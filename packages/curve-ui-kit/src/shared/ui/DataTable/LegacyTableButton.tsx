@@ -9,6 +9,7 @@ const { IconSize } = SizesAndSpaces
 /**
  * A button for controlling the DataTable.
  */
+// eslint-disable-next-line @eslint-react/no-forward-ref -- Existing violation before enabling this rule.
 export const LegacyTableButton = forwardRef<
   HTMLButtonElement,
   {
@@ -20,6 +21,7 @@ export const LegacyTableButton = forwardRef<
   }
 >(function LegacyTableButton({ active, icon: Icon, rotateIcon, testId, ...rest }, ref) {
   const iconProps = rotateIcon && { sx: LoadingAnimation }
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   active = active || rotateIcon
   return (
     <IconButton

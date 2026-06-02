@@ -30,8 +30,10 @@ export type ManageLoanProps = {
 
 export type FormValues = {
   collateral: string
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   collateralError: 'too-much' | string
   debt: string
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   debtError: 'too-much' | string
   n: number | null
 }

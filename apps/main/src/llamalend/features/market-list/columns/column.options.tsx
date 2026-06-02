@@ -144,5 +144,4 @@ export const LLAMA_MARKETS_COLUMN_OPTIONS = {
   }),
   hasPositions: createLlamaMarketsColumnOptions({ hasPositions: true }),
   noPositions: createLlamaMarketsColumnOptions({ hasPositions: false }),
-  unknown: [],
 }

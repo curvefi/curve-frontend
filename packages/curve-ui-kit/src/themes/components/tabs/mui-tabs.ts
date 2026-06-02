@@ -8,6 +8,7 @@ import { SizesAndSpaces } from '../../design/1_sizes_spaces'
 
 type TabStyle = { Label?: string; Fill?: string; Outline?: string }
 type TabVariant = { Inset?: string; Default: TabStyle; Hover: TabStyle; Current: TabStyle }
+// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
 type SpacingKey = keyof typeof SizesAndSpaces.Spacing | string | number
 type TabSizeConfig = {
   className: string

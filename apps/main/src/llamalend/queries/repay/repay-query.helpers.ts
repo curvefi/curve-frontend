@@ -50,6 +50,7 @@ export function getRepayImplementation(
     if (hasLeverage(market)) return ['V1', market.leverage, [stateCollateral, userCollateral, userBorrowed]] as const
   }
   throw new Error(
+    // eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions -- Existing violation before enabling this rule.
     `Invalid repay implementation for ${market.constructor.name} market: ${marketId} with ${notFalsy(
       hasUserBorrowed && 'user borrowed',
       hasUserCollateral && 'user collateral',

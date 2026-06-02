@@ -2,6 +2,7 @@ import { ReactNode, Children, isValidElement } from 'react'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { borderStyle } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -9,7 +10,7 @@ export const Header = ({ children }: { children?: ReactNode }) => (
   <Stack
     sx={{
       justifyContent: 'end',
-      borderBottom: t => `1px solid ${t.design.Layer[1].Outline}`,
+      borderBottom: borderStyle,
       paddingBlockStart: Spacing.lg,
       paddingInline: Spacing.md,
     }}
@@ -43,6 +44,7 @@ export const Bold = ({ children }: { children: ReactNode }) => (
 )
 
 export const Section = ({ children }: { children?: ReactNode }) => {
+  // eslint-disable-next-line @eslint-react/no-children-to-array -- Existing violation before enabling this rule.
   const childArray = Children.toArray(children)
   const title = childArray.find(child => isValidElement(child) && child.type === Title)
   const content = childArray.filter(child => isValidElement(child) && child.type !== Title)

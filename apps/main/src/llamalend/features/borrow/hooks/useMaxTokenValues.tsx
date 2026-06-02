@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'bignumber.js'
 import { useCallback, useEffect, useRef } from 'react'
 import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
@@ -81,7 +81,7 @@ export function useMaxTokenValues({
     collateral: {
       data: maxCollateral,
       isLoading: !market || isLoadingMaxBorrow || isBalanceLoading,
-      error: maxBorrowError || balanceError,
+      error: maxBorrowError ?? balanceError,
     },
     debt: {
       data: maxDebt,
@@ -91,7 +91,7 @@ export function useMaxTokenValues({
     maxLeverage: {
       data: maxLeverage,
       isLoading: isLoadingMaxLeverage || isLoadingMaxBorrow,
-      error: maxLeverageError || maxBorrowError,
+      error: maxLeverageError ?? maxBorrowError,
     },
   }
 }

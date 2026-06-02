@@ -28,8 +28,10 @@ const { LineHeight, FontSize, ButtonSize } = SizesAndSpaces
 
 export type TypographyVariantDefinition = {
   fontFamily: keyof DesignSystem['Text']['FontFamily']
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   fontSize: string | keyof typeof FontSize
   fontWeight?: keyof DesignSystem['Text']['FontWeight']
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   lineHeight?: string | keyof typeof LineHeight
   letterSpacing?: string
   textCase?: 'uppercase' | 'capitalize'
@@ -38,7 +40,9 @@ export type TypographyVariantDefinition = {
 }
 
 const responsiveValues = (
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   fontSize: string | keyof typeof FontSize,
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   lineHeight: string | keyof typeof LineHeight | undefined,
   breakpoint: Breakpoint,
 ) => ({

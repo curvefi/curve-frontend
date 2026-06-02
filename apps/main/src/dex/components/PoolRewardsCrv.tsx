@@ -19,7 +19,7 @@ export const PoolRewardsCrv = ({
   rewardsApy: RewardsApy | undefined
   poolData: PoolDataCache | PoolData | undefined
 }) => {
-  const { rewardsNeedNudging, areCrvRewardsStuckInBridge } = poolData?.gauge.status || {}
+  const { rewardsNeedNudging, areCrvRewardsStuckInBridge } = poolData?.gauge.status ?? {}
 
   const rewardsCrvLabel = useMemo(() => {
     if (isLoading || typeof poolData === 'undefined') {

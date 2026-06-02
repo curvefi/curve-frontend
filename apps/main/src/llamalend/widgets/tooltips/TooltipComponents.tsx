@@ -97,6 +97,7 @@ export const TooltipItem = ({
     </Stack>
     <WithSkeleton loading={loading}>
       <Stack direction="row" spacing={1} sx={{ alignItems: 'baseline' }}>
+        {/* eslint-disable-next-line @eslint-react/no-children-map -- Existing violation before enabling this rule. */}
         {Children.map(children, (child, index) => {
           const isFirstChild = index === 0
           const typographyVariant = isFirstChild ? valueTypographyVariant[variant] : 'bodyXsRegular'

@@ -7,6 +7,7 @@ import type { ButtonProps } from '@ui/Button/types'
 import { Spinner } from '@ui/Spinner/Spinner'
 import { buttonBaseStyles } from './styles'
 
+// eslint-disable-next-line @eslint-react/no-forward-ref -- Existing violation before enabling this rule.
 export const Button = forwardRef<
   HTMLButtonElement,
   ButtonProps &
@@ -24,7 +25,7 @@ export const Button = forwardRef<
       {...focusProps}
       data-testid={`btn-${testId}`}
       className={`${className || ''} ${loading ? 'loading' : ''} ${isFocusVisible ? 'focus-visible' : ''}`}
-      ref={ref || buttonRef}
+      ref={ref ?? buttonRef}
     >
       {children}
       {loading && (

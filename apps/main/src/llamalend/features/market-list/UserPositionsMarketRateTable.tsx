@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { PositionsEmptyState } from '@/llamalend/constants'
+import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import { ExpandedState } from '@tanstack/react-table'
 import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
@@ -54,7 +54,7 @@ export const UserPositionsMarketRateTable = ({
   const { label, defaultSort, sortQueryField, storageKey } = TABLE_CONFIG[marketRateType]
   const [sorting, onSortingChange] = useSortFromQueryString(defaultSort, sortQueryField)
   const { columnVisibility } = useLlamaTableVisibility(storageKey, sorting, marketRateType)
-  const [expanded, onExpandedChange] = useState<ExpandedState>({})
+  const [expanded, setExpanded] = useState<ExpandedState>({})
 
   const table = useTable({
     columns: LLAMA_MARKET_COLUMNS,
@@ -62,7 +62,7 @@ export const UserPositionsMarketRateTable = ({
     state: { expanded, sorting, columnVisibility },
     initialState: { pagination },
     onSortingChange,
-    onExpandedChange,
+    onExpandedChange: setExpanded,
     ...getTableOptions(data),
   })
   return (
@@ -70,7 +70,7 @@ export const UserPositionsMarketRateTable = ({
       table={table}
       defaultVisibleRows={{
         max: DEFAULT_VISIBLE_ROWS,
-        buttonLabel: t`View all ${marketRateType.toLowerCase()} positions`,
+        buttonLabel: t`View all ${data.length} ${marketRateType.toLowerCase()} positions`,
       }}
       emptyState={
         <UserPositionsEmptyState
@@ -87,14 +87,12 @@ export const UserPositionsMarketRateTable = ({
       <Stack
         sx={{
           backgroundColor: t => t.design.Layer[1].Fill,
-          paddingBlockEnd: Spacing.xs,
           height: Sizing.md,
           justifyContent: 'end',
+          paddingInline: Spacing.md,
         }}
       >
-        <Typography variant="headingXsBold" color="textSecondary">
-          {label}
-        </Typography>
+        <CardHeader title={label} size="small" />
       </Stack>
     </DataTable>
   )

@@ -1,5 +1,5 @@
 import { BrowserProvider } from 'ethers'
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, use, useEffect, useMemo, useState } from 'react'
 import { useConnection, useConnectorClient } from 'wagmi'
 import type { NetworkDef } from '@ui/utils'
 import { setUser } from '@ui-kit/features/sentry'
@@ -38,6 +38,7 @@ function useWagmiIsInitialized(hasWallet: boolean) {
   const [wasInitialized, setWasInitialized] = useState(false)
 
   const isInitialized = !isConnecting && !isReconnecting && (!isConnected || hasWallet)
+  // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
   useEffect(() => setWasInitialized(wasInitialized => isInitialized || wasInitialized), [isInitialized])
   return isInitialized || wasInitialized // note: use || since `isInitialized` is set one render before `wasInitialized`
 }
@@ -63,4 +64,4 @@ export function useWagmiWallet() {
   }
 }
 
-export const useCurve = () => useContext(CurveContext)
+export const useCurve = () => use(CurveContext)

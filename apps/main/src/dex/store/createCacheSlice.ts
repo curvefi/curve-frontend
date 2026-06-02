@@ -13,20 +13,20 @@ export type SwapFormValuesCache = {
 type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
-  hasDepositAndStake: { [chainId: string]: boolean }
-  hasRouter: { [chainId: string]: boolean }
-  poolsMapper: { [chainId: string]: PoolDataCacheMapper }
-  routerFormValues: { [chainId: string]: SwapFormValuesCache }
+  hasDepositAndStake: Record<string, boolean>
+  hasRouter: Record<string, boolean>
+  poolsMapper: Record<string, PoolDataCacheMapper>
+  routerFormValues: Record<string, SwapFormValuesCache>
 }
 
 const sliceKey = 'storeCache'
 
 export type CacheSlice = {
   [sliceKey]: SliceState & {
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): Promise<void>
-    setStateByKey<T>(key: StateKey, value: T): Promise<void>
-    setStateByKeys(SliceState: Partial<SliceState>): Promise<void>
-    resetState(): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => Promise<void>
+    setStateByKey: <T>(key: StateKey, value: T) => Promise<void>
+    setStateByKeys: (SliceState: Partial<SliceState>) => Promise<void>
+    resetState: () => void
   }
 }
 

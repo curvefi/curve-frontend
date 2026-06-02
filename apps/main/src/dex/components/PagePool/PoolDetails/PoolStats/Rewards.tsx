@@ -124,7 +124,7 @@ export const Rewards = ({ chainId, poolData, rewardsApy }: RewardsProps) => {
                       </TokenWrapper>
                     </StyledExternalLink>
 
-                    <StyledIconButton size="small" onClick={() => copyToClipboard(tokenAddress)}>
+                    <StyledIconButton size="small" onClick={() => void copyToClipboard(tokenAddress)}>
                       <Icon name="Copy" size={16} />
                     </StyledIconButton>
                   </Box>

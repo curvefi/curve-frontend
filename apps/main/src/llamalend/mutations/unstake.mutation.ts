@@ -43,6 +43,7 @@ export const useUnstakeMutation = ({
     ...props,
   })
 
+  // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
   const onSubmit = useCallback(async (form: UnstakeForm) => mutate(form as UnstakeMutation), [mutate])
 
   return { onSubmit, mutate, error, isPending }

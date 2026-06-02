@@ -1,12 +1,22 @@
+import { useConnection } from 'wagmi'
+import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
+import { fromEntries, maybe, recordValues } from '@primitives/objects.utils'
+import { useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
 import { t } from '@ui-kit/lib/i18n'
 import { getInternalUrl, LEND_MARKET_ROUTES, LEND_ROUTES } from '@ui-kit/shared/routes'
 import { TableHeader } from '@ui-kit/shared/ui/DataTable/TableHeader'
+import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
 import { mapQuery, QueryProp } from '@ui-kit/types/util'
+import { borderStyle, directChildrenAfterFirst } from '@ui-kit/utils/mui'
 import type { LlamaMarket, LlamaMarketsResult } from '../../queries/market-list/llama-markets'
 import { UserPositionsMarketRateTable } from './UserPositionsMarketRateTable'
 import { UserPositionSummary } from './UserPositionsSummary'
+
+const { Spacing } = SizesAndSpaces
 
 type UserPositionsTableProps = {
   onReload: () => void
@@ -24,26 +34,69 @@ export const UserPositionsTables = ({
   onReload,
   tableQuery,
   tableQuery: { data: queryData, isLoading },
-}: UserPositionsTableProps) => (
-  <Stack>
-    <TableHeader title={t`Your Positions`} onReload={onReload} isLoading={isLoading} />
-    <UserPositionSummary markets={queryData?.markets} selectedChains={undefined} />
-    <UserPositionsMarketRateTable
-      tableQuery={mapQuery(tableQuery, ({ markets }) =>
-        markets.filter(market => market.userHasPositions?.[MarketRateType.Borrow]),
-      )}
-      marketRateType={MarketRateType.Borrow}
-      onReload={onReload}
-    />
-    <UserPositionsMarketRateTable
-      tableQuery={mapQuery(tableQuery, ({ markets }) =>
-        markets
-          .filter(market => market.userHasPositions?.[MarketRateType.Supply])
-          // For supply positions, navigate to vault page instead of borrow page
-          .map(market => ({ ...market, url: buildVaultUrl(market) })),
-      )}
-      marketRateType={MarketRateType.Supply}
-      onReload={onReload}
-    />
-  </Stack>
-)
+}: UserPositionsTableProps) => {
+  const { address, isConnecting } = useConnection()
+  const { connect } = useWallet()
+  // Tracks whether the user has any positions for each market rate type.
+  const hasUserPositions = maybe(queryData?.userHasPositions, userHasPositions =>
+    fromEntries(
+      recordValues(MarketRateType).map(rateType => [
+        rateType,
+        recordValues(userHasPositions).some(marketHasPositions => marketHasPositions[rateType]),
+      ]),
+    ),
+  )
+
+  return (
+    <Stack>
+      <TableHeader title={t`Your Positions`} onReload={onReload} isLoading={isLoading} />
+      <Stack sx={directChildrenAfterFirst({ borderTop: borderStyle })}>
+        <UserPositionSummary markets={queryData?.markets} selectedChains={undefined} />
+        {hasUserPositions?.[MarketRateType.Borrow] && (
+          <UserPositionsMarketRateTable
+            tableQuery={mapQuery(tableQuery, ({ markets }) =>
+              markets.filter(market => market.userHasPositions?.[MarketRateType.Borrow]),
+            )}
+            marketRateType={MarketRateType.Borrow}
+            onReload={onReload}
+          />
+        )}
+        {hasUserPositions?.[MarketRateType.Supply] && (
+          <UserPositionsMarketRateTable
+            tableQuery={mapQuery(tableQuery, ({ markets }) =>
+              markets
+                .filter(market => market.userHasPositions?.[MarketRateType.Supply])
+                // For supply positions, navigate to vault page instead of borrow page
+                .map(market => ({ ...market, url: buildVaultUrl(market) })),
+            )}
+            marketRateType={MarketRateType.Supply}
+            onReload={onReload}
+          />
+        )}
+        {(!hasUserPositions || !address) && (
+          <Box sx={{ paddingBlock: Spacing.md, backgroundColor: t => t.design.Layer[1].Fill }}>
+            {address ? (
+              !hasUserPositions && (
+                <EmptyStateCard
+                  isLoading={isLoading}
+                  title={t`No active positions`}
+                  subtitle={t`Borrow with LLAMMA to stay exposed and lend assets to earn yield.`}
+                />
+              )
+            ) : (
+              <EmptyStateCard
+                action={
+                  <ConnectWalletButton
+                    label={t`Connect to view positions`}
+                    onClick={() => void connect()}
+                    loading={isConnecting}
+                  />
+                }
+              />
+            )}
+          </Box>
+        )}
+      </Stack>
+    </Stack>
+  )
+}

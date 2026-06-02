@@ -4,10 +4,12 @@ import { styled } from 'styled-components'
 import type { Distribution } from '@curvefi/prices-api/revenue'
 import { Box } from '@ui/Box'
 import { formatDate } from '@ui/utils'
+import { useCurrentDate } from '@ui-kit/hooks/useCurrentDate'
 import { t } from '@ui-kit/lib/i18n'
 import { formatNumber } from '@ui-kit/utils'
 
 export const FeesBarChartTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
+  const currentDate = useCurrentDate()
   if (active && payload?.length) {
     const { feesUsd, timestamp } = payload[0].payload as Distribution
 
@@ -18,7 +20,7 @@ export const FeesBarChartTooltip = ({ active, payload }: TooltipProps<ValueType,
             <TooltipDataTitle>{t`Distribution Date`}</TooltipDataTitle>
             <TooltipData>
               {formatDate(timestamp)}
-              {new Date(timestamp) > new Date() && <strong> {t`(in progress)`}</strong>}
+              {new Date(timestamp) > currentDate && <strong> {t`(in progress)`}</strong>}
             </TooltipData>
           </TooltipColumn>
         </Box>

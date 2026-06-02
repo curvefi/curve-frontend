@@ -4,11 +4,11 @@ import { useDialog } from 'react-aria'
 import { styled } from 'styled-components'
 import { focusVisible } from '@ui/utils/sharedStyles'
 
-export interface DialogProps extends AriaDialogProps {
+export type DialogProps = {
   className?: string
   title?: ReactNode
   children: ReactElement<AriaDialogProps>
-}
+} & AriaDialogProps
 
 export function Popover2Dialog({ title, children, ...props }: DialogProps) {
   const ref = useRef(null)
@@ -21,6 +21,7 @@ export function Popover2Dialog({ title, children, ...props }: DialogProps) {
           {title}
         </h3>
       )}
+      {/* eslint-disable-next-line @eslint-react/no-clone-element -- Existing violation before enabling this rule. */}
       {cloneElement(children, props)}
     </Wrapper>
   )

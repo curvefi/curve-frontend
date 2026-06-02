@@ -2,7 +2,7 @@ import { styled } from 'styled-components'
 import { Button } from '@ui/Button'
 import { Icon } from '@ui/Icon'
 
-interface TableHeaderProps<T> {
+type TableHeaderProps<T> = {
   columns: { key: keyof T; label: string; disabled?: boolean }[]
   title?: string
   sortBy: { key: keyof T; order: 'asc' | 'desc' }

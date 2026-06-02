@@ -45,7 +45,7 @@ const CHIPS_PRESETS: Record<ChipsPreset, InputChip[]> = {
   })),
 }
 
-export interface LargeTokenInputRef {
+export type LargeTokenInputRef = {
   resetBalance: () => void
 }
 
@@ -203,6 +203,7 @@ export const LargeTokenInput = ({
   const showSlider = !!maxBalance?.showSlider && !!maxBalance?.balance
   const chips = typeof maxBalance?.chips === 'string' ? CHIPS_PRESETS[maxBalance.chips] : maxBalance?.chips
   const showChips = !!chips?.length
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const chipDisabled = disabled || maxBalance?.isLoading
 
   const maxBalanceValue = maxBalance?.balance
@@ -241,6 +242,7 @@ export const LargeTokenInput = ({
   )
 
   const updatePercentageOnNewMaxBalance = useEffectEvent((newMaxBalance?: Decimal) => {
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setPercentage(newMaxBalance && balance ? calculateNewPercentage(balance, newMaxBalance) : undefined)
   })
 
@@ -267,11 +269,26 @@ export const LargeTokenInput = ({
       data-testid={testId}
       sx={{
         backgroundColor: t => t.design.Inputs.Large.Default.Fill,
-        outline: t =>
-          `1px solid ${isError ? t.design.Layer.Feedback.Error : t.design.Inputs.Base.Default.Border.Default}`,
+        outline: t => `1px solid ${t.design.Inputs.Base.Default.Border[isError ? 'Error' : 'Default']}`,
+        '&:hover': {
+          backgroundColor: t => t.design.Inputs.Base.Default.Fill.Hover,
+          outlineColor: t => t.design.Inputs.Base.Default.Border.Hover,
+        },
+        ...(isError && {
+          '&:hover': {
+            backgroundColor: t => t.design.Inputs.Large.Default.Fill,
+            outlineColor: t => t.design.Inputs.Base.Default.Border.Error,
+          },
+        }),
+        ...(disabled && {
+          '&:hover': {
+            backgroundColor: t => t.design.Inputs.Large.Default.Fill,
+            outlineColor: t => t.design.Inputs.Base.Default.Border[isError ? 'Error' : 'Default'],
+          },
+        }),
       }}
     >
-      <Stack sx={{ gap: Spacing.xxs, padding: Spacing.sm }}>
+      <Stack sx={{ gap: SizesAndSpaces.LargeTokenInput.RowGap, padding: SizesAndSpaces.LargeTokenInput.PaddingX }}>
         {/** First row is an optional label describing the input and/or chips */}
         {(label || showChips) && (
           <Stack
@@ -284,7 +301,7 @@ export const LargeTokenInput = ({
             }}
           >
             {label && (
-              <Typography variant="bodyXsRegular" color="textSecondary">
+              <Typography variant="bodyXsRegular" sx={{ color: t => t.design.Inputs.Text.Label }}>
                 {label}
               </Typography>
             )}
@@ -323,6 +340,7 @@ export const LargeTokenInput = ({
                         }
                       }}
                       selected={false}
+                      size="extraSmall"
                     />
                   ),
                 )}
@@ -344,10 +362,11 @@ export const LargeTokenInput = ({
         </Stack>
 
         {/** Third row containing input and max balances */}
+        {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
         {(walletBalance || inputBalanceUsd) && (
           <Stack direction="row" sx={{ justifyContent: 'end' }}>
             {inputBalanceUsd != null && (
-              <Typography variant="bodyXsRegular" color="textTertiary" sx={{ flexGrow: 1 }}>
+              <Typography variant="bodyXsRegular" sx={{ flexGrow: 1, color: t => t.design.Inputs.Text.MetaSubtle }}>
                 ≈ {formatNumber(inputBalanceUsd, { unit: 'dollar', abbreviate: false })}
               </Typography>
             )}
@@ -363,7 +382,7 @@ export const LargeTokenInput = ({
               name={name}
               disabled={disabled}
               value={percentage ?? `${MIN_PERCENTAGE}`}
-              onChange={value => handlePercentageChange(value as Decimal)}
+              onChange={value => handlePercentageChange(value)}
               sliderProps={{ 'data-rail-background': 'danger', ...sliderProps }}
               min={MIN_PERCENTAGE}
               max={MAX_PERCENTAGE}

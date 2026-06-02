@@ -1,5 +1,5 @@
+import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { TableButton } from './TableButton'
@@ -24,9 +24,7 @@ export const TableHeader = ({
       backgroundColor: t => t.design.Layer.App.Background,
     }}
   >
-    <Typography variant="headingSBold" color="textSecondary" sx={{ paddingInlineStart: Spacing.sm }}>
-      {title}
-    </Typography>
+    <CardHeader title={title} />
     <TableButton onClick={onReload} icon={ReloadIcon} rotateIcon={isLoading} />
   </Stack>
 )

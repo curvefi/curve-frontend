@@ -7,7 +7,7 @@ import { Button } from '@ui/Button'
 import { Icon } from '@ui/Icon'
 import { t } from '@ui-kit/lib/i18n'
 
-interface Props {
+type Props = {
   navigation: number
   setNavigation: (index: number) => void
   disabled?: boolean

@@ -39,6 +39,7 @@ export const getRoutes = async (request: FastifyRequest<{ Querystring: RoutesQue
 
   failures.forEach(res => request.log.error({ message: 'route calculation failed', error: res.reason }))
   if (!successes.length) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- Existing violation before enabling this rule.
     const reasons = failures.map(f => f.reason)
     if (reasons.length === 1) throw reasons[0]
     throw new Error(`Failed to calculate route for ${router.join(', ')}: ${reasons.join('; ')}`)

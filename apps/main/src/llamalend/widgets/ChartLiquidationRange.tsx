@@ -27,7 +27,7 @@ import type { HealthColorKey } from '../llamalend.types'
 
 const { Spacing, Sizing } = SizesAndSpaces
 
-export interface LiquidationRangeData {
+export type LiquidationRangeData = {
   name: string
   curr: number[]
   new: number[]
@@ -36,7 +36,7 @@ export interface LiquidationRangeData {
   newLabel?: string
 }
 
-interface ChartLiquidationRangeProps {
+type ChartLiquidationRangeProps = {
   data: LiquidationRangeData[]
   healthColorKey: HealthColorKey | undefined
   height?: number
@@ -46,10 +46,9 @@ interface ChartLiquidationRangeProps {
   tooltipContent?: (params: TooltipContentProps) => ReactNode
 }
 
-interface TooltipContentProps {
+type TooltipContentProps = {
   active?: boolean
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  payload?: any[]
+  payload: { name?: string | number; stroke?: string; payload?: LiquidationRangeData }[]
   oraclePrice: string
   isManage: boolean
   chartHealthColor: string
@@ -61,9 +60,9 @@ const DefaultTooltipContent = ({ active, payload, oraclePrice, isManage, chartHe
   const currPrices = isManage ? payload.find(p => p.name === 'curr') : undefined
   const newPrices = isManage ? payload.find(p => p.name === 'new') : payload[0]
 
-  const [cp1, cp2] = currPrices ? (currPrices.payload.curr as string[]) : []
-  const [np1, np2] = (newPrices?.payload.new as string[]) ?? []
-  const oraclePriceValue = newPrices?.payload.oraclePrice
+  const [cp1, cp2] = currPrices?.payload?.curr ?? []
+  const [np1, np2] = newPrices?.payload?.new ?? []
+  const oraclePriceValue = newPrices?.payload?.oraclePrice
 
   return (
     <ChartTooltip>
@@ -96,6 +95,7 @@ const DefaultTooltipContent = ({ active, payload, oraclePrice, isManage, chartHe
 const LegendContent = ({ payload }: LegendContentProps) => (
   <Stack sx={{ gap: Spacing.xs }}>
     {payload?.map(({ color, type, value }, index) => (
+      // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
       <Stack direction="row" key={index} sx={{ gap: Spacing.xs }}>
         <Stack
           sx={{
@@ -131,10 +131,11 @@ export const ChartLiquidationRange = ({
   showLegend = false,
   tooltipContent,
 }: ChartLiquidationRangeProps) => {
-  const oraclePrice = data[0]?.oraclePrice
-  const haveCurrData = data[0]?.curr[0] > 0
-  const haveNewData = data[0]?.new[0] > 0
-  const isInLiquidationRange = haveCurrData ? inRange(+oraclePrice, data[0].curr[1], data[0].curr[0]) : false
+  const [first] = data
+  const oraclePrice = first?.oraclePrice
+  const haveCurrData = first?.curr[0] > 0
+  const haveNewData = first?.new[0] > 0
+  const isInLiquidationRange = haveCurrData && inRange(+oraclePrice, first.curr[1], first.curr[0])
   const theme = useTheme()
   const showFireStyle = isInLiquidationRange && theme.key === 'chad'
 
@@ -147,6 +148,7 @@ export const ChartLiquidationRange = ({
     : `var(--health_mode_${healthColorKey}--color)`
   const chartLabelColor = isDetailView ? 'var(--chart_label--color)' : 'var(--chart_label_darkBg--color)'
 
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const TooltipContentComponent = tooltipContent || DefaultTooltipContent
 
   return (
@@ -161,6 +163,7 @@ export const ChartLiquidationRange = ({
               stroke={chartAxisColor}
               tick={{ fontSize: 12 }}
               tickFormatter={tick =>
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
                 `${formatNumber(amount(tick), { ...(tick > 10 && { decimals: 0 }), abbreviate: false, fallback: '-' })}`
               }
               domain={([dataMin, dataMax]) => {
@@ -194,8 +197,9 @@ export const ChartLiquidationRange = ({
               wrapperStyle={{ zIndex: 1000 }}
               content={({ active, payload }) => (
                 <TooltipContentComponent
+                  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
                   active={active || false}
-                  payload={payload || []}
+                  payload={payload ?? []}
                   oraclePrice={oraclePrice}
                   isManage={isManage}
                   chartHealthColor={chartHealthColor}
@@ -275,7 +279,9 @@ export const ChartLiquidationRange = ({
                       strokeWidth: 1,
                       label: ({ viewBox }) => (
                         <svg
+                          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                           x={viewBox.x - 31}
+                          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                           y={viewBox.y - 6}
                           width={50}
                           height={50}

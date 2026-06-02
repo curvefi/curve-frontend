@@ -52,6 +52,7 @@ function RepayTokenSelector<ChainId extends IChainId>({
       isOpen={isOpen}
       onOpen={onOpen}
       onClose={onClose}
+      size="small"
     >
       <RepayTokenList {...props} />
     </TokenSelector>
@@ -137,6 +138,7 @@ export const RepayForm = <ChainId extends IChainId>({
   return (
     <Form
       {...form}
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
       onSubmit={onSubmit}
       footer={
         <RepayLoanInfoList

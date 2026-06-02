@@ -10,7 +10,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
 import { shortenAddress } from '@ui-kit/utils'
 
-interface TitleCompProps {
+type TitleCompProps = {
   gaugeData: GaugeFormattedData
   gaugeAddress?: string
 }
@@ -31,6 +31,7 @@ export const TitleComp = ({ gaugeData, gaugeAddress }: TitleCompProps) => (
       {gaugeData.tokens && (
         <SymbolsWrapper>
           {gaugeData.tokens.map((token, index) => (
+            // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
             <TokenSymbol key={`${token.symbol}-${index}`}>{token.symbol}</TokenSymbol>
           ))}
         </SymbolsWrapper>

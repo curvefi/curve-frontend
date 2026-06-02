@@ -17,7 +17,7 @@ export const ErrorAlert = ({ error }: Props) => (
     variant="filled"
     severity="error"
     action={
-      <Button color="ghost" size="extraSmall" onClick={() => copyToClipboard(error)}>
+      <Button color="ghost" size="extraSmall" onClick={() => void copyToClipboard(error)}>
         Copy
       </Button>
     }

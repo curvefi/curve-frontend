@@ -1,7 +1,6 @@
-import lodash from 'lodash'
+import { get, sortBy, sortedUniq } from 'lodash'
 import { type DeepKeys } from '@tanstack/table-core'
 
-const { get, sortBy, sortedUniq } = lodash
 /**
  * Get all unique string values from a field in an array of objects and sort them alphabetically.
  * TODO: validate T[K] is string with typescript. DeepKeys makes it hard to do this.

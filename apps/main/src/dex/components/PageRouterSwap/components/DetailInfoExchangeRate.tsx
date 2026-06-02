@@ -13,7 +13,6 @@ export const DetailInfoExchangeRate = ({
   loading: boolean
 }) => (
   <DetailInfo
-    alignItems="start"
     label={
       <>
         {t`Exchange rate`} <Chip size="xs">{t`(incl. fees):`}</Chip>

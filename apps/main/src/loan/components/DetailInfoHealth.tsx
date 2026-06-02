@@ -85,6 +85,7 @@ export const DetailInfoHealth = ({
   useEffect(() => {
     if (typeof oraclePriceBand !== 'undefined' && userLoanDetails) {
       const { healthFull, healthNotFull, userBands } = userLoanDetails
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setCurrentHealthMode(
         getHealthMode(
           DEFAULT_BORROW_TOKEN_SYMBOL,

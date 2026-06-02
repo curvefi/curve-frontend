@@ -40,7 +40,7 @@ export const CollateralDecrease = ({
   rChainId,
 }: Pick<ManageLoanProps, 'curve' | 'market' | 'rChainId'>) => {
   const llammaId = llamma?.id ?? ''
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.loanCollateralDecrease.activeKey)
   const detailInfo = useStore(state => state.loanCollateralDecrease.detailInfo[activeKey] ?? DEFAULT_DETAIL_INFO)
@@ -60,7 +60,7 @@ export const CollateralDecrease = ({
   const setStateByKey = useStore(state => state.loanCollateralDecrease.setStateByKey)
   const resetState = useStore(state => state.loanCollateralDecrease.resetState)
 
-  const [confirmedHealthWarning, setConfirmHealthWarning] = useState(false)
+  const [confirmedHealthWarning, setConfirmedHealthWarning] = useState(false)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
@@ -82,7 +82,7 @@ export const CollateralDecrease = ({
 
   const reset = useCallback(
     (isErrorReset: boolean, isFullReset: boolean) => {
-      setConfirmHealthWarning(false)
+      setConfirmedHealthWarning(false)
       setTxInfoBar(null)
 
       if (isErrorReset || isFullReset) {
@@ -111,7 +111,7 @@ export const CollateralDecrease = ({
       const notification = notify(notifyMessage, 'pending')
       const resp = await fetchStepDecrease(payloadActiveKey, curve, llamma, formValues)
 
-      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey) {
         const txMessage = `Remove ${formValues.collateral} ${llamma.collateralSymbol} collateral.`
         setTxInfoBar(
           <TxInfoBar
@@ -141,7 +141,7 @@ export const CollateralDecrease = ({
       const haveCollateral = !!collateral && +collateral > 0
       const isValid = !!curve.signerAddress && !formEstGas.loading && haveCollateral && !collateralError && !error
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         REMOVE: {
           key: 'REMOVE',
           status: getStepStatus(isComplete, step === 'REMOVE', isValid),
@@ -155,22 +155,24 @@ export const CollateralDecrease = ({
                     <DialogHealthWarning
                       {...healthMode}
                       confirmed={confirmedHealthWarning}
-                      setConfirmed={val => setConfirmHealthWarning(val)}
+                      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
+                      setConfirmed={val => setConfirmedHealthWarning(val)}
                     />
                   ),
                   isDismissable: false,
                   cancelBtnProps: {
                     label: t`Cancel`,
-                    onClick: () => setConfirmHealthWarning(false),
+                    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
+                    onClick: () => setConfirmedHealthWarning(false),
                   },
                   primaryBtnProps: {
-                    onClick: () => handleBtnClickRemove(payloadActiveKey, curve, llamma, formValues),
+                    onClick: () => void handleBtnClickRemove(payloadActiveKey, curve, llamma, formValues),
                     disabled: !confirmedHealthWarning,
                   },
                   primaryBtnLabel: 'Remove anyway',
                 },
               }
-            : { onClick: async () => handleBtnClickRemove(payloadActiveKey, curve, llamma, formValues) }),
+            : { onClick: () => void handleBtnClickRemove(payloadActiveKey, curve, llamma, formValues) }),
         },
       }
 
@@ -183,10 +185,10 @@ export const CollateralDecrease = ({
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
       resetState()
     }
   }, [resetState])
@@ -211,6 +213,7 @@ export const CollateralDecrease = ({
         formStatus,
         formValues,
       )
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

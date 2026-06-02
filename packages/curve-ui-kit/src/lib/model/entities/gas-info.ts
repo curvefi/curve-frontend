@@ -72,7 +72,9 @@ const {
 } = queryFactory({
   queryKey: ({ gasPricesUrl, gasPricesUrlL2, ...params }: GasInfoParams) =>
     [...rootKeys.chain(params), { gasPricesUrl }, { gasPricesUrlL2 }, 'gasInfo'] as const,
-  queryFn: async ({ chainId, gasPricesUrl, gasPricesUrlL2 }: GasInfoQuery): Promise<GasInfo> => {
+  queryFn: async ({ chainId: chain, gasPricesUrl, gasPricesUrlL2 }: GasInfoQuery): Promise<GasInfo> => {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+    const chainId = chain as Chain
     const curve = getAnyCurve(chainId)!
     const provider = getProvider()
 
@@ -80,11 +82,15 @@ const {
 
     if (chainId === Chain.Ethereum) {
       // Ethereum uses api
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
       const json = await httpFetcher(gasPricesUrl)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       const { eip1559Gas: gasInfo, gas } = json?.data ?? {}
 
       if (gasInfo) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
         parsedGasInfo = parseEthereumGasInfo(gasInfo, gas)
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
         const customFeeDataValues = getEthereumCustomFeeDataValues(gasInfo)
         if (customFeeDataValues) {
           curve.setCustomFeeData(customFeeDataValues)
@@ -92,17 +98,13 @@ const {
       }
     } else if (chainId === Chain.Polygon) {
       // Polygon uses api
-      const json = await httpFetcher(gasPricesUrl)
-
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
+      const json: PolygonGasInfo = await httpFetcher(gasPricesUrl)
       if (json?.fast) {
         parsedGasInfo = parsePolygonGasInfo(json)
       }
-
       if (json) {
-        curve.setCustomFeeData({
-          maxFeePerGas: json.fast.maxFee,
-          maxPriorityFeePerGas: json.fast.maxPriorityFee,
-        })
+        curve.setCustomFeeData({ maxFeePerGas: json.fast.maxFee, maxPriorityFeePerGas: json.fast.maxPriorityFee })
       }
     } else if (chainId === Chain.XLayer) {
       const { l2GasPrice } = await fetchL2GasPrice(curve)
@@ -231,12 +233,14 @@ function parseEthereumGasInfo(gasInfo: { base: number; prio: number[]; max: numb
   }
 }
 
-function parsePolygonGasInfo(gasInfo: {
+type PolygonGasInfo = {
   estimatedBaseFee: number
   safeLow: { maxFee: number; maxPriorityFee: number }
   standard: { maxFee: number; maxPriorityFee: number }
   fast: { maxFee: number; maxPriorityFee: number }
-}) {
+}
+
+function parsePolygonGasInfo(gasInfo: PolygonGasInfo) {
   const { estimatedBaseFee, safeLow, standard, fast } = gasInfo
 
   if (estimatedBaseFee && safeLow && standard && fast) {
@@ -275,10 +279,13 @@ async function parseGasInfo(curve: AnyCurveApi, provider: Provider, l2GasUrl?: s
   }
 
   if (l2GasUrl) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
     const fetchedData = await httpFetcher(l2GasUrl)
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
     const { eip1559Gas: gasInfo } = fetchedData?.data ?? {}
 
     baseInfo.basePlusPriority = gasFeeDataWei.gasPrice ? [gasFeeDataWei.gasPrice] : []
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
     baseInfo.basePlusPriorityL1 = [gasInfo.base * 6000]
 
     const { l2GasPriceWei, l1GasPriceWei } = await fetchL1AndL2GasPrice(curve)
@@ -403,7 +410,7 @@ export function calculateGas(
 type GasEstimateConversionResult = ReturnType<typeof calculateGas>
 
 export const useEstimateGas = (
-  networks: Record<number, BaseConfig<string, number>>,
+  networks: Record<number, BaseConfig>,
   chainId: number | null | undefined,
   estimate: Amount | [Decimal, Decimal] | number[] | null | undefined,
   enabled?: boolean,
@@ -429,7 +436,7 @@ export const useEstimateGas = (
   return { data, isLoading: ethRateLoading || gasInfoLoading, error: ethRateError ?? gasInfoError }
 }
 
-type NetworkDict = Record<number, BaseConfig<string, number>>
+type NetworkDict = Record<number, BaseConfig>
 
 type EstimateValue = number | number[] | null | undefined
 

@@ -37,7 +37,7 @@ export const Dashboard = ({
   params: NetworkUrlParams
   pageLoaded: boolean
 }) => {
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
   const push = useNavigate()
 
   const activeKey = useStore(state => state.dashboard.activeKey)
@@ -81,10 +81,10 @@ export const Dashboard = ({
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
     }
   }, [])
 

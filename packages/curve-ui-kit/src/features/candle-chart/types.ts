@@ -10,7 +10,7 @@ export type ChartSelection =
   | { type: 'lp-token'; symbol: string }
   | { type: 'pair'; mainToken: PoolCoin; refToken: PoolCoin }
 
-export interface LpPriceOhlcData {
+export type LpPriceOhlcData = {
   time: number
   open: number
   close: number
@@ -18,7 +18,7 @@ export interface LpPriceOhlcData {
   low: number
 }
 
-export interface LpPriceOhlcDataFormatted {
+export type LpPriceOhlcDataFormatted = {
   time: UTCTimestamp
   open: number
   close: number
@@ -26,17 +26,17 @@ export interface LpPriceOhlcDataFormatted {
   low: number
 }
 
-export interface LlamaBaselinePriceData {
+export type LlamaBaselinePriceData = {
   time: UTCTimestamp
   base_price: number
 }
 
-export interface OraclePriceData {
+export type OraclePriceData = {
   time: UTCTimestamp
   value: number
 }
 
-export interface LpPriceApiResponse {
+export type LpPriceApiResponse = {
   chain: string
   address: string
   data: LpPriceOhlcData[]

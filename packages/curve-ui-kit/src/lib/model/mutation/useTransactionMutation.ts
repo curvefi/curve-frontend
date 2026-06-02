@@ -1,3 +1,4 @@
+/* eslint-disable @eslint-react/naming-convention-context-name -- `context` refers to transaction context in this file */
 import { useState } from 'react'
 import type { FormattedTransactionReceipt } from 'viem'
 import { useConfig } from 'wagmi'
@@ -84,6 +85,7 @@ type TransactionMutationOptionsBase<
     receipt: FormattedTransactionReceipt,
     variables: TVariables,
     context: TContext,
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   ) => unknown | Promise<unknown>
   /** Callback executed to reset the form when mutation is finished successfully */
   onReset: () => void

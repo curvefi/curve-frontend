@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'bignumber.js'
 import { zeroAddress } from 'viem'
 import { USE_API } from '@/lend/shared/config'
 import type { LiqRange } from '@/lend/store/types'
@@ -21,7 +21,6 @@ import {
   MarketStatCapAndAvailable,
   MaxRecvLeverageResp,
   LendMarketTemplate,
-  ParsedBandsBalances,
   Provider,
   RewardCrv,
   RewardOther,
@@ -62,7 +61,7 @@ export const helpers = {
 const market = {
   fetchStatsBands: async (markets: LendMarketTemplate[]) => {
     log('fetchStatsBands', markets.length)
-    const results: { [id: string]: MarketStatBands } = {}
+    const results: Record<string, MarketStatBands> = {}
 
     await PromisePool.for(markets)
       .handleError((errorObj, { id }) => {
@@ -106,7 +105,7 @@ const market = {
   },
   fetchStatsCapAndAvailable: async (markets: LendMarketTemplate[]) => {
     log('fetchStatsCapAndAvailable', markets.length)
-    const results: { [id: string]: MarketStatCapAndAvailable } = {}
+    const results: Record<string, MarketStatCapAndAvailable> = {}
     const useMultiCall = markets.length > 1
 
     await PromisePool.for(markets)
@@ -124,7 +123,7 @@ const market = {
   },
   fetchMarketsPrices: async (markets: LendMarketTemplate[]) => {
     log('fetchMarketsPrices', markets.length)
-    const results: { [id: string]: MarketPrices } = {}
+    const results: Record<string, MarketPrices> = {}
 
     await PromisePool.for(markets)
       .handleError((errorObj, market) => {
@@ -156,7 +155,7 @@ const market = {
   fetchMarketsRates: async (markets: LendMarketTemplate[]) => {
     log('fetchMarketsRates', markets.length)
     const useMultiCall = markets.length > 1
-    const results: { [id: string]: MarketRates } = {}
+    const results: Record<string, MarketRates> = {}
 
     await PromisePool.for(markets)
       .handleError((errorObj, market) => {
@@ -174,7 +173,7 @@ const market = {
   fetchMarketsVaultsRewards: async (markets: LendMarketTemplate[]) => {
     const useMultiCall = markets.length > 1
     log('fetchMarketsVaultsRewards', markets.length)
-    const results: { [id: string]: MarketRewards } = {}
+    const results: Record<string, MarketRewards> = {}
 
     await PromisePool.for(markets).process(async market => {
       const resp: MarketRewards = {
@@ -218,7 +217,7 @@ const market = {
   },
   fetchMarketsMaxLeverage: async (markets: LendMarketTemplate[]) => {
     log('fetchMarketsMaxLeverage', markets.length)
-    const results: { [id: string]: MarketMaxLeverage } = {}
+    const results: Record<string, MarketMaxLeverage> = {}
 
     await PromisePool.for(markets)
       .handleError((errorObj, market) => {
@@ -238,7 +237,7 @@ const market = {
 const user = {
   fetchLoansDetails: async (api: Api, markets: LendMarketTemplate[]) => {
     log('fetchUsersLoansDetails', api.chainId, markets.length)
-    const results: { [userActiveKey: string]: UserLoanDetails } = {}
+    const results: Record<string, UserLoanDetails> = {}
     const { signerAddress } = api
 
     await PromisePool.for(markets)
@@ -315,7 +314,7 @@ const user = {
   },
   fetchMarketBalances: async (api: Api, markets: LendMarketTemplate[]) => {
     log('fetchUsersMarketBalances', api.chainId, markets.length)
-    const results: { [userActiveKey: string]: UserMarketBalances } = {}
+    const results: Record<string, UserMarketBalances> = {}
 
     await PromisePool.for(markets)
       .handleError((errorObj, market) => {
@@ -412,6 +411,7 @@ const loanCreate = {
         prices: fulfilledValue(pricesResp) ?? [],
         bands: reverseBands(bands),
       }
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
       resp.error = _detailInfoRespErrorMessage(futureRatesResp, bandsResp)
       return resp
     } catch (error) {
@@ -469,6 +469,7 @@ const loanCreate = {
         expectedCollateral: fulfilledValue(expectedCollateralResp) ?? null,
         ..._getPriceImpactResp(priceImpactResp, maxSlippage),
       }
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
       resp.error = _detailInfoRespErrorMessage(
         expectedCollateralResp, // leave this one as first, in case of errors the other ones will fail too
         healthFullResp,
@@ -505,7 +506,7 @@ const loanCreate = {
     const { minBands, maxBands } = market
     const bands = Array.from({ length: +maxBands - +minBands + 1 }, (_, i) => i + minBands)
     const liqRangesList: LiqRange[] = []
-    const liqRangesListMapper: { [n: string]: LiqRange & { sliderIdx: number } } = {}
+    const liqRangesListMapper: Record<string, LiqRange & { sliderIdx: number }> = {}
     let sliderIdx = 0
 
     if (isLeverage) {
@@ -529,6 +530,7 @@ const loanCreate = {
           collateral: isLeverage ? totalCollateral : userBorrowed,
           debt,
           maxRecv: maxRecv || '',
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
           maxRecvError: maxRecvsResults.status === 'rejected' ? maxRecvsResults.reason : '',
           prices: nLoanPrices ? [nLoanPrices[1], nLoanPrices[0]] : [],
           bands: bands ? reverseBands(bands) : [0, 0],
@@ -558,6 +560,7 @@ const loanCreate = {
           collateral: userCollateral,
           debt,
           maxRecv: maxRecv || '',
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
           maxRecvError: maxRecvsResults.status === 'rejected' ? maxRecvsResults.reason : '',
           prices: nLoanPrices ? [nLoanPrices[1], nLoanPrices[0]] : [],
           bands: bands ? reverseBands(bands) : [0, 0],
@@ -719,6 +722,7 @@ const loanBorrowMore = {
         prices: fulfilledValue(pricesResp) ?? [],
         bands: reverseBands(bands),
       }
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
       resp.error = _detailInfoRespErrorMessage(futureRatesResp, bandsResp)
       return resp
     } catch (error) {
@@ -780,6 +784,7 @@ const loanBorrowMore = {
         routeImage: fulfilledValue(routesResp) ?? null,
         ..._getPriceImpactResp(priceImpactResp, slippage),
       }
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
       resp.error = _detailInfoRespErrorMessage(futureRatesResp, bandsResp)
       return resp
     } catch (error) {
@@ -817,6 +822,7 @@ const loanBorrowMore = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       if (error?.message?.includes('liquidation mode')) {
         resp.error = 'error-liquidation-mode'
       } else {
@@ -915,6 +921,7 @@ const loanRepay = {
         prices: fulfilledValue(pricesResp) ?? [],
         bands: reverseBands(bands),
       }
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
       resp.error = _detailInfoRespErrorMessage(futureRatesResp, bandsResp)
       return resp
     } catch (error) {
@@ -1000,6 +1007,7 @@ const loanRepay = {
         routeImage: fulfilledValue(routesResp) ?? null,
         ..._getPriceImpactResp(priceImpactResp, maxSlippage),
       }
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
       resp.error = _detailInfoRespErrorMessage(
         expectedBorrowedResp, // leave this one as first, in case of errors the other ones will fail too
         repayIsFullResp,
@@ -1214,6 +1222,7 @@ const loanCollateralAdd = {
       return resp
     } catch (err) {
       console.error(err)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       if (err?.message?.includes('liquidation mode')) {
         resp.error = 'error-liquidation-mode'
       } else {
@@ -1289,6 +1298,7 @@ const loanCollateralRemove = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       if (error?.message?.includes('liquidation mode')) {
         resp.error = 'error-liquidation-mode'
       } else {
@@ -1793,7 +1803,7 @@ async function fetchChartBandBalancesData(
       p_up,
       p_down,
       pUpDownMedian,
-    } as ParsedBandsBalances
+    }
   })
 
   const parsedBandBalances = []
@@ -1850,5 +1860,6 @@ function _getPriceImpactResp(priceImpactResp: PromiseSettledResult<string | unde
 }
 
 function _detailInfoRespErrorMessage(...args: PromiseSettledResult<unknown>[]) {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return -- Existing violation before enabling this rule.
   return args.find(a => a.status == 'rejected')?.reason.message
 }

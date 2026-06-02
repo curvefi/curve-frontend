@@ -45,13 +45,13 @@ export const MarketInformationComposite = ({
         <AdvancedDetails
           chainId={chainId}
           marketId={marketId}
-          market={market || undefined}
+          market={market ?? undefined}
           marketType={LlamaMarketType.Mint}
         />
         <MarketInfoLayout
           chainId={chainId}
           marketType={LlamaMarketType.Mint}
-          market={market || undefined}
+          market={market ?? undefined}
           network={networks[chainId]}
         />
       </CardContent>

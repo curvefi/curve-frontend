@@ -30,6 +30,7 @@ export const SearchField = ({
 }: SearchFieldProps) => {
   const [search, setSearch] = useUniqueDebounce<string>({ defaultValue, callback, sanitize })
   const localInputRef = useRef<HTMLInputElement | null>(null)
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const ref = inputRef || localInputRef
   const resetSearch = useCallback(() => {
     setSearch('')

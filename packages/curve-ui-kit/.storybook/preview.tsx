@@ -80,6 +80,7 @@ const preview: Preview = {
     docs: {
       container: ({ children, context }: PropsWithChildren<DocsContainerProps>) => {
         // @ts-expect-error - context.store is private API but works at runtime; see https://github.com/storybookjs/storybook/issues/26242
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
         const themeName = context.store.userGlobals.globals.theme
         const theme = themeName in themes ? themes[themeName as keyof typeof themes] : themes.light
         return (

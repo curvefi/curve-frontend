@@ -77,9 +77,9 @@ testCases.forEach(([width, height, breakpoint]) => {
 
       // filter height changes because text wraps depending on the width
       const filterHeight = {
-        mobile: [90],
-        tablet: [100],
-        desktop: [100],
+        mobile: [48],
+        tablet: [56],
+        desktop: [56],
       }[breakpoint]
       cy.get('[data-testid="table-filters"]').invoke('outerHeight').should('be.oneOf', filterHeight)
       cy.get('[data-testid^="data-table-row"]').eq(10).invoke('outerHeight').should('equal', 65)
@@ -200,7 +200,7 @@ testCases.forEach(([width, height, breakpoint]) => {
     })
 
     /** Filter chip not yet available on mobile */
-    itSkipOnMobile('should allow filtering favorites', { scrollBehavior: false }, () => {
+    itSkipOnMobile('should allow filtering favorites', () => {
       openDrawer(breakpoint, 'filter')
       // on desktop, the favorite icon is not visible until hovered - but cypress doesn't support that so use force
       cy.get(`[data-testid="favorite-icon"]`).first().click({ force: true })
@@ -209,8 +209,8 @@ testCases.forEach(([width, height, breakpoint]) => {
       withFilterChips(breakpoint, () => cy.get(`[data-testid="chip-favorites"]`).click())
       cy.url().should('include', 'isFavorite=yes')
       cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
-      cy.get(`[data-testid="favorite-icon"]:visible`).should('not.exist')
-      cy.get(`[data-testid="favorite-icon-filled"]:visible`).click()
+      cy.get(`[data-testid="favorite-icon"]`).should('not.exist')
+      cy.get(`[data-testid="favorite-icon-filled"]`).click()
       cy.get(`[data-testid="table-empty-row"]`).should('exist')
     })
 
@@ -248,7 +248,11 @@ testCases.forEach(([width, height, breakpoint]) => {
 
     it(`should allow filtering by using a slider and input`, () => {
       // Keep the viewport stable for slider width.
-      cy.viewport(...((breakpoint === 'mobile' ? [500, 800] : [1200, 800]) as [number, number]))
+      if (breakpoint === 'mobile') {
+        cy.viewport(500, 800)
+      } else {
+        cy.viewport(1200, 800)
+      }
       const [columnId, medianValue] = getOneColumnMedianValue(vaultData, [LlamaMarketColumnId.MaxLtv])
       const bound = oneOf('min', 'max')
 

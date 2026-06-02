@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { cloneDeep } from 'lodash'
 import type { StoreApi } from 'zustand'
 import { getControllerAddress, updateUserEventsApi } from '@/llamalend/llama.utils'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
@@ -17,12 +17,11 @@ import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
-const { cloneDeep } = lodash
 
 type SliceState = {
   activeKey: string
-  detailInfo: { [activeKey: string]: FormDetailInfo }
-  formEstGas: { [activeKey: string]: FormEstGas }
+  detailInfo: Record<string, FormDetailInfo>
+  formEstGas: Record<string, FormEstGas>
   formStatus: FormStatus
   formValues: FormValues
 }
@@ -32,14 +31,14 @@ const sliceKey = 'loanDeleverage'
 // prettier-ignore
 export type LoanDeleverageSlice = {
   [sliceKey]: SliceState & {
-    fetchDetailInfo(activeKey: string, curve: LlamaApi, llamma: Llamma, formValues: FormValues, maxSlippage: string, userState: UserLoanDetails['userState']): Promise<FormDetailInfo>
-    setFormValues(llammaId: string, curve: LlamaApi | null, llamma: Llamma | null, formValues: Partial<FormValues>, maxSlippage: string, isFullReset?: boolean): Promise<void>
-    fetchEstGas(activeKey: string, chainId: ChainId, llamma: Llamma, formValues: FormValues, maxSlippage: string): Promise<void>
-    fetchStepRepay(activeKey: string, curve: LlamaApi, llamma: Llamma, formValues: FormValues, maxSlippage: string): Promise<{ activeKey: string; error: string; hash: string; loanExists: boolean } | undefined>
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
+    fetchDetailInfo: (activeKey: string, curve: LlamaApi, llamma: Llamma, formValues: FormValues, maxSlippage: string, userState: UserLoanDetails['userState']) => Promise<FormDetailInfo>
+    setFormValues: (llammaId: string, curve: LlamaApi | null, llamma: Llamma | null, formValues: Partial<FormValues>, maxSlippage: string, isFullReset?: boolean) => Promise<void>
+    fetchEstGas: (activeKey: string, chainId: ChainId, llamma: Llamma, formValues: FormValues, maxSlippage: string) => Promise<void>
+    fetchStepRepay: (activeKey: string, curve: LlamaApi, llamma: Llamma, formValues: FormValues, maxSlippage: string) => Promise<{ activeKey: string; error: string; hash: string; loanExists: boolean } | undefined>
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: () => void
   }
 }
 

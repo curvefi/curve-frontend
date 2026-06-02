@@ -384,8 +384,8 @@ export const useLlamaMarkets = (
         const getMintMarketBadDebt = createGetBadDebtMarket(badDebtMintMarkets.data)
 
         const userDataReady =
-          !userAddress || [userLendingVaults, userSuppliedMarkets, userMintMarkets].every(q => q.data || q.error)
-        const marketsReady = [lendingVaults, mintMarkets].every(q => q.data || q.error)
+          !userAddress || [userLendingVaults, userSuppliedMarkets, userMintMarkets].every(q => q.data ?? q.error)
+        const marketsReady = [lendingVaults, mintMarkets].every(q => q.data ?? q.error)
         const isReady = setIsReady(marketsReady && (userDataReady || isTimedOut))
 
         const data: LlamaMarketsResult | undefined = isReady

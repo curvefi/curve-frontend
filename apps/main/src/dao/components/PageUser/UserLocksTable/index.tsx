@@ -11,7 +11,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { formatNumber } from '@ui-kit/utils'
 import { LOCKS_LABELS } from '../constants'
 
-interface UserLocksTableProps {
+type UserLocksTableProps = {
   userAddress: string
 }
 
@@ -53,7 +53,7 @@ export const UserLocksTable = ({ userAddress }: UserLocksTableProps) => {
         sortBy={userLocksSortBy}
         errorMessage={t`An error occurred while fetching user locking activity.`}
         setSortBy={key => setUserLocksSortBy(key as UserLocksSortBy)}
-        getData={() => invalidateUserLocks({ userAddress })}
+        getData={() => void invalidateUserLocks({ userAddress })}
         noDataMessage={t`No locking activity found for this user.`}
         gridTemplateColumns={gridTemplateColumns}
         renderRow={(lock, index) => (

@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'bignumber.js'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { useConnection, useConfig } from 'wagmi'
@@ -25,9 +25,9 @@ import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
 export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: TransferProps) => {
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
 
-  const { chainId, signerAddress } = curve || {}
+  const { chainId, signerAddress } = curve ?? {}
   const { rChainId } = routerParams
   const activeKey = useStore(state => state.poolDeposit.activeKey)
   const formEstGas = useStore(state => state.poolDeposit.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
@@ -51,6 +51,7 @@ export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>) => {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTxInfoBar(null)
       void setFormValues(
         'STAKE',
@@ -83,7 +84,7 @@ export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
       const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepStake(activeKey, curve, poolData, formValues)
 
-      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && network) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && network) {
         const TxDescription = `Staked ${formValues.lpToken} LP Tokens`
         setTxInfoBar(<TxInfoBar description={TxDescription} txHash={scanTxPath(network, resp.hash)} />)
       }
@@ -105,20 +106,20 @@ export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
       const isApproved = formStatus.isApproved || formStatus.formTypeCompleted === 'APPROVE'
       const isComplete = formStatus.formTypeCompleted === 'STAKE'
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: getStepStatus(isApproved, formStatus.step === 'APPROVAL', isValid && !formStatus.formProcessing),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
-          onClick: () => handleApproveClick(activeKey, curve, poolData.pool, formValues),
+          onClick: () => void handleApproveClick(activeKey, curve, poolData.pool, formValues),
         },
         STAKE: {
           key: 'STAKE',
           status: getStepStatus(isComplete, formStatus.step === 'STAKE', isValid && formStatus.isApproved),
           type: 'action',
           content: isComplete ? t`Stake Complete` : t`Stake`,
-          onClick: () => handleStakeClick(activeKey, curve, poolData, formValues),
+          onClick: () => void handleStakeClick(activeKey, curve, poolData, formValues),
         },
       }
 
@@ -137,10 +138,10 @@ export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
     }
   }, [])
 
@@ -163,6 +164,7 @@ export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
   useEffect(() => {
     if (curve && poolId) {
       const updatedSteps = getSteps(activeKey, curve, poolData, formValues, formStatus, steps)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

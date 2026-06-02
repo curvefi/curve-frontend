@@ -35,6 +35,7 @@ async function fetchPools(curve: CurveJS, log: FastifyBaseLogger) {
       log.error({ message: 'Error fetching pools', error: e, chainId: curve.chainId })
       if (initial) throw e // make sure the request fails if fetching pools fails
     } finally {
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
       setTimeout(fetchAllPools, ONE_MINUTE).unref() // refresh every minute, unref to avoid keeping the event loop alive
     }
   }
@@ -47,14 +48,12 @@ async function fetchPools(curve: CurveJS, log: FastifyBaseLogger) {
  * The instance is cached for future use. Automatically fetches and refreshes pool data.
  */
 export const loadCurve = (chainId: number, log: FastifyBaseLogger) => {
-  if (!instances[chainId]) {
-    instances[chainId] = (async () => {
-      const curve = createCurve()
-      const { url } = await resolveRpc(chainId, curve)
-      await curve.init('JsonRpc', { url }, { chainId })
-      await fetchPools(curve, log)
-      return curve
-    })()
-  }
-  return instances[chainId]!
+  instances[chainId] ??= (async () => {
+    const curve = createCurve()
+    const { url } = await resolveRpc(chainId, curve)
+    await curve.init('JsonRpc', { url }, { chainId })
+    await fetchPools(curve, log)
+    return curve
+  })()
+  return instances[chainId]
 }

@@ -11,13 +11,14 @@ import { breakpoints } from '@ui/utils/responsive'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 
-interface Props extends AriaOverlayProps, AriaDialogProps {
+type Props = {
   footerContent?: ReactNode
   maxWidth?: string
   title: string
   state: OverlayTriggerState
   children: ReactNode
-}
+} & AriaOverlayProps &
+  AriaDialogProps
 
 export const ModalDialog = ({ children, footerContent, maxWidth, state, title, ...props }: Props) => {
   const closeButtonRef = useRef<HTMLButtonElement>(null)

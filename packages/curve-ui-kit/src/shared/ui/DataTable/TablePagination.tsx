@@ -27,16 +27,19 @@ const PageButton = <T extends TableItem>({ page, table }: { page: number; table:
  * A spacer component used to indicate skipped pages in pagination.
  * We use a toggle button with a disabled state for consistent styling & to pass the ToggleButtonGroup validation.
  */
-const Spacer = () => (
-  <ToggleButton
-    disabled
-    value={useId()} // not used, disabled
-    sx={{ '&': { backgroundColor: 'transparent', minWidth: 0, padding: 0, width: '11px' } }}
-    data-testid="btn-page-ellipsis"
-  >
-    …
-  </ToggleButton>
-)
+const Spacer = () => {
+  const id = useId()
+  return (
+    <ToggleButton
+      disabled
+      value={id} // not used, disabled
+      sx={{ '&': { backgroundColor: 'transparent', minWidth: 0, padding: 0, width: '11px' } }}
+      data-testid="btn-page-ellipsis"
+    >
+      …
+    </ToggleButton>
+  )
+}
 
 /**
  * Calculate which page numbers to display in the pagination component.

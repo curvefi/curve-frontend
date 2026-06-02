@@ -62,14 +62,15 @@ export const useRepayTokens = ({
   networkId: string
   collateralEvents: QueryProp<UserCollateralEvents>
 }) => {
-  const [token, onToken] = useState<RepayTokenOption | undefined>()
+  const [token, setToken] = useState<RepayTokenOption | undefined>()
   const tokens = useMemo(() => getRepayTokenOptions({ market, networkId }), [market, networkId])
   const isLeveraged = collateralEvents.data && isPositionLeveraged(collateralEvents.data?.originalLeverage)
   const field = isLeveraged === true ? 'stateCollateral' : isLeveraged === false ? 'userBorrowed' : undefined
   const defaultToken = tokens.find(t => t.field === field)
   useEffect(() => {
     // override the user's choice when we get to know they have a (non)-leveraged position
-    if (defaultToken) onToken(defaultToken)
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
+    if (defaultToken) setToken(defaultToken)
   }, [defaultToken])
-  return { tokens, token: token ?? tokens[0], onToken }
+  return { tokens, token: token ?? tokens[0], onToken: setToken }
 }
