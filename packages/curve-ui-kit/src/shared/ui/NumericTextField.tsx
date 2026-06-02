@@ -50,6 +50,7 @@ const sanitize = (value: string, current: string): string => {
   const normalizedValue = value.replace(/,/g, '.')
 
   // If more than one decimal point, return the current value (ignore the change)
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   if ((normalizedValue.match(/\./g) || []).length > 1) {
     return current
   }
@@ -140,7 +141,7 @@ export const NumericTextField = ({
   ...props
 }: NumericTextFieldProps) => {
   // Internal value that might be incomplete, like "4.".
-  const [inputValue, setInputValue] = useState(getFormattedDisplayValue(value, format))
+  const [inputValue, setInputValue] = useState(() => getFormattedDisplayValue(value, format))
 
   const [lastChangeValue, setLastChangeValue] = useState<string | undefined>(value)
   const [lastBlurValue, setLastBlurValue] = useState(value)
@@ -148,6 +149,7 @@ export const NumericTextField = ({
 
   // Update input value when value changes externally
   useEffect(() => {
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setInputValue(isFocused ? getDisplayValue(value) : getFormattedDisplayValue(value, format))
   }, [value, isFocused, format])
 

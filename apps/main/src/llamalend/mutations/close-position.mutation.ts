@@ -57,6 +57,7 @@ export const useClosePositionMutation = ({
     ...props,
   })
 
+  // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
   const onSubmit = useCallback(async ({ slippage }: CloseLoanParams) => mutate({ slippage: slippage! }), [mutate])
 
   return { onSubmit, mutate, error, isPending }

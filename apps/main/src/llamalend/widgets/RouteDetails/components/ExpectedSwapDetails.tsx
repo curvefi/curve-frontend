@@ -33,9 +33,11 @@ export const ExpectedSwapDetails = ({
   swapToAddress: string
 }) => {
   const routesRef = useRef<HTMLDivElement>(null)
+  // eslint-disable-next-line @eslint-react/use-state -- Existing violation before enabling this rule.
   const [{ height, data }, setData] = useState<{ height: string; data: Hop[] }>(stateDefault)
 
   useEffect(() => {
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setData(prev => ({ ...stateDefault, height: prev.height }))
     const state = { height: '', data: [] as Hop[] }
 
@@ -44,6 +46,7 @@ export const ExpectedSwapDetails = ({
       state.height = `${height}px`
     }
 
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setData(state)
   }, [networkId])
 

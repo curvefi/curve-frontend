@@ -9,5 +9,5 @@ export type CurrencyReservesProps = {
   tokenAddress: string
   tokenLink: string | undefined
   tokensMapper: TokensMapper
-  handleCopyClick(address: string): void
+  handleCopyClick: (address: string) => void
 }

@@ -1,3 +1,4 @@
+import { noop } from 'lodash'
 import {
   type Chain,
   createWalletClient,
@@ -72,6 +73,7 @@ export function createTestConnector({ privateKey, chain, transport }: CreateTest
   // A connect function with overloads to satisfy Wagmi's conditional return type
   function connect(params: ConnectParams<true>): Promise<ConnectResult<Account>>
   function connect(params?: ConnectParams<false>): Promise<ConnectResult<Address>>
+  // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
   async function connect(params?: ConnectParams<boolean>): Promise<ConnectResult<Account | Address>> {
     return params?.withCapabilities
       ? { accounts: [{ address: account.address, capabilities: {} }], chainId: chain.id }
@@ -84,17 +86,17 @@ export function createTestConnector({ privateKey, chain, transport }: CreateTest
     type: 'test',
 
     connect,
-    disconnect: async () => {},
+    disconnect: () => Promise.resolve(undefined),
 
-    getAccounts: async () => [account.address],
-    getChainId: async () => chain.id,
-    getProvider: async () => client,
+    getAccounts: () => Promise.resolve([account.address]),
+    getChainId: () => Promise.resolve(chain.id),
+    getProvider: () => Promise.resolve(client),
 
-    isAuthorized: async () => true,
-    switchChain: async () => chain,
+    isAuthorized: () => Promise.resolve(true),
+    switchChain: () => Promise.resolve(chain),
 
-    onAccountsChanged: () => {},
-    onChainChanged: () => {},
-    onDisconnect: () => {},
+    onAccountsChanged: noop,
+    onChainChanged: noop,
+    onDisconnect: noop,
   }))
 }

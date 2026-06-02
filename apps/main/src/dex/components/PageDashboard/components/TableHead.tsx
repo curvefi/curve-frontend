@@ -13,7 +13,7 @@ export const TableHead = ({ tableLabel }: { tableLabel: TableLabel }) => {
   const { isLite, isLoading, formValues, updateFormValues } = useDashboardContext()
 
   const handleBtnClickSort = (sortBy: string, sortByOrder: Order) => {
-    updateFormValues({ sortBy: sortBy as SORT_ID, sortByOrder: sortByOrder as Order })
+    updateFormValues({ sortBy: sortBy as SORT_ID, sortByOrder })
   }
 
   const props: Omit<TheadSortButtonProps<SortId>, 'sortIdKey'> = {

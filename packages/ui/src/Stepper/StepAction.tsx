@@ -35,6 +35,7 @@ export const StepAction = ({ step }: { step: Step }) => {
         className="step-box"
         disabled={step.status !== 'current'}
         data-testid={step.key.toLowerCase()}
+        // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
         onClick={'onClick' in step ? step.onClick : overlayTriggerState.open}
         fullWidth
         size="medium"

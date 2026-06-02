@@ -168,12 +168,13 @@ export const LoanDecrease = ({
       const isValidFormValue = isFullRepay || (+debt > 0 && !debtError)
       const isValid = !!curve.signerAddress && !formEstGas.loading && isValidFormValue && !error
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: getStepStatus(isApproved, step === 'APPROVAL', isValid),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: async () => {
             const notifyMessage = t`Please approve spending your ${getTokenName(llamma).stablecoin}`
             const notification = notify(notifyMessage, 'pending')
@@ -187,7 +188,7 @@ export const LoanDecrease = ({
           status: getStepStatus(isComplete, step === 'PAY', isValid && isApproved),
           type: 'action',
           content: isComplete ? t`Repaid` : t`Repay`,
-          onClick: () => handleBtnClickPay(payloadActiveKey, curve, llamma, formValues),
+          onClick: () => void handleBtnClickPay(payloadActiveKey, curve, llamma, formValues),
         },
       }
 
@@ -218,6 +219,7 @@ export const LoanDecrease = ({
   useEffect(() => {
     if (curve && llamma) {
       const updatedSteps = getSteps(activeKey, curve, llamma, formEstGas, formStatus, formValues, steps)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

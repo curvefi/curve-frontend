@@ -1,5 +1,5 @@
 import { produce } from 'immer'
-import lodash from 'lodash'
+import { isEqual } from 'lodash'
 import type { Config } from 'wagmi'
 import type { StoreApi } from 'zustand'
 import { curvejsApi } from '@/dex/lib/curvejs'
@@ -14,29 +14,28 @@ import { refetchPoolVolumes } from '../queries/pool-volume.query'
 
 export type SliceKey = keyof State | ''
 export type StateKey = string
-const { isEqual } = lodash
 
 type GlobalState = {
-  hasDepositAndStake: { [chainId: string]: boolean | null }
-  hasRouter: { [chainId: string]: boolean | null }
+  hasDepositAndStake: Record<string, boolean | null>
+  hasRouter: Record<string, boolean | null>
 }
 
 export type GlobalSlice = {
-  getNetworkConfigFromApi(chainId: ChainId | ''): NetworkConfigFromApi
-  setNetworkConfigFromApi(curve: CurveApi): void
+  getNetworkConfigFromApi: (chainId: ChainId | '') => NetworkConfigFromApi
+  setNetworkConfigFromApi: (curve: CurveApi) => void
 
   /** Hydrate resets states and refreshes store data from the API */
-  hydrate(
+  hydrate: (
     config: Config,
     curveApi: CurveApi | undefined,
     prevCurveApi: CurveApi | undefined,
     wallet: Wallet | undefined,
-  ): Promise<void>
+  ) => Promise<void>
 
-  setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean): void
-  setAppStateByKey<T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean): void
-  setAppStateByKeys<T>(sliceKey: SliceKey, sliceState: Partial<T>, showLog?: boolean): void
-  resetAppState<T>(sliceKey: SliceKey, defaultState: T, showLog?: boolean): void
+  setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean) => void
+  setAppStateByKey: <T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean) => void
+  setAppStateByKeys: <T>(sliceKey: SliceKey, sliceState: Partial<T>, showLog?: boolean) => void
+  resetAppState: <T>(sliceKey: SliceKey, defaultState: T, showLog?: boolean) => void
 } & GlobalState
 
 const DEFAULT_STATE = {
@@ -111,7 +110,9 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
   setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean) => {
     set(
       produce(state => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
         const storedValues = state[sliceKey][key]
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
         const storedActiveKeyValues = storedValues[activeKey] // todo: this means the following branch is unreachable?
         if (typeof storedValues === 'undefined') {
           const parsedValue = { [activeKey]: value }
@@ -119,14 +120,17 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
             if (showLog) {
               log(`%c state: ${key}`, 'background: #222; color: #bada55', parsedValue)
             }
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             state[sliceKey][key] = parsedValue
           }
         } else if (typeof storedValues === 'object') {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
           const parsedValue = { ...storedValues, [activeKey]: value }
           if (!isEqual(storedActiveKeyValues, parsedValue)) {
             if (showLog) {
               log(`%c state: ${key}`, 'background: #222; color: #bada55', parsedValue)
             }
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             state[sliceKey][key] = parsedValue
           }
         }
@@ -136,11 +140,13 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
   setAppStateByKey: <T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean) => {
     set(
       produce(state => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
         const storedValue = state[sliceKey][key]
         if (!isEqual(storedValue, value)) {
           if (showLog) {
             log(`%c state: ${key}`, 'background: #222; color: #bada55', value)
           }
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
           state[sliceKey][key] = value
         }
       }),
@@ -151,11 +157,13 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
       const value = sliceState[key]
       set(
         produce(state => {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
           const storedValue = state[sliceKey][key]
           if (!isEqual(storedValue, value)) {
             if (showLog) {
               log(`%c state: ${key}`, 'background: #222; color: #bada55', value)
             }
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             state[sliceKey][key] = value
           }
         }),
@@ -165,10 +173,8 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
   resetAppState: <T>(sliceKey: SliceKey, defaultState: T) => {
     set(
       produce(state => {
-        state[sliceKey] = {
-          ...state[sliceKey],
-          ...defaultState,
-        }
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+        state[sliceKey] = { ...state[sliceKey], ...defaultState }
       }),
     )
   },

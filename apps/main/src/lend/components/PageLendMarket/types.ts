@@ -15,6 +15,7 @@ export type FormValues = {
 
 export type FormStatus = {
   error: string
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   warning: 'loan-exists' | string
   step: StepKey
 } & Fs

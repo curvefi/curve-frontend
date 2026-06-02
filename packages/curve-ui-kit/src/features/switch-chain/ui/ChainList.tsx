@@ -68,6 +68,7 @@ export function ChainList({
       <Box sx={{ overflowY: 'auto', flexGrow: '1' }}>
         {entries.length ? (
           entries
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
             .filter(([key]) => showTestnets || key !== ChainType.test)
             .flatMap(([key, networks]) => (
               <Fragment key={key}>

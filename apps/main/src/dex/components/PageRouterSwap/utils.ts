@@ -22,7 +22,7 @@ export const DEFAULT_FORM_VALUES: FormValues = {
 
 export function parseRouterRoutes(
   routes: IRouteStep[],
-  poolsMapper: { [poolId: string]: PoolData },
+  poolsMapper: Record<string, PoolData>,
   getPool: (poolId: string) => Pool,
 ) {
   let haveCryptoRoutes = false
@@ -36,6 +36,7 @@ export function parseRouterRoutes(
         try {
           pool = getPool(route.poolId)
         } catch (error) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
           log('routerBestRouteAndOutput missing poolName', LogStatus.ERROR, route.poolId, error.message)
         }
       }

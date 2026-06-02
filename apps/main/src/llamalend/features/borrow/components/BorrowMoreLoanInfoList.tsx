@@ -12,7 +12,6 @@ import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useUserCurrentLeverage } from '@/llamalend/queries/user'
 import { type BorrowMoreForm, type BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
 import { useBorrowRates } from '@/llamalend/widgets/action-card/hooks/useBorrowRates'
-import { useLeverageInfoFields } from '@/llamalend/widgets/action-card/hooks/useLeverageInfoFields'
 import { usePrevLoanState } from '@/llamalend/widgets/action-card/hooks/usePrevLoanState'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -22,6 +21,7 @@ import type { UseFormReturn } from '@ui-kit/features/forms'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
+import { getLeverageInfoFields } from '../../../widgets/action-card/hooks/getLeverageInfoFields'
 
 export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   params,
@@ -74,7 +74,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
         ),
       )}
       debt={mapQuery(prevDebt, stateDebt => decimalSum(stateDebt, debt))}
-      {...useLeverageInfoFields({
+      {...getLeverageInfoFields({
         leverageEnabled,
         leverageValue: useBorrowMoreFutureLeverage(params, isOpen),
         prevLeverageValue: useUserCurrentLeverage(params, isOpen),

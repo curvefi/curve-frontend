@@ -203,6 +203,7 @@ export const LargeTokenInput = ({
   const showSlider = !!maxBalance?.showSlider && !!maxBalance?.balance
   const chips = typeof maxBalance?.chips === 'string' ? CHIPS_PRESETS[maxBalance.chips] : maxBalance?.chips
   const showChips = !!chips?.length
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const chipDisabled = disabled || maxBalance?.isLoading
 
   const maxBalanceValue = maxBalance?.balance
@@ -241,6 +242,7 @@ export const LargeTokenInput = ({
   )
 
   const updatePercentageOnNewMaxBalance = useEffectEvent((newMaxBalance?: Decimal) => {
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setPercentage(newMaxBalance && balance ? calculateNewPercentage(balance, newMaxBalance) : undefined)
   })
 
@@ -360,6 +362,7 @@ export const LargeTokenInput = ({
         </Stack>
 
         {/** Third row containing input and max balances */}
+        {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
         {(walletBalance || inputBalanceUsd) && (
           <Stack direction="row" sx={{ justifyContent: 'end' }}>
             {inputBalanceUsd != null && (
@@ -379,7 +382,7 @@ export const LargeTokenInput = ({
               name={name}
               disabled={disabled}
               value={percentage ?? `${MIN_PERCENTAGE}`}
-              onChange={value => handlePercentageChange(value as Decimal)}
+              onChange={value => handlePercentageChange(value)}
               sliderProps={{ 'data-rail-background': 'danger', ...sliderProps }}
               min={MIN_PERCENTAGE}
               max={MAX_PERCENTAGE}

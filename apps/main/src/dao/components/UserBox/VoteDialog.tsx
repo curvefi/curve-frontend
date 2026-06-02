@@ -72,7 +72,7 @@ export const VoteDialog = ({
       {executeTx?.status !== 'SUCCESS' && (
         <ExecuteButton
           variant="icon-filled"
-          onClick={() => executeProposal(proposalId, proposalType)}
+          onClick={() => void executeProposal(proposalId, proposalType)}
           loading={executeTx?.status === 'CONFIRMING' || executeTx?.status === 'LOADING'}
         >
           {t`Execute`}
@@ -158,12 +158,16 @@ export const VoteDialog = ({
           <VoteButton
             isFor
             variant="icon-filled"
-            onClick={() => castVote(proposalId, proposalType, true)}
+            onClick={() => void castVote(proposalId, proposalType, true)}
             loading={false}
           >
             {t`Vote For`}
           </VoteButton>
-          <VoteButton variant="icon-filled" onClick={() => castVote(proposalId, proposalType, false)} loading={false}>
+          <VoteButton
+            variant="icon-filled"
+            onClick={() => void castVote(proposalId, proposalType, false)}
+            loading={false}
+          >
             {t`Vote Against`}
           </VoteButton>
         </Box>

@@ -73,30 +73,6 @@ const config = [
       'import-x/internal-regex': '^@(ui|ui-kit|curvefi/prices-api|external-rewards)',
     },
     rules: {
-      // The follow react rules are turned off as they were not enabled or working properly in the old eslint react plugin
-      // These rules are new recommended ones that came with the migration from eslint-plugin-react to @eslint-react,
-      // and we haven't had the bandwidth to fix all the issues they raise yet.
-      // We should create future PRs to re-enable these rules and fix any issues that arise
-      '@eslint-react/component-hook-factories': 'off',
-      '@eslint-react/set-state-in-effect': 'off', // painful to disable but we manually disabled it in a shit ton of cases already, requires a huge refactor
-      '@eslint-react/no-array-index-key': 'off',
-      '@eslint-react/no-forward-ref': 'off',
-      '@eslint-react/no-clone-element': 'off',
-      '@eslint-react/no-unnecessary-use-prefix': 'off',
-      '@eslint-react/no-children-to-array': 'off',
-      '@eslint-react/no-children-map': 'off',
-      '@eslint-react/no-nested-component-definitions': 'off',
-      '@eslint-react/web-api-no-leaked-timeout': 'off',
-      '@eslint-react/dom-no-flush-sync': 'off',
-      '@eslint-react/web-api-no-leaked-event-listener': 'off',
-      '@eslint-react/use-state': [
-        'warn',
-        {
-          enforceSetterName: false, // we're not really sticking to the 'setX' naming convention in a lot of cases
-          enforceLazyInitialization: false, // something we didn't adhere to previously, but should refactor in the future anyway?
-        },
-      ],
-
       'local/use-maybe-pattern': 'error',
       'local/no-double-negative': 'error',
       'local/no-redundant-ternary': 'error',
@@ -178,32 +154,8 @@ const config = [
           ignoreRestSiblings: true,
         },
       ],
-      // Allow local module-augmentation sidecars (`*.d.ts`) to be attached with
-      // `path` references, but keep package `types` references import-based.
-      '@typescript-eslint/triple-slash-reference': ['error', { lib: 'always', path: 'always', types: 'prefer-import' }],
-
-      // The following rules come from tseslint.configs.recommendedTypeChecked, but are too large to fix in one go
-      '@typescript-eslint/no-base-to-string': 'off',
-      '@typescript-eslint/no-duplicate-type-constituents': 'off',
-      '@typescript-eslint/no-misused-promises': 'off',
-      '@typescript-eslint/no-unsafe-argument': 'off',
-      '@typescript-eslint/no-unsafe-assignment': 'off',
-      '@typescript-eslint/no-unsafe-member-access': 'off',
-      '@typescript-eslint/no-unsafe-return': 'off',
-      '@typescript-eslint/no-unsafe-call': 'off',
-      '@typescript-eslint/no-unsafe-enum-comparison': 'off',
-      '@typescript-eslint/no-unnecessary-type-assertion': 'off',
-      '@typescript-eslint/no-redundant-type-constituents': 'off',
-      '@typescript-eslint/unbound-method': 'off',
-      '@typescript-eslint/restrict-template-expressions': 'off',
-      '@typescript-eslint/require-await': 'off',
-
-      // And the following ones are from tseslint.configs.stylisticTypeChecked
       '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
-      '@typescript-eslint/consistent-indexed-object-style': 'off',
-      '@typescript-eslint/no-empty-function': 'off',
-      '@typescript-eslint/prefer-nullish-coalescing': 'off',
-
+      '@typescript-eslint/prefer-nullish-coalescing': ['error', { ignorePrimitives: { string: true, number: true } }],
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
 
       'no-console': [

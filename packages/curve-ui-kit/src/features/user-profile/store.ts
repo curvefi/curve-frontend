@@ -58,11 +58,7 @@ const store: StateCreator<Store> = set => ({
       if (!key) return false
       if (key === 'crypto' || key === 'stable') return false
 
-      set(
-        produce(state => {
-          delete state.maxSlippage[key]
-        }),
-      )
+      set(produce((state: UserProfileState) => delete state.maxSlippage[key]))
 
       return true
     }
@@ -73,13 +69,11 @@ const store: StateCreator<Store> = set => ({
 
     // Set slippage for a key, but if none given all existing keys will be overwritten.
     set(
-      produce(state => {
+      produce((state: UserProfileState) => {
         if (key) {
           state.maxSlippage[key] = maxSlippage
         } else {
-          for (const k of Object.keys(state.maxSlippage)) {
-            state.maxSlippage[k] = maxSlippage
-          }
+          Object.keys(state.maxSlippage).forEach(k => (state.maxSlippage[k] = maxSlippage))
         }
       }),
     )

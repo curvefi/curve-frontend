@@ -33,6 +33,7 @@ export const InputDebounced = ({
       <Input
         value={debouncedValue}
         onChange={e => handleInputChange(e.target.value)}
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
         disabled={contextDisabled || disabled}
         testId={testId}
         {...inputProps}

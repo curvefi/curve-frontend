@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { kebabCase } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import type { Address } from '@primitives/address.utils'
 import type { VisibilityVariants } from '@ui-kit/shared/ui/DataTable/visibility.types'
@@ -6,20 +6,12 @@ import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { defaultReleaseChannel, ReleaseChannel } from '@ui-kit/utils'
 import { getStorageKey, type MigrationOptions, useStoredState } from './useStoredState'
 
-const { kebabCase } = lodash
-
-function getFromLocalStorage<T>(storageKey: string): T | null {
-  if (typeof window === 'undefined') {
-    return null
-  }
+function getFromLocalStorage<T>(storageKey: string) {
   const item = window.localStorage.getItem(storageKey)
-  return item && JSON.parse(item)
+  return (item && JSON.parse(item)) as T | null
 }
 
-const get = <T>(key: string, initialValue: T): T => {
-  const existing = getFromLocalStorage<T>(key)
-  return existing == null ? initialValue : existing
-}
+const get = <T>(key: string, initialValue: T): T => getFromLocalStorage<T>(key) ?? initialValue
 
 const set = <T>(storageKey: string, value: T) => {
   if (value == null) {
@@ -118,9 +110,9 @@ export const useDismissPoolBanner = (network: string, poolId: string) =>
   useDismissBanner(['pool-alert-banner-dismissed', network, poolId].join('-'), 'Daily')
 
 export const useDismissMaintenanceModal = (dateISO: string | undefined) =>
-  useLocalStorage<string | null>(`backend-maintenance-modal-${dateISO}`, null)
+  useLocalStorage<string | null>(`maintenance-modal-${dateISO}`, null)
 
 export const useDismissMaintenanceBanner = (dateISO: string | undefined) =>
-  useDismissBanner(`backend-maintenance-banner-${dateISO}`, 'Daily')
+  useDismissBanner(`maintenance-banner-${dateISO}`, 'Daily')
 
 export const usePinataJwt = () => useLocalStorage<string | undefined>('pinataJwt', undefined)

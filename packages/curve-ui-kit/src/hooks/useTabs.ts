@@ -24,8 +24,8 @@ export function useTabs<T>(
   onTabChange: (value: T) => void
   tabOptions: readonly TabOption<T>[]
 } {
-  const [requestedValue, onTabChange] = useState<T | undefined>(defaultValue)
+  const [requestedValue, setRequestedValue] = useState<T | undefined>(defaultValue)
   const isPresent = requestedValue !== undefined && options.some(o => o.value === requestedValue)
   const tab = isPresent ? requestedValue : options[0]?.value
-  return { tab, onTabChange, tabOptions: options }
+  return { tab, onTabChange: setRequestedValue, tabOptions: options }
 }

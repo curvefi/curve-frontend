@@ -41,7 +41,7 @@ export const FormVecrv = () => {
   const setFormStatusVecrv = useStore(state => state.dashboard.setFormStatusVecrv)
   const fetchStepWithdraw = useStore(state => state.dashboard.fetchStepWithdrawVecrv)
   const { data: networks } = useNetworks()
-  const network = (curve && networks[curve.chainId]) || null
+  const network = (curve && networks[curve.chainId]) ?? null
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
@@ -85,7 +85,7 @@ export const FormVecrv = () => {
 
   const getSteps = useCallback(
     (activeKey: string, curve: CurveApi, lockedAmount: string, formStatus: FormStatus) => {
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         WITHDRAW: {
           key: 'WITHDRAW',
           status: getStepStatus(
@@ -118,6 +118,7 @@ export const FormVecrv = () => {
   useEffect(() => {
     if (curve) {
       const updatedSteps = getSteps(activeKey, curve, lockedAmount, parsedFormStatus)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

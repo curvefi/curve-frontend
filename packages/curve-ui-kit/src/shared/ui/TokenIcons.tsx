@@ -48,6 +48,7 @@ export function TokenIcons({ tokens, variant = 'default', ...props }: TokenIcons
 
         return (
           <TokenIcon
+            // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
             key={`${address}${index}`}
             {...props}
             address={address}

@@ -84,7 +84,7 @@ export const GaugesList = () => {
         )}
         {gaugesIsError && (
           <ErrorMessageWrapper>
-            <ErrorMessage message={t`Error fetching gauges`} onClick={() => refetchGauges({})} />
+            <ErrorMessage message={t`Error fetching gauges`} onClick={() => void refetchGauges({})} />
           </ErrorMessageWrapper>
         )}
         {gauges && (
@@ -99,7 +99,7 @@ export const GaugesList = () => {
             errorMessage={t`An error occurred while fetching gauges.`}
             noDataMessage={t`No gauges found`}
             setSortBy={handleSortChange}
-            getData={() => refetchGauges({})}
+            getData={() => void refetchGauges({})}
             renderRow={(gauge, index) => (
               <Fragment key={index}>
                 <GaugeListItemWrapper>

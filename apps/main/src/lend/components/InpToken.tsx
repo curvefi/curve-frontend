@@ -36,7 +36,7 @@ export const InpToken = ({
   tokenSymbol: string | undefined
   tokenBalance: string | undefined
   debt?: string
-  handleInpChange(inpValue: string): void
+  handleInpChange: (inpValue: string) => void
   handleMaxClick?: () => void
   network: NetworkConfig
 }) => (

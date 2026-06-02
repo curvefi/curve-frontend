@@ -99,12 +99,13 @@ export const LoanLiquidate = ({
         haveEnoughCrvusdForLiquidation(userWalletBalances?.stablecoin, liquidationAmt)
       const chainId = curve.chainId as ChainId
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: getStepStatus(isApproved, step === 'APPROVAL', isValid),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: async () => {
             const notifyMessage = t`Please approve spending of ${getTokenName(llamma).stablecoin}`
             const notification = notify(notifyMessage, 'pending')
@@ -118,6 +119,7 @@ export const LoanLiquidate = ({
           status: getStepStatus(isComplete, step === 'LIQUIDATE', isApproved && isValid),
           type: 'action',
           content: isComplete ? t`Self-liquidated` : t`Self-liquidate`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: async () => {
             const stablecoinName = getTokenName(llamma).stablecoin
             const notifyMessage = t`Please confirm ${stablecoinName} self-liquidation at max ${maxSlippage}% slippage.`
@@ -193,6 +195,7 @@ export const LoanLiquidate = ({
         userWalletBalances,
         steps,
       )
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

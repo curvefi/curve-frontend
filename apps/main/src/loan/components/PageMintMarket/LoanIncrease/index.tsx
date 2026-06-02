@@ -66,13 +66,13 @@ export const LoanIncrease = ({
   const setStateByKey = useStore(state => state.loanIncrease.setStateByKey)
   const resetState = useStore(state => state.loanIncrease.resetState)
 
-  const [confirmedHealthWarning, setConfirmHealthWarning] = useState(false)
+  const [confirmedHealthWarning, setConfirmedHealthWarning] = useState(false)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const { chainId, haveSigner } = curveProps(curve)
-  const resolvedChainId = (chainId ?? 1) as ChainId
+  const resolvedChainId = chainId ?? 1
   const network = networks[resolvedChainId]
 
   const [stablecoinAddress, collateralAddress] = llamma?.coinAddresses ?? []
@@ -90,7 +90,7 @@ export const LoanIncrease = ({
 
   const reset = useCallback(
     (isErrorReset: boolean, isFullReset: boolean) => {
-      setConfirmHealthWarning(false)
+      setConfirmedHealthWarning(false)
       setTxInfoBar(null)
 
       if (isErrorReset || isFullReset) {
@@ -171,12 +171,13 @@ export const LoanIncrease = ({
       const isValid =
         !!curve.signerAddress && !formEstGas.loading && haveDebt && !debtError && !collateralError && !error
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: getStepStatus(isApproved, step === 'APPROVAL', isValid),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: async () => {
             const notifyMessage = t`Please approve spending of ${formValues.collateral}`
             const notification = notify(notifyMessage, 'pending')
@@ -198,22 +199,24 @@ export const LoanIncrease = ({
                     <DialogHealthWarning
                       {...healthMode}
                       confirmed={confirmedHealthWarning}
-                      setConfirmed={val => setConfirmHealthWarning(val)}
+                      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
+                      setConfirmed={val => setConfirmedHealthWarning(val)}
                     />
                   ),
                   isDismissable: false,
                   cancelBtnProps: {
                     label: t`Cancel`,
-                    onClick: () => setConfirmHealthWarning(false),
+                    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
+                    onClick: () => setConfirmedHealthWarning(false),
                   },
                   primaryBtnProps: {
-                    onClick: () => handleBtnClickBorrow(payloadActiveKey, curve, formValues, llamma),
+                    onClick: () => void handleBtnClickBorrow(payloadActiveKey, curve, formValues, llamma),
                     disabled: !confirmedHealthWarning,
                   },
                   primaryBtnLabel: t`Borrow more anyway`,
                 },
               }
-            : { onClick: async () => handleBtnClickBorrow(payloadActiveKey, curve, formValues, llamma) }),
+            : { onClick: () => void handleBtnClickBorrow(payloadActiveKey, curve, formValues, llamma) }),
         },
       }
 
@@ -261,6 +264,7 @@ export const LoanIncrease = ({
         formValues,
         steps,
       )
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

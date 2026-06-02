@@ -40,6 +40,7 @@ export function useEChartsTooltip<TData>(data: TData[], theme: Theme, renderTool
       const { dataIndex } = (toArray(params)[0] ?? {}) as { dataIndex?: number }
       const datum = data[dataIndex ?? -1]
 
+      // eslint-disable-next-line @eslint-react/dom-no-flush-sync -- Existing violation before enabling this rule.
       flushSync(() =>
         rootRef.current?.render(
           datum && <ThemeProvider theme={theme}>{renderTooltipRef.current!(datum)}</ThemeProvider>,

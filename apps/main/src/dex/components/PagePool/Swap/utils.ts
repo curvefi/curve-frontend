@@ -41,7 +41,7 @@ export const DEFAULT_FORM_VALUES: FormValues = {
 
 export function getSwapTokens(tokensMapper: TokensMapper, poolDataCacheOrApi: PoolDataCacheOrApi) {
   const { tokenAddresses, tokensCountBy } = poolDataCacheOrApi
-  const swapTokensMapper: { [tokenAddress: string]: Token } = {}
+  const swapTokensMapper: Record<string, Token> = {}
 
   for (const address of tokenAddresses) {
     const token = lodash.cloneDeep(tokensMapper[address])

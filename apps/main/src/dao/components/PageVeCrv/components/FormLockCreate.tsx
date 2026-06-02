@@ -48,6 +48,7 @@ export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVe
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>, { isFullReset = false }: { isFullReset?: boolean } = {}) => {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTxInfoBar(null)
       setFormValues(curve, isLoadingCurve, rFormType, updatedFormValues, vecrvInfo, isFullReset)
     },
@@ -146,13 +147,13 @@ export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVe
         !formStatus.error &&
         !formEstGas.loading
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: getStepStatus(formStatus.isApproved, formStatus.step === 'APPROVAL', isValid),
           type: 'action',
           content: formStatus.isApproved ? t`Spending Approved` : t`Approve Spending`,
-          onClick: () => handleBtnClickApproval(activeKey, curve, formValues),
+          onClick: () => void handleBtnClickApproval(activeKey, curve, formValues),
         },
         CREATE_LOCK: {
           key: 'CREATE_LOCK',
@@ -163,7 +164,7 @@ export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVe
           ),
           type: 'action',
           content: formStatus.formTypeCompleted === 'CREATE_LOCK' ? t`Lock Created` : t`Create Lock`,
-          onClick: () => handleBtnClickCreate(activeKey, curve, formValues),
+          onClick: () => void handleBtnClickCreate(activeKey, curve, formValues),
         },
       }
 
@@ -195,6 +196,7 @@ export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVe
   useEffect(() => {
     if (curve) {
       const updatedSteps = getSteps(activeKey, curve, formEstGas, formValues, formStatus, steps)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

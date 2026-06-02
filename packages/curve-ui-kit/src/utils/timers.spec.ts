@@ -1,3 +1,4 @@
+import { noop } from 'lodash'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { setTimeoutInterval } from './timers'
 
@@ -122,7 +123,7 @@ describe('setTimeoutInterval', () => {
     'logs errors but continues scheduling subsequent ticks',
     withFakeTimers(async () => {
       const error = new Error('boom')
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(noop)
 
       const cb = vi.fn(() => {
         if (cb.mock.calls.length === 1) throw error // throws only the first time (mock.calls populated before the call)

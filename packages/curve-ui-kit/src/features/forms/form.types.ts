@@ -33,10 +33,10 @@ export type UseFormReturn<T extends FieldValues = FieldValues> = {
   handleSubmit: UseFormHandleSubmit<T>
   reset: (userDefaultValues: FormUpdates<T>) => void
   watchValues: () => T
-  watchValue<TField extends FieldPath<T>>(field: TField): FieldPathValue<T, TField>
+  watchValue: <TField extends FieldPath<T>>(field: TField) => FieldPathValue<T, TField>
   getValues: () => T
-  getValue<TField extends FieldPath<T>>(field: TField): FieldPathValue<T, TField>
-  update(updates: FormUpdates<T>, options?: { automated?: true }): void
+  getValue: <TField extends FieldPath<T>>(field: TField) => FieldPathValue<T, TField>
+  update: (updates: FormUpdates<T>, options?: { automated?: true }) => void
   setError: (field: ErrorKey<T>, error: Error | { type?: 'server' | 'manual'; message: string }) => void
   clearErrors: (field: ErrorKey<T>) => void
   isTouched: (...fields: FieldPath<T>[]) => boolean

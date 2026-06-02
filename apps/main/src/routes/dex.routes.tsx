@@ -1,3 +1,4 @@
+import type { PoolAddressParams, PoolUrlParams } from '@/dex/types/main.types'
 import { createRoute, lazyRouteComponent } from '@tanstack/react-router'
 import { rootRoute } from './root.routes'
 import { createSharedRoutes } from './shared.routes'
@@ -72,13 +73,17 @@ export const dexRoutes = dexLayoutRoute.addChildren([
   createRoute({
     path: '$network/pools/$poolIdOrAddress/$formType',
     component: PagePool,
-    head: ({ params }) => ({ meta: [{ title: `Curve - Pool - ${params.poolIdOrAddress} - Curve` }] }),
+    head: ({ params: { poolIdOrAddress } }: { params: PoolUrlParams }) => ({
+      meta: [{ title: `Curve - Pool - ${poolIdOrAddress} - Curve` }],
+    }),
     ...layoutProps,
   }),
   createRoute({
     path: '$network/pools/$poolAddress/refuel',
     component: PageRefuel,
-    head: ({ params }) => ({ meta: [{ title: `Curve - Pool - ${params.poolAddress} - Refuel` }] }),
+    head: ({ params: { poolAddress } }: { params: PoolAddressParams }) => ({
+      meta: [{ title: `Curve - Pool - ${poolAddress} - Refuel` }],
+    }),
     ...layoutProps,
   }),
   createRoute({

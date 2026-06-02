@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import lodash from 'lodash'
+import { isUndefined } from 'lodash'
 import type { FormValues as PoolSwapFormValues } from '@/dex/components/PagePool/Swap/types'
 import type { ExchangeRate, FormValues, Route, SearchedParams } from '@/dex/components/PageRouterSwap/types'
 import { httpFetcher } from '@/dex/lib/utils'
@@ -39,8 +39,6 @@ import { log } from '@ui-kit/lib/logging'
 import { getErrorMessage } from '@ui-kit/utils'
 import { fetchNetworks } from '../entities/networks'
 
-const { isUndefined } = lodash
-
 const helpers = { waitForTransaction, waitForTransactions }
 
 // curve
@@ -51,29 +49,31 @@ const network = {
   }),
   getTVL: (curve: CurveApi) => {
     log('getChainTVL', curve.chainId)
-    const api = curve as CurveApi
-    return api.getTVL()
+    return curve.getTVL()
   },
   getVolume: (curve: CurveApi) => {
     log('getChainVolume', curve.chainId)
-    const api = curve as CurveApi
-    return api.getVolume()
+    return curve.getVolume()
   },
   getFailedFetching24hOldVprice: async () => {
     // TODO: Temporary code to determine if there is an issue with getting base APY from  Kava Api (https://api.curve.finance/api/getFactoryAPYs-kava)
     // If `failedFetching24hOldVprice` is true, it means the base apy couldn't be calculated, display in UI
     // something like a dash with a tooltip "not available currently"
-    const failedFetching24hOldVprice: { [poolAddress: string]: boolean } = {}
+    const failedFetching24hOldVprice: Record<string, boolean> = {}
     const url = 'https://api.curve.finance/api/getFactoryAPYs-kava'
     try {
-      const resp = await httpFetcher(url)
-      if (resp.success && Object.keys(resp.data.poolDetails).length) {
-        for (const poolDetail of resp.data.poolDetails) {
+      const { data, success } = (await httpFetcher(url)) as {
+        success: boolean
+        data: { poolDetails: { poolAddress: string; failedFetching24hOldVprice: boolean }[] }
+      }
+      if (success) {
+        for (const poolDetail of data.poolDetails) {
           failedFetching24hOldVprice[poolDetail.poolAddress.toLowerCase()] = poolDetail.failedFetching24hOldVprice
         }
       }
       return failedFetching24hOldVprice
     } catch (e) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       console.warn(`Unable to fetch failedFetching24hOldVprice from ${url}`, e.message)
       return failedFetching24hOldVprice
     }
@@ -180,7 +180,7 @@ const router = {
   routesAndOutput: async (
     activeKey: string,
     curve: CurveApi,
-    poolsMapper: { [poolId: string]: PoolData },
+    poolsMapper: Record<string, PoolData>,
     formValues: FormValues,
     searchedParams: SearchedParams,
   ) => {
@@ -314,7 +314,7 @@ const router = {
     fromAmount: string,
   ) => {
     log('swapApprove', fromAddress, fromAmount)
-    const api = curve as CurveApi
+    const api = curve
     const resp = { activeKey, hashes: [] as string[], error: '' }
     try {
       resp.hashes = await api.router.approve(fromAddress, fromAmount)
@@ -639,9 +639,11 @@ const poolSwap = {
       const swapExpected = fulfilledValue(swapExpectedResult) ?? ''
       const swapRequired = fulfilledValue(swapRequiredResult) ?? ''
       if (swapExpectedResult.status === 'rejected') {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
         resp.error = swapExpectedResult.reason?.reason || 'error-swap-exchange-and-output'
       }
       if (swapRequiredResult.status === 'rejected') {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
         resp.error = swapRequiredResult.reason?.reason || 'error-swap-exchange-and-output'
       }
 
