@@ -57,6 +57,7 @@ export const createVaultClaim = (
       const resp = await apiLending.vaultClaim.claimable(userActiveKey, market)
       get()[sliceKey].setStateByKey('claimable', { [resp.userActiveKey]: { claimable: resp.claimable } })
     },
+    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
     setFormValues: async (userActiveKey, api, market) => {
       // update userActiveKey, formValues
       const cFormStatus: FormStatus = cloneDeep(DEFAULT_FORM_STATUS)

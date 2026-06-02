@@ -70,28 +70,29 @@ export function useStoredState<T>({
   oldKey,
 }: StoredStateOptions<T>): GetAndSet<T> {
   const fullKey = getStorageKey(key, version)
-  const [stateValue, setState] = useState<T>(get(fullKey, initialValue))
-  const setStateValue = useCallback((value: T) => setState(old => (isEqual(old, value) ? old : value)), [])
+  // eslint-disable-next-line @eslint-react/use-state -- Existing violation before enabling this rule.
+  const [stateValue, setStateValue] = useState<T>(get(fullKey, initialValue))
+  const setState = useCallback((value: T) => setStateValue(old => (isEqual(old, value) ? old : value)), [])
 
   const setValue = useCallback(
     (setter: SetStateAction<T>) => {
       const value: T = typeof setter === 'function' ? (setter as (prev: T) => T)(get(fullKey, initialValue)) : setter
       set(fullKey, value)
-      setStateValue(value)
+      setState(value)
       storageEvent.dispatchEvent(new Event(fullKey))
     },
-    [get, initialValue, fullKey, set, setStateValue],
+    [get, initialValue, fullKey, set, setState],
   )
 
   useEffect(() => {
-    const listener = () => setStateValue(get(fullKey, initialValue))
+    const listener = () => setState(get(fullKey, initialValue))
     if (version) runMigration({ key, initialValue, get, set, version, migrate, oldKey })
     listener() // update state if migration ran or if fullKey changes
 
     // Update state when other components update the local storage
     storageEvent.addEventListener(fullKey, listener)
     return () => storageEvent.removeEventListener(fullKey, listener)
-  }, [get, initialValue, fullKey, set, migrate, version, key, oldKey, setStateValue])
+  }, [get, initialValue, fullKey, set, migrate, version, key, oldKey, setState])
 
   return [stateValue, setValue]
 }

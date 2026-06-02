@@ -1,3 +1,4 @@
+import { noop } from 'lodash'
 import { QuickSwap } from '@/dex/components/PageRouterSwap'
 import { useNetworksQuery } from '@/dex/entities/networks'
 import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
@@ -41,7 +42,7 @@ function QuickSwapTest({
       rChainId={chainId}
       tokensMapper={tokensMapper}
       tokensMapperStr={tokensMapperStr}
-      redirect={() => {}}
+      redirect={noop}
     />
   )
 }

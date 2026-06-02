@@ -76,6 +76,7 @@ export const Summary = () => {
         {isMdUp ? (
           <>
             <SummaryRecurrence title="Daily" />
+            {/* eslint-disable-next-line @typescript-eslint/no-base-to-string -- Existing violation before enabling this rule. */}
             <SummaryClaimable title={tabs[1].label?.toString()} />
           </>
         ) : (

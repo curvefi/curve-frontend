@@ -46,7 +46,7 @@ export const FormDepositStake = ({
 }: TransferProps) => {
   const isSubscribedRef = useRef(false)
 
-  const { chainId, signerAddress } = curve || {}
+  const { chainId, signerAddress } = curve ?? {}
   const { rChainId } = routerParams
   const activeKey = useStore(state => state.poolDeposit.activeKey)
   const formEstGas = useStore(state => state.poolDeposit.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
@@ -146,7 +146,7 @@ export const FormDepositStake = ({
           status: getStepStatus(isApproved, formStatus.step === 'APPROVAL', isValid),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
-          onClick: () => handleApproveClick(activeKey, curve, poolData.pool, formValues, maxSlippage),
+          onClick: () => void handleApproveClick(activeKey, curve, poolData.pool, formValues, maxSlippage),
         },
         DEPOSIT_STAKE: {
           key: 'DEPOSIT_STAKE',
@@ -173,13 +173,13 @@ export const FormDepositStake = ({
                     onClick: () => setSlippageConfirmed(false),
                   },
                   primaryBtnProps: {
-                    onClick: () => handleDepositStakeClick(activeKey, curve, poolData, formValues, maxSlippage),
+                    onClick: () => void handleDepositStakeClick(activeKey, curve, poolData, formValues, maxSlippage),
                     disabled: !slippageConfirmed,
                   },
                   primaryBtnLabel: 'Deposit anyway',
                 },
               }
-            : { onClick: () => handleDepositStakeClick(activeKey, curve, poolData, formValues, maxSlippage) }),
+            : { onClick: () => void handleDepositStakeClick(activeKey, curve, poolData, formValues, maxSlippage) }),
         },
       }
 

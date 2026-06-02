@@ -196,7 +196,7 @@ export const updateUserEventsApi = (
     market instanceof LendMarketTemplate
       ? [market.addresses.controller, getLendUserMarketCollateralEvents]
       : [market.controller, getMintUserMarketCollateralEvents]
-  void updateEvents(wallet.address, networkId as Chain, address as Address, txHash as Hex)
+  void updateEvents(wallet.address, networkId, address as Address, txHash as Hex)
 }
 
 /**

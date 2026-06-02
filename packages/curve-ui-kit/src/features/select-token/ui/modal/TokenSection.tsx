@@ -87,6 +87,7 @@ export const TokenSection = <T extends Option = Option>({
               {...token}
               balance={balances?.[token.address]}
               tokenPrice={tokenPrices?.[token.address]}
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
               disabled={disabledTokens?.includes(token.address) || !!blacklistEntry}
               disabledReason={blacklistEntry?.reason}
               onToken={() => onToken(token)}

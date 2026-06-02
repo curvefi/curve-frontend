@@ -174,6 +174,7 @@ export const LoanDecrease = ({
           status: getStepStatus(isApproved, step === 'APPROVAL', isValid),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: async () => {
             const notifyMessage = t`Please approve spending your ${getTokenName(llamma).stablecoin}`
             const notification = notify(notifyMessage, 'pending')
@@ -187,7 +188,7 @@ export const LoanDecrease = ({
           status: getStepStatus(isComplete, step === 'PAY', isValid && isApproved),
           type: 'action',
           content: isComplete ? t`Repaid` : t`Repay`,
-          onClick: () => handleBtnClickPay(payloadActiveKey, curve, llamma, formValues),
+          onClick: () => void handleBtnClickPay(payloadActiveKey, curve, llamma, formValues),
         },
       }
 

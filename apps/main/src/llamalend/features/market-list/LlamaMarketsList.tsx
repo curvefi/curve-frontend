@@ -103,7 +103,7 @@ export const LlamaMarketsList = () => {
             action={
               <ConnectWalletButton
                 label={t`Connect to view positions`}
-                onClick={() => connect()}
+                onClick={() => void connect()}
                 loading={isConnecting}
               />
             }

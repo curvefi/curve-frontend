@@ -188,13 +188,13 @@ export const LoanDeleverage = ({
                     onClick: () => setConfirmHighPriceImpact(false),
                   },
                   primaryBtnProps: {
-                    onClick: () => handleBtnClickRepay(payloadActiveKey, curve, llamma, formValues, maxSlippage),
+                    onClick: () => void handleBtnClickRepay(payloadActiveKey, curve, llamma, formValues, maxSlippage),
                     disabled: !confirmHighPriceImpact,
                   },
                   primaryBtnLabel: t`Repay anyway`,
                 },
               }
-            : { onClick: () => handleBtnClickRepay(payloadActiveKey, curve, llamma, formValues, maxSlippage) }),
+            : { onClick: () => void handleBtnClickRepay(payloadActiveKey, curve, llamma, formValues, maxSlippage) }),
         },
       }
 

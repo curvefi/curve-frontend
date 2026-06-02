@@ -53,6 +53,7 @@ export const BridgeForm = ({
   return (
     <Form
       {...form}
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
       onSubmit={onSubmit}
       footer={
         <>
@@ -81,13 +82,13 @@ export const BridgeForm = ({
         isConnecting={isConnecting}
         isWrongNetwork={fromChainId != null && chainId !== fromChainId}
         onAmount={amount => form.update({ amount })}
-        onConnect={() => connect()}
+        onConnect={() => void connect()}
         onChangeNetwork={() =>
           navigate(getInternalUrl(getCurrentApp(pathname), requireBlockchainId(fromChainId as Chain)))
         }
       />
 
-      <FormAlerts error={approveError || bridgeError} formErrors={formErrors} handledErrors={['amount']} />
+      <FormAlerts error={approveError ?? bridgeError} formErrors={formErrors} handledErrors={['amount']} />
     </Form>
   )
 }

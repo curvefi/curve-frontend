@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { cloneDeep, isUndefined } from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useConfig, useConnection, type Config } from 'wagmi'
 import { AlertFormError } from '@/dex/components/AlertFormError'
@@ -46,7 +46,6 @@ import { decimal, formatNumber } from '@ui-kit/utils'
 import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
-const { cloneDeep, isUndefined } = lodash
 const { Spacing } = SizesAndSpaces
 
 export const Swap = ({
@@ -66,7 +65,7 @@ export const Swap = ({
 }) => {
   const isSubscribedRef = useRef(false)
 
-  const { chainId, signerAddress } = curve || {}
+  const { chainId, signerAddress } = curve ?? {}
   const { rChainId } = routerParams
   const activeKey = useStore(state => state.poolSwap.activeKey)
   const exchangeOutput = useStore(state => state.poolSwap.exchangeOutput[activeKey] ?? DEFAULT_EXCHANGE_OUTPUT)
@@ -217,6 +216,7 @@ export const Swap = ({
           status: getStepStatus(isApprove, step === 'APPROVAL', isValid && !formProcessing),
           type: 'action',
           content: isApprove ? t`Spending Approved` : t`Approve Spending`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: async () => {
             const notifyMessage = t`Please approve spending your ${formValues.fromToken}.`
             const { dismiss } = notify(notifyMessage, 'pending')
@@ -251,13 +251,13 @@ export const Swap = ({
                   },
                   isDismissable: false,
                   primaryBtnProps: {
-                    onClick: () => handleSwapClick(actionActiveKey, curve, poolData, formValues, maxSlippage),
+                    onClick: () => void handleSwapClick(actionActiveKey, curve, poolData, formValues, maxSlippage),
                     disabled: !confirmedLoss,
                   },
                   primaryBtnLabel: 'Swap anyway',
                 },
               }
-            : { onClick: () => handleSwapClick(actionActiveKey, curve, poolData, formValues, maxSlippage) }),
+            : { onClick: () => void handleSwapClick(actionActiveKey, curve, poolData, formValues, maxSlippage) }),
         },
       }
 

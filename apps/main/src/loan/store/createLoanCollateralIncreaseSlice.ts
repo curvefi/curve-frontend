@@ -100,6 +100,7 @@ export const createLoanCollateralIncrease = (_set: StoreApi<State>['setState'], 
 
       get()[sliceKey].setStateByActiveKey('detailInfo', resp.activeKey, resp.resp)
     },
+    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
     setFormValues: async (chainId: ChainId, llamma: Llamma, formValues: FormValues) => {
       // stored values
       const prevActiveKey = get()[sliceKey].activeKey

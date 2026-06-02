@@ -41,6 +41,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
     isLite,
     sorting,
   })
+  // eslint-disable-next-line @eslint-react/use-state -- Existing violation before enabling this rule.
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
   const filterProps = { columnFiltersById, setColumnFilter }
 

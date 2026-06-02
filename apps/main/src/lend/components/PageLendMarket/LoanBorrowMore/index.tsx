@@ -64,6 +64,7 @@ export const LoanBorrowMore = ({
 
   const maxSlippage = useUserProfileStore(state => state.maxSlippage.crypto)
 
+  // eslint-disable-next-line @eslint-react/use-state -- Existing violation before enabling this rule.
   const [{ isConfirming, confirmedWarning }, setConfirmWarning] = useState(DEFAULT_CONFIRM_WARNING)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
   const [steps, setSteps] = useState<Step[]>([])
@@ -185,6 +186,7 @@ export const LoanBorrowMore = ({
           status: helpers.getStepStatus(isApproved, step === 'APPROVAL', isValid && haveValues),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: async () => {
             const tokensMessage = getStepTokensStr(formValues, market).symbolList
             const notifyMessage = t`Please approve spending of ${tokensMessage}`
@@ -230,15 +232,15 @@ export const LoanBorrowMore = ({
                   },
                   primaryBtnProps: {
                     onClick: () =>
-                      handleBtnClickBorrow(payloadActiveKey, api, formValues, market, maxSlippage, isLeverage),
+                      void handleBtnClickBorrow(payloadActiveKey, api, formValues, market, maxSlippage, isLeverage),
                     disabled: !confirmedWarning,
                   },
                   primaryBtnLabel: t`Borrow more anyway`,
                 },
               }
             : {
-                onClick: async () =>
-                  handleBtnClickBorrow(payloadActiveKey, api, formValues, market, maxSlippage, isLeverage),
+                onClick: () =>
+                  void handleBtnClickBorrow(payloadActiveKey, api, formValues, market, maxSlippage, isLeverage),
               }),
         },
       }

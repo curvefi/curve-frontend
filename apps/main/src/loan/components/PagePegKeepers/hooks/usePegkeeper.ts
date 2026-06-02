@@ -94,6 +94,7 @@ export function usePegkeeper({ address, pool: { address: poolAddress } }: PegKee
         address,
         functionName: 'update',
       },
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
       { onSuccess: refetch },
     )
 

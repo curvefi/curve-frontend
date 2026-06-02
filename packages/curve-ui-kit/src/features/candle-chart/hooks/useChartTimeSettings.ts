@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { DEFAULT_TIME_OPTION } from '../constants'
 import type { TimeOption } from '../types'
 import { getThreeHundredResultsAgo } from '../utils'
@@ -42,11 +42,7 @@ const intervals: Record<TimeOption, number> = {
 export const useChartTimeSettings = (
   initialTimeOption: TimeOption = DEFAULT_TIME_OPTION,
 ): UseChartTimeSettingsReturn => {
-  const [timeOption, setTimeOptionState] = useState<TimeOption>(initialTimeOption)
-
-  const setTimeOption = useCallback((option: TimeOption) => {
-    setTimeOptionState(option)
-  }, [])
+  const [timeOption, setTimeOption] = useState<TimeOption>(initialTimeOption)
 
   const chartTimeSettings = useMemo(() => {
     const now = Date.now() / 1000

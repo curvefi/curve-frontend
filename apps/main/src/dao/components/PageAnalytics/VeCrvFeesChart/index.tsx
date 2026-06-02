@@ -28,6 +28,7 @@ export const VeCrvFeesChart = () => {
       </TitleRow>
       <Content>
         {feesLoading && <Spinner height="31.25rem" />}
+        {/* eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule. */}
         {feesError && <ErrorMessage message={t`Error fetching veCRV fees data`} onClick={getVeCrvFees} />}
         {feesReady && <FeesBarChart data={reverseOrderFees} />}
       </Content>

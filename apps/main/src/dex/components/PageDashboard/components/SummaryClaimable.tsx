@@ -33,7 +33,7 @@ export const SummaryClaimable = ({ title }: Props) => {
     if (typeof dashboardDataMapper === 'undefined') return {} as AllTotal
 
     let totalUsd = 0
-    const allTotal = Object.values(dashboardDataMapper).reduce(
+    const allTotal = Object.values(dashboardDataMapper).reduce<AllTotal>(
       (prev, { claimableCrv = [], claimableOthers, claimablesTotalUsd }) => {
         // crv
         claimableCrv.forEach(({ amount, price }) => {
@@ -55,7 +55,7 @@ export const SummaryClaimable = ({ title }: Props) => {
         totalUsd += claimablesTotalUsd
         return prev
       },
-      { totalUsd: 0, tokens: {} } as AllTotal,
+      { totalUsd: 0, tokens: {} },
     )
 
     return { ...allTotal, totalUsd }

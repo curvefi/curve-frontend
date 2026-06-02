@@ -10,7 +10,7 @@ type CopyIconButtonProps = {
 export const CopyIconButton = ({ copyContent, tooltip }: CopyIconButtonProps) => (
   <TooltipButton
     clickable
-    onClick={() => copyToClipboard(copyContent)}
+    onClick={() => void copyToClipboard(copyContent)}
     noWrap
     tooltip={tooltip}
     customIcon={<Icon name="Copy" size={16} />}

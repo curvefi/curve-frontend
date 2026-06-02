@@ -36,7 +36,7 @@ export const shouldBlockTransaction = (
     slippageType,
   }: { slippage: Decimal | null | undefined; leverageEnabled: boolean | undefined; slippageType: SlippageType },
 ) =>
-  (leverageEnabled && priceImpact.data == null) ||
+  (leverageEnabled == true && priceImpact.data == null) ||
   getPriceImpactSeverity(priceImpact, { slippage, slippageType }) === 'error'
 
 export const getPriceImpactDisplay = (

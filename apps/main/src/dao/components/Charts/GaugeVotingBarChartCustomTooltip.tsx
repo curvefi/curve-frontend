@@ -9,15 +9,18 @@ export const GaugeVotingBarChartCustomTooltip = ({ active, payload }: TooltipPro
   if (active && payload?.length) {
     return (
       <TooltipWrapper>
+        {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule. */}
         <TooltipTitle>{payload[0].payload.title}</TooltipTitle>
         <Box flex flexColumn flexGap={'var(--spacing-1)'}>
           <TooltipColumn>
             <TooltipDataTitle>{t`User Weight`}</TooltipDataTitle>
+            {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule. */}
             <TooltipData>{payload[0].payload.userPower}%</TooltipData>
           </TooltipColumn>
           <TooltipColumn>
             <TooltipDataTitle>{t`User veCRV`}</TooltipDataTitle>
             <TooltipData>
+              {/* eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule. */}
               {formatNumber(amount(payload[0].payload.userVeCrv), { abbreviate: true, fallback: '-' })} veCRV
             </TooltipData>
           </TooltipColumn>

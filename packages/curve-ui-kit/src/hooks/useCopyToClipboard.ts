@@ -15,10 +15,10 @@ export const useCopyToClipboard = ({
 }) =>
   useCallback(() => {
     console.info(`Copying to clipboard: ${copyText}`)
-    return (
+    return void (
       navigator.clipboard?.writeText(copyText).then(
         () => showToast({ message: copyText, severity: 'info', title: confirmationText, testId }),
-        e => showToast({ title: e.message, severity: 'error', testId }),
+        e => showToast({ title: (e as Error).message, severity: 'error', testId }),
       ) ?? showToast({ title: t`Clipboard not available`, severity: 'warning', testId })
     )
   }, [copyText, confirmationText, testId])

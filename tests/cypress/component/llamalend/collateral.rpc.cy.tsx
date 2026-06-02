@@ -1,4 +1,3 @@
-import type { Address } from 'viem'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
 import {
@@ -47,8 +46,8 @@ describe('Collateral forms', () => {
 
         const addAmount = '0.01' as Decimal
         const removeAmount = '0.005' as Decimal
-        const collateralAfterAdd = `${+collateral + +addAmount}` as Decimal
-        const collateralAfterRemove = `${+collateralAfterAdd - +removeAmount}` as Decimal
+        const collateralAfterAdd: Decimal = `${+collateral + +addAmount}`
+        const collateralAfterRemove: Decimal = `${+collateralAfterAdd - +removeAmount}`
         let onPricesUpdated: ReturnType<typeof cy.stub>
         const CollateralTest = ({ tab }: { tab: 'add-collateral' | 'remove-collateral' }) => (
           <LlammalendTestCase
@@ -68,7 +67,7 @@ describe('Collateral forms', () => {
           setupTenderlyLoan({
             vnet: getVirtualNetwork(),
             userAddress: address,
-            collateralAddress: collateralAddress as Address,
+            collateralAddress,
             controllerAddress,
             collateral,
             collateralDecimals,

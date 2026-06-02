@@ -24,6 +24,7 @@ const compareBanners = (a: ReactElement<BannerProps>, b: ReactElement<BannerProp
  */
 export const StackBanners = ({ children }: StackBannersProps) => {
   const sortedBanners = useMemo(() => {
+    // eslint-disable-next-line @eslint-react/no-children-to-array -- Existing violation before enabling this rule.
     const banners = Children.toArray(children).filter(isValidElement) as ReactElement<BannerProps>[]
     const [removable, nonRemovable] = partition(banners, el => !!el.props.onClick)
     return [...nonRemovable.sort(compareBanners), ...removable.sort(compareBanners)]

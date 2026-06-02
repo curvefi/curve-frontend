@@ -62,6 +62,7 @@ export type FormStatus = {
   formProcessing: boolean
   formTypeCompleted: 'APPROVE' | 'SWAP' | ''
   step: StepKey | ''
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   error: AlertFormErrorKey | string
   swapError: string
 }

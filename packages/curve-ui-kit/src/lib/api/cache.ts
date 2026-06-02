@@ -1,11 +1,11 @@
-import { type Mutation, MutationCache } from '@tanstack/react-query'
+import { type Mutation, MutationCache, type QueryKey } from '@tanstack/react-query'
 import { addBreadcrumb, captureError } from '@ui-kit/features/sentry'
 import { logError, logMutation, logSuccess } from '@ui-kit/lib/logging'
 
-const getMutationKey = (mutation: Mutation<unknown, unknown, unknown, unknown>, variables: unknown) => {
+const getMutationKey = (mutation: Mutation<unknown, unknown>, variables: unknown) => {
   const queryKeyFn = mutation.options.meta?.queryKeyFn
   return typeof queryKeyFn === 'function'
-    ? queryKeyFn(variables)
+    ? (queryKeyFn as (variables: unknown) => QueryKey)(variables)
     : (mutation.options.mutationKey ?? String(mutation.mutationId))
 }
 

@@ -27,7 +27,7 @@ type Props = {
 }
 
 export const PoolListEmptyState = ({ columnFiltersById, resetFilters }: Props) => {
-  const searchText = columnFiltersById[PoolColumnId.PoolName] as string | undefined
+  const searchText = columnFiltersById[PoolColumnId.PoolName]
 
   const props = useParams<NetworkUrlParams>()
   const chainId = useChainId(props.network)

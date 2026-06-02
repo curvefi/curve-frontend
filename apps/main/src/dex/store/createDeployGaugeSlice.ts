@@ -229,6 +229,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             set(
               produce((state: State) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'ERROR'
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.mainnet.errorMessage = error.message
               }),
             )
@@ -266,6 +267,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             set(
               produce((state: State) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'ERROR'
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.mainnet.errorMessage = error.message
               }),
             )
@@ -303,6 +305,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             set(
               produce((state: State) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'ERROR'
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.mainnet.errorMessage = error.message
               }),
             )
@@ -340,6 +343,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             set(
               produce((state: State) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'ERROR'
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.mainnet.errorMessage = error.message
               }),
             )
@@ -376,6 +380,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             set(
               produce((state: State) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'ERROR'
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.mainnet.errorMessage = error.message
               }),
             )
@@ -424,6 +429,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             set(
               produce((state: State) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'ERROR'
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.sidechain.errorMessage = error.message
               }),
             )
@@ -462,6 +468,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             set(
               produce((state: State) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'ERROR'
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.sidechain.errorMessage = error.message
               }),
             )
@@ -500,6 +507,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             set(
               produce((state: State) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'ERROR'
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.sidechain.errorMessage = error.message
               }),
             )
@@ -538,6 +546,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             set(
               produce((state: State) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'ERROR'
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.sidechain.errorMessage = error.message
               }),
             )
@@ -576,6 +585,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             set(
               produce((state: State) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'ERROR'
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.sidechain.errorMessage = error.message
               }),
             )
@@ -625,6 +635,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             set(
               produce((state: State) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'ERROR'
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.mirror.errorMessage = error.message
               }),
             )
@@ -664,6 +675,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             set(
               produce((state: State) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'ERROR'
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.mirror.errorMessage = error.message
               }),
             )
@@ -703,6 +715,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             set(
               produce((state: State) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'ERROR'
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.mirror.errorMessage = error.message
               }),
             )
@@ -742,6 +755,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             set(
               produce((state: State) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'ERROR'
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.mirror.errorMessage = error.message
               }),
             )
@@ -778,6 +792,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             set(
               produce((state: State) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'ERROR'
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.deployGauge.deploymentStatus.mirror.errorMessage = error.message
               }),
             )

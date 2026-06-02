@@ -48,7 +48,7 @@ export const FormWithdraw = ({
 }: TransferProps) => {
   const isSubscribedRef = useRef(false)
 
-  const { chainId, signerAddress } = curve || {}
+  const { chainId, signerAddress } = curve ?? {}
   const { rChainId } = routerParams
   const activeKey = useStore(state => state.poolWithdraw.activeKey)
   const formEstGas = useStore(state => state.poolWithdraw.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
@@ -165,7 +165,7 @@ export const FormWithdraw = ({
           status: getStepStatus(isApproved, formStatus.step === 'APPROVAL', isValid),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
-          onClick: () => handleApproveClick(activeKey, config, curve, poolData.pool, formValues, maxSlippage),
+          onClick: () => void handleApproveClick(activeKey, config, curve, poolData.pool, formValues, maxSlippage),
         },
         WITHDRAW: {
           key: 'WITHDRAW',
@@ -192,13 +192,13 @@ export const FormWithdraw = ({
                     onClick: () => setSlippageConfirmed(false),
                   },
                   primaryBtnProps: {
-                    onClick: () => handleWithdrawClick(activeKey, curve, poolData, formValues, maxSlippage),
+                    onClick: () => void handleWithdrawClick(activeKey, curve, poolData, formValues, maxSlippage),
                     disabled: !slippageConfirmed,
                   },
                   primaryBtnLabel: 'Withdraw anyway',
                 },
               }
-            : { onClick: () => handleWithdrawClick(activeKey, curve, poolData, formValues, maxSlippage) }),
+            : { onClick: () => void handleWithdrawClick(activeKey, curve, poolData, formValues, maxSlippage) }),
         },
       }
 

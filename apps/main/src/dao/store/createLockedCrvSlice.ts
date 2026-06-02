@@ -80,6 +80,7 @@ export const createLockedCrvSlice = (
 ): LockedCrvSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises, @typescript-eslint/require-await -- Existing violation before enabling this rule.
     setFormValues: async (curve, isLoadingCurve, rFormType, updatedFormValues, vecrvInfo, isFullReset) => {
       // stored state
       const storedFormValues = get()[sliceKey].formValues
@@ -289,6 +290,7 @@ export const createLockedCrvSlice = (
       }
     },
 
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
     withdrawLockedCrv: async () => {
       const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])

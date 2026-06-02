@@ -49,6 +49,7 @@ export const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
   const columnView = useMediaQuery(`(max-width: ${columnViewBreakPoint})`)
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
     const fetchData = async () => {
       if (!lendApi || !address) return
       // ensure user balances are up to date on load

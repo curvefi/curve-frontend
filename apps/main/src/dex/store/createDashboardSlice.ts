@@ -214,6 +214,7 @@ export const createDashboardSlice = (
       }
       return []
     },
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
     setFormValues: async (rChainId, curve, poolDataMapper, updatedFormValues) => {
       const {
         [sliceKey]: {
@@ -268,6 +269,7 @@ export const createDashboardSlice = (
       }
 
       // get claimableFees, locked crv info
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
       if (chainId === Chain.Ethereum) void sliceState.fetchVeCrvAndClaimables(activeKey, curve, walletAddress)
 
       // get dashboard data
