@@ -50,7 +50,7 @@ const sliceKey = 'ohlcCharts'
 
 export type OhlcChartSlice = {
   [sliceKey]: SliceState & {
-    fetchLlammaOhlcData(
+    fetchLlammaOhlcData: (
       chainId: ChainId,
       llammaId: string,
       poolAddress: string,
@@ -58,36 +58,36 @@ export type OhlcChartSlice = {
       timeUnit: string,
       start: number,
       end: number,
-    ): Promise<void>
-    fetchMoreLlammaOhlcData(
+    ) => Promise<void>
+    fetchMoreLlammaOhlcData: (
       chainId: ChainId,
       poolAddress: string,
       interval: number,
       timeUnit: string,
       start: number,
       end: number,
-    ): Promise<{
+    ) => Promise<{
       oracleData: OraclePriceData[]
       baselineData: LlamaBaselinePriceData[]
       refetchingCapped: boolean
       lastFetchEndTime: number
     }>
-    fetchOraclePoolOhlcData(
+    fetchOraclePoolOhlcData: (
       chainId: ChainId,
       controller: string,
       interval: number,
       timeUnit: string,
       start: number,
       end: number,
-    ): Promise<void>
-    fetchMoreOraclePoolOhlcData(
+    ) => Promise<void>
+    fetchMoreOraclePoolOhlcData: (
       chainId: ChainId,
       controller: string,
       interval: number,
       timeUnit: string,
       start: number,
       end: number,
-    ): Promise<{
+    ) => Promise<{
       ohlcData: LpPriceOhlcDataFormatted[]
       oracleData: OraclePriceData[]
       baselineData: LlamaBaselinePriceData[]
@@ -102,7 +102,7 @@ export type OhlcChartSlice = {
         symbol: string
       }
     }>
-    fetchMoreData(
+    fetchMoreData: (
       chainId: ChainId,
       controller: string,
       poolAddress: string,
@@ -110,8 +110,8 @@ export type OhlcChartSlice = {
       timeUnit: string,
       start: number,
       end: number,
-    ): Promise<void>
-    resetState(): void
+    ) => Promise<void>
+    resetState: () => void
   }
 }
 

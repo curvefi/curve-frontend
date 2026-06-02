@@ -17,11 +17,11 @@ type SliceState = {
 // prettier-ignore
 export type AppSlice = {
   /** Hydrate resets states and refreshes store data from the API */
-  hydrate(config: Config, curve: LlamaApi | undefined, prevCurveApi: LlamaApi | undefined, wallet: Wallet | undefined): Promise<void>
-  setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean): void
-  setAppStateByKey<T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean): void
-  setAppStateByKeys<T>(sliceKey: SliceKey, sliceState: Partial<T>, showLog?: boolean): void
-  resetAppState<T>(sliceKey: SliceKey, defaultState: T): void
+  hydrate: (config: Config, curve: LlamaApi | undefined, prevCurveApi: LlamaApi | undefined, wallet: Wallet | undefined) => Promise<void>
+  setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean) => void
+  setAppStateByKey: <T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean) => void
+  setAppStateByKeys: <T>(sliceKey: SliceKey, sliceState: Partial<T>, showLog?: boolean) => void
+  resetAppState: <T>(sliceKey: SliceKey, defaultState: T) => void
 } & SliceState
 
 const DEFAULT_STATE: SliceState = {
@@ -114,10 +114,7 @@ export const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<S
   resetAppState: <T>(sliceKey: SliceKey, defaultState: T) => {
     set(
       produce(state => {
-        state[sliceKey] = {
-          ...state[sliceKey],
-          ...defaultState,
-        }
+        state[sliceKey] = { ...state[sliceKey], ...defaultState }
       }),
     )
   },

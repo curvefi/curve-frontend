@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { cloneDeep, merge } from 'lodash'
 import type { StoreApi } from 'zustand'
 import type { FormEstGas } from '@/lend/components/PageLendMarket/types'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLendMarket/utils'
@@ -15,7 +15,6 @@ import { refetchUserMarket } from '../queries/refetchUserMarket'
 
 type StateKey = keyof typeof DEFAULT_STATE
 type FormType = string | null
-const { cloneDeep, merge } = lodash
 
 const sliceKey = 'vaultDepositMint'
 
@@ -31,20 +30,20 @@ type SliceState = {
 // prettier-ignore
 export type VaultDepositMintSlice = {
   [sliceKey]: SliceState & {
-    fetchMax(rChainId: ChainId, formType: FormType, market: LendMarketTemplate): Promise<void>
-    fetchEstGasApproval(activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate): Promise<void>
-    fetchDetails(activeKey: string, formType: FormType, market: LendMarketTemplate): Promise<void>
-    setFormValues(rChainId: ChainId, formType: FormType, api: Api | null, market: LendMarketTemplate | undefined, updatedPartialFormValues: Partial<FormValues>): Promise<void>
+    fetchMax: (rChainId: ChainId, formType: FormType, market: LendMarketTemplate) => Promise<void>
+    fetchEstGasApproval: (activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate) => Promise<void>
+    fetchDetails: (activeKey: string, formType: FormType, market: LendMarketTemplate) => Promise<void>
+    setFormValues: (rChainId: ChainId, formType: FormType, api: Api | null, market: LendMarketTemplate | undefined, updatedPartialFormValues: Partial<FormValues>) => Promise<void>
 
     // steps
-    fetchStepApprove(activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate, formValues: FormValues): Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
-    fetchStepDepositMint(activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate, formValues: FormValues): Promise<{ activeKey: string; error: string; hash: string } | undefined>
+    fetchStepApprove: (activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate, formValues: FormValues) => Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
+    fetchStepDepositMint: (activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate, formValues: FormValues) => Promise<{ activeKey: string; error: string; hash: string } | undefined>
 
     // steps helper
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(isLeverage?: boolean): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: (isLeverage?: boolean) => void
   }
 }
 

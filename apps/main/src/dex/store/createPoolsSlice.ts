@@ -1,6 +1,6 @@
 import { produce } from 'immer'
 import type { UTCTimestamp } from 'lightweight-charts'
-import lodash from 'lodash'
+import { chunk, countBy, groupBy, isNaN } from 'lodash'
 import { zeroAddress } from 'viem'
 import type { StoreApi } from 'zustand'
 import { curvejsApi } from '@/dex/lib/curvejs'
@@ -35,7 +35,6 @@ import { getPools } from '../lib/pools'
 import { fetchPoolsBlacklist } from '../queries/pools-blacklist.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
-const { chunk, countBy, groupBy, isNaN } = lodash
 
 type SliceState = {
   poolsMapper: Record<string, PoolDataMapper>
@@ -59,16 +58,16 @@ const sliceKey = 'pools'
 
 export type PoolsSlice = {
   [sliceKey]: SliceState & {
-    fetchPools(
+    fetchPools: (
       curve: CurveApi,
       poolIds: string[],
-    ): Promise<{ poolsMapper: PoolDataMapper; poolDatas: PoolData[] } | undefined>
-    fetchNewPool(curve: CurveApi, poolId: string): Promise<PoolData | undefined>
-    fetchPoolsRewardsApy(chainId: ChainId, poolDatas: PoolData[], useApi?: boolean): Promise<void>
-    fetchMissingPoolsRewardsApy(chainId: ChainId, poolDatas: PoolData[]): Promise<void>
+    ) => Promise<{ poolsMapper: PoolDataMapper; poolDatas: PoolData[] } | undefined>
+    fetchNewPool: (curve: CurveApi, poolId: string) => Promise<PoolData | undefined>
+    fetchPoolsRewardsApy: (chainId: ChainId, poolDatas: PoolData[], useApi?: boolean) => Promise<void>
+    fetchMissingPoolsRewardsApy: (chainId: ChainId, poolDatas: PoolData[]) => Promise<void>
     fetchPoolStats: (curve: CurveApi, poolData: PoolData) => Promise<void>
-    fetchPoolCurrenciesReserves(curve: CurveApi, poolData: PoolData): Promise<void>
-    setPoolIsWrapped(poolData: PoolData, isWrapped: boolean): { tokens: string[]; tokenAddresses: string[] }
+    fetchPoolCurrenciesReserves: (curve: CurveApi, poolData: PoolData) => Promise<void>
+    setPoolIsWrapped: (poolData: PoolData, isWrapped: boolean) => { tokens: string[]; tokenAddresses: string[] }
     updatePool: (chainId: ChainId, poolId: string, updatedPoolData: Partial<PoolData>) => void
     fetchPricesApiCharts: (
       chainId: ChainId,
@@ -88,12 +87,12 @@ export type PoolsSlice = {
       start: number,
       end: number,
     ) => void
-    setEmptyPoolListDefault(chainId: ChainId): void
+    setEmptyPoolListDefault: (chainId: ChainId) => void
 
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: () => void
   }
 }
 
@@ -331,7 +330,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
       }
 
       set(
-        produce(state => {
+        produce((state: State) => {
           state.pools.poolsMapper[chainId][poolData.pool.id] = cPoolData
         }),
       )
@@ -340,8 +339,8 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
     },
     updatePool: (chainId, poolId, updatedPoolData) => {
       set(
-        produce(state => {
-          state.pools.poolsMapper[chainId][poolId] = updatedPoolData
+        produce((state: State) => {
+          state.pools.poolsMapper[chainId][poolId] = { ...state.pools.poolsMapper[chainId][poolId], ...updatedPoolData }
         }),
       )
     },

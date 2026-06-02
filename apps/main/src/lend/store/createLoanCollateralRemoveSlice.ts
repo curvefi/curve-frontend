@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { cloneDeep } from 'lodash'
 import { StoreApi } from 'zustand'
 import type { FormStatus, FormValues } from '@/lend/components/PageLendMarket/LoanCollateralRemove/types'
 import type { FormDetailInfo, FormEstGas } from '@/lend/components/PageLendMarket/types'
@@ -12,8 +12,6 @@ import { updateUserEventsApi } from '@/llamalend/llama.utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 import { refetchUserMarket } from '../queries/refetchUserMarket'
-
-const { cloneDeep } = lodash
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -31,19 +29,19 @@ const sliceKey = 'loanCollateralRemove'
 // prettier-ignore
 export type LoanCollateralRemoveSlice = {
   [sliceKey]: SliceState & {
-    fetchMaxRemovable(api: Api, market: LendMarketTemplate): Promise<void>
-    fetchDetailInfo(activeKey: string, api: Api, market: LendMarketTemplate): Promise<void>
-    fetchEstGas(activeKey: string, api: Api, market: LendMarketTemplate): Promise<void>
-    setFormValues(api: Api | null, market: LendMarketTemplate | undefined, partialFormValues: Partial<FormValues>, shouldRefetch?: boolean): Promise<void>
+    fetchMaxRemovable: (api: Api, market: LendMarketTemplate) => Promise<void>
+    fetchDetailInfo: (activeKey: string, api: Api, market: LendMarketTemplate) => Promise<void>
+    fetchEstGas: (activeKey: string, api: Api, market: LendMarketTemplate) => Promise<void>
+    setFormValues: (api: Api | null, market: LendMarketTemplate | undefined, partialFormValues: Partial<FormValues>, shouldRefetch?: boolean) => Promise<void>
 
     // step
-    fetchStepDecrease(activeKey: string, api: Api, market: LendMarketTemplate, formValues: FormValues): Promise<{ activeKey: string; error: string; hash: string } | undefined>
+    fetchStepDecrease: (activeKey: string, api: Api, market: LendMarketTemplate, formValues: FormValues) => Promise<{ activeKey: string; error: string; hash: string } | undefined>
 
     // steps helper
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: () => void
   }
 }
 

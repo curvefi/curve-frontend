@@ -23,10 +23,10 @@ const sliceKey = 'storeCache'
 
 export type CacheSlice = {
   [sliceKey]: SliceState & {
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): Promise<void>
-    setStateByKey<T>(key: StateKey, value: T): Promise<void>
-    setStateByKeys(SliceState: Partial<SliceState>): Promise<void>
-    resetState(): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => Promise<void>
+    setStateByKey: <T>(key: StateKey, value: T) => Promise<void>
+    setStateByKeys: (SliceState: Partial<SliceState>) => Promise<void>
+    resetState: () => void
   }
 }
 
