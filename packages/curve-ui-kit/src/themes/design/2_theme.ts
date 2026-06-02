@@ -16,6 +16,36 @@ const SliderBackground = {
   },
 } as const
 
+const LightFontWeight = {
+  Extra_Light: 200,
+  Light: 300,
+  Normal: 500,
+  Medium: 500,
+  Semi_Bold: 600,
+  Bold: 700,
+  Extra_Bold: 800,
+} as const
+
+const DarkFontWeight = {
+  Extra_Light: 200,
+  Light: 300,
+  Normal: 400,
+  Medium: 500,
+  Semi_Bold: 500,
+  Bold: 600,
+  Extra_Bold: 700,
+} as const
+
+const ChadFontWeight = {
+  Extra_Light: 400,
+  Light: 400,
+  Normal: 400,
+  Medium: 400,
+  Semi_Bold: 700,
+  Bold: 700,
+  Extra_Bold: 700,
+} as const
+
 export const createLightDesign = (
   Light: typeof SurfacesAndText.plain.Light | typeof SurfacesAndText.inverted.Light,
 ) => {
@@ -109,6 +139,7 @@ export const createLightDesign = (
       Mono: 'Mona Sans',
       Button: 'Mona Sans',
     },
+    FontWeight: LightFontWeight,
   } as const
 
   const Button = {
@@ -615,6 +646,7 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
       Mono: 'Mona Sans',
       Button: 'Mona Sans',
     },
+    FontWeight: DarkFontWeight,
   } as const
 
   const Button = {
@@ -1082,6 +1114,7 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
       Mono: 'Ioskeley Mono',
       Button: 'Ioskeley Mono',
     },
+    FontWeight: ChadFontWeight,
   } as const
 
   const Button = {

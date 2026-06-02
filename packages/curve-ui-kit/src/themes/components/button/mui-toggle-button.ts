@@ -6,7 +6,7 @@ import { DesignSystem } from '../../design'
 import { SizesAndSpaces } from '../../design/1_sizes_spaces'
 import { Fonts } from '../../fonts'
 
-const { Spacing, ButtonSize, FontSize, FontWeight, LineHeight, OutlineWidth } = SizesAndSpaces
+const { Spacing, ButtonSize, FontSize, LineHeight, OutlineWidth } = SizesAndSpaces
 
 type ToggleStyle = { Label?: string; Fill?: string }
 
@@ -19,6 +19,7 @@ const sizeBreakpoint = (
   paddingBlock: Responsive,
   paddingInline: Responsive,
   fontSize: Responsive,
+  fontWeight: number,
   lineHeight: Responsive,
   size?: string,
 ) => ({
@@ -29,13 +30,14 @@ const sizeBreakpoint = (
     paddingBlock: paddingBlock[breakpoint],
     paddingInline: paddingInline[breakpoint],
     fontSize: fontSize[breakpoint],
-    fontWeight: FontWeight.Bold,
+    fontWeight,
     lineHeight: lineHeight[breakpoint],
   },
 })
 
 type BaseButtonSize = {
   fontSize: keyof typeof FontSize
+  fontWeight?: keyof DesignSystem['Text']['FontWeight']
   lineHeight: keyof typeof LineHeight
 }
 
@@ -46,13 +48,17 @@ type ButtonSize = BaseButtonSize & {
   paddingInline: keyof typeof Spacing
 }
 
-const buttonSize = ({ minHeight, minWidth, paddingBlock, paddingInline, fontSize, lineHeight }: ButtonSize) => {
+const buttonSize = (
+  fontWeightTokens: DesignSystem['Text']['FontWeight'],
+  { minHeight, minWidth, paddingBlock, paddingInline, fontSize, fontWeight = 'Bold', lineHeight }: ButtonSize,
+) => {
   const sizes = [
     ButtonSize[minHeight],
     ButtonSize[minWidth],
     Spacing[paddingBlock],
     Spacing[paddingInline],
     FontSize[fontSize],
+    fontWeightTokens[fontWeight],
     LineHeight[lineHeight],
   ] as const
 
@@ -68,13 +74,17 @@ type ButtonSizeSquare = BaseButtonSize & {
   padding: keyof typeof Spacing
 }
 
-const buttonSizeSquare = ({ size, padding, fontSize, lineHeight }: ButtonSizeSquare) => {
+const buttonSizeSquare = (
+  fontWeightTokens: DesignSystem['Text']['FontWeight'],
+  { size, padding, fontSize, fontWeight = 'Bold', lineHeight }: ButtonSizeSquare,
+) => {
   const sizes = [
     ButtonSize[size],
     ButtonSize[size],
     Spacing[padding],
     Spacing[padding],
     FontSize[fontSize],
+    fontWeightTokens[fontWeight],
     LineHeight[lineHeight],
     ...(size && [ButtonSize[size]]),
   ] as const
@@ -109,7 +119,7 @@ export const defineMuiToggleButton = ({ Toggles, Button, Text }: DesignSystem): 
       },
 
       sizeExtraSmall: {
-        ...buttonSize({
+        ...buttonSize(Text.FontWeight, {
           minHeight: 'xs',
           minWidth: 'sm',
           paddingBlock: 'xs',
@@ -121,7 +131,7 @@ export const defineMuiToggleButton = ({ Toggles, Button, Text }: DesignSystem): 
       },
 
       sizeExtraSmallSquare: {
-        ...buttonSizeSquare({
+        ...buttonSizeSquare(Text.FontWeight, {
           size: 'xs',
           padding: 'xs',
           fontSize: 'sm',
@@ -130,7 +140,7 @@ export const defineMuiToggleButton = ({ Toggles, Button, Text }: DesignSystem): 
         textTransform: 'none',
       },
 
-      sizeSmall: buttonSize({
+      sizeSmall: buttonSize(Text.FontWeight, {
         minHeight: 'sm',
         minWidth: 'sm',
         paddingBlock: 'sm',
@@ -139,14 +149,14 @@ export const defineMuiToggleButton = ({ Toggles, Button, Text }: DesignSystem): 
         lineHeight: 'sm',
       }),
 
-      sizeSmallSquare: buttonSizeSquare({
+      sizeSmallSquare: buttonSizeSquare(Text.FontWeight, {
         size: 'sm',
         padding: 'sm',
         fontSize: 'sm',
         lineHeight: 'sm',
       }),
 
-      sizeMedium: buttonSize({
+      sizeMedium: buttonSize(Text.FontWeight, {
         minHeight: 'md',
         minWidth: 'md',
         paddingBlock: 'sm',
@@ -155,7 +165,7 @@ export const defineMuiToggleButton = ({ Toggles, Button, Text }: DesignSystem): 
         lineHeight: 'xl',
       }),
 
-      sizeMediumSquare: buttonSizeSquare({
+      sizeMediumSquare: buttonSizeSquare(Text.FontWeight, {
         size: 'md',
         padding: 'sm',
         fontSize: 'md',

@@ -156,53 +156,12 @@ li {
 }
 
 @font-face {
-  font-family: 'Hubot Sans';
-  src:
-    local('Hubot Sans'),
-    url('../../../packages/curve-ui-kit/public/fonts/Hubot-Sans.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'Ioskeley Mono';
-  src:
-    local('Ioskeley Mono Light'),
-    local('Ioskeley-Mono-Light'),
-    url('../../../packages/curve-ui-kit/public/fonts/Ioskeley-Mono-Light.woff2') format('woff2');
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
   font-family: 'Ioskeley Mono';
   src:
     local('Ioskeley Mono Regular'),
     local('Ioskeley Mono'),
     url('../../../packages/curve-ui-kit/public/fonts/Ioskeley-Mono.woff2') format('woff2');
   font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Ioskeley Mono';
-  src:
-    local('Ioskeley Mono Medium'),
-    local('Ioskeley-Mono-Medium'),
-    url('../../../packages/curve-ui-kit/public/fonts/Ioskeley-Mono-Medium.woff2') format('woff2');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Ioskeley Mono';
-  src:
-    local('Ioskeley Mono Semibold'),
-    local('Ioskeley Mono SemiBold'),
-    local('Ioskeley-Mono-SemiBold'),
-    url('../../../packages/curve-ui-kit/public/fonts/Ioskeley-Mono-SemiBold.woff2') format('woff2');
-  font-weight: 600;
   font-style: normal;
   font-display: swap;
 }

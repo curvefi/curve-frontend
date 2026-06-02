@@ -28,7 +28,7 @@ export const BalanceAmount = <T extends Amount>({
       color={disabled ? 'textDisabled' : children == null ? 'textTertiary' : 'textPrimary'}
       data-testid={testId}
       data-value={children ?? ''}
-      sx={{ ...VERTICAL_CENTER_TEXT, fontVariantNumeric: 'tabular-nums', ...sx }}
+      sx={{ ...VERTICAL_CENTER_TEXT, ...sx }}
     >
       {loading ? '?????' : children == null ? '-' : formatNumber(children, { abbreviate: true })}
     </Typography>

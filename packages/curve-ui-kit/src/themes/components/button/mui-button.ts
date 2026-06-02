@@ -9,7 +9,7 @@ import { SizesAndSpaces } from '../../design/1_sizes_spaces'
 import { Fonts } from '../../fonts'
 import { buttonColor } from './utils'
 
-const { LineHeight, OutlineWidth, FontWeight, ButtonSize, FontSize } = SizesAndSpaces
+const { LineHeight, OutlineWidth, ButtonSize, FontSize } = SizesAndSpaces
 
 const sizeBreakpoint = (
   height: string,
@@ -29,13 +29,34 @@ const sizeBreakpoint = (
 type ButtonSize = {
   height: keyof typeof ButtonSize
   fontSize: keyof typeof FontSize
-  fontWeight?: keyof typeof FontWeight
+  fontWeight?: keyof DesignSystem['Text']['FontWeight']
   lineHeight: keyof typeof LineHeight
 }
-const buttonSize = ({ height, fontSize, fontWeight = 'Bold', lineHeight }: ButtonSize) => ({
-  ...sizeBreakpoint(ButtonSize[height], FontSize[fontSize], FontWeight[fontWeight], LineHeight[lineHeight], 'mobile'),
-  ...sizeBreakpoint(ButtonSize[height], FontSize[fontSize], FontWeight[fontWeight], LineHeight[lineHeight], 'tablet'),
-  ...sizeBreakpoint(ButtonSize[height], FontSize[fontSize], FontWeight[fontWeight], LineHeight[lineHeight], 'desktop'),
+const buttonSize = (
+  fontWeightTokens: DesignSystem['Text']['FontWeight'],
+  { height, fontSize, fontWeight = 'Bold', lineHeight }: ButtonSize,
+) => ({
+  ...sizeBreakpoint(
+    ButtonSize[height],
+    FontSize[fontSize],
+    fontWeightTokens[fontWeight],
+    LineHeight[lineHeight],
+    'mobile',
+  ),
+  ...sizeBreakpoint(
+    ButtonSize[height],
+    FontSize[fontSize],
+    fontWeightTokens[fontWeight],
+    LineHeight[lineHeight],
+    'tablet',
+  ),
+  ...sizeBreakpoint(
+    ButtonSize[height],
+    FontSize[fontSize],
+    fontWeightTokens[fontWeight],
+    LineHeight[lineHeight],
+    'desktop',
+  ),
 })
 
 export const defineMuiButton = ({ Button, Text }: DesignSystem): Components['MuiButton'] => {
@@ -119,10 +140,13 @@ export const defineMuiButton = ({ Button, Text }: DesignSystem): Components['Mui
         textTransform: 'uppercase',
         transition: Transition,
       },
-      sizeExtraSmall: { ...buttonSize({ height: 'xs', fontSize: 'sm', lineHeight: 'md' }), textTransform: 'none' },
-      sizeSmall: buttonSize({ height: 'sm', fontSize: 'sm', lineHeight: 'md' }),
-      sizeMedium: buttonSize({ height: 'md', fontSize: 'md', lineHeight: 'xl' }),
-      sizeLarge: buttonSize({ height: 'lg', fontSize: 'md', lineHeight: 'xl' }),
+      sizeExtraSmall: {
+        ...buttonSize(Text.FontWeight, { height: 'xs', fontSize: 'sm', lineHeight: 'md' }),
+        textTransform: 'none',
+      },
+      sizeSmall: buttonSize(Text.FontWeight, { height: 'sm', fontSize: 'sm', lineHeight: 'md' }),
+      sizeMedium: buttonSize(Text.FontWeight, { height: 'md', fontSize: 'md', lineHeight: 'xl' }),
+      sizeLarge: buttonSize(Text.FontWeight, { height: 'lg', fontSize: 'md', lineHeight: 'xl' }),
       startIcon: {
         [basicMuiTheme.breakpoints.up('mobile')]: { marginInlineEnd: SizesAndSpaces.Spacing.xs.mobile },
         [basicMuiTheme.breakpoints.up('tablet')]: { marginInlineEnd: SizesAndSpaces.Spacing.xs.tablet },

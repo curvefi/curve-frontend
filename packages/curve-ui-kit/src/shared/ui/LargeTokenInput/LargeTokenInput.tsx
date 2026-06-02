@@ -347,11 +347,7 @@ export const LargeTokenInput = ({
         {(walletBalance || inputBalanceUsd) && (
           <Stack direction="row" sx={{ justifyContent: 'end' }}>
             {inputBalanceUsd != null && (
-              <Typography
-                variant="bodyXsRegular"
-                color="textTertiary"
-                sx={{ flexGrow: 1, fontVariantNumeric: 'tabular-nums' }}
-              >
+              <Typography variant="bodyXsRegular" color="textTertiary" sx={{ flexGrow: 1 }}>
                 ≈ {formatNumber(inputBalanceUsd, { unit: 'dollar', abbreviate: false })}
               </Typography>
             )}

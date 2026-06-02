@@ -72,6 +72,10 @@ body.theme-default {
 
   --layout--home--background-color: var(--whitel98);
 
+  --normal: 500;
+  --medium: 500;
+  --semi-bold: 600;
+  --bold: 700;
   --font-weight--bold: var(--bold);
   --font-weight--semi-bold: var(--semi-bold);
   --font-weight--normal: var(--normal);
