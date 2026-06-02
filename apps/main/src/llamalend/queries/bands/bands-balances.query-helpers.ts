@@ -6,7 +6,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import PromisePool from '@supercharge/promise-pool'
 import { decimal } from '@ui-kit/utils/decimal'
 
-type BandsBalances = { [band: number]: { borrowed: string; collateral: string } }
+type BandsBalances = Record<number, { borrowed: string; collateral: string }>
 type BandsBalancesArr = { borrowed: string; collateral: string; band: number }[]
 type FetchedBandsBalances = {
   borrowed: Decimal

@@ -11,7 +11,7 @@ enum Pool {
 export const usePoolTokensLinksMapper = (rChainId: ChainId, { pool }: PoolDataCacheOrApi) => {
   const poolId = pool?.id
 
-  const [mapper, setMapper] = useState<{ [tokenAddress: string]: string } | null>(null)
+  const [mapper, setMapper] = useState<Record<string, string> | null>(null)
 
   useEffect(() => {
     if (!rChainId && !poolId) return

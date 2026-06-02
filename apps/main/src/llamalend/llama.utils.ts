@@ -325,7 +325,7 @@ export function reverseBands(bands: [number, number] | number[]) {
 // There's a slight difference in types (borrowed vs stablecoin) that I didn't want to touch at the risk of breaking things;
 // I only want to move code, not change. At least they're neatly in the same place now.
 
-export function sortBandsLend(bandsBalances: { [index: number]: { borrowed: string; collateral: string } }) {
+export function sortBandsLend(bandsBalances: Record<number, { borrowed: string; collateral: string }>) {
   const sortedKeys = sortBy(objectKeys(bandsBalances), k => +k)
   const bandsBalancesArr: { borrowed: string; collateral: string; band: number }[] = []
   for (const k of sortedKeys) {
@@ -334,7 +334,7 @@ export function sortBandsLend(bandsBalances: { [index: number]: { borrowed: stri
   return { bandsBalancesArr, bandsBalances }
 }
 
-export function sortBandsMint(bandBalances: { [key: string]: { stablecoin: string; collateral: string } }) {
+export function sortBandsMint(bandBalances: Record<string, { stablecoin: string; collateral: string }>) {
   const sortedKeys = sortBy(objectKeys(bandBalances).map(k => +k))
   const bandBalancesArr: { stablecoin: string; collateral: string; band: string }[] = []
   for (const k of sortedKeys) {

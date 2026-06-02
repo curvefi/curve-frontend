@@ -160,7 +160,7 @@ export const LoanDeleverage = ({
         +(userState?.collateral ?? 0) >= +formValues.collateral
       const isValid = !!curve.signerAddress && isValidForm && !formStatus.error && !detailInfo.loading
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         REPAY: {
           key: 'REPAY',
           status: getStepStatus(isComplete, step === 'REPAY', isValid),

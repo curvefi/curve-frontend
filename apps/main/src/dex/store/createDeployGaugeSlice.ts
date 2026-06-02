@@ -17,9 +17,7 @@ type NetworkWithFactory = {
   isCrvRewardsEnabled: boolean
 }
 
-type NetworksWithFactory = {
-  [key: string]: NetworkWithFactory
-}
+type NetworksWithFactory = Record<string, NetworkWithFactory>
 
 type DeploymentStatus = {
   status: 'LOADING' | 'CONFIRMING' | 'ERROR' | 'SUCCESS' | ''

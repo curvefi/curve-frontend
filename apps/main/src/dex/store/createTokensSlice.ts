@@ -10,8 +10,8 @@ type StateKey = keyof typeof DEFAULT_STATE
 const { countBy } = lodash
 
 type SliceState = {
-  tokensNameMapper: { [chainId: string]: TokensNameMapper }
-  tokensMapper: { [chainId: string]: TokensMapper } // list of all tokens from poolDatas
+  tokensNameMapper: Record<string, TokensNameMapper>
+  tokensMapper: Record<string, TokensMapper> // list of all tokens from poolDatas
   loading: boolean
 }
 
@@ -121,7 +121,7 @@ export const createTokensSlice = (
       }
       sliceState.setStateByActiveKey('tokensNameMapper', strChainId, tokensNameMapper)
 
-      const tokensMapper: { [tokenAddress: string]: Token } = {
+      const tokensMapper: Record<string, Token> = {
         [nativeToken.address]: {
           ...DEFAULT_TOKEN,
           address: nativeToken.address,

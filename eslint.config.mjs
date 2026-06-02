@@ -200,7 +200,6 @@ const config = [
 
       // And the following ones are from tseslint.configs.stylisticTypeChecked
       '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
-      '@typescript-eslint/consistent-indexed-object-style': 'off',
       '@typescript-eslint/no-empty-function': 'off',
       '@typescript-eslint/prefer-nullish-coalescing': 'off',
 

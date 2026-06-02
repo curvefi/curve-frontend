@@ -146,7 +146,7 @@ export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVe
         !formStatus.error &&
         !formEstGas.loading
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: getStepStatus(formStatus.isApproved, formStatus.step === 'APPROVAL', isValid),

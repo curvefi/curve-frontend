@@ -97,7 +97,7 @@ export const VaultUnstake = ({ rChainId, isLoaded, api, market, userActiveKey }:
 
       const isValid = !!signerAddress && +amount > 0 && !amountError && !error
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         UNSTAKE: {
           key: 'UNSTAKE',
           status: helpers.getStepStatus(isComplete, step === 'UNSTAKE', isValid),

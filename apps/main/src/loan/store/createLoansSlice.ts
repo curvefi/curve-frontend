@@ -24,10 +24,10 @@ import { log } from '@ui-kit/lib/logging'
 type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
-  detailsMapper: { [collateralId: string]: Partial<LoanDetails> }
-  priceInfoMapper: { [collateralId: string]: LoanPriceInfo }
-  userDetailsMapper: { [collateralId: string]: UserLoanDetails }
-  userWalletBalancesMapper: { [collateralId: string]: UserWalletBalances }
+  detailsMapper: Record<string, Partial<LoanDetails>>
+  priceInfoMapper: Record<string, LoanPriceInfo>
+  userDetailsMapper: Record<string, UserLoanDetails>
+  userWalletBalancesMapper: Record<string, UserWalletBalances>
   userWalletBalancesLoading: boolean
 }
 

@@ -88,7 +88,7 @@ export const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams,
       const isValid = !isSeed && !formStatus.error && +formValues.stakedLpToken > 0
       const isComplete = formStatus.formTypeCompleted === 'UNSTAKE'
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         UNSTAKE: {
           key: 'UNSTAKE',
           status: getStepStatus(isComplete, step === 'UNSTAKE', isValid),

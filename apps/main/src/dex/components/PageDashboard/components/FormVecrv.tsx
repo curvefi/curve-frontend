@@ -85,7 +85,7 @@ export const FormVecrv = () => {
 
   const getSteps = useCallback(
     (activeKey: string, curve: CurveApi, lockedAmount: string, formStatus: FormStatus) => {
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         WITHDRAW: {
           key: 'WITHDRAW',
           status: getStepStatus(

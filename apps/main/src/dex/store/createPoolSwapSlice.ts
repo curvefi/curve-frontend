@@ -39,11 +39,11 @@ const { cloneDeep } = lodash
 
 type SliceState = {
   activeKey: string
-  exchangeOutput: { [activeKey: string]: ExchangeOutput }
-  routerSwapOutput: { [activeKey: string]: RouterSwapOutput }
+  exchangeOutput: Record<string, ExchangeOutput>
+  routerSwapOutput: Record<string, RouterSwapOutput>
   isMaxLoading: boolean
-  ignoreExchangeRateCheck: { [poolId: string]: boolean }
-  formEstGas: { [activeKey: string]: FormEstGas }
+  ignoreExchangeRateCheck: Record<string, boolean>
+  formEstGas: Record<string, FormEstGas>
   formStatus: FormStatus
   formValues: FormValues
 }

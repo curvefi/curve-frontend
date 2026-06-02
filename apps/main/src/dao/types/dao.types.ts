@@ -45,12 +45,13 @@ export type GaugeVote = {
   transaction: string
 }
 
-export type GaugeVotesMapper = {
-  [gaugeAddress: string]: {
+export type GaugeVotesMapper = Record<
+  string,
+  {
     fetchingState: FetchingState
     votes: GaugeVote[]
   }
-}
+>
 
 export type SnapshotVotingPower = {
   value: number

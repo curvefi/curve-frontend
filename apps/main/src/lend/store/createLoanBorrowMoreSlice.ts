@@ -28,12 +28,12 @@ const { cloneDeep } = lodash
 type SliceState = {
   activeKey: string
   activeKeyMax: string
-  detailInfo: { [activeKey: string]: FormDetailInfo }
-  detailInfoLeverage: { [activeKey: string]: FormDetailInfoLeverage }
-  formEstGas: { [activeKey: string]: FormEstGas }
+  detailInfo: Record<string, FormDetailInfo>
+  detailInfoLeverage: Record<string, FormDetailInfoLeverage>
+  formEstGas: Record<string, FormEstGas>
   formStatus: FormStatus
   formValues: FormValues
-  maxRecv: { [activeKeyMax: string]: string }
+  maxRecv: Record<string, string>
 }
 
 const sliceKey = 'loanBorrowMore'

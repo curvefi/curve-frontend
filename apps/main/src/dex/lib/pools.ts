@@ -62,7 +62,7 @@ export async function getPools(
   poolList: string[],
   blacklist: Set<Address>,
   network: NetworkConfig,
-  failedFetching24hOldVprice?: { [p: string]: boolean } | null,
+  failedFetching24hOldVprice?: Record<string, boolean> | null,
 ) {
   const { getPool } = curve
   const { orgUIPath } = network
