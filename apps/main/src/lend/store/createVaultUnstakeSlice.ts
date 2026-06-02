@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { cloneDeep, merge } from 'lodash'
 import type { StoreApi } from 'zustand'
 import type { FormEstGas } from '@/lend/components/PageLendMarket/types'
 import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLendMarket/utils'
@@ -15,13 +15,12 @@ import { refetchUserMarket } from '../queries/refetchUserMarket'
 
 type StateKey = keyof typeof DEFAULT_STATE
 type FormType = string | null
-const { cloneDeep, merge } = lodash
 
 const sliceKey = 'vaultUnstake'
 
 type SliceState = {
   activeKey: string
-  formEstGas: { [activeKey: string]: FormEstGas }
+  formEstGas: Record<string, FormEstGas>
   formStatus: FormStatus
   formValues: FormValues
 }
@@ -29,17 +28,17 @@ type SliceState = {
 // prettier-ignore
 export type VaultUnstakeSlice = {
   [sliceKey]: SliceState & {
-    fetchEstGas(activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate): Promise<void>
-    setFormValues(rChainId: ChainId, formType: FormType, api: Api | null, market: LendMarketTemplate | undefined, updatedPartialFormValues: Partial<FormValues>): Promise<void>
+    fetchEstGas: (activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate) => Promise<void>
+    setFormValues: (rChainId: ChainId, formType: FormType, api: Api | null, market: LendMarketTemplate | undefined, updatedPartialFormValues: Partial<FormValues>) => Promise<void>
 
     // steps
-    fetchStepUnstake(activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate, formValues: FormValues): Promise<{ activeKey: string; error: string; hash: string } | undefined>
+    fetchStepUnstake: (activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate, formValues: FormValues) => Promise<{ activeKey: string; error: string; hash: string } | undefined>
 
     // steps helper
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: () => void
   }
 }
 

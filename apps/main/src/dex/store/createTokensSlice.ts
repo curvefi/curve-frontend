@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { countBy } from 'lodash'
 import type { StoreApi } from 'zustand'
 import { updateHaveSameTokenNames } from '@/dex/store/createPoolsSlice'
 import type { State } from '@/dex/store/useStore'
@@ -7,11 +7,10 @@ import { log } from '@ui-kit/lib/logging'
 import { fetchPoolVolumes } from '../queries/pool-volume.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
-const { countBy } = lodash
 
 type SliceState = {
-  tokensNameMapper: { [chainId: string]: TokensNameMapper }
-  tokensMapper: { [chainId: string]: TokensMapper } // list of all tokens from poolDatas
+  tokensNameMapper: Record<string, TokensNameMapper>
+  tokensMapper: Record<string, TokensMapper> // list of all tokens from poolDatas
   loading: boolean
 }
 
@@ -20,13 +19,13 @@ const sliceKey = 'tokens'
 // prettier-ignore
 export type TokensSlice = {
   [sliceKey]: SliceState & {
-    setTokensMapper(curve: CurveApi, poolDatas: PoolData[]): Promise<string[]>
-    setEmptyPoolListDefault(curve: CurveApi): void
+    setTokensMapper: (curve: CurveApi, poolDatas: PoolData[]) => Promise<string[]>
+    setEmptyPoolListDefault: (curve: CurveApi) => void
 
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: () => void
   }
 }
 
@@ -121,7 +120,7 @@ export const createTokensSlice = (
       }
       sliceState.setStateByActiveKey('tokensNameMapper', strChainId, tokensNameMapper)
 
-      const tokensMapper: { [tokenAddress: string]: Token } = {
+      const tokensMapper: Record<string, Token> = {
         [nativeToken.address]: {
           ...DEFAULT_TOKEN,
           address: nativeToken.address,

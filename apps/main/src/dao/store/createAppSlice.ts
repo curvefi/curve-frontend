@@ -7,10 +7,10 @@ export type SliceKey = keyof State | ''
 export type StateKey = string
 
 export type AppSlice = {
-  setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T): void
-  setAppStateByKey<T>(sliceKey: SliceKey, key: StateKey, value: T): void
-  setAppStateByKeys<T>(sliceKey: SliceKey, sliceState: Partial<T>): void
-  resetAppState<T>(sliceKey: SliceKey, defaultState: T): void
+  setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T) => void
+  setAppStateByKey: <T>(sliceKey: SliceKey, key: StateKey, value: T) => void
+  setAppStateByKeys: <T>(sliceKey: SliceKey, sliceState: Partial<T>) => void
+  resetAppState: <T>(sliceKey: SliceKey, defaultState: T) => void
 }
 
 export const createAppSlice = (set: StoreApi<State>['setState'], _get: StoreApi<State>['getState']): AppSlice => ({
@@ -58,10 +58,7 @@ export const createAppSlice = (set: StoreApi<State>['setState'], _get: StoreApi<
   resetAppState: <T>(sliceKey: SliceKey, defaultState: T) => {
     set(
       produce(state => {
-        state[sliceKey] = {
-          ...state[sliceKey],
-          ...defaultState,
-        }
+        state[sliceKey] = { ...state[sliceKey], ...defaultState }
       }),
     )
   },

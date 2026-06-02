@@ -43,7 +43,7 @@ type SliceState = {
 
 type FilterOptions = {
   showSearch?: boolean
-  endsWith(string: string, substring: string): boolean
+  endsWith: (string: string, substring: string) => boolean
 }
 
 const sliceKey = 'gauges'
@@ -51,20 +51,20 @@ const sliceKey = 'gauges'
 // prettier-ignore
 export type GaugesSlice = {
   [sliceKey]: SliceState & {
-    getGaugeVotes(gaugeAddress: string): Promise<void>
+    getGaugeVotes: (gaugeAddress: string) => Promise<void>
 
-    setSearchValue(searchValue: string): void
-    setGaugeListSortBy(sortByKey: SortByFilterGaugesKeys): void
-    setGauges(searchValue: string): void
-    setGaugeVotesSortBy(gaugeAddress: string, sortBy: GaugeVotesSortBy): void
-    setSelectGaugeFilterValue(filterValue: string, gauges: GaugeFormattedData[], filterOptions: FilterOptions): void
-    setSelectedGauge(gauge: GaugeFormattedData | null): void
+    setSearchValue: (searchValue: string) => void
+    setGaugeListSortBy: (sortByKey: SortByFilterGaugesKeys) => void
+    setGauges: (searchValue: string) => void
+    setGaugeVotesSortBy: (gaugeAddress: string, sortBy: GaugeVotesSortBy) => void
+    setSelectGaugeFilterValue: (filterValue: string, gauges: GaugeFormattedData[], filterOptions: FilterOptions) => void
+    setSelectedGauge: (gauge: GaugeFormattedData | null) => void
 
-    castVote(userAddress: string, gaugeAddress: string, voteWeight: number): Promise<void>
+    castVote: (userAddress: string, gaugeAddress: string, voteWeight: number) => Promise<void>
 
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: () => void
   }
 }
 
@@ -163,7 +163,7 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
         order = order === 'asc' ? 'desc' : 'asc'
 
         set(
-          produce(state => {
+          produce((state: State) => {
             state[sliceKey].gaugeVotesMapper[address].votes = [...votes].reverse()
             state[sliceKey].gaugeVotesSortBy.order = order
           }),
@@ -172,7 +172,7 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
         const sortedEntries = [...votes].sort((a, b) => b[sortBy] - a[sortBy])
 
         set(
-          produce(state => {
+          produce((state: State) => {
             state[sliceKey].gaugeVotesSortBy.key = sortBy
             state[sliceKey].gaugeVotesSortBy.order = 'desc'
             state[sliceKey].gaugeVotesMapper[address].votes = sortedEntries
