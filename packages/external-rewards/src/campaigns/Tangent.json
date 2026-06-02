@@ -28,6 +28,18 @@
       "multiplier": "tangent points",
       "tags": ["points"],
       "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x317837aed98bea887074d1f97fd3c83ebca6905b",
+      "network": "ethereum",
+      "multiplier": "tangent points",
+      "tags": ["points"],
+      "lock": "false"
     }
   ]
 }

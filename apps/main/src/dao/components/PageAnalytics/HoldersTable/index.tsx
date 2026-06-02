@@ -42,7 +42,7 @@ export const TopHoldersTable = () => {
         sortBy={allHoldersSortBy}
         errorMessage={t`An error occurred while veCRV holders data.`}
         setSortBy={key => setAllHoldersSortBy(key as AllHoldersSortBy)}
-        getData={() => getVeCrvHolders()}
+        getData={() => void getVeCrvHolders()}
         noDataMessage={t`No veCRV holders found.`}
         renderRow={(holder, index) => (
           <TableRowWrapper key={holder.user} columns={HOLDERS_LABELS.length}>

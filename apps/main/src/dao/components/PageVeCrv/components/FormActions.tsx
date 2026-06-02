@@ -17,7 +17,13 @@ export const FormActions = ({
   return (
     <>
       {!haveSigner && !loading ? (
-        <Button fillWidth size="large" variant="filled" onClick={() => connect()} loading={isLoading(connectState)}>
+        <Button
+          fillWidth
+          size="large"
+          variant="filled"
+          onClick={() => void connect()}
+          loading={isLoading(connectState)}
+        >
           {t`Connect Wallet`}
         </Button>
       ) : loading ? (

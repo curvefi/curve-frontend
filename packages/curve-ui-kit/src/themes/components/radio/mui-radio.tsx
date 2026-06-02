@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference -- referring to a type definition file
 /// <reference path="./mui-radio.d.ts" />
 import type { ReactNode } from 'react'
 import Box from '@mui/material/Box'
@@ -22,11 +23,10 @@ const CircleIcon = createSvgIcon(
 const createIconWrapper = (icon: ReactNode) => (
   <Box
     className="icon-wrapper"
-    display="flex"
     sx={{
+      display: 'flex',
       outline: '1px solid currentColor',
       borderRadius: '50%',
-
       // Animate the checkbox as it appears. It's not possible to animate it when unchecking.
       '& svg': {
         animation: 'circle-appear 300ms cubic-bezier(0.4, 0, 0.2, 1) forwards',

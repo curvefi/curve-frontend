@@ -5,12 +5,20 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-export const SelectedFilterChips = ({ title, children }: { title: ReactNode; children: ReactNode }) => (
-  <Stack gap={Spacing.xs}>
+export const SelectedFilterChips = ({
+  title,
+  children,
+  testId,
+}: {
+  title: ReactNode
+  children: ReactNode
+  testId?: string
+}) => (
+  <Stack sx={{ gap: Spacing.xs }} data-testid={testId}>
     <Typography variant="bodyXsRegular" color="textTertiary">
       {title}
     </Typography>
-    <Stack direction="row" gap={Spacing.xs}>
+    <Stack direction="row" sx={{ gap: Spacing.xs }}>
       {children}
     </Stack>
   </Stack>

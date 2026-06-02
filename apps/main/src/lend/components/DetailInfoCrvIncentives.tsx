@@ -9,7 +9,7 @@ import { Icon } from '@ui/Icon'
 import { TooltipIcon } from '@ui/Tooltip/TooltipIcon'
 import { t } from '@ui-kit/lib/i18n'
 import { formatNumber, amount } from '@ui-kit/utils'
-import { useLendMarket } from '../hooks/useLendMarket'
+import { useLendMarketData } from '../hooks/useLendMarket'
 
 type Data = {
   label: string
@@ -30,7 +30,7 @@ export const DetailInfoCrvIncentives = ({
   lpTokenAmount: string
 }) => {
   const { tooltipValues } = useSupplyTotalApr(rChainId, marketId)
-  const gaugeAddress = useLendMarket(rChainId, marketId).data?.addresses?.gauge
+  const gaugeAddress = useLendMarketData(rChainId, marketId).data?.addresses?.gauge
   const gaugeTotalSupply = useAbiTotalSupply(rChainId, gaugeAddress)
   const isGaugeAddressInvalid = gaugeAddress === zeroAddress
 
@@ -72,6 +72,7 @@ export const DetailInfoCrvIncentives = ({
     <>
       {data.map(({ label, tooltip, skeleton, aprCurr, aprNew, ratio }, idx) => (
         <DetailInfo
+          // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
           key={`${label}${idx}`}
           loading={String(aprCurr).length === 0}
           loadingSkeleton={skeleton ?? [140, 23]}

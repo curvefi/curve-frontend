@@ -5,11 +5,9 @@ import { invalidateUserGaugeVoteNextTimeQuery } from '@/dao/entities/user-gauge-
 import { invalidateUserGaugeWeightVotesQuery } from '@/dao/entities/user-gauge-weight-votes'
 import type { State } from '@/dao/store/useStore'
 import {
-  FetchingState,
   GaugeVotesMapper,
   GaugeVotesResponse,
   GaugeVotesSortBy,
-  GaugeWeightHistoryData,
   SortByFilterGauges,
   SortByFilterGaugesKeys,
   SortDirection,
@@ -33,7 +31,6 @@ type SliceState = {
   gaugeListSortBy: SortByFilterGauges
   searchValue: string
   gaugeVotesMapper: GaugeVotesMapper
-  gaugeWeightHistoryMapper: { [address: string]: { loadingState: FetchingState; data: GaugeWeightHistoryData[] } }
   filteredGauges: GaugeFormattedData[]
   gaugeVotesSortBy: {
     key: GaugeVotesSortBy
@@ -46,7 +43,7 @@ type SliceState = {
 
 type FilterOptions = {
   showSearch?: boolean
-  endsWith(string: string, substring: string): boolean
+  endsWith: (string: string, substring: string) => boolean
 }
 
 const sliceKey = 'gauges'
@@ -54,21 +51,20 @@ const sliceKey = 'gauges'
 // prettier-ignore
 export type GaugesSlice = {
   [sliceKey]: SliceState & {
-    getGaugeVotes(gaugeAddress: string): Promise<void>
-    getHistoricGaugeWeights(gaugeAddress: string): Promise<void>
+    getGaugeVotes: (gaugeAddress: string) => Promise<void>
 
-    setSearchValue(searchValue: string): void
-    setGaugeListSortBy(sortByKey: SortByFilterGaugesKeys): void
-    setGauges(searchValue: string): void
-    setGaugeVotesSortBy(gaugeAddress: string, sortBy: GaugeVotesSortBy): void
-    setSelectGaugeFilterValue(filterValue: string, gauges: GaugeFormattedData[], filterOptions: FilterOptions): void
-    setSelectedGauge(gauge: GaugeFormattedData | null): void
+    setSearchValue: (searchValue: string) => void
+    setGaugeListSortBy: (sortByKey: SortByFilterGaugesKeys) => void
+    setGauges: (searchValue: string) => void
+    setGaugeVotesSortBy: (gaugeAddress: string, sortBy: GaugeVotesSortBy) => void
+    setSelectGaugeFilterValue: (filterValue: string, gauges: GaugeFormattedData[], filterOptions: FilterOptions) => void
+    setSelectedGauge: (gauge: GaugeFormattedData | null) => void
 
-    castVote(userAddress: string, gaugeAddress: string, voteWeight: number): Promise<void>
+    castVote: (userAddress: string, gaugeAddress: string, voteWeight: number) => Promise<void>
 
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: () => void
   }
 }
 
@@ -81,7 +77,6 @@ const DEFAULT_STATE: SliceState = {
   },
   searchValue: '',
   gaugeVotesMapper: {},
-  gaugeWeightHistoryMapper: {},
   filteredGauges: [],
   gaugeVotesSortBy: {
     key: 'timestamp',
@@ -109,6 +104,7 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
 
       try {
         const response = await fetch(`https://prices.curve.finance/v1/dao/gauges/${address}/votes`)
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
         const data: GaugeVotesResponse = await response.json()
 
         const formattedData = data.votes.map(vote => ({ ...vote, timestamp: new Date(vote.timestamp).getTime() }))
@@ -128,46 +124,6 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
             state[sliceKey].gaugeVotesMapper[gaugeAddress].fetchingState = 'ERROR'
           }),
         )
-      }
-    },
-    getHistoricGaugeWeights: async (gaugeAddress: string) => {
-      set(
-        produce(get(), state => {
-          state[sliceKey].gaugeWeightHistoryMapper[gaugeAddress] = {
-            loadingState: 'LOADING',
-            data: [],
-          }
-        }),
-      )
-
-      try {
-        const weights = await fetch(`https://prices.curve.finance/v1/dao/gauges/${gaugeAddress}/weight_history`)
-        const weightsData = await weights.json()
-
-        const formattedWeightsData = weightsData.data
-          .map((weight: GaugeWeightHistoryData) => ({
-            ...weight,
-            gauge_weight: +weight.gauge_weight / 1e18,
-            gauge_relative_weight: (+weight.gauge_relative_weight / 1e18) * 100,
-            emissions: +weight.emissions,
-          }))
-          .sort((a: GaugeWeightHistoryData, b: GaugeWeightHistoryData) => a.epoch - b.epoch)
-
-        set(
-          produce(get(), state => {
-            state[sliceKey].gaugeWeightHistoryMapper[gaugeAddress] = {
-              loadingState: 'SUCCESS',
-              data: formattedWeightsData,
-            }
-          }),
-        )
-      } catch (error) {
-        set(
-          produce(get(), state => {
-            state[sliceKey].gaugeWeightHistoryMapper[gaugeAddress].loadingState = 'ERROR'
-          }),
-        )
-        console.warn(error)
       }
     },
 
@@ -208,7 +164,7 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
         order = order === 'asc' ? 'desc' : 'asc'
 
         set(
-          produce(state => {
+          produce((state: State) => {
             state[sliceKey].gaugeVotesMapper[address].votes = [...votes].reverse()
             state[sliceKey].gaugeVotesSortBy.order = order
           }),
@@ -217,7 +173,7 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
         const sortedEntries = [...votes].sort((a, b) => b[sortBy] - a[sortBy])
 
         set(
-          produce(state => {
+          produce((state: State) => {
             state[sliceKey].gaugeVotesSortBy.key = sortBy
             state[sliceKey].gaugeVotesSortBy.order = 'desc'
             state[sliceKey].gaugeVotesMapper[address].votes = sortedEntries

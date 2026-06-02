@@ -4,9 +4,9 @@ import { useFocusRing, useSwitch, VisuallyHidden } from 'react-aria'
 import { useToggleState } from 'react-stately'
 import { styled } from 'styled-components'
 
-interface Props extends AriaSwitchProps {
+type Props = {
   isActive: boolean
-}
+} & AriaSwitchProps
 
 export function Switch({ isActive, ...props }: Props) {
   const state = useToggleState(props)
@@ -27,7 +27,7 @@ export function Switch({ isActive, ...props }: Props) {
           width={32}
           height={16}
           rx={8}
-          fill={!isActive ? 'var(--dropdown--active--background-color)' : 'gray'}
+          fill={isActive ? 'gray' : 'var(--dropdown--active--background-color)'}
         />
         <circle cx={state.isSelected ? 28 : 12} cy={12} r={5} fill="white" />
         {isFocusVisible && (

@@ -1,6 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { formatUnits, parseUnits } from 'viem'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
+import { maybe } from '@primitives/objects.utils'
 
 /** Converts loose numeric input to an Amount for formatting, returning undefined for empty or non-numeric values. */
 export const amount = (value: number | string | BigNumber | bigint | null | undefined): Amount | undefined =>
@@ -34,7 +35,7 @@ export const decimalCompare = (a: Decimal, b: Decimal) => BigNumber(a).comparedT
  * Returns the maximum Decimal value from an array of Decimals, without losing precision.
  */
 export const decimalMax = (...data: Decimal[]) =>
-  data.length ? (BigNumber.max(...data)!.toFixed() as Decimal) : undefined
+  data.length ? (BigNumber.max(...data).toFixed() as Decimal) : undefined
 
 export const decimalSum = (...data: (Decimal | undefined)[]): Decimal =>
   data.filter(d => d != null).reduce((sum, value) => new BigNumber(sum).plus(value).toFixed() as Decimal, '0')
@@ -46,7 +47,7 @@ export const decimalMinus = (first: Decimal, ...rest: (Decimal | undefined)[]): 
     .toFixed() as Decimal
 
 export const decimalNegate = (value: Decimal | undefined) =>
-  value == null ? undefined : (new BigNumber(value).negated().toFixed() as Decimal)
+  maybe(value, value => new BigNumber(value).negated().toFixed() as Decimal)
 
 export const decimalEqual = (first: Decimal, second: Decimal) => BigNumber(first).isEqualTo(second)
 

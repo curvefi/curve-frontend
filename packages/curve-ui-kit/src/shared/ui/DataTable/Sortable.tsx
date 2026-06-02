@@ -2,17 +2,24 @@ import { forwardRef, type ReactNode, type MouseEvent, type RefAttributes } from 
 import Stack from '@mui/material/Stack'
 import type { Column } from '@tanstack/react-table'
 import { ArrowDownIcon } from '@ui-kit/shared/icons/ArrowDownIcon'
-import { getFlexAlignment, type TableItem } from './data-table.utils'
+import {
+  DataTableHeaderCellSortableAlign,
+  getFlexAlignment,
+  type DataTableSize,
+  type TableItem,
+} from './data-table.utils'
 import { RotatableIcon } from './RotatableIcon'
 
 type SortableProps<T extends TableItem> = {
   column: Column<T, unknown> | undefined
   children: ReactNode
+  size: DataTableSize
   isEnabled?: boolean
 }
 // forwardRef needed to pass ref to Tooltip for it to work
+// eslint-disable-next-line @eslint-react/no-forward-ref -- Existing violation before enabling this rule.
 const _Sortable = forwardRef<HTMLDivElement, SortableProps<TableItem>>(function Sortable(
-  { children, column, isEnabled = true, ...props },
+  { children, column, size, isEnabled = true, ...props },
   ref,
 ) {
   return (
@@ -20,15 +27,17 @@ const _Sortable = forwardRef<HTMLDivElement, SortableProps<TableItem>>(function 
       ref={ref}
       {...props}
       direction="row"
-      alignItems="end"
       {...(column && {
-        justifyContent: getFlexAlignment(column),
         onClick: (e: MouseEvent) => {
           column.getToggleSortingHandler()?.(e)
           e.stopPropagation()
         },
       })}
-      {...(isEnabled && { sx: { cursor: 'pointer' } })}
+      sx={{
+        alignItems: DataTableHeaderCellSortableAlign[size],
+        ...(isEnabled && { sx: { cursor: 'pointer' } }),
+        ...(column && { justifyContent: getFlexAlignment(column) }),
+      }}
     >
       {children}
       <RotatableIcon

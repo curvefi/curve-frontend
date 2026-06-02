@@ -32,8 +32,8 @@ export function TokenIcons({ tokens, variant = 'default', ...props }: TokenIcons
   return (
     <Box
       data-testid="token-icons"
-      display="inline-grid"
       sx={{
+        display: 'inline-grid',
         gridTemplateColumns: `repeat(${iconsPerRow}, auto)`,
         [`& > *:nth-of-type(${iconsPerRow}n-1)`]: { justifySelf: 'center' },
         [`& > *:nth-of-type(${iconsPerRow}n-1):nth-last-of-type(1)`]: { gridColumn: `span ${isOddCount ? 2 : 1}` },
@@ -48,6 +48,7 @@ export function TokenIcons({ tokens, variant = 'default', ...props }: TokenIcons
 
         return (
           <TokenIcon
+            // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
             key={`${address}${index}`}
             {...props}
             address={address}

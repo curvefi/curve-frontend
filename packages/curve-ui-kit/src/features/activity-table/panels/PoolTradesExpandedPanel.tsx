@@ -17,17 +17,17 @@ export const PoolTradesExpandedPanel: ExpandedPanel<PoolTradeRow> = ({
   },
 }) => (
   <Stack>
-    <Stack paddingTop={Spacing.md} gap={Spacing.xs}>
-      <Stack direction="row" justifyContent="space-between" alignItems="center">
+    <Stack sx={{ paddingTop: Spacing.md, gap: Spacing.xs }}>
+      <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
         <Typography variant="bodyMRegular" color="textSecondary">{t`Sold`}</Typography>
-        <Stack direction="row" alignItems="center" gap={Spacing.xs}>
+        <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
           <Typography variant="tableCellMBold" color="error">
             -{formatNumber(tokensSold, { abbreviate: false })} {tokenSold.symbol}
           </Typography>
           <TokenIcon blockchainId={network} address={tokenSold.address} size="mui-sm" />
         </Stack>
       </Stack>
-      <Stack direction="row" justifyContent="space-between" alignItems="center">
+      <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
         <Typography variant="bodyMRegular" color="textSecondary">{t`User`}</Typography>
         <Typography variant="tableCellMBold">{shortenString(buyer)}</Typography>
       </Stack>

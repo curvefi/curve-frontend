@@ -60,8 +60,9 @@ export const ReleaseChannelDialog = ({
         </Button>
       }
     >
-      <Stack gap={Spacing.md}>
+      <Stack sx={{ gap: Spacing.md }}>
         {Text[channel]?.map((p, i) => (
+          // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
           <Typography color="textSecondary" key={i}>
             {p}
           </Typography>

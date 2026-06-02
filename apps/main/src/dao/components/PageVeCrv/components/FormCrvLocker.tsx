@@ -40,14 +40,17 @@ export const FormCrvLocker = (pageProps: PageVecrv) => {
 
   useEffect(() => {
     if (canUnlock) {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTab('withdraw')
     }
     // if user has no locked crv, and is not on the create tab, set the tab to create
     if (+vecrvInfo.lockedAmountAndUnlockTime.lockedAmount === 0 && tab !== 'create') {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTab('create')
     }
     // if user has locked crv, and is on the create tab, set the tab to adjust_crv
     if (+vecrvInfo.lockedAmountAndUnlockTime.lockedAmount > 0 && tab === 'create') {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTab('adjust_crv')
     }
   }, [tab, vecrvInfo, canUnlock])
@@ -61,14 +64,14 @@ export const FormCrvLocker = (pageProps: PageVecrv) => {
     <>
       <TabsSwitcher variant="underlined" value={tab} onChange={setTab} options={tabs} overflow="fullWidth" />
 
-      <Stack gap={Spacing.md} padding={Spacing.md} paddingBlockStart={Spacing.xs}>
+      <Stack sx={{ gap: Spacing.md, padding: Spacing.md, paddingBlockStart: Spacing.xs }}>
         {tab === 'adjust_crv' && <FormLockCrv {...pageProps} rFormType={tab} />}
         {tab === 'adjust_date' && <FormLockDate {...pageProps} rFormType={tab} />}
         {tab === 'withdraw' && <FormWithdraw {...pageProps} rFormType={tab} />}
       </Stack>
     </>
   ) : (
-    <Stack gap={Spacing.md} padding={Spacing.md}>
+    <Stack sx={{ gap: Spacing.md, padding: Spacing.md }}>
       <FormLockCreate {...pageProps} />
     </Stack>
   )

@@ -2,7 +2,6 @@ import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
 import type { BorrowRate, SupplyRate } from '@/llamalend/rates.types'
-import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { type Chain } from '@curvefi/prices-api'
 import Box from '@mui/material/Box'
@@ -81,10 +80,12 @@ export const PageHeaderView = ({
   return (
     <Stack
       direction={{ mobile: 'column', tablet: 'row' }}
-      flexWrap={{ tablet: 'wrap' }}
-      justifyContent={{ tablet: 'space-between' }}
-      gap={Spacing.md}
-      paddingBlock={Spacing.sm}
+      sx={{
+        flexWrap: { tablet: 'wrap' },
+        justifyContent: { tablet: 'space-between' },
+        gap: Spacing.md,
+        paddingBlock: Spacing.sm,
+      }}
     >
       <Stack direction="row">
         <IconButton
@@ -94,8 +95,8 @@ export const PageHeaderView = ({
         >
           <ArrowLeft />
         </IconButton>
-        <Stack direction="row" gap={Spacing.sm}>
-          <Box alignSelf="center">
+        <Stack direction="row" sx={{ gap: Spacing.sm }}>
+          <Box sx={{ alignSelf: 'center' }}>
             <WithSkeleton loading={isLoading} variant="rectangular" width={35} height={35}>
               {collateralToken && borrowToken && (
                 <TokenPair
@@ -106,17 +107,17 @@ export const PageHeaderView = ({
               )}
             </WithSkeleton>
           </Box>
-          <Stack justifyContent={{ mobile: 'center', tablet: 'flex-start' }}>
+          <Stack sx={{ justifyContent: { mobile: 'center', tablet: 'flex-start' } }}>
             <WithSkeleton loading={isLoading} width={80} height={12}>
               <Typography variant="bodyXsRegular">{subtitle}</Typography>
             </WithSkeleton>
-            <Stack direction="row" gap={Spacing.xs} alignItems="flex-end" flexWrap="wrap">
+            <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'flex-end', flexWrap: 'wrap' }}>
               <WithSkeleton loading={isLoading} width={140} height={24}>
                 <Typography variant="headingSBold">{title}</Typography>
               </WithSkeleton>
               <WithSkeleton loading={isLoading} width={24} height={24}>
                 {/* 3px custom padding bottom to align with text baseline */}
-                <Stack direction="row" gap={Spacing.xs} paddingBottom="0.1875rem" alignItems="flex-end">
+                <Stack direction="row" sx={{ gap: Spacing.xs, paddingBottom: '0.1875rem', alignItems: 'flex-end' }}>
                   <ChainIcon blockchainId={blockchainId} />
                   <Badge size="extraSmall" color="default" label={t`${marketType}`} />
                 </Stack>
@@ -127,10 +128,11 @@ export const PageHeaderView = ({
         {isDevelopment && market && (
           <IconButton
             size="extraSmall"
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
             onClick={() => {
               const { chainId, signerAddress } = market.getLlamalend()
               return invalidateAllUserMarketDetails({
-                chainId: chainId as IChainId,
+                chainId,
                 marketId: market.id,
                 userAddress: signerAddress as Address,
                 blockchainId,

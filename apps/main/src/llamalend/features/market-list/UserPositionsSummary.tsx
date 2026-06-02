@@ -6,14 +6,12 @@ import { t } from '@ui-kit/lib/i18n'
 import { parseListFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { MarketRateType } from '@ui-kit/types/market'
 import { UserPositionSummaryMetric, useUserPositionsSummary } from './hooks/useUserPositionsSummary'
 
 const { Spacing } = SizesAndSpaces
 
 type UserPositionStatisticsProps = {
   markets: LlamaMarket[] | undefined
-  tab: MarketRateType
   selectedChains: string | undefined // the table filter for the chains column, unserialized from the url
 }
 
@@ -54,15 +52,15 @@ export const UserPositionSummary = ({ markets, selectedChains }: UserPositionSta
   return (
     <Grid
       container
-      paddingBlock={Spacing.sm}
-      paddingInline={Spacing.md}
       spacing={Spacing.md}
       sx={{
+        paddingBlock: Spacing.sm,
+        paddingInline: Spacing.md,
         backgroundColor: t => t.design.Layer[1].Fill,
-        borderBlock: t => `1px solid ${t.design.Layer[1].Outline}`,
       }}
     >
       {summary.map((item, index) => (
+        // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
         <UserPositionStatisticItem key={index} itemSize={{ mobile: 6, tablet: 12 / summary.length }} {...item} />
       ))}
     </Grid>

@@ -48,20 +48,15 @@ export const PoolStats = ({ routerParams, poolAlert, poolData, poolDataCacheOrAp
   }, [curveApi, fetchPoolStats, poolData])
 
   return (
-    <Card size="small">
-      <CardContent
-        component={Grid}
-        container
-        columnSpacing={Spacing.md}
-        sx={{ padding: '0 !important' /** The default padding interferes with background colors of the inner grids */ }}
-      >
+    <Card size="inline" sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
+      <CardContent component={Grid} container columnSpacing={Spacing.md}>
         <Grid size={{ mobile: 12, desktop: 8 }} sx={cardContentSmallStyles}>
-          <Stack gap={Spacing.md}>
+          <Stack sx={{ gap: Spacing.md }}>
             <CurrencyReserves chainId={chainId} poolId={poolId ?? ''} tokensMapper={tokensMapper} />
 
             {poolData && <RewardsComp chainId={chainId} poolData={poolData} rewardsApy={rewardsApy} />}
 
-            <Stack gap={Spacing.sm}>
+            <Stack sx={{ gap: Spacing.sm }}>
               {poolAlert && !poolAlert.isDisableDeposit && !poolAlert.isInformationOnlyAndShowInForm && (
                 <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
               )}
@@ -89,6 +84,7 @@ export const PoolStats = ({ routerParams, poolAlert, poolData, poolDataCacheOrAp
           sx={{
             ...cardContentSmallStyles,
             backgroundColor: t => t.design.Layer[2].Fill,
+            border: t => `1px solid ${t.design.Layer[2].Outline}`,
           }}
         >
           <PoolParameters poolData={poolData} poolDataCacheOrApi={poolDataCacheOrApi} routerParams={routerParams} />

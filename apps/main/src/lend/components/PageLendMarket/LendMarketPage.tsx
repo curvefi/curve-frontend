@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { MarketInformationComposite } from '@/lend/components/MarketInformationComposite'
 import { CreateLoanTabs } from '@/lend/components/PageLendMarket/CreateLoanTabs'
@@ -11,12 +11,12 @@ import { type MarketUrlParams } from '@/lend/types/lend.types'
 import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/helpers'
 import { PositionDetailsComposite } from '@/llamalend/features/market-position-details'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import { getControllerAddress } from '@/llamalend/llama.utils'
+import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { PageHeader } from '@/llamalend/widgets/page-header'
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
-import { type Chain, isPricesApiChain } from '@curvefi/prices-api'
+import { isPricesApiChain } from '@curvefi/prices-api'
 import type { Decimal } from '@primitives/decimal.utils'
 import { ConnectWalletPrompt, type LlamaApi, useCurve } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
@@ -25,7 +25,7 @@ import { useLoanSlices } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 import { useLendMarket } from '../../hooks/useLendMarket'
@@ -49,6 +49,7 @@ function useLegacyFetching({
   const setMarketsStateKey = useStore(state => state.markets.setStateByKey)
   useEffect(() => {
     // delay fetch rest after form details are fetched first
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
     const timer = setTimeout(async () => {
       if (!api || !market || !isPageVisible || !enabled) return
       await fetchAllMarketDetails(api, market, true)
@@ -82,18 +83,22 @@ export const LendMarketPage = () => {
   const { rMarket, rChainId: chainId } = parseMarketParams(params)
   const { data: market, isSuccess } = useLendMarket(chainId, rMarket)
   const { isHydrated, llamaApi: api = null, provider } = useCurve()
-
   const marketId = market?.id ?? '' // todo: use market?.id directly everywhere since we pass the market too!
   const { address: userAddress } = useConnection()
   useLendPageTitle(market?.collateral_token?.symbol ?? rMarket, t`Lend`)
 
   const network = networks[chainId]
-  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists({
-    chainId,
-    marketId,
-    userAddress,
-  })
+  const tokens = useMemo(() => (market ? getTokens(market) : {}), [market])
+  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists(
+    {
+      chainId,
+      marketId,
+      userAddress,
+    },
+    !!market, // enable query as soon as market is defined, the validation suite isn't able to detect it otherwise
+  )
 
+  // eslint-disable-next-line @eslint-react/use-state -- Existing violation before enabling this rule.
   const [previewPrices, onPricesUpdated] = useState<Range<Decimal> | undefined>(undefined)
   const controllerAddress = getControllerAddress(market)
   const collateralEvents = useUserCollateralEvents({
@@ -101,8 +106,7 @@ export const LendMarketPage = () => {
     chain: isPricesApiChain(network.id) ? network.id : undefined,
     controllerAddress,
     userAddress,
-    collateralToken: market?.collateral_token,
-    borrowToken: market?.borrowed_token,
+    tokens,
     network,
   })
 
@@ -141,7 +145,7 @@ export const LendMarketPage = () => {
           marketId={marketId}
           isLoading={!isHydrated}
           market={market}
-          blockchainId={network.id as Chain}
+          blockchainId={network.id}
         />
       }
     >
@@ -153,10 +157,14 @@ export const LendMarketPage = () => {
       <PositionDetailsComposite
         hasPosition={loanExists}
         events={collateralEvents}
-        market={market}
+        tokens={tokens}
         params={{ chainId, marketId, userAddress }}
       />
-      <MarketInformationComposite pageProps={pageProps} type="borrow" previewPrices={previewPrices} />
+      <MarketInformationComposite
+        pageProps={pageProps}
+        rateType={MarketRateType.Borrow}
+        previewPrices={previewPrices}
+      />
     </DetailPageLayout>
   ) : (
     <ConnectWalletPrompt description={t`Connect your wallet to view market`} />

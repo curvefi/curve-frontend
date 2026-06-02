@@ -34,6 +34,7 @@ function useToastItems() {
     const add = (notification: ToastItem): void => {
       setItems((prevNotifications: ToastItem[]) => [...prevNotifications, notification])
       if (!notification.keepAlive) {
+        // eslint-disable-next-line @eslint-react/web-api-no-leaked-timeout -- Existing violation before enabling this rule.
         const timeout = window.setTimeout(() => dismiss(notification), getTotalDuration(notification))
         timeouts.push(timeout)
       }
@@ -57,7 +58,15 @@ export const Toast = () => {
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
       sx={{ top, left: 'unset' }} // unset left, otherwise it takes the whole width blocking clicks
     >
-      <Stack justifyContent="end" marginTop={Spacing.md} gap={Spacing.sm} flexWrap="wrap" flexDirection="column">
+      <Stack
+        sx={{
+          justifyContent: 'end',
+          marginTop: Spacing.md,
+          gap: Spacing.sm,
+          flexWrap: 'wrap',
+          flexDirection: 'column',
+        }}
+      >
         {items.map(({ id, severity, title, message, testId = `toast-${severity}`, keepAlive }) => (
           <Alert
             key={id}

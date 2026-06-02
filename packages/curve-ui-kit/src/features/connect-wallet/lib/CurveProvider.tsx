@@ -35,7 +35,7 @@ export const CurveProvider = <App extends AppName>({
   /** Callback when the wallet is connected to an unsupported chain. */
   onChainUnavailable: (walletChainId?: number) => void
   app: App
-  hydrate: HydratorMap
+  hydrate?: HydratorMap
   children: ReactNode
 }) => {
   const [connectState, setConnectState] = useState<ConnectState>(LOADING)
@@ -56,6 +56,7 @@ export const CurveProvider = <App extends AppName>({
     if (!network) return onChainUnavailable(walletChainId) // will redirect to the wallet's chain if supported
     if (network.chainId == walletChainId) return // all good
     if (isFocused) {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setConnectState(LOADING)
       switchChain({ chainId: network.chainId }).catch(e => {
         console.error(`Error updating wallet chain from ${walletChainId} to ${network.chainId}`, e)
@@ -71,7 +72,7 @@ export const CurveProvider = <App extends AppName>({
 
     /** Initialize the app by hydrating the library if needed. */
     const hydrateApp = async (lib: AppLib<App>, prevLib?: AppLib<App>) => {
-      if (globalLibs.hydrated[app] != lib && hydrate[app]) {
+      if (globalLibs.hydrated[app] != lib && hydrate?.[app]) {
         setConnectState(HYDRATING)
         await hydrate[app](config, lib, prevLib, wallet, releaseChannel) // if thrown, it will be caught in initLib
       }
@@ -126,7 +127,7 @@ export const CurveProvider = <App extends AppName>({
   const isHydrated = !!globalLibs.hydrated[app] && { curveApi, llamaApi }[libKey] === globalLibs.hydrated[app]
 
   return (
-    <CurveContext.Provider
+    <CurveContext
       value={{
         connectState,
         network,
@@ -139,6 +140,6 @@ export const CurveProvider = <App extends AppName>({
       }}
     >
       {children}
-    </CurveContext.Provider>
+    </CurveContext>
   )
 }

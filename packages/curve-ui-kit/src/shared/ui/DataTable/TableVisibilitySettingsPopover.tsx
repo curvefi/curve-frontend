@@ -5,6 +5,7 @@ import Stack from '@mui/material/Stack'
 import Switch from '@mui/material/Switch'
 import Typography from '@mui/material/Typography'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { borderStyle } from '@ui-kit/utils'
 import type { VisibilityGroup } from './visibility.types'
 
 const { Spacing } = SizesAndSpaces
@@ -37,15 +38,12 @@ export const TableVisibilitySettingsPopover = <ColumnIds extends string>({
         },
       }}
     >
-      <Stack gap={Spacing.md}>
+      <Stack sx={{ gap: Spacing.md }}>
         {visibilityGroups
           .filter(({ options }) => options.some(o => o.enabled))
           .map(({ options, label }) => (
-            <Stack key={label} gap={Spacing.sm}>
-              <Typography
-                variant="headingXsBold"
-                sx={{ paddingBottom: Spacing.xs, borderBottom: t => `1px solid ${t.design.Layer[1].Outline}` }}
-              >
+            <Stack key={label} sx={{ gap: Spacing.sm }}>
+              <Typography variant="headingXsBold" sx={{ paddingBottom: Spacing.xs, borderBottom: borderStyle }}>
                 {label}
               </Typography>
               {options

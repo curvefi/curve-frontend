@@ -45,11 +45,11 @@ const getBasepoolCoins = (value: string, basePools: BasePool[], tokenA: TokenSta
   let basePoolCoins: string[] = []
   if (checkMetaPool(value, basePools) || tokenA.basePool || tokenB.basePool) {
     if (checkMetaPool(value, basePools)) {
-      basePoolCoins = basePools.find(pool => pool.token.toLowerCase() === value.toLowerCase())?.coins || []
+      basePoolCoins = basePools.find(pool => pool.token.toLowerCase() === value.toLowerCase())?.coins ?? []
     } else if (tokenA.basePool) {
-      basePoolCoins = basePools.find(pool => pool.token.toLowerCase() === tokenA.address.toLowerCase())?.coins || []
+      basePoolCoins = basePools.find(pool => pool.token.toLowerCase() === tokenA.address.toLowerCase())?.coins ?? []
     } else if (tokenB.basePool) {
-      basePoolCoins = basePools.find(pool => pool.token.toLowerCase() === tokenB.address.toLowerCase())?.coins || []
+      basePoolCoins = basePools.find(pool => pool.token.toLowerCase() === tokenB.address.toLowerCase())?.coins ?? []
     }
   }
   return basePoolCoins
@@ -92,7 +92,7 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
       basePool: basePools.some(pool => pool.token.toLowerCase() === token[0].toLowerCase()),
     }))
 
-    if (haveSigner && Object.keys(tokensArray || {}).length > 0) {
+    if (haveSigner && Object.keys(tokensArray ?? {}).length > 0) {
       const volumeSortedTokensArray = tokensArray
         .filter(token => token.symbol !== '' && token.address !== '')
         .sort((a, b) => Number(b.volume) - Number(a.volume))
@@ -110,7 +110,7 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
   const findSymbol = useCallback(
     (address: string) => {
       if (address !== '') {
-        if (tokensMapper[address]) return tokensMapper[address]!.symbol
+        if (tokensMapper[address]) return tokensMapper[address].symbol
         //search through user added tokens
         const addedToken = userAddedTokens.find(userToken => userToken.address === address)
         if (addedToken) return addedToken.symbol

@@ -1,7 +1,7 @@
 import { ChangeEvent } from 'react'
 import { styled } from 'styled-components'
 
-interface NumberFieldProps {
+type NumberFieldProps = {
   className?: string
   delay?: number
   value: string

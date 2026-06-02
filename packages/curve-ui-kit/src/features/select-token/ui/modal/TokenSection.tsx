@@ -62,7 +62,7 @@ export const TokenSection = <T extends Option = Option>({
         <Box sx={{ position: 'sticky', top: 0, zIndex: 1, backgroundColor: t => t.design.Layer[1].Fill }}>
           <CardHeader
             title={
-              <Stack direction="row" justifyContent="space-between" alignItems="center">
+              <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
                 {title}
                 {isLoading && (
                   <Box sx={{ marginBlockEnd: Spacing.xs, marginInlineEnd: Spacing.sm }}>
@@ -76,7 +76,6 @@ export const TokenSection = <T extends Option = Option>({
           <Divider />
         </Box>
       )}
-
       <MenuList variant="menu" sx={{ paddingBlock: 0 }}>
         {displayTokens.map(token => {
           const blacklistEntry = blacklist.find(
@@ -88,6 +87,7 @@ export const TokenSection = <T extends Option = Option>({
               {...token}
               balance={balances?.[token.address]}
               tokenPrice={tokenPrices?.[token.address]}
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
               disabled={disabledTokens?.includes(token.address) || !!blacklistEntry}
               disabledReason={blacklistEntry?.reason}
               onToken={() => onToken(token)}

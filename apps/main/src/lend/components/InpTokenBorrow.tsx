@@ -27,7 +27,7 @@ export const InpTokenBorrow = ({
   tokenAddress: string | undefined
   tokenSymbol: string | undefined
   maxRecv: string | undefined
-  handleInpChange(inpValue: string): void
+  handleInpChange: (inpValue: string) => void
   network: NetworkConfig
 }) => {
   const { data: usdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress })

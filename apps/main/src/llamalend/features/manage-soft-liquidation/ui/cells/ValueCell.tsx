@@ -33,22 +33,24 @@ export const ValueCellDisplay = ({
         // fit on one line the '+' separator sticks to the end of the preceding token symbol.
         // 1ch is for some reason too large, 0.25rem seems to do the trick.
         <Typography
-          display="flex"
-          flexWrap="wrap"
-          justifyContent="end"
-          textAlign="end"
           variant={isFooter ? 'tableCellMBold' : 'tableCellMRegular'}
           color={tokensColor}
           data-testid={testId}
+          sx={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'end',
+            textAlign: 'end',
+          }}
         >
           {tokens.map((token, i) => (
+            // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
             <span key={i} style={{ whiteSpace: 'nowrap', ...(i > 0 && { marginInlineStart: '0.25rem' }) }}>
               {i === 0 ? formatTokens(token) : ` + ${formatTokens(token)}`}
             </span>
           ))}
         </Typography>
       )}
-
       <Typography
         variant={
           tokens.length
@@ -60,7 +62,7 @@ export const ValueCellDisplay = ({
               : 'tableCellMRegular'
         }
         color="textSecondary"
-        textAlign="end"
+        sx={{ textAlign: 'end' }}
       >
         {formatNotional(notional)}
       </Typography>
@@ -73,7 +75,7 @@ export const ValueCell = ({ getValue, row }: CellContext<ClosePositionRow, Close
   const { testId } = row.original
   return (
     value && (
-      <Box paddingBlock={Spacing.md}>
+      <Box sx={{ paddingBlock: Spacing.md }}>
         <ValueCellDisplay tokens={value} testId={testId} />
       </Box>
     )

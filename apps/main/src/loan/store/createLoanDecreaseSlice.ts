@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { cloneDeep } from 'lodash'
 import type { StoreApi } from 'zustand'
 import { getControllerAddress, updateUserEventsApi } from '@/llamalend/llama.utils'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
@@ -17,12 +17,11 @@ import { setMissingProvider } from '@ui-kit/utils/store.util'
 import { loadingLRPrices } from '../lib/apiCrvusd'
 
 type StateKey = keyof typeof DEFAULT_STATE
-const { cloneDeep } = lodash
 
 type SliceState = {
   activeKey: string
-  detailInfo: { [activeKey: string]: FormDetailInfo }
-  formEstGas: { [activeKey: string]: FormEstGas }
+  detailInfo: Record<string, FormDetailInfo>
+  formEstGas: Record<string, FormEstGas>
   formStatus: FormStatus
   formValues: FormValues
 }
@@ -31,29 +30,29 @@ const sliceKey = 'loanDecrease'
 
 export type LoanDecreaseSlice = {
   [sliceKey]: SliceState & {
-    fetchEstGasApproval(activeKey: string, chainId: ChainId, llamma: Llamma, formValues: FormValues): Promise<void>
-    fetchDetailInfo(activeKey: string, chainId: ChainId, llamma: Llamma, formValues: FormValues): Promise<void>
-    setFormValues(chainId: ChainId, llamma: Llamma, formValues: FormValues): Promise<void>
+    fetchEstGasApproval: (activeKey: string, chainId: ChainId, llamma: Llamma, formValues: FormValues) => Promise<void>
+    fetchDetailInfo: (activeKey: string, chainId: ChainId, llamma: Llamma, formValues: FormValues) => Promise<void>
+    setFormValues: (chainId: ChainId, llamma: Llamma, formValues: FormValues) => Promise<void>
 
     // step
-    fetchStepApprove(
+    fetchStepApprove: (
       activeKey: string,
       curve: LlamaApi,
       llamma: Llamma,
       formValues: FormValues,
-    ): Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
-    fetchStepDecrease(
+    ) => Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
+    fetchStepDecrease: (
       activeKey: string,
       curve: LlamaApi,
       llamma: Llamma,
       formValues: FormValues,
-    ): Promise<{ activeKey: string; error: string; hash: string; loanExists: boolean } | undefined>
+    ) => Promise<{ activeKey: string; error: string; hash: string; loanExists: boolean } | undefined>
 
     // steps helper
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: () => void
   }
 }
 
@@ -103,6 +102,7 @@ export const createLoanDecrease = (_set: StoreApi<State>['setState'], get: Store
       const resp = await detailInfoFn(activeKey, llamma, debt)
       get()[sliceKey].setStateByActiveKey('detailInfo', activeKey, resp.resp)
     },
+    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
     setFormValues: async (chainId: ChainId, llamma: Llamma, formValues: FormValues) => {
       // stored values
       const prevActiveKey = get()[sliceKey].activeKey

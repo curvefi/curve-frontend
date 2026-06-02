@@ -83,6 +83,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
   return (
     <Form
       {...form}
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
       onSubmit={onSubmit}
       footer={
         <CreateLoanInfoList
@@ -99,7 +100,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
       }
       data-testid="create-loan-form"
     >
-      <Stack gap={Spacing.xs}>
+      <Stack sx={{ gap: Spacing.xs }}>
         <LoanFormTokenInput
           label={t`Collateral`}
           token={collateralToken}
@@ -155,10 +156,8 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           />
         </Collapse>
       </LoanPresetSelector>
-
       <HighPriceImpactAlert priceImpact={priceImpact} values={values} max={q(maxLeverage)} />
       <HighLiquidationRiskAlert isHighLiquidationRisk={isHighLiquidationRisk} />
-
       {disabledAlert ? (
         <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>
       ) : (

@@ -36,9 +36,11 @@ export type FormValues = {
   fromAmount: string
   fromAddress: string
   fromToken: string
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   fromError: 'too-much' | string
   toAddress: string
   toAmount: string
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   toError: 'too-much-reserves' | string
   toToken: string
 }

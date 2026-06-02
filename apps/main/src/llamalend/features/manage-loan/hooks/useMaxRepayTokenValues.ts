@@ -1,27 +1,33 @@
 import { useEffect } from 'react'
 import { getTokens } from '@/llamalend/llama.utils'
-import { useRepayExpectedBorrowed } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
+import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import {
+  resetRepayExpectedBorrowed,
+  useRepayExpectedBorrowed,
+} from '@/llamalend/queries/repay/repay-expected-borrowed.query'
 import { useRepayIsFull } from '@/llamalend/queries/repay/repay-is-full.query'
 import { useUserState } from '@/llamalend/queries/user'
 import type { RepayFormData, RepayParams } from '@/llamalend/queries/validation/repay.types'
-import { useFormSync } from '@ui-kit/features/forms'
+import { maybe } from '@primitives/objects.utils'
+import { useFormSync, useOnChangeCallback } from '@ui-kit/features/forms'
 import type { UseFormReturn } from '@ui-kit/features/forms'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
-import { useQueryMinimum } from '@ui-kit/lib'
+import { queryMinimum } from '@ui-kit/lib'
 import { mapQuery } from '@ui-kit/types/util'
 
 export function useMaxRepayTokenValues(
   {
-    collateralToken,
-    borrowToken,
+    market,
     params,
     form,
-  }: Partial<ReturnType<typeof getTokens>> & {
+  }: {
+    market: LlamaMarketTemplate | undefined
     params: RepayParams
     form: UseFormReturn<RepayFormData>
   },
   enabled?: boolean,
 ) {
+  const { borrowToken, collateralToken } = market ? getTokens(market) : {}
   const { update: updateForm } = form
   const { chainId, userAddress } = params
   const maxUserCollateral = useTokenBalance({
@@ -38,7 +44,7 @@ export function useMaxRepayTokenValues(
   // required for isFull query
   const isFull = useRepayIsFull(params, enabled)
 
-  const maxBorrowed = useQueryMinimum(
+  const maxBorrowed = queryMinimum(
     maxUserBorrowed,
     mapQuery(userState, d => d.debt),
   )
@@ -46,10 +52,13 @@ export function useMaxRepayTokenValues(
   useFormSync(form, { maxCollateral: maxUserCollateral.data })
   useFormSync(form, { maxBorrowed: maxBorrowed.data })
   useEffect(
-    () => (isFull.data == null ? undefined : updateForm({ isFull: isFull.data }, { automated: true })),
+    () => maybe(isFull.data, data => updateForm({ isFull: data }, { automated: true })),
     [isFull.data, updateForm],
   )
   useFormSync(form, { maxStateCollateral: userState.data?.collateral })
+
+  // some repay queries depend on LL internal cache for expected collateral, reset when new market data arrives
+  useOnChangeCallback(market, () => resetRepayExpectedBorrowed(params))
 
   return {
     isFull,

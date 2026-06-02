@@ -35,37 +35,45 @@ export const TableCellRewards = ({
   const haveRewards = haveCrv || haveOther
   const boostedCrvApy = haveCrv && crv?.[1]
   const haveUserCrvApy = userCrvApy && !Number.isNaN(userCrvApy)
-  const { rewardsNeedNudging, areCrvRewardsStuckInBridge } = poolData?.gauge.status || {}
+  const { rewardsNeedNudging, areCrvRewardsStuckInBridge } = poolData?.gauge.status ?? {}
   const showUserCrvRewards = !!poolData && !rewardsNeedNudging && !areCrvRewardsStuckInBridge
 
   const rewards = haveRewards && (
     <>
-      {!showUserCrvRewards ? (
+      {showUserCrvRewards ? (
+        typeof userCrvApy !== 'undefined' && haveCrv ? (
+          <Chip
+            isBlock
+            {...(haveUserCrvApy && boostedCrvApy && fetchUserPoolBoost
+              ? {
+                  tooltip: (
+                    <TableCellRewardsTooltip
+                      crv={crv}
+                      userCrvApy={userCrvApy}
+                      fetchUserPoolBoost={fetchUserPoolBoost}
+                    />
+                  ),
+                  tooltipProps: {
+                    textAlign: 'left',
+                    minWidth: '300px',
+                  },
+                }
+              : {})}
+            size="md"
+          >
+            {/* eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule. */}
+            <WithWrapper shouldWrap={sortBy === SORT_ID.userCrvApy} Wrapper={Bold}>
+              {`${formatNumber(userCrvApy, { unit: 'percentage', abbreviate: false })} CRV`}
+            </WithWrapper>{' '}
+            {boostedCrvApy ? (
+              <DetailText> of {formatNumber(boostedCrvApy, { unit: 'percentage', abbreviate: false })}</DetailText>
+            ) : null}
+          </Chip>
+        ) : null
+      ) : (
         <PoolRewardsCrv rewardsApy={rewardsApy} poolData={poolData} />
-      ) : typeof userCrvApy !== 'undefined' && haveCrv ? (
-        <Chip
-          isBlock
-          {...(haveUserCrvApy && boostedCrvApy && fetchUserPoolBoost
-            ? {
-                tooltip: (
-                  <TableCellRewardsTooltip crv={crv} userCrvApy={userCrvApy} fetchUserPoolBoost={fetchUserPoolBoost} />
-                ),
-                tooltipProps: {
-                  textAlign: 'left',
-                  minWidth: '300px',
-                },
-              }
-            : {})}
-          size="md"
-        >
-          <WithWrapper shouldWrap={sortBy === SORT_ID.userCrvApy} Wrapper={Bold}>
-            {`${formatNumber(userCrvApy, { unit: 'percentage', abbreviate: false })} CRV`}
-          </WithWrapper>{' '}
-          {boostedCrvApy ? (
-            <DetailText> of {formatNumber(boostedCrvApy, { unit: 'percentage', abbreviate: false })}</DetailText>
-          ) : null}
-        </Chip>
-      ) : null}
+      )}
+      {/* eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule. */}
       <TableCellRewardsOthers isHighlight={sortBy === SORT_ID.rewardOthers} rewardsApy={rewardsApy} />
     </>
   )
@@ -73,6 +81,7 @@ export const TableCellRewards = ({
   if (rewardsApyKey === 'baseApy') {
     return (
       <RewardsWrapper>
+        {/* eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule. */}
         <TableCellRewardsBase base={rewardsApy?.base} isHighlight={sortBy === SORT_ID.rewardBase} poolData={poolData} />
       </RewardsWrapper>
     )
@@ -85,6 +94,7 @@ export const TableCellRewards = ({
           <div>
             <TableCellRewardsBase
               base={rewardsApy?.base}
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
               isHighlight={sortBy === SORT_ID.rewardBase}
               poolData={poolData}
             />

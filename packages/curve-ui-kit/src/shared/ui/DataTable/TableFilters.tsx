@@ -18,11 +18,9 @@ const { Spacing } = SizesAndSpaces
  * A component that wraps a table and provides a title, subtitle, and filter controls.
  */
 export const TableFilters = <ColumnIds extends string>({
-  header,
   testIdPrefix,
   visibilityGroups,
   toggleVisibility,
-  popoverFilters,
   collapsibleFilters,
   chips,
   filterChip,
@@ -31,11 +29,10 @@ export const TableFilters = <ColumnIds extends string>({
   disableSearchAutoFocus,
   onSearch,
 }: {
-  header: ReactNode
   testIdPrefix: string
   visibilityGroups: VisibilityGroup<ColumnIds>[]
   toggleVisibility?: (columns: string[]) => void
-  popoverFilters?: ReactNode // filters shown in the popover menu
+  filtersOverlay?: ReactNode // filters shown in the filter overlay (popover or drawer for mobile)
   // collabsible bar that displays the active filters for desktop and tablet only
   collapsibleFilters?: { collapsible: ReactNode; hasActiveFilters?: boolean | undefined }
   chips?: ReactNode // buttons that are part of the collapsible (on mobile) or always visible (on larger screens)
@@ -53,14 +50,17 @@ export const TableFilters = <ColumnIds extends string>({
 
   return (
     <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
-      {header}
-      <Grid container spacing={Spacing.lg} padding={Spacing.sm} justifyContent="space-between" alignItems="center">
+      <Grid
+        container
+        spacing={Spacing.lg}
+        sx={{ padding: Spacing.sm, justifyContent: 'space-between', alignItems: 'center' }}
+      >
         <Grid
           size={{ mobile: 12, tablet: 7 }}
           sx={{
             display: 'flex',
             // overlap adjacent component to avoid duplicate border width
-            '& > .tableControl + .tableControl': { ml: '-1px' },
+            '& > .tableControl + .tableControl': { marginLeft: '-1px' },
           }}
         >
           {/* Box wrapper needed for applying style */}
@@ -76,7 +76,7 @@ export const TableFilters = <ColumnIds extends string>({
           {sortChip && <Box className="tableControl">{sortChip}</Box>}
         </Grid>
         {!isMobile && (
-          <Grid container size="grow" spacing="none" justifyContent="flex-end">
+          <Grid container size="grow" spacing="none" sx={{ justifyContent: 'flex-end' }}>
             {chips}
             <TableButton
               ref={settingsRef}
@@ -88,9 +88,7 @@ export const TableFilters = <ColumnIds extends string>({
           </Grid>
         )}
       </Grid>
-
       {collapsible && !isMobile && <Collapse in={hasActiveFilters}>{collapsible}</Collapse>}
-
       {visibilitySettingsOpen != null && toggleVisibility && (
         <TableVisibilitySettingsPopover<ColumnIds>
           anchorRef={settingsRef}
@@ -100,7 +98,6 @@ export const TableFilters = <ColumnIds extends string>({
           onClose={closeVisibilitySettings}
         />
       )}
-      {popoverFilters}
     </Stack>
   )
 }

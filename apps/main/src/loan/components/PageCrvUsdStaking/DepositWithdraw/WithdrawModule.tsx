@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'bignumber.js'
 import { useCallback } from 'react'
 import { useConnection } from 'wagmi'
 import { CRVUSD_ADDRESS, SCRVUSD_VAULT_ADDRESS } from '@/loan/constants'
@@ -37,7 +37,7 @@ export const WithdrawModule = () => {
     t`Input amount exceeds your balance, click max to use all your balance`
 
   return (
-    <Stack gap={Spacing.xs}>
+    <Stack sx={{ gap: Spacing.xs }}>
       <LargeTokenInput
         label={t`From Vault`}
         name="withdraw-from"

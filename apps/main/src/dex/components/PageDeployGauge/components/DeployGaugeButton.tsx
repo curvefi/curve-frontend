@@ -21,7 +21,7 @@ import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { shortenAddress } from '@ui-kit/utils'
 
-interface Props {
+type Props = {
   disabled: boolean
   chainId: ChainId
   curve: CurveApi | null
@@ -45,6 +45,7 @@ export const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Prop
 
   const handleConnectEth = () => push(getPath({ network: 'ethereum' }, `/${restFullPathname}`))
 
+  // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
   const handleClick = async () => {
     if (!curve) throw new Error('No current curve')
     if (sidechainGauge) {
@@ -72,26 +73,20 @@ export const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Prop
     }
   }
 
+  // sidechain / mirror gauge logic, on Mirror gauge step but not connected to Ethereum
   return sidechainGauge ? (
-    // sidechain / mirror gauge logic
-
-    // on Mirror gauge step but not connected to Ethereum
     sidechainNav === 1 && chainId !== 1 ? (
-      !isLoadingApi ? (
-        <StyledButton variant={'icon-filled'} onClick={() => handleConnectEth()}>
-          {t`Connect to Ethereum`}
-        </StyledButton>
-      ) : (
+      isLoadingApi ? (
         <StyledSpinnerWrapper>
           {t`Connecting`}
           <StyledSpinner isDisabled size={15} />
         </StyledSpinnerWrapper>
-      ) // no signer
-    ) : !haveSigner ? (
-      <StyledButton variant="filled" onClick={() => connectWallet()} loading={isLoading(connectState)}>
-        {t`Connect Wallet`}
-      </StyledButton>
-    ) : (
+      ) : (
+        <StyledButton variant={'icon-filled'} onClick={() => handleConnectEth()}>
+          {t`Connect to Ethereum`}
+        </StyledButton>
+      )
+    ) : haveSigner ? (
       <>
         {sidechainNav === 0
           ? deploymentStatus.sidechain.transaction &&
@@ -131,13 +126,13 @@ export const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Prop
         {sidechainNav === 0
           ? deploymentStatus.sidechain.status !== 'LOADING' &&
             deploymentStatus.sidechain.status !== 'CONFIRMING' && (
-              <StyledButton disabled={disabled} variant={'icon-filled'} onClick={() => handleClick()}>
+              <StyledButton disabled={disabled} variant={'icon-filled'} onClick={() => void handleClick()}>
                 {t`Deploy Sidechain Gauge`}
               </StyledButton>
             )
           : deploymentStatus.mirror.status !== 'LOADING' &&
             deploymentStatus.mirror.status !== 'CONFIRMING' && (
-              <StyledButton disabled={disabled} variant={'icon-filled'} onClick={() => handleClick()}>
+              <StyledButton disabled={disabled} variant={'icon-filled'} onClick={() => void handleClick()}>
                 {t`Deploy Mirror Gauge`}
               </StyledButton>
             )}
@@ -155,24 +150,24 @@ export const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Prop
               </StyledSpinnerWrapper>
             )}
       </>
+    ) : (
+      <StyledButton variant="filled" onClick={() => void connectWallet()} loading={isLoading(connectState)}>
+        {t`Connect Wallet`}
+      </StyledButton>
     )
   ) : // mainnet gauge logic
   chainId !== 1 ? (
-    !isLoadingApi ? (
-      <StyledButton variant={'icon-filled'} onClick={() => handleConnectEth()}>
-        {t`Connect to Ethereum`}
-      </StyledButton>
-    ) : (
+    isLoadingApi ? (
       <StyledSpinnerWrapper>
         {t`Connecting`}
         <StyledSpinner isDisabled size={15} />
       </StyledSpinnerWrapper>
+    ) : (
+      <StyledButton variant={'icon-filled'} onClick={() => handleConnectEth()}>
+        {t`Connect to Ethereum`}
+      </StyledButton>
     )
-  ) : !haveSigner ? (
-    <StyledButton variant="filled" onClick={() => connectWallet()} loading={isLoading(connectState)}>
-      {t`Connect Wallet`}
-    </StyledButton>
-  ) : (
+  ) : haveSigner ? (
     <>
       {deploymentStatus.mainnet.transaction && deploymentStatus.mainnet.status === 'SUCCESS' && (
         <InfoLinkBarWrapper>
@@ -191,7 +186,7 @@ export const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Prop
         <SuccessWrapper>{t`Gauge Deployed Successfully`}</SuccessWrapper>
       )}
       {deploymentStatus.mainnet.status !== 'LOADING' && deploymentStatus.mainnet.status !== 'CONFIRMING' && (
-        <StyledButton disabled={disabled} variant={'icon-filled'} onClick={() => handleClick()}>
+        <StyledButton disabled={disabled} variant={'icon-filled'} onClick={() => void handleClick()}>
           {t`Deploy Gauge`}
         </StyledButton>
       )}
@@ -202,6 +197,10 @@ export const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Prop
         </StyledSpinnerWrapper>
       )}
     </>
+  ) : (
+    <StyledButton variant="filled" onClick={() => void connectWallet()} loading={isLoading(connectState)}>
+      {t`Connect Wallet`}
+    </StyledButton>
   )
 }
 

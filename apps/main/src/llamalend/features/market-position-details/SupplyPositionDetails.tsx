@@ -4,6 +4,7 @@ import type { SupplyRate } from '@/llamalend/rates.types'
 import { BoostTooltipContent } from '@/llamalend/widgets/tooltips/BoostTooltipContent'
 import { MarketSupplyRateTooltipContent } from '@/llamalend/widgets/tooltips/MarketSupplyRateTooltipContent'
 import { Grid, Stack } from '@mui/material'
+import { maybes } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
@@ -67,7 +68,7 @@ export const SupplyPositionDetails = ({ userSupplyRate, shares, supplyAsset, boo
         value={SUPPLY_POSITION_TAB}
         options={[{ value: SUPPLY_POSITION_TAB, label: t`Supply Details` }]}
       />
-      <Grid container padding={Spacing.md} spacing={Spacing.md} sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
+      <Grid container spacing={Spacing.md} sx={{ padding: Spacing.md, backgroundColor: t => t.design.Layer[1].Fill }}>
         <MetricGrid>
           <Metric
             size="medium"
@@ -135,14 +136,10 @@ export const SupplyPositionDetails = ({ userSupplyRate, shares, supplyAsset, boo
             value={sharesValue}
             loading={sharesLoading}
             valueOptions={{}}
-            notional={
-              sharesStaked != null && sharesValue != null
-                ? {
-                    value: (sharesStaked / sharesValue) * 100,
-                    unit: { symbol: t`% staked`, position: 'suffix' },
-                  }
-                : undefined
-            }
+            notional={maybes([sharesStaked, sharesValue], ([sharesStaked, sharesValue]) => ({
+              value: (sharesStaked / sharesValue) * 100,
+              unit: { symbol: t`% staked`, position: 'suffix' },
+            }))}
             valueTooltip={{
               title: t`Vault Shares`,
               body: <VaultSharesTooltipContent />,

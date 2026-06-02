@@ -20,9 +20,10 @@ import {
 import { useLlamaMarkets } from '../../queries/market-list/llama-markets'
 import { invalidateAllUserMintMarkets, invalidateMintMarkets } from '../../queries/market-list/mint-markets'
 import { LegacyLlamaMarketsTable } from './LegacyLlamaMarketsTable'
+import { LegacyUserPositionsTable } from './LegacyUserPositionsTable'
 import { LendTableFooter } from './LendTableFooter'
 import { LlamaMarketsTable } from './LlamaMarketsTable'
-import { UserPositionsTable } from './UserPositionsTable'
+import { UserPositionsTables } from './UserPositionsTables'
 
 const { Spacing } = SizesAndSpaces
 
@@ -52,6 +53,7 @@ const useOnReload = ({ address: userAddress, isFetching }: { address?: Address; 
 
   useEffect(() => {
     // reset the isReloading state when the data is fetched
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     if (isReloading && !isFetching) setIsReloading(false)
   }, [isFetching, isReloading])
 
@@ -76,9 +78,7 @@ const useTableLlamaMarkets = (address: Address | undefined) => {
   }
 }
 
-/**
- * Page for displaying the lending markets table.
- */
+/** Page for displaying the lending markets table. */
 export const LlamaMarketsList = () => {
   const { connect } = useWallet()
   const { address, isConnecting } = useConnection()
@@ -89,25 +89,28 @@ export const LlamaMarketsList = () => {
     onReload,
   } = useTableLlamaMarkets(address)
 
+  const isNewLayout = useNewMarketListLayout()
+
   return (
     <ListPageWrapper footer={<LendTableFooter />}>
-      {address ? (
-        data?.userHasPositions && <UserPositionsTable onReload={onReload} tableQuery={tableQuery} />
+      {isNewLayout ? (
+        <UserPositionsTables onReload={onReload} tableQuery={tableQuery} />
+      ) : address ? (
+        data?.userHasPositions && <LegacyUserPositionsTable onReload={onReload} tableQuery={tableQuery} />
       ) : (
-        <Box paddingBlock={Spacing.md} sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
+        <Box sx={{ paddingBlock: Spacing.md, backgroundColor: t => t.design.Layer[1].Fill }}>
           <EmptyStateCard
             action={
               <ConnectWalletButton
                 label={t`Connect to view positions`}
-                onClick={() => connect()}
+                onClick={() => void connect()}
                 loading={isConnecting}
               />
             }
           />
         </Box>
       )}
-
-      {useNewMarketListLayout() ? (
+      {isNewLayout ? (
         <LlamaMarketsTable onReload={onReload} tableQuery={tableQuery} />
       ) : (
         <LegacyLlamaMarketsTable onReload={onReload} result={data} isError={!!error} loading={isLoading} />

@@ -10,6 +10,7 @@ import { useProposalsMapperQuery } from '@/dao/entities/proposals-mapper'
 import type { ProposalUrlParams } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
 import type { ProposalType } from '@curvefi/prices-api/proposal'
+import { maybes } from '@primitives/objects.utils'
 import { Box } from '@ui/Box'
 import { Icon } from '@ui/Icon'
 import { IconButton } from '@ui/IconButton'
@@ -77,12 +78,10 @@ export const Proposal = () => {
 
   const snapshotVeCrv = useMemo(
     () =>
-      proposal != null && votingPower != null
-        ? {
-            value: votingPower,
-            blockNumber: proposal.block,
-          }
-        : undefined,
+      maybes([proposal, votingPower], ([proposal, votingPower]) => ({
+        value: votingPower,
+        blockNumber: proposal.block,
+      })),
     [proposal, votingPower],
   )
 
@@ -102,7 +101,7 @@ export const Proposal = () => {
               <ErrorWrapper>
                 <ErrorMessage
                   message={t`Error loading proposal data`}
-                  onClick={() => invalidateProposalPricesApi({ proposalId: +voteId, proposalType })}
+                  onClick={() => void invalidateProposalPricesApi({ proposalId: +voteId, proposalType })}
                 />
               </ErrorWrapper>
             )}
@@ -117,7 +116,7 @@ export const Proposal = () => {
                   <Box flex flexJustifyContent="space-between" flexAlignItems="end">
                     <MetadataTitle>{t`Metadata`}</MetadataTitle>
                     <Tooltip tooltip={t`Copy to clipboard`} minWidth="135px">
-                      <StyledCopyButton size="medium" onClick={() => copyToClipboard(proposal?.metadata ?? '')}>
+                      <StyledCopyButton size="medium" onClick={() => void copyToClipboard(proposal?.metadata ?? '')}>
                         {t`Raw IPFS`}
                         <Icon name="Copy" size={16} />
                       </StyledCopyButton>

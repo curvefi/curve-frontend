@@ -16,7 +16,7 @@ export const BoostCell = ({ row }: CellContext<LlamaMarket, number>) => {
 
   if (isLoading) {
     return (
-      <Typography variant="tableCellMBold" textAlign="right">
+      <Typography variant="tableCellMBold" sx={{ textAlign: 'right' }}>
         <Skeleton variant="text" width={40} />
       </Typography>
     )
@@ -24,7 +24,7 @@ export const BoostCell = ({ row }: CellContext<LlamaMarket, number>) => {
 
   if (!boostMultiplier) {
     return (
-      <Typography variant="tableCellMBold" color="textSecondary" textAlign="right">
+      <Typography variant="tableCellMBold" color="textSecondary" sx={{ textAlign: 'right' }}>
         -
       </Typography>
     )
@@ -32,7 +32,7 @@ export const BoostCell = ({ row }: CellContext<LlamaMarket, number>) => {
 
   return (
     <Tooltip clickable title={t`Boost`} body={<BoostTooltipContent />} placement="top">
-      <Typography variant="tableCellMBold" color="textPrimary" textAlign="right">
+      <Typography variant="tableCellMBold" color="textPrimary" sx={{ textAlign: 'right' }}>
         {formatNumber(boostMultiplier, { maximumFractionDigits: 2, abbreviate: false })}x
       </Typography>
     </Tooltip>

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Grid, Box } from '@mui/material'
+import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { getSearchString, useSearchParams } from '@ui-kit/hooks/router'
 import type { AppName } from '@ui-kit/shared/routes'
@@ -25,6 +25,7 @@ type LegalPageProps = {
 
 function useAfterHydration(result: string) {
   const [value, setValue] = useState<string>()
+  // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
   useEffect(() => setValue(result), [result]) // only after hydration, otherwise test may click too fast
   return value
 }
@@ -59,36 +60,25 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
 
   return (
     <Stack
-      alignItems="center"
-      gap={Spacing.xl}
       sx={{
+        alignItems: 'center',
+        gap: Spacing.xl,
         marginInline: 'auto',
         marginBlockStart: Spacing.xl,
         marginBlockEnd: Spacing.xxl,
       }}
     >
-      <Stack
-        sx={{
-          maxWidth: MaxWidth.disclaimer,
-          width: '100%',
-        }}
-        data-testid={useAfterHydration('legal-page')}
-      >
-        <Grid container direction="column" spacing={Spacing.md}>
-          <Grid size={12} justifyContent="flex-start">
-            <LastUpdated />
-          </Grid>
-          <Grid size={12}>
-            <TabsSwitcher variant="contained" value={tab} options={tabs} testIdPrefix="legal-tab" />
-          </Grid>
-        </Grid>
+      <Stack sx={{ maxWidth: MaxWidth.disclaimer, width: '100%' }} data-testid={useAfterHydration('legal-page')}>
+        <Stack sx={{ gap: Spacing.md }}>
+          <LastUpdated />
+          <TabsSwitcher variant="contained" value={tab} options={tabs} testIdPrefix="legal-tab" />
+        </Stack>
 
         {tab === 'disclaimers' ? (
           <>
             <Stack
               direction={'row'}
-              justifyContent="space-between"
-              sx={{ backgroundColor: t => t.design.Layer[1].Fill }}
+              sx={{ justifyContent: 'space-between', backgroundColor: t => t.design.Layer[1].Fill }}
             >
               <TabsSwitcher
                 variant="underlined"

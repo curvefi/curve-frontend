@@ -4,11 +4,20 @@ import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 import { DesignSystem } from '@ui-kit/themes/design'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-const { Spacing, ButtonSize } = SizesAndSpaces
+const { Spacing, Sizing } = SizesAndSpaces
 
 export const cardHeaderSmallStyles = (typography: TypographyVariantsOptions) => ({
   '& .MuiCardHeader-title': typography.headingXsBold,
-  ...handleBreakpoints({ minHeight: ButtonSize.sm }),
+  ...handleBreakpoints({ minHeight: Sizing.lg }),
+})
+
+export const cardHeaderInlineStyles = (design: DesignSystem, typography: TypographyVariantsOptions) => ({
+  ...cardHeaderSmallStyles(typography),
+  borderBottom: `1px solid ${design.Layer[3].Outline}`,
+  ...handleBreakpoints({
+    minHeight: Sizing.md,
+    paddingInline: 0,
+  }),
 })
 
 export const defineMuiCardHeader = (
@@ -20,7 +29,7 @@ export const defineMuiCardHeader = (
       padding: 0,
       ...handleBreakpoints({
         paddingBlockEnd: Spacing.xs,
-        minHeight: ButtonSize.lg,
+        minHeight: Sizing.xl,
         gap: Spacing.xs,
       }),
       '& .MuiCardHeader-title': { color: design.Text.TextColors.Secondary },
@@ -36,13 +45,8 @@ export const defineMuiCardHeader = (
       style: cardHeaderSmallStyles(typography),
     },
     {
-      props: { 'data-inline': true },
-      style: {
-        borderBottom: `1px solid ${design.Layer[3].Outline}`,
-        ...handleBreakpoints({
-          paddingInline: 0,
-        }),
-      },
+      props: { size: 'inline' },
+      style: cardHeaderInlineStyles(design, typography),
     },
   ],
 })

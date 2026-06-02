@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography'
 import type { AppPage } from '@ui-kit/widgets/Header/types'
 import { SidebarItem } from './SidebarItem'
 
-interface SidebarSectionProps {
+type SidebarSectionProps = {
   title: string
   pages?: AppPage[]
   children?: ReactNode
@@ -15,7 +15,7 @@ export const SidebarSection = ({ pages, title, children }: SidebarSectionProps) 
   <List
     subheader={
       <ListSubheader disableSticky sx={{ padding: 0 }}>
-        <Typography variant="headingSBold" color="text.primary" sx={{ paddingX: 4, paddingTop: 4, paddingBottom: 2 }}>
+        <Typography variant="headingSBold" sx={{ color: 'text.primary', paddingX: 4, paddingTop: 4, paddingBottom: 2 }}>
           {title}
         </Typography>
         <Divider />

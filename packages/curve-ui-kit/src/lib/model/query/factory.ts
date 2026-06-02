@@ -15,6 +15,7 @@ import { queryClient } from '@ui-kit/lib/api/query-client'
 import { logError, logQuery, logSuccess } from '@ui-kit/lib/logging'
 import { QUERY_CATEGORIES, type QueryCategory } from '@ui-kit/lib/model/query/query-categories'
 import { FieldName, FieldsOf, validate } from '@ui-kit/lib/validation'
+import { formatTimeDiff } from '@ui-kit/utils/time.utils'
 
 // Checks if T is a union type (e.g., 'a' | 'b')
 type IsUnion<T, U = T> = T extends T ? ([U] extends [T] ? false : true) : never
@@ -94,11 +95,13 @@ async function runQuery<TKey extends QueryKey, TData, TQuery>(
   disableLog: true | undefined,
 ) {
   try {
+    const start = new Date()
     if (!disableLog) logQuery(queryKey)
     const data = await queryFn(getParamsFromQueryKey(queryKey))
-    if (!disableLog) logSuccess(queryKey, ...[data ? [data] : []])
+    if (!disableLog) logSuccess(queryKey, formatTimeDiff(start), ...[data ? [data] : []])
     return data
   } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
     logError(queryKey, error, error.message)
     throw error
   }
@@ -167,9 +170,12 @@ export function queryFactory<
       const { enabled, ...options } = getQueryOptions(params, condition)
       const query = useQuery({ enabled, ...options })
       const validation = enabled ? {} : validate(validationSuite, params)
-      // add validation results to the query result via Object.assign so we don't enumerate all react-query properties
+      // eslint-disable-next-line @eslint-react/purity -- Preserve the query result object's getters and generic inference.
       return Object.assign(query, { enabled, validation })
     },
+    /** Invalidates the cache for the query, marking it as stale and triggering a refetch if needed **/
     invalidate: (params: TParams) => queryClient.invalidateQueries({ queryKey: queryKey(params) }),
+    /** Removes all the cached data for the query **/
+    reset: (params: TParams) => queryClient.resetQueries({ queryKey: queryKey(params) }),
   } as const
 }

@@ -3,15 +3,15 @@ import { InputHTMLAttributes } from 'react'
 export type InputMinHeight = 'small' | 'medium' | 'large' | 'x-large'
 export type InputVariant = 'error' | 'warning' | 'small'
 
-export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+export type InputProps = {
   id: string
   globalDisabled?: boolean
   minHeight?: InputMinHeight
   variant?: 'small'
   inputProps?: InputHTMLAttributes<HTMLInputElement>
-}
+} & InputHTMLAttributes<HTMLInputElement>
 
-export interface InputLabelProps {
+export type InputLabelProps = {
   className?: string
   label: string
   descriptionLoading?: boolean

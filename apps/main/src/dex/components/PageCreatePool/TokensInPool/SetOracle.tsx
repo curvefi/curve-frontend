@@ -83,6 +83,7 @@ const OracleInputs = ({ token, tokenId, title }: OracleInputProps) => {
       <TextInput
         row
         defaultValue={oracleAddress}
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
         onChange={lodash.debounce(value => updateOracleAddress(tokenId, value), 300)}
         maxLength={42}
         label={t`Address (e.g 0x123...)`}
@@ -93,6 +94,7 @@ const OracleInputs = ({ token, tokenId, title }: OracleInputProps) => {
       <TextInput
         row
         defaultValue={oracleFunction}
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
         onChange={lodash.debounce(value => updateOracleFunction(tokenId, value), 300)}
         maxLength={42}
         label={t`Function (e.g exchangeRate())`}
@@ -112,7 +114,7 @@ const OracleInputs = ({ token, tokenId, title }: OracleInputProps) => {
       )}
       {isSuccess && formattedRate !== null && (
         <Alert severity="info" variant="standard" sx={{ marginTop: Spacing.sm }}>
-          <Stack gap={Spacing.xs}>
+          <Stack sx={{ gap: Spacing.xs }}>
             <Typography variant="bodySRegular">
               {t`Oracle rate:`} {formattedRate}
             </Typography>

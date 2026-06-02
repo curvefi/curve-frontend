@@ -1,6 +1,7 @@
 /// <reference types="./mui-card-content.d.ts" />
 import type { Components } from '@mui/material/styles'
 import { DesignSystem } from '@ui-kit/themes/design'
+import { Transparent } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { handleBreakpoints } from '../../basic-theme'
 
@@ -18,6 +19,14 @@ export const cardContentSmallStyles = {
   '&:last-child': handleBreakpoints({ paddingBlockEnd: Padding.sm }),
 }
 
+export const cardContentInlineStyles = {
+  ...handleBreakpoints({ padding: 0 }),
+  '&:last-child': handleBreakpoints({ paddingBlockEnd: 0 }),
+  '&.MuiCardContent-root': {
+    backgroundColor: Transparent,
+  },
+}
+
 export const defineMuiCardContent = (design: DesignSystem): Components['MuiCardContent'] => ({
   styleOverrides: {
     root: {
@@ -30,6 +39,10 @@ export const defineMuiCardContent = (design: DesignSystem): Components['MuiCardC
     {
       props: { size: 'small' },
       style: cardContentSmallStyles,
+    },
+    {
+      props: { size: 'inline' },
+      style: cardContentInlineStyles,
     },
   ],
 })

@@ -1,9 +1,12 @@
-import type { Property } from 'csstype'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { shortenString } from '@primitives/string.utils'
+import { useCopyToClipboard } from '@ui-kit/hooks/useCopyToClipboard'
+import { t } from '@ui-kit/lib/i18n'
 import { TableSecondaryTextClass } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
+import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
+import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -13,22 +16,37 @@ type AddressCellProps = {
   address: string
   /** Optional label to display above the address */
   label?: string
-  /** Horizontal alignment of the content */
-  justifyContent?: Extract<Property.JustifyContent, 'flex-start' | 'flex-end'>
+  /** Optional explorer URL for the address. */
+  explorerUrl?: string
 }
 
 /**
  * Cell component for displaying blockchain addresses with truncation.
  */
-export const AddressCell = ({ address, label, justifyContent = 'flex-start' }: AddressCellProps) => (
+export const AddressCell = ({ address, label, explorerUrl }: AddressCellProps) => (
   <InlineTableCell>
     {label && (
       <Typography variant="bodyXsRegular" className={TableSecondaryTextClass}>
         {label}
       </Typography>
     )}
-    <Stack direction="row" alignItems="center" justifyContent={justifyContent} gap={Spacing.xs}>
-      <Typography variant="tableCellMBold">{shortenString(address)}</Typography>
-    </Stack>
+    <Tooltip
+      title={explorerUrl && <ExternalLink href={explorerUrl} label={t`View on explorer`} />}
+      placement="top"
+      clickable={!!explorerUrl}
+    >
+      <Stack direction="row" sx={{ gap: Spacing.xs }}>
+        <Typography
+          variant="tableCellMBold"
+          onClick={useCopyToClipboard({
+            copyText: address,
+            confirmationText: t`Address has been copied to clipboard`,
+          })}
+          sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+        >
+          {shortenString(address)}
+        </Typography>
+      </Stack>
+    </Tooltip>
   </InlineTableCell>
 )

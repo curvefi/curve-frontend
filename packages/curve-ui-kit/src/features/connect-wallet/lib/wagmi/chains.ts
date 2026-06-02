@@ -1,7 +1,7 @@
 import { defineChain, type Chain } from 'viem'
+import { DEFAULT_DECIMALS } from '@primitives/objects.utils'
 import type { NetworkDef } from '@ui/utils'
 import { defaultGetRpcUrls } from '@ui-kit/features/connect-wallet/lib/wagmi/transports'
-import { Chain as ChainId } from '@ui-kit/utils/network'
 import {
   arbitrum,
   arbitrumSepolia,
@@ -28,13 +28,14 @@ import {
   polygon,
   sonic,
   stable,
+  tac,
   taiko,
   unichain,
   xdc,
   xLayer,
   zksync,
 } from '@wagmi/core/chains'
-import { ethereum as mainnet, expchain, hyperliquid, megaeth, strata, tac } from './custom-chains'
+import { ethereum as mainnet, expchain, hyperliquid, megaeth, strata } from './custom-chains'
 
 const wagmiChains = [
   arbitrum,
@@ -86,10 +87,6 @@ export const DOWNGRADED_CHAINS = new Set<number>([avalanche, fantom, xLayer, son
 /** Mapping of chain IDs to their corresponding Wagmi chain configurations for easy lookup */
 export const wagmiChainsMap = Object.fromEntries(wagmiChains.map(chain => [chain.id, chain]))
 
-const DECIMALS: Record<number, number> = {
-  [ChainId.Tac]: 8, // TAC has 8 decimals instead of 18
-}
-
 /**
  * Creates a Viem chain configuration from a Curve network definition.
  *
@@ -104,7 +101,7 @@ export const createChainFromNetwork = (network: NetworkDef, getRpcUrls: typeof d
   // use the backend data to configure new chains, but use wagmi contract addresses and useful properties/RPCs
   defineChain({
     ...(wagmiChainsMap[network.chainId] ?? {
-      nativeCurrency: { name: network.symbol, symbol: network.symbol, decimals: DECIMALS[network.chainId] ?? 18 },
+      nativeCurrency: { name: network.symbol, symbol: network.symbol, decimals: DEFAULT_DECIMALS },
     }),
     id: network.chainId,
     testnet: network.isTestnet,

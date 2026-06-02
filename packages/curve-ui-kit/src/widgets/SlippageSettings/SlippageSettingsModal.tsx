@@ -123,7 +123,7 @@ type Props = SlippageSettingsProps & SlippageSettingsCallbacks
  * - Max recommended slippage: 5% (values above this trigger a warning)
  */
 export const SlippageSettingsModal = ({ isOpen, maxSlippage, onSave, onClose }: Props) => {
-  const [formValues, setFormValues] = useState(initFormValues(maxSlippage))
+  const [formValues, setFormValues] = useState(() => initFormValues(maxSlippage))
   const { error, selected, customValue } = formValues
 
   /**
@@ -133,11 +133,13 @@ export const SlippageSettingsModal = ({ isOpen, maxSlippage, onSave, onClose }: 
   const [lastError, setLastError] = useState<Error | undefined>(undefined)
 
   useEffect(() => {
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setFormValues(initFormValues(maxSlippage))
   }, [maxSlippage])
 
   useEffect(() => {
     if (error) {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setLastError(error)
     }
   }, [error])
@@ -208,7 +210,7 @@ export const SlippageSettingsModal = ({ isOpen, maxSlippage, onSave, onClose }: 
       footer={footer}
       compact
     >
-      <Stack gap={Spacing.md}>
+      <Stack sx={{ gap: Spacing.md }}>
         <FormControl fullWidth>
           {/* Labels become blue on focus, but in this one-off we don't want that as it's the only form option */}
           <FormLabel sx={{ '&.Mui-focused': { color: 'text.secondary' } }}>
@@ -217,23 +219,22 @@ export const SlippageSettingsModal = ({ isOpen, maxSlippage, onSave, onClose }: 
             </Typography>
           </FormLabel>
 
-          <Stack direction={{ mobile: 'column', tablet: 'row' }} justifyContent="space-between" gap={Spacing.sm}>
+          <Stack
+            direction={{ mobile: 'column', tablet: 'row' }}
+            sx={{ justifyContent: 'space-between', gap: Spacing.sm }}
+          >
             <RadioGroup
               row
               value={formValues.selected}
               onChange={e => setFormValues({ ...formValues, selected: e.target.value as Decimal })}
-              sx={{
-                flexGrow: 1,
-                justifyContent: { mobile: 'space-between', tablet: 'start' },
-                gap: Spacing.xs,
-              }}
+              sx={{ flexGrow: 1, justifyContent: { mobile: 'space-between', tablet: 'start' }, gap: Spacing.xs }}
               data-testid="slippage-radio-group"
             >
               <FormControlLabel value={SLIPPAGE_PRESETS.STABLE} label={FORMATTED_STABLE} control={<Radio />} />
               <FormControlLabel value={SLIPPAGE_PRESETS.CRYPTO} label={FORMATTED_CRYPTO} control={<Radio />} />
             </RadioGroup>
 
-            <Box display="flex" flexGrow={1} justifyContent={{ mobile: 'start', tablet: 'end' }}>
+            <Box sx={{ display: 'flex', flexGrow: 1, justifyContent: { mobile: 'start', tablet: 'end' } }}>
               {customTextField}
             </Box>
           </Stack>

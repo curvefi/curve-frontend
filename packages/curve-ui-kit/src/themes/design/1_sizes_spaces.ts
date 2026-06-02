@@ -57,6 +57,72 @@ const MappedButtonSize = {
   lg: Sizing[650], // 56px
 }
 
+const MappedInputSize = {
+  tiny: MappedButtonSize.xs,
+  small: MappedButtonSize.sm,
+  medium: MappedButtonSize.md,
+  extraLarge: MappedButtonSize.lg,
+} as const
+
+const MappedInputSpacing = {
+  PaddingX: {
+    tiny: Spacing[200],
+    small: Spacing[300],
+    medium: Spacing[300],
+    extraLarge: Spacing[300],
+  },
+  ContentPaddingRight: Spacing[300],
+  HelperPaddingTop: Spacing[200],
+  LabelGap: Spacing[100],
+  ValueGap: Spacing[100],
+} as const
+
+const MappedSelectSize = {
+  tiny: MappedButtonSize.xs,
+  small: MappedButtonSize.sm,
+  medium: MappedButtonSize.md,
+  extraLarge: MappedButtonSize.lg,
+} as const
+
+const MappedSelectPaddingX = {
+  tiny: Spacing[200],
+  small: Spacing[300],
+  medium: Spacing[300],
+  extraLarge: Spacing[300],
+} as const
+
+const MappedSelectSpacing = {
+  PaddingX: MappedSelectPaddingX,
+  ContentPaddingY: {
+    tiny: Spacing[100],
+    small: Spacing[300],
+    medium: Spacing[300],
+    extraLarge: Spacing[300],
+  },
+  IconGap: Spacing[300],
+  IconPaddingRight: MappedSelectPaddingX,
+} as const
+
+const MappedSelectListItem = {
+  Height: {
+    small: Sizing[450],
+    medium: MappedButtonSize.sm,
+  },
+  PaddingX: {
+    small: Spacing[200],
+    medium: Spacing[200],
+  },
+  PaddingY: Spacing[200],
+  Gap: Spacing[200],
+} as const
+
+const MappedLargeTokenInput = {
+  AmountHeight: MappedButtonSize.sm,
+  BalanceIconSize: MappedIconSize.xs,
+  PaddingX: MappedInputSpacing.PaddingX.extraLarge,
+  RowGap: Spacing[0],
+} as const
+
 const SliderHeight = {
   small: { mobile: Sizing[200], tablet: Sizing[200], desktop: Sizing[200] },
   medium: { mobile: Sizing[300], tablet: Sizing[300], desktop: Sizing[300] },
@@ -128,6 +194,12 @@ export const SizesAndSpaces = {
   Sizing: MappedSizing,
   IconSize: MappedIconSize,
   ButtonSize: MappedButtonSize,
+  InputSize: MappedInputSize,
+  InputSpacing: MappedInputSpacing,
+  SelectSize: MappedSelectSize,
+  SelectSpacing: MappedSelectSpacing,
+  SelectListItem: MappedSelectListItem,
+  LargeTokenInput: MappedLargeTokenInput,
   Grid: MappedGrid,
   FontSize: MappedFontSize,
   FontWeight: MappedFontWeight,
@@ -160,6 +232,7 @@ export const SizesAndSpaces = {
       md: '6.25rem', // 100px
       bands: '6.8rem', // 108.8px
     },
+    maintenanceContent: '40rem', // 640px
   },
   Height: {
     modal: MappedModalHeight,
@@ -171,6 +244,7 @@ export const SizesAndSpaces = {
     tableNoResults: { sm: '15vh', lg: '35vh' },
     pageContent: '80vh',
     popoverHeader: '2rem', // 32px
+    maintenancePage: '100vh',
   },
   MaxHeight: {
     popover: '17rem', // 272px

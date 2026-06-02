@@ -1,14 +1,11 @@
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
-import CallMade from '@mui/icons-material/CallMade'
-import IconButton, { IconButtonProps } from '@mui/material/IconButton'
-import Link from '@mui/material/Link'
+import type { IconButtonProps } from '@mui/material/IconButton'
 import Stack, { type StackProps } from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
+import { useCopyToClipboard } from '@ui-kit/hooks/useCopyToClipboard'
 import { t } from '@ui-kit/lib/i18n'
-import { CopyIconButton } from '@ui-kit/shared/ui/CopyIconButton'
 import { ErrorIconButton } from '@ui-kit/shared/ui/ErrorIconButton'
-import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { IconButtonIconSize } from '@ui-kit/themes/components/button'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
@@ -40,9 +37,7 @@ export type ActionInfoProps = {
   prevValue?: ReactNode
   /** Custom color for the previous value text */
   prevValueColor?: TypographyProps['color']
-  /** URL to navigate to when clicking the external link button */
-  link?: string
-  /** Value to be copied (will display a copy button). */
+  /** Value to be copied from the value text when clicked. */
   copyValue?: string
   /** Message displayed in the snackbar title when the value is copied */
   copiedTitle?: string
@@ -60,8 +55,6 @@ export type ActionInfoProps = {
   testId?: string
   /** Additional styles */
   sx?: StackProps['sx']
-  /** CSS align-items property */
-  alignItems?: StackProps['alignItems']
 }
 
 const DEFAULT_SIZE: ActionInfoSize = 'medium'
@@ -97,13 +90,24 @@ const ValueTypography = ({
   children,
   testId,
   value,
-}: ValueDecoratorProps & { children: ReactNode }) => (
+  onClick,
+}: ValueDecoratorProps & {
+  children: ReactNode
+  onClick?: () => void
+}) => (
   <Typography
     variant={valueSize[size]}
     color={error ? 'error' : (valueColor ?? 'textPrimary')}
     component="div"
     data-testid={testId}
     data-value={value}
+    onClick={onClick}
+    sx={
+      onClick && {
+        cursor: 'pointer',
+        '&:hover': { textDecoration: 'underline' },
+      }
+    }
   >
     {children}
   </Typography>
@@ -125,13 +129,11 @@ export const ActionInfo = ({
   valueLeft,
   valueRight,
   valueTooltip,
-  link,
   size = DEFAULT_SIZE,
   copyValue,
   copiedTitle,
   loading = false,
   error = false,
-  alignItems = 'center',
   testId = 'action-info',
   sx,
 }: ActionInfoProps) => {
@@ -139,34 +141,35 @@ export const ActionInfo = ({
   const iconSize = IconButtonIconSize[buttonSize]
   const value = givenValue ?? givenPrevValue
   const prevValue = value === givenPrevValue ? null : givenPrevValue
+  const copyToClipboard = useCopyToClipboard({
+    copyText: copyValue ?? '',
+    confirmationText: copiedTitle ?? t`Value has been copied to clipboard`,
+  })
+
   return (
     <Stack
       direction="row"
-      alignItems={alignItems}
-      columnGap={Spacing.sm}
       data-testid={testId}
-      sx={applySxProps(sx, { minHeight: rowHeight[size] })}
+      sx={applySxProps({ alignItems: 'center', columnGap: Spacing.sm, minHeight: rowHeight[size] }, sx)}
     >
       <Typography
-        flexGrow={1}
         variant={labelSize[size]}
         color={labelColor ?? 'textSecondary'}
-        textAlign="start"
         component="div"
-        whiteSpace="nowrap"
+        sx={{ flexGrow: 1, textAlign: 'start', whiteSpace: 'nowrap' }}
       >
         {label}
       </Typography>
-
-      <Stack direction="row" alignItems="center" gap={Spacing.xs} className="ActionInfo-valueGroup">
-        <Stack direction="row" gap={Spacing.xs} flexWrap="wrap" justifyContent="end">
-          <Stack direction="row" gap={Spacing.xs}>
+      <Stack direction="row" className="ActionInfo-valueGroup" sx={{ alignItems: 'center', gap: Spacing.xs }}>
+        <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs, flexWrap: 'wrap', justifyContent: 'end' }}>
+          <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
             <Typography
               variant={prevValueSize[size]}
               color={prevValueColor ?? 'textTertiary'}
               data-testid={`${testId}-previous`}
+              // eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions -- Existing violation before enabling this rule.
               data-value={`${givenPrevValue}`}
-              whiteSpace="nowrap"
+              sx={{ whiteSpace: 'nowrap' }}
             >
               {prevValue}
             </Typography>
@@ -176,14 +179,12 @@ export const ActionInfo = ({
               />
             )}
 
-            <Tooltip title={valueTooltip} placement="top">
+            <Tooltip title={valueTooltip} placement="top" clickable={!!valueTooltip}>
               {/** Additional stack to add some space between left (icon), value and right (icon) */}
               <Stack
                 direction="row"
-                alignItems={alignItems}
-                gap={Spacing.xxs}
                 className="ActionInfo-value"
-                whiteSpace="nowrap"
+                sx={{ alignItems: 'center', gap: Spacing.xxs, whiteSpace: 'nowrap' }}
               >
                 <ValueDecorator
                   value={valueLeft}
@@ -206,6 +207,7 @@ export const ActionInfo = ({
                     valueColor={valueColor}
                     testId={`${testId}-value`}
                     value={value}
+                    onClick={copyValue && !loading && !error ? copyToClipboard : undefined}
                   >
                     {typeof loading === 'string' ? loading : error ? '' : (value ?? '-')}
                   </ValueTypography>
@@ -223,26 +225,6 @@ export const ActionInfo = ({
         </Stack>
 
         {error && <ErrorIconButton error={error} size={buttonSize} />}
-        {copyValue && (
-          <CopyIconButton
-            copyText={copyValue}
-            label={`${t`Copy `}${copyValue}${t` to clipboard`}`}
-            confirmationText={copiedTitle ?? t`Value has been copied to clipboard`}
-            size={buttonSize}
-          />
-        )}
-
-        {link && (
-          <IconButton
-            component={link.startsWith('http') ? Link : RouterLink}
-            href={link}
-            target="_blank"
-            rel="noopener"
-            size={buttonSize}
-          >
-            <CallMade />
-          </IconButton>
-        )}
       </Stack>
     </Stack>
   )

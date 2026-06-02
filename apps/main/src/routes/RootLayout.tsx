@@ -15,12 +15,15 @@ import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { CurveProvider } from '@ui-kit/features/connect-wallet'
 import { HydratorMap } from '@ui-kit/features/connect-wallet/lib/types'
 import { useWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/useWagmiConfig'
-import { BackendMaintenanceModal } from '@ui-kit/features/maintenance/BackendMaintenanceModal'
+import { BackendMaintenanceModal } from '@ui-kit/features/maintenance/components/BackendMaintenanceModal'
+import { MaintenancePage } from '@ui-kit/features/maintenance/components/MaintenancePage'
 import { useMaintenance } from '@ui-kit/features/maintenance/hooks/useMaintenance'
 import type { Maintenance } from '@ui-kit/features/maintenance/hooks/useMaintenance'
 import { addBreadcrumb } from '@ui-kit/features/sentry'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { usePathname } from '@ui-kit/hooks/router'
+import { useBodyThemeClass } from '@ui-kit/hooks/useBodyThemeClass'
+import { useLoanSlices } from '@ui-kit/hooks/useFeatureFlags'
 import { useLayoutStoreResponsive } from '@ui-kit/hooks/useLayoutStoreResponsive'
 import { useNetworkFromUrl } from '@ui-kit/hooks/useNetworkFromUrl'
 import { useOnChainUnavailable } from '@ui-kit/hooks/useOnChainUnavailable'
@@ -39,10 +42,11 @@ import { ErrorBoundary } from '@ui-kit/widgets/ErrorBoundary'
 const shouldForwardProp = (propName: string, target: unknown) => typeof target !== 'string' || isPropValid(propName)
 
 function useHydrationMethods(): HydratorMap {
-  const crvusd: HydratorMap['crvusd'] = useLoanStore().hydrate
-  const dex: HydratorMap['dex'] = useDexStore().hydrate
-  const lend: HydratorMap['lend'] = useLendStore().hydrate
-  return useMemo(() => ({ crvusd, dex, lend }), [crvusd, dex, lend])
+  const loanSlicesEnabled = useLoanSlices()
+  const dex = useDexStore().hydrate
+  const crvusd = useLoanStore().hydrate
+  const lend = useLendStore().hydrate
+  return useMemo(() => ({ dex, ...(loanSlicesEnabled && { crvusd, lend }) }), [crvusd, dex, lend, loanSlicesEnabled])
 }
 
 const useBreadcrumbs = (pathname: string, { origin, search } = window.location) =>
@@ -89,13 +93,19 @@ export const RootLayout = () => {
   const theme = useUserProfileStore(state => state.theme)
   const backendMaintenance = useMaintenance(BACKEND_MAINTENANCE)
   const devTools = !isCypress
+  useBodyThemeClass()
+
   return (
     <StyleSheetManager shouldForwardProp={shouldForwardProp}>
       <ThemeProvider theme={theme}>
         <ErrorBoundary title={t`Layout error`}>
           <OverlayProvider>
             <QueryProvider persister={persister} queryClient={queryClient}>
-              <NetworkAwareLayout backendMaintenance={backendMaintenance} />
+              {backendMaintenance.isMaintenanceMode ? (
+                <MaintenancePage />
+              ) : (
+                <NetworkAwareLayout backendMaintenance={backendMaintenance} />
+              )}
               {!isCypress && <BackendMaintenanceModal {...backendMaintenance} />}
               {devTools && <ReactQueryDevtools />}
             </QueryProvider>

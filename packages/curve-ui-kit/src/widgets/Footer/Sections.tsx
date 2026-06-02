@@ -3,6 +3,7 @@ import BugReportOutlinedIcon from '@mui/icons-material/BugReportOutlined'
 import GitHubIcon from '@mui/icons-material/GitHub'
 import MonitorHeartOutlinedIcon from '@mui/icons-material/MonitorHeartOutlined'
 import YouTubeIcon from '@mui/icons-material/YouTube'
+import { CURVE_SOCIALS } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { BrandAssetsIcon } from '@ui-kit/shared/icons/BrandAssetsIcon'
 import { CrvHubIcon } from '@ui-kit/shared/icons/CrvHubIcon'
@@ -24,37 +25,37 @@ export const getSections = () => [
     links: [
       {
         label: t`Twitter`,
-        href: 'https://twitter.com/curvefinance',
+        href: CURVE_SOCIALS.twitter,
         icon: <XIcon />,
       },
       {
         label: t`Discord`,
-        href: 'https://discord.gg/rgrfS7W',
+        href: CURVE_SOCIALS.discord,
         icon: <DiscordIcon />,
       },
       {
         label: t`Youtube`,
-        href: 'https://www.youtube.com/c/CurveFinance',
+        href: CURVE_SOCIALS.youtube.en,
         icon: <YouTubeIcon />,
       },
       {
         label: t`Announcements`,
-        href: 'https://t.me/curvefiann',
+        href: CURVE_SOCIALS.telegram.announcements,
         icon: <TelegramIcon />,
       },
       {
         label: t`Telegram`,
-        href: 'https://t.me/curvefi',
+        href: CURVE_SOCIALS.telegram.en,
         icon: <TelegramIcon />,
       },
       {
         label: t`Telegram (CN)`,
-        href: 'https://t.me/curveficn',
+        href: CURVE_SOCIALS.telegram.cn,
         icon: <TelegramCNIcon />,
       },
       {
         label: t`Telegram (RU)`,
-        href: 'https://t.me/crvrussianchat',
+        href: CURVE_SOCIALS.telegram.ru,
         icon: <TelegramRUIcon />,
       },
     ],

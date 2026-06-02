@@ -1,21 +1,22 @@
 import { t } from '@ui-kit/lib/i18n'
 
-interface CustomError extends Error {
+type CustomError = {
   data?: { message: string }
   code?: string
-}
+} & Error
 
 /**
  * TODO: this function was deduplicated from four different apps into ui-kit for FormAlerts.tsx, but it's rather ugly.
  * A future PR will need to properly get error messages and dedupe the whole AlertFormError.tsx shebang.
  */
-export function getErrorMessage(error: CustomError | null, defaultErrorMessage?: string): string {
+export function getErrorMessage(e: unknown, defaultErrorMessage?: string): string {
   let errorMessage = defaultErrorMessage ?? ''
 
+  const error = e as CustomError
   if (error?.message) {
-    if (error.message.includes('user rejected transaction') || error?.code === 'ACTION_REJECTED') {
+    if (error.message.toLocaleLowerCase().includes('user rejected') || error?.code === 'ACTION_REJECTED') {
       errorMessage = t`User rejected transaction`
-    } else if (error.message.includes('Bad swap type')) {
+    } else if (error.message.toLocaleLowerCase().includes('bad swap type')) {
       errorMessage = t`Swap route is not available on Curve. Try an aggregator.`
     } else if ('data' in error && typeof error.data?.message === 'string') {
       errorMessage = error.data.message

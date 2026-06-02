@@ -1,5 +1,4 @@
 import { useMemo } from 'react'
-import type { Chain } from '@curvefi/prices-api'
 import { fromDate } from '@curvefi/prices-api/timestamp'
 import type { Address, Token } from '@primitives/address.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -19,9 +18,9 @@ import {
 } from './panels'
 import type { LlammaEventRow, LlammaTradeRow, PoolLiquidityRow, PoolTradeRow } from './types'
 
-const generateAddress = (seed: number): Address => `0x${seed.toString(16).padStart(40, '0')}` as Address
+const generateAddress = (seed: number): Address => `0x${seed.toString(16).padStart(40, '0')}`
 
-const generateTxHash = (seed: number): Address => `0x${seed.toString(16).padStart(64, '0')}` as Address
+const generateTxHash = (seed: number): Address => `0x${seed.toString(16).padStart(64, '0')}`
 
 // DEX Pool Mock Tokens (TriCrypto - USDT/WBTC/WETH)
 const USDT_TOKEN = {
@@ -48,12 +47,12 @@ const WETH_TOKEN = {
 // Lending Mock Tokens (WETH/crvUSD market)
 const COLLATERAL_TOKEN: Token = {
   symbol: 'WETH',
-  address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2' as Address,
+  address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
 }
 
 const BORROW_TOKEN: Token = {
   symbol: 'crvUSD',
-  address: '0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E' as Address,
+  address: '0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E',
 }
 
 // Pool Trades Mock Data Generator
@@ -89,7 +88,7 @@ const generatePoolTrades = (count: number): PoolTradeRow[] => {
       tokenBought,
       poolState: null,
       txUrl: `https://etherscan.io/tx/${generateTxHash(1000 + i)}`,
-      network: 'ethereum' as Chain,
+      network: 'ethereum',
     }
   })
 }
@@ -116,7 +115,7 @@ const generatePoolLiquidity = (count: number): PoolLiquidityRow[] => {
     txHash: generateTxHash(3000 + i),
     provider: generateAddress(4000 + i),
     txUrl: `https://etherscan.io/tx/${generateTxHash(3000 + i)}`,
-    network: 'ethereum' as Chain,
+    network: 'ethereum',
     poolTokens: POOL_TOKENS,
   }))
 }
@@ -145,7 +144,7 @@ const generateLlammaTrades = (count: number, collateralToken: Token, borrowToken
       timestamp: fromDate(new Date(now - i * 1800000)), // 30 minutes apart
       txHash: generateTxHash(5000 + i),
       txUrl: `https://etherscan.io/tx/${generateTxHash(5000 + i)}`,
-      network: 'ethereum' as Chain,
+      network: 'ethereum',
     }
   })
 }
@@ -166,17 +165,17 @@ const generateLlammaEvents = (count: number, collateralToken: Token, borrowToken
             n2: Math.floor(Math.random() * 50) + 50,
           }
         : null,
-      withdrawal: !isDeposit
-        ? {
+      withdrawal: isDeposit
+        ? null
+        : {
             amountBorrowed: Math.random() * 5000 + 100,
             amountCollateral: Math.random() * 2 + 0.1,
-          }
-        : null,
+          },
       blockNumber: 19000000 + i * 60,
       timestamp: fromDate(new Date(now - i * 3600000)), // 1 hour apart
       txHash: generateTxHash(6000 + i),
       txUrl: `https://etherscan.io/tx/${generateTxHash(6000 + i)}`,
-      network: 'ethereum' as Chain,
+      network: 'ethereum',
       collateralToken,
       borrowToken,
     }

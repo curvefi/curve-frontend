@@ -14,14 +14,14 @@ const { Spacing } = SizesAndSpaces
 export const RewardsOtherHeader = ({ table }: HeaderContext<PoolListItem, RewardsApy | undefined>) => (
   <Stack>
     <Box>{t`Rewards tAPR`}</Box>
-    <Stack direction="row" gap={Spacing.xs} alignItems="end">
+    <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'end' }}>
       {useNetworkFromUrl()?.isCrvRewardsEnabled && (
         <>
-          <Sortable column={table.getColumn(PoolColumnId.RewardsCrv)}>{`CRV`}</Sortable>
+          <Sortable column={table.getColumn(PoolColumnId.RewardsCrv)} size="large">{`CRV`}</Sortable>
           <Box component="span">{'+'}</Box>
         </>
       )}
-      <Sortable column={table.getColumn(PoolColumnId.RewardsIncentives)}>{`Incentives`}</Sortable>
+      <Sortable column={table.getColumn(PoolColumnId.RewardsIncentives)} size="large">{`Incentives`}</Sortable>
     </Stack>
   </Stack>
 )

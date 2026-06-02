@@ -18,9 +18,9 @@ type UserPositionHistoryProps = {
 
 export const UserPositionHistory = ({ events, isLoading, isError, variant }: UserPositionHistoryProps) => (
   <WithWrapper shouldWrap={variant === 'accordion'} Wrapper={Accordion} title={t`Activity`} ghost>
-    <Stack gap={Spacing.xxs}>
+    <Stack sx={{ gap: Spacing.xxs }}>
       <UserEventsTable events={events} loading={isLoading} isError={isError} />
-      <Stack direction="row" gap={Spacing.xs}>
+      <Stack direction="row" sx={{ gap: Spacing.xs }}>
         <Typography variant="bodyXsRegular">
           {t`Llamelend liquidations are not price based, but health based.`}
         </Typography>

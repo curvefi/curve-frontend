@@ -22,8 +22,10 @@ import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { ManageGauge } from '@/dex/widgets/manage-gauge'
 import type { Chain } from '@curvefi/prices-api'
+import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { Link as TanstackLink } from '@tanstack/react-router'
 import { AlertBox } from '@ui/AlertBox'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
@@ -39,6 +41,9 @@ import { PoolAlertBanner } from '../PoolAlertBanner'
 const { Spacing } = SizesAndSpaces
 
 const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
+
+/** Prices API tells us which pools methods are available, of which the following one is a requisite for refuels */
+const hasRefuelMethod = (poolMethods?: string[]) => poolMethods?.includes('donation_shares')
 
 export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { params, curve, hasDepositAndStake, poolData, poolDataCacheOrApi, routerParams } = pageTransferProps
@@ -121,6 +126,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
     const isSeed = Number(currencyReserves.total) === 0
 
     if (isSeed && poolData.hasWrapped) setPoolIsWrapped(poolData, true)
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setSeed({ isSeed, loaded: true })
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [poolData?.pool?.id, currencyReserves?.total])
@@ -178,7 +184,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
       )}
       <DetailPageLayout
         header={
-          <Typography variant="headingSBold" paddingBlock={Spacing.sm}>
+          <Typography variant="headingSBold" sx={{ paddingBlock: Spacing.sm }}>
             {pool.name || ''}
           </Typography>
         }
@@ -186,7 +192,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
           <FormMargins>
             <TabsSwitcher
               variant="contained"
-              value={!rFormType ? 'deposit' : rFormType}
+              value={rFormType || 'deposit'}
               onChange={key => toggleForm(key as TransferFormType)}
               options={tabs}
               testIdPrefix="pool-form-tab"
@@ -233,20 +239,29 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
       >
         {poolAddress && <CampaignRewardsBanner chainId={rChainId} address={poolAddress} />}
         {!isLite && pricesApiPoolData && pricesApi && (
-          <OhlcAndActivityComp
-            rChainId={rChainId}
-            poolAddress={poolAddress as Address}
-            pricesApiPoolData={pricesApiPoolData}
-          />
+          <OhlcAndActivityComp rChainId={rChainId} poolAddress={poolAddress} pricesApiPoolData={pricesApiPoolData} />
         )}
         <Stack>
-          <TabsSwitcher
-            variant="contained"
-            value={poolInfoTab}
-            onChange={setPoolInfoTab}
-            options={poolInfoTabs}
-            testIdPrefix="pool-info-tab"
-          />
+          <Stack direction="row">
+            <TabsSwitcher
+              variant="contained"
+              value={poolInfoTab}
+              onChange={setPoolInfoTab}
+              options={poolInfoTabs}
+              testIdPrefix="pool-info-tab"
+            />
+            {hasRefuelMethod(pricesApiPoolData?.poolMethods) && (
+              <Button
+                component={TanstackLink}
+                to={getPath(params, `${ROUTE.PAGE_POOLS}/${poolAddress}/refuel`)}
+                variant="inline"
+                color="ghost"
+                sx={{ whiteSpace: 'nowrap', alignSelf: 'end', marginBlockEnd: Spacing.xs }}
+              >
+                {t`Manage pool`}
+              </Button>
+            )}
+          </Stack>
           {poolInfoTab === 'user' && (
             <MySharesStats
               curve={curve}

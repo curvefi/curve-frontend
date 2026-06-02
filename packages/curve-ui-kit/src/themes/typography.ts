@@ -26,8 +26,10 @@ const { LineHeight, FontWeight, FontSize } = SizesAndSpaces
 
 export type TypographyVariantDefinition = {
   fontFamily: keyof DesignSystem['Text']['FontFamily']
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   fontSize: string | keyof typeof FontSize
   fontWeight?: keyof typeof FontWeight
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   lineHeight?: string | keyof typeof LineHeight
   letterSpacing?: string
   textCase?: 'uppercase' | 'capitalize'
@@ -35,7 +37,9 @@ export type TypographyVariantDefinition = {
 }
 
 const responsiveValues = (
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   fontSize: string | keyof typeof FontSize,
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   lineHeight: string | keyof typeof LineHeight | undefined,
   breakpoint: Breakpoint,
 ) => ({
@@ -114,10 +118,12 @@ export const createTypography = ({ Text }: DesignSystem) =>
     fontWeightMedium: FontWeight.Medium,
     fontWeightRegular: FontWeight.Normal,
     fontWeightLight: FontWeight.Light,
+
     ...disabledTypographyKeys.reduce(
       (acc, variant) => ({ ...acc, [variant]: undefined }),
       {} as TypographyVariantsOptions,
     ),
+
     ...Object.fromEntries(
       Object.entries(TYPOGRAPHY_VARIANTS).map(([key, def]) => {
         const { fontFamily, ...value } = variant(def)

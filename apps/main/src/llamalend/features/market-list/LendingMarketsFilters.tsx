@@ -51,7 +51,7 @@ export const LendingMarketsFilters = (props: LlamaMarketsFiltersProps) => {
   } = useLlamaMarketsFilters(props)
 
   return (
-    <Stack padding={Spacing.sm} spacing={Spacing.sm}>
+    <Stack spacing={Spacing.sm} sx={{ padding: Spacing.sm }}>
       <TableFilterItem title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.Chain]}>
         <LlamaChainFilterChips marketsQuery={props.marketsQuery} {...filterProps} />
       </TableFilterItem>
@@ -130,6 +130,7 @@ export const LendingMarketsFilters = (props: LlamaMarketsFiltersProps) => {
         onChange={onMarketTypeChange}
         ariaLabel={t`Market type filter`}
         options={marketTypeOptions}
+        testIdSuffix="market-type"
       />
       <TableFilterButtonGroup
         title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.Version]}
@@ -137,6 +138,7 @@ export const LendingMarketsFilters = (props: LlamaMarketsFiltersProps) => {
         onChange={onMarketVersionChange}
         ariaLabel={t`Market version filter`}
         options={marketVersionOptions}
+        testIdSuffix="market-version"
       />
     </Stack>
   )

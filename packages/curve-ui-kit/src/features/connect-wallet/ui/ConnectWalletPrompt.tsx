@@ -15,23 +15,24 @@ export const ConnectWalletPrompt = ({ description, testId }: { description: stri
   const { connect } = useWallet()
   const isConnecting = isLoading(connectState) || !isInitialized
   return (
-    <Stack alignItems="center" marginBlock={Spacing.lg} data-testid={testId}>
+    <Stack data-testid={testId} sx={{ alignItems: 'center', marginBlock: Spacing.lg }}>
       <Stack
-        padding={Spacing.xxl}
         spacing={Spacing['3xl']}
-        width={MaxWidth.connectWallet}
-        maxWidth="90dvw"
         sx={{
+          padding: Spacing.xxl,
+          width: MaxWidth.connectWallet,
+          maxWidth: '90dvw',
+
           // note: not using mui colors as the color needs to match the background image and we don't have one for chad
           backgroundColor: 'var(--table--background-color)',
         }}
       >
         <Stack
           spacing={3}
-          paddingBlock={8}
-          alignItems="center"
-          justifyContent="center"
           sx={{
+            paddingBlock: 8,
+            alignItems: 'center',
+            justifyContent: 'center',
             backgroundImage: t => `url(${getBackgroundUrl(t.key)})`,
             backgroundSize: 'contain',
             backgroundPosition: 'center',
@@ -41,12 +42,12 @@ export const ConnectWalletPrompt = ({ description, testId }: { description: stri
           <CurveLogo src={CURVE_LOGO_URL} alt="Curve Logo" />
           <Typography variant="headingXxl">{t`Enter Curve`}</Typography>
         </Stack>
-        <Stack spacing={3} alignItems="center">
+        <Stack spacing={3} sx={{ alignItems: 'center' }}>
           <Typography variant="bodyMRegular">{description}</Typography>
           <Button
             size="large"
             color="primary"
-            onClick={() => connect()}
+            onClick={() => void connect()}
             loading={isConnecting}
             loadingPosition="start"
             data-testid={`btn-connect-prompt${isConnecting ? '-loading' : ''}`}

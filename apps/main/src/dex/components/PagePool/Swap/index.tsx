@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { cloneDeep, isUndefined } from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useConfig, useConnection, type Config } from 'wagmi'
 import { AlertFormError } from '@/dex/components/AlertFormError'
@@ -45,7 +45,6 @@ import { decimal, formatNumber } from '@ui-kit/utils'
 import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
-const { cloneDeep, isUndefined } = lodash
 const { Spacing } = SizesAndSpaces
 
 export const Swap = ({
@@ -65,9 +64,9 @@ export const Swap = ({
   seed: Seed
   tokensMapper: TokensMapper
 }) => {
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
 
-  const { chainId, signerAddress } = curve || {}
+  const { chainId, signerAddress } = curve ?? {}
   const { rChainId } = routerParams
   const activeKey = useStore(state => state.poolSwap.activeKey)
   const exchangeOutput = useStore(state => state.poolSwap.exchangeOutput[activeKey] ?? DEFAULT_EXCHANGE_OUTPUT)
@@ -140,7 +139,9 @@ export const Swap = ({
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>, isGetMaxFrom: boolean | null, updatedMaxSlippage: string | null) => {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setConfirmedLoss(false)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTxInfoBar(null)
 
       void setFormValues(
@@ -170,7 +171,7 @@ export const Swap = ({
       const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepSwap(actionActiveKey, curve, poolData, formValues, maxSlippage)
 
-      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && network) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && network) {
         void refetchUserFromBalance()
         void refetchUserToBalance()
         setTxInfoBar(
@@ -214,12 +215,13 @@ export const Swap = ({
       const isApprove = formStatus.isApproved || formStatus.formTypeCompleted === 'APPROVE'
       const isComplete = formTypeCompleted === 'SWAP'
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: getStepStatus(isApprove, step === 'APPROVAL', isValid && !formProcessing),
           type: 'action',
           content: isApprove ? t`Spending Approved` : t`Approve Spending`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: async () => {
             const notifyMessage = t`Please approve spending your ${formValues.fromToken}.`
             const { dismiss } = notify(notifyMessage, 'pending')
@@ -248,18 +250,19 @@ export const Swap = ({
                   cancelBtnProps: {
                     label: t`Cancel`,
                     onClick: () => {
+                      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
                       setConfirmedLoss(false)
                     },
                   },
                   isDismissable: false,
                   primaryBtnProps: {
-                    onClick: () => handleSwapClick(actionActiveKey, curve, poolData, formValues, maxSlippage),
+                    onClick: () => void handleSwapClick(actionActiveKey, curve, poolData, formValues, maxSlippage),
                     disabled: !confirmedLoss,
                   },
                   primaryBtnLabel: 'Swap anyway',
                 },
               }
-            : { onClick: () => handleSwapClick(actionActiveKey, curve, poolData, formValues, maxSlippage) }),
+            : { onClick: () => void handleSwapClick(actionActiveKey, curve, poolData, formValues, maxSlippage) }),
         },
       }
 
@@ -284,10 +287,10 @@ export const Swap = ({
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
     }
   }, [])
 
@@ -336,6 +339,7 @@ export const Swap = ({
         maxSlippage,
         userFromBalanceLoading || userToBalanceLoading,
       )
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
@@ -375,7 +379,7 @@ export const Swap = ({
 
   return (
     <FormContent>
-      <Stack gap={Spacing.sm}>
+      <Stack sx={{ gap: Spacing.sm }}>
         <LargeTokenInput
           label={t`Sell`}
           name="fromAmount"
@@ -390,6 +394,7 @@ export const Swap = ({
               onClose={closeModalFromToken}
               isOpen={!!isOpenFromToken}
               onOpen={openModalFromToken}
+              size="small"
             >
               <TokenList
                 tokens={selectList}
@@ -466,6 +471,7 @@ export const Swap = ({
               isOpen={!!isOpenToToken}
               onOpen={openModalToToken}
               onClose={closeModalToToken}
+              size="small"
             >
               <TokenList
                 tokens={selectList}
@@ -529,7 +535,6 @@ export const Swap = ({
           </div>
         )}
       </Stack>
-
       <Stack>
         <DetailInfoExchangeRate exchangeRates={exchangeOutput.exchangeRates} loading={exchangeOutput.loading} />
 
@@ -549,11 +554,9 @@ export const Swap = ({
         )}
         <SlippageToleranceActionInfo maxSlippage={maxSlippage} stateKey={chainIdPoolId} />
       </Stack>
-
       {poolAlert && poolAlert?.isInformationOnlyAndShowInForm && (
         <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
       )}
-
       <AlertSlippage
         maxSlippage={maxSlippage}
         usdAmount={
@@ -569,11 +572,9 @@ export const Swap = ({
           updateFormValues({}, null, null)
         }}
       />
-
       {formValues.toError ? (
         <AlertBox alertType="error">{t`The entered amount exceeds the available currency reserves.`}</AlertBox>
       ) : null}
-
       {/* actions*/}
       <TransferActions
         poolData={poolData}

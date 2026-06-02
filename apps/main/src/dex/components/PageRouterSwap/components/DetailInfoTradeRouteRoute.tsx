@@ -23,7 +23,7 @@ export const DetailInfoTradeRouteRoute = ({
 }: {
   params: UrlParams
   route: Route
-  tokensNameMapper: { [address: string]: string }
+  tokensNameMapper: Record<string, string>
   poolData: PoolData | undefined
   swapCustomRouteRedirect: string | undefined
 }) => {
@@ -39,7 +39,7 @@ export const DetailInfoTradeRouteRoute = ({
             {route.name || route.poolId}
           </ExternalLink>
         ) : route.routeUrlId ? (
-          <Stack direction="row" alignItems="center" gap={Spacing.sm}>
+          <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.sm }}>
             {tokens && (
               <TokenIcons
                 blockchainId={params.network}
@@ -53,10 +53,7 @@ export const DetailInfoTradeRouteRoute = ({
             <RouterLink
               href={getPath(params, `${ROUTE.PAGE_POOLS}/${route.routeUrlId}/deposit`)}
               target="_blank"
-              sx={{
-                textDecoration: 'none',
-                '&:hover': { textDecoration: 'underline' },
-              }}
+              sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
             >
               {route.name || route.poolId}
             </RouterLink>

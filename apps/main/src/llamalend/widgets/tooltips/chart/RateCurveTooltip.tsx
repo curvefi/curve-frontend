@@ -1,11 +1,7 @@
 import type { RateCurveChartPoint } from '@/llamalend/widgets/MarketRateCurveChart'
-import {
-  ChartTooltipSeriesGroup,
-  ChartTooltipSeriesRow,
-  ChartTooltipShell,
-} from '@/llamalend/widgets/tooltips/chart/ChartTooltipComponents'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
+import { ChartTooltipSeriesGroup, ChartTooltipSeriesRow, ChartTooltipShell } from '@ui-kit/shared/ui/Chart'
 import type { LineSeriesConfig } from '@ui-kit/shared/ui/Chart/EChartsLineChart'
 import { formatPercent } from '@ui-kit/utils'
 
@@ -29,7 +25,7 @@ export const RateCurveTooltip = ({ datum, visibleSeries }: RateCurveTooltipProps
         />
       ))}
     </ChartTooltipSeriesGroup>
-    <Typography variant="bodyXsRegular" fontStyle="italic" sx={{ whiteSpace: 'normal' }}>
+    <Typography variant="bodyXsRegular" sx={{ fontStyle: 'italic', whiteSpace: 'normal' }}>
       {t`Higher utilization can reduce immediately withdrawable liquidity.`}
     </Typography>
   </ChartTooltipShell>

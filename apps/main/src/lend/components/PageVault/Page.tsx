@@ -13,13 +13,13 @@ import { SupplyPositionDetails } from '@/llamalend/features/market-position-deta
 import { useLoanExists } from '@/llamalend/queries/user'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { PageHeader } from '@/llamalend/widgets/page-header'
-import { type Chain } from '@curvefi/prices-api'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
+import { MarketRateType } from '@ui-kit/types/market'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 import { useLendMarket } from '../../hooks/useLendMarket'
 import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
@@ -39,6 +39,7 @@ export const Page = () => {
   const marketId = market?.id ?? ''
   const userActiveKey = helpers.getUserActiveKey(api, market!)
   const { address: userAddress } = useConnection()
+  // eslint-disable-next-line @eslint-react/use-state -- Existing violation before enabling this rule.
   const [isLoaded, setLoaded] = useState(false)
 
   const { data: loanExists } = useLoanExists({
@@ -55,10 +56,11 @@ export const Page = () => {
   })
   useEffect(() => {
     if (api && market && isPageVisible) {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setLoaded(true)
       const timer = setTimeout(
         () =>
-          Promise.all([
+          void Promise.all([
             fetchAllMarketDetails(api, market, true),
             api.signerAddress &&
               (loanExists ? fetchAllUserMarketDetails(api, market, true) : fetchUserMarketBalances(api, market, true)),
@@ -107,7 +109,7 @@ export const Page = () => {
           marketId={marketId}
           isLoading={!isHydrated}
           market={market}
-          blockchainId={network.id as Chain}
+          blockchainId={network.id}
         />
       }
     >
@@ -117,7 +119,7 @@ export const Page = () => {
         rewardsBanner={<CampaignRewardsBanner chainId={rChainId} market={market} />}
       />
       {hasSupplyPosition && <SupplyPositionDetails {...supplyPositionDetails} />}
-      <MarketInformationComposite pageProps={pageProps} type="supply" />
+      <MarketInformationComposite pageProps={pageProps} rateType={MarketRateType.Supply} />
     </DetailPageLayout>
   ) : (
     <ConnectWalletPrompt description={t`Connect your wallet to view market`} />

@@ -34,6 +34,7 @@ export const TableRow = ({
       </Td>
       {isLite ? (
         <Td className="right">
+          {/* eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule. */}
           <TableCellRewardsOthers isHighlight={sortBy === SORT_ID.rewardOthers} rewardsApy={poolRewardsApy} />
         </Td>
       ) : (
@@ -49,12 +50,14 @@ export const TableRow = ({
         </Td>
       )}
       <Td className="right">
+        {/* eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule. */}
         <TableCellBalances isHighLight={sortBy === SORT_ID.liquidityUsd} {...dashboardData} />
       </Td>
       <Td className="right">
         <TableCellProfit sortBy={sortBy} {...dashboardData} />
       </Td>
       <Td className="right">
+        {/* eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule. */}
         <TableCellClaimables isHighLight={sortBy === SORT_ID.claimables} {...dashboardData} />
       </Td>
     </Tr>

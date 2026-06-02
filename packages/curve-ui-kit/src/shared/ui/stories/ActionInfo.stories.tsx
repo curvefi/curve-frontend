@@ -3,9 +3,11 @@ import WhatshotIcon from '@mui/icons-material/Whatshot'
 import { Stack } from '@mui/material'
 import Switch from '@mui/material/Switch'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { t } from '@ui-kit/lib/i18n'
 import { shortenAddress } from '@ui-kit/utils'
 import { ActionInfo } from '../ActionInfo'
 import { ActionInfoSize } from '../ActionInfo/ActionInfo'
+import { ExternalLink } from '../ExternalLink'
 
 const SIZES: ActionInfoSize[] = ['small', 'medium']
 
@@ -45,13 +47,9 @@ const meta: Meta<typeof ActionInfo> = {
       control: 'color',
       description: 'Custom color for the previous value text',
     },
-    link: {
-      control: 'text',
-      description: 'The URL to navigate to when clicking the external link button',
-    },
     copyValue: {
       control: 'text',
-      description: 'The value to be copied (will display a copy button)',
+      description: 'The value to be copied when clicking the value',
     },
     copiedTitle: {
       control: 'text',
@@ -75,8 +73,12 @@ const meta: Meta<typeof ActionInfo> = {
     label: 'Contract',
     value: shortenAddress('0x0655977feb2f289a4ab78af67bab0d17aab84367'),
     valueColor: 'textPrimary',
-    valueTooltip: 'Contract address',
-    link: 'https://etherscan.io/address/0x0655977feb2f289a4ab78af67bab0d17aab84367',
+    valueTooltip: (
+      <ExternalLink
+        href="https://etherscan.io/address/0x0655977feb2f289a4ab78af67bab0d17aab84367"
+        label={t`View on Etherscan`}
+      />
+    ),
     copyValue: '',
     copiedTitle: 'Contract address copied!',
     loading: false,
@@ -106,7 +108,7 @@ export const AllSizes: Story = {
     size: 'small',
   },
   render: args => (
-    <Stack gap={4} alignItems="center" width="25rem" sx={{ alignItems: 'stretch' }}>
+    <Stack sx={{ gap: 4, width: '25rem', alignItems: 'stretch' }}>
       {SIZES.map(size => (
         <ActionInfo
           key={size}
@@ -187,12 +189,31 @@ export const WithTooltip: Story = {
   },
 }
 
+export const WithLinkTooltip: Story = {
+  args: {
+    value: shortenAddress('0x0655977feb2f289a4ab78af67bab0d17aab84367'),
+    valueTooltip: (
+      <ExternalLink
+        href="https://etherscan.io/address/0x0655977feb2f289a4ab78af67bab0d17aab84367"
+        label={t`View on Etherscan`}
+      />
+    ),
+    size: 'medium',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Shows value tooltip content with a single link button',
+      },
+    },
+  },
+}
+
 export const WithEmptyValueAndSwitch: Story = {
   args: {
     label: 'Toggle Setting',
     value: '',
     valueRight: <Switch size="small" />,
-    link: '',
     size: 'medium',
   },
   parameters: {
@@ -222,7 +243,6 @@ export const WithError: Story = {
   args: {
     error: new Error('Failed to load contract address'),
     size: 'medium',
-    link: '',
   },
   parameters: {
     docs: {

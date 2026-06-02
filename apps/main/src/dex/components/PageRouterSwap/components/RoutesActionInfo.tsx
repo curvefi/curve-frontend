@@ -20,7 +20,7 @@ export const RoutesActionInfo = ({
   routes: Route[] | undefined
   tokensNameMapper: TokensNameMapper
   poolDataMapper: PoolDataMapper | undefined
-  swapCustomRouteRedirect: { [poolId: string]: string } | undefined
+  swapCustomRouteRedirect: Record<string, string> | undefined
 }) => (
   <>
     <ActionInfo
@@ -44,7 +44,7 @@ export const RoutesActionInfo = ({
     {routes && routes.length > 1 && (
       // the action info isn't able to wrap properly to take the whole line without changing it a lot.
       // here we follow the design and use multiple action infos
-      <Stack direction="row" width="100%">
+      <Stack direction="row" sx={{ width: '100%' }}>
         <Stack direction="row">
           <Box
             sx={{
@@ -55,13 +55,14 @@ export const RoutesActionInfo = ({
           ></Box>
           <Stack direction="column">
             {routes.map((_, index) => (
+              // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
               <Box key={index} sx={{ width: 16, height: 20 }}>
                 <IndicatorIcon sx={{ width: 12, height: 12, color: t => t.design.Color.Neutral[700] }} />
               </Box>
             ))}
           </Stack>
         </Stack>
-        <Stack direction="column" width="100%">
+        <Stack direction="column" sx={{ width: '100%' }}>
           {routes.map(route => (
             <DetailInfoTradeRouteRoute
               key={`${route.poolId}-${route.outputCoinAddress}`}

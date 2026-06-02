@@ -142,7 +142,7 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
       setInternalValue(nextValue)
       cancelDebounce()
       if (Array.isArray(nextValue) && nextValue.find(v => v == null)) return
-      onChange(nextValue as T)
+      onChange(nextValue)
     },
     [cancelDebounce, onChange, setInternalValue],
   )
@@ -239,7 +239,7 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
   )
 
   const renderSlider = (
-    <Stack flexGrow={1}>
+    <Stack sx={{ flexGrow: 1 }}>
       {sliderLabel}
       <Slider
         size={size}
@@ -263,9 +263,7 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
   return (
     <Stack
       direction={layoutDirection}
-      alignItems={layoutDirection === 'row' ? 'end' : 'stretch'}
-      columnGap={Spacing.sm}
-      rowGap={Spacing.xs}
+      sx={{ alignItems: layoutDirection === 'row' ? 'end' : 'stretch', columnGap: Spacing.sm, rowGap: Spacing.xs }}
     >
       {layoutDirection === 'row' ? (
         <>
@@ -278,11 +276,13 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
           {renderSlider}
           <Stack
             direction="row"
-            alignItems="center"
-            justifyContent={isRange ? 'space-between' : 'flex-end'}
-            columnGap={Spacing.sm}
-            rowGap={Spacing.xs}
-            flexGrow={1}
+            sx={{
+              alignItems: 'center',
+              justifyContent: isRange ? 'space-between' : 'flex-end',
+              columnGap: Spacing.sm,
+              rowGap: Spacing.xs,
+              flexGrow: 1,
+            }}
           >
             {isRange && renderInput(currentFirst, 0)}
             {renderInput(currentSecond, 1)}

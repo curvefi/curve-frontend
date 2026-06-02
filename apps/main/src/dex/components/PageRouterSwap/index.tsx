@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { isEqual, noop } from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useConfig } from 'wagmi'
 import { FormConnectWallet } from '@/dex/components/FormConnectWallet'
@@ -74,7 +74,7 @@ export const QuickSwap = ({
   redirect: (toAddress: string, fromAddress: string) => void
   curve: CurveApi | null
 }) => {
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
   const { signerAddress: userAddress } = curve ?? {}
   const { tokensNameMapper } = useTokensNameMapper(chainId)
   const poolDataMapper = useStore((state): PoolDataMapper | undefined => state.pools.poolsMapper[chainId])
@@ -179,7 +179,9 @@ export const QuickSwap = ({
       isFullReset?: boolean,
       isRefetch?: boolean,
     ) => {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTxInfoBar(null)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setConfirmedLoss(false)
 
       void setFormValues(
@@ -218,7 +220,7 @@ export const QuickSwap = ({
 
       const resp = await fetchStepSwap(actionActiveKey, config, curve, formValues, searchedParams, maxSlippage)
 
-      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && !resp.error && network) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && !resp.error && network) {
         void refetchUserFromBalance()
         void refetchUserToBalance()
         const txMessage = t`Transaction complete. Received ${resp.swappedAmount} ${toSymbol}.`
@@ -256,12 +258,13 @@ export const QuickSwap = ({
       const isApproved = formStatus.isApproved || formStatus.formTypeCompleted === 'APPROVE'
       const isComplete = formStatus.formTypeCompleted === 'SWAP'
 
-      const stepsObj: { [k: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: getStepStatus(isApproved, step === 'APPROVAL', isValid && !formProcessing),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: async () => {
             const notifyMessage = t`Please approve spending your ${fromSymbol}.`
             const { dismiss } = notify(notifyMessage, 'pending')
@@ -290,6 +293,7 @@ export const QuickSwap = ({
                   ),
                   cancelBtnProps: {
                     label: t`Cancel`,
+                    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
                     onClick: () => setConfirmedLoss(false),
                   },
                   primaryBtnProps: {
@@ -355,7 +359,7 @@ export const QuickSwap = ({
   )
 
   const lastFetchTimeRef = useRef<number>(0)
-  const fetchDataRef = useRef<() => void>(() => {})
+  const fetchDataRef = useRef<() => void>(noop)
 
   // Keep fetchDataRef always pointing to the latest fetchData logic
   fetchDataRef.current = () => {
@@ -382,10 +386,10 @@ export const QuickSwap = ({
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
       updateFormValues({}, false, '', true)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
@@ -430,7 +434,8 @@ export const QuickSwap = ({
       toToken?.symbol ?? toToken?.address ?? '',
       fromToken?.symbol ?? fromToken?.address ?? '',
     )
-    setSteps(prev => (lodash.isEqual(prev, updatedSteps) ? prev : updatedSteps))
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
+    setSteps(prev => (isEqual(prev, updatedSteps) ? prev : updatedSteps))
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isReady, confirmedLoss, routesAndOutput, formEstGas, formStatus, formValues, searchedParams, curve])
 
@@ -457,7 +462,7 @@ export const QuickSwap = ({
   )
 
   return (
-    <Stack gap={Spacing.sm}>
+    <Stack sx={{ gap: Spacing.sm }}>
       {/* SWAP FROM */}
       <LargeTokenInput
         label={t`Sell`}
@@ -485,6 +490,7 @@ export const QuickSwap = ({
             isOpen={!!isOpenFromToken}
             onOpen={openModalFromToken}
             onClose={closeModalFromToken}
+            size="small"
           >
             <TokenList
               tokens={tokens}
@@ -506,7 +512,6 @@ export const QuickSwap = ({
           t`Amount > wallet balance ${formatNumber(userFromBalance, { abbreviate: false })}`
         }
       />
-
       {/* SWAP ICON */}
       <IconButton
         disabled={isDisable}
@@ -516,9 +521,7 @@ export const QuickSwap = ({
       >
         <Icon name="ArrowsVertical" size={24} />
       </IconButton>
-
       {/* SWAP TO */}
-
       <LargeTokenInput
         label={t`Buy`}
         balance={decimal(formValues.toAmount)}
@@ -540,6 +543,7 @@ export const QuickSwap = ({
             isOpen={!!isOpenToToken}
             onOpen={openModalToToken}
             onClose={closeModalToToken}
+            size="small"
           >
             <TokenList
               tokens={tokens}
@@ -556,9 +560,8 @@ export const QuickSwap = ({
           </TokenSelector>
         }
       />
-
       {/* detail info */}
-      <Stack gap={Spacing.xs}>
+      <Stack sx={{ gap: Spacing.xs }}>
         <Stack>
           <SlippageToleranceActionInfo
             maxSlippage={storeMaxSlippage}
@@ -591,7 +594,6 @@ export const QuickSwap = ({
         </Stack>
         {userAddress && <ActionInfoGasEstimate gas={q(gas)} isApproved={formStatus.isApproved} />}
       </Stack>
-
       {/* alerts */}
       <RouterSwapAlerts
         formStatus={formStatus}
@@ -604,7 +606,6 @@ export const QuickSwap = ({
         searchedParams={searchedParams}
         updateFormValues={updateFormValues}
       />
-
       {/* actions */}
       <FormConnectWallet loading={!!userAddress && !steps.length}>
         {txInfoBar}
@@ -622,5 +623,6 @@ function _isRoutesAndOutputLoading(
   if (typeof routesAndOutput !== 'undefined') {
     return routesAndOutput.loading
   }
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   return !error && ((isFrom && +fromAmount > 0) || (!isFrom && +toAmount > 0))
 }

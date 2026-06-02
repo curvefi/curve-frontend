@@ -24,12 +24,15 @@ type ChartCardProps = {
   loading: boolean
   /** EChart options */
   option: EChartsOption
-  /** Whether the card should be shown as a fullscreen modal or */
+  /** Content for above the chart, usually metrics */
+  metrics?: ReactNode
+  /** Whether the card should be shown as a fullscreen modal or not */
   fullscreen?: boolean
   /** When the fullscreen modal is being closed */
   onCloseFullscreen?: () => void
   /** Content for below the chart, like an optional legend for example */
   children?: ReactNode
+  testId?: string
 }
 
 /** General purpose card for ECharts graphs with optional support of fullscreen mode */
@@ -38,28 +41,32 @@ export const EChartsCard = ({
   action,
   loading,
   option,
+  metrics,
   fullscreen = false,
   onCloseFullscreen,
   children,
+  testId,
 }: ChartCardProps) => (
   <WithWrapper shouldWrap={fullscreen} Wrapper={DialogFullscreen} onClose={() => onCloseFullscreen?.()}>
     {/** A lot of flex and height code is to make sure the chart expands correctly in fullscreen mode */}
-    <Card component={Stack} height="100%" {...(!fullscreen && { size: 'small' })}>
+    <Card component={Stack} sx={{ height: '100%' }} {...(!fullscreen && { size: 'small' })} data-testid={testId}>
       <CardHeader
         title={title}
         action={
-          <Stack direction="row" gap={Spacing.xs}>
+          <Stack direction="row" sx={{ gap: Spacing.xs }}>
             {action}
           </Stack>
         }
         sx={{ ...(fullscreen && { marginInlineStart: Spacing.md }) }}
       />
 
-      <CardContent component={Stack} gap={Spacing.md} flexGrow={1}>
-        <Box position="relative" {...(fullscreen && { flexGrow: 1 })}>
+      <CardContent component={Stack} sx={{ gap: Spacing.md, flexGrow: 1 }}>
+        {metrics}
+        <Box sx={{ position: 'relative', ...(fullscreen && { flexGrow: 1 }) }}>
           {loading && <CircularProgress sx={{ position: 'absolute', inset: 0, margin: 'auto', zIndex: 2 }} />}
           <ReactECharts
             notMerge
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
             option={option}
             style={{
               height: '100%',

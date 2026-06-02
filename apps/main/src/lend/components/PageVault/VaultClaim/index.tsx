@@ -6,7 +6,7 @@ import type { FormStatus, RewardType } from '@/lend/components/PageVault/VaultCl
 import { helpers } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import { useStore } from '@/lend/store/useStore'
-import { Api, MarketClaimable, LendMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
+import { Api, LendMarketTemplate, MarketClaimable, PageContentProps } from '@/lend/types/lend.types'
 import { AlertBox } from '@ui/AlertBox'
 import { Box } from '@ui/Box'
 import { Button } from '@ui/Button'
@@ -22,7 +22,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { amount as toAmount, formatNumber } from '@ui-kit/utils'
 
 export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) => {
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
 
   const formStatus = useStore(state => state.vaultClaim.formStatus)
   const claimable = useStore(state => state.vaultClaim.claimable[userActiveKey])
@@ -59,14 +59,15 @@ export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContent
       const { chainId } = api
       const { crv, rewards } = claimable.claimable ?? {}
 
-      const amount = type === 'crv' ? `${crv} CRV` : _getRewardsAmount(rewards)
-      const notifyMessage = t`claim rewards ${amount}`
+      const amount =
+        type === 'crv' ? `${crv} CRV` : rewards?.map(({ symbol, amount }) => `${amount} ${symbol}`).join(', ')
+      const notifyMessage = t`claim rewards ${amount ?? ''}`
       const notification = notify(`Please confirm ${notifyMessage}`, 'pending')
       setTxInfoBar(<AlertBox alertType="info">Pending {notifyMessage}</AlertBox>)
 
       const resp = await fetchStepClaim(payloadActiveKey, api, market, type)
 
-      if (isSubscribed.current && resp?.hash && resp.userActiveKey === userActiveKey && !resp.error) {
+      if (isSubscribedRef.current && resp?.hash && resp.userActiveKey === userActiveKey && !resp.error) {
         const txMessage = t`Transaction completed.`
         setTxInfoBar(
           <TxInfoBar
@@ -100,20 +101,20 @@ export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContent
 
       const stepKey = isCrv ? 'CLAIM_CRV' : 'CLAIM_REWARDS'
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         CLAIM_CRV: {
           key: 'CLAIM_CRV',
           status: helpers.getStepStatus(isComplete, step === stepKey, isValid),
           type: 'action',
           content: isComplete ? t`Claimed` : t`Claim CRV`,
-          onClick: async () => handleBtnClickClaim(payloadActiveKey, claimable, api, market, 'crv'),
+          onClick: () => void handleBtnClickClaim(payloadActiveKey, claimable, api, market, 'crv'),
         },
         CLAIM_REWARDS: {
           key: 'CLAIM_REWARDS',
           status: helpers.getStepStatus(isComplete, step === stepKey, isValid),
           type: 'action',
           content: isComplete ? t`Claimed` : t`Claim Rewards`,
-          onClick: async () => handleBtnClickClaim(payloadActiveKey, claimable, api, market, 'rewards'),
+          onClick: () => void handleBtnClickClaim(payloadActiveKey, claimable, api, market, 'rewards'),
         },
       }
 
@@ -126,10 +127,10 @@ export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContent
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
       resetState()
     }
   }, [resetState])
@@ -143,6 +144,7 @@ export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContent
   useEffect(() => {
     if (isLoaded && api && market && (haveClaimableCrv || haveClaimableRewards)) {
       const updatedSteps = getSteps(userActiveKey, api, market, claimable, formStatus)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
@@ -193,7 +195,7 @@ export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContent
                 variant="filled"
                 size="large"
                 disabled={!!formStatus.step}
-                onClick={() => handleBtnClickClaim(userActiveKey, claimable, api, market, 'crv')}
+                onClick={() => void handleBtnClickClaim(userActiveKey, claimable, api, market, 'crv')}
               >
                 Claim CRV
               </Button>
@@ -206,7 +208,7 @@ export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContent
                 variant="filled"
                 size="large"
                 disabled={!!formStatus.step}
-                onClick={() => handleBtnClickClaim(userActiveKey, claimable, api, market, 'rewards')}
+                onClick={() => void handleBtnClickClaim(userActiveKey, claimable, api, market, 'rewards')}
               >
                 Claim Rewards
               </Button>
@@ -225,7 +227,3 @@ const ClaimableWrapper = styled.div`
   box-shadow: inset 0.5px 0.5px 0 0.5px var(--box--primary--content--shadow-color);
   background-color: var(--box--primary--content--background-color);
 `
-
-function _getRewardsAmount(rewards: { token: string; symbol: string; amount: string }[] | undefined) {
-  return (rewards || []).map(({ symbol, amount }) => `${amount} ${symbol}`).join(', ')
-}

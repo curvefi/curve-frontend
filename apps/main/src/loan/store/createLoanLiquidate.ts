@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { cloneDeep } from 'lodash'
 import { StoreApi } from 'zustand'
 import { getControllerAddress, updateUserEventsApi } from '@/llamalend/llama.utils'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
@@ -12,7 +12,6 @@ import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
-const { cloneDeep } = lodash
 
 type SliceState = {
   formEstGas: FormEstGas
@@ -24,33 +23,38 @@ const sliceKey = 'loanLiquidate'
 
 export type LoanLiquidateSlice = {
   [sliceKey]: SliceState & {
-    fetchEstGasApproval(chainId: ChainId, llamma: Llamma, maxSlippage: string, formStatus: FormStatus): Promise<void>
-    fetchTokensToLiquidate(
+    fetchEstGasApproval: (
+      chainId: ChainId,
+      llamma: Llamma,
+      maxSlippage: string,
+      formStatus: FormStatus,
+    ) => Promise<void>
+    fetchTokensToLiquidate: (
       chainId: ChainId,
       llamma: Llamma,
       llammaId: string,
       maxSlippage: string,
       userWalletBalances: UserWalletBalances,
-    ): Promise<void>
+    ) => Promise<void>
 
     // step
-    fetchStepApprove(
+    fetchStepApprove: (
       curve: LlamaApi,
       llamma: Llamma,
       maxSlippage: string,
-    ): Promise<{ hashes: string[]; error: string } | undefined>
-    fetchStepLiquidate(
+    ) => Promise<{ hashes: string[]; error: string } | undefined>
+    fetchStepLiquidate: (
       curve: LlamaApi,
       llamma: Llamma,
       liquidationAmt: string,
       maxSlippage: string,
-    ): Promise<{ error: string; hash: string; loanExists: boolean } | undefined>
+    ) => Promise<{ error: string; hash: string; loanExists: boolean } | undefined>
 
     // steps helper
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: () => void
   }
 }
 
@@ -96,7 +100,7 @@ export const createLoanLiquidate = (_set: StoreApi<State>['setState'], get: Stor
       const clonedFormStatus = cloneDeep(get()[sliceKey].formStatus)
       clonedFormStatus.error = resp.error
       const canSelfLiquidate = haveEnoughCrvusdForLiquidation(userWalletBalances.stablecoin, resp.tokensToLiquidate)
-      clonedFormStatus.warning = !canSelfLiquidate ? 'warning-not-enough-crvusd' : ''
+      clonedFormStatus.warning = canSelfLiquidate ? '' : 'warning-not-enough-crvusd'
 
       get()[sliceKey].setStateByKey('formStatus', clonedFormStatus)
       if (canSelfLiquidate) {

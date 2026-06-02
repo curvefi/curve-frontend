@@ -48,7 +48,7 @@ export const LoanRepay = ({
   userActiveKey,
   params,
 }: PageContentProps & { params: MarketUrlParams }) => {
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
   const push = useNavigate()
   const activeKey = useStore(state => state.loanRepay.activeKey)
   const detailInfoLeverage = useStore(state => state.loanRepay.detailInfoLeverage[activeKey])
@@ -65,6 +65,7 @@ export const LoanRepay = ({
 
   const maxSlippage = useUserProfileStore(state => state.maxSlippage.crypto)
 
+  // eslint-disable-next-line @eslint-react/use-state -- Existing violation before enabling this rule.
   const [{ isConfirming, confirmedWarning }, setConfirmWarning] = useState(DEFAULT_CONFIRM_WARNING)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
   const [steps, setSteps] = useState<Step[]>([])
@@ -83,6 +84,7 @@ export const LoanRepay = ({
       isFullReset?: boolean,
       shouldRefetch?: boolean,
     ) => {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setConfirmWarning(DEFAULT_CONFIRM_WARNING)
       void setFormValues(
         isLoaded ? api : null,
@@ -92,6 +94,7 @@ export const LoanRepay = ({
         shouldRefetch,
       )
 
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       if (isFullReset) setHealthMode(DEFAULT_HEALTH_MODE)
     },
     [api, isLoaded, maxSlippage, market, setFormValues],
@@ -108,7 +111,7 @@ export const LoanRepay = ({
       const notification = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
       const resp = await fetchStepRepay(payloadActiveKey, api, market, formValues, maxSlippage)
 
-      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && !resp.error) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && !resp.error) {
         const txMessage = t`Transaction completed.`
 
         setTxInfoBar(
@@ -166,6 +169,7 @@ export const LoanRepay = ({
             ? t`Repay in full.`
             : t`Repay with ${tokensMessage}.`
 
+        // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
         setTxInfoBar(
           <AlertBox alertType="info">
             <AlertSummary
@@ -181,15 +185,17 @@ export const LoanRepay = ({
           </AlertBox>,
         )
       } else if (!isComplete) {
+        // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
         setTxInfoBar(null)
       }
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: helpers.getStepStatus(isApproved, step === 'APPROVAL', isValid),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: async () => {
             const tokensMessage = getStepTokensStr(formValues, market).symbolList
             const notifyMessage = t`Please approve spending your ${tokensMessage}`
@@ -208,6 +214,7 @@ export const LoanRepay = ({
             ? {
                 modal: {
                   isDismissable: false,
+                  // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
                   initFn: () => setConfirmWarning({ isConfirming: true, confirmedWarning: false }),
                   title: t`Warning!`,
                   content: (
@@ -218,22 +225,24 @@ export const LoanRepay = ({
                         swapFrom: collateral_token.symbol,
                       }}
                       confirmed={confirmedWarning}
+                      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
                       setConfirmed={val => setConfirmWarning({ isConfirming: false, confirmedWarning: val as boolean })}
                     />
                   ),
                   cancelBtnProps: {
                     label: t`Cancel`,
+                    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
                     onClick: () => setConfirmWarning(DEFAULT_CONFIRM_WARNING),
                   },
                   primaryBtnProps: {
-                    onClick: () => handleBtnClickPay(payloadActiveKey, api, market, formValues, maxSlippage),
+                    onClick: () => void handleBtnClickPay(payloadActiveKey, api, market, formValues, maxSlippage),
                     disabled: !confirmedWarning,
                   },
                   primaryBtnLabel: t`Repay anyway`,
                 },
               }
             : {
-                onClick: async () => handleBtnClickPay(payloadActiveKey, api, market, formValues, maxSlippage),
+                onClick: () => void handleBtnClickPay(payloadActiveKey, api, market, formValues, maxSlippage),
               }),
         },
       }
@@ -261,10 +270,10 @@ export const LoanRepay = ({
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
     }
   }, [])
 
@@ -303,6 +312,7 @@ export const LoanRepay = ({
         steps,
         detailInfoLeverage?.isHighPriceImpact ? detailInfoLeverage.priceImpact : '',
       )
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
@@ -354,9 +364,9 @@ export const LoanRepay = ({
   )
 
   return (
-    <Stack gap={Spacing.lg}>
+    <Stack sx={{ gap: Spacing.lg }}>
       {hasLeverage && (
-        <Stack gap={Spacing.sm}>
+        <Stack sx={{ gap: Spacing.sm }}>
           <Typography variant="headingXsMedium"> {t`Repay from collateral:`} </Typography>
 
           <InpToken
@@ -373,11 +383,10 @@ export const LoanRepay = ({
           />
         </Stack>
       )}
-
-      <Stack gap={Spacing.sm}>
+      <Stack sx={{ gap: Spacing.sm }}>
         <Typography variant="headingXsMedium">{t`Repay from wallet:`}</Typography>
 
-        <Stack gap={Spacing.md}>
+        <Stack sx={{ gap: Spacing.md }}>
           {hasLeverage && (
             <InpToken
               network={network}
@@ -422,6 +431,7 @@ export const LoanRepay = ({
               },
               [borrowedTokenDecimals, hasExpectedBorrowed, updateFormValues, userState?.borrowed, userState?.debt],
             )}
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
             handleMaxClick={async () => {
               if (+userBalances.borrowed === 0) {
                 updateFormValues({ userBorrowed: '', isFullRepay: false })
@@ -454,12 +464,10 @@ export const LoanRepay = ({
           />
         </Stack>
       </Stack>
-
       <Typography variant="headingXsMedium">
         {t`Debt balance`} {formatNumber(amount(userState?.debt), { abbreviate: false, fallback: '-' })}{' '}
         {borrowed_token?.symbol}
       </Typography>
-
       <Checkbox
         isDisabled={disableCheckbox}
         isSelected={detailInfoLeverage?.repayIsFull || formValues.isFullRepay}
@@ -473,7 +481,6 @@ export const LoanRepay = ({
       >
         {t`Repay in full and close loan`}
       </Checkbox>
-
       {/* detail info */}
       <StyledDetailInfoWrapper>
         <DetailInfo
@@ -490,11 +497,11 @@ export const LoanRepay = ({
           setHealthMode={setHealthMode}
         />
       </StyledDetailInfoWrapper>
-
       {/* actions */}
       <LoanFormConnect haveSigner={!!signerAddress} loading={!api}>
         {txInfoBar}
         {!!healthMode.message && <AlertBox alertType="warning">{healthMode.message}</AlertBox>}
+        {/* eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule. */}
         {formStatus.error === FormError.FullRepaymentRequired ? (
           <AlertBox alertType="error">
             {t`Only partial repayment from wallet's ${borrowed_token?.symbol} or full repayment from collateral or wallet's ${collateral_token?.symbol} is

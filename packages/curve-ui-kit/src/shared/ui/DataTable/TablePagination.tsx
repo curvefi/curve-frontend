@@ -27,16 +27,19 @@ const PageButton = <T extends TableItem>({ page, table }: { page: number; table:
  * A spacer component used to indicate skipped pages in pagination.
  * We use a toggle button with a disabled state for consistent styling & to pass the ToggleButtonGroup validation.
  */
-const Spacer = () => (
-  <ToggleButton
-    disabled
-    value={useId()} // not used, disabled
-    sx={{ '&': { backgroundColor: 'transparent', minWidth: 0, padding: 0, width: '11px' } }}
-    data-testid="btn-page-ellipsis"
-  >
-    …
-  </ToggleButton>
-)
+const Spacer = () => {
+  const id = useId()
+  return (
+    <ToggleButton
+      disabled
+      value={id} // not used, disabled
+      sx={{ '&': { backgroundColor: 'transparent', minWidth: 0, padding: 0, width: '11px' } }}
+      data-testid="btn-page-ellipsis"
+    >
+      …
+    </ToggleButton>
+  )
+}
 
 /**
  * Calculate which page numbers to display in the pagination component.
@@ -72,9 +75,8 @@ export const TablePagination = <T extends TableItem>({ table }: { table: Table<T
   const { pageIndex } = table.getState().pagination
   const [firstPages, aroundPages, lastPages] = getPageOptions(pageIndex, table.getPageCount())
   return (
-    <Stack justifyContent="center" alignItems="center" direction="row" data-testid="table-pagination">
+    <Stack direction="row" data-testid="table-pagination" sx={{ justifyContent: 'center', alignItems: 'center' }}>
       <NeighborButton table={table} type="previous" />
-
       <ToggleButtonGroup value={pageIndex} size="extraSmall" exclusive data-testid="page-buttons">
         {firstPages.map(o => (
           <PageButton key={o} page={o} table={table} />
@@ -88,7 +90,6 @@ export const TablePagination = <T extends TableItem>({ table }: { table: Table<T
           <PageButton key={o} page={o} table={table} />
         ))}
       </ToggleButtonGroup>
-
       <NeighborButton table={table} type="next" />
     </Stack>
   )

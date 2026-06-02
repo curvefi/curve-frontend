@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'bignumber.js'
 import { FastifyBaseLogger } from 'fastify'
 import { Address, zeroAddress } from 'viem'
 import type { IDict, IRoute, IRouteStep } from '@curvefi/api/lib/interfaces'
@@ -19,6 +19,7 @@ const tryGetPools = (routes: IRouteStep[], curve: CurveJS, log: FastifyBaseLogge
     try {
       return [route, curve.getPool(route.poolId)]
     } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       log.info({ message: 'routerBestRouteAndOutput missing poolName', poolId: route.poolId }, error.message)
       return [route, undefined]
     }

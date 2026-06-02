@@ -19,6 +19,9 @@ const pool = z
     trading_fee_24h: z.number(),
     liquidity_volume_24h: z.number(),
     liquidity_fee_24h: z.number(),
+    lp_token_address: address,
+    lp_token_symbol: z.string(),
+    lp_token_supply: z.number(),
     coins: z.array(coin).optional(),
     base_daily_apr: z.number(),
     base_weekly_apr: z.number(),
@@ -328,11 +331,11 @@ export const getPoolMetadataResponse = z
     has_donations: z.boolean(),
   })
   .transform(camelizeKeys)
-  .transform(({ deploymentDate, gauges, assetTypes, oracles, ...data }) => ({
+  .transform(({ deploymentDate, gauges, assetTypes, oracles = null, ...data }) => ({
     ...data,
     gauges: [...gauges],
     assetTypes: assetTypes ? [...assetTypes] : null,
-    oracles: oracles?.map(item => (item ? item : null)) ?? null,
+    oracles,
     deploymentDate: deploymentDate ?? null,
   }))
 

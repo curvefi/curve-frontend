@@ -26,7 +26,11 @@ const convertDate = (input: Date | number | string): Date => {
  *
  * @returns A formatted date string adjusted for the local timezone.
  */
-export const formatDate = (date: Date | string | number, variant: 'short' | 'long' = 'short') =>
+export const formatDate = (
+  date: Date | string | number,
+  variant: 'short' | 'long' = 'short',
+  { omitYear = false } = {},
+) =>
   new Intl.DateTimeFormat(
     undefined,
     variant === 'short'
@@ -34,13 +38,13 @@ export const formatDate = (date: Date | string | number, variant: 'short' | 'lon
           // short - example: 31/01/25 adjusted for local timezone
           day: '2-digit',
           month: 'short',
-          year: 'numeric',
+          year: omitYear ? undefined : 'numeric',
         }
       : {
           // long - example: 31 January, 2026, 12:00 AM adjusted for local timezone
           month: 'short',
           day: 'numeric',
-          year: 'numeric',
+          year: omitYear ? undefined : 'numeric',
           hour: 'numeric',
           minute: '2-digit',
           hour12: true,

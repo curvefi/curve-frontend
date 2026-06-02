@@ -5,7 +5,7 @@ import { Chain } from '@ui-kit/utils'
 export const getCollateralListPathname = ({ network }: NetworkUrlParams) =>
   getInternalUrl('llamalend', network, LLAMALEND_ROUTES.PAGE_MARKETS)
 
-export const useChainId = ({ network }: NetworkUrlParams) =>
+export const getChainId = ({ network }: NetworkUrlParams) =>
   ({
     ethereum: Chain.Ethereum as const,
   })[network] as ChainId

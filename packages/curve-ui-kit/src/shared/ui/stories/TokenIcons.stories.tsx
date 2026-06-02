@@ -20,6 +20,7 @@ const TOKENS = [
 
 const TokenIconsStory = (props: Omit<TokenIconsProps, 'variant'>) => {
   const ref = useRef<HTMLDivElement>(null)
+  // eslint-disable-next-line @eslint-react/use-state -- Existing violation before enabling this rule.
   const [[sizeDefault, sizeIcons], setSizes] = useState<DOMRect[]>([])
   useEffect(() => {
     const interval = setInterval(
@@ -34,7 +35,7 @@ const TokenIconsStory = (props: Omit<TokenIconsProps, 'variant'>) => {
     return () => clearInterval(interval)
   }, [])
   return (
-    <Stack gap={5} ref={ref} width={300}>
+    <Stack ref={ref} sx={{ gap: 5, width: 300 }}>
       <Box>
         <Typography variant="headingXsMedium">
           Default Variant

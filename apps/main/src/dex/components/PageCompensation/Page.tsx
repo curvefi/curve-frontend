@@ -54,19 +54,21 @@ export const PageCompensation = () => {
           <strong>
             <i>Claimable compensation is only available on Ethereum network.</i>
           </strong>
-        ) : !provider ? (
+        ) : provider ? (
+          !rChainId || contracts.length === 0 ? (
+            <SpinnerWrapper>
+              <Spinner />
+            </SpinnerWrapper>
+          ) : (
+            <FormCompensation curve={curveApi} rChainId={rChainId} contracts={contracts} provider={provider} />
+          )
+        ) : (
           <>
             <strong>Please connect your wallet to view compensation</strong>
-            <Button fillWidth loading={isConnecting} size="large" variant="filled" onClick={() => connectWallet()}>
+            <Button fillWidth loading={isConnecting} size="large" variant="filled" onClick={() => void connectWallet()}>
               {t`Connect Wallet`}
             </Button>
           </>
-        ) : !rChainId || contracts.length === 0 ? (
-          <SpinnerWrapper>
-            <Spinner />
-          </SpinnerWrapper>
-        ) : (
-          <FormCompensation curve={curveApi} rChainId={rChainId} contracts={contracts} provider={provider} />
         )}
         <i>
           For additional information, please see{' '}

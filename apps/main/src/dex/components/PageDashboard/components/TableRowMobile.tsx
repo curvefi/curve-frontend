@@ -59,6 +59,7 @@ export const TableRowMobile = ({
                 <div>
                   <TableTitle>{tableLabel.rewardBase.name}</TableTitle>
                   <Td className="right">
+                    {/* eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule. */}
                     <TableCellRewardsOthers isHighlight={sortBy === SORT_ID.rewardOthers} rewardsApy={poolRewardsApy} />
                   </Td>
                 </div>
@@ -96,11 +97,13 @@ export const TableRowMobile = ({
 
             <div className="grid-claimable">
               <TableTitle>{tableLabel.claimables.name}</TableTitle>
+              {/* eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule. */}
               <TableCellClaimables isMobile isHighLight={sortBy === SORT_ID.claimables} {...dashboardData} />
             </div>
 
             <div className="grid-balance">
               <TableTitle>{tableLabel.liquidityUsd.name}</TableTitle>
+              {/* eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule. */}
               <TableCellBalances isHighLight={sortBy === SORT_ID.liquidityUsd} {...dashboardData} />
             </div>
           </TableContent>

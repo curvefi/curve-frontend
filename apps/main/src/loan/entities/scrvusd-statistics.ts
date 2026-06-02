@@ -35,6 +35,7 @@ async function _fetchSavingsStatistics(): Promise<Omit<Statistics, 'lastUpdated'
 
   if (provider) {
     const vault = new Contract(SCRVUSD_VAULT_ADDRESS, VAULT_ABI, provider)
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
     const [profitUnlockingRate, supply] = await Promise.all([vault.profitUnlockingRate(), vault.totalSupply()])
 
     const profitUnlockingRateNum = Number(profitUnlockingRate)

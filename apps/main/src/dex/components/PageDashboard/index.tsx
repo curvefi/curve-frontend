@@ -37,7 +37,7 @@ export const Dashboard = ({
   params: NetworkUrlParams
   pageLoaded: boolean
 }) => {
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
   const push = useNavigate()
 
   const activeKey = useStore(state => state.dashboard.activeKey)
@@ -74,17 +74,17 @@ export const Dashboard = ({
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>) => {
-      setFormValues(rChainId, !pageLoaded ? null : curve, poolsMapper, updatedFormValues)
+      setFormValues(rChainId, pageLoaded ? curve : null, poolsMapper, updatedFormValues)
     },
     [curve, pageLoaded, poolsMapper, rChainId, setFormValues],
   )
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
     }
   }, [])
 

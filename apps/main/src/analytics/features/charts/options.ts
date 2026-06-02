@@ -36,10 +36,10 @@ type TooltipParam = { axisValue: string; marker: string; seriesName: string; val
  * Creates an ECharts tooltip that renders series rows aligned like a table.
  * Each row displays the series marker, name on the left and the formatted value on the right.
  *
- * @param formatter - Function to format each numeric series value (e.g. `formatUsd`)
+ * @param formatter - Function to format each numeric series value. The series name is passed for mixed-unit charts.
  * @returns A tooltip object ready to pass to ECharts tooltip options
  */
-export const createTooltip = (formatter: (v: number) => string) => ({
+export const createTooltip = (formatter: (value: number, seriesName: string) => string) => ({
   trigger: 'axis' as const,
   formatter: (params: unknown) =>
     `<strong>${(params as TooltipParam[])[0].axisValue}</strong>` +
@@ -48,7 +48,7 @@ export const createTooltip = (formatter: (v: number) => string) => ({
         item =>
           `<div style="display:flex;justify-content:space-between;gap:1rem;font-variant-numeric:tabular-nums">` +
           `<span>${item.marker}${item.seriesName}</span>` +
-          `<span>${formatter(item.value)}</span>` +
+          `<span>${formatter(item.value, item.seriesName)}</span>` +
           `</div>`,
       )
       .join(''),

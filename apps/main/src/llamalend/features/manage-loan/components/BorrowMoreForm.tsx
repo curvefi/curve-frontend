@@ -80,6 +80,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   return (
     <Form
       {...form}
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
       onSubmit={onSubmit}
       footer={
         <BorrowMoreLoanInfoList
@@ -95,7 +96,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         />
       }
     >
-      <Stack gap={Spacing.xs}>
+      <Stack sx={{ gap: Spacing.xs }}>
         <LoanFormTokenInput
           label={t`Collateral to add`}
           token={collateralToken}
@@ -142,7 +143,6 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           }
         />
       </Stack>
-
       {isLeverageBorrowMoreSupported(market) && (
         <LeverageInput
           checked={values.leverageEnabled}
@@ -151,9 +151,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           maxLeverage={max.maxLeverage.data}
         />
       )}
-
       <HighPriceImpactAlert priceImpact={priceImpact} values={values} max={q(max.maxLeverage)} />
-
       {disabledAlert ? (
         <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>
       ) : (
@@ -184,7 +182,6 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
               )}
         </Button>
       )}
-
       <LowSolvencyActionModal
         action="borrow"
         open={isOpen}
@@ -192,7 +189,6 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         onConfirm={onConfirm}
         tokenSymbol={collateralToken?.symbol}
       />
-
       <FormAlerts
         error={error}
         formErrors={formErrors}

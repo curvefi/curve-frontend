@@ -4,7 +4,7 @@ import { requireLib } from '@ui-kit/features/connect-wallet'
 import { createValidationSuite } from '@ui-kit/lib'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { curveApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
-import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
+import { evmAddressValidationGroup } from '@ui-kit/lib/model/query/evm-address-validation'
 import type { BridgeForm } from '../hooks/useBridgeForm'
 import type { BridgeParams } from '../types'
 
@@ -69,7 +69,7 @@ export const bridgeFormValidationSuite = createValidationSuite(
 export const bridgeValidationSuite = createValidationSuite((params: BridgeParams) => {
   chainValidationGroup(params)
   curveApiValidationGroup(params, { requireRpc: true })
-  userAddressValidationGroup(params)
+  evmAddressValidationGroup({ evmAddress: params.userAddress })
 
   test('amount', 'Amount cannot be empty', () => {
     enforce(params.amount).isNumeric().gte(0)

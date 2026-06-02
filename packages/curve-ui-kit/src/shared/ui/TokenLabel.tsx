@@ -1,5 +1,6 @@
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import type { TypographyProps } from '@mui/material/Typography'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { TokenIcon, DEFAULT_SIZE, type Size, type TokenIconProps } from './TokenIcon'
 
@@ -16,15 +17,25 @@ const LABEL_SPACING = {
 
 type TokenLabelProps = TokenIconProps & {
   label: string
+  noWrap?: boolean
+  typographyVariant?: TypographyProps['variant']
 }
 
-export const TokenLabel = ({ label, ...tokenIconProps }: TokenLabelProps) => (
-  <Stack direction="row" gap={Spacing[LABEL_SPACING[tokenIconProps.size ?? DEFAULT_SIZE]]} alignItems="center">
+export const TokenLabel = ({ label, noWrap, typographyVariant = 'bodyMBold', ...tokenIconProps }: TokenLabelProps) => (
+  <Stack
+    direction="row"
+    sx={{
+      gap: Spacing[LABEL_SPACING[tokenIconProps.size ?? DEFAULT_SIZE]],
+      alignItems: 'center',
+      ...(noWrap && { minWidth: 0 }),
+    }}
+  >
     <TokenIcon {...tokenIconProps} />
-    <Stack>
+    <Stack sx={{ ...(noWrap && { minWidth: 0 }) }}>
       <Typography
-        variant="bodyMBold"
+        variant={typographyVariant}
         color={tokenIconProps.disabled ? 'textDisabled' : undefined}
+        noWrap={noWrap}
         // Remove line-height to ensure proper vertical centering with TokenIcon
         // MUI Typography's default line-height prevents perfect vertical alignment
         sx={{ '&': { lineHeight: 'unset' } }}

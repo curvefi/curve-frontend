@@ -7,7 +7,7 @@ export type BridgeAlert = {
   message?: ReactNode
 }
 
-type Alerts = { [chainId: number]: BridgeAlert }
+type Alerts = Record<number, BridgeAlert>
 
 const BRIDGE_ALERTS: Alerts = {}
 

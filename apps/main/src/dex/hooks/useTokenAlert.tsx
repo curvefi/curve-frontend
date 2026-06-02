@@ -20,7 +20,7 @@ export const useTokenAlert = (tokenAddressAll: string[] | undefined): PoolAlert 
       ),
     }
 
-    const alerts: { [tokenAddress: string]: PoolAlert } = {
+    const alerts: Record<string, PoolAlert> = {
       '0xeb4c2781e4eba804ce9a9803c67d0893436bb27d': {
         alertType: 'warning',
         address: '0xeb4c2781e4eba804ce9a9803c67d0893436bb27d',
@@ -211,6 +211,20 @@ export const useTokenAlert = (tokenAddressAll: string[] | undefined): PoolAlert 
             <Trans>
               The Resolv protocol has experienced an exploit.{' '}
               <StyledExternalLink href="https://x.com/ResolvLabs/status/2035581976514609437?s=20">
+                Learn more here
+              </StyledExternalLink>
+            </Trans>
+          </div>
+        ),
+      },
+      '0x7b43e3875440b44613dc3bc08e7763e6da63c8f8': {
+        alertType: 'danger',
+        address: '0x7b43e3875440b44613dc3bc08e7763e6da63c8f8',
+        message: (
+          <div>
+            <Trans>
+              The StablR has suffered an exploit.{' '}
+              <StyledExternalLink href="https://x.com/StablREuro/status/2058520949075386683?s=20">
                 Learn more here
               </StyledExternalLink>
             </Trans>

@@ -31,6 +31,7 @@ export const getPriceImpactSeverity = (
 export const shouldBlockTransaction = (
   priceImpact: Query<Decimal | null>,
   { slippage, leverageEnabled }: { slippage: Decimal | null | undefined; leverageEnabled: boolean | undefined },
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
 ) => (leverageEnabled && priceImpact.data == null) || getPriceImpactSeverity(priceImpact, { slippage }) === 'error'
 
 export const getPriceImpactDisplay = (

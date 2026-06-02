@@ -9,10 +9,11 @@ import {
   useMarketUsers,
 } from '@/llamalend/queries/market'
 import type { Endpoint } from '@curvefi/prices-api/lending'
+import { maybe, maybes } from '@primitives/objects.utils'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import type { MarketParams } from '@ui-kit/lib/model/query/root-keys'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { Chain, requireBlockchainId } from '@ui-kit/utils/network'
+import { requireBlockchainId } from '@ui-kit/utils/network'
 
 const endpointFromMarketType: Record<LlamaMarketType, Endpoint> = {
   [LlamaMarketType.Lend]: 'lending',
@@ -26,7 +27,7 @@ export const useAdvancedDetailsData = ({
   marketType,
 }: MarketParams & { market: LlamaMarketTemplate | undefined; marketType: LlamaMarketType }) => {
   const { collateralToken, borrowToken } = market ? getTokens(market) : {}
-  const blockchainId = chainId == null ? undefined : requireBlockchainId(chainId as Chain)
+  const blockchainId = maybe(chainId, chainId => requireBlockchainId(chainId))
   const controllerAddress = getControllerAddress(market)
   const endpoint = endpointFromMarketType[marketType]
 
@@ -62,12 +63,15 @@ export const useAdvancedDetailsData = ({
       contractAddress: controllerAddress,
     })
 
-  const collateralTotal = totalCollateral == null ? null : Number(totalCollateral.collateral)
-  const borrowedTotal = totalCollateral == null ? null : Number(totalCollateral.borrowed)
+  const collateralTotal = maybe(totalCollateral, totalCollateral => Number(totalCollateral.collateral)) ?? null
+  const borrowedTotal = maybe(totalCollateral, totalCollateral => Number(totalCollateral.borrowed)) ?? null
   const collateralUsdValue = collateralTotal && collateralUsdRate && collateralTotal * collateralUsdRate
   const borrowedUsdValue = borrowedTotal && borrowedUsdRate && borrowedTotal * borrowedUsdRate
   const combinedCollateralUsdValue =
-    collateralUsdValue == null || borrowedUsdValue == null ? null : collateralUsdValue + borrowedUsdValue
+    maybes(
+      [collateralUsdValue, borrowedUsdValue],
+      ([collateralUsdValue, borrowedUsdValue]) => collateralUsdValue + borrowedUsdValue,
+    ) ?? null
 
   return {
     marketType,

@@ -275,11 +275,93 @@ export const createLightDesign = (
     Transition: 'Transition',
   } as const
 
+  const Inputs = {
+    Base: {
+      Default: {
+        Fill: {
+          Default: Grays[100],
+          Active: Grays[50],
+          Hover: Grays[50],
+        },
+        Border: {
+          Default: Grays[200],
+          Active: Light.Text.Highlight,
+          Filled: Grays[850],
+          Hover: Grays[400],
+          Error: Reds[600],
+        },
+      },
+      Nested: {
+        Nested: Grays[10],
+        Fill: Grays[100],
+        Border: {
+          Default: Grays[400],
+          Active: Light.Text.Highlight,
+          Filled: Grays[850],
+          Hover: Grays[400],
+          Error: Reds[600],
+        },
+      },
+    },
+    Large: {
+      Default: {
+        Fill: Grays[100],
+        Outline: Grays[200],
+      },
+    },
+    Text: {
+      Label: Text.TextColors.Secondary,
+      Value: Text.TextColors.Primary,
+      Placeholder: Text.TextColors.Secondary,
+      Unit: Text.TextColors.Secondary,
+      Meta: Text.TextColors.Secondary,
+      MetaSubtle: Text.TextColors.Secondary,
+      Helper: Text.TextColors.Secondary,
+      Error: Reds[600],
+      Disabled: Text.TextColors.Disabled,
+    },
+  } as const
+
+  const Select = {
+    Text: {
+      Label: Text.TextColors.Secondary,
+      Value: Text.TextColors.Primary,
+      Unit: Text.TextColors.Secondary,
+      Helper: Text.TextColors.Secondary,
+      Error: Reds[600],
+      Disabled: Text.TextColors.Disabled,
+    },
+  } as const
+
+  const InputSelect = {
+    Base: {
+      Default: {
+        Fill: {
+          Default: Inputs.Base.Default.Fill.Default,
+          Active: Inputs.Base.Default.Fill.Active,
+          Hover: Inputs.Base.Default.Fill.Hover,
+        },
+        Border: {
+          Default: Inputs.Base.Default.Border.Default,
+          Active: Inputs.Base.Default.Border.Active,
+          Filled: Inputs.Base.Default.Border.Filled,
+          Hover: Inputs.Base.Default.Border.Hover,
+          Error: Inputs.Base.Default.Border.Error,
+        },
+      },
+    },
+    Large: {
+      Default: {
+        Fill: Inputs.Large.Default.Fill,
+      },
+    },
+  } as const
+
   const Chips = {
     Default: {
       Label: Text.TextColors.Primary,
-      Fill: Layer[1].Fill,
-      Stroke: Text.TextColors.Primary,
+      Fill: Layer[2].Fill,
+      Stroke: Inputs.Base.Default.Border.Default,
     },
     Hover: {
       Label: Color.Neutral[50],
@@ -400,39 +482,6 @@ export const createLightDesign = (
     },
   } as const
 
-  const Inputs = {
-    Base: {
-      Default: {
-        Fill: {
-          Default: Grays[100],
-          Active: Grays[50],
-        },
-        Border: {
-          Default: Grays[200],
-          Active: Light.Text.Highlight,
-          Filled: Grays[850],
-          Error: Reds[500],
-        },
-      },
-      Nested: {
-        Nested: Grays[10],
-        Fill: Grays[100],
-        Border: {
-          Default: Grays[400],
-          Active: Light.Text.Highlight,
-          Filled: Grays[850],
-          Error: Reds[500],
-        },
-      },
-    },
-    Large: {
-      Default: {
-        Fill: Grays[100],
-        Outline: Grays[200],
-      },
-    },
-  } as const
-
   const Sliders = {
     default: {
       SliderThumbImage: '/mui/slider-thumb-white.svg',
@@ -480,6 +529,8 @@ export const createLightDesign = (
     Toggles,
     Table,
     Inputs,
+    Select,
+    InputSelect,
     Switch,
     Sliders,
   } as const
@@ -781,11 +832,93 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
     Transition: 'Transition',
   } as const
 
+  const Inputs = {
+    Base: {
+      Default: {
+        Fill: {
+          Default: Grays[900],
+          Active: Grays[900],
+          Hover: Grays[850],
+        },
+        Border: {
+          Default: Grays[800],
+          Active: Dark.Text.Highlight,
+          Filled: Grays[75],
+          Hover: Grays[600],
+          Error: Reds[200],
+        },
+      },
+      Nested: {
+        Nested: Grays[850],
+        Fill: Grays[850],
+        Border: {
+          Default: Grays[600],
+          Active: Dark.Text.Highlight,
+          Filled: Grays[75],
+          Hover: Grays[600],
+          Error: Reds[200],
+        },
+      },
+    },
+    Large: {
+      Default: {
+        Fill: Grays[900],
+        Outline: Grays[800],
+      },
+    },
+    Text: {
+      Label: Text.TextColors.Secondary,
+      Value: Text.TextColors.Primary,
+      Placeholder: Text.TextColors.Secondary,
+      Unit: Text.TextColors.Secondary,
+      Meta: Text.TextColors.Secondary,
+      MetaSubtle: Text.TextColors.Secondary,
+      Helper: Text.TextColors.Secondary,
+      Error: Reds[200],
+      Disabled: Text.TextColors.Disabled,
+    },
+  } as const
+
+  const Select = {
+    Text: {
+      Label: Text.TextColors.Secondary,
+      Value: Text.TextColors.Primary,
+      Unit: Text.TextColors.Secondary,
+      Helper: Text.TextColors.Secondary,
+      Error: Reds[200],
+      Disabled: Text.TextColors.Disabled,
+    },
+  } as const
+
+  const InputSelect = {
+    Base: {
+      Default: {
+        Fill: {
+          Default: Inputs.Base.Default.Fill.Default,
+          Active: Inputs.Base.Default.Fill.Active,
+          Hover: Inputs.Base.Default.Fill.Hover,
+        },
+        Border: {
+          Default: Inputs.Base.Default.Border.Default,
+          Active: Inputs.Base.Default.Border.Active,
+          Filled: Inputs.Base.Default.Border.Filled,
+          Hover: Inputs.Base.Default.Border.Hover,
+          Error: Inputs.Base.Default.Border.Error,
+        },
+      },
+    },
+    Large: {
+      Default: {
+        Fill: Inputs.Large.Default.Fill,
+      },
+    },
+  } as const
+
   const Chips = {
     Default: {
       Label: Text.TextColors.Primary,
-      Fill: Layer[1].Fill,
-      Stroke: Text.TextColors.Primary,
+      Fill: Layer[2].Fill,
+      Stroke: Inputs.Base.Default.Border.Default,
     },
     Hover: {
       Label: Color.Neutral[50],
@@ -793,7 +926,7 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
     },
     Current: {
       Label: Color.Primary[500],
-      Fill: Color.Neutral[75],
+      Fill: Layer[2].Fill,
       Outline: Layer.Highlight.Outline,
     },
     BorderRadius: {
@@ -906,39 +1039,6 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
     },
   } as const
 
-  const Inputs = {
-    Base: {
-      Default: {
-        Fill: {
-          Default: Grays[900],
-          Active: Grays[900],
-        },
-        Border: {
-          Default: Grays[800],
-          Active: Dark.Text.Highlight,
-          Filled: Grays[75],
-          Error: Reds[500],
-        },
-      },
-      Nested: {
-        Nested: Grays[850],
-        Fill: Grays[850],
-        Border: {
-          Default: Grays[600],
-          Active: Dark.Text.Highlight,
-          Filled: Grays[75],
-          Error: Reds[500],
-        },
-      },
-    },
-    Large: {
-      Default: {
-        Fill: Grays[900],
-        Outline: Grays[800],
-      },
-    },
-  } as const
-
   const Sliders = {
     default: {
       SliderThumbImage: '/mui/slider-thumb-blue.svg',
@@ -986,6 +1086,8 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
     Toggles,
     Table,
     Inputs,
+    Select,
+    InputSelect,
     Switch,
     Sliders,
   } as const
@@ -1248,11 +1350,93 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
     Transition: 'Transition',
   } as const
 
+  const Inputs = {
+    Base: {
+      Default: {
+        Fill: {
+          Default: Grays[100],
+          Active: Grays[100],
+          Hover: Violets[50],
+        },
+        Border: {
+          Default: Grays[400],
+          Active: Violets[500],
+          Filled: Violets[600],
+          Hover: Violets[400],
+          Error: Reds[600],
+        },
+      },
+      Nested: {
+        Nested: Grays[50],
+        Fill: Violets[50],
+        Border: {
+          Default: Grays[200],
+          Active: Violets[500],
+          Filled: Violets[400],
+          Hover: Violets[400],
+          Error: Reds[600],
+        },
+      },
+    },
+    Large: {
+      Default: {
+        Fill: Grays[100],
+        Outline: Grays[400],
+      },
+    },
+    Text: {
+      Label: Text.TextColors.Secondary,
+      Value: Text.TextColors.Primary,
+      Placeholder: Text.TextColors.Secondary,
+      Unit: Text.TextColors.Secondary,
+      Meta: Text.TextColors.Secondary,
+      MetaSubtle: Text.TextColors.Secondary,
+      Helper: Text.TextColors.Secondary,
+      Error: Reds[600],
+      Disabled: Text.TextColors.Disabled,
+    },
+  } as const
+
+  const Select = {
+    Text: {
+      Label: Text.TextColors.Secondary,
+      Value: Text.TextColors.Primary,
+      Unit: Text.TextColors.Secondary,
+      Helper: Text.TextColors.Secondary,
+      Error: Reds[600],
+      Disabled: Text.TextColors.Disabled,
+    },
+  } as const
+
+  const InputSelect = {
+    Base: {
+      Default: {
+        Fill: {
+          Default: Inputs.Base.Default.Fill.Default,
+          Active: Inputs.Base.Default.Fill.Active,
+          Hover: Inputs.Base.Default.Fill.Hover,
+        },
+        Border: {
+          Default: Inputs.Base.Default.Border.Default,
+          Active: Inputs.Base.Default.Border.Active,
+          Filled: Inputs.Base.Default.Border.Filled,
+          Hover: Inputs.Base.Default.Border.Hover,
+          Error: Inputs.Base.Default.Border.Error,
+        },
+      },
+    },
+    Large: {
+      Default: {
+        Fill: Inputs.Large.Default.Fill,
+      },
+    },
+  } as const
+
   const Chips = {
     Default: {
       Label: Grays[950],
       Fill: Layer[1].Fill,
-      Stroke: Grays[950],
+      Stroke: Inputs.Base.Default.Border.Default,
     },
     Hover: {
       Label: Color.Neutral[50],
@@ -1373,39 +1557,6 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
     },
   } as const
 
-  const Inputs = {
-    Base: {
-      Default: {
-        Fill: {
-          Default: Grays[100],
-          Active: Grays[100],
-        },
-        Border: {
-          Default: Grays[400],
-          Active: Violets[400],
-          Filled: Violets[600],
-          Error: Reds[500],
-        },
-      },
-      Nested: {
-        Nested: Grays[50],
-        Fill: Violets[50],
-        Border: {
-          Default: Grays[200],
-          Active: Violets[400],
-          Filled: Violets[400],
-          Error: Reds[500],
-        },
-      },
-    },
-    Large: {
-      Default: {
-        Fill: Grays[100],
-        Outline: Grays[400],
-      },
-    },
-  } as const
-
   const Sliders = {
     default: {
       SliderThumbImage: '/mui/slider-thumb-white.svg',
@@ -1453,6 +1604,8 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
     Toggles,
     Table,
     Inputs,
+    Select,
+    InputSelect,
     Switch,
     Sliders,
   } as const

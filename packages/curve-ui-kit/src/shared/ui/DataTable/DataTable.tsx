@@ -9,11 +9,12 @@ import TableFooter from '@mui/material/TableFooter'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import { useLayoutStore } from '@ui-kit/features/layout'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { TablePagination } from '@ui-kit/shared/ui/DataTable/TablePagination'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { type TableItem, type TanstackTable } from './data-table.utils'
+import { DataTableHeaderHeight, type DataTableSize, type TableItem, type TanstackTable } from './data-table.utils'
 import { DataRow, type DataRowProps } from './DataRow'
 import { FilterRow } from './FilterRow'
 import { HeaderCell } from './HeaderCell'
@@ -54,13 +55,13 @@ function useResetPageOnResultChange<T extends TableItem>(table: TanstackTable<T>
   const isManualPagination = table.options.manualPagination
   const resultCount = table.getFilteredRowModel().rows.length
   const onPaginationChangeEvent = useEffectEvent(table.setPagination)
-  const lastResultCount = useRef<number>(resultCount)
+  const lastResultCountRef = useRef<number>(resultCount)
   useEffect(() => {
     // Skip for manual pagination - data is expected to change on page change
     if (isManualPagination) return
     // Reset to first page, but only if result amount wasn't 0 (links must keep working while data might still be loading)
-    if (lastResultCount.current && resultCount) onPaginationChangeEvent(prev => ({ ...prev, pageIndex: 0 }))
-    lastResultCount.current = resultCount
+    if (lastResultCountRef.current && resultCount) onPaginationChangeEvent(prev => ({ ...prev, pageIndex: 0 }))
+    lastResultCountRef.current = resultCount
   }, [resultCount, isManualPagination])
 }
 
@@ -73,9 +74,9 @@ export const DataTable = <T extends TableItem>({
   emptyState,
   children,
   isLoading,
+  size = 'small',
   maxHeight,
-  rowLimit,
-  viewAllLabel,
+  defaultVisibleRows,
   disableStickyHeader,
   shouldStickFirstColumn = false,
   hideHeader = false,
@@ -86,18 +87,20 @@ export const DataTable = <T extends TableItem>({
   emptyState: ReactNode
   children?: ReactNode // passed to <FilterRow />
   isLoading: boolean
+  size?: DataTableSize
   maxHeight?: `${number}rem` // also sets overflowY to 'auto'
-  rowLimit?: number
-  viewAllLabel?: string
+  // maximum number of visible rows and the button's label to expand them all
+  defaultVisibleRows?: { max: number; buttonLabel: string }
   disableStickyHeader?: boolean
   hideHeader?: boolean
   footerRow?: ReactNode
 } & Omit<DataRowProps<T>, 'row' | 'isLastRow' | 'shouldStickLastRowToTop'>) => {
   const { table } = rowProps
+  const { max: rowLimit, buttonLabel: viewAllLabel } = defaultVisibleRows ?? {}
   const { rows } = table.getRowModel()
   const { isLimited, isLoading: isLoadingViewAll, onShowAll } = useTableRowLimit(rowLimit, rows.length)
   // When number of rows are limited, show only rowLimit rows
-  const visibleRows = isLimited && rowLimit ? rows.slice(0, rowLimit) : rows
+  const visibleRows = isLimited ? rows.slice(0, rowLimit) : rows
   const showViewAllButton = isLimited && rows.length > rowLimit!
   // pagination should bw shown if no rows limit and if needed
   const showPagination = !isLimited && table.getPageCount() > 1
@@ -124,7 +127,9 @@ export const DataTable = <T extends TableItem>({
     <WithWrapper Wrapper={Box} shouldWrap={maxHeight} sx={{ maxHeight, overflowY: 'auto' }} ref={containerRef}>
       <Table
         sx={{
-          borderCollapse: 'separate' /* Don't collapse to avoid funky stuff with the sticky header */,
+          borderCollapse: 'separate', // Don't collapse to avoid funky stuff with the sticky header
+          // Prevent a long content of a column to push the other column outside the viewport
+          ...(useIsMobile() && { tableLayout: 'fixed' }),
         }}
         data-testid={!isLoading && 'data-table'}
       >
@@ -133,11 +138,12 @@ export const DataTable = <T extends TableItem>({
             {children && <FilterRow table={table}>{children}</FilterRow>}
 
             {headerGroups.map(headerGroup => (
-              <TableRow key={headerGroup.id} sx={{ height: Sizing.xxl }}>
+              <TableRow key={headerGroup.id} sx={{ height: DataTableHeaderHeight[size] }}>
                 {headerGroup.headers.map((header, index) => (
                   <HeaderCell
                     key={header.id}
                     header={header}
+                    size={size}
                     isSticky={!index && shouldStickFirstColumn}
                     width={`calc(100% / ${columnCount})`}
                   />

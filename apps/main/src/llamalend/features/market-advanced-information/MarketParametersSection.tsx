@@ -1,5 +1,8 @@
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { CardHeader, Stack } from '@mui/material'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import CardHeader from '@mui/material/CardHeader'
+import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
@@ -14,31 +17,31 @@ type MarketParametersProps = {
   marketType: LlamaMarketType
 }
 
-export const MarketParametersSection = ({ chainId, marketId, marketType }: MarketParametersProps) => {
-  const enablePricePerShare = marketType === LlamaMarketType.Lend
+export const MarketParametersSection = ({ chainId, marketId, marketType }: MarketParametersProps) => (
+  <Stack>
+    <Card size="inline">
+      <CardHeader title={t`Parameters`} />
+      <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
+        <MarketLoanParameters chainId={chainId} marketId={marketId} />
+      </CardContent>
+    </Card>
 
-  return (
-    <Stack>
-      <Stack gap={Spacing.sm}>
-        <CardHeader title={t`Parameters`} size="small" data-inline />
-        <Stack>
-          <MarketLoanParameters chainId={chainId} marketId={marketId} />
-        </Stack>
-      </Stack>
+    <Card size="inline">
+      <CardHeader title={t`Prices`} />
+      <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
+        <MarketPricesRows
+          chainId={chainId}
+          marketId={marketId}
+          enablePricePerShare={marketType === LlamaMarketType.Lend}
+        />
+      </CardContent>
+    </Card>
 
-      <Stack gap={Spacing.sm}>
-        <CardHeader title={t`Prices`} size="small" data-inline />
-        <Stack>
-          <MarketPricesRows chainId={chainId} marketId={marketId} enablePricePerShare={enablePricePerShare} />
-        </Stack>
-      </Stack>
-
-      <Stack gap={Spacing.sm}>
-        <CardHeader title={t`Market`} size="small" data-inline />
-        <Stack>
-          <MarketIdRow marketId={marketId} />
-        </Stack>
-      </Stack>
-    </Stack>
-  )
-}
+    <Card size="inline">
+      <CardHeader title={t`Market`} />
+      <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
+        <MarketIdRow marketId={marketId} />
+      </CardContent>
+    </Card>
+  </Stack>
+)

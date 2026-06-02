@@ -10,7 +10,7 @@ import { formatNumber } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
-interface UserStatsProps {
+type UserStatsProps = {
   veCrvHolder: Locker
   holdersLoading: boolean
 }

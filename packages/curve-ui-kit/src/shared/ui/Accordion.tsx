@@ -8,7 +8,7 @@ import type { Responsive } from '@ui-kit/themes/basic-theme'
 import { Duration, Transition, TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
-import { applySxProps, type SxProps } from '@ui-kit/utils'
+import { applySxProps, borderStyle, type SxProps } from '@ui-kit/utils'
 
 const { Spacing, IconSize } = SizesAndSpaces
 
@@ -39,7 +39,6 @@ const headerIconSize = {
   medium: IconSize.md.mobile,
 } as const satisfies Record<Size, string>
 
-const borderStyle = (t: Theme) => `1px solid ${t.design.Layer[1].Outline}`
 const ghostBorderStyle = (t: Theme) => `1px solid ${t.design.Layer[3].Outline}`
 const layer1Fill = (t: Theme) => t.design.Layer[1].Fill
 const activeFill = (t: Theme) => t.design.Inputs.Base.Default.Fill.Active
@@ -189,13 +188,13 @@ export const Accordion = ({
           },
         }}
       >
-        <Stack flexGrow={1} direction="row" alignItems="center" gap={Spacing.sm}>
+        <Stack direction="row" sx={{ flexGrow: 1, alignItems: 'center', gap: Spacing.sm }}>
           {icon && (
             <Box
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
               sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
                 width: headerIconSize[size],
                 height: headerIconSize[size],
               }}
@@ -206,11 +205,12 @@ export const Accordion = ({
 
           {typeof title === 'string' ? (
             <Typography
-              flexGrow={1}
               variant={(ghost ? ghostTitleVariants : titleVariants)[size]}
               color="textSecondary"
               sx={{
+                flexGrow: 1,
                 textAlign: 'start',
+
                 // Specifically unset to override the variant's uppercase styling; we want full control here
                 textTransform: ghost && size === 'small' ? 'unset' : undefined,
               }}
@@ -218,9 +218,7 @@ export const Accordion = ({
               {title}
             </Typography>
           ) : (
-            <Box display="flex" flexGrow={1}>
-              {title}
-            </Box>
+            <Box sx={{ display: 'flex', flexGrow: 1 }}>{title}</Box>
           )}
 
           {info}

@@ -24,9 +24,9 @@ import { t, Trans } from '@ui-kit/lib/i18n'
 import { amount as toAmount, formatNumber } from '@ui-kit/utils'
 
 export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: TransferProps) => {
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
 
-  const { chainId, signerAddress } = curve || {}
+  const { chainId, signerAddress } = curve ?? {}
   const activeKey = useStore(state => state.poolWithdraw.activeKey)
   const formStatus = useStore(state => state.poolWithdraw.formStatus)
   const formValues = useStore(state => state.poolWithdraw.formValues)
@@ -44,14 +44,16 @@ export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
 
   const poolId = poolData?.pool?.id
   const haveSigner = !!signerAddress
-  const { rewardsNeedNudging } = poolData?.gauge.status || {}
+  const { rewardsNeedNudging } = poolData?.gauge.status ?? {}
   const haveClaimableCrv = +formValues.claimableCrv > 0
   const haveClaimableRewards = +formValues.claimableRewards.length > 0
 
   const config = useConfig()
 
   const updateFormValues = useCallback(() => {
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setTxInfoBar(null)
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setSlippageConfirmed(false)
     void setFormValues('CLAIM', config, curve, poolDataCacheOrApi.pool.id, poolData, {}, null, seed.isSeed, '')
   }, [config, curve, poolData, poolDataCacheOrApi.pool.id, seed.isSeed, setFormValues])
@@ -69,7 +71,7 @@ export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
       const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepClaim(activeKey, curve, poolData)
 
-      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && network) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && network) {
         const claimedLabel = formStatus.isClaimCrv
           ? 'CRV'
           : `${formValues.claimableRewards.map(r => r.symbol).join(', ')} rewards`
@@ -100,7 +102,7 @@ export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
       const isClaimedRewards = formStatus.formTypeCompleted === 'CLAIM_REWARDS'
       const isComplete = isClaimedCRV || isClaimedRewards
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         CLAIM: {
           key: 'CLAIM',
           status: getStepStatus(isComplete, step === 'CLAIM', isValid),
@@ -125,10 +127,10 @@ export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
     }
   }, [])
 
@@ -159,6 +161,7 @@ export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
   useEffect(() => {
     if (curve && poolData && seed.isSeed !== null) {
       const updatedSteps = getSteps(activeKey, curve, poolData, formValues, formStatus, rewardsNeedNudging, seed.isSeed)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

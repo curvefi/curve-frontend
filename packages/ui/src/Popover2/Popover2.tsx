@@ -4,10 +4,10 @@ import { DismissButton, Overlay, usePopover } from 'react-aria'
 import type { OverlayTriggerState } from 'react-stately'
 import { styled } from 'styled-components'
 
-export interface PopoverProps extends Omit<AriaPopoverProps, 'popoverRef'> {
+export type PopoverProps = {
   children: ReactElement<OverlayTriggerState>
   state: OverlayTriggerState
-}
+} & Omit<AriaPopoverProps, 'popoverRef'>
 
 export function Popover2({ children, state, offset = 8, ...props }: PopoverProps) {
   const popoverRef = useRef(null)
@@ -33,8 +33,11 @@ export function Popover2({ children, state, offset = 8, ...props }: PopoverProps
         ref={popoverRef}
         className="popover"
       >
+        {/* eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule. */}
         <DismissButton onDismiss={state.close} />
+        {/* eslint-disable-next-line @eslint-react/no-clone-element -- Existing violation before enabling this rule. */}
         {cloneElement(children, state)}
+        {/* eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule. */}
         <DismissButton onDismiss={state.close} />
       </Popover>
     </Overlay>

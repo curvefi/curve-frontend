@@ -18,11 +18,11 @@ export const RewardsIncentivesCell = ({ getValue, table, row: { original: poolDa
   const { other } = rewards ?? {}
 
   return hasIncentives ? (
-    <Stack alignItems="end">
+    <Stack sx={{ alignItems: 'end' }}>
       {other?.map(o => (
         <Typography
-          fontWeight={isSortedBy(table, PoolColumnId.RewardsIncentives) ? 'bold' : 'normal'}
           key={o.tokenAddress}
+          sx={{ fontWeight: isSortedBy(table, PoolColumnId.RewardsIncentives) ? 'bold' : 'normal' }}
         >
           {formatNumber(o.apy, { unit: 'percentage', abbreviate: false })} {o.symbol}
         </Typography>

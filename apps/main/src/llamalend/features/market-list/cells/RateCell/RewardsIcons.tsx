@@ -23,9 +23,9 @@ export const RewardsIcons = ({
     (filteredRewards.length > 0 || extraIncentives.length > 0) && (
       <Stack
         direction="row"
-        minWidth={IconSize.md}
         data-testid="rewards-icons"
         sx={{
+          minWidth: IconSize.md,
           '& svg, & img': { '&:not(:last-child)': { marginInline: '-8px' } },
         }}
       >

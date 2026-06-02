@@ -21,6 +21,7 @@ export const InputLabel = ({
   useEffect(() => {
     const { offsetWidth, offsetHeight } = descriptionEl ?? {}
     if (offsetWidth && offsetHeight && description !== '-') {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSkeleton([offsetWidth > 10 ? offsetWidth : 20, offsetHeight - 4] as [number, number])
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

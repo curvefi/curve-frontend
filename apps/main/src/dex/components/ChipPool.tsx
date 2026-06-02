@@ -12,9 +12,9 @@ import { useCurve } from '@ui-kit/features/connect-wallet'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
 
-interface ButtonProps extends AriaButtonProps {
+type ButtonProps = {
   className?: string
-}
+} & AriaButtonProps
 
 const Button = ({ className, ...props }: ButtonProps) => {
   const ref = useRef(null)
@@ -39,7 +39,7 @@ const ChipPoolCopyButton = styled.button`
   }
 `
 
-interface ChipPoolProps {
+type ChipPoolProps = {
   poolId: string
   poolName: string
   poolAddress: string
@@ -59,17 +59,13 @@ export const ChipPool = ({ poolId, poolName, poolAddress }: ChipPoolProps) => {
       <ChipPoolName>
         <RouterLink
           href={getPath({ network }, `${ROUTE.PAGE_POOLS}/${encodeURIComponent(poolId)}${ROUTE.PAGE_POOL_DEPOSIT}`)}
-          sx={{
-            textDecoration: 'none',
-            color: 'inherit',
-            fontWeight: 'bold',
-          }}
+          sx={{ textDecoration: 'none', color: 'inherit', fontWeight: 'bold' }}
         >
           {poolName}
         </RouterLink>{' '}
       </ChipPoolName>
       <ChipPoolAdditionalInfo>
-        <Button onPress={() => copyToClipboard(poolAddress)}>
+        <Button onPress={() => void copyToClipboard(poolAddress)}>
           <ChipPoolAddress>{parsedPoolAddress}</ChipPoolAddress>
           <ChipPoolCopyButtonIcon name="Copy" size={16} />
         </Button>

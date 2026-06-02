@@ -67,11 +67,12 @@ export const PoolParameters = ({
     priceOracle,
   } = parameters ?? {}
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
   const isEymaPools = chainId === Chain.Fantom && poolDataCacheOrApi.pool.id.startsWith('factory-eywa')
 
   return (
-    <Stack gap={Spacing.lg}>
-      <Stack gap={Spacing.sm}>
+    <Stack sx={{ gap: Spacing.lg }}>
+      <Stack sx={{ gap: Spacing.sm }}>
         {!isLite && (
           <>
             <ActionInfo
@@ -141,8 +142,8 @@ export const PoolParameters = ({
           valueTooltip={t`Measures pool growth; this is not a dollar value`}
         />
       </Stack>
-
       {/* price oracle & price scale */}
+      {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
       {poolData && haveWrappedCoins && (priceOracle || priceScale) && !pricesApi && (
         <Stack spacing={Spacing.sm}>
           <Title>Price Data</Title>
@@ -170,7 +171,6 @@ export const PoolParameters = ({
           )}
         </Stack>
       )}
-
       {!pricesApi && (
         <Stack spacing={Spacing.sm}>
           <Title>{t`Pool Parameters`}</Title>
@@ -185,7 +185,7 @@ export const PoolParameters = ({
               label={t`A`}
               value={formatNumber(amount(A), { useGrouping: false, abbreviate: false, fallback: '-' })}
               valueTooltip={
-                <Stack gap={Spacing.sm}>
+                <Stack sx={{ gap: Spacing.sm }}>
                   {t`Amplification coefficient chosen from fluctuation of prices around 1.`}
                   {initial_A_time != null &&
                     future_A_time != null &&
@@ -215,9 +215,8 @@ export const PoolParameters = ({
         </Stack>
       )}
       <Contracts rChainId={chainId} poolDataCacheOrApi={poolDataCacheOrApi} />
-
       {/** Copied from market page, temporary as this page will get a redesign */}
-      <Stack gap={Spacing.xs}>
+      <Stack sx={{ gap: Spacing.xs }}>
         <Typography variant="headingXsBold">{t`Pool`}</Typography>
         <Stack>
           <ActionInfo label={t`ID`} value={poolId} loading={!poolId} />

@@ -14,25 +14,43 @@ const PaletteStory = () => {
       {Object.entries({ palette, Color, Text }).map(([palette, p]) => (
         <Box key={palette}>
           {Object.entries(p)
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/restrict-template-expressions -- Existing violation before enabling this rule.
             .filter(([, options]) => Object.values(options).some(o => `${o}`.startsWith('#')))
             .map(([type, options]) => (
               <Box key={type} sx={{ marginY: 7 }}>
                 <Typography variant="headingMLight">
                   {palette}.{type}
                 </Typography>
-                <Box display="flex" flexDirection="row" maxWidth="100%" flexWrap="wrap">
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    maxWidth: '100%',
+                    flexWrap: 'wrap',
+                  }}
+                >
+                  {/* eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule. */}
                   {Object.entries(options)
                     .filter(([, color]) => typeof color == 'string')
                     .map(([key, color]) => (
                       <Box title={`${type}.${key}`} key={`${type}.${key}`}>
-                        <Box maxWidth={100} textOverflow="ellipsis" whiteSpace="nowrap" overflow="hidden">
+                        <Box
+                          sx={{
+                            maxWidth: 100,
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                          }}
+                        >
                           {key}
                         </Box>
                         <Box
-                          width={100}
-                          height={100}
-                          border={1}
-                          bgcolor={color as StandardCSSProperties['backgroundColor']}
+                          sx={{
+                            width: 100,
+                            height: 100,
+                            border: 1,
+                            bgcolor: color as StandardCSSProperties['backgroundColor'],
+                          }}
                         />
                       </Box>
                     ))}

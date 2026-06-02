@@ -6,12 +6,12 @@ import { useCheckbox } from '@react-aria/checkbox'
 import { useFocusRing } from '@react-aria/focus'
 import type { ToggleProps } from '@react-types/checkbox'
 
-interface CheckboxProps extends ToggleProps {
+type CheckboxProps = {
   className?: string
   isDisabled?: boolean
   fillColor?: string
   blank?: boolean
-}
+} & ToggleProps
 
 export const Checkbox = ({ className, isDisabled = false, fillColor, blank, ...props }: CheckboxProps) => {
   const ref = useRef<HTMLInputElement>(null)
@@ -81,8 +81,8 @@ const Rect = styled.rect<{ isSelected: boolean; isDisabled: boolean; fillColor: 
   ${({ isSelected, isDisabled, fillColor }) => {
     if (isSelected) {
       return `
-        stroke: ${fillColor ? fillColor : 'var(--active--border-color)'};
-        fill: ${fillColor ? fillColor : 'var(--checkbox--active--background-color)'};
+        stroke: ${fillColor || 'var(--active--border-color)'};
+        fill: ${fillColor || 'var(--checkbox--active--background-color)'};
       `
     } else if (isDisabled) {
       return `

@@ -1,5 +1,6 @@
 import { get } from 'lodash'
 import { useMemo } from 'react'
+import { maybe } from '@primitives/objects.utils'
 import type { DeepKeys } from '@tanstack/table-core'
 
 export const useMaxValue = <TKey>({
@@ -16,9 +17,10 @@ export const useMaxValue = <TKey>({
 }) => {
   const maxValue = useMemo(
     // todo: round this to a nice number
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-return -- Existing violation before enabling this rule.
     () => max ?? (data.length ? Math.ceil(Math.max(...data.map(item => get(item, field)))) : undefined),
     [max, data, field],
   )
-  const step = useMemo(() => (maxValue == null ? undefined : Math.ceil(+maxValue.toPrecision(2) / 100)), [maxValue])
+  const step = useMemo(() => maybe(maxValue, maxValue => Math.ceil(+maxValue.toPrecision(2) / 100)), [maxValue])
   return { maxValue, step }
 }

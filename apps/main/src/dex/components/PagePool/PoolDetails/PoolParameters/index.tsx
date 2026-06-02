@@ -108,15 +108,10 @@ export const PoolParameters = ({ poolData, rChainId }: PoolParametersProps) => {
   if (!poolMetadata || !snapshotData) return null
 
   return (
-    <Card size="small">
-      <CardContent
-        component={Grid}
-        container
-        columnSpacing={Spacing.md}
-        sx={{ padding: '0 !important' /** The default padding interferes with background colors of the inner grids */ }}
-      >
+    <Card size="inline" sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
+      <CardContent component={Grid} container columnSpacing={Spacing.md}>
         <Grid size={{ mobile: 12, desktop: 8 }} sx={cardContentSmallStyles}>
-          <Stack gap={Spacing.lg}>
+          <Stack sx={{ gap: Spacing.lg }}>
             <Stack>
               <SectionTitle>{t`Pool Info:`}</SectionTitle>
               <PoolParameter>
@@ -152,6 +147,7 @@ export const PoolParameters = ({ poolData, rChainId }: PoolParametersProps) => {
               <Stack>
                 <SectionTitle>{t`Coins:`}</SectionTitle>
                 {poolData.tokens.map((token, idx) => (
+                  // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
                   <Stack key={`${token}-${idx}`}>
                     <Stack direction="row">
                       <Stack direction="row">
@@ -166,7 +162,10 @@ export const PoolParameters = ({ poolData, rChainId }: PoolParametersProps) => {
                             <ExternalLinkToken>{token}</ExternalLinkToken>
                           </ExternalLinkTokenWrapper>
                         </StyledExternalLink>
-                        <StyledIconButton size="medium" onClick={() => copyToClipboard(poolData.tokenAddresses[idx])}>
+                        <StyledIconButton
+                          size="medium"
+                          onClick={() => void copyToClipboard(poolData.tokenAddresses[idx])}
+                        >
                           <Icon name="Copy" size={16} />
                         </StyledIconButton>
                       </Stack>
@@ -257,7 +256,7 @@ export const PoolParameters = ({ poolData, rChainId }: PoolParametersProps) => {
                 <RampUpContainer>
                   <Stack direction="row">
                     <Numeral>├─</Numeral>
-                    <Stack margin={'0 0 0 var(--spacing-2)'} justifyContent="space-between">
+                    <Stack sx={{ margin: '0 0 0 var(--spacing-2)', justifyContent: 'space-between' }}>
                       <PoolParameterTitle>{t`Ramping ${rampADetails.isRampUp ? 'up' : 'down'} A:`}</PoolParameterTitle>
                       <PoolParameterValue>
                         <StyledChip
@@ -276,7 +275,7 @@ export const PoolParameters = ({ poolData, rChainId }: PoolParametersProps) => {
                   </Stack>
                   <Stack direction="row">
                     <Numeral>└─</Numeral>
-                    <Stack margin={'0 0 0 var(--spacing-2)'} justifyContent="space-between">
+                    <Stack sx={{ margin: '0 0 0 var(--spacing-2)', justifyContent: 'space-between' }}>
                       <PoolParameterTitle>{t`Ramp ${
                         rampADetails.isRampUp ? 'up' : 'down'
                       } A ends on: `}</PoolParameterTitle>
@@ -329,17 +328,14 @@ export const PoolParameters = ({ poolData, rChainId }: PoolParametersProps) => {
 
         <Grid
           size={{ mobile: 12, desktop: 4 }}
-          sx={{
-            ...cardContentSmallStyles,
-            backgroundColor: t => t.design.Layer[2].Fill,
-          }}
+          sx={{ ...cardContentSmallStyles, backgroundColor: t => t.design.Layer[2].Fill }}
         >
-          <Stack gap={Spacing.md}>
+          <Stack sx={{ gap: Spacing.md }}>
             {!!poolData && haveWrappedCoins && priceOracle && (
               <Stack>
                 <StatsTitle>{t`Price Oracle:`}</StatsTitle>
                 {priceOracle.map((p, idx) => {
-                  const wrappedCoins = poolData.pool.wrappedCoins as string[]
+                  const wrappedCoins = poolData.pool.wrappedCoins
                   const symbol = wrappedCoins[idx + 1]
                   return (
                     <ActionInfo
@@ -360,7 +356,7 @@ export const PoolParameters = ({ poolData, rChainId }: PoolParametersProps) => {
               <Stack>
                 <StatsTitle>{t`Price Scale:`}</StatsTitle>
                 {priceScale.map((p, idx) => {
-                  const wrappedCoins = poolData.pool.wrappedCoins as string[]
+                  const wrappedCoins = poolData.pool.wrappedCoins
                   const symbol = wrappedCoins[idx + 1]
                   return (
                     <ActionInfo

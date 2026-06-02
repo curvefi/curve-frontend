@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useRef } from 'react'
-import { Button, MenuItem } from '@mui/material'
+import { Button, MenuItem, MenuList } from '@mui/material'
 import Typography from '@mui/material/Typography'
 import { OnChangeFn, SortingState } from '@tanstack/react-table'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
@@ -20,20 +20,19 @@ type Props = {
   sortField: PoolColumnId
 }
 
-const useDexPoolSortOptions = () =>
-  [
-    { id: PoolColumnId.Volume, label: t`Volume` },
-    { id: PoolColumnId.Tvl, label: t`Total Value Locked` },
-    { id: PoolColumnId.RewardsCrv, label: t`Rewards CRV` },
-    { id: PoolColumnId.RewardsIncentives, label: t`Rewards Incentives` },
-  ] as const
+const DEX_POOL_SORT_OPTIONS = [
+  { id: PoolColumnId.Volume, label: t`Volume` },
+  { id: PoolColumnId.Tvl, label: t`Total Value Locked` },
+  { id: PoolColumnId.RewardsCrv, label: t`Rewards CRV` },
+  { id: PoolColumnId.RewardsIncentives, label: t`Rewards Incentives` },
+] as const
 
 export const PoolSortDrawer = ({ onSortingChange, sortField }: Props) => {
   const [open, openDrawer, closeDrawer] = useSwitch(false)
-  const sortOptions = useDexPoolSortOptions()
+
   const menuRef = useRef<HTMLLIElement | null>(null)
 
-  const selectedOption = useMemo(() => sortOptions.find(option => option.id === sortField), [sortOptions, sortField])
+  const selectedOption = useMemo(() => DEX_POOL_SORT_OPTIONS.find(option => option.id === sortField), [sortField])
 
   const handleSort = useCallback(
     (id: PoolColumnId) => {
@@ -56,22 +55,24 @@ export const PoolSortDrawer = ({ onSortingChange, sortField }: Props) => {
     >
       <DrawerHeader title={t`Sort by`} />
       <DrawerItems data-testid="drawer-sort-menu-dex-pools">
-        {sortOptions.map(({ id, label }) => (
-          <InvertOnHover hoverRef={menuRef} key={id}>
-            <MenuItem
-              ref={menuRef}
-              value={id}
-              className={selectedOption?.id === id ? 'Mui-selected' : ''}
-              onClick={() => handleSort(id)}
-              sx={{ justifyContent: 'space-between', minHeight: ButtonSize.sm }}
-            >
-              <Typography component="span" variant="bodyMBold">
-                {label}
-              </Typography>
-              {selectedOption?.id === id && <CheckIcon sx={{ marginLeft: Spacing.sm }} />}
-            </MenuItem>
-          </InvertOnHover>
-        ))}
+        <MenuList disablePadding sx={{ display: 'flex', flexDirection: 'column', gap: Spacing.sm }}>
+          {DEX_POOL_SORT_OPTIONS.map(({ id, label }) => (
+            <InvertOnHover hoverRef={menuRef} key={id}>
+              <MenuItem
+                ref={menuRef}
+                value={id}
+                selected={selectedOption?.id === id}
+                onClick={() => handleSort(id)}
+                sx={{ justifyContent: 'space-between', minHeight: ButtonSize.sm }}
+              >
+                <Typography component="span" variant="bodyMBold">
+                  {label}
+                </Typography>
+                {selectedOption?.id === id && <CheckIcon sx={{ marginLeft: Spacing.sm }} />}
+              </MenuItem>
+            </InvertOnHover>
+          ))}
+        </MenuList>
       </DrawerItems>
     </SwipeableDrawer>
   )

@@ -51,7 +51,7 @@ export const GaugesList = () => {
     <Box sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
       <Header>
         <h3>{t`CURVE GAUGES`}</h3>
-        <Stack direction="row" alignItems="center" gap={Spacing.sm}>
+        <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.sm }}>
           <CreateVote />
           <SortingWrapper>
             <StyledSearchInput
@@ -84,7 +84,7 @@ export const GaugesList = () => {
         )}
         {gaugesIsError && (
           <ErrorMessageWrapper>
-            <ErrorMessage message={t`Error fetching gauges`} onClick={() => refetchGauges({})} />
+            <ErrorMessage message={t`Error fetching gauges`} onClick={() => void refetchGauges({})} />
           </ErrorMessageWrapper>
         )}
         {gauges && (
@@ -99,7 +99,7 @@ export const GaugesList = () => {
             errorMessage={t`An error occurred while fetching gauges.`}
             noDataMessage={t`No gauges found`}
             setSortBy={handleSortChange}
-            getData={() => refetchGauges({})}
+            getData={() => void refetchGauges({})}
             renderRow={(gauge, index) => (
               <Fragment key={index}>
                 <GaugeListItemWrapper>

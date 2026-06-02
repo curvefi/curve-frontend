@@ -84,6 +84,7 @@ export const ComboBoxGauges = ({
 
   const handleClose = () => {
     if (isMobile) {
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
       delayAction(overlayTriggerState.close)
     } else {
       overlayTriggerState.close()

@@ -10,7 +10,7 @@ export const InputProvider = ({ className, children, disabled, id, inputVariant,
   const [isFocusVisible, setIsFocusVisible] = useState(false)
 
   return (
-    <InputContext.Provider value={{ disabled, id, inputVariant, setIsFocusVisible }}>
+    <InputContext value={{ disabled, id, inputVariant, setIsFocusVisible }}>
       <InputWrapper
         flex
         gridColumnGap={2}
@@ -22,11 +22,11 @@ export const InputProvider = ({ className, children, disabled, id, inputVariant,
       >
         {children}
       </InputWrapper>
-    </InputContext.Provider>
+    </InputContext>
   )
 }
 
-interface InputWrapperProps {
+type InputWrapperProps = {
   disabled?: boolean
   padding?: string
   inputVariant?: InputVariant | ''

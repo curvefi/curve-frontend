@@ -13,11 +13,12 @@ export type FormValues = {
   n: number | null
 }
 
-export interface FormStatus extends Fs {
+export type FormStatus = {
   error: string
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   warning: 'loan-exists' | string
   step: StepKey
-}
+} & Fs
 
 export type FormEstGas = {
   estimatedGas: number

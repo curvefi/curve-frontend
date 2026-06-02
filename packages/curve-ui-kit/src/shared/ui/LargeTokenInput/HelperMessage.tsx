@@ -21,7 +21,7 @@ type HelperMessageProps = {
 const NUMBER_REGEX = /-?\b\d+(?:\.\d+)?\b/g
 
 const getTextColor = (t: Theme, isError?: boolean) =>
-  isError ? t.design.Text.TextColors.FilledFeedback.Alert.Primary : t.design.Text.TextColors.Tertiary
+  isError ? t.design.Inputs.Text.Error : t.design.Inputs.Text.Helper
 
 /**
  * Injects clickable BalanceButton components around numbers in the message.
@@ -38,10 +38,11 @@ const buildClickableMessage = (
   return message.split(NUMBER_REGEX).flatMap((part, index) => [
     part,
     matches[index] && (
+      // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
       <BalanceButton key={index} onClick={() => onNumberClick(matches[index])}>
         <BalanceAmount
           testId={`helper-message-number-${index}`}
-          sx={{ ...(isError && { color: t => t.design.Text.TextColors.FilledFeedback.Alert.Primary }) }}
+          sx={{ ...(isError && { color: t => t.design.Inputs.Text.Error }) }}
         >
           {matches[index]}
         </BalanceAmount>
@@ -59,7 +60,6 @@ export const HelperMessage = ({ message, isError, onNumberClick }: HelperMessage
       paddingBlock: Spacing.xs,
       paddingInline: Spacing.sm,
       minHeight: Sizing.sm,
-      ...(isError && { backgroundColor: t => t.design.Layer.Feedback.Error }),
     }}
   >
     {typeof message === 'string' ? (
@@ -67,9 +67,7 @@ export const HelperMessage = ({ message, isError, onNumberClick }: HelperMessage
         variant="bodyXsRegular"
         component="div"
         // todo: replace with alert component and add filledfeedback colors to alert component.
-        sx={{
-          color: t => getTextColor(t, isError),
-        }}
+        sx={{ color: t => getTextColor(t, isError) }}
         data-testid={`helper-message-${isError ? 'error' : 'info'}`}
       >
         {onNumberClick ? buildClickableMessage(message, isError, onNumberClick) : message}

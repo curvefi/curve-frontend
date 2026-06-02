@@ -64,7 +64,9 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
 
   const { data: mintData, error: mintError, isLoading: loadingMint } = useUserMintMarketStats(params, enableMintStats)
 
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const stats = (enableLendingStats && lendData) || (enableMintStats && mintData)
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const error = (enableLendingStats && lendError) || (enableMintStats && mintError) || (enableEarnings && earnError)
   const isLoading = loadingLend || loadingEarn || loadingMint || collateralUsdRateLoading || borrowedUsdRateLoading
 

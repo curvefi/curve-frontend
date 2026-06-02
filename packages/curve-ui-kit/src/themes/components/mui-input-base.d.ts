@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
+/* eslint-disable @typescript-eslint/no-empty-object-type,@typescript-eslint/consistent-type-definitions */
 import '@mui/material/InputBase'
 import '@mui/material/InputLabel'
 import '@mui/material/TextField'
@@ -11,6 +11,7 @@ import type { TextFieldClasses } from '@mui/material'
  */
 interface InputSizeOverrides {
   tiny: true // called xxs in the design system
+  extraLarge: true // called xl in the design system
   // todo: we have a task to create `extraSmall`, called xs in the design system
 }
 

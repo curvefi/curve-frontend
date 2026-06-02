@@ -5,6 +5,8 @@ import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useMarketOracleAddress } from '@/llamalend/queries/market'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -33,7 +35,7 @@ type MarketContractsProps = {
 }
 
 const TokenLabel = ({ blockchainId, address, label }: TokenIconProps & { label: string }) => (
-  <Stack direction="row" gap={Spacing.xs} alignItems="center">
+  <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center' }}>
     <TokenIcon blockchainId={blockchainId} address={address} size="mui-md" />
     <Typography variant="bodyMRegular">{label}</Typography>
   </Stack>
@@ -101,9 +103,9 @@ export const MarketContractsSection = ({ chainId, market, network }: MarketContr
     : []
 
   return (
-    <Stack gap={Spacing.md}>
-      <Stack gap={Spacing.sm}>
-        <CardHeader title={t`Contracts`} size="small" data-inline />
+    <Card size="inline">
+      <CardHeader title={t`Contracts`} />
+      <CardContent component={Stack} sx={{ marginBlock: Spacing.sm, gap: Spacing.sm }}>
         <WithSkeleton loading={loading} variant="rectangular" height={'4lh'} width="100%">
           <Stack>
             {tokenItems.map(({ key, label, address }) => (
@@ -111,17 +113,16 @@ export const MarketContractsSection = ({ chainId, market, network }: MarketContr
             ))}
           </Stack>
         </WithSkeleton>
-      </Stack>
-
-      <Stack>
-        {infraItems.map(({ key, label, address, fallbackValue }) =>
-          fallbackValue ? (
-            <ActionInfo key={key} label={label} value={fallbackValue ?? t`No gauge`} />
-          ) : (
-            <AddressActionInfo key={key} network={network} title={label} address={address} />
-          ),
-        )}
-      </Stack>
-    </Stack>
+        <Stack>
+          {infraItems.map(({ key, label, address, fallbackValue }) =>
+            fallbackValue ? (
+              <ActionInfo key={key} label={label} value={fallbackValue ?? t`No gauge`} />
+            ) : (
+              <AddressActionInfo key={key} network={network} title={label} address={address} />
+            ),
+          )}
+        </Stack>
+      </CardContent>
+    </Card>
   )
 }

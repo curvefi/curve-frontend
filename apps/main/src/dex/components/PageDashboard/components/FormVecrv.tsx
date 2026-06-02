@@ -34,14 +34,14 @@ export const FormVecrv = () => {
     formValues: { walletAddress },
   } = useDashboardContext()
 
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
 
   const dashboardVecrvInfo = useStore(state => state.dashboard.vecrvInfo[activeKey])
   const formStatus = useStore(state => state.dashboard.formStatus)
   const setFormStatusVecrv = useStore(state => state.dashboard.setFormStatusVecrv)
   const fetchStepWithdraw = useStore(state => state.dashboard.fetchStepWithdrawVecrv)
   const { data: networks } = useNetworks()
-  const network = (curve && networks[curve.chainId]) || null
+  const network = (curve && networks[curve.chainId]) ?? null
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
@@ -65,7 +65,7 @@ export const FormVecrv = () => {
       const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepWithdraw(activeKey, curve, walletAddress)
 
-      if (isSubscribed.current && resp?.hash && resp.walletAddress === walletAddress && network) {
+      if (isSubscribedRef.current && resp?.hash && resp.walletAddress === walletAddress && network) {
         const txDescription = t`Withdraw Complete`
         setTxInfoBar(
           <TxInfoBar
@@ -85,7 +85,7 @@ export const FormVecrv = () => {
 
   const getSteps = useCallback(
     (activeKey: string, curve: CurveApi, lockedAmount: string, formStatus: FormStatus) => {
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         WITHDRAW: {
           key: 'WITHDRAW',
           status: getStepStatus(
@@ -107,10 +107,10 @@ export const FormVecrv = () => {
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
     }
   }, [])
 
@@ -118,6 +118,7 @@ export const FormVecrv = () => {
   useEffect(() => {
     if (curve) {
       const updatedSteps = getSteps(activeKey, curve, lockedAmount, parsedFormStatus)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
