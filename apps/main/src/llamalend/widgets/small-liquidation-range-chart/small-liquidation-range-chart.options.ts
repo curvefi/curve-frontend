@@ -7,7 +7,6 @@ import type {
 } from 'echarts'
 import { notFalsy } from '@primitives/objects.utils'
 import { CHART_LINE_WIDTHS } from '@ui-kit/shared/ui/Chart/chart.utils'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
 import { buildOracleMarkerSeries } from './oracle-marker-series'
 import {
@@ -29,8 +28,6 @@ import type {
   SmallLiquidationRangeChartLayout,
   SplitLayout,
 } from './small-liquidation-range-chart.types'
-
-const { FontWeight } = SizesAndSpaces
 
 const buildBaseOption = ({ chartTextStyle }: Pick<BuildOptionContext, 'chartTextStyle'>) => ({
   animation: false,
@@ -215,7 +212,7 @@ export const buildRangeMarkAreas = ({
   const rangeLabelStyle = {
     fontFamily: textStyle.fontFamily,
     fontSize: textStyle.fontSize,
-    fontWeight: FontWeight.Semi_Bold,
+    fontWeight: textStyle.emphasisFontWeight,
     lineHeight: textStyle.lineHeight,
   }
 

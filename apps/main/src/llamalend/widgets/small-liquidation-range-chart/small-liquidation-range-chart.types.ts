@@ -48,6 +48,7 @@ export type ChartTextStyle = {
   fontFamily: string
   fontSize: number
   fontWeight: number
+  emphasisFontWeight: number
   lineHeight: number
 }
 
