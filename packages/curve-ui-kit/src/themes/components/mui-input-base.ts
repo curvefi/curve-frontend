@@ -1,4 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/triple-slash-reference -- Existing violation before enabling this rule.
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference -- referring to a type definition file
 /// <reference path="./mui-input-base.d.ts" />
 import type { Components, TypographyVariantsOptions } from '@mui/material/styles'
 import type { DesignSystem } from '@ui-kit/themes/design'

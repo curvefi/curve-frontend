@@ -163,7 +163,6 @@ export function useTransactionMutation<
     mutationFn: async (variables: TVariables) => {
       // We need to reconstruct context here since mutationFn doesn't receive onMutate's return.
       // buildContext is called again, which is fine since it should be deterministic. No side-effect please though.
-
       const context = createContext(variables)
       const data = await withPendingToast(mutationFn(variables, context), pendingMessage(variables, context))
       throwIfError(data)

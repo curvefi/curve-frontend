@@ -72,13 +72,14 @@ const {
 } = queryFactory({
   queryKey: ({ gasPricesUrl, gasPricesUrlL2, ...params }: GasInfoParams) =>
     [...rootKeys.chain(params), { gasPricesUrl }, { gasPricesUrlL2 }, 'gasInfo'] as const,
-  queryFn: async ({ chainId, gasPricesUrl, gasPricesUrlL2 }: GasInfoQuery): Promise<GasInfo> => {
+  queryFn: async ({ chainId: chain, gasPricesUrl, gasPricesUrlL2 }: GasInfoQuery): Promise<GasInfo> => {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+    const chainId = chain as Chain
     const curve = getAnyCurve(chainId)!
     const provider = getProvider()
 
     let parsedGasInfo
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
     if (chainId === Chain.Ethereum) {
       // Ethereum uses api
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
@@ -95,27 +96,16 @@ const {
           curve.setCustomFeeData(customFeeDataValues)
         }
       }
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
     } else if (chainId === Chain.Polygon) {
       // Polygon uses api
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
-      const json = await httpFetcher(gasPricesUrl)
-
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+      const json: PolygonGasInfo = await httpFetcher(gasPricesUrl)
       if (json?.fast) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
         parsedGasInfo = parsePolygonGasInfo(json)
       }
-
       if (json) {
-        curve.setCustomFeeData({
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
-          maxFeePerGas: json.fast.maxFee,
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
-          maxPriorityFeePerGas: json.fast.maxPriorityFee,
-        })
+        curve.setCustomFeeData({ maxFeePerGas: json.fast.maxFee, maxPriorityFeePerGas: json.fast.maxPriorityFee })
       }
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
     } else if (chainId === Chain.XLayer) {
       const { l2GasPrice } = await fetchL2GasPrice(curve)
       parsedGasInfo = await parseGasInfo(curve, provider, gasPricesUrlL2)
@@ -128,7 +118,6 @@ const {
         const maxFeePerGas = null as unknown as undefined // todo: fix `undefined` type in curvejs, it actually checks `=== null`
         curve.setCustomFeeData({ gasPrice: l2GasPrice /*in gwei*/, maxFeePerGas, maxPriorityFeePerGas: maxFeePerGas })
       }
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
     } else if (chainId === Chain.Arbitrum || chainId === Chain.Mantle) {
       const { customFeeData } = await fetchCustomGasFees(curve)
       parsedGasInfo = await parseGasInfo(curve, provider, gasPricesUrlL2)
@@ -138,7 +127,6 @@ const {
         parsedGasInfo.gasInfo.priority = [gweiToWai(customFeeData.maxPriorityFeePerGas)]
         curve.setCustomFeeData(customFeeData)
       }
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
     } else if (chainId === Chain.Fraxtal || chainId === Chain.Base) {
       // TODO: remove this hardcode value once it api is fixed
       parsedGasInfo = await parseGasInfo(curve, provider, gasPricesUrlL2)
@@ -149,7 +137,6 @@ const {
           maxPriorityFeePerGas: 0.001,
         })
       }
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
     } else if (chainId === Chain.Optimism) {
       // TODO: remove this hardcode value once it api is fixed
       parsedGasInfo = await parseGasInfo(curve, provider, gasPricesUrlL2)
@@ -246,12 +233,14 @@ function parseEthereumGasInfo(gasInfo: { base: number; prio: number[]; max: numb
   }
 }
 
-function parsePolygonGasInfo(gasInfo: {
+type PolygonGasInfo = {
   estimatedBaseFee: number
   safeLow: { maxFee: number; maxPriorityFee: number }
   standard: { maxFee: number; maxPriorityFee: number }
   fast: { maxFee: number; maxPriorityFee: number }
-}) {
+}
+
+function parsePolygonGasInfo(gasInfo: PolygonGasInfo) {
   const { estimatedBaseFee, safeLow, standard, fast } = gasInfo
 
   if (estimatedBaseFee && safeLow && standard && fast) {
@@ -421,7 +410,7 @@ export function calculateGas(
 type GasEstimateConversionResult = ReturnType<typeof calculateGas>
 
 export const useEstimateGas = (
-  networks: Record<number, BaseConfig<string, number>>,
+  networks: Record<number, BaseConfig>,
   chainId: number | null | undefined,
   estimate: Amount | [Decimal, Decimal] | number[] | null | undefined,
   enabled?: boolean,
@@ -447,7 +436,7 @@ export const useEstimateGas = (
   return { data, isLoading: ethRateLoading || gasInfoLoading, error: ethRateError ?? gasInfoError }
 }
 
-type NetworkDict = Record<number, BaseConfig<string, number>>
+type NetworkDict = Record<number, BaseConfig>
 
 type EstimateValue = number | number[] | null | undefined
 

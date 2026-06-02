@@ -38,10 +38,7 @@ export function useResizeObserver(
 
   useEffect(() => {
     const node = elementRef.current
-    if (!node) {
-      // eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions -- Existing violation before enabling this rule.
-      return console.warn(`Could not find the element to observe for resize: ${elementRef}`)
-    }
+    if (!node) return console.warn(`Could not find the element to observe for resize`, elementRef)
 
     const { width, height } = node.getBoundingClientRect()
     // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.

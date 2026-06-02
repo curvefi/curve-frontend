@@ -1,4 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/triple-slash-reference -- Existing violation before enabling this rule.
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference -- referring to a type definition file
 /// <reference path="./mui-radio.d.ts" />
 import type { ReactNode } from 'react'
 import Box from '@mui/material/Box'

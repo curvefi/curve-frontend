@@ -70,7 +70,6 @@ const DefaultTooltipContent = ({ active, payload, oraclePrice, isManage, chartHe
         <div>
           <TipTitle>{t`Liquidation range`}</TipTitle>
           <TipContent>
-            {}
             <TipIcon name="Stop" size={20} fill={currPrices.stroke} />{' '}
             <>{`${formatNumber(amount(cp2), { abbreviate: false, fallback: '-' })} - ${formatNumber(amount(cp1), { abbreviate: false, fallback: '-' })}`}</>
           </TipContent>
@@ -87,7 +86,6 @@ const DefaultTooltipContent = ({ active, payload, oraclePrice, isManage, chartHe
       )}
       <div>
         <TipTitle>{t`Oracle price`}</TipTitle>
-        {}
         <TipContent>{formatNumber(amount(oraclePriceValue), { abbreviate: false, fallback: '-' })}</TipContent>
       </div>
     </ChartTooltip>
