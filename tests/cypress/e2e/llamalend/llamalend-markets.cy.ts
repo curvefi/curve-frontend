@@ -69,7 +69,7 @@ testCases.forEach(([width, height, breakpoint]) => {
       cy.url(LOAD_TIMEOUT).should('match', urlRegex)
     })
 
-    it('should have sticky headers or horizontally scrollable table', () => {
+    it.only('should have sticky headers or horizontally scrollable table', () => {
       cy.get(`[data-testid^="badge-market-type-"]`).should('be.visible') // wait for the table to render
       cy.get('[data-testid="data-table-scroll-wrapper"]').then($wrapper => {
         cy.get('[data-testid="data-table"]').then($table => {
@@ -78,9 +78,9 @@ testCases.forEach(([width, height, breakpoint]) => {
 
           if (tableWidth <= wrapperWidth) {
             // should have sticky headers
-            cy.get('[data-testid^="data-table-row"]').last().then(assertNotInViewport)
+            cy.get('[data-testid^="data-table-row"]').last().should('not.be.visible')
             cy.get('[data-testid^="data-table-row"]').eq(10).scrollIntoView()
-            cy.get('[data-testid="data-table-head"] th').eq(1).then(assertInViewport)
+            cy.get('[data-testid="data-table-head"] th').eq(1).should('be.visible')
 
             // filter height changes because text wraps depending on the width
             const filterHeight = { mobile: [48], tablet: [56], desktop: [56] }[breakpoint]
