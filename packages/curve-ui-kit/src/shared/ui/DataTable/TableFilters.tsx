@@ -88,7 +88,7 @@ export const TableFilters = <ColumnIds extends string>({
           </Grid>
         )}
       </Grid>
-      {collapsible && <Collapse in={hasActiveFilters || isMobile}>{collapsible}</Collapse>}
+      {collapsible && <Collapse in={!!hasActiveFilters || isMobile}>{collapsible}</Collapse>}
       {visibilitySettingsOpen != null && toggleVisibility && (
         <TableVisibilitySettingsPopover<ColumnIds>
           anchorRef={settingsRef}
