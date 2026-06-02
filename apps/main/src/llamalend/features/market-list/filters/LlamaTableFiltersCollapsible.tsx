@@ -63,12 +63,7 @@ export const LlamaTableFiltersCollapsible = <T extends TableItem>({
       </Button>
 
       {isMobile && (
-        <IconButton
-          size="small"
-          onClick={toggleFavorites}
-          disabled={!hasFavorites}
-          data-testid={`${TEST_ID}-favorites-btn`}
-        >
+        <IconButton size="small" onClick={toggleFavorites} disabled={!hasFavorites} data-testid={`chip-favorites`}>
           <FavoriteHeartIcon isFavorite={favorites} />
         </IconButton>
       )}
