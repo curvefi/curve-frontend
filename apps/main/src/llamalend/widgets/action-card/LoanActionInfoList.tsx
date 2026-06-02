@@ -1,4 +1,4 @@
-import { slippageType } from '@/llamalend/constants'
+import { LEVERAGE } from '@/llamalend/constants'
 import { getHealthValueColor } from '@/llamalend/features/market-position-details'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { ReturnToWalletActionInfo } from '@/llamalend/widgets/action-card/ReturnToWalletActionInfo'
@@ -103,7 +103,7 @@ export const LoanActionInfoList = ({
   const [isRoutesOpen, , , toggleRoutes] = useSwitch(false)
   const { label: priceImpactLabel, color: priceImpactColor } = getPriceImpactDisplay(priceImpact, {
     slippage,
-    slippageType,
+    slippageType: LEVERAGE,
   })
   const exchangeRateValue = decimal(exchangeRate?.data)
 
@@ -271,7 +271,7 @@ export const LoanActionInfoList = ({
         {slippage && onSlippageChange && (
           <SlippageToleranceActionInfo
             maxSlippage={slippage}
-            type={slippageType}
+            type={LEVERAGE}
             onChanged={({ leverage }) => onSlippageChange(leverage)}
             size="small"
           />

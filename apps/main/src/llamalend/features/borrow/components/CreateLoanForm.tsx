@@ -1,5 +1,5 @@
 import { type ChangeEvent, useCallback } from 'react'
-import { LoanPreset, slippageType } from '@/llamalend/constants'
+import { LoanPreset, LEVERAGE } from '@/llamalend/constants'
 import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
@@ -156,12 +156,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           />
         </Collapse>
       </LoanPresetSelector>
-      <HighPriceImpactAlert
-        priceImpact={priceImpact}
-        values={values}
-        max={q(maxLeverage)}
-        slippageType={slippageType}
-      />
+      <HighPriceImpactAlert priceImpact={priceImpact} values={values} max={q(maxLeverage)} slippageType={LEVERAGE} />
       <HighLiquidationRiskAlert isHighLiquidationRisk={isHighLiquidationRisk} />
       {disabledAlert ? (
         <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>

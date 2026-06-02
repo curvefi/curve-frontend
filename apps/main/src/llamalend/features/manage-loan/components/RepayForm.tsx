@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { slippageType } from '@/llamalend/constants'
+import { LEVERAGE } from '@/llamalend/constants'
 import { RepayLoanInfoList } from '@/llamalend/features/borrow/components/RepayLoanInfoList'
 import { RepayTokenList, type RepayTokenListProps } from '@/llamalend/features/manage-loan/components/RepayTokenList'
 import { RepayTokenOption, useRepayTokens } from '@/llamalend/features/manage-loan/hooks/useRepayTokens'
@@ -193,12 +193,7 @@ export const RepayForm = <ChainId extends IChainId>({
           )
         }
       />
-      <HighPriceImpactAlert
-        priceImpact={priceImpact}
-        values={values}
-        max={q(max.expected)}
-        slippageType={slippageType}
-      />
+      <HighPriceImpactAlert priceImpact={priceImpact} values={values} max={q(max.expected)} slippageType={LEVERAGE} />
       {isInSoftLiquidation && <AlertRepayDebtToIncreaseHealth />}
       <Stack sx={{ gap: Spacing.xs }}>
         <Button type="submit" loading={isPending || !market} disabled={isDisabled} data-testid="repay-submit-button">

@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
-import { slippageType } from '@/llamalend/constants'
+import { LEVERAGE } from '@/llamalend/constants'
 import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { type CloseLoanMutation, useClosePositionMutation } from '@/llamalend/mutations/close-position.mutation'
@@ -21,7 +21,7 @@ const CLOSE_POSITION_SAFETY_BUFFER = 1.0001 // 0.01% safety margin
 
 const userDefaultValues = {}
 const formOptions = {
-  defaultValues: { ...userDefaultValues, slippage: SLIPPAGE[slippageType].default },
+  defaultValues: { ...userDefaultValues, slippage: SLIPPAGE[LEVERAGE].default },
 } as const
 
 /** Hook to build state for the close-position form */

@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
-import { slippageType } from '@/llamalend/constants'
+import { LEVERAGE } from '@/llamalend/constants'
 import { useMaxRepayTokenValues } from '@/llamalend/features/manage-loan/hooks/useMaxRepayTokenValues'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { getTokens, isRouterRequired } from '@/llamalend/llama.utils'
@@ -93,7 +93,7 @@ const defaultValues = {
   maxCollateral: undefined,
   maxBorrowed: undefined,
   isFull: false,
-  slippage: SLIPPAGE[slippageType].default,
+  slippage: SLIPPAGE[LEVERAGE].default,
 }
 const formOptions = {
   defaultValues,
@@ -159,7 +159,11 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
       isPending ||
       isDebouncing ||
       isFull.isLoading ||
-      shouldBlockTransaction(priceImpact, { ...values, leverageEnabled: isRepayLeveraged(values), slippageType }),
+      shouldBlockTransaction(priceImpact, {
+        ...values,
+        leverageEnabled: isRepayLeveraged(values),
+        slippageType: LEVERAGE,
+      }),
     onSubmit: form.handleSubmit(onSubmit),
     borrowToken,
     collateralToken,
