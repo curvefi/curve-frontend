@@ -64,7 +64,7 @@ export const ChartWrapper = ({
         isLoading={isLoading}
         error={error}
         errorMessage={errorMessage}
-        refetchFunction={refetchPricesData}
+        refreshData={refetchPricesData}
       >
         <Box
           ref={wrapperRef}

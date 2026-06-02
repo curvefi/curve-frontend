@@ -3,17 +3,17 @@ import { t } from '@ui-kit/lib/i18n'
 import { ErrorMessage } from '@ui-kit/shared/ui/ErrorMessage'
 
 /** Error message component centered and wrapped in a container that takes a height prop and uses full width.
- * Optional prop for passing a refetch function to refresh the chart */
+ * Optional callback for refreshing the chart data. */
 export const ChartError = ({
   height,
   error,
   errorMessage,
-  refetchFunction,
+  refreshData,
 }: {
   height: number
   error: Error
   errorMessage: string
-  refetchFunction?: () => Promise<unknown> | void
+  refreshData?: () => Promise<unknown> | void
 }) => (
   <Box
     sx={{
@@ -28,7 +28,7 @@ export const ChartError = ({
       title={t`An error occurred`}
       subtitle={errorMessage}
       error={error}
-      refreshData={refetchFunction}
+      refreshData={refreshData}
       errorMessage={errorMessage}
     />
   </Box>

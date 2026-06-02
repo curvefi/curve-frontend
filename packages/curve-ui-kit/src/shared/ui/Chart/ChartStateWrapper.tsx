@@ -12,7 +12,7 @@ type ChartStateWrapperProps = {
   emptyMessage?: ReactNode
   error?: Error | null
   errorMessage: string
-  refetchFunction?: () => Promise<unknown> | void
+  refreshData?: () => Promise<unknown> | void
   children: ReactNode
 }
 
@@ -26,12 +26,11 @@ export const ChartStateWrapper = ({
   emptyMessage,
   error,
   errorMessage,
-  refetchFunction,
+  refreshData,
   children,
 }: ChartStateWrapperProps) => {
   if (isLoading) return <ChartLoading height={height} />
-  if (error)
-    return <ChartError height={height} error={error} errorMessage={errorMessage} refetchFunction={refetchFunction} />
+  if (error) return <ChartError height={height} error={error} errorMessage={errorMessage} refreshData={refreshData} />
   if (isEmpty) return <ChartEmpty height={height} title={emptyTitle} message={emptyMessage} />
 
   return (
@@ -39,7 +38,7 @@ export const ChartStateWrapper = ({
       title="Chart Error"
       inline
       subtitle="Something went wrong when rendering the chart."
-      refreshData={refetchFunction}
+      refreshData={refreshData}
     >
       {children}
     </ErrorBoundary>
