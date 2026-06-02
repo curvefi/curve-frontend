@@ -22,7 +22,7 @@ import { t } from '@ui-kit/lib/i18n'
 export const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: TransferProps) => {
   const isSubscribedRef = useRef(false)
 
-  const { chainId, signerAddress } = curve || {}
+  const { chainId, signerAddress } = curve ?? {}
   const { rChainId } = routerParams
   const activeKey = useStore(state => state.poolWithdraw.activeKey)
   const formEstGas = useStore(state => state.poolWithdraw.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
@@ -95,7 +95,7 @@ export const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams,
           status: getStepStatus(isComplete, step === 'UNSTAKE', isValid),
           type: 'action',
           content: isComplete ? t`Unstake Complete` : t`Unstake`,
-          onClick: () => handleUnstakeClick(activeKey, curve, poolData, formValues),
+          onClick: () => void handleUnstakeClick(activeKey, curve, poolData, formValues),
         },
       }
 

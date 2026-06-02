@@ -34,6 +34,7 @@ export const useBridgeMutation = ({ chainId, ...props }: BridgeOptions) => {
     ...props,
   })
 
+  // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
   const onSubmit = useCallback(async (form: BridgeForm) => mutate(form as BridgeMutation), [mutate])
 
   return { onSubmit, mutate, error, isPending }

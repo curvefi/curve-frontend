@@ -1,9 +1,7 @@
-import lodash from 'lodash'
+import { meanBy } from 'lodash'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 
 const { Weekly, Monthly } = Duration.AverageRates
-
-const { meanBy } = lodash
 
 /** A timestamped snapshot record */
 export type WithTimestamp = { timestamp: string | number | Date }

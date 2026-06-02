@@ -52,6 +52,7 @@ export const TokenSelector = <T extends TokenOption = TokenOption>({
     <>
       <TokenSelectButton token={selectedToken} disabled={disabled} size={size} onClick={onOpen} />
       <TokenSelectorModal isOpen={isOpen} compact={compact} onClose={onClose}>
+        {/* eslint-disable-next-line @eslint-react/no-clone-element -- Existing violation before enabling this rule. */}
         {cloneElement(children, {
           onToken: (token: T) => {
             onClose()

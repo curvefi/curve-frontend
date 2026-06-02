@@ -5,7 +5,7 @@ import type { Address } from '@primitives/address.utils'
 import { useFormSync } from '@ui-kit/features/forms'
 import type { UseFormReturn } from '@ui-kit/features/forms'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
-import { useQueryMinimum } from '@ui-kit/lib'
+import { queryMinimum } from '@ui-kit/lib'
 
 export function useMaxDepositTokenValues<ChainId extends LlamaChainId>(
   {
@@ -26,7 +26,7 @@ export function useMaxDepositTokenValues<ChainId extends LlamaChainId>(
     tokenAddress: borrowToken,
   })
   const maxVaultDeposit = useMarketVaultMaxDeposit({ chainId, marketId }, enabled)
-  const maxDepositAmount = useQueryMinimum(maxUserDeposit, maxVaultDeposit)
+  const maxDepositAmount = queryMinimum(maxUserDeposit, maxVaultDeposit)
 
   useFormSync(form, { maxDepositAmount: maxDepositAmount.data })
 

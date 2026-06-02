@@ -7,6 +7,7 @@ import { usePoolTvl } from '@/dex/queries/pool-tvl.query'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId, TokensMapper } from '@/dex/types/main.types'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
+import type { Address } from '@primitives/address.utils'
 import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
 import { Chip } from '@ui/Typography'
 import { t } from '@ui-kit/lib/i18n'
@@ -36,6 +37,7 @@ export const CurrencyReserves = ({ chainId, poolId, tokensMapper }: Props) => {
         const tokenAddress = poolDataCachedOrApi.tokenAddresses[idx]
         return (
           <CurrencyReservesContent
+            // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
             key={`${token}-${idx}`}
             cr={currencyReserves?.tokens.find(t => t.tokenAddress === tokenAddress)}
             haveSameTokenName={poolDataCachedOrApi.tokensCountBy[token] > 1}
@@ -44,7 +46,8 @@ export const CurrencyReserves = ({ chainId, poolId, tokensMapper }: Props) => {
             tokensMapper={tokensMapper}
             token={token}
             tokenAddress={tokenAddress}
-            tokenLink={poolTokensLinks?.[tokenAddress]}
+            tokenLink={poolTokensLinks?.[tokenAddress as Address]}
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
             handleCopyClick={copyToClipboard}
           />
         )

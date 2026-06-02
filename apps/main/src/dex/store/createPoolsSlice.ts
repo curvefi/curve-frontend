@@ -1,5 +1,5 @@
 import { produce } from 'immer'
-import lodash from 'lodash'
+import { chunk, countBy, groupBy, isNaN } from 'lodash'
 import { zeroAddress } from 'viem'
 import type { StoreApi } from 'zustand'
 import { curvejsApi } from '@/dex/lib/curvejs'
@@ -27,7 +27,6 @@ import { getPools } from '../lib/pools'
 import { fetchPoolsBlacklist } from '../queries/pools-blacklist.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
-const { chunk, countBy, groupBy, isNaN } = lodash
 
 type SliceState = {
   poolsMapper: Record<string, PoolDataMapper>
@@ -45,23 +44,23 @@ const sliceKey = 'pools'
 
 export type PoolsSlice = {
   [sliceKey]: SliceState & {
-    fetchPools(
+    fetchPools: (
       curve: CurveApi,
       poolIds: string[],
-    ): Promise<{ poolsMapper: PoolDataMapper; poolDatas: PoolData[] } | undefined>
-    fetchNewPool(curve: CurveApi, poolId: string): Promise<PoolData | undefined>
-    fetchPoolsRewardsApy(chainId: ChainId, poolDatas: PoolData[], useApi?: boolean): Promise<void>
-    fetchMissingPoolsRewardsApy(chainId: ChainId, poolDatas: PoolData[]): Promise<void>
+    ) => Promise<{ poolsMapper: PoolDataMapper; poolDatas: PoolData[] } | undefined>
+    fetchNewPool: (curve: CurveApi, poolId: string) => Promise<PoolData | undefined>
+    fetchPoolsRewardsApy: (chainId: ChainId, poolDatas: PoolData[], useApi?: boolean) => Promise<void>
+    fetchMissingPoolsRewardsApy: (chainId: ChainId, poolDatas: PoolData[]) => Promise<void>
     fetchPoolStats: (curve: CurveApi, poolData: PoolData) => Promise<void>
-    fetchPoolCurrenciesReserves(curve: CurveApi, poolData: PoolData): Promise<void>
-    setPoolIsWrapped(poolData: PoolData, isWrapped: boolean): { tokens: string[]; tokenAddresses: string[] }
+    fetchPoolCurrenciesReserves: (curve: CurveApi, poolData: PoolData) => Promise<void>
+    setPoolIsWrapped: (poolData: PoolData, isWrapped: boolean) => { tokens: string[]; tokenAddresses: string[] }
     updatePool: (chainId: ChainId, poolId: string, updatedPoolData: Partial<PoolData>) => void
-    setEmptyPoolListDefault(chainId: ChainId): void
+    setEmptyPoolListDefault: (chainId: ChainId) => void
 
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: () => void
   }
 }
 
@@ -91,6 +90,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
 
       // TODO: Temporary code to determine if there is an issue with getting base APY from  Kava Api (https://api.curve.finance/api/getFactoryAPYs-kava)
       const failedFetching24hOldVprice: Record<string, boolean> =
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
         chainId === ChainEnum.Kava ? await curvejsApi.network.getFailedFetching24hOldVprice() : {}
 
       const networks = await fetchNetworks()
@@ -239,6 +239,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
 
       setStateByActiveKey('rewardsApyMapper', chainId.toString(), rewardsApyMapper)
     },
+    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
     fetchMissingPoolsRewardsApy: async (chainId, poolDatas) => {
       const { rewardsApyMapper: allRewardsApyMapper, fetchPoolsRewardsApy } = get()[sliceKey]
       const rewardsApyMapper = allRewardsApyMapper[chainId] ?? {}
@@ -293,7 +294,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
       }
 
       set(
-        produce(state => {
+        produce((state: State) => {
           state.pools.poolsMapper[chainId][poolData.pool.id] = cPoolData
         }),
       )
@@ -302,8 +303,8 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
     },
     updatePool: (chainId, poolId, updatedPoolData) => {
       set(
-        produce(state => {
-          state.pools.poolsMapper[chainId][poolId] = updatedPoolData
+        produce((state: State) => {
+          state.pools.poolsMapper[chainId][poolId] = { ...state.pools.poolsMapper[chainId][poolId], ...updatedPoolData }
         }),
       )
     },

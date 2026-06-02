@@ -142,7 +142,7 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
       setInternalValue(nextValue)
       cancelDebounce()
       if (Array.isArray(nextValue) && nextValue.find(v => v == null)) return
-      onChange(nextValue as T)
+      onChange(nextValue)
     },
     [cancelDebounce, onChange, setInternalValue],
   )

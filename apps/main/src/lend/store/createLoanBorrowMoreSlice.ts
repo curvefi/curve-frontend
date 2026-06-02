@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { cloneDeep } from 'lodash'
 import { StoreApi } from 'zustand'
 import type {
   FormDetailInfoLeverage,
@@ -23,7 +23,6 @@ import { setMissingProvider } from '@ui-kit/utils/store.util'
 import { refetchUserMarket } from '../queries/refetchUserMarket'
 
 type StateKey = keyof typeof DEFAULT_STATE
-const { cloneDeep } = lodash
 
 type SliceState = {
   activeKey: string
@@ -41,21 +40,21 @@ const sliceKey = 'loanBorrowMore'
 // prettier-ignore
 export type LoanBorrowMoreSlice = {
   [sliceKey]: SliceState & {
-    fetchMaxRecv(activeKeyMax: string, api: Api, market: LendMarketTemplate, isLeverage: boolean): Promise<void>
-    refetchMaxRecv(market: LendMarketTemplate | undefined, isLeverage: boolean): Promise<string>
-    fetchDetailInfo(activeKey: string, api: Api, market: LendMarketTemplate, maxSlippage: string, isLeverage: boolean): Promise<void>
-    fetchEstGasApproval(activeKey: string, api: Api, market: LendMarketTemplate, maxSlippage: string, isLeverage: boolean): Promise<void>
-    setFormValues(api: Api | null, market: LendMarketTemplate | undefined, partialFormValues: Partial<FormValues>, maxSlippage: string, isLeverage: boolean, shouldRefetch?: boolean): Promise<void>
+    fetchMaxRecv: (activeKeyMax: string, api: Api, market: LendMarketTemplate, isLeverage: boolean) => Promise<void>
+    refetchMaxRecv: (market: LendMarketTemplate | undefined, isLeverage: boolean) => Promise<string>
+    fetchDetailInfo: (activeKey: string, api: Api, market: LendMarketTemplate, maxSlippage: string, isLeverage: boolean) => Promise<void>
+    fetchEstGasApproval: (activeKey: string, api: Api, market: LendMarketTemplate, maxSlippage: string, isLeverage: boolean) => Promise<void>
+    setFormValues: (api: Api | null, market: LendMarketTemplate | undefined, partialFormValues: Partial<FormValues>, maxSlippage: string, isLeverage: boolean, shouldRefetch?: boolean) => Promise<void>
 
     // steps
-    fetchStepApprove(activeKey: string, api: Api, market: LendMarketTemplate, formValues: FormValues, maxSlippage: string, isLeverage: boolean): Promise<{ hashes: string[]; error: string } | undefined>
-    fetchStepIncrease(activeKey: string, api: Api, market: LendMarketTemplate, formValues: FormValues, maxSlippage: string, isLeverage: boolean): Promise<{ activeKey: string; error: string; hash: string } | undefined>
+    fetchStepApprove: (activeKey: string, api: Api, market: LendMarketTemplate, formValues: FormValues, maxSlippage: string, isLeverage: boolean) => Promise<{ hashes: string[]; error: string } | undefined>
+    fetchStepIncrease: (activeKey: string, api: Api, market: LendMarketTemplate, formValues: FormValues, maxSlippage: string, isLeverage: boolean) => Promise<{ activeKey: string; error: string; hash: string } | undefined>
 
     // steps helper
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(rChainId?: ChainId, marketId?: string, isLeverage?: boolean): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: (rChainId?: ChainId, marketId?: string, isLeverage?: boolean) => void
   }
 }
 

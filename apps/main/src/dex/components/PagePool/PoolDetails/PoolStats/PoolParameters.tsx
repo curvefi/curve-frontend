@@ -67,6 +67,7 @@ export const PoolParameters = ({
     priceOracle,
   } = parameters ?? {}
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
   const isEymaPools = chainId === Chain.Fantom && poolDataCacheOrApi.pool.id.startsWith('factory-eywa')
 
   return (
@@ -142,6 +143,7 @@ export const PoolParameters = ({
         />
       </Stack>
       {/* price oracle & price scale */}
+      {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
       {poolData && haveWrappedCoins && (priceOracle || priceScale) && !pricesApi && (
         <Stack spacing={Spacing.sm}>
           <Title>Price Data</Title>

@@ -26,10 +26,12 @@ export async function sendVnetTransaction({
   if (!response.ok) {
     throw new Error(`Failed to send virtual testnet transaction: ${response.status} ${response.statusText}: ${text}`)
   }
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
   const { tx_hash } = JSON.parse(text)
   console.info(
     'Created VNet transaction',
     `https://dashboard.tenderly.co/${projectSlug}/project/testnet/${vnetId}/tx/${tx_hash}`,
   )
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- Existing violation before enabling this rule.
   return tx_hash
 }

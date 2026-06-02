@@ -5,6 +5,7 @@ import {
   useNavigate as useTanstackNavigate,
   useParams as useTanstackParams,
 } from '@tanstack/react-router'
+import type { ParsedLocation, RegisteredRouter } from '@tanstack/router-core'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type NavigateOptions = { replace?: boolean; resetScroll?: boolean; state?: any }
@@ -27,7 +28,8 @@ export function useNavigate() {
  * Note that during navigation, this will reflect the *new* search params before the navigation is complete.
  */
 export function useSearchParams(): URLSearchParams {
-  const { search } = useTanstackLocation()
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+  const { search } = useTanstackLocation() as { search: Record<string, string> }
   return useMemo(() => new URLSearchParams(search), [search])
 }
 
@@ -61,10 +63,7 @@ export function useSearchNavigate(searchParams: URLSearchParams) {
  * Use URL params from tanstack router.
  * Note that during navigation, this will reflect the *old* params until the navigation is complete.
  */
-export const useParams = <T>(): T => {
-  const params = useTanstackParams({ strict: false })
-  return params as unknown as T
-}
+export const useParams = <T>(): T => useTanstackParams<RegisteredRouter, undefined, false>({ strict: false }) as T
 
 /**
  * Get current pathname from tanstack router.
@@ -72,7 +71,7 @@ export const useParams = <T>(): T => {
  */
 export const usePathname = () => useTanstackLocation().pathname
 
-export const useLocation = useTanstackLocation
+export const useLocation = useTanstackLocation as () => ParsedLocation
 
 /**
  * Use matchRoute from tanstack router and return typed params or false if the route does not match.

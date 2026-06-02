@@ -290,14 +290,14 @@ export const createCreatePoolSlice = (
     ...DEFAULT_CREATE_POOL_STATE,
     setNavigationIndex: (index: number) => {
       set(
-        produce(state => {
+        produce((state: State) => {
           state.createPool.navigationIndex = index
         }),
       )
     },
     updateAdvanced: (boolean: boolean) => {
       set(
-        produce(state => {
+        produce((state: State) => {
           state.createPool.advanced = boolean
         }),
       )
@@ -309,7 +309,7 @@ export const createCreatePoolSlice = (
         const amount = networks[chainId].twocryptoFactory || networks[chainId].twocryptoFactory ? 2 : 3
 
         set(
-          produce(state => {
+          produce((state: State) => {
             state.createPool.tokensInPool.tokenAmount = amount
           }),
         )
@@ -321,7 +321,7 @@ export const createCreatePoolSlice = (
 
         if (tokenA.basePool) {
           set(
-            produce(state => {
+            produce((state: State) => {
               state.createPool.tokensInPool.tokenAmount = 2
               state.createPool.tokensInPool[TOKEN_B] = DEFAULT_CREATE_POOL_STATE.tokensInPool[TOKEN_B]
             }),
@@ -329,7 +329,7 @@ export const createCreatePoolSlice = (
         }
         if (tokenB.basePool) {
           set(
-            produce(state => {
+            produce((state: State) => {
               state.createPool.tokensInPool[TOKEN_B] = DEFAULT_CREATE_POOL_STATE.tokensInPool[TOKEN_B]
               state.createPool.tokensInPool.metaPoolToken = false
             }),
@@ -337,42 +337,42 @@ export const createCreatePoolSlice = (
         }
         if (tokenC.basePool) {
           set(
-            produce(state => {
+            produce((state: State) => {
               state.createPool.tokensInPool[TOKEN_C] = DEFAULT_CREATE_POOL_STATE.tokensInPool[TOKEN_C]
             }),
           )
         }
         if (tokenD.basePool) {
           set(
-            produce(state => {
+            produce((state: State) => {
               state.createPool.tokensInPool[TOKEN_D] = DEFAULT_CREATE_POOL_STATE.tokensInPool[TOKEN_D]
             }),
           )
         }
         if (tokenE.basePool) {
           set(
-            produce(state => {
+            produce((state: State) => {
               state.createPool.tokensInPool[TOKEN_E] = DEFAULT_CREATE_POOL_STATE.tokensInPool[TOKEN_E]
             }),
           )
         }
         if (tokenF.basePool) {
           set(
-            produce(state => {
+            produce((state: State) => {
               state.createPool.tokensInPool[TOKEN_F] = DEFAULT_CREATE_POOL_STATE.tokensInPool[TOKEN_F]
             }),
           )
         }
         if (tokenG.basePool) {
           set(
-            produce(state => {
+            produce((state: State) => {
               state.createPool.tokensInPool[TOKEN_G] = DEFAULT_CREATE_POOL_STATE.tokensInPool[TOKEN_G]
             }),
           )
         }
         if (tokenH.basePool) {
           set(
-            produce(state => {
+            produce((state: State) => {
               state.createPool.tokensInPool[TOKEN_H] = DEFAULT_CREATE_POOL_STATE.tokensInPool[TOKEN_H]
             }),
           )
@@ -380,7 +380,7 @@ export const createCreatePoolSlice = (
       }
 
       set(
-        produce(state => {
+        produce((state: State) => {
           state.createPool.parameters = DEFAULT_CREATE_POOL_STATE.parameters
           state.createPool.poolPresetIndex = null
           state.createPool.swapType = swapType
@@ -389,7 +389,7 @@ export const createCreatePoolSlice = (
     },
     updatePoolPresetIndex: (presetIndex: number) => {
       set(
-        produce(state => {
+        produce((state: State) => {
           state.createPool.poolPresetIndex = presetIndex
           state.createPool.parameters = POOL_PRESETS[presetIndex].defaultParams
         }),
@@ -397,12 +397,13 @@ export const createCreatePoolSlice = (
     },
     resetPoolPresetIndex: () => {
       set(
-        produce(state => {
+        produce((state: State) => {
           state.createPool.parameters = DEFAULT_CREATE_POOL_STATE.parameters
           state.createPool.poolPresetIndex = null
         }),
       )
     },
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
     updateTokensInPool: async (
       curve: CurveApi,
       tokenA: TokenState,
@@ -495,7 +496,7 @@ export const createCreatePoolSlice = (
       syncTokenStatuses()
 
       set(
-        produce(state => {
+        produce((state: State) => {
           state.createPool.tokensInPool = tokensInPoolUpdates
           state.createPool.initialPrice = initialPriceUpdates
         }),
@@ -503,7 +504,7 @@ export const createCreatePoolSlice = (
     },
     clearToken: (tokenId: TokenId) => {
       set(
-        produce(state => {
+        produce((state: State) => {
           state.createPool.tokensInPool[tokenId] = DEFAULT_CREATE_POOL_STATE.tokensInPool[tokenId]
           state.createPool.tokensInPool.metaPoolToken = get().createPool.tokensInPool[tokenId].basePool
             ? false
@@ -513,48 +514,48 @@ export const createCreatePoolSlice = (
     },
     updateNgAssetType: (tokenId: TokenId, value: NgAssetType) => {
       set(
-        produce(state => {
+        produce((state: State) => {
           state.createPool.tokensInPool[tokenId].ngAssetType = value
         }),
       )
     },
     updateTokenErc4626Status: (tokenId: TokenId, status: TokenState['erc4626']) => {
       set(
-        produce(state => {
+        produce((state: State) => {
           state.createPool.tokensInPool[tokenId].erc4626 = { ...status }
         }),
       )
     },
     updateOracleState: (tokenId: TokenId, status: OracleType) => {
       set(
-        produce(state => {
+        produce((state: State) => {
           state.createPool.tokensInPool[tokenId].oracle = { ...status }
         }),
       )
     },
     updateOracleAddress: (tokenId: TokenId, oracleAddress: string) => {
       set(
-        produce(state => {
+        produce((state: State) => {
           state.createPool.tokensInPool[tokenId].oracle.address = oracleAddress
         }),
       )
     },
     updateOracleFunction: (tokenId: TokenId, functionName: string) => {
       set(
-        produce(state => {
+        produce((state: State) => {
           state.createPool.tokensInPool[tokenId].oracle.functionName = functionName
         }),
       )
     },
     updateTokenAmount: (amount: number) =>
       set(
-        produce(state => {
+        produce((state: State) => {
           state.createPool.tokensInPool.tokenAmount = amount
         }),
       ),
     updateUserAddedTokens: (address, symbol, haveSameTokenName, basePool) =>
       set(
-        produce(state => {
+        produce((state: State) => {
           state.createPool.userAddedTokens.push({
             address: address.toLowerCase(),
             symbol,
@@ -566,7 +567,7 @@ export const createCreatePoolSlice = (
       ),
     updateInitialPrice: (tokenA: number, tokenB: number, tokenC: number) =>
       set(
-        produce(state => {
+        produce((state: State) => {
           state.createPool.initialPrice.initialPrice = [
             calculateInitialPrice(tokenA, tokenB),
             calculateInitialPrice(tokenA, tokenC),
@@ -582,7 +583,7 @@ export const createCreatePoolSlice = (
         )
 
         set(
-          produce(state => {
+          produce((state: State) => {
             state.createPool.initialPrice[TOKEN_A] = price
           }),
         )
@@ -595,7 +596,7 @@ export const createCreatePoolSlice = (
         )
 
         set(
-          produce(state => {
+          produce((state: State) => {
             state.createPool.initialPrice[TOKEN_B] = price
           }),
         )
@@ -608,12 +609,13 @@ export const createCreatePoolSlice = (
         )
 
         set(
-          produce(state => {
+          produce((state: State) => {
             state.createPool.initialPrice[TOKEN_C] = price
           }),
         )
       }
     },
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
     refreshInitialPrice: async (curve: CurveApi) => {
       const { chainId } = curve
 
@@ -633,7 +635,7 @@ export const createCreatePoolSlice = (
       get().createPool.updateInitialPrice(tokenAPrice, tokenBPrice, tokenCPrice)
 
       set(
-        produce(state => {
+        produce((state: State) => {
           state.createPool.initialPrice = {
             ...get().createPool.initialPrice,
             [TOKEN_A]: tokenAPrice,
@@ -645,115 +647,115 @@ export const createCreatePoolSlice = (
     },
     updateStableSwapFee: (fee: string) =>
       set(
-        produce(state => {
+        produce((state: State) => {
           state.createPool.parameters.stableSwapFee = fee
         }),
       ),
     updateMidFee: (fee: string) =>
       set(
-        produce(state => {
+        produce((state: State) => {
           state.createPool.parameters.midFee = fee
         }),
       ),
     updateOutFee: (fee: string) =>
       set(
-        produce(state => {
+        produce((state: State) => {
           state.createPool.parameters.outFee = fee
         }),
       ),
     updateStableA: (value: number | string) =>
       set(
-        produce(state => {
+        produce((state: State) => {
           state.createPool.parameters.stableA = new BigNumber(value).toString()
         }),
       ),
     updateCryptoA: (value: number | string) =>
       set(
-        produce(state => {
+        produce((state: State) => {
           state.createPool.parameters.cryptoA = new BigNumber(value).toString()
         }),
       ),
     updateGamma: (value: number | string) =>
       set(
-        produce(state => {
+        produce((state: State) => {
           state.createPool.parameters.gamma = typeof value === 'string' ? value : new BigNumber(value).toString()
         }),
       ),
     updateAllowedExtraProfit: (value: number | string) =>
       set(
-        produce(state => {
+        produce((state: State) => {
           state.createPool.parameters.allowedExtraProfit =
             typeof value === 'string' ? value : new BigNumber(value).toString()
         }),
       ),
     updateFeeGamma: (value: number | string) =>
       set(
-        produce(state => {
+        produce((state: State) => {
           state.createPool.parameters.feeGamma = typeof value === 'string' ? value : new BigNumber(value).toString()
         }),
       ),
     updateAdjustmentStep: (value: number | string) =>
       set(
-        produce(state => {
+        produce((state: State) => {
           state.createPool.parameters.adjustmentStep =
             typeof value === 'string' ? value : new BigNumber(value).toString()
         }),
       ),
     updateMaHalfTime: (value: number | string) =>
       set(
-        produce(state => {
+        produce((state: State) => {
           state.createPool.parameters.maHalfTime = typeof value === 'string' ? value : new BigNumber(value).toString()
         }),
       ),
     updateMaExpTime: (value: number | string) =>
       set(
-        produce(state => {
+        produce((state: State) => {
           state.createPool.parameters.maExpTime = typeof value === 'string' ? value : new BigNumber(value).toString()
         }),
       ),
     updateOffpegFeeMultiplier: (value: number | string) =>
       set(
-        produce(state => {
+        produce((state: State) => {
           state.createPool.parameters.offpegFeeMultiplier =
             typeof value === 'string' ? value : new BigNumber(value).toString()
         }),
       ),
     updatePoolName: (name: string) =>
       set(
-        produce(state => {
+        produce((state: State) => {
           state.createPool.poolName = name
         }),
       ),
     updatePoolSymbol: (symbol: string) =>
       set(
-        produce(state => {
+        produce((state: State) => {
           state.createPool.poolSymbol = symbol
         }),
       ),
     updatePoolTypeValidation: (poolType: boolean) => {
       set(
-        produce(state => {
+        produce((state: State) => {
           state.createPool.validation.poolType = poolType
         }),
       )
     },
     updateTokensInPoolValidation: (tokensInPool: boolean) => {
       set(
-        produce(state => {
+        produce((state: State) => {
           state.createPool.validation.tokensInPool = tokensInPool
         }),
       )
     },
     updateParametersValidation: (parameters: boolean) => {
       set(
-        produce(state => {
+        produce((state: State) => {
           state.createPool.validation.parameters = parameters
         }),
       )
     },
     updatePoolInfoValidation: (poolInfo: boolean) => {
       set(
-        produce(state => {
+        produce((state: State) => {
           // Also check for invalid characters in pool name
           const { poolName } = state.createPool
           const invalidChars = INVALID_POOLS_NAME_CHARACTERS.filter(c => poolName.includes(c))
@@ -761,6 +763,7 @@ export const createCreatePoolSlice = (
         }),
       )
     },
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
     deployPool: async (curve: CurveApi) => {
       const chainId = curve.chainId
       const {
@@ -796,7 +799,7 @@ export const createCreatePoolSlice = (
       dismissNotificationHandler = dismissConfirm
 
       set(
-        produce(state => {
+        produce((state: State) => {
           state.createPool.transactionState.txStatus = 'CONFIRMING'
         }),
       )
@@ -826,10 +829,10 @@ export const createCreatePoolSlice = (
           )
 
           set(
-            produce(state => {
+            produce((state: State) => {
               state.createPool.transactionState.txStatus = 'LOADING'
               state.createPool.transactionState.transaction = deployPoolTx
-              state.createPool.transactionState.txLink = scanTxPath(networks[chainId], deployPoolTx.hash)
+              state.createPool.transactionState.txLink = scanTxPath(networks[chainId], deployPoolTx.hash)!
             }),
           )
 
@@ -842,7 +845,7 @@ export const createCreatePoolSlice = (
           const poolAddress = await curve.twocryptoFactory.getDeployedPoolAddress(deployPoolTx)
           // deploy pool tx success
           set(
-            produce(state => {
+            produce((state: State) => {
               state.createPool.transactionState.txStatus = 'SUCCESS'
               state.createPool.transactionState.txSuccess = true
               state.createPool.transactionState.fetchPoolStatus = 'LOADING'
@@ -857,7 +860,7 @@ export const createCreatePoolSlice = (
 
           const poolId = await curve.twocryptoFactory.fetchRecentlyDeployedPool(poolAddress)
           set(
-            produce(state => {
+            produce((state: State) => {
               state.createPool.transactionState.poolId = poolId
             }),
           )
@@ -865,7 +868,7 @@ export const createCreatePoolSlice = (
           const poolData = await fetchNewPool(curve, poolId)
           if (poolData) {
             set(
-              produce(state => {
+              produce((state: State) => {
                 state.createPool.transactionState.fetchPoolStatus = 'SUCCESS'
                 state.createPool.transactionState.lpTokenAddress = poolData.pool.lpToken
               }),
@@ -876,8 +879,9 @@ export const createCreatePoolSlice = (
             dismissNotificationHandler()
           }
           set(
-            produce(state => {
+            produce((state: State) => {
               state.createPool.transactionState.txStatus = 'ERROR'
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
               state.createPool.transactionState.errorMessage = error.message
             }),
           )
@@ -903,10 +907,10 @@ export const createCreatePoolSlice = (
               initialPrice.initialPrice,
             )
             set(
-              produce(state => {
+              produce((state: State) => {
                 state.createPool.transactionState.txStatus = 'LOADING'
                 state.createPool.transactionState.transaction = deployPoolTx
-                state.createPool.transactionState.txLink = scanTxPath(networks[chainId], deployPoolTx.hash)
+                state.createPool.transactionState.txLink = scanTxPath(networks[chainId], deployPoolTx.hash)!
               }),
             )
 
@@ -919,7 +923,7 @@ export const createCreatePoolSlice = (
             const poolAddress = await curve.tricryptoFactory.getDeployedPoolAddress(deployPoolTx)
             // deploy pool tx success
             set(
-              produce(state => {
+              produce((state: State) => {
                 state.createPool.transactionState.txStatus = 'SUCCESS'
                 state.createPool.transactionState.txSuccess = true
                 state.createPool.transactionState.fetchPoolStatus = 'LOADING'
@@ -934,7 +938,7 @@ export const createCreatePoolSlice = (
 
             const poolId = await curve.tricryptoFactory.fetchRecentlyDeployedPool(poolAddress)
             set(
-              produce(state => {
+              produce((state: State) => {
                 state.createPool.transactionState.poolId = poolId
               }),
             )
@@ -942,7 +946,7 @@ export const createCreatePoolSlice = (
             const poolData = await fetchNewPool(curve, poolId)
             if (poolData) {
               set(
-                produce(state => {
+                produce((state: State) => {
                   state.createPool.transactionState.fetchPoolStatus = 'SUCCESS'
                   state.createPool.transactionState.lpTokenAddress = poolData.pool.lpToken
                 }),
@@ -954,8 +958,9 @@ export const createCreatePoolSlice = (
             }
 
             set(
-              produce(state => {
+              produce((state: State) => {
                 state.createPool.transactionState.txStatus = 'ERROR'
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.createPool.transactionState.errorMessage = error.message
               }),
             )
@@ -984,10 +989,10 @@ export const createCreatePoolSlice = (
             )
 
             set(
-              produce(state => {
+              produce((state: State) => {
                 state.createPool.transactionState.txStatus = 'LOADING'
                 state.createPool.transactionState.transaction = deployPoolTx
-                state.createPool.transactionState.txLink = scanTxPath(networks[chainId], deployPoolTx.hash)
+                state.createPool.transactionState.txLink = scanTxPath(networks[chainId], deployPoolTx.hash)!
               }),
             )
 
@@ -1000,7 +1005,7 @@ export const createCreatePoolSlice = (
             const poolAddress = await curve.twocryptoFactory.getDeployedPoolAddress(deployPoolTx)
             // deploy pool tx success
             set(
-              produce(state => {
+              produce((state: State) => {
                 state.createPool.transactionState.txStatus = 'SUCCESS'
                 state.createPool.transactionState.txSuccess = true
                 state.createPool.transactionState.fetchPoolStatus = 'LOADING'
@@ -1015,7 +1020,7 @@ export const createCreatePoolSlice = (
 
             const poolId = await curve.twocryptoFactory.fetchRecentlyDeployedPool(poolAddress)
             set(
-              produce(state => {
+              produce((state: State) => {
                 state.createPool.transactionState.poolId = poolId
               }),
             )
@@ -1023,7 +1028,7 @@ export const createCreatePoolSlice = (
             const poolData = await fetchNewPool(curve, poolId)
             if (poolData) {
               set(
-                produce(state => {
+                produce((state: State) => {
                   state.createPool.transactionState.fetchPoolStatus = 'SUCCESS'
                   state.createPool.transactionState.lpTokenAddress = poolData.pool.lpToken
                 }),
@@ -1034,8 +1039,9 @@ export const createCreatePoolSlice = (
               dismissNotificationHandler()
             }
             set(
-              produce(state => {
+              produce((state: State) => {
                 state.createPool.transactionState.txStatus = 'ERROR'
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.createPool.transactionState.errorMessage = error.message
               }),
             )
@@ -1083,10 +1089,10 @@ export const createCreatePoolSlice = (
               oracleAddress,
             )
             set(
-              produce(state => {
+              produce((state: State) => {
                 state.createPool.transactionState.txStatus = 'LOADING'
                 state.createPool.transactionState.transaction = deployPoolTx
-                state.createPool.transactionState.txLink = scanTxPath(networks[chainId], deployPoolTx.hash)
+                state.createPool.transactionState.txLink = scanTxPath(networks[chainId], deployPoolTx.hash)!
               }),
             )
 
@@ -1100,7 +1106,7 @@ export const createCreatePoolSlice = (
 
             // deploy pool tx success
             set(
-              produce(state => {
+              produce((state: State) => {
                 state.createPool.transactionState.txStatus = 'SUCCESS'
                 state.createPool.transactionState.txSuccess = true
                 state.createPool.transactionState.fetchPoolStatus = 'LOADING'
@@ -1115,7 +1121,7 @@ export const createCreatePoolSlice = (
 
             const poolId = await curve.stableNgFactory.fetchRecentlyDeployedPool(poolAddress)
             set(
-              produce(state => {
+              produce((state: State) => {
                 state.createPool.transactionState.poolId = poolId
               }),
             )
@@ -1123,7 +1129,7 @@ export const createCreatePoolSlice = (
             const poolData = await fetchNewPool(curve, poolId)
             if (poolData) {
               set(
-                produce(state => {
+                produce((state: State) => {
                   state.createPool.transactionState.fetchPoolStatus = 'SUCCESS'
                   state.createPool.transactionState.lpTokenAddress = poolData.pool.lpToken
                 }),
@@ -1134,8 +1140,9 @@ export const createCreatePoolSlice = (
               dismissNotificationHandler()
             }
             set(
-              produce(state => {
+              produce((state: State) => {
                 state.createPool.transactionState.txStatus = 'ERROR'
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.createPool.transactionState.errorMessage = error.message
               }),
             )
@@ -1175,10 +1182,10 @@ export const createCreatePoolSlice = (
               oracleFunctions,
             )
             set(
-              produce(state => {
+              produce((state: State) => {
                 state.createPool.transactionState.txStatus = 'LOADING'
                 state.createPool.transactionState.transaction = deployPoolTx
-                state.createPool.transactionState.txLink = scanTxPath(networks[chainId], deployPoolTx.hash)
+                state.createPool.transactionState.txLink = scanTxPath(networks[chainId], deployPoolTx.hash)!
               }),
             )
 
@@ -1191,7 +1198,7 @@ export const createCreatePoolSlice = (
             const poolAddress = await curve.stableNgFactory.getDeployedPlainPoolAddress(deployPoolTx)
             // deploy pool tx success
             set(
-              produce(state => {
+              produce((state: State) => {
                 state.createPool.transactionState.txStatus = 'SUCCESS'
                 state.createPool.transactionState.txSuccess = true
                 state.createPool.transactionState.fetchPoolStatus = 'LOADING'
@@ -1206,7 +1213,7 @@ export const createCreatePoolSlice = (
 
             const poolId = await curve.stableNgFactory.fetchRecentlyDeployedPool(poolAddress)
             set(
-              produce(state => {
+              produce((state: State) => {
                 state.createPool.transactionState.poolId = poolId
               }),
             )
@@ -1214,7 +1221,7 @@ export const createCreatePoolSlice = (
             const poolData = await fetchNewPool(curve, poolId)
             if (poolData) {
               set(
-                produce(state => {
+                produce((state: State) => {
                   state.createPool.transactionState.fetchPoolStatus = 'SUCCESS'
                   state.createPool.transactionState.lpTokenAddress = poolData.pool.lpToken
                 }),
@@ -1225,8 +1232,9 @@ export const createCreatePoolSlice = (
               dismissNotificationHandler()
             }
             set(
-              produce(state => {
+              produce((state: State) => {
                 state.createPool.transactionState.txStatus = 'ERROR'
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.createPool.transactionState.errorMessage = error.message
               }),
             )
@@ -1237,7 +1245,7 @@ export const createCreatePoolSlice = (
     },
     resetState: () =>
       set(
-        produce(state => {
+        produce((state: State) => {
           state.createPool = { ...state.createPool, ...DEFAULT_CREATE_POOL_STATE }
         }),
       ),

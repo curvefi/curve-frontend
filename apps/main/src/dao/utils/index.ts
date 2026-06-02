@@ -7,6 +7,7 @@ export * from './utilsDates'
 
 export function delayAction<T>(cb: T) {
   if (typeof cb === 'function') {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return -- Existing violation before enabling this rule.
     setTimeout(() => cb(), 50)
   }
 }

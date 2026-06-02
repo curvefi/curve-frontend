@@ -11,4 +11,5 @@ export const breakpoints = {
 
 export const mediaQueries =
   (key: keyof typeof breakpoints) => (style: TemplateStringsArray | string | Interpolation<object>) =>
+    // eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions -- Existing violation before enabling this rule.
     `@media (min-width: ${breakpoints[key]}rem) { ${style} }`

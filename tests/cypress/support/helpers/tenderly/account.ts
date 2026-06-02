@@ -23,6 +23,7 @@ export const loadTenderlyAccount = () =>
           [accountSlug, projectSlug, accessKey].every(Boolean),
           'Tenderly account environment variables are not set',
         )
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
         return (tenderlyAccount = { accountSlug, projectSlug, accessKey })
       },
     )

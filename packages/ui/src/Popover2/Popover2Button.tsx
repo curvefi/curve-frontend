@@ -41,6 +41,7 @@ const Wrapper = styled.div<{ variant?: ButtonVariant }>`
 
   ${({ variant }) => {
     if (variant === 'outlined') {
+      // eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions -- Existing violation before enabling this rule.
       return `${buttonOutlinedStyles};`
     }
   }}

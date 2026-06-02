@@ -17,6 +17,7 @@ export const useMaxValue = <TKey>({
 }) => {
   const maxValue = useMemo(
     // todo: round this to a nice number
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-return -- Existing violation before enabling this rule.
     () => max ?? (data.length ? Math.ceil(Math.max(...data.map(item => get(item, field)))) : undefined),
     [max, data, field],
   )

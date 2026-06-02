@@ -56,6 +56,7 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
   const isMax = maxUtcDate ? 365 * 4 - remainingLockedDays <= 7 : false
 
   const updateFormValues = useCallback(
+    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
     async (updatedFormValues: Partial<FormValues>, { isFullReset = false }: { isFullReset?: boolean } = {}) => {
       setTxInfoBar(null)
       setFormValues(curve, isLoadingCurve, rFormType, updatedFormValues, vecrvInfo, isFullReset)
@@ -141,7 +142,7 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
           ),
           type: 'action',
           content: formStatus.formTypeCompleted === 'INCREASE_TIME' ? t`Lock Increased` : t`Increase Lock`,
-          onClick: () => handleBtnClickIncrease(activeKey, curve, formValues),
+          onClick: () => void handleBtnClickIncrease(activeKey, curve, formValues),
         },
       }
 
@@ -214,7 +215,9 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
 
       <FormActions haveSigner={haveSigner} loading={loading}>
         {isMax && <AlertBox alertType="info">{t`You have reached the maximum locked date.`}</AlertBox>}
-        {formStatus.error && <AlertFormError errorKey={formStatus.error} handleBtnClose={() => updateFormValues({})} />}
+        {formStatus.error && (
+          <AlertFormError errorKey={formStatus.error} handleBtnClose={() => void updateFormValues({})} />
+        )}
         {txInfoBar}
         <Stepper steps={steps} hideStepNumber />
       </FormActions>

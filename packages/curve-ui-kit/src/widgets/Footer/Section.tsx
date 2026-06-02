@@ -24,6 +24,7 @@ export const Section = ({ title, links, networkId, appName, isTiny }: SectionPro
     </Grid>
 
     {links.map((link, index) => (
+      // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
       <Grid key={`${link.href}-${index}`} size={{ mobile: isTiny ? 12 : 6, tablet: 12 }} data-testid="footer-link">
         <Link {...link} appName={appName} networkId={networkId} />
       </Grid>

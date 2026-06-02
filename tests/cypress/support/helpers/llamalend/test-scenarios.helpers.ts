@@ -36,6 +36,7 @@ export const createStub = <TResult, TArgs extends readonly TestStubArg[] = reado
 
 /** Creates an isApproved stub that returns false until approveStub has been called, then returns true. */
 export const createIsApprovedStub = (approveStub: TestStub<readonly [string], unknown>) =>
+  // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
   cy.stub().callsFake(async () => approveStub.callCount > 0) as TestStub<readonly [string], boolean>
 
 const generateMarketRates = () => ({
@@ -83,7 +84,7 @@ export const createCreateLoanScenario = ({
     estimateGasCreateLoan: createStub(`${oneInt(80_000, 220_000)}`),
     createLoan: createStub(TEST_TX_HASH),
     createLoanApprove,
-    estimateGasCreateLoanApprove: createStub(`${oneInt(70_000, 200_000)}`)!,
+    estimateGasCreateLoanApprove: createStub(`${oneInt(70_000, 200_000)}`),
   } as const
 
   seedMarketBalances(chainId, collateralAddress)

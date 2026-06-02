@@ -21,6 +21,7 @@ export function Popover2Dialog({ title, children, ...props }: DialogProps) {
           {title}
         </h3>
       )}
+      {/* eslint-disable-next-line @eslint-react/no-clone-element -- Existing violation before enabling this rule. */}
       {cloneElement(children, props)}
     </Wrapper>
   )

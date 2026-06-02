@@ -47,12 +47,14 @@ export function useSnapshots<T extends CrvUsdSnapshot | LendingSnapshot>(
 
   const { snapshots, isLoading, snapshotKey, error } = isLend
     ? {
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
         snapshots: (showLendGraph && poolSnapshots) || null,
         isLoading: !enabled || lendIsLoading,
         snapshotKey: RateKeys[type],
         error: poolError,
       }
     : {
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
         snapshots: (showMintGraph && mintSnapshots) || null,
         isLoading: !enabled || mintIsLoading,
         snapshotKey: RateKeys[MarketRateType.Borrow],

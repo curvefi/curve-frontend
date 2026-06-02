@@ -8,6 +8,7 @@ export type FormStatus = {
   formProcessing: boolean
   formTypeCompleted: FormType | 'APPROVE' | ''
   step: StepKey | ''
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   error: 'lpToken-too-much' | string
   warning: string
 }

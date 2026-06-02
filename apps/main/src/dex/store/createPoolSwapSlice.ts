@@ -1,5 +1,5 @@
 import { Contract, Interface, JsonRpcProvider } from 'ethers'
-import lodash from 'lodash'
+import { cloneDeep } from 'lodash'
 import { ethAddress } from 'viem'
 import type { Config } from 'wagmi'
 import type { StoreApi } from 'zustand'
@@ -35,7 +35,6 @@ import { fetchPoolTokenBalances } from '../hooks/usePoolTokenBalances'
 import { invalidatePoolParameters } from '../queries/pool-parameters.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
-const { cloneDeep } = lodash
 
 type SliceState = {
   activeKey: string
@@ -53,20 +52,20 @@ const sliceKey = 'poolSwap'
 // prettier-ignore
 export type PoolSwapSlice = {
   [sliceKey]: SliceState & {
-    fetchIgnoreExchangeRateCheck(curve: CurveApi, pool: Pool): Promise<boolean>
-    fetchExchangeOutput(activeKey: string, storedActiveKey: string, config: Config, curve: CurveApi, pool: Pool, formValues: FormValues, maxSlippage: string): Promise<void>
-    fetchMaxAmount(activeKey: string, config: Config, curve: CurveApi, pool: Pool, formValues: FormValues, maxSlippage: string): Promise<string>
-    setFormValues(config: Config, curve: CurveApi | null, poolId: string, poolData: PoolData | undefined, updatedFormValues: Partial<FormValues>, isGetMaxFrom: boolean | null, isSeed: boolean | null, maxSlippage: string): Promise<void>
+    fetchIgnoreExchangeRateCheck: (curve: CurveApi, pool: Pool) => Promise<boolean>
+    fetchExchangeOutput: (activeKey: string, storedActiveKey: string, config: Config, curve: CurveApi, pool: Pool, formValues: FormValues, maxSlippage: string) => Promise<void>
+    fetchMaxAmount: (activeKey: string, config: Config, curve: CurveApi, pool: Pool, formValues: FormValues, maxSlippage: string) => Promise<string>
+    setFormValues: (config: Config, curve: CurveApi | null, poolId: string, poolData: PoolData | undefined, updatedFormValues: Partial<FormValues>, isGetMaxFrom: boolean | null, isSeed: boolean | null, maxSlippage: string) => Promise<void>
 
     // steps
-    fetchEstGasApproval(activeKey: string, chainId: ChainId, pool: Pool, formValues: FormValues, maxSlippage: string): Promise<FnStepEstGasApprovalResponse | undefined>
-    fetchStepApprove(activeKey: string, config: Config, curve: CurveApi, pool: Pool, formValues: FormValues, globalMaxSlippage: string): Promise<FnStepApproveResponse | undefined>
-    fetchStepSwap(activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string): Promise<FnStepResponse | undefined>
+    fetchEstGasApproval: (activeKey: string, chainId: ChainId, pool: Pool, formValues: FormValues, maxSlippage: string) => Promise<FnStepEstGasApprovalResponse | undefined>
+    fetchStepApprove: (activeKey: string, config: Config, curve: CurveApi, pool: Pool, formValues: FormValues, globalMaxSlippage: string) => Promise<FnStepApproveResponse | undefined>
+    fetchStepSwap: (activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string) => Promise<FnStepResponse | undefined>
 
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(poolData: PoolData): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: (poolData: PoolData) => void
   }
 }
 
@@ -100,14 +99,16 @@ export const createPoolSwapSlice = (
         return storedIgnoreExchangeRateCheck
       } else {
         const networks = await fetchNetworks()
-        const provider = useWallet.getState().provider || new JsonRpcProvider(networks[chainId].rpcUrl)
+        const provider = useWallet.getState().provider ?? new JsonRpcProvider(networks[chainId].rpcUrl)
 
         try {
           const json = await import('@/dex/components/PagePool/abis/stored_rates.json').then(module => module.default)
           const iface = new Interface(json)
           const contract = new Contract(pool.address, iface.format(), provider)
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
           const storedRates = await contract.stored_rates()
 
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
           const ignoreExchangeRateCheck = Object.values(storedRates).some(rate => {
             // if rate is > 1, then number cannot be checked for exchange rate
             const parsedRate = BigInt(rate as bigint)

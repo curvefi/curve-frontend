@@ -47,7 +47,7 @@ export const ConnectWalletPrompt = ({ description, testId }: { description: stri
           <Button
             size="large"
             color="primary"
-            onClick={() => connect()}
+            onClick={() => void connect()}
             loading={isConnecting}
             loadingPosition="start"
             data-testid={`btn-connect-prompt${isConnecting ? '-loading' : ''}`}

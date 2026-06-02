@@ -22,6 +22,7 @@ export function useShouldShowNetRate({
 }) {
   const isPrevDiff = isQueryValueDifferent(prevNetRate, prevRate?.data)
   const isDiff = isQueryValueDifferent(netRate, rate?.data)
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const result = isDiff || isPrevDiff
 
   useEffect(() => {

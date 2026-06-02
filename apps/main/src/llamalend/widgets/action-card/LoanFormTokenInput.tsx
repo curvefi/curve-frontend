@@ -112,7 +112,7 @@ export const LoanFormTokenInput = <
   const errors = formErrors as PartialRecord<FieldPath<TFieldValues>, Error>
   const maxFieldName = max?.fieldName
   const relatedMaxFieldError = max?.data && maxFieldName && errors[maxFieldName]
-  const error = (name in touchedFields && (errors[name] || max?.error || relatedMaxFieldError)) || balanceError
+  const error = name in touchedFields ? (errors[name] ?? max?.error ?? relatedMaxFieldError) : balanceError
   const value = getValue(name)
   const errorMessage = error?.message
 

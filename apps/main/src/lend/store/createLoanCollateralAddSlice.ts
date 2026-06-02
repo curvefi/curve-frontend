@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { cloneDeep } from 'lodash'
 import { StoreApi } from 'zustand'
 import type { FormStatus, FormValues } from '@/lend/components/PageLendMarket/LoanCollateralAdd/types'
 import type { FormDetailInfo, FormEstGas } from '@/lend/components/PageLendMarket/types'
@@ -14,7 +14,6 @@ import { setMissingProvider } from '@ui-kit/utils/store.util'
 import { refetchUserMarket } from '../queries/refetchUserMarket'
 
 type StateKey = keyof typeof DEFAULT_STATE
-const { cloneDeep } = lodash
 
 type SliceState = {
   activeKey: string
@@ -29,19 +28,19 @@ const sliceKey = 'loanCollateralAdd'
 // prettier-ignore
 export type LoanCollateralAddSlice = {
   [sliceKey]: SliceState & {
-    fetchDetailInfo(activeKey: string, api: Api, market: LendMarketTemplate): Promise<void>
-    fetchEstGasApproval(activeKey: string, api: Api, market: LendMarketTemplate): Promise<void>
-    setFormValues(api: Api | null, market: LendMarketTemplate | undefined, formValues: Partial<FormValues>): Promise<void>
+    fetchDetailInfo: (activeKey: string, api: Api, market: LendMarketTemplate) => Promise<void>
+    fetchEstGasApproval: (activeKey: string, api: Api, market: LendMarketTemplate) => Promise<void>
+    setFormValues: (api: Api | null, market: LendMarketTemplate | undefined, formValues: Partial<FormValues>) => Promise<void>
 
     // steps
-    fetchStepApprove(activeKey: string, api: Api, market: LendMarketTemplate, formValues: FormValues): Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
-    fetchStepIncrease(activeKey: string, api: Api, market: LendMarketTemplate, formValues: FormValues): Promise<{ activeKey: string; error: string; hash: string; loanExists: boolean } | undefined>
+    fetchStepApprove: (activeKey: string, api: Api, market: LendMarketTemplate, formValues: FormValues) => Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
+    fetchStepIncrease: (activeKey: string, api: Api, market: LendMarketTemplate, formValues: FormValues) => Promise<{ activeKey: string; error: string; hash: string; loanExists: boolean } | undefined>
 
     // steps helper
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: () => void
   }
 }
 

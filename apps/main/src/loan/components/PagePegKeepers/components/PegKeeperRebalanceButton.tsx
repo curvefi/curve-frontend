@@ -27,6 +27,6 @@ export const PegKeeperRebalanceButton = ({ canRebalance, isRebalancing, onRebala
       {isRebalancing ? t`Rebalancing...` : t`Rebalance`}
     </Button>
   ) : (
-    <ConnectWalletButton onClick={() => connect()} loading={isConnecting} fullWidth />
+    <ConnectWalletButton onClick={() => void connect()} loading={isConnecting} fullWidth />
   )
 }

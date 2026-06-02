@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useState } from 'react'
 import { DEFAULT_TIME_OPTION } from '../constants'
 import type { TimeOption } from '../types'
 
@@ -46,11 +46,7 @@ const timeUnits: Record<TimeOption, TimeUnit> = {
 export const useChartTimeSettings = (
   initialTimeOption: TimeOption = DEFAULT_TIME_OPTION,
 ): UseChartTimeSettingsReturn => {
-  const [timeOption, setTimeOptionState] = useState<TimeOption>(initialTimeOption)
-
-  const setTimeOption = useCallback((option: TimeOption) => {
-    setTimeOptionState(option)
-  }, [])
+  const [timeOption, setTimeOption] = useState<TimeOption>(initialTimeOption)
 
   return {
     timeOption,
