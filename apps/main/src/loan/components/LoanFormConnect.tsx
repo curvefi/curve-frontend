@@ -17,7 +17,13 @@ export const LoanFormConnect = ({
   return (
     <>
       {!isLoading(connectState) && !loading && !haveSigner ? (
-        <Button fillWidth size="large" variant="filled" onClick={() => connect()} loading={isLoading(connectState)}>
+        <Button
+          fillWidth
+          size="large"
+          variant="filled"
+          onClick={() => void connect()}
+          loading={isLoading(connectState)}
+        >
           {t`Connect Wallet`}
         </Button>
       ) : isLoading(connectState) || loading ? (

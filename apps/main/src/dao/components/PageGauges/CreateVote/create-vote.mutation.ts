@@ -75,7 +75,7 @@ export const useCreateVoteMutation = ({ onReset }: { onReset: () => void }) => {
         functionName: 'newVote',
         args: [evmScript, `ipfs:${ipfsHash}`, false, false],
       })
-      return { hash: hash as Hex }
+      return { hash }
     },
     validationSuite: createVoteFormValidationSuite,
     validationParams: {},

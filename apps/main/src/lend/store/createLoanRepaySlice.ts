@@ -36,19 +36,19 @@ const sliceKey = 'loanRepay'
 // prettier-ignore
 export type LoanRepaySlice = {
   [sliceKey]: SliceState & {
-    fetchDetailInfo(activeKey: string, api: Api, market: LendMarketTemplate, maxSlippage: string, userState: UserLoanState): Promise<void>
-    fetchEstGasApproval(activeKey: string, api: Api, market: LendMarketTemplate, maxSlippage: string): Promise<void>
-    setFormValues(api: Api | null, market: LendMarketTemplate | undefined, partialFormValues: Partial<FormValues>, maxSlippage: string, shouldRefetch?: boolean): Promise<void>
+    fetchDetailInfo: (activeKey: string, api: Api, market: LendMarketTemplate, maxSlippage: string, userState: UserLoanState) => Promise<void>
+    fetchEstGasApproval: (activeKey: string, api: Api, market: LendMarketTemplate, maxSlippage: string) => Promise<void>
+    setFormValues: (api: Api | null, market: LendMarketTemplate | undefined, partialFormValues: Partial<FormValues>, maxSlippage: string, shouldRefetch?: boolean) => Promise<void>
 
     // step
-    fetchStepApprove(activeKey: string, api: Api, market: LendMarketTemplate, formValues: FormValues, maxSlippage: string): Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
-    fetchStepRepay(activeKey: string, api: Api, market: LendMarketTemplate, formValues: FormValues, maxSlippage: string): Promise<{ activeKey: string; error: string; hash: string; loanExists: boolean } | undefined>
+    fetchStepApprove: (activeKey: string, api: Api, market: LendMarketTemplate, formValues: FormValues, maxSlippage: string) => Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
+    fetchStepRepay: (activeKey: string, api: Api, market: LendMarketTemplate, formValues: FormValues, maxSlippage: string) => Promise<{ activeKey: string; error: string; hash: string; loanExists: boolean } | undefined>
 
     // steps helper
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: () => void
   }
 }
 
@@ -184,6 +184,7 @@ export const createLoanRepaySlice = (
       try {
         userState = { ...(await market.userPosition.userState()), error: '' }
       } catch (error) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
         userState = { collateral: '', borrowed: '', debt: '', N: '', error }
       }
 

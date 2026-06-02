@@ -114,6 +114,7 @@ export const LoanCollateralAdd = ({ rChainId, marketId, api, isLoaded, market, u
           status: helpers.getStepStatus(isApproved, step === 'APPROVAL', isValid),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: async () => {
             const notifyMessage = t`Please approve spending of ${market.collateral_token.symbol}`
             const notification = notify(notifyMessage, 'pending')
@@ -127,7 +128,7 @@ export const LoanCollateralAdd = ({ rChainId, marketId, api, isLoaded, market, u
           status: helpers.getStepStatus(isComplete, step === 'ADD', isValid && isApproved),
           type: 'action',
           content: isComplete ? t`Collateral Added` : t`Add Collateral`,
-          onClick: async () => handleBtnClickAdd(payloadActiveKey, api, market, formValues),
+          onClick: () => void handleBtnClickAdd(payloadActiveKey, api, market, formValues),
         },
       }
 

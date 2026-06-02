@@ -20,6 +20,7 @@ type RouteByIdParams = FieldsOf<RouteByIdQuery>
 
 const { getQueryData: getRouteQueryData, setQueryData: setRouteQueryData } = queryFactory({
   queryKey: ({ routeId }: RouteByIdParams) => ['router-api', 'v1/routes', { routeId }] as const,
+  // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
   queryFn: async (_params: RouteByIdQuery): Promise<RouteResponse> => {
     throw new NoRetryError('router route-by-id cache is write-through only')
   },

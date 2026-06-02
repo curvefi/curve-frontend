@@ -23,6 +23,7 @@ export const DialogSelectContent = <T extends string>({ data, currentData, setCu
           className={item === currentData ? 'active' : ''}
           variant={'text'}
           onClick={() => handleClick(item)}
+          // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
           key={index}
         >
           {item}

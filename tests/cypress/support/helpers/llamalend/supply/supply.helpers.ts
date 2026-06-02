@@ -74,6 +74,7 @@ export const getSupplyInputBalanceValue = (type: SupplyFormType) =>
 export const getSupplyInputBalanceValueAttr = (type: SupplyFormType) =>
   getSupplyInputBalanceValue(type).invoke(LOAD_TIMEOUT, 'attr', 'data-value')
 
+// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
 export const writeSupplyInput = ({ type, amount }: { type: SupplyFormType; amount: Decimal | string }) => {
   getSupplyInput(type).clear()
   getSupplyInput(type).type(amount)

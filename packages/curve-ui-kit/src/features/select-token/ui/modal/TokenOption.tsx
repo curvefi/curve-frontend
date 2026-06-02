@@ -36,6 +36,7 @@ export const TokenOption = ({
   const hasBalance = +(balance ?? '0') > 0
   const hasBalanceUsd = hasBalance && (tokenPrice ?? 0) > 0
   const menuItemRef = useRef<HTMLLIElement>(null)
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
   const [primary, secondary, tertiary] = disabled
     ? Array(3).fill('textDisabled')
     : ['textPrimary', 'textSecondary', 'textTertiary']
@@ -62,11 +63,13 @@ export const TokenOption = ({
           />
 
           <Stack sx={{ flexGrow: 1, overflow: 'hidden' }}>
+            {/* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule. */}
             <Typography variant="bodyMBold" color={primary} sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
               {symbol}
             </Typography>
 
             {hasBalance && (
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
               <Typography variant="bodyXsRegular" color={tertiary}>
                 {shortenAddress(address)}
               </Typography>
@@ -75,18 +78,21 @@ export const TokenOption = ({
 
           <Stack direction="column" sx={{ alignItems: 'end' }}>
             {hasBalance && (
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
               <Typography variant="bodyMBold" color={primary}>
                 {formatNumber(amount(balance), { decimals: 5, abbreviate: false, fallback: '-' })}
               </Typography>
             )}
 
             {hasBalanceUsd && (
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
               <Typography variant="bodyXsRegular" color={secondary}>
                 {formatNumber(tokenPrice! * +balance!, { unit: 'dollar', abbreviate: false })}
               </Typography>
             )}
 
             {!hasBalance && (
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
               <Typography variant="bodyXsRegular" color={tertiary}>
                 {shortenAddress(address)}
               </Typography>

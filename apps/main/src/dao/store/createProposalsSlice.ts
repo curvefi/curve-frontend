@@ -48,15 +48,15 @@ const sliceKey = 'proposals'
 
 export type ProposalsSlice = {
   [sliceKey]: SliceState & {
-    setSearchValue(searchValue: string): void
-    setActiveFilter(filter: ProposalListFilter): void
-    setActiveSortBy(sortBy: SortByFilterProposals): void
-    setActiveSortDirection(direction: SortDirection): void
-    castVote(voteId: number, voteType: ProposalType, support: boolean): Promise<void>
-    executeProposal(voteId: number, voteType: ProposalType): Promise<void>
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
+    setSearchValue: (searchValue: string) => void
+    setActiveFilter: (filter: ProposalListFilter) => void
+    setActiveSortBy: (sortBy: SortByFilterProposals) => void
+    setActiveSortDirection: (direction: SortDirection) => void
+    castVote: (voteId: number, voteType: ProposalType, support: boolean) => Promise<void>
+    executeProposal: (voteId: number, voteType: ProposalType) => Promise<void>
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: () => void
   }
 }
 
@@ -172,6 +172,7 @@ export const createProposalsSlice = (
             status: 'ERROR',
             hash: null,
             txLink: null,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             error: error.message,
           },
         })
@@ -260,6 +261,7 @@ export const createProposalsSlice = (
             status: 'ERROR',
             hash: null,
             txLink: null,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             error: error.message,
           },
         })

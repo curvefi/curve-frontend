@@ -11,12 +11,13 @@ export const useAbiTotalSupply = (rChainId: ChainId, contractAddress: string | u
   const contract = useAbiGaugeTotalSupply(rChainId, false, 'totalSupply', contractAddress)
   const isValidAddress = contractAddress !== zeroAddress
 
-  const [totalSupply, settotalSupply] = useState<number | null>(null)
+  const [totalSupply, setTotalSupply] = useState<number | null>(null)
 
   const getTotalSupply = useCallback(async (contract: Contract) => {
     try {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
       const totalSupply = await contract.totalSupply()
-      settotalSupply(weiToEther(Number(totalSupply)))
+      setTotalSupply(weiToEther(Number(totalSupply)))
     } catch (error) {
       console.error(error)
     }

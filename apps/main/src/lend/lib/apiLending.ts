@@ -21,7 +21,6 @@ import {
   MarketStatCapAndAvailable,
   MaxRecvLeverageResp,
   LendMarketTemplate,
-  ParsedBandsBalances,
   Provider,
   RewardCrv,
   RewardOther,
@@ -412,6 +411,7 @@ const loanCreate = {
         prices: fulfilledValue(pricesResp) ?? [],
         bands: reverseBands(bands),
       }
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
       resp.error = _detailInfoRespErrorMessage(futureRatesResp, bandsResp)
       return resp
     } catch (error) {
@@ -469,6 +469,7 @@ const loanCreate = {
         expectedCollateral: fulfilledValue(expectedCollateralResp) ?? null,
         ..._getPriceImpactResp(priceImpactResp, maxSlippage),
       }
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
       resp.error = _detailInfoRespErrorMessage(
         expectedCollateralResp, // leave this one as first, in case of errors the other ones will fail too
         healthFullResp,
@@ -529,6 +530,7 @@ const loanCreate = {
           collateral: isLeverage ? totalCollateral : userBorrowed,
           debt,
           maxRecv: maxRecv || '',
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
           maxRecvError: maxRecvsResults.status === 'rejected' ? maxRecvsResults.reason : '',
           prices: nLoanPrices ? [nLoanPrices[1], nLoanPrices[0]] : [],
           bands: bands ? reverseBands(bands) : [0, 0],
@@ -558,6 +560,7 @@ const loanCreate = {
           collateral: userCollateral,
           debt,
           maxRecv: maxRecv || '',
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
           maxRecvError: maxRecvsResults.status === 'rejected' ? maxRecvsResults.reason : '',
           prices: nLoanPrices ? [nLoanPrices[1], nLoanPrices[0]] : [],
           bands: bands ? reverseBands(bands) : [0, 0],
@@ -719,6 +722,7 @@ const loanBorrowMore = {
         prices: fulfilledValue(pricesResp) ?? [],
         bands: reverseBands(bands),
       }
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
       resp.error = _detailInfoRespErrorMessage(futureRatesResp, bandsResp)
       return resp
     } catch (error) {
@@ -780,6 +784,7 @@ const loanBorrowMore = {
         routeImage: fulfilledValue(routesResp) ?? null,
         ..._getPriceImpactResp(priceImpactResp, slippage),
       }
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
       resp.error = _detailInfoRespErrorMessage(futureRatesResp, bandsResp)
       return resp
     } catch (error) {
@@ -817,6 +822,7 @@ const loanBorrowMore = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       if (error?.message?.includes('liquidation mode')) {
         resp.error = 'error-liquidation-mode'
       } else {
@@ -915,6 +921,7 @@ const loanRepay = {
         prices: fulfilledValue(pricesResp) ?? [],
         bands: reverseBands(bands),
       }
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
       resp.error = _detailInfoRespErrorMessage(futureRatesResp, bandsResp)
       return resp
     } catch (error) {
@@ -1000,6 +1007,7 @@ const loanRepay = {
         routeImage: fulfilledValue(routesResp) ?? null,
         ..._getPriceImpactResp(priceImpactResp, maxSlippage),
       }
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
       resp.error = _detailInfoRespErrorMessage(
         expectedBorrowedResp, // leave this one as first, in case of errors the other ones will fail too
         repayIsFullResp,
@@ -1214,6 +1222,7 @@ const loanCollateralAdd = {
       return resp
     } catch (err) {
       console.error(err)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       if (err?.message?.includes('liquidation mode')) {
         resp.error = 'error-liquidation-mode'
       } else {
@@ -1289,6 +1298,7 @@ const loanCollateralRemove = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       if (error?.message?.includes('liquidation mode')) {
         resp.error = 'error-liquidation-mode'
       } else {
@@ -1793,7 +1803,7 @@ async function fetchChartBandBalancesData(
       p_up,
       p_down,
       pUpDownMedian,
-    } as ParsedBandsBalances
+    }
   })
 
   const parsedBandBalances = []
@@ -1850,5 +1860,6 @@ function _getPriceImpactResp(priceImpactResp: PromiseSettledResult<string | unde
 }
 
 function _detailInfoRespErrorMessage(...args: PromiseSettledResult<unknown>[]) {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return -- Existing violation before enabling this rule.
   return args.find(a => a.status == 'rejected')?.reason.message
 }

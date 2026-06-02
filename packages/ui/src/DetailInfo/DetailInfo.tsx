@@ -44,6 +44,7 @@ export const DetailInfo = ({
       value={children || '-'}
       valueColor={VariantToColorMap[variant || '']}
       valueTooltip={tooltip}
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
       loading={loading && (loadingSkeleton || true)}
       {...props}
       {...(isBold && { sx: { '& .MuiTypography-root': { '&': { fontWeight: 'bold' } } } })}

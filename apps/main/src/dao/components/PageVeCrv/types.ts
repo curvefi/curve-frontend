@@ -35,6 +35,7 @@ export type FormEstGas = {
 
 export type FormValues = {
   utcDate: DateValue | null
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   utcDateError: 'invalid-date' | string
   days: number
   calcdUtcDate: string

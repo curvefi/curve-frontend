@@ -1,3 +1,4 @@
+import type { GaugeUrlParams, ProposalUrlParams, UserUrlParams } from '@/dao/types/dao.types'
 import { createRoute, lazyRouteComponent } from '@tanstack/react-router'
 import { rootRoute } from './root.routes'
 import { createSharedRoutes } from './shared.routes'
@@ -42,7 +43,9 @@ export const daoRoutes = daoLayoutRoute.addChildren([
   createRoute({
     path: '$network/gauges/$gaugeAddress',
     component: PageGauge,
-    head: ({ params }) => ({ meta: [{ title: `Gauge - ${params.gaugeAddress} - Curve` }] }),
+    head: ({ params: { gaugeAddress } }: { params: GaugeUrlParams }) => ({
+      meta: [{ title: `Gauge - ${gaugeAddress} - Curve` }],
+    }),
     ...layoutProps,
   }),
   createRoute({
@@ -54,13 +57,17 @@ export const daoRoutes = daoLayoutRoute.addChildren([
   createRoute({
     path: '$network/proposals/$proposalId',
     component: PageProposal,
-    head: ({ params }) => ({ meta: [{ title: `Proposal - ${params.proposalId} - Curve` }] }),
+    head: ({ params: { proposalId } }: { params: ProposalUrlParams }) => ({
+      meta: [{ title: `Proposal - ${proposalId} - Curve` }],
+    }),
     ...layoutProps,
   }),
   createRoute({
     path: '$network/user/$userAddress',
     component: PageUser,
-    head: ({ params }) => ({ meta: [{ title: `veCRV Holder - ${params.userAddress} - Curve` }] }),
+    head: ({ params: { userAddress } }: { params: UserUrlParams }) => ({
+      meta: [{ title: `veCRV Holder - ${userAddress} - Curve` }],
+    }),
     ...layoutProps,
   }),
   createRoute({

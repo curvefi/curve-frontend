@@ -11,6 +11,7 @@ export const SelectGaugeListChunk = ({
   selectedGauge,
   gauges,
   dialogClose,
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
   handleOnSelectChange,
 }: Pick<ComboBoxSelectGaugeProps, 'testId'> & {
   inputRef?: RefObject<HTMLInputElement | null>

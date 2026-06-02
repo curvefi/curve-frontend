@@ -65,7 +65,7 @@ export const ChipPool = ({ poolId, poolName, poolAddress }: ChipPoolProps) => {
         </RouterLink>{' '}
       </ChipPoolName>
       <ChipPoolAdditionalInfo>
-        <Button onPress={() => copyToClipboard(poolAddress)}>
+        <Button onPress={() => void copyToClipboard(poolAddress)}>
           <ChipPoolAddress>{parsedPoolAddress}</ChipPoolAddress>
           <ChipPoolCopyButtonIcon name="Copy" size={16} />
         </Button>

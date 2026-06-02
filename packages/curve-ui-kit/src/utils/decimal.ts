@@ -35,7 +35,7 @@ export const decimalCompare = (a: Decimal, b: Decimal) => BigNumber(a).comparedT
  * Returns the maximum Decimal value from an array of Decimals, without losing precision.
  */
 export const decimalMax = (...data: Decimal[]) =>
-  data.length ? (BigNumber.max(...data)!.toFixed() as Decimal) : undefined
+  data.length ? (BigNumber.max(...data).toFixed() as Decimal) : undefined
 
 export const decimalSum = (...data: (Decimal | undefined)[]): Decimal =>
   data.filter(d => d != null).reduce((sum, value) => new BigNumber(sum).plus(value).toFixed() as Decimal, '0')

@@ -136,7 +136,7 @@ export const VaultWithdrawRedeem = ({ rChainId, marketId, isLoaded, api, market,
           status: helpers.getStepStatus(isComplete, step === 'WITHDRAW_REDEEM', isValid),
           type: 'action',
           content: isComplete ? (isWithdraw ? t`Withdrawn` : t`Redeemed`) : isWithdraw ? t`Withdraw` : t`Redeem`,
-          onClick: async () => handleBtnClickWithdrawRedeem(payloadActiveKey, rFormType, api, market, formValues),
+          onClick: () => void handleBtnClickWithdrawRedeem(payloadActiveKey, rFormType, api, market, formValues),
         },
       }
 

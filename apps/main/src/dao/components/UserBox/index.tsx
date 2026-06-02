@@ -36,7 +36,7 @@ export const UserBox = ({ className, children, votingPower, snapshotVotingPower,
       ) : chainId === 1 ? (
         <Box flex flexColumn flexGap="var(--spacing-2)">
           <p>{t`Please connect a wallet to see user information.`}</p>
-          <StyledButton variant="outlined" onClick={() => connect()} loading={isLoading(connectState)}>
+          <StyledButton variant="outlined" onClick={() => void connect()} loading={isLoading(connectState)}>
             {t`Connect Wallet`}
           </StyledButton>
         </Box>

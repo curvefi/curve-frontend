@@ -77,7 +77,7 @@ export const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistribution
         )}
         {isError && (
           <ErrorMessageWrapper>
-            <ErrorMessage message={t`Error fetching gauges`} onClick={() => refetchGauges({})} />
+            <ErrorMessage message={t`Error fetching gauges`} onClick={() => void refetchGauges({})} />
           </ErrorMessageWrapper>
         )}
         {isSuccess && formattedData.length > 0 && (

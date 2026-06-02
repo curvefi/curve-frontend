@@ -12,7 +12,7 @@ import { maybe } from '@primitives/objects.utils'
 import { useFormSync, useOnChangeCallback } from '@ui-kit/features/forms'
 import type { UseFormReturn } from '@ui-kit/features/forms'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
-import { useQueryMinimum } from '@ui-kit/lib'
+import { queryMinimum } from '@ui-kit/lib'
 import { mapQuery } from '@ui-kit/types/util'
 
 export function useMaxRepayTokenValues(
@@ -44,7 +44,7 @@ export function useMaxRepayTokenValues(
   // required for isFull query
   const isFull = useRepayIsFull(params, enabled)
 
-  const maxBorrowed = useQueryMinimum(
+  const maxBorrowed = queryMinimum(
     maxUserBorrowed,
     mapQuery(userState, d => d.debt),
   )

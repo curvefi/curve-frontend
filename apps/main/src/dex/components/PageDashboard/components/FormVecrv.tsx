@@ -41,7 +41,7 @@ export const FormVecrv = () => {
   const setFormStatusVecrv = useStore(state => state.dashboard.setFormStatusVecrv)
   const fetchStepWithdraw = useStore(state => state.dashboard.fetchStepWithdrawVecrv)
   const { data: networks } = useNetworks()
-  const network = (curve && networks[curve.chainId]) || null
+  const network = (curve && networks[curve.chainId]) ?? null
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)

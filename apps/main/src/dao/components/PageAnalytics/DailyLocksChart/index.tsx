@@ -26,6 +26,7 @@ export const DailyLocks = () => {
       <BoxTitle>{t`Daily veCRV Locks Last 100 Days`}</BoxTitle>
       <Content>
         {locksFetchLoading && <Spinner height="32.5rem" />}
+        {/* eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule. */}
         {locksFetchError && <ErrorMessage message={t`Error fetching daily veCRV locks`} onClick={getVeCrvLocks} />}
         {locksFetchSuccess && <PositiveAndNegativeBarChart height={520} data={veCrvLocks.locks.slice(256, 356)} />}
       </Content>

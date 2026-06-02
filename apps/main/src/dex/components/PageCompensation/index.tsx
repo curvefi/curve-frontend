@@ -6,6 +6,7 @@ import { AlertFormError } from '@/dex/components/AlertFormError'
 import { Compensations } from '@/dex/components/PageCompensation/components/Compensations'
 import type { Balances, EtherContract, VestedTotals } from '@/dex/components/PageCompensation/types'
 import { CurveApi, ChainId, Provider } from '@/dex/types/main.types'
+import { Decimal } from '@primitives/decimal.utils'
 import { Box } from '@ui/Box'
 import { getErrorMessage } from '@ui-kit/utils'
 
@@ -55,9 +56,9 @@ export const FormCompensation = ({
       if (token === 'CRV') {
         try {
           const vestContract = new Contract(vestAddress, iface.format(), signer)
-          const unvested = await vestContract.lockedOf(contractAddress)
-          const fractions = await contracts[idx].contract.fractions(signerAddress)
-          const totalFraction = await contracts[idx].contract.total_fraction()
+          const unvested = (await vestContract.lockedOf(contractAddress)) as Decimal
+          const fractions = (await contracts[idx].contract.fractions(signerAddress)) as Decimal
+          const totalFraction = (await contracts[idx].contract.total_fraction()) as Decimal
 
           return { poolId, amount: ((Number(unvested) / 1e18) * Number(fractions)) / Number(totalFraction) }
         } catch (error) {
@@ -79,6 +80,7 @@ export const FormCompensation = ({
         const abi = await import('@/dex/components/PageCompensation/abis/vest_abi.json').then(module => module.default)
         const iface = new Interface(abi as InterfaceAbi)
         const vestedTotals = await Promise.all(
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
           vestAddresses.map((vc, idx) => getVestedAmount(vc, iface, contracts[idx], idx, signerAddress, signer)),
         )
         setVestedTotals(lodash.groupBy(vestedTotals, ({ poolId }) => poolId))

@@ -13,7 +13,7 @@ export function TestQueryProvider({
     // eslint-disable-next-line @eslint-react/rules-of-hooks
     useEffect(
       () => void client.setQueryData(key, data),
-      // eslint-disable-next-line @eslint-react/exhaustive-deps
+      // eslint-disable-next-line @eslint-react/exhaustive-deps, @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
       [client, ...(data && typeof data === 'object' ? Object.values(data) : [data])],
     ),
   )

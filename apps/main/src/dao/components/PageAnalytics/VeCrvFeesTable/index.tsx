@@ -38,6 +38,7 @@ export const VeCrcFees = () => {
                 <FeesSubtitle>{t`Fees`}</FeesSubtitle>
               </FeesTitlesRow>
               {feesLoading && <Spinner height="27.125rem" />}
+              {/* eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule. */}
               {feesError && <ErrorMessage message="Error fetching veCRV historical fees" onClick={getVeCrvFees} />}
               {feesReady && (
                 <>

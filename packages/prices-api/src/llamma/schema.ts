@@ -1,14 +1,10 @@
 import { z } from 'zod/v4'
-import type { Token } from '@primitives/address.utils'
 import { address, camelizeKeys, timestamp } from '../schemas'
 
-const token = z.object({ symbol: z.string(), address }).transform(
-  ({ symbol, address }) =>
-    ({
-      symbol,
-      address,
-    }) as Token,
-)
+const token = z.object({ symbol: z.string(), address }).transform(({ symbol, address }) => ({
+  symbol,
+  address,
+}))
 
 export const endpoint = z.enum(['crvusd', 'lending'])
 export type Endpoint = z.infer<typeof endpoint>

@@ -88,7 +88,7 @@ export const UserPositionsTables = ({
                 action={
                   <ConnectWalletButton
                     label={t`Connect to view positions`}
-                    onClick={() => connect()}
+                    onClick={() => void connect()}
                     loading={isConnecting}
                   />
                 }

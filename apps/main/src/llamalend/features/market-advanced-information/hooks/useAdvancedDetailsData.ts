@@ -13,7 +13,7 @@ import { maybe, maybes } from '@primitives/objects.utils'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import type { MarketParams } from '@ui-kit/lib/model/query/root-keys'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { Chain, requireBlockchainId } from '@ui-kit/utils/network'
+import { requireBlockchainId } from '@ui-kit/utils/network'
 
 const endpointFromMarketType: Record<LlamaMarketType, Endpoint> = {
   [LlamaMarketType.Lend]: 'lending',
@@ -27,7 +27,7 @@ export const useAdvancedDetailsData = ({
   marketType,
 }: MarketParams & { market: LlamaMarketTemplate | undefined; marketType: LlamaMarketType }) => {
   const { collateralToken, borrowToken } = market ? getTokens(market) : {}
-  const blockchainId = maybe(chainId, chainId => requireBlockchainId(chainId as Chain))
+  const blockchainId = maybe(chainId, chainId => requireBlockchainId(chainId))
   const controllerAddress = getControllerAddress(market)
   const endpoint = endpointFromMarketType[marketType]
 

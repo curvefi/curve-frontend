@@ -21,6 +21,7 @@ import { BlockchainIds, Chain, REUSD_ADDRESS, SREUSD_ADDRESS } from '@ui-kit/uti
 import { readContract } from '@wagmi/core'
 
 const getTestTokenPrice = async (chainId: number, tokenAddress: Address): Promise<number | null> => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
   if (chainId === Chain.Optimism) {
     if (isAddressEqual(tokenAddress, '0x79cc1c5c0171ff25ef391055e529a56a12bf3d39'))
       return await fetchUsdRate(chainId, ethAddress)

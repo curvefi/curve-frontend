@@ -5,7 +5,13 @@ import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@ui/utils'
 const DEFAULT_NETWORK_CONFIG = { api: curvejsApi, isActiveNetwork: true, showInSelectNetwork: true }
 
 export const { networks, networksIdMapper } = Object.entries(NETWORK_BASE_CONFIG).reduce(
-  (mapper, [key, config]) => {
+  (
+    mapper,
+    [key, config],
+  ): {
+    networks: Record<ChainId, NetworkConfig>
+    networksIdMapper: Record<NetworkEnum, ChainId>
+  } => {
     const chainId = +key
     const networkConfig = {
       ...getBaseNetworksConfig<NetworkEnum, ChainId>(chainId, config),
@@ -13,11 +19,11 @@ export const { networks, networksIdMapper } = Object.entries(NETWORK_BASE_CONFIG
       showInSelectNetwork: chainId === 1,
     }
     mapper.networks[chainId] = networkConfig
-    mapper.networksIdMapper[networkConfig.networkId as NetworkEnum] = chainId
+    mapper.networksIdMapper[networkConfig.networkId] = chainId
     return mapper
   },
   {
-    networks: {} as Record<ChainId, NetworkConfig>,
-    networksIdMapper: {} as Record<NetworkEnum, ChainId>,
+    networks: {},
+    networksIdMapper: {},
   },
 )

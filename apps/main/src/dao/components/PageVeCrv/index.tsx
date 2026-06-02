@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import { useConnection } from 'wagmi'
-import type { FormType } from '@/dao/components/PageVeCrv/types'
 import { useLockerVecrvInfo } from '@/dao/entities/locker-vecrv-info'
 import { networksIdMapper } from '@/dao/networks'
 import { useStore } from '@/dao/store/useStore'
@@ -48,12 +47,7 @@ export const VeCrv = () => {
         {rChainId === 1 ? (
           <Stack>
             {rChainId && rFormType && vecrvInfo && !isLoadingCurve ? (
-              <FormCrvLocker
-                curve={curveApi}
-                rChainId={rChainId}
-                rFormType={rFormType as FormType}
-                vecrvInfo={vecrvInfo}
-              />
+              <FormCrvLocker curve={curveApi} rChainId={rChainId} rFormType={rFormType} vecrvInfo={vecrvInfo} />
             ) : (
               <SpinnerWrapper>
                 <Spinner />

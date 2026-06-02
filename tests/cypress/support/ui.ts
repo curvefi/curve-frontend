@@ -34,8 +34,10 @@ const isInViewport = ($el: JQuery) => {
 }
 
 export const assertInViewport = ($el: JQuery) =>
+  // eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions -- Existing violation before enabling this rule.
   expect(isInViewport($el), `${$el} should be in the viewport`).to.be.true
 export const assertNotInViewport = ($el: JQuery) =>
+  // eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions -- Existing violation before enabling this rule.
   expect(isInViewport($el), `${$el} should not be in the viewport`).to.be.false
 
 const oneDexPath = () => oneOf('', 'dex')

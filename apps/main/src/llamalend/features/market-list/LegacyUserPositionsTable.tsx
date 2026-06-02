@@ -80,6 +80,7 @@ const useTabs = (results: LlamaMarketsResult | undefined) => {
 
   // Show the first tab that has user positions by default, or the first tab if none are found
   const defaultTab = useMemo(
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
     () => tabs.find(({ value }) => userHasPositions?.Lend[value] || userHasPositions?.Mint[value]) ?? tabs[0],
     [userHasPositions, tabs],
   )
@@ -145,7 +146,7 @@ export const LegacyUserPositionsTable = ({
   const globalFilterFn = useLlamaGlobalFilterFn(userData, globalFilter)
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT[tab], SORT_QUERY_FIELD[tab])
   const { columnSettings, columnVisibility, sortField, toggleVisibility } = useLlamaTableVisibility(title, sorting, tab)
-  const [expanded, onExpandedChange] = useState<ExpandedState>({})
+  const [expanded, setExpanded] = useState<ExpandedState>({})
   const filterProps = { columnFiltersById, setColumnFilter }
   const selectedChains = columnFiltersById[LlamaMarketColumnId.Chain]
 
@@ -155,7 +156,7 @@ export const LegacyUserPositionsTable = ({
     state: { expanded, sorting, columnVisibility, columnFilters, globalFilter },
     initialState: { pagination },
     onSortingChange,
-    onExpandedChange,
+    onExpandedChange: setExpanded,
     globalFilterFn,
     ...getTableOptions(queryData),
   })

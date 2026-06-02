@@ -40,6 +40,7 @@ const isWithinInterval = ({
   duration,
 }: {
   currentTime: number
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   startTime: number | Falsy
   duration: number | undefined
 }) => !!startTime && !!duration && startTime <= currentTime && currentTime <= startTime + duration
