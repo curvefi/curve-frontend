@@ -15,7 +15,7 @@ import { tooltipProps } from '../utils'
 
 type AllTotal = {
   totalUsd: number
-  tokens: { [token: string]: { symbol: string; total: number; price: number } }
+  tokens: Record<string, { symbol: string; total: number; price: number }>
 }
 
 type Props = {

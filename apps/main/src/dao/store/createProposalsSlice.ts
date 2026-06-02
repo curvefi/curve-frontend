@@ -20,22 +20,24 @@ import { t } from '@ui-kit/lib/i18n'
 type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
-  voteTxMapper: {
-    [voteId: string]: {
+  voteTxMapper: Record<
+    string,
+    {
       hash: string | null
       txLink: string | null
       error: string | null
       status: TransactionState
     }
-  }
-  executeTxMapper: {
-    [voteId: string]: {
+  >
+  executeTxMapper: Record<
+    string,
+    {
       hash: string | null
       txLink: string | null
       error: string | null
       status: TransactionState
     }
-  }
+  >
   searchValue: string
   activeFilter: ProposalListFilter
   activeSortBy: SortByFilterProposals

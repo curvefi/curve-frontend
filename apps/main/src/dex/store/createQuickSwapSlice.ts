@@ -29,11 +29,11 @@ const { cloneDeep } = lodash
 
 type SliceState = {
   activeKey: string
-  formEstGas: { [activeKey: string]: FormEstGas }
+  formEstGas: Record<string, FormEstGas>
   formStatus: FormStatus
   formValues: FormValues
   isMaxLoading: boolean
-  routesAndOutput: { [activeKey: string]: RoutesAndOutput }
+  routesAndOutput: Record<string, RoutesAndOutput>
 }
 
 const sliceKey = 'quickSwap'
@@ -515,7 +515,7 @@ function getRouterActiveKey(
 function getRouterSwapsExchangeRate(
   [value]: [Decimal, Decimal],
   { fromAddress, toAddress }: SearchedParams,
-  tokensNameMapper: { [p: string]: string },
+  tokensNameMapper: Record<string, string>,
 ) {
   const fromToken = tokensNameMapper[fromAddress]
   const toToken = tokensNameMapper[toAddress]
@@ -536,7 +536,7 @@ export function getRouterWarningModal(
   >,
   { toAddress }: SearchedParams,
   maxSlippage: string,
-  storedTokensNameMapper: { [address: string]: string },
+  storedTokensNameMapper: Record<string, string>,
 ) {
   const { isHighImpact, isExpectedToAmount } = getSlippageImpact({
     maxSlippage,

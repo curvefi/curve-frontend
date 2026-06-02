@@ -38,6 +38,7 @@ function useWagmiIsInitialized(hasWallet: boolean) {
   const [wasInitialized, setWasInitialized] = useState(false)
 
   const isInitialized = !isConnecting && !isReconnecting && (!isConnected || hasWallet)
+  // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
   useEffect(() => setWasInitialized(wasInitialized => isInitialized || wasInitialized), [isInitialized])
   return isInitialized || wasInitialized // note: use || since `isInitialized` is set one render before `wasInitialized`
 }

@@ -168,7 +168,7 @@ export const LoanDecrease = ({
       const isValidFormValue = isFullRepay || (+debt > 0 && !debtError)
       const isValid = !!curve.signerAddress && !formEstGas.loading && isValidFormValue && !error
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: getStepStatus(isApproved, step === 'APPROVAL', isValid),
@@ -218,6 +218,7 @@ export const LoanDecrease = ({
   useEffect(() => {
     if (curve && llamma) {
       const updatedSteps = getSteps(activeKey, curve, llamma, formEstGas, formStatus, formValues, steps)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

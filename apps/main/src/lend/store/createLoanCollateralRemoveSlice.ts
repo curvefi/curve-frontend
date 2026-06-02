@@ -19,8 +19,8 @@ type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
   activeKey: string
-  detailInfo: { [activeKey: string]: FormDetailInfo }
-  formEstGas: { [activeKey: string]: FormEstGas }
+  detailInfo: Record<string, FormDetailInfo>
+  formEstGas: Record<string, FormEstGas>
   formStatus: FormStatus
   formValues: FormValues
   maxRemovable: string

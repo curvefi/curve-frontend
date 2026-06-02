@@ -20,7 +20,7 @@ export const RoutesActionInfo = ({
   routes: Route[] | undefined
   tokensNameMapper: TokensNameMapper
   poolDataMapper: PoolDataMapper | undefined
-  swapCustomRouteRedirect: { [poolId: string]: string } | undefined
+  swapCustomRouteRedirect: Record<string, string> | undefined
 }) => (
   <>
     <ActionInfo

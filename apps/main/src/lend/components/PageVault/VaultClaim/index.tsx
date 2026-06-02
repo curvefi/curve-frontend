@@ -100,7 +100,7 @@ export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContent
 
       const stepKey = isCrv ? 'CLAIM_CRV' : 'CLAIM_REWARDS'
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         CLAIM_CRV: {
           key: 'CLAIM_CRV',
           status: helpers.getStepStatus(isComplete, step === stepKey, isValid),
@@ -143,6 +143,7 @@ export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContent
   useEffect(() => {
     if (isLoaded && api && market && (haveClaimableCrv || haveClaimableRewards)) {
       const updatedSteps = getSteps(userActiveKey, api, market, claimable, formStatus)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

@@ -53,6 +53,7 @@ const useOnReload = ({ address: userAddress, isFetching }: { address?: Address; 
 
   useEffect(() => {
     // reset the isReloading state when the data is fetched
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     if (isReloading && !isFetching) setIsReloading(false)
   }, [isFetching, isReloading])
 

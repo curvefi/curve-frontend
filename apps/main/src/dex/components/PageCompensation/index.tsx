@@ -91,8 +91,11 @@ export const FormCompensation = ({
 
   useEffect(() => {
     // reset state
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setError('')
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setBalances({})
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setVestedTotals({})
 
     if (signerAddress) {

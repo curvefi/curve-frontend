@@ -58,6 +58,7 @@ export const PageRouterSwap = () => {
 
   // redirect to poolList if Swap is excluded from route
   useEffect(() => {
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setLoaded(false)
     if (!isConnecting && rChainId && typeof hasRouter !== 'undefined') {
       if (!hasRouter) {
@@ -84,6 +85,7 @@ export const PageRouterSwap = () => {
           const toAddress = routerCachedToAddress ?? routerDefault.toAddress
           if (!!toAddress && !!fromAddress) redirect(toAddress, fromAddress)
         } else {
+          // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
           setLoaded(true)
         }
       }

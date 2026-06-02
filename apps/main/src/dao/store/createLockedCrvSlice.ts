@@ -28,7 +28,7 @@ const { cloneDeep } = lodash
 type SliceState = {
   activeKey: string
   activeKeyVecrvInfo: string
-  formEstGas: { [activeKey: string]: FormEstGas }
+  formEstGas: Record<string, FormEstGas>
   formValues: FormValues
   formStatus: FormStatus
 

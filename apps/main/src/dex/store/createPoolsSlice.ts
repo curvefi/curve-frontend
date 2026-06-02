@@ -30,13 +30,14 @@ type StateKey = keyof typeof DEFAULT_STATE
 const { chunk, countBy, groupBy, isNaN } = lodash
 
 type SliceState = {
-  poolsMapper: { [chainId: string]: PoolDataMapper }
+  poolsMapper: Record<string, PoolDataMapper>
   currencyReserves: CurrencyReservesMapper
-  haveAllPools: { [chainId: string]: boolean }
-  rewardsApyMapper: { [chainId: string]: RewardsApyMapper }
-  stakedMapper: {
-    [poolAddress: string]: { totalStakedPercent: number | string; gaugeTotalSupply: number | string; timestamp: number }
-  }
+  haveAllPools: Record<string, boolean>
+  rewardsApyMapper: Record<string, RewardsApyMapper>
+  stakedMapper: Record<
+    string,
+    { totalStakedPercent: number | string; gaugeTotalSupply: number | string; timestamp: number }
+  >
   error: string
 }
 
@@ -89,7 +90,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
       }
 
       // TODO: Temporary code to determine if there is an issue with getting base APY from  Kava Api (https://api.curve.finance/api/getFactoryAPYs-kava)
-      const failedFetching24hOldVprice: { [poolAddress: string]: boolean } =
+      const failedFetching24hOldVprice: Record<string, boolean> =
         chainId === ChainEnum.Kava ? await curvejsApi.network.getFailedFetching24hOldVprice() : {}
 
       const networks = await fetchNetworks()
@@ -352,7 +353,7 @@ export function updateHaveSameTokenNames(tokensMapper: TokensMapper) {
 }
 
 function parsedTokensNameMapper(poolDatas: PoolData[]) {
-  const tokensNameMapper: { [address: string]: string } = {}
+  const tokensNameMapper: Record<string, string> = {}
 
   // eslint-disable-next-line @typescript-eslint/no-for-in-array
   for (const idx in poolDatas) {

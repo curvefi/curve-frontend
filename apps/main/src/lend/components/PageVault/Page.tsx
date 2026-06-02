@@ -56,6 +56,7 @@ export const Page = () => {
   })
   useEffect(() => {
     if (api && market && isPageVisible) {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setLoaded(true)
       const timer = setTimeout(
         () =>

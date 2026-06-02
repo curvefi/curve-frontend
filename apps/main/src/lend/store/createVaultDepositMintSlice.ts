@@ -21,9 +21,9 @@ const sliceKey = 'vaultDepositMint'
 
 type SliceState = {
   activeKey: string
-  formEstGas: { [activeKey: string]: FormEstGas }
-  max: { [formTypeChainIdOwmId: string]: { max: string; error: string } }
-  detailInfo: { [activeKey: string]: { preview: string; futureRates: FutureRates | null; error: string } }
+  formEstGas: Record<string, FormEstGas>
+  max: Record<string, { max: string; error: string }>
+  detailInfo: Record<string, { preview: string; futureRates: FutureRates | null; error: string }>
   formStatus: FormStatus
   formValues: FormValues
 }

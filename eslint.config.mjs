@@ -78,7 +78,6 @@ const config = [
       // and we haven't had the bandwidth to fix all the issues they raise yet.
       // We should create future PRs to re-enable these rules and fix any issues that arise
       '@eslint-react/component-hook-factories': 'off',
-      '@eslint-react/set-state-in-effect': 'off', // painful to disable but we manually disabled it in a shit ton of cases already, requires a huge refactor
       '@eslint-react/no-array-index-key': 'off',
       '@eslint-react/no-forward-ref': 'off',
       '@eslint-react/no-clone-element': 'off',
@@ -200,7 +199,6 @@ const config = [
 
       // And the following ones are from tseslint.configs.stylisticTypeChecked
       '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
-      '@typescript-eslint/consistent-indexed-object-style': 'off',
       '@typescript-eslint/no-empty-function': 'off',
       '@typescript-eslint/prefer-nullish-coalescing': 'off',
 

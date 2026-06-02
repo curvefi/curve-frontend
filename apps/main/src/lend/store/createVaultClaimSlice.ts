@@ -15,8 +15,8 @@ const { cloneDeep, merge } = lodash
 const sliceKey = 'vaultClaim'
 
 type SliceState = {
-  claimable: { [userActiveKey: string]: MarketClaimable }
-  formEstGas: { [userActiveKey: string]: FormEstGas }
+  claimable: Record<string, MarketClaimable>
+  formEstGas: Record<string, FormEstGas>
   formStatus: FormStatus
 }
 

@@ -148,6 +148,7 @@ export const NumericTextField = ({
 
   // Update input value when value changes externally
   useEffect(() => {
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setInputValue(isFocused ? getDisplayValue(value) : getFormattedDisplayValue(value, format))
   }, [value, isFocused, format])
 
