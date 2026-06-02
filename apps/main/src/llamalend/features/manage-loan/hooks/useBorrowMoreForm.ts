@@ -5,7 +5,13 @@ import { useMaxBorrowMoreValues } from '@/llamalend/features/manage-loan/hooks/u
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
-import { getControllerAddress, getMarketType, getTokens, isRouterRequired } from '@/llamalend/llama.utils'
+import {
+  getControllerAddress,
+  getLlamaMarketVersion,
+  getMarketType,
+  getTokens,
+  isRouterRequired,
+} from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useBorrowMoreMutation } from '@/llamalend/mutations/borrow-more.mutation'
 import { useBorrowMoreLeverage } from '@/llamalend/queries/borrow-more/borrow-more-future-leverage.query'
@@ -185,9 +191,11 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
       },
       getRouteGasOptions: (routeId: string | undefined) => getBorrowMoreGasEstimateQueryOptions({ ...params, routeId }),
       networks,
+      version: market && getLlamaMarketVersion(market),
     }),
     max: useMaxBorrowMoreValues({ params, form, market, collateralEvents }, enabled),
     isLeverageEnabled,
     leverage: useBorrowMoreLeverage(params),
+    version: market && getLlamaMarketVersion(market),
   }
 }
