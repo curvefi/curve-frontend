@@ -31,12 +31,12 @@ const { cloneDeep } = lodash
 
 type SliceState = {
   activeKey: string
-  formEstGas: { [activeKey: string]: FormEstGas }
+  formEstGas: Record<string, FormEstGas>
   formType: FormType
   formStatus: FormStatus
   formValues: FormValues
   maxLoading: number | null
-  slippage: { [activeKey: string]: Slippage }
+  slippage: Record<string, Slippage>
 }
 
 const sliceKey = 'poolWithdraw'

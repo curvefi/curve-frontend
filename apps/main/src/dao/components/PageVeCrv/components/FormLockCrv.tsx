@@ -83,7 +83,7 @@ export const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv
       const isValid =
         +formValues.lockedAmt > 0 && formValues.lockedAmtError === '' && !formStatus.error && !formEstGas.loading
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: getStepStatus(formStatus.isApproved, formStatus.step === 'APPROVAL', isValid),

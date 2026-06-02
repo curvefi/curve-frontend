@@ -168,7 +168,7 @@ export const LoanDecrease = ({
       const isValidFormValue = isFullRepay || (+debt > 0 && !debtError)
       const isValid = !!curve.signerAddress && !formEstGas.loading && isValidFormValue && !error
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: getStepStatus(isApproved, step === 'APPROVAL', isValid),

@@ -141,7 +141,7 @@ export const LoanCollateralRemove = ({
         setTxInfoBar(null)
       }
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         REMOVE: {
           key: 'REMOVE',
           status: helpers.getStepStatus(isComplete, step === 'REMOVE', isValid),

@@ -28,7 +28,7 @@ type Props = {
 export const AlertFormError = ({ errorKey, ...props }: Props) => {
   const errorMessage = useMemo(() => {
     // locale will update inside component
-    const messages: { [key: AlertFormErrorKey | string]: string } = {
+    const messages: Record<AlertFormErrorKey | string, string> = {
       // loan deleverage
       [ALERT_FORM_ERROR_KEYS['error-deleverage-api']]: t`Unable to get deleverage info`,
       [ALERT_FORM_ERROR_KEYS['error-full-repayment-required']]:

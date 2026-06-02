@@ -131,7 +131,7 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
 
   const getSteps = useCallback(
     (activeKey: string, curve: CurveApi, formEstGas: FormEstGas, formValues: FormValues, formStatus: FormStatus) => {
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         INCREASE_TIME: {
           key: 'INCREASE_TIME',
           status: getStepStatus(

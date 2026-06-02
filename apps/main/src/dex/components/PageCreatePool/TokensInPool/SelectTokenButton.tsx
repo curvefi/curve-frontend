@@ -44,7 +44,7 @@ export const SelectTokenButton = ({
   onSelectionChange,
 }: Props) => {
   const { data: network } = useNetworkByChain({ chainId })
-  const visibleTokensRef = useRef<{ [k: string]: boolean }>({})
+  const visibleTokensRef = useRef<Record<string, boolean>>({})
   const overlayTriggerState = useOverlayTriggerState({})
   const openButtonRef = useRef<HTMLButtonElement>(null)
   const { buttonProps: openButtonProps } = useButton({ onPress: () => overlayTriggerState.open() }, openButtonRef)

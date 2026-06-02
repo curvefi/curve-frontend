@@ -100,7 +100,7 @@ export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContent
 
       const stepKey = isCrv ? 'CLAIM_CRV' : 'CLAIM_REWARDS'
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         CLAIM_CRV: {
           key: 'CLAIM_CRV',
           status: helpers.getStepStatus(isComplete, step === stepKey, isValid),

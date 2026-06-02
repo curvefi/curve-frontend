@@ -9,7 +9,7 @@ type Key = keyof typeof APP_STORAGE
 
 export function getStorageValue(key: Key) {
   const storedValue = window.localStorage.getItem(APP_STORAGE[key])
-  let parsedStoredValue: { [key: string]: string } = {}
+  let parsedStoredValue: Record<string, string> = {}
 
   if (storedValue) {
     try {

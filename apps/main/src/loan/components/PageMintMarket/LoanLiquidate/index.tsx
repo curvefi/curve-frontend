@@ -99,7 +99,7 @@ export const LoanLiquidate = ({
         haveEnoughCrvusdForLiquidation(userWalletBalances?.stablecoin, liquidationAmt)
       const chainId = curve.chainId as ChainId
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: getStepStatus(isApproved, step === 'APPROVAL', isValid),

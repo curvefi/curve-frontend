@@ -216,7 +216,7 @@ export const Swap = ({
       const isApprove = formStatus.isApproved || formStatus.formTypeCompleted === 'APPROVE'
       const isComplete = formTypeCompleted === 'SWAP'
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: getStepStatus(isApprove, step === 'APPROVAL', isValid && !formProcessing),

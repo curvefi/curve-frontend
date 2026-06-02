@@ -34,13 +34,13 @@ type SliceState = {
   loading: boolean
   error: 'error-get-dashboard-data' | ''
   noResult: boolean
-  dashboardDataPoolIds: { [activeKey: string]: string[] }
+  dashboardDataPoolIds: Record<string, string[]>
   dashboardDatasMapper: DashboardDatasMapper
-  claimableFees: { [activeKey: string]: { ['3CRV']: string; crvUSD: string } | null }
+  claimableFees: Record<string, { ['3CRV']: string; crvUSD: string } | null>
   formValues: FormValues
   formStatus: FormStatus
   searchedWalletAddresses: string[]
-  vecrvInfo: { [activeKey: string]: Awaited<ReturnType<typeof curvejsApi.lockCrv.vecrvInfo>>['resp'] | null }
+  vecrvInfo: Record<string, Awaited<ReturnType<typeof curvejsApi.lockCrv.vecrvInfo>>['resp'] | null>
 }
 
 const sliceKey = 'dashboard'
