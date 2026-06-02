@@ -4,6 +4,7 @@ import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
 import type { RouterRouteResponse } from '@primitives/router.utils'
+import { LEVERAGE_ZAP_CONTRACT } from '../router.utils'
 import { type RoutesQuery } from '../routes/routes.schemas'
 import type { AssemblePathResponse, CurveOdosAssembleRequest } from './odos-assemble.types'
 import type { CurveOdosQuoteRequest, OdosQuoteResponse } from './odos-quote.types'
@@ -21,14 +22,12 @@ async function getOdosQuote(
     tokenOut,
     amountIn,
     slippage,
-    userAddress,
   }: {
     chainId: number
     tokenIn: Address
     tokenOut: Address
     amountIn: Decimal
     slippage: number
-    userAddress: Address
   },
   log: FastifyBaseLogger,
 ) {
@@ -39,7 +38,7 @@ async function getOdosQuote(
     amount: amountIn,
     slippage: `${slippage}`,
     pathVizImage: 'false', // prices API isn't returning images, maybe we could use them instead of `generateId`
-    caller_address: userAddress,
+    caller_address: LEVERAGE_ZAP_CONTRACT,
     blacklist: '',
   }
 
@@ -57,11 +56,8 @@ async function getOdosQuote(
   return (await quoteResponse.json()) as OdosQuoteResponse
 }
 
-async function assembleOdosQuote(
-  { pathId, userAddress }: { pathId: string; userAddress: string },
-  log: FastifyBaseLogger,
-) {
-  const params: Record<keyof CurveOdosAssembleRequest, string> = { path_id: pathId, user: userAddress }
+async function assembleOdosQuote({ pathId }: { pathId: string }, log: FastifyBaseLogger) {
+  const params: Record<keyof CurveOdosAssembleRequest, string> = { path_id: pathId, user: LEVERAGE_ZAP_CONTRACT }
   const assembleResponse = await fetch(`${ODOS_API_URL}/assemble?${new URLSearchParams(params)}`, {
     method: 'GET',
     headers: { accept: 'application/json' },
@@ -93,11 +89,10 @@ export const buildOdosRouteResponse = async (
     tokenIn: [tokenIn],
     tokenOut: [tokenOut],
     amountIn: [amountIn] = [],
-    userAddress,
     slippage = 0.5,
   } = query
 
-  if (amountIn == null || !userAddress) {
+  if (amountIn == null) {
     // Odos requires amount (amountIn), caller_address (leverage zap) and blacklist (AMM/controller)
     log.info({ message: 'odos route request skipped', query })
     return []
@@ -108,11 +103,8 @@ export const buildOdosRouteResponse = async (
     pathId,
     pathVizImage,
     priceImpact = null,
-  } = await getOdosQuote({ chainId, tokenIn, tokenOut, amountIn, slippage, userAddress }, log)
-  const { transaction } = await assembleOdosQuote(
-    { pathId: assert(pathId, 'Odos quote missing pathId'), userAddress },
-    log,
-  )
+  } = await getOdosQuote({ chainId, tokenIn, tokenOut, amountIn, slippage }, log)
+  const { transaction } = await assembleOdosQuote({ pathId: assert(pathId, 'Odos quote missing pathId') }, log)
   return [
     {
       router: protocol,

@@ -2,6 +2,8 @@ import { BigNumber } from 'bignumber.js'
 import { formatUnits, parseUnits } from 'viem'
 import type { Decimal } from '@primitives/decimal.utils'
 
+export const LEVERAGE_ZAP_CONTRACT = '0xcfd71a5BC9c2215ca8878C1083EC9a3CE1F0fdEb'
+
 /**
  * Returns the maximum Decimal value from an array of Decimals, without losing precision.
  */
