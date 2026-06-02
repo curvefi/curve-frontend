@@ -15,6 +15,7 @@ import { networks } from '@/lend/networks'
 import { useStore } from '@/lend/store/useStore'
 import { Api, type MarketUrlParams, LendMarketTemplate, PageContentProps, UserLoanState } from '@/lend/types/lend.types'
 import { getCollateralListPathname } from '@/lend/utils/utilsRouter'
+import { slippageType } from '@/llamalend/constants'
 import { AlertBox } from '@ui/AlertBox'
 import { InputReadyOnly as InputReadOnly } from '@ui/InputReadOnly'
 import { InternalLink } from '@ui/Link/InternalLink'
@@ -212,7 +213,7 @@ export const LoanSelfLiquidation = ({
           {...formEstGas}
           stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
         />
-        <SlippageToleranceActionInfo maxSlippage={maxSlippage} type="leverage" />
+        <SlippageToleranceActionInfo maxSlippage={maxSlippage} type={slippageType} />
       </div>
 
       {/* actions */}

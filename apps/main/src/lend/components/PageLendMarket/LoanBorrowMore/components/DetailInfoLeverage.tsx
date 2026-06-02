@@ -9,6 +9,7 @@ import { _parseValues } from '@/lend/components/PageLendMarket/LoanBorrowMore/ut
 import { networks } from '@/lend/networks'
 import { useStore } from '@/lend/store/useStore'
 import { PageContentProps } from '@/lend/types/lend.types'
+import { slippageType } from '@/llamalend/constants'
 import type { HealthMode } from '@/llamalend/llamalend.types'
 import { RouteDetails } from '@/llamalend/widgets/RouteDetails'
 import type { Step } from '@ui/Stepper/types'
@@ -114,7 +115,7 @@ export const DetailInfoLeverage = ({
             {...formEstGas}
             stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
           />
-          <SlippageToleranceActionInfo maxSlippage={maxSlippage} type="leverage" />
+          <SlippageToleranceActionInfo maxSlippage={maxSlippage} type={slippageType} />
         </>
       )}
     </>

@@ -1,5 +1,6 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
+import { slippageType } from '@/llamalend/constants'
 import { AlertFormError } from '@/loan/components/AlertFormError'
 import { AlertFormWarning } from '@/loan/components/AlertFormWarning'
 import { DetailInfoEstimateGas } from '@/loan/components/DetailInfoEstimateGas'
@@ -222,7 +223,7 @@ export const LoanLiquidate = ({
           {...formEstGas}
           stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
         />
-        <SlippageToleranceActionInfo maxSlippage={maxSlippage} type="leverage" />
+        <SlippageToleranceActionInfo maxSlippage={maxSlippage} type={slippageType} />
       </div>
 
       {/* actions */}

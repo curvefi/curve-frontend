@@ -10,6 +10,7 @@ import type { FormDetailInfo } from '@/lend/components/PageLendMarket/types'
 import { networks } from '@/lend/networks'
 import { useStore } from '@/lend/store/useStore'
 import { PageContentProps } from '@/lend/types/lend.types'
+import { slippageType } from '@/llamalend/constants'
 import { RouteDetails } from '@/llamalend/widgets/RouteDetails'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
@@ -119,7 +120,7 @@ export const DetailInfo = ({
             {...formEstGas}
             stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
           />
-          <SlippageToleranceActionInfo maxSlippage={maxSlippage} type="leverage" />
+          <SlippageToleranceActionInfo maxSlippage={maxSlippage} type={slippageType} />
         </>
       )}
     </>
