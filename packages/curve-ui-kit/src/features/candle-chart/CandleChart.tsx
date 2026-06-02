@@ -1,5 +1,6 @@
 import type { IChartApi, Time, ISeriesApi, LineWidth, IPriceLine, CustomSeriesWhitespaceData } from 'lightweight-charts'
 import { createChart, ColorType, LineStyle, CandlestickSeries, LineSeries } from 'lightweight-charts'
+import { sortBy } from 'lodash'
 import { useEffect, useRef, useCallback, useMemo, type RefObject } from 'react'
 import { Box } from '@mui/material'
 import { CHART_LINE_WIDTHS } from '@ui-kit/shared/ui/Chart/chart.utils'
@@ -33,30 +34,34 @@ const normalizeLiquidationRangePoints = (range?: LlammaLiquididationRange | null
   range.price1?.forEach(({ time, value }) => assignPoint(time, 'upper', value))
   range.price2?.forEach(({ time, value }) => assignPoint(time, 'lower', value))
 
-  const orderedEntries = Array.from(pointMap.entries())
-    .filter(([, values]) => typeof values.upper === 'number' && typeof values.lower === 'number')
-    .sort((a, b) => a[0] - b[0])
+  const orderedPoints = sortBy(
+    Array.from(pointMap, ([time, { upper, lower }]) =>
+      typeof upper === 'number' && typeof lower === 'number'
+        ? {
+            time,
+            upper: Math.max(upper, lower),
+            lower: Math.min(upper, lower),
+          }
+        : null,
+    ).filter(point => point !== null),
+    point => point.time,
+  )
 
-  if (!orderedEntries.length) {
+  if (!orderedPoints.length) {
     return []
   }
 
-  const fallbackStart = orderedEntries[0][0] as Time
-  const fallbackEnd = orderedEntries[orderedEntries.length - 1][0] as Time
-  const rangeStartTime = (range.startTime ?? fallbackStart) as Time
-  const rangeEndTime = (range.endTime ?? fallbackEnd) as Time
+  const fallbackStart = orderedPoints[0].time as Time
+  const fallbackEnd = orderedPoints[orderedPoints.length - 1].time as Time
+  const rangeStartTime = range.startTime ?? fallbackStart
+  const rangeEndTime = range.endTime ?? fallbackEnd
 
-  return orderedEntries.map(([time, values]) => {
-    const upper = values.upper!
-    const lower = values.lower!
-    return {
-      time: time as Time,
-      upper: Math.max(upper, lower),
-      lower: Math.min(upper, lower),
-      rangeStartTime,
-      rangeEndTime,
-    }
-  })
+  return orderedPoints.map(point => ({
+    ...point,
+    time: point.time as Time,
+    rangeStartTime,
+    rangeEndTime,
+  }))
 }
 
 function getPriceFormat(ohlcData: LpPriceOhlcDataFormatted[] | undefined) {
