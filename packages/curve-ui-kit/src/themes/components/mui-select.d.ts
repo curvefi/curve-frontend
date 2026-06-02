@@ -3,7 +3,7 @@
 import '@mui/material/Select'
 
 type SelectSizes = 'tiny' | 'small' | 'medium' | 'extraLarge'
-type SelectSizeOverrides = { [key in SelectSizes]: true }
+type SelectSizeOverrides = Record<SelectSizes, true>
 
 declare module '@mui/material/Select' {
   export interface SelectPropsSizeOverrides extends SelectSizeOverrides {}

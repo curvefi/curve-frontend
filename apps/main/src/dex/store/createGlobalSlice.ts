@@ -17,8 +17,8 @@ export type StateKey = string
 const { isEqual } = lodash
 
 type GlobalState = {
-  hasDepositAndStake: { [chainId: string]: boolean | null }
-  hasRouter: { [chainId: string]: boolean | null }
+  hasDepositAndStake: Record<string, boolean | null>
+  hasRouter: Record<string, boolean | null>
 }
 
 export type GlobalSlice = {

@@ -102,7 +102,7 @@ export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
       const isClaimedRewards = formStatus.formTypeCompleted === 'CLAIM_REWARDS'
       const isComplete = isClaimedCRV || isClaimedRewards
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         CLAIM: {
           key: 'CLAIM',
           status: getStepStatus(isComplete, step === 'CLAIM', isValid),

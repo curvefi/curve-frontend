@@ -19,7 +19,7 @@ type SliceState = {
   }
   veCrvHolders: {
     topHolders: Locker[]
-    allHolders: { [userAddress: string]: Locker }
+    allHolders: Record<string, Locker>
     totalHolders: number
     canCreateVote: number
     totalValues: {

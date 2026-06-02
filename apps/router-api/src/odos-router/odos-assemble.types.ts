@@ -175,9 +175,7 @@ type Transaction = {
  *
  * Replace with the real Simulation schema if defined elsewhere.
  */
-type Simulation = {
-  [key: string]: unknown
-}
+type Simulation = Record<string, unknown>
 
 export type CurveOdosAssembleRequest = {
   path_id: AssemblePathRequest['pathId']

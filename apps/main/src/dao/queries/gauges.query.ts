@@ -51,9 +51,7 @@ export type GaugeFormattedData = Omit<PricesGaugeOverviewData, 'gauge_weight'> &
   gauge_weight: number
 }
 
-export type GaugeMapper = {
-  [gaugeAddress: string]: GaugeFormattedData
-}
+export type GaugeMapper = Record<string, GaugeFormattedData>
 
 const formatGaugeTitle = (poolName: string | undefined, marketName: string | null, address: string): string => {
   if (poolName) {

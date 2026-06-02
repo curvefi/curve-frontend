@@ -23,10 +23,10 @@ type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
   activeKey: string
-  repayIsAvailable: { [userActiveKey: string]: boolean | null }
-  detailInfo: { [activeKey: string]: FormDetailInfo }
-  detailInfoLeverage: { [activeKey: string]: FormDetailInfoLeverage }
-  formEstGas: { [activeKey: string]: FormEstGas }
+  repayIsAvailable: Record<string, boolean | null>
+  detailInfo: Record<string, FormDetailInfo>
+  detailInfoLeverage: Record<string, FormDetailInfoLeverage>
+  formEstGas: Record<string, FormEstGas>
   formStatus: FormStatus
   formValues: FormValues
 }

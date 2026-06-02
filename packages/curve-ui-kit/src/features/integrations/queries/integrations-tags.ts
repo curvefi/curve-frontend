@@ -31,9 +31,7 @@ const INTEGRATIONS_TAGS_COLORS = [
 
 const parseIntegrationsTags = (
   integrationsTags: { id: string; displayName: string }[],
-): {
-  [k: string]: IntegrationTag
-} =>
+): Record<string, IntegrationTag> =>
   fromEntries(
     integrationsTags.map((t, idx) => {
       if (t.id === 'all') return ['all', { ...t, color: '' }]

@@ -23,7 +23,7 @@ export const DetailInfoTradeRouteRoute = ({
 }: {
   params: UrlParams
   route: Route
-  tokensNameMapper: { [address: string]: string }
+  tokensNameMapper: Record<string, string>
   poolData: PoolData | undefined
   swapCustomRouteRedirect: string | undefined
 }) => {

@@ -13,9 +13,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { formatNumber } from '@ui-kit/utils'
 import { tooltipProps } from '../utils'
 
-type TotalOtherProfit = {
-  [token: string]: { symbol: string; day: number; price: number }
-}
+type TotalOtherProfit = Record<string, { symbol: string; day: number; price: number }>
 
 type TotalAll = {
   tokens: TotalOtherProfit

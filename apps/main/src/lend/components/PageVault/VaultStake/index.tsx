@@ -99,7 +99,7 @@ export const VaultStake = ({ rChainId, marketId, isLoaded, api, market, userActi
 
       const isValid = !!signerAddress && +amount > 0 && !amountError && !error
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: helpers.getStepStatus(isApproved, step === 'APPROVAL', isValid),

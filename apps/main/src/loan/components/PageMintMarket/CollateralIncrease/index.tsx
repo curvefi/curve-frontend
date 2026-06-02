@@ -143,7 +143,7 @@ export const CollateralIncrease = ({
       const haveCollateral = !!collateral && +collateral > 0
       const isValid = !!curve.signerAddress && !formEstGas.loading && haveCollateral && !collateralError && !error
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: getStepStatus(isApproved, step === 'APPROVAL', isValid),

@@ -63,7 +63,7 @@ const network = {
     // TODO: Temporary code to determine if there is an issue with getting base APY from  Kava Api (https://api.curve.finance/api/getFactoryAPYs-kava)
     // If `failedFetching24hOldVprice` is true, it means the base apy couldn't be calculated, display in UI
     // something like a dash with a tooltip "not available currently"
-    const failedFetching24hOldVprice: { [poolAddress: string]: boolean } = {}
+    const failedFetching24hOldVprice: Record<string, boolean> = {}
     const url = 'https://api.curve.finance/api/getFactoryAPYs-kava'
     try {
       const resp = await httpFetcher(url)
@@ -180,7 +180,7 @@ const router = {
   routesAndOutput: async (
     activeKey: string,
     curve: CurveApi,
-    poolsMapper: { [poolId: string]: PoolData },
+    poolsMapper: Record<string, PoolData>,
     formValues: FormValues,
     searchedParams: SearchedParams,
   ) => {
