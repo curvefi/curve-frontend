@@ -4,7 +4,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { formatNumber, amount } from '@ui-kit/utils'
 
-interface MarketPricesRowsProps {
+type MarketPricesRowsProps = {
   chainId: IChainId
   marketId: string | undefined
   enablePricePerShare: boolean

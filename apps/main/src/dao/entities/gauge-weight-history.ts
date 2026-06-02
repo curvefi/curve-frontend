@@ -7,9 +7,7 @@ import { createValidationSuite, type FieldsOf } from '@ui-kit/lib/validation'
 
 export type { WeightHistory as GaugeWeightHistoryData } from '@curvefi/prices-api/gauge'
 
-interface Query {
-  gaugeAddress: Address
-}
+type Query = { gaugeAddress: Address }
 type QueryParams = FieldsOf<Query>
 
 export const { useQuery: useGaugeWeightHistoryQuery } = queryFactory({

@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
 import { getBlockchainIconUrl } from '@ui/utils'
 
-interface ChainIconProps {
+type ChainIconProps = {
   networkId: string
   size?: number
 }

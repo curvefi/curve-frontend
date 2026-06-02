@@ -1,6 +1,6 @@
 import { styled } from 'styled-components'
 
-interface ProgressBarProps {
+type ProgressBarProps = {
   minSupport: number
   support: number
   active: boolean

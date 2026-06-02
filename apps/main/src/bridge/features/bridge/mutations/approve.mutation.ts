@@ -9,11 +9,11 @@ import { formatNumber } from '@ui-kit/utils'
 import type { BridgeForm } from '../hooks/useBridgeForm'
 import { bridgeFormValidationSuite } from '../validation/bridge.validation'
 
-interface BridgeApproveMutation {
+type BridgeApproveMutation = {
   amount: Decimal
 }
 
-interface BridgeApproveOptions {
+type BridgeApproveOptions = {
   chainId: number
   onApproved: OnTransactionSuccess<BridgeApproveMutation>
   onReset: () => void

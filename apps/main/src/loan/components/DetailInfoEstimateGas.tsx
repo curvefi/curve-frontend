@@ -10,12 +10,12 @@ import { calculateGas, useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { formatNumber } from '@ui-kit/utils'
 
-interface StepProgress {
+type StepProgress = {
   active: number
   total: number
 }
 
-interface Props {
+type Props = {
   chainId: ChainId
   isDivider?: boolean
   loading?: boolean

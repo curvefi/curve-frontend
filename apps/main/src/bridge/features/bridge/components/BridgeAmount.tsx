@@ -3,7 +3,7 @@ import { HelperMessage, LargeTokenInput, type LargeTokenInputProps } from '@ui-k
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 
-export interface BridgeAmountProps {
+export type BridgeAmountProps = {
   /** Whether the input is disabled (e.g. during a pending transaction or invalid form) */
   disabled: boolean
   /** The current bridge amount value */

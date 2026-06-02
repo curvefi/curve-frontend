@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
 import { Button } from '@ui/Button'
 
-interface Props<T> {
+type Props<T> = {
   data: T[]
   currentData: T | null
   setCurrentData: (data: T) => void

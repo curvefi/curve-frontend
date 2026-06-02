@@ -10,7 +10,7 @@ import { BalanceButton } from './BalanceButton'
 
 const { Spacing, Sizing } = SizesAndSpaces
 
-interface HelperMessageProps {
+type HelperMessageProps = {
   message: string | ReactNode
   isError?: boolean
   /** Callback when a number in the error is clicked. Used to set the max value when balance error is shown. */
@@ -21,7 +21,7 @@ interface HelperMessageProps {
 const NUMBER_REGEX = /-?\b\d+(?:\.\d+)?\b/g
 
 const getTextColor = (t: Theme, isError?: boolean) =>
-  isError ? t.design.Text.TextColors.FilledFeedback.Alert.Primary : t.design.Text.TextColors.Tertiary
+  isError ? t.design.Inputs.Text.Error : t.design.Inputs.Text.Helper
 
 /**
  * Injects clickable BalanceButton components around numbers in the message.
@@ -42,7 +42,7 @@ const buildClickableMessage = (
       <BalanceButton key={index} onClick={() => onNumberClick(matches[index])}>
         <BalanceAmount
           testId={`helper-message-number-${index}`}
-          sx={{ ...(isError && { color: t => t.design.Text.TextColors.FilledFeedback.Alert.Primary }) }}
+          sx={{ ...(isError && { color: t => t.design.Inputs.Text.Error }) }}
         >
           {matches[index]}
         </BalanceAmount>
@@ -60,7 +60,6 @@ export const HelperMessage = ({ message, isError, onNumberClick }: HelperMessage
       paddingBlock: Spacing.xs,
       paddingInline: Spacing.sm,
       minHeight: Sizing.sm,
-      ...(isError && { backgroundColor: t => t.design.Layer.Feedback.Error }),
     }}
   >
     {typeof message === 'string' ? (

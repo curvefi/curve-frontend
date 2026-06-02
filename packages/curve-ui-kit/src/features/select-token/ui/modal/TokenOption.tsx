@@ -12,11 +12,11 @@ import type { TokenOption as Option } from '../../types'
 
 const { IconSize } = SizesAndSpaces
 
-interface TokenOptionCallbacks {
+type TokenOptionCallbacks = {
   onToken: () => void
 }
 
-interface TokenOptionsProps {
+type TokenOptionsProps = {
   balance?: string
   tokenPrice?: number
   disabled?: boolean

@@ -5,7 +5,7 @@ import type { FetchingStatus } from '../types'
 
 type ChartKey = 'oracle' | 'llamma'
 
-interface ChartAvailability {
+type ChartAvailability = {
   fetchStatus: FetchingStatus
   hasData: boolean
 }
@@ -18,7 +18,7 @@ type TokenLabels =
   | null
   | undefined
 
-interface UseLlammaChartSelectionsProps {
+type UseLlammaChartSelectionsProps = {
   oracleChart: ChartAvailability
   llammaChart: ChartAvailability
   oracleTokens: TokenLabels

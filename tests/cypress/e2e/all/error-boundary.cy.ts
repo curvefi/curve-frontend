@@ -64,7 +64,7 @@ function check500Error({ context }: { context: object }) {
   }
 }
 
-interface ErrorReportBody {
+type ErrorReportBody = {
   formData: ErrorReportFormValues
   url: string
   context: { title: string; subtitle: string }

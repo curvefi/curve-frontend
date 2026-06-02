@@ -13,7 +13,7 @@ const getErrorMessage = (error: FormError): string => {
   return String(error)
 }
 
-interface FormErrorsDisplayProps<T extends Record<string, unknown>> {
+type FormErrorsDisplayProps<T extends Record<string, unknown>> = {
   errorKeys?: (keyof T)[]
   component: FunctionComponent<{ errorKey: string; handleBtnClose: () => void }>
 }

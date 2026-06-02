@@ -6,7 +6,7 @@ import type { State } from '@/dao/store/useStore'
 export type SliceKey = keyof State | ''
 export type StateKey = string
 
-export interface AppSlice {
+export type AppSlice = {
   setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T) => void
   setAppStateByKey: <T>(sliceKey: SliceKey, key: StateKey, value: T) => void
   setAppStateByKeys: <T>(sliceKey: SliceKey, sliceState: Partial<T>) => void

@@ -44,7 +44,7 @@ export async function getTvl(chain: Chain, poolAddr: string, options?: Options) 
   return Schema.getTvlResponse.parse(response)
 }
 
-interface GetPoolTradesParams {
+type GetPoolTradesParams = {
   chain: Chain
   poolAddress: Address
   mainToken: Address
@@ -70,7 +70,7 @@ export async function getPoolTrades(
   return Schema.getPoolTradesResponse.parse(response)
 }
 
-export interface GetAllPoolTradesParams {
+export type GetAllPoolTradesParams = {
   chain: Chain
   poolAddress: Address
   page?: number
@@ -94,7 +94,7 @@ export async function getAllPoolTrades(
   return Schema.getAllPoolTradesResponse.parse(response)
 }
 
-export interface GetPoolLiquidityEventsParams {
+export type GetPoolLiquidityEventsParams = {
   chain: Chain
   poolAddress: Address
   page?: number
@@ -116,7 +116,7 @@ export async function getPoolLiquidityEvents(
   return Schema.getPoolLiquidityEventsResponse.parse(response)
 }
 
-export interface GetPoolMetadataParams {
+export type GetPoolMetadataParams = {
   chain: Chain
   poolAddress: Address
 }
@@ -129,7 +129,7 @@ export async function getPoolMetadata({ chain, poolAddress }: GetPoolMetadataPar
   return Schema.getPoolMetadataResponse.parse(response)
 }
 
-export interface GetPoolSnapshotsParams {
+export type GetPoolSnapshotsParams = {
   chain: Chain
   poolAddress: Address
   start: number

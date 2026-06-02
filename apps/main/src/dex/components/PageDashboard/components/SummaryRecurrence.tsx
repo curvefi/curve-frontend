@@ -15,14 +15,12 @@ import { tooltipProps } from '../utils'
 
 type TotalOtherProfit = Record<string, { symbol: string; day: number; price: number }>
 
-interface TotalAll {
+type TotalAll = {
   tokens: TotalOtherProfit
   totalUsd: number
 }
 
-interface Props {
-  title?: string
-}
+type Props = { title?: string }
 
 export const TotalRecurrence = ({ title }: Props) => {
   const {

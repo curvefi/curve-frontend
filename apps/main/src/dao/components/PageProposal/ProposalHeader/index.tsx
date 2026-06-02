@@ -9,7 +9,7 @@ import { ExternalLink } from '@ui/Link'
 import { formatDate, scanTxPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
-interface ProposalHeaderProps {
+type ProposalHeaderProps = {
   proposal: ProposalData | null
   loading: boolean
   voteId: string

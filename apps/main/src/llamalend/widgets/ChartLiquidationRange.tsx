@@ -27,7 +27,7 @@ import type { HealthColorKey } from '../llamalend.types'
 
 const { Spacing, Sizing } = SizesAndSpaces
 
-export interface LiquidationRangeData {
+export type LiquidationRangeData = {
   name: string
   curr: number[]
   new: number[]
@@ -36,7 +36,7 @@ export interface LiquidationRangeData {
   newLabel?: string
 }
 
-interface ChartLiquidationRangeProps {
+type ChartLiquidationRangeProps = {
   data: LiquidationRangeData[]
   healthColorKey: HealthColorKey | undefined
   height?: number
@@ -46,7 +46,7 @@ interface ChartLiquidationRangeProps {
   tooltipContent?: (params: TooltipContentProps) => ReactNode
 }
 
-interface TooltipContentProps {
+type TooltipContentProps = {
   active?: boolean
   payload: { name?: string | number; stroke?: string; payload?: LiquidationRangeData }[]
   oraclePrice: string

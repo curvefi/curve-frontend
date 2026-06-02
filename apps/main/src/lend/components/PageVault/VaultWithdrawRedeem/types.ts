@@ -1,6 +1,6 @@
 import type { FormStatus as Fs } from '@/lend/types/lend.types'
 
-export interface FormValues {
+export type FormValues = {
   amount: string
   amountError: 'too-much-wallet' | 'too-much-max' | ''
   isFullWithdraw: boolean
@@ -8,6 +8,6 @@ export interface FormValues {
 
 export type StepKey = 'APPROVAL' | 'WITHDRAW_REDEEM' | ''
 
-export interface FormStatus extends Omit<Fs, 'isApproved' | 'isApprovedCompleted'> {
+export type FormStatus = {
   step: StepKey
-}
+} & Omit<Fs, 'isApproved' | 'isApprovedCompleted'>

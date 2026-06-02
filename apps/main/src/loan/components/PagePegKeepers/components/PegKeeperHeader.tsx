@@ -8,7 +8,7 @@ import { PegChip } from './PegChip'
 
 const { Spacing } = SizesAndSpaces
 
-interface Props {
+type Props = {
   underlyingCoins: Pool['underlyingCoins']
   underlyingCoinAddresses: Pool['underlyingCoinAddresses']
   rate: PegKeeperDetails['rate']

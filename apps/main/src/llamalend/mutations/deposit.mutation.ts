@@ -17,7 +17,7 @@ import type { OnTransactionSuccess } from '@ui-kit/lib/model/mutation/useTransac
 import { waitForApproval } from '@ui-kit/utils'
 import { formatTokenAmounts } from '../llama.utils'
 
-interface DepositOptions {
+type DepositOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
   onSuccess?: OnTransactionSuccess<DepositMutation>

@@ -9,7 +9,7 @@ import { Stack } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
 import { formatUsd } from '@ui-kit/utils'
 
-interface TotalCollateralTooltipProps {
+type TotalCollateralTooltipProps = {
   collateralSymbol: string | null | undefined
   totalCollateral: number | null
   borrowedSymbol: string | null | undefined

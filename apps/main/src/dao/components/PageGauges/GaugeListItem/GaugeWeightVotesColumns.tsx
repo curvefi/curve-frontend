@@ -6,7 +6,7 @@ import { TooltipButton as Tooltip } from '@ui/Tooltip/TooltipButton'
 import { t } from '@ui-kit/lib/i18n'
 import { formatNumber } from '@ui-kit/utils'
 
-interface GaugeWeightVotesColumnsProps {
+type GaugeWeightVotesColumnsProps = {
   userGaugeWeightVoteData: UserGaugeVoteWeight
 }
 

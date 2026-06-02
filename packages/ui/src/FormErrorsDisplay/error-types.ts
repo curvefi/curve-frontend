@@ -1,9 +1,9 @@
-interface SimpleFormError {
+type SimpleFormError = {
   message: string
   ref: undefined
 }
 
-interface ServerFormError {
+type ServerFormError = {
   code: string
   info: { key: string; args: unknown[] }
   operation: string

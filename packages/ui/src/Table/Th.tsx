@@ -2,10 +2,7 @@ import type { ComponentPropsWithRef } from 'react'
 import { styled, type IStyledComponent } from 'styled-components'
 import { breakpoints } from '@ui/utils'
 
-interface ThProps {
-  $first?: boolean
-  $last?: boolean
-}
+type ThProps = { $first?: boolean; $last?: boolean }
 
 export const Th: IStyledComponent<'web', ThProps & ComponentPropsWithRef<'th'>> = styled.th<ThProps>`
   padding: var(--spacing-1) var(--spacing-2);

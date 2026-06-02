@@ -394,6 +394,7 @@ export const Swap = ({
               onClose={closeModalFromToken}
               isOpen={!!isOpenFromToken}
               onOpen={openModalFromToken}
+              size="small"
             >
               <TokenList
                 tokens={selectList}
@@ -470,6 +471,7 @@ export const Swap = ({
               isOpen={!!isOpenToToken}
               onOpen={openModalToToken}
               onClose={closeModalToToken}
+              size="small"
             >
               <TokenList
                 tokens={selectList}

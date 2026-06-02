@@ -15,7 +15,7 @@ import { PoolColumnId } from '../columns'
 
 const { Spacing, ButtonSize } = SizesAndSpaces
 
-interface Props {
+type Props = {
   onSortingChange: OnChangeFn<SortingState>
   sortField: PoolColumnId
 }

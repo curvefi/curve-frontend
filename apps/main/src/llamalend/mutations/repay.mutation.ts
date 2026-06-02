@@ -16,7 +16,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
 import { waitForApproval } from '@ui-kit/utils'
 
-interface RepayMutation {
+type RepayMutation = {
   stateCollateral: Decimal
   userCollateral: Decimal
   userBorrowed: Decimal
@@ -25,7 +25,7 @@ interface RepayMutation {
   routeId: string | undefined
 }
 
-interface RepayOptions {
+type RepayOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
   onReset: () => void

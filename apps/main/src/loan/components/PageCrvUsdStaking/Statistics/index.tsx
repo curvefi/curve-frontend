@@ -39,7 +39,7 @@ const chartSelections: ChartSelections<StatisticsChart>[] = [
   { activeTitle: t`Historical Distributions`, label: chartLabels.distributions, key: 'distributions' },
 ]
 
-interface StatisticsProps {
+type StatisticsProps = {
   isChartExpanded: boolean
   toggleChartExpanded: () => void
   hideExpandChart: boolean

@@ -3,9 +3,10 @@ import { Link as RouterLink, LinkProps as RouterLinkProps } from '@tanstack/reac
 import { buttonBaseStyles } from '@ui/Button/styles'
 import type { ButtonProps } from '@ui/Button/types'
 
-interface Props extends ButtonProps, Omit<RouterLinkProps, 'to'> {
+type Props = {
   href?: string
-}
+} & ButtonProps &
+  Omit<RouterLinkProps, 'to'>
 
 export const LinkButton = ({ children, href, ...rest }: Props) => (
   <StyledLink to={href || '/'} {...rest}>

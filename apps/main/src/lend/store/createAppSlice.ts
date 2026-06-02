@@ -13,7 +13,7 @@ export type SliceKey = keyof State | ''
 export type StateKey = string
 
 // prettier-ignore
-export interface AppSlice {
+export type AppSlice = {
   /** Hydrate resets states and refreshes store data from the API */
   hydrate: (config: Config, api: Api | undefined, prevApi: Api | undefined, wallet: Wallet | undefined, releaseChannel: ReleaseChannel) => Promise<void>
 

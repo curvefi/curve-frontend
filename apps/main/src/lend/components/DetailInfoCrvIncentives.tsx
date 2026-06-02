@@ -11,7 +11,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { formatNumber, amount } from '@ui-kit/utils'
 import { useLendMarketData } from '../hooks/useLendMarket'
 
-interface Data {
+type Data = {
   label: string
   tooltip: string
   skeleton: [number, number]

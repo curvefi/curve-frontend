@@ -10,7 +10,7 @@ import { LlamaMarketType } from '@ui-kit/types/market'
 import { q } from '@ui-kit/types/util'
 import { BlockchainIds } from '@ui-kit/utils/network'
 
-interface Props<T extends FieldValues, ChainId extends IChainId> {
+type Props<T extends FieldValues, ChainId extends IChainId> = {
   market: LlamaMarketTemplate | undefined
   chainId: ChainId
   onSubmit: (form: T) => void

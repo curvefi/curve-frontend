@@ -26,7 +26,7 @@ export const Stepper = ({
   </StepsContainer>
 )
 
-interface StepNumberProps {
+type StepNumberProps = {
   index: number
   step: Step
   steps: Step[]

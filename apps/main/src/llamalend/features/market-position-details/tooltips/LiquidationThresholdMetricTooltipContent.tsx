@@ -12,7 +12,7 @@ import type { UserMarketParams } from '@ui-kit/lib/model'
 import type { QueryProp, Range } from '@ui-kit/types/util'
 import { formatNumber } from '@ui-kit/utils'
 
-interface LiquidationThresholdTooltipContentProps {
+type LiquidationThresholdTooltipContentProps = {
   userPrices: QueryProp<Range<Decimal>>
   rangeToLiquidation: QueryProp<number>
   params: UserMarketParams

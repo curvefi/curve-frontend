@@ -3,14 +3,14 @@ import { DEFAULT_TIME_OPTION } from '../constants'
 import type { TimeOption } from '../types'
 import { getThreeHundredResultsAgo } from '../utils'
 
-interface ChartTimeSettings {
+type ChartTimeSettings = {
   /** Start timestamp for fetching chart data */
   start: number
   /** End timestamp (current time) */
   end: number
 }
 
-interface UseChartTimeSettingsReturn {
+type UseChartTimeSettingsReturn = {
   /** Currently selected time option */
   timeOption: TimeOption
   /** Update the selected time option */

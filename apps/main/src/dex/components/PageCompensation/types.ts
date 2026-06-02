@@ -1,6 +1,6 @@
 import type { Contract } from 'ethers'
 
-export interface EtherContract {
+export type EtherContract = {
   contractAddress: string
   contract: Contract
   poolName: string

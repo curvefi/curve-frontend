@@ -2,7 +2,7 @@ import MenuItem from '@mui/material/MenuItem'
 import Typography from '@mui/material/Typography'
 import { Select } from '../Select'
 
-export interface TimeOption<TTimeOption extends string = string> {
+export type TimeOption<TTimeOption extends string = string> = {
   options: readonly TTimeOption[]
   activeOption: TTimeOption
   setActiveOption: (newTimeOption: TTimeOption) => void

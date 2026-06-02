@@ -20,7 +20,7 @@ import { ActionInfoCollapse } from './ActionInfoCollapse'
 import { useShouldShowNetRate } from './hooks/useShouldShowNetRate'
 import { ACTION_INFO_GROUP_SX, combineActionInfoState, formatAmount, formatLeverage } from './info-actions.helpers'
 
-export interface LoanActionInfoListProps {
+export type LoanActionInfoListProps = {
   isOpen: boolean
   isApproved?: QueryProp<boolean>
   health?: QueryProp<Decimal | null>

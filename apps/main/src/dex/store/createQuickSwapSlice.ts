@@ -26,7 +26,7 @@ import { fetchNetworks } from '../entities/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
-interface SliceState {
+type SliceState = {
   activeKey: string
   formEstGas: Record<string, FormEstGas>
   formStatus: FormStatus
@@ -37,7 +37,7 @@ interface SliceState {
 
 const sliceKey = 'quickSwap'
 
-export interface QuickSwapSlice {
+export type QuickSwapSlice = {
   [sliceKey]: SliceState & {
     fetchMaxAmount: (
       config: Config,

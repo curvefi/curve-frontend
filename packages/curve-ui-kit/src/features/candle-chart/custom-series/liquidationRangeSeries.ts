@@ -50,13 +50,13 @@ const DEFAULT_OPTIONS: LiquidationRangeSeriesOptions = {
   showBottomLine: true,
 }
 
-interface PreparedPoint {
+type PreparedPoint = {
   x: number
   upper: Coordinate
   lower: Coordinate
 }
 
-interface RendererPayload {
+type RendererPayload = {
   data: PaneRendererCustomData<Time, LiquidationRangePoint> | null
   options: LiquidationRangeSeriesOptions
 }

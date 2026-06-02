@@ -19,7 +19,7 @@ import { t } from '@ui-kit/lib/i18n'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
-interface SliceState {
+type SliceState = {
   voteTxMapper: Record<
     string,
     {
@@ -46,7 +46,7 @@ interface SliceState {
 
 const sliceKey = 'proposals'
 
-export interface ProposalsSlice {
+export type ProposalsSlice = {
   [sliceKey]: SliceState & {
     setSearchValue: (searchValue: string) => void
     setActiveFilter: (filter: ProposalListFilter) => void

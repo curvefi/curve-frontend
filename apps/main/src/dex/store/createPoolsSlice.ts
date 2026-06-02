@@ -36,7 +36,7 @@ import { fetchPoolsBlacklist } from '../queries/pools-blacklist.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
-interface SliceState {
+type SliceState = {
   poolsMapper: Record<string, PoolDataMapper>
   currencyReserves: CurrencyReservesMapper
   haveAllPools: Record<string, boolean>
@@ -56,7 +56,7 @@ interface SliceState {
 
 const sliceKey = 'pools'
 
-export interface PoolsSlice {
+export type PoolsSlice = {
   [sliceKey]: SliceState & {
     fetchPools: (
       curve: CurveApi,

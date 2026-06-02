@@ -9,8 +9,7 @@ import { SelectModal } from '@ui/Select/SelectModal'
 import { SelectModalFull } from '@ui/Select/SelectModalFull'
 import { getIsFullScreen } from '@ui/utils'
 
-export interface SelectProps<T extends object>
-  extends Omit<ReactStatelySelectProps<T>, 'children'>, AriaSelectOptions<T> {
+export type SelectProps<T extends object> = {
   buttonStyles?: CSSProperties
   className?: string
   loading?: boolean
@@ -23,7 +22,8 @@ export interface SelectProps<T extends object>
     searchFilterKeys: string[]
   }
   children?: AriaSelectProps<T>['children'] // todo: children is excluded from AriaSelectOptions for some reason, does this even work?
-}
+} & Omit<ReactStatelySelectProps<T>, 'children'> &
+  AriaSelectOptions<T>
 
 export function Select<T extends object>({
   buttonStyles = {},

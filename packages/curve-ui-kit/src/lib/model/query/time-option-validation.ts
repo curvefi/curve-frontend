@@ -7,9 +7,7 @@ export type TimeOption = (typeof timeOptions)[number]
 /** Discriminated union for snapshot query range: either a UI time range or a fixed row count */
 export type SnapshotRange = { kind: 'timeRange'; timeOption: TimeOption } | { kind: 'limit'; limit: number }
 
-interface TimeOptionParams {
-  timeOption: TimeOption
-}
+type TimeOptionParams = { timeOption: TimeOption }
 
 const timeOptionValidationGroup = ({ timeOption }: TimeOptionParams) =>
   group('timeOptionValidation', () => {

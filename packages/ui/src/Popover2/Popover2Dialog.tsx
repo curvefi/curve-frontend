@@ -4,11 +4,11 @@ import { useDialog } from 'react-aria'
 import { styled } from 'styled-components'
 import { focusVisible } from '@ui/utils/sharedStyles'
 
-export interface DialogProps extends AriaDialogProps {
+export type DialogProps = {
   className?: string
   title?: ReactNode
   children: ReactElement<AriaDialogProps>
-}
+} & AriaDialogProps
 
 export function Popover2Dialog({ title, children, ...props }: DialogProps) {
   const ref = useRef(null)

@@ -2,7 +2,7 @@ import { identity, isEqual } from 'lodash'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 
-interface DebouncedValueOptions<T> {
+type DebouncedValueOptions<T> = {
   defaultValue?: T
   debounceMs?: number
 }

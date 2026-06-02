@@ -12,10 +12,10 @@ import { formatNumber } from '@ui-kit/utils'
 import { WalletIcon } from '../../icons/WalletIcon'
 import { WithWrapper } from '../WithWrapper'
 
-const { Spacing, IconSize } = SizesAndSpaces
+const { Spacing, LargeTokenInput } = SizesAndSpaces
 
 /** Props for the Balance component */
-export interface Props<T> {
+export type Props<T> = {
   /** The token symbol to display */
   symbol: string | undefined
   /** The token balance amount (optional, in case of loading) */
@@ -63,17 +63,21 @@ export const Balance = <T extends Amount>({
     <Tooltip title={tooltip ?? t`Wallet balance`} body={[balance?.toString() ?? '-', symbol].join(' ')} clickable>
       <Box {...(!inline && { sx: { display: 'flex', alignItems: 'center', gap: Spacing.xs } })}>
         {typeof Prefix === 'string' ? (
-          <Typography variant="bodyXsRegular" color="textTertiary" {...(inline && { component: 'span' })}>
+          <Typography
+            variant="bodyXsRegular"
+            sx={{ color: t => t.design.Inputs.Text.MetaSubtle }}
+            {...(inline && { component: 'span' })}
+          >
             {Prefix}
           </Typography>
         ) : (
           Prefix && (
             <Prefix
               sx={{
-                width: IconSize.sm,
-                height: IconSize.sm,
-                color: t => t.palette.text.primary,
-                ...(disabled && { color: t => t.palette.text.disabled }),
+                width: LargeTokenInput.BalanceIconSize,
+                height: LargeTokenInput.BalanceIconSize,
+                color: t => t.design.Inputs.Text.Meta,
+                ...(disabled && { color: t => t.design.Inputs.Text.Disabled }),
               }}
             />
           )
@@ -83,8 +87,10 @@ export const Balance = <T extends Amount>({
         </BalanceAmount>{' '}
         <Typography
           variant="highlightXs"
-          color={disabled ? 'textDisabled' : 'textPrimary'}
-          sx={{ ...VERTICAL_CENTER_TEXT }}
+          sx={{
+            ...VERTICAL_CENTER_TEXT,
+            color: t => t.design.Inputs.Text[disabled ? 'Disabled' : 'Unit'],
+          }}
           {...(inline && { component: 'span' })}
         >
           {symbol}
@@ -92,8 +98,7 @@ export const Balance = <T extends Amount>({
         {notionalValueUsd != null && notionalValueUsd !== 0 && !loading && (
           <Typography
             variant="bodyXsRegular"
-            color="textTertiary"
-            sx={{ ...VERTICAL_CENTER_TEXT }}
+            sx={{ ...VERTICAL_CENTER_TEXT, color: t => t.design.Inputs.Text.MetaSubtle }}
             {...(inline && { component: 'span' })}
           >
             {formatNumber(notionalValueUsd, { unit: 'dollar', abbreviate: true })}

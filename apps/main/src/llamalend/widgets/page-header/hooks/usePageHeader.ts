@@ -25,7 +25,7 @@ import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
 import { AVERAGE_CATEGORIES, type AverageCategory } from '@ui-kit/utils'
 
-export interface AvailableLiquidity {
+export type AvailableLiquidity = {
   value: number | null | undefined
   max: number | null | undefined
   loading: boolean

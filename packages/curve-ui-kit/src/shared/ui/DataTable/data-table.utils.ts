@@ -36,9 +36,7 @@ export const TableSecondaryTextClass = 'table-secondary-text'
 export type ColumnDefinition<T> = ColumnDef<T, any>
 
 /** Required fields for the data in the table. */
-export interface TableItem {
-  url?: string | null
-}
+export type TableItem = { url?: string | null }
 
 export type TanstackTable<T extends TableItem> = ReturnType<typeof useReactTable<T>>
 
@@ -68,7 +66,7 @@ export const getExtraColumnPadding = <T>(column: Column<T, unknown>) => ({
   ...(column.getIsLastColumn() && { paddingInlineEnd: Spacing.md }),
 })
 
-export interface FilterProps<T extends string> {
+export type FilterProps<T extends string> = {
   columnFiltersById: PartialRecord<T, string>
   setColumnFilter: (id: T, value: string | null) => void
 }

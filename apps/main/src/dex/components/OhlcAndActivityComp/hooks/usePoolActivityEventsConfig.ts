@@ -5,7 +5,7 @@ import { usePoolsPricesApi } from '@/dex/queries/pools-prices-api.query'
 import { ChainId } from '@/dex/types/main.types'
 import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
-import { scanTxPath } from '@ui/utils'
+import { scanAddressPath, scanTxPath } from '@ui/utils'
 import {
   type PoolLiquidityRow,
   createPoolLiquidityColumns,
@@ -18,7 +18,7 @@ import { useCurve } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 
-interface UsePoolActivityProps {
+type UsePoolActivityProps = {
   chainId: ChainId
   poolAddress: Address
 }
@@ -61,6 +61,7 @@ export const usePoolActivityEventsConfig = ({ chainId, poolAddress }: UsePoolAct
       (network &&
         liquidityData?.events.map(event => ({
           ...event,
+          providerUrl: scanAddressPath(networkConfig, event.provider),
           txUrl: scanTxPath(networkConfig, event.txHash),
           network,
           poolTokens,

@@ -13,11 +13,9 @@ import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
 import { waitForApproval } from '@ui-kit/utils'
 
-interface AddCollateralMutation {
-  userCollateral: Decimal
-}
+type AddCollateralMutation = { userCollateral: Decimal }
 
-interface AddCollateralOptions {
+type AddCollateralOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
   onReset: () => void

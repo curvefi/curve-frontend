@@ -6,7 +6,7 @@ import { Icon } from '@ui/Icon'
 import { InternalLink } from '@ui/Link'
 import { useParams } from '@ui-kit/hooks/router'
 
-interface InternalLinkButtonProps {
+type InternalLinkButtonProps = {
   to: string
   children: ReactNode
   smallSize?: boolean

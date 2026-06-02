@@ -19,7 +19,7 @@ import { QueryProp } from '@ui-kit/types/util'
 
 const { Spacing } = SizesAndSpaces
 
-export interface RepayTokenListProps<ChainId extends IChainId> {
+export type RepayTokenListProps<ChainId extends IChainId> = {
   market: LlamaMarketTemplate | undefined
   network: NetworkDict<ChainId>[ChainId]
   onToken: (token: RepayTokenOption) => void

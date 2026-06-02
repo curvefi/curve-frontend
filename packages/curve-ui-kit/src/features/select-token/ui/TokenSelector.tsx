@@ -1,5 +1,6 @@
 import { isEqual } from 'lodash'
 import { cloneElement, type ReactElement } from 'react'
+import type { SelectProps } from '@ui-kit/shared/ui/Select'
 import { type TokenOption } from '../types'
 import { TokenSelectorModal, type TokenSelectorModalProps } from './modal/TokenSelectorModal'
 import { TokenSelectButton } from './TokenSelectButton'
@@ -15,6 +16,8 @@ type Props<T extends TokenOption = TokenOption> = Partial<Pick<TokenSelectorModa
   onOpen: () => void
   /** Callback to close modal */
   onClose: () => void
+  /** Size of the trigger button. Defaults to medium to preserve existing usage. */
+  size?: SelectProps['size']
   /**
    * Token list to render inside the modal.
    * It may be any valid React element as long as it accepts `onToken` prop.
@@ -39,6 +42,7 @@ export const TokenSelector = <T extends TokenOption = TokenOption>({
   isOpen,
   disabled = false,
   compact = false,
+  size,
   onOpen,
   onClose,
   children,
@@ -46,7 +50,7 @@ export const TokenSelector = <T extends TokenOption = TokenOption>({
   const { onToken } = checkChildProps(children.props)
   return (
     <>
-      <TokenSelectButton token={selectedToken} disabled={disabled} onClick={onOpen} />
+      <TokenSelectButton token={selectedToken} disabled={disabled} size={size} onClick={onOpen} />
       <TokenSelectorModal isOpen={isOpen} compact={compact} onClose={onClose}>
         {/* eslint-disable-next-line @eslint-react/no-clone-element -- Existing violation before enabling this rule. */}
         {cloneElement(children, {

@@ -1,7 +1,7 @@
 import { type RefObject, useEffect, useState } from 'react'
 
 /** Options for the height resize observer */
-interface ResizeObserverOptions {
+type ResizeObserverOptions = {
   threshold?: number
 }
 

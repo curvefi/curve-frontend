@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import type { ChartDataPoint, FetchedBandsBalances } from '@/llamalend/features/bands-chart/types'
 import { sortBy } from '@primitives/array.utils'
 
-interface ProcessedBandsData {
+type ProcessedBandsData = {
   marketBandsBalances: FetchedBandsBalances[] | undefined
   userBandsBalances: FetchedBandsBalances[] | undefined
 }

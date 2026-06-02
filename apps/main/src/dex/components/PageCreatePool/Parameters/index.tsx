@@ -24,7 +24,7 @@ import { Box } from '@ui/Box'
 import { Button } from '@ui/Button'
 import { t } from '@ui-kit/lib/i18n'
 
-interface Props {
+type Props = {
   curve: CurveApi
   chainId: ChainId
   haveSigner: boolean

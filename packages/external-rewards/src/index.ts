@@ -1,7 +1,7 @@
 import { default as campaignList } from './campaign-list.json'
 import * as campaignsJsons from './campaigns'
 
-export interface Campaign {
+export type Campaign = {
   campaignName: string
   platform: string
   description: string
@@ -10,7 +10,7 @@ export interface Campaign {
   pools: CampaignPool[]
 }
 
-export interface CampaignPool {
+export type CampaignPool = {
   id: string
   action: RewardsAction
   description: string

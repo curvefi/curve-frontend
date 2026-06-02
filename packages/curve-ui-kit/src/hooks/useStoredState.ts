@@ -5,7 +5,7 @@ export type GetAndSet<T> = [T, Dispatch<SetStateAction<T>>]
 
 const storageEvent = new EventTarget()
 
-export interface MigrationOptions<T> {
+export type MigrationOptions<T> = {
   /**
    * Version of the stored value. When increased, the migrate function is called (if provided) to migrate old values to new values.
    */

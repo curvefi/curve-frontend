@@ -15,12 +15,12 @@ import { refetchPoolVolumes } from '../queries/pool-volume.query'
 export type SliceKey = keyof State | ''
 export type StateKey = string
 
-interface GlobalState {
+type GlobalState = {
   hasDepositAndStake: Record<string, boolean | null>
   hasRouter: Record<string, boolean | null>
 }
 
-export interface GlobalSlice extends GlobalState {
+export type GlobalSlice = {
   getNetworkConfigFromApi: (chainId: ChainId | '') => NetworkConfigFromApi
   setNetworkConfigFromApi: (curve: CurveApi) => void
 
@@ -36,7 +36,7 @@ export interface GlobalSlice extends GlobalState {
   setAppStateByKey: <T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean) => void
   setAppStateByKeys: <T>(sliceKey: SliceKey, sliceState: Partial<T>, showLog?: boolean) => void
   resetAppState: <T>(sliceKey: SliceKey, defaultState: T, showLog?: boolean) => void
-}
+} & GlobalState
 
 const DEFAULT_STATE = {
   hasDepositAndStake: {},

@@ -3,7 +3,7 @@ import { isAddress } from 'viem'
 import { createValidationSuite } from '@ui-kit/lib/validation'
 import type { UserParams } from './root-keys'
 
-interface EvmAddressValidationParams<T extends string, TField extends string = 'evmAddress'> {
+type EvmAddressValidationParams<T extends string, TField extends string = 'evmAddress'> = {
   evmAddress?: T | null
   fieldName?: TField
   required?: boolean

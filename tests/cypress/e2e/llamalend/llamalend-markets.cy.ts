@@ -200,7 +200,7 @@ testCases.forEach(([width, height, breakpoint]) => {
     })
 
     /** Filter chip not yet available on mobile */
-    itSkipOnMobile('should allow filtering favorites', { scrollBehavior: false }, () => {
+    itSkipOnMobile('should allow filtering favorites', () => {
       openDrawer(breakpoint, 'filter')
       // on desktop, the favorite icon is not visible until hovered - but cypress doesn't support that so use force
       cy.get(`[data-testid="favorite-icon"]`).first().click({ force: true })
@@ -209,8 +209,8 @@ testCases.forEach(([width, height, breakpoint]) => {
       withFilterChips(breakpoint, () => cy.get(`[data-testid="chip-favorites"]`).click())
       cy.url().should('include', 'isFavorite=yes')
       cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
-      cy.get(`[data-testid="favorite-icon"]:visible`).should('not.exist')
-      cy.get(`[data-testid="favorite-icon-filled"]:visible`).click()
+      cy.get(`[data-testid="favorite-icon"]`).should('not.exist')
+      cy.get(`[data-testid="favorite-icon-filled"]`).click()
       cy.get(`[data-testid="table-empty-row"]`).should('exist')
     })
 

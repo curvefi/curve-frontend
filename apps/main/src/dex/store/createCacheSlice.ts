@@ -3,7 +3,7 @@ import type { State } from '@/dex/store/useStore'
 import { PoolDataCacheMapper } from '@/dex/types/main.types'
 import { sleep } from '@ui-kit/utils/time.utils'
 
-export interface SwapFormValuesCache {
+export type SwapFormValuesCache = {
   fromAddress: string
   fromToken: string
   toAddress: string
@@ -12,7 +12,7 @@ export interface SwapFormValuesCache {
 
 type StateKey = keyof typeof DEFAULT_STATE
 
-interface SliceState {
+type SliceState = {
   hasDepositAndStake: Record<string, boolean>
   hasRouter: Record<string, boolean>
   poolsMapper: Record<string, PoolDataCacheMapper>
@@ -21,7 +21,7 @@ interface SliceState {
 
 const sliceKey = 'storeCache'
 
-export interface CacheSlice {
+export type CacheSlice = {
   [sliceKey]: SliceState & {
     setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => Promise<void>
     setStateByKey: <T>(key: StateKey, value: T) => Promise<void>

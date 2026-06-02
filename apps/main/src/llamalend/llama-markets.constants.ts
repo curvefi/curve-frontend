@@ -162,10 +162,7 @@ export const MARKETS_ALERTS: Record<LlamaMarketType, Record<number, Record<Addre
   Mint: {},
 }
 
-export interface DeprecatedMarketAlert {
-  message: string
-  url?: string
-}
+export type DeprecatedMarketAlert = { message: string; url?: string }
 
 // Deprecated markets are hidden from market list for new users but remain accessible to users with existing positions.
 export const DEPRECATED_LLAMAS: Record<

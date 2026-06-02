@@ -14,7 +14,7 @@ export type PoolType =
   | typeof STABLESWAPOLD
   | ''
 
-export interface PoolTypes {
+export type PoolTypes = {
   twoCrypto: boolean
   twoCryptoNg: boolean
   threeCrypto: boolean

@@ -1,6 +1,6 @@
 import type { Address } from '@primitives/address.utils'
 
-export interface Token {
+export type Token = {
   address: Address
   symbol: string
   chain?: string

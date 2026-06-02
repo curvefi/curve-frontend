@@ -17,7 +17,7 @@ import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { q, type QueryProp } from '@ui-kit/types/util'
 import { decimalCompare, decimalMax, toWei } from '@ui-kit/utils'
 
-export interface MarketRoutes {
+export type MarketRoutes = {
   queries: RouteQueries
   enabled: boolean
   selectedRoute: RouteResponse | undefined

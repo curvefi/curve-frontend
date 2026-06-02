@@ -7,7 +7,7 @@ import { createValidationSuite } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { decimal } from '@ui-kit/utils'
 
-interface BorrowMoreMaxReceiveResult {
+type BorrowMoreMaxReceiveResult = {
   maxDebt: Decimal
   maxTotalCollateral?: Decimal
   userCollateral?: Decimal

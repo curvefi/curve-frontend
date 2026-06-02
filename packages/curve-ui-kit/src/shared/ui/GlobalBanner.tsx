@@ -15,7 +15,7 @@ import { Chain } from '@ui-kit/utils/network'
 import { PhishingWarningBanner } from '@ui-kit/widgets/Header/PhishingWarningBanner'
 import { StackBanners } from './StackBanners'
 
-interface GlobalBannerProps {
+type GlobalBannerProps = {
   networkId: string
   chainId: number
   backendMaintenance: Maintenance

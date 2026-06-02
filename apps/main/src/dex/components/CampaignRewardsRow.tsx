@@ -2,7 +2,7 @@ import { styled } from 'styled-components'
 import { RewardsCompSmall as CampaignRewardsComp } from '@ui/CampaignRewards/CampaignRewardsComp'
 import type { CampaignRewards } from '@ui-kit/entities/campaigns'
 
-interface Props {
+type Props = {
   rewardItems: CampaignRewards[]
   mobile?: boolean
 }

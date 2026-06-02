@@ -6,7 +6,7 @@
  *   signal: new AbortController().signal // For request cancellation
  * }
  */
-export interface Options {
+export type Options = {
   host?: string
   signal?: AbortSignal
 }
@@ -44,7 +44,7 @@ export type Chain = (typeof chains)[number]
 
 export const isPricesApiChain = (chain: string): chain is Chain => chains.includes(chain as Chain)
 
-export interface PaginationMeta {
+export type PaginationMeta = {
   page: number
   /** items/events per page */
   per_page: number

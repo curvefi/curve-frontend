@@ -5,18 +5,9 @@ import * as Schema from './schema'
 
 export type * from './schema'
 
-interface PoolParams {
-  chain: Chain
-  poolAddress: Address
-}
-interface WindowParams {
-  start?: number
-  end?: number
-}
-interface PageParams {
-  page?: number
-  pageSize?: number
-}
+type PoolParams = { chain: Chain; poolAddress: Address }
+type WindowParams = { start?: number; end?: number }
+type PageParams = { page?: number; pageSize?: number }
 
 export async function getRefuelTimeseries(
   { chain, poolAddress, start, end, page, pageSize }: PoolParams & WindowParams & PageParams,

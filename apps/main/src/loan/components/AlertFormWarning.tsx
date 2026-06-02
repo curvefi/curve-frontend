@@ -15,10 +15,10 @@ const ALERT_FORM_WARNING_KEYS = {
 
 type AlertFormWarningKey = keyof typeof ALERT_FORM_WARNING_KEYS
 
-interface Props extends Omit<AlertBoxProps, 'alertType'> {
+type Props = {
   // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   errorKey: AlertFormWarningKey | string
-}
+} & Omit<AlertBoxProps, 'alertType'>
 
 export const AlertFormWarning = ({ errorKey, ...props }: Props) => {
   const errorMessage = useMemo(() => {

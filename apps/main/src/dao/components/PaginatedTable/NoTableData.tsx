@@ -2,7 +2,7 @@ import { styled } from 'styled-components'
 import { ErrorMessage } from '@/dao/components/ErrorMessage'
 import { Box } from '@ui/Box'
 
-interface NoTableDataProps {
+type NoTableDataProps = {
   height: string
   noDataMessage: string
   refetchData: () => void

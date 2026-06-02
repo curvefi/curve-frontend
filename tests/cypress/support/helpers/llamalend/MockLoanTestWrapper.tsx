@@ -7,7 +7,7 @@ import { ComponentTestWrapper } from '../ComponentTestWrapper'
 import { createMockLlamaApi, TEST_ADDRESS } from './mock-loan-test-data'
 import { mockedWagmiConfig } from './test-wagmi.helpers'
 
-interface MockLoanTestWrapperProps {
+type MockLoanTestWrapperProps = {
   children: ReactElement
   llamaApi: ReturnType<typeof createMockLlamaApi>
 }

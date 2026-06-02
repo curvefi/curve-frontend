@@ -16,7 +16,7 @@ import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { formatNumber } from '@ui-kit/utils'
 import { VOTES_LABELS } from '../constants'
 
-interface UserProposalVotesTableProps {
+type UserProposalVotesTableProps = {
   userAddress: string
   tableMinWidth: number
 }

@@ -11,7 +11,7 @@ import { MarketIdRow, MarketPricesRows } from './MarketParameterRows'
 
 const { Spacing } = SizesAndSpaces
 
-interface MarketParametersProps {
+type MarketParametersProps = {
   chainId: IChainId
   marketId: string | undefined
   marketType: LlamaMarketType

@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 
-interface HeaderStatsProps {
+type HeaderStatsProps = {
   appStats?: { label: string; value: string }[]
 }
 

@@ -15,25 +15,20 @@ export type ChainId = IChainId
 export type NetworkEnum = INetworkName
 export type EstimatedGas = number | number[] | null
 
-export interface NetworkUrlParams {
-  network: NetworkEnum
-}
+export type NetworkUrlParams = { network: NetworkEnum }
 export type MarketUrlParams = NetworkUrlParams & { market: string }
 export type UrlParams = NetworkUrlParams & Partial<MarketUrlParams>
 
-export interface NetworkConfig<TId extends string = string, TChainId extends number = number> extends BaseConfig<
-  TId,
-  TChainId
-> {
+export type NetworkConfig<TId extends string = string, TChainId extends number = number> = {
   isActiveNetwork: boolean
   showInSelectNetwork: boolean
   hideMarketsInUI: Record<string, boolean>
   marketListFilter: string[]
   marketListFilterType: string[]
   pricesData: boolean
-}
+} & BaseConfig<TId, TChainId>
 
-export interface MaxRecvLeverageResp {
+export type MaxRecvLeverageResp = {
   maxDebt: string
   maxTotalCollateral: string
   userCollateral: string
@@ -41,7 +36,7 @@ export interface MaxRecvLeverageResp {
   collateralFromMaxDebt: string
   avgPrice: string
 }
-export interface LiqRangeResp {
+export type LiqRangeResp = {
   n: number
   collateral: string
   debt: string
@@ -50,7 +45,7 @@ export interface LiqRangeResp {
   prices: string[]
   bands: [number, number]
 }
-export interface DetailInfoResp {
+export type DetailInfoResp = {
   healthFull: string
   healthNotFull: string
   futureRates: FutureRates | null
@@ -61,7 +56,7 @@ export type DetailInfoLeverageResp = DetailInfoResp & {
   priceImpact: string
   isHighPriceImpact: boolean
 }
-export interface ExpectedCollateral {
+export type ExpectedCollateral = {
   totalCollateral: string
   userCollateral: string
   collateralFromUserBorrowed: string
@@ -69,7 +64,7 @@ export interface ExpectedCollateral {
   leverage: string
   avgPrice: string
 }
-export interface ExpectedBorrowed {
+export type ExpectedBorrowed = {
   totalBorrowed: string
   borrowedFromStateCollateral: string
   borrowedFromUserCollateral: string
@@ -77,7 +72,7 @@ export interface ExpectedBorrowed {
   avgPrice: string
 }
 
-export interface PageContentProps<T = UrlParams> {
+export type PageContentProps<T = UrlParams> = {
   params: T
   rChainId: ChainId
   marketId: string
@@ -89,7 +84,7 @@ export interface PageContentProps<T = UrlParams> {
 }
 export type BandsBalances = Record<number, { borrowed: string; collateral: string }>
 export type BandsBalancesArr = { borrowed: string; collateral: string; band: number }[]
-export interface ParsedBandsBalances {
+export type ParsedBandsBalances = {
   borrowed: string
   collateral: string
   collateralUsd: string
@@ -102,7 +97,7 @@ export interface ParsedBandsBalances {
   p_down: string
   pUpDownMedian: string
 }
-export interface MarketStatBands {
+export type MarketStatBands = {
   bands: {
     balances: string[]
     maxMinBands: number[]
@@ -114,18 +109,11 @@ export interface MarketStatBands {
   error: string
 }
 export type MarketsStatsBandsMapper = Record<string, MarketStatBands>
-export interface MarketStatCapAndAvailable {
-  totalAssets: string
-  available: string
-  error: string
-}
+export type MarketStatCapAndAvailable = { totalAssets: string; available: string; error: string }
 export type MarketsStatsCapAndAvailableMapper = Record<string, MarketStatCapAndAvailable>
-export interface MarketMaxLeverage {
-  maxLeverage: string
-  error: string
-}
+export type MarketMaxLeverage = { maxLeverage: string; error: string }
 export type MarketsMaxLeverageMapper = Record<string, MarketMaxLeverage>
-export interface MarketPrices {
+export type MarketPrices = {
   prices: {
     oraclePrice: string
     oraclePriceBand: number | null
@@ -135,7 +123,7 @@ export interface MarketPrices {
   error: string
 }
 export type MarketsPricesMapper = Record<string, MarketPrices>
-export interface MarketRates {
+export type MarketRates = {
   rates: {
     borrowApr: string
     lendApr: string
@@ -145,7 +133,7 @@ export interface MarketRates {
   error: string
 }
 export type MarketsRatesMapper = Record<string, MarketRates>
-export interface RewardOther {
+export type RewardOther = {
   apy: number
   decimals?: number
   gaugeAddress: string
@@ -155,7 +143,7 @@ export interface RewardOther {
   tokenPrice?: number
 }
 export type RewardCrv = number
-export interface MarketRewards {
+export type MarketRewards = {
   rewards: {
     other: RewardOther[]
     crv: RewardCrv[]
@@ -163,7 +151,7 @@ export interface MarketRewards {
   error: string
 }
 export type MarketsRewardsMapper = Record<string, MarketRewards>
-export interface MarketClaimable {
+export type MarketClaimable = {
   claimable: {
     crv: string
     rewards: { token: string; symbol: string; amount: string }[]
@@ -171,20 +159,14 @@ export interface MarketClaimable {
   error: string
 }
 
-export interface UserLoss {
+export type UserLoss = {
   deposited_collateral: string
   current_collateral_estimation: string
   loss: string
   loss_pct: string
 }
-export interface UserLoanState {
-  collateral: string
-  borrowed: string
-  debt: string
-  N: string
-  error: string
-}
-export interface UserLoanDetails {
+export type UserLoanState = { collateral: string; borrowed: string; debt: string; N: string; error: string }
+export type UserLoanDetails = {
   details: {
     health: string
     healthFull: string
@@ -203,7 +185,7 @@ export interface UserLoanDetails {
   error: string
 }
 export type UsersLoansDetailsMapper = Record<string, UserLoanDetails>
-export interface UserMarketBalances {
+export type UserMarketBalances = {
   collateral: string
   borrowed: string
   vaultShares: string
@@ -212,7 +194,7 @@ export interface UserMarketBalances {
   error: string
 }
 export type UsersMarketsBalancesMapper = Record<string, UserMarketBalances>
-export interface FutureRates {
+export type FutureRates = {
   borrowApr: string
   lendApr: string
   borrowApy: string
@@ -246,7 +228,7 @@ export enum FormError {
   TotalSupply = 'error-total-supply',
 }
 
-export interface FormStatus {
+export type FormStatus = {
   isApproved: boolean
   isApprovedCompleted: boolean
   isComplete: boolean

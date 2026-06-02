@@ -36,12 +36,12 @@ import { scanAddressPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { shortenAddress } from '@ui-kit/utils'
 
-interface Props {
+type Props = {
   blockchainId: string
   chainId: ChainId
 }
 
-interface TokenSummary {
+type TokenSummary = {
   blockchainId: string
   token: TokenState
   chainId: ChainId

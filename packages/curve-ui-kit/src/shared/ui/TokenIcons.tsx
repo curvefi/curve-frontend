@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
 import { TokenIcon } from './TokenIcon'
 
-export interface TokenIconsProps {
+export type TokenIconsProps = {
   blockchainId: string
   tokens: {
     symbol: string

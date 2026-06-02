@@ -17,7 +17,7 @@ export type MaintenanceConfig = {
   learnMoreLink?: string
 } | null
 
-export interface Maintenance {
+export type Maintenance = {
   formattedDate: string | undefined
   formattedTime: string | undefined
   expectedDurationLabel?: string

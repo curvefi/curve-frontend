@@ -1,6 +1,6 @@
 import { styled } from 'styled-components'
 
-interface Props {
+type Props = {
   className?: string
   $height?: string
   progress: number

@@ -40,7 +40,7 @@ import { INVALID_POOLS_NAME_CHARACTERS } from '../constants'
 import { fetchNetworks, getNetworks } from '../entities/networks'
 import { getBasePools } from '../queries/base-pools.query'
 
-interface SliceState {
+type SliceState = {
   navigationIndex: number
   swapType: SwapType
   advanced: boolean
@@ -104,7 +104,7 @@ interface SliceState {
   }
 }
 
-export interface CreatePoolSlice {
+export type CreatePoolSlice = {
   createPool: SliceState & {
     setNavigationIndex: (index: number) => void
     updateSwapType: (type: SwapType, chainId: ChainId) => void

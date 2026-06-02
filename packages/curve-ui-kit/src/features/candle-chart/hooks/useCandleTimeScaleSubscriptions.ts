@@ -1,7 +1,7 @@
 import type { IChartApi } from 'lightweight-charts'
 import { useEffect, type RefObject } from 'react'
 
-interface Params {
+type Params = {
   chartRef: RefObject<IChartApi | null>
   onVisibleLogicalRangeChange: () => void
   enableVisiblePriceRangeSync: boolean

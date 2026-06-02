@@ -23,7 +23,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { shortenAddress } from '@ui-kit/utils'
 
-interface Props {
+type Props = {
   curve: CurveApi
   chainId: ChainId
   disabledKeys?: string[]

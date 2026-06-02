@@ -48,7 +48,7 @@ import { invalidatePoolParameters } from '../queries/pool-parameters.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
-interface SliceState {
+type SliceState = {
   activeKey: string
   poolAddress: string
   formEstGas: Record<string, FormEstGas>
@@ -63,7 +63,7 @@ interface SliceState {
 const sliceKey = 'poolDeposit'
 
 // prettier-ignore
-export interface PoolDepositSlice {
+export type PoolDepositSlice = {
   [sliceKey]: SliceState & {
     fetchExpected: (activeKey: string, formType: FormType, pool: Pool, formValues: FormValues) => Promise<void>
     fetchMaxAmount: (config: Config, activeKey: string, chainId: ChainId, userAddress: Address, pool: Pool, loadMaxAmount: LoadMaxAmount, maxSlippage: string) => Promise<Amount[]>

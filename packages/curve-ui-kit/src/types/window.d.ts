@@ -1,18 +1,19 @@
+/* eslint-disable @typescript-eslint/consistent-type-definitions */
 import type { EIP1193Provider } from 'viem'
 
 declare global {
-  interface Eip6963ProviderInfo {
+  type Eip6963ProviderInfo = {
     icon: string
     name: string
     rdns: string // reverse DNS
     uuid: string
   }
-  interface Eip6963Provider {
+  type Eip6963Provider = {
     info: Eip6963ProviderInfo
     provider: EIP1193Provider
   }
 
-  interface DetectedEip6963Connector {
+  type DetectedEip6963Connector = {
     id: string
     name: string
     icon: string

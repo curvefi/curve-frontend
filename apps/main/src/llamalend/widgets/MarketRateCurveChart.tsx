@@ -30,7 +30,7 @@ import { decimal, decimalMinus, formatNumber, formatPercent, formatUsd } from '@
 
 const { Spacing, Height } = SizesAndSpaces
 
-export interface RateCurveChartPoint {
+export type RateCurveChartPoint = {
   utilization: number
   borrowApr: number
   supplyApy: number

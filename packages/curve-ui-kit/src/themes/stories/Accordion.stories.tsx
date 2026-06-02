@@ -6,7 +6,7 @@ import AccordionSummary from '@mui/material/AccordionSummary'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
-interface StoryProps {
+type StoryProps = {
   title?: string
 }
 

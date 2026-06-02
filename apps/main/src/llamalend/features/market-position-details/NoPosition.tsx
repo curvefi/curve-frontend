@@ -6,7 +6,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 const { Spacing, IconSize, MaxWidth } = SizesAndSpaces
 
 type AppType = 'borrow' | 'supply'
-interface NoPositionProps {
+type NoPositionProps = {
   type: AppType
 }
 

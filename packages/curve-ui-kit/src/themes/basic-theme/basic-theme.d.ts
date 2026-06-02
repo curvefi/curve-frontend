@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/consistent-type-definitions */
 import type { DesignOptions, DesignSystem } from '../design'
 import type { ThemeKey } from './basic-theme'
 

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
+/* eslint-disable @typescript-eslint/no-empty-object-type,@typescript-eslint/consistent-type-definitions */
 // eslint-disable-next-line no-restricted-imports
 import '@mui/material/Chip'
 import { ChipColors } from './colors'

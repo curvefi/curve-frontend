@@ -4,7 +4,7 @@ import { ExternalLink } from '@ui/Link/ExternalLink'
 import { Spinner } from '@ui/Spinner'
 import { shortenHash } from '@ui-kit/utils/address'
 
-interface Props {
+type Props = {
   transactionHash: string
   txLink: string
   pendingMessage: string

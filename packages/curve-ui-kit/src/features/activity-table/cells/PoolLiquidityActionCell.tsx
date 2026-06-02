@@ -10,7 +10,7 @@ import type { PoolLiquidityRow } from '../types'
 
 const { Spacing } = SizesAndSpaces
 
-interface PoolLiquidityActionCellProps {
+type PoolLiquidityActionCellProps = {
   event: PoolLiquidityRow
 }
 

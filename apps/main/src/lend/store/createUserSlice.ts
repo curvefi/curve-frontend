@@ -15,7 +15,7 @@ import { log } from '@ui-kit/lib/logging'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
-interface SliceState {
+type SliceState = {
   loansDetailsMapper: UsersLoansDetailsMapper
   marketsBalancesMapper: UsersMarketsBalancesMapper
 }
@@ -23,7 +23,7 @@ interface SliceState {
 const sliceKey = 'user'
 
 // prettier-ignore
-export interface UserSlice {
+export type UserSlice = {
   [sliceKey]: SliceState & {
     // groups
     fetchDatas: (key: string, api: Api, markets: LendMarketTemplate[], shouldRefetch?: boolean) => Promise<void>

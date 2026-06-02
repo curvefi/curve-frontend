@@ -13,13 +13,13 @@ import { AVERAGE_CATEGORIES, formatPercent } from '@ui-kit/utils'
 import { RewardsTooltipItems } from './RewardTooltipItems'
 
 type SupplyBoostType = 'market' | 'user'
-interface SupplyBoost {
+type SupplyBoost = {
   type: SupplyBoostType
   apy: number | null | undefined
   totalApy: number | null | undefined
   totalAverageApy: number | null | undefined
 }
-interface MarketSupplyRateTooltipContentProps {
+type MarketSupplyRateTooltipContentProps = {
   supplyApy: number | null | undefined
   averageSupplyApy: number | null | undefined
   periodLabel: string

@@ -12,7 +12,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { shortenAddress, formatNumber } from '@ui-kit/utils'
 
-interface Props {
+type Props = {
   totalVotes: number
   voteId: string
   proposalType: ProposalType

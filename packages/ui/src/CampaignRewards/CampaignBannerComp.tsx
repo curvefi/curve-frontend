@@ -4,7 +4,7 @@ import { ExternalLink } from '@ui/Link'
 import type { CampaignRewards } from '@ui-kit/entities/campaigns'
 import { RewardsCompSmall } from './CampaignRewardsComp'
 
-interface CampaignRewardsBannerCompProps {
+type CampaignRewardsBannerCompProps = {
   campaignRewards: CampaignRewards[]
   message: string
 }

@@ -1,14 +1,15 @@
 import { BigNumber } from 'bignumber.js'
 import type { Property } from 'csstype'
-import { ReactNode, useEffect, useState } from 'react'
+import { type ReactNode, useEffect, useState } from 'react'
 import { Typography } from '@mui/material'
+import InputAdornment from '@mui/material/InputAdornment'
 import TextField from '@mui/material/TextField'
 import type { TextFieldProps } from '@mui/material/TextField'
 import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-const { Spacing, MaxWidth } = SizesAndSpaces
+const { MaxWidth } = SizesAndSpaces
 
 type NumericTextFieldAdornments = 'dollar' | 'percentage' | 'bands'
 
@@ -95,9 +96,11 @@ const getFormattedDisplayValue = (val: Decimal | undefined, format?: (value: Dec
   val == null ? '' : (format?.(val) ?? getDisplayValue(val))
 
 const AdornmentTypography = ({ children, size }: { children: ReactNode; size: NumericTextFieldProps['size'] }) => (
-  <Typography variant={size === 'tiny' ? 'bodySBold' : 'bodyMBold'} color="textSecondary">
-    {children}
-  </Typography>
+  <InputAdornment position="end">
+    <Typography variant={size === 'tiny' ? 'bodySBold' : 'bodyMBold'} sx={{ color: t => t.design.Inputs.Text.Unit }}>
+      {children}
+    </Typography>
+  </InputAdornment>
 )
 
 const adornments: Record<
@@ -210,8 +213,7 @@ export const NumericTextField = ({
         ...(adornment && {
           input: {
             sx: {
-              paddingInline: Spacing.xs,
-              '& input': {
+              '& .MuiInputBase-input': {
                 textAlign: adornments[adornment].textAlign,
               },
             },

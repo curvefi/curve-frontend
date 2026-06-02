@@ -28,7 +28,7 @@ import { invalidatePoolParameters } from '../queries/pool-parameters.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
-interface SliceState {
+type SliceState = {
   activeKey: string
   formEstGas: Record<string, FormEstGas>
   formType: FormType
@@ -40,7 +40,7 @@ interface SliceState {
 
 const sliceKey = 'poolWithdraw'
 
-interface FetchWithdrawProps {
+type FetchWithdrawProps = {
   activeKey: string
   storedActiveKey: string
   config: Config
@@ -52,7 +52,7 @@ interface FetchWithdrawProps {
 }
 
 // prettier-ignore
-export interface PoolWithdrawSlice {
+export type PoolWithdrawSlice = {
   [sliceKey]: SliceState & {
     fetchWithdrawToken: (props: FetchWithdrawProps) => Promise<void>
     fetchWithdrawLpToken: (props: FetchWithdrawProps) => Promise<void>

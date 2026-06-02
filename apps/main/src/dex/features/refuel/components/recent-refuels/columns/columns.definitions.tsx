@@ -6,7 +6,7 @@ import { AddressCell, TimestampCell } from '@ui-kit/shared/ui/DataTable/inline-c
 import { AmountCell } from '../cells/AmountCell'
 import { getTokenAmountColumnId, RecentRefuelsColumnId } from './columns.enum'
 
-export interface RecentRefuelsToken {
+export type RecentRefuelsToken = {
   symbol: string
   address: Address
   decimals: number
@@ -15,6 +15,7 @@ export interface RecentRefuelsToken {
 export type RecentRefuelRow = TableItem & {
   timestamp: number
   donor?: Address | null
+  donorUrl?: string
   lpSharesMinted?: number | null
   usdValue?: number | null
   tokenAmounts?: number[] | null
@@ -43,7 +44,7 @@ export const createRecentRefuelsColumns = (tokens: RecentRefuelsToken[]) => [
   columnHelper.accessor('donor', {
     id: RecentRefuelsColumnId.Refueler,
     header: headers[RecentRefuelsColumnId.Refueler],
-    cell: ({ getValue }) => <AddressCell address={getValue() ?? ''} />,
+    cell: ({ getValue, row }) => <AddressCell address={getValue() ?? ''} explorerUrl={row.original.donorUrl} />,
     enableSorting: false,
   }),
   columnHelper.accessor('lpSharesMinted', {

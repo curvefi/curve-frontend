@@ -24,7 +24,7 @@ import { invalidateLockerVecrvUser } from '../entities/locker-vecrv-user'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
-interface SliceState {
+type SliceState = {
   activeKey: string
   activeKeyVecrvInfo: string
   formEstGas: Record<string, FormEstGas>
@@ -41,7 +41,7 @@ interface SliceState {
 const sliceKey = 'lockedCrv'
 
 // prettier-ignore
-export interface LockedCrvSlice {
+export type LockedCrvSlice = {
   [sliceKey]: SliceState & {
     setFormValues: (curve: CurveApi | null, isLoadingCurve: boolean, rFormType: FormType, formValues: Partial<FormValues>, vecrvInfo: VecrvInfo, isFullReset?: boolean) =>  void
 

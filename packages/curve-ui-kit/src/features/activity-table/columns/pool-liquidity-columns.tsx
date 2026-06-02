@@ -1,7 +1,10 @@
 import { type Token } from '@primitives/address.utils'
 import { createColumnHelper } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
-import { AddressCell, TimestampCell, TokenAmountCell } from '../cells'
+import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
+import { TokenInfo } from '@ui-kit/shared/ui/TokenInfo'
+import { formatNumber } from '@ui-kit/utils'
+import { AddressCell, TimestampCell } from '../cells'
 import { PoolLiquidityActionCell } from '../cells/PoolLiquidityActionCell'
 import type { PoolLiquidityRow } from '../types'
 
@@ -15,7 +18,7 @@ export const getTokenAmountColumnId = (tokenIndex: number): string => `tokenAmou
 
 const columnHelper = createColumnHelper<PoolLiquidityRow>()
 
-interface CreatePoolLiquidityColumnsParams {
+type CreatePoolLiquidityColumnsParams = {
   poolTokens: Token[]
 }
 
@@ -24,7 +27,7 @@ export const createPoolLiquidityColumns = ({ poolTokens }: CreatePoolLiquidityCo
     columnHelper.accessor('provider', {
       id: PoolLiquidityColumnId.User,
       header: t`Address`,
-      cell: ({ getValue }) => <AddressCell address={getValue()} />,
+      cell: ({ getValue, row }) => <AddressCell address={getValue()} explorerUrl={row.original.providerUrl} />,
     }),
     columnHelper.display({
       id: PoolLiquidityColumnId.Action,
@@ -45,13 +48,18 @@ export const createPoolLiquidityColumns = ({ poolTokens }: CreatePoolLiquidityCo
         const displayAmount = isAdd ? amount : -amount
 
         return (
-          <TokenAmountCell
-            amount={displayAmount}
-            symbol={token.symbol}
-            tokenAddress={token.address}
-            chainId={network}
-            align="right"
-          />
+          <InlineTableCell sx={{ alignItems: 'end' }}>
+            {amount === 0 ? (
+              '-'
+            ) : (
+              <TokenInfo
+                address={token.address}
+                blockchainId={network}
+                iconPosition="right"
+                primary={formatNumber(displayAmount, { abbreviate: false })}
+              />
+            )}
+          </InlineTableCell>
         )
       },
       meta: { type: 'numeric' },

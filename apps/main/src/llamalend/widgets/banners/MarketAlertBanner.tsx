@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { AlertType } from '@ui/AlertBox/types'
 import { Banner, type BannerProps } from '@ui-kit/shared/ui/Banner'
 
-export interface MarketBannerAlert {
+export type MarketBannerAlert = {
   // TODO: move alertType to ui-kit and refactor lend/loan/dex etc alertType
   alertType: AlertType
   banner: Omit<BannerProps, 'children'> & { title: ReactNode }

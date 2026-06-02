@@ -18,7 +18,7 @@ type FormType = string | null
 
 const sliceKey = 'vaultUnstake'
 
-interface SliceState {
+type SliceState = {
   activeKey: string
   formEstGas: Record<string, FormEstGas>
   formStatus: FormStatus
@@ -26,7 +26,7 @@ interface SliceState {
 }
 
 // prettier-ignore
-export interface VaultUnstakeSlice {
+export type VaultUnstakeSlice = {
   [sliceKey]: SliceState & {
     fetchEstGas: (activeKey: string, formType: FormType, api: Api, market: LendMarketTemplate) => Promise<void>
     setFormValues: (rChainId: ChainId, formType: FormType, api: Api | null, market: LendMarketTemplate | undefined, updatedPartialFormValues: Partial<FormValues>) => Promise<void>

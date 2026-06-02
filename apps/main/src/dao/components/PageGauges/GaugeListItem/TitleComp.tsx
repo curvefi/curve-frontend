@@ -10,7 +10,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
 import { shortenAddress } from '@ui-kit/utils'
 
-interface TitleCompProps {
+type TitleCompProps = {
   gaugeData: GaugeFormattedData
   gaugeAddress?: string
 }

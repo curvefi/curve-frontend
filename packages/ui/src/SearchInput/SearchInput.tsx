@@ -6,14 +6,14 @@ import { RCEditClear } from '@ui/images'
 import { InputDebounced } from '@ui/InputComp/InputDebounced'
 import { InputProvider } from '@ui/InputComp/InputProvider'
 
-interface Props extends InputHTMLAttributes<HTMLInputElement> {
+type Props = {
   className?: string
   id: string
   value: string
   variant?: 'small'
   handleInputChange: (val: string) => void
   handleSearchClose: () => void
-}
+} & InputHTMLAttributes<HTMLInputElement>
 
 export const SearchInput = ({
   className,

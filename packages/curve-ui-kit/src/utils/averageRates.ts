@@ -4,9 +4,7 @@ import { Duration } from '@ui-kit/themes/design/0_primitives'
 const { Weekly, Monthly } = Duration.AverageRates
 
 /** A timestamped snapshot record */
-export interface WithTimestamp {
-  timestamp: string | number | Date
-}
+export type WithTimestamp = { timestamp: string | number | Date }
 
 /**
  * Calculates average rates from snapshots over a given time period
@@ -41,7 +39,7 @@ export function calculateAverageRates<
   return result
 }
 
-interface AverageType {
+type AverageType = {
   /** Number of days included in the average window. */
   window: number
   /** Label for the period of the the averaging range. */

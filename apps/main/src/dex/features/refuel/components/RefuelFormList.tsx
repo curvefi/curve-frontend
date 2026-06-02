@@ -15,7 +15,7 @@ const DONATIONS_PER_YEAR = {
   monthly: 12,
 } as const
 
-interface RefuelFormListProps {
+type RefuelFormListProps = {
   values: RefuelFormValues
   tokenA: {
     usdRate?: number

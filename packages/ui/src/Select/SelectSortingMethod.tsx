@@ -3,7 +3,7 @@ import { styled } from 'styled-components'
 import { Select } from '@ui/Select'
 import type { SelectProps } from '@ui/Select/Select'
 
-interface ItemObj {
+type ItemObj = {
   label: string
   key: string
 }

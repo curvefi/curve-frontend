@@ -3,7 +3,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Banner } from '@ui-kit/shared/ui/Banner'
 import { formatPercent } from '@ui-kit/utils'
 
-interface Props {
+type Props = {
   solvencyPercent: number
 }
 

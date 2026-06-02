@@ -21,7 +21,7 @@ import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { shortenAddress } from '@ui-kit/utils'
 
-interface Props {
+type Props = {
   disabled: boolean
   chainId: ChainId
   curve: CurveApi | null

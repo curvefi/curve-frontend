@@ -18,7 +18,7 @@ import { loadingLRPrices } from '../lib/apiCrvusd'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
-interface SliceState {
+type SliceState = {
   activeKey: string
   detailInfo: Record<string, FormDetailInfo>
   formEstGas: Record<string, FormEstGas>
@@ -29,7 +29,7 @@ interface SliceState {
 
 const sliceKey = 'loanIncrease'
 
-export interface LoanIncreaseSlice {
+export type LoanIncreaseSlice = {
   [sliceKey]: SliceState & {
     init: (chainId: ChainId, llamma: Llamma) => Promise<void>
     fetchEstGasApproval: (activeKey: string, chainId: ChainId, llamma: Llamma, formValues: FormValues) => Promise<void>

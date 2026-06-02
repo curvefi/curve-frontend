@@ -1,7 +1,7 @@
 import type { Address } from '@primitives/address.utils'
 
 /** Represents a token that should be blacklisted from token selection. */
-interface BlacklistEntry {
+type BlacklistEntry = {
   /** The contract address of the blacklisted token */
   address: Address
   /** Optional reason explaining why the token is blacklisted */

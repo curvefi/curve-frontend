@@ -17,11 +17,11 @@ import { decimal } from '@ui-kit/utils'
 
 type WalletBalanceProps = NonNullable<LargeTokenInputProps['walletBalance']>
 
-export interface LoanFormTokenInputProps<
+export type LoanFormTokenInputProps<
   TFieldValues extends FieldValues,
   TFieldName extends FieldPathByValue<TFieldValues, Decimal | undefined>,
   TMaxFieldName extends FieldPathByValue<TFieldValues, Decimal | undefined>,
-> {
+> = {
   label: string
   token: { address: Address; symbol?: string } | undefined
   blockchainId: INetworkName | undefined

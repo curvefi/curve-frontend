@@ -113,10 +113,8 @@ const config = [
         'warn',
         {
           groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
-          pathGroups: [
-            // This will make all @-prefixed external imports come after non-@ imports
-            { pattern: '@*/**', group: 'external', position: 'after' },
-          ],
+          // This will make all @-prefixed external imports come after non-@ imports
+          pathGroups: [{ pattern: '@*/**', group: 'external', position: 'after' }],
           pathGroupsExcludedImportTypes: [], // Make sure pathGroups aren't ignored by anything
           alphabetize: { order: 'asc', caseInsensitive: true },
           'newlines-between': 'never',
@@ -156,6 +154,7 @@ const config = [
           ignoreRestSiblings: true,
         },
       ],
+      '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
       '@typescript-eslint/prefer-nullish-coalescing': ['error', { ignorePrimitives: { string: true, number: true } }],
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
 

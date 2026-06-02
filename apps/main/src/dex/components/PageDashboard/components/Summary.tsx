@@ -165,9 +165,7 @@ const TitleWrapper = styled.div`
   }
 `
 
-interface SummarySpinnerWrapperProps {
-  isMain?: boolean
-}
+type SummarySpinnerWrapperProps = { isMain?: boolean }
 // eslint-disable-next-line react-refresh/only-export-components
 export const SummarySpinnerWrapper: IStyledComponent<'web', SummarySpinnerWrapperProps & DivProps> = styled(
   SpinnerWrapper,

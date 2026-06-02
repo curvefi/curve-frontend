@@ -10,19 +10,19 @@ import { formatTimeDiff } from '@ui-kit/utils/time.utils'
 export type SliceKey = keyof State | ''
 export type StateKey = string
 
-interface SliceState {
+type SliceState = {
   isPageVisible: boolean
 }
 
 // prettier-ignore
-export interface AppSlice extends SliceState {
+export type AppSlice = {
   /** Hydrate resets states and refreshes store data from the API */
   hydrate: (config: Config, curve: LlamaApi | undefined, prevCurveApi: LlamaApi | undefined, wallet: Wallet | undefined) => Promise<void>
   setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean) => void
   setAppStateByKey: <T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean) => void
   setAppStateByKeys: <T>(sliceKey: SliceKey, sliceState: Partial<T>, showLog?: boolean) => void
   resetAppState: <T>(sliceKey: SliceKey, defaultState: T) => void
-}
+} & SliceState
 
 const DEFAULT_STATE: SliceState = {
   isPageVisible: true,

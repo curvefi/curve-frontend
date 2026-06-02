@@ -52,6 +52,7 @@ function RepayTokenSelector<ChainId extends IChainId>({
       isOpen={isOpen}
       onOpen={onOpen}
       onClose={onClose}
+      size="small"
     >
       <RepayTokenList {...props} />
     </TokenSelector>

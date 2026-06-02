@@ -3,7 +3,7 @@ import { DetailInfoResp, type FormStatus as Fs, FutureRates } from '@/lend/types
 export type StepKey = 'APPROVAL' | 'CREATE' | ''
 export type InpError = 'too-much' | 'too-much-max' | ''
 
-export interface FormValues {
+export type FormValues = {
   userCollateral: string
   userCollateralError: InpError
   userBorrowed: string
@@ -13,14 +13,14 @@ export interface FormValues {
   n: number | null
 }
 
-export interface FormStatus extends Fs {
+export type FormStatus = {
   error: string
   // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   warning: 'loan-exists' | string
   step: StepKey
-}
+} & Fs
 
-export interface FormEstGas {
+export type FormEstGas = {
   estimatedGas: number
   loading?: boolean
 }
@@ -30,7 +30,7 @@ export type DetailInfo = DetailInfoResp & {
   error: string
 }
 
-export interface FormDetailInfo {
+export type FormDetailInfo = {
   healthFull: string
   healthNotFull: string
   futureRates: FutureRates | null

@@ -13,7 +13,7 @@ import { Chip } from '@ui/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { copyToClipboard, formatNumber, amount } from '@ui-kit/utils'
 
-interface Props {
+type Props = {
   chainId: ChainId
   poolId: string
   tokensMapper: TokensMapper

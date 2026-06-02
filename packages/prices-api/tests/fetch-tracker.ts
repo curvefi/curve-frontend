@@ -1,7 +1,7 @@
 /** Captures fetch URLs per async test case so live endpoint failures show the exact request. */
 import { AsyncLocalStorage } from 'node:async_hooks'
 
-interface FetchTrackerContext {
+type FetchTrackerContext = {
   urls: string[]
 }
 

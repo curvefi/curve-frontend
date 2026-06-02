@@ -32,7 +32,7 @@ export const StyledIconButton: IStyledComponent<'web', IconButtonComponentProps>
   ${actionStyles}
 `
 
-interface StatsProps {
+type StatsProps = {
   isBorderBottom?: boolean
   padding?: boolean
 }

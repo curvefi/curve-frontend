@@ -23,7 +23,7 @@ const onCellClick = (target: EventTarget, url: string, routerNavigate: (href: st
   }
 }
 
-export interface DataRowProps<T extends TableItem> {
+export type DataRowProps<T extends TableItem> = {
   table: Table<T>
   row: Row<T>
   expandedPanel?: ExpandedPanel<T>

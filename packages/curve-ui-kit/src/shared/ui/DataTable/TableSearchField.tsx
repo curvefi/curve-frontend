@@ -2,7 +2,7 @@ import { notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { SearchField } from '@ui-kit/shared/ui/SearchField'
 
-interface Props {
+type Props = {
   value: string
   placeholder?: string
   onChange: (value: string) => void

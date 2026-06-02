@@ -2,7 +2,7 @@ import type { ExchangeRate, Route, RoutesAndOutputModal } from '@/dex/components
 
 export type StepKey = 'APPROVAL' | 'SWAP' | ''
 
-export interface ExchangeOutput {
+export type ExchangeOutput = {
   loading: boolean
   exchangeRates: ExchangeRate[]
   isExchangeRateLow: boolean
@@ -11,7 +11,7 @@ export interface ExchangeOutput {
   modal?: RoutesAndOutputModal | null
 }
 
-export interface RouterSwapOutput {
+export type RouterSwapOutput = {
   isExchangeRateLow: boolean
   isHighSlippage: boolean
   priceImpact: number
@@ -30,7 +30,7 @@ export interface RouterSwapOutput {
   isApproved: boolean
 }
 
-export interface FormValues {
+export type FormValues = {
   isFrom: boolean | null
   isWrapped: boolean
   fromAmount: string
@@ -45,7 +45,7 @@ export interface FormValues {
   toToken: string
 }
 
-export interface FormStatus {
+export type FormStatus = {
   isApproved: boolean
   formProcessing: boolean
   formTypeCompleted: 'APPROVE' | 'SWAP' | ''

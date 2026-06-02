@@ -15,7 +15,7 @@ import { refetchUserMarket } from '../queries/refetchUserMarket'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
-interface SliceState {
+type SliceState = {
   activeKey: string
   detailInfo: Record<string, FormDetailInfo>
   formEstGas: Record<string, FormEstGas>
@@ -26,7 +26,7 @@ interface SliceState {
 const sliceKey = 'loanCollateralAdd'
 
 // prettier-ignore
-export interface LoanCollateralAddSlice {
+export type LoanCollateralAddSlice = {
   [sliceKey]: SliceState & {
     fetchDetailInfo: (activeKey: string, api: Api, market: LendMarketTemplate) => Promise<void>
     fetchEstGasApproval: (activeKey: string, api: Api, market: LendMarketTemplate) => Promise<void>

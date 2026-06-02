@@ -11,7 +11,7 @@ const { FAILURE, LOADING } = ConnectState
 export const isFailure = (status: ConnectState) => status === FAILURE
 export const isLoading = (status: ConnectState) => status === LOADING
 
-interface CurveContextValue {
+type CurveContextValue = {
   connectState: ConnectState
   curveApi?: CurveApi
   llamaApi?: LlamaApi

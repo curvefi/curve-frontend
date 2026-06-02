@@ -14,7 +14,7 @@ import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { Chain } from '@ui-kit/utils'
 
-interface Props {
+type Props = {
   chainId: ChainId
   isLite: boolean
 }

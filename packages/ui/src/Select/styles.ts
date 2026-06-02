@@ -1,9 +1,7 @@
 import type { ComponentPropsWithRef } from 'react'
 import { styled, type IStyledComponent } from 'styled-components'
 
-interface StyledBtnProps {
-  $loading?: boolean
-}
+type StyledBtnProps = { $loading?: boolean }
 
 export const StyledBtn: IStyledComponent<'web', StyledBtnProps & ComponentPropsWithRef<'button'>> =
   styled.button<StyledBtnProps>`

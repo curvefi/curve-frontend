@@ -32,7 +32,7 @@ import { useCrvUsdSupplyTotal } from '../queries/crv-usd-supply-total.query'
 
 const { Spacing, Height } = SizesAndSpaces
 
-export interface CrvUsdPriceChartPoint {
+export type CrvUsdPriceChartPoint = {
   timestamp: number
   price: number
   movingAverage: number

@@ -8,7 +8,7 @@ import { decimal } from '@ui-kit/utils/decimal'
 
 type BandsBalances = Record<number, { borrowed: string; collateral: string }>
 type BandsBalancesArr = { borrowed: string; collateral: string; band: number }[]
-export interface FetchedBandsBalances {
+type FetchedBandsBalances = {
   borrowed: Decimal
   collateral: Decimal
   collateralUsd: number

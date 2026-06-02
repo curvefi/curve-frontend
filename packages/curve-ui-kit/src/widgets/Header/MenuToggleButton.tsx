@@ -9,7 +9,7 @@ const Svg = styled('svg')({
 
 const Path = styled('path')``
 
-interface MenuToggleButtonProps {
+type MenuToggleButtonProps = {
   isOpen: boolean
   toggle: () => void
 }

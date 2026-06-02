@@ -11,7 +11,7 @@ import type { PegKeeper, PegKeeperDetails, Pool } from '../types'
 
 const { Spacing, IconSize } = SizesAndSpaces
 
-interface Props {
+type Props = {
   address: PegKeeper['address']
   estCallerProfit: PegKeeperDetails['estCallerProfit']
   poolName: Pool['name']

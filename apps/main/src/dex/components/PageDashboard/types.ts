@@ -1,31 +1,31 @@
 import { SORT_ID } from '@/dex/components/PageDashboard/utils'
 import { ChainId, RewardsApy, PoolData } from '@/dex/types/main.types'
 
-interface UserBaseProfit {
+type UserBaseProfit = {
   day: string
   week: string
   month: string
   year: string
 }
 
-interface UserClaimableToken {
+type UserClaimableToken = {
   token: string
   symbol: string
   amount: string
   price: number
 }
 
-interface UserTokenProfit extends UserBaseProfit {
+type UserTokenProfit = {
   token: string
   symbol: string
   price: number
-}
+} & UserBaseProfit
 
 export type Order = 'asc' | 'desc'
 
 export type SortId = keyof typeof SORT_ID
 
-export interface WalletPoolData {
+export type WalletPoolData = {
   poolAddress: string
   poolId: string
   poolName: string
@@ -44,7 +44,7 @@ export interface WalletPoolData {
 export type DashboardDataMapper = Record<string, WalletPoolData>
 export type DashboardDatasMapper = Record<string, DashboardDataMapper>
 
-export interface FormValues {
+export type FormValues = {
   sortBy: SortId
   sortByOrder: Order
   walletAddress: string
@@ -54,7 +54,7 @@ export type TableLabel = Record<SortId, { name: string; mobile: string }>
 
 export type StepKey = 'WITHDRAW' | 'CLAIM' | ''
 
-export interface FormStatus {
+export type FormStatus = {
   loading: boolean
   formProcessing: boolean
   formType: 'CLAIMABLE_FEES' | 'VECRV' | ''
@@ -63,7 +63,7 @@ export interface FormStatus {
   error: string
 }
 
-export interface DashboardTableRowProps {
+export type DashboardTableRowProps = {
   rChainId: ChainId
   isLite: boolean
   blockchainId: string

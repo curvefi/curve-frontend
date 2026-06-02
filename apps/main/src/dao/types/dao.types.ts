@@ -11,35 +11,33 @@ export type ChainId = number
 export type NetworkEnum = INetworkName
 
 export type FormType = 'create' | 'adjust_crv' | 'adjust_date' | 'withdraw'
-export interface NetworkUrlParams {
-  network: INetworkName
-}
+export type NetworkUrlParams = { network: INetworkName }
 export type GaugeUrlParams = NetworkUrlParams & { gaugeAddress: Address }
 export type UserUrlParams = NetworkUrlParams & { userAddress: Address }
 export type ProposalUrlParams = NetworkUrlParams & { proposalId: string }
 export type VeCrvUrlParams = NetworkUrlParams & { formType: FormType }
 export type UrlParams = NetworkUrlParams & Partial<GaugeUrlParams & UserUrlParams & ProposalUrlParams & VeCrvUrlParams>
 
-export interface NetworkConfig extends BaseConfig<NetworkEnum, ChainId> {
+export type NetworkConfig = {
   api: typeof curvejsApi
   isActiveNetwork: boolean
   showInSelectNetwork: boolean
-}
+} & BaseConfig<NetworkEnum, ChainId>
 
 export type EstimatedGas = number | number[] | null
 export type CurveJsProposalType = 'PARAMETER' | 'OWNERSHIP'
 
-export interface GaugeVotesResponse {
+export type GaugeVotesResponse = {
   votes: GaugeVoteData[]
 }
-export interface GaugeVoteData {
+export type GaugeVoteData = {
   user: string
   weight: number
   block_number: number
   timestamp: string
   transaction: string
 }
-export interface GaugeVote {
+export type GaugeVote = {
   user: string
   weight: number
   block_number: number
@@ -55,17 +53,17 @@ export type GaugeVotesMapper = Record<
   }
 >
 
-export interface SnapshotVotingPower {
+export type SnapshotVotingPower = {
   value: number
   blockNumber: number
 }
-export interface ActiveProposal {
+export type ActiveProposal = {
   active: boolean
   startTimestamp: number
   endTimestamp: number
 }
 
-export interface UserGaugeVoteWeight {
+export type UserGaugeVoteWeight = {
   title?: string
   userPower: number
   userVeCrv: number
@@ -83,20 +81,20 @@ export interface UserGaugeVoteWeight {
   totalVeCrv: number
 }
 
-export interface FnStepEstGasApprovalResponse {
+export type FnStepEstGasApprovalResponse = {
   activeKey: string
   isApproved: boolean
   estimatedGas: EstimatedGas
   error: string
 }
 
-export interface FnStepApproveResponse {
+export type FnStepApproveResponse = {
   activeKey: string
   hashes: string[]
   error: string
 }
 
-export interface FnStepResponse {
+export type FnStepResponse = {
   activeKey: string
   hash: string
   error: string
@@ -105,16 +103,13 @@ export interface FnStepResponse {
 export type FetchingState = 'LOADING' | 'SUCCESS' | 'ERROR'
 export type TransactionState = '' | 'CONFIRMING' | 'LOADING' | 'SUCCESS' | 'ERROR'
 export type ProposalListFilter = 'all' | 'active' | 'passed' | 'denied' | 'executable'
-export interface ProposalListFilterItem {
-  key: ProposalListFilter
-  label: string
-}
+export type ProposalListFilterItem = { key: ProposalListFilter; label: string }
 export type SortByFilterProposals = 'timeCreated' | 'endingSoon'
 export type SortByFilterGaugesKeys =
   | 'gauge_relative_weight'
   | 'gauge_relative_weight_7d_delta'
   | 'gauge_relative_weight_60d_delta'
-export interface SortByFilterGauges {
+export type SortByFilterGauges = {
   key: SortByFilterGaugesKeys
   order: SortDirection
 }

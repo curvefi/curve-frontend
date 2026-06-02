@@ -1,10 +1,7 @@
 import { Icon } from '@ui/Icon'
 import { StyledBtn } from '@ui/Select/styles'
 
-export interface SelectIconBtnDeleteProps {
-  loading?: boolean
-  onSelectionDelete?: () => void
-}
+export type SelectIconBtnDeleteProps = { loading?: boolean; onSelectionDelete?: () => void }
 
 export function SelectIconBtnDelete({ loading, onSelectionDelete }: SelectIconBtnDeleteProps) {
   return (

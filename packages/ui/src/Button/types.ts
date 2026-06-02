@@ -2,7 +2,7 @@ export type Size = 'small' | 'medium' | 'large' | 'x-large'
 
 export type ButtonVariant = 'filled' | 'outlined' | 'icon-outlined' | 'text' | 'icon-filled' | 'select' | 'select-flat'
 
-export interface ButtonProps {
+export type ButtonProps = {
   fillWidth?: boolean
   loading?: boolean
   nowrap?: boolean

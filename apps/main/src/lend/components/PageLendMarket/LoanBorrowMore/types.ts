@@ -1,7 +1,7 @@
 import type { FormDetailInfo, InpError } from '@/lend/components/PageLendMarket/types'
 import { ExpectedCollateral, type FormStatus as Fs } from '@/lend/types/lend.types'
 
-export interface FormValues {
+export type FormValues = {
   userCollateral: string
   userCollateralError: InpError
   userBorrowed: string
@@ -12,9 +12,9 @@ export interface FormValues {
 
 export type StepKey = 'APPROVAL' | 'BORROW_MORE' | ''
 
-export interface FormStatus extends Fs {
+export type FormStatus = {
   step: StepKey
-}
+} & Fs
 
 export type FormDetailInfoLeverage = FormDetailInfo & {
   expectedCollateral: ExpectedCollateral | null

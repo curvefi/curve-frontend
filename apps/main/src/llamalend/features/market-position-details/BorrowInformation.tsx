@@ -23,7 +23,7 @@ const dollarUnitOptions = {
   },
 }
 
-interface BorrowInformationProps {
+type BorrowInformationProps = {
   params: UserMarketParams
   tokens: Partial<MarketTokens>
 }

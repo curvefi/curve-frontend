@@ -15,7 +15,7 @@ type CreateLoanMaxReceiveQuery = Omit<CreateLoanFormQuery, 'userCollateral' | 'd
 }
 type CreateLoanMaxReceiveParams = FieldsOf<CreateLoanMaxReceiveQuery>
 
-interface CreateLoanMaxReceiveResult {
+type CreateLoanMaxReceiveResult = {
   maxDebt: Decimal
   maxTotalCollateral?: Decimal
   maxLeverage?: Decimal

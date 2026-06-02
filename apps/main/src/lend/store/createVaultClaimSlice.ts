@@ -13,14 +13,14 @@ type StateKey = keyof typeof DEFAULT_STATE
 
 const sliceKey = 'vaultClaim'
 
-interface SliceState {
+type SliceState = {
   claimable: Record<string, MarketClaimable>
   formEstGas: Record<string, FormEstGas>
   formStatus: FormStatus
 }
 
 // prettier-ignore
-export interface VaultClaimSlice {
+export type VaultClaimSlice = {
   [sliceKey]: SliceState & {
     fetchClaimable: (userActiveKey: string, api: Api, market: LendMarketTemplate) => Promise<void>
     setFormValues: (userActiveKey: string, api: Api | null, market: LendMarketTemplate | undefined) => Promise<void>

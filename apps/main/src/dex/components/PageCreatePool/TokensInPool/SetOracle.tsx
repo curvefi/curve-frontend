@@ -30,7 +30,7 @@ import { formatNumber } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
-interface OracleInputProps {
+type OracleInputProps = {
   token: TokenState
   tokenId: TokenId
   title: string

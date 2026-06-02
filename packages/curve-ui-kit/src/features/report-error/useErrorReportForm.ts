@@ -3,13 +3,13 @@ import { captureError, captureString } from '@ui-kit/features/sentry'
 
 export type ContactMethod = 'email' | 'telegram' | 'discord'
 
-export interface ErrorContext {
+export type ErrorContext = {
   error: Error | string | null | undefined
   title: string
   subtitle: string
 }
 
-export interface ErrorReportFormValues {
+export type ErrorReportFormValues = {
   address: string
   contactMethod: ContactMethod
   contact: string

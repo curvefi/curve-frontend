@@ -4,13 +4,13 @@ import { ChainId } from '@/loan/types/loan.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
-interface SliceState {
+type SliceState = {
   xAxisDisplayType: 'price' | 'band'
 }
 
 const sliceKey = 'chartBands'
 
-export interface ChartBandsSlice {
+export type ChartBandsSlice = {
   [sliceKey]: SliceState & {
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void

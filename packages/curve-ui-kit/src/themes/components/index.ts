@@ -86,18 +86,27 @@ export const createComponents = (
     styleOverrides: {
       root: {
         margin: 0,
-        paddingTop: SizesAndSpaces.Spacing.xs.desktop,
-        color: design.Text.TextColors.Tertiary,
+        paddingTop: SizesAndSpaces.InputSpacing.HelperPaddingTop,
+        color: design.Inputs.Text.Helper,
         ...typography.bodyXsRegular,
+        '&.Mui-error': {
+          color: design.Inputs.Text.Error,
+        },
       },
     },
   },
   MuiFormLabel: {
     styleOverrides: {
       root: {
-        marginBottom: SizesAndSpaces.Spacing.xs.desktop,
-        color: design.Text.TextColors.Secondary,
+        marginBottom: SizesAndSpaces.InputSpacing.LabelGap,
+        color: design.Inputs.Text.Label,
         ...typography.bodyXsRegular,
+        '&.Mui-error': {
+          color: design.Inputs.Text.Error,
+        },
+        '&.Mui-disabled': {
+          color: design.Inputs.Text.Disabled,
+        },
       },
     },
   },
@@ -137,7 +146,7 @@ export const createComponents = (
     },
   },
   MuiMenuItem: defineMuiMenuItem(design),
-  MuiSelect: defineMuiSelect(design),
+  MuiSelect: defineMuiSelect(design, typography),
   MuiSlider: defineMuiSlider(design),
   MuiSkeleton: { styleOverrides: { root: { backgroundColor: alpha(design.Text.TextColors.Primary, 0.13) } } },
   MuiTab: defineMuiTab(design),

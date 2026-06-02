@@ -21,7 +21,7 @@ import { getGauges, type GaugeFormattedData, type GaugeMapper } from '../queries
 
 type StateKey = keyof typeof DEFAULT_STATE
 
-interface SliceState {
+type SliceState = {
   txCastVoteState: {
     state: TransactionState
     hash: string
@@ -41,7 +41,7 @@ interface SliceState {
   selectedGauge: GaugeFormattedData | null
 }
 
-interface FilterOptions {
+type FilterOptions = {
   showSearch?: boolean
   endsWith: (string: string, substring: string) => boolean
 }
@@ -49,7 +49,7 @@ interface FilterOptions {
 const sliceKey = 'gauges'
 
 // prettier-ignore
-export interface GaugesSlice {
+export type GaugesSlice = {
   [sliceKey]: SliceState & {
     getGaugeVotes: (gaugeAddress: string) => Promise<void>
 

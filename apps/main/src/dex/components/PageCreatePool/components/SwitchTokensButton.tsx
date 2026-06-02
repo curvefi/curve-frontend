@@ -15,7 +15,7 @@ import { Icon } from '@ui/Icon'
 import { IconButton } from '@ui/IconButton'
 import { t } from '@ui-kit/lib/i18n'
 
-interface Props {
+type Props = {
   curve: CurveApi
   from:
     | typeof TOKEN_A

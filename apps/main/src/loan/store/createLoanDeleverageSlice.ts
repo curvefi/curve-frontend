@@ -18,7 +18,7 @@ import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
-interface SliceState {
+type SliceState = {
   activeKey: string
   detailInfo: Record<string, FormDetailInfo>
   formEstGas: Record<string, FormEstGas>
@@ -29,7 +29,7 @@ interface SliceState {
 const sliceKey = 'loanDeleverage'
 
 // prettier-ignore
-export interface LoanDeleverageSlice {
+export type LoanDeleverageSlice = {
   [sliceKey]: SliceState & {
     fetchDetailInfo: (activeKey: string, curve: LlamaApi, llamma: Llamma, formValues: FormValues, maxSlippage: string, userState: UserLoanDetails['userState']) => Promise<FormDetailInfo>
     setFormValues: (llammaId: string, curve: LlamaApi | null, llamma: Llamma | null, formValues: Partial<FormValues>, maxSlippage: string, isFullReset?: boolean) => Promise<void>
