@@ -73,22 +73,54 @@ type UseOhlcPagesAdapterParams<TPage, TData> = {
   selectData: (pages: TPage[] | undefined) => TData
 }
 
+/**
+ * Candle chart pages are anchored historical windows. Background refetches can
+ * rewrite already-loaded page windows while the user is panning, which can
+ * disturb pagination state and viewport restoration.
+ *
+ * Keep these queries fresh forever and disable mount/focus/reconnect/interval
+ * refetches so they fetch only from explicit chart actions: initial load,
+ * time/market changes, manual retry, and historical scroll pagination. Also
+ * skip persistence because these page windows are cheap to reload and would
+ * otherwise bloat the persisted query cache.
+ */
+const CANDLE_CHART_QUERY_OPTIONS = {
+  staleTime: Infinity,
+  refetchInterval: false,
+  refetchOnMount: false,
+  refetchOnReconnect: false,
+  refetchOnWindowFocus: false,
+  meta: { persist: false },
+} as const
+
 const canFetchMoreOhlc = ({ hasNextPage, isFetchingNextPage, isSuccess }: OhlcPaginationQuery) =>
   isSuccess && hasNextPage && !isFetchingNextPage
 
 const CANDLE_CHART_MAX_RESULTS = 300
 const CANDLE_CHART_PAGE_INTERVALS = CANDLE_CHART_MAX_RESULTS - 1
 const getTimeOptionSeconds = (timeOption: TimeOption) => TIME_OPTION_MS[timeOption] / 1000
-const hasFullOhlcPage = (resultCount: number) => resultCount >= CANDLE_CHART_MAX_RESULTS
+// Prices API windows can be sparse. A short page can still have older history,
+// so only an empty historical page should stop infinite pagination.
+const hasHistoricalPageData = (resultCount: number) => resultCount > 0
 const getOhlcPageStart = (timeOption: TimeOption, end: number) =>
   Math.floor(end - CANDLE_CHART_PAGE_INTERVALS * getTimeOptionSeconds(timeOption))
 const getPreviousOhlcPageEnd = (timeOption: TimeOption, pageStart: number) =>
   pageStart - getTimeOptionSeconds(timeOption)
 
-// Historical scrolling can emit repeated fetch attempts before React Query's
-// observer state reaches the chart. The chart gates those attempts locally; if
-// one still reaches React Query while a page is in flight, keep that request
-// alive instead of aborting and restarting it.
+/**
+ * Protects the historical-scroll race between lightweight-charts events and
+ * React Query observer state:
+ * 1. The first left-edge scroll event starts `fetchNextPage`.
+ * 2. More scroll events can fire before React re-renders with
+ *    `isFetchingNextPage: true`.
+ * 3. Those duplicate calls can still reach React Query during the active page
+ *    request.
+ *
+ * TanStack Query defaults `cancelRefetch` to true, which would let those
+ * duplicate calls cancel/restart the active historical page request. Setting it
+ * to false makes duplicate calls during an active page fetch reuse the existing
+ * request instead.
+ */
 const FETCH_NEXT_PAGE_OPTIONS = { cancelRefetch: false } as const
 
 export const useOhlcInfiniteQuery = <TPage extends OhlcPageResult, TQueryKey extends QueryKey>({
@@ -104,7 +136,7 @@ export const useOhlcInfiniteQuery = <TPage extends OhlcPageResult, TQueryKey ext
   // Callers own the endpoint-specific fetcher and include its identity inputs in queryKey.
   // eslint-disable-next-line @tanstack/query/exhaustive-deps
   return useInfiniteQuery<TPage, Error, InfiniteData<TPage, OhlcPageParam>, TQueryKey, OhlcPageParam>({
-    meta: { persist: false },
+    ...CANDLE_CHART_QUERY_OPTIONS,
     queryKey,
     initialPageParam: createOhlcPageParam(timeOption, anchorEnd),
     enabled,
@@ -113,11 +145,8 @@ export const useOhlcInfiniteQuery = <TPage extends OhlcPageResult, TQueryKey ext
   })
 }
 
-export const fetchMoreOhlcQueries = (queries: readonly OhlcFetchMoreQuery[]) => {
-  const requests = queries.filter(canFetchMoreOhlc).map(query => query.fetchNextPage(FETCH_NEXT_PAGE_OPTIONS))
-
-  return requests.length > 0 ? Promise.all(requests) : undefined
-}
+export const fetchMoreOhlcQueries = (queries: readonly OhlcFetchMoreQuery[]) =>
+  Promise.all(queries.filter(canFetchMoreOhlc).map(query => query.fetchNextPage(FETCH_NEXT_PAGE_OPTIONS)))
 
 export const refetchOhlcQueries = (queries: readonly { refetch: () => Promise<unknown> }[]) =>
   Promise.all(queries.map(query => query.refetch()))
@@ -132,20 +161,17 @@ export const useOhlcPagesAdapter = <TPage, TData>({ query, selectData }: UseOhlc
     isFetchingNextPage,
     isLoading,
     isSuccess,
-    refetch: refetchQuery,
+    refetch,
   } = query
   const pages = queryData?.pages
   const data = useMemo(() => selectData(pages), [pages, selectData])
   const canFetchMore = canFetchMoreOhlc({ hasNextPage, isFetchingNextPage, isSuccess })
   const isFetchingMore = isFetchingNextPage
 
-  const refetch = useCallback(() => refetchQuery(), [refetchQuery])
-
-  const fetchMore = useCallback(() => {
-    if (!canFetchMore) return undefined
-
-    return fetchNextPage(FETCH_NEXT_PAGE_OPTIONS)
-  }, [canFetchMore, fetchNextPage])
+  const fetchMore = useCallback(
+    () => Promise.all(canFetchMore ? [fetchNextPage(FETCH_NEXT_PAGE_OPTIONS)] : []),
+    [canFetchMore, fetchNextPage],
+  )
 
   return {
     canFetchMore,
@@ -185,11 +211,12 @@ export const createOhlcPageResult = (
   data: readonly { time: number }[],
   resultCount: number = data.length,
 ): OhlcPageResult => {
-  const oldestPageTimestamp =
-    data.length > 0 ? Math.floor(Math.min(...data.map(({ time }) => time)) / 1000) : undefined
+  const pageTimes = data.map(({ time }) => time)
+  const oldestPageTimestamp = pageTimes.length > 0 ? Math.floor(Math.min(...pageTimes) / 1000) : undefined
+  const hasMore = hasHistoricalPageData(resultCount)
 
   return {
-    hasMore: hasFullOhlcPage(resultCount),
+    hasMore,
     oldestPageTimestamp,
   }
 }

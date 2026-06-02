@@ -91,7 +91,7 @@ type Props = {
   timeOption: string
   wrapperRef: RefObject<HTMLDivElement | null>
   colors: ChartColors
-  fetchMoreChartData: () => Promise<unknown> | undefined
+  fetchMoreChartData: () => Promise<unknown>
   oraclePriceVisible?: boolean
   liqRangeCurrentVisible?: boolean
   liqRangeNewVisible?: boolean
@@ -527,7 +527,9 @@ export const CandleChart = ({
     // Oracle data drives historical pagination only for fallback-only charts.
     // In candle charts, candle updates restore the viewport; restoring here can
     // consume the pending range before the candle page arrives.
-    if (ohlcData.length === 0) {
+    const isOracleOnlyChart = ohlcData.length === 0
+
+    if (isOracleOnlyChart) {
       restoreVisibleRangeAfterDataUpdate()
     }
   }, [ohlcData.length, oraclePriceData, restoreVisibleRangeAfterDataUpdate])

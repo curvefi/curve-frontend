@@ -23,7 +23,7 @@ export type OhlcChartProps = {
   selectedChartKey: string
   timeOption: TimeOption
   refetchPricesData: () => Promise<unknown> | void
-  fetchMoreChartData: () => Promise<unknown> | undefined
+  fetchMoreChartData: () => Promise<unknown>
   oraclePriceVisible?: boolean
   liqRangeCurrentVisible?: boolean
   liqRangeNewVisible?: boolean

@@ -1,6 +1,8 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { DEFAULT_TIME_OPTION } from '../constants'
 import type { TimeOption } from '../types'
+
+type TimeUnit = 'minute' | 'hour' | 'day'
 
 type UseChartTimeSettingsReturn = {
   /** Currently selected time option */
@@ -10,7 +12,7 @@ type UseChartTimeSettingsReturn = {
   /** Interval value for the API (e.g., 15 for 15m, 1 for 1h) */
   chartInterval: number
   /** Time unit for the API ('minute' | 'hour' | 'day') */
-  timeUnit: 'minute' | 'hour' | 'day'
+  timeUnit: TimeUnit
 }
 
 const intervals: Record<TimeOption, number> = {
@@ -23,6 +25,18 @@ const intervals: Record<TimeOption, number> = {
   '1d': 1,
   '7d': 7,
   '14d': 14,
+}
+
+const timeUnits: Record<TimeOption, TimeUnit> = {
+  '15m': 'minute',
+  '30m': 'minute',
+  '1h': 'hour',
+  '4h': 'hour',
+  '6h': 'hour',
+  '12h': 'hour',
+  '1d': 'day',
+  '7d': 'day',
+  '14d': 'day',
 }
 
 /**
@@ -38,13 +52,10 @@ export const useChartTimeSettings = (
     setTimeOptionState(option)
   }, [])
 
-  const chartInterval = useMemo(() => intervals[timeOption], [timeOption])
-
-  const timeUnit = useMemo(() => {
-    if (timeOption.endsWith('m')) return 'minute'
-    if (timeOption.endsWith('h')) return 'hour'
-    return 'day'
-  }, [timeOption])
-
-  return { timeOption, setTimeOption, chartInterval, timeUnit }
+  return {
+    timeOption,
+    setTimeOption,
+    chartInterval: intervals[timeOption],
+    timeUnit: timeUnits[timeOption],
+  }
 }

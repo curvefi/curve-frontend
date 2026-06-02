@@ -10,7 +10,7 @@ type VisibleTimeRange = { from: Time; to: Time }
 type UseHistoricalChartPaginationParams = {
   candlestickSeriesRef: RefObject<ISeriesApi<'Candlestick'> | null>
   chartRef: RefObject<IChartApi | null>
-  fetchMoreChartData: () => Promise<unknown> | undefined
+  fetchMoreChartData: () => Promise<unknown>
   ohlcData: LpPriceOhlcDataFormatted[]
   oraclePriceData?: OraclePriceData[]
   oraclePriceSeriesRef: RefObject<ISeriesApi<'Line'> | null>
@@ -50,16 +50,10 @@ export const useHistoricalChartPagination = ({
 
     historicalFetchInFlightRef.current = true
 
-    let request: Promise<unknown> | undefined
+    let request: Promise<unknown>
     try {
       request = fetchMoreChartDataRef.current()
     } catch {
-      pendingVisibleRangeRef.current = null
-      historicalFetchInFlightRef.current = false
-      return
-    }
-
-    if (!request) {
       pendingVisibleRangeRef.current = null
       historicalFetchInFlightRef.current = false
       return
