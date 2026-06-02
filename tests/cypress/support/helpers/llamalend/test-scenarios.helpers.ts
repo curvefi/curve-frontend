@@ -1,8 +1,10 @@
 import { BigNumber } from 'bignumber.js'
 import type { Address } from 'viem'
+import { LEVERAGE } from '@/llamalend/constants'
 import { oneAddress, oneDecimal, oneFloat, oneInt } from '@cy/support/generators'
 import type { Decimal } from '@primitives/decimal.utils'
 import { CRVUSD_ADDRESS, decimal, decimalMinus, decimalSum } from '@ui-kit/utils'
+import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import { createMockLlamaApi, TEST_ADDRESS, TEST_TX_HASH } from './mock-loan-test-data'
 import { createMockMintMarket } from './mock-market.helpers'
 import { seedErc20BalanceForAddresses } from './query-cache.helpers'
@@ -57,6 +59,8 @@ const oneAprPair = () => ({
   rates: generateMarketRates(),
   future_rates: generateMarketRates(),
 })
+
+const DEFAULT_LEVERAGE_SLIPPAGE = Number(SLIPPAGE[LEVERAGE].default)
 
 export const createCreateLoanScenario = ({
   chainId,
@@ -114,7 +118,7 @@ export const createCreateLoanScenario = ({
       approved: [collateral] as const,
       estimateGasApprove: [collateral] as const,
       approve: [collateral] as const,
-      submit: [collateral, borrow, presetRange, 0.1] as const,
+      submit: [collateral, borrow, presetRange, DEFAULT_LEVERAGE_SLIPPAGE] as const,
     },
     stubs,
   }
@@ -249,7 +253,7 @@ export const createSoftLiquidationScenario = ({ chainId, approved }: { chainId: 
   const collateral = oneDecimal(0.02, 0.6, 3)
   const stateBorrowed = oneDecimal(0.2, 8, 2)
   const debt = decimalSum(borrow, oneDecimal(0.5, 40, 2))
-  const slippage = 0.1
+  const slippage = DEFAULT_LEVERAGE_SLIPPAGE
   const repayApproveStub = createStub(TEST_TX_HASH)
   const selfLiquidateApproveStub = createStub(TEST_TX_HASH)
   const estimateGasRepayApproveStub = createStub(oneInt(90_000, 180_000))
