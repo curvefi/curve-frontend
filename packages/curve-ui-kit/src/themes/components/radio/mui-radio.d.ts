@@ -1,11 +1,12 @@
+/* eslint-disable @typescript-eslint/consistent-type-definitions */
 import '@mui/material/Radio'
 
 declare module '@mui/material/Radio' {
-  export type RadioPropsSizeOverrides = {
+  export interface RadioPropsSizeOverrides {
     large: true
   }
 
-  export type RadioClasses = {
+  export interface RadioClasses {
     sizeLarge: string
   }
 }

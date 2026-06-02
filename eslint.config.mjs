@@ -68,10 +68,7 @@ const config = [
     settings: {
       react: { version: 'detect' },
       'import-x/resolver': {
-        typescript: {
-          alwaysTryTypes: true,
-          project: ['./tsconfig.json'],
-        },
+        typescript: { alwaysTryTypes: true, project: ['./tsconfig.json'] },
       },
       'import-x/internal-regex': '^@(ui|ui-kit|curvefi/prices-api|external-rewards)',
     },
@@ -129,15 +126,9 @@ const config = [
               from: `apps/main/src/${importedApp}`, // from ==> the app imported
             })),
             // forbid importing from the router-api app in app source code
-            {
-              target: ['apps/main/src/**'],
-              from: 'apps/router-api',
-            },
+            { target: ['apps/main/src/**'], from: 'apps/router-api' },
             // forbid `wagmi` external dependency package imports, except from feature
-            {
-              target: ['apps/**', 'packages/**', '!packages/curve-ui-kit/src/features/forms/**'],
-              from: 'wagmi',
-            },
+            { target: ['apps/**', 'packages/**', '!packages/curve-ui-kit/src/features/forms/**'], from: 'wagmi' },
           ],
         },
       ],
@@ -146,15 +137,10 @@ const config = [
         'warn',
         {
           groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
-          pathGroups: [
-            // This will make all @-prefixed external imports come after non-@ imports
-            { pattern: '@*/**', group: 'external', position: 'after' },
-          ],
+          // This will make all @-prefixed external imports come after non-@ imports
+          pathGroups: [{ pattern: '@*/**', group: 'external', position: 'after' }],
           pathGroupsExcludedImportTypes: [], // Make sure pathGroups aren't ignored by anything
-          alphabetize: {
-            order: 'asc',
-            caseInsensitive: true,
-          },
+          alphabetize: { order: 'asc', caseInsensitive: true },
           'newlines-between': 'never',
         },
       ],
@@ -222,9 +208,7 @@ const config = [
 
       'no-console': [
         'error', // use console.log only for debugging
-        {
-          allow: ['warn', 'error', 'info', 'trace', 'assert'],
-        },
+        { allow: ['warn', 'error', 'info', 'trace', 'assert'] },
       ],
     },
   },
@@ -232,9 +216,7 @@ const config = [
   // Override (replaces legacy `overrides`)
   {
     files: ['**/*.stories.tsx', '**/*.stories.ts', '**/*.d.ts', '**/_api/*.ts'],
-    rules: {
-      'import-x/no-default-export': 'off',
-    },
+    rules: { 'import-x/no-default-export': 'off' },
   },
 
   // Disables stylistic rules that conflict with Prettier — must be last

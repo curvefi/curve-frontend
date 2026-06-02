@@ -5,7 +5,8 @@ import { connectors as defaultConnectors } from './connectors'
 
 declare module 'wagmi' {
   /** Enable Wagmi to infer types in places that wouldn't normally have access to type info via React Context alone. */
-  type Register = {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+  interface Register {
     config: ReturnType<typeof createWagmiConfig>
   }
 }

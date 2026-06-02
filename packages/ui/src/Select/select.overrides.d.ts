@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/consistent-type-definitions */
 /**
  * Override the types of the `Select` and `ListBox` components to add the `children` prop.
  * This is for backwards compatibility with the existing components that are currently passing the children prop.
@@ -18,7 +19,7 @@ declare module '@react-types/select' {
   } from '@react-types/select'
 
   type FieldsToAdd = Pick<OriginalSelectProps, 'children'>
-  export type SelectStateOptions<T> = {} & OriginalSelectStateOptions<T> & FieldsToAdd
-  export type AriaSelectOptions<T> = {} & OriginalSelectOptions<T> & FieldsToAdd
-  export type AriaListBoxOptions<T> = {} & OriginalListBoxOptions<T> & FieldsToAdd
+  export interface SelectStateOptions<T> extends OriginalSelectStateOptions<T>, FieldsToAdd {}
+  export interface AriaSelectOptions<T> extends OriginalSelectOptions<T>, FieldsToAdd {}
+  export interface AriaListBoxOptions<T> extends OriginalListBoxOptions<T>, FieldsToAdd {}
 }

@@ -1,12 +1,13 @@
+/* eslint-disable @typescript-eslint/consistent-type-definitions */
 // eslint-disable-next-line import-x/no-unresolved
 import '@mui/material/CheckBox'
 
 declare module '@mui/material/Checkbox' {
-  export type CheckboxPropsSizeOverrides = {
+  export interface CheckboxPropsSizeOverrides {
     large: true
   }
 
-  export type CheckboxClasses = {
+  export interface CheckboxClasses {
     sizeLarge: string
   }
 }

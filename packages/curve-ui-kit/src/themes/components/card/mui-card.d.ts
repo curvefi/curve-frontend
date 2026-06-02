@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/consistent-type-definitions */
 import '@mui/material/Card'
 
 declare module '@mui/material/Card' {
-  export type CardOwnProps = {
+  export interface CardOwnProps {
     size?: 'small' | 'inline'
   }
 }

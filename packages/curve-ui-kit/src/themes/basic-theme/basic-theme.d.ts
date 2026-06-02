@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/consistent-type-definitions */
 import type { DesignOptions, DesignSystem } from '../design'
 import type { ThemeKey } from './basic-theme'
 
 declare module '@mui/material/styles' {
-  type BreakpointOverrides = {
+  interface BreakpointOverrides {
     xs: false
     sm: false
     md: false
@@ -13,22 +14,22 @@ declare module '@mui/material/styles' {
     desktop: true
   }
 
-  type Theme = {
+  interface Theme {
     design: DesignSystem & { options: DesignOptions }
     key: ThemeKey
   }
   // allow configuration using `createTheme()`
-  type ThemeOptions = {
+  interface ThemeOptions {
     design?: DesignSystem & { options: DesignOptions }
     key?: ThemeKey
   }
 
-  type TypeText = {
+  interface TypeText {
     tertiary: string
     highlight: string
   }
 
-  type ZIndex = {
+  interface ZIndex {
     tableStickyColumn: number
     tableHeader: number
     tableFilters: number
