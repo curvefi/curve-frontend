@@ -5,6 +5,8 @@ type ResizeObserverOptions = {
   threshold?: number
 }
 
+const EMPTY_DIMENSIONS: readonly [] = []
+
 /**
  * A hook that observes an element's dimension changes (including borders) and returns the current dimensions.
  * Only updates when dimensions change beyond the threshold.
@@ -66,5 +68,5 @@ export function useResizeObserver(
     }
   }, [elementRef, threshold])
 
-  return dimensions ?? []
+  return dimensions ?? EMPTY_DIMENSIONS
 }
