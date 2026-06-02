@@ -110,9 +110,9 @@ export const useDismissPoolBanner = (network: string, poolId: string) =>
   useDismissBanner(['pool-alert-banner-dismissed', network, poolId].join('-'), 'Daily')
 
 export const useDismissMaintenanceModal = (dateISO: string | undefined) =>
-  useLocalStorage<string | null>(`backend-maintenance-modal-${dateISO}`, null)
+  useLocalStorage<string | null>(`maintenance-modal-${dateISO}`, null)
 
 export const useDismissMaintenanceBanner = (dateISO: string | undefined) =>
-  useDismissBanner(`backend-maintenance-banner-${dateISO}`, 'Daily')
+  useDismissBanner(`maintenance-banner-${dateISO}`, 'Daily')
 
 export const usePinataJwt = () => useLocalStorage<string | undefined>('pinataJwt', undefined)
