@@ -10,7 +10,7 @@ type Props = {
 
 export const AlertFormWarning = ({ errorKey, ...props }: Props) => {
   const errorMessage = useMemo(() => {
-    const messages: { [key: FormWarning | string]: { message: string; alertType?: AlertType } } = {
+    const messages: Record<FormWarning | string, { message: string; alertType?: AlertType }> = {
       [FormWarning.FullRepaymentOnly]: {
         message: t`Only full repayment is allowed when in soft-liquidation mode.`,
       },

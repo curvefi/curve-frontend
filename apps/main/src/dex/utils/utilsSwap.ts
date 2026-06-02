@@ -98,7 +98,7 @@ export function _parseRoutesAndOutput(
   routes: IRoute,
   priceImpact: number,
   output: string,
-  poolsMapper: { [poolId: string]: PoolData },
+  poolsMapper: Record<string, PoolData>,
   toAmount: string,
   toAddress: string,
   toStoredRate: string | undefined,

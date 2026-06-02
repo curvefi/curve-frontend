@@ -3,7 +3,7 @@
 import '@mui/material/Slider'
 
 type SliderSizes = 'small' | 'medium'
-type SliderSizeOverrides = { [key in SliderSizes]: true }
+type SliderSizeOverrides = Record<SliderSizes, true>
 
 /**
  * The background pattern applied to the rail background.

@@ -130,7 +130,7 @@ export const VaultWithdrawRedeem = ({ rChainId, marketId, isLoaded, api, market,
       const isValid = !!signerAddress && (isValidAmount || isFullWithdraw)
       const isWithdraw = _isWithdraw(rFormType)
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         WITHDRAW_REDEEM: {
           key: 'WITHDRAW_REDEEM',
           status: helpers.getStepStatus(isComplete, step === 'WITHDRAW_REDEEM', isValid),
@@ -172,6 +172,7 @@ export const VaultWithdrawRedeem = ({ rChainId, marketId, isLoaded, api, market,
   useEffect(() => {
     if (isLoaded && api && market && rFormType) {
       const updatedSteps = getSteps(activeKey, rFormType, api, market, formStatus, formValues, steps)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
