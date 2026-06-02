@@ -166,6 +166,7 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
   useEffect(() => {
     if (curve && activeKey) {
       const updatedSteps = getSteps(activeKey, curve, formEstGas, formValues, formStatus)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

@@ -179,7 +179,9 @@ export const QuickSwap = ({
       isFullReset?: boolean,
       isRefetch?: boolean,
     ) => {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTxInfoBar(null)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setConfirmedLoss(false)
 
       void setFormValues(
@@ -290,6 +292,7 @@ export const QuickSwap = ({
                   ),
                   cancelBtnProps: {
                     label: t`Cancel`,
+                    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
                     onClick: () => setConfirmedLoss(false),
                   },
                   primaryBtnProps: {
@@ -430,6 +433,7 @@ export const QuickSwap = ({
       toToken?.symbol ?? toToken?.address ?? '',
       fromToken?.symbol ?? fromToken?.address ?? '',
     )
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setSteps(prev => (lodash.isEqual(prev, updatedSteps) ? prev : updatedSteps))
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isReady, confirmedLoss, routesAndOutput, formEstGas, formStatus, formValues, searchedParams, curve])

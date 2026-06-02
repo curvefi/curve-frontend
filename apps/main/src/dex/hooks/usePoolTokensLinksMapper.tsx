@@ -20,6 +20,7 @@ export const usePoolTokensLinksMapper = (rChainId: ChainId, { pool }: PoolDataCa
 
     if (key === Pool.fantomFactoryStableNg24) {
       // prettier-ignore
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setMapper({
         '0x14f8e5851879a18e0fea77b5a17f15523262a99e': getInternalUrl('dex', 'ethereum', `${DEX_ROUTES.PAGE_POOLS}/3pool/deposit`), //s3Crv_e
         '0x2902257ba817e1436b93f9f959ed50b95560b7d5': getInternalUrl('dex', 'arbitrum', `${DEX_ROUTES.PAGE_POOLS}/2pool/deposit`), //s2CRV_ar
@@ -34,6 +35,7 @@ export const usePoolTokensLinksMapper = (rChainId: ChainId, { pool }: PoolDataCa
 
     if (key === Pool.fantomFactoryStableNg39) {
       // prettier-ignore
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setMapper({
         '0x2dadf589f616876e21c8ba63f59af764479a422d': getInternalUrl('dex', 'ethereum', `${DEX_ROUTES.PAGE_POOLS}/factory-crvusd-16/deposit`), //s2BTC_e
         '0x636cc0ab717be347ff3acf9763afbaf7d2cf47a9': getInternalUrl('dex', 'arbitrum', `${DEX_ROUTES.PAGE_POOLS}/factory-stable-ng-69/deposit`), //s2BTC_ar

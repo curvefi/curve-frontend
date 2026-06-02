@@ -143,6 +143,7 @@ export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContent
   useEffect(() => {
     if (isLoaded && api && market && (haveClaimableCrv || haveClaimableRewards)) {
       const updatedSteps = getSteps(userActiveKey, api, market, claimable, formStatus)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

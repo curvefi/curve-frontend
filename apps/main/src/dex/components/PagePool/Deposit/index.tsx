@@ -31,6 +31,7 @@ export const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps 
         formStatus: DEFAULT_FORM_STATUS,
         formType: tab,
       })
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTab(tab)
     },
     [setStateByKeys],
