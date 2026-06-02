@@ -8,7 +8,7 @@ export type FormValues = {
 
 export type StepKey = 'APPROVAL' | 'PAY' | ''
 
-export interface FormStatus extends Fs {
+export type FormStatus = {
   warning: string
   step: StepKey
-}
+} & Fs

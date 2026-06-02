@@ -7,13 +7,13 @@ import { NoTableData } from './NoTableData'
 import { Pagination } from './Pagination'
 import { TableHeader } from './TableHeader'
 
-export interface Column<T> {
+export type Column<T> = {
   key: keyof T
   label: string
   disabled?: boolean
 }
 
-interface PaginatedTableProps<T> {
+type PaginatedTableProps<T> = {
   sortBy: { key: keyof T; order: 'asc' | 'desc' }
   columns: Column<T>[]
   data: T[]

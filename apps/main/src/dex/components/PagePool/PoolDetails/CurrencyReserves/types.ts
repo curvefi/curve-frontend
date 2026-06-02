@@ -1,6 +1,6 @@
 import { ChainId, NetworkConfig, CurrencyReservesToken, TokensMapper } from '@/dex/types/main.types'
 
-export interface CurrencyReservesProps {
+export type CurrencyReservesProps = {
   cr: CurrencyReservesToken | undefined
   haveSameTokenName: boolean
   network: NetworkConfig

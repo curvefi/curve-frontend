@@ -87,11 +87,11 @@ const icon = {
   OverflowMenuVertical,
 } as const
 
-export interface IconProps extends CarbonIconProps {
+export type IconProps = {
   className?: string
   name: keyof typeof icon
   size: 16 | 20 | 24 | 32
-}
+} & CarbonIconProps
 
 export const Icon = ({ className, name, size, ...props }: IconProps) => {
   if (!(name in icon)) return null

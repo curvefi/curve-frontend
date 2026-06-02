@@ -6,14 +6,14 @@ export type RenderableLiquidationRange = readonly [number, number]
 export type ChartDomain = readonly [number, number]
 export type SplitMode = 'split-left' | 'split-right'
 
-export interface SmallLiquidationRangeChartProps {
+export type SmallLiquidationRangeChartProps = {
   prices: QueryProp<Range<Decimal> | null> | undefined
   prevPrices: QueryProp<Range<Decimal>> | undefined
   oraclePrice: QueryProp<Decimal | null>
   isFullRepay: boolean | undefined
 }
 
-export interface SmallLiquidationRangeChartOptionProps {
+export type SmallLiquidationRangeChartOptionProps = {
   liquidationRanges: {
     newRange?: LiquidationRange
     currentRange?: LiquidationRange

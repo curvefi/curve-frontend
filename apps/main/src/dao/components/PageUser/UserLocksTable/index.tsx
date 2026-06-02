@@ -11,7 +11,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { formatNumber } from '@ui-kit/utils'
 import { LOCKS_LABELS } from '../constants'
 
-interface UserLocksTableProps {
+type UserLocksTableProps = {
   userAddress: string
 }
 

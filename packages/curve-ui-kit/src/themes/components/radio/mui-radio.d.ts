@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/consistent-type-definitions */
 import '@mui/material/Radio'
 
 declare module '@mui/material/Radio' {

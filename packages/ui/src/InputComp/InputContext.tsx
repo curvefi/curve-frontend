@@ -2,18 +2,18 @@ import { createContext, type Dispatch, type ReactNode, type SetStateAction, use 
 import type { BoxProps } from '../Box/types'
 import type { InputMinHeight, InputVariant } from './types'
 
-export interface InputProviderProps extends Omit<BoxProps, 'padding'> {
+export type InputProviderProps = {
   children: ReactNode
   disabled?: boolean
   id: string
   inputVariant?: InputVariant | ''
   minHeight?: InputMinHeight
   padding?: string
-}
+} & Omit<BoxProps, 'padding'>
 
-interface InputContextProps extends Pick<InputProviderProps, 'disabled' | 'id' | 'inputVariant'> {
+type InputContextProps = {
   setIsFocusVisible: Dispatch<SetStateAction<boolean>>
-}
+} & Pick<InputProviderProps, 'disabled' | 'id' | 'inputVariant'>
 
 export const InputContext = createContext<InputContextProps>(undefined!)
 

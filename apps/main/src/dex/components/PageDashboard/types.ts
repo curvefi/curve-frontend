@@ -15,11 +15,11 @@ type UserClaimableToken = {
   price: number
 }
 
-interface UserTokenProfit extends UserBaseProfit {
+type UserTokenProfit = {
   token: string
   symbol: string
   price: number
-}
+} & UserBaseProfit
 
 export type Order = 'asc' | 'desc'
 

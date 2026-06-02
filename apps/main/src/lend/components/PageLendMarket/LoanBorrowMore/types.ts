@@ -12,9 +12,9 @@ export type FormValues = {
 
 export type StepKey = 'APPROVAL' | 'BORROW_MORE' | ''
 
-export interface FormStatus extends Fs {
+export type FormStatus = {
   step: StepKey
-}
+} & Fs
 
 export type FormDetailInfoLeverage = FormDetailInfo & {
   expectedCollateral: ExpectedCollateral | null
