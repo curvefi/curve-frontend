@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { cloneDeep } from 'lodash'
 import type { StoreApi } from 'zustand'
 import { getControllerAddress, updateUserEventsApi } from '@/llamalend/llama.utils'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
@@ -18,7 +18,6 @@ import { setMissingProvider } from '@ui-kit/utils/store.util'
 import { loadingLRPrices } from '../lib/apiCrvusd'
 
 type StateKey = keyof typeof DEFAULT_STATE
-const { cloneDeep } = lodash
 
 type SliceState = {
   activeKey: string
@@ -33,25 +32,25 @@ const sliceKey = 'loanCollateralDecrease'
 
 export type LoanCollateralDecreaseSlice = {
   [sliceKey]: SliceState & {
-    init(chainId: ChainId, llamma: Llamma): void
-    fetchEstGas(activeKey: string, chainId: ChainId, llamma: Llamma, formValues: FormValues): Promise<void>
-    fetchDetailInfo(activeKey: string, chainId: ChainId, llamma: Llamma, formValues: FormValues): Promise<void>
-    fetchMaxRemovable(chainId: ChainId, llamma: Llamma): Promise<void>
-    setFormValues(chainId: ChainId, llamma: Llamma, formValues: FormValues, maxRemovable: string): Promise<void>
+    init: (chainId: ChainId, llamma: Llamma) => void
+    fetchEstGas: (activeKey: string, chainId: ChainId, llamma: Llamma, formValues: FormValues) => Promise<void>
+    fetchDetailInfo: (activeKey: string, chainId: ChainId, llamma: Llamma, formValues: FormValues) => Promise<void>
+    fetchMaxRemovable: (chainId: ChainId, llamma: Llamma) => Promise<void>
+    setFormValues: (chainId: ChainId, llamma: Llamma, formValues: FormValues, maxRemovable: string) => Promise<void>
 
     // step
-    fetchStepDecrease(
+    fetchStepDecrease: (
       activeKey: string,
       curve: LlamaApi,
       llamma: Llamma,
       formValues: FormValues,
-    ): Promise<{ activeKey: string; error: string; hash: string } | undefined>
+    ) => Promise<{ activeKey: string; error: string; hash: string } | undefined>
 
     // steps helper
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: () => void
   }
 }
 

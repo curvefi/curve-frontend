@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { cloneDeep, merge } from 'lodash'
 import type { StoreApi } from 'zustand'
 import type { FormEstGas } from '@/lend/components/PageLendMarket/types'
 import type { FormStatus, RewardType } from '@/lend/components/PageVault/VaultClaim/types'
@@ -10,7 +10,6 @@ import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
-const { cloneDeep, merge } = lodash
 
 const sliceKey = 'vaultClaim'
 
@@ -23,17 +22,17 @@ type SliceState = {
 // prettier-ignore
 export type VaultClaimSlice = {
   [sliceKey]: SliceState & {
-    fetchClaimable(userActiveKey: string, api: Api, market: LendMarketTemplate): Promise<void>
-    setFormValues(userActiveKey: string, api: Api | null, market: LendMarketTemplate | undefined): Promise<void>
+    fetchClaimable: (userActiveKey: string, api: Api, market: LendMarketTemplate) => Promise<void>
+    setFormValues: (userActiveKey: string, api: Api | null, market: LendMarketTemplate | undefined) => Promise<void>
 
     // steps
-    fetchStepClaim(userActiveKey: string, api: Api, market: LendMarketTemplate, type: RewardType): Promise<{ userActiveKey: string; error: string; hash: string } | undefined>
+    fetchStepClaim: (userActiveKey: string, api: Api, market: LendMarketTemplate, type: RewardType) => Promise<{ userActiveKey: string; error: string; hash: string } | undefined>
 
     // steps helper
-    setStateByActiveKey<T>(key: StateKey, userActiveKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
+    setStateByActiveKey: <T>(key: StateKey, userActiveKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: () => void
   }
 }
 
