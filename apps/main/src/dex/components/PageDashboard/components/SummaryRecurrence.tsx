@@ -22,9 +22,7 @@ type TotalAll = {
   totalUsd: number
 }
 
-type Props = {
-  title?: string
-}
+type Props = { title?: string }
 
 export const TotalRecurrence = ({ title }: Props) => {
   const {

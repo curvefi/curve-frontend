@@ -1,10 +1,5 @@
 /* createLiqRangesSlice */
-export type MaxRecvLeverage = {
-  maxBorrowable: string
-  maxCollateral: string
-  leverage: string
-  routeIdx: number
-}
+export type MaxRecvLeverage = { maxBorrowable: string; maxCollateral: string; leverage: string; routeIdx: number }
 
 export type LiqRange = {
   n: number

@@ -42,10 +42,7 @@ export type LpPriceApiResponse = {
   data: LpPriceOhlcData[]
 }
 
-export type LiquidationRange = {
-  value: number
-  time: UTCTimestamp
-}
+export type LiquidationRange = { value: number; time: UTCTimestamp }
 
 export type LlammaLiquididationRange = {
   price1: LiquidationRange[]

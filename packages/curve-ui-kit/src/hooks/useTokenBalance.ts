@@ -13,9 +13,7 @@ import type { Config, GetBalanceReturnType, ReadContractsReturnType } from '@wag
 import { multicall } from '@wagmi/core'
 import { getBalanceQueryOptions, readContractsQueryOptions } from '@wagmi/core/query'
 
-type TokenQuery = {
-  tokenAddress: Address
-}
+type TokenQuery = { tokenAddress: Address }
 type TokenBalanceQuery = ChainQuery & UserQuery & TokenQuery
 
 /** Convert user collateral from GetBalanceReturnType to number */

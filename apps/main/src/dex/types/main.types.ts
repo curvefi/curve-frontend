@@ -15,9 +15,7 @@ export type NetworkConfigFromApi = {
   hasRouter: boolean | undefined
 }
 
-export type NetworkUrlParams = {
-  network: INetworkName
-}
+export type NetworkUrlParams = { network: INetworkName }
 export type PoolUrlParams = NetworkUrlParams & { poolIdOrAddress: string; formType?: RFormType }
 export type CrvLockerUrlParams = NetworkUrlParams & { formType?: RFormType }
 export type UrlParams = NetworkUrlParams & Partial<PoolUrlParams & CrvLockerUrlParams>
@@ -67,9 +65,7 @@ export type CurrencyReserves = {
   total: string
   totalUsd: string
 }
-export type CurrencyReservesMapper = {
-  [chainPoolId: string]: CurrencyReserves
-}
+export type CurrencyReservesMapper = { [chainPoolId: string]: CurrencyReserves }
 export const FormTypes = [
   'deposit',
   'withdraw',
@@ -109,9 +105,7 @@ export type RewardsApy = {
   crv: RewardCrv[]
   error: { [rewardType: string]: boolean }
 }
-export type RewardsApyMapper = {
-  [poolId: string]: RewardsApy
-}
+export type RewardsApyMapper = { [poolId: string]: RewardsApy }
 export type Token = {
   address: string
   ethAddress?: string
@@ -120,16 +114,9 @@ export type Token = {
   haveSameTokenName: boolean // use to display token address if duplicated token names
   volume?: number
 }
-export type TokensMapper = {
-  [tokenAddress: string]: Token | undefined
-}
-export type TokensNameMapper = {
-  [tokenAddress: string]: string
-}
-export type GaugeStatus = {
-  rewardsNeedNudging: boolean
-  areCrvRewardsStuckInBridge: boolean
-}
+export type TokensMapper = { [tokenAddress: string]: Token | undefined }
+export type TokensNameMapper = { [tokenAddress: string]: string }
+export type GaugeStatus = { rewardsNeedNudging: boolean; areCrvRewardsStuckInBridge: boolean }
 
 export type Gauge = {
   status: GaugeStatus | null
@@ -155,9 +142,7 @@ export type PoolData = {
   failedFetching24hOldVprice: boolean
 }
 
-export type PoolDataMapper = {
-  [poolAddress: string]: PoolData
-}
+export type PoolDataMapper = { [poolAddress: string]: PoolData }
 export type PoolDataCache = {
   gauge: Gauge
   hasWrapped: boolean
@@ -183,9 +168,7 @@ export type PoolDataCache = {
     referenceAsset: string
   }
 }
-export type PoolDataCacheMapper = {
-  [poolAddress: string]: PoolDataCache
-}
+export type PoolDataCacheMapper = { [poolAddress: string]: PoolDataCache }
 export type PoolDataCacheOrApi = PoolData | PoolDataCache
 
 export type AlertType = 'info' | 'warning' | 'error' | 'danger' | ''

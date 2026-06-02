@@ -11,9 +11,7 @@ export type ChainId = number
 export type NetworkEnum = INetworkName
 
 export type FormType = 'create' | 'adjust_crv' | 'adjust_date' | 'withdraw'
-export type NetworkUrlParams = {
-  network: INetworkName
-}
+export type NetworkUrlParams = { network: INetworkName }
 export type GaugeUrlParams = NetworkUrlParams & { gaugeAddress: Address }
 export type UserUrlParams = NetworkUrlParams & { userAddress: Address }
 export type ProposalUrlParams = NetworkUrlParams & { proposalId: string }
@@ -104,10 +102,7 @@ export type FnStepResponse = {
 export type FetchingState = 'LOADING' | 'SUCCESS' | 'ERROR'
 export type TransactionState = '' | 'CONFIRMING' | 'LOADING' | 'SUCCESS' | 'ERROR'
 export type ProposalListFilter = 'all' | 'active' | 'passed' | 'denied' | 'executable'
-export type ProposalListFilterItem = {
-  key: ProposalListFilter
-  label: string
-}
+export type ProposalListFilterItem = { key: ProposalListFilter; label: string }
 export type SortByFilterProposals = 'timeCreated' | 'endingSoon'
 export type SortByFilterGaugesKeys =
   | 'gauge_relative_weight'

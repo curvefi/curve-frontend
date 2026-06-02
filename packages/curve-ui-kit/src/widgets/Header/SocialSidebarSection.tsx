@@ -26,9 +26,7 @@ const SocialButton = ({ icon: Icon, href, label }: SocialButtonProps) => (
   </IconButton>
 )
 
-type SocialSidebarSectionProps = {
-  title: string
-}
+type SocialSidebarSectionProps = { title: string }
 
 export const SocialSidebarSection = ({ title }: SocialSidebarSectionProps) => (
   <SidebarSection title={title}>

@@ -15,9 +15,7 @@ export type ChainId = IChainId
 export type NetworkEnum = INetworkName
 export type EstimatedGas = number | number[] | null
 
-export type NetworkUrlParams = {
-  network: NetworkEnum
-}
+export type NetworkUrlParams = { network: NetworkEnum }
 export type MarketUrlParams = NetworkUrlParams & { market: string }
 export type UrlParams = NetworkUrlParams & Partial<MarketUrlParams>
 
@@ -84,9 +82,7 @@ export type PageContentProps<T = UrlParams> = {
   api: LlamaApi | null
   market: LendMarketTemplate | undefined
 }
-export type BandsBalances = {
-  [band: number]: { borrowed: string; collateral: string }
-}
+export type BandsBalances = { [band: number]: { borrowed: string; collateral: string } }
 export type BandsBalancesArr = { borrowed: string; collateral: string; band: number }[]
 export type ParsedBandsBalances = {
   borrowed: string
@@ -112,24 +108,11 @@ export type MarketStatBands = {
   } | null
   error: string
 }
-export type MarketsStatsBandsMapper = {
-  [owmId: string]: MarketStatBands
-}
-export type MarketStatCapAndAvailable = {
-  totalAssets: string
-  available: string
-  error: string
-}
-export type MarketsStatsCapAndAvailableMapper = {
-  [owmId: string]: MarketStatCapAndAvailable
-}
-export type MarketMaxLeverage = {
-  maxLeverage: string
-  error: string
-}
-export type MarketsMaxLeverageMapper = {
-  [owmId: string]: MarketMaxLeverage
-}
+export type MarketsStatsBandsMapper = { [owmId: string]: MarketStatBands }
+export type MarketStatCapAndAvailable = { totalAssets: string; available: string; error: string }
+export type MarketsStatsCapAndAvailableMapper = { [owmId: string]: MarketStatCapAndAvailable }
+export type MarketMaxLeverage = { maxLeverage: string; error: string }
+export type MarketsMaxLeverageMapper = { [owmId: string]: MarketMaxLeverage }
 export type MarketPrices = {
   prices: {
     oraclePrice: string
@@ -139,9 +122,7 @@ export type MarketPrices = {
   } | null
   error: string
 }
-export type MarketsPricesMapper = {
-  [owmId: string]: MarketPrices
-}
+export type MarketsPricesMapper = { [owmId: string]: MarketPrices }
 export type MarketRates = {
   rates: {
     borrowApr: string
@@ -151,9 +132,7 @@ export type MarketRates = {
   } | null
   error: string
 }
-export type MarketsRatesMapper = {
-  [owmId: string]: MarketRates
-}
+export type MarketsRatesMapper = { [owmId: string]: MarketRates }
 export type RewardOther = {
   apy: number
   decimals?: number
@@ -171,9 +150,7 @@ export type MarketRewards = {
   } | null
   error: string
 }
-export type MarketsRewardsMapper = {
-  [owmId: string]: MarketRewards
-}
+export type MarketsRewardsMapper = { [owmId: string]: MarketRewards }
 export type MarketClaimable = {
   claimable: {
     crv: string
@@ -188,13 +165,7 @@ export type UserLoss = {
   loss: string
   loss_pct: string
 }
-export type UserLoanState = {
-  collateral: string
-  borrowed: string
-  debt: string
-  N: string
-  error: string
-}
+export type UserLoanState = { collateral: string; borrowed: string; debt: string; N: string; error: string }
 export type UserLoanDetails = {
   details: {
     health: string
@@ -213,9 +184,7 @@ export type UserLoanDetails = {
   } | null
   error: string
 }
-export type UsersLoansDetailsMapper = {
-  [userActiveKey: string]: UserLoanDetails
-}
+export type UsersLoansDetailsMapper = { [userActiveKey: string]: UserLoanDetails }
 export type UserMarketBalances = {
   collateral: string
   borrowed: string
@@ -224,9 +193,7 @@ export type UserMarketBalances = {
   gauge: string
   error: string
 }
-export type UsersMarketsBalancesMapper = {
-  [userActiveKey: string]: UserMarketBalances
-}
+export type UsersMarketsBalancesMapper = { [userActiveKey: string]: UserMarketBalances }
 export type FutureRates = {
   borrowApr: string
   lendApr: string

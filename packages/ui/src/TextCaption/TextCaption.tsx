@@ -1,11 +1,7 @@
 import type { ComponentPropsWithRef } from 'react'
 import { styled, type IStyledComponent } from 'styled-components'
 
-type TextCaptionProps = {
-  isBold?: boolean
-  isBlock?: boolean
-  isCaps?: boolean
-}
+type TextCaptionProps = { isBold?: boolean; isBlock?: boolean; isCaps?: boolean }
 
 export const TextCaption: IStyledComponent<'web', TextCaptionProps & ComponentPropsWithRef<'span'>> =
   styled.span<TextCaptionProps>`

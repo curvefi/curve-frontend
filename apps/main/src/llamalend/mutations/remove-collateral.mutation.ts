@@ -9,9 +9,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
 
-type RemoveCollateralMutation = {
-  userCollateral: Decimal
-}
+type RemoveCollateralMutation = { userCollateral: Decimal }
 
 type RemoveCollateralOptions = {
   marketId: string | undefined

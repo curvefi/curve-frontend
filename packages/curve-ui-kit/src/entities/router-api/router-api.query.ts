@@ -15,9 +15,7 @@ import { decimal } from '@ui-kit/utils'
 import type { RouteQueries, RouteQuery, RouteResponse, RoutesParams, RoutesQuery } from './router-api.types'
 import { routerApiValidation } from './router-api.validation'
 
-type RouteByIdQuery = {
-  routeId: string
-}
+type RouteByIdQuery = { routeId: string }
 type RouteByIdParams = FieldsOf<RouteByIdQuery>
 
 const { getQueryData: getRouteQueryData, setQueryData: setRouteQueryData } = queryFactory({

@@ -297,10 +297,7 @@ async function parseGasInfo(curve: AnyCurveApi, provider: Provider, l2GasUrl?: s
   }
 }
 
-type Network = {
-  gasPricesUrl: string
-  gasL2: boolean
-}
+type Network = { gasPricesUrl: string; gasL2: boolean }
 
 export type GasInfoQueryOptions<TChainId extends number = number> = {
   chainId?: TChainId | null

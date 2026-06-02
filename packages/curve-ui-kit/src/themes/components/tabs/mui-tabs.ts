@@ -6,17 +6,8 @@ import { TypographyVariantKey } from '@ui-kit/themes/typography'
 import { DesignSystem } from '../../design'
 import { SizesAndSpaces } from '../../design/1_sizes_spaces'
 
-type TabStyle = {
-  Label?: string
-  Fill?: string
-  Outline?: string
-}
-type TabVariant = {
-  Inset?: string
-  Default: TabStyle
-  Hover: TabStyle
-  Current: TabStyle
-}
+type TabStyle = { Label?: string; Fill?: string; Outline?: string }
+type TabVariant = { Inset?: string; Default: TabStyle; Hover: TabStyle; Current: TabStyle }
 type SpacingKey = keyof typeof SizesAndSpaces.Spacing | string | number
 type TabSizeConfig = {
   className: string

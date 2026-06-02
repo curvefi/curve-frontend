@@ -12,7 +12,7 @@ export type CompleteRepayForm = {
   routeId: string | undefined
 }
 
-export type RepayCalculatedValues = {
+type RepayCalculatedValues = {
   maxCollateral: Decimal | undefined
   maxBorrowed: Decimal | undefined
   maxStateCollateral: Decimal | undefined

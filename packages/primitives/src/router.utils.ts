@@ -14,12 +14,7 @@ export type RouteStep = {
   chainId: number
 }
 
-export type TransactionData = {
-  data: Hex
-  to: Address
-  from: Address
-  value: Decimal
-}
+export type TransactionData = { data: Hex; to: Address; from: Address; value: Decimal }
 
 export type RouterRouteResponse = {
   router: RouteProvider

@@ -11,10 +11,7 @@ import { Select } from '../Select'
 
 const { Spacing } = SizesAndSpaces
 
-export type Option<T = string> = {
-  id: T
-  label: ReactNode
-}
+export type Option<T = string> = { id: T; label: ReactNode }
 
 export const SelectFilter = <T extends string>({
   value,

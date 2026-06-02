@@ -56,11 +56,7 @@ type MarketHistoricalRatesChartProps = {
   rateMode: MarketRateType
 }
 
-type RateSeriesConfig = {
-  key: RateSeriesKey
-  label: string
-  dash?: ChartLineDashPattern
-}
+type RateSeriesConfig = { key: RateSeriesKey; label: string; dash?: ChartLineDashPattern }
 type RateModeConfig = {
   chartTitle: string
   currentRateLabel: string

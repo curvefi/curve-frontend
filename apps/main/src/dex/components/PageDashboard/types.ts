@@ -41,12 +41,8 @@ export type WalletPoolData = {
   percentStaked: string
 }
 
-export type DashboardDataMapper = {
-  [poolId: string]: WalletPoolData
-}
-export type DashboardDatasMapper = {
-  [searchedAddress: string]: DashboardDataMapper
-}
+export type DashboardDataMapper = { [poolId: string]: WalletPoolData }
+export type DashboardDatasMapper = { [searchedAddress: string]: DashboardDataMapper }
 
 export type FormValues = {
   sortBy: SortId

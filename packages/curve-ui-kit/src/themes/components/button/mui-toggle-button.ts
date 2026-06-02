@@ -8,10 +8,7 @@ import { Fonts } from '../../fonts'
 
 const { Spacing, ButtonSize, FontSize, FontWeight, LineHeight, OutlineWidth } = SizesAndSpaces
 
-type ToggleStyle = {
-  Label?: string
-  Fill?: string
-}
+type ToggleStyle = { Label?: string; Fill?: string }
 
 const toggleStyle = ({ Label, Fill }: ToggleStyle) => ({ color: Label, backgroundColor: Fill })
 
