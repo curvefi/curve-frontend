@@ -20,7 +20,7 @@ export type PoolUrlParams = NetworkUrlParams & { poolIdOrAddress: string; formTy
 export type CrvLockerUrlParams = NetworkUrlParams & { formType?: RFormType }
 export type UrlParams = NetworkUrlParams & Partial<PoolUrlParams & CrvLockerUrlParams>
 
-export interface NetworkConfig extends BaseConfig<NetworkEnum> {
+export type NetworkConfig = {
   isLite: boolean
   isCrvRewardsEnabled: boolean
   useApi: boolean
@@ -48,7 +48,7 @@ export interface NetworkConfig extends BaseConfig<NetworkEnum> {
   fxswapFactory: boolean
   hasFactory: boolean
   pricesApi: boolean
-}
+} & BaseConfig<NetworkEnum>
 
 export type Networks = Record<ChainId, NetworkConfig>
 export type CurrencyReservesToken = {
@@ -118,12 +118,12 @@ export type TokensMapper = { [tokenAddress: string]: Token | undefined }
 export type TokensNameMapper = { [tokenAddress: string]: string }
 export type GaugeStatus = { rewardsNeedNudging: boolean; areCrvRewardsStuckInBridge: boolean }
 
-export interface Gauge {
+export type Gauge = {
   status: GaugeStatus | null
   isKilled: boolean | null
 }
 
-export interface PoolData {
+export type PoolData = {
   idx?: number
   chainId: ChainId
   pool: Pool
@@ -173,7 +173,7 @@ export type PoolDataCacheOrApi = PoolData | PoolDataCache
 
 export type AlertType = 'info' | 'warning' | 'error' | 'danger' | ''
 
-export interface PoolAlert extends TooltipProps {
+export type PoolAlert = {
   alertType: AlertType
   isDisableDeposit?: boolean
   isDisableSwap?: boolean
@@ -188,24 +188,24 @@ export interface PoolAlert extends TooltipProps {
   address?: string
   // action card message, related to action of user
   message?: ReactNode
-}
+} & TooltipProps
 
 export type EstimatedGas = number | number[] | null
 
-export interface FnStepEstGasApprovalResponse {
+export type FnStepEstGasApprovalResponse = {
   activeKey: string
   isApproved: boolean
   estimatedGas: EstimatedGas
   error: string
 }
 
-export interface FnStepApproveResponse {
+export type FnStepApproveResponse = {
   activeKey: string
   hashes: string[]
   error: string
 }
 
-export interface FnStepResponse {
+export type FnStepResponse = {
   activeKey: string
   hash: string
   error: string

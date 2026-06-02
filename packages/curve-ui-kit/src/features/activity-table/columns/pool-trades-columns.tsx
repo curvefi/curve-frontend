@@ -1,6 +1,9 @@
 import { createColumnHelper } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
-import { TokenAmountCell, TimestampCell, AddressCell } from '../cells'
+import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
+import { TokenInfo } from '@ui-kit/shared/ui/TokenInfo'
+import { formatNumber } from '@ui-kit/utils'
+import { TimestampCell, AddressCell } from '../cells'
 import type { PoolTradeRow } from '../types'
 
 export enum PoolTradesColumnId {
@@ -22,14 +25,15 @@ export const POOL_TRADES_COLUMNS = [
     id: PoolTradesColumnId.Bought,
     header: t`Buy`,
     cell: ({ row }) => (
-      <TokenAmountCell
-        amount={row.original.tokensBought}
-        symbol={row.original.tokenBought.symbol}
-        amountUsd={row.original.tokensBoughtUsd}
-        tokenAddress={row.original.tokenBought.address}
-        chainId={row.original.network}
-        align="right"
-      />
+      <InlineTableCell sx={{ alignItems: 'end' }}>
+        <TokenInfo
+          address={row.original.tokenBought.address}
+          blockchainId={row.original.network}
+          iconPosition="right"
+          primary={formatNumber(row.original.tokensBought, { abbreviate: false })}
+          secondary={formatNumber(row.original.tokensBoughtUsd, { unit: 'dollar', abbreviate: true })}
+        />
+      </InlineTableCell>
     ),
     meta: { type: 'numeric' },
   }),
@@ -37,14 +41,15 @@ export const POOL_TRADES_COLUMNS = [
     id: PoolTradesColumnId.Sold,
     header: t`Sell`,
     cell: ({ row }) => (
-      <TokenAmountCell
-        amount={-row.original.tokensSold}
-        symbol={row.original.tokenSold.symbol}
-        amountUsd={row.original.tokensSoldUsd ? -row.original.tokensSoldUsd : undefined}
-        align="right"
-        tokenAddress={row.original.tokenSold.address}
-        chainId={row.original.network}
-      />
+      <InlineTableCell sx={{ alignItems: 'end' }}>
+        <TokenInfo
+          address={row.original.tokenSold.address}
+          blockchainId={row.original.network}
+          iconPosition="right"
+          primary={formatNumber(-row.original.tokensSold, { abbreviate: false })}
+          secondary={formatNumber(-row.original.tokensSoldUsd, { unit: 'dollar', abbreviate: true })}
+        />
+      </InlineTableCell>
     ),
     meta: { type: 'numeric' },
   }),

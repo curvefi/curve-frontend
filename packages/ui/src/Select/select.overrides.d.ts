@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/consistent-type-definitions */
 /**
  * Override the types of the `Select` and `ListBox` components to add the `children` prop.
  * This is for backwards compatibility with the existing components that are currently passing the children prop.

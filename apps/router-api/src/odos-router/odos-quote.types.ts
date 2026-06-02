@@ -28,7 +28,7 @@
  *   userAddr: "0x47E2D28169738039755586743E2dfCF3bd643f86",
  * };
  */
-export interface PathRequestV2 {
+export type PathRequestV2 = {
   /**
    * Deprecated
    *
@@ -238,7 +238,7 @@ export type CurveOdosQuoteRequest = {
  *   tokenAddress: "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
  * };
  */
-interface TokenAmount {
+type TokenAmount = {
   /**
    * Raw token amount, typically as a stringified integer (e.g. in smallest units).
    */
@@ -264,7 +264,7 @@ interface TokenAmount {
  *   tokenAddress: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
  * };
  */
-interface TokenProportion {
+type TokenProportion = {
   /**
    * Proportion of the total output, typically between 0 and 1.
    */
@@ -285,7 +285,7 @@ interface TokenProportion {
  * @description Configuration for how the path visualization image should be rendered.
  * The exact shape is defined in the `PathVizImageConfig` OpenAPI schema.
  */
-interface PathVizImageConfig {
+type PathVizImageConfig = {
   /**
    * Arbitrary configuration bag. Extend this according to the actual
    * `PathVizImageConfig` schema.
@@ -299,7 +299,7 @@ interface PathVizImageConfig {
  * @title QuoteResponse
  * @description Quote response schema.
  */
-export interface OdosQuoteResponse {
+export type OdosQuoteResponse = {
   /**
    * Deprecated
    */

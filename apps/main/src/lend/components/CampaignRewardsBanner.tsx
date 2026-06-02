@@ -7,7 +7,7 @@ import { CampaignBannerComp } from '@ui/CampaignRewards/CampaignBannerComp'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 
-interface CampaignRewardsBannerProps {
+type CampaignRewardsBannerProps = {
   chainId: ChainId
   market: LendMarketTemplate | undefined
 }

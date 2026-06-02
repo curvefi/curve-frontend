@@ -4,10 +4,10 @@ import { styled } from 'styled-components'
 import { FocusScope } from '@react-aria/focus'
 import { useOverlay, DismissButton } from '@react-aria/overlays'
 
-interface Props extends AriaOverlayProps {
+type Props = {
   popoverRef: RefObject<HTMLDivElement | null>
   children: ReactNode
-}
+} & AriaOverlayProps
 
 export const Popover = (props: Props) => {
   const ref = useRef<HTMLDivElement>(null)

@@ -25,10 +25,13 @@ export const BalanceAmount = <T extends Amount>({
     <Typography
       className="balance"
       variant="highlightXs"
-      color={disabled ? 'textDisabled' : children == null ? 'textTertiary' : 'textPrimary'}
       data-testid={testId}
       data-value={children ?? ''}
-      sx={{ ...VERTICAL_CENTER_TEXT, ...sx }}
+      sx={{
+        ...VERTICAL_CENTER_TEXT,
+        color: t => t.design.Inputs.Text[disabled ? 'Disabled' : children == null ? 'MetaSubtle' : 'Value'],
+        ...sx,
+      }}
     >
       {loading ? '?????' : children == null ? '-' : formatNumber(children, { abbreviate: true })}
     </Typography>

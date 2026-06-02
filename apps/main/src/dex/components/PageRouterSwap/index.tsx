@@ -485,6 +485,7 @@ export const QuickSwap = ({
             isOpen={!!isOpenFromToken}
             onOpen={openModalFromToken}
             onClose={closeModalFromToken}
+            size="small"
           >
             <TokenList
               tokens={tokens}
@@ -537,6 +538,7 @@ export const QuickSwap = ({
             isOpen={!!isOpenToToken}
             onOpen={openModalToToken}
             onClose={closeModalToToken}
+            size="small"
           >
             <TokenList
               tokens={tokens}

@@ -8,6 +8,6 @@ export type FormValues = {
 
 export type StepKey = 'REMOVE' | ''
 
-export interface FormStatus extends Fs {
+export type FormStatus = {
   step: StepKey
-}
+} & Fs

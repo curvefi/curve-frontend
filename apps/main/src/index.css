@@ -16,11 +16,11 @@ html {
 
 /*
  * Locks page scroll when a MUI modal or drawer is open.
- * MUI sets aria-hidden="true" on #root (the app root) to hide background content from
- * assistive technologies when an overlay is active. This uses that signal to prevent
- * the page from scrolling behind the overlay.
+ * MUI sets aria-hidden="true" on #root (the app root) to hide background content from assistive technologies when an 
+ * overlay is active. This uses that signal to prevent the page from scrolling behind blocking overlays. 
+ * Popovers and menus are excluded because they make the page jump to the top otherwise.
  */
-html:has(#root[aria-hidden='true']) {
+html:has(#root[aria-hidden='true']):has(body > .MuiModal-root:not(.MuiPopover-root)) {
   overflow: hidden;
 }
 

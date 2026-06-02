@@ -12,9 +12,9 @@ import { useCurve } from '@ui-kit/features/connect-wallet'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
 
-interface ButtonProps extends AriaButtonProps {
+type ButtonProps = {
   className?: string
-}
+} & AriaButtonProps
 
 const Button = ({ className, ...props }: ButtonProps) => {
   const ref = useRef(null)
@@ -39,7 +39,7 @@ const ChipPoolCopyButton = styled.button`
   }
 `
 
-interface ChipPoolProps {
+type ChipPoolProps = {
   poolId: string
   poolName: string
   poolAddress: string

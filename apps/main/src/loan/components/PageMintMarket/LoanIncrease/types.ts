@@ -9,6 +9,6 @@ export type FormValues = {
 
 export type StepKey = 'APPROVAL' | 'BORROW' | ''
 
-export interface FormStatus extends Fs {
+export type FormStatus = {
   step: StepKey
-}
+} & Fs

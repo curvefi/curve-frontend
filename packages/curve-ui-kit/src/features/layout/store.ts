@@ -3,7 +3,7 @@ import { devtools } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 import type { PageWidthClassName } from './types'
 
-interface LayoutState {
+type LayoutState = {
   windowWidth: number
   navHeight: number // size of the header plus the global banners, used for sticky elements below the header
 
@@ -19,7 +19,7 @@ interface LayoutState {
   isPageVisible: boolean
 }
 
-interface LayoutActions {
+type LayoutActions = {
   setLayoutWidth: (pageWidthClassName: PageWidthClassName) => void
   setNavHeight: (value: number) => void
   setPageVisible: (visible: boolean) => void

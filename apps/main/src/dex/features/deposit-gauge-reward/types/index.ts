@@ -7,7 +7,7 @@ export enum DepositRewardStep {
   CONFIRMATION = 'CONFIRMATION',
 }
 
-export interface DepositRewardFormValues {
+export type DepositRewardFormValues = {
   rewardTokenId?: Address
   amount?: string
   userBalance?: Decimal

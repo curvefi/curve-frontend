@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 import { setTimeoutInterval } from '@ui-kit/utils/timers'
 
-interface CountdownProps {
+type CountdownProps = {
   /** startDate adds 7 days to the current date to mimic a DAO proposal voting period */
   startDate?: number | null
   /** endDate is the specific date to count down to. Takes precedence over startDate. */
