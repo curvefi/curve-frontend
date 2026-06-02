@@ -174,6 +174,7 @@ export const VaultDepositMint = ({ rChainId, marketId, isLoaded, api, market, us
   useEffect(() => {
     if (isLoaded && api && market) {
       const updatedSteps = getSteps(activeKey, rFormType, api, market, formStatus, formValues, steps)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

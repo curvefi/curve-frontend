@@ -83,6 +83,7 @@ export const LoanSelfLiquidation = ({
 
       if (isValid) {
         const notifyMessage = t`Self-liquidate ${market.borrowed_token.symbol} at ${maxSlippage}% max slippage.`
+        // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
         setTxInfoBar(
           <AlertBox alertType="info">
             <AlertSummary
@@ -97,6 +98,7 @@ export const LoanSelfLiquidation = ({
           </AlertBox>,
         )
       } else if (!isComplete) {
+        // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
         setTxInfoBar(null)
       }
 
@@ -187,6 +189,7 @@ export const LoanSelfLiquidation = ({
   useEffect(() => {
     if (isLoaded && api && market && userState) {
       const updatedSteps = getSteps(api, market, formEstGas, formStatus, liquidationAmt, maxSlippage, steps, userState)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

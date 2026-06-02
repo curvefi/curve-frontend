@@ -72,11 +72,14 @@ function useRowExpansion<T>(row: Row<T>) {
   useEffect(() => {
     if (rowExpanded) {
       if (!render) {
+        // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
         setRender(true)
       } else if (!expanded) {
+        // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
         setExpanded(true)
       }
     } else if (expanded) {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setExpanded(false)
     }
   }, [expanded, render, rowExpanded])

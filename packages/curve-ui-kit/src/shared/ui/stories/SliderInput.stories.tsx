@@ -14,6 +14,7 @@ const SliderInputComponent = ({ value: initialValue = '40', onChange, ...rest }:
   const [value, setValue] = useState<Decimal | DecimalRangeValue>(initialValue)
 
   useEffect(() => {
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setValue(initialValue)
   }, [initialValue])
 

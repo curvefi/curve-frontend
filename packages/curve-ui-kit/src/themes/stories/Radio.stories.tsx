@@ -11,6 +11,7 @@ const RadioStory = ({ checked, onChange, ...props }: RadioProps) => {
 
   // Update internal state when the checked prop changes
   useEffect(() => {
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setValue(checked ? 'option1' : 'option2')
   }, [checked])
 

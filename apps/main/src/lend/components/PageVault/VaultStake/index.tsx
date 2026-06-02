@@ -154,6 +154,7 @@ export const VaultStake = ({ rChainId, marketId, isLoaded, api, market, userActi
   useEffect(() => {
     if (isLoaded && api && market && rFormType) {
       const updatedSteps = getSteps(activeKey, rFormType, api, market, formStatus, formValues, steps)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

@@ -170,12 +170,14 @@ export const CollateralIncrease = ({
                     <DialogHealthWarning
                       {...healthMode}
                       confirmed={confirmedHealthWarning}
+                      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
                       setConfirmed={val => setConfirmHealthWarning(val)}
                     />
                   ),
                   isDismissable: false,
                   cancelBtnProps: {
                     label: t`Cancel`,
+                    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
                     onClick: () => setConfirmHealthWarning(false),
                   },
                   primaryBtnProps: {
@@ -225,6 +227,7 @@ export const CollateralIncrease = ({
         formValues,
         steps,
       )
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

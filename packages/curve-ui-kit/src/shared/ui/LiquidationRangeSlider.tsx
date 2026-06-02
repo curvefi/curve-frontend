@@ -31,6 +31,7 @@ export const LiquidationRangeSlider = ({
 
   useEffect(() => {
     if (selectedLiqRange?.n) {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSliderValue(selectedLiqRange.n)
     }
   }, [selectedLiqRange?.n])
