@@ -5,10 +5,10 @@ import { AlertBox } from '@ui/AlertBox'
 import { Checkbox } from '@ui/Checkbox'
 import { t } from '@ui-kit/lib/i18n'
 
-interface Props extends HealthMode {
+type Props = {
   confirmed: boolean
   setConfirmed: Dispatch<SetStateAction<boolean>>
-}
+} & HealthMode
 
 export function DialogHealthWarning({ confirmed, warningTitle, warning, setConfirmed }: Props) {
   const handleInpChange = (isConfirmed: boolean) => {

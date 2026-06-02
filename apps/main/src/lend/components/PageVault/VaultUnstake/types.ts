@@ -7,6 +7,6 @@ export type FormValues = {
 
 export type StepKey = 'UNSTAKE' | ''
 
-export interface FormStatus extends Fs {
+export type FormStatus = {
   step: StepKey
-}
+} & Fs

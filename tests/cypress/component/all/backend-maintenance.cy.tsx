@@ -116,5 +116,5 @@ const clearMaintenanceStorage = () =>
 
 const seedDismissedModal = ({ dateISO, dismissedAtISO }: { dateISO: string; dismissedAtISO: string }) =>
   cy.window().then(win => {
-    win.localStorage.setItem(`backend-maintenance-modal-${dateISO}`, JSON.stringify(dismissedAtISO))
+    win.localStorage.setItem(`maintenance-modal-${dateISO}`, JSON.stringify(dismissedAtISO))
   })

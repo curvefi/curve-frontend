@@ -10,7 +10,7 @@ import { SpinnerWrapper, Spinner } from '@ui/Spinner'
 import { isLoading, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
-interface Props {
+type Props = {
   disabled: boolean
   curve: CurveApi
 }

@@ -5,7 +5,7 @@ import { Icon } from '@ui/Icon'
 import { t } from '@ui-kit/lib/i18n'
 import { formatNumber, amount } from '@ui-kit/utils'
 
-interface Props {
+type Props = {
   parameters: LoanParameter | undefined
 }
 

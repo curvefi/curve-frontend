@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
+/* eslint-disable @typescript-eslint/no-empty-object-type,@typescript-eslint/consistent-type-definitions */
 import type { CSSObject } from '@mui/system'
 import type { TypographyVariantKey, DisabledTypographyVariantKey } from '../../typography'
 

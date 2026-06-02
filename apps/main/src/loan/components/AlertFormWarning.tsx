@@ -15,9 +15,9 @@ const ALERT_FORM_WARNING_KEYS = {
 
 type AlertFormWarningKey = keyof typeof ALERT_FORM_WARNING_KEYS
 
-interface Props extends Omit<AlertBoxProps, 'alertType'> {
+type Props = {
   errorKey: AlertFormWarningKey | string
-}
+} & Omit<AlertBoxProps, 'alertType'>
 
 export const AlertFormWarning = ({ errorKey, ...props }: Props) => {
   const errorMessage = useMemo(() => {

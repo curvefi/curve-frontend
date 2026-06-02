@@ -8,9 +8,9 @@ import { Spinner } from '@ui/Spinner'
 import { fetchTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { copyToClipboard, shortenAddress, formatNumber } from '@ui-kit/utils'
 
-interface ButtonProps extends AriaButtonProps {
+type ButtonProps = {
   className?: string
-}
+} & AriaButtonProps
 
 const Button = ({ className, ...props }: ButtonProps) => {
   const ref = useRef(null)
@@ -35,13 +35,13 @@ const ChipTokenCopyButton = styled.button`
   }
 `
 
-interface ChipTokenProps extends AriaButtonProps {
+type ChipTokenProps = {
   className?: string
   amount?: string
   showUsdAmount?: boolean // display amount instead of token name
   tokenName: string
   tokenAddress: string
-}
+} & AriaButtonProps
 
 export const ChipToken = ({ className, tokenName, tokenAddress, ...props }: ChipTokenProps) => {
   const chainId = useChainId()

@@ -33,9 +33,9 @@ enum AlertFormErrorKey {
   WITHDRAW_LOCKED_CRV = 'error-withdraw-locked-crv',
 }
 
-interface Props extends Omit<AlertBoxProps, 'alertType'> {
+type Props = {
   errorKey: AlertFormErrorKey | string
-}
+} & Omit<AlertBoxProps, 'alertType'>
 
 // generate message that only display if it cannot get error message from api.
 export const AlertFormError = ({ errorKey, ...props }: Props) => {
