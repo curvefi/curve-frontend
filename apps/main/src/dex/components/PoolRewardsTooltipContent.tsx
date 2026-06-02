@@ -2,7 +2,7 @@ import { PoolRewardsCrv } from '@/dex/components/PoolRewardsCrv'
 import { RewardsApy, PoolData, PoolDataCache } from '@/dex/types/main.types'
 import { TableCellRewardsOthers } from './TableCellRewardsOthers'
 
-interface PoolRewardsTooltipContentProps {
+type PoolRewardsTooltipContentProps = {
   isHighlightBase: boolean
   isHighlightCrv: boolean
   isHighlightOther: boolean

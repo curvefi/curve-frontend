@@ -26,7 +26,7 @@ export const InputProvider = ({ className, children, disabled, id, inputVariant,
   )
 }
 
-interface InputWrapperProps {
+type InputWrapperProps = {
   disabled?: boolean
   padding?: string
   inputVariant?: InputVariant | ''

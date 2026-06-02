@@ -45,7 +45,7 @@ const CHIPS_PRESETS: Record<ChipsPreset, InputChip[]> = {
   })),
 }
 
-export interface LargeTokenInputRef {
+export type LargeTokenInputRef = {
   resetBalance: () => void
 }
 

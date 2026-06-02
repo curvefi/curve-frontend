@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/consistent-type-definitions */
 // eslint-disable-next-line import-x/no-unresolved
 import '@mui/material/CheckBox'
 

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
+/* eslint-disable @typescript-eslint/no-empty-object-type,@typescript-eslint/consistent-type-definitions */
 import '@mui/material/InputBase'
 import '@mui/material/InputLabel'
 import '@mui/material/TextField'

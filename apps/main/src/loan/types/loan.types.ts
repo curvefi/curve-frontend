@@ -18,11 +18,11 @@ export type UrlParams = NetworkUrlParams & Partial<CollateralUrlParams>
 
 export type AlertType = 'info' | 'warning' | 'error' | 'danger'
 
-export interface NetworkConfig extends BaseConfig<NetworkEnum, ChainId> {
+export type NetworkConfig = {
   api: typeof curvejsApi
   isActiveNetwork: boolean
   showInSelectNetwork: boolean
-}
+} & BaseConfig<NetworkEnum, ChainId>
 
 export type Llamma = MintMarketTemplate
 

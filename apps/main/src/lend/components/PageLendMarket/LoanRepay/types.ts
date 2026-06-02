@@ -16,11 +16,11 @@ export type FormValues = {
 
 export type StepKey = 'APPROVAL' | 'REPAY' | ''
 
-export interface FormStatus extends Fs {
+export type FormStatus = {
   warning: string
   step: StepKey
   stepError: string
-}
+} & Fs
 
 export type DetailProps = Pick<PageContentProps, 'rChainId' | 'marketId' | 'api' | 'userActiveKey'> & {
   activeKey: string

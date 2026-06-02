@@ -19,17 +19,14 @@ export type NetworkUrlParams = { network: NetworkEnum }
 export type MarketUrlParams = NetworkUrlParams & { market: string }
 export type UrlParams = NetworkUrlParams & Partial<MarketUrlParams>
 
-export interface NetworkConfig<TId extends string = string, TChainId extends number = number> extends BaseConfig<
-  TId,
-  TChainId
-> {
+export type NetworkConfig<TId extends string = string, TChainId extends number = number> = {
   isActiveNetwork: boolean
   showInSelectNetwork: boolean
   hideMarketsInUI: { [owmId: string]: boolean }
   marketListFilter: string[]
   marketListFilterType: string[]
   pricesData: boolean
-}
+} & BaseConfig<TId, TChainId>
 
 export type MaxRecvLeverageResp = {
   maxDebt: string

@@ -3,10 +3,10 @@ import { useFocusRing, useSwitch, VisuallyHidden } from 'react-aria'
 import { ToggleProps, useToggleState } from 'react-stately'
 import { styled, keyframes } from 'styled-components'
 
-interface Props extends ToggleProps {
+type Props = {
   className?: string
   isDarkBg?: boolean
-}
+} & ToggleProps
 
 export function Switch(props: Props) {
   const ref = useRef<HTMLInputElement>(null)
