@@ -2,7 +2,6 @@ import type { IChartApi, Time, ISeriesApi, LineWidth, IPriceLine, CustomSeriesWh
 import { createChart, ColorType, LineStyle, CandlestickSeries, LineSeries } from 'lightweight-charts'
 import { useEffect, useRef, useCallback, useMemo, type RefObject } from 'react'
 import { Box } from '@mui/material'
-import { useResizeObserver } from '@ui-kit/hooks/useResizeObserver'
 import { CHART_LINE_WIDTHS } from '@ui-kit/shared/ui/Chart/chart.utils'
 import { PRICE_SCALE_MARGINS } from './constants'
 import { createLiquidationRangeSeries } from './custom-series/liquidationRangeSeries'
@@ -76,8 +75,6 @@ type LiquidationRangeSeriesApi = ISeriesApi<
   LiquidationRangeSeriesOptions
 >
 
-const getAdjustedChartWidth = (width: number) => (width > 0 ? Math.max(1, width - 1) : undefined)
-
 const LIQUIDATION_RANGE_LINE_STYLE: LiquidationRangeSeriesOptions['lineStyle'] = LineStyle.Dashed
 
 type Props = {
@@ -90,7 +87,6 @@ type Props = {
   oraclePriceData?: OraclePriceData[]
   liquidationRange?: LiquidationRanges
   timeOption: string
-  wrapperRef: RefObject<HTMLDivElement | null>
   colors: ChartColors
   fetchMoreChartData: () => Promise<unknown>
   oraclePriceVisible?: boolean
@@ -107,7 +103,6 @@ export const CandleChart = ({
   oraclePriceData,
   liquidationRange,
   timeOption,
-  wrapperRef,
   colors,
   fetchMoreChartData,
   oraclePriceVisible,
@@ -143,10 +138,10 @@ export const CandleChart = ({
   const oraclePriceSeriesRef = useRef<ISeriesApi<'Line'> | null>(null)
   const hasAppliedInitialOffsetRef = useRef(false)
   const ohlcDataRef = useLatestValueRef(ohlcData)
-  const wrapperDimensions = useResizeObserver(wrapperRef, { threshold: 0 })
-  const wrapperWidth = getAdjustedChartWidth(wrapperDimensions?.[0] ?? 0) ?? 0
 
+  const hasSeriesData = ohlcData.length > 0 || (oraclePriceData?.length ?? 0) > 0
   const memoizedColors = useMemo(() => colors, [colors])
+
   const getSeriesAppearance = useCallback(
     (variant: 'current' | 'new' | 'historical') => {
       if (variant === 'current') {
@@ -220,6 +215,7 @@ export const CandleChart = ({
     if (!chartContainerRef.current) return
 
     chartRef.current = createChart(chartContainerRef.current, {
+      autoSize: true,
       hoveredSeriesOnTop: false,
       timeScale: {
         borderVisible: false,
@@ -231,7 +227,6 @@ export const CandleChart = ({
         scaleMargins: PRICE_SCALE_MARGINS,
       },
     })
-    chartRef.current.timeScale()
     return () => {
       if (chartRef.current) {
         chartRef.current.remove()
@@ -259,18 +254,6 @@ export const CandleChart = ({
       },
     })
   }, [memoizedColors.backgroundColor, memoizedColors.textColor, memoizedColors.gridLine])
-
-  // Update chart dimensions when they change
-  useEffect(() => {
-    if (!chartRef.current || wrapperWidth <= 0) return
-
-    const width = Math.max(1, wrapperWidth)
-
-    chartRef.current.applyOptions({
-      width,
-      height: chartHeight,
-    })
-  }, [chartHeight, wrapperWidth])
 
   // Update timeScale visibility when timeOption changes
   useEffect(() => {
@@ -496,27 +479,33 @@ export const CandleChart = ({
     restoreVisibleRangeAfterDataUpdate()
   }, [ohlcData, restoreVisibleRangeAfterDataUpdate])
 
-  // Apply initial right-side spacing (10% of chart width) only on first data load between chart data and y-axis price scale
-  // This effect runs when wrapperWidth changes to ensure chart is rendered with proper dimensions
+  // Apply initial right-side spacing once after the chart has data and a non-zero rendered width.
   useEffect(() => {
-    const hasSeriesData = ohlcData.length > 0 || !!oraclePriceData?.length
-    if (!chartRef.current || !hasSeriesData || hasAppliedInitialOffsetRef.current || wrapperWidth <= 0) return
+    if (!chartRef.current || !hasSeriesData || hasAppliedInitialOffsetRef.current) return
 
-    // Use requestAnimationFrame to ensure the chart has finished rendering
-    requestAnimationFrame(() => {
-      if (!chartRef.current || hasAppliedInitialOffsetRef.current) return
+    const timeScale = chartRef.current.timeScale()
+    const applyInitialRightOffset = () => {
+      requestAnimationFrame(() => {
+        if (!chartRef.current || hasAppliedInitialOffsetRef.current) return
 
-      const timeScale = chartRef.current.timeScale()
-      const chartWidth = timeScale.width()
-      const barSpacing = timeScale.options().barSpacing
+        const chartWidth = timeScale.width()
+        const barSpacing = timeScale.options().barSpacing
 
-      if (chartWidth > 0 && barSpacing > 0) {
-        const paddingBars = (chartWidth * 0.1) / barSpacing // 10% spacing
-        timeScale.scrollToPosition(+paddingBars, false)
-        hasAppliedInitialOffsetRef.current = true
-      }
-    })
-  }, [ohlcData, oraclePriceData, wrapperWidth])
+        if (chartWidth > 0 && barSpacing > 0) {
+          const paddingBars = (chartWidth * 0.1) / barSpacing
+          timeScale.scrollToPosition(paddingBars, false)
+          hasAppliedInitialOffsetRef.current = true
+        }
+      })
+    }
+
+    timeScale.subscribeSizeChange(applyInitialRightOffset)
+    applyInitialRightOffset()
+
+    return () => {
+      timeScale.unsubscribeSizeChange(applyInitialRightOffset)
+    }
+  }, [hasSeriesData])
 
   // Update oracle price data when it changes
   useEffect(() => {
@@ -727,7 +716,5 @@ export const CandleChart = ({
     })
   }, [liquidationRange, liqRangeCurrentVisible, liqRangeNewVisible])
 
-  return (
-    <Box sx={{ position: 'absolute', width: '100%', fontVariantNumeric: 'tabular-nums' }} ref={chartContainerRef} />
-  )
+  return <Box sx={{ width: '100%', height: chartHeight, fontVariantNumeric: 'tabular-nums' }} ref={chartContainerRef} />
 }

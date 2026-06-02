@@ -1,5 +1,3 @@
-import { useRef } from 'react'
-import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { CandleChart } from '@ui-kit/features/candle-chart/CandleChart'
 import { useChartPalette } from '@ui-kit/features/candle-chart/hooks/useChartPalette'
@@ -52,7 +50,6 @@ export const ChartWrapper = ({
   latestOraclePrice,
   onVisiblePriceRangeChange,
 }: OhlcChartProps) => {
-  const wrapperRef = useRef<HTMLDivElement | null>(null)
   const colors = useChartPalette({ backgroundOverride: betaBackgroundColor })
 
   const errorMessage = t`Unable to fetch "${selectChartList?.find(c => c.key === selectedChartKey)?.label ?? ''}" data.`
@@ -66,35 +63,21 @@ export const ChartWrapper = ({
         errorMessage={errorMessage}
         refreshData={refetchPricesData}
       >
-        <Box
-          ref={wrapperRef}
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '100%',
-            minHeight: chartHeight,
-            position: 'relative',
-          }}
-        >
-          <CandleChart
-            hideCandleSeriesLabel={hideCandleSeriesLabel}
-            chartHeight={chartHeight}
-            ohlcData={ohlcData}
-            oraclePriceData={oraclePriceData}
-            liquidationRange={liquidationRange}
-            timeOption={timeOption}
-            wrapperRef={wrapperRef}
-            colors={colors}
-            fetchMoreChartData={fetchMoreChartData}
-            liqRangeCurrentVisible={liqRangeCurrentVisible}
-            liqRangeNewVisible={liqRangeNewVisible}
-            oraclePriceVisible={oraclePriceVisible}
-            latestOraclePrice={latestOraclePrice}
-            onVisiblePriceRangeChange={onVisiblePriceRangeChange}
-          />
-        </Box>
+        <CandleChart
+          hideCandleSeriesLabel={hideCandleSeriesLabel}
+          chartHeight={chartHeight}
+          ohlcData={ohlcData}
+          oraclePriceData={oraclePriceData}
+          liquidationRange={liquidationRange}
+          timeOption={timeOption}
+          colors={colors}
+          fetchMoreChartData={fetchMoreChartData}
+          liqRangeCurrentVisible={liqRangeCurrentVisible}
+          liqRangeNewVisible={liqRangeNewVisible}
+          oraclePriceVisible={oraclePriceVisible}
+          latestOraclePrice={latestOraclePrice}
+          onVisiblePriceRangeChange={onVisiblePriceRangeChange}
+        />
       </ChartStateWrapper>
     </Stack>
   )
