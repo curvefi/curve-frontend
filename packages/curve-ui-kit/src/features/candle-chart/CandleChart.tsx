@@ -1,7 +1,8 @@
 import type { IChartApi, Time, ISeriesApi, LineWidth, IPriceLine, CustomSeriesWhitespaceData } from 'lightweight-charts'
 import { createChart, ColorType, LineStyle, CandlestickSeries, LineSeries } from 'lightweight-charts'
-import { useEffect, useRef, useState, useCallback, useMemo, type RefObject } from 'react'
+import { useEffect, useRef, useCallback, useMemo, type RefObject } from 'react'
 import { Box } from '@mui/material'
+import { useResizeObserver } from '@ui-kit/hooks/useResizeObserver'
 import { CHART_LINE_WIDTHS } from '@ui-kit/shared/ui/Chart/chart.utils'
 import { PRICE_SCALE_MARGINS } from './constants'
 import { createLiquidationRangeSeries } from './custom-series/liquidationRangeSeries'
@@ -115,6 +116,15 @@ export const CandleChart = ({
   latestOraclePrice,
   onVisiblePriceRangeChange,
 }: Props) => {
+  /*
+   * lightweight-charts is an imperative canvas charting library: createChart()
+   * creates a chart instance, and every series/price line/subscription is a
+   * mutable handle owned by that instance. React re-runs this component whenever
+   * props or state change, so local variables would be lost between renders and
+   * React state would cause render loops for objects React does not render.
+   * Refs keep those chart handles stable while effects push new data/options
+   * into the existing chart instead of recreating it or talking to stale handles.
+   */
   const chartContainerRef = useRef<HTMLDivElement>(null)
   const chartRef = useRef<IChartApi>(null)
 
@@ -131,16 +141,12 @@ export const CandleChart = ({
   const historicalRangeSeriesRef = useRef<LiquidationRangeSeriesApi[]>([])
   const candlestickSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null)
   const oraclePriceSeriesRef = useRef<ISeriesApi<'Line'> | null>(null)
-  const resizeObserverRef = useRef<ResizeObserver | null>(null)
   const hasAppliedInitialOffsetRef = useRef(false)
   const ohlcDataRef = useLatestValueRef(ohlcData)
+  const wrapperDimensions = useResizeObserver(wrapperRef, { threshold: 0 })
+  const wrapperWidth = getAdjustedChartWidth(wrapperDimensions?.[0] ?? 0) ?? 0
 
-  const [wrapperWidth, setWrapperWidth] = useState(0)
-
-  // Memoize colors to prevent unnecessary re-renders
   const memoizedColors = useMemo(() => colors, [colors])
-
-  // Central palette helper so every series gets the right colors immediately
   const getSeriesAppearance = useCallback(
     (variant: 'current' | 'new' | 'historical') => {
       if (variant === 'current') {
@@ -199,13 +205,6 @@ export const CandleChart = ({
       memoizedColors.rangeLineTop,
     ],
   )
-
-  const setMeasuredWrapperWidth = useCallback((width: number) => {
-    const adjustedWidth = getAdjustedChartWidth(width)
-    if (!adjustedWidth) return
-
-    setWrapperWidth(previousWidth => (previousWidth === adjustedWidth ? previousWidth : adjustedWidth))
-  }, [])
 
   const { handleVisibleLogicalRangeChange, restoreVisibleRangeAfterDataUpdate } = useHistoricalChartPagination({
     candlestickSeriesRef,
@@ -727,30 +726,6 @@ export const CandleChart = ({
       }
     })
   }, [liquidationRange, liqRangeCurrentVisible, liqRangeNewVisible])
-
-  useEffect(() => {
-    const wrapper = wrapperRef.current
-    if (!wrapper) return
-
-    // wrapperRef is owned by ChartWrapper and must keep pointing at the DOM
-    // node. Store the observer separately so resize handling does not corrupt
-    // the ref or create a chart-width feedback loop while the user drags.
-    const observer = new ResizeObserver((entries: ResizeObserverEntry[]) => {
-      const { width } = entries[0].contentRect
-      setMeasuredWrapperWidth(width)
-    })
-    resizeObserverRef.current = observer
-
-    setMeasuredWrapperWidth(wrapper.clientWidth)
-    observer.observe(wrapper)
-
-    return () => {
-      observer.disconnect()
-      if (resizeObserverRef.current === observer) {
-        resizeObserverRef.current = null
-      }
-    }
-  }, [setMeasuredWrapperWidth, wrapperRef])
 
   return (
     <Box sx={{ position: 'absolute', width: '100%', fontVariantNumeric: 'tabular-nums' }} ref={chartContainerRef} />
