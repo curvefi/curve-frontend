@@ -18,11 +18,11 @@ export type ProposalUrlParams = NetworkUrlParams & { proposalId: string }
 export type VeCrvUrlParams = NetworkUrlParams & { formType: FormType }
 export type UrlParams = NetworkUrlParams & Partial<GaugeUrlParams & UserUrlParams & ProposalUrlParams & VeCrvUrlParams>
 
-export interface NetworkConfig extends BaseConfig<NetworkEnum, ChainId> {
+export type NetworkConfig = {
   api: typeof curvejsApi
   isActiveNetwork: boolean
   showInSelectNetwork: boolean
-}
+} & BaseConfig<NetworkEnum, ChainId>
 
 export type EstimatedGas = number | number[] | null
 export type CurveJsProposalType = 'PARAMETER' | 'OWNERSHIP'
@@ -45,7 +45,7 @@ export type GaugeVote = {
   transaction: string
 }
 
-export interface GaugeVotesMapper {
+export type GaugeVotesMapper = {
   [gaugeAddress: string]: {
     fetchingState: FetchingState
     votes: GaugeVote[]
@@ -80,20 +80,20 @@ export type UserGaugeVoteWeight = {
   totalVeCrv: number
 }
 
-export interface FnStepEstGasApprovalResponse {
+export type FnStepEstGasApprovalResponse = {
   activeKey: string
   isApproved: boolean
   estimatedGas: EstimatedGas
   error: string
 }
 
-export interface FnStepApproveResponse {
+export type FnStepApproveResponse = {
   activeKey: string
   hashes: string[]
   error: string
 }
 
-export interface FnStepResponse {
+export type FnStepResponse = {
   activeKey: string
   hash: string
   error: string

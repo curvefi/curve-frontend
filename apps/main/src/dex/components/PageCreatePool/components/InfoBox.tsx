@@ -3,7 +3,7 @@ import { Box } from '@ui/Box'
 import { Icon } from '@ui/Icon'
 import { t } from '@ui-kit/lib/i18n'
 
-interface Props {
+type Props = {
   link1?: {
     title: string
     link: string

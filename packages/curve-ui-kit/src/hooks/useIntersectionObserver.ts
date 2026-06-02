@@ -1,9 +1,9 @@
 import { type RefObject, useCallback, useEffect, useState } from 'react'
 
-interface Props extends IntersectionObserverInit {
+type Props = {
   /** Once the element is visible, freeze that state and stop observing */
   freezeOnceVisible?: boolean
-}
+} & IntersectionObserverInit
 
 type IntersectionEntry = IntersectionObserverEntry | { isIntersecting: boolean }
 
