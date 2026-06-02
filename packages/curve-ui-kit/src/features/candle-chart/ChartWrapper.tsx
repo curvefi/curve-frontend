@@ -55,7 +55,7 @@ export const ChartWrapper = ({
   const errorMessage = t`Unable to fetch "${selectChartList?.find(c => c.key === selectedChartKey)?.label ?? ''}" data.`
 
   return (
-    <Stack direction="column">
+    <Stack direction="column" sx={{ width: '100%', minWidth: 0 }}>
       <ChartStateWrapper
         height={chartHeight}
         isLoading={isLoading}
