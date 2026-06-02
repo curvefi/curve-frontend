@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'bignumber.js'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { notFalsy, maybes } from '@primitives/objects.utils'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'

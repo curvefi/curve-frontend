@@ -48,7 +48,7 @@ export const LoanRepay = ({
   userActiveKey,
   params,
 }: PageContentProps & { params: MarketUrlParams }) => {
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
   const push = useNavigate()
   const activeKey = useStore(state => state.loanRepay.activeKey)
   const detailInfoLeverage = useStore(state => state.loanRepay.detailInfoLeverage[activeKey])
@@ -83,6 +83,7 @@ export const LoanRepay = ({
       isFullReset?: boolean,
       shouldRefetch?: boolean,
     ) => {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setConfirmWarning(DEFAULT_CONFIRM_WARNING)
       void setFormValues(
         isLoaded ? api : null,
@@ -92,6 +93,7 @@ export const LoanRepay = ({
         shouldRefetch,
       )
 
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       if (isFullReset) setHealthMode(DEFAULT_HEALTH_MODE)
     },
     [api, isLoaded, maxSlippage, market, setFormValues],
@@ -108,7 +110,7 @@ export const LoanRepay = ({
       const notification = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
       const resp = await fetchStepRepay(payloadActiveKey, api, market, formValues, maxSlippage)
 
-      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && !resp.error) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && !resp.error) {
         const txMessage = t`Transaction completed.`
 
         setTxInfoBar(
@@ -166,6 +168,7 @@ export const LoanRepay = ({
             ? t`Repay in full.`
             : t`Repay with ${tokensMessage}.`
 
+        // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
         setTxInfoBar(
           <AlertBox alertType="info">
             <AlertSummary
@@ -181,10 +184,11 @@ export const LoanRepay = ({
           </AlertBox>,
         )
       } else if (!isComplete) {
+        // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
         setTxInfoBar(null)
       }
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: helpers.getStepStatus(isApproved, step === 'APPROVAL', isValid),
@@ -208,6 +212,7 @@ export const LoanRepay = ({
             ? {
                 modal: {
                   isDismissable: false,
+                  // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
                   initFn: () => setConfirmWarning({ isConfirming: true, confirmedWarning: false }),
                   title: t`Warning!`,
                   content: (
@@ -218,11 +223,13 @@ export const LoanRepay = ({
                         swapFrom: collateral_token.symbol,
                       }}
                       confirmed={confirmedWarning}
+                      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
                       setConfirmed={val => setConfirmWarning({ isConfirming: false, confirmedWarning: val as boolean })}
                     />
                   ),
                   cancelBtnProps: {
                     label: t`Cancel`,
+                    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
                     onClick: () => setConfirmWarning(DEFAULT_CONFIRM_WARNING),
                   },
                   primaryBtnProps: {
@@ -261,10 +268,10 @@ export const LoanRepay = ({
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
     }
   }, [])
 
@@ -303,6 +310,7 @@ export const LoanRepay = ({
         steps,
         detailInfoLeverage?.isHighPriceImpact ? detailInfoLeverage.priceImpact : '',
       )
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

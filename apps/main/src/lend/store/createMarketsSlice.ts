@@ -17,12 +17,12 @@ import { invalidateMarketDetails } from '../queries/invalidateMarketDetails'
 type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
-  statsBandsMapper: { [chainId: string]: MarketsStatsBandsMapper }
-  statsCapAndAvailableMapper: { [chainId: string]: MarketsStatsCapAndAvailableMapper }
-  maxLeverageMapper: { [chainId: string]: MarketsMaxLeverageMapper }
-  pricesMapper: { [chainId: string]: MarketsPricesMapper }
-  ratesMapper: { [chainId: string]: MarketsRatesMapper }
-  rewardsMapper: { [chainId: string]: MarketsRewardsMapper }
+  statsBandsMapper: Record<string, MarketsStatsBandsMapper>
+  statsCapAndAvailableMapper: Record<string, MarketsStatsCapAndAvailableMapper>
+  maxLeverageMapper: Record<string, MarketsMaxLeverageMapper>
+  pricesMapper: Record<string, MarketsPricesMapper>
+  ratesMapper: Record<string, MarketsRatesMapper>
+  rewardsMapper: Record<string, MarketsRewardsMapper>
   marketDetailsView: MarketDetailsView
 }
 
@@ -32,15 +32,15 @@ const sliceKey = 'markets'
 export type MarketsSlice = {
   [sliceKey]: SliceState & {
     // grouped
-    fetchDatas(key: string, api: Api, markets: LendMarketTemplate[], shouldRefetch?: boolean): Promise<void>
+    fetchDatas: (key: string, api: Api, markets: LendMarketTemplate[], shouldRefetch?: boolean) => Promise<void>
 
     // individual
-    fetchAll(api: Api, OneWayMarketTemplate: LendMarketTemplate, shouldRefetch?: boolean): Promise<void>
+    fetchAll: (api: Api, OneWayMarketTemplate: LendMarketTemplate, shouldRefetch?: boolean) => Promise<void>
 
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: () => void
   }
 }
 

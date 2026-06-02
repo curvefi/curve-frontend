@@ -4,9 +4,9 @@ import { useTextField } from 'react-aria'
 import { styled } from 'styled-components'
 import { Box } from '@ui/Box'
 
-interface Props extends AriaTextFieldProps {
+type Props = {
   row?: boolean
-}
+} & AriaTextFieldProps
 
 export const TextInput = (props: Props) => {
   const { label } = props

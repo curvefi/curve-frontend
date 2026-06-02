@@ -25,7 +25,7 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { formatNumber, amount } from '@ui-kit/utils'
 
 export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.lockedCrv.activeKey)
   const { connectState } = useCurve()
@@ -48,6 +48,7 @@ export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVe
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>, { isFullReset = false }: { isFullReset?: boolean } = {}) => {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTxInfoBar(null)
       setFormValues(curve, isLoadingCurve, rFormType, updatedFormValues, vecrvInfo, isFullReset)
     },
@@ -117,7 +118,7 @@ export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVe
         const { dismiss } = notify(notifyMessage, 'pending')
         const resp = await fetchStepCreate(activeKey, curve, formValues)
 
-        if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey) {
+        if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey) {
           const txDescription = t`Successfully locked ${resp.lockedAmt} CRV until ${resp.lockedDate}`
           setTxInfoBar(
             <TxInfoBar description={txDescription} txHash={scanTxPath(networks[curve.chainId], resp.hash)} />,
@@ -146,7 +147,7 @@ export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVe
         !formStatus.error &&
         !formEstGas.loading
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: getStepStatus(formStatus.isApproved, formStatus.step === 'APPROVAL', isValid),
@@ -182,11 +183,11 @@ export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVe
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
     updateFormValues({}, { isFullReset: true })
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [])
@@ -195,6 +196,7 @@ export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVe
   useEffect(() => {
     if (curve) {
       const updatedSteps = getSteps(activeKey, curve, formEstGas, formValues, formStatus, steps)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

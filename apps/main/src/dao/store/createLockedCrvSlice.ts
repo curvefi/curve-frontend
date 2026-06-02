@@ -1,5 +1,5 @@
 import { produce } from 'immer'
-import lodash from 'lodash'
+import { cloneDeep } from 'lodash'
 import { StoreApi } from 'zustand'
 import type { FormEstGas, FormStatus, FormType, FormValues, VecrvInfo } from '@/dao/components/PageVeCrv/types'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/dao/components/PageVeCrv/utils'
@@ -23,12 +23,11 @@ import { setMissingProvider } from '@ui-kit/utils/store.util'
 import { invalidateLockerVecrvUser } from '../entities/locker-vecrv-user'
 
 type StateKey = keyof typeof DEFAULT_STATE
-const { cloneDeep } = lodash
 
 type SliceState = {
   activeKey: string
   activeKeyVecrvInfo: string
-  formEstGas: { [activeKey: string]: FormEstGas }
+  formEstGas: Record<string, FormEstGas>
   formValues: FormValues
   formStatus: FormStatus
 
@@ -47,18 +46,18 @@ export type LockedCrvSlice = {
     setFormValues: (curve: CurveApi | null, isLoadingCurve: boolean, rFormType: FormType, formValues: Partial<FormValues>, vecrvInfo: VecrvInfo, isFullReset?: boolean) =>  void
 
     // steps
-    fetchEstGasApproval(activeKey: string, curve: CurveApi, rFormType: FormType, formValues: FormValues): Promise<FnStepEstGasApprovalResponse>
-    fetchStepApprove(activeKey: string, curve: CurveApi, rFormType: FormType, formValues: FormValues): Promise<FnStepApproveResponse | undefined>
-    fetchStepCreate(activeKey: string, curve: CurveApi, formValues: FormValues): Promise<FnStepResponse & { lockedAmt: string, lockedDate: string } | undefined>
-    fetchStepIncreaseCrv(activeKey: string, curve: CurveApi, formValues: FormValues): Promise<FnStepResponse  | undefined>
-    fetchStepIncreaseTime(activeKey: string, curve: CurveApi, formValues: FormValues): Promise<FnStepResponse  | undefined>
+    fetchEstGasApproval: (activeKey: string, curve: CurveApi, rFormType: FormType, formValues: FormValues) => Promise<FnStepEstGasApprovalResponse>
+    fetchStepApprove: (activeKey: string, curve: CurveApi, rFormType: FormType, formValues: FormValues) => Promise<FnStepApproveResponse | undefined>
+    fetchStepCreate: (activeKey: string, curve: CurveApi, formValues: FormValues) => Promise<FnStepResponse & { lockedAmt: string, lockedDate: string } | undefined>
+    fetchStepIncreaseCrv: (activeKey: string, curve: CurveApi, formValues: FormValues) => Promise<FnStepResponse  | undefined>
+    fetchStepIncreaseTime: (activeKey: string, curve: CurveApi, formValues: FormValues) => Promise<FnStepResponse  | undefined>
 
-    withdrawLockedCrv(): void
+    withdrawLockedCrv: () => void
 
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: () => void
   }
 }
 

@@ -30,7 +30,7 @@ import { decimal, formatNumber, amount } from '@ui-kit/utils'
 
 export const VaultDepositMint = ({ rChainId, marketId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const rFormType = 'deposit'
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
   const marketAlert = useMarketAlert(rChainId, getControllerAddress(market), LlamaMarketType.Lend)
 
   const activeKey = useStore(state => state.vaultDepositMint.activeKey)
@@ -87,7 +87,7 @@ export const VaultDepositMint = ({ rChainId, marketId, isLoaded, api, market, us
 
       const resp = await fetchStepDepositMint(payloadActiveKey, rFormType, api, market, formValues)
 
-      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && !resp.error) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && !resp.error) {
         const txMessage = t`Transaction completed.`
         setTxInfoBar(
           <TxInfoBar
@@ -119,7 +119,7 @@ export const VaultDepositMint = ({ rChainId, marketId, isLoaded, api, market, us
       const { symbol } = market.borrowed_token
       const isValid = !!signerAddress && +amount > 0 && !amountError && !error
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: helpers.getStepStatus(isApproved, step === 'APPROVAL', isValid),
@@ -157,10 +157,10 @@ export const VaultDepositMint = ({ rChainId, marketId, isLoaded, api, market, us
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
       resetState()
     }
   }, [resetState])
@@ -174,6 +174,7 @@ export const VaultDepositMint = ({ rChainId, marketId, isLoaded, api, market, us
   useEffect(() => {
     if (isLoaded && api && market) {
       const updatedSteps = getSteps(activeKey, rFormType, api, market, formStatus, formValues, steps)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

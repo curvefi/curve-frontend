@@ -10,20 +10,6 @@ Cypress.on(
   ) => !error?.message?.includes('Do not know how to serialize a BigInt'),
 )
 
-declare global {
-  interface Window {
-    CypressNoTestConnector?: string
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace Cypress {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/no-explicit-any
-    interface Chainable<Subject = any> {
-      visitWithoutTestConnector(route: AppRoute, options?: Partial<Cypress.VisitOptions>): Chainable<AUTWindow>
-    }
-  }
-}
-
 /**
  * For most of our e2e tests we have a wagmi test connect that auto-connects, so there's a wallet available.
  * However, in some cases we want to test functionality without a wallet connected.

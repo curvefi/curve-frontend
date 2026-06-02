@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { orderBy } from 'lodash'
 import { isAddress } from 'viem'
 import { StoreApi } from 'zustand'
 import type {
@@ -27,20 +27,19 @@ import { userPoolRewardCrvApy } from '../queries/user-pool-reward-crv-apy.query'
 import { fetchUserPools } from '../queries/user-pools.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
-const { orderBy } = lodash
 
 type SliceState = {
   activeKey: string
   loading: boolean
   error: 'error-get-dashboard-data' | ''
   noResult: boolean
-  dashboardDataPoolIds: { [activeKey: string]: string[] }
+  dashboardDataPoolIds: Record<string, string[]>
   dashboardDatasMapper: DashboardDatasMapper
-  claimableFees: { [activeKey: string]: { ['3CRV']: string; crvUSD: string } | null }
+  claimableFees: Record<string, { ['3CRV']: string; crvUSD: string } | null>
   formValues: FormValues
   formStatus: FormStatus
   searchedWalletAddresses: string[]
-  vecrvInfo: { [activeKey: string]: Awaited<ReturnType<typeof curvejsApi.lockCrv.vecrvInfo>>['resp'] | null }
+  vecrvInfo: Record<string, Awaited<ReturnType<typeof curvejsApi.lockCrv.vecrvInfo>>['resp'] | null>
 }
 
 const sliceKey = 'dashboard'
@@ -58,10 +57,10 @@ export type DashboardSlice = {
     fetchStepClaimFees: (activeKey: string, curve: CurveApi, walletAddress: string, key: claimButtonsKey) => Promise<FnStepResponse | undefined>
     fetchStepWithdrawVecrv: (activeKey: string, curve: CurveApi, walletAddress: string) => Promise<{ walletAddress: string, hash: string, error: string } | undefined>
 
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: () => void
   }
 }
 
@@ -189,7 +188,9 @@ export const createDashboardSlice = (
         return { dashboardDataMapper: {}, error: errorKey }
       }
     },
-    sortFn: (chainId, sortBy, order, poolDatas) => {
+    sortFn: (chainId, sort, order, poolDatas) => {
+      const sortBy = sort as SORT_ID
+
       if (sortBy === SORT_ID.poolName) {
         return orderBy(poolDatas, ({ poolName }) => poolName.toLowerCase(), [order])
       } else if (sortBy === SORT_ID.liquidityUsd) {
@@ -229,7 +230,7 @@ export const createDashboardSlice = (
       formValues.walletAddress = (formValues.walletAddress ?? '').toLowerCase()
 
       const activeKey = getActiveKey(rChainId, formValues)
-      const isValidAddress = isAddress(formValues.walletAddress as Address)
+      const isValidAddress = isAddress(formValues.walletAddress)
       const storedDashboardData = storedDashboardDatasMapper[formValues.walletAddress]
 
       sliceState.setStateByKeys({
@@ -254,12 +255,12 @@ export const createDashboardSlice = (
 
       const { sortBy, sortByOrder, walletAddress } = formValues
 
-      if (!isAddress(walletAddress as Address)) return
+      if (!isAddress(walletAddress)) return
 
       // update search addresses, local storage
       const cachedAddresses = getStorageValue('APP_DASHBOARD')?.addresses ?? []
       if (!cachedAddresses.includes(walletAddress)) {
-        const searchedAddresses = [walletAddress].concat(cachedAddresses).slice(0, 10)
+        const searchedAddresses = [walletAddress, ...cachedAddresses].slice(0, 10)
         sliceState.setStateByKey('searchedWalletAddresses', searchedAddresses)
         setStorageValue('APP_DASHBOARD', { addresses: searchedAddresses })
       } else if (storedSearchedAddresses.length === 0 && cachedAddresses.length > 0) {

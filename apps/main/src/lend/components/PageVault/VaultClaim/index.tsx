@@ -22,7 +22,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { amount as toAmount, formatNumber } from '@ui-kit/utils'
 
 export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) => {
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
 
   const formStatus = useStore(state => state.vaultClaim.formStatus)
   const claimable = useStore(state => state.vaultClaim.claimable[userActiveKey])
@@ -66,7 +66,7 @@ export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContent
 
       const resp = await fetchStepClaim(payloadActiveKey, api, market, type)
 
-      if (isSubscribed.current && resp?.hash && resp.userActiveKey === userActiveKey && !resp.error) {
+      if (isSubscribedRef.current && resp?.hash && resp.userActiveKey === userActiveKey && !resp.error) {
         const txMessage = t`Transaction completed.`
         setTxInfoBar(
           <TxInfoBar
@@ -100,7 +100,7 @@ export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContent
 
       const stepKey = isCrv ? 'CLAIM_CRV' : 'CLAIM_REWARDS'
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         CLAIM_CRV: {
           key: 'CLAIM_CRV',
           status: helpers.getStepStatus(isComplete, step === stepKey, isValid),
@@ -126,10 +126,10 @@ export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContent
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
       resetState()
     }
   }, [resetState])
@@ -143,6 +143,7 @@ export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContent
   useEffect(() => {
     if (isLoaded && api && market && (haveClaimableCrv || haveClaimableRewards)) {
       const updatedSteps = getSteps(userActiveKey, api, market, claimable, formStatus)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

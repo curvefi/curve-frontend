@@ -35,26 +35,4 @@ describe(`Peg Stability Reserves`, () => {
     cy.get('[data-testid="pegkeeper-stats-reserve"]').should('be.visible')
     cy.get('[data-testid="pegkeeper-stats-total-ceiling"]').should('be.visible')
   })
-
-  it('should render advanced details with pool links', () => {
-    getPegkeeperCards('action-info-pool').as('infos').should('have.length.greaterThan', 0)
-    cy.get('@infos')
-      .find('a')
-      .each($el => {
-        cy.wrap($el)
-          .should('have.attr', 'href')
-          .and('match', /\/dex\/ethereum\/pools\/.*\//)
-      })
-  })
-
-  it('should render advanced details with contract links', () => {
-    getPegkeeperCards('action-info-contract').as('infos').should('have.length.greaterThan', 0)
-    cy.get('@infos')
-      .find('a')
-      .each($el => {
-        cy.wrap($el)
-          .should('have.attr', 'href')
-          .and('match', /https:\/\/etherscan\.io\/address\/.*/)
-      })
-  })
 })

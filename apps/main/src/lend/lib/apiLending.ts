@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'bignumber.js'
 import { zeroAddress } from 'viem'
 import { USE_API } from '@/lend/shared/config'
 import type { LiqRange } from '@/lend/store/types'
@@ -62,7 +62,7 @@ export const helpers = {
 const market = {
   fetchStatsBands: async (markets: LendMarketTemplate[]) => {
     log('fetchStatsBands', markets.length)
-    const results: { [id: string]: MarketStatBands } = {}
+    const results: Record<string, MarketStatBands> = {}
 
     await PromisePool.for(markets)
       .handleError((errorObj, { id }) => {
@@ -106,7 +106,7 @@ const market = {
   },
   fetchStatsCapAndAvailable: async (markets: LendMarketTemplate[]) => {
     log('fetchStatsCapAndAvailable', markets.length)
-    const results: { [id: string]: MarketStatCapAndAvailable } = {}
+    const results: Record<string, MarketStatCapAndAvailable> = {}
     const useMultiCall = markets.length > 1
 
     await PromisePool.for(markets)
@@ -124,7 +124,7 @@ const market = {
   },
   fetchMarketsPrices: async (markets: LendMarketTemplate[]) => {
     log('fetchMarketsPrices', markets.length)
-    const results: { [id: string]: MarketPrices } = {}
+    const results: Record<string, MarketPrices> = {}
 
     await PromisePool.for(markets)
       .handleError((errorObj, market) => {
@@ -156,7 +156,7 @@ const market = {
   fetchMarketsRates: async (markets: LendMarketTemplate[]) => {
     log('fetchMarketsRates', markets.length)
     const useMultiCall = markets.length > 1
-    const results: { [id: string]: MarketRates } = {}
+    const results: Record<string, MarketRates> = {}
 
     await PromisePool.for(markets)
       .handleError((errorObj, market) => {
@@ -174,7 +174,7 @@ const market = {
   fetchMarketsVaultsRewards: async (markets: LendMarketTemplate[]) => {
     const useMultiCall = markets.length > 1
     log('fetchMarketsVaultsRewards', markets.length)
-    const results: { [id: string]: MarketRewards } = {}
+    const results: Record<string, MarketRewards> = {}
 
     await PromisePool.for(markets).process(async market => {
       const resp: MarketRewards = {
@@ -218,7 +218,7 @@ const market = {
   },
   fetchMarketsMaxLeverage: async (markets: LendMarketTemplate[]) => {
     log('fetchMarketsMaxLeverage', markets.length)
-    const results: { [id: string]: MarketMaxLeverage } = {}
+    const results: Record<string, MarketMaxLeverage> = {}
 
     await PromisePool.for(markets)
       .handleError((errorObj, market) => {
@@ -238,7 +238,7 @@ const market = {
 const user = {
   fetchLoansDetails: async (api: Api, markets: LendMarketTemplate[]) => {
     log('fetchUsersLoansDetails', api.chainId, markets.length)
-    const results: { [userActiveKey: string]: UserLoanDetails } = {}
+    const results: Record<string, UserLoanDetails> = {}
     const { signerAddress } = api
 
     await PromisePool.for(markets)
@@ -315,7 +315,7 @@ const user = {
   },
   fetchMarketBalances: async (api: Api, markets: LendMarketTemplate[]) => {
     log('fetchUsersMarketBalances', api.chainId, markets.length)
-    const results: { [userActiveKey: string]: UserMarketBalances } = {}
+    const results: Record<string, UserMarketBalances> = {}
 
     await PromisePool.for(markets)
       .handleError((errorObj, market) => {
@@ -505,7 +505,7 @@ const loanCreate = {
     const { minBands, maxBands } = market
     const bands = Array.from({ length: +maxBands - +minBands + 1 }, (_, i) => i + minBands)
     const liqRangesList: LiqRange[] = []
-    const liqRangesListMapper: { [n: string]: LiqRange & { sliderIdx: number } } = {}
+    const liqRangesListMapper: Record<string, LiqRange & { sliderIdx: number }> = {}
     let sliderIdx = 0
 
     if (isLeverage) {

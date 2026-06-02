@@ -27,7 +27,7 @@ import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
 export const LoanCollateralAdd = ({ rChainId, marketId, api, isLoaded, market, userActiveKey }: PageContentProps) => {
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.loanCollateralAdd.activeKey)
   const detailInfo = useStore(state => state.loanCollateralAdd.detailInfo[activeKey])
@@ -61,7 +61,7 @@ export const LoanCollateralAdd = ({ rChainId, marketId, api, isLoaded, market, u
       const notification = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
       const resp = await fetchStepIncrease(payloadActiveKey, api, market, formValues)
 
-      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && !resp.error) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && !resp.error) {
         const txMessage = t`Transaction completed.`
         const txHash = scanTxPath(networks[chainId], resp.hash)
         setTxInfoBar(<TxInfoBar description={txMessage} txHash={txHash} onClose={() => updateFormValues({}, true)} />)
@@ -90,6 +90,7 @@ export const LoanCollateralAdd = ({ rChainId, marketId, api, isLoaded, market, u
 
       if (+collateral > 0) {
         const notifyMessage = t`deposit ${formValues.collateral} ${market.collateral_token.symbol}.`
+        // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
         setTxInfoBar(
           <AlertBox alertType="info">
             <AlertSummary
@@ -103,10 +104,11 @@ export const LoanCollateralAdd = ({ rChainId, marketId, api, isLoaded, market, u
           </AlertBox>,
         )
       } else if (!isComplete) {
+        // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
         setTxInfoBar(null)
       }
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: helpers.getStepStatus(isApproved, step === 'APPROVAL', isValid),
@@ -144,10 +146,10 @@ export const LoanCollateralAdd = ({ rChainId, marketId, api, isLoaded, market, u
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
     }
   }, [])
 
@@ -163,6 +165,7 @@ export const LoanCollateralAdd = ({ rChainId, marketId, api, isLoaded, market, u
   useEffect(() => {
     if (isLoaded && api && market) {
       const updatedSteps = getSteps(activeKey, api, market, formEstGas, formStatus, formValues, steps)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

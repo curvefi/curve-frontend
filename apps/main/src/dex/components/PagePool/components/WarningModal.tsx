@@ -10,33 +10,33 @@ type SharedProps = {
   setConfirmed: Dispatch<SetStateAction<boolean>>
 }
 
-interface SlippageType extends SharedProps {
+type SlippageType = {
   slippage: boolean
   value: number
   transferType: 'Withdrawal' | 'Deposit'
-}
+} & SharedProps
 
-interface LowExchangeRateType extends SharedProps {
+type LowExchangeRateType = {
   lowExchangeRate: boolean
   exchangeRate: string
   toAmount: string
   toToken: string
-}
+} & SharedProps
 
-interface PriceImpactType extends SharedProps {
+type PriceImpactType = {
   priceImpact: boolean
   value: string
   toAmount: string
   toToken: string
-}
+} & SharedProps
 
-interface PriceImpactLowExchangeRateType extends SharedProps {
+type PriceImpactLowExchangeRateType = {
   priceImpactLowExchangeRate: boolean
   value: string
   exchangeRate: string
   toAmount: string
   toToken: string
-}
+} & SharedProps
 
 export type HighSlippagePriceImpactProps =
   | SlippageType

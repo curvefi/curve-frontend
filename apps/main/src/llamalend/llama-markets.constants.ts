@@ -31,10 +31,7 @@ export const DEFAULT_ALERT: MarketAlert = {
  * Market alerts keep markets visible while surfacing warnings or disabling new borrow/deposit actions.
  * Addresses must be checksummed. Tests have been added to enforce this.
  */
-export const MARKETS_ALERTS: Record<
-  LlamaMarketType,
-  { [chainId: number]: { [controllerAddress: Address]: MarketAlert } }
-> = {
+export const MARKETS_ALERTS: Record<LlamaMarketType, Record<number, Record<Address, MarketAlert>>> = {
   /** LEND MARKET ALERTS */
   Lend: {
     [Chain.Ethereum]: {

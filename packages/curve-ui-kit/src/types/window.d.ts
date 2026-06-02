@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/consistent-type-definitions */
 import type { EIP1193Provider } from 'viem'
 
 declare global {

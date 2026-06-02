@@ -37,7 +37,7 @@ export const LoanLiquidate = ({
 }: Pick<ManageLoanProps, 'curve' | 'market' | 'params' | 'rChainId'>) => {
   const llammaId = llamma?.id ?? ''
   const { chainId, haveSigner } = curveProps(curve)
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
 
   const formEstGas = useStore(state => state.loanLiquidate.formEstGas ?? DEFAULT_FORM_EST_GAS)
   const formStatus = useStore(state => state.loanLiquidate.formStatus)
@@ -99,7 +99,7 @@ export const LoanLiquidate = ({
         haveEnoughCrvusdForLiquidation(userWalletBalances?.stablecoin, liquidationAmt)
       const chainId = curve.chainId as ChainId
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: getStepStatus(isApproved, step === 'APPROVAL', isValid),
@@ -125,7 +125,7 @@ export const LoanLiquidate = ({
 
             const resp = await fetchStepLiquidate(curve, llamma, liquidationAmt, maxSlippage)
 
-            if (isSubscribed.current && resp?.hash && !resp.loanExists) {
+            if (isSubscribedRef.current && resp?.hash && !resp.loanExists) {
               const TxDescription = (
                 <>
                   <Trans>
@@ -164,10 +164,10 @@ export const LoanLiquidate = ({
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
       resetState()
     }
   }, [resetState])
@@ -193,6 +193,7 @@ export const LoanLiquidate = ({
         userWalletBalances,
         steps,
       )
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

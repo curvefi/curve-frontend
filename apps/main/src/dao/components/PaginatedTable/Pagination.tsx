@@ -4,7 +4,7 @@ import { Button } from '@ui/Button'
 import { Icon } from '@ui/Icon'
 import { t } from '@ui-kit/lib/i18n'
 
-interface PaginationProps {
+type PaginationProps = {
   currentPage: number
   totalPages: number
   onPageChange: (page: number) => void

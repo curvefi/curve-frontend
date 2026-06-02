@@ -42,7 +42,7 @@ export const LoanDecrease = ({
   rChainId,
 }: Pick<ManageLoanProps, 'curve' | 'market' | 'params' | 'rChainId'>) => {
   const llammaId = llamma?.id ?? ''
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
   const push = useNavigate()
 
   const activeKey = useStore(state => state.loanDecrease.activeKey)
@@ -129,7 +129,7 @@ export const LoanDecrease = ({
       const notification = notify(notifyMessage, 'pending')
       const resp = await fetchStepDecrease(payloadActiveKey, curve, llamma, formValues)
 
-      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey) {
         const txInfoBarMessage = resp.loanExists
           ? t`Transaction complete`
           : t`Transaction complete. This loan is payoff and will no longer be manageable.`
@@ -168,7 +168,7 @@ export const LoanDecrease = ({
       const isValidFormValue = isFullRepay || (+debt > 0 && !debtError)
       const isValid = !!curve.signerAddress && !formEstGas.loading && isValidFormValue && !error
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: getStepStatus(isApproved, step === 'APPROVAL', isValid),
@@ -206,10 +206,10 @@ export const LoanDecrease = ({
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
       resetState()
     }
   }, [resetState])
@@ -218,6 +218,7 @@ export const LoanDecrease = ({
   useEffect(() => {
     if (curve && llamma) {
       const updatedSteps = getSteps(activeKey, curve, llamma, formEstGas, formStatus, formValues, steps)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

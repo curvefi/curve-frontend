@@ -39,7 +39,7 @@ const meta: Meta<typeof Typography> = {
 
 type Story = StoryObj<typeof Typography>
 
-interface TypographyDisplayProps {
+type TypographyDisplayProps = {
   variant: TypographyVariantKey
   children?: ReactNode
   [key: string]: unknown

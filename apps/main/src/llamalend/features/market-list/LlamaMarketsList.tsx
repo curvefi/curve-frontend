@@ -53,6 +53,7 @@ const useOnReload = ({ address: userAddress, isFetching }: { address?: Address; 
 
   useEffect(() => {
     // reset the isReloading state when the data is fetched
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     if (isReloading && !isFetching) setIsReloading(false)
   }, [isFetching, isReloading])
 
@@ -92,13 +93,10 @@ export const LlamaMarketsList = () => {
 
   return (
     <ListPageWrapper footer={<LendTableFooter />}>
-      {address ? (
-        data?.userHasPositions &&
-        (isNewLayout ? (
-          <UserPositionsTables onReload={onReload} tableQuery={tableQuery} />
-        ) : (
-          <LegacyUserPositionsTable onReload={onReload} tableQuery={tableQuery} />
-        ))
+      {isNewLayout ? (
+        <UserPositionsTables onReload={onReload} tableQuery={tableQuery} />
+      ) : address ? (
+        data?.userHasPositions && <LegacyUserPositionsTable onReload={onReload} tableQuery={tableQuery} />
       ) : (
         <Box sx={{ paddingBlock: Spacing.md, backgroundColor: t => t.design.Layer[1].Fill }}>
           <EmptyStateCard

@@ -9,6 +9,7 @@ import TableFooter from '@mui/material/TableFooter'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import { useLayoutStore } from '@ui-kit/features/layout'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { TablePagination } from '@ui-kit/shared/ui/DataTable/TablePagination'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
@@ -54,13 +55,13 @@ function useResetPageOnResultChange<T extends TableItem>(table: TanstackTable<T>
   const isManualPagination = table.options.manualPagination
   const resultCount = table.getFilteredRowModel().rows.length
   const onPaginationChangeEvent = useEffectEvent(table.setPagination)
-  const lastResultCount = useRef<number>(resultCount)
+  const lastResultCountRef = useRef<number>(resultCount)
   useEffect(() => {
     // Skip for manual pagination - data is expected to change on page change
     if (isManualPagination) return
     // Reset to first page, but only if result amount wasn't 0 (links must keep working while data might still be loading)
-    if (lastResultCount.current && resultCount) onPaginationChangeEvent(prev => ({ ...prev, pageIndex: 0 }))
-    lastResultCount.current = resultCount
+    if (lastResultCountRef.current && resultCount) onPaginationChangeEvent(prev => ({ ...prev, pageIndex: 0 }))
+    lastResultCountRef.current = resultCount
   }, [resultCount, isManualPagination])
 }
 
@@ -129,6 +130,8 @@ export const LegacyDataTable = <T extends TableItem>({
         sx={{
           backgroundColor: t => t.design.Layer[1].Fill,
           borderCollapse: 'separate' /* Don't collapse to avoid funky stuff with the sticky header */,
+          // Prevent a long content of a column to push the other column outside the viewport
+          ...(useIsMobile() && { tableLayout: 'fixed' }),
         }}
         data-testid={!loading && 'data-table'}
       >

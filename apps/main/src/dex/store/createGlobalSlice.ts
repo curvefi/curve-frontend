@@ -1,5 +1,5 @@
 import { produce } from 'immer'
-import lodash from 'lodash'
+import { isEqual } from 'lodash'
 import type { Config } from 'wagmi'
 import type { StoreApi } from 'zustand'
 import { curvejsApi } from '@/dex/lib/curvejs'
@@ -14,30 +14,29 @@ import { refetchPoolVolumes } from '../queries/pool-volume.query'
 
 export type SliceKey = keyof State | ''
 export type StateKey = string
-const { isEqual } = lodash
 
 type GlobalState = {
-  hasDepositAndStake: { [chainId: string]: boolean | null }
-  hasRouter: { [chainId: string]: boolean | null }
+  hasDepositAndStake: Record<string, boolean | null>
+  hasRouter: Record<string, boolean | null>
 }
 
-export interface GlobalSlice extends GlobalState {
-  getNetworkConfigFromApi(chainId: ChainId | ''): NetworkConfigFromApi
-  setNetworkConfigFromApi(curve: CurveApi): void
+export type GlobalSlice = {
+  getNetworkConfigFromApi: (chainId: ChainId | '') => NetworkConfigFromApi
+  setNetworkConfigFromApi: (curve: CurveApi) => void
 
   /** Hydrate resets states and refreshes store data from the API */
-  hydrate(
+  hydrate: (
     config: Config,
     curveApi: CurveApi | undefined,
     prevCurveApi: CurveApi | undefined,
     wallet: Wallet | undefined,
-  ): Promise<void>
+  ) => Promise<void>
 
-  setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean): void
-  setAppStateByKey<T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean): void
-  setAppStateByKeys<T>(sliceKey: SliceKey, sliceState: Partial<T>, showLog?: boolean): void
-  resetAppState<T>(sliceKey: SliceKey, defaultState: T, showLog?: boolean): void
-}
+  setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean) => void
+  setAppStateByKey: <T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean) => void
+  setAppStateByKeys: <T>(sliceKey: SliceKey, sliceState: Partial<T>, showLog?: boolean) => void
+  resetAppState: <T>(sliceKey: SliceKey, defaultState: T, showLog?: boolean) => void
+} & GlobalState
 
 const DEFAULT_STATE = {
   hasDepositAndStake: {},
@@ -165,10 +164,7 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
   resetAppState: <T>(sliceKey: SliceKey, defaultState: T) => {
     set(
       produce(state => {
-        state[sliceKey] = {
-          ...state[sliceKey],
-          ...defaultState,
-        }
+        state[sliceKey] = { ...state[sliceKey], ...defaultState }
       }),
     )
   },

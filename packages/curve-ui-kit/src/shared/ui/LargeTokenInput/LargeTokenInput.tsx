@@ -45,7 +45,7 @@ const CHIPS_PRESETS: Record<ChipsPreset, InputChip[]> = {
   })),
 }
 
-export interface LargeTokenInputRef {
+export type LargeTokenInputRef = {
   resetBalance: () => void
 }
 
@@ -241,6 +241,7 @@ export const LargeTokenInput = ({
   )
 
   const updatePercentageOnNewMaxBalance = useEffectEvent((newMaxBalance?: Decimal) => {
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setPercentage(newMaxBalance && balance ? calculateNewPercentage(balance, newMaxBalance) : undefined)
   })
 
@@ -267,11 +268,26 @@ export const LargeTokenInput = ({
       data-testid={testId}
       sx={{
         backgroundColor: t => t.design.Inputs.Large.Default.Fill,
-        outline: t =>
-          `1px solid ${isError ? t.design.Layer.Feedback.Error : t.design.Inputs.Base.Default.Border.Default}`,
+        outline: t => `1px solid ${t.design.Inputs.Base.Default.Border[isError ? 'Error' : 'Default']}`,
+        '&:hover': {
+          backgroundColor: t => t.design.Inputs.Base.Default.Fill.Hover,
+          outlineColor: t => t.design.Inputs.Base.Default.Border.Hover,
+        },
+        ...(isError && {
+          '&:hover': {
+            backgroundColor: t => t.design.Inputs.Large.Default.Fill,
+            outlineColor: t => t.design.Inputs.Base.Default.Border.Error,
+          },
+        }),
+        ...(disabled && {
+          '&:hover': {
+            backgroundColor: t => t.design.Inputs.Large.Default.Fill,
+            outlineColor: t => t.design.Inputs.Base.Default.Border[isError ? 'Error' : 'Default'],
+          },
+        }),
       }}
     >
-      <Stack sx={{ gap: Spacing.xxs, padding: Spacing.sm }}>
+      <Stack sx={{ gap: SizesAndSpaces.LargeTokenInput.RowGap, padding: SizesAndSpaces.LargeTokenInput.PaddingX }}>
         {/** First row is an optional label describing the input and/or chips */}
         {(label || showChips) && (
           <Stack
@@ -284,7 +300,7 @@ export const LargeTokenInput = ({
             }}
           >
             {label && (
-              <Typography variant="bodyXsRegular" color="textSecondary">
+              <Typography variant="bodyXsRegular" sx={{ color: t => t.design.Inputs.Text.Label }}>
                 {label}
               </Typography>
             )}
@@ -323,6 +339,7 @@ export const LargeTokenInput = ({
                         }
                       }}
                       selected={false}
+                      size="extraSmall"
                     />
                   ),
                 )}
@@ -347,7 +364,7 @@ export const LargeTokenInput = ({
         {(walletBalance || inputBalanceUsd) && (
           <Stack direction="row" sx={{ justifyContent: 'end' }}>
             {inputBalanceUsd != null && (
-              <Typography variant="bodyXsRegular" color="textTertiary" sx={{ flexGrow: 1 }}>
+              <Typography variant="bodyXsRegular" sx={{ flexGrow: 1, color: t => t.design.Inputs.Text.MetaSubtle }}>
                 ≈ {formatNumber(inputBalanceUsd, { unit: 'dollar', abbreviate: false })}
               </Typography>
             )}

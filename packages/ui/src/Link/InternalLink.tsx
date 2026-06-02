@@ -4,7 +4,7 @@ import { Link as RouterLink } from '@tanstack/react-router'
 import type { LinkProps } from './styles'
 import { linkStyles } from './styles'
 
-export interface InternalLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement>, LinkProps {}
+export type InternalLinkProps = {} & AnchorHTMLAttributes<HTMLAnchorElement> & LinkProps
 
 export const InternalLink = ({ children, href = '', ...props }: InternalLinkProps) => (
   <StyledLink {...props} to={href}>

@@ -23,7 +23,7 @@ import { decimal, formatNumber, amount } from '@ui-kit/utils'
 
 export const VaultStake = ({ rChainId, marketId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const rFormType = 'stake'
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.vaultStake.activeKey)
   const formEstGas = useStore(state => state.vaultStake.formEstGas[activeKey])
@@ -72,7 +72,7 @@ export const VaultStake = ({ rChainId, marketId, isLoaded, api, market, userActi
 
       const resp = await fetchStepStake(payloadActiveKey, rFormType, api, market, formValues)
 
-      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && !resp.error) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && !resp.error) {
         const txMessage = t`Transaction completed.`
         const txHash = scanTxPath(networks[chainId], resp.hash)
         setTxInfoBar(<TxInfoBar description={txMessage} txHash={txHash} onClose={() => reset({})} />)
@@ -99,7 +99,7 @@ export const VaultStake = ({ rChainId, marketId, isLoaded, api, market, userActi
 
       const isValid = !!signerAddress && +amount > 0 && !amountError && !error
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: helpers.getStepStatus(isApproved, step === 'APPROVAL', isValid),
@@ -137,10 +137,10 @@ export const VaultStake = ({ rChainId, marketId, isLoaded, api, market, userActi
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
       resetState()
     }
   }, [resetState])
@@ -154,6 +154,7 @@ export const VaultStake = ({ rChainId, marketId, isLoaded, api, market, userActi
   useEffect(() => {
     if (isLoaded && api && market && rFormType) {
       const updatedSteps = getSteps(activeKey, rFormType, api, market, formStatus, formValues, steps)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

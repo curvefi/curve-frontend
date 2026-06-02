@@ -13,11 +13,11 @@ export type FormValues = {
   n: number | null
 }
 
-export interface FormStatus extends Fs {
+export type FormStatus = {
   error: string
   warning: 'loan-exists' | string
   step: StepKey
-}
+} & Fs
 
 export type FormEstGas = {
   estimatedGas: number

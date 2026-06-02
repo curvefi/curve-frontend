@@ -68,10 +68,7 @@ const config = [
     settings: {
       react: { version: 'detect' },
       'import-x/resolver': {
-        typescript: {
-          alwaysTryTypes: true,
-          project: ['./tsconfig.json'],
-        },
+        typescript: { alwaysTryTypes: true, project: ['./tsconfig.json'] },
       },
       'import-x/internal-regex': '^@(ui|ui-kit|curvefi/prices-api|external-rewards)',
     },
@@ -80,17 +77,10 @@ const config = [
       // These rules are new recommended ones that came with the migration from eslint-plugin-react to @eslint-react,
       // and we haven't had the bandwidth to fix all the issues they raise yet.
       // We should create future PRs to re-enable these rules and fix any issues that arise
-      '@eslint-react/naming-convention-context-name': 'off',
-      '@eslint-react/naming-convention-ref-name': 'off',
-      '@eslint-react/naming-convention-id-name': 'off',
       '@eslint-react/component-hook-factories': 'off',
-      '@eslint-react/set-state-in-effect': 'off', // painful to disable but we manually disabled it in a shit ton of cases already, requires a huge refactor
-      '@eslint-react/purity': 'off',
       '@eslint-react/no-array-index-key': 'off',
       '@eslint-react/no-forward-ref': 'off',
       '@eslint-react/no-clone-element': 'off',
-      '@eslint-react/no-use-context': 'off',
-      '@eslint-react/no-context-provider': 'off',
       '@eslint-react/no-unnecessary-use-prefix': 'off',
       '@eslint-react/no-children-to-array': 'off',
       '@eslint-react/no-children-map': 'off',
@@ -117,7 +107,6 @@ const config = [
       'unused-imports/no-unused-imports': 'warn',
 
       'import-x/no-default-export': 'error',
-      'import-x/no-named-as-default': 'off',
       'import-x/no-restricted-paths': [
         'error',
         {
@@ -136,15 +125,9 @@ const config = [
               from: `apps/main/src/${importedApp}`, // from ==> the app imported
             })),
             // forbid importing from the router-api app in app source code
-            {
-              target: ['apps/main/src/**'],
-              from: 'apps/router-api',
-            },
+            { target: ['apps/main/src/**'], from: 'apps/router-api' },
             // forbid `wagmi` external dependency package imports, except from feature
-            {
-              target: ['apps/**', 'packages/**', '!packages/curve-ui-kit/src/features/forms/**'],
-              from: 'wagmi',
-            },
+            { target: ['apps/**', 'packages/**', '!packages/curve-ui-kit/src/features/forms/**'], from: 'wagmi' },
           ],
         },
       ],
@@ -153,15 +136,10 @@ const config = [
         'warn',
         {
           groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
-          pathGroups: [
-            // This will make all @-prefixed external imports come after non-@ imports
-            { pattern: '@*/**', group: 'external', position: 'after' },
-          ],
+          // This will make all @-prefixed external imports come after non-@ imports
+          pathGroups: [{ pattern: '@*/**', group: 'external', position: 'after' }],
           pathGroupsExcludedImportTypes: [], // Make sure pathGroups aren't ignored by anything
-          alphabetize: {
-            order: 'asc',
-            caseInsensitive: true,
-          },
+          alphabetize: { order: 'asc', caseInsensitive: true },
           'newlines-between': 'never',
         },
       ],
@@ -199,7 +177,9 @@ const config = [
           ignoreRestSiblings: true,
         },
       ],
-      '@typescript-eslint/triple-slash-reference': 'off',
+      // Allow local module-augmentation sidecars (`*.d.ts`) to be attached with
+      // `path` references, but keep package `types` references import-based.
+      '@typescript-eslint/triple-slash-reference': ['error', { lib: 'always', path: 'always', types: 'prefer-import' }],
 
       // The following rules come from tseslint.configs.recommendedTypeChecked, but are too large to fix in one go
       '@typescript-eslint/no-base-to-string': 'off',
@@ -218,8 +198,7 @@ const config = [
       '@typescript-eslint/require-await': 'off',
 
       // And the following ones are from tseslint.configs.stylisticTypeChecked
-      '@typescript-eslint/consistent-type-definitions': 'off',
-      '@typescript-eslint/consistent-indexed-object-style': 'off',
+      '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
       '@typescript-eslint/no-empty-function': 'off',
       '@typescript-eslint/prefer-nullish-coalescing': 'off',
 
@@ -227,9 +206,7 @@ const config = [
 
       'no-console': [
         'error', // use console.log only for debugging
-        {
-          allow: ['warn', 'error', 'info', 'trace', 'assert'],
-        },
+        { allow: ['warn', 'error', 'info', 'trace', 'assert'] },
       ],
     },
   },
@@ -237,9 +214,7 @@ const config = [
   // Override (replaces legacy `overrides`)
   {
     files: ['**/*.stories.tsx', '**/*.stories.ts', '**/*.d.ts', '**/_api/*.ts'],
-    rules: {
-      'import-x/no-default-export': 'off',
-    },
+    rules: { 'import-x/no-default-export': 'off' },
   },
 
   // Disables stylistic rules that conflict with Prettier — must be last

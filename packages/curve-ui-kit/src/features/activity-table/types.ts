@@ -4,8 +4,9 @@ import type { AllPoolTrade, PoolLiquidityEvent } from '@curvefi/prices-api/pools
 import type { Token } from '@primitives/address.utils'
 
 // LLAMMA Types (for lending/crvusd markets)
-export type LlammaTradeRow = LlammaTrade & { txUrl?: string; url?: never; network: Chain }
+export type LlammaTradeRow = LlammaTrade & { buyerUrl?: string; txUrl?: string; url?: never; network: Chain }
 export type LlammaEventRow = LlammaEvent & {
+  providerUrl?: string
   txUrl?: string
   url?: never
   network: Chain
@@ -14,8 +15,9 @@ export type LlammaEventRow = LlammaEvent & {
 }
 
 // Pool Types (for DEX pools)
-export type PoolTradeRow = AllPoolTrade & { txUrl?: string; url?: never; network: Chain }
+export type PoolTradeRow = AllPoolTrade & { buyerUrl?: string; txUrl?: string; url?: never; network: Chain }
 export type PoolLiquidityRow = PoolLiquidityEvent & {
+  providerUrl?: string
   txUrl?: string
   url?: never
   network: Chain

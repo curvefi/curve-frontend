@@ -24,7 +24,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.lockedCrv.activeKey)
   const { connectState } = useCurve()
@@ -117,7 +117,7 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
         const { dismiss } = notify(notifyMessage, 'pending')
         const resp = await fetchStepIncreaseTime(activeKey, curve, formValues)
 
-        if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey) {
+        if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey) {
           const txDescription = t`Lock date updated`
           setTxInfoBar(
             <TxInfoBar description={txDescription} txHash={scanTxPath(networks[curve.chainId], resp.hash)} />,
@@ -131,7 +131,7 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
 
   const getSteps = useCallback(
     (activeKey: string, curve: CurveApi, formEstGas: FormEstGas, formValues: FormValues, formStatus: FormStatus) => {
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         INCREASE_TIME: {
           key: 'INCREASE_TIME',
           status: getStepStatus(
@@ -153,11 +153,11 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
     void updateFormValues({}, { isFullReset: true })
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [])
@@ -166,6 +166,7 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
   useEffect(() => {
     if (curve && activeKey) {
       const updatedSteps = getSteps(activeKey, curve, formEstGas, formValues, formStatus)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

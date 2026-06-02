@@ -40,7 +40,7 @@ export const CollateralDecrease = ({
   rChainId,
 }: Pick<ManageLoanProps, 'curve' | 'market' | 'rChainId'>) => {
   const llammaId = llamma?.id ?? ''
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.loanCollateralDecrease.activeKey)
   const detailInfo = useStore(state => state.loanCollateralDecrease.detailInfo[activeKey] ?? DEFAULT_DETAIL_INFO)
@@ -111,7 +111,7 @@ export const CollateralDecrease = ({
       const notification = notify(notifyMessage, 'pending')
       const resp = await fetchStepDecrease(payloadActiveKey, curve, llamma, formValues)
 
-      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey) {
         const txMessage = `Remove ${formValues.collateral} ${llamma.collateralSymbol} collateral.`
         setTxInfoBar(
           <TxInfoBar
@@ -141,7 +141,7 @@ export const CollateralDecrease = ({
       const haveCollateral = !!collateral && +collateral > 0
       const isValid = !!curve.signerAddress && !formEstGas.loading && haveCollateral && !collateralError && !error
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         REMOVE: {
           key: 'REMOVE',
           status: getStepStatus(isComplete, step === 'REMOVE', isValid),
@@ -155,12 +155,14 @@ export const CollateralDecrease = ({
                     <DialogHealthWarning
                       {...healthMode}
                       confirmed={confirmedHealthWarning}
+                      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
                       setConfirmed={val => setConfirmHealthWarning(val)}
                     />
                   ),
                   isDismissable: false,
                   cancelBtnProps: {
                     label: t`Cancel`,
+                    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
                     onClick: () => setConfirmHealthWarning(false),
                   },
                   primaryBtnProps: {
@@ -183,10 +185,10 @@ export const CollateralDecrease = ({
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
       resetState()
     }
   }, [resetState])
@@ -211,6 +213,7 @@ export const CollateralDecrease = ({
         formStatus,
         formValues,
       )
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

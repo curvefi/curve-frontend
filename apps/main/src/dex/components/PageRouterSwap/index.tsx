@@ -75,7 +75,7 @@ export const QuickSwap = ({
   redirect: (toAddress: string, fromAddress: string) => void
   curve: CurveApi | null
 }) => {
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
   const { signerAddress: userAddress } = curve ?? {}
   const { tokensNameMapper } = useTokensNameMapper(chainId)
   const poolDataMapper = useStore((state): PoolDataMapper | undefined => state.pools.poolsMapper[chainId])
@@ -176,7 +176,9 @@ export const QuickSwap = ({
       isFullReset?: boolean,
       isRefetch?: boolean,
     ) => {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTxInfoBar(null)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setConfirmedLoss(false)
 
       void setFormValues(
@@ -215,7 +217,7 @@ export const QuickSwap = ({
 
       const resp = await fetchStepSwap(actionActiveKey, config, curve, formValues, searchedParams, maxSlippage)
 
-      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && !resp.error && network) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && !resp.error && network) {
         void refetchUserFromBalance()
         void refetchUserToBalance()
         const txMessage = t`Transaction complete. Received ${resp.swappedAmount} ${toSymbol}.`
@@ -253,7 +255,7 @@ export const QuickSwap = ({
       const isApproved = formStatus.isApproved || formStatus.formTypeCompleted === 'APPROVE'
       const isComplete = formStatus.formTypeCompleted === 'SWAP'
 
-      const stepsObj: { [k: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: getStepStatus(isApproved, step === 'APPROVAL', isValid && !formProcessing),
@@ -287,6 +289,7 @@ export const QuickSwap = ({
                   ),
                   cancelBtnProps: {
                     label: t`Cancel`,
+                    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
                     onClick: () => setConfirmedLoss(false),
                   },
                   primaryBtnProps: {
@@ -379,10 +382,10 @@ export const QuickSwap = ({
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
       updateFormValues({}, false, '', true)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
@@ -426,6 +429,7 @@ export const QuickSwap = ({
       toToken?.symbol ?? toToken?.address ?? '',
       fromToken?.symbol ?? fromToken?.address ?? '',
     )
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setSteps(prev => (lodash.isEqual(prev, updatedSteps) ? prev : updatedSteps))
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isReady, confirmedLoss, routesAndOutput, formEstGas, formStatus, formValues, searchedParams, curve])
@@ -481,6 +485,7 @@ export const QuickSwap = ({
             isOpen={!!isOpenFromToken}
             onOpen={openModalFromToken}
             onClose={closeModalFromToken}
+            size="small"
           >
             <TokenList
               tokens={tokens}
@@ -533,6 +538,7 @@ export const QuickSwap = ({
             isOpen={!!isOpenToToken}
             onOpen={openModalToToken}
             onClose={closeModalToToken}
+            size="small"
           >
             <TokenList
               tokens={tokens}

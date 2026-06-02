@@ -169,7 +169,7 @@ export function queryFactory<
       const { enabled, ...options } = getQueryOptions(params, condition)
       const query = useQuery({ enabled, ...options })
       const validation = enabled ? {} : validate(validationSuite, params)
-      // add validation results to the query result via Object.assign so we don't enumerate all react-query properties
+      // eslint-disable-next-line @eslint-react/purity -- Preserve the query result object's getters and generic inference.
       return Object.assign(query, { enabled, validation })
     },
     /** Invalidates the cache for the query, marking it as stale and triggering a refetch if needed **/

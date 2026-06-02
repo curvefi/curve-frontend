@@ -23,10 +23,10 @@ type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
   activeKey: string
-  repayIsAvailable: { [userActiveKey: string]: boolean | null }
-  detailInfo: { [activeKey: string]: FormDetailInfo }
-  detailInfoLeverage: { [activeKey: string]: FormDetailInfoLeverage }
-  formEstGas: { [activeKey: string]: FormEstGas }
+  repayIsAvailable: Record<string, boolean | null>
+  detailInfo: Record<string, FormDetailInfo>
+  detailInfoLeverage: Record<string, FormDetailInfoLeverage>
+  formEstGas: Record<string, FormEstGas>
   formStatus: FormStatus
   formValues: FormValues
 }
@@ -36,19 +36,19 @@ const sliceKey = 'loanRepay'
 // prettier-ignore
 export type LoanRepaySlice = {
   [sliceKey]: SliceState & {
-    fetchDetailInfo(activeKey: string, api: Api, market: LendMarketTemplate, maxSlippage: string, userState: UserLoanState): Promise<void>
-    fetchEstGasApproval(activeKey: string, api: Api, market: LendMarketTemplate, maxSlippage: string): Promise<void>
-    setFormValues(api: Api | null, market: LendMarketTemplate | undefined, partialFormValues: Partial<FormValues>, maxSlippage: string, shouldRefetch?: boolean): Promise<void>
+    fetchDetailInfo: (activeKey: string, api: Api, market: LendMarketTemplate, maxSlippage: string, userState: UserLoanState) => Promise<void>
+    fetchEstGasApproval: (activeKey: string, api: Api, market: LendMarketTemplate, maxSlippage: string) => Promise<void>
+    setFormValues: (api: Api | null, market: LendMarketTemplate | undefined, partialFormValues: Partial<FormValues>, maxSlippage: string, shouldRefetch?: boolean) => Promise<void>
 
     // step
-    fetchStepApprove(activeKey: string, api: Api, market: LendMarketTemplate, formValues: FormValues, maxSlippage: string): Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
-    fetchStepRepay(activeKey: string, api: Api, market: LendMarketTemplate, formValues: FormValues, maxSlippage: string): Promise<{ activeKey: string; error: string; hash: string; loanExists: boolean } | undefined>
+    fetchStepApprove: (activeKey: string, api: Api, market: LendMarketTemplate, formValues: FormValues, maxSlippage: string) => Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
+    fetchStepRepay: (activeKey: string, api: Api, market: LendMarketTemplate, formValues: FormValues, maxSlippage: string) => Promise<{ activeKey: string; error: string; hash: string; loanExists: boolean } | undefined>
 
     // steps helper
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: () => void
   }
 }
 
