@@ -4,7 +4,7 @@ import { ChartEmpty } from './ChartEmpty'
 import { ChartError } from './ChartError'
 import { ChartLoading } from './ChartLoading'
 
-interface ChartStateWrapperProps {
+type ChartStateWrapperProps = {
   height: number
   isLoading: boolean
   isEmpty?: boolean

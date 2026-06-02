@@ -2,7 +2,7 @@ import type { EstimatedGas, Slippage } from '@/dex/components/PagePool/types'
 import { shortenTokenName } from '@/dex/utils'
 import type { IDict } from '@curvefi/api/lib/interfaces'
 
-export interface Amount {
+export type Amount = {
   value: string
   touched?: boolean
   token: string

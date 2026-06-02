@@ -14,7 +14,7 @@ import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { formatNumber, shortenAddress } from '@ui-kit/utils'
 import { GAUGE_VOTES_LABELS } from '../constants'
 
-interface UserGaugeVotesTableProps {
+type UserGaugeVotesTableProps = {
   userAddress: string
   tableMinWidth: number
 }

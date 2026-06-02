@@ -2,13 +2,13 @@ import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
 import { FieldsOf } from '@ui-kit/lib'
 
-export interface ChainQuery<T = number> {
+export type ChainQuery<T = number> = {
   chainId: T
 }
-export interface UserQuery<T = Address> {
+export type UserQuery<T = Address> = {
   userAddress: T
 }
-export interface ChainNameQuery<T = Chain> {
+export type ChainNameQuery<T = Chain> = {
   blockchainId: T
 }
 

@@ -20,7 +20,7 @@ import {
   WalletIcon,
 } from './styles'
 
-interface DepositTrackingProps {
+type DepositTrackingProps = {
   className?: string
 }
 

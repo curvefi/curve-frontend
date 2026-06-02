@@ -11,7 +11,7 @@ import { Select } from '../Select'
 
 const { Spacing } = SizesAndSpaces
 
-export interface Option<T = string> {
+export type Option<T = string> = {
   id: T
   label: ReactNode
 }

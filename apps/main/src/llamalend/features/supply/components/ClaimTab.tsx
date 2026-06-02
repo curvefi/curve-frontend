@@ -14,7 +14,7 @@ import { ClaimActionInfoList } from './ClaimActionInfoList'
 import { type ClaimableToken } from './columns'
 import { TotalNotionalRow } from './columns/notional-cells'
 
-export interface ClaimTabProps<ChainId extends IChainId> {
+export type ClaimTabProps<ChainId extends IChainId> = {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId

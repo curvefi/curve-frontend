@@ -9,7 +9,7 @@ import type { BandsChartPalette, BandsRangeOverlay } from './types'
  * Internal horizontal-line data shared by custom range-boundary series and
  * native ECharts oracle markLine conversion.
  */
-export interface HorizontalLine {
+export type HorizontalLine = {
   startPoint: { coord: [number, number] }
   endPoint: { coord: [number, number] }
   lineStyle: { color: string; type: ChartLineDashPattern; width: number }

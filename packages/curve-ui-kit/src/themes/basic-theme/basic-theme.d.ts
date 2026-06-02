@@ -2,7 +2,7 @@ import type { DesignOptions, DesignSystem } from '../design'
 import type { ThemeKey } from './basic-theme'
 
 declare module '@mui/material/styles' {
-  interface BreakpointOverrides {
+  type BreakpointOverrides = {
     xs: false
     sm: false
     md: false
@@ -13,22 +13,22 @@ declare module '@mui/material/styles' {
     desktop: true
   }
 
-  interface Theme {
+  type Theme = {
     design: DesignSystem & { options: DesignOptions }
     key: ThemeKey
   }
   // allow configuration using `createTheme()`
-  interface ThemeOptions {
+  type ThemeOptions = {
     design?: DesignSystem & { options: DesignOptions }
     key?: ThemeKey
   }
 
-  interface TypeText {
+  type TypeText = {
     tertiary: string
     highlight: string
   }
 
-  interface ZIndex {
+  type ZIndex = {
     tableStickyColumn: number
     tableHeader: number
     tableFilters: number

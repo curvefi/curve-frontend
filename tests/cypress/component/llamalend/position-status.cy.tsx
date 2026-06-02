@@ -90,7 +90,7 @@ const PositionDetailsTest = ({
   </ComponentTestWrapper>
 )
 
-interface StatusCase {
+type StatusCase = {
   status: UserPositionStatusKey
   severity?: 'warning' | 'error'
   title?: string

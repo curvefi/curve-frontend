@@ -1,7 +1,7 @@
 import type { ComponentPropsWithRef } from 'react'
 import { styled, type IStyledComponent } from 'styled-components'
 
-interface StyledBtnProps {
+type StyledBtnProps = {
   $loading?: boolean
 }
 

@@ -29,7 +29,7 @@ import { BalanceTextField } from './BalanceTextField'
 const { Spacing } = SizesAndSpaces
 
 /** A chip can be something like 50% or 'Max', and is shown on the top right on hover on desktop or always visible on tablet and lower. */
-interface InputChip {
+type InputChip = {
   /** The chip button label. */
   label: string
   /** The function that returns the new input amount, possibly based on the max balance. */
@@ -45,11 +45,11 @@ const CHIPS_PRESETS: Record<ChipsPreset, InputChip[]> = {
   })),
 }
 
-export interface LargeTokenInputRef {
+export type LargeTokenInputRef = {
   resetBalance: () => void
 }
 
-export interface LargeTokenInputProps {
+export type LargeTokenInputProps = {
   ref?: Ref<LargeTokenInputRef>
 
   /**

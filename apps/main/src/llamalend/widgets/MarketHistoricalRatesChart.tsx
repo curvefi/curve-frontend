@@ -35,7 +35,7 @@ import { calculateAverageRates } from '@ui-kit/utils/averageRates'
 
 const { Spacing, Height } = SizesAndSpaces
 
-export interface RateChartPoint {
+export type RateChartPoint = {
   timestamp: number
   rate: number
   movingAverage: number
@@ -48,7 +48,7 @@ type MarketRates = NonNullable<ReturnType<typeof useMarketRates>['data']>
 type RateSnapshot = CrvUsdSnapshot | LendingSnapshot
 type RateValue = Amount | null | undefined
 
-interface MarketHistoricalRatesChartProps {
+type MarketHistoricalRatesChartProps = {
   market: LlamaMarketTemplate | undefined | null
   blockchainId: Chain | undefined
   chainId: number
@@ -56,12 +56,12 @@ interface MarketHistoricalRatesChartProps {
   rateMode: MarketRateType
 }
 
-interface RateSeriesConfig {
+type RateSeriesConfig = {
   key: RateSeriesKey
   label: string
   dash?: ChartLineDashPattern
 }
-interface RateModeConfig {
+type RateModeConfig = {
   chartTitle: string
   currentRateLabel: string
   oneWeekAverageLabel: string

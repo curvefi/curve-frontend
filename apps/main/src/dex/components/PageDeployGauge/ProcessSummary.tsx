@@ -13,7 +13,7 @@ import { scanTxPath } from '@ui/utils'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 
-interface Props {
+type Props = {
   chainId: ChainId
   isLite: boolean
 }

@@ -63,7 +63,7 @@ const CHART_LAYER = {
   oracleLine: 8,
 } as const
 
-interface NativeMarkLineOption {
+type NativeMarkLineOption = {
   animation: false
   animationDuration: 0
   animationDurationUpdate: 0

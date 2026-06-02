@@ -4,7 +4,7 @@ import { ExpectedBorrowed, type FormStatus as Fs, PageContentProps } from '@/len
 import type { HealthMode } from '@/llamalend/llamalend.types'
 import type { Step } from '@ui/Stepper/types'
 
-export interface FormValues {
+export type FormValues = {
   stateCollateral: string
   stateCollateralError: 'too-much-collateral' | ''
   userCollateral: string
@@ -16,11 +16,11 @@ export interface FormValues {
 
 export type StepKey = 'APPROVAL' | 'REPAY' | ''
 
-export interface FormStatus extends Fs {
+export type FormStatus = {
   warning: string
   step: StepKey
   stepError: string
-}
+} & Fs
 
 export type DetailProps = Pick<PageContentProps, 'rChainId' | 'marketId' | 'api' | 'userActiveKey'> & {
   activeKey: string

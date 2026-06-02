@@ -4,7 +4,7 @@ import { Icon } from '@ui/Icon'
 import { TooltipButton as Tooltip } from '@ui/Tooltip/TooltipButton'
 import type { CampaignRewards } from '@ui-kit/entities/campaigns'
 
-interface CampaignRewardsCompProps {
+type CampaignRewardsCompProps = {
   rewardsPool: CampaignRewards
   highContrast?: boolean
   mobile?: boolean

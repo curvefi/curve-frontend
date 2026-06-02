@@ -23,17 +23,17 @@ const BTC_DECIMALS = 18
 const USD_DECIMALS = 6
 
 type QueryString = { [P in keyof RoutesQuery]?: string | string[] }
-interface SuccessCase {
+type SuccessCase = {
   query: QueryString
   expectedRoutes?: number
 }
-interface ErrorResponse {
+type ErrorResponse = {
   statusCode: number
   code: string
   error: string
   message: string
 }
-interface FailureCase {
+type FailureCase = {
   query: Partial<QueryString>
   expectedResponse: ErrorResponse
 }

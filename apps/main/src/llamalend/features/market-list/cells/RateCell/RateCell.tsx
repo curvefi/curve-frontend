@@ -17,7 +17,7 @@ import { SupplyRateMintTooltip } from './SupplyRateMintTooltip'
 
 const { Spacing } = SizesAndSpaces
 
-export interface RateTooltipProps {
+export type RateTooltipProps = {
   market: LlamaMarket
   children: TooltipProps['children']
 }

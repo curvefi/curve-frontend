@@ -6,7 +6,7 @@ import { Icon } from '@ui/Icon'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import { breakpoints } from '@ui/utils'
 
-export interface IconStyles {
+export type IconStyles = {
   $svgTop?: string
 }
 

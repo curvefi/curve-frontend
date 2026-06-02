@@ -7,7 +7,7 @@ import { ProposalData } from '@/dao/entities/proposals-mapper'
 import { LazyItem } from '@ui/LazyItem'
 import { t } from '@ui-kit/lib/i18n'
 
-interface Props {
+type Props = {
   proposalData: ProposalData
   handleClick: (rProposalId: string) => void
 }

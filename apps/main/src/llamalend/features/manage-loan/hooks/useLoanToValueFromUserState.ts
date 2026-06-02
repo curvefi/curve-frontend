@@ -6,7 +6,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 
-interface Params<ChainId extends IChainId> {
+type Params<ChainId extends IChainId> = {
   chainId: ChainId | null | undefined
   marketId: string | null | undefined
   userAddress: Address | null | undefined

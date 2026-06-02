@@ -3,7 +3,7 @@ import { useStore } from '@/dao/store/useStore'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { formatNumber } from '@ui-kit/utils'
 
-interface GaugeListColumnsProps {
+type GaugeListColumnsProps = {
   gaugeData: GaugeFormattedData
 }
 

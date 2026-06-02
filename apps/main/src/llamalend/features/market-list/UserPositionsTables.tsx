@@ -18,7 +18,7 @@ import { UserPositionSummary } from './UserPositionsSummary'
 
 const { Spacing } = SizesAndSpaces
 
-interface UserPositionsTableProps {
+type UserPositionsTableProps = {
   onReload: () => void
   tableQuery: QueryProp<LlamaMarketsResult>
 }

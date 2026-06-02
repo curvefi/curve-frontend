@@ -14,7 +14,7 @@ const buildOracleAbi = (fnName: string) =>
     },
   ] as const
 
-interface UseOracleRateParams {
+type UseOracleRateParams = {
   address?: Address
   functionName?: string
   enabled?: boolean

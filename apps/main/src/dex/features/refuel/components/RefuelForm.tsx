@@ -17,7 +17,7 @@ import { RefuelFormList } from './RefuelFormList'
 
 const { Spacing } = SizesAndSpaces
 
-export interface RefuelFormParams {
+export type RefuelFormParams = {
   chainId: number
   blockchainId: Chain
   poolAddress: Address

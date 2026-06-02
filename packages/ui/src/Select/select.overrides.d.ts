@@ -18,7 +18,7 @@ declare module '@react-types/select' {
   } from '@react-types/select'
 
   type FieldsToAdd = Pick<OriginalSelectProps, 'children'>
-  export interface SelectStateOptions<T> extends OriginalSelectStateOptions<T>, FieldsToAdd {}
-  export interface AriaSelectOptions<T> extends OriginalSelectOptions<T>, FieldsToAdd {}
-  export interface AriaListBoxOptions<T> extends OriginalListBoxOptions<T>, FieldsToAdd {}
+  export type SelectStateOptions<T> = {} & OriginalSelectStateOptions<T> & FieldsToAdd
+  export type AriaSelectOptions<T> = {} & OriginalSelectOptions<T> & FieldsToAdd
+  export type AriaListBoxOptions<T> = {} & OriginalListBoxOptions<T> & FieldsToAdd
 }

@@ -1,5 +1,5 @@
 /** Common types used by the Tenderly API */
-export interface TestnetProps {
+export type TestnetProps = {
   /**
    * ID of the Virtual Testnet.
    * @example '4010f442-c4d9-407d-aba1-7276e3312998'

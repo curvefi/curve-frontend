@@ -28,7 +28,7 @@ import { Spinner } from '@ui/Spinner'
 import { useLayoutStore } from '@ui-kit/features/layout/store'
 import { t } from '@ui-kit/lib/i18n'
 
-interface Props {
+type Props = {
   curve: CurveApi
 }
 

@@ -3,7 +3,7 @@ import { RewardsApy } from '@/dex/types/main.types'
 import { Chip } from '@ui/Typography'
 import { formatNumber } from '@ui-kit/utils'
 
-interface Prop {
+type Prop = {
   isHighlight: boolean
   rewardsApy: RewardsApy | undefined
 }

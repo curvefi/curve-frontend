@@ -11,7 +11,7 @@ import { LlamaMarketType } from '@ui-kit/types/market'
 import { formatPercent } from '@ui-kit/utils'
 import { RewardsTooltipItems } from './RewardTooltipItems'
 
-export interface MarketNetBorrowAprTooltipContentProps {
+export type MarketNetBorrowAprTooltipContentProps = {
   marketType: LlamaMarketType
   borrowApr: number | null | undefined
   averageApr: number | null | undefined

@@ -35,7 +35,7 @@ function visitAndWait(
   }
 }
 
-interface UsdValue {
+type UsdValue = {
   text: string
   parsed: number
 }

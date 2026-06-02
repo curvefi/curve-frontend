@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useTheme } from '@mui/material/styles'
 
-export interface ChartColors {
+export type ChartColors = {
   backgroundColor: string
   lineColor: string
   textColor: string

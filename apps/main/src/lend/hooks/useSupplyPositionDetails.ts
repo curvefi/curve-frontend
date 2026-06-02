@@ -20,7 +20,7 @@ import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { AVERAGE_CATEGORIES, type AverageCategory } from '@ui-kit/utils'
 
-interface UseSupplyPositionDetailsProps {
+type UseSupplyPositionDetailsProps = {
   chainId: ChainId
   market: LendMarketTemplate | null | undefined
   marketId: string

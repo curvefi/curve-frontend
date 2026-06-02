@@ -7,7 +7,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { FontSize } = SizesAndSpaces
 
-export interface LineSeriesConfig<TSeriesKey extends string> {
+export type LineSeriesConfig<TSeriesKey extends string> = {
   key: TSeriesKey
   label: string
   color: string
@@ -15,12 +15,12 @@ export interface LineSeriesConfig<TSeriesKey extends string> {
   strokeWidth?: number
 }
 
-interface EChartsLineChartTooltipContext<TData, TSeriesKey extends string> {
+type EChartsLineChartTooltipContext<TData, TSeriesKey extends string> = {
   datum: TData
   visibleSeries: LineSeriesConfig<TSeriesKey>[]
 }
 
-interface EChartsLineMarkLine {
+type EChartsLineMarkLine = {
   value: number
   label?: string
   color: string

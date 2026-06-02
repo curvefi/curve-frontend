@@ -3,7 +3,7 @@ import type { Amount } from '@/dex/components/PagePool/utils'
 export type StepKey = 'APPROVAL' | 'DEPOSIT' | 'DEPOSIT_STAKE' | 'STAKE' | ''
 export type FormType = 'DEPOSIT' | 'DEPOSIT_STAKE' | 'STAKE'
 
-export interface FormStatus {
+export type FormStatus = {
   isApproved: boolean
   formProcessing: boolean
   formTypeCompleted: FormType | 'APPROVE' | ''
@@ -12,7 +12,7 @@ export interface FormStatus {
   warning: string
 }
 
-export interface FormValues {
+export type FormValues = {
   amounts: Amount[]
   /**
    * The balanced amounts switch works as follows:
@@ -25,14 +25,14 @@ export interface FormValues {
   lpToken: string
 }
 
-export interface FormLpTokenExpected {
+export type FormLpTokenExpected = {
   expected: string
   virtualPrice: string
   loading: boolean
   error: string
 }
 
-export interface LoadMaxAmount {
+export type LoadMaxAmount = {
   tokenAddress: string
   idx: number
 }

@@ -17,7 +17,7 @@ const { cloneDeep } = lodash
 
 type StateKey = keyof typeof DEFAULT_STATE
 
-interface SliceState {
+type SliceState = {
   activeKey: string
   detailInfo: { [activeKey: string]: FormDetailInfo }
   formEstGas: { [activeKey: string]: FormEstGas }
@@ -29,7 +29,7 @@ interface SliceState {
 const sliceKey = 'loanCollateralRemove'
 
 // prettier-ignore
-export interface LoanCollateralRemoveSlice {
+export type LoanCollateralRemoveSlice = {
   [sliceKey]: SliceState & {
     fetchMaxRemovable(api: Api, market: LendMarketTemplate): Promise<void>
     fetchDetailInfo(activeKey: string, api: Api, market: LendMarketTemplate): Promise<void>

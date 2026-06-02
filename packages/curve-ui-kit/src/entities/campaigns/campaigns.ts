@@ -43,7 +43,7 @@ export const combineCampaigns = memoizee((campaigns: (Campaigns | undefined)[], 
   )
 })
 
-interface UseCampaignsOptions {
+type UseCampaignsOptions = {
   blockchainId?: Chain
   enabled?: boolean
 }

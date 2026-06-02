@@ -2,11 +2,11 @@
 import '@mui/material/CheckBox'
 
 declare module '@mui/material/Checkbox' {
-  export interface CheckboxPropsSizeOverrides {
+  export type CheckboxPropsSizeOverrides = {
     large: true
   }
 
-  export interface CheckboxClasses {
+  export type CheckboxClasses = {
     sizeLarge: string
   }
 }

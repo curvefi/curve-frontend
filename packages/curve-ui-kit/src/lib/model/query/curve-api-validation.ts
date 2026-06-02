@@ -4,7 +4,7 @@ import { createValidationSuite } from '@ui-kit/lib/validation'
 import { chainValidationGroup } from './chain-validation'
 import { ChainParams } from './root-keys'
 
-interface CurveApiOptions {
+type CurveApiOptions = {
   requireRpc?: boolean
 }
 

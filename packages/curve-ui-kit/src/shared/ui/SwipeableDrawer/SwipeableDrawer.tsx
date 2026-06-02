@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 import { Box, SxProps, Theme } from '@mui/material'
 import MuiSwipeableDrawer from '@mui/material/SwipeableDrawer'
-interface Props {
+type Props = {
   button?: ReactNode
   children: ReactNode
   open: boolean

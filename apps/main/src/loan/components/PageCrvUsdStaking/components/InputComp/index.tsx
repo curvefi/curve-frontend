@@ -8,7 +8,7 @@ import { Loader } from '@ui/Loader'
 import { t } from '@ui-kit/lib/i18n'
 import { formatNumber, amount } from '@ui-kit/utils'
 
-interface InputCompProps {
+type InputCompProps = {
   walletBalance: string
   walletBalanceSymbol: string
   value: string

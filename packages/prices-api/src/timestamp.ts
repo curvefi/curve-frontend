@@ -47,7 +47,7 @@ export const parseTimestamp = (timestamp: TimestampResponse) => fromDate(toDate(
 
 const ONE_DAY_IN_SECONDS = 24 * 60 * 60
 
-interface TimeRangeParams {
+type TimeRangeParams = {
   end?: number
   start?: number
   daysRange?: number

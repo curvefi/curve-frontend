@@ -5,7 +5,7 @@ import { connectors as defaultConnectors } from './connectors'
 
 declare module 'wagmi' {
   /** Enable Wagmi to infer types in places that wouldn't normally have access to type info via React Context alone. */
-  interface Register {
+  type Register = {
     config: ReturnType<typeof createWagmiConfig>
   }
 }
@@ -33,7 +33,7 @@ let _config: Config | undefined
  */
 export const getWagmiConfig = () => _config
 
-interface CreateWagmiConfigOptions<TChains extends readonly [Chain, ...Chain[]]> {
+type CreateWagmiConfigOptions<TChains extends readonly [Chain, ...Chain[]]> = {
   /** An array of Chain objects to configure */
   chains: TChains
   /** A record mapping chain IDs to their respective transport configurations */

@@ -3,7 +3,7 @@ import { styled, type IStyledComponent } from 'styled-components'
 import { Box } from '@ui/Box/Box'
 import { Loader } from '@ui/Loader/Loader'
 
-interface Props {
+type Props = {
   loading?: boolean
   title: string
   data: ReactNode
@@ -31,7 +31,7 @@ const StyledLoader = styled(Loader)<{ row?: boolean }>`
   margin-left: ${({ row }) => (row ? 'var(--spacing-2)' : '0')};
 `
 
-interface MetricsTitleProps {
+type MetricsTitleProps = {
   row?: boolean
 }
 // eslint-disable-next-line react-refresh/only-export-components
@@ -48,7 +48,7 @@ export const MetricsTitle: IStyledComponent<'web', MetricsTitleProps & Component
     }
   `
 
-interface MetricsColumnDataProps {
+type MetricsColumnDataProps = {
   noMargin?: boolean
   capitalize?: boolean
 }

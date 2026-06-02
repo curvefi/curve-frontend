@@ -11,7 +11,7 @@ import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { formatNumber } from '@ui-kit/utils'
 import { useNetworkByChain, useNetworks } from '../entities/networks'
 
-interface StepProgress {
+type StepProgress = {
   active: number
   total: number
 }

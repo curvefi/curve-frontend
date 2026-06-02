@@ -5,7 +5,7 @@ import type { SxProps } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
-interface Props {
+type Props = {
   children?: ReactNode
   sx?: SxProps
 }

@@ -2,7 +2,7 @@ import { getCrvUsdSupply } from '@curvefi/prices-api/crvusd'
 import { EmptyValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 
-interface CrvUsdSupplyQuery {
+type CrvUsdSupplyQuery = {
   days: number
 }
 type CrvUsdSupplyParams = FieldsOf<CrvUsdSupplyQuery>

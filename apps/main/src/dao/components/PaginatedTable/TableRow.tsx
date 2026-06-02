@@ -3,7 +3,7 @@ import { styled, type IStyledComponent } from 'styled-components'
 import { InternalLink } from '@ui/Link'
 import type { InternalLinkProps } from '@ui/Link/InternalLink'
 
-interface TableRowWrapperProps {
+type TableRowWrapperProps = {
   columns: number
   gridTemplateColumns?: string
 }

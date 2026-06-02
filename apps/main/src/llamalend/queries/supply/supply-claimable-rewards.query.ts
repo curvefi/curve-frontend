@@ -3,7 +3,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory, rootKeys, UserMarketParams, UserMarketQuery } from '@ui-kit/lib/model'
 import { claimableRewardsValidationSuite, requireGauge } from '../validation/supply.validation'
 
-export interface ClaimableReward {
+export type ClaimableReward = {
   token: Address
   symbol: string
   amount: Decimal

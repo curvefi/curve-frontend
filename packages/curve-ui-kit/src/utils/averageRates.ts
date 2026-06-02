@@ -6,7 +6,7 @@ const { Weekly, Monthly } = Duration.AverageRates
 const { meanBy } = lodash
 
 /** A timestamped snapshot record */
-export interface WithTimestamp {
+export type WithTimestamp = {
   timestamp: string | number | Date
 }
 
@@ -43,7 +43,7 @@ export function calculateAverageRates<
   return result
 }
 
-interface AverageType {
+type AverageType = {
   /** Number of days included in the average window. */
   window: number
   /** Label for the period of the the averaging range. */

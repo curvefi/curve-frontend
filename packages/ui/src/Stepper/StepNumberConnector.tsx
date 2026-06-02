@@ -3,7 +3,7 @@ import { styled, css, type IStyledComponent } from 'styled-components'
 import { statusColorMap } from './helpers'
 import type { StepStatus } from './types'
 
-interface StepNumberConnectorProps {
+type StepNumberConnectorProps = {
   visible: boolean
   status: StepStatus
   nextStatus?: StepStatus

@@ -6,7 +6,7 @@ import type { SxProps } from '@ui-kit/utils'
  * A component that inverts the theme when hovered.
  * The child component should accept the following props
  */
-interface ChildProps {
+type ChildProps = {
   sx: SxProps
   onMouseEnter: () => void
   onMouseLeave: () => void
@@ -14,7 +14,7 @@ interface ChildProps {
   className: string
 }
 
-interface InvertOnHoverProps {
+type InvertOnHoverProps = {
   children: ReactElement<ChildProps>
 
   /**

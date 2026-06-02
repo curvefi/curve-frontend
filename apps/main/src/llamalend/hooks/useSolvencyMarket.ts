@@ -12,7 +12,7 @@ import { calculateMarketSolvency, createGetBadDebtMarket } from '../llama.utils'
 import { getBadDebtLendMarketsOptions } from '../queries/market/market-bad-debt.query'
 import { getLendingVaultsOptions } from '../queries/market-list/lending-vaults'
 
-interface SolvencyMarketParams {
+type SolvencyMarketParams = {
   blockchainId: Chain | undefined
   controllerAddress: Address | undefined
   marketType: LlamaMarketType

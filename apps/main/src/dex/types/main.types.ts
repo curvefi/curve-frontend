@@ -10,19 +10,19 @@ export type { CurveApi, Wallet } from '@ui-kit/features/connect-wallet'
 
 export type ChainId = IChainId | number
 export type NetworkEnum = INetworkName
-export interface NetworkConfigFromApi {
+export type NetworkConfigFromApi = {
   hasDepositAndStake: boolean | undefined
   hasRouter: boolean | undefined
 }
 
-export interface NetworkUrlParams {
+export type NetworkUrlParams = {
   network: INetworkName
 }
 export type PoolUrlParams = NetworkUrlParams & { poolIdOrAddress: string; formType?: RFormType }
 export type CrvLockerUrlParams = NetworkUrlParams & { formType?: RFormType }
 export type UrlParams = NetworkUrlParams & Partial<PoolUrlParams & CrvLockerUrlParams>
 
-export interface NetworkConfig extends BaseConfig<NetworkEnum> {
+export type NetworkConfig = {
   isLite: boolean
   isCrvRewardsEnabled: boolean
   useApi: boolean
@@ -50,10 +50,10 @@ export interface NetworkConfig extends BaseConfig<NetworkEnum> {
   fxswapFactory: boolean
   hasFactory: boolean
   pricesApi: boolean
-}
+} & BaseConfig<NetworkEnum>
 
 export type Networks = Record<ChainId, NetworkConfig>
-export interface CurrencyReservesToken {
+export type CurrencyReservesToken = {
   token: string
   tokenAddress: string
   balance: number
@@ -61,13 +61,13 @@ export interface CurrencyReservesToken {
   usdRate: number
   percentShareInPool: string
 }
-export interface CurrencyReserves {
+export type CurrencyReserves = {
   poolId: string
   tokens: CurrencyReservesToken[]
   total: string
   totalUsd: string
 }
-export interface CurrencyReservesMapper {
+export type CurrencyReservesMapper = {
   [chainPoolId: string]: CurrencyReserves
 }
 export const FormTypes = [
@@ -82,18 +82,18 @@ export const FormTypes = [
 ] as const
 export type RFormType = (typeof FormTypes)[number]
 export type Pool = PoolTemplate
-export interface ClaimableReward {
+export type ClaimableReward = {
   token: string
   symbol: string
   amount: string
   price: number
 }
-export interface RewardBase {
+export type RewardBase = {
   day: string
   week: string
 }
 export type RewardCrv = number
-export interface RewardOther {
+export type RewardOther = {
   apy: number
   decimals?: number
   gaugeAddress: string
@@ -102,17 +102,17 @@ export interface RewardOther {
   tokenAddress: string
   tokenPrice?: number
 }
-export interface RewardsApy {
+export type RewardsApy = {
   poolId: string
   base: RewardBase
   other: RewardOther[]
   crv: RewardCrv[]
   error: { [rewardType: string]: boolean }
 }
-export interface RewardsApyMapper {
+export type RewardsApyMapper = {
   [poolId: string]: RewardsApy
 }
-export interface Token {
+export type Token = {
   address: string
   ethAddress?: string
   symbol: string
@@ -120,23 +120,23 @@ export interface Token {
   haveSameTokenName: boolean // use to display token address if duplicated token names
   volume?: number
 }
-export interface TokensMapper {
+export type TokensMapper = {
   [tokenAddress: string]: Token | undefined
 }
-export interface TokensNameMapper {
+export type TokensNameMapper = {
   [tokenAddress: string]: string
 }
-export interface GaugeStatus {
+export type GaugeStatus = {
   rewardsNeedNudging: boolean
   areCrvRewardsStuckInBridge: boolean
 }
 
-export interface Gauge {
+export type Gauge = {
   status: GaugeStatus | null
   isKilled: boolean | null
 }
 
-export interface PoolData {
+export type PoolData = {
   idx?: number
   chainId: ChainId
   pool: Pool
@@ -155,10 +155,10 @@ export interface PoolData {
   failedFetching24hOldVprice: boolean
 }
 
-export interface PoolDataMapper {
+export type PoolDataMapper = {
   [poolAddress: string]: PoolData
 }
-export interface PoolDataCache {
+export type PoolDataCache = {
   gauge: Gauge
   hasWrapped: boolean
   hasVyperVulnerability: boolean
@@ -183,14 +183,14 @@ export interface PoolDataCache {
     referenceAsset: string
   }
 }
-export interface PoolDataCacheMapper {
+export type PoolDataCacheMapper = {
   [poolAddress: string]: PoolDataCache
 }
 export type PoolDataCacheOrApi = PoolData | PoolDataCache
 
 export type AlertType = 'info' | 'warning' | 'error' | 'danger' | ''
 
-export interface PoolAlert extends TooltipProps {
+export type PoolAlert = {
   alertType: AlertType
   isDisableDeposit?: boolean
   isDisableSwap?: boolean
@@ -205,24 +205,24 @@ export interface PoolAlert extends TooltipProps {
   address?: string
   // action card message, related to action of user
   message?: ReactNode
-}
+} & TooltipProps
 
 export type EstimatedGas = number | number[] | null
 
-export interface FnStepEstGasApprovalResponse {
+export type FnStepEstGasApprovalResponse = {
   activeKey: string
   isApproved: boolean
   estimatedGas: EstimatedGas
   error: string
 }
 
-export interface FnStepApproveResponse {
+export type FnStepApproveResponse = {
   activeKey: string
   hashes: string[]
   error: string
 }
 
-export interface FnStepResponse {
+export type FnStepResponse = {
   activeKey: string
   hash: string
   error: string

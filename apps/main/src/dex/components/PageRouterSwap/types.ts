@@ -5,12 +5,12 @@ import type { RouteResponse } from '@ui-kit/entities/router-api'
 
 export type StepKey = 'APPROVAL' | 'SWAP'
 
-export interface Route extends IRouteStep {
+export type Route = {
   name: string
   routeUrlId: string
-}
+} & IRouteStep
 
-export interface ExchangeRate {
+export type ExchangeRate = {
   from: string
   to: string
   fromAddress: string
@@ -18,7 +18,7 @@ export interface ExchangeRate {
   label: string
 }
 
-export interface RoutesAndOutputModal {
+export type RoutesAndOutputModal = {
   [key: string]:
     | {
         lowExchangeRate: boolean
@@ -52,12 +52,12 @@ export type RoutesAndOutput = Pick<RouteResponse, 'router' | 'priceImpact'> & {
   modal: RoutesAndOutputModal | null
 }
 
-export interface FormEstGas {
+export type FormEstGas = {
   estimatedGas: number
   loading: boolean
 }
 
-export interface FormStatus {
+export type FormStatus = {
   isApproved: boolean
   formProcessing: boolean
   formTypeCompleted: 'APPROVE' | 'SWAP' | ''
@@ -66,14 +66,14 @@ export interface FormStatus {
   swapError: string
 }
 
-export interface FormValues {
+export type FormValues = {
   isFrom: boolean | null
   fromAmount: string
   fromError: 'too-much' | ''
   toAmount: string
 }
 
-export interface SearchedParams {
+export type SearchedParams = {
   fromAddress: string
   toAddress: string
 }

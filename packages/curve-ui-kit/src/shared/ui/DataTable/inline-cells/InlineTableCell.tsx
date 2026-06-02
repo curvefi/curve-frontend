@@ -6,7 +6,7 @@ import { applySxProps } from '@ui-kit/utils'
 
 const { Sizing, Spacing } = SizesAndSpaces
 
-interface InlineTableCellProps {
+type InlineTableCellProps = {
   children: ReactNode
   onClick?: () => void
   sx?: SxProps<Theme>

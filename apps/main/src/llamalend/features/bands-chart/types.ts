@@ -3,7 +3,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 
 export type BandsChartToken = { symbol: string; address: string } | undefined
 
-export interface ChartDataPoint {
+export type ChartDataPoint = {
   n: number
   pUpDownMedian: number
   p_up: number
@@ -21,7 +21,7 @@ export interface ChartDataPoint {
   isLiquidationBand: boolean
 }
 
-export interface BandsChartPalette {
+export type BandsChartPalette = {
   gridColor: string
   scaleLabelsColor: string
   marketBandColor: string
@@ -36,12 +36,12 @@ export interface BandsChartPalette {
   liquidationBandOutlineColor: string
 }
 
-export interface BandsPriceRange {
+export type BandsPriceRange = {
   lowerPrice: number
   upperPrice: number
 }
 
-export interface BandsRangeOverlay {
+export type BandsRangeOverlay = {
   variant: 'current' | 'new'
   lowerPrice: number
   upperPrice: number
@@ -57,7 +57,7 @@ export type UserBandsPriceRange = {
   lowerBandPriceDown: number
 } | null
 
-export interface DerivedChartData {
+export type DerivedChartData = {
   yAxisData: number[]
   marketData: number[]
   userCollateralData: number[]
@@ -94,7 +94,7 @@ export type BandsChartNativeMarkLineData = [
   { coord: [number, number]; lineStyle?: unknown },
 ][]
 
-interface BandsChartSeriesBase {
+type BandsChartSeriesBase = {
   name: string
   type: 'custom'
 }
@@ -122,12 +122,12 @@ export type BandsChartOption = Omit<EChartsOption, 'series'> & {
   series?: BandsChartSeries[]
 }
 
-export interface BandsBalances {
+export type BandsBalances = {
   [band: number]: { borrowed: string; collateral: string }
 }
 export type BandsBalancesArr = { borrowed: string; collateral: string; band: number }[]
 
-export interface FetchedBandsBalances {
+export type FetchedBandsBalances = {
   borrowed: Decimal
   collateral: Decimal
   collateralUsd: number

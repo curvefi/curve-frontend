@@ -3,11 +3,11 @@ import { BoxProps } from '@ui/Box/types'
 
 export type AlertType = 'info' | 'warning' | 'error' | 'danger' | ''
 
-export interface AlertBoxProps extends BoxProps {
+export type AlertBoxProps = {
   children?: ReactNode
   alertType: AlertType
   className?: string
   title?: string
   limitHeight?: boolean
   handleBtnClose?: () => void
-}
+} & BoxProps

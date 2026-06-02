@@ -4,7 +4,7 @@ import LinkMui from '@mui/material/Link'
 import type { AppName } from '@ui-kit/shared/routes'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 
-export interface LinkProps {
+export type LinkProps = {
   label: string
   href: string
   icon?: ReactNode

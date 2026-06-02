@@ -1,7 +1,7 @@
 import '@mui/material/CardHeader'
 
 declare module '@mui/material/CardHeader' {
-  export interface CardHeaderOwnProps {
+  export type CardHeaderOwnProps = {
     size?: 'small' | 'inline'
   }
 }

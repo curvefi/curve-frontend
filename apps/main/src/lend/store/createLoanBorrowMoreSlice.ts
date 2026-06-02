@@ -25,7 +25,7 @@ import { refetchUserMarket } from '../queries/refetchUserMarket'
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
 
-interface SliceState {
+type SliceState = {
   activeKey: string
   activeKeyMax: string
   detailInfo: { [activeKey: string]: FormDetailInfo }
@@ -39,7 +39,7 @@ interface SliceState {
 const sliceKey = 'loanBorrowMore'
 
 // prettier-ignore
-export interface LoanBorrowMoreSlice {
+export type LoanBorrowMoreSlice = {
   [sliceKey]: SliceState & {
     fetchMaxRecv(activeKeyMax: string, api: Api, market: LendMarketTemplate, isLeverage: boolean): Promise<void>
     refetchMaxRecv(market: LendMarketTemplate | undefined, isLeverage: boolean): Promise<string>

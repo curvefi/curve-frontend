@@ -7,7 +7,7 @@ import { type RoutesQuery } from '../routes/routes.schemas'
 
 const { ENSO_API_URL = 'https://api.enso.finance', ENSO_API_KEY } = process.env
 
-interface EnsoRouteResponse {
+type EnsoRouteResponse = {
   gas: string
   amountOut: Decimal
   priceImpact: number | null

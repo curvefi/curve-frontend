@@ -37,7 +37,7 @@ import { fetchPoolsBlacklist } from '../queries/pools-blacklist.query'
 type StateKey = keyof typeof DEFAULT_STATE
 const { chunk, countBy, groupBy, isNaN } = lodash
 
-interface SliceState {
+type SliceState = {
   poolsMapper: { [chainId: string]: PoolDataMapper }
   currencyReserves: CurrencyReservesMapper
   haveAllPools: { [chainId: string]: boolean }
@@ -56,7 +56,7 @@ interface SliceState {
 
 const sliceKey = 'pools'
 
-export interface PoolsSlice {
+export type PoolsSlice = {
   [sliceKey]: SliceState & {
     fetchPools(
       curve: CurveApi,

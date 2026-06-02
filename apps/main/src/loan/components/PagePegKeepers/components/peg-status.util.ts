@@ -1,7 +1,7 @@
 import type { ChipColors } from '@ui-kit/themes/components/chip'
 import type { PegKeeperDetails } from '../types'
 
-export interface PegStatus {
+export type PegStatus = {
   label: 'loading' | 'pegged' | 'overpegged' | 'underpegged'
   color: ChipColors
 }

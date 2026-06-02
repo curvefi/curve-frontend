@@ -14,7 +14,7 @@ import { setMissingProvider } from '@ui-kit/utils/store.util'
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
 
-interface SliceState {
+type SliceState = {
   formEstGas: FormEstGas
   formStatus: FormStatus
   liquidationAmt: string
@@ -22,7 +22,7 @@ interface SliceState {
 
 const sliceKey = 'loanLiquidate'
 
-export interface LoanLiquidateSlice {
+export type LoanLiquidateSlice = {
   [sliceKey]: SliceState & {
     fetchEstGasApproval(chainId: ChainId, llamma: Llamma, maxSlippage: string, formStatus: FormStatus): Promise<void>
     fetchTokensToLiquidate(

@@ -16,7 +16,7 @@ import { refetchUserMarket } from '../queries/refetchUserMarket'
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
 
-interface SliceState {
+type SliceState = {
   activeKey: string
   detailInfo: { [activeKey: string]: FormDetailInfo }
   formEstGas: { [activeKey: string]: FormEstGas }
@@ -27,7 +27,7 @@ interface SliceState {
 const sliceKey = 'loanCollateralAdd'
 
 // prettier-ignore
-export interface LoanCollateralAddSlice {
+export type LoanCollateralAddSlice = {
   [sliceKey]: SliceState & {
     fetchDetailInfo(activeKey: string, api: Api, market: LendMarketTemplate): Promise<void>
     fetchEstGasApproval(activeKey: string, api: Api, market: LendMarketTemplate): Promise<void>

@@ -55,7 +55,7 @@ const getBasepoolCoins = (value: string, basePools: BasePool[], tokenA: TokenSta
   return basePoolCoins
 }
 
-interface Props {
+type Props = {
   curve: CurveApi
   haveSigner: boolean
   chainId: ChainId

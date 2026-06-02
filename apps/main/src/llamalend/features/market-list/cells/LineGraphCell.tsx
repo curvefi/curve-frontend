@@ -32,7 +32,7 @@ const calculateDomain =
     return [first - diff, first + diff]
   }
 
-interface RateCellProps {
+type RateCellProps = {
   market: LlamaMarket
   type: MarketRateType
   graphSize?: typeof defaultGraphSize

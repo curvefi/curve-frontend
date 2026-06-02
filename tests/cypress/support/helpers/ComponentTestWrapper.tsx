@@ -9,7 +9,7 @@ import { Toast } from '@ui-kit/widgets/Toast'
 
 export type Config = ResolvedRegister['config']
 
-interface Props {
+type Props = {
   config?: Config
   children: ReactElement
   autoConnect?: boolean

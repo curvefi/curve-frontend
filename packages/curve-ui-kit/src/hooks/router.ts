@@ -6,7 +6,7 @@ import {
   useParams as useTanstackParams,
 } from '@tanstack/react-router'
 
-interface NavigateOptions {
+type NavigateOptions = {
   replace?: boolean
   resetScroll?: boolean
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

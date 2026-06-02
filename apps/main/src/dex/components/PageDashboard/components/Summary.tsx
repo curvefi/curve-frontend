@@ -164,7 +164,7 @@ const TitleWrapper = styled.div`
   }
 `
 
-interface SummarySpinnerWrapperProps {
+type SummarySpinnerWrapperProps = {
   isMain?: boolean
 }
 // eslint-disable-next-line react-refresh/only-export-components

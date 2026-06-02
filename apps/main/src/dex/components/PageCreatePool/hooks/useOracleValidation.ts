@@ -6,7 +6,7 @@ import { validateOracleFunction } from '@/dex/components/PageCreatePool/utils'
 import { useStore } from '@/dex/store/useStore'
 import type { Address } from '@primitives/address.utils'
 
-interface UseOracleValidationParams {
+type UseOracleValidationParams = {
   token: TokenState
   tokenId: TokenId
 }

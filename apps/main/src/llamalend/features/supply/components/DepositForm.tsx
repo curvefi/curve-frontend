@@ -12,7 +12,7 @@ import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { useDepositForm } from '../hooks/useDepositForm'
 import { DepositSupplyInfoList } from './DepositSupplyInfoList'
 
-export interface DepositFormProps<ChainId extends IChainId> {
+export type DepositFormProps<ChainId extends IChainId> = {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId

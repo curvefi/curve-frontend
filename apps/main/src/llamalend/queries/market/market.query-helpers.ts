@@ -26,11 +26,11 @@ export const getLoanImplementation = (marketId: string | LlamaMarketTemplate) =>
   return market instanceof LendMarketTemplate ? market.loan : market
 }
 
-interface LendBalances {
+type LendBalances = {
   collateral: string
   borrowed: string
 }
-interface MintBalances {
+type MintBalances = {
   collateral: string
   stablecoin: string
 }

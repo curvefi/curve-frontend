@@ -3,7 +3,7 @@ import { styled } from 'styled-components'
 import { Icon } from '@ui/Icon'
 import { IconButton } from '@ui/IconButton'
 
-interface Props {
+type Props = {
   message: string
   onClick?: (e?: MouseEvent) => void
 }

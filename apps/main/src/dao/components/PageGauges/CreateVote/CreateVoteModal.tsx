@@ -22,7 +22,7 @@ import { useCreateVoteForm } from './useCreateVoteForm'
 
 const { Spacing } = SizesAndSpaces
 
-interface CreateVoteModalProps {
+type CreateVoteModalProps = {
   isOpen: boolean
   onClose: () => void
 }

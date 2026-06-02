@@ -11,7 +11,7 @@ import { TIME_FRAMES } from '@ui-kit/lib/model'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { shortenAddress } from '@ui-kit/utils'
 
-interface ProposalInformationProps {
+type ProposalInformationProps = {
   proposal: ProposalData | null
 }
 

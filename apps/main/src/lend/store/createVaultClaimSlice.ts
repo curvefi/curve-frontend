@@ -14,14 +14,14 @@ const { cloneDeep, merge } = lodash
 
 const sliceKey = 'vaultClaim'
 
-interface SliceState {
+type SliceState = {
   claimable: { [userActiveKey: string]: MarketClaimable }
   formEstGas: { [userActiveKey: string]: FormEstGas }
   formStatus: FormStatus
 }
 
 // prettier-ignore
-export interface VaultClaimSlice {
+export type VaultClaimSlice = {
   [sliceKey]: SliceState & {
     fetchClaimable(userActiveKey: string, api: Api, market: LendMarketTemplate): Promise<void>
     setFormValues(userActiveKey: string, api: Api | null, market: LendMarketTemplate | undefined): Promise<void>

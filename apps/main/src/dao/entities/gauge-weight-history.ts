@@ -7,7 +7,7 @@ import { createValidationSuite, type FieldsOf } from '@ui-kit/lib/validation'
 
 export type { WeightHistory as GaugeWeightHistoryData } from '@curvefi/prices-api/gauge'
 
-interface Query {
+type Query = {
   gaugeAddress: Address
 }
 type QueryParams = FieldsOf<Query>

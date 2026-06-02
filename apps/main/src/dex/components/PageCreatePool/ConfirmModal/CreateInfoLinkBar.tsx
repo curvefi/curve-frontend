@@ -2,14 +2,14 @@ import { styled } from 'styled-components'
 import { RCExternal } from '@ui/images'
 import { ExternalLink } from '@ui/Link/ExternalLink'
 
-interface Props {
+type Props = {
   description: string
   link?: string
   theme?: 'plain'
   className?: string
 }
 
-interface StylesProps {
+type StylesProps = {
   theme?: 'plain'
 }
 

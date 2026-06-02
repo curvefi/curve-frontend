@@ -16,7 +16,7 @@ import { ChainId } from '@/dex/types/main.types'
 import { Box } from '@ui/Box/Box'
 import { t } from '@ui-kit/lib/i18n'
 
-interface Props {
+type Props = {
   chainId: ChainId
 }
 

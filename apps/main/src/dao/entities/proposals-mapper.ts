@@ -13,7 +13,7 @@ export type ProposalData = Omit<Proposal, 'timestamp'> & {
   timestamp: number
 }
 
-interface ProposalsMapper {
+type ProposalsMapper = {
   [voteId: string]: ProposalData
 }
 

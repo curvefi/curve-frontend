@@ -2,7 +2,7 @@ import type { TenderlyAccount } from './account'
 import type { TestnetProps } from './types'
 
 /** Implemented as per https://docs.tenderly.co/reference/api#/operations/getVnet */
-export interface GetVirtualTestnetOptions {
+export type GetVirtualTestnetOptions = {
   /** @see {@link TestnetProps.id} for complete documentation */
   vnetId: TestnetProps['id']
 }

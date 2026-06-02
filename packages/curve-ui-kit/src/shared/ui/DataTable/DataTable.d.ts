@@ -9,7 +9,7 @@ import type { TooltipProps } from '../Tooltip'
  * Extend the tanstack ColumnMeta interface to add our custom properties
  */
 declare module '@tanstack/react-table' {
-  interface ColumnMeta<TData extends RowData, TValue> {
+  type ColumnMeta<TData extends RowData, TValue> = {
     type?: 'numeric' // aligns cell content to the right
     unit?: Unit // used when displaying the filter's serialized value
     hidden?: boolean // todo: get rid of this property, use column visibility, it breaks e.g. column.getIsLastColumn()

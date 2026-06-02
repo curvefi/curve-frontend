@@ -13,16 +13,16 @@ import { t } from '@ui-kit/lib/i18n'
 import { formatNumber } from '@ui-kit/utils'
 import { tooltipProps } from '../utils'
 
-interface TotalOtherProfit {
+type TotalOtherProfit = {
   [token: string]: { symbol: string; day: number; price: number }
 }
 
-interface TotalAll {
+type TotalAll = {
   tokens: TotalOtherProfit
   totalUsd: number
 }
 
-interface Props {
+type Props = {
   title?: string
 }
 

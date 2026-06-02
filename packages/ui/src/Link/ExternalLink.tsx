@@ -3,9 +3,10 @@ import { styled } from 'styled-components'
 import type { LinkProps } from '@ui/Link/styles'
 import { linkStyles } from '@ui/Link/styles'
 
-export interface ExternalLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement>, LinkProps {
+export type ExternalLinkProps = {
   isNumber?: boolean
-}
+} & AnchorHTMLAttributes<HTMLAnchorElement> &
+  LinkProps
 
 export function ExternalLink({ className, children, ...props }: ExternalLinkProps) {
   return (

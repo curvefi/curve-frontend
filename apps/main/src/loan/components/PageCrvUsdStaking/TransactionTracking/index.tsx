@@ -2,7 +2,7 @@ import { useStore } from '@/loan/store/useStore'
 import { DepositTracking } from './DepositTracking'
 import { WithdrawTracking } from './WithdrawTracking'
 
-interface TransactionTrackingProps {
+type TransactionTrackingProps = {
   className?: string
   approved?: boolean
 }

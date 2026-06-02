@@ -4,7 +4,7 @@ import { useWallet } from '@ui-kit/features/connect-wallet'
 import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
 import { t } from '@ui-kit/lib/i18n'
 
-interface Props {
+type Props = {
   canRebalance: boolean
   isRebalancing: boolean
   onRebalance: () => void

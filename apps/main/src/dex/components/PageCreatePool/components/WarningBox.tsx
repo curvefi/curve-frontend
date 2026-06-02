@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 import { styled } from 'styled-components'
 import { Icon } from '@ui/Icon'
 
-interface Props {
+type Props = {
   message: string
   children?: ReactNode
   informational?: boolean

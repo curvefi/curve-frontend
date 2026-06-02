@@ -9,7 +9,7 @@ import { SizesAndSpaces } from '../design/1_sizes_spaces'
 
 const { IconSize, SelectSize, SelectSpacing } = SizesAndSpaces
 
-interface SelectSizeDefinition {
+type SelectSizeDefinition = {
   height: string
   iconSize: Responsive
   iconPaddingRight: string

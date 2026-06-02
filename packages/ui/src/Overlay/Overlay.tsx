@@ -3,7 +3,7 @@ import { styled } from 'styled-components'
 import { FocusScope } from '@react-aria/focus'
 import { OverlayContainer, usePreventScroll } from '@react-aria/overlays'
 
-interface Props {
+type Props = {
   children: ReactNode
   isOpen: boolean
 }
@@ -21,7 +21,7 @@ export const Overlay = ({ children, isOpen, ...rest }: Props) => {
   )
 }
 
-interface StyledOverlayProps {
+type StyledOverlayProps = {
   isOpen: boolean
 }
 

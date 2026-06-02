@@ -11,7 +11,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-interface AddressCellProps {
+type AddressCellProps = {
   /** The address to display */
   address: string
   /** Optional label to display above the address */

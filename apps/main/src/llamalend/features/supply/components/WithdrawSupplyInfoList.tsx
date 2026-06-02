@@ -12,7 +12,7 @@ import { mapQuery, q } from '@ui-kit/types/util'
 import { decimalMinus } from '@ui-kit/utils'
 import { useVaultUserBalances } from '../hooks/useVaultUserBalances'
 
-interface WithdrawSupplyInfoListProps<ChainId extends IChainId> {
+type WithdrawSupplyInfoListProps<ChainId extends IChainId> = {
   params: WithdrawParams<ChainId>
   networks: NetworkDict<ChainId>
   tokens: { borrowToken: Token | undefined }

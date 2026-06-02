@@ -22,7 +22,7 @@ import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { copyToClipboard, formatNumber, amount } from '@ui-kit/utils'
 
-interface RewardsProps {
+type RewardsProps = {
   chainId: ChainId
   poolData: PoolData
   rewardsApy: RewardsApy | undefined

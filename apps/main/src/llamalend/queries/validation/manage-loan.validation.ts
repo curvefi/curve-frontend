@@ -19,7 +19,7 @@ import { evmAddressValidationGroup } from '@ui-kit/lib/model/query/evm-address-v
 import { marketIdValidationGroup, marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 import type { UserMarketParams } from '@ui-kit/lib/model/query/root-keys'
 
-export interface CollateralForm {
+export type CollateralForm = {
   userCollateral: Decimal | undefined
   maxCollateral: Decimal | undefined
 }

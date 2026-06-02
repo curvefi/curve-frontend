@@ -1,4 +1,4 @@
-export interface UnitOptions {
+export type UnitOptions = {
   symbol: string
   position: 'prefix' | 'suffix'
 }

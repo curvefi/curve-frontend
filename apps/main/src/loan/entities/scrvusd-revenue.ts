@@ -3,14 +3,14 @@ import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { weiToEther } from '@ui-kit/utils'
 
-interface Epoch {
+type Epoch = {
   startDate: Date
   endDate: Date
   weeklyRevenue: number
   data: Revenue[]
 }
 
-export interface ScrvUsdRevenue {
+export type ScrvUsdRevenue = {
   totalDistributed: string
   epochs: Epoch[]
   history: Revenue[]

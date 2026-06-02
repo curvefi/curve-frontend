@@ -5,15 +5,15 @@ import * as Schema from './schema'
 
 export type * from './schema'
 
-interface PoolParams {
+type PoolParams = {
   chain: Chain
   poolAddress: Address
 }
-interface WindowParams {
+type WindowParams = {
   start?: number
   end?: number
 }
-interface PageParams {
+type PageParams = {
   page?: number
   pageSize?: number
 }

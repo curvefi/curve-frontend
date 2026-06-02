@@ -57,7 +57,7 @@ const BannerIcons: Record<BannerIcons, ReactNode> = {
   llama: <LlamaIcon sx={IconSx} />,
 }
 
-export interface BannerProps {
+export type BannerProps = {
   onClick?: () => void
   buttonText?: string
   children: ReactNode

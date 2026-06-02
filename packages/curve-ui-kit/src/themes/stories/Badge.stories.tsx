@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { type BadgeProps, Badge } from '@ui-kit/shared/ui/Badge'
 
-interface BadgeStoryProps {
+type BadgeStoryProps = {
   color: BadgeProps['color']
 }
 

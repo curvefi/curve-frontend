@@ -10,7 +10,7 @@ import { shortenAddress } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
-interface Props {
+type Props = {
   walletAddress?: Address
   onClose: () => void
 }

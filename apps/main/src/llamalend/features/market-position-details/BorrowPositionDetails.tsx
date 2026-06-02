@@ -10,7 +10,7 @@ import { HealthDetails } from './HealthDetails'
 
 const { Spacing } = SizesAndSpaces
 
-export interface BorrowPositionDetailsProps {
+export type BorrowPositionDetailsProps = {
   params: UserMarketParams
   tokens: Partial<MarketTokens>
 }

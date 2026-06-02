@@ -6,7 +6,7 @@ import { endpointTestSeed } from './seeds'
 
 export { endpointId, type EndpointId, type EndpointModule }
 
-interface EndpointCase {
+type EndpointCase = {
   functionName: string
   labelSuffix?: string
   run: () => Promise<unknown>

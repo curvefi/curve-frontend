@@ -6,7 +6,7 @@ import { formatNumber, amount } from '@ui-kit/utils'
 import { ChipVolatileBaseApy } from './ChipVolatileBaseApy'
 import { TooltipBaseApy } from './TooltipBaseApy'
 
-interface Props {
+type Props = {
   base: RewardBase | undefined
   isHighlight: boolean
   poolData: (PoolData | PoolDataCache) | undefined

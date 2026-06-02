@@ -13,7 +13,7 @@ export enum MarketRateType {
   Supply = 'Supply',
 }
 
-export interface ExtraIncentive {
+export type ExtraIncentive = {
   title: string
   percentage: number
   address: string

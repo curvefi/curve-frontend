@@ -16,7 +16,7 @@ import { getPriceImpactSeverity } from '@ui-kit/widgets/DetailPageLayout/price-i
 
 type FormErrors<Field extends string> = readonly (readonly [Field, string])[]
 
-interface FormAlertProps<Field extends string> {
+type FormAlertProps<Field extends string> = {
   error: Error | null
   formErrors: FormErrors<Field> // list of all form errors
   handledErrors: Field[] // list of fields that have their errors already handled/displayed elsewhere

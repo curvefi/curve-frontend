@@ -9,7 +9,7 @@ import { DistributionsChartTooltip } from './DistributionsChartTooltip'
 
 const { FontSize } = SizesAndSpaces
 
-interface RevenueDistributionsBarChartProps {
+type RevenueDistributionsBarChartProps = {
   data: ScrvUsdRevenue | null
   height: number
 }

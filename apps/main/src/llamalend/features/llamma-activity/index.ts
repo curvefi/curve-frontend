@@ -6,7 +6,7 @@ import { type BaseConfig } from '@ui/utils'
 export { LlammaActivityEvents } from './LlammaActivityEvents'
 export { LlammaActivityTrades } from './LlammaActivityTrades'
 
-export interface LlammaActivityProps {
+export type LlammaActivityProps = {
   isMarketAvailable: boolean
   network: Chain | undefined
   collateralToken: Token | undefined

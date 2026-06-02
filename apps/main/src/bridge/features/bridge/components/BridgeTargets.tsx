@@ -87,7 +87,7 @@ const SelectNetworkButton = ({
   />
 )
 
-export interface BridgeTargetsProps {
+export type BridgeTargetsProps = {
   /** List of networks available as bridge sources. */
   networks: NetworkDef[]
   /** Currently selected source chain id. At the moment of writing the parent component reads this from the URL. */

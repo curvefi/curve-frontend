@@ -16,7 +16,7 @@ import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { DEX_ROUTES } from '@ui-kit/shared/routes'
 
-interface Props {
+type Props = {
   setStableFeeValue: Dispatch<SetStateAction<string>>
   setMidValue: Dispatch<SetStateAction<string>>
   setOutValue: Dispatch<SetStateAction<string>>

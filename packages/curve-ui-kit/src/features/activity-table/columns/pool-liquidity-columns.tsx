@@ -18,7 +18,7 @@ export const getTokenAmountColumnId = (tokenIndex: number): string => `tokenAmou
 
 const columnHelper = createColumnHelper<PoolLiquidityRow>()
 
-interface CreatePoolLiquidityColumnsParams {
+type CreatePoolLiquidityColumnsParams = {
   poolTokens: Token[]
 }
 

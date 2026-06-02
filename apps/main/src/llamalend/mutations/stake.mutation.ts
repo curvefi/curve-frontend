@@ -16,7 +16,7 @@ import { rootKeys } from '@ui-kit/lib/model'
 import { waitForApproval } from '@ui-kit/utils'
 import { formatTokenAmounts } from '../llama.utils'
 
-interface StakeOptions {
+type StakeOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
   onReset: () => void

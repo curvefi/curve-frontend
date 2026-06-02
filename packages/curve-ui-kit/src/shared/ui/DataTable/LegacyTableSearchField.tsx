@@ -11,7 +11,7 @@ import { LegacyTableButton } from './LegacyTableButton'
 
 const { ButtonSize } = SizesAndSpaces
 
-interface Props {
+type Props = {
   value: string
   placeholder?: string
   onChange: (value: string) => void

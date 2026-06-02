@@ -1,7 +1,7 @@
 import '@mui/material/CardContent'
 
 declare module '@mui/material/CardContent' {
-  export interface CardContentOwnProps {
+  export type CardContentOwnProps = {
     size?: 'small' | 'inline'
   }
 }

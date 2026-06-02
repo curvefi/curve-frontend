@@ -4,7 +4,7 @@ import type { FieldsOf } from '@ui-kit/lib'
 import type { UserMarketParams, UserMarketQuery } from '@ui-kit/lib/model'
 import type { MakeOptional } from '@ui-kit/types/util'
 
-export interface CompleteRepayForm {
+export type CompleteRepayForm = {
   userCollateral: Decimal
   stateCollateral: Decimal
   userBorrowed: Decimal
@@ -12,7 +12,7 @@ export interface CompleteRepayForm {
   routeId: string | undefined
 }
 
-export interface RepayCalculatedValues {
+export type RepayCalculatedValues = {
   maxCollateral: Decimal | undefined
   maxBorrowed: Decimal | undefined
   maxStateCollateral: Decimal | undefined

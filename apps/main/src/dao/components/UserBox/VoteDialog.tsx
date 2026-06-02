@@ -14,7 +14,7 @@ import { Icon } from '@ui/Icon'
 import { t } from '@ui-kit/lib/i18n'
 import { formatNumber } from '@ui-kit/utils'
 
-interface Props {
+type Props = {
   userAddress?: Address
   activeProposal?: ActiveProposal
   proposalId: number

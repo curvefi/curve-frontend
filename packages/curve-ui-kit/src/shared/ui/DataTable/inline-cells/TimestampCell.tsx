@@ -9,7 +9,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-interface TimestampCellProps {
+type TimestampCellProps = {
   timestamp: Date
   txUrl?: string | null
   align?: 'start' | 'end'

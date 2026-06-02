@@ -4,7 +4,7 @@ import { LinearProgress } from '@ui-kit/shared/ui/LinearProgress'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { HEALTH_THRESHOLDS, getHealthTrackColor } from './'
 
-interface HealthBarProps {
+type HealthBarProps = {
   health: number | undefined | null
   small?: boolean
   softLiquidation: boolean | undefined | null

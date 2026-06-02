@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
 import '@mui/material/IconButton'
 import { DesignSystem } from '../../design'
 
@@ -8,14 +7,14 @@ declare module '@mui/material/IconButton' {
     [K in keyof Buttons as Lowercase<string & K>]: true
   }
 
-  export interface IconButtonPropsColorOverrides extends ButtonColors {}
+  export type IconButtonPropsColorOverrides = {} & ButtonColors
 
-  export interface IconButtonPropsSizeOverrides {
+  export type IconButtonPropsSizeOverrides = {
     extraExtraSmall: true
     extraSmall: true
   }
 
-  export interface IconButtonClasses {
+  export type IconButtonClasses = {
     sizeExtraExtraSmall: string
     sizeExtraSmall: string
   }

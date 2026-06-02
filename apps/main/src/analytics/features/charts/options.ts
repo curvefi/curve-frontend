@@ -30,7 +30,7 @@ export const createPalette = ({ theme }: { theme: Theme }) => ({
 type ChartPalette = ReturnType<typeof createPalette>
 
 /** Cast is necessary as the typing of echarts is not in sync with the actual data for some reason. */
-interface TooltipParam {
+type TooltipParam = {
   axisValue: string
   marker: string
   seriesName: string

@@ -10,7 +10,7 @@ import { BalanceButton } from './BalanceButton'
 
 const { Spacing, Sizing } = SizesAndSpaces
 
-interface HelperMessageProps {
+type HelperMessageProps = {
   message: string | ReactNode
   isError?: boolean
   /** Callback when a number in the error is clicked. Used to set the max value when balance error is shown. */

@@ -3,7 +3,7 @@ import { styled } from 'styled-components'
 
 type Size = 'md' | 'lg'
 
-interface Props {
+type Props = {
   title: string
   size?: Size
   children: ReactNode

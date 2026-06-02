@@ -44,7 +44,7 @@ export type Size = 'sm' | 'mui-sm' | 'mui-md' | 'xs' | 'lg' | 'xl'
 
 export const DEFAULT_SIZE: Size = 'sm'
 
-export interface TokenIconProps {
+export type TokenIconProps = {
   /** Additional CSS class name to apply to the token icon */
   className?: string
   /** Blockchain ID used for constructing the image URL */

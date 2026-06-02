@@ -11,7 +11,7 @@ import {
 
 type StateKey = keyof typeof DEFAULT_STATE
 
-interface SliceState {
+type SliceState = {
   userLocksSortBy: {
     key: UserLocksSortBy
     order: SortDirection
@@ -33,7 +33,7 @@ interface SliceState {
 const sliceKey = 'user'
 
 // prettier-ignore
-export interface UserSlice {
+export type UserSlice = {
   [sliceKey]: SliceState & {
     setUserProposalVotesSortBy(sortBy: UserProposalVotesSortBy): void
     setUserLocksSortBy: (sortBy: UserLocksSortBy) => void

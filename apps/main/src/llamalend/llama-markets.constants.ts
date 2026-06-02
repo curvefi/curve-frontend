@@ -165,7 +165,7 @@ export const MARKETS_ALERTS: Record<
   Mint: {},
 }
 
-export interface DeprecatedMarketAlert {
+export type DeprecatedMarketAlert = {
   message: string
   url?: string
 }

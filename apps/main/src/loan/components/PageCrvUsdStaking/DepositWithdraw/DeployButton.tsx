@@ -7,7 +7,7 @@ import { useStore } from '@/loan/store/useStore'
 import { Button } from '@ui/Button'
 import { t } from '@ui-kit/lib/i18n'
 
-interface DeployButtonProps {
+type DeployButtonProps = {
   className?: string
 }
 

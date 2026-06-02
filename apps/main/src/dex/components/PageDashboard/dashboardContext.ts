@@ -3,7 +3,7 @@ import { DashboardDataMapper, FormValues } from '@/dex/components/PageDashboard/
 import { ChainId, CurveApi } from '@/dex/types/main.types'
 import { assert } from '@primitives/objects.utils'
 
-interface DashboardContextType {
+type DashboardContextType = {
   activeKey: string
   rChainId: ChainId
   isLite: boolean

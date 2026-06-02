@@ -15,7 +15,7 @@ import {
 import type { CreatePoolSlice } from '@/dex/store/createCreatePoolSlice'
 import type { Decimal } from '@primitives/decimal.utils'
 
-export interface CreateToken {
+export type CreateToken = {
   address: string
   symbol: string
   ethAddress?: string
@@ -26,7 +26,7 @@ export interface CreateToken {
   basePool?: boolean
 }
 
-export interface OracleType {
+export type OracleType = {
   isLoading: boolean
   error: ReadContractErrorType | null
   isSuccess: boolean
@@ -36,14 +36,14 @@ export interface OracleType {
   decimals: number | undefined
 }
 
-export interface Erc4626Type {
+export type Erc4626Type = {
   isErc4626: boolean | undefined
   isLoading: boolean
   error: ReadContractErrorType | null
   isSuccess: boolean
 }
 
-export interface TokenState {
+export type TokenState = {
   address: string
   symbol: string
   ngAssetType: NgAssetType
@@ -54,7 +54,7 @@ export interface TokenState {
 
 export type TokensInPoolState = CreatePoolSlice['createPool']['tokensInPool']
 
-export interface SelectTokenFormValues {
+export type SelectTokenFormValues = {
   [TOKEN_A]: TokenState
   [TOKEN_B]: TokenState
   [TOKEN_C]: TokenState

@@ -3,7 +3,7 @@ import { ProposalListFilter, ProposalListFilterItem } from '@/dao/types/dao.type
 import { Button } from '@ui/Button'
 import { Spinner } from '@ui/Spinner'
 
-interface Props {
+type Props = {
   className?: string
   filters: ProposalListFilterItem[]
   activeFilter: ProposalListFilter

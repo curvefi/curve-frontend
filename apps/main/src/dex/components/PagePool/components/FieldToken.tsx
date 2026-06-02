@@ -6,7 +6,7 @@ import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { decimal, shortenAddress } from '@ui-kit/utils'
 
-interface Props {
+type Props = {
   idx: number
   amount: string
   balance: string | undefined

@@ -23,7 +23,7 @@ type GasInfoQuery<T = number> = ChainQuery<T> & {
 
 type GasInfoParams<T = number> = FieldsOf<GasInfoQuery<T>>
 
-export interface GasInfo {
+export type GasInfo = {
   gasPrice: number | null
   max: number[]
   priority: number[]
@@ -297,12 +297,12 @@ async function parseGasInfo(curve: AnyCurveApi, provider: Provider, l2GasUrl?: s
   }
 }
 
-interface Network {
+type Network = {
   gasPricesUrl: string
   gasL2: boolean
 }
 
-export interface GasInfoQueryOptions<TChainId extends number = number> {
+export type GasInfoQueryOptions<TChainId extends number = number> = {
   chainId?: TChainId | null
   networks: Record<TChainId, Network>
 }
@@ -436,11 +436,11 @@ type NetworkDict = Record<number, BaseConfig<string, number>>
 
 type EstimateValue = number | number[] | null | undefined
 
-interface WithOptionalChainId {
+type WithOptionalChainId = {
   chainId?: number | null | undefined
 }
 
-interface ApprovedEstimateGasHookConfig<Query, Estimate extends EstimateValue> {
+type ApprovedEstimateGasHookConfig<Query, Estimate extends EstimateValue> = {
   useIsApproved: (query: Query, enabled?: boolean) => QueryResult<boolean>
   useApproveEstimate: (query: Query, enabled?: boolean) => QueryResult<Estimate>
   useActionEstimate: (query: Query, enabled?: boolean) => QueryResult<Estimate>

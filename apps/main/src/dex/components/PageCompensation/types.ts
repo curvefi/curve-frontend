@@ -1,6 +1,6 @@
 import type { Contract } from 'ethers'
 
-export interface EtherContract {
+export type EtherContract = {
   contractAddress: string
   contract: Contract
   poolName: string
@@ -8,14 +8,14 @@ export interface EtherContract {
   token: string
 }
 
-export interface Balances {
+export type Balances = {
   [key: string]: {
     poolId: string
     balance: number
   }[]
 }
 
-export interface VestedTotals {
+export type VestedTotals = {
   [key: string]: {
     poolId: string
     amount: number

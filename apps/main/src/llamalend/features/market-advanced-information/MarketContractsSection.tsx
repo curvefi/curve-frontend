@@ -21,14 +21,14 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 const { Spacing } = SizesAndSpaces
 
 /** Either `address` (for a link) or `fallbackValue` (e.g. gauge = zeroAddress) is provided, not both */
-interface ContractItem {
+type ContractItem = {
   key: string
   label: ReactNode
   address?: string
   fallbackValue?: ReactNode
 }
 
-interface MarketContractsProps {
+type MarketContractsProps = {
   chainId: IChainId
   market: LlamaMarketTemplate | undefined
   network: BaseConfig | undefined

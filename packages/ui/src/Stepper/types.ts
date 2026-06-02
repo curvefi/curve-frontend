@@ -2,14 +2,14 @@ import { type MouseEvent, ReactNode } from 'react'
 
 export type StepStatus = 'current' | 'pending' | 'in-progress' | 'succeeded' | 'failed'
 
-export interface StepTask {
+export type StepTask = {
   key: string
   status: StepStatus
   type: 'task'
   content: ReactNode
 }
 
-export interface StepAction {
+export type StepAction = {
   key: string
   status: StepStatus
   type: 'action'
@@ -17,7 +17,7 @@ export interface StepAction {
   onClick: () => void
 }
 
-export interface StepActionModal {
+export type StepActionModal = {
   key: string
   status: StepStatus
   type: 'action'

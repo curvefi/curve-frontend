@@ -18,7 +18,7 @@ import { useCurve } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 
-interface UsePoolActivityProps {
+type UsePoolActivityProps = {
   chainId: ChainId
   poolAddress: Address
 }

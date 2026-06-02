@@ -19,7 +19,7 @@ import { LlamaMarketType } from '@ui-kit/types/market'
 import type { Query } from '@ui-kit/types/util'
 import { requireChainId } from '@ui-kit/utils'
 
-export interface UserPositionSummaryMetric {
+export type UserPositionSummaryMetric = {
   label: string
   metric: Query<number>
 }
@@ -35,7 +35,7 @@ type BorrowStatsData = LendBorrowStatsData | MintBorrowStatsData
 type SupplyStatsData = QueryOptionsData<EarningsQueryOptions>
 type TokenPriceData = QueryOptionsData<ReturnType<typeof getTokenUsdRateQueryOptions>>
 
-interface BorrowPositionQuery {
+type BorrowPositionQuery = {
   query: StatsQueryOptions
   blockchainId: LlamaMarket['chain']
   debtTokenAddress: Address
@@ -43,13 +43,13 @@ interface BorrowPositionQuery {
   marketType: LlamaMarketType
 }
 
-interface SupplyPositionQuery {
+type SupplyPositionQuery = {
   query: EarningsQueryOptions
   blockchainId: LlamaMarket['chain']
   suppliedTokenAddress: Address
 }
 
-interface TokenPriceEntry {
+type TokenPriceEntry = {
   chainId: number
   tokenAddress: Address
 }

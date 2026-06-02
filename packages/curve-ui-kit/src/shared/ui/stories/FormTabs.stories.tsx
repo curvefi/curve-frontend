@@ -8,7 +8,7 @@ import { TabsSwitcherProps } from '../Tabs/TabsSwitcher'
 
 const { MaxWidth } = SizesAndSpaces
 
-interface DemoParams {
+type DemoParams = {
   availableBalance: number
   canWithdraw: boolean
   showAdvanced: boolean

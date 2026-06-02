@@ -24,7 +24,7 @@ import { breakpoints } from '@ui/utils/responsive'
 import { useParams, useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 
-interface Props {
+type Props = {
   disabled?: boolean
   blockchainId: string
   chainId: ChainId

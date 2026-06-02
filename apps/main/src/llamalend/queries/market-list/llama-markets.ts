@@ -27,12 +27,12 @@ import {
 } from './lending-vaults'
 import { getMintMarketOptions, getUserMintMarketsOptions, MintMarket } from './mint-markets'
 
-export interface Assets {
+export type Assets = {
   borrowed: AssetDetails
   collateral: AssetDetails
 }
 
-export interface AssetDetails {
+export type AssetDetails = {
   symbol: string
   address: Address
   chain: Chain
@@ -42,7 +42,7 @@ export interface AssetDetails {
   rebasingYieldApr: number | null
 }
 
-export interface LlamaMarket {
+export type LlamaMarket = {
   chain: Chain
   ammAddress: Address
   controllerAddress: Address
@@ -82,7 +82,7 @@ export interface LlamaMarket {
   favoriteKey: Address // this differs per market type; for lend markets the vault address, for mint markets the amm address
 }
 
-export interface LlamaMarketsResult {
+export type LlamaMarketsResult = {
   markets: LlamaMarket[]
   userHasPositions: Record<LlamaMarketType, Record<MarketRateType, boolean>> | null
   hasFavorites: boolean
@@ -329,7 +329,7 @@ type LlamaMarketsQueries = [
   ReturnType<typeof getUserLendingSuppliesOptions>,
   ReturnType<typeof getUserMintMarketsOptions>,
 ]
-interface LlamaMarketParams {
+type LlamaMarketParams = {
   userAddress: Address | undefined
   enableLLv2: boolean
   enableDeprecatedMarkets: boolean

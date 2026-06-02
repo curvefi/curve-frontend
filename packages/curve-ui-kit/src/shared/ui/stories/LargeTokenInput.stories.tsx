@@ -6,7 +6,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { LargeTokenInput, type LargeTokenInputRef, type LargeTokenInputProps } from '../LargeTokenInput'
 
 // Test options for token selector with corresponding pre-seeded wallet balances
-interface Token {
+type Token = {
   name: string
   walletBalance: { symbol: string; balance: Decimal; notionalValueUsd?: Decimal }
 }

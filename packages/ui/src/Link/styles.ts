@@ -2,7 +2,7 @@ import { css } from 'styled-components'
 import type { LinkSize, LinkVariant } from '@ui/Link/types'
 import { focusVisible } from '@ui/utils/sharedStyles'
 
-export interface LinkProps {
+export type LinkProps = {
   className?: string
   active?: boolean
   isDarkBg?: boolean

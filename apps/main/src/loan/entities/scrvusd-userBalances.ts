@@ -5,7 +5,7 @@ import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-valid
 import { evmAddressValidationGroup } from '@ui-kit/lib/model/query/evm-address-validation'
 import { Chain } from '@ui-kit/utils'
 
-export interface ScrvUsdUserBalances {
+export type ScrvUsdUserBalances = {
   crvUSD: string
   scrvUSD: string
 }

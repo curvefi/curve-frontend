@@ -1,12 +1,12 @@
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { HelperMessage } from '@ui-kit/shared/ui/LargeTokenInput/HelperMessage'
 
-interface ExpectedMatch {
+type ExpectedMatch = {
   raw: string
   text: string
 }
 
-interface TestCase {
+type TestCase = {
   name: string
   message: string
   expectedMatches: ExpectedMatch[]

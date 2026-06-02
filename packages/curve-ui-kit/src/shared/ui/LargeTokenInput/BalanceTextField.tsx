@@ -5,7 +5,7 @@ import { NumericTextField } from '../NumericTextField'
 
 const { AmountHeight } = SizesAndSpaces.LargeTokenInput
 
-interface BalanceTextFieldProps {
+type BalanceTextFieldProps = {
   balance: Decimal | undefined
   isError: boolean
   disabled?: boolean

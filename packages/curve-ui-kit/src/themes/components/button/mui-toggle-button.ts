@@ -8,7 +8,7 @@ import { Fonts } from '../../fonts'
 
 const { Spacing, ButtonSize, FontSize, FontWeight, LineHeight, OutlineWidth } = SizesAndSpaces
 
-interface ToggleStyle {
+type ToggleStyle = {
   Label?: string
   Fill?: string
 }
@@ -37,7 +37,7 @@ const sizeBreakpoint = (
   },
 })
 
-interface BaseButtonSize {
+type BaseButtonSize = {
   fontSize: keyof typeof FontSize
   lineHeight: keyof typeof LineHeight
 }

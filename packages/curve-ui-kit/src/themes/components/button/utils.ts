@@ -1,9 +1,9 @@
-interface ButtonStyle {
+type ButtonStyle = {
   Label?: string
   Fill?: string
   Outline?: string
 }
-interface ButtonColor {
+type ButtonColor = {
   Default: ButtonStyle
   Disabled?: ButtonStyle
   Hover: ButtonStyle

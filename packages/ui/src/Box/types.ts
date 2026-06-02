@@ -3,7 +3,7 @@ import { CSSProperties } from 'react'
 export type ValueOf<T> = T[keyof T]
 export type Variant = 'primary' | 'secondary'
 
-export interface BoxProps {
+export type BoxProps = {
   className?: string
   display?: ValueOf<Pick<CSSProperties, 'display'>>
   fillHeight?: boolean

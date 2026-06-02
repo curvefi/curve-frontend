@@ -32,7 +32,7 @@ const headerIconSize = {
 
 const layer1Fill = (t: Theme) => t.design.Layer[1].Fill
 
-interface AccordionBaseProps {
+type AccordionBaseProps = {
   /** The title displayed in the accordion header */
   title: ReactNode
   /** Optional icon to display before the title */
@@ -51,7 +51,7 @@ interface AccordionBaseProps {
   sx?: SxProps
 }
 
-interface UncontrolledAccordionProps {
+type UncontrolledAccordionProps = {
   /** Initial expanded state (uncontrolled mode) */
   defaultExpanded?: boolean
   /** Never provided in uncontrolled mode */
@@ -60,7 +60,7 @@ interface UncontrolledAccordionProps {
   toggle?: never
 }
 
-interface ControlledAccordionProps {
+type ControlledAccordionProps = {
   /** Never provided in controlled mode */
   defaultExpanded?: never
   /** Current expanded state (controlled mode) */

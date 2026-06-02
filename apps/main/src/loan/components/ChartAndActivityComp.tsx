@@ -11,7 +11,7 @@ import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useBandsChartVisible } from '@ui-kit/hooks/useLocalStorage'
 import type { Range } from '@ui-kit/types/util'
 
-interface ChartAndActivityCompProps {
+type ChartAndActivityCompProps = {
   chainId: ChainId
   market: Llamma | null
   marketId: string

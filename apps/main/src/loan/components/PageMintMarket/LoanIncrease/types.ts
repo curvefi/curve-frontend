@@ -1,6 +1,6 @@
 import type { FormStatus as Fs } from '@/loan/components/PageMintMarket/types'
 
-export interface FormValues {
+export type FormValues = {
   collateral: string
   collateralError: 'too-much' | string
   debt: string
@@ -9,6 +9,6 @@ export interface FormValues {
 
 export type StepKey = 'APPROVAL' | 'BORROW' | ''
 
-export interface FormStatus extends Fs {
+export type FormStatus = {
   step: StepKey
-}
+} & Fs

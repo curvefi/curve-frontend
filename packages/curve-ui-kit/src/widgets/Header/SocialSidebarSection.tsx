@@ -12,7 +12,7 @@ import { DodoIcon } from '@ui-kit/shared/icons/DodoIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SidebarSection } from './SidebarSection'
 
-interface SocialButtonProps {
+type SocialButtonProps = {
   label: string
   href: string
   icon: typeof SvgIcon
@@ -26,7 +26,7 @@ const SocialButton = ({ icon: Icon, href, label }: SocialButtonProps) => (
   </IconButton>
 )
 
-interface SocialSidebarSectionProps {
+type SocialSidebarSectionProps = {
   title: string
 }
 

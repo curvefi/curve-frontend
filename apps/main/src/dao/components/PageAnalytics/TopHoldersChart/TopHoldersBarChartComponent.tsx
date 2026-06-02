@@ -6,7 +6,7 @@ import type { Locker } from '@curvefi/prices-api/dao'
 import { shortenAddress, formatNumber, amount } from '@ui-kit/utils'
 import { TopHoldersBarChartTooltip as CustomTooltip } from './TopHoldersBarChartTooltip'
 
-interface TopHoldersBarChartProps {
+type TopHoldersBarChartProps = {
   data: Locker[]
   filter: TopHoldersSortBy
 }

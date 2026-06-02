@@ -23,7 +23,7 @@ import { log } from '@ui-kit/lib/logging'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
-interface SliceState {
+type SliceState = {
   detailsMapper: { [collateralId: string]: Partial<LoanDetails> }
   priceInfoMapper: { [collateralId: string]: LoanPriceInfo }
   userDetailsMapper: { [collateralId: string]: UserLoanDetails }
@@ -33,7 +33,7 @@ interface SliceState {
 
 const sliceKey = 'loans'
 
-export interface LoansSlice {
+export type LoansSlice = {
   [sliceKey]: SliceState & {
     fetchLoansDetails(curve: LlamaApi, markets: MintMarketTemplate[]): Promise<void>
     fetchLoanDetails(curve: LlamaApi, llamma: Llamma): Promise<{ loanDetails: LoanDetails; loanExists: boolean }>

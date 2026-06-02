@@ -1,11 +1,13 @@
 import type { UTCTimestamp } from 'lightweight-charts'
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface Date {
     getUTCTimestamp(): UTCTimestamp
     getLocalTimestamp(): UTCTimestamp
   }
 
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface BigInt {
     fromWei(): number
   }

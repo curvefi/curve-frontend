@@ -29,7 +29,7 @@ import { fetchUserPools } from '../queries/user-pools.query'
 type StateKey = keyof typeof DEFAULT_STATE
 const { orderBy } = lodash
 
-interface SliceState {
+type SliceState = {
   activeKey: string
   loading: boolean
   error: 'error-get-dashboard-data' | ''
@@ -46,7 +46,7 @@ interface SliceState {
 const sliceKey = 'dashboard'
 
 // prettier-ignore
-export interface DashboardSlice {
+export type DashboardSlice = {
   [sliceKey]: SliceState & {
     fetchVeCrvAndClaimables: (activeKey: string, curve: CurveApi, walletAddress: string) => Promise<void>
     fetchDashboardData: (curve: CurveApi, walletAddress: string, poolDataMapper: PoolDataMapper) => Promise<{ dashboardDataMapper: DashboardDataMapper, error: string }>

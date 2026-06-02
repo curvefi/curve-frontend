@@ -12,14 +12,14 @@ import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
 import { waitForApproval } from '@ui-kit/utils'
 
-interface ClosePositionOptions {
+type ClosePositionOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
   onReset: () => void
   userAddress: Address | undefined
 }
 
-export interface CloseLoanMutation {
+export type CloseLoanMutation = {
   slippage: Decimal
 }
 

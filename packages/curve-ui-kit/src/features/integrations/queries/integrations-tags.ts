@@ -6,7 +6,7 @@ import { queryFactory } from '@ui-kit/lib/model/query'
 
 const INTEGRATIONS_TAGS_URL = `${CURVE_CDN_URL}/curve-external-integrations/integrations-tags.json`
 
-interface IntegrationTag {
+type IntegrationTag = {
   id: string
   displayName: string
   color: string

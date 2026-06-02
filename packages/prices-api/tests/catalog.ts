@@ -7,7 +7,7 @@ import { notFalsy, notFalsyArray } from '@primitives/objects.utils'
 export type EndpointModule = string
 export type EndpointId = `${EndpointModule}.${string}`
 
-interface EndpointCatalogStatus {
+type EndpointCatalogStatus = {
   missing: EndpointId[]
   staleCases: EndpointId[]
   staleExclusions: EndpointId[]

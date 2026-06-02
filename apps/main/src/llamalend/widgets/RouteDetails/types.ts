@@ -1,11 +1,11 @@
 import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 
-export interface Hop {
+export type Hop = {
   hops: { name: string; part: number; fromTokenAddress: string; toTokenAddress: string }[][]
   part: number
 }
 
-export interface BreakdownItem {
+export type BreakdownItem = {
   $opacity?: boolean
   $isTotal?: boolean
   $minWidth?: string

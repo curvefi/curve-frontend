@@ -1,11 +1,11 @@
 import '@mui/material/Radio'
 
 declare module '@mui/material/Radio' {
-  export interface RadioPropsSizeOverrides {
+  export type RadioPropsSizeOverrides = {
     large: true
   }
 
-  export interface RadioClasses {
+  export type RadioClasses = {
     sizeLarge: string
   }
 }

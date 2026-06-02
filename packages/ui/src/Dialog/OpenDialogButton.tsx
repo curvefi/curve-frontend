@@ -8,11 +8,11 @@ import type { ButtonProps } from '@ui/Button/types'
 import { Icon } from '@ui/Icon/Icon'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 
-interface OpenDialogButtonProps extends ButtonProps {
+type OpenDialogButtonProps = {
   children: ReactNode
   overlayTriggerState: OverlayTriggerState
   showCaret?: boolean
-}
+} & ButtonProps
 
 export const OpenDialogButton = ({ children, overlayTriggerState, showCaret, ...props }: OpenDialogButtonProps) => {
   const openButtonRef = useRef<HTMLButtonElement>(null)

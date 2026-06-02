@@ -49,7 +49,7 @@ import { invalidatePoolParameters } from '../queries/pool-parameters.query'
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
 
-interface SliceState {
+type SliceState = {
   activeKey: string
   poolAddress: string
   formEstGas: { [activeKey: string]: FormEstGas }
@@ -64,7 +64,7 @@ interface SliceState {
 const sliceKey = 'poolDeposit'
 
 // prettier-ignore
-export interface PoolDepositSlice {
+export type PoolDepositSlice = {
   [sliceKey]: SliceState & {
     fetchExpected(activeKey: string, formType: FormType, pool: Pool, formValues: FormValues): Promise<void>
     fetchMaxAmount(

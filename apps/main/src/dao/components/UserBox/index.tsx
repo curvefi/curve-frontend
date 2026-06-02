@@ -9,7 +9,7 @@ import { isLoading, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { UserInformation } from './UserInformation'
 
-interface Props {
+type Props = {
   children?: ReactNode
   className?: string
   votingPower?: SnapshotVotingPower

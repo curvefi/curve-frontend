@@ -11,7 +11,7 @@ import { formatNumber } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
-interface Props {
+type Props = {
   data: ScrvUsdYieldWithAverages[]
   height: number
   visibleSeries?: YieldKeys[]

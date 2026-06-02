@@ -8,7 +8,7 @@ import type { CampaignRewards } from './types'
 
 type MerklAction = 'POOL' | 'BORROW' | 'LEND'
 
-interface MerklReward {
+type MerklReward = {
   token: {
     /** Chain id of the token. Is a number, like '1' being Ethereum mainnet */
     chainId: number
@@ -24,7 +24,7 @@ interface MerklReward {
 }
 
 /** The API response returned by the Merkl Opportunity endpoint. We only extract what we need; much more other data is returned */
-interface MerklOpportunity {
+type MerklOpportunity = {
   /** Used to generate dashboardLink */
   type: string
   /** Used to generate dashboardLink */
