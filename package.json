@@ -27,7 +27,7 @@
     "check-supply-chain": "node .github/check-supply-chain.mjs"
   },
   "devDependencies": {
-    "@commitlint/config-conventional": "20.5.3",
+    "@commitlint/config-conventional": "21.0.1",
     "@eslint-react/eslint-plugin": "5.6.6",
     "@eslint/js": "10.0.1",
     "@tanstack/eslint-plugin-query": "5.100.7",
