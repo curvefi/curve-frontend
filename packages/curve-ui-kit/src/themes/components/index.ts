@@ -76,6 +76,8 @@ export const createComponents = (
   },
   MuiFormControlLabel: {
     styleOverrides: {
+      // MUI offsets radio padding with margins; inside tight grids those margins overflow.
+      root: { '.MuiGrid-root > &': { marginInline: 0 } },
       label: {
         marginLeft: SizesAndSpaces.Spacing.xs.desktop,
         ...typography.headingXsBold,

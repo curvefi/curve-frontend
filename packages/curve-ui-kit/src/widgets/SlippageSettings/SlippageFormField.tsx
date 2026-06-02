@@ -53,7 +53,7 @@ export const SlippageFormField = ({
         data-testid="slippage-radio-group"
       >
         {presets.map((preset, i) => (
-          <Grid size={6 / presets.length} key={i}>
+          <Grid size={6 / presets.length} key={i} sx={{ display: 'flex', alignItems: 'middle' }}>
             <FormControlLabel value={preset} label={formatPercent(preset)} control={<Radio />} />
           </Grid>
         ))}
