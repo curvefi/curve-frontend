@@ -153,7 +153,7 @@ export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVe
           status: getStepStatus(formStatus.isApproved, formStatus.step === 'APPROVAL', isValid),
           type: 'action',
           content: formStatus.isApproved ? t`Spending Approved` : t`Approve Spending`,
-          onClick: () => handleBtnClickApproval(activeKey, curve, formValues),
+          onClick: () => void handleBtnClickApproval(activeKey, curve, formValues),
         },
         CREATE_LOCK: {
           key: 'CREATE_LOCK',
@@ -164,7 +164,7 @@ export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVe
           ),
           type: 'action',
           content: formStatus.formTypeCompleted === 'CREATE_LOCK' ? t`Lock Created` : t`Create Lock`,
-          onClick: () => handleBtnClickCreate(activeKey, curve, formValues),
+          onClick: () => void handleBtnClickCreate(activeKey, curve, formValues),
         },
       }
 

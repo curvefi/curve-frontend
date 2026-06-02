@@ -132,7 +132,7 @@ export const replaceNetworkInPath = (path: string, networkId: string) => {
 }
 
 export const getCurrentApp = (path: string | null): AppName => {
-  const [, app] = path?.split('/') || []
+  const [, app] = path?.split('/') ?? []
   return AppNames.includes(app as AppName) ? (app as AppName) : 'dex'
 }
 

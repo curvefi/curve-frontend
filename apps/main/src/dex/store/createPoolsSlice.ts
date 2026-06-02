@@ -128,6 +128,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
 
       // TODO: Temporary code to determine if there is an issue with getting base APY from  Kava Api (https://api.curve.finance/api/getFactoryAPYs-kava)
       const failedFetching24hOldVprice: Record<string, boolean> =
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
         chainId === ChainEnum.Kava ? await curvejsApi.network.getFailedFetching24hOldVprice() : {}
 
       const networks = await fetchNetworks()
@@ -276,6 +277,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
 
       setStateByActiveKey('rewardsApyMapper', chainId.toString(), rewardsApyMapper)
     },
+    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
     fetchMissingPoolsRewardsApy: async (chainId, poolDatas) => {
       const { rewardsApyMapper: allRewardsApyMapper, fetchPoolsRewardsApy } = get()[sliceKey]
       const rewardsApyMapper = allRewardsApyMapper[chainId] ?? {}
@@ -344,6 +346,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         }),
       )
     },
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
     fetchPricesApiCharts: async (
       chainId: ChainId,
       chartSelection: ChartSelection,
@@ -372,6 +375,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
 
       try {
         const response = await fetch(url)
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
         const responseData: LpPriceApiResponse = await response.json()
         const filteredData = responseData.data
           .filter(item => item.open !== null && item.close !== null && item.high !== null && item.low !== null)
@@ -394,6 +398,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         console.warn(error)
       }
     },
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
     fetchMorePricesApiCharts: async (
       chainId: ChainId,
       chartSelection: ChartSelection,
@@ -414,6 +419,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
 
       try {
         const response = await fetch(url)
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
         const responseData: LpPriceApiResponse = await response.json()
         const filteredData = responseData.data
           .filter(item => item.open !== null && item.close !== null && item.high !== null && item.low !== null)

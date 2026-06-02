@@ -66,6 +66,7 @@ export const EChartsCard = ({
           {loading && <CircularProgress sx={{ position: 'absolute', inset: 0, margin: 'auto', zIndex: 2 }} />}
           <ReactECharts
             notMerge
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
             option={option}
             style={{
               height: '100%',

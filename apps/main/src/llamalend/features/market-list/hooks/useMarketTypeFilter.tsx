@@ -18,6 +18,7 @@ export function useMarketTypeFilter({ columnFiltersById, setColumnFilter }: Filt
     (type: LlamaMarketType) => {
       setColumnFilter(
         LlamaMarketColumnId.Type,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
         serializeListFilter(filter?.includes(type) ? filter.filter(f => f !== type) : [...(filter ?? []), type]),
       )
     },

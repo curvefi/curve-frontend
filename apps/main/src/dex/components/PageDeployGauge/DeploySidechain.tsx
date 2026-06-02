@@ -75,6 +75,7 @@ export const DeploySidechain = ({ chainId }: Props) => {
     () =>
       Object.keys(curveNetworks)
         .filter(
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
           key => +key !== Chain.Ethereum && !curveNetworks[+key].isTestnet && curveNetworks[+key].isCrvRewardsEnabled,
         )
         .map(key => curveNetworks[+key].name)

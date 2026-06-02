@@ -12,9 +12,9 @@ import { ManageLoanTabs } from '@/loan/components/PageMintMarket/ManageLoanTabs'
 import { networks } from '@/loan/networks'
 import { useStore } from '@/loan/store/useStore'
 import { type CollateralUrlParams, type LlamaApi } from '@/loan/types/loan.types'
-import { getCollateralListPathname, useChainId } from '@/loan/utils/utilsRouter'
+import { getCollateralListPathname, getChainId } from '@/loan/utils/utilsRouter'
 import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
-import { type Chain, isPricesApiChain } from '@curvefi/prices-api'
+import { isPricesApiChain } from '@curvefi/prices-api'
 import type { Decimal } from '@primitives/decimal.utils'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { useParams } from '@ui-kit/hooks/router'
@@ -61,7 +61,7 @@ export const MintMarketPage = () => {
   const params = useParams<CollateralUrlParams>()
   const rCollateralId = params.collateralId.toLowerCase()
   const { llamaApi: curve = null, isHydrated, provider } = useCurve()
-  const rChainId = useChainId(params)
+  const rChainId = getChainId(params)
   const { address } = useConnection()
   const [previewPrices, setPreviewPrices] = useState<Range<Decimal> | undefined>(undefined)
 
@@ -121,7 +121,7 @@ export const MintMarketPage = () => {
           marketId={market?.id ?? ''}
           isLoading={!isHydrated}
           market={market}
-          blockchainId={network.id as Chain}
+          blockchainId={network.id}
         />
       }
     >

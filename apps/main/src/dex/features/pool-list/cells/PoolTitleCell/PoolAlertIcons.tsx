@@ -19,6 +19,7 @@ export const PoolAlertIcons = ({
   tokenAlert: PoolAlert | null
 }) => (
   <>
+    {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
     {(poolAlert?.isInformationOnly || poolAlert?.isInformationOnlyAndShowInForm) && <PoolAlertIcon alert={poolAlert} />}
     {tokenAlert && <PoolAlertIcon alert={tokenAlert} />}
   </>

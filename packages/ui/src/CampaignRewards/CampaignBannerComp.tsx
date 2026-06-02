@@ -20,6 +20,7 @@ export const CampaignBannerComp = ({ campaignRewards, message }: CampaignRewards
     </RewardsMessage>
     <RewardsIconsWrapper>
       {campaignRewards.map((rewardItem, index) => (
+        // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
         <RewardsCompSmall key={`${rewardItem.address}-${index}`} rewardsPool={rewardItem} highContrast banner />
       ))}
     </RewardsIconsWrapper>

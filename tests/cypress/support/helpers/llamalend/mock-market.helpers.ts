@@ -103,6 +103,7 @@ export const createMockLendVault = (): MockLendVault => ({
   maxDeposit: cy.stub().resolves('0'),
   maxWithdraw: cy.stub().resolves('0'),
   maxRedeem: cy.stub().resolves('0'),
+  // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
   convertToAssets: cy.stub().callsFake(async (shares: string) => shares),
   previewDeposit: cy.stub().resolves('0'),
   previewWithdraw: cy.stub().resolves('0'),

@@ -11,11 +11,13 @@ const ALERT_FORM_WARNING_KEYS = {
 type AlertFormWarningKey = keyof typeof ALERT_FORM_WARNING_KEYS
 
 type Props = {
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   errorKey: AlertFormWarningKey | string
 } & Omit<AlertBoxProps, 'alertType'>
 
 export const AlertFormWarning = ({ errorKey, ...props }: Props) => {
   const errorMessage = useMemo(() => {
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
     const messages: Record<AlertFormWarningKey | string, { message: string; alertType?: AlertType }> = {
       [ALERT_FORM_WARNING_KEYS['warning-exchange-rate-low']]: {
         message: t`Warning! Exchange rate is too low!`,

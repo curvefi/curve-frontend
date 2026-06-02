@@ -1,4 +1,3 @@
-import type { Address } from 'viem'
 import { useReadContract } from 'wagmi'
 import { refuelPoolAbi } from '@/dex/features/refuel/abi'
 import { BorrowInformationContainer } from '@/dex/features/refuel/components/BorrowInformationContainer'
@@ -11,7 +10,7 @@ import { ReservesCompositionChart } from '@/dex/features/refuel/components/Reser
 import { useRefuelPool } from '@/dex/features/refuel/queries/pools.query'
 import { RefuelFormTabs } from '@/dex/features/refuel/RefuelFormTabs'
 import { useChainId } from '@/dex/hooks/useChainId'
-import type { NetworkUrlParams } from '@/dex/types/main.types'
+import type { PoolAddressParams } from '@/dex/types/main.types'
 import type { Chain } from '@curvefi/prices-api'
 import Grid from '@mui/material/Grid'
 import { DEFAULT_DECIMALS } from '@primitives/objects.utils'
@@ -27,7 +26,7 @@ const { Spacing } = SizesAndSpaces
 const LOW_RESERVES_RATIO = 1 / 10000
 
 export const Refuel = () => {
-  const { network, poolAddress } = useParams<NetworkUrlParams & { poolAddress: Address }>()
+  const { network, poolAddress } = useParams<PoolAddressParams>()
   const chainId = useChainId(network)
   const blockchainId = network as Chain
 

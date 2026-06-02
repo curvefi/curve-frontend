@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 import type { IChainId, INetworkName } from '@curvefi/api/lib/interfaces'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
+import type { Address } from '@primitives/address.utils'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BaseConfig } from '@ui/utils'
 import { BannerProps } from '@ui-kit/shared/ui/Banner'
@@ -8,7 +9,7 @@ import { BannerProps } from '@ui-kit/shared/ui/Banner'
 export type { Provider } from '@ui-kit/lib/ethers'
 export type { CurveApi, Wallet } from '@ui-kit/features/connect-wallet'
 
-export type ChainId = IChainId | number
+export type ChainId = IChainId
 export type NetworkEnum = INetworkName
 export type NetworkConfigFromApi = {
   hasDepositAndStake: boolean | undefined
@@ -17,6 +18,7 @@ export type NetworkConfigFromApi = {
 
 export type NetworkUrlParams = { network: INetworkName }
 export type PoolUrlParams = NetworkUrlParams & { poolIdOrAddress: string; formType?: RFormType }
+export type PoolAddressParams = NetworkUrlParams & { poolAddress: Address }
 export type CrvLockerUrlParams = NetworkUrlParams & { formType?: RFormType }
 export type UrlParams = NetworkUrlParams & Partial<PoolUrlParams & CrvLockerUrlParams>
 

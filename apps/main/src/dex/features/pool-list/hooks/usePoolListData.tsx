@@ -33,7 +33,9 @@ const matchText = <T,>(data: T, fields: readonly DeepKeys<T>[], filter: string) 
   filter
     .toLowerCase()
     .split(/\s+/)
-    .every(filterWord => fields.some(field => get(data, field)?.toLowerCase?.().includes(filterWord)))
+    .every(filterWord =>
+      fields.some(field => (get(data, field) as string | undefined)?.toLowerCase?.().includes(filterWord)),
+    )
 
 const getPoolTags = (hasPosition: boolean, { pool, pool: { address, id, name, referenceAsset } }: PoolData) =>
   notFalsy<PoolTag>(

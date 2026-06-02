@@ -107,5 +107,6 @@ export const useCampaignsByAddress = ({
   blockchainId,
 }: { address: Address | undefined } & UseCampaignsOptions) => {
   const { data } = useCampaigns({ blockchainId, enabled: Boolean(address) })
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   return { data: useMemo(() => (address && data[address]) || [], [address, data]) }
 }

@@ -11,10 +11,12 @@ export const createMockLlamaApi = (chainId: number, mockMarket: unknown) => ({
   ___mock: true,
   chainId,
   signerAddress: TEST_ADDRESS,
+  // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
   getUsdRate: async () => 1,
   getMintMarket: () => mockMarket,
   getLendMarket: () => mockMarket,
-  setCustomFeeData: async () => {},
+  setCustomFeeData: () => Promise.resolve(undefined),
+  // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
   userState: async () => ({ collateral: '0', borrowed: '0', debt: '0', N: '0' }),
 })
 

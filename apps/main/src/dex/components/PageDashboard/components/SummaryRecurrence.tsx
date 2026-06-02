@@ -32,7 +32,7 @@ export const TotalRecurrence = ({ title }: Props) => {
   const { tokens, totalUsd } = useMemo(() => {
     if (typeof dashboardDataMapper === 'undefined') return {} as TotalAll
 
-    return Object.values(dashboardDataMapper).reduce(
+    return Object.values(dashboardDataMapper).reduce<TotalAll>(
       (prev, { profitBase, profitCrv, profitOthers, profitsTotalUsd }) => {
         if (profitBase) {
           prev.tokens.base = { symbol: t`Base`, day: Number(profitBase.day), price: 1 }
@@ -58,7 +58,7 @@ export const TotalRecurrence = ({ title }: Props) => {
         prev.totalUsd += profitsTotalUsd
         return prev
       },
-      { tokens: {}, totalUsd: 0 } as TotalAll,
+      { tokens: {}, totalUsd: 0 },
     )
   }, [dashboardDataMapper])
 

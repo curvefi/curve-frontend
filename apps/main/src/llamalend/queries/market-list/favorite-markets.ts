@@ -6,6 +6,7 @@ import { queryFactory } from '@ui-kit/lib/model'
 
 const { getQueryOptions: getFavoriteMarketOptions, invalidate: invalidateFavoriteMarkets } = queryFactory({
   queryKey: () => ['favorite-markets'] as const,
+  // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
   queryFn: async () => getFavoriteMarkets(),
   category: 'llamalend.user',
   validationSuite: EmptyValidationSuite,

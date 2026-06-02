@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { chunk, noop } from 'lodash'
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import { SelectGaugeListChunk as ComboBoxListChunk } from '@/dao/components/ComboBoxSelectGauge/ComboBoxListChunk'
@@ -17,8 +17,6 @@ import { SpinnerWrapper } from '@ui/Spinner/SpinnerWrapper'
 import { breakpoints } from '@ui/utils/responsive'
 import { t } from '@ui-kit/lib/i18n'
 
-const { chunk } = lodash
-
 export const ComboBox = ({
   testId,
   dialogClose,
@@ -33,8 +31,8 @@ export const ComboBox = ({
   dialogClose: () => void
   result: GaugeFormattedData[] | undefined
   selectedGauge: GaugeFormattedData | null
-  handleInpChange(filterValue: string, gauges: GaugeFormattedData[] | undefined): void
-  handleOnSelectChange(selectedAddress: string): void
+  handleInpChange: (filterValue: string, gauges: GaugeFormattedData[] | undefined) => void
+  handleOnSelectChange: (selectedAddress: string) => void
 }) => {
   const topContentRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -53,7 +51,7 @@ export const ComboBox = ({
 
   return (
     <>
-      <Popover data-testid={`modal-${testId}`} popoverRef={popoverRef} isOpen onClose={() => {}}>
+      <Popover data-testid={`modal-${testId}`} popoverRef={popoverRef} isOpen onClose={noop}>
         <Box grid gridGap={3}>
           {showInpSearch && (
             <Box ref={topContentRef} grid gridTemplateRows="auto 1fr" gridRowGap={3}>
@@ -109,6 +107,7 @@ export const ComboBox = ({
             {Array.isArray(result) && result.length > 0 ? (
               chunk(result, 30).map((gauges, idx) => (
                 <ComboBoxListChunk
+                  // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
                   key={`gauges-${idx}`}
                   testId={testId}
                   inputRef={inputRef}

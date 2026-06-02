@@ -403,6 +403,7 @@ export const createCreatePoolSlice = (
         }),
       )
     },
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
     updateTokensInPool: async (
       curve: CurveApi,
       tokenA: TokenState,
@@ -614,6 +615,7 @@ export const createCreatePoolSlice = (
         )
       }
     },
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
     refreshInitialPrice: async (curve: CurveApi) => {
       const { chainId } = curve
 
@@ -761,6 +763,7 @@ export const createCreatePoolSlice = (
         }),
       )
     },
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
     deployPool: async (curve: CurveApi) => {
       const chainId = curve.chainId
       const {
@@ -878,6 +881,7 @@ export const createCreatePoolSlice = (
           set(
             produce((state: State) => {
               state.createPool.transactionState.txStatus = 'ERROR'
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
               state.createPool.transactionState.errorMessage = error.message
             }),
           )
@@ -956,6 +960,7 @@ export const createCreatePoolSlice = (
             set(
               produce((state: State) => {
                 state.createPool.transactionState.txStatus = 'ERROR'
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.createPool.transactionState.errorMessage = error.message
               }),
             )
@@ -1036,6 +1041,7 @@ export const createCreatePoolSlice = (
             set(
               produce((state: State) => {
                 state.createPool.transactionState.txStatus = 'ERROR'
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.createPool.transactionState.errorMessage = error.message
               }),
             )
@@ -1136,6 +1142,7 @@ export const createCreatePoolSlice = (
             set(
               produce((state: State) => {
                 state.createPool.transactionState.txStatus = 'ERROR'
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.createPool.transactionState.errorMessage = error.message
               }),
             )
@@ -1227,6 +1234,7 @@ export const createCreatePoolSlice = (
             set(
               produce((state: State) => {
                 state.createPool.transactionState.txStatus = 'ERROR'
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
                 state.createPool.transactionState.errorMessage = error.message
               }),
             )

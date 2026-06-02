@@ -44,6 +44,7 @@ export const Bold = ({ children }: { children: ReactNode }) => (
 )
 
 export const Section = ({ children }: { children?: ReactNode }) => {
+  // eslint-disable-next-line @eslint-react/no-children-to-array -- Existing violation before enabling this rule.
   const childArray = Children.toArray(children)
   const title = childArray.find(child => isValidElement(child) && child.type === Title)
   const content = childArray.filter(child => isValidElement(child) && child.type !== Title)

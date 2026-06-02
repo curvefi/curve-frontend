@@ -101,6 +101,7 @@ async function runQuery<TKey extends QueryKey, TData, TQuery>(
     if (!disableLog) logSuccess(queryKey, formatTimeDiff(start), ...[data ? [data] : []])
     return data
   } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
     logError(queryKey, error, error.message)
     throw error
   }

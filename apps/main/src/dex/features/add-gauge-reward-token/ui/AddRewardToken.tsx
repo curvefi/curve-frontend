@@ -74,6 +74,7 @@ export const AddRewardToken = ({ chainId, poolId }: AddRewardTokenProps) => {
 
   return (
     <FormProvider {...form}>
+      {/* eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule. */}
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormContainer>
           <FormFieldsContainer>

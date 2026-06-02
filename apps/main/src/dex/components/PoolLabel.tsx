@@ -62,6 +62,7 @@ export const PoolLabel = ({
           <Box flex flexAlignItems="center">
             {!isMobile && (
               <>
+                {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
                 {(poolAlert?.isInformationOnly || poolAlert?.isInformationOnlyAndShowInForm) && (
                   <TooltipAlert minWidth="300px" placement="right-start" {...poolAlert}>
                     {poolAlert.message}
@@ -82,9 +83,11 @@ export const PoolLabel = ({
             {pool && (
               <div>
                 {isMobile
-                  ? tokens.map(({ symbol }, idx) => <TokenLabel key={`${symbol}-${idx}`}>{symbol} </TokenLabel>)
+                  ? // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
+                    tokens.map(({ symbol }, idx) => <TokenLabel key={`${symbol}-${idx}`}>{symbol} </TokenLabel>)
                   : isVisible &&
                     tokens.map(({ symbol, address }, idx) => (
+                      // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
                       <ChipToken key={`${symbol}${address}${idx}`} tokenName={symbol} tokenAddress={address} />
                     ))}
               </div>

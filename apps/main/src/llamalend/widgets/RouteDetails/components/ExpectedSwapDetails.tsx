@@ -33,6 +33,7 @@ export const ExpectedSwapDetails = ({
   swapToAddress: string
 }) => {
   const routesRef = useRef<HTMLDivElement>(null)
+  // eslint-disable-next-line @eslint-react/use-state -- Existing violation before enabling this rule.
   const [{ height, data }, setData] = useState<{ height: string; data: Hop[] }>(stateDefault)
 
   useEffect(() => {

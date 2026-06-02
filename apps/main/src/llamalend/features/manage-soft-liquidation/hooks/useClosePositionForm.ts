@@ -68,7 +68,7 @@ export function useClosePositionForm({
 
   const { collateral, debt, stablecoin } = userState ?? {}
 
-  const error = userStateError || userBalancesError || borrowTokenUsdRateError || collateralTokenUsdRateError
+  const error = userStateError ?? userBalancesError ?? borrowTokenUsdRateError ?? collateralTokenUsdRateError
 
   // Form state
   const form = useForm<CloseLoanMutation>(formOptions)

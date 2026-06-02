@@ -81,7 +81,7 @@ export function useMaxTokenValues({
     collateral: {
       data: maxCollateral,
       isLoading: !market || isLoadingMaxBorrow || isBalanceLoading,
-      error: maxBorrowError || balanceError,
+      error: maxBorrowError ?? balanceError,
     },
     debt: {
       data: maxDebt,
@@ -91,7 +91,7 @@ export function useMaxTokenValues({
     maxLeverage: {
       data: maxLeverage,
       isLoading: isLoadingMaxLeverage || isLoadingMaxBorrow,
-      error: maxLeverageError || maxBorrowError,
+      error: maxLeverageError ?? maxBorrowError,
     },
   }
 }

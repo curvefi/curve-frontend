@@ -48,6 +48,7 @@ const REWARDS = groupBy(
  */
 export const { getQueryOptions: getCampaignsExternalOptions } = queryFactory({
   queryKey: () => ['campaigns-external'] as const,
+  // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
   queryFn: async () => {
     const now = Date.now() // refresh is handled by refetchInterval
     return mapRecord(REWARDS, (_, rewards) =>
