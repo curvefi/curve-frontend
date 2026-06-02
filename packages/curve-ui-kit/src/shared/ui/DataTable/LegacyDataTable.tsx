@@ -9,6 +9,7 @@ import TableFooter from '@mui/material/TableFooter'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import { useLayoutStore } from '@ui-kit/features/layout'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { TablePagination } from '@ui-kit/shared/ui/DataTable/TablePagination'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
@@ -129,6 +130,8 @@ export const LegacyDataTable = <T extends TableItem>({
         sx={{
           backgroundColor: t => t.design.Layer[1].Fill,
           borderCollapse: 'separate' /* Don't collapse to avoid funky stuff with the sticky header */,
+          // Prevent a long content of a column to push the other column outside the viewport
+          ...(useIsMobile() && { tableLayout: 'fixed' }),
         }}
         data-testid={!loading && 'data-table'}
       >
