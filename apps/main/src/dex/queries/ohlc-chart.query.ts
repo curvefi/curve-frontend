@@ -4,12 +4,12 @@ import {
   assertInitialOhlcPageHasData,
   createCandleChartQueryKey,
   createOhlcPageResult,
-  formatCandleOhlcData,
   type OhlcPageParam,
   type OhlcPageResult,
   useOhlcInfiniteQuery,
 } from '@ui-kit/features/candle-chart/query-utils'
 import type { ChartSelection, LpPriceOhlcDataFormatted, TimeOption } from '@ui-kit/features/candle-chart/types'
+import { formatCandleOhlcData } from '@ui-kit/features/candle-chart/utils'
 
 type DexOhlcQueryParams = {
   anchorEnd: number

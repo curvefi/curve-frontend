@@ -7,13 +7,12 @@ import {
   assertInitialOhlcPageHasData,
   createCandleChartQueryKey,
   createOhlcPageResult,
-  formatCandleOhlcData,
-  formatOraclePriceData,
   type OhlcPageParam,
   type OhlcPageResult,
   useOhlcInfiniteQuery,
 } from '@ui-kit/features/candle-chart/query-utils'
 import type { LpPriceOhlcDataFormatted, OraclePriceData, TimeOption } from '@ui-kit/features/candle-chart/types'
+import { formatCandleOhlcData, formatOraclePriceData } from '@ui-kit/features/candle-chart/utils'
 
 type OhlcTimeUnit = Parameters<typeof getOHLC>[0]['units']
 

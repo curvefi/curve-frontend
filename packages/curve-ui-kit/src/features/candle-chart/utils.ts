@@ -1,5 +1,64 @@
+import type { UTCTimestamp } from 'lightweight-charts'
 import { sortBy } from 'lodash'
+import { notFalsy } from '@primitives/objects.utils'
+import { toLocalTimestampSeconds } from '@primitives/timestamp.utils'
 import { formatNumber } from '../../utils/number'
+import type { LpPriceOhlcDataFormatted, OraclePriceData } from './types'
+
+type OhlcPoint = {
+  time: number
+  open?: number | null
+  close?: number | null
+  high?: number | null
+  low?: number | null
+}
+
+type CompleteOhlcPoint = {
+  time: number
+  open: number
+  close: number
+  high: number
+  low: number
+}
+
+type NullableOraclePoint = {
+  time: number
+  oraclePrice?: number | null
+}
+
+const hasCompleteOhlcValues = (data: OhlcPoint): data is CompleteOhlcPoint =>
+  data.close != null && data.high != null && data.low != null && data.open != null
+
+export const formatCandleOhlcData = (data: OhlcPoint[]): LpPriceOhlcDataFormatted[] =>
+  data.filter(hasCompleteOhlcValues).map(({ time, open, close, high, low }) => ({
+    time: toLocalTimestampSeconds(time) as UTCTimestamp,
+    open,
+    close,
+    high,
+    low,
+  }))
+
+export const formatOraclePriceData = (data: NullableOraclePoint[]): OraclePriceData[] =>
+  data.flatMap(({ time, oraclePrice }) =>
+    notFalsy(
+      oraclePrice != null && {
+        time: toLocalTimestampSeconds(time) as UTCTimestamp,
+        value: oraclePrice,
+      },
+    ),
+  )
+
+export const applyLatestOraclePrice = (data: OraclePriceData[], oraclePrice: number | undefined) => {
+  if (oraclePrice == null || data.length === 0) return data
+
+  const lastItem = data[data.length - 1]
+  if (lastItem.value === oraclePrice) return data
+
+  return [...data.slice(0, -1), { ...lastItem, value: oraclePrice }]
+}
+
+export const flattenOhlcPages = <TPage, TItem>(pages: TPage[] | undefined, selectItems: (page: TPage) => TItem[]) =>
+  [...(pages ?? [])].reverse().flatMap(selectItems)
 
 const clampPercentile = (value: number, fallback: number) =>
   Number.isFinite(value) ? Math.max(0, Math.min(1, value)) : fallback

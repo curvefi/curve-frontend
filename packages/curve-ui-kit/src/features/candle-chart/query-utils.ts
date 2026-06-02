@@ -1,10 +1,8 @@
-import type { UTCTimestamp } from 'lightweight-charts'
 import { useCallback, useMemo, useRef } from 'react'
-import { notFalsy } from '@primitives/objects.utils'
-import { toLocalTimestampSeconds } from '@primitives/timestamp.utils'
 import { type InfiniteData, type QueryKey, useInfiniteQuery } from '@tanstack/react-query'
 import { TIME_OPTION_MS } from '@ui-kit/lib/model/time'
-import type { LpPriceOhlcDataFormatted, OraclePriceData, TimeOption } from './types'
+import type { TimeOption } from './types'
+import { flattenOhlcPages } from './utils'
 
 export type OhlcPageParam = {
   start: number
@@ -22,27 +20,6 @@ type UseOhlcInfiniteQueryParams<TPage extends OhlcPageResult, TQueryKey extends 
   fetchPage: (params: { pageParam: OhlcPageParam; signal: AbortSignal }) => Promise<TPage>
   queryKey: TQueryKey
   timeOption: TimeOption
-}
-
-type OhlcPoint = {
-  time: number
-  open?: number | null
-  close?: number | null
-  high?: number | null
-  low?: number | null
-}
-
-type CompleteOhlcPoint = {
-  time: number
-  open: number
-  close: number
-  high: number
-  low: number
-}
-
-type NullableOraclePoint = {
-  time: number
-  oraclePrice?: number | null
 }
 
 type OhlcPaginationQuery = {
@@ -240,40 +217,6 @@ export const assertInitialOhlcPageHasData = ({
 export const createCandleChartQueryKey = <TParts extends readonly unknown[]>(...parts: TParts) =>
   ['candle-chart', ...parts] as const
 
-export const flattenOhlcPages = <TPage, TItem>(pages: TPage[] | undefined, selectItems: (page: TPage) => TItem[]) =>
-  [...(pages ?? [])].reverse().flatMap(selectItems)
-
-export const applyLatestOraclePrice = (data: OraclePriceData[], oraclePrice: number | undefined) => {
-  if (oraclePrice == null || data.length === 0) return data
-
-  const lastItem = data[data.length - 1]
-  if (lastItem.value === oraclePrice) return data
-
-  return [...data.slice(0, -1), { ...lastItem, value: oraclePrice }]
-}
-
 const createOhlcAnchorEnd = (_resetKey: string) => Math.floor(Date.now() / 1000)
 
 export const useStableOhlcAnchorEnd = (resetKey: string) => useMemo(() => createOhlcAnchorEnd(resetKey), [resetKey])
-
-const hasCompleteOhlcValues = (data: OhlcPoint): data is CompleteOhlcPoint =>
-  data.close != null && data.high != null && data.low != null && data.open != null
-
-export const formatCandleOhlcData = (data: OhlcPoint[]): LpPriceOhlcDataFormatted[] =>
-  data.filter(hasCompleteOhlcValues).map(({ time, open, close, high, low }) => ({
-    time: toLocalTimestampSeconds(time) as UTCTimestamp,
-    open,
-    close,
-    high,
-    low,
-  }))
-
-export const formatOraclePriceData = (data: NullableOraclePoint[]): OraclePriceData[] =>
-  data.flatMap(({ time, oraclePrice }) =>
-    notFalsy(
-      oraclePrice != null && {
-        time: toLocalTimestampSeconds(time) as UTCTimestamp,
-        value: oraclePrice,
-      },
-    ),
-  )

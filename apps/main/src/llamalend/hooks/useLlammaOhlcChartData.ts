@@ -2,14 +2,13 @@ import { useCallback, useMemo } from 'react'
 import type { Chain } from '@curvefi/prices-api'
 import { notFalsy } from '@primitives/objects.utils'
 import {
-  applyLatestOraclePrice,
   fetchMoreOhlcQueries,
-  flattenOhlcPages,
   refetchOhlcQueries,
   useOhlcPagesAdapter,
   useOhlcQueryAdapter,
 } from '@ui-kit/features/candle-chart/query-utils'
 import type { TimeOption } from '@ui-kit/features/candle-chart/types'
+import { applyLatestOraclePrice, flattenOhlcPages } from '@ui-kit/features/candle-chart/utils'
 import { q, useMappedQuery } from '@ui-kit/types/util'
 import {
   type LlammaOhlcPage,
@@ -74,6 +73,7 @@ export const useLlammaOhlcChartData = ({
   })
   const oraclePoolIsSettled = oraclePoolQuery.isSuccess || oraclePoolQuery.isError
   const oraclePoolsHaveOraclePriceData = oraclePoolsChartAdapter.data.oraclePriceData.length > 0
+  const oraclePoolsHaveChartData = oraclePoolsChartAdapter.data.ohlcData.length > 0 || oraclePoolsHaveOraclePriceData
   const shouldFetchLlammaQuery = enabled && !!llamma && oraclePoolIsSettled && !oraclePoolsHaveOraclePriceData
   const llammaQuery = useLlammaOhlcQuery({
     endpoint,
@@ -89,6 +89,8 @@ export const useLlammaOhlcChartData = ({
     query: llammaQuery,
     selectItems: selectLlammaOraclePriceData,
   })
+  const isWaitingForFallbackChartData =
+    !oraclePoolsHaveChartData && shouldFetchLlammaQuery && rawOraclePriceFallback.isLoading
   const oraclePriceFallbackQuery = useMappedQuery(
     rawOraclePriceFallback,
     useCallback(data => applyLatestOraclePrice(data, oraclePrice), [oraclePrice]),
@@ -123,6 +125,7 @@ export const useLlammaOhlcChartData = ({
 
   return {
     fetchMore,
+    isWaitingForFallbackChartData,
     oraclePriceFallbackQuery,
     oraclePoolsChartQuery: q(oraclePoolsChartAdapter),
     oracleTokens,
