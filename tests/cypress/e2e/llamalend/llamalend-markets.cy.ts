@@ -78,9 +78,9 @@ testCases.forEach(([width, height, breakpoint]) => {
 
           if (tableWidth <= wrapperWidth) {
             // should have sticky headers
-            cy.get('[data-testid^="data-table-row"]').last().then(assertNotInViewport)
+            cy.get('[data-testid^="data-table-row"]').last().should(assertNotInViewport)
             cy.get('[data-testid^="data-table-row"]').eq(10).scrollIntoView()
-            cy.get('[data-testid="data-table-head"] th').eq(1).then(assertInViewport)
+            cy.get('[data-testid="data-table-head"] th').eq(1).should(assertInViewport)
 
             // filter height changes because text wraps depending on the width
             const filterHeight = { mobile: [48], tablet: [56], desktop: [56] }[breakpoint]
