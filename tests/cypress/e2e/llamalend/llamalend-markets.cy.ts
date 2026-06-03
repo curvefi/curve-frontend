@@ -3,11 +3,9 @@ import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns/co
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
 import { oneOf, shuffle } from '@cy/support/generators'
 import {
-  closeDrawer,
   expandFirstRowOnMobile,
   getTableCellAssets,
   openDrawer,
-  withFilterChips,
   withFilters,
 } from '@cy/support/helpers/data-table.helpers'
 import { Chain, HighTVLAddress, HighUtilizationAddress } from '@cy/support/helpers/lending-mocks'
@@ -77,7 +75,7 @@ testCases.forEach(([width, height, breakpoint]) => {
 
       // filter height changes because text wraps depending on the width
       const filterHeight = {
-        mobile: [48],
+        mobile: [93],
         tablet: [56],
         desktop: [56],
       }[breakpoint]
@@ -199,18 +197,16 @@ testCases.forEach(([width, height, breakpoint]) => {
       getTableCellAssets().first().contains('wstETH')
     })
 
-    /** Filter chip not yet available on mobile */
-    itSkipOnMobile('should allow filtering favorites', () => {
-      openDrawer(breakpoint, 'filter')
+    it('should allow filtering favorites', () => {
+      expandFirstRowOnMobile(breakpoint)
       // on desktop, the favorite icon is not visible until hovered - but cypress doesn't support that so use force
-      cy.get(`[data-testid="favorite-icon"]`).first().click({ force: true })
+      cy.get(`[data-testid="favorite-btn"]`).first().click({ force: true })
 
-      closeDrawer(breakpoint)
-      withFilterChips(breakpoint, () => cy.get(`[data-testid="chip-favorites"]`).click())
+      cy.get(`[data-testid="chip-favorites"]`).click()
       cy.url().should('include', 'isFavorite=yes')
       cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
-      cy.get(`[data-testid="favorite-icon"]`).should('not.exist')
-      cy.get(`[data-testid="favorite-icon-filled"]`).click()
+      cy.get(`[data-testid="favorite-btn"]`).should('not.exist')
+      cy.get(`[data-testid="favorite-btn-active"]`).click()
       cy.get(`[data-testid="table-empty-row"]`).should('exist')
     })
 
