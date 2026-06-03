@@ -58,7 +58,7 @@ export const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTable
       setSortBy={key => {
         setGaugeVotesSortBy(gaugeAddress, key as GaugeVotesSortBy)
       }}
-      getData={() => getGaugeVotes(gaugeAddress)}
+      getData={() => void getGaugeVotes(gaugeAddress)}
       noDataMessage={t`No gauge weight votes found for this gauge.`}
       overflowYBreakpoint={tableMinWidth}
       gridTemplateColumns={gridTemplateColumns}

@@ -38,6 +38,7 @@ const buildClickableMessage = (
   return message.split(NUMBER_REGEX).flatMap((part, index) => [
     part,
     matches[index] && (
+      // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
       <BalanceButton key={index} onClick={() => onNumberClick(matches[index])}>
         <BalanceAmount
           testId={`helper-message-number-${index}`}

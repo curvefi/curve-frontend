@@ -128,7 +128,7 @@ export const EChartsLineChart = <
           align: 'left',
           formatter: (value: string | number) => {
             if (!xTickFormatterRef.current) return String(value)
-            return xTickFormatterRef.current(value as number)
+            return xTickFormatterRef.current(value)
           },
         },
       },
@@ -223,5 +223,6 @@ export const EChartsLineChart = <
     [activeSeries, data, gridLineColor, gridTextColor, markLines, tooltipFormatter, xAxisType, xKey, yMax, yMin],
   )
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
   return <ReactECharts option={option} notMerge autoResize style={{ width: '100%', height }} />
 }

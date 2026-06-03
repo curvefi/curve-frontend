@@ -102,7 +102,7 @@ export const CurrentVotes = () => {
           errorMessage={t`An error occurred while fetching user gauge weight votes.`}
           noDataMessage={t`No gauge votes found`}
           setSortBy={key => setUserGaugeVoteWeightsSortBy(key as UserGaugeVoteWeightSortBy)}
-          getData={() => invalidateUserGaugeWeightVotesQuery({ chainId: Chain.Ethereum, userAddress })}
+          getData={() => void invalidateUserGaugeWeightVotesQuery({ chainId: Chain.Ethereum, userAddress })}
           renderRow={(gauge, index) => (
             <Fragment key={index}>
               <GaugeListItemWrapper>

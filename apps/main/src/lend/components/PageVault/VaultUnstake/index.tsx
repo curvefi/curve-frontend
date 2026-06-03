@@ -103,7 +103,7 @@ export const VaultUnstake = ({ rChainId, isLoaded, api, market, userActiveKey }:
           status: helpers.getStepStatus(isComplete, step === 'UNSTAKE', isValid),
           type: 'action',
           content: isComplete ? t`Unstaked` : t`Unstake`,
-          onClick: async () => handleBtnClickUnstake(payloadActiveKey, rFormType, api, market, formValues),
+          onClick: () => void handleBtnClickUnstake(payloadActiveKey, rFormType, api, market, formValues),
         },
       }
 

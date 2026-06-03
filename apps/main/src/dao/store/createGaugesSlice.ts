@@ -104,6 +104,7 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
 
       try {
         const response = await fetch(`https://prices.curve.finance/v1/dao/gauges/${address}/votes`)
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
         const data: GaugeVotesResponse = await response.json()
 
         const formattedData = data.votes.map(vote => ({ ...vote, timestamp: new Date(vote.timestamp).getTime() }))

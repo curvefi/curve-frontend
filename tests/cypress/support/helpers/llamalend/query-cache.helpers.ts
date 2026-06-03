@@ -1,7 +1,6 @@
 import { type Address, erc20Abi, parseUnits } from 'viem'
 import { getBadDebtLendMarketsOptions } from '@/llamalend/queries/market/market-bad-debt.query'
 import { getLendingVaultsOptions, type LendingVault } from '@/llamalend/queries/market-list/lending-vaults'
-import type { BadDebt } from '@curvefi/prices-api/liquidations'
 import { oneAddress, oneInt } from '@cy/support/generators'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryClient } from '@ui-kit/lib/api'
@@ -74,7 +73,7 @@ export const seedCrvUsdBalance = ({
 }) =>
   seedErc20BalanceForAddresses({
     chainId,
-    tokenAddress: CRVUSD_ADDRESS as Address,
+    tokenAddress: CRVUSD_ADDRESS,
     addresses,
     rawBalance: parseUnits(`${oneInt(Math.ceil(Number(min)), Math.ceil(Number(max)))}`, decimals),
     decimals,
@@ -106,7 +105,7 @@ export const seedLendMarketSolvencyQueries = ({
       totalDebt: 20,
       totalDebtUsd: 20,
       vault: vaultAddress,
-      llamma: oneAddress() as Address,
+      llamma: oneAddress(),
       collateralToken: {
         symbol: market.collateral_token.symbol,
         address: collateralAddress,
@@ -144,6 +143,6 @@ export const seedLendMarketSolvencyQueries = ({
       liquidatableCollateralUsd: 0,
       liquidatableBorrowedUsd: null,
       liquidatableStablecoinUsd: null,
-    } as BadDebt[number],
+    },
   ])
 }

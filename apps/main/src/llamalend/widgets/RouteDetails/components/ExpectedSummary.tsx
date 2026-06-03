@@ -24,6 +24,7 @@ export const ExpectedSummary = ({
       const { value, label } = swapFromAmounts[idx]
 
       return (
+        // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
         <Item key={`${amount}${idx}`} {...($minWidth ? { $minWidth } : {})}>
           <span>{label}</span>{' '}
           <span>

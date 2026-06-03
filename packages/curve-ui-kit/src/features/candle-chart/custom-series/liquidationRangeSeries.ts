@@ -81,7 +81,7 @@ const createRenderer = () => {
 
   return {
     renderer,
-    setPayload(data: PaneRendererCustomData<Time, LiquidationRangePoint>, options: LiquidationRangeSeriesOptions) {
+    setPayload: (data: PaneRendererCustomData<Time, LiquidationRangePoint>, options: LiquidationRangeSeriesOptions) => {
       payload.data = data
       payload.options = options
     },

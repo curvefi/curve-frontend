@@ -153,6 +153,7 @@ export const FieldsDeposit = ({
 
           return (
             <FieldToken
+              // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
               key={`${tokenAddress}-${idx}`}
               idx={idx}
               amount={value}

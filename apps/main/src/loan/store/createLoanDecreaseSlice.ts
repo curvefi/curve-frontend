@@ -102,6 +102,7 @@ export const createLoanDecrease = (_set: StoreApi<State>['setState'], get: Store
       const resp = await detailInfoFn(activeKey, llamma, debt)
       get()[sliceKey].setStateByActiveKey('detailInfo', activeKey, resp.resp)
     },
+    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
     setFormValues: async (chainId: ChainId, llamma: Llamma, formValues: FormValues) => {
       // stored values
       const prevActiveKey = get()[sliceKey].activeKey

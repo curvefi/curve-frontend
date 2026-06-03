@@ -48,14 +48,17 @@ const cache: PersistOptions<State, Pick<State, 'storeCache'>> = {
   partialize: ({ storeCache }: State) => ({ storeCache }),
   merge,
   storage: {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- Existing violation before enabling this rule.
     getItem: name => JSON.parse(localStorage.getItem(name)!),
     // debounce storage to avoid performance issues serializing too often. The item can be large.
     setItem: debounce((name, value) => {
       const json = JSON.stringify(value)
       if (json.length > MAX_SIZE) {
         console.warn(`Cache item ${name} is too big (${json.length} bytes), removing it.`)
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
         return localStorage.removeItem(name)
       }
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       return localStorage.setItem(name, json)
     }, 1000),
     removeItem: name => localStorage.removeItem(name),

@@ -55,7 +55,7 @@ export const MarketBadges = ({ market, isMobile }: { market: LlamaMarket; isMobi
           </Typography>
         </Tooltip>
       )}
-      <FavoriteMarketButton address={favoriteKey} desktopOnly />
+      {!isMobile && <FavoriteMarketButton address={favoriteKey} desktopOnly />}
     </Stack>
   )
 }

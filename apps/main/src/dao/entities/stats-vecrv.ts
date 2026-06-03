@@ -1,6 +1,7 @@
 import { Contract } from 'ethers'
 import { ABI_VECRV } from '@/dao/abis/vecrv'
 import { CONTRACT_VECRV } from '@/dao/constants'
+import { Amount } from '@primitives/decimal.utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { EmptyValidationSuite } from '@ui-kit/lib/validation'
@@ -11,16 +12,16 @@ const _fetchVeCrvStats = async () => {
   const veCrvContract = new Contract(CONTRACT_VECRV, ABI_VECRV, provider)
   const crvContract = new Contract(MAINNET_CRV_ADDRESS, ABI_VECRV, provider)
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
   const [totalLockedCrv, totalCrv, totalVeCrv] = await Promise.all([
     veCrvContract.supply(),
     crvContract.totalSupply(),
     veCrvContract.totalSupply(),
   ])
-
   return {
-    totalVeCrv: BigInt(totalVeCrv),
-    totalLockedCrv: BigInt(totalLockedCrv),
-    totalCrv: BigInt(totalCrv),
+    totalVeCrv: BigInt(totalVeCrv as Amount),
+    totalLockedCrv: BigInt(totalLockedCrv as Amount),
+    totalCrv: BigInt(totalCrv as Amount),
     lockedPercentage: (Number(totalLockedCrv) / Number(totalCrv)) * 100,
   }
 }

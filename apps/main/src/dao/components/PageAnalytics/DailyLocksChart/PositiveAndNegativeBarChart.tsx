@@ -46,6 +46,7 @@ export const PositiveAndNegativeBarChart = ({ data, height = 500 }: PositiveAndN
       <ReferenceLine y={0} stroke="#000" opacity={0.3} />
       <Bar dataKey="amount" label={false} fill="#8884d8" isAnimationActive={false}>
         {data.map((entry, index) => (
+          // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
           <Cell key={`$cell-${index}`} fill={entry.amount > 0n ? 'var(--chart-green)' : 'var(--chart-red)'} />
         ))}
       </Bar>

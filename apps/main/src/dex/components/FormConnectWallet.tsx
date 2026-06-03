@@ -14,7 +14,7 @@ export const FormConnectWallet = ({ loading, children }: { loading: boolean; chi
           fillWidth
           size="large"
           variant="filled"
-          onClick={() => connectWallet()}
+          onClick={() => void connectWallet()}
           loading={isLoading(connectState)}
           testId="connect-wallet"
         >

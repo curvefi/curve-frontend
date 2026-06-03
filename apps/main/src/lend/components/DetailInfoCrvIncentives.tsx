@@ -72,6 +72,7 @@ export const DetailInfoCrvIncentives = ({
     <>
       {data.map(({ label, tooltip, skeleton, aprCurr, aprNew, ratio }, idx) => (
         <DetailInfo
+          // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
           key={`${label}${idx}`}
           loading={String(aprCurr).length === 0}
           loadingSkeleton={skeleton ?? [140, 23]}

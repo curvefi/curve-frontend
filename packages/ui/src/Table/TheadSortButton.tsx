@@ -41,6 +41,7 @@ export const TheadSortButton = ({
   }
 
   return (
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
     <TheadButton disabled={disabled || loading} onClick={() => handleClick(sortIdKey)} {...props}>
       {indicatorPlacement === 'left' && (
         <>

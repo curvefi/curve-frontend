@@ -1,11 +1,5 @@
 import { useEffect, useMemo } from 'react'
-import type {
-  FormValues,
-  Route,
-  RoutesAndOutput,
-  RoutesAndOutputModal,
-  SearchedParams,
-} from '@/dex/components/PageRouterSwap/types'
+import type { RoutesAndOutput, RoutesAndOutputModal, SearchedParams } from '@/dex/components/PageRouterSwap/types'
 import { getRouterWarningModal } from '@/dex/store/createQuickSwapSlice'
 import { useStore } from '@/dex/store/useStore'
 import { TokensNameMapper } from '@/dex/types/main.types'
@@ -75,16 +69,13 @@ const convertRoute = (
     ),
     isHighSlippage: warnings.includes('high-slippage'),
     isStableswapRoute,
-    routes: route.map(
-      ({ args, name, tokenIn: [inputCoinAddress], tokenOut: [outputCoinAddress] }) =>
-        ({
-          inputCoinAddress,
-          outputCoinAddress,
-          name,
-          routeUrlId: (args as { poolId: string }).poolId ?? '',
-          ...(args as Omit<IRouteStep, 'inputCoinAddress' | 'outputCoinAddress'>),
-        }) as Route,
-    ),
+    routes: route.map(({ args, name, tokenIn: [inputCoinAddress], tokenOut: [outputCoinAddress] }) => ({
+      inputCoinAddress,
+      outputCoinAddress,
+      name,
+      routeUrlId: (args as { poolId: string }).poolId ?? '',
+      ...(args as Omit<IRouteStep, 'inputCoinAddress' | 'outputCoinAddress'>),
+    })),
     modal: getRouterWarningModal(
       modalArgs,
       { toAddress, fromAddress },
@@ -112,7 +103,7 @@ export function useRouterApi(
   data: RoutesAndOutput | undefined
   isLoading: boolean
 } {
-  const formValues = useStore(state => state.quickSwap.formValues) as FormValues
+  const formValues = useStore(state => state.quickSwap.formValues)
   const tokensMapper = useStore(state => state.tokens.tokensMapper[chainId])
   const fromDecimals = tokensMapper?.[fromAddress]?.decimals
   const toDecimals = tokensMapper?.[toAddress]?.decimals

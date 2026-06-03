@@ -15,7 +15,7 @@ export const ComboBoxListItem = ({
 }: Pick<ComboBoxSelectGaugeProps, 'testId'> &
   GaugeFormattedData & {
     selectedGauge: GaugeFormattedData | null
-    handleOnSelectChange(selectedGauge: string): void
+    handleOnSelectChange: (selectedGauge: string) => void
   }) => (
   <li>
     <ItemButton

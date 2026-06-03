@@ -14,19 +14,23 @@ export const advanceVirtualNetworkClock = ({
 }) => {
   const { adminRpcUrl } = getRpcUrls(vnet)
 
-  return cy
-    .request({
-      method: 'POST',
-      url: adminRpcUrl,
-      body: { jsonrpc: '2.0', method: 'evm_increaseTime', params: [seconds], id: 1 },
-    })
-    .then(response => {
-      expect(response.isOkStatusCode).to.equal(true, response.body.error)
-      return cy.request({
+  return (
+    cy
+      .request({
         method: 'POST',
         url: adminRpcUrl,
-        body: { jsonrpc: '2.0', method: 'evm_mine', params: [], id: 2 },
+        body: { jsonrpc: '2.0', method: 'evm_increaseTime', params: [seconds], id: 1 },
       })
-    })
-    .then(response => expect(response.isOkStatusCode).to.equal(true, response.body.error))
+      .then(response => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+        expect(response.isOkStatusCode).to.equal(true, response.body.error)
+        return cy.request({
+          method: 'POST',
+          url: adminRpcUrl,
+          body: { jsonrpc: '2.0', method: 'evm_mine', params: [], id: 2 },
+        })
+      })
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
+      .then(response => expect(response.isOkStatusCode).to.equal(true, response.body.error))
+  )
 }

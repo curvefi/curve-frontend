@@ -55,6 +55,7 @@ export const LoanCollateralRemove = ({
   const setFormValues = useStore(state => state.loanCollateralRemove.setFormValues)
   const resetState = useStore(state => state.loanCollateralRemove.resetState)
 
+  // eslint-disable-next-line @eslint-react/use-state -- Existing violation before enabling this rule.
   const [{ confirmedWarning }, setConfirmWarning] = useState(DEFAULT_CONFIRM_WARNING)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
   const [steps, setSteps] = useState<Step[]>([])
@@ -168,13 +169,13 @@ export const LoanCollateralRemove = ({
                     onClick: () => setConfirmWarning(DEFAULT_CONFIRM_WARNING),
                   },
                   primaryBtnProps: {
-                    onClick: () => handleBtnClickRemove(payloadActiveKey, api, market, formValues),
+                    onClick: () => void handleBtnClickRemove(payloadActiveKey, api, market, formValues),
                     disabled: !confirmedHealthWarning,
                   },
                   primaryBtnLabel: 'Remove anyway',
                 },
               }
-            : { onClick: async () => handleBtnClickRemove(payloadActiveKey, api, market, formValues) }),
+            : { onClick: () => void handleBtnClickRemove(payloadActiveKey, api, market, formValues) }),
         },
       }
 

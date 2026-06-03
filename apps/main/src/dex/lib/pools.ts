@@ -1,14 +1,6 @@
 import lodash from 'lodash'
 import { type Address, getAddress } from 'viem'
-import {
-  CurveApi,
-  NetworkConfig,
-  Pool,
-  PoolData,
-  PoolDataCache,
-  PoolDataCacheMapper,
-  PoolDataMapper,
-} from '@/dex/types/main.types'
+import { CurveApi, type GaugeStatus, NetworkConfig, Pool, PoolData, PoolDataCache } from '@/dex/types/main.types'
 import { fulfilledValue, getCurvefiUrl } from '@/dex/utils'
 import { PromisePool } from '@supercharge/promise-pool'
 import { log } from '@ui-kit/lib'
@@ -18,10 +10,10 @@ const hasNoWrapped = (pool: Pool) => pool?.isPlain || pool?.isFake
 
 const getPoolData = (p: Pool, network: NetworkConfig) => {
   const isWrappedOnly = network.poolIsWrappedOnly[p.id]
-  const tokensWrapped = p.wrappedCoins.map((token, idx) => token || shortenAddress(p.wrappedCoinAddresses[idx])!)
+  const tokensWrapped = p.wrappedCoins.map((token, idx) => token || shortenAddress(p.wrappedCoinAddresses[idx]))
   const tokens = isWrappedOnly
     ? tokensWrapped
-    : p.underlyingCoins.map((token, idx) => token || shortenAddress(p.underlyingCoinAddresses[idx])!)
+    : p.underlyingCoins.map((token, idx) => token || shortenAddress(p.underlyingCoinAddresses[idx]))
   const tokensLowercase = tokens.map(c => c.toLowerCase())
   const tokensAll = isWrappedOnly ? tokensWrapped : [...tokens, ...tokensWrapped]
   const tokenAddresses = isWrappedOnly ? p.wrappedCoinAddresses : p.underlyingCoinAddresses
@@ -68,7 +60,13 @@ export async function getPools(
   const { orgUIPath } = network
 
   const resp = poolList.reduce(
-    (prev, poolId) => {
+    (
+      prev,
+      poolId,
+    ): {
+      poolsMapper: Record<string, PoolData>
+      poolsMapperCache: Record<string, PoolDataCache>
+    } => {
       const pool = getPool(poolId)
 
       if (blacklist.has(getAddress(pool.address))) {
@@ -107,7 +105,7 @@ export async function getPools(
 
       return prev
     },
-    { poolsMapper: {}, poolsMapperCache: {} } as { poolsMapper: PoolDataMapper; poolsMapperCache: PoolDataCacheMapper },
+    { poolsMapper: {}, poolsMapperCache: {} },
   )
 
   // get gauge info
@@ -116,8 +114,8 @@ export async function getPools(
       pool.gaugeStatus(),
       pool.isGaugeKilled(),
     ])
-    const gaugeStatus = fulfilledValue(gaugeStatusResult) || null
-    const isGaugeKilled = fulfilledValue(isGaugeKilledResult) || null
+    const gaugeStatus = (fulfilledValue(gaugeStatusResult) ?? null) as GaugeStatus | null
+    const isGaugeKilled = fulfilledValue(isGaugeKilledResult) ?? null
 
     resp.poolsMapper[pool.id].gauge = { status: gaugeStatus, isKilled: isGaugeKilled }
     resp.poolsMapperCache[pool.id].gauge = { status: gaugeStatus, isKilled: isGaugeKilled }

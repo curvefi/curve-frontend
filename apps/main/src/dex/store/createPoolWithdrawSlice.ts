@@ -307,6 +307,7 @@ export const createPoolWithdrawSlice = (
         }
       }
     },
+    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
     setFormValues: async (
       formType,
       config,
@@ -687,6 +688,7 @@ function getActiveKey(
   } else if (formType === 'UNSTAKE') {
     activeKey += `${stakedLpToken}`
   } else if (formType === 'CLAIM') {
+    // eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions -- Existing violation before enabling this rule.
     activeKey += `${claimableCrv}-${claimableRewards}`
   }
   return activeKey

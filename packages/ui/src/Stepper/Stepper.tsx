@@ -17,6 +17,7 @@ export const Stepper = ({
 }) => (
   <StepsContainer data-testid={`stepper-${testId}`}>
     {steps.map((step, i) => (
+      // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
       <StepContainer key={i} flex flexAlignItems="center" flexJustifyContent="space-between" fillWidth>
         {!hideStepNumber && <StepNumber index={i} step={step} steps={steps} />}
         <StepAction step={step} />

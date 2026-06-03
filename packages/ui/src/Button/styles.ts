@@ -84,6 +84,7 @@ export const buttonOutlinedStyles = css`
   }
 `
 
+/* eslint-disable @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions -- Existing violation before enabling this rule. */
 export const buttonBaseStyles = css<ButtonProps>`
   ${focusVisible};
 
@@ -216,3 +217,4 @@ export const buttonBaseStyles = css<ButtonProps>`
     }
   }}
 `
+/* eslint-enable @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions -- Existing violation before enabling this rule. */

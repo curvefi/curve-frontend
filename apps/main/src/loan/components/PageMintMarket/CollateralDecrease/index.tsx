@@ -60,7 +60,7 @@ export const CollateralDecrease = ({
   const setStateByKey = useStore(state => state.loanCollateralDecrease.setStateByKey)
   const resetState = useStore(state => state.loanCollateralDecrease.resetState)
 
-  const [confirmedHealthWarning, setConfirmHealthWarning] = useState(false)
+  const [confirmedHealthWarning, setConfirmedHealthWarning] = useState(false)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
@@ -82,7 +82,7 @@ export const CollateralDecrease = ({
 
   const reset = useCallback(
     (isErrorReset: boolean, isFullReset: boolean) => {
-      setConfirmHealthWarning(false)
+      setConfirmedHealthWarning(false)
       setTxInfoBar(null)
 
       if (isErrorReset || isFullReset) {
@@ -156,23 +156,23 @@ export const CollateralDecrease = ({
                       {...healthMode}
                       confirmed={confirmedHealthWarning}
                       // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-                      setConfirmed={val => setConfirmHealthWarning(val)}
+                      setConfirmed={val => setConfirmedHealthWarning(val)}
                     />
                   ),
                   isDismissable: false,
                   cancelBtnProps: {
                     label: t`Cancel`,
                     // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-                    onClick: () => setConfirmHealthWarning(false),
+                    onClick: () => setConfirmedHealthWarning(false),
                   },
                   primaryBtnProps: {
-                    onClick: () => handleBtnClickRemove(payloadActiveKey, curve, llamma, formValues),
+                    onClick: () => void handleBtnClickRemove(payloadActiveKey, curve, llamma, formValues),
                     disabled: !confirmedHealthWarning,
                   },
                   primaryBtnLabel: 'Remove anyway',
                 },
               }
-            : { onClick: async () => handleBtnClickRemove(payloadActiveKey, curve, llamma, formValues) }),
+            : { onClick: () => void handleBtnClickRemove(payloadActiveKey, curve, llamma, formValues) }),
         },
       }
 

@@ -12,6 +12,7 @@ import { Spinner } from '@ui/Spinner'
 import { scanTxPath } from '@ui/utils'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
+import { Chain } from '@ui-kit/utils'
 
 type Props = {
   chainId: ChainId
@@ -24,10 +25,8 @@ export const ProcessSummary = ({ chainId, isLite }: Props) => {
   const currentSidechain = useStore(state => state.deployGauge.currentSidechain)
 
   const push = useNavigate()
-  const sidechain: ChainId = currentSidechain === null ? 1 : currentSidechain
-
   const { data: network } = useNetworkByChain({ chainId })
-  const { data: networkSidechain } = useNetworkByChain({ chainId: sidechain })
+  const { data: networkSidechain } = useNetworkByChain({ chainId: currentSidechain ?? Chain.Ethereum })
 
   return (
     <Box flex flexColumn>

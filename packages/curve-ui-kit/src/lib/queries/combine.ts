@@ -32,7 +32,7 @@ export const combineQueriesToObject = <TData, K extends string[]>(
 /**
  * Returns the minimum value from multiple queries returning Decimal values.
  */
-export const useQueryMinimum = (...queries: Query<Decimal>[]) => ({
+export const queryMinimum = (...queries: Query<Decimal>[]) => ({
   data: queries.some(d => d.data == null) ? undefined : decimalMin(...queries.map(d => d.data!)),
   isLoading: queries.some(d => d?.isLoading),
   error: queries.map(d => d?.error).find(Boolean) ?? null,

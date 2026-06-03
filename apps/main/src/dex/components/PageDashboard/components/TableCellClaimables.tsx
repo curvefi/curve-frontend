@@ -18,10 +18,12 @@ export const TableCellClaimables = ({
   <>
     {claimableCrv?.map(({ symbol, amount }, idx) => {
       const formatted = `${formatNumber(toAmount(amount), { abbreviate: false, fallback: '-' })} CRV`
+      // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
       return <Info key={`${symbol}${idx}`}>{isHighLight ? <strong>{formatted}</strong> : <>{formatted}</>}</Info>
     })}
     {claimableOthers?.map(({ symbol, amount }, idx) => {
       const formatted = `${formatNumber(toAmount(amount), { abbreviate: false, fallback: '-' })} ${symbol}`
+      // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
       return <Info key={`${symbol}${idx}`}>{isHighLight ? <strong>{formatted}</strong> : <>{formatted}</>}</Info>
     })}
     <div>

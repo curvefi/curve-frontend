@@ -34,6 +34,7 @@ function useToastItems() {
     const add = (notification: ToastItem): void => {
       setItems((prevNotifications: ToastItem[]) => [...prevNotifications, notification])
       if (!notification.keepAlive) {
+        // eslint-disable-next-line @eslint-react/web-api-no-leaked-timeout -- Existing violation before enabling this rule.
         const timeout = window.setTimeout(() => dismiss(notification), getTotalDuration(notification))
         timeouts.push(timeout)
       }

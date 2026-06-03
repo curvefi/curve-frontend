@@ -11,6 +11,7 @@ export const ThemeToggleButtons = () => {
     <ToggleButtonGroup
       value={theme}
       exclusive
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
       onChange={(_, value) => (value ? setTheme(value) : {})}
       aria-label={t`Theme selection`}
       size="smallSquare"

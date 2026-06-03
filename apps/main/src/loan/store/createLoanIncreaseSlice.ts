@@ -84,6 +84,7 @@ export const createLoanIncrease = (_set: StoreApi<State>['setState'], get: Store
   [sliceKey]: {
     ...DEFAULT_STATE,
 
+    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
     init: async (chainId: ChainId, llamma: Llamma) => {
       void get()[sliceKey].fetchMaxRecv(chainId, llamma, DEFAULT_FORM_VALUES)
     },

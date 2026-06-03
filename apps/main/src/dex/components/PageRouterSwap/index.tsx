@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { isEqual, noop } from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useConfig } from 'wagmi'
 import { FormConnectWallet } from '@/dex/components/FormConnectWallet'
@@ -264,6 +264,7 @@ export const QuickSwap = ({
           status: getStepStatus(isApproved, step === 'APPROVAL', isValid && !formProcessing),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: async () => {
             const notifyMessage = t`Please approve spending your ${fromSymbol}.`
             const { dismiss } = notify(notifyMessage, 'pending')
@@ -358,7 +359,7 @@ export const QuickSwap = ({
   )
 
   const lastFetchTimeRef = useRef<number>(0)
-  const fetchDataRef = useRef<() => void>(() => {})
+  const fetchDataRef = useRef<() => void>(noop)
 
   // Keep fetchDataRef always pointing to the latest fetchData logic
   fetchDataRef.current = () => {
@@ -434,7 +435,7 @@ export const QuickSwap = ({
       fromToken?.symbol ?? fromToken?.address ?? '',
     )
     // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-    setSteps(prev => (lodash.isEqual(prev, updatedSteps) ? prev : updatedSteps))
+    setSteps(prev => (isEqual(prev, updatedSteps) ? prev : updatedSteps))
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isReady, confirmedLoss, routesAndOutput, formEstGas, formStatus, formValues, searchedParams, curve])
 
@@ -622,5 +623,6 @@ function _isRoutesAndOutputLoading(
   if (typeof routesAndOutput !== 'undefined') {
     return routesAndOutput.loading
   }
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   return !error && ((isFrom && +fromAmount > 0) || (!isFrom && +toAmount > 0))
 }
