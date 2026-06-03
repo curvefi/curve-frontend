@@ -143,9 +143,8 @@ export const Accordion = ({
             ...(ghost
               ? isOpen && { borderBottom: (t: Theme) => `1px solid ${t.design.Layer[3].Outline}` }
               : isOpen
-                ? { border: borderStyle, borderBottom: borderStyle }
+                ? { borderBottom: borderStyle }
                 : { border: borderStyle }),
-            transition: `border-color ${TransitionFunction}, border-width ${TransitionFunction}`,
           },
 
           '&.Mui-focusVisible': {
