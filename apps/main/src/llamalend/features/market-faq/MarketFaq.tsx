@@ -22,7 +22,7 @@ export const MarketFaq = () => (
         <Stack key={group.title} sx={{ gap: Spacing.xs }}>
           <Typography
             color="textSecondary"
-            variant="headingXsBold"
+            variant="bodyMBold"
             sx={{ borderBottom: borderStyle, paddingBlockStart: Spacing.md, paddingBlockEnd: Spacing.xs }}
           >
             {group.title}
