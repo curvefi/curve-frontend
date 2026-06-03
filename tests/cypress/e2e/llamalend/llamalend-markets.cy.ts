@@ -244,7 +244,7 @@ testCases.forEach(([width, height, breakpoint]) => {
 
     it(`should allow filtering by using a slider and input`, () => {
       // Keep the viewport stable for slider width; avoid 1200px because it is the desktop breakpoint edge.
-      cy.viewport(...((breakpoint === 'mobile' ? [500, 800] : [1280, 800]) as [number, number]))
+      cy.viewport(...((breakpoint === 'mobile' ? [500, 800] : [1280, 800])))
       const [columnId, medianValue] = getOneColumnMedianValue(vaultData, [LlamaMarketColumnId.MaxLtv])
       const bound = oneOf('min', 'max')
 
