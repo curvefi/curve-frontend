@@ -91,11 +91,7 @@ export const AdvancedDetails = ({
               poolId={resolvedPoolId}
               pricesApiPoolData={pricesApiPoolData}
             />
-            <YieldBreakdown
-              chainId={chainId}
-              poolDataCacheOrApi={poolDataCacheOrApi}
-              poolId={resolvedPoolId}
-            />
+            <YieldBreakdown chainId={chainId} poolDataCacheOrApi={poolDataCacheOrApi} poolId={resolvedPoolId} />
             <MarketComposition
               chainId={chainId}
               poolDataCacheOrApi={poolDataCacheOrApi}
@@ -120,10 +116,7 @@ export const AdvancedDetails = ({
               paddingInline: Spacing.sm,
             }}
           >
-            <Contracts
-              chainId={chainId}
-              poolDataCacheOrApi={poolDataCacheOrApi}
-            />
+            <Contracts chainId={chainId} poolDataCacheOrApi={poolDataCacheOrApi} />
 
             {isAddressEqual(gaugeAddress, zeroAddress) && (
               <AddGaugeLink
@@ -134,11 +127,7 @@ export const AdvancedDetails = ({
               />
             )}
 
-            <Parameters
-              chainId={chainId}
-              poolId={resolvedPoolId}
-              poolDataCacheOrApi={poolDataCacheOrApi}
-            />
+            <Parameters chainId={chainId} poolId={resolvedPoolId} poolDataCacheOrApi={poolDataCacheOrApi} />
           </Stack>
         </Grid>
       </CardContent>
