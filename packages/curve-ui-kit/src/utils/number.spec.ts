@@ -500,7 +500,9 @@ describe('formatNumber', () => {
     })
 
     it('formats percent categories', () => {
+      expect(formatNumber(1200.345, 'percent.value')).toBe('1,200.35%')
       expect(formatNumber(12.345, 'percent.value')).toBe('12.35%')
+      expect(formatNumber(1200.345, 'percent.rate')).toBe('1.20k%')
       expect(formatNumber(12.3, 'percent.rate')).toBe('12.30%')
       expect(formatNumber(0.1234, 'percent.rate')).toBe('0.12%')
     })
