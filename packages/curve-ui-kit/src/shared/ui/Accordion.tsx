@@ -239,20 +239,7 @@ export const Accordion = ({
         </Stack>
       </ButtonBase>
 
-      <Collapse
-        in={isOpen}
-        id={id}
-        easing={Transition}
-        timeout={Duration.Transition}
-        sx={{
-          ...(!ghost && { backgroundColor: (t: Theme) => t.design.Layer[1].Fill }),
-          '& .MuiCollapse-wrapperInner': {
-            opacity: isOpen ? 1 : 0,
-            transform: isOpen ? 'translateY(0)' : 'translateY(-0.125rem)',
-            transition: `opacity ${TransitionFunction}, transform ${TransitionFunction}`,
-          },
-        }}
-      >
+      <Collapse in={isOpen} id={id} sx={{ ...(!ghost && { backgroundColor: (t: Theme) => t.design.Layer[1].Fill }) }}>
         {/*
           This Box wrapper serves two purposes:
           1. Padding is applied here instead of on Collapse because Collapse would never
