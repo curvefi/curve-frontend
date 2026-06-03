@@ -9,7 +9,6 @@ import {
   scaleSuffix,
   log10Exp,
   getFractionDigitsOptions,
-  NUMBER_FORMAT_CATEGORIES,
 } from './number'
 
 describe('getFractionDigitsOptions', () => {
@@ -484,18 +483,6 @@ describe('formatNumber', () => {
   })
 
   describe('categories', () => {
-    it('exposes semantic formatter categories', () => {
-      expect(Object.keys(NUMBER_FORMAT_CATEGORIES)).toEqual([
-        'token.amount',
-        'token.compact',
-        'token.balance',
-        'usd.notional',
-        'usd.amount',
-        'percent.value',
-        'percent.rate',
-      ])
-    })
-
     it('formats token categories', () => {
       expect(formatNumber(1234.56, 'token.amount')).toBe('1,234.56')
       expect(formatNumber(1234.56, 'token.compact')).toBe('1.23k')

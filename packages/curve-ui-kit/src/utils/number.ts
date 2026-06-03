@@ -181,7 +181,7 @@ export type NumberFormatOptions = {
   fallback?: string
 } & Omit<Intl.NumberFormatOptions, 'unit' | 'style' | 'compact' | 'notation' | 'currency'>
 
-export const NUMBER_FORMAT_CATEGORIES = {
+const NUMBER_FORMAT_CATEGORIES = {
   'token.amount': { abbreviate: false, fallback: '-' },
   'token.compact': { abbreviate: true, fallback: '-' },
   'token.balance': {
@@ -204,7 +204,7 @@ export const NUMBER_FORMAT_CATEGORIES = {
   },
 } as const satisfies Record<string, NumberFormatOptions & { fallback: string }>
 
-export type NumberFormatCategory = keyof typeof NUMBER_FORMAT_CATEGORIES
+type NumberFormatCategory = keyof typeof NUMBER_FORMAT_CATEGORIES
 
 /**
  * Decomposes a number into its formatted parts including prefix, main value, suffix, and scale suffix.
