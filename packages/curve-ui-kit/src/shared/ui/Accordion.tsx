@@ -150,9 +150,8 @@ export const Accordion = ({
           '&.Mui-focusVisible': {
             '&::after': {
               borderColor: t => t.design.Button.Focus_Outline,
-              ...(ghost
-                ? { borderBottomStyle: 'solid', borderBottomWidth: SizesAndSpaces.OutlineWidth }
-                : { borderWidth: '2px' }),
+              borderWidth: SizesAndSpaces.OutlineWidth,
+              ...(ghost && { borderBottomStyle: 'solid' }),
             },
             ...(!ghost && { backgroundColor: (t: Theme) => t.design.Layer[1].Fill }),
           },
@@ -161,9 +160,8 @@ export const Accordion = ({
             '&:hover': {
               '&::after': {
                 borderColor: t => t.design.Button.Focus_Outline,
-                ...(ghost
-                  ? { borderBottomStyle: 'solid', borderBottomWidth: SizesAndSpaces.OutlineWidth }
-                  : { borderWidth: '2px' }),
+                borderWidth: SizesAndSpaces.OutlineWidth,
+                ...(ghost && { borderBottomStyle: 'solid' }),
               },
               ...(!ghost && { backgroundColor: (t: Theme) => t.design.Layer[1].Fill }),
             },
