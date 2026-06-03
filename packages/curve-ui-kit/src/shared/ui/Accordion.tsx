@@ -1,16 +1,20 @@
 import { type ReactNode, useId } from 'react'
+import AddIcon from '@mui/icons-material/Add'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import RemoveIcon from '@mui/icons-material/Remove'
 import { Box, ButtonBase, Collapse, Stack, type Theme, Typography } from '@mui/material'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
+import { RotatableIcon } from '@ui-kit/shared/ui/DataTable/RotatableIcon'
 import type { Responsive } from '@ui-kit/themes/basic-theme'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
-import { applySxProps, borderStyle, SxProps } from '@ui-kit/utils'
+import { applySxProps, borderStyle, type SxProps } from '@ui-kit/utils'
 
 const { Spacing, IconSize } = SizesAndSpaces
 
 type Size = 'extraSmall' | 'small' | 'medium'
+type Indicator = 'chevron' | 'plusMinus'
 
 const titleVariants = {
   extraSmall: 'bodyXsRegular',
@@ -18,19 +22,29 @@ const titleVariants = {
   medium: 'headingSBold',
 } as const satisfies Record<Size, TypographyVariantKey>
 
+const ghostTitleVariants = {
+  extraSmall: 'bodyXsRegular',
+  small: 'bodyMBold',
+  medium: 'headingSBold',
+} as const satisfies Record<Size, TypographyVariantKey>
+
 const headerPaddingBlock = {
   extraSmall: 0,
-  small: Spacing.sm,
-  medium: Spacing.sm,
+  small: Spacing.xs,
+  medium: Spacing.xs,
 } as const satisfies Record<Size, number | Responsive>
 
 const headerIconSize = {
-  extraSmall: IconSize.sm.mobile,
+  extraSmall: IconSize.xs.mobile,
   small: IconSize.md.mobile,
   medium: IconSize.md.mobile,
 } as const satisfies Record<Size, string>
 
-const layer1Fill = (t: Theme) => t.design.Layer[1].Fill
+const headerIconFontSize = {
+  extraSmall: 12,
+  small: 20,
+  medium: 20,
+} as const satisfies Record<Size, number>
 
 type AccordionBaseProps = {
   /** The title displayed in the accordion header */
@@ -43,6 +57,8 @@ type AccordionBaseProps = {
   size?: Size
   /** Optional information to display in the header */
   info?: ReactNode
+  /** The visual indicator displayed at the end of the header */
+  indicator?: Indicator
   /** Content to display when the accordion is expanded */
   children?: ReactNode
   /** Optional test id for the accordion root */
@@ -101,6 +117,7 @@ export const Accordion = ({
   ghost = false,
   size = 'small',
   info,
+  indicator = 'chevron',
   children,
   testId,
   sx,
@@ -108,6 +125,21 @@ export const Accordion = ({
 }: AccordionProps) => {
   const [isOpen, toggle] = useAccordionToggle(controlProps)
   const id = `accordion-${useId()}`
+
+  const interactiveHeaderState = {
+    // We use after to avoid layout shifts when the borders appear on hover/focus
+    '&::after': {
+      borderColor: (t: Theme) => t.design.Button.Focus_Outline,
+      borderWidth: SizesAndSpaces.OutlineWidth,
+      ...(ghost && { borderBottomStyle: 'solid' }),
+    },
+    ...(!ghost && { backgroundColor: (t: Theme) => t.design.Layer[1].Fill }),
+  }
+
+  const indicatorIconSx = {
+    width: headerIconSize[size],
+    height: headerIconSize[size],
+  }
 
   return (
     <Stack data-testid={testId}>
@@ -118,8 +150,10 @@ export const Accordion = ({
         sx={{
           paddingBlock: headerPaddingBlock[size],
           paddingInline: ghost ? 0 : Spacing.sm,
-          ...(isOpen && !ghost && { backgroundColor: layer1Fill }),
+          minHeight: size === 'extraSmall' ? IconSize.sm.mobile : IconSize.md.mobile,
+          ...(isOpen && !ghost && { backgroundColor: (t: Theme) => t.design.Inputs.Base.Default.Fill.Active }),
           transition: `background-color ${TransitionFunction}`,
+          touchAction: 'manipulation',
 
           // Render border inside without layout shift on hover using a pseudo-element overlay
           position: 'relative',
@@ -128,16 +162,15 @@ export const Accordion = ({
             position: 'absolute',
             inset: 0,
             pointerEvents: 'none', // Prevents the overlay from intercepting mouse events (e.g., tooltip hover on the `info` slot)
-            ...(ghost ? { borderBottom: borderStyle } : { border: borderStyle }),
+            ...(ghost
+              ? isOpen && { borderBottom: (t: Theme) => `1px solid ${t.design.Layer[3].Outline}` }
+              : isOpen
+                ? { borderBottom: borderStyle }
+                : { border: borderStyle }),
           },
 
-          '&:hover, &.Mui-focusVisible': {
-            '&::after': {
-              borderColor: t => t.design.Button.Focus_Outline,
-              borderWidth: '2px',
-            },
-            ...(!ghost && { backgroundColor: layer1Fill }),
-          },
+          '&.Mui-focusVisible': interactiveHeaderState,
+          '@media (hover: hover) and (pointer: fine)': { '&:hover': interactiveHeaderState },
         }}
       >
         <Stack direction="row" sx={{ flexGrow: 1, alignItems: 'center', gap: Spacing.sm }}>
@@ -157,14 +190,14 @@ export const Accordion = ({
 
           {typeof title === 'string' ? (
             <Typography
-              variant={titleVariants[size]}
+              variant={(ghost ? ghostTitleVariants : titleVariants)[size]}
               color="textSecondary"
               sx={{
                 flexGrow: 1,
                 textAlign: 'start',
 
                 // Specifically unset to override the variant's uppercase styling; we want full control here
-                textTransform: ghost ? 'unset' : 'uppercase',
+                textTransform: ghost && size === 'small' ? 'unset' : undefined,
               }}
             >
               {title}
@@ -175,22 +208,17 @@ export const Accordion = ({
 
           {info}
 
-          <ExpandMoreIcon
-            sx={{
-              width: headerIconSize[size],
-              height: headerIconSize[size],
-              transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-              // Create a transition that mimics the collapse transition
-              transition: t =>
-                t.transitions.create('transform', {
-                  duration: t.transitions.duration.standard,
-                  easing: t.transitions.easing.easeInOut,
-                }),
-            }}
-          />
+          {indicator === 'chevron' ? (
+            <RotatableIcon icon={ExpandMoreIcon} rotated={isOpen} fontSize={headerIconFontSize[size]} />
+          ) : isOpen ? (
+            <RemoveIcon sx={indicatorIconSx} />
+          ) : (
+            <AddIcon sx={indicatorIconSx} />
+          )}
         </Stack>
       </ButtonBase>
-      <Collapse in={isOpen} id={id} sx={{ ...(!ghost && { backgroundColor: layer1Fill }) }}>
+
+      <Collapse in={isOpen} id={id} sx={{ ...(!ghost && { backgroundColor: (t: Theme) => t.design.Layer[1].Fill }) }}>
         {/*
           This Box wrapper serves two purposes:
           1. Padding is applied here instead of on Collapse because Collapse would never

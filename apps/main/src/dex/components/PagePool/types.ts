@@ -8,6 +8,7 @@ import {
   PoolAlert,
   type PoolUrlParams,
 } from '@/dex/types/main.types'
+import type { Decimal } from '@primitives/decimal.utils'
 
 export type EstimatedGas = {
   loading: boolean
@@ -40,10 +41,9 @@ export type PageTransferProps = {
 }
 
 export type TransferProps = {
-  chainIdPoolId: string
   blockchainId: string
   poolAlert: PoolAlert | null
-  maxSlippage: string
+  maxSlippage: Decimal
   seed: Seed
   tokensMapper: TokensMapper
 } & PageTransferProps

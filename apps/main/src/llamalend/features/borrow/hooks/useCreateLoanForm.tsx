@@ -2,7 +2,13 @@ import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
-import { getControllerAddress, getMarketType, getTokens, hasZapV2 } from '@/llamalend/llama.utils'
+import {
+  getControllerAddress,
+  getLlamaMarketVersion,
+  getMarketType,
+  getTokens,
+  hasZapV2,
+} from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { getCreateLoanEstimateGasOptions } from '@/llamalend/queries/create-loan/create-loan-estimate-gas.query'
 import { useCreateLoanExpectedCollateral } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
@@ -19,8 +25,8 @@ import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { q, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
 import { shouldBlockTransaction } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
-import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
-import { LoanPreset, PRESET_RANGES } from '../../../constants'
+import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
+import { LoanPreset, PRESET_RANGES, LEVERAGE } from '../../../constants'
 import { useCreateLoanMutation } from '../../../mutations/create-loan.mutation'
 import { useCreateLoanIsApproved } from '../../../queries/create-loan/create-loan-approved.query'
 import { invalidateCreateLoanRouteQueries } from '../../../queries/create-loan/create-loan-route-invalidation'
@@ -63,7 +69,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     defaultValues: {
       ...userDefaultValues,
       leverageEnabled: false,
-      slippage: SLIPPAGE_PRESETS.STABLE,
+      slippage: SLIPPAGE[LEVERAGE].default,
       range: PRESET_RANGES[preset],
       maxDebt: undefined,
       maxCollateral: undefined,
@@ -87,6 +93,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
         userCollateral: values.userCollateral,
         userBorrowed: values.userBorrowed,
         routeId: values.routeId,
+        slippageType: LEVERAGE,
       }),
       [
         chainId,
@@ -185,6 +192,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
       },
       getRouteGasOptions: (routeId: string | undefined) => getCreateLoanEstimateGasOptions({ ...params, routeId }),
       networks,
+      version: market && getLlamaMarketVersion(market),
     }),
   }
 }

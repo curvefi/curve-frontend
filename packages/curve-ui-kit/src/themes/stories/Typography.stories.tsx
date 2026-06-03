@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 import { Divider, List, ListItem, Stack, Typography } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { TYPOGRAPHY_VARIANTS, TypographyVariantDefinition, TypographyVariantKey } from '../typography'
 
@@ -54,7 +55,8 @@ const Item = ({ title, value }: { title: string; value: ReactNode }) =>
   )
 
 const TypographyDisplay = ({ variant, children, ...args }: TypographyDisplayProps) => {
-  const { fontFamily, fontWeight, fontSize, lineHeight, letterSpacing } = TYPOGRAPHY_VARIANTS[
+  const theme = useTheme()
+  const { fontWeight, fontSize, lineHeight, letterSpacing } = TYPOGRAPHY_VARIANTS[
     variant
   ] as TypographyVariantDefinition
   return (
@@ -66,7 +68,7 @@ const TypographyDisplay = ({ variant, children, ...args }: TypographyDisplayProp
       <Typography variant="bodyXsRegular">
         <List>
           <Item title="Variant" value={variant} />
-          <Item title="Font Family" value={fontFamily} />
+          <Item title="Font Family" value={theme.typography.fontFamily} />
           <Item title="Font Weight" value={fontWeight} />
           <Item title="Font Size" value={(fontSize || 'Medium').toUpperCase()} />
           <Item title="Line Height" value={(lineHeight ?? fontSize).toUpperCase()} />

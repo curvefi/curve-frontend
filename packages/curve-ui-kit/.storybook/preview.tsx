@@ -36,19 +36,34 @@ const decorators: Decorator[] = [
         <style>
           {`
         @font-face {
-          font-family: MonaSans;
+          font-family: 'Mona Sans';
+          font-weight: 200 900;
+          font-style: normal;
+          font-display: swap;
           src: url('fonts/Mona-Sans.woff2') format('woff2');
-          unicodeRange: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF;
+          unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF;
         }
         @font-face {
-          font-family: Minecraft;
-          font-weight: normal;
-          src: url('fonts/Minecraft-Regular.otf') format('opentype');
+          font-family: 'Mona Sans Mono';
+          font-weight: 200 900;
+          font-style: normal;
+          font-display: swap;
+          src: url('fonts/Mona-Sans-Mono.woff2') format('woff2');
+          unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF;
         }
         @font-face {
-          font-family: Minecraft;
-          font-weight: bold;
-          src: url('fonts/Minecraft-Bold.otf') format('opentype');
+          font-family: 'Ioskeley Mono';
+          font-weight: 400;
+          font-style: normal;
+          font-display: swap;
+          src: url('fonts/Ioskeley-Mono.woff2') format('woff2');
+        }
+        @font-face {
+          font-family: 'Ioskeley Mono';
+          font-weight: 700;
+          font-style: normal;
+          font-display: swap;
+          src: url('fonts/Ioskeley-Mono-Bold.woff2') format('woff2');
         }
         `}
         </style>

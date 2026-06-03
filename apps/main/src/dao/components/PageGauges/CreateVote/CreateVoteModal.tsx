@@ -51,12 +51,13 @@ export const CreateVoteModal = ({ isOpen, onClose }: CreateVoteModalProps) => {
       compact
       open={isOpen}
       onClose={onClose}
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
+      formProps={{ onSubmit }}
       footer={
         <Button
           fullWidth
           color="primary"
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-          onClick={onSubmit}
+          type="submit"
           disabled={isDisabled}
           loading={isPending}
           data-testid="create-gauge-vote-submit"

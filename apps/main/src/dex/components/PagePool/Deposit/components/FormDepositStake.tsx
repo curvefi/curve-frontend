@@ -17,6 +17,7 @@ import {
   amountsDescription,
   DEFAULT_ESTIMATED_GAS,
   DEFAULT_SLIPPAGE,
+  getSlippageType,
   tokensDescription,
 } from '@/dex/components/PagePool/utils'
 import { useNetworkByChain } from '@/dex/entities/networks'
@@ -33,7 +34,6 @@ import { t } from '@ui-kit/lib/i18n'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
 export const FormDepositStake = ({
-  chainIdPoolId,
   curve,
   blockchainId,
   poolAlert,
@@ -298,7 +298,7 @@ export const FormDepositStake = ({
             stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
           />
         )}
-        <SlippageToleranceActionInfo maxSlippage={maxSlippage} stateKey={chainIdPoolId} />
+        <SlippageToleranceActionInfo maxSlippage={maxSlippage} type={getSlippageType(poolData)} />
       </div>
 
       {poolAlert && poolAlert?.isInformationOnlyAndShowInForm && (
