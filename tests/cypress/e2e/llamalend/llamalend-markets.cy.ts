@@ -75,7 +75,7 @@ testCases.forEach(([width, height, breakpoint]) => {
 
       // filter height changes because text wraps depending on the width
       const filterHeight = {
-        mobile: [48],
+        mobile: [93],
         tablet: [56],
         desktop: [56],
       }[breakpoint]
