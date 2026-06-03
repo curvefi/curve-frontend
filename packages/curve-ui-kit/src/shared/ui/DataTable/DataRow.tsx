@@ -81,9 +81,8 @@ export const DataRow = <T extends TableItem>({
                 },
               },
               ...(shouldApplyStickyLastRow && {
-                // to avoid the sticky header showing without any rows, show the last row on top of it
+                // Keep the final row visible near the table end without covering the sticky header.
                 position: 'sticky',
-                zIndex: t => t.zIndex.tableStickyLastRow,
                 top: 0,
                 backgroundColor: t => t.design.Table.Row.Default,
               }),

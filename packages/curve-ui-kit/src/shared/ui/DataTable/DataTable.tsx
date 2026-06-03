@@ -25,6 +25,8 @@ import { useTableRowLimit } from './useTableRowLimit'
 
 const TABLE_FILTERS_TEST_ID = 'table-filters'
 
+const { Height } = SizesAndSpaces
+
 /**
  * Scrolls to the top of the window whenever the column filters change.
  */
@@ -67,13 +69,10 @@ function useResetPageOnResultChange<T extends TableItem>(table: TanstackTable<T>
     lastResultCountRef.current = resultCount
   }, [resultCount, isManualPagination])
 }
-
-const { Sizing } = SizesAndSpaces
-
 /**
  * DataTable component to render the table with headers and rows.
- * The table header cannot be both sticky and horizontally scrollable, so when the table content is wider than its
- * parent the header stops being sticky and the table becomes horizontally scrollable instead.
+ * The table header stays sticky only when enabled, rows are not limited, and table content fits within its parent.
+ * When the table is wider than its parent, the header stops being sticky and the table becomes horizontally scrollable.
  */
 export const DataTable = <T extends TableItem>({
   emptyState,
@@ -82,7 +81,7 @@ export const DataTable = <T extends TableItem>({
   size = 'small',
   maxHeight,
   defaultVisibleRows,
-  disableStickyHeader,
+  disableStickyHeader = false,
   shouldStickFirstColumn = false,
   hideHeader = false,
   footerRow,
@@ -96,7 +95,7 @@ export const DataTable = <T extends TableItem>({
   maxHeight?: `${number}rem` // also sets overflowY to 'auto'
   // maximum number of visible rows and the button's label to expand them all
   defaultVisibleRows?: { max: number; buttonLabel: string }
-  disableStickyHeader?: boolean
+  disableStickyHeader?: boolean // can also be disabled by limited rows or table width overflow.
   hideHeader?: boolean
   footerRow?: ReactNode
 } & Omit<DataRowProps<T>, 'row' | 'isLastRow' | 'shouldStickLastRowToTop'>) => {
@@ -114,7 +113,7 @@ export const DataTable = <T extends TableItem>({
   const columnCount = useMemo(() => headerGroups.reduce((acc, group) => acc + group.headers.length, 0), [headerGroups])
   const top = useLayoutStore(state => state.navHeight)
   const containerRef = useRef<HTMLDivElement>(null)
-  const { shouldStickyHeader, tableRef, tableWrapperRef } = useTableStickyHeader(!disableStickyHeader)
+  const { shouldStickyHeader, tableRef, tableWrapperRef } = useTableStickyHeader({ disableStickyHeader, isLimited })
   useScrollToTopOnFilterChange(table)
   useResetPageOnResultChange(table)
   useScrollToTopOnPageChange(table, containerRef)
@@ -123,8 +122,8 @@ export const DataTable = <T extends TableItem>({
       position: 'sticky',
       top: maxHeight ? 0 : top,
       zIndex: t.zIndex.tableHeader,
+      marginBlockEnd: Height.row, // last row should not be hidden by the sticky header
     }),
-    marginBlock: Sizing.sm,
   })
   const showFooter = showPagination || showViewAllButton || footerRow
 

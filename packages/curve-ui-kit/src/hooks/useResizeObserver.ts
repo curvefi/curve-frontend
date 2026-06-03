@@ -3,6 +3,7 @@ import { type RefObject, useEffect, useState } from 'react'
 /** Options for the height resize observer */
 type ResizeObserverOptions = {
   threshold?: number
+  enabled?: boolean
 }
 
 const EMPTY_DIMENSIONS: readonly [] = []
@@ -34,11 +35,12 @@ const EMPTY_DIMENSIONS: readonly [] = []
  */
 export function useResizeObserver(
   elementRef: RefObject<Element | null>,
-  { threshold = 10 }: ResizeObserverOptions = {},
+  { threshold = 10, enabled = true }: ResizeObserverOptions = {},
 ) {
   const [dimensions, setDimensions] = useState<[number, number] | null>(null)
 
   useEffect(() => {
+    if (!enabled) return
     const node = elementRef.current
     if (!node) return console.warn(`Could not find the element to observe for resize`, elementRef)
 
@@ -65,7 +67,7 @@ export function useResizeObserver(
     return () => {
       observer?.disconnect()
     }
-  }, [elementRef, threshold])
+  }, [elementRef, threshold, enabled])
 
   return dimensions ?? EMPTY_DIMENSIONS
 }
