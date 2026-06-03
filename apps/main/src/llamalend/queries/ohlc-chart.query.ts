@@ -17,8 +17,8 @@ import { formatCandleOhlcData, formatOraclePriceData } from '@ui-kit/features/ca
 type OhlcTimeUnit = Parameters<typeof getOHLC>[0]['units']
 
 type TokenInfo = {
-  address: OraclePool['borrowedAddress'] | OraclePool['collateralAddress']
-  symbol: OraclePool['borrowedSymbol'] | OraclePool['collateralSymbol']
+  address: OraclePool['borrowedAddress']
+  symbol: OraclePool['borrowedSymbol']
 }
 
 type BaseOhlcQueryParams = {
