@@ -1,5 +1,5 @@
 import { z } from 'zod/v4'
-import { address, camelizeKeys, chain, timestamp } from '../schemas'
+import { address, camelizeKeys, chain, sortDirection, timestamp } from '../schemas'
 
 const rawCoin = z.object({
   pool_index: z.number(),
@@ -238,6 +238,89 @@ const poolType = z.enum([
 ])
 export type PoolType = z.infer<typeof poolType>
 
+const v2Coin = rawCoin
+  .extend({
+    name: z.string().nullable().optional(),
+    decimals: z.number().nullable().optional(),
+  })
+  .transform(camelizeKeys)
+
+const v2ExtraRewardApr = z
+  .object({
+    address: address.nullable().optional(),
+    symbol: z.string().nullable().optional(),
+    name: z.string().nullable().optional(),
+    decimals: z.number().nullable().optional(),
+    price: z.number().nullable().optional(),
+    apr: z.number(),
+  })
+  .transform(camelizeKeys)
+
+const v2Gauge = z
+  .object({
+    address,
+    is_killed: z.boolean().optional(),
+  })
+  .transform(camelizeKeys)
+  .transform(({ isKilled, ...data }) => ({
+    ...data,
+    isKilled: isKilled ?? false,
+  }))
+
+const v2Pool = z
+  .object({
+    chain_id: z.number(),
+    name: z.string(),
+    address,
+    pool_type: poolType.nullable().optional(),
+    is_metapool: z.boolean().nullable().optional(),
+    base_pool: address.nullable().optional(),
+    tvl_usd: z.number().nullable().optional(),
+    trading_volume_24h: z.number(),
+    trading_fee_24h: z.number(),
+    liquidity_volume_24h: z.number(),
+    liquidity_fee_24h: z.number(),
+    coins: z.array(v2Coin),
+    base_daily_apr: z.number().nullable().optional(),
+    base_weekly_apr: z.number().nullable().optional(),
+    crv_apr: z.number().nullable().optional(),
+    crv_apr_boosted: z.number().nullable().optional(),
+    extra_rewards_apr: z.array(v2ExtraRewardApr).optional(),
+    vyper_version: z.string().nullable().optional(),
+    gauges: z.array(v2Gauge).optional(),
+  })
+  .transform(camelizeKeys)
+  .transform(({ extraRewardsApr, gauges, ...data }) => {
+    const poolGauges = gauges ?? []
+
+    return {
+      ...data,
+      extraRewardsApr: extraRewardsApr ?? [],
+      gauge: poolGauges[0] ?? null,
+      gauges: poolGauges,
+    }
+  })
+
+const v2PoolRegistry = z
+  .object({
+    chain_id: z.number(),
+    address,
+    type: poolType,
+  })
+  .transform(camelizeKeys)
+
+export const v2PoolSortField = z.enum(['name', 'base_daily_apr', 'volume', 'tvl'])
+export type V2PoolSortField = z.infer<typeof v2PoolSortField>
+
+export type SortDirection = z.infer<typeof sortDirection>
+
+const v2PoolChain = z
+  .object({
+    chain_id: z.number(),
+    name: z.string(),
+  })
+  .transform(camelizeKeys)
+
 export const getPoolsResponse = z
   .object({
     chain,
@@ -251,6 +334,31 @@ export const getPoolsResponse = z
   }))
 
 export const getPoolResponse = pool
+export const listPoolsResponse = z
+  .object({
+    page: z.number().optional(),
+    pagination: z.number().optional(),
+    count: z.number().optional(),
+    pools: z.array(v2Pool).optional(),
+  })
+  .transform(({ page, pagination, count, pools }) => ({
+    page: page ?? 1,
+    pagination: pagination ?? 20,
+    count: count ?? 0,
+    pools: pools ?? [],
+  }))
+
+export const listPoolRegistriesResponse = z
+  .object({
+    data: z.array(v2PoolRegistry),
+  })
+  .transform(({ data }) => data)
+
+export const listPoolChainsResponse = z
+  .object({
+    data: z.array(v2PoolChain),
+  })
+  .transform(({ data }) => data)
 export const getVolumeResponse = z.object({ data: z.array(volume) }).transform(({ data }) => data)
 export const getTvlResponse = z.object({ data: z.array(tvl) }).transform(({ data }) => data)
 
@@ -346,6 +454,10 @@ export const getPoolMetadataResponse = z
 export type PoolCoin = z.infer<typeof pool>['coins'][number]
 export type PoolsTotals = z.infer<typeof poolTotals>
 export type Pool = z.infer<typeof pool>
+export type V2Gauge = z.infer<typeof v2Gauge>
+export type V2Pool = z.infer<typeof v2Pool>
+export type V2PoolRegistry = z.infer<typeof v2PoolRegistry>
+export type V2PoolChain = z.infer<typeof v2PoolChain>
 export type Volume = z.infer<typeof volume>
 export type Tvl = z.infer<typeof tvl>
 export type TradeToken = z.infer<typeof tradeToken>
