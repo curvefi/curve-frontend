@@ -3,7 +3,10 @@ import { type RefObject, useEffect, useState } from 'react'
 /** Options for the height resize observer */
 type ResizeObserverOptions = {
   threshold?: number
+  enabled?: boolean
 }
+
+const EMPTY_DIMENSIONS: readonly [] = []
 
 /**
  * A hook that observes an element's dimension changes (including borders) and returns the current dimensions.
@@ -11,16 +14,16 @@ type ResizeObserverOptions = {
  *
  * @param elementRef - React ref object for the element to observe
  * @param options - Configuration options
- * @returns  The current width and height of the element or null if not measured yet
+ * @returns  The current width and height of the element or an empty array if not measured yet
  *
  * @example
  * // Basic usage
  * const elementRef = useRef<HTMLDivElement>(null);
- * const [width, height] = useResizeObserver(elementRef) ?? [];
+ * const [width, height] = useResizeObserver(elementRef);
  *
  * // With custom threshold
  * const bannerRef = useRef<HTMLDivElement>(null);
- * const [,bannerHeight] = useResizeObserver(bannerRef, { threshold: 5 }) ?? [];
+ * const [,bannerHeight] = useResizeObserver(bannerRef, { threshold: 5 });
  *
  * // Using the height in layout calculations
  * useEffect(() => {
@@ -32,11 +35,12 @@ type ResizeObserverOptions = {
  */
 export function useResizeObserver(
   elementRef: RefObject<Element | null>,
-  { threshold = 10 }: ResizeObserverOptions = {},
+  { threshold = 10, enabled = true }: ResizeObserverOptions = {},
 ) {
   const [dimensions, setDimensions] = useState<[number, number] | null>(null)
 
   useEffect(() => {
+    if (!enabled) return
     const node = elementRef.current
     if (!node) return console.warn(`Could not find the element to observe for resize`, elementRef)
 
@@ -63,7 +67,7 @@ export function useResizeObserver(
     return () => {
       observer?.disconnect()
     }
-  }, [elementRef, threshold])
+  }, [elementRef, threshold, enabled])
 
-  return dimensions
+  return dimensions ?? EMPTY_DIMENSIONS
 }

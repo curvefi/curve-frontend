@@ -67,20 +67,31 @@ testCases.forEach(([width, height, breakpoint]) => {
       cy.url(LOAD_TIMEOUT).should('match', urlRegex)
     })
 
-    it('should have sticky headers', () => {
-      cy.get('[data-testid^="data-table-row"]').last().then(assertNotInViewport)
-      cy.get('[data-testid^="data-table-row"]').eq(10).scrollIntoView()
-      cy.get('[data-testid="data-table-head"] th').eq(1).then(assertInViewport)
+    it('should have sticky headers or horizontally scrollable table', () => {
       cy.get(`[data-testid^="badge-market-type-"]`).should('be.visible') // wait for the table to render
+      cy.get('[data-testid="data-table-scroll-wrapper"]').then($wrapper => {
+        cy.get('[data-testid="data-table"]').then($table => {
+          const tableWidth = assert($table.outerWidth(), 'The table width was not found')
+          const wrapperWidth = assert($wrapper.outerWidth(), 'The table scroll wrapper width was not found')
 
-      // filter height changes because text wraps depending on the width
-      const filterHeight = {
-        mobile: [93],
-        tablet: [56],
-        desktop: [56],
-      }[breakpoint]
-      cy.get('[data-testid="table-filters"]').invoke('outerHeight').should('be.oneOf', filterHeight)
-      cy.get('[data-testid^="data-table-row"]').eq(10).invoke('outerHeight').should('equal', 65)
+          if (tableWidth <= wrapperWidth) {
+            // should have sticky headers
+            cy.get('[data-testid^="data-table-row"]').last().should(assertNotInViewport)
+            cy.get('[data-testid^="data-table-row"]').eq(10).scrollIntoView()
+            cy.get('[data-testid="data-table-head"] th').eq(1).should(assertInViewport)
+
+            // filter height changes because text wraps depending on the width
+            const filterHeight = { mobile: [93], tablet: [56], desktop: [56] }[breakpoint]
+            cy.get('[data-testid="table-filters"]').invoke('outerHeight').should('be.oneOf', filterHeight)
+            cy.get('[data-testid^="data-table-row"]').eq(10).invoke('outerHeight').should('equal', 65)
+          } else {
+            // should by horizontally scrollable
+            expect($wrapper[0].scrollWidth).to.be.greaterThan($wrapper[0].clientWidth)
+            cy.wrap($wrapper).scrollTo('right')
+            cy.wrap($wrapper).should($el => expect($el[0].scrollLeft).to.be.greaterThan(0))
+          }
+        })
+      })
     })
 
     it('should hide columns', () => {
