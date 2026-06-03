@@ -16,7 +16,7 @@ function isSlippage(nr: Decimal) {
     .gte(MIN_SLIPPAGE)
   enforce(nr)
     .message(t`Slippage cannot be larger than ${MAX_SLIPPAGE}%`)
-    .lt(MAX_SLIPPAGE)
+    .lte(MAX_SLIPPAGE)
 }
 
 export type SlippageSettingsFormData = SlippageSettings

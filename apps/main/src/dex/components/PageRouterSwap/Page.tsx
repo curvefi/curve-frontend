@@ -14,7 +14,6 @@ import { isLoading, useCurve } from '@ui-kit/features/connect-wallet'
 import { useNavigate, useSearchParams, useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { decimal } from '@ui-kit/utils'
 
 const { MaxWidth } = SizesAndSpaces
 
@@ -39,7 +38,6 @@ export const PageRouterSwap = () => {
   const nativeToken = curveApi?.getNetworkConstants()?.NATIVE_TOKEN
   const paramsFromAddress = searchParams?.get('from')?.toLowerCase() || nativeToken?.address || ''
   const paramsToAddress = searchParams?.get('to')?.toLowerCase() || nativeToken?.wrappedAddress || ''
-  const paramsMaxSlippage = decimal(searchParams?.get('slippage'))
   const searchedParams = useMemo(
     () => ({ fromAddress: paramsFromAddress, toAddress: paramsToAddress }),
     [paramsFromAddress, paramsToAddress],
@@ -92,7 +90,6 @@ export const PageRouterSwap = () => {
     hasRouter,
     paramsFromAddress,
     paramsToAddress,
-    paramsMaxSlippage,
     rChainId,
     tokensMapperStr,
     routerCachedFromAddress,

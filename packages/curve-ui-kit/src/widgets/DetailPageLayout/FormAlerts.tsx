@@ -18,9 +18,12 @@ import type { SlippageType } from '@ui-kit/widgets/SlippageSettings'
 type FormErrors<Field extends string> = readonly (readonly [Field, string])[]
 
 type FormAlertProps<Field extends string> = {
+  /** Error that occurred during form submission. Only omit when there is no exception possible */
   error?: Error | null
-  formErrors: FormErrors<Field> // list of all form errors
-  handledErrors: readonly Field[] // list of fields that have their errors already handled/displayed elsewhere
+  /** List of form errors */
+  formErrors: FormErrors<Field>
+  /** List of fields that have their errors already displayed elsewhere */
+  handledErrors: readonly Field[]
 }
 
 const { Spacing } = SizesAndSpaces

@@ -50,8 +50,5 @@ export const DEFAULT_SLIPPAGE: Slippage = {
 
 export const DEFAULT_ESTIMATED_GAS: EstimatedGas = { loading: false, estimatedGas: null, error: null }
 
-export function getSlippageType(poolData: PoolData): SlippageType
-export function getSlippageType(poolData: PoolData | undefined): SlippageType | undefined
-export function getSlippageType(poolData: PoolData | undefined): SlippageType | undefined {
-  return maybe(poolData, ({ pool }) => (pool.isCrypto ? 'crypto' : 'stable'))
-}
+export const getSlippageType = <T extends PoolData | undefined>(poolData: T) =>
+  maybe(poolData, ({ pool }): SlippageType => (pool.isCrypto ? 'crypto' : 'stable'))

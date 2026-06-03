@@ -29,7 +29,7 @@ const store: StateCreator<Store> = set => ({
   ...INITIAL_STATE,
   reset: () => set(INITIAL_STATE),
   setTheme: theme => set(state => ({ ...state, theme })),
-  setMaxSlippage: maxSlippage => set(state => ({ ...state, maxSlippage: { ...maxSlippage } })),
+  setMaxSlippage: maxSlippage => set(state => ({ ...state, maxSlippage })),
   setShowDeprecatedMarkets: (showDeprecatedMarkets: boolean) => set(state => ({ ...state, showDeprecatedMarkets })),
 })
 
