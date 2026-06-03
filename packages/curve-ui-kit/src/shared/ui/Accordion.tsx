@@ -39,10 +39,6 @@ const headerIconSize = {
   medium: IconSize.md.mobile,
 } as const satisfies Record<Size, string>
 
-const ghostBorderStyle = (t: Theme) => `1px solid ${t.design.Layer[3].Outline}`
-const layer1Fill = (t: Theme) => t.design.Layer[1].Fill
-const activeFill = (t: Theme) => t.design.Inputs.Base.Default.Fill.Active
-
 type AccordionBaseProps = {
   /** The title displayed in the accordion header */
   title: ReactNode
@@ -134,7 +130,7 @@ export const Accordion = ({
           paddingBlock: headerPaddingBlock[size],
           paddingInline: ghost ? 0 : Spacing.sm,
           minHeight: size === 'extraSmall' ? IconSize.sm.mobile : IconSize.md.mobile,
-          ...(isOpen && !ghost && { backgroundColor: activeFill }),
+          ...(isOpen && !ghost && { backgroundColor: (t: Theme) => t.design.Inputs.Base.Default.Fill.Active }),
           transition: `background-color ${TransitionFunction}`,
           touchAction: 'manipulation',
 
@@ -147,7 +143,7 @@ export const Accordion = ({
             pointerEvents: 'none', // Prevents the overlay from intercepting mouse events (e.g., tooltip hover on the `info` slot)
             ...(ghost
               ? isOpen
-                ? { borderBottom: ghostBorderStyle }
+                ? { borderBottom: (t: Theme) => `1px solid ${t.design.Layer[3].Outline}` }
                 : {}
               : isOpen
                 ? { border: borderStyle, borderBottom: borderStyle }
@@ -162,7 +158,7 @@ export const Accordion = ({
                 ? { borderBottomStyle: 'solid', borderBottomWidth: SizesAndSpaces.OutlineWidth }
                 : { borderWidth: '2px' }),
             },
-            ...(!ghost && { backgroundColor: layer1Fill }),
+            ...(!ghost && { backgroundColor: (t: Theme) => t.design.Layer[1].Fill }),
           },
 
           ['@media (hover: hover) and (pointer: fine)']: {
@@ -173,7 +169,7 @@ export const Accordion = ({
                   ? { borderBottomStyle: 'solid', borderBottomWidth: SizesAndSpaces.OutlineWidth }
                   : { borderWidth: '2px' }),
               },
-              ...(!ghost && { backgroundColor: layer1Fill }),
+              ...(!ghost && { backgroundColor: (t: Theme) => t.design.Layer[1].Fill }),
             },
           },
         }}
@@ -263,7 +259,7 @@ export const Accordion = ({
         easing={Transition}
         timeout={Duration.Transition}
         sx={{
-          ...(!ghost && { backgroundColor: layer1Fill }),
+          ...(!ghost && { backgroundColor: (t: Theme) => t.design.Layer[1].Fill }),
           '& .MuiCollapse-wrapperInner': {
             opacity: isOpen ? 1 : 0,
             transform: isOpen ? 'translateY(0)' : 'translateY(-0.125rem)',
