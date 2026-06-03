@@ -42,7 +42,6 @@ const headerIconSize = {
 const ghostBorderStyle = (t: Theme) => `1px solid ${t.design.Layer[3].Outline}`
 const layer1Fill = (t: Theme) => t.design.Layer[1].Fill
 const activeFill = (t: Theme) => t.design.Inputs.Base.Default.Fill.Active
-const hoverFinePointer = '@media (hover: hover) and (pointer: fine)'
 const indicatorIconSize = '0.9375rem'
 
 type AccordionBaseProps = {
@@ -167,16 +166,14 @@ export const Accordion = ({
             ...(!ghost && { backgroundColor: layer1Fill }),
           },
 
-          [hoverFinePointer]: {
-            '&:hover': {
-              '&::after': {
-                borderColor: t => t.design.Button.Focus_Outline,
-                ...(ghost
-                  ? { borderBottomStyle: 'solid', borderBottomWidth: SizesAndSpaces.OutlineWidth }
-                  : { borderWidth: '2px' }),
-              },
-              ...(!ghost && { backgroundColor: layer1Fill }),
+          '&:hover': {
+            '&::after': {
+              borderColor: t => t.design.Button.Focus_Outline,
+              ...(ghost
+                ? { borderBottomStyle: 'solid', borderBottomWidth: SizesAndSpaces.OutlineWidth }
+                : { borderWidth: '2px' }),
             },
+            ...(!ghost && { backgroundColor: layer1Fill }),
           },
         }}
       >
