@@ -42,7 +42,6 @@ const headerIconSize = {
 const ghostBorderStyle = (t: Theme) => `1px solid ${t.design.Layer[3].Outline}`
 const layer1Fill = (t: Theme) => t.design.Layer[1].Fill
 const activeFill = (t: Theme) => t.design.Inputs.Base.Default.Fill.Active
-const indicatorIconSize = '0.9375rem'
 
 type AccordionBaseProps = {
   /** The title displayed in the accordion header */
@@ -237,8 +236,8 @@ export const Accordion = ({
             <AddIcon
               sx={{
                 position: 'absolute',
-                width: indicatorIconSize,
-                height: indicatorIconSize,
+                width: IconSize.sm,
+                height: IconSize.sm,
                 opacity: isOpen ? 0 : 1,
                 transform: isOpen ? 'scale(0.85)' : 'scale(1)',
                 transition: `opacity ${TransitionFunction}, transform ${TransitionFunction}`,
@@ -247,8 +246,8 @@ export const Accordion = ({
             <RemoveIcon
               sx={{
                 position: 'absolute',
-                width: indicatorIconSize,
-                height: indicatorIconSize,
+                width: IconSize.sm,
+                height: IconSize.sm,
                 opacity: isOpen ? 1 : 0,
                 transform: isOpen ? 'scale(1)' : 'scale(0.85)',
                 transition: `opacity ${TransitionFunction}, transform ${TransitionFunction}`,
