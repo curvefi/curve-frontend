@@ -4,6 +4,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import RemoveIcon from '@mui/icons-material/Remove'
 import { Box, ButtonBase, Collapse, Stack, type Theme, Typography } from '@mui/material'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
+import { RotatableIcon } from '@ui-kit/shared/ui/DataTable/RotatableIcon'
 import type { Responsive } from '@ui-kit/themes/basic-theme'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -38,6 +39,12 @@ const headerIconSize = {
   small: IconSize.md.mobile,
   medium: IconSize.md.mobile,
 } as const satisfies Record<Size, string>
+
+const headerIconFontSize = {
+  extraSmall: 12,
+  small: 20,
+  medium: 20,
+} as const satisfies Record<Size, number>
 
 type AccordionBaseProps = {
   /** The title displayed in the accordion header */
@@ -202,7 +209,7 @@ export const Accordion = ({
           {info}
 
           {indicator === 'chevron' ? (
-            <ExpandMoreIcon sx={{ ...indicatorIconSx, transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }} />
+            <RotatableIcon icon={ExpandMoreIcon} rotated={isOpen} fontSize={headerIconFontSize[size]} />
           ) : isOpen ? (
             <RemoveIcon sx={indicatorIconSx} />
           ) : (
