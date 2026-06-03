@@ -31,6 +31,11 @@ const meta: Meta<typeof Accordion> = {
       options: ['extraSmall', 'small', 'medium'],
       description: 'The size of the accordion header',
     },
+    indicator: {
+      control: 'select',
+      options: ['chevron', 'plusMinus'],
+      description: 'The visual indicator displayed at the end of the header',
+    },
     info: {
       control: { disable: true },
       description: 'Optional information to display in the header (ReactNode)',
@@ -48,6 +53,7 @@ const meta: Meta<typeof Accordion> = {
     title: 'Accordion title',
     ghost: false,
     size: 'small',
+    indicator: 'chevron',
     defaultExpanded: false,
     children: 'This is the content of the accordion that appears when expanded.',
   },
@@ -85,6 +91,17 @@ export const WithIcon: Story = {
 export const Ghost: Story = {
   args: { ghost: true },
   parameters: { docs: { description: { story: 'Accordion without a border (ghost mode)' } } },
+}
+
+export const PlusMinus: Story = {
+  args: {
+    ghost: true,
+    indicator: 'plusMinus',
+    title: 'What is LlamaLend?',
+    children:
+      "LlamaLend is Curve's non-custodial lending infrastructure. All markets are one-way isolated: each market has one collateral and one borrowable asset.",
+  },
+  parameters: { docs: { description: { story: 'FAQ-style accordion with a minus indicator' } } },
 }
 
 export const WithInfo: Story = {

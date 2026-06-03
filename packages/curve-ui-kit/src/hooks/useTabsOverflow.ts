@@ -22,7 +22,7 @@ export function useTabsOverflow<T extends string | number>(options: readonly Tab
   const [kebabMenuOpen, openKebabMenu, closeKebabMenu] = useSwitch()
   const visibleTabsRef = useRef<HTMLDivElement>(null)
   const kebabTabRef = useRef<HTMLDivElement | null>(null)
-  const [tabsContainerWidth] = useResizeObserver(visibleTabsRef, { threshold: 1 }) ?? []
+  const [tabsContainerWidth] = useResizeObserver(visibleTabsRef, { threshold: 1 })
   const [tabWidths, setTabWidths] = useState<number[]>([])
 
   // useLayoutEffect is used to measure tab widths before the browser paints, ensuring that

@@ -34,6 +34,5 @@ declare module '@mui/material/styles' {
     tableHeader: number
     tableFilters: number
     tableHeaderStickyColumn: number
-    tableStickyLastRow: number
   }
 }

@@ -8,6 +8,7 @@ import { PoolStats } from '@/dex/components/PagePool/PoolDetails/PoolStats'
 import { Swap } from '@/dex/components/PagePool/Swap'
 import type { PageTransferProps, Seed, TransferFormType } from '@/dex/components/PagePool/types'
 import { MySharesStats } from '@/dex/components/PagePool/UserDetails'
+import { getSlippageType } from '@/dex/components/PagePool/utils'
 import { Withdraw } from '@/dex/components/PagePool/Withdraw'
 import { ROUTE } from '@/dex/constants'
 import { useGaugeManager, useGaugeRewardsDistributors } from '@/dex/entities/gauge'
@@ -59,23 +60,15 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const setPoolIsWrapped = useStore(state => state.pools.setPoolIsWrapped)
   const { pool } = poolDataCacheOrApi
 
-  const poolMaxSlippage = useUserProfileStore(state => state.maxSlippage[chainIdPoolId])
-  const poolTypeMaxSlippage = useUserProfileStore(state => state.maxSlippage[pool.isCrypto ? 'crypto' : 'stable'])
+  const maxSlippage = useUserProfileStore(state => state.maxSlippage[getSlippageType(poolData) ?? 'stable'])
 
   const { data: gaugeManager, isPending: isPendingGaugeManager } = useGaugeManager(
-    {
-      chainId: rChainId,
-      poolId: poolData?.pool.id,
-    },
+    { chainId: rChainId, poolId: poolData?.pool.id },
     !!curve,
   )
 
   const { data: rewardDistributors, isPending: isPendingRewardsDistributors } = useGaugeRewardsDistributors(
-    {
-      chainId: rChainId,
-      poolId: poolData?.pool.id,
-      userAddress: signerAddress,
-    },
+    { chainId: rChainId, poolId: poolData?.pool.id, userAddress: signerAddress },
     !!curve,
   )
 
@@ -86,13 +79,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { data: pricesApiPoolsMapper } = usePoolsPricesApi({ blockchainId: networkId as Chain })
   const poolAddress = poolData?.pool.address as Address
   const shouldFetchSnapshots = pricesApi && !!poolAddress
-  const { data: snapshots } = usePoolSnapshots(
-    {
-      chain: networkId as Chain,
-      poolAddress,
-    },
-    shouldFetchSnapshots,
-  )
+  const { data: snapshots } = usePoolSnapshots({ chain: networkId as Chain, poolAddress }, shouldFetchSnapshots)
   const snapshotData = snapshots?.[0]
 
   const pricesApiPoolData = poolData && pricesApiPoolsMapper?.[poolData.pool.address]
@@ -107,11 +94,6 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
     [signerAddress, pricesApi, pricesApiPoolData, snapshotData],
   )
   const [poolInfoTab, setPoolInfoTab] = useState<DetailInfoTab>('pool')
-
-  const maxSlippage = useMemo(() => {
-    const poolTypeDefaultMaxSlippage = pool.isCrypto ? '0.1' : '0.03'
-    return poolMaxSlippage || poolTypeMaxSlippage || poolTypeDefaultMaxSlippage
-  }, [pool.isCrypto, poolMaxSlippage, poolTypeMaxSlippage])
 
   usePageVisibleInterval(() => {
     if (curve && poolData) {
@@ -203,7 +185,6 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
               ) : (
                 <Swap
                   {...pageTransferProps}
-                  chainIdPoolId={chainIdPoolId}
                   poolAlert={poolAlert}
                   maxSlippage={maxSlippage}
                   seed={seed}
@@ -213,7 +194,6 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
             ) : rFormType === 'deposit' ? (
               <Deposit
                 {...pageTransferProps}
-                chainIdPoolId={chainIdPoolId}
                 blockchainId={networkId}
                 hasDepositAndStake={hasDepositAndStake}
                 poolAlert={poolAlert}
@@ -224,7 +204,6 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
             ) : rFormType === 'withdraw' ? (
               <Withdraw
                 {...pageTransferProps}
-                chainIdPoolId={chainIdPoolId}
                 blockchainId={networkId}
                 poolAlert={poolAlert}
                 maxSlippage={maxSlippage}

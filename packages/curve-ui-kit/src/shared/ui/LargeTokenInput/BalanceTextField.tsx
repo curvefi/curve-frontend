@@ -21,12 +21,13 @@ export const BalanceTextField = ({ balance, name, isError, onChange, disabled }:
     name={name}
     size="small"
     fullWidth
+    error={isError}
     slotProps={{
       input: {
         disableUnderline: true,
         sx: theme => ({
           height: AmountHeight,
-          backgroundColor: Transparent,
+          '&&&': { backgroundColor: Transparent },
           color: theme.design.Inputs.Text[isError ? 'Error' : 'Value'],
           ...theme.typography.headingSBold,
           '&& input.MuiInputBase-input': {
