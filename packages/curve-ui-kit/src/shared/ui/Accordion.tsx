@@ -142,9 +142,7 @@ export const Accordion = ({
             inset: 0,
             pointerEvents: 'none', // Prevents the overlay from intercepting mouse events (e.g., tooltip hover on the `info` slot)
             ...(ghost
-              ? isOpen
-                ? { borderBottom: (t: Theme) => `1px solid ${t.design.Layer[3].Outline}` }
-                : {}
+              ? isOpen && { borderBottom: (t: Theme) => `1px solid ${t.design.Layer[3].Outline}` }
               : isOpen
                 ? { border: borderStyle, borderBottom: borderStyle }
                 : { border: borderStyle }),
