@@ -1,6 +1,6 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
-import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
+import { DEFAULT_HEALTH_MODE, LEVERAGE } from '@/llamalend/constants'
 import { hasDeleverage } from '@/llamalend/llama.utils'
 import { AlertFormError } from '@/loan/components/AlertFormError'
 import { AlertFormWarning } from '@/loan/components/AlertFormWarning'
@@ -365,7 +365,7 @@ export const LoanDeleverage = ({
           {...formEstGas}
           stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
         />
-        <SlippageToleranceActionInfo maxSlippage={maxSlippage} />
+        <SlippageToleranceActionInfo maxSlippage={maxSlippage} type={LEVERAGE} />
       </StyledDetailInfoWrapper>
 
       {/* actions */}

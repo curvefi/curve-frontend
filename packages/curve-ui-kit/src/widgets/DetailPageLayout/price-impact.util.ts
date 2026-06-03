@@ -1,8 +1,9 @@
 import type { Decimal } from '@primitives/decimal.utils'
+import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Query } from '@ui-kit/types/util'
 import { decimalGreaterThan } from '@ui-kit/utils'
-import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
+import { SLIPPAGE, type SlippageType } from '../SlippageSettings/slippage.utils'
 
 /** Threshold above which price impact blocks the transaction (shown as red alert) */
 const HIGH_PRICE_IMPACT_CRITICAL_THRESHOLD = '25' satisfies Decimal
@@ -15,11 +16,11 @@ const HIGH_PRICE_IMPACT_CRITICAL_THRESHOLD = '25' satisfies Decimal
  */
 export const getPriceImpactSeverity = (
   { data: priceImpact }: Pick<Query<Decimal | null>, 'data'>,
-  { slippage }: { slippage: Decimal | null | undefined },
+  { slippage, slippageType }: { slippage: Decimal | null | undefined; slippageType: SlippageType },
 ): 'error' | 'warning' | null =>
   decimalGreaterThan(priceImpact ?? '0', HIGH_PRICE_IMPACT_CRITICAL_THRESHOLD)
     ? 'error'
-    : decimalGreaterThan(priceImpact ?? '0', slippage ?? SLIPPAGE_PRESETS.CRYPTO)
+    : decimalGreaterThan(priceImpact ?? '0', slippage ?? SLIPPAGE[slippageType].default)
       ? 'warning'
       : null
 
@@ -30,17 +31,22 @@ export const getPriceImpactSeverity = (
  */
 export const shouldBlockTransaction = (
   priceImpact: Query<Decimal | null>,
-  { slippage, leverageEnabled }: { slippage: Decimal | null | undefined; leverageEnabled: boolean | undefined },
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-) => (leverageEnabled && priceImpact.data == null) || getPriceImpactSeverity(priceImpact, { slippage }) === 'error'
+  {
+    slippage,
+    leverageEnabled,
+    slippageType,
+  }: { slippage: Decimal | null | undefined; leverageEnabled: boolean | undefined; slippageType: SlippageType },
+) =>
+  (leverageEnabled == true && priceImpact.data == null) ||
+  getPriceImpactSeverity(priceImpact, { slippage, slippageType }) === 'error'
 
 export const getPriceImpactDisplay = (
   priceImpact: Query<Decimal | null> | undefined,
-  { slippage }: { slippage: Decimal | null | undefined },
+  { slippage, slippageType }: { slippage: Decimal | null | undefined; slippageType: SlippageType | undefined },
 ) => {
-  const severity = priceImpact && getPriceImpactSeverity(priceImpact, { slippage })
+  const severity = priceImpact && slippageType && getPriceImpactSeverity(priceImpact, { slippage, slippageType })
   return {
     label: severity ? t`High price impact` : t`Price impact`,
-    color: severity ? { error: 'error', warning: 'warning.main' }[severity] : undefined,
+    color: maybe(severity, s => ({ error: 'error', warning: 'warning.main' })[s]),
   }
 }

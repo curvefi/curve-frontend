@@ -1,5 +1,6 @@
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import type { SlippageType } from '@ui-kit/widgets/SlippageSettings'
 import type { HealthMode } from './llamalend.types'
 
 /**
@@ -46,3 +47,5 @@ export const MarketTypeSuffix: Record<LlamaMarketType, string> = {
 
 export const NET_SUPPLY_RATE_TITLE = t`Net supply APY`
 export const USER_NET_SUPPLY_RATE_TITLE = t`Your net supply APY`
+
+export const LEVERAGE = 'leverage' as const satisfies SlippageType

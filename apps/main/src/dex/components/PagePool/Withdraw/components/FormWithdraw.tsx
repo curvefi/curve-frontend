@@ -15,7 +15,6 @@ import { TransferActions } from '@/dex/components/PagePool/components/TransferAc
 import { WarningModal } from '@/dex/components/PagePool/components/WarningModal'
 import { FieldsWrapper } from '@/dex/components/PagePool/styles'
 import type { Slippage, TransferProps } from '@/dex/components/PagePool/types'
-import { amountsDescription, DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE } from '@/dex/components/PagePool/utils'
 import type { FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/Withdraw/types'
 import { resetFormAmounts } from '@/dex/components/PagePool/Withdraw/utils'
 import { useNetworks } from '@/dex/entities/networks'
@@ -35,9 +34,9 @@ import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
+import { amountsDescription, DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE, getSlippageType } from '../../utils'
 
 export const FormWithdraw = ({
-  chainIdPoolId,
   curve,
   blockchainId,
   maxSlippage,
@@ -484,7 +483,7 @@ export const FormWithdraw = ({
             stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
           />
         )}
-        <SlippageToleranceActionInfo maxSlippage={maxSlippage} stateKey={chainIdPoolId} />
+        <SlippageToleranceActionInfo maxSlippage={maxSlippage} type={getSlippageType(poolData)} />
       </div>
 
       {formStatus.error && (

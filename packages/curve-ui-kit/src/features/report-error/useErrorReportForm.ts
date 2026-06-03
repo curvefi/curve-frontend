@@ -6,7 +6,7 @@ export type ContactMethod = 'email' | 'telegram' | 'discord'
 export type ErrorContext = {
   error: Error | string | null | undefined
   title: string
-  subtitle: string
+  subtitle: string | null | undefined
 }
 
 export type ErrorReportFormValues = {
