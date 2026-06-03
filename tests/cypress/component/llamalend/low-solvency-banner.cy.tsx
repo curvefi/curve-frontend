@@ -1,7 +1,7 @@
 import { LowSolvencyBanner } from '@/llamalend/widgets/banners/LowSolvencyBanner'
 import { oneFloat } from '@cy/support/generators'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
-import { formatPercent } from '@ui-kit/utils'
+import { formatNumber } from '@ui-kit/utils'
 
 const mountBanner = ({ solvencyPercent }: { solvencyPercent: number }) =>
   cy.mount(
@@ -38,7 +38,7 @@ describe('LowSolvencyBanner', () => {
       mountBanner({ solvencyPercent })
 
       cy.get(`[data-testid="${BANNER_PREFIX_ID}${id}"]`).should('be.visible')
-      cy.contains(formatPercent(solvencyPercent)).should('be.visible')
+      cy.contains(formatNumber(solvencyPercent, 'percent.rate')).should('be.visible')
     })
   })
 })
