@@ -120,6 +120,7 @@ export const Accordion = ({
   const id = `accordion-${useId()}`
 
   const interactiveHeaderState = {
+    // We use after to avoid layout shifts when the borders appear on hover/focus
     '&::after': {
       borderColor: (t: Theme) => t.design.Button.Focus_Outline,
       borderWidth: SizesAndSpaces.OutlineWidth,
@@ -127,6 +128,7 @@ export const Accordion = ({
     },
     ...(!ghost && { backgroundColor: (t: Theme) => t.design.Layer[1].Fill }),
   }
+
   const indicatorIconSx = {
     width: headerIconSize[size],
     height: headerIconSize[size],
