@@ -29,7 +29,8 @@ describe('Pool page', () => {
       cy.get(`[data-testid="slippage-radio-group"] [value="${value}"]`).click()
       cy.get('[data-testid="slippage-input"]').should('have.value', '') // value is empty, placeholder shown
     } else {
-      cy.get('[data-testid="slippage-input"]').clear().type(value).blur()
+      cy.get('[data-testid="slippage-input"]').clear()
+      cy.get('[data-testid="slippage-input"]').type(value)
     }
     cy.get('[data-testid="slippage-save-button"]').click()
     cy.get('[data-testid="borrow-slippage-value"]').contains(formatSlippage(value))
