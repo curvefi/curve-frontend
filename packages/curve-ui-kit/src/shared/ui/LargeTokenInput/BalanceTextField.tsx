@@ -27,15 +27,9 @@ export const BalanceTextField = ({ balance, name, isError, onChange, disabled }:
         disableUnderline: true,
         sx: theme => ({
           height: AmountHeight,
-          backgroundColor: Transparent,
+          '&&&': { backgroundColor: Transparent },
           color: theme.design.Inputs.Text[isError ? 'Error' : 'Value'],
           ...theme.typography.headingSBold,
-          '&&:hover, &&.Mui-focused, &&.Mui-error, &&.Mui-disabled': {
-            backgroundColor: Transparent,
-          },
-          '&&:hover:not(.Mui-focused):not(.Mui-error):not(.Mui-disabled)': {
-            backgroundColor: Transparent,
-          },
           '&& input.MuiInputBase-input': {
             height: AmountHeight,
             paddingInlineStart: 0,

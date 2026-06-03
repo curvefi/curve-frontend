@@ -1,8 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference -- referring to a type definition file
 /// <reference path="./mui-toggle-button.d.ts" />
-import type { Breakpoint } from '@mui/material'
 import type { Components } from '@mui/material/styles'
-import { basicMuiTheme, type Responsive } from '../../basic-theme'
+import { handleBreakpoints } from '../../basic-theme'
 import { DesignSystem } from '../../design'
 import { SizesAndSpaces } from '../../design/1_sizes_spaces'
 import { Fonts } from '../../fonts'
@@ -12,29 +11,6 @@ const { Spacing, ButtonSize, FontSize, LineHeight, OutlineWidth } = SizesAndSpac
 type ToggleStyle = { Label?: string; Fill?: string }
 
 const toggleStyle = ({ Label, Fill }: ToggleStyle) => ({ color: Label, backgroundColor: Fill })
-
-const sizeBreakpoint = (
-  breakpoint: Breakpoint,
-  minHeight: string,
-  minWidth: string,
-  paddingBlock: Responsive,
-  paddingInline: Responsive,
-  fontSize: Responsive,
-  fontWeight: number,
-  lineHeight: Responsive,
-  size?: string,
-) => ({
-  [basicMuiTheme.breakpoints.up(breakpoint)]: {
-    minHeight,
-    minWidth,
-    ...(size && { height: size, width: size }),
-    paddingBlock: paddingBlock[breakpoint],
-    paddingInline: paddingInline[breakpoint],
-    fontSize: fontSize[breakpoint],
-    fontWeight,
-    lineHeight: lineHeight[breakpoint],
-  },
-})
 
 type BaseButtonSize = {
   fontSize: keyof typeof FontSize
@@ -52,23 +28,16 @@ type ButtonSize = BaseButtonSize & {
 const buttonSize = (
   fontWeightTokens: DesignSystem['Text']['FontWeight'],
   { minHeight, minWidth, paddingBlock, paddingInline, fontSize, fontWeight = 'Bold', lineHeight }: ButtonSize,
-) => {
-  const sizes = [
-    ButtonSize[minHeight],
-    ButtonSize[minWidth],
-    Spacing[paddingBlock],
-    Spacing[paddingInline],
-    FontSize[fontSize],
-    fontWeightTokens[fontWeight],
-    LineHeight[lineHeight],
-  ] as const
-
-  return {
-    ...sizeBreakpoint('mobile', ...sizes),
-    ...sizeBreakpoint('tablet', ...sizes),
-    ...sizeBreakpoint('desktop', ...sizes),
-  }
-}
+) =>
+  handleBreakpoints({
+    minHeight: ButtonSize[minHeight],
+    minWidth: ButtonSize[minWidth],
+    paddingBlock: Spacing[paddingBlock],
+    paddingInline: Spacing[paddingInline],
+    fontSize: FontSize[fontSize],
+    fontWeight: fontWeightTokens[fontWeight],
+    lineHeight: LineHeight[lineHeight],
+  })
 
 type ButtonSizeSquare = BaseButtonSize & {
   size: keyof typeof ButtonSize
@@ -78,25 +47,20 @@ type ButtonSizeSquare = BaseButtonSize & {
 const buttonSizeSquare = (
   fontWeightTokens: DesignSystem['Text']['FontWeight'],
   { size, padding, fontSize, fontWeight = 'Bold', lineHeight }: ButtonSizeSquare,
-) => {
-  const sizes = [
-    ButtonSize[size],
-    ButtonSize[size],
-    Spacing[padding],
-    Spacing[padding],
-    FontSize[fontSize],
-    fontWeightTokens[fontWeight],
-    LineHeight[lineHeight],
-    ...(size && [ButtonSize[size]]),
-  ] as const
-
-  return {
-    ...sizeBreakpoint('mobile', ...sizes),
-    ...sizeBreakpoint('tablet', ...sizes),
-    ...sizeBreakpoint('desktop', ...sizes),
-    overflow: 'hidden',
-  }
-}
+) => ({
+  ...handleBreakpoints({
+    minHeight: ButtonSize[size],
+    minWidth: ButtonSize[size],
+    height: ButtonSize[size],
+    width: ButtonSize[size],
+    paddingBlock: Spacing[padding],
+    paddingInline: Spacing[padding],
+    fontSize: FontSize[fontSize],
+    fontWeight: fontWeightTokens[fontWeight],
+    lineHeight: LineHeight[lineHeight],
+  }),
+  overflow: 'hidden',
+})
 
 export const defineMuiToggleButton = ({ Toggles, Button, Text }: DesignSystem): Components['MuiToggleButton'] => {
   const { Default, Hover, Current } = Toggles
@@ -115,7 +79,7 @@ export const defineMuiToggleButton = ({ Toggles, Button, Text }: DesignSystem): 
         border: `${OutlineWidth} solid transparent !important`, // Not even '&&' works, hence the !important
         borderRadius: 0,
         transition: Button.Transition,
-        fontFamily: Fonts[Text.FontFamily.Button],
+        fontFamily: Fonts[Text.FontFamily],
         textTransform: 'uppercase',
       },
 

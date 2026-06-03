@@ -46,6 +46,17 @@ const ChadFontWeight = {
   Extra_Bold: 700,
 } as const
 
+type TypographyVariantOverride = {
+  fontSize?: string
+  lineHeight?: string
+}
+
+const DefaultTypographyVariantOverrides: Record<string, TypographyVariantOverride> = {}
+const ChadTypographyVariantOverrides: Record<string, TypographyVariantOverride> = {
+  bodyMRegular: { fontSize: 'sm', lineHeight: 'sm' },
+  bodyMBold: { fontSize: 'sm', lineHeight: 'sm' },
+}
+
 export const createLightDesign = (
   Light: typeof SurfacesAndText.plain.Light | typeof SurfacesAndText.inverted.Light,
 ) => {
@@ -133,13 +144,9 @@ export const createLightDesign = (
         Inverted: Grays[50],
       },
     },
-    FontFamily: {
-      Heading: 'Mona Sans',
-      Body: 'Mona Sans',
-      Mono: 'Mona Sans',
-      Button: 'Mona Sans',
-    },
+    FontFamily: 'Mona Sans',
     FontWeight: LightFontWeight,
+    TypographyVariantOverrides: DefaultTypographyVariantOverrides,
   } as const
 
   const Button = {
@@ -691,13 +698,9 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
         Inverted: Grays[950],
       },
     },
-    FontFamily: {
-      Heading: 'Mona Sans',
-      Body: 'Mona Sans',
-      Mono: 'Mona Sans',
-      Button: 'Mona Sans',
-    },
+    FontFamily: 'Mona Sans',
     FontWeight: DarkFontWeight,
+    TypographyVariantOverrides: DefaultTypographyVariantOverrides,
   } as const
 
   const Button = {
@@ -1210,13 +1213,9 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
         Inverted: Grays[50],
       },
     },
-    FontFamily: {
-      Heading: 'Ioskeley Mono',
-      Body: 'Ioskeley Mono',
-      Mono: 'Ioskeley Mono',
-      Button: 'Ioskeley Mono',
-    },
+    FontFamily: 'Ioskeley Mono',
     FontWeight: ChadFontWeight,
+    TypographyVariantOverrides: ChadTypographyVariantOverrides,
   } as const
 
   const Button = {

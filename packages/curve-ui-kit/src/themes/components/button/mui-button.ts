@@ -1,9 +1,8 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference -- referring to a type definition file
 /// <reference path="./mui-button.d.ts" />
-import { Breakpoint } from '@mui/material'
 import type { Components } from '@mui/material/styles'
 import { recordEntries } from '@primitives/objects.utils'
-import { basicMuiTheme, type Responsive } from '../../basic-theme'
+import { handleBreakpoints } from '../../basic-theme'
 import { DesignSystem } from '../../design'
 import { Sizing } from '../../design/0_primitives'
 import { SizesAndSpaces } from '../../design/1_sizes_spaces'
@@ -11,21 +10,6 @@ import { Fonts } from '../../fonts'
 import { buttonColor } from './utils'
 
 const { LineHeight, OutlineWidth, ButtonSize, FontSize } = SizesAndSpaces
-
-const sizeBreakpoint = (
-  height: string,
-  fontSize: Responsive,
-  fontWeight: number,
-  lineHeight: Responsive,
-  breakpoint: Breakpoint,
-) => ({
-  [basicMuiTheme.breakpoints.up(breakpoint)]: {
-    height,
-    fontSize: fontSize[breakpoint],
-    fontWeight,
-    lineHeight: lineHeight[breakpoint],
-  },
-})
 
 type ButtonSize = {
   height: keyof typeof ButtonSize
@@ -36,29 +20,13 @@ type ButtonSize = {
 const buttonSize = (
   fontWeightTokens: DesignSystem['Text']['FontWeight'],
   { height, fontSize, fontWeight = 'Bold', lineHeight }: ButtonSize,
-) => ({
-  ...sizeBreakpoint(
-    ButtonSize[height],
-    FontSize[fontSize],
-    fontWeightTokens[fontWeight],
-    LineHeight[lineHeight],
-    'mobile',
-  ),
-  ...sizeBreakpoint(
-    ButtonSize[height],
-    FontSize[fontSize],
-    fontWeightTokens[fontWeight],
-    LineHeight[lineHeight],
-    'tablet',
-  ),
-  ...sizeBreakpoint(
-    ButtonSize[height],
-    FontSize[fontSize],
-    fontWeightTokens[fontWeight],
-    LineHeight[lineHeight],
-    'desktop',
-  ),
-})
+) =>
+  handleBreakpoints({
+    height: ButtonSize[height],
+    fontSize: FontSize[fontSize],
+    fontWeight: fontWeightTokens[fontWeight],
+    lineHeight: LineHeight[lineHeight],
+  })
 
 export const defineMuiButton = ({ Button, Text }: DesignSystem): Components['MuiButton'] => {
   const { Primary, Secondary, Success, Error, Outlined, Ghost, Navigation, Focus_Outline, Transition } = Button
@@ -137,7 +105,7 @@ export const defineMuiButton = ({ Button, Text }: DesignSystem): Components['Mui
         border: `${OutlineWidth} solid transparent`,
         boxSizing: 'border-box',
         '&:focus-visible': { borderColor: Focus_Outline },
-        fontFamily: Fonts[Text.FontFamily.Button],
+        fontFamily: Fonts[Text.FontFamily],
         textTransform: 'uppercase',
         transition: Transition,
       },
@@ -148,16 +116,8 @@ export const defineMuiButton = ({ Button, Text }: DesignSystem): Components['Mui
       sizeSmall: buttonSize(Text.FontWeight, { height: 'sm', fontSize: 'sm', lineHeight: 'md' }),
       sizeMedium: buttonSize(Text.FontWeight, { height: 'md', fontSize: 'md', lineHeight: 'xl' }),
       sizeLarge: buttonSize(Text.FontWeight, { height: 'lg', fontSize: 'md', lineHeight: 'xl' }),
-      startIcon: {
-        [basicMuiTheme.breakpoints.up('mobile')]: { marginInlineEnd: SizesAndSpaces.Spacing.xs.mobile },
-        [basicMuiTheme.breakpoints.up('tablet')]: { marginInlineEnd: SizesAndSpaces.Spacing.xs.tablet },
-        [basicMuiTheme.breakpoints.up('desktop')]: { marginInlineEnd: SizesAndSpaces.Spacing.xs.desktop },
-      },
-      endIcon: {
-        [basicMuiTheme.breakpoints.up('mobile')]: { marginInlineStart: SizesAndSpaces.Spacing.xs.mobile },
-        [basicMuiTheme.breakpoints.up('tablet')]: { marginInlineStart: SizesAndSpaces.Spacing.xs.tablet },
-        [basicMuiTheme.breakpoints.up('desktop')]: { marginInlineStart: SizesAndSpaces.Spacing.xs.desktop },
-      },
+      startIcon: handleBreakpoints({ marginInlineEnd: SizesAndSpaces.Spacing.xs }),
+      endIcon: handleBreakpoints({ marginInlineStart: SizesAndSpaces.Spacing.xs }),
     },
   }
 }

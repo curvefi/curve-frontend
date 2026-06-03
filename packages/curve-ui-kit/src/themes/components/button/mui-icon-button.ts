@@ -56,7 +56,7 @@ export const defineMuiIconButton = ({ Button, Text }: DesignSystem): Components[
         ...buttonColor(Ghost),
         transition: Transition,
         ':focus-visible': { borderColor: Focus_Outline },
-        fontFamily: Fonts[Text.FontFamily.Button],
+        fontFamily: Fonts[Text.FontFamily],
       },
       sizeExtraExtraSmall: iconButtonSize('xxs', 'extraExtraSmall'),
       sizeExtraSmall: iconButtonSize('xs', 'extraSmall'),
