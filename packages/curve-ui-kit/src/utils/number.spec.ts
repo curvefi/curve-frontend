@@ -488,13 +488,17 @@ describe('formatNumber', () => {
       expect(formatNumber(1234.56, 'token.compact')).toBe('1.23k')
     })
 
-    it('formats token balances with at most five significant digits below 1 without padding', () => {
+    it('formats token balances with precision-sensitive decimal handling', () => {
       expect(formatNumber(0.00000123456789, 'token.balance')).toBe('0.0000012346')
       expect(formatNumber(-0.00000123456789, 'token.balance')).toBe('-0.0000012346')
       expect(formatNumber(12, 'token.balance')).toBe('12')
       expect(formatNumber(-12, 'token.balance')).toBe('-12')
       expect(formatNumber(1.2, 'token.balance')).toBe('1.20')
       expect(formatNumber(-1.2, 'token.balance')).toBe('-1.20')
+      expect(formatNumber(5.123567, 'token.balance')).toBe('5.1236')
+      expect(formatNumber(-5.123567, 'token.balance')).toBe('-5.1236')
+      expect(formatNumber(12.34567, 'token.balance')).toBe('12.346')
+      expect(formatNumber(-12.34567, 'token.balance')).toBe('-12.346')
       expect(formatNumber(123456, 'token.balance')).toBe('123,456')
       expect(formatNumber(-123456, 'token.balance')).toBe('-123,456')
       expect(formatNumber(123456789, 'token.balance')).toBe('123,456,789')

@@ -180,18 +180,28 @@ export type NumberFormatOptions = {
   fallback?: string
 } & Omit<Intl.NumberFormatOptions, 'unit' | 'style' | 'compact' | 'notation' | 'currency'>
 
+const TOKEN_BALANCE_SIGNIFICANT_DIGITS = 5
+
 const NUMBER_FORMAT_CATEGORIES = {
   'token.amount': { abbreviate: false, fallback: '-' },
   'token.compact': { abbreviate: true, fallback: '-' },
   'token.balance': {
     abbreviate: false,
     formatter: (value: Amount) => {
-      const numericValue = typeof value === 'number' ? value : Number(value)
-      const absValue = Math.abs(numericValue)
+      const absValue = Math.abs(Number(value))
+      const options: Partial<NumberFormatOptions> | undefined =
+        absValue > 0 && absValue < 1
+          ? { maximumSignificantDigits: TOKEN_BALANCE_SIGNIFICANT_DIGITS, trailingZeroDisplay: 'auto' }
+          : absValue >= 1 && Number.isFinite(absValue)
+            ? {
+                maximumFractionDigits: Math.max(
+                  2,
+                  TOKEN_BALANCE_SIGNIFICANT_DIGITS - Math.floor(Math.log10(absValue)) - 1,
+                ),
+              }
+            : undefined
 
-      return absValue > 0 && absValue < 1
-        ? defaultNumberFormatter(value, { maximumSignificantDigits: 5, trailingZeroDisplay: 'auto' })
-        : defaultNumberFormatter(value)
+      return defaultNumberFormatter(value, options)
     },
     fallback: '-',
   },
