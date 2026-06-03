@@ -191,8 +191,8 @@ const NUMBER_FORMAT_CATEGORIES = {
     trailingZeroDisplay: 'auto',
     fallback: '-',
   },
-  'usd.notional': { unit: 'dollar', abbreviate: true, fallback: '-' },
   'usd.amount': { unit: 'dollar', abbreviate: false, fallback: '-' },
+  'usd.notional': { unit: 'dollar', abbreviate: true, fallback: '-' },
   'percent.value': { unit: 'percentage', abbreviate: false, fallback: '-' },
   'percent.rate': {
     unit: 'percentage',
