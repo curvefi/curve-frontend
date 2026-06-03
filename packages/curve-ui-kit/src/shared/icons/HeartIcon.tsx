@@ -13,8 +13,5 @@ export const HeartIcon = createSvgIcon(
 )
 
 export const FavoriteHeartIcon = ({ isFavorite }: { isFavorite: boolean }) => (
-  <HeartIcon
-    sx={{ fill: isFavorite ? 'currentColor' : 'transparent' }}
-    data-testid={'favorite-icon' + (isFavorite ? '-filled' : '')}
-  />
+  <HeartIcon sx={{ fill: isFavorite ? 'currentColor' : 'transparent' }} />
 )
