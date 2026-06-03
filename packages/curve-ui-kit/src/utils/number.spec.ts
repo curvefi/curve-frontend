@@ -488,10 +488,19 @@ describe('formatNumber', () => {
       expect(formatNumber(1234.56, 'token.compact')).toBe('1.23k')
     })
 
-    it('formats token balances with at least five significant digits', () => {
-      expect(formatNumber(12, 'token.balance')).toBe('12.000')
-      expect(formatNumber(1.2, 'token.balance')).toBe('1.2000')
+    it('formats token balances with at most five significant digits below 1 without padding', () => {
+      expect(formatNumber(0.00000123456789, 'token.balance')).toBe('0.0000012346')
+      expect(formatNumber(-0.00000123456789, 'token.balance')).toBe('-0.0000012346')
+      expect(formatNumber(12, 'token.balance')).toBe('12')
+      expect(formatNumber(-12, 'token.balance')).toBe('-12')
+      expect(formatNumber(1.2, 'token.balance')).toBe('1.20')
+      expect(formatNumber(-1.2, 'token.balance')).toBe('-1.20')
       expect(formatNumber(123456, 'token.balance')).toBe('123,456')
+      expect(formatNumber(-123456, 'token.balance')).toBe('-123,456')
+      expect(formatNumber(123456789, 'token.balance')).toBe('123,456,789')
+      expect(formatNumber(-123456789, 'token.balance')).toBe('-123,456,789')
+      expect(formatNumber(123456789.1234, 'token.balance')).toBe('123,456,789.12')
+      expect(formatNumber(-123456789.1234, 'token.balance')).toBe('-123,456,789.12')
     })
 
     it('formats USD categories', () => {

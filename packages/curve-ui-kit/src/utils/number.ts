@@ -114,11 +114,10 @@ export const defaultNumberFormatter = (
   if (value === -Infinity) return '-∞'
   if (value === 0) return '0'
 
-  const absValue = Math.abs(value)
-  if (absValue > 0 && absValue < 0.00001) return value > 0 ? '<0.00001' : '>-0.00001'
+  const usesSignificantDigits = options.minimumSignificantDigits != null || options.maximumSignificantDigits != null
 
-  const usesSignificantDigits =
-    options.minimumSignificantDigits !== undefined || options.maximumSignificantDigits !== undefined
+  const absValue = Math.abs(value)
+  if (!usesSignificantDigits && absValue > 0 && absValue < 0.00001) return value > 0 ? '<0.00001' : '>-0.00001'
 
   const formatted = value.toLocaleString(LOCALE, {
     ...(!usesSignificantDigits && {
@@ -186,9 +185,14 @@ const NUMBER_FORMAT_CATEGORIES = {
   'token.compact': { abbreviate: true, fallback: '-' },
   'token.balance': {
     abbreviate: false,
-    // Ensure small balances show significant digits instead of being rounded to 0, but don't force it for larger numbers where it would be noisy.
-    minimumSignificantDigits: 5,
-    trailingZeroDisplay: 'auto',
+    formatter: (value: Amount) => {
+      const numericValue = typeof value === 'number' ? value : Number(value)
+      const absValue = Math.abs(numericValue)
+
+      return absValue > 0 && absValue < 1
+        ? defaultNumberFormatter(value, { maximumSignificantDigits: 5, trailingZeroDisplay: 'auto' })
+        : defaultNumberFormatter(value)
+    },
     fallback: '-',
   },
   'usd.amount': { unit: 'dollar', abbreviate: false, fallback: '-' },
