@@ -50,9 +50,10 @@ type TypographyVariantOverride = {
   fontSize?: string
   lineHeight?: string
 }
+type TypographyVariantOverrides = Partial<Record<string, TypographyVariantOverride>>
 
-const DefaultTypographyVariantOverrides: Record<string, TypographyVariantOverride> = {}
-const ChadTypographyVariantOverrides: Record<string, TypographyVariantOverride> = {
+const DefaultTypographyVariantOverrides: TypographyVariantOverrides = {}
+const ChadTypographyVariantOverrides: TypographyVariantOverrides = {
   bodyMRegular: { fontSize: 'sm', lineHeight: 'sm' },
   bodyMBold: { fontSize: 'sm', lineHeight: 'sm' },
 }
