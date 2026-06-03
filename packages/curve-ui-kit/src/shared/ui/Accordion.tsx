@@ -5,7 +5,7 @@ import RemoveIcon from '@mui/icons-material/Remove'
 import { Box, ButtonBase, Collapse, Stack, type Theme, Typography } from '@mui/material'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import type { Responsive } from '@ui-kit/themes/basic-theme'
-import { Duration, Transition, TransitionFunction } from '@ui-kit/themes/design/0_primitives'
+import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
 import { applySxProps, borderStyle, type SxProps } from '@ui-kit/utils'
@@ -127,6 +127,10 @@ export const Accordion = ({
     },
     ...(!ghost && { backgroundColor: (t: Theme) => t.design.Layer[1].Fill }),
   }
+  const indicatorIconSx = {
+    width: headerIconSize[size],
+    height: headerIconSize[size],
+  }
 
   return (
     <Stack data-testid={testId}>
@@ -195,47 +199,13 @@ export const Accordion = ({
 
           {info}
 
-          <ExpandMoreIcon
-            sx={{
-              display: indicator === 'chevron' ? 'block' : 'none',
-              width: headerIconSize[size],
-              height: headerIconSize[size],
-              transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-              transition: `transform ${TransitionFunction}`,
-            }}
-          />
-          <Box
-            aria-hidden
-            sx={{
-              display: indicator === 'plusMinus' ? 'flex' : 'none',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: headerIconSize[size],
-              height: headerIconSize[size],
-              position: 'relative',
-            }}
-          >
-            <AddIcon
-              sx={{
-                position: 'absolute',
-                width: IconSize.sm,
-                height: IconSize.sm,
-                opacity: isOpen ? 0 : 1,
-                transform: isOpen ? 'scale(0.85)' : 'scale(1)',
-                transition: `opacity ${TransitionFunction}, transform ${TransitionFunction}`,
-              }}
-            />
-            <RemoveIcon
-              sx={{
-                position: 'absolute',
-                width: IconSize.sm,
-                height: IconSize.sm,
-                opacity: isOpen ? 1 : 0,
-                transform: isOpen ? 'scale(1)' : 'scale(0.85)',
-                transition: `opacity ${TransitionFunction}, transform ${TransitionFunction}`,
-              }}
-            />
-          </Box>
+          {indicator === 'chevron' ? (
+            <ExpandMoreIcon sx={{ ...indicatorIconSx, transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }} />
+          ) : isOpen ? (
+            <RemoveIcon sx={indicatorIconSx} />
+          ) : (
+            <AddIcon sx={indicatorIconSx} />
+          )}
         </Stack>
       </ButtonBase>
 
