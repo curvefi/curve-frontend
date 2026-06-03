@@ -40,6 +40,7 @@ export const YieldBreakdown = ({
         table={table}
         size="small"
         loading={false}
+        disableStickyHeader
         emptyState={<EmptyStateRow table={table} size="sm">{t`No yield breakdown found.`}</EmptyStateRow>}
         footerRow={
           dailyTotal && (

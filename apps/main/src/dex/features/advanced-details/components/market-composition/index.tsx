@@ -40,6 +40,7 @@ export const MarketComposition = ({
         table={table}
         size="small"
         loading={isLoading}
+        disableStickyHeader
         emptyState={<EmptyStateRow table={table} size="sm">{t`No market composition found.`}</EmptyStateRow>}
         footerRow={rows.length > 0 && <FooterRow isLoading={isLoading} totalUsd={totalUsd} />}
       />
