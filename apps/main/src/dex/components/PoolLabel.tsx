@@ -55,7 +55,7 @@ export const PoolLabel = ({
   }
 
   return (
-    <div data-testid={'pool-label'}>
+    <div>
       <Wrapper className={className} onClick={({ target }) => handleClick(target)}>
         <IconsWrapper>{isVisible && <TokenIcons blockchainId={blockchainId} tokens={tokens} />}</IconsWrapper>
         <Box fillWidth>

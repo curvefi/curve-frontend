@@ -8,7 +8,6 @@ body {
 body.theme-chad {
   --font: 'Ioskeley Mono', 'SF Mono Regular 11', 'Ubuntu Mono', monospace;
   --button-font: 'Ioskeley Mono', 'SF Mono Regular 11', 'Ubuntu Mono', monospace;
-  --button--font: 'Ioskeley Mono', 'SF Mono Regular 11', 'Ubuntu Mono', monospace;
 }
 
 html {
