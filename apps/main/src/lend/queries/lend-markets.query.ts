@@ -7,9 +7,9 @@ import type { IOneWayMarket } from '@curvefi/llamalend-api/lib/interfaces'
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { notFalsy } from '@curvefi/primitives/objects.utils'
 import type { Address } from '@primitives/address.utils'
+import { LlamaMarketVersion } from '@ui-kit/types/market'
 
-const V1 = 'v1' as const
-const V2 = 'v2' as const
+const { v1, v2 } = LlamaMarketVersion
 
 const v2chains = [Chain.Optimism]
 
@@ -46,7 +46,7 @@ export const { useQuery: useLendMarkets } = queryFactory({
   }: ChainQuery & { enableLLv2: boolean }): Promise<Record<string | Address, LendMarketData>> => {
     const api = requireLib('llamaApi')
     await Promise.all(
-      notFalsy(V1, enableLLv2 && v2chains.includes(chainId) && V2).map(version =>
+      notFalsy(v1, enableLLv2 && v2chains.includes(chainId) && v2).map(version =>
         api.lendMarkets.fetchMarkets({ useApi: USE_API, version }),
       ),
     )
