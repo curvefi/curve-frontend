@@ -93,78 +93,15 @@ export const Ghost: Story = {
   parameters: { docs: { description: { story: 'Accordion without a border (ghost mode)' } } },
 }
 
-export const PlusMinusClosed: Story = {
+export const PlusMinus: Story = {
   args: {
-    ghost: true,
-    indicator: 'plusMinus',
-    title: 'What is LlamaLend?',
-  },
-  parameters: { docs: { description: { story: 'FAQ-style accordion with a plus indicator' } } },
-}
-
-export const PlusMinusOpen: Story = {
-  args: {
-    defaultExpanded: true,
     ghost: true,
     indicator: 'plusMinus',
     title: 'What is LlamaLend?',
     children:
       "LlamaLend is Curve's non-custodial lending infrastructure. All markets are one-way isolated: each market has one collateral and one borrowable asset.",
   },
-  parameters: { docs: { description: { story: 'FAQ-style accordion with a minus indicator when open' } } },
-}
-
-export const MotionStressFaq: Story = {
-  render: () => (
-    <Stack maxWidth="48rem" gap={1}>
-      <Accordion title="What is LlamaLend?" ghost indicator="plusMinus" sx={{ paddingBlock: 2 }}>
-        <Typography variant="bodyMRegular">
-          LlamaLend is Curve's non-custodial lending infrastructure with isolated one-way markets.
-        </Typography>
-      </Accordion>
-      <Accordion title="When does liquidation happen?" ghost indicator="plusMinus" sx={{ paddingBlock: 2 }}>
-        <Typography variant="bodyMRegular">
-          Full liquidation happens when health reaches zero. Before that, liquidation protection can gradually convert
-          collateral.
-        </Typography>
-      </Accordion>
-      <Accordion title="What is Supply APR?" ghost indicator="plusMinus" sx={{ paddingBlock: 2 }}>
-        <Typography variant="bodyMRegular">
-          Supply APR is the annualized rate earned by suppliers and changes as market utilization changes.
-        </Typography>
-      </Accordion>
-    </Stack>
-  ),
-  parameters: {
-    docs: {
-      description: {
-        story: 'FAQ-like accordions for checking rapid toggles, independent open states, and plus/minus crossfades.',
-      },
-    },
-  },
-}
-
-export const ReducedMotionReference: Story = {
-  render: () => (
-    <Stack maxWidth="48rem" gap={1}>
-      <Typography variant="bodySRegular" color="textSecondary">
-        Enable reduced motion in the browser or OS to confirm the content and indicator state changes become instant.
-      </Typography>
-      <Accordion title="Reduced motion accordion" ghost indicator="plusMinus" defaultExpanded sx={{ paddingBlock: 2 }}>
-        <Typography variant="bodyMRegular">
-          The accordion should preserve layout and accessibility while disabling decorative transform and opacity
-          motion.
-        </Typography>
-      </Accordion>
-    </Stack>
-  ),
-  parameters: {
-    docs: {
-      description: {
-        story: 'Reference story for validating `prefers-reduced-motion` behavior.',
-      },
-    },
-  },
+  parameters: { docs: { description: { story: 'FAQ-style accordion with a minus indicator' } } },
 }
 
 export const WithInfo: Story = {
@@ -276,47 +213,6 @@ export const Controlled: Story = {
           'Accordion with controlled state. The expanded state is managed externally using the `expanded` and `toggle` props.',
       },
     },
-  },
-}
-
-export const FaqSection: Story = {
-  render: () => (
-    <Stack maxWidth="80rem">
-      <Stack minHeight="3.5rem" justifyContent="end" paddingBlockEnd={1}>
-        <Typography variant="headingSBold" color="textSecondary">
-          FAQs
-        </Typography>
-      </Stack>
-      <Stack gap={1}>
-        <Stack
-          minHeight="2.5rem"
-          justifyContent="end"
-          paddingBlockEnd={1}
-          sx={{ borderBottom: t => `1px solid ${t.design.Layer[1].Outline}` }}
-        >
-          <Typography variant="headingXsBold" color="textSecondary">
-            Core Understanding
-          </Typography>
-        </Stack>
-        <Stack gap={1} paddingInlineStart={2}>
-          <Accordion title="What is LlamaLend?" ghost indicator="plusMinus" defaultExpanded sx={{ paddingBlock: 2 }}>
-            <Typography variant="bodyMRegular">
-              LlamaLend is Curve's non-custodial lending infrastructure. All markets are one-way isolated: each market
-              has one collateral and one borrowable asset.
-            </Typography>
-          </Accordion>
-          <Accordion title="How does LlamaLend work?" ghost indicator="plusMinus" sx={{ paddingBlock: 2 }}>
-            <Typography variant="bodyMRegular">
-              You deposit collateral and borrow against it. You pay a dynamic borrow rate; there are no opening or
-              closing fees.
-            </Typography>
-          </Accordion>
-        </Stack>
-      </Stack>
-    </Stack>
-  ),
-  parameters: {
-    docs: { description: { story: 'FAQ section composition using ghost accordions and plus/minus indicators' } },
   },
 }
 
