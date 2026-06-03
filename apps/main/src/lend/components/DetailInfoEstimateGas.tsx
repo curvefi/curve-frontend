@@ -15,7 +15,7 @@ type StepProgress = {
   total: number
 }
 
-interface Props {
+type Props = {
   chainId: ChainId
   isDivider?: boolean
   loading?: boolean

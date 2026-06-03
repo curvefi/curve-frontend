@@ -31,6 +31,13 @@ export const DetailInfoTradeRoutes = ({
   return (
     <ActionInfo
       label={t`Trade routed through:`}
+      sx={{
+        '& > .MuiTypography-root:first-of-type': {
+          overflow: 'visible',
+          textOverflow: 'clip',
+          whiteSpace: 'normal',
+        },
+      }}
       value={
         parsedRoutes?.length ? (
           <WithWrapper shouldWrap={isMultiRoutes} Wrapper={Stack} direction="row" sx={{ gap: Spacing.sm }}>

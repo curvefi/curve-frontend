@@ -57,15 +57,11 @@ type CurveApiGaugeData = CurveApiPoolGauge | CurveApiLendingGauge
 
 type CurveGaugeResponse = {
   success: boolean
-  data: {
-    [poolId: string]: CurveApiGaugeData
-  }
+  data: Record<string, CurveApiGaugeData>
   generatedTimeMs: number
 }
 
-type GaugeCurveApiDataMapper = {
-  [gaugeAddress: string]: CurveApiGaugeData
-}
+type GaugeCurveApiDataMapper = Record<string, CurveApiGaugeData>
 
 /**
  * Legacy refers to the fact that we're using the old api.curve.finance endpoint.

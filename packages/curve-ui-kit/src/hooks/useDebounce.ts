@@ -80,6 +80,7 @@ export function useDebounce<T>({
   debounceMs?: number
 }) {
   const [value, setValue] = useState<T>(initialValue)
+  // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
   useEffect(() => setValue(initialValue), [initialValue])
   return [value, ...useDebounced(callback, debounceMs, setValue)] as const
 }

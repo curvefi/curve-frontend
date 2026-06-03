@@ -167,6 +167,7 @@ export const ActionInfo = ({
               variant={prevValueSize[size]}
               color={prevValueColor ?? 'textTertiary'}
               data-testid={`${testId}-previous`}
+              // eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions -- Existing violation before enabling this rule.
               data-value={`${givenPrevValue}`}
               sx={{ whiteSpace: 'nowrap' }}
             >

@@ -24,6 +24,7 @@ export function SelectModal<T>({
   const { overlayProps } = useOverlay(
     {
       isOpen: state.isOpen,
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
       onClose: state.close,
       shouldCloseOnBlur: true,
       isDismissable: true,
@@ -40,6 +41,7 @@ export function SelectModal<T>({
         minWidth={minWidth}
       >
         <SelectModalListBox {...menuProps} state={state} />
+        {/* eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule. */}
         <DismissButton onDismiss={state.close} />
       </StyledPopover>
     </FocusScope>

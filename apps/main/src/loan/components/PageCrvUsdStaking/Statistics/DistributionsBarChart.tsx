@@ -38,6 +38,7 @@ export const RevenueDistributionsBarChart = ({ data, height }: RevenueDistributi
               axisLine={false}
               minTickGap={20}
               allowDataOverflow={false}
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
               tickFormatter={time => formatDate(time)}
             />
             <YAxis
@@ -45,11 +46,13 @@ export const RevenueDistributionsBarChart = ({ data, height }: RevenueDistributi
               tick={{ fill: gridTextColor, fontSize: FontSize.xs.desktop }}
               tickLine={{ fill: gridLineColor, strokeWidth: 0.5 }}
               axisLine={{ opacity: 0.3, strokeWidth: 0.3 }}
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
               tickFormatter={value => `$${formatNumber(amount(value), { abbreviate: true })}`}
             />
             <Tooltip content={DistributionsChartTooltip} cursor={{ opacity: 0.3 }} />
             <Bar dataKey="weeklyRevenue" label={false} fill={barColor} isAnimationActive={false}>
               {data?.epochs.map((_, index) => (
+                // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
                 <Cell key={`$cell-${index}`} fill={barColor} />
               ))}
             </Bar>

@@ -3,7 +3,7 @@ import { styled, type IStyledComponent } from 'styled-components'
 import { Box } from '@ui/Box/Box'
 import { Loader } from '@ui/Loader/Loader'
 
-interface Props {
+type Props = {
   loading?: boolean
   title: string
   data: ReactNode

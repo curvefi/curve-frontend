@@ -17,7 +17,7 @@ type GaugeDetailsSmProps = {
 }
 
 export const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }: GaugeDetailsSmProps) => {
-  const { userVeCrv, userFutureVeCrv } = userGaugeWeightVoteData || {}
+  const { userVeCrv, userFutureVeCrv } = userGaugeWeightVoteData ?? {}
   const hasFutureVeCrv = userVeCrv && userFutureVeCrv && userFutureVeCrv > userVeCrv
 
   const chainId = getChainIdFromGaugeData(gaugeData)

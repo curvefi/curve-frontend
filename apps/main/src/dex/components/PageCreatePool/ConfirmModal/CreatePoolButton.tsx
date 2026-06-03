@@ -10,7 +10,7 @@ import { SpinnerWrapper, Spinner } from '@ui/Spinner'
 import { isLoading, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
-interface Props {
+type Props = {
   disabled: boolean
   curve: CurveApi
 }
@@ -48,7 +48,7 @@ export const CreatePoolButton = ({ disabled, curve }: Props) => {
       {txStatus === 'SUCCESS' && <SuccessWrapper>{t`Pool Creation Complete`}</SuccessWrapper>}
     </>
   ) : (
-    <StyledButton variant="filled" onClick={() => connectWallet()} loading={isLoading(connectState)}>
+    <StyledButton variant="filled" onClick={() => void connectWallet()} loading={isLoading(connectState)}>
       {t`Connect Wallet`}
     </StyledButton>
   )

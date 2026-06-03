@@ -6,12 +6,12 @@ import { useCheckbox } from '@react-aria/checkbox'
 import { useFocusRing } from '@react-aria/focus'
 import type { ToggleProps } from '@react-types/checkbox'
 
-interface CheckboxProps extends ToggleProps {
+type CheckboxProps = {
   className?: string
   isDisabled?: boolean
   fillColor?: string
   blank?: boolean
-}
+} & ToggleProps
 
 export const Checkbox = ({ className, isDisabled = false, fillColor, blank, ...props }: CheckboxProps) => {
   const ref = useRef<HTMLInputElement>(null)

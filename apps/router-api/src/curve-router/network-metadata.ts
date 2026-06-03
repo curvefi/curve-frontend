@@ -24,15 +24,9 @@ function resolveEnv(id: string, fallback?: string, env: NodeJS.ProcessEnv = proc
 /**
  * Resolve the RPC URL and network ID for a given chain ID using CurveJS.
  */
-export async function resolveRpc(
-  chainId: number,
-  curve: CurveJS,
-): Promise<{
-  id: string
-  url: string
-}> {
+export async function resolveRpc(chainId: number, curve: CurveJS): Promise<{ id: string; url: string }> {
   if (chainId in NETWORK_CONSTANTS) {
-    const id = NETWORK_CONSTANTS[chainId].NAME
+    const id = (NETWORK_CONSTANTS[chainId] as { NAME: string }).NAME
     return { id, url: resolveEnv(id) }
   }
   const liteNetworks = await curve.getCurveLiteNetworks() // note: this is already memoized inside curvejs

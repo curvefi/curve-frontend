@@ -49,7 +49,7 @@ export const FormWithdraw = ({
 }: TransferProps) => {
   const isSubscribedRef = useRef(false)
 
-  const { chainId, signerAddress } = curve || {}
+  const { chainId, signerAddress } = curve ?? {}
   const { rChainId } = routerParams
   const activeKey = useStore(state => state.poolWithdraw.activeKey)
   const formEstGas = useStore(state => state.poolWithdraw.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
@@ -82,7 +82,9 @@ export const FormWithdraw = ({
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>, updatedMaxSlippage: string | null) => {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTxInfoBar(null)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSlippageConfirmed(false)
       void setFormValues(
         'WITHDRAW',
@@ -158,13 +160,13 @@ export const FormWithdraw = ({
       const isApproved = formStatus.isApproved || formStatus.formTypeCompleted === 'APPROVE'
       const isComplete = formStatus.formTypeCompleted === 'WITHDRAW'
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: getStepStatus(isApproved, formStatus.step === 'APPROVAL', isValid),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
-          onClick: () => handleApproveClick(activeKey, config, curve, poolData.pool, formValues, maxSlippage),
+          onClick: () => void handleApproveClick(activeKey, config, curve, poolData.pool, formValues, maxSlippage),
         },
         WITHDRAW: {
           key: 'WITHDRAW',
@@ -187,16 +189,17 @@ export const FormWithdraw = ({
                   isDismissable: false,
                   cancelBtnProps: {
                     label: t`Cancel`,
+                    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
                     onClick: () => setSlippageConfirmed(false),
                   },
                   primaryBtnProps: {
-                    onClick: () => handleWithdrawClick(activeKey, curve, poolData, formValues, maxSlippage),
+                    onClick: () => void handleWithdrawClick(activeKey, curve, poolData, formValues, maxSlippage),
                     disabled: !slippageConfirmed,
                   },
                   primaryBtnLabel: 'Withdraw anyway',
                 },
               }
-            : { onClick: () => handleWithdrawClick(activeKey, curve, poolData, formValues, maxSlippage) }),
+            : { onClick: () => void handleWithdrawClick(activeKey, curve, poolData, formValues, maxSlippage) }),
         },
       }
 
@@ -261,6 +264,7 @@ export const FormWithdraw = ({
         maxSlippage,
         seed.isSeed,
       )
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

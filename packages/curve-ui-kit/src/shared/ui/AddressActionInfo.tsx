@@ -7,7 +7,7 @@ import { shortenAddress } from '../../utils'
 import { ActionInfo } from './ActionInfo'
 import { ExternalLink } from './ExternalLink'
 
-interface AddressActionInfoProps {
+type AddressActionInfoProps = {
   network: BaseConfig | undefined
   title: ReactNode
   address: string | undefined

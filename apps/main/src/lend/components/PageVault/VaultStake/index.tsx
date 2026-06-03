@@ -99,12 +99,13 @@ export const VaultStake = ({ rChainId, marketId, isLoaded, api, market, userActi
 
       const isValid = !!signerAddress && +amount > 0 && !amountError && !error
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: helpers.getStepStatus(isApproved, step === 'APPROVAL', isValid),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: async () => {
             const notifyMessage = t`Please approve spending of vault shares`
             const notification = notify(notifyMessage, 'pending')
@@ -118,7 +119,7 @@ export const VaultStake = ({ rChainId, marketId, isLoaded, api, market, userActi
           status: helpers.getStepStatus(isComplete, step === 'STAKE', isValid && isApproved),
           type: 'action',
           content: isComplete ? t`Staked` : t`Stake`,
-          onClick: async () => handleBtnClickStake(payloadActiveKey, rFormType, api, market, formValues),
+          onClick: () => void handleBtnClickStake(payloadActiveKey, rFormType, api, market, formValues),
         },
       }
 
@@ -154,6 +155,7 @@ export const VaultStake = ({ rChainId, marketId, isLoaded, api, market, userActi
   useEffect(() => {
     if (isLoaded && api && market && rFormType) {
       const updatedSteps = getSteps(activeKey, rFormType, api, market, formStatus, formValues, steps)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
@@ -187,6 +189,7 @@ export const VaultStake = ({ rChainId, marketId, isLoaded, api, market, userActi
       />
 
       {/* detail info */}
+      {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule. */}
       {(detailInfoCrvIncentivesComp || signerAddress) && (
         <StyledDetailInfoWrapper>
           {detailInfoCrvIncentivesComp}

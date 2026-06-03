@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 import { setTimeoutInterval } from '@ui-kit/utils/timers'
 
-interface CountdownProps {
+type CountdownProps = {
   /** startDate adds 7 days to the current date to mimic a DAO proposal voting period */
   startDate?: number | null
   /** endDate is the specific date to count down to. Takes precedence over startDate. */
@@ -24,6 +24,7 @@ export const Countdown = ({ startDate, endDate, className }: CountdownProps) => 
       }
 
       if (!effectiveEndDate) {
+        // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
         setTimeRemaining('')
         return
       }
@@ -32,6 +33,7 @@ export const Countdown = ({ startDate, endDate, className }: CountdownProps) => 
       const remainingSeconds = effectiveEndDate - now
 
       if (remainingSeconds <= 0) {
+        // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
         setTimeRemaining('Voting has ended')
       } else {
         const days = Math.floor(remainingSeconds / 86400)
@@ -39,6 +41,7 @@ export const Countdown = ({ startDate, endDate, className }: CountdownProps) => 
         const minutes = Math.floor((remainingSeconds % 3600) / 60)
         const seconds = remainingSeconds % 60
 
+        // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
         setTimeRemaining(`${days}d ${hours}h ${minutes}m ${seconds}s`)
       }
     }

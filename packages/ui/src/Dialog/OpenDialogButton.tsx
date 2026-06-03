@@ -8,16 +8,17 @@ import type { ButtonProps } from '@ui/Button/types'
 import { Icon } from '@ui/Icon/Icon'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 
-interface OpenDialogButtonProps extends ButtonProps {
+type OpenDialogButtonProps = {
   children: ReactNode
   overlayTriggerState: OverlayTriggerState
   showCaret?: boolean
-}
+} & ButtonProps
 
 export const OpenDialogButton = ({ children, overlayTriggerState, showCaret, ...props }: OpenDialogButtonProps) => {
   const openButtonRef = useRef<HTMLButtonElement>(null)
   const isMobile = useIsMobile()
   const { buttonProps } = useButton(
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
     { onPress: () => (isMobile ? setTimeout(overlayTriggerState.open, Duration.Delay) : overlayTriggerState.open()) },
     openButtonRef,
   )

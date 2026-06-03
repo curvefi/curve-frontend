@@ -9,12 +9,12 @@ export type FormValues = {
 
 export type StepKey = 'REPAY' | ''
 
-export interface FormStatus extends Fs {
+export type FormStatus = {
   warning: string
   step: StepKey
-}
+} & Fs
 
-export interface FormDetailInfo extends Di, LiqRange {
+export type FormDetailInfo = {
   receiveStablecoin: string
   isAvailable: boolean | null
   isFullRepayment: boolean
@@ -22,4 +22,5 @@ export interface FormDetailInfo extends Di, LiqRange {
   priceImpact: string
   isHighImpact: boolean
   error: string
-}
+} & Di &
+  LiqRange

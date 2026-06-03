@@ -11,7 +11,6 @@ import { useUserCurrentLeverage } from '@/llamalend/queries/user'
 import { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import type { CollateralForm } from '@/llamalend/queries/validation/manage-loan.validation'
 import { useBorrowRates } from '@/llamalend/widgets/action-card/hooks/useBorrowRates'
-import { useLeverageInfoFields } from '@/llamalend/widgets/action-card/hooks/useLeverageInfoFields'
 import { usePrevLoanState } from '@/llamalend/widgets/action-card/hooks/usePrevLoanState'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -19,6 +18,7 @@ import { type Token } from '@primitives/address.utils'
 import type { UseFormReturn } from '@ui-kit/features/forms'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
+import { getLeverageInfoFields } from '../../../widgets/action-card/hooks/getLeverageInfoFields'
 
 export function AddCollateralInfoList<ChainId extends IChainId>({
   params,
@@ -66,7 +66,7 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
       )}
       prices={q(useAddCollateralPrices(params, isOpen))}
       oraclePrice={q(useMarketOraclePrice(params, isOpen))}
-      {...useLeverageInfoFields({
+      {...getLeverageInfoFields({
         leverageEnabled: false,
         leverageValue: useAddCollateralFutureLeverage(params, isOpen),
         prevLeverageValue: useUserCurrentLeverage(params, isOpen),

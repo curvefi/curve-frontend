@@ -14,7 +14,7 @@ import type { Decimal } from '@primitives/decimal.utils'
  *   userAddr: "0x47E2D28169738039755586743E2dfCF3bd643f86",
  * };
  */
-export interface AssemblePathRequest {
+export type AssemblePathRequest = {
   /**
    * Address of the user who will execute the assembled transaction.
    *
@@ -64,7 +64,7 @@ export interface AssemblePathRequest {
  * @description Detailed response for an assembled path, including quote values,
  * transaction data, simulation results, and token information.
  */
-export interface AssemblePathResponse {
+export type AssemblePathResponse = {
   /**
    * Deprecated field.
    *
@@ -151,7 +151,7 @@ export interface AssemblePathResponse {
  *
  * Replace with the actual TokenAmount interface you already generated.
  */
-interface TokenAmount {
+type TokenAmount = {
   amount: string
   tokenAddress: string
 }
@@ -159,7 +159,7 @@ interface TokenAmount {
 /**
  * Transaction placeholder.
  */
-interface Transaction {
+type Transaction = {
   gas: number
   gasPrice: number
   value: Decimal
@@ -175,9 +175,7 @@ interface Transaction {
  *
  * Replace with the real Simulation schema if defined elsewhere.
  */
-interface Simulation {
-  [key: string]: unknown
-}
+type Simulation = Record<string, unknown>
 
 export type CurveOdosAssembleRequest = {
   path_id: AssemblePathRequest['pathId']

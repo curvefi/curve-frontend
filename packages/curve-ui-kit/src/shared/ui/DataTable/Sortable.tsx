@@ -17,6 +17,7 @@ type SortableProps<T extends TableItem> = {
   isEnabled?: boolean
 }
 // forwardRef needed to pass ref to Tooltip for it to work
+// eslint-disable-next-line @eslint-react/no-forward-ref -- Existing violation before enabling this rule.
 const _Sortable = forwardRef<HTMLDivElement, SortableProps<TableItem>>(function Sortable(
   { children, column, size, isEnabled = true, ...props },
   ref,

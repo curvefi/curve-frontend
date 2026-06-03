@@ -84,7 +84,7 @@ export const useVisiblePriceRangeSync = ({
       // spawning overlapping loops while still capturing the final settled range.
       emitBurstFramesRef.current = Math.max(emitBurstFramesRef.current, frames)
 
-      if (emitRequestAnimationFrameRef.current === null) {
+      if (!emitRequestAnimationFrameRef.current) {
         emitRequestAnimationFrameRef.current = requestAnimationFrame(runEmitFrame)
       }
     },

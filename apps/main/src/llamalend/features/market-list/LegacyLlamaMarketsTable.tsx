@@ -49,7 +49,7 @@ export const LegacyLlamaMarketsTable = ({
     sorting,
     getLlamaMarketsColumnVariant(userHasPositions),
   )
-  const [expanded, onExpandedChange] = useState<ExpandedState>({})
+  const [expanded, setExpanded] = useState<ExpandedState>({})
   const filterProps = { columnFiltersById, setColumnFilter }
 
   const table = useTable({
@@ -58,7 +58,7 @@ export const LegacyLlamaMarketsTable = ({
     state: { expanded, sorting, columnVisibility, columnFilters, globalFilter },
     initialState: { pagination },
     onSortingChange,
-    onExpandedChange,
+    onExpandedChange: setExpanded,
     globalFilterFn,
     ...getTableOptions(result),
   })

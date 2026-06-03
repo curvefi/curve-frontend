@@ -15,11 +15,11 @@ type UserClaimableToken = {
   price: number
 }
 
-interface UserTokenProfit extends UserBaseProfit {
+type UserTokenProfit = {
   token: string
   symbol: string
   price: number
-}
+} & UserBaseProfit
 
 export type Order = 'asc' | 'desc'
 
@@ -41,8 +41,8 @@ export type WalletPoolData = {
   percentStaked: string
 }
 
-export type DashboardDataMapper = { [poolId: string]: WalletPoolData }
-export type DashboardDatasMapper = { [searchedAddress: string]: DashboardDataMapper }
+export type DashboardDataMapper = Record<string, WalletPoolData>
+export type DashboardDatasMapper = Record<string, DashboardDataMapper>
 
 export type FormValues = {
   sortBy: SortId

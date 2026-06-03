@@ -22,7 +22,7 @@ import { t } from '@ui-kit/lib/i18n'
 export const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: TransferProps) => {
   const isSubscribedRef = useRef(false)
 
-  const { chainId, signerAddress } = curve || {}
+  const { chainId, signerAddress } = curve ?? {}
   const { rChainId } = routerParams
   const activeKey = useStore(state => state.poolWithdraw.activeKey)
   const formEstGas = useStore(state => state.poolWithdraw.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
@@ -44,6 +44,7 @@ export const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams,
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>) => {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTxInfoBar(null)
       void setFormValues(
         'UNSTAKE',
@@ -88,13 +89,13 @@ export const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams,
       const isValid = !isSeed && !formStatus.error && +formValues.stakedLpToken > 0
       const isComplete = formStatus.formTypeCompleted === 'UNSTAKE'
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         UNSTAKE: {
           key: 'UNSTAKE',
           status: getStepStatus(isComplete, step === 'UNSTAKE', isValid),
           type: 'action',
           content: isComplete ? t`Unstake Complete` : t`Unstake`,
-          onClick: () => handleUnstakeClick(activeKey, curve, poolData, formValues),
+          onClick: () => void handleUnstakeClick(activeKey, curve, poolData, formValues),
         },
       }
 
@@ -131,6 +132,7 @@ export const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams,
   useEffect(() => {
     if (curve && poolData && seed.isSeed !== null) {
       const updatedSteps = getSteps(activeKey, curve, poolData, formValues, formStatus, seed.isSeed)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

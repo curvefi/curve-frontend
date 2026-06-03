@@ -61,7 +61,7 @@ export const CollateralIncrease = ({
   const setStateByKey = useStore(state => state.loanCollateralIncrease.setStateByKey)
   const resetState = useStore(state => state.loanCollateralIncrease.resetState)
 
-  const [confirmedHealthWarning, setConfirmHealthWarning] = useState(false)
+  const [confirmedHealthWarning, setConfirmedHealthWarning] = useState(false)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
@@ -83,7 +83,7 @@ export const CollateralIncrease = ({
 
   const reset = useCallback(
     (isErrorReset: boolean, isFullReset: boolean) => {
-      setConfirmHealthWarning(false)
+      setConfirmedHealthWarning(false)
       setTxInfoBar(null)
 
       if (isErrorReset || isFullReset) {
@@ -143,12 +143,13 @@ export const CollateralIncrease = ({
       const haveCollateral = !!collateral && +collateral > 0
       const isValid = !!curve.signerAddress && !formEstGas.loading && haveCollateral && !collateralError && !error
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: getStepStatus(isApproved, step === 'APPROVAL', isValid),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: async () => {
             const notifyMessage = t`Please approve spending of ${llamma.collateralSymbol}`
             const notification = notify(notifyMessage, 'pending')
@@ -170,22 +171,24 @@ export const CollateralIncrease = ({
                     <DialogHealthWarning
                       {...healthMode}
                       confirmed={confirmedHealthWarning}
-                      setConfirmed={val => setConfirmHealthWarning(val)}
+                      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
+                      setConfirmed={val => setConfirmedHealthWarning(val)}
                     />
                   ),
                   isDismissable: false,
                   cancelBtnProps: {
                     label: t`Cancel`,
-                    onClick: () => setConfirmHealthWarning(false),
+                    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
+                    onClick: () => setConfirmedHealthWarning(false),
                   },
                   primaryBtnProps: {
-                    onClick: () => handleBtnClickAdd(payloadActiveKey, curve, llamma, formValues),
+                    onClick: () => void handleBtnClickAdd(payloadActiveKey, curve, llamma, formValues),
                     disabled: !confirmedHealthWarning,
                   },
                   primaryBtnLabel: 'Add anyway',
                 },
               }
-            : { onClick: async () => handleBtnClickAdd(payloadActiveKey, curve, llamma, formValues) }),
+            : { onClick: () => void handleBtnClickAdd(payloadActiveKey, curve, llamma, formValues) }),
         },
       }
 
@@ -225,6 +228,7 @@ export const CollateralIncrease = ({
         formValues,
         steps,
       )
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

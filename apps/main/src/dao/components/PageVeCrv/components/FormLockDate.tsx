@@ -56,6 +56,7 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
   const isMax = maxUtcDate ? 365 * 4 - remainingLockedDays <= 7 : false
 
   const updateFormValues = useCallback(
+    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
     async (updatedFormValues: Partial<FormValues>, { isFullReset = false }: { isFullReset?: boolean } = {}) => {
       setTxInfoBar(null)
       setFormValues(curve, isLoadingCurve, rFormType, updatedFormValues, vecrvInfo, isFullReset)
@@ -131,7 +132,7 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
 
   const getSteps = useCallback(
     (activeKey: string, curve: CurveApi, formEstGas: FormEstGas, formValues: FormValues, formStatus: FormStatus) => {
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         INCREASE_TIME: {
           key: 'INCREASE_TIME',
           status: getStepStatus(
@@ -141,7 +142,7 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
           ),
           type: 'action',
           content: formStatus.formTypeCompleted === 'INCREASE_TIME' ? t`Lock Increased` : t`Increase Lock`,
-          onClick: () => handleBtnClickIncrease(activeKey, curve, formValues),
+          onClick: () => void handleBtnClickIncrease(activeKey, curve, formValues),
         },
       }
 
@@ -166,6 +167,7 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
   useEffect(() => {
     if (curve && activeKey) {
       const updatedSteps = getSteps(activeKey, curve, formEstGas, formValues, formStatus)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
@@ -213,7 +215,9 @@ export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecr
 
       <FormActions haveSigner={haveSigner} loading={loading}>
         {isMax && <AlertBox alertType="info">{t`You have reached the maximum locked date.`}</AlertBox>}
-        {formStatus.error && <AlertFormError errorKey={formStatus.error} handleBtnClose={() => updateFormValues({})} />}
+        {formStatus.error && (
+          <AlertFormError errorKey={formStatus.error} handleBtnClose={() => void updateFormValues({})} />
+        )}
         {txInfoBar}
         <Stepper steps={steps} hideStepNumber />
       </FormActions>

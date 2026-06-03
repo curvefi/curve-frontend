@@ -15,7 +15,6 @@ import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impac
 import { useUserCurrentLeverage, useUserState } from '@/llamalend/queries/user'
 import type { RepayFormData, RepayParams } from '@/llamalend/queries/validation/repay.types'
 import { useBorrowRates } from '@/llamalend/widgets/action-card/hooks/useBorrowRates'
-import { useLeverageInfoFields } from '@/llamalend/widgets/action-card/hooks/useLeverageInfoFields'
 import { usePrevLoanState } from '@/llamalend/widgets/action-card/hooks/usePrevLoanState'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -25,6 +24,7 @@ import type { UseFormReturn } from '@ui-kit/features/forms'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { constQ, mapQuery, q, type Query, type QueryProp, type Range } from '@ui-kit/types/util'
 import { decimal, decimalMinus, decimalNegate } from '@ui-kit/utils'
+import { getLeverageInfoFields } from '../../../widgets/action-card/hooks/getLeverageInfoFields'
 
 const remainingDebt = (debt: Decimal, repayAmount: Decimal) => {
   const remaining = new BigNumber(debt).minus(repayAmount)
@@ -147,7 +147,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
         },
         isOpen && !!isFull,
       )}
-      {...useLeverageInfoFields({
+      {...getLeverageInfoFields({
         // we need to use the leverage implementations to do any swap. deleverage implementation cannot show the expected values
         leverageEnabled: showLeverage,
         leverageValue: useRepayFutureLeverage(params, isOpen),

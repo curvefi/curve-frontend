@@ -27,7 +27,7 @@ import { t } from '@ui-kit/lib/i18n'
 export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: TransferProps) => {
   const isSubscribedRef = useRef(false)
 
-  const { chainId, signerAddress } = curve || {}
+  const { chainId, signerAddress } = curve ?? {}
   const { rChainId } = routerParams
   const activeKey = useStore(state => state.poolDeposit.activeKey)
   const formEstGas = useStore(state => state.poolDeposit.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
@@ -51,6 +51,7 @@ export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>) => {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTxInfoBar(null)
       void setFormValues(
         'STAKE',
@@ -105,20 +106,20 @@ export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
       const isApproved = formStatus.isApproved || formStatus.formTypeCompleted === 'APPROVE'
       const isComplete = formStatus.formTypeCompleted === 'STAKE'
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: getStepStatus(isApproved, formStatus.step === 'APPROVAL', isValid && !formStatus.formProcessing),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
-          onClick: () => handleApproveClick(activeKey, curve, poolData.pool, formValues),
+          onClick: () => void handleApproveClick(activeKey, curve, poolData.pool, formValues),
         },
         STAKE: {
           key: 'STAKE',
           status: getStepStatus(isComplete, formStatus.step === 'STAKE', isValid && formStatus.isApproved),
           type: 'action',
           content: isComplete ? t`Stake Complete` : t`Stake`,
-          onClick: () => handleStakeClick(activeKey, curve, poolData, formValues),
+          onClick: () => void handleStakeClick(activeKey, curve, poolData, formValues),
         },
       }
 
@@ -163,6 +164,7 @@ export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
   useEffect(() => {
     if (curve && poolId) {
       const updatedSteps = getSteps(activeKey, curve, poolData, formValues, formStatus, steps)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

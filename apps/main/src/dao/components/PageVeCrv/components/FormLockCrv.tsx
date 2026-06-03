@@ -39,6 +39,7 @@ export const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>, isFullReset?: boolean) => {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTxInfoBar(null)
       setFormValues(curve, isLoadingCurve, rFormType, updatedFormValues, vecrvInfo, isFullReset)
     },
@@ -82,13 +83,13 @@ export const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv
       const isValid =
         +formValues.lockedAmt > 0 && formValues.lockedAmtError === '' && !formStatus.error && !formEstGas.loading
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: getStepStatus(formStatus.isApproved, formStatus.step === 'APPROVAL', isValid),
           type: 'action',
           content: formStatus.isApproved ? t`Spending Approved` : t`Approve Spending`,
-          onClick: () => handleBtnClickApproval(activeKey, curve, formValues),
+          onClick: () => void handleBtnClickApproval(activeKey, curve, formValues),
         },
         INCREASE_CRV: {
           key: 'INCREASE_CRV',
@@ -99,7 +100,7 @@ export const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv
           ),
           type: 'action',
           content: formStatus.formTypeCompleted === 'INCREASE_CRV' ? t`Lock Amount Increased` : t`Increase Lock Amount`,
-          onClick: () => handleBtnClickIncrease(activeKey, curve, formValues),
+          onClick: () => void handleBtnClickIncrease(activeKey, curve, formValues),
         },
       }
 
@@ -131,6 +132,7 @@ export const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv
   useEffect(() => {
     if (curve) {
       const updatedSteps = getSteps(activeKey, curve, formEstGas, formValues, formStatus, steps)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

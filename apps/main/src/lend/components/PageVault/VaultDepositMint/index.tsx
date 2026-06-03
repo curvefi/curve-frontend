@@ -119,12 +119,13 @@ export const VaultDepositMint = ({ rChainId, marketId, isLoaded, api, market, us
       const { symbol } = market.borrowed_token
       const isValid = !!signerAddress && +amount > 0 && !amountError && !error
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: helpers.getStepStatus(isApproved, step === 'APPROVAL', isValid),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: async () => {
             const notifyMessage = t`Please approve spending of ${symbol}`
             const notification = notify(notifyMessage, 'pending')
@@ -138,7 +139,7 @@ export const VaultDepositMint = ({ rChainId, marketId, isLoaded, api, market, us
           status: helpers.getStepStatus(isComplete, step === 'DEPOSIT_MINT', isValid && isApproved),
           type: 'action',
           content: isComplete ? t`Deposited` : t`Deposit`,
-          onClick: async () => handleBtnClickDeposit(payloadActiveKey, rFormType, api, market, formValues),
+          onClick: () => void handleBtnClickDeposit(payloadActiveKey, rFormType, api, market, formValues),
         },
       }
 
@@ -174,6 +175,7 @@ export const VaultDepositMint = ({ rChainId, marketId, isLoaded, api, market, us
   useEffect(() => {
     if (isLoaded && api && market) {
       const updatedSteps = getSteps(activeKey, rFormType, api, market, formStatus, formValues, steps)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

@@ -16,7 +16,7 @@ import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { formatNumber } from '@ui-kit/utils'
 import { VOTES_LABELS } from '../constants'
 
-interface UserProposalVotesTableProps {
+type UserProposalVotesTableProps = {
   userAddress: string
   tableMinWidth: number
 }
@@ -57,7 +57,7 @@ export const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserPropo
         sortBy={userProposalVotesSortBy}
         errorMessage={t`An error occurred while fetching proposal votes.`}
         setSortBy={key => setUserProposalVotesSortBy(key as UserProposalVotesSortBy)}
-        getData={() => invalidateUserProposalVotesQuery({ userAddress })}
+        getData={() => void invalidateUserProposalVotesQuery({ userAddress })}
         gridTemplateColumns={gridTemplateColumns}
         noDataMessage={t`No proposal votes found for this user.`}
         renderRow={(proposalVote, index) => (

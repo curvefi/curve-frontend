@@ -520,7 +520,7 @@ const loanCreate = {
     const haveCollateral = +collateral > 0
     const haveDebt = +debt > 0
     const liqRangesList: LiqRange[] = []
-    const liqRangesListMapper: { [n: string]: LiqRange & { sliderIdx: number } } = {}
+    const liqRangesListMapper: Record<string, LiqRange & { sliderIdx: number }> = {}
     let sliderIdx = 0
     const isV2LeverageSupported = hasV2Leverage(llamma)
     const userBorrowed = '0' // hardcode to zero as that's not displayed in the form
@@ -563,6 +563,7 @@ const loanCreate = {
         debt,
         maxRecv: (!isLeverage && (maxRecvs as Record<number, string>)?.[n]) || '',
         maxRecvLeverage: (isLeverage && (maxRecvs as Record<number, MaxRecvLeverage>)?.[n]) || null,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
         maxRecvError: maxRecvsResults.status === 'rejected' ? maxRecvsResults.reason : '',
         prices: nLoanPrices ? [nLoanPrices[1], nLoanPrices[0]] : [],
         bands: bands ? reverseBands(bands) : [0, 0],
@@ -676,6 +677,7 @@ const loanIncrease = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       if (error?.message?.includes('liquidation mode')) {
         resp.error = 'error-liquidation-mode'
       } else {
@@ -703,6 +705,7 @@ const loanIncrease = {
           healthNotFull: '',
           prices: [],
           bands: [],
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
           error: pricesResult.reason,
         },
       }
@@ -859,7 +862,9 @@ const loanLiquidate = {
       return resp
     } catch (err) {
       console.error(err)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       const haveErrorMessage = err?.message
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       if (haveErrorMessage && err.message.includes('not in liquidation mode')) {
         resp.warning = 'warning-not-in-liquidation-mode'
       } else {
@@ -935,6 +940,7 @@ const collateralIncrease = {
       return resp
     } catch (err) {
       console.error(err)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       if (err?.message?.includes('liquidation mode')) {
         resp.error = 'error-liquidation-mode'
       } else {
@@ -991,6 +997,7 @@ const collateralIncrease = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       if (error?.message?.includes('liquidation mode')) {
         resp.error = 'error-liquidation-mode'
       } else {
@@ -1011,6 +1018,7 @@ const collateralDecrease = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       if (error?.message?.includes('liquidation mode')) {
         resp.error = 'error-liquidation-mode'
       } else {
@@ -1068,6 +1076,7 @@ const collateralDecrease = {
       return resp
     } catch (error) {
       console.error(error)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
       if (error?.message?.includes('liquidation mode')) {
         resp.error = 'error-liquidation-mode'
       } else {

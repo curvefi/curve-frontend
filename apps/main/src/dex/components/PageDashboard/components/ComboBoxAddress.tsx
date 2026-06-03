@@ -151,6 +151,7 @@ export function ComboBoxAddress<T extends object>(props: ComboBoxStateOptions<T>
         </Button>
       </InputProvider>
       {state.isOpen && (
+        // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
         <Popover popoverRef={popoverRef} isOpen={state.isOpen} onClose={state.close}>
           <ListBox {...listBoxProps} listBoxRef={listBoxRef} state={state} />
         </Popover>

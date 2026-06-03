@@ -28,18 +28,18 @@ const sliceKey = 'loanSelfLiquidation'
 // prettier-ignore
 export type LoanSelfLiquidationSlice = {
   [sliceKey]: SliceState & {
-    fetchDetails(api: Api, market: LendMarketTemplate, maxSlippage: string): Promise<void>
-    fetchEstGasApproval(api: Api, market: LendMarketTemplate, maxSlippage: string): Promise<void>
+    fetchDetails: (api: Api, market: LendMarketTemplate, maxSlippage: string) => Promise<void>
+    fetchEstGasApproval: (api: Api, market: LendMarketTemplate, maxSlippage: string) => Promise<void>
 
     // step
-    fetchStepApprove(api: Api, market: LendMarketTemplate, maxSlippage: string): Promise<{ hashes: string[]; error: string } | undefined>
-    fetchStepLiquidate(api: Api, market: LendMarketTemplate, liquidationAmt: string, maxSlippage: string): Promise<{ error: string; hash: string; loanExists: boolean } | undefined>
+    fetchStepApprove: (api: Api, market: LendMarketTemplate, maxSlippage: string) => Promise<{ hashes: string[]; error: string } | undefined>
+    fetchStepLiquidate: (api: Api, market: LendMarketTemplate, liquidationAmt: string, maxSlippage: string) => Promise<{ error: string; hash: string; loanExists: boolean } | undefined>
 
     // steps helper
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: () => void
   }
 }
 

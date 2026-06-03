@@ -20,7 +20,7 @@ export const RoutesActionInfo = ({
   routes: Route[] | undefined
   tokensNameMapper: TokensNameMapper
   poolDataMapper: PoolDataMapper | undefined
-  swapCustomRouteRedirect: { [poolId: string]: string } | undefined
+  swapCustomRouteRedirect: Record<string, string> | undefined
 }) => (
   <>
     <ActionInfo
@@ -55,6 +55,7 @@ export const RoutesActionInfo = ({
           ></Box>
           <Stack direction="column">
             {routes.map((_, index) => (
+              // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
               <Box key={index} sx={{ width: 16, height: 20 }}>
                 <IndicatorIcon sx={{ width: 12, height: 12, color: t => t.design.Color.Neutral[700] }} />
               </Box>

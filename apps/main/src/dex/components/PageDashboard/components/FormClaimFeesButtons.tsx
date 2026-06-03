@@ -1,3 +1,4 @@
+import { noop } from 'lodash'
 import {
   ButtonHTMLAttributes,
   Dispatch,
@@ -43,7 +44,7 @@ export const FormClaimFeesButtons = ({
   const fetchStepClaimFees = useStore(state => state.dashboard.fetchStepClaimFees)
   const setFormStatus = useStore(state => state.dashboard.setFormStatusClaimFees)
 
-  const { chainId, signerAddress } = curve || {}
+  const { chainId, signerAddress } = curve ?? {}
   const { data: networks } = useNetworks()
   const network = networks[chainId!] || null
   const [claimingKey, setClaimingKey] = useState<claimButtonsKey | ''>('')
@@ -93,7 +94,7 @@ export const FormClaimFeesButtons = ({
           status: 'succeeded',
           type: 'action',
           content: t`Claimed ${key}`,
-          onClick: () => {},
+          onClick: noop,
         },
       ])
 
@@ -130,7 +131,7 @@ export const FormClaimFeesButtons = ({
                 <Button
                   {...buttonProps}
                   loading={buttonProps.loading && claimingKey === key}
-                  onClick={() => handleBtnClickClaimFees(key)}
+                  onClick={() => void handleBtnClickClaimFees(key)}
                 >
                   {label}
                 </Button>

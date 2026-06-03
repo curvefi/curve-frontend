@@ -281,12 +281,14 @@ export const createLightDesign = (
         Fill: {
           Default: Grays[100],
           Active: Grays[50],
+          Hover: Grays[50],
         },
         Border: {
           Default: Grays[200],
           Active: Light.Text.Highlight,
           Filled: Grays[850],
-          Error: Reds[500],
+          Hover: Grays[400],
+          Error: Reds[600],
         },
       },
       Nested: {
@@ -296,7 +298,8 @@ export const createLightDesign = (
           Default: Grays[400],
           Active: Light.Text.Highlight,
           Filled: Grays[850],
-          Error: Reds[500],
+          Hover: Grays[400],
+          Error: Reds[600],
         },
       },
     },
@@ -304,6 +307,52 @@ export const createLightDesign = (
       Default: {
         Fill: Grays[100],
         Outline: Grays[200],
+      },
+    },
+    Text: {
+      Label: Text.TextColors.Secondary,
+      Value: Text.TextColors.Primary,
+      Placeholder: Text.TextColors.Secondary,
+      Unit: Text.TextColors.Secondary,
+      Meta: Text.TextColors.Secondary,
+      MetaSubtle: Text.TextColors.Secondary,
+      Helper: Text.TextColors.Secondary,
+      Error: Reds[600],
+      Disabled: Text.TextColors.Disabled,
+    },
+  } as const
+
+  const Select = {
+    Text: {
+      Label: Text.TextColors.Secondary,
+      Value: Text.TextColors.Primary,
+      Unit: Text.TextColors.Secondary,
+      Helper: Text.TextColors.Secondary,
+      Error: Reds[600],
+      Disabled: Text.TextColors.Disabled,
+    },
+  } as const
+
+  const InputSelect = {
+    Base: {
+      Default: {
+        Fill: {
+          Default: Inputs.Base.Default.Fill.Default,
+          Active: Inputs.Base.Default.Fill.Active,
+          Hover: Inputs.Base.Default.Fill.Hover,
+        },
+        Border: {
+          Default: Inputs.Base.Default.Border.Default,
+          Active: Inputs.Base.Default.Border.Active,
+          Filled: Inputs.Base.Default.Border.Filled,
+          Hover: Inputs.Base.Default.Border.Hover,
+          Error: Inputs.Base.Default.Border.Error,
+        },
+      },
+    },
+    Large: {
+      Default: {
+        Fill: Inputs.Large.Default.Fill,
       },
     },
   } as const
@@ -480,6 +529,8 @@ export const createLightDesign = (
     Toggles,
     Table,
     Inputs,
+    Select,
+    InputSelect,
     Switch,
     Sliders,
   } as const
@@ -787,12 +838,14 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
         Fill: {
           Default: Grays[900],
           Active: Grays[900],
+          Hover: Grays[850],
         },
         Border: {
           Default: Grays[800],
           Active: Dark.Text.Highlight,
           Filled: Grays[75],
-          Error: Reds[500],
+          Hover: Grays[600],
+          Error: Reds[200],
         },
       },
       Nested: {
@@ -802,7 +855,8 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
           Default: Grays[600],
           Active: Dark.Text.Highlight,
           Filled: Grays[75],
-          Error: Reds[500],
+          Hover: Grays[600],
+          Error: Reds[200],
         },
       },
     },
@@ -810,6 +864,52 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
       Default: {
         Fill: Grays[900],
         Outline: Grays[800],
+      },
+    },
+    Text: {
+      Label: Text.TextColors.Secondary,
+      Value: Text.TextColors.Primary,
+      Placeholder: Text.TextColors.Secondary,
+      Unit: Text.TextColors.Secondary,
+      Meta: Text.TextColors.Secondary,
+      MetaSubtle: Text.TextColors.Secondary,
+      Helper: Text.TextColors.Secondary,
+      Error: Reds[200],
+      Disabled: Text.TextColors.Disabled,
+    },
+  } as const
+
+  const Select = {
+    Text: {
+      Label: Text.TextColors.Secondary,
+      Value: Text.TextColors.Primary,
+      Unit: Text.TextColors.Secondary,
+      Helper: Text.TextColors.Secondary,
+      Error: Reds[200],
+      Disabled: Text.TextColors.Disabled,
+    },
+  } as const
+
+  const InputSelect = {
+    Base: {
+      Default: {
+        Fill: {
+          Default: Inputs.Base.Default.Fill.Default,
+          Active: Inputs.Base.Default.Fill.Active,
+          Hover: Inputs.Base.Default.Fill.Hover,
+        },
+        Border: {
+          Default: Inputs.Base.Default.Border.Default,
+          Active: Inputs.Base.Default.Border.Active,
+          Filled: Inputs.Base.Default.Border.Filled,
+          Hover: Inputs.Base.Default.Border.Hover,
+          Error: Inputs.Base.Default.Border.Error,
+        },
+      },
+    },
+    Large: {
+      Default: {
+        Fill: Inputs.Large.Default.Fill,
       },
     },
   } as const
@@ -986,6 +1086,8 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
     Toggles,
     Table,
     Inputs,
+    Select,
+    InputSelect,
     Switch,
     Sliders,
   } as const
@@ -1254,12 +1356,14 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
         Fill: {
           Default: Grays[100],
           Active: Grays[100],
+          Hover: Violets[50],
         },
         Border: {
           Default: Grays[400],
-          Active: Violets[400],
+          Active: Violets[500],
           Filled: Violets[600],
-          Error: Reds[500],
+          Hover: Violets[400],
+          Error: Reds[600],
         },
       },
       Nested: {
@@ -1267,9 +1371,10 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
         Fill: Violets[50],
         Border: {
           Default: Grays[200],
-          Active: Violets[400],
+          Active: Violets[500],
           Filled: Violets[400],
-          Error: Reds[500],
+          Hover: Violets[400],
+          Error: Reds[600],
         },
       },
     },
@@ -1277,6 +1382,52 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
       Default: {
         Fill: Grays[100],
         Outline: Grays[400],
+      },
+    },
+    Text: {
+      Label: Text.TextColors.Secondary,
+      Value: Text.TextColors.Primary,
+      Placeholder: Text.TextColors.Secondary,
+      Unit: Text.TextColors.Secondary,
+      Meta: Text.TextColors.Secondary,
+      MetaSubtle: Text.TextColors.Secondary,
+      Helper: Text.TextColors.Secondary,
+      Error: Reds[600],
+      Disabled: Text.TextColors.Disabled,
+    },
+  } as const
+
+  const Select = {
+    Text: {
+      Label: Text.TextColors.Secondary,
+      Value: Text.TextColors.Primary,
+      Unit: Text.TextColors.Secondary,
+      Helper: Text.TextColors.Secondary,
+      Error: Reds[600],
+      Disabled: Text.TextColors.Disabled,
+    },
+  } as const
+
+  const InputSelect = {
+    Base: {
+      Default: {
+        Fill: {
+          Default: Inputs.Base.Default.Fill.Default,
+          Active: Inputs.Base.Default.Fill.Active,
+          Hover: Inputs.Base.Default.Fill.Hover,
+        },
+        Border: {
+          Default: Inputs.Base.Default.Border.Default,
+          Active: Inputs.Base.Default.Border.Active,
+          Filled: Inputs.Base.Default.Border.Filled,
+          Hover: Inputs.Base.Default.Border.Hover,
+          Error: Inputs.Base.Default.Border.Error,
+        },
+      },
+    },
+    Large: {
+      Default: {
+        Fill: Inputs.Large.Default.Fill,
       },
     },
   } as const
@@ -1453,6 +1604,8 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
     Toggles,
     Table,
     Inputs,
+    Select,
+    InputSelect,
     Switch,
     Sliders,
   } as const
