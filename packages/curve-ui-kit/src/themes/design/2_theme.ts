@@ -151,6 +151,7 @@ export const createLightDesign = (
   } as const
 
   const Button = {
+    FontFamily: 'Mona Sans Mono',
     Focus_Outline_Width: '0.125rem', // 2px
     Focus_Outline: Color.Primary[500],
     Radius: {
@@ -705,6 +706,7 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
   } as const
 
   const Button = {
+    FontFamily: 'Mona Sans Mono',
     Focus_Outline_Width: '0.125rem', // 2px
     Focus_Outline: Color.Primary[500],
     Radius: {
@@ -1220,6 +1222,7 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
   } as const
 
   const Button = {
+    FontFamily: 'Ioskeley Mono',
     Focus_Outline_Width: '0.125rem', // 2px
     Focus_Outline: Color.Primary[300],
     Radius: {

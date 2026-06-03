@@ -47,8 +47,8 @@ type ButtonSizeSquare = BaseButtonSize & {
 const buttonSizeSquare = (
   fontWeightTokens: DesignSystem['Text']['FontWeight'],
   { size, padding, fontSize, fontWeight = 'Bold', lineHeight }: ButtonSizeSquare,
-) => ({
-  ...handleBreakpoints({
+) =>
+  handleBreakpoints({
     minHeight: ButtonSize[size],
     minWidth: ButtonSize[size],
     height: ButtonSize[size],
@@ -58,9 +58,8 @@ const buttonSizeSquare = (
     fontSize: FontSize[fontSize],
     fontWeight: fontWeightTokens[fontWeight],
     lineHeight: LineHeight[lineHeight],
-  }),
-  overflow: 'hidden',
-})
+    overflow: 'hidden',
+  })
 
 export const defineMuiToggleButton = ({ Toggles, Button, Text }: DesignSystem): Components['MuiToggleButton'] => {
   const { Default, Hover, Current } = Toggles
@@ -79,7 +78,7 @@ export const defineMuiToggleButton = ({ Toggles, Button, Text }: DesignSystem): 
         border: `${OutlineWidth} solid transparent !important`, // Not even '&&' works, hence the !important
         borderRadius: 0,
         transition: Button.Transition,
-        fontFamily: Fonts[Text.FontFamily],
+        fontFamily: Fonts[Button.FontFamily],
         textTransform: 'uppercase',
       },
 

@@ -105,7 +105,7 @@ export const defineMuiButton = ({ Button, Text }: DesignSystem): Components['Mui
         border: `${OutlineWidth} solid transparent`,
         boxSizing: 'border-box',
         '&:focus-visible': { borderColor: Focus_Outline },
-        fontFamily: Fonts[Text.FontFamily],
+        fontFamily: Fonts[Button.FontFamily],
         textTransform: 'uppercase',
         transition: Transition,
       },
