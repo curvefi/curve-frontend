@@ -159,7 +159,7 @@ export const Accordion = ({
             ...(!ghost && { backgroundColor: (t: Theme) => t.design.Layer[1].Fill }),
           },
 
-          ['@media (hover: hover) and (pointer: fine)']: {
+          '@media (hover: hover) and (pointer: fine)': {
             '&:hover': {
               '&::after': {
                 borderColor: t => t.design.Button.Focus_Outline,
