@@ -96,7 +96,6 @@ export const PoolLabel = ({
           {quickViewValue && <Chip>{quickViewValue}</Chip>}
         </Box>
       </Wrapper>
-
       {tokenAlert && isMobile && <StyledAlertBox alertType={tokenAlert.alertType}>{tokenAlert.message}</StyledAlertBox>}
       {poolAlert && !poolAlert.isPoolPageOnly && (
         <>

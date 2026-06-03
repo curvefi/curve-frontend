@@ -2,13 +2,12 @@
 
 body {
   --font: 'Mona Sans', 'Helvetica Neue', Helvetica, sans-serif;
-  --font-mono: 'Mona Sans Mono', 'SF Mono Regular 11', 'Ubuntu Mono', monospace;
+  --button-font: 'Mona Sans', 'Helvetica Neue', Helvetica, sans-serif;
 }
 
 body.theme-chad {
   --font: 'Ioskeley Mono', 'SF Mono Regular 11', 'Ubuntu Mono', monospace;
-  --font-mono: 'Ioskeley Mono', 'SF Mono Regular 11', 'Ubuntu Mono', monospace;
-  --button--font: 'Ioskeley Mono', 'SF Mono Regular 11', 'Ubuntu Mono', monospace;
+  --button-font: 'Ioskeley Mono', 'SF Mono Regular 11', 'Ubuntu Mono', monospace;
 }
 
 html {
@@ -150,16 +149,6 @@ li {
   src:
     local('Mona Sans'),
     url('../../../packages/curve-ui-kit/public/fonts/Mona-Sans.woff2') format('woff2');
-  font-weight: 200 900;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Mona Sans Mono';
-  src:
-    local('Mona Sans Mono'),
-    url('../../../packages/curve-ui-kit/public/fonts/Mona-Sans-Mono.woff2') format('woff2');
   font-weight: 200 900;
   font-style: normal;
   font-display: swap;

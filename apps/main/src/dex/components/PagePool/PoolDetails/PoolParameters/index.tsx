@@ -417,7 +417,7 @@ const StyledTokenIcon = styled(TokenIcon)`
 `
 
 const Numeral = styled.p`
-  font-family: var(--font-mono);
+  font-family: var(--button-font);
 `
 
 const IndentDataTitle = styled.p`
