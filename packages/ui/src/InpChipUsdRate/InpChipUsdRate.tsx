@@ -28,7 +28,7 @@ export const InpChipUsdRate = ({ className = '', amount, hideRate, usdRate, ...p
         </TextCaption>
       ) : (
         <StyledInpChip className={className} size="xs">
-          x {formatNumber(toAmount(usdRate), { abbreviate: false, fallback: '-' })} ≈ {formattedAmountUsd}
+          x {formatNumber(toAmount(usdRate), 'token.amount')} ≈ {formattedAmountUsd}
         </StyledInpChip>
       )}
     </>
