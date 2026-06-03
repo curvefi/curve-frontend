@@ -119,6 +119,15 @@ export const Accordion = ({
   const [isOpen, toggle] = useAccordionToggle(controlProps)
   const id = `accordion-${useId()}`
 
+  const interactiveHeaderState = {
+    '&::after': {
+      borderColor: (t: Theme) => t.design.Button.Focus_Outline,
+      borderWidth: SizesAndSpaces.OutlineWidth,
+      ...(ghost && { borderBottomStyle: 'solid' }),
+    },
+    ...(!ghost && { backgroundColor: (t: Theme) => t.design.Layer[1].Fill }),
+  }
+
   return (
     <Stack data-testid={testId}>
       <ButtonBase
@@ -147,25 +156,8 @@ export const Accordion = ({
                 : { border: borderStyle }),
           },
 
-          '&.Mui-focusVisible': {
-            '&::after': {
-              borderColor: t => t.design.Button.Focus_Outline,
-              borderWidth: SizesAndSpaces.OutlineWidth,
-              ...(ghost && { borderBottomStyle: 'solid' }),
-            },
-            ...(!ghost && { backgroundColor: (t: Theme) => t.design.Layer[1].Fill }),
-          },
-
-          '@media (hover: hover) and (pointer: fine)': {
-            '&:hover': {
-              '&::after': {
-                borderColor: t => t.design.Button.Focus_Outline,
-                borderWidth: SizesAndSpaces.OutlineWidth,
-                ...(ghost && { borderBottomStyle: 'solid' }),
-              },
-              ...(!ghost && { backgroundColor: (t: Theme) => t.design.Layer[1].Fill }),
-            },
-          },
+          '&.Mui-focusVisible': interactiveHeaderState,
+          '@media (hover: hover) and (pointer: fine)': { '&:hover': interactiveHeaderState },
         }}
       >
         <Stack direction="row" sx={{ flexGrow: 1, alignItems: 'center', gap: Spacing.sm }}>
