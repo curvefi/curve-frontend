@@ -124,7 +124,7 @@ body.theme-default {
   --button--disabled--border-color: var(--gray-500);
   --button--disabled--background-color: var(--gray-500);
   --button--disabled_spinner--background-color: var(--gray-500a20);
-  --button--font: var(--font-mono);
+  --button--font: var(--button-font);
   --button--font-size: inherit;
   --button--font-weight: var(--bold);
   --button--shadow-color: var(--primary-200);

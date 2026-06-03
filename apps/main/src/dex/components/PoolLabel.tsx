@@ -55,7 +55,7 @@ export const PoolLabel = ({
   }
 
   return (
-    <div>
+    <div data-testid={'pool-label'}>
       <Wrapper className={className} onClick={({ target }) => handleClick(target)}>
         <IconsWrapper>{isVisible && <TokenIcons blockchainId={blockchainId} tokens={tokens} />}</IconsWrapper>
         <Box fillWidth>
@@ -96,7 +96,6 @@ export const PoolLabel = ({
           {quickViewValue && <Chip>{quickViewValue}</Chip>}
         </Box>
       </Wrapper>
-
       {tokenAlert && isMobile && <StyledAlertBox alertType={tokenAlert.alertType}>{tokenAlert.message}</StyledAlertBox>}
       {poolAlert && !poolAlert.isPoolPageOnly && (
         <>

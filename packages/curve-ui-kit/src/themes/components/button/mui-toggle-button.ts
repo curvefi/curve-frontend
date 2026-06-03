@@ -4,7 +4,6 @@ import type { Components } from '@mui/material/styles'
 import { handleBreakpoints } from '../../basic-theme'
 import { DesignSystem } from '../../design'
 import { SizesAndSpaces } from '../../design/1_sizes_spaces'
-import { Fonts } from '../../fonts'
 
 const { Spacing, ButtonSize, FontSize, LineHeight, OutlineWidth } = SizesAndSpaces
 
@@ -78,7 +77,6 @@ export const defineMuiToggleButton = ({ Toggles, Button, Text }: DesignSystem): 
         border: `${OutlineWidth} solid transparent !important`, // Not even '&&' works, hence the !important
         borderRadius: 0,
         transition: Button.Transition,
-        fontFamily: Fonts[Button.FontFamily],
         textTransform: 'uppercase',
       },
 
