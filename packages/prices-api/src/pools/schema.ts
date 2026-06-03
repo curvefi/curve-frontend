@@ -22,6 +22,8 @@ const pool = z
     lp_token_address: address,
     lp_token_symbol: z.string(),
     lp_token_supply: z.number(),
+    balances: z.array(z.number()).optional(),
+    balances_usd: z.array(z.number().nullable()).optional(),
     coins: z.array(coin).optional(),
     base_daily_apr: z.number(),
     base_weekly_apr: z.number(),
@@ -29,9 +31,11 @@ const pool = z
     pool_methods: z.array(z.string()).optional(),
   })
   .transform(camelizeKeys)
-  .transform(({ nCoins, coins, poolMethods, ...data }) => ({
+  .transform(({ nCoins, balances, balancesUsd, coins, poolMethods, ...data }) => ({
     ...data,
     numCoins: nCoins,
+    balances: balances ?? [],
+    balancesUsd: balancesUsd?.map(balance => balance ?? 0) ?? [],
     coins: coins ?? [],
     poolMethods: poolMethods ?? [],
   }))
