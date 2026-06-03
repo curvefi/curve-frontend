@@ -126,7 +126,6 @@ export const Accordion = ({
         aria-expanded={isOpen}
         aria-controls={id}
         sx={{
-          width: '100%',
           paddingBlock: headerPaddingBlock[size],
           paddingInline: ghost ? 0 : Spacing.sm,
           minHeight: size === 'extraSmall' ? IconSize.sm.mobile : IconSize.md.mobile,
