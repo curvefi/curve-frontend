@@ -42,7 +42,6 @@ const headerIconSize = {
 const ghostBorderStyle = (t: Theme) => `1px solid ${t.design.Layer[3].Outline}`
 const layer1Fill = (t: Theme) => t.design.Layer[1].Fill
 const activeFill = (t: Theme) => t.design.Inputs.Base.Default.Fill.Active
-const reducedMotion = '@media (prefers-reduced-motion: reduce)'
 const hoverFinePointer = '@media (hover: hover) and (pointer: fine)'
 const indicatorIconSize = '0.9375rem'
 
@@ -179,13 +178,6 @@ export const Accordion = ({
               ...(!ghost && { backgroundColor: layer1Fill }),
             },
           },
-
-          [reducedMotion]: {
-            transition: 'none',
-            '&::after': {
-              transition: 'none',
-            },
-          },
         }}
       >
         <Stack direction="row" sx={{ flexGrow: 1, alignItems: 'center', gap: Spacing.sm }}>
@@ -230,9 +222,6 @@ export const Accordion = ({
               height: headerIconSize[size],
               transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
               transition: `transform ${TransitionFunction}`,
-              [reducedMotion]: {
-                transition: 'none',
-              },
             }}
           />
           <Box
@@ -254,10 +243,6 @@ export const Accordion = ({
                 opacity: isOpen ? 0 : 1,
                 transform: isOpen ? 'scale(0.85)' : 'scale(1)',
                 transition: `opacity ${TransitionFunction}, transform ${TransitionFunction}`,
-                [reducedMotion]: {
-                  transition: 'none',
-                  transform: 'none',
-                },
               }}
             />
             <RemoveIcon
@@ -268,10 +253,6 @@ export const Accordion = ({
                 opacity: isOpen ? 1 : 0,
                 transform: isOpen ? 'scale(1)' : 'scale(0.85)',
                 transition: `opacity ${TransitionFunction}, transform ${TransitionFunction}`,
-                [reducedMotion]: {
-                  transition: 'none',
-                  transform: 'none',
-                },
               }}
             />
           </Box>
@@ -289,14 +270,6 @@ export const Accordion = ({
             opacity: isOpen ? 1 : 0,
             transform: isOpen ? 'translateY(0)' : 'translateY(-0.125rem)',
             transition: `opacity ${TransitionFunction}, transform ${TransitionFunction}`,
-          },
-          [reducedMotion]: {
-            transitionDuration: '0ms',
-            '& .MuiCollapse-wrapperInner': {
-              opacity: 1,
-              transform: 'none',
-              transition: 'none',
-            },
           },
         }}
       >
