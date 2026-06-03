@@ -4,32 +4,31 @@ import { t } from '@ui-kit/lib/i18n'
 import { Accordion } from '@ui-kit/shared/ui/Accordion'
 import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { borderStyle } from '@ui-kit/utils'
 import { FAQ_GROUPS } from './faq-groups'
 
 const { Spacing } = SizesAndSpaces
 
 export const MarketFaq = () => (
-  <Stack component="section" gap={0} data-testid="llamalend-market-faq">
-    <Stack paddingBlockStart={Spacing.lg} paddingBlockEnd={Spacing.xs}>
+  <Stack component="section" data-testid="llamalend-market-faq">
+    <Stack sx={{ paddingBlockStart: Spacing.lg, paddingBlockEnd: Spacing.xs }}>
       <Typography color="textSecondary" variant="headingSBold">
-        {t`FAQs`}
+        {t`Frequently Asked Questions`}
       </Typography>
     </Stack>
 
     <Stack>
       {FAQ_GROUPS.map(group => (
-        <Stack key={group.title} gap={Spacing.xs}>
-          <Stack
-            paddingBlockStart={Spacing.md}
-            paddingBlockEnd={Spacing.xs}
-            sx={{ borderBottom: '1px solid', borderColor: 'divider' }}
+        <Stack key={group.title} sx={{ gap: Spacing.xs }}>
+          <Typography
+            color="textSecondary"
+            variant="headingXsBold"
+            sx={{ borderBottom: borderStyle, paddingBlockStart: Spacing.md, paddingBlockEnd: Spacing.xs }}
           >
-            <Typography color="textSecondary" variant="headingXsBold">
-              {group.title}
-            </Typography>
-          </Stack>
+            {group.title}
+          </Typography>
 
-          <Stack gap={Spacing.xs} paddingInlineStart={Spacing.md}>
+          <Stack sx={{ gap: Spacing.xs, paddingInlineStart: Spacing.md }}>
             {group.items.map(item => (
               <Accordion
                 key={item.question}
@@ -46,10 +45,11 @@ export const MarketFaq = () => (
       ))}
     </Stack>
 
-    <Stack alignItems="center" gap={Spacing.sm} paddingBlock={Spacing.md}>
-      <Typography color="textPrimary" textAlign="center" variant="bodyMRegular">
+    <Stack sx={{ alignItems: 'center', gap: Spacing.sm, paddingBlock: Spacing.md }}>
+      <Typography color="textPrimary" variant="bodyMRegular">
         {t`Want to know even more?`}
       </Typography>
+
       <ExternalLink
         href="https://docs.curve.finance/user/llamalend/overview"
         label={t`Go to knowledge base`}
