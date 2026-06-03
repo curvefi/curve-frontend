@@ -33,7 +33,7 @@ export const BalanceAmount = <T extends Amount>({
         ...sx,
       }}
     >
-      {loading ? '?????' : children == null ? '-' : formatNumber(children, { abbreviate: true })}
+      {loading ? '?????' : children == null ? '-' : formatNumber(children, 'token.balance')}
     </Typography>
   </WithSkeleton>
 )

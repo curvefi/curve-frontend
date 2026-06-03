@@ -109,7 +109,7 @@ function _getDataApr(
   lpTokenAmount: string,
 ) {
   const resp = {
-    aprCurr: formatNumber(amount(currApr), { unit: 'percentage', abbreviate: false, fallback: '-' }),
+    aprCurr: formatNumber(amount(currApr), 'percent.value'),
     aprNew: '',
     ratio: 0,
   }
@@ -117,7 +117,7 @@ function _getDataApr(
   if (+currApr > 0 && gaugeTotalSupply && +(gaugeTotalSupply || '0') > 0 && +lpTokenAmount > 0) {
     const newGaugeTotalLocked = Number(lpTokenAmount) + gaugeTotalSupply
     const aprNew = (gaugeTotalSupply / newGaugeTotalLocked) * +currApr
-    resp.aprNew = formatNumber(aprNew, { unit: 'percentage', abbreviate: false })
+    resp.aprNew = formatNumber(aprNew, 'percent.value')
     resp.ratio = +currApr / aprNew
   }
   return resp

@@ -44,7 +44,7 @@ export const PoolParameters = ({
     () =>
       tvl && volume
         ? +tvl && +volume
-          ? formatNumber(amount((+volume / +tvl) * 100), { unit: 'percentage', abbreviate: false, fallback: '-' })
+          ? formatNumber(amount((+volume / +tvl) * 100), 'percent.value')
           : formatNumber(0, { maximumFractionDigits: 0, unit: 'percentage', abbreviate: false })
         : '-',
     [tvl, volume],
@@ -103,7 +103,7 @@ export const PoolParameters = ({
           value={
             typeof staked?.totalStakedPercent === 'string'
               ? staked.totalStakedPercent
-              : formatNumber(staked?.totalStakedPercent, { unit: 'percentage', abbreviate: false, fallback: '-' })
+              : formatNumber(staked?.totalStakedPercent, 'percent.value')
           }
         />
 

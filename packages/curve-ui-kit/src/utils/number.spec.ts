@@ -9,6 +9,7 @@ import {
   scaleSuffix,
   log10Exp,
   getFractionDigitsOptions,
+  NUMBER_FORMAT_CATEGORIES,
 } from './number'
 
 describe('getFractionDigitsOptions', () => {
@@ -310,6 +311,14 @@ describe('defaultNumberFormatter', () => {
       expect(defaultNumberFormatter(1234567.89, { useGrouping: true })).toBe('1,234,567.89')
       expect(defaultNumberFormatter(1000, { decimals: 0, useGrouping: true })).toBe('1,000')
     })
+
+    it('uses explicit significant digit options without applying default fraction digit constraints', () => {
+      expect(defaultNumberFormatter(12, { minimumSignificantDigits: 5, trailingZeroDisplay: 'auto' })).toBe('12.000')
+      expect(defaultNumberFormatter(1.2, { minimumSignificantDigits: 5, trailingZeroDisplay: 'auto' })).toBe('1.2000')
+      expect(defaultNumberFormatter(123456, { minimumSignificantDigits: 5, trailingZeroDisplay: 'auto' })).toBe(
+        '123,456',
+      )
+    })
   })
 })
 
@@ -471,6 +480,49 @@ describe('formatNumber', () => {
 
     it('keeps formatting NaN as NaN when no fallback is provided', () => {
       expect(formatNumber(NaN, { abbreviate: false })).toBe('NaN')
+    })
+  })
+
+  describe('categories', () => {
+    it('exposes semantic formatter categories', () => {
+      expect(Object.keys(NUMBER_FORMAT_CATEGORIES)).toEqual([
+        'token.amount',
+        'token.compact',
+        'token.balance',
+        'usd.notional',
+        'usd.amount',
+        'percent.value',
+        'percent.rate',
+      ])
+    })
+
+    it('formats token categories', () => {
+      expect(formatNumber(1234.56, 'token.amount')).toBe('1,234.56')
+      expect(formatNumber(1234.56, 'token.compact')).toBe('1.23k')
+    })
+
+    it('formats token balances with at least five significant digits', () => {
+      expect(formatNumber(12, 'token.balance')).toBe('12.000')
+      expect(formatNumber(1.2, 'token.balance')).toBe('1.2000')
+      expect(formatNumber(123456, 'token.balance')).toBe('123,456')
+    })
+
+    it('formats USD categories', () => {
+      expect(formatNumber(1234567, 'usd.notional')).toBe('$1.23m')
+      expect(formatNumber(1234.56, 'usd.amount')).toBe('$1,234.56')
+    })
+
+    it('formats percent categories', () => {
+      expect(formatNumber(12.345, 'percent.value')).toBe('12.35%')
+      expect(formatNumber(12.3, 'percent.rate')).toBe('12.30%')
+      expect(formatNumber(0.1234, 'percent.rate')).toBe('0.12%')
+    })
+
+    it('uses category fallbacks for missing-like and NaN values', () => {
+      expect(formatNumber(undefined, 'token.amount')).toBe('-')
+      expect(formatNumber(null, 'usd.notional')).toBe('-')
+      expect(formatNumber('', 'percent.value')).toBe('-')
+      expect(formatNumber(NaN, 'percent.rate')).toBe('-')
     })
   })
 

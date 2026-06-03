@@ -20,7 +20,7 @@ export const HistoricalRatesTooltip = ({ datum, visibleSeries }: HistoricalRates
           label={activeSeries.label}
           lineColor={activeSeries.color}
           dash={activeSeries.dash}
-          value={formatNumber(datum[activeSeries.key], { unit: 'percentage', abbreviate: false })}
+          value={formatNumber(datum[activeSeries.key], 'percent.value')}
         />
       ))}
     </ChartTooltipSeriesGroup>

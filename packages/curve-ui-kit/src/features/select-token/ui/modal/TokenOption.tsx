@@ -80,14 +80,14 @@ export const TokenOption = ({
             {hasBalance && (
               // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
               <Typography variant="bodyMBold" color={primary}>
-                {formatNumber(amount(balance), { decimals: 5, abbreviate: false, fallback: '-' })}
+                {formatNumber(amount(balance), 'token.balance')}
               </Typography>
             )}
 
             {hasBalanceUsd && (
               // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
               <Typography variant="bodyXsRegular" color={secondary}>
-                {formatNumber(tokenPrice! * +balance!, { unit: 'dollar', abbreviate: false })}
+                {formatNumber(tokenPrice! * +balance!, 'usd.amount')}
               </Typography>
             )}
 

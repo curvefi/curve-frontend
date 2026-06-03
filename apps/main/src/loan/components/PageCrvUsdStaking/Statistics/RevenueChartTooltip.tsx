@@ -12,7 +12,7 @@ const lineLabels: Record<YieldKeys, string> = {
   proj_apy_total_avg: t`Average APY`,
 }
 
-const format = (value: number) => formatNumber(value, { unit: 'percentage', abbreviate: false })
+const format = (value: number) => formatNumber(value, 'percent.value')
 
 type RevenueChartTooltipProps = {
   datum: ScrvUsdYieldWithAverages

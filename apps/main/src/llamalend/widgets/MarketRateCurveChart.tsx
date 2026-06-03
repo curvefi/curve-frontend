@@ -26,7 +26,7 @@ import {
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { decimal, decimalMinus, formatNumber, formatPercent, formatUsd } from '@ui-kit/utils'
+import { decimal, decimalMinus, formatNumber } from '@ui-kit/utils'
 
 const { Spacing, Height } = SizesAndSpaces
 
@@ -125,7 +125,7 @@ export const MarketRateCurveChart = ({
       notFalsy(
         currentUtilization != null && {
           value: currentUtilization,
-          label: formatPercent(currentUtilization),
+          label: formatNumber(currentUtilization, 'percent.rate'),
           color: Color.Primary[500],
           dash: CHART_LINE_DASH_PATTERNS.tight,
         },
@@ -188,7 +188,9 @@ export const MarketRateCurveChart = ({
               unit: borrowToken?.symbol ? { symbol: ` ${borrowToken.symbol}`, position: 'suffix' } : undefined,
               abbreviate: true,
             }}
-            notional={maybe(totalBorrowedUsdValue, totalBorrowedUsdValue => formatUsd(totalBorrowedUsdValue))}
+            notional={maybe(totalBorrowedUsdValue, totalBorrowedUsdValue =>
+              formatNumber(totalBorrowedUsdValue, 'usd.notional'),
+            )}
           />
           <Metric
             size="medium"
@@ -238,8 +240,8 @@ export const MarketRateCurveChart = ({
             visibleSeries={visibleSeries}
             xAxisType="value"
             markLines={markLines}
-            xTickFormatter={value => formatPercent(+value)}
-            yTickFormatter={value => formatPercent(+value)}
+            xTickFormatter={value => formatNumber(+value, 'percent.rate')}
+            yTickFormatter={value => formatNumber(+value, 'percent.rate')}
             yPaddingRatio={0.05}
             renderTooltip={RateCurveTooltip}
           />

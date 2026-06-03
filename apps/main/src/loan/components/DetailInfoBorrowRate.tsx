@@ -17,11 +17,8 @@ export const DetailInfoBorrowRate = ({ parameters }: Props) => {
   return (
     <DetailInfo loading={loading} loadingSkeleton={[100, 20]} label={t`Borrow APR:`}>
       <span>
-        {formatNumber(amount(borrowApr), { unit: 'percentage', abbreviate: false, fallback: '-' })}{' '}
-        <Icon name="ArrowRight" size={16} className="svg-arrow" />{' '}
-        <strong>
-          {formatNumber(amount(futureBorrowApr), { unit: 'percentage', abbreviate: false, fallback: '-' })}
-        </strong>
+        {formatNumber(amount(borrowApr), 'percent.value')} <Icon name="ArrowRight" size={16} className="svg-arrow" />{' '}
+        <strong>{formatNumber(amount(futureBorrowApr), 'percent.value')}</strong>
       </span>
     </DetailInfo>
   )

@@ -11,7 +11,7 @@ import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { formatPercent, formatNumber } from '@ui-kit/utils'
+import { formatNumber } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -108,7 +108,7 @@ const UtilizationTooltip = ({ market, children }: { market: LlamaMarket; childre
 export const UtilizationCell = ({ row, getValue }: CellContext<LlamaMarket, number>) => (
   <UtilizationTooltip market={row.original}>
     <Stack sx={{ gap: Spacing.xs }}>
-      {formatPercent(getValue())}
+      {formatNumber(getValue(), 'percent.rate')}
       <LinearProgress percent={getValue()} size="medium" />
     </Stack>
   </UtilizationTooltip>

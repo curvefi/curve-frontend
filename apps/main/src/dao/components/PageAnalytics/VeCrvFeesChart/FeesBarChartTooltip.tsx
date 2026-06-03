@@ -28,7 +28,7 @@ export const FeesBarChartTooltip = ({ active, payload }: TooltipProps<ValueType,
         <Box flex flexColumn flexGap={'var(--spacing-1)'}>
           <TooltipColumn>
             <TooltipDataTitle>{t`veCRV Fees`}</TooltipDataTitle>
-            <TooltipData>{formatNumber(feesUsd, { unit: 'dollar', abbreviate: true, fallback: '-' })}</TooltipData>
+            <TooltipData>{formatNumber(feesUsd, 'usd.notional')}</TooltipData>
           </TooltipColumn>
         </Box>
       </TooltipWrapper>

@@ -4,7 +4,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { formatChartAxisNumber } from '@ui-kit/shared/ui/Chart'
 import { LegendBox } from '@ui-kit/shared/ui/Chart/LegendSet'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { formatNumber, formatPercent, formatUsd } from '@ui-kit/utils'
+import { formatNumber } from '@ui-kit/utils'
 import { useBandsChartPalette } from './hooks/useBandsChartPalette'
 import { BandsChartToken, ChartDataPoint } from './types'
 
@@ -18,13 +18,14 @@ type TooltipContentProps = {
 
 const calculateBandShare = (numerator: number | undefined, denominator: number | undefined): string =>
   typeof denominator === 'number' && denominator > 0 && typeof numerator === 'number'
-    ? `${formatPercent((numerator / denominator) * 100)}`
+    ? `${formatNumber((numerator / denominator) * 100, 'percent.rate')}`
     : '?'
 
 const formatAbbreviatedNumber = (value: number | undefined): string =>
   typeof value === 'number' ? `${formatNumber(value, { abbreviate: true })}` : '?'
 
-const formatUsdValue = (value: number | undefined): string => (typeof value === 'number' ? formatUsd(value) : '?')
+const formatUsdNotional = (value: number | undefined): string =>
+  typeof value === 'number' ? formatNumber(value, 'usd.notional') : '?'
 const formatBandPrice = (value: number): string =>
   formatChartAxisNumber(value, { unit: 'dollar', abbreviateFrom: false })
 
@@ -59,7 +60,7 @@ export const TooltipContent = ({ data, collateralToken, borrowToken }: TooltipCo
                 titleAdornment={<LegendBox outline="none" fill={palette.userCollateralShareColor} />}
               >
                 {formatAbbreviatedNumber(data.userBandCollateralAmount)}
-                {formatUsdValue(data.userBandCollateralValueUsd)}
+                {formatUsdNotional(data.userBandCollateralValueUsd)}
               </TooltipItem>
               <TooltipItem
                 variant="subItem"
@@ -67,11 +68,11 @@ export const TooltipContent = ({ data, collateralToken, borrowToken }: TooltipCo
                 titleAdornment={<LegendBox outline="none" fill={palette.userBorrowedShareColor} />}
               >
                 {formatAbbreviatedNumber(data.userBandBorrowedAmount)}
-                {formatUsdValue(data.userBandBorrowedValueUsd)}
+                {formatUsdNotional(data.userBandBorrowedValueUsd)}
               </TooltipItem>
             </TooltipItems>
             <TooltipItem variant="primary" title={t`Your band liquidity`}>
-              {formatUsdValue(data.userBandTotalCollateralValueUsd)}
+              {formatUsdNotional(data.userBandTotalCollateralValueUsd)}
             </TooltipItem>
           </Stack>
         )}
@@ -88,15 +89,15 @@ export const TooltipContent = ({ data, collateralToken, borrowToken }: TooltipCo
               >{`${calculateBandShare(data.bandCollateralValueUsd, data.bandTotalCollateralValueUsd)} / ${calculateBandShare(data.bandBorrowedValueUsd, data.bandTotalCollateralValueUsd)}`}</TooltipItem>
               <TooltipItem variant="subItem" title={collateralToken?.symbol}>
                 {formatAbbreviatedNumber(data.bandCollateralAmount)}
-                {formatUsdValue(data.bandCollateralValueUsd)}
+                {formatUsdNotional(data.bandCollateralValueUsd)}
               </TooltipItem>
               <TooltipItem variant="subItem" title={borrowToken?.symbol}>
                 {formatAbbreviatedNumber(data.bandBorrowedAmount)}
-                {formatUsdValue(data.bandBorrowedValueUsd)}
+                {formatUsdNotional(data.bandBorrowedValueUsd)}
               </TooltipItem>
             </TooltipItems>
             <TooltipItem variant="primary" title={t`Band liquidity`}>
-              {formatUsdValue(data.bandTotalCollateralValueUsd)}
+              {formatUsdNotional(data.bandTotalCollateralValueUsd)}
             </TooltipItem>
           </>
         )}

@@ -18,7 +18,7 @@ export const InpChipUsdRate = ({ className = '', amount, hideRate, usdRate, ...p
     return +amount * +usdRate
   }, [usdRate, amount])
 
-  const formattedAmountUsd = formatNumber(amountUsd, { unit: 'dollar', abbreviate: false, fallback: '-' })
+  const formattedAmountUsd = formatNumber(amountUsd, 'usd.amount')
 
   return (
     <>
