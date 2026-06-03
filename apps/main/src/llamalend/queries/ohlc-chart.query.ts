@@ -2,7 +2,7 @@ import { getAddress } from 'ethers'
 import type { Chain } from '@curvefi/prices-api'
 import { getOracle, type Endpoint, type OraclePool } from '@curvefi/prices-api/lending'
 import { getOHLC } from '@curvefi/prices-api/llamma'
-import type { Address } from '@primitives/address.utils'
+import type { Address, Token } from '@primitives/address.utils'
 import {
   assertInitialOhlcPageHasData,
   createCandleChartQueryKey,
@@ -15,11 +15,6 @@ import type { LpPriceOhlcDataFormatted, OraclePriceData, TimeOption } from '@ui-
 import { formatCandleOhlcData, formatOraclePriceData } from '@ui-kit/features/candle-chart/utils'
 
 type OhlcTimeUnit = Parameters<typeof getOHLC>[0]['units']
-
-type TokenInfo = {
-  address: OraclePool['borrowedAddress']
-  symbol: OraclePool['borrowedSymbol']
-}
 
 type BaseOhlcQueryParams = {
   endpoint: Endpoint
@@ -43,8 +38,8 @@ export type OraclePoolOhlcPage = OhlcPageResult & {
   page: OhlcPageParam
   ohlcData: LpPriceOhlcDataFormatted[]
   oraclePriceData: OraclePriceData[]
-  borrowedToken?: TokenInfo
-  collateralToken?: TokenInfo
+  borrowedToken?: Token
+  collateralToken?: Token
 }
 
 export type LlammaOhlcPage = OhlcPageResult & {
