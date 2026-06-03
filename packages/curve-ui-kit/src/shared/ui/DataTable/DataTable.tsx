@@ -174,15 +174,8 @@ export const DataTable = <T extends TableItem>({
             ) : rows.length === 0 ? (
               emptyState
             ) : (
-              visibleRows.map((row, index) => (
-                <DataRow<T>
-                  key={row.id}
-                  row={row}
-                  isLastRow={index === visibleRows.length - 1}
-                  shouldStickLastRowToTop={shouldStickyHeader && !hideHeader}
-                  shouldStickFirstColumn={shouldStickFirstColumn}
-                  {...rowProps}
-                />
+              visibleRows.map(row => (
+                <DataRow<T> key={row.id} row={row} shouldStickFirstColumn={shouldStickFirstColumn} {...rowProps} />
               ))
             )}
           </TableBody>
