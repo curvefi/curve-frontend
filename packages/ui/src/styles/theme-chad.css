@@ -23,6 +23,12 @@ body.theme-chad {
   --page--text-color: var(--text-600);
   --page--background-color: #c6c4f2;
   --page--header--background-color: var(--page--background-color);
+  /* Mirrors 02_Theme/Text/FontWeight Chad mode in Figma. */
+  --normal: 400;
+  --medium: 400;
+  --semi-bold: 700;
+  --bold: 700;
+  font-weight: var(--normal);
 
   --layout--home--background-color: var(--white);
 

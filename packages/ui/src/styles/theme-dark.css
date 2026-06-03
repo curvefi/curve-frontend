@@ -44,6 +44,10 @@ body.theme-dark {
   --page--text-color: var(--text-400);
   --page--background-color: #12110f;
   --page--header--background-color: var(--black);
+  --normal: 400;
+  --medium: 500;
+  --semi-bold: 500;
+  --bold: 600;
 
   --layout--home--background-color: var(--page--background-color);
 

@@ -1,10 +1,11 @@
 /**
- * Utility function to create a font stack. The quotes are important to create valid CSS font stacks.
+ * Utility function to create a font stack. Named families need quotes, CSS generic families must stay unquoted.
  */
-const fontStack = (...fonts: string[]) => fonts.map(f => `"${f}"`).join(', ')
+const CSS_GENERIC_FAMILIES = new Set(['serif', 'sans-serif', 'monospace', 'cursive', 'fantasy', 'system-ui'])
+const fontStack = (...fonts: string[]) => fonts.map(f => (CSS_GENERIC_FAMILIES.has(f) ? f : `"${f}"`)).join(', ')
 
 export const Fonts = {
   'Mona Sans': fontStack('Mona Sans', 'Helvetica Neue', 'Helvetica', 'sans-serif'),
-  'Hubot Sans': fontStack('Hubot Sans', 'Helvetica Neue', 'Helvetica', 'sans-serif'),
-  Minecraft: fontStack('Minecraft', 'SF Mono Regular 11', 'Ubuntu Mono', 'monospace'),
+  'Mona Sans Mono': fontStack('Mona Sans Mono', 'SF Mono Regular 11', 'Ubuntu Mono', 'monospace'),
+  'Ioskeley Mono': fontStack('Ioskeley Mono', 'SF Mono Regular 11', 'Ubuntu Mono', 'monospace'),
 }

@@ -47,9 +47,9 @@ export const HIDE_INACTIVE_BORDERS_CLASS = 'hide-inactive-borders' as const
 export const TAB_SUFFIX_CLASS = 'tab-suffix' as const
 
 export const TAB_TEXT_VARIANTS = {
-  small: 'buttonXs',
-  medium: 'buttonS',
-  extraExtraLarge: 'headingMBold',
+  small: 'buttonTabsS',
+  medium: 'buttonTabsM',
+  extraExtraLarge: 'buttonTabsL',
 } as const satisfies Record<keyof typeof TABS_SIZES_CLASSES, TypographyVariantKey>
 
 const TAB_HEIGHT: Record<keyof typeof TABS_SIZES_CLASSES, string> = {

@@ -2,12 +2,13 @@
 
 body {
   --font: 'Mona Sans', 'Helvetica Neue', Helvetica, sans-serif;
-  --font-mono: Minecraft, 'SF Mono Regular 11', 'Ubuntu Mono', monospace;
+  --font-mono: 'Mona Sans Mono', 'SF Mono Regular 11', 'Ubuntu Mono', monospace;
 }
 
 body.theme-chad {
-  --font: 'Hubot Sans', 'Helvetica Neue', 'Helvetica', 'sans-serif';
-  --button--font: 'Minecraft', 'SF Mono Regular 11', 'Ubuntu Mono', monospace;
+  --font: 'Ioskeley Mono', 'SF Mono Regular 11', 'Ubuntu Mono', monospace;
+  --font-mono: 'Ioskeley Mono', 'SF Mono Regular 11', 'Ubuntu Mono', monospace;
+  --button--font: 'Ioskeley Mono', 'SF Mono Regular 11', 'Ubuntu Mono', monospace;
 }
 
 html {
@@ -149,27 +150,39 @@ li {
   src:
     local('Mona Sans'),
     url('../../../packages/curve-ui-kit/public/fonts/Mona-Sans.woff2') format('woff2');
+  font-weight: 200 900;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-  font-family: 'Hubot Sans';
+  font-family: 'Mona Sans Mono';
   src:
-    local('Hubot Sans'),
-    url('../../../packages/curve-ui-kit/public/fonts/Hubot-Sans.woff2') format('woff2');
+    local('Mona Sans Mono'),
+    url('../../../packages/curve-ui-kit/public/fonts/Mona-Sans-Mono.woff2') format('woff2');
+  font-weight: 200 900;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-  font-family: 'Minecraft';
+  font-family: 'Ioskeley Mono';
   src:
-    local('Minecraft'),
-    url('../../../packages/curve-ui-kit/public/fonts/Minecraft-Regular.otf') format('opentype');
-  font-weight: normal;
+    local('Ioskeley Mono Regular'),
+    local('Ioskeley Mono'),
+    url('../../../packages/curve-ui-kit/public/fonts/Ioskeley-Mono.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-  font-family: 'Minecraft';
+  font-family: 'Ioskeley Mono';
   src:
-    local('Minecraft'),
-    url('../../../packages/curve-ui-kit/public/fonts/Minecraft-Bold.otf') format('opentype');
-  font-weight: bold;
+    local('Ioskeley Mono Bold'),
+    local('Ioskeley-Mono-Bold'),
+    url('../../../packages/curve-ui-kit/public/fonts/Ioskeley-Mono-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
 }
