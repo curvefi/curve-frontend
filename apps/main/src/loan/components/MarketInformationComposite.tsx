@@ -1,4 +1,5 @@
 import { AdvancedDetails, MarketInfoLayout } from '@/llamalend/features/market-advanced-information'
+import { MarketFaq } from '@/llamalend/features/market-faq'
 import { CrvUsdPriceChart } from '@/llamalend/widgets/CrvUsdPriceChart'
 import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
 import { ChartAndActivityComp } from '@/loan/components/ChartAndActivityComp'
@@ -56,5 +57,7 @@ export const MarketInformationComposite = ({
         />
       </CardContent>
     </Card>
+
+    <MarketFaq />
   </Stack>
 )
