@@ -166,14 +166,16 @@ export const Accordion = ({
             ...(!ghost && { backgroundColor: layer1Fill }),
           },
 
-          '&:hover': {
-            '&::after': {
-              borderColor: t => t.design.Button.Focus_Outline,
-              ...(ghost
-                ? { borderBottomStyle: 'solid', borderBottomWidth: SizesAndSpaces.OutlineWidth }
-                : { borderWidth: '2px' }),
+          ['@media (hover: hover) and (pointer: fine)']: {
+            '&:hover': {
+              '&::after': {
+                borderColor: t => t.design.Button.Focus_Outline,
+                ...(ghost
+                  ? { borderBottomStyle: 'solid', borderBottomWidth: SizesAndSpaces.OutlineWidth }
+                  : { borderWidth: '2px' }),
+              },
+              ...(!ghost && { backgroundColor: layer1Fill }),
             },
-            ...(!ghost && { backgroundColor: layer1Fill }),
           },
         }}
       >
