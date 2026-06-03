@@ -123,7 +123,7 @@ export const DataTable = <T extends TableItem>({
     marginBlock: Sizing.sm,
   })
   const shouldStickLastRowToTop = !disableStickyHeader && !hideHeader
-  const showFooter = showPagination || showViewAllButton || footerRow
+  const showFooter = !isLoading && (showPagination || showViewAllButton || footerRow)
 
   return (
     <WithWrapper Wrapper={Box} shouldWrap={maxHeight} sx={{ maxHeight, overflowY: 'auto' }} ref={containerRef}>
