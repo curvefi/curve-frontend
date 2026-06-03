@@ -14,6 +14,7 @@ import { ROUTE } from '@/dex/constants'
 import { useGaugeManager, useGaugeRewardsDistributors } from '@/dex/entities/gauge'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolSnapshots } from '@/dex/entities/pool-snapshots.query'
+import { AdvancedDetails } from '@/dex/features/advanced-details'
 import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
 import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
@@ -30,6 +31,7 @@ import { Link as TanstackLink } from '@tanstack/react-router'
 import { AlertBox } from '@ui/AlertBox'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
+import { usePoolAdvancedDetails } from '@ui-kit/hooks/useFeatureFlags'
 import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
@@ -83,6 +85,10 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const snapshotData = snapshots?.[0]
 
   const pricesApiPoolData = poolData && pricesApiPoolsMapper?.[poolData.pool.address]
+  const managePoolPath = hasRefuelMethod(pricesApiPoolData?.poolMethods)
+    ? getPath(params, `${ROUTE.PAGE_POOLS}/${poolAddress}/refuel`)
+    : undefined
+  const isPoolAdvancedDetailsEnabled = usePoolAdvancedDetails()
 
   type DetailInfoTab = 'user' | 'pool' | 'advanced'
   const poolInfoTabs = useMemo<TabOption<DetailInfoTab>[]>(
@@ -220,47 +226,59 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
         {!isLite && pricesApiPoolData && pricesApi && (
           <OhlcAndActivityComp rChainId={rChainId} poolAddress={poolAddress} pricesApiPoolData={pricesApiPoolData} />
         )}
-        <Stack>
-          <Stack direction="row">
-            <TabsSwitcher
-              variant="contained"
-              value={poolInfoTab}
-              onChange={setPoolInfoTab}
-              options={poolInfoTabs}
-              testIdPrefix="pool-info-tab"
-            />
-            {hasRefuelMethod(pricesApiPoolData?.poolMethods) && (
-              <Button
-                component={TanstackLink}
-                to={getPath(params, `${ROUTE.PAGE_POOLS}/${poolAddress}/refuel`)}
-                variant="inline"
-                color="ghost"
-                sx={{ whiteSpace: 'nowrap', alignSelf: 'end', marginBlockEnd: Spacing.xs }}
-              >
-                {t`Manage pool`}
-              </Button>
+        {isPoolAdvancedDetailsEnabled ? (
+          <AdvancedDetails
+            curve={curve}
+            routerParams={routerParams}
+            poolData={poolData}
+            poolDataCacheOrApi={poolDataCacheOrApi}
+            poolAlert={poolAlert}
+            pricesApiPoolData={pricesApiPoolData}
+            managePoolPath={managePoolPath}
+          />
+        ) : (
+          <Stack>
+            <Stack direction="row">
+              <TabsSwitcher
+                variant="contained"
+                value={poolInfoTab}
+                onChange={setPoolInfoTab}
+                options={poolInfoTabs}
+                testIdPrefix="pool-info-tab"
+              />
+              {hasRefuelMethod(pricesApiPoolData?.poolMethods) && (
+                <Button
+                  component={TanstackLink}
+                  to={getPath(params, `${ROUTE.PAGE_POOLS}/${poolAddress}/refuel`)}
+                  variant="inline"
+                  color="ghost"
+                  sx={{ whiteSpace: 'nowrap', alignSelf: 'end', marginBlockEnd: Spacing.xs }}
+                >
+                  {t`Manage pool`}
+                </Button>
+              )}
+            </Stack>
+            {poolInfoTab === 'user' && (
+              <MySharesStats
+                curve={curve}
+                poolData={poolData}
+                poolDataCacheOrApi={poolDataCacheOrApi}
+                routerParams={routerParams}
+                tokensMapper={tokensMapper}
+              />
             )}
+            {poolInfoTab === 'pool' && (
+              <PoolStats
+                routerParams={routerParams}
+                poolData={poolData}
+                poolDataCacheOrApi={poolDataCacheOrApi}
+                poolAlert={poolAlert}
+                tokensMapper={tokensMapper}
+              />
+            )}
+            {poolInfoTab === 'advanced' && poolData && <PoolParameters poolData={poolData} rChainId={rChainId} />}
           </Stack>
-          {poolInfoTab === 'user' && (
-            <MySharesStats
-              curve={curve}
-              poolData={poolData}
-              poolDataCacheOrApi={poolDataCacheOrApi}
-              routerParams={routerParams}
-              tokensMapper={tokensMapper}
-            />
-          )}
-          {poolInfoTab === 'pool' && (
-            <PoolStats
-              routerParams={routerParams}
-              poolData={poolData}
-              poolDataCacheOrApi={poolDataCacheOrApi}
-              poolAlert={poolAlert}
-              tokensMapper={tokensMapper}
-            />
-          )}
-          {poolInfoTab === 'advanced' && poolData && <PoolParameters poolData={poolData} rChainId={rChainId} />}
-        </Stack>
+        )}
       </DetailPageLayout>
     </>
   )
