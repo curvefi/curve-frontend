@@ -151,6 +151,11 @@ export const createComponents = (
   MuiSkeleton: { styleOverrides: { root: { backgroundColor: alpha(design.Text.TextColors.Primary, 0.13) } } },
   MuiTab: defineMuiTab(design),
   MuiTabs: defineMuiTabs(design),
+  MuiTableCell: {
+    styleOverrides: {
+      root: { borderBottom: 'none' },
+    },
+  },
   MuiTableRow: {
     styleOverrides: {
       root: {

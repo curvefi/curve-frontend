@@ -185,7 +185,7 @@ export const DataTable = <T extends TableItem>({
             )}
             {showPagination && (
               <TableRow>
-                <TableCell colSpan={columnCount} sx={{ borderBlockEnd: 'none' }}>
+                <TableCell colSpan={columnCount}>
                   <TablePagination table={table} />
                 </TableCell>
               </TableRow>
