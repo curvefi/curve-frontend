@@ -6,6 +6,7 @@ const MAX_USD_VALUE = 100_000_000_000_000 // $ 100T 🤑
 
 /** Locale used for consistent number formatting across the application */
 const LOCALE = 'en-US'
+const DEFAULT_DECIMALS = 2
 
 /**
  * Calculates the exponent (in base 10) divided by 3 for a given number.
@@ -102,7 +103,7 @@ const formatterReset = { style: undefined, currency: undefined, notation: undefi
 export const defaultNumberFormatter = (
   value: Amount,
   {
-    decimals = 2,
+    decimals = DEFAULT_DECIMALS,
     trailingZeroDisplay = 'stripIfInteger',
     highPrecision = false,
     ...options
@@ -203,7 +204,7 @@ const NUMBER_FORMAT_CATEGORIES = {
           : Number.isFinite(absValue)
             ? {
                 maximumFractionDigits: Math.max(
-                  2,
+                  DEFAULT_DECIMALS,
                   TOKEN_BALANCE_SIGNIFICANT_DIGITS - Math.floor(Math.log10(absValue)) - 1,
                 ),
               }
