@@ -10,7 +10,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Cross2Icon } from '@ui-kit/shared/icons/Cross2Icon'
 import { FilterIcon } from '@ui-kit/shared/icons/FilterIcon'
 import { GridChip } from '@ui-kit/shared/ui/DataTable/chips/GridChip'
-import { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import type { FilterProps, TanstackTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 import { DrawerHeader } from '@ui-kit/shared/ui/SwipeableDrawer/DrawerHeader'
 import { DrawerItems } from '@ui-kit/shared/ui/SwipeableDrawer/DrawerItems'
@@ -26,6 +26,7 @@ const { Spacing, Width, MinHeight } = SizesAndSpaces
 const OPEN_FILTERS_TEST_ID = 'btn-open-filters'
 
 type LlamaTableFiltersProps = {
+  table: TanstackTable<LlamaMarket>
   open: boolean
   setOpen: (open: boolean) => void
   anchorRef: RefObject<HTMLDivElement | null>
@@ -37,6 +38,7 @@ type LlamaTableFiltersProps = {
 
 /** Llama market list table filters. Renders a drawer for mobile or a popover with the table filters */
 export const LlamaTableFilters = ({
+  table,
   open,
   setOpen,
   anchorRef: { current: anchorEl },
@@ -47,7 +49,7 @@ export const LlamaTableFilters = ({
   ...filterProps
 }: LlamaTableFiltersProps) => {
   const isMobile = useIsMobile()
-  const content = <LendingMarketsFilters marketsQuery={marketsQuery} {...filterProps} />
+  const content = <LendingMarketsFilters table={table} marketsQuery={marketsQuery} {...filterProps} />
   const resetButton = (
     <Button
       color="ghost"

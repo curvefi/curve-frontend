@@ -158,7 +158,7 @@ export const LegacyUserPositionsTable = ({
     onSortingChange,
     onExpandedChange: setExpanded,
     globalFilterFn,
-    ...getTableOptions(queryData),
+    ...getTableOptions(userQuery.data ? userData : undefined),
   })
   return (
     <LegacyDataTable

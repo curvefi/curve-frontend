@@ -320,7 +320,7 @@ const LoadingStateComponent = () => {
   const table = useTable({
     data: [] as PoolTradeRow[],
     columns: POOL_TRADES_COLUMNS,
-    ...getTableOptions([]),
+    ...getTableOptions<PoolTradeRow>([]),
   })
   return <ActivityTable table={table} isLoading={true} isError={false} emptyMessage="Loading trades..." />
 }
@@ -340,7 +340,7 @@ const EmptyStateComponent = () => {
   const table = useTable({
     data: [] as PoolTradeRow[],
     columns: POOL_TRADES_COLUMNS,
-    ...getTableOptions([]),
+    ...getTableOptions<PoolTradeRow>([]),
   })
   return <ActivityTable table={table} isLoading={false} isError={false} emptyMessage="No swap data found." />
 }
@@ -360,7 +360,7 @@ const ErrorStateComponent = () => {
   const table = useTable({
     data: [] as PoolTradeRow[],
     columns: POOL_TRADES_COLUMNS,
-    ...getTableOptions([]),
+    ...getTableOptions<PoolTradeRow>([]),
   })
   return <ActivityTable table={table} isLoading={false} isError={true} emptyMessage="Could not load data" />
 }

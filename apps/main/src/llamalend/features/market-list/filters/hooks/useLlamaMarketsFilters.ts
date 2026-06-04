@@ -1,11 +1,11 @@
 import { keyBy, type Dictionary } from 'lodash'
-import { type MouseEvent, useCallback, useMemo } from 'react'
+import { type MouseEvent, useMemo } from 'react'
 import { notFalsyArray, recordEntries } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { parseListFilter, serializeListFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { LlamaMarketType, LlamaMarketVersion } from '@ui-kit/types/market'
-import { type QueryProp, useMappedQuery } from '@ui-kit/types/util'
+import { type QueryProp } from '@ui-kit/types/util'
 import { type AssetDetails, LlamaMarket } from '../../../../queries/market-list/llama-markets'
 import { LlamaMarketColumnId } from '../../columns'
 
@@ -43,9 +43,6 @@ export type LlamaMarketsFiltersProps = FilterProps<LlamaMarketColumnId> & {
 export const useLlamaMarketsFilters = ({ marketsQuery, ...filterProps }: LlamaMarketsFiltersProps) => {
   const selectedMarketTypes = parseListFilter(filterProps.columnFiltersById[LlamaMarketColumnId.Type])
   const selectedMarketVersions = parseListFilter(filterProps.columnFiltersById[LlamaMarketColumnId.Version])
-  // Filter options are scoped to selected chains to prevent cross-chain filter data pollution.
-  // Example: When viewing Ethereum markets, Arbitrum market data should not influence filter options.
-  const selectedChains = parseListFilter(filterProps.columnFiltersById[LlamaMarketColumnId.Chain])
 
   // Relies on data and not markets, because you might have a filter active for a token from a chain
   // before you filtered out that said chain. This would lead to token symbols not loading.
@@ -61,13 +58,6 @@ export const useLlamaMarketsFilters = ({ marketsQuery, ...filterProps }: LlamaMa
   return {
     filterProps,
     tokens,
-    marketsQuery: useMappedQuery(
-      marketsQuery,
-      useCallback(
-        data => (selectedChains?.length ? data.filter(market => selectedChains.includes(market.chain)) : data),
-        [selectedChains],
-      ),
-    ),
     marketTypeValue: useMemo<MarketTypeFilterValue>(
       () => getSelectFilterValue<LlamaMarketType>(selectedMarketTypes),
       [selectedMarketTypes],

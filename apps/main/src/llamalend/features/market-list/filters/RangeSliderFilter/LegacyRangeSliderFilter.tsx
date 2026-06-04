@@ -57,7 +57,7 @@ export const LegacyRangeSliderFilter = <TKey, TColumnId extends string>({
   const isMobile = useIsMobile()
   const { maxValue, step } = useMaxValue<TKey>({ max, data, field })
   const sliderValueTransform = useSliderValueTransform({ min, max: maxValue ?? 0, isPowerScale: scale === 'power' })
-  const [range, setRange] = useRangeFilter({ id, maxValue, ...filterProps })
+  const [range, setRange] = useRangeFilter({ id, min, max: maxValue, ...filterProps })
   return (
     // this is not a real select, but we reuse the component so the design is correct
     <Select
