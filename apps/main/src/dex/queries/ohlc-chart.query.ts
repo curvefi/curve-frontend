@@ -1,12 +1,12 @@
 import type { Chain } from '@curvefi/prices-api'
 import { getLpOHLC, getOHLC } from '@curvefi/prices-api/ohlc'
+import { useOhlcInfiniteQuery } from '@ui-kit/features/candle-chart/hooks/useOhlcQueries'
 import {
   assertInitialOhlcPageHasData,
   createCandleChartQueryKey,
   createOhlcPageResult,
   type OhlcPageParam,
   type OhlcPageResult,
-  useOhlcInfiniteQuery,
 } from '@ui-kit/features/candle-chart/query-utils'
 import type { ChartSelection, LpPriceOhlcDataFormatted, TimeOption } from '@ui-kit/features/candle-chart/types'
 import { formatCandleOhlcData } from '@ui-kit/features/candle-chart/utils'

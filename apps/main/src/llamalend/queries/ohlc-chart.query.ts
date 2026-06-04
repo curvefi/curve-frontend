@@ -3,13 +3,13 @@ import type { Chain } from '@curvefi/prices-api'
 import { getOracle, type Endpoint, type OraclePool } from '@curvefi/prices-api/lending'
 import { getOHLC } from '@curvefi/prices-api/llamma'
 import type { Address, Token } from '@primitives/address.utils'
+import { useOhlcInfiniteQuery } from '@ui-kit/features/candle-chart/hooks/useOhlcQueries'
 import {
   assertInitialOhlcPageHasData,
   createCandleChartQueryKey,
   createOhlcPageResult,
   type OhlcPageParam,
   type OhlcPageResult,
-  useOhlcInfiniteQuery,
 } from '@ui-kit/features/candle-chart/query-utils'
 import type { LpPriceOhlcDataFormatted, OraclePriceData, TimeOption } from '@ui-kit/features/candle-chart/types'
 import { formatCandleOhlcData, formatOraclePriceData } from '@ui-kit/features/candle-chart/utils'

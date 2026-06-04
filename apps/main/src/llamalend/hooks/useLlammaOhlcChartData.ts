@@ -6,7 +6,7 @@ import {
   refetchOhlcQueries,
   useOhlcPagesAdapter,
   useOhlcQueryAdapter,
-} from '@ui-kit/features/candle-chart/query-utils'
+} from '@ui-kit/features/candle-chart/hooks/useOhlcQueries'
 import type { TimeOption } from '@ui-kit/features/candle-chart/types'
 import { applyLatestOraclePrice, flattenOhlcPages } from '@ui-kit/features/candle-chart/utils'
 import { q, useMappedQuery } from '@ui-kit/types/util'

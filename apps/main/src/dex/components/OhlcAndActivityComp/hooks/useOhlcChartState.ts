@@ -6,7 +6,7 @@ import type { Pool } from '@curvefi/prices-api/pools'
 import type { OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
 import { useChartTimeSettings } from '@ui-kit/features/candle-chart/hooks/useChartTimeSettings'
 import { useDexChartList } from '@ui-kit/features/candle-chart/hooks/useDexChartList'
-import { useOhlcQueryAdapter, useStableOhlcAnchorEnd } from '@ui-kit/features/candle-chart/query-utils'
+import { useOhlcQueryAdapter, useStableOhlcAnchorEnd } from '@ui-kit/features/candle-chart/hooks/useOhlcQueries'
 import type { LpPriceOhlcDataFormatted } from '@ui-kit/features/candle-chart/types'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
