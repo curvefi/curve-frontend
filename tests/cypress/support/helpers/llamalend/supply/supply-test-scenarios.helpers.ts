@@ -197,7 +197,7 @@ export const createDepositScenario = ({
     expected: {
       walletBalances: [] as const,
       marketRates: [false, false] as const,
-      futureRates: [amount, '0'] as const,
+      futureRates: [amount, '0', false] as const,
       maxDeposit: [] as const,
       previewDeposit: amountArgs,
       isApproved: amountArgs,
@@ -362,7 +362,7 @@ export const createWithdrawScenario = ({
     expected: {
       walletBalances: [] as const,
       marketRates: [false, false] as const,
-      futureRates: [decimalMinus('0', amount), '0'] as const,
+      futureRates: [decimalMinus('0', amount), '0', false] as const,
       maxWithdraw: [] as const,
       maxRedeem: [] as const,
       previewWithdraw: [amount] as const,
