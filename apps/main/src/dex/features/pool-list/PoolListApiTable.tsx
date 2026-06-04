@@ -125,7 +125,7 @@ const getPoolListItem = (network: NetworkConfig, pool: V2Pool): PoolListItem => 
       name: pool.name,
       address: poolAddress,
       gauge: { address: gaugeAddress },
-      lpToken: '', // some legacy pools have a different LP address then pool address (api only has pool address)
+      lpToken: '', // not used in the new list
       isCrypto: false, // not used in the new list
       isNg: false, // not used in the new list
       isFactory: false, // not used in the new list
