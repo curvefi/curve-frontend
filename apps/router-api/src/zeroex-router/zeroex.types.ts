@@ -1,7 +1,7 @@
 import type { Address, Hex } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 
-export interface ZeroExQuoteRequest {
+export type ZeroExQuoteRequest = {
   chainId: number
   sellToken: Address
   buyToken: Address
@@ -9,7 +9,7 @@ export interface ZeroExQuoteRequest {
   taker: Address
 }
 
-export interface ZeroExQuoteResponse {
+export type ZeroExQuoteResponse = {
   buyAmount: Decimal
   buyToken: Address
   sellAmount: Decimal
@@ -20,22 +20,22 @@ export interface ZeroExQuoteResponse {
   transaction: { to: Address; data: Hex; gas: Decimal; gasPrice: Decimal; value: Decimal }
   route: { fills: ZeroExRouteFill[]; tokens: ZeroExRouteToken[] }
   fees: {
-    integratorFee: unknown | null
+    integratorFee: unknown
     zeroExFee: { amount: Decimal; token: Address; type: string } | null
-    gasFee: unknown | null
+    gasFee: unknown
   }
   issues: { simulationIncomplete: boolean; invalidSourcesPassed: string[] }
   zid: string
 }
 
-export interface ZeroExRouteFill {
+export type ZeroExRouteFill = {
   from: Address
   to: Address
   source: string
   proportionBps: Decimal
 }
 
-export interface ZeroExRouteToken {
+export type ZeroExRouteToken = {
   address: Address
   symbol: string
 }

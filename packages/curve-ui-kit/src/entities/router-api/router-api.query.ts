@@ -153,7 +153,7 @@ export const useRouterQueries = <TData extends TGas | null, TKey extends QueryKe
       enso: useRouterQuery(params, 'enso', enabled),
       // odos requires the zap contract as the user address
       odos: useRouterQuery({ ...params, userAddress: zapAddress }, 'odos', enabled),
-      '0x': useRouterQuery(params, '0x', enabled),
+      '0x': useRouterQuery({ ...params, userAddress: zapAddress }, '0x', enabled),
     } satisfies RouteQueries,
     onRefresh: useCallback(
       () => Promise.all(RouteProviders.map(router => fetchApiRoutes({ ...params, router }))),

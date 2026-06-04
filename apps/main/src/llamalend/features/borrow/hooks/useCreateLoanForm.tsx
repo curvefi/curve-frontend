@@ -150,6 +150,13 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   const isHighLiquidationRisk = q(useIsHighLiquidationRisk(params))
 
   const isPending = formState.isSubmitting || isCreating
+  console.log({
+    disabledAlert,
+    isPending,
+    isDebouncing,
+    should: shouldBlockTransaction(priceImpact, params),
+    priceImpact: q(priceImpact),
+  })
 
   return {
     form,
