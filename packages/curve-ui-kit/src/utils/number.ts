@@ -192,7 +192,7 @@ const NUMBER_FORMAT_CATEGORIES = {
       const options: Partial<NumberFormatOptions> | undefined =
         absValue > 0 && absValue < 1
           ? { maximumSignificantDigits: TOKEN_BALANCE_SIGNIFICANT_DIGITS, trailingZeroDisplay: 'auto' }
-          : absValue >= 1 && Number.isFinite(absValue)
+          : absValue >= 1
             ? {
                 maximumFractionDigits: Math.max(
                   2,
