@@ -32,7 +32,6 @@ export const basicMuiTheme = createMuiTheme({
     tableFilters: 110, // the filters in the table header
     tableHeader: 120, // the whole table header including filters
     tableHeaderStickyColumn: 130, // the sticky column in the table header
-    tableStickyLastRow: 140, // the last row in the table is sticky so we don't show the header without any data
   },
 })
 

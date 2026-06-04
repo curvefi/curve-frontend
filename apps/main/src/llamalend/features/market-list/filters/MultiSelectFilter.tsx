@@ -48,7 +48,7 @@ export const MultiSelectFilter = <TKeys, TColumnId extends string>({
   const isMobile = useIsMobile()
   const selectRef = useRef<HTMLDivElement | null>(null)
   const menuRef = useRef<HTMLLIElement | null>(null)
-  const [selectWidth] = useResizeObserver(selectRef) ?? []
+  const [selectWidth] = useResizeObserver(selectRef)
   const [isOpen, open, close] = useSwitch(false)
   const options = useMemo(() => getUniqueSortedStrings(notFalsyArray(query.data), field), [query.data, field])
   const selectedOptions = parseListFilter(columnFiltersById[id])

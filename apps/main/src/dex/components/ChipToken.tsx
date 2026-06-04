@@ -110,7 +110,7 @@ const ChipTokenWrapper = styled.span`
   }
 `
 const ChipTokenAddress = styled.span`
-  font-family: var(--font-mono);
+  font-family: var(--button-font);
   font-size: var(--font-size-2);
   margin-bottom: 2px;
 `

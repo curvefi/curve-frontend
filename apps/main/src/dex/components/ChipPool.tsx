@@ -100,7 +100,7 @@ const ChipPoolWrapper = styled.span`
 
 const ChipPoolAddress = styled.span`
   margin-right: 2px;
-  font-family: var(--font-mono);
+  font-family: var(--button-font);
   font-size: var(--font-size-2);
 `
 

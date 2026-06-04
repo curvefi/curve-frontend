@@ -6,7 +6,6 @@ import { recordEntries } from '@primitives/objects.utils'
 import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 import { DesignSystem } from '../../design'
 import { SizesAndSpaces } from '../../design/1_sizes_spaces'
-import { Fonts } from '../../fonts'
 import { buttonColor } from './utils'
 
 const { ButtonSize, OutlineWidth, IconSize } = SizesAndSpaces
@@ -56,7 +55,6 @@ export const defineMuiIconButton = ({ Button }: DesignSystem): Components['MuiIc
         ...buttonColor(Ghost),
         transition: Transition,
         ':focus-visible': { borderColor: Focus_Outline },
-        fontFamily: Fonts[Button.FontFamily],
       },
       sizeExtraExtraSmall: iconButtonSize('xxs', 'extraExtraSmall'),
       sizeExtraSmall: iconButtonSize('xs', 'extraSmall'),

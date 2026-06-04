@@ -6,7 +6,6 @@ import { handleBreakpoints } from '../../basic-theme'
 import { DesignSystem } from '../../design'
 import { Sizing } from '../../design/0_primitives'
 import { SizesAndSpaces } from '../../design/1_sizes_spaces'
-import { Fonts } from '../../fonts'
 import { buttonColor } from './utils'
 
 const { LineHeight, OutlineWidth, ButtonSize, FontSize } = SizesAndSpaces
@@ -105,7 +104,6 @@ export const defineMuiButton = ({ Button, Text }: DesignSystem): Components['Mui
         border: `${OutlineWidth} solid transparent`,
         boxSizing: 'border-box',
         '&:focus-visible': { borderColor: Focus_Outline },
-        fontFamily: Fonts[Button.FontFamily],
         textTransform: 'uppercase',
         transition: Transition,
       },
