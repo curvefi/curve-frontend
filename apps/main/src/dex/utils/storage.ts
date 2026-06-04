@@ -9,10 +9,11 @@ type Key = keyof typeof APP_STORAGE
 
 export function getStorageValue(key: Key) {
   const storedValue = window.localStorage.getItem(APP_STORAGE[key])
-  let parsedStoredValue: { [key: string]: string } = {}
+  let parsedStoredValue: Record<string, string> = {}
 
   if (storedValue) {
     try {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
       parsedStoredValue = JSON.parse(storedValue) ?? {}
     } catch (error) {
       console.error(error)

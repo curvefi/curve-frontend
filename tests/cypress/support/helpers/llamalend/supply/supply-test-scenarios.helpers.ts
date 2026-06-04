@@ -53,6 +53,7 @@ const createSupplyRates = (lendApy: Decimal) => ({
 })
 
 const createIdentityConvertToAssetsStub = () =>
+  // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
   cy.stub().callsFake(async (shares: Decimal) => shares) as TestStub<readonly [string], string>
 
 const createBaseSupplyMarket = ({
@@ -314,7 +315,7 @@ export const createWithdrawScenario = ({
   stakedShares?: Decimal
 }) => {
   const input = {
-    amount: (isFull ? depositedShares : '22.5') as Decimal,
+    amount: isFull ? depositedShares : '22.5',
     isFull,
   }
   const amount = input.amount

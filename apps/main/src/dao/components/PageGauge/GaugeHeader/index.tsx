@@ -6,7 +6,7 @@ import { Loader } from '@ui/Loader'
 import { t } from '@ui-kit/lib/i18n'
 import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
 
-interface GaugeHeaderProps {
+type GaugeHeaderProps = {
   gaugeData: GaugeFormattedData | undefined
   dataLoading: boolean
 }

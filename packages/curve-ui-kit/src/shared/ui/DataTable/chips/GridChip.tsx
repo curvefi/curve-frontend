@@ -19,7 +19,8 @@ export const GridChip = ({
       <SelectableChip
         {...props}
         size={selectableChipSize || getDefaultSelectableChipSize(isMobile)}
-        sx={{ width: { mobile: '100%', tablet: 'auto' } }}
+        // flex removes the inline-flex line box that otherwise makes icon-only chip wrappers taller.
+        sx={{ display: 'flex', width: { mobile: '100%', tablet: 'auto' } }}
       />
     </ChipGridItem>
   )

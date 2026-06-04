@@ -1,8 +1,9 @@
 import lodash from 'lodash'
 import { create, type StateCreator } from 'zustand'
 import { devtools, persist, type PersistOptions } from 'zustand/middleware'
+import { mapRecord } from '@primitives/objects.utils'
 import type { ThemeKey } from '@ui-kit/themes/basic-theme'
-import { type SlippageSettings } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
+import { SLIPPAGE, type SlippageSettings } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
 type UserProfileState = {
   theme: ThemeKey
@@ -21,7 +22,7 @@ type Store = UserProfileState & Action
 
 const INITIAL_STATE: UserProfileState = {
   theme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
-  maxSlippage: { crypto: '0.1', stable: '0.03', leverage: '0.5' },
+  maxSlippage: mapRecord(SLIPPAGE, (_, v) => v.default),
   showDeprecatedMarkets: false,
 }
 
@@ -29,7 +30,7 @@ const store: StateCreator<Store> = set => ({
   ...INITIAL_STATE,
   reset: () => set(INITIAL_STATE),
   setTheme: theme => set(state => ({ ...state, theme })),
-  setMaxSlippage: maxSlippage => set(state => ({ ...state, maxSlippage: { ...maxSlippage } })),
+  setMaxSlippage: maxSlippage => set(state => ({ ...state, maxSlippage })),
   setShowDeprecatedMarkets: (showDeprecatedMarkets: boolean) => set(state => ({ ...state, showDeprecatedMarkets })),
 })
 

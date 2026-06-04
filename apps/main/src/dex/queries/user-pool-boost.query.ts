@@ -7,6 +7,7 @@ import { Chain } from '@ui-kit/utils'
 import { isValidAddress } from '../utils'
 
 export async function userPoolBoost(chainId: number, pool: PoolTemplate, userAddress: Address) {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
   if (chainId !== Chain.Ethereum || !isValidAddress(pool.gauge.address)) return ''
   const result = await pool.userBoost(userAddress)
   return result === 'NaN' ? '0' : result

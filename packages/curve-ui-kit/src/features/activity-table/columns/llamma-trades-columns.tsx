@@ -1,6 +1,9 @@
 import { createColumnHelper } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
-import { TokenAmountCell, TimestampCell, AddressCell } from '../cells'
+import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
+import { TokenInfo } from '@ui-kit/shared/ui/TokenInfo'
+import { formatNumber } from '@ui-kit/utils'
+import { TimestampCell, AddressCell } from '../cells'
 import type { LlammaTradeRow } from '../types'
 
 export enum LlammaTradesColumnId {
@@ -16,19 +19,20 @@ export const LLAMMA_TRADES_COLUMNS = [
   columnHelper.accessor('buyer', {
     id: LlammaTradesColumnId.User,
     header: t`Address`,
-    cell: ({ getValue }) => <AddressCell address={getValue()} />,
+    cell: ({ getValue, row }) => <AddressCell address={getValue()} explorerUrl={row.original.buyerUrl} />,
   }),
   columnHelper.accessor('amountBought', {
     id: LlammaTradesColumnId.Bought,
     header: t`Buy`,
     cell: ({ row }) => (
-      <TokenAmountCell
-        amount={row.original.amountBought}
-        symbol={row.original.tokenBought.symbol}
-        tokenAddress={row.original.tokenBought.address}
-        chainId={row.original.network}
-        align="right"
-      />
+      <InlineTableCell sx={{ alignItems: 'end' }}>
+        <TokenInfo
+          address={row.original.tokenBought.address}
+          blockchainId={row.original.network}
+          iconPosition="right"
+          primary={formatNumber(row.original.amountBought, { abbreviate: false })}
+        />
+      </InlineTableCell>
     ),
     meta: { type: 'numeric' },
   }),
@@ -36,13 +40,14 @@ export const LLAMMA_TRADES_COLUMNS = [
     id: LlammaTradesColumnId.Sold,
     header: t`Sell`,
     cell: ({ row }) => (
-      <TokenAmountCell
-        amount={-row.original.amountSold}
-        symbol={row.original.tokenSold.symbol}
-        tokenAddress={row.original.tokenSold.address}
-        chainId={row.original.network}
-        align="right"
-      />
+      <InlineTableCell sx={{ alignItems: 'end' }}>
+        <TokenInfo
+          address={row.original.tokenSold.address}
+          blockchainId={row.original.network}
+          iconPosition="right"
+          primary={formatNumber(-row.original.amountSold, { abbreviate: false })}
+        />
+      </InlineTableCell>
     ),
     meta: { type: 'numeric' },
   }),

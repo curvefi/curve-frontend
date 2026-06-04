@@ -35,7 +35,7 @@ export function ExpansionRow<T extends TableItem>({
   return (
     render && ( // add a scale(1) so the box-shadow is applied correctly on top of the next table row
       <TableRow sx={{ boxShadow, transform: 'scale(1)' }} data-testid="data-table-expansion-row">
-        <TableCell colSpan={colSpan} sx={{ padding: 0, boxShadow: insetShadow, borderBottom: 'none' }}>
+        <TableCell colSpan={colSpan} sx={{ padding: 0, boxShadow: insetShadow }}>
           <Collapse in={expanded} onExited={onExited}>
             <Stack
               direction="column"
@@ -72,11 +72,14 @@ function useRowExpansion<T>(row: Row<T>) {
   useEffect(() => {
     if (rowExpanded) {
       if (!render) {
+        // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
         setRender(true)
       } else if (!expanded) {
+        // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
         setExpanded(true)
       }
     } else if (expanded) {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setExpanded(false)
     }
   }, [expanded, render, rowExpanded])

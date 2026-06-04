@@ -80,6 +80,7 @@ export function useDebounce<T>({
   debounceMs?: number
 }) {
   const [value, setValue] = useState<T>(initialValue)
+  // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
   useEffect(() => setValue(initialValue), [initialValue])
   return [value, ...useDebounced(callback, debounceMs, setValue)] as const
 }
@@ -136,13 +137,13 @@ export function useUniqueDebounce<T>({
   sanitize?: (value: T) => T
 }) {
   const [value, setValue] = useState<T>(defaultValue)
-  const lastCallbackValue = useRef(defaultValue)
+  const lastCallbackValueRef = useRef(defaultValue)
 
   useEffect(() => {
     // if the default value changes externally and is different from the last value that triggered the callback,
     // update the initial value to reflect the change. This will override the input contents and the debounced value.
-    if (!equals(lastCallbackValue.current, defaultValue)) {
-      lastCallbackValue.current = defaultValue
+    if (!equals(lastCallbackValueRef.current, defaultValue)) {
+      lastCallbackValueRef.current = defaultValue
       setValue(defaultValue)
     }
   }, [defaultValue, equals])
@@ -150,8 +151,8 @@ export function useUniqueDebounce<T>({
   const callback = useCallback(
     (givenValue: T) => {
       const value = sanitize(givenValue)
-      if (!equals(value, lastCallbackValue.current)) {
-        lastCallbackValue.current = value
+      if (!equals(value, lastCallbackValueRef.current)) {
+        lastCallbackValueRef.current = value
         onChange?.(value)
       }
     },

@@ -81,7 +81,7 @@ export function requireGauge(marketId: string): LendMarketTemplate {
 }
 
 const validateHasVault = (marketId: string | null | undefined) => {
-  const market = tryGetLlamaMarket(marketId!)
+  const market = tryGetLlamaMarket(marketId)
   skipWhen(!market, () => {
     test('marketId', 'Market does not have a vault', () => {
       enforce(market && hasVault(market)).isTruthy()
@@ -90,7 +90,7 @@ const validateHasVault = (marketId: string | null | undefined) => {
 }
 
 const validateHasGauge = (marketId: string | null | undefined) => {
-  const market = tryGetLlamaMarket(marketId!)
+  const market = tryGetLlamaMarket(marketId)
   skipWhen(!market, () => {
     test('marketId', 'Market does not have a gauge', () => {
       enforce(market && hasGauge(market)).isTruthy()

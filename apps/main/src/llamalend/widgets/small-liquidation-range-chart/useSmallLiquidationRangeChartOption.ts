@@ -17,7 +17,7 @@ import type {
 } from './small-liquidation-range-chart.types'
 import { getSmallLiquidationRangeChartLayout, toEChartsPixelValue } from './small-liquidation-range-chart.utils'
 
-const { FontSize, FontWeight, LineHeight } = SizesAndSpaces
+const { FontSize, LineHeight } = SizesAndSpaces
 
 const isSplitLayout = (layout?: SmallLiquidationRangeChartLayout): layout is SplitLayout =>
   layout?.mode === 'split-left' || layout?.mode === 'split-right'
@@ -28,7 +28,8 @@ const toRenderableRange = (range?: LiquidationRange): RenderableLiquidationRange
 const getBodyXsRegularChartTextStyle = (theme: Theme): ChartTextStyle => ({
   fontFamily: theme.typography.bodyXsRegular.fontFamily as string,
   fontSize: toEChartsPixelValue(FontSize.xs.desktop, theme.typography.htmlFontSize),
-  fontWeight: Number(theme.typography.bodyXsRegular.fontWeight) || FontWeight.Medium,
+  fontWeight: Number(theme.typography.bodyXsRegular.fontWeight) || theme.design.Text.FontWeight.Medium,
+  emphasisFontWeight: theme.design.Text.FontWeight.Semi_Bold,
   lineHeight: toEChartsPixelValue(LineHeight.xs.desktop, theme.typography.htmlFontSize),
 })
 

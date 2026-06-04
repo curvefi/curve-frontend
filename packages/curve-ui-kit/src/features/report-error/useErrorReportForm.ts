@@ -9,7 +9,7 @@ export type ErrorContext = {
   subtitle: string | null | undefined
 }
 
-type ErrorReportFormValues = {
+export type ErrorReportFormValues = {
   address: string
   contactMethod: ContactMethod
   contact: string
@@ -24,6 +24,7 @@ export const useErrorReportForm = ({ error, ...context }: ErrorContext, onClose:
   return {
     form,
     values: form.watchValues(),
+    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
     onSubmit: form.handleSubmit(async formData => {
       const body = {
         formData,
@@ -49,6 +50,7 @@ export const useErrorReportForm = ({ error, ...context }: ErrorContext, onClose:
         onClose()
       } catch (e) {
         console.warn(e)
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
         form.setError('root', { type: 'server', message: e.message })
       }
     }),

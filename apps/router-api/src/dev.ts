@@ -16,16 +16,18 @@ const loadConfigFromEnv = ({ HOST, PORT = 3010 } = process.env): FastifyListenOp
 async function start(): Promise<void> {
   const server = createRouterApiServer()
 
-  const stopServer = async (signal: NodeJS.Signals) => {
+  const stopServer = (signal: NodeJS.Signals) => {
     server.log.info({ signal }, 'Received shutdown signal. Closing server.')
-    try {
-      await server.close()
-      server.log.info('Server closed successfully.')
-      process.exit(0)
-    } catch (error) {
-      server.log.error({ err: error }, 'Error during server shutdown.')
-      process.exit(1)
-    }
+    server.close().then(
+      () => {
+        server.log.info('Server closed successfully.')
+        process.exit(0)
+      },
+      error => {
+        server.log.error({ err: error }, 'Error during server shutdown.')
+        process.exit(1)
+      },
+    )
   }
 
   process.on('SIGINT', stopServer)

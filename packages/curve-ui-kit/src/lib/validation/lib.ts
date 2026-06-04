@@ -1,3 +1,4 @@
+import { noop } from 'lodash'
 import { create, enforce, only, type Suite } from 'vest'
 import { extendEnforce } from './enforce-extension'
 import { FieldName, FieldsOf } from './types'
@@ -25,6 +26,7 @@ export function assertValidity<D extends object, S extends ValidationSuite>(
   const result = suite(data, fields)
   const entries = Object.entries(result.getErrors())
   if (entries.length > 0) {
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions -- Existing violation before enabling this rule.
     throw new Error(`Validation failed: ${entries.map(([field, error]) => `${field}: ${error}`).join(', ')}`)
   }
   return data as D
@@ -38,4 +40,4 @@ export const createValidationSuite = <T extends object, TGroupName extends strin
     validationGroup(data)
   })
 
-export const EmptyValidationSuite = createValidationSuite(() => {})
+export const EmptyValidationSuite = createValidationSuite(noop)

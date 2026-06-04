@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/consistent-type-definitions */
 import type { UTCTimestamp } from 'lightweight-charts'
 
 declare global {

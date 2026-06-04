@@ -9,6 +9,7 @@ const { IconSize } = SizesAndSpaces
 /**
  * A button for controlling the DataTable.
  */
+// eslint-disable-next-line @eslint-react/no-forward-ref -- Existing violation before enabling this rule.
 export const TableButton = forwardRef<
   HTMLButtonElement,
   {

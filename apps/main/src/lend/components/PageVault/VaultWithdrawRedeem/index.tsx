@@ -27,7 +27,7 @@ import { decimal, formatNumber, amount } from '@ui-kit/utils'
 
 export const VaultWithdrawRedeem = ({ rChainId, marketId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const rFormType = 'withdraw'
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.vaultWithdrawRedeem.activeKey)
   const formEstGas = useStore(state => state.vaultWithdrawRedeem.formEstGas[activeKey])
@@ -96,7 +96,7 @@ export const VaultWithdrawRedeem = ({ rChainId, marketId, isLoaded, api, market,
       setTxInfoBar(<AlertBox alertType="info">{`Pending ${notifyMessage}`}</AlertBox>)
       const resp = await fetchStepWithdrawRedeem(payloadActiveKey, rFormType, api, market, formValues, vaultShares)
 
-      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey) {
         const txMessage = t`Transaction complete.`
         setTxInfoBar(
           <TxInfoBar
@@ -130,13 +130,13 @@ export const VaultWithdrawRedeem = ({ rChainId, marketId, isLoaded, api, market,
       const isValid = !!signerAddress && (isValidAmount || isFullWithdraw)
       const isWithdraw = _isWithdraw(rFormType)
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         WITHDRAW_REDEEM: {
           key: 'WITHDRAW_REDEEM',
           status: helpers.getStepStatus(isComplete, step === 'WITHDRAW_REDEEM', isValid),
           type: 'action',
           content: isComplete ? (isWithdraw ? t`Withdrawn` : t`Redeemed`) : isWithdraw ? t`Withdraw` : t`Redeem`,
-          onClick: async () => handleBtnClickWithdrawRedeem(payloadActiveKey, rFormType, api, market, formValues),
+          onClick: () => void handleBtnClickWithdrawRedeem(payloadActiveKey, rFormType, api, market, formValues),
         },
       }
 
@@ -155,10 +155,10 @@ export const VaultWithdrawRedeem = ({ rChainId, marketId, isLoaded, api, market,
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
       resetState()
     }
   }, [resetState])
@@ -172,6 +172,7 @@ export const VaultWithdrawRedeem = ({ rChainId, marketId, isLoaded, api, market,
   useEffect(() => {
     if (isLoaded && api && market && rFormType) {
       const updatedSteps = getSteps(activeKey, rFormType, api, market, formStatus, formValues, steps)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

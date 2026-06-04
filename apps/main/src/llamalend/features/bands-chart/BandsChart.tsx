@@ -129,6 +129,7 @@ const BandsChartContent = ({
 
   return (
     <ReactECharts
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
       option={finalOption as EChartsOption}
       style={{ width: '100%', height: '100%' }}
       opts={{ renderer: 'canvas' }}

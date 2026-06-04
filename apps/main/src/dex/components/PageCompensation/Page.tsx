@@ -65,7 +65,7 @@ export const PageCompensation = () => {
         ) : (
           <>
             <strong>Please connect your wallet to view compensation</strong>
-            <Button fillWidth loading={isConnecting} size="large" variant="filled" onClick={() => connectWallet()}>
+            <Button fillWidth loading={isConnecting} size="large" variant="filled" onClick={() => void connectWallet()}>
               {t`Connect Wallet`}
             </Button>
           </>

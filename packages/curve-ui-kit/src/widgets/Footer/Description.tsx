@@ -7,7 +7,7 @@ import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-const { IconSize, Spacing, FontWeight } = SizesAndSpaces
+const { IconSize, Spacing } = SizesAndSpaces
 
 const Image = styled('img')({})
 
@@ -27,7 +27,7 @@ export const Description = () => (
             // One-off for the logo text (fixed size). Extra '&' specificity needed to override default.
             fontSize: Sizing[600],
           },
-          fontWeight: FontWeight.Bold,
+          fontWeight: t => t.design.Text.FontWeight.Bold,
         }}
       >
         Curve

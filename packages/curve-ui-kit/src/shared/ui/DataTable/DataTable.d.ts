@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars,@typescript-eslint/consistent-type-definitions */
 import '@tanstack/table-core'
 import type { RowData } from '@tanstack/table-core'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'

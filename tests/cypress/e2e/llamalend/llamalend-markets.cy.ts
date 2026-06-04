@@ -3,11 +3,9 @@ import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns/co
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
 import { oneOf, shuffle } from '@cy/support/generators'
 import {
-  closeDrawer,
   expandFirstRowOnMobile,
   getTableCellAssets,
   openDrawer,
-  withFilterChips,
   withFilters,
 } from '@cy/support/helpers/data-table.helpers'
 import { Chain, HighTVLAddress, HighUtilizationAddress } from '@cy/support/helpers/lending-mocks'
@@ -69,20 +67,31 @@ testCases.forEach(([width, height, breakpoint]) => {
       cy.url(LOAD_TIMEOUT).should('match', urlRegex)
     })
 
-    it('should have sticky headers', () => {
-      cy.get('[data-testid^="data-table-row"]').last().then(assertNotInViewport)
-      cy.get('[data-testid^="data-table-row"]').eq(10).scrollIntoView()
-      cy.get('[data-testid="data-table-head"] th').eq(1).then(assertInViewport)
+    it('should have sticky headers or horizontally scrollable table', () => {
       cy.get(`[data-testid^="badge-market-type-"]`).should('be.visible') // wait for the table to render
+      cy.get('[data-testid="data-table-scroll-wrapper"]').then($wrapper => {
+        cy.get('[data-testid="data-table"]').then($table => {
+          const tableWidth = assert($table.outerWidth(), 'The table width was not found')
+          const wrapperWidth = assert($wrapper.outerWidth(), 'The table scroll wrapper width was not found')
 
-      // filter height changes because text wraps depending on the width
-      const filterHeight = {
-        mobile: [48],
-        tablet: [56],
-        desktop: [56],
-      }[breakpoint]
-      cy.get('[data-testid="table-filters"]').invoke('outerHeight').should('be.oneOf', filterHeight)
-      cy.get('[data-testid^="data-table-row"]').eq(10).invoke('outerHeight').should('equal', 65)
+          if (tableWidth <= wrapperWidth) {
+            // should have sticky headers
+            cy.get('[data-testid^="data-table-row"]').last().should(assertNotInViewport)
+            cy.get('[data-testid^="data-table-row"]').eq(10).scrollIntoView()
+            cy.get('[data-testid="data-table-head"] th').eq(1).should(assertInViewport)
+
+            // filter height changes because text wraps depending on the width
+            const filterHeight = { mobile: [93], tablet: [56], desktop: [56] }[breakpoint]
+            cy.get('[data-testid="table-filters"]').invoke('outerHeight').should('be.oneOf', filterHeight)
+            cy.get('[data-testid^="data-table-row"]').eq(10).invoke('outerHeight').should('equal', 65)
+          } else {
+            // should by horizontally scrollable
+            expect($wrapper[0].scrollWidth).to.be.greaterThan($wrapper[0].clientWidth)
+            cy.wrap($wrapper).scrollTo('right')
+            cy.wrap($wrapper).should($el => expect($el[0].scrollLeft).to.be.greaterThan(0))
+          }
+        })
+      })
     })
 
     it('should hide columns', () => {
@@ -199,18 +208,16 @@ testCases.forEach(([width, height, breakpoint]) => {
       getTableCellAssets().first().contains('wstETH')
     })
 
-    /** Filter chip not yet available on mobile */
-    itSkipOnMobile('should allow filtering favorites', { scrollBehavior: false }, () => {
-      openDrawer(breakpoint, 'filter')
+    it('should allow filtering favorites', () => {
+      expandFirstRowOnMobile(breakpoint)
       // on desktop, the favorite icon is not visible until hovered - but cypress doesn't support that so use force
-      cy.get(`[data-testid="favorite-icon"]`).first().click({ force: true })
+      cy.get(`[data-testid="favorite-btn"]`).first().click({ force: true })
 
-      closeDrawer(breakpoint)
-      withFilterChips(breakpoint, () => cy.get(`[data-testid="chip-favorites"]`).click())
+      cy.get(`[data-testid="chip-favorites"]`).click()
       cy.url().should('include', 'isFavorite=yes')
       cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
-      cy.get(`[data-testid="favorite-icon"]:visible`).should('not.exist')
-      cy.get(`[data-testid="favorite-icon-filled"]:visible`).click()
+      cy.get(`[data-testid="favorite-btn"]`).should('not.exist')
+      cy.get(`[data-testid="favorite-btn-active"]`).click()
       cy.get(`[data-testid="table-empty-row"]`).should('exist')
     })
 
@@ -248,7 +255,11 @@ testCases.forEach(([width, height, breakpoint]) => {
 
     it(`should allow filtering by using a slider and input`, () => {
       // Keep the viewport stable for slider width.
-      cy.viewport(...((breakpoint === 'mobile' ? [500, 800] : [1200, 800]) as [number, number]))
+      if (breakpoint === 'mobile') {
+        cy.viewport(500, 800)
+      } else {
+        cy.viewport(1200, 800)
+      }
       const [columnId, medianValue] = getOneColumnMedianValue(vaultData, [LlamaMarketColumnId.MaxLtv])
       const bound = oneOf('min', 'max')
 

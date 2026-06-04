@@ -56,6 +56,7 @@ export const CurveProvider = <App extends AppName>({
     if (!network) return onChainUnavailable(walletChainId) // will redirect to the wallet's chain if supported
     if (network.chainId == walletChainId) return // all good
     if (isFocused) {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setConnectState(LOADING)
       switchChain({ chainId: network.chainId }).catch(e => {
         console.error(`Error updating wallet chain from ${walletChainId} to ${network.chainId}`, e)
@@ -126,7 +127,7 @@ export const CurveProvider = <App extends AppName>({
   const isHydrated = !!globalLibs.hydrated[app] && { curveApi, llamaApi }[libKey] === globalLibs.hydrated[app]
 
   return (
-    <CurveContext.Provider
+    <CurveContext
       value={{
         connectState,
         network,
@@ -139,6 +140,6 @@ export const CurveProvider = <App extends AppName>({
       }}
     >
       {children}
-    </CurveContext.Provider>
+    </CurveContext>
   )
 }

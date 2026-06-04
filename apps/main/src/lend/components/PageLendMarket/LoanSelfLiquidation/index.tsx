@@ -15,6 +15,7 @@ import { networks } from '@/lend/networks'
 import { useStore } from '@/lend/store/useStore'
 import { Api, type MarketUrlParams, LendMarketTemplate, PageContentProps, UserLoanState } from '@/lend/types/lend.types'
 import { getCollateralListPathname } from '@/lend/utils/utilsRouter'
+import { LEVERAGE } from '@/llamalend/constants'
 import { AlertBox } from '@ui/AlertBox'
 import { InputReadyOnly as InputReadOnly } from '@ui/InputReadOnly'
 import { InternalLink } from '@ui/Link/InternalLink'
@@ -38,7 +39,7 @@ export const LoanSelfLiquidation = ({
   userActiveKey,
   params,
 }: PageContentProps<MarketUrlParams>) => {
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
   const formEstGas = useStore(state => state.loanSelfLiquidation.formEstGas)
   const formStatus = useStore(state => state.loanSelfLiquidation.formStatus)
   const futureRates = useStore(state => state.loanSelfLiquidation.futureRates)
@@ -83,6 +84,7 @@ export const LoanSelfLiquidation = ({
 
       if (isValid) {
         const notifyMessage = t`Self-liquidate ${market.borrowed_token.symbol} at ${maxSlippage}% max slippage.`
+        // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
         setTxInfoBar(
           <AlertBox alertType="info">
             <AlertSummary
@@ -97,15 +99,17 @@ export const LoanSelfLiquidation = ({
           </AlertBox>,
         )
       } else if (!isComplete) {
+        // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
         setTxInfoBar(null)
       }
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: helpers.getStepStatus(isApproved, step === 'APPROVAL', isValid),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: async () => {
             const notifyMessage = t`Please approve spending of ${market.borrowed_token.symbol}`
             const notification = notify(notifyMessage, 'pending')
@@ -119,11 +123,12 @@ export const LoanSelfLiquidation = ({
           status: helpers.getStepStatus(isComplete, step === 'SELF_LIQUIDATE', isApproved && isValid),
           type: 'action',
           content: isComplete ? t`Self-liquidated` : t`Self-liquidate`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: async () => {
             const notification = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
             const resp = await fetchStepLiquidate(api, market, liquidationAmt, maxSlippage)
 
-            if (isSubscribed.current && resp?.hash && !resp.loanExists && !resp.error) {
+            if (isSubscribedRef.current && resp?.hash && !resp.loanExists && !resp.error) {
               const TxDescription = (
                 <Trans>
                   Transaction completed. This loan will no longer exist. Click{' '}
@@ -161,10 +166,10 @@ export const LoanSelfLiquidation = ({
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
     }
   }, [])
 
@@ -187,6 +192,7 @@ export const LoanSelfLiquidation = ({
   useEffect(() => {
     if (isLoaded && api && market && userState) {
       const updatedSteps = getSteps(api, market, formEstGas, formStatus, liquidationAmt, maxSlippage, steps, userState)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
@@ -209,7 +215,7 @@ export const LoanSelfLiquidation = ({
           {...formEstGas}
           stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
         />
-        <SlippageToleranceActionInfo maxSlippage={maxSlippage} type="leverage" />
+        <SlippageToleranceActionInfo maxSlippage={maxSlippage} type={LEVERAGE} />
       </div>
 
       {/* actions */}

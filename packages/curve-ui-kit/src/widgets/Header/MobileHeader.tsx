@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 import AppBar from '@mui/material/AppBar'
 import Drawer from '@mui/material/Drawer'
 import Stack from '@mui/material/Stack'
@@ -6,6 +6,7 @@ import Toolbar from '@mui/material/Toolbar'
 import { recordEntries } from '@primitives/objects.utils'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { usePathname } from '@ui-kit/hooks/router'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK, routeToPage } from '@ui-kit/shared/routes'
 import { GlobalBanner } from '@ui-kit/shared/ui/GlobalBanner'
@@ -38,9 +39,7 @@ export const MobileHeader = ({
   supportedNetworks,
   networkId,
 }: HeaderImplementationProps) => {
-  const [isSidebarOpen, setSidebarOpen] = useState(false)
-  const closeSidebar = useCallback(() => setSidebarOpen(false), [])
-  const toggleSidebar = useCallback(() => setSidebarOpen(isOpen => !isOpen), [])
+  const [isSidebarOpen, , closeSidebar, toggleSidebar] = useSwitch(false)
   const pathname = usePathname()
   const top = useLayoutStore(state => state.navHeight)
 

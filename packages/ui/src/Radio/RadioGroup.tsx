@@ -22,7 +22,7 @@ export const RadioGroup = ({
 
   return (
     <RadioGroupContainer data-testid={`radio-group-${testId}`} {...radioGroupProps} className={className}>
-      <RadioContext.Provider value={state}>{children}</RadioContext.Provider>
+      <RadioContext value={state}>{children}</RadioContext>
     </RadioGroupContainer>
   )
 }

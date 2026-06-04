@@ -54,7 +54,7 @@ export const UserPositionsMarketRateTable = ({
   const { label, defaultSort, sortQueryField, storageKey } = TABLE_CONFIG[marketRateType]
   const [sorting, onSortingChange] = useSortFromQueryString(defaultSort, sortQueryField)
   const { columnVisibility } = useLlamaTableVisibility(storageKey, sorting, marketRateType)
-  const [expanded, onExpandedChange] = useState<ExpandedState>({})
+  const [expanded, setExpanded] = useState<ExpandedState>({})
 
   const table = useTable({
     columns: LLAMA_MARKET_COLUMNS,
@@ -62,7 +62,7 @@ export const UserPositionsMarketRateTable = ({
     state: { expanded, sorting, columnVisibility },
     initialState: { pagination },
     onSortingChange,
-    onExpandedChange,
+    onExpandedChange: setExpanded,
     ...getTableOptions(data),
   })
   return (
@@ -72,6 +72,8 @@ export const UserPositionsMarketRateTable = ({
         max: DEFAULT_VISIBLE_ROWS,
         buttonLabel: t`View all ${data.length} ${marketRateType.toLowerCase()} positions`,
       }}
+      // with two user positions tables let's avoid having too many skeletons rows when loading
+      increasingLengthOptions={{ initialLength: 1, maxLength: 3 }}
       emptyState={
         <UserPositionsEmptyState
           state={getEmptyState(!!error)}

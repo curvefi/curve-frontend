@@ -5,10 +5,10 @@ import type { RouteResponse } from '@ui-kit/entities/router-api'
 
 export type StepKey = 'APPROVAL' | 'SWAP'
 
-export interface Route extends IRouteStep {
+export type Route = {
   name: string
   routeUrlId: string
-}
+} & IRouteStep
 
 export type ExchangeRate = {
   from: string
@@ -18,25 +18,25 @@ export type ExchangeRate = {
   label: string
 }
 
-export type RoutesAndOutputModal = {
-  [key: string]:
-    | {
-        lowExchangeRate: boolean
-        title: string
-        exchangeRate: string
-      }
-    | {
-        priceImpact: boolean
-        title: string
-        value: string
-      }
-    | {
-        priceImpactLowExchangeRate: boolean
-        title: string
-        value: string
-        exchangeRate: string
-      }
-}
+export type RoutesAndOutputModal = Record<
+  string,
+  | {
+      lowExchangeRate: boolean
+      title: string
+      exchangeRate: string
+    }
+  | {
+      priceImpact: boolean
+      title: string
+      value: string
+    }
+  | {
+      priceImpactLowExchangeRate: boolean
+      title: string
+      value: string
+      exchangeRate: string
+    }
+>
 
 export type RoutesAndOutput = Pick<RouteResponse, 'router' | 'priceImpact'> & {
   loading: boolean
@@ -62,6 +62,7 @@ export type FormStatus = {
   formProcessing: boolean
   formTypeCompleted: 'APPROVE' | 'SWAP' | ''
   step: StepKey | ''
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   error: AlertFormErrorKey | string
   swapError: string
 }

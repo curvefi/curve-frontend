@@ -44,7 +44,7 @@ export const SelectTokenButton = ({
   onSelectionChange,
 }: Props) => {
   const { data: network } = useNetworkByChain({ chainId })
-  const visibleTokens = useRef<{ [k: string]: boolean }>({})
+  const visibleTokensRef = useRef<Record<string, boolean>>({})
   const overlayTriggerState = useOverlayTriggerState({})
   const openButtonRef = useRef<HTMLButtonElement>(null)
   const { buttonProps: openButtonProps } = useButton({ onPress: () => overlayTriggerState.open() }, openButtonRef)
@@ -71,7 +71,7 @@ export const SelectTokenButton = ({
   ].map(({ address, symbol }) => ({ chain: blockchainId, address: address as Address, symbol }))
 
   if (!overlayTriggerState.isOpen) {
-    visibleTokens.current = {}
+    visibleTokensRef.current = {}
   }
 
   // handles search/filtering
@@ -114,6 +114,7 @@ export const SelectTokenButton = ({
           updateUserAddedTokens(filterValueLowerCase, token[0].symbol, false, isBasePool)
         } catch (error) {
           console.warn(error)
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
           setError(error)
         }
       }
@@ -130,6 +131,7 @@ export const SelectTokenButton = ({
     setFilterValue('')
     setError(undefined)
     if (isMobile) {
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
       delayAction(overlayTriggerState.close)
     } else {
       overlayTriggerState.close()

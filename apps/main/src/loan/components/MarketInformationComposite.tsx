@@ -1,4 +1,5 @@
 import { AdvancedDetails, MarketInfoLayout } from '@/llamalend/features/market-advanced-information'
+import { MarketFaq } from '@/llamalend/features/market-faq'
 import { CrvUsdPriceChart } from '@/llamalend/widgets/CrvUsdPriceChart'
 import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
 import { ChartAndActivityComp } from '@/loan/components/ChartAndActivityComp'
@@ -45,16 +46,18 @@ export const MarketInformationComposite = ({
         <AdvancedDetails
           chainId={chainId}
           marketId={marketId}
-          market={market || undefined}
+          market={market ?? undefined}
           marketType={LlamaMarketType.Mint}
         />
         <MarketInfoLayout
           chainId={chainId}
           marketType={LlamaMarketType.Mint}
-          market={market || undefined}
+          market={market ?? undefined}
           network={networks[chainId]}
         />
       </CardContent>
     </Card>
+
+    <MarketFaq />
   </Stack>
 )

@@ -1,4 +1,4 @@
-import { Contract, Interface, JsonRpcProvider } from 'ethers'
+import { Contract, Interface, type InterfaceAbi, JsonRpcProvider } from 'ethers'
 import { useCallback, useEffect } from 'react'
 import { type State, useStore } from '@/dex/store/useStore'
 import { PoolDataCacheOrApi, Provider } from '@/dex/types/main.types'
@@ -16,7 +16,7 @@ export const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi): Pool
   const staked = useStore(state => state.pools.stakedMapper[address])
   const setStateByActiveKey = useStore(state => state.pools.setStateByActiveKey)
   const { data: networks } = useNetworks()
-  const { rpcUrl } = (curveApi && networks[curveApi.chainId]) || {}
+  const { rpcUrl } = (curveApi && networks[curveApi.chainId]) ?? {}
 
   const updateTotalStakeValue = useCallback(
     (value: { totalStakedPercent: string | number; gaugeTotalSupply: number | string }) => {
@@ -28,9 +28,10 @@ export const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi): Pool
   const getContract = useCallback(
     async (contract: string, address: string, provider: Provider | JsonRpcProvider) => {
       try {
-        const abi = await import(`@/dex/components/PagePool/abis/${contract}.json`).then(module => module.default.abi)
-        const iface = new Interface(abi)
-        return new Contract(address, iface.format(), provider)
+        const abi = await import(`@/dex/components/PagePool/abis/${contract}.json`).then(
+          (module: { default: { abi: InterfaceAbi } }) => module.default.abi,
+        )
+        return new Contract(address, new Interface(abi).format(), provider)
       } catch (error) {
         updateTotalStakeValue({ totalStakedPercent: 'N/A', gaugeTotalSupply: 'N/A' })
         console.error(error)
@@ -42,6 +43,7 @@ export const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi): Pool
   const getTotalSupply = useCallback(
     async (poolContract: Contract, gaugeContract: Contract) => {
       try {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
         const [lpTokenTotalSupply, gaugeTotalSupply] = await Promise.all([
           poolContract.totalSupply(),
           gaugeContract.totalSupply(),
@@ -63,7 +65,7 @@ export const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi): Pool
 
     if (address && rpcUrl && shouldCallApi) {
       void (async () => {
-        const provider = walletProvider || new JsonRpcProvider(rpcUrl)
+        const provider = walletProvider ?? new JsonRpcProvider(rpcUrl)
         const gaugeContract = isValidAddress(gauge.address)
           ? await getContract('gaugeTotalSupply', gauge.address, provider)
           : null

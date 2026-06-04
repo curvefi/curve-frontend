@@ -43,14 +43,15 @@ const BridgeForm = (props: BridgeFormContentParams) => {
   const [fromChainId, setFromChainId] = useState(SupportedNetworks[0].chainId)
   const [amount, setAmount] = useState<Decimal | undefined>(undefined)
   const [loading, setLoading] = useState(true)
-  const [walletBalance, setWalletBalance] = useState({
-    balance: '1234' as Decimal,
+  const [walletBalance, setWalletBalance] = useState<{ balance: Decimal; loading: boolean; notionalValueUsd: number }>({
+    balance: '1234',
     loading: true,
     notionalValueUsd: 500,
   })
 
   // Simulate loading at start
   useEffect(() => {
+    // eslint-disable-next-line @eslint-react/web-api-no-leaked-timeout -- Existing violation before enabling this rule.
     setTimeout(() => {
       setLoading(false)
       setWalletBalance({ ...walletBalance, loading: false })

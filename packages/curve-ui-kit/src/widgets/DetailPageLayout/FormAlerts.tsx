@@ -13,13 +13,17 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { type QueryProp } from '@ui-kit/types/util'
 import { formatPercent, getErrorMessage } from '@ui-kit/utils'
 import { getPriceImpactSeverity } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
+import type { SlippageType } from '@ui-kit/widgets/SlippageSettings'
 
 type FormErrors<Field extends string> = readonly (readonly [Field, string])[]
 
 type FormAlertProps<Field extends string> = {
+  /** Error that occurred during form submission. Only omit when there is no exception possible */
   error?: Error | null
-  formErrors: FormErrors<Field> // list of all form errors
-  handledErrors: readonly Field[] // list of fields that have their errors already handled/displayed elsewhere
+  /** List of form errors */
+  formErrors: FormErrors<Field>
+  /** List of fields that have their errors already displayed elsewhere */
+  handledErrors: readonly Field[]
 }
 
 const { Spacing } = SizesAndSpaces
@@ -70,13 +74,15 @@ export const HighPriceImpactAlert = ({
   priceImpact: { data, isLoading: isImpactLoading, error },
   max: { isLoading: isMaxLoading },
   values: { slippage },
+  slippageType,
 }: {
   priceImpact: QueryProp<Decimal | null>
   max: QueryProp<unknown> // dependent query that is necessary before the price impact query is even enabled
   values: { slippage: Decimal | undefined }
+  slippageType: SlippageType
 }) => {
   const isLoading = isImpactLoading || isMaxLoading // impact will only start loading after the max is available
-  const severity = getPriceImpactSeverity({ data }, { slippage })
+  const severity = getPriceImpactSeverity({ data }, { slippage, slippageType })
   const prevSeverity = usePreviousValue(severity)
   return error ? (
     <Alert severity="error" data-testid="high-price-impact-error">

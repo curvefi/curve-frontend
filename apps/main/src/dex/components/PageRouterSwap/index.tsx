@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { isEqual, noop } from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useConfig } from 'wagmi'
 import { FormConnectWallet } from '@/dex/components/FormConnectWallet'
@@ -23,7 +23,8 @@ import { getSlippageImpact } from '@/dex/utils/utilsSwap'
 import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybe } from '@primitives/objects.utils'
+import { assert, maybes } from '@primitives/objects.utils'
+import type { RouterRouteResponse } from '@primitives/router.utils'
 import { AlertBox } from '@ui/AlertBox'
 import { Icon } from '@ui/Icon'
 import { IconButton } from '@ui/IconButton'
@@ -49,12 +50,15 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q } from '@ui-kit/types/util'
 import { decimal, formatNumber, formatPercent } from '@ui-kit/utils'
 import { getPriceImpactDisplay } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
-import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
+import { SlippageToleranceActionInfo, type SlippageType } from '@ui-kit/widgets/SlippageSettings'
 
 const { Spacing } = SizesAndSpaces
 
 const formatExchangeRate = ({ from, to, value }: ExchangeRate) =>
   ['1', from, '=', +value ? formatNumber(value, { abbreviate: true, highPrecision: true }) : '-', to].join(' ')
+
+const getSlippageType = ({ isStableswapRoute }: RouterRouteResponse | RoutesAndOutput): SlippageType =>
+  isStableswapRoute ? 'stable' : 'crypto'
 
 export const QuickSwap = ({
   pageLoaded,
@@ -75,7 +79,7 @@ export const QuickSwap = ({
   redirect: (toAddress: string, fromAddress: string) => void
   curve: CurveApi | null
 }) => {
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
   const { signerAddress: userAddress } = curve ?? {}
   const { tokensNameMapper } = useTokensNameMapper(chainId)
   const poolDataMapper = useStore((state): PoolDataMapper | undefined => state.pools.poolsMapper[chainId])
@@ -100,9 +104,12 @@ export const QuickSwap = ({
   const gas = useEstimateGas(networks, chainId, formEstGas?.estimatedGas, !!userAddress)
 
   const routesAndOutput = userAddress ? rpcRoutesAndOutput : apiRoutes
-  const isStableswapRoute = routesAndOutput?.isStableswapRoute
-  const storeMaxSlippage = useUserProfileStore(state => state.maxSlippage[isStableswapRoute ? 'stable' : 'crypto'])
-  const slippageImpact = maybe(routesAndOutput, r => getSlippageImpact({ maxSlippage: storeMaxSlippage, ...r }))
+  const slippageType = routesAndOutput && getSlippageType(routesAndOutput)
+  const storeSlippage = useUserProfileStore(state => state.maxSlippage)
+  const maxSlippage = slippageType && storeSlippage[slippageType]
+  const slippageImpact = maybes([routesAndOutput, maxSlippage], ([r, maxSlippage]) =>
+    getSlippageImpact({ maxSlippage, ...r }),
+  )
 
   const [confirmedLoss, setConfirmedLoss] = useState(false)
   const [steps, setSteps] = useState<Step[]>([])
@@ -169,28 +176,24 @@ export const QuickSwap = ({
 
   const config = useConfig()
   const updateFormValues = useCallback(
-    (
-      updatedFormValues: Partial<FormValues>,
-      isGetMaxFrom?: boolean,
-      maxSlippage?: string,
-      isFullReset?: boolean,
-      isRefetch?: boolean,
-    ) => {
+    (updatedFormValues?: Partial<FormValues>, isGetMaxFrom?: boolean, isFullReset?: boolean, isRefetch?: boolean) => {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTxInfoBar(null)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setConfirmedLoss(false)
 
       void setFormValues(
         config,
         pageLoaded ? curve : null,
-        updatedFormValues,
+        updatedFormValues ?? {},
         searchedParams,
-        maxSlippage || storeMaxSlippage,
+        maxSlippage,
         isGetMaxFrom,
         isFullReset,
         isRefetch,
       )
     },
-    [config, curve, storeMaxSlippage, pageLoaded, searchedParams, setFormValues],
+    [config, curve, maxSlippage, pageLoaded, searchedParams, setFormValues],
   )
 
   const handleBtnClickSwap = useCallback(
@@ -198,7 +201,7 @@ export const QuickSwap = ({
       actionActiveKey: string,
       curve: CurveApi,
       formValues: FormValues,
-      maxSlippage: string,
+      maxSlippage: Decimal,
       isExpectedToAmount: boolean,
       toAmountOutput: string,
       searchedParams: SearchedParams,
@@ -215,7 +218,7 @@ export const QuickSwap = ({
 
       const resp = await fetchStepSwap(actionActiveKey, config, curve, formValues, searchedParams, maxSlippage)
 
-      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && !resp.error && network) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && !resp.error && network) {
         void refetchUserFromBalance()
         void refetchUserToBalance()
         const txMessage = t`Transaction complete. Received ${resp.swappedAmount} ${toSymbol}.`
@@ -223,7 +226,7 @@ export const QuickSwap = ({
           <TxInfoBar
             description={txMessage}
             txHash={scanTxPath(network, resp.hash)}
-            onClose={() => updateFormValues({}, false, '', true)}
+            onClose={() => updateFormValues({}, false, true)}
           />,
         )
       }
@@ -248,21 +251,22 @@ export const QuickSwap = ({
       const { fromAmount } = formValues
 
       const isValidFromAmount = +fromAmount > 0 && !formValues.fromError
-      const isValid =
-        typeof routesAndOutput !== 'undefined' && !routesAndOutput.loading && !formStatus.error && isValidFromAmount
+      const isValid = !!routesAndOutput && !routesAndOutput.loading && !formStatus.error && isValidFromAmount
       const isApproved = formStatus.isApproved || formStatus.formTypeCompleted === 'APPROVE'
       const isComplete = formStatus.formTypeCompleted === 'SWAP'
 
-      const stepsObj: { [k: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: getStepStatus(isApproved, step === 'APPROVAL', isValid && !formProcessing),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: async () => {
             const notifyMessage = t`Please approve spending your ${fromSymbol}.`
             const { dismiss } = notify(notifyMessage, 'pending')
-            await fetchStepApprove(activeKey, config, curve, formValues, searchedParams, storeMaxSlippage)
+            const slippage = assert(maxSlippage, `Max slippage must be set once we a route is found`)
+            await fetchStepApprove(activeKey, config, curve, formValues, searchedParams, slippage)
             if (typeof dismiss === 'function') dismiss()
           },
         },
@@ -287,16 +291,17 @@ export const QuickSwap = ({
                   ),
                   cancelBtnProps: {
                     label: t`Cancel`,
+                    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
                     onClick: () => setConfirmedLoss(false),
                   },
                   primaryBtnProps: {
                     onClick: () => {
-                      if (typeof routesAndOutput !== 'undefined') {
+                      if (routesAndOutput && maxSlippage) {
                         void handleBtnClickSwap(
                           activeKey,
                           curve,
                           formValues,
-                          storeMaxSlippage,
+                          maxSlippage,
                           !!slippageImpact?.isExpectedToAmount,
                           routesAndOutput.toAmountOutput,
                           searchedParams,
@@ -312,12 +317,12 @@ export const QuickSwap = ({
               }
             : {
                 onClick: () => {
-                  if (typeof routesAndOutput !== 'undefined') {
+                  if (routesAndOutput && maxSlippage) {
                     void handleBtnClickSwap(
                       activeKey,
                       curve,
                       formValues,
-                      storeMaxSlippage,
+                      maxSlippage,
                       !!slippageImpact?.isExpectedToAmount,
                       routesAndOutput.toAmountOutput,
                       searchedParams,
@@ -344,7 +349,7 @@ export const QuickSwap = ({
       config,
       confirmedLoss,
       fetchStepApprove,
-      storeMaxSlippage,
+      maxSlippage,
       handleBtnClickSwap,
       slippageImpact?.isExpectedToAmount,
       steps,
@@ -352,12 +357,12 @@ export const QuickSwap = ({
   )
 
   const lastFetchTimeRef = useRef<number>(0)
-  const fetchDataRef = useRef<() => void>(() => {})
+  const fetchDataRef = useRef<() => void>(noop)
 
   // Keep fetchDataRef always pointing to the latest fetchData logic
   fetchDataRef.current = () => {
     if (isReady && !formStatus.formProcessing && formStatus.formTypeCompleted !== 'SWAP') {
-      updateFormValues({}, false, '', false, true)
+      updateFormValues({}, false, false, true)
     }
   }
 
@@ -379,21 +384,21 @@ export const QuickSwap = ({
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
-      updateFormValues({}, false, '', true)
+      isSubscribedRef.current = false
+      updateFormValues()
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [])
 
   // maxSlippage
   useEffect(() => {
-    if (isReady) updateFormValues({}, false, storeMaxSlippage)
-    // Intentionally depend on raw profile slippage values, not storeMaxSlippage.
-    // storeMaxSlippage also changes when route metadata resolves, which can trigger a slippage/activeKey refresh loop.
-  }, [storeMaxSlippage, isReady, updateFormValues])
+    if (isReady && maxSlippage) updateFormValues()
+    // Intentionally depend on `storeSlippage`, not `maxSlippage` which changes when route metadata resolves - that can trigger a slippage/activeKey refresh loop.
+    // eslint-disable-next-line @eslint-react/exhaustive-deps
+  }, [storeSlippage, isReady, updateFormValues])
 
   // pageVisible re-fetch data
   useEffect(() => {
@@ -426,7 +431,8 @@ export const QuickSwap = ({
       toToken?.symbol ?? toToken?.address ?? '',
       fromToken?.symbol ?? fromToken?.address ?? '',
     )
-    setSteps(prev => (lodash.isEqual(prev, updatedSteps) ? prev : updatedSteps))
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
+    setSteps(prev => (isEqual(prev, updatedSteps) ? prev : updatedSteps))
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [isReady, confirmedLoss, routesAndOutput, formEstGas, formStatus, formValues, searchedParams, curve])
 
@@ -449,7 +455,7 @@ export const QuickSwap = ({
       error: null,
       isLoading: routesAndOutputLoading,
     },
-    { slippage: storeMaxSlippage as Decimal },
+    { slippage: maxSlippage, slippageType },
   )
 
   return (
@@ -481,6 +487,7 @@ export const QuickSwap = ({
             isOpen={!!isOpenFromToken}
             onOpen={openModalFromToken}
             onClose={closeModalFromToken}
+            size="small"
           >
             <TokenList
               tokens={tokens}
@@ -533,6 +540,7 @@ export const QuickSwap = ({
             isOpen={!!isOpenToToken}
             onOpen={openModalToToken}
             onClose={closeModalToToken}
+            size="small"
           >
             <TokenList
               tokens={tokens}
@@ -553,9 +561,9 @@ export const QuickSwap = ({
       <Stack sx={{ gap: Spacing.xs }}>
         <Stack>
           <SlippageToleranceActionInfo
-            maxSlippage={storeMaxSlippage}
+            maxSlippage={maxSlippage}
             type={['stable', 'crypto']}
-            active={isStableswapRoute ? 'stable' : 'crypto'}
+            active={slippageType}
             size="small"
           />
           <ActionInfo
@@ -588,13 +596,13 @@ export const QuickSwap = ({
       <RouterSwapAlerts
         formStatus={formStatus}
         formValues={formValues}
-        maxSlippage={storeMaxSlippage}
+        maxSlippage={maxSlippage}
         isHighImpact={slippageImpact?.isHighImpact}
         isExpectedToAmount={slippageImpact?.isExpectedToAmount}
         toAmountOutput={routesAndOutput?.toAmountOutput}
         isExchangeRateLow={routesAndOutput?.isExchangeRateLow}
         searchedParams={searchedParams}
-        updateFormValues={updateFormValues}
+        onClose={() => updateFormValues()}
       />
       {/* actions */}
       <FormConnectWallet loading={!!userAddress && !steps.length}>
@@ -613,5 +621,6 @@ function _isRoutesAndOutputLoading(
   if (typeof routesAndOutput !== 'undefined') {
     return routesAndOutput.loading
   }
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   return !error && ((isFrom && +fromAmount > 0) || (!isFrom && +toAmount > 0))
 }

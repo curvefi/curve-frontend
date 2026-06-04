@@ -14,7 +14,7 @@ import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { formatNumber, shortenAddress } from '@ui-kit/utils'
 import { GAUGE_VOTES_LABELS } from '../constants'
 
-interface UserGaugeVotesTableProps {
+type UserGaugeVotesTableProps = {
   userAddress: string
   tableMinWidth: number
 }
@@ -51,7 +51,7 @@ export const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVot
         sortBy={userGaugeVotesSortBy}
         errorMessage={t`An error occurred while fetching user gauge votes.`}
         setSortBy={key => setUserGaugeVotesSortBy(key as UserGaugeVotesSortBy)}
-        getData={() => invalidateUserGaugeVoteQuery({ userAddress })}
+        getData={() => void invalidateUserGaugeVoteQuery({ userAddress })}
         noDataMessage={t`No gauge votes found for this user.`}
         gridTemplateColumns={gridTemplateColumns}
         renderRow={(gaugeVote, index) => (

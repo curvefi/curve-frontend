@@ -26,7 +26,7 @@ export const SelectFilter = <T extends string>({
 }) => {
   const selectRef = useRef<HTMLDivElement | null>(null)
   const menuRef = useRef<HTMLLIElement | null>(null)
-  const [selectWidth] = useResizeObserver(selectRef) ?? []
+  const [selectWidth] = useResizeObserver(selectRef)
   const [isOpen, open, close] = useSwitch(false)
   const selectedOption = useMemo(() => options.find(option => option.id === value), [options, value])
 

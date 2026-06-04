@@ -7,21 +7,26 @@ import { formatNumber, amount } from '@ui-kit/utils'
 
 export const GaugesBarChartCustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
   if (active && payload?.length) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
     const sevenDayDelta = payload[0].payload.gauge_relative_weight_7d_delta
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
     const sixtyDayDelta = payload[0].payload.gauge_relative_weight_60d_delta
 
     return (
       <TooltipWrapper>
+        {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule. */}
         <TooltipTitle>{payload[0].payload.title}</TooltipTitle>
         <Box flex flexColumn flexGap={'var(--spacing-1)'}>
           <TooltipColumn>
             <TooltipDataTitle>{t`Relative Weight`}</TooltipDataTitle>
+            {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule. */}
             <TooltipData>{payload[0].payload.gauge_relative_weight}%</TooltipData>
           </TooltipColumn>
           <TooltipColumn>
             <TooltipDataTitle>{t`Gauge weight 7d delta`}</TooltipDataTitle>
             {sevenDayDelta ? (
               <TooltipData className={sevenDayDelta > 0 ? 'positive' : 'negative'}>
+                {/* eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule. */}
                 {formatNumber(amount(sevenDayDelta), { abbreviate: true, fallback: '-' })}%
               </TooltipData>
             ) : (
@@ -32,6 +37,7 @@ export const GaugesBarChartCustomTooltip = ({ active, payload }: TooltipProps<Va
             <TooltipDataTitle>{t`Gauge weight 60d delta`}</TooltipDataTitle>
             {sixtyDayDelta ? (
               <TooltipData className={sixtyDayDelta > 0 ? 'positive' : 'negative'}>
+                {/* eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule. */}
                 {formatNumber(amount(sixtyDayDelta), { abbreviate: true, fallback: '-' })}%
               </TooltipData>
             ) : (

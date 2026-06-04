@@ -28,8 +28,10 @@ export const DetailInfoExpectedApy = ({
       const gaugeTotalSupplyInEther = weiToEther(Number(gaugeTotalSupply))
       const newGaugeTotalLocked = Number(lpTokenAmount) + gaugeTotalSupplyInEther
       const newCrvApr = (gaugeTotalSupplyInEther / newGaugeTotalLocked) * crvApr
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setNewCrvApr({ ratio: crvApr / newCrvApr, apr: newCrvApr })
     } else {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setNewCrvApr(null)
     }
   }, [crvApr, gaugeTotalSupply, lpTokenAmount])

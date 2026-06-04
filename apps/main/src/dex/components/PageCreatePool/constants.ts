@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'bignumber.js'
 import { t } from '@ui-kit/lib/i18n'
 import type { NgAssetType, SwapType } from './types'
 
@@ -14,8 +14,9 @@ export const TOKEN_F = 'tokenF'
 export const TOKEN_G = 'tokenG'
 export const TOKEN_H = 'tokenH'
 
-type PRESETS = {
-  [index: number]: {
+type PRESETS = Record<
+  number,
+  {
     name: string
     descriptionName: string
     description: string
@@ -34,7 +35,7 @@ type PRESETS = {
       maHalfTime: string
     }
   }
-}
+>
 
 export const ORACLE_DECIMALS = 18
 

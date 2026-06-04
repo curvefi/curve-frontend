@@ -38,6 +38,7 @@ export const FeesBarChart = ({ data, height = 500 }: FeesBarChartProps) => (
         tickLine={{ opacity: 0.3, strokeWidth: 0.3 }}
         axisLine={{ opacity: 0.3, strokeWidth: 0.3 }}
         tickFormatter={value =>
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
           `${formatNumber(amount(value), { ...(value > 10 && { decimals: 0 }), abbreviate: false, fallback: '-' })}`
         }
         tickCount={10}
@@ -45,6 +46,7 @@ export const FeesBarChart = ({ data, height = 500 }: FeesBarChartProps) => (
       <Tooltip content={FeesBarChartTooltip} cursor={{ opacity: 0.3 }} />
       <Bar dataKey="feesUsd" label={false} fill={'var(--primary-300)'} isAnimationActive={false}>
         {data.map((_entry, index) => (
+          // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
           <Cell key={`$cell-${index}`} fill={'var(--primary-300)'} />
         ))}
       </Bar>

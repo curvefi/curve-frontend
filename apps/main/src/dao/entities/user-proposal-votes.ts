@@ -16,9 +16,7 @@ export type UserProposalVoteFormatted = {
   voteTotalSupply: number
 }
 
-type UserProposalVotesMapper = {
-  [proposalKey: string]: UserProposalVoteFormatted
-}
+type UserProposalVotesMapper = Record<string, UserProposalVoteFormatted>
 
 const _fetchUserProposalVotes = async ({ userAddress }: { userAddress: string }) => {
   const results: UserProposalVote[] = await paginate(

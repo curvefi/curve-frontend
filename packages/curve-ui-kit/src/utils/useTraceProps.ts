@@ -7,6 +7,7 @@ export function useTraceProps<T extends Record<string, unknown>>(name: string, p
   const propsRef = useRef<T>(props)
   useEffect(() => {
     const { current: previousProps } = propsRef
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
     const changedProps: Record<string, [unknown, unknown]> = Object.fromEntries(
       Object.keys(props)
         .map(key => [key, [previousProps[key], props[key]]])

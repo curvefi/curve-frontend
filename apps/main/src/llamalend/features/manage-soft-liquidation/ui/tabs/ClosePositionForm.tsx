@@ -56,6 +56,7 @@ export const ClosePositionForm = ({
   return (
     <Form
       {...form}
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
       onSubmit={onSubmit}
       footer={
         <ClosePositionInfoList
@@ -81,10 +82,10 @@ export const ClosePositionForm = ({
           !isLoading &&
           collateralToRecover != null && (
             <>
-              <TableCell sx={{ borderBottom: 'none', padding: Spacing.md }}>
+              <TableCell sx={{ padding: Spacing.md }}>
                 <LabelCellDisplay label={t`You recover`} isFooter />
               </TableCell>
-              <TableCell sx={{ borderBottom: 'none', padding: Spacing.md }}>
+              <TableCell sx={{ padding: Spacing.md }}>
                 <ValueCellDisplay tokens={collateralToRecover} isFooter testId="you-recover" />
               </TableCell>
             </>

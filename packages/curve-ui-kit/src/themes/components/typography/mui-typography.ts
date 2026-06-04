@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference -- referring to a type definition file
 /// <reference path="./mui-typography.d.ts" />
 import type { Components } from '@mui/material/styles'
 import type { DesignSystem } from '@ui-kit/themes/design'
@@ -22,6 +23,9 @@ const variantMapping = {
   buttonXs: 'span',
   buttonS: 'span',
   buttonM: 'span',
+  buttonTabsS: 'span',
+  buttonTabsM: 'span',
+  buttonTabsL: 'span',
 
   tableHeaderM: 'p',
   tableHeaderS: 'p',

@@ -78,6 +78,7 @@ export const TopHoldersBarChart = ({ data, filter }: TopHoldersBarChartProps) =>
             interval={0}
             tick={{ fill: 'var(--page--text-color)', fontWeight: 'var(--bold)', fontSize: 'var(--font-size-1)' }}
             tickFormatter={value =>
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
               filter === 'weightRatio' ? `${value}%` : formatNumber(amount(value), { abbreviate: true, fallback: '-' })
             }
             tickLine={{ opacity: 0.3, strokeWidth: 0.3 }}
@@ -87,6 +88,7 @@ export const TopHoldersBarChart = ({ data, filter }: TopHoldersBarChartProps) =>
           <Tooltip content={CustomTooltip} cursor={{ opacity: 0.3 }} />
           <Bar dataKey={filter} label={false} isAnimationActive={false}>
             {dataFormatted.map((_entry, index) => (
+              // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
             ))}
           </Bar>

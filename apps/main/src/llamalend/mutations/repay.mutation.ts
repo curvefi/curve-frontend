@@ -119,6 +119,7 @@ export const useRepayMutation = ({ network, network: { chainId }, marketId, user
   })
 
   const onSubmit = useCallback(
+    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
     async ({ userBorrowed = '0', isFull, ...form }: RepayFormData) =>
       mutate({
         ...form,

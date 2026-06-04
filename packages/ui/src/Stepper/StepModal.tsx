@@ -5,9 +5,9 @@ import { Box } from '@ui/Box'
 import { ModalDialog } from '@ui/Dialog/ModalDialog'
 import type { StepActionModal } from '@ui/Stepper/types'
 
-interface StepModalProps extends Pick<StepActionModal, 'modal'> {
+type StepModalProps = {
   overlayTriggerState: OverlayTriggerState
-}
+} & Pick<StepActionModal, 'modal'>
 
 export const StepModal = ({ modal, overlayTriggerState }: StepModalProps) => {
   const { title, testId, content, cancelBtnProps, primaryBtnProps, primaryBtnLabel } = modal

@@ -8,7 +8,7 @@ import { NumericTextField, NumericTextFieldProps } from '../NumericTextField'
 
 const { Spacing } = SizesAndSpaces
 
-const sizes = ['tiny', 'small', 'medium'] satisfies NonNullable<NumericTextFieldProps['size']>[]
+const sizes = ['tiny', 'small', 'medium', 'extraLarge'] satisfies NonNullable<NumericTextFieldProps['size']>[]
 const variants = ['outlined', 'standard'] satisfies NonNullable<NumericTextFieldProps['variant']>[]
 
 const NumericTextFieldWrapper = (props: NumericTextFieldProps) => {
@@ -52,7 +52,7 @@ const meta: Meta<typeof NumericTextField> = {
     },
     size: {
       control: 'select',
-      options: ['tiny', 'small', 'medium'],
+      options: sizes,
       description: 'Size of the input field',
     },
     variant: {
@@ -177,7 +177,7 @@ export const VariantsBySize: Story = {
     >
       {variants.flatMap(variant =>
         sizes.map(size => (
-          <Grid key={`${variant}-${size}`} size={4}>
+          <Grid key={`${variant}-${size}`} size={3}>
             <NumericTextFieldWrapper
               value="123456"
               min="0"

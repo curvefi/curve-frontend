@@ -49,7 +49,7 @@ export const TokenSelector = ({
             token.decimals == 18 &&
             !!aliasesCrv &&
             ![
-              ...Object.keys(gaugeRewardsDistributors || {}), // Tokens already added as reward
+              ...Object.keys(gaugeRewardsDistributors ?? {}), // Tokens already added as reward
               zeroAddress,
               ethAddress,
               aliasesCrv,

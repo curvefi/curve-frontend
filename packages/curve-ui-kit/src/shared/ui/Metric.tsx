@@ -50,7 +50,7 @@ const MetricChangeSize = {
   extraLarge: 'highlightM',
 } as const satisfies Record<string, TypographyVariantKey>
 
-// eslint-disable-next-line react-refresh/only-export-components
+// eslint-disable-next-line react-refresh/only-export-components -- Existing violation before enabling this rule.
 export const SIZES = Object.keys(MetricSize) as (keyof typeof MetricSize)[]
 
 type Notional = Omit<NumberFormatOptions, 'abbreviate'> & {
