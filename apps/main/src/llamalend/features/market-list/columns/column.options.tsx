@@ -54,6 +54,12 @@ const createLlamaMarketsColumnOptions = ({
         enabled: true,
       },
       {
+        label: t`Solvency`,
+        columns: [LlamaMarketColumnId.SolvencyPercent],
+        active: false,
+        enabled: true,
+      },
+      {
         label: t`Total Debt`,
         columns: [LlamaMarketColumnId.TotalDebt],
         active: false,

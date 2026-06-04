@@ -1,11 +1,12 @@
 import { ReactNode } from 'react'
 import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
+import { SolvencyTooltip } from '@/llamalend/widgets/tooltips'
 import { type ColumnMeta, createColumnHelper, FilterFnOption } from '@tanstack/react-table'
 import { type DeepKeys } from '@tanstack/table-core'
 import { t } from '@ui-kit/lib/i18n'
 import type { ColumnDefinition } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { boolFilterFn, listNotEmptyFilterFn, multiFilterFn, rangeFilterFn } from '@ui-kit/shared/ui/DataTable/filters'
-import { MarketRateType } from '@ui-kit/types/market'
+import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 import { AVERAGE_CATEGORIES } from '@ui-kit/utils'
 import { LlamaMarket } from '../../../queries/market-list/llama-markets'
 import {
@@ -20,6 +21,7 @@ import {
   PercentCell,
   PriceCell,
   RateCell,
+  SolvencyCell,
   TvlCell,
   UtilizationCell,
 } from '../cells'
@@ -89,6 +91,7 @@ export const LLAMA_MARKET_TITLES: Record<LlamaMarketColumnId, string> = {
   [LlamaMarketColumnId.MaxLtv]: t`Max LTV`,
   [LlamaMarketColumnId.MaxLeverage]: t`Max Leverage`,
   [LlamaMarketColumnId.UtilizationPercent]: t`Utilization`,
+  [LlamaMarketColumnId.SolvencyPercent]: t`Solvency`,
   [LlamaMarketColumnId.LiquidityUsd]: t`Available Liquidity`,
   [LlamaMarketColumnId.Tvl]: t`TVL`,
   [LlamaMarketColumnId.TotalDebt]: t`Total Debt`,
@@ -180,6 +183,20 @@ export const LLAMA_MARKET_COLUMNS = [
       tooltip: createTooltip(LlamaMarketColumnId.UtilizationPercent, <UtilizationHeaderTooltipContent />),
     },
     filterFn: rangeFilterFn,
+  }),
+  createColumnHelper<LlamaMarket>().accessor(({ solvencyPercent }) => solvencyPercent ?? undefined, {
+    id: LlamaMarketColumnId.SolvencyPercent,
+    header: LLAMA_MARKET_TITLES[LlamaMarketColumnId.SolvencyPercent],
+    cell: SolvencyCell,
+    meta: {
+      type: 'numeric',
+      unit: 'percentage',
+      tooltip: createTooltip(
+        LlamaMarketColumnId.SolvencyPercent,
+        <SolvencyTooltip marketType={LlamaMarketType.Lend} />,
+      ),
+    },
+    sortUndefined: 'last',
   }),
   accessor(LlamaMarketColumnId.LiquidityUsd, LlamaMarketColumnId.LiquidityUsd, {
     cell: LiquidityUsdCell,
