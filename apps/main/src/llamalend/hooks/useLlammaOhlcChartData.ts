@@ -8,7 +8,7 @@ import {
   useOhlcQueryAdapter,
 } from '@ui-kit/features/candle-chart/hooks/useOhlcQueries'
 import type { TimeOption } from '@ui-kit/features/candle-chart/types'
-import { applyLatestOraclePrice, flattenOhlcPages } from '@ui-kit/features/candle-chart/utils'
+import { applyLatestOraclePrice, flattenOhlcPagesChronologically } from '@ui-kit/features/candle-chart/utils'
 import { q, useMappedQuery } from '@ui-kit/types/util'
 import {
   type LlammaOhlcPage,
@@ -41,8 +41,8 @@ const selectOraclePoolOhlcData = (page: OraclePoolOhlcPage) => page.ohlcData
 const selectOraclePoolOraclePriceData = (page: OraclePoolOhlcPage) => page.oraclePriceData
 const selectLlammaOraclePriceData = (page: LlammaOhlcPage) => page.oraclePriceData
 const selectOraclePoolChartData = (pages: OraclePoolOhlcPage[] | undefined) => ({
-  ohlcData: flattenOhlcPages(pages, selectOraclePoolOhlcData),
-  oraclePriceData: flattenOhlcPages(pages, selectOraclePoolOraclePriceData),
+  ohlcData: flattenOhlcPagesChronologically(pages, selectOraclePoolOhlcData),
+  oraclePriceData: flattenOhlcPagesChronologically(pages, selectOraclePoolOraclePriceData),
 })
 
 export const useLlammaOhlcChartData = ({

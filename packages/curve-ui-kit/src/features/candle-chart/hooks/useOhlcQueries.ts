@@ -2,7 +2,7 @@ import { useCallback, useMemo, useRef } from 'react'
 import { type InfiniteData, type QueryKey, useInfiniteQuery } from '@tanstack/react-query'
 import { createOhlcPageParam, getNextOhlcPageParam, type OhlcPageParam, type OhlcPageResult } from '../query-utils'
 import type { TimeOption } from '../types'
-import { flattenOhlcPages } from '../utils'
+import { flattenOhlcPagesChronologically } from '../utils'
 
 type UseOhlcInfiniteQueryParams<TPage extends OhlcPageResult, TQueryKey extends QueryKey> = {
   anchorEnd: number
@@ -141,7 +141,7 @@ export const useOhlcPagesAdapter = <TPage, TData>({ query, selectData }: UseOhlc
 }
 
 export const useOhlcQueryAdapter = <TPage, TItem>({ query, selectItems }: UseOhlcQueryAdapterParams<TPage, TItem>) =>
-  useOhlcPagesAdapter({ query, selectData: pages => flattenOhlcPages(pages, selectItems) })
+  useOhlcPagesAdapter({ query, selectData: pages => flattenOhlcPagesChronologically(pages, selectItems) })
 
 const createOhlcAnchorEnd = (_resetKey: string) => Math.floor(Date.now() / 1000)
 
