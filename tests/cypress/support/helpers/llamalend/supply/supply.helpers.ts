@@ -2,7 +2,7 @@ import type { Address } from 'viem'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
-import { formatNumber, formatPercent, Chain } from '@ui-kit/utils'
+import { formatNumber, Chain } from '@ui-kit/utils'
 import { getActionValue } from '../action-info.helpers'
 
 type SupplyRpcTestMarket = {
@@ -124,10 +124,10 @@ export const checkSupplyActionInfoValues = ({
   cy.get('[data-testid="supply-action-info-list"]').should('be.visible')
 
   if (supplyApy != null) {
-    getActionValue('supply-apy').should('equal', formatPercent(supplyApy as Decimal))
+    getActionValue('supply-apy').should('equal', formatNumber(supplyApy as Decimal, 'percent.rate'))
   }
   if (prevSupplyApy != null) {
-    getActionValue('supply-apy', 'previous').should('equal', formatPercent(prevSupplyApy as Decimal))
+    getActionValue('supply-apy', 'previous').should('equal', formatNumber(prevSupplyApy as Decimal, 'percent.rate'))
   }
   if (vaultShares != null) {
     getActionValue('supply-vault-shares').should('equal', formatNumber(vaultShares as Decimal, { abbreviate: true }))

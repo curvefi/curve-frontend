@@ -56,11 +56,7 @@ export const DetailInfoEstGas = ({
   return (
     <DetailInfo isDivider={isDivider} loading={loading} loadingSkeleton={[50, 20]} label={Label} tooltip={Tooltip}>
       {estGasCost &&
-        (estGasCostUsd ? (
-          <span>{formatNumber(estGasCostUsd, { unit: 'dollar', abbreviate: false })}</span>
-        ) : (
-          t`Unable to get USD rate`
-        ))}
+        (estGasCostUsd ? <span>{formatNumber(estGasCostUsd, 'usd.amount')}</span> : t`Unable to get USD rate`)}
     </DetailInfo>
   )
 }

@@ -18,7 +18,7 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import type { LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
 import { SelectTimeOption } from '@ui-kit/shared/ui/Chart/SelectTimeOption'
-import { formatUsd } from '@ui-kit/utils'
+import { formatNumber } from '@ui-kit/utils'
 import { useCrvUsdSupply } from '../queries/useCrvUsdSupply.query'
 
 /**
@@ -110,9 +110,9 @@ export function ChartCrvUsdSupplyBreakdown() {
       createChartOptions({
         legendSets,
         options: {
-          tooltip: createTooltip(value => formatUsd(value)),
+          tooltip: createTooltip(value => formatNumber(value, 'usd.notional')),
           xAxis: { data: chartData.map(x => x.time).map(timeToCategory) },
-          yAxis: { axisLabel: { formatter: (v: number) => formatUsd(v) } },
+          yAxis: { axisLabel: { formatter: (v: number) => formatNumber(v, 'usd.notional') } },
           series: [
             {
               name: MINT_MARKETS_LABEL,

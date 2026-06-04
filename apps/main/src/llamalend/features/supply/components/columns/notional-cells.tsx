@@ -5,13 +5,14 @@ import { t } from '@ui-kit/lib/i18n'
 import { type TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
-import { formatUsd, type SxProps } from '@ui-kit/utils'
+import { formatNumber, type SxProps } from '@ui-kit/utils'
 
 type NotionalCellData = TableItem & {
   isLoading?: boolean // used for partial loading states e.g. notional rates
 }
 
-const formatNotional = (notional: number | undefined) => (notional == null ? '-' : formatUsd(notional))
+const formatNotional = (notional: number | undefined) =>
+  notional == null ? '-' : formatNumber(notional, 'usd.notional')
 
 const NotionalTypographyWithSkeleton = ({
   notional,

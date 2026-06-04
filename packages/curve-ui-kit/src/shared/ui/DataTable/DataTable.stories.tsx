@@ -15,8 +15,8 @@ import { EmptyStateRow } from './EmptyStateRow'
 const { Spacing } = SizesAndSpaces
 
 const formatTokenAmount = (value: number, symbol: string) => `${formatNumber(value, { abbreviate: false })} ${symbol}`
-const formatPercentage = (value: number) => formatNumber(value, { unit: 'percentage', abbreviate: false })
-const formatUsd = (value: number) => formatNumber(value, { unit: 'dollar', abbreviate: true })
+const formatPercentage = (value: number) => formatNumber(value, 'percent.value')
+const formatUsdNotional = (value: number) => formatNumber(value, 'usd.notional')
 
 type MarketRow = TableItem & {
   id: number
@@ -112,19 +112,19 @@ const createMarketColumns = (extraColumnCount = 0): ColumnDefinition<MarketRow>[
   }),
   columnHelper.accessor('liquidity', {
     header: 'Available Liquidity',
-    cell: ({ row }) => formatUsd(row.original.liquidity),
+    cell: ({ row }) => formatUsdNotional(row.original.liquidity),
     meta: { type: 'numeric' },
   }),
   columnHelper.accessor('totalDebt', {
     header: 'Total Debt',
-    cell: ({ row }) => formatUsd(row.original.totalDebt),
+    cell: ({ row }) => formatUsdNotional(row.original.totalDebt),
     meta: { type: 'numeric' },
   }),
   ...Array.from({ length: extraColumnCount }, (_, index) =>
     columnHelper.accessor(row => row.extraMetrics[index], {
       id: `extraMetric${index + 1}`,
       header: `Metric ${index + 1}`,
-      cell: ({ row }) => formatUsd(row.original.extraMetrics[index]),
+      cell: ({ row }) => formatUsdNotional(row.original.extraMetrics[index]),
       meta: { type: 'numeric' },
     }),
   ),

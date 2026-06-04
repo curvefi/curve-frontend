@@ -31,13 +31,9 @@ export const PoolRewardsCrv = ({
       if (base < 0.01) return '< 0.01% CRV' // Anything less is basically not worth the time
       return (
         <>
-          {formatNumber(base, { unit: 'percentage', abbreviate: false })}
+          {formatNumber(base, 'percent.value')}
           {boosted && ' → '}
-          {boosted && (
-            <span style={{ whiteSpace: 'nowrap' }}>
-              {formatNumber(boosted, { unit: 'percentage', abbreviate: false })}
-            </span>
-          )}
+          {boosted && <span style={{ whiteSpace: 'nowrap' }}>{formatNumber(boosted, 'percent.value')}</span>}
           {' CRV'}
         </>
       )

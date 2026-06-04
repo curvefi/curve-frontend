@@ -94,7 +94,7 @@ export const CrvStats = () => {
             notional={
               loading || veCrvFeesLoading || aprLoading
                 ? undefined
-                : `${formatNumber(veCrvApr.fourDayAverage, { unit: 'percentage', abbreviate: false })} 4w avg`
+                : `${formatNumber(veCrvApr.fourDayAverage, 'percent.value')} 4w avg`
             }
           />
         </MetricsContainer>

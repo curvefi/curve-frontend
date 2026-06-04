@@ -6,7 +6,7 @@ import {
   TooltipItem,
 } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import { t } from '@ui-kit/lib/i18n'
-import { formatNumber, formatPercent } from '@ui-kit/utils'
+import { formatNumber } from '@ui-kit/utils'
 import type { Shares, SupplyAsset } from '../SupplyPositionDetails'
 
 const isAvailable = (value: number | null | undefined): value is number => value != null
@@ -21,7 +21,7 @@ const formatAmount = (
 }
 
 const formatPercentageDisplay = (percentage: number | null) =>
-  percentage === null ? UnavailableNotation : formatPercent(percentage * 100)
+  percentage === null ? UnavailableNotation : formatNumber(percentage * 100, 'percent.rate')
 
 export const AmountSuppliedTooltipContent = ({ shares, supplyAsset }: { shares: Shares; supplyAsset: SupplyAsset }) => {
   const { value, staked } = shares

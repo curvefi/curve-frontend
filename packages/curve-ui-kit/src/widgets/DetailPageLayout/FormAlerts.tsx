@@ -11,7 +11,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { type QueryProp } from '@ui-kit/types/util'
-import { formatPercent, getErrorMessage } from '@ui-kit/utils'
+import { formatNumber, getErrorMessage } from '@ui-kit/utils'
 import { getPriceImpactSeverity } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import type { SlippageType } from '@ui-kit/widgets/SlippageSettings'
 
@@ -94,7 +94,7 @@ export const HighPriceImpactAlert = ({
       <WithSkeleton loading={isLoading}>
         <Alert severity={severity ?? 'warning'} data-testid="high-price-impact-alert" variant="outlined">
           <AlertTitle sx={{ color: { warning: 'warning.main', error: 'error.main' }[severity!] }}>
-            {t`High price impact:`} -{formatPercent(data)}
+            {t`High price impact:`} -{formatNumber(data, 'percent.rate')}
           </AlertTitle>
           {t`Consider reducing the amount or waiting for better market conditions.`}
         </Alert>

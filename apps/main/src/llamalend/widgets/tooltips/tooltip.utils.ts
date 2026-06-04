@@ -1,5 +1,5 @@
 import { Amount } from '@primitives/decimal.utils'
-import { formatNumber, formatPercent } from '@ui-kit/utils'
+import { formatNumber } from '@ui-kit/utils'
 
 export const UnavailableNotation = '-'
 
@@ -11,4 +11,7 @@ export const formatPercentage = (
   value: Amount | undefined | null,
   totalValue: Amount | undefined | null,
   usdRate: number | undefined | null,
-) => (totalValue && value != null && usdRate != null ? formatPercent(((+value * usdRate) / +totalValue) * 100) : null)
+) =>
+  totalValue && value != null && usdRate != null
+    ? formatNumber(((+value * usdRate) / +totalValue) * 100, 'percent.rate')
+    : null

@@ -167,7 +167,7 @@ export const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
             loading={dataLoading}
             title={t`Pool TVL`}
             data={
-              <StyledMetricsColumnData>{t`${formatNumber(gaugeData?.pool?.tvl_usd, { unit: 'dollar', abbreviate: true, fallback: '-' })}`}</StyledMetricsColumnData>
+              <StyledMetricsColumnData>{t`${formatNumber(gaugeData?.pool?.tvl_usd, 'usd.notional')}`}</StyledMetricsColumnData>
             }
           />
         ) : (
@@ -178,7 +178,7 @@ export const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
             loading={dataLoading}
             title={t`24h Pool Volume`}
             data={
-              <StyledMetricsColumnData>{t`${formatNumber(gaugeData?.pool?.trading_volume_24h, { unit: 'dollar', abbreviate: true, fallback: '-' })}`}</StyledMetricsColumnData>
+              <StyledMetricsColumnData>{t`${formatNumber(gaugeData?.pool?.trading_volume_24h, 'usd.notional')}`}</StyledMetricsColumnData>
             }
           />
         ) : (

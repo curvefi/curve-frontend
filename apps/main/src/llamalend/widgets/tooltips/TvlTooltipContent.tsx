@@ -10,7 +10,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { formatNumber } from '@ui-kit/utils'
 
-const format = (value: number) => formatNumber(value, { unit: 'dollar', abbreviate: true })
+const format = (value: number) => formatNumber(value, 'usd.notional')
 
 export const TvlTooltipContent = ({
   market: { totalCollateralUsd, liquidityUsd, tvl, type },
