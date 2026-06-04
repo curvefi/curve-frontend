@@ -75,7 +75,7 @@ export const SummaryClaimable = ({ title }: Props) => {
             <StyledStats isOneLine isBorderBottom key={token} label={symbol}>
               <Chip
                 size="md"
-                tooltip={`${formatNumber(1, { abbreviate: false })} ${symbol} = ${formatNumber(price, { unit: 'dollar', abbreviate: false })}`}
+                tooltip={`${formatNumber(1, { abbreviate: false })} ${symbol} = ${formatNumber(price, 'usd.amount')}`}
                 tooltipProps={tooltipProps}
               >
                 {formatNumber(total, { abbreviate: false })}
@@ -84,7 +84,7 @@ export const SummaryClaimable = ({ title }: Props) => {
           ))}
         <Stats isOneLine label={t`USD Total`}>
           <Chip isBold isNumber size="md">
-            ≈ {formatNumber(totalUsd, { unit: 'dollar', abbreviate: false })}
+            ≈ {formatNumber(totalUsd, 'usd.amount')}
           </Chip>
         </Stats>
       </SummaryInnerContent>

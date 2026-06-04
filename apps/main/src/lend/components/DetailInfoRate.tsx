@@ -39,12 +39,12 @@ export const DetailInfoRate = ({
           '?'
         ) : (
           <strong>
-            {formatNumber(rate, { unit: 'percentage', abbreviate: false, fallback: '-' })}
+            {formatNumber(rate, 'percent.value')}
             {typeof futureRates !== 'undefined' && (
               <>
                 {' '}
                 <Icon name="ArrowRight" size={16} className="svg-arrow" />{' '}
-                {formatNumber(amount(futureRate), { unit: 'percentage', abbreviate: false, fallback: '-' })}
+                {formatNumber(amount(futureRate), 'percent.value')}
               </>
             )}
           </strong>

@@ -319,12 +319,12 @@ export const ChartLiquidationRange = ({
                 wrapperStyle={{ color: chartLabelColor }}
                 payload={[
                   {
-                    value: `${t`Oracle Price`} (${formatNumber(amount(oraclePrice), { unit: 'dollar', abbreviate: false, fallback: '-' })})`,
+                    value: `${t`Oracle Price`} (${formatNumber(amount(oraclePrice), 'usd.amount')})`,
                     type: 'line',
                     color: chartReferenceLineColor,
                   },
                   {
-                    value: `${t`Liquidation Range`} (${data.map(d => d.new.map(n => formatNumber(n, { unit: 'dollar', abbreviate: false })).join(' - ')).join(', ')})`,
+                    value: `${t`Liquidation Range`} (${data.map(d => d.new.map(n => formatNumber(n, 'usd.amount')).join(' - ')).join(', ')})`,
                     type: 'rect',
                     color: chartHealthColor,
                   },

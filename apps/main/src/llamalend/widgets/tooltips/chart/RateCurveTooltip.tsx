@@ -3,7 +3,7 @@ import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { ChartTooltipSeriesGroup, ChartTooltipSeriesRow, ChartTooltipShell } from '@ui-kit/shared/ui/Chart'
 import type { LineSeriesConfig } from '@ui-kit/shared/ui/Chart/EChartsLineChart'
-import { formatPercent } from '@ui-kit/utils'
+import { formatNumber } from '@ui-kit/utils'
 
 type RateCurveSeriesKey = keyof Omit<RateCurveChartPoint, 'utilization'>
 
@@ -13,7 +13,7 @@ type RateCurveTooltipProps = {
 }
 
 export const RateCurveTooltip = ({ datum, visibleSeries }: RateCurveTooltipProps) => (
-  <ChartTooltipShell title={`${formatPercent(datum.utilization)} ${t`Utilization`}`}>
+  <ChartTooltipShell title={`${formatNumber(datum.utilization, 'percent.rate')} ${t`Utilization`}`}>
     <ChartTooltipSeriesGroup>
       {visibleSeries.map(activeSeries => (
         <ChartTooltipSeriesRow
@@ -21,7 +21,7 @@ export const RateCurveTooltip = ({ datum, visibleSeries }: RateCurveTooltipProps
           label={activeSeries.label}
           lineColor={activeSeries.color}
           dash={activeSeries.dash}
-          value={formatPercent(datum[activeSeries.key])}
+          value={formatNumber(datum[activeSeries.key], 'percent.rate')}
         />
       ))}
     </ChartTooltipSeriesGroup>

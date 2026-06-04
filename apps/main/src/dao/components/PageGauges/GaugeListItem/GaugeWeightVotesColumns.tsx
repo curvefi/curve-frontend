@@ -47,7 +47,7 @@ export const GaugeWeightVotesColumns = ({ userGaugeWeightVoteData }: GaugeWeight
                     abbreviate: false,
                   })}
                 </strong>
-                {` (${formatNumber(staleVeCrvPct, { unit: 'percentage', abbreviate: false })} increase)`}
+                {` (${formatNumber(staleVeCrvPct, 'percent.value')} increase)`}
               </p>
             }
           >

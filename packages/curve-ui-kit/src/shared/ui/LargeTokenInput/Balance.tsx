@@ -101,7 +101,7 @@ export const Balance = <T extends Amount>({
             sx={{ ...VERTICAL_CENTER_TEXT, color: t => t.design.Inputs.Text.MetaSubtle }}
             {...(inline && { component: 'span' })}
           >
-            {formatNumber(notionalValueUsd, { unit: 'dollar', abbreviate: true })}
+            {formatNumber(notionalValueUsd, 'usd.notional')}
           </Typography>
         )}{' '}
       </Box>

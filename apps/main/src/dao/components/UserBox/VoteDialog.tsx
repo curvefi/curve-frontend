@@ -24,8 +24,7 @@ type Props = {
   className?: string
 }
 
-const votePercentage = (vote: number, total: number) =>
-  `(${formatNumber((vote / total) * 100, { unit: 'percentage', abbreviate: false })})`
+const votePercentage = (vote: number, total: number) => `(${formatNumber((vote / total) * 100, 'percent.value')})`
 
 export const VoteDialog = ({
   userAddress,

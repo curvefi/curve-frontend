@@ -367,7 +367,7 @@ export const LargeTokenInput = ({
           <Stack direction="row" sx={{ justifyContent: 'end' }}>
             {inputBalanceUsd != null && (
               <Typography variant="bodyXsRegular" sx={{ flexGrow: 1, color: t => t.design.Inputs.Text.MetaSubtle }}>
-                ≈ {formatNumber(inputBalanceUsd, { unit: 'dollar', abbreviate: false })}
+                ≈ {formatNumber(inputBalanceUsd, 'usd.amount')}
               </Typography>
             )}
 

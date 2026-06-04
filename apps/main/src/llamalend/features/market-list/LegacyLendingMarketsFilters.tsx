@@ -9,7 +9,7 @@ import { TableFilterColumn } from '@ui-kit/shared/ui/DataTable/TableFilterColumn
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { formatPercent, formatUsd } from '@ui-kit/utils'
+import { formatNumber } from '@ui-kit/utils'
 import { type AssetDetails, LlamaMarket } from '../../queries/market-list/llama-markets'
 import { LlamaMarketColumnId } from './columns'
 import { LegacyMultiSelectFilter } from './filters/LegacyMultiSelectFilter'
@@ -99,7 +99,7 @@ export const LegacyLendingMarketsFilters = ({
           id={LlamaMarketColumnId.Tvl}
           field={LlamaMarketColumnId.Tvl}
           title={t`TVL`}
-          format={formatUsd}
+          format={value => formatNumber(value, 'usd.notional')}
           data={markets}
           adornment="dollar"
           scale="power"
@@ -111,7 +111,7 @@ export const LegacyLendingMarketsFilters = ({
           id={LlamaMarketColumnId.LiquidityUsd}
           field={LlamaMarketColumnId.LiquidityUsd}
           title={t`Liquidity`}
-          format={formatUsd}
+          format={value => formatNumber(value, 'usd.notional')}
           data={markets}
           adornment="dollar"
           scale="power"
@@ -123,7 +123,7 @@ export const LegacyLendingMarketsFilters = ({
           id={LlamaMarketColumnId.UtilizationPercent}
           field={LlamaMarketColumnId.UtilizationPercent}
           title={t`Utilization`}
-          format={formatPercent}
+          format={value => formatNumber(value, 'percent.rate')}
           data={markets}
           adornment="percentage"
           max={100}

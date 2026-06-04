@@ -7,7 +7,7 @@ import { GearIcon } from '@ui-kit/shared/icons/GearIcon'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { ActionInfoSize } from '@ui-kit/shared/ui/ActionInfo/ActionInfo'
 import { Badge } from '@ui-kit/shared/ui/Badge'
-import { formatPercent as formatPercent } from '@ui-kit/utils'
+import { formatNumber } from '@ui-kit/utils'
 import type { SlippageType } from './slippage.utils'
 import { SlippageSettingsModal } from './SlippageSettingsModal'
 import type { SlippageSettingsFormData } from './useSlipageSettingsForm'
@@ -30,7 +30,7 @@ export const SlippageToleranceActionInfo = ({
     <>
       <ActionInfo
         label={t`Slippage`}
-        value={maxSlippage ? formatPercent(maxSlippage) : '-'}
+        value={formatNumber(maxSlippage, 'percent.rate')}
         valueLeft={active && <Badge size="extraSmall" label={capitalize(active)} />}
         valueRight={
           <IconButton onClick={openModal} size="extraExtraSmall" data-testid="slippage-settings-button">

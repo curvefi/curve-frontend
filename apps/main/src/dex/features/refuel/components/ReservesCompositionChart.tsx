@@ -26,8 +26,7 @@ import { REFUEL_TIMESERIES_PAGE_SIZE, useRefuelTimeseries } from '../queries/tim
 
 const PERIODS = ['7d', '1m', '3m', '6m', '1y'] as const satisfies Period[]
 
-const formatReserveShare = (value: number | null | undefined) =>
-  formatNumber(value, { unit: 'percentage', abbreviate: false, fallback: '-' })
+const formatReserveShare = (value: number | null | undefined) => formatNumber(value, 'percent.value')
 
 const getTokenLabel = (symbol: string | undefined, index: number) => symbol || t`Token ${index + 1}`
 
