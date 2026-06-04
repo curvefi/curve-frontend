@@ -11,6 +11,8 @@ import type { PoolTag } from '../types'
 
 const { Spacing } = SizesAndSpaces
 
+type PoolFilterChip = { key: string; label: string }
+
 const getFilterGroups = ({ isConnected }: { isConnected: boolean }) =>
   [
     [
@@ -25,14 +27,16 @@ const getFilterGroups = ({ isConnected }: { isConnected: boolean }) =>
       { key: 'cross-chain' as const, label: t`Cross-chain` },
     ],
     ...(isConnected ? [[{ key: 'user' as const, label: t`My Pools` }]] : []),
-  ] satisfies { key: PoolTag | null; label: string }[][]
+  ] satisfies PoolFilterChip[][]
 
 export type PoolListFilterChipsProps = FilterProps<PoolColumnId> & {
+  filterGroups?: PoolFilterChip[][]
   resultCount: number | undefined
-  poolFilters: NetworkConfig['poolFilters']
+  poolFilters: NetworkConfig['poolFilters'] | readonly string[]
 }
 
 export const PoolListFilterChips = ({
+  filterGroups,
   resultCount,
   poolFilters,
   setColumnFilter,
@@ -40,6 +44,7 @@ export const PoolListFilterChips = ({
 }: PoolListFilterChipsProps) => {
   const filterKey = columnFiltersById[PoolColumnId.PoolTags] as PoolTag | undefined
   const { isConnected } = useConnection()
+  const groups = filterGroups ?? getFilterGroups({ isConnected })
   return (
     <Grid
       container
@@ -49,7 +54,7 @@ export const PoolListFilterChips = ({
       size={{ mobile: 12, desktop: 'auto' }}
       sx={{ justifyContent: 'flex-end' }}
     >
-      {getFilterGroups({ isConnected }).map(group => (
+      {groups.map(group => (
         <Grid container key={group[0].key} size={{ mobile: 12, tablet: 'auto' }} spacing={1}>
           {group.map(
             ({ key, label }) =>

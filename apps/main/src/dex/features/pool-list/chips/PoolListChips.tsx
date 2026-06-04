@@ -13,11 +13,12 @@ const { Spacing } = SizesAndSpaces
 
 export const PoolListChips = ({
   hiddenCount,
+  searchText,
   resetFilters,
   onSortingChange,
-  sortField,
-  searchText,
   onSearch,
+  sortField,
+  sortOptions,
   ...filterProps
 }: {
   hiddenCount: number
@@ -27,6 +28,7 @@ export const PoolListChips = ({
   sortField: PoolColumnId
   searchText: string
   onSearch: (value: string) => void
+  sortOptions?: readonly { id: PoolColumnId; label: string }[]
 } & PoolListFilterChipsProps) => {
   const isMobile = useIsMobile()
   return (
@@ -34,7 +36,7 @@ export const PoolListChips = ({
       {isMobile ? (
         <Grid container columnSpacing={Spacing.sm} size={12}>
           <Grid size={6}>
-            <PoolSortDrawer onSortingChange={onSortingChange} sortField={sortField} />
+            <PoolSortDrawer onSortingChange={onSortingChange} sortField={sortField} options={sortOptions} />
           </Grid>
           <Grid size={6}>
             <PoolListFilterDrawer

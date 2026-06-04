@@ -1,8 +1,32 @@
 import { useNetworkFromUrl } from '@/dex/hooks/useChainId'
+import { usePoolChains } from '@/dex/queries/pool-list.query'
+import { useDexPoolListV2 } from '@ui-kit/hooks/useFeatureFlags'
 import { ListPageWrapper } from '@ui-kit/widgets/ListPageWrapper'
-import { PoolListTable } from '../../features/pool-list/PoolListTable'
+import { PoolListApiTable } from './PoolListApiTable'
+import { PoolListTable } from './PoolListTable'
 
 export const Page = () => {
+  const isBetaPoolListEnabled = useDexPoolListV2()
+
+  return isBetaPoolListEnabled ? <BetaPoolListPage /> : <StablePoolListPage />
+}
+
+const StablePoolListPage = () => {
   const network = useNetworkFromUrl()
+
   return <ListPageWrapper>{network && <PoolListTable network={network} />}</ListPageWrapper>
+}
+
+const BetaPoolListPage = () => {
+  const network = useNetworkFromUrl()
+  const { data: supportedPoolChains, isLoading } = usePoolChains({})
+  const isSupported = supportedPoolChains?.some(({ chainId }) => chainId === network?.chainId)
+
+  return (
+    <ListPageWrapper>
+      {network &&
+        !isLoading &&
+        (isSupported ? <PoolListApiTable network={network} /> : <PoolListTable network={network} />)}
+    </ListPageWrapper>
+  )
 }

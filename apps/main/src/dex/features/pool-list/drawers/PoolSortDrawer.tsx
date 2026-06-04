@@ -18,6 +18,7 @@ const { Spacing, ButtonSize } = SizesAndSpaces
 type Props = {
   onSortingChange: OnChangeFn<SortingState>
   sortField: PoolColumnId
+  options?: readonly { id: PoolColumnId; label: string }[]
 }
 
 const DEX_POOL_SORT_OPTIONS = [
@@ -25,14 +26,14 @@ const DEX_POOL_SORT_OPTIONS = [
   { id: PoolColumnId.Tvl, label: t`Total Value Locked` },
   { id: PoolColumnId.RewardsCrv, label: t`Rewards CRV` },
   { id: PoolColumnId.RewardsIncentives, label: t`Rewards Incentives` },
-] as const
+] as const satisfies readonly { id: PoolColumnId; label: string }[]
 
-export const PoolSortDrawer = ({ onSortingChange, sortField }: Props) => {
+export const PoolSortDrawer = ({ onSortingChange, sortField, options = DEX_POOL_SORT_OPTIONS }: Props) => {
   const [open, openDrawer, closeDrawer] = useSwitch(false)
 
   const menuRef = useRef<HTMLLIElement | null>(null)
 
-  const selectedOption = useMemo(() => DEX_POOL_SORT_OPTIONS.find(option => option.id === sortField), [sortField])
+  const selectedOption = useMemo(() => options.find(option => option.id === sortField), [options, sortField])
 
   const handleSort = useCallback(
     (id: PoolColumnId) => {
@@ -56,7 +57,7 @@ export const PoolSortDrawer = ({ onSortingChange, sortField }: Props) => {
       <DrawerHeader title={t`Sort by`} />
       <DrawerItems data-testid="drawer-sort-menu-dex-pools">
         <MenuList disablePadding sx={{ display: 'flex', flexDirection: 'column', gap: Spacing.sm }}>
-          {DEX_POOL_SORT_OPTIONS.map(({ id, label }) => (
+          {options.map(({ id, label }) => (
             <InvertOnHover hoverRef={menuRef} key={id}>
               <MenuItem
                 ref={menuRef}
