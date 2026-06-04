@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { cloneDeep } from 'lodash'
 import { ethAddress, type Address } from 'viem'
 import type { Config } from 'wagmi'
 import type { StoreApi } from 'zustand'
@@ -22,66 +22,74 @@ import { fetchTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 import { sleep } from '@ui-kit/utils/time.utils'
+import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import { fetchNetworks } from '../entities/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
-const { cloneDeep } = lodash
 
 type SliceState = {
   activeKey: string
-  formEstGas: { [activeKey: string]: FormEstGas }
+  formEstGas: Record<string, FormEstGas>
   formStatus: FormStatus
   formValues: FormValues
   isMaxLoading: boolean
-  routesAndOutput: { [activeKey: string]: RoutesAndOutput }
+  routesAndOutput: Record<string, RoutesAndOutput>
 }
 
 const sliceKey = 'quickSwap'
 
+/** Before we have any route, we cannot choose between crypto and stable slippage. Default to the higher one. **/
+const defaultSlippage = SLIPPAGE.crypto.default
+
 export type QuickSwapSlice = {
   [sliceKey]: SliceState & {
-    fetchMaxAmount(config: Config, curve: CurveApi, searchedParams: SearchedParams, maxSlippage: string): Promise<void>
-    fetchRoutesAndOutput(
+    fetchMaxAmount: (
       config: Config,
       curve: CurveApi,
       searchedParams: SearchedParams,
       maxSlippage: string,
-    ): Promise<void>
-    fetchEstGasApproval(curve: CurveApi, searchedParams: SearchedParams, maxSlippage: string): Promise<void>
-    resetFormErrors(): void
-    setFormValues(
+    ) => Promise<void>
+    fetchRoutesAndOutput: (
+      config: Config,
+      curve: CurveApi,
+      searchedParams: SearchedParams,
+      maxSlippage: string,
+    ) => Promise<void>
+    fetchEstGasApproval: (curve: CurveApi, searchedParams: SearchedParams, maxSlippage: string) => Promise<void>
+    resetFormErrors: () => void
+    setFormValues: (
       config: Config,
       curve: CurveApi | null,
       updatedFormValues: Partial<FormValues>,
       searchedParams: SearchedParams,
-      maxSlippage: string,
+      maxSlippage: Decimal | undefined,
       isGetMaxFrom?: boolean,
       isFullReset?: boolean,
       isRefetch?: boolean,
-    ): Promise<void>
+    ) => Promise<void>
 
     // steps
-    fetchStepApprove(
+    fetchStepApprove: (
       activeKey: string,
       config: Config,
       curve: CurveApi,
       formValues: FormValues,
       searchedParams: SearchedParams,
-      globalMaxSlippage: string,
-    ): Promise<FnStepApproveResponse | undefined>
-    fetchStepSwap(
+      maxSlippage: Decimal,
+    ) => Promise<FnStepApproveResponse | undefined>
+    fetchStepSwap: (
       activeKey: string,
       config: Config,
       curve: CurveApi,
       formValues: FormValues,
       searchedParams: SearchedParams,
-      maxSlippage: string,
-    ): Promise<(FnStepResponse & { swappedAmount: string }) | undefined>
+      maxSlippage: Decimal,
+    ) => Promise<(FnStepResponse & { swappedAmount: string }) | undefined>
 
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: () => void
   }
 }
 
@@ -348,6 +356,7 @@ export const createQuickSwapSlice = (
       }
 
       // get max if MAX button is clicked
+      maxSlippage ??= defaultSlippage
       if (isGetMaxFrom) await sliceState.fetchMaxAmount(config, curve, searchedParams, maxSlippage)
 
       // api calls
@@ -356,7 +365,7 @@ export const createQuickSwapSlice = (
     },
 
     // steps
-    fetchStepApprove: async (activeKey, config, curve, formValues, searchedParams, globalMaxSlippage) => {
+    fetchStepApprove: async (activeKey, config, curve, formValues, searchedParams, maxSlippage) => {
       const state = get()
       const sliceState = state[sliceKey]
 
@@ -390,8 +399,9 @@ export const createQuickSwapSlice = (
           sliceState.setStateByKey('formStatus', cFormStatus)
 
           // re-fetch est gas, approval, routes and output
-          await sliceState.fetchRoutesAndOutput(config, curve, searchedParams, globalMaxSlippage)
-          void sliceState.fetchEstGasApproval(curve, searchedParams, globalMaxSlippage)
+          maxSlippage ??= defaultSlippage
+          await sliceState.fetchRoutesAndOutput(config, curve, searchedParams, maxSlippage)
+          void sliceState.fetchEstGasApproval(curve, searchedParams, maxSlippage)
         }
 
         return resp
@@ -515,7 +525,7 @@ function getRouterActiveKey(
 function getRouterSwapsExchangeRate(
   [value]: [Decimal, Decimal],
   { fromAddress, toAddress }: SearchedParams,
-  tokensNameMapper: { [p: string]: string },
+  tokensNameMapper: Record<string, string>,
 ) {
   const fromToken = tokensNameMapper[fromAddress]
   const toToken = tokensNameMapper[toAddress]
@@ -536,7 +546,7 @@ export function getRouterWarningModal(
   >,
   { toAddress }: SearchedParams,
   maxSlippage: string,
-  storedTokensNameMapper: { [address: string]: string },
+  storedTokensNameMapper: Record<string, string>,
 ) {
   const { isHighImpact, isExpectedToAmount } = getSlippageImpact({
     maxSlippage,

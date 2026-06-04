@@ -41,9 +41,9 @@ export const FormDeposit = ({
   seed,
   tokensMapper,
 }: TransferProps) => {
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
 
-  const { chainId, signerAddress } = curve || {}
+  const { chainId, signerAddress } = curve ?? {}
   const { rChainId } = routerParams
   const activeKey = useStore(state => state.poolDeposit.activeKey)
   const formEstGas = useStore(state => state.poolDeposit.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
@@ -75,7 +75,9 @@ export const FormDeposit = ({
       loadMaxAmount: LoadMaxAmount | null,
       updatedMaxSlippage: string | null,
     ) => {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTxInfoBar(null)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSlippageConfirmed(false)
       void setFormValues(
         'DEPOSIT',
@@ -109,7 +111,7 @@ export const FormDeposit = ({
       const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepDeposit(activeKey, curve, poolData, formValues, maxSlippage)
 
-      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && network) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && network) {
         const txDescription = t`Deposited ${tokenText}.`
         setTxInfoBar(<TxInfoBar description={txDescription} txHash={scanTxPath(network, resp.hash)} />)
       }
@@ -135,13 +137,13 @@ export const FormDeposit = ({
       const isApproved = formStatus.isApproved || formStatus.formTypeCompleted === 'APPROVE'
       const isComplete = formStatus.formTypeCompleted === 'DEPOSIT'
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: getStepStatus(isApproved, formStatus.step === 'APPROVAL', isValid),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
-          onClick: async () => handleApproveClick(activeKey, curve, poolData, formValues, maxSlippage),
+          onClick: () => void handleApproveClick(activeKey, curve, poolData, formValues, maxSlippage),
         },
         ['DEPOSIT']: {
           key: 'DEPOSIT',
@@ -164,16 +166,17 @@ export const FormDeposit = ({
                   isDismissable: false,
                   cancelBtnProps: {
                     label: t`Cancel`,
+                    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
                     onClick: () => setSlippageConfirmed(false),
                   },
                   primaryBtnProps: {
-                    onClick: () => handleDepositClick(activeKey, curve, poolData, formValues, maxSlippage),
+                    onClick: () => void handleDepositClick(activeKey, curve, poolData, formValues, maxSlippage),
                     disabled: !slippageConfirmed,
                   },
                   primaryBtnLabel: 'Deposit anyway',
                 },
               }
-            : { onClick: () => handleDepositClick(activeKey, curve, poolData, formValues, maxSlippage) }),
+            : { onClick: () => void handleDepositClick(activeKey, curve, poolData, formValues, maxSlippage) }),
         },
       }
 
@@ -192,10 +195,10 @@ export const FormDeposit = ({
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
     }
   }, [])
 
@@ -236,6 +239,7 @@ export const FormDeposit = ({
         steps,
         maxSlippage,
       )
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

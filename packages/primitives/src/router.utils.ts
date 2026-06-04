@@ -8,7 +8,9 @@ export type RouteStep = {
   name: string
   tokenIn: [Address]
   tokenOut: [Address]
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   protocol: 'curve' | string
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   action: 'swap' | string
   args?: Record<string, unknown>
   chainId: number

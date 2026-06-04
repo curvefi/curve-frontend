@@ -44,7 +44,7 @@ export const LegacyMultiSelectFilter = <TKeys, TColumnId extends string>({
   const isMobile = useIsMobile()
   const selectRef = useRef<HTMLDivElement | null>(null)
   const menuRef = useRef<HTMLLIElement | null>(null)
-  const [selectWidth] = useResizeObserver(selectRef) ?? []
+  const [selectWidth] = useResizeObserver(selectRef)
   const [isOpen, open, close] = useSwitch(false)
   const options = useMemo(() => getUniqueSortedStrings(data, field), [data, field])
   const selectedOptions = parseListFilter(columnFiltersById[id])

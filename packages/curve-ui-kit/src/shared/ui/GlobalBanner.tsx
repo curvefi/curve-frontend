@@ -1,16 +1,11 @@
 import { useChainId, useConnection } from 'wagmi'
 import { formatDate } from '@ui/utils'
-import {
-  DEPRECATED_CHAINS,
-  isFailure,
-  useCurve,
-  useSwitchChain,
-  type WagmiChainId,
-} from '@ui-kit/features/connect-wallet'
+import { DEPRECATED_CHAINS, isFailure, useCurve, useSwitchChain } from '@ui-kit/features/connect-wallet'
 import { DOWNGRADED_CHAINS } from '@ui-kit/features/connect-wallet/lib/wagmi/chains'
 import { BackendMaintenanceBanner } from '@ui-kit/features/maintenance/components/BackendMaintenanceBanner'
 import type { Maintenance } from '@ui-kit/features/maintenance/hooks/useMaintenance'
 import { usePathname } from '@ui-kit/hooks/router'
+import { useCurrentDate } from '@ui-kit/hooks/useCurrentDate'
 import { useDismissAaveBanner, useDismissCurveLiteBanner, useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { getCurrentApp } from '@ui-kit/shared/routes'
@@ -36,6 +31,7 @@ export const GlobalBanner = ({ networkId, chainId, backendMaintenance }: GlobalB
   const currentApp = getCurrentApp(pathname)
   const deprecationDate = DEPRECATED_CHAINS[chainId]
   const isDowngraded = DOWNGRADED_CHAINS.has(chainId)
+  const currentDate = useCurrentDate()
 
   const [showAaveBanner, dismissAaveBanner] = useDismissAaveBanner()
   const [showDowngraded, dismissDowngraded] = useDismissCurveLiteBanner(chainId)
@@ -61,11 +57,7 @@ export const GlobalBanner = ({ networkId, chainId, backendMaintenance }: GlobalB
         isConnected &&
         chainId &&
         walletChainId != chainId && (
-          <Banner
-            severity="warning"
-            buttonText={t`Change network`}
-            onClick={() => void switchChain({ chainId: chainId as WagmiChainId })}
-          >
+          <Banner severity="warning" buttonText={t`Change network`} onClick={() => void switchChain({ chainId })}>
             {t`Please switch your wallet's network to`} <strong>{networkId}</strong> {t`to use Curve on`}{' '}
             <strong>{networkId}</strong>.{' '}
           </Banner>
@@ -74,7 +66,7 @@ export const GlobalBanner = ({ networkId, chainId, backendMaintenance }: GlobalB
       {deprecationDate ? (
         <Banner severity="alert">
           {`“${network?.name}”` +
-            (deprecationDate > new Date()
+            (deprecationDate > currentDate
               ? t` will be deprecated at ${formatDate(deprecationDate)}. `
               : t` is deprecated. `)}
           {t`Future management of positions will only be possible via the chain explorer. `}

@@ -68,7 +68,7 @@ export const SupplyActionInfoList = ({
     <ActionInfoCollapse isOpen={isOpen} testId="supply-action-info-list">
       <Stack sx={{ ...ACTION_INFO_GROUP_SX }}>
         <Stack>
-          {(supplyApy || prevSupplyApy) && (
+          {(supplyApy ?? prevSupplyApy) && (
             <ActionInfo
               label={t`Supply APY`}
               value={supplyApy?.data && formatPercent(supplyApy.data)}
@@ -98,7 +98,7 @@ export const SupplyActionInfoList = ({
             size="small"
             testId="supply-vault-shares"
           />
-          {(amountSupplied || prevAmountSupplied) && (
+          {(amountSupplied ?? prevAmountSupplied) && (
             <ActionInfo
               label={amountLabel}
               value={amountSupplied?.data && formatNumber(amountSupplied.data, { abbreviate: false })}

@@ -6,6 +6,7 @@ import { StyledIconButton } from '@/dex/components/PagePool/PoolDetails/PoolStat
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { curvejsApi } from '@/dex/lib/curvejs'
 import { ChainId, CurveApi, Provider } from '@/dex/types/main.types'
+import { Hex } from '@primitives/address.utils'
 import { Box } from '@ui/Box'
 import { Button } from '@ui/Button'
 import { Icon } from '@ui/Icon'
@@ -58,7 +59,7 @@ export const Compensation = ({
 
       try {
         setStep('claiming')
-        const hash = await contract.claim()
+        const hash = (await contract.claim()) as Hex
         await curvejsApi.helpers.waitForTransaction(hash, provider)
         setStep('claimed')
         const txDescription = t`Claimed ${balance}`
@@ -77,8 +78,11 @@ export const Compensation = ({
 
   // reset
   useEffect(() => {
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setError('')
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setStep('')
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setTxInfoBar(null)
   }, [curve?.signerAddress])
 
@@ -101,7 +105,7 @@ export const Compensation = ({
                 <Icon name="Launch" size={16} />
               </StyledExternalLink>
             )}
-            <StyledIconButton size="medium" onClick={() => copyToClipboard(contractAddress)}>
+            <StyledIconButton size="medium" onClick={() => void copyToClipboard(contractAddress)}>
               <Icon name="Copy" size={16} />
             </StyledIconButton>
           </div>
@@ -128,7 +132,7 @@ export const Compensation = ({
             disabled={disabled}
             loading={loading}
             variant="filled"
-            onClick={() => handleClaimClick(activeKey, contract, balance)}
+            onClick={() => void handleClaimClick(activeKey, contract, balance)}
           >
             {step || `Claim`}
           </Button>

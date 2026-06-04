@@ -2,7 +2,9 @@ import { ClaimableReward } from '@/llamalend/queries/supply/supply-claimable-rew
 import { createColumnHelper } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { type TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { TokenBalanceCell } from '@ui-kit/shared/ui/DataTable/inline-cells/TokenBalanceCell'
+import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
+import { TokenInfo } from '@ui-kit/shared/ui/TokenInfo'
+import { formatNumber } from '@ui-kit/utils'
 import { ClaimTabColumnId } from './columns.enum'
 import { NotionalCell } from './notional-cells'
 
@@ -24,7 +26,18 @@ export const CLAIM_TAB_COLUMNS = [
   columnHelper.accessor('amount', {
     id: ClaimTabColumnId.Token,
     header: headers[ClaimTabColumnId.Token],
-    cell: TokenBalanceCell<ClaimableToken>,
+    cell: ({ getValue, row }) => (
+      <InlineTableCell>
+        <TokenInfo
+          address={row.original.token}
+          blockchainId={row.original.networkId}
+          iconPosition="left"
+          primary={formatNumber(getValue(), { abbreviate: false })}
+          secondary={row.original.symbol}
+          showChainIcon
+        />
+      </InlineTableCell>
+    ),
     enableSorting: false,
   }),
   columnHelper.accessor('notional', {

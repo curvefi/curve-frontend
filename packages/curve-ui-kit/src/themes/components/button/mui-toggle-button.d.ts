@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/consistent-type-definitions */
 import '@mui/material/ToggleButton'
 import '@mui/material/ToggleButtonGroup'
 

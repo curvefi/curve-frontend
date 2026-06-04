@@ -47,6 +47,7 @@ const SkeletonChips = ({ chipSize }: { chipSize: NonNullable<SelectableChipProps
   const length = useIncreasingLength({ maxLength: 5 })
   return Array.from({ length }).map((_, i) => (
     <Skeleton
+      // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
       key={`skeleton-chain-chip-${i}`}
       variant="rectangular"
       sx={{

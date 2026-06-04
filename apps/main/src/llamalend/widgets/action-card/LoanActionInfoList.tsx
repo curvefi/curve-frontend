@@ -1,3 +1,4 @@
+import { LEVERAGE } from '@/llamalend/constants'
 import { getHealthValueColor } from '@/llamalend/features/market-position-details'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { ReturnToWalletActionInfo } from '@/llamalend/widgets/action-card/ReturnToWalletActionInfo'
@@ -100,7 +101,10 @@ export const LoanActionInfoList = ({
   routes,
 }: LoanActionInfoListProps) => {
   const [isRoutesOpen, , , toggleRoutes] = useSwitch(false)
-  const { label: priceImpactLabel, color: priceImpactColor } = getPriceImpactDisplay(priceImpact, { slippage })
+  const { label: priceImpactLabel, color: priceImpactColor } = getPriceImpactDisplay(priceImpact, {
+    slippage,
+    slippageType: LEVERAGE,
+  })
   const exchangeRateValue = decimal(exchangeRate?.data)
 
   const shouldShowNetBorrowApr = useShouldShowNetRate({
@@ -114,7 +118,7 @@ export const LoanActionInfoList = ({
 
   const debtActionInfo = (
     <>
-      {(debt || prevDebt) && (
+      {(debt ?? prevDebt) && (
         <ActionInfo
           label={t`Debt`}
           value={debt?.data && formatNumber(debt.data, { abbreviate: false })}
@@ -133,7 +137,7 @@ export const LoanActionInfoList = ({
     <ActionInfoCollapse isOpen={isOpen} testId="loan-action-info-list">
       <Stack sx={{ ...ACTION_INFO_GROUP_SX }}>
         <Stack>
-          {(rates || prevRates) && (
+          {(rates ?? prevRates) && (
             <ActionInfo
               label={t`Borrow APR`}
               value={rates?.data?.borrowApr && formatPercent(rates.data.borrowApr)}
@@ -171,7 +175,7 @@ export const LoanActionInfoList = ({
             size="small"
             testId="borrow-health"
           />
-          {(loanToValue || prevLoanToValue) && (
+          {(loanToValue ?? prevLoanToValue) && (
             <ActionInfo
               label={
                 <Tooltip title={t`Loan to value ratio`} placement="top">
@@ -191,7 +195,7 @@ export const LoanActionInfoList = ({
             oraclePrice={oraclePrice}
             isFullRepay={isFullRepay}
           />
-          {(prices || prevPrices) && !isFullRepay && (
+          {(prices ?? prevPrices) && !isFullRepay && (
             <ActionInfo
               label={t`Liquidation range`}
               value={prices?.data?.map(p => formatNumber(p, { abbreviate: false })).join(' - ')}
@@ -199,13 +203,12 @@ export const LoanActionInfoList = ({
               valueRight={notFalsy(collateralSymbol, borrowSymbol).join('/')}
               {...combineActionInfoState(prices, prevPrices)}
               size="small"
-              alignItems="start"
               testId="borrow-price-range"
             />
           )}
         </Stack>
         <Stack>
-          {(collateral || prevCollateral) && (
+          {(collateral ?? prevCollateral) && (
             <ActionInfo
               label={t`Collateral`}
               value={isFullRepay ? 0 : collateral?.data && formatNumber(collateral.data, { abbreviate: false })}
@@ -222,7 +225,7 @@ export const LoanActionInfoList = ({
 
       {leverageEnabled && (
         <Stack data-testid="borrow-leverage-info-list">
-          {(prevLeverageValue || leverageValue) && (
+          {(prevLeverageValue ?? leverageValue) && (
             <ActionInfo
               label={t`Leverage`}
               value={formatLeverage(leverageValue?.data ?? prevLeverageValue?.data)}
@@ -232,7 +235,7 @@ export const LoanActionInfoList = ({
               testId="borrow-leverage"
             />
           )}
-          {(prevLeverageCollateral || leverageCollateral) && (
+          {(prevLeverageCollateral ?? leverageCollateral) && (
             <ActionInfo
               label={t`Leverage collateral`}
               value={formatAmount(leverageCollateral?.data ?? prevLeverageCollateral?.data, collateralSymbol)}
@@ -246,7 +249,7 @@ export const LoanActionInfoList = ({
               testId="borrow-leverage-collateral"
             />
           )}
-          {(prevLeverageTotalCollateral || leverageTotalCollateral) && (
+          {(prevLeverageTotalCollateral ?? leverageTotalCollateral) && (
             <ActionInfo
               label={t`Total collateral`}
               value={formatAmount(leverageTotalCollateral?.data ?? prevLeverageTotalCollateral?.data, collateralSymbol)}
@@ -268,7 +271,7 @@ export const LoanActionInfoList = ({
         {slippage && onSlippageChange && (
           <SlippageToleranceActionInfo
             maxSlippage={slippage}
-            type="leverage"
+            type={LEVERAGE}
             onChanged={({ leverage }) => onSlippageChange(leverage)}
             size="small"
           />

@@ -23,7 +23,9 @@ export const showToast = (item: Omit<ToastItem, 'id'>): { dismiss: () => void } 
 }
 
 export const watchToasts = (onAdd: (toast: ToastItem) => void, onRemove: (toast: ToastItem) => void) => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
   const addListener = (event: Event) => onAdd((event as CustomEvent).detail)
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
   const removeListener = (event: Event) => onRemove((event as CustomEvent).detail)
   onToast.addEventListener(addMessageKey, addListener)
   onToast.addEventListener(removeMessageKey, removeListener)

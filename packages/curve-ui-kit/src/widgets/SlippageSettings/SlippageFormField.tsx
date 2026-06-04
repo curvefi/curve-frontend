@@ -1,10 +1,10 @@
-import { type ReactNode, useState } from 'react'
+import { useState } from 'react'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
-import Box from '@mui/material/Box'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import FormHelperText from '@mui/material/FormHelperText'
 import FormLabel from '@mui/material/FormLabel'
+import Grid from '@mui/material/Grid'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
 import Stack from '@mui/material/Stack'
@@ -12,81 +12,57 @@ import type { Decimal } from '@primitives/decimal.utils'
 import type { UseFormReturn } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
 import { Badge } from '@ui-kit/shared/ui/Badge'
-import { HelperMessage } from '@ui-kit/shared/ui/LargeTokenInput'
 import { NumericTextField } from '@ui-kit/shared/ui/NumericTextField'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { decimal, formatNumber } from '@ui-kit/utils'
-import {
-  HIGH_SLIPPAGE_PRESETS,
-  MAX_RECOMMENDED_SLIPPAGE,
-  MIN_SLIPPAGE,
-  SLIPPAGE_PRESETS,
-  type SlippageType,
-} from './slippage.utils'
+import { decimal, decimalGreaterThan, formatPercent } from '@ui-kit/utils'
+import { SLIPPAGE, type SlippageType } from './slippage.utils'
 import { type SlippageSettingsFormData } from './useSlipageSettingsForm'
-
-const { Spacing } = SizesAndSpaces
-
-const formatOptions = { maximumFractionDigits: 1, unit: 'percentage', abbreviate: false } as const
 
 export const SlippageFormField = ({
   type,
-  title,
   form: {
     update,
     watchValue,
     formState: { errors },
   },
   isActive,
-  helper,
 }: {
   type: SlippageType
-  helper: ReactNode
-  title: ReactNode
   isActive: boolean
   form: UseFormReturn<SlippageSettingsFormData>
 }) => {
-  const presets = [SLIPPAGE_PRESETS[type], HIGH_SLIPPAGE_PRESETS[type]]
+  const { title, helper, presets, min, max } = SLIPPAGE[type]
   const value = watchValue(type)
   const [isCustom, setIsCustom] = useState(!presets.includes(value))
   const error = errors[type]
   return (
     <Stack>
       {/* Labels become blue on focus, but in this one-off we don't want that as it's the only form option */}
-
       <Stack sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <FormLabel>{title}</FormLabel>
         {isActive && <Badge color="active" size="extraSmall" label={t`Current`} />}
       </Stack>
-      <Stack
-        sx={{ flexDirection: { mobile: 'column', tablet: 'row' }, justifyContent: 'space-between', gap: Spacing.md }}
+      <Grid
+        container
+        component={RadioGroup}
+        name={type}
+        value={isCustom ? null : value}
+        onChange={e => {
+          setIsCustom(false)
+          update({ [type]: e.target.value as Decimal })
+        }}
+        data-testid="slippage-radio-group"
       >
-        <RadioGroup
-          row
-          value={isCustom ? null : value}
-          onChange={e => {
-            setIsCustom(false)
-            update({ [type]: e.target.value as Decimal })
-          }}
-          sx={{ flexGrow: 1, justifyContent: 'space-between', gap: Spacing.xs }}
-          data-testid="slippage-radio-group"
-        >
-          {presets.map((preset, index) => (
-            <FormControlLabel
-              key={index}
-              value={preset}
-              label={formatNumber(preset, formatOptions)}
-              control={<Radio />}
-            />
-          ))}
-        </RadioGroup>
-
-        <Box sx={{ display: 'flex', flexGrow: 1, justifyContent: { mobile: 'start', tablet: 'end' } }}>
+        {presets.map(preset => (
+          <Grid size={3} key={preset} sx={{ display: 'flex', alignItems: 'middle' }}>
+            <FormControlLabel value={preset} label={formatPercent(preset)} control={<Radio />} />
+          </Grid>
+        ))}
+        <Grid size={6}>
           <NumericTextField
             fullWidth
             variant="standard"
             value={isCustom ? value : undefined}
-            placeholder={t`Custom slippage`}
+            placeholder={t`Custom`}
             adornment="percentage"
             data-testid="slippage-input"
             slotProps={{ input: { sx: { color: t => (isCustom ? 'inherit' : t.design.Text.TextColors.Disabled) } } }}
@@ -96,22 +72,26 @@ export const SlippageFormField = ({
             onFocus={() => setIsCustom(true)}
             onBlur={() => setIsCustom(!presets.includes(value))}
           />
-        </Box>
-      </Stack>
-      {error && <HelperMessage message={error.message} isError />}
-      {+value > +MAX_RECOMMENDED_SLIPPAGE && (
-        <Alert severity="warning" variant="standard">
-          <AlertTitle>{t`High slippage selected!`}</AlertTitle>
+        </Grid>
+      </Grid>
+      {error ? (
+        <Alert severity="error" variant="outlined">
+          <AlertTitle>{error.message}</AlertTitle>
+        </Alert>
+      ) : decimalGreaterThan(value, max) ? (
+        <Alert severity="warning" variant="outlined">
+          <AlertTitle>{t`High ${type} slippage selected!`}</AlertTitle>
           {t`This may lead to fewer tokens received and potential loss of funds. Proceed with caution.`}{' '}
-          {t`Max. recommended slippage is ${formatNumber(MAX_RECOMMENDED_SLIPPAGE, formatOptions)}`}
+          {t`Max. recommended slippage is ${formatPercent(max)}`}
         </Alert>
-      )}
-      {+value < +MIN_SLIPPAGE && (
-        <Alert severity="warning" variant="standard">
-          <AlertTitle>{t`Low slippage selected!`}</AlertTitle>
-          {t`Your transaction may fail if price moves slightly. Consider increasing slippage if it doesn't go through.`}{' '}
-          {t`Min. slippage is ${formatNumber(MIN_SLIPPAGE, formatOptions)}`}
-        </Alert>
+      ) : (
+        decimalGreaterThan(min, value) && (
+          <Alert severity="warning" variant="outlined">
+            <AlertTitle>{t`Low ${type} slippage selected!`}</AlertTitle>
+            {t`Your transaction may fail if price moves slightly. Consider increasing slippage if it doesn't go through.`}{' '}
+            {t`Min. slippage is ${formatPercent(min)}`}
+          </Alert>
+        )
       )}
       <FormHelperText>{helper}</FormHelperText>
     </Stack>

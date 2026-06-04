@@ -41,7 +41,7 @@ export const LoanCollateralRemove = ({
   market,
   userActiveKey,
 }: PageContentProps) => {
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
 
   const activeKey = useStore(state => state.loanCollateralRemove.activeKey)
   const detailInfo = useStore(state => state.loanCollateralRemove.detailInfo[activeKey])
@@ -55,6 +55,7 @@ export const LoanCollateralRemove = ({
   const setFormValues = useStore(state => state.loanCollateralRemove.setFormValues)
   const resetState = useStore(state => state.loanCollateralRemove.resetState)
 
+  // eslint-disable-next-line @eslint-react/use-state -- Existing violation before enabling this rule.
   const [{ confirmedWarning }, setConfirmWarning] = useState(DEFAULT_CONFIRM_WARNING)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
   const [steps, setSteps] = useState<Step[]>([])
@@ -71,9 +72,11 @@ export const LoanCollateralRemove = ({
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>, isFullReset?: boolean) => {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setConfirmWarning(DEFAULT_CONFIRM_WARNING)
       void setFormValues(isLoaded ? api : null, market, updatedFormValues)
 
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       if (isFullReset) setHealthMode(DEFAULT_HEALTH_MODE)
     },
     [api, isLoaded, market, setFormValues],
@@ -84,7 +87,7 @@ export const LoanCollateralRemove = ({
       const notification = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
       const resp = await fetchStepDecrease(payloadActiveKey, api, market, formValues)
 
-      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && !resp.error) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && !resp.error) {
         const txMessage = t`Transaction completed.`
         const txHash = scanTxPath(network, resp.hash)
         setTxInfoBar(
@@ -121,6 +124,7 @@ export const LoanCollateralRemove = ({
 
       if (+collateral > 0) {
         const notifyMessage = t`Removal of ${collateral} ${market.collateral_token.symbol}.`
+        // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
         setTxInfoBar(
           <AlertBox alertType="info">
             <AlertSummary
@@ -134,10 +138,11 @@ export const LoanCollateralRemove = ({
           </AlertBox>,
         )
       } else if (!isComplete) {
+        // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
         setTxInfoBar(null)
       }
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         REMOVE: {
           key: 'REMOVE',
           status: helpers.getStepStatus(isComplete, step === 'REMOVE', isValid),
@@ -146,28 +151,31 @@ export const LoanCollateralRemove = ({
           ...(healthMode.message
             ? {
                 modal: {
+                  // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
                   initFn: () => setConfirmWarning({ isConfirming: true, confirmedWarning: false }),
                   title: t`Warning!`,
                   content: (
                     <DialogFormWarning
                       health={healthMode}
                       confirmed={confirmedHealthWarning}
+                      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
                       setConfirmed={val => setConfirmWarning({ isConfirming: false, confirmedWarning: val as boolean })}
                     />
                   ),
                   isDismissable: false,
                   cancelBtnProps: {
                     label: t`Cancel`,
+                    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
                     onClick: () => setConfirmWarning(DEFAULT_CONFIRM_WARNING),
                   },
                   primaryBtnProps: {
-                    onClick: () => handleBtnClickRemove(payloadActiveKey, api, market, formValues),
+                    onClick: () => void handleBtnClickRemove(payloadActiveKey, api, market, formValues),
                     disabled: !confirmedHealthWarning,
                   },
                   primaryBtnLabel: 'Remove anyway',
                 },
               }
-            : { onClick: async () => handleBtnClickRemove(payloadActiveKey, api, market, formValues) }),
+            : { onClick: () => void handleBtnClickRemove(payloadActiveKey, api, market, formValues) }),
         },
       }
 
@@ -180,10 +188,10 @@ export const LoanCollateralRemove = ({
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
     }
   }, [])
 
@@ -209,6 +217,7 @@ export const LoanCollateralRemove = ({
         formStatus,
         formValues,
       )
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

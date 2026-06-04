@@ -8,6 +8,7 @@ import { SizesAndSpaces } from '../../design/1_sizes_spaces'
 
 type TabStyle = { Label?: string; Fill?: string; Outline?: string }
 type TabVariant = { Inset?: string; Default: TabStyle; Hover: TabStyle; Current: TabStyle }
+// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
 type SpacingKey = keyof typeof SizesAndSpaces.Spacing | string | number
 type TabSizeConfig = {
   className: string
@@ -46,9 +47,9 @@ export const HIDE_INACTIVE_BORDERS_CLASS = 'hide-inactive-borders' as const
 export const TAB_SUFFIX_CLASS = 'tab-suffix' as const
 
 export const TAB_TEXT_VARIANTS = {
-  small: 'buttonXs',
-  medium: 'buttonS',
-  extraExtraLarge: 'headingMBold',
+  small: 'buttonTabsS',
+  medium: 'buttonTabsM',
+  extraExtraLarge: 'buttonTabsL',
 } as const satisfies Record<keyof typeof TABS_SIZES_CLASSES, TypographyVariantKey>
 
 const TAB_HEIGHT: Record<keyof typeof TABS_SIZES_CLASSES, string> = {

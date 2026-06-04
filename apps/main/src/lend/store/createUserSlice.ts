@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { cloneDeep } from 'lodash'
 import type { StoreApi } from 'zustand'
 import { helpers, apiLending } from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
@@ -14,7 +14,6 @@ import { getLoanExists } from '@/llamalend/queries/user'
 import { log } from '@ui-kit/lib/logging'
 
 type StateKey = keyof typeof DEFAULT_STATE
-const { cloneDeep } = lodash
 
 type SliceState = {
   loansDetailsMapper: UsersLoansDetailsMapper
@@ -27,19 +26,19 @@ const sliceKey = 'user'
 export type UserSlice = {
   [sliceKey]: SliceState & {
     // groups
-    fetchDatas(key: string, api: Api, markets: LendMarketTemplate[], shouldRefetch?: boolean): Promise<void>
-    fetchLoanDatas(key: string, api: Api, markets: LendMarketTemplate[], shouldRefetch?: boolean): Promise<void>
+    fetchDatas: (key: string, api: Api, markets: LendMarketTemplate[], shouldRefetch?: boolean) => Promise<void>
+    fetchLoanDatas: (key: string, api: Api, markets: LendMarketTemplate[], shouldRefetch?: boolean) => Promise<void>
 
     // individual
-    fetchUserLoanDetails(api: Api, market: LendMarketTemplate, shouldRefetch?: boolean): Promise<UserLoanDetails>
-    fetchUserMarketBalances(api: Api, market: LendMarketTemplate, shouldRefetch?: boolean): Promise<UserMarketBalances>
-    fetchAll(api: Api, market: LendMarketTemplate, shouldRefetch?: boolean): Promise<{ userLoanDetailsResp: UserLoanDetails | null; userLoanBalancesResp: UserMarketBalances; }>
+    fetchUserLoanDetails: (api: Api, market: LendMarketTemplate, shouldRefetch?: boolean) => Promise<UserLoanDetails>
+    fetchUserMarketBalances: (api: Api, market: LendMarketTemplate, shouldRefetch?: boolean) => Promise<UserMarketBalances>
+    fetchAll: (api: Api, market: LendMarketTemplate, shouldRefetch?: boolean) => Promise<{ userLoanDetailsResp: UserLoanDetails | null; userLoanBalancesResp: UserMarketBalances; }>
 
     // helpers
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: () => void
   }
 }
 

@@ -14,8 +14,9 @@ import {
   useRouterQueries,
 } from '@ui-kit/entities/router-api'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { LlamaMarketVersion } from '@ui-kit/types/market'
 import { q, type QueryProp } from '@ui-kit/types/util'
-import { decimalCompare, decimalMax, toWei } from '@ui-kit/utils'
+import { Chain, decimalCompare, decimalMax, toWei } from '@ui-kit/utils'
 
 export type MarketRoutes = {
   queries: RouteQueries
@@ -32,6 +33,19 @@ const sortRoutes = (a: RouterRouteResponse, b: RouterRouteResponse) =>
   decimalCompare(decimalMax(...b.amountOut) ?? '0', decimalMax(...a.amountOut) ?? '0') ||
   (a.priceImpact ?? 100) - (b.priceImpact ?? 100)
 
+const leverageZaps: Record<LlamaMarketVersion, Record<number, Address>> = {
+  [LlamaMarketVersion.v1]: {
+    [Chain.Ethereum]: '0x324c5f9F7A3015D91860aC6870dcE25d410Df3Dc',
+    [Chain.Arbitrum]: '0x9577086c6E38d38359872F903Da201f1bdCc0323',
+    [Chain.Optimism]: '0xE94d1fBF399c27CCBf0185b2Dd11Bf0FA0f0D95C',
+    [Chain.Fraxtal]: '0x16C6521Dff6baB339122a0FE25a9116693265353',
+    [Chain.Sonic]: '0xCA8d0747B5573D69653C3aC22242e6341C36e4b4',
+  },
+  [LlamaMarketVersion.v2]: {
+    [Chain.Optimism]: '0xcfd71a5BC9c2215ca8878C1083EC9a3CE1F0fdEb',
+  },
+}
+
 /**
  * Queries and converts the routes for leveraging on llamalend markets.
  */
@@ -45,6 +59,7 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
   onChange: onChangeProp,
   networks,
   getRouteGasOptions,
+  version,
 }: {
   chainId: number
   tokenIn: { symbol: string; address: Address; decimals: number } | undefined
@@ -54,6 +69,7 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
   enabled: boolean
   networks: Record<number, BaseConfig>
   getRouteGasOptions: GetGasCallback<TData, GasQueryKey>
+  version: LlamaMarketVersion | undefined
 } & Pick<MarketRoutes, 'onChange'>): MarketRoutes | undefined {
   const [chosenRouter, setChosenRouter] = useState<RouteProvider | undefined>(undefined) // keep the preferred router while mounted
   const { address: userAddress } = useConnection()
@@ -66,6 +82,7 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
       tokenOut: tokenOut?.address,
       amountIn: amountIn && tokenIn && toWei(amountIn, tokenIn.decimals),
       userAddress,
+      zapAddress: version && leverageZaps[version]?.[chainId],
       slippage,
     },
     getRouteGasOptions,
@@ -74,6 +91,7 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
   const usdRate = q(useTokenUsdRate({ tokenAddress: tokenOut?.address, chainId }, enabled))
   const selectedRoute = useMemo(
     () =>
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
       (chosenRouter && queries[chosenRouter]?.data) ||
       recordValues(queries)
         .map(q => q.data)
@@ -101,6 +119,7 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
     enabled,
     selectedRoute,
     onChange,
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
     onRefresh,
     tokenOut: { ...tokenOut, usdRate },
   }

@@ -1,4 +1,5 @@
 import { type ChangeEvent, useCallback } from 'react'
+import { LEVERAGE } from '@/llamalend/constants'
 import { BorrowMoreLoanInfoList } from '@/llamalend/features/borrow/components/BorrowMoreLoanInfoList'
 import { LeverageInput } from '@/llamalend/features/borrow/components/LeverageInput'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
@@ -80,6 +81,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   return (
     <Form
       {...form}
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
       onSubmit={onSubmit}
       footer={
         <BorrowMoreLoanInfoList
@@ -150,7 +152,12 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           maxLeverage={max.maxLeverage.data}
         />
       )}
-      <HighPriceImpactAlert priceImpact={priceImpact} values={values} max={q(max.maxLeverage)} />
+      <HighPriceImpactAlert
+        priceImpact={priceImpact}
+        values={values}
+        max={q(max.maxLeverage)}
+        slippageType={LEVERAGE}
+      />
       {disabledAlert ? (
         <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>
       ) : (

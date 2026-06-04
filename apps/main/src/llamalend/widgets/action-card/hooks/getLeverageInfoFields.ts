@@ -21,7 +21,7 @@ type LeverageInfoFieldsOptions = {
   collateralDelta: Decimal | undefined // only used when leverage is disabled, otherwise `leverageTotalCollateral` is used
 }
 
-export const useLeverageInfoFields = ({
+export const getLeverageInfoFields = ({
   leverageEnabled,
   routes,
   collateralDelta,
@@ -61,6 +61,6 @@ export const useLeverageInfoFields = ({
         }
       : {
           prevCollateral,
-          collateral: mapQuery(prevCollateral, prev => prev && collateralDelta && decimalSum(prev, collateralDelta)!),
+          collateral: mapQuery(prevCollateral, prev => prev && collateralDelta && decimalSum(prev, collateralDelta)),
         }),
   }) satisfies Partial<LoanActionInfoListProps>

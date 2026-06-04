@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { isUndefined, isNaN } from 'lodash'
 import { useMemo } from 'react'
 import { useChainId } from 'wagmi'
 import { AlertFormError } from '@/dex/components/AlertFormError'
@@ -7,8 +7,6 @@ import type { FormStatus, FormValues, SearchedParams } from '@/dex/components/Pa
 import { AlertBox } from '@ui/AlertBox'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
-
-const { isUndefined, isNaN } = lodash
 
 export const RouterSwapAlerts = ({
   formStatus,
@@ -19,22 +17,17 @@ export const RouterSwapAlerts = ({
   isHighImpact,
   isExpectedToAmount,
   searchedParams,
-  updateFormValues,
+  onClose,
 }: {
   formStatus: FormStatus
   formValues: FormValues
-  maxSlippage: string
+  maxSlippage: string | undefined
   toAmountOutput: string | undefined
   isExchangeRateLow: boolean | undefined
   isHighImpact?: boolean
   isExpectedToAmount?: boolean
   searchedParams: SearchedParams
-  updateFormValues: (
-    updatedFormValues: Partial<FormValues>,
-    isGetMaxFrom?: boolean,
-    maxSlippage?: string,
-    isFullReset?: boolean,
-  ) => void
+  onClose: () => void
 }) => {
   const { error, swapError } = formStatus
   const { toAddress } = searchedParams
@@ -58,7 +51,7 @@ export const RouterSwapAlerts = ({
 
       <AlertSlippage maxSlippage={maxSlippage} usdAmount={usdToAmount} />
 
-      <AlertFormError errorKey={swapError || error} handleBtnClose={() => updateFormValues({})} />
+      <AlertFormError errorKey={swapError || error} handleBtnClose={onClose} />
     </>
   )
 }

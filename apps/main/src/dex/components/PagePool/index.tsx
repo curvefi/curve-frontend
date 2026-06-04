@@ -108,6 +108,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
     const isSeed = Number(currencyReserves.total) === 0
 
     if (isSeed && poolData.hasWrapped) setPoolIsWrapped(poolData, true)
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setSeed({ isSeed, loaded: true })
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [poolData?.pool?.id, currencyReserves?.total])
@@ -217,11 +218,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
       >
         {poolAddress && <CampaignRewardsBanner chainId={rChainId} address={poolAddress} />}
         {!isLite && pricesApiPoolData && pricesApi && (
-          <OhlcAndActivityComp
-            rChainId={rChainId}
-            poolAddress={poolAddress as Address}
-            pricesApiPoolData={pricesApiPoolData}
-          />
+          <OhlcAndActivityComp rChainId={rChainId} poolAddress={poolAddress} pricesApiPoolData={pricesApiPoolData} />
         )}
         <Stack>
           <Stack direction="row">

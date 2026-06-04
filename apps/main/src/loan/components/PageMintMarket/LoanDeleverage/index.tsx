@@ -1,6 +1,6 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
-import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
+import { DEFAULT_HEALTH_MODE, LEVERAGE } from '@/llamalend/constants'
 import { hasDeleverage } from '@/llamalend/llama.utils'
 import { AlertFormError } from '@/loan/components/AlertFormError'
 import { AlertFormWarning } from '@/loan/components/AlertFormWarning'
@@ -54,7 +54,7 @@ export const LoanDeleverage = ({
   rChainId,
 }: Pick<ManageLoanProps, 'curve' | 'market' | 'params' | 'rChainId'>) => {
   const llammaId = llamma?.id ?? ''
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
   const push = useNavigate()
 
   const activeKey = useStore(state => state.loanDeleverage.activeKey)
@@ -87,10 +87,13 @@ export const LoanDeleverage = ({
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>, updatedMaxSlippage: string | null, isFullReset: boolean) => {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setTxInfoBar(null)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setConfirmHighPriceImpact(false)
 
       if (isFullReset) {
+        // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
         setHealthMode(DEFAULT_HEALTH_MODE)
       }
 
@@ -120,7 +123,7 @@ export const LoanDeleverage = ({
       const { dismiss } = notify(notifyMessage, 'pending')
       const resp = await fetchStepRepay(payloadActiveKey, curve, llamma, formValues, maxSlippage)
 
-      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey) {
         const txInfoBarMessage = resp.loanExists
           ? t`Transaction complete`
           : t`Transaction complete. This loan is paid-off and will no longer be manageable.`
@@ -160,7 +163,7 @@ export const LoanDeleverage = ({
         +(userState?.collateral ?? 0) >= +formValues.collateral
       const isValid = !!curve.signerAddress && isValidForm && !formStatus.error && !detailInfo.loading
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         REPAY: {
           key: 'REPAY',
           status: getStepStatus(isComplete, step === 'REPAY', isValid),
@@ -174,22 +177,24 @@ export const LoanDeleverage = ({
                     <DialogHighPriceImpactWarning
                       priceImpact={detailInfo?.priceImpact}
                       confirmed={confirmHighPriceImpact}
+                      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
                       setConfirmed={val => setConfirmHighPriceImpact(val)}
                     />
                   ),
                   isDismissable: false,
                   cancelBtnProps: {
                     label: t`Cancel`,
+                    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
                     onClick: () => setConfirmHighPriceImpact(false),
                   },
                   primaryBtnProps: {
-                    onClick: () => handleBtnClickRepay(payloadActiveKey, curve, llamma, formValues, maxSlippage),
+                    onClick: () => void handleBtnClickRepay(payloadActiveKey, curve, llamma, formValues, maxSlippage),
                     disabled: !confirmHighPriceImpact,
                   },
                   primaryBtnLabel: t`Repay anyway`,
                 },
               }
-            : { onClick: () => handleBtnClickRepay(payloadActiveKey, curve, llamma, formValues, maxSlippage) }),
+            : { onClick: () => void handleBtnClickRepay(payloadActiveKey, curve, llamma, formValues, maxSlippage) }),
         },
       }
 
@@ -200,11 +205,11 @@ export const LoanDeleverage = ({
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
     updateFormValues(DEFAULT_FORM_VALUES, '', true)
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [])
@@ -251,6 +256,7 @@ export const LoanDeleverage = ({
   useEffect(() => {
     if (curve && llamma && userState) {
       const updatedSteps = getSteps(activeKey, curve, llamma, formStatus, formValues, detailInfo)
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps
@@ -359,7 +365,7 @@ export const LoanDeleverage = ({
           {...formEstGas}
           stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
         />
-        <SlippageToleranceActionInfo maxSlippage={maxSlippage} type="leverage" />
+        <SlippageToleranceActionInfo maxSlippage={maxSlippage} type={LEVERAGE} />
       </StyledDetailInfoWrapper>
 
       {/* actions */}

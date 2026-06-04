@@ -31,10 +31,7 @@ export const DEFAULT_ALERT: MarketAlert = {
  * Market alerts keep markets visible while surfacing warnings or disabling new borrow/deposit actions.
  * Addresses must be checksummed. Tests have been added to enforce this.
  */
-export const MARKETS_ALERTS: Record<
-  LlamaMarketType,
-  { [chainId: number]: { [controllerAddress: Address]: MarketAlert } }
-> = {
+export const MARKETS_ALERTS: Record<LlamaMarketType, Record<number, Record<Address, MarketAlert>>> = {
   /** LEND MARKET ALERTS */
   Lend: {
     [Chain.Ethereum]: {
@@ -226,6 +223,16 @@ export const DEPRECATED_LLAMAS: Record<
       '0xd15d9797c4ECBf1c97c010327602bC51A09Dfb95': DEFAULT_DEPRECATE,
       // RCH-crvUSD
       '0xf8C27436B277734AAA726A8fD5e6D7daDe0296c5': DEFAULT_DEPRECATE,
+      // CRV-crvUSD old (CRV short)
+      '0xC510d73Ad34BeDECa8978B6914461aA7b50CF3Fc': DEFAULT_DEPRECATE,
+      // wstETH-crvUSD old
+      '0x1E0165DbD2019441aB7927C018701f3138114D71': DEFAULT_DEPRECATE,
+      // sUSDe-crvUSD
+      '0x98Fc283d6636f6DCFf5a817A00Ac69A3ADd96907': DEFAULT_DEPRECATE,
+      // USD0USD0++-crvUSD (2)
+      '0x1F9D988cDeBfA1FD5563C122a987186e516173c2': DEFAULT_DEPRECATE,
+      // yvCurve-yYB-f-crvUSD
+      '0x1591F867C42ecA199d59a4f8B0074DeDee5D843A': DEFAULT_DEPRECATE,
     },
     arbitrum: {
       // iBTC-crvUSD
@@ -256,6 +263,10 @@ export const DEPRECATED_LLAMAS: Record<
       '0x398e6dd92Df9F792D0107668871e6F49ebdfE028': DEFAULT_DEPRECATE,
       // ARB-crvUSD old
       '0x76709bC0dA299Ab0234EEC51385E900922AE98f5': DEFAULT_DEPRECATE,
+      // ARB-crvUSD (long2)
+      '0xeCF99dE21c31eC75b4Fb97e980F9d084b1d8Da8f': DEFAULT_DEPRECATE,
+      // tBTC-crvUSD (2)
+      '0x376e6D52F38e0fCe8E94293ce911e2FdEd2d4A4f': DEFAULT_DEPRECATE,
       // asdCRV-crvUSD
       '0x83B85f3b08B5EE58dE9EF9604e7Eec087FCCf130': {
         message: t`This market is deprecated due to the vsdCRV exploit.`,

@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'bignumber.js'
 import lodash from 'lodash'
 import type { StoreApi } from 'zustand'
 import type { DepositWithdrawModule, StatisticsChart } from '@/loan/components/PageCrvUsdStaking/types'
@@ -65,10 +65,10 @@ export type ScrvUsdSlice = {
     getInputAmountApproved: () => boolean
     getEstimateGas: (userAddress: string) => number
 
-    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
-    setStateByKey<T>(key: StateKey, value: T): void
-    setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(): void
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
+    setStateByKey: <T>(key: StateKey, value: T) => void
+    setStateByKeys: (SliceState: Partial<SliceState>) => void
+    resetState: () => void
   }
 }
 
@@ -237,6 +237,7 @@ export const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: Store
           get()[sliceKey].setStateByKey('approveDepositTransaction', {
             transactionStatus: 'error',
             transaction: null,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             errorMessage: error.message,
           })
           console.warn(error)
@@ -293,6 +294,7 @@ export const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: Store
           get()[sliceKey].setStateByKey('depositTransaction', {
             transactionStatus: 'error',
             transaction: null,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             errorMessage: error.message,
           })
           console.warn(error)
@@ -348,6 +350,7 @@ export const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: Store
           get()[sliceKey].setStateByKey('withdrawTransaction', {
             transactionStatus: 'error',
             transaction: null,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             errorMessage: error.message,
           })
           console.warn(error)
@@ -402,6 +405,7 @@ export const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: Store
           get()[sliceKey].setStateByKey('withdrawTransaction', {
             transactionStatus: 'error',
             transaction: null,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
             errorMessage: error.message,
           })
           console.warn(error)

@@ -1,6 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
+import { LEVERAGE } from '@/llamalend/constants'
 import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { type CloseLoanMutation, useClosePositionMutation } from '@/llamalend/mutations/close-position.mutation'
@@ -13,14 +14,14 @@ import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { decimal, decimalNegate } from '@ui-kit/utils'
-import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings'
+import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import { CLOSE_POSITION_COLUMNS, type ClosePositionRow } from '../ui/columns/columns.definitions'
 
 const CLOSE_POSITION_SAFETY_BUFFER = 1.0001 // 0.01% safety margin
 
 const userDefaultValues = {}
 const formOptions = {
-  defaultValues: { ...userDefaultValues, slippage: SLIPPAGE_PRESETS.stable },
+  defaultValues: { ...userDefaultValues, slippage: SLIPPAGE[LEVERAGE].default },
 } as const
 
 /** Hook to build state for the close-position form */
@@ -68,7 +69,7 @@ export function useClosePositionForm({
 
   const { collateral, debt, stablecoin } = userState ?? {}
 
-  const error = userStateError || userBalancesError || borrowTokenUsdRateError || collateralTokenUsdRateError
+  const error = userStateError ?? userBalancesError ?? borrowTokenUsdRateError ?? collateralTokenUsdRateError
 
   // Form state
   const form = useForm<CloseLoanMutation>(formOptions)

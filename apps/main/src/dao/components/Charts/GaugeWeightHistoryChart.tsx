@@ -23,7 +23,7 @@ const ERROR_MESSAGE = t`Unable to fetch historical gauge weights data.`
 
 type GaugeWeightSeriesKey = 'weightRelative'
 
-interface GaugeWeightHistoryChartProps {
+type GaugeWeightHistoryChartProps = {
   gaugeAddress: Address
   height?: number
 }

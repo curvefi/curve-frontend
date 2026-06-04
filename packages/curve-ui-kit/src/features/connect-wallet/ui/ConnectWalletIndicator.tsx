@@ -13,7 +13,7 @@ export const ConnectWalletIndicator = ({ sx, onConnect }: { sx?: SxProps; onConn
     <ConnectWalletButton
       onClick={() => {
         onConnect?.()
-        return connect()
+        void connect()
       }}
       loading={isConnecting}
       sx={sx}

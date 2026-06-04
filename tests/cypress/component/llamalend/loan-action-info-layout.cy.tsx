@@ -29,6 +29,7 @@ const routes: MarketRoutes = {
   chainId: 1,
   selectedRoute: mockRoutes[0],
   enabled: true,
+  // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
   onChange: async () => undefined,
   onRefresh: () => undefined,
   tokenOut: { symbol: 'crvUSD', decimals: 18, usdRate: q({ data: 1, error: null, isLoading: false }) },

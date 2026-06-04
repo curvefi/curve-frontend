@@ -19,7 +19,7 @@ export const SlippageToleranceActionInfo = ({
   type,
   active,
 }: {
-  maxSlippage: Decimal
+  maxSlippage: Decimal | undefined
   onChanged?: (data: SlippageSettingsFormData) => void
   size?: ActionInfoSize
   type: SlippageType | SlippageType[] | undefined
@@ -30,7 +30,7 @@ export const SlippageToleranceActionInfo = ({
     <>
       <ActionInfo
         label={t`Slippage`}
-        value={formatPercent(maxSlippage)}
+        value={maxSlippage ? formatPercent(maxSlippage) : '-'}
         valueLeft={active && <Badge size="extraSmall" label={capitalize(active)} />}
         valueRight={
           <IconButton onClick={openModal} size="extraExtraSmall" data-testid="slippage-settings-button">

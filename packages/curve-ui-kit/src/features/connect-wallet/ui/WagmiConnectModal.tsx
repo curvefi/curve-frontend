@@ -62,7 +62,7 @@ const WalletListItem = ({
     labelVariant="bodyMBold"
     icon={<WalletIcon connector={connector} />}
     value={connector.id}
-    onSelected={() => onConnect(connector)}
+    onSelected={() => void onConnect(connector)}
     isLoading={isLoading}
   />
 )

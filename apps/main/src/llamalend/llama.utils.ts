@@ -17,7 +17,7 @@ import { notFalsy, objectKeys } from '@primitives/objects.utils'
 import { getLib, requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
 import { isZapV2Enabled } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { LlamaMarketType, LlamaMarketVersion } from '@ui-kit/types/market'
 import { CRVUSD, decimalMinus, decimalSum, formatNumber } from '@ui-kit/utils'
 import { SOLVENCY_THRESHOLDS } from './llama-markets.constants'
 
@@ -37,8 +37,6 @@ export const tryGetLlamaMarket = (marketId: LlamaMarketTemplate | string | null 
   const lib = getLib('llamaApi') // retrieve lib separately to avoid crashing the whole app when uninitialized
   return marketId && lib && getLlamaMarket(marketId, lib)
 }
-
-const isLendV2Market = (market: LlamaMarketTemplate) => market instanceof LendMarketTemplate && market.version === 'v2'
 
 /**
  * Checks if a market supports leverage or not. A market supports leverage if:
@@ -63,11 +61,9 @@ export const hasLeverageValue = (market: LlamaMarketTemplate) =>
   (market instanceof MintMarketTemplate && hasV2Leverage(market))
 
 export const hasV1Leverage = (market: LlamaMarketTemplate) =>
-  market instanceof LendMarketTemplate
-    ? !isLendV2Market(market) && market.leverage.hasLeverage()
-    : market?.leverageZap !== zeroAddress
+  market instanceof LendMarketTemplate ? market.leverage.hasLeverage() : market?.leverageZap !== zeroAddress
 
-export const hasV2Leverage = (market: MintMarketTemplate) => !isLendV2Market(market) && market?.leverageV2.hasLeverage()
+export const hasV2Leverage = (market: MintMarketTemplate) => market?.leverageV2.hasLeverage()
 
 const hasV1Deleverage = (market: LlamaMarketTemplate) =>
   market instanceof LendMarketTemplate ? hasV1Leverage(market) : market?.deleverageZap !== zeroAddress
@@ -196,7 +192,7 @@ export const updateUserEventsApi = (
     market instanceof LendMarketTemplate
       ? [market.addresses.controller, getLendUserMarketCollateralEvents]
       : [market.controller, getMintUserMarketCollateralEvents]
-  void updateEvents(wallet.address, networkId as Chain, address as Address, txHash as Hex)
+  void updateEvents(wallet.address, networkId, address as Address, txHash as Hex)
 }
 
 /**
@@ -325,7 +321,7 @@ export function reverseBands(bands: [number, number] | number[]) {
 // There's a slight difference in types (borrowed vs stablecoin) that I didn't want to touch at the risk of breaking things;
 // I only want to move code, not change. At least they're neatly in the same place now.
 
-export function sortBandsLend(bandsBalances: { [index: number]: { borrowed: string; collateral: string } }) {
+export function sortBandsLend(bandsBalances: Record<number, { borrowed: string; collateral: string }>) {
   const sortedKeys = sortBy(objectKeys(bandsBalances), k => +k)
   const bandsBalancesArr: { borrowed: string; collateral: string; band: number }[] = []
   for (const k of sortedKeys) {
@@ -334,7 +330,7 @@ export function sortBandsLend(bandsBalances: { [index: number]: { borrowed: stri
   return { bandsBalancesArr, bandsBalances }
 }
 
-export function sortBandsMint(bandBalances: { [key: string]: { stablecoin: string; collateral: string } }) {
+export function sortBandsMint(bandBalances: Record<string, { stablecoin: string; collateral: string }>) {
   const sortedKeys = sortBy(objectKeys(bandBalances).map(k => +k))
   const bandBalancesArr: { stablecoin: string; collateral: string; band: string }[] = []
   for (const k of sortedKeys) {
@@ -430,3 +426,6 @@ export const lowSolvencyDeprecatedMessage = (solvencyPercent: number | null) =>
   solvencyPercent != null && solvencyPercent < SOLVENCY_THRESHOLDS.low
     ? t`This market is deprecated due to low solvency`
     : null
+
+export const getLlamaMarketVersion = (market: LlamaMarketTemplate) =>
+  market instanceof LendMarketTemplate ? (market.version as LlamaMarketVersion) : LlamaMarketVersion.v1

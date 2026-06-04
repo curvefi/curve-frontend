@@ -21,7 +21,7 @@ import { MarketSortDrawer } from './drawers/MarketSortDrawer'
 import { useLlamaGlobalFilterFn } from './filters/llamaGlobalFilter'
 import { LlamaTableFilters } from './filters/LlamaTableFilters'
 import { LlamaTableFiltersCollapsible } from './filters/LlamaTableFiltersCollapsible'
-import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
+import { getLlamaMarketsColumnVariant, useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
 
 const LOCAL_STORAGE_KEY = 'Llamalend Markets'
@@ -50,9 +50,9 @@ export const LlamaMarketsTable = ({
   const { columnSettings, columnVisibility, toggleVisibility, sortField } = useLlamaTableVisibility(
     LOCAL_STORAGE_KEY,
     sorting,
-    userHasPositions,
+    getLlamaMarketsColumnVariant(userHasPositions),
   )
-  const [expanded, onExpandedChange] = useState<ExpandedState>({})
+  const [expanded, setExpanded] = useState<ExpandedState>({})
   const filterProps = { columnFiltersById, setColumnFilter }
 
   const table = useTable({
@@ -61,7 +61,7 @@ export const LlamaMarketsTable = ({
     state: { expanded, sorting, columnVisibility, columnFilters, globalFilter },
     initialState: { pagination },
     onSortingChange,
-    onExpandedChange,
+    onExpandedChange: setExpanded,
     globalFilterFn,
     ...getTableOptions(queryData),
   })
@@ -98,7 +98,15 @@ export const LlamaMarketsTable = ({
           searchText={globalFilter}
           onSearch={setGlobalFilter}
           collapsibleFilters={{
-            collapsible: <LlamaTableFiltersCollapsible table={table} resetFilters={resetFilters} {...filterProps} />,
+            collapsible: (
+              <LlamaTableFiltersCollapsible
+                table={table}
+                resetFilters={resetFilters}
+                hasActiveFilters={hasActiveFilters}
+                hasFavorites={hasFavorites}
+                {...filterProps}
+              />
+            ),
             hasActiveFilters,
           }}
           filterChip={

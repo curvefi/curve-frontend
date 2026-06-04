@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography'
 import type { AppPage } from '@ui-kit/widgets/Header/types'
 import { SidebarItem } from './SidebarItem'
 
-interface SidebarSectionProps {
+type SidebarSectionProps = {
   title: string
   pages?: AppPage[]
   children?: ReactNode

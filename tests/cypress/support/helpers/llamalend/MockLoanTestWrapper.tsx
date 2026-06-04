@@ -23,18 +23,19 @@ const WalletStateSync = () => {
 
 export const MockLoanTestWrapper = ({ children, llamaApi }: MockLoanTestWrapperProps) => (
   <ComponentTestWrapper config={mockedWagmiConfig}>
-    <CurveContext.Provider
+    <CurveContext
       value={{
         connectState: ConnectState.SUCCESS,
         isHydrated: true,
         isInitialized: true,
         llamaApi: llamaApi as never,
+        // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
         wallet: { provider: { request: async () => undefined }, address: TEST_ADDRESS },
         provider: {} as never, // Intentionally unused here; gas info is seeded via setGasInfo() in test context.
       }}
     >
       <WalletStateSync />
       <Box sx={{ maxWidth: 520 }}>{children}</Box>
-    </CurveContext.Provider>
+    </CurveContext>
   </ComponentTestWrapper>
 )

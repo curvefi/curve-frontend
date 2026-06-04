@@ -24,7 +24,7 @@ const Label = styled.span<
 >`
   ${({ isBold }) => isBold && `font-weight: var(--font-weight--bold);`}
   ${({ fontVariantNumeric }) => fontVariantNumeric && `font-variant-numeric: ${fontVariantNumeric};`}
-  ${({ isMono }) => (isMono ? 'font-family: var(--font-mono);' : 'font-family: var(--font);')}
+  ${({ isMono }) => (isMono ? 'font-family: var(--button-font);' : 'font-family: var(--font);')}
   ${({ isError }) => isError && `color: var(--danger_darkBg-400);`}
   ${({ opacity }) => opacity !== undefined && `opacity: ${opacity};`}
   

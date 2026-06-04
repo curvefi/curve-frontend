@@ -207,7 +207,7 @@ describe('GET routes integration', () => {
         })
         expect(statusCode).toBe(200)
 
-        const payload = json() as RouterRouteResponse[]
+        const payload = json<RouterRouteResponse[]>()
         expect(payload).toHaveLength(expectedRoutes)
         payload.forEach(route => {
           expect(route.router).toBe(router)
@@ -227,8 +227,8 @@ describe('GET routes integration', () => {
           const [expectedTokenOut] = query.tokenOut ?? []
           const [firstStep] = route.route!
           const lastStep = route.route![route.route!.length - 1]
-          expect(firstStep.tokenIn.join(',')?.toLowerCase()).toBe(expectedTokenIn.toLowerCase())
-          expect(lastStep.tokenOut.join(',')?.toLowerCase()).toBe(expectedTokenOut.toLowerCase())
+          expect(firstStep.tokenIn.join(',').toLowerCase()).toBe(expectedTokenIn.toLowerCase())
+          expect(lastStep.tokenOut.join(',').toLowerCase()).toBe(expectedTokenOut.toLowerCase())
         })
       })
     })

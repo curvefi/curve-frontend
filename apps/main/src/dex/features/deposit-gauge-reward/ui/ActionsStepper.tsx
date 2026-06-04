@@ -133,6 +133,7 @@ export const DepositStepper = ({ chainId, poolId }: { chainId: ChainId; poolId: 
           (!isLoadingDepositRewardApproved && isDepositRewardApproved)
             ? t`Spending Approved`
             : t`Approve Spending`,
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
         onClick: handleSubmit(onSubmitApproval),
       },
       {
@@ -144,6 +145,7 @@ export const DepositStepper = ({ chainId, poolId }: { chainId: ChainId; poolId: 
         ),
         type: 'action',
         content: step === DepositRewardStep.CONFIRMATION ? t`Deposited` : t`Deposit`,
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
         onClick: handleSubmit(onSubmitDeposit),
       },
     ],

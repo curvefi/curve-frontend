@@ -6,15 +6,17 @@ import type { TableItem, TanstackTable } from './data-table.utils'
 export const FilterRow = <T extends TableItem>({
   table,
   children,
+  testId,
 }: {
   children: ReactNode
   table: TanstackTable<T>
+  testId?: string
 }) => (
   <TableRow>
     <TableCell
       colSpan={table.getHeaderGroups().reduce((count, { headers }) => count + headers.length, 0)}
-      sx={{ padding: 0, borderBottomWidth: 0 }}
-      data-testid="table-filters"
+      sx={{ padding: 0 }}
+      data-testid={testId}
     >
       {children}
     </TableCell>

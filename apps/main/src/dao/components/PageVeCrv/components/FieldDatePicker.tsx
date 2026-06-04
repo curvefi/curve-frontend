@@ -46,6 +46,7 @@ export const FieldDatePicker = ({
   isMax?: boolean
   calcdUtcDate: string
   utcDate: DateValue | null
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
   utcDateError: 'invalid-date' | string
   minUtcDate: dayjs.Dayjs
   maxUtcDate: dayjs.Dayjs | null
@@ -107,6 +108,7 @@ export const FieldDatePicker = ({
           hasError: !!utcDateError,
           showError: !!curve?.signerAddress,
         }}
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
         isDisabled={loading || disabled || isMax}
         isDateUnavailable={isDateUnavailable}
         label={t`Select unlock date`}

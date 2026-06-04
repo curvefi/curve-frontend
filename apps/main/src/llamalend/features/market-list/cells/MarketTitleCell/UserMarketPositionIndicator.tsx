@@ -6,10 +6,8 @@ import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { Typography } from '@mui/material'
 import { UserPositionIndicator, type ColorState } from '@ui-kit/shared/ui/DataTable/UserPositionIndicator'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketColumnId } from '../../columns'
 
-const { FontWeight } = SizesAndSpaces
 /**
  * Creates a flicker effect by toggling between orange and red colors
  * @returns Cleanup function to stop the flicker interval
@@ -55,7 +53,7 @@ export const UserMarketPositionIndicator = ({ market }: { market: LlamaMarket })
       colorState={colorState}
       tooltipTitle={title}
       tooltipBody={
-        <Typography variant="bodySRegular" sx={{ fontWeight: FontWeight.Medium }}>
+        <Typography variant="bodySRegular" sx={{ fontWeight: t => t.typography.fontWeightMedium }}>
           {description}
         </Typography>
       }

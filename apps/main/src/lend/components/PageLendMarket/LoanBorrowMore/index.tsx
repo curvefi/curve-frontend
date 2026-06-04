@@ -47,7 +47,7 @@ export const LoanBorrowMore = ({
   userActiveKey,
   isLeverage = false,
 }: LoanBorrowMoreProps) => {
-  const isSubscribed = useRef(false)
+  const isSubscribedRef = useRef(false)
   const activeKey = useStore(state => state.loanBorrowMore.activeKey)
   const activeKeyMax = useStore(state => state.loanBorrowMore.activeKeyMax)
   const detailInfoLeverage = useStore(state => state.loanBorrowMore.detailInfoLeverage[activeKey])
@@ -64,6 +64,7 @@ export const LoanBorrowMore = ({
 
   const maxSlippage = useUserProfileStore(state => state.maxSlippage.crypto)
 
+  // eslint-disable-next-line @eslint-react/use-state -- Existing violation before enabling this rule.
   const [{ isConfirming, confirmedWarning }, setConfirmWarning] = useState(DEFAULT_CONFIRM_WARNING)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
   const [steps, setSteps] = useState<Step[]>([])
@@ -79,6 +80,7 @@ export const LoanBorrowMore = ({
       isFullReset?: boolean,
       shouldRefetch?: boolean,
     ) => {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setConfirmWarning(DEFAULT_CONFIRM_WARNING)
       void setFormValues(
         isLoaded ? api : null,
@@ -89,6 +91,7 @@ export const LoanBorrowMore = ({
         shouldRefetch,
       )
 
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       if (isFullReset) setHealthMode(DEFAULT_HEALTH_MODE)
     },
     [api, isLeverage, isLoaded, maxSlippage, market, setFormValues],
@@ -108,7 +111,7 @@ export const LoanBorrowMore = ({
       const notification = notify(NOFITY_MESSAGE.pendingConfirm, 'pending')
       const resp = await fetchStepIncrease(payloadActiveKey, api, market, formValues, maxSlippage, isLeverage)
 
-      if (isSubscribed.current && resp?.hash && resp.activeKey === activeKey && !resp.error) {
+      if (isSubscribedRef.current && resp?.hash && resp.activeKey === activeKey && !resp.error) {
         const txMessage = t`Transaction completed.`
         setTxInfoBar(
           <TxInfoBar
@@ -158,6 +161,7 @@ export const LoanBorrowMore = ({
             ? t`Borrow additional ${debtStr}, deposit ${tokensMessage}.`
             : t`Borrow additional ${debtStr}`
 
+        // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
         setTxInfoBar(
           <AlertBox alertType="info">
             <AlertLoanSummary
@@ -172,15 +176,17 @@ export const LoanBorrowMore = ({
           </AlertBox>,
         )
       } else if (!isComplete) {
+        // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
         setTxInfoBar(null)
       }
 
-      const stepsObj: { [key: string]: Step } = {
+      const stepsObj: Record<string, Step> = {
         APPROVAL: {
           key: 'APPROVAL',
           status: helpers.getStepStatus(isApproved, step === 'APPROVAL', isValid && haveValues),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
           onClick: async () => {
             const tokensMessage = getStepTokensStr(formValues, market).symbolList
             const notifyMessage = t`Please approve spending of ${tokensMessage}`
@@ -199,6 +205,7 @@ export const LoanBorrowMore = ({
             ? {
                 modal: {
                   isDismissable: false,
+                  // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
                   initFn: () => setConfirmWarning({ isConfirming: true, confirmedWarning: false }),
                   title: t`Warning!`,
                   content: (
@@ -214,24 +221,26 @@ export const LoanBorrowMore = ({
                           : null
                       }
                       confirmed={confirmedWarning}
+                      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
                       setConfirmed={val => setConfirmWarning({ isConfirming: false, confirmedWarning: val as boolean })}
                     />
                   ),
                   cancelBtnProps: {
                     label: t`Cancel`,
+                    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
                     onClick: () => setConfirmWarning(DEFAULT_CONFIRM_WARNING),
                   },
                   primaryBtnProps: {
                     onClick: () =>
-                      handleBtnClickBorrow(payloadActiveKey, api, formValues, market, maxSlippage, isLeverage),
+                      void handleBtnClickBorrow(payloadActiveKey, api, formValues, market, maxSlippage, isLeverage),
                     disabled: !confirmedWarning,
                   },
                   primaryBtnLabel: t`Borrow more anyway`,
                 },
               }
             : {
-                onClick: async () =>
-                  handleBtnClickBorrow(payloadActiveKey, api, formValues, market, maxSlippage, isLeverage),
+                onClick: () =>
+                  void handleBtnClickBorrow(payloadActiveKey, api, formValues, market, maxSlippage, isLeverage),
               }),
         },
       }
@@ -250,10 +259,10 @@ export const LoanBorrowMore = ({
 
   // onMount
   useEffect(() => {
-    isSubscribed.current = true
+    isSubscribedRef.current = true
 
     return () => {
-      isSubscribed.current = false
+      isSubscribedRef.current = false
     }
   }, [])
 
@@ -294,6 +303,7 @@ export const LoanBorrowMore = ({
         detailInfoLeverage?.isHighPriceImpact ? detailInfoLeverage.priceImpact : '',
         steps,
       )
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line @eslint-react/exhaustive-deps

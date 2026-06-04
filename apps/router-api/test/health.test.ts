@@ -9,7 +9,14 @@ describe('health endpoint', () => {
       const response = await server.inject({ method: 'GET', url: '/health' })
       expect(response.statusCode).toBe(200)
 
-      const payload = response.json()
+      const payload = response.json<{
+        status: string
+        service: string
+        environment: string
+        version: string
+        timestamp: string
+        uptime: number
+      }>()
       expect(payload).toMatchObject({
         status: 'ok',
         service: 'router-api',

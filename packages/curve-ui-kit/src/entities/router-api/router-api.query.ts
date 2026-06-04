@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import { enforce, test } from 'vest'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
+import type { Address } from '@primitives/address.utils'
 import { toArray } from '@primitives/array.utils'
 import { fetchJson } from '@primitives/fetch.utils'
 import { assert, notFalsy, maybe } from '@primitives/objects.utils'
@@ -20,6 +21,7 @@ type RouteByIdParams = FieldsOf<RouteByIdQuery>
 
 const { getQueryData: getRouteQueryData, setQueryData: setRouteQueryData } = queryFactory({
   queryKey: ({ routeId }: RouteByIdParams) => ['router-api', 'v1/routes', { routeId }] as const,
+  // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
   queryFn: async (_params: RouteByIdQuery): Promise<RouteResponse> => {
     throw new NoRetryError('router route-by-id cache is write-through only')
   },
@@ -127,7 +129,7 @@ export type GetGasCallback<TData extends TGas | null = TGas, TKey extends QueryK
  * Calls the route providers in parallel, returning the first route of each.
  */
 export const useRouterQueries = <TData extends TGas | null, TKey extends QueryKey>(
-  params: Omit<RoutesParams, 'router'>,
+  { zapAddress, ...params }: Omit<RoutesParams, 'router'> & { zapAddress: Address | undefined },
   getRouteGasOptions: GetGasCallback<TData, TKey>,
   enabled?: boolean,
 ) => {
@@ -149,8 +151,8 @@ export const useRouterQueries = <TData extends TGas | null, TKey extends QueryKe
         [curveRoutes, gas],
       ),
       'curve-solver': useRouterQuery(params, 'curve-solver', enabled),
-      enso: useRouterQuery(params, 'enso', enabled),
-      odos: useRouterQuery(params, 'odos', enabled),
+      enso: useRouterQuery({ ...params, userAddress: zapAddress }, 'enso', enabled),
+      odos: useRouterQuery({ ...params, userAddress: zapAddress }, 'odos', enabled),
     } satisfies RouteQueries,
     onRefresh: useCallback(
       () => Promise.all(RouteProviders.map(router => fetchApiRoutes({ ...params, router }))),

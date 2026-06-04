@@ -1,8 +1,9 @@
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
+import { LEVERAGE } from '@/llamalend/constants'
 import { useMaxRepayTokenValues } from '@/llamalend/features/manage-loan/hooks/useMaxRepayTokenValues'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
-import { getTokens, isRouterRequired } from '@/llamalend/llama.utils'
+import { getLlamaMarketVersion, getTokens, isRouterRequired } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useRepayMutation } from '@/llamalend/mutations/repay.mutation'
 import { getRepayLoanEstimateGasOptions } from '@/llamalend/queries/repay/repay-gas-estimate.query'
@@ -28,7 +29,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { type AllowUndefined, q, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
 import { shouldBlockTransaction } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
-import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings'
+import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
 const NOT_AVAILABLE = ['root', t`Repay is not available, increase the repayment amount or repay fully.`] as const
 
@@ -92,7 +93,7 @@ const defaultValues = {
   maxCollateral: undefined,
   maxBorrowed: undefined,
   isFull: false,
-  slippage: SLIPPAGE_PRESETS.stable,
+  slippage: SLIPPAGE[LEVERAGE].default,
 }
 const formOptions = {
   defaultValues,
@@ -158,7 +159,11 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
       isPending ||
       isDebouncing ||
       isFull.isLoading ||
-      shouldBlockTransaction(priceImpact, { ...values, leverageEnabled: isRepayLeveraged(values) }),
+      shouldBlockTransaction(priceImpact, {
+        ...values,
+        leverageEnabled: isRepayLeveraged(values),
+        slippageType: LEVERAGE,
+      }),
     onSubmit: form.handleSubmit(onSubmit),
     borrowToken,
     collateralToken,
@@ -178,6 +183,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
       },
       getRouteGasOptions: (routeId: string | undefined) => getRepayLoanEstimateGasOptions({ ...params, routeId }),
       networks,
+      version: market && getLlamaMarketVersion(market),
     }),
     formErrors: useMemo(
       // only show the 'not available' warn when there are no other form errors

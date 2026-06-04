@@ -72,6 +72,10 @@ body.theme-default {
 
   --layout--home--background-color: var(--whitel98);
 
+  --normal: 500;
+  --medium: 500;
+  --semi-bold: 600;
+  --bold: 700;
   --font-weight--bold: var(--bold);
   --font-weight--semi-bold: var(--semi-bold);
   --font-weight--normal: var(--normal);
@@ -120,7 +124,7 @@ body.theme-default {
   --button--disabled--border-color: var(--gray-500);
   --button--disabled--background-color: var(--gray-500);
   --button--disabled_spinner--background-color: var(--gray-500a20);
-  --button--font: var(--font);
+  --button--font: var(--button-font);
   --button--font-size: inherit;
   --button--font-weight: var(--bold);
   --button--shadow-color: var(--primary-200);

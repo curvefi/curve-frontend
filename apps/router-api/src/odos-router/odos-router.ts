@@ -58,7 +58,7 @@ async function getOdosQuote(
 }
 
 async function assembleOdosQuote(
-  { pathId, userAddress }: { pathId: string; userAddress: string },
+  { pathId, userAddress }: { pathId: string; userAddress: Address },
   log: FastifyBaseLogger,
 ) {
   const params: Record<keyof CurveOdosAssembleRequest, string> = { path_id: pathId, user: userAddress }

@@ -120,7 +120,6 @@ export function useCellSx<T extends TableItem>({
         zIndex: (t: Theme) => t.zIndex.tableStickyColumn,
         backgroundColor: (t: Theme) => t.design.Table.Row.Default,
       }),
-      borderBlockEnd: borderStyle,
     }),
     [isSticky, paddingInlineEnd, paddingInlineStart, showCollapseIcon, wrapperSx],
   )

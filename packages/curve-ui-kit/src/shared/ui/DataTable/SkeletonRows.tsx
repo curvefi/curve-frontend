@@ -39,6 +39,7 @@ export const SkeletonRows = <T extends TableItem>({
           _,
           rowIndex, // note: length is part of the key, so all rows are recreated and the skeleton animation is restarted
         ) => (
+          // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
           <TableRow key={`loading-row-${rowIndex}-${length}`} data-testid={`data-table-loading-${rowIndex}`}>
             {table
               .getHeaderGroups()
