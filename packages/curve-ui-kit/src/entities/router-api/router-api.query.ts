@@ -150,7 +150,7 @@ export const useRouterQueries = <TData extends TGas | null, TKey extends QueryKe
             : curveRoutes,
         [curveRoutes, gas],
       ),
-      'curve-solver': useRouterQuery(params, 'curve-solver', enabled),
+      'curve-solver': useRouterQuery({ ...params, userAddress: zapAddress }, 'curve-solver', enabled),
       enso: useRouterQuery({ ...params, userAddress: zapAddress }, 'enso', enabled),
       odos: useRouterQuery({ ...params, userAddress: zapAddress }, 'odos', enabled),
     } satisfies RouteQueries,
