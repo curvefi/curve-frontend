@@ -1,5 +1,6 @@
 import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
+import { EXTERNAL_LINKS } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -22,11 +23,8 @@ export const Dex = () => (
       }}
       sx={{ gap: Spacing.md, marginInline: Spacing.md }}
     >
-      <ExternalLink href="https://docs.curve.finance/references/whitepaper" label={t`Curve whitepaper`} />
-      <ExternalLink
-        href="https://docs.curve.finance/security/security/#security-audits"
-        label={t`Curve smart contract audits`}
-      />
+      <ExternalLink href={EXTERNAL_LINKS.docs.references.whitepaper} label={t`Curve whitepaper`} />
+      <ExternalLink href={EXTERNAL_LINKS.docs.user.security.audits} label={t`Curve smart contract audits`} />
     </Stack>
 
     <Header>{t`Technology Risk`}</Header>

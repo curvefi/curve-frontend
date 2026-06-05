@@ -1,5 +1,6 @@
 import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
+import { EXTERNAL_LINKS } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { List } from '../general/List'
 import { Section, Header, Title, Paragraph, Bold } from '../general/Section'
@@ -12,28 +13,28 @@ export const Privacy = () => (
         {t`This privacy notice (`}
         <Bold>{t`"Privacy Notice"`}</Bold>
         {t`) explains the basis for our collection of personal data when you use our websites `}
-        <Link color="textSecondary" href="https://www.curve.finance" target="_blank">
-          https://www.curve.finance
+        <Link color="textSecondary" href={EXTERNAL_LINKS.curve.root} target="_blank">
+          {EXTERNAL_LINKS.curve.root}
         </Link>
         {t`, `}
-        <Link color="textSecondary" href="https://classic.curve.finance" target="_blank">
-          https://classic.curve.finance
+        <Link color="textSecondary" href={EXTERNAL_LINKS.curve.classic} target="_blank">
+          {EXTERNAL_LINKS.curve.classic}
         </Link>
         {t`, `}
-        <Link color="textSecondary" href="https://news.curve.finance/" target="_blank">
-          https://news.curve.finance/
+        <Link color="textSecondary" href={EXTERNAL_LINKS.news} target="_blank">
+          {EXTERNAL_LINKS.news}
         </Link>
         {t`, `}
-        <Link color="textSecondary" href="https://docs.curve.finance/" target="_blank">
-          https://docs.curve.finance/
+        <Link color="textSecondary" href={EXTERNAL_LINKS.docs.root} target="_blank">
+          {EXTERNAL_LINKS.docs.root}
         </Link>
         {t`, `}
-        <Link color="textSecondary" href="https://docs.curve.finance/" target="_blank">
-          https://docs.curve.finance/
+        <Link color="textSecondary" href={EXTERNAL_LINKS.docs.root} target="_blank">
+          {EXTERNAL_LINKS.docs.root}
         </Link>
         {t` and `}
-        <Link color="textSecondary" href="https://gov.curve.finance/" target="_blank">
-          https://gov.curve.finance/
+        <Link color="textSecondary" href={EXTERNAL_LINKS.curve.gov} target="_blank">
+          {EXTERNAL_LINKS.curve.gov}
         </Link>
         {t` (together `}
         <Bold>{t`"Websites"`}</Bold>
@@ -87,7 +88,7 @@ export const Privacy = () => (
     <Section>
       <Title>{t`2.2 User Account`}</Title>
       <Paragraph>
-        {t`Some of our services (especially on https://news.curve.finance/ and https://gov.curve.finance/) can only be used with a user account. We process the data collected in this context in order to provide our services and to ensure their functionality and security.`}
+        {t`Some of our services (especially on ${EXTERNAL_LINKS.news}  and ${EXTERNAL_LINKS.curve.gov}) can only be used with a user account. We process the data collected in this context in order to provide our services and to ensure their functionality and security.`}
       </Paragraph>
       <Paragraph>
         {t`The data collected includes: name; first name; username; email address; password; information regarding your consent to the Terms of Service; your acknowledgement of this Privacy Notice; etc.`}
@@ -149,19 +150,6 @@ export const Privacy = () => (
       </Paragraph>
       <Paragraph>{t`All of the above data may be used for this purpose.`}</Paragraph>
     </Section>
-
-    {/* <Section>
-      <Title>{t`2.10 Cookies`}</Title>
-      <Paragraph>
-        {t`Our Websites use cookies, and we may also allow certain third parties to do so (see also Section 2.11 below). Cookies are text files that are stored on your device (computer, laptop, smartphone, etc.) and that are necessary for the use of the Websites as such or certain functions or that enable the analysis of the use of our Websites.`}
-      </Paragraph>
-      <Paragraph>
-        {t`Depending on the purpose of these cookies, we may ask for your express prior consent before cookies are used. You can access your current settings by clicking on the "[Change Your Cookies]" button at our Websites and withdraw your consent under the same link at any time.`}
-      </Paragraph>
-      <Paragraph>
-        {t`When you use our Websites, you can also set your browser to block or deceive certain types of cookies or alternative technologies, or to delete existing cookies. You can also add software to your browser that blocks certain third-party tracking. You can find more information on the help pages of your browser (usually with the keyword "Privacy") or on the websites of the third parties set out in our consent management tool.`}
-      </Paragraph>
-    </Section> */}
 
     <Section>
       <Title>{t`2.10 Tools`}</Title>

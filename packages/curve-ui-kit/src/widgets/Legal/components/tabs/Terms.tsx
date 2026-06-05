@@ -1,5 +1,6 @@
 import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
+import { EXTERNAL_LINKS } from '@ui/utils'
 import { getSearchString } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
@@ -89,15 +90,15 @@ export const Terms = () => (
         <List type="disc">
           <Typography component="li" variant="bodyMRegular">
             {t`Technical Information: The Website provides access to various types of documentation related to the Curve ecosystem, including among others user guides (`}
-            <Link color="textSecondary" href="https://docs.curve.finance/" target="_blank">
+            <Link color="textSecondary" href={EXTERNAL_LINKS.docs.root} target="_blank">
               {t`https://docs.curve.finance/`}
             </Link>
             {t`), GitHub repositories (`}
-            <Link color="textSecondary" href="https://github.com/curvefi" target="_blank">
+            <Link color="textSecondary" href={EXTERNAL_LINKS.github.curvefi} target="_blank">
               {t`Curve GitHub`}
             </Link>
             {t`), a blog featuring the latest news in the Curve ecosystem (`}
-            <Link color="textSecondary" href="https://news.curve.finance/" target="_blank">
+            <Link color="textSecondary" href={EXTERNAL_LINKS.news} target="_blank">
               {t`Curve News`}
             </Link>
             {t`), a list of applications reportedly built on top of the Curve ecosystem (`}
@@ -105,7 +106,7 @@ export const Terms = () => (
               {t`Integrations - Curve`}
             </Link>
             {t`) and technical documentation detailing the implementation of the core Curve protocol and its associated smart contracts (`}
-            <Link color="textSecondary" href="https://docs.curve.finance/" target="_blank">
+            <Link color="textSecondary" href={EXTERNAL_LINKS.docs.root} target="_blank">
               {t`Curve Technical Docs`}
             </Link>
             {t`).`}
@@ -115,23 +116,19 @@ export const Terms = () => (
           </Typography>
           <Typography component="li" variant="bodyMRegular">
             {t`Security Information: The Website presents information related to the security of the Curve Project, respectively the Curve Functionalities and respective ecosystem, including audits reports (`}
-            <Link
-              color="textSecondary"
-              href="https://docs.curve.finance/security/security/#security-audits"
-              target="_blank"
-            >
+            <Link color="textSecondary" href={EXTERNAL_LINKS.docs.user.security.audits} target="_blank">
               {t`Bug Bounty & Audits - Curve Technical Docs`}
             </Link>
             {t`), details on bug bounty programs (`}
-            <Link color="textSecondary" href="https://docs.curve.finance/security/security/#bug-bounty" target="_blank">
+            <Link color="textSecondary" href={EXTERNAL_LINKS.docs.user.security.bugBounty} target="_blank">
               {t`Bug Bounty & Audits - Curve Technical Docs`}
             </Link>
             {t`) and relevant statistics (`}
-            <Link color="textSecondary" href="https://dune.com/mrblock_buidl/Curve.fi" target="_blank">
+            <Link color="textSecondary" href={EXTERNAL_LINKS.analytics.duneCurveFi} target="_blank">
               {t`Curve.fi`}
             </Link>
             {t`) and API status monitoring (`}
-            <Link color="textSecondary" href="https://statuspage.freshping.io/59335-CurveAPI" target="_blank">
+            <Link color="textSecondary" href={EXTERNAL_LINKS.security.apiStatus} target="_blank">
               {t`Curve API's Live status - Powered by Freshping`}
             </Link>
             {t`).`}
@@ -257,11 +254,7 @@ export const Terms = () => (
       </Paragraph>
       <Paragraph>
         {t`Any and all rights related to the Website, including the official logos (as listed`}{' '}
-        <Link
-          color="textSecondary"
-          href="https://curvefinance.notion.site/Brand-Assets-1a6599aae064802fba11ce6a9e642d74"
-          target="_blank"
-        >
+        <Link color="textSecondary" href={EXTERNAL_LINKS.brand.assets} target="_blank">
           {t`here`}
         </Link>
         {t`) are held by us.`}

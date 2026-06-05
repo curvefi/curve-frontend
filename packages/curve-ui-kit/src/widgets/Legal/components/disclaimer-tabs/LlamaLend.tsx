@@ -1,5 +1,6 @@
 import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
+import { EXTERNAL_LINKS } from '@ui/utils'
 import { getSearchString } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
@@ -20,7 +21,7 @@ export const LlamaLend = () => (
           {t`Curve Risk Disclosures for Liquidity Providers`}
         </RouterLink>
         {t`. Users are also advised to review the public`}{' '}
-        <Link color="textSecondary" href="https://docs.curve.finance/references/audits/" target="_blank">
+        <Link color="textSecondary" href={EXTERNAL_LINKS.docs.user.security.audits} target="_blank">
           {t`audit reports`}
         </Link>{' '}
         {t`to assess the security and reliability of the platform before engaging in any lending or borrowing activities.`}

@@ -1,6 +1,7 @@
 import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { EXTERNAL_LINKS } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -25,14 +26,8 @@ export const CrvUsd = () => (
       }}
       sx={{ gap: Spacing.md, marginInline: Spacing.md }}
     >
-      <ExternalLink
-        href="https://docs.curve.finance/assets/pdf/whitepaper_curve_stablecoin.pdf"
-        label={t`crvUSD whitepaper`}
-      />
-      <ExternalLink
-        href="https://docs.curve.finance/security/security/#stablecoin-and-lending"
-        label={t`crvUSD smart contract audits`}
-      />
+      <ExternalLink href={EXTERNAL_LINKS.docs.assets.crvUsdWhitepaper} label={t`crvUSD whitepaper`} />
+      <ExternalLink href={EXTERNAL_LINKS.docs.user.security.audits} label={t`crvUSD smart contract audits`} />
     </Stack>
 
     <Header>{t`crvUSD Design Risks`}</Header>
