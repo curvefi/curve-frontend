@@ -8,7 +8,7 @@ import {
 import { Stack } from '@mui/material'
 import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
-import { formatUsd } from '@ui-kit/utils'
+import { formatNumber } from '@ui-kit/utils'
 
 type TokenValues = {
   value: Decimal | undefined | null
@@ -52,7 +52,7 @@ export const CollateralMetricTooltipContent = ({
       </Stack>
 
       <TooltipItem title={t`Total collateral value`} variant="independent">
-        {totalValue == null ? UnavailableNotation : formatUsd(totalValue, { abbreviate: false })}
+        {totalValue == null ? UnavailableNotation : formatNumber(totalValue, 'usd.amount')}
       </TooltipItem>
     </TooltipWrapper>
   )

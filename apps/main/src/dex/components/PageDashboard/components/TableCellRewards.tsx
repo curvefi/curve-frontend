@@ -63,11 +63,9 @@ export const TableCellRewards = ({
           >
             {/* eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule. */}
             <WithWrapper shouldWrap={sortBy === SORT_ID.userCrvApy} Wrapper={Bold}>
-              {`${formatNumber(userCrvApy, { unit: 'percentage', abbreviate: false })} CRV`}
+              {`${formatNumber(userCrvApy, 'percent.value')} CRV`}
             </WithWrapper>{' '}
-            {boostedCrvApy ? (
-              <DetailText> of {formatNumber(boostedCrvApy, { unit: 'percentage', abbreviate: false })}</DetailText>
-            ) : null}
+            {boostedCrvApy ? <DetailText> of {formatNumber(boostedCrvApy, 'percent.value')}</DetailText> : null}
           </Chip>
         ) : null
       ) : (

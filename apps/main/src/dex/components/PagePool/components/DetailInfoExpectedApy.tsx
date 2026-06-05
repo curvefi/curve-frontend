@@ -49,9 +49,9 @@ export const DetailInfoExpectedApy = ({
           }
         >
           <StyledBox>
-            {formatNumber(crvApr, { unit: 'percentage', abbreviate: false })}
+            {formatNumber(crvApr, 'percent.value')}
             <Icon name="ArrowRight" size={16} className="svg-arrow" />
-            {formatNumber(newCrvApr.apr, { unit: 'percentage', abbreviate: false })}
+            {formatNumber(newCrvApr.apr, 'percent.value')}
           </StyledBox>
         </DetailInfo>
       ) : null}

@@ -7,7 +7,7 @@ import {
 } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import { Stack } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
-import { formatUsd } from '@ui-kit/utils'
+import { formatNumber } from '@ui-kit/utils'
 
 type TotalCollateralTooltipProps = {
   collateralSymbol: string | null | undefined
@@ -35,9 +35,7 @@ export const TotalCollateralTooltip = ({
   const borrowPercentage = formatPercentage(totalBorrowed, combinedCollateralUsdValue, borrowedUsdRate)
 
   const totalValueFormatted =
-    combinedCollateralUsdValue != null
-      ? formatUsd(combinedCollateralUsdValue, { abbreviate: false })
-      : UnavailableNotation
+    combinedCollateralUsdValue != null ? formatNumber(combinedCollateralUsdValue, 'usd.amount') : UnavailableNotation
 
   return (
     <TooltipWrapper>

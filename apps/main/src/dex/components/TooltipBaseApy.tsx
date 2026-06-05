@@ -32,8 +32,8 @@ export const TooltipBaseApy = ({
         {label} <Chip size="xs">(annualized)</Chip>
       </Title>
       <ul>
-        <li>Daily: {formatNumber(amount(baseApy?.day), { unit: 'percentage', abbreviate: false, fallback: '-' })}</li>
-        <li>Weekly: {formatNumber(amount(baseApy?.week), { unit: 'percentage', abbreviate: false, fallback: '-' })}</li>
+        <li>Daily: {formatNumber(amount(baseApy?.day), 'percent.value')}</li>
+        <li>Weekly: {formatNumber(amount(baseApy?.week), 'percent.value')}</li>
       </ul>
 
       {baseApy?.day && Number(baseApy.day) < 0 && (

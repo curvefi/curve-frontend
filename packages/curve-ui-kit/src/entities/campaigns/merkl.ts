@@ -2,7 +2,7 @@ import { capitalize, groupBy } from 'lodash'
 import type { Address } from 'viem'
 import { paginate } from '@curvefi/prices-api/paginate'
 import { addQueryString, FetchError } from '@primitives/fetch.utils'
-import { formatPercent, isCypress } from '@ui-kit/utils'
+import { formatNumber, isCypress } from '@ui-kit/utils'
 import type { RewardsAction } from '@external-rewards'
 import type { CampaignRewards } from './types'
 
@@ -78,7 +78,7 @@ const opportunityToCampaignRewards = (opp: MerklOpportunity): CampaignRewards[] 
         lock: false, // Merkl doesn't offer 'locked' rewards.
 
         // Merkl campaigns don't have a multiplier, just a token. And APR is only available for the whole opportunity.
-        multiplier: opp.apr ? formatPercent(opp.apr) : token.symbol,
+        multiplier: opp.apr ? formatNumber(opp.apr, 'percent.rate') : token.symbol,
 
         tags: ['tokens'], // Merkl rewards are tokens only as far as I know; no points.
         action: ACTIONS[opp.action],

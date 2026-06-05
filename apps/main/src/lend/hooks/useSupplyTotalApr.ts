@@ -52,12 +52,12 @@ export function useSupplyTotalApr(rChainId: ChainId, marketId: string) {
 
 function _getTooltipValue(lendApr: number, lendApy: number, crvBase: number, crvBoost: number, others: RewardOther[]) {
   return {
-    lendApr: formatNumber(lendApr, { unit: 'percentage', abbreviate: false }),
-    lendApy: `${formatNumber(lendApy, { unit: 'percentage', abbreviate: false })} APY`,
+    lendApr: formatNumber(lendApr, 'percent.value'),
+    lendApy: `${formatNumber(lendApy, 'percent.value')} APY`,
     crvBase,
-    crv: crvBase > 0 ? formatNumber(crvBase, { unit: 'percentage', abbreviate: false }) : '',
-    crvBoosted: crvBoost > 0 ? formatNumber(crvBoost, { unit: 'percentage', abbreviate: false }) : '',
-    incentives: others.map(o => `${formatNumber(o.apy, { unit: 'percentage', abbreviate: false })} ${o.symbol}`),
+    crv: crvBase > 0 ? formatNumber(crvBase, 'percent.value') : '',
+    crvBoosted: crvBoost > 0 ? formatNumber(crvBoost, 'percent.value') : '',
+    incentives: others.map(o => `${formatNumber(o.apy, 'percent.value')} ${o.symbol}`),
     incentivesObj: others,
   }
 }

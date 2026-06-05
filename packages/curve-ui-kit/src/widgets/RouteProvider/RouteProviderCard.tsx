@@ -15,7 +15,6 @@ import { LoadingAnimation } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { QueryProp } from '@ui-kit/types/util'
 import { formatNumber, fromWei } from '@ui-kit/utils'
-import { formatUsd } from '@ui-kit/utils/number'
 import { RouteComparisonChip } from '@ui-kit/widgets/RouteProvider/RouteComparisonChip'
 
 const { Spacing, IconSize } = SizesAndSpaces
@@ -87,13 +86,15 @@ export const RouteProviderCard = ({
           <Stack direction="row" sx={{ gap: Spacing.xxs, alignItems: 'center' }}>
             <WithSkeleton loading={isLoading}>
               <Typography variant="bodyXsRegular" color="textTertiary" data-testid="route-provider-usd">
-                {amountOut == null || usdRate == null ? '-' : `~${formatUsd(parseFloat(amountOut) * usdRate)}`}
+                {amountOut == null || usdRate == null
+                  ? '-'
+                  : `~${formatNumber(parseFloat(amountOut) * usdRate, 'usd.notional')}`}
               </Typography>
             </WithSkeleton>
             {gasEstimate?.estGasCostUsd != null && !isFetching && (
               <Typography variant="bodyXsRegular" color="textTertiary" data-testid="route-provider-gas">
                 {' - '}
-                {formatUsd(gasEstimate.estGasCostUsd)}
+                {formatNumber(gasEstimate.estGasCostUsd, 'usd.notional')}
               </Typography>
             )}
             {isFetching && <ReloadIcon sx={{ ...LoadingAnimation, width: IconSize.xxs, height: IconSize.xxs }} />}

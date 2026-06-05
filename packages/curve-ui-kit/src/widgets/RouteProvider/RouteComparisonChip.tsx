@@ -2,10 +2,13 @@ import { BigNumber } from 'bignumber.js'
 import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Badge } from '@ui-kit/shared/ui/Badge'
-import { formatPercent } from '@ui-kit/utils/number'
+import { formatNumber } from '@ui-kit/utils/number'
 
 const showPercentage = (toAmountOutput: Decimal, bestOutputAmount: Decimal) =>
-  formatPercent(BigNumber(toAmountOutput).minus(bestOutputAmount).div(bestOutputAmount).div(100).toFixed() as Decimal)
+  formatNumber(
+    BigNumber(toAmountOutput).minus(bestOutputAmount).div(bestOutputAmount).div(100).toFixed() as Decimal,
+    'percent.rate',
+  )
 
 export const RouteComparisonChip = ({
   maxAmountOut,

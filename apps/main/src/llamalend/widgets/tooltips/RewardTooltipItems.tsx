@@ -6,7 +6,7 @@ import { CampaignRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { formatPercent } from '@ui-kit/utils'
+import { formatNumber } from '@ui-kit/utils'
 import type { RewardsAction } from '@external-rewards'
 import { TooltipItem } from './TooltipComponents'
 
@@ -28,7 +28,10 @@ export const RewardsTooltipItems = ({
 }: RewardsTooltipItemsProps) => {
   const totalExtraPercentage =
     extraIncentives.length > 0
-      ? formatPercent(extraIncentives.reduce((sum, item) => sum + (item.percentage || 0), 0))
+      ? formatNumber(
+          extraIncentives.reduce((sum, item) => sum + (item.percentage || 0), 0),
+          'percent.rate',
+        )
       : undefined
 
   return (
@@ -37,7 +40,7 @@ export const RewardsTooltipItems = ({
       {extraIncentives.map(({ percentage, title, address, blockchainId }, i) => (
         // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
         <TooltipItem key={i} variant="subItem" title={title} titleIcon={{ blockchainId, address, size: 'mui-sm' }}>
-          {formatPercent(percentage)}
+          {formatNumber(percentage, 'percent.rate')}
         </TooltipItem>
       ))}
       {extraRewards.map(

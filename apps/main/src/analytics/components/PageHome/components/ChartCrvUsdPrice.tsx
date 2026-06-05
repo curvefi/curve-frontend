@@ -19,7 +19,7 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import type { LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
 import { SelectTimeOption } from '@ui-kit/shared/ui/Chart/SelectTimeOption'
-import { formatNumber, formatUsd } from '@ui-kit/utils'
+import { formatNumber } from '@ui-kit/utils'
 
 const PRICE_LABEL = t`Price`
 const PERIODS = ['7d', '1m', '3m', '6m'] as const satisfies Period[]
@@ -58,7 +58,7 @@ export function ChartCrvUsdPrice() {
       createChartOptions({
         legendSets,
         options: {
-          tooltip: createTooltip(value => formatUsd(value)),
+          tooltip: createTooltip(value => formatNumber(value, 'usd.notional')),
           xAxis: { data: chartData.map(x => x.time).map(timeToCategory) },
           yAxis: {
             axisLabel: {

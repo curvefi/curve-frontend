@@ -150,8 +150,7 @@ export const useRouterQueries = <TData extends TGas | null, TKey extends QueryKe
             : curveRoutes,
         [curveRoutes, gas],
       ),
-      enso: useRouterQuery(params, 'enso', enabled),
-      // odos requires the zap contract as the user address
+      enso: useRouterQuery({ ...params, userAddress: zapAddress }, 'enso', enabled),
       odos: useRouterQuery({ ...params, userAddress: zapAddress }, 'odos', enabled),
     } satisfies RouteQueries,
     onRefresh: useCallback(

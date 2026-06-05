@@ -79,6 +79,6 @@ function validateAmount({ rewardTokenId, amount, userBalance }: DepositRewardApp
   enforce(amount).condition(amount => ({
     pass: +amount <= +userBalance!,
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
-    message: t`Amount ${formatNumber(toAmount(amount), { decimals: 5, abbreviate: false, fallback: '-' })} > wallet balance ${formatNumber(toAmount(userBalance), { decimals: 5, abbreviate: false, fallback: '-' })}`,
+    message: t`Amount ${formatNumber(toAmount(amount), 'token.balance')} > wallet balance ${formatNumber(toAmount(userBalance), 'token.balance')}`,
   }))
 }

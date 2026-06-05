@@ -6,7 +6,7 @@ import type { CellContext } from '@tanstack/react-table'
 import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
 import { isSortedBy } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
-import { formatPercent } from '@ui-kit/utils'
+import { formatNumber } from '@ui-kit/utils'
 import type { PoolListItem } from '../types'
 
 export const RewardsBaseCell = ({ table, row, getValue, column }: CellContext<PoolListItem, number | null>) => {
@@ -25,7 +25,7 @@ export const RewardsBaseCell = ({ table, row, getValue, column }: CellContext<Po
         <ChipVolatileBaseApy isBold={isHighlight} />
       ) : (
         <Tooltip title={rewards?.base && <TooltipBaseApy poolData={poolData} baseApy={rewards.base} />}>
-          <Stack>{formatPercent(day)}</Stack>
+          <Stack>{formatNumber(day, 'percent.rate')}</Stack>
         </Tooltip>
       ))
   )

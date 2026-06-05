@@ -49,13 +49,13 @@ export const VeCrcFees = () => {
                           {formatDate(item.timestamp)}
                           {new Date(item.timestamp) > new Date() && <span> {t`(in progress)`}</span>}
                         </FeeDate>
-                        <FeeData>{formatNumber(item.feesUsd, { unit: 'dollar', abbreviate: true })}</FeeData>
+                        <FeeData>{formatNumber(item.feesUsd, 'usd.notional')}</FeeData>
                       </FeeRow>
                     ))}
                   </FeesContainer>
                   <TotalFees>
                     <FeeDate>{t`Total Fees:`}</FeeDate>
-                    <FeeData>{formatNumber(veCrvFees.veCrvTotalFees, { unit: 'dollar', abbreviate: true })}</FeeData>
+                    <FeeData>{formatNumber(veCrvFees.veCrvTotalFees, 'usd.notional')}</FeeData>
                   </TotalFees>
                 </>
               )}
