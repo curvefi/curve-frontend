@@ -137,7 +137,7 @@ const AssetUsdValue = ({
   <WithSkeleton loading={isPriceLoading}>
     <Tooltip title={formatNumber(usdValue, { decimals: 5, unit: 'dollar', abbreviate: false, fallback: '-' })}>
       <Typography variant="bodySRegular" sx={{ color: 'text.secondary' }}>
-        {formatNumber(usdValue, { unit: 'dollar', abbreviate: true, fallback: '-' })}
+        {formatNumber(usdValue, 'usd.notional')}
       </Typography>
     </Tooltip>
   </WithSkeleton>

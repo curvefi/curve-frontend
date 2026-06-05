@@ -86,13 +86,11 @@ export const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }
           <>
             <StatsRow>
               <StatTitle>{t`24 Volume`}</StatTitle>
-              <StatData>
-                {formatNumber(gaugeData.pool.trading_volume_24h, { unit: 'dollar', abbreviate: false })}
-              </StatData>
+              <StatData>{formatNumber(gaugeData.pool.trading_volume_24h, 'usd.amount')}</StatData>
             </StatsRow>
             <StatsRow>
               <StatTitle>{t`TVL`}</StatTitle>
-              <StatData>{formatNumber(gaugeData.pool.tvl_usd, { unit: 'dollar', abbreviate: false })}</StatData>
+              <StatData>{formatNumber(gaugeData.pool.tvl_usd, 'usd.amount')}</StatData>
             </StatsRow>
           </>
         )}

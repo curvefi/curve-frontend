@@ -61,7 +61,7 @@ export const DetailInfoEstimateGas = ({ chainId, isDivider = false, loading, est
         estGasCostUsd == null ? (
           t`Unable to get USD rate`
         ) : (
-          <strong>{formatNumber(estGasCostUsd, { unit: 'dollar', abbreviate: false })}</strong>
+          <strong>{formatNumber(estGasCostUsd, 'usd.amount')}</strong>
         )
       ) : (
         ''

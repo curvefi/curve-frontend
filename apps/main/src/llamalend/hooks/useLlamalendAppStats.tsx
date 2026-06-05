@@ -11,7 +11,7 @@ import { EmptyValidationSuite } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { queryFactory } from '@ui-kit/lib/model'
 import { type AppName, LLAMALEND_ROUTES } from '@ui-kit/shared/routes'
-import { formatUsd } from '@ui-kit/utils'
+import { formatNumber } from '@ui-kit/utils'
 
 /** Query for getting the daily volume of all crvUSD AMMs */
 const { useQuery: useAppStatsDailyVolume } = queryFactory({
@@ -55,11 +55,11 @@ export function useLlamalendAppStats(
     ? [
         {
           label: 'TVL',
-          value: (tvl && formatUsd(tvl)) || '-',
+          value: (tvl && formatNumber(tvl, 'usd.notional')) || '-',
         },
         {
           label: t`Daily volume`,
-          value: (dailyVolume && formatUsd(dailyVolume)) || '-',
+          value: (dailyVolume && formatNumber(dailyVolume, 'usd.notional')) || '-',
         },
       ]
     : []

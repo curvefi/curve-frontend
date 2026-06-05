@@ -48,7 +48,7 @@ import { ActionInfo, ActionInfoGasEstimate } from '@ui-kit/shared/ui/ActionInfo'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q } from '@ui-kit/types/util'
-import { decimal, formatNumber, formatPercent } from '@ui-kit/utils'
+import { decimal, formatNumber } from '@ui-kit/utils'
 import { getPriceImpactDisplay } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { SlippageToleranceActionInfo, type SlippageType } from '@ui-kit/widgets/SlippageSettings'
 
@@ -568,7 +568,9 @@ export const QuickSwap = ({
           />
           <ActionInfo
             label={priceImpactLabel}
-            value={routesAndOutput?.priceImpact == null ? '-' : formatPercent(routesAndOutput.priceImpact)}
+            value={
+              routesAndOutput?.priceImpact == null ? '-' : formatNumber(routesAndOutput.priceImpact, 'percent.rate')
+            }
             valueColor={priceImpactColor}
             loading={routesAndOutputLoading}
             size="small"

@@ -57,11 +57,11 @@ export const MySharesStats = ({
   const userShareLabel = useMemo(() => {
     if (userLpShare && Number(userLpShare)) {
       if (Number(userLpShare) > 0.01) {
-        return formatNumber(amount(userLpShare), { unit: 'percentage', abbreviate: false, fallback: '-' })
+        return formatNumber(amount(userLpShare), 'percent.value')
       }
-      return `< ${formatNumber(0.01, { unit: 'percentage', abbreviate: false })}`
+      return `< ${formatNumber(0.01, 'percent.value')}`
     }
-    return formatNumber(0, { unit: 'percentage', abbreviate: false })
+    return formatNumber(0, 'percent.value')
   }, [userLpShare])
 
   const withdrawTotal = useMemo(() => {
@@ -87,19 +87,15 @@ export const MySharesStats = ({
         <CrvRewardsTooltipWrapper>
           <tbody>
             <tr>
-              <td className="right">
-                {formatNumber(crvRewards[0], { unit: 'percentage', abbreviate: false, fallback: '-' })}
-              </td>
+              <td className="right">{formatNumber(crvRewards[0], 'percent.value')}</td>
               <td>&nbsp;({t`min. CRV tAPR %`})</td>
             </tr>
             <tr>
-              <td className="right">
-                x {formatNumber(amount(userBoostApy), { unit: 'percentage', abbreviate: false, fallback: '-' })}
-              </td>
+              <td className="right">x {formatNumber(amount(userBoostApy), 'percent.value')}</td>
               <td>&nbsp;({t`your boost`})</td>
             </tr>
             <tr>
-              <td className="right">= {formatNumber(userCrvApyValue, { unit: 'percentage', abbreviate: false })}</td>
+              <td className="right">= {formatNumber(userCrvApyValue, 'percent.value')}</td>
               <td>%</td>
             </tr>
           </tbody>
@@ -145,8 +141,7 @@ export const MySharesStats = ({
                   </Chip>
                 ) : (
                   <Chip size="md" tooltip={crvRewardsTooltipText} tooltipProps={{ minWidth: '350px' }}>
-                    {t`Your CRV Rewards tAPR:`}{' '}
-                    <strong>{formatNumber(userCrvApyValue, { unit: 'percentage', abbreviate: false })}</strong>
+                    {t`Your CRV Rewards tAPR:`} <strong>{formatNumber(userCrvApyValue, 'percent.value')}</strong>
                   </Chip>
                 )}
                 {haveBoosting && (

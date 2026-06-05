@@ -5,7 +5,7 @@ import { useShowNetRate } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate, type TxGasInfo } from '@ui-kit/shared/ui/ActionInfo'
 import type { QueryProp } from '@ui-kit/types/util'
-import { formatNumber, formatPercent } from '@ui-kit/utils'
+import { formatNumber } from '@ui-kit/utils'
 import { ActionInfoCollapse } from './ActionInfoCollapse'
 import { useShouldShowNetRate } from './hooks/useShouldShowNetRate'
 import { formatAmount, ACTION_INFO_GROUP_SX, combineActionInfoState } from './info-actions.helpers'
@@ -71,8 +71,8 @@ export const SupplyActionInfoList = ({
           {(supplyApy ?? prevSupplyApy) && (
             <ActionInfo
               label={t`Supply APY`}
-              value={supplyApy?.data && formatPercent(supplyApy.data)}
-              prevValue={prevSupplyApy?.data && formatPercent(prevSupplyApy.data)}
+              value={supplyApy?.data && formatNumber(supplyApy.data, 'percent.rate')}
+              prevValue={prevSupplyApy?.data && formatNumber(prevSupplyApy.data, 'percent.rate')}
               {...combineActionInfoState(supplyApy, prevSupplyApy)}
               size="small"
               testId="supply-apy"
@@ -81,8 +81,8 @@ export const SupplyActionInfoList = ({
           {shouldShowNetSupplyApy && (
             <ActionInfo
               label={NET_SUPPLY_RATE_TITLE}
-              value={netSupplyApy?.data && formatPercent(netSupplyApy.data)}
-              prevValue={prevNetSupplyApy?.data && formatPercent(prevNetSupplyApy.data)}
+              value={netSupplyApy?.data && formatNumber(netSupplyApy.data, 'percent.rate')}
+              prevValue={prevNetSupplyApy?.data && formatNumber(prevNetSupplyApy.data, 'percent.rate')}
               {...combineActionInfoState(netSupplyApy, prevNetSupplyApy)}
               size="small"
               testId="supply-net-apy"

@@ -46,7 +46,7 @@ type ChipTokenProps = {
 export const ChipToken = ({ className, tokenName, tokenAddress, ...props }: ChipTokenProps) => {
   const chainId = useChainId()
   const [usdRate, setUsdRate] = useState<number | undefined>(undefined)
-  const parsedUsdRate = formatNumber(usdRate, { unit: 'dollar', abbreviate: false, fallback: '-' })
+  const parsedUsdRate = formatNumber(usdRate, 'usd.amount')
 
   const handleMouseEnter = useCallback(() => {
     if (usdRate == null) {
