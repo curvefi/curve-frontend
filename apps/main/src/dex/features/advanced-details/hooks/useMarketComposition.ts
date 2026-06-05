@@ -1,3 +1,4 @@
+import { sum } from 'lodash'
 import { useMemo } from 'react'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { useStore } from '@/dex/store/useStore'
@@ -24,7 +25,7 @@ export const useMarketComposition = ({
 
   // We use prices API as a fallback for non-lite networks, and currencyReserves.total is NaN when no wallet is connected.
   const usePricesApiReserves = isNaN(Number(currencyReserves?.total)) && !network.isLite
-  const pricesApiTotalUsd = pricesApiPoolData?.balancesUsd.reduce((total, balanceUsd) => total + balanceUsd, 0)
+  const pricesApiTotalUsd = sum(pricesApiPoolData?.balancesUsd)
 
   const rows = useMemo<MarketCompositionRow[]>(
     () =>
