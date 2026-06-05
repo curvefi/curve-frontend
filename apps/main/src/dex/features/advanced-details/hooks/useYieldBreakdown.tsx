@@ -6,15 +6,14 @@ import { useStore } from '@/dex/store/useStore'
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import type { Chain as BlockchainId } from '@curvefi/prices-api'
 import Box from '@mui/material/Box'
+import { maybe } from '@primitives/objects.utils'
 import { scanAddressPath } from '@ui/utils'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
-import { LeverageIcon } from '@ui-kit/shared/icons/LeverageIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Chain } from '@ui-kit/utils'
 import { MAINNET_CRV_ADDRESS } from '@ui-kit/utils/address'
 import type { YieldBreakdownRow } from '../components/yield-breakdown/columns/columns.definitions'
-import { maybe } from '@primitives/objects.utils'
 
 const { IconSize } = SizesAndSpaces
 
