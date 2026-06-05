@@ -121,6 +121,7 @@ export const LlamaMarketsTable = ({
       </DataTable>
       {/* Keep the overlay outside DataTable children because DataTable remounts them when switching sticky header layout. */}
       <LlamaTableFiltersOverlay
+        table={table}
         hasActiveFilters={hasActiveFilters}
         open={filtersOpen}
         setOpen={setFiltersOpen}

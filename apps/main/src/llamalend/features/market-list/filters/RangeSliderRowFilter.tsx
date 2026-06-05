@@ -1,25 +1,27 @@
 import { useCallback, useMemo } from 'react'
-import { type FilterProps, type TableItem, type TanstackTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { type FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { type NumericTextFieldProps } from '@ui-kit/shared/ui/NumericTextField'
 import { type DecimalRangeValue, SliderInput } from '@ui-kit/shared/ui/SliderInput'
 import { Range } from '@ui-kit/types/util'
 import { decimal, formatNumber } from '@ui-kit/utils'
-import { useFacetedMaxMinValue } from './RangeSliderFilter/useFacetedMaxMinValue'
 import { useRangeFilter } from './RangeSliderFilter/useRangeFilter'
 
-type RangeSliderRowFilterProps<TData extends TableItem, TColumnId extends string> = FilterProps<TColumnId> & {
-  table: TanstackTable<TData>
+type RangeSliderRowFilterProps<TColumnId extends string> = FilterProps<TColumnId> & {
   id: TColumnId
   adornment?: NumericTextFieldProps['adornment']
+  min?: number
+  max?: number
+  step?: number
 }
 
-export const RangeSliderRowFilter = <TData extends TableItem, TColumnId extends string>({
-  table,
+export const RangeSliderRowFilter = <TColumnId extends string>({
   id,
   adornment,
+  min,
+  max,
+  step,
   ...filterProps
-}: RangeSliderRowFilterProps<TData, TColumnId>) => {
-  const { min, max, step } = useFacetedMaxMinValue({ table, columnId: id })
+}: RangeSliderRowFilterProps<TColumnId>) => {
   const [range, setRange] = useRangeFilter({ id, min, max, ...filterProps })
 
   return (

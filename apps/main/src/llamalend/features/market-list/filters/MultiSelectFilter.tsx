@@ -1,4 +1,4 @@
-import { type MouseEvent, ReactNode, useCallback, useMemo, useRef } from 'react'
+import { type MouseEvent, ReactNode, useCallback, useRef } from 'react'
 import { Box, Stack } from '@mui/material'
 import Button from '@mui/material/Button'
 import Menu from '@mui/material/Menu'
@@ -9,7 +9,7 @@ import { useResizeObserver } from '@ui-kit/hooks/useResizeObserver'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { CheckIcon } from '@ui-kit/shared/icons/CheckIcon'
-import { type FilterProps, type TableItem, type TanstackTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { type FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { parseListFilter, serializeListFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
 import { Select } from '@ui-kit/shared/ui/Select'
@@ -22,17 +22,17 @@ const { Spacing } = SizesAndSpaces
 /**
  * A filter for tanstack tables that allows multi-select of string values.
  */
-export const MultiSelectFilter = <TData extends TableItem, TColumnId extends string>({
+export const MultiSelectFilter = <TColumnId extends string>({
   columnFiltersById,
   setColumnFilter,
-  table,
+  options,
   defaultText = t`All`,
   defaultTextMobile,
   renderItem,
   selectedItemRender,
   id,
 }: FilterProps<TColumnId> & {
-  table: TanstackTable<TData>
+  options: string[]
   defaultText?: string
   defaultTextMobile: string
   id: TColumnId
@@ -44,11 +44,6 @@ export const MultiSelectFilter = <TData extends TableItem, TColumnId extends str
   const menuRef = useRef<HTMLLIElement | null>(null)
   const [selectWidth] = useResizeObserver(selectRef)
   const [isOpen, open, close] = useSwitch(false)
-  const facetedUniqueValues = table.getColumn(id)?.getFacetedUniqueValues() as Map<string, number> | undefined
-  const options = useMemo(
-    () => (facetedUniqueValues ? Array.from(facetedUniqueValues.keys()).sort() : []),
-    [facetedUniqueValues],
-  )
   const selectedOptions = parseListFilter(columnFiltersById[id])
   const onClear = useCallback(
     (e: MouseEvent<HTMLButtonElement>) => {
@@ -63,10 +58,10 @@ export const MultiSelectFilter = <TData extends TableItem, TColumnId extends str
     // click in the "Clear Selection" Box, outside the button, mui calls this with filter=[undefined] 😞
     ({ currentTarget }: MouseEvent<HTMLLIElement>) => {
       const value = currentTarget.getAttribute('value')!
-      const options = selectedOptions?.includes(value)
+      const nextOptions = selectedOptions?.includes(value)
         ? selectedOptions.filter(v => v !== value)
         : [...(selectedOptions ?? []), value]
-      setColumnFilter(id, serializeListFilter(options))
+      setColumnFilter(id, serializeListFilter(nextOptions))
     },
     [setColumnFilter, id, selectedOptions],
   )

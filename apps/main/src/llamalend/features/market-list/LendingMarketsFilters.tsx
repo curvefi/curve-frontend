@@ -1,12 +1,11 @@
 import { noop, type Dictionary } from 'lodash'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
-import type { TanstackTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { TableFilterItem } from '@ui-kit/shared/ui/DataTable/TableFilterItem'
 import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { type AssetDetails, type LlamaMarket } from '../../queries/market-list/llama-markets'
+import { type AssetDetails } from '../../queries/market-list/llama-markets'
 import { LlamaChainFilterChips } from './chips/LlamaChainFilterChips'
 import { LLAMA_MARKET_TITLES, LlamaMarketColumnId } from './columns'
 import { type LlamaMarketsFiltersProps, useLlamaMarketsFilters } from './filters/hooks/useLlamaMarketsFilters'
@@ -38,15 +37,17 @@ const SelectedToken = ({ symbol }: { symbol: string }) => (
 /**
  * Filters for the LlamaLend markets table, including chain, token, APR, and range-based filters.
  */
-export const LendingMarketsFilters = ({
-  table,
-  ...props
-}: LlamaMarketsFiltersProps & {
-  table: TanstackTable<LlamaMarket>
-}) => {
+export const LendingMarketsFilters = (props: LlamaMarketsFiltersProps) => {
   const {
     filterProps,
     tokens,
+    collateralTokenOptions,
+    borrowedTokenOptions,
+    borrowRateRange,
+    tvlRange,
+    liquidityRange,
+    utilizationRange,
+    maxLtvRange,
     marketTypeValue,
     marketVersionValue,
     onMarketTypeChange,
@@ -63,7 +64,7 @@ export const LendingMarketsFilters = ({
       <TableFilterItem title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.CollateralSymbol]}>
         <MultiSelectFilter
           id={LlamaMarketColumnId.CollateralSymbol}
-          table={table}
+          options={collateralTokenOptions}
           renderItem={symbol => <Token symbol={symbol} tokens={tokens} />}
           selectedItemRender={symbol => <SelectedToken symbol={symbol} />}
           defaultTextMobile={t`All Collateral Tokens`}
@@ -73,7 +74,7 @@ export const LendingMarketsFilters = ({
       <TableFilterItem title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.BorrowedSymbol]}>
         <MultiSelectFilter
           id={LlamaMarketColumnId.BorrowedSymbol}
-          table={table}
+          options={borrowedTokenOptions}
           renderItem={symbol => <Token symbol={symbol} tokens={tokens} />}
           selectedItemRender={symbol => <SelectedToken symbol={symbol} />}
           defaultTextMobile={t`All Debt Tokens`}
@@ -83,7 +84,8 @@ export const LendingMarketsFilters = ({
       <TableFilterItem title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.BorrowRate]}>
         <RangeFilter
           id={LlamaMarketColumnId.BorrowRate}
-          table={table}
+          min={borrowRateRange.min}
+          max={borrowRateRange.max}
           isLoading={props.marketsQuery.isLoading}
           adornment="percentage"
           {...filterProps}
@@ -92,7 +94,8 @@ export const LendingMarketsFilters = ({
       <TableFilterItem title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.Tvl]}>
         <RangeFilter
           id={LlamaMarketColumnId.Tvl}
-          table={table}
+          min={tvlRange.min}
+          max={tvlRange.max}
           isLoading={props.marketsQuery.isLoading}
           adornment="dollar"
           {...filterProps}
@@ -101,7 +104,8 @@ export const LendingMarketsFilters = ({
       <TableFilterItem title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.LiquidityUsd]}>
         <RangeFilter
           id={LlamaMarketColumnId.LiquidityUsd}
-          table={table}
+          min={liquidityRange.min}
+          max={liquidityRange.max}
           isLoading={props.marketsQuery.isLoading}
           adornment="dollar"
           {...filterProps}
@@ -110,14 +114,22 @@ export const LendingMarketsFilters = ({
       <TableFilterItem title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.UtilizationPercent]}>
         <RangeFilter
           id={LlamaMarketColumnId.UtilizationPercent}
-          table={table}
+          min={utilizationRange.min}
+          max={utilizationRange.max}
           isLoading={props.marketsQuery.isLoading}
           adornment="percentage"
           {...filterProps}
         />
       </TableFilterItem>
       <TableFilterItem title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.MaxLtv]}>
-        <RangeSliderRowFilter id={LlamaMarketColumnId.MaxLtv} table={table} adornment="percentage" {...filterProps} />
+        <RangeSliderRowFilter
+          id={LlamaMarketColumnId.MaxLtv}
+          min={maxLtvRange.min}
+          max={maxLtvRange.max}
+          step={maxLtvRange.step}
+          adornment="percentage"
+          {...filterProps}
+        />
       </TableFilterItem>
       <TableFilterButtonGroup
         title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.Type]}
