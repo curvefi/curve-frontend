@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
@@ -16,6 +17,10 @@ import { useParameters } from '../hooks/useParameters'
 const { Spacing } = SizesAndSpaces
 
 const formatParam = (number: number) => formatNumber(number, { decimals: 5, abbreviate: false })
+
+const Section = ({ children }: { children: ReactNode }) => (
+  <Stack sx={{ paddingBlock: Spacing.sm, '&:empty': { display: 'none' } }}>{children}</Stack>
+)
 
 export const Parameters = ({
   chainId,
@@ -56,7 +61,7 @@ export const Parameters = ({
     <Card size="inline">
       <CardHeader title={t`Parameters`} />
       <CardContent component={Stack}>
-        <Stack sx={{ paddingBlock: Spacing.sm }}>
+        <Section>
           <ActionInfo
             label={t`AMM fee`}
             loading={isLoadingParameters}
@@ -92,9 +97,9 @@ export const Parameters = ({
             })}
             valueTooltip={t`Measures pool growth; this is not a dollar value`}
           />
-        </Stack>
+        </Section>
 
-        <Stack sx={{ paddingBlock: Spacing.sm }}>
+        <Section>
           {(A != null || snapshotData?.a != null) && (
             <ActionInfo
               label={t`Amplification factor`}
@@ -131,9 +136,9 @@ export const Parameters = ({
           {maybe(snapshotData?.offpegFeeMultiplier, x => (
             <ActionInfo label={t`Off peg multiplier`} value={formatParam(x / 10 ** 10)} />
           ))}
-        </Stack>
+        </Section>
 
-        <Stack sx={{ paddingBlock: Spacing.sm }}>
+        <Section>
           {maybe(snapshotData?.midFee, x => (
             <ActionInfo label={t`Mid fee`} value={formatParam(x / 10 ** 8)} />
           ))}
@@ -141,9 +146,9 @@ export const Parameters = ({
           {maybe(snapshotData?.outFee, x => (
             <ActionInfo label={t`Out fee`} value={formatParam(x / 10 ** 8)} />
           ))}
-        </Stack>
+        </Section>
 
-        <Stack sx={{ paddingBlock: Spacing.sm }}>
+        <Section>
           {gamma && (
             <ActionInfo
               label={t`Gamma`}
@@ -158,9 +163,9 @@ export const Parameters = ({
           {maybe(snapshotData?.allowedExtraProfit, x => (
             <ActionInfo label={t`Allowed extra profit`} value={formatParam(x / 10 ** 18)} />
           ))}
-        </Stack>
+        </Section>
 
-        <Stack sx={{ paddingBlock: Spacing.sm }}>
+        <Section>
           {maybe(snapshotData?.adjustmentStep, x => (
             <ActionInfo label={t`Adjustment step`} value={formatParam(x / 10 ** 18)} />
           ))}
@@ -171,9 +176,9 @@ export const Parameters = ({
               value={formatNumber(x, { useGrouping: false, abbreviate: false })}
             />
           ))}
-        </Stack>
+        </Section>
 
-        <Stack sx={{ paddingBlock: Spacing.sm }}>
+        <Section>
           <ActionInfo
             label={t`Pool type`}
             value={notFalsy(
@@ -195,7 +200,7 @@ export const Parameters = ({
             <AddressActionInfo network={network} title={t`Registry`} address={x} />
           ))}
           <ActionInfo label={t`ID`} value={poolId} loading={!poolId} />
-        </Stack>
+        </Section>
       </CardContent>
     </Card>
   )
