@@ -1,30 +1,30 @@
-import type { PoolAlert } from '@/dex/types/main.types'
-import Alert from '@mui/material/Alert'
+import type { AlertType, PoolAlert } from '@/dex/types/main.types'
+import Alert, { type AlertProps } from '@mui/material/Alert'
 import Stack from '@mui/material/Stack'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-type AlertsProps = {
-  poolAlert: PoolAlert | null
-  tokenAlert: PoolAlert | null
+const alertTypeToSeverity: Record<AlertType, AlertProps['severity']> = {
+  danger: 'error',
+  error: 'error',
+  warning: 'warning',
+  info: 'info',
+  '': 'info',
 }
 
-const PoolMessageAlert = ({ alert: { alertType, message } }: { alert: PoolAlert }) => (
-  <Alert
-    variant="filled"
-    severity={alertType === 'danger' || alertType === 'error' ? 'error' : alertType === 'warning' ? 'warning' : 'info'}
-  >
-    {message}
-  </Alert>
-)
-
-export const Alerts = ({ poolAlert, tokenAlert }: AlertsProps) => (
+export const Alerts = ({ poolAlert, tokenAlert }: { poolAlert: PoolAlert | null; tokenAlert: PoolAlert | null }) => (
   <Stack sx={{ gap: Spacing.sm, paddingBlockStart: Spacing.md }}>
     {poolAlert && !poolAlert.isDisableDeposit && !poolAlert.isInformationOnlyAndShowInForm && (
-      <PoolMessageAlert alert={poolAlert} />
+      <Alert variant="filled" severity={alertTypeToSeverity[poolAlert.alertType]}>
+        {poolAlert.message}
+      </Alert>
     )}
 
-    {tokenAlert && tokenAlert.isInformationOnly && <PoolMessageAlert alert={tokenAlert} />}
+    {tokenAlert && tokenAlert.isInformationOnly && (
+      <Alert variant="filled" severity={alertTypeToSeverity[tokenAlert.alertType]}>
+        {tokenAlert.message}
+      </Alert>
+    )}
   </Stack>
 )
