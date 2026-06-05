@@ -14,7 +14,7 @@ export const FooterRow = ({ isLoading, totalUsd }: { isLoading: boolean; totalUs
       <Typography variant="tableCellMBold">{t`USD Total`}</Typography>
     </TableCell>
 
-    {/** Address */}
+    {/** Price */}
     <TableCell />
 
     {/** % of Market */}

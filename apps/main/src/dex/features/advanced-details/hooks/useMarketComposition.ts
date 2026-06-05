@@ -5,7 +5,6 @@ import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
 import { maybe } from '@primitives/objects.utils'
-import { scanAddressPath } from '@ui/utils'
 
 export const useMarketComposition = ({
   chainId,
@@ -49,7 +48,6 @@ export const useMarketComposition = ({
       return {
         symbol,
         tokenAddress,
-        tokenAddressUrl: scanAddressPath(network, tokenAddress),
         blockchainId: network?.id,
         marketShare: maybe(reserve?.percentShareInPool, x => +x),
         tokenAmount: reserve?.balance,

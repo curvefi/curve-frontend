@@ -4,17 +4,15 @@ import { maybe } from '@primitives/objects.utils'
 import { createColumnHelper } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import type { TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { AddressCell } from '@ui-kit/shared/ui/DataTable/inline-cells/AddressCell'
 import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { TokenInfo } from '@ui-kit/shared/ui/TokenInfo'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
-import { formatNumber } from '@ui-kit/utils'
+import { formatNumber, shortenAddress } from '@ui-kit/utils'
 import { MarketCompositionColumnId } from './columns.enum'
 
 export type MarketCompositionRow = TableItem & {
   symbol: string
   tokenAddress: string
-  tokenAddressUrl?: string
   blockchainId: string
   marketShare?: number
   tokenAmount?: number
@@ -26,7 +24,7 @@ const columnHelper = createColumnHelper<MarketCompositionRow>()
 
 const headers = {
   [MarketCompositionColumnId.Asset]: t`Asset`,
-  [MarketCompositionColumnId.TokenAddress]: t`Address`,
+  [MarketCompositionColumnId.Price]: t`Price`,
   [MarketCompositionColumnId.MarketShare]: t`% of Market`,
   [MarketCompositionColumnId.TokenAmount]: t`Amount`,
 } as const
@@ -42,17 +40,22 @@ export const MARKET_COMPOSITION_COLUMNS = [
           blockchainId={row.original.blockchainId}
           iconPosition="left"
           primary={getValue()}
-          secondary={formatNumber(row.original.tokenPrice, { unit: 'dollar', abbreviate: false, fallback: '-' })}
+          secondary={shortenAddress(row.original.tokenAddress)}
         />
       </InlineTableCell>
     ),
     enableSorting: false,
   }),
-  columnHelper.accessor('tokenAddress', {
-    id: MarketCompositionColumnId.TokenAddress,
-    header: headers[MarketCompositionColumnId.TokenAddress],
-    cell: ({ getValue, row }) => <AddressCell address={getValue()} explorerUrl={row.original.tokenAddressUrl} />,
+  columnHelper.accessor('tokenPrice', {
+    id: MarketCompositionColumnId.Price,
+    header: headers[MarketCompositionColumnId.Price],
+    cell: ({ getValue }) => (
+      <InlineTableCell>
+        <Typography variant="tableCellMRegular">{formatNumber(getValue(), 'usd.amount')}</Typography>
+      </InlineTableCell>
+    ),
     enableSorting: false,
+    meta: { type: 'numeric' },
   }),
   columnHelper.accessor('marketShare', {
     id: MarketCompositionColumnId.MarketShare,

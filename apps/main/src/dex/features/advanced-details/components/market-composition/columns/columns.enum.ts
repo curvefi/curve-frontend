@@ -1,6 +1,6 @@
 export enum MarketCompositionColumnId {
   Asset = 'asset',
-  TokenAddress = 'tokenAddress',
+  Price = 'price',
   MarketShare = 'marketShare',
   TokenAmount = 'tokenAmount',
 }

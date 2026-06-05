@@ -1,5 +1,5 @@
 export enum YieldBreakdownColumnId {
   Source = 'source',
-  Address = 'address',
+  Price = 'price',
   DailyApr = 'dailyApr',
 }

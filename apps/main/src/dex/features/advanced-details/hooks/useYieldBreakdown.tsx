@@ -7,9 +7,9 @@ import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import type { Chain as BlockchainId } from '@curvefi/prices-api'
 import Box from '@mui/material/Box'
 import { maybe } from '@primitives/objects.utils'
-import { scanAddressPath } from '@ui/utils'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Chain } from '@ui-kit/utils'
 import { MAINNET_CRV_ADDRESS } from '@ui-kit/utils/address'
@@ -29,8 +29,8 @@ export const useYieldBreakdown = ({
   const poolAddress = poolDataCacheOrApi.pool.address as Address
   const gaugeIsKilled = !!poolDataCacheOrApi.gauge.isKilled
   const { data: network } = useNetworkByChain({ chainId })
-  const { data: ethereumNetwork } = useNetworkByChain({ chainId: Chain.Ethereum })
   const rewardsApy = useStore(state => state.pools.rewardsApyMapper[chainId]?.[poolId])
+  const { data: crvPrice } = useTokenUsdRate({ chainId: Chain.Ethereum, tokenAddress: MAINNET_CRV_ADDRESS })
   const { data: campaigns } = useCampaignsByAddress({
     blockchainId: network?.networkId as BlockchainId | undefined,
     address: poolAddress,
@@ -48,34 +48,32 @@ export const useYieldBreakdown = ({
           blockchainId: 'ethereum',
           iconPosition: 'left',
           primary: 'CRV',
-          secondary: t`Curve DAO`,
         },
         address: MAINNET_CRV_ADDRESS,
-        addressUrl: scanAddressPath(ethereumNetwork, MAINNET_CRV_ADDRESS),
+        price: crvPrice,
         dailyApr: gaugeIsKilled ? undefined : crvMax,
         dailyAprSecondary: gaugeIsKilled ? undefined : crvBase,
         dailyAprTooltip: gaugeIsKilled ? undefined : t`Max CRV tAPR can be reached with max boost for this pool.`,
       })
     }
 
-    rewardsApy?.other?.forEach(({ apy, name, symbol, tokenAddress }) => {
+    rewardsApy?.other?.forEach(({ apy, symbol, tokenAddress, tokenPrice }) => {
       rows.push({
         source: {
           address: tokenAddress,
           blockchainId: network?.id,
           iconPosition: 'left',
           primary: symbol,
-          secondary: name,
         },
         address: tokenAddress,
-        addressUrl: scanAddressPath(network, tokenAddress),
+        price: tokenPrice,
         dailyApr: apy,
       })
     })
 
     campaigns
       .filter(({ tags }) => !tags.includes('points'))
-      .forEach(({ address, campaignName, description, multiplier, platform, platformImageId }) => {
+      .forEach(({ address, multiplier, platform, platformImageId }) => {
         rows.push({
           source: {
             icon: (
@@ -88,10 +86,8 @@ export const useYieldBreakdown = ({
             ),
             iconPosition: 'left',
             primary: platform,
-            secondary: campaignName || description || undefined,
           },
           address,
-          addressUrl: scanAddressPath(network, address),
           dailyApr: Number(multiplier),
         })
       })
@@ -106,7 +102,7 @@ export const useYieldBreakdown = ({
     })
 
     return rows
-  }, [campaigns, ethereumNetwork, gaugeIsKilled, network, rewardsApy])
+  }, [campaigns, crvPrice, gaugeIsKilled, network, rewardsApy])
 
   return {
     dailyBaseTotal: useMemo(() => sum(rows.map(row => row.dailyAprSecondary ?? row.dailyApr)), [rows]),

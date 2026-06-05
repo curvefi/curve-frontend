@@ -1,19 +1,19 @@
 import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
 import { maybe } from '@primitives/objects.utils'
 import { createColumnHelper } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { type TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { AddressCell } from '@ui-kit/shared/ui/DataTable/inline-cells/AddressCell'
 import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { TokenInfo, type TokenInfoProps } from '@ui-kit/shared/ui/TokenInfo'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
-import { formatNumber } from '@ui-kit/utils'
+import { formatNumber, shortenAddress } from '@ui-kit/utils'
 import { YieldBreakdownColumnId } from './columns.enum'
 
 export type YieldBreakdownRow = TableItem & {
   source: TokenInfoProps
   address?: string
-  addressUrl?: string
+  price?: number
   dailyApr?: number
   dailyAprSecondary?: number
   dailyAprTooltip?: string
@@ -23,7 +23,7 @@ const columnHelper = createColumnHelper<YieldBreakdownRow>()
 
 const headers = {
   [YieldBreakdownColumnId.Source]: t`Source`,
-  [YieldBreakdownColumnId.Address]: t`Address`,
+  [YieldBreakdownColumnId.Price]: t`Price`,
   [YieldBreakdownColumnId.DailyApr]: t`Daily APR`,
 } as const
 
@@ -31,24 +31,23 @@ export const YIELD_BREAKDOWN_COLUMNS = [
   columnHelper.accessor('source', {
     id: YieldBreakdownColumnId.Source,
     header: headers[YieldBreakdownColumnId.Source],
-    cell: ({ getValue }) => (
+    cell: ({ getValue, row }) => (
       <InlineTableCell>
-        <TokenInfo {...getValue()} />
+        <TokenInfo {...getValue()} secondary={maybe(row.original.address, shortenAddress)} />
       </InlineTableCell>
     ),
     enableSorting: false,
   }),
-  columnHelper.accessor('address', {
-    id: YieldBreakdownColumnId.Address,
-    header: headers[YieldBreakdownColumnId.Address],
-    cell: ({ getValue, row }) => (
+  columnHelper.accessor('price', {
+    id: YieldBreakdownColumnId.Price,
+    header: headers[YieldBreakdownColumnId.Price],
+    cell: ({ getValue }) => (
       <InlineTableCell>
-        {maybe(getValue(), address => (
-          <AddressCell address={address} explorerUrl={row.original.addressUrl} />
-        ))}
+        <Typography variant="tableCellMRegular">{formatNumber(getValue(), 'usd.amount')}</Typography>
       </InlineTableCell>
     ),
     enableSorting: false,
+    meta: { type: 'numeric' },
   }),
   columnHelper.accessor('dailyApr', {
     id: YieldBreakdownColumnId.DailyApr,

@@ -20,7 +20,7 @@ export const FooterRow = ({
       <Typography variant="tableCellMBold">{t`Total APY`}</Typography>
     </TableCell>
 
-    {/** Address */}
+    {/** Price */}
     <TableCell />
 
     {/** Daily APR */}
