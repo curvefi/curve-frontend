@@ -8,7 +8,7 @@ import { AddressCell } from '@ui-kit/shared/ui/DataTable/inline-cells/AddressCel
 import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { TokenInfo, type TokenInfoProps } from '@ui-kit/shared/ui/TokenInfo'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
-import { formatPercent } from '@ui-kit/utils'
+import { formatNumber } from '@ui-kit/utils'
 import { YieldBreakdownColumnId } from './columns.enum'
 
 export type YieldBreakdownRow = TableItem & {
@@ -65,8 +65,11 @@ export const YIELD_BREAKDOWN_COLUMNS = [
               <TokenInfo
                 icon={null}
                 iconPosition="right"
-                primary={formatPercent(dailyApr)}
-                secondary={maybe(row.original.dailyAprSecondary, value => t`Base ${formatPercent(value)}`)}
+                primary={formatNumber(dailyApr, 'percent.rate')}
+                secondary={maybe(
+                  row.original.dailyAprSecondary,
+                  value => t`Base ${formatNumber(value, 'percent.rate')}`,
+                )}
               />
             </Box>
           </Tooltip>
