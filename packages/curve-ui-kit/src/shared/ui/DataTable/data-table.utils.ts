@@ -77,7 +77,7 @@ export type FilterProps<T extends string> = {
 /**
  * Shared TanStack row-model options for DataTable instances.
  *
- * `result` is only used as a loaded/not-loaded guard for row models that depend on data.
+ * `result` is only used as a loaded/not-loaded guard for the filtered row model.
  * `TData` must be the table row type, because TanStack row-model factories are typed against the same row shape as
  * `useTable`, `columns`, and `data`.
  */
@@ -86,9 +86,9 @@ export const getTableOptions = <TData extends RowData>(result: readonly TData[] 
   getSortedRowModel: getSortedRowModel<TData>(),
   // only pass the filtered model once loaded, it causes an error: https://github.com/TanStack/table/issues/5026
   getFilteredRowModel: maybe(result, () => getFilteredRowModel<TData>()),
-  getFacetedRowModel: maybe(result, () => getFacetedRowModel<TData>()),
-  getFacetedUniqueValues: maybe(result, () => getFacetedUniqueValues<TData>()),
-  getFacetedMinMaxValues: maybe(result, () => getFacetedMinMaxValues<TData>()),
+  getFacetedRowModel: getFacetedRowModel<TData>(),
+  getFacetedUniqueValues: getFacetedUniqueValues<TData>(),
+  getFacetedMinMaxValues: getFacetedMinMaxValues<TData>(),
   getExpandedRowModel: getExpandedRowModel<TData>(),
   getPaginationRowModel: getPaginationRowModel<TData>(),
   autoResetPageIndex: false, // autoreset causing stack too deep issues when receiving new data

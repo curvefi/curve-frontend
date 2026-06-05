@@ -66,7 +66,7 @@ export const LlamaMarketsTable = ({
     onExpandedChange: setExpanded,
     globalFilterFn,
     ...getTableOptions(queryData ? data : undefined),
-    getFacetedRowModel: queryData && getLlamaFacetedRowModel,
+    getFacetedRowModel: getLlamaFacetedRowModel,
   })
 
   const hasActiveFilters = !!table.getState().columnFilters.length
