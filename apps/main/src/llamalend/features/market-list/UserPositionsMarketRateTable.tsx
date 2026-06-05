@@ -47,11 +47,11 @@ const pagination = { pageIndex: 0, pageSize: 50 }
 const DEFAULT_VISIBLE_ROWS = 3
 
 export const UserPositionsMarketRateTable = ({
-  tableQuery: { data: queryData, isLoading, error },
+  tableQuery,
+  tableQuery: { data = [], isLoading, error },
   marketRateType,
   onReload,
 }: UserPositionsTableProps) => {
-  const data = queryData ?? []
   const { label, defaultSort, sortQueryField, storageKey } = TABLE_CONFIG[marketRateType]
   const [sorting, onSortingChange] = useSortFromQueryString(defaultSort, sortQueryField)
   const { columnVisibility } = useLlamaTableVisibility(storageKey, sorting, marketRateType)
@@ -64,7 +64,7 @@ export const UserPositionsMarketRateTable = ({
     initialState: { pagination },
     onSortingChange,
     onExpandedChange: setExpanded,
-    ...getTableOptions(queryData),
+    ...getTableOptions(tableQuery.data),
   })
   return (
     <DataTable

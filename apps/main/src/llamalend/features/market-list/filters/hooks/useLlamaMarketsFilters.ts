@@ -46,8 +46,8 @@ export type LlamaMarketsFiltersProps = FilterProps<LlamaMarketColumnId> & {
 export const useLlamaMarketsFilters = ({ marketsQuery, table, ...filterProps }: LlamaMarketsFiltersProps) => {
   const selectedMarketTypes = parseListFilter(filterProps.columnFiltersById[LlamaMarketColumnId.Type])
   const selectedMarketVersions = parseListFilter(filterProps.columnFiltersById[LlamaMarketColumnId.Version])
-  const collateralTokenOptions = useFacetedSortedOptions(table, LlamaMarketColumnId.CollateralSymbol)
-  const borrowedTokenOptions = useFacetedSortedOptions(table, LlamaMarketColumnId.BorrowedSymbol)
+  const collateralTokenOptions = useFacetedSortedOptions({ table, columnId: LlamaMarketColumnId.CollateralSymbol })
+  const borrowedTokenOptions = useFacetedSortedOptions({ table, columnId: LlamaMarketColumnId.BorrowedSymbol })
   const borrowRateRange = useFacetedMaxMinValue({ table, columnId: LlamaMarketColumnId.BorrowRate })
   const tvlRange = useFacetedMaxMinValue({ table, columnId: LlamaMarketColumnId.Tvl })
   const liquidityRange = useFacetedMaxMinValue({ table, columnId: LlamaMarketColumnId.LiquidityUsd })
