@@ -20,7 +20,7 @@ export const FooterRow = ({
   showPointsMultiplier: boolean
 }) => (
   <>
-    <TableCell sx={{ paddingInline: Spacing.md, paddingBlock: Spacing.sm }}>
+    <TableCell sx={{ paddingInline: Spacing.md }}>
       <Typography variant="tableCellMBold">{t`Yield Total`}</Typography>
     </TableCell>
 

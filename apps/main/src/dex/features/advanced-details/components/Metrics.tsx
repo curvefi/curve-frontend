@@ -29,7 +29,7 @@ export const Metrics = ({
   })
 
   return (
-    <Grid container columnSpacing={Spacing.md} rowSpacing={Spacing.md}>
+    <Grid container spacing={Spacing.md}>
       <Grid size={4}>
         <Metric
           size="medium"

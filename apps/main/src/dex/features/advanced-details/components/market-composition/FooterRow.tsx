@@ -9,7 +9,7 @@ const { Spacing } = SizesAndSpaces
 
 export const FooterRow = ({ isLoading, totalUsd }: { isLoading: boolean; totalUsd: string | undefined }) => (
   <>
-    <TableCell sx={{ paddingInline: Spacing.md, paddingBlock: Spacing.sm }}>
+    <TableCell sx={{ padding: Spacing.md }}>
       <Typography variant="tableCellMBold">{t`USD Total`}</Typography>
     </TableCell>
 

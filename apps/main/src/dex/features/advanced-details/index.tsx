@@ -64,8 +64,7 @@ export const AdvancedDetails = ({
         size="inline"
         component={Grid}
         container
-        columnSpacing={Spacing.md}
-        rowSpacing={Spacing.md}
+        spacing={Spacing.md}
         sx={{ '&&': { backgroundColor: t => t.design.Layer[1].Fill } }}
       >
         <Grid size={{ mobile: 12, desktop: 8 }} sx={cardContentSmallStyles}>
