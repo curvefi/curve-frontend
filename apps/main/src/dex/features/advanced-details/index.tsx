@@ -82,12 +82,7 @@ export const AdvancedDetails = ({
               poolId={resolvedPoolId}
               pricesApiPoolData={pricesApiPoolData}
             />
-            <Alerts
-              isCryptoPool={pool.referenceAsset === 'CRYPTO'}
-              poolAlert={poolAlert}
-              poolName={pool.name}
-              tokenAlert={tokenAlert}
-            />
+            <Alerts poolAlert={poolAlert} tokenAlert={tokenAlert} />
           </Stack>
         </Grid>
 
