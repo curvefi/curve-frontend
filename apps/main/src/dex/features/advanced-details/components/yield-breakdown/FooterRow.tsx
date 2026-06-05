@@ -17,13 +17,15 @@ export const FooterRow = ({
   showPointsMultiplier: boolean
 }) => (
   <>
+    {/** Source */}
     <TableCell sx={{ paddingInline: Spacing.md }}>
       <Typography variant="tableCellMBold">{t`Yield Total`}</Typography>
     </TableCell>
 
-    {/** Empty address column */}
+    {/** Address */}
     <TableCell />
 
+    {/** Daily APR */}
     <TableCell
       sx={{
         paddingInline: showPointsMultiplier ? Spacing.sm : Spacing.md,
@@ -39,6 +41,7 @@ export const FooterRow = ({
       ))}
     </TableCell>
 
+    {/** Points */}
     {showPointsMultiplier && <TableCell sx={{ paddingInline: Spacing.md, paddingBlock: Spacing.sm }} />}
   </>
 )
