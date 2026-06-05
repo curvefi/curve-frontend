@@ -1,19 +1,18 @@
 import { useEffect } from 'react'
 import { isAddressEqual, zeroAddress, type Address } from 'viem'
 import { AddGaugeLink } from '@/dex/components/PagePool/components/AddGaugeLink'
+import { ManagePoolLink } from '@/dex/components/PagePool/components/ManagePoolLink'
 import type { PageTransferProps } from '@/dex/components/PagePool/types'
 import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import { useTokenAlert } from '@/dex/hooks/useTokenAlert'
 import { useStore } from '@/dex/store/useStore'
 import type { PoolAlert } from '@/dex/types/main.types'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
-import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
-import { Link as TanstackLink } from '@tanstack/react-router'
 import { t } from '@ui-kit/lib/i18n'
 import { cardContentSmallStyles } from '@ui-kit/themes/components/card-content'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -29,7 +28,6 @@ const { Spacing } = SizesAndSpaces
 type AdvancedDetailsProps = {
   poolAlert: PoolAlert | null
   pricesApiPoolData?: PricesApiPool
-  managePoolPath?: string
 } & Pick<PageTransferProps, 'curve' | 'poolData' | 'poolDataCacheOrApi' | 'routerParams'>
 
 export const AdvancedDetails = ({
@@ -39,7 +37,6 @@ export const AdvancedDetails = ({
   poolDataCacheOrApi,
   poolAlert,
   pricesApiPoolData,
-  managePoolPath,
 }: AdvancedDetailsProps) => {
   const { rChainId: chainId, rPoolIdOrAddress: poolIdOrAddress } = routerParams
   const poolId = usePoolIdByAddressOrId({ chainId, poolIdOrAddress })
@@ -61,19 +58,7 @@ export const AdvancedDetails = ({
       <CardHeader
         size="small"
         title={t`Advanced Details`}
-        action={
-          managePoolPath && (
-            <Button
-              component={TanstackLink}
-              to={managePoolPath}
-              variant="inline"
-              color="ghost"
-              sx={{ whiteSpace: 'nowrap' }}
-            >
-              {t`Manage pool`}
-            </Button>
-          )
-        }
+        action={<ManagePoolLink chainId={chainId} poolAddress={pool.address} />}
       />
       <CardContent
         size="inline"
