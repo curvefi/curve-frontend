@@ -20,6 +20,7 @@ const mountRouteProviderCard = ({ isSelected = true }: { isSelected?: boolean } 
       <RouteProviderCard
         query={{
           isFetching: false,
+          enabled: true,
           ...q({
             error: null,
             isLoading: false,

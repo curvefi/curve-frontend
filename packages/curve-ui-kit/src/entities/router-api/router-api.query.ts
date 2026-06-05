@@ -115,10 +115,13 @@ const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
   category: 'global.routerApi',
 })
 
-function useRouterQuery(params: Omit<RoutesParams, 'router'>, router: RouteProvider, enabled?: boolean): RouteQuery {
+function useRouterQuery(params: Omit<RoutesParams, 'router'>, router: RouteProvider, enabled = true): RouteQuery {
   const { data, isLoading, error, isFetching } = useRouterApi({ ...params, router }, enabled)
   const route = maybe(data, ([route = null]) => route)
-  return useMemo(() => ({ ...q({ isLoading, data: route, error }), isFetching }), [isLoading, route, error, isFetching])
+  return useMemo(
+    () => ({ ...q({ isLoading, data: route, error }), isFetching, enabled }),
+    [isLoading, route, error, isFetching, enabled],
+  )
 }
 
 export type GetGasCallback<TData extends TGas | null = TGas, TKey extends QueryKey = QueryKey> = (
@@ -132,7 +135,10 @@ export const useRouterQueries = <TData extends TGas | null, TKey extends QueryKe
   { zapAddress, ...params }: Omit<RoutesParams, 'router'> & { zapAddress: Address | undefined },
   getRouteGasOptions: GetGasCallback<TData, TKey>,
   enabled?: boolean,
-) => {
+): {
+  queries: RouteQueries
+  onRefresh: () => Promise<RouteResponse[][]>
+} => {
   const curveRoutes = useRouterQuery(params, 'curve', enabled)
   const { data: gas } = useQuery({
     ...getRouteGasOptions(curveRoutes.data?.id),
@@ -150,9 +156,9 @@ export const useRouterQueries = <TData extends TGas | null, TKey extends QueryKe
             : curveRoutes,
         [curveRoutes, gas],
       ),
-      enso: useRouterQuery({ ...params, userAddress: zapAddress }, 'enso', enabled),
-      odos: useRouterQuery({ ...params, userAddress: zapAddress }, 'odos', enabled),
-    } satisfies RouteQueries,
+      enso: useRouterQuery({ ...params, userAddress: zapAddress }, 'enso', !!zapAddress && enabled),
+      odos: useRouterQuery({ ...params, userAddress: zapAddress }, 'odos', !!zapAddress && enabled),
+    },
     onRefresh: useCallback(
       () => Promise.all(RouteProviders.map(router => fetchApiRoutes({ ...params, router }))),
       [params],
