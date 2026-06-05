@@ -31,27 +31,27 @@ export const YieldBreakdown = ({
     ...getTableOptions(rows),
   })
 
-  if (rows.length === 0) return null
-
   return (
-    <Stack>
-      <CardHeader title={t`Yield Breakdown`} size="small" />
-      <LegacyDataTable<YieldBreakdownRow>
-        table={table}
-        size="small"
-        loading={false}
-        disableStickyHeader
-        emptyState={<EmptyStateRow table={table} size="sm">{t`No yield breakdown found.`}</EmptyStateRow>}
-        footerRow={
-          dailyTotal && (
-            <FooterRow
-              dailyBaseTotal={dailyBaseTotal}
-              dailyTotal={dailyTotal}
-              showPointsMultiplier={showPointsMultiplier}
-            />
-          )
-        }
-      />
-    </Stack>
+    rows.length > 0 && (
+      <Stack>
+        <CardHeader title={t`Yield Breakdown`} size="small" />
+        <LegacyDataTable<YieldBreakdownRow>
+          table={table}
+          size="small"
+          loading={false}
+          disableStickyHeader
+          emptyState={<EmptyStateRow table={table} size="sm">{t`No yield breakdown found.`}</EmptyStateRow>}
+          footerRow={
+            dailyTotal && (
+              <FooterRow
+                dailyBaseTotal={dailyBaseTotal}
+                dailyTotal={dailyTotal}
+                showPointsMultiplier={showPointsMultiplier}
+              />
+            )
+          }
+        />
+      </Stack>
+    )
   )
 }
