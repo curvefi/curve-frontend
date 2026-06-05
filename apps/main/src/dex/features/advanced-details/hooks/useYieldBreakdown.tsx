@@ -73,30 +73,28 @@ export const useYieldBreakdown = ({
       })
     })
 
-    campaigns.forEach(({ address, campaignName, description, multiplier, platform, platformImageId, tags }) => {
-      const isPointsCampaign = tags.includes('points')
-      const sourceAddress = isPointsCampaign ? undefined : address
-
-      rows.push({
-        source: {
-          icon: (
-            <Box
-              component="img"
-              src={platformImageId}
-              alt={platform}
-              sx={{ borderRadius: '50%', width: IconSize.lg, height: IconSize.lg }}
-            />
-          ),
-          iconPosition: 'left',
-          primary: platform,
-          secondary: campaignName || description || undefined,
-        },
-        address: sourceAddress,
-        addressUrl: sourceAddress && scanAddressPath(network, sourceAddress),
-        dailyApr: isPointsCampaign ? undefined : Number(multiplier),
-        points: isPointsCampaign ? `${multiplier}x` : undefined,
+    campaigns
+      .filter(({ tags }) => !tags.includes('points'))
+      .forEach(({ address, campaignName, description, multiplier, platform, platformImageId }) => {
+        rows.push({
+          source: {
+            icon: (
+              <Box
+                component="img"
+                src={platformImageId}
+                alt={platform}
+                sx={{ borderRadius: '50%', width: IconSize.lg, height: IconSize.lg }}
+              />
+            ),
+            iconPosition: 'left',
+            primary: platform,
+            secondary: campaignName || description || undefined,
+          },
+          address,
+          addressUrl: scanAddressPath(network, address),
+          dailyApr: Number(multiplier),
+        })
       })
-    })
 
     rows.push({
       source: {
@@ -114,6 +112,5 @@ export const useYieldBreakdown = ({
     dailyBaseTotal: useMemo(() => sum(rows.map(row => row.dailyAprSecondary)), [rows]),
     dailyTotal: useMemo(() => sum(rows.map(row => row.dailyApr)), [rows]),
     rows,
-    showPointsMultiplier: campaigns.some(campaign => campaign.tags.includes('points')),
   }
 }

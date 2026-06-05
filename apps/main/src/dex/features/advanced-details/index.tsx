@@ -21,6 +21,7 @@ import { Contracts } from './components/Contracts'
 import { MarketComposition } from './components/market-composition'
 import { Metrics } from './components/Metrics'
 import { Parameters } from './components/Parameters'
+import { PointsCampaigns } from './components/points-campaigns'
 import { YieldBreakdown } from './components/yield-breakdown'
 
 const { Spacing } = SizesAndSpaces
@@ -75,13 +76,14 @@ export const AdvancedDetails = ({
               poolId={resolvedPoolId}
               pricesApiPoolData={pricesApiPoolData}
             />
-            <YieldBreakdown chainId={chainId} poolDataCacheOrApi={poolDataCacheOrApi} poolId={resolvedPoolId} />
             <MarketComposition
               chainId={chainId}
               poolDataCacheOrApi={poolDataCacheOrApi}
               poolId={resolvedPoolId}
               pricesApiPoolData={pricesApiPoolData}
             />
+            <YieldBreakdown chainId={chainId} poolDataCacheOrApi={poolDataCacheOrApi} poolId={resolvedPoolId} />
+            <PointsCampaigns chainId={chainId} poolDataCacheOrApi={poolDataCacheOrApi} />
             <Alerts poolAlert={poolAlert} tokenAlert={tokenAlert} />
           </Stack>
         </Grid>

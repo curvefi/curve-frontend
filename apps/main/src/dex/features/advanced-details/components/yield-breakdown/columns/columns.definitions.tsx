@@ -1,6 +1,5 @@
 import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
-import { maybe, notFalsy } from '@primitives/objects.utils'
+import { maybe } from '@primitives/objects.utils'
 import { createColumnHelper } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { type TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
@@ -18,7 +17,6 @@ export type YieldBreakdownRow = TableItem & {
   dailyApr?: number
   dailyAprSecondary?: number
   dailyAprTooltip?: string
-  points?: string
 }
 
 const columnHelper = createColumnHelper<YieldBreakdownRow>()
@@ -27,7 +25,6 @@ const headers = {
   [YieldBreakdownColumnId.Source]: t`Source`,
   [YieldBreakdownColumnId.Address]: t`Address`,
   [YieldBreakdownColumnId.DailyApr]: t`Daily APR`,
-  [YieldBreakdownColumnId.Points]: t`Points`,
 } as const
 
 export const YIELD_BREAKDOWN_COLUMNS = [
@@ -75,16 +72,3 @@ export const YIELD_BREAKDOWN_COLUMNS = [
     meta: { type: 'numeric' },
   }),
 ]
-
-const pointsColumn = columnHelper.accessor('points', {
-  id: YieldBreakdownColumnId.Points,
-  header: headers[YieldBreakdownColumnId.Points],
-  cell: ({ getValue }) => (
-    <InlineTableCell>{getValue() && <Typography variant="tableCellMRegular">{getValue()}</Typography>}</InlineTableCell>
-  ),
-  enableSorting: false,
-  meta: { type: 'numeric' },
-})
-
-export const createYieldBreakdownColumns = ({ showPointsMultiplier }: { showPointsMultiplier: boolean }) =>
-  notFalsy(...YIELD_BREAKDOWN_COLUMNS, showPointsMultiplier && pointsColumn)

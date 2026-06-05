@@ -5,41 +5,36 @@ import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { LegacyDataTable } from '@ui-kit/shared/ui/DataTable/LegacyDataTable'
-import { useYieldBreakdown } from '../../hooks/useYieldBreakdown'
-import { YIELD_BREAKDOWN_COLUMNS, type YieldBreakdownRow } from './columns/columns.definitions'
-import { FooterRow } from './FooterRow'
+import { usePointsCampaigns } from '../../hooks/usePointsCampaigns'
+import { POINTS_CAMPAIGNS_COLUMNS, type PointsCampaignsRow } from './columns/columns.definitions'
 
-export const YieldBreakdown = ({
+export const PointsCampaigns = ({
   chainId,
   poolDataCacheOrApi,
-  poolId,
 }: {
   chainId: ChainId
   poolDataCacheOrApi: PoolDataCacheOrApi
-  poolId: string
 }) => {
-  const { dailyBaseTotal, dailyTotal, rows } = useYieldBreakdown({
+  const { rows } = usePointsCampaigns({
     chainId,
     poolDataCacheOrApi,
-    poolId,
   })
   const table = useTable({
     data: rows,
-    columns: YIELD_BREAKDOWN_COLUMNS,
+    columns: POINTS_CAMPAIGNS_COLUMNS,
     ...getTableOptions(rows),
   })
 
   return (
     rows.length > 0 && (
       <Stack>
-        <CardHeader title={t`Yield Breakdown`} size="small" />
-        <LegacyDataTable<YieldBreakdownRow>
+        <CardHeader title={t`Points Campaigns`} size="small" />
+        <LegacyDataTable<PointsCampaignsRow>
           table={table}
           size="small"
           loading={false}
           disableStickyHeader
-          emptyState={<EmptyStateRow table={table} size="sm">{t`No yield breakdown found.`}</EmptyStateRow>}
-          footerRow={dailyTotal && <FooterRow dailyBaseTotal={dailyBaseTotal} dailyTotal={dailyTotal} />}
+          emptyState={<EmptyStateRow table={table} size="sm">{t`No points campaigns found.`}</EmptyStateRow>}
         />
       </Stack>
     )

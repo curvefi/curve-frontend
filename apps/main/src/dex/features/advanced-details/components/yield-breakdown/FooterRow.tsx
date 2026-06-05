@@ -10,11 +10,9 @@ const { Spacing } = SizesAndSpaces
 export const FooterRow = ({
   dailyBaseTotal,
   dailyTotal,
-  showPointsMultiplier,
 }: {
   dailyBaseTotal: number | undefined
   dailyTotal: number | undefined
-  showPointsMultiplier: boolean
 }) => (
   <>
     {/** Source */}
@@ -28,7 +26,7 @@ export const FooterRow = ({
     {/** Daily APR */}
     <TableCell
       sx={{
-        paddingInline: showPointsMultiplier ? Spacing.sm : Spacing.md,
+        paddingInline: Spacing.md,
         paddingBlock: Spacing.sm,
         textAlign: 'right',
       }}
@@ -40,8 +38,5 @@ export const FooterRow = ({
         </Typography>
       ))}
     </TableCell>
-
-    {/** Points */}
-    {showPointsMultiplier && <TableCell sx={{ paddingInline: Spacing.md, paddingBlock: Spacing.sm }} />}
   </>
 )
