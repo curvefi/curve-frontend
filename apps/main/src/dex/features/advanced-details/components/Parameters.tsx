@@ -3,7 +3,7 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
-import { maybe, notFalsy } from '@primitives/objects.utils'
+import { maybe, maybes, notFalsy } from '@primitives/objects.utils'
 import { formatDate } from '@ui/utils'
 import { dayjs } from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
@@ -47,13 +47,10 @@ export const Parameters = ({
     virtualPrice,
   } = useParameters({ chainId, poolDataCacheOrApi, poolId })
 
-  const rampADetails =
-    initial_A && future_A_time && future_A
-      ? {
-          isFutureATimePassedToday: dayjs().isAfter(future_A_time, 'day'),
-          isRampUp: Number(future_A) > Number(initial_A),
-        }
-      : undefined
+  const rampADetails = maybes([initial_A, future_A_time, future_A], ([initial_A, future_A_time, future_A]) => ({
+    isFutureATimePassedToday: dayjs().isAfter(future_A_time, 'day'),
+    isRampUp: Number(future_A) > Number(initial_A),
+  }))
 
   return (
     <Card size="inline">
@@ -114,12 +111,14 @@ export const Parameters = ({
                 <Stack sx={{ gap: Spacing.sm }}>
                   {t`Amplification coefficient chosen from fluctuation of prices around 1.`}
                   {rampADetails?.isFutureATimePassedToday &&
-                    initial_A_time != null &&
-                    future_A_time != null &&
-                    t`Last change occurred between ${formatDate(initial_A_time, 'short')} and ${formatDate(
-                      future_A_time,
-                      'short',
-                    )}, when A ramped from ${formatADisplay(initial_A)} to ${formatADisplay(future_A)}.`}
+                    maybes(
+                      [initial_A_time, future_A_time],
+                      ([initial_A_time, future_A_time]) =>
+                        t`Last change occurred between ${formatDate(initial_A_time, 'short')} and ${formatDate(
+                          future_A_time,
+                          'short',
+                        )}, when A ramped from ${formatADisplay(initial_A)} to ${formatADisplay(future_A)}.`,
+                    )}
                 </Stack>
               }
             />
