@@ -95,17 +95,9 @@ export const Parameters = ({
         </Stack>
 
         <Stack sx={{ paddingBlock: Spacing.sm }}>
-          {maybe(snapshotData?.midFee, x => (
-            <ActionInfo label={t`Mid fee`} value={formatParam(x / 10 ** 8)} />
-          ))}
-
-          {maybe(snapshotData?.outFee, x => (
-            <ActionInfo label={t`Out fee`} value={formatParam(x / 10 ** 8)} />
-          ))}
-
           {(A != null || snapshotData?.a != null) && (
             <ActionInfo
-              label={t`A factor`}
+              label={t`Amplification factor`}
               value={formatADisplay(A ?? snapshotData?.a ?? undefined)}
               valueTooltip={
                 <Stack sx={{ gap: Spacing.sm }}>
@@ -137,9 +129,21 @@ export const Parameters = ({
           )}
 
           {maybe(snapshotData?.offpegFeeMultiplier, x => (
-            <ActionInfo label={t`Off Peg Multiplier`} value={formatParam(x / 10 ** 10)} />
+            <ActionInfo label={t`Off peg multiplier`} value={formatParam(x / 10 ** 10)} />
+          ))}
+        </Stack>
+
+        <Stack sx={{ paddingBlock: Spacing.sm }}>
+          {maybe(snapshotData?.midFee, x => (
+            <ActionInfo label={t`Mid fee`} value={formatParam(x / 10 ** 8)} />
           ))}
 
+          {maybe(snapshotData?.outFee, x => (
+            <ActionInfo label={t`Out fee`} value={formatParam(x / 10 ** 8)} />
+          ))}
+        </Stack>
+
+        <Stack sx={{ paddingBlock: Spacing.sm }}>
           {gamma && (
             <ActionInfo
               label={t`Gamma`}
@@ -147,21 +151,23 @@ export const Parameters = ({
             />
           )}
 
-          {maybe(snapshotData?.allowedExtraProfit, x => (
-            <ActionInfo label={t`Allowed Extra Profit`} value={formatParam(x / 10 ** 18)} />
-          ))}
-
           {maybe(snapshotData?.feeGamma, x => (
             <ActionInfo label={t`Fee Gamma`} value={formatParam(x / 10 ** 18)} />
           ))}
 
+          {maybe(snapshotData?.allowedExtraProfit, x => (
+            <ActionInfo label={t`Allowed extra profit`} value={formatParam(x / 10 ** 18)} />
+          ))}
+        </Stack>
+
+        <Stack sx={{ paddingBlock: Spacing.sm }}>
           {maybe(snapshotData?.adjustmentStep, x => (
-            <ActionInfo label={t`Adjustment Step`} value={formatParam(x / 10 ** 18)} />
+            <ActionInfo label={t`Adjustment step`} value={formatParam(x / 10 ** 18)} />
           ))}
 
           {maybe(snapshotData?.maHalfTime, x => (
             <ActionInfo
-              label={t`Moving Average Time`}
+              label={t`Moving average time`}
               value={formatNumber(x, { useGrouping: false, abbreviate: false })}
             />
           ))}
@@ -182,7 +188,7 @@ export const Parameters = ({
           ))}
 
           {maybe(metadata?.vyperVersion, x => (
-            <ActionInfo label={t`Vyper Version`} value={x} />
+            <ActionInfo label={t`Vyper version`} value={x} />
           ))}
 
           {maybe(metadata?.registry, x => (
