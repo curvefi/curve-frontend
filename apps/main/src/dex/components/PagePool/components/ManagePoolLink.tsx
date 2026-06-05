@@ -1,7 +1,6 @@
 import { ROUTE } from '@/dex/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolsPricesApi } from '@/dex/queries/pools-prices-api.query'
-import type { UrlParams } from '@/dex/types/main.types'
 import type { Chain } from '@curvefi/prices-api'
 import Button from '@mui/material/Button'
 import { Link as TanstackLink } from '@tanstack/react-router'
@@ -10,9 +9,6 @@ import { getInternalUrl } from '@ui-kit/shared/routes'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
-
-const getRefuelPath = (network: UrlParams['network'], poolAddress: string) =>
-  getInternalUrl('dex', network, `${ROUTE.PAGE_POOLS}/${poolAddress}/refuel`)
 
 /** Prices API tells us which pools methods are available, of which the following one is a requisite for refuels */
 const hasRefuelMethod = (poolMethods?: string[]) => poolMethods?.includes('donation_shares')
@@ -27,7 +23,7 @@ export const ManagePoolLink = ({ chainId, poolAddress }: { chainId: number; pool
     hasRefuelMethod(pricesApiPoolData?.poolMethods) && (
       <Button
         component={TanstackLink}
-        to={getRefuelPath(network?.networkId, poolAddress)}
+        to={getInternalUrl('dex', network?.networkId, `${ROUTE.PAGE_POOLS}/${poolAddress}/manage-pool`)}
         variant="inline"
         color="ghost"
         sx={{ whiteSpace: 'nowrap', alignSelf: 'end', marginBlockEnd: Spacing.xs }}
