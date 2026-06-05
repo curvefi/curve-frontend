@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import type { PartialRecord } from '@primitives/objects.utils'
+import { assert, type PartialRecord } from '@primitives/objects.utils'
 import type { RouteProvider, RouterRouteResponse } from '@primitives/router.utils'
 import { toWei } from '../../src/router.utils'
 import { ADDRESS_HEX_PATTERN, type RoutesQuery } from '../../src/routes/routes.schemas'
@@ -212,12 +212,13 @@ describe('GET routes integration', () => {
         payload.forEach(route => {
           expect(route.router).toBe(router)
           expect(route.amountOut[0]).toMatch(/^[0-9]+\.?[0-9]*$/)
-          expect(route.priceImpact).toBeTypeOf('number')
+          expect(route.priceImpact).toBeTypeOf(route.priceImpact == null ? 'undefined' : 'number')
           expect(route.createdAt).toBeTypeOf('number')
-          expect(route.route).toBeDefined()
-          expect(route.route!.length).toBeGreaterThan(0)
+          const steps = assert(route.route, `No route steps for ${router} - ${label}`)
+          expect(steps).toBeDefined()
+          expect(steps.length).toBeGreaterThan(0)
 
-          route.route!.forEach(step => {
+          steps.forEach(step => {
             if (router.startsWith('curve')) expect(step.protocol).toBe(router)
             expect(step.tokenIn.join(',')).toMatch(ADDRESS_REGEX)
             expect(step.tokenOut.join(',')).toMatch(ADDRESS_REGEX)
@@ -225,9 +226,8 @@ describe('GET routes integration', () => {
 
           const [expectedTokenIn] = query.tokenIn ?? []
           const [expectedTokenOut] = query.tokenOut ?? []
-          const [firstStep] = route.route!
-          const lastStep = route.route![route.route!.length - 1]
-          expect(firstStep.tokenIn.join(',').toLowerCase()).toBe(expectedTokenIn.toLowerCase())
+          const lastStep = steps[steps.length - 1]
+          expect(steps[0].tokenIn.join(',').toLowerCase()).toBe(expectedTokenIn.toLowerCase())
           expect(lastStep.tokenOut.join(',').toLowerCase()).toBe(expectedTokenOut.toLowerCase())
         })
       })
