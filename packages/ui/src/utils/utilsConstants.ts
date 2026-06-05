@@ -49,6 +49,7 @@ export const EXTERNAL_LINKS = {
   news: 'https://news.curve.finance/',
   github: {
     curvefi: 'https://github.com/curvefi',
+    llammaSimulator: 'https://github.com/curvefi/llamma-simulator',
   },
   brand: {
     assets: 'https://curvefinance.notion.site/Brand-Assets-1a6599aae064802fba11ce6a9e642d74',

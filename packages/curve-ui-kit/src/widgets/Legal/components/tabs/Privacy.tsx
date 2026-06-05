@@ -1,7 +1,7 @@
-import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 import { EXTERNAL_LINKS } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { LegalExternalLink } from '../general/LegalExternalLink'
 import { List } from '../general/List'
 import { Section, Header, Title, Paragraph, Bold } from '../general/Section'
 
@@ -13,29 +13,17 @@ export const Privacy = () => (
         {t`This privacy notice (`}
         <Bold>{t`"Privacy Notice"`}</Bold>
         {t`) explains the basis for our collection of personal data when you use our websites `}
-        <Link color="textSecondary" href={EXTERNAL_LINKS.curve.root} target="_blank">
-          {EXTERNAL_LINKS.curve.root}
-        </Link>
+        <LegalExternalLink href={EXTERNAL_LINKS.curve.root}>{EXTERNAL_LINKS.curve.root}</LegalExternalLink>
         {t`, `}
-        <Link color="textSecondary" href={EXTERNAL_LINKS.curve.classic} target="_blank">
-          {EXTERNAL_LINKS.curve.classic}
-        </Link>
+        <LegalExternalLink href={EXTERNAL_LINKS.curve.classic}>{EXTERNAL_LINKS.curve.classic}</LegalExternalLink>
         {t`, `}
-        <Link color="textSecondary" href={EXTERNAL_LINKS.news} target="_blank">
-          {EXTERNAL_LINKS.news}
-        </Link>
+        <LegalExternalLink href={EXTERNAL_LINKS.news}>{EXTERNAL_LINKS.news}</LegalExternalLink>
         {t`, `}
-        <Link color="textSecondary" href={EXTERNAL_LINKS.docs.root} target="_blank">
-          {EXTERNAL_LINKS.docs.root}
-        </Link>
+        <LegalExternalLink href={EXTERNAL_LINKS.docs.root}>{EXTERNAL_LINKS.docs.root}</LegalExternalLink>
         {t`, `}
-        <Link color="textSecondary" href={EXTERNAL_LINKS.docs.root} target="_blank">
-          {EXTERNAL_LINKS.docs.root}
-        </Link>
+        <LegalExternalLink href={EXTERNAL_LINKS.docs.root}>{EXTERNAL_LINKS.docs.root}</LegalExternalLink>
         {t` and `}
-        <Link color="textSecondary" href={EXTERNAL_LINKS.curve.gov} target="_blank">
-          {EXTERNAL_LINKS.curve.gov}
-        </Link>
+        <LegalExternalLink href={EXTERNAL_LINKS.curve.gov}>{EXTERNAL_LINKS.curve.gov}</LegalExternalLink>
         {t` (together `}
         <Bold>{t`"Websites"`}</Bold>
         {t`), when you use our services, when you communicate with us or when you otherwise deal with us, and sets out how we use your personal data, the conditions under which we disclose it to others and the measures we take to keep it secure. In addition, we may inform you about the processing of your personal data separately, for example in consent forms, terms and conditions, additional privacy notices, forms, and other notices. We use the word `}
@@ -166,9 +154,9 @@ export const Privacy = () => (
             {t`By visiting the website, YouTube receives the information that you have called up the corresponding subpage of our Websites. In addition, the above-mentioned basic data (such as IP-address and timestamp) are transmitted. This occurs regardless of whether YouTube provides a user account through which you are logged in or whether there is no user account. If you are logged in to Google, your data will be directly assigned to your account. If you do not want the assignment with your profile at YouTube, you must log out before activating the button. YouTube stores your data as user profiles and uses them for its own purposes, such as advertising, market research and/or needs-based design of its website. Such an evaluation is carried out in particular (even for users who are not logged in) to provide needs-based advertising and to inform other users of the social network about your activities on our Websites. You have the right to object to the creation of these user profiles. You must contact YouTube to exercise this right.`}
             <br />
             {t`The information collected is stored on Google servers, around the world including servers in the US. For these cases, the provider complies, according to its own information, with the EU-U.S. and Swiss-U.S. Data Privacy Frameworks and the UK Extension to the EU-U.S. Data Privacy Framework and/or relies on Standard Contractual Clauses (SCCs) for providing appropriate data protection safeguards. For more information, please refer to Google's privacy policy: `}
-            <Link color="textSecondary" href="https://policies.google.com/privacy?hl=en" target="_blank">
+            <LegalExternalLink href="https://policies.google.com/privacy?hl=en">
               {t`Privacy Policy – Privacy & Terms – Google`}
-            </Link>
+            </LegalExternalLink>
             {t`.`}
           </Typography>
           <Typography component="li" variant="bodyMRegular">
@@ -183,9 +171,7 @@ export const Privacy = () => (
             {t`The information collected is stored on X's servers, including those in the United States, a country that, from the perspective of Switzerland and the EU, does not offer an adequate level of data protection. In such cases, X participates in the EU-U.S. Data Privacy Framework, the Swiss-U.S. Data Privacy Framework and the UK Extension to the EU-U.S. Data Privacy Framework and/or enters into so-called Standard Contractual Clauses with its customers to ensure an adequate level of data protection.`}
             <br />
             {t`For more information, please refer to X's privacy policy: `}
-            <Link color="textSecondary" href="https://x.com/en/privacy" target="_blank">
-              {t`X Privacy Policy`}
-            </Link>
+            <LegalExternalLink href="https://x.com/en/privacy">{t`X Privacy Policy`}</LegalExternalLink>
             {t`.`}
           </Typography>
         </List>
@@ -316,9 +302,7 @@ export const Privacy = () => (
       </Paragraph>
       <Paragraph>
         {t`In addition, every data subject has the opportunity to assert their rights in court or to file a complaint with the relevant data protection authority. In Switzerland, the relevant data protection authority is the Federal Data Protection and Information Commissioner (`}
-        <Link color="textSecondary" href="http://www.edoeb.admin.ch" target="_blank">
-          {t`http://www.edoeb.admin.ch`}
-        </Link>
+        <LegalExternalLink href="http://www.edoeb.admin.ch">{t`http://www.edoeb.admin.ch`}</LegalExternalLink>
         {t`).`}
       </Paragraph>
     </Section>

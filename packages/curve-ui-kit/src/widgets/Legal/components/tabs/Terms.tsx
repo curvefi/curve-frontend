@@ -1,38 +1,41 @@
-import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 import { EXTERNAL_LINKS } from '@ui/utils'
 import { getSearchString } from '@ui-kit/hooks/router'
-import { t } from '@ui-kit/lib/i18n'
+import { t, Trans } from '@ui-kit/lib/i18n'
+import { type AppName, getInternalUrl, PAGE_INTEGRATIONS } from '@ui-kit/shared/routes'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
+import { LegalExternalLink } from '../general/LegalExternalLink'
 import { List } from '../general/List'
 import { Section, Header, Title, Paragraph, Bold, SubTitle } from '../general/Section'
 
-export const Terms = () => (
+export const Terms = ({ currentApp, network }: { currentApp: AppName; network: string }) => (
   <>
     <Header>{t`Preamble`}</Header>
     <Section>
       <Paragraph>
-        {t`These terms and conditions (`}
-        <Bold>{t`"Terms"`}</Bold>
-        {t`) are entered into between Swiss Stake AG with registered office in Zug, Switzerland (`}
-        <Bold>{t`"we"`}</Bold>
-        {t`, `}
-        <Bold>{t`"us"`}</Bold>
-        {t` or `}
-        <Bold>{t`"Company"`}</Bold>
-        {t`) and the users (`}
-        <Bold>{t`"you"`}</Bold>
-        {t` or `}
-        <Bold>{t`"your"`}</Bold>
-        {t`) of the website [www.curve.finance] (`}
-        <Bold>{t`«Website»`}</Bold>
-        {t`). These Terms, together with our Privacy Policy, govern your access to and use of the Website, including any data, information, items, links and Curve Functionalities which can be accessed via the Website.`}
+        <Trans>
+          These terms and conditions (<Bold>"Terms"</Bold>) are entered into between Swiss Stake AG with registered
+          office in Zug, Switzerland (<Bold>"we"</Bold>, <Bold>"us"</Bold> or <Bold>"Company"</Bold>) and the users (
+          <Bold>"you"</Bold> or <Bold>"your"</Bold>) of the website [{new URL(EXTERNAL_LINKS.curve.root).host}] (
+          <Bold>«Website»</Bold>). These Terms, together with our Privacy Policy, govern your access to and use of the
+          Website, including any data, information, items, links and Curve Functionalities which can be accessed via the
+          Website.
+        </Trans>
       </Paragraph>
       <Paragraph>
-        {t`We reserve the right to modify these Terms at any time at our sole discretion. In this case, the Company will provide notice by changing the «last updated» date above. By continuing to access or use the Website, you confirm that you accept these updated Terms, and all documents incorporated therein by reference. If you do not agree with these Terms and/or the Privacy Notice, please immediately cease all use of the Website.`}
+        <Trans>
+          We reserve the right to modify these Terms at any time at our sole discretion. In this case, the Company will
+          provide notice by changing the «last updated» date above. By continuing to access or use the Website, you
+          confirm that you accept these updated Terms, and all documents incorporated therein by reference. If you do
+          not agree with these Terms and/or the Privacy Notice, please immediately cease all use of the Website.
+        </Trans>
       </Paragraph>
       <Paragraph>
-        {t`Other terms from third parties outside of these Terms may apply to you, in particular if you access any functionalities or services provided by third-parties, items or websites linked on the Website. Such other terms apply in addition to these Terms.`}
+        <Trans>
+          Other terms from third parties outside of these Terms may apply to you, in particular if you access any
+          functionalities or services provided by third-parties, items or websites linked on the Website. Such other
+          terms apply in addition to these Terms.
+        </Trans>
       </Paragraph>
     </Section>
 
@@ -56,13 +59,9 @@ export const Terms = () => (
           </Typography>
           <Typography component="li" variant="bodyMRegular">
             {t`are not accessing or using the Website from one of the countries embargoed or restricted by the Swiss State Secretariat for Economic Affairs (SECO), including but not limited to: Belarus, Burundi, Central African Republic, Congo, DPRK (North Korea), Guinea, Guinea-Bissau, Iran, Iraq, Lebanon, Libya, Mali, Myanmar (Burma), Republic of South Sudan, Russia, Somalia, Sudan, Syria, Ukraine, Venezuela, Yemen, or Zimbabwe (if your country is embargoed or restricted can be found out under the following`}{' '}
-            <Link
-              color="textSecondary"
-              href="https://www.seco.admin.ch/seco/de/home/Aussenwirtschaftspolitik_Wirtschaftliche_Zusammenarbeit/Wirtschaftsbeziehungen/exportkontrollen-und-sanktionen/sanktionen-embargos/sanktionsmassnahmen/suche_sanktionsadressaten.html"
-              target="_blank"
-            >
+            <LegalExternalLink href="https://www.seco.admin.ch/seco/de/home/Aussenwirtschaftspolitik_Wirtschaftliche_Zusammenarbeit/Wirtschaftsbeziehungen/exportkontrollen-und-sanktionen/sanktionen-embargos/sanktionsmassnahmen/suche_sanktionsadressaten.html">
               {t`link`}
-            </Link>{' '}
+            </LegalExternalLink>{' '}
             {t`(`}
             <Bold>{t`Restricted Jurisdictions`}</Bold>
             {t`).`}
@@ -90,25 +89,21 @@ export const Terms = () => (
         <List type="disc">
           <Typography component="li" variant="bodyMRegular">
             {t`Technical Information: The Website provides access to various types of documentation related to the Curve ecosystem, including among others user guides (`}
-            <Link color="textSecondary" href={EXTERNAL_LINKS.docs.root} target="_blank">
-              {t`https://docs.curve.finance/`}
-            </Link>
+            <LegalExternalLink href={EXTERNAL_LINKS.docs.root}>{EXTERNAL_LINKS.docs.root}</LegalExternalLink>
             {t`), GitHub repositories (`}
-            <Link color="textSecondary" href={EXTERNAL_LINKS.github.curvefi} target="_blank">
-              {t`Curve GitHub`}
-            </Link>
+            <LegalExternalLink href={EXTERNAL_LINKS.github.curvefi}>{t`Curve GitHub`}</LegalExternalLink>
             {t`), a blog featuring the latest news in the Curve ecosystem (`}
-            <Link color="textSecondary" href={EXTERNAL_LINKS.news} target="_blank">
-              {t`Curve News`}
-            </Link>
+            <LegalExternalLink href={EXTERNAL_LINKS.news}>{t`Curve News`}</LegalExternalLink>
             {t`), a list of applications reportedly built on top of the Curve ecosystem (`}
-            <Link color="textSecondary" href="https://www.curve.finance/dex/ethereum/integrations/" target="_blank">
+            <RouterLink
+              color="textSecondary"
+              href={getInternalUrl(currentApp, network, PAGE_INTEGRATIONS)}
+              target="_blank"
+            >
               {t`Integrations - Curve`}
-            </Link>
+            </RouterLink>
             {t`) and technical documentation detailing the implementation of the core Curve protocol and its associated smart contracts (`}
-            <Link color="textSecondary" href={EXTERNAL_LINKS.docs.root} target="_blank">
-              {t`Curve Technical Docs`}
-            </Link>
+            <LegalExternalLink href={EXTERNAL_LINKS.docs.root}>{t`Curve Technical Docs`}</LegalExternalLink>
             {t`).`}
           </Typography>
           <Typography component="li" variant="bodyMRegular">
@@ -116,21 +111,19 @@ export const Terms = () => (
           </Typography>
           <Typography component="li" variant="bodyMRegular">
             {t`Security Information: The Website presents information related to the security of the Curve Project, respectively the Curve Functionalities and respective ecosystem, including audits reports (`}
-            <Link color="textSecondary" href={EXTERNAL_LINKS.docs.user.security.audits} target="_blank">
+            <LegalExternalLink href={EXTERNAL_LINKS.docs.user.security.audits}>
               {t`Bug Bounty & Audits - Curve Technical Docs`}
-            </Link>
+            </LegalExternalLink>
             {t`), details on bug bounty programs (`}
-            <Link color="textSecondary" href={EXTERNAL_LINKS.docs.user.security.bugBounty} target="_blank">
+            <LegalExternalLink href={EXTERNAL_LINKS.docs.user.security.bugBounty}>
               {t`Bug Bounty & Audits - Curve Technical Docs`}
-            </Link>
+            </LegalExternalLink>
             {t`) and relevant statistics (`}
-            <Link color="textSecondary" href={EXTERNAL_LINKS.analytics.duneCurveFi} target="_blank">
-              {t`Curve.fi`}
-            </Link>
+            <LegalExternalLink href={EXTERNAL_LINKS.analytics.duneCurveFi}>{t`Curve.fi`}</LegalExternalLink>
             {t`) and API status monitoring (`}
-            <Link color="textSecondary" href={EXTERNAL_LINKS.security.apiStatus} target="_blank">
+            <LegalExternalLink href={EXTERNAL_LINKS.security.apiStatus}>
               {t`Curve API's Live status - Powered by Freshping`}
-            </Link>
+            </LegalExternalLink>
             {t`).`}
           </Typography>
         </List>
@@ -254,9 +247,7 @@ export const Terms = () => (
       </Paragraph>
       <Paragraph>
         {t`Any and all rights related to the Website, including the official logos (as listed`}{' '}
-        <Link color="textSecondary" href={EXTERNAL_LINKS.brand.assets} target="_blank">
-          {t`here`}
-        </Link>
+        <LegalExternalLink href={EXTERNAL_LINKS.brand.assets}>{t`here`}</LegalExternalLink>
         {t`) are held by us.`}
       </Paragraph>
       <Paragraph>

@@ -1,9 +1,9 @@
-import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import { EXTERNAL_LINKS } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { LegalExternalLink } from '../general/LegalExternalLink'
 import { Section, Header, Title, Paragraph } from '../general/Section'
 import { LegalIntro } from './LegalIntro'
 
@@ -53,13 +53,9 @@ export const Dex = () => (
 
       <Paragraph>
         {t`The Curve Emergency Admin is a`}{' '}
-        <Link
-          color="textSecondary"
-          href="https://etherscan.io/address/0x467947EE34aF926cF1DCac093870f613C96B1E0c"
-          target="_blank"
-        >
+        <LegalExternalLink href="https://etherscan.io/address/0x467947EE34aF926cF1DCac093870f613C96B1E0c">
           {t`5-of-9 multisig`}
-        </Link>
+        </LegalExternalLink>
         {t`, composed of Curve community members. It has restricted rights to undertake actions that do not directly
           impact users' funds, including canceling parameter changes authorized by the DAO and halting CRV emissions to
           a pool. Early pool implementations included a timelimited function to freeze swaps and deposits in case of
