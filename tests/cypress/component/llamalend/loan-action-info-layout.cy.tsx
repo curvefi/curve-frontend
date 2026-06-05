@@ -6,6 +6,7 @@ import { mockedWagmiConfig } from '@cy/support/helpers/llamalend/test-wagmi.help
 import { allViewports } from '@cy/support/ui'
 import { fromEntries, notFalsy } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
+import type { BaseConfig } from '@ui/utils'
 import { q } from '@ui-kit/types/util'
 import { mockRoutes } from '@ui-kit/widgets/RouteProvider/route.mock'
 
@@ -26,7 +27,7 @@ const routes: MarketRoutes = {
       },
     ]),
   ),
-  networks: {},
+  networks: { 1: { name: 'Ethereum' } as BaseConfig },
   chainId: 1,
   selectedRoute: mockRoutes[0],
   selectedRouter: mockRoutes[0].router,

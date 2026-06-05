@@ -103,7 +103,7 @@ export const RouteProvidersAccordion = ({
               </Typography>
               <IconButton
                 size="extraExtraSmall"
-                onClick={onRefresh}
+                onClick={() => void onRefresh()}
                 aria-label={t`Refresh routes`}
                 disabled={anyFetching}
               >

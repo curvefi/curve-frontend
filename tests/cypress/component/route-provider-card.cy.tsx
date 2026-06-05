@@ -1,9 +1,9 @@
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { mockedWagmiConfig } from '@cy/support/helpers/llamalend/test-wagmi.helpers'
 import { allViewports } from '@cy/support/ui'
+import type { BaseConfig } from '@ui/utils'
 import { lightTheme } from '@ui-kit/themes'
 import { constQ, q } from '@ui-kit/types/util'
-import { RouteProviderIcons } from '@ui-kit/widgets/RouteProvider'
 import { RouteProviderCard } from '@ui-kit/widgets/RouteProvider/RouteProviderCard'
 
 const { design } = lightTheme()
@@ -13,14 +13,16 @@ const hexToRgb = (value: string) => {
   return `rgb(${(parsed >> 16) & 255}, ${(parsed >> 8) & 255}, ${parsed & 255})`
 }
 
-const mountRouteProviderCard = ({ isSelected = true }: { isSelected?: boolean } = {}) => {
-  const { curve: Curve } = RouteProviderIcons
+const mountRouteProviderCard = ({
+  isSelected = true,
+  enabled = true,
+}: { isSelected?: boolean; enabled?: boolean } = {}) => {
   cy.mount(
     <ComponentTestWrapper config={mockedWagmiConfig}>
       <RouteProviderCard
         query={{
           isFetching: false,
-          enabled: true,
+          enabled,
           ...q({
             error: null,
             isLoading: false,
@@ -52,14 +54,13 @@ const mountRouteProviderCard = ({ isSelected = true }: { isSelected?: boolean } 
             },
           }),
         }}
-        networks={{}}
+        networks={{ 1: { name: 'Ethereum' } as BaseConfig }}
         chainId={1}
         tokenOut={{ symbol: 'crvUSD', decimals: 18, usdRate: constQ(1) }}
         isSelected={isSelected}
         bestOutputAmount="69.4241"
-        providerLabel="Curve"
+        router="curve"
         onSelect={() => undefined}
-        icon={<Curve />}
       />
     </ComponentTestWrapper>,
   )
@@ -107,6 +108,14 @@ allViewports().forEach(([width, height, breakpoint]) => {
         'background-color',
         hexToRgb(design.Layer.TypeAction.Hover),
       )
+    })
+
+    it('renders disabled state when route provider is unavailable', () => {
+      mountRouteProviderCard({ enabled: false })
+      cy.get('[data-testid="route-provider-rows"]')
+        .should('have.css', 'opacity', '0.5')
+        .and('have.css', 'pointer-events', 'none')
+        .and('have.css', 'cursor', 'not-allowed')
     })
   })
 })

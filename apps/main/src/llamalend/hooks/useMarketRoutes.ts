@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useEffectEvent, useMemo, useState, useTransition } from 'react'
+import { useEffect, useEffectEvent, useMemo, useState, useTransition } from 'react'
 import { useConnection } from 'wagmi'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { Address } from '@primitives/address.utils'
@@ -24,7 +24,7 @@ export type MarketRoutes = {
   selectedRoute: RouteResponse | undefined
   selectedRouter: RouteProvider | undefined
   onChange: (option: RouteProvider | undefined) => void
-  onRefresh: () => void
+  onRefresh: () => Promise<unknown>
   tokenOut: Partial<{ symbol: string | undefined; address: Address; decimals: number }> & { usdRate: QueryProp<number> }
   networks: Record<number, BaseConfig>
   chainId: number
@@ -106,13 +106,6 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
   const onChangeEffect = useEffectEvent(onChangeProp)
   useEffect(() => startTransition(() => onChangeEffect(selectedRoute)), [selectedRoute])
 
-  const onChange = useCallback(
-    async (option: RouteProvider | undefined) => {
-      setChosenRouter(option)
-    },
-    [onChangeProp],
-  )
-
   return {
     networks,
     chainId,
@@ -121,7 +114,6 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
     selectedRoute,
     selectedRouter: chosenRouter ?? selectedRoute?.router,
     onChange: setChosenRouter,
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
     onRefresh,
     tokenOut: { ...tokenOut, usdRate },
   }
