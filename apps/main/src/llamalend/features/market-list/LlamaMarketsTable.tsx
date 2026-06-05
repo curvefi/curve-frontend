@@ -19,8 +19,9 @@ import { LlamaListChips } from './chips/LlamaListChips'
 import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS, LlamaMarketColumnId } from './columns'
 import { MarketSortDrawer } from './drawers/MarketSortDrawer'
 import { useLlamaGlobalFilterFn } from './filters/llamaGlobalFilter'
-import { LlamaTableFilters } from './filters/LlamaTableFilters'
+import { LlamaTableFiltersChip } from './filters/LlamaTableFiltersChip'
 import { LlamaTableFiltersCollapsible } from './filters/LlamaTableFiltersCollapsible'
+import { LlamaTableFiltersOverlay } from './filters/LlamaTableFiltersOverlay'
 import { getLlamaMarketsColumnVariant, useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
 
@@ -110,21 +111,22 @@ export const LlamaMarketsTable = ({
             hasActiveFilters,
           }}
           filterChip={
-            <LlamaTableFilters
-              popoverFilterChipRef={filterChipRef}
-              hasActiveFilters={hasActiveFilters}
-              open={filtersOpen}
-              setOpen={setFiltersOpen}
-              anchorRef={filterChipRef}
-              marketsQuery={mapQuery(tableQuery, d => d.markets)}
-              resetFilters={resetFilters}
-              {...filterProps}
-            />
+            <LlamaTableFiltersChip popoverFilterChipRef={filterChipRef} open={filtersOpen} setOpen={setFiltersOpen} />
           }
           sortChip={isMobile && <MarketSortDrawer onSortingChange={onSortingChange} sortField={sortField} />}
           chips={<LlamaListChips hasFavorites={hasFavorites} {...filterProps} />}
         />
       </DataTable>
+      {/* Keep the overlay outside DataTable children because DataTable remounts them when switching sticky header layout. */}
+      <LlamaTableFiltersOverlay
+        hasActiveFilters={hasActiveFilters}
+        open={filtersOpen}
+        setOpen={setFiltersOpen}
+        anchorRef={filterChipRef}
+        marketsQuery={mapQuery(tableQuery, d => d.markets)}
+        resetFilters={resetFilters}
+        {...filterProps}
+      />
     </Stack>
   )
 }
