@@ -3,9 +3,9 @@ import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolsPricesApi } from '@/dex/queries/pools-prices-api.query'
 import type { Chain } from '@curvefi/prices-api'
 import Button from '@mui/material/Button'
-import { Link as TanstackLink } from '@tanstack/react-router'
 import { t } from '@ui-kit/lib/i18n'
 import { getInternalUrl } from '@ui-kit/shared/routes'
+import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -22,8 +22,8 @@ export const ManagePoolLink = ({ chainId, poolAddress }: { chainId: number; pool
     poolAddress != null &&
     hasRefuelMethod(pricesApiPoolData?.poolMethods) && (
       <Button
-        component={TanstackLink}
-        to={getInternalUrl('dex', network?.networkId, `${ROUTE.PAGE_POOLS}/${poolAddress}/manage-pool`)}
+        component={RouterLink}
+        href={getInternalUrl('dex', network?.networkId, `${ROUTE.PAGE_POOLS}/${poolAddress}/manage-pool`)}
         variant="inline"
         color="ghost"
         sx={{ whiteSpace: 'nowrap', alignSelf: 'end', marginBlockEnd: Spacing.xs }}
