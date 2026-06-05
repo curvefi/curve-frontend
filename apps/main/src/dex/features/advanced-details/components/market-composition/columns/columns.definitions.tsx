@@ -8,7 +8,7 @@ import { AddressCell } from '@ui-kit/shared/ui/DataTable/inline-cells/AddressCel
 import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { TokenInfo } from '@ui-kit/shared/ui/TokenInfo'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
-import { amount, formatNumber } from '@ui-kit/utils'
+import { formatNumber } from '@ui-kit/utils'
 import { MarketCompositionColumnId } from './columns.enum'
 
 export type MarketCompositionRow = TableItem & {
@@ -59,9 +59,7 @@ export const MARKET_COMPOSITION_COLUMNS = [
     header: headers[MarketCompositionColumnId.MarketShare],
     cell: ({ getValue }) => (
       <InlineTableCell>
-        <Typography variant="tableCellMRegular">
-          {formatNumber(amount(getValue()), { unit: 'percentage', abbreviate: false, fallback: '-' })}
-        </Typography>
+        <Typography variant="tableCellMRegular">{formatNumber(getValue(), 'percent.rate')}</Typography>
       </InlineTableCell>
     ),
     enableSorting: false,
@@ -81,14 +79,13 @@ export const MARKET_COMPOSITION_COLUMNS = [
           )}
           placement="top"
         >
+          {/** Needed for tooltip to work for whatever reason */}
           <Box>
             <TokenInfo
               icon={null}
               iconPosition="right"
-              primary={formatNumber(getValue(), { abbreviate: true, fallback: '-' })}
-              secondary={maybe(row.original.tokenAmountUsd, x =>
-                x > 0 ? formatNumber(x, { unit: 'dollar', abbreviate: true }) : undefined,
-              )}
+              primary={formatNumber(getValue(), 'token.compact')}
+              secondary={maybe(row.original.tokenAmountUsd, x => formatNumber(x, 'usd.notional'))}
             />
           </Box>
         </Tooltip>
