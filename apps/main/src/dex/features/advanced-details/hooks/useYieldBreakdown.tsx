@@ -14,6 +14,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Chain } from '@ui-kit/utils'
 import { MAINNET_CRV_ADDRESS } from '@ui-kit/utils/address'
 import type { YieldBreakdownRow } from '../components/yield-breakdown/columns/columns.definitions'
+import { maybe } from '@primitives/objects.utils'
 
 const { IconSize } = SizesAndSpaces
 
@@ -98,17 +99,14 @@ export const useYieldBreakdown = ({
       })
     })
 
-    const baseDaily = rewardsApy?.base?.day
-    if (baseDaily != null && +baseDaily > 0) {
-      rows.push({
-        source: {
-          icon: null,
-          iconPosition: 'left',
-          primary: t`Swap fees`,
-        },
-        dailyApr: +baseDaily,
-      })
-    }
+    rows.push({
+      source: {
+        icon: null,
+        iconPosition: 'left',
+        primary: t`Swap fees`,
+      },
+      dailyApr: maybe(rewardsApy?.base?.day, x => (+x > 0 ? +x : undefined)),
+    })
 
     return rows
   }, [campaigns, ethereumNetwork, gaugeIsKilled, network, rewardsApy])
