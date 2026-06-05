@@ -85,7 +85,7 @@ export const MultiSelectFilter = <TColumnId extends string>({
         size="medium"
         sx={{ '& .MuiSelect-select': { gap: Spacing.xs } }}
         renderValue={() =>
-          selectedOptions?.length && selectedOptions.length < options.length ? (
+          selectedOptions?.length ? (
             <>
               {visibleSelectedOptions.map(optionId => (
                 <Box component="span" key={optionId} sx={{ display: 'inline-flex', alignItems: 'center' }}>
