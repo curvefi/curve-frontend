@@ -1,5 +1,4 @@
 import { sum } from 'lodash'
-import { useMemo } from 'react'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { useStore } from '@/dex/store/useStore'
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
@@ -7,7 +6,6 @@ import { getChainPoolIdActiveKey } from '@/dex/utils'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
 import { maybe } from '@primitives/objects.utils'
 import { scanAddressPath } from '@ui/utils'
-import type { MarketCompositionRow } from '../components/market-composition/columns/columns.definitions'
 
 export const useMarketComposition = ({
   chainId,
@@ -27,45 +25,39 @@ export const useMarketComposition = ({
   const usePricesApiReserves = isNaN(Number(currencyReserves?.total)) && !network.isLite
   const pricesApiTotalUsd = sum(pricesApiPoolData?.balancesUsd)
 
-  const rows = useMemo<MarketCompositionRow[]>(
-    () =>
-      poolDataCacheOrApi.tokens
-        .map((symbol, index) => {
-          const tokenAddress = poolDataCacheOrApi.tokenAddresses[index]
-          const reserve = currencyReserves?.tokens.find(
-            token => token.tokenAddress.toLowerCase() === tokenAddress.toLowerCase(),
-          )
-          const balance = usePricesApiReserves ? pricesApiPoolData?.balances[index] : reserve?.balance
-          const balanceUsd = usePricesApiReserves ? pricesApiPoolData?.balancesUsd[index] : reserve?.balanceUsd
+  // Transform Prices API reserves data to match the shape of currencyReserves (and not bothering with useMemo as arrays are super small)
+  const reserves = usePricesApiReserves
+    ? poolDataCacheOrApi.tokenAddresses.map((tokenAddress, index) => {
+        const balance = pricesApiPoolData?.balances[index]
+        const balanceUsd = pricesApiPoolData?.balancesUsd[index]
 
-          return {
-            symbol,
-            tokenAddress,
-            tokenAddressUrl: scanAddressPath(network, tokenAddress),
-            blockchainId: network?.id,
-            marketShare: maybe(
-              usePricesApiReserves && pricesApiTotalUsd
-                ? ((balanceUsd ?? 0) / pricesApiTotalUsd) * 100
-                : reserve?.percentShareInPool,
-              x => +x,
-            ),
-            tokenAmount: balance,
-            tokenAmountUsd: balanceUsd,
-            tokenPrice: usePricesApiReserves ? (balance ? (balanceUsd ?? 0) / balance : 0) : reserve?.usdRate,
-          }
-        })
-        .filter(({ tokenAmount }) => tokenAmount),
-    [
-      currencyReserves?.tokens,
-      network,
-      poolDataCacheOrApi.tokenAddresses,
-      poolDataCacheOrApi.tokens,
-      pricesApiPoolData?.balances,
-      pricesApiPoolData?.balancesUsd,
-      pricesApiTotalUsd,
-      usePricesApiReserves,
-    ],
-  )
+        return {
+          tokenAddress,
+          balance,
+          balanceUsd,
+          percentShareInPool: pricesApiTotalUsd ? ((balanceUsd ?? 0) / pricesApiTotalUsd) * 100 : undefined,
+          usdRate: balance ? (balanceUsd ?? 0) / balance : 0,
+        }
+      })
+    : currencyReserves?.tokens
+
+  const rows = poolDataCacheOrApi.tokens
+    .map((symbol, index) => {
+      const tokenAddress = poolDataCacheOrApi.tokenAddresses[index]
+      const reserve = reserves?.find(token => token.tokenAddress.toLowerCase() === tokenAddress.toLowerCase())
+
+      return {
+        symbol,
+        tokenAddress,
+        tokenAddressUrl: scanAddressPath(network, tokenAddress),
+        blockchainId: network?.id,
+        marketShare: maybe(reserve?.percentShareInPool, x => +x),
+        tokenAmount: reserve?.balance,
+        tokenAmountUsd: reserve?.balanceUsd,
+        tokenPrice: reserve?.usdRate,
+      }
+    })
+    .filter(({ tokenAmount }) => tokenAmount)
 
   return {
     isLoading: usePricesApiReserves ? !pricesApiPoolData?.balances.length : !currencyReserves, // this isn't a proper loading check, but we need a bigger refactor for that later on
