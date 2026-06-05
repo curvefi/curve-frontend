@@ -175,10 +175,13 @@ testCases.forEach(([width, height, breakpoint]) => {
         expect(calls1.length).to.be.greaterThan(0).lessThan(vaultCount) // make sure we have some calls before scrolling, but not all
         cy.wait(repeat('@lend-snapshots', calls1.length), LOAD_TIMEOUT)
 
-        // check that scrolling loads more snapshots
+        // check that scrolling to the last row loads more snapshots
         cy.get('[data-testid^="data-table-row"]')
           .last()
-          .scrollIntoView({ offset: { top: -height / 2, left: 0 } }) // scroll to the last row, make sure it's still visible
+          // Avoid scrollIntoView because Cypress may pick the horizontal table wrapper as the scroll container, instead of the vertical
+          .then($row => {
+            cy.scrollTo(0, $row.offset()!.top - height / 2)
+          })
         if (breakpoint == 'mobile') {
           cy.get(`[data-testid="expand-icon"]`).last().scrollIntoView()
           cy.get(`[data-testid="expand-icon"]`).last().click()
