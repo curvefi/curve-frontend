@@ -31,10 +31,10 @@ export function haveRewardsApy({ base, other, crv }: Partial<RewardsApy>) {
 
 export function rewardsApyCrvText([base, boosted]: number[]) {
   if (!base && !boosted) return ''
-  const formattedBase = formatNumber(base, { unit: 'percentage', abbreviate: false })
+  const formattedBase = formatNumber(base, 'percent.value')
 
   if (boosted) {
-    return `${formattedBase} → ${formatNumber(boosted, { unit: 'percentage', abbreviate: false })} CRV`
+    return `${formattedBase} → ${formatNumber(boosted, 'percent.value')} CRV`
   } else {
     return `${formattedBase} CRV`
   }

@@ -83,7 +83,7 @@ export const TotalRecurrence = ({ title }: Props) => {
                   {...(token === 'base'
                     ? {}
                     : {
-                        tooltip: `${formatNumber(1, { abbreviate: false })} ${symbol} = ${formatNumber(price, { unit: 'dollar', abbreviate: false })}`,
+                        tooltip: `${formatNumber(1, { abbreviate: false })} ${symbol} = ${formatNumber(price, 'usd.amount')}`,
                         tooltipProps,
                       })}
                 >
@@ -95,7 +95,7 @@ export const TotalRecurrence = ({ title }: Props) => {
 
         <Stats label={t`USD Total`} isOneLine>
           <Chip isBold size="md">
-            ≈ {formatNumber(totalUsd, { unit: 'dollar', abbreviate: false })}
+            ≈ {formatNumber(totalUsd, 'usd.amount')}
           </Chip>
         </Stats>
       </SummaryInnerContent>

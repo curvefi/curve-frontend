@@ -21,9 +21,7 @@ export const CollateralChangeCell = ({
       {collateralChange != null && collateralChange !== 0 && collateralChangeUsd !== 0 && collateralToken?.symbol}
     </Typography>
     {collateralChangeUsd !== 0 && collateralChangeUsd !== null && (
-      <Typography variant="bodySRegular">
-        {formatNumber(collateralChangeUsd, { unit: 'dollar', abbreviate: false, fallback: '-' })}
-      </Typography>
+      <Typography variant="bodySRegular">{formatNumber(collateralChangeUsd, 'usd.amount')}</Typography>
     )}
   </InlineTableCell>
 )

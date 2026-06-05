@@ -14,17 +14,11 @@ export const TableCellBalances = ({ isHighLight, liquidityUsd, percentStaked }: 
       isNumber
       isBold={isHighLight}
       size="md"
-      tooltip={formatNumber(amount(liquidityUsd), { unit: 'dollar', abbreviate: false, fallback: '-' })}
+      tooltip={formatNumber(amount(liquidityUsd), 'usd.amount')}
       tooltipProps={tooltipProps}
     >
-      {formatNumber(amount(liquidityUsd), { unit: 'dollar', abbreviate: true, fallback: '-' })}
+      {formatNumber(amount(liquidityUsd), 'usd.notional')}
     </Chip>
-    <div>
-      {percentStaked && (
-        <DetailText>
-          {formatNumber(amount(percentStaked), { unit: 'percentage', abbreviate: false, fallback: '-' })} staked
-        </DetailText>
-      )}
-    </div>
+    <div>{percentStaked && <DetailText>{formatNumber(amount(percentStaked), 'percent.value')} staked</DetailText>}</div>
   </>
 )

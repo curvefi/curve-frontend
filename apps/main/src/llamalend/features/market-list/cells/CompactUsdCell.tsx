@@ -4,5 +4,5 @@ import { formatNumber } from '@ui-kit/utils'
 
 export const CompactUsdCell = ({ getValue }: CellContext<LlamaMarket, number>) => {
   const value = getValue()
-  return value != null && formatNumber(value, { unit: 'dollar', abbreviate: true })
+  return value != null && formatNumber(value, 'usd.notional')
 }

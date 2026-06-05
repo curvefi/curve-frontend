@@ -1,7 +1,7 @@
 import { SOLVENCY_THRESHOLDS } from '@/llamalend/llama-markets.constants'
 import { t } from '@ui-kit/lib/i18n'
 import { Banner } from '@ui-kit/shared/ui/Banner'
-import { formatPercent } from '@ui-kit/utils'
+import { formatNumber } from '@ui-kit/utils'
 
 type Props = {
   solvencyPercent: number
@@ -27,7 +27,7 @@ export const LowSolvencyBanner = ({ solvencyPercent }: Props) => {
     banner && (
       <Banner
         severity={banner.severity}
-        subtitle={t`Market solvency is ${formatPercent(solvencyPercent)}. Part of the supplied funds is no longer fully covered.`}
+        subtitle={t`Market solvency is ${formatNumber(solvencyPercent, 'percent.rate')}. Part of the supplied funds is no longer fully covered.`}
         testId={`bad-debt-banner-${banner.id}`}
         learnMoreUrl="https://docs.curve.finance/user/llamalend/bad-debt"
       >

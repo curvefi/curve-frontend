@@ -61,7 +61,7 @@ export const GaugeWeightHistoryChart = ({ gaugeAddress, height = Height.chart }:
           xKey="timestamp"
           series={series}
           xTickFormatter={value => formatDate(value)}
-          yTickFormatter={value => formatNumber(+value, { unit: 'percentage', abbreviate: false, fallback: '-' })}
+          yTickFormatter={value => formatNumber(+value, 'percent.value')}
           yPaddingRatio={0.1}
           renderTooltip={({ datum, visibleSeries }) => (
             <ChartTooltipShell title={formatDate(datum.timestamp, 'long')}>

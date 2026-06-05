@@ -41,21 +41,21 @@ export const SmallScreenCard = ({
     if (key === 'gauge_relative_weight') {
       return {
         title: t`Weight`,
-        value: formatNumber(gaugeData.gauge_relative_weight, { unit: 'percentage', abbreviate: false }),
+        value: formatNumber(gaugeData.gauge_relative_weight, 'percent.value'),
       }
     }
     if (key === 'gauge_relative_weight_7d_delta') {
       return {
         title: t`7d Delta`,
         value: gaugeData.gauge_relative_weight_7d_delta
-          ? formatNumber(gaugeData.gauge_relative_weight_7d_delta, { unit: 'percentage', abbreviate: false })
+          ? formatNumber(gaugeData.gauge_relative_weight_7d_delta, 'percent.value')
           : 'N/A',
       }
     }
     return {
       title: t`60d Delta`,
       value: gaugeData.gauge_relative_weight_60d_delta
-        ? formatNumber(gaugeData.gauge_relative_weight_60d_delta, { unit: 'percentage', abbreviate: false })
+        ? formatNumber(gaugeData.gauge_relative_weight_60d_delta, 'percent.value')
         : 'N/A',
     }
   }

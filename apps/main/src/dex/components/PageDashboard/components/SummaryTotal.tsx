@@ -33,7 +33,7 @@ export const SummaryTotal = () => {
           tooltip={formatNumber(total, { abbreviate: false, fallback: '-' })}
           tooltipProps={{ noWrap: true }}
         >
-          {total === null ? '?' : formatNumber(total, { unit: 'dollar', abbreviate: true })}
+          {total === null ? '?' : formatNumber(total, 'usd.notional')}
         </TotalBalancesValue>
       </SummaryInnerContent>
     </StyledTotalBalanceWrapper>

@@ -18,7 +18,7 @@ export const TableCellRewardsOthers = ({ isHighlight, rewardsApy }: Prop) => {
       {rewardsApy?.other?.map(o => (
         <Fragment key={o.tokenAddress}>
           <Chip size="md" isBold={isHighlight}>
-            {formatNumber(o.apy, { unit: 'percentage', abbreviate: false })} {o.symbol}
+            {formatNumber(o.apy, 'percent.value')} {o.symbol}
           </Chip>
           <br />
         </Fragment>

@@ -11,7 +11,7 @@ type AmountCellProps = {
 }
 
 export const AmountCell = ({ amount, usdAmount }: AmountCellProps) => {
-  const formattedUsd = formatNumber(usdAmount, { unit: 'dollar', abbreviate: false })
+  const formattedUsd = formatNumber(usdAmount, 'usd.amount')
 
   return (
     <Stack sx={{ gap: Spacing.xxs, alignItems: 'end' }}>

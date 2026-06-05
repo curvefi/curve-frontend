@@ -31,7 +31,7 @@ export const POOL_TRADES_COLUMNS = [
           blockchainId={row.original.network}
           iconPosition="right"
           primary={formatNumber(row.original.tokensBought, { abbreviate: false })}
-          secondary={formatNumber(row.original.tokensBoughtUsd, { unit: 'dollar', abbreviate: true })}
+          secondary={formatNumber(row.original.tokensBoughtUsd, 'usd.notional')}
         />
       </InlineTableCell>
     ),
@@ -47,7 +47,7 @@ export const POOL_TRADES_COLUMNS = [
           blockchainId={row.original.network}
           iconPosition="right"
           primary={formatNumber(-row.original.tokensSold, { abbreviate: false })}
-          secondary={formatNumber(-row.original.tokensSoldUsd, { unit: 'dollar', abbreviate: true })}
+          secondary={formatNumber(-row.original.tokensSoldUsd, 'usd.notional')}
         />
       </InlineTableCell>
     ),

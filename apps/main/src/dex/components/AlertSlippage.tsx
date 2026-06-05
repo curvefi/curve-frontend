@@ -21,8 +21,7 @@ export const AlertSlippage = ({ maxSlippage, usdAmount }: Props) => {
     <AlertBox alertType="warning">
       <div>
         <Trans>
-          With your current slippage tolerance setting (
-          {formatNumber(amount(maxSlippage), { unit: 'percentage', abbreviate: false, fallback: '-' })}
+          With your current slippage tolerance setting ({formatNumber(amount(maxSlippage), 'percent.value')}
           ), the expected output displayed above might incur up to{' '}
           <strong>
             {formatNumber(maxUsdSlippage, {
