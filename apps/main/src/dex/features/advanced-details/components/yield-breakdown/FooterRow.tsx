@@ -19,7 +19,7 @@ export const FooterRow = ({
   <>
     {/** Source */}
     <TableCell sx={{ paddingInline: Spacing.md }}>
-      <Typography variant="tableCellMBold">{t`Yield Total`}</Typography>
+      <Typography variant="tableCellMBold">{t`Total APY`}</Typography>
     </TableCell>
 
     {/** Address */}
