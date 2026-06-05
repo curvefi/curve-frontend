@@ -102,7 +102,7 @@ export const useYieldBreakdown = ({
     if (baseDaily != null && +baseDaily > 0) {
       rows.push({
         source: {
-          icon: <LeverageIcon sx={{ width: IconSize.lg, height: IconSize.lg }} />,
+          icon: null,
           iconPosition: 'left',
           primary: t`Trading fees`,
         },
