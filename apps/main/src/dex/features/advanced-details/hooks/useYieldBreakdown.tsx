@@ -109,7 +109,7 @@ export const useYieldBreakdown = ({
   }, [campaigns, ethereumNetwork, gaugeIsKilled, network, rewardsApy])
 
   return {
-    dailyBaseTotal: useMemo(() => sum(rows.map(row => row.dailyAprSecondary)), [rows]),
+    dailyBaseTotal: useMemo(() => sum(rows.map(row => row.dailyAprSecondary ?? row.dailyApr)), [rows]),
     dailyTotal: useMemo(() => sum(rows.map(row => row.dailyApr)), [rows]),
     rows,
   }
