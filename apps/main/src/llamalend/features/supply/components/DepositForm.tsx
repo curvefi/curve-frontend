@@ -6,7 +6,6 @@ import Button from '@mui/material/Button'
 import { notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { AlertDisableForm } from '@ui-kit/shared/ui/AlertDisableForm'
-import { q } from '@ui-kit/types/util'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { useDepositForm } from '../hooks/useDepositForm'
@@ -58,7 +57,7 @@ export const DepositForm = <ChainId extends IChainId>({
         blockchainId={network.id}
         name="depositAmount"
         form={form}
-        max={q(max)}
+        max={max}
         testId={`${TEST_ID_PREFIX}-input`}
         network={network}
       />
