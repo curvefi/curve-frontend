@@ -41,9 +41,7 @@ export const useYieldBreakdown = ({
     const rows: YieldBreakdownRow[] = []
     const crvBase = rewardsApy?.crv?.[0]
     const crvMax = rewardsApy?.crv?.[1] ?? crvBase
-    const haveCrv = Number(crvBase) > 0 || Number(crvMax) > 0
-
-    if (haveCrv) {
+    if (crvBase || crvMax) {
       rows.push({
         source: {
           address: MAINNET_CRV_ADDRESS,
