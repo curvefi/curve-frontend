@@ -129,9 +129,7 @@ export const RepayForm = <ChainId extends IChainId>({
   useEffect(
     () => () => {
       // Reset when selectedField changes and the field is dirty (unmounting the field)
-      if (selectedField in dirtyFields) {
-        updateForm({ [selectedField]: undefined }, { automated: true })
-      }
+      if (selectedField in dirtyFields) updateForm({ [selectedField]: undefined })
     },
     [dirtyFields, selectedField, updateForm],
   )
@@ -163,7 +161,7 @@ export const RepayForm = <ChainId extends IChainId>({
         blockchainId={network.id}
         name={selectedField}
         form={form}
-        max={q(max[selectedField])}
+        max={max[selectedField]}
         {...(selectedField === 'stateCollateral' && {
           positionBalance: { position: max.stateCollateral, tooltip: t`Current collateral in position` },
         })}
@@ -213,7 +211,7 @@ export const RepayForm = <ChainId extends IChainId>({
       <FormAlerts
         error={repayError}
         formErrors={formErrors}
-        handledErrors={notFalsy(selectedField, max[selectedField]?.field)}
+        handledErrors={notFalsy(selectedField, max[selectedField]?.fieldName)}
       />
     </Form>
   )
