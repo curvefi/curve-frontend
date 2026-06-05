@@ -13,7 +13,7 @@ import { useFormSync, useOnChangeCallback } from '@ui-kit/features/forms'
 import type { UseFormReturn } from '@ui-kit/features/forms'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { queryMinimum } from '@ui-kit/lib'
-import { mapQuery } from '@ui-kit/types/util'
+import { mapQuery, q } from '@ui-kit/types/util'
 
 export function useMaxRepayTokenValues(
   {
@@ -63,9 +63,9 @@ export function useMaxRepayTokenValues(
   return {
     isFull,
     max: {
-      userCollateral: { ...maxUserCollateral, field: 'maxCollateral' as const },
-      userBorrowed: { ...maxBorrowed, field: 'maxBorrowed' as const },
-      stateCollateral: { ...mapQuery(userState, d => d.collateral), field: 'maxStateCollateral' as const },
+      userCollateral: { ...q(maxUserCollateral), fieldName: 'maxCollateral' as const },
+      userBorrowed: { ...q(maxBorrowed), fieldName: 'maxBorrowed' as const },
+      stateCollateral: { ...mapQuery(userState, d => d.collateral), fieldName: 'maxStateCollateral' as const },
       expected: useRepayExpectedBorrowed(params),
     },
   }
