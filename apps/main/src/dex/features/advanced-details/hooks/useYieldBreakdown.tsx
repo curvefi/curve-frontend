@@ -104,7 +104,7 @@ export const useYieldBreakdown = ({
         source: {
           icon: null,
           iconPosition: 'left',
-          primary: t`Trading fees`,
+          primary: t`Swap fees`,
         },
         dailyApr: +baseDaily,
       })
