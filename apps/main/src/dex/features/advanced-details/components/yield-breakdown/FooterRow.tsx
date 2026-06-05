@@ -3,12 +3,9 @@ import Typography from '@mui/material/Typography'
 import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { amount, formatNumber } from '@ui-kit/utils'
+import { formatNumber } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
-
-const formatPercent = (value: number | undefined) =>
-  formatNumber(amount(value), { unit: 'percentage', abbreviate: false })
 
 export const FooterRow = ({
   dailyBaseTotal,
@@ -34,10 +31,10 @@ export const FooterRow = ({
         textAlign: 'right',
       }}
     >
-      <Typography variant="tableCellMBold">{formatPercent(dailyTotal)}</Typography>
+      <Typography variant="tableCellMBold">{formatNumber(dailyTotal, 'percent.rate')}</Typography>
       {maybe(dailyBaseTotal, x => (
         <Typography variant="tableCellSRegular" color="textSecondary">
-          {t`Base ${formatPercent(x)}`}
+          {t`Base ${formatNumber(x, 'percent.rate')}`}
         </Typography>
       ))}
     </TableCell>

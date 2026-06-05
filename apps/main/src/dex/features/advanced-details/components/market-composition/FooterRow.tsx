@@ -22,9 +22,7 @@ export const FooterRow = ({ isLoading, totalUsd }: { isLoading: boolean; totalUs
 
     <TableCell sx={{ paddingInline: Spacing.md, paddingBlock: Spacing.sm, textAlign: 'right' }}>
       <WithSkeleton loading={isLoading} sx={{ justifySelf: 'end' }}>
-        <Typography variant="tableCellMBold">
-          {formatNumber(amount(totalUsd), { unit: 'dollar', abbreviate: true, fallback: '-' })}
-        </Typography>
+        <Typography variant="tableCellMBold">{formatNumber(amount(totalUsd), 'usd.notional')}</Typography>
       </WithSkeleton>
     </TableCell>
   </>
