@@ -10,6 +10,8 @@ import { useMetrics } from '../hooks/useMetrics'
 
 const { Spacing } = SizesAndSpaces
 
+const METRIC_GRID_SIZE = { mobile: 6, tablet: 3 } as const
+
 export const Metrics = ({
   chainId,
   poolDataCacheOrApi,
@@ -30,17 +32,20 @@ export const Metrics = ({
 
   return (
     <Grid container spacing={Spacing.md}>
-      <Grid size={4}>
+      <Grid size={METRIC_GRID_SIZE}>
         <Metric
           size="medium"
           label={t`24h volume`}
           value={volume}
           valueOptions={{ unit: 'dollar', abbreviate: true }}
-          notional={maybe(tvl, value => ({ value, unit: 'dollar', abbreviate: true }))}
         />
       </Grid>
 
-      <Grid size={4}>
+      <Grid size={METRIC_GRID_SIZE}>
+        <Metric size="medium" label={t`TVL`} value={tvl} valueOptions={{ unit: 'dollar', abbreviate: true }} />
+      </Grid>
+
+      <Grid size={METRIC_GRID_SIZE}>
         <Metric
           size="medium"
           label={t`Liquidity utilization`}
@@ -49,7 +54,7 @@ export const Metrics = ({
         />
       </Grid>
 
-      <Grid size={4}>
+      <Grid size={METRIC_GRID_SIZE}>
         <Metric
           size="medium"
           label={t`LP Staked`}
