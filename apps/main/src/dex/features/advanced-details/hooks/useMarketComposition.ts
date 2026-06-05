@@ -22,6 +22,7 @@ export const useMarketComposition = ({
   const { data: network } = useNetworkByChain({ chainId })
   const currencyReserves = useStore(state => state.pools.currencyReserves[getChainPoolIdActiveKey(chainId, poolId)])
 
+  // We use prices API as a fallback for non-lite networks, and currencyReserves.total is NaN when no wallet is connected.
   const usePricesApiReserves = isNaN(Number(currencyReserves?.total)) && !network.isLite
   const pricesApiTotalUsd = pricesApiPoolData?.balancesUsd.reduce((total, balanceUsd) => total + balanceUsd, 0)
 
