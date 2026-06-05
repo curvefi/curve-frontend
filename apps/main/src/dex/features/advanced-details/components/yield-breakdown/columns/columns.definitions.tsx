@@ -58,22 +58,17 @@ export const YIELD_BREAKDOWN_COLUMNS = [
     header: headers[YieldBreakdownColumnId.DailyApr],
     cell: ({ getValue, row }) => (
       <InlineTableCell sx={{ alignItems: 'end' }}>
-        {maybe(getValue(), dailyApr => (
-          <Tooltip title={row.original.dailyAprTooltip} placement="top">
-            {/** Needed for tooltip to work for whatever reason */}
-            <Box>
-              <TokenInfo
-                icon={null}
-                iconPosition="right"
-                primary={formatNumber(dailyApr, 'percent.rate')}
-                secondary={maybe(
-                  row.original.dailyAprSecondary,
-                  value => t`Base ${formatNumber(value, 'percent.rate')}`,
-                )}
-              />
-            </Box>
-          </Tooltip>
-        ))}
+        <Tooltip title={row.original.dailyAprTooltip} placement="top">
+          {/** Needed for tooltip to work for whatever reason */}
+          <Box>
+            <TokenInfo
+              icon={null}
+              iconPosition="right"
+              primary={formatNumber(getValue(), 'percent.rate')}
+              secondary={maybe(row.original.dailyAprSecondary, value => t`Base ${formatNumber(value, 'percent.rate')}`)}
+            />
+          </Box>
+        </Tooltip>
       </InlineTableCell>
     ),
     enableSorting: false,
