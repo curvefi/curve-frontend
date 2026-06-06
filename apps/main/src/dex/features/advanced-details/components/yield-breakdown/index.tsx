@@ -18,7 +18,7 @@ export const YieldBreakdown = ({
   poolDataCacheOrApi: PoolDataCacheOrApi
   poolId: string
 }) => {
-  const { dailyBaseTotal, dailyTotal, rows } = useYieldBreakdown({
+  const { baseTotal, total, rows } = useYieldBreakdown({
     chainId,
     poolDataCacheOrApi,
     poolId,
@@ -39,7 +39,7 @@ export const YieldBreakdown = ({
           loading={false}
           disableStickyHeader
           emptyState={<EmptyStateRow table={table} size="sm">{t`No yield breakdown found.`}</EmptyStateRow>}
-          footerRow={dailyTotal && <FooterRow dailyBaseTotal={dailyBaseTotal} dailyTotal={dailyTotal} />}
+          footerRow={total && <FooterRow baseTotal={baseTotal} total={total} />}
         />
       </Stack>
     )

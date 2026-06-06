@@ -16,9 +16,9 @@ export type YieldBreakdownRow = TableItem & {
   address?: string
   explorerUrl?: string
   price?: number
-  dailyApr?: number
-  dailyAprSecondary?: number
-  dailyAprTooltip?: string
+  apy?: number
+  apySecondary?: number
+  apyTooltip?: string
 }
 
 const columnHelper = createColumnHelper<YieldBreakdownRow>()
@@ -26,7 +26,7 @@ const columnHelper = createColumnHelper<YieldBreakdownRow>()
 const headers = {
   [YieldBreakdownColumnId.Source]: t`Source`,
   [YieldBreakdownColumnId.Price]: t`Price`,
-  [YieldBreakdownColumnId.DailyApr]: t`Daily APR`,
+  [YieldBreakdownColumnId.Apy]: t`APY`,
 } as const
 
 export const YIELD_BREAKDOWN_COLUMNS = [
@@ -49,19 +49,19 @@ export const YIELD_BREAKDOWN_COLUMNS = [
     enableSorting: false,
     meta: { type: 'numeric' },
   }),
-  columnHelper.accessor('dailyApr', {
-    id: YieldBreakdownColumnId.DailyApr,
-    header: headers[YieldBreakdownColumnId.DailyApr],
+  columnHelper.accessor('apy', {
+    id: YieldBreakdownColumnId.Apy,
+    header: headers[YieldBreakdownColumnId.Apy],
     cell: ({ getValue, row }) => (
       <InlineTableCell sx={{ alignItems: 'end' }}>
-        <Tooltip title={row.original.dailyAprTooltip} placement="top">
+        <Tooltip title={row.original.apyTooltip} placement="top">
           {/** Needed for tooltip to work for whatever reason */}
           <Box>
             <TokenInfo
               icon={null}
               iconPosition="right"
               primary={formatNumber(getValue(), 'percent.rate')}
-              secondary={maybe(row.original.dailyAprSecondary, value => t`Base ${formatNumber(value, 'percent.rate')}`)}
+              secondary={maybe(row.original.apySecondary, value => t`Base ${formatNumber(value, 'percent.rate')}`)}
             />
           </Box>
         </Tooltip>

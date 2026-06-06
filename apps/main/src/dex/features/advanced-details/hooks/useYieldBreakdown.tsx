@@ -13,11 +13,13 @@ import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate, useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { Chain } from '@ui-kit/utils'
+import { AVERAGE_CATEGORIES, Chain } from '@ui-kit/utils'
 import { MAINNET_CRV_ADDRESS } from '@ui-kit/utils/address'
+import { aprToApy } from '@ui-kit/utils/rates'
 import type { YieldBreakdownRow } from '../components/yield-breakdown/columns/columns.definitions'
 
 const { IconSize } = SizesAndSpaces
+const COMPOUND_WINDOW = AVERAGE_CATEGORIES['dex.poolYield.compoundRate'].window
 
 export const useYieldBreakdown = ({
   chainId,
@@ -54,8 +56,8 @@ export const useYieldBreakdown = ({
   // Construct all yield rows imperatively rather than functional to improve readability
   const rows: YieldBreakdownRow[] = useMemo(() => {
     const rows: YieldBreakdownRow[] = []
-    const crvBase = rewardsApy?.crv?.[0]
-    const crvMax = rewardsApy?.crv?.[1] ?? crvBase
+    const crvBase = aprToApy(rewardsApy?.crv?.[0], COMPOUND_WINDOW) ?? undefined
+    const crvMax = aprToApy(rewardsApy?.crv?.[1] ?? rewardsApy?.crv?.[0], COMPOUND_WINDOW) ?? undefined
     if (crvBase || crvMax) {
       rows.push({
         source: {
@@ -67,9 +69,9 @@ export const useYieldBreakdown = ({
         address: MAINNET_CRV_ADDRESS,
         explorerUrl: scanTokenPath(defaultNetworks[Chain.Ethereum], MAINNET_CRV_ADDRESS),
         price: crvPrice,
-        dailyApr: gaugeIsKilled ? undefined : crvMax,
-        dailyAprSecondary: gaugeIsKilled ? undefined : crvBase,
-        dailyAprTooltip: gaugeIsKilled ? undefined : t`Max CRV tAPR can be reached with max boost for this pool.`,
+        apy: gaugeIsKilled ? undefined : crvMax,
+        apySecondary: gaugeIsKilled ? undefined : crvBase,
+        apyTooltip: gaugeIsKilled ? undefined : t`Max CRV APY can be reached with max boost for this pool.`,
       })
     }
 
@@ -84,7 +86,7 @@ export const useYieldBreakdown = ({
         address: tokenAddress,
         explorerUrl: scanTokenPath(network, tokenAddress),
         price: tokenPrice ?? fallbackTokenRates?.[tokenAddress],
-        dailyApr: apy,
+        apy: aprToApy(apy, COMPOUND_WINDOW) ?? undefined,
       })
     })
 
@@ -106,7 +108,7 @@ export const useYieldBreakdown = ({
           },
           address,
           explorerUrl: scanAddressPath(network, address),
-          dailyApr: Number(multiplier),
+          apy: aprToApy(Number(multiplier), COMPOUND_WINDOW) ?? undefined,
         })
       })
 
@@ -116,15 +118,15 @@ export const useYieldBreakdown = ({
         iconPosition: 'left',
         primary: t`Swap fees`,
       },
-      dailyApr: maybe(rewardsApy?.base?.day, x => (+x > 0 ? +x : undefined)),
+      apy: maybe(rewardsApy?.base?.day, x => (+x > 0 ? +x : undefined)), // already APY, no need to calculate
     })
 
     return rows
   }, [campaigns, crvPrice, fallbackTokenRates, gaugeIsKilled, network, rewardsApy])
 
   return {
-    dailyBaseTotal: useMemo(() => sum(rows.map(row => row.dailyAprSecondary ?? row.dailyApr)), [rows]),
-    dailyTotal: useMemo(() => sum(rows.map(row => row.dailyApr)), [rows]),
+    baseTotal: useMemo(() => sum(rows.map(row => row.apySecondary ?? row.apy)), [rows]),
+    total: useMemo(() => sum(rows.map(row => row.apy)), [rows]),
     rows,
   }
 }

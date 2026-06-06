@@ -8,11 +8,11 @@ import { formatNumber } from '@ui-kit/utils'
 const { Spacing } = SizesAndSpaces
 
 export const FooterRow = ({
-  dailyBaseTotal,
-  dailyTotal,
+  baseTotal,
+  total,
 }: {
-  dailyBaseTotal: number | undefined
-  dailyTotal: number | undefined
+  baseTotal: number | undefined
+  total: number | undefined
 }) => (
   <>
     {/** Source */}
@@ -23,7 +23,7 @@ export const FooterRow = ({
     {/** Price */}
     <TableCell />
 
-    {/** Daily APR */}
+    {/** APY */}
     <TableCell
       sx={{
         paddingInline: Spacing.md,
@@ -31,8 +31,8 @@ export const FooterRow = ({
         textAlign: 'right',
       }}
     >
-      <Typography variant="tableCellMBold">{formatNumber(dailyTotal, 'percent.rate')}</Typography>
-      {maybe(dailyBaseTotal, x => (
+      <Typography variant="tableCellMBold">{formatNumber(total, 'percent.rate')}</Typography>
+      {maybe(baseTotal, x => (
         <Typography variant="tableCellSRegular" color="textSecondary">
           {t`Base ${formatNumber(x, 'percent.rate')}`}
         </Typography>
