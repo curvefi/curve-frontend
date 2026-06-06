@@ -47,7 +47,7 @@ export const TokenInfo = (props: TokenInfoProps) => {
       {iconPosition === 'left' && tokenIcon}
 
       <Stack sx={{ gap: Spacing.xxs, alignItems: iconPosition === 'right' ? 'end' : 'start' }}>
-        <Typography variant="tableCellMBold" noWrap>
+        <Typography variant="tableCellMRegular" noWrap>
           {primary}
         </Typography>
 
