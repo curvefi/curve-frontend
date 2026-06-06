@@ -3,7 +3,9 @@ import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import TableCell, { TableCellProps } from '@mui/material/TableCell'
 import { ArrowDownIcon } from '@ui-kit/shared/icons/ArrowDownIcon'
-import { Spacing } from '@ui-kit/themes/design/0_primitives'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+
+const { Spacing } = SizesAndSpaces
 
 export const TableViewAllCell = (
   {
@@ -17,7 +19,7 @@ export const TableViewAllCell = (
     isLoading?: boolean
   } & TableCellProps, // constant padding block accross all breakpoints
 ) => (
-  <TableCell {...tableCellProps} sx={{ paddingBlock: Spacing[200] }}>
+  <TableCell {...tableCellProps} sx={{ paddingBlock: Spacing.xs }}>
     <Stack sx={{ alignSelf: 'center', alignItems: 'center' }}>
       <Button
         color="ghost"

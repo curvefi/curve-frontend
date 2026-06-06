@@ -36,7 +36,7 @@ export const TableCellRewardsTooltip = ({ crv = [], userCrvApy, fetchUserPoolBoo
     <Box grid gridRowGap={1}>
       <Title>CRV tAPR</Title>
       <div>Min/max: {rewardsApyCrvText(crv)}</div>
-      <div>Your: {formatNumber(userCrvApy, { unit: 'percentage', abbreviate: false })}</div>
+      <div>Your: {formatNumber(userCrvApy, 'percent.value')}</div>
       <div>Boost: {boost ? `${lodash.round(+boost, 2)}x` : '-'}</div>
     </Box>
   )

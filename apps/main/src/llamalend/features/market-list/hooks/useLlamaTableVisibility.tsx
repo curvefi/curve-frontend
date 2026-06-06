@@ -7,7 +7,6 @@ import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import type { MigrationOptions } from '@ui-kit/hooks/useStoredState'
 import { useVisibilitySettings } from '@ui-kit/shared/ui/DataTable/hooks/useVisibilitySettings'
 import type { VisibilityGroup } from '@ui-kit/shared/ui/DataTable/visibility.types'
-import { MarketRateType } from '@ui-kit/types/market'
 import {
   DEFAULT_SORT,
   LLAMA_MARKET_COLUMNS,
@@ -36,14 +35,12 @@ const mergeVisibilityGroups = (
       : initialGroup
   })
 
-const getVariant = (
-  userHasPositions: LlamaMarketsResult['userHasPositions'] | MarketRateType | undefined,
+export const getLlamaMarketsColumnVariant = (
+  userHasPositions: LlamaMarketsResult['userHasPositions'] | undefined,
 ): LlamaColumnVariant =>
   userHasPositions == null // we treat undefined (loading),  and null (no positions at all) as the same variant
     ? 'noPositions'
-    : typeof userHasPositions == 'string'
-      ? userHasPositions // show variant for a specific market rate type
-      : 'hasPositions' // show the general market table, for users with positions
+    : 'hasPositions' // show the general market table, for users with positions
 
 const migration: MigrationOptions<Record<LlamaColumnVariant, VisibilityGroup<LlamaMarketColumnId>[]>> = {
   version: 5,
@@ -56,12 +53,7 @@ const migration: MigrationOptions<Record<LlamaColumnVariant, VisibilityGroup<Lla
  * The visibility on mobile is based on the sort field.
  * On larger devices, it uses the visibility settings that may be customized by the user.
  */
-export const useLlamaTableVisibility = (
-  title: string,
-  sorting: SortingState,
-  userHasPositions: LlamaMarketsResult['userHasPositions'] | MarketRateType | undefined,
-) => {
-  const variant = getVariant(userHasPositions)
+export const useLlamaTableVisibility = (title: string, sorting: SortingState, variant: LlamaColumnVariant) => {
   const sortField = (sorting.length ? sorting : DEFAULT_SORT)[0].id as LlamaMarketColumnId
   const visibilitySettings = useVisibilitySettings(
     title,

@@ -63,7 +63,7 @@ export const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVot
             <TableData
               className={userGaugeVotesSortBy.key === 'weight' ? 'sortby-active right-padding' : 'right-padding'}
             >
-              {formatNumber(gaugeVote.weight / 100, { unit: 'percentage', abbreviate: false })}
+              {formatNumber(gaugeVote.weight / 100, 'percent.value')}
             </TableData>
             <TableDataLink href={getEthPath(`${DAO_ROUTES.PAGE_GAUGES}/${gaugeVote.gauge}`)} className="right-padding">
               {shortenAddress(gaugeVote.gauge)}

@@ -15,7 +15,7 @@ export const FilterRow = <T extends TableItem>({
   <TableRow>
     <TableCell
       colSpan={table.getHeaderGroups().reduce((count, { headers }) => count + headers.length, 0)}
-      sx={{ padding: 0, borderBottomWidth: 0 }}
+      sx={{ padding: 0 }}
       data-testid={testId}
     >
       {children}

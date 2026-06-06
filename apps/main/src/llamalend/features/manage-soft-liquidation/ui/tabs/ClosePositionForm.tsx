@@ -82,10 +82,10 @@ export const ClosePositionForm = ({
           !isLoading &&
           collateralToRecover != null && (
             <>
-              <TableCell sx={{ borderBottom: 'none', padding: Spacing.md }}>
+              <TableCell sx={{ padding: Spacing.md }}>
                 <LabelCellDisplay label={t`You recover`} isFooter />
               </TableCell>
-              <TableCell sx={{ borderBottom: 'none', padding: Spacing.md }}>
+              <TableCell sx={{ padding: Spacing.md }}>
                 <ValueCellDisplay tokens={collateralToRecover} isFooter testId="you-recover" />
               </TableCell>
             </>

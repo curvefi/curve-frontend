@@ -2,7 +2,7 @@ import { useMarketParameters } from '@/llamalend/queries/market'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
-import { formatNumber, formatPercent } from '@ui-kit/utils'
+import { formatNumber } from '@ui-kit/utils'
 
 // In [1]: ltv = lambda x: ((x[0] - 1) / x[0])**2 * (1 - x[1])
 // In [2]: ltv((30, 0.11))
@@ -27,14 +27,14 @@ export const MarketLoanParameters = ({ chainId, marketId }: { chainId: IChainId;
     <>
       <ActionInfo
         label={t`AMM swap fee`}
-        value={formatPercent(parameters?.fee)}
+        value={formatNumber(parameters?.fee, 'percent.rate')}
         loading={loading}
         error={errorParameters}
       />
 
       <ActionInfo
         label={t`Admin fee`}
-        value={formatPercent(parameters?.admin_fee)}
+        value={formatNumber(parameters?.admin_fee, 'percent.rate')}
         loading={loading}
         error={errorParameters}
       />
@@ -48,21 +48,21 @@ export const MarketLoanParameters = ({ chainId, marketId }: { chainId: IChainId;
 
       <ActionInfo
         label={t`Loan discount`}
-        value={formatPercent(parameters?.loan_discount)}
+        value={formatNumber(parameters?.loan_discount, 'percent.rate')}
         loading={loading}
         error={errorParameters}
       />
 
       <ActionInfo
         label={t`Liquidation discount`}
-        value={formatPercent(parameters?.liquidation_discount)}
+        value={formatNumber(parameters?.liquidation_discount, 'percent.rate')}
         loading={loading}
         error={errorParameters}
       />
 
       <ActionInfo
         label={t`Max LTV`}
-        value={formatPercent(getMaxLTV(parameters?.A ?? 0, parameters?.loan_discount))}
+        value={formatNumber(getMaxLTV(parameters?.A ?? 0, parameters?.loan_discount), 'percent.rate')}
         valueTooltip={t`Max possible loan at N=4`}
         loading={loading}
         error={errorParameters}

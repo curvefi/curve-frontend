@@ -15,7 +15,7 @@ export function getTotalApr(lendApy: number, crvBase: number, crvBoost: number, 
     max,
     minMax:
       min === max
-        ? formatNumber(amount(min), { unit: 'percentage', abbreviate: false, fallback: '-' })
-        : `${formatNumber(amount(min), { unit: 'percentage', abbreviate: false, fallback: '-' })} - ${formatNumber(amount(max), { unit: 'percentage', abbreviate: false, fallback: '-' })}`,
+        ? formatNumber(amount(min), 'percent.value')
+        : `${formatNumber(amount(min), 'percent.value')} - ${formatNumber(amount(max), 'percent.value')}`,
   }
 }

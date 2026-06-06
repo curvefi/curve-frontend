@@ -13,7 +13,7 @@ import type { UseFormReturn } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
 import { Badge } from '@ui-kit/shared/ui/Badge'
 import { NumericTextField } from '@ui-kit/shared/ui/NumericTextField'
-import { decimal, decimalGreaterThan, formatPercent } from '@ui-kit/utils'
+import { decimal, decimalGreaterThan, formatNumber } from '@ui-kit/utils'
 import { SLIPPAGE, type SlippageType } from './slippage.utils'
 import { type SlippageSettingsFormData } from './useSlipageSettingsForm'
 
@@ -54,7 +54,7 @@ export const SlippageFormField = ({
       >
         {presets.map(preset => (
           <Grid size={3} key={preset} sx={{ display: 'flex', alignItems: 'middle' }}>
-            <FormControlLabel value={preset} label={formatPercent(preset)} control={<Radio />} />
+            <FormControlLabel value={preset} label={formatNumber(preset, 'percent.rate')} control={<Radio />} />
           </Grid>
         ))}
         <Grid size={6}>
@@ -82,14 +82,14 @@ export const SlippageFormField = ({
         <Alert severity="warning" variant="outlined">
           <AlertTitle>{t`High ${type} slippage selected!`}</AlertTitle>
           {t`This may lead to fewer tokens received and potential loss of funds. Proceed with caution.`}{' '}
-          {t`Max. recommended slippage is ${formatPercent(max)}`}
+          {t`Max. recommended slippage is ${formatNumber(max, 'percent.rate')}`}
         </Alert>
       ) : (
         decimalGreaterThan(min, value) && (
           <Alert severity="warning" variant="outlined">
             <AlertTitle>{t`Low ${type} slippage selected!`}</AlertTitle>
             {t`Your transaction may fail if price moves slightly. Consider increasing slippage if it doesn't go through.`}{' '}
-            {t`Min. slippage is ${formatPercent(min)}`}
+            {t`Min. slippage is ${formatNumber(min, 'percent.rate')}`}
           </Alert>
         )
       )}

@@ -34,9 +34,7 @@ export const TableCellProfit = ({ profitBase, profitCrv, profitOthers, profitsTo
       })}
 
       <div>
-        {isHighLight && profitsTotalUsd > 0 && (
-          <DetailText>{formatNumber(profitsTotalUsd, { unit: 'dollar', abbreviate: false })}</DetailText>
-        )}
+        {isHighLight && profitsTotalUsd > 0 && <DetailText>{formatNumber(profitsTotalUsd, 'usd.amount')}</DetailText>}
       </div>
     </>
   )

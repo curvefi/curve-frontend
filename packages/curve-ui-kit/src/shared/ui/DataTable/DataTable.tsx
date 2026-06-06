@@ -10,6 +10,7 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
+import { IncreasingLengthOptions } from '@ui-kit/hooks/useIncreasingLength'
 import { t } from '@ui-kit/lib/i18n'
 import { TablePagination } from '@ui-kit/shared/ui/DataTable/TablePagination'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
@@ -85,6 +86,7 @@ export const DataTable = <T extends TableItem>({
   shouldStickFirstColumn = false,
   hideHeader = false,
   footerRow,
+  increasingLengthOptions,
   ...rowProps
 }: {
   table: TanstackTable<T>
@@ -98,6 +100,7 @@ export const DataTable = <T extends TableItem>({
   disableStickyHeader?: boolean // can also be disabled by limited rows or table width overflow.
   hideHeader?: boolean
   footerRow?: ReactNode
+  increasingLengthOptions?: IncreasingLengthOptions // optional props for the SkeletonRows
 } & Omit<DataRowProps<T>, 'row' | 'isLastRow' | 'shouldStickLastRowToTop'>) => {
   const { table } = rowProps
   const { max: rowLimit, buttonLabel: viewAllLabel } = defaultVisibleRows ?? {}
@@ -125,7 +128,7 @@ export const DataTable = <T extends TableItem>({
       marginBlockEnd: Height.row, // last row should not be hidden by the sticky header
     }),
   })
-  const showFooter = showPagination || showViewAllButton || footerRow
+  const showFooter = !isLoading && (showPagination || showViewAllButton || footerRow)
 
   return (
     <WithWrapper Wrapper={Box} shouldWrap={maxHeight} sx={{ maxHeight, overflowY: 'auto' }} ref={containerRef}>
@@ -170,7 +173,11 @@ export const DataTable = <T extends TableItem>({
           )}
           <TableBody>
             {isLoading ? (
-              <SkeletonRows table={table} shouldStickFirstColumn={shouldStickFirstColumn} />
+              <SkeletonRows
+                table={table}
+                shouldStickFirstColumn={shouldStickFirstColumn}
+                {...increasingLengthOptions}
+              />
             ) : rows.length === 0 ? (
               emptyState
             ) : (

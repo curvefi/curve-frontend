@@ -24,7 +24,7 @@ export const RewardsIncentivesCell = ({ getValue, table, row: { original: poolDa
           key={o.tokenAddress}
           sx={{ fontWeight: isSortedBy(table, PoolColumnId.RewardsIncentives) ? 'bold' : 'normal' }}
         >
-          {formatNumber(o.apy, { unit: 'percentage', abbreviate: false })} {o.symbol}
+          {formatNumber(o.apy, 'percent.value')} {o.symbol}
         </Typography>
       ))}
       {campaigns.length > 0 && <CampaignRewardsRow rewardItems={campaigns} />}

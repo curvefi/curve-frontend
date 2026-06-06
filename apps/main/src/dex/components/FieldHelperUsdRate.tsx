@@ -16,8 +16,7 @@ export const FieldHelperUsdRate = ({ amount, usdRate }: { amount: string; usdRat
 
   return (
     <StyledChip size="xs">
-      x {usdRate && formatNumber(usdRate, { unit: 'dollar', abbreviate: false })} ≈
-      {formatNumber(toAmount(usdRateTotal), { unit: 'dollar', abbreviate: false, fallback: '-' })}
+      x {usdRate && formatNumber(usdRate, 'usd.amount')} ≈ {formatNumber(toAmount(usdRateTotal), 'usd.amount')}
     </StyledChip>
   )
 }

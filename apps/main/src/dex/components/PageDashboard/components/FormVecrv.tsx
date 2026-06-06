@@ -165,10 +165,7 @@ export const FormVecrv = () => {
               {t`Balance in voting escrow:`}{' '}
               <strong>{formatNumber(amount(veCrv), { abbreviate: false, fallback: '-' })}</strong> veCRV <br />
               <Chip size="sm">
-                <strong>
-                  {formatNumber(amount(veCrvPct), { unit: 'percentage', abbreviate: false, fallback: '-' })}
-                </strong>{' '}
-                {t`share of total`}
+                <strong>{formatNumber(amount(veCrvPct), 'percent.value')}</strong> {t`share of total`}
               </Chip>
             </li>
           </Items>

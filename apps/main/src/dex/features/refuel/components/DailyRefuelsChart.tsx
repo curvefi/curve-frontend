@@ -20,7 +20,7 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import type { LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
 import { SelectTimeOption } from '@ui-kit/shared/ui/Chart/SelectTimeOption'
-import { formatNumber, formatUsd } from '@ui-kit/utils'
+import { formatNumber } from '@ui-kit/utils'
 import { useRefuelDailyRefuels } from '../queries/daily-refuels.query'
 
 const REFUELS_LABEL = t`Daily refuels`
@@ -30,7 +30,9 @@ const REFUELS_VALUE_KEY = 'totalUsd'
 const REFUELS_COUNT_KEY = 'count'
 
 const formatDonationTooltip = (value: number, seriesName: string) =>
-  seriesName === REFUELS_COUNT_LABEL ? formatNumber(value, { abbreviate: false, decimals: 0 }) : formatUsd(value)
+  seriesName === REFUELS_COUNT_LABEL
+    ? formatNumber(value, { abbreviate: false, decimals: 0 })
+    : formatNumber(value, 'usd.notional')
 
 export const DailyRefuelsChart = ({ blockchainId, poolAddress }: { blockchainId: Chain; poolAddress: Address }) => {
   const [period, setPeriod] = useState<(typeof PERIODS)[number]>('6m')
@@ -96,7 +98,7 @@ export const DailyRefuelsChart = ({ blockchainId, poolAddress }: { blockchainId:
             ...yAxisBase,
             position: 'right',
             splitLine: { lineStyle: { color: palette.gridLinesColor } },
-            axisLabel: { ...yAxisBase.axisLabel, formatter: (value: number) => formatUsd(value) },
+            axisLabel: { ...yAxisBase.axisLabel, formatter: (value: number) => formatNumber(value, 'usd.notional') },
           },
           {
             type: 'value',

@@ -1,9 +1,11 @@
-import { useCallback, useMemo } from 'react'
+import { type MouseEventHandler, useCallback, useMemo } from 'react'
 import {
+  RouterHistory,
   useLocation as useTanstackLocation,
   useMatchRoute as useTanstackMatchRoute,
   useNavigate as useTanstackNavigate,
   useParams as useTanstackParams,
+  useRouter as useTanstackRouter,
 } from '@tanstack/react-router'
 import type { ParsedLocation, RegisteredRouter } from '@tanstack/router-core'
 
@@ -81,4 +83,19 @@ export function useMatchRoute<T extends Record<string, string> = Record<string, 
 ): T | false {
   const matchRoute = useTanstackMatchRoute()
   return matchRoute(options) as T | false
+}
+
+export const useGoBack = () => {
+  const { history } = useTanstackRouter() as { history: RouterHistory }
+  return useCallback<MouseEventHandler<HTMLAnchorElement>>(
+    e => {
+      const { canGoBack } = history
+      if (canGoBack()) {
+        e.stopPropagation()
+        e.preventDefault()
+        return history.go(-1)
+      }
+    },
+    [history],
+  )
 }

@@ -1,5 +1,4 @@
 import { useConnection } from 'wagmi'
-import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { fromEntries, maybe, recordValues } from '@primitives/objects.utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
@@ -74,7 +73,13 @@ export const UserPositionsTables = ({
           />
         )}
         {(!hasUserPositions || !address) && (
-          <Box sx={{ paddingBlock: Spacing.md, backgroundColor: t => t.design.Layer[1].Fill }}>
+          <Stack
+            sx={{
+              alignItems: 'center',
+              paddingBlock: Spacing.md,
+              backgroundColor: t => t.design.Layer[1].Fill,
+            }}
+          >
             {address ? (
               !hasUserPositions && (
                 <EmptyStateCard
@@ -94,7 +99,7 @@ export const UserPositionsTables = ({
                 }
               />
             )}
-          </Box>
+          </Stack>
         )}
       </Stack>
     </Stack>

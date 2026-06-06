@@ -28,7 +28,7 @@ export const TableCellClaimables = ({
     })}
     <div>
       {isHighLight && claimablesTotalUsd > 0 && (
-        <DetailText>{formatNumber(claimablesTotalUsd, { unit: 'dollar', abbreviate: false })}</DetailText>
+        <DetailText>{formatNumber(claimablesTotalUsd, 'usd.amount')}</DetailText>
       )}
     </div>
     {isMobile && !claimableCrv && claimableOthers?.length === 0 && t`None`}
