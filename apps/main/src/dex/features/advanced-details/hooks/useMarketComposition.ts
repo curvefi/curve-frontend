@@ -5,6 +5,7 @@ import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
 import { maybe } from '@primitives/objects.utils'
+import type { MarketCompositionRow } from '../components/market-composition/columns/columns.definitions'
 
 export const useMarketComposition = ({
   chainId,
@@ -40,22 +41,25 @@ export const useMarketComposition = ({
       })
     : currencyReserves?.tokens
 
-  const rows = poolDataCacheOrApi.tokens
+  const rows: MarketCompositionRow[] = poolDataCacheOrApi.tokens
     .map((symbol, index) => {
       const tokenAddress = poolDataCacheOrApi.tokenAddresses[index]
       const reserve = reserves?.find(token => token.tokenAddress.toLowerCase() === tokenAddress.toLowerCase())
 
       return {
-        symbol,
-        tokenAddress,
-        blockchainId: network?.id,
+        source: {
+          address: tokenAddress,
+          blockchainId: network.id,
+          iconPosition: 'left' as const,
+          primary: symbol,
+        },
         marketShare: maybe(reserve?.percentShareInPool, x => +x),
-        tokenAmount: reserve?.balance,
-        tokenAmountUsd: reserve?.balanceUsd,
-        tokenPrice: reserve?.usdRate,
+        amount: reserve?.balance,
+        amountUsd: reserve?.balanceUsd,
+        price: reserve?.usdRate,
       }
     })
-    .filter(({ tokenAmount }) => tokenAmount)
+    .filter(({ amount }) => amount)
 
   return {
     isLoading: usePricesApiReserves ? !pricesApiPoolData?.balances.length : !currencyReserves, // this isn't a proper loading check, but we need a bigger refactor for that later on

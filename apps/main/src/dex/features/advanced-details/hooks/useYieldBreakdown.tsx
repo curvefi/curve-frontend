@@ -37,7 +37,7 @@ export const useYieldBreakdown = ({
   })
 
   // Construct all yield rows imperatively rather than functional to improve readability
-  const rows = useMemo(() => {
+  const rows: YieldBreakdownRow[] = useMemo(() => {
     const rows: YieldBreakdownRow[] = []
     const crvBase = rewardsApy?.crv?.[0]
     const crvMax = rewardsApy?.crv?.[1] ?? crvBase

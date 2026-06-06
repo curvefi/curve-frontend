@@ -8,18 +8,18 @@ const { Spacing } = SizesAndSpaces
 
 type TokenInfoBaseProps = {
   iconPosition: 'left' | 'right'
-  primary: string
-  secondary?: string
+  primary: ReactNode
+  secondary?: ReactNode
 }
 
-type TokenInfoTokenIconProps = TokenInfoBaseProps & {
+export type TokenInfoTokenIconProps = TokenInfoBaseProps & {
   address: string
   blockchainId: string
   showChainIcon?: boolean
   icon?: never
 }
 
-type TokenInfoCustomIconProps = TokenInfoBaseProps & {
+export type TokenInfoCustomIconProps = TokenInfoBaseProps & {
   icon: ReactNode
   address?: never
   blockchainId?: never

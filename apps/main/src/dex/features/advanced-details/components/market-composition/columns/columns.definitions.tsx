@@ -5,19 +5,22 @@ import { createColumnHelper } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import type { TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
-import { TokenInfo } from '@ui-kit/shared/ui/TokenInfo'
+import { TokenInfo, type TokenInfoTokenIconProps } from '@ui-kit/shared/ui/TokenInfo'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
-import { formatNumber, shortenAddress } from '@ui-kit/utils'
+import { formatNumber } from '@ui-kit/utils'
+import { TokenCell } from '../../TokenCell'
 import { MarketCompositionColumnId } from './columns.enum'
 
+type MarketCompositionSource = TokenInfoTokenIconProps & {
+  primary: string
+}
+
 export type MarketCompositionRow = TableItem & {
-  symbol: string
-  tokenAddress: string
-  blockchainId: string
+  source: MarketCompositionSource
   marketShare?: number
-  tokenAmount?: number
-  tokenAmountUsd?: number
-  tokenPrice?: number
+  amount?: number
+  amountUsd?: number
+  price?: number
 }
 
 const columnHelper = createColumnHelper<MarketCompositionRow>()
@@ -30,23 +33,13 @@ const headers = {
 } as const
 
 export const MARKET_COMPOSITION_COLUMNS = [
-  columnHelper.accessor('symbol', {
+  columnHelper.accessor('source', {
     id: MarketCompositionColumnId.Asset,
     header: headers[MarketCompositionColumnId.Asset],
-    cell: ({ getValue, row }) => (
-      <InlineTableCell>
-        <TokenInfo
-          address={row.original.tokenAddress}
-          blockchainId={row.original.blockchainId}
-          iconPosition="left"
-          primary={getValue()}
-          secondary={shortenAddress(row.original.tokenAddress)}
-        />
-      </InlineTableCell>
-    ),
+    cell: ({ getValue }) => <TokenCell source={getValue()} />,
     enableSorting: false,
   }),
-  columnHelper.accessor('tokenPrice', {
+  columnHelper.accessor('price', {
     id: MarketCompositionColumnId.Price,
     header: headers[MarketCompositionColumnId.Price],
     cell: ({ getValue }) => (
@@ -68,7 +61,7 @@ export const MARKET_COMPOSITION_COLUMNS = [
     enableSorting: false,
     meta: { type: 'numeric' },
   }),
-  columnHelper.accessor('tokenAmount', {
+  columnHelper.accessor('amount', {
     id: MarketCompositionColumnId.TokenAmount,
     header: headers[MarketCompositionColumnId.TokenAmount],
     cell: ({ getValue, row }) => (
@@ -78,7 +71,7 @@ export const MARKET_COMPOSITION_COLUMNS = [
             getValue(),
             value =>
               !isNaN(value) &&
-              `${value} ${row.original.symbol} ${maybe(row.original.tokenAmountUsd, value => ` / ${value}`) ?? ''}`,
+              `${value} ${row.original.source.primary} ${maybe(row.original.amountUsd, value => ` / ${value}`) ?? ''}`,
           )}
           placement="top"
         >
@@ -88,7 +81,7 @@ export const MARKET_COMPOSITION_COLUMNS = [
               icon={null}
               iconPosition="right"
               primary={formatNumber(getValue(), 'token.compact')}
-              secondary={maybe(row.original.tokenAmountUsd, x => formatNumber(x, 'usd.notional'))}
+              secondary={maybe(row.original.amountUsd, x => formatNumber(x, 'usd.notional'))}
             />
           </Box>
         </Tooltip>

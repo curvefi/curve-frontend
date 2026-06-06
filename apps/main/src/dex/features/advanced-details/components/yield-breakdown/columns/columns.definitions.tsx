@@ -3,11 +3,12 @@ import Typography from '@mui/material/Typography'
 import { maybe } from '@primitives/objects.utils'
 import { createColumnHelper } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
-import { type TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import type { TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { TokenInfo, type TokenInfoProps } from '@ui-kit/shared/ui/TokenInfo'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
-import { formatNumber, shortenAddress } from '@ui-kit/utils'
+import { formatNumber } from '@ui-kit/utils'
+import { TokenCell } from '../../TokenCell'
 import { YieldBreakdownColumnId } from './columns.enum'
 
 export type YieldBreakdownRow = TableItem & {
@@ -31,11 +32,7 @@ export const YIELD_BREAKDOWN_COLUMNS = [
   columnHelper.accessor('source', {
     id: YieldBreakdownColumnId.Source,
     header: headers[YieldBreakdownColumnId.Source],
-    cell: ({ getValue, row }) => (
-      <InlineTableCell>
-        <TokenInfo {...getValue()} secondary={maybe(row.original.address, shortenAddress)} />
-      </InlineTableCell>
-    ),
+    cell: ({ getValue, row }) => <TokenCell source={getValue()} address={row.original.address} />,
     enableSorting: false,
   }),
   columnHelper.accessor('price', {
