@@ -7,13 +7,7 @@ import { formatNumber } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
-export const FooterRow = ({
-  baseTotal,
-  total,
-}: {
-  baseTotal: number | undefined
-  total: number | undefined
-}) => (
+export const FooterRow = ({ baseTotal, total }: { baseTotal: number | undefined; total: number | undefined }) => (
   <>
     {/** Source */}
     <TableCell sx={{ paddingInline: Spacing.md }}>
@@ -24,13 +18,7 @@ export const FooterRow = ({
     <TableCell />
 
     {/** APY */}
-    <TableCell
-      sx={{
-        paddingInline: Spacing.md,
-        paddingBlock: Spacing.sm,
-        textAlign: 'right',
-      }}
-    >
+    <TableCell sx={{ paddingInline: Spacing.md, paddingBlock: Spacing.sm, textAlign: 'right' }}>
       <Typography variant="tableCellMBold">{formatNumber(total, 'percent.rate')}</Typography>
       {maybe(baseTotal, x => (
         <Typography variant="tableCellSRegular" color="textSecondary">
