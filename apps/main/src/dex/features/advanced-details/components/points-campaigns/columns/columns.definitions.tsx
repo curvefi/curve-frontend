@@ -27,7 +27,7 @@ export const POINTS_CAMPAIGNS_COLUMNS = [
     header: headers[PointsCampaignsColumnId.Source],
     cell: ({ getValue }) => (
       <InlineTableCell>
-        <TokenInfo {...getValue()} />
+        <TokenInfo {...getValue()} boldPrimary />
       </InlineTableCell>
     ),
     enableSorting: false,

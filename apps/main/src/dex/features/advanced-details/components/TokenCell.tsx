@@ -36,6 +36,7 @@ export const TokenCell = ({
         <Box>
           <TokenInfo
             {...source}
+            boldPrimary
             secondary={
               address ? (
                 <Box

@@ -10,6 +10,7 @@ type TokenInfoBaseProps = {
   iconPosition: 'left' | 'right'
   primary: ReactNode
   secondary?: ReactNode
+  boldPrimary?: boolean
 }
 
 export type TokenInfoTokenIconProps = TokenInfoBaseProps & {
@@ -29,7 +30,7 @@ export type TokenInfoCustomIconProps = TokenInfoBaseProps & {
 export type TokenInfoProps = TokenInfoTokenIconProps | TokenInfoCustomIconProps
 
 export const TokenInfo = (props: TokenInfoProps) => {
-  const { iconPosition, primary, secondary } = props
+  const { iconPosition, primary, secondary, boldPrimary } = props
   const tokenIcon =
     'address' in props ? (
       <TokenIcon
@@ -47,7 +48,7 @@ export const TokenInfo = (props: TokenInfoProps) => {
       {iconPosition === 'left' && tokenIcon}
 
       <Stack sx={{ gap: Spacing.xxs, alignItems: iconPosition === 'right' ? 'end' : 'start' }}>
-        <Typography variant="tableCellMRegular" noWrap>
+        <Typography variant={boldPrimary ? 'tableCellMBold' : 'tableCellMRegular'} noWrap>
           {primary}
         </Typography>
 
