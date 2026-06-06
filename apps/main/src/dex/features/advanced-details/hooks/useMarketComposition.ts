@@ -5,6 +5,7 @@ import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
 import { maybe } from '@primitives/objects.utils'
+import { scanTokenPath } from '@ui/utils'
 import type { MarketCompositionRow } from '../components/market-composition/columns/columns.definitions'
 
 export const useMarketComposition = ({
@@ -53,6 +54,7 @@ export const useMarketComposition = ({
           iconPosition: 'left' as const,
           primary: symbol,
         },
+        explorerUrl: scanTokenPath(network, tokenAddress),
         marketShare: maybe(reserve?.percentShareInPool, x => +x),
         amount: reserve?.balance,
         amountUsd: reserve?.balanceUsd,

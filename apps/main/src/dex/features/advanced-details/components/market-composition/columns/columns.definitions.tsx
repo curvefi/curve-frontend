@@ -11,12 +11,9 @@ import { formatNumber } from '@ui-kit/utils'
 import { TokenCell } from '../../TokenCell'
 import { MarketCompositionColumnId } from './columns.enum'
 
-type MarketCompositionSource = TokenInfoTokenIconProps & {
-  primary: string
-}
-
 export type MarketCompositionRow = TableItem & {
-  source: MarketCompositionSource
+  source: TokenInfoTokenIconProps
+  explorerUrl?: string
   marketShare?: number
   amount?: number
   amountUsd?: number
@@ -36,7 +33,7 @@ export const MARKET_COMPOSITION_COLUMNS = [
   columnHelper.accessor('source', {
     id: MarketCompositionColumnId.Asset,
     header: headers[MarketCompositionColumnId.Asset],
-    cell: ({ getValue }) => <TokenCell source={getValue()} />,
+    cell: ({ getValue, row }) => <TokenCell source={getValue()} explorerUrl={row.original.explorerUrl} />,
     enableSorting: false,
   }),
   columnHelper.accessor('price', {
@@ -64,29 +61,34 @@ export const MARKET_COMPOSITION_COLUMNS = [
   columnHelper.accessor('amount', {
     id: MarketCompositionColumnId.TokenAmount,
     header: headers[MarketCompositionColumnId.TokenAmount],
-    cell: ({ getValue, row }) => (
-      <InlineTableCell sx={{ alignItems: 'end' }}>
-        <Tooltip
-          title={maybe(
-            getValue(),
-            value =>
-              !isNaN(value) &&
-              `${value} ${row.original.source.primary} ${maybe(row.original.amountUsd, value => ` / ${value}`) ?? ''}`,
-          )}
-          placement="top"
-        >
-          {/** Needed for tooltip to work for whatever reason */}
-          <Box>
-            <TokenInfo
-              icon={null}
-              iconPosition="right"
-              primary={formatNumber(getValue(), 'token.compact')}
-              secondary={maybe(row.original.amountUsd, x => formatNumber(x, 'usd.notional'))}
-            />
-          </Box>
-        </Tooltip>
-      </InlineTableCell>
-    ),
+    cell: ({ getValue, row }) => {
+      const symbol = row.original.source.primary
+
+      return (
+        <InlineTableCell sx={{ alignItems: 'end' }}>
+          <Tooltip
+            title={maybe(
+              getValue(),
+              value =>
+                !isNaN(value) &&
+                typeof symbol === 'string' &&
+                `${value} ${symbol} ${maybe(row.original.amountUsd, value => ` / ${value}`) ?? ''}`,
+            )}
+            placement="top"
+          >
+            {/** Needed for tooltip to work for whatever reason */}
+            <Box>
+              <TokenInfo
+                icon={null}
+                iconPosition="right"
+                primary={formatNumber(getValue(), 'token.compact')}
+                secondary={maybe(row.original.amountUsd, x => formatNumber(x, 'usd.notional'))}
+              />
+            </Box>
+          </Tooltip>
+        </InlineTableCell>
+      )
+    },
     enableSorting: false,
     meta: { type: 'numeric' },
   }),

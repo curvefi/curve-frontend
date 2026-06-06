@@ -2,11 +2,13 @@ import { sum } from 'lodash'
 import { useMemo } from 'react'
 import { type Address } from 'viem'
 import { useNetworkByChain } from '@/dex/entities/networks'
+import { defaultNetworks } from '@/dex/lib/networks'
 import { useStore } from '@/dex/store/useStore'
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import type { Chain as BlockchainId } from '@curvefi/prices-api'
 import Box from '@mui/material/Box'
 import { maybe } from '@primitives/objects.utils'
+import { scanAddressPath, scanTokenPath } from '@ui/utils'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
@@ -50,6 +52,7 @@ export const useYieldBreakdown = ({
           primary: 'CRV',
         },
         address: MAINNET_CRV_ADDRESS,
+        explorerUrl: scanTokenPath(defaultNetworks[Chain.Ethereum], MAINNET_CRV_ADDRESS),
         price: crvPrice,
         dailyApr: gaugeIsKilled ? undefined : crvMax,
         dailyAprSecondary: gaugeIsKilled ? undefined : crvBase,
@@ -66,6 +69,7 @@ export const useYieldBreakdown = ({
           primary: symbol,
         },
         address: tokenAddress,
+        explorerUrl: scanTokenPath(network, tokenAddress),
         price: tokenPrice,
         dailyApr: apy,
       })
@@ -88,6 +92,7 @@ export const useYieldBreakdown = ({
             primary: platform,
           },
           address,
+          explorerUrl: scanAddressPath(network, address),
           dailyApr: Number(multiplier),
         })
       })

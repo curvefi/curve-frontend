@@ -14,6 +14,7 @@ import { YieldBreakdownColumnId } from './columns.enum'
 export type YieldBreakdownRow = TableItem & {
   source: TokenInfoProps
   address?: string
+  explorerUrl?: string
   price?: number
   dailyApr?: number
   dailyAprSecondary?: number
@@ -32,7 +33,9 @@ export const YIELD_BREAKDOWN_COLUMNS = [
   columnHelper.accessor('source', {
     id: YieldBreakdownColumnId.Source,
     header: headers[YieldBreakdownColumnId.Source],
-    cell: ({ getValue, row }) => <TokenCell source={getValue()} address={row.original.address} />,
+    cell: ({ getValue, row }) => (
+      <TokenCell source={getValue()} address={row.original.address} explorerUrl={row.original.explorerUrl} />
+    ),
     enableSorting: false,
   }),
   columnHelper.accessor('price', {
