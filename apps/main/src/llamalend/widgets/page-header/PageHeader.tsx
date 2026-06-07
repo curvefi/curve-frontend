@@ -9,13 +9,14 @@ import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Address } from '@primitives/address.utils'
-import { useNavigate } from '@ui-kit/hooks/router'
+import { useGoBack } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { ArrowLeft } from '@ui-kit/shared/icons/ArrowLeft'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
 import { getInternalUrl, LLAMALEND_ROUTES } from '@ui-kit/shared/routes'
 import { Badge } from '@ui-kit/shared/ui/Badge'
+import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -68,8 +69,6 @@ export const PageHeaderView = ({
   supplyRate?: SupplyRate
   availableLiquidity: AvailableLiquidity
 }) => {
-  const push = useNavigate()
-
   const marketType = market instanceof MintMarketTemplate ? LlamaMarketType.Mint : LlamaMarketType.Lend
   const { collateralToken, borrowToken } = market
     ? getTokens(market)
@@ -90,7 +89,9 @@ export const PageHeaderView = ({
       <Stack direction="row">
         <IconButton
           size="small"
-          onClick={() => push(getInternalUrl('llamalend', blockchainId, LLAMALEND_ROUTES.PAGE_MARKETS))}
+          component={RouterLink}
+          href={getInternalUrl('llamalend', blockchainId, LLAMALEND_ROUTES.PAGE_MARKETS)}
+          onClick={useGoBack()}
           sx={{ alignSelf: 'center' }}
         >
           <ArrowLeft />

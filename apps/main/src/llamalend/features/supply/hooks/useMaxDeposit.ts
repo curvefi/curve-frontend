@@ -6,6 +6,7 @@ import { useFormSync } from '@ui-kit/features/forms'
 import type { UseFormReturn } from '@ui-kit/features/forms'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { queryMinimum } from '@ui-kit/lib'
+import { q } from '@ui-kit/types/util'
 
 export function useMaxDepositTokenValues<ChainId extends LlamaChainId>(
   {
@@ -30,5 +31,5 @@ export function useMaxDepositTokenValues<ChainId extends LlamaChainId>(
 
   useFormSync(form, { maxDepositAmount: maxDepositAmount.data })
 
-  return maxDepositAmount
+  return { ...q(maxDepositAmount), fieldName: 'maxDepositAmount' as const }
 }
