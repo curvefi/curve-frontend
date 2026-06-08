@@ -110,8 +110,8 @@ export const useOhlcInfiniteQuery = <TPage extends OhlcPageResult, TQueryKey ext
 export const fetchMoreOhlcQueries = (queries: readonly OhlcFetchMoreQuery[]) =>
   Promise.all(queries.filter(canFetchMoreOhlc).map(query => query.fetchNextPage(FETCH_NEXT_PAGE_OPTIONS)))
 
-export const refetchOhlcQueries = (queries: readonly { refetch: () => Promise<unknown> }[]) =>
-  Promise.all(queries.map(query => query.refetch()))
+export const refetchOhlcQueries = (refetches: readonly (() => Promise<unknown>)[]) =>
+  Promise.all(refetches.map(refetch => refetch()))
 
 const useOhlcAdapter = <TPage, TData>({ query, data }: UseOhlcAdapterParams<TPage, TData>) => {
   const { error, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isSuccess, refetch } = query
