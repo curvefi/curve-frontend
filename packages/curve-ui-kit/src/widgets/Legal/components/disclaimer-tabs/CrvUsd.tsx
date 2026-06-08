@@ -40,7 +40,7 @@ export const CrvUsd = () => (
 
       <Paragraph>
         {t`Collateralized debt positions are managed passively through arbitrage opportunities: if the collateral's price decreases, the system automatically sells off collateral to arbitrageurs in a ‘soft-liquidation mode’. If the collateral's price increases, the system recovers the collateral. This algorithm is designed to dynamically adjust the collateral backing each crvUSD in real-time, responding to fluctuating market conditions. While this approach is intended to mitigate the severity of traditional liquidations—a process where collateral becomes insufficient, leading to irreversible sales at potentially undervalued prices—it does not eliminate the inherent risk of collateral volatility. Additional information can be found on`}{' '}
-        <LegalExternalLink href="https://docs.curve.finance/crvUSD/amm/">{t`LLAMMA Overview`}</LegalExternalLink>
+        <LegalExternalLink link="docs.crvUsd.amm">{t`LLAMMA Overview`}</LegalExternalLink>
         {'.'}
       </Paragraph>
 
@@ -54,8 +54,7 @@ export const CrvUsd = () => (
 
       <Paragraph>
         {t`Curve incorporates specialized on-chain Exponential Moving Average (EMA) oracles built into stabelswap-ng, tricrypto-ng, and twocrypto-ng Curve pool implementations. crvUSD markets derive price information from a select number of high TVL Curve pools. By utilizing the EMA smoothing methodology, oracles mitigate the impact of transient price fluctuations, aiming to reduce unnecessary losses caused by short-term market volatility or attempts to manipulate the oracle. Despite the manipulation-resistant design specification, Curve pool oracles may exhibit price distortions in certain scenarios that have the potential to result in missed or excessive liquidations. This may be a result of liquidity and volume migration to alternate venues that increase the risk of oracle manipulation. A detailed explanation of the aforementioned terms can be found in the`}{' '}
-        <LegalExternalLink href="https://docs.curve.finance/crvUSD/oracle/">{t`crvUSD Oracle`}</LegalExternalLink>{' '}
-        {t`documentation`}
+        <LegalExternalLink link="docs.crvUsd.oracle">{t`crvUSD Oracle`}</LegalExternalLink> {t`documentation`}
       </Paragraph>
     </Section>
 
@@ -85,7 +84,7 @@ export const CrvUsd = () => (
 
       <Paragraph>
         {t`Essentially, the borrow rate increases when the price of crvUSD goes lower and/or the proportion of Pegkeeper debt to total debt reduces. This process is intended to dynamically regulate market behavior such that it reinforces the crvUSD peg. Changes to the Monetary Policy are authorized only by the Curve DAO. A`}{' '}
-        <LegalExternalLink href="https://github.com/0xreviews/crvusdsim">{t`crvUSD simulation tool`}</LegalExternalLink>{' '}
+        <LegalExternalLink link="github.crvUsdSimulator">{t`crvUSD simulation tool`}</LegalExternalLink>{' '}
         {t`by 0xReviews allows Users to visualize the influence of these factors on the borrowing rate.`}
       </Paragraph>
 

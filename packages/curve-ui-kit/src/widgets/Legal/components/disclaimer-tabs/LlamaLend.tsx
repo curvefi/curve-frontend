@@ -1,5 +1,4 @@
 import Typography from '@mui/material/Typography'
-import { EXTERNAL_LINKS } from '@ui/utils'
 import { getSearchString } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
@@ -21,7 +20,7 @@ export const LlamaLend = () => (
           {t`Curve Risk Disclosures for Liquidity Providers`}
         </RouterLink>
         {t`. Users are also advised to review the public`}{' '}
-        <LegalExternalLink href={EXTERNAL_LINKS.docs.user.security.audits}>{t`audit reports`}</LegalExternalLink>{' '}
+        <LegalExternalLink link="docs.user.security.audits">{t`audit reports`}</LegalExternalLink>{' '}
         {t`to assess the security and reliability of the platform before engaging in any lending or borrowing activities.`}
       </Paragraph>
     </Section>
@@ -30,7 +29,7 @@ export const LlamaLend = () => (
     <Section>
       <Paragraph>
         {t`Curve Lending markets are permissionless, allowing anyone to create and customize markets with unique token pairs, a price oracle, and parameters that influence the LLAMMA liquidation algorithm and interest rate model. Given the protocol's permissionless nature, users should verify that the market has been instantiated with sensible parameters. Curve provides a`}{' '}
-        <LegalExternalLink href={EXTERNAL_LINKS.github.llammaSimulator}>{t`LLAMMA-simulator`}</LegalExternalLink>{' '}
+        <LegalExternalLink link="github.llammaSimulator">{t`LLAMMA-simulator`}</LegalExternalLink>{' '}
         {t`that can be referenced for finding optimal parameters.`}
       </Paragraph>
 

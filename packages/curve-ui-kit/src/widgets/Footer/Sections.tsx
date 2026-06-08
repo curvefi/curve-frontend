@@ -65,12 +65,12 @@ export const getSections = () => [
     links: [
       {
         label: t`News`,
-        href: EXTERNAL_LINKS.news,
+        href: EXTERNAL_LINKS.curve.news,
         icon: <NewsIcon />,
       },
       {
         label: t`Documentation`,
-        href: EXTERNAL_LINKS.docs.root,
+        href: EXTERNAL_LINKS.curve.docs,
         icon: <DocsIcon />,
       },
       {
