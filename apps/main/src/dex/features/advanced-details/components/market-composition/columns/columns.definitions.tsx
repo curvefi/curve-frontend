@@ -82,7 +82,7 @@ export const MARKET_COMPOSITION_COLUMNS = [
                 icon={null}
                 iconPosition="right"
                 primary={formatNumber(getValue(), 'token.compact')}
-                secondary={maybe(row.original.amountUsd, x => formatNumber(x, 'usd.notional'))}
+                secondary={formatNumber(row.original.amountUsd, 'usd.notional')}
               />
             </Box>
           </Tooltip>
