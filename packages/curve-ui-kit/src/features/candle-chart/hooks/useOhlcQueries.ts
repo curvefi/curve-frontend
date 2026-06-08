@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from 'react'
+import { useCallback, useLayoutEffect, useMemo, useReducer, useRef } from 'react'
 import { notFalsy } from '@primitives/objects.utils'
 import { type InfiniteData, type QueryKey, useInfiniteQuery } from '@tanstack/react-query'
 import { createOhlcPageParam, getNextOhlcPageParam, type OhlcPageParam, type OhlcPageResult } from '../query-utils'
@@ -44,6 +44,11 @@ type UseOhlcPagesAdapterParams<TPage, TData> = {
 type UseOhlcAdapterParams<TPage, TData> = {
   query: OhlcQuery<TPage>
   data: TData
+}
+
+type OhlcAnchor = {
+  anchorEnd: number
+  resetKey: string
 }
 
 /**
@@ -144,7 +149,27 @@ export const useOhlcPagesAdapter = <TPage, TData>({ query, selectData }: UseOhlc
 export const useOhlcQueryAdapter = <TPage, TItem>({ query, selectItems }: UseOhlcQueryAdapterParams<TPage, TItem>) =>
   useOhlcPagesAdapter({ query, selectData: pages => flattenOhlcPagesChronologically(pages, selectItems) })
 
+const createOhlcAnchor = (resetKey: string): OhlcAnchor => ({
+  anchorEnd: Math.floor(Date.now() / 1000),
+  resetKey,
+})
+
+const replaceOhlcAnchor = (_current: OhlcAnchor, next: OhlcAnchor) => next
+
 export const useStableOhlcAnchorEnd = (...resetKeyParts: readonly (string | number)[]) => {
-  const resetKey = resetKeyParts.join(':')
-  return useMemo(() => ({ resetKey, value: Math.floor(Date.now() / 1000) }), [resetKey]).value
+  const resetKey = JSON.stringify(resetKeyParts)
+  const [anchor, replaceAnchor] = useReducer(replaceOhlcAnchor, resetKey, createOhlcAnchor)
+  const isAnchorEndReady = anchor.resetKey === resetKey
+
+  useLayoutEffect(() => {
+    if (isAnchorEndReady) return
+
+    // Capture non-idempotent time before paint; readiness blocks stale-anchor query fetches until this lands.
+    replaceAnchor(createOhlcAnchor(resetKey))
+  }, [isAnchorEndReady, resetKey])
+
+  return {
+    anchorEnd: anchor.anchorEnd,
+    isAnchorEndReady,
+  }
 }

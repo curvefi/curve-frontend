@@ -16,6 +16,7 @@ type DexOhlcQueryParams = {
   anchorEnd: number
   chain: Chain | undefined
   chartSelection: ChartSelection
+  enabled?: boolean
   interval: number
   poolAddress: string
   timeOption: TimeOption
@@ -88,6 +89,7 @@ export const useDexOhlcQuery = ({
   anchorEnd,
   chain,
   chartSelection,
+  enabled = true,
   interval,
   poolAddress,
   timeOption,
@@ -108,7 +110,7 @@ export const useDexOhlcQuery = ({
     ),
     anchorEnd,
     timeOption,
-    enabled: !!chain && !!poolAddress,
+    enabled: enabled && !!chain && !!poolAddress,
     fetchPage: async ({ pageParam, signal }): Promise<DexOhlcPage> => {
       const validChain = assert(chain, t`Cannot fetch DEX OHLC data without a chain.`)
       const responseData = await fetchDexOhlc(
