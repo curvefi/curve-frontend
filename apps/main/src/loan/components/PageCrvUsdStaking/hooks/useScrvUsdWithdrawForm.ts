@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
-import { useScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances'
+import { useScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances.query'
 import { useScrvUsdWithdrawMutation } from '@/loan/entities/scrvusd-withdraw.mutation'
 import { type ScrvUsdWithdrawForm, scrvUsdWithdrawFormValidationSuite } from '@/loan/entities/scrvusd.validation'
 import type { ChainId } from '@/loan/types/loan.types'

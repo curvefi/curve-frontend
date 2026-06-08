@@ -3,8 +3,6 @@ import lodash from 'lodash'
 import type { StoreApi } from 'zustand'
 import type { DepositWithdrawModule, StatisticsChart } from '@/loan/components/PageCrvUsdStaking/types'
 import { SCRVUSD_GAS_ESTIMATE } from '@/loan/constants'
-import type { ScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances'
-import { invalidateScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances'
 import { networks } from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
 import { type ChainId, FetchStatus, TransactionStatus } from '@/loan/types/loan.types'
@@ -13,6 +11,8 @@ import { getLib, notify, useWallet } from '@ui-kit/features/connect-wallet'
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import { t } from '@ui-kit/lib/i18n'
 import type { TimeOption } from '@ui-kit/lib/model/query/time-option-validation'
+import { invalidateScrvUsdUserBalances } from '../entities/scrvusd-userBalances.query'
+import type { ScrvUsdUserBalances } from '../entities/scrvusd-userBalances.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

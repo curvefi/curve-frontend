@@ -1,7 +1,7 @@
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { createApprovedEstimateGasHook } from '@ui-kit/lib/model/entities/gas-info'
-import { useScrvUsdDepositIsApproved } from './scrvusd-deposit-approved.query'
+import { useScrvUsdDepositIsApproved } from './scrvusd-deposit-is-approved.query'
 import type { ScrvUsdDepositParams, ScrvUsdDepositQuery } from './scrvusd.validation'
 import { scrvUsdDepositMaxValidationSuite } from './scrvusd.validation'
 

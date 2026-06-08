@@ -6,7 +6,7 @@ import { Statistics } from '@/loan/components/PageCrvUsdStaking/Statistics'
 import { StatsBanner } from '@/loan/components/PageCrvUsdStaking/StatsBanner'
 import { UserInformation } from '@/loan/components/PageCrvUsdStaking/UserInformation'
 import { UserPosition } from '@/loan/components/PageCrvUsdStaking/UserPosition'
-import { useScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances'
+import { useScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances.query'
 import { useStore } from '@/loan/store/useStore'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
 import Fade from '@mui/material/Fade'
@@ -17,6 +17,7 @@ import { RCScrvUSDLogoSM } from '@ui/images'
 import { type LlamaApi, useCurve } from '@ui-kit/features/connect-wallet'
 import { useParams } from '@ui-kit/hooks/router'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
+import { useScrvUsdNewForms } from '@ui-kit/hooks/useFeatureFlags'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -33,7 +34,7 @@ function useLegacyFetching({
   address: string | undefined
   refetchUserScrvUsdBalance: () => Promise<unknown>
 }) {
-  const enabled = true
+  const enabled = useScrvUsdNewForms()
   const checkApproval = useStore(state => state.scrvusd.checkApproval)
   const inputAmount = useStore(state => state.scrvusd.inputAmount)
   const fetchExchangeRate = useStore(state => state.scrvusd.fetchExchangeRate)

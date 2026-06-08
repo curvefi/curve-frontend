@@ -1,8 +1,11 @@
+import { useConnection } from 'wagmi'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { SCRVUSD_VAULT_ADDRESS } from '@/loan/constants'
 import { networks, networksIdMapper } from '@/loan/networks'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
 import Button from '@mui/material/Button'
+import { useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
 import { t } from '@ui-kit/lib/i18n'
 import { q } from '@ui-kit/types/util'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
@@ -11,6 +14,8 @@ import { useScrvUsdWithdrawForm } from './hooks/useScrvUsdWithdrawForm'
 import { ScrvUsdWithdrawInfoList } from './ScrvUsdWithdrawInfoList'
 
 export const ScrvUsdWithdrawForm = ({ network }: NetworkUrlParams) => {
+  const { isConnected, isConnecting } = useConnection()
+  const { connect } = useWallet()
   const chainId = networksIdMapper[network]
   const { form, params, isPending, isDisabled, error, formErrors, max, positionBalance, onSubmit } =
     useScrvUsdWithdrawForm({
@@ -35,10 +40,22 @@ export const ScrvUsdWithdrawForm = ({ network }: NetworkUrlParams) => {
         testId="scrvusd-withdraw-input"
         network={networkConfig}
         positionBalance={{ position: positionBalance, tooltip: t`scrvUSD balance` }}
+        hideBalance={!isConnected}
+        disabled={!isConnected}
       />
-      <Button type="submit" loading={isPending} disabled={isDisabled} data-testid="scrvusd-withdraw-submit-button">
-        {isPending ? t`Processing...` : t`Withdraw`}
-      </Button>
+      {isConnected ? (
+        <Button type="submit" loading={isPending} disabled={isDisabled} data-testid="scrvusd-withdraw-submit-button">
+          {isPending ? t`Processing...` : t`Withdraw`}
+        </Button>
+      ) : (
+        <ConnectWalletButton
+          type="button"
+          size="large"
+          loading={isConnecting}
+          onClick={() => void connect()}
+          data-testid="scrvusd-withdraw-connect-wallet-button"
+        />
+      )}
       <FormAlerts error={error} formErrors={formErrors} handledErrors={['withdrawAmount']} />
     </Form>
   )

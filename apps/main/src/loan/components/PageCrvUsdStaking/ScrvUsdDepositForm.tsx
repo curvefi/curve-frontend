@@ -1,9 +1,12 @@
+import { useConnection } from 'wagmi'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { CRVUSD_ADDRESS } from '@/loan/constants'
 import { networks, networksIdMapper } from '@/loan/networks'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
 import Button from '@mui/material/Button'
 import { joinButtonText } from '@primitives/string.utils'
+import { useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
 import { t } from '@ui-kit/lib/i18n'
 import { q } from '@ui-kit/types/util'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
@@ -12,6 +15,8 @@ import { useScrvUsdDepositForm } from './hooks/useScrvUsdDepositForm'
 import { ScrvUsdDepositInfoList } from './ScrvUsdDepositInfoList'
 
 export const ScrvUsdDepositForm = ({ network }: NetworkUrlParams) => {
+  const { isConnected, isConnecting } = useConnection()
+  const { connect } = useWallet()
   const chainId = networksIdMapper[network]
   const {
     form,
@@ -52,10 +57,22 @@ export const ScrvUsdDepositForm = ({ network }: NetworkUrlParams) => {
         max={{ ...q(max), fieldName: max.fieldName }}
         testId="scrvusd-deposit-input"
         network={networkConfig}
+        hideBalance={!isConnected}
+        disabled={!isConnected}
       />
-      <Button type="submit" loading={isPending} disabled={isDisabled} data-testid="scrvusd-deposit-submit-button">
-        {isPending ? t`Processing...` : joinButtonText(isApproved.data === false && t`Approve`, t`Deposit`)}
-      </Button>
+      {isConnected ? (
+        <Button type="submit" loading={isPending} disabled={isDisabled} data-testid="scrvusd-deposit-submit-button">
+          {isPending ? t`Processing...` : joinButtonText(isApproved.data === false && t`Approve`, t`Deposit`)}
+        </Button>
+      ) : (
+        <ConnectWalletButton
+          type="button"
+          size="large"
+          loading={isConnecting}
+          onClick={() => void connect()}
+          data-testid="scrvusd-deposit-connect-wallet-button"
+        />
+      )}
       <FormAlerts error={error} formErrors={formErrors} handledErrors={['depositAmount']} />
     </Form>
   )

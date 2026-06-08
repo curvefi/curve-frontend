@@ -4,13 +4,11 @@ import { LoanFormConnect } from '@/loan/components/LoanFormConnect'
 import { SCRVUSD_VAULT_ADDRESS } from '@/loan/constants'
 import { useStore } from '@/loan/store/useStore'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
-import Stack from '@mui/material/Stack'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useDebounced } from '@ui-kit/hooks/useDebounce'
 import { useScrvUsdNewForms } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
@@ -22,11 +20,7 @@ import { DeployButton } from './DeployButton'
 import { DepositModule } from './DepositModule'
 import { WithdrawModule } from './WithdrawModule'
 
-const { Spacing } = SizesAndSpaces
-
-type DepositWithdrawProps = {
-  params: NetworkUrlParams
-}
+type DepositWithdrawProps = { params: NetworkUrlParams }
 
 const ScrvUsdDepositFormTab = () => {
   const setStakingModule = useStore(state => state.scrvusd.setStakingModule)
@@ -144,9 +138,6 @@ const ScrvUsdMenu = [
   { value: 'swap', label: t`Swap`, href: SwapHref },
 ] satisfies FormTab<NetworkUrlParams>[]
 
-export const DepositWithdraw = ({ params }: DepositWithdrawProps) => (
-  <Stack sx={{ gap: Spacing.md }}>
-    <FormTabs params={params} menu={ScrvUsdLegacyMenu} />
-    {useScrvUsdNewForms() && <FormTabs params={params} menu={ScrvUsdMenu} />}
-  </Stack>
+export const DepositWithdraw = ({ params }: { params: NetworkUrlParams }) => (
+  <FormTabs params={params} menu={useScrvUsdNewForms() ? ScrvUsdMenu : ScrvUsdLegacyMenu} />
 )
