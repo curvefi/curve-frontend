@@ -25,6 +25,7 @@ export const CURVE_SOCIALS = {
     cn: 'https://t.me/curveficn',
     ru: 'https://t.me/crvrussianchat',
     announcements: 'https://t.me/curvefiann',
+    llamalendMonitorBot: 'https://t.me/LlamalendMonitorBot',
   },
   youtube: {
     en: 'https://www.youtube.com/@CurveFinanceChannel',
@@ -95,7 +96,7 @@ export const EXTERNAL_LINKS = {
     sanctionsAddressSearch:
       'https://www.seco.admin.ch/seco/de/home/Aussenwirtschaftspolitik_Wirtschaftliche_Zusammenarbeit/Wirtschaftsbeziehungen/exportkontrollen-und-sanktionen/sanktionen-embargos/sanktionsmassnahmen/suche_sanktionsadressaten.html',
   },
-  security: {
+  monitoring: {
     curveMonitor: 'https://curvemonitor.com/',
     crvHub: 'https://crvhub.com/',
     apiStatus: 'https://statuspage.freshping.io/59335-CurveAPI',

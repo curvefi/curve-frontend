@@ -9,7 +9,7 @@ import { AlertBox } from '@ui/AlertBox'
 import { Box } from '@ui/Box'
 import { Button } from '@ui/Button'
 import { ExternalLink } from '@ui/Link/ExternalLink'
-import { shortenAccount } from '@ui/utils'
+import { CURVE_SOCIALS, shortenAccount } from '@ui/utils'
 import { useParams } from '@ui-kit/hooks/router'
 import { Trans } from '@ui-kit/lib/i18n'
 import { PoolColumnId } from '../columns'
@@ -73,7 +73,7 @@ export const PoolListEmptyState = ({ columnFiltersById, resetFilters }: Props) =
   ) : (
     <Trans>
       Can&apos;t find what you&apos;re looking for?{' '}
-      <ExternalLink $noStyles href="https://t.me/curvefi">
+      <ExternalLink $noStyles href={CURVE_SOCIALS.telegram.en}>
         Feel free to ask us on Telegram
       </ExternalLink>
     </Trans>

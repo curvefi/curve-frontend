@@ -118,7 +118,7 @@ export const Terms = ({ currentApp, network }: { currentApp: AppName; network: s
             {t`) and relevant statistics (`}
             <LegalExternalLink link="analytics.duneCurveFi">{t`Curve.fi`}</LegalExternalLink>
             {t`) and API status monitoring (`}
-            <LegalExternalLink link="security.apiStatus">
+            <LegalExternalLink link="monitoring.apiStatus">
               {t`Curve API's Live status - Powered by Freshping`}
             </LegalExternalLink>
             {t`).`}

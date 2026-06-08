@@ -302,7 +302,7 @@ export const Privacy = () => (
       </Paragraph>
       <Paragraph>
         {t`In addition, every data subject has the opportunity to assert their rights in court or to file a complaint with the relevant data protection authority. In Switzerland, the relevant data protection authority is the Federal Data Protection and Information Commissioner (`}
-        <LegalExternalLink link="legal.swissFdpic">{t`http://www.edoeb.admin.ch`}</LegalExternalLink>
+        <LegalExternalLink link="legal.swissFdpic">{EXTERNAL_LINKS.legal.swissFdpic}</LegalExternalLink>
         {t`).`}
       </Paragraph>
     </Section>

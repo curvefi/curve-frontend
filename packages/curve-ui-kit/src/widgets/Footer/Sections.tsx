@@ -111,12 +111,12 @@ export const getSections = () => [
       },
       {
         label: t`Curve Monitor`,
-        href: EXTERNAL_LINKS.security.curveMonitor,
+        href: EXTERNAL_LINKS.monitoring.curveMonitor,
         icon: <LAFIcon />,
       },
       {
         label: t`CrvHub`,
-        href: EXTERNAL_LINKS.security.crvHub,
+        href: EXTERNAL_LINKS.monitoring.crvHub,
         icon: <CrvHubIcon />,
       },
       {
@@ -126,7 +126,7 @@ export const getSections = () => [
       },
       {
         label: t`API Status`,
-        href: EXTERNAL_LINKS.security.apiStatus,
+        href: EXTERNAL_LINKS.monitoring.apiStatus,
         icon: <MonitorHeartOutlinedIcon />,
       },
     ],
