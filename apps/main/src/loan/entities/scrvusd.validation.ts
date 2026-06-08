@@ -1,15 +1,16 @@
 import { enforce, skipWhen, test } from 'vest'
+import type { ChainId } from '@/loan/types/loan.types'
 import type { Decimal } from '@primitives/decimal.utils'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
 import { userAddressValidationGroup } from '@ui-kit/lib/model/query/evm-address-validation'
-import type { ChainQuery, UserChainQuery } from '@ui-kit/lib/model/query/root-keys'
+import type { UserChainQuery } from '@ui-kit/lib/model/query/root-keys'
 
-export type ScrvUsdChainQuery<ChainId = number> = ChainQuery<ChainId>
-export type ScrvUsdUserQuery<ChainId = number> = UserChainQuery<ChainId>
+export type ScrvUsdUserQuery = UserChainQuery<ChainId>
 
-export type ScrvUsdDepositQuery<ChainId = number> = ScrvUsdUserQuery<ChainId> & {
+export type ScrvUsdDepositQuery = ScrvUsdUserQuery & {
   depositAmount: Decimal
+  maxDepositAmount?: Decimal
 }
 
 export type ScrvUsdDepositMutation = {
@@ -21,10 +22,11 @@ export type ScrvUsdDepositForm = Partial<ScrvUsdDepositMutation> & {
   maxDepositAmount?: Decimal
 }
 
-export type ScrvUsdWithdrawQuery<ChainId = number> = ScrvUsdUserQuery<ChainId> & {
+export type ScrvUsdWithdrawQuery = ScrvUsdUserQuery & {
   withdrawAmount: Decimal
   isFull: boolean | undefined
   userVaultShares: Decimal
+  maxWithdrawAmount?: Decimal
 }
 
 export type ScrvUsdWithdrawMutation = {
@@ -37,10 +39,9 @@ export type ScrvUsdWithdrawForm = Partial<ScrvUsdWithdrawMutation> & {
   maxWithdrawAmount?: Decimal
 }
 
-export type ScrvUsdChainParams<ChainId = number> = FieldsOf<ScrvUsdChainQuery<ChainId>>
-export type ScrvUsdUserParams<ChainId = number> = FieldsOf<ScrvUsdUserQuery<ChainId>>
-export type ScrvUsdDepositParams<ChainId = number> = FieldsOf<ScrvUsdDepositQuery<ChainId>>
-export type ScrvUsdWithdrawParams<ChainId = number> = FieldsOf<ScrvUsdWithdrawQuery<ChainId>>
+export type ScrvUsdUserParams = FieldsOf<ScrvUsdUserQuery>
+export type ScrvUsdDepositParams = FieldsOf<ScrvUsdDepositQuery>
+export type ScrvUsdWithdrawParams = FieldsOf<ScrvUsdWithdrawQuery>
 
 const validateRequiredDecimal = (field: 'depositAmount' | 'withdrawAmount' | 'userVaultShares', value: unknown) => {
   test(field, `${field} is required`, () => {
@@ -51,16 +52,47 @@ const validateRequiredDecimal = (field: 'depositAmount' | 'withdrawAmount' | 'us
   })
 }
 
+const validateMaxDecimal = (
+  field: 'depositAmount' | 'withdrawAmount',
+  value: Decimal | null | undefined,
+  max: Decimal | null | undefined,
+  maxRequired: boolean,
+) => {
+  skipWhen(!maxRequired, () => {
+    test(field, `Maximum ${field} must be available`, () => {
+      enforce(max).isNotEmpty()
+    })
+  })
+  skipWhen(value == null || max == null, () => {
+    test(field, `Amount exceeds maximum of ${max}`, () => {
+      enforce(value).lte(max)
+    })
+  })
+}
+
 export const scrvUsdUserValidationSuite = createValidationSuite((params: ScrvUsdUserParams) => {
   llamaApiValidationGroup(params)
   userAddressValidationGroup({ userAddress: params.userAddress })
 })
 
-export const scrvUsdDepositValidationSuite = createValidationSuite((params: ScrvUsdDepositParams) => {
-  llamaApiValidationGroup(params)
-  userAddressValidationGroup({ userAddress: params.userAddress })
-  validateRequiredDecimal('depositAmount', params.depositAmount)
-})
+const createScrvUsdDepositValidationSuite = ({
+  validateMax,
+  maxRequired = validateMax,
+}: {
+  validateMax: boolean
+  maxRequired?: boolean
+}) =>
+  createValidationSuite((params: ScrvUsdDepositParams) => {
+    llamaApiValidationGroup(params)
+    userAddressValidationGroup({ userAddress: params.userAddress })
+    validateRequiredDecimal('depositAmount', params.depositAmount)
+    skipWhen(!validateMax, () => {
+      validateMaxDecimal('depositAmount', params.depositAmount, params.maxDepositAmount, maxRequired)
+    })
+  })
+
+export const scrvUsdDepositValidationSuite = createScrvUsdDepositValidationSuite({ validateMax: false })
+export const scrvUsdDepositMaxValidationSuite = createScrvUsdDepositValidationSuite({ validateMax: true })
 
 export const scrvUsdDepositFormValidationSuite = createValidationSuite(
   ({ depositAmount, maxDepositAmount }: ScrvUsdDepositForm) => {
@@ -80,19 +112,33 @@ export const scrvUsdDepositFormValidationSuite = createValidationSuite(
   },
 )
 
-export const scrvUsdWithdrawValidationSuite = createValidationSuite((params: ScrvUsdWithdrawParams) => {
-  llamaApiValidationGroup(params)
-  userAddressValidationGroup({ userAddress: params.userAddress })
-  validateRequiredDecimal('withdrawAmount', params.withdrawAmount)
+const createScrvUsdWithdrawValidationSuite = ({
+  validateMax,
+  maxRequired = validateMax,
+}: {
+  validateMax: boolean
+  maxRequired?: boolean
+}) =>
+  createValidationSuite((params: ScrvUsdWithdrawParams) => {
+    llamaApiValidationGroup(params)
+    userAddressValidationGroup({ userAddress: params.userAddress })
+    validateRequiredDecimal('withdrawAmount', params.withdrawAmount)
 
-  test('isFull', 'Full withdraw value must be calculated', () => {
-    enforce(params.isFull).isBoolean()
+    test('isFull', 'Full withdraw value must be calculated', () => {
+      enforce(params.isFull).isBoolean()
+    })
+
+    if (params.isFull) {
+      validateRequiredDecimal('userVaultShares', params.userVaultShares)
+    }
+
+    skipWhen(!validateMax, () => {
+      validateMaxDecimal('withdrawAmount', params.withdrawAmount, params.maxWithdrawAmount, maxRequired)
+    })
   })
 
-  if (params.isFull) {
-    validateRequiredDecimal('userVaultShares', params.userVaultShares)
-  }
-})
+export const scrvUsdWithdrawValidationSuite = createScrvUsdWithdrawValidationSuite({ validateMax: false })
+export const scrvUsdWithdrawMaxValidationSuite = createScrvUsdWithdrawValidationSuite({ validateMax: true })
 
 export const scrvUsdWithdrawFormValidationSuite = createValidationSuite(
   ({ withdrawAmount, maxWithdrawAmount, isFull }: ScrvUsdWithdrawForm) => {

@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { useScrvUsdDepositIsApproved } from '@/loan/entities/scrvusd-deposit-approved.query'
 import { useScrvUsdDepositMutation } from '@/loan/entities/scrvusd-deposit.mutation'
@@ -20,6 +20,7 @@ export const useScrvUsdDepositForm = ({ chainId }: { chainId: ChainId }) => {
     validation: scrvUsdDepositFormValidationSuite,
   })
   const depositAmount = form.watchValue('depositAmount')
+  const approveInfinite = !!form.watchValue('approveInfinite')
   const [params, isDebouncing] = useFormDebounce(
     useMemo(() => ({ chainId, userAddress, depositAmount }), [chainId, depositAmount, userAddress]),
   )
@@ -40,12 +41,18 @@ export const useScrvUsdDepositForm = ({ chainId }: { chainId: ChainId }) => {
 
   return {
     form,
+    params,
+    approveInfinite,
     isApproved,
     isPending,
     isDisabled: !userAddress || !form.formState.isValid || isPending || isDebouncing || isApproved.isLoading,
     error,
     formErrors: form.formState.visibleErrors,
     max,
+    onApproveInfiniteToggle: useCallback(
+      () => form.update({ approveInfinite: !approveInfinite }),
+      [approveInfinite, form],
+    ),
     onSubmit: form.handleSubmit(onMutationSubmit),
   }
 }

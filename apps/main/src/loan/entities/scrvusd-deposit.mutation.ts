@@ -9,7 +9,7 @@ import { formatNumber, waitForApproval } from '@ui-kit/utils'
 import { fetchScrvUsdDepositIsApproved } from './scrvusd-deposit-approved.query'
 import { invalidateScrvUsdMutationQueries } from './scrvusd-mutation.helpers'
 import type { ScrvUsdDepositForm, ScrvUsdDepositMutation } from './scrvusd.validation'
-import { scrvUsdDepositValidationSuite } from './scrvusd.validation'
+import { scrvUsdDepositMaxValidationSuite } from './scrvusd.validation'
 
 type ScrvUsdDepositOptions = {
   chainId: number
@@ -42,7 +42,7 @@ export const useScrvUsdDepositMutation = ({ chainId, userAddress, onSuccess, ...
         .st_crvUSD.deposit(variables.depositAmount)
         .then(hash => ({ hash: hash as Hex }))
     },
-    validationSuite: scrvUsdDepositValidationSuite,
+    validationSuite: scrvUsdDepositMaxValidationSuite,
     validationParams: { chainId, userAddress },
     pendingMessage: ({ depositAmount }) =>
       t`Depositing... ${formatNumber(depositAmount, { abbreviate: false })} crvUSD`,

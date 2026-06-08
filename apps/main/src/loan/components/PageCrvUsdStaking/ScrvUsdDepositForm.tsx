@@ -9,19 +9,39 @@ import { q } from '@ui-kit/types/util'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { useScrvUsdDepositForm } from './hooks/useScrvUsdDepositForm'
+import { ScrvUsdDepositInfoList } from './ScrvUsdDepositInfoList'
 
 export const ScrvUsdDepositForm = ({ network }: NetworkUrlParams) => {
   const chainId = networksIdMapper[network]
-  const { form, isApproved, isPending, isDisabled, error, formErrors, max, onSubmit } = useScrvUsdDepositForm({
-    chainId,
-  })
+  const {
+    form,
+    params,
+    approveInfinite,
+    isApproved,
+    isPending,
+    isDisabled,
+    error,
+    formErrors,
+    max,
+    onApproveInfiniteToggle,
+    onSubmit,
+  } = useScrvUsdDepositForm({ chainId })
   const networkConfig = networks[chainId]
   return (
     <Form
       {...form}
       // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Form submit handlers are async through react-hook-form.
       onSubmit={onSubmit}
-      footer={null}
+      footer={
+        <ScrvUsdDepositInfoList
+          chainId={chainId}
+          params={params}
+          isOpen={form.isTouched('depositAmount')}
+          isApproved={isApproved.data}
+          approveInfinite={approveInfinite}
+          onApproveInfiniteToggle={onApproveInfiniteToggle}
+        />
+      }
     >
       <LoanFormTokenInput
         label={t`Amount to deposit`}

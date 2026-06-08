@@ -27,6 +27,7 @@ export const useScrvUsdWithdrawForm = ({ chainId }: { chainId: ChainId }) => {
   const withdrawAmount = form.watchValue('withdrawAmount')
   const isFull = form.watchValue('isFull')
   const userVaultShares = form.watchValue('userVaultShares')
+  const maxWithdrawAmount = form.watchValue('maxWithdrawAmount')
   const [params, isDebouncing] = useFormDebounce(
     useMemo(
       () => ({
@@ -35,8 +36,9 @@ export const useScrvUsdWithdrawForm = ({ chainId }: { chainId: ChainId }) => {
         withdrawAmount,
         isFull,
         userVaultShares,
+        maxWithdrawAmount,
       }),
-      [chainId, isFull, userAddress, userVaultShares, withdrawAmount],
+      [chainId, isFull, maxWithdrawAmount, userAddress, userVaultShares, withdrawAmount],
     ),
   )
   const userBalances = useScrvUsdUserBalances({ chainId, userAddress }, !!userAddress)

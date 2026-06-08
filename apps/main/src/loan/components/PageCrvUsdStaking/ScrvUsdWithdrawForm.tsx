@@ -8,12 +8,14 @@ import { q } from '@ui-kit/types/util'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { useScrvUsdWithdrawForm } from './hooks/useScrvUsdWithdrawForm'
+import { ScrvUsdWithdrawInfoList } from './ScrvUsdWithdrawInfoList'
 
 export const ScrvUsdWithdrawForm = ({ network }: NetworkUrlParams) => {
   const chainId = networksIdMapper[network]
-  const { form, isPending, isDisabled, error, formErrors, max, positionBalance, onSubmit } = useScrvUsdWithdrawForm({
-    chainId,
-  })
+  const { form, params, isPending, isDisabled, error, formErrors, max, positionBalance, onSubmit } =
+    useScrvUsdWithdrawForm({
+      chainId,
+    })
   const networkConfig = networks[chainId]
 
   return (
@@ -21,7 +23,7 @@ export const ScrvUsdWithdrawForm = ({ network }: NetworkUrlParams) => {
       {...form}
       // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Form submit handlers are async through react-hook-form.
       onSubmit={onSubmit}
-      footer={null}
+      footer={<ScrvUsdWithdrawInfoList form={form} params={params} networks={networks} />}
     >
       <LoanFormTokenInput
         label={t`Amount to withdraw`}

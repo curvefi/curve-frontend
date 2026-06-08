@@ -17,7 +17,6 @@ import { RCScrvUSDLogoSM } from '@ui/images'
 import { type LlamaApi, useCurve } from '@ui-kit/features/connect-wallet'
 import { useParams } from '@ui-kit/hooks/router'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
-import { useScrvUsdNewForms } from '@ui-kit/hooks/useFeatureFlags'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -34,7 +33,7 @@ function useLegacyFetching({
   address: string | undefined
   refetchUserScrvUsdBalance: () => Promise<unknown>
 }) {
-  const enabled = !useScrvUsdNewForms() || true
+  const enabled = true
   const checkApproval = useStore(state => state.scrvusd.checkApproval)
   const inputAmount = useStore(state => state.scrvusd.inputAmount)
   const fetchExchangeRate = useStore(state => state.scrvusd.fetchExchangeRate)
