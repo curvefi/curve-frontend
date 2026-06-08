@@ -56,9 +56,8 @@ export const useYieldBreakdown = ({
   // Construct all yield rows imperatively rather than functional to improve readability
   const rows: YieldBreakdownRow[] = useMemo(() => {
     const rows: YieldBreakdownRow[] = []
-    const crvBase = aprToApy(rewardsApy?.crv?.[0], COMPOUND_WINDOW) ?? undefined
-    const crvMax = aprToApy(rewardsApy?.crv?.[1] ?? rewardsApy?.crv?.[0], COMPOUND_WINDOW) ?? undefined
-    if (crvBase || crvMax) {
+
+    if (rewardsApy?.crv?.some(Boolean)) {
       rows.push({
         source: {
           address: MAINNET_CRV_ADDRESS,
@@ -69,9 +68,11 @@ export const useYieldBreakdown = ({
         address: MAINNET_CRV_ADDRESS,
         explorerUrl: scanTokenPath(defaultNetworks[Chain.Ethereum], MAINNET_CRV_ADDRESS),
         price: crvPrice,
-        apy: gaugeIsKilled ? undefined : crvMax,
-        apySecondary: gaugeIsKilled ? undefined : crvBase,
-        apyTooltip: gaugeIsKilled ? undefined : t`Max CRV APY can be reached with max boost for this pool.`,
+        ...(!gaugeIsKilled && {
+          apy: aprToApy(rewardsApy?.crv?.[1] ?? rewardsApy?.crv?.[0], COMPOUND_WINDOW) ?? undefined,
+          apySecondary: aprToApy(rewardsApy?.crv?.[0], COMPOUND_WINDOW) ?? undefined,
+          apyTooltip: t`Max CRV APY can be reached with max boost for this pool.`,
+        }),
       })
     }
 
