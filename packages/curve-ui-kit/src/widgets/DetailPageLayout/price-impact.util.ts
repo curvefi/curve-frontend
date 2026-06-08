@@ -1,5 +1,6 @@
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
+import { getRouteById } from '@ui-kit/entities/router-api'
 import { t } from '@ui-kit/lib/i18n'
 import { Query } from '@ui-kit/types/util'
 import { decimalGreaterThan } from '@ui-kit/utils'
@@ -25,6 +26,13 @@ export const getPriceImpactSeverity = (
       : null
 
 /**
+ * When using zapv2, the transaction often gets blocked because odos and enso give a nonsensical price impact.
+ * For 0x, the price impact is not available at all.
+ */
+const disablePriceImpactCheck = (routeId: string | undefined) =>
+  !!routeId && ['0x', 'odos', 'enso'].includes(getRouteById(routeId).router)
+
+/**
  * Defines whether to block the transaction due to the price impact.
  * Returns true if the price impact exceeds the critical threshold or if the price impact data is null (query loading or disabled).
  * We don't check the isLoading property as the query will be disabled until maxDebt is calculated.
@@ -35,9 +43,15 @@ export const shouldBlockTransaction = (
     slippage,
     leverageEnabled,
     slippageType,
-  }: { slippage: Decimal | null | undefined; leverageEnabled: boolean | undefined; slippageType: SlippageType },
+    routeId,
+  }: {
+    slippage: Decimal | null | undefined
+    leverageEnabled: boolean | undefined
+    slippageType: SlippageType
+    routeId?: string
+  },
 ) =>
-  (leverageEnabled == true && priceImpact.data == null) ||
+  (leverageEnabled == true && priceImpact.data == null && !disablePriceImpactCheck(routeId)) ||
   getPriceImpactSeverity(priceImpact, { slippage, slippageType }) === 'error'
 
 export const getPriceImpactDisplay = (
