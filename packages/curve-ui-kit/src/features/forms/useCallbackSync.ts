@@ -7,6 +7,7 @@ import type { Query } from '@ui-kit/types/util'
  */
 export function useCallbackSync<T>({ data }: Query<T | null>, callback: (data: T | undefined) => void): void {
   useEffect(() => {
+    // Keep parent in sync with resolved values, keep stale while revalidating, and clear resolved empty data.
     if (data !== undefined) callback(data ?? undefined)
   }, [callback, data])
   useEffect(() => () => callback(undefined), [callback]) // clear stale data only when unmounting
