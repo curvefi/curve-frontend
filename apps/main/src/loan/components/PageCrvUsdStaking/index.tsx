@@ -11,22 +11,54 @@ import { useStore } from '@/loan/store/useStore'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
 import { Stack, useMediaQuery } from '@mui/material'
 import Fade from '@mui/material/Fade'
-import { useCurve } from '@ui-kit/features/connect-wallet'
+import { type LlamaApi, useCurve } from '@ui-kit/features/connect-wallet'
+import { useScrvUsdNewForms } from '@ui-kit/hooks/useFeatureFlags'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { MaxWidth } = SizesAndSpaces
 
-export const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
-  const [isChartExpanded = false, , minimizeChart, toggleChartExpanded] = useSwitch(false)
+function useLegacyFetching({
+  lendApi,
+  address,
+  refetchUserScrvUsdBalance,
+}: {
+  lendApi: LlamaApi | null
+  address: string | undefined
+  refetchUserScrvUsdBalance: () => Promise<unknown>
+}) {
+  const enabled = !useScrvUsdNewForms() || true
   const checkApproval = useStore(state => state.scrvusd.checkApproval)
   const inputAmount = useStore(state => state.scrvusd.inputAmount)
   const fetchExchangeRate = useStore(state => state.scrvusd.fetchExchangeRate)
   const fetchCrvUsdSupplies = useStore(state => state.scrvusd.fetchCrvUsdSupplies)
   const stakingModule = useStore(state => state.scrvusd.stakingModule)
-  const { llamaApi: lendApi = null } = useCurve()
   const chainId = lendApi?.chainId
+
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
+    const fetchData = async () => {
+      if (!enabled || !lendApi || !address) return
+      // ensure user balances are up to date on load
+      void refetchUserScrvUsdBalance()
+      fetchExchangeRate()
+      fetchCrvUsdSupplies()
+    }
+
+    void fetchData()
+  }, [enabled, lendApi, fetchExchangeRate, fetchCrvUsdSupplies, refetchUserScrvUsdBalance, address])
+
+  useEffect(() => {
+    if (enabled && lendApi && chainId && address && +inputAmount && stakingModule === 'deposit') {
+      void checkApproval.depositApprove(inputAmount)
+    }
+  }, [enabled, checkApproval, lendApi, chainId, inputAmount, stakingModule, address])
+}
+
+export const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
+  const [isChartExpanded = false, , minimizeChart, toggleChartExpanded] = useSwitch(false)
+  const { llamaApi: lendApi = null } = useCurve()
   const { address, isConnecting } = useConnection()
 
   const {
@@ -35,6 +67,8 @@ export const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
     isFetched: isUserScrvUsdBalanceFetched,
     refetch: refetchUserScrvUsdBalance,
   } = useScrvUsdUserBalances({ userAddress: address })
+
+  useLegacyFetching({ lendApi, address, refetchUserScrvUsdBalance })
 
   const isUserScrvUsdBalanceZero = !address || !userScrvUsdBalance || BigNumber(userScrvUsdBalance.scrvUSD).isZero()
 
@@ -48,32 +82,9 @@ export const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
   const columnViewBreakPoint = '65.625rem'
   const columnView = useMediaQuery(`(max-width: ${columnViewBreakPoint})`)
 
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
-    const fetchData = async () => {
-      if (!lendApi || !address) return
-      // ensure user balances are up to date on load
-      void refetchUserScrvUsdBalance()
-      fetchExchangeRate()
-      fetchCrvUsdSupplies()
-    }
-
-    void fetchData()
-  }, [lendApi, fetchExchangeRate, fetchCrvUsdSupplies, refetchUserScrvUsdBalance, address])
-
-  useEffect(() => {
-    if (!lendApi || !chainId || !address || inputAmount === '0') return
-
-    if (stakingModule === 'deposit') {
-      void checkApproval.depositApprove(inputAmount)
-    }
-  }, [checkApproval, lendApi, chainId, inputAmount, stakingModule, address])
-
   // automatically minimize chart on smaller screens where the toggle button is hidden (the chart is already full width)
   useEffect(() => {
-    if (columnView && isChartExpanded) {
-      minimizeChart()
-    }
+    if (columnView && isChartExpanded) minimizeChart()
   }, [isChartExpanded, columnView, minimizeChart])
 
   return (

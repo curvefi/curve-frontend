@@ -4,18 +4,25 @@ import { LoanFormConnect } from '@/loan/components/LoanFormConnect'
 import { SCRVUSD_VAULT_ADDRESS } from '@/loan/constants'
 import { useStore } from '@/loan/store/useStore'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
+import Stack from '@mui/material/Stack'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useDebounced } from '@ui-kit/hooks/useDebounce'
+import { useScrvUsdNewForms } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 import { TransactionDetails } from '../components/TransactionDetails'
+import { ScrvUsdDepositForm } from '../ScrvUsdDepositForm'
+import { ScrvUsdWithdrawForm } from '../ScrvUsdWithdrawForm'
 import { TransactionTracking } from '../TransactionTracking'
 import { DeployButton } from './DeployButton'
 import { DepositModule } from './DepositModule'
 import { WithdrawModule } from './WithdrawModule'
+
+const { Spacing } = SizesAndSpaces
 
 type DepositWithdrawProps = {
   params: NetworkUrlParams
@@ -141,4 +148,34 @@ const menu = [
   },
 ] satisfies FormTab<NetworkUrlParams>[]
 
-export const DepositWithdraw = ({ params }: DepositWithdrawProps) => <FormTabs params={params} menu={menu} />
+const newMenu = [
+  {
+    value: 'deposit',
+    label: t`Deposit`,
+    component: ScrvUsdDepositForm,
+  },
+  {
+    value: 'withdraw',
+    label: t`Withdraw`,
+    component: ScrvUsdWithdrawForm,
+  },
+  {
+    value: 'swap',
+    label: t`Swap`,
+    href: ({ network }) =>
+      `${getInternalUrl('dex', network, DEX_ROUTES.PAGE_SWAP)}?from=${CRVUSD_ADDRESS}&to=${SCRVUSD_VAULT_ADDRESS}`,
+  },
+] satisfies FormTab<NetworkUrlParams>[]
+
+export const DepositWithdraw = ({ params }: DepositWithdrawProps) => {
+  const useNewForms = useScrvUsdNewForms()
+
+  if (!useNewForms) return <FormTabs params={params} menu={menu} />
+
+  return (
+    <Stack sx={{ gap: Spacing.md }}>
+      <FormTabs params={params} menu={menu} />
+      <FormTabs params={params} menu={newMenu} />
+    </Stack>
+  )
+}

@@ -1,26 +1,17 @@
+import type { Decimal } from '@primitives/decimal.utils'
 import { requireLib } from '@ui-kit/features/connect-wallet'
-import { createValidationSuite } from '@ui-kit/lib'
-import { queryFactory, type UserParams, type UserQuery } from '@ui-kit/lib/model/query'
-import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
-import { evmAddressValidationGroup } from '@ui-kit/lib/model/query/evm-address-validation'
-import { Chain } from '@ui-kit/utils'
+import { queryFactory, rootKeys, type UserChainParams, type UserChainQuery } from '@ui-kit/lib/model/query'
+import { scrvUsdUserValidationSuite } from './scrvusd.validation'
 
-export type ScrvUsdUserBalances = { crvUSD: string; scrvUSD: string }
-
-async function _fetchSavingsUserBalances({ userAddress }: UserQuery): Promise<ScrvUsdUserBalances | null> {
-  const { crvUSD, st_crvUSD } = await requireLib('llamaApi').st_crvUSD.userBalances(userAddress)
-  return {
-    crvUSD: crvUSD === '0.0' ? '0' : crvUSD,
-    scrvUSD: st_crvUSD === '0.0' ? '0' : st_crvUSD,
-  }
-}
+export type ScrvUsdUserBalances = { crvUSD: Decimal; scrvUSD: Decimal }
 
 export const { useQuery: useScrvUsdUserBalances, invalidate: invalidateScrvUsdUserBalances } = queryFactory({
-  queryKey: ({ userAddress }: UserParams) => ['useScrvUsdUserBalances', { userAddress }] as const,
-  queryFn: _fetchSavingsUserBalances,
-  validationSuite: createValidationSuite(({ userAddress }: UserParams) => {
-    evmAddressValidationGroup({ evmAddress: userAddress })
-    llamaApiValidationGroup({ chainId: Chain.Ethereum })
-  }),
+  queryKey: ({ chainId, userAddress }: UserChainParams) =>
+    [...rootKeys.userChain({ chainId, userAddress }), 'st_crvUSD.userBalances'] as const,
+  queryFn: async ({ userAddress }: UserChainQuery) => {
+    const { crvUSD, st_crvUSD } = await requireLib('llamaApi').st_crvUSD.userBalances(userAddress)
+    return { crvUSD: crvUSD as Decimal, scrvUSD: st_crvUSD as Decimal }
+  },
+  validationSuite: scrvUsdUserValidationSuite,
   category: 'savings.user',
 })
