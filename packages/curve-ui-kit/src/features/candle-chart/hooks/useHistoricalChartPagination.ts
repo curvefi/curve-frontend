@@ -3,7 +3,6 @@ import { useCallback, useRef, type RefObject } from 'react'
 import type { LpPriceOhlcDataFormatted, OraclePriceData } from '../types'
 import { useLatestValueRef } from './useLatestValueRef'
 
-type PaginationSeriesApi = ISeriesApi<'Candlestick'> | ISeriesApi<'Line'>
 type VisibleTimeRange = { from: Time; to: Time }
 
 type UseHistoricalChartPaginationParams = {
@@ -72,27 +71,23 @@ export const useHistoricalChartPagination = ({
     chartRef.current.timeScale().setVisibleRange(pendingVisibleRange)
   }, [chartRef, ohlcDataRef, oraclePriceDataRef])
 
-  const getPaginationSeries = useCallback((): PaginationSeriesApi | null => {
-    if (ohlcDataRef.current.length > 0 && candlestickSeriesRef.current) {
-      return candlestickSeriesRef.current
-    }
-
-    if (oraclePriceDataRef.current?.length && oraclePriceSeriesRef.current) {
-      return oraclePriceSeriesRef.current
-    }
-
-    return null
-  }, [candlestickSeriesRef, ohlcDataRef, oraclePriceDataRef, oraclePriceSeriesRef])
-
   const handleVisibleLogicalRangeChange = useCallback(() => {
-    if (!chartRef.current) {
-      return
-    }
+    const chart = chartRef.current
+    if (!chart) return
 
-    const paginationSeries = getPaginationSeries()
+    const candlestickSeries = candlestickSeriesRef.current
+    const oraclePriceSeries = oraclePriceSeriesRef.current
+    const hasCandlestickData = ohlcDataRef.current.length > 0
+    const hasOraclePriceData = Boolean(oraclePriceDataRef.current?.length)
+    const paginationSeries =
+      hasCandlestickData && candlestickSeries
+        ? candlestickSeries
+        : hasOraclePriceData && oraclePriceSeries
+          ? oraclePriceSeries
+          : null
     if (!paginationSeries) return
 
-    const timeScale = chartRef.current.timeScale()
+    const timeScale = chart.timeScale()
     const logicalRange = timeScale.getVisibleLogicalRange()
 
     if (!logicalRange) {
@@ -112,7 +107,7 @@ export const useHistoricalChartPagination = ({
       pendingVisibleRangeRef.current = visibleRange
       fetchHistoricalPage()
     }
-  }, [chartRef, fetchHistoricalPage, getPaginationSeries])
+  }, [candlestickSeriesRef, chartRef, fetchHistoricalPage, ohlcDataRef, oraclePriceDataRef, oraclePriceSeriesRef])
 
   return {
     handleVisibleLogicalRangeChange,
