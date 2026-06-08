@@ -72,8 +72,7 @@ export const useLlammaOhlcChartStateModel = ({
   userPrices,
 }: LlammaOhlcChartStateModelParams) => {
   const { timeOption, setTimeOption, chartInterval, timeUnit } = useChartTimeSettings()
-  const anchorKey = `${chainKey}:${marketId}:${timeOption}`
-  const anchorEnd = useStableOhlcAnchorEnd(anchorKey)
+  const anchorEnd = useStableOhlcAnchorEnd(chainKey, marketId, timeOption)
 
   const {
     oraclePoolsChartQuery,

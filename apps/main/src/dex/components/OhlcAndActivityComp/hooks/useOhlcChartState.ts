@@ -31,9 +31,11 @@ export const useOhlcChartState = ({ rChainId, pricesApiPoolData }: UseOhlcChartS
       nCoins: pricesApiPoolData.numCoins,
     })
 
-  const chartSelectionKey = getDexChartSelectionKey(selectedChart)
   const anchorEnd = useStableOhlcAnchorEnd(
-    `${rChainId}:${pricesApiPoolData.address}:${chartSelectionKey}:${timeOption}`,
+    rChainId,
+    pricesApiPoolData.address,
+    getDexChartSelectionKey(selectedChart),
+    timeOption,
   )
   const chartQuery = useDexOhlcQuery({
     anchorEnd,

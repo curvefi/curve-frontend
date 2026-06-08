@@ -144,5 +144,7 @@ export const useOhlcPagesAdapter = <TPage, TData>({ query, selectData }: UseOhlc
 export const useOhlcQueryAdapter = <TPage, TItem>({ query, selectItems }: UseOhlcQueryAdapterParams<TPage, TItem>) =>
   useOhlcPagesAdapter({ query, selectData: pages => flattenOhlcPagesChronologically(pages, selectItems) })
 
-export const useStableOhlcAnchorEnd = (resetKey: string) =>
-  useMemo(() => ({ resetKey, value: Math.floor(Date.now() / 1000) }), [resetKey]).value
+export const useStableOhlcAnchorEnd = (...resetKeyParts: readonly (string | number)[]) => {
+  const resetKey = resetKeyParts.join(':')
+  return useMemo(() => ({ resetKey, value: Math.floor(Date.now() / 1000) }), [resetKey]).value
+}
