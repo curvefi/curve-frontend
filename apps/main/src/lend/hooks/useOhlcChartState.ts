@@ -14,6 +14,7 @@ import {
 import type { OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
 import type { FetchingStatus } from '@ui-kit/features/candle-chart/types'
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui-kit/features/candle-chart/utils'
+import { useLoanSlices } from '@ui-kit/hooks/useFeatureFlags'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { Range } from '@ui-kit/types/util'
 import { useLendMarketData } from '../hooks/useLendMarket'
@@ -26,7 +27,7 @@ type UseOhlcChartStateProps = {
   previewPrices: Range<Decimal> | undefined
 }
 
-const useLegacyChartPrices = () => {
+const useLegacyChartPrices = (enabled: boolean) => {
   const borrowMoreActiveKey = useStore(state => state.loanBorrowMore.activeKey)
   const loanRepayActiveKey = useStore(state => state.loanRepay.activeKey)
   const loanCollateralAddActiveKey = useStore(state => state.loanCollateralAdd.activeKey)
@@ -42,20 +43,21 @@ const useLegacyChartPrices = () => {
     state => state.loanCollateralRemove.detailInfo[loanCollateralRemoveActiveKey]?.prices ?? null,
   )
   return useMemo(() => {
+    if (!enabled) return undefined
     if (repayLeveragePrices?.length) return repayLeveragePrices
     if (removeCollateralPrices?.length) return removeCollateralPrices
     if (addCollateralPrices?.length) return addCollateralPrices
     if (repayLoanPrices?.length) return repayLoanPrices
     if (borrowMorePrices?.length) return borrowMorePrices
-    return null
-  }, [repayLeveragePrices, removeCollateralPrices, addCollateralPrices, repayLoanPrices, borrowMorePrices]) as
+    return undefined
+  }, [enabled, repayLeveragePrices, removeCollateralPrices, addCollateralPrices, repayLoanPrices, borrowMorePrices]) as
     | Range<Decimal>
     | undefined
 }
 
 export const useOhlcChartState = ({ rChainId, marketId, previewPrices }: UseOhlcChartStateProps) => {
   const { address: userAddress } = useConnection()
-  const storePreviewPrices = useLegacyChartPrices()
+  const storePreviewPrices = useLegacyChartPrices(useLoanSlices())
   const { data: userPrices } = useUserPrices({
     chainId: rChainId,
     marketId,
