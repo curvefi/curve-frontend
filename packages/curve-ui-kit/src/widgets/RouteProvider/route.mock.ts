@@ -65,4 +65,18 @@ export const mockRoutes: RouteResponse[] = [
     ],
     tx: { to: '0x0000000000000000000000000000000000000003', data: '0x', from: zeroAddress, value: '0' },
   },
+  {
+    id: '0x',
+    router: '0x',
+    amountIn: ['69424100000000000000'],
+    amountOut: ['66914200000000000000'],
+    priceImpact: null,
+    gas: `2100`,
+    createdAt: 0,
+    warnings: [],
+    route: [
+      { name: '0x RFQ', tokenIn: [zeroAddress], tokenOut: [zeroAddress], protocol: '0x', action: 'swap', chainId: 1 },
+    ],
+    tx: { to: '0x0000000000000000000000000000000000000004', data: '0x', from: zeroAddress, value: '0' },
+  },
 ]

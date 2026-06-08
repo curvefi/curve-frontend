@@ -27,7 +27,7 @@ export const useManageSoftLiquidation = useStableChannel
 /** New ZapV2 leverage implementation for LlamaLend markets */
 export const isZapV2Enabled = () => getReleaseChannel() === ReleaseChannel.Beta && !isZapV2Disabled()
 
-const useZapV2 = () => [useBetaChannel(), !useDisableZapV2()].every(Boolean)
+const useZapV2 = () => [useStableChannel(), !useDisableZapV2()].every(Boolean)
 
 /** gets a key to remount components when ZapV2 is toggled, forcing calls to non-reactive isZapV2Enabled */
 export const useLoanImplementationKey = () => (useZapV2() ? 'zapV2' : '')

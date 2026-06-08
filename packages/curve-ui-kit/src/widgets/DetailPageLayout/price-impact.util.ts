@@ -27,10 +27,10 @@ export const getPriceImpactSeverity = (
 
 /**
  * When using zapv2, the transaction often gets blocked because odos and enso give a nonsensical price impact.
- * For curve-solver, the price impact is not available at all yet.
+ * For 0x and curve-solver, the price impact is not available yet.
  */
 const disablePriceImpactCheck = (routeId: string | undefined) =>
-  !!routeId && ['curve-solver', 'odos', 'enso'].includes(getRouteById(routeId).router)
+  !!routeId && ['curve-solver', '0x', 'odos', 'enso'].includes(getRouteById(routeId).router)
 
 /**
  * Defines whether to block the transaction due to the price impact.

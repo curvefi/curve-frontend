@@ -24,6 +24,7 @@ const providerLabels = {
   'curve-solver': t`Curve Solver`,
   enso: t`Enso`,
   odos: t`Odos`,
+  '0x': t`0x`,
 }
 
 export type RouteProviderProps = {

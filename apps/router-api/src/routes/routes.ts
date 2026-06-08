@@ -7,15 +7,17 @@ import { buildCurveSolverRouteResponse } from '../curve-solver-router/curve-solv
 import { buildEnsoRouteResponse } from '../enso-router/enso-router'
 import { buildOdosRouteResponse } from '../odos-router/odos-router'
 import { decimalCompare, decimalMax } from '../router.utils'
+import { buildZeroExRouteResponse } from '../zeroex-router/zeroex-router'
 import { type RoutesQuery } from './routes.schemas'
 
 const ROUTE_TIMEOUT = 30_000 // 30 seconds
 
 const routers = {
   curve: buildCurveRouteResponse,
-  'curve-solver': buildCurveSolverRouteResponse,
   enso: buildEnsoRouteResponse,
   odos: buildOdosRouteResponse,
+  '0x': buildZeroExRouteResponse,
+  'curve-solver': buildCurveSolverRouteResponse,
 }
 
 const sortRoutes = (a: RouterRouteResponse, b: RouterRouteResponse) =>
