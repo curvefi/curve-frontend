@@ -7,6 +7,7 @@ import { StatsBanner } from '@/loan/components/PageCrvUsdStaking/StatsBanner'
 import { UserInformation } from '@/loan/components/PageCrvUsdStaking/UserInformation'
 import { UserPosition } from '@/loan/components/PageCrvUsdStaking/UserPosition'
 import { useScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances.query'
+import { networksIdMapper } from '@/loan/networks'
 import { useStore } from '@/loan/store/useStore'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
 import Fade from '@mui/material/Fade'
@@ -64,6 +65,7 @@ function useLegacyFetching({
 
 export const CrvUsdStakingPage = () => {
   const params = useParams<NetworkUrlParams>()
+  const chainId = networksIdMapper[params.network]
   const [isChartExpanded = false, , minimizeChart, toggleChartExpanded] = useSwitch(false)
   const { llamaApi: lendApi = null } = useCurve()
   const { address, isConnecting } = useConnection()
@@ -122,8 +124,9 @@ export const CrvUsdStakingPage = () => {
           </div>
         </Fade>
       )}
-      {!isUserScrvUsdBalanceZero && <UserPosition />}
+      {!isUserScrvUsdBalanceZero && <UserPosition chainId={chainId} />}
       <Statistics
+        chainId={chainId}
         hideExpandChart={isMobile}
         isChartExpanded={isChartExpanded}
         toggleChartExpanded={toggleChartExpanded}
