@@ -22,10 +22,8 @@ const HISTORICAL_FETCH_DEBOUNCE_MS = 500
 const shouldFetchHistoricalPage = (barsInfo: { barsBefore: number } | null) =>
   !!barsInfo && barsInfo.barsBefore < HISTORICAL_PAGE_THRESHOLD_BARS
 
-const getHistoricalPaginationDataLength = (
-  ohlcData: LpPriceOhlcDataFormatted[],
-  oraclePriceData?: OraclePriceData[],
-) => (ohlcData.length > 0 ? ohlcData.length : (oraclePriceData?.length ?? 0))
+const getHistoricalPaginationDataLength = (ohlcData: LpPriceOhlcDataFormatted[], oraclePriceData?: OraclePriceData[]) =>
+  ohlcData.length || (oraclePriceData?.length ?? 0)
 
 export const useHistoricalChartPagination = ({
   candlestickSeriesRef,

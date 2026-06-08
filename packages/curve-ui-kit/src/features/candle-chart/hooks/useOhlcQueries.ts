@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useRef } from 'react'
+import { notFalsy } from '@primitives/objects.utils'
 import { type InfiniteData, type QueryKey, useInfiniteQuery } from '@tanstack/react-query'
 import { createOhlcPageParam, getNextOhlcPageParam, type OhlcPageParam, type OhlcPageResult } from '../query-utils'
 import type { TimeOption } from '../types'
@@ -113,19 +114,19 @@ export const refetchOhlcQueries = (queries: readonly { refetch: () => Promise<un
   Promise.all(queries.map(query => query.refetch()))
 
 const useOhlcAdapter = <TPage, TData>({ query, data }: UseOhlcAdapterParams<TPage, TData>) => {
-  const { error, fetchNextPage, hasNextPage, isError, isFetchingNextPage, isLoading, isSuccess, refetch } = query
+  const { error, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isSuccess, refetch } = query
   const canFetchMore = canFetchMoreOhlc({ hasNextPage, isFetchingNextPage, isSuccess })
   const isFetchingMore = isFetchingNextPage
 
   const fetchMore = useCallback(
-    () => Promise.all(canFetchMore ? [fetchNextPage(FETCH_NEXT_PAGE_OPTIONS)] : []),
+    () => Promise.all(notFalsy(canFetchMore && fetchNextPage(FETCH_NEXT_PAGE_OPTIONS))),
     [canFetchMore, fetchNextPage],
   )
 
   return {
     canFetchMore,
     data,
-    error: isError ? error : null,
+    error,
     fetchMore,
     isFetchingMore,
     isLoading,
@@ -143,6 +144,5 @@ export const useOhlcPagesAdapter = <TPage, TData>({ query, selectData }: UseOhlc
 export const useOhlcQueryAdapter = <TPage, TItem>({ query, selectItems }: UseOhlcQueryAdapterParams<TPage, TItem>) =>
   useOhlcPagesAdapter({ query, selectData: pages => flattenOhlcPagesChronologically(pages, selectItems) })
 
-const createOhlcAnchorEnd = (_resetKey: string) => Math.floor(Date.now() / 1000)
-
-export const useStableOhlcAnchorEnd = (resetKey: string) => useMemo(() => createOhlcAnchorEnd(resetKey), [resetKey])
+export const useStableOhlcAnchorEnd = (resetKey: string) =>
+  useMemo(() => ({ resetKey, value: Math.floor(Date.now() / 1000) }), [resetKey]).value

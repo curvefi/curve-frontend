@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import type { Chain } from '@curvefi/prices-api'
-import { notFalsy } from '@primitives/objects.utils'
+import { notFalsy, maybe, maybes } from '@primitives/objects.utils'
 import {
   fetchMoreOhlcQueries,
   refetchOhlcQueries,
@@ -32,7 +32,7 @@ type UseLlammaOhlcChartDataParams = {
   endpoint: Endpoint
   interval: number
   llamma: string
-  oraclePrice: number | undefined
+  oraclePrice: string | undefined
   timeOption: TimeOption
   units: OhlcTimeUnit
 }
@@ -93,20 +93,22 @@ export const useLlammaOhlcChartData = ({
     !oraclePoolsHaveChartData && shouldFetchLlammaQuery && rawOraclePriceFallback.isLoading
   const oraclePriceFallbackQuery = useMappedQuery(
     rawOraclePriceFallback,
-    useCallback(data => applyLatestOraclePrice(data, oraclePrice), [oraclePrice]),
+    useCallback(data => applyLatestOraclePrice(data, maybe(oraclePrice, Number)), [oraclePrice]),
   )
   const oracleTokenPage = oraclePoolQuery.data?.pages.find(
     page => page.collateralToken?.symbol && page.borrowedToken?.symbol,
   )
-  const oracleTokens = useMemo(() => {
-    const { collateralToken, borrowedToken } = oracleTokenPage ?? {}
-    return collateralToken && borrowedToken
-      ? {
+  const oracleTokens = useMemo(
+    () =>
+      maybes(
+        [oracleTokenPage?.collateralToken, oracleTokenPage?.borrowedToken],
+        ([collateralToken, borrowedToken]) => ({
           collateralSymbol: collateralToken.symbol,
           borrowedSymbol: borrowedToken.symbol,
-        }
-      : null
-  }, [oracleTokenPage])
+        }),
+      ),
+    [oracleTokenPage],
+  )
   const selectHistoricalQueries = useCallback(
     (selection: HistoricalSelection) =>
       notFalsy(selection.oraclePool && oraclePoolQuery, selection.llamma && shouldFetchLlammaQuery && llammaQuery),

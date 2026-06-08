@@ -3,6 +3,7 @@ import { createChart, ColorType, LineStyle, CandlestickSeries, LineSeries } from
 import { sortBy } from 'lodash'
 import { useEffect, useRef, useCallback, useMemo, type RefObject } from 'react'
 import { Box } from '@mui/material'
+import { maybes } from '@primitives/objects.utils'
 import { CHART_LINE_WIDTHS } from '@ui-kit/shared/ui/Chart/chart.utils'
 import { PRICE_SCALE_MARGINS } from './constants'
 import { createLiquidationRangeSeries } from './custom-series/liquidationRangeSeries'
@@ -36,14 +37,14 @@ const normalizeLiquidationRangePoints = (range?: LlammaLiquididationRange | null
   range.price2?.forEach(({ time, value }) => assignPoint(time, 'lower', value))
 
   const orderedPoints = sortBy(
-    Array.from(pointMap, ([time, { upper, lower }]) =>
-      typeof upper === 'number' && typeof lower === 'number'
-        ? {
-            time,
-            upper: Math.max(upper, lower),
-            lower: Math.min(upper, lower),
-          }
-        : null,
+    Array.from(
+      pointMap,
+      ([time, { upper, lower }]) =>
+        maybes([upper, lower], points => ({
+          time,
+          upper: Math.max(...points),
+          lower: Math.min(...points),
+        })) ?? null,
     ).filter(point => point !== null),
     point => point.time,
   )

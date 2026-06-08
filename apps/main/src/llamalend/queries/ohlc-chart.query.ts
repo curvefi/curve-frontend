@@ -3,16 +3,17 @@ import type { Chain } from '@curvefi/prices-api'
 import { getOracle, type Endpoint, type OraclePool } from '@curvefi/prices-api/lending'
 import { getOHLC } from '@curvefi/prices-api/llamma'
 import type { Address, Token } from '@primitives/address.utils'
+import { assert, maybe } from '@primitives/objects.utils'
 import { useOhlcInfiniteQuery } from '@ui-kit/features/candle-chart/hooks/useOhlcQueries'
 import {
   assertInitialOhlcPageHasData,
   createCandleChartQueryKey,
   createOhlcPageResult,
-  type OhlcPageParam,
   type OhlcPageResult,
 } from '@ui-kit/features/candle-chart/query-utils'
 import type { LpPriceOhlcDataFormatted, OraclePriceData, TimeOption } from '@ui-kit/features/candle-chart/types'
 import { formatCandleOhlcData, formatOraclePriceData } from '@ui-kit/features/candle-chart/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 type OhlcTimeUnit = Parameters<typeof getOHLC>[0]['units']
 
@@ -35,7 +36,6 @@ type LlammaOhlcQueryParams = BaseOhlcQueryParams & {
 }
 
 export type OraclePoolOhlcPage = OhlcPageResult & {
-  page: OhlcPageParam
   ohlcData: LpPriceOhlcDataFormatted[]
   oraclePriceData: OraclePriceData[]
   borrowedToken?: Token
@@ -43,7 +43,6 @@ export type OraclePoolOhlcPage = OhlcPageResult & {
 }
 
 export type LlammaOhlcPage = OhlcPageResult & {
-  page: OhlcPageParam
   oraclePriceData: OraclePriceData[]
 }
 
@@ -53,22 +52,18 @@ const getOraclePoolTokenPair = (pools: OraclePool[]): Pick<OraclePoolOhlcPage, '
   const borrowedPool = pools.at(-1)
 
   return {
-    ...(collateralPool
-      ? {
-          collateralToken: {
-            address: collateralPool.collateralAddress,
-            symbol: collateralPool.collateralSymbol,
-          },
-        }
-      : {}),
-    ...(borrowedPool
-      ? {
-          borrowedToken: {
-            address: borrowedPool.borrowedAddress,
-            symbol: borrowedPool.borrowedSymbol,
-          },
-        }
-      : {}),
+    ...maybe(collateralPool, ({ collateralAddress, collateralSymbol }) => ({
+      collateralToken: {
+        address: collateralAddress,
+        symbol: collateralSymbol,
+      },
+    })),
+    ...maybe(borrowedPool, ({ borrowedAddress, borrowedSymbol }) => ({
+      borrowedToken: {
+        address: borrowedAddress,
+        symbol: borrowedSymbol,
+      },
+    })),
   }
 }
 
@@ -98,20 +93,16 @@ export const useOraclePoolOhlcQuery = ({
     timeOption,
     enabled: enabled && !!chain && !!controller,
     fetchPage: async ({ pageParam, signal }): Promise<OraclePoolOhlcPage> => {
-      if (!chain) {
-        throw new Error('Cannot fetch oracle-pool OHLC data without a chain.')
-      }
-
-      const page = pageParam
+      const validChain = assert(chain, t`Cannot fetch oracle-pool OHLC data without a chain.`)
       const { data, pools, ohlc } = await getOracle(
         {
           endpoint,
-          chain,
+          chain: validChain,
           controller: getAddress(controller) as Address,
           interval,
           units,
-          start: page.start,
-          end: page.end,
+          start: pageParam.start,
+          end: pageParam.end,
         },
         { signal },
       )
@@ -120,14 +111,13 @@ export const useOraclePoolOhlcQuery = ({
         anchorEnd,
         dataLength: data.length,
         message: 'No oracle OHLC data found. Data may be unavailable for this pool.',
-        page,
+        pageParam,
       })
 
       const ohlcData = formatCandleOhlcData(ohlc)
       const oraclePriceData = formatOraclePriceData(data)
 
       return {
-        page,
         ohlcData,
         oraclePriceData,
         ...createOhlcPageResult(data),
@@ -162,20 +152,16 @@ export const useLlammaOhlcQuery = ({
     timeOption,
     enabled: enabled && !!chain && !!llamma,
     fetchPage: async ({ pageParam, signal }): Promise<LlammaOhlcPage> => {
-      if (!chain) {
-        throw new Error('Cannot fetch LLAMMA OHLC data without a chain.')
-      }
-
-      const page = pageParam
+      const validChain = assert(chain, 'Cannot fetch LLAMMA OHLC data without a chain.')
       const ohlc = await getOHLC(
         {
           endpoint,
-          chain,
+          chain: validChain,
           llamma: llamma as Address,
           interval,
           units,
-          start: page.start,
-          end: page.end,
+          start: pageParam.start,
+          end: pageParam.end,
         },
         { signal },
       )
@@ -184,13 +170,12 @@ export const useLlammaOhlcQuery = ({
         anchorEnd,
         dataLength: ohlc.length,
         message: 'No LLAMMA OHLC data found. Data may be unavailable for this pool.',
-        page,
+        pageParam,
       })
 
       const oraclePriceData = formatOraclePriceData(ohlc)
 
       return {
-        page,
         oraclePriceData,
         ...createOhlcPageResult(ohlc),
       }

@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import type { Chain } from '@curvefi/prices-api'
 import type { Decimal } from '@primitives/decimal.utils'
+import { maybe } from '@primitives/objects.utils'
 import { useChartLegendToggles, useChartTimeSettings, useLiquidationRange } from '@ui-kit/features/candle-chart'
 import type { OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
 import { useStableOhlcAnchorEnd } from '@ui-kit/features/candle-chart/hooks/useOhlcQueries'
@@ -73,7 +74,6 @@ export const useLlammaOhlcChartStateModel = ({
   const { timeOption, setTimeOption, chartInterval, timeUnit } = useChartTimeSettings()
   const anchorKey = `${chainKey}:${marketId}:${timeOption}`
   const anchorEnd = useStableOhlcAnchorEnd(anchorKey)
-  const latestOraclePrice = oraclePrice ? Number(oraclePrice) : undefined
 
   const {
     oraclePoolsChartQuery,
@@ -87,7 +87,7 @@ export const useLlammaOhlcChartStateModel = ({
     chain: network,
     controller: controllerAddress,
     llamma: llammaAddress,
-    oraclePrice: latestOraclePrice,
+    oraclePrice,
     interval: chartInterval,
     timeOption,
     units: timeUnit,
@@ -150,7 +150,7 @@ export const useLlammaOhlcChartStateModel = ({
     liqRangeCurrentVisible,
     liqRangeNewVisible,
     oraclePriceVisible,
-    latestOraclePrice,
+    latestOraclePrice: maybe(oraclePrice, Number),
   }
 
   return {
