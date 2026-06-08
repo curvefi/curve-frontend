@@ -70,7 +70,6 @@ export const MARKET_COMPOSITION_COLUMNS = [
             title={maybe(
               getValue(),
               value =>
-                !isNaN(value) &&
                 typeof symbol === 'string' &&
                 `${value} ${symbol} ${maybe(row.original.amountUsd, value => ` / ${value}`) ?? ''}`,
             )}
