@@ -1,11 +1,13 @@
 import { useEffect } from 'react'
-import { maybe } from '@primitives/objects.utils'
 import type { Query } from '@ui-kit/types/util'
 
 /**
- * Syncs `data` to `callback` whenever it changes to a valid value. Clears it when unmounting.
+ * Syncs `data` to `callback` whenever it changes to a resolved value. Keeps the previous value while loading, and
+ * clears it when the query explicitly resolves to null or unmounts.
  */
 export function useCallbackSync<T>({ data }: Query<T | null>, callback: (data: T | undefined) => void): void {
-  useEffect(() => maybe(data, data => callback(data)), [callback, data]) // keep parent in sync, keep stale while revalidating
+  useEffect(() => {
+    if (data !== undefined) callback(data ?? undefined)
+  }, [callback, data])
   useEffect(() => () => callback(undefined), [callback]) // clear stale data only when unmounting
 }
