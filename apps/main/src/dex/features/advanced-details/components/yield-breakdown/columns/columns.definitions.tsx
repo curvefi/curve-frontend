@@ -43,7 +43,7 @@ export const YIELD_BREAKDOWN_COLUMNS = [
     header: headers[YieldBreakdownColumnId.Price],
     cell: ({ getValue }) => (
       <InlineTableCell>
-        <Typography variant="tableCellMRegular">{formatNumber(getValue(), 'usd.amount')}</Typography>
+        <Typography>{formatNumber(getValue(), 'usd.amount')}</Typography>
       </InlineTableCell>
     ),
     enableSorting: false,

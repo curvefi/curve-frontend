@@ -36,8 +36,8 @@ export const POINTS_CAMPAIGNS_COLUMNS = [
     id: PointsCampaignsColumnId.Points,
     header: headers[PointsCampaignsColumnId.Points],
     cell: ({ getValue }) => (
-      <InlineTableCell sx={{ alignItems: 'end' }}>
-        <Typography variant="tableCellMRegular">{getValue()}</Typography>
+      <InlineTableCell>
+        <Typography>{getValue()}</Typography>
       </InlineTableCell>
     ),
     enableSorting: false,
@@ -47,8 +47,8 @@ export const POINTS_CAMPAIGNS_COLUMNS = [
     id: PointsCampaignsColumnId.CampaignUrl,
     header: headers[PointsCampaignsColumnId.CampaignUrl],
     cell: ({ getValue }) => (
-      <InlineTableCell sx={{ alignItems: 'end' }}>
-        <ExternalLink href={getValue()} label={t`To campaign`} />
+      <InlineTableCell>
+        <ExternalLink href={getValue()} label={t`To campaign`} sx={{ justifyContent: 'end' }} />
       </InlineTableCell>
     ),
     enableSorting: false,
