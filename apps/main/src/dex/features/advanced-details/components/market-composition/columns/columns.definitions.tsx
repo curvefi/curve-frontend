@@ -70,6 +70,7 @@ export const MARKET_COMPOSITION_COLUMNS = [
             title={maybe(
               getValue(),
               value =>
+                // TokenInfo primary is ReactNode; we only want to show a tooltip if it's a pure string (which it should for all our cases)
                 typeof symbol === 'string' &&
                 `${value} ${symbol} ${maybe(row.original.amountUsd, value => ` / ${value}`) ?? ''}`,
             )}
