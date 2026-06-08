@@ -104,7 +104,7 @@ export const useLlammaOhlcChartStateModel = ({
       llammaOracleLine,
     })
 
-  const isLoading = !isAnchorEndReady || oraclePoolsChartQuery.isLoading || isWaitingForFallbackChartData
+  const isLoading = !enabled || !isAnchorEndReady || oraclePoolsChartQuery.isLoading || isWaitingForFallbackChartData
   const selectedChartKey = isLoading ? undefined : isOracleLineOnly ? 'llamma' : 'oracle'
   const currentError = hasAnySeries ? null : (oraclePriceFallbackQuery.error ?? oraclePoolsChartQuery.error)
   const noDataAvailable = enabled && !isLoading && !currentError && !hasAnySeries
