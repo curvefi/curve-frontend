@@ -23,6 +23,7 @@ const providerLabels = {
   curve: t`Curve`,
   enso: t`Enso`,
   odos: t`Odos`,
+  '0x': t`0x`,
 }
 
 export type RouteProviderProps = {

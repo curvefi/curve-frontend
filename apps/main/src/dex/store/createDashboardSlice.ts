@@ -362,28 +362,23 @@ export const createDashboardSlice = (
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       // update form
-      const cFormStatus: FormStatus = {
+      const formStatus: FormStatus = {
         ...DEFAULT_FORM_STATUS,
         formType: 'VECRV',
         formProcessing: true,
         step: 'WITHDRAW',
       }
-      sliceState.setStateByKey('formStatus', cFormStatus)
+      sliceState.setStateByKey('formStatus', formStatus)
 
       const resp = await curvejsApi.lockCrv.withdrawLockedCrv(curve, provider, walletAddress)
 
-      cFormStatus.formProcessing = false
-      cFormStatus.step = ''
-
-      if (resp.error) {
-        cFormStatus.error = resp.error
-      }
-
-      if (!resp.error && resp.walletAddress === formValues.walletAddress) {
-        cFormStatus.formTypeCompleted = 'WITHDRAW'
-      }
-
-      sliceState.setStateByKey('formStatus', cFormStatus)
+      sliceState.setStateByKey('formStatus', {
+        ...formStatus,
+        formProcessing: false,
+        step: '',
+        error: resp.error || '',
+        formTypeCompleted: !resp.error && resp.walletAddress === formValues.walletAddress ? 'WITHDRAW' : '',
+      })
       return resp
     },
 
