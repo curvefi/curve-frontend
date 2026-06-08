@@ -148,7 +148,7 @@ export const useLlammaOhlcChartStateModel = ({
     oraclePriceData,
     liquidationRange: selectedLiqRange,
     timeOption,
-    selectedChartKey: selectedChartKey ?? '',
+    selectedChartKey,
     selectChartList,
     refetchPricesData: () => refetch({ oraclePool: !isOracleLineOnly, llamma: shouldFetchFallbackOracleLine }),
     fetchMoreChartData: () => fetchMore({ oraclePool: !isOracleLineOnly, llamma: shouldFetchFallbackOracleLine }),

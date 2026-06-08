@@ -75,16 +75,19 @@ export const useDexChartList = ({ coins, nCoins }: UseDexChartListArgs) => {
         ? 'lp-token'
         : `pair-${selectedPairIndex}`
 
-  const selectChartList: ChartSelections[] = useMemo(
-    () => [
+  const selectChartList: ChartSelections[] = useMemo(() => {
+    const lpTokenSymbol = coins[0]?.symbol
+    const lpTokenLabel = lpTokenSymbol ? t`LP Token (${lpTokenSymbol})` : t`LP Token`
+
+    return [
       {
         activeTitle: t`LP Token (USD)`,
         label: t`LP Token (USD)`,
         key: 'lp-usd',
       },
       {
-        activeTitle: t`LP Token (${coins[0]?.symbol ?? ''})`,
-        label: t`LP Token (${coins[0]?.symbol ?? ''})`,
+        activeTitle: lpTokenLabel,
+        label: lpTokenLabel,
         key: 'lp-token',
       },
       ...chartCombinations.map(([mainToken, refToken], index) => {
@@ -95,16 +98,16 @@ export const useDexChartList = ({ coins, nCoins }: UseDexChartListArgs) => {
           : formatPairLabel(mainToken, refToken)
         return { activeTitle: label, label, key: `pair-${index}` }
       }),
-    ],
-    [coins, chartCombinations, selectedPairIndex, selectedChart],
-  )
+    ]
+  }, [coins, chartCombinations, selectedPairIndex, selectedChart])
 
   const handleSelectChart = useCallback(
     (key: string) => {
       if (key === 'lp-usd') {
         setSelectedChart({ type: 'lp-usd' })
       } else if (key === 'lp-token') {
-        setSelectedChart({ type: 'lp-token', symbol: coins[0]?.symbol ?? '' })
+        const lpTokenSymbol = coins[0]?.symbol
+        setSelectedChart(lpTokenSymbol ? { type: 'lp-token', symbol: lpTokenSymbol } : { type: 'lp-token' })
       } else if (key.startsWith('pair-')) {
         const index = parseInt(key.replace('pair-', ''), 10)
         const [mainToken, refToken] = chartCombinations[index]

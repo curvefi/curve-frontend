@@ -20,7 +20,7 @@ export type OhlcChartProps = {
   ohlcData: LpPriceOhlcDataFormatted[]
   oraclePriceData?: OraclePriceData[]
   liquidationRange?: LiquidationRanges
-  selectedChartKey: string
+  selectedChartKey: string | undefined
   timeOption: TimeOption
   refetchPricesData: () => Promise<unknown> | void
   fetchMoreChartData: () => Promise<unknown>
@@ -56,7 +56,10 @@ export const ChartWrapper = ({
 }: OhlcChartProps) => {
   const colors = useChartPalette({ backgroundOverride: betaBackgroundColor })
 
-  const errorMessage = t`Unable to fetch "${selectChartList?.find(c => c.key === selectedChartKey)?.label ?? ''}" data.`
+  const selectedChartLabel = selectChartList.find(c => c.key === selectedChartKey)?.label
+  const errorMessage = selectedChartLabel
+    ? t`Unable to fetch "${selectedChartLabel}" data.`
+    : t`Unable to fetch chart data.`
 
   return (
     <Stack direction="column" sx={{ width: '100%', minWidth: 0 }}>

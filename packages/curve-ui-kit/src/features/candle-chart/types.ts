@@ -6,7 +6,7 @@ export type TimeOption = (typeof TIME_OPTIONS)[number]
 
 export type ChartSelection =
   | { type: 'lp-usd' }
-  | { type: 'lp-token'; symbol: string }
+  | { type: 'lp-token'; symbol?: string }
   | { type: 'pair'; mainToken: PoolCoin; refToken: PoolCoin }
 
 export type LpPriceOhlcData = {
