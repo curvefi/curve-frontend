@@ -9,14 +9,6 @@ export type ChartSelection =
   | { type: 'lp-token'; symbol: string }
   | { type: 'pair'; mainToken: PoolCoin; refToken: PoolCoin }
 
-export type LpPriceOhlcData = {
-  time: number
-  open: number
-  close: number
-  high: number
-  low: number
-}
-
 export type LpPriceOhlcDataFormatted = {
   time: UTCTimestamp
   open: number

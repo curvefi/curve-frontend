@@ -28,5 +28,3 @@ export const useLLv2 = useBetaChannel
 
 /** New market list and search layout */
 export const useNewMarketListLayout = useBetaChannel
-
-export const useLoanSlices = () => false

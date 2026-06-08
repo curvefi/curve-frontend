@@ -1,4 +1,3 @@
-import type { HealthColorKey } from '@/llamalend/llamalend.types'
 import type { IChainId, INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { Address } from '@primitives/address.utils'
@@ -28,31 +27,6 @@ export type NetworkConfig<TId extends string = string, TChainId extends number =
   pricesData: boolean
 } & BaseConfig<TId, TChainId>
 
-export type MaxRecvLeverageResp = {
-  maxDebt: string
-  maxTotalCollateral: string
-  userCollateral: string
-  collateralFromUserBorrowed: string
-  collateralFromMaxDebt: string
-  avgPrice: string
-}
-export type LiqRangeResp = {
-  n: number
-  collateral: string
-  debt: string
-  maxRecv: string | null
-  maxRecvError: string
-  prices: string[]
-  bands: [number, number]
-}
-export type DetailInfoResp = {
-  healthFull: string
-  healthNotFull: string
-  futureRates: FutureRates | null
-  prices: string[]
-  bands: [number, number]
-}
-
 export type PageContentProps<T = UrlParams> = {
   params: T
   rChainId: ChainId
@@ -62,55 +36,6 @@ export type PageContentProps<T = UrlParams> = {
   market: LendMarketTemplate | undefined
 }
 
-export type ParsedBandsBalances = {
-  borrowed: string
-  collateral: string
-  collateralUsd: string
-  collateralBorrowedUsd: number
-  isLiquidationBand: string
-  isOraclePriceBand: boolean
-  isNGrouped: boolean
-  n: number | string
-  p_up: string
-  p_down: string
-  pUpDownMedian: string
-}
-export type MarketStatBands = {
-  bands: {
-    balances: string[]
-    maxMinBands: number[]
-    activeBand: number
-    liquidationBand: number | null
-    bandBalances: { borrowed: string; collateral: string } | null
-    bandsBalances: ParsedBandsBalances[]
-  } | null
-  error: string
-}
-export type MarketsStatsBandsMapper = Record<string, MarketStatBands>
-export type MarketStatCapAndAvailable = { totalAssets: string; available: string; error: string }
-export type MarketsStatsCapAndAvailableMapper = Record<string, MarketStatCapAndAvailable>
-export type MarketMaxLeverage = { maxLeverage: string; error: string }
-export type MarketsMaxLeverageMapper = Record<string, MarketMaxLeverage>
-export type MarketPrices = {
-  prices: {
-    oraclePrice: string
-    oraclePriceBand: number | null
-    price: string
-    basePrice: string
-  } | null
-  error: string
-}
-export type MarketsPricesMapper = Record<string, MarketPrices>
-export type MarketRates = {
-  rates: {
-    borrowApr: string
-    lendApr: string
-    borrowApy: string
-    lendApy: string
-  } | null
-  error: string
-}
-export type MarketsRatesMapper = Record<string, MarketRates>
 export type RewardOther = {
   apy: number
   decimals?: number
@@ -119,98 +44,4 @@ export type RewardOther = {
   symbol: string
   tokenAddress: string
   tokenPrice?: number
-}
-export type RewardCrv = number
-export type MarketRewards = {
-  rewards: {
-    other: RewardOther[]
-    crv: RewardCrv[]
-  } | null
-  error: string
-}
-export type MarketsRewardsMapper = Record<string, MarketRewards>
-export type MarketClaimable = {
-  claimable: {
-    crv: string
-    rewards: { token: string; symbol: string; amount: string }[]
-  } | null
-  error: string
-}
-
-export type UserLoss = {
-  deposited_collateral: string
-  current_collateral_estimation: string
-  loss: string
-  loss_pct: string
-}
-export type UserLoanState = { collateral: string; borrowed: string; debt: string; N: string; error: string }
-export type UserLoanDetails = {
-  details: {
-    health: string
-    healthFull: string
-    healthNotFull: string
-    bands: number[]
-    bandsBalances: ParsedBandsBalances[]
-    bandsPct: string
-    isCloseToLiquidation: boolean
-    loss?: UserLoss
-    prices: string[]
-    range: number | null
-    state: { collateral: string; borrowed: string; debt: string; N: string; isSoftLiquidation: boolean }
-    status: { label: string; colorKey: HealthColorKey; tooltip: string }
-    leverage: string
-  } | null
-  error: string
-}
-export type UsersLoansDetailsMapper = Record<string, UserLoanDetails>
-export type UserMarketBalances = {
-  collateral: string
-  borrowed: string
-  vaultShares: string
-  vaultSharesConverted: string
-  gauge: string
-  error: string
-}
-export type UsersMarketsBalancesMapper = Record<string, UserMarketBalances>
-export type FutureRates = {
-  borrowApr: string
-  lendApr: string
-  borrowApy: string
-  lendApy: string
-}
-export type MarketDetailsView = 'user' | 'market' | ''
-
-export enum FormWarning {
-  // loan deleverage
-  FullRepaymentOnly = 'warning-full-repayment-only',
-
-  IsPayoffAmount = 'warning-is-payoff-amount',
-  NotInLiquidationMode = 'warning-not-in-liquidation-mode',
-  NotEnoughCrvusd = 'warning-not-enough-crvusd',
-}
-
-export enum FormError {
-  // vault
-
-  // repay
-  FullRepaymentRequired = 'error-full-repayment-required',
-
-  // all
-  API = 'error-api',
-  ExistingLoan = 'error-existing-loan',
-  EstGasApproval = 'error-est-gas-approval',
-  InvalidProvider = 'error-invalid-provider',
-  WalletBalances = 'error-wallet-balances',
-  StepApprove = 'error-step-approve',
-  LiquidationMode = 'error-liquidation-mode',
-  TotalSupply = 'error-total-supply',
-}
-
-export type FormStatus = {
-  isApproved: boolean
-  isApprovedCompleted: boolean
-  isComplete: boolean
-  isInProgress: boolean
-  error: string
-  stepError: string
 }

@@ -122,9 +122,6 @@ export type BandsChartOption = Omit<EChartsOption, 'series'> & {
   series?: BandsChartSeries[]
 }
 
-export type BandsBalances = Record<number, { borrowed: string; collateral: string }>
-export type BandsBalancesArr = { borrowed: string; collateral: string; band: number }[]
-
 export type FetchedBandsBalances = {
   borrowed: Decimal
   collateral: Decimal
