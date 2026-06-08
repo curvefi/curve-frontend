@@ -148,15 +148,7 @@ export const useOhlcChartState = ({ rChainId, marketId, previewPrices }: UseOhlc
         chartTimeSettings.end,
       )
     }
-  }, [
-    chartInterval,
-    chartTimeSettings,
-    fetchLlammaOhlcData,
-    fetchOraclePoolOhlcData,
-    market,
-    rChainId,
-    timeUnit,
-  ])
+  }, [chartInterval, chartTimeSettings, fetchLlammaOhlcData, fetchOraclePoolOhlcData, market, rChainId, timeUnit])
 
   // Eagerly reset chart state as soon as the market identity changes, before the market entity resolves.
   // Without this, stale data from the previous market stays visible during the gap between navigation and fetch.
