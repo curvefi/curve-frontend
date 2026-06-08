@@ -40,7 +40,7 @@ const [PLACEHOLDER, PLACEHOLDER_USD] = [0.00001, 0.001]
 
 export const RouteProviderCard = ({
   query: { data: route, error, isLoading, isFetching, enabled },
-  tokenOut,
+  tokenOut: { symbol: toTokenSymbol, usdRate, decimals },
   isSelected,
   bestOutputAmount,
   onSelect,
@@ -48,20 +48,14 @@ export const RouteProviderCard = ({
   chainId,
   networks,
 }: RouteProviderCardProps) => {
-  const {
-    symbol: toTokenSymbol,
-    usdRate: { data: usdRate },
-    decimals,
-  } = tokenOut
-  const amountOut = decimals == null || !route ? null : fromWei(route.amountOut[0], decimals)
+  const out = maybes([route, decimals], ([{ amountOut }, decimals]) => fromWei(amountOut[0], decimals))
   const { data: gasEstimate } = useEstimateGas(networks, chainId, route?.gas)
-  const { name: networkName } = networks[chainId]
   const Icon = RouteProviderIcons[router]
-  const providerLabel = RouteProviderLabels[router]
+  const disabledTooltip = t`${RouteProviderLabels[router]} is unavailable on ${networks[chainId].name}.`
   return (
-    <WithWrapper shouldWrap={!enabled} Wrapper={Tooltip} title={t`${providerLabel} is unavailable on ${networkName}.`}>
+    <WithWrapper shouldWrap={!enabled} Wrapper={Tooltip} title={disabledTooltip}>
       <SelectableCard
-        onClick={useCallback(() => onSelect(router), [onSelect, router])}
+        onClick={useCallback(() => (enabled ? onSelect(router) : undefined), [onSelect, router, enabled])}
         isSelected={isSelected}
         isError={!!error}
         data-testid="route-provider-card"
@@ -72,11 +66,7 @@ export const RouteProviderCard = ({
           sx={{
             gap: Spacing.xxs,
             width: '100%',
-            ...(!enabled && {
-              opacity: 0.5,
-              pointerEvents: 'none',
-              cursor: 'not-allowed',
-            }),
+            ...(!enabled && { opacity: 0.5, pointerEvents: 'none', cursor: 'not-allowed' }),
           }}
         >
           <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
@@ -88,11 +78,7 @@ export const RouteProviderCard = ({
                   color="textPrimary"
                   data-testid="route-provider-amount"
                 >
-                  {isLoading
-                    ? PLACEHOLDER
-                    : (maybe(amountOut, amountOut =>
-                        formatNumber(isLoading ? PLACEHOLDER : amountOut, { abbreviate: false }),
-                      ) ?? '-')}
+                  {isLoading ? PLACEHOLDER : (maybe(out, n => formatNumber(n, { abbreviate: false })) ?? '-')}
                 </Typography>
               </WithSkeleton>
               {toTokenSymbol && (
@@ -111,11 +97,11 @@ export const RouteProviderCard = ({
             <Stack direction="row" sx={{ gap: Spacing.xxs, alignItems: 'center' }}>
               <WithSkeleton loading={isLoading}>
                 <Typography variant="bodyXsRegular" color="textTertiary" data-testid="route-provider-usd">
-                  {isLoading
+                  {isLoading || usdRate.isLoading
                     ? PLACEHOLDER_USD
                     : (maybes(
-                          [amountOut, usdRate],
-                          ([amountOut, usdRate]) => `~${formatNumber(parseFloat(amountOut) * usdRate, 'usd.notional')}`,
+                          [out, usdRate.data],
+                          ([out, usd]) => `~${formatNumber(parseFloat(out) * usd, 'usd.notional')}`,
                         ) ?? route)
                       ? '-'
                       : t`No route available`}
@@ -132,7 +118,7 @@ export const RouteProviderCard = ({
             <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xxs }}>
               <Icon />
               <Typography variant="bodyXsRegular" color="textSecondary">
-                {providerLabel}
+                {RouteProviderLabels[router]}
               </Typography>
             </Stack>
           </Stack>
