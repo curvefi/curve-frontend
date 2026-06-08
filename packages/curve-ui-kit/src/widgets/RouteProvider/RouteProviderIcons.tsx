@@ -14,4 +14,5 @@ export const RouteProviderIcons: Record<RouteProvider, () => ReactNode> = {
   curve: () => <Box component="img" src={CURVE_LOGO_URL} alt="Curve" sx={iconSx} />,
   enso: () => <EnsoIcon sx={iconSx} />,
   odos: () => <OdosIcon sx={iconSx} />,
+  '0x': () => <Box sx={{ ...iconSx, fontSize: 10, lineHeight: 1.6, textAlign: 'center' }}>0x</Box>,
 }
