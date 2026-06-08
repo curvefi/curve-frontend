@@ -10,6 +10,7 @@ import type { LiquidationRangePoint, LiquidationRangeSeriesOptions } from './cus
 import { useCandleTimeScaleSubscriptions } from './hooks/useCandleTimeScaleSubscriptions'
 import type { ChartColors } from './hooks/useChartPalette'
 import { useHistoricalChartPagination } from './hooks/useHistoricalChartPagination'
+import { useInitialChartRightOffset } from './hooks/useInitialChartRightOffset'
 import { useLatestValueRef } from './hooks/useLatestValueRef'
 import { useVisiblePriceRangeSync } from './hooks/useVisiblePriceRangeSync'
 import type { LpPriceOhlcDataFormatted, OraclePriceData, LiquidationRanges, LlammaLiquididationRange } from './types'
@@ -141,7 +142,6 @@ export const CandleChart = ({
   const historicalRangeSeriesRef = useRef<LiquidationRangeSeriesApi[]>([])
   const candlestickSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null)
   const oraclePriceSeriesRef = useRef<ISeriesApi<'Line'> | null>(null)
-  const hasAppliedInitialOffsetRef = useRef(false)
   const ohlcDataRef = useLatestValueRef(ohlcData)
 
   const hasSeriesData = ohlcData.length > 0 || (oraclePriceData?.length ?? 0) > 0
@@ -484,33 +484,7 @@ export const CandleChart = ({
     restoreVisibleRangeAfterDataUpdate()
   }, [ohlcData, restoreVisibleRangeAfterDataUpdate])
 
-  // Apply initial right-side spacing once after the chart has data and a non-zero rendered width.
-  useEffect(() => {
-    if (!chartRef.current || !hasSeriesData || hasAppliedInitialOffsetRef.current) return
-
-    const timeScale = chartRef.current.timeScale()
-    const applyInitialRightOffset = () => {
-      requestAnimationFrame(() => {
-        if (!chartRef.current || hasAppliedInitialOffsetRef.current) return
-
-        const chartWidth = timeScale.width()
-        const barSpacing = timeScale.options().barSpacing
-
-        if (chartWidth > 0 && barSpacing > 0) {
-          const paddingBars = (chartWidth * 0.1) / barSpacing
-          timeScale.scrollToPosition(paddingBars, false)
-          hasAppliedInitialOffsetRef.current = true
-        }
-      })
-    }
-
-    timeScale.subscribeSizeChange(applyInitialRightOffset)
-    applyInitialRightOffset()
-
-    return () => {
-      timeScale.unsubscribeSizeChange(applyInitialRightOffset)
-    }
-  }, [hasSeriesData])
+  useInitialChartRightOffset({ chartRef, hasSeriesData })
 
   // Update oracle price data when it changes
   useEffect(() => {
