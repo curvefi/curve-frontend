@@ -1,6 +1,5 @@
 import type { IChartApi, ISeriesApi, Time } from 'lightweight-charts'
-import { debounce } from 'lodash'
-import { useCallback, useEffect, useMemo, useRef, type RefObject } from 'react'
+import { useCallback, useRef, type RefObject } from 'react'
 import type { LpPriceOhlcDataFormatted, OraclePriceData } from '../types'
 import { useLatestValueRef } from './useLatestValueRef'
 
@@ -17,7 +16,6 @@ type UseHistoricalChartPaginationParams = {
 }
 
 const HISTORICAL_PAGE_THRESHOLD_BARS = 50
-const HISTORICAL_FETCH_DEBOUNCE_MS = 500
 
 const shouldFetchHistoricalPage = (barsInfo: { barsBefore: number } | null) =>
   !!barsInfo && barsInfo.barsBefore < HISTORICAL_PAGE_THRESHOLD_BARS
@@ -48,28 +46,10 @@ export const useHistoricalChartPagination = ({
 
     historicalFetchInFlightRef.current = true
 
-    let request: Promise<unknown>
-    try {
-      request = fetchMoreChartDataRef.current()
-    } catch {
-      pendingVisibleRangeRef.current = null
+    void fetchMoreChartDataRef.current().finally(() => {
       historicalFetchInFlightRef.current = false
-      return
-    }
-
-    void request
-      .catch(() => {
-        pendingVisibleRangeRef.current = null
-      })
-      .finally(() => {
-        historicalFetchInFlightRef.current = false
-      })
+    })
   }, [fetchMoreChartDataRef])
-
-  const debouncedFetchHistoricalPage = useMemo(
-    () => debounce(fetchHistoricalPage, HISTORICAL_FETCH_DEBOUNCE_MS, { leading: true, trailing: false }),
-    [fetchHistoricalPage],
-  )
 
   const restoreVisibleRangeAfterDataUpdate = useCallback(() => {
     const nextDataLength = getHistoricalPaginationDataLength(ohlcDataRef.current, oraclePriceDataRef.current)
@@ -91,13 +71,6 @@ export const useHistoricalChartPagination = ({
     // before setData lets the prepend move the x-axis back in time.
     chartRef.current.timeScale().setVisibleRange(pendingVisibleRange)
   }, [chartRef, ohlcDataRef, oraclePriceDataRef])
-
-  useEffect(
-    () => () => {
-      debouncedFetchHistoricalPage.cancel()
-    },
-    [debouncedFetchHistoricalPage],
-  )
 
   const getPaginationSeries = useCallback((): PaginationSeriesApi | null => {
     if (ohlcDataRef.current.length > 0 && candlestickSeriesRef.current) {
@@ -137,9 +110,9 @@ export const useHistoricalChartPagination = ({
     const barsInfo = paginationSeries.barsInLogicalRange(logicalRange)
     if (shouldFetchHistoricalPage(barsInfo)) {
       pendingVisibleRangeRef.current = visibleRange
-      debouncedFetchHistoricalPage()
+      fetchHistoricalPage()
     }
-  }, [chartRef, debouncedFetchHistoricalPage, getPaginationSeries])
+  }, [chartRef, fetchHistoricalPage, getPaginationSeries])
 
   return {
     handleVisibleLogicalRangeChange,
