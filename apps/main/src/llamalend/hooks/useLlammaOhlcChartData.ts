@@ -109,20 +109,47 @@ export const useLlammaOhlcChartData = ({
       ),
     [oracleTokenPage],
   )
-  const selectHistoricalQueries = useCallback(
-    (selection: HistoricalSelection) =>
-      notFalsy(selection.oraclePool && oraclePoolQuery, selection.llamma && shouldFetchLlammaQuery && llammaQuery),
-    [llammaQuery, oraclePoolQuery, shouldFetchLlammaQuery],
-  )
-
   const refetch = useCallback(
-    (selection: HistoricalSelection) => refetchOhlcQueries(selectHistoricalQueries(selection)),
-    [selectHistoricalQueries],
+    (selection: HistoricalSelection) =>
+      refetchOhlcQueries(
+        notFalsy(
+          selection.oraclePool && { refetch: oraclePoolQuery.refetch },
+          selection.llamma && shouldFetchLlammaQuery && { refetch: llammaQuery.refetch },
+        ),
+      ),
+    [llammaQuery.refetch, oraclePoolQuery.refetch, shouldFetchLlammaQuery],
   )
 
   const fetchMore = useCallback(
-    (selection: HistoricalSelection) => fetchMoreOhlcQueries(selectHistoricalQueries(selection)),
-    [selectHistoricalQueries],
+    (selection: HistoricalSelection) =>
+      fetchMoreOhlcQueries(
+        notFalsy(
+          selection.oraclePool && {
+            fetchNextPage: oraclePoolQuery.fetchNextPage,
+            hasNextPage: oraclePoolQuery.hasNextPage,
+            isFetchingNextPage: oraclePoolQuery.isFetchingNextPage,
+            isSuccess: oraclePoolQuery.isSuccess,
+          },
+          selection.llamma &&
+            shouldFetchLlammaQuery && {
+              fetchNextPage: llammaQuery.fetchNextPage,
+              hasNextPage: llammaQuery.hasNextPage,
+              isFetchingNextPage: llammaQuery.isFetchingNextPage,
+              isSuccess: llammaQuery.isSuccess,
+            },
+        ),
+      ),
+    [
+      llammaQuery.fetchNextPage,
+      llammaQuery.hasNextPage,
+      llammaQuery.isFetchingNextPage,
+      llammaQuery.isSuccess,
+      oraclePoolQuery.fetchNextPage,
+      oraclePoolQuery.hasNextPage,
+      oraclePoolQuery.isFetchingNextPage,
+      oraclePoolQuery.isSuccess,
+      shouldFetchLlammaQuery,
+    ],
   )
 
   return {
