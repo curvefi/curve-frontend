@@ -18,7 +18,7 @@ const columnHelper = createColumnHelper<PointsCampaignsRow>()
 const headers = {
   [PointsCampaignsColumnId.Source]: t`Source`,
   [PointsCampaignsColumnId.Points]: t`Points`,
-  [PointsCampaignsColumnId.CampaignUrl]: t`Link`,
+  [PointsCampaignsColumnId.CampaignUrl]: t`Details`,
 } as const
 
 export const POINTS_CAMPAIGNS_COLUMNS = [
