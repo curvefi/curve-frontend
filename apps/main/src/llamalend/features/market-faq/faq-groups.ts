@@ -33,7 +33,7 @@ export const FAQ_GROUPS: FaqGroup[] = [
     items: [
       {
         question: t`What is "Health"?`,
-        answer: t`Health is a value (not a percentage) that indicates how close your loan is to full liquidation. The lower it gets, the closer you are to being fully liquidated. Health decreases when collateral price drops, when you're in liquidation protection (conversion costs), or when debt grows (interest). When health reaches zero, the loan can be fully liquidated. Monitor health in the UI and consider repaying or adding collateral when it gets low.`,
+        answer: t`Health is a value (not a percentage) that indicates how close your loan is to full liquidation. The lower it gets, the closer you are to being fully liquidated. Health decreases when collateral price drops, when you're in liquidation protection (conversion costs), or when debt grows (interest). When health reaches 0, the loan can be fully liquidated. Monitor health in the UI and consider repaying or adding collateral (if above the liquidation range) when it gets low.`,
       },
       {
         question: t`When does liquidation happen?`,
