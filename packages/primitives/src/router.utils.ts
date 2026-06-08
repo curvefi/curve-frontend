@@ -23,7 +23,7 @@ export type RouterRouteResponse = {
   amountIn: [Decimal]
   amountOut: [Decimal]
   gas: Decimal | [Decimal, Decimal] | null
-  priceImpact?: number
+  priceImpact: number | null
   createdAt: number
   warnings: ('high-slippage' | 'low-exchange-rate')[]
   route?: RouteStep[]

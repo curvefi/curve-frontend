@@ -212,7 +212,7 @@ describe('GET routes integration', () => {
         payload.forEach(route => {
           expect(route.router).toBe(router)
           expect(route.amountOut[0]).toMatch(/^[0-9]+\.?[0-9]*$/)
-          expect(route.priceImpact).toBeTypeOf(route.priceImpact == null ? 'undefined' : 'number')
+          expect(route.priceImpact).toBeTypeOf(route.priceImpact == null ? typeof null : 'number')
           expect(route.createdAt).toBeTypeOf('number')
           const steps = assert(route.route, `No route steps for ${router} - ${label}`)
           expect(steps).toBeDefined()

@@ -77,6 +77,7 @@ export const buildCurveSolverRouteResponse = async (
       amountIn: [amountIn],
       amountOut: [expected_out],
       gas: `${gas_estimate}`,
+      priceImpact: null,
       createdAt: Date.now(),
       warnings: [], // todo: add warnings
       isStableswapRoute: false, // todo: check whether stable route is selected
