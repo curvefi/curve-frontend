@@ -49,7 +49,7 @@ export const Metrics = ({
         <Metric
           size="medium"
           label={t`Liquidity utilization`}
-          value={maybes([tvl, volume], ([tvl, volume]) => (tvl === 0 ? 0 : (volume / tvl) * 100))}
+          value={maybes([tvl, volume], ([tvl, volume]) => tvl && (volume / tvl) * 100)}
           valueOptions={{ unit: 'percentage', abbreviate: false }}
         />
       </Grid>
