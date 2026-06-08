@@ -9,15 +9,21 @@ import { UserPosition } from '@/loan/components/PageCrvUsdStaking/UserPosition'
 import { useScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances'
 import { useStore } from '@/loan/store/useStore'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
-import { Stack, useMediaQuery } from '@mui/material'
 import Fade from '@mui/material/Fade'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
+import { Box } from '@ui/Box'
+import { RCScrvUSDLogoSM } from '@ui/images'
 import { type LlamaApi, useCurve } from '@ui-kit/features/connect-wallet'
+import { useParams } from '@ui-kit/hooks/router'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useScrvUsdNewForms } from '@ui-kit/hooks/useFeatureFlags'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
-import { Sizing } from '@ui-kit/themes/design/0_primitives'
+import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 
-const { MaxWidth } = SizesAndSpaces
+const { Spacing } = SizesAndSpaces
 
 function useLegacyFetching({
   lendApi,
@@ -56,7 +62,8 @@ function useLegacyFetching({
   }, [enabled, checkApproval, lendApi, chainId, inputAmount, stakingModule, address])
 }
 
-export const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
+export const CrvUsdStakingPage = () => {
+  const params = useParams<NetworkUrlParams>()
   const [isChartExpanded = false, , minimizeChart, toggleChartExpanded] = useSwitch(false)
   const { llamaApi: lendApi = null } = useCurve()
   const { address, isConnecting } = useConnection()
@@ -79,84 +86,49 @@ export const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
     !address ||
     (!isConnecting && !isUserScrvUsdBalanceFetching && isUserScrvUsdBalanceZero)
 
-  const columnViewBreakPoint = '65.625rem'
-  const columnView = useMediaQuery(`(max-width: ${columnViewBreakPoint})`)
+  const isMobile = useIsMobile()
 
   // automatically minimize chart on smaller screens where the toggle button is hidden (the chart is already full width)
   useEffect(() => {
-    if (columnView && isChartExpanded) minimizeChart()
-  }, [isChartExpanded, columnView, minimizeChart])
+    if (isMobile && isChartExpanded) minimizeChart()
+  }, [isChartExpanded, isMobile, minimizeChart])
 
   return (
-    <Stack
-      direction={'column'}
-      sx={{
-        alignItems: 'center',
-        gap: Sizing[400],
-        width: '100%',
-
-        [`@media (max-width: calc(${MaxWidth.legacyActionCard} + ${Sizing[200]} + ${MaxWidth.section} + ${Sizing[400]}))`]:
-          {
-            padding: `0 ${Sizing[100]}`,
-          },
-      }}
-    >
-      <Stack
-        direction={'column'}
-        sx={{
-          gap: Sizing[200],
-          width: '100%',
-          justifyContent: 'center',
-          maxWidth: `calc(${MaxWidth.legacyActionCard} + ${Sizing[200]} + ${MaxWidth.section})`,
-        }}
-      >
-        {showStatsBanner && (
-          <Fade in={showStatsBanner}>
-            <div>
-              <StatsBanner />
-            </div>
-          </Fade>
-        )}
+    <DetailPageLayout
+      header={
         <Stack
-          direction={isChartExpanded ? 'column' : 'row'}
+          direction="row"
           sx={{
-            justifyContent: 'center',
-            gap: Sizing[200],
-            [`@media (max-width: ${columnViewBreakPoint})`]: { flexDirection: 'column', alignItems: 'center', gap: 0 },
+            alignItems: 'center',
+            alignSelf: 'flex-start',
+            gap: Spacing.sm,
+            paddingInline: Spacing.sm,
+            paddingBlock: Spacing.md,
           }}
         >
-          {isChartExpanded && (
-            <>
-              {!isUserScrvUsdBalanceZero && <UserPosition />}
-              <Statistics
-                hideExpandChart={columnView}
-                isChartExpanded={isChartExpanded}
-                toggleChartExpanded={toggleChartExpanded}
-              />
-            </>
-          )}
-          <DepositWithdraw params={params} />
-          {!isChartExpanded && (
-            <Stack
-              sx={{
-                gap: Sizing[200],
-                width: '100%',
-                maxWidth: MaxWidth.section,
-                justifyContent: 'center',
-                [`@media (max-width: ${columnViewBreakPoint})`]: { alignItems: 'center' },
-              }}
-            >
-              {!isUserScrvUsdBalanceZero && <UserPosition />}
-              <Statistics
-                hideExpandChart={columnView}
-                isChartExpanded={isChartExpanded}
-                toggleChartExpanded={toggleChartExpanded}
-              />
-            </Stack>
-          )}
+          <img height={55} src={RCScrvUSDLogoSM} alt="crvUSD logo" />
+          <Box flex flexColumn>
+            <Typography variant="headingMBold">{t`Savings crvUSD`}</Typography>
+            <Typography variant="bodySRegular">{t`Let your idle crvUSD do more for you.`}</Typography>
+          </Box>
         </Stack>
-      </Stack>
+      }
+      formTabs={<DepositWithdraw params={params} />}
+    >
+      {showStatsBanner && (
+        <Fade in={showStatsBanner}>
+          <div>
+            <StatsBanner />
+          </div>
+        </Fade>
+      )}
+      {!isUserScrvUsdBalanceZero && <UserPosition />}
+      <Statistics
+        hideExpandChart={isMobile}
+        isChartExpanded={isChartExpanded}
+        toggleChartExpanded={toggleChartExpanded}
+      />
       <UserInformation params={params} />
-    </Stack>
+    </DetailPageLayout>
   )
 }
