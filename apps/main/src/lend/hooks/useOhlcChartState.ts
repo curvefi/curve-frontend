@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { useStore } from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
+import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useUserPrices } from '@/llamalend/queries/user'
 import type { Decimal } from '@primitives/decimal.utils'
 import {
@@ -76,9 +77,8 @@ export const useOhlcChartState = ({ rChainId, marketId, previewPrices }: UseOhlc
   const fetchOraclePoolOhlcData = useStore(state => state.ohlcCharts.fetchOraclePoolOhlcData)
   const fetchMoreData = useStore(state => state.ohlcCharts.fetchMoreData)
   const resetOhlcState = useStore(state => state.ohlcCharts.resetState)
-  const priceInfo = useStore(state => state.markets.pricesMapper[rChainId]?.[marketId]?.prices ?? null)
 
-  const { oraclePrice } = priceInfo ?? {}
+  const { data: oraclePrice } = useMarketOraclePrice({ chainId: rChainId, marketId })
 
   // Token symbols for chart labels (oracle tokens comes from API response)
   const oracleTokens = useMemo(
@@ -141,7 +141,6 @@ export const useOhlcChartState = ({ rChainId, marketId, previewPrices }: UseOhlc
     if (market?.addresses.amm) {
       void fetchLlammaOhlcData(
         rChainId,
-        marketId,
         market.addresses.amm,
         chartInterval,
         timeUnit,
@@ -156,7 +155,6 @@ export const useOhlcChartState = ({ rChainId, marketId, previewPrices }: UseOhlc
     fetchOraclePoolOhlcData,
     market,
     rChainId,
-    marketId,
     timeUnit,
   ])
 
