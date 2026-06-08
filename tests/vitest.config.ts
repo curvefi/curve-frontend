@@ -7,5 +7,10 @@ export default defineConfig({
     globals: true,
     include: ['../packages/*/src/**/*.{test,spec}.{js,ts}'],
   },
-  resolve: { alias: [{ find: '@primitives', replacement: resolve(__dirname, '../packages/primitives/src') }] },
+  resolve: {
+    alias: [
+      { find: '@primitives', replacement: resolve(__dirname, '../packages/primitives/src') },
+      { find: '@ui-kit', replacement: resolve(__dirname, '../packages/curve-ui-kit/src') },
+    ],
+  },
 })
