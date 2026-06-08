@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 import { useConfig } from 'wagmi'
+import type { ChainId } from '@/loan/types/loan.types'
 import type { Address, Hex } from '@primitives/address.utils'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
@@ -12,7 +13,7 @@ import type { ScrvUsdDepositForm, ScrvUsdDepositMutation } from './scrvusd.valid
 import { scrvUsdDepositMaxValidationSuite } from './scrvusd.validation'
 
 type ScrvUsdDepositOptions = {
-  chainId: number
+  chainId: ChainId
   userAddress: Address | undefined
   onReset: () => void
   onSuccess?: OnTransactionSuccess<ScrvUsdDepositMutation>
@@ -22,25 +23,17 @@ export const useScrvUsdDepositMutation = ({ chainId, userAddress, onSuccess, ...
   const config = useConfig()
   const { mutate, error, isPending } = useTransactionMutation<ScrvUsdDepositMutation>({
     mutationKey: [...rootKeys.userChain({ chainId, userAddress }), 'st_crvUSD.deposit'] as const,
-    mutationFn: async variables => {
+    mutationFn: async ({ approveInfinite, depositAmount }) => {
       await waitForApproval({
         isApproved: async () =>
-          await fetchScrvUsdDepositIsApproved(
-            { chainId, userAddress, depositAmount: variables.depositAmount },
-            { staleTime: 0 },
-          ),
+          await fetchScrvUsdDepositIsApproved({ chainId, userAddress, depositAmount }, { staleTime: 0 }),
         onApprove: async () =>
-          (await requireLib('llamaApi').st_crvUSD.depositApprove(
-            variables.depositAmount,
-            variables.approveInfinite,
-          )) as Hex[],
+          (await requireLib('llamaApi').st_crvUSD.depositApprove(depositAmount, approveInfinite)) as Hex[],
         message: t`Approved deposit`,
         config,
       })
-
-      return await requireLib('llamaApi')
-        .st_crvUSD.deposit(variables.depositAmount)
-        .then(hash => ({ hash: hash as Hex }))
+      const hash = (await requireLib('llamaApi').st_crvUSD.deposit(depositAmount)) as Hex
+      return { hash }
     },
     validationSuite: scrvUsdDepositMaxValidationSuite,
     validationParams: { chainId, userAddress },
@@ -49,9 +42,7 @@ export const useScrvUsdDepositMutation = ({ chainId, userAddress, onSuccess, ...
     successMessage: ({ depositAmount }) =>
       t`Deposit successful! ${formatNumber(depositAmount, { abbreviate: false })} crvUSD`,
     onSuccess: async (data, receipt, variables, context) => {
-      if (userAddress) {
-        await invalidateScrvUsdMutationQueries({ chainId, config, userAddress })
-      }
+      await invalidateScrvUsdMutationQueries({ chainId, config, userAddress })
       await onSuccess?.(data, receipt, variables, context)
     },
     ...props,

@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 import { useConfig } from 'wagmi'
+import type { ChainId } from '@/loan/types/loan.types'
 import type { Address, Hex } from '@primitives/address.utils'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
@@ -11,7 +12,7 @@ import type { ScrvUsdDepositMutation } from './scrvusd.validation'
 import { scrvUsdDepositValidationSuite } from './scrvusd.validation'
 
 type ScrvUsdDepositApproveOptions = {
-  chainId: number
+  chainId: ChainId
   userAddress: Address | undefined
   onReset: () => void
   onSuccess?: OnTransactionSuccess<ScrvUsdDepositMutation>
@@ -35,9 +36,7 @@ export const useScrvUsdDepositApproveMutation = ({
     pendingMessage: ({ depositAmount }) => t`Approving... ${formatNumber(depositAmount, { abbreviate: false })} crvUSD`,
     successMessage: ({ depositAmount }) => t`Approved! ${formatNumber(depositAmount, { abbreviate: false })} crvUSD`,
     onSuccess: async (data, receipt, variables, context) => {
-      if (userAddress) {
-        await invalidateScrvUsdMutationQueries({ chainId, config, userAddress })
-      }
+      await invalidateScrvUsdMutationQueries({ chainId, config, userAddress })
       await onSuccess?.(data, receipt, variables, context)
     },
     ...props,

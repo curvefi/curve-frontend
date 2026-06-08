@@ -27,10 +27,11 @@ export const { useQuery: useScrvUsdPreviewWithdraw } = queryFactory({
       { isFull },
       { userVaultShares },
     ] as const,
-  queryFn: async ({ withdrawAmount, isFull, userVaultShares }: ScrvUsdWithdrawQuery) =>
-    (await (isFull
-      ? requireLib('llamaApi').st_crvUSD.previewRedeem(userVaultShares)
-      : requireLib('llamaApi').st_crvUSD.previewWithdraw(withdrawAmount))) as Decimal,
+  queryFn: async ({ withdrawAmount, isFull, userVaultShares }: ScrvUsdWithdrawQuery) => {
+    const { st_crvUSD } = requireLib('llamaApi')
+    const r = isFull ? await st_crvUSD.previewRedeem(userVaultShares) : await st_crvUSD.previewWithdraw(withdrawAmount)
+    return r as Decimal
+  },
   category: 'savings.user',
   validationSuite: scrvUsdWithdrawValidationSuite,
 })

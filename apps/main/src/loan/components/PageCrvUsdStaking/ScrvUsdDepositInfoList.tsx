@@ -17,7 +17,7 @@ import { ScrvUsdExchangeRateActionInfo } from './ScrvUsdExchangeRateActionInfo'
 
 type ScrvUsdDepositInfoListProps = {
   chainId: ChainId
-  params: ScrvUsdDepositParams<ChainId>
+  params: ScrvUsdDepositParams
   isOpen: boolean
   isApproved?: boolean
   approveInfinite: boolean

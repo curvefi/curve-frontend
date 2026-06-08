@@ -129,53 +129,24 @@ const ScrvUsdWithdrawFormTab = () => {
   )
 }
 
-const menu = [
-  {
-    value: 'deposit',
-    label: t`Deposit`,
-    component: ScrvUsdDepositFormTab,
-  },
-  {
-    value: 'withdraw',
-    label: t`Withdraw`,
-    component: ScrvUsdWithdrawFormTab,
-  },
-  {
-    value: 'swap',
-    label: t`Swap`,
-    href: ({ network }) =>
-      `${getInternalUrl('dex', network, DEX_ROUTES.PAGE_SWAP)}?from=${CRVUSD_ADDRESS}&to=${SCRVUSD_VAULT_ADDRESS}`,
-  },
+const SwapHref = ({ network }: NetworkUrlParams) =>
+  `${getInternalUrl('dex', network, DEX_ROUTES.PAGE_SWAP)}?from=${CRVUSD_ADDRESS}&to=${SCRVUSD_VAULT_ADDRESS}`
+
+const ScrvUsdLegacyMenu = [
+  { value: 'deposit', label: t`Deposit`, component: ScrvUsdDepositFormTab },
+  { value: 'withdraw', label: t`Withdraw`, component: ScrvUsdWithdrawFormTab },
+  { value: 'swap', label: t`Swap`, href: SwapHref },
 ] satisfies FormTab<NetworkUrlParams>[]
 
-const newMenu = [
-  {
-    value: 'deposit',
-    label: t`Deposit`,
-    component: ScrvUsdDepositForm,
-  },
-  {
-    value: 'withdraw',
-    label: t`Withdraw`,
-    component: ScrvUsdWithdrawForm,
-  },
-  {
-    value: 'swap',
-    label: t`Swap`,
-    href: ({ network }) =>
-      `${getInternalUrl('dex', network, DEX_ROUTES.PAGE_SWAP)}?from=${CRVUSD_ADDRESS}&to=${SCRVUSD_VAULT_ADDRESS}`,
-  },
+const ScrvUsdMenu = [
+  { value: 'deposit', label: t`Deposit`, component: ScrvUsdDepositForm },
+  { value: 'withdraw', label: t`Withdraw`, component: ScrvUsdWithdrawForm },
+  { value: 'swap', label: t`Swap`, href: SwapHref },
 ] satisfies FormTab<NetworkUrlParams>[]
 
-export const DepositWithdraw = ({ params }: DepositWithdrawProps) => {
-  const useNewForms = useScrvUsdNewForms()
-
-  if (!useNewForms) return <FormTabs params={params} menu={menu} />
-
-  return (
-    <Stack sx={{ gap: Spacing.md }}>
-      <FormTabs params={params} menu={menu} />
-      <FormTabs params={params} menu={newMenu} />
-    </Stack>
-  )
-}
+export const DepositWithdraw = ({ params }: DepositWithdrawProps) => (
+  <Stack sx={{ gap: Spacing.md }}>
+    <FormTabs params={params} menu={ScrvUsdLegacyMenu} />
+    {useScrvUsdNewForms() && <FormTabs params={params} menu={ScrvUsdMenu} />}
+  </Stack>
+)

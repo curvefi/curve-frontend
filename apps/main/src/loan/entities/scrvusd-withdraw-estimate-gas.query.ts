@@ -22,9 +22,9 @@ export const { useQuery: useScrvUsdWithdrawEstimateGasQuery } = queryFactory({
   validationSuite: scrvUsdWithdrawMaxValidationSuite,
 })
 
-export const useScrvUsdWithdrawEstimateGas = <ChainId extends number>(
+export const useScrvUsdWithdrawEstimateGas = (
   networks: Record<number, BaseConfig>,
-  query: ScrvUsdWithdrawParams<ChainId>,
+  query: ScrvUsdWithdrawParams,
   enabled?: boolean,
 ) => {
   const { chainId } = query

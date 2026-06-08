@@ -1,4 +1,5 @@
 import { combineActionInfoState } from '@/llamalend/widgets/action-card/info-actions.helpers'
+import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { q } from '@ui-kit/types/util'
@@ -17,14 +18,15 @@ export function ScrvUsdExchangeRateActionInfo({
   return (
     <ActionInfo
       label={t`Exchange rate`}
-      value={
-        exchangeRate.data &&
-        t`1 crvUSD = ${formatNumber(exchangeRate.data, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 4,
-          abbreviate: false,
-        })} scrvUSD`
-      }
+      value={[
+        1,
+        'crvUSD',
+        '=',
+        maybe(exchangeRate.data, data =>
+          formatNumber(data, { minimumFractionDigits: 2, maximumFractionDigits: 4, abbreviate: false }),
+        ) ?? '...',
+        'scrvUSD',
+      ].join(' ')}
       {...combineActionInfoState(q(exchangeRate))}
       size="small"
       testId="scrvusd-deposit-exchange-rate"

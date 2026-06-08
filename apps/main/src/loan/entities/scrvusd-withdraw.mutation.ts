@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 import { useConfig } from 'wagmi'
+import type { ChainId } from '@/loan/types/loan.types'
 import type { Address, Hex } from '@primitives/address.utils'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
@@ -11,7 +12,7 @@ import type { ScrvUsdWithdrawForm, ScrvUsdWithdrawMutation } from './scrvusd.val
 import { scrvUsdWithdrawMaxValidationSuite } from './scrvusd.validation'
 
 type ScrvUsdWithdrawOptions = {
-  chainId: number
+  chainId: ChainId
   userAddress: Address | undefined
   onReset: () => void
   onSuccess?: OnTransactionSuccess<ScrvUsdWithdrawMutation>
@@ -39,11 +40,7 @@ export const useScrvUsdWithdrawMutation = ({ chainId, userAddress, onSuccess, ..
     ...props,
   })
 
-  const onSubmit = useCallback(
-    ({ withdrawAmount = '0', userVaultShares = '0', ...form }: ScrvUsdWithdrawForm) =>
-      mutate({ ...form, withdrawAmount, userVaultShares, isFull: form.isFull }),
-    [mutate],
-  )
+  const onSubmit = useCallback((form: ScrvUsdWithdrawForm) => mutate(form as ScrvUsdWithdrawMutation), [mutate])
 
   return { onSubmit, mutate, error, isPending }
 }
