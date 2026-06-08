@@ -9,6 +9,7 @@ import { useStore } from '@/loan/store/useStore'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
 import { isPricesApiChain } from '@curvefi/prices-api'
 import type { Decimal } from '@primitives/decimal.utils'
+import { useLoanSlices } from '@ui-kit/hooks/useFeatureFlags'
 import type { Range } from '@ui-kit/types/util'
 
 type LlammaLiquidityCoins = ReturnType<typeof getTokens> | undefined | null
@@ -20,7 +21,7 @@ type OhlcChartStateProps = {
   previewPrices: Range<Decimal> | undefined
 }
 
-const useLegacyChartPrices = () => {
+const useLegacyChartPrices = (enabled: boolean) => {
   const increaseActiveKey = useStore(state => state.loanIncrease.activeKey)
   const decreaseActiveKey = useStore(state => state.loanDecrease.activeKey)
   const deleverageActiveKey = useStore(state => state.loanDeleverage.activeKey)
@@ -36,20 +37,26 @@ const useLegacyChartPrices = () => {
     state => state.loanCollateralDecrease.detailInfo[collateralDecreaseActiveKey]?.prices ?? null,
   )
   return useMemo(() => {
+    if (!enabled) return undefined
     if (deleveragePrices?.length) return deleveragePrices
     if (decreaseCollateralPrices?.length) return decreaseCollateralPrices
     if (increaseCollateralPrices?.length) return increaseCollateralPrices
     if (decreaseLoanPrices?.length) return decreaseLoanPrices
     if (increaseLoanPrices?.length) return increaseLoanPrices
     return undefined
-  }, [deleveragePrices, decreaseCollateralPrices, increaseCollateralPrices, decreaseLoanPrices, increaseLoanPrices]) as
-    | Range<Decimal>
-    | undefined
+  }, [
+    enabled,
+    deleveragePrices,
+    decreaseCollateralPrices,
+    increaseCollateralPrices,
+    decreaseLoanPrices,
+    increaseLoanPrices,
+  ]) as Range<Decimal> | undefined
 }
 
 export const useOhlcChartState = ({ chainId, market, marketId, previewPrices }: OhlcChartStateProps) => {
   const { address: userAddress } = useConnection()
-  const storePreviewPrices = useLegacyChartPrices()
+  const storePreviewPrices = useLegacyChartPrices(useLoanSlices())
   const { data: userPrices } = useUserPrices({ chainId, marketId, userAddress })
   const poolAddress = market?.address ?? ''
   const controllerAddress = market?.controller ?? ''

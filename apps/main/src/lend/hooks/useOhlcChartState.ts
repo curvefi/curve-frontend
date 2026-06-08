@@ -9,6 +9,7 @@ import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useUserPrices } from '@/llamalend/queries/user'
 import { isPricesApiChain } from '@curvefi/prices-api'
 import type { Decimal } from '@primitives/decimal.utils'
+import { useLoanSlices } from '@ui-kit/hooks/useFeatureFlags'
 import type { Range } from '@ui-kit/types/util'
 import { useLendMarket } from '../hooks/useLendMarket'
 
@@ -20,7 +21,7 @@ type UseOhlcChartStateProps = {
   previewPrices: Range<Decimal> | undefined
 }
 
-const useLegacyChartPrices = () => {
+const useLegacyChartPrices = (enabled: boolean) => {
   const borrowMoreActiveKey = useStore(state => state.loanBorrowMore.activeKey)
   const loanRepayActiveKey = useStore(state => state.loanRepay.activeKey)
   const loanCollateralAddActiveKey = useStore(state => state.loanCollateralAdd.activeKey)
@@ -36,20 +37,21 @@ const useLegacyChartPrices = () => {
     state => state.loanCollateralRemove.detailInfo[loanCollateralRemoveActiveKey]?.prices ?? null,
   )
   return useMemo(() => {
+    if (!enabled) return undefined
     if (repayLeveragePrices?.length) return repayLeveragePrices
     if (removeCollateralPrices?.length) return removeCollateralPrices
     if (addCollateralPrices?.length) return addCollateralPrices
     if (repayLoanPrices?.length) return repayLoanPrices
     if (borrowMorePrices?.length) return borrowMorePrices
-    return null
-  }, [repayLeveragePrices, removeCollateralPrices, addCollateralPrices, repayLoanPrices, borrowMorePrices]) as
+    return undefined
+  }, [enabled, repayLeveragePrices, removeCollateralPrices, addCollateralPrices, repayLoanPrices, borrowMorePrices]) as
     | Range<Decimal>
     | undefined
 }
 
 export const useOhlcChartState = ({ rChainId, marketId, previewPrices }: UseOhlcChartStateProps) => {
   const { address: userAddress } = useConnection()
-  const storePreviewPrices = useLegacyChartPrices()
+  const storePreviewPrices = useLegacyChartPrices(useLoanSlices())
   const { data: userPrices } = useUserPrices({
     chainId: rChainId,
     marketId,
