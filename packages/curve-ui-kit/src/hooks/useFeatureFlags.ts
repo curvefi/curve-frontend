@@ -15,15 +15,6 @@ const useStableChannel = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy
  **/
 // const useAlphaChannel = () => useBetaChannel() && defaultReleaseChannel === ReleaseChannel.Beta
 
-/** New unified supply/vault forms (deposit/withdraw/claim) */
-export const useLendingMuiForm = useStableChannel
-
-/** New manage loan forms (add/remove/repay) */
-export const useManageLoanMuiForm = useStableChannel
-
-/** New card for managing soft liquidations */
-export const useManageSoftLiquidation = useStableChannel
-
 /** New ZapV2 leverage implementation for LlamaLend markets */
 export const isZapV2Enabled = () => getReleaseChannel() === ReleaseChannel.Beta && !isZapV2Disabled()
 
@@ -34,10 +25,8 @@ export const useLoanImplementationKey = () => (useZapV2() ? 'zapV2' : '')
 
 /** New LlamaLend v2 implementation */
 export const useLLv2 = useBetaChannel
-export const isLLv2Enabled = (releaseChannel: ReleaseChannel) => releaseChannel === ReleaseChannel.Beta
 
 /** New market list and search layout */
 export const useNewMarketListLayout = useBetaChannel
 
-export const useLoanSlices = () =>
-  ![useManageSoftLiquidation(), useManageLoanMuiForm(), useLendingMuiForm()].every(Boolean)
+export const useLoanSlices = () => false

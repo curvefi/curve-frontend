@@ -37,7 +37,7 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   market: LlamaMarketTemplate | undefined
   network: LlamaNetwork<ChainId>
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
-  enabled: boolean
+  enabled?: boolean
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network

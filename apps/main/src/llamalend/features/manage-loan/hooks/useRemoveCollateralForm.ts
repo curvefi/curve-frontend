@@ -40,7 +40,7 @@ export const useRemoveCollateralForm = <
 }: {
   market: LlamaMarketTemplate | undefined
   network: BaseConfig<NetworkName, ChainId>
-  enabled: boolean
+  enabled?: boolean
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
   const { address: userAddress } = useConnection()

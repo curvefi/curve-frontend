@@ -18,7 +18,6 @@ type LlammaOhlcChartStateModelParams = {
   controllerAddress: string
   enabled?: boolean
   endpoint: Parameters<typeof useLlammaOhlcChartData>[0]['endpoint']
-  legacyPreviewPrices: Range<Decimal> | undefined
   llammaAddress: string
   marketId: string
   network: Chain | undefined
@@ -63,7 +62,6 @@ export const useLlammaOhlcChartStateModel = ({
   controllerAddress,
   enabled = true,
   endpoint,
-  legacyPreviewPrices,
   llammaAddress,
   marketId,
   network,
@@ -121,10 +119,8 @@ export const useLlammaOhlcChartStateModel = ({
     [chartLabel, selectedChartKey],
   )
 
-  const newLiqPrices = previewPrices ?? legacyPreviewPrices
-
   const { oraclePriceVisible, liqRangeCurrentVisible, liqRangeNewVisible, legendSets } = useChartLegendToggles({
-    hasNewLiquidationRange: !!newLiqPrices,
+    hasNewLiquidationRange: !!previewPrices,
     hasLiquidationRange: !!userPrices,
     llammaEndpoint: isOracleLineOnly,
   })
@@ -134,7 +130,7 @@ export const useLlammaOhlcChartStateModel = ({
     chartData: ohlcData,
     fallbackData: liquidationFallbackData,
     currentPrices: userPrices,
-    newPrices: newLiqPrices,
+    newPrices: previewPrices,
   })
 
   const ohlcChartProps: OhlcChartProps = {

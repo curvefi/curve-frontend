@@ -23,7 +23,7 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
   networks: NetworkDict<ChainId>
   chainId: ChainId
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
-  enabled: boolean
+  enabled?: boolean
 }) => {
   const network = networks[chainId]
 

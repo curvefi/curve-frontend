@@ -6,19 +6,12 @@ import { ClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/
 import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealthForm'
 import { useLiquidationStatus } from '@/llamalend/features/market-position-details/hooks/useUserLiquidationStatus'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import { hasDeleverage } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
-import { CollateralDecrease } from '@/loan/components/PageMintMarket/CollateralDecrease'
-import { CollateralIncrease } from '@/loan/components/PageMintMarket/CollateralIncrease'
-import { LoanDecrease } from '@/loan/components/PageMintMarket/LoanDecrease'
-import { LoanDeleverage } from '@/loan/components/PageMintMarket/LoanDeleverage'
-import { LoanIncrease } from '@/loan/components/PageMintMarket/LoanIncrease'
-import { LoanLiquidate } from '@/loan/components/PageMintMarket/LoanLiquidate'
 import type { ManageLoanProps } from '@/loan/components/PageMintMarket/types'
 import { networks } from '@/loan/networks'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Decimal } from '@primitives/decimal.utils'
-import { useLoanImplementationKey, useManageLoanMuiForm, useManageSoftLiquidation } from '@ui-kit/hooks/useFeatureFlags'
+import { useLoanImplementationKey } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import type { QueryProp, Range } from '@ui-kit/types/util'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
@@ -30,64 +23,34 @@ type MintManageLoanProps = ManageLoanProps & {
   collateralEvents: QueryProp<UserCollateralEvents>
 }
 
-const BorrowTab = ({ rChainId, market, isReady, onPricesUpdated, collateralEvents }: MintManageLoanProps) => (
-  <BorrowMoreForm
-    networks={networks}
-    chainId={rChainId}
-    market={market ?? undefined}
-    enabled={isReady}
-    onPricesUpdated={onPricesUpdated}
-    collateralEvents={collateralEvents}
-  />
-)
-
-const RepayTab = ({ rChainId, market, isReady, onPricesUpdated, collateralEvents }: MintManageLoanProps) => (
-  <RepayForm
-    networks={networks}
-    chainId={rChainId}
-    market={market ?? undefined}
-    enabled={isReady}
-    onPricesUpdated={onPricesUpdated}
-    collateralEvents={collateralEvents}
-  />
-)
-
-const MintManageLegacyMenu = [
-  {
-    value: 'loan' as const,
-    label: t`Loan`,
-    subTabs: [
-      { value: 'loan-increase', label: t`Borrow more`, component: LoanIncrease },
-      { value: 'loan-decrease', label: t`Repay`, component: LoanDecrease },
-      { value: 'loan-liquidate', label: t`Self-liquidate`, component: LoanLiquidate },
-    ],
-  },
-  {
-    value: 'collateral' as const,
-    label: t`Collateral`,
-    subTabs: [
-      { value: 'collateral-increase', label: t`Add`, component: CollateralIncrease },
-      { value: 'collateral-decrease', label: t`Remove`, component: CollateralDecrease },
-    ],
-  },
-  {
-    value: 'deleverage' as const,
-    label: t`Delever`,
-    component: LoanDeleverage,
-    visible: ({ market }) => !market || hasDeleverage(market),
-  },
-] satisfies FormTab<MintManageLoanProps>[]
-
-const MintManageNewMenu = [
+const MintManageMenu = [
   {
     value: 'borrow',
     label: t`Borrow`,
-    component: BorrowTab,
+    component: ({ rChainId, market, isReady, onPricesUpdated, collateralEvents }: MintManageLoanProps) => (
+      <BorrowMoreForm
+        networks={networks}
+        chainId={rChainId}
+        market={market ?? undefined}
+        enabled={isReady}
+        onPricesUpdated={onPricesUpdated}
+        collateralEvents={collateralEvents}
+      />
+    ),
   },
   {
     value: 'repay',
     label: t`Repay`,
-    component: RepayTab,
+    component: ({ rChainId, market, isReady, onPricesUpdated, collateralEvents }: MintManageLoanProps) => (
+      <RepayForm
+        networks={networks}
+        chainId={rChainId}
+        market={market ?? undefined}
+        enabled={isReady}
+        onPricesUpdated={onPricesUpdated}
+        collateralEvents={collateralEvents}
+      />
+    ),
   },
   {
     value: 'collateral',
@@ -160,15 +123,12 @@ const MintManageSoftLiquidationMenu = [
 
 export const ManageLoanTabs = (params: MintManageLoanProps) => {
   const { market, curve, rChainId } = params
-  const status = useLiquidationStatus({ chainId: rChainId, marketId: market?.id, userAddress: curve?.signerAddress })
-  const shouldUseSoftLiquidation =
-    useManageSoftLiquidation() && status.data && ['softLiquidation', 'hardLiquidation'].includes(status.data)
-  const shouldUseManageLoanMuiForm = useManageLoanMuiForm()
-  const menu = shouldUseSoftLiquidation
-    ? MintManageSoftLiquidationMenu
-    : shouldUseManageLoanMuiForm
-      ? MintManageNewMenu
-      : MintManageLegacyMenu
-  const key = useLoanImplementationKey()
-  return <FormTabs key={key} params={params} menu={menu} shouldWrap={menu === MintManageLegacyMenu} />
+  const { data: status } = useLiquidationStatus({
+    chainId: rChainId,
+    marketId: market?.id,
+    userAddress: curve?.signerAddress,
+  })
+  const isSoftLiquidation = ['softLiquidation', 'hardLiquidation'].includes(status ?? '')
+  const menu = isSoftLiquidation ? MintManageSoftLiquidationMenu : MintManageMenu
+  return <FormTabs key={useLoanImplementationKey()} params={params} menu={menu} />
 }

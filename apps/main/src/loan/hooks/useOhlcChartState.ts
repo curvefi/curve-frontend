@@ -4,7 +4,6 @@ import { useLlammaOhlcChartStateModel } from '@/llamalend/hooks/useLlammaOhlcCha
 import { getTokens } from '@/llamalend/llama.utils'
 import { useUserPrices } from '@/llamalend/queries/user'
 import { networks } from '@/loan/networks'
-import { useStore } from '@/loan/store/useStore'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
 import { isPricesApiChain } from '@curvefi/prices-api'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -19,41 +18,11 @@ type OhlcChartStateProps = {
   previewPrices: Range<Decimal> | undefined
 }
 
-const useLegacyChartPrices = () => {
-  const increaseActiveKey = useStore(state => state.loanIncrease.activeKey)
-  const decreaseActiveKey = useStore(state => state.loanDecrease.activeKey)
-  const deleverageActiveKey = useStore(state => state.loanDeleverage.activeKey)
-  const collateralIncreaseActiveKey = useStore(state => state.loanCollateralIncrease.activeKey)
-  const collateralDecreaseActiveKey = useStore(state => state.loanCollateralDecrease.activeKey)
-  const increaseLoanPrices = useStore(state => state.loanIncrease.detailInfo[increaseActiveKey]?.prices ?? null)
-  const decreaseLoanPrices = useStore(state => state.loanDecrease.detailInfo[decreaseActiveKey]?.prices ?? null)
-  const deleveragePrices = useStore(state => state.loanDeleverage.detailInfo[deleverageActiveKey]?.prices ?? null)
-  const increaseCollateralPrices = useStore(
-    state => state.loanCollateralIncrease.detailInfo[collateralIncreaseActiveKey]?.prices ?? null,
-  )
-  const decreaseCollateralPrices = useStore(
-    state => state.loanCollateralDecrease.detailInfo[collateralDecreaseActiveKey]?.prices ?? null,
-  )
-  return useMemo(() => {
-    if (deleveragePrices?.length) return deleveragePrices
-    if (decreaseCollateralPrices?.length) return decreaseCollateralPrices
-    if (increaseCollateralPrices?.length) return increaseCollateralPrices
-    if (decreaseLoanPrices?.length) return decreaseLoanPrices
-    if (increaseLoanPrices?.length) return increaseLoanPrices
-    return undefined
-  }, [deleveragePrices, decreaseCollateralPrices, increaseCollateralPrices, decreaseLoanPrices, increaseLoanPrices]) as
-    | Range<Decimal>
-    | undefined
-}
-
 export const useOhlcChartState = ({ chainId, market, marketId, previewPrices }: OhlcChartStateProps) => {
   const { address: userAddress } = useConnection()
-  const storePreviewPrices = useLegacyChartPrices()
   const { data: userPrices } = useUserPrices({ chainId, marketId, userAddress })
-  const priceInfo = useStore(state => state.loans.detailsMapper[marketId]?.priceInfo ?? null)
   const poolAddress = market?.address ?? ''
   const controllerAddress = market?.controller ?? ''
-  const { oraclePrice } = priceInfo ?? {}
   const networkId = networks[chainId].id.toLowerCase()
   const network = isPricesApiChain(networkId) ? networkId : undefined
   const chartState = useLlammaOhlcChartStateModel({
@@ -67,7 +36,6 @@ export const useOhlcChartState = ({ chainId, market, marketId, previewPrices }: 
     enabled: !!market,
     userPrices,
     previewPrices,
-    legacyPreviewPrices: storePreviewPrices,
   })
 
   const coins: LlammaLiquidityCoins = useMemo(() => market && getTokens(market), [market])

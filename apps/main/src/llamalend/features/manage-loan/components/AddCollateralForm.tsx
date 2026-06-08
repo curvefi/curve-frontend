@@ -21,7 +21,7 @@ export const AddCollateralForm = <ChainId extends IChainId>({
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
-  enabled: boolean
+  enabled?: boolean
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
   const network = networks[chainId]

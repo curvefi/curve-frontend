@@ -52,38 +52,16 @@ export type DetailInfoResp = {
   prices: string[]
   bands: [number, number]
 }
-export type DetailInfoLeverageResp = DetailInfoResp & {
-  priceImpact: string
-  isHighPriceImpact: boolean
-}
-export type ExpectedCollateral = {
-  totalCollateral: string
-  userCollateral: string
-  collateralFromUserBorrowed: string
-  collateralFromDebt: string
-  leverage: string
-  avgPrice: string
-}
-export type ExpectedBorrowed = {
-  totalBorrowed: string
-  borrowedFromStateCollateral: string
-  borrowedFromUserCollateral: string
-  userBorrowed: string
-  avgPrice: string
-}
 
 export type PageContentProps<T = UrlParams> = {
   params: T
   rChainId: ChainId
   marketId: string
   userAddress: Address | undefined
-  userActiveKey: string
-  isLoaded: boolean
   api: LlamaApi | null
   market: LendMarketTemplate | undefined
 }
-export type BandsBalances = Record<number, { borrowed: string; collateral: string }>
-export type BandsBalancesArr = { borrowed: string; collateral: string; band: number }[]
+
 export type ParsedBandsBalances = {
   borrowed: string
   collateral: string

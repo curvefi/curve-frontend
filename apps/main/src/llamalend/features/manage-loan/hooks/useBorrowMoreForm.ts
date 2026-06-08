@@ -109,7 +109,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
-  enabled: boolean
+  enabled?: boolean
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
   collateralEvents: QueryProp<UserCollateralEvents>
 }) => {
