@@ -5,8 +5,7 @@ import type { CellContext } from '@tanstack/react-table'
 import { formatNumber } from '@ui-kit/utils'
 
 const getSolvencyColor = (value: number | undefined | null): TypographyProps['color'] => {
-  if (value == null) return 'textPrimary'
-  else if (value >= SOLVENCY_THRESHOLDS.solvent) return 'success'
+  if (value == null || value >= SOLVENCY_THRESHOLDS.solvent) return 'textPrimary'
   else if (value >= SOLVENCY_THRESHOLDS.low) return 'warning'
   else return 'error'
 }
