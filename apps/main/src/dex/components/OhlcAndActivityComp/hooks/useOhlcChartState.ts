@@ -8,6 +8,7 @@ import { useChartTimeSettings } from '@ui-kit/features/candle-chart/hooks/useCha
 import { useDexChartList } from '@ui-kit/features/candle-chart/hooks/useDexChartList'
 import { useOhlcQueryAdapter, useStableOhlcAnchorEnd } from '@ui-kit/features/candle-chart/hooks/useOhlcQueries'
 import type { LpPriceOhlcDataFormatted } from '@ui-kit/features/candle-chart/types'
+import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Height } = SizesAndSpaces
@@ -53,11 +54,14 @@ export const useOhlcChartState = ({ rChainId, pricesApiPoolData }: UseOhlcChartS
     refetch,
     fetchMore,
   } = useOhlcQueryAdapter({ query: chartQuery, selectItems: selectDexOhlcData })
+  const isEmpty = !isLoading && !error && ohlcData.length === 0
 
   const ohlcChartProps: OhlcChartProps = {
     hideCandleSeriesLabel: false,
     chartHeight: Height.chart,
     isLoading,
+    isEmpty,
+    emptyMessage: t`No OHLC data found. Data may be unavailable for this pool.`,
     error,
     ohlcData,
     selectChartList,

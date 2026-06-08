@@ -6,7 +6,6 @@ import type { Address, Token } from '@primitives/address.utils'
 import { assert, maybe } from '@primitives/objects.utils'
 import { useOhlcInfiniteQuery } from '@ui-kit/features/candle-chart/hooks/useOhlcQueries'
 import {
-  assertInitialOhlcPageHasData,
   createCandleChartQueryKey,
   createOhlcPageResult,
   type OhlcPageResult,
@@ -107,13 +106,6 @@ export const useOraclePoolOhlcQuery = ({
         { signal },
       )
 
-      assertInitialOhlcPageHasData({
-        anchorEnd,
-        dataLength: data.length,
-        message: 'No oracle OHLC data found. Data may be unavailable for this pool.',
-        pageParam,
-      })
-
       const ohlcData = formatCandleOhlcData(ohlc)
       const oraclePriceData = formatOraclePriceData(data)
 
@@ -152,7 +144,7 @@ export const useLlammaOhlcQuery = ({
     timeOption,
     enabled: enabled && !!chain && !!llamma,
     fetchPage: async ({ pageParam, signal }): Promise<LlammaOhlcPage> => {
-      const validChain = assert(chain, 'Cannot fetch LLAMMA OHLC data without a chain.')
+      const validChain = assert(chain, t`Cannot fetch LLAMMA OHLC data without a chain.`)
       const ohlc = await getOHLC(
         {
           endpoint,
@@ -165,13 +157,6 @@ export const useLlammaOhlcQuery = ({
         },
         { signal },
       )
-
-      assertInitialOhlcPageHasData({
-        anchorEnd,
-        dataLength: ohlc.length,
-        message: 'No LLAMMA OHLC data found. Data may be unavailable for this pool.',
-        pageParam,
-      })
 
       const oraclePriceData = formatOraclePriceData(ohlc)
 

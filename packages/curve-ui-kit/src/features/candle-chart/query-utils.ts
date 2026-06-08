@@ -1,4 +1,3 @@
-import { assert } from '@primitives/objects.utils'
 import { TIME_OPTION_MS } from '@ui-kit/lib/model/time'
 import type { TimeOption } from './types'
 
@@ -52,20 +51,6 @@ export const createOhlcPageResult = (
     hasMore,
     oldestPageTimestamp,
   }
-}
-
-export const assertInitialOhlcPageHasData = ({
-  anchorEnd,
-  dataLength,
-  message,
-  pageParam,
-}: {
-  anchorEnd: number
-  dataLength: number
-  message: string
-  pageParam: OhlcPageParam
-}) => {
-  assert(dataLength > 0 || pageParam.end !== anchorEnd, message)
 }
 
 export const createCandleChartQueryKey = <TParts extends readonly unknown[]>(...parts: TParts) =>

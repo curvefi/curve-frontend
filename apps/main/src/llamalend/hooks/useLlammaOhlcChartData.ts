@@ -155,6 +155,7 @@ export const useLlammaOhlcChartData = ({
   return {
     fetchMore,
     isWaitingForFallbackChartData,
+    isLlammaFallbackEnabled: shouldFetchLlammaQuery,
     oraclePriceFallbackQuery,
     oraclePoolsChartQuery: q(oraclePoolsChartAdapter),
     oracleTokens,

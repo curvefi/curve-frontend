@@ -13,6 +13,8 @@ export type OhlcChartProps = {
   hideCandleSeriesLabel: boolean
   chartHeight: number
   isLoading: boolean
+  isEmpty?: boolean
+  emptyMessage?: string
   error: Error | null
   betaBackgroundColor?: string // Used during the beta phase of the new theme migration to pass theme bg color
   ohlcData: LpPriceOhlcDataFormatted[]
@@ -34,6 +36,8 @@ export const ChartWrapper = ({
   hideCandleSeriesLabel,
   chartHeight,
   isLoading,
+  isEmpty,
+  emptyMessage,
   error,
   betaBackgroundColor,
   ohlcData,
@@ -61,6 +65,8 @@ export const ChartWrapper = ({
         isLoading={isLoading}
         error={error}
         errorMessage={errorMessage}
+        isEmpty={isEmpty}
+        emptyMessage={emptyMessage}
         refreshData={refetchPricesData}
       >
         <CandleChart

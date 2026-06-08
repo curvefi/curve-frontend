@@ -1,8 +1,8 @@
 import type { Chain } from '@curvefi/prices-api'
 import { getLpOHLC, getOHLC, type GetLpOHLCParams } from '@curvefi/prices-api/ohlc'
+import { assert } from '@primitives/objects.utils'
 import { useOhlcInfiniteQuery } from '@ui-kit/features/candle-chart/hooks/useOhlcQueries'
 import {
-  assertInitialOhlcPageHasData,
   createCandleChartQueryKey,
   createOhlcPageResult,
   type OhlcPageParam,
@@ -10,6 +10,7 @@ import {
 } from '@ui-kit/features/candle-chart/query-utils'
 import type { ChartSelection, LpPriceOhlcDataFormatted, TimeOption } from '@ui-kit/features/candle-chart/types'
 import { formatCandleOhlcData } from '@ui-kit/features/candle-chart/utils'
+import { t } from '@ui-kit/lib/i18n'
 
 type DexOhlcQueryParams = {
   anchorEnd: number
@@ -109,14 +110,11 @@ export const useDexOhlcQuery = ({
     timeOption,
     enabled: !!chain && !!poolAddress,
     fetchPage: async ({ pageParam, signal }): Promise<DexOhlcPage> => {
-      if (!chain) {
-        throw new Error('Cannot fetch DEX OHLC data without a chain.')
-      }
-
+      const validChain = assert(chain, t`Cannot fetch DEX OHLC data without a chain.`)
       const responseData = await fetchDexOhlc(
         {
           anchorEnd,
-          chain,
+          chain: validChain,
           chartSelection,
           interval,
           poolAddress,
@@ -128,13 +126,6 @@ export const useDexOhlcQuery = ({
         signal,
       )
       const ohlcData = formatCandleOhlcData(responseData)
-
-      assertInitialOhlcPageHasData({
-        anchorEnd,
-        dataLength: ohlcData.length,
-        message: 'No OHLC data found. Data may be unavailable for this pool.',
-        pageParam,
-      })
 
       return {
         ohlcData,
