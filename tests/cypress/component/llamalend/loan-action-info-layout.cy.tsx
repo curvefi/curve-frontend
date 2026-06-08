@@ -33,7 +33,7 @@ const routes: MarketRoutes = {
   selectedRouter: mockRoutes[0].router,
   enabled: true,
   onChange: () => undefined,
-  onRefresh: () => undefined,
+  onRefresh: () => Promise.resolve(),
   tokenOut: { symbol: 'crvUSD', decimals: 18, usdRate: q({ data: 1, error: null, isLoading: false }) },
 }
 
