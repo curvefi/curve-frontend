@@ -22,9 +22,11 @@ export const useScrvUsdWithdrawMutation = ({ chainId, userAddress, onSuccess, ..
   const config = useConfig()
   const { mutate, error, isPending } = useTransactionMutation<ScrvUsdWithdrawMutation>({
     mutationKey: [...rootKeys.userChain({ chainId, userAddress }), 'st_crvUSD.withdraw'] as const,
-    mutationFn: async ({ withdrawAmount, isFull, userVaultShares }) => {
+    mutationFn: async ({ withdrawAmount, isFull, maxWithdrawAmount }) => {
       const { st_crvUSD } = requireLib('llamaApi')
-      const hash = (isFull ? await st_crvUSD.redeem(userVaultShares) : await st_crvUSD.withdraw(withdrawAmount)) as Hex
+      const hash = (
+        isFull ? await st_crvUSD.redeem(maxWithdrawAmount) : await st_crvUSD.withdraw(withdrawAmount)
+      ) as Hex
       return { hash }
     },
     validationSuite: scrvUsdWithdrawMaxValidationSuite,

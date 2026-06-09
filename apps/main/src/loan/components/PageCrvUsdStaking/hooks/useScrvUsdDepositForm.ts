@@ -19,10 +19,12 @@ export const useScrvUsdDepositForm = ({ chainId }: { chainId: ChainId }) => {
     defaultValues: emptyDepositForm(),
     validation: scrvUsdDepositFormValidationSuite,
   })
-  const depositAmount = form.watchValue('depositAmount')
-  const approveInfinite = !!form.watchValue('approveInfinite')
+  const { depositAmount, maxDepositAmount, approveInfinite } = form.watchValues()
   const [params, isDebouncing] = useFormDebounce(
-    useMemo(() => ({ chainId, userAddress, depositAmount }), [chainId, depositAmount, userAddress]),
+    useMemo(
+      () => ({ chainId, userAddress, depositAmount, maxDepositAmount, approveInfinite }),
+      [chainId, depositAmount, maxDepositAmount, approveInfinite, userAddress],
+    ),
   )
   const userBalances = useScrvUsdUserBalances({ chainId, userAddress }, !!userAddress)
   const isApproved = useScrvUsdDepositIsApproved(params, !!userAddress && form.formState.isValid)

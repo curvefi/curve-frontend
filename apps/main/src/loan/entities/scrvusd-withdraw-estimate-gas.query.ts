@@ -6,17 +6,17 @@ import type { ScrvUsdWithdrawParams, ScrvUsdWithdrawQuery } from './scrvusd.vali
 import { scrvUsdWithdrawMaxValidationSuite } from './scrvusd.validation'
 
 export const { useQuery: useScrvUsdWithdrawEstimateGasQuery } = queryFactory({
-  queryKey: ({ chainId, userAddress, withdrawAmount, isFull, userVaultShares }: ScrvUsdWithdrawParams) =>
+  queryKey: ({ chainId, userAddress, withdrawAmount, isFull, maxWithdrawAmount }: ScrvUsdWithdrawParams) =>
     [
       ...rootKeys.userChain({ chainId, userAddress }),
       'st_crvUSD.estimateGas.withdraw',
       { withdrawAmount },
       { isFull },
-      { userVaultShares },
+      { maxWithdrawAmount },
     ] as const,
-  queryFn: async ({ withdrawAmount, isFull, userVaultShares }: ScrvUsdWithdrawQuery) =>
+  queryFn: async ({ withdrawAmount, isFull, maxWithdrawAmount }: ScrvUsdWithdrawQuery) =>
     await (isFull
-      ? requireLib('llamaApi').st_crvUSD.estimateGas.redeem(userVaultShares)
+      ? requireLib('llamaApi').st_crvUSD.estimateGas.redeem(maxWithdrawAmount)
       : requireLib('llamaApi').st_crvUSD.estimateGas.withdraw(withdrawAmount)),
   category: 'savings.user',
   validationSuite: scrvUsdWithdrawMaxValidationSuite,

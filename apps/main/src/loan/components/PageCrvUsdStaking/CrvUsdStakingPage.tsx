@@ -35,7 +35,7 @@ function useLegacyFetching({
   address: string | undefined
   refetchUserScrvUsdBalance: () => Promise<unknown>
 }) {
-  const enabled = useScrvUsdNewForms()
+  const enabled = !useScrvUsdNewForms()
   const checkApproval = useStore(state => state.scrvusd.checkApproval)
   const inputAmount = useStore(state => state.scrvusd.inputAmount)
   const fetchExchangeRate = useStore(state => state.scrvusd.fetchExchangeRate)
@@ -75,7 +75,7 @@ export const CrvUsdStakingPage = () => {
     isFetching: isUserScrvUsdBalanceFetching,
     isFetched: isUserScrvUsdBalanceFetched,
     refetch: refetchUserScrvUsdBalance,
-  } = useScrvUsdUserBalances({ userAddress: address })
+  } = useScrvUsdUserBalances({ userAddress: address, chainId })
 
   useLegacyFetching({ lendApi, address, refetchUserScrvUsdBalance })
 

@@ -20,7 +20,6 @@ import {
   ChartFooter,
   ChartStateWrapper,
 } from '@ui-kit/shared/ui/Chart'
-import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { AdvancedDetails } from './AdvancedDetails'
 import { RevenueDistributionsBarChart } from './DistributionsBarChart'
@@ -107,67 +106,57 @@ export const Statistics = ({ chainId, isChartExpanded, toggleChartExpanded, hide
   }))
 
   return (
-    <Stack
-      sx={{
-        width: '100%',
+    <Card size="small">
+      <CardHeader title={t`Statistics`} />
+      <CardContent component={Stack} sx={{ gap: Spacing.md }}>
+        <StatsStack chainId={chainId} />
 
-        maxWidth: isChartExpanded
-          ? `calc(${MaxWidth.legacyActionCard} + ${Sizing[200]} + ${MaxWidth.section})`
-          : MaxWidth.section,
-      }}
-    >
-      <Card size="small">
-        <CardHeader title={t`Statistics`} />
-        <CardContent component={Stack} sx={{ gap: Spacing.md }}>
-          <StatsStack chainId={chainId} />
+        <ChartHeader
+          chartSelections={{
+            selections: chartSelections,
+            activeSelection: selectedStatisticsChart,
+            setActiveSelection: setSelectedStatisticsChart,
+          }}
+          chartOptionVariant="buttons-group"
+          expandChart={hideExpandChart ? undefined : { isExpanded: isChartExpanded, toggleChartExpanded }}
+        />
 
-          <ChartHeader
-            chartSelections={{
-              selections: chartSelections,
-              activeSelection: selectedStatisticsChart,
-              setActiveSelection: setSelectedStatisticsChart,
-            }}
-            chartOptionVariant="buttons-group"
-            expandChart={hideExpandChart ? undefined : { isExpanded: isChartExpanded, toggleChartExpanded }}
-          />
-
-          {selectedStatisticsChart === 'savingsRate' && (
-            <Stack sx={{ gap: Spacing.md }}>
-              <ChartStateWrapper
-                height={Height.chart}
-                isLoading={isScrvUsdYieldLoading}
-                error={scrvUsdYieldError}
-                errorMessage={t`Unable to fetch savings rate data.`}
-              >
-                <RevenueLineChart
-                  height={Height.chart}
-                  data={yieldData ?? EMPTY_YIELD_DATA}
-                  visibleSeries={visibleSeries}
-                />
-              </ChartStateWrapper>
-              <ChartFooter
-                legendSets={legendSets}
-                toggleOptions={timeOptions}
-                activeToggleOption={revenueChartTimeOption}
-                onToggleChange={(_, newOption) => setRevenueChartTimeOption(newOption)}
-              />
-            </Stack>
-          )}
-
-          {selectedStatisticsChart === 'distributions' && (
+        {selectedStatisticsChart === 'savingsRate' && (
+          <Stack sx={{ gap: Spacing.md }}>
             <ChartStateWrapper
               height={Height.chart}
-              isLoading={isRevenueLoading}
-              error={revenueError}
-              errorMessage={t`Unable to fetch distributions data.`}
+              isLoading={isScrvUsdYieldLoading}
+              error={scrvUsdYieldError}
+              errorMessage={t`Unable to fetch savings rate data.`}
             >
-              <RevenueDistributionsBarChart height={Height.chart} data={revenueData ?? null} />
+              <RevenueLineChart
+                height={Height.chart}
+                data={yieldData ?? EMPTY_YIELD_DATA}
+                visibleSeries={visibleSeries}
+              />
             </ChartStateWrapper>
-          )}
+            <ChartFooter
+              legendSets={legendSets}
+              toggleOptions={timeOptions}
+              activeToggleOption={revenueChartTimeOption}
+              onToggleChange={(_, newOption) => setRevenueChartTimeOption(newOption)}
+            />
+          </Stack>
+        )}
 
-          <AdvancedDetails network={chainId && networks[chainId]} />
-        </CardContent>
-      </Card>
-    </Stack>
+        {selectedStatisticsChart === 'distributions' && (
+          <ChartStateWrapper
+            height={Height.chart}
+            isLoading={isRevenueLoading}
+            error={revenueError}
+            errorMessage={t`Unable to fetch distributions data.`}
+          >
+            <RevenueDistributionsBarChart height={Height.chart} data={revenueData ?? null} />
+          </ChartStateWrapper>
+        )}
+
+        <AdvancedDetails network={chainId && networks[chainId]} />
+      </CardContent>
+    </Card>
   )
 }

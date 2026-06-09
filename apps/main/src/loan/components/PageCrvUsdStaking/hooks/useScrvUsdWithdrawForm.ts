@@ -10,7 +10,7 @@ import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { mapQuery } from '@ui-kit/types/util'
 import { decimalEqual } from '@ui-kit/utils'
 
-const userDefaultValues = { withdrawAmount: undefined, userVaultShares: undefined }
+const userDefaultValues = { withdrawAmount: undefined }
 
 const emptyWithdrawForm = (): ScrvUsdWithdrawForm => ({
   ...userDefaultValues,
@@ -24,21 +24,11 @@ export const useScrvUsdWithdrawForm = ({ chainId }: { chainId: ChainId }) => {
     defaultValues: emptyWithdrawForm(),
     validation: scrvUsdWithdrawFormValidationSuite,
   })
-  const withdrawAmount = form.watchValue('withdrawAmount')
-  const isFull = form.watchValue('isFull')
-  const userVaultShares = form.watchValue('userVaultShares')
-  const maxWithdrawAmount = form.watchValue('maxWithdrawAmount')
+  const { maxWithdrawAmount, withdrawAmount, isFull } = form.watchValues()
   const [params, isDebouncing] = useFormDebounce(
     useMemo(
-      () => ({
-        chainId,
-        userAddress,
-        withdrawAmount,
-        isFull,
-        userVaultShares,
-        maxWithdrawAmount,
-      }),
-      [chainId, isFull, maxWithdrawAmount, userAddress, userVaultShares, withdrawAmount],
+      () => ({ chainId, userAddress, maxWithdrawAmount, withdrawAmount, isFull }),
+      [chainId, userAddress, maxWithdrawAmount, withdrawAmount, isFull],
     ),
   )
   const userBalances = useScrvUsdUserBalances({ chainId, userAddress }, !!userAddress)
@@ -53,7 +43,7 @@ export const useScrvUsdWithdrawForm = ({ chainId }: { chainId: ChainId }) => {
   })
   const max = { ...mapQuery(userBalances, ({ scrvUSD }) => scrvUSD), fieldName: 'maxWithdrawAmount' as const }
 
-  useFormSync(form, { maxWithdrawAmount: max.data, userVaultShares: max.data })
+  useFormSync(form, { maxWithdrawAmount: max.data })
   useFormSync(form, { isFull: maybes([withdrawAmount, max.data], ([val, max]) => decimalEqual(val, max)) })
 
   return {

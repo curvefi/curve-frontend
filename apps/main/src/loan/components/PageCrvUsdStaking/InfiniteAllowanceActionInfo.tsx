@@ -7,7 +7,7 @@ type ScrvUsdInfiniteAllowanceActionInfoProps = { approveInfinite: boolean; onTog
 export const InfiniteAllowanceActionInfo = ({ approveInfinite, onToggle }: ScrvUsdInfiniteAllowanceActionInfoProps) => (
   <ActionInfo
     label={t`Infinite allowance`}
-    value={null}
+    value="" // do not pass null/undefined as that renders fallback
     valueRight={<Switch isActive={approveInfinite} isSelected={approveInfinite} onChange={onToggle} />}
     size="small"
     testId="scrvusd-infinite-allowance"

@@ -25,14 +25,13 @@ export type ScrvUsdDepositForm = Partial<ScrvUsdDepositMutation> & {
 export type ScrvUsdWithdrawQuery = ScrvUsdUserQuery & {
   withdrawAmount: Decimal
   isFull: boolean | undefined
-  userVaultShares: Decimal
-  maxWithdrawAmount?: Decimal
+  maxWithdrawAmount: Decimal
 }
 
 export type ScrvUsdWithdrawMutation = {
   withdrawAmount: Decimal
   isFull: boolean | undefined
-  userVaultShares: Decimal
+  maxWithdrawAmount: Decimal
 }
 
 export type ScrvUsdWithdrawForm = Partial<ScrvUsdWithdrawMutation> & {
@@ -43,7 +42,7 @@ export type ScrvUsdUserParams = FieldsOf<ScrvUsdUserQuery>
 export type ScrvUsdDepositParams = FieldsOf<ScrvUsdDepositQuery>
 export type ScrvUsdWithdrawParams = FieldsOf<ScrvUsdWithdrawQuery>
 
-const validateRequiredDecimal = (field: 'depositAmount' | 'withdrawAmount' | 'userVaultShares', value: unknown) => {
+const validateRequiredDecimal = (field: 'depositAmount' | 'withdrawAmount', value: unknown) => {
   test(field, `${field} is required`, () => {
     enforce(value).isNotEmpty()
   })
@@ -127,11 +126,6 @@ const createScrvUsdWithdrawValidationSuite = ({
     test('isFull', 'Full withdraw value must be calculated', () => {
       enforce(params.isFull).isBoolean()
     })
-
-    if (params.isFull) {
-      validateRequiredDecimal('userVaultShares', params.userVaultShares)
-    }
-
     skipWhen(!validateMax, () => {
       validateMaxDecimal('withdrawAmount', params.withdrawAmount, params.maxWithdrawAmount, maxRequired)
     })

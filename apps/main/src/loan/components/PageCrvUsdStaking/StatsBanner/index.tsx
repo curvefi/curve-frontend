@@ -28,9 +28,6 @@ export const StatsBanner = () => {
         backgroundColor: Color.Secondary[100],
         border: `1px solid ${Color.Secondary[500]}`,
         width: '100%',
-
-        // action card + gap + section
-        maxWidth: `calc(${MaxWidth.legacyActionCard} + ${Sizing[200]} + ${MaxWidth.section})`,
       }}
     >
       <Stack direction="column">

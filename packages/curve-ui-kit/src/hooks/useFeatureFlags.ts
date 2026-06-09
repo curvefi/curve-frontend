@@ -13,6 +13,7 @@ const useStableChannel = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy
  * Alpha channel works like beta for preview/localhost urls, but completely hidden in production.
  * This is used for features actively under development that are known not to be ready.
  **/
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const useAlphaChannel = () => useBetaChannel() && defaultReleaseChannel === ReleaseChannel.Beta
 
 /** New unified supply/vault forms (deposit/withdraw/claim) */
@@ -24,7 +25,7 @@ export const useManageLoanMuiForm = useStableChannel
 /** New card for managing soft liquidations */
 export const useManageSoftLiquidation = useStableChannel
 
-export const useScrvUsdNewForms = useAlphaChannel
+export const useScrvUsdNewForms = useBetaChannel
 
 /** New ZapV2 leverage implementation for LlamaLend markets */
 export const isZapV2Enabled = () => getReleaseChannel() === ReleaseChannel.Beta && !isZapV2Disabled()

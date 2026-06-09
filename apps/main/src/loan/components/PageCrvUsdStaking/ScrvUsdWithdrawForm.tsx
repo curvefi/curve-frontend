@@ -45,7 +45,7 @@ export const ScrvUsdWithdrawForm = ({ network }: NetworkUrlParams) => {
       />
       {isConnected ? (
         <Button type="submit" loading={isPending} disabled={isDisabled} data-testid="scrvusd-withdraw-submit-button">
-          {isPending ? t`Processing...` : t`Withdraw`}
+          {isPending ? t`Processing...` : params.isFull ? t`Redeem` : t`Withdraw`}
         </Button>
       ) : (
         <ConnectWalletButton
