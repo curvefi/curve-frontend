@@ -10,16 +10,20 @@
  *
  * TODO Refactor components to render their own children, or replace with MUI
  */
-declare module '@react-types/select' {
-  import {
-    AriaListBoxOptions as OriginalListBoxOptions,
-    AriaSelectOptions as OriginalSelectOptions,
-    SelectProps as OriginalSelectProps,
-    SelectStateOptions as OriginalSelectStateOptions,
-  } from '@react-types/select'
+import type { ReactNode } from 'react'
+import type { SelectionMode } from 'react-stately'
 
-  type FieldsToAdd = Pick<OriginalSelectProps, 'children'>
-  export interface SelectStateOptions<T> extends OriginalSelectStateOptions<T>, FieldsToAdd {}
-  export interface AriaSelectOptions<T> extends OriginalSelectOptions<T>, FieldsToAdd {}
-  export interface AriaListBoxOptions<T> extends OriginalListBoxOptions<T>, FieldsToAdd {}
+declare module 'react-stately' {
+  export interface SelectStateOptions<T, _M extends SelectionMode = 'single'> {
+    children?: ReactNode | ((item: T) => ReactNode)
+  }
+}
+
+declare module 'react-aria' {
+  export interface AriaSelectOptions<T, _M extends SelectionMode = 'single'> {
+    children?: ReactNode | ((item: T) => ReactNode)
+  }
+  export interface AriaListBoxOptions<T> {
+    children?: ReactNode | ((item: T) => ReactNode)
+  }
 }
