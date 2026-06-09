@@ -1,38 +1,20 @@
 import { BigNumber } from 'bignumber.js'
 import { useConnection } from 'wagmi'
-import { oneMonthProjectionYield, oneYearProjectionYield, isReady } from '@/loan/components/PageCrvUsdStaking/utils'
+import { oneMonthProjectionYield, oneYearProjectionYield } from '@/loan/components/PageCrvUsdStaking/utils'
 import { useScrvUsdExchangeRate as useScrvUsdExchangeRateQuery } from '@/loan/entities/scrvusd-exchange-rate.query'
 import { useScrvUsdStatistics } from '@/loan/entities/scrvusd-statistics.query'
 import { useScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances.query'
-import { useStore } from '@/loan/store/useStore'
 import type { ChainId } from '@/loan/types/loan.types'
 import { Card, CardContent, CardHeader, Stack } from '@mui/material'
 import Grid from '@mui/material/Grid'
-import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
-import { useScrvUsdNewForms } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { mapQuery, q, type QueryProp } from '@ui-kit/types/util'
 
 const { Spacing } = SizesAndSpaces
 
 const CRVUSD_OPTIONS = { symbol: 'crvUSD', position: 'suffix' as const, abbreviate: true }
-
-const useScrvUsdExchangeRate = (chainId: ChainId | undefined): QueryProp<Decimal | undefined> => {
-  const useNewForms = useScrvUsdNewForms()
-  const legacyExchangeRate = useStore(state => state.scrvusd.scrvUsdExchangeRate)
-  const exchangeRate = useScrvUsdExchangeRateQuery({ chainId }, !!chainId && useNewForms)
-
-  if (useNewForms) return mapQuery(exchangeRate, rate => rate)
-
-  return q({
-    data: isReady(legacyExchangeRate.fetchStatus) ? (legacyExchangeRate.value as Decimal) : undefined,
-    isLoading: !isReady(legacyExchangeRate.fetchStatus),
-    error: null,
-  })
-}
 
 type UserPositionProps = {
   chainId: ChainId | undefined
@@ -42,10 +24,10 @@ export const UserPosition = ({ chainId }: UserPositionProps) => {
   const { address } = useConnection()
   const { data: statisticsData, isLoading: isStatisticsLoading } = useScrvUsdStatistics({})
   const { data: userBalance, isLoading: userBalanceLoading } = useScrvUsdUserBalances({ userAddress: address })
-  const scrvUsdExchangeRate = useScrvUsdExchangeRate(chainId)
+  const { data: exchangeRate, isLoading: isExchangeRateLoading } = useScrvUsdExchangeRateQuery({ chainId })
 
   const userScrvUsdBalance = maybe(userBalance?.scrvUSD, Number)
-  const userScrvUsdBalanceInCrvUsd = maybe(scrvUsdExchangeRate.data, rate =>
+  const userScrvUsdBalanceInCrvUsd = maybe(exchangeRate, rate =>
     maybe(userScrvUsdBalance, balance => balance / Number(rate)),
   )
 
@@ -66,7 +48,7 @@ export const UserPosition = ({ chainId }: UserPositionProps) => {
               label={t`Your crvUSD Staked`}
               value={userScrvUsdBalanceInCrvUsd}
               valueOptions={{ unit: CRVUSD_OPTIONS }}
-              loading={userBalanceLoading || scrvUsdExchangeRate.isLoading}
+              loading={isExchangeRateLoading}
             />
           </Grid>
           <Grid size={6}>

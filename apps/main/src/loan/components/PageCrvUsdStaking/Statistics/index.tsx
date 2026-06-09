@@ -4,21 +4,19 @@ import type { StatisticsChart, YieldKeys } from '@/loan/components/PageCrvUsdSta
 import { useScrvUsdRevenue } from '@/loan/entities/scrvusd-revenue.query'
 import { useScrvUsdYield } from '@/loan/entities/scrvusd-yield.query'
 import { networks } from '@/loan/networks'
-import { useStore } from '@/loan/store/useStore'
 import type { ChainId } from '@/loan/types/loan.types'
-import { Stack, Card, CardHeader } from '@mui/material'
+import { Card, CardHeader, Stack } from '@mui/material'
 import CardContent from '@mui/material/CardContent'
 import { useTheme } from '@mui/material/styles'
 import { recordEntries } from '@primitives/objects.utils'
-import { useScrvUsdNewForms } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { timeOptions } from '@ui-kit/lib/model/query/time-option-validation'
 import {
+  ChartFooter,
   ChartHeader,
   type ChartSelections,
-  type LegendItem,
-  ChartFooter,
   ChartStateWrapper,
+  type LegendItem,
 } from '@ui-kit/shared/ui/Chart'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { AdvancedDetails } from './AdvancedDetails'
@@ -39,28 +37,6 @@ const chartSelections: ChartSelections<StatisticsChart>[] = [
   { activeTitle: t`Historical Distributions`, label: chartLabels.distributions, key: 'distributions' },
 ]
 
-const useStatisticsChartControls = () => {
-  const useNewForms = useScrvUsdNewForms()
-  const [newFormsSelectedStatisticsChart, setNewFormsSelectedStatisticsChart] = useState<StatisticsChart>('savingsRate')
-  const [newFormsRevenueChartTimeOption, setNewFormsRevenueChartTimeOption] =
-    useState<(typeof timeOptions)[number]>('1M')
-  const selectedStatisticsChart = useStore(state => state.scrvusd.selectedStatisticsChart)
-  const setSelectedStatisticsChart = useStore(state => state.scrvusd.setSelectedStatisticsChart)
-  const revenueChartTimeOption = useStore(state => state.scrvusd.revenueChartTimeOption)
-  const setRevenueChartTimeOption = useStore(state => state.scrvusd.setRevenueChartTimeOption)
-
-  if (useNewForms) {
-    return {
-      selectedStatisticsChart: newFormsSelectedStatisticsChart,
-      setSelectedStatisticsChart: setNewFormsSelectedStatisticsChart,
-      revenueChartTimeOption: newFormsRevenueChartTimeOption,
-      setRevenueChartTimeOption: setNewFormsRevenueChartTimeOption,
-    }
-  }
-
-  return { selectedStatisticsChart, setSelectedStatisticsChart, revenueChartTimeOption, setRevenueChartTimeOption }
-}
-
 type StatisticsProps = {
   chainId: ChainId | undefined
   isChartExpanded: boolean
@@ -69,8 +45,8 @@ type StatisticsProps = {
 }
 
 export const Statistics = ({ chainId, isChartExpanded, toggleChartExpanded, hideExpandChart }: StatisticsProps) => {
-  const { selectedStatisticsChart, setSelectedStatisticsChart, revenueChartTimeOption, setRevenueChartTimeOption } =
-    useStatisticsChartControls()
+  const [selectedStatisticsChart, setSelectedStatisticsChart] = useState<StatisticsChart>('savingsRate')
+  const [revenueChartTimeOption, setRevenueChartTimeOption] = useState<(typeof timeOptions)[number]>('1M')
 
   const {
     data: yieldData,
