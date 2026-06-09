@@ -522,6 +522,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ecies/ciphers@npm:^0.2.5":
+  version: 0.2.6
+  resolution: "@ecies/ciphers@npm:0.2.6"
+  peerDependencies:
+    "@noble/ciphers": ^1.0.0
+  checksum: 10c0/31cbfbaedae690e12344e49eb1b7fd0697f36cf4d03100df52b925e1f19d02a6f445834938ecdd1cd74154496a74fa9147cdda6209255512220e45eb9c693ca0
+  languageName: node
+  linkType: hard
+
 "@emnapi/core@npm:1.10.0":
   version: 1.10.0
   resolution: "@emnapi/core@npm:1.10.0"
@@ -1889,6 +1898,95 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/connect-multichain@npm:1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/connect-multichain@npm:1.0.0"
+  dependencies:
+    "@metamask/analytics": "npm:^0.6.0"
+    "@metamask/mobile-wallet-protocol-core": "npm:^0.4.0"
+    "@metamask/mobile-wallet-protocol-dapp-client": "npm:^0.3.0"
+    "@metamask/multichain-api-client": "npm:^0.10.1"
+    "@metamask/multichain-ui": "npm:^0.4.1"
+    "@metamask/onboarding": "npm:^1.0.1"
+    "@metamask/rpc-errors": "npm:^7.0.3"
+    "@metamask/utils": "npm:^11.8.1"
+    "@paulmillr/qr": "npm:^0.2.1"
+    bowser: "npm:^2.11.0"
+    buffer: "npm:^6.0.3"
+    cross-fetch: "npm:^4.1.0"
+    eciesjs: "npm:0.4.17"
+    eventemitter3: "npm:^5.0.1"
+    pako: "npm:^2.1.0"
+    uuid: "npm:^11.1.0"
+    ws: "npm:^8.18.3"
+  peerDependencies:
+    "@react-native-async-storage/async-storage": ^1.23
+  peerDependenciesMeta:
+    "@react-native-async-storage/async-storage":
+      optional: true
+  checksum: 10c0/9c3a38c59430336517d89d10d38a25099fd11c91d493f4e2ccbdb38cf3b45e19ba739916a88bc65f2009909ef07d0fcaec94236d54157208d568d99d4e11b2ac
+  languageName: node
+  linkType: hard
+
+"@metamask/mobile-wallet-protocol-core@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@metamask/mobile-wallet-protocol-core@npm:0.4.0"
+  dependencies:
+    async-mutex: "npm:^0.5.0"
+    centrifuge: "npm:^5.3.5"
+    eventemitter3: "npm:^5.0.1"
+    uuid: "npm:^11.1.0"
+  checksum: 10c0/214ebd3e3ff718ef1c8a2e935dd4a9f9db6c76a61d5e2604e5fcdf9f966bf9f0f99a0a241cd2f329e4899e52a56d77a5755d436c049bd78663b31901d9e416a8
+  languageName: node
+  linkType: hard
+
+"@metamask/mobile-wallet-protocol-dapp-client@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@metamask/mobile-wallet-protocol-dapp-client@npm:0.3.0"
+  dependencies:
+    "@metamask/mobile-wallet-protocol-core": "npm:^0.4.0"
+    "@metamask/utils": "npm:^9.1.0"
+    uuid: "npm:^11.1.0"
+  checksum: 10c0/76140d0c374e787ba2d8e57308b649909e93c1bb8865c61225e45db0986aef2a354f7c6af8fa90dd47f8220ac645c0ab512d0b5ebaab9c5cd4bafb1c4b7138df
+  languageName: node
+  linkType: hard
+
+"@metamask/multichain-api-client@npm:^0.10.1":
+  version: 0.10.1
+  resolution: "@metamask/multichain-api-client@npm:0.10.1"
+  checksum: 10c0/78995f50411bc887fe93b447c814a558ca5573a689d11ad3012dd91f2ea5308e964ec9ca5d3c7907c0a9177815a0f018d58b7b2ffdc25ed40084a48702321fb9
+  languageName: node
+  linkType: hard
+
+"@metamask/multichain-ui@npm:^0.4.1":
+  version: 0.4.1
+  resolution: "@metamask/multichain-ui@npm:0.4.1"
+  dependencies:
+    "@paulmillr/qr": "npm:^0.2.1"
+    qr-code-styling: "npm:^1.9.2"
+  checksum: 10c0/4f927c659ba1bebf49e5774a00abad23dbfa5a4aebe3b85af55251a75eac040543ca302c6bafabd83dc001fca436cc929e43774e7c3ff814aeccd3a074bcd04d
+  languageName: node
+  linkType: hard
+
+"@metamask/onboarding@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@metamask/onboarding@npm:1.0.1"
+  dependencies:
+    bowser: "npm:^2.9.0"
+  checksum: 10c0/7a95eb47749217878a9e964c169a479a7532892d723eaade86c2e638e5ea5a54c697e0bbf68ab4f06dff5770639b9937da3375a3e8f958eae3f8da69f24031ed
+  languageName: node
+  linkType: hard
+
+"@metamask/rpc-errors@npm:^7.0.3":
+  version: 7.0.3
+  resolution: "@metamask/rpc-errors@npm:7.0.3"
+  dependencies:
+    "@metamask/utils": "npm:^11.4.2"
+    fast-safe-stringify: "npm:^2.0.6"
+  checksum: 10c0/9cbe759e8f9c20f332fb00b1c93c607bab6ec97deb248588cba67de1127cca66e016332577b94bb6991267786b1af47b1056e8e1436cb6f86ff0b7ea91b31ed8
+  languageName: node
+  linkType: hard
+
 "@metamask/superstruct@npm:^3.1.0":
   version: 3.2.1
   resolution: "@metamask/superstruct@npm:3.2.1"
@@ -1896,7 +1994,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:^11.8.1":
+"@metamask/utils@npm:^11.4.2, @metamask/utils@npm:^11.8.1":
   version: 11.11.0
   resolution: "@metamask/utils@npm:11.11.0"
   dependencies:
@@ -1912,6 +2010,23 @@ __metadata:
     semver: "npm:^7.5.4"
     uuid: "npm:^9.0.1"
   checksum: 10c0/f6874481ba64e80ddee60dcfef1e7070c887696f72dc20d63dd6dc10d5e7f27d5a23a24bfb9888dd8fe1c123dac9185f4f78c41584754cbe7ceae29c84569daa
+  languageName: node
+  linkType: hard
+
+"@metamask/utils@npm:^9.1.0":
+  version: 9.3.0
+  resolution: "@metamask/utils@npm:9.3.0"
+  dependencies:
+    "@ethereumjs/tx": "npm:^4.2.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@noble/hashes": "npm:^1.3.1"
+    "@scure/base": "npm:^1.1.3"
+    "@types/debug": "npm:^4.1.7"
+    debug: "npm:^4.3.4"
+    pony-cause: "npm:^2.1.10"
+    semver: "npm:^7.5.4"
+    uuid: "npm:^9.0.1"
+  checksum: 10c0/8298d6f58d1cf8f5b3e057a4fdf364466f6d7d860e2950713690c5b4be3edb48d952f20982af66f83753596dc2bcd5b23cb53721b389ca134117b20ef0ebf04f
   languageName: node
   linkType: hard
 
@@ -2163,7 +2278,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/curves@npm:1.9.7, @noble/curves@npm:^1.4.2, @noble/curves@npm:^1.6.0, @noble/curves@npm:~1.9.0":
+"@noble/curves@npm:1.9.7, @noble/curves@npm:^1.4.2, @noble/curves@npm:^1.6.0, @noble/curves@npm:^1.9.7, @noble/curves@npm:~1.9.0":
   version: 1.9.7
   resolution: "@noble/curves@npm:1.9.7"
   dependencies:
@@ -2551,6 +2666,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@paulmillr/qr@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@paulmillr/qr@npm:0.2.1"
+  checksum: 10c0/6ca1171a7e870d948084dc0a51ca61fab4a2537c888e116cac2f3c622974a911559b212d0d0a79d57c69a8b396eb0168e3a6e46715f9881df241d78cdf081ef4
+  languageName: node
+  linkType: hard
+
 "@phosphor-icons/webcomponents@npm:2.1.5":
   version: 2.1.5
   resolution: "@phosphor-icons/webcomponents@npm:2.1.5"
@@ -2578,6 +2700,78 @@ __metadata:
   version: 2.11.8
   resolution: "@popperjs/core@npm:2.11.8"
   checksum: 10c0/4681e682abc006d25eb380d0cf3efc7557043f53b6aea7a5057d0d1e7df849a00e281cd8ea79c902a35a414d7919621fc2ba293ecec05f413598e0b23d5a1e63
+  languageName: node
+  linkType: hard
+
+"@protobufjs/aspromise@npm:^1.1.1, @protobufjs/aspromise@npm:^1.1.2":
+  version: 1.1.2
+  resolution: "@protobufjs/aspromise@npm:1.1.2"
+  checksum: 10c0/a83343a468ff5b5ec6bff36fd788a64c839e48a07ff9f4f813564f58caf44d011cd6504ed2147bf34835bd7a7dd2107052af755961c6b098fd8902b4f6500d0f
+  languageName: node
+  linkType: hard
+
+"@protobufjs/base64@npm:^1.1.2":
+  version: 1.1.2
+  resolution: "@protobufjs/base64@npm:1.1.2"
+  checksum: 10c0/eec925e681081af190b8ee231f9bad3101e189abbc182ff279da6b531e7dbd2a56f1f306f37a80b1be9e00aa2d271690d08dcc5f326f71c9eed8546675c8caf6
+  languageName: node
+  linkType: hard
+
+"@protobufjs/codegen@npm:^2.0.5":
+  version: 2.0.5
+  resolution: "@protobufjs/codegen@npm:2.0.5"
+  checksum: 10c0/1b8a2ae56ee60a56e9d205cd4b6072a1503c5069b8ebb905710f974ff0098a0d0700641c137e0a8d98dedf14423156a106a9433695cbf52574810f55000fdcab
+  languageName: node
+  linkType: hard
+
+"@protobufjs/eventemitter@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "@protobufjs/eventemitter@npm:1.1.1"
+  checksum: 10c0/8e06193d4629c5e7c09d4f8c2ddba8fc4dfa739f0149f33a1d901568d35bb7b8b5277a4e8452baf3bdd0b302fd599cf255d193267aa93a0a4747e23cd073c4ac
+  languageName: node
+  linkType: hard
+
+"@protobufjs/fetch@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "@protobufjs/fetch@npm:1.1.1"
+  dependencies:
+    "@protobufjs/aspromise": "npm:^1.1.1"
+  checksum: 10c0/a497ff5433854e8577f0427983ea39b9113b49a8120f94515291d763327061d2c3013e60e24ea436d091dafae01a0f6eb1867e3b1616045d96a31d8b3c646ed4
+  languageName: node
+  linkType: hard
+
+"@protobufjs/float@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "@protobufjs/float@npm:1.0.2"
+  checksum: 10c0/18f2bdede76ffcf0170708af15c9c9db6259b771e6b84c51b06df34a9c339dbbeec267d14ce0bddd20acc142b1d980d983d31434398df7f98eb0c94a0eb79069
+  languageName: node
+  linkType: hard
+
+"@protobufjs/inquire@npm:^1.1.2":
+  version: 1.1.2
+  resolution: "@protobufjs/inquire@npm:1.1.2"
+  checksum: 10c0/af69597818a14cac6a00a74cd5b3fb85aa96658b9dbbae73e6d907cb154ebf470953a8c537b3e6095a43de565ec4e6c5b40227c72f4a7d762d34fbec7ac179e7
+  languageName: node
+  linkType: hard
+
+"@protobufjs/path@npm:^1.1.2":
+  version: 1.1.2
+  resolution: "@protobufjs/path@npm:1.1.2"
+  checksum: 10c0/cece0a938e7f5dfd2fa03f8c14f2f1cf8b0d6e13ac7326ff4c96ea311effd5fb7ae0bba754fbf505312af2e38500250c90e68506b97c02360a43793d88a0d8b4
+  languageName: node
+  linkType: hard
+
+"@protobufjs/pool@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@protobufjs/pool@npm:1.1.0"
+  checksum: 10c0/eda2718b7f222ac6e6ad36f758a92ef90d26526026a19f4f17f668f45e0306a5bd734def3f48f51f8134ae0978b6262a5c517c08b115a551756d1a3aadfcf038
+  languageName: node
+  linkType: hard
+
+"@protobufjs/utf8@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "@protobufjs/utf8@npm:1.1.1"
+  checksum: 10c0/641fc145f00626405e8984b6e90b9edcbcc072ffc82d0647ca3176e09c730b2d022f988e65f011a7a17e2e4d77cde7733643aa10d8ac2bfa30f134dbcad553fd
   languageName: node
   linkType: hard
 
@@ -6363,6 +6557,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"async-mutex@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "async-mutex@npm:0.5.0"
+  dependencies:
+    tslib: "npm:^2.4.0"
+  checksum: 10c0/9096e6ad6b674c894d8ddd5aa4c512b09bb05931b8746ebd634952b05685608b2b0820ed5c406e6569919ff5fe237ab3c491e6f2887d6da6b6ba906db3ee9c32
+  languageName: node
+  linkType: hard
+
 "async-sema@npm:^3.1.1":
   version: 3.1.1
   resolution: "async-sema@npm:3.1.1"
@@ -6592,6 +6795,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"bowser@npm:^2.11.0, bowser@npm:^2.9.0":
+  version: 2.14.1
+  resolution: "bowser@npm:2.14.1"
+  checksum: 10c0/bb69b55ba7f0456e3dc07d0cfd9467f985581f640ba8fd426b08754a6737ee0d6cf3b50607941e5255f04c83075b952ece0599f978dd4d20f1e95461104c5ffd
+  languageName: node
+  linkType: hard
+
 "brace-expansion@npm:^5.0.5":
   version: 5.0.5
   resolution: "brace-expansion@npm:5.0.5"
@@ -6774,6 +6984,16 @@ __metadata:
   version: 0.12.0
   resolution: "caseless@npm:0.12.0"
   checksum: 10c0/ccf64bcb6c0232cdc5b7bd91ddd06e23a4b541f138336d4725233ac538041fb2f29c2e86c3c4a7a61ef990b665348db23a047060b9414c3a6603e9fa61ad4626
+  languageName: node
+  linkType: hard
+
+"centrifuge@npm:^5.3.5":
+  version: 5.6.0
+  resolution: "centrifuge@npm:5.6.0"
+  dependencies:
+    events: "npm:^3.3.0"
+    protobufjs: "npm:^7.6.0"
+  checksum: 10c0/07b70c6ab90d6bdd843308cec9e553118615e3f2a46f2ce7bb145c6e03974085373cc161a12d6bec908872c6de6857ba3d1197571604b8b359f8f425c62df0ca
   languageName: node
   linkType: hard
 
@@ -7183,6 +7403,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cross-fetch@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "cross-fetch@npm:4.1.0"
+  dependencies:
+    node-fetch: "npm:^2.7.0"
+  checksum: 10c0/628b134ea27cfcada67025afe6ef1419813fffc5d63d175553efa75a2334522d450300a0f3f0719029700da80e96327930709d5551cf6deb39bb62f1d536642e
+  languageName: node
+  linkType: hard
+
 "cross-spawn@npm:^7.0.0, cross-spawn@npm:^7.0.6":
   version: 7.0.6
   resolution: "cross-spawn@npm:7.0.6"
@@ -7313,6 +7542,7 @@ __metadata:
     "@emotion/styled": "npm:11.14.1"
     "@hookform/resolvers": "npm:5.4.0"
     "@metamask/connect-evm": "npm:2.0.0"
+    "@metamask/connect-multichain": "npm:1.0.0"
     "@mui/icons-material": "npm:9.0.1"
     "@mui/material": "npm:9.0.1"
     "@safe-global/safe-apps-provider": "npm:0.18.6"
@@ -7848,6 +8078,18 @@ __metadata:
     tslib: "npm:2.3.0"
     zrender: "npm:6.1.0"
   checksum: 10c0/a0911a9d75969ff946d0bce998e95e1924cdec7f5ca6be13ded376e2a47067c70b264ee8d04ba84345aa7895363e202f54c87d2bae114859bd154d565babc09c
+  languageName: node
+  linkType: hard
+
+"eciesjs@npm:0.4.17":
+  version: 0.4.17
+  resolution: "eciesjs@npm:0.4.17"
+  dependencies:
+    "@ecies/ciphers": "npm:^0.2.5"
+    "@noble/ciphers": "npm:^1.3.0"
+    "@noble/curves": "npm:^1.9.7"
+    "@noble/hashes": "npm:^1.8.0"
+  checksum: 10c0/18fc6c1f9591ac5c80bd5bcc0741a99583ca41363de63db232118b5b61ae1a1fe3b8ac68f2d06e6a0ca24e59a608c53eb51f304e7c438215a1dcdf5dc0ba0aa6
   languageName: node
   linkType: hard
 
@@ -8995,6 +9237,13 @@ __metadata:
   dependencies:
     fast-decode-uri-component: "npm:^1.0.1"
   checksum: 10c0/e8223273a9b199722f760f5a047a77ad049a14bd444b821502cb8218f5925e3a5fffb56b64389bca73ab2ac6f1aa7aebbe4e203e5f6e53ff5978de97c0fde4e3
+  languageName: node
+  linkType: hard
+
+"fast-safe-stringify@npm:^2.0.6":
+  version: 2.1.1
+  resolution: "fast-safe-stringify@npm:2.1.1"
+  checksum: 10c0/d90ec1c963394919828872f21edaa3ad6f1dddd288d2bd4e977027afff09f5db40f94e39536d4646f7e01761d704d72d51dce5af1b93717f3489ef808f5f4e4d
   languageName: node
   linkType: hard
 
@@ -10277,6 +10526,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"long@npm:^5.3.2":
+  version: 5.3.2
+  resolution: "long@npm:5.3.2"
+  checksum: 10c0/7130fe1cbce2dca06734b35b70d380ca3f70271c7f8852c922a7c62c86c4e35f0c39290565eca7133c625908d40e126ac57c02b1b1a4636b9457d77e1e60b981
+  languageName: node
+  linkType: hard
+
 "loose-envify@npm:^1.4.0":
   version: 1.4.0
   resolution: "loose-envify@npm:1.4.0"
@@ -11250,6 +11506,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"pako@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "pako@npm:2.1.0"
+  checksum: 10c0/8e8646581410654b50eb22a5dfd71159cae98145bd5086c9a7a816ec0370b5f72b4648d08674624b3870a521e6a3daffd6c2f7bc00fdefc7063c9d8232ff5116
+  languageName: node
+  linkType: hard
+
 "parent-module@npm:^1.0.0":
   version: 1.0.1
   resolution: "parent-module@npm:1.0.1"
@@ -11577,6 +11840,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"protobufjs@npm:^7.6.0":
+  version: 7.6.2
+  resolution: "protobufjs@npm:7.6.2"
+  dependencies:
+    "@protobufjs/aspromise": "npm:^1.1.2"
+    "@protobufjs/base64": "npm:^1.1.2"
+    "@protobufjs/codegen": "npm:^2.0.5"
+    "@protobufjs/eventemitter": "npm:^1.1.1"
+    "@protobufjs/fetch": "npm:^1.1.1"
+    "@protobufjs/float": "npm:^1.0.2"
+    "@protobufjs/inquire": "npm:^1.1.2"
+    "@protobufjs/path": "npm:^1.1.2"
+    "@protobufjs/pool": "npm:^1.1.0"
+    "@protobufjs/utf8": "npm:^1.1.1"
+    "@types/node": "npm:>=13.7.0"
+    long: "npm:^5.3.2"
+  checksum: 10c0/3c552dfe3cbcfad2d6c312a76cd189cf5be9fb36b203f6292f79c6020d675f7f33d5531ce312441c42ae75deb24ced32760e64fe4aa3d5b3c2295fd67cea270c
+  languageName: node
+  linkType: hard
+
 "proxy-compare@npm:^3.0.1":
   version: 3.0.1
   resolution: "proxy-compare@npm:3.0.1"
@@ -11619,6 +11902,22 @@ __metadata:
   version: 2.3.1
   resolution: "punycode@npm:2.3.1"
   checksum: 10c0/14f76a8206bc3464f794fb2e3d3cc665ae416c01893ad7a02b23766eb07159144ee612ad67af5e84fa4479ccfe67678c4feb126b0485651b302babf66f04f9e9
+  languageName: node
+  linkType: hard
+
+"qr-code-styling@npm:^1.9.2":
+  version: 1.9.2
+  resolution: "qr-code-styling@npm:1.9.2"
+  dependencies:
+    qrcode-generator: "npm:^1.4.4"
+  checksum: 10c0/6296e115776ec7788dacc62f2ec0e54d861cfa2a82676bcf9adc693e8bce33552bd6bd92c9ff0478d2bff8610243f7010d7bd7bf85cf96fb41d8b60a36fa56e0
+  languageName: node
+  linkType: hard
+
+"qrcode-generator@npm:^1.4.4":
+  version: 1.5.2
+  resolution: "qrcode-generator@npm:1.5.2"
+  checksum: 10c0/4e0a43ba1c0212cf8ec39654cc7a5bebda96ee00453dc5732e98af4cf681c6786d2c189d4657d8d4fa6486f07573c1edb85fbb7af5e78972f843b7db8457a9b7
   languageName: node
   linkType: hard
 
@@ -13473,7 +13772,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uuid@npm:^11.0.0":
+"uuid@npm:^11.0.0, uuid@npm:^11.1.0":
   version: 11.1.1
   resolution: "uuid@npm:11.1.1"
   bin:
@@ -13996,6 +14295,21 @@ __metadata:
     utf-8-validate:
       optional: true
   checksum: 10c0/7972670b676fb1ccba73b0899ca3c2e04e8c2075629c2614cced7f556536f96a672bbf4619fc5a06c8b8720bb839a47ca88c69c95dc14c9c61a99fbecba1c866
+  languageName: node
+  linkType: hard
+
+"ws@npm:^8.18.3":
+  version: 8.21.0
+  resolution: "ws@npm:8.21.0"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ">=5.0.2"
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: 10c0/ef4a243476283fc49bc7550966c4af4aa0eef56273837211e700de3b664e08604a760cdddcb5ba43c049140e74ccfec5b0ee0bb439e08c2adf9138902fdde5f9
   languageName: node
   linkType: hard
 
