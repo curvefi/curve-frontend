@@ -20,6 +20,10 @@ const StablePoolListPage = () => {
 const BetaPoolListPage = () => {
   const network = useNetworkFromUrl()
   const { data: supportedPoolChains, isLoading } = usePoolChains({})
+  /**
+   * Prices API v2 does not cover every full DEX network that's supplied by the curve-api.
+   * Unsupported: Moonbeam, Kava, Avalanche, Celo, Aurora, X-Layer, zkSync, Mantle.
+   */
   const isSupported = supportedPoolChains?.some(({ chainId }) => chainId === network?.chainId)
 
   return (
