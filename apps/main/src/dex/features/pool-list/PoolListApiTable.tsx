@@ -25,6 +25,7 @@ import { PoolListChips } from './chips/PoolListChips'
 import { POOL_LIST_COLUMNS, PoolColumnId, getDefaultSort } from './columns'
 import { PoolListEmptyState } from './components/PoolListEmptyState'
 import { PoolMobileExpandedPanel } from './components/PoolMobileExpandedPanel'
+import { usePoolListApiUserPositionOptions } from './hooks/usePoolListApiUserPositionOptions'
 import { usePoolListVisibilitySettings } from './hooks/usePoolListVisibilitySettings'
 
 const LOCAL_STORAGE_KEY = 'dex-pool-list'
@@ -76,6 +77,7 @@ const getApiSorting = (sorting: SortingState, defaultSort: SortingState): Sortin
 
 export const PoolListApiTable = ({ network }: { network: NetworkConfig }) => {
   const isTablet = useIsTablet()
+  const getUserPositionOptions = usePoolListApiUserPositionOptions(network.chainId)
   const searchParams = useSearchParams()
   const searchNavigate = useSearchNavigate(searchParams)
   const defaultSort = useMemo<SortingState>(() => getDefaultSort(network.isLite), [network.isLite])
@@ -151,8 +153,8 @@ export const PoolListApiTable = ({ network }: { network: NetworkConfig }) => {
     [poolType, searchText],
   )
   const data = useMemo(
-    () => poolList?.pools.map(pool => getPoolListItem(network, pool)) ?? EMPTY,
-    [network, poolList?.pools],
+    () => poolList?.pools.map(pool => getPoolListItem(network, pool, getUserPositionOptions(pool.address))) ?? EMPTY,
+    [getUserPositionOptions, network, poolList?.pools],
   )
   const [expanded, setExpanded] = useState<ExpandedState>({})
   const { columnSettings, columnVisibility } = usePoolListVisibilitySettings(LOCAL_STORAGE_KEY, {
