@@ -100,15 +100,13 @@ export const RouteProviderCard = ({
                   {isLoading || usdRate.isLoading
                     ? PLACEHOLDER_USD
                     : (maybes(
-                          [out, usdRate.data],
-                          ([out, usd]) => `~${formatNumber(parseFloat(out) * usd, 'usd.notional')}`,
-                        ) ?? route)
-                      ? '-'
-                      : t`No route available`}
+                        [out, usdRate.data],
+                        ([out, usd]) => `~${formatNumber(parseFloat(out) * usd, 'usd.notional')}`,
+                      ) ?? t`No route available`)}
                 </Typography>
               </WithSkeleton>
               {gasEstimate?.estGasCostUsd != null && !isFetching && (
-                <Typography variant="bodyXsRegular" color="textTertiary" data-testid="route-provider-gas">
+                <Typography variant="bodyXsRegular" color="textTertiary">
                   {' - '}
                   {formatNumber(gasEstimate.estGasCostUsd, 'usd.notional')}
                 </Typography>
