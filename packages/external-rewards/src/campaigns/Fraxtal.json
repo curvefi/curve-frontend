@@ -157,7 +157,7 @@
       "campaignEnd": "1770000000",
       "address": "0x279a23349fa48ea5215d31666aff359dbbec1404",
       "network": "fraxtal",
-      "multiplier": "12.5x",
+      "multiplier": "",
       "tags": ["points"],
       "lock": "false"
     },

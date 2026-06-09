@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
-import { getSearchString, useSearchParams } from '@ui-kit/hooks/router'
+import { getSearchString, useParams, useSearchParams } from '@ui-kit/hooks/router'
 import type { AppName } from '@ui-kit/shared/routes'
 import { TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -31,6 +31,7 @@ function useAfterHydration(result: string) {
 }
 
 export const LegalPage = ({ currentApp }: LegalPageProps) => {
+  const { network } = useParams<{ network: string }>()
   const searchParams = useSearchParams()
   const tabParam = searchParams?.get('tab')
   const tab: Tab = tabParam !== null && VALID_TABS.has(tabParam as Tab) ? (tabParam as Tab) : 'terms'
@@ -102,7 +103,9 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
             </TabPanel>
           </>
         ) : (
-          <TabPanel>{{ terms: <Terms />, privacy: <Privacy /> }[tab]}</TabPanel>
+          <TabPanel>
+            {{ terms: <Terms currentApp={currentApp} network={network} />, privacy: <Privacy /> }[tab]}
+          </TabPanel>
         )}
       </Stack>
     </Stack>

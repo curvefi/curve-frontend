@@ -82,7 +82,6 @@ export type OhlcChartSlice = {
     }>
     fetchLlammaOhlcData: (
       chainId: ChainId,
-      llammaId: string,
       poolAddress: string,
       interval: number,
       timeUnit: string,
@@ -345,7 +344,6 @@ export const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<
     },
     fetchLlammaOhlcData: async (
       chainId: ChainId,
-      llammaId: string,
       poolAddress: string,
       interval: number,
       timeUnit: string,
@@ -400,14 +398,6 @@ export const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<
               value: item.oraclePrice,
             })
           }
-        }
-
-        const arrLength = oraclePriceArray.length - 1
-        const priceInfo = get().loans.priceInfoMapper[llammaId]
-        const { oraclePrice } = priceInfo ?? {}
-        oraclePriceArray[arrLength] = {
-          ...oraclePriceArray[arrLength],
-          value: oraclePrice ? +oraclePrice : oraclePriceArray[arrLength].value,
         }
 
         set(
