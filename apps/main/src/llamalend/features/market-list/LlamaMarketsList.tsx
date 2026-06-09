@@ -1,15 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { invalidateBadDebtMarkets } from '@/llamalend/queries/market'
-import Box from '@mui/material/Box'
 import type { Address } from '@primitives/address.utils'
-import { useWallet } from '@ui-kit/features/connect-wallet'
-import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useLLv2, useNewMarketListLayout } from '@ui-kit/hooks/useFeatureFlags'
-import { t } from '@ui-kit/lib/i18n'
-import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
 import { q } from '@ui-kit/types/util'
 import { ListPageWrapper } from '@ui-kit/widgets/ListPageWrapper'
 import {
@@ -19,13 +13,9 @@ import {
 } from '../../queries/market-list/lending-vaults'
 import { useLlamaMarkets } from '../../queries/market-list/llama-markets'
 import { invalidateAllUserMintMarkets, invalidateMintMarkets } from '../../queries/market-list/mint-markets'
-import { LegacyLlamaMarketsTable } from './LegacyLlamaMarketsTable'
-import { LegacyUserPositionsTable } from './LegacyUserPositionsTable'
 import { LendTableFooter } from './LendTableFooter'
 import { LlamaMarketsTable } from './LlamaMarketsTable'
 import { UserPositionsTables } from './UserPositionsTables'
-
-const { Spacing } = SizesAndSpaces
 
 /**
  * Creates a callback to reload the markets and user data.
@@ -80,41 +70,13 @@ const useTableLlamaMarkets = (address: Address | undefined) => {
 
 /** Page for displaying the lending markets table. */
 export const LlamaMarketsList = () => {
-  const { connect } = useWallet()
-  const { address, isConnecting } = useConnection()
-
-  const {
-    tableQuery: { data, isLoading, error },
-    tableQuery,
-    onReload,
-  } = useTableLlamaMarkets(address)
-
-  const isNewLayout = useNewMarketListLayout()
+  const { address } = useConnection()
+  const { tableQuery, onReload } = useTableLlamaMarkets(address)
 
   return (
     <ListPageWrapper footer={<LendTableFooter />}>
-      {isNewLayout ? (
-        <UserPositionsTables onReload={onReload} tableQuery={tableQuery} />
-      ) : address ? (
-        data?.userHasPositions && <LegacyUserPositionsTable onReload={onReload} tableQuery={tableQuery} />
-      ) : (
-        <Box sx={{ paddingBlock: Spacing.md, backgroundColor: t => t.design.Layer[1].Fill }}>
-          <EmptyStateCard
-            action={
-              <ConnectWalletButton
-                label={t`Connect to view positions`}
-                onClick={() => void connect()}
-                loading={isConnecting}
-              />
-            }
-          />
-        </Box>
-      )}
-      {isNewLayout ? (
-        <LlamaMarketsTable onReload={onReload} tableQuery={tableQuery} />
-      ) : (
-        <LegacyLlamaMarketsTable onReload={onReload} result={data} isError={!!error} loading={isLoading} />
-      )}
+      <UserPositionsTables onReload={onReload} tableQuery={tableQuery} />
+      <LlamaMarketsTable onReload={onReload} tableQuery={tableQuery} />
     </ListPageWrapper>
   )
 }

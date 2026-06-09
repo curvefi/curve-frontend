@@ -23,21 +23,25 @@ const onCellClick = (target: EventTarget, url: string, routerNavigate: (href: st
   }
 }
 
-export type DataRowProps<T extends TableItem> = {
+export type LegacyDataRowProps<T extends TableItem> = {
   table: Table<T>
   row: Row<T>
   expandedPanel?: ExpandedPanel<T>
+  isLastRow?: boolean
+  shouldStickLastRowToTop?: boolean
   shouldStickFirstColumn?: boolean
   verticalAlign?: 'top' | 'middle' | 'bottom'
 }
 
-export const DataRow = <T extends TableItem>({
+export const LegacyDataRow = <T extends TableItem>({
   table,
   row,
   expandedPanel,
+  isLastRow,
+  shouldStickLastRowToTop,
   shouldStickFirstColumn,
   verticalAlign = 'middle',
-}: DataRowProps<T>) => {
+}: LegacyDataRowProps<T>) => {
   const isMobile = useIsMobile()
   const [element, setElement] = useState<HTMLTableRowElement | null>(null) // note: useRef doesn't get updated in cypress
   const push = useNavigate()
@@ -48,6 +52,7 @@ export const DataRow = <T extends TableItem>({
     [url, push, hasUrl],
   )
   const visibleCells = row.getVisibleCells()
+  const shouldApplyStickyLastRow = isLastRow && shouldStickLastRowToTop
 
   return (
     <>
@@ -76,8 +81,14 @@ export const DataRow = <T extends TableItem>({
                   color: t => t.design.Table.Text.Hover.Secondary,
                 },
               },
+              ...(shouldApplyStickyLastRow && {
+                // Keep the final row visible near the table end without covering the sticky header.
+                position: 'sticky',
+                top: 0,
+                backgroundColor: t => t.design.Table.Row.Default,
+              }),
             }),
-            [hasUrl, verticalAlign],
+            [shouldApplyStickyLastRow, hasUrl, verticalAlign],
           )}
           ref={setElement}
           data-testid={element && `data-table-row-${row.id}`}

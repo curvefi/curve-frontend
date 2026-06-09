@@ -36,8 +36,5 @@ export const useLoanImplementationKey = () => (useZapV2() ? 'zapV2' : '')
 export const useLLv2 = useBetaChannel
 export const isLLv2Enabled = (releaseChannel: ReleaseChannel) => releaseChannel === ReleaseChannel.Beta
 
-/** New market list and search layout */
-export const useNewMarketListLayout = useBetaChannel
-
 export const useLoanSlices = () =>
   ![useManageSoftLiquidation(), useManageLoanMuiForm(), useLendingMuiForm()].every(Boolean)
