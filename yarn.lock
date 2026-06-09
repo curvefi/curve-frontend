@@ -1876,31 +1876,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/analytics@npm:^0.6.0":
-  version: 0.6.0
-  resolution: "@metamask/analytics@npm:0.6.0"
+"@metamask/analytics@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "@metamask/analytics@npm:0.5.0"
   dependencies:
     openapi-fetch: "npm:^0.13.5"
-  checksum: 10c0/da230e39c5d05180ee430b0bfa38c70f027baec16ee9bf30544a1e757dbf5e2232d991c59989096e5f7abab6d98478dccddbe7182c8aa6dbc5b57fa730b3c9ef
+  checksum: 10c0/ea87fb1043bdf686f985c3512c0dd071396aad6b8c767601b7240df940a940e538ce697bebf9c35662ff582c4b258bdd84877ae02d78a29aff0c93c2af5294b3
   languageName: node
   linkType: hard
 
-"@metamask/connect-evm@npm:1.4.0":
-  version: 1.4.0
-  resolution: "@metamask/connect-evm@npm:1.4.0"
+"@metamask/connect-evm@npm:1.3.1":
+  version: 1.3.1
+  resolution: "@metamask/connect-evm@npm:1.3.1"
   dependencies:
-    "@metamask/analytics": "npm:^0.6.0"
-    "@metamask/connect-multichain": "npm:^0.15.0"
+    "@metamask/analytics": "npm:^0.5.0"
+    "@metamask/connect-multichain": "npm:^0.14.0"
     "@metamask/utils": "npm:^11.8.1"
-  checksum: 10c0/13a95403fcc445341372549d94fbaed35403d273ef5eebb13493823a0ab0bd872cbba034cba9f99b076b1f04d2618c3206109dcde60e77b8a571ecf9a7499820
+  checksum: 10c0/be9838cf35d95ad6a728118cdabb714e38232e1c5172b48ba12ca8380f1207f2752defdd1d46b8f4b107aafa4a3f4ed9cdb952f8d07050b93bc97584a551cb31
   languageName: node
   linkType: hard
 
-"@metamask/connect-multichain@npm:^0.15.0":
-  version: 0.15.0
-  resolution: "@metamask/connect-multichain@npm:0.15.0"
+"@metamask/connect-multichain@npm:^0.14.0":
+  version: 0.14.0
+  resolution: "@metamask/connect-multichain@npm:0.14.0"
   dependencies:
-    "@metamask/analytics": "npm:^0.6.0"
+    "@metamask/analytics": "npm:^0.5.0"
     "@metamask/mobile-wallet-protocol-core": "npm:^0.4.0"
     "@metamask/mobile-wallet-protocol-dapp-client": "npm:^0.3.0"
     "@metamask/multichain-api-client": "npm:^0.10.1"
@@ -1922,7 +1922,7 @@ __metadata:
   peerDependenciesMeta:
     "@react-native-async-storage/async-storage":
       optional: true
-  checksum: 10c0/3f94258a2be5919d927bb5f3436b2c3addadef4f819ced1656497de34d02ec029a0e468f35a06964c2f81a487578eb3da5fd4eeffad13d4186879eb3ad18aff6
+  checksum: 10c0/5abca1f3fa94785f988b2f11f6b4cb23d7e2fd91cef9db77806ea55977b35b67a77d5dd879c410f333ba10e63034f28b6b2b4b11210ef124ca2a14456a6fd154
   languageName: node
   linkType: hard
 
@@ -7539,7 +7539,7 @@ __metadata:
     "@emotion/react": "npm:11.14.0"
     "@emotion/styled": "npm:11.14.1"
     "@hookform/resolvers": "npm:5.4.0"
-    "@metamask/connect-evm": "npm:1.4.0"
+    "@metamask/connect-evm": "npm:1.3.1"
     "@mui/icons-material": "npm:9.0.1"
     "@mui/material": "npm:9.0.1"
     "@safe-global/safe-apps-provider": "npm:0.18.6"
