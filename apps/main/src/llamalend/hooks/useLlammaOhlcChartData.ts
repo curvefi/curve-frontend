@@ -113,8 +113,8 @@ export const useLlammaOhlcChartData = ({
     (selection: HistoricalSelection) =>
       refetchOhlcQueries(
         notFalsy(
-          selection.oraclePool && { refetch: oraclePoolQuery.refetch },
-          selection.llamma && shouldFetchLlammaQuery && { refetch: llammaQuery.refetch },
+          selection.oraclePool && oraclePoolQuery.refetch,
+          selection.llamma && shouldFetchLlammaQuery && llammaQuery.refetch,
         ),
       ),
     [llammaQuery.refetch, oraclePoolQuery.refetch, shouldFetchLlammaQuery],

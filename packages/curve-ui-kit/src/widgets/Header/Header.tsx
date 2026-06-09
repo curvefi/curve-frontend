@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { EXTERNAL_LINKS } from '@ui/utils'
 import { WagmiConnectModal } from '@ui-kit/features/connect-wallet/ui/WagmiConnectModal'
 import { usePathname } from '@ui-kit/hooks/router'
 import { useIsDesktop } from '@ui-kit/hooks/useBreakpoints'
@@ -35,23 +36,23 @@ const getSections = (currentApp: AppName, networkId: string): NavigationSection[
   {
     title: t`Documentation`,
     links: [
-      { href: 'https://news.curve.finance/', label: t`News` },
-      { href: 'https://docs.curve.finance/user/llamalend/overview', label: t`User Resources` },
-      { href: 'https://docs.curve.finance', label: t`Developer Resources` },
+      { href: EXTERNAL_LINKS.news, label: t`News` },
+      { href: EXTERNAL_LINKS.docs.user.llamalend.overview, label: t`User Resources` },
+      { href: EXTERNAL_LINKS.docs.root, label: t`Developer Resources` },
       { href: getInternalUrl(currentApp, networkId, PAGE_LEGAL), label: t`Legal` },
       { href: getInternalUrl(currentApp, networkId, PAGE_INTEGRATIONS), label: t`Integrations` },
-      { href: 'https://curvefinance.notion.site/Brand-Assets-1a6599aae064802fba11ce6a9e642d74', label: t`Branding` },
-      ...(isChinese() ? [{ href: 'https://www.curve.wiki/', label: t`Wiki` }] : []),
+      { href: EXTERNAL_LINKS.brand.assets, label: t`Branding` },
+      ...(isChinese() ? [{ href: EXTERNAL_LINKS.wiki.curve, label: t`Wiki` }] : []),
     ],
   },
   {
     title: t`Security`, // audits, bug bounty, dune analytics, curve monitor & crvhub
     links: [
-      { href: 'https://docs.curve.finance/references/audits/', label: t`Audits` },
-      { href: 'https://docs.curve.finance/security/security/', label: t`Bug Bounty` },
-      { href: 'https://dune.com/mrblock_buidl/Curve.fi', label: t`Dune Analytics` },
-      { href: 'https://curvemonitor.com', label: t`Curve Monitor` },
-      { href: 'https://crvhub.com/', label: t`Crvhub` },
+      { href: EXTERNAL_LINKS.docs.user.security.audits, label: t`Audits` },
+      { href: EXTERNAL_LINKS.docs.user.security.bugBounty, label: t`Bug Bounty` },
+      { href: EXTERNAL_LINKS.analytics.duneCurveFi, label: t`Dune Analytics` },
+      { href: EXTERNAL_LINKS.security.curveMonitor, label: t`Curve Monitor` },
+      { href: EXTERNAL_LINKS.security.crvHub, label: t`Crvhub` },
     ],
   },
 ]

@@ -32,7 +32,7 @@ export const useOhlcChartState = ({ rChainId, pricesApiPoolData }: UseOhlcChartS
       nCoins: pricesApiPoolData.numCoins,
     })
 
-  const anchorEnd = useStableOhlcAnchorEnd(
+  const { anchorEnd, isAnchorEndReady } = useStableOhlcAnchorEnd(
     rChainId,
     pricesApiPoolData.address,
     getDexChartSelectionKey(selectedChart),
@@ -46,14 +46,16 @@ export const useOhlcChartState = ({ rChainId, pricesApiPoolData }: UseOhlcChartS
     poolAddress: pricesApiPoolData.address,
     timeOption,
     units: timeUnit,
+    enabled: isAnchorEndReady,
   })
   const {
-    isLoading,
+    isLoading: isQueryLoading,
     error,
     data: ohlcData,
     refetch,
     fetchMore,
   } = useOhlcQueryAdapter({ query: chartQuery, selectItems: selectDexOhlcData })
+  const isLoading = !isAnchorEndReady || isQueryLoading
   const isEmpty = !isLoading && !error && ohlcData.length === 0
 
   const ohlcChartProps: OhlcChartProps = {

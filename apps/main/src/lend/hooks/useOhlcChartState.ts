@@ -4,6 +4,7 @@ import { networks } from '@/lend/networks'
 import { ChainId } from '@/lend/types/lend.types'
 import { useLlammaOhlcChartStateModel } from '@/llamalend/hooks/useLlammaOhlcChartStateModel'
 import { getTokens } from '@/llamalend/llama.utils'
+import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useUserPrices } from '@/llamalend/queries/user'
 import { isPricesApiChain } from '@curvefi/prices-api'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -26,6 +27,7 @@ export const useOhlcChartState = ({ rChainId, marketId, previewPrices }: UseOhlc
     userAddress,
   })
   const market = useLendMarket(rChainId, marketId).data
+  const { data: oraclePrice } = useMarketOraclePrice({ chainId: rChainId, marketId })
   const networkId = networks[rChainId].id.toLowerCase()
   const network = isPricesApiChain(networkId) ? networkId : undefined
   const controllerAddress = market?.addresses.controller ?? ''

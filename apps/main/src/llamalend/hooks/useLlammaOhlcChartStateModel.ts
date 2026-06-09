@@ -70,7 +70,7 @@ export const useLlammaOhlcChartStateModel = ({
   userPrices,
 }: LlammaOhlcChartStateModelParams) => {
   const { timeOption, setTimeOption, chartInterval, timeUnit } = useChartTimeSettings()
-  const anchorEnd = useStableOhlcAnchorEnd(chainKey, marketId, timeOption)
+  const { anchorEnd, isAnchorEndReady } = useStableOhlcAnchorEnd(chainKey, marketId, timeOption)
 
   const {
     oraclePoolsChartQuery,
@@ -90,7 +90,7 @@ export const useLlammaOhlcChartStateModel = ({
     timeOption,
     units: timeUnit,
     anchorEnd,
-    enabled: enabled && !!network,
+    enabled: enabled && !!network && isAnchorEndReady,
   })
   const oraclePoolCandles = oraclePoolsChartQuery.data?.ohlcData ?? []
   const oraclePoolOracleLine = oraclePoolsChartQuery.data?.oraclePriceData ?? []
@@ -102,7 +102,7 @@ export const useLlammaOhlcChartStateModel = ({
       llammaOracleLine,
     })
 
-  const isLoading = oraclePoolsChartQuery.isLoading || isWaitingForFallbackChartData
+  const isLoading = !enabled || !isAnchorEndReady || oraclePoolsChartQuery.isLoading || isWaitingForFallbackChartData
   const selectedChartKey = isLoading ? undefined : isOracleLineOnly ? 'llamma' : 'oracle'
   const currentError = hasAnySeries ? null : (oraclePriceFallbackQuery.error ?? oraclePoolsChartQuery.error)
   const noDataAvailable = enabled && !isLoading && !currentError && !hasAnySeries
@@ -144,7 +144,7 @@ export const useLlammaOhlcChartStateModel = ({
     oraclePriceData,
     liquidationRange: selectedLiqRange,
     timeOption,
-    selectedChartKey: selectedChartKey ?? '',
+    selectedChartKey,
     selectChartList,
     refetchPricesData: () => refetch({ oraclePool: !isOracleLineOnly, llamma: shouldFetchFallbackOracleLine }),
     fetchMoreChartData: () => fetchMore({ oraclePool: !isOracleLineOnly, llamma: shouldFetchFallbackOracleLine }),

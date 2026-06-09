@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { useLlammaOhlcChartStateModel } from '@/llamalend/hooks/useLlammaOhlcChartStateModel'
 import { getTokens } from '@/llamalend/llama.utils'
+import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useUserPrices } from '@/llamalend/queries/user'
 import { networks } from '@/loan/networks'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
@@ -23,6 +24,7 @@ export const useOhlcChartState = ({ chainId, market, marketId, previewPrices }: 
   const { data: userPrices } = useUserPrices({ chainId, marketId, userAddress })
   const poolAddress = market?.address ?? ''
   const controllerAddress = market?.controller ?? ''
+  const { data: oraclePrice } = useMarketOraclePrice({ chainId, marketId })
   const networkId = networks[chainId].id.toLowerCase()
   const network = isPricesApiChain(networkId) ? networkId : undefined
   const chartState = useLlammaOhlcChartStateModel({

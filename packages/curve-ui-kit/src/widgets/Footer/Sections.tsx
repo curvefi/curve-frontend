@@ -3,7 +3,7 @@ import BugReportOutlinedIcon from '@mui/icons-material/BugReportOutlined'
 import GitHubIcon from '@mui/icons-material/GitHub'
 import MonitorHeartOutlinedIcon from '@mui/icons-material/MonitorHeartOutlined'
 import YouTubeIcon from '@mui/icons-material/YouTube'
-import { CURVE_SOCIALS } from '@ui/utils'
+import { CURVE_SOCIALS, EXTERNAL_LINKS } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { BrandAssetsIcon } from '@ui-kit/shared/icons/BrandAssetsIcon'
 import { CrvHubIcon } from '@ui-kit/shared/icons/CrvHubIcon'
@@ -65,12 +65,12 @@ export const getSections = () => [
     links: [
       {
         label: t`News`,
-        href: 'https://news.curve.finance/',
+        href: EXTERNAL_LINKS.news,
         icon: <NewsIcon />,
       },
       {
         label: t`Documentation`,
-        href: 'https://docs.curve.finance/',
+        href: EXTERNAL_LINKS.docs.root,
         icon: <DocsIcon />,
       },
       {
@@ -81,7 +81,7 @@ export const getSections = () => [
       },
       {
         label: t`Github`,
-        href: 'https://github.com/curvefi',
+        href: EXTERNAL_LINKS.github.curvefi,
         icon: <GitHubIcon />,
       },
       {
@@ -91,7 +91,7 @@ export const getSections = () => [
       },
       {
         label: t`Brand Assets`,
-        href: 'https://curvefinance.notion.site/Brand-Assets-1a6599aae064802fba11ce6a9e642d74',
+        href: EXTERNAL_LINKS.brand.assets,
         icon: <BrandAssetsIcon />,
       },
     ],
@@ -101,32 +101,32 @@ export const getSections = () => [
     links: [
       {
         label: t`Audits`,
-        href: 'https://docs.curve.finance/user/security/audits',
+        href: EXTERNAL_LINKS.docs.user.security.audits,
         icon: <BeenhereOutlinedIcon />,
       },
       {
         label: t`Bug Bounty`,
-        href: 'https://docs.curve.finance/user/security/bug-bounty',
+        href: EXTERNAL_LINKS.docs.user.security.bugBounty,
         icon: <BugReportOutlinedIcon />,
       },
       {
         label: t`Curve Monitor`,
-        href: 'https://curvemonitor.com/',
+        href: EXTERNAL_LINKS.security.curveMonitor,
         icon: <LAFIcon />,
       },
       {
         label: t`CrvHub`,
-        href: 'https://crvhub.com/',
+        href: EXTERNAL_LINKS.security.crvHub,
         icon: <CrvHubIcon />,
       },
       {
         label: t`Dune Analytics`,
-        href: 'https://dune.com/mrblock_buidl/Curve.fi',
+        href: EXTERNAL_LINKS.analytics.duneCurveFi,
         icon: <DuneIcon />,
       },
       {
         label: t`API Status`,
-        href: 'https://statuspage.freshping.io/59335-CurveAPI',
+        href: EXTERNAL_LINKS.security.apiStatus,
         icon: <MonitorHeartOutlinedIcon />,
       },
     ],
