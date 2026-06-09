@@ -1,6 +1,6 @@
 import { type MouseEvent, useEffect } from 'react'
+import { OverlayTriggerState } from 'react-stately'
 import Button from '@mui/material/Button'
-import type { OverlayTriggerState } from '@react-stately/overlays'
 import { Box } from '@ui/Box'
 import { ModalDialog } from '@ui/Dialog/ModalDialog'
 import type { StepActionModal } from '@ui/Stepper/types'

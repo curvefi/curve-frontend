@@ -157,15 +157,20 @@ export function queryFactory<
     getQueryData: (params: TParams): TData | undefined => queryClient.getQueryData(queryKey(params)),
     setQueryData: (params: TParams, data: TData) => queryClient.setQueryData<TData>(queryKey(params), data),
     prefetchQuery: (params: TParams, staleTime = 0) =>
-      queryClient.prefetchQuery({ ...getQueryOptions(params), staleTime }),
+      queryClient.prefetchQuery<TData, DefaultError, TData, TKey>({ ...getQueryOptions(params), staleTime }),
     fetchQuery: (params: TParams, options?: Partial<FetchQueryOptions<TData, DefaultError, TData, TKey>>) =>
-      queryClient.fetchQuery({ ...getQueryOptions(params), ...options }),
+      queryClient.fetchQuery<TData, DefaultError, TData, TKey>({ ...getQueryOptions(params), ...options }),
     /**
      * Function that is like fetchQuery, but sets staleTime to 0 to ensure fresh data is fetched.
      * Primary use case is for Zustand stores where want to both use queries and ensure freshness.
      * I suspect this will be the only case, and once Zustand refactoring to Tanstack is complete, we may delete this.
      */
-    refetchQuery: (params: TParams) => queryClient.fetchQuery({ ...getQueryOptions(params), ...options, staleTime: 0 }),
+    refetchQuery: (params: TParams) =>
+      queryClient.fetchQuery<TData, DefaultError, TData, TKey>({
+        ...getQueryOptions(params),
+        ...options,
+        staleTime: 0,
+      }),
     useQuery: (params: TParams, condition?: boolean) => {
       const { enabled, ...options } = getQueryOptions(params, condition)
       const query = useQuery({ enabled, ...options })

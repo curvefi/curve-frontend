@@ -1,5 +1,5 @@
+import type { DateValue } from 'react-stately'
 import { ChainId, CurveApi, EstimatedGas, FormType } from '@/dao/types/dao.types'
-import { DateValue } from '@react-types/calendar'
 
 export type { FormType } from '@/dao/types/dao.types'
 
