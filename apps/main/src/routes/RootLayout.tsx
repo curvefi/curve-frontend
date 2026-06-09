@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from 'react'
+import { OverlayProvider } from 'react-aria'
 import { StyleSheetManager } from 'styled-components'
 import { WagmiProvider } from 'wagmi'
 import { useNetworksQuery } from '@/dex/entities/networks'
@@ -32,7 +33,6 @@ import { getCurrentApp } from '@ui-kit/shared/routes'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import { isCypress } from '@ui-kit/utils'
 import { ErrorBoundary } from '@ui-kit/widgets/ErrorBoundary'
-import { OverlayProvider } from 'react-aria'
 
 /**
  * This implements the default behavior from styled-components v5

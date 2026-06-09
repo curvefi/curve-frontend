@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react'
+import { useButton } from 'react-aria'
+import { useOverlayTriggerState } from 'react-stately'
 import { styled } from 'styled-components'
 import { DeployGaugeButton } from '@/dex/components/PageDeployGauge/components/DeployGaugeButton'
 import { DeployMainnet } from '@/dex/components/PageDeployGauge/DeployMainnet'
@@ -16,8 +18,6 @@ import { SpinnerWrapper, Spinner } from '@ui/Spinner'
 import { Switch } from '@ui/Switch/Switch'
 import { isLoading, useCurve } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
-import { useButton } from 'react-aria'
-import { useOverlayTriggerState } from 'react-stately'
 
 export const DeployGauge = (props: NetworkUrlParams) => {
   const { curveApi = null, connectState } = useCurve()

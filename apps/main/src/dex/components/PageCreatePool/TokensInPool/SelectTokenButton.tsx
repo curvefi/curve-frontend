@@ -1,4 +1,6 @@
 import { type Key, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useButton } from 'react-aria'
+import { useOverlayTriggerState } from 'react-stately'
 import { styled } from 'styled-components'
 import { STABLESWAP } from '@/dex/components/PageCreatePool/constants'
 import { CreateToken } from '@/dex/components/PageCreatePool/types'
@@ -20,8 +22,6 @@ import { useFuzzySearch } from '@ui-kit/hooks/useFuzzySearch'
 import { t } from '@ui-kit/lib/i18n'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { shortenAddress } from '@ui-kit/utils'
-import { useButton } from 'react-aria'
-import { useOverlayTriggerState } from 'react-stately'
 
 type Props = {
   curve: CurveApi

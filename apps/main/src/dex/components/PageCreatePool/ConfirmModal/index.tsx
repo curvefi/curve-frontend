@@ -1,4 +1,6 @@
 import { useCallback, useMemo, useRef } from 'react'
+import { useButton } from 'react-aria'
+import { useOverlayTriggerState } from 'react-stately'
 import { styled } from 'styled-components'
 import { InfoLinkBar } from '@/dex/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
 import { CreatePoolButton } from '@/dex/components/PageCreatePool/ConfirmModal/CreatePoolButton'
@@ -22,8 +24,6 @@ import { breakpoints } from '@ui/utils/responsive'
 import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
-import { useButton } from 'react-aria'
-import { useOverlayTriggerState } from 'react-stately'
 
 type Props = {
   disabled?: boolean

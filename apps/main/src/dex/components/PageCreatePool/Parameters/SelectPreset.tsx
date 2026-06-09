@@ -1,4 +1,6 @@
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
+import { useButton } from 'react-aria'
+import { useOverlayTriggerState } from 'react-stately'
 import { styled } from 'styled-components'
 import { SelectButton } from '@/dex/components/PageCreatePool/components/SelectButton'
 import { ModalDialog } from '@/dex/components/PageCreatePool/ConfirmModal/ModalDialog'
@@ -13,8 +15,6 @@ import { breakpoints } from '@ui/utils/responsive'
 import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { DEX_ROUTES } from '@ui-kit/shared/routes'
-import { useButton } from 'react-aria'
-import { useOverlayTriggerState } from 'react-stately'
 
 type Props = {
   setStableFeeValue: Dispatch<SetStateAction<string>>

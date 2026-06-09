@@ -36,15 +36,14 @@ export function Select<T extends object>({
   const buttonRef = useRef<HTMLButtonElement>(null)
   const { labelProps, triggerProps, menuProps } = useSelect(props, state, buttonRef)
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
   const title = props['aria-label'] || 'Select'
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
+
   const selectListIsGreaterThanOne = [...(props.items ?? [])].length > 1
 
   return (
     <Wrapper className={props.className}>
       <div {...labelProps}>{props.label}</div>
-      {/* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule. */}
+      {}
       <HiddenSelect state={state} triggerRef={buttonRef} label={props.label} name={props.name} />
       <InnerWrapper>
         <SelectBtn
@@ -70,7 +69,6 @@ export function Select<T extends object>({
       {state.isOpen && (
         <>
           {getIsFullScreen() ? (
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
             <SelectModalFull title={title} state={state} onSelectionChange={props.onSelectionChange} />
           ) : (
             <SelectModal
@@ -79,7 +77,6 @@ export function Select<T extends object>({
               mobileRightAlign={props.mobileRightAlign}
               menuProps={menuProps}
               state={state}
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
               {...(selectSearchOptions ? { ...selectSearchOptions, onSelectionChange: props.onSelectionChange } : {})}
             />
           )}

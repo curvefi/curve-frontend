@@ -14379,11 +14379,11 @@ __metadata:
   linkType: hard
 
 "yauzl@npm:^3.3.1":
-  version: 3.4.0
-  resolution: "yauzl@npm:3.4.0"
+  version: 3.3.2
+  resolution: "yauzl@npm:3.3.2"
   dependencies:
     pend: "npm:~1.2.0"
-  checksum: 10c0/17a98c42c0065e8af429eb8a61f7a0e4562181ed54080366b838f34f741b6829f167f804787c86b7646bb042707f35871739f053de0548285e405a2eae4da025
+  checksum: 10c0/92e93b5162ad27a1b3088742fd613c90158553f9ce957ef40bad117c13b25476ea2992a825a7b45eed23924a355991253e60cdeb9b7dea63771de83710dd856f
   languageName: node
   linkType: hard
 
