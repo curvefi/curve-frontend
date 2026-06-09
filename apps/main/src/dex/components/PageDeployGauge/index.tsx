@@ -8,8 +8,6 @@ import { useNetworkByChain } from '@/dex/entities/networks'
 import { useChainId } from '@/dex/hooks/useChainId'
 import { useStore } from '@/dex/store/useStore'
 import { type NetworkUrlParams } from '@/dex/types/main.types'
-import { useButton } from '@react-aria/button'
-import { useOverlayTriggerState } from '@react-stately/overlays'
 import { BoxHeader, Box } from '@ui/Box'
 import { ModalDialog } from '@ui/Dialog/ModalDialog'
 import { Icon } from '@ui/Icon/Icon'
@@ -18,6 +16,8 @@ import { SpinnerWrapper, Spinner } from '@ui/Spinner'
 import { Switch } from '@ui/Switch/Switch'
 import { isLoading, useCurve } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
+import { useButton } from 'react-aria'
+import { useOverlayTriggerState } from 'react-stately'
 
 export const DeployGauge = (props: NetworkUrlParams) => {
   const { curveApi = null, connectState } = useCurve()

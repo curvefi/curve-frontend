@@ -8,7 +8,6 @@ import { useStore as useLoanStore } from '@/loan/store/useStore'
 import { BACKEND_MAINTENANCE } from '@/maintenances'
 import { GlobalLayout } from '@/routes/GlobalLayout'
 import isPropValid from '@emotion/is-prop-valid'
-import { OverlayProvider } from '@react-aria/overlays'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { HeadContent, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
@@ -33,6 +32,7 @@ import { getCurrentApp } from '@ui-kit/shared/routes'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import { isCypress } from '@ui-kit/utils'
 import { ErrorBoundary } from '@ui-kit/widgets/ErrorBoundary'
+import { OverlayProvider } from 'react-aria'
 
 /**
  * This implements the default behavior from styled-components v5

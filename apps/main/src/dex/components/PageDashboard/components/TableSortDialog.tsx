@@ -1,13 +1,13 @@
 import { styled } from 'styled-components'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 import type { Order, SortId, TableLabel } from '@/dex/components/PageDashboard/types'
-import { useOverlayTriggerState } from '@react-stately/overlays'
 import { Box } from '@ui/Box'
 import { ModalDialog } from '@ui/Dialog/ModalDialog'
 import { OpenDialogButton } from '@ui/Dialog/OpenDialogButton'
 import { Icon } from '@ui/Icon'
 import { Radio, RadioGroup } from '@ui/Radio'
 import { Chip } from '@ui/Typography'
+import { useOverlayTriggerState } from 'react-stately'
 
 const sortOrder = {
   asc: { label: 'Ascending', icon: <Icon name="ArrowUp" size={24} /> },

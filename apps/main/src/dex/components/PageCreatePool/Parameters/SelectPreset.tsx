@@ -6,8 +6,6 @@ import { CRYPTOSWAP, FXSWAP, POOL_PRESETS, STABLESWAP } from '@/dex/components/P
 import { useStore } from '@/dex/store/useStore'
 import type { UrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
-import { useButton } from '@react-aria/button'
-import { useOverlayTriggerState } from '@react-stately/overlays'
 import { Box } from '@ui/Box'
 import { Button } from '@ui/Button'
 import { ExternalLink } from '@ui/Link'
@@ -15,6 +13,8 @@ import { breakpoints } from '@ui/utils/responsive'
 import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { DEX_ROUTES } from '@ui-kit/shared/routes'
+import { useButton } from 'react-aria'
+import { useOverlayTriggerState } from 'react-stately'
 
 type Props = {
   setStableFeeValue: Dispatch<SetStateAction<string>>

@@ -13,8 +13,6 @@ import { useStore } from '@/dex/store/useStore'
 import { ChainId, CurveApi, type UrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import MuiButton from '@mui/material/Button'
-import { useButton } from '@react-aria/button'
-import { useOverlayTriggerState } from '@react-stately/overlays'
 import { Box } from '@ui/Box'
 import { Button } from '@ui/Button'
 import { Icon } from '@ui/Icon'
@@ -24,6 +22,8 @@ import { breakpoints } from '@ui/utils/responsive'
 import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
+import { useButton } from 'react-aria'
+import { useOverlayTriggerState } from 'react-stately'
 
 type Props = {
   disabled?: boolean

@@ -8,8 +8,6 @@ import { useStore } from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
 import { delayAction } from '@/dex/utils'
 import type { Address } from '@primitives/address.utils'
-import { useButton } from '@react-aria/button'
-import { useOverlayTriggerState } from '@react-stately/overlays'
 import { Box } from '@ui/Box'
 import { Button } from '@ui/Button'
 import { Checkbox } from '@ui/Checkbox'
@@ -22,6 +20,8 @@ import { useFuzzySearch } from '@ui-kit/hooks/useFuzzySearch'
 import { t } from '@ui-kit/lib/i18n'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { shortenAddress } from '@ui-kit/utils'
+import { useButton } from 'react-aria'
+import { useOverlayTriggerState } from 'react-stately'
 
 type Props = {
   curve: CurveApi
