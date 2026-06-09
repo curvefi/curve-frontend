@@ -23,6 +23,51 @@ export const CURVE_SOCIALS = {
   dodo: 'https://imdodo.com/s/147186?inv=7J46',
 }
 
+export const EXTERNAL_LINKS = {
+  docs: {
+    root: 'https://docs.curve.finance/',
+    user: {
+      llamalend: {
+        overview: 'https://docs.curve.finance/user/llamalend/overview',
+      },
+      security: {
+        audits: 'https://docs.curve.finance/user/security/audits',
+        bugBounty: 'https://docs.curve.finance/user/security/bug-bounty',
+      },
+    },
+    references: {
+      whitepaper: 'https://docs.curve.finance/references/whitepaper',
+    },
+    assets: {
+      crvUsdWhitepaper: 'https://docs.curve.finance/assets/pdf/whitepaper_curve_stablecoin.pdf',
+    },
+  },
+  curve: {
+    root: 'https://www.curve.finance/',
+    classic: 'https://classic.curve.finance/',
+    gov: 'https://gov.curve.finance/',
+  },
+  news: 'https://news.curve.finance/',
+  github: {
+    curvefi: 'https://github.com/curvefi',
+    llammaSimulator: 'https://github.com/curvefi/llamma-simulator',
+  },
+  brand: {
+    assets: 'https://curvefinance.notion.site/Brand-Assets-1a6599aae064802fba11ce6a9e642d74',
+  },
+  security: {
+    curveMonitor: 'https://curvemonitor.com/',
+    crvHub: 'https://crvhub.com/',
+    apiStatus: 'https://statuspage.freshping.io/59335-CurveAPI',
+  },
+  analytics: {
+    duneCurveFi: 'https://dune.com/mrblock_buidl/Curve.fi',
+  },
+  wiki: {
+    curve: 'https://www.curve.wiki/',
+  },
+} as const
+
 export const getImageBaseUrl = (blockchainId: string) =>
   `${CURVE_ASSETS_URL}/images/assets${!blockchainId || blockchainId == 'ethereum' ? '' : `-${blockchainId}`}/`
 

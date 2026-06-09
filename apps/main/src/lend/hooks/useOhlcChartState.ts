@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { useStore } from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
+import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useUserPrices } from '@/llamalend/queries/user'
 import type { Decimal } from '@primitives/decimal.utils'
 import {
@@ -13,6 +14,7 @@ import {
 import type { OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
 import type { FetchingStatus } from '@ui-kit/features/candle-chart/types'
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui-kit/features/candle-chart/utils'
+import { useLoanSlices } from '@ui-kit/hooks/useFeatureFlags'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { Range } from '@ui-kit/types/util'
 import { useLendMarketData } from '../hooks/useLendMarket'
@@ -25,7 +27,7 @@ type UseOhlcChartStateProps = {
   previewPrices: Range<Decimal> | undefined
 }
 
-const useLegacyChartPrices = () => {
+const useLegacyChartPrices = (enabled: boolean) => {
   const borrowMoreActiveKey = useStore(state => state.loanBorrowMore.activeKey)
   const loanRepayActiveKey = useStore(state => state.loanRepay.activeKey)
   const loanCollateralAddActiveKey = useStore(state => state.loanCollateralAdd.activeKey)
@@ -41,20 +43,21 @@ const useLegacyChartPrices = () => {
     state => state.loanCollateralRemove.detailInfo[loanCollateralRemoveActiveKey]?.prices ?? null,
   )
   return useMemo(() => {
+    if (!enabled) return undefined
     if (repayLeveragePrices?.length) return repayLeveragePrices
     if (removeCollateralPrices?.length) return removeCollateralPrices
     if (addCollateralPrices?.length) return addCollateralPrices
     if (repayLoanPrices?.length) return repayLoanPrices
     if (borrowMorePrices?.length) return borrowMorePrices
-    return null
-  }, [repayLeveragePrices, removeCollateralPrices, addCollateralPrices, repayLoanPrices, borrowMorePrices]) as
+    return undefined
+  }, [enabled, repayLeveragePrices, removeCollateralPrices, addCollateralPrices, repayLoanPrices, borrowMorePrices]) as
     | Range<Decimal>
     | undefined
 }
 
 export const useOhlcChartState = ({ rChainId, marketId, previewPrices }: UseOhlcChartStateProps) => {
   const { address: userAddress } = useConnection()
-  const storePreviewPrices = useLegacyChartPrices()
+  const storePreviewPrices = useLegacyChartPrices(useLoanSlices())
   const { data: userPrices } = useUserPrices({
     chainId: rChainId,
     marketId,
@@ -76,9 +79,8 @@ export const useOhlcChartState = ({ rChainId, marketId, previewPrices }: UseOhlc
   const fetchOraclePoolOhlcData = useStore(state => state.ohlcCharts.fetchOraclePoolOhlcData)
   const fetchMoreData = useStore(state => state.ohlcCharts.fetchMoreData)
   const resetOhlcState = useStore(state => state.ohlcCharts.resetState)
-  const priceInfo = useStore(state => state.markets.pricesMapper[rChainId]?.[marketId]?.prices ?? null)
 
-  const { oraclePrice } = priceInfo ?? {}
+  const { data: oraclePrice } = useMarketOraclePrice({ chainId: rChainId, marketId })
 
   // Token symbols for chart labels (oracle tokens comes from API response)
   const oracleTokens = useMemo(
@@ -141,7 +143,6 @@ export const useOhlcChartState = ({ rChainId, marketId, previewPrices }: UseOhlc
     if (market?.addresses.amm) {
       void fetchLlammaOhlcData(
         rChainId,
-        marketId,
         market.addresses.amm,
         chartInterval,
         timeUnit,
@@ -149,16 +150,7 @@ export const useOhlcChartState = ({ rChainId, marketId, previewPrices }: UseOhlc
         chartTimeSettings.end,
       )
     }
-  }, [
-    chartInterval,
-    chartTimeSettings,
-    fetchLlammaOhlcData,
-    fetchOraclePoolOhlcData,
-    market,
-    rChainId,
-    marketId,
-    timeUnit,
-  ])
+  }, [chartInterval, chartTimeSettings, fetchLlammaOhlcData, fetchOraclePoolOhlcData, market, rChainId, timeUnit])
 
   // Eagerly reset chart state as soon as the market identity changes, before the market entity resolves.
   // Without this, stale data from the previous market stays visible during the gap between navigation and fetch.

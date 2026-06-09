@@ -1,5 +1,4 @@
 import Box from '@mui/material/Box'
-import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { getSearchString } from '@ui-kit/hooks/router'
@@ -7,6 +6,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { LegalExternalLink } from '../general/LegalExternalLink'
 import { List } from '../general/List'
 import { Header, Paragraph, Section } from '../general/Section'
 import { LegalIntro } from './LegalIntro'
@@ -66,9 +66,9 @@ export const SCrvUsd = () => (
 
           <Box component="li">
             <Typography variant="bodyMBold" component="span">
-              <Link color="textSecondary" href="https://docs.curve.finance/crvUSD/pegkeepers/overview/" target="_blank">
+              <LegalExternalLink href="https://docs.curve.finance/crvUSD/pegkeepers/overview/">
                 {t`PegKeeper Dependency:`}
-              </Link>
+              </LegalExternalLink>
               {': '}
             </Typography>
 
@@ -107,14 +107,12 @@ export const SCrvUsd = () => (
     <Section>
       <Paragraph>
         {t`To obtain scrvUSD, users deposit crvUSD into a Savings Vault which make use of`}{' '}
-        <Link color="textSecondary" href="https://docs.yearn.fi/developers/v3/overview" target="_blank">
-          {t`Yearn V3 vaults`}
-        </Link>
+        <LegalExternalLink href="https://docs.yearn.fi/developers/v3/overview">{t`Yearn V3 vaults`}</LegalExternalLink>
         {'. '}
         {t`While Yearn vaults have undergone extensive`}{' '}
-        <Link color="textSecondary" href="https://github.com/yearn/yearn-vaults-v3/tree/master/audits" target="_blank">
+        <LegalExternalLink href="https://github.com/yearn/yearn-vaults-v3/tree/master/audits">
           {t`audits`}
-        </Link>{' '}
+        </LegalExternalLink>{' '}
         {t`and demonstrated resilience and security, users should be aware of the technical risks associated with interacting with smart contracts.`}
       </Paragraph>
 
