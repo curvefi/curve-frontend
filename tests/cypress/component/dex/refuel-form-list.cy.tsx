@@ -1,4 +1,4 @@
-import { RefuelFormList } from '@/dex/features/refuel/components/RefuelFormList'
+import { RefuelFormList } from '@/dex/features/manage-pool/components/RefuelFormList'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 
 type RefuelFormListProps = Parameters<typeof RefuelFormList>[0]

@@ -12,6 +12,9 @@ const { week, month } = AVERAGES_TYPES
  * Format: 'app.surface.metric'.
  */
 export const AVERAGE_CATEGORIES = {
+  // dex pool yield compounding frequency to convert APR rates to APY
+  'dex.poolYield.compoundRate': week,
+
   // compounding rate frequency to convert APR rates to APY
   'llamalend.compoundRate': week,
 

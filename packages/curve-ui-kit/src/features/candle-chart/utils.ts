@@ -1,23 +1,63 @@
+import type { OhlcData, UTCTimestamp } from 'lightweight-charts'
 import { sortBy } from 'lodash'
-import { TIME_OPTION_MS } from '../../lib/model/time'
+import { notFalsy } from '@primitives/objects.utils'
+import { toLocalTimestampSeconds } from '@primitives/timestamp.utils'
 import { formatNumber } from '../../utils/number'
-import type { TimeOption } from './types'
+import type { LpPriceOhlcDataFormatted, OraclePriceData } from './types'
 
-const toSeconds = (timeOption: TimeOption) => TIME_OPTION_MS[timeOption] / 1000
+type OhlcPoint = {
+  time: number
+  open?: number | null
+  close?: number | null
+  high?: number | null
+  low?: number | null
+}
+
+type CompleteOhlcPoint = OhlcData<number>
+
+type NullableOraclePoint = {
+  time: number
+  oraclePrice?: number | null
+}
+
+const hasCompleteOhlcValues = (data: OhlcPoint): data is CompleteOhlcPoint =>
+  data.close != null && data.high != null && data.low != null && data.open != null
+
+export const formatCandleOhlcData = (data: OhlcPoint[]): LpPriceOhlcDataFormatted[] =>
+  data.filter(hasCompleteOhlcValues).map(({ time, ...ohlc }) => ({
+    time: toLocalTimestampSeconds(time) as UTCTimestamp,
+    ...ohlc,
+  }))
+
+export const formatOraclePriceData = (data: NullableOraclePoint[]): OraclePriceData[] =>
+  data.flatMap(({ time, oraclePrice }) =>
+    notFalsy(
+      oraclePrice != null && {
+        time: toLocalTimestampSeconds(time) as UTCTimestamp,
+        value: oraclePrice,
+      },
+    ),
+  )
+
+export const applyLatestOraclePrice = (data: OraclePriceData[], oraclePrice: number | undefined) => {
+  const lastItem = data.at(-1)
+
+  return oraclePrice == null || !lastItem || lastItem.value === oraclePrice
+    ? data
+    : [...data.slice(0, -1), { ...lastItem, value: oraclePrice }]
+}
+
+// Historical pages are fetched newest first, then older pages are appended.
+// Chart series data must be oldest-to-newest, so reverse page chunks before flattening.
+export const flattenOhlcPagesChronologically = <TPage, TItem>(
+  pages: TPage[] | undefined,
+  selectItems: (page: TPage) => TItem[],
+) => [...(pages ?? [])].reverse().flatMap(selectItems)
+
 const clampPercentile = (value: number, fallback: number) =>
   Number.isFinite(value) ? Math.max(0, Math.min(1, value)) : fallback
 const getPercentileIndex = (length: number, percentile: number) =>
   Math.max(0, Math.min(length - 1, Math.floor(length * percentile)))
-
-export const subtractTimeUnit = (timeOption: TimeOption, timestamp: number) => timestamp - toSeconds(timeOption)
-
-export const getThreeHundredResultsAgo = (timeOption: TimeOption, timestamp: number) =>
-  Math.floor(timestamp - 299 * toSeconds(timeOption))
-
-export const convertToLocaleTimestamp = (unixTimestamp: number) => {
-  const offsetInSeconds = new Date().getTimezoneOffset() * 60
-  return unixTimestamp - offsetInSeconds
-}
 
 /**
  * Calculates a robust non-negative price range for chart auto-scaling.

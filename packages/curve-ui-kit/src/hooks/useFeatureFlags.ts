@@ -41,3 +41,6 @@ export const useNewMarketListLayout = useBetaChannel
 
 export const useLoanSlices = () =>
   ![useManageSoftLiquidation(), useManageLoanMuiForm(), useLendingMuiForm()].every(Boolean)
+
+/** New advanced details card for pool page */
+export const usePoolAdvancedDetails = useBetaChannel

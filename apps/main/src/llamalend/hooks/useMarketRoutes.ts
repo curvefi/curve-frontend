@@ -33,7 +33,7 @@ const sortRoutes = (a: RouterRouteResponse, b: RouterRouteResponse) =>
   decimalCompare(decimalMax(...b.amountOut) ?? '0', decimalMax(...a.amountOut) ?? '0') ||
   (a.priceImpact ?? 100) - (b.priceImpact ?? 100)
 
-const leverageZaps: Record<LlamaMarketVersion, Record<number, Address>> = {
+const LEVERAGE_ZAPS: Record<LlamaMarketVersion, Record<number, Address>> = {
   [LlamaMarketVersion.v1]: {
     [Chain.Ethereum]: '0x324c5f9F7A3015D91860aC6870dcE25d410Df3Dc',
     [Chain.Arbitrum]: '0x9577086c6E38d38359872F903Da201f1bdCc0323',
@@ -41,9 +41,7 @@ const leverageZaps: Record<LlamaMarketVersion, Record<number, Address>> = {
     [Chain.Fraxtal]: '0x16C6521Dff6baB339122a0FE25a9116693265353',
     [Chain.Sonic]: '0xCA8d0747B5573D69653C3aC22242e6341C36e4b4',
   },
-  [LlamaMarketVersion.v2]: {
-    [Chain.Optimism]: '0xcfd71a5BC9c2215ca8878C1083EC9a3CE1F0fdEb',
-  },
+  [LlamaMarketVersion.v2]: { [Chain.Optimism]: '0x29837e7a58436D91cC25Cf487dBed0EBF3865c00' },
 }
 
 /**
@@ -82,7 +80,7 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
       tokenOut: tokenOut?.address,
       amountIn: amountIn && tokenIn && toWei(amountIn, tokenIn.decimals),
       userAddress,
-      zapAddress: version && leverageZaps[version]?.[chainId],
+      zapAddress: version && LEVERAGE_ZAPS[version]?.[chainId],
       slippage,
     },
     getRouteGasOptions,
