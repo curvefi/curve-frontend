@@ -8,7 +8,7 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-const { MaxWidth, Spacing } = SizesAndSpaces
+const { Spacing } = SizesAndSpaces
 
 export const StatsBanner = () => {
   const {

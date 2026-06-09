@@ -116,6 +116,7 @@ export const CrvUsdStakingPage = () => {
         </Stack>
       }
       formTabs={<DepositWithdraw params={params} />}
+      testId="scrvusd-page"
     >
       {showStatsBanner && (
         <Fade in={showStatsBanner}>

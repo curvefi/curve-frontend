@@ -20,8 +20,6 @@ import { DeployButton } from './DeployButton'
 import { DepositModule } from './DepositModule'
 import { WithdrawModule } from './WithdrawModule'
 
-type DepositWithdrawProps = { params: NetworkUrlParams }
-
 const ScrvUsdDepositFormTab = () => {
   const setStakingModule = useStore(state => state.scrvusd.setStakingModule)
   const previewAction = useStore(state => state.scrvusd.previewAction)

@@ -26,7 +26,7 @@ import { RevenueDistributionsBarChart } from './DistributionsBarChart'
 import { RevenueLineChart } from './RevenueLineChart'
 import { StatsStack } from './StatsStack'
 
-const { Spacing, MaxWidth, Height } = SizesAndSpaces
+const { Spacing, Height } = SizesAndSpaces
 const EMPTY_YIELD_DATA: never[] = []
 
 const chartLabels: Record<StatisticsChart, string> = {
