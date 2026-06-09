@@ -1,9 +1,7 @@
-import { countBy, sumBy } from 'lodash'
 import { useCallback, useMemo, useState } from 'react'
 import { usePoolList } from '@/dex/queries/pool-list.query'
-import type { NetworkConfig, PoolData, RewardsApy } from '@/dex/types/main.types'
-import { getPath } from '@/dex/utils/utilsRouter'
-import type { PoolType, V2Pool, V2PoolSortField as PoolSortField } from '@curvefi/prices-api/pools'
+import type { NetworkConfig } from '@/dex/types/main.types'
+import type { PoolType, V2PoolSortField as PoolSortField } from '@curvefi/prices-api/pools'
 import {
   type ExpandedState,
   type OnChangeFn,
@@ -17,19 +15,17 @@ import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { usePageFromQueryString } from '@ui-kit/hooks/usePageFromQueryString'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
-import { DEX_ROUTES } from '@ui-kit/shared/routes'
 import { useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { LegacyDataTable } from '@ui-kit/shared/ui/DataTable/LegacyDataTable'
 import { LegacyTableFilters } from '@ui-kit/shared/ui/DataTable/LegacyTableFilters'
 import { LegacyTableFiltersTitles } from '@ui-kit/shared/ui/DataTable/LegacyTableFiltersTitles'
-import { decimal } from '@ui-kit/utils'
+import { getPoolListItem } from './apiPoolList.utils'
 import { PoolListChips } from './chips/PoolListChips'
 import { POOL_LIST_COLUMNS, PoolColumnId, getDefaultSort } from './columns'
 import { PoolListEmptyState } from './components/PoolListEmptyState'
 import { PoolMobileExpandedPanel } from './components/PoolMobileExpandedPanel'
 import { usePoolListVisibilitySettings } from './hooks/usePoolListVisibilitySettings'
-import type { PoolListItem } from './types'
 
 const LOCAL_STORAGE_KEY = 'dex-pool-list'
 const PER_PAGE = 50
@@ -66,8 +62,6 @@ const POOL_LIST_API_COLUMNS = POOL_LIST_COLUMNS.map(column =>
   column.id === PoolColumnId.RewardsOther ? { ...column, header: t`Rewards tAPR` } : column,
 )
 
-const VYPER_EXPLOIT_VERSIONS = new Set(['0.2.15', '0.2.16', '0.3.0'])
-
 const isPoolType = (value: string | null): value is PoolTypeFilter =>
   value != null && POOL_TYPES.includes(value as PoolTypeFilter)
 
@@ -78,86 +72,6 @@ const getApiSorting = (sorting: SortingState, defaultSort: SortingState): Sortin
   const sort = sorting.find(({ id }) => isApiSortColumn(id)) ?? defaultSort.find(({ id }) => isApiSortColumn(id))
 
   return sort ? [{ id: sort.id, desc: sort.desc }] : [{ id: PoolColumnId.Tvl, desc: true }]
-}
-
-const normalizeAddress = (address: string) => address.toLowerCase()
-
-const getPoolRewards = (pool: V2Pool): RewardsApy => {
-  const poolAddress = normalizeAddress(pool.address)
-  const gaugeAddress = pool.gauge?.address ? normalizeAddress(pool.gauge.address) : ''
-
-  return {
-    poolId: poolAddress,
-    base: {
-      day: `${pool.baseDailyApr ?? 0}`,
-      week: `${pool.baseWeeklyApr ?? 0}`,
-    },
-    crv: [pool.crvApr ?? 0, pool.crvAprBoosted ?? 0],
-    other: pool.extraRewardsApr
-      .filter(({ apr }) => apr > 0)
-      .map((reward, index) => ({
-        apy: reward.apr,
-        decimals: reward.decimals ?? undefined,
-        gaugeAddress,
-        name: reward.name ?? undefined,
-        symbol: reward.symbol ?? '',
-        tokenAddress: reward.address ? normalizeAddress(reward.address) : `${poolAddress}-${index}`,
-        tokenPrice: reward.price ?? undefined,
-      })),
-    error: {},
-  }
-}
-
-const getPoolListItem = (network: NetworkConfig, pool: V2Pool): PoolListItem => {
-  const poolAddress = normalizeAddress(pool.address)
-  const gaugeAddress = pool.gauge?.address ? normalizeAddress(pool.gauge.address) : ''
-  const tokens = pool.coins.map(({ symbol }) => symbol)
-  const tokenAddresses = pool.coins.map(({ address }) => normalizeAddress(address))
-  const tokenDecimals = pool.coins.map(({ decimals }) => decimals ?? 18)
-  const rewards = getPoolRewards(pool)
-  const crvApr = pool.crvAprBoosted ?? pool.crvApr ?? 0
-  const incentivesApr = sumBy(rewards.other, 'apy')
-
-  return {
-    chainId: network.chainId,
-    pool: {
-      id: poolAddress,
-      name: pool.name,
-      address: poolAddress,
-      gauge: { address: gaugeAddress },
-      lpToken: '', // not used in the new list
-      isCrypto: false, // not used in the new list
-      isNg: false, // not used in the new list
-      isFactory: false, // not used in the new list
-      isLending: false, // not used in the new list
-      implementation: '', // not used in the new list
-      referenceAsset: '', // not used in the new list
-    } as PoolData['pool'],
-    gauge: {
-      isKilled: pool.gauge?.isKilled ?? null,
-      status: null, // not used in the new list
-    },
-    hasWrapped: false, // not used in the new list
-    hasVyperVulnerability: pool.vyperVersion != null && VYPER_EXPLOIT_VERSIONS.has(pool.vyperVersion),
-    isWrapped: false, // not used in the new list
-    tokenAddresses,
-    tokenAddressesAll: tokenAddresses,
-    tokenDecimalsAll: tokenDecimals,
-    tokens,
-    tokensCountBy: countBy(tokens),
-    tokensAll: tokens,
-    tokensLowercase: tokens.map(token => token.toLowerCase()),
-    curvefiUrl: '', // not used in the new list
-    failedFetching24hOldVprice: false, // not used in the new list
-    rewards,
-    volume: decimal(pool.tradingVolume24h),
-    tvl: decimal(pool.tvlUsd),
-    hasPosition: undefined, // in the old list balances are mapped with pool ids, the new API doesn't return them but we should get pool addresses to map with from curve-js
-    network: network.id,
-    url: getPath({ network: network.id }, `${DEX_ROUTES.PAGE_POOLS}/${poolAddress}/deposit`),
-    tags: [], // not used in the new list
-    totalAPR: crvApr + incentivesApr,
-  }
 }
 
 export const PoolListApiTable = ({ network }: { network: NetworkConfig }) => {
