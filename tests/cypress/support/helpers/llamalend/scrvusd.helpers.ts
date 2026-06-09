@@ -1,6 +1,9 @@
+import { createPublicClient, erc20Abi, formatUnits, http, type Address } from 'viem'
+import { CRVUSD_ADDRESS, SCRVUSD_VAULT_ADDRESS } from '@/loan/constants'
+import { CRVUSD_DECIMALS } from '@cy/support/helpers/llamalend/supply/supply-setup.helpers'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
-import { decimalCompare, formatNumber } from '@ui-kit/utils'
+import { decimalCompare } from '@ui-kit/utils'
 import { getActionValue } from './action-info.helpers'
 
 type ScrvUsdFormType = 'deposit' | 'withdraw'
@@ -49,17 +52,52 @@ export const writeInvalidThenValidScrvUsdWithdraw = ({
 
 const checkMaxAmountError = () => cy.contains('Amount exceeds maximum of', LOAD_TIMEOUT).should('be.visible')
 
+export const setScrvUsdInfiniteAllowance = (approveInfinite: boolean) => {
+  cy.get('[data-testid="scrvusd-infinite-allowance"] input[role="switch"]', LOAD_TIMEOUT).should('not.be.checked')
+  if (!approveInfinite) return
+
+  cy.get('[data-testid="scrvusd-infinite-allowance"] input[role="switch"]', LOAD_TIMEOUT).click({ force: true })
+  cy.get('[data-testid="scrvusd-infinite-allowance"] input[role="switch"]', LOAD_TIMEOUT).should('be.checked')
+}
+
+const readCrvUsdAllowance = ({ publicRpcUrl, userAddress }: { publicRpcUrl: string; userAddress: Address }) =>
+  cy.then(async () => {
+    const publicClient = createPublicClient({ transport: http(publicRpcUrl) })
+    const allowance = await publicClient.readContract({
+      address: CRVUSD_ADDRESS,
+      abi: erc20Abi,
+      functionName: 'allowance',
+      args: [userAddress, SCRVUSD_VAULT_ADDRESS],
+    })
+
+    return formatUnits(allowance, CRVUSD_DECIMALS) as Decimal
+  })
+
+export const checkScrvUsdDepositAllowance = ({
+  approveInfinite,
+  publicRpcUrl,
+  userAddress,
+  depositAmount,
+}: {
+  approveInfinite: boolean
+  publicRpcUrl: string
+  userAddress: Address
+  depositAmount: Decimal
+}) =>
+  readCrvUsdAllowance({ publicRpcUrl, userAddress }).should(allowance =>
+    expect(decimalCompare(allowance, approveInfinite ? depositAmount : '0')).to.equal(approveInfinite ? 1 : 0),
+  )
+
 export const checkNoFormErrors = () => {
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
   cy.get('body').should('not.contain', 'Amount exceeds maximum of')
 }
 
-const checkLoadedActionValue = (testId: string) => {
+const checkLoadedActionValue = (testId: string) =>
   getActionValue(testId).should(value => {
     expect(value).to.be.a('string').and.not.equal('').and.not.equal('-')
     expect(value).not.to.contain('...')
   })
-}
 
 const checkLoadedUsdActionValue = (testId: string) => {
   checkLoadedActionValue(testId)
@@ -92,9 +130,9 @@ export const checkScrvUsdWithdrawDetailsLoaded = () => {
 }
 
 export const submitScrvUsdDepositForm = () => {
-  cy.get('[data-testid="scrvusd-deposit-submit-button"]', LOAD_TIMEOUT).should(button => {
-    expect(button.text()).to.be.oneOf(['Approve & Deposit', 'Deposit'])
-  })
+  cy.get('[data-testid="scrvusd-deposit-submit-button"]', LOAD_TIMEOUT).should(button =>
+    expect(button.text()).to.be.oneOf(['Approve & Deposit', 'Deposit']),
+  )
   cy.get('[data-testid="scrvusd-deposit-submit-button"]', LOAD_TIMEOUT).click()
   return cy
     .get('[data-testid="toast-success"]', TRANSACTION_LOAD_TIMEOUT)
@@ -109,36 +147,21 @@ export const submitScrvUsdWithdrawForm = (expectedButtonText: 'Withdraw' | 'Rede
     .contains('Withdraw successful!', TRANSACTION_LOAD_TIMEOUT)
 }
 
-export const selectMaxScrvUsdWithdraw = () => {
+export const selectMaxScrvUsdWithdraw = () =>
   cy.get('[data-testid="input-chip-100%"]', LOAD_TIMEOUT).click({ force: true })
-}
 
 export const readScrvUsdWithdrawBalance = () =>
   cy
     .get('[data-testid="scrvusd-withdraw-input"] [data-testid="balance-value"]', LOAD_TIMEOUT)
     .invoke(LOAD_TIMEOUT, 'attr', 'data-value')
-    .should(balance => {
-      expect(balance).to.be.a('string').and.not.equal('')
-    })
+    .should(balance => expect(balance).to.be.a('string').and.not.equal(''))
     .then(balance => balance as Decimal)
 
-export const checkScrvUsdWithdrawBalanceGreaterThan = (expectedMinimum: Decimal) => {
-  readScrvUsdWithdrawBalance().should(balance => {
-    expect(decimalCompare(balance, expectedMinimum)).to.equal(1)
-  })
-}
+export const checkScrvUsdWithdrawBalanceGreaterThan = (expectedMinimum: Decimal) =>
+  readScrvUsdWithdrawBalance().should(balance => expect(decimalCompare(balance, expectedMinimum)).to.equal(1))
 
-export const checkScrvUsdWithdrawBalanceLessThan = (expectedMaximum: Decimal) => {
-  readScrvUsdWithdrawBalance().should(balance => {
-    expect(decimalCompare(balance, expectedMaximum)).to.equal(-1)
-  })
-}
+export const checkScrvUsdWithdrawBalanceLessThan = (expectedMaximum: Decimal) =>
+  readScrvUsdWithdrawBalance().should(balance => expect(decimalCompare(balance, expectedMaximum)).to.equal(-1))
 
-export const checkScrvUsdWithdrawBalanceZero = () => {
-  readScrvUsdWithdrawBalance().should(balance => {
-    expect(
-      decimalCompare(balance, '0'),
-      `Expected ${formatNumber(balance, { abbreviate: false })} to be zero`,
-    ).to.equal(0)
-  })
-}
+export const checkScrvUsdWithdrawBalanceZero = () =>
+  readScrvUsdWithdrawBalance().should(balance => expect(+balance, `Expected ${balance} to be zero`).to.equal(0))

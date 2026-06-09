@@ -2,16 +2,18 @@ import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { ScrvUsdDepositForm } from '@/loan/components/PageCrvUsdStaking/ScrvUsdDepositForm'
 import { ScrvUsdWithdrawForm } from '@/loan/components/PageCrvUsdStaking/ScrvUsdWithdrawForm'
 import { networks } from '@/loan/networks'
-import { oneDecimal } from '@cy/support/generators'
+import { oneBool, oneDecimal } from '@cy/support/generators'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import {
   checkScrvUsdDepositDetailsLoaded,
+  checkScrvUsdDepositAllowance,
   checkScrvUsdWithdrawBalanceGreaterThan,
   checkScrvUsdWithdrawBalanceLessThan,
   checkScrvUsdWithdrawBalanceZero,
   checkScrvUsdWithdrawDetailsLoaded,
   readScrvUsdWithdrawBalance,
   selectMaxScrvUsdWithdraw,
+  setScrvUsdInfiniteAllowance,
   submitScrvUsdDepositForm,
   submitScrvUsdWithdrawForm,
   writeInvalidThenValidScrvUsdDeposit,
@@ -19,7 +21,7 @@ import {
 } from '@cy/support/helpers/llamalend/scrvusd.helpers'
 import { fundUserWithCrvUsd } from '@cy/support/helpers/llamalend/supply/supply-setup.helpers'
 import { createVirtualTestnet, createTenderlyWagmiConfigFromVNet } from '@cy/support/helpers/tenderly'
-import type { TenderlyWagmiConfigFromVNet } from '@cy/support/helpers/tenderly/vnet'
+import { getRpcUrls, type TenderlyWagmiConfigFromVNet } from '@cy/support/helpers/tenderly/vnet'
 import { skipTestsAfterFailure } from '@cy/support/ui'
 import Box from '@mui/material/Box'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -43,6 +45,7 @@ describe('scrvUSD', () => {
   const fundValue = oneDecimal(1, 10000, 6)
   const depositValue = decimalMultiply(fundValue, oneDecimal(0.1, 0.9, 6))
   const invalidDepositValue = decimalSum(fundValue, '1')
+  const approveInfinite = oneBool()
 
   const getVirtualNetwork = createVirtualTestnet(uuid => ({
     slug: `scrvusd-integration-${uuid}`,
@@ -81,7 +84,14 @@ describe('scrvUSD', () => {
     cy.mount(<ScrvUsdTestCase form="deposit" vnet={vnet} />)
     writeInvalidThenValidScrvUsdDeposit({ invalidAmount: invalidDepositValue, validAmount: depositValue })
     checkScrvUsdDepositDetailsLoaded()
+    setScrvUsdInfiniteAllowance(approveInfinite)
     submitScrvUsdDepositForm()
+    checkScrvUsdDepositAllowance({
+      approveInfinite,
+      publicRpcUrl: getRpcUrls(vnet).publicRpcUrl,
+      userAddress: address,
+      depositAmount: depositValue,
+    })
   })
 
   it('partially withdraws scrvUSD', () => {
