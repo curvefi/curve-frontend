@@ -52,6 +52,7 @@ export type LoanFormTokenInputProps<
    * Called after the form value is set.
    */
   onValueChange?: (value: Decimal | undefined) => void
+  disabled?: boolean
 }
 
 /**
@@ -79,6 +80,7 @@ export const LoanFormTokenInput = <
   tokenSelector,
   hideBalance,
   onValueChange,
+  disabled,
 }: LoanFormTokenInputProps<TFieldValues, TFieldName, TMaxFieldName>) => {
   const { address: userAddress } = useConnection()
   const {
@@ -144,6 +146,7 @@ export const LoanFormTokenInput = <
       {...(!hideBalance && { walletBalance })}
       maxBalance={max && { balance: max.data, chips: 'range', isLoading: max.isLoading }}
       inputBalanceUsd={decimal(usdRate && usdRate * +(value ?? 0))}
+      disabled={disabled}
     >
       {maxMessage && <HelperMessage onNumberClick={onBalance} message={maxMessage} />}
       {errorMessage && <HelperMessage message={errorMessage} onNumberClick={onBalance} isError />}

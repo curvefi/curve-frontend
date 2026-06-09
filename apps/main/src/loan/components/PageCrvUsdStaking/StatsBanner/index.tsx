@@ -1,5 +1,5 @@
 import { oneMonthProjectionYield, oneYearProjectionYield } from '@/loan/components/PageCrvUsdStaking/utils'
-import { useScrvUsdStatistics } from '@/loan/entities/scrvusd-statistics'
+import { useScrvUsdStatistics } from '@/loan/entities/scrvusd-statistics.query'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
@@ -8,7 +8,7 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-const { MaxWidth, Spacing } = SizesAndSpaces
+const { Spacing } = SizesAndSpaces
 
 export const StatsBanner = () => {
   const {
@@ -28,9 +28,6 @@ export const StatsBanner = () => {
         backgroundColor: Color.Secondary[100],
         border: `1px solid ${Color.Secondary[500]}`,
         width: '100%',
-
-        // action card + gap + section
-        maxWidth: `calc(${MaxWidth.legacyActionCard} + ${Sizing[200]} + ${MaxWidth.section})`,
       }}
     >
       <Stack direction="column">

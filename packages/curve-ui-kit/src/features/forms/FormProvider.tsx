@@ -61,8 +61,10 @@ export const FormProvider = <T extends FieldValues>({
       {children}
       {isDevelopment && (
         <Accordion title={t`Form state`} ghost size="extraSmall">
-          <AccordionDetails sx={{ overflowX: 'auto' }}>
-            <pre>{JSON.stringify({ values: getValues(), ...formState }, null, 2).slice(2, -2)}</pre>
+          <AccordionDetails>
+            <pre style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>
+              {JSON.stringify({ values: getValues(), ...formState }, null, 2).slice(2, -2)}
+            </pre>
           </AccordionDetails>
         </Accordion>
       )}

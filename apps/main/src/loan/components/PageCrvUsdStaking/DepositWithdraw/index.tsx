@@ -6,20 +6,19 @@ import { useStore } from '@/loan/store/useStore'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useDebounced } from '@ui-kit/hooks/useDebounce'
+import { useScrvUsdNewForms } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 import { TransactionDetails } from '../components/TransactionDetails'
+import { ScrvUsdDepositForm } from '../ScrvUsdDepositForm'
+import { ScrvUsdWithdrawForm } from '../ScrvUsdWithdrawForm'
 import { TransactionTracking } from '../TransactionTracking'
 import { DeployButton } from './DeployButton'
 import { DepositModule } from './DepositModule'
 import { WithdrawModule } from './WithdrawModule'
-
-type DepositWithdrawProps = {
-  params: NetworkUrlParams
-}
 
 const ScrvUsdDepositFormTab = () => {
   const setStakingModule = useStore(state => state.scrvusd.setStakingModule)
@@ -122,23 +121,21 @@ const ScrvUsdWithdrawFormTab = () => {
   )
 }
 
-const menu = [
-  {
-    value: 'deposit',
-    label: t`Deposit`,
-    component: ScrvUsdDepositFormTab,
-  },
-  {
-    value: 'withdraw',
-    label: t`Withdraw`,
-    component: ScrvUsdWithdrawFormTab,
-  },
-  {
-    value: 'swap',
-    label: t`Swap`,
-    href: ({ network }) =>
-      `${getInternalUrl('dex', network, DEX_ROUTES.PAGE_SWAP)}?from=${CRVUSD_ADDRESS}&to=${SCRVUSD_VAULT_ADDRESS}`,
-  },
+const SwapHref = ({ network }: NetworkUrlParams) =>
+  `${getInternalUrl('dex', network, DEX_ROUTES.PAGE_SWAP)}?from=${CRVUSD_ADDRESS}&to=${SCRVUSD_VAULT_ADDRESS}`
+
+const ScrvUsdLegacyMenu = [
+  { value: 'deposit', label: t`Deposit`, component: ScrvUsdDepositFormTab },
+  { value: 'withdraw', label: t`Withdraw`, component: ScrvUsdWithdrawFormTab },
+  { value: 'swap', label: t`Swap`, href: SwapHref },
 ] satisfies FormTab<NetworkUrlParams>[]
 
-export const DepositWithdraw = ({ params }: DepositWithdrawProps) => <FormTabs params={params} menu={menu} />
+const ScrvUsdMenu = [
+  { value: 'deposit', label: t`Deposit`, component: ScrvUsdDepositForm },
+  { value: 'withdraw', label: t`Withdraw`, component: ScrvUsdWithdrawForm },
+  { value: 'swap', label: t`Swap`, href: SwapHref },
+] satisfies FormTab<NetworkUrlParams>[]
+
+export const DepositWithdraw = ({ params }: { params: NetworkUrlParams }) => (
+  <FormTabs params={params} menu={useScrvUsdNewForms() ? ScrvUsdMenu : ScrvUsdLegacyMenu} />
+)

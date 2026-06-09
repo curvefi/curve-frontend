@@ -3,7 +3,7 @@
  * These return booleans indicating whether a new experience is enabled.
  */
 
-import { ReleaseChannel } from '@ui-kit/utils'
+import { defaultReleaseChannel, ReleaseChannel } from '@ui-kit/utils'
 import { getReleaseChannel, isZapV2Disabled, useDisableZapV2, useReleaseChannel } from './useLocalStorage'
 
 const useBetaChannel = () => useReleaseChannel()[0] === ReleaseChannel.Beta
@@ -13,7 +13,8 @@ const useStableChannel = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy
  * Alpha channel works like beta for preview/localhost urls, but completely hidden in production.
  * This is used for features actively under development that are known not to be ready.
  **/
-// const useAlphaChannel = () => useBetaChannel() && defaultReleaseChannel === ReleaseChannel.Beta
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const useAlphaChannel = () => useBetaChannel() && defaultReleaseChannel === ReleaseChannel.Beta
 
 /** New ZapV2 leverage implementation for LlamaLend markets */
 export const isZapV2Enabled = () => getReleaseChannel() === ReleaseChannel.Beta && !isZapV2Disabled()

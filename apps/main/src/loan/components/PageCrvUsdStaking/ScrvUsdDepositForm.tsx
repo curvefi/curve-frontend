@@ -1,0 +1,79 @@
+import { useConnection } from 'wagmi'
+import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
+import { CRVUSD_ADDRESS } from '@/loan/constants'
+import { networks, networksIdMapper } from '@/loan/networks'
+import type { NetworkUrlParams } from '@/loan/types/loan.types'
+import Button from '@mui/material/Button'
+import { joinButtonText } from '@primitives/string.utils'
+import { useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
+import { t } from '@ui-kit/lib/i18n'
+import { q } from '@ui-kit/types/util'
+import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
+import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
+import { useScrvUsdDepositForm } from './hooks/useScrvUsdDepositForm'
+import { ScrvUsdDepositInfoList } from './ScrvUsdDepositInfoList'
+
+export const ScrvUsdDepositForm = ({ network }: NetworkUrlParams) => {
+  const { isConnected, isConnecting } = useConnection()
+  const { connect } = useWallet()
+  const chainId = networksIdMapper[network]
+  const {
+    form,
+    params,
+    approveInfinite,
+    isApproved,
+    isPending,
+    isDisabled,
+    error,
+    formErrors,
+    max,
+    onApproveInfiniteToggle,
+    onSubmit,
+  } = useScrvUsdDepositForm({ chainId })
+  const networkConfig = networks[chainId]
+  return (
+    <Form
+      {...form}
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Form submit handlers are async through react-hook-form.
+      onSubmit={onSubmit}
+      footer={
+        <ScrvUsdDepositInfoList
+          chainId={chainId}
+          params={params}
+          isOpen={form.isTouched('depositAmount')}
+          isApproved={isApproved.data}
+          approveInfinite={approveInfinite}
+          onApproveInfiniteToggle={onApproveInfiniteToggle}
+        />
+      }
+    >
+      <LoanFormTokenInput
+        label={t`Amount to deposit`}
+        token={{ address: CRVUSD_ADDRESS, symbol: 'crvUSD' }}
+        blockchainId={networkConfig.id}
+        name="depositAmount"
+        form={form}
+        max={{ ...q(max), fieldName: max.fieldName }}
+        testId="scrvusd-deposit-input"
+        network={networkConfig}
+        hideBalance={!isConnected}
+        disabled={!isConnected}
+      />
+      {isConnected ? (
+        <Button type="submit" loading={isPending} disabled={isDisabled} data-testid="scrvusd-deposit-submit-button">
+          {isPending ? t`Processing...` : joinButtonText(isApproved.data === false && t`Approve`, t`Deposit`)}
+        </Button>
+      ) : (
+        <ConnectWalletButton
+          type="button"
+          size="large"
+          loading={isConnecting}
+          onClick={() => void connect()}
+          data-testid="scrvusd-deposit-connect-wallet-button"
+        />
+      )}
+      <FormAlerts error={error} formErrors={formErrors} handledErrors={['depositAmount']} />
+    </Form>
+  )
+}
