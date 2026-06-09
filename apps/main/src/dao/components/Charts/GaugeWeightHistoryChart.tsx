@@ -53,7 +53,7 @@ export const GaugeWeightHistoryChart = ({ gaugeAddress, height = Height.chart }:
         isEmpty={isSuccess && data.length === 0}
         error={error}
         errorMessage={ERROR_MESSAGE}
-        refetchFunction={() => void refetch()}
+        refreshData={() => void refetch()}
       >
         <EChartsLineChart<GaugeWeightHistoryData, GaugeWeightSeriesKey, 'timestamp'>
           data={data}

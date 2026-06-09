@@ -1,3 +1,4 @@
+import { LOAD_TIMEOUT } from '@cy/support/ui'
 import { getRpcUrls } from './vnet'
 import type { CreateVirtualTestnetResponse } from './vnet-create'
 
@@ -20,6 +21,7 @@ export const advanceVirtualNetworkClock = ({
         method: 'POST',
         url: adminRpcUrl,
         body: { jsonrpc: '2.0', method: 'evm_increaseTime', params: [seconds], id: 1 },
+        ...LOAD_TIMEOUT,
       })
       .then(response => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.
@@ -28,6 +30,7 @@ export const advanceVirtualNetworkClock = ({
           method: 'POST',
           url: adminRpcUrl,
           body: { jsonrpc: '2.0', method: 'evm_mine', params: [], id: 2 },
+          ...LOAD_TIMEOUT,
         })
       })
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule.

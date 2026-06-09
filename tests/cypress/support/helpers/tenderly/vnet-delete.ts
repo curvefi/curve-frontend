@@ -1,3 +1,4 @@
+import { LOAD_TIMEOUT } from '@cy/support/ui'
 import type { TenderlyAccount } from './account'
 import type { TestnetProps } from './types'
 
@@ -22,6 +23,7 @@ export const deleteVirtualTestnet = ({
         'X-Access-Key': accessKey,
       },
       failOnStatusCode: false,
+      ...LOAD_TIMEOUT,
     })
     .then(response => {
       if (!response.isOkStatusCode) {
