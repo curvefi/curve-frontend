@@ -19,7 +19,11 @@ import { routerApiValidation } from './router-api.validation'
 type RouteByIdQuery = { routeId: string }
 type RouteByIdParams = FieldsOf<RouteByIdQuery>
 
-const { getQueryData: getRouteQueryData, setQueryData: setRouteQueryData } = queryFactory({
+const {
+  getQueryData: getRouteQueryData,
+  setQueryData: setRouteQueryData,
+  useQuery: useRouteByIdQuery,
+} = queryFactory({
   queryKey: ({ routeId }: RouteByIdParams) => ['router-api', 'v1/routes', { routeId }] as const,
   // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
   queryFn: async (_params: RouteByIdQuery): Promise<RouteResponse> => {
@@ -33,6 +37,13 @@ const { getQueryData: getRouteQueryData, setQueryData: setRouteQueryData } = que
   disableLog: true,
   category: 'global.routerApi',
 })
+
+/**
+ * Keeps the selected route-by-id cache entry active while a form references it.
+ * The route-by-id query is write-through only, so this hook must never enable fetching.
+ * A disabled useQuery still creates/subscribes an observer for that queryKey; it just does not auto-fetch.
+ */
+export const usePinRouteById = (routeId: string | undefined) => useRouteByIdQuery({ routeId }, false)
 
 /**
  * Returns a previously fetched router route from a local query-cache entry keyed by `routeId`.

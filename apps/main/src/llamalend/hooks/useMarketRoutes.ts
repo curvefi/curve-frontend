@@ -11,6 +11,7 @@ import {
   type GetGasCallback,
   type RouteQueries,
   type RouteResponse,
+  usePinRouteById,
   useRouterQueries,
 } from '@ui-kit/entities/router-api'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
@@ -98,6 +99,8 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
     // eslint-disable-next-line @eslint-react/exhaustive-deps
     [chosenRouter, ...recordValues(queries)],
   )
+
+  usePinRouteById(selectedRoute?.id)
 
   const onChangeEffect = useEffectEvent(onChangeProp)
   useEffect(() => startTransition(() => onChangeEffect(selectedRoute)), [selectedRoute])
