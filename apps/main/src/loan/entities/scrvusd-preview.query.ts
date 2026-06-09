@@ -19,17 +19,19 @@ export const { useQuery: useScrvUsdPreviewDeposit } = queryFactory({
 })
 
 export const { useQuery: useScrvUsdPreviewWithdraw } = queryFactory({
-  queryKey: ({ chainId, userAddress, withdrawAmount, isFull, userVaultShares }: ScrvUsdWithdrawParams) =>
+  queryKey: ({ chainId, userAddress, withdrawAmount, isFull, maxWithdrawAmount }: ScrvUsdWithdrawParams) =>
     [
       ...rootKeys.userChain({ chainId, userAddress }),
       'st_crvUSD.previewWithdraw',
       { withdrawAmount },
       { isFull },
-      { userVaultShares },
+      { maxWithdrawAmount },
     ] as const,
-  queryFn: async ({ withdrawAmount, isFull, userVaultShares }: ScrvUsdWithdrawQuery) => {
+  queryFn: async ({ withdrawAmount, isFull, maxWithdrawAmount }: ScrvUsdWithdrawQuery) => {
     const { st_crvUSD } = requireLib('llamaApi')
-    const r = isFull ? await st_crvUSD.previewRedeem(userVaultShares) : await st_crvUSD.previewWithdraw(withdrawAmount)
+    const r = isFull
+      ? await st_crvUSD.previewRedeem(maxWithdrawAmount)
+      : await st_crvUSD.previewWithdraw(withdrawAmount)
     return r as Decimal
   },
   category: 'savings.user',

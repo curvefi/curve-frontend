@@ -18,8 +18,10 @@ export type ScrvUsdDepositMutation = {
   approveInfinite: boolean
 }
 
-export type ScrvUsdDepositForm = Partial<ScrvUsdDepositMutation> & {
-  maxDepositAmount?: Decimal
+export type ScrvUsdDepositForm = {
+  depositAmount: Decimal | undefined
+  approveInfinite: boolean
+  maxDepositAmount: Decimal | undefined
 }
 
 export type ScrvUsdWithdrawQuery = ScrvUsdUserQuery & {

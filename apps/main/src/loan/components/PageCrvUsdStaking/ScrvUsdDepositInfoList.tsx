@@ -19,7 +19,7 @@ type ScrvUsdDepositInfoListProps = {
   chainId: ChainId
   params: ScrvUsdDepositParams
   isOpen: boolean
-  isApproved?: boolean
+  isApproved: boolean | undefined
   approveInfinite: boolean
   onApproveInfiniteToggle: () => void
 }
