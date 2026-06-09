@@ -1,3 +1,4 @@
+import { LOAD_TIMEOUT } from '@cy/support/ui'
 import type { TenderlyAccount } from './account'
 import type { TestnetProps } from './types'
 
@@ -48,6 +49,7 @@ export const forkVirtualTestnet = ({
       },
       body: forkOptions,
       failOnStatusCode: false,
+      ...LOAD_TIMEOUT,
     })
     .then(response => {
       if (!response.isOkStatusCode) {
