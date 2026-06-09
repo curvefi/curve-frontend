@@ -57,5 +57,6 @@ export const POOL_TRADES_COLUMNS = [
     id: PoolTradesColumnId.Time,
     header: t`Time`,
     cell: ({ row }) => <TimestampCell timestamp={new Date(row.original.time)} txUrl={row.original.txUrl} align="end" />,
+    meta: { type: 'numeric' },
   }),
 ]
