@@ -33,7 +33,7 @@ const useZapV2 = () => [useStableChannel(), !useDisableZapV2()].every(Boolean)
 export const useLoanImplementationKey = () => (useZapV2() ? 'zapV2' : '')
 
 /** New LlamaLend v2 implementation */
-export const useLLv2 = useBetaChannel
+export const useLLv2 = useStableChannel
 export const isLLv2Enabled = (releaseChannel: ReleaseChannel) => releaseChannel === ReleaseChannel.Beta
 
 /** New market list and search layout */
