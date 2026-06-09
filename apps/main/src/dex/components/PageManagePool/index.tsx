@@ -1,14 +1,14 @@
 import { useReadContract } from 'wagmi'
-import { refuelPoolAbi } from '@/dex/features/refuel/abi'
-import { BorrowInformationContainer } from '@/dex/features/refuel/components/BorrowInformationContainer'
-import { DailyRefuelsChart } from '@/dex/features/refuel/components/DailyRefuelsChart'
-import { Header } from '@/dex/features/refuel/components/Header'
-import { RecentRefuels } from '@/dex/features/refuel/components/recent-refuels'
-import { RefuelPricesChart } from '@/dex/features/refuel/components/RefuelPricesChart'
-import { RefuelSharesChart } from '@/dex/features/refuel/components/RefuelSharesChart'
-import { ReservesCompositionChart } from '@/dex/features/refuel/components/ReservesCompositionChart'
-import { useRefuelPool } from '@/dex/features/refuel/queries/pools.query'
-import { RefuelFormTabs } from '@/dex/features/refuel/RefuelFormTabs'
+import { refuelPoolAbi } from '@/dex/features/manage-pool/abi'
+import { BorrowInformationContainer } from '@/dex/features/manage-pool/components/BorrowInformationContainer'
+import { DailyRefuelsChart } from '@/dex/features/manage-pool/components/DailyRefuelsChart'
+import { Header } from '@/dex/features/manage-pool/components/Header'
+import { RecentRefuels } from '@/dex/features/manage-pool/components/recent-refuels'
+import { RefuelPricesChart } from '@/dex/features/manage-pool/components/RefuelPricesChart'
+import { RefuelSharesChart } from '@/dex/features/manage-pool/components/RefuelSharesChart'
+import { ReservesCompositionChart } from '@/dex/features/manage-pool/components/ReservesCompositionChart'
+import { useRefuelPool } from '@/dex/features/manage-pool/queries/pools.query'
+import { RefuelFormTabs } from '@/dex/features/manage-pool/RefuelFormTabs'
 import { useChainId } from '@/dex/hooks/useChainId'
 import type { PoolAddressParams } from '@/dex/types/main.types'
 import type { Chain } from '@curvefi/prices-api'
@@ -25,7 +25,7 @@ const { Spacing } = SizesAndSpaces
 
 const LOW_RESERVES_RATIO = 1 / 10000
 
-export const Refuel = () => {
+export const ManagePool = () => {
   const { network, poolAddress } = useParams<PoolAddressParams>()
   const chainId = useChainId(network)
   const blockchainId = network as Chain

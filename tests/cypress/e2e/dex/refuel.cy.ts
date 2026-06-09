@@ -2,7 +2,7 @@ import type { AppRoute } from '@cy/support/routes'
 import { API_LOAD_TIMEOUT, LOAD_TIMEOUT } from '@cy/support/ui'
 
 const REFUEL_POOL_ADDRESS = '0x6e5492f8ea2370844ee098a56dd88e1717e4a9c2'
-const REFUEL_ROUTE = `dex/ethereum/pools/${REFUEL_POOL_ADDRESS}/refuel` satisfies AppRoute
+const REFUEL_ROUTE = `dex/ethereum/pools/${REFUEL_POOL_ADDRESS}/manage-pool` satisfies AppRoute
 
 /** Smol helper to reduce amount of repetition */
 const getTestById = (testId: string, options?: Partial<Cypress.Timeoutable>) =>

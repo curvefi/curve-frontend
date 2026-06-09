@@ -29,3 +29,6 @@ export const useLLv2 = useBetaChannel
 
 /** New market list and search layout */
 export const useNewMarketListLayout = useBetaChannel
+
+/** New advanced details card for pool page */
+export const usePoolAdvancedDetails = useBetaChannel

@@ -1,17 +1,22 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { LeverageIcon } from '@ui-kit/shared/icons/LeverageIcon'
 import { TokenInfo } from '../TokenInfo'
 
 const meta: Meta<typeof TokenInfo> = {
   title: 'UI Kit/Widgets/TokenInfo',
   component: TokenInfo,
   argTypes: {
+    address: {
+      control: 'text',
+      description: 'Token contract address',
+    },
     blockchainId: {
       control: 'text',
       description: 'Network the token is on',
     },
-    address: {
-      control: 'text',
-      description: 'Token contract address',
+    icon: {
+      control: false,
+      description: 'Custom icon node. Mutually exclusive with address and blockchainId.',
     },
     iconPosition: {
       control: 'select',
@@ -32,18 +37,19 @@ const meta: Meta<typeof TokenInfo> = {
     },
   },
   args: {
-    blockchainId: 'ethereum',
-    address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
     iconPosition: 'left',
     primary: 'USDC',
     secondary: '$1.0001',
-    showChainIcon: false,
   },
 }
 
 type Story = StoryObj<typeof TokenInfo>
 
 export const AssetCellUsage: Story = {
+  args: {
+    blockchainId: 'ethereum',
+    address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+  },
   parameters: {
     docs: {
       description: {
@@ -56,6 +62,7 @@ export const AssetCellUsage: Story = {
 
 export const PoolSwapUsage: Story = {
   args: {
+    blockchainId: 'ethereum',
     address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
     iconPosition: 'right',
     primary: '10.420M',
@@ -73,6 +80,7 @@ export const PoolSwapUsage: Story = {
 
 export const CrvClaimRewardsUsage: Story = {
   args: {
+    blockchainId: 'ethereum',
     address: '0xd533a949740bb3306d119cc777fa900ba034cd52',
     iconPosition: 'left',
     primary: '1,234.56',
@@ -91,6 +99,8 @@ export const CrvClaimRewardsUsage: Story = {
 
 export const NoSecondary: Story = {
   args: {
+    blockchainId: 'ethereum',
+    address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
     primary: 'USDC',
     secondary: undefined,
   },
@@ -98,6 +108,36 @@ export const NoSecondary: Story = {
     docs: {
       description: {
         story: 'Token info with only the primary label.',
+      },
+    },
+  },
+}
+
+export const CustomIcon: Story = {
+  args: {
+    icon: <LeverageIcon />,
+    primary: 'Trading fees',
+    secondary: undefined,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Token info with a custom icon node instead of a token icon.',
+      },
+    },
+  },
+}
+
+export const NoIcon: Story = {
+  args: {
+    primary: '4.19%',
+    secondary: 'Base 2.98%',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Token info with no icon, useful for yield data whose token icon is already displayed in the first column of a table',
       },
     },
   },
