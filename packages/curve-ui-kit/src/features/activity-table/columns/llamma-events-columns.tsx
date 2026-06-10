@@ -42,5 +42,6 @@ export const LLAMMA_EVENTS_COLUMNS = [
     cell: ({ row }) => (
       <TimestampCell timestamp={new Date(row.original.timestamp)} txUrl={row.original.txUrl} align="end" />
     ),
+    meta: { type: 'numeric' },
   }),
 ]

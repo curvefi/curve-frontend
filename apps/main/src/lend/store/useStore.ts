@@ -18,7 +18,6 @@ import {
 import { createLoanRepaySlice, LoanRepaySlice } from '@/lend/store/createLoanRepaySlice'
 import { createLoanSelfLiquidationSlice, LoanSelfLiquidationSlice } from '@/lend/store/createLoanSelfLiquidationSlice'
 import { createMarketsSlice, MarketsSlice } from '@/lend/store/createMarketsSlice'
-import { createOhlcChart as createOhlcChartSlice, OhlcChartSlice } from '@/lend/store/createOhlcChartSlice'
 import { createUserSlice, UserSlice } from '@/lend/store/createUserSlice'
 import { createVaultClaim as createVaultClaimSlice, VaultClaimSlice } from '@/lend/store/createVaultClaimSlice'
 import {
@@ -45,8 +44,7 @@ export type State = AppSlice &
   VaultStakeSlice &
   VaultWithdrawRedeemSlice &
   VaultUnstakeSlice &
-  VaultClaimSlice &
-  OhlcChartSlice
+  VaultClaimSlice
 
 const store = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): State => ({
   ...createAppSlice(set, get),
@@ -63,7 +61,6 @@ const store = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState'
   ...createVaultStakeSlice(set, get),
   ...createVaultUnstakeSlice(set, get),
   ...createVaultClaimSlice(set, get),
-  ...createOhlcChartSlice(set, get),
 })
 
 export const useStore = process.env.NODE_ENV === 'development' ? create(devtools(store)) : create(store)

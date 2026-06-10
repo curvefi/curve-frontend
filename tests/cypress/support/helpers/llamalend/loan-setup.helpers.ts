@@ -4,6 +4,7 @@ import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import type { CreateVirtualTestnetResponse } from '@cy/support/helpers/tenderly/vnet-create'
 import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
 import { sendVnetTransaction } from '@cy/support/helpers/tenderly/vnet-transaction'
+import { LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 
 const ERC20_ABI = parseAbi(['function approve(address spender, uint256 amount)'])
@@ -127,7 +128,7 @@ export const setupTenderlyLoan = ({
   })
 
   // the call above uses cy.request, but to use async we need cy.then()
-  loadTenderlyAccount().then(async tenderlyAccount => {
+  loadTenderlyAccount().then(LOAD_TIMEOUT, async tenderlyAccount => {
     await approveTokenForSpender({
       vnet,
       userAddress,

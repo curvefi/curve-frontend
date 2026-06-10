@@ -15,8 +15,8 @@ import { TablePagination } from '@ui-kit/shared/ui/DataTable/TablePagination'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { DataTableHeaderHeight, type DataTableSize, type TableItem, type TanstackTable } from './data-table.utils'
-import { DataRow, type DataRowProps } from './DataRow'
 import { HeaderCell } from './HeaderCell'
+import { LegacyDataRow, LegacyDataRowProps } from './LegacyDataRow'
 import { LegacyFilterRow } from './LegacyFilterRow'
 import { SkeletonRows } from './SkeletonRows'
 import { TableViewAllCell } from './TableViewAllCell'
@@ -95,7 +95,7 @@ export const LegacyDataTable = <T extends TableItem>({
   disableStickyHeader?: boolean
   hideHeader?: boolean
   footerRow?: ReactNode
-} & Omit<DataRowProps<T>, 'row' | 'isLastRow' | 'shouldStickLastRowToTop'>) => {
+} & Omit<LegacyDataRowProps<T>, 'row' | 'isLastRow' | 'shouldStickLastRowToTop'>) => {
   const { table } = rowProps
   const { rows } = table.getRowModel()
   const { isLimited, isLoading: isLoadingViewAll, onShowAll } = useTableRowLimit(rowLimit, rows.length)
@@ -161,7 +161,7 @@ export const LegacyDataTable = <T extends TableItem>({
             emptyState
           ) : (
             visibleRows.map((row, index) => (
-              <DataRow<T>
+              <LegacyDataRow<T>
                 key={row.id}
                 row={row}
                 isLastRow={index === visibleRows.length - 1}
