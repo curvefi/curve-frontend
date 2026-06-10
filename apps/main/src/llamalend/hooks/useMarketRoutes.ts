@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useEffectEvent, useMemo, useState, useTransition } from 'react'
+import { useEffect, useEffectEvent, useMemo, useState, useTransition } from 'react'
 import { useConnection } from 'wagmi'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { Address } from '@primitives/address.utils'
@@ -23,8 +23,9 @@ export type MarketRoutes = {
   queries: RouteQueries
   enabled: boolean
   selectedRoute: RouteResponse | undefined
-  onChange: (option: RouteResponse | undefined) => Promise<void>
-  onRefresh: () => void
+  selectedRouter: RouteProvider | undefined
+  onChange: (option: RouteProvider | undefined) => void
+  onRefresh: () => Promise<unknown>
   tokenOut: Partial<{ symbol: string | undefined; address: Address; decimals: number }> & { usdRate: QueryProp<number> }
   networks: Record<number, BaseConfig>
   chainId: number
@@ -69,7 +70,8 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
   networks: Record<number, BaseConfig>
   getRouteGasOptions: GetGasCallback<TData, GasQueryKey>
   version: LlamaMarketVersion | undefined
-} & Pick<MarketRoutes, 'onChange'>): MarketRoutes | undefined {
+  onChange: (option: RouteResponse | undefined) => Promise<void>
+}): MarketRoutes | undefined {
   const [chosenRouter, setChosenRouter] = useState<RouteProvider | undefined>(undefined) // keep the preferred router while mounted
   const { address: userAddress } = useConnection()
   const [, startTransition] = useTransition() // todo: use isTransitioning for something
@@ -90,12 +92,12 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
   const usdRate = q(useTokenUsdRate({ tokenAddress: tokenOut?.address, chainId }, enabled))
   const selectedRoute = useMemo(
     () =>
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-      (chosenRouter && queries[chosenRouter]?.data) ||
-      recordValues(queries)
-        .map(q => q.data)
-        .filter((q): q is RouteResponse => !!q)
-        .sort(sortRoutes)[0],
+      chosenRouter
+        ? (queries[chosenRouter].data ?? undefined)
+        : recordValues(queries)
+            .map(q => q.data)
+            .filter((q): q is RouteResponse => !!q)
+            .sort(sortRoutes)[0],
     // eslint-disable-next-line @eslint-react/exhaustive-deps
     [chosenRouter, ...recordValues(queries)],
   )
@@ -105,22 +107,14 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
   const onChangeEffect = useEffectEvent(onChangeProp)
   useEffect(() => startTransition(() => onChangeEffect(selectedRoute)), [selectedRoute])
 
-  const onChange = useCallback(
-    async (option: RouteResponse | undefined) => {
-      if (option) setChosenRouter(option?.router)
-      await onChangeProp(option)
-    },
-    [onChangeProp],
-  )
-
   return {
     networks,
     chainId,
     queries,
     enabled,
     selectedRoute,
-    onChange,
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
+    selectedRouter: chosenRouter ?? selectedRoute?.router,
+    onChange: setChosenRouter,
     onRefresh,
     tokenOut: { ...tokenOut, usdRate },
   }
