@@ -1,5 +1,7 @@
 import { Sizing, Spacing } from './0_primitives'
 
+const FixedResponsive = <T extends string>(value: T) => ({ mobile: value, tablet: value, desktop: value })
+
 const MappedSpacing = {
   '3xs': { mobile: Spacing[75], tablet: Spacing[75], desktop: Spacing[75] },
   xxs: { mobile: Spacing[100], tablet: Spacing[100], desktop: Spacing[100] },
@@ -175,6 +177,45 @@ const MappedLineHeight = {
   },
 } as const
 
+const MappedBadge = {
+  BorderWidth: Sizing[10],
+  Size: {
+    extraSmall: Sizing[200],
+    small: Sizing[350],
+    medium: Sizing[500],
+    large: Sizing[600],
+    extraLarge: Sizing[650],
+  },
+  IconSize: {
+    extraSmall: MappedIconSize.xs,
+    small: MappedIconSize.sm,
+    medium: MappedIconSize.md,
+    large: MappedIconSize.lg,
+    extraLarge: MappedIconSize.xl,
+  },
+  Gap: {
+    extraSmall: FixedResponsive(Spacing[75]),
+    small: FixedResponsive(Spacing[100]),
+    medium: FixedResponsive(Spacing[100]),
+    large: FixedResponsive(Spacing[200]),
+    extraLarge: FixedResponsive(Spacing[200]),
+  },
+  Padding: {
+    extraSmall: { x: FixedResponsive(Spacing[100]), y: FixedResponsive(Spacing[75]) },
+    small: { x: FixedResponsive(Spacing[200]), y: FixedResponsive(Spacing[100]) },
+    medium: { x: FixedResponsive(Spacing[200]), y: FixedResponsive(Spacing[300]) },
+    large: { x: FixedResponsive(Spacing[300]), y: FixedResponsive(Spacing[200]) },
+    extraLarge: { x: FixedResponsive(Spacing[300]), y: FixedResponsive(Spacing[200]) },
+  },
+  LineHeight: {
+    extraSmall: MappedLineHeight.xs,
+    small: MappedLineHeight.xs,
+    medium: MappedLineHeight.xs,
+    large: MappedLineHeight.md,
+    extraLarge: FixedResponsive(Sizing[300]),
+  },
+} as const
+
 const MappedModalWidth = {
   xs: '19rem', // 304px
   sm: '24rem', // 384px
@@ -200,6 +241,7 @@ export const SizesAndSpaces = {
   SelectSpacing: MappedSelectSpacing,
   SelectListItem: MappedSelectListItem,
   LargeTokenInput: MappedLargeTokenInput,
+  Badge: MappedBadge,
   Grid: MappedGrid,
   FontSize: MappedFontSize,
   FontWeight: MappedFontWeight,

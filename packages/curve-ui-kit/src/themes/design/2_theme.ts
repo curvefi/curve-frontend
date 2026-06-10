@@ -413,7 +413,7 @@ export const createLightDesign = (
     },
     BorderRadius: {
       Clickable: '0',
-      NonClickable: '6.25rem', // 100px
+      NonClickable: '0',
     },
   } as const
 
@@ -967,7 +967,7 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
     },
     BorderRadius: {
       Clickable: '0',
-      NonClickable: '6.25rem', // 100px
+      NonClickable: '0',
     },
   } as const
 
