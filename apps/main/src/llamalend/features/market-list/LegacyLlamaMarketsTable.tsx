@@ -60,7 +60,7 @@ export const LegacyLlamaMarketsTable = ({
     onSortingChange,
     onExpandedChange: setExpanded,
     globalFilterFn,
-    ...getTableOptions(result ? data : undefined),
+    ...getTableOptions(markets),
   })
 
   return (

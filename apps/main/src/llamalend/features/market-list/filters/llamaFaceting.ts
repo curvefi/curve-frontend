@@ -1,4 +1,5 @@
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
+import { assert } from '@primitives/objects.utils'
 import { getFacetedRowModel, type RowModel, type Table } from '@tanstack/react-table'
 import { parseListFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { LlamaMarketColumnId } from '../columns'
@@ -10,7 +11,10 @@ const getChainFilteredRowModel = (
   preRowModel: RowModel<LlamaMarket>,
   selectedChainsFilter: unknown,
 ): RowModel<LlamaMarket> => {
-  const selectedChains = typeof selectedChainsFilter === 'string' ? parseListFilter(selectedChainsFilter) : undefined
+  if (!selectedChainsFilter) return preRowModel
+  const selectedChains = parseListFilter(
+    assert(typeof selectedChainsFilter === 'string' && selectedChainsFilter, 'Selected chain filters must be a string'),
+  )
 
   if (!selectedChains?.length) return preRowModel
 
