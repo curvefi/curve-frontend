@@ -41,14 +41,13 @@ const getChainFilteredRowModel = (
  * is the chain column itself.
  */
 export const getLlamaFacetedRowModel = (table: Table<LlamaMarket>, columnId: string) => {
-  const getDefaultFacetedRowModel = getFacetedRowModel<LlamaMarket>()(table, columnId)
+  if (columnId === CHAIN_COLUMN_ID) return getFacetedRowModel<LlamaMarket>()(table, columnId)
+
   let previousPreRowModel: RowModel<LlamaMarket> | undefined
   let previousSelectedChainsFilter: unknown
   let previousRowModel: RowModel<LlamaMarket> | undefined
 
   return () => {
-    if (columnId === CHAIN_COLUMN_ID) return getDefaultFacetedRowModel()
-
     const preRowModel = table.getPreFilteredRowModel()
     const selectedChainsFilter = table.getState().columnFilters.find(({ id }) => id === CHAIN_COLUMN_ID)?.value
 
