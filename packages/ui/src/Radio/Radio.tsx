@@ -1,9 +1,7 @@
 import { use, useRef } from 'react'
+import type { AriaRadioProps } from 'react-aria'
+import { useFocusRing, useRadio, VisuallyHidden } from 'react-aria'
 import { styled } from 'styled-components'
-import { useFocusRing } from '@react-aria/focus'
-import { useRadio } from '@react-aria/radio'
-import { VisuallyHidden } from '@react-aria/visually-hidden'
-import type { AriaRadioProps } from '@react-types/radio'
 import { Box } from '../Box'
 import { RadioContext } from './RadioContext'
 

@@ -31,10 +31,9 @@ export const useScrvUsdWithdrawMutation = ({ chainId, userAddress, onSuccess, ..
     },
     validationSuite: scrvUsdWithdrawMaxValidationSuite,
     validationParams: { chainId, userAddress },
-    pendingMessage: ({ withdrawAmount }) =>
-      t`Withdrawing... ${formatNumber(withdrawAmount, { abbreviate: false })} scrvUSD`,
+    pendingMessage: ({ withdrawAmount }) => t`Withdrawing... ${formatNumber(withdrawAmount, 'token.amount')} scrvUSD`,
     successMessage: ({ withdrawAmount }) =>
-      t`Withdraw successful! ${formatNumber(withdrawAmount, { abbreviate: false })} scrvUSD`,
+      t`Withdraw successful! ${formatNumber(withdrawAmount, 'token.amount')} scrvUSD`,
     onSuccess: async (data, receipt, variables, context) => {
       await invalidateScrvUsdMutationQueries({ chainId, config, userAddress })
       await onSuccess?.(data, receipt, variables, context)

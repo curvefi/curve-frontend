@@ -1,4 +1,5 @@
 import type { Decimal } from '@primitives/decimal.utils'
+import { maybes } from '@primitives/objects.utils'
 import type { UseQueryOptions } from '@tanstack/react-query'
 import { Query, QueryProp } from '@ui-kit/types/util'
 import { decimalMin } from '@ui-kit/utils'
@@ -9,6 +10,22 @@ export const combineQueryState = (...queries: (Query<unknown> | undefined)[]) =>
     error: queries.find(x => x?.error)?.error ?? null,
     isLoading: queries.some(x => x?.isLoading),
   }) as Omit<QueryProp<unknown>, 'data'>
+
+type QueriesNonNullableData<TQueries extends readonly Query<unknown>[]> = {
+  [K in keyof TQueries]: TQueries[K] extends Query<infer TData> | undefined ? NonNullable<TData> : never
+}
+
+export const combineQueries = <const TQueries extends readonly Query<unknown>[], TResult>(
+  queries: TQueries,
+  selector: (...data: QueriesNonNullableData<TQueries>) => TResult | null | undefined,
+) =>
+  ({
+    data: maybes(
+      queries.map(({ data }) => data),
+      data => selector(...(data as QueriesNonNullableData<TQueries>)),
+    ),
+    ...combineQueryState(...queries),
+  }) as QueryProp<TResult>
 
 /** Combines the metadata of multiple queries into a single object. */
 export const combineQueriesMeta = <T extends QueryOptionsArray>(results: QueryResultsArray<T>) => ({

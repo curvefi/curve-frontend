@@ -37,10 +37,8 @@ export const useScrvUsdDepositMutation = ({ chainId, userAddress, onSuccess, ...
     },
     validationSuite: scrvUsdDepositMaxValidationSuite,
     validationParams: { chainId, userAddress },
-    pendingMessage: ({ depositAmount }) =>
-      t`Depositing... ${formatNumber(depositAmount, { abbreviate: false })} crvUSD`,
-    successMessage: ({ depositAmount }) =>
-      t`Deposit successful! ${formatNumber(depositAmount, { abbreviate: false })} crvUSD`,
+    pendingMessage: ({ depositAmount }) => t`Depositing... ${formatNumber(depositAmount, 'token.amount')} crvUSD`,
+    successMessage: ({ depositAmount }) => t`Deposit successful! ${formatNumber(depositAmount, 'token.amount')} crvUSD`,
     onSuccess: async (data, receipt, variables, context) => {
       await invalidateScrvUsdMutationQueries({ chainId, config, userAddress })
       await onSuccess?.(data, receipt, variables, context)

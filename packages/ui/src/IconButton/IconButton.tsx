@@ -1,5 +1,5 @@
 import { forwardRef, useRef } from 'react'
-import { useFocusRing } from '@react-aria/focus'
+import { useFocusRing } from 'react-aria'
 import { StyledIconButton } from './styles'
 import type { IconButtonProps } from './types'
 

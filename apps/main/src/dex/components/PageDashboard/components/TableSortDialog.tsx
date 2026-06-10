@@ -1,7 +1,7 @@
+import { useOverlayTriggerState } from 'react-stately'
 import { styled } from 'styled-components'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 import type { Order, SortId, TableLabel } from '@/dex/components/PageDashboard/types'
-import { useOverlayTriggerState } from '@react-stately/overlays'
 import { Box } from '@ui/Box'
 import { ModalDialog } from '@ui/Dialog/ModalDialog'
 import { OpenDialogButton } from '@ui/Dialog/OpenDialogButton'

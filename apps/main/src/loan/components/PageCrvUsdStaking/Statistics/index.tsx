@@ -39,12 +39,9 @@ const chartSelections: ChartSelections<StatisticsChart>[] = [
 
 type StatisticsProps = {
   chainId: ChainId | undefined
-  isChartExpanded: boolean
-  toggleChartExpanded: () => void
-  hideExpandChart: boolean
 }
 
-export const Statistics = ({ chainId, isChartExpanded, toggleChartExpanded, hideExpandChart }: StatisticsProps) => {
+export const Statistics = ({ chainId }: StatisticsProps) => {
   const [selectedStatisticsChart, setSelectedStatisticsChart] = useState<StatisticsChart>('savingsRate')
   const [revenueChartTimeOption, setRevenueChartTimeOption] = useState<(typeof timeOptions)[number]>('1M')
 
@@ -94,7 +91,6 @@ export const Statistics = ({ chainId, isChartExpanded, toggleChartExpanded, hide
             setActiveSelection: setSelectedStatisticsChart,
           }}
           chartOptionVariant="buttons-group"
-          expandChart={hideExpandChart ? undefined : { isExpanded: isChartExpanded, toggleChartExpanded }}
         />
 
         {selectedStatisticsChart === 'savingsRate' && (

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useEffectEvent, useMemo, useState, useTransition } from 'react'
+import { useEffect, useEffectEvent, useMemo, useState, useTransition } from 'react'
 import { useConnection } from 'wagmi'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { Address } from '@primitives/address.utils'
@@ -11,6 +11,7 @@ import {
   type GetGasCallback,
   type RouteQueries,
   type RouteResponse,
+  usePinRouteById,
   useRouterQueries,
 } from '@ui-kit/entities/router-api'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
@@ -22,8 +23,9 @@ export type MarketRoutes = {
   queries: RouteQueries
   enabled: boolean
   selectedRoute: RouteResponse | undefined
-  onChange: (option: RouteResponse | undefined) => Promise<void>
-  onRefresh: () => void
+  selectedRouter: RouteProvider | undefined
+  onChange: (option: RouteProvider | undefined) => void
+  onRefresh: () => Promise<unknown>
   tokenOut: Partial<{ symbol: string | undefined; address: Address; decimals: number }> & { usdRate: QueryProp<number> }
   networks: Record<number, BaseConfig>
   chainId: number
@@ -37,7 +39,7 @@ const LEVERAGE_ZAPS: Record<LlamaMarketVersion, Record<number, Address>> = {
   [LlamaMarketVersion.v1]: {
     [Chain.Ethereum]: '0x324c5f9F7A3015D91860aC6870dcE25d410Df3Dc',
     [Chain.Arbitrum]: '0x9577086c6E38d38359872F903Da201f1bdCc0323',
-    [Chain.Optimism]: '0xE94d1fBF399c27CCBf0185b2Dd11Bf0FA0f0D95C',
+    [Chain.Optimism]: '0x4b10E1774521c077a2887806fa60C56CeFa94cCC',
     [Chain.Fraxtal]: '0x16C6521Dff6baB339122a0FE25a9116693265353',
     [Chain.Sonic]: '0xCA8d0747B5573D69653C3aC22242e6341C36e4b4',
   },
@@ -68,7 +70,8 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
   networks: Record<number, BaseConfig>
   getRouteGasOptions: GetGasCallback<TData, GasQueryKey>
   version: LlamaMarketVersion | undefined
-} & Pick<MarketRoutes, 'onChange'>): MarketRoutes | undefined {
+  onChange: (option: RouteResponse | undefined) => Promise<void>
+}): MarketRoutes | undefined {
   const [chosenRouter, setChosenRouter] = useState<RouteProvider | undefined>(undefined) // keep the preferred router while mounted
   const { address: userAddress } = useConnection()
   const [, startTransition] = useTransition() // todo: use isTransitioning for something
@@ -89,26 +92,20 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
   const usdRate = q(useTokenUsdRate({ tokenAddress: tokenOut?.address, chainId }, enabled))
   const selectedRoute = useMemo(
     () =>
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-      (chosenRouter && queries[chosenRouter]?.data) ||
-      recordValues(queries)
-        .map(q => q.data)
-        .filter((q): q is RouteResponse => !!q)
-        .sort(sortRoutes)[0],
+      chosenRouter
+        ? (queries[chosenRouter].data ?? undefined)
+        : recordValues(queries)
+            .map(q => q.data)
+            .filter((q): q is RouteResponse => !!q)
+            .sort(sortRoutes)[0],
     // eslint-disable-next-line @eslint-react/exhaustive-deps
     [chosenRouter, ...recordValues(queries)],
   )
 
+  usePinRouteById(selectedRoute?.id)
+
   const onChangeEffect = useEffectEvent(onChangeProp)
   useEffect(() => startTransition(() => onChangeEffect(selectedRoute)), [selectedRoute])
-
-  const onChange = useCallback(
-    async (option: RouteResponse | undefined) => {
-      if (option) setChosenRouter(option?.router)
-      await onChangeProp(option)
-    },
-    [onChangeProp],
-  )
 
   return {
     networks,
@@ -116,8 +113,8 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
     queries,
     enabled,
     selectedRoute,
-    onChange,
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
+    selectedRouter: chosenRouter ?? selectedRoute?.router,
+    onChange: setChosenRouter,
     onRefresh,
     tokenOut: { ...tokenOut, usdRate },
   }

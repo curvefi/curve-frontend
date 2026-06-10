@@ -1,16 +1,18 @@
-import { BigNumber } from 'bignumber.js'
 import { useConnection } from 'wagmi'
+import { combineMetricState } from '@/llamalend/widgets/action-card/info-actions.helpers'
 import { oneMonthProjectionYield, oneYearProjectionYield } from '@/loan/components/PageCrvUsdStaking/utils'
-import { useScrvUsdExchangeRate as useScrvUsdExchangeRateQuery } from '@/loan/entities/scrvusd-exchange-rate.query'
+import { useScrvUsdExchangeRate } from '@/loan/entities/scrvusd-exchange-rate.query'
 import { useScrvUsdStatistics } from '@/loan/entities/scrvusd-statistics.query'
 import { useScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances.query'
 import type { ChainId } from '@/loan/types/loan.types'
 import { Card, CardContent, CardHeader, Stack } from '@mui/material'
 import Grid from '@mui/material/Grid'
-import { maybe } from '@primitives/objects.utils'
+import { combineQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { mapQuery } from '@ui-kit/types/util'
+import { decimal, decimalDiv, decimalMultiply } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -22,21 +24,22 @@ type UserPositionProps = {
 
 export const UserPosition = ({ chainId }: UserPositionProps) => {
   const { address } = useConnection()
-  const { data: statisticsData, isLoading: isStatisticsLoading } = useScrvUsdStatistics({})
-  const { data: userBalance, isLoading: userBalanceLoading } = useScrvUsdUserBalances({ userAddress: address })
-  const { data: exchangeRate, isLoading: isExchangeRateLoading } = useScrvUsdExchangeRateQuery({ chainId })
-
-  const userScrvUsdBalance = maybe(userBalance?.scrvUSD, Number)
-  const userScrvUsdBalanceInCrvUsd = maybe(exchangeRate, rate =>
-    maybe(userScrvUsdBalance, balance => balance / Number(rate)),
+  const statistics = useScrvUsdStatistics({})
+  const scrvUsdExchangeRate = useScrvUsdExchangeRate({ chainId })
+  const totalScrvUsdSupply = mapQuery(statistics, ({ supply }) => decimal(supply))
+  const scrvUsdApy = mapQuery(statistics, ({ apyProjected }) => decimal(apyProjected))
+  const userScrvUsdBalance = mapQuery(
+    useScrvUsdUserBalances({ chainId, userAddress: address }),
+    ({ scrvUSD }) => scrvUSD,
   )
-
-  const totalScrvUsdSupply = statisticsData?.supply
-  const scrvUsdApy = statisticsData?.apyProjected
-
-  const userShareOfTotalScrvUsdSupply = maybe(userScrvUsdBalance, balance =>
-    maybe(totalScrvUsdSupply, supply => Number(BigNumber(balance).div(supply).times(100))),
+  const userScrvUsdBalanceInCrvUsd = combineQueries([userScrvUsdBalance, scrvUsdExchangeRate], (balance, rate) =>
+    +rate ? decimalDiv(balance, rate) : undefined,
   )
+  const userShareOfTotalScrvUsdSupply = combineQueries([userScrvUsdBalance, totalScrvUsdSupply], (balance, supply) =>
+    +supply ? decimalMultiply(decimalDiv(balance, supply), '100') : '0',
+  )
+  const thirtyDayProjection = combineQueries([scrvUsdApy, userScrvUsdBalance], oneMonthProjectionYield)
+  const oneYearProjection = combineQueries([scrvUsdApy, userScrvUsdBalance], oneYearProjectionYield)
 
   return (
     <Card size="small">
@@ -46,17 +49,17 @@ export const UserPosition = ({ chainId }: UserPositionProps) => {
           <Grid size={6}>
             <Metric
               label={t`Your crvUSD Staked`}
-              value={userScrvUsdBalanceInCrvUsd}
               valueOptions={{ unit: CRVUSD_OPTIONS }}
-              loading={isExchangeRateLoading}
+              {...combineMetricState(userScrvUsdBalanceInCrvUsd)}
+              testId="scrvusd-position-staked"
             />
           </Grid>
           <Grid size={6}>
             <Metric
               label={t`Your share of the vault`}
-              value={userShareOfTotalScrvUsdSupply}
               valueOptions={{ unit: 'percentage' }}
-              loading={isStatisticsLoading}
+              {...combineMetricState(userShareOfTotalScrvUsdSupply)}
+              testId="scrvusd-position-share"
             />
           </Grid>
         </Grid>
@@ -66,14 +69,12 @@ export const UserPosition = ({ chainId }: UserPositionProps) => {
             <Metric
               size="small"
               label={t`30 Days Projection`}
-              value={maybe(scrvUsdApy, apy =>
-                maybe(userScrvUsdBalance, balance => oneMonthProjectionYield(apy, balance)),
-              )}
               valueOptions={{ unit: 'dollar' }}
-              loading={isStatisticsLoading || userBalanceLoading}
+              {...combineMetricState(thirtyDayProjection)}
               labelTooltip={{
                 title: t`This is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`,
               }}
+              testId="scrvusd-position-projection-30d"
             />
           </Grid>
 
@@ -81,14 +82,12 @@ export const UserPosition = ({ chainId }: UserPositionProps) => {
             <Metric
               size="small"
               label={t`1 Year Projection`}
-              value={maybe(scrvUsdApy, apy =>
-                maybe(userScrvUsdBalance, balance => oneYearProjectionYield(apy, balance)),
-              )}
               valueOptions={{ unit: 'dollar' }}
-              loading={isStatisticsLoading || userBalanceLoading}
+              {...combineMetricState(oneYearProjection)}
               labelTooltip={{
                 title: t`This is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`,
               }}
+              testId="scrvusd-position-projection-1y"
             />
           </Grid>
 
@@ -96,13 +95,13 @@ export const UserPosition = ({ chainId }: UserPositionProps) => {
             <Metric
               size="small"
               label={t`Estimated APY`}
-              value={scrvUsdApy}
               valueOptions={{ unit: 'percentage' }}
-              loading={isStatisticsLoading}
+              {...combineMetricState(scrvUsdApy)}
               labelTooltip={{
                 title: t`Annual percentage yield (APY) refers to how much interest is distributed on savings and takes compounded interest into account. 
 This value is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`,
               }}
+              testId="scrvusd-position-apy"
             />
           </Grid>
         </Grid>
