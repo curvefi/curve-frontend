@@ -11,7 +11,7 @@ export const INJECTED_CONNECTOR_ID = 'injected'
 // Order matters for the connect wallet modal, list grows from bottom to top, so first one is shown all the way down.
 export const connectors: CreateConnectorFn[] = [
   coinbaseWallet({ preference: { options: 'all', telemetry: false } }),
-  metaMask(),
+  metaMask({ analytics: { enabled: false } }),
   safe(),
   walletConnect({
     projectId: WALLET_CONNECT_PROJECT_ID,

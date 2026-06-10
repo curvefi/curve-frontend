@@ -1876,31 +1876,33 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/analytics@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "@metamask/analytics@npm:0.5.0"
+"@metamask/analytics@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "@metamask/analytics@npm:0.6.0"
   dependencies:
     openapi-fetch: "npm:^0.13.5"
-  checksum: 10c0/ea87fb1043bdf686f985c3512c0dd071396aad6b8c767601b7240df940a940e538ce697bebf9c35662ff582c4b258bdd84877ae02d78a29aff0c93c2af5294b3
+  checksum: 10c0/da230e39c5d05180ee430b0bfa38c70f027baec16ee9bf30544a1e757dbf5e2232d991c59989096e5f7abab6d98478dccddbe7182c8aa6dbc5b57fa730b3c9ef
   languageName: node
   linkType: hard
 
-"@metamask/connect-evm@npm:1.3.1":
-  version: 1.3.1
-  resolution: "@metamask/connect-evm@npm:1.3.1"
+"@metamask/connect-evm@npm:2.0.0":
+  version: 2.0.0
+  resolution: "@metamask/connect-evm@npm:2.0.0"
   dependencies:
-    "@metamask/analytics": "npm:^0.5.0"
-    "@metamask/connect-multichain": "npm:^0.14.0"
+    "@metamask/analytics": "npm:^0.6.0"
     "@metamask/utils": "npm:^11.8.1"
-  checksum: 10c0/be9838cf35d95ad6a728118cdabb714e38232e1c5172b48ba12ca8380f1207f2752defdd1d46b8f4b107aafa4a3f4ed9cdb952f8d07050b93bc97584a551cb31
+    semver: "npm:^7.7.4"
+  peerDependencies:
+    "@metamask/connect-multichain": ^1.0.0
+  checksum: 10c0/e3fc00e03070b6d142315804eed2bfbf08de3e6bd88fa55405eec0741ce07552a964c07ea6acd41783e4bc293181bf4a4bf73f7bf281affc1083c183b90c7367
   languageName: node
   linkType: hard
 
-"@metamask/connect-multichain@npm:^0.14.0":
-  version: 0.14.0
-  resolution: "@metamask/connect-multichain@npm:0.14.0"
+"@metamask/connect-multichain@npm:1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/connect-multichain@npm:1.0.0"
   dependencies:
-    "@metamask/analytics": "npm:^0.5.0"
+    "@metamask/analytics": "npm:^0.6.0"
     "@metamask/mobile-wallet-protocol-core": "npm:^0.4.0"
     "@metamask/mobile-wallet-protocol-dapp-client": "npm:^0.3.0"
     "@metamask/multichain-api-client": "npm:^0.10.1"
@@ -1922,7 +1924,7 @@ __metadata:
   peerDependenciesMeta:
     "@react-native-async-storage/async-storage":
       optional: true
-  checksum: 10c0/5abca1f3fa94785f988b2f11f6b4cb23d7e2fd91cef9db77806ea55977b35b67a77d5dd879c410f333ba10e63034f28b6b2b4b11210ef124ca2a14456a6fd154
+  checksum: 10c0/9c3a38c59430336517d89d10d38a25099fd11c91d493f4e2ccbdb38cf3b45e19ba739916a88bc65f2009909ef07d0fcaec94236d54157208d568d99d4e11b2ac
   languageName: node
   linkType: hard
 
@@ -2722,10 +2724,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@protobufjs/eventemitter@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "@protobufjs/eventemitter@npm:1.1.0"
-  checksum: 10c0/1eb0a75180e5206d1033e4138212a8c7089a3d418c6dfa5a6ce42e593a4ae2e5892c4ef7421f38092badba4040ea6a45f0928869989411001d8c1018ea9a6e70
+"@protobufjs/eventemitter@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "@protobufjs/eventemitter@npm:1.1.1"
+  checksum: 10c0/8e06193d4629c5e7c09d4f8c2ddba8fc4dfa739f0149f33a1d901568d35bb7b8b5277a4e8452baf3bdd0b302fd599cf255d193267aa93a0a4747e23cd073c4ac
   languageName: node
   linkType: hard
 
@@ -6986,12 +6988,12 @@ __metadata:
   linkType: hard
 
 "centrifuge@npm:^5.3.5":
-  version: 5.5.3
-  resolution: "centrifuge@npm:5.5.3"
+  version: 5.6.0
+  resolution: "centrifuge@npm:5.6.0"
   dependencies:
     events: "npm:^3.3.0"
-    protobufjs: "npm:^7.2.5"
-  checksum: 10c0/143bdae375a94b1aba141d50dcc2477842142546311dc5f14753625a9a923abf6d8485f76f0947699728e038cd02c4552a84641ba5f21bbfdd572d01e06f5ef3
+    protobufjs: "npm:^7.6.0"
+  checksum: 10c0/07b70c6ab90d6bdd843308cec9e553118615e3f2a46f2ce7bb145c6e03974085373cc161a12d6bec908872c6de6857ba3d1197571604b8b359f8f425c62df0ca
   languageName: node
   linkType: hard
 
@@ -7539,7 +7541,8 @@ __metadata:
     "@emotion/react": "npm:11.14.0"
     "@emotion/styled": "npm:11.14.1"
     "@hookform/resolvers": "npm:5.4.0"
-    "@metamask/connect-evm": "npm:1.3.1"
+    "@metamask/connect-evm": "npm:2.0.0"
+    "@metamask/connect-multichain": "npm:1.0.0"
     "@mui/icons-material": "npm:9.0.1"
     "@mui/material": "npm:9.0.1"
     "@safe-global/safe-apps-provider": "npm:0.18.6"
@@ -11837,14 +11840,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"protobufjs@npm:^7.2.5":
-  version: 7.6.0
-  resolution: "protobufjs@npm:7.6.0"
+"protobufjs@npm:^7.6.0":
+  version: 7.6.2
+  resolution: "protobufjs@npm:7.6.2"
   dependencies:
     "@protobufjs/aspromise": "npm:^1.1.2"
     "@protobufjs/base64": "npm:^1.1.2"
     "@protobufjs/codegen": "npm:^2.0.5"
-    "@protobufjs/eventemitter": "npm:^1.1.0"
+    "@protobufjs/eventemitter": "npm:^1.1.1"
     "@protobufjs/fetch": "npm:^1.1.1"
     "@protobufjs/float": "npm:^1.0.2"
     "@protobufjs/inquire": "npm:^1.1.2"
@@ -11853,7 +11856,7 @@ __metadata:
     "@protobufjs/utf8": "npm:^1.1.1"
     "@types/node": "npm:>=13.7.0"
     long: "npm:^5.3.2"
-  checksum: 10c0/013339777bc29610ef141876d734aa538a7982d278930a121513171f32958b3b38411b259476d9118c56d55f67980a8f433476cfbfdd1d1c60b4a06f36d3f689
+  checksum: 10c0/3c552dfe3cbcfad2d6c312a76cd189cf5be9fb36b203f6292f79c6020d675f7f33d5531ce312441c42ae75deb24ced32760e64fe4aa3d5b3c2295fd67cea270c
   languageName: node
   linkType: hard
 
@@ -12540,6 +12543,15 @@ __metadata:
   bin:
     semver: bin/semver.js
   checksum: 10c0/8f096ca9b80ffd47b308d03f9ce8c873e27e2983f36023c559cdc92c51e8433fc23ebbfe57ec9623fc155636a6961ee989501099841ae4bb1babc8d2b3f048cd
+  languageName: node
+  linkType: hard
+
+"semver@npm:^7.7.4":
+  version: 7.8.2
+  resolution: "semver@npm:7.8.2"
+  bin:
+    semver: bin/semver.js
+  checksum: 10c0/8e8c193fa75b938e5b3ccf6707c6447e4b34f73e493e72b03f3185393489f45e049144052f624217c346d6c6e0a301dda8eeab2f14413e337218ecb1cbd2de16
   languageName: node
   linkType: hard
 
@@ -14256,7 +14268,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:8.20.1, ws@npm:^8.18.0, ws@npm:^8.18.3, ws@npm:^8.19.0, ws@npm:^8.5.0":
+"ws@npm:8.20.1, ws@npm:^8.18.0, ws@npm:^8.19.0, ws@npm:^8.5.0":
   version: 8.20.1
   resolution: "ws@npm:8.20.1"
   peerDependencies:
@@ -14283,6 +14295,21 @@ __metadata:
     utf-8-validate:
       optional: true
   checksum: 10c0/7972670b676fb1ccba73b0899ca3c2e04e8c2075629c2614cced7f556536f96a672bbf4619fc5a06c8b8720bb839a47ca88c69c95dc14c9c61a99fbecba1c866
+  languageName: node
+  linkType: hard
+
+"ws@npm:^8.18.3":
+  version: 8.21.0
+  resolution: "ws@npm:8.21.0"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ">=5.0.2"
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: 10c0/ef4a243476283fc49bc7550966c4af4aa0eef56273837211e700de3b664e08604a760cdddcb5ba43c049140e74ccfec5b0ee0bb439e08c2adf9138902fdde5f9
   languageName: node
   linkType: hard
 
