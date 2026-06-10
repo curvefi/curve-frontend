@@ -54,7 +54,7 @@ const MetricChangeSize = {
 export const SIZES = Object.keys(MetricSize) as (keyof typeof MetricSize)[]
 
 type Notional = Omit<NumberFormatOptions, 'abbreviate'> & {
-  value: number
+  value: Amount
   abbreviate?: boolean // Defaults to true
 }
 
