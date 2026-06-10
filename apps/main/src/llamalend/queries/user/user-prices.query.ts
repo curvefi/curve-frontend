@@ -7,13 +7,14 @@ import { loanExistsValidationGroup } from '@ui-kit/lib/model/query/loan-exists-v
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 import { createValidationSuite } from '@ui-kit/lib/validation'
 import { q, type Range } from '@ui-kit/types/util'
+import { decimalMultiply, decimalDiv, decimalMinus } from '@ui-kit/utils'
 import { useLoanExists } from './user-loan-exists.query'
 
 type UserPricesQuery = UserMarketQuery & { loanExists: boolean }
 type UserPricesParams = FieldsOf<UserPricesQuery>
 
-const calculatePriceDropToLiquidationThreshold = (currentPrice: Decimal, liquidationThreshold: Decimal) =>
-  ((+currentPrice - +liquidationThreshold) / +currentPrice) * 100
+const calculatePriceDropToLiquidationThreshold = (currentPrice: Decimal, [, liquidationThreshold]: Range<Decimal>) =>
+  decimalMultiply(decimalDiv(decimalMinus(currentPrice, liquidationThreshold), currentPrice), `100`)
 
 const { useQuery: useUserPricesQuery, queryKey: getUserPricesKey } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, loanExists }: UserPricesParams) =>
@@ -40,7 +41,7 @@ export function useRangeToLiquidation({ params }: { params: UserMarketParams }) 
     data:
       oraclePrice.data &&
       userPrices.data &&
-      calculatePriceDropToLiquidationThreshold(oraclePrice.data, userPrices.data[1]),
+      calculatePriceDropToLiquidationThreshold(oraclePrice.data, userPrices.data),
     ...combineQueryState(userPrices, oraclePrice),
   }
   return { rangeToLiquidation, userPrices }
