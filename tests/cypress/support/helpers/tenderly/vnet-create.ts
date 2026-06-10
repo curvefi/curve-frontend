@@ -1,3 +1,4 @@
+import { LOAD_TIMEOUT } from '@cy/support/ui'
 import type { MakeOptional } from '@ui-kit/types/util'
 import type { TenderlyAccount } from './account'
 import type { TestnetProps } from './types'
@@ -36,6 +37,7 @@ export const createVirtualTestnet = ({
       headers: { 'Content-Type': 'application/json', Accept: 'application/json', 'X-Access-Key': accessKey },
       body: createOptions,
       failOnStatusCode: false,
+      ...LOAD_TIMEOUT,
     })
     .then(response => {
       if (!response.isOkStatusCode) {

@@ -1,7 +1,6 @@
 import { ReactNode } from 'react'
+import { FocusScope, OverlayContainer, usePreventScroll } from 'react-aria'
 import { styled } from 'styled-components'
-import { FocusScope } from '@react-aria/focus'
-import { OverlayContainer, usePreventScroll } from '@react-aria/overlays'
 
 type Props = {
   children: ReactNode

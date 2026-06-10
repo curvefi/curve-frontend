@@ -1,8 +1,9 @@
 import { ReactNode } from 'react'
+import type { AriaRadioGroupProps } from 'react-aria'
+import { useRadioGroup } from 'react-aria'
+import type { RadioGroupProps } from 'react-stately'
+import { useRadioGroupState } from 'react-stately'
 import { styled, css } from 'styled-components'
-import { useRadioGroup } from '@react-aria/radio'
-import { useRadioGroupState } from '@react-stately/radio'
-import type { AriaRadioGroupProps, RadioGroupProps } from '@react-types/radio'
 import { mediaQueries } from '../utils/responsive'
 import { RadioContext } from './RadioContext'
 

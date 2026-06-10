@@ -18,16 +18,18 @@ import {
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
-import { notFalsyArray } from '@primitives/objects.utils'
+import { maybes, notFalsyArray } from '@primitives/objects.utils'
 import { useCampaignsByAddress, type CampaignRewards } from '@ui-kit/entities/campaigns'
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
-import { AVERAGE_CATEGORIES, type AverageCategory } from '@ui-kit/utils'
+import { AVERAGE_CATEGORIES, CRVUSD_ADDRESS, type AverageCategory } from '@ui-kit/utils'
 
 export type AvailableLiquidity = {
   value: number | null | undefined
   max: number | null | undefined
+  notional: number | null | undefined
   loading: boolean
 }
 
@@ -106,6 +108,7 @@ export const usePageHeader = ({
   const isLendMarket = market instanceof LendMarketTemplate
   const vaultAddress = (isLendMarket ? market.addresses.vault : undefined) as Address | undefined
   const controllerAddress = (isLendMarket ? market.addresses.controller : market?.controller) as Address | undefined
+  const borrowTokenAddress = (isLendMarket ? market.addresses.borrowed_token : CRVUSD_ADDRESS) as Address | undefined
   const marketType = isLendMarket ? LlamaMarketType.Lend : LlamaMarketType.Mint
 
   const { data: snapshots, isLoading: isSnapshotsLoading } = useLlamaSnapshot(
@@ -120,6 +123,10 @@ export const usePageHeader = ({
     !isMarketMetadataLoading,
   )
   const { data: capAndAvailable, isLoading: isCapAndAvailableLoading } = useMarketCapAndAvailable({ chainId, marketId })
+  const { data: borrowUsdRate, isLoading: isBorrowUsdRateLoading } = useTokenUsdRate({
+    chainId,
+    tokenAddress: borrowTokenAddress,
+  })
   const { data: marketOnChainRewards, isLoading: isMarketOnChainRewardsLoading } = useMarketVaultOnChainRewards(
     { chainId, marketId },
     isLendMarket,
@@ -170,7 +177,8 @@ export const usePageHeader = ({
   const availableLiquidity: AvailableLiquidity = {
     value: toNumberOrNull(capAndAvailable?.available),
     max: toNumberOrNull(capAndAvailable?.totalAssets),
-    loading: isCapAndAvailableLoading || isMarketMetadataLoading,
+    notional: maybes([toNumberOrNull(capAndAvailable?.available), borrowUsdRate], ([liq, rate]) => liq * rate),
+    loading: isCapAndAvailableLoading || isMarketMetadataLoading || isBorrowUsdRateLoading,
   }
 
   return { borrowRate, supplyRate, availableLiquidity }

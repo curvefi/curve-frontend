@@ -23,7 +23,7 @@ export const ErrorMessage = ({
   subtitle?: string
   error?: Error | string
   errorMessage: string
-  refreshData?: () => void
+  refreshData?: () => Promise<unknown> | void
   sx?: SxProps
 }) => {
   const [isReportOpen, openReportModal, closeReportModal] = useSwitch(false)
@@ -66,7 +66,7 @@ export const ErrorMessage = ({
           <IconButton
             size="small"
             onClick={() => {
-              refreshData()
+              void refreshData()
             }}
           >
             <ReloadIcon />

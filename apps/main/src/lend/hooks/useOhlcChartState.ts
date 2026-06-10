@@ -1,25 +1,19 @@
-import { useCallback, useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
+import { networks } from '@/lend/networks'
 import { useStore } from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
+import { useLlammaOhlcChartStateModel } from '@/llamalend/hooks/useLlammaOhlcChartStateModel'
+import { getTokens } from '@/llamalend/llama.utils'
 import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useUserPrices } from '@/llamalend/queries/user'
+import { isPricesApiChain } from '@curvefi/prices-api'
 import type { Decimal } from '@primitives/decimal.utils'
-import {
-  useChartLegendToggles,
-  useChartTimeSettings,
-  useLiquidationRange,
-  useLlammaChartSelections,
-} from '@ui-kit/features/candle-chart'
-import type { OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
-import type { FetchingStatus } from '@ui-kit/features/candle-chart/types'
-import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui-kit/features/candle-chart/utils'
 import { useLoanSlices } from '@ui-kit/hooks/useFeatureFlags'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { Range } from '@ui-kit/types/util'
-import { useLendMarketData } from '../hooks/useLendMarket'
+import { useLendMarket } from '../hooks/useLendMarket'
 
-const { Height } = SizesAndSpaces
+type LendingMarketTokens = ReturnType<typeof getTokens> | undefined
 
 type UseOhlcChartStateProps = {
   rChainId: ChainId
@@ -63,148 +57,30 @@ export const useOhlcChartState = ({ rChainId, marketId, previewPrices }: UseOhlc
     marketId,
     userAddress,
   })
-  const market = useLendMarketData(rChainId, marketId).data
-  const oraclePoolFetchStatus = useStore(state => state.ohlcCharts.chartOraclePoolOhlc.fetchStatus)
-  const oraclePoolData = useStore(state => state.ohlcCharts.chartOraclePoolOhlc.data)
-  const oraclePoolOraclePriceData = useStore(state => state.ohlcCharts.chartOraclePoolOhlc.oraclePriceData)
-  const oraclePoolCollateralSymbol = useStore(state => state.ohlcCharts.chartOraclePoolOhlc.collateralToken.symbol)
-  const oraclePoolBorrowedSymbol = useStore(state => state.ohlcCharts.chartOraclePoolOhlc.borrowedToken.symbol)
-  const oraclePoolRefetchingCapped = useStore(state => state.ohlcCharts.chartOraclePoolOhlc.refetchingCapped)
-  const oraclePoolLastFetchEndTime = useStore(state => state.ohlcCharts.chartOraclePoolOhlc.lastFetchEndTime)
-  const llammaFetchStatus = useStore(state => state.ohlcCharts.chartLlammaOhlc.fetchStatus)
-  const llammaOraclePriceData = useStore(state => state.ohlcCharts.chartLlammaOhlc.oraclePriceData)
-  const llammaRefetchingCapped = useStore(state => state.ohlcCharts.chartLlammaOhlc.refetchingCapped)
-  const llammaLastFetchEndTime = useStore(state => state.ohlcCharts.chartLlammaOhlc.lastFetchEndTime)
-  const fetchLlammaOhlcData = useStore(state => state.ohlcCharts.fetchLlammaOhlcData)
-  const fetchOraclePoolOhlcData = useStore(state => state.ohlcCharts.fetchOraclePoolOhlcData)
-  const fetchMoreData = useStore(state => state.ohlcCharts.fetchMoreData)
-  const resetOhlcState = useStore(state => state.ohlcCharts.resetState)
-
+  const market = useLendMarket(rChainId, marketId).data
   const { data: oraclePrice } = useMarketOraclePrice({ chainId: rChainId, marketId })
-
-  // Token symbols for chart labels (oracle tokens comes from API response)
-  const oracleTokens = useMemo(
-    () =>
-      oraclePoolCollateralSymbol && oraclePoolBorrowedSymbol
-        ? { collateralSymbol: oraclePoolCollateralSymbol, borrowedSymbol: oraclePoolBorrowedSymbol }
-        : null,
-    [oraclePoolCollateralSymbol, oraclePoolBorrowedSymbol],
-  )
-
-  const { selectChartList, selectedChartKey, isLoading } = useLlammaChartSelections({
-    oracleChart: { fetchStatus: oraclePoolFetchStatus, hasData: oraclePoolData.length > 0 },
-    llammaChart: { fetchStatus: llammaFetchStatus, hasData: llammaOraclePriceData.length > 0 },
-    oracleTokens,
+  const networkId = networks[rChainId].id.toLowerCase()
+  const network = isPricesApiChain(networkId) ? networkId : undefined
+  const controllerAddress = market?.addresses.controller ?? ''
+  const poolAddress = market?.addresses.amm ?? ''
+  const chartState = useLlammaOhlcChartStateModel({
+    endpoint: 'lending',
+    chainKey: rChainId,
+    marketId,
+    network,
+    controllerAddress,
+    llammaAddress: poolAddress,
+    oraclePrice,
+    enabled: !!market,
+    userPrices,
+    previewPrices,
+    legacyPreviewPrices: storePreviewPrices,
   })
 
-  const isLlamma = selectedChartKey === 'llamma'
-  // we no longer want to use the llamma endpoint for it's ohlc data as it's deemed too spotty, pass empty array for ohlc data when llamma is selected
-  const ohlcData = isLlamma ? [] : oraclePoolData
-  const currentOraclePriceData = isLlamma ? llammaOraclePriceData : oraclePoolOraclePriceData
-  const currentRefetchingCapped = isLlamma ? llammaRefetchingCapped : oraclePoolRefetchingCapped
-  const currentLastFetchEndTime = isLlamma ? llammaLastFetchEndTime : oraclePoolLastFetchEndTime
-  const ohlcDataUnavailable = !isLoading && currentOraclePriceData.length === 0
+  const coins: LendingMarketTokens = useMemo(() => market && getTokens(market), [market])
 
-  const oraclePriceData = useMemo(() => {
-    if (oraclePoolOraclePriceData.length > 0) return oraclePoolOraclePriceData
-    // if the oracle data endpoint doesn't have oracle price data, there's a higher chance that it still exists in the llamma endpoint
-    if (llammaOraclePriceData.length > 0) return llammaOraclePriceData
-    return undefined
-  }, [oraclePoolOraclePriceData, llammaOraclePriceData])
-
-  const newLiqPrices = previewPrices ?? storePreviewPrices
-
-  const { oraclePriceVisible, liqRangeCurrentVisible, liqRangeNewVisible, legendSets } = useChartLegendToggles({
-    hasNewLiquidationRange: !!newLiqPrices,
-    hasLiquidationRange: !!userPrices,
-    llammaEndpoint: selectedChartKey === 'llamma',
-  })
-
-  const selectedLiqRange = useLiquidationRange({
-    chartData: ohlcData,
-    fallbackData: currentOraclePriceData,
-    currentPrices: userPrices,
-    newPrices: newLiqPrices,
-  })
-
-  const { timeOption, setTimeOption, chartTimeSettings, chartInterval, timeUnit } = useChartTimeSettings()
-
-  const refetchPricesData = useCallback(() => {
-    if (market?.addresses.controller) {
-      void fetchOraclePoolOhlcData(
-        rChainId,
-        market.addresses.controller,
-        chartInterval,
-        timeUnit,
-        chartTimeSettings.start,
-        chartTimeSettings.end,
-      )
-    }
-    if (market?.addresses.amm) {
-      void fetchLlammaOhlcData(
-        rChainId,
-        market.addresses.amm,
-        chartInterval,
-        timeUnit,
-        chartTimeSettings.start,
-        chartTimeSettings.end,
-      )
-    }
-  }, [chartInterval, chartTimeSettings, fetchLlammaOhlcData, fetchOraclePoolOhlcData, market, rChainId, timeUnit])
-
-  // Eagerly reset chart state as soon as the market identity changes, before the market entity resolves.
-  // Without this, stale data from the previous market stays visible during the gap between navigation and fetch.
-  useEffect(() => () => resetOhlcState(), [rChainId, marketId, resetOhlcState])
-
-  // Fetch chart data once the market entity has resolved (addresses are required for the API calls).
-  useEffect(() => {
-    if (market !== undefined) {
-      refetchPricesData()
-    }
-  }, [market, refetchPricesData])
-
-  const fetchMoreChartData = useCallback(
-    (lastFetchEndTime: number) => {
-      const endTime = subtractTimeUnit(timeOption, lastFetchEndTime)
-      const startTime = getThreeHundredResultsAgo(timeOption, endTime)
-
-      if (market?.addresses.controller && market?.addresses.amm) {
-        void fetchMoreData(
-          rChainId,
-          market?.addresses.controller,
-          market?.addresses.amm,
-          chartInterval,
-          timeUnit,
-          startTime,
-          endTime,
-        )
-      }
-    },
-    [timeOption, fetchMoreData, rChainId, market?.addresses.amm, market?.addresses.controller, chartInterval, timeUnit],
-  )
-
-  // Determine chart status: loading > error (no data) > ready
-  const chartStatus: FetchingStatus = isLoading ? 'LOADING' : ohlcDataUnavailable ? 'ERROR' : 'READY'
-
-  const ohlcChartProps: OhlcChartProps = {
-    hideCandleSeriesLabel: true,
-    chartHeight: Height.chart,
-    chartStatus,
-    ohlcData,
-    oraclePriceData,
-    liquidationRange: selectedLiqRange,
-    timeOption,
-    selectedChartKey: selectedChartKey ?? '',
-    selectChartList,
-    refetchPricesData,
-    refetchingCapped: currentRefetchingCapped,
-    fetchMoreChartData,
-    lastFetchEndTime: currentLastFetchEndTime,
-    liqRangeCurrentVisible,
-    liqRangeNewVisible,
-    oraclePriceVisible,
-    latestOraclePrice: oraclePrice,
+  return {
+    coins,
+    ...chartState,
   }
-
-  return { ohlcDataUnavailable, isLoading, selectedChartKey, setTimeOption, legendSets, ohlcChartProps }
 }

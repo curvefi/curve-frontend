@@ -1,8 +1,7 @@
 import { ReactNode, RefObject, useRef } from 'react'
+import { DismissButton, FocusScope, useOverlay } from 'react-aria'
 import type { AriaOverlayProps } from 'react-aria'
 import { styled } from 'styled-components'
-import { FocusScope } from '@react-aria/focus'
-import { useOverlay, DismissButton } from '@react-aria/overlays'
 
 type Props = {
   popoverRef: RefObject<HTMLDivElement | null>

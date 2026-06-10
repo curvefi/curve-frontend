@@ -29,7 +29,6 @@ export const ChartAndActivityComp = ({ chainId, market, marketId, previewPrices 
   const ammAddress = market?.address as Address | undefined
 
   const {
-    ohlcDataUnavailable,
     isLoading: isChartLoading,
     selectedChartKey,
     setTimeOption,
@@ -61,7 +60,6 @@ export const ChartAndActivityComp = ({ chainId, market, marketId, previewPrices 
   return (
     <ChartAndActivityLayout
       chart={{
-        ohlcDataUnavailable,
         isLoading: isChartLoading,
         selectedChartKey,
         setTimeOption,
