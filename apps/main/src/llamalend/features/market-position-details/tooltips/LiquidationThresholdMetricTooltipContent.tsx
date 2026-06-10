@@ -14,7 +14,7 @@ import { formatNumber } from '@ui-kit/utils'
 
 type LiquidationThresholdTooltipContentProps = {
   userPrices: QueryProp<Range<Decimal>>
-  rangeToLiquidation: QueryProp<number>
+  rangeToLiquidation: QueryProp<Decimal>
   params: UserMarketParams
 }
 
@@ -34,7 +34,7 @@ export const LiquidationThresholdTooltipContent = ({
       />
       <TooltipItems secondary>
         <TooltipItem title={t`Distance to LT`} variant="independent">
-          {rangeToLiquidation ? formatNumber(rangeToLiquidation, 'percent.value') : UnavailableNotation}
+          {rangeToLiquidation != null ? formatNumber(rangeToLiquidation, 'percent.value') : UnavailableNotation}
         </TooltipItem>
         <TooltipItem title={t`Liquidation range`} variant="independent">
           {liquidationRange?.map(price => formatNumber(price, 'usd.amount')).join(' to ') ?? UnavailableNotation}
