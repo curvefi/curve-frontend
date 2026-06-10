@@ -67,5 +67,5 @@ export const useLlammaActivityTradesConfig = ({
     ...getTableOptions(tradesWithUrls),
   })
 
-  return { table, isLoading, isError, emptyMessage: t`No swap data found.` }
+  return { table, isLoading, isError, emptyMessage: t`No swap data found.`, errorMessage: t`Could not load swap data.` }
 }

@@ -210,6 +210,7 @@ const DexPoolActivityComponent = () => {
         isLoading={false}
         isError={false}
         emptyMessage="No trades data found."
+        errorMessage="Could not load trades data."
         expandedPanel={PoolTradesExpandedPanel}
       />
       <ActivityTable
@@ -217,6 +218,7 @@ const DexPoolActivityComponent = () => {
         isLoading={false}
         isError={false}
         emptyMessage="No liquidity data found."
+        errorMessage="Could not load liquidity data."
         expandedPanel={PoolLiquidityExpandedPanel}
       />
     </>
@@ -250,6 +252,7 @@ const LendMarketActivityComponent = () => {
         isLoading={false}
         isError={false}
         emptyMessage="No AMM trades found."
+        errorMessage="Could not load AMM trades."
         expandedPanel={LlammaTradesExpandedPanel}
       />
       <ActivityTable
@@ -257,6 +260,7 @@ const LendMarketActivityComponent = () => {
         isLoading={false}
         isError={false}
         emptyMessage="No controller events found."
+        errorMessage="Could not load controller events."
         expandedPanel={LlammaEventsExpandedPanel}
       />
     </>
@@ -322,7 +326,15 @@ const LoadingStateComponent = () => {
     columns: POOL_TRADES_COLUMNS,
     ...getTableOptions([]),
   })
-  return <ActivityTable table={table} isLoading={true} isError={false} emptyMessage="Loading trades..." />
+  return (
+    <ActivityTable
+      table={table}
+      isLoading={true}
+      isError={false}
+      emptyMessage="Loading trades..."
+      errorMessage="Could not load trades data."
+    />
+  )
 }
 
 export const LoadingState: StoryObj = {
@@ -342,7 +354,15 @@ const EmptyStateComponent = () => {
     columns: POOL_TRADES_COLUMNS,
     ...getTableOptions([]),
   })
-  return <ActivityTable table={table} isLoading={false} isError={false} emptyMessage="No swap data found." />
+  return (
+    <ActivityTable
+      table={table}
+      isLoading={false}
+      isError={false}
+      emptyMessage="No swap data found."
+      errorMessage="Could not load swap data."
+    />
+  )
 }
 
 export const EmptyState: StoryObj = {
@@ -362,7 +382,15 @@ const ErrorStateComponent = () => {
     columns: POOL_TRADES_COLUMNS,
     ...getTableOptions([]),
   })
-  return <ActivityTable table={table} isLoading={false} isError={true} emptyMessage="Could not load data" />
+  return (
+    <ActivityTable
+      table={table}
+      isLoading={false}
+      isError={true}
+      emptyMessage="No swap data found."
+      errorMessage="Could not load swap data."
+    />
+  )
 }
 
 export const ErrorState: StoryObj = {

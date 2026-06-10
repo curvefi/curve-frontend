@@ -71,5 +71,11 @@ export const useLlammaActivityEventsConfig = ({
     ...getTableOptions(eventsWithUrls),
   })
 
-  return { table, isLoading, isError, emptyMessage: t`No activity data found.` }
+  return {
+    table,
+    isLoading,
+    isError,
+    emptyMessage: t`No activity data found.`,
+    errorMessage: t`Could not load activity data.`,
+  }
 }

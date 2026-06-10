@@ -15,6 +15,7 @@ import {
   DEFAULT_PAGE_SIZE,
 } from '@ui-kit/features/activity-table'
 import { useCurve } from '@ui-kit/features/connect-wallet'
+import { combineQueryState } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 
@@ -33,25 +34,21 @@ export const usePoolActivityTradesConfig = ({ chainId, poolAddress }: UsePoolAct
   const { isHydrated } = useCurve()
   const { pagination, onPaginationChange, apiPage } = useManualPagination()
 
-  const { data: pricesApiPoolsMapper, isLoading: isPricesApiPoolsLoading } = usePoolsPricesApi({
-    blockchainId: network,
-  })
+  const poolPriceApi = usePoolsPricesApi({ blockchainId: network })
+  const { data: pricesApiPoolsMapper } = poolPriceApi
   const poolTokens = useMemo(
     () => pricesApiPoolsMapper?.[poolAddress]?.coins ?? [],
     [pricesApiPoolsMapper, poolAddress],
   )
   const { tradesColumnVisibility } = usePoolActivityVisibility({ poolTokens })
 
-  const {
-    data: tradesData,
-    isLoading: isTradesLoading,
-    isError: isTradesError,
-  } = usePoolTrades({
+  const poolTrades = usePoolTrades({
     chain: network,
     poolAddress,
     page: apiPage,
     perPage: DEFAULT_PAGE_SIZE,
   })
+  const { data: tradesData } = poolTrades
 
   const pageCount = getPageCount(tradesData?.count, DEFAULT_PAGE_SIZE)
 
@@ -69,8 +66,7 @@ export const usePoolActivityTradesConfig = ({ chainId, poolAddress }: UsePoolAct
     [tradesData?.trades, networkConfig, network],
   )
 
-  const isLoading = isTradesLoading || isPricesApiPoolsLoading || !isHydrated
-  const isError = isTradesError && !isHydrated
+  const { error, isLoading } = combineQueryState(poolTrades, poolPriceApi)
 
   const table = useTable({
     data: tradesWithUrls,
@@ -82,5 +78,11 @@ export const usePoolActivityTradesConfig = ({ chainId, poolAddress }: UsePoolAct
     ...getTableOptions(tradesWithUrls),
   })
 
-  return { table, isLoading, isError, emptyMessage: t`No swap data found.` }
+  return {
+    table,
+    isLoading: isLoading || !isHydrated,
+    isError: !!error && !isHydrated,
+    emptyMessage: t`No swap data found.`,
+    errorMessage: t`Could not load swap data.`,
+  }
 }
