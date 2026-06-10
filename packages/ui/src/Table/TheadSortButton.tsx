@@ -49,9 +49,7 @@ export const TheadSortButton = ({
           <StyledSortIcon isVisible={sortIdKey === sortBy} activeType={sortByOrder} />
         </>
       )}
-
       {children}
-
       {indicatorPlacement === 'right' && (
         <>
           <StyledSortIcon isVisible={sortIdKey === sortBy} activeType={sortByOrder} />

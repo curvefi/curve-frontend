@@ -37,7 +37,7 @@ export const useLLv2 = useStableChannel
 export const isLLv2Enabled = (releaseChannel: ReleaseChannel) => releaseChannel === ReleaseChannel.Beta
 
 /** New market list and search layout */
-export const useNewMarketListLayout = useBetaChannel
+export const useNewMarketListLayout = useStableChannel
 
 export const useLoanSlices = () =>
   ![useManageSoftLiquidation(), useManageLoanMuiForm(), useLendingMuiForm()].every(Boolean)
