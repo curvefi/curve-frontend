@@ -3,17 +3,38 @@ import { useConnection } from 'wagmi'
 import { useUserPools } from '@/dex/queries/user-pools.query'
 import { useStore } from '@/dex/store/useStore'
 import type { ChainId } from '@/dex/types/main.types'
-import { getHasPosition, getPoolIdByAddress, normalizeAddress, type PoolListItemOptions } from '../apiPoolList.utils'
+import { useCurve } from '@ui-kit/features/connect-wallet'
+import {
+  getCurvePoolIdByAddressEntries,
+  getHasPosition,
+  getPoolIdByAddressEntries,
+  getPoolIdByAddressFromEntries,
+  normalizeAddress,
+  type PoolListItemOptions,
+} from '../apiPoolList.utils'
 
 export const usePoolListApiUserPositionOptions = (chainId: ChainId) => {
+  const { curveApi, isHydrated } = useCurve()
   const { address: userAddress } = useConnection()
-  const haveAllPools = useStore(state => state.pools.haveAllPools[chainId])
   const poolDataMapper = useStore(state => state.pools.poolsMapper[chainId])
   const poolDataCacheMapper = useStore(state => state.storeCache.poolsMapper[chainId])
-  const { data: userPools } = useUserPools({ chainId, userAddress }, haveAllPools)
+  const curvePoolEntries = useMemo(
+    () =>
+      isHydrated && curveApi?.chainId === chainId
+        ? getCurvePoolIdByAddressEntries(curveApi)
+        : getCurvePoolIdByAddressEntries(undefined),
+    [chainId, curveApi, isHydrated],
+  )
+  const isCurvePoolListReady = curvePoolEntries.length > 0
+  const { data: userPools } = useUserPools({ chainId, userAddress }, isCurvePoolListReady)
   const poolIdByAddress = useMemo(
-    () => getPoolIdByAddress(poolDataCacheMapper, poolDataMapper),
-    [poolDataCacheMapper, poolDataMapper],
+    () =>
+      getPoolIdByAddressFromEntries([
+        ...getPoolIdByAddressEntries(poolDataCacheMapper),
+        ...getPoolIdByAddressEntries(poolDataMapper),
+        ...curvePoolEntries,
+      ]),
+    [curvePoolEntries, poolDataCacheMapper, poolDataMapper],
   )
   const userPoolIds = useMemo(() => userPools && new Set(userPools.map(poolId => poolId.toLowerCase())), [userPools])
 
