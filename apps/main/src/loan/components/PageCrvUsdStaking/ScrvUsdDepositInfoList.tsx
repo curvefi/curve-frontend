@@ -25,11 +25,7 @@ type ScrvUsdDepositInfoListProps = {
 }
 
 const formatTokenAmount = (value: Decimal | undefined, symbol: string) =>
-  maybe(
-    value,
-    value =>
-      `${formatNumber(value, { minimumFractionDigits: 2, maximumFractionDigits: 4, abbreviate: false })} ${symbol}`,
-  )
+  maybe(value, value => `${formatNumber(value, 'token.amount')} ${symbol}`)
 
 export const ScrvUsdDepositInfoList = ({
   chainId,
@@ -44,7 +40,7 @@ export const ScrvUsdDepositInfoList = ({
 
   return (
     <ActionInfoCollapse isOpen={isOpen} testId="scrvusd-deposit-action-info-list">
-      <Stack sx={{ ...ACTION_INFO_GROUP_SX }}>
+      <Stack sx={ACTION_INFO_GROUP_SX}>
         <ScrvUsdExchangeRateActionInfo chainId={chainId} enabled={isOpen} />
         <ActionInfo
           label={t`To Vault`}

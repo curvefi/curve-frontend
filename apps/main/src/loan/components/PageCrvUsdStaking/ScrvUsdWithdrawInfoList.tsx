@@ -24,10 +24,10 @@ export const ScrvUsdWithdrawInfoList = ({ params, networks, form }: ScrvUsdWithd
   const expectedCrvUsd = useScrvUsdPreviewWithdraw(params, isOpen)
   return (
     <ActionInfoCollapse isOpen={isOpen} testId="scrvusd-withdraw-action-info-list">
-      <Stack sx={{ ...ACTION_INFO_GROUP_SX }}>
+      <Stack sx={ACTION_INFO_GROUP_SX}>
         <ActionInfo
           label={t`You receive`}
-          value={maybe(expectedCrvUsd.data, data => formatNumber(data, { abbreviate: false }))}
+          value={maybe(expectedCrvUsd.data, data => formatNumber(data, 'token.amount'))}
           valueRight="crvUSD"
           {...combineActionInfoState(q(expectedCrvUsd))}
           size="small"

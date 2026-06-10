@@ -31,7 +31,7 @@ export const useScrvUsdWithdrawForm = ({ chainId }: { chainId: ChainId }) => {
       [chainId, userAddress, maxWithdrawAmount, withdrawAmount, isFull],
     ),
   )
-  const userBalances = useScrvUsdUserBalances({ chainId, userAddress }, !!userAddress)
+  const userBalances = useScrvUsdUserBalances({ chainId, userAddress })
   const {
     onSubmit: onMutationSubmit,
     isPending,

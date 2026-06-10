@@ -17,9 +17,7 @@ import { Box } from '@ui/Box'
 import { RCScrvUSDLogoSM } from '@ui/images'
 import { type LlamaApi, useCurve } from '@ui-kit/features/connect-wallet'
 import { useParams } from '@ui-kit/hooks/router'
-import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useScrvUsdNewForms } from '@ui-kit/hooks/useFeatureFlags'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
@@ -66,7 +64,6 @@ function useLegacyFetching({
 export const CrvUsdStakingPage = () => {
   const params = useParams<NetworkUrlParams>()
   const chainId = networksIdMapper[params.network]
-  const [isChartExpanded = false, , minimizeChart, toggleChartExpanded] = useSwitch(false)
   const { llamaApi: lendApi = null } = useCurve()
   const { address, isConnecting } = useConnection()
 
@@ -87,13 +84,6 @@ export const CrvUsdStakingPage = () => {
     connectedUserNoScrvUsdBalance ||
     !address ||
     (!isConnecting && !isUserScrvUsdBalanceFetching && isUserScrvUsdBalanceZero)
-
-  const isMobile = useIsMobile()
-
-  // automatically minimize chart on smaller screens where the toggle button is hidden (the chart is already full width)
-  useEffect(() => {
-    if (isMobile && isChartExpanded) minimizeChart()
-  }, [isChartExpanded, isMobile, minimizeChart])
 
   return (
     <DetailPageLayout
@@ -126,12 +116,7 @@ export const CrvUsdStakingPage = () => {
         </Fade>
       )}
       {!isUserScrvUsdBalanceZero && <UserPosition chainId={chainId} />}
-      <Statistics
-        chainId={chainId}
-        hideExpandChart={isMobile}
-        isChartExpanded={isChartExpanded}
-        toggleChartExpanded={toggleChartExpanded}
-      />
+      <Statistics chainId={chainId} />
       <UserInformation params={params} />
     </DetailPageLayout>
   )

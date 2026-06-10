@@ -26,8 +26,8 @@ export const useScrvUsdDepositForm = ({ chainId }: { chainId: ChainId }) => {
       [chainId, depositAmount, maxDepositAmount, approveInfinite, userAddress],
     ),
   )
-  const userBalances = useScrvUsdUserBalances({ chainId, userAddress }, !!userAddress)
-  const isApproved = useScrvUsdDepositIsApproved(params, !!userAddress && form.formState.isValid)
+  const userBalances = useScrvUsdUserBalances({ chainId, userAddress })
+  const isApproved = useScrvUsdDepositIsApproved(params, form.formState.isValid)
   const {
     onSubmit: onMutationSubmit,
     isPending,

@@ -7,6 +7,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { decimal } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -16,8 +17,8 @@ export const StatsBanner = () => {
   } = useTheme()
   const { data: statisticsData, isLoading: isStatisticsLoading } = useScrvUsdStatistics({})
 
-  const exampleBalance = 100000
-  const scrvUsdApy = statisticsData?.apyProjected
+  const exampleBalance = '100000' as const
+  const scrvUsdApy = decimal(statisticsData?.apyProjected)
 
   return (
     <Stack

@@ -4,7 +4,7 @@ import { CRVUSD_DECIMALS } from '@cy/support/helpers/llamalend/supply/supply-set
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { decimalCompare } from '@ui-kit/utils'
-import { getActionValue } from './action-info.helpers'
+import { DECIMAL_REGEX, getActionValue, getMetricValue } from './action-info.helpers'
 
 type ScrvUsdFormType = 'deposit' | 'withdraw'
 
@@ -102,6 +102,24 @@ const checkLoadedActionValue = (testId: string) =>
 const checkLoadedUsdActionValue = (testId: string) => {
   checkLoadedActionValue(testId)
   getActionValue(testId).should('contain', '$')
+}
+
+type PositionDetailsState = 'zero' | 'positive'
+
+const checkMetricValue = (testId: string, expected: PositionDetailsState) =>
+  getMetricValue(testId).should(value =>
+    ({
+      zero: () => expect(decimalCompare(value as Decimal, '0')).to.equal(0),
+      positive: () => expect(decimalCompare(value as Decimal, '0')).to.equal(1),
+    })[expected](),
+  )
+
+export const checkScrvUsdPositionDetails = (expected: PositionDetailsState) => {
+  checkMetricValue('scrvusd-position-staked', expected)
+  checkMetricValue('scrvusd-position-share', expected)
+  checkMetricValue('scrvusd-position-projection-30d', expected)
+  checkMetricValue('scrvusd-position-projection-1y', expected)
+  getMetricValue('scrvusd-position-apy').should('match', DECIMAL_REGEX)
 }
 
 export const checkScrvUsdDepositDetailsLoaded = () => {

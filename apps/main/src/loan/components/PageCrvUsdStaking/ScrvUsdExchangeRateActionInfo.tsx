@@ -22,9 +22,7 @@ export function ScrvUsdExchangeRateActionInfo({
         1,
         'crvUSD',
         '=',
-        maybe(exchangeRate.data, data =>
-          formatNumber(data, { minimumFractionDigits: 2, maximumFractionDigits: 4, abbreviate: false }),
-        ) ?? '...',
+        maybe(exchangeRate.data, data => formatNumber(data, 'token.amount')) ?? '...',
         'scrvUSD',
       ].join(' ')}
       {...combineActionInfoState(q(exchangeRate))}

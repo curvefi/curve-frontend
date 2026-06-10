@@ -1,12 +1,14 @@
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { ScrvUsdDepositForm } from '@/loan/components/PageCrvUsdStaking/ScrvUsdDepositForm'
 import { ScrvUsdWithdrawForm } from '@/loan/components/PageCrvUsdStaking/ScrvUsdWithdrawForm'
+import { UserPosition } from '@/loan/components/PageCrvUsdStaking/UserPosition'
 import { networks } from '@/loan/networks'
 import { oneBool, oneDecimal } from '@cy/support/generators'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import {
   checkScrvUsdDepositDetailsLoaded,
   checkScrvUsdDepositAllowance,
+  checkScrvUsdPositionDetails,
   checkScrvUsdWithdrawBalanceGreaterThan,
   checkScrvUsdWithdrawBalanceLessThan,
   checkScrvUsdWithdrawBalanceZero,
@@ -23,7 +25,7 @@ import { fundUserWithCrvUsd } from '@cy/support/helpers/llamalend/supply/supply-
 import { createVirtualTestnet, createTenderlyWagmiConfigFromVNet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls, type TenderlyWagmiConfigFromVNet } from '@cy/support/helpers/tenderly/vnet'
 import { skipTestsAfterFailure } from '@cy/support/ui'
-import Box from '@mui/material/Box'
+import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { CurveProvider } from '@ui-kit/features/connect-wallet/lib/CurveProvider'
 import { Chain, decimalGreaterThan, decimalMultiply, decimalSum } from '@ui-kit/utils'
@@ -60,9 +62,10 @@ describe('scrvUSD', () => {
     return (
       <ComponentTestWrapper config={createTenderlyWagmiConfigFromVNet({ vnet, privateKey })} autoConnect>
         <CurveProvider app="llamalend" network={networks[Chain.Ethereum]} onChainUnavailable={console.error}>
-          <Box sx={{ maxWidth: 520 }}>
+          <Stack sx={{ maxWidth: 520, gap: 2 }}>
+            <UserPosition chainId={Chain.Ethereum} />
             <FormComponent network={SCRVUSD_NETWORK} />
-          </Box>
+          </Stack>
         </CurveProvider>
       </ComponentTestWrapper>
     )
@@ -82,6 +85,7 @@ describe('scrvUSD', () => {
   it('deposits crvUSD into scrvUSD', () => {
     const vnet = getVirtualNetwork()
     cy.mount(<ScrvUsdTestCase form="deposit" vnet={vnet} />)
+    checkScrvUsdPositionDetails('zero')
     writeInvalidThenValidScrvUsdDeposit({ invalidAmount: invalidDepositValue, validAmount: depositValue })
     checkScrvUsdDepositDetailsLoaded()
     setScrvUsdInfiniteAllowance(approveInfinite)
@@ -97,6 +101,7 @@ describe('scrvUSD', () => {
   it('partially withdraws scrvUSD', () => {
     const vnet = getVirtualNetwork()
     cy.mount(<ScrvUsdTestCase form="withdraw" vnet={vnet} />)
+    checkScrvUsdPositionDetails('positive')
     readScrvUsdWithdrawBalance().then(balance => {
       expect(decimalGreaterThan(balance, '0')).to.equal(true)
       const withdrawValue = decimalMultiply(balance, oneDecimal(0.01, 0.99, 6))
@@ -113,6 +118,7 @@ describe('scrvUSD', () => {
   it('redeems the remaining scrvUSD balance', () => {
     const vnet = getVirtualNetwork()
     cy.mount(<ScrvUsdTestCase form="withdraw" vnet={vnet} />)
+    checkScrvUsdPositionDetails('positive')
     selectMaxScrvUsdWithdraw()
     checkScrvUsdWithdrawDetailsLoaded()
     submitScrvUsdWithdrawForm('Redeem')
