@@ -39,7 +39,7 @@ const LEVERAGE_ZAPS: Record<LlamaMarketVersion, Record<number, Address>> = {
   [LlamaMarketVersion.v1]: {
     [Chain.Ethereum]: '0x324c5f9F7A3015D91860aC6870dcE25d410Df3Dc',
     [Chain.Arbitrum]: '0x9577086c6E38d38359872F903Da201f1bdCc0323',
-    [Chain.Optimism]: '0xE94d1fBF399c27CCBf0185b2Dd11Bf0FA0f0D95C',
+    [Chain.Optimism]: '0x4b10E1774521c077a2887806fa60C56CeFa94cCC',
     [Chain.Fraxtal]: '0x16C6521Dff6baB339122a0FE25a9116693265353',
     [Chain.Sonic]: '0xCA8d0747B5573D69653C3aC22242e6341C36e4b4',
   },
