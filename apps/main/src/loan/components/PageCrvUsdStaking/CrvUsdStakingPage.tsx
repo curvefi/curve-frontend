@@ -10,10 +10,8 @@ import { useScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances.que
 import { networksIdMapper } from '@/loan/networks'
 import { useStore } from '@/loan/store/useStore'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
+import Box from '@mui/material/Box'
 import Fade from '@mui/material/Fade'
-import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
-import { Box } from '@ui/Box'
 import { RCScrvUSDLogoSM } from '@ui/images'
 import { type LlamaApi, useCurve } from '@ui-kit/features/connect-wallet'
 import { useParams } from '@ui-kit/hooks/router'
@@ -21,8 +19,9 @@ import { useScrvUsdNewForms } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
+import { PageHeader } from '@ui-kit/widgets/PageHeader'
 
-const { Spacing } = SizesAndSpaces
+const { IconSize } = SizesAndSpaces
 
 function useLegacyFetching({
   lendApi,
@@ -88,31 +87,18 @@ export const CrvUsdStakingPage = () => {
   return (
     <DetailPageLayout
       header={
-        <Stack
-          direction="row"
-          sx={{
-            alignItems: 'center',
-            alignSelf: 'flex-start',
-            gap: Spacing.sm,
-            paddingInline: Spacing.sm,
-            paddingBlock: Spacing.md,
-          }}
-        >
-          <img height={55} src={RCScrvUSDLogoSM} alt="crvUSD logo" />
-          <Box flex flexColumn>
-            <Typography variant="headingMBold">{t`Savings crvUSD`}</Typography>
-            <Typography variant="bodySRegular">{t`Let your idle crvUSD do more for you.`}</Typography>
-          </Box>
-        </Stack>
+        <PageHeader
+          icon={<Box component="img" sx={{ height: IconSize.xxl }} src={RCScrvUSDLogoSM} alt="crvUSD logo" />}
+          title={t`Savings crvUSD`}
+          subtitle={t`Let your idle crvUSD do more for you.`}
+        />
       }
       formTabs={<DepositWithdraw params={params} />}
       testId="scrvusd-page"
     >
       {showStatsBanner && (
         <Fade in={showStatsBanner}>
-          <div>
-            <StatsBanner />
-          </div>
+          <StatsBanner />
         </Fade>
       )}
       {!isUserScrvUsdBalanceZero && <UserPosition chainId={chainId} />}

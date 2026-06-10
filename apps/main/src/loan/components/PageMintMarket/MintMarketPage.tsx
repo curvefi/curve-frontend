@@ -5,7 +5,7 @@ import { useUserCollateralEvents } from '@/llamalend/features/user-position-hist
 import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
-import { PageHeader } from '@/llamalend/widgets/page-header'
+import { MarketPageHeader } from '@/llamalend/widgets/page-header'
 import { MarketInformationComposite } from '@/loan/components/MarketInformationComposite'
 import { CreateLoanTabs } from '@/loan/components/PageMintMarket/CreateLoanTabs'
 import { ManageLoanTabs } from '@/loan/components/PageMintMarket/ManageLoanTabs'
@@ -116,7 +116,7 @@ export const MintMarketPage = () => {
         ))
       }
       header={
-        <PageHeader
+        <MarketPageHeader
           chainId={rChainId}
           marketId={market?.id ?? ''}
           isLoading={!isHydrated}

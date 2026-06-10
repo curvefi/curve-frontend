@@ -12,7 +12,7 @@ import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/utils
 import { SupplyPositionDetails } from '@/llamalend/features/market-position-details'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
-import { PageHeader } from '@/llamalend/widgets/page-header'
+import { MarketPageHeader } from '@/llamalend/widgets/page-header'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useParams } from '@ui-kit/hooks/router'
@@ -104,7 +104,7 @@ export const Page = () => {
     <DetailPageLayout
       formTabs={rChainId && marketId && <VaultTabs {...pageProps} params={params} />}
       header={
-        <PageHeader
+        <MarketPageHeader
           chainId={rChainId}
           marketId={marketId}
           isLoading={!isHydrated}

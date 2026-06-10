@@ -14,7 +14,7 @@ import { useUserCollateralEvents } from '@/llamalend/features/user-position-hist
 import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
-import { PageHeader } from '@/llamalend/widgets/page-header'
+import { MarketPageHeader } from '@/llamalend/widgets/page-header'
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { isPricesApiChain } from '@curvefi/prices-api'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -140,7 +140,7 @@ export const LendMarketPage = () => {
         ))
       }
       header={
-        <PageHeader
+        <MarketPageHeader
           chainId={chainId}
           marketId={marketId}
           isLoading={!isHydrated}
