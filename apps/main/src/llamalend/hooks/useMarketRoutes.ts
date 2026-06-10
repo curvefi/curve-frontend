@@ -90,12 +90,12 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
   const usdRate = q(useTokenUsdRate({ tokenAddress: tokenOut?.address, chainId }, enabled))
   const selectedRoute = useMemo(
     () =>
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-      (chosenRouter && queries[chosenRouter]?.data) ||
-      recordValues(queries)
-        .map(q => q.data)
-        .filter((q): q is RouteResponse => !!q)
-        .sort(sortRoutes)[0],
+      chosenRouter
+        ? (queries[chosenRouter]?.data ?? undefined)
+        : recordValues(queries)
+            .map(q => q.data)
+            .filter((q): q is RouteResponse => !!q)
+            .sort(sortRoutes)[0],
     // eslint-disable-next-line @eslint-react/exhaustive-deps
     [chosenRouter, ...recordValues(queries)],
   )
