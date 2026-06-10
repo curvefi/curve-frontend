@@ -1,7 +1,7 @@
 import { priceLineLabels } from '@/loan/components/PageCrvUsdStaking/Statistics/constants'
 import { RevenueChartTooltip } from '@/loan/components/PageCrvUsdStaking/Statistics/RevenueChartTooltip'
 import type { YieldKeys } from '@/loan/components/PageCrvUsdStaking/types'
-import type { ScrvUsdYieldWithAverages } from '@/loan/entities/scrvusd-yield'
+import type { ScrvUsdYieldWithAverages } from '@/loan/entities/scrvusd-yield.query'
 import { Box } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { formatDate } from '@ui/utils'

@@ -3,7 +3,7 @@
  * These return booleans indicating whether a new experience is enabled.
  */
 
-import { ReleaseChannel } from '@ui-kit/utils'
+import { defaultReleaseChannel, ReleaseChannel } from '@ui-kit/utils'
 import { useCurrentDate } from './useCurrentDate'
 import { getReleaseChannel, isZapV2Disabled, useDisableZapV2, useReleaseChannel } from './useLocalStorage'
 
@@ -15,7 +15,8 @@ const LLV2_STABLE_RELEASE_DATE = new Date('2026-06-10T13:00:00Z') // 15:00 CEST
  * Alpha channel works like beta for preview/localhost urls, but completely hidden in production.
  * This is used for features actively under development that are known not to be ready.
  **/
-// const useAlphaChannel = () => useBetaChannel() && defaultReleaseChannel === ReleaseChannel.Beta
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const useAlphaChannel = () => useBetaChannel() && defaultReleaseChannel === ReleaseChannel.Beta
 
 /** New unified supply/vault forms (deposit/withdraw/claim) */
 export const useLendingMuiForm = useStableChannel
@@ -25,6 +26,8 @@ export const useManageLoanMuiForm = useStableChannel
 
 /** New card for managing soft liquidations */
 export const useManageSoftLiquidation = useStableChannel
+
+export const useScrvUsdNewForms = useBetaChannel
 
 /** New ZapV2 leverage implementation for LlamaLend markets */
 export const isZapV2Enabled = () => getReleaseChannel() === ReleaseChannel.Beta && !isZapV2Disabled()
