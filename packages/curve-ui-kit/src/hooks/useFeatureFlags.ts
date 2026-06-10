@@ -4,10 +4,12 @@
  */
 
 import { ReleaseChannel } from '@ui-kit/utils'
+import { useCurrentDate } from './useCurrentDate'
 import { getReleaseChannel, isZapV2Disabled, useDisableZapV2, useReleaseChannel } from './useLocalStorage'
 
 const useBetaChannel = () => useReleaseChannel()[0] === ReleaseChannel.Beta
 const useStableChannel = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy
+const LLV2_STABLE_RELEASE_DATE = new Date('2026-06-10T13:00:00Z') // 15:00 CEST
 
 /**
  * Alpha channel works like beta for preview/localhost urls, but completely hidden in production.
@@ -33,8 +35,15 @@ const useZapV2 = () => [useStableChannel(), !useDisableZapV2()].every(Boolean)
 export const useLoanImplementationKey = () => (useZapV2() ? 'zapV2' : '')
 
 /** New LlamaLend v2 implementation */
-export const useLLv2 = useStableChannel
-export const isLLv2Enabled = (releaseChannel: ReleaseChannel) => releaseChannel === ReleaseChannel.Beta
+export const useLLv2 = () => {
+  const [releaseChannel] = useReleaseChannel()
+  const currentDate = useCurrentDate()
+  return isLLv2Enabled(releaseChannel, currentDate)
+}
+
+const isLLv2Enabled = (releaseChannel: ReleaseChannel, now = new Date()) =>
+  releaseChannel === ReleaseChannel.Beta ||
+  (releaseChannel === ReleaseChannel.Stable && now >= LLV2_STABLE_RELEASE_DATE)
 
 /** New market list and search layout */
 export const useNewMarketListLayout = useStableChannel
