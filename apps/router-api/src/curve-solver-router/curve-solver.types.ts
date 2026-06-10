@@ -6,6 +6,7 @@ export type CurveSolverQuoteRequest = {
   input_token: Address
   output_token: Address
   amount_in: Decimal
+  blacklist: readonly Address[]
   exact: boolean
   receiver?: Address
   min_out?: Decimal

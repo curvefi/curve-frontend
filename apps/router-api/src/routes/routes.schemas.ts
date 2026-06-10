@@ -10,6 +10,7 @@ export const RoutesPath = '/api/router/v1/routes'
 
 const AddressSchema = { type: 'string', pattern: ADDRESS_HEX_PATTERN } as const
 const AddressArraySchema = { type: 'array', items: AddressSchema, minItems: 1, maxItems: 1 } as const
+const AddressListSchema = { type: 'array', items: AddressSchema, minItems: 1 } as const
 const DecimalSchema = { type: 'string', pattern: DECIMAL_PATTERN }
 const DecimalTupleSchema = { type: 'array', items: DecimalSchema, minItems: 2, maxItems: 2 } as const
 const WeiAmountSchema = { type: 'string', pattern: WEI_AMOUNT_PATTERN } as const
@@ -30,6 +31,7 @@ const routesQuerySchema = {
     },
     tokenIn: AddressArraySchema,
     tokenOut: AddressArraySchema,
+    blacklist: AddressListSchema,
     amountIn: { ...WeiAmountArraySchema, description: 'Amount of tokenIn in wei (integer, no decimals).' },
     amountOut: { ...WeiAmountArraySchema, description: 'Amount of tokenOut in wei (integer, no decimals).' },
     userAddress: AddressSchema,
@@ -42,6 +44,7 @@ export type RoutesQuery = {
   router?: RouteProvider[]
   tokenIn: [Address]
   tokenOut: [Address]
+  blacklist?: readonly Address[]
   amountIn?: [Decimal]
   amountOut?: [Decimal]
   userAddress?: Address

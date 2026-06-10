@@ -90,6 +90,7 @@ const successCasesByProvider: PartialRecord<RouteProvider, Record<string, Succes
         tokenIn: [ETHEREUM_USDT],
         tokenOut: [ETHEREUM_USDC],
         amountIn: [toWei('1000', USD_DECIMALS)],
+        blacklist: [ETHEREUM_USDC],
         router: ['odos'],
         // Odos requires a caller (leverage zap) and a blacklist address; any valid addresses are acceptable for quoting
         userAddress: '0xC5898606BdB494a994578453B92e7910a90aA873',
@@ -104,6 +105,7 @@ const successCasesByProvider: PartialRecord<RouteProvider, Record<string, Succes
         tokenIn: [ETHEREUM_USDC],
         tokenOut: [ETHEREUM_USDT],
         amountIn: [toWei('1000', USD_DECIMALS)],
+        blacklist: [ETHEREUM_USDC],
         router: ['curve-solver'],
         userAddress: '0xF977814e90dA44bFA03b6295A0616a897441aceC',
       },

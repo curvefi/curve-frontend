@@ -66,7 +66,17 @@ export const getRouteById = (routeId: string | undefined) =>
   )
 
 const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
-  queryKey: ({ chainId, tokenIn, tokenOut, amountIn, amountOut, router, userAddress, slippage }: RoutesParams) =>
+  queryKey: ({
+    chainId,
+    tokenIn,
+    tokenOut,
+    amountIn,
+    amountOut,
+    blacklist,
+    router,
+    userAddress,
+    slippage,
+  }: RoutesParams) =>
     [
       'router-api',
       'v1/routes',
@@ -75,6 +85,7 @@ const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
       { tokenOut },
       { amountIn },
       { amountOut },
+      { blacklist },
       { router },
       { userAddress },
       { slippage },
@@ -85,6 +96,7 @@ const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
     tokenOut,
     amountIn,
     amountOut,
+    blacklist,
     router,
     userAddress,
     slippage,
@@ -101,6 +113,7 @@ const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
       ),
     )
 
+    toArray(blacklist).forEach(address => query.append('blacklist', address))
     toArray(router).forEach(router => query.append('router', router))
     const routes = await fetchJson<RouterRouteResponse[]>(`/api/router/v1/routes?${query}`)
     return await Promise.all(
@@ -111,6 +124,7 @@ const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
           tokenIn,
           tokenOut,
           amountIn,
+          toArray(blacklist),
           slippage,
           userAddress,
           amountOut,

@@ -46,6 +46,7 @@ export const buildCurveSolverRouteResponse = async (
     chainId,
     tokenIn: [tokenIn],
     tokenOut: [tokenOut],
+    blacklist = [],
     amountIn: [amountIn] = [],
     amountOut: [amountOut] = [],
     userAddress,
@@ -60,6 +61,7 @@ export const buildCurveSolverRouteResponse = async (
     input_token: tokenIn,
     output_token: tokenOut,
     amount_in: amountIn,
+    blacklist,
     exact: true,
     ...(userAddress && { receiver: userAddress }),
     min_out: amountOut ?? '0', // todo: use slippage?

@@ -50,12 +50,13 @@ export const getExpectedFn =
     userAddress,
     slippage,
   }: Pick<RoutesQuery, 'chainId' | 'router' | 'slippage' | 'userAddress'>): GetExpectedFn =>
-  async (tokenIn, tokenOut, amountIn) => {
+  async (tokenIn, tokenOut, amountIn, blacklist) => {
     const routes = await fetchApiRoutes({
       chainId,
       tokenIn: tokenIn as Address,
       tokenOut: tokenOut as Address,
       amountIn: `${amountIn}` as Decimal,
+      blacklist: toArray(blacklist as Address | readonly Address[]),
       router: router ?? 'curve', // use curve router for getting the maximum amounts
       slippage,
       userAddress,
@@ -65,7 +66,7 @@ export const getExpectedFn =
   }
 
 export const createHash = async (
-  input: (number | string | null | undefined | number[] | string[])[],
+  input: (number | string | null | undefined | readonly number[] | readonly string[])[],
   algorithm = 'SHA-256',
 ): Promise<string> =>
   Array.from(

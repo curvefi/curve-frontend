@@ -3,6 +3,7 @@ import { useConnection } from 'wagmi'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import {
+  getAmmAddress,
   getControllerAddress,
   getLlamaMarketVersion,
   getMarketType,
@@ -42,10 +43,9 @@ const userDefaultValues = {
   routeId: undefined,
 } satisfies Partial<CreateLoanForm>
 
-// to crete a loan we need the debt/maxDebt, but we skip the market validation as that's given separately to the mutation
 const validation = createLoanQueryValidationSuite({
   debtRequired: false,
-  skipMarketValidation: true,
+  skipMarketValidation: true, // given separately to the mutation
   collateralRequired: true,
 })
 
@@ -181,6 +181,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     },
     routes: useMarketRoutes({
       chainId,
+      marketAddress: getAmmAddress(market),
       tokenIn: borrowToken,
       tokenOut: collateralToken,
       amountIn: decimalSum(params.debt, params.userBorrowed),
