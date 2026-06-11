@@ -61,9 +61,7 @@ export const PoolPageHeader = ({
           </WithSkeleton>
         )
       }
-      rightItems={
-        poolId && <PoolMetricsRow chainId={chainId} poolId={poolId} pricesApiPoolData={pricesApiPoolData} />
-      }
+      rightItems={poolId && <PoolMetricsRow chainId={chainId} poolId={poolId} pricesApiPoolData={pricesApiPoolData} />}
     />
   )
 }
