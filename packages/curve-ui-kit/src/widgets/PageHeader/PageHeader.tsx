@@ -46,14 +46,6 @@ export const PageHeader = ({
         {icon}
 
         <Stack>
-          {subtitle && (
-            <WithSkeleton loading={subtitleLoading}>
-              <Typography variant="bodyXsRegular" color="textSecondary">
-                {subtitle ?? 'Page subtitle' /** For skeleton width inference */}
-              </Typography>
-            </WithSkeleton>
-          )}
-
           <Stack direction="row" sx={{ alignItems: 'center', flexWrap: 'wrap', gap: Spacing.xs }}>
             <WithSkeleton loading={titleLoading}>
               <Typography variant="headingSBold" sx={{ overflowWrap: 'anywhere' }}>
@@ -63,6 +55,14 @@ export const PageHeader = ({
 
             {titleItems}
           </Stack>
+
+          {subtitle && (
+            <WithSkeleton loading={subtitleLoading}>
+              <Typography variant="bodyXsRegular" color="textSecondary">
+                {subtitle ?? 'Page subtitle' /** For skeleton width inference */}
+              </Typography>
+            </WithSkeleton>
+          )}
         </Stack>
       </Stack>
     </Stack>
