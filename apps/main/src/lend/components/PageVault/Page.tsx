@@ -81,7 +81,7 @@ export const Page = () => {
     userActiveKey,
   }
 
-  const hasSupplied = !!useUserShares({ marketId: market?.id, chainId, userAddress }).data?.value
+  const supplied = +(useUserShares({ marketId: market?.id, chainId, userAddress }).data?.value ?? 0)
 
   return isSuccess && !market ? (
     <ErrorPage
@@ -107,7 +107,7 @@ export const Page = () => {
         market={market}
         rewardsBanner={<CampaignRewardsBanner chainId={chainId} market={market} />}
       />
-      {market && hasSupplied && (
+      {market && supplied > 0 && (
         <SupplyPositionDetails
           chainId={chainId}
           market={market}

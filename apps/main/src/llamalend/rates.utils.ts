@@ -1,4 +1,5 @@
 import { sumBy } from 'lodash'
+import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, maybes, notFalsy } from '@primitives/objects.utils'
 import type { CrvUsdSnapshot } from '@ui-kit/entities/crvusd-snapshots'
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
@@ -77,9 +78,6 @@ type OnChainSupplyRewardApr = { apy: number; symbol: string; tokenAddress: strin
 export const sumOnChainExtraIncentivesApy = (rewardsApr: OnChainSupplyRewardApr[] | undefined) =>
   rewardsApr && rewardsApr.length > 0 ? sumBy(rewardsApr, reward => aprToApy(reward.apy)!) : null
 
-const displayUserBoost = (userBoost: number | null | undefined) =>
-  userBoost == null ? '' : ' (' + defaultNumberFormatter(userBoost) + 'x veCRV Boost)'
-
 export const formatSupplyExtraIncentives = ({
   incentives,
   baseRate,
@@ -89,7 +87,7 @@ export const formatSupplyExtraIncentives = ({
   incentives: ExtraIncentive[]
   baseRate?: number | null | undefined
   userRate?: number | null | undefined
-  userBoost?: number | null | undefined
+  userBoost?: Decimal | null | undefined
 }): SupplyExtraIncentive[] =>
   notFalsy(
     baseRate && {
@@ -100,7 +98,7 @@ export const formatSupplyExtraIncentives = ({
     },
     userRate &&
       baseRate == null && {
-        title: 'CRV' + displayUserBoost(userBoost),
+        title: maybe(userBoost, b => `CRV (${defaultNumberFormatter(b)}x veCRV Boost)`) ?? '',
         percentage: userRate,
         address: MAINNET_CRV_ADDRESS,
         blockchainId: 'ethereum',
@@ -113,7 +111,7 @@ type SupplyRateMetricsParams = {
   crvBoostApr: Range<number> | null | undefined
   rebasingYieldApy: number | null | undefined
   extraIncentivesApy: number | null | undefined
-  userSupplyBoost?: number | null | undefined
+  userSupplyBoost?: Decimal | null | undefined
 }
 
 /**
@@ -134,7 +132,7 @@ export const getSupplyApyMetrics = ({
 
   const crvMinBoostApy = aprToApy(crvMinBoostApr)
   const crvMaxBoostApy = aprToApy(crvMaxBoostApr)
-  const userBoostApy = maybes([crvMinBoostApr, userSupplyBoost], ([apr, boost]) => aprToApy(apr * boost)) ?? null
+  const userBoostApy = maybes([crvMinBoostApr, userSupplyBoost], ([apr, boost]) => aprToApy(apr * +boost)) ?? null
 
   const totalWithoutBoost = sumRates(supplyApy, rebasingYieldApy, extraIncentivesApy)
 

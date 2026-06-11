@@ -1,4 +1,5 @@
 import { ReactNode } from 'react'
+import { zeroAddress } from 'viem'
 import { USER_NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { getControllerAddress } from '@/llamalend/llama.utils'
 import { useMarketRates, useMarketVaultOnChainRewards, useMarketVaultPricePerShare } from '@/llamalend/queries/market'
@@ -62,6 +63,7 @@ export const SupplyPositionDetails = ({ chainId, market, userAddress, blockchain
   const params = { chainId, marketId: market.id, userAddress }
   const { window: rateWindow } = AVERAGE_CATEGORIES[RATE_CATEGORY]
   const { data: campaigns } = useCampaignsByAddress({ blockchainId, address: market.addresses.vault as Address })
+  const noGauge = market.addresses.gauge === zeroAddress
 
   const userSupplyBoost = useUserSupplyBoost(params)
   const onChainRewards = useMarketVaultOnChainRewards(params)
@@ -133,7 +135,7 @@ export const SupplyPositionDetails = ({ chainId, market, userAddress, blockchain
             size="medium"
             label={USER_NET_SUPPLY_RATE_TITLE}
             {...combineMetricState(mapQuery(supplyMetrics, ({ totalUserBoost }) => totalUserBoost))}
-            valueOptions={{ unit: 'percentage' }}
+            valueOptions={{ unit: 'percentage', ...(noGauge && { fallback: `No Gauge` }) }}
             notional={maybe(userSupplyBoost.data, data => t`your boost ${defaultNumberFormatter(data)}x`)}
             valueTooltip={{
               title: USER_NET_SUPPLY_RATE_TITLE,
@@ -206,7 +208,7 @@ export const SupplyPositionDetails = ({ chainId, market, userAddress, blockchain
             size="medium"
             label={t`veCRV Boost`}
             {...combineMetricState(userSupplyBoost)}
-            valueOptions={{ unit: 'multiplier' }}
+            valueOptions={{ unit: 'multiplier', ...(noGauge && { fallback: `No Gauge` }) }}
             valueTooltip={{
               title: t`veCRV Boost`,
               body: <BoostTooltipContent />,

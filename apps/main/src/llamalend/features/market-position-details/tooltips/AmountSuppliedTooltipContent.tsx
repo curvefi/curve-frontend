@@ -10,7 +10,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { maybes, maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import type { QueryProp } from '@ui-kit/types/util'
-import { decimalDiv, decimalMin, decimalMultiply, formatNumber } from '@ui-kit/utils'
+import { decimalDiv, decimalMinus, decimalMultiply, formatNumber } from '@ui-kit/utils'
 import type { SupplyAsset } from '../SupplyPositionDetails'
 
 const formatAmount = (
@@ -37,7 +37,7 @@ export const AmountSuppliedTooltipContent = ({
   const { value, staked } = shares ?? {}
   const { symbol, depositedAmount } = supplyAsset ?? {}
 
-  const unstaked = maybes([value, staked], ([value, staked]) => decimalMin(value, staked))
+  const unstaked = maybes([value, staked], ([value, staked]) => decimalMinus(value, staked))
   const unstakedPercentage = maybes([value, unstaked], ([value, unstaked]) =>
     +value ? decimalDiv(unstaked, value) : null,
   )
