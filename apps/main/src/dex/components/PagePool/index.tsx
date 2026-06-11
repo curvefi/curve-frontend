@@ -34,6 +34,7 @@ import { usePoolFreshup } from '@ui-kit/hooks/useFeatureFlags'
 import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
@@ -172,6 +173,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
               blockchainId={networkId}
               poolIdOrAddress={rPoolIdOrAddress}
               pricesApiPoolData={pricesApiPoolData}
+              backHref={getInternalUrl('dex', networkId, DEX_ROUTES.PAGE_POOLS)}
             />
           ) : (
             <Typography variant="headingSBold" sx={{ paddingBlock: Spacing.sm }}>
