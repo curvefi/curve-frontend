@@ -30,6 +30,7 @@ export function useScrollToTopOnPageChange<T extends TableItem>(
   const { pageIndex } = table.getState().pagination
   const lastPageIndexRef = useRef(pageIndex)
   useEffect(() => {
+    // Avoid scrolling on the initial render, only scroll after the user changes pages.
     if (lastPageIndexRef.current !== pageIndex) {
       scrollToTableTop(tableTopRef)
     }
