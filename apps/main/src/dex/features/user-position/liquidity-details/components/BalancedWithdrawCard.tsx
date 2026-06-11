@@ -26,7 +26,7 @@ export const BalancedWithdrawCard = ({
           key={row.address}
           label={
             <Stack component="span" direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
-              <TokenIcon size="mui-md" blockchainId={blockchainId} tooltip={row.symbol} address={row.iconAddress} />
+              <TokenIcon size="mui-md" blockchainId={blockchainId} tooltip={row.symbol} address={row.address} />
               {row.symbol}
             </Stack>
           }
