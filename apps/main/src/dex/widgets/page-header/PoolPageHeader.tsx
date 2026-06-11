@@ -12,14 +12,6 @@ import { PoolMetricsRow } from './PoolMetricsRow'
 
 const ICON_SIZE = 35
 
-const getPoolTitle = (poolName: string | undefined, poolIdOrAddress: string | undefined) => {
-  const trimmedName = poolName?.trim()
-  const colonIndex = trimmedName?.lastIndexOf(':') ?? -1
-  const title = colonIndex >= 0 ? trimmedName?.slice(colonIndex + 1).trim() : trimmedName
-
-  return title || poolIdOrAddress || t`Pool`
-}
-
 const getPoolTokens = (poolDataCacheOrApi: PoolDataCacheOrApi | undefined) =>
   poolDataCacheOrApi?.tokens
     .map((symbol, index) => ({ symbol, address: poolDataCacheOrApi.tokenAddresses[index] ?? '' }))
@@ -51,7 +43,7 @@ export const PoolPageHeader = ({
   return (
     <PageHeader
       backHref={backHref}
-      title={getPoolTitle(poolDataCacheOrApi?.pool.name, poolIdOrAddress)}
+      title={poolDataCacheOrApi?.pool.name ?? 'Pool'}
       titleLoading={isLoading}
       subtitle={subtitle ?? (isLoading ? t`Token symbols` : undefined)}
       subtitleLoading={isLoading}
