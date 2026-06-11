@@ -324,7 +324,7 @@ const LoadingStateComponent = () => {
   const table = useTable({
     data: [] as PoolTradeRow[],
     columns: POOL_TRADES_COLUMNS,
-    ...getTableOptions([]),
+    ...getTableOptions<PoolTradeRow>([]),
   })
   return (
     <ActivityTable
@@ -352,7 +352,7 @@ const EmptyStateComponent = () => {
   const table = useTable({
     data: [] as PoolTradeRow[],
     columns: POOL_TRADES_COLUMNS,
-    ...getTableOptions([]),
+    ...getTableOptions<PoolTradeRow>([]),
   })
   return (
     <ActivityTable
@@ -380,7 +380,7 @@ const ErrorStateComponent = () => {
   const table = useTable({
     data: [] as PoolTradeRow[],
     columns: POOL_TRADES_COLUMNS,
-    ...getTableOptions([]),
+    ...getTableOptions<PoolTradeRow>([]),
   })
   return (
     <ActivityTable

@@ -18,6 +18,7 @@ import { mapQuery, QueryProp } from '@ui-kit/types/util'
 import { LlamaListChips } from './chips/LlamaListChips'
 import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS, LlamaMarketColumnId } from './columns'
 import { MarketSortDrawer } from './drawers/MarketSortDrawer'
+import { getLlamaFacetedRowModel } from './filters/llamaFaceting'
 import { useLlamaGlobalFilterFn } from './filters/llamaGlobalFilter'
 import { LlamaTableFiltersChip } from './filters/LlamaTableFiltersChip'
 import { LlamaTableFiltersCollapsible } from './filters/LlamaTableFiltersCollapsible'
@@ -64,7 +65,8 @@ export const LlamaMarketsTable = ({
     onSortingChange,
     onExpandedChange: setExpanded,
     globalFilterFn,
-    ...getTableOptions(queryData),
+    ...getTableOptions(queryData ? data : undefined),
+    getFacetedRowModel: getLlamaFacetedRowModel,
   })
 
   const hasActiveFilters = !!table.getState().columnFilters.length
@@ -119,6 +121,7 @@ export const LlamaMarketsTable = ({
       </DataTable>
       {/* Keep the overlay outside DataTable children because DataTable remounts them when switching sticky header layout. */}
       <LlamaTableFiltersOverlay
+        table={table}
         hasActiveFilters={hasActiveFilters}
         open={filtersOpen}
         setOpen={setFiltersOpen}
