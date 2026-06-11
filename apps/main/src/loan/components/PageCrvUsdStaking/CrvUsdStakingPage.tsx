@@ -98,7 +98,9 @@ export const CrvUsdStakingPage = () => {
     >
       {showStatsBanner && (
         <Fade in={showStatsBanner}>
-          <StatsBanner />
+          <Box>
+            <StatsBanner />
+          </Box>
         </Fade>
       )}
       {!isUserScrvUsdBalanceZero && <UserPosition chainId={chainId} />}
