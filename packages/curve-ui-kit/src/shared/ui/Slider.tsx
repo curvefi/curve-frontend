@@ -10,7 +10,7 @@ export type SliderProps = MuiSliderProps
  * @returns Slider component with custom rail background and flex wrapper to prevent height issues and overflows
  */
 export const Slider = (props: SliderProps) => {
-  const { orientation = 'horizontal' } = props
+  const { disabled, orientation = 'horizontal', step, ...sliderProps } = props
   const isHorizontal = orientation === 'horizontal'
   return (
     <Stack
@@ -20,7 +20,7 @@ export const Slider = (props: SliderProps) => {
         height: isHorizontal ? 'auto' : '100%',
       }}
     >
-      <MuiSlider {...props} />
+      <MuiSlider {...sliderProps} disabled={Boolean(disabled) || step === 0} orientation={orientation} step={step} />
     </Stack>
   )
 }

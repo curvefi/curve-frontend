@@ -1,11 +1,9 @@
-import { type MouseEvent, ReactNode, useCallback, useMemo, useRef } from 'react'
+import { type MouseEvent, ReactNode, useCallback, useRef } from 'react'
 import { Box, Stack } from '@mui/material'
 import Button from '@mui/material/Button'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Typography from '@mui/material/Typography'
-import { notFalsyArray } from '@primitives/objects.utils'
-import { type DeepKeys } from '@tanstack/table-core'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useResizeObserver } from '@ui-kit/hooks/useResizeObserver'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
@@ -16,8 +14,6 @@ import { parseListFilter, serializeListFilter } from '@ui-kit/shared/ui/DataTabl
 import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
 import { Select } from '@ui-kit/shared/ui/Select'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { QueryProp } from '@ui-kit/types/util'
-import { getUniqueSortedStrings } from '@ui-kit/utils/sorting'
 import { HiddenInlinedItems } from './HiddenInlinedItems'
 import { getInlinedItemsVisibility } from './utils'
 
@@ -26,21 +22,19 @@ const { Spacing } = SizesAndSpaces
 /**
  * A filter for tanstack tables that allows multi-select of string values.
  */
-export const MultiSelectFilter = <TKeys, TColumnId extends string>({
+export const MultiSelectFilter = <TColumnId extends string>({
   columnFiltersById,
   setColumnFilter,
-  query,
+  options,
   defaultText = t`All`,
   defaultTextMobile,
   renderItem,
   selectedItemRender,
-  field,
   id,
 }: FilterProps<TColumnId> & {
-  query: QueryProp<TKeys[]>
+  options: string[]
   defaultText?: string
   defaultTextMobile: string
-  field: DeepKeys<TKeys>
   id: TColumnId
   renderItem?: (value: string) => ReactNode
   selectedItemRender?: (value: string) => ReactNode
@@ -50,7 +44,6 @@ export const MultiSelectFilter = <TKeys, TColumnId extends string>({
   const menuRef = useRef<HTMLLIElement | null>(null)
   const [selectWidth] = useResizeObserver(selectRef)
   const [isOpen, open, close] = useSwitch(false)
-  const options = useMemo(() => getUniqueSortedStrings(notFalsyArray(query.data), field), [query.data, field])
   const selectedOptions = parseListFilter(columnFiltersById[id])
   const onClear = useCallback(
     (e: MouseEvent<HTMLButtonElement>) => {
@@ -65,10 +58,10 @@ export const MultiSelectFilter = <TKeys, TColumnId extends string>({
     // click in the "Clear Selection" Box, outside the button, mui calls this with filter=[undefined] 😞
     ({ currentTarget }: MouseEvent<HTMLLIElement>) => {
       const value = currentTarget.getAttribute('value')!
-      const options = selectedOptions?.includes(value)
+      const nextOptions = selectedOptions?.includes(value)
         ? selectedOptions.filter(v => v !== value)
         : [...(selectedOptions ?? []), value]
-      setColumnFilter(id, serializeListFilter(options))
+      setColumnFilter(id, serializeListFilter(nextOptions))
     },
     [setColumnFilter, id, selectedOptions],
   )
@@ -92,7 +85,7 @@ export const MultiSelectFilter = <TKeys, TColumnId extends string>({
         size="medium"
         sx={{ '& .MuiSelect-select': { gap: Spacing.xs } }}
         renderValue={() =>
-          selectedOptions?.length && selectedOptions.length < options.length ? (
+          selectedOptions?.length ? (
             <>
               {visibleSelectedOptions.map(optionId => (
                 <Box component="span" key={optionId} sx={{ display: 'inline-flex', alignItems: 'center' }}>
