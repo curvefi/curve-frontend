@@ -40,6 +40,6 @@ export const useUserShares = (params: UserBalancesParams) =>
   mapQuery(useUserBalances(params), ({ vaultShares, gauge }): Shares => {
     if (!gauge) throw new Error(`useUserShares only supports lend markets`)
     const value = decimalSum(vaultShares, gauge)
-    const percentage = +vaultShares ? decimalMultiply(decimalDiv(value, vaultShares), '100') : '0'
+    const percentage = +value ? decimalMultiply(decimalDiv(gauge, value), '100') : '0'
     return { value, staked: gauge, percentage }
   })
