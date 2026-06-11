@@ -53,8 +53,8 @@ export const decimalEqual = (first: Decimal, second: Decimal) => BigNumber(first
 
 export const decimalGreaterThan = (first: Decimal, second: Decimal) => BigNumber(first).isGreaterThan(second)
 
-export const decimalMultiply = (first: Decimal, second: Decimal) =>
-  new BigNumber(first).multipliedBy(second).toFixed() as Decimal
+export const decimalMultiply = (first: Decimal, ...items: Amount[]) =>
+  items.reduce((p, c) => p.multipliedBy(c), new BigNumber(first)).toFixed() as Decimal
 
 /** Divides the 1st by the 2nd decimal. Does NOT guard for division-by-zero! */
 export const decimalDiv = (first: Decimal, second: Decimal) =>

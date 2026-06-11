@@ -1,3 +1,4 @@
+import { zeroAddress } from 'viem'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { rootKeys } from '@ui-kit/lib/model/query/root-keys'
 import type { UserMarketQuery, UserMarketParams } from '@ui-kit/lib/model/query/root-keys'
@@ -6,6 +7,7 @@ import { requireVault } from '../validation/supply.validation'
 
 const _fetchUserSupplyBoost = async ({ marketId, userAddress }: UserMarketQuery): Promise<number | null> => {
   const market = requireVault(marketId)
+  if (market.addresses.gauge === zeroAddress) return null
   const boost = await market.userPosition.userBoost(userAddress)
   return boost ? +boost : null
 }

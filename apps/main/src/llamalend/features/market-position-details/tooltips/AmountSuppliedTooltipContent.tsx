@@ -1,37 +1,47 @@
+import type { Shares } from '@/llamalend/queries/user/user-balances.query'
 import { UnavailableNotation } from '@/llamalend/widgets/tooltips/tooltip.utils'
 import {
-  TooltipWrapper,
   TooltipDescription,
-  TooltipItems,
   TooltipItem,
+  TooltipItems,
+  TooltipWrapper,
 } from '@/llamalend/widgets/tooltips/TooltipComponents'
+import type { Decimal } from '@primitives/decimal.utils'
+import { maybes, maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
-import { formatNumber } from '@ui-kit/utils'
-import type { Shares, SupplyAsset } from '../SupplyPositionDetails'
-
-const isAvailable = (value: number | null | undefined): value is number => value != null
+import type { QueryProp } from '@ui-kit/types/util'
+import { decimalDiv, decimalMin, decimalMultiply, formatNumber } from '@ui-kit/utils'
+import type { SupplyAsset } from '../SupplyPositionDetails'
 
 const formatAmount = (
-  percentage: number | null,
-  depositedAmount: number | null | undefined,
+  percentage: Decimal | null | undefined,
+  depositedAmount: Decimal | null | undefined,
   symbol: string | null | undefined,
-) => {
-  if (percentage === null || !isAvailable(depositedAmount) || !symbol) return null
-  return `${formatNumber(percentage * depositedAmount, { abbreviate: true })} ${symbol}`
-}
+) =>
+  maybes(
+    [percentage, depositedAmount, symbol],
+    ([percentage, depositedAmount, symbol]) =>
+      `${formatNumber(decimalMultiply(percentage, depositedAmount), { abbreviate: true })} ${symbol}`,
+  )
 
-const formatPercentageDisplay = (percentage: number | null) =>
-  percentage === null ? UnavailableNotation : formatNumber(percentage * 100, 'percent.rate')
+const formatPercentageDisplay = (percentage: Decimal | null | undefined) =>
+  maybe(percentage, p => formatNumber(decimalMultiply(p, '100'), 'percent.rate')) ?? UnavailableNotation
 
-export const AmountSuppliedTooltipContent = ({ shares, supplyAsset }: { shares: Shares; supplyAsset: SupplyAsset }) => {
-  const { value, staked } = shares
+export const AmountSuppliedTooltipContent = ({
+  shares: { data: shares },
+  supplyAsset: { data: supplyAsset },
+}: {
+  shares: QueryProp<Shares>
+  supplyAsset: QueryProp<SupplyAsset>
+}) => {
+  const { value, staked } = shares ?? {}
+  const { symbol, depositedAmount } = supplyAsset ?? {}
 
-  const unstaked = isAvailable(value) && isAvailable(staked) ? value - staked : null
-  const unstakedPercentage = isAvailable(value) && unstaked !== null ? unstaked / value : null
-  const stakedPercentage = isAvailable(value) && isAvailable(staked) ? staked / value : null
-
-  const stakedAmount = formatAmount(stakedPercentage, supplyAsset.depositedAmount, supplyAsset.symbol)
-  const unstakedAmount = formatAmount(unstakedPercentage, supplyAsset.depositedAmount, supplyAsset.symbol)
+  const unstaked = maybes([value, staked], ([value, staked]) => decimalMin(value, staked))
+  const unstakedPercentage = maybes([value, unstaked], ([value, unstaked]) =>
+    +value ? decimalDiv(unstaked, value) : null,
+  )
+  const stakedPercentage = maybes([value, staked], ([value, staked]) => (+value ? decimalDiv(staked, value) : null))
 
   return (
     <TooltipWrapper>
@@ -45,16 +55,17 @@ export const AmountSuppliedTooltipContent = ({ shares, supplyAsset }: { shares: 
           {`${formatPercentageDisplay(stakedPercentage)} / ${formatPercentageDisplay(unstakedPercentage)}`}
         </TooltipItem>
         <TooltipItem variant="subItem" title={t`Staked`}>
-          {stakedAmount ?? UnavailableNotation}
+          {formatAmount(stakedPercentage, depositedAmount, symbol) ?? UnavailableNotation}
         </TooltipItem>
         <TooltipItem variant="subItem" title={t`Unstaked`}>
-          {unstakedAmount ?? UnavailableNotation}
+          {formatAmount(unstakedPercentage, depositedAmount, symbol) ?? UnavailableNotation}
         </TooltipItem>
       </TooltipItems>
       <TooltipItem variant="primary" title={t`Total supplied`}>
-        {isAvailable(supplyAsset.depositedAmount) && supplyAsset.symbol
-          ? `${formatNumber(supplyAsset.depositedAmount, { abbreviate: true })} ${supplyAsset.symbol}`
-          : UnavailableNotation}
+        {maybes(
+          [depositedAmount, symbol],
+          ([depositedAmount, symbol]) => `${formatNumber(depositedAmount, { abbreviate: true })} ${symbol}`,
+        ) ?? UnavailableNotation}
       </TooltipItem>
     </TooltipWrapper>
   )
