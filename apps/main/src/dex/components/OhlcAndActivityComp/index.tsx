@@ -56,6 +56,7 @@ export const OhlcAndActivityComp = ({
             isLoading={liquidityTable.isLoading}
             isError={liquidityTable.isError}
             emptyMessage={liquidityTable.emptyMessage}
+            errorMessage={liquidityTable.errorMessage}
             expandedPanel={PoolLiquidityExpandedPanel}
           />
         )}
@@ -65,6 +66,7 @@ export const OhlcAndActivityComp = ({
             isLoading={tradesTable.isLoading}
             isError={tradesTable.isError}
             emptyMessage={tradesTable.emptyMessage}
+            errorMessage={tradesTable.errorMessage}
             expandedPanel={PoolTradesExpandedPanel}
           />
         )}

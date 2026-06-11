@@ -15,6 +15,7 @@ import {
   DEFAULT_PAGE_SIZE,
 } from '@ui-kit/features/activity-table'
 import { useCurve } from '@ui-kit/features/connect-wallet'
+import { combineQueryState } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 
@@ -33,25 +34,21 @@ export const usePoolActivityEventsConfig = ({ chainId, poolAddress }: UsePoolAct
   const network = networkConfig?.id.toLowerCase() as Chain
   const { pagination, onPaginationChange, apiPage } = useManualPagination()
 
-  const { data: pricesApiPoolsMapper, isLoading: isPricesApiPoolsLoading } = usePoolsPricesApi({
-    blockchainId: network,
-  })
+  const poolPriceApi = usePoolsPricesApi({ blockchainId: network })
+  const { data: pricesApiPoolsMapper } = poolPriceApi
   const poolTokens = useMemo(
     () => pricesApiPoolsMapper?.[poolAddress]?.coins ?? [],
     [pricesApiPoolsMapper, poolAddress],
   )
   const { liquidityColumnVisibility } = usePoolActivityVisibility({ poolTokens })
 
-  const {
-    data: liquidityData,
-    isLoading: isLiquidityLoading,
-    isError: isLiquidityError,
-  } = usePoolLiquidityEvents({
+  const poolLiquidityEvents = usePoolLiquidityEvents({
     chain: network,
     poolAddress,
     page: apiPage,
     perPage: DEFAULT_PAGE_SIZE,
   })
+  const { data: liquidityData } = poolLiquidityEvents
 
   const pageCount = getPageCount(liquidityData?.count, DEFAULT_PAGE_SIZE)
 
@@ -72,8 +69,7 @@ export const usePoolActivityEventsConfig = ({ chainId, poolAddress }: UsePoolAct
 
   const liquidityColumns = useMemo(() => createPoolLiquidityColumns({ poolTokens }), [poolTokens])
 
-  const isLoading = isLiquidityLoading || isPricesApiPoolsLoading || !isHydrated
-  const isError = isLiquidityError && !isHydrated
+  const { error, isLoading } = combineQueryState(poolLiquidityEvents, poolPriceApi)
 
   const table = useTable({
     data: liquidityWithUrls,
@@ -85,5 +81,11 @@ export const usePoolActivityEventsConfig = ({ chainId, poolAddress }: UsePoolAct
     ...getTableOptions(liquidityWithUrls),
   })
 
-  return { table, isLoading, isError, emptyMessage: t`No liquidity data found.` }
+  return {
+    table,
+    isLoading: isLoading || !isHydrated,
+    isError: !!error && isHydrated,
+    emptyMessage: t`No liquidity data found.`,
+    errorMessage: t`Could not load liquidity data.`,
+  }
 }
