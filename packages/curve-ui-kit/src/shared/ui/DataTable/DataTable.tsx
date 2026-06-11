@@ -1,5 +1,5 @@
 /// <reference types="./DataTable.d.ts" />
-import { type ReactNode, type RefObject, useEffect, useEffectEvent, useMemo, useRef } from 'react'
+import { type ReactNode, useEffect, useEffectEvent, useMemo, useRef } from 'react'
 import Box from '@mui/material/Box'
 import { Theme } from '@mui/material/styles'
 import Table from '@mui/material/Table'
@@ -19,6 +19,7 @@ import { DataTableHeaderHeight, type DataTableSize, type TableItem, type Tanstac
 import { DataRow, type DataRowProps } from './DataRow'
 import { FilterRow } from './FilterRow'
 import { HeaderCell } from './HeaderCell'
+import { useScrollToTopOnFilterChange, useScrollToTopOnPageChange } from './hooks/useTableScroll'
 import { useTableStickyHeader } from './hooks/useTableStickyHeader'
 import { SkeletonRows } from './SkeletonRows'
 import { TableViewAllCell } from './TableViewAllCell'
@@ -27,31 +28,6 @@ import { useTableRowLimit } from './useTableRowLimit'
 const TABLE_FILTERS_TEST_ID = 'table-filters'
 
 const { Height } = SizesAndSpaces
-
-/**
- * Scrolls to the top of the window whenever the column filters change.
- */
-function useScrollToTopOnFilterChange<T extends TableItem>(table: TanstackTable<T>) {
-  const { columnFilters } = table.getState()
-  useEffect(() => {
-    if (columnFilters.length) {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    }
-  }, [columnFilters])
-}
-
-/**
- * Scrolls to the top of the table container whenever the page changes with manual pagination.
- */
-function useScrollToTopOnPageChange<T extends TableItem>(
-  table: TanstackTable<T>,
-  containerRef: RefObject<HTMLElement | null>,
-) {
-  const { pageIndex } = table.getState().pagination
-  useEffect(() => {
-    containerRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
-  }, [pageIndex, containerRef])
-}
 
 /**
  * Resets the table pagination to the first page whenever the number of filtered results changes.
@@ -115,11 +91,11 @@ export const DataTable = <T extends TableItem>({
   const headerGroups = table.getHeaderGroups()
   const columnCount = useMemo(() => headerGroups.reduce((acc, group) => acc + group.headers.length, 0), [headerGroups])
   const top = useLayoutStore(state => state.navHeight)
-  const containerRef = useRef<HTMLDivElement>(null)
+  const tableTopRef = useRef<HTMLDivElement>(null)
   const { shouldStickyHeader, tableRef, tableWrapperRef } = useTableStickyHeader({ disableStickyHeader, isLimited })
-  useScrollToTopOnFilterChange(table)
+  useScrollToTopOnFilterChange(table, tableTopRef)
   useResetPageOnResultChange(table)
-  useScrollToTopOnPageChange(table, containerRef)
+  useScrollToTopOnPageChange(table, tableTopRef)
   const tableHeaderSx = (t: Theme) => ({
     ...(shouldStickyHeader && {
       position: 'sticky',
@@ -131,7 +107,9 @@ export const DataTable = <T extends TableItem>({
   const showFooter = !isLoading && (showPagination || showViewAllButton || footerRow)
 
   return (
-    <WithWrapper Wrapper={Box} shouldWrap={maxHeight} sx={{ maxHeight, overflowY: 'auto' }} ref={containerRef}>
+    <WithWrapper Wrapper={Box} shouldWrap={maxHeight} sx={{ maxHeight, overflowY: 'auto' }}>
+      {/* Anchor used to scroll back to the table without hiding it behind the sticky nav. */}
+      <Box ref={tableTopRef} sx={{ scrollMarginTop: `${top}px` }} />
       {/* Children are placed outside the table header when the table content is horizontally scrollable in order to
       preserve the parent's width instead of the table's scroll width. */}
       {!shouldStickyHeader && children && <Box data-testid={TABLE_FILTERS_TEST_ID}>{children}</Box>}
