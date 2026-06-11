@@ -134,9 +134,13 @@ export const SupplyPositionDetails = ({ chainId, market, userAddress, blockchain
           <Metric
             size="medium"
             label={USER_NET_SUPPLY_RATE_TITLE}
-            {...combineMetricState(mapQuery(supplyMetrics, ({ totalUserBoost }) => totalUserBoost))}
+            {...(noGauge
+              ? { value: null }
+              : combineMetricState(mapQuery(supplyMetrics, ({ totalUserBoost }) => totalUserBoost)))}
             valueOptions={{ unit: 'percentage', ...(noGauge && { fallback: `No Gauge` }) }}
-            notional={maybe(userSupplyBoost.data, data => t`your boost ${defaultNumberFormatter(data)}x`)}
+            notional={maybe(userSupplyBoost.data, data =>
+              +data ? t`your boost ${defaultNumberFormatter(data)}x` : undefined,
+            )}
             valueTooltip={{
               title: USER_NET_SUPPLY_RATE_TITLE,
               body: (
@@ -207,7 +211,7 @@ export const SupplyPositionDetails = ({ chainId, market, userAddress, blockchain
           <Metric
             size="medium"
             label={t`veCRV Boost`}
-            {...combineMetricState(userSupplyBoost)}
+            {...(noGauge ? { value: null } : combineMetricState(userSupplyBoost))}
             valueOptions={{ unit: 'multiplier', ...(noGauge && { fallback: `No Gauge` }) }}
             valueTooltip={{
               title: t`veCRV Boost`,
