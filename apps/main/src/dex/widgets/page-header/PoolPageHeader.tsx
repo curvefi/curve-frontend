@@ -5,6 +5,7 @@ import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
 import { t } from '@ui-kit/lib/i18n'
 import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
+import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { PageHeader } from '@ui-kit/widgets/PageHeader'
 import { PoolMetricsRow } from './PoolMetricsRow'
@@ -57,7 +58,15 @@ export const PoolPageHeader = ({
       icon={
         (isLoading || tokenList.length > 0) && (
           <WithSkeleton loading={isLoading} variant="rectangular" width={ICON_SIZE} height={ICON_SIZE}>
-            <TokenIcons blockchainId={blockchainId} tokens={tokenList} />
+            {tokenList.length === 2 ? (
+              <TokenPair
+                chain={blockchainId}
+                assets={{ primary: tokenList[0], secondary: tokenList[1] }}
+                hideChainIcon
+              />
+            ) : (
+              <TokenIcons blockchainId={blockchainId} tokens={tokenList} />
+            )}
           </WithSkeleton>
         )
       }
