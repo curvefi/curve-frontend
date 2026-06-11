@@ -14,7 +14,7 @@ export const LiquidityDetails = ({ blockchainId, ...params }: { blockchainId: st
   const { marketParticipation, metrics, withdraw } = useLiquidityDetails(params)
 
   return (
-    <Stack sx={{ gap: Spacing.md, padding: Spacing.md }}>
+    <Stack sx={{ gap: Spacing.md, padding: Spacing.sm }}>
       <Metrics metrics={metrics} />
 
       <Grid container spacing={Spacing.md}>
