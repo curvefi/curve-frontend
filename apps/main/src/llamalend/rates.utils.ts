@@ -4,9 +4,12 @@ import type { CrvUsdSnapshot } from '@ui-kit/entities/crvusd-snapshots'
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
 import type { ExtraIncentive } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
-import { AVERAGE_CATEGORIES, MAINNET_CRV_ADDRESS, decimal, defaultNumberFormatter } from '@ui-kit/utils'
+import { MAINNET_CRV_ADDRESS, decimal, defaultNumberFormatter } from '@ui-kit/utils'
 import { calculateAverageRates, type WithTimestamp } from '@ui-kit/utils/averageRates'
+import { aprToApy } from '@ui-kit/utils/rates'
 import type { SupplyExtraIncentive } from './rates.types'
+
+export { aprToApy } from '@ui-kit/utils/rates'
 
 type BorrowRateMetricsParams<TSnapshot extends WithTimestamp = WithTimestamp> = {
   borrowRate: number | null | undefined
@@ -14,24 +17,6 @@ type BorrowRateMetricsParams<TSnapshot extends WithTimestamp = WithTimestamp> = 
   getBorrowRate: (snapshot: TSnapshot) => number | null | undefined
   getRebasingYield: (snapshot: TSnapshot) => number | null | undefined
   daysBack: number
-}
-
-const DAYS_PER_YEAR = 365
-
-/**
- * Converts an APR into APY using periodic compounding based on a given number of days per compounding period.
- * The function assumes APR is expressed as a percentage (e.g. 10 for 10%) and returns APY as a percentage.
- */
-export const aprToApy = (
-  aprPercentage: number | null | undefined,
-  compoundingDays = AVERAGE_CATEGORIES['llamalend.compoundRate'].window,
-): number | null => {
-  if (aprPercentage == null) return null
-
-  const periods = DAYS_PER_YEAR / compoundingDays
-  const compoundedRate = 1 + aprPercentage / 100 / periods
-
-  return (Math.pow(compoundedRate, periods) - 1) * 100
 }
 
 export const computeTotalRate = (rate: number, rebasingYield: number) => rate - rebasingYield

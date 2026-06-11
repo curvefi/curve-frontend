@@ -66,7 +66,7 @@ export const SupplyActionInfoList = ({
 
   return (
     <ActionInfoCollapse isOpen={isOpen} testId="supply-action-info-list">
-      <Stack sx={{ ...ACTION_INFO_GROUP_SX }}>
+      <Stack sx={ACTION_INFO_GROUP_SX}>
         <Stack>
           {(supplyApy ?? prevSupplyApy) && (
             <ActionInfo

@@ -73,6 +73,7 @@ export const createPoolLiquidityColumns = ({ poolTokens }: CreatePoolLiquidityCo
       cell: ({ row }) => (
         <TimestampCell timestamp={new Date(row.original.time)} txUrl={row.original.txUrl} align="end" />
       ),
+      meta: { type: 'numeric' },
     }),
   ]
 

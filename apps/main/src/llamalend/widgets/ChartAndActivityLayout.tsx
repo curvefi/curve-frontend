@@ -20,7 +20,6 @@ import { ChartFooter } from '@ui-kit/shared/ui/Chart/ChartFooter'
 import { ChartHeader, type ChartSelections } from '@ui-kit/shared/ui/Chart/ChartHeader'
 import { type LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
 import { ToggleBandsChartButton } from '@ui-kit/shared/ui/Chart/ToggleBandsChartButton'
-import { ErrorMessage } from '@ui-kit/shared/ui/ErrorMessage'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
@@ -44,7 +43,6 @@ const hasVisiblePriceRangeChanged = (previous: { min: number; max: number }, nex
 
 type ChartAndActivityLayoutProps = {
   chart: {
-    ohlcDataUnavailable: boolean
     isLoading: boolean
     selectedChartKey: string | undefined
     setTimeOption: (option: TimeOption) => void
@@ -131,20 +129,11 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
                 gridTemplateColumns: showBands ? { mobile: '5fr 1fr', tablet: '7fr 1fr' } : undefined,
               }}
             >
-              {chart.ohlcDataUnavailable ? (
-                <ErrorMessage
-                  title="An error ocurred"
-                  subtitle={t`Chart data is not yet available for this market.`}
-                  errorMessage={t`Chart data is not yet available for this market.`}
-                  sx={{ alignSelf: 'center' }}
-                />
-              ) : (
-                <ChartWrapper
-                  {...chart.ohlcChartProps}
-                  betaBackgroundColor={theme.design.Layer[1].Fill}
-                  onVisiblePriceRangeChange={showBands ? handleVisiblePriceRangeChange : undefined}
-                />
-              )}
+              <ChartWrapper
+                {...chart.ohlcChartProps}
+                betaBackgroundColor={theme.design.Layer[1].Fill}
+                onVisiblePriceRangeChange={showBands ? handleVisiblePriceRangeChange : undefined}
+              />
               {showBands && (
                 <BandsChart
                   isLoading={bands.isLoading}

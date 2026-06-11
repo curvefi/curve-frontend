@@ -8,7 +8,6 @@ import type { ChartSelection } from '../types'
 type UseDexChartListArgs = {
   coins: PoolCoin[]
   nCoins: number
-  hasChartData: boolean
 }
 
 /**
@@ -54,7 +53,7 @@ const DEFAULT_CHART_SELECTION: ChartSelection = { type: 'lp-usd' }
  * Handles the generation of chart combinations from pool coins and provides
  * flip functionality to swap the token order in each chart pair (for none LP token charts).
  */
-export const useDexChartList = ({ coins, nCoins, hasChartData }: UseDexChartListArgs) => {
+export const useDexChartList = ({ coins, nCoins }: UseDexChartListArgs) => {
   const [selectedChart, setSelectedChart] = useState<ChartSelection>(DEFAULT_CHART_SELECTION)
 
   const chartCombinations = useMemo(() => buildChartCombinations(coins, nCoins), [coins, nCoins])
@@ -77,7 +76,8 @@ export const useDexChartList = ({ coins, nCoins, hasChartData }: UseDexChartList
         : `pair-${selectedPairIndex}`
 
   const selectChartList: ChartSelections[] = useMemo(() => {
-    if (!hasChartData) return []
+    const lpTokenSymbol = coins[0]?.symbol
+    const lpTokenLabel = lpTokenSymbol ? t`LP Token (${lpTokenSymbol})` : t`LP Token`
 
     return [
       {
@@ -86,8 +86,8 @@ export const useDexChartList = ({ coins, nCoins, hasChartData }: UseDexChartList
         key: 'lp-usd',
       },
       {
-        activeTitle: t`LP Token (${coins[0]?.symbol ?? ''})`,
-        label: t`LP Token (${coins[0]?.symbol ?? ''})`,
+        activeTitle: lpTokenLabel,
+        label: lpTokenLabel,
         key: 'lp-token',
       },
       ...chartCombinations.map(([mainToken, refToken], index) => {
@@ -99,14 +99,15 @@ export const useDexChartList = ({ coins, nCoins, hasChartData }: UseDexChartList
         return { activeTitle: label, label, key: `pair-${index}` }
       }),
     ]
-  }, [coins, chartCombinations, hasChartData, selectedPairIndex, selectedChart])
+  }, [coins, chartCombinations, selectedPairIndex, selectedChart])
 
   const handleSelectChart = useCallback(
     (key: string) => {
       if (key === 'lp-usd') {
         setSelectedChart({ type: 'lp-usd' })
       } else if (key === 'lp-token') {
-        setSelectedChart({ type: 'lp-token', symbol: coins[0]?.symbol ?? '' })
+        const lpTokenSymbol = coins[0]?.symbol
+        setSelectedChart(lpTokenSymbol ? { type: 'lp-token', symbol: lpTokenSymbol } : { type: 'lp-token' })
       } else if (key.startsWith('pair-')) {
         const index = parseInt(key.replace('pair-', ''), 10)
         const [mainToken, refToken] = chartCombinations[index]

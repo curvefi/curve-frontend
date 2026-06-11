@@ -35,6 +35,7 @@ export const CLAIM_TAB_COLUMNS = [
           primary={formatNumber(getValue(), { abbreviate: false })}
           secondary={row.original.symbol}
           showChainIcon
+          boldPrimary
         />
       </InlineTableCell>
     ),

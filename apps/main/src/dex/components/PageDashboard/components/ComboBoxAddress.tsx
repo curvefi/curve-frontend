@@ -20,10 +20,9 @@ import {
   useOverlay,
   useSeparator,
 } from 'react-aria'
-import type { ComboBoxStateOptions, ListState } from 'react-stately'
+import type { ComboBoxStateOptions, ListState, Node } from 'react-stately'
 import { useComboBoxState } from 'react-stately'
 import { styled } from 'styled-components'
-import type { Node } from '@react-types/shared'
 import { Box } from '@ui/Box'
 import { Icon } from '@ui/Icon'
 import { IconButton } from '@ui/IconButton'

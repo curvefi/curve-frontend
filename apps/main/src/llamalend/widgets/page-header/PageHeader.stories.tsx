@@ -64,6 +64,7 @@ const supplyRate: SupplyRate = {
 const availableLiquidity: AvailableLiquidity = {
   value: 12_500_000,
   max: 30_000_000,
+  notional: 12_500_000 * 1.02, // Assuming a $1.02 USD rate for the borrow token
   loading: false,
 }
 

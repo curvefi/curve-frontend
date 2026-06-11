@@ -54,9 +54,6 @@ export const useLlammaActivityTradesConfig = ({
     [tradesData?.trades, networkConfig, network],
   )
 
-  const isLoading = isTradesLoading || !isHydrated || !isMarketAvailable
-  const isError = isTradesError && isMarketAvailable && isHydrated
-
   const table = useTable({
     data: tradesWithUrls,
     columns: LLAMMA_TRADES_COLUMNS,
@@ -67,5 +64,11 @@ export const useLlammaActivityTradesConfig = ({
     ...getTableOptions(tradesWithUrls),
   })
 
-  return { table, isLoading, isError, emptyMessage: t`No swap data found.` }
+  return {
+    table,
+    isLoading: isTradesLoading || !isHydrated || !isMarketAvailable,
+    isError: isTradesError && isHydrated && isMarketAvailable,
+    emptyMessage: t`No swap data found.`,
+    errorMessage: t`Could not load swap data.`,
+  }
 }

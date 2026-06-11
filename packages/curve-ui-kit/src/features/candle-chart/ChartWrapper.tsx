@@ -1,12 +1,10 @@
-import { useMemo, useRef } from 'react'
-import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { CandleChart } from '@ui-kit/features/candle-chart/CandleChart'
 import { useChartPalette } from '@ui-kit/features/candle-chart/hooks/useChartPalette'
 import { t } from '@ui-kit/lib/i18n'
 import { ChartStateWrapper } from '@ui-kit/shared/ui/Chart'
 import type { ChartSelections } from '@ui-kit/shared/ui/Chart/ChartHeader'
-import type { FetchingStatus, LiquidationRanges, LpPriceOhlcDataFormatted, OraclePriceData, TimeOption } from './types'
+import type { LiquidationRanges, LpPriceOhlcDataFormatted, OraclePriceData, TimeOption } from './types'
 
 export type OhlcChartProps = {
   /**
@@ -14,29 +12,33 @@ export type OhlcChartProps = {
    */
   hideCandleSeriesLabel: boolean
   chartHeight: number
-  chartStatus: FetchingStatus
+  isLoading: boolean
+  isEmpty?: boolean
+  emptyMessage?: string
+  error: Error | null
   betaBackgroundColor?: string // Used during the beta phase of the new theme migration to pass theme bg color
   ohlcData: LpPriceOhlcDataFormatted[]
   oraclePriceData?: OraclePriceData[]
   liquidationRange?: LiquidationRanges
-  selectedChartKey: string
+  selectedChartKey: string | undefined
   timeOption: TimeOption
-  refetchPricesData: () => void
-  fetchMoreChartData: (lastFetchEndTime: number) => void
+  refetchPricesData: () => Promise<unknown> | void
+  fetchMoreChartData: () => Promise<unknown>
   oraclePriceVisible?: boolean
   liqRangeCurrentVisible?: boolean
   liqRangeNewVisible?: boolean
-  lastFetchEndTime: number
-  refetchingCapped: boolean
   selectChartList: ChartSelections[]
-  latestOraclePrice?: string
+  latestOraclePrice?: number
   onVisiblePriceRangeChange?: (min: number, max: number) => void
 }
 
 export const ChartWrapper = ({
   hideCandleSeriesLabel,
   chartHeight,
-  chartStatus,
+  isLoading,
+  isEmpty,
+  emptyMessage,
+  error,
   betaBackgroundColor,
   ohlcData,
   oraclePriceData,
@@ -48,60 +50,43 @@ export const ChartWrapper = ({
   oraclePriceVisible,
   liqRangeCurrentVisible,
   liqRangeNewVisible,
-  lastFetchEndTime,
-  refetchingCapped,
   selectChartList,
   latestOraclePrice,
   onVisiblePriceRangeChange,
 }: OhlcChartProps) => {
-  const clonedOhlcData = useMemo(() => [...ohlcData], [ohlcData])
-  const wrapperRef = useRef<HTMLDivElement>(null)
   const colors = useChartPalette({ backgroundOverride: betaBackgroundColor })
 
-  const isError = chartStatus === 'ERROR'
-  const errorMessage = t`Unable to fetch "${selectChartList?.find(c => c.key === selectedChartKey)?.label ?? ''}" data.`
-  const error = useMemo(() => (isError ? new Error(errorMessage) : null), [isError, errorMessage]) // todo: pass correct error from query instead of creating new error with message
+  const selectedChartLabel = selectChartList.find(c => c.key === selectedChartKey)?.label
+  const errorMessage = selectedChartLabel
+    ? t`Unable to fetch "${selectedChartLabel}" data.`
+    : t`Unable to fetch chart data.`
 
   return (
-    <Stack direction="column">
+    <Stack direction="column" sx={{ width: '100%', minWidth: 0 }}>
       <ChartStateWrapper
         height={chartHeight}
-        isLoading={chartStatus === 'LOADING'}
+        isLoading={isLoading}
         error={error}
         errorMessage={errorMessage}
-        refetchFunction={refetchPricesData}
+        isEmpty={isEmpty}
+        emptyMessage={emptyMessage}
+        refreshData={refetchPricesData}
       >
-        <Box
-          ref={wrapperRef}
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '100%',
-            minHeight: chartHeight,
-            position: 'relative',
-          }}
-        >
-          <CandleChart
-            hideCandleSeriesLabel={hideCandleSeriesLabel}
-            chartHeight={chartHeight}
-            ohlcData={clonedOhlcData}
-            oraclePriceData={oraclePriceData}
-            liquidationRange={liquidationRange}
-            timeOption={timeOption}
-            wrapperRef={wrapperRef}
-            colors={colors}
-            refetchingCapped={refetchingCapped}
-            fetchMoreChartData={fetchMoreChartData}
-            lastFetchEndTime={lastFetchEndTime}
-            liqRangeCurrentVisible={liqRangeCurrentVisible}
-            liqRangeNewVisible={liqRangeNewVisible}
-            oraclePriceVisible={oraclePriceVisible}
-            latestOraclePrice={latestOraclePrice}
-            onVisiblePriceRangeChange={onVisiblePriceRangeChange}
-          />
-        </Box>
+        <CandleChart
+          hideCandleSeriesLabel={hideCandleSeriesLabel}
+          chartHeight={chartHeight}
+          ohlcData={ohlcData}
+          oraclePriceData={oraclePriceData}
+          liquidationRange={liquidationRange}
+          timeOption={timeOption}
+          colors={colors}
+          fetchMoreChartData={fetchMoreChartData}
+          liqRangeCurrentVisible={liqRangeCurrentVisible}
+          liqRangeNewVisible={liqRangeNewVisible}
+          oraclePriceVisible={oraclePriceVisible}
+          latestOraclePrice={latestOraclePrice}
+          onVisiblePriceRangeChange={onVisiblePriceRangeChange}
+        />
       </ChartStateWrapper>
     </Stack>
   )

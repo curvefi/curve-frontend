@@ -3,10 +3,10 @@ import { timestamp } from '../schemas'
 
 const ohlc = z.object({
   time: timestamp,
-  open: z.number(),
-  close: z.number(),
-  high: z.number(),
-  low: z.number(),
+  open: z.number().nullable().optional(),
+  close: z.number().nullable().optional(),
+  high: z.number().nullable().optional(),
+  low: z.number().nullable().optional(),
 })
 
 export const getOHLCResponse = z

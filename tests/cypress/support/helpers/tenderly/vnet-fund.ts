@@ -1,4 +1,5 @@
 import { oneInt } from '@cy/support/generators'
+import { LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Hex } from '@primitives/address.utils'
 
 /**
@@ -26,6 +27,7 @@ export const fundEth = ({
       params: [recipientAddresses, amountWei],
       id: oneInt(),
     },
+    ...LOAD_TIMEOUT,
   })
 
 /**
@@ -56,4 +58,5 @@ export const fundErc20 = ({
       params: [tokenAddress, recipientAddresses, amountWei],
       id: oneInt(),
     },
+    ...LOAD_TIMEOUT,
   })

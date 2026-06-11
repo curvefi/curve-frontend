@@ -4,7 +4,6 @@ import { type Row } from '@tanstack/react-table'
 import type { Table } from '@tanstack/table-core'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
-import { useNewMarketListLayout } from '@ui-kit/hooks/useFeatureFlags'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { hasParentWithClass } from '@ui-kit/utils/dom'
 import { InvertOnHover } from '../InvertOnHover'
@@ -28,8 +27,6 @@ export type DataRowProps<T extends TableItem> = {
   table: Table<T>
   row: Row<T>
   expandedPanel?: ExpandedPanel<T>
-  isLastRow?: boolean
-  shouldStickLastRowToTop?: boolean
   shouldStickFirstColumn?: boolean
   verticalAlign?: 'top' | 'middle' | 'bottom'
 }
@@ -38,8 +35,6 @@ export const DataRow = <T extends TableItem>({
   table,
   row,
   expandedPanel,
-  isLastRow,
-  shouldStickLastRowToTop,
   shouldStickFirstColumn,
   verticalAlign = 'middle',
 }: DataRowProps<T>) => {
@@ -53,8 +48,6 @@ export const DataRow = <T extends TableItem>({
     [url, push, hasUrl],
   )
   const visibleCells = row.getVisibleCells()
-  // to do: remove shouldApplyStickyLastRow and sx code once LegacyDataTable is deleted
-  const shouldApplyStickyLastRow = !useNewMarketListLayout() && isLastRow && shouldStickLastRowToTop
 
   return (
     <>
@@ -83,14 +76,8 @@ export const DataRow = <T extends TableItem>({
                   color: t => t.design.Table.Text.Hover.Secondary,
                 },
               },
-              ...(shouldApplyStickyLastRow && {
-                // Keep the final row visible near the table end without covering the sticky header.
-                position: 'sticky',
-                top: 0,
-                backgroundColor: t => t.design.Table.Row.Default,
-              }),
             }),
-            [shouldApplyStickyLastRow, hasUrl, verticalAlign],
+            [hasUrl, verticalAlign],
           )}
           ref={setElement}
           data-testid={element && `data-table-row-${row.id}`}
