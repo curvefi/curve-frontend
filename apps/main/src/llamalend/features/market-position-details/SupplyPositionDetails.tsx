@@ -56,7 +56,7 @@ export const SupplyPositionDetails = ({ userSupplyRate, shares, supplyAsset, boo
     loading: supplyRateLoading,
     rebasingYield,
   } = userSupplyRate
-  const { loading: supplyAssetLoading, symbol: supplyAssetSymbol, depositedAmount } = supplyAsset
+  const { loading: supplyAssetLoading, symbol: supplyAssetSymbol, depositedAmount, depositedUsdValue } = supplyAsset
   const { value: sharesValue, staked: sharesStaked, loading: sharesLoading } = shares
   const { value: boostValue, loading: boostLoading } = boost
   const { period: averageRatePeriod } = AVERAGE_CATEGORIES[averageCategory]
@@ -109,7 +109,7 @@ export const SupplyPositionDetails = ({ userSupplyRate, shares, supplyAsset, boo
           <Metric
             size="medium"
             label={t`Amount supplied`}
-            value={depositedAmount}
+            value={depositedUsdValue}
             loading={supplyAssetLoading}
             valueOptions={{ unit: 'dollar' }}
             notional={

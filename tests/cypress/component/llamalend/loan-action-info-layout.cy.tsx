@@ -6,6 +6,7 @@ import { mockedWagmiConfig } from '@cy/support/helpers/llamalend/test-wagmi.help
 import { allViewports } from '@cy/support/ui'
 import { fromEntries, notFalsy } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
+import type { BaseConfig } from '@ui/utils'
 import { q } from '@ui-kit/types/util'
 import { mockRoutes } from '@ui-kit/widgets/RouteProvider/route.mock'
 
@@ -22,16 +23,17 @@ const routes: MarketRoutes = {
       {
         ...q({ data: mockRoutes.find(route => route.router === router) ?? null, isLoading: false, error: null }),
         isFetching: false,
+        enabled: true,
       },
     ]),
   ),
-  networks: {},
+  networks: { 1: { name: 'Ethereum' } as BaseConfig },
   chainId: 1,
   selectedRoute: mockRoutes[0],
+  selectedRouter: mockRoutes[0].router,
   enabled: true,
-  // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
-  onChange: async () => undefined,
-  onRefresh: () => undefined,
+  onChange: () => undefined,
+  onRefresh: () => Promise.resolve(),
   tokenOut: { symbol: 'crvUSD', decimals: 18, usdRate: q({ data: 1, error: null, isLoading: false }) },
 }
 

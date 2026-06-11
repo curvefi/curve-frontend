@@ -1,6 +1,6 @@
 import { TooltipProps } from 'recharts'
 import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
-import type { ScrvUsdRevenue } from '@/loan/entities/scrvusd-revenue'
+import type { ScrvUsdRevenue } from '@/loan/entities/scrvusd-revenue.query'
 import { formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ChartTooltipDataRow, ChartTooltipSeriesGroup, ChartTooltipShell } from '@ui-kit/shared/ui/Chart'

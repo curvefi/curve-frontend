@@ -17,7 +17,7 @@ import { notFalsy, objectKeys } from '@primitives/objects.utils'
 import { getLib, requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
 import { isZapV2Enabled } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
-import { LlamaMarketType, LlamaMarketVersion } from '@ui-kit/types/market'
+import { LlamaMarketType } from '@ui-kit/types/market'
 import { CRVUSD, decimalMinus, decimalSum, formatNumber } from '@ui-kit/utils'
 import { SOLVENCY_THRESHOLDS } from './llama-markets.constants'
 
@@ -427,5 +427,4 @@ export const lowSolvencyDeprecatedMessage = (solvencyPercent: number | null) =>
     ? t`This market is deprecated due to low solvency`
     : null
 
-export const getLlamaMarketVersion = (market: LlamaMarketTemplate) =>
-  market instanceof LendMarketTemplate ? (market.version as LlamaMarketVersion) : LlamaMarketVersion.v1
+export const getZapAddress = (market: LlamaMarketTemplate) => market.getZapAddress() as Address
