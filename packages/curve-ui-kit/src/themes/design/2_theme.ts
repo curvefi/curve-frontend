@@ -418,6 +418,7 @@ export const createLightDesign = (
   } as const
 
   const Badges = {
+    Radius: '0',
     Border: {
       Default: Light.Badges.Border.Default,
       Active: Light.Badges.Border.Active,
@@ -972,6 +973,7 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
   } as const
 
   const Badges = {
+    Radius: '0',
     Border: {
       Default: Dark.Badges.Border.Default,
       Active: Dark.Badges.Border.Active,
@@ -1487,6 +1489,7 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
   } as const
 
   const Badges = {
+    Radius: '0',
     Border: {
       Default: Chad.Badges.Border.Default,
       Active: Chad.Badges.Border.Active,

@@ -204,7 +204,7 @@ export const defineMuiChip = (
       borderStyle: 'solid',
       borderWidth: Badge.BorderWidth,
       borderColor: 'transparent',
-      borderRadius: Chips.BorderRadius.NonClickable,
+      borderRadius: Badges.Radius,
       color: TextColors.Primary,
       backgroundColor: 'transparent',
       '&:has(.MuiChip-icon), &:has(.MuiChip-deleteIcon)': {
