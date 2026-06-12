@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 import { usePoolList } from '@/dex/queries/pool-list.query'
+import { getLocalPoolsBlacklist } from '@/dex/queries/pools-blacklist.query'
 import type { NetworkConfig } from '@/dex/types/main.types'
 import type { PoolType, V2PoolSortField as PoolSortField } from '@curvefi/prices-api/pools'
 import {
@@ -20,7 +21,7 @@ import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { LegacyDataTable } from '@ui-kit/shared/ui/DataTable/LegacyDataTable'
 import { LegacyTableFilters } from '@ui-kit/shared/ui/DataTable/LegacyTableFilters'
 import { LegacyTableFiltersTitles } from '@ui-kit/shared/ui/DataTable/LegacyTableFiltersTitles'
-import { getPoolListItem } from './apiPoolList.utils'
+import { getPoolListItem, normalizeAddress } from './apiPoolList.utils'
 import { PoolListChips } from './chips/PoolListChips'
 import { POOL_LIST_COLUMNS, PoolColumnId, getDefaultSort } from './columns'
 import { PoolListEmptyState } from './components/PoolListEmptyState'
@@ -144,6 +145,15 @@ export const PoolListApiTable = ({ network }: { network: NetworkConfig }) => {
     sortBy,
     sortDirection,
   })
+  /**
+   * the prices v2 pool-list endpoint already applies the getPoolFilters blacklist
+   *  upstream so we only need to apply the local repo blacklist
+   */
+  const localBlacklist = useMemo(() => new Set(getLocalPoolsBlacklist(network.id).map(normalizeAddress)), [network.id])
+  const pools = useMemo(
+    () => poolList?.pools.filter(({ address }) => !localBlacklist.has(normalizeAddress(address))) ?? EMPTY,
+    [localBlacklist, poolList?.pools],
+  )
   const poolCount = isPlaceholderData ? undefined : poolList?.count
   const emptyStateFilters = useMemo(
     () => ({
@@ -153,8 +163,8 @@ export const PoolListApiTable = ({ network }: { network: NetworkConfig }) => {
     [poolType, searchText],
   )
   const data = useMemo(
-    () => poolList?.pools.map(pool => getPoolListItem(network, pool, getUserPositionOptions(pool.address))) ?? EMPTY,
-    [getUserPositionOptions, network, poolList?.pools],
+    () => pools.map(pool => getPoolListItem(network, pool, getUserPositionOptions(pool.address))),
+    [getUserPositionOptions, network, pools],
   )
   const [expanded, setExpanded] = useState<ExpandedState>({})
   const { columnSettings, columnVisibility } = usePoolListVisibilitySettings(LOCAL_STORAGE_KEY, {

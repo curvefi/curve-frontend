@@ -225,6 +225,9 @@ const getBlacklist = (blacklistPricesApi: QueryData<typeof usePricesApiBlacklist
     ...blacklistPricesApi.filter(({ chain }) => chain === blockchainId).map(({ address }) => address),
   ].map(address => getAddress(address)) // just to be sure there's no missing checksums from the prices api
 
+export const getLocalPoolsBlacklist = (blockchainId: string | undefined) =>
+  blockchainId ? (blacklist[blockchainId as ChainBlacklist] ?? []).map(address => getAddress(address)) : []
+
 export const usePoolsBlacklist = ({ blockchainId }: ChainNameParams) =>
   mapQuery(usePricesApiBlacklist({}), blacklist => (blockchainId ? getBlacklist(blacklist, blockchainId) : undefined))
 
