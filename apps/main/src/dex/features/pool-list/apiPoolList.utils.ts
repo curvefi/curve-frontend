@@ -15,6 +15,9 @@ export type PoolListItemOptions = {
   poolId?: string
 }
 
+/**
+ * Normalize v2 API addresses so they match legacy curve-js/store pool ids by address.
+ */
 export const normalizeAddress = (address: string) => address.toLowerCase()
 
 export const getPoolIdByAddressEntries = (poolMapper: PoolIdByAddressSource | undefined) =>
@@ -35,6 +38,7 @@ const getPoolRewards = (pool: V2Pool, poolId: string): RewardsApy => {
 
   return {
     poolId,
+    // Match curve-js RewardsApy: missing base APRs become 0 and no CRV rewards are represented as [0, 0].
     base: {
       day: `${pool.baseDailyApr ?? 0}`,
       week: `${pool.baseWeeklyApr ?? 0}`,
@@ -55,6 +59,7 @@ const getPoolRewards = (pool: V2Pool, poolId: string): RewardsApy => {
   }
 }
 
+/** Legacy pool list components data shape adapter */
 export const getPoolListItem = (
   network: NetworkConfig,
   pool: V2Pool,
