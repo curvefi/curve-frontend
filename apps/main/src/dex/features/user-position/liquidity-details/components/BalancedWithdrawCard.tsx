@@ -21,7 +21,7 @@ export const BalancedWithdrawCard = ({
   <Card size="inline">
     <CardHeader title={t`Balanced withdraw amount`} />
     <CardContent component={Stack} sx={{ gap: Spacing.xs, marginBlockStart: Spacing.xs }}>
-      {(rows.data ?? []).map(row => (
+      {rows.data?.map(row => (
         <ActionInfo
           key={row.address}
           label={
