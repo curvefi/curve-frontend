@@ -1,7 +1,7 @@
 import { useConnection } from 'wagmi'
 import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns'
 import { calculateLtv, getDisplayHealth, getLiquidationStatus, isBelowRange } from '@/llamalend/llama.utils'
-import { useUserLendingVaultEarnings, useUserLendingVaultStats } from '@/llamalend/queries/market-list/lending-vaults'
+import { useUserLendingVaultStats } from '@/llamalend/queries/market-list/lending-vaults'
 import { type LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { useUserMintMarketStats } from '@/llamalend/queries/market-list/mint-markets'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
@@ -15,35 +15,28 @@ const statsColumns = [
   LlamaMarketColumnId.UserCollateral,
   LlamaMarketColumnId.UserLtv,
 ]
-const earningsColumns = [
-  LlamaMarketColumnId.UserEarnings,
-  LlamaMarketColumnId.UserDeposited,
-  LlamaMarketColumnId.UserBoostMultiplier,
-]
 
 /**
  * Hook that fetches the user's stats for a given market.
  * Depending on the column and market type, it fetches the stats from different endpoints.
  * It returns the stats data and an error if any.
- * @param market - The market to fetch stats for
- * @param column - The column to fetch stats for
  * @returns The stats data and an error if any
  */
-export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColumnId) {
-  const { type, userHasPositions, controllerAddress, vaultAddress, chain } = market
+export function useUserMarketStats(
+  { assets, type, userHasPositions, controllerAddress, chain }: LlamaMarket,
+  column?: LlamaMarketColumnId,
+) {
   const { address: userAddress } = useConnection()
   const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
-    chainId: requireChainId(market.chain),
-    tokenAddress: market.assets.collateral.address,
+    chainId: requireChainId(chain),
+    tokenAddress: assets.collateral.address,
   })
   const { data: borrowedUsdRate, isLoading: borrowedUsdRateLoading } = useTokenUsdRate({
-    chainId: requireChainId(market.chain),
-    tokenAddress: market.assets.borrowed.address,
+    chainId: requireChainId(chain),
+    tokenAddress: assets.borrowed.address,
   })
 
   const enableStats = !!userHasPositions?.Borrow && (!column || statsColumns.includes(column))
-  const enableEarnings = !!userHasPositions?.Supply && column != null && earningsColumns.includes(column)
-
   const enableLendingStats = enableStats && type === LlamaMarketType.Lend
   const enableMintStats = enableStats && type === LlamaMarketType.Mint
 
@@ -55,20 +48,13 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
     isLoading: loadingLend,
   } = useUserLendingVaultStats(params, enableLendingStats)
 
-  // The API endpoint for user earnings is an exception in that it relies on the vault address instead of controller address.
-  const {
-    data: earnData,
-    error: earnError,
-    isLoading: loadingEarn,
-  } = useUserLendingVaultEarnings({ ...params, contractAddress: vaultAddress }, enableEarnings)
-
   const { data: mintData, error: mintError, isLoading: loadingMint } = useUserMintMarketStats(params, enableMintStats)
 
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
   const stats = (enableLendingStats && lendData) || (enableMintStats && mintData)
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-  const error = (enableLendingStats && lendError) || (enableMintStats && mintError) || (enableEarnings && earnError)
-  const isLoading = loadingLend || loadingEarn || loadingMint || collateralUsdRateLoading || borrowedUsdRateLoading
+  const error = (enableLendingStats && lendError) || (enableMintStats && mintError)
+  const isLoading = loadingLend || loadingMint || collateralUsdRateLoading || borrowedUsdRateLoading
 
   const borrowedAmount = stats ? ('borrowed' in stats ? stats.borrowed : stats.stablecoin) : 0
 
@@ -86,8 +72,8 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
         borrowed: stats.debt,
         collateral: {
           amount: stats.collateral,
-          address: market?.assets?.collateral?.address,
-          symbol: market?.assets?.collateral?.symbol,
+          address: assets?.collateral?.address,
+          symbol: assets?.collateral?.symbol,
           usdRate: collateralUsdRate,
         },
         /**
@@ -96,8 +82,8 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
          */
         borrowToken: {
           amount: borrowedAmount,
-          address: market?.assets?.borrowed?.address,
-          symbol: market?.assets?.borrowed?.symbol,
+          address: assets?.borrowed?.address,
+          symbol: assets?.borrowed?.symbol,
           usdRate: borrowedUsdRate,
         },
         ltv: calculateLtv(stats.debt, stats.collateral, borrowedAmount, borrowedUsdRate, collateralUsdRate),
@@ -109,8 +95,9 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
         },
       },
     }),
-    ...(enableEarnings && { data: { earnings: earnData } }),
     ...(error && { error }),
     isLoading,
   }
 }
+
+export type MarketStats = ReturnType<typeof useUserMarketStats>['data']

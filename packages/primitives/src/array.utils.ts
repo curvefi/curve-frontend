@@ -56,3 +56,5 @@ export const median = (values: number[]) => {
   const middle = Math.floor(sorted.length / 2)
   return sorted.length % 2 === 0 ? sorted[middle - 1] : sorted[middle]
 }
+
+export const zip = <T, U>(a: T[], b: U[]): [T, U][] => a.map((k, i) => [k, b[i]] as const)

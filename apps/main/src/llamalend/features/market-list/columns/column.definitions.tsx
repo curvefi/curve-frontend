@@ -111,18 +111,18 @@ export const LLAMA_MARKET_COLUMNS = [
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
-  display(LlamaMarketColumnId.UserEarnings, {
+  accessor(LlamaMarketColumnId.UserEarnings, 'lendingPosition.earnings', {
     cell: PriceCell,
     meta: { type: 'numeric', hidden: true }, // hidden until we have a backend
     sortUndefined: 'last',
   }),
-  display(LlamaMarketColumnId.UserDeposited, {
+  accessor(LlamaMarketColumnId.UserDeposited, 'lendingPosition.totalCurrentAssets', {
     cell: PriceCell,
     meta: { type: 'numeric' },
     filterFn: boolFilterFn,
     sortUndefined: 'last',
   }),
-  display(LlamaMarketColumnId.UserBoostMultiplier, {
+  accessor(LlamaMarketColumnId.UserBoostMultiplier, 'lendingPosition.boostMultiplier', {
     cell: BoostCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',

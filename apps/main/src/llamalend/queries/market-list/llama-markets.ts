@@ -23,6 +23,7 @@ import {
   getLendingVaultsOptions,
   getUserLendingSuppliesOptions,
   getUserLendingVaultsOptions,
+  type LendingPosition,
   LendingVault,
 } from './lending-vaults'
 import { getMintMarketOptions, getUserMintMarketsOptions, MintMarket } from './mint-markets'
@@ -71,6 +72,7 @@ export type LlamaMarket = {
     // extra lending incentives, like OP rewards (so non CRV)
     incentives: ExtraIncentive[]
   }
+  lendingPosition?: LendingPosition
   type: LlamaMarketType
   url: string
   rewards: CampaignRewards[]
@@ -122,12 +124,11 @@ const convertLendingVault = (
   favoriteMarkets: Set<Address>,
   campaigns: Record<string, CampaignRewards[]> = {},
   userBorrows: Set<Address>,
-  userSupplied: Set<Address>,
+  lendingPosition: LendingPosition | undefined,
   badDebtUsd?: number,
 ): LlamaMarket => {
   const marketType = LlamaMarketType.Lend
   const hasBorrowed = userBorrows.has(controller)
-  const hasSupplied = userSupplied.has(vault)
   const totalExtraRewardApy =
     // sumBy returns 0 for empty arrays
     extraRewardApr.length ? sumBy(extraRewardApr, reward => aprToApy(reward.rate)!) : null
@@ -191,6 +192,7 @@ const convertLendingVault = (
           }))
         : [],
     },
+    lendingPosition: lendingPosition && { ...lendingPosition, boostMultiplier: 10 },
     type: marketType,
     url: getInternalUrl('lend', chain, `${LEND_ROUTES.PAGE_MARKETS}/${controller}`),
     deprecatedMessage:
@@ -199,11 +201,8 @@ const convertLendingVault = (
     rewards: [...(campaigns[vault.toLowerCase()] ?? []), ...(campaigns[controller.toLowerCase()] ?? [])],
     leverage: NO_LEVERAGE_LEND[chain]?.includes(controller) ? null : leverage,
     userHasPositions:
-      hasBorrowed || hasSupplied
-        ? {
-            [MarketRateType.Borrow]: hasBorrowed,
-            [MarketRateType.Supply]: hasSupplied,
-          }
+      hasBorrowed || lendingPosition
+        ? { [MarketRateType.Borrow]: hasBorrowed, [MarketRateType.Supply]: !!lendingPosition }
         : null,
     createdAt: new Date(createdAt).getTime(),
     favoriteKey: vault,
@@ -377,7 +376,7 @@ export const useLlamaMarkets = (
         const favoriteMarketsSet = new Set(favoriteMarkets.data)
         const userBorrows = new Set(recordValues(userLendingVaults.data ?? {}).flat())
         const userMints = new Set(recordValues(userMintMarkets.data ?? {}).flat())
-        const userSupplied = new Set(recordValues(userSuppliedMarkets.data ?? {}).flat())
+        const hasSupplied = recordValues(userSuppliedMarkets.data ?? {}).some(c => c)
         const countMarket = createCountMarket(mintMarkets.data)
         const campaigns = combineCampaigns([externalCampaigns.data, merklCampaigns.data])
         const getLendMarketBadDebt = createGetBadDebtMarket(badDebtLendMarkets.data)
@@ -391,7 +390,7 @@ export const useLlamaMarkets = (
         const data: LlamaMarketsResult | undefined = isReady
           ? {
               userHasPositions:
-                userBorrows.size > 0 || userMints.size > 0 || userSupplied.size > 0
+                userBorrows.size > 0 || userMints.size > 0 || hasSupplied
                   ? {
                       [LlamaMarketType.Mint]: {
                         [MarketRateType.Borrow]: userMints.size > 0,
@@ -399,7 +398,7 @@ export const useLlamaMarkets = (
                       },
                       [LlamaMarketType.Lend]: {
                         [MarketRateType.Borrow]: userBorrows.size > 0,
-                        [MarketRateType.Supply]: userSupplied.size > 0,
+                        [MarketRateType.Supply]: hasSupplied,
                       },
                     }
                   : null,
@@ -411,7 +410,7 @@ export const useLlamaMarkets = (
                     favoriteMarketsSet,
                     campaigns,
                     userBorrows,
-                    userSupplied,
+                    userSuppliedMarkets.data?.[vault.chain]?.[vault.vault],
                     getLendMarketBadDebt(vault.chain, vault.controller),
                   ),
                 ),
