@@ -129,7 +129,7 @@ export const SupplyPositionDetails = ({ chainId, market, userAddress, blockchain
         value={SUPPLY_POSITION_TAB}
         options={[{ value: SUPPLY_POSITION_TAB, label: t`Supply Details` }]}
       />
-      <Grid container spacing={Spacing.sm} sx={{ padding: Spacing.md, backgroundColor: t => t.design.Layer[1].Fill }}>
+      <Grid container spacing={Spacing.md} sx={{ padding: Spacing.sm, backgroundColor: t => t.design.Layer[1].Fill }}>
         <MetricGrid>
           <Metric
             size="medium"
