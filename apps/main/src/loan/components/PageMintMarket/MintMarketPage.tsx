@@ -117,11 +117,12 @@ export const MintMarketPage = () => {
       }
       header={
         <MarketPageHeader
+          blockchainId={network.id}
           chainId={rChainId}
           marketId={market?.id ?? ''}
           isLoading={!isHydrated}
           market={market}
-          blockchainId={network.id}
+          marketType={LlamaMarketType.Mint}
         />
       }
     >

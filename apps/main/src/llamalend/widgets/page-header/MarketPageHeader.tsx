@@ -1,7 +1,6 @@
 import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
-import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { type Chain } from '@curvefi/prices-api'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
@@ -25,7 +24,7 @@ const { Spacing } = SizesAndSpaces
 const generateSubtitle = (
   collateralSymbol: string | undefined,
   borrowedSymbol: string | undefined,
-  type: LlamaMarketType,
+  type: LlamaMarketType | undefined,
 ) =>
   collateralSymbol && borrowedSymbol && type === LlamaMarketType.Mint
     ? t`Use ${collateralSymbol} to borrow and mint ${borrowedSymbol}`
@@ -36,20 +35,21 @@ const generateMarketTitle = (collateralSymbol: string | undefined, borrowedSymbo
   t`Market`
 
 export const MarketPageHeader = ({
+  blockchainId,
   chainId,
   marketId,
   isLoading,
   market,
-  blockchainId,
+  marketType,
 }: {
+  blockchainId: Chain
   chainId: number
   marketId: string | undefined
   isLoading: boolean
   market: LlamaMarketTemplate | undefined
-  blockchainId: Chain
+  marketType: LlamaMarketType
 }) => {
   const { borrowRate, supplyRate, availableLiquidity } = usePageHeader({ chainId, marketId, market, blockchainId })
-  const marketType = market instanceof MintMarketTemplate ? LlamaMarketType.Mint : LlamaMarketType.Lend
   const { collateralToken, borrowToken } = market
     ? getTokens(market)
     : { collateralToken: undefined, borrowToken: undefined }

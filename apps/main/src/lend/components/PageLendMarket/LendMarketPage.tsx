@@ -141,11 +141,12 @@ export const LendMarketPage = () => {
       }
       header={
         <MarketPageHeader
+          blockchainId={network.id}
           chainId={chainId}
           marketId={marketId}
           isLoading={!isHydrated}
           market={market}
-          blockchainId={network.id}
+          marketType={LlamaMarketType.Lend}
         />
       }
     >

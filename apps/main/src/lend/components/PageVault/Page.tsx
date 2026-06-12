@@ -19,7 +19,7 @@ import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
-import { MarketRateType } from '@ui-kit/types/market'
+import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 import { useLendMarket } from '../../hooks/useLendMarket'
 import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
@@ -94,11 +94,12 @@ export const Page = () => {
       formTabs={chainId && <VaultTabs {...pageProps} params={params} />}
       header={
         <MarketPageHeader
+          blockchainId={network.id}
           chainId={chainId}
           marketId={market?.id}
           isLoading={!isHydrated}
           market={market}
-          blockchainId={network.id}
+          marketType={LlamaMarketType.Lend}
         />
       }
     >
