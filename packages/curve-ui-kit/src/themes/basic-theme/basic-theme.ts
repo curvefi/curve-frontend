@@ -36,6 +36,7 @@ export const basicMuiTheme = createMuiTheme({
 })
 
 export type Responsive<T = string> = Record<Breakpoint, T>
+export type ResponsiveOrValue<T = string> = T | Responsive<T>
 
 /**
  * Create a responsive object based on the breakpoints defined in the basicMuiTheme.

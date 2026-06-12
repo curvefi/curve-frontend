@@ -5,6 +5,8 @@ import { SurfacesAndText } from './1_surfaces_text'
 const InsetOverline = '0 0 auto' as const // Top border only
 const InsetUnderline = 'auto 0 0' as const // Bottom border only
 
+const Radius = { square: '0' } as const
+
 const SliderBackground = {
   Safe: { 25: Reds[500], 50: Oranges[500], 75: Yellows[500], 100: Greens[400] },
   Danger: { 25: Reds[200], 50: Reds[300], 75: Reds[400], 100: Reds[500] },
@@ -148,10 +150,6 @@ export const createLightDesign = (
     FontFamily: 'Mona Sans',
     FontWeight: LightFontWeight,
     TypographyVariantOverrides: DefaultTypographyVariantOverrides,
-  } as const
-
-  const Radius = {
-    square: '0',
   } as const
 
   const Button = {
@@ -710,10 +708,6 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
     TypographyVariantOverrides: DefaultTypographyVariantOverrides,
   } as const
 
-  const Radius = {
-    square: '0',
-  } as const
-
   const Button = {
     Focus_Outline_Width: '0.125rem', // 2px
     Focus_Outline: Color.Primary[500],
@@ -1229,10 +1223,6 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
     FontFamily: 'Ioskeley Mono',
     FontWeight: ChadFontWeight,
     TypographyVariantOverrides: ChadTypographyVariantOverrides,
-  } as const
-
-  const Radius = {
-    square: '0',
   } as const
 
   const Button = {

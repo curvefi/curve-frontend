@@ -4,7 +4,7 @@ import type { Components } from '@mui/material'
 import type { ChipProps } from '@mui/material/Chip'
 import type { CSSObject, TypographyVariantsOptions } from '@mui/material/styles'
 import { mapRecord, recordValues } from '@primitives/objects.utils'
-import { fixedResponsive, handleBreakpoints, Responsive } from '@ui-kit/themes/basic-theme'
+import { fixedResponsive, handleBreakpoints, Responsive, ResponsiveOrValue } from '@ui-kit/themes/basic-theme'
 import { DesignSystem } from '@ui-kit/themes/design'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
@@ -21,16 +21,17 @@ type ChipSizeDefinition = {
 type BadgeSizeDefinition = {
   font: TypographyVariantKey
   height: string
-  iconSize: Responsive
-  paddingX: Responsive
-  paddingY: Responsive
-  iconGap: Responsive
-  lineHeight: Responsive
+  iconSize: ResponsiveOrValue
+  paddingX: ResponsiveOrValue
+  paddingY: ResponsiveOrValue
+  iconGap: ResponsiveOrValue
+  lineHeight: ResponsiveOrValue
 }
 type ChipSizes = NonNullable<ChipProps['size']>
 type ChipVariantProps = Partial<ChipProps> & { ownerState: Partial<ChipProps> }
 type ClickableChipVariant = NonNullable<ChipProps['variant']>
 type ClickableChipColor = Extract<NonNullable<ChipProps['color']>, 'selected' | 'unselected'>
+
 const isBadgeVariant = ({ ownerState }: ChipVariantProps) => !ownerState.clickable
 
 const createColor = (
@@ -279,7 +280,6 @@ export const defineMuiChip = (
           // Target chips with empty labels (icon-only badges)
           '&:has(.MuiChip-label:empty)': {
             width: height, // constant width for icon-only badges (perfect square)
-            height,
             gap: 0,
             padding: 0,
             justifyContent: 'center',

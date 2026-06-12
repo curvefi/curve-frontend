@@ -1,7 +1,5 @@
 import { Sizing, Spacing } from './0_primitives'
 
-const FixedResponsive = <T extends string>(value: T) => ({ mobile: value, tablet: value, desktop: value })
-
 const MappedSpacing = {
   '3xs': { mobile: Spacing[75], tablet: Spacing[75], desktop: Spacing[75] },
   xxs: { mobile: Spacing[100], tablet: Spacing[100], desktop: Spacing[100] },
@@ -194,25 +192,25 @@ const MappedBadge = {
     extraLarge: MappedIconSize.xl,
   },
   Gap: {
-    extraSmall: FixedResponsive(Spacing[75]),
-    small: FixedResponsive(Spacing[100]),
-    medium: FixedResponsive(Spacing[100]),
-    large: FixedResponsive(Spacing[200]),
-    extraLarge: FixedResponsive(Spacing[200]),
+    extraSmall: Spacing[75],
+    small: Spacing[100],
+    medium: Spacing[100],
+    large: Spacing[200],
+    extraLarge: Spacing[200],
   },
   Padding: {
-    extraSmall: { x: FixedResponsive(Spacing[100]), y: FixedResponsive(Spacing[75]) },
-    small: { x: FixedResponsive(Spacing[200]), y: FixedResponsive(Spacing[100]) },
-    medium: { x: FixedResponsive(Spacing[200]), y: FixedResponsive(Spacing[300]) },
-    large: { x: FixedResponsive(Spacing[300]), y: FixedResponsive(Spacing[200]) },
-    extraLarge: { x: FixedResponsive(Spacing[300]), y: FixedResponsive(Spacing[200]) },
+    extraSmall: { x: Spacing[100], y: Spacing[75] },
+    small: { x: Spacing[200], y: Spacing[100] },
+    medium: { x: Spacing[200], y: Spacing[300] },
+    large: { x: Spacing[300], y: Spacing[200] },
+    extraLarge: { x: Spacing[300], y: Spacing[200] },
   },
   LineHeight: {
     extraSmall: MappedLineHeight.xs,
     small: MappedLineHeight.xs,
     medium: MappedLineHeight.xs,
     large: MappedLineHeight.md,
-    extraLarge: FixedResponsive(Sizing[300]),
+    extraLarge: Sizing[300],
   },
 } as const
 
