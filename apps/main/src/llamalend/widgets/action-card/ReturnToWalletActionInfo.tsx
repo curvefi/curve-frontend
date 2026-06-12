@@ -24,7 +24,7 @@ export function ReturnToWalletActionInfo({
       />
       {second && (
         <ActionInfo
-          label={''}
+          label=""
           valueTooltip={`${formatNumber(second.value, { abbreviate: false })} ${second.symbol}`}
           value={second ? formatNumber(second.value, { abbreviate: true }) : '-'}
           valueRight={second.symbol}
