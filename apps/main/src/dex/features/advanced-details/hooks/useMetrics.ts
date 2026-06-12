@@ -19,12 +19,13 @@ export const useMetrics = ({
   const { data: volumeFromCurve } = usePoolVolume({ chainId, poolId })
   const { data: tvlFromCurve } = usePoolTvl({ chainId, poolId })
   const staked = usePoolTotalStaked(poolDataCacheOrApi)
-  const tvl = maybe(tvlFromCurve ?? pricesApiPoolData?.tvlUsd, x => +x)
-  const volume = maybe(volumeFromCurve ?? pricesApiPoolData?.tradingVolume24h, x => +x)
 
   return {
     gaugeTotalSupply: maybe(staked?.gaugeTotalSupply, x => +x),
     totalStakedPercent: maybe(staked?.totalStakedPercent, x => +x),
-    liquidityUtilization: maybes([tvl, volume], ([tvl, volume]) => (tvl === 0 ? 0 : (volume / tvl) * 100)),
+    liquidityUtilization: maybes(
+      [tvlFromCurve ?? pricesApiPoolData?.tvlUsd, volumeFromCurve ?? pricesApiPoolData?.tradingVolume24h],
+      ([tvl, volume]) => (+tvl === 0 ? 0 : (+volume / +tvl) * 100),
+    ),
   }
 }
