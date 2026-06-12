@@ -19,6 +19,7 @@ export const PoolListChips = ({
   onSearch,
   sortField,
   sortOptions,
+  showHiddenCountReset = true,
   ...filterProps
 }: {
   hiddenCount: number
@@ -29,6 +30,7 @@ export const PoolListChips = ({
   searchText: string
   onSearch: (value: string) => void
   sortOptions?: readonly { id: PoolColumnId; label: string }[]
+  showHiddenCountReset?: boolean
 } & PoolListFilterChipsProps) => {
   const isMobile = useIsMobile()
   return (
@@ -44,6 +46,7 @@ export const PoolListChips = ({
               resetFilters={resetFilters}
               searchText={searchText}
               onSearch={onSearch}
+              showHiddenCountReset={showHiddenCountReset}
               {...filterProps}
             />
           </Grid>
@@ -58,7 +61,9 @@ export const PoolListChips = ({
           <PoolListFilterChips {...filterProps} />
         </Grid>
       )}
-      {!isMobile && <HiddenCountResetButton hiddenCount={hiddenCount} resetFilters={resetFilters} />}
+      {!isMobile && showHiddenCountReset && (
+        <HiddenCountResetButton hiddenCount={hiddenCount} resetFilters={resetFilters} />
+      )}
     </Grid>
   )
 }

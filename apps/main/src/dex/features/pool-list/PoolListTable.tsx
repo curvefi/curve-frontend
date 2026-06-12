@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { usePoolList } from '@/dex/queries/pool-list.query'
 import { getLocalPoolsBlacklist } from '@/dex/queries/pools-blacklist.query'
 import type { NetworkConfig } from '@/dex/types/main.types'
-import type { PoolType, V2PoolSortField as PoolSortField } from '@curvefi/prices-api/pools'
+import type { V2PoolFilterType as PoolType, V2PoolSortField as PoolSortField } from '@curvefi/prices-api/pools'
 import { recordEntries } from '@primitives/objects.utils'
 import {
   type ExpandedState,
@@ -33,16 +33,19 @@ const LOCAL_STORAGE_KEY = 'dex-pool-list'
 const PER_PAGE = 50
 const EMPTY: never[] = []
 
-// Omitted "main", "factory", "factory_crypto", and "crypto" from available filters
+// The API bundles crypto, factory_crypto, and twocrypto_ng pools under the "crypto" filter.
+// Omitted "main" and "factory" from available filters.
 const POOL_TYPE_FILTERS = [
   { key: 'stableswapng', label: t`Stable NG` },
   { key: 'crvusd', label: t`crvUSD` },
-  { key: 'twocryptong', label: t`Twocrypto` },
+  { key: 'crypto', label: t`Twocrypto` },
   { key: 'factory_tricrypto', label: t`Tricrypto` },
 ] satisfies { key: PoolType; label: string }[]
 
 type PoolTypeFilter = (typeof POOL_TYPE_FILTERS)[number]['key']
 const POOL_TYPES = POOL_TYPE_FILTERS.map(({ key }) => key)
+const POOL_TYPE_SET = new Set<string>(POOL_TYPES)
+const CRYPTO_POOL_TYPE_ALIASES = new Set<string>(['factory_crypto', 'twocryptong'])
 const POOL_TYPE_FILTER_GROUPS = [POOL_TYPE_FILTERS]
 
 const API_SORT_COLUMNS = {
@@ -63,8 +66,10 @@ const POOL_LIST_API_COLUMNS = POOL_LIST_COLUMNS.map(column =>
   column.id === PoolColumnId.RewardsOther ? { ...column, header: t`Rewards tAPR` } : column,
 )
 
-const isPoolType = (value: string | null): value is PoolTypeFilter =>
-  value != null && POOL_TYPES.includes(value as PoolTypeFilter)
+const isPoolType = (value: string | null): value is PoolTypeFilter => value != null && POOL_TYPE_SET.has(value)
+
+const getPoolType = (value: string | null): PoolTypeFilter | undefined =>
+  value != null && CRYPTO_POOL_TYPE_ALIASES.has(value) ? 'crypto' : isPoolType(value) ? value : undefined
 
 const isApiSortColumn = (value: string | undefined): value is ApiSortColumn =>
   value != null && value in API_SORT_COLUMNS
@@ -88,8 +93,8 @@ const usePoolListApiUrlState = ({ isLite }: Pick<NetworkConfig, 'isLite'>) => {
   const sortDirection: 'desc' | 'asc' = desc ? 'desc' : 'asc'
   const [pagination, onPaginationChange] = usePageFromQueryString(PER_PAGE)
   const searchText = searchParams.get('search') ?? ''
-  const poolTypeParam = searchParams.get('pool_type')
-  const poolType = isPoolType(poolTypeParam) ? poolTypeParam : undefined
+  const poolTypeParam = searchParams.get(PoolColumnId.PoolTags)
+  const poolType = getPoolType(poolTypeParam)
 
   const updateQueryAndResetPage = useCallback(
     (update: Record<string, string | string[] | null>) => searchNavigate({ ...update, page: null }, { replace: true }),
@@ -100,11 +105,11 @@ const usePoolListApiUrlState = ({ isLite }: Pick<NetworkConfig, 'isLite'>) => {
     [updateQueryAndResetPage],
   )
   const setPoolType = useCallback(
-    (type: PoolTypeFilter | null) => updateQueryAndResetPage({ pool_type: type }),
+    (type: PoolTypeFilter | null) => updateQueryAndResetPage({ [PoolColumnId.PoolTags]: type }),
     [updateQueryAndResetPage],
   )
   const resetFilters = useCallback(
-    () => updateQueryAndResetPage({ search: null, pool_type: null }),
+    () => updateQueryAndResetPage({ search: null, [PoolColumnId.PoolTags]: null }),
     [updateQueryAndResetPage],
   )
   const onSortingChange: OnChangeFn<SortingState> = useCallback(
@@ -153,7 +158,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
   const {
     data: poolList,
     isPlaceholderData,
-    isLoading,
+    isPending,
     isError,
   } = usePoolList({
     chainId: network.chainId,
@@ -164,6 +169,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
     sortBy,
     sortDirection,
   })
+  const loading = isPending || isPlaceholderData
   /**
    * the prices v2 pool-list endpoint already applies the getPoolFilters blacklist
    *  upstream so we only need to apply the local repo blacklist
@@ -217,12 +223,12 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
       }
       expandedPanel={PoolMobileExpandedPanel}
       shouldStickFirstColumn={isTablet}
-      loading={isLoading}
+      loading={loading}
     >
       <LegacyTableFilters<PoolColumnId>
         filterExpandedKey={LOCAL_STORAGE_KEY}
         leftChildren={<LegacyTableFiltersTitles title={t`Pools`} subtitle={t`Find your next opportunity`} />}
-        loading={isLoading}
+        loading={loading}
         visibilityGroups={columnSettings}
         searchText={searchText}
         onSearch={setSearch}
@@ -239,6 +245,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
             resetFilters={resetFilters}
             resultCount={poolCount}
             setColumnFilter={(_, value) => setPoolType(isPoolType(value) ? value : null)}
+            showHiddenCountReset={false} // "hidden" makes no sense unless returned from the API
             sortField={sortField}
             sortOptions={API_SORT_OPTIONS}
           />

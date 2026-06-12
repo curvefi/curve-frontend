@@ -32,7 +32,7 @@ export type ListPoolsParams = {
   page?: number
   pagination?: number
   searchString?: string
-  poolType?: Schema.PoolType
+  poolType?: Schema.V2PoolFilterType
   sortBy?: Schema.V2PoolSortField
   sortDirection?: Schema.SortDirection
 }

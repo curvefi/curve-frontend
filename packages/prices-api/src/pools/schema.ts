@@ -237,6 +237,10 @@ const poolType = z.enum([
   'twocryptong',
 ])
 export type PoolType = z.infer<typeof poolType>
+export type V2PoolFilterType = Extract<
+  PoolType,
+  'main' | 'factory' | 'crypto' | 'crvusd' | 'factory_tricrypto' | 'stableswapng'
+>
 
 const v2Coin = rawCoin
   .extend({
@@ -338,14 +342,14 @@ export const listPoolsResponse = z
   .object({
     page: z.number().optional(),
     pagination: z.number().optional(),
-    count: z.number().optional(),
-    pools: z.array(v2Pool).optional(),
+    count: z.number(),
+    pools: z.array(v2Pool),
   })
   .transform(({ page, pagination, count, pools }) => ({
     page: page ?? 1,
-    pagination: pagination ?? 20,
-    count: count ?? 0,
-    pools: pools ?? [],
+    pagination: pagination ?? pools.length,
+    count,
+    pools,
   }))
 
 export const listPoolRegistriesResponse = z
