@@ -6,17 +6,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { IconSize, Spacing } = SizesAndSpaces
 
-export const DEFAULT_ICON_STACK_OVERLAP = 1 / 3
-
-export type IconStackSize = keyof typeof IconSize
-
-export type IconStackProps = {
-  children: ReactNode
-  /** The intended size of icons that will be used in the children for correct margin calculations */
-  iconSize?: IconStackSize
-  /** Percentage of the icon width to overlap */
-  overlap?: number
-}
+const DEFAULT_ICON_STACK_OVERLAP = 1 / 3
 
 // Builds responsive overlap offsets for each icon size, signed by direction.
 const overlapBySize = (direction: 'left' | 'right', overlap: number) => {
@@ -26,7 +16,17 @@ const overlapBySize = (direction: 'left' | 'right', overlap: number) => {
   )
 }
 
-export const IconStack = ({ children, iconSize = 'md', overlap = DEFAULT_ICON_STACK_OVERLAP }: IconStackProps) => (
+export const IconStack = ({
+  children,
+  iconSize = 'md',
+  overlap = DEFAULT_ICON_STACK_OVERLAP,
+}: {
+  children: ReactNode
+  /** The intended size of icons that will be used in the children for correct margin calculations */
+  iconSize?: keyof typeof IconSize
+  /** Percentage of the icon width to overlap */
+  overlap?: number
+}) => (
   <Stack
     direction="row"
     sx={{

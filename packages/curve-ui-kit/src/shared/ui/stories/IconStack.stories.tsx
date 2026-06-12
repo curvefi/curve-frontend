@@ -3,7 +3,7 @@ import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
-import { IconStack, type IconStackSize } from '../IconStack'
+import { IconStack } from '../IconStack'
 import { TokenIcon } from '../TokenIcon'
 
 const BLOCKCHAIN_IDS = [
@@ -26,6 +26,8 @@ const TOKENS = [
   { symbol: 'DAI', address: '0x6b175474e89094c44da98b954eedeac495271d0f' },
   { symbol: 'WBTC', address: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599' },
 ]
+
+type IconStackSize = NonNullable<Parameters<typeof IconStack>[0]['iconSize']>
 
 const ICON_SIZE_OPTIONS: IconStackSize[] = ['xxs', 'xs', 'sm', 'md', 'lg', 'xl', 'xxl', '3xl', '4xl']
 const OVERLAPS = [1 / 4, 1 / 3, 1 / 2]
