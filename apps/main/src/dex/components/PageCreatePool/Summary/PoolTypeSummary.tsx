@@ -18,7 +18,7 @@ export const PoolTypeSummary = () => {
 
   return (
     <StyledCategoryColumn>
-      <Box flex padding={'0 var(--spacing-2) var(--spacing-2) 0'}>
+      <Box flex padding="0 var(--spacing-2) var(--spacing-2) 0">
         {validation.poolType && <StyledCheckmark name="CheckmarkFilled" size={16} aria-label={t`Checkmark filled`} />}
         <Box flex>
           <StyledSummaryCategoryTitle>{t`Pool Type:`}</StyledSummaryCategoryTitle>

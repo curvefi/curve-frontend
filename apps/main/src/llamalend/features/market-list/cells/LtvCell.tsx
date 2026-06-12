@@ -35,7 +35,7 @@ export const LtvCell = ({ row }: CellContext<LlamaMarket, number>) => {
     <Tooltip
       clickable
       title={t`LTV`}
-      body={<CurrentLTVTooltipContent debtDenomination={'Borrowed amount'} />}
+      body={<CurrentLTVTooltipContent debtDenomination="Borrowed amount" />}
       placement="top"
     >
       <Typography variant="tableCellMBold" color="textPrimary" sx={{ textAlign: 'right' }}>
