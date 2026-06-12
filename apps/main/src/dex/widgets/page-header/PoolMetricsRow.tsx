@@ -20,8 +20,8 @@ export const PoolMetricsRow = ({
   poolId: string
   pricesApiPoolData?: PricesApiPool
 }) => {
-  const { data: volume } = usePoolVolume({ chainId, poolId })
-  const { data: tvl } = usePoolTvl({ chainId, poolId })
+  const volume = usePoolVolume({ chainId, poolId })
+  const tvl = usePoolTvl({ chainId, poolId })
 
   const alignment = useIsMobile() ? 'start' : 'end'
 
@@ -30,15 +30,19 @@ export const PoolMetricsRow = ({
       <Metric
         alignment={alignment}
         label={t`TVL`}
-        value={maybe(tvl ?? pricesApiPoolData?.tvlUsd, x => +x)}
+        value={maybe(tvl.data ?? pricesApiPoolData?.tvlUsd, x => +x)}
         valueOptions={{ unit: 'dollar' }}
+        loading={tvl.isLoading}
+        error={tvl.error}
       />
 
       <Metric
         alignment={alignment}
         label={t`24h volume`}
-        value={maybe(volume ?? pricesApiPoolData?.tradingVolume24h, x => +x)}
+        value={maybe(volume.data ?? pricesApiPoolData?.tradingVolume24h, x => +x)}
         valueOptions={{ unit: 'dollar' }}
+        loading={volume.isLoading}
+        error={volume.error}
       />
     </Stack>
   )
