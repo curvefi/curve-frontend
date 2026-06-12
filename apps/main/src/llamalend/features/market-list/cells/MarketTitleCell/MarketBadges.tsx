@@ -1,11 +1,8 @@
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
-import useMediaQuery from '@mui/material/useMediaQuery'
 import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
-import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
 import { Badge, BadgeProps } from '@ui-kit/shared/ui/Badge'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -34,8 +31,7 @@ const MarketBadge = ({ ...props }: Omit<BadgeProps, 'size'>) => <Badge size="ext
 
 /** Displays badges for a market, such as the chain icon and market type. */
 export const MarketBadges = ({ market, isMobile }: { market: LlamaMarket; isMobile: boolean }) => {
-  const { favoriteKey, type, leverage, deprecatedMessage, chain, version } = market
-  const isSmall = useMediaQuery('(max-width:1250px)')
+  const { favoriteKey, type, deprecatedMessage, chain, version } = market
   return (
     <Stack
       direction="row"
@@ -46,13 +42,9 @@ export const MarketBadges = ({ market, isMobile }: { market: LlamaMarket; isMobi
       <Tooltip title={marketTypeDetails[type].description}>
         <MarketBadge label={marketTypeDetails[type].label} data-testid={`badge-market-type-${type}`} />
       </Tooltip>
-      {!!leverage && isMobile && <Typography variant="bodyXsBold">🔥</Typography>}
       {deprecatedMessage && (
         <Tooltip title={deprecatedMessage}>
-          <Typography variant="bodyXsRegular" color="warning" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <ExclamationTriangleIcon fontSize="small" />
-            {!isSmall && t`Deprecated`}
-          </Typography>
+          <MarketBadge label={t`Deprecated`} color="warning" />
         </Tooltip>
       )}
       {!isMobile && <FavoriteMarketButton address={favoriteKey} desktopOnly />}
