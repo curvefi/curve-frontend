@@ -68,7 +68,7 @@ export const useLiquidityDetails = ({ chainId, poolDataCacheOrApi, poolId }: Use
       positionValue: q(userLiquidityUsd),
     },
     withdraw: {
-      rows: q({ data: withdrawRows, isLoading: userBalances.isLoading, error: userBalances.error }),
+      rows: mapQuery(userBalances, () => withdrawRows),
     },
   }
 }
