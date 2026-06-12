@@ -3,9 +3,9 @@ import Stack from '@mui/material/Stack'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 import { Badge } from '@ui-kit/shared/ui/Badge'
+import { IconStack } from '@ui-kit/shared/ui/IconStack'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
-import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
 import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
@@ -51,7 +51,13 @@ type Story = StoryObj<typeof PageHeader>
 export const DexPool: Story = {
   args: {
     title: 'crvUSD/USDC/USDT',
-    icon: <TokenIcons blockchainId="ethereum" tokens={[TOKENS.crvUSD, TOKENS.usdc, TOKENS.usdt]} />,
+    icon: (
+      <IconStack iconSize="lg">
+        {[TOKENS.crvUSD, TOKENS.usdc, TOKENS.usdt].map(({ address, symbol }) => (
+          <TokenIcon key={`${address}-${symbol}`} blockchainId="ethereum" address={address} tooltip={symbol} />
+        ))}
+      </IconStack>
+    ),
     rightItems: (
       <Stack direction="row" sx={{ gap: Spacing.xl }}>
         <Metric label="TVL" value={246_800_000} valueOptions={{ unit: 'dollar' }} alignment="end" />
