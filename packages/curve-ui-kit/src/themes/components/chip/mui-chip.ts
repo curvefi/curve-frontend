@@ -4,7 +4,7 @@ import type { Components } from '@mui/material'
 import type { ChipProps } from '@mui/material/Chip'
 import type { CSSObject, TypographyVariantsOptions } from '@mui/material/styles'
 import { mapRecord, recordValues } from '@primitives/objects.utils'
-import { fixedResponsive, handleBreakpoints, Responsive } from '@ui-kit/themes/basic-theme'
+import { handleBreakpoints, Responsive, ResponsiveOrValue } from '@ui-kit/themes/basic-theme'
 import { DesignSystem } from '@ui-kit/themes/design'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
@@ -13,7 +13,7 @@ const { Spacing, IconSize, LineHeight, ButtonSize, Badge } = SizesAndSpaces
 
 type ChipSizeDefinition = {
   font: TypographyVariantKey
-  height: Responsive
+  height: string
   iconSize: Responsive
   paddingInline: Responsive
   lineHeight: Responsive
@@ -21,16 +21,17 @@ type ChipSizeDefinition = {
 type BadgeSizeDefinition = {
   font: TypographyVariantKey
   height: string
-  iconSize: Responsive
-  paddingX: Responsive
-  paddingY: Responsive
-  iconGap: Responsive
-  lineHeight: Responsive
+  iconSize: ResponsiveOrValue
+  paddingX: ResponsiveOrValue
+  paddingY: ResponsiveOrValue
+  iconGap: ResponsiveOrValue
+  lineHeight: ResponsiveOrValue
 }
 type ChipSizes = NonNullable<ChipProps['size']>
 type ChipVariantProps = Partial<ChipProps> & { ownerState: Partial<ChipProps> }
 type ClickableChipVariant = NonNullable<ChipProps['variant']>
 type ClickableChipColor = Extract<NonNullable<ChipProps['color']>, 'selected' | 'unselected'>
+
 const isBadgeVariant = ({ ownerState }: ChipVariantProps) => !ownerState.clickable
 
 const createColor = (
@@ -144,7 +145,7 @@ export const chipSizeClickable: Record<
 > = {
   extraSmall: {
     font: 'buttonXxs',
-    height: fixedResponsive(ButtonSize.xxs),
+    height: ButtonSize.xxs,
     iconSize: IconSize.xs,
     paddingInline: Spacing.xs,
     lineHeight: LineHeight.xs,
@@ -152,7 +153,7 @@ export const chipSizeClickable: Record<
   },
   small: {
     font: 'buttonXs',
-    height: fixedResponsive(ButtonSize.xs),
+    height: ButtonSize.xs,
     iconSize: IconSize.sm,
     paddingInline: Spacing.sm,
     paddingBlock: Spacing.xs,
@@ -161,7 +162,7 @@ export const chipSizeClickable: Record<
   },
   medium: {
     font: 'buttonS',
-    height: fixedResponsive(ButtonSize.sm),
+    height: ButtonSize.sm,
     iconSize: IconSize.md,
     paddingInline: Spacing.sm,
     paddingBlock: Spacing.xs,
@@ -170,7 +171,7 @@ export const chipSizeClickable: Record<
   },
   large: {
     font: 'buttonS',
-    height: fixedResponsive(ButtonSize.md),
+    height: ButtonSize.md,
     iconSize: IconSize.md,
     paddingInline: Spacing.sm,
     paddingBlock: Spacing.xs,
@@ -179,7 +180,7 @@ export const chipSizeClickable: Record<
   },
   extraLarge: {
     font: 'buttonM',
-    height: fixedResponsive(ButtonSize.md),
+    height: ButtonSize.md,
     iconSize: IconSize.lg,
     paddingInline: Spacing.sm,
     paddingBlock: Spacing.xs,
@@ -279,7 +280,6 @@ export const defineMuiChip = (
           // Target chips with empty labels (icon-only badges)
           '&:has(.MuiChip-label:empty)': {
             width: height, // constant width for icon-only badges (perfect square)
-            height,
             gap: 0,
             padding: 0,
             justifyContent: 'center',
@@ -296,12 +296,12 @@ export const defineMuiChip = (
         style: {
           ...handleBreakpoints({ ...(font && typography[font]), ...rest }),
           ...(heightOverride && {
-            height: heightOverride.desktop, // constant height override for clickable chips
+            height: heightOverride, // constant height override for clickable chips
             '& .MuiChip-icon': handleBreakpoints({ width: iconSize.desktop, height: iconSize.desktop }),
             // Target clickable chips with empty labels (icon-only chips)
             '&:has(.MuiChip-label:empty)': {
-              width: heightOverride.desktop, // constant width for icon-only clickable chips (perfect square)
-              height: heightOverride.desktop,
+              width: heightOverride, // constant width for icon-only clickable chips (perfect square)
+              height: heightOverride,
             },
           }),
           '& .MuiChip-deleteIcon': handleBreakpoints({ width: deleteIconSize, height: deleteIconSize }),
