@@ -3,12 +3,12 @@ import { useConnection } from 'wagmi'
 import { useUserPools } from '@/dex/queries/user-pools.query'
 import { useStore } from '@/dex/store/useStore'
 import type { ChainId } from '@/dex/types/main.types'
+import { fromEntries } from '@primitives/objects.utils'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import {
   getCurvePoolIdByAddressEntries,
   getHasPosition,
   getPoolIdByAddressEntries,
-  getPoolIdByAddressFromEntries,
   normalizeAddress,
   type PoolListItemOptions,
 } from '../apiPoolList.utils'
@@ -29,7 +29,7 @@ export const usePoolListApiUserPositionOptions = (chainId: ChainId) => {
   const { data: userPools } = useUserPools({ chainId, userAddress }, isCurvePoolListReady)
   const poolIdByAddress = useMemo(
     () =>
-      getPoolIdByAddressFromEntries([
+      fromEntries([
         ...getPoolIdByAddressEntries(poolDataCacheMapper),
         ...getPoolIdByAddressEntries(poolDataMapper),
         ...curvePoolEntries,

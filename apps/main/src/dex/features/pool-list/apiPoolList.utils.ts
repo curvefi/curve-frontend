@@ -2,7 +2,7 @@ import { countBy, sumBy } from 'lodash'
 import type { CurveApi, NetworkConfig, PoolData, RewardsApy } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import type { V2Pool } from '@curvefi/prices-api/pools'
-import { fromEntries, notFalsy, recordValues } from '@primitives/objects.utils'
+import { notFalsy, recordValues } from '@primitives/objects.utils'
 import { DEX_ROUTES } from '@ui-kit/shared/routes'
 import { decimal } from '@ui-kit/utils'
 import type { PoolListItem } from './types'
@@ -20,13 +20,8 @@ export const normalizeAddress = (address: string) => address.toLowerCase()
 export const getPoolIdByAddressEntries = (poolMapper: PoolIdByAddressSource | undefined) =>
   recordValues(poolMapper ?? {}).map(({ pool }) => [normalizeAddress(pool.address), pool.id] as const)
 
-export const getPoolIdByAddress = (...poolMappers: (PoolIdByAddressSource | undefined)[]) =>
-  fromEntries(poolMappers.flatMap(getPoolIdByAddressEntries))
-
 export const getCurvePoolIdByAddressEntries = (curve: CurveApi | undefined) =>
   curve?.getPoolList().map(poolId => [normalizeAddress(curve.getPool(poolId).address), poolId] as const) ?? []
-
-export const getPoolIdByAddressFromEntries = (entries: (readonly [string, string])[]) => fromEntries(entries)
 
 export const getHasPosition = (
   userPoolIds: Set<string> | undefined,

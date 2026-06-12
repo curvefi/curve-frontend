@@ -2,7 +2,7 @@ import { useNetworkFromUrl } from '@/dex/hooks/useChainId'
 import { usePoolChains } from '@/dex/queries/pool-list.query'
 import { useDexPoolListV2 } from '@ui-kit/hooks/useFeatureFlags'
 import { ListPageWrapper } from '@ui-kit/widgets/ListPageWrapper'
-import { PoolListApiTable } from './PoolListApiTable'
+import { LegacyPoolListTable } from './LegacyPoolListTable'
 import { PoolListTable } from './PoolListTable'
 
 export const Page = () => {
@@ -14,7 +14,7 @@ export const Page = () => {
 const StablePoolListPage = () => {
   const network = useNetworkFromUrl()
 
-  return <ListPageWrapper>{network && <PoolListTable network={network} />}</ListPageWrapper>
+  return <ListPageWrapper>{network && <LegacyPoolListTable network={network} />}</ListPageWrapper>
 }
 
 const BetaPoolListPage = () => {
@@ -30,7 +30,7 @@ const BetaPoolListPage = () => {
     <ListPageWrapper>
       {network &&
         !isLoading &&
-        (isSupported ? <PoolListApiTable network={network} /> : <PoolListTable network={network} />)}
+        (isSupported ? <PoolListTable network={network} /> : <LegacyPoolListTable network={network} />)}
     </ListPageWrapper>
   )
 }
