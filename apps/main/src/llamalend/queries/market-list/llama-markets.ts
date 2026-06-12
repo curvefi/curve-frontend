@@ -376,7 +376,9 @@ export const useLlamaMarkets = (
         const favoriteMarketsSet = new Set(favoriteMarkets.data)
         const userBorrows = new Set(recordValues(userLendingVaults.data ?? {}).flat())
         const userMints = new Set(recordValues(userMintMarkets.data ?? {}).flat())
-        const hasSupplied = recordValues(userSuppliedMarkets.data ?? {}).some(c => c)
+        const hasSupplied = recordValues(userSuppliedMarkets.data ?? {}).some(
+          positions => recordValues(positions).length,
+        )
         const countMarket = createCountMarket(mintMarkets.data)
         const campaigns = combineCampaigns([externalCampaigns.data, merklCampaigns.data])
         const getLendMarketBadDebt = createGetBadDebtMarket(badDebtLendMarkets.data)
