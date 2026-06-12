@@ -17,10 +17,10 @@ export const defineMuiAlert = (
 ): Components['MuiAlert'] => ({
   defaultProps: {
     iconMapping: {
-      success: <CheckIcon fontSize={'small'} />,
-      info: <InfoCircledIcon fontSize={'small'} />,
-      warning: <ExclamationTriangleIcon fontSize={'small'} />,
-      error: <ExclamationTriangleIcon fontSize={'small'} />,
+      success: <CheckIcon fontSize="small" />,
+      info: <InfoCircledIcon fontSize="small" />,
+      warning: <ExclamationTriangleIcon fontSize="small" />,
+      error: <ExclamationTriangleIcon fontSize="small" />,
     },
   },
   styleOverrides: {

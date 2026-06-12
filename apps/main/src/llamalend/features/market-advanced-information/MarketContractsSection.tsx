@@ -106,7 +106,7 @@ export const MarketContractsSection = ({ chainId, market, network }: MarketContr
     <Card size="inline">
       <CardHeader title={t`Contracts`} />
       <CardContent component={Stack} sx={{ marginBlock: Spacing.sm, gap: Spacing.sm }}>
-        <WithSkeleton loading={loading} variant="rectangular" height={'4lh'} width="100%">
+        <WithSkeleton loading={loading} variant="rectangular" height="4lh" width="100%">
           <Stack>
             {tokenItems.map(({ key, label, address }) => (
               <AddressActionInfo key={key} network={network} title={label} address={address} />

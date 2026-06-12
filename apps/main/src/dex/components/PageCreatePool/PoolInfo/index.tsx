@@ -20,7 +20,7 @@ export const PoolInfo = () => {
   return (
     <>
       <Wrapper flex flexColumn>
-        <Row flexJustifyContent={'space-between'}>
+        <Row flexJustifyContent="space-between">
           <TextInput
             value={poolName}
             onChange={updatePoolName}

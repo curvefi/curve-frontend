@@ -163,7 +163,7 @@ export const CreatePool = ({ curve }: Props) => {
   }, [chainId, poolName, poolSymbol, swapType, updatePoolInfoValidation, networks])
 
   return (
-    <Box flex padding={false} flexJustifyContent={'center'}>
+    <Box flex padding={false} flexJustifyContent="center">
       {chainId ? (
         networks[chainId].hasFactory ? (
           <>
@@ -225,18 +225,18 @@ export const CreatePool = ({ curve }: Props) => {
               {/* Regular nav */}
               <NavButtonsBox>
                 {navigationIndex > 0 && (
-                  <NavButtonStyles variant={'icon-filled'} onClick={() => setNavigationIndex(navigationIndex - 1)}>
-                    <Icon name={'ChevronLeft'} size={24} aria-label={t`Chevron left`} /> {t`Previous`}
+                  <NavButtonStyles variant="icon-filled" onClick={() => setNavigationIndex(navigationIndex - 1)}>
+                    <Icon name="ChevronLeft" size={24} aria-label={t`Chevron left`} /> {t`Previous`}
                   </NavButtonStyles>
                 )}
                 {navigationIndex < 3 && (
                   <NavButtonStyles
                     className="next"
-                    variant={'icon-filled'}
+                    variant="icon-filled"
                     onClick={() => setNavigationIndex(navigationIndex + 1)}
                     disabled={!isNavEnabled()}
                   >
-                    {t`Next`} <Icon name={'ChevronRight'} size={24} aria-label={t`Chevron right`} />
+                    {t`Next`} <Icon name="ChevronRight" size={24} aria-label={t`Chevron right`} />
                   </NavButtonStyles>
                 )}
                 {navigationIndex === 3 && (
@@ -260,18 +260,18 @@ export const CreatePool = ({ curve }: Props) => {
             {/* Nav for small viewport width */}
             <NavButtonsBoxFixed $navHeight={navHeight}>
               {navigationIndex > 0 && (
-                <NavButtonStyles variant={'icon-filled'} onClick={() => setNavigationIndex(navigationIndex - 1)}>
-                  <Icon name={'ChevronLeft'} size={24} aria-label={t`Chevron left`} /> {t`Previous`}
+                <NavButtonStyles variant="icon-filled" onClick={() => setNavigationIndex(navigationIndex - 1)}>
+                  <Icon name="ChevronLeft" size={24} aria-label={t`Chevron left`} /> {t`Previous`}
                 </NavButtonStyles>
               )}
               {navigationIndex < 3 && (
                 <NavButtonStyles
                   className="next"
-                  variant={'icon-filled'}
+                  variant="icon-filled"
                   onClick={() => setNavigationIndex(navigationIndex + 1)}
                   disabled={!isNavEnabled()}
                 >
-                  {t`Next`} <Icon name={'ChevronRight'} size={24} aria-label={t`Chevron right`} />
+                  {t`Next`} <Icon name="ChevronRight" size={24} aria-label={t`Chevron right`} />
                 </NavButtonStyles>
               )}
               {navigationIndex === 3 && (
