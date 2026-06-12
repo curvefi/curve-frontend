@@ -5,6 +5,8 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { type FieldsOf } from '@ui-kit/lib'
 import { type MarketQuery, queryFactory, rootKeys, type UserQuery } from '@ui-kit/lib/model'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
+import { mapQuery } from '@ui-kit/types/util'
+import { decimalDiv, decimalMultiply, decimalSum } from '@ui-kit/utils'
 
 type UserBalancesQuery = UserQuery & MarketQuery<IChainId>
 type UserBalancesParams = FieldsOf<UserBalancesQuery>
@@ -32,3 +34,12 @@ export const { useQuery: useUserBalances } = queryFactory({
   category: 'llamalend.user',
   validationSuite: marketIdValidationSuite,
 })
+
+export type Shares = { value: Decimal; staked: Decimal; percentage: Decimal }
+export const useUserShares = (params: UserBalancesParams) =>
+  mapQuery(useUserBalances(params), ({ vaultShares, gauge }): Shares => {
+    if (!gauge) throw new Error(`useUserShares only supports lend markets`)
+    const value = decimalSum(vaultShares, gauge)
+    const percentage = +value ? decimalMultiply(decimalDiv(gauge, value), '100') : '0'
+    return { value, staked: gauge, percentage }
+  })

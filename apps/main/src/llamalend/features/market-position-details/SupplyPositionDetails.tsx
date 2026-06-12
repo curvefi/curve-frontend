@@ -1,65 +1,126 @@
 import { ReactNode } from 'react'
+import { zeroAddress } from 'viem'
 import { USER_NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
-import type { SupplyRate } from '@/llamalend/rates.types'
+import { getControllerAddress } from '@/llamalend/llama.utils'
+import { useMarketRates, useMarketVaultOnChainRewards, useMarketVaultPricePerShare } from '@/llamalend/queries/market'
+import { useUserSupplyBoost } from '@/llamalend/queries/user'
+import { useUserShares } from '@/llamalend/queries/user/user-balances.query'
+import {
+  aprToApy,
+  formatSupplyExtraIncentives,
+  getLatestSnapshotValue,
+  getSupplyApyAverageMetrics,
+  getSupplyApyMetrics,
+  sumOnChainExtraIncentivesApy,
+  toNumberOrNull,
+} from '@/llamalend/rates.utils'
+import { combineMetricState } from '@/llamalend/widgets/action-card/info-actions.helpers'
 import { BoostTooltipContent } from '@/llamalend/widgets/tooltips/BoostTooltipContent'
 import { MarketSupplyRateTooltipContent } from '@/llamalend/widgets/tooltips/MarketSupplyRateTooltipContent'
+import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import type { Chain } from '@curvefi/prices-api'
 import { Grid, Stack } from '@mui/material'
-import { maybes } from '@primitives/objects.utils'
+import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
+import { maybe } from '@primitives/objects.utils'
+import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
+import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
+import { LlamaChainId } from '@ui-kit/features/connect-wallet/lib/types'
+import { combineQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { AVERAGE_CATEGORIES, defaultNumberFormatter } from '@ui-kit/utils'
-import { VaultSharesTooltipContent, AmountSuppliedTooltipContent } from './'
+import { mapQuery } from '@ui-kit/types/util'
+import { AVERAGE_CATEGORIES, type AverageCategory, decimalMultiply, defaultNumberFormatter } from '@ui-kit/utils'
+import { AmountSuppliedTooltipContent, VaultSharesTooltipContent } from './'
 
 const { Spacing } = SizesAndSpaces
 
-export type Shares = {
-  value: number | undefined | null
-  staked: number | undefined | null
-  loading: boolean
-}
-type Boost = {
-  value: number | undefined | null
-  loading: boolean
-}
 export type SupplyAsset = {
-  symbol: string | undefined | null
-  address: string | undefined | null
-  usdRate: number | undefined | null
-  depositedAmount: number | undefined | null
-  depositedUsdValue: number | undefined | null
-  loading: boolean
+  symbol: string
+  address: Address
+  usdRate: number
+  depositedAmount: Decimal
+  depositedUsdValue: Decimal
 }
 
 export type SupplyPositionDetailsProps = {
-  userSupplyRate: SupplyRate
-  shares: Shares
-  supplyAsset: SupplyAsset
-  boost: Boost
+  chainId: LlamaChainId
+  market: LendMarketTemplate
+  userAddress: Address | undefined
+  blockchainId: Chain
 }
 
 const SUPPLY_POSITION_TAB = 'supplyPosition'
 
+const RATE_CATEGORY: AverageCategory = 'llamalend.market.rate'
+
 const MetricGrid = ({ children }: { children: ReactNode }) => <Grid size={{ mobile: 6, tablet: 3 }}>{children}</Grid>
 
-export const SupplyPositionDetails = ({ userSupplyRate, shares, supplyAsset, boost }: SupplyPositionDetailsProps) => {
-  const {
-    totalUserBoost,
-    totalAverageUserBoost,
-    supplyApy,
-    averageLendApy,
-    averageCategory,
-    extraRewards,
-    extraIncentives,
-    userBoostApy,
-    loading: supplyRateLoading,
-    rebasingYield,
-  } = userSupplyRate
-  const { loading: supplyAssetLoading, symbol: supplyAssetSymbol, depositedAmount, depositedUsdValue } = supplyAsset
-  const { value: sharesValue, staked: sharesStaked, loading: sharesLoading } = shares
-  const { value: boostValue, loading: boostLoading } = boost
-  const { period: averageRatePeriod } = AVERAGE_CATEGORIES[averageCategory]
+export const SupplyPositionDetails = ({ chainId, market, userAddress, blockchainId }: SupplyPositionDetailsProps) => {
+  const params = { chainId, marketId: market.id, userAddress }
+  const { window: rateWindow } = AVERAGE_CATEGORIES[RATE_CATEGORY]
+  const { data: campaigns } = useCampaignsByAddress({ blockchainId, address: market.addresses.vault as Address })
+  const noGauge = market.addresses.gauge === zeroAddress
+
+  const userSupplyBoost = useUserSupplyBoost(params)
+  const onChainRewards = useMarketVaultOnChainRewards(params)
+  const snapshots = mapQuery(
+    useLendingSnapshots({
+      blockchainId,
+      contractAddress: market && getControllerAddress(market),
+      limit: rateWindow,
+    }),
+    snapshots => ({
+      rebasingYield: getLatestSnapshotValue(snapshots, snapshot => snapshot.borrowedToken.rebasingYield),
+      supplyAverageMetrics: getSupplyApyAverageMetrics({ snapshots, daysBack: rateWindow }),
+    }),
+  )
+
+  const supplyMetrics = combineQueries(
+    [snapshots, useMarketRates(params), onChainRewards, userSupplyBoost],
+    ({ rebasingYield }, marketRatesData, { crvRates, rewardsApr }, userSupplyBoost) =>
+      getSupplyApyMetrics({
+        supplyApy: toNumberOrNull(marketRatesData?.lendApy),
+        rebasingYieldApy: rebasingYield,
+        crvBoostApr: crvRates,
+        extraIncentivesApy: sumOnChainExtraIncentivesApy(rewardsApr),
+        userSupplyBoost,
+      }),
+  )
+
+  const shares = useUserShares(params)
+  const supplyAsset = combineQueries(
+    [
+      useTokenUsdRate({ chainId, tokenAddress: market.addresses?.borrowed_token }),
+      useMarketVaultPricePerShare(params),
+      shares,
+    ],
+    (usdRate, perShare, { value }): SupplyAsset => ({
+      symbol: market.borrowed_token.symbol,
+      address: market.borrowed_token.address as Address,
+      usdRate,
+      depositedAmount: decimalMultiply(perShare, value),
+      depositedUsdValue: decimalMultiply(perShare, value, usdRate),
+    }),
+  )
+
+  const extraIncentives = combineQueries(
+    [supplyMetrics, userSupplyBoost, onChainRewards],
+    ({ userBoostApy }, userBoost, { rewardsApr }) =>
+      formatSupplyExtraIncentives({
+        incentives: rewardsApr.map(r => ({
+          title: r.symbol,
+          percentage: aprToApy(r.apy)!,
+          blockchainId,
+          address: r.tokenAddress,
+        })),
+        userRate: userBoostApy,
+        userBoost,
+      }),
+  )
 
   return (
     <Stack>
@@ -73,30 +134,29 @@ export const SupplyPositionDetails = ({ userSupplyRate, shares, supplyAsset, boo
           <Metric
             size="medium"
             label={USER_NET_SUPPLY_RATE_TITLE}
-            value={totalUserBoost}
-            loading={supplyRateLoading}
-            valueOptions={{ unit: 'percentage' }}
-            notional={boostValue ? t`your boost ${defaultNumberFormatter(boostValue)}x` : undefined}
+            {...combineMetricState(mapQuery(supplyMetrics, ({ totalUserBoost }) => totalUserBoost))}
+            valueOptions={{ unit: 'percentage', ...(noGauge && { fallback: `No Gauge` }) }}
+            notional={maybe(userSupplyBoost.data, data => t`your boost ${defaultNumberFormatter(data)}x`)}
             valueTooltip={{
               title: USER_NET_SUPPLY_RATE_TITLE,
               body: (
                 <MarketSupplyRateTooltipContent
-                  supplyApy={supplyApy}
-                  averageSupplyApy={averageLendApy}
-                  periodLabel={averageRatePeriod}
-                  extraRewards={extraRewards}
-                  extraIncentives={extraIncentives}
-                  totalApy={totalUserBoost}
-                  totalAverageApy={totalAverageUserBoost}
+                  supplyApy={supplyMetrics.data?.supplyApy}
+                  averageSupplyApy={snapshots.data?.supplyAverageMetrics.averageLendApy}
+                  periodLabel={AVERAGE_CATEGORIES[RATE_CATEGORY].period}
+                  extraRewards={campaigns}
+                  extraIncentives={extraIncentives.data ?? []}
+                  totalApy={supplyMetrics.data?.totalUserBoost}
+                  totalAverageApy={snapshots.data?.supplyAverageMetrics.totalAverageUserBoost}
                   boost={{
                     type: 'user',
-                    apy: userBoostApy,
-                    totalApy: totalUserBoost,
-                    totalAverageApy: totalAverageUserBoost,
+                    apy: supplyMetrics.data?.userBoostApy,
+                    totalApy: supplyMetrics.data?.totalUserBoost,
+                    totalAverageApy: snapshots.data?.supplyAverageMetrics.totalAverageUserBoost,
                   }}
-                  rebasingYieldApy={rebasingYield}
-                  rebasingSymbol={supplyAssetSymbol}
-                  isLoading={supplyRateLoading}
+                  rebasingYieldApy={snapshots.data?.rebasingYield}
+                  rebasingSymbol={supplyAsset.data?.symbol}
+                  isLoading={extraIncentives.isLoading} // todo: implement Query<> states in tooltip
                 />
               ),
               placement: 'top',
@@ -109,17 +169,12 @@ export const SupplyPositionDetails = ({ userSupplyRate, shares, supplyAsset, boo
           <Metric
             size="medium"
             label={t`Amount supplied`}
-            value={depositedUsdValue}
-            loading={supplyAssetLoading}
+            {...combineMetricState(mapQuery(supplyAsset, ({ depositedUsdValue }) => depositedUsdValue))}
             valueOptions={{ unit: 'dollar' }}
-            notional={
-              depositedAmount
-                ? {
-                    value: depositedAmount,
-                    unit: { symbol: ` ${supplyAssetSymbol}`, position: 'suffix' },
-                  }
-                : undefined
-            }
+            notional={maybe(supplyAsset.data, ({ depositedAmount, symbol }) => ({
+              value: depositedAmount,
+              unit: { symbol: ` ${symbol}`, position: 'suffix' },
+            }))}
             valueTooltip={{
               title: t`Amount Supplied`,
               body: <AmountSuppliedTooltipContent shares={shares} supplyAsset={supplyAsset} />,
@@ -133,11 +188,10 @@ export const SupplyPositionDetails = ({ userSupplyRate, shares, supplyAsset, boo
           <Metric
             size="medium"
             label={t`Vault shares`}
-            value={sharesValue}
-            loading={sharesLoading}
+            {...combineMetricState(mapQuery(shares, ({ value }) => value))}
             valueOptions={{}}
-            notional={maybes([sharesStaked, sharesValue], ([sharesStaked, sharesValue]) => ({
-              value: (sharesStaked / sharesValue) * 100,
+            notional={maybe(shares.data, ({ percentage }) => ({
+              value: percentage,
               unit: { symbol: t`% staked`, position: 'suffix' },
             }))}
             valueTooltip={{
@@ -153,9 +207,8 @@ export const SupplyPositionDetails = ({ userSupplyRate, shares, supplyAsset, boo
           <Metric
             size="medium"
             label={t`veCRV Boost`}
-            value={boostValue}
-            loading={boostLoading}
-            valueOptions={{ unit: 'multiplier' }}
+            {...combineMetricState(userSupplyBoost)}
+            valueOptions={{ unit: 'multiplier', ...(noGauge && { fallback: `No Gauge` }) }}
             valueTooltip={{
               title: t`veCRV Boost`,
               body: <BoostTooltipContent />,

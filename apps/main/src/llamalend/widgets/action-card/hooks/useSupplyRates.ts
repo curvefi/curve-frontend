@@ -29,7 +29,7 @@ const addNetApy = <T extends { lendApy?: Decimal }>(
   rates: Query<T>,
   snapshotsQuery: Query<LendingSnapshot[] | undefined>,
   marketOnChainRewardsQuery: Query<SupplyRewards | undefined>,
-  userSupplyBoostQuery: Query<number | null>,
+  userSupplyBoostQuery: Query<Decimal | null>,
 ) => {
   const rebasingYieldApy = getLatestSnapshotValue(snapshotsQuery.data, snapshot => snapshot.borrowedToken.rebasingYield)
   // todo: refactor using decimals for calculation, rounding errors causes supplyApy != netSupplyApy even when identical

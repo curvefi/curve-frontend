@@ -35,7 +35,7 @@ export const PageHeader = ({
   blockchainId,
 }: {
   chainId: number
-  marketId: string
+  marketId: string | undefined
   isLoading: boolean
   market: LlamaMarketTemplate | undefined
   blockchainId: Chain
