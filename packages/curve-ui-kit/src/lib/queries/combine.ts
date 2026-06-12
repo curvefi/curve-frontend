@@ -10,19 +10,19 @@ export const combineQueryState = (...queries: (Query<unknown> | undefined)[]) =>
     isLoading: queries.some(x => x?.isLoading),
   }) as Omit<QueryProp<unknown>, 'data'>
 
-type QueryTuple = readonly Query<unknown>[]
-type QueryDataTuple<TQueries extends QueryTuple> = {
+type Queries = readonly Query<unknown>[]
+type QueriesData<TQueries extends Queries> = {
   [K in keyof TQueries]: TQueries[K] extends Query<infer TData> ? Exclude<TData, undefined> : never
 }
 
-export const combineQueries = <const TQueries extends QueryTuple, TResult>(
+export const combineQueries = <const TQueries extends Queries, TResult>(
   queries: TQueries,
-  selector: (...data: QueryDataTuple<TQueries>) => TResult | null | undefined,
+  selector: (...data: QueriesData<TQueries>) => TResult | null | undefined,
 ) =>
   ({
     data: queries.some(({ data }) => data === undefined)
       ? undefined
-      : selector(...(queries.map(({ data }) => data) as QueryDataTuple<TQueries>)),
+      : selector(...(queries.map(({ data }) => data) as QueriesData<TQueries>)),
     ...combineQueryState(...queries),
   }) as QueryProp<TResult>
 

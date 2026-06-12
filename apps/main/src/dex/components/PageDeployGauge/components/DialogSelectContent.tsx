@@ -21,7 +21,7 @@ export const DialogSelectContent = <T extends string>({ data, currentData, setCu
       {data.map((item, index) => (
         <StyledSelectButton
           className={item === currentData ? 'active' : ''}
-          variant={'text'}
+          variant="text"
           onClick={() => handleClick(item)}
           // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
           key={index}

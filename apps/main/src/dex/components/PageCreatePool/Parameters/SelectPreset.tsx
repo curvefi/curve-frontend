@@ -51,11 +51,11 @@ export const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Pr
   return (
     <>
       <Box>
-        <TitleRow flex flexAlignItems={'center'}>
+        <TitleRow flex flexAlignItems="center">
           <SectionLabel>{t`Pool Parameters Presets`}</SectionLabel>
         </TitleRow>
       </Box>
-      <PoolPresetButton {...openButtonProps} ref={openButtonRef} variant={'filled'} fillWidth>
+      <PoolPresetButton {...openButtonProps} ref={openButtonRef} variant="filled" fillWidth>
         {poolPresetIndex === null ? (
           <LabelTextWrapper>
             <PlaceholderSelectedLabelText>{t`Select preset`}</PlaceholderSelectedLabelText>
@@ -90,7 +90,7 @@ export const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Pr
                       setStableFeeValue(t(POOL_PRESETS[0].defaultParams.stableSwapFee))
                       overlayTriggerState.close()
                     }}
-                    paddingSize={'small'}
+                    paddingSize="small"
                   />
                 </SelectButtonWrapper>
                 <SelectButtonWrapper>
@@ -104,7 +104,7 @@ export const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Pr
                       setStableFeeValue(t(POOL_PRESETS[1].defaultParams.stableSwapFee))
                       overlayTriggerState.close()
                     }}
-                    paddingSize={'small'}
+                    paddingSize="small"
                   />
                 </SelectButtonWrapper>
                 <SelectButtonWrapper>
@@ -118,7 +118,7 @@ export const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Pr
                       setStableFeeValue(t(POOL_PRESETS[2].defaultParams.stableSwapFee))
                       overlayTriggerState.close()
                     }}
-                    paddingSize={'small'}
+                    paddingSize="small"
                   />
                 </SelectButtonWrapper>
               </>
@@ -137,7 +137,7 @@ export const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Pr
                       setOutValue(t(POOL_PRESETS[3].defaultParams.outFee))
                       overlayTriggerState.close()
                     }}
-                    paddingSize={'small'}
+                    paddingSize="small"
                   />
                 </SelectButtonWrapper>
                 <SelectButtonWrapper>
@@ -152,7 +152,7 @@ export const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Pr
                       setOutValue(t(POOL_PRESETS[4].defaultParams.outFee))
                       overlayTriggerState.close()
                     }}
-                    paddingSize={'small'}
+                    paddingSize="small"
                   />
                 </SelectButtonWrapper>
                 <SelectButtonWrapper>
@@ -167,7 +167,7 @@ export const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Pr
                       setOutValue(t(POOL_PRESETS[5].defaultParams.outFee))
                       overlayTriggerState.close()
                     }}
-                    paddingSize={'small'}
+                    paddingSize="small"
                   />
                 </SelectButtonWrapper>
                 <SelectButtonWrapper>
@@ -182,7 +182,7 @@ export const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Pr
                       setOutValue(t(POOL_PRESETS[6].defaultParams.outFee))
                       overlayTriggerState.close()
                     }}
-                    paddingSize={'small'}
+                    paddingSize="small"
                   />
                 </SelectButtonWrapper>
               </>
@@ -201,7 +201,7 @@ export const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Pr
                       setOutValue(t(POOL_PRESETS[7].defaultParams.outFee))
                       overlayTriggerState.close()
                     }}
-                    paddingSize={'small'}
+                    paddingSize="small"
                   />
                 </SelectButtonWrapper>
                 <SelectButtonWrapper>
@@ -216,7 +216,7 @@ export const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Pr
                       setOutValue(t(POOL_PRESETS[8].defaultParams.outFee))
                       overlayTriggerState.close()
                     }}
-                    paddingSize={'small'}
+                    paddingSize="small"
                   />
                 </SelectButtonWrapper>
               </>
@@ -235,7 +235,7 @@ export const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Pr
                       setOutValue(t(POOL_PRESETS[9].defaultParams.outFee))
                       overlayTriggerState.close()
                     }}
-                    paddingSize={'small'}
+                    paddingSize="small"
                   />
                 </SelectButtonWrapper>
               </>

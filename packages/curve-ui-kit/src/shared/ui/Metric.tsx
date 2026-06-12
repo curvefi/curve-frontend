@@ -9,6 +9,7 @@ import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangl
 import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
+import type { MakeOptional } from '@ui-kit/types/util'
 import {
   copyToClipboard,
   defaultNumberFormatter,
@@ -156,9 +157,8 @@ const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip, te
 export type MetricProps = {
   /** The actual metric value to display */
   value: Amount | '' | false | undefined | null
-  valueOptions: Omit<NumberFormatOptions, 'abbreviate'> & {
+  valueOptions: MakeOptional<NumberFormatOptions, 'abbreviate'> /* defaults to true */ & {
     color?: TypographyProps['color']
-    abbreviate?: boolean // Default to true
   }
 
   /** Optional value that denotes a change in metric value since 'last' time */

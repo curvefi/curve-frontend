@@ -1,7 +1,6 @@
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { BoostTooltipContent } from '@/llamalend/widgets/tooltips/BoostTooltipContent'
 import Typography from '@mui/material/Typography'
-import { maybe } from '@primitives/objects.utils'
 import type { CellContext } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
@@ -18,7 +17,7 @@ export const BoostCell = ({ getValue }: CellContext<LlamaMarket, number>) => (
     placement="top"
   >
     <Typography variant="tableCellMBold" color="textPrimary" sx={{ textAlign: 'right' }}>
-      {maybe(getValue(), boost => `${formatNumber(boost, { maximumFractionDigits: 2, abbreviate: false })}x`) ?? '-'}
+      {formatNumber(getValue(), 'multiplier')}
     </Typography>
   </WithWrapper>
 )

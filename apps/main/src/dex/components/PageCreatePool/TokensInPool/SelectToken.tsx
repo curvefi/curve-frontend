@@ -79,19 +79,19 @@ export const SelectToken = ({
   return (
     <TokenPickerContainer>
       {(tokenId === TOKEN_A || tokenId === TOKEN_B) && (
-        <LabelRow flex flexJustifyContent={'space-between'}>
+        <LabelRow flex flexJustifyContent="space-between">
           <p>{tokenTitle}</p>
           <ClearButton variant="text" onClick={() => clearToken(tokenId)}>{t`Clear`}</ClearButton>
         </LabelRow>
       )}
       {tokenId === TOKEN_C && (
-        <LabelRow flex flexJustifyContent={'space-between'}>
+        <LabelRow flex flexJustifyContent="space-between">
           <p>{t`Token C`}</p>
           <Box flex>
             <ClearButton variant="text" onClick={() => clearToken(tokenId)}>{t`Clear`}</ClearButton>
             {((swapType === CRYPTOSWAP && network.twocryptoFactory) || swapType === STABLESWAP) && removeToken && (
-              <RemoveButton variant={'text'} onClick={() => removeToken(TOKEN_C, tokensInPool)}>
-                <Icon name={'RowDelete'} size={16} aria-label={t`Remove token`} />
+              <RemoveButton variant="text" onClick={() => removeToken(TOKEN_C, tokensInPool)}>
+                <Icon name="RowDelete" size={16} aria-label={t`Remove token`} />
               </RemoveButton>
             )}
           </Box>
@@ -103,12 +103,12 @@ export const SelectToken = ({
         tokenId === TOKEN_G ||
         tokenId === TOKEN_H) &&
         removeToken && (
-          <LabelRow flex flexJustifyContent={'space-between'}>
+          <LabelRow flex flexJustifyContent="space-between">
             <p>{getTokenName(tokenId)}</p>
             <Box flex>
               <ClearButton variant="text" onClick={() => clearToken(tokenId)}>{t`Clear`}</ClearButton>
-              <RemoveButton variant={'text'} onClick={() => removeToken(tokenId, tokensInPool)}>
-                <Icon name={'RowDelete'} size={16} aria-label={t`Remove token`} />
+              <RemoveButton variant="text" onClick={() => removeToken(tokenId, tokensInPool)}>
+                <Icon name="RowDelete" size={16} aria-label={t`Remove token`} />
               </RemoveButton>
             </Box>
           </LabelRow>

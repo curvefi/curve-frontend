@@ -35,7 +35,7 @@ export const CreatePoolButton = ({ disabled, curve }: Props) => {
         </StyledAlertBox>
       )}
       {(txStatus === '' || txStatus === 'ERROR') && (
-        <StyledButton disabled={disabled} variant={'icon-filled'} onClick={() => deployPool(curve)}>
+        <StyledButton disabled={disabled} variant="icon-filled" onClick={() => deployPool(curve)}>
           {t`Create Pool`}
         </StyledButton>
       )}
