@@ -50,9 +50,7 @@ export const MarketPageHeader = ({
   marketType: LlamaMarketType
 }) => {
   const { borrowRate, supplyRate, availableLiquidity } = usePageHeader({ chainId, marketId, market, blockchainId })
-  const { collateralToken, borrowToken } = market
-    ? getTokens(market)
-    : { collateralToken: undefined, borrowToken: undefined }
+  const { collateralToken, borrowToken } = (market && getTokens(market)) ?? {}
   const title = generateMarketTitle(collateralToken?.symbol, borrowToken?.symbol)
   const subtitle = generateSubtitle(collateralToken?.symbol, borrowToken?.symbol, marketType)
 
