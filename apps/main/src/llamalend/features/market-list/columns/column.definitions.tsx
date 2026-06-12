@@ -6,7 +6,7 @@ import { type AccessorFn, type DeepKeys } from '@tanstack/table-core'
 import { t } from '@ui-kit/lib/i18n'
 import type { ColumnDefinition } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { boolFilterFn, listNotEmptyFilterFn, multiFilterFn, rangeFilterFn } from '@ui-kit/shared/ui/DataTable/filters'
-import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
+import { MarketRateType } from '@ui-kit/types/market'
 import { AVERAGE_CATEGORIES } from '@ui-kit/utils'
 import { LlamaMarket } from '../../../queries/market-list/llama-markets'
 import {
@@ -194,10 +194,7 @@ export const LLAMA_MARKET_COLUMNS = [
       meta: {
         type: 'numeric',
         unit: 'percentage',
-        tooltip: createTooltip(
-          LlamaMarketColumnId.SolvencyPercent,
-          <SolvencyTooltip marketType={LlamaMarketType.Lend} />,
-        ),
+        tooltip: createTooltip(LlamaMarketColumnId.SolvencyPercent, <SolvencyTooltip type="overview" />),
       },
       sortUndefined: 'last',
     },

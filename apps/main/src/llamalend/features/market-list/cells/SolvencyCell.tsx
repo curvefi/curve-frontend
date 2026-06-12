@@ -1,20 +1,31 @@
 import { SOLVENCY_THRESHOLDS } from '@/llamalend/llama-markets.constants'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
+import { SolvencyTooltip } from '@/llamalend/widgets/tooltips'
 import Typography, { TypographyProps } from '@mui/material/Typography'
+import { maybe, objectKeys } from '@primitives/objects.utils'
 import type { CellContext } from '@tanstack/react-table'
+import { t } from '@ui-kit/lib/i18n'
+import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { formatNumber } from '@ui-kit/utils'
 
-const getSolvencyColor = (value: number | undefined | null): TypographyProps['color'] => {
-  if (value == null || value >= SOLVENCY_THRESHOLDS.solvent) return 'textPrimary'
-  else if (value >= SOLVENCY_THRESHOLDS.low) return 'warning'
-  else return 'error'
+const SOLVENCY_COLORS: Record<keyof typeof SOLVENCY_THRESHOLDS, TypographyProps['color']> = {
+  solvent: 'textPrimary',
+  low: 'warning',
+  insolvent: 'error',
 }
 
-export const SolvencyCell = ({ getValue }: CellContext<LlamaMarket, number | null | undefined>) => {
+const getSolvencyColor = (value: number | undefined | null): TypographyProps['color'] =>
+  SOLVENCY_COLORS[
+    maybe(value, v => objectKeys(SOLVENCY_THRESHOLDS).find(t => v >= SOLVENCY_THRESHOLDS[t])) ?? 'solvent'
+  ]
+
+export const SolvencyCell = ({ getValue, row }: CellContext<LlamaMarket, number | null | undefined>) => {
   const value = getValue()
   return (
-    <Typography variant="tableCellMBold" color={getSolvencyColor(value)} sx={{ textAlign: 'right' }}>
-      {formatNumber(value, 'percent.value')}
-    </Typography>
+    <Tooltip title={t`Solvency`} body={<SolvencyTooltip type={row.original.type} />}>
+      <Typography variant="tableCellMBold" color={getSolvencyColor(value)}>
+        {formatNumber(value, 'percent.value')}
+      </Typography>
+    </Tooltip>
   )
 }
