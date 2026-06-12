@@ -32,7 +32,7 @@ export const MetricsRow = ({
   const supplyRatePeriod = supplyRate ? AVERAGE_CATEGORIES[supplyRate.averageCategory].period : null
 
   return (
-    <Stack direction="row" sx={{ gap: Spacing.xxl, alignItems: 'center' }}>
+    <Stack direction="row" sx={{ gap: Spacing.xxl, alignItems: 'center', flexWrap: 'wrap' }}>
       <BorrowAprMetric
         marketType={marketType}
         borrowRate={borrowRate}
