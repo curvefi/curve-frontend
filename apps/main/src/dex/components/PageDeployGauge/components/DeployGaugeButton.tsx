@@ -82,7 +82,7 @@ export const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Prop
           <StyledSpinner isDisabled size={15} />
         </StyledSpinnerWrapper>
       ) : (
-        <StyledButton variant={'icon-filled'} onClick={() => handleConnectEth()}>
+        <StyledButton variant="icon-filled" onClick={() => handleConnectEth()}>
           {t`Connect to Ethereum`}
         </StyledButton>
       )
@@ -126,13 +126,13 @@ export const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Prop
         {sidechainNav === 0
           ? deploymentStatus.sidechain.status !== 'LOADING' &&
             deploymentStatus.sidechain.status !== 'CONFIRMING' && (
-              <StyledButton disabled={disabled} variant={'icon-filled'} onClick={() => void handleClick()}>
+              <StyledButton disabled={disabled} variant="icon-filled" onClick={() => void handleClick()}>
                 {t`Deploy Sidechain Gauge`}
               </StyledButton>
             )
           : deploymentStatus.mirror.status !== 'LOADING' &&
             deploymentStatus.mirror.status !== 'CONFIRMING' && (
-              <StyledButton disabled={disabled} variant={'icon-filled'} onClick={() => void handleClick()}>
+              <StyledButton disabled={disabled} variant="icon-filled" onClick={() => void handleClick()}>
                 {t`Deploy Mirror Gauge`}
               </StyledButton>
             )}
@@ -163,7 +163,7 @@ export const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Prop
         <StyledSpinner isDisabled size={15} />
       </StyledSpinnerWrapper>
     ) : (
-      <StyledButton variant={'icon-filled'} onClick={() => handleConnectEth()}>
+      <StyledButton variant="icon-filled" onClick={() => handleConnectEth()}>
         {t`Connect to Ethereum`}
       </StyledButton>
     )
@@ -186,7 +186,7 @@ export const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Prop
         <SuccessWrapper>{t`Gauge Deployed Successfully`}</SuccessWrapper>
       )}
       {deploymentStatus.mainnet.status !== 'LOADING' && deploymentStatus.mainnet.status !== 'CONFIRMING' && (
-        <StyledButton disabled={disabled} variant={'icon-filled'} onClick={() => void handleClick()}>
+        <StyledButton disabled={disabled} variant="icon-filled" onClick={() => void handleClick()}>
           {t`Deploy Gauge`}
         </StyledButton>
       )}

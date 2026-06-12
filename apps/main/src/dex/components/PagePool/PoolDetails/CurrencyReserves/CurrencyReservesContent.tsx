@@ -63,7 +63,7 @@ export const CurrencyReservesContent = ({
       </Box>
     </Box>
 
-    <Box className={'right'} flex flexDirection="column">
+    <Box className="right" flex flexDirection="column">
       <Chip size="md" isBold>
         {formatNumber(cr?.balance, { abbreviate: false, fallback: '-' })}{' '}
       </Chip>

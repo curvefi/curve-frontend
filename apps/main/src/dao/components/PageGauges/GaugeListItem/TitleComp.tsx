@@ -20,7 +20,7 @@ export const TitleComp = ({ gaugeData, gaugeAddress }: TitleCompProps) => (
     {gaugeData.tokens && (
       <TokenIcons blockchainId={gaugeData?.pool?.chain ?? gaugeData?.market?.chain ?? ''} tokens={gaugeData.tokens} />
     )}
-    <Box flex flexColumn flexGap={'var(--spacing-1)'}>
+    <Box flex flexColumn flexGap="var(--spacing-1)">
       <BoxedDataComp>
         {gaugeData.is_killed && <SmallLabel description={t`Killed`} isKilled />}
         {gaugeData.platform && <SmallLabel description={gaugeData.platform} />}

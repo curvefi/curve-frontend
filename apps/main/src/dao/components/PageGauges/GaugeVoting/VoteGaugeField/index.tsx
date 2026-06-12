@@ -116,7 +116,7 @@ export const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVot
           aria-label="Voting power input"
           label={
             newVote ? (
-              <Box flex flexColumn flexGap={'var(--spacing-1)'}>
+              <Box flex flexColumn flexGap="var(--spacing-1)">
                 <LabelTitle>{t`Available voting power:`}</LabelTitle>
                 <LabelData>
                   <strong>

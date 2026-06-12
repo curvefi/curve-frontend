@@ -76,7 +76,7 @@ const OracleTokenSummary = ({ chainId, token, title }: OracleTokenSummaryProps) 
           <SummaryData>
             <AddressLink href={scanAddressPath(network, token.oracle.address)}>
               {shortenAddress(token.oracle.address)}
-              <Icon name={'Launch'} size={16} aria-label={t`Link to address`} />
+              <Icon name="Launch" size={16} aria-label={t`Link to address`} />
             </AddressLink>
           </SummaryData>
         ) : (
