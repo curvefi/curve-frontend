@@ -52,7 +52,7 @@ const getAssetValues = (
       [LlamaMarketColumnId.UserCollateral]: [stats?.collateral?.amount, stats?.borrowToken?.amount],
       [LlamaMarketColumnId.UserBorrowed]: [stats?.borrowed, undefined],
       [LlamaMarketColumnId.UserEarnings]: [lendingPosition?.earnings, undefined],
-      [LlamaMarketColumnId.UserDeposited]: [lendingPosition?.currentShares, undefined],
+      [LlamaMarketColumnId.UserDeposited]: [lendingPosition?.supplied, undefined],
     }) as Partial<Record<LlamaMarketColumnId, [number, number | undefined]>>
   )[columnId]
 

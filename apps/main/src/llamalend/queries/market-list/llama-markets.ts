@@ -192,7 +192,7 @@ const convertLendingVault = (
           }))
         : [],
     },
-    lendingPosition: lendingPosition && { ...lendingPosition, boostMultiplier: 10 },
+    lendingPosition,
     type: marketType,
     url: getInternalUrl('lend', chain, `${LEND_ROUTES.PAGE_MARKETS}/${controller}`),
     deprecatedMessage:

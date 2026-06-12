@@ -1,4 +1,4 @@
-import { sum } from 'lodash'
+import { sum, uniqBy } from 'lodash'
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { getUserLendingVaultStatsOptions } from '@/llamalend/queries/market-list/lending-vaults'
@@ -7,6 +7,7 @@ import { getUserMintMarketsStatsOptions } from '@/llamalend/queries/market-list/
 import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
 import { splitAt, zip } from '@primitives/array.utils'
+import type { Amount } from '@primitives/decimal.utils'
 import { useQueries, type UseQueryResult } from '@tanstack/react-query'
 import { t } from '@ui-kit/lib/i18n'
 import { getTokenUsdRateQueryOptions } from '@ui-kit/lib/model/entities/token-usd-rate'
@@ -16,56 +17,33 @@ import { LlamaMarketType } from '@ui-kit/types/market'
 import { mapQuery, type Query } from '@ui-kit/types/util'
 import { requireChainId } from '@ui-kit/utils'
 
-export type UserPositionSummaryMetric = { label: string; metric: Query<number> }
-
-type StatsQueryOptions =
-  | ReturnType<typeof getUserLendingVaultStatsOptions>
-  | ReturnType<typeof getUserMintMarketsStatsOptions>
+export type UserPositionSummaryMetric = { label: string; metric: Query<Amount> }
 
 type LendBorrowStatsData = QueryOptionsData<ReturnType<typeof getUserLendingVaultStatsOptions>>
 type MintBorrowStatsData = QueryOptionsData<ReturnType<typeof getUserMintMarketsStatsOptions>>
 type BorrowStatsData = LendBorrowStatsData | MintBorrowStatsData
-type TokenPriceData = QueryOptionsData<ReturnType<typeof getTokenUsdRateQueryOptions>>
-
-type BorrowPositionQuery = {
-  query: StatsQueryOptions
-  blockchainId: LlamaMarket['chain']
-  debtTokenAddress: Address
-  collateralTokenAddress: Address
-  marketType: LlamaMarketType
-}
+type TokenPrice = number
 
 type TokenPriceEntry = { chainId: number; tokenAddress: Address }
 
-const MISSING_PRICE_RESULT: TokenPriceData = 0
+const MISSING_PRICE_RESULT: TokenPrice = 0
 
-const createMetric = (label: string, metric: Query<number>): UserPositionSummaryMetric => ({ label, metric })
-
-const getBorrowEntry = (
-  { assets: { borrowed, collateral }, chain, controllerAddress, type }: LlamaMarket,
-  userAddress: Address | undefined,
-): BorrowPositionQuery => ({
-  query: { Lend: getUserLendingVaultStatsOptions, Mint: getUserMintMarketsStatsOptions }[type]({
-    contractAddress: controllerAddress,
-    userAddress,
-    blockchainId: chain,
-  }),
-  blockchainId: chain,
-  debtTokenAddress: borrowed.address,
-  collateralTokenAddress: collateral.address,
-  marketType: type,
+const createMetric = <T extends Amount>(label: string, metric: Query<T>): UserPositionSummaryMetric => ({
+  label,
+  metric,
 })
 
 const createTokenPriceQueries = (entries: TokenPriceEntry[]) =>
-  entries.map(({ chainId, tokenAddress }) => getTokenUsdRateQueryOptions({ chainId, tokenAddress }))
+  uniqBy(entries, e => `${e.chainId}:${e.tokenAddress}`).map(({ chainId, tokenAddress }) =>
+    getTokenUsdRateQueryOptions({ chainId, tokenAddress }),
+  )
 
 /** Build a token price lookup that hides key formatting. */
-const buildGetPrice = (entries: TokenPriceEntry[], priceResults: UseQueryResult<TokenPriceData>[]) => {
+const buildGetPrice = (entries: TokenPriceEntry[], priceResults: UseQueryResult<TokenPrice>[]) => {
   const getKey = (chainId: number, address: Address) => `${chainId}:${address.toLowerCase()}`
   const tokenMap = Object.fromEntries(
     entries.map(({ chainId, tokenAddress }, index) => [getKey(chainId, tokenAddress), priceResults[index]?.data]),
-  ) as Record<string, TokenPriceData | undefined>
-
+  ) as Record<string, TokenPrice | undefined>
   return (blockchainId: Chain, address: Address) =>
     tokenMap[getKey(requireChainId(blockchainId), address)] ?? MISSING_PRICE_RESULT
 }
@@ -101,7 +79,7 @@ function useSupplySummary(markets: LlamaMarket[]) {
           markets.map(
             ({ lendingPosition, assets: { borrowed }, chain }) =>
               // Missing USD prices contribute 0 and surface as summary errors
-              (lendingPosition?.totalCurrentAssets ?? 0) * getPrice(chain, borrowed.address),
+              (lendingPosition?.supplied ?? 0) * getPrice(chain, borrowed.address),
           ),
         ),
       }
@@ -115,7 +93,17 @@ function useBorrowSummary(markets: LlamaMarket[]) {
     () =>
       markets
         .filter(({ userHasPositions }) => userHasPositions?.Borrow)
-        .map(market => getBorrowEntry(market, userAddress)),
+        .map(({ assets: { borrowed, collateral }, chain, controllerAddress, type }) => ({
+          query: { Lend: getUserLendingVaultStatsOptions, Mint: getUserMintMarketsStatsOptions }[type]({
+            contractAddress: controllerAddress,
+            userAddress,
+            blockchainId: chain,
+          }),
+          blockchainId: chain,
+          debtTokenAddress: borrowed.address,
+          collateralTokenAddress: collateral.address,
+          marketType: type,
+        })),
     [markets, userAddress],
   )
 
@@ -136,7 +124,7 @@ function useBorrowSummary(markets: LlamaMarket[]) {
     combine: results => {
       const [positionResults, priceResults] = splitAt(results, borrowEntries?.length ?? 0) as [
         UseQueryResult<BorrowStatsData>[],
-        UseQueryResult<TokenPriceData>[],
+        UseQueryResult<TokenPrice>[],
       ]
 
       const getPrice = buildGetPrice(tokenPriceEntries, priceResults)

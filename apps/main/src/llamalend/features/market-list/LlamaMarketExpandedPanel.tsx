@@ -14,7 +14,7 @@ import { type ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
+import { MarketRateType } from '@ui-kit/types/market'
 import { AVERAGE_CATEGORIES, borderStyle } from '@ui-kit/utils'
 import type { LlamaMarket } from '../../queries/market-list/llama-markets'
 import { LineGraphCell, RateTooltipProps } from './cells'
@@ -91,11 +91,6 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
   } = market
   const graphSize = useMobileGraphSize()
 
-  const UnitMapping = {
-    [LlamaMarketType.Lend]: { symbol: assets.borrowed.symbol, position: 'suffix' },
-    [LlamaMarketType.Mint]: 'dollar',
-  } as const
-
   return (
     <>
       <Grid container spacing={Spacing.md}>
@@ -162,12 +157,12 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
               <Metric label={t`Earnings`} value={lendingPosition.earnings} valueOptions={{ unit: 'dollar' }} />
             </Grid>
           )}
-          {lendingPosition != null && (
+          {lendingPosition && (
             <Grid size={6}>
               <Metric
                 label={t`Supplied Amount`}
-                value={lendingPosition.currentShares}
-                valueOptions={{ unit: UnitMapping[type] }}
+                value={lendingPosition.supplied}
+                valueOptions={{ symbol: assets.borrowed.symbol, position: 'suffix' }}
               />
             </Grid>
           )}

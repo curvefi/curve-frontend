@@ -15,7 +15,7 @@ export const BoostCell = ({ getValue }: CellContext<LlamaMarket, number>) => (
     clickable
     title={t`Boost`}
     body={<BoostTooltipContent />}
-    placement={'top'}
+    placement="top"
   >
     <Typography variant="tableCellMBold" color="textPrimary" sx={{ textAlign: 'right' }}>
       {maybe(getValue(), boost => `${formatNumber(boost, { maximumFractionDigits: 2, abbreviate: false })}x`) ?? '-'}

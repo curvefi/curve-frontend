@@ -77,8 +77,7 @@ export async function invalidateAllUserLendingVaults(userAddress: Address | null
 }
 
 export type LendingPosition = {
-  currentShares: number
-  totalCurrentAssets: number
+  supplied: number
   earnings: number
   boostMultiplier: number | null
 }
@@ -96,10 +95,10 @@ const { getQueryOptions: getUserLendingSuppliesOptions, invalidate: invalidateUs
         chain,
         fromEntries(
           positions
-            .filter(p => p.currentShares || p.currentSharesInGauge || p.totalCurrentAssets)
-            .map(({ vaultAddress, currentShares, totalCurrentAssets, earnings, boostMultiplier }) => [
+            .filter(p => p.totalCurrentAssets > 0)
+            .map(({ vaultAddress, totalCurrentAssets, earnings, boostMultiplier }) => [
               vaultAddress,
-              { currentShares, totalCurrentAssets: totalCurrentAssets + currentShares, earnings, boostMultiplier },
+              { supplied: totalCurrentAssets, earnings, boostMultiplier },
             ]),
         ),
       ]),
