@@ -116,7 +116,7 @@ export const LLAMA_MARKET_COLUMNS = [
     meta: { type: 'numeric', hidden: true }, // hidden until we have a backend
     sortUndefined: 'last',
   }),
-  accessor(LlamaMarketColumnId.UserDeposited, 'lendingPosition.totalCurrentAssets', {
+  accessor(LlamaMarketColumnId.UserDeposited, 'lendingPosition.supplied', {
     cell: PriceCell,
     meta: { type: 'numeric' },
     filterFn: boolFilterFn,
