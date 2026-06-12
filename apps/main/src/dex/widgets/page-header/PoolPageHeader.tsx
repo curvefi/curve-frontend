@@ -38,7 +38,7 @@ export const PoolPageHeader = ({
   const isLoading = !poolDataCacheOrApi
 
   const tokenList = useMemo(() => getPoolTokens(poolDataCacheOrApi), [poolDataCacheOrApi])
-  const subtitle = tokenList.length ? tokenList.map(({ symbol }) => symbol).join(' / ') : undefined
+  const subtitle = tokenList?.map(({ symbol }) => symbol).join(' / ')
 
   return (
     <PageHeader
