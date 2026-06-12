@@ -33,7 +33,7 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { mapQuery } from '@ui-kit/types/util'
-import { AVERAGE_CATEGORIES, type AverageCategory, decimalMultiply, defaultNumberFormatter } from '@ui-kit/utils'
+import { AVERAGE_CATEGORIES, type AverageCategory, decimalMultiply, formatNumber } from '@ui-kit/utils'
 import { AmountSuppliedTooltipContent, VaultSharesTooltipContent } from './'
 
 const { Spacing } = SizesAndSpaces
@@ -129,14 +129,14 @@ export const SupplyPositionDetails = ({ chainId, market, userAddress, blockchain
         value={SUPPLY_POSITION_TAB}
         options={[{ value: SUPPLY_POSITION_TAB, label: t`Supply Details` }]}
       />
-      <Grid container spacing={Spacing.md} sx={{ padding: Spacing.md, backgroundColor: t => t.design.Layer[1].Fill }}>
+      <Grid container spacing={Spacing.sm} sx={{ padding: Spacing.md, backgroundColor: t => t.design.Layer[1].Fill }}>
         <MetricGrid>
           <Metric
             size="medium"
             label={USER_NET_SUPPLY_RATE_TITLE}
             {...combineMetricState(mapQuery(supplyMetrics, ({ totalUserBoost }) => totalUserBoost))}
             valueOptions={{ unit: 'percentage', ...(noGauge && { fallback: `No Gauge` }) }}
-            notional={maybe(userSupplyBoost.data, data => t`your boost ${defaultNumberFormatter(data)}x`)}
+            notional={maybe(userSupplyBoost.data, data => t`your boost ${formatNumber(data, 'multiplier')}`)}
             valueTooltip={{
               title: USER_NET_SUPPLY_RATE_TITLE,
               body: (

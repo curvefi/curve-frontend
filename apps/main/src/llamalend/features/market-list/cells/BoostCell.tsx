@@ -33,7 +33,7 @@ export const BoostCell = ({ row }: CellContext<LlamaMarket, number>) => {
   return (
     <Tooltip clickable title={t`Boost`} body={<BoostTooltipContent />} placement="top">
       <Typography variant="tableCellMBold" color="textPrimary" sx={{ textAlign: 'right' }}>
-        {formatNumber(boostMultiplier, { maximumFractionDigits: 2, abbreviate: false })}x
+        {formatNumber(boostMultiplier, 'multiplier')}
       </Typography>
     </Tooltip>
   )

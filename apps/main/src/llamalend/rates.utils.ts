@@ -5,7 +5,7 @@ import type { CrvUsdSnapshot } from '@ui-kit/entities/crvusd-snapshots'
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
 import type { ExtraIncentive } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
-import { decimal, defaultNumberFormatter, MAINNET_CRV_ADDRESS } from '@ui-kit/utils'
+import { decimal, formatNumber, MAINNET_CRV_ADDRESS } from '@ui-kit/utils'
 import { calculateAverageRates, type WithTimestamp } from '@ui-kit/utils/averageRates'
 import { aprToApy } from '@ui-kit/utils/rates'
 import type { SupplyExtraIncentive } from './rates.types'
@@ -98,7 +98,7 @@ export const formatSupplyExtraIncentives = ({
     },
     userRate &&
       baseRate == null && {
-        title: maybe(userBoost, b => `CRV (${defaultNumberFormatter(b)}x veCRV Boost)`) ?? '',
+        title: maybe(userBoost, b => `CRV (${formatNumber(b, 'multiplier')} veCRV Boost)`) ?? '',
         percentage: userRate,
         address: MAINNET_CRV_ADDRESS,
         blockchainId: 'ethereum',

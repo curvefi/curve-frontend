@@ -183,25 +183,32 @@ export type NumberFormatOptions = {
 const TOKEN_BALANCE_SIGNIFICANT_DIGITS = 5
 
 const NUMBER_FORMAT_CATEGORIES = {
+  multiplier: {
+    abbreviate: false,
+    fallback: '-',
+    unit: 'multiplier',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  },
   'token.amount': { abbreviate: false, fallback: '-' },
   'token.compact': { abbreviate: true, fallback: '-' },
   'token.balance': {
     abbreviate: false,
     formatter: (value: Amount) => {
       const absValue = Math.abs(Number(value))
-      const options: Partial<NumberFormatOptions> | undefined =
-        absValue > 0 && absValue < 1
+      return defaultNumberFormatter(
+        value,
+        absValue && absValue < 1
           ? { maximumSignificantDigits: TOKEN_BALANCE_SIGNIFICANT_DIGITS, trailingZeroDisplay: 'auto' }
-          : absValue >= 1 && Number.isFinite(absValue)
+          : Number.isFinite(absValue)
             ? {
                 maximumFractionDigits: Math.max(
                   2,
                   TOKEN_BALANCE_SIGNIFICANT_DIGITS - Math.floor(Math.log10(absValue)) - 1,
                 ),
               }
-            : undefined
-
-      return defaultNumberFormatter(value, options)
+            : undefined,
+      )
     },
     fallback: '-',
   },
