@@ -15,7 +15,7 @@ const format = (value: number) => formatNumber(value, 'usd.notional')
 const TITLE = { Lend: t`Total supplied`, Mint: t`Debt ceiling` }
 const TOOLTIP = {
   Lend: t`Total unborrowed supply available for new loans or withdrawals.`,
-  Mint: `Remaining borrowing capacity under the DAO-set debt ceiling.`,
+  Mint: t`Remaining borrowing capacity under the DAO-set debt ceiling.`,
 }
 
 export const LiquidityUsdTooltipContent = ({

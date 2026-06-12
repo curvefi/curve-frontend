@@ -27,6 +27,8 @@ type TokenPrice = number
 type TokenPriceEntry = { chainId: number; tokenAddress: Address }
 
 const MISSING_PRICE_RESULT: TokenPrice = 0
+const getTokenPriceEntryKey = ({ chainId, tokenAddress }: TokenPriceEntry) => `${chainId}:${tokenAddress.toLowerCase()}`
+const createUniqueTokenPriceEntries = (entries: TokenPriceEntry[]) => uniqBy(entries, getTokenPriceEntryKey)
 
 const createMetric = <T extends Amount>(label: string, metric: Query<T>): UserPositionSummaryMetric => ({
   label,
@@ -34,18 +36,21 @@ const createMetric = <T extends Amount>(label: string, metric: Query<T>): UserPo
 })
 
 const createTokenPriceQueries = (entries: TokenPriceEntry[]) =>
-  uniqBy(entries, e => `${e.chainId}:${e.tokenAddress}`).map(({ chainId, tokenAddress }) =>
+  createUniqueTokenPriceEntries(entries).map(({ chainId, tokenAddress }) =>
     getTokenUsdRateQueryOptions({ chainId, tokenAddress }),
   )
 
 /** Build a token price lookup that hides key formatting. */
 const buildGetPrice = (entries: TokenPriceEntry[], priceResults: UseQueryResult<TokenPrice>[]) => {
-  const getKey = (chainId: number, address: Address) => `${chainId}:${address.toLowerCase()}`
   const tokenMap = Object.fromEntries(
-    entries.map(({ chainId, tokenAddress }, index) => [getKey(chainId, tokenAddress), priceResults[index]?.data]),
+    createUniqueTokenPriceEntries(entries).map((entry, index) => [
+      getTokenPriceEntryKey(entry),
+      priceResults[index]?.data,
+    ]),
   ) as Record<string, TokenPrice | undefined>
   return (blockchainId: Chain, address: Address) =>
-    tokenMap[getKey(requireChainId(blockchainId), address)] ?? MISSING_PRICE_RESULT
+    tokenMap[getTokenPriceEntryKey({ chainId: requireChainId(blockchainId), tokenAddress: address })] ??
+    MISSING_PRICE_RESULT
 }
 
 const isMintMarketStats = (stats: BorrowStatsData | undefined) => stats && 'stablecoin' in stats

@@ -57,4 +57,13 @@ export const median = (values: number[]) => {
   return sorted.length % 2 === 0 ? sorted[middle - 1] : sorted[middle]
 }
 
-export const zip = <T, U>(a: T[], b: U[]): [T, U][] => a.map((k, i) => [k, b[i]] as const)
+export const zip = <T extends readonly unknown[][]>(
+  ...arrays: T
+): { [K in keyof T]: T[K] extends readonly (infer U)[] ? U : never }[] => {
+  if (arrays.some(array => array.length !== arrays[0].length)) {
+    throw new Error('Cannot zip arrays with different lengths')
+  }
+  return arrays[0].map((_, i) => arrays.map(array => array[i])) as {
+    [K in keyof T]: T[K] extends readonly (infer U)[] ? U : never
+  }[]
+}
