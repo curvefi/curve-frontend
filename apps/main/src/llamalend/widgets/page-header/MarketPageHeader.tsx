@@ -1,10 +1,11 @@
+import { useConnection } from 'wagmi'
 import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
+import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Chain } from '@curvefi/prices-api'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
-import type { Address } from '@primitives/address.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
@@ -36,6 +37,7 @@ export const MarketPageHeader = ({
   market: LlamaMarketTemplate | undefined
   marketType: LlamaMarketType
 }) => {
+  const { address: userAddress } = useConnection()
   const { borrowRate, supplyRate, availableLiquidity } = usePageHeader({ chainId, marketId, market, blockchainId })
   const { collateralToken, borrowToken } = (market && getTokens(market)) ?? {}
 
@@ -77,20 +79,18 @@ export const MarketPageHeader = ({
             </Stack>
           </WithSkeleton>
 
-          {isDevelopment && market && (
+          {isDevelopment && market && userAddress && (
             <IconButton
               size="extraSmall"
-              // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-              onClick={() => {
-                const { chainId, signerAddress } = market.getLlamalend()
-                return invalidateAllUserMarketDetails({
-                  chainId,
+              onClick={() =>
+                void invalidateAllUserMarketDetails({
+                  chainId: chainId as IChainId,
                   marketId: market.id,
-                  userAddress: signerAddress as Address,
+                  userAddress,
                   blockchainId,
                   contractAddress: getControllerAddress(market),
                 })
-              }}
+              }
             >
               <ReloadIcon />
             </IconButton>
