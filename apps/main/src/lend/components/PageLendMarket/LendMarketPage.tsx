@@ -81,7 +81,7 @@ function useLegacyFetching({
 export const LendMarketPage = () => {
   const params = useParams<MarketUrlParams>()
   const { rMarket, rChainId: chainId } = parseMarketParams(params)
-  const { data: market, isSuccess } = useLendMarket(chainId, rMarket)
+  const { data: market, isLoading: isMarketLoading, isSuccess } = useLendMarket(chainId, rMarket)
   const { isHydrated, llamaApi: api = null, provider } = useCurve()
   const marketId = market?.id ?? '' // todo: use market?.id directly everywhere since we pass the market too!
   const { address: userAddress } = useConnection()
@@ -144,7 +144,7 @@ export const LendMarketPage = () => {
           blockchainId={network.id}
           chainId={chainId}
           marketId={marketId}
-          isLoading={!isHydrated}
+          isLoading={!isHydrated || isMarketLoading}
           market={market}
           marketType={LlamaMarketType.Lend}
         />

@@ -28,7 +28,7 @@ export const Page = () => {
   const params = useParams<MarketUrlParams>()
   const { rMarket, rChainId: chainId } = parseMarketParams(params)
   const { llamaApi: api = null, provider, isHydrated } = useCurve()
-  const { data: market, isSuccess } = useLendMarket(chainId, rMarket)
+  const { data: market, isLoading: isMarketLoading, isSuccess } = useLendMarket(chainId, rMarket)
   const network = networks[chainId]
 
   const isPageVisible = useLayoutStore(state => state.isPageVisible)
@@ -97,7 +97,7 @@ export const Page = () => {
           blockchainId={network.id}
           chainId={chainId}
           marketId={market?.id}
-          isLoading={!isHydrated}
+          isLoading={!isHydrated || isMarketLoading}
           market={market}
           marketType={LlamaMarketType.Lend}
         />

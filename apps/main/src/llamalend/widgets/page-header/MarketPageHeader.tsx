@@ -21,19 +21,6 @@ import { MetricsRow } from './'
 
 const { Spacing } = SizesAndSpaces
 
-const generateSubtitle = (
-  collateralSymbol: string | undefined,
-  borrowedSymbol: string | undefined,
-  type: LlamaMarketType | undefined,
-) =>
-  collateralSymbol && borrowedSymbol && type === LlamaMarketType.Mint
-    ? t`Use ${collateralSymbol} to borrow and mint ${borrowedSymbol}`
-    : t`Use ${collateralSymbol} to borrow ${borrowedSymbol}`
-
-const generateMarketTitle = (collateralSymbol: string | undefined, borrowedSymbol: string | undefined) =>
-  (collateralSymbol && borrowedSymbol && `${collateralSymbol.toUpperCase()} • ${borrowedSymbol.toUpperCase()}`) ??
-  t`Market`
-
 export const MarketPageHeader = ({
   blockchainId,
   chainId,
@@ -51,8 +38,17 @@ export const MarketPageHeader = ({
 }) => {
   const { borrowRate, supplyRate, availableLiquidity } = usePageHeader({ chainId, marketId, market, blockchainId })
   const { collateralToken, borrowToken } = (market && getTokens(market)) ?? {}
-  const title = generateMarketTitle(collateralToken?.symbol, borrowToken?.symbol)
-  const subtitle = generateSubtitle(collateralToken?.symbol, borrowToken?.symbol, marketType)
+
+  const title =
+    (collateralToken &&
+      borrowToken &&
+      `${collateralToken.symbol.toUpperCase()} • ${borrowToken.symbol.toUpperCase()}`) ??
+    t`Market`
+
+  const subtitle =
+    collateralToken &&
+    borrowToken &&
+    t`Use ${collateralToken.symbol} to borrow ${marketType === LlamaMarketType.Mint ? t`and mint ` : ''}${borrowToken.symbol}`
 
   return (
     <PageHeader

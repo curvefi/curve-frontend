@@ -65,7 +65,7 @@ export const MintMarketPage = () => {
   const { address } = useConnection()
   const [previewPrices, setPreviewPrices] = useState<Range<Decimal> | undefined>(undefined)
 
-  const { data: market, isSuccess } = useMintMarket(rChainId, rCollateralId)
+  const { data: market, isLoading: isMarketLoading, isSuccess } = useMintMarket(rChainId, rCollateralId)
   const userMarketParams = { chainId: rChainId, marketId: market?.id, userAddress: address }
   const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists(
     {
@@ -120,7 +120,7 @@ export const MintMarketPage = () => {
           blockchainId={network.id}
           chainId={rChainId}
           marketId={market?.id ?? ''}
-          isLoading={!isHydrated}
+          isLoading={!isHydrated || isMarketLoading}
           market={market}
           marketType={LlamaMarketType.Mint}
         />
