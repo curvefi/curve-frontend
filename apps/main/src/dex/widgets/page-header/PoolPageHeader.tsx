@@ -4,7 +4,8 @@ import { useStore } from '@/dex/store/useStore'
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
 import { t } from '@ui-kit/lib/i18n'
-import { StackedTokenIcons } from '@ui-kit/shared/ui/StackedTokenIcons'
+import { IconStack } from '@ui-kit/shared/ui/IconStack'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { PageHeader } from '@ui-kit/widgets/PageHeader'
@@ -57,7 +58,16 @@ export const PoolPageHeader = ({
                 hideChainIcon
               />
             ) : (
-              <StackedTokenIcons blockchainId={blockchainId} tokens={tokenList} />
+              <IconStack iconSize="lg">
+                {tokenList.map(({ address, symbol }) => (
+                  <TokenIcon
+                    key={`${address}-${symbol}`}
+                    blockchainId={blockchainId}
+                    address={address}
+                    tooltip={symbol}
+                  />
+                ))}
+              </IconStack>
             )}
           </WithSkeleton>
         )
