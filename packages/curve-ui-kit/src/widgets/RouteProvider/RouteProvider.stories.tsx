@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { WagmiProvider } from 'wagmi'
-import { mockedWagmiConfig } from '@cy/support/helpers/llamalend/test-wagmi.helpers'
 import Box from '@mui/material/Box'
 import { fromEntries, mapRecord } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { BaseConfig } from '@ui/utils'
+import { createTestWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/wagmi-test-config'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { TestQueryProvider } from '@ui-kit/lib/queries/test-query.provider.test'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -14,6 +14,7 @@ import { mockRoutes } from '@ui-kit/widgets/RouteProvider/route.mock'
 import { type RouteProviderProps, RouteProvidersAccordion } from './RouteProvidersAccordion'
 
 const { MaxWidth } = SizesAndSpaces
+const mockedWagmiConfig = createTestWagmiConfig()
 
 const RouteProviderStory = ({
   isExpanded: givenExpanded,
