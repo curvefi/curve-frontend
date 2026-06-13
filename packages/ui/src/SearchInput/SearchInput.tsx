@@ -27,7 +27,7 @@ export const SearchInput = ({
   <InputProvider
     className={className}
     grid
-    gridTemplateColumns={'auto 1fr auto'}
+    gridTemplateColumns="auto 1fr auto"
     gridColumnGap={2}
     flexAlignItems="center"
     id={id}

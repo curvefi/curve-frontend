@@ -101,7 +101,7 @@ export const GaugeListItem = ({
             flex
             flexGap="var(--spacing-3)"
             flexAlignItems="center"
-            margin={'var(--spacing-2) 0 var(--spacing-2) auto'}
+            margin="var(--spacing-2) 0 var(--spacing-2) auto"
           >
             <ExternalLinkIconButton
               href={gaugeExternalLink}
