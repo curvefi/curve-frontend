@@ -1,10 +1,11 @@
 import lodash from 'lodash'
-import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { useStatsVecrvQuery } from '@/dao/entities/stats-vecrv'
 import { useStore } from '@/dao/store/useStore'
+import { maybe } from '@primitives/objects.utils'
 import { Box } from '@ui/Box'
-import { useCurve, useWallet } from '@ui-kit/features/connect-wallet'
+import { useCurve } from '@ui-kit/features/connect-wallet'
+import { combineQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { Metric } from '@ui-kit/shared/ui/Metric'
@@ -12,47 +13,30 @@ import { mapQuery, q } from '@ui-kit/types/util'
 import { formatNumber, MAINNET_CRV_ADDRESS } from '@ui-kit/utils'
 import { Chain } from '@ui-kit/utils/network'
 
-export const CrvStats = () => {
-  const statsQuery = useStatsVecrvQuery({})
-  const { data: veCrvData, isLoading: statsLoading, error } = statsQuery
-  const { provider } = useWallet()
-  const { curveApi: { chainId } = {} } = useCurve()
+function useVeCrvFees() {
   const veCrvFees = useStore(state => state.analytics.veCrvFees)
+  return { data: veCrvFees, isLoading: veCrvFees.fetchStatus === 'LOADING', error: null }
+}
+
+export const CrvStats = () => {
+  const { curveApi: { chainId } = {} } = useCurve()
+  const statsQuery = useStatsVecrvQuery({})
   const veCrvHolders = useStore(state => state.analytics.veCrvHolders)
-  const {
-    data: crv,
-    isFetching: isLoadingCrv,
-    error: crvError,
-  } = useTokenUsdRate({ chainId, tokenAddress: MAINNET_CRV_ADDRESS })
+  const crvUsdRate = useTokenUsdRate({ chainId, tokenAddress: MAINNET_CRV_ADDRESS })
+  const veCrv = useVeCrvFees()
 
-  // protect against trying to load data on non-mainnet networks
-  const notMainnet = chainId !== Chain.Ethereum
-  const noProvider = !provider || notMainnet
-  const veCrvFeesLoading = veCrvFees.fetchStatus === 'LOADING'
-  const aprLoading = statsLoading || veCrvFeesLoading || isLoadingCrv || crv == null
-
-  const veCrvApr = useMemo(
-    () =>
-      aprLoading || notMainnet || !veCrvData
-        ? { current: 0, fourDayAverage: 0 }
-        : {
-            current: calculateApr(veCrvFees.fees[1].feesUsd, veCrvData.totalVeCrv.fromWei(), crv),
-            fourDayAverage: calculateFourWeekAverageApr(
-              veCrvFees.fees.slice(1, 5).map(fee => fee.feesUsd),
-              veCrvData.totalVeCrv.fromWei(),
-              crv,
-            ),
-          },
-    [aprLoading, notMainnet, veCrvFees, veCrvData, crv],
+  const veCrvApr = combineQueries([statsQuery, crvUsdRate, veCrv], (veCrvData, crv, { fees }) =>
+    chainId === Chain.Ethereum
+      ? {
+          current: calculateApr(fees[1].feesUsd, veCrvData.totalVeCrv.fromWei(), crv),
+          fourDayAverage: calculateFourWeekAverageApr(
+            fees.slice(1, 5).map(fee => fee.feesUsd),
+            veCrvData.totalVeCrv.fromWei(),
+            crv,
+          ),
+        }
+      : { current: 0, fourDayAverage: 0 },
   )
-
-  const isLoading = Boolean(provider && statsLoading)
-  const veCrvStats = q({
-    ...statsQuery,
-    data: noProvider ? undefined : statsQuery.data,
-    isLoading,
-    error: noProvider ? null : error,
-  })
 
   return (
     <Wrapper>
@@ -62,19 +46,19 @@ export const CrvStats = () => {
           <Metric
             size="small"
             label={t`Total CRV`}
-            value={mapQuery(veCrvStats, ({ totalCrv }) => totalCrv.fromWei())}
+            value={mapQuery(statsQuery, ({ totalCrv }) => totalCrv.fromWei())}
             valueOptions={{}}
           />
           <Metric
             size="small"
             label={t`Locked CRV`}
-            value={mapQuery(veCrvStats, ({ totalLockedCrv }) => totalLockedCrv.fromWei())}
+            value={mapQuery(statsQuery, ({ totalLockedCrv }) => totalLockedCrv.fromWei())}
             valueOptions={{}}
           />
           <Metric
             size="small"
             label={t`veCRV`}
-            value={mapQuery(veCrvStats, ({ totalVeCrv }) => totalVeCrv.fromWei())}
+            value={mapQuery(statsQuery, ({ totalVeCrv }) => totalVeCrv.fromWei())}
             valueOptions={{}}
           />
           <Metric
@@ -93,23 +77,15 @@ export const CrvStats = () => {
           <Metric
             size="small"
             label={t`CRV Supply Locked`}
-            value={mapQuery(veCrvStats, ({ lockedPercentage }) => lockedPercentage)}
+            value={mapQuery(statsQuery, ({ lockedPercentage }) => lockedPercentage)}
             valueOptions={{ unit: 'percentage' }}
           />
           <Metric
             size="small"
             label={t`veCRV APR`}
-            value={q({
-              data: noProvider ? undefined : veCrvApr?.current,
-              isLoading: Boolean(isLoading || veCrvFeesLoading || aprLoading),
-              error: noProvider ? null : (error ?? crvError),
-            })}
+            value={mapQuery(veCrvApr, ({ current }) => current)}
             valueOptions={{ unit: 'percentage' }}
-            notional={
-              isLoading || veCrvFeesLoading || aprLoading
-                ? undefined
-                : `${formatNumber(veCrvApr.fourDayAverage, 'percent.value')} 4w avg`
-            }
+            notional={maybe(veCrvApr.data?.fourDayAverage, apr => `${formatNumber(apr, 'percent.value')} 4w avg`)}
           />
         </MetricsContainer>
       </Container>

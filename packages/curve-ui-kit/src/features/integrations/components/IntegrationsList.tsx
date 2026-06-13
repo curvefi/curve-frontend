@@ -52,6 +52,17 @@ const filterIntegrations = ({
     .map(r => r.item)
 }
 
+// Collect the unique list of networks from the integrations response
+const getNetworks = (data: Partner[]) => [
+  ...new Set(
+    data.flatMap(integration =>
+      Object.entries(integration.networks ?? [])
+        .filter(([, enabled]) => enabled)
+        .map(([networkId]) => networkId),
+    ),
+  ),
+]
+
 export const IntegrationsList = ({ networkId, searchText }: { networkId?: string; searchText?: string }) => {
   const integrationsQuery = useIntegrations({})
   // to do: handle query error
@@ -60,16 +71,7 @@ export const IntegrationsList = ({ networkId, searchText }: { networkId?: string
   const isLoading = integrationsLoading || integrationsTagsLoading
   const isMobile = useIsMobile()
 
-  // Collect the unique list of networks from the integrations response
-  const networksQuery = useMappedQuery(integrationsQuery, data => [
-    ...new Set(
-      data.flatMap(integration =>
-        Object.entries(integration.networks ?? [])
-          .filter(([, enabled]) => enabled)
-          .map(([networkId]) => networkId),
-      ),
-    ),
-  ])
+  const networksQuery = useMappedQuery(integrationsQuery, getNetworks)
 
   const push = useNavigate()
   const searchParams = useSearchParams()

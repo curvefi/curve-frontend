@@ -9,8 +9,7 @@ import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangl
 import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
-import type { QueryProp } from '@ui-kit/types/util'
-import type { MakeOptional } from '@ui-kit/types/util'
+import type { MakeOptional, QueryProp } from '@ui-kit/types/util'
 import {
   copyToClipboard,
   defaultNumberFormatter,

@@ -26,7 +26,11 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useMappedQuery } from '@ui-kit/types/util'
 import { formatNumber } from '@ui-kit/utils'
-import { REFUEL_TIMESERIES_PAGE_SIZE, useRefuelTimeseries } from '../queries/timeseries.query'
+import {
+  REFUEL_TIMESERIES_PAGE_SIZE,
+  type RefuelTimeSeriesData,
+  useRefuelTimeseries,
+} from '../queries/timeseries.query'
 
 const { Spacing } = SizesAndSpaces
 
@@ -51,6 +55,10 @@ const toExportPoint = (time: number, value: number | null) => (value == null ? [
 const isFinitePrice = (value: number | null): value is number => value != null && Number.isFinite(value)
 const getLatestMetric = (values: (number | null | undefined)[]) =>
   values.findLast((value): value is number => value != null && Number.isFinite(value))
+
+const getLatestLpUsdPrice = ({ data }: RefuelTimeSeriesData) => getLatestMetric(data.map(point => point.lpUsdPrice))
+const getLatestVirtualPrice = ({ data }: RefuelTimeSeriesData) =>
+  maybe(getLatestMetric(data.map(point => point.virtualPrice)), virtualPrice => virtualPrice / 10 ** DEFAULT_DECIMALS)
 
 /** Used to calculate padded minimum for the price axis with some extra padding */
 const getPaddedMin = (values: number[]) => {
@@ -111,13 +119,8 @@ export const RefuelPricesChart = ({ blockchainId, poolAddress }: { blockchainId:
         .value(),
     [timeseries.data?.data],
   )
-  const lpUsdPrice = useMappedQuery(timeseries, ({ data }) => getLatestMetric(data.map(point => point.lpUsdPrice)))
-  const virtualPrice = useMappedQuery(timeseries, ({ data }) =>
-    maybe(
-      getLatestMetric(data.map(point => point.virtualPrice)),
-      virtualPrice => virtualPrice / 10 ** DEFAULT_DECIMALS,
-    ),
-  )
+  const lpUsdPrice = useMappedQuery(timeseries, getLatestLpUsdPrice)
+  const virtualPrice = useMappedQuery(timeseries, getLatestVirtualPrice)
 
   const yAxisMin = useMemo(
     () =>
