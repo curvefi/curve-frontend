@@ -43,7 +43,7 @@ export const usePointsCampaigns = ({
               iconPosition: 'left',
               primary: platform,
             },
-            points: formatNumber(decimal(multiplier), 'multiplier'),
+            multiplier: formatNumber(decimal(multiplier), 'multiplier'),
             campaignUrl: dashboardLink,
           }),
         ),
