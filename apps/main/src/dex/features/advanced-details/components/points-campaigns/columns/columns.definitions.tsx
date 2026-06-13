@@ -21,7 +21,7 @@ const headers = {
   [PointsCampaignsColumnId.CampaignUrl]: t`Details`,
 } as const
 
-export const POINTS_CAMPAIGNS_COLUMNS = [
+export const createPointsCampaignsColumns = ({ isMobile }: { isMobile: boolean }) => [
   columnHelper.accessor('source', {
     id: PointsCampaignsColumnId.Source,
     header: headers[PointsCampaignsColumnId.Source],
@@ -48,7 +48,7 @@ export const POINTS_CAMPAIGNS_COLUMNS = [
     header: headers[PointsCampaignsColumnId.CampaignUrl],
     cell: ({ getValue }) => (
       <InlineTableCell>
-        <ExternalLink href={getValue()} label={t`To campaign`} sx={{ justifyContent: 'end' }} />
+        <ExternalLink href={getValue()} label={isMobile ? '' : t`To campaign`} sx={{ justifyContent: 'end' }} />
       </InlineTableCell>
     ),
     enableSorting: false,
