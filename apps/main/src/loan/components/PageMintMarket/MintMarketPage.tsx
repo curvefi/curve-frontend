@@ -54,14 +54,7 @@ export const MintMarketPage = () => {
     tokens,
   })
 
-  const pageProps = {
-    curve,
-    isReady: !!curve?.signerAddress && !!market,
-    market: market ?? null,
-    rChainId,
-    params,
-    onPricesUpdated: setPreviewPrices,
-  }
+  const pageProps = { curve, market, rChainId, params, onPricesUpdated: setPreviewPrices }
 
   return isSuccess && !market ? (
     <ErrorPage

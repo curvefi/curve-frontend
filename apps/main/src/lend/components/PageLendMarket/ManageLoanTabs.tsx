@@ -8,7 +8,7 @@ import { ClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/
 import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealthForm'
 import { useLiquidationStatus } from '@/llamalend/features/market-position-details/hooks/useUserLiquidationStatus'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import type { Decimal } from '@primitives/decimal.utils'
+import { Decimal } from '@primitives/decimal.utils'
 import { useLoanImplementationKey } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import type { QueryProp, Range } from '@ui-kit/types/util'
@@ -23,27 +23,15 @@ const LendManageMenu = [
   {
     value: 'loan-increase',
     label: t`Borrow`,
-    component: ({ rChainId: chainId, market, onPricesUpdated, collateralEvents }: ManageLoanProps) => (
-      <BorrowMoreForm
-        networks={networks}
-        chainId={chainId}
-        market={market}
-        onPricesUpdated={onPricesUpdated}
-        collateralEvents={collateralEvents}
-      />
+    component: ({ rChainId: chainId, ...props }: ManageLoanProps) => (
+      <BorrowMoreForm chainId={chainId} networks={networks} {...props} />
     ),
   },
   {
     value: 'loan-decrease',
     label: t`Repay`,
-    component: ({ rChainId: chainId, market, onPricesUpdated, collateralEvents }: ManageLoanProps) => (
-      <RepayForm
-        networks={networks}
-        chainId={chainId}
-        market={market}
-        onPricesUpdated={onPricesUpdated}
-        collateralEvents={collateralEvents}
-      />
+    component: ({ rChainId: chainId, ...props }: ManageLoanProps) => (
+      <RepayForm chainId={chainId} networks={networks} {...props} />
     ),
   },
   {
@@ -53,20 +41,15 @@ const LendManageMenu = [
       {
         value: 'add',
         label: t`Add`,
-        component: ({ rChainId: chainId, market, onPricesUpdated }: ManageLoanProps) => (
-          <AddCollateralForm networks={networks} chainId={chainId} market={market} onPricesUpdated={onPricesUpdated} />
+        component: ({ rChainId: chainId, ...props }: ManageLoanProps) => (
+          <AddCollateralForm networks={networks} chainId={chainId} {...props} />
         ),
       },
       {
         value: 'remove',
         label: t`Remove`,
-        component: ({ rChainId: chainId, market, onPricesUpdated }: ManageLoanProps) => (
-          <RemoveCollateralForm
-            networks={networks}
-            chainId={chainId}
-            market={market}
-            onPricesUpdated={onPricesUpdated}
-          />
+        component: ({ rChainId: chainId, ...props }: ManageLoanProps) => (
+          <RemoveCollateralForm networks={networks} chainId={chainId} {...props} />
         ),
       },
     ],
@@ -81,13 +64,8 @@ const LendManageSoftLiquidationMenu = [
       {
         value: 'improve-health',
         label: t`Improve health`,
-        component: ({ rChainId: chainId, market, collateralEvents }: ManageLoanProps) => (
-          <ImproveHealthForm
-            chainId={chainId}
-            market={market}
-            networks={networks}
-            collateralEvents={collateralEvents}
-          />
+        component: ({ rChainId: chainId, ...props }: ManageLoanProps) => (
+          <ImproveHealthForm chainId={chainId} networks={networks} {...props} />
         ),
       },
       {
