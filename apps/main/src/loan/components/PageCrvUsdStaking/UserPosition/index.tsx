@@ -1,37 +1,62 @@
-import { BigNumber } from 'bignumber.js'
 import { useConnection } from 'wagmi'
-import { oneMonthProjectionYield, oneYearProjectionYield, isReady } from '@/loan/components/PageCrvUsdStaking/utils'
-import { useScrvUsdStatistics } from '@/loan/entities/scrvusd-statistics'
-import { useScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances'
+import { combineMetricState } from '@/llamalend/widgets/action-card/info-actions.helpers'
+import { isReady, oneMonthProjectionYield, oneYearProjectionYield } from '@/loan/components/PageCrvUsdStaking/utils'
+import { useScrvUsdExchangeRate as useScrvUsdExchangeRateQuery } from '@/loan/entities/scrvusd-exchange-rate.query'
+import { useScrvUsdStatistics } from '@/loan/entities/scrvusd-statistics.query'
+import { useScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances.query'
 import { useStore } from '@/loan/store/useStore'
+import type { ChainId } from '@/loan/types/loan.types'
 import { Card, CardContent, CardHeader, Stack } from '@mui/material'
 import Grid from '@mui/material/Grid'
+import type { Decimal } from '@primitives/decimal.utils'
+import { useScrvUsdNewForms } from '@ui-kit/hooks/useFeatureFlags'
+import { combineQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { mapQuery, q, type QueryProp } from '@ui-kit/types/util'
+import { decimal, decimalDiv, decimalMultiply } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
 const CRVUSD_OPTIONS = { symbol: 'crvUSD', position: 'suffix' as const, abbreviate: true }
 
-export const UserPosition = () => {
+const useScrvUsdExchangeRate = (chainId: ChainId | undefined): QueryProp<Decimal | undefined> => {
+  const useNewForms = useScrvUsdNewForms()
+  const legacyExchangeRate = useStore(state => state.scrvusd.scrvUsdExchangeRate)
+  const exchangeRate = useScrvUsdExchangeRateQuery({ chainId }, !!chainId && useNewForms)
+
+  if (useNewForms) return mapQuery(exchangeRate, rate => rate)
+
+  return q({
+    data: isReady(legacyExchangeRate.fetchStatus) ? (legacyExchangeRate.value as Decimal) : undefined,
+    isLoading: !isReady(legacyExchangeRate.fetchStatus),
+    error: null,
+  })
+}
+
+type UserPositionProps = {
+  chainId: ChainId | undefined
+}
+
+export const UserPosition = ({ chainId }: UserPositionProps) => {
   const { address } = useConnection()
-  const { data: statisticsData, isLoading: isStatisticsLoading } = useScrvUsdStatistics({})
-  const { data: userBalance, isLoading: userBalanceLoading } = useScrvUsdUserBalances({ userAddress: address })
-  const usdRateLoading = useStore(state => state.scrvusd.scrvUsdExchangeRate.fetchStatus === 'loading')
-  const scrvUsdExchangeRateFetchStatus = useStore(state => state.scrvusd.scrvUsdExchangeRate.fetchStatus)
-  const scrvUsdRate = useStore(state => state.scrvusd.scrvUsdExchangeRate.value)
-
-  const userScrvUsdBalance = Number(userBalance?.scrvUSD)
-  const userScrvUsdBalanceInCrvUsd = userScrvUsdBalance / Number(scrvUsdRate)
-  const exchangeRateLoading = !isReady(scrvUsdExchangeRateFetchStatus)
-
-  const totalScrvUsdSupply = statisticsData?.supply
-  const scrvUsdApy = statisticsData?.apyProjected
-
-  const userShareOfTotalScrvUsdSupply = totalScrvUsdSupply
-    ? Number(BigNumber(userScrvUsdBalance).div(totalScrvUsdSupply).times(100))
-    : undefined
+  const statistics = useScrvUsdStatistics({})
+  const scrvUsdExchangeRate = useScrvUsdExchangeRate(chainId)
+  const totalScrvUsdSupply = mapQuery(statistics, ({ supply }) => decimal(supply))
+  const scrvUsdApy = mapQuery(statistics, ({ apyProjected }) => decimal(apyProjected))
+  const userScrvUsdBalance = mapQuery(
+    useScrvUsdUserBalances({ chainId, userAddress: address }),
+    ({ scrvUSD }) => scrvUSD,
+  )
+  const userScrvUsdBalanceInCrvUsd = combineQueries([userScrvUsdBalance, scrvUsdExchangeRate], (balance, rate) =>
+    +rate ? decimalDiv(balance, rate) : undefined,
+  )
+  const userShareOfTotalScrvUsdSupply = combineQueries([userScrvUsdBalance, totalScrvUsdSupply], (balance, supply) =>
+    +supply ? decimalMultiply(decimalDiv(balance, supply), '100') : '0',
+  )
+  const thirtyDayProjection = combineQueries([scrvUsdApy, userScrvUsdBalance], oneMonthProjectionYield)
+  const oneYearProjection = combineQueries([scrvUsdApy, userScrvUsdBalance], oneYearProjectionYield)
 
   return (
     <Card size="small">
@@ -41,17 +66,17 @@ export const UserPosition = () => {
           <Grid size={6}>
             <Metric
               label={t`Your crvUSD Staked`}
-              value={userScrvUsdBalanceInCrvUsd}
               valueOptions={{ unit: CRVUSD_OPTIONS }}
-              loading={userBalanceLoading || usdRateLoading || exchangeRateLoading}
+              {...combineMetricState(userScrvUsdBalanceInCrvUsd)}
+              testId="scrvusd-position-staked"
             />
           </Grid>
           <Grid size={6}>
             <Metric
               label={t`Your share of the vault`}
-              value={userShareOfTotalScrvUsdSupply}
               valueOptions={{ unit: 'percentage' }}
-              loading={isStatisticsLoading}
+              {...combineMetricState(userShareOfTotalScrvUsdSupply)}
+              testId="scrvusd-position-share"
             />
           </Grid>
         </Grid>
@@ -61,12 +86,12 @@ export const UserPosition = () => {
             <Metric
               size="small"
               label={t`30 Days Projection`}
-              value={scrvUsdApy && oneMonthProjectionYield(scrvUsdApy, userScrvUsdBalance)}
               valueOptions={{ unit: 'dollar' }}
-              loading={isStatisticsLoading || userBalanceLoading}
+              {...combineMetricState(thirtyDayProjection)}
               labelTooltip={{
                 title: t`This is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`,
               }}
+              testId="scrvusd-position-projection-30d"
             />
           </Grid>
 
@@ -74,12 +99,12 @@ export const UserPosition = () => {
             <Metric
               size="small"
               label={t`1 Year Projection`}
-              value={scrvUsdApy && oneYearProjectionYield(scrvUsdApy, userScrvUsdBalance)}
               valueOptions={{ unit: 'dollar' }}
-              loading={isStatisticsLoading || userBalanceLoading}
+              {...combineMetricState(oneYearProjection)}
               labelTooltip={{
                 title: t`This is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`,
               }}
+              testId="scrvusd-position-projection-1y"
             />
           </Grid>
 
@@ -87,13 +112,13 @@ export const UserPosition = () => {
             <Metric
               size="small"
               label={t`Estimated APY`}
-              value={scrvUsdApy}
               valueOptions={{ unit: 'percentage' }}
-              loading={isStatisticsLoading}
+              {...combineMetricState(scrvUsdApy)}
               labelTooltip={{
                 title: t`Annual percentage yield (APY) refers to how much interest is distributed on savings and takes compounded interest into account. 
 This value is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`,
               }}
+              testId="scrvusd-position-apy"
             />
           </Grid>
         </Grid>

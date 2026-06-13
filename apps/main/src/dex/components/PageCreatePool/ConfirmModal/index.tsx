@@ -90,7 +90,7 @@ export const ConfirmModal = ({
     <>
       {smallScreen && (
         <SummaryButton
-          variant={'icon-outlined'}
+          variant="icon-outlined"
           className={
             checkFormReady(validation.poolType, validation.tokensInPool, validation.parameters, validation.poolInfo)
               ? 'form-ready'
@@ -104,7 +104,7 @@ export const ConfirmModal = ({
       )}
       {fixedNavButton && (
         <NavCreateButton
-          variant={'icon-filled'}
+          variant="icon-filled"
           disabled={
             !checkFormReady(validation.poolType, validation.tokensInPool, validation.parameters, validation.poolInfo)
           }
@@ -125,14 +125,14 @@ export const ConfirmModal = ({
               validation.tokensInPool,
               validation.parameters,
               validation.poolInfo,
-            ) && <Icon name={'CheckmarkFilled'} size={16} aria-label={t`Checkmark filled`} />
+            ) && <Icon name="CheckmarkFilled" size={16} aria-label={t`Checkmark filled`} />
           )}
         </NavCreateButton>
       )}
       {!fixedNavButton && !smallScreen && (
         <StyledCreateButton
           className={hideOnMediumSize ? 'hide-on-medium-screen-size' : ''}
-          variant={'filled'}
+          variant="filled"
           {...openButtonProps}
           ref={openButtonRef}
           disabled={
@@ -182,7 +182,7 @@ export const ConfirmModal = ({
                   </SuccessBox>
                 </SuccessWrapper>
                 {checkIfUserAddedToken() && (
-                  <Box margin={'0 var(--spacing-normal)'}>
+                  <Box margin="0 var(--spacing-normal)">
                     <StyledInfoLinkBar
                       link="https://github.com/curvefi/curve-assets"
                       description={t`Upload an icon for a new token`}

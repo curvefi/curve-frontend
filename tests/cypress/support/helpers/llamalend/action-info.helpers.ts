@@ -13,6 +13,11 @@ export const DECIMAL_RANGE_REGEX = new RegExp([DECIMAL_REGEX.source, DECIMAL_REG
 export const getActionValue = (name: string, field?: ActionInfoField) =>
   getActionInfo(name, field).invoke(TRANSACTION_LOAD_TIMEOUT, 'attr', 'data-value')
 
+export const getMetricValue = (name: string) =>
+  cy
+    .get(`[data-testid="${name}-value"]`, TRANSACTION_LOAD_TIMEOUT)
+    .invoke(TRANSACTION_LOAD_TIMEOUT, 'attr', 'data-value')
+
 export type DebtCheck = { current: Decimal; future: Decimal; symbol: string }
 /**
  * Checks the current and future debt values, and that the symbol is displayed correctly.

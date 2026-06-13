@@ -5,7 +5,6 @@ import Stack from '@mui/material/Stack'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import Typography from '@mui/material/Typography'
-import { Icon } from '@ui/Icon'
 import { t } from '@ui-kit/lib/i18n'
 import { ArrowsHorizontalIcon } from '@ui-kit/shared/icons/ArrowsHorizontalIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -31,10 +30,6 @@ type ChartHeaderProps<TChartKey extends string = string, TTimeOption extends str
     setActiveSelection?: (value: TChartKey) => void
   }
   timeOption?: TimeOption<TTimeOption>
-  expandChart?: {
-    isExpanded: boolean
-    toggleChartExpanded: () => void
-  }
   chartOptionVariant: 'select' | 'buttons-group'
   flipChart?: () => void
   customButton?: ReactNode
@@ -44,7 +39,6 @@ type ChartHeaderProps<TChartKey extends string = string, TTimeOption extends str
 }
 
 export const ChartHeader = <TChartKey extends string, TTimeOption extends string = string>({
-  expandChart,
   chartSelections,
   timeOption,
   chartOptionVariant,
@@ -131,11 +125,6 @@ export const ChartHeader = <TChartKey extends string, TTimeOption extends string
             />
           )}
           {customButton}
-          {expandChart && (
-            <IconButton size="small" onClick={expandChart.toggleChartExpanded}>
-              <Icon name={expandChart?.isExpanded ? 'Minimize' : 'Maximize'} size={20} />
-            </IconButton>
-          )}
         </ToggleButtonGroup>
       </Stack>
     </Stack>

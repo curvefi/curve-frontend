@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { Cross2Icon } from '@ui-kit/shared/icons/Cross2Icon'
-import { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { FilterProps, TanstackTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DrawerHeader } from '@ui-kit/shared/ui/SwipeableDrawer/DrawerHeader'
 import { DrawerItems } from '@ui-kit/shared/ui/SwipeableDrawer/DrawerItems'
 import { SwipeableDrawer } from '@ui-kit/shared/ui/SwipeableDrawer/SwipeableDrawer'
@@ -21,6 +21,7 @@ import { LendingMarketsFilters } from '../LendingMarketsFilters'
 const { Spacing, Width, MinHeight } = SizesAndSpaces
 
 type LlamaTableFiltersOverlayProps = {
+  table: TanstackTable<LlamaMarket>
   open: boolean
   setOpen: (open: boolean) => void
   anchorRef: RefObject<HTMLDivElement | null>
@@ -31,6 +32,7 @@ type LlamaTableFiltersOverlayProps = {
 
 /** Llama market list table filters. Renders a drawer for mobile or a popover with the table filters. */
 export const LlamaTableFiltersOverlay = ({
+  table,
   open,
   setOpen,
   anchorRef,
@@ -40,7 +42,7 @@ export const LlamaTableFiltersOverlay = ({
   ...filterProps
 }: LlamaTableFiltersOverlayProps) => {
   const isMobile = useIsMobile()
-  const content = <LendingMarketsFilters marketsQuery={marketsQuery} {...filterProps} />
+  const content = <LendingMarketsFilters table={table} marketsQuery={marketsQuery} {...filterProps} />
   const resetButton = (
     <Button
       color="ghost"

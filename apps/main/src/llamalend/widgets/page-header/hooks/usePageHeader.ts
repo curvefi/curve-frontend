@@ -100,7 +100,7 @@ export const usePageHeader = ({
   blockchainId,
 }: {
   chainId: number
-  marketId: string
+  marketId: string | undefined
   market: LlamaMarketTemplate | null | undefined
   blockchainId: Chain | undefined
 }) => {

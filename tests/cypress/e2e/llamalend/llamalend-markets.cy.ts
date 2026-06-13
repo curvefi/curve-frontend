@@ -179,9 +179,7 @@ testCases.forEach(([width, height, breakpoint]) => {
         cy.get('[data-testid^="data-table-row"]')
           .last()
           // Avoid scrollIntoView because Cypress may pick the horizontal table wrapper as the scroll container, instead of the vertical
-          .then($row => {
-            cy.scrollTo(0, $row.offset()!.top - height / 2)
-          })
+          .then($row => cy.scrollTo(0, $row.offset()!.top - height / 2))
         if (breakpoint == 'mobile') {
           cy.get(`[data-testid="expand-icon"]`).last().scrollIntoView()
           cy.get(`[data-testid="expand-icon"]`).last().click()

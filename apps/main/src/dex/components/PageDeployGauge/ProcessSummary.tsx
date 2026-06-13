@@ -47,16 +47,16 @@ export const ProcessSummary = ({ chainId, isLite }: Props) => {
               {deploymentStatus.sidechain.status === 'SUCCESS' && deploymentStatus.sidechain.transaction && (
                 <SuccessfulTransactionInfo>
                   <Box flex flexAlignItems="center">
-                    <StyledCheckmark name={'CheckmarkFilled'} size={16} aria-label={t`Checkmark filled`} />
+                    <StyledCheckmark name="CheckmarkFilled" size={16} aria-label={t`Checkmark filled`} />
                     <SuccessMessage>{t`Sidechain gauge successfully deployed`}</SuccessMessage>
                   </Box>
                   <Transaction
-                    variant={'contained'}
+                    variant="contained"
                     href={scanTxPath(networkSidechain, deploymentStatus.sidechain.transaction.hash)}
                   >
                     <p>{t`Transaction:`}</p>
                     {shortenString(deploymentStatus.sidechain.transaction.hash)}
-                    <StyledIcon name={'Launch'} size={16} />
+                    <StyledIcon name="Launch" size={16} />
                   </Transaction>
                 </SuccessfulTransactionInfo>
               )}
@@ -79,16 +79,13 @@ export const ProcessSummary = ({ chainId, isLite }: Props) => {
               {deploymentStatus.mirror.status == 'SUCCESS' && deploymentStatus.mirror.transaction && (
                 <SuccessfulTransactionInfo>
                   <Box flex flexAlignItems="center">
-                    <StyledCheckmark name={'CheckmarkFilled'} size={16} aria-label={t`Checkmark filled`} />
+                    <StyledCheckmark name="CheckmarkFilled" size={16} aria-label={t`Checkmark filled`} />
                     <SuccessMessage>{t`Mirror gauge successfully deployed`}</SuccessMessage>
                   </Box>
-                  <Transaction
-                    variant={'contained'}
-                    href={scanTxPath(network, deploymentStatus.mirror.transaction.hash)}
-                  >
+                  <Transaction variant="contained" href={scanTxPath(network, deploymentStatus.mirror.transaction.hash)}>
                     <p>{t`Transaction:`}</p>
                     {shortenString(deploymentStatus.mirror.transaction.hash)}
-                    <StyledIcon name={'Launch'} size={16} />
+                    <StyledIcon name="Launch" size={16} />
                   </Transaction>
                 </SuccessfulTransactionInfo>
               )}

@@ -15,9 +15,9 @@ export const ModalPendingTx = ({ transactionHash, txLink, pendingMessage }: Prop
     <PendingWrapper>
       <PendingMessage>{pendingMessage}</PendingMessage>
       <StyledPendingSpinner isDisabled size={24} />
-      <Transaction variant={'contained'} href={txLink}>
+      <Transaction variant="contained" href={txLink}>
         <p>Transaction: {shortenHash(transactionHash)}</p>
-        <StyledIcon name={'Launch'} size={16} />
+        <StyledIcon name="Launch" size={16} />
       </Transaction>
     </PendingWrapper>
   </PendingContainer>

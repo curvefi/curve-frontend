@@ -99,9 +99,9 @@ export const GaugeListItem = ({
           <GaugeDetails gaugeData={gaugeData} />
           <Box
             flex
-            flexGap={'var(--spacing-3)'}
-            flexAlignItems={'center'}
-            margin={'var(--spacing-2) 0 var(--spacing-2) auto'}
+            flexGap="var(--spacing-3)"
+            flexAlignItems="center"
+            margin="var(--spacing-2) 0 var(--spacing-2) auto"
           >
             <ExternalLinkIconButton
               href={gaugeExternalLink}

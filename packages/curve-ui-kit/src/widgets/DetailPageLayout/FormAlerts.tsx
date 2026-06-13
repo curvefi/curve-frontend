@@ -46,7 +46,7 @@ export const FormAlerts = <Field extends string>({ error, formErrors, handledErr
           variant="outlined"
           severity="error"
           sx={{ overflowWrap: 'anywhere' /* break anywhere as there is often JSON in the error breaking the design */ }}
-          data-testid={'loan-alert-error'}
+          data-testid="loan-alert-error"
         >
           <AlertTitle>{t`An error occurred`}</AlertTitle>
           <Stack sx={{ gap: Spacing.xs, width: '100%' }}>

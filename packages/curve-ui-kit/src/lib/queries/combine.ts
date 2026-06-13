@@ -1,7 +1,7 @@
 import type { Decimal } from '@primitives/decimal.utils'
 import type { UseQueryOptions } from '@tanstack/react-query'
 import { Query, QueryProp } from '@ui-kit/types/util'
-import { decimalMin } from '@ui-kit/utils'
+import { decimalMin } from '@ui-kit/utils/decimal'
 import { QueryOptionsArray, QueryResultsArray } from './types'
 
 export const combineQueryState = (...queries: (Query<unknown> | undefined)[]) =>
@@ -9,6 +9,22 @@ export const combineQueryState = (...queries: (Query<unknown> | undefined)[]) =>
     error: queries.find(x => x?.error)?.error ?? null,
     isLoading: queries.some(x => x?.isLoading),
   }) as Omit<QueryProp<unknown>, 'data'>
+
+type Queries = readonly Query<unknown>[]
+type QueriesData<TQueries extends Queries> = {
+  [K in keyof TQueries]: TQueries[K] extends Query<infer TData> ? Exclude<TData, undefined> : never
+}
+
+export const combineQueries = <const TQueries extends Queries, TResult>(
+  queries: TQueries,
+  selector: (...data: QueriesData<TQueries>) => TResult | null | undefined,
+) =>
+  ({
+    data: queries.some(({ data }) => data === undefined)
+      ? undefined
+      : selector(...(queries.map(({ data }) => data) as QueriesData<TQueries>)),
+    ...combineQueryState(...queries),
+  }) as QueryProp<TResult>
 
 /** Combines the metadata of multiple queries into a single object. */
 export const combineQueriesMeta = <T extends QueryOptionsArray>(results: QueryResultsArray<T>) => ({

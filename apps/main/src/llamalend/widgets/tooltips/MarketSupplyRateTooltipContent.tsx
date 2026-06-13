@@ -71,7 +71,7 @@ export const MarketSupplyRateTooltipContent = ({
           <TooltipItems secondary>
             <RewardsTooltipItems
               title={t`Lending incentives APY*`}
-              tooltipType={'supply'}
+              tooltipType="supply"
               extraRewards={extraRewards}
               extraIncentives={extraIncentives}
             />

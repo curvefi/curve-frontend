@@ -117,13 +117,7 @@ export const Basic: Story = {
 
 export const WithEndContent: Story = {
   args: {
-    endContent: (
-      <ActionInfo
-        label={t`Leverage`}
-        value={`${formatNumber(2.42, { decimals: 2, abbreviate: false })}x`}
-        size="medium"
-      />
-    ),
+    endContent: <ActionInfo label={t`Leverage`} value={formatNumber(2.42, 'multiplier')} size="medium" />,
   },
   parameters: {
     docs: {

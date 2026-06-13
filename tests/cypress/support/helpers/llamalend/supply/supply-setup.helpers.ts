@@ -3,6 +3,9 @@ import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import type { CreateVirtualTestnetResponse } from '@cy/support/helpers/tenderly/vnet-create'
 import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
 import type { Decimal } from '@primitives/decimal.utils'
+import { CRVUSD_ADDRESS } from '@ui-kit/utils'
+
+export const CRVUSD_DECIMALS = 18
 
 export const fundUserForSupplySetup = ({
   vnet,
@@ -29,5 +32,26 @@ export const fundUserForSupplySetup = ({
     amountWei: `0x${borrowedAmountWei.toString(16)}`,
     tokenAddress: borrowedTokenAddress,
     recipientAddresses: [userAddress],
+  })
+}
+
+export const fundUserWithCrvUsd = ({
+  vnet,
+  userAddress,
+  crvUsdAmount,
+  ethAmount,
+}: {
+  vnet: CreateVirtualTestnetResponse
+  userAddress: Address
+  crvUsdAmount: Decimal
+  ethAmount: Decimal
+}) => {
+  fundUserForSupplySetup({
+    vnet,
+    userAddress,
+    borrowedTokenAddress: CRVUSD_ADDRESS,
+    borrowedTokenDecimals: CRVUSD_DECIMALS,
+    borrowedAmount: crvUsdAmount,
+    ethAmount,
   })
 }
