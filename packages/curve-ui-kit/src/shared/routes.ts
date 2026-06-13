@@ -26,8 +26,6 @@ export const LEND_MARKET_ROUTES = {
   PAGE_VAULT: '/vault',
 } as const
 
-export type LendMarketRoute = (typeof LEND_MARKET_ROUTES)[keyof typeof LEND_MARKET_ROUTES]
-
 export const CRVUSD_ROUTES = {
   PAGE_MARKETS: '/markets',
   PAGE_CRVUSD_STAKING: '/scrvUSD',

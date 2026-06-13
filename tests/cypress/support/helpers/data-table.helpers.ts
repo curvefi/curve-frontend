@@ -16,8 +16,6 @@ export function withFilterChips<T>(breakpoint: Breakpoint, callback: () => Cypre
 export const getHiddenCount = (breakpoint: Breakpoint): Cypress.Chainable<string> =>
   withFilterChips(breakpoint, () => cy.get('[data-testid="hidden-market-count"]').then(([{ innerText }]) => innerText))
 
-export const firstRow = () => cy.get(`[data-testid^="data-table-row-"]`).first()
-
 export function expandFirstRowOnMobile(breakpoint: Breakpoint) {
   if (breakpoint == 'mobile') {
     cy.get(`[data-testid="expand-icon"]`).first().click()
