@@ -73,7 +73,6 @@ describe('BorrowMoreForm (mocked)', () => {
             networks={llamaNetworks}
             chainId={chainId}
             onPricesUpdated={onPricesUpdated}
-            enabled
             collateralEvents={constQ(fakeCollateralEvents)}
           />
         </MockLoanTestWrapper>,

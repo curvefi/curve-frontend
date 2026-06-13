@@ -102,14 +102,12 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   market,
   networks,
   chainId,
-  enabled,
   onPricesUpdated,
   collateralEvents,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
-  enabled?: boolean
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
   collateralEvents: QueryProp<UserCollateralEvents>
 }) => {
@@ -153,10 +151,10 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
 
   const disabledAlert = (marketAlert?.isBorrowDisabled ? marketAlert : undefined) ?? solvencyDisabledAlert
 
-  useCallbackSync(useBorrowMorePrices(params, enabled), onPricesUpdated)
+  useCallbackSync(useBorrowMorePrices(params), onPricesUpdated)
 
   const isLeverageEnabled = isLeverageBorrowMore(market, values.leverageEnabled)
-  const priceImpact = q(useBorrowMorePriceImpact(params, enabled && isLeverageEnabled))
+  const priceImpact = q(useBorrowMorePriceImpact(params, isLeverageEnabled))
   const { formState } = form
   const isPending = formState.isSubmitting || isBorrowing
   return {
@@ -171,7 +169,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     borrowToken,
     collateralToken,
     error: borrowError ?? solvencyError,
-    isApproved: useBorrowMoreIsApproved(params, enabled),
+    isApproved: useBorrowMoreIsApproved(params),
     priceImpact,
     formErrors: formState.visibleErrors,
     disabledAlert,
@@ -195,7 +193,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
       networks,
       zapAddress: market && getZapAddress(market),
     }),
-    max: useMaxBorrowMoreValues({ params, form, market, collateralEvents }, enabled),
+    max: useMaxBorrowMoreValues({ params, form, market, collateralEvents }),
     isLeverageEnabled,
     leverage: useBorrowMoreLeverage(params),
     zapAddress: market && getZapAddress(market),
