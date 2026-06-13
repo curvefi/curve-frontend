@@ -13,6 +13,7 @@ import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
+import { useIsDesktop } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { cardContentSmallStyles } from '@ui-kit/themes/components/card-content'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -91,7 +92,7 @@ export const AdvancedDetails = ({
           <Stack
             sx={{
               backgroundColor: theme => theme.design.Layer[2].Fill,
-              border: theme => `1px solid ${theme.design.Layer[2].Outline}`,
+              ...(useIsDesktop() && { border: theme => `1px solid ${theme.design.Layer[2].Outline}` }),
               flexGrow: 1,
               paddingInline: Spacing.sm,
             }}
