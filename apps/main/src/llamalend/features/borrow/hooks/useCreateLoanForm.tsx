@@ -2,13 +2,7 @@ import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
-import {
-  getControllerAddress,
-  getLlamaMarketVersion,
-  getMarketType,
-  getTokens,
-  hasZapV2,
-} from '@/llamalend/llama.utils'
+import { getControllerAddress, getZapAddress, getMarketType, getTokens, hasZapV2 } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { getCreateLoanEstimateGasOptions } from '@/llamalend/queries/create-loan/create-loan-estimate-gas.query'
 import { useCreateLoanExpectedCollateral } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
@@ -192,7 +186,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
       },
       getRouteGasOptions: (routeId: string | undefined) => getCreateLoanEstimateGasOptions({ ...params, routeId }),
       networks,
-      version: market && getLlamaMarketVersion(market),
+      zapAddress: market && getZapAddress(market),
     }),
   }
 }

@@ -65,8 +65,8 @@ export const InitialPrice = ({ curve }: Props) => {
               )}
             </InputsWrapper>
             <SwitchWrapper>
-              <SwitchTokensButton curve={curve} from={'tokenA'} to={'tokenB'} />
-              {tokenAmount === 3 && <SwitchTokensButton curve={curve} from={'tokenB'} to={'tokenC'} />}
+              <SwitchTokensButton curve={curve} from="tokenA" to="tokenB" />
+              {tokenAmount === 3 && <SwitchTokensButton curve={curve} from="tokenB" to="tokenC" />}
             </SwitchWrapper>
           </InputSwitchWrapper>
           <InitialPriceWrapper>

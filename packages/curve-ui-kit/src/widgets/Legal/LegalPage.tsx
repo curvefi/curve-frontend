@@ -78,7 +78,7 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
         {tab === 'disclaimers' ? (
           <>
             <Stack
-              direction={'row'}
+              direction="row"
               sx={{ justifyContent: 'space-between', backgroundColor: t => t.design.Layer[1].Fill }}
             >
               <TabsSwitcher

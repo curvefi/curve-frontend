@@ -92,11 +92,11 @@ export const DeployGauge = (props: NetworkUrlParams) => {
                     <Box flex flexAlignItems="center">
                       <NavTitle>{t`Step 1`}</NavTitle>
                       <InfoButton size="small" onClick={() => overlayTriggerState.open()} ref={openButtonRef}>
-                        <Icon name={'InformationSquare'} size={16} />
+                        <Icon name="InformationSquare" size={16} />
                       </InfoButton>
                     </Box>
                     <StyledIconButton size="small" onClick={() => setSidechainNav(1)}>
-                      <Icon name={'ChevronRight'} size={16} />
+                      <Icon name="ChevronRight" size={16} />
                     </StyledIconButton>
                   </>
                 ) : (
@@ -104,11 +104,11 @@ export const DeployGauge = (props: NetworkUrlParams) => {
                     <Box flex flexAlignItems="center">
                       <NavTitle>{t`Step 2`}</NavTitle>
                       <InfoButton size="small" onClick={() => overlayTriggerState.open()} ref={openButtonRef}>
-                        <Icon name={'InformationSquare'} size={16} />
+                        <Icon name="InformationSquare" size={16} />
                       </InfoButton>
                     </Box>
                     <StyledIconButton size="small" onClick={() => setSidechainNav(0)}>
-                      <Icon name={'ChevronLeft'} size={16} />
+                      <Icon name="ChevronLeft" size={16} />
                     </StyledIconButton>
                   </>
                 )}
@@ -139,7 +139,7 @@ export const DeployGauge = (props: NetworkUrlParams) => {
         <>
           {overlayTriggerState.isOpen && (
             <ModalDialog
-              title={'Steps'}
+              title="Steps"
               isOpen
               isDismissable
               onClose={() => overlayTriggerState.close()}

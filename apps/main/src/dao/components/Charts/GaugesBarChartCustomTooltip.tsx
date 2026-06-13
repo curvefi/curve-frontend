@@ -16,7 +16,7 @@ export const GaugesBarChartCustomTooltip = ({ active, payload }: TooltipProps<Va
       <TooltipWrapper>
         {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule. */}
         <TooltipTitle>{payload[0].payload.title}</TooltipTitle>
-        <Box flex flexColumn flexGap={'var(--spacing-1)'}>
+        <Box flex flexColumn flexGap="var(--spacing-1)">
           <TooltipColumn>
             <TooltipDataTitle>{t`Relative Weight`}</TooltipDataTitle>
             {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Existing violation before enabling this rule. */}

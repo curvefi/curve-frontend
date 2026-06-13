@@ -29,10 +29,8 @@ export const { useQuery: useScrvUsdPreviewWithdraw } = queryFactory({
     ] as const,
   queryFn: async ({ withdrawAmount, isFull, maxWithdrawAmount }: ScrvUsdWithdrawQuery) => {
     const { st_crvUSD } = requireLib('llamaApi')
-    const r = isFull
-      ? await st_crvUSD.previewRedeem(maxWithdrawAmount)
-      : await st_crvUSD.previewWithdraw(withdrawAmount)
-    return r as Decimal
+    const shares = isFull ? maxWithdrawAmount : withdrawAmount
+    return (await st_crvUSD.previewRedeem(shares)) as Decimal
   },
   category: 'savings.user',
   validationSuite: scrvUsdWithdrawValidationSuite,

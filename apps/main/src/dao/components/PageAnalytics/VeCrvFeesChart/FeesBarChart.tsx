@@ -44,10 +44,10 @@ export const FeesBarChart = ({ data, height = 500 }: FeesBarChartProps) => (
         tickCount={10}
       />
       <Tooltip content={FeesBarChartTooltip} cursor={{ opacity: 0.3 }} />
-      <Bar dataKey="feesUsd" label={false} fill={'var(--primary-300)'} isAnimationActive={false}>
+      <Bar dataKey="feesUsd" label={false} fill="var(--primary-300)" isAnimationActive={false}>
         {data.map((_entry, index) => (
           // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
-          <Cell key={`$cell-${index}`} fill={'var(--primary-300)'} />
+          <Cell key={`$cell-${index}`} fill="var(--primary-300)" />
         ))}
       </Bar>
     </BarChart>
