@@ -4,23 +4,25 @@ import { queryFactory, rootKeys, type ChainQuery } from '@ui-kit/lib/model'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 
 type PoolListQuery = ChainQuery &
-  Pick<ListPoolsParams, 'page' | 'pagination' | 'searchString' | 'poolType' | 'sortBy' | 'sortDirection'>
+  Pick<ListPoolsParams, 'page' | 'searchString' | 'poolType' | 'sortBy' | 'sortDirection'> & {
+    pageSize?: ListPoolsParams['pagination']
+  }
 type PoolListParams = FieldsOf<PoolListQuery>
 
 export const { useQuery: usePoolList } = queryFactory({
-  queryKey: ({ chainId, page, pagination, searchString, poolType, sortBy, sortDirection }: PoolListParams) =>
+  queryKey: ({ chainId, page, pageSize, searchString, poolType, sortBy, sortDirection }: PoolListParams) =>
     [
       ...rootKeys.chain({ chainId }),
       'listPools',
       { page },
-      { pagination },
+      { pageSize },
       { searchString },
       { poolType },
       { sortBy },
       { sortDirection },
     ] as const,
-  queryFn: async ({ chainId, page, pagination, searchString, poolType, sortBy, sortDirection }: PoolListQuery) =>
-    listPools({ chainId, page, pagination, searchString, poolType, sortBy, sortDirection }),
+  queryFn: async ({ chainId, page, pageSize, searchString, poolType, sortBy, sortDirection }: PoolListQuery) =>
+    listPools({ chainId, page, pagination: pageSize, searchString, poolType, sortBy, sortDirection }),
   validationSuite: createValidationSuite(chainValidationGroup),
   category: 'dex.pools',
   keepPreviousData: true,

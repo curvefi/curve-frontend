@@ -11,8 +11,8 @@ const VYPER_EXPLOIT_VERSIONS = new Set(['0.2.15', '0.2.16', '0.3.0'])
 
 export type PoolIdByAddressSource = Record<string, { pool: Pick<PoolData['pool'], 'address' | 'id'> }>
 export type PoolListItemOptions = {
-  hasPosition?: boolean
-  poolId?: string
+  hasPosition: boolean | undefined
+  poolId: string | undefined
 }
 
 /**
@@ -23,8 +23,8 @@ export const normalizeAddress = (address: string) => address.toLowerCase()
 export const getPoolIdByAddressEntries = (poolMapper: PoolIdByAddressSource | undefined) =>
   recordValues(poolMapper ?? {}).map(({ pool }) => [normalizeAddress(pool.address), pool.id] as const)
 
-export const getCurvePoolIdByAddressEntries = (curve: CurveApi | undefined) =>
-  curve?.getPoolList().map(poolId => [normalizeAddress(curve.getPool(poolId).address), poolId] as const) ?? []
+export const getCurvePoolIdByAddressEntries = (curve: CurveApi) =>
+  curve.getPoolList().map(poolId => [normalizeAddress(curve.getPool(poolId).address), poolId] as const)
 
 export const getHasPosition = (
   userPoolIds: Set<string> | undefined,
@@ -60,11 +60,7 @@ const getPoolRewards = (pool: V2Pool, poolId: string): RewardsApy => {
 }
 
 /** Legacy pool list components data shape adapter */
-export const getPoolListItem = (
-  network: NetworkConfig,
-  pool: V2Pool,
-  options: PoolListItemOptions = {},
-): PoolListItem => {
+export const getPoolListItem = (network: NetworkConfig, pool: V2Pool, options: PoolListItemOptions): PoolListItem => {
   const poolAddress = normalizeAddress(pool.address)
   const poolId = options.poolId ?? poolAddress
   const gaugeAddress = pool.gauge?.address ? normalizeAddress(pool.gauge.address) : ''

@@ -163,7 +163,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
   } = usePoolList({
     chainId: network.chainId,
     page: pagination.pageIndex + 1,
-    pagination: PER_PAGE,
+    pageSize: PER_PAGE,
     searchString: searchText || undefined,
     poolType,
     sortBy,
@@ -179,7 +179,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
     () => poolList?.pools.filter(({ address }) => !localBlacklist.has(normalizeAddress(address))) ?? EMPTY,
     [localBlacklist, poolList?.pools],
   )
-  const poolCount = isPlaceholderData ? undefined : poolList?.count
+  const apiResultCount = isPlaceholderData ? undefined : poolList?.count
   const emptyStateFilters = useMemo(
     () => ({
       ...(searchText && { [PoolColumnId.PoolName]: searchText }),
@@ -243,7 +243,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
             onSearch={setSearch}
             poolFilters={POOL_TYPES}
             resetFilters={resetFilters}
-            resultCount={poolCount}
+            resultCount={apiResultCount}
             setColumnFilter={(_, value) => setPoolType(isPoolType(value) ? value : null)}
             showHiddenCountReset={false} // "hidden" makes no sense unless returned from the API
             sortField={sortField}
