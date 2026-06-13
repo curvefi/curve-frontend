@@ -8,16 +8,22 @@ import { useCurve, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { Metric } from '@ui-kit/shared/ui/Metric'
+import { mapQuery, q } from '@ui-kit/types/util'
 import { formatNumber, MAINNET_CRV_ADDRESS } from '@ui-kit/utils'
 import { Chain } from '@ui-kit/utils/network'
 
 export const CrvStats = () => {
-  const { data: veCrvData, isLoading: statsLoading, isSuccess: statsSuccess } = useStatsVecrvQuery({})
+  const statsQuery = useStatsVecrvQuery({})
+  const { data: veCrvData, isLoading: statsLoading, error } = statsQuery
   const { provider } = useWallet()
   const { curveApi: { chainId } = {} } = useCurve()
   const veCrvFees = useStore(state => state.analytics.veCrvFees)
   const veCrvHolders = useStore(state => state.analytics.veCrvHolders)
-  const { data: crv, isFetching: isLoadingCrv } = useTokenUsdRate({ chainId, tokenAddress: MAINNET_CRV_ADDRESS })
+  const {
+    data: crv,
+    isFetching: isLoadingCrv,
+    error: crvError,
+  } = useTokenUsdRate({ chainId, tokenAddress: MAINNET_CRV_ADDRESS })
 
   // protect against trying to load data on non-mainnet networks
   const notMainnet = chainId !== Chain.Ethereum
@@ -27,7 +33,7 @@ export const CrvStats = () => {
 
   const veCrvApr = useMemo(
     () =>
-      aprLoading || notMainnet || !statsSuccess
+      aprLoading || notMainnet || !veCrvData
         ? { current: 0, fourDayAverage: 0 }
         : {
             current: calculateApr(veCrvFees.fees[1].feesUsd, veCrvData.totalVeCrv.fromWei(), crv),
@@ -37,10 +43,16 @@ export const CrvStats = () => {
               crv,
             ),
           },
-    [aprLoading, notMainnet, statsSuccess, veCrvFees, veCrvData, crv],
+    [aprLoading, notMainnet, veCrvFees, veCrvData, crv],
   )
 
-  const loading = Boolean(provider && statsLoading)
+  const isLoading = Boolean(provider && statsLoading)
+  const veCrvStats = q({
+    ...statsQuery,
+    data: noProvider ? undefined : statsQuery.data,
+    isLoading,
+    error: noProvider ? null : error,
+  })
 
   return (
     <Wrapper>
@@ -50,29 +62,29 @@ export const CrvStats = () => {
           <Metric
             size="small"
             label={t`Total CRV`}
-            value={noProvider || !statsSuccess ? null : veCrvData.totalCrv.fromWei()}
-            loading={loading}
+            value={mapQuery(veCrvStats, ({ totalCrv }) => totalCrv.fromWei())}
             valueOptions={{}}
           />
           <Metric
             size="small"
-            loading={loading}
             label={t`Locked CRV`}
-            value={noProvider || !statsSuccess ? null : veCrvData.totalLockedCrv.fromWei()}
+            value={mapQuery(veCrvStats, ({ totalLockedCrv }) => totalLockedCrv.fromWei())}
             valueOptions={{}}
           />
           <Metric
             size="small"
-            loading={loading}
             label={t`veCRV`}
-            value={noProvider || !statsSuccess ? null : veCrvData.totalVeCrv.fromWei()}
+            value={mapQuery(veCrvStats, ({ totalVeCrv }) => totalVeCrv.fromWei())}
             valueOptions={{}}
           />
           <Metric
             size="small"
-            loading={veCrvHolders.fetchStatus === 'LOADING'}
             label={t`Holders`}
-            value={veCrvHolders.totalHolders}
+            value={q({
+              data: veCrvHolders.totalHolders,
+              isLoading: veCrvHolders.fetchStatus === 'LOADING',
+              error: null,
+            })}
             valueOptions={{ abbreviate: false, decimals: 0 }}
             labelTooltip={{
               title: t`${veCrvHolders.canCreateVote} veCRV holders can create a new proposal (minimum 2500 veCRV is required)`,
@@ -80,19 +92,21 @@ export const CrvStats = () => {
           />
           <Metric
             size="small"
-            loading={loading}
             label={t`CRV Supply Locked`}
-            value={noProvider || !statsSuccess ? null : veCrvData.lockedPercentage}
+            value={mapQuery(veCrvStats, ({ lockedPercentage }) => lockedPercentage)}
             valueOptions={{ unit: 'percentage' }}
           />
           <Metric
             size="small"
-            loading={Boolean(loading || veCrvFeesLoading || aprLoading)}
             label={t`veCRV APR`}
-            value={noProvider || !statsSuccess ? null : veCrvApr.current}
+            value={q({
+              data: noProvider ? undefined : veCrvApr?.current,
+              isLoading: Boolean(isLoading || veCrvFeesLoading || aprLoading),
+              error: noProvider ? null : (error ?? crvError),
+            })}
             valueOptions={{ unit: 'percentage' }}
             notional={
-              loading || veCrvFeesLoading || aprLoading
+              isLoading || veCrvFeesLoading || aprLoading
                 ? undefined
                 : `${formatNumber(veCrvApr.fourDayAverage, 'percent.value')} 4w avg`
             }

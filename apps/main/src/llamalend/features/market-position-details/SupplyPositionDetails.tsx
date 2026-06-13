@@ -14,7 +14,6 @@ import {
   sumOnChainExtraIncentivesApy,
   toNumberOrNull,
 } from '@/llamalend/rates.utils'
-import { combineMetricState } from '@/llamalend/widgets/action-card/info-actions.helpers'
 import { BoostTooltipContent } from '@/llamalend/widgets/tooltips/BoostTooltipContent'
 import { MarketSupplyRateTooltipContent } from '@/llamalend/widgets/tooltips/MarketSupplyRateTooltipContent'
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
@@ -32,7 +31,7 @@ import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { mapQuery } from '@ui-kit/types/util'
+import { mapQuery, q } from '@ui-kit/types/util'
 import { AVERAGE_CATEGORIES, type AverageCategory, decimalMultiply, formatNumber } from '@ui-kit/utils'
 import { AmountSuppliedTooltipContent, VaultSharesTooltipContent } from './'
 
@@ -134,7 +133,7 @@ export const SupplyPositionDetails = ({ chainId, market, userAddress, blockchain
           <Metric
             size="medium"
             label={USER_NET_SUPPLY_RATE_TITLE}
-            {...combineMetricState(mapQuery(supplyMetrics, ({ totalUserBoost }) => totalUserBoost))}
+            value={mapQuery(supplyMetrics, ({ totalUserBoost }) => totalUserBoost)}
             valueOptions={{ unit: 'percentage', ...(noGauge && { fallback: `No Gauge` }) }}
             notional={maybe(userSupplyBoost.data, data => t`your boost ${formatNumber(data, 'multiplier')}`)}
             valueTooltip={{
@@ -169,7 +168,7 @@ export const SupplyPositionDetails = ({ chainId, market, userAddress, blockchain
           <Metric
             size="medium"
             label={t`Amount supplied`}
-            {...combineMetricState(mapQuery(supplyAsset, ({ depositedUsdValue }) => depositedUsdValue))}
+            value={mapQuery(supplyAsset, ({ depositedUsdValue }) => depositedUsdValue)}
             valueOptions={{ unit: 'dollar' }}
             notional={maybe(supplyAsset.data, ({ depositedAmount, symbol }) => ({
               value: depositedAmount,
@@ -188,7 +187,7 @@ export const SupplyPositionDetails = ({ chainId, market, userAddress, blockchain
           <Metric
             size="medium"
             label={t`Vault shares`}
-            {...combineMetricState(mapQuery(shares, ({ value }) => value))}
+            value={mapQuery(shares, ({ value }) => value)}
             valueOptions={{}}
             notional={maybe(shares.data, ({ percentage }) => ({
               value: percentage,
@@ -207,7 +206,7 @@ export const SupplyPositionDetails = ({ chainId, market, userAddress, blockchain
           <Metric
             size="medium"
             label={t`veCRV Boost`}
-            {...combineMetricState(userSupplyBoost)}
+            value={q(userSupplyBoost)}
             valueOptions={{ unit: 'multiplier', ...(noGauge && { fallback: `No Gauge` }) }}
             valueTooltip={{
               title: t`veCRV Boost`,

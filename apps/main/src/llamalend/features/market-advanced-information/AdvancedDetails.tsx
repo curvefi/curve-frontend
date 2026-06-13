@@ -7,11 +7,11 @@ import {
   TooltipOptions,
 } from '@/llamalend/widgets/tooltips'
 import Box from '@mui/material/Box'
-import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import { mapQuery } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 import { useAdvancedDetailsData } from './hooks/useAdvancedDetailsData'
 
@@ -42,27 +42,24 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
         gridTemplateColumns: { mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)', desktop: 'repeat(6, 1fr)' },
       }}
     >
-      {availableLiquidity.borrowCap && (
+      {availableLiquidity.data?.borrowCap && (
         <Metric
           size="medium"
           label={t`Borrow cap`}
-          value={availableLiquidity.borrowCap}
-          loading={availableLiquidity?.loading}
+          value={mapQuery(availableLiquidity, ({ borrowCap }) => borrowCap)}
           valueOptions={{ abbreviate: true }}
         />
       )}
       <Metric
         size="medium"
         label={t`Total borrowers`}
-        value={totalBorrowers?.value}
-        loading={totalBorrowers?.loading}
+        value={mapQuery(totalBorrowers, ({ value }) => value)}
         valueOptions={{ abbreviate: true }}
       />
       <Metric
         size="medium"
         label={t`Average health`}
-        value={averageHealth?.value}
-        loading={averageHealth?.loading}
+        value={mapQuery(averageHealth, ({ value }) => value)}
         valueOptions={{ decimals: 1 }}
       />
       {/* we show total collateral in the rate curve card for lend markets */}
@@ -70,23 +67,35 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
         <Metric
           size="medium"
           label={t`Total collateral`}
-          value={collateral?.combinedCollateralUsdValue}
-          loading={collateral?.loading}
+          value={mapQuery(collateral, ({ combinedCollateralUsdValue }) => combinedCollateralUsdValue)}
           valueOptions={{ unit: 'dollar' }}
           notional={
-            collateral?.loading
+            collateral.isLoading
               ? undefined
               : formatCollateralNotional(
                   {
-                    value: decimal(collateral?.totalCollateral),
-                    symbol: collateral?.collateralSymbol ?? undefined,
+                    value: decimal(collateral.data?.totalCollateral),
+                    symbol: collateral.data?.collateralSymbol ?? undefined,
                   },
-                  { value: decimal(collateral?.totalBorrowed), symbol: collateral?.borrowedSymbol ?? undefined },
+                  {
+                    value: decimal(collateral.data?.totalBorrowed),
+                    symbol: collateral.data?.borrowedSymbol ?? undefined,
+                  },
                 )
           }
           valueTooltip={{
             title: t`Total Collateral`,
-            body: <TotalCollateralTooltip {...collateral} />,
+            body: (
+              <TotalCollateralTooltip
+                collateralSymbol={collateral.data?.collateralSymbol}
+                totalCollateral={collateral.data?.totalCollateral ?? null}
+                borrowedSymbol={collateral.data?.borrowedSymbol}
+                totalBorrowed={collateral.data?.totalBorrowed ?? null}
+                combinedCollateralUsdValue={collateral.data?.combinedCollateralUsdValue ?? null}
+                collateralUsdRate={collateral.data?.collateralUsdRate ?? null}
+                borrowedUsdRate={collateral.data?.borrowedUsdRate ?? null}
+              />
+            ),
             ...TooltipOptions,
           }}
         />
@@ -95,8 +104,7 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
         <Metric
           size="medium"
           label={t`Solvency`}
-          value={solvency?.value}
-          loading={solvency?.loading}
+          value={mapQuery(solvency, ({ value }) => value)}
           valueOptions={{ unit: 'percentage' }}
           valueTooltip={{
             title: t`Solvency`,
@@ -109,8 +117,7 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
         <Metric
           size="medium"
           label={t`Max leverage`}
-          value={maybe(maxLeverage?.value, () => maxLeverage.value)}
-          loading={maxLeverage?.loading}
+          value={mapQuery(maxLeverage, ({ value }) => value)}
           valueOptions={{ unit: 'multiplier' }}
           valueTooltip={{
             title: t`Maximum Leverage`,

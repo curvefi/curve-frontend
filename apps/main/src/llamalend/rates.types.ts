@@ -13,7 +13,6 @@ export type BorrowRate = {
   totalBorrowRate: number | null | undefined
   totalAverageBorrowRate: number | null | undefined
   extraRewards: CampaignRewards[]
-  loading: boolean
 }
 
 export type SupplyRate = {
@@ -38,5 +37,4 @@ export type SupplyRate = {
   extraIncentivesTotalApy: number | null | undefined
   averageExtraIncentivesApy: number | null | undefined
   extraRewards: CampaignRewards[]
-  loading: boolean
 }

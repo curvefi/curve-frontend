@@ -9,21 +9,22 @@ import {
   createTooltip,
   DAYS,
   EChartsCard,
-  timeToCategory,
   type Period,
+  timeToCategory,
 } from '@/analytics/features/charts'
 import { llama } from '@/analytics/llamadash'
 import type { Chain } from '@curvefi/prices-api'
 import { getTimeRange } from '@curvefi/prices-api/timestamp'
 import Grid from '@mui/material/Grid'
 import { useTheme } from '@mui/material/styles'
-import { DEFAULT_DECIMALS } from '@primitives/objects.utils'
+import { DEFAULT_DECIMALS, maybe } from '@primitives/objects.utils'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import type { LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
 import { SelectTimeOption } from '@ui-kit/shared/ui/Chart/SelectTimeOption'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { useMappedQuery } from '@ui-kit/types/util'
 import { formatNumber } from '@ui-kit/utils'
 import { REFUEL_TIMESERIES_PAGE_SIZE, useRefuelTimeseries } from '../queries/timeseries.query'
 
@@ -71,7 +72,7 @@ export const RefuelPricesChart = ({ blockchainId, poolAddress }: { blockchainId:
 
   const toggleVisibility = (key: string) => setVisibility(prev => ({ ...prev, [key]: !(prev[key] ?? true) }))
 
-  const { data, isFetching: loading } = useRefuelTimeseries({
+  const timeseries = useRefuelTimeseries({
     blockchainId,
     poolAddress,
     start,
@@ -95,7 +96,7 @@ export const RefuelPricesChart = ({ blockchainId, poolAddress }: { blockchainId:
 
   const chartData = useMemo(
     () =>
-      llama(data?.data)
+      llama(timeseries.data?.data)
         .map(point => ({
           time: new Date(point.timestamp).getTime(),
           lastPrice: point.lastPrices?.[0] ?? null,
@@ -108,11 +109,15 @@ export const RefuelPricesChart = ({ blockchainId, poolAddress }: { blockchainId:
         .uniqWith((x, y) => x.time === y.time)
         .orderBy(point => point.time, 'asc')
         .value(),
-    [data?.data],
+    [timeseries.data?.data],
   )
-
-  const lpUsdPrice = useMemo(() => getLatestMetric(chartData.map(point => point.lpUsdPrice)), [chartData])
-  const virtualPrice = useMemo(() => getLatestMetric(chartData.map(point => point.virtualPrice)), [chartData])
+  const lpUsdPrice = useMappedQuery(timeseries, ({ data }) => getLatestMetric(data.map(point => point.lpUsdPrice)))
+  const virtualPrice = useMappedQuery(timeseries, ({ data }) =>
+    maybe(
+      getLatestMetric(data.map(point => point.virtualPrice)),
+      virtualPrice => virtualPrice / 10 ** DEFAULT_DECIMALS,
+    ),
+  )
 
   const yAxisMin = useMemo(
     () =>
@@ -145,8 +150,8 @@ export const RefuelPricesChart = ({ blockchainId, poolAddress }: { blockchainId:
 
   return (
     <EChartsCard
-      title={`${data?.tokens[1]?.symbol ?? '?'} prices in ${data?.tokens[0]?.symbol ?? '?'}`}
-      loading={loading}
+      title={`${timeseries.data?.tokens[1]?.symbol ?? '?'} prices in ${timeseries.data?.tokens[0]?.symbol ?? '?'}`}
+      loading={timeseries.isLoading}
       option={option}
       fullscreen={fullscreen}
       onCloseFullscreen={closeFullscreen}
@@ -158,7 +163,6 @@ export const RefuelPricesChart = ({ blockchainId, poolAddress }: { blockchainId:
               label={t`LP token value`}
               value={lpUsdPrice}
               valueOptions={{ abbreviate: true, unit: 'dollar' }}
-              loading={loading}
               testId="refuel-lp-token-value"
             />
           </Grid>
@@ -166,9 +170,8 @@ export const RefuelPricesChart = ({ blockchainId, poolAddress }: { blockchainId:
           <Grid size={{ mobile: 6, tablet: 4 }}>
             <Metric
               label={t`Virtual price`}
-              value={virtualPrice && virtualPrice / 10 ** DEFAULT_DECIMALS}
+              value={virtualPrice}
               valueOptions={{ abbreviate: false, decimals: 6 }}
-              loading={loading}
               testId="refuel-virtual-price"
             />
           </Grid>
@@ -176,7 +179,12 @@ export const RefuelPricesChart = ({ blockchainId, poolAddress }: { blockchainId:
       }
       action={
         <>
-          <SelectTimeOption options={PERIODS} activeOption={period} setActiveOption={setPeriod} isLoading={loading} />
+          <SelectTimeOption
+            options={PERIODS}
+            activeOption={period}
+            setActiveOption={setPeriod}
+            isLoading={timeseries.isLoading}
+          />
           {fullscreen && (
             <ButtonExport
               filename="refuel_prices"

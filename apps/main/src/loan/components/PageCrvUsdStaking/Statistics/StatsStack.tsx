@@ -8,6 +8,7 @@ import { useScrvUsdNewForms } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { mapQuery, q } from '@ui-kit/types/util'
 import { weiToEther } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
@@ -20,11 +21,14 @@ type StatsStackProps = {
 
 export const StatsStack = ({ chainId }: StatsStackProps) => {
   const useNewForms = useScrvUsdNewForms()
-  const { data: yieldData, isLoading: yieldIsLoading } = useScrvUsdYield({ timeOption: '1M' }, !useNewForms)
-  const { data: suppliesData, isLoading: suppliesIsLoading } = useScrvUsdSupplies({ chainId }, !!chainId && useNewForms)
-  const { data: revenueData, isLoading: revenueIsLoading } = useScrvUsdRevenue({})
-  const { data: statisticsData, isLoading: statisticsIsLoading } = useScrvUsdStatistics({})
+  const yieldQuery = useScrvUsdYield({ timeOption: '1M' }, !useNewForms)
+  const supplies = useScrvUsdSupplies({ chainId }, !!chainId && useNewForms)
+  const revenue = useScrvUsdRevenue({})
+  const statistics = useScrvUsdStatistics({})
+  const { data: yieldData, isLoading: yieldIsLoading, error: yieldError } = yieldQuery
+  const { data: suppliesData, isLoading: suppliesIsLoading, error: suppliesError } = supplies
   const totalCrvUsdStaked = useNewForms ? suppliesData?.crvUSD : yieldData?.[yieldData.length - 1]?.assets
+  const totalCrvUsdStakedError = useNewForms ? suppliesError : yieldError
 
   return (
     <Grid
@@ -42,9 +46,12 @@ export const StatsStack = ({ chainId }: StatsStackProps) => {
         <Metric
           size="small"
           label="Total crvUSD Staked"
-          value={totalCrvUsdStaked}
+          value={q({
+            data: totalCrvUsdStaked,
+            isLoading: useNewForms ? suppliesIsLoading : yieldIsLoading,
+            error: totalCrvUsdStakedError,
+          })}
           valueOptions={{ unit: CRVUSD_OPTION }}
-          loading={useNewForms ? suppliesIsLoading : yieldIsLoading}
           copyText={t`Copied total crvUSD staked`}
         />
       </Grid>
@@ -52,9 +59,8 @@ export const StatsStack = ({ chainId }: StatsStackProps) => {
         <Metric
           size="small"
           label="Current projected APY"
-          value={statisticsData?.apyProjected}
+          value={mapQuery(statistics, ({ apyProjected }) => apyProjected)}
           valueOptions={{ unit: 'percentage' }}
-          loading={statisticsIsLoading}
           copyText={t`Copied current projected APY`}
         />
       </Grid>
@@ -62,9 +68,10 @@ export const StatsStack = ({ chainId }: StatsStackProps) => {
         <Metric
           size="small"
           label="Total Revenue Distributed"
-          value={revenueData?.totalDistributed ? weiToEther(Number(revenueData.totalDistributed)) : undefined}
+          value={mapQuery(revenue, ({ totalDistributed }) =>
+            totalDistributed ? weiToEther(Number(totalDistributed)) : undefined,
+          )}
           valueOptions={{ unit: CRVUSD_OPTION }}
-          loading={revenueIsLoading}
           copyText={t`Copied total revenue distributed`}
         />
       </Grid>
@@ -72,9 +79,8 @@ export const StatsStack = ({ chainId }: StatsStackProps) => {
         <Metric
           size="small"
           label="Weekly Accumulated Revenue"
-          value={revenueData?.epochs[revenueData.epochs.length - 1].weeklyRevenue}
+          value={mapQuery(revenue, ({ epochs }) => epochs[epochs.length - 1].weeklyRevenue)}
           valueOptions={{ unit: CRVUSD_OPTION }}
-          loading={revenueIsLoading}
           copyText={t`Copied weekly accumulated revenue`}
         />
       </Grid>

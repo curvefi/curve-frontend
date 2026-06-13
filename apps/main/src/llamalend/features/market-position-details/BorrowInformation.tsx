@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { formatCollateralNotional, isPositionLeveraged, type MarketTokens } from '@/llamalend/llama.utils'
 import { type UserState, useUserCurrentLeverage, useUserState } from '@/llamalend/queries/user'
 import { useRangeToLiquidation } from '@/llamalend/queries/user/user-prices.query'
@@ -6,12 +5,12 @@ import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/Col
 import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'
 import { Stack } from '@mui/material'
 import { maybe } from '@primitives/objects.utils'
-import { combineQueryState } from '@ui-kit/lib'
+import { combineQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import type { UserMarketParams } from '@ui-kit/lib/model'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { Metric } from '@ui-kit/shared/ui/Metric'
-import { q, type Query } from '@ui-kit/types/util'
+import { mapQuery, q, type Query } from '@ui-kit/types/util'
 import { decimalMultiply, decimalSum } from '@ui-kit/utils'
 import { LiquidationThresholdTooltipContent } from './'
 
@@ -29,33 +28,27 @@ type BorrowInformationProps = {
   tokens: Partial<MarketTokens>
 }
 
-const useCollateralValue = ({
+const getCollateralValue = ({
   userState,
   collateralUsdRate,
 }: {
   userState: Query<UserState>
   collateralUsdRate: Query<number>
-}) => ({
-  data: useMemo(
-    () =>
-      collateralUsdRate.data && userState.data
-        ? decimalSum(decimalMultiply(userState.data.collateral, `${collateralUsdRate.data}`), userState.data.stablecoin)
-        : null,
-    [userState.data, collateralUsdRate.data],
-  ),
-  ...combineQueryState(collateralUsdRate, userState),
-})
+}) =>
+  combineQueries([collateralUsdRate, userState], (collateralUsdRate, userState) =>
+    decimalSum(decimalMultiply(userState.collateral, `${collateralUsdRate}`), userState.stablecoin),
+  )
 
 export const BorrowInformation = ({ params, tokens: { collateralToken, borrowToken } }: BorrowInformationProps) => {
   const userState = useUserState(params)
-  const { data: userStateValue, isLoading: isUserStateLoading } = userState
-  const { data: leverageValue, isLoading: isLeverageLoading } = useUserCurrentLeverage(params)
+  const { data: userStateValue } = userState
+  const leverage = useUserCurrentLeverage(params)
 
   const collateralUsdRate = useTokenUsdRate({ chainId: params.chainId, tokenAddress: collateralToken?.address })
   const borrowedUsdRate = useTokenUsdRate({ chainId: params.chainId, tokenAddress: borrowToken?.address })
 
-  const { collateral, stablecoin: borrowed, debt } = userStateValue ?? {}
-  const collateralValue = useCollateralValue({ userState, collateralUsdRate })
+  const { collateral, stablecoin: borrowed } = userStateValue ?? {}
+  const collateralValue = getCollateralValue({ userState, collateralUsdRate })
   const { rangeToLiquidation, userPrices } = useRangeToLiquidation({ params })
 
   return (
@@ -70,9 +63,7 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
         <Metric
           size="small"
           label={t`Collateral value`}
-          value={collateralValue.data}
-          loading={collateralValue.isLoading}
-          error={collateralValue.error}
+          value={collateralValue}
           valueOptions={{ unit: 'dollar' }}
           notional={
             collateral
@@ -99,8 +90,7 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
         <Metric
           size="small"
           label={t`Liquidation threshold`}
-          value={userPrices?.data?.[1]}
-          loading={userPrices?.isLoading}
+          value={mapQuery(userPrices, ([, liquidationThreshold]) => liquidationThreshold)}
           valueOptions={dollarUnitOptions}
           valueTooltip={{
             title: t`Liquidation Threshold (LT)`,
@@ -123,8 +113,7 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
         <Metric
           size="small"
           label={t`Total debt`}
-          value={debt}
-          loading={isUserStateLoading}
+          value={mapQuery(userState, ({ debt }) => debt)}
           valueOptions={{ unit: { symbol: borrowToken?.symbol ?? '?', position: 'suffix' } }}
           valueTooltip={{
             title: t`Total Debt`,
@@ -134,14 +123,8 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
             clickable: true,
           }}
         />
-        {isPositionLeveraged(leverageValue) && (
-          <Metric
-            size="small"
-            label={t`Leverage`}
-            value={leverageValue}
-            loading={isLeverageLoading}
-            valueOptions={{ unit: 'multiplier' }}
-          />
+        {isPositionLeveraged(leverage.data) && (
+          <Metric size="small" label={t`Leverage`} value={q(leverage)} valueOptions={{ unit: 'multiplier' }} />
         )}
       </Stack>
     </Stack>

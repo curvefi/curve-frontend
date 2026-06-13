@@ -23,14 +23,13 @@ import { useCampaignsByAddress, type CampaignRewards } from '@ui-kit/entities/ca
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
-import type { Range } from '@ui-kit/types/util'
+import { q, type QueryProp, type Range } from '@ui-kit/types/util'
 import { AVERAGE_CATEGORIES, CRVUSD_ADDRESS, type AverageCategory } from '@ui-kit/utils'
 
 export type AvailableLiquidity = {
   value: number | null | undefined
   max: number | null | undefined
   notional: number | null | undefined
-  loading: boolean
 }
 
 const RATE_CATEGORY: AverageCategory = 'llamalend.market.rate'
@@ -44,7 +43,6 @@ function buildSupplyRate({
   lendingSnapshots,
   campaigns,
   blockchainId,
-  loading,
   category,
 }: {
   supplyApy?: number | string | null
@@ -55,7 +53,6 @@ function buildSupplyRate({
   lendingSnapshots: LendingSnapshot[] | undefined
   campaigns: CampaignRewards[]
   blockchainId: Chain | undefined
-  loading: boolean
   category: AverageCategory
 }): SupplyRate {
   const { window: daysBack } = AVERAGE_CATEGORIES[category]
@@ -89,7 +86,6 @@ function buildSupplyRate({
         }),
     ),
     extraRewards: campaigns,
-    loading,
   }
 }
 
@@ -111,26 +107,38 @@ export const usePageHeader = ({
   const borrowTokenAddress = (isLendMarket ? market.addresses.borrowed_token : CRVUSD_ADDRESS) as Address | undefined
   const marketType = isLendMarket ? LlamaMarketType.Lend : LlamaMarketType.Mint
 
-  const { data: snapshots, isLoading: isSnapshotsLoading } = useLlamaSnapshot(
-    market ?? undefined,
-    blockchainId,
-    Boolean(blockchainId && market),
-    { kind: 'limit', limit: RATE_WINDOW },
-  )
+  const {
+    data: snapshots,
+    isLoading: isSnapshotsLoading,
+    error: snapshotsError,
+  } = useLlamaSnapshot(market ?? undefined, blockchainId, Boolean(blockchainId && market), {
+    kind: 'limit',
+    limit: RATE_WINDOW,
+  })
 
-  const { data: marketRates, isLoading: isMarketRatesLoading } = useMarketRates(
-    { chainId, marketId },
-    !isMarketMetadataLoading,
-  )
-  const { data: capAndAvailable, isLoading: isCapAndAvailableLoading } = useMarketCapAndAvailable({ chainId, marketId })
-  const { data: borrowUsdRate, isLoading: isBorrowUsdRateLoading } = useTokenUsdRate({
+  const {
+    data: marketRates,
+    isLoading: isMarketRatesLoading,
+    error: marketRatesError,
+  } = useMarketRates({ chainId, marketId }, !isMarketMetadataLoading)
+  const {
+    data: capAndAvailable,
+    isLoading: isCapAndAvailableLoading,
+    error: capAndAvailableError,
+  } = useMarketCapAndAvailable({ chainId, marketId })
+  const {
+    data: borrowUsdRate,
+    isLoading: isBorrowUsdRateLoading,
+    error: borrowUsdRateError,
+  } = useTokenUsdRate({
     chainId,
     tokenAddress: borrowTokenAddress,
   })
-  const { data: marketOnChainRewards, isLoading: isMarketOnChainRewardsLoading } = useMarketVaultOnChainRewards(
-    { chainId, marketId },
-    isLendMarket,
-  )
+  const {
+    data: marketOnChainRewards,
+    isLoading: isMarketOnChainRewardsLoading,
+    error: marketOnChainRewardsError,
+  } = useMarketVaultOnChainRewards({ chainId, marketId }, isLendMarket)
 
   const { data: controllerCampaigns } = useCampaignsByAddress({
     blockchainId,
@@ -148,7 +156,7 @@ export const usePageHeader = ({
     getRebasingYield: getSnapshotCollateralRebasingYieldApr,
     daysBack: RATE_WINDOW,
   })
-  const borrowRate: BorrowRate = {
+  const borrowRateData: BorrowRate = {
     rate: toNumberOrNull(marketRates?.borrowApr),
     averageRate: metrics.averageRate,
     averageCategory: RATE_CATEGORY,
@@ -157,29 +165,40 @@ export const usePageHeader = ({
     totalBorrowRate: metrics.totalRate,
     totalAverageBorrowRate: metrics.averageTotalRate,
     extraRewards: borrowCampaigns,
-    loading: isMarketRatesLoading || isSnapshotsLoading || isMarketMetadataLoading,
   }
+  const borrowRate: QueryProp<BorrowRate> = q({
+    data: borrowRateData,
+    isLoading: isMarketRatesLoading || isSnapshotsLoading || isMarketMetadataLoading,
+    error: marketRatesError ?? snapshotsError,
+  })
   const lendingSnapshots = isLendMarket ? (snapshots as LendingSnapshot[] | undefined) : undefined
   const rebasingYieldApy = getLatestSnapshotValue(lendingSnapshots, snapshot => snapshot.borrowedToken.rebasingYield)
   const supplyRate = isLendMarket
-    ? buildSupplyRate({
-        supplyApy: marketRates?.lendApy,
-        rebasingYieldApy,
-        marketOnChainRewards,
-        lendingSnapshots,
-        campaigns: supplyCampaigns,
-        blockchainId,
-        loading: isMarketRatesLoading || isSnapshotsLoading || isMarketOnChainRewardsLoading || isMarketMetadataLoading,
-        category: RATE_CATEGORY,
+    ? q({
+        data: buildSupplyRate({
+          supplyApy: marketRates?.lendApy,
+          rebasingYieldApy,
+          marketOnChainRewards,
+          lendingSnapshots,
+          campaigns: supplyCampaigns,
+          blockchainId,
+          category: RATE_CATEGORY,
+        }),
+        isLoading:
+          isMarketRatesLoading || isSnapshotsLoading || isMarketOnChainRewardsLoading || isMarketMetadataLoading,
+        error: marketRatesError ?? snapshotsError ?? marketOnChainRewardsError,
       })
     : undefined
 
-  const availableLiquidity: AvailableLiquidity = {
-    value: toNumberOrNull(capAndAvailable?.available),
-    max: toNumberOrNull(capAndAvailable?.totalAssets),
-    notional: maybes([toNumberOrNull(capAndAvailable?.available), borrowUsdRate], ([liq, rate]) => liq * rate),
-    loading: isCapAndAvailableLoading || isMarketMetadataLoading || isBorrowUsdRateLoading,
-  }
+  const availableLiquidity: QueryProp<AvailableLiquidity> = q({
+    data: {
+      value: toNumberOrNull(capAndAvailable?.available),
+      max: toNumberOrNull(capAndAvailable?.totalAssets),
+      notional: maybes([toNumberOrNull(capAndAvailable?.available), borrowUsdRate], ([liq, rate]) => liq * rate),
+    },
+    isLoading: isCapAndAvailableLoading || isMarketMetadataLoading || isBorrowUsdRateLoading,
+    error: capAndAvailableError ?? borrowUsdRateError,
+  })
 
   return { borrowRate, supplyRate, availableLiquidity }
 }

@@ -1,7 +1,6 @@
 import { formatEther } from 'viem'
 import { useReadContracts } from 'wagmi'
-import type { Decimal } from '@primitives/decimal.utils'
-import { maybe } from '@primitives/objects.utils'
+import { mapQuery, q } from '@ui-kit/types/util'
 import { abi as pegkeeperAbi } from '../abi/pegkeeper'
 import { abi as pegkeeperDebtCeilingAbi } from '../abi/pegkeeperDebtCeiling'
 import { PEG_KEEPER_DEBT_CEILINGS_CONTRACT_ADDRESS, PEG_KEEPERS } from '../constants'
@@ -24,33 +23,41 @@ export function useStatistics() {
     data: debt,
     isFetching: isFetchingDebt,
     isError: isErrorDebt,
+    error: debtError,
   } = useReadContracts({
     contracts: pegkeeperDebtContracts,
   })
-
-  const totalDebt = debt
-    ?.filter(x => x.status === 'success')
-    .map(x => x.result)
-    .reduce((acc, curr) => acc + curr, 0n)
 
   const {
     data: ceiling,
     isFetching: isFetchingCeiling,
     isError: isErrorCeiling,
+    error: ceilingError,
   } = useReadContracts({
     contracts: pegkeeperDebtCeilingContracts,
   })
 
-  const totalCeiling = ceiling
-    ?.filter(x => x.status === 'success')
-    .map(x => x.result)
-    .reduce((acc, curr) => acc + curr, 0n)
-
   return {
-    totalDebt: maybe(totalDebt, totalDebt => formatEther(totalDebt) as Decimal),
-    totalCeiling: maybe(totalCeiling, totalCeiling => formatEther(totalCeiling) as Decimal),
-    isFetchingDebt,
-    isFetchingCeiling,
+    totalDebt: mapQuery(q({ data: debt, isLoading: isFetchingDebt, error: debtError }), results =>
+      Number(
+        formatEther(
+          results
+            .filter(x => x.status === 'success')
+            .map(x => x.result)
+            .reduce((acc, curr) => acc + curr, 0n),
+        ),
+      ),
+    ),
+    totalCeiling: mapQuery(q({ data: ceiling, isLoading: isFetchingCeiling, error: ceilingError }), results =>
+      Number(
+        formatEther(
+          results
+            .filter(x => x.status === 'success')
+            .map(x => x.result)
+            .reduce((acc, curr) => acc + curr, 0n),
+        ),
+      ),
+    ),
     isErrorDebt,
     isErrorCeiling,
   }

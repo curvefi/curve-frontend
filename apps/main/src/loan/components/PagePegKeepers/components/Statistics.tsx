@@ -12,7 +12,7 @@ import { useStatistics } from '../hooks/useStatistics'
 const { Spacing } = SizesAndSpaces
 
 export const Statistics = () => {
-  const { totalDebt, totalCeiling, isFetchingDebt, isFetchingCeiling, isErrorDebt, isErrorCeiling } = useStatistics()
+  const { totalDebt, totalCeiling, isErrorDebt, isErrorCeiling } = useStatistics()
 
   return (
     <Card size="small">
@@ -30,18 +30,16 @@ export const Statistics = () => {
 
         <Stack direction="row" sx={{ gap: Spacing.md }}>
           <Metric
-            loading={isFetchingDebt}
             label={t`Peg stabilisation reserve`}
-            value={totalDebt && Number(totalDebt)}
+            value={totalDebt}
             valueOptions={{ unit: CRVUSD_UNIT }}
             sx={{ flex: 1 }}
             testId="pegkeeper-stats-reserve"
           />
 
           <Metric
-            loading={isFetchingCeiling}
             label={t`Total debt ceiling`}
-            value={totalCeiling && Number(totalCeiling)}
+            value={totalCeiling}
             valueOptions={{ unit: CRVUSD_UNIT }}
             sx={{ flex: 1 }}
             testId="pegkeeper-stats-total-ceiling"

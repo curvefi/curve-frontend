@@ -6,6 +6,7 @@ import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import type { Chain } from '@curvefi/prices-api'
 import Box from '@mui/material/Box'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { q } from '@ui-kit/types/util'
 import type { AvailableLiquidity } from './hooks/usePageHeader'
 import { PageHeaderView } from './PageHeader'
 
@@ -33,7 +34,6 @@ const borrowRate: BorrowRate = {
   totalBorrowRate: 1.08,
   totalAverageBorrowRate: 1.073,
   extraRewards: [],
-  loading: false,
 }
 
 const supplyRate: SupplyRate = {
@@ -58,14 +58,12 @@ const supplyRate: SupplyRate = {
   extraIncentivesTotalApy: null,
   averageExtraIncentivesApy: 4.002,
   extraRewards: [],
-  loading: false,
 }
 
 const availableLiquidity: AvailableLiquidity = {
   value: 12_500_000,
   max: 30_000_000,
   notional: 12_500_000 * 1.02, // Assuming a $1.02 USD rate for the borrow token
-  loading: false,
 }
 
 const meta: Meta<typeof PageHeaderView> = {
@@ -106,8 +104,8 @@ const withWidth = (maxWidth: number | undefined, displayName: string) => {
 const baseArgs: Omit<PageHeaderViewProps, 'market' | 'supplyRate'> = {
   isLoading: false,
   blockchainId,
-  borrowRate,
-  availableLiquidity,
+  borrowRate: q({ data: borrowRate, isLoading: false, error: null }),
+  availableLiquidity: q({ data: availableLiquidity, isLoading: false, error: null }),
 }
 
 export const MintMarketDesktop: Story = {
@@ -130,7 +128,7 @@ export const LendMarketDesktop: Story = {
   args: {
     ...baseArgs,
     market: lendMarket,
-    supplyRate,
+    supplyRate: q({ data: supplyRate, isLoading: false, error: null }),
   },
   parameters: {
     docs: {
@@ -147,25 +145,35 @@ export const LendMarketLoading: Story = {
     ...baseArgs,
     isLoading: true,
     market: lendMarket,
-    borrowRate: {
-      ...borrowRate,
-      rate: null,
-      averageRate: null,
-      totalBorrowRate: null,
-      totalAverageBorrowRate: null,
-      loading: true,
-    },
-    supplyRate: {
-      ...supplyRate,
-      supplyApy: null,
-      averageLendApy: null,
-      totalMinBoost: null,
-      totalMaxBoost: null,
-      totalAverageMinBoost: null,
-      totalAverageMaxBoost: null,
-      loading: true,
-    },
-    availableLiquidity: { ...availableLiquidity, value: null, max: null, loading: true },
+    borrowRate: q({
+      data: {
+        ...borrowRate,
+        rate: null,
+        averageRate: null,
+        totalBorrowRate: null,
+        totalAverageBorrowRate: null,
+      },
+      isLoading: true,
+      error: null,
+    }),
+    supplyRate: q({
+      data: {
+        ...supplyRate,
+        supplyApy: null,
+        averageLendApy: null,
+        totalMinBoost: null,
+        totalMaxBoost: null,
+        totalAverageMinBoost: null,
+        totalAverageMaxBoost: null,
+      },
+      isLoading: true,
+      error: null,
+    }),
+    availableLiquidity: q({
+      data: { ...availableLiquidity, value: null, max: null },
+      isLoading: true,
+      error: null,
+    }),
   },
   parameters: {
     docs: {

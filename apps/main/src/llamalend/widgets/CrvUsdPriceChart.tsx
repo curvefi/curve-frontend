@@ -5,7 +5,7 @@ import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import { useTheme } from '@mui/material/styles'
-import { notFalsyArray } from '@primitives/objects.utils'
+import { maybe, notFalsyArray } from '@primitives/objects.utils'
 import { formatDate } from '@ui/utils'
 import { useCrvUsdPriceHistory } from '@ui-kit/entities/crvusd-price.query'
 import { t } from '@ui-kit/lib/i18n'
@@ -26,6 +26,7 @@ import {
 } from '@ui-kit/shared/ui/Chart'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { mapQuery, q } from '@ui-kit/types/util'
 import { Chain, CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { calculateAverageRates } from '@ui-kit/utils/averageRates'
 import { useCrvUsdSupplyTotal } from '../queries/crv-usd-supply-total.query'
@@ -56,20 +57,20 @@ export const CrvUsdPriceChart = () => {
 
   const days = Math.round(TIME_OPTION_MS[timeOption] / TIME_FRAMES.DAY_MS)
 
-  const { data: priceHistory = [], isLoading, isPlaceholderData, error } = useCrvUsdPriceHistory({ days })
-  const { data: currentPrice, isLoading: isCurrentPriceLoading } = useTokenUsdRate({
+  const priceHistory = useCrvUsdPriceHistory({ days })
+  const currentPrice = useTokenUsdRate({
     chainId: Chain.Ethereum,
     tokenAddress: CRVUSD_ADDRESS,
   })
-  const { data: totalSupply, isLoading: isTotalSupplyLoading } = useCrvUsdSupplyTotal({})
+  const totalSupply = useCrvUsdSupplyTotal({})
   // keepPreviousData is enabled on this query for analytics, so isLoading stays false when switching time options.
   // Check isPlaceholderData to show the loader while fresh data is being fetched.
-  const showLoading = isLoading || isPlaceholderData
+  const showLoading = priceHistory.isLoading || priceHistory.isPlaceholderData
 
   const chartData = useMemo<CrvUsdPriceChartPoint[]>(() => {
     const sorted = sortBy(
       uniqBy(
-        priceHistory.map(item => ({ timestamp: new Date(item.timestamp).getTime(), price: item.price })),
+        (priceHistory.data ?? []).map(item => ({ timestamp: new Date(item.timestamp).getTime(), price: item.price })),
         'timestamp',
       ),
       item => item.timestamp,
@@ -80,19 +81,24 @@ export const CrvUsdPriceChart = () => {
       d => d.price,
       d => d.timestamp,
     )
-  }, [priceHistory])
+  }, [priceHistory.data])
 
-  const oneWeekDeviation = useMemo(() => {
-    const now = Date.now()
+  const oneWeekDeviationQuery = mapQuery(
+    q({
+      data: { priceHistory: priceHistory.data, currentPrice: currentPrice.data },
+      isLoading: showLoading || currentPrice.isLoading,
+      error: priceHistory.error ?? currentPrice.error,
+    }),
+    ({ priceHistory, currentPrice }) => {
+      const now = Date.now()
 
-    return (
-      calculateAverageRates(
+      return calculateAverageRates(
         notFalsyArray(priceHistory, currentPrice != null && [{ timestamp: now, price: currentPrice }]),
         7,
         { deviation: ({ price }) => Math.abs(price - 1) * 100 },
-      )?.deviation ?? null
-    )
-  }, [currentPrice, priceHistory])
+      )?.deviation
+    },
+  )
 
   const seriesColors: Record<PriceSeriesKey, string> = useMemo(
     () => ({ price: Color.Primary[500], movingAverage: Color.Secondary[500], totalAverage: Color.Tertiary[400] }),
@@ -139,29 +145,26 @@ export const CrvUsdPriceChart = () => {
           <Metric
             size="medium"
             label={t`Current price`}
-            value={currentPrice}
-            loading={currentPrice == null && isCurrentPriceLoading}
+            value={q(currentPrice)}
             valueOptions={{ unit: 'dollar', maximumSignificantDigits: 5 }}
           />
           <Metric
             size="medium"
             label={t`1W deviation`}
-            value={oneWeekDeviation}
-            loading={oneWeekDeviation == null && (showLoading || isCurrentPriceLoading)}
+            value={oneWeekDeviationQuery}
             valueOptions={{ unit: 'percentage' }}
           />
           <Metric
             size="medium"
             label={t`Total supply`}
-            value={totalSupply}
-            loading={totalSupply == null && isTotalSupplyLoading}
+            value={mapQuery(totalSupply, totalSupply => maybe(totalSupply, totalSupply => totalSupply))}
             valueOptions={{ unit: 'dollar' }}
           />
         </Stack>
         <ChartStateWrapper
           height={Height.shortChart}
           isLoading={showLoading}
-          error={error}
+          error={priceHistory.error}
           errorMessage={t`Unable to fetch historical crvUSD peg data.`}
         >
           <EChartsLineChart<CrvUsdPriceChartPoint, PriceSeriesKey, 'timestamp'>
