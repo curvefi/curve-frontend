@@ -18,7 +18,9 @@ export const ChartTooltipShell = ({ title, children }: { title: ReactNode; child
     }}
     elevation={2}
   >
-    <Typography variant="bodyMBold">{title}</Typography>
+    <Typography variant="bodyMBold" sx={{ overflowWrap: 'anywhere' }}>
+      {title}
+    </Typography>
     {children}
   </Paper>
 )
@@ -52,9 +54,19 @@ export const ChartTooltipSeriesRow = ({
   </Stack>
 )
 
-export const ChartTooltipDataRow = ({ label, value }: { label: ReactNode; value: ReactNode }) => (
+export const ChartTooltipDataRow = ({
+  label,
+  value,
+  valueColor,
+}: {
+  label: ReactNode
+  value: ReactNode
+  valueColor?: string
+}) => (
   <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
     <Typography variant="bodySRegular">{label}</Typography>
-    <Typography variant="bodySBold">{value}</Typography>
+    <Typography variant="bodySBold" sx={{ color: valueColor }}>
+      {value}
+    </Typography>
   </Stack>
 )
