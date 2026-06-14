@@ -51,6 +51,9 @@ const isLLv2Enabled = (releaseChannel: ReleaseChannel, now = new Date()) =>
 /** New market list and search layout */
 export const useNewMarketListLayout = useStableChannel
 
+/** New DEX pool list backed by Prices API v2 */
+export const useDexPoolListV2 = useBetaChannel
+
 export const useLoanSlices = () =>
   ![useManageSoftLiquidation(), useManageLoanMuiForm(), useLendingMuiForm()].every(Boolean)
 

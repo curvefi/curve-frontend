@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 import { orderBy } from 'lodash'
 import { oneOf } from '@cy/support/generators'
-import { getHiddenCount, withFilterChips } from '@cy/support/helpers/data-table.helpers'
 import { API_LOAD_TIMEOUT, type Breakpoint, LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
 import { assert } from '@primitives/objects.utils'
 
@@ -59,6 +57,14 @@ describe('DEX Pools', () => {
     ;[width, height, breakpoint] = oneViewport()
   })
 
+  function assertSelectedFilterChip(chip: string) {
+    if (breakpoint === 'mobile') {
+      cy.get('[data-testid="btn-drawer-filter-dex-pools"]').click()
+      cy.get('[data-testid="drawer-filter-menu-dex-pools"]').should('be.visible')
+    }
+    cy.get(`[data-testid="filter-chip-${chip}"]`).contains(/\(\d+\)/)
+  }
+
   describe('First page', () => {
     beforeEach(() => visitAndWait(width, height))
 
@@ -111,18 +117,12 @@ describe('DEX Pools', () => {
       cy.url().should('include', 'sort=tvl')
     })
 
-    it('filters by currency chip', () => {
-      const currency = oneOf('usd', 'btc')
-      getHiddenCount(breakpoint).then(beforeCount => {
-        expect(isNaN(+beforeCount), `Cannot parse hidden count ${beforeCount}`).to.be.false
-        clickFilterChip(currency)
-        getHiddenCount(breakpoint).then(afterCount => {
-          expect(+afterCount).to.be.greaterThan(+beforeCount)
-          // chip is in the drawer for mobile, check on desktop that we show count
-          if (breakpoint !== 'mobile') cy.get(`[data-testid="filter-chip-${currency}"]`).contains(/\(\d+\)/)
-        })
-        cy.get('[data-testid="data-table-cell-PoolName"]').contains(currency.toUpperCase())
-      })
+    it('filters by pool type chip', () => {
+      const poolType = oneOf('stableswapng', 'crypto')
+      clickFilterChip(poolType)
+      cy.url().should('include', `filter=${poolType}`)
+      cy.get('[data-testid^="data-table-row-"]', API_LOAD_TIMEOUT).should('have.length.greaterThan', 0)
+      assertSelectedFilterChip(poolType)
     })
 
     it('navigates to pool deposit page by clicking a row', () => {
@@ -153,13 +153,12 @@ describe('DEX Pools', () => {
     cy.url().should('include', `?search=${filter}`)
   })
 
-  it('persists currency filter across reload', () => {
-    const filter = oneOf('usd', 'btc')
+  it('persists pool type filter across reload', () => {
+    const filter = 'crypto'
     visitAndWait(width, height, { query: { filter } })
-    cy.get('[data-testid^="data-table-row-"]', API_LOAD_TIMEOUT).should('have.length.greaterThan', 0)
     cy.url().should('include', `filter=${filter}`)
-    cy.get('[data-testid="data-table-cell-PoolName"]').first().contains(filter.toUpperCase())
-    withFilterChips(breakpoint, () => cy.get(`[data-testid="reset-filter"]`).click())
+    assertSelectedFilterChip(filter)
+    cy.get(`[data-testid="filter-chip-${filter}"]`).click()
     cy.url().should('not.include', '?')
   })
 

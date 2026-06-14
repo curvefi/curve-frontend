@@ -14,5 +14,5 @@ const POOL_KEYS: DeepKeys<PoolListItem>[] = [
 ]
 
 /** Search filter for pools lists */
-export const usePoolsGlobalFilterFn = (data: readonly PoolListItem[], filterValue: string) =>
+export const useLegacyPoolsGlobalFilterFn = (data: readonly PoolListItem[], filterValue: string) =>
   useFuzzyFilterFn(data, filterValue, POOL_KEYS)
