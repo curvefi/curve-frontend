@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import { meanBy } from 'lodash'
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { useStatsVecrvQuery } from '@/dao/entities/stats-vecrv'
@@ -10,6 +10,8 @@ import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { formatNumber, MAINNET_CRV_ADDRESS } from '@ui-kit/utils'
 import { Chain } from '@ui-kit/utils/network'
+
+const VECRV_APR_AVERAGE_WEEKS = 4
 
 export const CrvStats = () => {
   const { data: veCrvData, isLoading: statsLoading, isSuccess: statsSuccess } = useStatsVecrvQuery({})
@@ -25,20 +27,20 @@ export const CrvStats = () => {
   const veCrvFeesLoading = veCrvFees.fetchStatus === 'LOADING'
   const aprLoading = statsLoading || veCrvFeesLoading || isLoadingCrv || crv == null
 
-  const veCrvApr = useMemo(
-    () =>
-      aprLoading || notMainnet || !statsSuccess
-        ? { current: 0, fourDayAverage: 0 }
-        : {
-            current: calculateApr(veCrvFees.fees[1].feesUsd, veCrvData.totalVeCrv.fromWei(), crv),
-            fourDayAverage: calculateFourWeekAverageApr(
-              veCrvFees.fees.slice(1, 5).map(fee => fee.feesUsd),
-              veCrvData.totalVeCrv.fromWei(),
-              crv,
-            ),
-          },
-    [aprLoading, notMainnet, statsSuccess, veCrvFees, veCrvData, crv],
-  )
+  const veCrvApr = useMemo(() => {
+    if (aprLoading || notMainnet || !statsSuccess) return { current: 0, fourWeekAverage: 0 }
+
+    const totalVeCrv = +veCrvData.totalVeCrv
+    if (!totalVeCrv || !crv) return { current: 0, fourWeekAverage: 0 }
+
+    const aprScale = (52 * 100) / (totalVeCrv * crv)
+    const completedFees = veCrvFees.fees.slice(1, VECRV_APR_AVERAGE_WEEKS + 1)
+
+    return {
+      current: (veCrvFees.fees[1]?.feesUsd ?? 0) * aprScale,
+      fourWeekAverage: completedFees.length ? meanBy(completedFees, fee => fee.feesUsd * aprScale) : 0,
+    }
+  }, [aprLoading, notMainnet, statsSuccess, veCrvFees, veCrvData, crv])
 
   const loading = Boolean(provider && statsLoading)
 
@@ -50,7 +52,7 @@ export const CrvStats = () => {
           <Metric
             size="small"
             label={t`Total CRV`}
-            value={noProvider || !statsSuccess ? null : veCrvData.totalCrv.fromWei()}
+            value={noProvider || !statsSuccess ? null : veCrvData.totalCrv}
             loading={loading}
             valueOptions={{}}
           />
@@ -58,14 +60,14 @@ export const CrvStats = () => {
             size="small"
             loading={loading}
             label={t`Locked CRV`}
-            value={noProvider || !statsSuccess ? null : veCrvData.totalLockedCrv.fromWei()}
+            value={noProvider || !statsSuccess ? null : veCrvData.totalLockedCrv}
             valueOptions={{}}
           />
           <Metric
             size="small"
             loading={loading}
             label={t`veCRV`}
-            value={noProvider || !statsSuccess ? null : veCrvData.totalVeCrv.fromWei()}
+            value={noProvider || !statsSuccess ? null : veCrvData.totalVeCrv}
             valueOptions={{}}
           />
           <Metric
@@ -94,7 +96,7 @@ export const CrvStats = () => {
             notional={
               loading || veCrvFeesLoading || aprLoading
                 ? undefined
-                : `${formatNumber(veCrvApr.fourDayAverage, 'percent.value')} 4w avg`
+                : `${formatNumber(veCrvApr.fourWeekAverage, 'percent.value')} ${VECRV_APR_AVERAGE_WEEKS}w avg`
             }
           />
         </MetricsContainer>
@@ -102,12 +104,6 @@ export const CrvStats = () => {
     </Wrapper>
   )
 }
-
-const calculateApr = (fees: number, totalVeCrv: number, crvPrice: number) =>
-  (((fees / totalVeCrv) * 52) / crvPrice) * 100
-
-const calculateFourWeekAverageApr = (fees: number[], totalVeCrv: number, crvPrice: number) =>
-  lodash.meanBy(fees, fee => calculateApr(fee, totalVeCrv, crvPrice))
 
 const Wrapper = styled(Box)`
   display: flex;

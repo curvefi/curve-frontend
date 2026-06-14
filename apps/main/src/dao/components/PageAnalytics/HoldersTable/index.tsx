@@ -1,16 +1,16 @@
 import { styled } from 'styled-components'
 import { Column, PaginatedTable } from '@/dao/components/PaginatedTable'
 import { TableRowWrapper, TableData, TableDataLink } from '@/dao/components/PaginatedTable/TableRow'
-import { TOP_HOLDERS } from '@/dao/constants'
 import { useStore } from '@/dao/store/useStore'
 import type { AllHoldersSortBy } from '@/dao/types/dao.types'
-import { getEthPath } from '@/dao/utils'
+import { formatHolderName, getEthPath } from '@/dao/utils'
 import type { Locker } from '@curvefi/prices-api/dao'
 import Stack from '@mui/material/Stack'
+import { maybe } from '@primitives/objects.utils'
 import { formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
-import { shortenAddress, formatNumber } from '@ui-kit/utils'
+import { formatNumber } from '@ui-kit/utils'
 
 export const TopHoldersTable = () => {
   const veCrvHolders = useStore(state => state.analytics.veCrvHolders)
@@ -48,27 +48,23 @@ export const TopHoldersTable = () => {
           <TableRowWrapper key={holder.user} columns={HOLDERS_LABELS.length}>
             <StyledTableDataLink className="align-left" href={getEthPath(`${DAO_ROUTES.PAGE_USER}/${holder.user}`)}>
               <span>{index + 1}.</span>
-              <span style={{ textDecoration: 'underline' }}>
-                {TOP_HOLDERS[holder.user.toLowerCase()]
-                  ? TOP_HOLDERS[holder.user.toLowerCase()].title
-                  : shortenAddress(holder.user)}
-              </span>
+              <span style={{ textDecoration: 'underline' }}>{formatHolderName(holder.user)}</span>
             </StyledTableDataLink>
             <TableData className={allHoldersSortBy.key === 'weight' ? 'sortby-active right-padding' : 'right-padding'}>
-              {formatNumber(holder.weight.fromWei(), { abbreviate: true })}
+              {formatNumber(holder.weight.fromWei(), 'token.compact')}
             </TableData>
             <TableData className={allHoldersSortBy.key === 'locked' ? 'sortby-active right-padding' : 'right-padding'}>
-              {formatNumber(holder.locked.fromWei(), { abbreviate: true })}
+              {formatNumber(holder.locked.fromWei(), 'token.compact')}
             </TableData>
             <TableData
               className={allHoldersSortBy.key === 'weightRatio' ? 'sortby-active right-padding' : 'right-padding'}
             >
-              {formatNumber(holder.weightRatio, { unit: 'percentage', abbreviate: true })}
+              {formatNumber(holder.weightRatio, 'percent.value')}
             </TableData>
             <TableData
               className={allHoldersSortBy.key === 'unlockTime' ? 'sortby-active right-padding' : 'right-padding'}
             >
-              {holder.unlockTime ? formatDate(holder.unlockTime) : 'N/A'}
+              {maybe(holder.unlockTime, formatDate) ?? 'N/A'}
             </TableData>
           </TableRowWrapper>
         )}
