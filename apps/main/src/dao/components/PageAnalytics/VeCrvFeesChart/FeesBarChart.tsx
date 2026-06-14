@@ -1,55 +1,35 @@
-import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
-import type { Distribution } from '@curvefi/prices-api/revenue'
+import type { VeCrvFee } from '@/dao/entities/vecrv-fees'
+import { useTheme } from '@mui/material/styles'
 import { formatDate } from '@ui/utils'
-import { formatNumber, amount } from '@ui-kit/utils'
+import { useCurrentDate } from '@ui-kit/hooks/useCurrentDate'
+import { EChartsBarChart, formatChartAxisNumber } from '@ui-kit/shared/ui/Chart'
 import { FeesBarChartTooltip } from './FeesBarChartTooltip'
 
 type FeesBarChartProps = {
-  data: Distribution[]
+  data: VeCrvFee[]
   height?: number
 }
 
-export const FeesBarChart = ({ data, height = 500 }: FeesBarChartProps) => (
-  <ResponsiveContainer width="100%" height={height} debounce={200}>
-    <BarChart
-      width={500}
-      height={300}
+export const FeesBarChart = ({ data, height = 500 }: FeesBarChartProps) => {
+  const {
+    design: { Color },
+  } = useTheme()
+  const currentDate = useCurrentDate()
+
+  return (
+    <EChartsBarChart
       data={data}
-      margin={{
-        top: 16,
+      xKey="timestamp"
+      yKey="feesUsd"
+      barColor={Color.Primary[300]}
+      grid={{
         right: 20,
         left: 10,
-        bottom: 16,
       }}
-    >
-      <CartesianGrid fillOpacity={0.6} strokeWidth={0.3} horizontal={true} vertical={false} />
-      <XAxis
-        dataKey="timestamp"
-        tick={{ fill: 'var(--page--text-color)', fontSize: 'var(--font-size-1)' }}
-        tickFormatter={(value: string) => formatDate(value)}
-        tickLine={{ opacity: 0.3, strokeWidth: 0.3 }}
-        axisLine={{ opacity: 0.3, strokeWidth: 0.3 }}
-        minTickGap={20}
-        allowDataOverflow={false}
-      />
-      <YAxis
-        dataKey="feesUsd"
-        tick={{ fill: 'var(--page--text-color)', fontSize: 'var(--font-size-1)' }}
-        tickLine={{ opacity: 0.3, strokeWidth: 0.3 }}
-        axisLine={{ opacity: 0.3, strokeWidth: 0.3 }}
-        tickFormatter={value =>
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
-          `${formatNumber(amount(value), { ...(value > 10 && { decimals: 0 }), abbreviate: false, fallback: '-' })}`
-        }
-        tickCount={10}
-      />
-      <Tooltip content={FeesBarChartTooltip} cursor={{ opacity: 0.3 }} />
-      <Bar dataKey="feesUsd" label={false} fill="var(--primary-300)" isAnimationActive={false}>
-        {data.map((_entry, index) => (
-          // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
-          <Cell key={`$cell-${index}`} fill="var(--primary-300)" />
-        ))}
-      </Bar>
-    </BarChart>
-  </ResponsiveContainer>
-)
+      height={height}
+      renderTooltip={({ datum }) => <FeesBarChartTooltip datum={datum} currentDate={currentDate} />}
+      xTickFormatter={value => formatDate(value)}
+      yTickFormatter={value => formatChartAxisNumber(+value, { unit: 'dollar' })}
+    />
+  )
+}

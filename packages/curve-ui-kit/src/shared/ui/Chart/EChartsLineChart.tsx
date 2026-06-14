@@ -1,7 +1,11 @@
 import ReactECharts, { type EChartsOption } from 'echarts-for-react'
 import { useEffect, useMemo, useRef, type ReactNode } from 'react'
 import { useTheme } from '@mui/material/styles'
-import type { ChartLineDashPattern } from '@ui-kit/shared/ui/Chart/chart.utils'
+import {
+  getPaddedChartAxisBounds,
+  type ChartAxisTickLabelOptions,
+  type ChartLineDashPattern,
+} from '@ui-kit/shared/ui/Chart/chart.utils'
 import { useEChartsTooltip } from '@ui-kit/shared/ui/Chart/hooks/useEChartsTooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
@@ -22,21 +26,6 @@ type EChartsLineChartTooltipContext<TData, TSeriesKey extends string> = {
 
 type EChartsLineMarkLine = { value: number; label?: string; color: string; dash?: ChartLineDashPattern }
 
-/** Derive y-axis bounds from all visible series so toggling legend items adjusts the range */
-const getYAxisBounds = <TData extends Record<string, unknown>, TSeriesKey extends string>(
-  data: TData[],
-  activeSeries: LineSeriesConfig<TSeriesKey>[],
-  paddingRatio: number,
-): { yMin: number; yMax: number } => {
-  const values = data.flatMap(item => activeSeries.map(s => Number(item[s.key])).filter(Number.isFinite))
-  if (!values.length) return { yMin: 0, yMax: 0 }
-
-  const min = Math.min(...values)
-  const max = Math.max(...values)
-  const padding = min === max ? 1 : (max - min) * paddingRatio
-  return { yMin: min - padding, yMax: max + padding }
-}
-
 export const EChartsLineChart = <
   TData extends Record<string, unknown>,
   TSeriesKey extends Extract<keyof TData, string>,
@@ -51,7 +40,9 @@ export const EChartsLineChart = <
   yTickFormatter,
   renderTooltip,
   xAxisType,
+  xAxisTickLabelOptions,
   markLines,
+  yAxisTickLabelOptions,
   yPaddingRatio = 0.2,
 }: {
   data: TData[]
@@ -63,7 +54,9 @@ export const EChartsLineChart = <
   yTickFormatter?: (value: number | string) => string
   renderTooltip?: (context: EChartsLineChartTooltipContext<TData, TSeriesKey>) => ReactNode
   xAxisType?: 'time' | 'value'
+  xAxisTickLabelOptions?: ChartAxisTickLabelOptions
   markLines?: EChartsLineMarkLine[]
+  yAxisTickLabelOptions?: ChartAxisTickLabelOptions
   /** Sets the padding ratio for the y-axis, used to add space above and below the data points */
   yPaddingRatio?: number
 }) => {
@@ -74,6 +67,10 @@ export const EChartsLineChart = <
 
   const gridLineColor = Color.Neutral[300]
   const gridTextColor = Text.TextColors.Tertiary
+  const xAxisShowMinLabel = xAxisTickLabelOptions?.showMinLabel ?? true
+  const xAxisShowMaxLabel = xAxisTickLabelOptions?.showMaxLabel ?? false
+  const yAxisShowMinLabel = yAxisTickLabelOptions?.showMinLabel ?? true
+  const yAxisShowMaxLabel = yAxisTickLabelOptions?.showMaxLabel ?? true
 
   const xTickFormatterRef = useRef(xTickFormatter)
   const yTickFormatterRef = useRef(yTickFormatter)
@@ -87,8 +84,12 @@ export const EChartsLineChart = <
     [series, visibleSeries],
   )
 
-  const { yMin, yMax } = useMemo(
-    () => getYAxisBounds(data, activeSeries, yPaddingRatio),
+  const { min: yMin, max: yMax } = useMemo(
+    () =>
+      getPaddedChartAxisBounds({
+        values: data.flatMap(item => activeSeries.map(s => Number(item[s.key]))),
+        paddingRatio: yPaddingRatio,
+      }),
     [data, activeSeries, yPaddingRatio],
   )
 
@@ -123,8 +124,8 @@ export const EChartsLineChart = <
           color: gridTextColor,
           fontSize: FontSize.xs.desktop,
           hideOverlap: true,
-          showMinLabel: true,
-          showMaxLabel: false,
+          showMinLabel: xAxisShowMinLabel,
+          showMaxLabel: xAxisShowMaxLabel,
           align: 'left',
           formatter: (value: string | number) => {
             if (!xTickFormatterRef.current) return String(value)
@@ -150,8 +151,8 @@ export const EChartsLineChart = <
         axisLabel: {
           color: gridTextColor,
           fontSize: FontSize.xs.desktop,
-          showMinLabel: false,
-          showMaxLabel: false,
+          showMinLabel: yAxisShowMinLabel,
+          showMaxLabel: yAxisShowMaxLabel,
           formatter: (value: number) => (yTickFormatterRef.current ? yTickFormatterRef.current(value) : `${value}`),
         },
       },
@@ -220,7 +221,22 @@ export const EChartsLineChart = <
           }),
       })),
     }),
-    [activeSeries, data, gridLineColor, gridTextColor, markLines, tooltipFormatter, xAxisType, xKey, yMax, yMin],
+    [
+      activeSeries,
+      data,
+      gridLineColor,
+      gridTextColor,
+      markLines,
+      tooltipFormatter,
+      xAxisShowMaxLabel,
+      xAxisShowMinLabel,
+      xAxisType,
+      xKey,
+      yAxisShowMaxLabel,
+      yAxisShowMinLabel,
+      yMax,
+      yMin,
+    ],
   )
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.

@@ -28,7 +28,6 @@
     "fuse.js": "7.4.1",
     "lightweight-charts": "5.2.0",
     "memoizee": "0.4.17",
-    "recharts": "2.15.4",
     "ui": "*",
     "vest": "5.4.6",
     "vite-plugin-svgr": "*",

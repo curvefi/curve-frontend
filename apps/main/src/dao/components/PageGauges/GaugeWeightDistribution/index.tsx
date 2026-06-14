@@ -1,59 +1,78 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { styled } from 'styled-components'
 import { useConnection } from 'wagmi'
-import { ErrorMessage } from '@/dao/components/ErrorMessage'
 import { useUserGaugeWeightVotesQuery } from '@/dao/entities/user-gauge-weight-votes'
-import { refetchGauges, useGauges } from '@/dao/queries/gauges.query'
+import { useGauges } from '@/dao/queries/gauges.query'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
+import { useTheme } from '@mui/material/styles'
 import { Box } from '@ui/Box'
-import { SpinnerWrapper, Spinner } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
+import {
+  ChartStateWrapper,
+  createChartSeriesColorScale,
+  EChartsBarChart,
+  formatChartAxisNumber,
+} from '@ui-kit/shared/ui/Chart'
 import { Chain } from '@ui-kit/utils/network'
-import { BarChartComponent } from '../../Charts/BarChartComponent'
 import { GaugesBarChartCustomTooltip } from '../../Charts/GaugesBarChartCustomTooltip'
 import { GaugeVotingBarChartCustomTooltip } from '../../Charts/GaugeVotingBarChartCustomTooltip'
+
+const CHART_HEIGHT = 300
+
+const getXAxisInterval = (length: number) => (length > 50 ? 1 : 0)
 
 type GaugeWeightDistributionProps = {
   isUserVotes: boolean
 }
 
 export const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistributionProps) => {
+  const theme = useTheme()
+  const barColors = useMemo(() => createChartSeriesColorScale(theme), [theme])
+  const getBarColor = useCallback((_: unknown, index: number) => barColors[index % barColors.length], [barColors])
+  const renderGaugesTooltip = useCallback(
+    ({ datum }: { datum: GaugeFormattedData }) => <GaugesBarChartCustomTooltip datum={datum} />,
+    [],
+  )
   const { address: userAddress } = useConnection()
   const {
     data: userGaugeWeightVotes,
-    isSuccess: userGaugeWeightsSuccess,
     isLoading: userGaugeWeightsLoading,
-    isError: userGaugeWeightsError,
+    error: userGaugeWeightsError,
+    refetch: refetchUserGaugeWeights,
   } = useUserGaugeWeightVotesQuery({
     chainId: Chain.Ethereum, // DAO is only used on mainnet
     userAddress: userAddress ?? '',
   })
   const {
     data: gaugeMapper,
-    isSuccess: gaugesIsSuccess,
     isLoading: gaugesIsLoading,
-    isError: gaugesIsError,
+    error: gaugesError,
+    refetch: refetchGaugeMapper,
   } = useGauges({})
 
-  const isLoading = isUserVotes ? userGaugeWeightsLoading : gaugesIsLoading
-  const isError = isUserVotes ? userGaugeWeightsError : gaugesIsError
-  const isSuccess = isUserVotes ? userGaugeWeightsSuccess : gaugesIsSuccess
+  const isLoading = isUserVotes ? userGaugeWeightsLoading || gaugesIsLoading : gaugesIsLoading
+  const error = isUserVotes ? (userGaugeWeightsError ?? gaugesError) : gaugesError
 
-  const dataKey = isUserVotes ? 'userPower' : 'gauge_relative_weight'
-  const formattedData: (UserGaugeVoteWeight | GaugeFormattedData)[] = useMemo(() => {
-    if (isUserVotes) {
-      return (
-        userGaugeWeightVotes?.gauges.map(gauge => ({
-          ...gauge,
-          title: gaugeMapper?.[gauge.gaugeAddress]?.title ?? '',
-        })) ?? []
-      )
-    }
+  const userVoteData: UserGaugeVoteWeight[] = useMemo(
+    () =>
+      userGaugeWeightVotes?.gauges.map(gauge => ({
+        ...gauge,
+        title: gaugeMapper?.[gauge.gaugeAddress]?.title ?? '',
+      })) ?? [],
+    [gaugeMapper, userGaugeWeightVotes?.gauges],
+  )
 
-    return Object.values(gaugeMapper ?? {})
-      .filter(gauge => gauge.gauge_relative_weight > 0.5)
-      .sort((a, b) => b.gauge_relative_weight - a.gauge_relative_weight)
-  }, [gaugeMapper, isUserVotes, userGaugeWeightVotes?.gauges])
+  const gaugeData: GaugeFormattedData[] = useMemo(
+    () =>
+      Object.values(gaugeMapper ?? {})
+        .filter(gauge => gauge.gauge_relative_weight > 0.5)
+        .sort((a, b) => b.gauge_relative_weight - a.gauge_relative_weight),
+    [gaugeMapper],
+  )
+
+  const dataLength = isUserVotes ? userVoteData.length : gaugeData.length
+  const refreshData = () =>
+    isUserVotes ? Promise.all([refetchUserGaugeWeights(), refetchGaugeMapper()]) : refetchGaugeMapper()
 
   if (!userAddress && isUserVotes) {
     return (
@@ -70,30 +89,43 @@ export const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistribution
     <Wrapper variant="secondary">
       <Box flex flexColumn padding="var(--spacing-3) 0 0">
         <ChartTitle>{isUserVotes ? t`User Vote Weight Distribution` : t`Relative Weight Distribution`}</ChartTitle>
-        {isLoading && (
-          <StyledSpinnerWrapper>
-            <Spinner size={24} />
-          </StyledSpinnerWrapper>
-        )}
-        {isError && (
-          <ErrorMessageWrapper>
-            <ErrorMessage message={t`Error fetching gauges`} onClick={() => void refetchGauges({})} />
-          </ErrorMessageWrapper>
-        )}
-        {isSuccess && formattedData.length > 0 && (
-          <BarChartComponent
-            data={formattedData}
-            dataKey={dataKey as keyof (typeof formattedData)[0]}
-            CustomTooltip={isUserVotes ? GaugeVotingBarChartCustomTooltip : GaugesBarChartCustomTooltip}
-          />
-        )}
-        {!isLoading && !isError && formattedData.length === 0 && (
-          <ErrorMessageWrapper>
-            <ErrorMessage
-              message={isUserVotes ? t`No gauge votes found` : t`No gauges with with >0.5% relative gauge weight found`}
+        <ChartStateWrapper
+          height={CHART_HEIGHT}
+          isLoading={isLoading}
+          isEmpty={!isLoading && !error && dataLength === 0}
+          emptyMessage={isUserVotes ? t`No gauge votes found` : t`No gauges with >0.5% relative gauge weight found`}
+          error={error}
+          errorMessage={isUserVotes ? t`Unable to fetch user gauge votes.` : t`Unable to fetch gauges.`}
+          refreshData={refreshData}
+        >
+          {isUserVotes ? (
+            <EChartsBarChart
+              data={userVoteData}
+              xKey="title"
+              yKey="userPower"
+              barColor={getBarColor}
+              height={CHART_HEIGHT}
+              renderTooltip={GaugeVotingBarChartCustomTooltip}
+              xAxisHeight={60}
+              xAxisInterval={getXAxisInterval(userVoteData.length)}
+              xAxisLabelRotate={-45}
+              yTickFormatter={value => formatChartAxisNumber(+value, { unit: 'percentage' })}
             />
-          </ErrorMessageWrapper>
-        )}
+          ) : (
+            <EChartsBarChart
+              data={gaugeData}
+              xKey="title"
+              yKey="gauge_relative_weight"
+              barColor={getBarColor}
+              height={CHART_HEIGHT}
+              renderTooltip={renderGaugesTooltip}
+              xAxisHeight={60}
+              xAxisInterval={getXAxisInterval(gaugeData.length)}
+              xAxisLabelRotate={-45}
+              yTickFormatter={value => formatChartAxisNumber(+value, { unit: 'percentage' })}
+            />
+          )}
+        </ChartStateWrapper>
       </Box>
       {!isUserVotes && <ChartDescription>{t`Showing gauges with >0.5% relative gauge weight`}</ChartDescription>}
     </Wrapper>
@@ -107,11 +139,6 @@ const Wrapper = styled(Box)`
   @media (max-width: 54.6875rem) {
     display: none;
   }
-`
-
-const StyledSpinnerWrapper = styled(SpinnerWrapper)`
-  width: 100%;
-  min-width: 100%;
 `
 
 const ChartTitle = styled.h4`

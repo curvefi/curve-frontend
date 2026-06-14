@@ -1,25 +1,21 @@
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
-import { ErrorMessage } from '@/dao/components/ErrorMessage'
-import { useStore } from '@/dao/store/useStore'
+import { useVeCrvFeesQuery } from '@/dao/entities/vecrv-fees'
 import { Box } from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
-import { SpinnerComponent as Spinner } from '../../Spinner'
+import { ChartStateWrapper } from '@ui-kit/shared/ui/Chart'
 import { FeesBarChart } from './FeesBarChart'
 
-export const VeCrvFeesChart = () => {
-  const veCrvFees = useStore(state => state.analytics.veCrvFees)
-  const getVeCrvFees = useStore(state => state.analytics.getVeCrvFees)
+const CHART_HEIGHT = 500
 
-  const feesLoading = veCrvFees.fetchStatus === 'LOADING'
-  const feesError = veCrvFees.fetchStatus === 'ERROR'
-  const feesReady = veCrvFees.fetchStatus === 'SUCCESS'
+export const VeCrvFeesChart = () => {
+  const { data = [], isLoading, error, refetch } = useVeCrvFeesQuery({})
 
   const reverseOrderFees = useMemo(() => {
-    if (!feesReady || veCrvFees.fees.length === 0) return []
+    if (data.length === 0) return []
 
-    return [...veCrvFees.fees].reverse().slice(-52)
-  }, [feesReady, veCrvFees.fees])
+    return [...data].reverse().slice(-52)
+  }, [data])
 
   return (
     <Wrapper>
@@ -27,10 +23,16 @@ export const VeCrvFeesChart = () => {
         <BoxTitle>{t`veCRV Fees Last 52 Weeks`}</BoxTitle>
       </TitleRow>
       <Content>
-        {feesLoading && <Spinner height="31.25rem" />}
-        {/* eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule. */}
-        {feesError && <ErrorMessage message={t`Error fetching veCRV fees data`} onClick={getVeCrvFees} />}
-        {feesReady && <FeesBarChart data={reverseOrderFees} />}
+        <ChartStateWrapper
+          height={CHART_HEIGHT}
+          isLoading={isLoading}
+          isEmpty={!isLoading && !error && reverseOrderFees.length === 0}
+          error={error}
+          errorMessage={t`Unable to fetch veCRV fees data.`}
+          refreshData={() => refetch()}
+        >
+          <FeesBarChart height={CHART_HEIGHT} data={reverseOrderFees} />
+        </ChartStateWrapper>
       </Content>
     </Wrapper>
   )
