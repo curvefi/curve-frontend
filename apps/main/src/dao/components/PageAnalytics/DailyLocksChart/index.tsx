@@ -1,34 +1,30 @@
-import { useEffect } from 'react'
 import { styled } from 'styled-components'
-import { ErrorMessage } from '@/dao/components/ErrorMessage'
-import { useStore } from '@/dao/store/useStore'
+import { useVeCrvLocksQuery } from '@/dao/entities/vecrv-locks'
 import Box from '@mui/material/Box'
 import { t } from '@ui-kit/lib/i18n'
-import { SpinnerComponent as Spinner } from '../../Spinner'
+import { ChartStateWrapper } from '@ui-kit/shared/ui/Chart'
 import { PositiveAndNegativeBarChart } from './PositiveAndNegativeBarChart'
 
+const CHART_HEIGHT = 520
+
 export const DailyLocks = () => {
-  const getVeCrvLocks = useStore(state => state.analytics.getVeCrvLocks)
-  const veCrvLocks = useStore(state => state.analytics.veCrvLocks)
-
-  const locksFetchSuccess = veCrvLocks.fetchStatus === 'SUCCESS'
-  const locksFetchError = veCrvLocks.fetchStatus === 'ERROR'
-  const locksFetchLoading = veCrvLocks.fetchStatus === 'LOADING'
-
-  useEffect(() => {
-    if (veCrvLocks.locks.length === 0 && veCrvLocks.fetchStatus !== 'ERROR') {
-      void getVeCrvLocks()
-    }
-  }, [getVeCrvLocks, veCrvLocks.locks.length, veCrvLocks.fetchStatus])
+  const { data = [], isLoading, error, refetch } = useVeCrvLocksQuery({})
+  const locks = data.slice(256, 356)
 
   return (
     <Box sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
       <BoxTitle>{t`Daily veCRV Locks Last 100 Days`}</BoxTitle>
       <Content>
-        {locksFetchLoading && <Spinner height="32.5rem" />}
-        {/* eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule. */}
-        {locksFetchError && <ErrorMessage message={t`Error fetching daily veCRV locks`} onClick={getVeCrvLocks} />}
-        {locksFetchSuccess && <PositiveAndNegativeBarChart height={520} data={veCrvLocks.locks.slice(256, 356)} />}
+        <ChartStateWrapper
+          height={CHART_HEIGHT}
+          isLoading={isLoading}
+          isEmpty={!isLoading && !error && locks.length === 0}
+          error={error}
+          errorMessage={t`Unable to fetch daily veCRV locks.`}
+          refreshData={() => refetch()}
+        >
+          <PositiveAndNegativeBarChart height={CHART_HEIGHT} data={locks} />
+        </ChartStateWrapper>
       </Content>
     </Box>
   )
