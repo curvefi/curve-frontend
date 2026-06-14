@@ -8,7 +8,7 @@ import { useScrvUsdNewForms } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { mapQuery, q } from '@ui-kit/types/util'
+import { mapQuery } from '@ui-kit/types/util'
 import { weiToEther } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
@@ -21,15 +21,9 @@ type StatsStackProps = {
 
 export const StatsStack = ({ chainId }: StatsStackProps) => {
   const useNewForms = useScrvUsdNewForms()
-  const yieldQuery = useScrvUsdYield({ timeOption: '1M' }, !useNewForms)
-  const supplies = useScrvUsdSupplies({ chainId }, !!chainId && useNewForms)
+  const savingYield = useScrvUsdYield({ timeOption: '1M' }, !useNewForms)
+  const supplies = useScrvUsdSupplies({ chainId }, useNewForms)
   const revenue = useScrvUsdRevenue({})
-  const statistics = useScrvUsdStatistics({})
-  const { data: yieldData, isLoading: yieldIsLoading, error: yieldError } = yieldQuery
-  const { data: suppliesData, isLoading: suppliesIsLoading, error: suppliesError } = supplies
-  const totalCrvUsdStaked = useNewForms ? suppliesData?.crvUSD : yieldData?.[yieldData.length - 1]?.assets
-  const totalCrvUsdStakedError = useNewForms ? suppliesError : yieldError
-
   return (
     <Grid
       container
@@ -46,11 +40,9 @@ export const StatsStack = ({ chainId }: StatsStackProps) => {
         <Metric
           size="small"
           label="Total crvUSD Staked"
-          value={q({
-            data: totalCrvUsdStaked,
-            isLoading: useNewForms ? suppliesIsLoading : yieldIsLoading,
-            error: totalCrvUsdStakedError,
-          })}
+          value={
+            useNewForms ? mapQuery(supplies, s => s.crvUSD) : mapQuery(savingYield, y => y?.[y.length - 1]?.assets)
+          }
           valueOptions={{ unit: CRVUSD_OPTION }}
           copyText={t`Copied total crvUSD staked`}
         />
@@ -59,7 +51,7 @@ export const StatsStack = ({ chainId }: StatsStackProps) => {
         <Metric
           size="small"
           label="Current projected APY"
-          value={mapQuery(statistics, ({ apyProjected }) => apyProjected)}
+          value={mapQuery(useScrvUsdStatistics({}), ({ apyProjected }) => apyProjected)}
           valueOptions={{ unit: 'percentage' }}
           copyText={t`Copied current projected APY`}
         />

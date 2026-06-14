@@ -2,7 +2,6 @@ import { CardContent } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -12,22 +11,12 @@ import { useStatistics } from '../hooks/useStatistics'
 const { Spacing } = SizesAndSpaces
 
 export const Statistics = () => {
-  const { totalDebt, totalCeiling, isErrorDebt, isErrorCeiling } = useStatistics()
+  const { totalDebt, totalCeiling } = useStatistics()
 
   return (
     <Card size="small">
       <CardHeader title={t`Statistics`} />
       <CardContent>
-        {isErrorDebt && (
-          <Typography color="error" variant="bodyXsBold">{t`Unable to fetch required data for total debt`}</Typography>
-        )}
-        {isErrorCeiling && (
-          <Typography
-            color="error"
-            variant="bodyXsBold"
-          >{t`Unable to fetch required data for total ceiling`}</Typography>
-        )}
-
         <Stack direction="row" sx={{ gap: Spacing.md }}>
           <Metric
             label={t`Peg stabilisation reserve`}

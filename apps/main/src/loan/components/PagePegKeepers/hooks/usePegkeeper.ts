@@ -35,9 +35,7 @@ export function usePegkeeper({ address, pool: { address: poolAddress } }: PegKee
     abi: pegkeeperAbi,
     address,
     functionName: 'estimate_caller_profit',
-    query: {
-      enabled: !estCallerProfitEnabled || !!estCallerProfitError,
-    },
+    query: { enabled: !estCallerProfitEnabled || !!estCallerProfitError },
   })
 
   const { data: debtCeiling } = useReadContract({

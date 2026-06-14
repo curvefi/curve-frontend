@@ -55,8 +55,8 @@ const filterIntegrations = ({
 // Collect the unique list of networks from the integrations response
 const getNetworks = (data: Partner[]) => [
   ...new Set(
-    data.flatMap(integration =>
-      Object.entries(integration.networks ?? [])
+    data.flatMap(({ networks = {} }) =>
+      Object.entries(networks)
         .filter(([, enabled]) => enabled)
         .map(([networkId]) => networkId),
     ),
@@ -133,7 +133,7 @@ export const IntegrationsList = ({ networkId, searchText }: { networkId?: string
 
         {integrationsFiltered.length ? (
           <Grid container spacing={Spacing.md} sx={{ marginBlockStart: Spacing.sm }}>
-            {(integrationsFiltered ?? []).map(app => (
+            {integrationsFiltered.map(app => (
               <Grid key={app.name} size={{ mobile: 12, tablet: 6, desktop: 4 }}>
                 <PartnerCard {...app} tags={(app.tags ?? []).map(tag => tags[tag]?.displayName ?? tag)} />
               </Grid>

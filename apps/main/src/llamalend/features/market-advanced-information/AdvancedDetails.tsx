@@ -7,6 +7,7 @@ import {
   TooltipOptions,
 } from '@/llamalend/widgets/tooltips'
 import Box from '@mui/material/Box'
+import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -69,20 +70,12 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
           label={t`Total collateral`}
           value={mapQuery(collateral, ({ combinedCollateralUsdValue }) => combinedCollateralUsdValue)}
           valueOptions={{ unit: 'dollar' }}
-          notional={
-            collateral.isLoading
-              ? undefined
-              : formatCollateralNotional(
-                  {
-                    value: decimal(collateral.data?.totalCollateral),
-                    symbol: collateral.data?.collateralSymbol ?? undefined,
-                  },
-                  {
-                    value: decimal(collateral.data?.totalBorrowed),
-                    symbol: collateral.data?.borrowedSymbol ?? undefined,
-                  },
-                )
-          }
+          notional={maybe(collateral.data, ({ borrowedSymbol, collateralSymbol, totalBorrowed, totalCollateral }) =>
+            formatCollateralNotional(
+              { value: decimal(totalCollateral), symbol: collateralSymbol },
+              { value: decimal(totalBorrowed), symbol: borrowedSymbol },
+            ),
+          )}
           valueTooltip={{
             title: t`Total Collateral`,
             body: <TotalCollateralTooltip {...collateral.data} />,

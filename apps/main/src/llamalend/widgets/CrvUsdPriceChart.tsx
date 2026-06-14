@@ -8,6 +8,7 @@ import { useTheme } from '@mui/material/styles'
 import { maybe, notFalsyArray } from '@primitives/objects.utils'
 import { formatDate } from '@ui/utils'
 import { useCrvUsdPriceHistory } from '@ui-kit/entities/crvusd-price.query'
+import { combineQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { timeOptions, type TimeOption } from '@ui-kit/lib/model/query/time-option-validation'
@@ -83,22 +84,15 @@ export const CrvUsdPriceChart = () => {
     )
   }, [priceHistory.data])
 
-  const oneWeekDeviationQuery = mapQuery(
-    q({
-      data: { priceHistory: priceHistory.data, currentPrice: currentPrice.data },
-      isLoading: showLoading || currentPrice.isLoading,
-      error: priceHistory.error ?? currentPrice.error,
-    }),
-    ({ priceHistory, currentPrice }) => {
-      const now = Date.now()
+  const oneWeekDeviation = combineQueries([priceHistory, currentPrice], (priceHistory, currentPrice) => {
+    const now = Date.now()
 
-      return calculateAverageRates(
-        notFalsyArray(priceHistory, currentPrice != null && [{ timestamp: now, price: currentPrice }]),
-        7,
-        { deviation: ({ price }) => Math.abs(price - 1) * 100 },
-      )?.deviation
-    },
-  )
+    return calculateAverageRates(
+      notFalsyArray(priceHistory, currentPrice != null && [{ timestamp: now, price: currentPrice }]),
+      7,
+      { deviation: ({ price }) => Math.abs(price - 1) * 100 },
+    )?.deviation
+  })
 
   const seriesColors: Record<PriceSeriesKey, string> = useMemo(
     () => ({ price: Color.Primary[500], movingAverage: Color.Secondary[500], totalAverage: Color.Tertiary[400] }),
@@ -151,7 +145,7 @@ export const CrvUsdPriceChart = () => {
           <Metric
             size="medium"
             label={t`1W deviation`}
-            value={oneWeekDeviationQuery}
+            value={oneWeekDeviation}
             valueOptions={{ unit: 'percentage' }}
           />
           <Metric

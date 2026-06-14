@@ -10,27 +10,28 @@ import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import { useTheme } from '@mui/material/styles'
 import type { Amount } from '@primitives/decimal.utils'
-import { notFalsy, maybe } from '@primitives/objects.utils'
+import { maybe, notFalsy } from '@primitives/objects.utils'
 import { formatDate } from '@ui/utils'
 import type { CrvUsdSnapshot } from '@ui-kit/entities/crvusd-snapshots'
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
+import { useCombinedQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
-import { timeOptions, type TimeOption } from '@ui-kit/lib/model/query/time-option-validation'
+import { type TimeOption, timeOptions } from '@ui-kit/lib/model/query/time-option-validation'
 import {
-  ChartStateWrapper,
-  ChartFooter,
-  type LegendItem,
   addMovingAverages,
   CHART_LINE_DASH_PATTERNS,
-  EChartsLineChart,
+  ChartFooter,
   type ChartLineDashPattern,
+  ChartStateWrapper,
+  EChartsLineChart,
+  type LegendItem,
   type LineSeriesConfig,
   SelectTimeOption,
 } from '@ui-kit/shared/ui/Chart'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
-import { mapQuery, q } from '@ui-kit/types/util'
+import { mapQuery } from '@ui-kit/types/util'
 import { formatNumber } from '@ui-kit/utils'
 import { calculateAverageRates } from '@ui-kit/utils/averageRates'
 
@@ -123,58 +124,32 @@ export const MarketHistoricalRatesChart = ({
     design: { Color },
   } = useTheme()
 
-  const marketRates = useMarketRates({
-    chainId,
-    marketId,
-  })
+  const marketRates = useMarketRates({ chainId, marketId })
 
   const snapshots = useLlamaSnapshot({ market, blockchainId, range: { kind: 'timeRange', timeOption } })
 
-  const currentLiveRate = useMemo(() => {
-    const liveRate = modeConfig.getLiveRate(marketRates.data)
-
-    return toRateNumber(liveRate)
-  }, [marketRates.data, modeConfig])
-  const currentLiveRateQuery = mapQuery(
-    q({
-      data: marketRates.data,
-      isLoading: marketRates.isLoading || !market,
-      error: marketRates.error,
-    }),
-    marketRates => toRateNumber(modeConfig.getLiveRate(marketRates)),
-  )
-
-  const snapshotRatePoints = useMemo(
-    () => toSnapshotRatePoints(snapshots.data, modeConfig.getSnapshotRate),
-    [snapshots.data, modeConfig],
-  )
-
-  const ratePoints = useMemo(
-    () =>
-      sortBy(
-        notFalsy(...snapshotRatePoints, currentLiveRate != null && { timestamp: Date.now(), rate: currentLiveRate }),
-        item => item.timestamp,
-      ),
-    [snapshotRatePoints, currentLiveRate],
-  )
+  const ratePoints = useCombinedQueries([snapshots, marketRates], (snapshots, marketRates) => {
+    const currentLiveRate = toRateNumber(modeConfig.getLiveRate(marketRates))
+    const snapshotRatePoints = toSnapshotRatePoints(snapshots, modeConfig.getSnapshotRate)
+    return sortBy(
+      notFalsy(...snapshotRatePoints, currentLiveRate != null && { timestamp: Date.now(), rate: currentLiveRate }),
+      item => item.timestamp,
+    )
+  })
 
   const chartData = useMemo<RateChartPoint[]>(
     () =>
       addMovingAverages(
-        ratePoints,
+        ratePoints.data ?? [],
         d => d.rate,
         d => d.timestamp,
       ),
-    [ratePoints],
+    [ratePoints.data],
   )
 
   const oneWeekAverageRateQuery = mapQuery(
-    q({
-      data: { ratePoints },
-      isLoading: snapshots.isLoading || marketRates.isLoading || !market,
-      error: snapshots.error ?? marketRates.error,
-    }),
-    ({ ratePoints }) => calculateAverageRates(ratePoints, 7, { rate: ({ rate }) => rate })?.rate,
+    ratePoints,
+    ratePoints => calculateAverageRates(ratePoints, 7, { rate: ({ rate }) => rate })?.rate,
   )
 
   const seriesColors: Record<RateSeriesKey, string> = useMemo(
@@ -222,7 +197,7 @@ export const MarketHistoricalRatesChart = ({
           <Metric
             size="medium"
             label={modeConfig.currentRateLabel}
-            value={currentLiveRateQuery}
+            value={mapQuery(marketRates, marketRates => toRateNumber(modeConfig.getLiveRate(marketRates)))}
             valueOptions={{ unit: 'percentage' }}
           />
           <Metric

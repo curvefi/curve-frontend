@@ -91,10 +91,7 @@ export const MetricsRow = ({
           body: <AvailableLiquidityTooltip marketType={marketType} />,
           ...TooltipOptions,
         }}
-        notional={maybe(availableLiquidity.data?.notional, x => ({
-          value: x,
-          unit: 'dollar',
-        }))}
+        notional={maybe(availableLiquidity.data?.notional, x => ({ value: x, unit: 'dollar' }))}
       />
     </Stack>
   )

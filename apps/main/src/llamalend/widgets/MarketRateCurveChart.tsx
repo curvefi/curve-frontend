@@ -11,16 +11,16 @@ import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import { useTheme } from '@mui/material/styles'
-import { notFalsy, maybe, maybes } from '@primitives/objects.utils'
-import { combineQueryState } from '@ui-kit/lib'
+import { maybe, maybes, notFalsy } from '@primitives/objects.utils'
+import { combineQueries, combineQueryState } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import {
-  ChartFooter,
-  ChartStateWrapper,
   CHART_LINE_DASH_PATTERNS,
-  EChartsLineChart,
+  ChartFooter,
   type ChartLineDashPattern,
+  ChartStateWrapper,
+  EChartsLineChart,
   type LegendItem,
   type LineSeriesConfig,
 } from '@ui-kit/shared/ui/Chart'
@@ -28,7 +28,7 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { mapQuery, q } from '@ui-kit/types/util'
-import { decimal, decimalMinus, formatNumber } from '@ui-kit/utils'
+import { decimal, decimalMax, decimalMinus, formatNumber } from '@ui-kit/utils'
 
 const { Spacing, Height } = SizesAndSpaces
 
@@ -81,52 +81,25 @@ export const MarketRateCurveChart = ({
     chainId,
     tokenAddress: borrowToken?.address,
   })
-
-  const currentUtilization = useMemo(
-    () =>
-      getUtilizationPercent(capAndAvailable.data?.available, capAndAvailable.data?.totalAssets) ??
-      rateCurve.data?.currentUtilization,
-    [capAndAvailable.data, rateCurve.data?.currentUtilization],
+  const currentUtilization = combineQueries(
+    [capAndAvailable, rateCurve],
+    ({ available, totalAssets }, { currentUtilization }) =>
+      getUtilizationPercent(available, totalAssets) ?? currentUtilization,
   )
-  const currentUtilizationQuery = mapQuery(
-    q({
-      data: { capAndAvailable: capAndAvailable.data, rateCurve: rateCurve.data },
-      ...{
-        ...combineQueryState(capAndAvailable, rateCurve),
-        isLoading: !market || capAndAvailable.isLoading || rateCurve.isLoading,
-      },
-    }),
-    ({ capAndAvailable, rateCurve }) =>
-      getUtilizationPercent(capAndAvailable?.available, capAndAvailable?.totalAssets) ?? rateCurve?.currentUtilization,
-  )
-  const totalBorrowed = useMemo(() => {
-    if (capAndAvailable.data?.available == null || capAndAvailable.data.totalAssets == null) return null
 
-    const borrowed = decimalMinus(capAndAvailable.data.totalAssets, capAndAvailable.data.available)
-    return +borrowed < 0 ? decimal(0)! : borrowed
-  }, [capAndAvailable.data])
-  const totalBorrowedQuery = mapQuery(
-    q({
-      data: capAndAvailable.data,
-      isLoading: !market || capAndAvailable.isLoading,
-      error: capAndAvailable.error,
-    }),
-    ({ available, totalAssets }) => {
-      if (available == null || totalAssets == null) return null
-
-      const borrowed = decimalMinus(totalAssets, available)
-      return +borrowed < 0 ? decimal(0)! : borrowed
-    },
+  const totalBorrowed = mapQuery(capAndAvailable, ({ available, totalAssets }) =>
+    decimalMax('0', decimalMinus(totalAssets, available)),
   )
+
   const totalBorrowedUsdValue =
     maybes(
       [totalBorrowed, borrowedUsdRate.data],
       ([totalBorrowed, borrowedUsdRate]) => Number(totalBorrowed) * borrowedUsdRate,
     ) ?? null
-  const utilizationBreakdown = maybe(
-    [totalBorrowed, capAndAvailable.data?.totalAssets],
-    ([borrow, available]) =>
-      `${formatNumber(borrow, { abbreviate: true })}/${formatNumber(available, {
+  const utilizationBreakdown = combineQueries(
+    [totalBorrowed, capAndAvailable],
+    (borrow, { totalAssets }) =>
+      `${formatNumber(borrow, { abbreviate: true })}/${formatNumber(totalAssets, {
         abbreviate: true,
       })} ${borrowToken?.symbol ?? ''}`,
   )
@@ -175,14 +148,14 @@ export const MarketRateCurveChart = ({
   const markLines = useMemo(
     () =>
       notFalsy(
-        currentUtilization != null && {
-          value: currentUtilization,
-          label: formatNumber(currentUtilization, 'percent.rate'),
+        currentUtilization.data && {
+          value: currentUtilization.data,
+          label: formatNumber(currentUtilization.data, 'percent.rate'),
           color: Color.Primary[500],
           dash: CHART_LINE_DASH_PATTERNS.tight,
         },
       ),
-    [currentUtilization, Color.Primary],
+    [currentUtilization.data, Color.Primary],
   )
 
   const seriesColors: Record<RateCurveSeriesKey, string> = useMemo(
@@ -221,9 +194,13 @@ export const MarketRateCurveChart = ({
           <Metric
             size="medium"
             label={t`Utilization`}
-            value={currentUtilizationQuery}
+            value={combineQueries(
+              [capAndAvailable, rateCurve],
+              ({ available, totalAssets }, { currentUtilization }) =>
+                getUtilizationPercent(available, totalAssets) ?? currentUtilization,
+            )}
             valueOptions={{ unit: 'percentage' }}
-            notional={utilizationBreakdown}
+            notional={utilizationBreakdown.data}
             valueTooltip={{
               title: t`Utilization`,
               body: <UtilizationTooltip marketType={LlamaMarketType.Lend} />,
@@ -233,7 +210,7 @@ export const MarketRateCurveChart = ({
           <Metric
             size="medium"
             label={t`Total borrowed`}
-            value={totalBorrowedQuery}
+            value={totalBorrowed}
             valueOptions={{
               unit: borrowToken?.symbol ? { symbol: ` ${borrowToken.symbol}`, position: 'suffix' } : undefined,
               abbreviate: true,

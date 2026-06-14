@@ -67,27 +67,18 @@ export const useAdvancedDetailsData = ({
     marketType,
     collateral: combineQueries(
       [totalCollateral, collateralUsdRate, borrowedUsdRate],
-      (totalCollateral, collateralUsdRate, borrowedUsdRate) => {
-        const collateralTotal = Number(totalCollateral.collateral)
-        const borrowedTotal = Number(totalCollateral.borrowed)
-        const collateralUsdValue = collateralTotal && collateralUsdRate && collateralTotal * collateralUsdRate
-        const borrowedUsdValue = borrowedTotal && borrowedUsdRate && borrowedTotal * borrowedUsdRate
-        const combinedCollateralUsdValue =
-          maybes(
-            [collateralUsdValue, borrowedUsdValue],
-            ([collateralUsdValue, borrowedUsdValue]) => collateralUsdValue + borrowedUsdValue,
-          ) ?? null
-
-        return {
-          collateralSymbol: collateralToken?.symbol ?? null,
-          totalCollateral: collateralTotal,
-          borrowedSymbol: borrowToken?.symbol ?? null,
-          totalBorrowed: borrowedTotal,
-          combinedCollateralUsdValue,
-          collateralUsdRate: collateralUsdRate ?? null,
-          borrowedUsdRate: borrowedUsdRate ?? null,
-        }
-      },
+      ({ borrowed, collateral }, collateralUsdRate, borrowedUsdRate) => ({
+        collateralSymbol: collateralToken?.symbol,
+        totalCollateral: +collateral,
+        borrowedSymbol: borrowToken?.symbol,
+        totalBorrowed: +borrowed,
+        combinedCollateralUsdValue: maybes(
+          [collateralUsdRate, borrowedUsdRate],
+          ([collateralUsdRate, borrowedUsdRate]) => +collateral * collateralUsdRate + +borrowed * borrowedUsdRate,
+        ),
+        collateralUsdRate,
+        borrowedUsdRate,
+      }),
     ),
     maxLeverage: mapQuery(maxLeverage, value => ({ value })),
     availableLiquidity: mapQuery(capAndAvailable, ({ available, totalAssets, borrowCap }) => ({
@@ -101,10 +92,7 @@ export const useAdvancedDetailsData = ({
       distribution,
     })),
     ...(marketType === LlamaMarketType.Lend && {
-      solvency: mapQuery(solvency, ({ solvencyPercent, badDebtUsd }) => ({
-        value: solvencyPercent,
-        badDebtUsd,
-      })),
+      solvency: mapQuery(solvency, ({ solvencyPercent, badDebtUsd }) => ({ value: solvencyPercent, badDebtUsd })),
     }),
   }
 }

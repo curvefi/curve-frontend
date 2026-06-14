@@ -22,16 +22,15 @@ const CRVUSD_OPTIONS = { symbol: 'crvUSD', position: 'suffix' as const, abbrevia
 
 const useScrvUsdExchangeRate = (chainId: ChainId | undefined): QueryProp<Decimal | undefined> => {
   const useNewForms = useScrvUsdNewForms()
-  const legacyExchangeRate = useStore(state => state.scrvusd.scrvUsdExchangeRate)
-  const exchangeRate = useScrvUsdExchangeRateQuery({ chainId }, !!chainId && useNewForms)
-
-  if (useNewForms) return q(exchangeRate)
-
-  return q({
-    data: isReady(legacyExchangeRate.fetchStatus) ? (legacyExchangeRate.value as Decimal) : undefined,
-    isLoading: !isReady(legacyExchangeRate.fetchStatus),
-    error: null,
-  })
+  const { fetchStatus, value: legacyValue } = useStore(state => state.scrvusd.scrvUsdExchangeRate)
+  const exchangeRate = useScrvUsdExchangeRateQuery({ chainId }, useNewForms)
+  return useNewForms
+    ? q(exchangeRate)
+    : q({
+        data: decimal(legacyValue),
+        isLoading: !isReady(fetchStatus),
+        error: null,
+      })
 }
 
 type UserPositionProps = {
