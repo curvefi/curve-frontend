@@ -21,7 +21,10 @@ const extraRewardApr = z
   .transform(({ apr, ...data }) => ({ ...data, rate: apr }))
 
 const numberLike = z.union([z.number(), z.string()]).transform(value => Number(value))
-const optionalAmountString = z.union([z.number(), z.string()]).nullish().transform(value => value?.toString() ?? '0')
+const optionalAmountString = z
+  .union([z.number(), z.string()])
+  .nullish()
+  .transform(value => value?.toString() ?? '0')
 
 /*
  * Note that collateral can be two tokens due to soft-liquidations.
