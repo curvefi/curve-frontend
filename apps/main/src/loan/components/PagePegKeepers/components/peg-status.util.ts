@@ -7,18 +7,18 @@ export type PegStatus = {
 }
 /**
  * Determines the peg status based on the rate deviation from 1.0
- * @param rate - The current rate as a string, or undefined if loading
+ * @param rate - The current rate query
  * @returns PegStatus object with:
- *   - 'loading' if rate is undefined
+ *   - 'loading' if rate data is undefined
  *   - 'pegged' if within 2% tolerance (±0.02)
  *   - 'overpegged' if rate > 1.02 (above peg)
  *   - 'underpegged' if rate < 0.98 (below peg)
  *   Color severity: 'warning' if within 5% tolerance, 'alert' if beyond
  */
 export function pegStatus(rate: PegKeeperDetails['rate']): PegStatus {
-  if (!rate) return { label: 'loading', color: 'unselected' }
+  if (!rate.data) return { label: 'loading', color: 'unselected' }
 
-  const delta = 1 - Number(rate)
+  const delta = 1 - +rate.data
   const pegged = Math.abs(delta) <= 0.02
   const severe = Math.abs(delta) >= 0.05
 

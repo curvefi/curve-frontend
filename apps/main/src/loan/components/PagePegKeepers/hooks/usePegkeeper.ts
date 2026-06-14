@@ -2,14 +2,22 @@ import { formatEther } from 'viem'
 import { useReadContract, useWriteContract, useSimulateContract } from 'wagmi'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
+import { q } from '@ui-kit/types/util'
 import { abi as pegkeeperAbi } from '../abi/pegkeeper'
 import { abi as pegkeeperDebtCeilingAbi } from '../abi/pegkeeperDebtCeiling'
 import { abi as priceOracleAbi, abiFallback as priceOracleFallbackAbi } from '../abi/priceOracle'
 import { PEG_KEEPER_DEBT_CEILINGS_CONTRACT_ADDRESS } from '../constants'
 import type { PegKeeper } from '../types'
 
+const formatWei = (value: bigint) => formatEther(value) as Decimal
+
 export function usePegkeeper({ address, pool: { address: poolAddress } }: PegKeeper) {
-  const { data: debt, refetch: refetchDebt } = useReadContract({
+  const {
+    data: debt,
+    error: debtError,
+    isLoading: isLoadingDebt,
+    refetch: refetchDebt,
+  } = useReadContract({
     abi: pegkeeperAbi,
     address,
     functionName: 'debt',
@@ -21,6 +29,7 @@ export function usePegkeeper({ address, pool: { address: poolAddress } }: PegKee
     data: estCallerProfit,
     refetch: refetchEstCallerProfit,
     error: estCallerProfitError,
+    isLoading: isLoadingEstCallerProfit,
     isEnabled: estCallerProfitEnabled,
   } = useSimulateContract({
     abi: pegkeeperAbi,
@@ -31,16 +40,22 @@ export function usePegkeeper({ address, pool: { address: poolAddress } }: PegKee
     },
   })
 
-  const { data: estCallerProfitFallback } = useReadContract({
+  const {
+    data: estCallerProfitFallback,
+    error: estCallerProfitFallbackError,
+    isLoading: isLoadingEstCallerProfitFallback,
+  } = useReadContract({
     abi: pegkeeperAbi,
     address,
     functionName: 'estimate_caller_profit',
-    query: {
-      enabled: !estCallerProfitEnabled || !!estCallerProfitError,
-    },
+    query: { enabled: !estCallerProfitEnabled || !!estCallerProfitError },
   })
 
-  const { data: debtCeiling } = useReadContract({
+  const {
+    data: debtCeiling,
+    error: debtCeilingError,
+    isLoading: isLoadingDebtCeiling,
+  } = useReadContract({
     abi: pegkeeperDebtCeilingAbi,
     address: PEG_KEEPER_DEBT_CEILINGS_CONTRACT_ADDRESS,
     functionName: 'debt_ceiling',
@@ -49,7 +64,9 @@ export function usePegkeeper({ address, pool: { address: poolAddress } }: PegKee
 
   const {
     data: priceOracle,
+    error: priceOracleReadError,
     isError: priceOracleError,
+    isLoading: isLoadingPriceOracle,
     refetch: refetchPriceOracle,
   } = useReadContract({
     abi: priceOracleAbi,
@@ -61,7 +78,12 @@ export function usePegkeeper({ address, pool: { address: poolAddress } }: PegKee
   })
 
   // Some pools might use a different price oracle function.
-  const { data: priceOracleFallback, refetch: refetchPriceOracleFallback } = useReadContract({
+  const {
+    data: priceOracleFallback,
+    error: priceOracleFallbackError,
+    isLoading: isLoadingPriceOracleFallback,
+    refetch: refetchPriceOracleFallback,
+  } = useReadContract({
     abi: priceOracleFallbackAbi,
     address: poolAddress,
     functionName: 'price_oracle',
@@ -72,10 +94,8 @@ export function usePegkeeper({ address, pool: { address: poolAddress } }: PegKee
     },
   })
 
-  const rate =
-    priceOracle !== undefined
-      ? formatEther(priceOracle)
-      : maybe(priceOracleFallback, priceOracleFallback => formatEther(priceOracleFallback))
+  const shouldUseEstCallerProfitFallback = !estCallerProfitEnabled || !!estCallerProfitError
+  const shouldUsePriceOracleFallback = priceOracleError
 
   const refetch = async () => {
     const [, , newPriceOracle] = await Promise.all([refetchDebt(), refetchEstCallerProfit(), refetchPriceOracle()])
@@ -99,13 +119,34 @@ export function usePegkeeper({ address, pool: { address: poolAddress } }: PegKee
     )
 
   return {
-    rate,
-    debt: maybe(debt, debt => formatEther(debt) as Decimal),
-    estCallerProfit:
-      !estCallerProfitEnabled || estCallerProfitError
-        ? maybe(estCallerProfitFallback, estCallerProfitFallback => formatEther(estCallerProfitFallback) as Decimal)
-        : maybe(estCallerProfit?.result, data => formatEther(data) as Decimal),
-    debtCeiling: maybe(debtCeiling, debtCeiling => formatEther(debtCeiling) as Decimal),
+    rate: q({
+      data: priceOracle === undefined ? maybe(priceOracleFallback, formatWei) : formatWei(priceOracle),
+      isLoading: isLoadingPriceOracle || (shouldUsePriceOracleFallback && isLoadingPriceOracleFallback),
+      error: shouldUsePriceOracleFallback ? (priceOracleFallbackError ?? priceOracleReadError) : priceOracleReadError,
+    }),
+    debt: q({
+      data: maybe(debt, formatWei),
+      isLoading: isLoadingDebt,
+      error: debtError,
+    }),
+    estCallerProfit: q(
+      shouldUseEstCallerProfitFallback
+        ? {
+            data: maybe(estCallerProfitFallback, formatWei),
+            isLoading: isLoadingEstCallerProfitFallback,
+            error: estCallerProfitFallbackError,
+          }
+        : {
+            data: maybe(estCallerProfit?.result, formatWei),
+            isLoading: isLoadingEstCallerProfit,
+            error: estCallerProfitError,
+          },
+    ),
+    debtCeiling: q({
+      data: maybe(debtCeiling, formatWei),
+      isLoading: isLoadingDebtCeiling,
+      error: debtCeilingError,
+    }),
     rebalance,
     isRebalancing,
   }

@@ -1,5 +1,6 @@
+import { useMemo } from 'react'
 import type { Decimal } from '@primitives/decimal.utils'
-import type { UseQueryOptions } from '@tanstack/react-query'
+import { UseQueryOptions } from '@tanstack/react-query'
 import { Query, QueryProp } from '@ui-kit/types/util'
 import { decimalMin } from '@ui-kit/utils/decimal'
 import { QueryOptionsArray, QueryResultsArray } from './types'
@@ -23,6 +24,22 @@ export const combineQueries = <const TQueries extends Queries, TResult>(
     data: queries.some(({ data }) => data === undefined)
       ? undefined
       : selector(...(queries.map(({ data }) => data) as QueriesData<TQueries>)),
+    ...combineQueryState(...queries),
+  }) as QueryProp<TResult>
+
+export const useCombinedQueries = <const TQueries extends Queries, TResult>(
+  queries: TQueries,
+  selector: (...data: QueriesData<TQueries>) => TResult | null | undefined,
+) =>
+  ({
+    data: useMemo(
+      () =>
+        queries.some(({ data }) => data === undefined)
+          ? undefined
+          : selector(...(queries.map(({ data }) => data) as QueriesData<TQueries>)),
+      // eslint-disable-next-line @eslint-react/exhaustive-deps
+      queries.map(({ data }) => data),
+    ),
     ...combineQueryState(...queries),
   }) as QueryProp<TResult>
 

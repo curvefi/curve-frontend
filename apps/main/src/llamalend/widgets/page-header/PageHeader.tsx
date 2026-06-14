@@ -1,7 +1,6 @@
 import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
-import type { BorrowRate, SupplyRate } from '@/llamalend/rates.types'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { type Chain } from '@curvefi/prices-api'
 import Box from '@mui/material/Box'
@@ -21,8 +20,9 @@ import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import type { QueryProp } from '@ui-kit/types/util'
 import { isDevelopment } from '@ui-kit/utils'
-import { type AvailableLiquidity, usePageHeader } from './hooks/usePageHeader'
+import { type AvailableLiquidity, BorrowRate, SupplyRate, usePageHeader } from './hooks/usePageHeader'
 import { generateMarketTitle, generateSubtitle, MetricsRow } from './'
 
 const { Spacing } = SizesAndSpaces
@@ -65,9 +65,9 @@ export const PageHeaderView = ({
   isLoading: boolean
   market: LlamaMarketTemplate | undefined
   blockchainId: Chain
-  borrowRate: BorrowRate
-  supplyRate?: SupplyRate
-  availableLiquidity: AvailableLiquidity
+  borrowRate: QueryProp<BorrowRate>
+  supplyRate?: QueryProp<SupplyRate>
+  availableLiquidity: QueryProp<AvailableLiquidity>
 }) => {
   const marketType = market instanceof MintMarketTemplate ? LlamaMarketType.Mint : LlamaMarketType.Lend
   const { collateralToken, borrowToken } = market

@@ -1,5 +1,4 @@
 import { MarketTypeSuffix, NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
-import type { BorrowRate, SupplyRate } from '@/llamalend/rates.types'
 import { BorrowAprMetric } from '@/llamalend/widgets/BorrowAprMetric'
 import { MarketSupplyRateTooltipContent, AvailableLiquidityTooltip, TooltipOptions } from '@/llamalend/widgets/tooltips'
 import Stack from '@mui/material/Stack'
@@ -9,8 +8,9 @@ import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import { mapQuery, type QueryProp } from '@ui-kit/types/util'
 import { AVERAGE_CATEGORIES } from '@ui-kit/utils'
-import type { AvailableLiquidity } from './hooks/usePageHeader'
+import type { AvailableLiquidity, BorrowRate, SupplyRate } from './hooks/usePageHeader'
 
 const { Spacing } = SizesAndSpaces
 
@@ -21,15 +21,15 @@ export const MetricsRow = ({
   marketType,
   collateral,
 }: {
-  borrowRate: BorrowRate
-  supplyRate?: SupplyRate
-  availableLiquidity: AvailableLiquidity
+  borrowRate: QueryProp<BorrowRate>
+  supplyRate?: QueryProp<SupplyRate>
+  availableLiquidity: QueryProp<AvailableLiquidity>
   marketType: LlamaMarketType
   collateral: { symbol: string } | undefined
 }) => {
   const isMobile = useIsMobile()
   const metricAlignment = isMobile ? 'start' : 'end'
-  const supplyRatePeriod = supplyRate ? AVERAGE_CATEGORIES[supplyRate.averageCategory].period : null
+  const supplyRatePeriod = supplyRate?.data ? AVERAGE_CATEGORIES[supplyRate.data.averageCategory].period : null
 
   return (
     <Stack
@@ -50,10 +50,9 @@ export const MetricsRow = ({
         <Metric
           alignment={metricAlignment}
           label={NET_SUPPLY_RATE_TITLE}
-          value={supplyRate.totalMinBoost}
-          loading={supplyRate.loading}
+          value={mapQuery(supplyRate, supplyRate => supplyRate.totalMinBoost)}
           valueOptions={{ unit: 'percentage' }}
-          notional={maybe(supplyRate.totalAverageMinBoost, data => ({
+          notional={maybe(supplyRate.data?.totalAverageMinBoost, data => ({
             value: data,
             unit: { symbol: `% ${supplyRatePeriod} Avg`, position: 'suffix' },
           }))}
@@ -61,21 +60,21 @@ export const MetricsRow = ({
             title: NET_SUPPLY_RATE_TITLE,
             body: (
               <MarketSupplyRateTooltipContent
-                supplyApy={supplyRate.supplyApy}
-                averageSupplyApy={supplyRate.averageLendApy}
-                totalApy={supplyRate.totalMinBoost}
-                totalAverageApy={supplyRate.totalAverageMinBoost}
+                supplyApy={supplyRate.data?.supplyApy}
+                averageSupplyApy={supplyRate.data?.averageLendApy}
+                totalApy={supplyRate.data?.totalMinBoost}
+                totalAverageApy={supplyRate.data?.totalAverageMinBoost}
                 boost={{
                   type: 'market',
-                  apy: supplyRate.supplyApyCrvMaxBoost,
-                  totalApy: supplyRate.totalMaxBoost,
-                  totalAverageApy: supplyRate.totalAverageMaxBoost,
+                  apy: supplyRate.data?.supplyApyCrvMaxBoost,
+                  totalApy: supplyRate.data?.totalMaxBoost,
+                  totalAverageApy: supplyRate.data?.totalAverageMaxBoost,
                 }}
-                rebasingYieldApy={supplyRate.rebasingYield}
-                isLoading={supplyRate.loading}
+                rebasingYieldApy={supplyRate.data?.rebasingYield}
+                isLoading={supplyRate.isLoading}
                 periodLabel={supplyRatePeriod!}
-                extraRewards={supplyRate.extraRewards ?? []}
-                extraIncentives={supplyRate.extraIncentives ?? []}
+                extraRewards={supplyRate.data?.extraRewards ?? []}
+                extraIncentives={supplyRate.data?.extraIncentives ?? []}
               />
             ),
             ...TooltipOptions,
@@ -85,18 +84,14 @@ export const MetricsRow = ({
       <Metric
         alignment={metricAlignment}
         label={t`Available liquidity`}
-        value={availableLiquidity?.value}
-        loading={availableLiquidity?.loading}
+        value={mapQuery(availableLiquidity, availableLiquidity => availableLiquidity.value)}
         valueOptions={{ unit: 'none' }} // We could've shown the supply token symbol, but it's a bit ugly and it's implicit anyway
         valueTooltip={{
           title: t`Available Liquidity ${MarketTypeSuffix[marketType]}`,
           body: <AvailableLiquidityTooltip marketType={marketType} />,
           ...TooltipOptions,
         }}
-        notional={maybe(availableLiquidity?.notional, x => ({
-          value: x,
-          unit: 'dollar',
-        }))}
+        notional={maybe(availableLiquidity.data?.notional, x => ({ value: x, unit: 'dollar' }))}
       />
     </Stack>
   )

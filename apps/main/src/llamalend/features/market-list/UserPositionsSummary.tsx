@@ -17,31 +17,25 @@ type UserPositionStatisticsProps = {
 
 const UserPositionStatisticItem = ({
   label,
-  metric: { data, isLoading, error },
+  metric,
   itemSize,
-}: UserPositionSummaryMetric & { itemSize: GridProps['size'] }) => {
-  const hasError = !!error
-  return (
-    <Grid size={itemSize}>
-      <Metric
-        value={data}
-        size="medium"
-        // isLoading can still be true if there is an error
-        loading={!hasError && isLoading}
-        valueOptions={{
-          unit: 'dollar',
-        }}
-        label={label}
-        error={error}
-        errorTooltip={{
-          placement: 'top',
-          title: t`Error fetching ${label}`,
-          body: <TooltipDescription text={t`Some positions could not be loaded correctly.`} />,
-        }}
-      />
-    </Grid>
-  )
-}
+}: UserPositionSummaryMetric & { itemSize: GridProps['size'] }) => (
+  <Grid size={itemSize}>
+    <Metric
+      value={metric}
+      size="medium"
+      valueOptions={{
+        unit: 'dollar',
+      }}
+      label={label}
+      errorTooltip={{
+        placement: 'top',
+        title: t`Error fetching ${label}`,
+        body: <TooltipDescription text={t`Some positions could not be loaded correctly.`} />,
+      }}
+    />
+  </Grid>
+)
 
 export const UserPositionSummary = ({ markets, selectedChains }: UserPositionStatisticsProps) => {
   const filteredMarkets = useMemo(() => {

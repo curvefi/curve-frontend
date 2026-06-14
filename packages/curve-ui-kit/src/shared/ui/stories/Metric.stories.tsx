@@ -1,6 +1,7 @@
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { FireIcon } from '@ui-kit/shared/icons/FireIcon'
+import { constQ, q } from '@ui-kit/types/util'
 import { Metric, SIZES, ALIGNMENTS } from '../Metric'
 
 const meta: Meta<typeof Metric> = {
@@ -45,10 +46,6 @@ const meta: Meta<typeof Metric> = {
       control: 'object',
       description: 'Optional notional values that gives context or underlying value of the key metric',
     },
-    error: {
-      control: 'object',
-      description: 'Pass an Error object to show the error icon and hide the metric value row content',
-    },
     errorTooltip: {
       control: 'object',
       description: 'Optional tooltip shown on the error icon. Requires both title and body',
@@ -57,7 +54,7 @@ const meta: Meta<typeof Metric> = {
   args: {
     size: 'medium',
     alignment: 'start',
-    value: 26539422,
+    value: constQ(26539422),
     valueOptions: {
       decimals: 1,
       unit: 'dollar',
@@ -82,7 +79,7 @@ export const Default: Story = {
 
 export const Percentage: Story = {
   args: {
-    value: 133.42,
+    value: constQ(133.42),
     valueOptions: {
       decimals: 2,
       unit: 'percentage',
@@ -114,7 +111,7 @@ export const ExtraLargeRight: Story = {
 
 export const Loading: Story = {
   args: {
-    loading: true,
+    value: q({ data: undefined, isLoading: true, error: null }),
   },
 }
 
@@ -131,7 +128,7 @@ export const Notional: Story = {
 
 export const Notionals: Story = {
   args: {
-    value: 650450,
+    value: constQ(650450),
     valueOptions: { unit: 'dollar' },
     label: 'Collateral to recover',
     size: 'large',
@@ -181,7 +178,7 @@ export const CustomValueFontColor: Story = {
 
 export const NotAvailable: Story = {
   args: {
-    value: null,
+    value: q({ data: undefined, isLoading: false, error: null }),
     label: 'Metric with N/A Value',
   },
   parameters: {
@@ -210,7 +207,7 @@ export const RightAdornment: Story = {
 
 export const ErrorWithTooltip: Story = {
   args: {
-    error: new globalThis.Error('Metric failed to load'),
+    value: q({ data: undefined, isLoading: false, error: new globalThis.Error('Metric failed to load') }),
     errorTooltip: {
       title: 'Error fetching metric',
       body: 'Some positions could not be loaded correctly.',

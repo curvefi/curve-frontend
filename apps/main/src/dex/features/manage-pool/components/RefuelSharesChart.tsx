@@ -27,6 +27,7 @@ import type { LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
 import { SelectTimeOption } from '@ui-kit/shared/ui/Chart/SelectTimeOption'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { mapQuery } from '@ui-kit/types/util'
 import { formatNumber } from '@ui-kit/utils'
 import { refuelPoolAbi } from '../abi'
 import { REFUEL_TIMESERIES_PAGE_SIZE, useRefuelTimeseries } from '../queries/timeseries.query'
@@ -59,7 +60,7 @@ export const RefuelSharesChart = ({
 
   const toggleVisibility = (key: string) => setVisibility(prev => ({ ...prev, [key]: !(prev[key] ?? true) }))
 
-  const { data, isFetching: loading } = useRefuelTimeseries({
+  const timeSeries = useRefuelTimeseries({
     blockchainId,
     poolAddress,
     start,
@@ -83,7 +84,7 @@ export const RefuelSharesChart = ({
 
   const chartData = useMemo(
     () =>
-      llama(data?.data)
+      llama(timeSeries.data?.data)
         .map(point => ({
           time: new Date(point.timestamp).getTime(),
           donationShares: point.donationShares == null ? 0 : point.donationShares / 10 ** DEFAULT_DECIMALS,
@@ -92,7 +93,7 @@ export const RefuelSharesChart = ({
         .uniqWith((x, y) => x.time === y.time)
         .orderBy(point => point.time, 'asc')
         .value(),
-    [data?.data],
+    [timeSeries.data?.data],
   )
 
   const option = useMemo(
@@ -114,33 +115,21 @@ export const RefuelSharesChart = ({
     [chartData, legendSets, palette],
   )
 
-  const {
-    data: refuelShares,
-    isLoading: isLoadingRefuelShares,
-    error: refuelSharesError,
-  } = useReadContract({
+  const refuelShares = useReadContract({
     address: poolAddress,
     abi: refuelPoolAbi,
     functionName: 'donation_shares',
     chainId,
   })
 
-  const {
-    data: refuelDuration,
-    isLoading: isLoadingRefuelDuration,
-    error: refuelDurationError,
-  } = useReadContract({
+  const refuelDuration = useReadContract({
     address: poolAddress,
     abi: refuelPoolAbi,
     functionName: 'donation_duration',
     chainId,
   })
 
-  const {
-    data: maxRatio,
-    isLoading: isLoadingMaxRatio,
-    error: maxRatioError,
-  } = useReadContract({
+  const maxRatio = useReadContract({
     address: poolAddress,
     abi: refuelPoolAbi,
     functionName: 'donation_shares_max_ratio',
@@ -150,7 +139,7 @@ export const RefuelSharesChart = ({
   return (
     <EChartsCard
       title={t`Refuel budget`}
-      loading={loading}
+      loading={timeSeries.isFetching}
       option={option}
       fullscreen={fullscreen}
       onCloseFullscreen={closeFullscreen}
@@ -160,10 +149,8 @@ export const RefuelSharesChart = ({
           <Grid size={{ mobile: 6, tablet: 4 }}>
             <Metric
               label={REFUEL_SHARES_LABEL}
-              value={Number(refuelShares && formatUnits(refuelShares, 18))}
+              value={mapQuery(refuelShares, value => Number(formatUnits(value, 18)))}
               valueOptions={{ abbreviate: true }}
-              loading={isLoadingRefuelShares}
-              error={refuelSharesError}
               testId="refuel-shares"
             />
           </Grid>
@@ -171,15 +158,13 @@ export const RefuelSharesChart = ({
           <Grid size={{ mobile: 6, tablet: 4 }}>
             <Metric
               label={t`Refuel duration`}
-              value={(Number(refuelDuration) / TIME_FRAMES.DAY_MS) * 1000}
+              value={mapQuery(refuelDuration, value => (Number(value) / TIME_FRAMES.DAY_MS) * 1000)}
               valueOptions={{ abbreviate: false, decimals: 0 }}
               rightAdornment={
                 <Typography variant="highlightS" color="textSecondary">
                   {t`days`}
                 </Typography>
               }
-              loading={isLoadingRefuelDuration}
-              error={refuelDurationError}
               testId="refuel-duration"
             />
           </Grid>
@@ -187,10 +172,8 @@ export const RefuelSharesChart = ({
           <Grid size={{ mobile: 6, tablet: 4 }}>
             <Metric
               label={t`Max ratio`}
-              value={Number(maxRatio && formatUnits(maxRatio, 18)) * 100}
+              value={mapQuery(maxRatio, value => Number(formatUnits(value, 18)) * 100)}
               valueOptions={{ abbreviate: true, decimals: 2, unit: 'percentage' }}
-              loading={isLoadingMaxRatio}
-              error={maxRatioError}
               testId="refuel-max-ratio"
             />
           </Grid>
@@ -198,7 +181,12 @@ export const RefuelSharesChart = ({
       }
       action={
         <>
-          <SelectTimeOption options={PERIODS} activeOption={period} setActiveOption={setPeriod} isLoading={loading} />
+          <SelectTimeOption
+            options={PERIODS}
+            activeOption={period}
+            setActiveOption={setPeriod}
+            isLoading={timeSeries.isFetching}
+          />
           {fullscreen && (
             <ButtonExport
               filename="refuel_donation_shares"

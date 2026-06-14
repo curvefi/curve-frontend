@@ -9,7 +9,7 @@ import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangl
 import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
-import type { MakeOptional } from '@ui-kit/types/util'
+import type { MakeOptional, QueryProp } from '@ui-kit/types/util'
 import {
   copyToClipboard,
   defaultNumberFormatter,
@@ -97,8 +97,11 @@ type MetricValueProps = Pick<MetricProps, 'value' | 'valueOptions' | 'change' | 
   copyValue?: () => void
 }
 
-const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip, testId }: MetricValueProps) => {
-  const numberValue = useMemo(() => ((value || value === 0) && isFinite(Number(value)) ? Number(value) : null), [value])
+const MetricValue = ({ value, valueOptions = {}, change, size, copyValue, tooltip, testId }: MetricValueProps) => {
+  const numberValue = useMemo(
+    () => ((value.data || value.data === 0) && isFinite(Number(value.data)) ? Number(value.data) : null),
+    [value.data],
+  )
   const { color = 'textPrimary', abbreviate = true, fallback = t`N/A`, ...formattingOptions } = valueOptions
   const { prefix, mainValue, scaleSuffix, suffix } =
     numberValue === null ? {} : decomposeNumber(numberValue, { ...formattingOptions, abbreviate })
@@ -116,7 +119,7 @@ const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip, te
         {...tooltip}
         title={tooltip?.title ?? (numberValue == null ? fallback : numberValue.toLocaleString())}
         data-testid={`${testId}-value`}
-        data-value={value}
+        data-value={value.data}
       >
         <Stack direction="row" sx={{ alignItems: 'baseline' }}>
           {prefix && (
@@ -156,8 +159,8 @@ const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip, te
 
 export type MetricProps = {
   /** The actual metric value to display */
-  value: Amount | '' | false | undefined | null
-  valueOptions: MakeOptional<NumberFormatOptions, 'abbreviate'> /* defaults to true */ & {
+  value: QueryProp<Amount>
+  valueOptions?: MakeOptional<NumberFormatOptions, 'abbreviate'> /* defaults to true */ & {
     color?: TypographyProps['color']
   }
 
@@ -178,14 +181,11 @@ export type MetricProps = {
   /** Optional content to display to the right of the value */
   rightAdornment?: ReactNode
 
-  /** Shows an error triangle icon on the metric value row. */
-  error?: Error | null
   /** Optional tooltip shown when hovering the error triangle icon. Must include both title and body. */
   errorTooltip?: MetricErrorTooltip
 
   size?: keyof typeof MetricSize
   alignment?: Alignment
-  loading?: boolean
   testId?: string
   sx?: SxProps
 }
@@ -203,22 +203,20 @@ export const Metric = ({
   notional,
 
   rightAdornment,
-  error = undefined,
   errorTooltip,
 
   size = 'medium',
   alignment = 'start',
-  loading = false,
   testId = 'metric',
   sx,
 }: MetricProps) => {
   const notionals = useMemo(() => notionalsToString(notional), [notional])
   const copyValue = useCallback(() => {
-    if (value || value === 0) {
-      void copyToClipboard(value.toString())
-      showToast({ title: copyText, message: value, severity: 'info' })
+    if (value.data || value.data === 0) {
+      void copyToClipboard(value.data.toString())
+      showToast({ title: copyText, message: value.data, severity: 'info' })
     }
-  }, [value, copyText])
+  }, [value.data, copyText])
 
   return (
     <Stack data-testid={testId} sx={applySxProps({ alignItems: alignment }, sx)}>
@@ -233,10 +231,10 @@ export const Metric = ({
           </Tooltip>
         )}
       </Typography>
-      <WithSkeleton loading={loading}>
+      <WithSkeleton loading={value.isLoading}>
         <Stack direction="row" sx={{ alignItems: 'baseline' }}>
           {/* Keep error state vertical rhythm aligned with regular metric values by inheriting metric typography sizing. */}
-          {error ? (
+          {value.error ? (
             <Tooltip arrow placement="bottom" title={errorTooltip?.title} body={errorTooltip?.body} {...errorTooltip}>
               <Typography component="span" variant={MetricSize[size]} color="error">
                 <ExclamationTriangleIcon fontSize="inherit" />
@@ -249,7 +247,7 @@ export const Metric = ({
                 valueOptions={valueOptions}
                 change={change}
                 size={size}
-                copyValue={value || value === 0 ? copyValue : undefined}
+                copyValue={value.data || value.data === 0 ? copyValue : undefined}
                 tooltip={valueTooltip}
                 testId={testId}
               />

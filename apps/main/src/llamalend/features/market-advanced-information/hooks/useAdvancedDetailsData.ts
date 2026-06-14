@@ -3,16 +3,18 @@ import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import {
   useMarketCapAndAvailable,
-  useMarketTotalCollateral,
-  useMarketMaxLeverage,
   useMarketLiquidationHealthDistribution,
+  useMarketMaxLeverage,
+  useMarketTotalCollateral,
   useMarketUsers,
 } from '@/llamalend/queries/market'
 import type { Endpoint } from '@curvefi/prices-api/lending'
 import { maybe, maybes } from '@primitives/objects.utils'
+import { combineQueries } from '@ui-kit/lib'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import type { MarketParams } from '@ui-kit/lib/model/query/root-keys'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import { mapQuery } from '@ui-kit/types/util'
 import { requireBlockchainId } from '@ui-kit/utils/network'
 
 const endpointFromMarketType: Record<LlamaMarketType, Endpoint> = {
@@ -31,85 +33,66 @@ export const useAdvancedDetailsData = ({
   const controllerAddress = getControllerAddress(market)
   const endpoint = endpointFromMarketType[marketType]
 
-  const { data: maxLeverageData, isLoading: maxLeverageLoading } = useMarketMaxLeverage({
+  const maxLeverage = useMarketMaxLeverage({
     chainId,
     marketId,
     range: market?.minBands ?? 0,
   })
-  const { data: capAndAvailable, isLoading: capAndAvailableLoading } = useMarketCapAndAvailable({ chainId, marketId })
-  const { data: totalCollateral, isLoading: totalCollateralLoading } = useMarketTotalCollateral({ chainId, marketId })
-  const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
+  const capAndAvailable = useMarketCapAndAvailable({ chainId, marketId })
+  const totalCollateral = useMarketTotalCollateral({ chainId, marketId })
+  const collateralUsdRate = useTokenUsdRate({
     chainId,
     tokenAddress: collateralToken?.address,
   })
-  const { data: borrowedUsdRate, isLoading: borrowedUsdRateLoading } = useTokenUsdRate({
+  const borrowedUsdRate = useTokenUsdRate({
     chainId,
     tokenAddress: borrowToken?.address,
   })
-  const { data: solvencyData, isLoading: solvencyLoading } = useSolvencyMarket({
+  const solvency = useSolvencyMarket({
     blockchainId,
     controllerAddress,
     marketType,
   })
-  const { data: marketUsers, isLoading: marketUsersLoading } = useMarketUsers({
+  const marketUsers = useMarketUsers({
     endpoint,
     blockchainId,
     contractAddress: controllerAddress,
   })
-  const { data: liquidationHealthDistribution, isLoading: liquidationHealthDistributionLoading } =
-    useMarketLiquidationHealthDistribution({
-      endpoint,
-      blockchainId,
-      contractAddress: controllerAddress,
-    })
-
-  const collateralTotal = maybe(totalCollateral, totalCollateral => Number(totalCollateral.collateral)) ?? null
-  const borrowedTotal = maybe(totalCollateral, totalCollateral => Number(totalCollateral.borrowed)) ?? null
-  const collateralUsdValue = collateralTotal && collateralUsdRate && collateralTotal * collateralUsdRate
-  const borrowedUsdValue = borrowedTotal && borrowedUsdRate && borrowedTotal * borrowedUsdRate
-  const combinedCollateralUsdValue =
-    maybes(
-      [collateralUsdValue, borrowedUsdValue],
-      ([collateralUsdValue, borrowedUsdValue]) => collateralUsdValue + borrowedUsdValue,
-    ) ?? null
-
+  const liquidationHealthDistribution = useMarketLiquidationHealthDistribution({
+    endpoint,
+    blockchainId,
+    contractAddress: controllerAddress,
+  })
   return {
     marketType,
-    collateral: {
-      collateralSymbol: collateralToken?.symbol ?? null,
-      totalCollateral: collateralTotal,
-      borrowedSymbol: borrowToken?.symbol ?? null,
-      totalBorrowed: borrowedTotal,
-      combinedCollateralUsdValue,
-      collateralUsdRate: collateralUsdRate ?? null,
-      borrowedUsdRate: borrowedUsdRate ?? null,
-      loading: !market || totalCollateralLoading || collateralUsdRateLoading || borrowedUsdRateLoading,
-    },
-    maxLeverage: {
-      value: maxLeverageData,
-      loading: !market || maxLeverageLoading,
-    },
-    availableLiquidity: {
-      available: capAndAvailable?.available,
-      totalAssets: capAndAvailable?.totalAssets,
-      borrowCap: capAndAvailable?.borrowCap,
-      loading: !market || capAndAvailableLoading,
-    },
-    totalBorrowers: {
-      value: marketUsers?.count,
-      loading: !market || marketUsersLoading,
-    },
-    averageHealth: {
-      value: liquidationHealthDistribution?.meanHealth,
-      distribution: liquidationHealthDistribution,
-      loading: !market || liquidationHealthDistributionLoading,
-    },
+    collateral: combineQueries(
+      [totalCollateral, collateralUsdRate, borrowedUsdRate],
+      ({ borrowed, collateral }, collateralUsdRate, borrowedUsdRate) => ({
+        collateralSymbol: collateralToken?.symbol,
+        totalCollateral: +collateral,
+        borrowedSymbol: borrowToken?.symbol,
+        totalBorrowed: +borrowed,
+        combinedCollateralUsdValue: maybes(
+          [collateralUsdRate, borrowedUsdRate],
+          ([collateralUsdRate, borrowedUsdRate]) => +collateral * collateralUsdRate + +borrowed * borrowedUsdRate,
+        ),
+        collateralUsdRate,
+        borrowedUsdRate,
+      }),
+    ),
+    maxLeverage: mapQuery(maxLeverage, value => ({ value })),
+    availableLiquidity: mapQuery(capAndAvailable, ({ available, totalAssets, borrowCap }) => ({
+      available,
+      totalAssets,
+      borrowCap,
+    })),
+    totalBorrowers: mapQuery(marketUsers, ({ count }) => ({ value: count })),
+    averageHealth: mapQuery(liquidationHealthDistribution, distribution => ({
+      value: distribution.meanHealth,
+      distribution,
+    })),
     ...(marketType === LlamaMarketType.Lend && {
-      solvency: {
-        value: solvencyData?.solvencyPercent,
-        badDebtUsd: solvencyData?.badDebtUsd,
-        loading: !market || solvencyLoading,
-      },
+      solvency: mapQuery(solvency, ({ solvencyPercent, badDebtUsd }) => ({ value: solvencyPercent, badDebtUsd })),
     }),
   }
 }
