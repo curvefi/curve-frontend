@@ -1,6 +1,8 @@
 import lodash from 'lodash'
+import { isAddress } from 'viem'
+import { TOP_HOLDERS } from '@/dao/constants'
 import { GaugeFormattedData, GaugeMapper } from '@/dao/types/dao.types'
-import { Chain } from '@ui-kit/utils'
+import { Chain, shortenAddress } from '@ui-kit/utils'
 
 export * from './utilsRouter'
 export * from './utilsDates'
@@ -26,3 +28,6 @@ export const findRootGauge = (gaugeAddress: string, gaugeMapper: GaugeMapper) =>
   }
   return ''
 }
+
+export const formatHolderName = (user: string) =>
+  TOP_HOLDERS[user.toLowerCase()]?.title ?? (isAddress(user, { strict: false }) ? shortenAddress(user) : user)

@@ -1,9 +1,9 @@
-import lodash from 'lodash'
+import { meanBy } from 'lodash'
 import { useCallback } from 'react'
 import { styled } from 'styled-components'
 import { useStatsVecrvQuery } from '@/dao/entities/stats-vecrv'
-import { useStore } from '@/dao/store/useStore'
-import { maybe } from '@primitives/objects.utils'
+import { useVeCrvFeesQuery } from '@/dao/entities/vecrv-fees'
+import { useVeCrvHoldersQuery } from '@/dao/entities/vecrv-holders'
 import { Box } from '@ui/Box'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useCombinedQueries } from '@ui-kit/lib'
@@ -14,33 +14,41 @@ import { mapQuery, q } from '@ui-kit/types/util'
 import { formatNumber, MAINNET_CRV_ADDRESS } from '@ui-kit/utils'
 import { Chain } from '@ui-kit/utils/network'
 
-function useVeCrvFees() {
-  const veCrvFees = useStore(state => state.analytics.veCrvFees)
-  return { data: veCrvFees, isLoading: veCrvFees.fetchStatus === 'LOADING', error: null }
-}
+const VECRV_APR_AVERAGE_WEEKS = 4
+const PROPOSAL_MIN_VECRV = 2500
 
 export const CrvStats = () => {
   const { curveApi: { chainId } = {} } = useCurve()
   const statsQuery = useStatsVecrvQuery({})
-  const veCrvHolders = useStore(state => state.analytics.veCrvHolders)
-  const crvUsdRate = useTokenUsdRate({ chainId, tokenAddress: MAINNET_CRV_ADDRESS })
-  const veCrv = useVeCrvFees()
+  const feesQuery = useVeCrvFeesQuery({})
+  const holdersQuery = useVeCrvHoldersQuery({})
+  const isMainnet = chainId === Chain.Ethereum
+  const crvUsdRateQuery = useTokenUsdRate({ chainId, tokenAddress: MAINNET_CRV_ADDRESS }, isMainnet)
+  const crvUsdRate = isMainnet ? crvUsdRateQuery : q({ data: 0, isLoading: false, error: null })
+
+  const holdersSummary = mapQuery(holdersQuery, holders => ({
+    totalHolders: holders.length,
+    canCreateVote: holders.filter(holder => +holder.weight > PROPOSAL_MIN_VECRV).length,
+  }))
 
   const veCrvApr = useCombinedQueries(
-    [statsQuery, crvUsdRate, veCrv],
+    [statsQuery, crvUsdRate, feesQuery],
     useCallback(
-      (veCrvData, crv, { fees }) =>
-        chainId === Chain.Ethereum
-          ? {
-              current: calculateApr(fees[1].feesUsd, veCrvData.totalVeCrv.fromWei(), crv),
-              fourDayAverage: calculateFourWeekAverageApr(
-                fees.slice(1, 5).map(fee => fee.feesUsd),
-                veCrvData.totalVeCrv.fromWei(),
-                crv,
-              ),
-            }
-          : { current: 0, fourDayAverage: 0 },
-      [chainId],
+      (veCrvData, crvPrice, fees) => {
+        if (!isMainnet) return { current: 0, fourWeekAverage: 0 }
+
+        const totalVeCrv = +veCrvData.totalVeCrv
+        if (!totalVeCrv || !crvPrice) return { current: 0, fourWeekAverage: 0 }
+
+        const aprScale = (52 * 100) / (totalVeCrv * crvPrice)
+        const completedFees = fees.slice(1, VECRV_APR_AVERAGE_WEEKS + 1)
+
+        return {
+          current: +(fees[1]?.feesUsd ?? 0) * aprScale,
+          fourWeekAverage: completedFees.length ? meanBy(completedFees, fee => +fee.feesUsd * aprScale) : 0,
+        }
+      },
+      [isMainnet],
     ),
   )
 
@@ -52,32 +60,28 @@ export const CrvStats = () => {
           <Metric
             size="small"
             label={t`Total CRV`}
-            value={mapQuery(statsQuery, ({ totalCrv }) => totalCrv.fromWei())}
+            value={mapQuery(statsQuery, ({ totalCrv }) => totalCrv)}
             valueOptions={{}}
           />
           <Metric
             size="small"
             label={t`Locked CRV`}
-            value={mapQuery(statsQuery, ({ totalLockedCrv }) => totalLockedCrv.fromWei())}
+            value={mapQuery(statsQuery, ({ totalLockedCrv }) => totalLockedCrv)}
             valueOptions={{}}
           />
           <Metric
             size="small"
             label={t`veCRV`}
-            value={mapQuery(statsQuery, ({ totalVeCrv }) => totalVeCrv.fromWei())}
+            value={mapQuery(statsQuery, ({ totalVeCrv }) => totalVeCrv)}
             valueOptions={{}}
           />
           <Metric
             size="small"
             label={t`Holders`}
-            value={q({
-              data: veCrvHolders.totalHolders,
-              isLoading: veCrvHolders.fetchStatus === 'LOADING',
-              error: null,
-            })}
+            value={mapQuery(holdersSummary, ({ totalHolders }) => totalHolders)}
             valueOptions={{ abbreviate: false, decimals: 0 }}
             labelTooltip={{
-              title: t`${veCrvHolders.canCreateVote} veCRV holders can create a new proposal (minimum 2500 veCRV is required)`,
+              title: t`${holdersSummary.data?.canCreateVote ?? 0} veCRV holders can create a new proposal (minimum 2500 veCRV is required)`,
             }}
           />
           <Metric
@@ -91,19 +95,17 @@ export const CrvStats = () => {
             label={t`veCRV APR`}
             value={mapQuery(veCrvApr, ({ current }) => current)}
             valueOptions={{ unit: 'percentage' }}
-            notional={maybe(veCrvApr.data?.fourDayAverage, apr => `${formatNumber(apr, 'percent.value')} 4w avg`)}
+            notional={
+              veCrvApr.data
+                ? `${formatNumber(veCrvApr.data.fourWeekAverage, 'percent.value')} ${VECRV_APR_AVERAGE_WEEKS}w avg`
+                : undefined
+            }
           />
         </MetricsContainer>
       </Container>
     </Wrapper>
   )
 }
-
-const calculateApr = (fees: number, totalVeCrv: number, crvPrice: number) =>
-  (((fees / totalVeCrv) * 52) / crvPrice) * 100
-
-const calculateFourWeekAverageApr = (fees: number[], totalVeCrv: number, crvPrice: number) =>
-  lodash.meanBy(fees, fee => calculateApr(fee, totalVeCrv, crvPrice))
 
 const Wrapper = styled(Box)`
   display: flex;

@@ -1,59 +1,66 @@
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
-import { ErrorMessage } from '@/dao/components/ErrorMessage'
 import { TOP_HOLDERS_FILTERS } from '@/dao/components/PageAnalytics/constants'
 import { TopHoldersBarChart as TopHoldersBarChartComponent } from '@/dao/components/PageAnalytics/TopHoldersChart/TopHoldersBarChartComponent'
 import { useStatsVecrvQuery } from '@/dao/entities/stats-vecrv'
+import { useVeCrvHoldersQuery, type VeCrvHolder } from '@/dao/entities/vecrv-holders'
 import { useStore } from '@/dao/store/useStore'
 import type { TopHoldersSortBy } from '@/dao/types/dao.types'
-import type { Locker } from '@curvefi/prices-api/dao'
 import MuiBox from '@mui/material/Box'
+import { sortBy } from '@primitives/array.utils'
 import { Box } from '@ui/Box'
 import { SelectSortingMethod } from '@ui/Select/SelectSortingMethod'
 import { t } from '@ui-kit/lib/i18n'
-import { SpinnerComponent as Spinner } from '../../Spinner'
+import { ChartStateWrapper } from '@ui-kit/shared/ui/Chart'
+import { decimal, decimalMinus, decimalSum } from '@ui-kit/utils'
+
+const CHART_HEIGHT = 300
+const TOP_HOLDERS_LIMIT = 100
+const MIN_TOP_HOLDER_WEIGHT_RATIO = 0.3
 
 export const TopLockers = () => {
-  const { data: veCrvData, isSuccess: statsSuccess } = useStatsVecrvQuery({})
-  const getVeCrvHolders = useStore(state => state.analytics.getVeCrvHolders)
-  const veCrvHolders = useStore(state => state.analytics.veCrvHolders)
+  const { data: veCrvData, isLoading: statsLoading, error: statsError, refetch: refetchStats } = useStatsVecrvQuery({})
+  const {
+    data: veCrvHolders,
+    isLoading: holdersLoading,
+    error: holdersError,
+    refetch: refetchHolders,
+  } = useVeCrvHoldersQuery({})
   const topHoldersSortBy = useStore(state => state.analytics.topHoldersSortBy)
   const setTopHoldersSortBy = useStore(state => state.analytics.setTopHoldersSortBy)
 
-  const lockersFetchSuccess = veCrvHolders.fetchStatus === 'SUCCESS'
-  const lockersFetchError = veCrvHolders.fetchStatus === 'ERROR'
-  const lockersFetchLoading = veCrvHolders.fetchStatus === 'LOADING'
+  const chartError = holdersError ?? statsError
+  const isLoading = holdersLoading || statsLoading
 
-  const othersData: Locker = useMemo(() => {
-    if (!lockersFetchSuccess || !statsSuccess)
-      return {
-        user: 'Others(<0.5%)',
-        weight: 0n,
-        locked: 0n,
-        weightRatio: 0,
+  const chartData: VeCrvHolder[] = useMemo(() => {
+    if (!veCrvHolders || !veCrvData) return []
+
+    const topHolders = sortBy(veCrvHolders, holder => +holder.weightRatio, 'desc')
+      .slice(0, TOP_HOLDERS_LIMIT)
+      .filter(holder => +holder.weightRatio > MIN_TOP_HOLDER_WEIGHT_RATIO)
+    const totalValues = topHolders.reduce(
+      (acc, holder) => ({
+        weight: decimalSum(acc.weight, holder.weight),
+        locked: decimalSum(acc.locked, holder.locked),
+        weightRatio: decimalSum(acc.weightRatio, holder.weightRatio),
+      }),
+      { weight: decimal(0)!, locked: decimal(0)!, weightRatio: decimal(0)! },
+    )
+    const othersVeCrv = decimalMinus(veCrvData.totalVeCrv, totalValues.weight)
+    const otherLockedCrv = decimalMinus(veCrvData.totalLockedCrv, totalValues.locked)
+    const othersWeightRatio = decimal((100 - +totalValues.weightRatio).toFixed(2))!
+
+    return [
+      ...topHolders,
+      {
+        user: 'Others(<0.3%)',
+        weight: othersVeCrv,
+        locked: otherLockedCrv,
+        weightRatio: othersWeightRatio,
         unlockTime: null,
-      }
-
-    const othersVeCrv = veCrvData.totalVeCrv - veCrvHolders.totalValues.weight
-    const otherLockedCrv = veCrvData.totalLockedCrv - veCrvHolders.totalValues.locked
-    const othersWeightRatio = +(100 - veCrvHolders.totalValues.weightRatio).toFixed(2)
-
-    return {
-      user: 'Others(<0.3%)',
-      weight: othersVeCrv,
-      locked: otherLockedCrv,
-      weightRatio: othersWeightRatio,
-      unlockTime: null,
-    }
-  }, [
-    lockersFetchSuccess,
-    statsSuccess,
-    veCrvData?.totalLockedCrv,
-    veCrvData?.totalVeCrv,
-    veCrvHolders.totalValues.locked,
-    veCrvHolders.totalValues.weight,
-    veCrvHolders.totalValues.weightRatio,
-  ])
+      },
+    ]
+  }, [veCrvData, veCrvHolders])
 
   return (
     <MuiBox sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
@@ -69,12 +76,16 @@ export const TopLockers = () => {
         </Box>
       </TitleRow>
       <Content>
-        {lockersFetchLoading && <Spinner height="18.75rem" />}
-        {/* eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule. */}
-        {lockersFetchError && <ErrorMessage message={t`Error fetching veCRV holders`} onClick={getVeCrvHolders} />}
-        {lockersFetchSuccess && (
-          <TopHoldersBarChartComponent data={[...veCrvHolders.topHolders, othersData]} filter={topHoldersSortBy} />
-        )}
+        <ChartStateWrapper
+          height={CHART_HEIGHT}
+          isLoading={isLoading}
+          isEmpty={!isLoading && !chartError && chartData.length === 0}
+          error={chartError}
+          errorMessage={t`Unable to fetch veCRV holders data.`}
+          refreshData={() => Promise.all([refetchHolders(), refetchStats()])}
+        >
+          <TopHoldersBarChartComponent data={chartData} filter={topHoldersSortBy} />
+        </ChartStateWrapper>
       </Content>
     </MuiBox>
   )
