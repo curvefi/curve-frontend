@@ -12,14 +12,14 @@ import { SupplyPositionDetails } from '@/llamalend/features/market-position-deta
 import { useLoanExists } from '@/llamalend/queries/user'
 import { useUserShares } from '@/llamalend/queries/user/user-balances.query'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
-import { PageHeader } from '@/llamalend/widgets/page-header'
+import { MarketPageHeader } from '@/llamalend/widgets/page-header'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
-import { MarketRateType } from '@ui-kit/types/market'
+import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 import { useLendMarket } from '../../hooks/useLendMarket'
 import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
@@ -28,7 +28,7 @@ export const Page = () => {
   const params = useParams<MarketUrlParams>()
   const { rMarket, rChainId: chainId } = parseMarketParams(params)
   const { llamaApi: api = null, provider, isHydrated } = useCurve()
-  const { data: market, isSuccess } = useLendMarket(chainId, rMarket)
+  const { data: market, isLoading: isMarketLoading, isSuccess } = useLendMarket(chainId, rMarket)
   const network = networks[chainId]
 
   const isPageVisible = useLayoutStore(state => state.isPageVisible)
@@ -93,12 +93,13 @@ export const Page = () => {
     <DetailPageLayout
       formTabs={chainId && <VaultTabs {...pageProps} params={params} />}
       header={
-        <PageHeader
+        <MarketPageHeader
+          blockchainId={network.id}
           chainId={chainId}
           marketId={market?.id}
-          isLoading={!isHydrated}
+          isLoading={!isHydrated || isMarketLoading}
           market={market}
-          blockchainId={network.id}
+          marketType={LlamaMarketType.Lend}
         />
       }
     >

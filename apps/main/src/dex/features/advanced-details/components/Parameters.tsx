@@ -184,7 +184,7 @@ export const Parameters = ({
             value={notFalsy(
               poolType,
               metadata?.metapool && `${t`Metapool`}`,
-              basePools?.some(pool => pool.pool === poolAddress) && `, ${t`Basepool`}`,
+              basePools?.some(pool => pool.pool === poolAddress) && `${t`Basepool`}`,
             ).join(', ')}
           />
 
