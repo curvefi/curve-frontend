@@ -29,24 +29,28 @@ const headers = {
   [MarketCompositionColumnId.TokenAmount]: t`Amount`,
 } as const
 
-export const MARKET_COMPOSITION_COLUMNS = [
+export const createMarketCompositionColumns = ({ isMobile }: { isMobile: boolean }) => [
   columnHelper.accessor('source', {
     id: MarketCompositionColumnId.Asset,
     header: headers[MarketCompositionColumnId.Asset],
     cell: ({ getValue, row }) => <TokenCell source={getValue()} explorerUrl={row.original.explorerUrl} />,
     enableSorting: false,
   }),
-  columnHelper.accessor('price', {
-    id: MarketCompositionColumnId.Price,
-    header: headers[MarketCompositionColumnId.Price],
-    cell: ({ getValue }) => (
-      <InlineTableCell>
-        <Typography>{formatNumber(getValue(), 'usd.amount')}</Typography>
-      </InlineTableCell>
-    ),
-    enableSorting: false,
-    meta: { type: 'numeric' },
-  }),
+  ...(isMobile
+    ? []
+    : [
+        columnHelper.accessor('price', {
+          id: MarketCompositionColumnId.Price,
+          header: headers[MarketCompositionColumnId.Price],
+          cell: ({ getValue }) => (
+            <InlineTableCell>
+              <Typography>{formatNumber(getValue(), 'usd.amount')}</Typography>
+            </InlineTableCell>
+          ),
+          enableSorting: false,
+          meta: { type: 'numeric' },
+        }),
+      ]),
   columnHelper.accessor('marketShare', {
     id: MarketCompositionColumnId.MarketShare,
     header: headers[MarketCompositionColumnId.MarketShare],

@@ -1,6 +1,7 @@
 import TableCell from '@mui/material/TableCell'
 import Typography from '@mui/material/Typography'
 import { maybe } from '@primitives/objects.utils'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
@@ -15,7 +16,7 @@ export const FooterRow = ({ baseTotal, total }: { baseTotal: number | undefined;
     </TableCell>
 
     {/** Price */}
-    <TableCell />
+    {!useIsMobile() && <TableCell />}
 
     {/** APY */}
     <TableCell sx={{ paddingInline: Spacing.md, paddingBlock: Spacing.sm, textAlign: 'right' }}>

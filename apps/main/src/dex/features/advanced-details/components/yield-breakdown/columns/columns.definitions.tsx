@@ -29,7 +29,7 @@ const headers = {
   [YieldBreakdownColumnId.Apy]: t`APY`,
 } as const
 
-export const YIELD_BREAKDOWN_COLUMNS = [
+export const createYieldBreakdownColumns = ({ isMobile }: { isMobile: boolean }) => [
   columnHelper.accessor('source', {
     id: YieldBreakdownColumnId.Source,
     header: headers[YieldBreakdownColumnId.Source],
@@ -38,17 +38,21 @@ export const YIELD_BREAKDOWN_COLUMNS = [
     ),
     enableSorting: false,
   }),
-  columnHelper.accessor('price', {
-    id: YieldBreakdownColumnId.Price,
-    header: headers[YieldBreakdownColumnId.Price],
-    cell: ({ getValue }) => (
-      <InlineTableCell>
-        <Typography>{formatNumber(getValue(), 'usd.amount')}</Typography>
-      </InlineTableCell>
-    ),
-    enableSorting: false,
-    meta: { type: 'numeric' },
-  }),
+  ...(isMobile
+    ? []
+    : [
+        columnHelper.accessor('price', {
+          id: YieldBreakdownColumnId.Price,
+          header: headers[YieldBreakdownColumnId.Price],
+          cell: ({ getValue }) => (
+            <InlineTableCell>
+              <Typography>{formatNumber(getValue(), 'usd.amount')}</Typography>
+            </InlineTableCell>
+          ),
+          enableSorting: false,
+          meta: { type: 'numeric' },
+        }),
+      ]),
   columnHelper.accessor('apy', {
     id: YieldBreakdownColumnId.Apy,
     header: headers[YieldBreakdownColumnId.Apy],

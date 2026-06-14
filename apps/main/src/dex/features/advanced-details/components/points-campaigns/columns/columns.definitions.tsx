@@ -9,7 +9,7 @@ import { PointsCampaignsColumnId } from './columns.enum'
 
 export type PointsCampaignsRow = TableItem & {
   source: TokenInfoProps
-  points: string
+  multiplier: string
   campaignUrl: string
 }
 
@@ -17,11 +17,11 @@ const columnHelper = createColumnHelper<PointsCampaignsRow>()
 
 const headers = {
   [PointsCampaignsColumnId.Source]: t`Source`,
-  [PointsCampaignsColumnId.Points]: t`Points`,
+  [PointsCampaignsColumnId.Multiplier]: t`Multiplier`,
   [PointsCampaignsColumnId.CampaignUrl]: t`Details`,
 } as const
 
-export const POINTS_CAMPAIGNS_COLUMNS = [
+export const createPointsCampaignsColumns = ({ isMobile }: { isMobile: boolean }) => [
   columnHelper.accessor('source', {
     id: PointsCampaignsColumnId.Source,
     header: headers[PointsCampaignsColumnId.Source],
@@ -32,9 +32,9 @@ export const POINTS_CAMPAIGNS_COLUMNS = [
     ),
     enableSorting: false,
   }),
-  columnHelper.accessor('points', {
-    id: PointsCampaignsColumnId.Points,
-    header: headers[PointsCampaignsColumnId.Points],
+  columnHelper.accessor('multiplier', {
+    id: PointsCampaignsColumnId.Multiplier,
+    header: headers[PointsCampaignsColumnId.Multiplier],
     cell: ({ getValue }) => (
       <InlineTableCell>
         <Typography>{getValue()}</Typography>
@@ -48,7 +48,7 @@ export const POINTS_CAMPAIGNS_COLUMNS = [
     header: headers[PointsCampaignsColumnId.CampaignUrl],
     cell: ({ getValue }) => (
       <InlineTableCell>
-        <ExternalLink href={getValue()} label={t`To campaign`} sx={{ justifyContent: 'end' }} />
+        <ExternalLink href={getValue()} label={isMobile ? '' : t`To campaign`} sx={{ justifyContent: 'end' }} />
       </InlineTableCell>
     ),
     enableSorting: false,
