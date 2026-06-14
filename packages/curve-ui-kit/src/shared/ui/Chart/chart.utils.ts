@@ -1,12 +1,19 @@
 import { meanBy } from 'lodash'
+import type { Theme } from '@mui/material/styles'
 import { movingAverage } from '@primitives/array.utils'
 import { TIME_FRAMES } from '@ui-kit/lib/model/time'
 import { formatNumber, type NumberFormatOptions } from '@ui-kit/utils/number'
 
 export type ChartLineDashPattern = number[]
 
+export type ChartAxisTickLabelOptions = {
+  showMinLabel?: boolean
+  showMaxLabel?: boolean
+}
+
 export const DEFAULT_CHART_SIGNIFICANT_DIGITS = 5
 const DEFAULT_CHART_ABBREVIATE_FROM = 10000
+const CHART_COLOR_INDICES = [1, 2, 3, 4, 5, 6, 7, 8] as const
 
 export const CHART_LINE_DASH_PATTERNS = {
   /** Matches lightweight-charts LineStyle.Dashed with the default 1px price line width. */
@@ -21,6 +28,48 @@ export const CHART_LINE_WIDTHS = {
   defaultPriceLine: 1,
   referenceLine: 2,
 } as const
+
+export const createChartSeriesColorScale = (theme: Theme) => CHART_COLOR_INDICES.map(i => theme.design.Chart.Lines[i])
+
+export const createChartSeriesSurfaceColorScale = (theme: Theme) =>
+  CHART_COLOR_INDICES.map(i => theme.design.Chart.Surfaces[i])
+
+export const getChartSignedValueColor = (theme: Theme, value: number | bigint) =>
+  (typeof value === 'bigint' ? value > 0n : value > 0)
+    ? theme.design.Chart.Candles.Positive
+    : theme.design.Chart.Candles.Negative
+
+/**
+ * Computes min/max axis bounds from chart values, optional reference lines, and proportional padding.
+ * `includeZero` keeps single-sign charts anchored to zero, which is useful for bars where a non-zero baseline would
+ * misrepresent magnitude, while still adding headroom on the data side.
+ */
+export const getPaddedChartAxisBounds = ({
+  includeZero = false,
+  paddingRatio,
+  referenceValues = [],
+  values,
+}: {
+  includeZero?: boolean
+  paddingRatio: number
+  referenceValues?: number[]
+  values: number[]
+}) => {
+  const boundsValues = [...values, ...referenceValues, ...(includeZero ? [0] : [])]
+  if (!boundsValues.length) return { min: 0, max: 0 }
+
+  const min = Math.min(...boundsValues)
+  const max = Math.max(...boundsValues)
+
+  if (min === max) return { min: min - 1, max: max + 1 }
+
+  const padding = (max - min) * paddingRatio
+
+  return {
+    min: includeZero && min >= 0 ? 0 : min - padding,
+    max: includeZero && max <= 0 ? 0 : max + padding,
+  }
+}
 
 /**
  * Formats numeric chart labels with a compact significant-digit default.
