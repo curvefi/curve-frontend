@@ -21,6 +21,10 @@ const extraRewardApr = z
   .transform(({ apr, ...data }) => ({ ...data, rate: apr }))
 
 const numberLike = z.union([z.number(), z.string()]).transform(value => Number(value))
+const optionalAmountString = z
+  .union([z.number(), z.string()])
+  .nullish()
+  .transform(value => value?.toString() ?? '0')
 
 /*
  * Note that collateral can be two tokens due to soft-liquidations.
@@ -215,16 +219,16 @@ const userMarketEarnings = z
     transfers_shares_from_gauge: z.string(),
     transfers_assets_to_gauge: z.string(),
     transfers_assets_from_gauge: z.string(),
-    transfers_shares_to_convex: z.string(),
-    transfers_shares_from_convex: z.string(),
-    transfers_assets_to_convex: z.string(),
-    transfers_assets_from_convex: z.string(),
+    transfers_shares_to_convex: optionalAmountString,
+    transfers_shares_from_convex: optionalAmountString,
+    transfers_assets_to_convex: optionalAmountString,
+    transfers_assets_from_convex: optionalAmountString,
     current_shares: z.string(),
     current_shares_in_gauge: z.string(),
-    current_shares_in_convex: z.string(),
+    current_shares_in_convex: optionalAmountString,
     current_assets: z.string(),
     current_assets_in_gauge: z.string(),
-    current_assets_in_convex: z.string(),
+    current_assets_in_convex: optionalAmountString,
     total_current_shares: z.string(),
     total_current_assets: z.string(),
     boost_multiplier: z.number().nullable(),
