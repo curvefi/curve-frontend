@@ -40,7 +40,7 @@ describe('Basic Access Test', () => {
     cy.visitWithoutTestConnector('dex/plasma/pools')
     cy.title(LOAD_TIMEOUT).should('equal', 'Pools - Curve')
     cy.url().should('include', '/dex/plasma/pools')
-    cy.contains(/USDT0\/wsUSDe/i, API_LOAD_TIMEOUT).should('be.visible')
+    cy.contains(/USDT0\/sUSDe/i, API_LOAD_TIMEOUT).should('be.visible')
   })
 
   it('shows 404 on /dex/:network/pools/404', () => {
