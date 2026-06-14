@@ -59,7 +59,7 @@ const createMetric = (
   data: number,
   isLoading: boolean,
   error: Error | null,
-): UserPositionSummaryMetric => ({ label, metric: q({ data, isLoading: !error && isLoading, error }) })
+): UserPositionSummaryMetric => ({ label, metric: q({ data, isLoading, error }) })
 
 const getSupplyEntry = (market: LlamaMarket, userAddress: Address | undefined): PositionQueryEntry | null => {
   if (!market.userHasPositions?.Supply || !market.vaultAddress) return null

@@ -1,13 +1,12 @@
 import type { ComponentProps } from 'react'
 import { ethAddress, zeroAddress } from 'viem'
-import type { BorrowRate, SupplyRate } from '@/llamalend/rates.types'
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import type { Chain } from '@curvefi/prices-api'
 import Box from '@mui/material/Box'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { q } from '@ui-kit/types/util'
-import type { AvailableLiquidity } from './hooks/usePageHeader'
+import type { AvailableLiquidity, BorrowRate, SupplyRate } from './hooks/usePageHeader'
 import { PageHeaderView } from './PageHeader'
 
 type PageHeaderViewProps = ComponentProps<typeof PageHeaderView>
@@ -55,15 +54,15 @@ const supplyRate: SupplyRate = {
   totalAverageMaxBoost: 4.041,
   totalAverageUserBoost: null,
   extraIncentives: [],
-  extraIncentivesTotalApy: null,
+  extraIncentivesTotalApy: 4.002,
   averageExtraIncentivesApy: 4.002,
   extraRewards: [],
 }
 
 const availableLiquidity: AvailableLiquidity = {
-  value: 12_500_000,
-  max: 30_000_000,
-  notional: 12_500_000 * 1.02, // Assuming a $1.02 USD rate for the borrow token
+  value: `${12_500_000}`,
+  max: `${30_000_000}`,
+  notional: `${12_500_000 * 1.02}`, // Assuming a $1.02 USD rate for the borrow token
 }
 
 const meta: Meta<typeof PageHeaderView> = {
@@ -169,11 +168,7 @@ export const LendMarketLoading: Story = {
       isLoading: true,
       error: null,
     }),
-    availableLiquidity: q({
-      data: { ...availableLiquidity, value: null, max: null },
-      isLoading: true,
-      error: null,
-    }),
+    availableLiquidity: q({ data: undefined, isLoading: true, error: null }),
   },
   parameters: {
     docs: {

@@ -9,15 +9,15 @@ import { Stack } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
 import { formatNumber } from '@ui-kit/utils'
 
-type TotalCollateralTooltipProps = {
-  collateralSymbol: string | null | undefined
+type TotalCollateralTooltipProps = Partial<{
+  collateralSymbol: string | null
   totalCollateral: number | null
-  borrowedSymbol: string | null | undefined
+  borrowedSymbol: string | null
   totalBorrowed: number | null
   combinedCollateralUsdValue: number | null
   collateralUsdRate: number | null
   borrowedUsdRate: number | null
-}
+}>
 
 export const TotalCollateralTooltip = ({
   collateralSymbol,

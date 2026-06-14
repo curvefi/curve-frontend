@@ -128,10 +128,7 @@ export const MarketHistoricalRatesChart = ({
     marketId,
   })
 
-  const snapshots = useLlamaSnapshot(market, blockchainId, Boolean(market && blockchainId), {
-    kind: 'timeRange',
-    timeOption,
-  })
+  const snapshots = useLlamaSnapshot({ market, blockchainId, range: { kind: 'timeRange', timeOption } })
 
   const currentLiveRate = useMemo(() => {
     const liveRate = modeConfig.getLiveRate(marketRates.data)

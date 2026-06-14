@@ -6,12 +6,17 @@ import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
 import type { SnapshotRange } from '@ui-kit/lib/model/query/time-option-validation'
 import type { LlamaMarketTemplate } from 'main/src/llamalend/llamalend.types'
 
-export function useLlamaSnapshot(
-  market: LlamaMarketTemplate | undefined | null,
-  blockchainId: Chain | undefined | null,
-  enabled: boolean,
-  range: SnapshotRange = { kind: 'timeRange', timeOption: '1M' },
-) {
+export function useLlamaSnapshot({
+  blockchainId,
+  enabled = true,
+  market,
+  range = { kind: 'timeRange', timeOption: '1M' },
+}: {
+  market: LlamaMarketTemplate | undefined | null
+  blockchainId: Chain | undefined | null
+  enabled?: boolean
+  range?: SnapshotRange
+}) {
   const isLendMarket = market instanceof LendMarketTemplate
   const controllerAddress = (isLendMarket ? market?.addresses.controller : market?.controller) as Address | undefined
   const timeOption = range.kind === 'timeRange' ? range.timeOption : undefined

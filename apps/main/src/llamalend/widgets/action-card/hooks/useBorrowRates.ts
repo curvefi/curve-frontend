@@ -39,7 +39,7 @@ export function useBorrowRates<ChainId extends IChainId>(
   },
   enabled: boolean,
 ) {
-  const snapshots = useLlamaSnapshot(market, chainId && BlockchainIds[chainId], enabled)
+  const snapshots = useLlamaSnapshot({ market, blockchainId: chainId && BlockchainIds[chainId], enabled })
   // Without `debt`, `rates`/`netBorrowApr` are disabled on purpose. `ActionInfo` shows `prevRates` as current.
   const [rates, netBorrowApr] = addNetApr(useMarketFutureRates({ chainId, marketId, debtDelta }, enabled), snapshots)
   const [prevRates, prevNetBorrowApr] = addNetApr(useMarketRates({ chainId, marketId }, enabled), snapshots)
