@@ -64,7 +64,9 @@ export const filterByMarketType = (size: [number, number], marketType: LlamaMark
 export function checkLineGraphColor(type: MarketRateType, color: string) {
   // the graphs are lazy loaded, so we need to scroll to them first before checking the color
   cy.get(`[data-testid="line-graph-${type}"]:visible`).first().scrollIntoView()
-  cy.get(`[data-testid="line-graph-${type}"] path`, LOAD_TIMEOUT).first().should('have.attr', 'stroke', color)
+  cy.get(`[data-testid="line-graph-${type}"] svg path[stroke]`, LOAD_TIMEOUT)
+    .first()
+    .should('have.attr', 'stroke', color)
 }
 
 export function checkCoinSelection(
