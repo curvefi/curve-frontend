@@ -1,10 +1,8 @@
 import { useScrvUsdRevenue } from '@/loan/entities/scrvusd-revenue.query'
 import { useScrvUsdStatistics } from '@/loan/entities/scrvusd-statistics.query'
 import { useScrvUsdSupplies } from '@/loan/entities/scrvusd-supplies.query'
-import { useScrvUsdYield } from '@/loan/entities/scrvusd-yield.query'
 import type { ChainId } from '@/loan/types/loan.types'
 import Grid from '@mui/material/Grid'
-import { useScrvUsdNewForms } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -20,9 +18,7 @@ type StatsStackProps = {
 }
 
 export const StatsStack = ({ chainId }: StatsStackProps) => {
-  const useNewForms = useScrvUsdNewForms()
-  const savingYield = useScrvUsdYield({ timeOption: '1M' }, !useNewForms)
-  const supplies = useScrvUsdSupplies({ chainId }, useNewForms)
+  const supplies = useScrvUsdSupplies({ chainId })
   const revenue = useScrvUsdRevenue({})
   return (
     <Grid
@@ -40,9 +36,7 @@ export const StatsStack = ({ chainId }: StatsStackProps) => {
         <Metric
           size="small"
           label="Total crvUSD Staked"
-          value={
-            useNewForms ? mapQuery(supplies, s => s.crvUSD) : mapQuery(savingYield, y => y?.[y.length - 1]?.assets)
-          }
+          value={mapQuery(supplies, s => s.crvUSD)}
           valueOptions={{ unit: CRVUSD_OPTION }}
           copyText={t`Copied total crvUSD staked`}
         />

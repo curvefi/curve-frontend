@@ -35,12 +35,10 @@ export const useRemoveCollateralForm = <
 >({
   market,
   network,
-  enabled,
   onPricesUpdated,
 }: {
   market: LlamaMarketTemplate | undefined
   network: BaseConfig<NetworkName, ChainId>
-  enabled: boolean
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
   const { address: userAddress } = useConnection()
@@ -75,9 +73,9 @@ export const useRemoveCollateralForm = <
     userAddress,
   })
   const { formState } = form
-  const maxRemovable = useMaxRemovableCollateral(params, enabled)
+  const maxRemovable = useMaxRemovableCollateral(params)
 
-  useCallbackSync(useRemoveCollateralPrices(params, enabled), onPricesUpdated)
+  useCallbackSync(useRemoveCollateralPrices(params), onPricesUpdated)
 
   useFormSync(form, { maxCollateral: maxRemovable.data })
 
@@ -96,7 +94,7 @@ export const useRemoveCollateralForm = <
     onSubmit: form.handleSubmit(onSubmit),
     action,
     maxRemovable,
-    positionCollateral: mapQuery(useUserState(params, enabled), d => d.collateral),
+    positionCollateral: mapQuery(useUserState(params), d => d.collateral),
     collateralToken,
     borrowToken,
     formErrors: formState.visibleErrors,

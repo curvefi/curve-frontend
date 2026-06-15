@@ -1,33 +1,21 @@
 import { useConnection } from 'wagmi'
-import { isReady, oneMonthProjectionYield, oneYearProjectionYield } from '@/loan/components/PageCrvUsdStaking/utils'
-import { useScrvUsdExchangeRate as useScrvUsdExchangeRateQuery } from '@/loan/entities/scrvusd-exchange-rate.query'
+import { oneMonthProjectionYield, oneYearProjectionYield } from '@/loan/components/PageCrvUsdStaking/utils'
+import { useScrvUsdExchangeRate } from '@/loan/entities/scrvusd-exchange-rate.query'
 import { useScrvUsdStatistics } from '@/loan/entities/scrvusd-statistics.query'
 import { useScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances.query'
-import { useStore } from '@/loan/store/useStore'
 import type { ChainId } from '@/loan/types/loan.types'
 import { Card, CardContent, CardHeader, Stack } from '@mui/material'
 import Grid from '@mui/material/Grid'
-import type { Decimal } from '@primitives/decimal.utils'
-import { useScrvUsdNewForms } from '@ui-kit/hooks/useFeatureFlags'
 import { combineQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { mapQuery, q, type QueryProp } from '@ui-kit/types/util'
+import { mapQuery } from '@ui-kit/types/util'
 import { decimal, decimalDiv, decimalMultiply } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
 const CRVUSD_OPTIONS = { symbol: 'crvUSD', position: 'suffix' as const, abbreviate: true }
-
-const useScrvUsdExchangeRate = (chainId: ChainId | undefined): QueryProp<Decimal | undefined> => {
-  const useNewForms = useScrvUsdNewForms()
-  const { fetchStatus, value: legacyValue } = useStore(state => state.scrvusd.scrvUsdExchangeRate)
-  const exchangeRate = useScrvUsdExchangeRateQuery({ chainId }, useNewForms)
-  return useNewForms
-    ? q(exchangeRate)
-    : q({ data: decimal(legacyValue), isLoading: !isReady(fetchStatus), error: null })
-}
 
 type UserPositionProps = {
   chainId: ChainId | undefined
@@ -36,7 +24,7 @@ type UserPositionProps = {
 export const UserPosition = ({ chainId }: UserPositionProps) => {
   const { address } = useConnection()
   const statistics = useScrvUsdStatistics({})
-  const scrvUsdExchangeRate = useScrvUsdExchangeRate(chainId)
+  const scrvUsdExchangeRate = useScrvUsdExchangeRate({ chainId })
   const totalScrvUsdSupply = mapQuery(statistics, ({ supply }) => decimal(supply))
   const scrvUsdApy = mapQuery(statistics, ({ apyProjected }) => decimal(apyProjected))
   const userScrvUsdBalance = mapQuery(
