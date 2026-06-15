@@ -189,7 +189,10 @@ const generateLlammaEvents = (count: number, collateralToken: Token, borrowToken
 const DexPoolActivityComponent = () => {
   const tradesData = useMemo(() => generatePoolTrades(20), [])
   const liquidityData = useMemo(() => generatePoolLiquidity(15), [])
-  const liquidityColumns = useMemo(() => createPoolLiquidityColumns({ poolTokens: POOL_TOKENS }), [])
+  const liquidityColumns = useMemo(
+    () => createPoolLiquidityColumns({ blockchainId: 'ethereum', poolTokens: POOL_TOKENS }),
+    [],
+  )
 
   const tradesTable = useTable({
     data: tradesData,
