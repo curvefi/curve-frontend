@@ -25,6 +25,7 @@ export const POOL_TYPE_FILTERS = [
 ] satisfies { key: PoolType; label: string }[]
 
 export type PoolListPoolType = (typeof POOL_TYPE_FILTERS)[number]['key']
+export type PoolListFilter = (typeof POOL_TYPE_FILTERS)[number]
 
 export const POOL_TYPES = POOL_TYPE_FILTERS.map(({ key }) => key)
 

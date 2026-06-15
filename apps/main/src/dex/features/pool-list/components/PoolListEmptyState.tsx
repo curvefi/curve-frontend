@@ -3,7 +3,7 @@ import { Box } from '@ui/Box'
 import { Button } from '@ui/Button'
 import { ExternalLink } from '@ui/Link/ExternalLink'
 import { Trans } from '@ui-kit/lib/i18n'
-import type { PoolListPoolType } from '../hooks/usePoolListUrlState'
+import type { PoolListFilter } from '../hooks/usePoolListUrlState'
 
 enum ERROR {
   api = 'api',
@@ -12,15 +12,17 @@ enum ERROR {
 }
 
 type Props = {
-  poolType: PoolListPoolType | undefined
+  poolType: PoolListFilter['key'] | undefined
+  poolTypeFilters: readonly PoolListFilter[]
   resetFilters: () => void
   searchText: string
   isError?: boolean
 }
 
-export const PoolListEmptyState = ({ poolType, resetFilters, searchText, isError }: Props) => {
+export const PoolListEmptyState = ({ poolType, poolTypeFilters, resetFilters, searchText, isError }: Props) => {
   const errorKey = isError ? ERROR.api : searchText ? ERROR.search : poolType ? ERROR.filter : undefined
-  const errorSearchedValue = errorKey === ERROR.search ? searchText : errorKey === ERROR.filter ? poolType : undefined
+  const selectedPoolTypeLabel = poolTypeFilters.find(({ key }) => key === poolType)?.label
+  const errorSearchedValue = errorKey === ERROR.search ? searchText : errorKey === ERROR.filter ? selectedPoolTypeLabel : undefined
 
   return errorKey === ERROR.api ? (
     <Box flex flexJustifyContent="center">
