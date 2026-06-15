@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react'
 import { usePoolList } from '@/dex/queries/pool-list.query'
-import { getLocalPoolsBlacklist } from '@/dex/queries/pools-blacklist.query'
 import type { NetworkConfig } from '@/dex/types/main.types'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
@@ -20,7 +19,7 @@ import { PoolListSortDrawer } from './drawers/PoolListSortDrawer'
 import { POOL_LIST_PAGE_SIZE, usePoolListUrlState } from './hooks/usePoolListUrlState'
 import { usePoolListUserPositionOptions } from './hooks/usePoolListUserPositionOptions'
 import { usePoolListVisibilitySettings } from './hooks/usePoolListVisibilitySettings'
-import { getPoolListItem, normalizeAddress } from './poolList.utils'
+import { getPoolListItem } from './poolList.utils'
 
 const LOCAL_STORAGE_KEY = 'dex-pool-list'
 const EMPTY: never[] = []
@@ -62,19 +61,10 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
     sortDirection,
   })
   const loading = isPending || isPlaceholderData
-  /**
-   * the prices v2 pool-list endpoint already applies the getPoolFilters blacklist
-   *  upstream so we only need to apply the local repo blacklist
-   */
-  const localBlacklist = useMemo(() => new Set(getLocalPoolsBlacklist(network.id).map(normalizeAddress)), [network.id])
-  const pools = useMemo(
-    () => poolList?.pools.filter(({ address }) => !localBlacklist.has(normalizeAddress(address))) ?? EMPTY,
-    [localBlacklist, poolList?.pools],
-  )
   const apiResultCount = isPlaceholderData ? undefined : poolList?.count
   const data = useMemo(
-    () => pools.map(pool => getPoolListItem(network, pool, getUserPositionOptions(pool.address))),
-    [getUserPositionOptions, network, pools],
+    () => poolList?.pools.map(pool => getPoolListItem(network, pool, getUserPositionOptions(pool.address))) ?? EMPTY,
+    [getUserPositionOptions, network, poolList?.pools],
   )
   const [expanded, setExpanded] = useState<ExpandedState>({})
   const { columnSettings, columnVisibility, toggleVisibility } = usePoolListVisibilitySettings(LOCAL_STORAGE_KEY, {
