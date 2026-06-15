@@ -42,6 +42,7 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
+import { logSuccess } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useEstimateGas } from '@ui-kit/lib/model/entities/gas-info'
@@ -99,12 +100,10 @@ export const QuickSwap = ({
   const { data: networks } = useNetworks()
   const network = (chainId && networks[chainId]) || null
   const {
-    data: routerBlacklist,
-    isLoading: routerBlacklistLoading,
-    error: routerBlacklistError,
-  } = usePoolsBlacklist({
-    blockchainId: network?.id as Chain,
-  })
+    data: blacklist,
+    isLoading: isBlacklistLoading,
+    error: blacklistError,
+  } = usePoolsBlacklist({ blockchainId: network?.id as Chain })
 
   const { data: apiRoutes, isLoading: apiRoutesLoading } = useRouterApi(
     { chainId, userAddress, searchedParams },
@@ -132,8 +131,11 @@ export const QuickSwap = ({
   const isReady = pageLoaded && isPageVisible
 
   useEffect(() => {
-    if (curve && userAddress && routerBlacklist) curve.router.setBlacklist(routerBlacklist)
-  }, [curve, routerBlacklist, userAddress])
+    if (curve && userAddress && blacklist) {
+      logSuccess('setBlacklist', blacklist)
+      curve.router.setBlacklist(blacklist)
+    }
+  }, [curve, blacklist, userAddress])
 
   const tokens = useMemo(
     () =>
@@ -197,7 +199,7 @@ export const QuickSwap = ({
 
       void setFormValues(
         config,
-        pageLoaded && !routerBlacklistLoading ? curve : null,
+        pageLoaded && !isBlacklistLoading ? curve : null,
         updatedFormValues ?? {},
         searchedParams,
         maxSlippage,
@@ -206,7 +208,7 @@ export const QuickSwap = ({
         isRefetch,
       )
     },
-    [config, curve, routerBlacklistLoading, maxSlippage, pageLoaded, searchedParams, setFormValues],
+    [config, curve, isBlacklistLoading, maxSlippage, pageLoaded, searchedParams, setFormValues],
   )
 
   const handleBtnClickSwap = useCallback(
@@ -453,7 +455,7 @@ export const QuickSwap = ({
   const routesAndOutputLoading =
     !pageLoaded ||
     (userAddress
-      ? routerBlacklistLoading || _isRoutesAndOutputLoading(rpcRoutesAndOutput, formValues, formStatus)
+      ? isBlacklistLoading || _isRoutesAndOutputLoading(rpcRoutesAndOutput, formValues, formStatus)
       : apiRoutesLoading)
 
   const setFromAmount = useCallback(
@@ -612,8 +614,8 @@ export const QuickSwap = ({
       {/* alerts */}
       <RouterSwapAlerts
         formStatus={
-          userAddress && routerBlacklistError && !formStatus.error
-            ? { ...formStatus, error: routerBlacklistError.message }
+          userAddress && blacklistError && !formStatus.error
+            ? { ...formStatus, error: blacklistError.message }
             : formStatus
         }
         formValues={formValues}
