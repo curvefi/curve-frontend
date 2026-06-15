@@ -16,10 +16,12 @@ import type {
 import { useNetworks } from '@/dex/entities/networks'
 import { useRouterApi } from '@/dex/hooks/useRouterApi'
 import { useTokensNameMapper } from '@/dex/hooks/useTokensNameMapper'
+import { usePoolsBlacklist } from '@/dex/queries/pools-blacklist.query'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId, CurveApi, type NetworkUrlParams, PoolDataMapper, TokensMapper } from '@/dex/types/main.types'
 import { toTokenOption } from '@/dex/utils'
 import { getSlippageImpact } from '@/dex/utils/utilsSwap'
+import type { Chain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -96,6 +98,13 @@ export const QuickSwap = ({
   const setFormValues = useStore(state => state.quickSwap.setFormValues)
   const { data: networks } = useNetworks()
   const network = (chainId && networks[chainId]) || null
+  const {
+    data: routerBlacklist,
+    isLoading: routerBlacklistLoading,
+    error: routerBlacklistError,
+  } = usePoolsBlacklist({
+    blockchainId: network?.id as Chain,
+  })
 
   const { data: apiRoutes, isLoading: apiRoutesLoading } = useRouterApi(
     { chainId, userAddress, searchedParams },
@@ -121,6 +130,10 @@ export const QuickSwap = ({
   const [isOpenToToken, openModalToToken, closeModalToToken] = useSwitch()
 
   const isReady = pageLoaded && isPageVisible
+
+  useEffect(() => {
+    if (curve && userAddress && routerBlacklist) curve.router.setBlacklist(routerBlacklist)
+  }, [curve, routerBlacklist, userAddress])
 
   const tokens = useMemo(
     () =>
@@ -184,7 +197,7 @@ export const QuickSwap = ({
 
       void setFormValues(
         config,
-        pageLoaded ? curve : null,
+        pageLoaded && !routerBlacklistLoading ? curve : null,
         updatedFormValues ?? {},
         searchedParams,
         maxSlippage,
@@ -193,7 +206,7 @@ export const QuickSwap = ({
         isRefetch,
       )
     },
-    [config, curve, maxSlippage, pageLoaded, searchedParams, setFormValues],
+    [config, curve, routerBlacklistLoading, maxSlippage, pageLoaded, searchedParams, setFormValues],
   )
 
   const handleBtnClickSwap = useCallback(
@@ -439,7 +452,9 @@ export const QuickSwap = ({
   const isDisable = formStatus.formProcessing
   const routesAndOutputLoading =
     !pageLoaded ||
-    (userAddress ? _isRoutesAndOutputLoading(rpcRoutesAndOutput, formValues, formStatus) : apiRoutesLoading)
+    (userAddress
+      ? routerBlacklistLoading || _isRoutesAndOutputLoading(rpcRoutesAndOutput, formValues, formStatus)
+      : apiRoutesLoading)
 
   const setFromAmount = useCallback(
     (fromAmount?: Decimal) => updateFormValues({ isFrom: true, fromAmount: fromAmount ?? '', toAmount: '' }),
@@ -596,7 +611,11 @@ export const QuickSwap = ({
       </Stack>
       {/* alerts */}
       <RouterSwapAlerts
-        formStatus={formStatus}
+        formStatus={
+          userAddress && routerBlacklistError && !formStatus.error
+            ? { ...formStatus, error: routerBlacklistError.message }
+            : formStatus
+        }
         formValues={formValues}
         maxSlippage={maxSlippage}
         isHighImpact={slippageImpact?.isHighImpact}
