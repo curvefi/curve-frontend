@@ -1,76 +1,45 @@
-import { useConnection } from 'wagmi'
-import { NetworkConfig } from '@/dex/types/main.types'
 import Grid from '@mui/material/Grid'
 import { notFalsy } from '@primitives/objects.utils'
-import { t } from '@ui-kit/lib/i18n'
 import { GridChip } from '@ui-kit/shared/ui/DataTable/chips/GridChip'
-import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { PoolColumnId } from '../columns'
-import type { PoolTag } from '../types'
+import type { PoolListPoolType } from '../hooks/usePoolListUrlState'
 
 const { Spacing } = SizesAndSpaces
 
-type PoolFilterChip = { key: string; label: string }
+type PoolListFilterChip = { key: PoolListPoolType; label: string }
 
-const getFilterGroups = ({ isConnected }: { isConnected: boolean }) =>
-  [
-    [
-      { key: 'usd' as const, label: 'USD' },
-      { key: 'btc' as const, label: 'BTC' },
-      { key: 'kava' as const, label: 'KAVA' },
-      { key: 'eth' as const, label: 'ETH' },
-      { key: 'crvusd' as const, label: t`crvUSD` },
-      { key: 'tricrypto' as const, label: t`Tricrypto` },
-      { key: 'crypto' as const, label: t`Crypto` },
-      { key: 'stableng' as const, label: t`Stable NG` },
-      { key: 'cross-chain' as const, label: t`Cross-chain` },
-    ],
-    ...(isConnected ? [[{ key: 'user' as const, label: t`My Pools` }]] : []),
-  ] satisfies PoolFilterChip[][]
-
-export type PoolListFilterChipsProps = FilterProps<PoolColumnId> & {
-  filterGroups?: PoolFilterChip[][]
+export type PoolListFilterChipsProps = {
+  poolType: PoolListPoolType | undefined
+  poolTypeFilters: readonly PoolListFilterChip[]
   resultCount: number | undefined
-  poolFilters: NetworkConfig['poolFilters'] | readonly string[]
+  setPoolType: (poolType: PoolListPoolType | null) => void
 }
 
 export const PoolListFilterChips = ({
-  filterGroups,
+  poolType,
+  poolTypeFilters,
   resultCount,
-  poolFilters,
-  setColumnFilter,
-  columnFiltersById,
-}: PoolListFilterChipsProps) => {
-  const filterKey = columnFiltersById[PoolColumnId.PoolTags] as PoolTag | undefined
-  const { isConnected } = useConnection()
-  const groups = filterGroups ?? getFilterGroups({ isConnected })
-  return (
-    <Grid
-      container
-      columnSpacing={Spacing.xs}
-      rowSpacing={Spacing.md}
-      direction="row"
-      size={{ mobile: 12, desktop: 'auto' }}
-      sx={{ justifyContent: 'flex-end' }}
-    >
-      {groups.map(group => (
-        <Grid container key={group[0].key} size={{ mobile: 12, tablet: 'auto' }} spacing={1}>
-          {group.map(
-            ({ key, label }) =>
-              poolFilters.includes(key) && (
-                <GridChip
-                  size={{ mobile: 6, tablet: 'auto' }}
-                  key={key}
-                  data-testid={`filter-chip-${key}`}
-                  label={notFalsy(label, filterKey == key && resultCount != null && ` (${resultCount})`).join(' ')}
-                  selected={filterKey == key}
-                  toggle={() => setColumnFilter(PoolColumnId.PoolTags, filterKey === key ? null : key)}
-                />
-              ),
-          )}
-        </Grid>
+  setPoolType,
+}: PoolListFilterChipsProps) => (
+  <Grid
+    container
+    columnSpacing={Spacing.xs}
+    rowSpacing={Spacing.md}
+    direction="row"
+    size={{ mobile: 12, desktop: 'auto' }}
+    sx={{ justifyContent: 'flex-end' }}
+  >
+    <Grid container size={{ mobile: 12, tablet: 'auto' }} spacing={1}>
+      {poolTypeFilters.map(({ key, label }) => (
+        <GridChip
+          size={{ mobile: 6, tablet: 'auto' }}
+          key={key}
+          data-testid={`filter-chip-${key}`}
+          label={notFalsy(label, poolType === key && resultCount != null && ` (${resultCount})`).join(' ')}
+          selected={poolType === key}
+          toggle={() => setPoolType(poolType === key ? null : key)}
+        />
       ))}
     </Grid>
-  )
-}
+  </Grid>
+)

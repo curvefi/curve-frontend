@@ -6,31 +6,26 @@ import { LegacyPoolListTable } from './LegacyPoolListTable'
 import { PoolListTable } from './PoolListTable'
 
 export const Page = () => {
+  const network = useNetworkFromUrl()
   const isBetaPoolListEnabled = useDexPoolListV2()
-
-  return isBetaPoolListEnabled ? <BetaPoolListPage /> : <StablePoolListPage />
-}
-
-const StablePoolListPage = () => {
-  const network = useNetworkFromUrl()
-
-  return <ListPageWrapper>{network && <LegacyPoolListTable network={network} />}</ListPageWrapper>
-}
-
-const BetaPoolListPage = () => {
-  const network = useNetworkFromUrl()
-  const { data: supportedPoolChains, isLoading } = usePoolChains({})
+  const { data: supportedPoolChains = [], isLoading } = usePoolChains({}, isBetaPoolListEnabled && !!network)
   /**
    * Prices API v2 does not cover every full DEX network that's supplied by the curve-api.
    * Unsupported: Moonbeam, Kava, Avalanche, Celo, Aurora, X-Layer, zkSync, Mantle.
    */
-  const isSupported = supportedPoolChains?.some(({ chainId }) => chainId === network?.chainId)
+  const isSupported = supportedPoolChains.some(({ chainId }) => chainId === network?.chainId)
+
+  if (!network || (isBetaPoolListEnabled && isLoading)) {
+    return <ListPageWrapper>{null}</ListPageWrapper>
+  }
 
   return (
     <ListPageWrapper>
-      {network &&
-        !isLoading &&
-        (isSupported ? <PoolListTable network={network} /> : <LegacyPoolListTable network={network} />)}
+      {isBetaPoolListEnabled && isSupported ? (
+        <PoolListTable network={network} />
+      ) : (
+        <LegacyPoolListTable network={network} />
+      )}
     </ListPageWrapper>
   )
 }

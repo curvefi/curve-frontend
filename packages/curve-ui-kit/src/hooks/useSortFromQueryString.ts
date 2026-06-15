@@ -1,22 +1,43 @@
 import { useCallback, useMemo } from 'react'
-import { OnChangeFn, SortingState } from '@tanstack/react-table'
+import type { OnChangeFn, SortingState } from '@tanstack/react-table'
 import { useSearchNavigate, useSearchParams } from '@ui-kit/hooks/router'
 
-export function useSortFromQueryString(defaultSort: SortingState, fieldName = 'sort') {
+type UseSortFromQueryStringOptions = {
+  fieldName?: string
+  resetPageField?: string
+  normalizeSort?: (sorting: SortingState) => SortingState
+}
+
+export function useSortFromQueryString(
+  defaultSort: SortingState,
+  fieldNameOrOptions: string | UseSortFromQueryStringOptions = 'sort',
+) {
+  const {
+    fieldName = 'sort',
+    resetPageField,
+    normalizeSort,
+  } = typeof fieldNameOrOptions === 'string' ? { fieldName: fieldNameOrOptions } : fieldNameOrOptions
   const searchParams = useSearchParams()
   const searchNavigate = useSearchNavigate(searchParams)
-  const sort = useMemo(() => parseSort(searchParams, defaultSort, fieldName), [defaultSort, fieldName, searchParams])
+  const sort = useMemo(() => {
+    const parsedSort = parseSort(searchParams, defaultSort, fieldName)
+
+    return normalizeSort ? normalizeSort(parsedSort) : parsedSort
+  }, [defaultSort, fieldName, normalizeSort, searchParams])
   const onChange: OnChangeFn<SortingState> = useCallback(
-    newSort =>
+    newSort => {
+      const sorting = typeof newSort == 'function' ? newSort(sort) : newSort
+      const nextSort = normalizeSort ? normalizeSort(sorting) : sorting
+
       searchNavigate(
         {
-          [fieldName]: (typeof newSort == 'function' ? newSort(sort) : newSort).map(
-            ({ id, desc }) => `${desc ? '-' : ''}${id}`,
-          ),
+          [fieldName]: nextSort.map(({ id, desc }) => `${desc ? '-' : ''}${id}`),
+          ...(resetPageField && { [resetPageField]: null }),
         },
         { replace: true },
-      ),
-    [fieldName, searchNavigate, sort],
+      )
+    },
+    [fieldName, normalizeSort, resetPageField, searchNavigate, sort],
   )
   return [sort, onChange] as const
 }
