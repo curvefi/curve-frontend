@@ -8,8 +8,8 @@ import Stack from '@mui/material/Stack'
 import TableCell from '@mui/material/TableCell'
 import { joinButtonText } from '@primitives/string.utils'
 import { t } from '@ui-kit/lib/i18n'
+import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
-import { LegacyDataTable } from '@ui-kit/shared/ui/DataTable/LegacyDataTable'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
@@ -68,14 +68,14 @@ export const ClosePositionForm = ({
         />
       }
     >
-      <LegacyDataTable<ClosePositionRow>
+      <DataTable<ClosePositionRow>
         table={table}
         emptyState={
           <EmptyStateRow table={table}>
             {error ? t`Could not load position data: ${error.message}` : t`Could not load position close data`}
           </EmptyStateRow>
         }
-        loading={isLoading}
+        isLoading={isLoading}
         verticalAlign="top"
         hideHeader
         footerRow={
