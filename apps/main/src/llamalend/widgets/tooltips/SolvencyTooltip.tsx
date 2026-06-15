@@ -21,8 +21,9 @@ const descriptions: Record<SolvencyTooltipType, string[]> = {
 
 export const SolvencyTooltip = ({ type }: { type: SolvencyTooltipType }) => (
   <TooltipWrapper>
-    {descriptions[type].map(description => (
-      <TooltipDescription key={type} text={description} />
+    {descriptions[type].map((description, index) => (
+      // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
+      <TooltipDescription key={`${type}-${index}`} text={description} />
     ))}
   </TooltipWrapper>
 )

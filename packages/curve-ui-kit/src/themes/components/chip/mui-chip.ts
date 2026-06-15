@@ -34,11 +34,15 @@ type ClickableChipColor = Extract<NonNullable<ChipProps['color']>, 'selected' | 
 
 const isBadgeVariant = ({ ownerState }: ChipVariantProps) => !ownerState.clickable
 
-const createColor = (
-  color: keyof DesignSystem['Badges']['Fill'],
-  Badges: DesignSystem['Badges'],
-  borderWidth: CSSObject['borderWidth'] = Badge.BorderWidth,
-) => ({
+const createColor = ({
+  color,
+  Badges,
+  borderWidth = Badge.BorderWidth,
+}: {
+  color: keyof DesignSystem['Badges']['Fill']
+  Badges: DesignSystem['Badges']
+  borderWidth?: CSSObject['borderWidth']
+}) => ({
   style: {
     backgroundColor: Badges.Fill[color],
     color: Badges.Label[color],
@@ -248,12 +252,12 @@ export const defineMuiChip = (
     },
 
     // Badge colors mirror Figma's Badges/LabelIcon tokens while keeping the runtime key as Badges.Label.
-    createColor('Default', Badges),
-    createColor('Active', Badges, 0),
-    createColor('Alert', Badges, 0),
-    createColor('Highlight', Badges),
-    createColor('Warning', Badges, 0),
-    createColor('Accent', Badges, 0),
+    createColor({ color: 'Default', Badges }),
+    createColor({ color: 'Active', Badges, borderWidth: 0 }),
+    createColor({ color: 'Alert', Badges, borderWidth: 0 }),
+    createColor({ color: 'Highlight', Badges }),
+    createColor({ color: 'Warning', Badges, borderWidth: 0 }),
+    createColor({ color: 'Accent', Badges, borderWidth: 0 }),
 
     ...buildClickableChipVariantStyle({ TextColors, Chips }).flatMap(({ variant, base, colors }) => [
       {
