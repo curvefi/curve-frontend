@@ -1,4 +1,5 @@
-import { type RefObject, useEffect, useRef } from 'react'
+import { type RefObject, useEffect } from 'react'
+import { useLatestValueRef } from '@ui-kit/hooks/useLatestValueRef'
 import type { TableItem, TanstackTable } from '../data-table.utils'
 
 const scrollToTableTop = (tableTopRef: RefObject<HTMLElement | null>) => {
@@ -28,12 +29,9 @@ export function useScrollToTopOnPageChange<T extends TableItem>(
   tableTopRef: RefObject<HTMLElement | null>,
 ) {
   const { pageIndex } = table.getState().pagination
-  const lastPageIndexRef = useRef(pageIndex)
+  const lastPageIndexRef = useLatestValueRef(pageIndex)
   useEffect(() => {
-    // Avoid scrolling on the initial render, only scroll after the user changes pages.
-    if (lastPageIndexRef.current !== pageIndex) {
-      scrollToTableTop(tableTopRef)
-    }
-    lastPageIndexRef.current = pageIndex
+    // scroll after the user changes pages
+    if (lastPageIndexRef.current !== pageIndex) scrollToTableTop(tableTopRef)
   }, [pageIndex, tableTopRef])
 }
