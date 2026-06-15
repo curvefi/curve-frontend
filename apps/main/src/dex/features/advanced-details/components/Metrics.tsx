@@ -1,7 +1,7 @@
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
 import Grid from '@mui/material/Grid'
-import { maybe, maybes } from '@primitives/objects.utils'
+import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -24,7 +24,7 @@ export const Metrics = ({
   poolId: string
   pricesApiPoolData?: PricesApiPool
 }) => {
-  const { tvl, volume, gaugeTotalSupply, totalStakedPercent } = useMetrics({
+  const { liquidityUtilization, gaugeTotalSupply, totalStakedPercent } = useMetrics({
     chainId,
     poolDataCacheOrApi,
     poolId,
@@ -36,21 +36,8 @@ export const Metrics = ({
       <Grid size={METRIC_GRID_SIZE}>
         <Metric
           size="medium"
-          label={t`24h volume`}
-          value={constQ(volume)}
-          valueOptions={{ unit: 'dollar', abbreviate: true }}
-        />
-      </Grid>
-
-      <Grid size={METRIC_GRID_SIZE}>
-        <Metric size="medium" label={t`TVL`} value={constQ(tvl)} valueOptions={{ unit: 'dollar', abbreviate: true }} />
-      </Grid>
-
-      <Grid size={METRIC_GRID_SIZE}>
-        <Metric
-          size="medium"
           label={t`Liquidity utilization`}
-          value={constQ(maybes([tvl, volume], ([tvl, volume]) => tvl && (volume / tvl) * 100))}
+          value={constQ(liquidityUtilization)}
           valueOptions={{ unit: 'percentage', abbreviate: false }}
         />
       </Grid>

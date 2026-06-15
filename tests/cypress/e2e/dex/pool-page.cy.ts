@@ -9,7 +9,7 @@ describe('Pool page', () => {
     'ethereum/pools/factory-tricrypto-0',
     'ethereum/pools/factory-stable-ng-561',
     'arbitrum/pools/2pool',
-    'corn/pools/factory-stable-ng-0',
+    'plasma/pools/0x1e8d78e9b3f0152d54d32904b7933f1cfe439df1/deposit',
   )}/deposit`
   const slippageType: SlippageType = path.includes('tricrypto') ? 'crypto' : 'stable'
   const slippageConfig = SLIPPAGE[slippageType]
