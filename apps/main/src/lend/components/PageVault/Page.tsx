@@ -8,12 +8,12 @@ import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/utils
 import { SupplyPositionDetails } from '@/llamalend/features/market-position-details'
 import { useUserShares } from '@/llamalend/queries/user/user-balances.query'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
-import { PageHeader } from '@/llamalend/widgets/page-header'
+import { MarketPageHeader } from '@/llamalend/widgets/page-header'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
-import { MarketRateType } from '@ui-kit/types/market'
+import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 import { useLendMarket } from '../../hooks/useLendMarket'
 import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
@@ -22,7 +22,7 @@ export const Page = () => {
   const params = useParams<MarketUrlParams>()
   const { rMarket, rChainId: chainId } = parseMarketParams(params)
   const { llamaApi: api = null, provider, isHydrated } = useCurve()
-  const { data: market, isSuccess } = useLendMarket(chainId, rMarket)
+  const { data: market, isLoading: isMarketLoading, isSuccess } = useLendMarket(chainId, rMarket)
   const network = networks[chainId]
   const { address: userAddress } = useConnection()
 
@@ -49,12 +49,13 @@ export const Page = () => {
     <DetailPageLayout
       formTabs={chainId && <VaultTabs {...pageProps} params={params} />}
       header={
-        <PageHeader
+        <MarketPageHeader
+          blockchainId={network.id}
           chainId={chainId}
           marketId={market?.id}
-          isLoading={!isHydrated}
+          isLoading={!isHydrated || isMarketLoading}
           market={market}
-          blockchainId={network.id}
+          marketType={LlamaMarketType.Lend}
         />
       }
     >

@@ -12,7 +12,7 @@ import { useUserCollateralEvents } from '@/llamalend/features/user-position-hist
 import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
-import { PageHeader } from '@/llamalend/widgets/page-header'
+import { MarketPageHeader } from '@/llamalend/widgets/page-header'
 import { isPricesApiChain } from '@curvefi/prices-api'
 import type { Decimal } from '@primitives/decimal.utils'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
@@ -28,7 +28,7 @@ import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
 export const LendMarketPage = () => {
   const params = useParams<MarketUrlParams>()
   const { rMarket, rChainId: chainId } = parseMarketParams(params)
-  const { data: market, isSuccess } = useLendMarket(chainId, rMarket)
+  const { data: market, isLoading: isMarketLoading, isSuccess } = useLendMarket(chainId, rMarket)
   const { isHydrated, llamaApi: api = null, provider } = useCurve()
   const marketId = market?.id ?? '' // todo: use market?.id directly everywhere since we pass the market too!
   const { address: userAddress } = useConnection()
@@ -86,12 +86,13 @@ export const LendMarketPage = () => {
         ))
       }
       header={
-        <PageHeader
+        <MarketPageHeader
+          blockchainId={network.id}
           chainId={chainId}
           marketId={marketId}
-          isLoading={!isHydrated}
+          isLoading={!isHydrated || isMarketLoading}
           market={market}
-          blockchainId={network.id}
+          marketType={LlamaMarketType.Lend}
         />
       }
     >

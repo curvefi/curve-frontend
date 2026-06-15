@@ -39,5 +39,5 @@ export const useLLv2 = () => {
 /** New market list and search layout */
 export const useNewMarketListLayout = useStableChannel
 
-/** New advanced details card for pool page */
-export const usePoolAdvancedDetails = useBetaChannel
+/** Fresh pool page experience */
+export const usePoolFreshup = useBetaChannel
