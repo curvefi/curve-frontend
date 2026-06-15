@@ -100,7 +100,7 @@ export const SmallScreenCard = ({
             <GaugeWeightHistoryChart gaugeAddress={gaugeData.address as Address} />
           </ChartWrapper>
           <GaugeDetailsSm gaugeData={gaugeData} userGaugeWeightVoteData={userGaugeWeightVoteData} />
-          <Box flex flexGap={'var(--spacing-3)'} flexAlignItems={'center'} margin={'var(--spacing-2) auto'}>
+          <Box flex flexGap="var(--spacing-3)" flexAlignItems="center" margin="var(--spacing-2) auto">
             <InternalLinkButton
               to={`${DAO_ROUTES.PAGE_GAUGES}/${gaugeData.effective_address}`}
             >{t`VISIT GAUGE`}</InternalLinkButton>

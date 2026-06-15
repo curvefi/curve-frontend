@@ -9,7 +9,7 @@ import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import {
   getAmmAddress,
   getControllerAddress,
-  getLlamaMarketVersion,
+  getZapAddress,
   getMarketType,
   getTokens,
   isRouterRequired,
@@ -195,11 +195,11 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
       },
       getRouteGasOptions: (routeId: string | undefined) => getBorrowMoreGasEstimateQueryOptions({ ...params, routeId }),
       networks,
-      version: market && getLlamaMarketVersion(market),
+      zapAddress: market && getZapAddress(market),
     }),
     max: useMaxBorrowMoreValues({ params, form, market, collateralEvents }, enabled),
     isLeverageEnabled,
     leverage: useBorrowMoreLeverage(params),
-    version: market && getLlamaMarketVersion(market),
+    zapAddress: market && getZapAddress(market),
   }
 }

@@ -24,7 +24,7 @@ export const ClaimActionInfoList = <ChainId extends IChainId>({
   isOpen,
 }: ClaimActionInfoListProps<ChainId>) => (
   <ActionInfoCollapse isOpen={isOpen} testId="claim-action-info-list">
-    <Stack sx={{ ...ACTION_INFO_GROUP_SX }}>
+    <Stack sx={ACTION_INFO_GROUP_SX}>
       <ActionInfoGasEstimate
         gas={q(useClaimRewardsEstimateGas(networks, params))}
         label={t`Claim other rewards tx cost`}

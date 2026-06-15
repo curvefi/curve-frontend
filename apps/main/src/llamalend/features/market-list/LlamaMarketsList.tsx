@@ -13,7 +13,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q } from '@ui-kit/types/util'
 import { ListPageWrapper } from '@ui-kit/widgets/ListPageWrapper'
 import {
-  invalidateAllUserLendingSupplies,
+  invalidateUserLendingSupplies,
   invalidateAllUserLendingVaults,
   invalidateLendingVaults,
 } from '../../queries/market-list/lending-vaults'
@@ -46,7 +46,7 @@ const useOnReload = ({ address: userAddress, isFetching }: { address?: Address; 
       invalidateMintMarkets({}),
       invalidateBadDebtMarkets(),
       invalidateAllUserLendingVaults(userAddress),
-      invalidateAllUserLendingSupplies(userAddress),
+      invalidateUserLendingSupplies({ userAddress }),
       invalidateAllUserMintMarkets(userAddress),
     ])
   }, [isReloading, userAddress])

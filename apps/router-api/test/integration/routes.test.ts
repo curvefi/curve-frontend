@@ -16,11 +16,12 @@ const CHAIN_ID_ARBITRUM = '42161'
 const ARBITRUM_USDC = '0xaf88d065e77c8cc2239327c5edb3a432268e5831'
 const ARBITRUM_USDT = '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9'
 
-const CHAIN_ID_CORN = '21000000'
-const CORN = '0x44f49ff0da2498bcb1d3dc7c0f999578f67fd8c6'
-const CORN_WBTCN = '0xda5ddd7270381a7c2717ad10d1c0ecb19e3cdfb2'
-const BTC_DECIMALS = 18
+const CHAIN_ID_PLASMA = '9745'
+const CORN_USDT0 = '0xb8ce59fc3717ada4c02eadf9682a9e934f625ebb'
+const CORN_SUSDE = '0x211cc4dd073734da055fbf44a2b4667d5e5fe5d2'
+
 const USD_DECIMALS = 6
+const USDT0_DECIMALS = 6
 
 type QueryString = { [P in keyof RoutesQuery]?: string | string[] }
 type SuccessCase = { query: QueryString; expectedRoutes?: number }
@@ -48,8 +49,13 @@ const successCasesByProvider: PartialRecord<RouteProvider, Record<string, Succes
         amountOut: [toWei('1000', USD_DECIMALS)],
       },
     },
-    'corn amountIn': {
-      query: { chainId: CHAIN_ID_CORN, tokenIn: [CORN], tokenOut: [CORN_WBTCN], amountIn: [toWei('10', BTC_DECIMALS)] },
+    'plasma amountIn': {
+      query: {
+        chainId: CHAIN_ID_PLASMA,
+        tokenIn: [CORN_USDT0],
+        tokenOut: [CORN_SUSDE],
+        amountIn: [toWei('10', USDT0_DECIMALS)],
+      },
     },
   },
   enso: {

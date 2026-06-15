@@ -10,7 +10,10 @@ const MintMarketPage = lazyRouteComponent(
   'MintMarketPage',
 )
 const PegKeepersPage = lazyRouteComponent(() => import('@/loan/components/PagePegKeepers'), 'Page')
-const CrvStaking = lazyRouteComponent(() => import('@/loan/components/PageCrvUsdStaking/Page'), 'Page')
+const CrvStaking = lazyRouteComponent(
+  () => import('../loan/components/PageCrvUsdStaking/CrvUsdStakingPage'),
+  'CrvUsdStakingPage',
+)
 
 const crvusdLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,

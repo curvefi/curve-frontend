@@ -126,7 +126,6 @@ const LendLoanOhlcChartHeader = () => {
 
 const ScrvUsdStatisticsHeaderExample = () => {
   const [activeChart, setActiveChart] = useState<StatisticsChart>('savingsRate')
-  const [isExpanded, setIsExpanded] = useState(false)
 
   return (
     <Box sx={{ width: exampleWidths.normalWidth }}>
@@ -136,10 +135,6 @@ const ScrvUsdStatisticsHeaderExample = () => {
           selections: statisticsSelections,
           activeSelection: activeChart,
           setActiveSelection: (value: StatisticsChart) => setActiveChart(value),
-        }}
-        expandChart={{
-          isExpanded,
-          toggleChartExpanded: () => setIsExpanded(prev => !prev),
         }}
       />
     </Box>
@@ -158,7 +153,6 @@ const ScrvUsdStatisticsHeaderExampleNarrow = () => {
           activeSelection: activeChart,
           setActiveSelection: (value: StatisticsChart) => setActiveChart(value),
         }}
-        expandChart={undefined}
       />
     </Box>
   )
@@ -208,8 +202,7 @@ export const ButtonsGroupVariantScrvUsdStatisticsHeader: Story = {
   parameters: {
     docs: {
       description: {
-        story:
-          'Matches the scrvUSD statistics view: button-group variant with expand/collapse control and expand/shrink icon button.',
+        story: 'Matches the scrvUSD statistics view: button-group variant with chart selection buttons.',
       },
     },
   },
@@ -233,7 +226,7 @@ export const ButtonsGroupVariantScrvUsdStatisticsHeaderNarrow: Story = {
     docs: {
       description: {
         story:
-          'Narrow width example of the scrvUSD statistics view: button-group variant with expand/collapse control and expand/shrink icon button.',
+          'Narrow width example of the scrvUSD statistics view: button-group variant with chart selection buttons.',
       },
     },
   },

@@ -58,9 +58,6 @@ export const useLlammaActivityEventsConfig = ({
     [eventsData?.events, network, networkConfig, collateralToken, borrowToken],
   )
 
-  const isLoading = isEventsLoading || !isHydrated || !isMarketAvailable
-  const isError = isEventsError && isMarketAvailable && isHydrated
-
   const table = useTable({
     data: eventsWithUrls,
     columns: LLAMMA_EVENTS_COLUMNS,
@@ -71,5 +68,11 @@ export const useLlammaActivityEventsConfig = ({
     ...getTableOptions(eventsWithUrls),
   })
 
-  return { table, isLoading, isError, emptyMessage: t`No activity data found.` }
+  return {
+    table,
+    isLoading: isEventsLoading || !isHydrated || !isMarketAvailable,
+    isError: isEventsError && isHydrated && isMarketAvailable,
+    emptyMessage: t`No activity data found.`,
+    errorMessage: t`Could not load activity data.`,
+  }
 }

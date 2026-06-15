@@ -21,14 +21,14 @@ const RouteProviderStory = ({
   ...args
 }: RouteProviderProps & { isLoading?: boolean; isFetching?: boolean }) => {
   const [routes, setRoutes] = useState(givenRoutes)
-  const [selectedRoute, setSelectedRoute] = useState(givenSelectedRoute)
+  const [selectedRouter, setSelectedRouter] = useState(givenSelectedRoute?.router)
   const [isLoading, setIsLoading] = useState(givenIsLoading ?? false)
   const [isFetching, setIsFetching] = useState(false)
   const [isExpanded, , , toggle, setIsExpanded] = useSwitch(givenExpanded)
   // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
   useEffect(() => setRoutes(givenRoutes), [givenRoutes])
   // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-  useEffect(() => setSelectedRoute(givenSelectedRoute), [givenSelectedRoute])
+  useEffect(() => setSelectedRouter(givenSelectedRoute?.router), [givenSelectedRoute])
   useEffect(() => setIsExpanded(givenExpanded), [givenExpanded, setIsExpanded])
   // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
   useEffect(() => setIsLoading(givenIsLoading ?? false), [givenIsLoading])
@@ -43,15 +43,13 @@ const RouteProviderStory = ({
           () => mapRecord(routes, (_, route) => ({ ...route, isLoading, isFetching: isLoading || isFetching })),
           [isLoading, isFetching, routes],
         )}
-        selectedRoute={selectedRoute}
-        onChange={useCallback(route => setSelectedRoute(route), [])}
+        selectedRoute={selectedRouter && (routes[selectedRouter]?.data ?? undefined)}
+        onChange={setSelectedRouter}
         isExpanded={isExpanded}
         onToggle={toggle}
         onRefresh={useCallback(() => {
           setIsLoading(true)
-          const timeout = setTimeout(() => {
-            setIsLoading(false)
-          }, 1000)
+          const timeout = setTimeout(() => setIsLoading(false), 1000)
           return () => clearTimeout(timeout)
         }, [])}
       />
@@ -75,10 +73,12 @@ const meta: Meta<typeof RouteProviderStory> = {
             error: null,
           }),
           isFetching: false,
+          enabled: false,
         },
       ]),
     ),
     selectedRoute: mockRoutes[0],
+    selectedRouter: mockRoutes[0].router,
     tokenOut: { symbol: 'crvUSD', decimals: 18, usdRate: constQ(1) },
     isExpanded: false,
     onChange: () => undefined,

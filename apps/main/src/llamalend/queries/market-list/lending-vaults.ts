@@ -3,7 +3,6 @@ import {
   getAllMarkets,
   getAllUserLendingPositions,
   getAllUserMarkets,
-  getUserMarketEarnings,
   getUserMarketStats,
   Market,
   type UserMarketStats,
@@ -32,7 +31,7 @@ export const { getQueryOptions: getLendingVaultsOptions, invalidate: invalidateL
 })
 
 const {
-  getQueryOptions: getUserLendingVaultsQueryOptions,
+  getQueryOptions: getUserLendingVaultsOptions,
   getQueryData: getCurrentUserLendingVaults,
   invalidate: invalidateUserLendingVaults,
 } = queryFactory({
@@ -49,27 +48,14 @@ const {
 })
 
 const {
-  getQueryOptions: getUserLendingVaultStatsQueryOptions,
-  useQuery: useUserLendingVaultStatsQuery,
+  getQueryOptions: getUserLendingVaultStatsOptions,
+  useQuery: useUserLendingVaultStats,
   invalidate: invalidateUserLendingVaultStats,
 } = queryFactory({
   queryKey: ({ userAddress, contractAddress, blockchainId }: UserContractParams) =>
     ['user-lending-vault', 'stats', { blockchainId }, { contractAddress }, { userAddress }, 'v1'] as const,
   queryFn: async ({ userAddress, contractAddress, blockchainId }: UserContractQuery): Promise<UserMarketStats> =>
     getUserMarketStats(userAddress, blockchainId, contractAddress),
-  category: 'llamalend.user',
-  validationSuite: userContractValidationSuite,
-})
-
-const {
-  useQuery: useUserLendingVaultEarningsQuery,
-  getQueryOptions: getUserLendingVaultEarningsQueryOptions,
-  invalidate: invalidateUserLendingVaultEarnings,
-} = queryFactory({
-  queryKey: ({ userAddress, contractAddress, blockchainId }: UserContractParams) =>
-    ['user-lending-vault', 'earnings', { blockchainId }, { contractAddress }, { userAddress }, 'v1'] as const,
-  queryFn: ({ userAddress, contractAddress, blockchainId }: UserContractQuery) =>
-    getUserMarketEarnings(userAddress, blockchainId, contractAddress),
   category: 'llamalend.user',
   validationSuite: userContractValidationSuite,
 })
@@ -90,47 +76,41 @@ export async function invalidateAllUserLendingVaults(userAddress: Address | null
   await Promise.all(invalidateContracts)
 }
 
+export type LendingPosition = {
+  supplied: number
+  earnings: number
+  boostMultiplier: number | null
+}
+
 /**
  * Fetches the user's lending supplies across all chains.
  */
-const {
-  getQueryOptions: getUserLendingSuppliesQueryOptions,
-  getQueryData: getCurrentUserLendingSupplies,
-  invalidate: invalidateUserLendingSupplies,
-} = queryFactory({
-  queryKey: ({ userAddress }: UserParams) => ['user-lending-supplies', { userAddress }, 'v4'] as const,
+const { getQueryOptions: getUserLendingSuppliesOptions, invalidate: invalidateUserLendingSupplies } = queryFactory({
+  queryKey: ({ userAddress }: UserParams) => ['user-lending-supplies', { userAddress }, 'v5'] as const,
   category: 'llamalend.user',
-  queryFn: async ({ userAddress }: UserQuery): Promise<Record<ChainName, Address[]>> => {
+  queryFn: async ({ userAddress }: UserQuery): Promise<Record<ChainName, Record<Address, LendingPosition>>> => {
     const positions = await getAllUserLendingPositions(userAddress)
     return fromEntries(
       recordEntries(positions).map(([chain, positions]) => [
         chain,
-        positions.filter(p => p.currentShares || p.currentSharesInGauge).map(position => position.vaultAddress),
+        fromEntries(
+          positions
+            .filter(p => p.totalCurrentAssets > 0)
+            .map(({ vaultAddress, totalCurrentAssets, earnings, boostMultiplier }) => [
+              vaultAddress,
+              { supplied: totalCurrentAssets, earnings, boostMultiplier },
+            ]),
+        ),
       ]),
     )
   },
   validationSuite: userAddressValidationSuite,
 })
 
-export async function invalidateAllUserLendingSupplies(userAddress: Address | null | undefined) {
-  await invalidateUserLendingSupplies({ userAddress })
-
-  const invalidateContracts = recordEntries(getCurrentUserLendingSupplies({ userAddress }) ?? {}).flatMap(
-    ([blockchainId, positions]) =>
-      positions.map(contractAddress =>
-        invalidateUserLendingVaultEarnings({
-          userAddress,
-          blockchainId,
-          contractAddress,
-        }),
-      ),
-  )
-  await Promise.all(invalidateContracts)
+export {
+  getUserLendingSuppliesOptions,
+  getUserLendingVaultsOptions,
+  getUserLendingVaultStatsOptions,
+  useUserLendingVaultStats,
+  invalidateUserLendingSupplies,
 }
-
-export const getUserLendingSuppliesOptions = getUserLendingSuppliesQueryOptions
-export const getUserLendingVaultEarningsOptions = getUserLendingVaultEarningsQueryOptions
-export const useUserLendingVaultEarnings = useUserLendingVaultEarningsQuery
-export const getUserLendingVaultsOptions = getUserLendingVaultsQueryOptions
-export const getUserLendingVaultStatsOptions = getUserLendingVaultStatsQueryOptions
-export const useUserLendingVaultStats = useUserLendingVaultStatsQuery

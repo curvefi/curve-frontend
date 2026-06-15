@@ -5,7 +5,7 @@ import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import {
   getAmmAddress,
   getControllerAddress,
-  getLlamaMarketVersion,
+  getZapAddress,
   getMarketType,
   getTokens,
   hasZapV2,
@@ -193,7 +193,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
       },
       getRouteGasOptions: (routeId: string | undefined) => getCreateLoanEstimateGasOptions({ ...params, routeId }),
       networks,
-      version: market && getLlamaMarketVersion(market),
+      zapAddress: market && getZapAddress(market),
     }),
   }
 }

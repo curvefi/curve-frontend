@@ -65,7 +65,7 @@ export const Parameters = ({
           <ActionInfo
             label={t`AMM fee`}
             loading={isLoadingParameters}
-            value={formatNumber(amount(fee ?? snapshotData?.fee), {
+            value={formatNumber(amount(fee ?? maybe(snapshotData?.fee, fee => fee / 10 ** 8)), {
               maximumFractionDigits: 4,
               unit: 'percentage',
               abbreviate: false,
@@ -184,7 +184,7 @@ export const Parameters = ({
             value={notFalsy(
               poolType,
               metadata?.metapool && `${t`Metapool`}`,
-              basePools?.some(pool => pool.pool === poolAddress) && `, ${t`Basepool`}`,
+              basePools?.some(pool => pool.pool === poolAddress) && `${t`Basepool`}`,
             ).join(', ')}
           />
 

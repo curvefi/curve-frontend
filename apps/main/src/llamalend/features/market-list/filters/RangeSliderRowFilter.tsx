@@ -1,40 +1,35 @@
 import { useCallback, useMemo } from 'react'
-import { type DeepKeys } from '@tanstack/table-core'
 import { type FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { type NumericTextFieldProps } from '@ui-kit/shared/ui/NumericTextField'
 import { type DecimalRangeValue, SliderInput } from '@ui-kit/shared/ui/SliderInput'
-import { QueryProp, Range } from '@ui-kit/types/util'
+import { Range } from '@ui-kit/types/util'
 import { decimal, formatNumber } from '@ui-kit/utils'
-import { useMaxValue } from './RangeSliderFilter/useMaxValue'
 import { useRangeFilter } from './RangeSliderFilter/useRangeFilter'
 
-type RangeSliderRowFilterProps<TKey, TColumnId extends string> = FilterProps<TColumnId> & {
-  query: QueryProp<TKey[]>
-  field: DeepKeys<TKey>
+type RangeSliderRowFilterProps<TColumnId extends string> = FilterProps<TColumnId> & {
   id: TColumnId
   adornment?: NumericTextFieldProps['adornment']
   min?: number
   max?: number
+  step?: number
 }
 
-export const RangeSliderRowFilter = <TKey, TColumnId extends string>({
-  query: { data = [] },
-  field,
+export const RangeSliderRowFilter = <TColumnId extends string>({
   id,
   adornment,
+  min,
   max,
-  min = 0,
+  step,
   ...filterProps
-}: RangeSliderRowFilterProps<TKey, TColumnId>) => {
-  const { maxValue, step } = useMaxValue<TKey>({ max, data, field })
-  const [range, setRange] = useRangeFilter({ id, maxValue, ...filterProps })
+}: RangeSliderRowFilterProps<TColumnId>) => {
+  const [range, setRange] = useRangeFilter({ id, min, max, ...filterProps })
 
   return (
     <SliderInput<DecimalRangeValue>
       value={useMemo(() => range.map(decimal) as DecimalRangeValue, [range])}
       onChange={useCallback(newRange => setRange(newRange.map(Number) as Range<number>), [setRange])}
       min={min}
-      max={maxValue}
+      max={max}
       step={step}
       inputProps={{
         format: value => formatNumber(Number(value), { abbreviate: true }),

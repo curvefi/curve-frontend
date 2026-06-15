@@ -13,7 +13,7 @@ export const PositiveAndNegativeBarChartTooltip = ({ active, payload }: TooltipP
 
     return (
       <TooltipWrapper>
-        <Box flex flexColumn flexGap={'var(--spacing-1)'}>
+        <Box flex flexColumn flexGap="var(--spacing-1)">
           <TooltipColumn>
             <TooltipDataTitle>{t`Date`}</TooltipDataTitle>
             <TooltipData>{formatDate(day)}</TooltipData>

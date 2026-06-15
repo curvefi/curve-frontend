@@ -3,7 +3,7 @@ import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { notFalsy, maybes } from '@primitives/objects.utils'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { QueryProp } from '@ui-kit/types/util'
+import { Query, QueryProp } from '@ui-kit/types/util'
 import { decimal, formatNumber } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
@@ -26,10 +26,15 @@ export const calculateLeverageCollateral = (
 
 export const ACTION_INFO_GROUP_SX = { gap: Spacing.sm }
 
-export const combineActionInfoState = (...queries: (QueryProp<unknown> | undefined)[]) => {
+export const combineActionInfoState = (...queries: (Query<unknown> | undefined)[]) => {
   const { isLoading, error } = combineQueryState(...queries)
   return { loading: isLoading, error }
 }
+
+export const combineMetricState = <T>(query: Query<T> | undefined) => ({
+  value: query?.data,
+  ...combineActionInfoState(query),
+})
 
 // Returns whether an action info should stay visible when its value differs from the reference value.
 export const isQueryValueDifferent = (

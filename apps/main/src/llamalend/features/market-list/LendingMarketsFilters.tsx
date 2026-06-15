@@ -40,8 +40,14 @@ const SelectedToken = ({ symbol }: { symbol: string }) => (
 export const LendingMarketsFilters = (props: LlamaMarketsFiltersProps) => {
   const {
     filterProps,
-    marketsQuery,
     tokens,
+    collateralTokenOptions,
+    borrowedTokenOptions,
+    borrowRateRange,
+    tvlRange,
+    liquidityRange,
+    utilizationRange,
+    maxLtvRange,
     marketTypeValue,
     marketVersionValue,
     onMarketTypeChange,
@@ -58,30 +64,29 @@ export const LendingMarketsFilters = (props: LlamaMarketsFiltersProps) => {
       <TableFilterItem title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.CollateralSymbol]}>
         <MultiSelectFilter
           id={LlamaMarketColumnId.CollateralSymbol}
-          field="assets.collateral.symbol"
+          options={collateralTokenOptions}
           renderItem={symbol => <Token symbol={symbol} tokens={tokens} />}
           selectedItemRender={symbol => <SelectedToken symbol={symbol} />}
           defaultTextMobile={t`All Collateral Tokens`}
-          query={marketsQuery}
           {...filterProps}
         />
       </TableFilterItem>
       <TableFilterItem title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.BorrowedSymbol]}>
         <MultiSelectFilter
           id={LlamaMarketColumnId.BorrowedSymbol}
-          field="assets.borrowed.symbol"
+          options={borrowedTokenOptions}
           renderItem={symbol => <Token symbol={symbol} tokens={tokens} />}
           selectedItemRender={symbol => <SelectedToken symbol={symbol} />}
           defaultTextMobile={t`All Debt Tokens`}
-          query={marketsQuery}
           {...filterProps}
         />
       </TableFilterItem>
       <TableFilterItem title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.BorrowRate]}>
         <RangeFilter
           id={LlamaMarketColumnId.BorrowRate}
-          field="rates.borrowApr"
-          query={marketsQuery}
+          min={borrowRateRange.min}
+          max={borrowRateRange.max}
+          isLoading={props.marketsQuery.isLoading}
           adornment="percentage"
           {...filterProps}
         />
@@ -89,8 +94,9 @@ export const LendingMarketsFilters = (props: LlamaMarketsFiltersProps) => {
       <TableFilterItem title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.Tvl]}>
         <RangeFilter
           id={LlamaMarketColumnId.Tvl}
-          field={LlamaMarketColumnId.Tvl}
-          query={marketsQuery}
+          min={tvlRange.min}
+          max={tvlRange.max}
+          isLoading={props.marketsQuery.isLoading}
           adornment="dollar"
           {...filterProps}
         />
@@ -98,8 +104,9 @@ export const LendingMarketsFilters = (props: LlamaMarketsFiltersProps) => {
       <TableFilterItem title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.LiquidityUsd]}>
         <RangeFilter
           id={LlamaMarketColumnId.LiquidityUsd}
-          field={LlamaMarketColumnId.LiquidityUsd}
-          query={marketsQuery}
+          min={liquidityRange.min}
+          max={liquidityRange.max}
+          isLoading={props.marketsQuery.isLoading}
           adornment="dollar"
           {...filterProps}
         />
@@ -107,20 +114,20 @@ export const LendingMarketsFilters = (props: LlamaMarketsFiltersProps) => {
       <TableFilterItem title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.UtilizationPercent]}>
         <RangeFilter
           id={LlamaMarketColumnId.UtilizationPercent}
-          field={LlamaMarketColumnId.UtilizationPercent}
-          query={marketsQuery}
+          min={utilizationRange.min}
+          max={utilizationRange.max}
+          isLoading={props.marketsQuery.isLoading}
           adornment="percentage"
-          max={100}
           {...filterProps}
         />
       </TableFilterItem>
       <TableFilterItem title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.MaxLtv]}>
         <RangeSliderRowFilter
           id={LlamaMarketColumnId.MaxLtv}
-          field={LlamaMarketColumnId.MaxLtv}
-          query={marketsQuery}
+          min={maxLtvRange.min}
+          max={maxLtvRange.max}
+          step={maxLtvRange.step}
           adornment="percentage"
-          max={100}
           {...filterProps}
         />
       </TableFilterItem>

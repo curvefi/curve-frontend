@@ -1,3 +1,4 @@
+import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 import type { MarketParams, MarketQuery } from '@ui-kit/lib/model/query/root-keys'
@@ -10,7 +11,7 @@ export const { useQuery: useMarketVaultPricePerShare, invalidate: invalidateMark
     { marketId }: MarketQuery, // Use convertToAssets instead of redeem preview: previewRedeem can revert when the vault
   ) =>
     // has no immediately available liquidity, while convertToAssets still returns 1 share's value.
-    await getLendVault(marketId).convertToAssets(1),
+    (await getLendVault(marketId).convertToAssets(1)) as Decimal,
   category: 'llamalend.market',
   validationSuite: marketIdValidationSuite,
 })

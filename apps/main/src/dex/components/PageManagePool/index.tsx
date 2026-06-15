@@ -2,7 +2,6 @@ import { useReadContract } from 'wagmi'
 import { refuelPoolAbi } from '@/dex/features/manage-pool/abi'
 import { BorrowInformationContainer } from '@/dex/features/manage-pool/components/BorrowInformationContainer'
 import { DailyRefuelsChart } from '@/dex/features/manage-pool/components/DailyRefuelsChart'
-import { Header } from '@/dex/features/manage-pool/components/Header'
 import { RecentRefuels } from '@/dex/features/manage-pool/components/recent-refuels'
 import { RefuelPricesChart } from '@/dex/features/manage-pool/components/RefuelPricesChart'
 import { RefuelSharesChart } from '@/dex/features/manage-pool/components/RefuelSharesChart'
@@ -11,11 +10,13 @@ import { useRefuelPool } from '@/dex/features/manage-pool/queries/pools.query'
 import { RefuelFormTabs } from '@/dex/features/manage-pool/RefuelFormTabs'
 import { useChainId } from '@/dex/hooks/useChainId'
 import type { PoolAddressParams } from '@/dex/types/main.types'
+import { PoolPageHeader } from '@/dex/widgets/page-header'
 import type { Chain } from '@curvefi/prices-api'
 import Grid from '@mui/material/Grid'
 import { DEFAULT_DECIMALS } from '@primitives/objects.utils'
 import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
+import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 import { Banner } from '@ui-kit/shared/ui/Banner'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
@@ -47,7 +48,14 @@ export const ManagePool = () => {
   return (
     poolAddress && (
       <DetailPageLayout
-        header={<Header blockchainId={blockchainId} poolAddress={poolAddress} />}
+        header={
+          <PoolPageHeader
+            chainId={chainId}
+            blockchainId={blockchainId}
+            poolIdOrAddress={poolAddress}
+            backHref={getInternalUrl('dex', blockchainId, `${DEX_ROUTES.PAGE_POOLS}/${poolAddress}`)}
+          />
+        }
         formTabs={<RefuelFormTabs chainId={chainId} blockchainId={blockchainId} poolAddress={poolAddress} />}
         testId="refuel-page"
       >

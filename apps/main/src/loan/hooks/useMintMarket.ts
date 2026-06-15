@@ -1,17 +1,28 @@
-import { useMemo } from 'react'
+import { useCallback } from 'react'
 import { useCurve } from '@ui-kit/features/connect-wallet'
+import { useMappedQuery } from '@ui-kit/types/util'
 import { useMintMarkets } from '../entities/mint-markets.query'
 import { ChainId } from '../types/loan.types'
 
 export function useMintMarketData(chainId: ChainId, rMarket: string, enabled?: boolean) {
-  const { data, error, isSuccess } = useMintMarkets({ chainId }, enabled)
-  const marketData = useMemo(() => data?.[rMarket], [data, rMarket])
-  return { error, isSuccess, data: marketData }
+  const mintMarkets = useMintMarkets({ chainId }, enabled)
+  return {
+    ...useMappedQuery(
+      mintMarkets,
+      useCallback(data => data?.[rMarket], [rMarket]),
+    ),
+    isSuccess: mintMarkets.isSuccess,
+  }
 }
 
 export const useMintMarket = (chainId: ChainId, rMarket: string, enabled?: boolean) => {
   const { llamaApi: api } = useCurve()
-  const { data, error, isSuccess } = useMintMarketData(chainId, rMarket, enabled)
-  const market = useMemo(() => api && data && api.getMintMarketByData(data.id, data), [api, data])
-  return { data: market, error, isSuccess: isSuccess && !!api }
+  const mintMarketData = useMintMarketData(chainId, rMarket, enabled)
+  return {
+    ...useMappedQuery(
+      mintMarketData,
+      useCallback(data => api && data && api.getMintMarketByData(data.id, data), [api]),
+    ),
+    isSuccess: mintMarketData.isSuccess && !!api,
+  }
 }

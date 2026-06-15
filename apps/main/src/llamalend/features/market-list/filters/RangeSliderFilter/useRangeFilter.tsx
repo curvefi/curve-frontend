@@ -4,33 +4,28 @@ import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { parseRangeFilter, serializeRangeFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { Range } from '@ui-kit/types/util'
 
-const defaultMin = 0
-
-export function useRangeFilter<TColumnId extends string>({
+export const useRangeFilter = <TColumnId extends string>({
   isLoading = false,
   columnFiltersById,
   setColumnFilter,
   id,
-  maxValue,
-}: FilterProps<TColumnId> & { id: TColumnId; maxValue: number | undefined; isLoading?: boolean }) {
-  return useUniqueDebounce({
+  min = 0,
+  max,
+}: FilterProps<TColumnId> & { id: TColumnId; min?: number; max: number | undefined; isLoading?: boolean }) =>
+  useUniqueDebounce({
     // Separate default and applied range, the input's onBlur event that didn’t change anything could trigger the callback and clear the filter
     defaultValue: useMemo((): Range<number | null> => {
       const [minFilter, maxFilter] = parseRangeFilter(columnFiltersById[id]) ?? []
-      return [
-        minFilter ?? (isLoading ? null : defaultMin),
-        maxFilter ?? (isLoading || maxValue == null ? null : maxValue),
-      ]
-    }, [columnFiltersById, id, isLoading, maxValue]),
+      return [minFilter ?? (isLoading ? null : min), maxFilter ?? (isLoading || max == null ? null : max)]
+    }, [columnFiltersById, id, isLoading, min, max]),
     callback: useCallback(
       (newRange: Range<number | null>) =>
         setColumnFilter(
           id,
           serializeRangeFilter(
-            newRange.map((value, i) => (value === [defaultMin, maxValue][i] ? null : value)) as Range<number | null>,
+            newRange.map((value, i) => (value === [min, max][i] ? null : value)) as Range<number | null>,
           ),
         ),
-      [id, maxValue, setColumnFilter],
+      [id, min, max, setColumnFilter],
     ),
   })
-}

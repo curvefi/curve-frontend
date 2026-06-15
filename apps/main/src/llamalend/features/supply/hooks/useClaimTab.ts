@@ -6,7 +6,7 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import { notFalsy } from '@primitives/objects.utils'
 import { UserMarketParams } from '@ui-kit/lib/model'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { CLAIM_TAB_COLUMNS } from '../components/columns'
+import { CLAIM_TAB_COLUMNS, type ClaimableToken } from '../components/columns'
 import { useClaimableTokens } from './useClaimableTokens'
 
 export const useClaimTab = <ChainId extends LlamaChainId>({
@@ -49,7 +49,7 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
   const table = useTable({
     columns: CLAIM_TAB_COLUMNS,
     data: tableData,
-    ...getTableOptions(tableData),
+    ...getTableOptions<ClaimableToken>(tableData),
   })
 
   const {

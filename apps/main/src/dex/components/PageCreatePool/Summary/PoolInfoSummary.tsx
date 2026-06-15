@@ -21,7 +21,7 @@ export const PoolInfoSummary = () => {
     <StyledCategoryColumn>
       <Box flex>
         {validation.poolType && validation.tokensInPool && validation.parameters && validation.poolInfo && (
-          <StyledCheckmark name={'CheckmarkFilled'} size={16} aria-label={t`Checkmark filled`} />
+          <StyledCheckmark name="CheckmarkFilled" size={16} aria-label={t`Checkmark filled`} />
         )}
         <SummaryCategoryTitle>{t`Pool Info:`}</SummaryCategoryTitle>
       </Box>

@@ -5,6 +5,7 @@ import type { TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import type { ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { LegacyDataTable } from '@ui-kit/shared/ui/DataTable/LegacyDataTable'
+import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
 import { ErrorMessage } from '@ui-kit/shared/ui/ErrorMessage'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
@@ -17,7 +18,8 @@ type ActivityTableProps<TData extends TableItem> = {
   table: Table<TData>
   isLoading: boolean
   isError: boolean
-  emptyMessage?: string
+  emptyMessage: string
+  errorMessage: string
   height?: `${number}rem`
   expandedPanel?: ExpandedPanel<TData>
 }
@@ -27,29 +29,26 @@ export const ActivityTable = <TData extends TableItem>({
   isLoading,
   isError,
   emptyMessage,
+  errorMessage,
   height = MaxHeight.userEventsTable,
   expandedPanel = DefaultExpandedPanel,
-}: ActivityTableProps<TData>) => {
-  const errorMessage = isError ? (emptyMessage ?? t`Could not load data`) : (emptyMessage ?? t`No data found`)
-
-  return (
-    <Box sx={{ minHeight: height }}>
-      <LegacyDataTable
-        table={table}
-        emptyState={
-          <EmptyStateRow table={table} size="lg">
-            <ErrorMessage
-              title={t`Hm... Something went wrong.`}
-              subtitle={errorMessage}
-              errorMessage={t`Couldn't load activity table data`}
-            />
-          </EmptyStateRow>
-        }
-        loading={isLoading}
-        maxHeight={height}
-        size="small"
-        expandedPanel={expandedPanel}
-      />
-    </Box>
-  )
-}
+}: ActivityTableProps<TData>) => (
+  <Box sx={{ minHeight: height }}>
+    <LegacyDataTable
+      table={table}
+      emptyState={
+        <EmptyStateRow table={table} size="lg">
+          {isError ? (
+            <ErrorMessage title={t`Hm... Something went wrong.`} subtitle={errorMessage} errorMessage={errorMessage} />
+          ) : (
+            <EmptyStateCard title={emptyMessage} />
+          )}
+        </EmptyStateRow>
+      }
+      loading={isLoading}
+      maxHeight={height}
+      size="small"
+      expandedPanel={expandedPanel}
+    />
+  </Box>
+)

@@ -6,7 +6,7 @@ describe('Basic Access Test', () => {
 
   it('should support default networks if the lite API is offline', () => {
     cy.intercept(`https://api-core.curve.finance/v1/getPlatforms`, { status: 500 }).as('error')
-    cy.visit('/dex/corn/pools')
+    cy.visit('/dex/plasma/pools')
     cy.wait('@error', LOAD_TIMEOUT)
     cy.title(LOAD_TIMEOUT).should('equal', 'Pools - Curve')
     cy.get('[data-testid="error-title"]').should('not.exist')
@@ -37,10 +37,10 @@ describe('Basic Access Test', () => {
   })
 
   it('should load for lite networks', () => {
-    cy.visitWithoutTestConnector('dex/corn/pools')
+    cy.visitWithoutTestConnector('dex/plasma/pools')
     cy.title(LOAD_TIMEOUT).should('equal', 'Pools - Curve')
-    cy.url().should('include', '/dex/corn/pools')
-    cy.contains(/LBTC\/wBTCN/i, API_LOAD_TIMEOUT).should('be.visible')
+    cy.url().should('include', '/dex/plasma/pools')
+    cy.contains(/USDT0\/sUSDe/i, API_LOAD_TIMEOUT).should('be.visible')
   })
 
   it('shows 404 on /dex/:network/pools/404', () => {
