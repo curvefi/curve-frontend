@@ -13,20 +13,17 @@ import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { mapQuery, type QueryProp } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 
-export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>(
-  {
-    params,
-    form,
-    market,
-    collateralEvents: { data: events },
-  }: {
-    params: BorrowMoreParams<ChainId>
-    form: UseFormReturn<BorrowMoreForm>
-    market: LlamaMarketTemplate | undefined
-    collateralEvents: QueryProp<UserCollateralEvents>
-  },
-  enabled?: boolean,
-) {
+export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>({
+  params,
+  form,
+  market,
+  collateralEvents: { data: events },
+}: {
+  params: BorrowMoreParams<ChainId>
+  form: UseFormReturn<BorrowMoreForm>
+  market: LlamaMarketTemplate | undefined
+  collateralEvents: QueryProp<UserCollateralEvents>
+}) {
   const { chainId, userAddress, marketId } = params
   const { borrowToken, collateralToken } = market ? getTokens(market) : {}
 
@@ -41,8 +38,8 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>(
     tokenAddress: borrowToken?.address,
   })
 
-  const maxReceive = useBorrowMoreMaxReceive(params, enabled)
-  const maxLeverage = useMarketMaxLeverage({ chainId, marketId, range: PRESET_RANGES.MaxLtv }, enabled)
+  const maxReceive = useBorrowMoreMaxReceive(params)
+  const maxLeverage = useMarketMaxLeverage({ chainId, marketId, range: PRESET_RANGES.MaxLtv })
 
   useFormSync(form, { maxCollateral: maxUserCollateral.data })
   useFormSync(form, { maxBorrowed: maxUserBorrowed.data })

@@ -5,8 +5,8 @@ import Stack from '@mui/material/Stack'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
-import { LegacyDataTable } from '@ui-kit/shared/ui/DataTable/LegacyDataTable'
 import { usePointsCampaigns } from '../../hooks/usePointsCampaigns'
 import { createPointsCampaignsColumns, type PointsCampaignsRow } from './columns/columns.definitions'
 
@@ -29,10 +29,10 @@ export const PointsCampaigns = ({
     rows.length > 0 && (
       <Stack>
         <CardHeader title={t`Points Campaigns`} size="small" />
-        <LegacyDataTable<PointsCampaignsRow>
+        <DataTable<PointsCampaignsRow>
           table={table}
           size="small"
-          loading={false}
+          isLoading={false}
           disableStickyHeader
           emptyState={<EmptyStateRow table={table} size="sm">{t`No points campaigns found.`}</EmptyStateRow>}
         />
