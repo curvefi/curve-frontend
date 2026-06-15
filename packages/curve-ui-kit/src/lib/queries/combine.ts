@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import type { Decimal } from '@primitives/decimal.utils'
-import { UseQueryOptions } from '@tanstack/react-query'
+import { type UseQueryOptions } from '@tanstack/react-query'
 import { Query, QueryProp } from '@ui-kit/types/util'
 import { decimalMin } from '@ui-kit/utils/decimal'
 import { QueryOptionsArray, QueryResultsArray } from './types'
@@ -16,16 +16,19 @@ type QueriesData<TQueries extends Queries> = {
   [K in keyof TQueries]: TQueries[K] extends Query<infer TData> ? Exclude<TData, undefined> : never
 }
 
+function combineQueryData<const TQueries extends Queries, TResult>(
+  queries: TQueries,
+  selector: (...data: QueriesData<TQueries>) => TResult | null | undefined,
+) {
+  return queries.some(({ data }) => data === undefined)
+    ? undefined
+    : selector(...(queries.map(({ data }) => data) as QueriesData<TQueries>))
+}
+
 export const combineQueries = <const TQueries extends Queries, TResult>(
   queries: TQueries,
   selector: (...data: QueriesData<TQueries>) => TResult | null | undefined,
-) =>
-  ({
-    data: queries.some(({ data }) => data === undefined)
-      ? undefined
-      : selector(...(queries.map(({ data }) => data) as QueriesData<TQueries>)),
-    ...combineQueryState(...queries),
-  }) as QueryProp<TResult>
+) => ({ data: combineQueryData(queries, selector), ...combineQueryState(...queries) }) as QueryProp<TResult>
 
 export const useCombinedQueries = <const TQueries extends Queries, TResult>(
   queries: TQueries,
@@ -33,12 +36,9 @@ export const useCombinedQueries = <const TQueries extends Queries, TResult>(
 ) =>
   ({
     data: useMemo(
-      () =>
-        queries.some(({ data }) => data === undefined)
-          ? undefined
-          : selector(...(queries.map(({ data }) => data) as QueriesData<TQueries>)),
+      () => combineQueryData(queries, selector),
       // eslint-disable-next-line @eslint-react/exhaustive-deps
-      queries.map(({ data }) => data),
+      [selector, ...queries.map(({ data }) => data)],
     ),
     ...combineQueryState(...queries),
   }) as QueryProp<TResult>

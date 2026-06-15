@@ -1,5 +1,5 @@
 import { sortBy } from 'lodash'
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { type LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useLlamaSnapshot } from '@/llamalend/queries/llamma-snapshots.query'
 import { useMarketRates } from '@/llamalend/queries/market'
@@ -131,14 +131,20 @@ export const MarketHistoricalRatesChart = ({
 
   const snapshots = useLlamaSnapshot({ market, blockchainId, range: { kind: 'timeRange', timeOption } })
 
-  const ratePoints = useCombinedQueries([snapshots, marketRates], (snapshots, marketRates) => {
-    const currentLiveRate = toRateNumber(modeConfig.getLiveRate(marketRates))
-    const snapshotRatePoints = toSnapshotRatePoints(snapshots, modeConfig.getSnapshotRate)
-    return sortBy(
-      notFalsy(...snapshotRatePoints, currentLiveRate != null && { timestamp: Date.now(), rate: currentLiveRate }),
-      item => item.timestamp,
-    )
-  })
+  const ratePoints = useCombinedQueries(
+    [snapshots, marketRates],
+    useCallback(
+      (snapshots, marketRates) => {
+        const currentLiveRate = toRateNumber(modeConfig.getLiveRate(marketRates))
+        const snapshotRatePoints = toSnapshotRatePoints(snapshots, modeConfig.getSnapshotRate)
+        return sortBy(
+          notFalsy(...snapshotRatePoints, currentLiveRate != null && { timestamp: Date.now(), rate: currentLiveRate }),
+          item => item.timestamp,
+        )
+      },
+      [modeConfig],
+    ),
+  )
 
   const chartData = useMemo<RateChartPoint[]>(
     () =>
