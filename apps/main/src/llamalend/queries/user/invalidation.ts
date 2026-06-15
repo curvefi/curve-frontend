@@ -4,7 +4,7 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import { rootKeys, type UserContractQuery, type UserMarketQuery } from '@ui-kit/lib/model'
-import { invalidateAllUserLendingSupplies, invalidateAllUserLendingVaults } from '../market-list/lending-vaults'
+import { invalidateUserLendingSupplies, invalidateAllUserLendingVaults } from '../market-list/lending-vaults'
 import { invalidateAllUserMintMarkets } from '../market-list/mint-markets'
 
 /**
@@ -24,6 +24,6 @@ export const invalidateAllUserMarketDetails = ({
     invalidateUserCollateralEvents({ userAddress, contractAddress, blockchainId }),
     invalidateAllUserMintMarkets(userAddress),
     invalidateAllUserLendingVaults(userAddress),
-    invalidateAllUserLendingSupplies(userAddress),
+    invalidateUserLendingSupplies({ userAddress }),
   ])
 }

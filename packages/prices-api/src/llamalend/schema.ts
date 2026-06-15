@@ -1,5 +1,5 @@
 import { z } from 'zod/v4'
-import { fromEntries, recordEntries } from '@primitives/objects.utils'
+import { fromEntries, maybe, recordEntries } from '@primitives/objects.utils'
 import type { Chain } from '..'
 import { address, camelizeKeys, chain, timestamp } from '../schemas'
 
@@ -171,13 +171,21 @@ const userLendingPosition = z
     current_shares: z.string(),
     current_shares_in_gauge: z.string(),
     boost_multiplier: z.number().nullable(),
+    current_shares_in_convex: z.string().optional(),
+    earnings: z.string(),
+    total_current_assets: z.string(),
   })
   .transform(camelizeKeys)
-  .transform(({ currentShares, currentSharesInGauge, ...data }) => ({
-    ...data,
-    currentShares: parseFloat(currentShares),
-    currentSharesInGauge: parseFloat(currentSharesInGauge),
-  }))
+  .transform(
+    ({ currentShares, currentSharesInGauge, currentSharesInConvex, earnings, totalCurrentAssets, ...data }) => ({
+      ...data,
+      currentShares: parseFloat(currentShares),
+      currentSharesInGauge: parseFloat(currentSharesInGauge),
+      currentSharesInConvex: maybe(currentSharesInConvex, s => parseFloat(s)),
+      earnings: parseFloat(earnings),
+      totalCurrentAssets: parseFloat(totalCurrentAssets),
+    }),
+  )
 
 const userMarketStats = z
   .object({
