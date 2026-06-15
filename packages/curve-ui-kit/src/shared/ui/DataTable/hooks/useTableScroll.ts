@@ -1,4 +1,4 @@
-import { type RefObject, useEffect, useRef } from 'react'
+import { type RefObject, useEffect, useEffectEvent, useRef } from 'react'
 import type { TableItem, TanstackTable } from '../data-table.utils'
 
 type UseTableScrollOptions<T extends TableItem> = {
@@ -7,43 +7,43 @@ type UseTableScrollOptions<T extends TableItem> = {
   containerRef?: RefObject<HTMLElement | null>
 }
 
-const scrollToTableTop = (tableTopRef: RefObject<HTMLElement | null>) => {
+const scrollTableTopIntoView = (tableTopRef: RefObject<HTMLElement | null>) => {
   tableTopRef.current?.scrollIntoView({ block: 'start', behavior: 'smooth' })
 }
 
-/**
- * Scrolls to the top of the table whenever the column filters change.
- */
+/** Runs an effect only after the tracked value changes, skipping the initial render. */
+const useEffectOnValueChange = <T>(value: T, effect: () => void) => {
+  const previousValueRef = useRef(value)
+  const effectEvent = useEffectEvent(effect)
+
+  useEffect(() => {
+    const previousValue = previousValueRef.current
+    previousValueRef.current = value
+
+    if (previousValue !== value) effectEvent()
+  }, [value])
+}
+
+/** Scrolls to the top of the table whenever the column filters change. */
 export function useScrollToTopOnFilterChange<T extends TableItem>({ table, tableTopRef }: UseTableScrollOptions<T>) {
   const { columnFilters } = table.getState()
   const columnFiltersKey = JSON.stringify(columnFilters)
-  const previousColumnFiltersKeyRef = useRef(columnFiltersKey)
 
-  useEffect(() => {
-    const previousColumnFiltersKey = previousColumnFiltersKeyRef.current
-    previousColumnFiltersKeyRef.current = columnFiltersKey
-
-    if (tableTopRef && previousColumnFiltersKey !== columnFiltersKey) scrollToTableTop(tableTopRef)
-  }, [columnFiltersKey, tableTopRef])
+  useEffectOnValueChange(columnFiltersKey, () => {
+    if (tableTopRef) scrollTableTopIntoView(tableTopRef)
+  })
 }
 
-/**
- * Scrolls to the top of the table whenever the page changes.
- */
+/** Scrolls to the top of the table whenever the page changes. */
 export function useScrollToTopOnPageChange<T extends TableItem>({
   table,
   tableTopRef,
   containerRef,
 }: UseTableScrollOptions<T>) {
   const { pageIndex } = table.getState().pagination
-  const previousPageIndexRef = useRef(pageIndex)
-  useEffect(() => {
-    const previousPageIndex = previousPageIndexRef.current
-    previousPageIndexRef.current = pageIndex
-
+  useEffectOnValueChange(pageIndex, () => {
     // scroll after the user changes pages
-    if (previousPageIndex === pageIndex) return
-    else if (containerRef) containerRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
-    else if (tableTopRef) scrollToTableTop(tableTopRef)
-  }, [containerRef, pageIndex, tableTopRef])
+    if (containerRef) containerRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
+    else if (tableTopRef) scrollTableTopIntoView(tableTopRef)
+  })
 }
