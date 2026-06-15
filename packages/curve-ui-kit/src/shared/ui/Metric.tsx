@@ -9,6 +9,7 @@ import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangl
 import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
+import type { MakeOptional } from '@ui-kit/types/util'
 import {
   copyToClipboard,
   defaultNumberFormatter,
@@ -98,7 +99,7 @@ type MetricValueProps = Pick<MetricProps, 'value' | 'valueOptions' | 'change' | 
 
 const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip, testId }: MetricValueProps) => {
   const numberValue = useMemo(() => ((value || value === 0) && isFinite(Number(value)) ? Number(value) : null), [value])
-  const { color = 'textPrimary', abbreviate = true, ...formattingOptions } = valueOptions
+  const { color = 'textPrimary', abbreviate = true, fallback = t`N/A`, ...formattingOptions } = valueOptions
   const { prefix, mainValue, scaleSuffix, suffix } =
     numberValue === null ? {} : decomposeNumber(numberValue, { ...formattingOptions, abbreviate })
 
@@ -113,7 +114,7 @@ const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip, te
         onClick={copyValue}
         sx={copyValue && { cursor: 'pointer' }}
         {...tooltip}
-        title={tooltip?.title ?? (numberValue == null ? t`N/A` : numberValue.toLocaleString())}
+        title={tooltip?.title ?? (numberValue == null ? fallback : numberValue.toLocaleString())}
         data-testid={`${testId}-value`}
         data-value={value}
       >
@@ -125,7 +126,7 @@ const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip, te
           )}
 
           <Typography variant={fontVariant} color={color}>
-            {mainValue ?? t`N/A`}
+            {mainValue ?? fallback}
           </Typography>
 
           {scaleSuffix && (
@@ -156,9 +157,8 @@ const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip, te
 export type MetricProps = {
   /** The actual metric value to display */
   value: Amount | '' | false | undefined | null
-  valueOptions: Omit<NumberFormatOptions, 'abbreviate'> & {
+  valueOptions: MakeOptional<NumberFormatOptions, 'abbreviate'> /* defaults to true */ & {
     color?: TypographyProps['color']
-    abbreviate?: boolean // Default to true
   }
 
   /** Optional value that denotes a change in metric value since 'last' time */

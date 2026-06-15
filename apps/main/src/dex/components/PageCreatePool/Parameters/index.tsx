@@ -227,9 +227,9 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
         </SelectPresetsWrapper>
         {/* Fees */}
         <BlurWrapper blur={poolPresetIndex === null}>
-          <TitleRow flex flexAlignItems={'center'}>
+          <TitleRow flex flexAlignItems="center">
             <SectionTitle>{t`Fees`}</SectionTitle>
-            <ResetButton size={'small'} onClick={resetFees}>
+            <ResetButton size="small" onClick={resetFees}>
               {t`Reset Fees`}
             </ResetButton>
           </TitleRow>
@@ -269,9 +269,9 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
               />
               <Description>{t`Out fee governs fees charged during high volatility.`}</Description>
               <InitialPriceWrapper>
-                <TitleRow flex flexAlignItems={'center'}>
+                <TitleRow flex flexAlignItems="center">
                   <SectionTitle>{t`Initial Liquidity Concentration Price`}</SectionTitle>
-                  <ResetButton size={'small'} onClick={() => refreshInitialPrice(curve)}>
+                  <ResetButton size="small" onClick={() => refreshInitialPrice(curve)}>
                     {t`Update Quote`}
                   </ResetButton>
                 </TitleRow>
@@ -290,14 +290,14 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
           {/* Advanced */}
           <>
             <AdvancedParametersWrapper>
-              <TitleRow flex flexAlignItems={'center'} flexJustifyContent="space-between">
+              <TitleRow flex flexAlignItems="center" flexJustifyContent="space-between">
                 <SwitchWrapper>
                   <Switch isActive={!advanced} onChange={() => updateAdvanced(!advanced)} defaultSelected={advanced}>
                     {t`Advanced`}
                   </Switch>
                 </SwitchWrapper>
                 {advanced && (
-                  <ResetButton size={'small'} onClick={() => resetAdvanced()}>
+                  <ResetButton size="small" onClick={() => resetAdvanced()}>
                     {t`Reset advanced`}
                   </ResetButton>
                 )}

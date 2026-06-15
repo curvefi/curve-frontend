@@ -3,7 +3,7 @@ import { CRVUSD_ADDRESS, SCRVUSD_VAULT_ADDRESS } from '@/loan/constants'
 import { CRVUSD_DECIMALS } from '@cy/support/helpers/llamalend/supply/supply-setup.helpers'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
-import { decimalCompare } from '@ui-kit/utils'
+import { decimalCompare, decimalMinus } from '@ui-kit/utils'
 import { DECIMAL_REGEX, getActionValue, getMetricValue } from './action-info.helpers'
 
 type ScrvUsdFormType = 'deposit' | 'withdraw'
@@ -180,6 +180,11 @@ export const checkScrvUsdWithdrawBalanceGreaterThan = (expectedMinimum: Decimal)
 
 export const checkScrvUsdWithdrawBalanceLessThan = (expectedMaximum: Decimal) =>
   readScrvUsdWithdrawBalance().should(balance => expect(decimalCompare(balance, expectedMaximum)).to.equal(-1))
+
+export const checkScrvUsdWithdrawBalanceDecreasedBy = (initialBalance: Decimal, withdrawAmount: Decimal) =>
+  readScrvUsdWithdrawBalance().should(balance =>
+    expect(+balance).to.be.closeTo(+decimalMinus(initialBalance, withdrawAmount), 0.000001),
+  )
 
 export const checkScrvUsdWithdrawBalanceZero = () =>
   readScrvUsdWithdrawBalance().should(balance => expect(+balance, `Expected ${balance} to be zero`).to.equal(0))

@@ -75,7 +75,7 @@ export const SwitchTokensButton = ({ curve, from, to, disabled, className }: Pro
 
   return (
     <IconButton className={className} disabled={disabled} onClick={handleClick} size="medium">
-      <StyledArrowsVertical name={'ArrowsVertical'} size={20} aria-label={t`Switch tokens`} />
+      <StyledArrowsVertical name="ArrowsVertical" size={20} aria-label={t`Switch tokens`} />
     </IconButton>
   )
 }

@@ -57,7 +57,7 @@ export const TokensInPoolSummary = ({ blockchainId, chainId }: Props) => {
     <CategoryColumn>
       <Box flex>
         {validation.tokensInPool && (
-          <StyledCheckmark name={'CheckmarkFilled'} size={16} aria-label={t`Checkmark filled`} />
+          <StyledCheckmark name="CheckmarkFilled" size={16} aria-label={t`Checkmark filled`} />
         )}
         <SummaryCategoryTitle>{t`Tokens In Pool:`}</SummaryCategoryTitle>
       </Box>
@@ -218,7 +218,7 @@ const TokenSummary = ({ blockchainId, token, chainId, swapType }: TokenSummary) 
       </Box>
       <AddressLink href={scanAddressPath(network, token.address)}>
         {shortenAddress(token.address)}
-        <Icon name={'Launch'} size={16} aria-label={t`Link to address`} />
+        <Icon name="Launch" size={16} aria-label={t`Link to address`} />
       </AddressLink>
     </TokenRow>
   )
