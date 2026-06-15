@@ -1,5 +1,5 @@
 import { defineChain, http } from 'viem'
-import { arbitrum, mainnet } from 'viem/chains'
+import { arbitrum, mainnet, optimism } from 'viem/chains'
 import type { TenderlyConfig } from '@cy/support/helpers/tenderly/account'
 import { type Hex } from '@primitives/address.utils'
 import { assert } from '@primitives/objects.utils'
@@ -23,7 +23,7 @@ type Options = {
 const getTestChain = (chainId: number | string) =>
   assert(
     // Tenderly recommends chain 73571 to prevent replay attacks, but our code relies on `chainId === Chain.Ethereum`. However, we do not use wallets with real funds.
-    [mainnet, arbitrum].find(c => c.id === +chainId),
+    [mainnet, arbitrum, optimism].find(c => c.id === +chainId),
     `Unsupported chain ${chainId}`,
   ) as typeof mainnet
 

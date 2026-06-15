@@ -39,16 +39,18 @@ export function checkBorrowMoreDetailsLoaded({
   leverageEnabled,
   expectedFutureDebt,
   expectedCurrentDebt,
+  borrowedSymbol,
 }: {
   expectedFutureDebt: Decimal
   expectedCurrentDebt: Decimal
   leverageEnabled: boolean
+  borrowedSymbol: string
 }) {
   getActionValue('borrow-apr').should('include', '%')
   getActionValue('borrow-health').should('match', DECIMAL_REGEX)
   getActionValue('borrow-health', 'previous').should('match', DECIMAL_REGEX)
   getActionValue('estimated-tx-cost').should('include', '$')
-  checkDebt({ current: expectedCurrentDebt, future: expectedFutureDebt, symbol: 'crvUSD' })
+  checkDebt({ current: expectedCurrentDebt, future: expectedFutureDebt, symbol: borrowedSymbol })
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
   if (leverageEnabled) {
     getActionValue('borrow-price-impact').should('include', '%')
