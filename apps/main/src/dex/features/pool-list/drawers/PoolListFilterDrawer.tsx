@@ -19,12 +19,7 @@ type Props = {
   resetFilters: () => void
 } & PoolListFilterChipsProps
 
-export const PoolListFilterDrawer = ({
-  activeFilterCount,
-  resetFilters,
-  setPoolType,
-  ...filterProps
-}: Props) => {
+export const PoolListFilterDrawer = ({ activeFilterCount, resetFilters, setPoolType, ...filterProps }: Props) => {
   const [open, , closeDrawer, toggleDrawer, setOpen] = useSwitch(false)
   const setPoolTypeAndClose = useCallback<PoolListFilterChipsProps['setPoolType']>(
     value => {

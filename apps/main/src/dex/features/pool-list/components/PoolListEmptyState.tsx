@@ -22,7 +22,8 @@ type Props = {
 export const PoolListEmptyState = ({ poolType, poolTypeFilters, resetFilters, searchText, isError }: Props) => {
   const errorKey = isError ? ERROR.api : searchText ? ERROR.search : poolType ? ERROR.filter : undefined
   const selectedPoolTypeLabel = poolTypeFilters.find(({ key }) => key === poolType)?.label
-  const errorSearchedValue = errorKey === ERROR.search ? searchText : errorKey === ERROR.filter ? selectedPoolTypeLabel : undefined
+  const errorSearchedValue =
+    errorKey === ERROR.search ? searchText : errorKey === ERROR.filter ? selectedPoolTypeLabel : undefined
 
   return errorKey === ERROR.api ? (
     <Box flex flexJustifyContent="center">

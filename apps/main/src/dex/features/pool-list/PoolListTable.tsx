@@ -132,9 +132,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
               <PoolListSortDrawer onSortingChange={onSortingChange} options={sortOptions} sortField={sortField} />
             )
           }
-          chips={
-            <PoolListFilterChips resultCount={apiResultCount} {...filterProps} />
-          }
+          chips={<PoolListFilterChips resultCount={apiResultCount} {...filterProps} />}
         />
       </DataTable>
     </Stack>

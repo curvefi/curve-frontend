@@ -12,7 +12,12 @@ import { Placeholder } from './Placeholder'
 
 type Prop = CellContext<LegacyPoolListItem, RewardsApy | undefined> & { placeholder?: boolean }
 
-export const LegacyRewardsIncentivesCell = ({ getValue, table, row: { original: poolData }, placeholder = true }: Prop) => {
+export const LegacyRewardsIncentivesCell = ({
+  getValue,
+  table,
+  row: { original: poolData },
+  placeholder = true,
+}: Prop) => {
   const rewards = getValue()
   const { hasIncentives, campaigns } = useHasPoolRewards(rewards, poolData)
   const { other } = rewards ?? {}

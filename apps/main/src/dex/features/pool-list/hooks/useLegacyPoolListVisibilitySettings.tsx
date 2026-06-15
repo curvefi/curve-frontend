@@ -13,7 +13,9 @@ import {
   getLegacyDefaultSort,
 } from '../columns'
 
-const migration: MigrationOptions<Record<LegacyPoolColumnVariant, VisibilityGroup<LegacyPoolColumnId>[]>> = { version: 1 }
+const migration: MigrationOptions<Record<LegacyPoolColumnVariant, VisibilityGroup<LegacyPoolColumnId>[]>> = {
+  version: 1,
+}
 
 /**
  * Create a map of column visibility for the pool list on mobile devices.

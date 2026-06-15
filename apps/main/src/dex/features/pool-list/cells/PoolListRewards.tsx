@@ -41,13 +41,7 @@ const getExtraRewards = ({ address: poolAddress, extraRewardsApr }: ExtraRewards
       symbol: symbol ?? '',
     }))
 
-export const PoolListRewards = ({
-  pool,
-  mobile,
-}: {
-  pool: PoolListItem
-  mobile?: boolean
-}) => {
+export const PoolListRewards = ({ pool, mobile }: { pool: PoolListItem; mobile?: boolean }) => {
   const { data: campaigns } = useCampaignsByAddress({
     blockchainId: pool.network as Chain,
     address: normalizeAddress(pool.address) as typeof pool.address,

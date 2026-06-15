@@ -46,4 +46,6 @@ export const LEGACY_POOL_LIST_COLUMN_OPTIONS = {
 }
 export type LegacyPoolColumnVariant = keyof typeof LEGACY_POOL_LIST_COLUMN_OPTIONS
 
-export const getLegacyDefaultSort = (isLite: boolean) => [{ id: isLite ? LegacyPoolColumnId.Tvl : LegacyPoolColumnId.Volume, desc: true }]
+export const getLegacyDefaultSort = (isLite: boolean) => [
+  { id: isLite ? LegacyPoolColumnId.Tvl : LegacyPoolColumnId.Volume, desc: true },
+]

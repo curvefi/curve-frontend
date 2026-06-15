@@ -31,7 +31,8 @@ type LegacyPoolColumn = ColumnDefinition<LegacyPoolListItem>
 
 /** Sorts pool rows by a numeric reward value, placing rows with no value last. */
 const sortByReward =
-  (getValue: (row: LegacyPoolListItem) => number | undefined) => (x: Row<LegacyPoolListItem>, y: Row<LegacyPoolListItem>) =>
+  (getValue: (row: LegacyPoolListItem) => number | undefined) =>
+  (x: Row<LegacyPoolListItem>, y: Row<LegacyPoolListItem>) =>
     (getValue(x.original) ?? -Infinity) - (getValue(y.original) ?? -Infinity)
 
 /** Define a hidden column. */

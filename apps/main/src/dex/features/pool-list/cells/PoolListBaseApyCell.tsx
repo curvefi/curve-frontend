@@ -11,8 +11,14 @@ import { Placeholder } from './Placeholder'
 const BaseApyTooltip = ({ day, week }: { day: number; week: number | null | undefined }) => (
   <Stack component="span">
     <strong>{t`Pool APY`}</strong>
-    <span>{t`Daily`}: {formatNumber(day, 'percent.value')}</span>
-    {week != null && <span>{t`Weekly`}: {formatNumber(week, 'percent.value')}</span>}
+    <span>
+      {t`Daily`}: {formatNumber(day, 'percent.value')}
+    </span>
+    {week != null && (
+      <span>
+        {t`Weekly`}: {formatNumber(week, 'percent.value')}
+      </span>
+    )}
   </Stack>
 )
 

@@ -81,7 +81,8 @@ export const LegacyPoolMobileExpandedPanel: ExpandedPanel<LegacyPoolListItem> = 
                 value={totalAPR}
                 valueOptions={{
                   unit: 'percentage',
-                  ...(isSortedBy(table, LegacyPoolColumnId.RewardsCrv) || isSortedBy(table, LegacyPoolColumnId.RewardsOther)
+                  ...(isSortedBy(table, LegacyPoolColumnId.RewardsCrv) ||
+                  isSortedBy(table, LegacyPoolColumnId.RewardsOther)
                     ? highlight
                     : {}),
                 }}
@@ -103,7 +104,10 @@ export const LegacyPoolMobileExpandedPanel: ExpandedPanel<LegacyPoolListItem> = 
             ) : (
               <ListInfoItem
                 value={totalAPR}
-                valueOptions={{ unit: 'percentage', ...(isSortedBy(table, LegacyPoolColumnId.RewardsOther) && highlight) }}
+                valueOptions={{
+                  unit: 'percentage',
+                  ...(isSortedBy(table, LegacyPoolColumnId.RewardsOther) && highlight),
+                }}
                 valueTooltip={{
                   title: (
                     <TableCellRewardsOthers

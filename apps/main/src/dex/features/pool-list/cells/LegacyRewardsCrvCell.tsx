@@ -12,7 +12,11 @@ type Prop = CellContext<LegacyPoolListItem, RewardsApy | undefined> & { placehol
 export const LegacyRewardsCrvCell = ({ getValue, table, row: { original: poolData }, placeholder = true }: Prop) => {
   const rewards = getValue()
   return hasCrvRewards(rewards) ? (
-    <PoolRewardsCrv poolData={poolData} rewardsApy={rewards} isHighlight={isSortedBy(table, LegacyPoolColumnId.RewardsCrv)} />
+    <PoolRewardsCrv
+      poolData={poolData}
+      rewardsApy={rewards}
+      isHighlight={isSortedBy(table, LegacyPoolColumnId.RewardsCrv)}
+    />
   ) : placeholder ? (
     <Placeholder />
   ) : null
