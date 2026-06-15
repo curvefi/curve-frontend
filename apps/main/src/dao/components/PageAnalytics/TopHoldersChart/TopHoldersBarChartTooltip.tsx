@@ -18,7 +18,7 @@ export const TopHoldersBarChartTooltip = ({ active, payload }: TooltipProps<Valu
 
     return (
       <TooltipWrapper>
-        <Box flex flexColumn flexGap={'var(--spacing-1)'}>
+        <Box flex flexColumn flexGap="var(--spacing-1)">
           <TooltipColumn>
             <TooltipDataTitle>{t`Holder`}</TooltipDataTitle>
             <TooltipData>{user}</TooltipData>

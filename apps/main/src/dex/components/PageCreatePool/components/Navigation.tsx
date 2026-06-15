@@ -21,49 +21,49 @@ export const Navigation = ({ navigation, setNavigation, blockchainId, chainId, c
 
   return (
     <NavigationStyles>
-      <ButtonStyles className={navigation === 0 ? 'active' : ''} nowrap size={'small'} onClick={() => setNavigation(0)}>
-        {validation.poolType && <StyledCheckmark name={'CheckmarkFilled'} size={16} aria-label={t`Checkmark filled`} />}
+      <ButtonStyles className={navigation === 0 ? 'active' : ''} nowrap size="small" onClick={() => setNavigation(0)}>
+        {validation.poolType && <StyledCheckmark name="CheckmarkFilled" size={16} aria-label={t`Checkmark filled`} />}
         <p className="button-text">{t`POOL TYPE`}</p>
-        <Icon name={'ChevronRight'} size={16} className="navigation-icon" aria-label={t`Chevron right`} />
+        <Icon name="ChevronRight" size={16} className="navigation-icon" aria-label={t`Chevron right`} />
       </ButtonStyles>
       <ButtonStyles
         className={navigation === 1 ? 'active' : ''}
         nowrap
-        size={'small'}
+        size="small"
         onClick={() => setNavigation(1)}
         disabled={!validation.poolType}
       >
         {validation.poolType && validation.tokensInPool && (
-          <StyledCheckmark name={'CheckmarkFilled'} size={16} aria-label={t`Checkmark filled`} />
+          <StyledCheckmark name="CheckmarkFilled" size={16} aria-label={t`Checkmark filled`} />
         )}
         <p className="button-text">{t`TOKENS IN POOL`}</p>
-        <Icon name={'ChevronRight'} size={16} className="navigation-icon" aria-label={t`Chevron right`} />
+        <Icon name="ChevronRight" size={16} className="navigation-icon" aria-label={t`Chevron right`} />
       </ButtonStyles>
       <ButtonStyles
         className={navigation === 2 ? 'active' : ''}
         nowrap
-        size={'small'}
+        size="small"
         onClick={() => setNavigation(2)}
         disabled={!validation.poolType || !validation.tokensInPool}
       >
         {validation.poolType && validation.tokensInPool && validation.parameters && (
-          <StyledCheckmark name={'CheckmarkFilled'} size={16} aria-label={t`Checkmark filled`} />
+          <StyledCheckmark name="CheckmarkFilled" size={16} aria-label={t`Checkmark filled`} />
         )}
         <p className="button-text">{t`PARAMETERS`}</p>
-        <Icon name={'ChevronRight'} size={16} className="navigation-icon" aria-label={t`Chevron right`} />
+        <Icon name="ChevronRight" size={16} className="navigation-icon" aria-label={t`Chevron right`} />
       </ButtonStyles>
       <ButtonStyles
         className={navigation === 3 ? 'active' : ''}
         nowrap
-        size={'small'}
+        size="small"
         onClick={() => setNavigation(3)}
         disabled={!validation.poolType || !validation.tokensInPool || !validation.parameters}
       >
         {checkFormReady(validation.poolType, validation.tokensInPool, validation.parameters, validation.poolInfo) && (
-          <StyledCheckmark name={'CheckmarkFilled'} size={16} aria-label={t`Checkmark filled`} />
+          <StyledCheckmark name="CheckmarkFilled" size={16} aria-label={t`Checkmark filled`} />
         )}
         <p className="button-text">{t`POOL INFO`}</p>
-        <Icon name={'ChevronRight'} size={16} className="navigation-icon" aria-label={t`Chevron right`} />
+        <Icon name="ChevronRight" size={16} className="navigation-icon" aria-label={t`Chevron right`} />
       </ButtonStyles>
       <SummaryContainer>
         <ConfirmModal smallScreen chainId={chainId} curve={curve} blockchainId={blockchainId} />

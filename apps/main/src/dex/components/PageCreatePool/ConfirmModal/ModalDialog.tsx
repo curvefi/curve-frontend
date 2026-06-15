@@ -58,7 +58,7 @@ export const ModalDialog = ({ children, footerContent, maxWidth, state, title, .
                 {title}
                 {showCloseButton && (
                   <IconButton {...closeButtonProps} ref={closeButtonRef} padding={2}>
-                    <Icon name={'Close'} size={24} aria-label="Close" />
+                    <Icon name="Close" size={24} aria-label="Close" />
                   </IconButton>
                 )}
               </Header>

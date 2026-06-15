@@ -64,7 +64,7 @@ export const GaugeVotingStats = () => {
             </MetricsColumnData>
           }
         />
-        <ComboBoxSelectGauge title={''} />
+        <ComboBoxSelectGauge title="" />
       </Box>
       {isUserPowerStale && <AlertBox alertType="info">{t`You have more power! Update gauges to unlock it.`}</AlertBox>}
     </UserDataWrapper>

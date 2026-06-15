@@ -1,5 +1,6 @@
 import { type ChangeEvent } from 'react'
 import type { Decimal } from '@primitives/decimal.utils'
+import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
@@ -30,11 +31,7 @@ export const LeverageInput = ({
       endContent={
         <ActionInfo
           label={t`Leverage`}
-          value={
-            leverage && +leverage > 0
-              ? `${formatNumber(leverage, { maximumFractionDigits: 2, abbreviate: false })}x`
-              : '-'
-          }
+          value={formatNumber(maybe(leverage, Number) && leverage, 'multiplier')}
           valueColor={leverageError ? 'error' : undefined}
           loading={isLeverageLoading}
           error={leverageError}

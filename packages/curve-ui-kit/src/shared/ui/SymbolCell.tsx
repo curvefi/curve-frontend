@@ -33,7 +33,7 @@ export const SymbolCell = ({
       <Tooltip arrow placement="bottom" {...valueTooltip} title={valueTooltip?.title ?? symbol ?? t`N/A`}>
         <Stack direction="row" sx={{ alignItems: 'baseline', gap: 1 }}>
           <Typography variant={MetricSize[size]}>{symbol ?? t`N/A`}</Typography>
-          <TokenIcon blockchainId={blockchainId} address={tokenAddress} size={'mui-sm'} />
+          <TokenIcon blockchainId={blockchainId} address={tokenAddress} size="mui-sm" />
         </Stack>
       </Tooltip>
     </WithSkeleton>

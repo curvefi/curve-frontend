@@ -1,8 +1,7 @@
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybes } from '@primitives/objects.utils'
 import type { UseQueryOptions } from '@tanstack/react-query'
 import { Query, QueryProp } from '@ui-kit/types/util'
-import { decimalMin } from '@ui-kit/utils'
+import { decimalMin } from '@ui-kit/utils/decimal'
 import { QueryOptionsArray, QueryResultsArray } from './types'
 
 export const combineQueryState = (...queries: (Query<unknown> | undefined)[]) =>
@@ -11,19 +10,19 @@ export const combineQueryState = (...queries: (Query<unknown> | undefined)[]) =>
     isLoading: queries.some(x => x?.isLoading),
   }) as Omit<QueryProp<unknown>, 'data'>
 
-type QueriesNonNullableData<TQueries extends readonly Query<unknown>[]> = {
-  [K in keyof TQueries]: TQueries[K] extends Query<infer TData> | undefined ? NonNullable<TData> : never
+type Queries = readonly Query<unknown>[]
+type QueriesData<TQueries extends Queries> = {
+  [K in keyof TQueries]: TQueries[K] extends Query<infer TData> ? Exclude<TData, undefined> : never
 }
 
-export const combineQueries = <const TQueries extends readonly Query<unknown>[], TResult>(
+export const combineQueries = <const TQueries extends Queries, TResult>(
   queries: TQueries,
-  selector: (...data: QueriesNonNullableData<TQueries>) => TResult | null | undefined,
+  selector: (...data: QueriesData<TQueries>) => TResult | null | undefined,
 ) =>
   ({
-    data: maybes(
-      queries.map(({ data }) => data),
-      data => selector(...(data as QueriesNonNullableData<TQueries>)),
-    ),
+    data: queries.some(({ data }) => data === undefined)
+      ? undefined
+      : selector(...(queries.map(({ data }) => data) as QueriesData<TQueries>)),
     ...combineQueryState(...queries),
   }) as QueryProp<TResult>
 

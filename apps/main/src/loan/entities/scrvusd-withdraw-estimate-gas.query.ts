@@ -15,9 +15,7 @@ export const { useQuery: useScrvUsdWithdrawEstimateGasQuery } = queryFactory({
       { maxWithdrawAmount },
     ] as const,
   queryFn: async ({ withdrawAmount, isFull, maxWithdrawAmount }: ScrvUsdWithdrawQuery) =>
-    await (isFull
-      ? requireLib('llamaApi').st_crvUSD.estimateGas.redeem(maxWithdrawAmount)
-      : requireLib('llamaApi').st_crvUSD.estimateGas.withdraw(withdrawAmount)),
+    await requireLib('llamaApi').st_crvUSD.estimateGas.redeem(isFull ? maxWithdrawAmount : withdrawAmount),
   category: 'savings.user',
   validationSuite: scrvUsdWithdrawMaxValidationSuite,
 })

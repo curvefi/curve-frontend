@@ -10,6 +10,7 @@ import {
   checkScrvUsdDepositAllowance,
   checkScrvUsdPositionDetails,
   checkScrvUsdWithdrawBalanceGreaterThan,
+  checkScrvUsdWithdrawBalanceDecreasedBy,
   checkScrvUsdWithdrawBalanceLessThan,
   checkScrvUsdWithdrawBalanceZero,
   checkScrvUsdWithdrawDetailsLoaded,
@@ -110,6 +111,7 @@ describe('scrvUSD', () => {
       writeInvalidThenValidScrvUsdWithdraw({ invalidAmount: invalidWithdrawValue, validAmount: withdrawValue })
       checkScrvUsdWithdrawDetailsLoaded()
       submitScrvUsdWithdrawForm('Withdraw')
+      checkScrvUsdWithdrawBalanceDecreasedBy(balance, withdrawValue)
       checkScrvUsdWithdrawBalanceGreaterThan('0')
       checkScrvUsdWithdrawBalanceLessThan(balance)
     })

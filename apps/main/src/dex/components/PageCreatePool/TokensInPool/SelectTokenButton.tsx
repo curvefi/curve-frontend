@@ -148,7 +148,7 @@ export const SelectTokenButton = ({
 
   return chainId || basePoolsLoading ? (
     <>
-      <ComboBoxButton {...openButtonProps} ref={openButtonRef} variant={'filled'} fillWidth>
+      <ComboBoxButton {...openButtonProps} ref={openButtonRef} variant="filled" fillWidth>
         {selectedToken ? (
           <>
             <ButtonTokenIcon
@@ -187,7 +187,7 @@ export const SelectTokenButton = ({
           >
             {swapType === STABLESWAP && (
               <Checkbox
-                key={'filter-basepools'}
+                key="filter-basepools"
                 isDisabled={basePools.length === 0}
                 className={filterBasepools ? 'active' : ''}
                 isSelected={filterBasepools}
