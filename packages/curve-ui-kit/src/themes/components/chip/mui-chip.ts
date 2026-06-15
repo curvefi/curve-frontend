@@ -283,9 +283,12 @@ export const defineMuiChip = (
           },
           // Target chips with empty labels (icon-only badges)
           '&:has(.MuiChip-label:empty)': {
-            width: height, // constant width for icon-only badges (perfect square)
+            width: height,
+            minWidth: height,
+            height,
             gap: 0,
-            padding: 0,
+            paddingInline: 0,
+            paddingBlock: 0,
             justifyContent: 'center',
           },
         },
