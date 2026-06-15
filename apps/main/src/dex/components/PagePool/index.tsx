@@ -15,6 +15,7 @@ import { useGaugeManager, useGaugeRewardsDistributors } from '@/dex/entities/gau
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolSnapshots } from '@/dex/entities/pool-snapshots.query'
 import { AdvancedDetails } from '@/dex/features/advanced-details'
+import { UserPosition } from '@/dex/features/user-position'
 import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
 import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
@@ -228,6 +229,14 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
         }
       >
         {poolAddress && <CampaignRewardsBanner chainId={rChainId} address={poolAddress} />}
+        {isPoolFreshupEnabled && (
+          <UserPosition
+            blockchainId={networkId}
+            chainId={rChainId}
+            poolDataCacheOrApi={poolDataCacheOrApi}
+            poolId={poolId}
+          />
+        )}
         {!isLite && pricesApiPoolData && pricesApi && (
           <OhlcAndActivityComp rChainId={rChainId} poolAddress={poolAddress} pricesApiPoolData={pricesApiPoolData} />
         )}
