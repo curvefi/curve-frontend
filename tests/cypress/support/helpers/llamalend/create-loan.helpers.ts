@@ -4,13 +4,17 @@ import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import { type AlertColor } from '@mui/material/Alert'
 import type { Decimal } from '@primitives/decimal.utils'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { Chain } from '@ui-kit/utils/network'
+import { DEFAULT_DECIMALS } from '@ui-kit/utils/units'
 import { DECIMAL_RANGE_REGEX, getActionValue } from './action-info.helpers'
 
 const chainId = Chain.Ethereum
 
 export const CREATE_LOAN_FUND_AMOUNT = '0x3635c9adc5dea00000' // 1000 ETH=1e21 wei
-const collateralDecimals = 18
+const borrowedSymbol = 'crvUSD'
+const borrowedDecimals = DEFAULT_DECIMALS
+const collateralDecimals = DEFAULT_DECIMALS
 
 export const LOAN_TEST_MARKETS = {
   [LlamaMarketType.Mint]: [
@@ -30,6 +34,9 @@ export const LOAN_TEST_MARKETS = {
       hasLeverage: true,
       hasLeverageManagement: false,
       collateralDecimals,
+      borrowedAddress: CRVUSD_ADDRESS,
+      borrowedDecimals,
+      borrowedSymbol,
     },
     {
       id: 'wbtc',
@@ -46,6 +53,9 @@ export const LOAN_TEST_MARKETS = {
       hasLeverage: true,
       hasLeverageManagement: false,
       collateralDecimals: 8,
+      borrowedAddress: CRVUSD_ADDRESS,
+      borrowedDecimals,
+      borrowedSymbol,
     },
   ],
   [LlamaMarketType.Lend]: [
@@ -64,6 +74,9 @@ export const LOAN_TEST_MARKETS = {
       hasLeverage: false,
       hasLeverageManagement: false,
       collateralDecimals,
+      borrowedAddress: CRVUSD_ADDRESS,
+      borrowedDecimals,
+      borrowedSymbol,
     },
     {
       id: 'one-way-market-41',
@@ -80,6 +93,28 @@ export const LOAN_TEST_MARKETS = {
       hasLeverage: true,
       hasLeverageManagement: true,
       collateralDecimals,
+      borrowedAddress: CRVUSD_ADDRESS,
+      borrowedDecimals,
+      borrowedSymbol,
+    },
+    {
+      id: 'one-way-market-v2-0',
+      label: 'wstETH-WETH LLv2',
+      collateralAddress: '0x1f32b1c2345538c0c6f582fcb022739c4a194ebb', // wstETH
+      controllerAddress: '0x745422BF49f3F6e4A8E12E4abD19339E7910F8C9',
+      collateral: '1',
+      borrow: '0.05',
+      borrowMore: '0.01',
+      repay: '0.02',
+      improveHealth: '0.01',
+      chainId: Chain.Optimism,
+      path: '/lend/optimism/markets/0x745422BF49f3F6e4A8E12E4abD19339E7910F8C9',
+      hasLeverage: true,
+      hasLeverageManagement: true,
+      collateralDecimals,
+      borrowedAddress: '0x4200000000000000000000000000000000000006', // WETH
+      borrowedDecimals,
+      borrowedSymbol: 'WETH',
     },
   ],
 } as const

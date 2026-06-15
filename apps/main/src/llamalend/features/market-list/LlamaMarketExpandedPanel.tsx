@@ -14,16 +14,14 @@ import { type ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
+import { MarketRateType } from '@ui-kit/types/market'
 import { AVERAGE_CATEGORIES, borderStyle } from '@ui-kit/utils'
-import { useUserMarketStats } from '../../queries/market-list/llama-market-stats'
 import type { LlamaMarket } from '../../queries/market-list/llama-markets'
 import { LineGraphCell, RateTooltipProps } from './cells'
 import { BorrowRateTooltip } from './cells/RateCell/BorrowRateTooltip'
 import { RewardsIcons } from './cells/RateCell/RewardsIcons'
 import { SupplyRateLendTooltip } from './cells/RateCell/SupplyRateLendTooltip'
 import { FavoriteMarketButton } from './chips/FavoriteMarketButton'
-import { LlamaMarketColumnId } from './columns'
 
 const { Spacing } = SizesAndSpaces
 
@@ -76,9 +74,6 @@ const RateItem = ({ market, type }: { market: LlamaMarket; type: MarketRateType 
 }
 
 export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { original: market } }) => {
-  // todo: update metric component(?) to show the errors when appropriate
-  const { data: earnings } = useUserMarketStats(market, LlamaMarketColumnId.UserEarnings)
-  const { data: deposited } = useUserMarketStats(market, LlamaMarketColumnId.UserDeposited)
   const {
     controllerAddress,
     favoriteKey,
@@ -88,17 +83,13 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
     type,
     url,
     userHasPositions,
+    lendingPosition,
     utilizationPercent,
     tvl,
     totalCollateralUsd,
     totalDebtUsd,
   } = market
   const graphSize = useMobileGraphSize()
-
-  const UnitMapping = {
-    [LlamaMarketType.Lend]: { symbol: assets.borrowed.symbol, position: 'suffix' },
-    [LlamaMarketType.Mint]: 'dollar',
-  } as const
 
   return (
     <>
@@ -161,17 +152,17 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
           <Grid size={12}>
             <CardHeader title={t`Your Position`} sx={{ paddingInline: 0 }}></CardHeader>
           </Grid>
-          {earnings?.earnings != null && (
+          {lendingPosition && (
             <Grid size={6}>
-              <Metric label={t`Earnings`} value={earnings.earnings.earnings} valueOptions={{ unit: 'dollar' }} />
+              <Metric label={t`Earnings`} value={lendingPosition.earnings} valueOptions={{ unit: 'dollar' }} />
             </Grid>
           )}
-          {deposited?.earnings != null && (
+          {lendingPosition && (
             <Grid size={6}>
               <Metric
                 label={t`Supplied Amount`}
-                value={deposited.earnings.totalCurrentAssets}
-                valueOptions={{ unit: UnitMapping[type] }}
+                value={lendingPosition.supplied}
+                valueOptions={{ unit: { symbol: assets.borrowed.symbol, position: 'suffix' } }}
               />
             </Grid>
           )}

@@ -4,8 +4,6 @@ import { StyleSheetManager } from 'styled-components'
 import { WagmiProvider } from 'wagmi'
 import { useNetworksQuery } from '@/dex/entities/networks'
 import { useStore as useDexStore } from '@/dex/store/useStore'
-import { useStore as useLendStore } from '@/lend/store/useStore'
-import { useStore as useLoanStore } from '@/loan/store/useStore'
 import { BACKEND_MAINTENANCE } from '@/maintenances'
 import { GlobalLayout } from '@/routes/GlobalLayout'
 import isPropValid from '@emotion/is-prop-valid'
@@ -13,7 +11,6 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { HeadContent, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { CurveProvider } from '@ui-kit/features/connect-wallet'
-import { HydratorMap } from '@ui-kit/features/connect-wallet/lib/types'
 import { useWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/useWagmiConfig'
 import { BackendMaintenanceModal } from '@ui-kit/features/maintenance/components/BackendMaintenanceModal'
 import { MaintenancePage } from '@ui-kit/features/maintenance/components/MaintenancePage'
@@ -23,7 +20,6 @@ import { addBreadcrumb } from '@ui-kit/features/sentry'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { usePathname } from '@ui-kit/hooks/router'
 import { useBodyThemeClass } from '@ui-kit/hooks/useBodyThemeClass'
-import { useLoanSlices } from '@ui-kit/hooks/useFeatureFlags'
 import { useLayoutStoreResponsive } from '@ui-kit/hooks/useLayoutStoreResponsive'
 import { useNetworkFromUrl } from '@ui-kit/hooks/useNetworkFromUrl'
 import { useOnChainUnavailable } from '@ui-kit/hooks/useOnChainUnavailable'
@@ -41,14 +37,6 @@ import { ErrorBoundary } from '@ui-kit/widgets/ErrorBoundary'
  */
 const shouldForwardProp = (propName: string, target: unknown) => typeof target !== 'string' || isPropValid(propName)
 
-function useHydrationMethods(): HydratorMap {
-  const loanSlicesEnabled = useLoanSlices()
-  const dex = useDexStore().hydrate
-  const crvusd = useLoanStore().hydrate
-  const lend = useLendStore().hydrate
-  return useMemo(() => ({ dex, ...(loanSlicesEnabled && { crvusd, lend }) }), [crvusd, dex, lend, loanSlicesEnabled])
-}
-
 const useBreadcrumbs = (pathname: string, { origin, search } = window.location) =>
   useEffect(
     () => addBreadcrumb(`Navigated to ${pathname}`, 'navigation', { origin, pathname, search }),
@@ -62,7 +50,8 @@ const NetworkAwareLayout = ({ backendMaintenance }: { backendMaintenance: Mainte
   const pathname = usePathname()
   const currentApp = getCurrentApp(pathname)
   const onChainUnavailable = useOnChainUnavailable(networks)
-  const hydrate = useHydrationMethods()
+  const { hydrate: dex } = useDexStore()
+  const hydrate = useMemo(() => ({ dex }), [dex])
   const config = useWagmiConfig(networks)
   useBreadcrumbs(pathname)
   useLayoutStoreResponsive()

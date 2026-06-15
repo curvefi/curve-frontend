@@ -1,40 +1,23 @@
-import { useUserMarketStats } from '@/llamalend/queries/market-list/llama-market-stats'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { BoostTooltipContent } from '@/llamalend/widgets/tooltips/BoostTooltipContent'
-import Skeleton from '@mui/material/Skeleton'
 import Typography from '@mui/material/Typography'
 import type { CellContext } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
+import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { formatNumber } from '@ui-kit/utils'
-import { LlamaMarketColumnId } from '../columns'
 
-export const BoostCell = ({ row }: CellContext<LlamaMarket, number>) => {
-  const market = row.original
-  const { data: stats, isLoading } = useUserMarketStats(market, LlamaMarketColumnId.UserBoostMultiplier)
-  const boostMultiplier = stats?.earnings?.boostMultiplier
-
-  if (isLoading) {
-    return (
-      <Typography variant="tableCellMBold" sx={{ textAlign: 'right' }}>
-        <Skeleton variant="text" width={40} />
-      </Typography>
-    )
-  }
-
-  if (!boostMultiplier) {
-    return (
-      <Typography variant="tableCellMBold" color="textSecondary" sx={{ textAlign: 'right' }}>
-        -
-      </Typography>
-    )
-  }
-
-  return (
-    <Tooltip clickable title={t`Boost`} body={<BoostTooltipContent />} placement="top">
-      <Typography variant="tableCellMBold" color="textPrimary" sx={{ textAlign: 'right' }}>
-        {formatNumber(boostMultiplier, 'multiplier')}
-      </Typography>
-    </Tooltip>
-  )
-}
+export const BoostCell = ({ getValue }: CellContext<LlamaMarket, number>) => (
+  <WithWrapper
+    Wrapper={Tooltip}
+    shouldWrap={getValue()}
+    clickable
+    title={t`Boost`}
+    body={<BoostTooltipContent />}
+    placement="top"
+  >
+    <Typography variant="tableCellMBold" color="textPrimary" sx={{ textAlign: 'right' }}>
+      {formatNumber(getValue(), 'multiplier')}
+    </Typography>
+  </WithWrapper>
+)

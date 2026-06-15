@@ -73,7 +73,6 @@ describe('BorrowMoreForm (mocked)', () => {
             networks={llamaNetworks}
             chainId={chainId}
             onPricesUpdated={onPricesUpdated}
-            enabled
             collateralEvents={constQ(fakeCollateralEvents)}
           />
         </MockLoanTestWrapper>,
@@ -84,6 +83,7 @@ describe('BorrowMoreForm (mocked)', () => {
         expectedCurrentDebt,
         expectedFutureDebt,
         leverageEnabled,
+        borrowedSymbol: 'crvUSD',
       })
       cy.get('[data-testid="borrow-more-submit-button"]').should('have.text', buttonText)
 
