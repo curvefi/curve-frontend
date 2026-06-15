@@ -5,7 +5,7 @@ import { queryFactory, rootKeys, type ChainNameParams, type ChainNameQuery } fro
 import { pricesApiChainValidationSuite } from '@ui-kit/lib/model/query/prices-chain-validation'
 import { mapQuery } from '@ui-kit/types/util'
 
-export const { useQuery: useRefuelPools, fetchQuery: fetchRefuelPools } = queryFactory({
+export const { useQuery: useRefuelPools } = queryFactory({
   queryKey: ({ blockchainId }: ChainNameParams) => [...rootKeys.chainName({ blockchainId }), 'getRefuelPools'] as const,
   queryFn: async ({ blockchainId }: ChainNameQuery) => getRefuelPools(blockchainId),
   validationSuite: pricesApiChainValidationSuite,
