@@ -28,7 +28,7 @@ export const BridgeAmount = ({
   error,
 }: BridgeAmountProps) => (
   <LargeTokenInput
-    name={'amount'}
+    name="amount"
     label={t`Amount to send`}
     disabled={disabled}
     // For now FastBride only support bridging crvUSD

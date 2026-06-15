@@ -4,9 +4,9 @@ import { useNetworkByChain } from '@/dex/entities/networks'
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import type { Chain as BlockchainId } from '@curvefi/prices-api'
 import Box from '@mui/material/Box'
-import { maybe } from '@primitives/objects.utils'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { decimal, formatNumber } from '@ui-kit/utils'
 import type { PointsCampaignsRow } from '../components/points-campaigns/columns/columns.definitions'
 
 const { IconSize } = SizesAndSpaces
@@ -43,7 +43,7 @@ export const usePointsCampaigns = ({
               iconPosition: 'left',
               primary: platform,
             },
-            points: maybe(multiplier, x => `${x}x`) ?? '-',
+            points: formatNumber(decimal(multiplier), 'multiplier'),
             campaignUrl: dashboardLink,
           }),
         ),

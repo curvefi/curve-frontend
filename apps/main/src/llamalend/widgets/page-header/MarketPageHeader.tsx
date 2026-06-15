@@ -1,11 +1,11 @@
+import { useConnection } from 'wagmi'
 import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
-import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
+import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Chain } from '@curvefi/prices-api'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
-import type { Address } from '@primitives/address.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
@@ -22,39 +22,35 @@ import { MetricsRow } from './'
 
 const { Spacing } = SizesAndSpaces
 
-const generateSubtitle = (
-  collateralSymbol: string | undefined,
-  borrowedSymbol: string | undefined,
-  type: LlamaMarketType,
-) =>
-  collateralSymbol && borrowedSymbol && type === LlamaMarketType.Mint
-    ? t`Use ${collateralSymbol} to borrow and mint ${borrowedSymbol}`
-    : t`Use ${collateralSymbol} to borrow ${borrowedSymbol}`
-
-const generateMarketTitle = (collateralSymbol: string | undefined, borrowedSymbol: string | undefined) =>
-  (collateralSymbol && borrowedSymbol && `${collateralSymbol.toUpperCase()} • ${borrowedSymbol.toUpperCase()}`) ??
-  t`Market`
-
 export const MarketPageHeader = ({
+  blockchainId,
   chainId,
   marketId,
   isLoading,
   market,
-  blockchainId,
+  marketType,
 }: {
+  blockchainId: Chain
   chainId: number
-  marketId: string
+  marketId: string | undefined
   isLoading: boolean
   market: LlamaMarketTemplate | undefined
-  blockchainId: Chain
+  marketType: LlamaMarketType
 }) => {
+  const { address: userAddress } = useConnection()
   const { borrowRate, supplyRate, availableLiquidity } = usePageHeader({ chainId, marketId, market, blockchainId })
-  const marketType = market instanceof MintMarketTemplate ? LlamaMarketType.Mint : LlamaMarketType.Lend
-  const { collateralToken, borrowToken } = market
-    ? getTokens(market)
-    : { collateralToken: undefined, borrowToken: undefined }
-  const title = generateMarketTitle(collateralToken?.symbol, borrowToken?.symbol)
-  const subtitle = generateSubtitle(collateralToken?.symbol, borrowToken?.symbol, marketType)
+  const { collateralToken, borrowToken } = (market && getTokens(market)) ?? {}
+
+  const title =
+    (collateralToken &&
+      borrowToken &&
+      `${collateralToken.symbol.toUpperCase()} • ${borrowToken.symbol.toUpperCase()}`) ??
+    t`Market`
+
+  const subtitle =
+    collateralToken &&
+    borrowToken &&
+    t`Use ${collateralToken.symbol} to borrow ${marketType === LlamaMarketType.Mint ? t`and mint ` : ''}${borrowToken.symbol}`
 
   return (
     <PageHeader
@@ -83,20 +79,18 @@ export const MarketPageHeader = ({
             </Stack>
           </WithSkeleton>
 
-          {isDevelopment && market && (
+          {isDevelopment && market && userAddress && (
             <IconButton
               size="extraSmall"
-              // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-              onClick={() => {
-                const { chainId, signerAddress } = market.getLlamalend()
-                return invalidateAllUserMarketDetails({
-                  chainId,
+              onClick={() =>
+                void invalidateAllUserMarketDetails({
+                  chainId: chainId as IChainId,
                   marketId: market.id,
-                  userAddress: signerAddress as Address,
+                  userAddress,
                   blockchainId,
                   contractAddress: getControllerAddress(market),
                 })
-              }}
+              }
             >
               <ReloadIcon />
             </IconButton>

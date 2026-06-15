@@ -1,10 +1,9 @@
-import lodash from 'lodash'
 import { useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import { RewardCrv } from '@/dex/types/main.types'
 import { rewardsApyCrvText } from '@/dex/utils/utilsCurvejs'
 import { Box } from '@ui/Box'
-import { formatNumber } from '@ui-kit/utils'
+import { decimal, formatNumber } from '@ui-kit/utils'
 
 type Props = {
   crv?: RewardCrv[]
@@ -37,7 +36,7 @@ export const TableCellRewardsTooltip = ({ crv = [], userCrvApy, fetchUserPoolBoo
       <Title>CRV tAPR</Title>
       <div>Min/max: {rewardsApyCrvText(crv)}</div>
       <div>Your: {formatNumber(userCrvApy, 'percent.value')}</div>
-      <div>Boost: {boost ? `${lodash.round(+boost, 2)}x` : '-'}</div>
+      <div>Boost: {formatNumber(decimal(boost), 'multiplier')}</div>
     </Box>
   )
 }

@@ -58,7 +58,7 @@ export const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistribution
   if (!userAddress && isUserVotes) {
     return (
       <Wrapper variant="secondary">
-        <Box flex flexColumn padding={'var(--spacing-3) 0 0'}>
+        <Box flex flexColumn padding="var(--spacing-3) 0 0">
           <ChartTitle>{isUserVotes ? t`Your Vote Weight Distribution` : t`Relative Weight Distribution`}</ChartTitle>
           <ErrorMessageWrapper>{t`No user address connected`}</ErrorMessageWrapper>
         </Box>
@@ -68,7 +68,7 @@ export const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistribution
 
   return (
     <Wrapper variant="secondary">
-      <Box flex flexColumn padding={'var(--spacing-3) 0 0'}>
+      <Box flex flexColumn padding="var(--spacing-3) 0 0">
         <ChartTitle>{isUserVotes ? t`User Vote Weight Distribution` : t`Relative Weight Distribution`}</ChartTitle>
         {isLoading && (
           <StyledSpinnerWrapper>

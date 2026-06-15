@@ -113,7 +113,7 @@ export const MySharesStats = ({
             <Typography variant="headingSBold">{t`Your position`}</Typography>
             <Typography variant="bodySRegular">
               <span>
-                {t`Staked share:`} <strong>{userShareLabel}</strong> <Chip size={'xs'}>{t`of pool`}</Chip>
+                {t`Staked share:`} <strong>{userShareLabel}</strong> <Chip size="xs">{t`of pool`}</Chip>
                 {userPoolError && (
                   <Tooltip title={userPoolError.message} placement="top">
                     <ExclamationTriangleIcon fontSize="small" color="error" />

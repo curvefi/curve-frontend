@@ -15,7 +15,7 @@ export const FeesBarChartTooltip = ({ active, payload }: TooltipProps<ValueType,
 
     return (
       <TooltipWrapper>
-        <Box flex flexColumn flexGap={'var(--spacing-1)'}>
+        <Box flex flexColumn flexGap="var(--spacing-1)">
           <TooltipColumn>
             <TooltipDataTitle>{t`Distribution Date`}</TooltipDataTitle>
             <TooltipData>
@@ -25,7 +25,7 @@ export const FeesBarChartTooltip = ({ active, payload }: TooltipProps<ValueType,
           </TooltipColumn>
         </Box>
 
-        <Box flex flexColumn flexGap={'var(--spacing-1)'}>
+        <Box flex flexColumn flexGap="var(--spacing-1)">
           <TooltipColumn>
             <TooltipDataTitle>{t`veCRV Fees`}</TooltipDataTitle>
             <TooltipData>{formatNumber(feesUsd, 'usd.notional')}</TooltipData>

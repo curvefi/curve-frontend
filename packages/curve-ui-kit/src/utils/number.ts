@@ -184,28 +184,35 @@ export type NumberFormatOptions = {
 const TOKEN_BALANCE_SIGNIFICANT_DIGITS = 5
 
 const NUMBER_FORMAT_CATEGORIES = {
+  multiplier: {
+    abbreviate: false,
+    fallback: '-',
+    unit: 'multiplier',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  },
   'token.amount': { abbreviate: false, fallback: '-' },
   'token.compact': { abbreviate: true, fallback: '-' },
   'token.balance': {
     abbreviate: false,
     formatter: (value: Amount) => {
       const absValue = Math.abs(Number(value))
-      const options: Partial<NumberFormatOptions> | undefined =
+      return defaultNumberFormatter(
+        value,
         // For values between 0 and 1, we want to round up to 5 significant digits,
         // For values >= 1, we want to show up to 5 significant digits after the decimal point, depending on the magnitude of the number.
         // For super big values that have more than 5 digits we don't want a max of 5 significant digits, as that will incorrectly round.
-        absValue > 0 && absValue < 1
+        absValue && absValue < 1
           ? { maximumSignificantDigits: TOKEN_BALANCE_SIGNIFICANT_DIGITS, trailingZeroDisplay: 'auto' }
-          : absValue >= 1
+          : Number.isFinite(absValue)
             ? {
                 maximumFractionDigits: Math.max(
                   DEFAULT_DECIMALS,
                   TOKEN_BALANCE_SIGNIFICANT_DIGITS - Math.floor(Math.log10(absValue)) - 1,
                 ),
               }
-            : undefined
-
-      return defaultNumberFormatter(value, options)
+            : undefined,
+      )
     },
     fallback: '-',
   },
@@ -222,7 +229,7 @@ const NUMBER_FORMAT_CATEGORIES = {
   },
 } as const satisfies Record<string, NumberFormatOptions & { fallback: string }>
 
-type NumberFormatCategory = keyof typeof NUMBER_FORMAT_CATEGORIES
+export type NumberFormatCategory = keyof typeof NUMBER_FORMAT_CATEGORIES
 
 /**
  * Decomposes a number into its formatted parts including prefix, main value, suffix, and scale suffix.

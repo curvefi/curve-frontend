@@ -63,7 +63,10 @@ describe('Refuel page', () => {
     getTestById('daily-refuels-chart').contains('Refuel count').should('be.visible')
 
     getTestById('recent-refuels').should('be.visible')
-    getTestById('recent-refuels').find('[data-testid="data-table"]').should('be.visible')
-    getTestById('recent-refuels').find('[data-testid^="data-table-row-"]').its('length').should('be.greaterThan', 0)
+    getTestById('recent-refuels').find('[data-testid="data-table"]', API_LOAD_TIMEOUT).should('be.visible')
+    getTestById('recent-refuels')
+      .find('[data-testid^="data-table-row-"]', API_LOAD_TIMEOUT)
+      .its('length')
+      .should('be.greaterThan', 0)
   })
 })

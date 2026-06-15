@@ -53,7 +53,7 @@ export const AlertBox = ({
             grid
             gridTemplateColumns={handleBtnClose == null ? 'auto 1fr' : 'auto 1fr auto'}
             gridColumnGap={1}
-            flexAlignItems={'flex-start'}
+            flexAlignItems="flex-start"
             {...props}
           >
             {IconComp}

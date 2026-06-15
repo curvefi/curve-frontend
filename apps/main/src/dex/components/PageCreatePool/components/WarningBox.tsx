@@ -10,7 +10,7 @@ type Props = {
 
 export const WarningBox = ({ message, children, informational = false }: Props) => (
   <WarningBoxWrapper informational={informational}>
-    <StyledIcon name={'InformationSquareFilled'} size={24} aria-label="Information Icon" />
+    <StyledIcon name="InformationSquareFilled" size={24} aria-label="Information Icon" />
     <p>{message}</p>
     {children}
   </WarningBoxWrapper>

@@ -1,56 +1,11 @@
 import { ChainId, type CollateralUrlParams, LlamaApi, Llamma } from '@/loan/types/loan.types'
+import { Decimal } from '@primitives/decimal.utils'
+import { Range } from '@ui-kit/types/util'
 
-export type FormStatus = {
-  isApproved: boolean
-  isComplete: boolean
-  isInProgress: boolean
-  error: string
-}
-
-export type FormEstGas = {
-  estimatedGas: number
-  loading?: boolean
-}
-
-export type FormDetailInfo = {
-  healthFull: string
-  healthNotFull: string
-  bands: [number, number]
-  prices: string[]
-  loading: boolean
-}
-
-export type ManageLoanProps = {
+export type LoanTabProps = {
   curve: LlamaApi | null
-  isReady: boolean
-  market: Llamma | null
+  market: Llamma | undefined
   params: CollateralUrlParams
   rChainId: ChainId
-}
-
-export type FormValues = {
-  collateral: string
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
-  collateralError: 'too-much' | string
-  debt: string
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
-  debtError: 'too-much' | string
-  n: number | null
-}
-
-export type StepKey = 'APPROVAL' | 'CREATE' | ''
-
-export type PageLoanCreateProps = {
-  curve: LlamaApi | null
-  isReady: boolean
-  market: Llamma | null
-  params: CollateralUrlParams
-  rChainId: ChainId
-}
-
-export type MaxRecvLeverage = {
-  maxBorrowable: string
-  maxCollateral: string
-  leverage: string
-  routeIdx: number | null
+  onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }
