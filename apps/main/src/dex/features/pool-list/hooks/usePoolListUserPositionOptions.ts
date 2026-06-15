@@ -11,9 +11,9 @@ import {
   getPoolIdByAddressEntries,
   normalizeAddress,
   type PoolListItemOptions,
-} from '../apiPoolList.utils'
+} from '../poolList.utils'
 
-export const usePoolListApiUserPositionOptions = (chainId: ChainId) => {
+export const usePoolListUserPositionOptions = (chainId: ChainId) => {
   const { curveApi, isHydrated } = useCurve()
   const { address: userAddress } = useConnection()
   const poolDataMapper = useStore(state => state.pools.poolsMapper[chainId])
@@ -37,7 +37,6 @@ export const usePoolListApiUserPositionOptions = (chainId: ChainId) => {
 
       return {
         hasPosition: getHasPosition(userPoolIds, normalizedPoolAddress, poolId),
-        poolId,
       }
     },
     [poolIdByAddress, userPoolIds],
