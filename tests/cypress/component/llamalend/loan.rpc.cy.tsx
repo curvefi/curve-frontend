@@ -54,9 +54,7 @@ const waitUntilLendMarketUpdated = (id: string, expectedDebt: Decimal, marketTyp
   if (marketType !== LlamaMarketType.Lend) return // mint markets don't have cache
   cy.then(LOAD_TIMEOUT, () =>
     waitFor(async () => {
-      const market = getLib('llamaApi')?.getLendMarket(id)
-      market?.userPosition.clearCache()
-      const state = await market?.userPosition.userState()
+      const state = await getLib('llamaApi')?.getLendMarket(id)?.userPosition.userState()
       if (state && BigNumber(expectedDebt).isEqualTo(state.debt)) return true
       console.warn(`Lend market ${id} debt not updated to ${expectedDebt} yet (state=${JSON.stringify(state)})`)
     }, LOAD_TIMEOUT),

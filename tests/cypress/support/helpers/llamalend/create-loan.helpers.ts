@@ -112,7 +112,7 @@ export const LOAN_TEST_MARKETS = {
       hasLeverage: true,
       hasLeverageManagement: true,
       collateralDecimals,
-      borrowedAddress: '0x4200000000000000000000000000000000000006',
+      borrowedAddress: '0x4200000000000000000000000000000000000006', // WETH
       borrowedDecimals,
       borrowedSymbol: 'WETH',
     },
