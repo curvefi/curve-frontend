@@ -26,11 +26,7 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useMappedQuery } from '@ui-kit/types/util'
 import { formatNumber } from '@ui-kit/utils'
-import {
-  REFUEL_TIMESERIES_PAGE_SIZE,
-  type RefuelTimeSeriesData,
-  useRefuelTimeseries,
-} from '../queries/timeseries.query'
+import { REFUEL_TIMESERIES_PAGE_SIZE, RefuelTimeSeriesData, useRefuelTimeseries } from '../queries/timeseries.query'
 
 const { Spacing } = SizesAndSpaces
 
@@ -80,7 +76,7 @@ export const RefuelPricesChart = ({ blockchainId, poolAddress }: { blockchainId:
 
   const toggleVisibility = (key: string) => setVisibility(prev => ({ ...prev, [key]: !(prev[key] ?? true) }))
 
-  const timeseries = useRefuelTimeseries({
+  const timeSeries = useRefuelTimeseries({
     blockchainId,
     poolAddress,
     start,
@@ -104,7 +100,7 @@ export const RefuelPricesChart = ({ blockchainId, poolAddress }: { blockchainId:
 
   const chartData = useMemo(
     () =>
-      llama(timeseries.data?.data)
+      llama(timeSeries.data?.data)
         .map(point => ({
           time: new Date(point.timestamp).getTime(),
           lastPrice: point.lastPrices?.[0] ?? null,
@@ -117,10 +113,10 @@ export const RefuelPricesChart = ({ blockchainId, poolAddress }: { blockchainId:
         .uniqWith((x, y) => x.time === y.time)
         .orderBy(point => point.time, 'asc')
         .value(),
-    [timeseries.data?.data],
+    [timeSeries.data?.data],
   )
-  const lpUsdPrice = useMappedQuery(timeseries, getLatestLpUsdPrice)
-  const virtualPrice = useMappedQuery(timeseries, getLatestVirtualPrice)
+  const lpUsdPrice = useMappedQuery(timeSeries, getLatestLpUsdPrice)
+  const virtualPrice = useMappedQuery(timeSeries, getLatestVirtualPrice)
 
   const yAxisMin = useMemo(
     () =>
@@ -153,8 +149,8 @@ export const RefuelPricesChart = ({ blockchainId, poolAddress }: { blockchainId:
 
   return (
     <EChartsCard
-      title={`${timeseries.data?.tokens[1]?.symbol ?? '?'} prices in ${timeseries.data?.tokens[0]?.symbol ?? '?'}`}
-      loading={timeseries.isLoading}
+      title={`${timeSeries.data?.tokens[1]?.symbol ?? '?'} prices in ${timeSeries.data?.tokens[0]?.symbol ?? '?'}`}
+      loading={timeSeries.isPending}
       option={option}
       fullscreen={fullscreen}
       onCloseFullscreen={closeFullscreen}
@@ -186,7 +182,7 @@ export const RefuelPricesChart = ({ blockchainId, poolAddress }: { blockchainId:
             options={PERIODS}
             activeOption={period}
             setActiveOption={setPeriod}
-            isLoading={timeseries.isLoading}
+            isLoading={timeSeries.isPending}
           />
           {fullscreen && (
             <ButtonExport
