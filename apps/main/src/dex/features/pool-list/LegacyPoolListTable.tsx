@@ -11,12 +11,12 @@ import { useFilters } from '@ui-kit/shared/ui/DataTable/hooks/useFilters'
 import { LegacyDataTable } from '@ui-kit/shared/ui/DataTable/LegacyDataTable'
 import { LegacyTableFilters } from '@ui-kit/shared/ui/DataTable/LegacyTableFilters'
 import { LegacyTableFiltersTitles } from '@ui-kit/shared/ui/DataTable/LegacyTableFiltersTitles'
-import { PoolListChips } from './chips/PoolListChips'
-import { POOL_LIST_COLUMNS, PoolColumnId, getDefaultSort } from './columns'
-import { PoolListEmptyState } from './components/PoolListEmptyState'
-import { PoolMobileExpandedPanel } from './components/PoolMobileExpandedPanel'
+import { LegacyPoolListChips } from './chips/LegacyPoolListChips'
+import { LEGACY_POOL_LIST_COLUMNS, LegacyPoolColumnId, getLegacyDefaultSort } from './columns'
+import { LegacyPoolListEmptyState } from './components/LegacyPoolListEmptyState'
+import { LegacyPoolMobileExpandedPanel } from './components/LegacyPoolMobileExpandedPanel'
 import { useLegacyPoolListData } from './hooks/useLegacyPoolListData'
-import { usePoolListVisibilitySettings } from './hooks/usePoolListVisibilitySettings'
+import { useLegacyPoolListVisibilitySettings } from './hooks/useLegacyPoolListVisibilitySettings'
 import { useLegacyPoolsGlobalFilterFn } from './legacyPoolsGlobalFilter'
 
 const LOCAL_STORAGE_KEY = 'dex-pool-list'
@@ -31,13 +31,13 @@ export const LegacyPoolListTable = ({ network }: { network: NetworkConfig }) => 
 
   const { globalFilter, setGlobalFilter, columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useFilters(
     {
-      columns: PoolColumnId,
+      columns: LegacyPoolColumnId,
     },
   )
   const globalFilterFn = useLegacyPoolsGlobalFilterFn(data ?? [], globalFilter)
-  const [sorting, onSortingChange] = useSortFromQueryString(getDefaultSort(isLite))
+  const [sorting, onSortingChange] = useSortFromQueryString(getLegacyDefaultSort(isLite))
   const [pagination, onPaginationChange] = usePageFromQueryString(PER_PAGE)
-  const { columnSettings, columnVisibility, sortField } = usePoolListVisibilitySettings(LOCAL_STORAGE_KEY, {
+  const { columnSettings, columnVisibility, sortField } = useLegacyPoolListVisibilitySettings(LOCAL_STORAGE_KEY, {
     isLite,
     sorting,
   })
@@ -46,7 +46,7 @@ export const LegacyPoolListTable = ({ network }: { network: NetworkConfig }) => 
   const filterProps = { columnFiltersById, setColumnFilter }
 
   const table = useTable({
-    columns: POOL_LIST_COLUMNS,
+    columns: LEGACY_POOL_LIST_COLUMNS,
     data: data ?? EMPTY,
     state: { expanded, sorting, columnVisibility, columnFilters, pagination, globalFilter },
     onSortingChange,
@@ -63,14 +63,14 @@ export const LegacyPoolListTable = ({ network }: { network: NetworkConfig }) => 
       table={table}
       emptyState={
         <EmptyStateRow table={table}>
-          <PoolListEmptyState columnFiltersById={columnFiltersById} resetFilters={resetFilters} />
+          <LegacyPoolListEmptyState columnFiltersById={columnFiltersById} resetFilters={resetFilters} />
         </EmptyStateRow>
       }
-      expandedPanel={PoolMobileExpandedPanel}
+      expandedPanel={LegacyPoolMobileExpandedPanel}
       shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       loading={isLoading}
     >
-      <LegacyTableFilters<PoolColumnId>
+      <LegacyTableFilters<LegacyPoolColumnId>
         filterExpandedKey={LOCAL_STORAGE_KEY}
         leftChildren={<LegacyTableFiltersTitles title={t`Pools`} subtitle={t`Find your next opportunity`} />}
         loading={isLoading}
@@ -79,7 +79,7 @@ export const LegacyPoolListTable = ({ network }: { network: NetworkConfig }) => 
         onSearch={setGlobalFilter}
         hasSearchBar
         chips={
-          <PoolListChips
+          <LegacyPoolListChips
             poolFilters={poolFilters}
             hiddenCount={getHiddenCount(table)}
             resetFilters={resetFilters}

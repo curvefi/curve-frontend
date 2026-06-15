@@ -1,8 +1,8 @@
 import type { DeepKeys } from '@tanstack/table-core'
 import { useFuzzyFilterFn } from '@ui-kit/hooks/useFuzzySearch'
-import type { PoolListItem } from './types'
+import type { LegacyPoolListItem } from './legacyPoolList.types'
 
-const POOL_KEYS: DeepKeys<PoolListItem>[] = [
+const POOL_KEYS: DeepKeys<LegacyPoolListItem>[] = [
   'pool.name',
   'pool.wrappedCoins',
   'pool.underlyingCoins',
@@ -14,5 +14,5 @@ const POOL_KEYS: DeepKeys<PoolListItem>[] = [
 ]
 
 /** Search filter for pools lists */
-export const useLegacyPoolsGlobalFilterFn = (data: readonly PoolListItem[], filterValue: string) =>
+export const useLegacyPoolsGlobalFilterFn = (data: readonly LegacyPoolListItem[], filterValue: string) =>
   useFuzzyFilterFn(data, filterValue, POOL_KEYS)

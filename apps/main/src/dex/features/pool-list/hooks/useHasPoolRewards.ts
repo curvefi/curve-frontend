@@ -3,11 +3,11 @@ import type { RewardsApy } from '@/dex/types/main.types'
 import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
-import type { PoolListItem } from '../types'
+import type { LegacyPoolListItem } from '../legacyPoolList.types'
 
 export const hasCrvRewards = (rewards: RewardsApy | undefined) => sum(rewards?.crv) > 0
 
-export const useHasPoolRewards = (rewards: RewardsApy | undefined, poolData: PoolListItem) => {
+export const useHasPoolRewards = (rewards: RewardsApy | undefined, poolData: LegacyPoolListItem) => {
   const { data: campaigns } = useCampaignsByAddress({
     blockchainId: poolData.network as Chain,
     address: poolData?.pool?.address as Address,

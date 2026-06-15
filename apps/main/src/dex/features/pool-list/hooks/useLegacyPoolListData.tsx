@@ -16,7 +16,7 @@ import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { DEX_ROUTES } from '@ui-kit/shared/routes'
 import { decimal } from '@ui-kit/utils'
-import type { PoolListItem, PoolTag } from '../types'
+import type { LegacyPoolListItem, LegacyPoolTag } from '../legacyPoolList.types'
 
 const POOL_TEXT_FIELDS = [
   'pool.wrappedCoins',
@@ -37,8 +37,8 @@ const matchText = <T,>(data: T, fields: readonly DeepKeys<T>[], filter: string) 
       fields.some(field => (get(data, field) as string | undefined)?.toLowerCase?.().includes(filterWord)),
     )
 
-const getPoolTags = (hasPosition: boolean, { pool, pool: { address, id, name, referenceAsset } }: PoolData) =>
-  notFalsy<PoolTag>(
+const getLegacyPoolTags = (hasPosition: boolean, { pool, pool: { address, id, name, referenceAsset } }: PoolData) =>
+  notFalsy<LegacyPoolTag>(
     hasPosition && 'user',
     ...(['btc', 'kava', 'eth', 'usd', 'crypto', 'crvusd'] as const).filter(
       asset => referenceAsset.toLowerCase() === asset || matchText({ pool }, POOL_TEXT_FIELDS, asset),
@@ -86,7 +86,7 @@ export function useLegacyPoolListData({ id: network, chainId, isLite }: NetworkC
       () =>
         isLoading
           ? []
-          : poolsData?.map((item): PoolListItem => {
+          : poolsData?.map((item): LegacyPoolListItem => {
               const rewards = rewardsApyMapper?.[item.pool.id]
               const hasPosition = userPools?.includes(item.pool.id)
               const [, boostedCrvRewards] = rewards?.crv ?? []
@@ -100,7 +100,7 @@ export function useLegacyPoolListData({ id: network, chainId, isLite }: NetworkC
                 hasPosition,
                 network,
                 url: getPath({ network }, `${DEX_ROUTES.PAGE_POOLS}/${item.pool.address}/deposit`),
-                tags: getPoolTags(!!hasPosition, item),
+                tags: getLegacyPoolTags(!!hasPosition, item),
               }
             }),
       [isLoading, poolsData, rewardsApyMapper, userPools, tvls, volumes, network],
