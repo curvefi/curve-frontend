@@ -42,6 +42,16 @@ type SliceState = {
 
 const sliceKey = 'pools'
 
+type FactoryPoolRefresher = Pick<CurveApi['factory'], 'fetchRecentlyDeployedPool'>
+
+const getFactoryPoolRefresher = (curve: CurveApi, poolId: string): FactoryPoolRefresher | undefined => {
+  if (poolId.startsWith('factory-v2-')) return curve.factory
+  if (poolId.startsWith('factory-stable-ng-')) return curve.stableNgFactory
+  if (poolId.startsWith('factory-crypto-')) return curve.cryptoFactory
+  if (poolId.startsWith('factory-twocrypto-')) return curve.twocryptoFactory
+  if (poolId.startsWith('factory-tricrypto-')) return curve.tricryptoFactory
+}
+
 export type PoolsSlice = {
   [sliceKey]: SliceState & {
     fetchPools: (
@@ -151,6 +161,20 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
       }
     },
     fetchNewPool: async (curve, poolId) => {
+      const knownPool = curve.getPoolList().includes(poolId) ? curve.getPool(poolId) : null
+
+      if (knownPool) {
+        if (knownPool.isFactory && !curve.isNoRPC) {
+          const refresher = getFactoryPoolRefresher(curve, poolId)
+          await refresher?.fetchRecentlyDeployedPool(knownPool.address)
+        }
+
+        const resp = await get()[sliceKey].fetchPools(curve, [poolId])
+        return resp?.poolsMapper?.[poolId]
+      }
+
+      if (curve.isNoRPC) return
+
       await Promise.allSettled([
         curve.factory.fetchNewPools(),
         curve.cryptoFactory.fetchNewPools(),

@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react'
 import { isAddress, isAddressEqual } from 'viem'
 import { Transfer } from '@/dex/components/PagePool/index'
 import { ROUTE } from '@/dex/constants'
-import { useNetworkByChain } from '@/dex/entities/networks'
 import { useChainId } from '@/dex/hooks/useChainId'
 import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import { usePoolsBlacklist } from '@/dex/queries/pools-blacklist.query'
@@ -11,12 +10,11 @@ import type { PoolUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import type { Chain } from '@curvefi/prices-api'
 import { useCurve } from '@ui-kit/features/connect-wallet'
-import { useNavigate, useParams } from '@ui-kit/hooks/router'
+import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 
 export const PagePool = () => {
-  const push = useNavigate()
   const { curveApi = null, isHydrated } = useCurve()
   const props = useParams<PoolUrlParams>()
   const { poolIdOrAddress: rPoolIdOrAddress, formType: rFormType, network: networkId } = props
@@ -28,17 +26,23 @@ export const PagePool = () => {
   const fetchNewPool = useStore(state => state.pools.fetchNewPool)
   const poolDataCache = useStore(state => state.storeCache.poolsMapper[rChainId]?.[poolId ?? ''])
   const poolData = useStore(state => state.pools.poolsMapper[rChainId]?.[poolId ?? ''])
-  const { data: network } = useNetworkByChain({ chainId: rChainId })
   const [poolNotFound, setPoolNotFound] = useState(false)
 
   const poolDataCacheOrApi = useMemo(() => poolData || poolDataCache, [poolData, poolDataCache])
+  const activePoolKey = rChainId && poolId ? `${rChainId}-${poolId}` : ''
+  const shouldRefreshPoolDefinition = !poolDataCacheOrApi || poolDataCacheOrApi.pool.isFactory
 
   useEffect(() => {
-    if (!rChainId || !poolId || curveApi?.chainId !== rChainId || !haveAllPools || poolData) return
+    setPoolNotFound(false)
+  }, [activePoolKey, rPoolIdOrAddress])
+
+  useEffect(() => {
+    if (!activePoolKey || !poolId || !curveApi || curveApi.chainId !== rChainId || !haveAllPools) return
+    if (!shouldRefreshPoolDefinition) return
     fetchNewPool(curveApi, poolId)
       .then(found => setPoolNotFound(!found))
       .catch(() => setPoolNotFound(true))
-  }, [curveApi, fetchNewPool, haveAllPools, network, poolId, poolData, push, rChainId])
+  }, [activePoolKey, curveApi, fetchNewPool, haveAllPools, poolId, rChainId, shouldRefreshPoolDefinition])
 
   /**
    * Blacklisted pools are excluded from the pools mapper during initialization,
