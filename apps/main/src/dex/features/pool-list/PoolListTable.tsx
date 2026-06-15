@@ -66,6 +66,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
     () => poolList?.pools.map(pool => getPoolListItem(network, pool, getUserPositionOptions(pool.address))) ?? EMPTY,
     [getUserPositionOptions, network, poolList?.pools],
   )
+  const userHasPositions = data.some(({ hasPosition }) => hasPosition)
   const [expanded, setExpanded] = useState<ExpandedState>({})
   const { columnSettings, columnVisibility, toggleVisibility } = usePoolListVisibilitySettings(LOCAL_STORAGE_KEY, {
     isLite: network.isLite,
@@ -106,7 +107,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
           </EmptyStateRow>
         }
         expandedPanel={PoolListMobileExpandedPanel}
-        shouldStickFirstColumn={isTablet}
+        shouldStickFirstColumn={Boolean(isTablet && userHasPositions)}
         isLoading={loading}
         size="large"
       >

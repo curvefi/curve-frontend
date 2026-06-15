@@ -8,6 +8,7 @@ import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { formatNumber } from '@ui-kit/utils'
 import type { PoolListItem } from '../poolList.types'
+import { normalizeAddress } from '../poolList.utils'
 import { Placeholder } from './Placeholder'
 
 type CrvRewards = Pick<PoolListItem, 'crvApr' | 'crvAprBoosted'>
@@ -49,7 +50,7 @@ export const PoolListRewards = ({
 }) => {
   const { data: campaigns } = useCampaignsByAddress({
     blockchainId: pool.network as Chain,
-    address: pool.address,
+    address: normalizeAddress(pool.address) as typeof pool.address,
   })
   const crvRewardsLabel = getCrvRewardsLabel(pool)
   const extraRewards = getExtraRewards(pool)
