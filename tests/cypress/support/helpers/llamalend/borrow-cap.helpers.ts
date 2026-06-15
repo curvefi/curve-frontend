@@ -1,13 +1,4 @@
-import {
-  type Address,
-  createPublicClient,
-  encodeFunctionData,
-  type Hex,
-  http,
-  maxUint256,
-  parseAbi,
-  parseUnits,
-} from 'viem'
+import { type Address, createPublicClient, encodeFunctionData, type Hex, http, parseAbi, parseUnits } from 'viem'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 
@@ -19,6 +10,9 @@ const CONTROLLER_V2_ABI = parseAbi([
   'function configure_lend(uint256 _borrow_cap, uint256 _admin_percentage)',
   'function on_borrowed_token_transfer_in(uint256 _amount)',
 ])
+
+/** keccak("SKIP_CONFIG") sentinel for leaving admin_percentage unchanged when calling configure_lend. */
+const SKIP_CONFIG_UINT256 = 34683848501677104821777960696933802007602333377339998839659032476042327981902n
 
 const callAdminRpc = async <T>({
   adminRpcUrl,
@@ -88,7 +82,7 @@ export const setControllerBorrowCap = ({
           data: encodeFunctionData({
             abi: CONTROLLER_V2_ABI,
             functionName: 'configure_lend',
-            args: [borrowCapWei, maxUint256],
+            args: [borrowCapWei, SKIP_CONFIG_UINT256],
           }),
         },
       ],
