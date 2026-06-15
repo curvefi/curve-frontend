@@ -52,6 +52,7 @@ export const MetricsRow = ({
           valueTooltip={{
             title: NET_SUPPLY_RATE_TITLE,
             body: (
+              // todo: implement loading/error states for tooltip
               <MarketSupplyRateTooltipContent
                 supplyApy={supplyRate.data?.supplyApy}
                 averageSupplyApy={supplyRate.data?.averageLendApy}

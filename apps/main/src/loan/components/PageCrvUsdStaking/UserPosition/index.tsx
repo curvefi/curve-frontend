@@ -26,11 +26,7 @@ const useScrvUsdExchangeRate = (chainId: ChainId | undefined): QueryProp<Decimal
   const exchangeRate = useScrvUsdExchangeRateQuery({ chainId }, useNewForms)
   return useNewForms
     ? q(exchangeRate)
-    : q({
-        data: decimal(legacyValue),
-        isLoading: !isReady(fetchStatus),
-        error: null,
-      })
+    : q({ data: decimal(legacyValue), isLoading: !isReady(fetchStatus), error: null })
 }
 
 type UserPositionProps = {

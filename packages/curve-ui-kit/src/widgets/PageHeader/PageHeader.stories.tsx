@@ -131,3 +131,16 @@ export const Loading: Story = {
     ),
   },
 }
+
+export const ErrorState: Story = {
+  args: {
+    rightItems: (
+      <Metric
+        label="24h volume"
+        value={q({ isLoading: false, data: undefined, error: new Error('An error occurred') })}
+        valueOptions={{ unit: 'dollar' }}
+        alignment="end"
+      />
+    ),
+  },
+}

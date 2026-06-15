@@ -31,7 +31,7 @@ import {
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
-import { mapQuery } from '@ui-kit/types/util'
+import { mapQuery, useMappedQuery } from '@ui-kit/types/util'
 import { formatNumber } from '@ui-kit/utils'
 import { calculateAverageRates } from '@ui-kit/utils/averageRates'
 
@@ -109,6 +109,9 @@ const RATE_MODE_CONFIG = {
   },
 } satisfies Record<MarketRateType, RateModeConfig>
 
+const averageRates = (ratePoints: { rate: number; timestamp: number }[]) =>
+  calculateAverageRates(ratePoints, 7, { rate: ({ rate }) => rate })?.rate
+
 export const MarketHistoricalRatesChart = ({
   market,
   blockchainId,
@@ -147,10 +150,7 @@ export const MarketHistoricalRatesChart = ({
     [ratePoints.data],
   )
 
-  const oneWeekAverageRateQuery = mapQuery(
-    ratePoints,
-    ratePoints => calculateAverageRates(ratePoints, 7, { rate: ({ rate }) => rate })?.rate,
-  )
+  const oneWeekAverageRateQuery = useMappedQuery(ratePoints, averageRates)
 
   const seriesColors: Record<RateSeriesKey, string> = useMemo(
     () => ({ rate: Color.Primary[500], movingAverage: Color.Secondary[500], totalAverage: Color.Tertiary[400] }),

@@ -69,12 +69,13 @@ export const useAdvancedDetailsData = ({
       [totalCollateral, collateralUsdRate, borrowedUsdRate],
       ({ borrowed, collateral }, collateralUsdRate, borrowedUsdRate) => ({
         collateralSymbol: collateralToken?.symbol,
-        totalCollateral: +collateral,
+        totalCollateral: collateral,
         borrowedSymbol: borrowToken?.symbol,
-        totalBorrowed: +borrowed,
+        totalBorrowed: borrowed,
         combinedCollateralUsdValue: maybes(
-          [collateralUsdRate, borrowedUsdRate],
-          ([collateralUsdRate, borrowedUsdRate]) => +collateral * collateralUsdRate + +borrowed * borrowedUsdRate,
+          [collateralUsdRate, borrowedUsdRate, collateral, borrowed],
+          ([collateralUsdRate, borrowedUsdRate, collateral, borrowed]) =>
+            +collateral * collateralUsdRate + +borrowed * borrowedUsdRate,
         ),
         collateralUsdRate,
         borrowedUsdRate,

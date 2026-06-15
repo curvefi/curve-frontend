@@ -19,6 +19,7 @@ import { getTimeRange } from '@curvefi/prices-api/timestamp'
 import Grid from '@mui/material/Grid'
 import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
+import type { Decimal } from '@primitives/decimal.utils'
 import { DEFAULT_DECIMALS } from '@primitives/objects.utils'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
@@ -149,7 +150,7 @@ export const RefuelSharesChart = ({
           <Grid size={{ mobile: 6, tablet: 4 }}>
             <Metric
               label={REFUEL_SHARES_LABEL}
-              value={mapQuery(refuelShares, value => Number(formatUnits(value, 18)))}
+              value={mapQuery(refuelShares, value => formatUnits(value, 18) as Decimal)}
               valueOptions={{ abbreviate: true }}
               testId="refuel-shares"
             />
