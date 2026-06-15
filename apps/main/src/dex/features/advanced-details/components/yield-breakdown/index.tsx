@@ -35,7 +35,6 @@ export const YieldBreakdown = ({
         <CardHeader title={t`Yield Breakdown`} size="small" />
         <DataTable<YieldBreakdownRow>
           table={table}
-          isLoading={false}
           disableStickyHeader
           emptyState={<EmptyStateRow table={table} size="sm">{t`No yield breakdown found.`}</EmptyStateRow>}
           footerRow={total && <FooterRow baseTotal={baseTotal} total={total} />}

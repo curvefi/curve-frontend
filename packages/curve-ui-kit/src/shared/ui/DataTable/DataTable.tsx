@@ -54,7 +54,7 @@ function useResetPageOnResultChange<T extends TableItem>(table: TanstackTable<T>
 export const DataTable = <T extends TableItem>({
   emptyState,
   children,
-  isLoading,
+  isLoading = false,
   size = 'small',
   maxHeight,
   defaultVisibleRows,
@@ -68,7 +68,7 @@ export const DataTable = <T extends TableItem>({
   table: TanstackTable<T>
   emptyState: ReactNode
   children?: ReactNode // passed to <FilterRow />
-  isLoading: boolean
+  isLoading?: boolean
   size?: DataTableSize
   maxHeight?: `${number}rem` // also sets overflowY to 'auto'
   // maximum number of visible rows and the button's label to expand them all
