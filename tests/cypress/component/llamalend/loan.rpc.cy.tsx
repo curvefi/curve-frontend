@@ -42,8 +42,7 @@ import { LlamaMarketType } from '@ui-kit/types/market'
 import { Chain } from '@ui-kit/utils'
 import { waitFor } from '@ui-kit/utils/time.utils'
 
-const _testCases = recordValues(LlamaMarketType).map(marketType => oneLoanTestMarket(marketType))
-const testCases = [{ ...LOAN_TEST_MARKETS.Lend.at(-1)!, marketType: LlamaMarketType.Lend }]
+const testCases = recordValues(LlamaMarketType).map(marketType => oneLoanTestMarket(marketType))
 
 /**
  * The lend markets have a memoize() around the userState function that we cannot control from the outside.
@@ -54,7 +53,7 @@ const waitUntilLendMarketUpdated = (id: string, expectedDebt: Decimal, marketTyp
   if (marketType !== LlamaMarketType.Lend) return // mint markets don't have cache
   cy.then(LOAD_TIMEOUT, () =>
     waitFor(async () => {
-      const state = await getLib('llamaApi')?.getLendMarket(id)?.userPosition.userState()
+      const state = await getLib('llamaApi')?.getLendMarket(id).userPosition.userState()
       if (state && BigNumber(expectedDebt).isEqualTo(state.debt)) return true
       console.warn(`Lend market ${id} debt not updated to ${expectedDebt} yet (state=${JSON.stringify(state)})`)
     }, LOAD_TIMEOUT),
