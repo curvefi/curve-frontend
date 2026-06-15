@@ -1,13 +1,17 @@
 import { useCallback, useMemo } from 'react'
 import type { NetworkConfig } from '@/dex/types/main.types'
-import type { V2PoolFilterType as PoolType, V2PoolSortField as PoolSortField } from '@curvefi/prices-api/pools'
-import { recordEntries } from '@primitives/objects.utils'
+import type {
+  SortDirection as PoolSortDirection,
+  V2PoolFilterType as PoolType,
+  V2PoolSortField as PoolSortField,
+} from '@curvefi/prices-api/pools'
+import { mapRecord, notFalsy, recordEntries, recordValues } from '@primitives/objects.utils'
 import type { SortingState } from '@tanstack/react-table'
 import { useSearchNavigate, useSearchParams } from '@ui-kit/hooks/router'
 import { usePageFromQueryString } from '@ui-kit/hooks/usePageFromQueryString'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
-import { PoolListColumnId, getDefaultSort } from '../columns'
+import { POOL_LIST_TITLES, PoolListColumnId, getDefaultSort } from '../columns'
 
 export const POOL_LIST_PAGE_SIZE = 50
 
@@ -15,7 +19,7 @@ const PAGE_QUERY_FIELD = 'page'
 const POOL_TYPE_QUERY_FIELD = 'filter'
 const SEARCH_QUERY_FIELD = 'search'
 
-// The API bundles crypto, factory_crypto, and twocrypto_ng pools under the "crypto" filter.
+// The API bundles crypto, factory_crypto, and twocryptong pools under the "crypto" filter.
 // Omitted "main" and "factory" from available filters.
 export const POOL_TYPE_FILTERS = [
   { key: 'stableswapng', label: t`Stable NG` },
@@ -39,10 +43,10 @@ export type PoolListSortableColumn =
   | PoolListColumnId.Tvl
 
 const SORT_COLUMNS = {
-  [PoolListColumnId.PoolName]: { sortBy: 'name', label: t`Pool` },
-  [PoolListColumnId.RewardsBase]: { sortBy: 'base_daily_apr', label: t`Base vAPY` },
-  [PoolListColumnId.Volume]: { sortBy: 'volume', label: t`Volume` },
-  [PoolListColumnId.Tvl]: { sortBy: 'tvl', label: t`Total Value Locked` },
+  [PoolListColumnId.PoolName]: { sortBy: 'name', label: POOL_LIST_TITLES[PoolListColumnId.PoolName] },
+  [PoolListColumnId.RewardsBase]: { sortBy: 'base_daily_apr', label: POOL_LIST_TITLES[PoolListColumnId.RewardsBase] },
+  [PoolListColumnId.Volume]: { sortBy: 'volume', label: POOL_LIST_TITLES[PoolListColumnId.Volume] },
+  [PoolListColumnId.Tvl]: { sortBy: 'tvl', label: POOL_LIST_TITLES[PoolListColumnId.Tvl] },
 } as const satisfies Record<PoolListSortableColumn, { sortBy: PoolSortField; label: string }>
 
 type ColumnSort = { id: PoolListSortableColumn; desc: boolean }
@@ -78,10 +82,17 @@ export const usePoolListUrlState = ({ isLite }: Pick<NetworkConfig, 'isLite'>) =
   const sorting = useMemo<PoolListSorting>(() => getPoolListSorting(urlSorting, defaultSort), [defaultSort, urlSorting])
   const [{ id: sortField, desc }] = sorting
   const { sortBy } = SORT_COLUMNS[sortField]
-  const sortDirection: 'desc' | 'asc' = desc ? 'desc' : 'asc'
+  const sortDirection: PoolSortDirection = desc ? 'desc' : 'asc'
   const [pagination, onPaginationChange] = usePageFromQueryString(POOL_LIST_PAGE_SIZE, PAGE_QUERY_FIELD)
   const searchText = searchParams.get(SEARCH_QUERY_FIELD) ?? ''
   const poolType = getPoolType(searchParams.get(POOL_TYPE_QUERY_FIELD))
+  const activeFilters = useMemo(
+    () => ({
+      [SEARCH_QUERY_FIELD]: searchText,
+      [POOL_TYPE_QUERY_FIELD]: poolType,
+    }),
+    [poolType, searchText],
+  )
   const updateQueryAndResetPage = useCallback(
     (update: Record<string, string | string[] | null>) =>
       searchNavigate({ ...update, [PAGE_QUERY_FIELD]: null }, { replace: true }),
@@ -96,10 +107,10 @@ export const usePoolListUrlState = ({ isLite }: Pick<NetworkConfig, 'isLite'>) =
     [updateQueryAndResetPage],
   )
   const resetFilters = useCallback(
-    () => updateQueryAndResetPage({ [SEARCH_QUERY_FIELD]: null, [POOL_TYPE_QUERY_FIELD]: null }),
-    [updateQueryAndResetPage],
+    () => updateQueryAndResetPage(mapRecord(activeFilters, () => null)),
+    [activeFilters, updateQueryAndResetPage],
   )
-  const activeFilterCount = poolType ? 1 : 0
+  const activeFilterCount = notFalsy(...recordValues(activeFilters)).length
 
   return {
     activeFilterCount,

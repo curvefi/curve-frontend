@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from 'react'
+import { useCallback, useRef } from 'react'
 import { MenuItem, MenuList } from '@mui/material'
 import Typography from '@mui/material/Typography'
 import type { OnChangeFn, SortingState } from '@tanstack/react-table'
@@ -25,7 +25,6 @@ type Props = {
 export const PoolListSortDrawer = ({ onSortingChange, options, sortField }: Props) => {
   const [open, , closeDrawer, toggleDrawer, setOpen] = useSwitch(false)
   const menuRef = useRef<HTMLLIElement | null>(null)
-  const selectedOption = useMemo(() => options.find(option => option.id === sortField), [options, sortField])
 
   const handleSort = useCallback(
     (id: PoolListSortableColumn) => {
@@ -58,14 +57,14 @@ export const PoolListSortDrawer = ({ onSortingChange, options, sortField }: Prop
               <MenuItem
                 ref={menuRef}
                 value={id}
-                selected={selectedOption?.id === id}
+                selected={sortField === id}
                 onClick={() => handleSort(id)}
                 sx={{ justifyContent: 'space-between', minHeight: ButtonSize.sm }}
               >
                 <Typography component="span" variant="bodyMBold">
                   {label}
                 </Typography>
-                {selectedOption?.id === id && <CheckIcon sx={{ marginLeft: Spacing.sm }} />}
+                {sortField === id && <CheckIcon sx={{ marginLeft: Spacing.sm }} />}
               </MenuItem>
             </InvertOnHover>
           ))}

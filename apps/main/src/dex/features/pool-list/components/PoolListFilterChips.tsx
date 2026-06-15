@@ -1,5 +1,4 @@
 import Grid from '@mui/material/Grid'
-import { notFalsy } from '@primitives/objects.utils'
 import { GridChip } from '@ui-kit/shared/ui/DataTable/chips/GridChip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { PoolListPoolType } from '../hooks/usePoolListUrlState'
@@ -35,7 +34,7 @@ export const PoolListFilterChips = ({
           size={{ mobile: 6, tablet: 'auto' }}
           key={key}
           data-testid={`filter-chip-${key}`}
-          label={notFalsy(label, poolType === key && resultCount != null && ` (${resultCount})`).join(' ')}
+          label={poolType === key && resultCount != null ? `${label} (${resultCount})` : label}
           selected={poolType === key}
           toggle={() => setPoolType(poolType === key ? null : key)}
         />

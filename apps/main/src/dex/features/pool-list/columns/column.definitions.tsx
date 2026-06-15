@@ -3,7 +3,7 @@ import { type ColumnMeta, createColumnHelper } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import type { ColumnDefinition } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { PoolListBaseApyCell } from '../cells/PoolListBaseApyCell'
-import { PoolListRewardsCell } from '../cells/PoolListRewardsCell'
+import { PoolListRewards } from '../cells/PoolListRewards'
 import { PoolListTitleCell } from '../cells/PoolListTitleCell'
 import { PoolListUsdCell } from '../cells/PoolListUsdCell'
 import type { PoolListItem } from '../poolList.types'
@@ -49,7 +49,7 @@ export const POOL_LIST_COLUMNS = [
   accessor(PoolListColumnId.PoolName, 'name', {
     cell: PoolListTitleCell,
   }),
-  accessor(PoolListColumnId.RewardsBase, row => row.baseDailyApr ?? null, {
+  accessor(PoolListColumnId.RewardsBase, 'baseDailyApr', {
     cell: PoolListBaseApyCell,
     meta: {
       type: 'numeric',
@@ -61,7 +61,7 @@ export const POOL_LIST_COLUMNS = [
     sortUndefined: 'last',
   }),
   display(PoolListColumnId.RewardsOther, {
-    cell: PoolListRewardsCell,
+    cell: ({ row }) => <PoolListRewards pool={row.original} />,
     meta: { type: 'numeric', tooltip: { title: t`Token APR based on current prices of tokens and reward rates` } },
   }),
   accessor(PoolListColumnId.Volume, 'tradingVolume24h', {
@@ -69,7 +69,7 @@ export const POOL_LIST_COLUMNS = [
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
-  accessor(PoolListColumnId.Tvl, row => row.tvlUsd ?? null, {
+  accessor(PoolListColumnId.Tvl, 'tvlUsd', {
     cell: PoolListUsdCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',

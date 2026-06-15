@@ -1,4 +1,3 @@
-import { fromEntries, recordValues } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import type { VisibilityGroup } from '@ui-kit/shared/ui/DataTable/visibility.types'
 import { PoolListColumnId } from './column.enum'
@@ -51,8 +50,3 @@ export type PoolListColumnVariant = keyof typeof POOL_LIST_COLUMN_OPTIONS
 export const getDefaultSort = (isLite: boolean) => [
   { id: isLite ? PoolListColumnId.Tvl : PoolListColumnId.Volume, desc: true },
 ]
-
-export const createPoolListMobileColumns = (sortBy: PoolListColumnId) =>
-  fromEntries(
-    recordValues(PoolListColumnId).map(key => [key, key === PoolListColumnId.PoolName || key === sortBy]),
-  )
