@@ -85,9 +85,9 @@ export const LegacyDataTable = <T extends TableItem>({
   const columnCount = useMemo(() => headerGroups.reduce((acc, group) => acc + group.headers.length, 0), [headerGroups])
   const top = useLayoutStore(state => state.navHeight)
   const tableTopRef = useRef<HTMLTableElement>(null)
-  useScrollToTopOnFilterChange(table, tableTopRef)
+  useScrollToTopOnFilterChange({ table, tableTopRef })
   useResetPageOnResultChange(table)
-  useScrollToTopOnPageChange(table, tableTopRef)
+  useScrollToTopOnPageChange({ table, tableTopRef })
   const tableHeaderSx = (t: Theme) => ({
     ...(!disableStickyHeader && {
       position: 'sticky',

@@ -92,10 +92,11 @@ export const DataTable = <T extends TableItem>({
   const columnCount = useMemo(() => headerGroups.reduce((acc, group) => acc + group.headers.length, 0), [headerGroups])
   const top = useLayoutStore(state => state.navHeight)
   const tableTopRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
   const { shouldStickyHeader, tableRef, tableWrapperRef } = useTableStickyHeader({ disableStickyHeader, isLimited })
-  useScrollToTopOnFilterChange(table, tableTopRef)
+  useScrollToTopOnFilterChange({ table, tableTopRef })
+  useScrollToTopOnPageChange({ table, tableTopRef, containerRef })
   useResetPageOnResultChange(table)
-  useScrollToTopOnPageChange(table, tableTopRef)
   const tableHeaderSx = (t: Theme) => ({
     ...(shouldStickyHeader && {
       position: 'sticky',
@@ -107,7 +108,7 @@ export const DataTable = <T extends TableItem>({
   const showFooter = !isLoading && (showPagination || showViewAllButton || footerRow)
 
   return (
-    <WithWrapper Wrapper={Box} shouldWrap={maxHeight} sx={{ maxHeight, overflowY: 'auto' }}>
+    <WithWrapper Wrapper={Box} shouldWrap={maxHeight} sx={{ maxHeight, overflowY: 'auto' }} ref={containerRef}>
       {/* Anchor used to scroll back to the table without hiding it behind the sticky nav. */}
       <Box ref={tableTopRef} sx={{ scrollMarginTop: `${top}px` }} />
       {/* Children are placed outside the table header when the table content is horizontally scrollable in order to
