@@ -52,9 +52,6 @@ export const API_LOAD_TIMEOUT = { timeout: 120000 } // unfortunately the prices 
 // scrollbar in px for the test browser. Firefox behaves when headless.
 export const SCROLL_WIDTH = Cypress.browser.name === 'firefox' ? (Cypress.browser.isHeadless ? 12 : 0) : 15
 
-// tests that are flaky in CI, hard to reproduce. Please try to avoid using this.
-export const RETRY_IN_CI = { retries: { openMode: 0, runMode: 5 } }
-
 /**
  * This hook skips all tests after a failed one. Useful for tests that are interdependent or when running interactively.
  * We don't use `Cypress.stop()` because it stops the entire test run, not just the current test.
