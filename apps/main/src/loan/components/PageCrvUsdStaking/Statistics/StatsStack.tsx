@@ -1,10 +1,8 @@
 import { useScrvUsdRevenue } from '@/loan/entities/scrvusd-revenue.query'
 import { useScrvUsdStatistics } from '@/loan/entities/scrvusd-statistics.query'
 import { useScrvUsdSupplies } from '@/loan/entities/scrvusd-supplies.query'
-import { useScrvUsdYield } from '@/loan/entities/scrvusd-yield.query'
 import type { ChainId } from '@/loan/types/loan.types'
 import Grid from '@mui/material/Grid'
-import { useScrvUsdNewForms } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -19,13 +17,9 @@ type StatsStackProps = {
 }
 
 export const StatsStack = ({ chainId }: StatsStackProps) => {
-  const useNewForms = useScrvUsdNewForms()
-  const { data: yieldData, isLoading: yieldIsLoading } = useScrvUsdYield({ timeOption: '1M' }, !useNewForms)
-  const { data: suppliesData, isLoading: suppliesIsLoading } = useScrvUsdSupplies({ chainId }, !!chainId && useNewForms)
+  const { data: suppliesData, isLoading: suppliesIsLoading } = useScrvUsdSupplies({ chainId })
   const { data: revenueData, isLoading: revenueIsLoading } = useScrvUsdRevenue({})
   const { data: statisticsData, isLoading: statisticsIsLoading } = useScrvUsdStatistics({})
-  const totalCrvUsdStaked = useNewForms ? suppliesData?.crvUSD : yieldData?.[yieldData.length - 1]?.assets
-
   return (
     <Grid
       container
@@ -42,9 +36,9 @@ export const StatsStack = ({ chainId }: StatsStackProps) => {
         <Metric
           size="small"
           label="Total crvUSD Staked"
-          value={totalCrvUsdStaked}
+          value={suppliesData?.crvUSD}
           valueOptions={{ unit: CRVUSD_OPTION }}
-          loading={useNewForms ? suppliesIsLoading : yieldIsLoading}
+          loading={suppliesIsLoading}
           copyText={t`Copied total crvUSD staked`}
         />
       </Grid>
