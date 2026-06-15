@@ -67,9 +67,7 @@ export const useLiquidityDetails = ({ chainId, poolDataCacheOrApi, poolId }: Use
       lpTokenTotal,
       positionValue: q(userLiquidityUsd),
     },
-    withdraw: {
-      rows: mapQuery(userBalances, () => withdrawRows),
-    },
+    rows: mapQuery(userBalances, () => withdrawRows),
   }
 }
 

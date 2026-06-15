@@ -13,10 +13,10 @@ const { Spacing } = SizesAndSpaces
 
 export const BalancedWithdrawCard = ({
   blockchainId,
-  withdraw: { rows },
+  rows,
 }: {
   blockchainId: string
-  withdraw: LiquidityDetailsData['withdraw']
+  rows: LiquidityDetailsData['rows']
 }) => (
   <Card size="inline">
     <CardHeader title={t`Balanced withdraw amount`} />

@@ -11,7 +11,7 @@ const { Spacing } = SizesAndSpaces
 const CARD_GRID_SIZE = { mobile: 12, desktop: 6 } as const
 
 export const LiquidityDetails = ({ blockchainId, ...params }: { blockchainId: string } & UseLiquidityDetailsParams) => {
-  const { marketParticipation, metrics, withdraw } = useLiquidityDetails(params)
+  const { marketParticipation, metrics, rows } = useLiquidityDetails(params)
 
   return (
     <Stack sx={{ gap: Spacing.md, padding: Spacing.sm }}>
@@ -22,7 +22,7 @@ export const LiquidityDetails = ({ blockchainId, ...params }: { blockchainId: st
           <MarketParticipationCard marketParticipation={marketParticipation} />
         </Grid>
         <Grid size={CARD_GRID_SIZE}>
-          <BalancedWithdrawCard blockchainId={blockchainId} withdraw={withdraw} />
+          <BalancedWithdrawCard blockchainId={blockchainId} rows={rows} />
         </Grid>
       </Grid>
     </Stack>
