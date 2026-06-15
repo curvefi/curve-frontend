@@ -15,9 +15,7 @@ export function useScrollToTopOnFilterChange<T extends TableItem>(
 ) {
   const { columnFilters } = table.getState()
   useEffect(() => {
-    if (columnFilters.length) {
-      scrollToTableTop(tableTopRef)
-    }
+    scrollToTableTop(tableTopRef)
   }, [columnFilters, tableTopRef])
 }
 
