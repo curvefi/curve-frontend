@@ -18,8 +18,6 @@ export const LegacyPoolListChips = ({
   onSortingChange,
   onSearch,
   sortField,
-  sortOptions,
-  showHiddenCountReset = true,
   ...filterProps
 }: {
   hiddenCount: number
@@ -29,8 +27,6 @@ export const LegacyPoolListChips = ({
   sortField: LegacyPoolColumnId
   searchText: string
   onSearch: (value: string) => void
-  sortOptions?: readonly { id: LegacyPoolColumnId; label: string }[]
-  showHiddenCountReset?: boolean
 } & LegacyPoolListFilterChipsProps) => {
   const isMobile = useIsMobile()
   return (
@@ -38,7 +34,7 @@ export const LegacyPoolListChips = ({
       {isMobile ? (
         <Grid container columnSpacing={Spacing.sm} size={12}>
           <Grid size={6}>
-            <LegacyPoolSortDrawer onSortingChange={onSortingChange} sortField={sortField} options={sortOptions} />
+            <LegacyPoolSortDrawer onSortingChange={onSortingChange} sortField={sortField} />
           </Grid>
           <Grid size={6}>
             <LegacyPoolListFilterDrawer
@@ -46,7 +42,6 @@ export const LegacyPoolListChips = ({
               resetFilters={resetFilters}
               searchText={searchText}
               onSearch={onSearch}
-              showHiddenCountReset={showHiddenCountReset}
               {...filterProps}
             />
           </Grid>
@@ -61,9 +56,7 @@ export const LegacyPoolListChips = ({
           <LegacyPoolListFilterChips {...filterProps} />
         </Grid>
       )}
-      {!isMobile && showHiddenCountReset && (
-        <HiddenCountResetButton hiddenCount={hiddenCount} resetFilters={resetFilters} />
-      )}
+      {!isMobile && <HiddenCountResetButton hiddenCount={hiddenCount} resetFilters={resetFilters} />}
     </Grid>
   )
 }

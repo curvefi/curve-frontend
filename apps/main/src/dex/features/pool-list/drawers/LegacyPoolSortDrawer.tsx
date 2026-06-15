@@ -18,7 +18,6 @@ const { Spacing, ButtonSize } = SizesAndSpaces
 type Props = {
   onSortingChange: OnChangeFn<SortingState>
   sortField: LegacyPoolColumnId
-  options?: readonly { id: LegacyPoolColumnId; label: string }[]
 }
 
 const DEX_POOL_SORT_OPTIONS = [
@@ -26,14 +25,14 @@ const DEX_POOL_SORT_OPTIONS = [
   { id: LegacyPoolColumnId.Tvl, label: t`Total Value Locked` },
   { id: LegacyPoolColumnId.RewardsCrv, label: t`Rewards CRV` },
   { id: LegacyPoolColumnId.RewardsIncentives, label: t`Rewards Incentives` },
-] as const satisfies readonly { id: LegacyPoolColumnId; label: string }[]
+] as const
 
-export const LegacyPoolSortDrawer = ({ onSortingChange, sortField, options = DEX_POOL_SORT_OPTIONS }: Props) => {
-  const [open, openDrawer, closeDrawer, , setOpen] = useSwitch(false)
+export const LegacyPoolSortDrawer = ({ onSortingChange, sortField }: Props) => {
+  const [open, openDrawer, closeDrawer] = useSwitch(false)
 
   const menuRef = useRef<HTMLLIElement | null>(null)
 
-  const selectedOption = useMemo(() => options.find(option => option.id === sortField), [options, sortField])
+  const selectedOption = useMemo(() => DEX_POOL_SORT_OPTIONS.find(option => option.id === sortField), [sortField])
 
   const handleSort = useCallback(
     (id: LegacyPoolColumnId) => {
@@ -52,12 +51,12 @@ export const LegacyPoolSortDrawer = ({ onSortingChange, sortField, options = DEX
         </Button>
       }
       open={open}
-      setOpen={setOpen}
+      setOpen={closeDrawer}
     >
       <DrawerHeader title={t`Sort by`} />
       <DrawerItems data-testid="drawer-sort-menu-dex-pools">
         <MenuList disablePadding sx={{ display: 'flex', flexDirection: 'column', gap: Spacing.sm }}>
-          {options.map(({ id, label }) => (
+          {DEX_POOL_SORT_OPTIONS.map(({ id, label }) => (
             <InvertOnHover hoverRef={menuRef} key={id}>
               <MenuItem
                 ref={menuRef}

@@ -24,10 +24,9 @@ enum ERROR {
 type Props = {
   columnFiltersById: PartialRecord<LegacyPoolColumnId, string>
   resetFilters: () => void
-  isError?: boolean
 }
 
-export const LegacyPoolListEmptyState = ({ columnFiltersById, resetFilters, isError }: Props) => {
+export const LegacyPoolListEmptyState = ({ columnFiltersById, resetFilters }: Props) => {
   const searchText = columnFiltersById[LegacyPoolColumnId.PoolName]
 
   const props = useParams<NetworkUrlParams>()
@@ -36,11 +35,10 @@ export const LegacyPoolListEmptyState = ({ columnFiltersById, resetFilters, isEr
   const { isError: isUserPoolsError } = useUserPools({ chainId, userAddress })
 
   const errorKey = useMemo(() => {
-    if (isError) return ERROR.api
     if (searchText) return ERROR.search
     if (columnFiltersById[LegacyPoolColumnId.PoolTags]) return ERROR.filter
     if (isUserPoolsError) return ERROR.api
-  }, [columnFiltersById, searchText, isError, isUserPoolsError])
+  }, [columnFiltersById, searchText, isUserPoolsError])
 
   const errorSearchedValue = useMemo(
     (): string | undefined =>

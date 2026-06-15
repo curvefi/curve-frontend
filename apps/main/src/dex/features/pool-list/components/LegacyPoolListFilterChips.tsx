@@ -11,8 +11,6 @@ import type { LegacyPoolTag } from '../legacyPoolList.types'
 
 const { Spacing } = SizesAndSpaces
 
-type PoolFilterChip = { key: string; label: string }
-
 const getFilterGroups = ({ isConnected }: { isConnected: boolean }) =>
   [
     [
@@ -27,16 +25,14 @@ const getFilterGroups = ({ isConnected }: { isConnected: boolean }) =>
       { key: 'cross-chain' as const, label: t`Cross-chain` },
     ],
     ...(isConnected ? [[{ key: 'user' as const, label: t`My Pools` }]] : []),
-  ] satisfies PoolFilterChip[][]
+  ] satisfies { key: LegacyPoolTag | null; label: string }[][]
 
 export type LegacyPoolListFilterChipsProps = FilterProps<LegacyPoolColumnId> & {
-  filterGroups?: PoolFilterChip[][]
   resultCount: number | undefined
-  poolFilters: NetworkConfig['poolFilters'] | readonly string[]
+  poolFilters: NetworkConfig['poolFilters']
 }
 
 export const LegacyPoolListFilterChips = ({
-  filterGroups,
   resultCount,
   poolFilters,
   setColumnFilter,
@@ -44,7 +40,6 @@ export const LegacyPoolListFilterChips = ({
 }: LegacyPoolListFilterChipsProps) => {
   const filterKey = columnFiltersById[LegacyPoolColumnId.PoolTags] as LegacyPoolTag | undefined
   const { isConnected } = useConnection()
-  const groups = filterGroups ?? getFilterGroups({ isConnected })
   return (
     <Grid
       container
@@ -54,7 +49,7 @@ export const LegacyPoolListFilterChips = ({
       size={{ mobile: 12, desktop: 'auto' }}
       sx={{ justifyContent: 'flex-end' }}
     >
-      {groups.map(group => (
+      {getFilterGroups({ isConnected }).map(group => (
         <Grid container key={group[0].key} size={{ mobile: 12, tablet: 'auto' }} spacing={1}>
           {group.map(
             ({ key, label }) =>

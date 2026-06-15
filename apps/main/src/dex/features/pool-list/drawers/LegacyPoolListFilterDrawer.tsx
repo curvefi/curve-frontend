@@ -19,7 +19,6 @@ type Props = {
   resetFilters: () => void
   searchText: string
   onSearch: (value: string) => void
-  showHiddenCountReset?: boolean
 } & LegacyPoolListFilterChipsProps
 
 export const LegacyPoolListFilterDrawer = ({
@@ -27,7 +26,6 @@ export const LegacyPoolListFilterDrawer = ({
   resetFilters,
   searchText,
   onSearch,
-  showHiddenCountReset = true,
   setColumnFilter,
   ...filterProps
 }: Props) => {
@@ -57,7 +55,7 @@ export const LegacyPoolListFilterDrawer = ({
       setOpen={setOpen}
     >
       <DrawerHeader title={t`Filters`}>
-        {showHiddenCountReset && <HiddenCountResetButton hiddenCount={hiddenCount} resetFilters={resetFilters} />}
+        <HiddenCountResetButton hiddenCount={hiddenCount} resetFilters={resetFilters} />
       </DrawerHeader>
       <Stack
         direction="column"
