@@ -19,7 +19,6 @@ const getCrvRewardsLabel = ({ crvApr, crvAprBoosted }: CrvRewards): ReactNode =>
   const boostedApr = crvAprBoosted ?? 0
 
   if (!baseApr && !boostedApr) return null
-  // Matches the legacy pool list: very small base CRV APRs hide the boosted APR.
   if (baseApr < 0.01) return '< 0.01% CRV'
 
   return (

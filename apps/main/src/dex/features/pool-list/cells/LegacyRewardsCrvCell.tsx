@@ -3,7 +3,7 @@ import { RewardsApy } from '@/dex/types/main.types'
 import type { CellContext } from '@tanstack/react-table'
 import { isSortedBy } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { LegacyPoolColumnId } from '../columns'
-import { hasCrvRewards } from '../hooks/useHasPoolRewards'
+import { hasLegacyCrvRewards } from '../hooks/useLegacyHasPoolRewards'
 import type { LegacyPoolListItem } from '../legacyPoolList.types'
 import { Placeholder } from './Placeholder'
 
@@ -11,7 +11,7 @@ type Prop = CellContext<LegacyPoolListItem, RewardsApy | undefined> & { placehol
 
 export const LegacyRewardsCrvCell = ({ getValue, table, row: { original: poolData }, placeholder = true }: Prop) => {
   const rewards = getValue()
-  return hasCrvRewards(rewards) ? (
+  return hasLegacyCrvRewards(rewards) ? (
     <PoolRewardsCrv
       poolData={poolData}
       rewardsApy={rewards}

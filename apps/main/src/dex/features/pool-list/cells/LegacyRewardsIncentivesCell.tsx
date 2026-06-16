@@ -6,7 +6,7 @@ import type { CellContext } from '@tanstack/react-table'
 import { isSortedBy } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { formatNumber } from '@ui-kit/utils'
 import { LegacyPoolColumnId } from '../columns'
-import { useHasPoolRewards } from '../hooks/useHasPoolRewards'
+import { useLegacyHasPoolRewards } from '../hooks/useLegacyHasPoolRewards'
 import type { LegacyPoolListItem } from '../legacyPoolList.types'
 import { Placeholder } from './Placeholder'
 
@@ -19,7 +19,7 @@ export const LegacyRewardsIncentivesCell = ({
   placeholder = true,
 }: Prop) => {
   const rewards = getValue()
-  const { hasIncentives, campaigns } = useHasPoolRewards(rewards, poolData)
+  const { hasIncentives, campaigns } = useLegacyHasPoolRewards(rewards, poolData)
   const { other } = rewards ?? {}
 
   return hasIncentives ? (

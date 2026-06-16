@@ -16,7 +16,7 @@ type Props = {
   poolTypeFilters: readonly PoolListFilter[]
   resetFilters: () => void
   searchText: string
-  isError?: boolean
+  isError: boolean
 }
 
 export const PoolListEmptyState = ({ poolType, poolTypeFilters, resetFilters, searchText, isError }: Props) => {
