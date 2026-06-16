@@ -102,6 +102,8 @@ const useDismissBanner = (bannerKey: string, frequency: keyof typeof Duration.Ba
 
 export const useDismissAaveBanner = () => useDismissBanner('aave-v2-frozen-avalanche-polygon')
 
+export const useDismissSonicRetirementBanner = () => useDismissBanner('sonic-chain-retirement', 'Daily')
+
 export const useDismissCurveLiteBanner = (chainId: number) => useDismissBanner(`curve-lite-${chainId}`)
 
 export const useDismissPhishingWarn = () => useDismissBanner('phishing-warning-dismissed')

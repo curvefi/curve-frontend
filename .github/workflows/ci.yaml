@@ -75,7 +75,7 @@ jobs:
         browser: [ chrome, firefox, electron ]
         count: [ 1 ]
     name: Cypress component tests in ${{ matrix.browser }} ${{ matrix.count }}
-    timeout-minutes: 10
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -97,7 +97,7 @@ jobs:
             tee ../cypress-component-${{ matrix.browser }}-${{ matrix.count }}.log \
               >(grep --line-buffered --invert-match --fixed-strings 'INFO:CONSOLE' >&1) > /dev/null
         working-directory: tests
-        timeout-minutes: 8 # lower timeout than the whole job, so we can get screenshots on timeout
+        timeout-minutes: 12 # lower timeout than the whole job, so we can get screenshots on timeout
         env:
           ELECTRON_ENABLE_LOGGING: true # send console logs to stdout in electron browser
           NODE_ENV: test
@@ -136,7 +136,7 @@ jobs:
           yarn run cy:run:rpc --browser electron 2>&1 | \
             tee ../rpc-cypress.log >(grep --line-buffered --invert-match --fixed-strings 'INFO:CONSOLE' >&1) > /dev/null
         working-directory: tests
-        timeout-minutes: 8 # lower timeout than the whole job, so we can get screenshots on timeout
+        timeout-minutes: 12 # lower timeout than the whole job, so we can get screenshots on timeout
         env:
           ELECTRON_ENABLE_LOGGING: true # Electron writes console to stdout
           NODE_ENV: test

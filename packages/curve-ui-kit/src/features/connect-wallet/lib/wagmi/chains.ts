@@ -82,7 +82,7 @@ export const DEPRECATED_CHAINS: Record<number, Date> = {
   [kava.id]: deprecateDate,
   [moonbeam.id]: deprecateDate,
 }
-export const DOWNGRADED_CHAINS = new Set<number>([avalanche, fantom, xLayer, sonic].map(c => c.id))
+export const DOWNGRADED_CHAINS = new Set<number>([avalanche, xLayer].map(c => c.id))
 
 /** Mapping of chain IDs to their corresponding Wagmi chain configurations for easy lookup */
 export const wagmiChainsMap = Object.fromEntries(wagmiChains.map(chain => [chain.id, chain]))
