@@ -14,6 +14,7 @@ export enum LlamaMarketColumnId {
   MaxLtv = 'maxLtv',
   MaxLeverage = 'maxLeverage',
   UtilizationPercent = 'utilizationPercent',
+  SolvencyPercent = 'solvencyPercent',
   LiquidityUsd = 'liquidityUsd',
   Chain = 'chain',
   CollateralSymbol = 'assets_collateral_symbol',

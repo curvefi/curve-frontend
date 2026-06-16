@@ -84,6 +84,7 @@ function createLightSurfaces() {
       },
     },
     Badges: {
+      // Figma names this group LabelIcon; keep Label as the runtime key for API compatibility.
       Label: {
         Default: Grays[950],
         Active: Grays[10],
@@ -94,7 +95,7 @@ function createLightSurfaces() {
       },
       Border: {
         Default: Grays[400],
-        Active: Blues[500],
+        Active: Layer.Feedback.Success,
         Alert: Reds[500],
         Highlight: Blues[500],
         Warning: Oranges[500],
@@ -102,7 +103,7 @@ function createLightSurfaces() {
       },
       Fill: {
         Default: Grays[50],
-        Active: Greens[400],
+        Active: Layer.Feedback.Success,
         Alert: Reds[500],
         Highlight: Grays[50],
         Warning: Yellows[500],
@@ -206,7 +207,7 @@ function createDarkSurfaces() {
       },
       Border: {
         Default: Grays[600],
-        Active: Blues[400],
+        Active: Layer.Feedback.Success,
         Alert: Reds[500],
         Highlight: Blues[400],
         Warning: Oranges[500],
@@ -214,7 +215,7 @@ function createDarkSurfaces() {
       },
       Fill: {
         Default: Grays[950],
-        Active: Greens[500],
+        Active: Layer.Feedback.Success,
         Alert: Reds[500],
         Highlight: Grays[950],
         Warning: Yellows[500],
@@ -318,7 +319,7 @@ function createChadSurfaces() {
       },
       Border: {
         Default: Grays[400],
-        Active: Violets[500],
+        Active: Layer.Feedback.Success,
         Alert: Reds[500],
         Highlight: Violets[800],
         Warning: Oranges[500],
@@ -326,7 +327,7 @@ function createChadSurfaces() {
       },
       Fill: {
         Default: Grays[150],
-        Active: Greens[500],
+        Active: Layer.Feedback.Success,
         Alert: Reds[500],
         Highlight: Grays[150],
         Warning: Yellows[500],
@@ -430,7 +431,7 @@ function createLightInvertedSurfaces() {
       },
       Border: {
         Default: Grays[600],
-        Active: Blues[400],
+        Active: Layer.Feedback.Success,
         Alert: Reds[500],
         Highlight: Blues[400],
         Warning: Oranges[500],
@@ -438,7 +439,7 @@ function createLightInvertedSurfaces() {
       },
       Fill: {
         Default: Grays[950],
-        Active: Greens[400],
+        Active: Layer.Feedback.Success,
         Alert: Reds[500],
         Highlight: Grays[10],
         Warning: Yellows[500],
@@ -542,7 +543,7 @@ function createDarkInvertedSurfaces() {
       },
       Border: {
         Default: Grays[400],
-        Active: Blues[500],
+        Active: Layer.Feedback.Success,
         Alert: Reds[500],
         Highlight: Blues[500],
         Warning: Oranges[500],
@@ -550,7 +551,7 @@ function createDarkInvertedSurfaces() {
       },
       Fill: {
         Default: Grays[75],
-        Active: Greens[500],
+        Active: Layer.Feedback.Success,
         Alert: Reds[500],
         Highlight: Grays[75],
         Warning: Yellows[500],
@@ -654,7 +655,7 @@ function createChadInvertedSurfaces() {
       },
       Border: {
         Default: Grays[600],
-        Active: Violets[400],
+        Active: Layer.Feedback.Success,
         Alert: Reds[500],
         Highlight: Violets[200],
         Warning: Oranges[500],
@@ -662,7 +663,7 @@ function createChadInvertedSurfaces() {
       },
       Fill: {
         Default: Violets[950],
-        Active: Greens[500],
+        Active: Layer.Feedback.Success,
         Alert: Reds[500],
         Highlight: Violets[950],
         Warning: Yellows[500],

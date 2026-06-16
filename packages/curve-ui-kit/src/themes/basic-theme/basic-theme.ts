@@ -36,6 +36,7 @@ export const basicMuiTheme = createMuiTheme({
 })
 
 export type Responsive<T = string> = Record<Breakpoint, T>
+export type ResponsiveOrValue<T = string> = T | Responsive<T>
 
 /**
  * Create a responsive object based on the breakpoints defined in the basicMuiTheme.
@@ -70,9 +71,3 @@ export const mapBreakpoints = (
   values: Responsive,
   callback: (value: string, breakpoint: Breakpoint) => string,
 ): CSSObject => mapRecord(values, (breakpoint, value) => callback(value, breakpoint))
-
-export const fixedResponsive = <T extends string>(value: T): Responsive<T> => ({
-  mobile: value,
-  tablet: value,
-  desktop: value,
-})

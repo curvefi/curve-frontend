@@ -15,12 +15,13 @@ const BadgeStories = ({ color }: BadgeStoryProps) => (
   <Stack spacing={7} sx={{ flexGrow: 0, marginBlock: 9 }}>
     <Typography variant="headingXxl">Badges: {color} color</Typography>
     {sizes.map(size => (
-      <Box key={size} sx={{ display: 'flex', flexDirection: 'row', gap: 5, justifyContent: 'space-evenly' }}>
+      <Box key={size} sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+        <Typography variant="bodySRegular">{size}</Typography>
         {/* simple one */}
-        <Badge label={size} size={size} color={color} />
+        <Badge label="Label" size={size} color={color} />
 
         {/* with icon */}
-        <Badge label={size} size={size} color={color} icon={<CheckIcon />} />
+        <Badge label="Label" size={size} color={color} icon={<CheckIcon />} />
 
         {/* only icon */}
         <Badge size={size} color={color} icon={<CheckIcon />} />

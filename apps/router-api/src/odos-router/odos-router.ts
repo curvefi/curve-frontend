@@ -20,6 +20,7 @@ async function getOdosQuote(
     tokenIn,
     tokenOut,
     amountIn,
+    blacklist,
     slippage,
     userAddress,
   }: {
@@ -27,12 +28,13 @@ async function getOdosQuote(
     tokenIn: Address
     tokenOut: Address
     amountIn: Decimal
+    blacklist: readonly Address[]
     slippage: number
     userAddress: Address
   },
   log: FastifyBaseLogger,
 ) {
-  const params: Record<keyof CurveOdosQuoteRequest, string> = {
+  const params = new URLSearchParams({
     chain_id: `${chainId}`,
     from_address: getToken(tokenIn),
     to_address: getToken(tokenOut),
@@ -40,10 +42,10 @@ async function getOdosQuote(
     slippage: `${slippage}`,
     pathVizImage: 'false', // prices API isn't returning images, maybe we could use them instead of `generateId`
     caller_address: userAddress,
-    blacklist: '',
-  }
+  } satisfies Omit<Record<keyof CurveOdosQuoteRequest, string>, 'blacklist'>)
+  blacklist.forEach(address => params.append('blacklist', address))
 
-  const quoteResponse = await fetch(`${ODOS_API_URL}/quote?${new URLSearchParams(params)}`, {
+  const quoteResponse = await fetch(`${ODOS_API_URL}/quote?${params}`, {
     method: 'GET',
     headers: { accept: 'application/json' },
   })
@@ -92,6 +94,7 @@ export const buildOdosRouteResponse = async (
     chainId,
     tokenIn: [tokenIn],
     tokenOut: [tokenOut],
+    blacklist = [],
     amountIn: [amountIn] = [],
     userAddress,
     slippage = 0.5,
@@ -108,7 +111,7 @@ export const buildOdosRouteResponse = async (
     pathId,
     pathVizImage,
     priceImpact = null,
-  } = await getOdosQuote({ chainId, tokenIn, tokenOut, amountIn, slippage, userAddress }, log)
+  } = await getOdosQuote({ chainId, tokenIn, tokenOut, amountIn, blacklist, slippage, userAddress }, log)
   const { transaction } = await assembleOdosQuote(
     { pathId: assert(pathId, 'Odos quote missing pathId'), userAddress },
     log,

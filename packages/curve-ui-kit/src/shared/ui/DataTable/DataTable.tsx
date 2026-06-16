@@ -1,5 +1,5 @@
 /// <reference types="./DataTable.d.ts" />
-import { type ReactNode, type RefObject, useEffect, useEffectEvent, useMemo, useRef } from 'react'
+import { type ReactNode, useEffect, useEffectEvent, useMemo, useRef } from 'react'
 import Box from '@mui/material/Box'
 import { Theme } from '@mui/material/styles'
 import Table from '@mui/material/Table'
@@ -19,6 +19,7 @@ import { DataTableHeaderHeight, type DataTableSize, type TableItem, type Tanstac
 import { DataRow, type DataRowProps } from './DataRow'
 import { FilterRow } from './FilterRow'
 import { HeaderCell } from './HeaderCell'
+import { useScrollToTopOnFilterChange, useScrollToTopOnPageChange } from './hooks/useTableScroll'
 import { useTableStickyHeader } from './hooks/useTableStickyHeader'
 import { SkeletonRows } from './SkeletonRows'
 import { TableViewAllCell } from './TableViewAllCell'
@@ -27,31 +28,6 @@ import { useTableRowLimit } from './useTableRowLimit'
 const TABLE_FILTERS_TEST_ID = 'table-filters'
 
 const { Height } = SizesAndSpaces
-
-/**
- * Scrolls to the top of the window whenever the column filters change.
- */
-function useScrollToTopOnFilterChange<T extends TableItem>(table: TanstackTable<T>) {
-  const { columnFilters } = table.getState()
-  useEffect(() => {
-    if (columnFilters.length) {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    }
-  }, [columnFilters])
-}
-
-/**
- * Scrolls to the top of the table container whenever the page changes with manual pagination.
- */
-function useScrollToTopOnPageChange<T extends TableItem>(
-  table: TanstackTable<T>,
-  containerRef: RefObject<HTMLElement | null>,
-) {
-  const { pageIndex } = table.getState().pagination
-  useEffect(() => {
-    containerRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
-  }, [pageIndex, containerRef])
-}
 
 /**
  * Resets the table pagination to the first page whenever the number of filtered results changes.
@@ -78,7 +54,7 @@ function useResetPageOnResultChange<T extends TableItem>(table: TanstackTable<T>
 export const DataTable = <T extends TableItem>({
   emptyState,
   children,
-  isLoading,
+  isLoading = false,
   size = 'small',
   maxHeight,
   defaultVisibleRows,
@@ -92,7 +68,7 @@ export const DataTable = <T extends TableItem>({
   table: TanstackTable<T>
   emptyState: ReactNode
   children?: ReactNode // passed to <FilterRow />
-  isLoading: boolean
+  isLoading?: boolean
   size?: DataTableSize
   maxHeight?: `${number}rem` // also sets overflowY to 'auto'
   // maximum number of visible rows and the button's label to expand them all
@@ -115,11 +91,12 @@ export const DataTable = <T extends TableItem>({
   const headerGroups = table.getHeaderGroups()
   const columnCount = useMemo(() => headerGroups.reduce((acc, group) => acc + group.headers.length, 0), [headerGroups])
   const top = useLayoutStore(state => state.navHeight)
+  const tableTopRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const { shouldStickyHeader, tableRef, tableWrapperRef } = useTableStickyHeader({ disableStickyHeader, isLimited })
-  useScrollToTopOnFilterChange(table)
+  useScrollToTopOnFilterChange({ table, tableTopRef })
+  useScrollToTopOnPageChange({ table, tableTopRef, containerRef })
   useResetPageOnResultChange(table)
-  useScrollToTopOnPageChange(table, containerRef)
   const tableHeaderSx = (t: Theme) => ({
     ...(shouldStickyHeader && {
       position: 'sticky',
@@ -132,80 +109,83 @@ export const DataTable = <T extends TableItem>({
 
   return (
     <WithWrapper Wrapper={Box} shouldWrap={maxHeight} sx={{ maxHeight, overflowY: 'auto' }} ref={containerRef}>
-      {/* Children are placed outside the table header when the table content is horizontally scrollable in order to
-      preserve the parent's width instead of the table's scroll width. */}
-      {!shouldStickyHeader && children && <Box data-testid={TABLE_FILTERS_TEST_ID}>{children}</Box>}
-      <Box
-        ref={tableWrapperRef}
-        sx={{ ...(!shouldStickyHeader && { overflowX: 'auto' }) }}
-        data-testid="data-table-scroll-wrapper"
-      >
-        <Table
-          ref={tableRef}
-          sx={{
-            borderCollapse: 'separate', // Don't collapse to avoid funky stuff with the sticky header
-            // Prevent a long content of a column to push the other column outside the viewport
-            ...(useIsMobile() && { tableLayout: 'fixed' }),
-          }}
-          data-testid={!isLoading && 'data-table'}
+      {/* Wrapper used to scroll back to the table without hiding it behind the sticky nav. */}
+      <Box ref={tableTopRef} sx={{ scrollMarginTop: `${top}px` }}>
+        {/* Children are placed outside the table header when the table content is horizontally scrollable in order to
+        preserve the parent's width instead of the table's scroll width. */}
+        {!shouldStickyHeader && children && <Box data-testid={TABLE_FILTERS_TEST_ID}>{children}</Box>}
+        <Box
+          ref={tableWrapperRef}
+          sx={{ ...(!shouldStickyHeader && { overflowX: 'auto' }) }}
+          data-testid="data-table-scroll-wrapper"
         >
-          {!hideHeader && (
-            <TableHead sx={tableHeaderSx} data-testid="data-table-head">
-              {children && shouldStickyHeader && (
-                <FilterRow table={table} testId={TABLE_FILTERS_TEST_ID}>
-                  {children}
-                </FilterRow>
-              )}
-              {headerGroups.map(headerGroup => (
-                <TableRow key={headerGroup.id} sx={{ height: DataTableHeaderHeight[size] }}>
-                  {headerGroup.headers.map((header, index) => (
-                    <HeaderCell
-                      key={header.id}
-                      header={header}
-                      size={size}
-                      isSticky={!index && shouldStickFirstColumn}
-                      width={`calc(100% / ${columnCount})`}
-                    />
-                  ))}
-                </TableRow>
-              ))}
-            </TableHead>
-          )}
-          <TableBody>
-            {isLoading ? (
-              <SkeletonRows
-                table={table}
-                shouldStickFirstColumn={shouldStickFirstColumn}
-                {...increasingLengthOptions}
-              />
-            ) : rows.length === 0 ? (
-              emptyState
-            ) : (
-              visibleRows.map(row => (
-                <DataRow<T> key={row.id} row={row} shouldStickFirstColumn={shouldStickFirstColumn} {...rowProps} />
-              ))
+          <Table
+            ref={tableRef}
+            sx={{
+              borderCollapse: 'separate', // Don't collapse to avoid funky stuff with the sticky header
+              // Prevent a long content of a column to push the other column outside the viewport
+              ...(useIsMobile() && { tableLayout: 'fixed' }),
+            }}
+            data-testid={!isLoading && 'data-table'}
+          >
+            {!hideHeader && (
+              <TableHead sx={tableHeaderSx} data-testid="data-table-head">
+                {children && shouldStickyHeader && (
+                  <FilterRow table={table} testId={TABLE_FILTERS_TEST_ID}>
+                    {children}
+                  </FilterRow>
+                )}
+                {headerGroups.map(headerGroup => (
+                  <TableRow key={headerGroup.id} sx={{ height: DataTableHeaderHeight[size] }}>
+                    {headerGroup.headers.map((header, index) => (
+                      <HeaderCell
+                        key={header.id}
+                        header={header}
+                        size={size}
+                        isSticky={!index && shouldStickFirstColumn}
+                        width={`calc(100% / ${columnCount})`}
+                      />
+                    ))}
+                  </TableRow>
+                ))}
+              </TableHead>
             )}
-          </TableBody>
-          {showFooter && (
-            <TableFooter>
-              {footerRow && <TableRow>{footerRow}</TableRow>}
-              {showViewAllButton && (
-                <TableRow>
-                  <TableViewAllCell colSpan={columnCount} onClick={onShowAll} isLoading={isLoadingViewAll}>
-                    {viewAllLabel || t`View all`}
-                  </TableViewAllCell>
-                </TableRow>
+            <TableBody>
+              {isLoading ? (
+                <SkeletonRows
+                  table={table}
+                  shouldStickFirstColumn={shouldStickFirstColumn}
+                  {...increasingLengthOptions}
+                />
+              ) : rows.length === 0 ? (
+                emptyState
+              ) : (
+                visibleRows.map(row => (
+                  <DataRow<T> key={row.id} row={row} shouldStickFirstColumn={shouldStickFirstColumn} {...rowProps} />
+                ))
               )}
-              {showPagination && (
-                <TableRow>
-                  <TableCell colSpan={columnCount}>
-                    <TablePagination table={table} />
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableFooter>
-          )}
-        </Table>
+            </TableBody>
+            {showFooter && (
+              <TableFooter>
+                {footerRow && <TableRow>{footerRow}</TableRow>}
+                {showViewAllButton && (
+                  <TableRow>
+                    <TableViewAllCell colSpan={columnCount} onClick={onShowAll} isLoading={isLoadingViewAll}>
+                      {viewAllLabel || t`View all`}
+                    </TableViewAllCell>
+                  </TableRow>
+                )}
+                {showPagination && (
+                  <TableRow>
+                    <TableCell colSpan={columnCount}>
+                      <TablePagination table={table} />
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableFooter>
+            )}
+          </Table>
+        </Box>
       </Box>
     </WithWrapper>
   )

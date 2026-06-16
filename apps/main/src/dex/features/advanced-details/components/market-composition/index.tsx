@@ -39,7 +39,6 @@ export const MarketComposition = ({
       <CardHeader title={t`Market Composition`} size="small" />
       <DataTable<MarketCompositionRow>
         table={table}
-        size="small"
         isLoading={isLoading}
         disableStickyHeader
         increasingLengthOptions={{ ...DEFAULT_INCREASING_LENGTH, maxLength: DEFAULT_INCREASING_LENGTH.initialLength }}

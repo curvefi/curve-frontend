@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import type { PartialRecord } from '@primitives/objects.utils'
+import { assert, type PartialRecord } from '@primitives/objects.utils'
 import type { RouteProvider, RouterRouteResponse } from '@primitives/router.utils'
 import { toWei } from '../../src/router.utils'
 import { ADDRESS_HEX_PATTERN, type RoutesQuery } from '../../src/routes/routes.schemas'
@@ -96,11 +96,46 @@ const successCasesByProvider: PartialRecord<RouteProvider, Record<string, Succes
         tokenIn: [ETHEREUM_USDT],
         tokenOut: [ETHEREUM_USDC],
         amountIn: [toWei('1000', USD_DECIMALS)],
+        blacklist: [ETHEREUM_USDC],
         router: ['odos'],
         // Odos requires a caller (leverage zap) and a blacklist address; any valid addresses are acceptable for quoting
         userAddress: '0xC5898606BdB494a994578453B92e7910a90aA873',
         slippage: '0.5',
       },
+    },
+  },
+  'curve-solver': {
+    'ethereum amountIn': {
+      query: {
+        chainId: CHAIN_ID_ETHEREUM,
+        tokenIn: [ETHEREUM_USDC],
+        tokenOut: [ETHEREUM_USDT],
+        amountIn: [toWei('1000', USD_DECIMALS)],
+        blacklist: [ETHEREUM_USDC],
+        router: ['curve-solver'],
+        userAddress: '0xF977814e90dA44bFA03b6295A0616a897441aceC',
+      },
+    },
+    'arbitrum amountIn': {
+      query: {
+        chainId: CHAIN_ID_ARBITRUM,
+        tokenIn: [ARBITRUM_USDC],
+        tokenOut: [ARBITRUM_USDT],
+        amountIn: [toWei('100', USD_DECIMALS)],
+        router: ['curve-solver'],
+        userAddress: '0x2Df1c51E09aECF9cacB7bc98cB1742757f163dF7',
+      },
+    },
+    'arbitrum amountOut': {
+      query: {
+        chainId: CHAIN_ID_ARBITRUM,
+        tokenIn: [ARBITRUM_USDC],
+        tokenOut: [ARBITRUM_USDT],
+        amountOut: [toWei('1000', USD_DECIMALS)],
+        router: ['curve-solver'],
+        userAddress: '0x2Df1c51E09aECF9cacB7bc98cB1742757f163dF7',
+      },
+      expectedRoutes: 0,
     },
   },
 }
@@ -185,23 +220,22 @@ describe('GET routes integration', () => {
         payload.forEach(route => {
           expect(route.router).toBe(router)
           expect(route.amountOut[0]).toMatch(/^[0-9]+\.?[0-9]*$/)
-          expect(route.priceImpact).toBeTypeOf(route.priceImpact == null ? 'undefined' : 'number')
+          expect(route.priceImpact).toBeTypeOf(route.priceImpact == null ? typeof null : 'number')
           expect(route.createdAt).toBeTypeOf('number')
-          expect(route.route.length).toBeGreaterThan(0)
+          const steps = assert(route.route, `No route steps for ${router} - ${label}`)
+          expect(steps).toBeDefined()
+          expect(steps.length).toBeGreaterThan(0)
 
-          route.route.forEach(step => {
-            if (router === 'curve') {
-              expect(step.protocol).toBe('curve')
-            }
+          steps.forEach(step => {
+            if (router.startsWith('curve')) expect(step.protocol).toBe(router)
             expect(step.tokenIn.join(',')).toMatch(ADDRESS_REGEX)
             expect(step.tokenOut.join(',')).toMatch(ADDRESS_REGEX)
           })
 
           const [expectedTokenIn] = query.tokenIn ?? []
           const [expectedTokenOut] = query.tokenOut ?? []
-          const [firstStep] = route.route
-          const lastStep = route.route[route.route.length - 1]
-          expect(firstStep.tokenIn.join(',').toLowerCase()).toBe(expectedTokenIn.toLowerCase())
+          const lastStep = steps[steps.length - 1]
+          expect(steps[0].tokenIn.join(',').toLowerCase()).toBe(expectedTokenIn.toLowerCase())
           expect(lastStep.tokenOut.join(',').toLowerCase()).toBe(expectedTokenOut.toLowerCase())
         })
       })

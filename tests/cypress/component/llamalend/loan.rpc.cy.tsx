@@ -14,7 +14,6 @@ import {
   checkLeverageCheckbox,
   checkLoanDetailsLoaded,
   CREATE_LOAN_FUND_AMOUNT,
-  LOAN_TEST_MARKETS,
   oneLoanTestMarket,
   submitCreateLoanForm,
   writeCreateLoanForm,
