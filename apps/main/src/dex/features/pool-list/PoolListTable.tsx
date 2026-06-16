@@ -109,7 +109,6 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
         expandedPanel={PoolListMobileExpandedPanel}
         shouldStickFirstColumn={Boolean(isTablet && userHasPositions)}
         isLoading={loading}
-        size="large"
       >
         <TableFilters<PoolListColumnId>
           testIdPrefix={LOCAL_STORAGE_KEY}
