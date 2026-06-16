@@ -102,7 +102,7 @@ export const GlobalBanner = ({ networkId, chainId, backendMaintenance }: GlobalB
       )}
       {showSonicRetirementBanner && currentApp === 'dex' && chainId === +Chain.Sonic && (
         <Banner
-          severity="warning"
+          severity="alert"
           subtitle={t`The Sonic chain will be retired at the end of June. Please withdraw from pools.`}
           onClick={dismissSonicRetirementBanner}
           learnMoreUrl="https://x.com/SonicLabs/status/2041551455254097988"
