@@ -24,7 +24,7 @@ import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
 import { combineQueries } from '@ui-kit/lib'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
-import { Query, type Range } from '@ui-kit/types/util'
+import { fakeLoadingQ, Query, type Range } from '@ui-kit/types/util'
 import { AVERAGE_CATEGORIES, type AverageCategory, CRVUSD_ADDRESS, decimalMultiply } from '@ui-kit/utils'
 
 const RATE_CATEGORY: AverageCategory = 'llamalend.market.rate'
@@ -112,9 +112,10 @@ export const usePageHeader = ({
   const campaigns = isLendMarket ? [...vaultCampaigns, ...controllerCampaigns] : controllerCampaigns
   const borrowCampaigns = useFilteredRewards(campaigns, marketType, MarketRateType.Borrow)
   const supplyCampaigns = useFilteredRewards(campaigns, marketType, MarketRateType.Supply)
+  const marketQuery = fakeLoadingQ(market) // todo: use a proper query, see #2729
 
   return {
-    borrowRate: combineQueries([marketRates, snapshot], ({ borrowApr }, snapshots) => {
+    borrowRate: combineQueries([marketRates, snapshot, marketQuery], ({ borrowApr }, snapshots) => {
       const { averageRate, averageRebasingYield, averageTotalRate, rebasingYield, totalRate } = getBorrowRateMetrics({
         borrowRate: toNumberOrNull(borrowApr),
         snapshots,
@@ -135,7 +136,7 @@ export const usePageHeader = ({
     }),
     supplyRate: isLendMarket
       ? combineQueries(
-          [marketRates, snapshot as Query<LendingSnapshot[]>, onChainRewards],
+          [marketRates, snapshot as Query<LendingSnapshot[]>, onChainRewards, marketQuery],
           (marketRates, lendingSnapshots, marketOnChainRewards) =>
             buildSupplyRate({
               supplyApy: marketRates?.lendApy,
@@ -152,7 +153,7 @@ export const usePageHeader = ({
         )
       : undefined,
     availableLiquidity: combineQueries(
-      [borrowUsdRate, capAndAvailable],
+      [borrowUsdRate, capAndAvailable, marketQuery],
       (borrowUsdRate, { available, totalAssets }) => ({
         value: available,
         max: totalAssets,

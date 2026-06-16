@@ -85,6 +85,12 @@ export const mapQuery = <TSource, TResult>(
 /** Creates a QueryProp constant data, no loading or error state. */
 export const constQ = <T>(data: T) => q({ data, isLoading: false, error: null })
 
+/**
+ * Creates a fake query that assumes the data is loading when null or undefined.
+ * Avoid this when possible, prefer real queries instead!
+ **/
+export const fakeLoadingQ = <T>(data: T | undefined) => q({ data, isLoading: data == null, error: null })
+
 /** Hook similar to mapQuery for queries that need memoization */
 export const useMappedQuery = <TSource, TResult>(
   { isLoading, error, data }: Query<TSource>,
