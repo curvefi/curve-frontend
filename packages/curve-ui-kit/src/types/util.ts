@@ -4,6 +4,17 @@ import type { UseQueryResult } from '@tanstack/react-query'
 
 export type Range<T> = [T, T]
 
+type DotPathPrefix<TPrefix extends string, TKey extends string> = TPrefix extends '' ? TKey : `${TPrefix}.${TKey}`
+
+/** Builds a union of dot-paths in T whose resolved leaf value extends TValue. */
+export type DotPathByValue<T, TValue, TPrefix extends string = ''> = {
+  [TKey in keyof T & string]: T[TKey] extends TValue
+    ? DotPathPrefix<TPrefix, TKey>
+    : T[TKey] extends Record<string, unknown>
+      ? DotPathByValue<T[TKey], TValue, DotPathPrefix<TPrefix, TKey>>
+      : never
+}[keyof T & string]
+
 /**
  * Creates a deep partial type that makes all properties optional recursively,
  * while preserving function types as-is

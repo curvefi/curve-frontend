@@ -1,4 +1,5 @@
 import { ThemeKey } from 'curve-ui-kit/src/themes/basic-theme'
+import type { DotPathByValue } from 'curve-ui-kit/src/types/util'
 import { get } from 'lodash'
 import { assert } from '@primitives/objects.utils'
 
@@ -8,15 +9,6 @@ export const CURVE_ASSETS_URL = `${CURVE_CDN_URL}/curve-assets`
 export const CURVE_LOGO_URL = `${CURVE_ASSETS_URL}/branding/logo.png`
 export const CURVE_LOGO_GRAYSCALE_URL = `${CURVE_ASSETS_URL}/branding/logo-bw.svg`
 export const ERROR_IMAGE_URL = `${CURVE_ASSETS_URL}/branding/four-oh-llama.jpg`
-
-/** Dot-path union of every URL leaf in EXTERNAL_LINKS, e.g. "brand.assets". */
-export type ExternalLinkKey<T = typeof EXTERNAL_LINKS, Prefix extends string = ''> = {
-  [Key in keyof T & string]: T[Key] extends string
-    ? `${Prefix}${Key}`
-    : T[Key] extends object
-      ? ExternalLinkKey<T[Key], `${Prefix}${Key}.`>
-      : never
-}[keyof T & string]
 
 export const CURVE_SOCIALS = {
   twitter: 'https://x.com/curvefinance',
@@ -103,6 +95,9 @@ export const EXTERNAL_LINKS = {
     apiStatus: 'https://statuspage.freshping.io/59335-CurveAPI',
   },
 } as const
+
+/** Dot-path union of every URL leaf in EXTERNAL_LINKS, e.g. "brand.assets". */
+export type ExternalLinkKey = DotPathByValue<typeof EXTERNAL_LINKS, string>
 
 /** Resolves a typed EXTERNAL_LINKS dot-path to its URL. */
 export const getExternalLink = (link: ExternalLinkKey) => {
