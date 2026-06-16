@@ -24,7 +24,7 @@ import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
 import { combineQueries } from '@ui-kit/lib'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
-import { Query, type Range } from '@ui-kit/types/util'
+import { Query, QueryProp, type Range } from '@ui-kit/types/util'
 import { AVERAGE_CATEGORIES, type AverageCategory, CRVUSD_ADDRESS, decimalMultiply } from '@ui-kit/utils'
 
 const RATE_CATEGORY: AverageCategory = 'llamalend.market.rate'
@@ -87,14 +87,15 @@ function buildSupplyRate({
 export const usePageHeader = ({
   chainId,
   marketId,
-  market,
+  marketQuery,
   blockchainId,
 }: {
   chainId: number
   marketId: string | undefined
-  market: LlamaMarketTemplate | null | undefined
+  marketQuery: QueryProp<LlamaMarketTemplate>
   blockchainId: Chain | undefined
 }) => {
+  const market = marketQuery.data
   const isLendMarket = market instanceof LendMarketTemplate
   const vaultAddress = (isLendMarket ? market.addresses.vault : undefined) as Address | undefined
   const controllerAddress = getControllerAddress(market)
@@ -114,7 +115,7 @@ export const usePageHeader = ({
   const supplyCampaigns = useFilteredRewards(campaigns, marketType, MarketRateType.Supply)
 
   return {
-    borrowRate: combineQueries([marketRates, snapshot], ({ borrowApr }, snapshots) => {
+    borrowRate: combineQueries([marketRates, snapshot, marketQuery], ({ borrowApr }, snapshots) => {
       const { averageRate, averageRebasingYield, averageTotalRate, rebasingYield, totalRate } = getBorrowRateMetrics({
         borrowRate: toNumberOrNull(borrowApr),
         snapshots,
@@ -135,7 +136,7 @@ export const usePageHeader = ({
     }),
     supplyRate: isLendMarket
       ? combineQueries(
-          [marketRates, snapshot as Query<LendingSnapshot[]>, onChainRewards],
+          [marketRates, snapshot as Query<LendingSnapshot[]>, onChainRewards, marketQuery],
           (marketRates, lendingSnapshots, marketOnChainRewards) =>
             buildSupplyRate({
               supplyApy: marketRates?.lendApy,
@@ -152,7 +153,7 @@ export const usePageHeader = ({
         )
       : undefined,
     availableLiquidity: combineQueries(
-      [borrowUsdRate, capAndAvailable],
+      [borrowUsdRate, capAndAvailable, marketQuery],
       (borrowUsdRate, { available, totalAssets }) => ({
         value: available,
         max: totalAssets,

@@ -19,12 +19,12 @@ const DEFAULT_TAB: PositionDetailsTab = 'borrowDetails'
 
 export const usePositionDetailsTabs = ({
   events: { data: events, isLoading: activityIsLoading, error: activityError },
-  hasPosition,
+  hasPosition: { data: hasPosition, isLoading: isLoanExistsLoading },
   params: { chainId, marketId, userAddress },
   tokens,
 }: {
   events: QueryProp<ParsedUserCollateralEvent[]>
-  hasPosition: boolean | undefined
+  hasPosition: QueryProp<boolean>
   params: UserMarketParams
   tokens: Partial<MarketTokens>
 }) => {
@@ -38,7 +38,7 @@ export const usePositionDetailsTabs = ({
             hasPosition ? (
               <BorrowPositionDetails tokens={tokens} params={{ chainId, marketId, userAddress }} />
             ) : (
-              <NoPosition type="borrow" />
+              <NoPosition type={isLoanExistsLoading ? 'loading' : 'borrow'} />
             ),
         },
         events?.length && {
@@ -56,7 +56,17 @@ export const usePositionDetailsTabs = ({
           ),
         },
       ),
-    [events, hasPosition, tokens, chainId, marketId, userAddress, activityIsLoading, activityError],
+    [
+      events,
+      hasPosition,
+      isLoanExistsLoading,
+      tokens,
+      chainId,
+      marketId,
+      userAddress,
+      activityIsLoading,
+      activityError,
+    ],
   )
 
   const { tab = DEFAULT_TAB, onTabChange } = useTabs(tabOptions, DEFAULT_TAB)

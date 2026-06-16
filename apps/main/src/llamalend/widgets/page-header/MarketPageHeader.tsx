@@ -6,6 +6,7 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Chain } from '@curvefi/prices-api'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
+import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
@@ -15,6 +16,7 @@ import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import { QueryProp } from '@ui-kit/types/util'
 import { isDevelopment } from '@ui-kit/utils'
 import { PageHeader } from '@ui-kit/widgets/PageHeader'
 import { usePageHeader } from './hooks/usePageHeader'
@@ -27,19 +29,19 @@ export const MarketPageHeader = ({
   chainId,
   marketId,
   isLoading,
-  market,
+  marketQuery,
   marketType,
 }: {
   blockchainId: Chain
   chainId: number
   marketId: string | undefined
   isLoading: boolean
-  market: LlamaMarketTemplate | undefined
+  marketQuery: QueryProp<LlamaMarketTemplate>
   marketType: LlamaMarketType
 }) => {
   const { address: userAddress } = useConnection()
-  const { borrowRate, supplyRate, availableLiquidity } = usePageHeader({ chainId, marketId, market, blockchainId })
-  const { collateralToken, borrowToken } = (market && getTokens(market)) ?? {}
+  const { borrowRate, supplyRate, availableLiquidity } = usePageHeader({ chainId, marketId, marketQuery, blockchainId })
+  const { collateralToken, borrowToken } = maybe(marketQuery.data, getTokens) ?? {}
 
   const title =
     (collateralToken &&
@@ -79,22 +81,24 @@ export const MarketPageHeader = ({
             </Stack>
           </WithSkeleton>
 
-          {isDevelopment && market && userAddress && (
-            <IconButton
-              size="extraSmall"
-              onClick={() =>
-                void invalidateAllUserMarketDetails({
-                  chainId: chainId as IChainId,
-                  marketId: market.id,
-                  userAddress,
-                  blockchainId,
-                  contractAddress: getControllerAddress(market),
-                })
-              }
-            >
-              <ReloadIcon />
-            </IconButton>
-          )}
+          {isDevelopment &&
+            userAddress &&
+            maybe(marketQuery.data, market => (
+              <IconButton
+                size="extraSmall"
+                onClick={() =>
+                  void invalidateAllUserMarketDetails({
+                    chainId: chainId as IChainId,
+                    marketId: market.id,
+                    userAddress,
+                    blockchainId,
+                    contractAddress: getControllerAddress(market),
+                  })
+                }
+              >
+                <ReloadIcon />
+              </IconButton>
+            ))}
         </>
       }
       rightItems={

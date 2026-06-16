@@ -14,7 +14,7 @@ export const PositionDetailsComposite = ({
   params,
   events,
 }: {
-  hasPosition: boolean | undefined
+  hasPosition: QueryProp<boolean>
   tokens: Partial<MarketTokens>
   params: UserMarketParams
   events: QueryProp<UserCollateralEvents>

@@ -10,17 +10,18 @@ import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/utils
 import { PositionDetailsComposite } from '@/llamalend/features/market-position-details'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
-import { useLoanExists } from '@/llamalend/queries/user'
+import { useHasLoan } from '@/llamalend/queries/user/user-loan-exists.query'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header'
 import { isPricesApiChain } from '@curvefi/prices-api'
 import type { Decimal } from '@primitives/decimal.utils'
+import { maybe } from '@primitives/objects.utils'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
-import type { Range } from '@ui-kit/types/util'
+import { Range } from '@ui-kit/types/util'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 import { useLendMarket } from '../../hooks/useLendMarket'
 import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
@@ -28,22 +29,16 @@ import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
 export const LendMarketPage = () => {
   const params = useParams<MarketUrlParams>()
   const { rMarket, rChainId: chainId } = parseMarketParams(params)
-  const { data: market, isLoading: isMarketLoading, isSuccess } = useLendMarket(chainId, rMarket)
+  const marketQuery = useLendMarket(chainId, rMarket)
+  const { data: market, isLoading: isMarketLoading, error } = marketQuery
   const { isHydrated, llamaApi: api = null, provider } = useCurve()
   const marketId = market?.id ?? '' // todo: use market?.id directly everywhere since we pass the market too!
   const { address: userAddress } = useConnection()
   useLendPageTitle(market?.collateral_token?.symbol ?? rMarket, t`Lend`)
 
   const network = networks[chainId]
-  const tokens = useMemo(() => (market ? getTokens(market) : {}), [market])
-  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists(
-    {
-      chainId,
-      marketId,
-      userAddress,
-    },
-    !!market, // enable query as soon as market is defined, the validation suite isn't able to detect it otherwise
-  )
+  const tokens = useMemo(() => maybe(market, getTokens) ?? {}, [market])
+  const loanExists = useHasLoan({ chainId, marketId, userAddress, marketQuery })
 
   // eslint-disable-next-line @eslint-react/use-state -- Existing violation before enabling this rule.
   const [previewPrices, onPricesUpdated] = useState<Range<Decimal> | undefined>(undefined)
@@ -68,30 +63,29 @@ export const LendMarketPage = () => {
     onPricesUpdated,
   }
 
-  return isSuccess && !market ? (
+  return error ? (
     <ErrorPage
-      title="404"
-      subtitle={`${t`Market`} ${rMarket} ${t`Not Found`}`}
+      title={t`Error`}
+      subtitle={error.message}
+      error={error}
       continueUrl={getCollateralListPathname(params)}
     />
   ) : provider ? (
     <DetailPageLayout
-      formTabs={
-        market &&
-        !isLoanExistsLoading &&
-        (loanExists ? (
+      formTabs={maybe(market && loanExists.data, loanExists =>
+        loanExists ? (
           <ManageLoanTabs {...pageProps} collateralEvents={collateralEvents} />
         ) : (
           <CreateLoanTabs {...pageProps} params={params} />
-        ))
-      }
+        ),
+      )}
       header={
         <MarketPageHeader
           blockchainId={network.id}
           chainId={chainId}
           marketId={marketId}
           isLoading={!isHydrated || isMarketLoading}
-          market={market}
+          marketQuery={marketQuery}
           marketType={LlamaMarketType.Lend}
         />
       }
