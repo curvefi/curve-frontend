@@ -35,8 +35,18 @@ export function closeDrawer(breakpoint: Breakpoint) {
   }
 }
 
+function waitForFiltersPopover() {
+  cy.get('[data-testid="table-filters-popover"]')
+    .should('be.visible')
+    .closest('.MuiPopover-paper')
+    .should('have.css', 'transform', 'none')
+}
+
 export function withFilters<T>(breakpoint: Breakpoint, callback: () => Cypress.Chainable<T>) {
   cy.get(`[data-testid="btn-open-filters"]`).click({ waitForAnimations: true })
+  if (breakpoint !== 'mobile') {
+    waitForFiltersPopover()
+  }
   return callback().then(result => {
     if (breakpoint === 'mobile') {
       closeDrawer(breakpoint)
