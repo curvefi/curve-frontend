@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react'
 import { ROUTE } from '@/dex/constants'
 import { getPath } from '@/dex/utils/utilsRouter'
 import Button from '@mui/material/Button'
@@ -6,7 +5,7 @@ import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import type { ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
-import { Metric, MetricProps } from '@ui-kit/shared/ui/Metric'
+import { Metric, type MetricProps } from '@ui-kit/shared/ui/Metric'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { PoolListRewards } from '../cells/PoolListRewards'
@@ -15,14 +14,9 @@ import type { PoolListItem } from '../poolList.types'
 
 const { Spacing } = SizesAndSpaces
 
-const ListInfoItem = ({
-  value,
-  children,
-  ...props
-}: Omit<MetricProps, 'value'> & { value: number | string | undefined | null; children?: ReactNode }) => (
+const ListInfoItem = (props: MetricProps) => (
   <Grid size={6}>
-    <Metric value={value && +value} {...props} />
-    {children}
+    <Metric {...props} />
   </Grid>
 )
 

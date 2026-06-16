@@ -60,7 +60,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
     sortBy,
     sortDirection,
   })
-  const loading = isPending || isPlaceholderData
+  const loading = isPending
   const apiResultCount = isPlaceholderData ? undefined : poolList?.count
   const data = useMemo(
     () => poolList?.pools.map(pool => getPoolListItem(network, pool, getUserPositionOptions(pool.address))) ?? EMPTY,

@@ -19,9 +19,8 @@ const PAGE_QUERY_FIELD = 'page'
 const POOL_TYPE_QUERY_FIELD = 'filter'
 const SEARCH_QUERY_FIELD = 'search'
 
-// The API bundles crypto, factory_crypto, and twocryptong pools under the "crypto" filter.
 // Omitted "main" and "factory" from available filters.
-export const POOL_TYPE_FILTERS = [
+const POOL_TYPE_FILTERS = [
   { key: 'stableswapng', label: t`Stable NG` },
   { key: 'crvusd', label: t`crvUSD` },
   { key: 'crypto', label: t`Twocrypto` },
@@ -31,9 +30,10 @@ export const POOL_TYPE_FILTERS = [
 export type PoolListPoolType = (typeof POOL_TYPE_FILTERS)[number]['key']
 export type PoolListFilter = (typeof POOL_TYPE_FILTERS)[number]
 
-export const POOL_TYPES = POOL_TYPE_FILTERS.map(({ key }) => key)
+const POOL_TYPES = POOL_TYPE_FILTERS.map(({ key }) => key)
 
 const POOL_TYPE_SET = new Set<string>(POOL_TYPES)
+// The API bundles crypto, factory_crypto, and twocryptong pools under the "crypto" filter.
 const CRYPTO_POOL_TYPE_ALIASES = new Set<string>(['factory_crypto', 'twocryptong'])
 
 export type PoolListSortableColumn =
@@ -46,18 +46,22 @@ const SORT_COLUMNS = {
   [PoolListColumnId.PoolName]: { sortBy: 'name', label: POOL_LIST_TITLES[PoolListColumnId.PoolName] },
   [PoolListColumnId.RewardsBase]: { sortBy: 'base_daily_apr', label: POOL_LIST_TITLES[PoolListColumnId.RewardsBase] },
   [PoolListColumnId.Volume]: { sortBy: 'volume', label: POOL_LIST_TITLES[PoolListColumnId.Volume] },
-  [PoolListColumnId.Tvl]: { sortBy: 'tvl', label: POOL_LIST_TITLES[PoolListColumnId.Tvl] },
+  [PoolListColumnId.Tvl]: { sortBy: 'tvl', label: t`Total Value Locked` },
 } as const satisfies Record<PoolListSortableColumn, { sortBy: PoolSortField; label: string }>
 
 type ColumnSort = { id: PoolListSortableColumn; desc: boolean }
-type PoolListSorting = [ColumnSort]
+export type PoolListSorting = [ColumnSort]
 
-export const SORT_OPTIONS = recordEntries(SORT_COLUMNS).map(([id, { label }]) => ({ id, label }))
+const SORT_OPTIONS = recordEntries(SORT_COLUMNS).map(([id, { label }]) => ({ id, label }))
 
 const isPoolType = (value: string | null): value is PoolListPoolType => value != null && POOL_TYPE_SET.has(value)
 
-const getPoolType = (value: string | null): PoolListPoolType | undefined =>
-  value != null && CRYPTO_POOL_TYPE_ALIASES.has(value) ? 'crypto' : isPoolType(value) ? value : undefined
+const getPoolType = (value: string | null): PoolListPoolType | undefined => {
+  if (value == null) return undefined
+  if (CRYPTO_POOL_TYPE_ALIASES.has(value)) return 'crypto'
+
+  return isPoolType(value) ? value : undefined
+}
 
 const isPoolListSortColumn = (value: string | undefined): value is PoolListSortableColumn =>
   value != null && value in SORT_COLUMNS

@@ -1,17 +1,11 @@
 import { useMemo } from 'react'
 import { fromEntries, recordValues } from '@primitives/objects.utils'
-import type { SortingState } from '@tanstack/react-table'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import type { MigrationOptions } from '@ui-kit/hooks/useStoredState'
 import { useVisibilitySettings } from '@ui-kit/shared/ui/DataTable/hooks/useVisibilitySettings'
 import type { VisibilityGroup } from '@ui-kit/shared/ui/DataTable/visibility.types'
-import {
-  POOL_LIST_COLUMNS,
-  POOL_LIST_COLUMN_OPTIONS,
-  PoolListColumnId,
-  PoolListColumnVariant,
-  getDefaultSort,
-} from '../columns'
+import { POOL_LIST_COLUMNS, POOL_LIST_COLUMN_OPTIONS, PoolListColumnId, type PoolListColumnVariant } from '../columns'
+import type { PoolListSorting } from './usePoolListUrlState'
 
 const migration: MigrationOptions<Record<PoolListColumnVariant, VisibilityGroup<PoolListColumnId>[]>> = {
   version: 1,
@@ -31,11 +25,11 @@ export function usePoolListVisibilitySettings(
     sorting,
   }: {
     isLite: boolean
-    sorting: SortingState
+    sorting: PoolListSorting
   },
 ) {
   const variant: PoolListColumnVariant = isLite ? 'lite' : 'full'
-  const sortField = (sorting.length ? sorting : getDefaultSort(isLite))[0].id as PoolListColumnId
+  const [{ id: sortField }] = sorting
   const visibilitySettings = useVisibilitySettings(
     title,
     POOL_LIST_COLUMN_OPTIONS,
