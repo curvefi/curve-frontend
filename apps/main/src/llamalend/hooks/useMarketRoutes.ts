@@ -2,6 +2,7 @@ import { useEffect, useEffectEvent, useMemo, useState, useTransition } from 'rea
 import { useConnection } from 'wagmi'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { Address } from '@primitives/address.utils'
+import { toArray } from '@primitives/array.utils'
 import { Decimal } from '@primitives/decimal.utils'
 import { recordValues } from '@primitives/objects.utils'
 import { type RouteProvider, type RouterRouteResponse } from '@primitives/router.utils'
@@ -39,6 +40,7 @@ const sortRoutes = (a: RouterRouteResponse, b: RouterRouteResponse) =>
  */
 export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends QueryKey>({
   chainId,
+  marketAddress,
   tokenIn,
   tokenOut,
   amountIn,
@@ -50,6 +52,7 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
   zapAddress,
 }: {
   chainId: number
+  marketAddress: Address | undefined
   tokenIn: { symbol: string; address: Address; decimals: number } | undefined
   tokenOut: { symbol: string; address: Address; decimals: number } | undefined
   amountIn: Decimal | undefined
@@ -70,6 +73,7 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
       tokenIn: tokenIn?.address,
       tokenOut: tokenOut?.address,
       amountIn: amountIn && tokenIn && toWei(amountIn, tokenIn.decimals),
+      blacklist: toArray(marketAddress),
       userAddress,
       zapAddress,
       slippage,

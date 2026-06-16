@@ -7,6 +7,7 @@ import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarket
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import {
+  getAmmAddress,
   getControllerAddress,
   getZapAddress,
   getMarketType,
@@ -180,6 +181,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     },
     routes: useMarketRoutes({
       chainId,
+      marketAddress: getAmmAddress(market),
       tokenIn: borrowToken,
       tokenOut: collateralToken,
       amountIn: decimalSum(params.debt, params.userBorrowed),

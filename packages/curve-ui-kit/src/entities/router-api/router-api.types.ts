@@ -11,6 +11,7 @@ export type RoutesQuery = {
   tokenOut: Address
   amountIn?: Decimal
   amountOut?: Decimal
+  blacklist?: readonly Address[]
   router?: RouteProvider | readonly RouteProvider[]
   userAddress?: Address
   slippage?: Decimal
