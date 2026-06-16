@@ -120,11 +120,6 @@ export const getSections = () => [
         icon: <CrvHubIcon />,
       },
       {
-        label: t`Dune Analytics`,
-        href: EXTERNAL_LINKS.analytics.duneCurveFi,
-        icon: <DuneIcon />,
-      },
-      {
         label: t`API Status`,
         href: EXTERNAL_LINKS.monitoring.apiStatus,
         icon: <MonitorHeartOutlinedIcon />,

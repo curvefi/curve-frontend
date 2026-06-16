@@ -50,7 +50,6 @@ const getSections = (currentApp: AppName, networkId: string): NavigationSection[
     links: [
       { href: EXTERNAL_LINKS.docs.user.security.audits, label: t`Audits` },
       { href: EXTERNAL_LINKS.docs.user.security.bugBounty, label: t`Bug Bounty` },
-      { href: EXTERNAL_LINKS.analytics.duneCurveFi, label: t`Dune Analytics` },
       { href: EXTERNAL_LINKS.monitoring.curveMonitor, label: t`Curve Monitor` },
       { href: EXTERNAL_LINKS.monitoring.crvHub, label: t`Crvhub` },
     ],

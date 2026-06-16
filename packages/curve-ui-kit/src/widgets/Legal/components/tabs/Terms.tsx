@@ -115,8 +115,6 @@ export const Terms = ({ currentApp, network }: { currentApp: AppName; network: s
             <LegalExternalLink link="docs.user.security.bugBounty">
               {t`Bug Bounty & Audits - Curve Technical Docs`}
             </LegalExternalLink>
-            {t`) and relevant statistics (`}
-            <LegalExternalLink link="analytics.duneCurveFi">{t`Curve.fi`}</LegalExternalLink>
             {t`) and API status monitoring (`}
             <LegalExternalLink link="monitoring.apiStatus">
               {t`Curve API's Live status - Powered by Freshping`}

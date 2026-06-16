@@ -102,9 +102,6 @@ export const EXTERNAL_LINKS = {
     crvHub: 'https://crvhub.com/',
     apiStatus: 'https://statuspage.freshping.io/59335-CurveAPI',
   },
-  analytics: {
-    duneCurveFi: 'https://dune.com/mrblock_buidl/Curve.fi',
-  },
 } as const
 
 /** Resolves a typed EXTERNAL_LINKS dot-path to its URL. */
