@@ -161,11 +161,14 @@ export const checkLeverageCheckbox = ({
 }: {
   leverageEnabled: boolean
   hasLeverage: boolean
-}) =>
-  cy
-    .get('[data-testid="leverage-checkbox"]')
-    .should(hasLeverage ? 'be.visible' : 'not.exist')
-    .and(leverageEnabled ? 'be.checked' : hasLeverage ? 'not.be.checked' : 'not.exist')
+}) => {
+  if (hasLeverage) {
+    cy.get('[data-testid="leverage-checkbox"]').should('be.visible')
+    cy.get('[data-testid="leverage-checkbox"] input').should(leverageEnabled ? 'be.checked' : 'not.be.checked')
+  } else {
+    cy.get('[data-testid="leverage-checkbox"]').should('not.exist')
+  }
+}
 
 /**
  * Fill in the create loan form. Assumes the form is already opened.

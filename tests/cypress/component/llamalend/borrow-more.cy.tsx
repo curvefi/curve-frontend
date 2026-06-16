@@ -46,21 +46,30 @@ const testCases = [
     withCollateral: true,
     buttonText: 'Add, Approve & Borrow More',
   },
-]
+].flatMap(testCase => [
+  {
+    ...testCase,
+    hasLeverageManagement: false,
+    leverageEnabled: false,
+  },
+  {
+    ...testCase,
+    title: `${testCase.title} with leverage`,
+    hasLeverageManagement: true,
+    leverageEnabled: true,
+  },
+])
 
 describe('BorrowMoreForm (mocked)', () => {
   beforeEach(() => mockMintSnapshots({ limit: 1 }))
 
   afterEach(() => resetLlamaTestContext())
 
-  testCases.forEach(({ approved, title, withCollateral, buttonText }) => {
-    const hasLeverageManagement = false
-    const leverageEnabled = false
-
+  testCases.forEach(({ approved, title, withCollateral, hasLeverageManagement, leverageEnabled, buttonText }) => {
     it(title, () => {
       const userCollateral = withCollateral ? oneDecimal(0.01, 0.5, 3) : undefined
       const { borrow, expected, expectedCurrentDebt, expectedFutureDebt, llamaApi, market, stubs } =
-        createBorrowMoreScenario({ chainId, approved, collateral: userCollateral })
+        createBorrowMoreScenario({ chainId, approved, collateral: userCollateral, leverage: hasLeverageManagement })
       const onPricesUpdated = cy.spy().as('onPricesUpdated')
 
       setLlamaApi(llamaApi)
@@ -92,6 +101,13 @@ describe('BorrowMoreForm (mocked)', () => {
         expect(stubs.borrowMoreHealth).to.have.been.calledWithExactly(...expected.health)
         expect(stubs.borrowMoreMaxRecv).to.have.been.calledWithExactly(...expected.maxRecv)
         expect(stubs.borrowMoreIsApproved).to.have.been.calledWithExactly(...expected.isApproved)
+        if (expected.leverage) {
+          const { expectedCollateral, futureLeverage, priceImpact } = expected.leverage
+          expect(stubs.maxLeverage).to.have.been.called
+          expect(stubs.borrowMoreExpectedCollateral).to.have.been.calledWithExactly(...expectedCollateral)
+          expect(stubs.borrowMoreFutureLeverage).to.have.been.calledWithExactly(...futureLeverage)
+          expect(stubs.borrowMorePriceImpact).to.have.been.calledWithExactly(...priceImpact)
+        }
         if (approved) {
           expect(stubs.estimateGasBorrowMore).to.have.been.calledWithExactly(...expected.estimateGas)
           expect(stubs.estimateGasBorrowMoreApprove).to.not.have.been.called

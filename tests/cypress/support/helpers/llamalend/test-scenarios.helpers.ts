@@ -61,23 +61,47 @@ const oneAprPair = () => ({
 })
 
 const DEFAULT_LEVERAGE_SLIPPAGE = Number(SLIPPAGE[LEVERAGE].default)
+const DEFAULT_USER_BORROWED = '0' as const
+/** Default collateral address used in createMockMintMarket */
+const DEFAULT_COLLATERAL_ADDRESS = '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0' as const
+
+const leverageMetrics = () => ({
+  totalCollateral: oneDecimal(1, 4, 3),
+  userCollateral: oneDecimal(0.05, 1.2, 3),
+  collateralFromUserBorrowed: oneDecimal(0.01, 0.5, 3),
+  collateralFromDebt: oneDecimal(0.01, 0.5, 3),
+  leverage: oneDecimal(1.1, 6, 2),
+  avgPrice: oneDecimal(900, 2300, 2),
+})
+
+const expectedBorrowedMetrics = () => ({
+  totalBorrowed: oneDecimal(0.2, 20, 2),
+  borrowedFromStateCollateral: oneDecimal(0.01, 0.5, 3),
+  borrowedFromUserCollateral: oneDecimal(0.01, 0.5, 3),
+  userBorrowed: oneDecimal(0.2, 20, 2),
+  avgPrice: oneDecimal(900, 2300, 2),
+})
 
 export const createCreateLoanScenario = ({
   chainId,
   presetRange = 50,
   approved,
+  leverage = false,
 }: {
   chainId: number
   presetRange?: number
   approved: boolean
+  leverage?: boolean
 }) => {
   const collateral = oneDecimal(0.05, 1.2, 3)
   const borrow = oneDecimal(5, 140, 2)
-  const collateralAddress = oneAddress()
+  const collateralAddress = DEFAULT_COLLATERAL_ADDRESS
   const lowPrice = oneDecimal(900, 2300, 2)
   const createLoanApprove = createStub(TEST_TX_HASH)
+  const createLoanLeverageApprove = createStub(TEST_TX_HASH)
+  const maxLeverage = oneDecimal(1.5, 10, 2)
 
-  const stubs = {
+  const normalStubs = {
     createLoanHealth: createStub(oneDecimal(1, 98, 2)),
     createLoanPrices: createStub([
       decimal(new BigNumber(lowPrice).plus(oneFloat(40, 800)).decimalPlaces(2))!,
@@ -89,21 +113,96 @@ export const createCreateLoanScenario = ({
     createLoan: createStub(TEST_TX_HASH),
     createLoanApprove,
     estimateGasCreateLoanApprove: createStub(`${oneInt(70_000, 200_000)}`),
+    createLoanExpectedCollateral: createStub(leverageMetrics()),
+    createLoanPriceImpact: createStub(oneDecimal(0.01, 1, 3)),
+    maxLeverage: createStub(maxLeverage),
   } as const
 
+  const leverageStubs = {
+    createLoanHealth: createStub(oneDecimal(1, 98, 2)),
+    createLoanPrices: createStub([
+      decimal(new BigNumber(lowPrice).plus(oneFloat(40, 800)).decimalPlaces(2))!,
+      lowPrice,
+    ]),
+    createLoanMaxRecv: createStub({
+      maxDebt: decimal(new BigNumber(borrow).plus(oneFloat(10, 400)).decimalPlaces(2))!,
+      maxTotalCollateral: oneDecimal(1, 4, 3),
+      maxLeverage,
+      userCollateral: collateral,
+      collateralFromUserBorrowed: DEFAULT_USER_BORROWED,
+      collateralFromMaxDebt: oneDecimal(0.01, 0.5, 3),
+      avgPrice: lowPrice,
+    }),
+    createLoanIsApproved: approved ? createStub(true) : createIsApprovedStub(createLoanLeverageApprove),
+    estimateGasCreateLoan: createStub(`${oneInt(80_000, 220_000)}`),
+    createLoan: createStub(TEST_TX_HASH),
+    createLoanApprove: createLoanLeverageApprove,
+    estimateGasCreateLoanApprove: createStub(`${oneInt(70_000, 200_000)}`),
+    createLoanExpectedCollateral: createStub(leverageMetrics()),
+    createLoanPriceImpact: createStub(oneDecimal(0.01, 1, 3)),
+    maxLeverage: createStub(maxLeverage),
+  } as const
+  const stubs = leverage ? leverageStubs : normalStubs
+
   seedMarketBalances(chainId, collateralAddress)
+
+  const leverageV2 = {
+    hasLeverage: () => leverage,
+    maxLeverage: leverageStubs.maxLeverage,
+    createLoanHealth: leverageStubs.createLoanHealth,
+    createLoanPrices: leverageStubs.createLoanPrices,
+    createLoanMaxRecv: leverageStubs.createLoanMaxRecv,
+    createLoanIsApproved: leverageStubs.createLoanIsApproved,
+    createLoanApprove: leverageStubs.createLoanApprove,
+    createLoan: leverageStubs.createLoan,
+    createLoanExpectedCollateral: leverageStubs.createLoanExpectedCollateral,
+    createLoanPriceImpact: leverageStubs.createLoanPriceImpact,
+    estimateGas: {
+      createLoan: leverageStubs.estimateGasCreateLoan,
+      createLoanApprove: leverageStubs.estimateGasCreateLoanApprove,
+    },
+  }
+
+  const expectedArgs = leverage
+    ? {
+        query: [collateral, DEFAULT_USER_BORROWED, borrow, presetRange] as const,
+        estimateGas: [collateral, DEFAULT_USER_BORROWED, borrow, presetRange, DEFAULT_LEVERAGE_SLIPPAGE] as const,
+        maxRecv: [collateral, DEFAULT_USER_BORROWED, presetRange] as const,
+        approved: [collateral, DEFAULT_USER_BORROWED] as const,
+        estimateGasApprove: [collateral, DEFAULT_USER_BORROWED] as const,
+        approve: [collateral, DEFAULT_USER_BORROWED] as const,
+        submit: [collateral, DEFAULT_USER_BORROWED, borrow, presetRange, DEFAULT_LEVERAGE_SLIPPAGE] as const,
+        leverage: {
+          expectedCollateral: [collateral, DEFAULT_USER_BORROWED, borrow, DEFAULT_LEVERAGE_SLIPPAGE] as const,
+          priceImpact: [DEFAULT_USER_BORROWED, borrow] as const,
+        },
+      }
+    : {
+        query: [collateral, borrow, presetRange] as const,
+        estimateGas: [collateral, borrow, presetRange] as const,
+        maxRecv: [collateral, presetRange] as const,
+        approved: [collateral] as const,
+        estimateGasApprove: [collateral] as const,
+        approve: [collateral] as const,
+        submit: [collateral, borrow, presetRange, DEFAULT_LEVERAGE_SLIPPAGE] as const,
+        leverage: undefined,
+      }
 
   const market = createMockMintMarket({
     collateral: collateralAddress,
     controller: oneAddress(),
+    leverageV2,
     stats: { parameters: createStub(oneAprPair()) },
-    estimateGas: { createLoan: stubs.estimateGasCreateLoan, createLoanApprove: stubs.estimateGasCreateLoanApprove },
-    createLoanHealth: stubs.createLoanHealth,
-    createLoanPrices: stubs.createLoanPrices,
-    createLoanMaxRecv: stubs.createLoanMaxRecv,
-    createLoanIsApproved: stubs.createLoanIsApproved,
-    createLoanApprove: stubs.createLoanApprove,
-    createLoan: stubs.createLoan,
+    estimateGas: {
+      createLoan: normalStubs.estimateGasCreateLoan,
+      createLoanApprove: normalStubs.estimateGasCreateLoanApprove,
+    },
+    createLoanHealth: normalStubs.createLoanHealth,
+    createLoanPrices: normalStubs.createLoanPrices,
+    createLoanMaxRecv: normalStubs.createLoanMaxRecv,
+    createLoanIsApproved: normalStubs.createLoanIsApproved,
+    createLoanApprove: normalStubs.createLoanApprove,
+    createLoan: normalStubs.createLoan,
   })
 
   return {
@@ -111,30 +210,21 @@ export const createCreateLoanScenario = ({
     borrow,
     market,
     llamaApi: createMockLlamaApi(chainId, market),
-    expected: {
-      query: [collateral, borrow, presetRange] as const,
-      estimateGas: [collateral, borrow, presetRange] as const,
-      maxRecv: [collateral, presetRange] as const,
-      approved: [collateral] as const,
-      estimateGasApprove: [collateral] as const,
-      approve: [collateral] as const,
-      submit: [collateral, borrow, presetRange, DEFAULT_LEVERAGE_SLIPPAGE] as const,
-    },
+    expected: expectedArgs,
     stubs,
   }
 }
-
-/** Default collateral address used in createMockMintMarket */
-const DEFAULT_COLLATERAL_ADDRESS = '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0' as const
 
 export const createBorrowMoreScenario = ({
   chainId,
   approved,
   collateral = '0' as const,
+  leverage = false,
 }: {
   chainId: number
   approved: boolean
   collateral?: Decimal
+  leverage?: boolean
 }) => {
   seedMarketBalances(chainId, DEFAULT_COLLATERAL_ADDRESS)
   const borrow = oneDecimal(1, 45, 2)
@@ -142,8 +232,8 @@ export const createBorrowMoreScenario = ({
   const expectedFutureDebt = decimalSum(expectedCurrentDebt, borrow)
 
   const borrowMoreApprove = createStub(TEST_TX_HASH)
-  const borrowMorePrices = createStub([oneDecimal(2500, 4200, 2), oneDecimal(2200, 3900, 2)])
-  const stubs = {
+  const borrowMoreLeverageApprove = createStub(TEST_TX_HASH)
+  const normalStubs = {
     parameters: createStub(oneRatePair()),
     estimateGasBorrowMore: createStub(oneInt(120_000, 240_000)),
     estimateGasBorrowMoreApprove: createStub(oneInt(90_000, 180_000)),
@@ -152,24 +242,101 @@ export const createBorrowMoreScenario = ({
     borrowMoreIsApproved: approved ? createStub(true) : createIsApprovedStub(borrowMoreApprove),
     borrowMore: createStub(TEST_TX_HASH),
     borrowMoreApprove,
-    borrowMorePrices,
+    borrowMorePrices: createStub([oneDecimal(2500, 4200, 2), oneDecimal(2200, 3900, 2)]),
+    borrowMoreExpectedCollateral: createStub(leverageMetrics()),
+    borrowMoreFutureLeverage: createStub(oneDecimal(1.1, 6, 2)),
+    borrowMorePriceImpact: createStub(oneDecimal(0.01, 1, 3)),
+    maxLeverage: createStub(oneDecimal(1.5, 10, 2)),
     loanExists: createStub(true),
     userPrices: createStub([oneDecimal(2500, 4200, 2), oneDecimal(2200, 3900, 2)]),
   } as const
+  const leverageStubs = {
+    parameters: normalStubs.parameters,
+    estimateGasBorrowMore: createStub(oneInt(120_000, 240_000)),
+    estimateGasBorrowMoreApprove: createStub(oneInt(90_000, 180_000)),
+    borrowMoreHealth: createStub(oneDecimal(10, 65, 2)),
+    borrowMoreMaxRecv: createStub({
+      maxDebt: oneDecimal(100, 900, 2),
+      maxTotalCollateral: oneDecimal(1, 4, 3),
+      userCollateral: collateral,
+      collateralFromUserBorrowed: DEFAULT_USER_BORROWED,
+      collateralFromMaxDebt: oneDecimal(0.01, 0.5, 3),
+      avgPrice: oneDecimal(900, 2300, 2),
+    }),
+    borrowMoreIsApproved: approved ? createStub(true) : createIsApprovedStub(borrowMoreLeverageApprove),
+    borrowMore: createStub(TEST_TX_HASH),
+    borrowMoreApprove: borrowMoreLeverageApprove,
+    borrowMorePrices: createStub([oneDecimal(2500, 4200, 2), oneDecimal(2200, 3900, 2)]),
+    borrowMoreExpectedCollateral: createStub(leverageMetrics()),
+    borrowMoreFutureLeverage: createStub(oneDecimal(1.1, 6, 2)),
+    borrowMorePriceImpact: createStub(oneDecimal(0.01, 1, 3)),
+    maxLeverage: createStub(oneDecimal(1.5, 10, 2)),
+    loanExists: normalStubs.loanExists,
+    userPrices: normalStubs.userPrices,
+  } as const
+  const stubs = leverage ? leverageStubs : normalStubs
+
+  const leverageV2 = {
+    hasLeverage: () => leverage,
+    maxLeverage: leverageStubs.maxLeverage,
+    borrowMoreHealth: leverageStubs.borrowMoreHealth,
+    borrowMoreMaxRecv: leverageStubs.borrowMoreMaxRecv,
+    borrowMoreIsApproved: leverageStubs.borrowMoreIsApproved,
+    borrowMoreApprove: leverageStubs.borrowMoreApprove,
+    borrowMore: leverageStubs.borrowMore,
+    borrowMorePrices: leverageStubs.borrowMorePrices,
+    borrowMoreExpectedCollateral: leverageStubs.borrowMoreExpectedCollateral,
+    borrowMoreFutureLeverage: leverageStubs.borrowMoreFutureLeverage,
+    borrowMorePriceImpact: leverageStubs.borrowMorePriceImpact,
+    estimateGas: {
+      borrowMore: leverageStubs.estimateGasBorrowMore,
+      borrowMoreApprove: leverageStubs.estimateGasBorrowMoreApprove,
+    },
+  }
+
+  const expectedArgs = leverage
+    ? {
+        health: [collateral, DEFAULT_USER_BORROWED, borrow] as const,
+        maxRecv: [collateral, DEFAULT_USER_BORROWED] as const,
+        isApproved: [collateral, DEFAULT_USER_BORROWED] as const,
+        estimateGasApprove: [collateral, DEFAULT_USER_BORROWED] as const,
+        approve: [collateral, DEFAULT_USER_BORROWED] as const,
+        estimateGas: [collateral, DEFAULT_USER_BORROWED, borrow, DEFAULT_LEVERAGE_SLIPPAGE] as const,
+        submit: [collateral, DEFAULT_USER_BORROWED, borrow, DEFAULT_LEVERAGE_SLIPPAGE] as const,
+        leverage: {
+          expectedCollateral: [collateral, DEFAULT_USER_BORROWED, borrow, DEFAULT_LEVERAGE_SLIPPAGE] as const,
+          futureLeverage: [collateral, DEFAULT_USER_BORROWED, borrow] as const,
+          priceImpact: [DEFAULT_USER_BORROWED, borrow] as const,
+        },
+      }
+    : {
+        health: [collateral, borrow] as const,
+        maxRecv: [collateral] as const,
+        isApproved: [collateral] as const,
+        estimateGasApprove: [collateral] as const,
+        approve: [collateral] as const,
+        estimateGas: [collateral, borrow] as const,
+        submit: [collateral, borrow] as const,
+        leverage: undefined,
+      }
 
   const market = createMockMintMarket({
-    stats: { parameters: stubs.parameters },
-    estimateGas: { borrowMore: stubs.estimateGasBorrowMore, borrowMoreApprove: stubs.estimateGasBorrowMoreApprove },
+    leverageV2,
+    stats: { parameters: normalStubs.parameters },
+    estimateGas: {
+      borrowMore: normalStubs.estimateGasBorrowMore,
+      borrowMoreApprove: normalStubs.estimateGasBorrowMoreApprove,
+    },
     userState: createStub({ collateral: '1', stablecoin: '0', debt: expectedCurrentDebt }),
     userHealth: createStub(oneDecimal(20, 80, 2)),
-    borrowMoreHealth: stubs.borrowMoreHealth,
-    borrowMoreMaxRecv: stubs.borrowMoreMaxRecv,
-    borrowMoreIsApproved: stubs.borrowMoreIsApproved,
-    borrowMoreApprove: stubs.borrowMoreApprove,
-    borrowMore: stubs.borrowMore,
-    borrowMorePrices: stubs.borrowMorePrices,
-    loanExists: stubs.loanExists,
-    userPrices: stubs.userPrices,
+    borrowMoreHealth: normalStubs.borrowMoreHealth,
+    borrowMoreMaxRecv: normalStubs.borrowMoreMaxRecv,
+    borrowMoreIsApproved: normalStubs.borrowMoreIsApproved,
+    borrowMoreApprove: normalStubs.borrowMoreApprove,
+    borrowMore: normalStubs.borrowMore,
+    borrowMorePrices: normalStubs.borrowMorePrices,
+    loanExists: normalStubs.loanExists,
+    userPrices: normalStubs.userPrices,
   })
 
   return {
@@ -180,28 +347,33 @@ export const createBorrowMoreScenario = ({
     expectedFutureDebt,
     market,
     llamaApi: createMockLlamaApi(chainId, market),
-    expected: {
-      health: [collateral, borrow] as const,
-      maxRecv: [collateral] as const,
-      isApproved: [collateral] as const,
-      estimateGasApprove: [collateral] as const,
-      approve: [collateral] as const,
-      estimateGas: [collateral, borrow] as const,
-      submit: [collateral, borrow] as const,
-    },
+    expected: expectedArgs,
     stubs,
   }
 }
 
-export const createRepayScenario = ({ chainId, approved }: { chainId: number; approved: boolean }) => {
+export const createRepayScenario = ({
+  chainId,
+  approved,
+  leverage = false,
+}: {
+  chainId: number
+  approved: boolean
+  leverage?: boolean
+}) => {
   seedMarketBalances(chainId, DEFAULT_COLLATERAL_ADDRESS)
   const borrow = oneDecimal(0.5, 20, 2)
   const collateral = oneDecimal(0.05, 2, 3)
   const currentDebt = decimalSum(borrow, oneDecimal(0.5, 50, 2))
+  const expectedBorrowed = {
+    ...expectedBorrowedMetrics(),
+    totalBorrowed: oneDecimal(0.1, Math.max(0.2, Number(currentDebt) - 0.1), 2),
+  }
   const repayApproveStub = createStub(TEST_TX_HASH)
+  const repayLeverageApproveStub = createStub(TEST_TX_HASH)
   const estimateGasRepayApproveStub = createStub(oneInt(90_000, 180_000))
 
-  const stubs = {
+  const normalStubs = {
     parameters: createStub(oneRatePair()),
     estimateGasRepay: createStub(oneInt(120_000, 260_000)),
     estimateGasRepayApprove: estimateGasRepayApproveStub,
@@ -210,39 +382,96 @@ export const createRepayScenario = ({ chainId, approved }: { chainId: number; ap
     repayIsApproved: approved ? createStub(true) : createIsApprovedStub(repayApproveStub),
     repayApprove: repayApproveStub,
     repay: createStub(TEST_TX_HASH),
+    repayExpectedBorrowed: createStub(expectedBorrowed),
+    repayFutureLeverage: createStub(oneDecimal(1.1, 6, 2)),
+    repayPriceImpact: createStub(oneDecimal(0.01, 1, 3)),
   } as const
+  const leverageStubs = {
+    parameters: normalStubs.parameters,
+    estimateGasRepay: createStub(oneInt(120_000, 260_000)),
+    estimateGasRepayApprove: createStub(oneInt(90_000, 180_000)),
+    repayHealth: createStub(oneDecimal(30, 95, 2)),
+    repayPrices: createStub([oneDecimal(2500, 4200, 2), oneDecimal(2200, 3900, 2)]),
+    repayIsApproved: approved ? createStub(true) : createIsApprovedStub(repayLeverageApproveStub),
+    repayApprove: repayLeverageApproveStub,
+    repay: createStub(TEST_TX_HASH),
+    repayExpectedBorrowed: createStub(expectedBorrowed),
+    repayFutureLeverage: createStub(oneDecimal(1.1, 6, 2)),
+    repayPriceImpact: createStub(oneDecimal(0.01, 1, 3)),
+  } as const
+  const stubs = leverage ? leverageStubs : normalStubs
+
+  const leverageV2 = {
+    hasLeverage: () => leverage,
+    repayHealth: leverageStubs.repayHealth,
+    repayPrices: leverageStubs.repayPrices,
+    repayIsApproved: leverageStubs.repayIsApproved,
+    repayApprove: leverageStubs.repayApprove,
+    repay: leverageStubs.repay,
+    repayExpectedBorrowed: leverageStubs.repayExpectedBorrowed,
+    repayFutureLeverage: leverageStubs.repayFutureLeverage,
+    repayPriceImpact: leverageStubs.repayPriceImpact,
+    estimateGas: {
+      repay: leverageStubs.estimateGasRepay,
+      repayApprove: leverageStubs.estimateGasRepayApprove,
+    },
+  }
+
+  const expectedArgs = leverage
+    ? {
+        health: [collateral, DEFAULT_USER_BORROWED, DEFAULT_USER_BORROWED, true] as const,
+        prices: [collateral, DEFAULT_USER_BORROWED, DEFAULT_USER_BORROWED, TEST_ADDRESS] as const,
+        isApproved: [DEFAULT_USER_BORROWED, DEFAULT_USER_BORROWED] as const,
+        estimateGas: [collateral, DEFAULT_USER_BORROWED, DEFAULT_USER_BORROWED, DEFAULT_LEVERAGE_SLIPPAGE] as const,
+        estimateGasApprove: [DEFAULT_USER_BORROWED, DEFAULT_USER_BORROWED] as const,
+        approve: [DEFAULT_USER_BORROWED, DEFAULT_USER_BORROWED] as const,
+        submit: [collateral, DEFAULT_USER_BORROWED, DEFAULT_USER_BORROWED, DEFAULT_LEVERAGE_SLIPPAGE] as const,
+        leverage: {
+          expectedBorrowed: [
+            collateral,
+            DEFAULT_USER_BORROWED,
+            DEFAULT_USER_BORROWED,
+            DEFAULT_LEVERAGE_SLIPPAGE,
+          ] as const,
+          futureLeverage: [collateral, DEFAULT_USER_BORROWED, DEFAULT_USER_BORROWED, TEST_ADDRESS] as const,
+          priceImpact: [collateral, DEFAULT_USER_BORROWED] as const,
+        },
+      }
+    : {
+        health: [borrow, false] as const,
+        prices: [borrow, TEST_ADDRESS] as const,
+        isApproved: [borrow] as const,
+        estimateGas: [borrow] as const,
+        estimateGasApprove: [borrow] as const,
+        approve: [borrow] as const,
+        submit: [borrow] as const,
+        leverage: undefined,
+      }
 
   const market = createMockMintMarket({
-    stats: { parameters: stubs.parameters },
+    leverageV2,
+    stats: { parameters: normalStubs.parameters },
     estimateGas: {
-      repay: stubs.estimateGasRepay,
-      ...(!approved && { repayApprove: stubs.estimateGasRepayApprove }),
+      repay: normalStubs.estimateGasRepay,
+      ...(!approved && { repayApprove: normalStubs.estimateGasRepayApprove }),
     },
     userState: createStub({ collateral, stablecoin: '0', debt: currentDebt }),
     userHealth: createStub(oneDecimal(20, 80, 2)),
-    repayHealth: stubs.repayHealth,
-    repayPrices: stubs.repayPrices,
-    repayIsApproved: stubs.repayIsApproved,
-    ...(!approved && { repayApprove: stubs.repayApprove }),
-    repay: stubs.repay,
+    repayHealth: normalStubs.repayHealth,
+    repayPrices: normalStubs.repayPrices,
+    repayIsApproved: normalStubs.repayIsApproved,
+    ...(!approved && { repayApprove: normalStubs.repayApprove }),
+    repay: normalStubs.repay,
   })
 
   return {
     borrow,
     collateral,
     currentDebt,
-    futureDebt: decimalMinus(currentDebt, borrow),
+    futureDebt: decimalMinus(currentDebt, leverage ? expectedBorrowed.totalBorrowed : borrow),
     market,
     llamaApi: createMockLlamaApi(chainId, market),
-    expected: {
-      health: [borrow, false] as const,
-      prices: [borrow, TEST_ADDRESS] as const,
-      isApproved: [borrow] as const,
-      estimateGas: [borrow] as const,
-      estimateGasApprove: [borrow] as const,
-      approve: [borrow] as const,
-      submit: [borrow] as const,
-    },
+    expected: expectedArgs,
     stubs,
   }
 }
