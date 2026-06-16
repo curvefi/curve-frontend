@@ -3,6 +3,8 @@
   "compilerOptions": {
     "types": ["node", "vitest/globals"],
     "paths": {
+      "@curvefi/prices-api": ["../../packages/prices-api/src/index.ts"],
+      "@curvefi/prices-api/*": ["../../packages/prices-api/src/*"],
       "@primitives/*": ["../../packages/primitives/src/*"]
     }
   },

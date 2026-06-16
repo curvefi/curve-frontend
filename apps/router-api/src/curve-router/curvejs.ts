@@ -1,5 +1,6 @@
 import { FastifyBaseLogger } from 'fastify'
-import { type default as curveApi, createCurve } from '@curvefi/api'
+import { createCurve, type default as curveApi } from '@curvefi/api'
+import { getPoolFilters } from '@curvefi/prices-api/chains'
 import { resolveRpc } from './network-metadata'
 
 export type CurveJS = typeof curveApi
@@ -25,11 +26,18 @@ async function fetchPools(curve: CurveJS, log: FastifyBaseLogger) {
   const factories = FACTORIES.map(key => curve[key])
   const fetchAllPools = async ({ initial = false }: { initial?: boolean } = {}) => {
     try {
-      await Promise.all(
-        factories.map(async factory => {
+      const [poolFilters] = await Promise.all([
+        getPoolFilters(),
+        ...factories.map(async factory => {
           await factory.fetchPools()
           if ('fetchNewPools' in factory) await factory.fetchNewPools()
         }),
+      ])
+
+      curve.router.setBlacklist(
+        poolFilters
+          .filter(({ chain }) => chain === curve.getNetworkConstants().NETWORK_NAME)
+          .map(({ address }) => address.toLowerCase()),
       )
     } catch (e) {
       log.error({ message: 'Error fetching pools', error: e, chainId: curve.chainId })
