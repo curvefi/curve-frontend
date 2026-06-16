@@ -75,7 +75,7 @@ export function usePegkeeper({ address, pool: { address: poolAddress } }: PegKee
       mapQuery(estCallerProfit, p => formatWei(p.result)),
       mapQuery(estCallerProfitFallback, formatWei),
     ),
-    debtCeiling,
+    debtCeiling: mapQuery(debtCeiling, formatWei),
     rebalance: () =>
       mutate({ abi: pegkeeperAbi, address, functionName: 'update' }, { onSuccess: () => void refetch() }),
     isRebalancing,

@@ -62,8 +62,11 @@ export const q = <T>({ data, isLoading, error }: Query<T>) =>
     error,
   }) as QueryProp<T>
 
-export const fallbackQ = <T, Q extends Query<T> = Query<T>>(...queries: Q[]) =>
-  q(queries.find(q => !q.error) ?? queries[0])
+type QueryData<TQuery> = TQuery extends Query<infer TData> ? TData : never
+
+export const fallbackQ = <const TQueries extends readonly [Query<unknown>, ...Query<unknown>[]]>(
+  ...queries: TQueries
+) => q(queries.find(q => !q.error) ?? queries[0]) as QueryProp<QueryData<TQueries[number]>>
 
 /**
  * Maps a Query type to extract partial data from it.

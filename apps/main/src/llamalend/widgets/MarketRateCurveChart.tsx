@@ -71,7 +71,7 @@ export const MarketRateCurveChart = ({
   const collateralUsdRate = useTokenUsdRate({ chainId, tokenAddress: collateralToken?.address })
   const borrowedUsdRate = useTokenUsdRate({ chainId, tokenAddress: borrowToken?.address })
 
-  const currentUtilization = fallbackQ<number>(
+  const currentUtilization = fallbackQ(
     mapQuery(capAndAvailable, ({ available, totalAssets }) => getUtilizationPercent(available, totalAssets)),
     mapQuery(rateCurve, ({ currentUtilization }) => currentUtilization),
   )
