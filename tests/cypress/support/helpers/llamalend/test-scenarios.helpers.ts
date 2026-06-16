@@ -257,7 +257,6 @@ export const createCreateLoanScenario = ({
     maxLeverage: createStub(maxLeverage),
     calcMinRecv: createSyncStub(ROUTE_MIN_RECV),
   } as const
-  const stubs = leverage ? leverageStubs : normalStubs
 
   seedMarketBalances(chainId, collateralAddress)
 
@@ -322,7 +321,6 @@ export const createCreateLoanScenario = ({
     approve: [collateral] as const,
     submit: [collateral, borrow, presetRange, DEFAULT_LEVERAGE_SLIPPAGE] as const,
   } as const
-  const expectedArgs = leverage ? leverageExpected : normalExpected
 
   const market = leverage
     ? createMockLendLoanMarket({
@@ -358,67 +356,61 @@ export const createCreateLoanScenario = ({
         createLoan: normalStubs.createLoan,
       })
 
-  const assertPreSubmit = leverage
-    ? () => {
-        expect(leverageStubs.createLoanExpectedMetrics).to.have.been.calledWithMatch(leverageExpected.expectedMetrics)
-        expect(leverageStubs.createLoanMaxRecv).to.have.been.calledWithMatch(leverageExpected.maxRecv)
-        expect(leverageStubs.createLoanIsApproved).to.have.been.calledWithMatch(leverageExpected.approved)
-        expect(leverageStubs.createLoanExpectedCollateral).to.have.been.calledWithMatch(
-          leverageExpected.expectedCollateral,
-        )
-        if (approved) {
-          expect(leverageStubs.estimateGasCreateLoan).to.have.been.calledWithMatch(leverageExpected.estimateGas)
-          expect(leverageStubs.estimateGasCreateLoanApprove).to.not.have.been.called
-        } else {
-          expect(leverageStubs.estimateGasCreateLoanApprove).to.have.been.calledWithMatch(
-            leverageExpected.estimateGasApprove,
-          )
-        }
-      }
-    : () => {
-        expect(normalStubs.createLoanHealth).to.have.been.calledWithExactly(...normalExpected.query)
-        expect(normalStubs.createLoanPrices).to.have.been.calledWithExactly(...normalExpected.query)
-        expect(normalStubs.createLoanMaxRecv).to.have.been.calledWithExactly(...normalExpected.maxRecv)
-        expect(normalStubs.createLoanIsApproved).to.have.been.calledWithExactly(...normalExpected.approved)
-        if (approved) {
-          expect(normalStubs.estimateGasCreateLoan).to.have.been.calledWithExactly(...normalExpected.estimateGas)
-          expect(normalStubs.estimateGasCreateLoanApprove).to.not.have.been.called
-        } else {
-          expect(normalStubs.estimateGasCreateLoanApprove).to.have.been.calledWithExactly(
-            ...normalExpected.estimateGasApprove,
-          )
-        }
-      }
-
-  const assertSubmit = leverage
-    ? () => {
-        expect(leverageStubs.estimateGasCreateLoan).to.have.been.calledWithMatch(leverageExpected.estimateGas)
-        if (approved) {
-          expect(leverageStubs.createLoanApprove).to.not.have.been.called
-        } else {
-          expect(leverageStubs.createLoanApprove).to.have.been.calledWithMatch(leverageExpected.approve)
-        }
-        expect(leverageStubs.createLoan).to.have.been.calledWithMatch(leverageExpected.submit)
-      }
-    : () => {
-        expect(normalStubs.estimateGasCreateLoan).to.have.been.calledWithExactly(...normalExpected.estimateGas)
-        if (approved) {
-          expect(normalStubs.createLoanApprove).to.not.have.been.called
-        } else {
-          expect(normalStubs.createLoanApprove).to.have.been.calledWithExactly(...normalExpected.approve)
-        }
-        expect(normalStubs.createLoan).to.have.been.calledWithExactly(...normalExpected.submit)
-      }
-
   return {
     collateral,
     borrow,
     market,
     llamaApi: createMockLlamaApi(chainId, market),
-    expected: expectedArgs,
-    stubs,
-    assertPreSubmit,
-    assertSubmit,
+    assertPreSubmit: leverage
+      ? () => {
+          expect(leverageStubs.createLoanExpectedMetrics).to.have.been.calledWithMatch(leverageExpected.expectedMetrics)
+          expect(leverageStubs.createLoanMaxRecv).to.have.been.calledWithMatch(leverageExpected.maxRecv)
+          expect(leverageStubs.createLoanIsApproved).to.have.been.calledWithMatch(leverageExpected.approved)
+          expect(leverageStubs.createLoanExpectedCollateral).to.have.been.calledWithMatch(
+            leverageExpected.expectedCollateral,
+          )
+          if (approved) {
+            expect(leverageStubs.estimateGasCreateLoan).to.have.been.calledWithMatch(leverageExpected.estimateGas)
+            expect(leverageStubs.estimateGasCreateLoanApprove).to.not.have.been.called
+          } else {
+            expect(leverageStubs.estimateGasCreateLoanApprove).to.have.been.calledWithMatch(
+              leverageExpected.estimateGasApprove,
+            )
+          }
+        }
+      : () => {
+          expect(normalStubs.createLoanHealth).to.have.been.calledWithExactly(...normalExpected.query)
+          expect(normalStubs.createLoanPrices).to.have.been.calledWithExactly(...normalExpected.query)
+          expect(normalStubs.createLoanMaxRecv).to.have.been.calledWithExactly(...normalExpected.maxRecv)
+          expect(normalStubs.createLoanIsApproved).to.have.been.calledWithExactly(...normalExpected.approved)
+          if (approved) {
+            expect(normalStubs.estimateGasCreateLoan).to.have.been.calledWithExactly(...normalExpected.estimateGas)
+            expect(normalStubs.estimateGasCreateLoanApprove).to.not.have.been.called
+          } else {
+            expect(normalStubs.estimateGasCreateLoanApprove).to.have.been.calledWithExactly(
+              ...normalExpected.estimateGasApprove,
+            )
+          }
+        },
+    assertSubmit: leverage
+      ? () => {
+          expect(leverageStubs.estimateGasCreateLoan).to.have.been.calledWithMatch(leverageExpected.estimateGas)
+          if (approved) {
+            expect(leverageStubs.createLoanApprove).to.not.have.been.called
+          } else {
+            expect(leverageStubs.createLoanApprove).to.have.been.calledWithMatch(leverageExpected.approve)
+          }
+          expect(leverageStubs.createLoan).to.have.been.calledWithMatch(leverageExpected.submit)
+        }
+      : () => {
+          expect(normalStubs.estimateGasCreateLoan).to.have.been.calledWithExactly(...normalExpected.estimateGas)
+          if (approved) {
+            expect(normalStubs.createLoanApprove).to.not.have.been.called
+          } else {
+            expect(normalStubs.createLoanApprove).to.have.been.calledWithExactly(...normalExpected.approve)
+          }
+          expect(normalStubs.createLoan).to.have.been.calledWithExactly(...normalExpected.submit)
+        },
   }
 }
 
@@ -427,7 +419,7 @@ export const createBorrowMoreScenario = ({
   approved,
   collateral = '0' as const,
   leverage = false,
-  leverageImplementation = 'leverageV2',
+  leverageImplementation,
 }: {
   chainId: number
   approved: boolean
@@ -512,7 +504,6 @@ export const createBorrowMoreScenario = ({
   } as const
   const useZapV2 = leverage && leverageImplementation === 'zapV2'
   const useLeverageV2 = leverage && leverageImplementation === 'leverageV2'
-  const stubs = useZapV2 ? zapV2Stubs : useLeverageV2 ? leverageV2Stubs : normalStubs
 
   if (useZapV2) mockRouterRoutes(chainId)
 
@@ -606,8 +597,6 @@ export const createBorrowMoreScenario = ({
     estimateGas: [collateral, borrow] as const,
     submit: [collateral, borrow] as const,
   } as const
-  const expectedArgs = useZapV2 ? zapV2Expected : useLeverageV2 ? leverageV2Expected : normalExpected
-
   const loan = {
     estimateGas: {
       borrowMore: normalStubs.estimateGasBorrowMore,
@@ -667,97 +656,93 @@ export const createBorrowMoreScenario = ({
           userPrices: normalStubs.userPrices,
         })
 
-  const assertPreSubmit = () => {
-    if (useZapV2) {
-      expect(zapV2Stubs.maxLeverage).to.have.been.called
-      expect(zapV2Stubs.borrowMoreExpectedMetrics).to.have.been.calledWithMatch(zapV2Expected.metrics)
-      expect(zapV2Stubs.borrowMoreMaxRecv).to.have.been.calledWithMatch(zapV2Expected.maxRecv)
-      expect(zapV2Stubs.borrowMoreIsApproved).to.have.been.calledWithMatch(zapV2Expected.isApproved)
-      expect(zapV2Stubs.borrowMoreExpectedCollateral).to.have.been.calledWithMatch(zapV2Expected.expectedCollateral)
-      expect(zapV2Stubs.borrowMoreFutureLeverage).to.have.been.calledWithMatch(zapV2Expected.futureLeverage)
-      if (approved) {
-        expect(zapV2Stubs.estimateGasBorrowMore).to.have.been.calledWithMatch(zapV2Expected.estimateGas)
-        expect(zapV2Stubs.estimateGasBorrowMoreApprove).to.not.have.been.called
-      } else {
-        expect(zapV2Stubs.estimateGasBorrowMoreApprove).to.have.been.calledWithMatch(zapV2Expected.estimateGasApprove)
-      }
-    } else if (useLeverageV2) {
-      expect(normalStubs.parameters).to.have.been.calledWithExactly()
-      expect(leverageV2Stubs.maxLeverage).to.have.been.called
-      expect(leverageV2Stubs.borrowMoreHealth).to.have.been.calledWithExactly(...leverageV2Expected.health)
-      expect(leverageV2Stubs.borrowMoreMaxRecv).to.have.been.calledWithExactly(...leverageV2Expected.maxRecv)
-      expect(leverageV2Stubs.borrowMoreIsApproved).to.have.been.calledWithExactly(...leverageV2Expected.isApproved)
-      expect(leverageV2Stubs.borrowMoreExpectedCollateral).to.have.been.calledWithExactly(
-        ...leverageV2Expected.expectedCollateral,
-      )
-      expect(leverageV2Stubs.borrowMoreFutureLeverage).to.have.been.calledWithExactly(
-        ...leverageV2Expected.futureLeverage,
-      )
-      expect(leverageV2Stubs.borrowMorePriceImpact).to.have.been.calledWithExactly(...leverageV2Expected.priceImpact)
-      if (approved) {
-        expect(leverageV2Stubs.estimateGasBorrowMore).to.have.been.calledWithExactly(...leverageV2Expected.estimateGas)
-        expect(leverageV2Stubs.estimateGasBorrowMoreApprove).to.not.have.been.called
-      } else {
-        expect(leverageV2Stubs.estimateGasBorrowMoreApprove).to.have.been.calledWithExactly(
-          ...leverageV2Expected.estimateGasApprove,
-        )
-      }
-    } else {
-      expect(normalStubs.parameters).to.have.been.calledWithExactly()
-      expect(normalStubs.borrowMoreHealth).to.have.been.calledWithExactly(...normalExpected.health)
-      expect(normalStubs.borrowMoreMaxRecv).to.have.been.calledWithExactly(...normalExpected.maxRecv)
-      expect(normalStubs.borrowMoreIsApproved).to.have.been.calledWithExactly(...normalExpected.isApproved)
-      if (approved) {
-        expect(normalStubs.estimateGasBorrowMore).to.have.been.calledWithExactly(...normalExpected.estimateGas)
-        expect(normalStubs.estimateGasBorrowMoreApprove).to.not.have.been.called
-      } else {
-        expect(normalStubs.estimateGasBorrowMoreApprove).to.have.been.calledWithExactly(
-          ...normalExpected.estimateGasApprove,
-        )
-      }
-    }
-  }
-
-  const assertSubmit = () => {
-    if (useZapV2) {
-      expect(zapV2Stubs.borrowMore).to.have.been.calledWithMatch(zapV2Expected.submit)
-      if (approved) {
-        expect(zapV2Stubs.estimateGasBorrowMore).to.have.been.calledWithMatch(zapV2Expected.estimateGas)
-        expect(zapV2Stubs.borrowMoreApprove).to.not.have.been.called
-      } else {
-        expect(zapV2Stubs.borrowMoreApprove).to.have.been.calledWithMatch(zapV2Expected.approve)
-      }
-    } else if (useLeverageV2) {
-      expect(leverageV2Stubs.borrowMore).to.have.been.calledWithExactly(...leverageV2Expected.submit)
-      if (approved) {
-        expect(leverageV2Stubs.estimateGasBorrowMore).to.have.been.calledWithExactly(...leverageV2Expected.estimateGas)
-        expect(leverageV2Stubs.borrowMoreApprove).to.not.have.been.called
-      } else {
-        expect(leverageV2Stubs.borrowMoreApprove).to.have.been.calledWithExactly(...leverageV2Expected.approve)
-      }
-    } else {
-      expect(normalStubs.borrowMore).to.have.been.calledWithExactly(...normalExpected.submit)
-      if (approved) {
-        expect(normalStubs.estimateGasBorrowMore).to.have.been.calledWithExactly(...normalExpected.estimateGas)
-        expect(normalStubs.borrowMoreApprove).to.not.have.been.called
-      } else {
-        expect(normalStubs.borrowMoreApprove).to.have.been.calledWithExactly(...normalExpected.approve)
-      }
-    }
-  }
-
   return {
     borrow,
-    collateral,
-    userBorrowed: '0' as const,
     expectedCurrentDebt,
     expectedFutureDebt,
     market,
     llamaApi: createMockLlamaApi(chainId, market),
-    expected: expectedArgs,
-    stubs,
-    assertPreSubmit,
-    assertSubmit,
+    assertPreSubmit: () => {
+      if (useZapV2) {
+        expect(zapV2Stubs.maxLeverage).to.have.been.called
+        expect(zapV2Stubs.borrowMoreExpectedMetrics).to.have.been.calledWithMatch(zapV2Expected.metrics)
+        expect(zapV2Stubs.borrowMoreMaxRecv).to.have.been.calledWithMatch(zapV2Expected.maxRecv)
+        expect(zapV2Stubs.borrowMoreIsApproved).to.have.been.calledWithMatch(zapV2Expected.isApproved)
+        expect(zapV2Stubs.borrowMoreExpectedCollateral).to.have.been.calledWithMatch(zapV2Expected.expectedCollateral)
+        expect(zapV2Stubs.borrowMoreFutureLeverage).to.have.been.calledWithMatch(zapV2Expected.futureLeverage)
+        if (approved) {
+          expect(zapV2Stubs.estimateGasBorrowMore).to.have.been.calledWithMatch(zapV2Expected.estimateGas)
+          expect(zapV2Stubs.estimateGasBorrowMoreApprove).to.not.have.been.called
+        } else {
+          expect(zapV2Stubs.estimateGasBorrowMoreApprove).to.have.been.calledWithMatch(zapV2Expected.estimateGasApprove)
+        }
+      } else if (useLeverageV2) {
+        expect(normalStubs.parameters).to.have.been.calledWithExactly()
+        expect(leverageV2Stubs.maxLeverage).to.have.been.called
+        expect(leverageV2Stubs.borrowMoreHealth).to.have.been.calledWithExactly(...leverageV2Expected.health)
+        expect(leverageV2Stubs.borrowMoreMaxRecv).to.have.been.calledWithExactly(...leverageV2Expected.maxRecv)
+        expect(leverageV2Stubs.borrowMoreIsApproved).to.have.been.calledWithExactly(...leverageV2Expected.isApproved)
+        expect(leverageV2Stubs.borrowMoreExpectedCollateral).to.have.been.calledWithExactly(
+          ...leverageV2Expected.expectedCollateral,
+        )
+        expect(leverageV2Stubs.borrowMoreFutureLeverage).to.have.been.calledWithExactly(
+          ...leverageV2Expected.futureLeverage,
+        )
+        expect(leverageV2Stubs.borrowMorePriceImpact).to.have.been.calledWithExactly(...leverageV2Expected.priceImpact)
+        if (approved) {
+          expect(leverageV2Stubs.estimateGasBorrowMore).to.have.been.calledWithExactly(
+            ...leverageV2Expected.estimateGas,
+          )
+          expect(leverageV2Stubs.estimateGasBorrowMoreApprove).to.not.have.been.called
+        } else {
+          expect(leverageV2Stubs.estimateGasBorrowMoreApprove).to.have.been.calledWithExactly(
+            ...leverageV2Expected.estimateGasApprove,
+          )
+        }
+      } else {
+        expect(normalStubs.parameters).to.have.been.calledWithExactly()
+        expect(normalStubs.borrowMoreHealth).to.have.been.calledWithExactly(...normalExpected.health)
+        expect(normalStubs.borrowMoreMaxRecv).to.have.been.calledWithExactly(...normalExpected.maxRecv)
+        expect(normalStubs.borrowMoreIsApproved).to.have.been.calledWithExactly(...normalExpected.isApproved)
+        if (approved) {
+          expect(normalStubs.estimateGasBorrowMore).to.have.been.calledWithExactly(...normalExpected.estimateGas)
+          expect(normalStubs.estimateGasBorrowMoreApprove).to.not.have.been.called
+        } else {
+          expect(normalStubs.estimateGasBorrowMoreApprove).to.have.been.calledWithExactly(
+            ...normalExpected.estimateGasApprove,
+          )
+        }
+      }
+    },
+    assertSubmit: () => {
+      if (useZapV2) {
+        expect(zapV2Stubs.borrowMore).to.have.been.calledWithMatch(zapV2Expected.submit)
+        if (approved) {
+          expect(zapV2Stubs.estimateGasBorrowMore).to.have.been.calledWithMatch(zapV2Expected.estimateGas)
+          expect(zapV2Stubs.borrowMoreApprove).to.not.have.been.called
+        } else {
+          expect(zapV2Stubs.borrowMoreApprove).to.have.been.calledWithMatch(zapV2Expected.approve)
+        }
+      } else if (useLeverageV2) {
+        expect(leverageV2Stubs.borrowMore).to.have.been.calledWithExactly(...leverageV2Expected.submit)
+        if (approved) {
+          expect(leverageV2Stubs.estimateGasBorrowMore).to.have.been.calledWithExactly(
+            ...leverageV2Expected.estimateGas,
+          )
+          expect(leverageV2Stubs.borrowMoreApprove).to.not.have.been.called
+        } else {
+          expect(leverageV2Stubs.borrowMoreApprove).to.have.been.calledWithExactly(...leverageV2Expected.approve)
+        }
+      } else {
+        expect(normalStubs.borrowMore).to.have.been.calledWithExactly(...normalExpected.submit)
+        if (approved) {
+          expect(normalStubs.estimateGasBorrowMore).to.have.been.calledWithExactly(...normalExpected.estimateGas)
+          expect(normalStubs.borrowMoreApprove).to.not.have.been.called
+        } else {
+          expect(normalStubs.borrowMoreApprove).to.have.been.calledWithExactly(...normalExpected.approve)
+        }
+      }
+    },
   }
 }
 
@@ -813,7 +798,6 @@ export const createRepayScenario = ({
     repayFutureLeverage: createStub(oneDecimal(1.1, 6, 2)),
     calcMinRecv: createSyncStub(ROUTE_MIN_RECV),
   } as const
-  const stubs = leverage ? leverageStubs : normalStubs
 
   if (leverage) mockRouterRoutes(chainId)
 
@@ -880,7 +864,6 @@ export const createRepayScenario = ({
     approve: [borrow] as const,
     submit: [borrow] as const,
   } as const
-  const expectedArgs = leverage ? leverageExpected : normalExpected
 
   const loan = {
     estimateGas: {
@@ -915,56 +898,6 @@ export const createRepayScenario = ({
         repay: normalStubs.repay,
       })
 
-  const assertPreSubmit = leverage
-    ? () => {
-        expect(leverageStubs.repayExpectedMetrics).to.have.been.calledWithMatch(leverageExpected.metrics)
-        expect(leverageStubs.repayIsApproved).to.have.been.calledWithMatch(leverageExpected.isApproved)
-        expect(leverageStubs.repayExpectedBorrowed).to.have.been.calledWithMatch(leverageExpected.expectedBorrowed)
-        expect(leverageStubs.repayFutureLeverage).to.have.been.calledWithMatch(leverageExpected.futureLeverage)
-        if (approved) {
-          expect(leverageStubs.estimateGasRepay).to.have.been.calledWithMatch(leverageExpected.estimateGas)
-          expect(leverageStubs.estimateGasRepayApprove).to.not.have.been.called
-        } else {
-          expect(leverageStubs.estimateGasRepayApprove).to.have.been.calledWithMatch(
-            leverageExpected.estimateGasApprove,
-          )
-        }
-      }
-    : () => {
-        expect(normalStubs.parameters).to.have.been.calledWithExactly()
-        expect(normalStubs.repayHealth).to.have.been.calledWithExactly(...normalExpected.health)
-        expect(normalStubs.repayPrices).to.have.been.calledWithExactly(...normalExpected.prices)
-        expect(normalStubs.repayIsApproved).to.have.been.calledWithExactly(...normalExpected.isApproved)
-        if (approved) {
-          expect(normalStubs.estimateGasRepay).to.have.been.calledWithExactly(...normalExpected.estimateGas)
-          expect(normalStubs.estimateGasRepayApprove).to.not.have.been.called
-        } else {
-          expect(normalStubs.estimateGasRepayApprove).to.have.been.calledWithExactly(
-            ...normalExpected.estimateGasApprove,
-          )
-        }
-      }
-
-  const assertSubmit = leverage
-    ? () => {
-        expect(leverageStubs.estimateGasRepay).to.have.been.calledWithMatch(leverageExpected.estimateGas)
-        expect(leverageStubs.repay).to.have.been.calledWithMatch(leverageExpected.submit)
-        if (approved) {
-          expect(leverageStubs.repayApprove).to.not.have.been.called
-        } else {
-          expect(leverageStubs.repayApprove).to.have.been.calledWithMatch(leverageExpected.approve)
-        }
-      }
-    : () => {
-        expect(normalStubs.estimateGasRepay).to.have.been.calledWithExactly(...normalExpected.estimateGas)
-        expect(normalStubs.repay).to.have.been.calledWithExactly(...normalExpected.submit)
-        if (approved) {
-          expect(normalStubs.repayApprove).to.not.have.been.called
-        } else {
-          expect(normalStubs.repayApprove).to.have.been.calledWithExactly(...normalExpected.approve)
-        }
-      }
-
   return {
     borrow,
     collateral,
@@ -972,10 +905,54 @@ export const createRepayScenario = ({
     futureDebt: decimalMinus(currentDebt, leverage ? expectedBorrowed.totalBorrowed : borrow),
     market,
     llamaApi: createMockLlamaApi(chainId, market),
-    expected: expectedArgs,
-    stubs,
-    assertPreSubmit,
-    assertSubmit,
+    assertPreSubmit: leverage
+      ? () => {
+          expect(leverageStubs.repayExpectedMetrics).to.have.been.calledWithMatch(leverageExpected.metrics)
+          expect(leverageStubs.repayIsApproved).to.have.been.calledWithMatch(leverageExpected.isApproved)
+          expect(leverageStubs.repayExpectedBorrowed).to.have.been.calledWithMatch(leverageExpected.expectedBorrowed)
+          expect(leverageStubs.repayFutureLeverage).to.have.been.calledWithMatch(leverageExpected.futureLeverage)
+          if (approved) {
+            expect(leverageStubs.estimateGasRepay).to.have.been.calledWithMatch(leverageExpected.estimateGas)
+            expect(leverageStubs.estimateGasRepayApprove).to.not.have.been.called
+          } else {
+            expect(leverageStubs.estimateGasRepayApprove).to.have.been.calledWithMatch(
+              leverageExpected.estimateGasApprove,
+            )
+          }
+        }
+      : () => {
+          expect(normalStubs.parameters).to.have.been.calledWithExactly()
+          expect(normalStubs.repayHealth).to.have.been.calledWithExactly(...normalExpected.health)
+          expect(normalStubs.repayPrices).to.have.been.calledWithExactly(...normalExpected.prices)
+          expect(normalStubs.repayIsApproved).to.have.been.calledWithExactly(...normalExpected.isApproved)
+          if (approved) {
+            expect(normalStubs.estimateGasRepay).to.have.been.calledWithExactly(...normalExpected.estimateGas)
+            expect(normalStubs.estimateGasRepayApprove).to.not.have.been.called
+          } else {
+            expect(normalStubs.estimateGasRepayApprove).to.have.been.calledWithExactly(
+              ...normalExpected.estimateGasApprove,
+            )
+          }
+        },
+    assertSubmit: leverage
+      ? () => {
+          expect(leverageStubs.estimateGasRepay).to.have.been.calledWithMatch(leverageExpected.estimateGas)
+          expect(leverageStubs.repay).to.have.been.calledWithMatch(leverageExpected.submit)
+          if (approved) {
+            expect(leverageStubs.repayApprove).to.not.have.been.called
+          } else {
+            expect(leverageStubs.repayApprove).to.have.been.calledWithMatch(leverageExpected.approve)
+          }
+        }
+      : () => {
+          expect(normalStubs.estimateGasRepay).to.have.been.calledWithExactly(...normalExpected.estimateGas)
+          expect(normalStubs.repay).to.have.been.calledWithExactly(...normalExpected.submit)
+          if (approved) {
+            expect(normalStubs.repayApprove).to.not.have.been.called
+          } else {
+            expect(normalStubs.repayApprove).to.have.been.calledWithExactly(...normalExpected.approve)
+          }
+        },
   }
 }
 

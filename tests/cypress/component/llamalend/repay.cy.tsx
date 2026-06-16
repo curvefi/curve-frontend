@@ -1,5 +1,5 @@
- 
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
+import { getTokens } from '@/llamalend/llama.utils'
 import { fakeCollateralEvents, TEST_ADDRESS } from '@cy/support/helpers/llamalend/mock-loan-test-data'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import { seedCrvUsdBalance } from '@cy/support/helpers/llamalend/query-cache.helpers'
@@ -54,13 +54,10 @@ describe('RepayForm (mocked)', () => {
       const onPricesUpdated = cy.spy().as('onPricesUpdated')
       const amount = repayToken === 'collateral' ? collateral : borrow
       const hasLeverageManagement = leverage
-      const collateralToken =
-        'collateral_token' in market
-          ? { symbol: market.collateral_token.symbol, tokenAddress: market.collateral_token.address }
-          : { symbol: market.collateralSymbol, tokenAddress: market.collateral }
+      const { collateralToken } = getTokens(market)
       const token =
         repayToken === 'collateral'
-          ? { ...collateralToken, optionIndex: 1 }
+          ? { symbol: collateralToken.symbol, tokenAddress: collateralToken.address, optionIndex: 1 }
           : { symbol: 'crvUSD', tokenAddress: CRVUSD_ADDRESS, optionIndex: 0 }
 
       setLlamaApi(llamaApi)
