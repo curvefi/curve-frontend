@@ -90,11 +90,6 @@ const {
       if (gasInfo) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
         parsedGasInfo = parseEthereumGasInfo(gasInfo, gas)
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
-        const customFeeDataValues = getEthereumCustomFeeDataValues(gasInfo)
-        if (customFeeDataValues) {
-          curve.setCustomFeeData(customFeeDataValues)
-        }
       }
     } else if (chainId === Chain.Polygon) {
       // Polygon uses api
@@ -161,17 +156,6 @@ const {
     })
   }),
 })
-
-function getEthereumCustomFeeDataValues(gasInfo: { max: number[]; prio: number[] } | undefined) {
-  if (gasInfo) {
-    const maxFeePerGas = gasInfo.max[1] ? weiToGwei(gasInfo.max[1]) : null
-    const maxPriorityFeePerGas = gasInfo.prio[1] ? weiToGwei(gasInfo.prio[1]) : null
-    if (maxFeePerGas && maxPriorityFeePerGas) {
-      return { maxFeePerGas, maxPriorityFeePerGas }
-    }
-  }
-  return null
-}
 
 async function fetchCustomGasFees(curve: AnyCurveApi) {
   const resp: { customFeeData: Record<string, number | null> | null; error: string } = {

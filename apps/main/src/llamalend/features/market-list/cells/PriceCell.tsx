@@ -1,11 +1,13 @@
 import type { ReactNode } from 'react'
-import { useUserMarketStats } from '@/llamalend/queries/market-list/llama-market-stats'
+import type { LendingPosition } from '@/llamalend/queries/market-list/lending-vaults'
+import { type MarketStats, useUserMarketStats } from '@/llamalend/queries/market-list/llama-market-stats'
 import { AssetDetails, LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
 import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { notFalsyArray } from '@primitives/objects.utils'
 import type { CellContext } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
@@ -39,17 +41,18 @@ const getAssets = (columnId: LlamaMarketColumnId, assets: LlamaMarket['assets'])
 /**
  * Maps a column ID to the corresponding values from user market stats.
  * Returns a tuple of [primary value, secondary value] where secondary may be undefined.
- *
- * @param columnId - The column identifier to determine which values to retrieve
- * @param stats - The user's market statistics containing borrowed, collateral, and earnings data
  */
-const getAssetValues = (columnId: LlamaMarketColumnId, stats: ReturnType<typeof useUserMarketStats>['data']) =>
+const getAssetValues = (
+  columnId: LlamaMarketColumnId,
+  stats: MarketStats,
+  lendingPosition: LendingPosition | undefined,
+) =>
   (
     ({
       [LlamaMarketColumnId.UserCollateral]: [stats?.collateral?.amount, stats?.borrowToken?.amount],
       [LlamaMarketColumnId.UserBorrowed]: [stats?.borrowed, undefined],
-      [LlamaMarketColumnId.UserEarnings]: [stats?.earnings?.earnings, undefined],
-      [LlamaMarketColumnId.UserDeposited]: [stats?.earnings?.totalCurrentAssets, undefined],
+      [LlamaMarketColumnId.UserEarnings]: [lendingPosition?.earnings, undefined],
+      [LlamaMarketColumnId.UserDeposited]: [lendingPosition?.supplied, undefined],
     }) as Partial<Record<LlamaMarketColumnId, [number, number | undefined]>>
   )[columnId]
 
@@ -68,10 +71,7 @@ const getTooltipTitle = (columnId: LlamaMarketColumnId) =>
  * @param columnId - The column identifier
  * @param stats - The user's market statistics
  */
-const getTooltipBody = (
-  columnId: LlamaMarketColumnId,
-  stats: ReturnType<typeof useUserMarketStats>['data'],
-): ReactNode | undefined => {
+const getTooltipBody = (columnId: LlamaMarketColumnId, stats: MarketStats): ReactNode | undefined => {
   if (columnId === LlamaMarketColumnId.UserBorrowed) {
     return <TotalDebtTooltipContent />
   }
@@ -160,13 +160,13 @@ const AssetUsdValue = ({
  */
 export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, number>) => {
   const market = row.original
-  const { assets } = market
+  const { assets, lendingPosition } = market
   const columnId = column.id as LlamaMarketColumnId
 
   const { data: stats, error: statsError, isLoading: isLoadingStats } = useUserMarketStats(market, columnId)
 
   const [primaryAsset, secondaryAsset] = getAssets(columnId, assets) ?? [assets.borrowed, undefined]
-  const [primaryValue, secondaryValue] = getAssetValues(columnId, stats) ?? [getValue(), undefined]
+  const [primaryValue, secondaryValue] = getAssetValues(columnId, stats, lendingPosition) ?? [getValue(), undefined]
 
   const { data: primaryPrice, isLoading: isPrimaryPriceLoading } = useTokenUsdRate({
     chainId: requireChainId(primaryAsset.chain),
@@ -197,16 +197,16 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
 
   const gridAssets = [
     { asset: primaryAsset, value: primaryValue, usdValue: primaryUsdValue, isPriceLoading: isPrimaryPriceLoading },
-    ...(hasSecondaryAsset
-      ? [
-          {
-            asset: secondaryAsset,
-            value: secondaryValue,
-            usdValue: secondaryUsdValue,
-            isPriceLoading: isSecondaryPriceLoading,
-          },
-        ]
-      : []),
+    ...notFalsyArray(
+      hasSecondaryAsset && [
+        {
+          asset: secondaryAsset,
+          value: secondaryValue,
+          usdValue: secondaryUsdValue,
+          isPriceLoading: isSecondaryPriceLoading,
+        },
+      ],
+    ),
   ]
 
   return (

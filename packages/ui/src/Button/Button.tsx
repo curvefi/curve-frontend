@@ -1,7 +1,7 @@
 import type { ComponentPropsWithRef } from 'react'
 import { forwardRef, ButtonHTMLAttributes, useRef } from 'react'
+import { useFocusRing } from 'react-aria'
 import { styled, type IStyledComponent } from 'styled-components'
-import { useFocusRing } from '@react-aria/focus'
 import { Box } from '@ui/Box/Box'
 import type { ButtonProps } from '@ui/Button/types'
 import { Spinner } from '@ui/Spinner/Spinner'

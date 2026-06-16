@@ -44,10 +44,17 @@ export const mockEmptyLlamaMarketBadDebt = () =>
     cy.intercept({ method: 'GET', pathname, query: { fetch_on_chain: 'true' } }, { body: { data: [] } }),
   )
 
+const mockEmptyCrvUsdAmms = () =>
+  cy.intercept(
+    { method: 'GET', pathname: '/api/getVolumes/ethereum/crvusd-amms' },
+    { body: { success: true, data: { amms: [], totalVolume: 0 }, generatedTimeMs: Date.now() } },
+  )
+
 export function setupLlamalendListMocks(vaultData = createLendingVaultChainsResponse()) {
   blockUnmockedLlamaMarketApis()
   mockEmptyLlamaMarketUserData()
   mockEmptyLlamaMarketBadDebt()
+  mockEmptyCrvUsdAmms()
   mockTokenPrices()
   const lendingVaults = mockLendingVaults(vaultData)
   mockLendingSnapshots().as('lend-snapshots')

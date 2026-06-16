@@ -1,6 +1,4 @@
-import type { ScrvUsdYieldWithAverages } from '@/loan/entities/scrvusd-yield'
-
-export type DepositWithdrawModule = 'deposit' | 'withdraw'
+import type { ScrvUsdYieldWithAverages } from '@/loan/entities/scrvusd-yield.query'
 
 export type YieldKeys = Extract<
   keyof ScrvUsdYieldWithAverages,

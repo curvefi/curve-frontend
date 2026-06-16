@@ -1,4 +1,6 @@
 import { type Key, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useButton } from 'react-aria'
+import { useOverlayTriggerState } from 'react-stately'
 import { styled } from 'styled-components'
 import { STABLESWAP } from '@/dex/components/PageCreatePool/constants'
 import { CreateToken } from '@/dex/components/PageCreatePool/types'
@@ -8,8 +10,6 @@ import { useStore } from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
 import { delayAction } from '@/dex/utils'
 import type { Address } from '@primitives/address.utils'
-import { useButton } from '@react-aria/button'
-import { useOverlayTriggerState } from '@react-stately/overlays'
 import { Box } from '@ui/Box'
 import { Button } from '@ui/Button'
 import { Checkbox } from '@ui/Checkbox'
@@ -148,7 +148,7 @@ export const SelectTokenButton = ({
 
   return chainId || basePoolsLoading ? (
     <>
-      <ComboBoxButton {...openButtonProps} ref={openButtonRef} variant={'filled'} fillWidth>
+      <ComboBoxButton {...openButtonProps} ref={openButtonRef} variant="filled" fillWidth>
         {selectedToken ? (
           <>
             <ButtonTokenIcon
@@ -187,7 +187,7 @@ export const SelectTokenButton = ({
           >
             {swapType === STABLESWAP && (
               <Checkbox
-                key={'filter-basepools'}
+                key="filter-basepools"
                 isDisabled={basePools.length === 0}
                 className={filterBasepools ? 'active' : ''}
                 isSelected={filterBasepools}

@@ -135,7 +135,7 @@ export const LoanActionInfoList = ({
 
   return (
     <ActionInfoCollapse isOpen={isOpen} testId="loan-action-info-list">
-      <Stack sx={{ ...ACTION_INFO_GROUP_SX }}>
+      <Stack sx={ACTION_INFO_GROUP_SX}>
         <Stack>
           {(rates ?? prevRates) && (
             <ActionInfo

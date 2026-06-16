@@ -5,6 +5,7 @@ import { useRangeToLiquidation } from '@/llamalend/queries/user/user-prices.quer
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
 import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'
 import { Stack } from '@mui/material'
+import { maybe } from '@primitives/objects.utils'
 import { combineQueryState } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import type { UserMarketParams } from '@ui-kit/lib/model'
@@ -114,14 +115,10 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
             arrow: false,
             clickable: true,
           }}
-          notional={
-            rangeToLiquidation.data
-              ? {
-                  value: rangeToLiquidation.data,
-                  unit: { symbol: `% distance to LT`, position: 'suffix' },
-                }
-              : undefined
-          }
+          notional={maybe(rangeToLiquidation.data, value => ({
+            value,
+            unit: { symbol: `% distance to LT`, position: 'suffix' },
+          }))}
         />
         <Metric
           size="small"

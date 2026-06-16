@@ -1,16 +1,20 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { WagmiProvider } from 'wagmi'
 import Box from '@mui/material/Box'
 import { fromEntries, mapRecord } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { BaseConfig } from '@ui/utils'
+import { createTestWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/wagmi-test-config'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
+import { TestQueryProvider } from '@ui-kit/lib/queries/test-query.provider.test'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { constQ, q } from '@ui-kit/types/util'
 import { mockRoutes } from '@ui-kit/widgets/RouteProvider/route.mock'
 import { type RouteProviderProps, RouteProvidersAccordion } from './RouteProvidersAccordion'
 
 const { MaxWidth } = SizesAndSpaces
+const mockedWagmiConfig = createTestWagmiConfig()
 
 const RouteProviderStory = ({
   isExpanded: givenExpanded,
@@ -21,14 +25,14 @@ const RouteProviderStory = ({
   ...args
 }: RouteProviderProps & { isLoading?: boolean; isFetching?: boolean }) => {
   const [routes, setRoutes] = useState(givenRoutes)
-  const [selectedRoute, setSelectedRoute] = useState(givenSelectedRoute)
+  const [selectedRouter, setSelectedRouter] = useState(givenSelectedRoute?.router)
   const [isLoading, setIsLoading] = useState(givenIsLoading ?? false)
   const [isFetching, setIsFetching] = useState(false)
   const [isExpanded, , , toggle, setIsExpanded] = useSwitch(givenExpanded)
   // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
   useEffect(() => setRoutes(givenRoutes), [givenRoutes])
   // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
-  useEffect(() => setSelectedRoute(givenSelectedRoute), [givenSelectedRoute])
+  useEffect(() => setSelectedRouter(givenSelectedRoute?.router), [givenSelectedRoute])
   useEffect(() => setIsExpanded(givenExpanded), [givenExpanded, setIsExpanded])
   // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
   useEffect(() => setIsLoading(givenIsLoading ?? false), [givenIsLoading])
@@ -36,26 +40,28 @@ const RouteProviderStory = ({
   useEffect(() => setIsFetching(givenIsFetching ?? false), [givenIsFetching])
 
   return (
-    <Box sx={{ maxWidth: MaxWidth.actionCard }}>
-      <RouteProvidersAccordion
-        {...args}
-        queries={useMemo(
-          () => mapRecord(routes, (_, route) => ({ ...route, isLoading, isFetching: isLoading || isFetching })),
-          [isLoading, isFetching, routes],
-        )}
-        selectedRoute={selectedRoute}
-        onChange={useCallback(route => setSelectedRoute(route), [])}
-        isExpanded={isExpanded}
-        onToggle={toggle}
-        onRefresh={useCallback(() => {
-          setIsLoading(true)
-          const timeout = setTimeout(() => {
-            setIsLoading(false)
-          }, 1000)
-          return () => clearTimeout(timeout)
-        }, [])}
-      />
-    </Box>
+    <WagmiProvider config={mockedWagmiConfig}>
+      <TestQueryProvider data={[]}>
+        <Box sx={{ maxWidth: MaxWidth.actionCard }}>
+          <RouteProvidersAccordion
+            {...args}
+            queries={useMemo(
+              () => mapRecord(routes, (_, route) => ({ ...route, isLoading, isFetching: isLoading || isFetching })),
+              [isLoading, isFetching, routes],
+            )}
+            selectedRoute={selectedRouter && (routes[selectedRouter]?.data ?? undefined)}
+            onChange={setSelectedRouter}
+            isExpanded={isExpanded}
+            onToggle={toggle}
+            onRefresh={useCallback(() => {
+              setIsLoading(true)
+              const timeout = setTimeout(() => setIsLoading(false), 1000)
+              return () => clearTimeout(timeout)
+            }, [])}
+          />
+        </Box>
+      </TestQueryProvider>
+    </WagmiProvider>
   )
 }
 
@@ -64,7 +70,7 @@ const meta: Meta<typeof RouteProviderStory> = {
   component: RouteProviderStory,
   args: {
     chainId: 1,
-    networks: { 1: {} as BaseConfig },
+    networks: { 1: { name: 'Ethereum' } as BaseConfig },
     queries: fromEntries(
       RouteProviders.map(router => [
         router,
@@ -75,10 +81,12 @@ const meta: Meta<typeof RouteProviderStory> = {
             error: null,
           }),
           isFetching: false,
+          enabled: true,
         },
       ]),
     ),
     selectedRoute: mockRoutes[0],
+    selectedRouter: mockRoutes[0].router,
     tokenOut: { symbol: 'crvUSD', decimals: 18, usdRate: constQ(1) },
     isExpanded: false,
     onChange: () => undefined,
@@ -96,6 +104,26 @@ export const Collapsed: Story = {}
 
 export const Expanded: Story = {
   args: { isExpanded: true },
+}
+
+export const Disabled: Story = {
+  args: {
+    isExpanded: true,
+    queries: fromEntries(
+      RouteProviders.map(router => [
+        router,
+        {
+          ...q({
+            data: null,
+            isLoading: false,
+            error: null,
+          }),
+          isFetching: false,
+          enabled: false,
+        },
+      ]),
+    ),
+  },
 }
 
 export const Fetching: Story = {

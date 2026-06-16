@@ -1,12 +1,17 @@
+import Stack from '@mui/material/Stack'
 import { type Token } from '@primitives/address.utils'
 import { createColumnHelper } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { TokenInfo } from '@ui-kit/shared/ui/TokenInfo'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
 import { AddressCell, TimestampCell } from '../cells'
 import { PoolLiquidityActionCell } from '../cells/PoolLiquidityActionCell'
 import type { PoolLiquidityRow } from '../types'
+
+const { Spacing } = SizesAndSpaces
 
 export enum PoolLiquidityColumnId {
   Action = 'eventType',
@@ -19,10 +24,11 @@ export const getTokenAmountColumnId = (tokenIndex: number): string => `tokenAmou
 const columnHelper = createColumnHelper<PoolLiquidityRow>()
 
 type CreatePoolLiquidityColumnsParams = {
+  blockchainId: string
   poolTokens: Token[]
 }
 
-export const createPoolLiquidityColumns = ({ poolTokens }: CreatePoolLiquidityColumnsParams) => {
+export const createPoolLiquidityColumns = ({ blockchainId, poolTokens }: CreatePoolLiquidityColumnsParams) => {
   const baseColumns = [
     columnHelper.accessor('provider', {
       id: PoolLiquidityColumnId.User,
@@ -40,25 +46,25 @@ export const createPoolLiquidityColumns = ({ poolTokens }: CreatePoolLiquidityCo
   const tokenColumns = poolTokens.map((token, index) =>
     columnHelper.display({
       id: getTokenAmountColumnId(index),
-      header: token.symbol ?? t`Token ${index + 1}`,
+      header: () => (
+        <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center' }}>
+          {token.symbol ?? t`Token ${index + 1}`}
+          <TokenIcon blockchainId={blockchainId} address={token.address} size="mui-md" />
+        </Stack>
+      ),
       cell: ({ row }) => {
-        const { tokenAmounts, network, eventType } = row.original
+        const { tokenAmounts, eventType } = row.original
         const amount = tokenAmounts[index] ?? 0
         const isAdd = eventType === 'AddLiquidity'
         const displayAmount = isAdd ? amount : -amount
 
         return (
           <InlineTableCell sx={{ alignItems: 'end' }}>
-            {amount === 0 ? (
-              '-'
-            ) : (
-              <TokenInfo
-                address={token.address}
-                blockchainId={network}
-                iconPosition="right"
-                primary={formatNumber(displayAmount, { abbreviate: false })}
-              />
-            )}
+            <TokenInfo
+              icon={null}
+              iconPosition="right"
+              primary={amount === 0 ? '-' : formatNumber(displayAmount, 'token.amount')}
+            />
           </InlineTableCell>
         )
       },
@@ -73,6 +79,7 @@ export const createPoolLiquidityColumns = ({ poolTokens }: CreatePoolLiquidityCo
       cell: ({ row }) => (
         <TimestampCell timestamp={new Date(row.original.time)} txUrl={row.original.txUrl} align="end" />
       ),
+      meta: { type: 'numeric' },
     }),
   ]
 

@@ -34,8 +34,8 @@ export const LlamaMonitorBotButton = () =>
         textWrapMode: 'nowrap',
         '&:hover': { textDecoration: 'underline' },
       }}
-      startIcon={<BellRingingIcon fontSize={'small'} />}
-      endIcon={<ArrowTopRightIcon fontSize={'small'} />}
+      startIcon={<BellRingingIcon fontSize="small" />}
+      endIcon={<ArrowTopRightIcon fontSize="small" />}
       href={CURVE_SOCIALS.telegram.llamalendMonitorBot}
       target="_blank"
       rel="noreferrer noopener"

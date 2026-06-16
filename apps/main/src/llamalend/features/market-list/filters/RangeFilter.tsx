@@ -2,43 +2,35 @@ import { sortBy } from 'lodash'
 import { useCallback } from 'react'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
-import { notFalsyArray } from '@primitives/objects.utils'
-import { type DeepKeys } from '@tanstack/table-core'
 import { t } from '@ui-kit/lib/i18n'
 import { type FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { NumericTextField, type NumericTextFieldProps } from '@ui-kit/shared/ui/NumericTextField'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { QueryProp, Range } from '@ui-kit/types/util'
+import type { Range } from '@ui-kit/types/util'
 import { amount, decimal, formatNumber } from '@ui-kit/utils'
-import { useMaxValue } from './RangeSliderFilter/useMaxValue'
 import { useRangeFilter } from './RangeSliderFilter/useRangeFilter'
 
 const { Spacing } = SizesAndSpaces
 
-type RangeFilterProps<TKey, TColumnId extends string> = FilterProps<TColumnId> & {
-  query: QueryProp<TKey[]>
-  field: DeepKeys<TKey>
+type RangeFilterProps<TColumnId extends string> = FilterProps<TColumnId> & {
   id: TColumnId
   adornment?: NumericTextFieldProps['adornment']
+  isLoading?: boolean
   min?: number
   max?: number
 }
 
 type InputIndex = 0 | 1
 
-export const RangeFilter = <TKey, TColumnId extends string>({
-  query,
-  field,
+export const RangeFilter = <TColumnId extends string>({
   id,
   adornment,
+  isLoading = false,
+  min,
   max,
-  min = 0,
   ...filterProps
-}: RangeFilterProps<TKey, TColumnId>) => {
-  const data = notFalsyArray(query.data)
-  const isLoading = query.isLoading
-  const { maxValue } = useMaxValue<TKey>({ max, data, field })
-  const [range, setRange] = useRangeFilter({ isLoading, id, maxValue, ...filterProps })
+}: RangeFilterProps<TColumnId>) => {
+  const [range, setRange] = useRangeFilter({ isLoading, id, min, max, ...filterProps })
 
   const handleInputChange = useCallback(
     (index: InputIndex) => (newValue: string | undefined) => {
@@ -83,7 +75,7 @@ export const RangeFilter = <TKey, TColumnId extends string>({
       fullWidth
       value={decimal(range[index])}
       min={decimal(min)}
-      max={decimal(maxValue)}
+      max={decimal(max)}
       onChange={handleInputChange(index)}
       onBlur={handleInputBlur(index)}
       disabled={isLoading}

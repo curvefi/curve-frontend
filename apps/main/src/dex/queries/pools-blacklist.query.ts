@@ -1,9 +1,10 @@
+import { useCallback } from 'react'
 import { getAddress, type Address } from 'viem'
 import type { Chain } from '@curvefi/prices-api'
 import { getPoolFilters } from '@curvefi/prices-api/chains'
 import { EmptyValidationSuite, type QueryData } from '@ui-kit/lib'
 import { queryFactory, type ChainNameParams } from '@ui-kit/lib/model'
-import { mapQuery } from '@ui-kit/types/util'
+import { useMappedQuery } from '@ui-kit/types/util'
 
 // List from api.curve.finance: https://raw.githubusercontent.com/curvefi/curve-api/eed5dd84492b3e5611a34504a98bc1fa256defa5/routes/v1/getHiddenPools.js
 // List for core api https://github.com/curvefi/curve-api-core/blob/ab4080c816438c9c97d0baab82ad939aabb9bc85/routes/v1/getHiddenPools.js
@@ -226,7 +227,10 @@ const getBlacklist = (blacklistPricesApi: QueryData<typeof usePricesApiBlacklist
   ].map(address => getAddress(address)) // just to be sure there's no missing checksums from the prices api
 
 export const usePoolsBlacklist = ({ blockchainId }: ChainNameParams) =>
-  mapQuery(usePricesApiBlacklist({}), blacklist => (blockchainId ? getBlacklist(blacklist, blockchainId) : undefined))
+  useMappedQuery(
+    usePricesApiBlacklist({}),
+    useCallback(blacklist => (blockchainId ? getBlacklist(blacklist, blockchainId) : undefined), [blockchainId]),
+  )
 
 export const fetchPoolsBlacklist = async ({ blockchainId }: ChainNameParams) =>
   blockchainId ? getBlacklist(await fetchPricesApiBlacklist({}), blockchainId) : []

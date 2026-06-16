@@ -1,7 +1,6 @@
 import { CSSProperties, ReactNode, RefObject } from 'react'
-import { useButton } from 'react-aria'
+import { AriaButtonOptions, useButton } from 'react-aria'
 import { styled } from 'styled-components'
-import { AriaButtonOptions } from '@react-aria/button'
 import { buttonOutlinedStyles } from '@ui/Button/styles'
 import { DividerHorizontal } from '@ui/DividerHorizontal'
 import { SelectIconBtnDeleteProps, SelectIconBtnDelete } from '@ui/Select/SelectIconBtnDelete'

@@ -3,6 +3,7 @@ import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { notFalsy, recordEntries, recordValues } from '@primitives/objects.utils'
+import type { RouteProvider } from '@primitives/router.utils'
 import type { BaseConfig } from '@ui/utils'
 import type { RouteQueries, RouteResponse } from '@ui-kit/entities/router-api'
 import { t } from '@ui-kit/lib/i18n'
@@ -15,21 +16,16 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { decimalMax } from '@ui-kit/utils'
 import { RouteComparisonChip } from '@ui-kit/widgets/RouteProvider/RouteComparisonChip'
 import { RouteProviderCard, type RouteProviderCardProps } from './RouteProviderCard'
-import { RouteProviderIcons } from './RouteProviderIcons'
+import { RouteProviderIcons, RouteProviderLabels } from './RouteProviders'
 
 const { Spacing } = SizesAndSpaces
-
-const providerLabels = {
-  curve: t`Curve`,
-  enso: t`Enso`,
-  odos: t`Odos`,
-}
 
 export type RouteProviderProps = {
   queries: RouteQueries
   enabled: boolean
   selectedRoute: RouteResponse | undefined
-  onChange: (route: RouteResponse) => void
+  selectedRouter: RouteProvider | undefined
+  onChange: (router: RouteProvider) => void
   tokenOut: RouteProviderCardProps['tokenOut']
   isExpanded: boolean
   onToggle: () => void
@@ -42,6 +38,7 @@ export const RouteProvidersAccordion = ({
   queries,
   enabled,
   selectedRoute,
+  selectedRouter,
   onChange,
   tokenOut,
   isExpanded,
@@ -72,12 +69,12 @@ export const RouteProvidersAccordion = ({
             <ErrorIconButton error={t`Cannot fetch any routes. Please try again later.`} size="extraExtraSmall" />
           ) : (
             !isExpanded &&
-            (selectedRoute || allLoading ? (
+            (selectedRouter || allLoading ? (
               <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
                 {Icon && <Icon />}
                 <WithSkeleton loading={allLoading}>
                   <Typography variant="bodyXsRegular" color="textPrimary">
-                    {selectedRoute ? providerLabels[selectedRoute.router] : t`Loading routes`}
+                    {selectedRouter ? RouteProviderLabels[selectedRouter] : t`Loading routes`}
                   </Typography>
                 </WithSkeleton>
                 {selectedRoute && (
@@ -106,7 +103,7 @@ export const RouteProvidersAccordion = ({
               </Typography>
               <IconButton
                 size="extraExtraSmall"
-                onClick={onRefresh}
+                onClick={() => void onRefresh()}
                 aria-label={t`Refresh routes`}
                 disabled={anyFetching}
               >
@@ -126,12 +123,11 @@ export const RouteProvidersAccordion = ({
               <RouteProviderCard
                 key={key}
                 tokenOut={tokenOut}
-                isSelected={key === selectedRoute?.router}
-                providerLabel={providerLabels[key]}
+                isSelected={key === selectedRouter}
+                router={key}
                 query={query}
                 bestOutputAmount={maxAmountOut}
                 onSelect={onChange}
-                icon={RouteProviderIcons[key]()}
                 networks={networks}
                 chainId={chainId}
               />

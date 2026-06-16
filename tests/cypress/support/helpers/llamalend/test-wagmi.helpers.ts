@@ -1,11 +1,4 @@
-import { http } from 'viem'
-import { createWagmiConfig } from '@ui-kit/features/connect-wallet'
-import { ethereum } from '@ui-kit/features/connect-wallet/lib/wagmi/custom-chains'
-import { createTestConnector } from '@ui-kit/features/connect-wallet/lib/wagmi/wagmi-test'
+import { createTestWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/wagmi-test-config'
 import { TEST_PRIVATE_KEY } from './mock-loan-test-data'
 
-export const mockedWagmiConfig = createWagmiConfig({
-  chains: [ethereum],
-  connectors: [createTestConnector({ privateKey: TEST_PRIVATE_KEY, chain: ethereum })],
-  transports: { [ethereum.id]: http() },
-})
+export const mockedWagmiConfig = createTestWagmiConfig({ privateKey: TEST_PRIVATE_KEY })

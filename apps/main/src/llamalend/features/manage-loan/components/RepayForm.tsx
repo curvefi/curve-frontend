@@ -100,12 +100,11 @@ export const RepayForm = <ChainId extends IChainId>({
 
   const selectedField = token?.field ?? 'userBorrowed'
   const selectedToken = selectedField == 'userBorrowed' ? borrowToken : collateralToken
+
   const fromPosition = isFull.data === false && selectedField === 'stateCollateral'
   const showLeverage = selectedToken !== borrowToken && !!market && hasLeverageValue(market)
-  const {
-    update: updateForm,
-    formState: { dirtyFields },
-  } = form
+  const { update: updateForm, formState } = form
+  const isSelectedDirty = formState.dirtyFields[selectedField]
 
   // The max repay amount in the helper message should always be denominated in terms of the borrow token.
   const {
@@ -129,9 +128,9 @@ export const RepayForm = <ChainId extends IChainId>({
   useEffect(
     () => () => {
       // Reset when selectedField changes and the field is dirty (unmounting the field)
-      if (selectedField in dirtyFields) updateForm({ [selectedField]: undefined })
+      if (isSelectedDirty) updateForm({ [selectedField]: undefined })
     },
-    [dirtyFields, selectedField, updateForm],
+    [isSelectedDirty, selectedField, updateForm],
   )
 
   return (

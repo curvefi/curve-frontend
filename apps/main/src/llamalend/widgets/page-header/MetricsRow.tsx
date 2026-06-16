@@ -32,14 +32,7 @@ export const MetricsRow = ({
   const supplyRatePeriod = supplyRate ? AVERAGE_CATEGORIES[supplyRate.averageCategory].period : null
 
   return (
-    <Stack
-      direction="row"
-      sx={{
-        display: { mobile: 'grid', tablet: 'flex' },
-        gridTemplateColumns: '1fr 1fr',
-        gap: { mobile: Spacing.md.mobile, tablet: Spacing.xxl.tablet },
-      }}
-    >
+    <Stack direction="row" sx={{ gap: Spacing.xxl, alignItems: 'center', flexWrap: 'wrap' }}>
       <BorrowAprMetric
         marketType={marketType}
         borrowRate={borrowRate}
@@ -87,12 +80,16 @@ export const MetricsRow = ({
         label={t`Available liquidity`}
         value={availableLiquidity?.value}
         loading={availableLiquidity?.loading}
-        valueOptions={{ unit: 'dollar' }}
+        valueOptions={{ unit: 'none' }} // We could've shown the supply token symbol, but it's a bit ugly and it's implicit anyway
         valueTooltip={{
           title: t`Available Liquidity ${MarketTypeSuffix[marketType]}`,
           body: <AvailableLiquidityTooltip marketType={marketType} />,
           ...TooltipOptions,
         }}
+        notional={maybe(availableLiquidity?.notional, x => ({
+          value: x,
+          unit: 'dollar',
+        }))}
       />
     </Stack>
   )

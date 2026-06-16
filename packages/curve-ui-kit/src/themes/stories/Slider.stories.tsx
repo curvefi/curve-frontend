@@ -167,6 +167,12 @@ export const DisabledDefault: Story = {
     defaultValue: 60,
   },
 }
+export const ZeroStep: Story = {
+  args: {
+    step: 0,
+    defaultValue: 60,
+  },
+}
 export const DisabledSafeRail: Story = {
   args: {
     disabled: true,

@@ -47,6 +47,7 @@ const pagination = { pageIndex: 0, pageSize: 50 }
 const DEFAULT_VISIBLE_ROWS = 3
 
 export const UserPositionsMarketRateTable = ({
+  tableQuery,
   tableQuery: { data = [], isLoading, error },
   marketRateType,
   onReload,
@@ -63,7 +64,7 @@ export const UserPositionsMarketRateTable = ({
     initialState: { pagination },
     onSortingChange,
     onExpandedChange: setExpanded,
-    ...getTableOptions(data),
+    ...getTableOptions(tableQuery.data),
   })
   return (
     <DataTable

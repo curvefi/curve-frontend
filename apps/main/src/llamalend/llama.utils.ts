@@ -13,11 +13,11 @@ import { getUserMarketCollateralEvents as getLendUserMarketCollateralEvents } fr
 import type { BadDebt } from '@curvefi/prices-api/liquidations'
 import { type Address, Hex } from '@primitives/address.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
-import { notFalsy, objectKeys } from '@primitives/objects.utils'
+import { maybe, notFalsy, objectKeys } from '@primitives/objects.utils'
 import { getLib, requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
 import { isZapV2Enabled } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
-import { LlamaMarketType, LlamaMarketVersion } from '@ui-kit/types/market'
+import { LlamaMarketType } from '@ui-kit/types/market'
 import { CRVUSD, decimalMinus, decimalSum, formatNumber } from '@ui-kit/utils'
 import { SOLVENCY_THRESHOLDS } from './llama-markets.constants'
 
@@ -145,14 +145,14 @@ export const getTokens = (market: LlamaMarketTemplate | IOneWayMarket) =>
 
 export type MarketTokens = ReturnType<typeof getTokens>
 
-export function getControllerAddress(market: LlamaMarketTemplate): Address
-export function getControllerAddress(market: null | undefined): undefined
-export function getControllerAddress(market: LlamaMarketTemplate | null | undefined): Address | undefined
-export function getControllerAddress(market: LlamaMarketTemplate | null | undefined): Address | undefined {
-  return (market instanceof LendMarketTemplate ? market?.addresses?.controller : market?.controller) as
-    | Address
-    | undefined
-}
+export const getAmmAddress = <T extends LlamaMarketTemplate | null | undefined>(market: T) =>
+  maybe(market, market => (market instanceof LendMarketTemplate ? market.addresses.amm : market.address) as Address)
+
+export const getControllerAddress = <T extends LlamaMarketTemplate | null | undefined>(market: T) =>
+  maybe(
+    market,
+    market => (market instanceof LendMarketTemplate ? market.addresses.controller : market.controller) as Address,
+  )
 
 /**
  * Calculates the loan-to-value ratio of a market.
@@ -427,5 +427,4 @@ export const lowSolvencyDeprecatedMessage = (solvencyPercent: number | null) =>
     ? t`This market is deprecated due to low solvency`
     : null
 
-export const getLlamaMarketVersion = (market: LlamaMarketTemplate) =>
-  market instanceof LendMarketTemplate ? (market.version as LlamaMarketVersion) : LlamaMarketVersion.v1
+export const getZapAddress = (market: LlamaMarketTemplate) => market.getZapAddress() as Address

@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react'
+import { useButton } from 'react-aria'
+import { useOverlayTriggerState } from 'react-stately'
 import { styled } from 'styled-components'
 import { DeployGaugeButton } from '@/dex/components/PageDeployGauge/components/DeployGaugeButton'
 import { DeployMainnet } from '@/dex/components/PageDeployGauge/DeployMainnet'
@@ -8,8 +10,6 @@ import { useNetworkByChain } from '@/dex/entities/networks'
 import { useChainId } from '@/dex/hooks/useChainId'
 import { useStore } from '@/dex/store/useStore'
 import { type NetworkUrlParams } from '@/dex/types/main.types'
-import { useButton } from '@react-aria/button'
-import { useOverlayTriggerState } from '@react-stately/overlays'
 import { BoxHeader, Box } from '@ui/Box'
 import { ModalDialog } from '@ui/Dialog/ModalDialog'
 import { Icon } from '@ui/Icon/Icon'
@@ -92,11 +92,11 @@ export const DeployGauge = (props: NetworkUrlParams) => {
                     <Box flex flexAlignItems="center">
                       <NavTitle>{t`Step 1`}</NavTitle>
                       <InfoButton size="small" onClick={() => overlayTriggerState.open()} ref={openButtonRef}>
-                        <Icon name={'InformationSquare'} size={16} />
+                        <Icon name="InformationSquare" size={16} />
                       </InfoButton>
                     </Box>
                     <StyledIconButton size="small" onClick={() => setSidechainNav(1)}>
-                      <Icon name={'ChevronRight'} size={16} />
+                      <Icon name="ChevronRight" size={16} />
                     </StyledIconButton>
                   </>
                 ) : (
@@ -104,11 +104,11 @@ export const DeployGauge = (props: NetworkUrlParams) => {
                     <Box flex flexAlignItems="center">
                       <NavTitle>{t`Step 2`}</NavTitle>
                       <InfoButton size="small" onClick={() => overlayTriggerState.open()} ref={openButtonRef}>
-                        <Icon name={'InformationSquare'} size={16} />
+                        <Icon name="InformationSquare" size={16} />
                       </InfoButton>
                     </Box>
                     <StyledIconButton size="small" onClick={() => setSidechainNav(0)}>
-                      <Icon name={'ChevronLeft'} size={16} />
+                      <Icon name="ChevronLeft" size={16} />
                     </StyledIconButton>
                   </>
                 )}
@@ -139,7 +139,7 @@ export const DeployGauge = (props: NetworkUrlParams) => {
         <>
           {overlayTriggerState.isOpen && (
             <ModalDialog
-              title={'Steps'}
+              title="Steps"
               isOpen
               isDismissable
               onClose={() => overlayTriggerState.close()}

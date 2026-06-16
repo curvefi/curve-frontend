@@ -1,9 +1,8 @@
 import { ReactNode, useRef } from 'react'
 import { FocusScope, Overlay, useButton, useDialog, useModalOverlay, usePreventScroll } from 'react-aria'
-import type { AriaOverlayProps } from 'react-aria'
+import type { AriaDialogProps, AriaOverlayProps } from 'react-aria'
 import type { OverlayTriggerState } from 'react-stately'
 import { styled } from 'styled-components'
-import type { AriaDialogProps } from '@react-types/dialog'
 import { Box } from '@ui/Box'
 import { Icon } from '@ui/Icon'
 import { IconButton } from '@ui/IconButton'
@@ -59,7 +58,7 @@ export const ModalDialog = ({ children, footerContent, maxWidth, state, title, .
                 {title}
                 {showCloseButton && (
                   <IconButton {...closeButtonProps} ref={closeButtonRef} padding={2}>
-                    <Icon name={'Close'} size={24} aria-label="Close" />
+                    <Icon name="Close" size={24} aria-label="Close" />
                   </IconButton>
                 )}
               </Header>

@@ -1,4 +1,4 @@
-import '@cy/eip6963-test-setup'
+import '@ui-kit/eip6963-test-setup'
 import '@/global-extensions'
 import { mount } from 'cypress/react'
 import { skipTestsAfterFailure } from '@cy/support/ui'

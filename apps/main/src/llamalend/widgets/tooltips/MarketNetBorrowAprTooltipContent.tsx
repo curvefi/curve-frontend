@@ -62,7 +62,7 @@ export const MarketNetBorrowAprTooltipContent = ({
         <TooltipItems secondary>
           <RewardsTooltipItems
             title={t`Borrowing incentives`}
-            tooltipType={'borrow'}
+            tooltipType="borrow"
             extraRewards={extraRewards}
             extraIncentives={[]}
           />

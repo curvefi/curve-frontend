@@ -3,7 +3,7 @@ import { useConnection } from 'wagmi'
 import { LEVERAGE } from '@/llamalend/constants'
 import { useMaxRepayTokenValues } from '@/llamalend/features/manage-loan/hooks/useMaxRepayTokenValues'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
-import { getLlamaMarketVersion, getTokens, isRouterRequired } from '@/llamalend/llama.utils'
+import { getAmmAddress, getZapAddress, getTokens, isRouterRequired } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useRepayMutation } from '@/llamalend/mutations/repay.mutation'
 import { getRepayLoanEstimateGasOptions } from '@/llamalend/queries/repay/repay-gas-estimate.query'
@@ -172,6 +172,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     isApproved: useRepayIsApproved(params, enabled),
     routes: useMarketRoutes({
       chainId,
+      marketAddress: getAmmAddress(market),
       tokenIn: collateralToken,
       tokenOut: borrowToken,
       amountIn: decimalSum(params.userCollateral, params.stateCollateral),
@@ -183,7 +184,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
       },
       getRouteGasOptions: (routeId: string | undefined) => getRepayLoanEstimateGasOptions({ ...params, routeId }),
       networks,
-      version: market && getLlamaMarketVersion(market),
+      zapAddress: market && getZapAddress(market),
     }),
     formErrors: useMemo(
       // only show the 'not available' warn when there are no other form errors

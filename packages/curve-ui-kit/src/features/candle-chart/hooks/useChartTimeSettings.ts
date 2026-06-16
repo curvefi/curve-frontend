@@ -1,26 +1,18 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { DEFAULT_TIME_OPTION } from '../constants'
 import type { TimeOption } from '../types'
-import { getThreeHundredResultsAgo } from '../utils'
 
-type ChartTimeSettings = {
-  /** Start timestamp for fetching chart data */
-  start: number
-  /** End timestamp (current time) */
-  end: number
-}
+type TimeUnit = 'minute' | 'hour' | 'day'
 
 type UseChartTimeSettingsReturn = {
   /** Currently selected time option */
   timeOption: TimeOption
   /** Update the selected time option */
   setTimeOption: (timeOption: TimeOption) => void
-  /** Time range for fetching chart data */
-  chartTimeSettings: ChartTimeSettings
   /** Interval value for the API (e.g., 15 for 15m, 1 for 1h) */
   chartInterval: number
   /** Time unit for the API ('minute' | 'hour' | 'day') */
-  timeUnit: 'minute' | 'hour' | 'day'
+  timeUnit: TimeUnit
 }
 
 const intervals: Record<TimeOption, number> = {
@@ -35,6 +27,18 @@ const intervals: Record<TimeOption, number> = {
   '14d': 14,
 }
 
+const timeUnits: Record<TimeOption, TimeUnit> = {
+  '15m': 'minute',
+  '30m': 'minute',
+  '1h': 'hour',
+  '4h': 'hour',
+  '6h': 'hour',
+  '12h': 'hour',
+  '1d': 'day',
+  '7d': 'day',
+  '14d': 'day',
+}
+
 /**
  * Manages chart time option state and converts it into the parameters needed for chart API requests.
  * Time settings only recalculate when timeOption changes.
@@ -44,22 +48,10 @@ export const useChartTimeSettings = (
 ): UseChartTimeSettingsReturn => {
   const [timeOption, setTimeOption] = useState<TimeOption>(initialTimeOption)
 
-  const chartTimeSettings = useMemo(() => {
-    const now = Date.now() / 1000
-    const threeHundredResultsAgo = getThreeHundredResultsAgo(timeOption, now)
-    return {
-      start: +threeHundredResultsAgo,
-      end: Math.floor(now),
-    }
-  }, [timeOption])
-
-  const chartInterval = useMemo(() => intervals[timeOption], [timeOption])
-
-  const timeUnit = useMemo(() => {
-    if (timeOption.endsWith('m')) return 'minute'
-    if (timeOption.endsWith('h')) return 'hour'
-    return 'day'
-  }, [timeOption])
-
-  return { timeOption, setTimeOption, chartTimeSettings, chartInterval, timeUnit }
+  return {
+    timeOption,
+    setTimeOption,
+    chartInterval: intervals[timeOption],
+    timeUnit: timeUnits[timeOption],
+  }
 }

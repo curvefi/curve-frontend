@@ -17,7 +17,7 @@ const buildEvmScript = (gaugeAddress: Address) => {
   const callData = encodeFunctionData({
     abi: abiGauge,
     functionName: 'add_gauge',
-    args: [gaugeAddress, 10n, 0n],
+    args: [gaugeAddress, 0n, 0n],
   })
 
   const agentCalldata = encodeFunctionData({

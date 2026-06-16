@@ -59,7 +59,7 @@ export const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVot
       {!newVote && (
         <Box flex flexColumn flexGap="var(--spacing-1)" margin="var(--spacing-3) 0 0">
           <GaugeVoteTitle>{t`USER GAUGE VOTE`}</GaugeVoteTitle>
-          <Box flex flexGap="var(--spacing-3)" margin={'var(--spacing-2) 0'}>
+          <Box flex flexGap="var(--spacing-3)" margin="var(--spacing-2) 0">
             <Box flex flexColumn flexGap="var(--spacing-1)">
               <MetricsComp
                 loading={false}
@@ -116,7 +116,7 @@ export const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVot
           aria-label="Voting power input"
           label={
             newVote ? (
-              <Box flex flexColumn flexGap={'var(--spacing-1)'}>
+              <Box flex flexColumn flexGap="var(--spacing-1)">
                 <LabelTitle>{t`Available voting power:`}</LabelTitle>
                 <LabelData>
                   <strong>

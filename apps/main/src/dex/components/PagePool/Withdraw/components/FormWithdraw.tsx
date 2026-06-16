@@ -365,14 +365,14 @@ export const FormWithdraw = ({
               }
             }}
           >
-            <Radio aria-label="Withdraw from one coin" value={'token'}>
+            <Radio aria-label="Withdraw from one coin" value="token">
               {t`One coin`}
             </Radio>
-            <Radio aria-label="Withdraw as balanced amounts" value={'lpToken'}>
+            <Radio aria-label="Withdraw as balanced amounts" value="lpToken">
               {t`Balanced`}
             </Radio>
             {!poolDataCacheOrApi.pool.isCrypto && (
-              <Radio aria-label="Custom withdraw" value={'imbalance'}>
+              <Radio aria-label="Custom withdraw" value="imbalance">
                 {t`Custom`}
               </Radio>
             )}
@@ -429,7 +429,7 @@ export const FormWithdraw = ({
                         key={tokenAddress}
                         idx={idx}
                         amount={amount?.value || ''}
-                        balance={''}
+                        balance=""
                         balanceLoading={false}
                         disabled={isDisabled}
                         hasError={false}

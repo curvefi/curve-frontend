@@ -40,5 +40,6 @@ export const USER_POSITION_HISTORY_COLUMNS = [
     cell: ({ row }) => (
       <TimestampCell timestamp={new Date(row.original.timestamp)} txUrl={row.original.url} align="end" />
     ),
+    meta: { type: 'numeric' },
   }),
 ]

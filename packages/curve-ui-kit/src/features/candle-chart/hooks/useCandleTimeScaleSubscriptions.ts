@@ -9,7 +9,7 @@ type Params = {
 }
 
 /**
- * Owns all timeScale event subscriptions used by CandleChart:
+ * Owns reusable timeScale event subscriptions used by CandleChart:
  * - logical range changes (for fetch-more and related chart state)
  * - size changes (to refresh externally synced visible y-range)
  */

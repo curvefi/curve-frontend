@@ -189,7 +189,10 @@ const generateLlammaEvents = (count: number, collateralToken: Token, borrowToken
 const DexPoolActivityComponent = () => {
   const tradesData = useMemo(() => generatePoolTrades(20), [])
   const liquidityData = useMemo(() => generatePoolLiquidity(15), [])
-  const liquidityColumns = useMemo(() => createPoolLiquidityColumns({ poolTokens: POOL_TOKENS }), [])
+  const liquidityColumns = useMemo(
+    () => createPoolLiquidityColumns({ blockchainId: 'ethereum', poolTokens: POOL_TOKENS }),
+    [],
+  )
 
   const tradesTable = useTable({
     data: tradesData,
@@ -210,6 +213,7 @@ const DexPoolActivityComponent = () => {
         isLoading={false}
         isError={false}
         emptyMessage="No trades data found."
+        errorMessage="Could not load trades data."
         expandedPanel={PoolTradesExpandedPanel}
       />
       <ActivityTable
@@ -217,6 +221,7 @@ const DexPoolActivityComponent = () => {
         isLoading={false}
         isError={false}
         emptyMessage="No liquidity data found."
+        errorMessage="Could not load liquidity data."
         expandedPanel={PoolLiquidityExpandedPanel}
       />
     </>
@@ -250,6 +255,7 @@ const LendMarketActivityComponent = () => {
         isLoading={false}
         isError={false}
         emptyMessage="No AMM trades found."
+        errorMessage="Could not load AMM trades."
         expandedPanel={LlammaTradesExpandedPanel}
       />
       <ActivityTable
@@ -257,6 +263,7 @@ const LendMarketActivityComponent = () => {
         isLoading={false}
         isError={false}
         emptyMessage="No controller events found."
+        errorMessage="Could not load controller events."
         expandedPanel={LlammaEventsExpandedPanel}
       />
     </>
@@ -320,9 +327,17 @@ const LoadingStateComponent = () => {
   const table = useTable({
     data: [] as PoolTradeRow[],
     columns: POOL_TRADES_COLUMNS,
-    ...getTableOptions([]),
+    ...getTableOptions<PoolTradeRow>([]),
   })
-  return <ActivityTable table={table} isLoading={true} isError={false} emptyMessage="Loading trades..." />
+  return (
+    <ActivityTable
+      table={table}
+      isLoading={true}
+      isError={false}
+      emptyMessage="Loading trades..."
+      errorMessage="Could not load trades data."
+    />
+  )
 }
 
 export const LoadingState: StoryObj = {
@@ -340,9 +355,17 @@ const EmptyStateComponent = () => {
   const table = useTable({
     data: [] as PoolTradeRow[],
     columns: POOL_TRADES_COLUMNS,
-    ...getTableOptions([]),
+    ...getTableOptions<PoolTradeRow>([]),
   })
-  return <ActivityTable table={table} isLoading={false} isError={false} emptyMessage="No swap data found." />
+  return (
+    <ActivityTable
+      table={table}
+      isLoading={false}
+      isError={false}
+      emptyMessage="No swap data found."
+      errorMessage="Could not load swap data."
+    />
+  )
 }
 
 export const EmptyState: StoryObj = {
@@ -360,9 +383,17 @@ const ErrorStateComponent = () => {
   const table = useTable({
     data: [] as PoolTradeRow[],
     columns: POOL_TRADES_COLUMNS,
-    ...getTableOptions([]),
+    ...getTableOptions<PoolTradeRow>([]),
   })
-  return <ActivityTable table={table} isLoading={false} isError={true} emptyMessage="Could not load data" />
+  return (
+    <ActivityTable
+      table={table}
+      isLoading={false}
+      isError={true}
+      emptyMessage="No swap data found."
+      errorMessage="Could not load swap data."
+    />
+  )
 }
 
 export const ErrorState: StoryObj = {

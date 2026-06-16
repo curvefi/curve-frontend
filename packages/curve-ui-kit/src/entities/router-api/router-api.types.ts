@@ -11,6 +11,7 @@ export type RoutesQuery = {
   tokenOut: Address
   amountIn?: Decimal
   amountOut?: Decimal
+  blacklist?: readonly Address[]
   router?: RouteProvider | readonly RouteProvider[]
   userAddress?: Address
   slippage?: Decimal
@@ -32,5 +33,5 @@ export type RouteMeta = {
  */
 export type RouteMutationMeta = RouteMeta & { minRecv: string }
 export type RouteResponse = RouterRouteResponse & { id: string }
-export type RouteQuery = QueryProp<RouteResponse | null> & { isFetching: boolean }
+export type RouteQuery = QueryProp<RouteResponse | null> & { isFetching: boolean; enabled: boolean }
 export type RouteQueries = Record<RouteProvider, RouteQuery>

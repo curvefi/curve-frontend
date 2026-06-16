@@ -27,7 +27,7 @@ export const ErrorBoundary = ({
   children: ReactNode
   title: string
   subtitle?: string
-  refreshData?: () => void
+  refreshData?: () => Promise<unknown> | void
   inline?: boolean
 }) => (
   <CatchBoundary
