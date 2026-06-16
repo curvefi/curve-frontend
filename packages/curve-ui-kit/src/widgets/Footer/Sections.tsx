@@ -1,7 +1,6 @@
 import BeenhereOutlinedIcon from '@mui/icons-material/BeenhereOutlined'
 import BugReportOutlinedIcon from '@mui/icons-material/BugReportOutlined'
 import GitHubIcon from '@mui/icons-material/GitHub'
-import MonitorHeartOutlinedIcon from '@mui/icons-material/MonitorHeartOutlined'
 import YouTubeIcon from '@mui/icons-material/YouTube'
 import { CURVE_SOCIALS, EXTERNAL_LINKS } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
@@ -117,11 +116,6 @@ export const getSections = () => [
         label: t`CrvHub`,
         href: EXTERNAL_LINKS.monitoring.crvHub,
         icon: <CrvHubIcon />,
-      },
-      {
-        label: t`API Status`,
-        href: EXTERNAL_LINKS.monitoring.apiStatus,
-        icon: <MonitorHeartOutlinedIcon />,
       },
     ],
   },

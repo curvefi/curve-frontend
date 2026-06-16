@@ -50,19 +50,19 @@ export const EXTERNAL_LINKS = {
       },
     },
     references: {
-      whitepaper: 'https://docs.curve.finance/references/whitepaper',
+      whitepaper: 'https://docs.curve.finance/developer/resources/whitepaper/',
     },
     assets: {
-      crvUsdWhitepaper: 'https://docs.curve.finance/assets/pdf/whitepaper_curve_stablecoin.pdf',
-      scrvUsdAudit: 'https://docs.curve.finance/assets/pdf/ChainSecurity_Curve_scrvUSD_audit.pdf',
+      crvUsdWhitepaper: 'https://docs.curve.finance/pdf/whitepapers/whitepaper_curve_stablecoin.pdf',
+      scrvUsdAudit: 'https://docs.curve.finance/pdf/audits/ChainSecurity_Curve_scrvUSD_audit.pdf',
     },
     crvUsd: {
-      amm: 'https://docs.curve.finance/crvUSD/amm/',
-      oracle: 'https://docs.curve.finance/crvUSD/oracle/',
-      pegKeepers: 'https://docs.curve.finance/crvUSD/pegkeepers/overview/',
+      amm: 'https://docs.curve.finance/developer/crvusd/amm/',
+      oracle: 'https://docs.curve.finance/developer/crvusd/oracles/overview/',
+      pegKeepers: 'https://docs.curve.finance/developer/crvusd/pegkeepers/overview/',
     },
     scrvUsd: {
-      overview: 'https://docs.curve.finance/scrvusd/overview/',
+      overview: 'https://docs.curve.finance/developer/scrvusd/overview/',
     },
     yearn: {
       v3Vaults: 'https://docs.yearn.fi/developers/v3/overview',
@@ -92,7 +92,6 @@ export const EXTERNAL_LINKS = {
   monitoring: {
     curveMonitor: 'https://curvemonitor.com/',
     crvHub: 'https://crvhub.com/',
-    apiStatus: 'https://statuspage.freshping.io/59335-CurveAPI',
   },
 } as const
 
