@@ -7,7 +7,7 @@ import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { mapQuery } from '@ui-kit/types/util'
+import { constQ, fallbackQ, mapQuery } from '@ui-kit/types/util'
 import { amount } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
@@ -29,14 +29,20 @@ export const PoolMetricsRow = ({
       <Metric
         alignment={alignment}
         label={t`TVL`}
-        value={mapQuery(tvl, data => amount(data ?? pricesApiPoolData?.tvlUsd))}
+        value={fallbackQ(
+          mapQuery(tvl, data => amount(data)),
+          constQ(amount(pricesApiPoolData?.tvlUsd)),
+        )}
         valueOptions={{ unit: 'dollar' }}
       />
 
       <Metric
         alignment={alignment}
         label={t`24h volume`}
-        value={mapQuery(volume, data => amount(data ?? pricesApiPoolData?.tradingVolume24h))}
+        value={fallbackQ(
+          mapQuery(volume, data => amount(data)),
+          constQ(amount(pricesApiPoolData?.tradingVolume24h)),
+        )}
         valueOptions={{ unit: 'dollar' }}
       />
     </Stack>

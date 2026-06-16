@@ -27,7 +27,7 @@ import {
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { mapQuery, useMappedQuery } from '@ui-kit/types/util'
+import { fallbackQ, mapQuery, useMappedQuery } from '@ui-kit/types/util'
 import { decimal, decimalMax, decimalMinus, formatNumber } from '@ui-kit/utils'
 
 const { Spacing, Height } = SizesAndSpaces
@@ -71,10 +71,9 @@ export const MarketRateCurveChart = ({
   const collateralUsdRate = useTokenUsdRate({ chainId, tokenAddress: collateralToken?.address })
   const borrowedUsdRate = useTokenUsdRate({ chainId, tokenAddress: borrowToken?.address })
 
-  const currentUtilization = combineQueries(
-    [capAndAvailable, rateCurve],
-    ({ available, totalAssets }, { currentUtilization }) =>
-      getUtilizationPercent(available, totalAssets) ?? currentUtilization,
+  const currentUtilization = fallbackQ<number>(
+    mapQuery(capAndAvailable, ({ available, totalAssets }) => getUtilizationPercent(available, totalAssets)),
+    mapQuery(rateCurve, ({ currentUtilization }) => currentUtilization),
   )
   const totalBorrowed = mapQuery(capAndAvailable, ({ available, totalAssets }) =>
     maybes([available, totalAssets], ([available, totalAssets]) =>

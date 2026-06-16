@@ -62,6 +62,9 @@ export const q = <T>({ data, isLoading, error }: Query<T>) =>
     error,
   }) as QueryProp<T>
 
+export const fallbackQ = <T, Q extends Query<T> = Query<T>>(...queries: Q[]) =>
+  q(queries.find(q => !q.error) ?? queries[0])
+
 /**
  * Maps a Query type to extract partial data from it.
  * Preserves error and loading states while transforming the data.
