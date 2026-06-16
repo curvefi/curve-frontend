@@ -80,7 +80,6 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
     assets,
     leverage,
     liquidityUsd,
-    type,
     url,
     userHasPositions,
     lendingPosition,
