@@ -26,7 +26,6 @@ const EMPTY: never[] = []
 
 export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
   const isMobile = useIsMobile()
-  const isTablet = useIsTablet()
   const getUserPositionOptions = usePoolListUserPositionOptions(network.chainId)
   const {
     activeFilterCount,
@@ -107,7 +106,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
           </EmptyStateRow>
         }
         expandedPanel={PoolListMobileExpandedPanel}
-        shouldStickFirstColumn={Boolean(isTablet && userHasPositions)}
+        shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
         isLoading={loading}
       >
         <TableFilters<PoolListColumnId>

@@ -8,7 +8,7 @@ import { PoolListTable } from './PoolListTable'
 export const Page = () => {
   const network = useNetworkFromUrl()
   const isBetaPoolListEnabled = useDexPoolListV2()
-  const { data: supportedPoolChains = [], isLoading } = usePoolChains({}, isBetaPoolListEnabled && !!network)
+  const { data: supportedPoolChains = [], isLoading } = usePoolChains({}, isBetaPoolListEnabled)
   /**
    * Prices API v2 does not cover every full DEX network that's supplied by the curve-api.
    * Unsupported: Moonbeam, Kava, Avalanche, Celo, Aurora, X-Layer, zkSync, Mantle.

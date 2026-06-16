@@ -6,7 +6,7 @@ import type {
   V2PoolSortField as PoolSortField,
 } from '@curvefi/prices-api/pools'
 import { mapRecord, notFalsy, recordEntries, recordValues } from '@primitives/objects.utils'
-import type { SortingState } from '@tanstack/react-table'
+import type { OnChangeFn, SortingState } from '@tanstack/react-table'
 import { useSearchNavigate, useSearchParams } from '@ui-kit/hooks/router'
 import { usePageFromQueryString } from '@ui-kit/hooks/usePageFromQueryString'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
@@ -18,6 +18,7 @@ export const POOL_LIST_PAGE_SIZE = 50
 const PAGE_QUERY_FIELD = 'page'
 const POOL_TYPE_QUERY_FIELD = 'filter'
 const SEARCH_QUERY_FIELD = 'search'
+const SORT_QUERY_FIELD = 'sort'
 
 // Omitted "main" and "factory" from available filters.
 const POOL_TYPE_FILTERS = [
@@ -78,11 +79,7 @@ export const usePoolListUrlState = ({ isLite }: Pick<NetworkConfig, 'isLite'>) =
   const searchParams = useSearchParams()
   const searchNavigate = useSearchNavigate(searchParams)
   const defaultSort = useMemo<SortingState>(() => getDefaultSort(isLite), [isLite])
-  const normalizeSort = useCallback((sorting: SortingState) => getPoolListSorting(sorting, defaultSort), [defaultSort])
-  const [urlSorting, onSortingChange] = useSortFromQueryString(defaultSort, {
-    normalizeSort,
-    resetPageField: PAGE_QUERY_FIELD,
-  })
+  const [urlSorting] = useSortFromQueryString(defaultSort, SORT_QUERY_FIELD)
   const sorting = useMemo<PoolListSorting>(() => getPoolListSorting(urlSorting, defaultSort), [defaultSort, urlSorting])
   const [{ id: sortField, desc }] = sorting
   const { sortBy } = SORT_COLUMNS[sortField]
@@ -101,6 +98,19 @@ export const usePoolListUrlState = ({ isLite }: Pick<NetworkConfig, 'isLite'>) =
     (update: Record<string, string | string[] | null>) =>
       searchNavigate({ ...update, [PAGE_QUERY_FIELD]: null }, { replace: true }),
     [searchNavigate],
+  )
+  const onSortingChange = useCallback<OnChangeFn<SortingState>>(
+    newSorting => {
+      const nextSorting = getPoolListSorting(
+        typeof newSorting == 'function' ? newSorting(sorting) : newSorting,
+        defaultSort,
+      )
+
+      updateQueryAndResetPage({
+        [SORT_QUERY_FIELD]: nextSorting.map(({ id, desc }) => `${desc ? '-' : ''}${id}`),
+      })
+    },
+    [defaultSort, sorting, updateQueryAndResetPage],
   )
   const setSearch = useCallback(
     (value: string) => updateQueryAndResetPage({ [SEARCH_QUERY_FIELD]: value || null }),

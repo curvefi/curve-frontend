@@ -23,11 +23,8 @@ export const getPoolIdByAddressEntries = (poolMapper: PoolIdByAddressSource | un
 export const getCurvePoolIdByAddressEntries = (curve: CurveApi) =>
   curve.getPoolList().map(poolId => [normalizeAddress(curve.getPool(poolId).address), poolId] as const)
 
-export const getHasPosition = (
-  userPoolIds: Set<string> | undefined,
-  poolAddress: string,
-  poolId: string | undefined,
-) => (userPoolIds ? notFalsy(poolId, poolAddress).some(id => userPoolIds.has(normalizeAddress(id))) : undefined)
+export const getHasPosition = (userPoolIds: Set<string> | undefined, poolAddress: string, poolId: string | undefined) =>
+  userPoolIds && notFalsy(poolId, poolAddress).some(id => userPoolIds.has(normalizeAddress(id)))
 
 export const getPoolListItem = (
   network: NetworkConfig,
