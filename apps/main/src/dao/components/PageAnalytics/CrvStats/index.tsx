@@ -1,11 +1,12 @@
 import lodash from 'lodash'
+import { useCallback } from 'react'
 import { styled } from 'styled-components'
 import { useStatsVecrvQuery } from '@/dao/entities/stats-vecrv'
 import { useStore } from '@/dao/store/useStore'
 import { maybe } from '@primitives/objects.utils'
 import { Box } from '@ui/Box'
 import { useCurve } from '@ui-kit/features/connect-wallet'
-import { combineQueries } from '@ui-kit/lib'
+import { useCombinedQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { Metric } from '@ui-kit/shared/ui/Metric'
@@ -25,17 +26,22 @@ export const CrvStats = () => {
   const crvUsdRate = useTokenUsdRate({ chainId, tokenAddress: MAINNET_CRV_ADDRESS })
   const veCrv = useVeCrvFees()
 
-  const veCrvApr = combineQueries([statsQuery, crvUsdRate, veCrv], (veCrvData, crv, { fees }) =>
-    chainId === Chain.Ethereum
-      ? {
-          current: calculateApr(fees[1].feesUsd, veCrvData.totalVeCrv.fromWei(), crv),
-          fourDayAverage: calculateFourWeekAverageApr(
-            fees.slice(1, 5).map(fee => fee.feesUsd),
-            veCrvData.totalVeCrv.fromWei(),
-            crv,
-          ),
-        }
-      : { current: 0, fourDayAverage: 0 },
+  const veCrvApr = useCombinedQueries(
+    [statsQuery, crvUsdRate, veCrv],
+    useCallback(
+      (veCrvData, crv, { fees }) =>
+        chainId === Chain.Ethereum
+          ? {
+              current: calculateApr(fees[1].feesUsd, veCrvData.totalVeCrv.fromWei(), crv),
+              fourDayAverage: calculateFourWeekAverageApr(
+                fees.slice(1, 5).map(fee => fee.feesUsd),
+                veCrvData.totalVeCrv.fromWei(),
+                crv,
+              ),
+            }
+          : { current: 0, fourDayAverage: 0 },
+      [chainId],
+    ),
   )
 
   return (

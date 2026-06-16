@@ -1,4 +1,4 @@
-import { type UseQueryOptions, type UseQueryResult } from '@tanstack/react-query'
+import type { UseQueryOptions, UseQueryResult } from '@tanstack/react-query'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type QueryOptionsArray = readonly UseQueryOptions<any, any, any, any>[]

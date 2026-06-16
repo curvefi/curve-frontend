@@ -2,7 +2,7 @@ import type { ChipColors } from '@ui-kit/themes/components/chip'
 import type { PegKeeperDetails } from '../types'
 
 export type PegStatus = {
-  label: 'loading' | 'pegged' | 'overpegged' | 'underpegged'
+  label: 'loading' | 'pegged' | 'overpegged' | 'underpegged' | 'error'
   color: ChipColors
 }
 /**
@@ -15,10 +15,11 @@ export type PegStatus = {
  *   - 'underpegged' if rate < 0.98 (below peg)
  *   Color severity: 'warning' if within 5% tolerance, 'alert' if beyond
  */
-export function pegStatus(rate: PegKeeperDetails['rate']): PegStatus {
-  if (!rate.data) return { label: 'loading', color: 'unselected' }
+export function pegStatus({ data, isLoading, error }: PegKeeperDetails['rate']): PegStatus {
+  if (isLoading) return { label: 'loading', color: 'unselected' }
+  if (error) return { label: 'error', color: 'alert' }
 
-  const delta = 1 - +rate.data
+  const delta = 1 - Number(data)
   const pegged = Math.abs(delta) <= 0.02
   const severe = Math.abs(delta) >= 0.05
 

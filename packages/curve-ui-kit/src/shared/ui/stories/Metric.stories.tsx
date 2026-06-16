@@ -31,7 +31,7 @@ const meta: Meta<typeof Metric> = {
       description: 'Optional tooltip shown when hovering the metric value',
     },
     value: {
-      control: 'number',
+      control: 'object',
       description: 'The value of the component',
     },
     valueOptions: {
@@ -207,7 +207,7 @@ export const RightAdornment: Story = {
 
 export const ErrorWithTooltip: Story = {
   args: {
-    value: q({ data: undefined, isLoading: false, error: new globalThis.Error('Metric failed to load') }),
+    value: q({ data: undefined, isLoading: false, error: new Error('Metric failed to load') }),
     errorTooltip: {
       title: 'Error fetching metric',
       body: 'Some positions could not be loaded correctly.',

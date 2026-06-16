@@ -1,6 +1,7 @@
 import { sortBy, uniqBy } from 'lodash'
 import { useMemo, useState } from 'react'
 import { CrvUsdPriceTooltip } from '@/llamalend/widgets/tooltips/chart/CrvUsdPriceTooltip'
+import type { Timestamp } from '@curvefi/prices-api/timestamp'
 import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
@@ -8,7 +9,7 @@ import { useTheme } from '@mui/material/styles'
 import { maybe, notFalsyArray } from '@primitives/objects.utils'
 import { formatDate } from '@ui/utils'
 import { useCrvUsdPriceHistory } from '@ui-kit/entities/crvusd-price.query'
-import { combineQueries } from '@ui-kit/lib'
+import { useCombinedQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { timeOptions, type TimeOption } from '@ui-kit/lib/model/query/time-option-validation'
@@ -49,6 +50,15 @@ const SERIES_CONFIG: { key: PriceSeriesKey; label: string; dash?: ChartLineDashP
   { key: 'totalAverage', label: t`Average Price`, dash: CHART_LINE_DASH_PATTERNS.regular },
 ]
 
+const getOneWeekDeviation = (
+  priceHistory: { timestamp: Timestamp; price: number }[],
+  price: number,
+  timestamp = Date.now(),
+) =>
+  calculateAverageRates(notFalsyArray(priceHistory, [{ timestamp, price }]), 7, {
+    deviation: ({ price }) => Math.abs(price - 1) * 100,
+  })?.deviation
+
 export const CrvUsdPriceChart = () => {
   const [timeOption, setTimeOption] = useState<TimeOption>('1M')
   const [visibleSeries, setVisibleSeries] = useState<PriceSeriesKey[]>(SERIES_CONFIG.map(({ key }) => key))
@@ -84,15 +94,7 @@ export const CrvUsdPriceChart = () => {
     )
   }, [priceHistory.data])
 
-  const oneWeekDeviation = combineQueries([priceHistory, currentPrice], (priceHistory, currentPrice) => {
-    const now = Date.now()
-
-    return calculateAverageRates(
-      notFalsyArray(priceHistory, currentPrice != null && [{ timestamp: now, price: currentPrice }]),
-      7,
-      { deviation: ({ price }) => Math.abs(price - 1) * 100 },
-    )?.deviation
-  })
+  const oneWeekDeviation = useCombinedQueries([priceHistory, currentPrice], getOneWeekDeviation)
 
   const seriesColors: Record<PriceSeriesKey, string> = useMemo(
     () => ({ price: Color.Primary[500], movingAverage: Color.Secondary[500], totalAverage: Color.Tertiary[400] }),

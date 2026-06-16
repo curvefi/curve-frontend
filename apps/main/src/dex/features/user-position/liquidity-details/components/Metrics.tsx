@@ -20,9 +20,7 @@ export const Metrics = ({
       <Metric
         size="medium"
         label={t`Position value`}
-        value={amount(positionValue.data)}
-        loading={positionValue.isLoading}
-        error={positionValue.error}
+        value={positionValue}
         valueOptions={{ unit: 'dollar', abbreviate: false }}
         notional={maybe(lpTokenTotal.data, value => `${formatNumber(amount(value), 'token.balance')} LP Tokens`)}
       />
@@ -32,9 +30,7 @@ export const Metrics = ({
       <Metric
         size="medium"
         label={t`veCRV Boost`}
-        value={maybe(boost.data, amount)}
-        loading={boost.isLoading}
-        error={boost.error}
+        value={boost}
         valueOptions={{ unit: 'multiplier', abbreviate: false }}
       />
     </Grid>

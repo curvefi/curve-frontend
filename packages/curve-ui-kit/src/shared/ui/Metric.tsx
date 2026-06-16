@@ -54,9 +54,9 @@ const MetricChangeSize = {
 
 const MetricButtonSize = {
   small: 'extraSmall',
-  medium: 'small',
-  large: 'medium',
-  extraLarge: 'large',
+  medium: 'extraSmall',
+  large: 'small',
+  extraLarge: 'medium',
 } satisfies Record<keyof typeof MetricSize, ButtonProps['size']>
 
 // eslint-disable-next-line react-refresh/only-export-components -- Existing violation before enabling this rule.
@@ -100,7 +100,7 @@ const notionalsToString = (notionals: MetricProps['notional']) =>
 const formatChange = (value: number): string => defaultNumberFormatter(value, { decimals: 2 })
 
 type MetricValueProps = Pick<MetricProps, 'valueOptions' | 'change' | 'testId'> & {
-  value: Amount | undefined
+  value: Amount | null
   size: NonNullable<MetricProps['size']>
   tooltip?: MetricProps['valueTooltip']
   copyValue?: () => void
@@ -165,7 +165,7 @@ const MetricValue = ({ value, valueOptions = {}, change, size, copyValue, toolti
 
 export type MetricProps = {
   /** The actual metric value to display */
-  value: QueryProp<Amount>
+  value: QueryProp<MetricValueProps['value']>
   valueOptions?: MakeOptional<NumberFormatOptions, 'abbreviate'> /* defaults to true */ & {
     color?: TypographyProps['color']
   }
@@ -247,7 +247,7 @@ export const Metric = ({
           ) : (
             <>
               <MetricValue
-                value={data}
+                value={data ?? null}
                 valueOptions={valueOptions}
                 change={change}
                 size={size}

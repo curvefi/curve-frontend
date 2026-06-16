@@ -1,5 +1,5 @@
 import { formatCollateralNotional, isPositionLeveraged, type MarketTokens } from '@/llamalend/llama.utils'
-import { type UserState, useUserCurrentLeverage, useUserState } from '@/llamalend/queries/user'
+import { useUserCurrentLeverage, useUserState } from '@/llamalend/queries/user'
 import { useRangeToLiquidation } from '@/llamalend/queries/user/user-prices.query'
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
 import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'
@@ -10,7 +10,7 @@ import { t } from '@ui-kit/lib/i18n'
 import type { UserMarketParams } from '@ui-kit/lib/model'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { Metric } from '@ui-kit/shared/ui/Metric'
-import { mapQuery, q, type Query } from '@ui-kit/types/util'
+import { mapQuery, q } from '@ui-kit/types/util'
 import { decimalMultiply, decimalSum } from '@ui-kit/utils'
 import { LiquidationThresholdTooltipContent } from './'
 
@@ -28,17 +28,6 @@ type BorrowInformationProps = {
   tokens: Partial<MarketTokens>
 }
 
-const getCollateralValue = ({
-  userState,
-  collateralUsdRate,
-}: {
-  userState: Query<UserState>
-  collateralUsdRate: Query<number>
-}) =>
-  combineQueries([collateralUsdRate, userState], (collateralUsdRate, userState) =>
-    decimalSum(decimalMultiply(userState.collateral, `${collateralUsdRate}`), userState.stablecoin),
-  )
-
 export const BorrowInformation = ({ params, tokens: { collateralToken, borrowToken } }: BorrowInformationProps) => {
   const userState = useUserState(params)
   const { data: userStateValue } = userState
@@ -48,7 +37,9 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
   const borrowedUsdRate = useTokenUsdRate({ chainId: params.chainId, tokenAddress: borrowToken?.address })
 
   const { collateral, stablecoin: borrowed } = userStateValue ?? {}
-  const collateralValue = getCollateralValue({ userState, collateralUsdRate })
+  const collateralValue = combineQueries([collateralUsdRate, userState], (collateralUsdRate, userState) =>
+    decimalSum(decimalMultiply(userState.collateral, `${collateralUsdRate}`), userState.stablecoin),
+  )
   const { rangeToLiquidation, userPrices } = useRangeToLiquidation({ params })
 
   return (
