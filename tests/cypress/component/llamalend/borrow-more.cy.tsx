@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
+ 
 import { BorrowMoreForm } from '@/llamalend/features/manage-loan/components/BorrowMoreForm'
 import { oneDecimal } from '@cy/support/generators'
 import {
@@ -51,12 +51,21 @@ const testCases = [
     ...testCase,
     hasLeverageManagement: false,
     leverageEnabled: false,
+    leverageImplementation: undefined,
   },
   {
     ...testCase,
-    title: `${testCase.title} with leverage`,
+    title: `${testCase.title} with leverageV2`,
     hasLeverageManagement: true,
     leverageEnabled: true,
+    leverageImplementation: 'leverageV2' as const,
+  },
+  {
+    ...testCase,
+    title: `${testCase.title} with zapV2 leverage`,
+    hasLeverageManagement: true,
+    leverageEnabled: true,
+    leverageImplementation: 'zapV2' as const,
   },
 ])
 
@@ -65,66 +74,55 @@ describe('BorrowMoreForm (mocked)', () => {
 
   afterEach(() => resetLlamaTestContext())
 
-  testCases.forEach(({ approved, title, withCollateral, hasLeverageManagement, leverageEnabled, buttonText }) => {
-    it(title, () => {
-      const userCollateral = withCollateral ? oneDecimal(0.01, 0.5, 3) : undefined
-      const { borrow, expected, expectedCurrentDebt, expectedFutureDebt, llamaApi, market, stubs } =
-        createBorrowMoreScenario({ chainId, approved, collateral: userCollateral, leverage: hasLeverageManagement })
-      const onPricesUpdated = cy.spy().as('onPricesUpdated')
+  testCases.forEach(
+    ({
+      approved,
+      title,
+      withCollateral,
+      hasLeverageManagement,
+      leverageEnabled,
+      leverageImplementation,
+      buttonText,
+    }) => {
+      it(title, () => {
+        const userCollateral = withCollateral ? oneDecimal(0.01, 0.5, 3) : undefined
+        const { borrow, expectedCurrentDebt, expectedFutureDebt, llamaApi, market, assertPreSubmit, assertSubmit } =
+          createBorrowMoreScenario({
+            chainId,
+            approved,
+            collateral: userCollateral,
+            leverage: hasLeverageManagement,
+            leverageImplementation,
+          })
+        const onPricesUpdated = cy.spy().as('onPricesUpdated')
 
-      setLlamaApi(llamaApi)
-      setGasInfo({ chainId, networks: llamaNetworks })
+        setLlamaApi(llamaApi)
+        setGasInfo({ chainId, networks: llamaNetworks })
 
-      cy.mount(
-        <MockLoanTestWrapper llamaApi={llamaApi}>
-          <BorrowMoreForm
-            market={market}
-            networks={llamaNetworks}
-            chainId={chainId}
-            onPricesUpdated={onPricesUpdated}
-            collateralEvents={constQ(fakeCollateralEvents)}
-          />
-        </MockLoanTestWrapper>,
-      )
+        cy.mount(
+          <MockLoanTestWrapper llamaApi={llamaApi}>
+            <BorrowMoreForm
+              market={market}
+              networks={llamaNetworks}
+              chainId={chainId}
+              onPricesUpdated={onPricesUpdated}
+              collateralEvents={constQ(fakeCollateralEvents)}
+            />
+          </MockLoanTestWrapper>,
+        )
 
-      writeBorrowMoreForm({ debt: borrow, userCollateral, hasLeverageManagement, leverageEnabled })
-      checkBorrowMoreDetailsLoaded({
-        expectedCurrentDebt,
-        expectedFutureDebt,
-        leverageEnabled,
-        borrowedSymbol: 'crvUSD',
+        writeBorrowMoreForm({ debt: borrow, userCollateral, hasLeverageManagement, leverageEnabled })
+        checkBorrowMoreDetailsLoaded({
+          expectedCurrentDebt,
+          expectedFutureDebt,
+          leverageEnabled,
+          borrowedSymbol: 'crvUSD',
+        })
+        cy.get('[data-testid="borrow-more-submit-button"]').should('have.text', buttonText)
+
+        cy.then(assertPreSubmit)
+        submitBorrowMoreForm().then(assertSubmit)
       })
-      cy.get('[data-testid="borrow-more-submit-button"]').should('have.text', buttonText)
-
-      cy.then(() => {
-        expect(stubs.parameters).to.have.been.calledWithExactly()
-        expect(stubs.borrowMoreHealth).to.have.been.calledWithExactly(...expected.health)
-        expect(stubs.borrowMoreMaxRecv).to.have.been.calledWithExactly(...expected.maxRecv)
-        expect(stubs.borrowMoreIsApproved).to.have.been.calledWithExactly(...expected.isApproved)
-        if (expected.leverage) {
-          const { expectedCollateral, futureLeverage, priceImpact } = expected.leverage
-          expect(stubs.maxLeverage).to.have.been.called
-          expect(stubs.borrowMoreExpectedCollateral).to.have.been.calledWithExactly(...expectedCollateral)
-          expect(stubs.borrowMoreFutureLeverage).to.have.been.calledWithExactly(...futureLeverage)
-          expect(stubs.borrowMorePriceImpact).to.have.been.calledWithExactly(...priceImpact)
-        }
-        if (approved) {
-          expect(stubs.estimateGasBorrowMore).to.have.been.calledWithExactly(...expected.estimateGas)
-          expect(stubs.estimateGasBorrowMoreApprove).to.not.have.been.called
-        } else {
-          expect(stubs.estimateGasBorrowMoreApprove).to.have.been.calledWithExactly(...expected.estimateGasApprove)
-        }
-      })
-
-      submitBorrowMoreForm().then(() => {
-        expect(stubs.borrowMore).to.have.been.calledWithExactly(...expected.submit)
-        if (approved) {
-          expect(stubs.estimateGasBorrowMore).to.have.been.calledWithExactly(...expected.estimateGas)
-          expect(stubs.borrowMoreApprove).to.not.have.been.called
-        } else {
-          expect(stubs.borrowMoreApprove).to.have.been.calledWithExactly(...expected.approve)
-        }
-      })
-    })
-  })
+    },
+  )
 })

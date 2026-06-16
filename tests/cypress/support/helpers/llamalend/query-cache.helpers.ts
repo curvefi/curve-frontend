@@ -29,10 +29,14 @@ export const seedErc20BalanceQuery = ({
       { chainId, address: tokenAddress, abi: erc20Abi, functionName: 'decimals' },
     ] as const,
   })
-  queryClient.setQueryData(queryKey, [
-    { status: 'success', result: rawBalance },
-    { status: 'success', result: decimals },
-  ])
+  queryClient.setQueryData(
+    queryKey,
+    [
+      { status: 'success', result: rawBalance },
+      { status: 'success', result: decimals },
+    ] as const,
+    { updatedAt: Date.now() },
+  )
 }
 
 export const seedErc20BalanceForAddresses = ({
@@ -96,7 +100,7 @@ export const seedLendMarketSolvencyQueries = ({
   const collateralAddress = market.collateral_token.address as Address
   const borrowedAddress = market.borrowed_token.address as Address
 
-  queryClient.setQueryData(getLendingVaultsOptions({}, true).queryKey, [
+  queryClient.setQueryData(getLendingVaultsOptions({}).queryKey, [
     {
       controller: controllerAddress,
       chain,
