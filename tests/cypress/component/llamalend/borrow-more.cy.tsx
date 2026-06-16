@@ -69,9 +69,10 @@ const testCases = [
 ])
 
 describe('BorrowMoreForm (mocked)', () => {
-  beforeEach(() => mockMintSnapshots({ limit: 1 }))
-
-  afterEach(() => resetLlamaTestContext())
+  beforeEach(() => {
+    resetLlamaTestContext()
+    mockMintSnapshots({ limit: 1 })
+  })
 
   testCases.forEach(
     ({

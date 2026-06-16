@@ -1,4 +1,5 @@
 import { enforce, skipWhen, test } from 'vest'
+import type { Address } from '@primitives/address.utils'
 import { toArray } from '@primitives/array.utils'
 import { type RouteProvider, RouteProviders } from '@primitives/router.utils'
 import { createValidationSuite } from '@ui-kit/lib'
@@ -29,8 +30,22 @@ const validateRouter = ({
   })
 }
 
+const validateAddressList = ({
+  addresses,
+  fieldName,
+}: {
+  addresses: readonly Address[] | null | undefined
+  fieldName: string
+}) =>
+  skipWhen(!addresses, () => {
+    test(fieldName, `${fieldName} must contain valid EVM addresses`, () => {
+      enforce(addresses).isArray().isNotEmpty()
+      addresses?.forEach(address => enforce(address).isAddress())
+    })
+  })
+
 export const routerApiValidation = createValidationSuite(
-  ({ chainId, tokenIn, tokenOut, amountIn, amountOut, userAddress, slippage, router }: RoutesQuery) => {
+  ({ chainId, tokenIn, tokenOut, amountIn, amountOut, blacklist, userAddress, slippage, router }: RoutesQuery) => {
     chainValidationGroup({ chainId })
     test('tokenIn', 'Invalid tokenIn address', () => {
       enforce(tokenIn).isAddress()
@@ -41,6 +56,7 @@ export const routerApiValidation = createValidationSuite(
     test('amount', 'Provide either amountIn or amountOut (not both)' + ` Got ${amountIn} and ${amountOut}`, () => {
       enforce(!!Number(amountIn) !== !!Number(amountOut)).isTruthy()
     })
+    validateAddressList({ addresses: blacklist, fieldName: 'blacklist' })
     evmAddressValidationGroup({ evmAddress: userAddress, required: false })
     validateSlippage({ slippage, required: false })
     validateRouter({ router, isRequired: false })

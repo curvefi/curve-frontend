@@ -41,7 +41,6 @@ export const UserEventsTable = ({ events, loading, isError }: UserEventsTablePro
       }
       isLoading={loading}
       maxHeight={MaxHeight.userEventsTable}
-      size="small"
       expandedPanel={RowExpandedPanel}
     />
   )

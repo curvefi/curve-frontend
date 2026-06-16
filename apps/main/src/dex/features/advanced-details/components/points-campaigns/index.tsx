@@ -31,8 +31,6 @@ export const PointsCampaigns = ({
         <CardHeader title={t`Points Campaigns`} size="small" />
         <DataTable<PointsCampaignsRow>
           table={table}
-          size="small"
-          isLoading={false}
           disableStickyHeader
           emptyState={<EmptyStateRow table={table} size="sm">{t`No points campaigns found.`}</EmptyStateRow>}
         />
