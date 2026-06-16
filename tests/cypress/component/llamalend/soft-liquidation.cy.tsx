@@ -4,6 +4,7 @@ import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/
 import { oneInt } from '@cy/support/generators'
 import { TEST_ADDRESS } from '@cy/support/helpers/llamalend/mock-loan-test-data'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
+import { createSoftLiquidationScenario } from '@cy/support/helpers/llamalend/mocks/soft-liquidation.mocks'
 import { seedCrvUsdBalance } from '@cy/support/helpers/llamalend/query-cache.helpers'
 import {
   checkRepayDetailsLoaded,
@@ -20,7 +21,6 @@ import {
   setGasInfo,
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
-import { createSoftLiquidationScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
 import { constQ } from '@ui-kit/types/util'
 
 const chainId = 1

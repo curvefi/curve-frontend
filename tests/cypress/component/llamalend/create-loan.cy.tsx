@@ -5,13 +5,13 @@ import {
   writeCreateLoanForm,
 } from '@cy/support/helpers/llamalend/create-loan.helpers'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
+import { createCreateLoanScenario } from '@cy/support/helpers/llamalend/mocks/create-loan.mocks'
 import {
   llamaNetworks,
   resetLlamaTestContext,
   setGasInfo,
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
-import { createCreateLoanScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
 
 const chainId = 1
 const testCases = [

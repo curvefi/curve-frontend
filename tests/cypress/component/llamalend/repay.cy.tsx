@@ -2,6 +2,7 @@ import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm
 import { getTokens } from '@/llamalend/llama.utils'
 import { fakeCollateralEvents, TEST_ADDRESS } from '@cy/support/helpers/llamalend/mock-loan-test-data'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
+import { createRepayScenario } from '@cy/support/helpers/llamalend/mocks/repay.mocks'
 import { seedCrvUsdBalance } from '@cy/support/helpers/llamalend/query-cache.helpers'
 import {
   checkRepayDetailsLoaded,
@@ -15,7 +16,6 @@ import {
   setGasInfo,
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
-import { createRepayScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
 import { constQ } from '@ui-kit/types/util'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 

@@ -11,7 +11,7 @@ import {
   type MockLendVault,
 } from '../mock-market.helpers'
 import { seedErc20BalanceForAddresses, seedLendMarketSolvencyQueries } from '../query-cache.helpers'
-import { createIsApprovedStub, createStub, type TestStub } from '../test-scenarios.helpers'
+import { createIsApprovedStub, createStub, type TestStub } from '../test-stub.utils'
 
 const seedSupplyMarketBalances = ({
   chainId,

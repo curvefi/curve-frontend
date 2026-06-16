@@ -7,13 +7,13 @@ import {
 } from '@cy/support/helpers/llamalend/borrow-more.helpers'
 import { fakeCollateralEvents } from '@cy/support/helpers/llamalend/mock-loan-test-data'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
+import { createBorrowMoreScenario } from '@cy/support/helpers/llamalend/mocks/borrow-more.mocks'
 import {
   llamaNetworks,
   resetLlamaTestContext,
   setGasInfo,
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
-import { createBorrowMoreScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
 import { mockMintSnapshots } from '@cy/support/helpers/minting-mocks'
 import { constQ } from '@ui-kit/types/util'
 import { Chain } from '@ui-kit/utils'
