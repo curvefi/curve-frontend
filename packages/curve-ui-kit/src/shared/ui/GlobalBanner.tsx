@@ -100,7 +100,7 @@ export const GlobalBanner = ({ networkId, chainId, backendMaintenance }: GlobalB
           {t`Aave V2 Frozen aTokens`}
         </Banner>
       )}
-      {showSonicRetirementBanner && currentApp === 'dex' && chainId === +Chain.Sonic && (
+      {showSonicRetirementBanner && chainId === +Chain.Sonic && (
         <Banner
           severity="alert"
           subtitle={t`The Sonic chain will be retired at the end of June. Please withdraw from pools.`}
