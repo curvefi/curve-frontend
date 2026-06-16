@@ -100,7 +100,6 @@ export const EXTERNAL_LINKS = {
   monitoring: {
     curveMonitor: 'https://curvemonitor.com/',
     crvHub: 'https://crvhub.com/',
-    apiStatus: 'https://statuspage.freshping.io/59335-CurveAPI',
   },
 } as const
 
