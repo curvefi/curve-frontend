@@ -40,14 +40,13 @@ const expectOrder = (actual: UsdValue[], order: 'asc' | 'desc') =>
     JSON.stringify(orderBy(actual, 'parsed', order)),
   )
 
-const getTopUsdValues = (columnId: 'volume' | 'tvl') =>
+const getUsdValues = (cells: HTMLElement[]) =>
+  cells.map(({ innerText }): UsdValue => ({ text: innerText, parsed: parseCompactUsd(innerText) }))
+
+const expectTopUsdValuesOrder = (columnId: 'volume' | 'tvl', order: 'asc' | 'desc') =>
   cy
-    .get(`[data-testid="data-table-cell-${columnId}"]`)
-    .then($cells =>
-      Cypress.$.makeArray($cells).map(
-        ({ innerText }): UsdValue => ({ text: innerText, parsed: parseCompactUsd(innerText) }),
-      ),
-    )
+    .get(`[data-testid^="data-table-row-"] [data-testid="data-table-cell-${columnId}"]`)
+    .should($cells => expectOrder(getUsdValues(Array.from($cells)), order))
 
 describe('DEX Pools', () => {
   let breakpoint: Breakpoint
@@ -98,22 +97,22 @@ describe('DEX Pools', () => {
     }
 
     it('sorts by volume', () => {
-      getTopUsdValues('volume').then(vals => expectOrder(vals, 'desc')) // initial is Volume desc
+      expectTopUsdValuesOrder('volume', 'desc') // initial is Volume desc
       cy.url().should('not.include', 'volume') // initial sort not in URL
       if (breakpoint === 'mobile') return // on mobile, we cannot sort ascending at the moment
       sortBy('volume', 'asc')
-      getTopUsdValues('volume').then(vals => expectOrder(vals, 'asc'))
+      expectTopUsdValuesOrder('volume', 'asc')
       cy.url().should('include', 'sort=volume')
     })
 
     it('sorts by TVL (desc/asc)', () => {
       cy.url().should('not.include', 'tvl') // initial sort not in URL
       sortBy('tvl', 'desc')
-      getTopUsdValues('tvl').then(vals => expectOrder(vals, 'desc'))
+      expectTopUsdValuesOrder('tvl', 'desc')
       cy.url().should('include', 'sort=-tvl')
       if (breakpoint === 'mobile') return // on mobile, we cannot sort ascending at the moment
       sortBy('tvl', 'asc')
-      getTopUsdValues('tvl').then(vals => expectOrder(vals, 'asc'))
+      expectTopUsdValuesOrder('tvl', 'asc')
       cy.url().should('include', 'sort=tvl')
     })
 
@@ -141,10 +140,10 @@ describe('DEX Pools', () => {
     if (breakpoint === 'mobile') {
       cy.get('[data-testid="btn-expand-search-dex-pool-list"]').click()
     }
-    const [filter, address] = ['ebUSD', '0xd25f2cc6819fbd34641712122397efbaf9b6a6e2'] as const
+    const filter = 'ebUSD'
     cy.get('[data-testid="table-text-search-dex-pool-list"]').type(filter)
     cy.url().should('include', `?search=${filter}`)
-    cy.get(`[data-testid="market-link-${address}"]`).click()
+    cy.contains('[data-testid^="market-link-"]', filter, API_LOAD_TIMEOUT).click()
     if (breakpoint === 'mobile') {
       cy.get(`[data-testid="pool-link-deposit"]`).click()
     }
