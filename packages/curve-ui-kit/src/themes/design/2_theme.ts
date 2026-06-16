@@ -5,6 +5,8 @@ import { SurfacesAndText } from './1_surfaces_text'
 const InsetOverline = '0 0 auto' as const // Top border only
 const InsetUnderline = 'auto 0 0' as const // Bottom border only
 
+const Radius = { square: '0' } as const
+
 const SliderBackground = {
   Safe: { 25: Reds[500], 50: Oranges[500], 75: Yellows[500], 100: Greens[400] },
   Danger: { 25: Reds[200], 50: Reds[300], 75: Reds[400], 100: Reds[500] },
@@ -154,10 +156,10 @@ export const createLightDesign = (
     Focus_Outline_Width: '0.125rem', // 2px
     Focus_Outline: Color.Primary[500],
     Radius: {
-      xs: '0',
-      sm: '0',
-      md: '0',
-      lg: '0',
+      xs: Radius.square,
+      sm: Radius.square,
+      md: Radius.square,
+      lg: Radius.square,
     },
     Primary: {
       Default: {
@@ -412,12 +414,13 @@ export const createLightDesign = (
       Outline: Layer.Highlight.Outline,
     },
     BorderRadius: {
-      Clickable: '0',
+      Clickable: Radius.square,
       NonClickable: '6.25rem', // 100px
     },
   } as const
 
   const Badges = {
+    Radius: Radius.square,
     Border: {
       Default: Light.Badges.Border.Default,
       Active: Light.Badges.Border.Active,
@@ -558,6 +561,7 @@ export const createLightDesign = (
   return {
     theme: 'light',
     Color,
+    Radius,
     Text,
     Button,
     Layer,
@@ -708,10 +712,10 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
     Focus_Outline_Width: '0.125rem', // 2px
     Focus_Outline: Color.Primary[500],
     Radius: {
-      xs: '0',
-      sm: '0',
-      md: '0',
-      lg: '0',
+      xs: Radius.square,
+      sm: Radius.square,
+      md: Radius.square,
+      lg: Radius.square,
     },
     Primary: {
       Default: {
@@ -966,12 +970,13 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
       Outline: Layer.Highlight.Outline,
     },
     BorderRadius: {
-      Clickable: '0',
+      Clickable: Radius.square,
       NonClickable: '6.25rem', // 100px
     },
   } as const
 
   const Badges = {
+    Radius: Radius.square,
     Border: {
       Default: Dark.Badges.Border.Default,
       Active: Dark.Badges.Border.Active,
@@ -1112,6 +1117,7 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
   return {
     theme: 'dark',
     Color,
+    Radius,
     Text,
     Button,
     Layer,
@@ -1223,10 +1229,10 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
     Focus_Outline_Width: '0.125rem', // 2px
     Focus_Outline: Color.Primary[300],
     Radius: {
-      xs: '0',
-      sm: '0',
-      md: '0',
-      lg: '0',
+      xs: Radius.square,
+      sm: Radius.square,
+      md: Radius.square,
+      lg: Radius.square,
     },
     Primary: {
       Default: {
@@ -1481,12 +1487,13 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
       Outline: Layer.Highlight.Outline,
     },
     BorderRadius: {
-      Clickable: '0',
-      NonClickable: '0',
+      Clickable: Radius.square,
+      NonClickable: '6.25rem', // 100px
     },
   } as const
 
   const Badges = {
+    Radius: Radius.square,
     Border: {
       Default: Chad.Badges.Border.Default,
       Active: Chad.Badges.Border.Active,
@@ -1627,6 +1634,7 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
   return {
     theme: 'chad',
     Color,
+    Radius,
     Text,
     Button,
     Layer,

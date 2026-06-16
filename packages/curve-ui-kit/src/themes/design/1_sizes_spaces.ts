@@ -175,6 +175,45 @@ const MappedLineHeight = {
   },
 } as const
 
+const MappedBadge = {
+  BorderWidth: Sizing[10],
+  Size: {
+    extraSmall: Sizing[200],
+    small: Sizing[350],
+    medium: Sizing[500],
+    large: Sizing[600],
+    extraLarge: Sizing[650],
+  },
+  IconSize: {
+    extraSmall: MappedIconSize.xs,
+    small: MappedIconSize.sm,
+    medium: MappedIconSize.md,
+    large: MappedIconSize.lg,
+    extraLarge: MappedIconSize.xl,
+  },
+  Gap: {
+    extraSmall: Spacing[75],
+    small: Spacing[100],
+    medium: Spacing[100],
+    large: Spacing[200],
+    extraLarge: Spacing[200],
+  },
+  Padding: {
+    extraSmall: { x: Spacing[100], y: Spacing[75] },
+    small: { x: Spacing[200], y: Spacing[100] },
+    medium: { x: Spacing[200], y: Spacing[300] },
+    large: { x: Spacing[300], y: Spacing[200] },
+    extraLarge: { x: Spacing[300], y: Spacing[200] },
+  },
+  LineHeight: {
+    extraSmall: MappedLineHeight.xs,
+    small: MappedLineHeight.xs,
+    medium: MappedLineHeight.xs,
+    large: MappedLineHeight.md,
+    extraLarge: Sizing[300],
+  },
+} as const
+
 const MappedModalWidth = {
   xs: '19rem', // 304px
   sm: '24rem', // 384px
@@ -200,6 +239,7 @@ export const SizesAndSpaces = {
   SelectSpacing: MappedSelectSpacing,
   SelectListItem: MappedSelectListItem,
   LargeTokenInput: MappedLargeTokenInput,
+  Badge: MappedBadge,
   Grid: MappedGrid,
   FontSize: MappedFontSize,
   FontWeight: MappedFontWeight,

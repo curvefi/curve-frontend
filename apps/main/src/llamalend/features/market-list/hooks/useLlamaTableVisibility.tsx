@@ -1,5 +1,7 @@
+import { isEqual } from 'lodash'
 import { useMemo } from 'react'
 import type { LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
+import { mapRecord } from '@primitives/objects.utils'
 import { SortingState } from '@tanstack/react-table'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import type { MigrationOptions } from '@ui-kit/hooks/useStoredState'
@@ -15,6 +17,24 @@ import {
 
 type LlamaColumnVariant = keyof typeof LLAMA_MARKETS_COLUMN_OPTIONS
 
+/** Preserve users' saved visibility choices while adding newly introduced column options from defaults. */
+const mergeVisibilityGroups = (
+  oldGroups: VisibilityGroup<LlamaMarketColumnId>[] | undefined,
+  initialGroups: VisibilityGroup<LlamaMarketColumnId>[],
+): VisibilityGroup<LlamaMarketColumnId>[] =>
+  initialGroups.map((initialGroup, index) => {
+    const oldGroup = oldGroups?.find(group => group.label === initialGroup.label) ?? oldGroups?.[index]
+    return oldGroup
+      ? {
+          ...initialGroup,
+          options: initialGroup.options.map(
+            initialOption =>
+              oldGroup.options.find(oldOption => isEqual(oldOption.columns, initialOption.columns)) ?? initialOption,
+          ),
+        }
+      : initialGroup
+  })
+
 export const getLlamaMarketsColumnVariant = (
   userHasPositions: LlamaMarketsResult['userHasPositions'] | undefined,
 ): LlamaColumnVariant =>
@@ -23,11 +43,9 @@ export const getLlamaMarketsColumnVariant = (
     : 'hasPositions' // show the general market table, for users with positions
 
 const migration: MigrationOptions<Record<LlamaColumnVariant, VisibilityGroup<LlamaMarketColumnId>[]>> = {
-  version: 4,
-  migrate: (oldValue, initialValue) => ({
-    ...initialValue,
-    ...oldValue,
-  }),
+  version: 5,
+  migrate: (oldValue, initialValue) =>
+    mapRecord(initialValue, (variant, initialGroups) => mergeVisibilityGroups(oldValue[variant], initialGroups)),
 }
 
 /**
