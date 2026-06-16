@@ -1,4 +1,4 @@
-import { Switch } from '@/loan/components/PageCrvUsdStaking/components/Switch'
+import Switch from '@mui/material/Switch'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 
@@ -8,7 +8,7 @@ export const InfiniteAllowanceActionInfo = ({ approveInfinite, onToggle }: ScrvU
   <ActionInfo
     label={t`Infinite allowance`}
     value="" // do not pass null/undefined as that renders fallback
-    valueRight={<Switch isActive={approveInfinite} isSelected={approveInfinite} onChange={onToggle} />}
+    valueRight={<Switch size="small" checked={approveInfinite} onChange={onToggle} />}
     size="small"
     testId="scrvusd-infinite-allowance"
   />

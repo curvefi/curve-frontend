@@ -1,7 +1,8 @@
 import { ReactNode } from 'react'
 import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
+import { SolvencyTooltip } from '@/llamalend/widgets/tooltips'
 import { type ColumnMeta, createColumnHelper, FilterFnOption } from '@tanstack/react-table'
-import { type DeepKeys } from '@tanstack/table-core'
+import { type AccessorFn, type DeepKeys } from '@tanstack/table-core'
 import { t } from '@ui-kit/lib/i18n'
 import type { ColumnDefinition } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { boolFilterFn, listNotEmptyFilterFn, multiFilterFn, rangeFilterFn } from '@ui-kit/shared/ui/DataTable/filters'
@@ -20,6 +21,7 @@ import {
   PercentCell,
   PriceCell,
   RateCell,
+  SolvencyCell,
   TvlCell,
   UtilizationCell,
 } from '../cells'
@@ -36,6 +38,7 @@ import { LlamaMarketColumnId } from './columns.enum'
 type Tooltip = ColumnMeta<never, never>['tooltip']
 type LlamaColumn = ColumnDefinition<LlamaMarket>
 type LlamaColumnOptions = Omit<LlamaColumn, 'id' | 'header'>
+type LlamaAccessor = DeepKeys<LlamaMarket> | AccessorFn<LlamaMarket>
 
 const createTooltip = (id: keyof typeof LLAMA_MARKET_TITLES, body: ReactNode): Tooltip => ({
   title: LLAMA_MARKET_TITLES[id],
@@ -50,7 +53,7 @@ const display = (id: LlamaMarketColumnId, column: LlamaColumnOptions): LlamaColu
 })
 
 /** Define an accessor column using separate data and table identifiers. */
-const accessor = (id: LlamaMarketColumnId, field: DeepKeys<LlamaMarket>, column: LlamaColumnOptions): LlamaColumn =>
+const accessor = (id: LlamaMarketColumnId, field: LlamaAccessor, column: LlamaColumnOptions): LlamaColumn =>
   createColumnHelper<LlamaMarket>().accessor(field, {
     ...column,
     id,
@@ -89,6 +92,7 @@ export const LLAMA_MARKET_TITLES: Record<LlamaMarketColumnId, string> = {
   [LlamaMarketColumnId.MaxLtv]: t`Max LTV`,
   [LlamaMarketColumnId.MaxLeverage]: t`Max Leverage`,
   [LlamaMarketColumnId.UtilizationPercent]: t`Utilization`,
+  [LlamaMarketColumnId.SolvencyPercent]: t`Solvency`,
   [LlamaMarketColumnId.LiquidityUsd]: t`Available Liquidity`,
   [LlamaMarketColumnId.Tvl]: t`TVL`,
   [LlamaMarketColumnId.TotalDebt]: t`Total Debt`,
@@ -181,6 +185,20 @@ export const LLAMA_MARKET_COLUMNS = [
     },
     filterFn: rangeFilterFn,
   }),
+  accessor(
+    LlamaMarketColumnId.SolvencyPercent,
+    // Normalize null to undefined so sortUndefined places missing solvency values last
+    ({ solvencyPercent }) => solvencyPercent ?? undefined,
+    {
+      cell: SolvencyCell,
+      meta: {
+        type: 'numeric',
+        unit: 'percentage',
+        tooltip: createTooltip(LlamaMarketColumnId.SolvencyPercent, <SolvencyTooltip type="overview" />),
+      },
+      sortUndefined: 'last',
+    },
+  ),
   accessor(LlamaMarketColumnId.LiquidityUsd, LlamaMarketColumnId.LiquidityUsd, {
     cell: LiquidityUsdCell,
     meta: {

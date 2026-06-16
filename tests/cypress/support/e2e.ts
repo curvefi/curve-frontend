@@ -1,4 +1,4 @@
-import '@cy/eip6963-test-setup'
+import '@ui-kit/eip6963-test-setup'
 import { skipTestsAfterFailure } from '@cy/support/ui'
 import type { AppRoute } from './routes'
 

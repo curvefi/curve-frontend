@@ -100,7 +100,7 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
           valueOptions={{ unit: 'percentage' }}
           valueTooltip={{
             title: t`Solvency`,
-            body: <SolvencyTooltip marketType={marketType} />,
+            body: <SolvencyTooltip type={marketType} />,
             ...TooltipOptions,
           }}
         />

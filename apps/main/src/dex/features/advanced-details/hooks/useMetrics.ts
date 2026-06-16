@@ -25,7 +25,7 @@ export const useMetrics = ({
     totalStakedPercent: maybe(staked?.totalStakedPercent, x => +x),
     liquidityUtilization: maybes(
       [tvlFromCurve ?? pricesApiPoolData?.tvlUsd, volumeFromCurve ?? pricesApiPoolData?.tradingVolume24h],
-      ([tvl, volume]) => (+tvl === 0 ? 0 : (+volume / +tvl) * 100),
+      ([tvl, volume]) => +tvl && (+volume / +tvl) * 100,
     ),
   }
 }
