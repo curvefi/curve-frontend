@@ -1,6 +1,5 @@
 import type { GaugeFormattedData } from '@/dao/types/dao.types'
 import { useTheme } from '@mui/material/styles'
-import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import {
   ChartTooltipDataRow,
@@ -22,14 +21,14 @@ type DeltaTooltipRowProps = {
 const DeltaTooltipRow = ({ label, value }: DeltaTooltipRowProps) => {
   const theme = useTheme()
 
-  return (
-    maybe(value, value => (
-      <ChartTooltipDataRow
-        label={label}
-        value={formatNumber(value, 'percent.value')}
-        valueColor={value === 0 ? undefined : getChartSignedValueColor(theme, value)}
-      />
-    )) ?? <ChartTooltipDataRow label={label} value={t`N/A`} />
+  return value == null ? (
+    <ChartTooltipDataRow label={label} value={t`N/A`} />
+  ) : (
+    <ChartTooltipDataRow
+      label={label}
+      value={formatNumber(value, 'percent.value')}
+      valueColor={value === 0 ? undefined : getChartSignedValueColor(theme, value)}
+    />
   )
 }
 

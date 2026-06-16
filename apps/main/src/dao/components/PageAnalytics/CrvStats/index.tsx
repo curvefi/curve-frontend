@@ -14,8 +14,11 @@ import { mapQuery, q } from '@ui-kit/types/util'
 import { formatNumber, MAINNET_CRV_ADDRESS } from '@ui-kit/utils'
 import { Chain } from '@ui-kit/utils/network'
 
+const WEEKS_PER_YEAR = 52
 const VECRV_APR_AVERAGE_WEEKS = 4
 const PROPOSAL_MIN_VECRV = 2500
+
+const weeklyRateToApr = (weeklyRate: number) => weeklyRate * WEEKS_PER_YEAR * 100
 
 export const CrvStats = () => {
   const { curveApi: { chainId } = {} } = useCurve()
@@ -37,15 +40,16 @@ export const CrvStats = () => {
       (veCrvData, crvPrice, fees) => {
         if (!isMainnet) return { current: 0, fourWeekAverage: 0 }
 
-        const totalVeCrv = +veCrvData.totalVeCrv
-        if (!totalVeCrv || !crvPrice) return { current: 0, fourWeekAverage: 0 }
+        const totalVeCrvUsd = +veCrvData.totalVeCrv * crvPrice
+        if (!totalVeCrvUsd) return { current: 0, fourWeekAverage: 0 }
 
-        const aprScale = (52 * 100) / (totalVeCrv * crvPrice)
         const completedFees = fees.slice(1, VECRV_APR_AVERAGE_WEEKS + 1)
 
         return {
-          current: +(fees[1]?.feesUsd ?? 0) * aprScale,
-          fourWeekAverage: completedFees.length ? meanBy(completedFees, fee => +fee.feesUsd * aprScale) : 0,
+          current: weeklyRateToApr(+(fees[1]?.feesUsd ?? 0) / totalVeCrvUsd),
+          fourWeekAverage: completedFees.length
+            ? meanBy(completedFees, fee => weeklyRateToApr(+fee.feesUsd / totalVeCrvUsd))
+            : 0,
         }
       },
       [isMainnet],

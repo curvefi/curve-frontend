@@ -1,7 +1,7 @@
-import { useEffect } from 'react'
+import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { ErrorMessage } from '@/dao/components/ErrorMessage'
-import { useStore } from '@/dao/store/useStore'
+import { useVeCrvFeesQuery } from '@/dao/entities/vecrv-fees'
 import MuiBox from '@mui/material/Box'
 import { Box } from '@ui/Box'
 import { formatDate } from '@ui/utils'
@@ -11,18 +11,14 @@ import { SpinnerComponent as Spinner } from '../../Spinner'
 import { VeCrvFeesChart } from '../VeCrvFeesChart'
 
 export const VeCrcFees = () => {
-  const getVeCrvFees = useStore(state => state.analytics.getVeCrvFees)
-  const veCrvFees = useStore(state => state.analytics.veCrvFees)
-
-  const feesLoading = veCrvFees.fetchStatus === 'LOADING'
-  const feesError = veCrvFees.fetchStatus === 'ERROR'
-  const feesReady = veCrvFees.fetchStatus === 'SUCCESS'
-
-  useEffect(() => {
-    if (veCrvFees.fees.length === 0 && !feesError) {
-      void getVeCrvFees()
-    }
-  }, [getVeCrvFees, veCrvFees, feesError])
+  const {
+    data: veCrvFees = [],
+    isLoading: feesLoading,
+    isError: feesError,
+    isSuccess: feesReady,
+    refetch,
+  } = useVeCrvFeesQuery({})
+  const totalFees = useMemo(() => veCrvFees.reduce((total, fee) => total + +fee.feesUsd, 0), [veCrvFees])
 
   return (
     <MuiBox sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
@@ -38,12 +34,13 @@ export const VeCrcFees = () => {
                 <FeesSubtitle>{t`Fees`}</FeesSubtitle>
               </FeesTitlesRow>
               {feesLoading && <Spinner height="27.125rem" />}
-              {/* eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule. */}
-              {feesError && <ErrorMessage message="Error fetching veCRV historical fees" onClick={getVeCrvFees} />}
+              {feesError && (
+                <ErrorMessage message="Error fetching veCRV historical fees" onClick={() => void refetch()} />
+              )}
               {feesReady && (
                 <>
                   <FeesContainer>
-                    {veCrvFees.fees.map(item => (
+                    {veCrvFees.map(item => (
                       <FeeRow key={item.timestamp}>
                         <FeeDate>
                           {formatDate(item.timestamp)}
@@ -55,7 +52,7 @@ export const VeCrcFees = () => {
                   </FeesContainer>
                   <TotalFees>
                     <FeeDate>{t`Total Fees:`}</FeeDate>
-                    <FeeData>{formatNumber(veCrvFees.veCrvTotalFees, 'usd.notional')}</FeeData>
+                    <FeeData>{formatNumber(totalFees, 'usd.notional')}</FeeData>
                   </TotalFees>
                 </>
               )}

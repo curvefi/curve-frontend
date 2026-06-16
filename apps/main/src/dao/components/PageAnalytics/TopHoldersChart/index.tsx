@@ -1,10 +1,9 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import { TOP_HOLDERS_FILTERS } from '@/dao/components/PageAnalytics/constants'
 import { TopHoldersBarChart as TopHoldersBarChartComponent } from '@/dao/components/PageAnalytics/TopHoldersChart/TopHoldersBarChartComponent'
 import { useStatsVecrvQuery } from '@/dao/entities/stats-vecrv'
 import { useVeCrvHoldersQuery, type VeCrvHolder } from '@/dao/entities/vecrv-holders'
-import { useStore } from '@/dao/store/useStore'
 import type { TopHoldersSortBy } from '@/dao/types/dao.types'
 import MuiBox from '@mui/material/Box'
 import { sortBy } from '@primitives/array.utils'
@@ -26,8 +25,7 @@ export const TopLockers = () => {
     error: holdersError,
     refetch: refetchHolders,
   } = useVeCrvHoldersQuery({})
-  const topHoldersSortBy = useStore(state => state.analytics.topHoldersSortBy)
-  const setTopHoldersSortBy = useStore(state => state.analytics.setTopHoldersSortBy)
+  const [topHoldersSortBy, setTopHoldersSortBy] = useState<TopHoldersSortBy>('weightRatio')
 
   const chartError = holdersError ?? statsError
   const isLoading = holdersLoading || statsLoading
