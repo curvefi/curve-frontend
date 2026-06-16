@@ -1,7 +1,6 @@
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import type { SlippageType } from '@ui-kit/widgets/SlippageSettings'
-import type { HealthMode } from './llamalend.types'
 
 /**
  * Preset options for loan creation
@@ -24,15 +23,6 @@ export enum PositionsEmptyState {
   Error = 'error',
   NoPositions = 'no-positions',
   Filtered = 'filtered',
-}
-
-export const DEFAULT_HEALTH_MODE: HealthMode = {
-  percent: '',
-  colorKey: '',
-  icon: null,
-  message: null,
-  warningTitle: '',
-  warning: '',
 }
 
 /**

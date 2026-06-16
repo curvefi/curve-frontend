@@ -15,6 +15,7 @@ import { useGaugeManager, useGaugeRewardsDistributors } from '@/dex/entities/gau
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolSnapshots } from '@/dex/entities/pool-snapshots.query'
 import { AdvancedDetails } from '@/dex/features/advanced-details'
+import { UserPosition } from '@/dex/features/user-position'
 import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
 import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
@@ -23,16 +24,18 @@ import { useStore } from '@/dex/store/useStore'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { ManageGauge } from '@/dex/widgets/manage-gauge'
+import { PoolPageHeader } from '@/dex/widgets/page-header'
 import type { Chain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { AlertBox } from '@ui/AlertBox'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
-import { usePoolAdvancedDetails } from '@ui-kit/hooks/useFeatureFlags'
+import { usePoolFreshup } from '@ui-kit/hooks/useFeatureFlags'
 import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
@@ -85,7 +88,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const snapshotData = snapshots?.[0]
 
   const pricesApiPoolData = poolData && pricesApiPoolsMapper?.[poolData.pool.address]
-  const isPoolAdvancedDetailsEnabled = usePoolAdvancedDetails()
+  const isPoolFreshupEnabled = usePoolFreshup()
 
   type DetailInfoTab = 'user' | 'pool' | 'advanced'
   const poolInfoTabs = useMemo<TabOption<DetailInfoTab>[]>(
@@ -169,9 +172,19 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
       )}
       <DetailPageLayout
         header={
-          <Typography variant="headingSBold" sx={{ paddingBlock: Spacing.sm }}>
-            {pool.name || ''}
-          </Typography>
+          isPoolFreshupEnabled ? (
+            <PoolPageHeader
+              chainId={rChainId}
+              blockchainId={networkId}
+              poolIdOrAddress={rPoolIdOrAddress}
+              pricesApiPoolData={pricesApiPoolData}
+              backHref={getInternalUrl('dex', networkId, DEX_ROUTES.PAGE_POOLS)}
+            />
+          ) : (
+            <Typography variant="headingSBold" sx={{ paddingBlock: Spacing.sm }}>
+              {pool.name}
+            </Typography>
+          )
         }
         formTabs={
           <FormMargins>
@@ -220,10 +233,18 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
         }
       >
         {poolAddress && <CampaignRewardsBanner chainId={rChainId} address={poolAddress} />}
+        {isPoolFreshupEnabled && (
+          <UserPosition
+            blockchainId={networkId}
+            chainId={rChainId}
+            poolDataCacheOrApi={poolDataCacheOrApi}
+            poolId={poolId}
+          />
+        )}
         {!isLite && pricesApiPoolData && pricesApi && (
           <OhlcAndActivityComp rChainId={rChainId} poolAddress={poolAddress} pricesApiPoolData={pricesApiPoolData} />
         )}
-        {isPoolAdvancedDetailsEnabled ? (
+        {isPoolFreshupEnabled ? (
           <AdvancedDetails
             curve={curve}
             routerParams={routerParams}

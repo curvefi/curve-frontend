@@ -67,7 +67,10 @@ export const usePoolActivityEventsConfig = ({ chainId, poolAddress }: UsePoolAct
     [liquidityData?.events, network, networkConfig, poolTokens],
   )
 
-  const liquidityColumns = useMemo(() => createPoolLiquidityColumns({ poolTokens }), [poolTokens])
+  const liquidityColumns = useMemo(
+    () => createPoolLiquidityColumns({ blockchainId: network, poolTokens }),
+    [network, poolTokens],
+  )
 
   const { error, isLoading } = combineQueryState(poolLiquidityEvents, poolPriceApi)
 

@@ -1,10 +1,8 @@
-import { crvusdjsApi as curvejsApi } from '@/loan/lib/apiCrvusd'
 import { ChainId, NetworkConfig, NetworkEnum } from '@/loan/types/loan.types'
 import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@ui/utils'
 import { Chain } from '@ui-kit/utils'
 
 const DEFAULT_NETWORK_CONFIG = {
-  api: curvejsApi,
   isActiveNetwork: false,
   showInSelectNetwork: false,
 }

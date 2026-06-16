@@ -229,7 +229,7 @@ const NUMBER_FORMAT_CATEGORIES = {
   },
 } as const satisfies Record<string, NumberFormatOptions & { fallback: string }>
 
-type NumberFormatCategory = keyof typeof NUMBER_FORMAT_CATEGORIES
+export type NumberFormatCategory = keyof typeof NUMBER_FORMAT_CATEGORIES
 
 /**
  * Decomposes a number into its formatted parts including prefix, main value, suffix, and scale suffix.

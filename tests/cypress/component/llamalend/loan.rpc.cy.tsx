@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { BigNumber } from 'bignumber.js'
+import { parseUnits } from 'viem'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { checkCurrentDebt, checkDebt } from '@cy/support/helpers/llamalend/action-info.helpers'
+import { setControllerBorrowCap } from '@cy/support/helpers/llamalend/borrow-cap.helpers'
 import {
   checkBorrowMoreDetailsLoaded,
   submitBorrowMoreForm,
@@ -12,6 +14,7 @@ import {
   checkLeverageCheckbox,
   checkLoanDetailsLoaded,
   CREATE_LOAN_FUND_AMOUNT,
+  LOAN_TEST_MARKETS,
   oneLoanTestMarket,
   submitCreateLoanForm,
   writeCreateLoanForm,
@@ -36,7 +39,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { recordValues } from '@primitives/objects.utils'
 import { getLib } from '@ui-kit/features/connect-wallet'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { CRVUSD_ADDRESS } from '@ui-kit/utils'
+import { Chain } from '@ui-kit/utils'
 import { waitFor } from '@ui-kit/utils/time.utils'
 
 const testCases = recordValues(LlamaMarketType).map(marketType => oneLoanTestMarket(marketType))
@@ -61,6 +64,10 @@ testCases.forEach(
   ({
     id,
     collateralAddress: tokenAddress,
+    borrowedAddress,
+    borrowedDecimals,
+    borrowedSymbol,
+    controllerAddress,
     collateral,
     borrow,
     borrowMore,
@@ -84,6 +91,7 @@ testCases.forEach(
       const getVirtualNetwork = createVirtualTestnet(uuid => ({
         slug: `loan-integration-${uuid}`,
         display_name: `LoanIntegration (${uuid})`,
+        chain_id: chainId,
         fork_config: { block_number: 'latest' },
       }))
 
@@ -92,10 +100,31 @@ testCases.forEach(
        * It will soon be migrated to our own router API, so it will be easier to mock.
        */
       const leverageEnabled = hasLeverage && false
-      const debtTokenSymbol = 'crvUSD'
       let adminRpcUrl: string
 
       let onPricesUpdated: ReturnType<typeof cy.stub>
+
+      before(() => {
+        const vnet = getVirtualNetwork()
+        const { adminRpcUrl: nextAdminRpcUrl, publicRpcUrl } = getRpcUrls(vnet)
+        adminRpcUrl = nextAdminRpcUrl
+        if (chainId === Chain.Optimism) {
+          const borrowCap = '10' as const
+          setControllerBorrowCap({
+            adminRpcUrl,
+            publicRpcUrl,
+            controllerAddress,
+            borrowCap,
+            borrowedDecimals,
+          })
+          fundErc20({
+            adminRpcUrl,
+            amountWei: `0x${parseUnits(borrowCap, borrowedDecimals).toString(16)}`,
+            tokenAddress: borrowedAddress,
+            recipientAddresses: [controllerAddress],
+          })
+        }
+      })
 
       beforeEach(() => {
         onPricesUpdated = cy.stub().as('onPricesUpdated')
@@ -136,6 +165,7 @@ testCases.forEach(
           expectedCurrentDebt: borrow,
           expectedFutureDebt: debtAfterBorrowMore,
           leverageEnabled,
+          borrowedSymbol,
         })
         submitBorrowMoreForm().then(() => expect(onPricesUpdated).to.be.called)
         touchBorrowMoreForm() // make sure the new debt is shown
@@ -145,27 +175,27 @@ testCases.forEach(
 
       it(`repays the loan`, () => {
         cy.mount(<LoanTestWrapper tab="repay" />)
-        selectRepayToken({ symbol: debtTokenSymbol, tokenAddress: CRVUSD_ADDRESS, hasLeverageManagement })
+        selectRepayToken({ symbol: borrowedSymbol, tokenAddress: borrowedAddress, hasLeverageManagement })
         writeRepayLoanForm({ amount: repay })
         checkRepayDetailsLoaded({
-          debt: { current: debtAfterBorrowMore, future: debtAfterRepay, symbol: debtTokenSymbol },
+          debt: { current: debtAfterBorrowMore, future: debtAfterRepay, symbol: borrowedSymbol },
           leverageEnabled,
         })
         submitRepayForm().then(() => expect(onPricesUpdated).to.be.called)
         touchRepayLoanForm() // make sure the new debt is shown
-        checkDebt({ current: debtAfterRepay, future: debtAfterRepay, symbol: debtTokenSymbol })
+        checkDebt({ current: debtAfterRepay, future: debtAfterRepay, symbol: borrowedSymbol })
       })
 
       it(`increases health`, () => {
         cy.mount(<LoanTestWrapper tab="improve-health" />)
         writeRepayLoanForm({ amount: improveHealth })
         checkRepayDetailsLoaded({
-          debt: { current: debtAfterRepay, future: debtAfterImproveHealth, symbol: debtTokenSymbol },
+          debt: { current: debtAfterRepay, future: debtAfterImproveHealth, symbol: borrowedSymbol },
           isPriceChanged: false,
         })
         submitRepayForm().then(() => expect(onPricesUpdated).not.to.be.called) // no price updates while in soft liquidation
         touchRepayLoanForm() // make sure the new debt is shown
-        checkDebt({ current: debtAfterImproveHealth, future: debtAfterImproveHealth, symbol: debtTokenSymbol })
+        checkDebt({ current: debtAfterImproveHealth, future: debtAfterImproveHealth, symbol: borrowedSymbol })
       })
 
       it(`closes the loan`, () => {
@@ -173,12 +203,12 @@ testCases.forEach(
         fundErc20({
           adminRpcUrl,
           amountWei: CREATE_LOAN_FUND_AMOUNT,
-          tokenAddress: CRVUSD_ADDRESS,
+          tokenAddress: borrowedAddress,
           recipientAddresses: [address],
         })
         cy.mount(<LoanTestWrapper tab="close" />)
         checkClosePositionDetailsLoaded({ debt: debtAfterImproveHealth })
-        checkDebt({ current: debtAfterImproveHealth, future: '0', symbol: debtTokenSymbol })
+        checkDebt({ current: debtAfterImproveHealth, future: '0', symbol: borrowedSymbol })
         submitClosePositionForm('error').then(() => {
           // unfortunately cannot cause soft liquidation in the tests yet
           cy.get('[data-testid="loan-alert-error"]', LOAD_TIMEOUT).contains('not in liquidation mode')
