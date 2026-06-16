@@ -47,7 +47,6 @@ export const ActivityTable = <TData extends TableItem>({
       }
       isLoading={isLoading}
       maxHeight={height}
-      size="small"
       expandedPanel={expandedPanel}
     />
   </Box>

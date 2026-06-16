@@ -5,7 +5,7 @@ import AlertTitle from '@mui/material/AlertTitle'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
-import { LegacyDataTable } from '@ui-kit/shared/ui/DataTable/LegacyDataTable'
+import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
@@ -52,7 +52,7 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
       <FormContent
         footer={<ClaimActionInfoList params={params} networks={networks} isOpen={!!claimableTokens.length} />}
       >
-        <LegacyDataTable<ClaimableToken>
+        <DataTable<ClaimableToken>
           table={table}
           emptyState={
             !isError && (
@@ -61,7 +61,7 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
               </Alert>
             )
           }
-          loading={isLoading}
+          isLoading={isLoading}
           hideHeader
           footerRow={
             !!claimableTokens.length &&
