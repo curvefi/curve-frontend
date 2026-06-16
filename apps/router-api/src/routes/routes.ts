@@ -3,6 +3,7 @@ import lodash from 'lodash'
 import { handleTimeout } from '@primitives/objects.utils'
 import { type RouterRouteResponse } from '@primitives/router.utils'
 import { buildCurveRouteResponse } from '../curve-router/curve-router'
+import { buildCurveSolverRouteResponse } from '../curve-solver-router/curve-solver-router'
 import { buildEnsoRouteResponse } from '../enso-router/enso-router'
 import { buildOdosRouteResponse } from '../odos-router/odos-router'
 import { decimalCompare, decimalMax } from '../router.utils'
@@ -16,6 +17,7 @@ const routers = {
   enso: buildEnsoRouteResponse,
   odos: buildOdosRouteResponse,
   '0x': buildZeroExRouteResponse,
+  'curve-solver': buildCurveSolverRouteResponse,
 }
 
 const sortRoutes = (a: RouterRouteResponse, b: RouterRouteResponse) =>

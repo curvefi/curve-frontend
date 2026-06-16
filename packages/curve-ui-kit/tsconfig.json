@@ -4,7 +4,6 @@
     "paths": {
       "@ui": ["../ui/src/index.ts"],
       "@ui/*": ["../ui/src/*"],
-      "@cy/*": ["../../tests/cypress/*"],
       "@ui-kit/*": ["./src/*"],
       "@external-rewards": ["../external-rewards/src/index.ts"],
       "@external-rewards/*": ["../external-rewards/src/*"],

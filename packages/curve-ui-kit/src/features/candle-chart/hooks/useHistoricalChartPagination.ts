@@ -1,7 +1,7 @@
 import type { IChartApi, ISeriesApi, Time } from 'lightweight-charts'
 import { useCallback, useRef, type RefObject } from 'react'
+import { useLatestValueRef } from '../../../hooks/useLatestValueRef'
 import type { LpPriceOhlcDataFormatted, OraclePriceData } from '../types'
-import { useLatestValueRef } from './useLatestValueRef'
 
 type VisibleTimeRange = { from: Time; to: Time }
 
