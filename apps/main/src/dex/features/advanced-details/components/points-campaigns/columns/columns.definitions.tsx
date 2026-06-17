@@ -1,3 +1,4 @@
+import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { createColumnHelper } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
@@ -21,7 +22,7 @@ const headers = {
   [PointsCampaignsColumnId.CampaignUrl]: t`Details`,
 } as const
 
-export const createPointsCampaignsColumns = ({ isMobile }: { isMobile: boolean }) => [
+export const POINTS_CAMPAIGNS_COLUMNS = [
   columnHelper.accessor('source', {
     id: PointsCampaignsColumnId.Source,
     header: headers[PointsCampaignsColumnId.Source],
@@ -48,7 +49,16 @@ export const createPointsCampaignsColumns = ({ isMobile }: { isMobile: boolean }
     header: headers[PointsCampaignsColumnId.CampaignUrl],
     cell: ({ getValue }) => (
       <InlineTableCell>
-        <ExternalLink href={getValue()} label={isMobile ? '' : t`To campaign`} sx={{ justifyContent: 'end' }} />
+        <ExternalLink
+          href={getValue()}
+          label={
+            // Avoid need of useIsMobile hook
+            <Box component="span" sx={{ display: { mobile: 'none', tablet: 'inline' } }}>
+              {t`To campaign`}
+            </Box>
+          }
+          sx={{ justifyContent: 'end' }}
+        />
       </InlineTableCell>
     ),
     enableSorting: false,
