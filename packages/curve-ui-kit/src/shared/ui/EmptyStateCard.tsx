@@ -12,9 +12,10 @@ const { Spacing, IconSize, MaxWidth, LineHeight } = SizesAndSpaces
 type EmptyStateCardProps = {
   title?: ReactNode
   subtitle?: ReactNode
-  button?: ButtonProps & { label: ReactNode; testId?: string }
   isLoading?: boolean
   size?: 'sm' | 'md'
+  button?: ButtonProps & { label: ReactNode; testId?: string }
+  rightAction?: ReactNode
 }
 
 const ICON_SIZE: Record<NonNullable<EmptyStateCardProps['size']>, Responsive> = {
@@ -34,7 +35,14 @@ const Skeletons = () => (
   </Stack>
 )
 
-export const EmptyStateCard = ({ title, subtitle, button, isLoading, size = 'md' }: EmptyStateCardProps) => {
+export const EmptyStateCard = ({
+  title,
+  subtitle,
+  button,
+  rightAction,
+  isLoading,
+  size = 'md',
+}: EmptyStateCardProps) => {
   const { label, sx: buttonSx, testId, ...buttonProps } = button ?? {}
   return (
     <Stack
@@ -62,16 +70,21 @@ export const EmptyStateCard = ({ title, subtitle, button, isLoading, size = 'md'
               </Typography>
             )}
           </Stack>
-          {button && (
-            <Button
-              {...buttonProps}
-              variant="outlined"
-              size={BUTTON_SIZE[size]}
-              sx={applySxProps({ alignSelf: 'center' }, buttonSx)}
-              data-testid={testId}
-            >
-              {label}
-            </Button>
+          {(!!button || !!rightAction) && (
+            <Stack direction="row" sx={{ flexWrap: 'wrap', gap: Spacing.sm, alignItems: 'center' }}>
+              {button && (
+                <Button
+                  {...buttonProps}
+                  variant="outlined"
+                  size={BUTTON_SIZE[size]}
+                  sx={applySxProps({ alignSelf: 'center' }, buttonSx)}
+                  data-testid={testId}
+                >
+                  {label}
+                </Button>
+              )}
+              {rightAction}
+            </Stack>
           )}
         </Stack>
       )}
