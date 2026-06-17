@@ -16,6 +16,7 @@
     "start": "yarn workspace main start",
     "dev": "yarn workspace main dev",
     "dev-router-api": "yarn workspace router-api dev",
+    "dev-merkl-api": "yarn workspace merkl-api dev",
     "lint": "yarn workspaces foreach --parallel --all --exclude curve-frontend run lint",
     "lint:fix": "yarn workspaces foreach --parallel --all --exclude curve-frontend run lint:fix",
     "typecheck": "node -e \"require('fs').mkdirSync('.cache/typecheck', {recursive: true})\" && yarn workspaces foreach --parallel --all run typecheck",

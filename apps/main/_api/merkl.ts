@@ -1,11 +1,11 @@
 import { type IncomingMessage, ServerResponse } from 'http'
-import { createRouterApiServer } from 'router-api/src/server'
+import { createMerklServer } from 'merkl-api/src/server'
 
-const server = createRouterApiServer()
+const server = createMerklServer()
 
 /**
  * Vercel handler for API routes, using fastify under the hood. This is only used when deployed to Vercel.
- * While in development, vite's dev server redirects /api/router/* calls to the router-api dev server.
+ * While in development, vite's dev server redirects /api/merkl/* calls to the merkl dev server.
  * This file is automatically detected by vite-plugin-vercel because it is in the "_api" folder.
  */
 export default async function handler(request: IncomingMessage, response: ServerResponse) {

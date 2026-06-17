@@ -1,0 +1,34 @@
+import { describe, expect, it } from 'vitest'
+import { createMerklServer } from '../src/server'
+
+describe('health endpoint', () => {
+  it('responds with service metadata', async () => {
+    const server = createMerklServer()
+
+    try {
+      const response = await server.inject({ method: 'GET', url: '/health' })
+      expect(response.statusCode).toBe(200)
+
+      const payload = response.json<{
+        status: string
+        service: string
+        environment: string
+        version: string
+        timestamp: string
+        uptime: number
+      }>()
+      expect(payload).toMatchObject({
+        status: 'ok',
+        service: 'merkl-api',
+        environment: 'test',
+        version: process.env.npm_package_version || '0.0.1',
+      })
+      expect(typeof payload.timestamp).toBe('string')
+      expect(typeof payload.uptime).toBe('number')
+      expect(payload.timestamp).not.toHaveLength(0)
+      expect(payload.uptime).toBeGreaterThanOrEqual(0)
+    } finally {
+      await server.close()
+    }
+  })
+})

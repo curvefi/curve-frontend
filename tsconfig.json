@@ -4,6 +4,7 @@
   "files": [],
   "references": [
     { "path": "./apps/main" },
+    { "path": "./apps/merkl-api" },
     { "path": "./apps/router-api" },
     { "path": "./packages/curve-ui-kit" },
     { "path": "./packages/external-rewards" },
