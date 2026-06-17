@@ -72,6 +72,7 @@ export const LlamaTableFiltersOverlay = ({
         paper: {
           sx: { backgroundColor: t => t.design.Layer[3].Fill, width: Width.modal.md },
         },
+        // set the testid once transition is ready to avoid flaky tests trying to click during transition
         transition: { onEntered: () => setTestId('table-filters-popover'), onExit: () => setTestId(null) },
       }}
     >
