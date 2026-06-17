@@ -1,5 +1,4 @@
 import { Stack, SxProps } from '@mui/material'
-import IconButton from '@mui/material/IconButton'
 import { ErrorReportModal } from '@ui-kit/features/report-error'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
@@ -30,18 +29,15 @@ export const ErrorMessage = ({
         title={title}
         subtitle={subtitle}
         button={{ label: t`Submit error report`, testId: 'submit-error-report-button', onClick: openReportModal }}
-        rightAction={
-          refreshData && (
-            <IconButton
-              size="small"
-              onClick={() => {
-                void refreshData()
-              }}
-            >
-              <ReloadIcon />
-            </IconButton>
-          )
-        }
+        {...(refreshData && {
+          secondaryButton: {
+            label: 'Refresh',
+            startIcon: <ReloadIcon />,
+            onClick: () => {
+              void refreshData()
+            },
+          },
+        })}
       />
       <ErrorReportModal
         isOpen={isReportOpen}
