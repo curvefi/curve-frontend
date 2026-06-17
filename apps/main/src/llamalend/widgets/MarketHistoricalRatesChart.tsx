@@ -1,5 +1,5 @@
 import { sortBy } from 'lodash'
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { type LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useLlamaSnapshot } from '@/llamalend/queries/llamma-snapshots.query'
 import { useMarketRates } from '@/llamalend/queries/market'
@@ -10,26 +10,28 @@ import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import { useTheme } from '@mui/material/styles'
 import type { Amount } from '@primitives/decimal.utils'
-import { notFalsy, maybe } from '@primitives/objects.utils'
+import { maybe, notFalsy } from '@primitives/objects.utils'
 import { formatDate } from '@ui/utils'
 import type { CrvUsdSnapshot } from '@ui-kit/entities/crvusd-snapshots'
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
+import { useCombinedQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
-import { timeOptions, type TimeOption } from '@ui-kit/lib/model/query/time-option-validation'
+import { type TimeOption, timeOptions } from '@ui-kit/lib/model/query/time-option-validation'
 import {
-  ChartStateWrapper,
-  ChartFooter,
-  type LegendItem,
   addMovingAverages,
   CHART_LINE_DASH_PATTERNS,
-  EChartsLineChart,
+  ChartFooter,
   type ChartLineDashPattern,
+  ChartStateWrapper,
+  EChartsLineChart,
+  type LegendItem,
   type LineSeriesConfig,
   SelectTimeOption,
 } from '@ui-kit/shared/ui/Chart'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
+import { mapQuery, useMappedQuery } from '@ui-kit/types/util'
 import { formatNumber } from '@ui-kit/utils'
 import { calculateAverageRates } from '@ui-kit/utils/averageRates'
 
@@ -107,6 +109,9 @@ const RATE_MODE_CONFIG = {
   },
 } satisfies Record<MarketRateType, RateModeConfig>
 
+const averageRates = (ratePoints: { rate: number; timestamp: number }[]) =>
+  calculateAverageRates(ratePoints, 7, { rate: ({ rate }) => rate })?.rate
+
 export const MarketHistoricalRatesChart = ({
   market,
   blockchainId,
@@ -122,48 +127,36 @@ export const MarketHistoricalRatesChart = ({
     design: { Color },
   } = useTheme()
 
-  const { data: marketRates, isLoading: isMarketRatesLoading } = useMarketRates({ chainId, marketId })
+  const marketRates = useMarketRates({ chainId, marketId })
 
-  const {
-    data: snapshots,
-    isLoading: isSnapshotsLoading,
-    error,
-  } = useLlamaSnapshot(market, blockchainId, Boolean(market && blockchainId), { kind: 'timeRange', timeOption })
+  const snapshots = useLlamaSnapshot({ market, blockchainId, range: { kind: 'timeRange', timeOption } })
 
-  const currentLiveRate = useMemo(() => {
-    const liveRate = modeConfig.getLiveRate(marketRates)
-
-    return toRateNumber(liveRate)
-  }, [marketRates, modeConfig])
-
-  const snapshotRatePoints = useMemo(
-    () => toSnapshotRatePoints(snapshots, modeConfig.getSnapshotRate),
-    [snapshots, modeConfig],
-  )
-
-  const ratePoints = useMemo(
-    () =>
-      sortBy(
-        notFalsy(...snapshotRatePoints, currentLiveRate != null && { timestamp: Date.now(), rate: currentLiveRate }),
-        item => item.timestamp,
-      ),
-    [snapshotRatePoints, currentLiveRate],
+  const ratePoints = useCombinedQueries(
+    [snapshots, marketRates],
+    useCallback(
+      (snapshots, marketRates) => {
+        const currentLiveRate = toRateNumber(modeConfig.getLiveRate(marketRates))
+        const snapshotRatePoints = toSnapshotRatePoints(snapshots, modeConfig.getSnapshotRate)
+        return sortBy(
+          notFalsy(...snapshotRatePoints, currentLiveRate != null && { timestamp: Date.now(), rate: currentLiveRate }),
+          item => item.timestamp,
+        )
+      },
+      [modeConfig],
+    ),
   )
 
   const chartData = useMemo<RateChartPoint[]>(
     () =>
       addMovingAverages(
-        ratePoints,
+        ratePoints.data ?? [],
         d => d.rate,
         d => d.timestamp,
       ),
-    [ratePoints],
+    [ratePoints.data],
   )
 
-  const oneWeekAverageRate = useMemo(
-    () => calculateAverageRates(ratePoints, 7, { rate: ({ rate }) => rate })?.rate ?? null,
-    [ratePoints],
-  )
+  const oneWeekAverageRateQuery = useMappedQuery(ratePoints, averageRates)
 
   const seriesColors: Record<RateSeriesKey, string> = useMemo(
     () => ({ rate: Color.Primary[500], movingAverage: Color.Secondary[500], totalAverage: Color.Tertiary[400] }),
@@ -195,7 +188,7 @@ export const MarketHistoricalRatesChart = ({
             options={timeOptions}
             activeOption={timeOption}
             setActiveOption={setTimeOption}
-            isLoading={isSnapshotsLoading || !market}
+            isLoading={snapshots.isLoading || !market}
           />
         }
       />
@@ -210,22 +203,20 @@ export const MarketHistoricalRatesChart = ({
           <Metric
             size="medium"
             label={modeConfig.currentRateLabel}
-            value={currentLiveRate}
-            loading={currentLiveRate == null && (isMarketRatesLoading || !market)}
+            value={mapQuery(marketRates, marketRates => toRateNumber(modeConfig.getLiveRate(marketRates)))}
             valueOptions={{ unit: 'percentage' }}
           />
           <Metric
             size="medium"
             label={modeConfig.oneWeekAverageLabel}
-            value={oneWeekAverageRate}
-            loading={oneWeekAverageRate == null && (isSnapshotsLoading || isMarketRatesLoading || !market)}
+            value={oneWeekAverageRateQuery}
             valueOptions={{ unit: 'percentage' }}
           />
         </Stack>
         <ChartStateWrapper
           height={Height.shortChart}
-          isLoading={isSnapshotsLoading || !market}
-          error={error}
+          isLoading={snapshots.isLoading || !market}
+          error={snapshots.error}
           errorMessage={t`Unable to fetch historical rates data.`}
         >
           <EChartsLineChart<RateChartPoint, RateSeriesKey, 'timestamp'>

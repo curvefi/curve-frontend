@@ -7,6 +7,7 @@ import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { constQ, fallbackQ, mapQuery } from '@ui-kit/types/util'
 import { amount } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
@@ -22,27 +23,27 @@ export const PoolMetricsRow = ({
 }) => {
   const volume = usePoolVolume({ chainId, poolId })
   const tvl = usePoolTvl({ chainId, poolId })
-
   const alignment = useIsMobile() ? 'start' : 'end'
-
   return (
     <Stack direction="row" sx={{ gap: Spacing.xxl, alignItems: 'center', flexWrap: 'wrap' }}>
       <Metric
         alignment={alignment}
         label={t`TVL`}
-        value={amount(tvl.data ?? pricesApiPoolData?.tvlUsd)}
+        value={fallbackQ(
+          mapQuery(tvl, data => amount(data)),
+          constQ(amount(pricesApiPoolData?.tvlUsd)),
+        )}
         valueOptions={{ unit: 'dollar' }}
-        loading={tvl.isLoading}
-        error={tvl.error}
       />
 
       <Metric
         alignment={alignment}
         label={t`24h volume`}
-        value={amount(volume.data ?? pricesApiPoolData?.tradingVolume24h)}
+        value={fallbackQ(
+          mapQuery(volume, data => amount(data)),
+          constQ(amount(pricesApiPoolData?.tradingVolume24h)),
+        )}
         valueOptions={{ unit: 'dollar' }}
-        loading={volume.isLoading}
-        error={volume.error}
       />
     </Stack>
   )

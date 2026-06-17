@@ -9,7 +9,7 @@ import { useCurrentDate } from '@ui-kit/hooks/useCurrentDate'
 import {
   useDismissAaveBanner,
   useDismissCurveLiteBanner,
-  useDismissSonicRetirementBanner,
+  useDismissFantomRetirementBanner,
   useReleaseChannel,
 } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
@@ -39,7 +39,7 @@ export const GlobalBanner = ({ networkId, chainId, backendMaintenance }: GlobalB
   const currentDate = useCurrentDate()
 
   const [showAaveBanner, dismissAaveBanner] = useDismissAaveBanner()
-  const [showSonicRetirementBanner, dismissSonicRetirementBanner] = useDismissSonicRetirementBanner()
+  const [showFantomRetirementBanner, dismissFantomRetirementBanner] = useDismissFantomRetirementBanner()
   const [showDowngraded, dismissDowngraded] = useDismissCurveLiteBanner(chainId)
 
   return (
@@ -100,14 +100,14 @@ export const GlobalBanner = ({ networkId, chainId, backendMaintenance }: GlobalB
           {t`Aave V2 Frozen aTokens`}
         </Banner>
       )}
-      {showSonicRetirementBanner && chainId === +Chain.Sonic && (
+      {showFantomRetirementBanner && chainId === +Chain.Fantom && (
         <Banner
           severity="alert"
-          subtitle={t`The Sonic chain will be retired at the end of June. Please withdraw from pools.`}
-          onClick={dismissSonicRetirementBanner}
+          subtitle={t`The Fantom chain will be retired at the end of June. Please withdraw from pools.`}
+          onClick={dismissFantomRetirementBanner}
           learnMoreUrl="https://x.com/SonicLabs/status/2041551455254097988"
         >
-          {t`Sonic Retirement`}
+          {t`Fantom Retirement`}
         </Banner>
       )}
     </StackBanners>

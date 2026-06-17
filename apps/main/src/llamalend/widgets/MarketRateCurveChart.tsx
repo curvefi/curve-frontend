@@ -11,22 +11,24 @@ import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import { useTheme } from '@mui/material/styles'
-import { notFalsy, maybe, maybes } from '@primitives/objects.utils'
+import { maybe, maybes, notFalsy } from '@primitives/objects.utils'
+import { combineQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import {
-  ChartFooter,
-  ChartStateWrapper,
   CHART_LINE_DASH_PATTERNS,
-  EChartsLineChart,
+  ChartFooter,
   type ChartLineDashPattern,
+  ChartStateWrapper,
+  EChartsLineChart,
   type LegendItem,
   type LineSeriesConfig,
 } from '@ui-kit/shared/ui/Chart'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { decimal, decimalMinus, formatNumber } from '@ui-kit/utils'
+import { fallbackQ, mapQuery, useMappedQuery } from '@ui-kit/types/util'
+import { decimal, decimalMax, decimalMinus, formatNumber } from '@ui-kit/utils'
 
 const { Spacing, Height } = SizesAndSpaces
 
@@ -43,6 +45,9 @@ const SERIES_CONFIG: { key: RateCurveSeriesKey; label: string; dash?: ChartLineD
   { key: 'supplyApy', label: t`Supply APY`, dash: CHART_LINE_DASH_PATTERNS.wide },
 ]
 
+const transform = ({ rates = [] }: { rates: RateCurveChartPoint[] | undefined }): RateCurveChartPoint[] =>
+  sortBy(rates, 'utilization')
+
 export const MarketRateCurveChart = ({
   market,
   blockchainId,
@@ -57,80 +62,58 @@ export const MarketRateCurveChart = ({
   const [visibleSeries, setVisibleSeries] = useState<RateCurveSeriesKey[]>(SERIES_CONFIG.map(({ key }) => key))
   const controllerAddress = market?.addresses.controller as Address | undefined
   const { collateralToken, borrowToken } = market ? getTokens(market) : {}
-
   const {
     design: { Color },
   } = useTheme()
+  const rateCurve = useRateCurve({ blockchainId, contractAddress: controllerAddress })
+  const capAndAvailable = useMarketCapAndAvailable({ chainId, marketId })
+  const totalCollateral = useMarketTotalCollateral({ chainId, marketId })
+  const collateralUsdRate = useTokenUsdRate({ chainId, tokenAddress: collateralToken?.address })
+  const borrowedUsdRate = useTokenUsdRate({ chainId, tokenAddress: borrowToken?.address })
 
-  const {
-    data: rateCurve,
-    isLoading,
-    error,
-  } = useRateCurve({ blockchainId, contractAddress: controllerAddress }, Boolean(blockchainId && controllerAddress))
-
-  const { data: capAndAvailable, isLoading: isCapAndAvailableLoading } = useMarketCapAndAvailable({ chainId, marketId })
-  const { data: totalCollateral, isLoading: isTotalCollateralLoading } = useMarketTotalCollateral({
-    chainId,
-    marketId,
-  })
-  const { data: collateralUsdRate, isLoading: isCollateralUsdRateLoading } = useTokenUsdRate({
-    chainId,
-    tokenAddress: collateralToken?.address,
-  })
-  const { data: borrowedUsdRate, isLoading: isBorrowedUsdRateLoading } = useTokenUsdRate({
-    chainId,
-    tokenAddress: borrowToken?.address,
-  })
-
-  const currentUtilization = useMemo(
-    () =>
-      getUtilizationPercent(capAndAvailable?.available, capAndAvailable?.totalAssets) ?? rateCurve?.currentUtilization,
-    [capAndAvailable, rateCurve?.currentUtilization],
+  const currentUtilization = fallbackQ(
+    mapQuery(capAndAvailable, ({ available, totalAssets }) => getUtilizationPercent(available, totalAssets)),
+    mapQuery(rateCurve, ({ currentUtilization }) => currentUtilization),
   )
-  const totalBorrowed = useMemo(() => {
-    if (capAndAvailable?.available == null || capAndAvailable.totalAssets == null) return null
-
-    const borrowed = decimalMinus(capAndAvailable.totalAssets, capAndAvailable.available)
-    return +borrowed < 0 ? decimal(0)! : borrowed
-  }, [capAndAvailable])
-  const totalBorrowedUsdValue =
-    maybes(
-      [totalBorrowed, borrowedUsdRate],
-      ([totalBorrowed, borrowedUsdRate]) => Number(totalBorrowed) * borrowedUsdRate,
-    ) ?? null
-  const utilizationBreakdown = maybe(
-    [totalBorrowed, capAndAvailable?.totalAssets],
-    ([borrow, available]) =>
-      `${formatNumber(borrow, { abbreviate: true })}/${formatNumber(available, {
+  const totalBorrowed = mapQuery(capAndAvailable, ({ available, totalAssets }) =>
+    maybes([available, totalAssets], ([available, totalAssets]) =>
+      decimalMax(decimalMinus(totalAssets, available), '0'),
+    ),
+  )
+  const totalBorrowedUsdValue = combineQueries(
+    [totalBorrowed, borrowedUsdRate],
+    (totalBorrowed, borrowedUsdRate) => Number(totalBorrowed) * borrowedUsdRate,
+  )
+  const utilizationBreakdown = combineQueries(
+    [totalBorrowed, capAndAvailable],
+    (borrow, { totalAssets }) =>
+      `${formatNumber(borrow, { abbreviate: true })}/${formatNumber(totalAssets, {
         abbreviate: true,
       })} ${borrowToken?.symbol ?? ''}`,
   )
 
-  const collateralTotal = maybe(totalCollateral, totalCollateral => Number(totalCollateral.collateral)) ?? null
-  const borrowedCollateralTotal = maybe(totalCollateral, totalCollateral => Number(totalCollateral.borrowed)) ?? null
-  const collateralUsdValue = maybes([collateralTotal, collateralUsdRate], ([total, usdRate]) => total * usdRate) ?? null
-  const borrowedCollateralUsdValue =
-    maybes([borrowedCollateralTotal, borrowedUsdRate], ([total, usdRate]) => total * usdRate) ?? null
-  const combinedCollateralUsdValue = maybes([collateralUsdValue, borrowedCollateralUsdValue], ([c, b]) => c + b) ?? null
-  const isTotalCollateralMetricLoading =
-    !market || isTotalCollateralLoading || isCollateralUsdRateLoading || isBorrowedUsdRateLoading
-
-  const chartData = useMemo<RateCurveChartPoint[]>(
-    () => sortBy(rateCurve?.rates ?? [], 'utilization'),
-    [rateCurve?.rates],
+  const collateralTotal = mapQuery(totalCollateral, totalCollateral => totalCollateral.collateral)
+  const borrowedCollateralTotal = mapQuery(totalCollateral, totalCollateral => totalCollateral.borrowed)
+  const collateralUsdValue = combineQueries([collateralTotal, collateralUsdRate], (total, usdRate) => +total * usdRate)
+  const borrowedCollateralUsdValue = combineQueries(
+    [borrowedCollateralTotal, borrowedUsdRate],
+    (total, usdRate) => +total * usdRate,
   )
+  const combinedCollateralUsdValue = combineQueries([collateralUsdValue, borrowedCollateralUsdValue], (c, b) => c + b)
+
+  const chartData = useMappedQuery(rateCurve, transform)
 
   const markLines = useMemo(
     () =>
       notFalsy(
-        currentUtilization != null && {
-          value: currentUtilization,
-          label: formatNumber(currentUtilization, 'percent.rate'),
+        currentUtilization.data != null && {
+          value: currentUtilization.data,
+          label: formatNumber(currentUtilization.data, 'percent.rate'),
           color: Color.Primary[500],
           dash: CHART_LINE_DASH_PATTERNS.tight,
         },
       ),
-    [currentUtilization, Color.Primary],
+    [currentUtilization.data, Color.Primary],
   )
 
   const seriesColors: Record<RateCurveSeriesKey, string> = useMemo(
@@ -170,9 +153,8 @@ export const MarketRateCurveChart = ({
             size="medium"
             label={t`Utilization`}
             value={currentUtilization}
-            loading={currentUtilization == null && (isCapAndAvailableLoading || isLoading || !market)}
             valueOptions={{ unit: 'percentage' }}
-            notional={utilizationBreakdown}
+            notional={utilizationBreakdown.data}
             valueTooltip={{
               title: t`Utilization`,
               body: <UtilizationTooltip marketType={LlamaMarketType.Lend} />,
@@ -183,43 +165,34 @@ export const MarketRateCurveChart = ({
             size="medium"
             label={t`Total borrowed`}
             value={totalBorrowed}
-            loading={totalBorrowed == null && (isCapAndAvailableLoading || !market)}
             valueOptions={{
               unit: borrowToken?.symbol ? { symbol: ` ${borrowToken.symbol}`, position: 'suffix' } : undefined,
               abbreviate: true,
             }}
-            notional={maybe(totalBorrowedUsdValue, totalBorrowedUsdValue =>
-              formatNumber(totalBorrowedUsdValue, 'usd.notional'),
-            )}
+            notional={maybe(totalBorrowedUsdValue.data, val => formatNumber(val, 'usd.notional'))}
           />
           <Metric
             size="medium"
             label={t`Total collateral`}
             value={combinedCollateralUsdValue}
-            loading={combinedCollateralUsdValue == null && isTotalCollateralMetricLoading}
             valueOptions={{ unit: 'dollar' }}
-            notional={
-              isTotalCollateralMetricLoading
-                ? undefined
-                : formatCollateralNotional(
-                    {
-                      value: decimal(totalCollateral?.collateral),
-                      symbol: collateralToken?.symbol,
-                    },
-                    { value: decimal(totalCollateral?.borrowed), symbol: borrowToken?.symbol },
-                  )
-            }
+            notional={maybe(totalCollateral.data, ({ collateral, borrowed }) =>
+              formatCollateralNotional(
+                { value: decimal(collateral), symbol: collateralToken?.symbol },
+                { value: decimal(borrowed), symbol: borrowToken?.symbol },
+              ),
+            )}
             valueTooltip={{
               title: t`Total Collateral`,
               body: (
                 <TotalCollateralTooltip
                   collateralSymbol={collateralToken?.symbol}
-                  totalCollateral={collateralTotal}
+                  totalCollateral={collateralTotal.data}
                   borrowedSymbol={borrowToken?.symbol}
-                  totalBorrowed={borrowedCollateralTotal}
-                  combinedCollateralUsdValue={combinedCollateralUsdValue}
-                  collateralUsdRate={collateralUsdRate ?? null}
-                  borrowedUsdRate={borrowedUsdRate ?? null}
+                  totalBorrowed={borrowedCollateralTotal.data}
+                  combinedCollateralUsdValue={combinedCollateralUsdValue.data}
+                  collateralUsdRate={collateralUsdRate.data ?? null}
+                  borrowedUsdRate={borrowedUsdRate.data ?? null}
                 />
               ),
               ...TooltipOptions,
@@ -228,12 +201,12 @@ export const MarketRateCurveChart = ({
         </Stack>
         <ChartStateWrapper
           height={Height.shortChart}
-          isLoading={isLoading || !market}
-          error={error}
+          isLoading={chartData.isLoading}
+          error={chartData.error}
           errorMessage={t`Unable to fetch rate curve data.`}
         >
           <EChartsLineChart<RateCurveChartPoint, RateCurveSeriesKey, 'utilization'>
-            data={chartData}
+            data={chartData.data ?? []}
             height={Height.shortChart}
             xKey="utilization"
             series={series}

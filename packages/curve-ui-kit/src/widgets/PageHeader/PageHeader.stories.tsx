@@ -8,6 +8,7 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { constQ, q } from '@ui-kit/types/util'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { PageHeader } from './PageHeader'
 
@@ -60,8 +61,8 @@ export const DexPool: Story = {
     ),
     rightItems: (
       <Stack direction="row" sx={{ gap: Spacing.xl }}>
-        <Metric label="TVL" value={246_800_000} valueOptions={{ unit: 'dollar' }} alignment="end" />
-        <Metric label="24h volume" value={48_200_000} valueOptions={{ unit: 'dollar' }} alignment="end" />
+        <Metric label="TVL" value={constQ(246_800_000)} valueOptions={{ unit: 'dollar' }} alignment="end" />
+        <Metric label="24h volume" value={constQ(48_200_000)} valueOptions={{ unit: 'dollar' }} alignment="end" />
       </Stack>
     ),
   },
@@ -79,21 +80,21 @@ export const LlamalendLendMarket: Story = {
         <Metric
           alignment="end"
           label="Borrow APR"
-          value={2.082}
+          value={constQ(2.082)}
           valueOptions={{ unit: 'percentage' }}
           notional={{ value: 2.075, unit: { symbol: '% 7d Avg', position: 'suffix' } }}
         />
         <Metric
           alignment="end"
           label="Net supply APY"
-          value={4.037}
+          value={constQ(4.037)}
           valueOptions={{ unit: 'percentage' }}
           notional={{ value: 4.034, unit: { symbol: '% 7d Avg', position: 'suffix' } }}
         />
         <Metric
           alignment="end"
           label="Available liquidity"
-          value={12_500_000}
+          value={constQ(12_500_000)}
           valueOptions={{ unit: 'none' }}
           notional={{ value: 12_750_000, unit: 'dollar' }}
         />
@@ -120,9 +121,32 @@ export const Loading: Story = {
     titleItems: <LlamaTitleItems marketType="Lend" />,
     rightItems: (
       <>
-        <Metric label="TVL" value={null} loading valueOptions={{ unit: 'dollar' }} alignment="end" />
-        <Metric label="24h volume" value={null} loading valueOptions={{ unit: 'dollar' }} alignment="end" />
+        <Metric
+          label="24h volume"
+          value={q({ isLoading: true, data: undefined, error: null })}
+          valueOptions={{ unit: 'dollar' }}
+          alignment="end"
+        />
+        <Metric
+          label="TVL"
+          value={q({ isLoading: true, data: undefined, error: null })}
+          valueOptions={{ unit: 'dollar' }}
+          alignment="end"
+        />
       </>
+    ),
+  },
+}
+
+export const ErrorState: Story = {
+  args: {
+    rightItems: (
+      <Metric
+        label="24h volume"
+        value={q({ isLoading: false, data: undefined, error: new Error('An error occurred') })}
+        valueOptions={{ unit: 'dollar' }}
+        alignment="end"
+      />
     ),
   },
 }

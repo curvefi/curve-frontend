@@ -8,7 +8,6 @@ import type { Range } from '@ui-kit/types/util'
 import { decimal, formatNumber, MAINNET_CRV_ADDRESS } from '@ui-kit/utils'
 import { calculateAverageRates, type WithTimestamp } from '@ui-kit/utils/averageRates'
 import { aprToApy } from '@ui-kit/utils/rates'
-import type { SupplyExtraIncentive } from './rates.types'
 
 export { aprToApy } from '@ui-kit/utils/rates'
 
@@ -88,7 +87,7 @@ export const formatSupplyExtraIncentives = ({
   baseRate?: number | null | undefined
   userRate?: number | null | undefined
   userBoost?: Decimal | null | undefined
-}): SupplyExtraIncentive[] =>
+}): ExtraIncentive[] =>
   notFalsy(
     baseRate && {
       title: 'CRV',

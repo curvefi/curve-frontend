@@ -7,6 +7,7 @@ const pegChipLabels = {
   pegged: t`Pegged`,
   overpegged: t`Over peg`,
   underpegged: t`Under peg`,
+  error: t`Error`,
 } as const satisfies Record<PegStatus['label'], string>
 
 type Props = {

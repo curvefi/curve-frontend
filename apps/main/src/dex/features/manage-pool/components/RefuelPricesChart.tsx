@@ -9,23 +9,24 @@ import {
   createTooltip,
   DAYS,
   EChartsCard,
-  timeToCategory,
   type Period,
+  timeToCategory,
 } from '@/analytics/features/charts'
 import { llama } from '@/analytics/llamadash'
 import type { Chain } from '@curvefi/prices-api'
 import { getTimeRange } from '@curvefi/prices-api/timestamp'
 import Grid from '@mui/material/Grid'
 import { useTheme } from '@mui/material/styles'
-import { DEFAULT_DECIMALS } from '@primitives/objects.utils'
+import { DEFAULT_DECIMALS, maybe } from '@primitives/objects.utils'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import type { LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
 import { SelectTimeOption } from '@ui-kit/shared/ui/Chart/SelectTimeOption'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { useMappedQuery } from '@ui-kit/types/util'
 import { formatNumber } from '@ui-kit/utils'
-import { REFUEL_TIMESERIES_PAGE_SIZE, useRefuelTimeseries } from '../queries/timeseries.query'
+import { REFUEL_TIMESERIES_PAGE_SIZE, RefuelTimeSeriesData, useRefuelTimeseries } from '../queries/timeseries.query'
 
 const { Spacing } = SizesAndSpaces
 
@@ -51,6 +52,10 @@ const isFinitePrice = (value: number | null): value is number => value != null &
 const getLatestMetric = (values: (number | null | undefined)[]) =>
   values.findLast((value): value is number => value != null && Number.isFinite(value))
 
+const getLatestLpUsdPrice = ({ data }: RefuelTimeSeriesData) => getLatestMetric(data.map(point => point.lpUsdPrice))
+const getLatestVirtualPrice = ({ data }: RefuelTimeSeriesData) =>
+  maybe(getLatestMetric(data.map(point => point.virtualPrice)), virtualPrice => virtualPrice / 10 ** DEFAULT_DECIMALS)
+
 /** Used to calculate padded minimum for the price axis with some extra padding */
 const getPaddedMin = (values: number[]) => {
   if (!values.length) return undefined
@@ -71,7 +76,7 @@ export const RefuelPricesChart = ({ blockchainId, poolAddress }: { blockchainId:
 
   const toggleVisibility = (key: string) => setVisibility(prev => ({ ...prev, [key]: !(prev[key] ?? true) }))
 
-  const { data, isFetching: loading } = useRefuelTimeseries({
+  const timeSeries = useRefuelTimeseries({
     blockchainId,
     poolAddress,
     start,
@@ -95,7 +100,7 @@ export const RefuelPricesChart = ({ blockchainId, poolAddress }: { blockchainId:
 
   const chartData = useMemo(
     () =>
-      llama(data?.data)
+      llama(timeSeries.data?.data)
         .map(point => ({
           time: new Date(point.timestamp).getTime(),
           lastPrice: point.lastPrices?.[0] ?? null,
@@ -108,11 +113,10 @@ export const RefuelPricesChart = ({ blockchainId, poolAddress }: { blockchainId:
         .uniqWith((x, y) => x.time === y.time)
         .orderBy(point => point.time, 'asc')
         .value(),
-    [data?.data],
+    [timeSeries.data?.data],
   )
-
-  const lpUsdPrice = useMemo(() => getLatestMetric(chartData.map(point => point.lpUsdPrice)), [chartData])
-  const virtualPrice = useMemo(() => getLatestMetric(chartData.map(point => point.virtualPrice)), [chartData])
+  const lpUsdPrice = useMappedQuery(timeSeries, getLatestLpUsdPrice)
+  const virtualPrice = useMappedQuery(timeSeries, getLatestVirtualPrice)
 
   const yAxisMin = useMemo(
     () =>
@@ -145,8 +149,8 @@ export const RefuelPricesChart = ({ blockchainId, poolAddress }: { blockchainId:
 
   return (
     <EChartsCard
-      title={`${data?.tokens[1]?.symbol ?? '?'} prices in ${data?.tokens[0]?.symbol ?? '?'}`}
-      loading={loading}
+      title={`${timeSeries.data?.tokens[1]?.symbol ?? '?'} prices in ${timeSeries.data?.tokens[0]?.symbol ?? '?'}`}
+      loading={timeSeries.isPending}
       option={option}
       fullscreen={fullscreen}
       onCloseFullscreen={closeFullscreen}
@@ -158,7 +162,6 @@ export const RefuelPricesChart = ({ blockchainId, poolAddress }: { blockchainId:
               label={t`LP token value`}
               value={lpUsdPrice}
               valueOptions={{ abbreviate: true, unit: 'dollar' }}
-              loading={loading}
               testId="refuel-lp-token-value"
             />
           </Grid>
@@ -166,9 +169,8 @@ export const RefuelPricesChart = ({ blockchainId, poolAddress }: { blockchainId:
           <Grid size={{ mobile: 6, tablet: 4 }}>
             <Metric
               label={t`Virtual price`}
-              value={virtualPrice && virtualPrice / 10 ** DEFAULT_DECIMALS}
+              value={virtualPrice}
               valueOptions={{ abbreviate: false, decimals: 6 }}
-              loading={loading}
               testId="refuel-virtual-price"
             />
           </Grid>
@@ -176,7 +178,12 @@ export const RefuelPricesChart = ({ blockchainId, poolAddress }: { blockchainId:
       }
       action={
         <>
-          <SelectTimeOption options={PERIODS} activeOption={period} setActiveOption={setPeriod} isLoading={loading} />
+          <SelectTimeOption
+            options={PERIODS}
+            activeOption={period}
+            setActiveOption={setPeriod}
+            isLoading={timeSeries.isPending}
+          />
           {fullscreen && (
             <ButtonExport
               filename="refuel_prices"

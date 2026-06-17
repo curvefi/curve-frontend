@@ -7,6 +7,12 @@ import { useMappedQuery, type QueryProp } from '@ui-kit/types/util'
 import { getUniqueSortedStrings } from '@ui-kit/utils/sorting'
 import { LlamaMarketColumnId } from '../columns'
 
+const getChains = (data: LlamaMarket[]) =>
+  getUniqueSortedStrings(
+    data.filter(market => !market.deprecatedMessage || market.userHasPositions),
+    LlamaMarketColumnId.Chain,
+  )
+
 export const LlamaChainFilterChips = ({
   marketsQuery,
   columnFiltersById,
@@ -36,12 +42,7 @@ export const LlamaChainFilterChips = ({
 
   return (
     <ChainFilterChips
-      chainsQuery={useMappedQuery(marketsQuery, data =>
-        getUniqueSortedStrings(
-          data.filter(market => !market.deprecatedMessage || market.userHasPositions),
-          LlamaMarketColumnId.Chain,
-        ),
-      )}
+      chainsQuery={useMappedQuery(marketsQuery, getChains)}
       selectedChains={selectedChains}
       toggleChain={toggleChain}
     />
