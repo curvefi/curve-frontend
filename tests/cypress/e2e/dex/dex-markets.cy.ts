@@ -175,6 +175,7 @@ describe('DEX Pools', () => {
     // Current page selected
     cy.get('[data-testid="btn-page-5"]').should('have.class', 'Mui-selected')
     cy.get('[data-testid^="btn-page-"]').then($buttons => {
+      // last page is displayed in index -2, since the last item (-1) is 'next'. The one before the last is index -3.
       const [prevLastPage, lastPage] = getPages($buttons.eq($buttons.length - 3), $buttons.eq($buttons.length - 2))
       expect(getPages($buttons)).to.deep.equal([
         'prev',
