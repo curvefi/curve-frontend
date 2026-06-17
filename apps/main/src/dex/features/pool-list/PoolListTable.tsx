@@ -91,7 +91,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
 
   return (
     <Stack>
-      <CardHeader title={t`Pools`} subheader={t`Find your next opportunity`} />
+      <CardHeader title={t`Pools`} />
       <DataTable
         table={table}
         emptyState={
