@@ -1,3 +1,4 @@
+import { EXTERNAL_LINKS } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { AppPage, AppRoute, AppRoutes } from '@ui-kit/widgets/Header/types'
 
@@ -47,7 +48,7 @@ export const DAO_ROUTES = {
   PAGE_VECRV: '/vecrv',
   PAGE_ANALYTICS: '/analytics',
   PAGE_USER: '/user',
-  DISCUSSION: 'https://gov.curve.finance/',
+  DISCUSSION: EXTERNAL_LINKS.curve.gov,
   PAGE_LEGAL,
   PAGE_INTEGRATIONS,
 } as const
