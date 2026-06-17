@@ -173,7 +173,7 @@ describe('DEX Pools', () => {
     // Current page selected
     cy.get('[data-testid="btn-page-5"]').should('have.class', 'Mui-selected')
     cy.get('[data-testid^="btn-page-"]').then($buttons => {
-      const [prevLastPage, lastPage] = [$buttons.length - 1, $buttons.length]
+      const [prevLastPage, lastPage] = [$buttons.length - 2, $buttons.length - 1]
       expect(getPages($buttons)).to.deep.equal([
         'prev',
         '1',
