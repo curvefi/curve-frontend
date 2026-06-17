@@ -13,17 +13,17 @@ export const Privacy = () => (
         {t`This privacy notice (`}
         <Bold>{t`"Privacy Notice"`}</Bold>
         {t`) explains the basis for our collection of personal data when you use our websites `}
-        <LegalExternalLink href={EXTERNAL_LINKS.curve.root}>{EXTERNAL_LINKS.curve.root}</LegalExternalLink>
+        <LegalExternalLink link="curve.root" />
         {t`, `}
-        <LegalExternalLink href={EXTERNAL_LINKS.curve.classic}>{EXTERNAL_LINKS.curve.classic}</LegalExternalLink>
+        <LegalExternalLink link="curve.classic" />
         {t`, `}
-        <LegalExternalLink href={EXTERNAL_LINKS.news}>{EXTERNAL_LINKS.news}</LegalExternalLink>
+        <LegalExternalLink link="curve.news" />
         {t`, `}
-        <LegalExternalLink href={EXTERNAL_LINKS.docs.root}>{EXTERNAL_LINKS.docs.root}</LegalExternalLink>
+        <LegalExternalLink link="curve.docs" />
         {t`, `}
-        <LegalExternalLink href={EXTERNAL_LINKS.docs.root}>{EXTERNAL_LINKS.docs.root}</LegalExternalLink>
+        <LegalExternalLink link="curve.docs" />
         {t` and `}
-        <LegalExternalLink href={EXTERNAL_LINKS.curve.gov}>{EXTERNAL_LINKS.curve.gov}</LegalExternalLink>
+        <LegalExternalLink link="curve.gov" />
         {t` (together `}
         <Bold>{t`"Websites"`}</Bold>
         {t`), when you use our services, when you communicate with us or when you otherwise deal with us, and sets out how we use your personal data, the conditions under which we disclose it to others and the measures we take to keep it secure. In addition, we may inform you about the processing of your personal data separately, for example in consent forms, terms and conditions, additional privacy notices, forms, and other notices. We use the word `}
@@ -76,7 +76,7 @@ export const Privacy = () => (
     <Section>
       <Title>{t`2.2 User Account`}</Title>
       <Paragraph>
-        {t`Some of our services (especially on ${EXTERNAL_LINKS.news}  and ${EXTERNAL_LINKS.curve.gov}) can only be used with a user account. We process the data collected in this context in order to provide our services and to ensure their functionality and security.`}
+        {t`Some of our services (especially on ${EXTERNAL_LINKS.curve.news}  and ${EXTERNAL_LINKS.curve.gov}) can only be used with a user account. We process the data collected in this context in order to provide our services and to ensure their functionality and security.`}
       </Paragraph>
       <Paragraph>
         {t`The data collected includes: name; first name; username; email address; password; information regarding your consent to the Terms of Service; your acknowledgement of this Privacy Notice; etc.`}
@@ -154,7 +154,7 @@ export const Privacy = () => (
             {t`By visiting the website, YouTube receives the information that you have called up the corresponding subpage of our Websites. In addition, the above-mentioned basic data (such as IP-address and timestamp) are transmitted. This occurs regardless of whether YouTube provides a user account through which you are logged in or whether there is no user account. If you are logged in to Google, your data will be directly assigned to your account. If you do not want the assignment with your profile at YouTube, you must log out before activating the button. YouTube stores your data as user profiles and uses them for its own purposes, such as advertising, market research and/or needs-based design of its website. Such an evaluation is carried out in particular (even for users who are not logged in) to provide needs-based advertising and to inform other users of the social network about your activities on our Websites. You have the right to object to the creation of these user profiles. You must contact YouTube to exercise this right.`}
             <br />
             {t`The information collected is stored on Google servers, around the world including servers in the US. For these cases, the provider complies, according to its own information, with the EU-U.S. and Swiss-U.S. Data Privacy Frameworks and the UK Extension to the EU-U.S. Data Privacy Framework and/or relies on Standard Contractual Clauses (SCCs) for providing appropriate data protection safeguards. For more information, please refer to Google's privacy policy: `}
-            <LegalExternalLink href="https://policies.google.com/privacy?hl=en">
+            <LegalExternalLink link="legal.privacyPolicies.google">
               {t`Privacy Policy – Privacy & Terms – Google`}
             </LegalExternalLink>
             {t`.`}
@@ -171,7 +171,7 @@ export const Privacy = () => (
             {t`The information collected is stored on X's servers, including those in the United States, a country that, from the perspective of Switzerland and the EU, does not offer an adequate level of data protection. In such cases, X participates in the EU-U.S. Data Privacy Framework, the Swiss-U.S. Data Privacy Framework and the UK Extension to the EU-U.S. Data Privacy Framework and/or enters into so-called Standard Contractual Clauses with its customers to ensure an adequate level of data protection.`}
             <br />
             {t`For more information, please refer to X's privacy policy: `}
-            <LegalExternalLink href="https://x.com/en/privacy">{t`X Privacy Policy`}</LegalExternalLink>
+            <LegalExternalLink link="legal.privacyPolicies.x">{t`X Privacy Policy`}</LegalExternalLink>
             {t`.`}
           </Typography>
         </List>
@@ -302,7 +302,7 @@ export const Privacy = () => (
       </Paragraph>
       <Paragraph>
         {t`In addition, every data subject has the opportunity to assert their rights in court or to file a complaint with the relevant data protection authority. In Switzerland, the relevant data protection authority is the Federal Data Protection and Information Commissioner (`}
-        <LegalExternalLink href="http://www.edoeb.admin.ch">{t`http://www.edoeb.admin.ch`}</LegalExternalLink>
+        <LegalExternalLink link="legal.swissFdpic">{EXTERNAL_LINKS.legal.swissFdpic}</LegalExternalLink>
         {t`).`}
       </Paragraph>
     </Section>

@@ -9,8 +9,8 @@ import { scanAddressPath } from '@ui/utils'
 import { useManualPagination, getPageCount } from '@ui-kit/features/activity-table'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
-import { LegacyDataTable } from '@ui-kit/shared/ui/DataTable/LegacyDataTable'
 import { RECENT_REFUELS_PAGE_SIZE, useRecentRefuels } from '../../queries/recent-refuels.query'
 import { createRecentRefuelsColumns, type RecentRefuelRow } from './columns/columns.definitions'
 
@@ -56,14 +56,14 @@ export const RecentRefuels = ({
   return (
     <Stack data-testid="refuel-recent-refuels">
       <CardHeader title={t`Recent Refuels`} size="small" />
-      <LegacyDataTable<RecentRefuelRow>
+      <DataTable<RecentRefuelRow>
         table={table}
         emptyState={
           <EmptyStateRow table={table}>
             {error ? t`Could not load recent refuels: ${error.message}` : t`No recent refuels found.`}
           </EmptyStateRow>
         }
-        loading={isLoading || isFetching}
+        isLoading={isLoading || isFetching}
       />
     </Stack>
   )

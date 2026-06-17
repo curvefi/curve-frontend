@@ -157,6 +157,7 @@ export const Duration = {
   LoadingTimeout: 5000,
   Banner: {
     Daily: TIME_FRAMES.DAY_MS,
+    Weekly: TIME_FRAMES.DAY_MS * 7,
     Monthly: TIME_FRAMES.MONTH_MS,
   },
   AverageRates: {
