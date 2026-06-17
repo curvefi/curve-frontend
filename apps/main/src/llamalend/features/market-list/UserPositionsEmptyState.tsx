@@ -1,6 +1,5 @@
 import { PositionsEmptyState } from '@/llamalend/constants'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
-import Button from '@mui/material/Button'
 import type { Table } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
@@ -64,13 +63,7 @@ export const UserPositionsEmptyState = ({
       <EmptyStateCard
         title={title}
         subtitle={subtitle}
-        action={
-          onButtonClick && (
-            <Button size="small" onClick={onButtonClick}>
-              {buttonLabel}
-            </Button>
-          )
-        }
+        {...(onButtonClick && { label: buttonLabel, onclick: onButtonClick })}
       />
     </EmptyStateRow>
   )

@@ -1,6 +1,5 @@
 import { useRef, useState } from 'react'
 import type { LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
-import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { ExpandedState } from '@tanstack/react-table'
 import { useIsMobile, useIsTablet } from '@ui-kit/hooks/useBreakpoints'
@@ -81,11 +80,7 @@ export const LlamaMarketsTable = ({
             <EmptyStateCard
               title={isError ? t`Could not load markets` : t`No markets found`}
               subtitle={isError ? undefined : t`Try adjusting your filters or search query`}
-              action={
-                <Button size="small" onClick={isError ? onReload : resetFilters}>
-                  {isError ? t`Reload` : t`Show All Markets`}
-                </Button>
-              }
+              action={{ onClick: isError ? onReload : resetFilters, label: isError ? t`Reload` : t`Show All Markets` }}
             />
           </EmptyStateRow>
         }

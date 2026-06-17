@@ -9,7 +9,7 @@ const meta: Meta<typeof EmptyStateCard> = {
   args: {
     title: 'No markets found',
     subtitle: 'Try adjusting your filters or search query.',
-    action: { label: 'Reset filters', onClick: fn },
+    action: { label: 'Reset filters', onClick: fn() },
   },
 }
 
@@ -34,7 +34,7 @@ export const WithSubtitle: Story = {
 export const WithAction: Story = {
   args: {
     subtitle: 'Try adjusting your filters or search query.',
-    action: { label: 'Reset filters', onClick: fn },
+    action: { label: 'Reset filters', onClick: fn() },
   },
 }
 

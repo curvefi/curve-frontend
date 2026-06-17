@@ -2,7 +2,7 @@ import { useConnection } from 'wagmi'
 import Stack from '@mui/material/Stack'
 import { fromEntries, maybe, recordValues } from '@primitives/objects.utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
-import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
+import { CONNECT_WALLET_TEST_ID } from '@ui-kit/features/connect-wallet/ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { getInternalUrl, LEND_MARKET_ROUTES, LEND_ROUTES } from '@ui-kit/shared/routes'
 import { TableHeader } from '@ui-kit/shared/ui/DataTable/TableHeader'
@@ -90,13 +90,12 @@ export const UserPositionsTables = ({
               )
             ) : (
               <EmptyStateCard
-                action={
-                  <ConnectWalletButton
-                    label={t`Connect to view positions`}
-                    onClick={() => void connect()}
-                    loading={isConnecting}
-                  />
-                }
+                action={{
+                  label: t`Connect to view positions`,
+                  onClick: () => void connect(),
+                  testId: CONNECT_WALLET_TEST_ID,
+                  loading: isConnecting,
+                }}
               />
             )}
           </Stack>

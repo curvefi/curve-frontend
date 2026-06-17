@@ -4,7 +4,7 @@ import { invalidateBadDebtMarkets } from '@/llamalend/queries/market'
 import Box from '@mui/material/Box'
 import type { Address } from '@primitives/address.utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
-import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
+import { CONNECT_WALLET_TEST_ID } from '@ui-kit/features/connect-wallet/ui/utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useLLv2, useNewMarketListLayout } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
@@ -100,13 +100,12 @@ export const LlamaMarketsList = () => {
       ) : (
         <Box sx={{ paddingBlock: Spacing.md, backgroundColor: t => t.design.Layer[1].Fill }}>
           <EmptyStateCard
-            action={
-              <ConnectWalletButton
-                label={t`Connect to view positions`}
-                onClick={() => void connect()}
-                loading={isConnecting}
-              />
-            }
+            action={{
+              label: t`Connect to view positions`,
+              onClick: () => void connect(),
+              testId: CONNECT_WALLET_TEST_ID,
+              loading: isConnecting,
+            }}
           />
         </Box>
       )}
