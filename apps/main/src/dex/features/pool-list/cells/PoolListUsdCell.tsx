@@ -1,4 +1,4 @@
-import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import { maybe } from '@primitives/objects.utils'
 import type { CellContext } from '@tanstack/react-table'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
@@ -10,7 +10,9 @@ export const PoolListUsdCell = ({ getValue }: CellContext<PoolListItem, number |
 
   return (
     <Tooltip title={maybe(value, value => formatNumber(value, 'usd.amount'))}>
-      <Stack>{value == null ? '-' : formatNumber(value, 'usd.notional')}</Stack>
+      <Typography component="span" variant="tableCellMBold">
+        {formatNumber(value, 'usd.notional')}
+      </Typography>
     </Tooltip>
   )
 }

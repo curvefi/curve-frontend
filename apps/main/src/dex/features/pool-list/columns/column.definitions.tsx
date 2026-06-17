@@ -55,7 +55,10 @@ export const POOL_LIST_COLUMNS = [
       type: 'numeric',
       tooltip: createTooltip(
         PoolListColumnId.RewardsBase,
-        t`Base variable APY (vAPY) is the annualized yield from trading fees based on the activity over the past 24h.`,
+        [
+          t`Base variable APY (vAPY) is the annualized yield from trading fees based on the activity over the past 24h.`,
+          t`If a pool holds a yield bearing asset, the intrinsic yield is added.`,
+        ].join(' '),
       ),
     },
     sortUndefined: 'last',

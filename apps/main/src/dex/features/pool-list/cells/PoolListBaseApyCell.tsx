@@ -1,40 +1,29 @@
 import { ChipVolatileBaseApy } from '@/dex/components/ChipVolatileBaseApy'
+import { TooltipBaseApy } from '@/dex/components/TooltipBaseApy'
 import { LARGE_APY } from '@/dex/constants'
-import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import type { CellContext } from '@tanstack/react-table'
-import { t } from '@ui-kit/lib/i18n'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { formatNumber } from '@ui-kit/utils'
 import type { PoolListItem } from '../poolList.types'
-import { Placeholder } from './Placeholder'
-
-const BaseApyTooltip = ({ day, week }: { day: number; week: number | null | undefined }) => (
-  <Stack component="span">
-    <strong>{t`Pool APY`}</strong>
-    <span>
-      {t`Daily`}: {formatNumber(day, 'percent.value')}
-    </span>
-    {week != null && (
-      <span>
-        {t`Weekly`}: {formatNumber(week, 'percent.value')}
-      </span>
-    )}
-  </Stack>
-)
 
 export const PoolListBaseApyCell = ({
   row: { original: pool },
   getValue,
-}: CellContext<PoolListItem, number | null>) => {
-  const day = getValue()
+}: CellContext<PoolListItem, number | null | undefined>) => {
+  const baseDailyApr = getValue()
 
-  return day == null ? (
-    <Placeholder />
-  ) : day > LARGE_APY ? (
+  return baseDailyApr != null && baseDailyApr > LARGE_APY ? (
     <ChipVolatileBaseApy />
+  ) : baseDailyApr == null ? (
+    <Typography component="span" variant="tableCellMBold">
+      {formatNumber(baseDailyApr, 'percent.rate')}
+    </Typography>
   ) : (
-    <Tooltip title={<BaseApyTooltip day={day} week={pool.baseWeeklyApr} />}>
-      <Stack>{formatNumber(day, 'percent.rate')}</Stack>
+    <Tooltip title={<TooltipBaseApy baseDailyApr={baseDailyApr} baseWeeklyApr={pool.baseWeeklyApr} />}>
+      <Typography component="span" variant="tableCellMBold">
+        {formatNumber(baseDailyApr, 'percent.rate')}
+      </Typography>
     </Tooltip>
   )
 }

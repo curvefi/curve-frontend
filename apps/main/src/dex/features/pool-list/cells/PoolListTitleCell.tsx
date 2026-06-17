@@ -19,7 +19,7 @@ export const PoolListTitleCell = ({
   row: { original: pool },
   column: { getFilterValue },
 }: CellContext<PoolListItem, string>) => {
-  const tokenList = useMemo(() => pool.coins.map(({ symbol, address }) => ({ symbol, address })), [pool.coins])
+  const tokenList = pool.coins
   const tokenAddresses = useMemo(() => tokenList.map(({ address }) => address), [tokenList])
   const poolAlert = usePoolAlert({
     network: pool.network,

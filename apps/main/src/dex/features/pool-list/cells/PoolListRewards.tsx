@@ -1,44 +1,46 @@
-import type { ReactNode } from 'react'
 import { CampaignRewardsRow } from '@/dex/components/CampaignRewardsRow'
 import { ChipInactive } from '@/dex/components/ChipInactive'
 import type { Chain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
-import { Chip } from '@ui/Typography'
+import Typography from '@mui/material/Typography'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
+import { Badge } from '@ui-kit/shared/ui/Badge'
+import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { formatNumber } from '@ui-kit/utils'
 import type { PoolListItem } from '../poolList.types'
 import { normalizeAddress } from '../poolList.utils'
-import { Placeholder } from './Placeholder'
 
 type CrvRewards = Pick<PoolListItem, 'crvApr' | 'crvAprBoosted'>
-type ExtraRewards = Pick<PoolListItem, 'address' | 'extraRewardsApr'>
 
-const getCrvRewardsLabel = ({ crvApr, crvAprBoosted }: CrvRewards): ReactNode => {
-  const baseApr = crvApr ?? 0
-  const boostedApr = crvAprBoosted ?? 0
+const MIN_VISIBLE_CRV_APR = 0.01
+const MAX_CRV_BOOST = '2.50'
+const REWARD_BADGE_SIZE = 'small'
+const CRV_SYMBOL = 'CRV'
 
-  if (!baseApr && !boostedApr) return null
-  if (baseApr < 0.01) return '< 0.01% CRV'
+const getCrvRewardsLabel = ({ crvApr, crvAprBoosted }: CrvRewards) => {
+  const baseCrvApr = crvApr ?? 0
+  const boostedCrvApr = crvAprBoosted ?? 0
+
+  if (!baseCrvApr && !boostedCrvApr) return
+  if (baseCrvApr < MIN_VISIBLE_CRV_APR) return `< ${formatNumber(MIN_VISIBLE_CRV_APR, 'percent.value')} ${CRV_SYMBOL}`
+  if (!boostedCrvApr) return `${formatNumber(baseCrvApr, 'percent.value')} ${CRV_SYMBOL}`
 
   return (
     <>
-      {formatNumber(baseApr, 'percent.value')}
-      {boostedApr ? ' \u2192 ' : null}
-      {boostedApr ? <span style={{ whiteSpace: 'nowrap' }}>{formatNumber(boostedApr, 'percent.value')}</span> : null}
-      {' CRV'}
+      {formatNumber(baseCrvApr, 'percent.value')}
+      {' → '}
+      <span style={{ whiteSpace: 'nowrap' }}>{formatNumber(boostedCrvApr, 'percent.value')}</span>
+      {` ${CRV_SYMBOL}`}
     </>
   )
 }
 
-const getExtraRewards = ({ address: poolAddress, extraRewardsApr }: ExtraRewards) =>
-  extraRewardsApr
-    .filter(({ apr }) => apr > 0)
-    .map(({ apr, address, symbol }, index) => ({
-      apr,
-      id: address ?? `${poolAddress}-${index}`,
-      symbol: symbol ?? '',
-    }))
+const EmptyRewards = () => (
+  <Typography component="span" variant="tableCellMBold" sx={{ display: 'block', textAlign: 'end' }}>
+    -
+  </Typography>
+)
 
 export const PoolListRewards = ({ pool, mobile }: { pool: PoolListItem; mobile?: boolean }) => {
   const { data: campaigns } = useCampaignsByAddress({
@@ -46,30 +48,27 @@ export const PoolListRewards = ({ pool, mobile }: { pool: PoolListItem; mobile?:
     address: normalizeAddress(pool.address) as typeof pool.address,
   })
   const crvRewardsLabel = getCrvRewardsLabel(pool)
-  const extraRewards = getExtraRewards(pool)
-  const hasRewards = crvRewardsLabel || extraRewards.length > 0 || campaigns.length > 0
+  const extraRewards = pool.extraRewardsApr.filter(({ apr }) => apr > 0)
+  const hasCampaignRewards = campaigns.length > 0
 
-  return pool.gauge?.isKilled ? (
-    <ChipInactive>Inactive gauge</ChipInactive>
-  ) : hasRewards ? (
+  if (pool.gauge?.isKilled) return <ChipInactive>{t`Inactive gauge`}</ChipInactive>
+  if (!crvRewardsLabel && extraRewards.length === 0 && !hasCampaignRewards) return <EmptyRewards />
+
+  return (
     <Stack sx={{ alignItems: 'end' }}>
       {crvRewardsLabel && (
-        <Chip
-          size="md"
-          tooltip={t`CRV LP reward annualized (max tAPR can be reached with max boost of 2.50)`}
-          tooltipProps={{ placement: 'bottom-end' }}
+        <Tooltip
+          title={t`CRV LP reward annualized (max tAPR can be reached with max boost of ${MAX_CRV_BOOST})`}
+          placement="bottom-end"
         >
-          {crvRewardsLabel}
-        </Chip>
+          <Badge size={REWARD_BADGE_SIZE} label={crvRewardsLabel} />
+        </Tooltip>
       )}
-      {extraRewards.map(({ apr, id, symbol }) => (
-        <Chip key={id} size="md">
-          {formatNumber(apr, 'percent.value')} {symbol}
-        </Chip>
+      {extraRewards.map(({ apr, symbol }, index) => (
+        // eslint-disable-next-line @eslint-react/no-array-index-key -- Extra rewards are display-only API rows without a required stable id.
+        <Badge key={index} size={REWARD_BADGE_SIZE} label={`${formatNumber(apr, 'percent.value')} ${symbol ?? ''}`} />
       ))}
-      {campaigns.length > 0 && <CampaignRewardsRow rewardItems={campaigns} mobile={mobile} />}
+      {hasCampaignRewards && <CampaignRewardsRow rewardItems={campaigns} mobile={mobile} />}
     </Stack>
-  ) : (
-    <Placeholder />
   )
 }

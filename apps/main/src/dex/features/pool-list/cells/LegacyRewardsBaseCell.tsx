@@ -1,5 +1,5 @@
 import { ChipVolatileBaseApy } from '@/dex/components/ChipVolatileBaseApy'
-import { TooltipBaseApy } from '@/dex/components/TooltipBaseApy'
+import { LegacyTooltipBaseApy } from '@/dex/components/LegacyTooltipBaseApy'
 import { LARGE_APY } from '@/dex/constants'
 import Stack from '@mui/material/Stack'
 import type { CellContext } from '@tanstack/react-table'
@@ -29,7 +29,7 @@ export const LegacyRewardsBaseCell = ({
       (day > LARGE_APY ? (
         <ChipVolatileBaseApy isBold={isHighlight} />
       ) : (
-        <Tooltip title={rewards?.base && <TooltipBaseApy poolData={poolData} baseApy={rewards.base} />}>
+        <Tooltip title={rewards?.base && <LegacyTooltipBaseApy poolData={poolData} baseApy={rewards.base} />}>
           <Stack>{formatNumber(day, 'percent.rate')}</Stack>
         </Tooltip>
       ))

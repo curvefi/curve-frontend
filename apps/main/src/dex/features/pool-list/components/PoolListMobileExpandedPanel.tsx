@@ -8,15 +8,20 @@ import type { ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { Metric, type MetricProps } from '@ui-kit/shared/ui/Metric'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { constQ } from '@ui-kit/types/util'
+import { decimal } from '@ui-kit/utils'
 import { PoolListRewards } from '../cells/PoolListRewards'
 import { PoolListColumnId } from '../columns/column.enum'
 import type { PoolListItem } from '../poolList.types'
 
 const { Spacing } = SizesAndSpaces
 
-const ListInfoItem = (props: MetricProps) => (
+const ListInfoItem = ({
+  value,
+  ...props
+}: Omit<MetricProps, 'value'> & { value: number | string | undefined | null }) => (
   <Grid size={6}>
-    <Metric {...props} />
+    <Metric value={constQ(decimal(value) ?? null)} {...props} />
   </Grid>
 )
 
