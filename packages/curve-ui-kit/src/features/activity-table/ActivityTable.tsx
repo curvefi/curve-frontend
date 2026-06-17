@@ -37,7 +37,7 @@ export const ActivityTable = <TData extends TableItem>({
     <DataTable
       table={table}
       emptyState={
-        <EmptyStateRow table={table} size="lg">
+        <EmptyStateRow table={table} size="sm">
           {isError ? (
             <ErrorMessage title={t`Hm... Something went wrong.`} subtitle={errorMessage} errorMessage={errorMessage} />
           ) : (
