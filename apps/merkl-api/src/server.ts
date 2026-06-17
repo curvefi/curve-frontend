@@ -4,8 +4,10 @@ import { OpportunitiesOpts, OpportunitiesPath } from './routes/opportunities.sch
 
 export const createMerklServer = (
   { npm_package_version, NODE_ENV, SERVICE_NAME, LOG_LEVEL, MERKL_API_KEY } = process.env,
-) =>
-  createFastify({ logger: { level: LOG_LEVEL || (NODE_ENV === 'production' ? 'info' : 'debug') } })
+) => {
+  if (!MERKL_API_KEY) throw new Error('Missing required environment variable MERKL_API_KEY')
+
+  return createFastify({ logger: { level: LOG_LEVEL || (NODE_ENV === 'production' ? 'info' : 'debug') } })
     .get('/health', () => ({
       status: 'ok',
       service: SERVICE_NAME || 'merkl-api',
@@ -15,3 +17,4 @@ export const createMerklServer = (
       timestamp: new Date().toISOString(),
     }))
     .get(OpportunitiesPath, OpportunitiesOpts, getOpportunities({ MERKL_API_KEY }))
+}

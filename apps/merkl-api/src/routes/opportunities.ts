@@ -1,14 +1,14 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import type { OpportunitiesQuery } from './opportunities.schemas'
 
-const MERKL_API_URL = 'https://api.merkl.xyz'
+const MERKL_OPPORTUNITIES_URL = 'https://api.merkl.xyz/v4/opportunities'
 
 type MerklConfig = {
-  MERKL_API_KEY?: string
+  MERKL_API_KEY: string
 }
 
-const buildMerklOpportunitiesUrl = (baseUrl: string, query: OpportunitiesQuery) => {
-  const url = new URL(`${baseUrl.replace(/\/+$/, '')}/v4/opportunities`)
+const buildMerklOpportunitiesUrl = (query: OpportunitiesQuery) => {
+  const url = new URL(MERKL_OPPORTUNITIES_URL)
   Object.entries(query).forEach(([key, value]) => {
     if (value != null) url.searchParams.set(key, String(value))
   })
@@ -16,11 +16,10 @@ const buildMerklOpportunitiesUrl = (baseUrl: string, query: OpportunitiesQuery) 
 }
 
 export const getOpportunities =
-  ({ MERKL_API_KEY }: MerklConfig = {}) =>
+  ({ MERKL_API_KEY }: MerklConfig) =>
   async (request: FastifyRequest<{ Querystring: OpportunitiesQuery }>, reply: FastifyReply) => {
-    const url = buildMerklOpportunitiesUrl(MERKL_API_URL, request.query)
-    const headers: Record<string, string> = { accept: 'application/json' }
-    if (MERKL_API_KEY) headers['X-API-Key'] = MERKL_API_KEY
+    const url = buildMerklOpportunitiesUrl(request.query)
+    const headers = { accept: 'application/json', 'X-API-Key': MERKL_API_KEY }
 
     const response = await fetch(url, { method: 'GET', headers })
     const { ok, status, statusText } = response
@@ -33,7 +32,7 @@ export const getOpportunities =
         statusText,
         url,
         body,
-        authenticated: !!MERKL_API_KEY,
+        authenticated: true,
       })
       return reply.code(status).send({
         statusCode: status,

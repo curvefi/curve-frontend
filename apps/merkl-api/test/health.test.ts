@@ -3,7 +3,7 @@ import { createMerklServer } from '../src/server'
 
 describe('health endpoint', () => {
   it('responds with service metadata', async () => {
-    const server = createMerklServer()
+    const server = createMerklServer({ NODE_ENV: 'test', LOG_LEVEL: 'silent', MERKL_API_KEY: 'test-merkl-key' })
 
     try {
       const response = await server.inject({ method: 'GET', url: '/health' })

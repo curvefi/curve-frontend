@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { createMerklServer } from '../src/server'
 
-const MERKL_API_URL = 'https://merkl.test'
+const MERKL_API_URL = 'https://api.merkl.xyz'
 
 const jsonResponse = (payload: unknown, init: ResponseInit = {}) =>
   new Response(JSON.stringify(payload), {
@@ -21,8 +21,8 @@ const getFetchInit = (fetchMock: ReturnType<typeof vi.fn<typeof fetch>>) => {
   return init!
 }
 
-const createServer = (MERKL_API_KEY?: string) =>
-  createMerklServer({ NODE_ENV: 'test', LOG_LEVEL: 'silent', MERKL_API_URL, MERKL_API_KEY })
+const createServer = (MERKL_API_KEY = 'test-merkl-key') =>
+  createMerklServer({ NODE_ENV: 'test', LOG_LEVEL: 'silent', MERKL_API_KEY })
 
 describe('GET opportunities', () => {
   afterEach(() => {
@@ -83,21 +83,10 @@ describe('GET opportunities', () => {
     }
   })
 
-  it('omits X-API-Key when no Merkl API key is configured', async () => {
-    const fetchMock = vi.fn<typeof fetch>(() => Promise.resolve(jsonResponse([])))
-    vi.stubGlobal('fetch', fetchMock)
-    const server = createServer()
-
-    try {
-      const { statusCode } = await server.inject({ url: '/api/merkl/v1/opportunities' })
-      expect(statusCode).toBe(200)
-
-      const init = getFetchInit(fetchMock)
-      expect(init.headers).toEqual({ accept: 'application/json' })
-      expect(init.headers).not.toHaveProperty('X-API-Key')
-    } finally {
-      await server.close()
-    }
+  it('requires a Merkl API key', () => {
+    expect(() => createMerklServer({ NODE_ENV: 'test', LOG_LEVEL: 'silent' })).toThrow(
+      'Missing required environment variable MERKL_API_KEY',
+    )
   })
 
   it('returns upstream failures without leaking secrets or upstream bodies', async () => {
