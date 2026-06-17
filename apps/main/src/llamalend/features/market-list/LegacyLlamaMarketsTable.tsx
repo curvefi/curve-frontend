@@ -70,7 +70,7 @@ export const LegacyLlamaMarketsTable = ({
           <EmptyStateCard
             title={isError ? t`Could not load markets` : t`No markets found`}
             subtitle={isError ? undefined : t`Try adjusting your filters or search query`}
-            action={{ onClick: isError ? onReload : resetFilters, label: isError ? t`Reload` : t`Show All Markets` }}
+            button={{ onClick: isError ? onReload : resetFilters, label: isError ? t`Reload` : t`Show All Markets` }}
           />
         </EmptyStateRow>
       }

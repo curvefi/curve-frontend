@@ -160,6 +160,7 @@ export const LegacyUserPositionsTable = ({
     globalFilterFn,
     ...getTableOptions(userQuery.data),
   })
+
   return (
     <LegacyDataTable
       table={table}

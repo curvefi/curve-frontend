@@ -100,7 +100,7 @@ export const LlamaMarketsList = () => {
       ) : (
         <Box sx={{ paddingBlock: Spacing.md, backgroundColor: t => t.design.Layer[1].Fill }}>
           <EmptyStateCard
-            action={{
+            button={{
               label: t`Connect to view positions`,
               onClick: () => void connect(),
               testId: CONNECT_WALLET_TEST_ID,

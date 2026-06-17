@@ -90,7 +90,7 @@ export const UserPositionsTables = ({
               )
             ) : (
               <EmptyStateCard
-                action={{
+                button={{
                   label: t`Connect to view positions`,
                   onClick: () => void connect(),
                   testId: CONNECT_WALLET_TEST_ID,

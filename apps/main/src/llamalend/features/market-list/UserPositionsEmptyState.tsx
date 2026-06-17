@@ -63,7 +63,7 @@ export const UserPositionsEmptyState = ({
       <EmptyStateCard
         title={title}
         subtitle={subtitle}
-        {...(onButtonClick && { label: buttonLabel, onclick: onButtonClick })}
+        {...(onButtonClick && { button: { label: buttonLabel, onClick: onButtonClick } })}
       />
     </EmptyStateRow>
   )

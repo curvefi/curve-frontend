@@ -9,7 +9,7 @@ const meta: Meta<typeof EmptyStateCard> = {
   args: {
     title: 'No markets found',
     subtitle: 'Try adjusting your filters or search query.',
-    action: { label: 'Reset filters', onClick: fn() },
+    button: { label: 'Reset filters', onClick: fn() },
   },
 }
 
@@ -20,21 +20,21 @@ export const Default: Story = {}
 export const WithTitle: Story = {
   args: {
     subtitle: undefined,
-    action: undefined,
+    button: undefined,
   },
 }
 
 export const WithSubtitle: Story = {
   args: {
     subtitle: 'Try adjusting your filters or search query.',
-    action: undefined,
+    button: undefined,
   },
 }
 
-export const WithAction: Story = {
+export const WithButton: Story = {
   args: {
     subtitle: 'Try adjusting your filters or search query.',
-    action: { label: 'Reset filters', onClick: fn() },
+    button: { label: 'Reset filters', onClick: fn() },
   },
 }
 

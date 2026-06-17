@@ -10,9 +10,9 @@ import { applySxProps } from '@ui-kit/utils'
 const { Spacing, IconSize, MaxWidth, LineHeight } = SizesAndSpaces
 
 type EmptyStateCardProps = {
-  title?: string
-  subtitle?: string
-  action?: ButtonProps & { label: ReactNode; testId?: string }
+  title?: ReactNode
+  subtitle?: ReactNode
+  button?: ButtonProps & { label: ReactNode; testId?: string }
   isLoading?: boolean
   size?: 'sm' | 'md'
 }
@@ -34,8 +34,8 @@ const Skeletons = () => (
   </Stack>
 )
 
-export const EmptyStateCard = ({ title, subtitle, action, isLoading, size = 'md' }: EmptyStateCardProps) => {
-  const { label, sx, testId, ...actionProps } = action ?? {}
+export const EmptyStateCard = ({ title, subtitle, button, isLoading, size = 'md' }: EmptyStateCardProps) => {
+  const { label, sx, testId, ...buttonProps } = button ?? {}
   return (
     <Stack
       sx={{
@@ -62,9 +62,9 @@ export const EmptyStateCard = ({ title, subtitle, action, isLoading, size = 'md'
               </Typography>
             )}
           </Stack>
-          {action && (
+          {button && (
             <Button
-              {...actionProps}
+              {...buttonProps}
               variant="outlined"
               size={BUTTON_SIZE[size]}
               sx={applySxProps({ alignSelf: 'center' }, sx)}
