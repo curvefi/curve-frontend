@@ -59,10 +59,7 @@ export const Terms = ({ currentApp, network }: { currentApp: AppName; network: s
           </Typography>
           <Typography component="li" variant="bodyMRegular">
             {t`are not accessing or using the Website from one of the countries embargoed or restricted by the Swiss State Secretariat for Economic Affairs (SECO), including but not limited to: Belarus, Burundi, Central African Republic, Congo, DPRK (North Korea), Guinea, Guinea-Bissau, Iran, Iraq, Lebanon, Libya, Mali, Myanmar (Burma), Republic of South Sudan, Russia, Somalia, Sudan, Syria, Ukraine, Venezuela, Yemen, or Zimbabwe (if your country is embargoed or restricted can be found out under the following`}{' '}
-            <LegalExternalLink href="https://www.seco.admin.ch/seco/de/home/Aussenwirtschaftspolitik_Wirtschaftliche_Zusammenarbeit/Wirtschaftsbeziehungen/exportkontrollen-und-sanktionen/sanktionen-embargos/sanktionsmassnahmen/suche_sanktionsadressaten.html">
-              {t`link`}
-            </LegalExternalLink>{' '}
-            {t`(`}
+            <LegalExternalLink link="legal.sanctionsAddressSearch">{t`link`}</LegalExternalLink> {t`(`}
             <Bold>{t`Restricted Jurisdictions`}</Bold>
             {t`).`}
           </Typography>
@@ -89,11 +86,11 @@ export const Terms = ({ currentApp, network }: { currentApp: AppName; network: s
         <List type="disc">
           <Typography component="li" variant="bodyMRegular">
             {t`Technical Information: The Website provides access to various types of documentation related to the Curve ecosystem, including among others user guides (`}
-            <LegalExternalLink href={EXTERNAL_LINKS.docs.root}>{EXTERNAL_LINKS.docs.root}</LegalExternalLink>
+            <LegalExternalLink link="curve.docs" />
             {t`), GitHub repositories (`}
-            <LegalExternalLink href={EXTERNAL_LINKS.github.curvefi}>{t`Curve GitHub`}</LegalExternalLink>
+            <LegalExternalLink link="github.curvefi">{t`Curve GitHub`}</LegalExternalLink>
             {t`), a blog featuring the latest news in the Curve ecosystem (`}
-            <LegalExternalLink href={EXTERNAL_LINKS.news}>{t`Curve News`}</LegalExternalLink>
+            <LegalExternalLink link="curve.news">{t`Curve News`}</LegalExternalLink>
             {t`), a list of applications reportedly built on top of the Curve ecosystem (`}
             <RouterLink
               color="textSecondary"
@@ -103,7 +100,7 @@ export const Terms = ({ currentApp, network }: { currentApp: AppName; network: s
               {t`Integrations - Curve`}
             </RouterLink>
             {t`) and technical documentation detailing the implementation of the core Curve protocol and its associated smart contracts (`}
-            <LegalExternalLink href={EXTERNAL_LINKS.docs.root}>{t`Curve Technical Docs`}</LegalExternalLink>
+            <LegalExternalLink link="curve.docs">{t`Curve Technical Docs`}</LegalExternalLink>
             {t`).`}
           </Typography>
           <Typography component="li" variant="bodyMRegular">
@@ -111,18 +108,12 @@ export const Terms = ({ currentApp, network }: { currentApp: AppName; network: s
           </Typography>
           <Typography component="li" variant="bodyMRegular">
             {t`Security Information: The Website presents information related to the security of the Curve Project, respectively the Curve Functionalities and respective ecosystem, including audits reports (`}
-            <LegalExternalLink href={EXTERNAL_LINKS.docs.user.security.audits}>
+            <LegalExternalLink link="docs.user.security.audits">
               {t`Bug Bounty & Audits - Curve Technical Docs`}
             </LegalExternalLink>
-            {t`), details on bug bounty programs (`}
-            <LegalExternalLink href={EXTERNAL_LINKS.docs.user.security.bugBounty}>
+            {t`) and details on bug bounty programs (`}
+            <LegalExternalLink link="docs.user.security.bugBounty">
               {t`Bug Bounty & Audits - Curve Technical Docs`}
-            </LegalExternalLink>
-            {t`) and relevant statistics (`}
-            <LegalExternalLink href={EXTERNAL_LINKS.analytics.duneCurveFi}>{t`Curve.fi`}</LegalExternalLink>
-            {t`) and API status monitoring (`}
-            <LegalExternalLink href={EXTERNAL_LINKS.security.apiStatus}>
-              {t`Curve API's Live status - Powered by Freshping`}
             </LegalExternalLink>
             {t`).`}
           </Typography>
@@ -247,7 +238,7 @@ export const Terms = ({ currentApp, network }: { currentApp: AppName; network: s
       </Paragraph>
       <Paragraph>
         {t`Any and all rights related to the Website, including the official logos (as listed`}{' '}
-        <LegalExternalLink href={EXTERNAL_LINKS.brand.assets}>{t`here`}</LegalExternalLink>
+        <LegalExternalLink link="brand.assets">{t`here`}</LegalExternalLink>
         {t`) are held by us.`}
       </Paragraph>
       <Paragraph>

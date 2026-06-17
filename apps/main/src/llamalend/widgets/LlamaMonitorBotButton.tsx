@@ -1,6 +1,7 @@
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
+import { CURVE_SOCIALS } from '@ui/utils'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { ArrowTopRightIcon } from '@ui-kit/shared/icons/ArrowTopRightIcon'
@@ -9,13 +10,10 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-const LLAMA_MONITOR_BOT_URL = 'https://t.me/LlamalendMonitorBot'
-
-export const LlamaMonitorBotButton = () => {
-  const isMobile = useIsMobile()
-  return isMobile ? (
+export const LlamaMonitorBotButton = () =>
+  useIsMobile() ? (
     <IconButton
-      href={LLAMA_MONITOR_BOT_URL}
+      href={CURVE_SOCIALS.telegram.llamalendMonitorBot}
       target="_blank"
       rel="noreferrer noopener"
       component={Link}
@@ -38,11 +36,10 @@ export const LlamaMonitorBotButton = () => {
       }}
       startIcon={<BellRingingIcon fontSize="small" />}
       endIcon={<ArrowTopRightIcon fontSize="small" />}
-      href={LLAMA_MONITOR_BOT_URL}
+      href={CURVE_SOCIALS.telegram.llamalendMonitorBot}
       target="_blank"
       rel="noreferrer noopener"
     >
       {t`Get alerts`}
     </Button>
   )
-}

@@ -1,6 +1,7 @@
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { EXTERNAL_LINKS } from '@ui/utils'
 import { getSearchString } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
@@ -29,11 +30,8 @@ export const SCrvUsd = () => (
       }}
       sx={{ gap: Spacing.md, marginInline: Spacing.md }}
     >
-      <ExternalLink href="https://docs.curve.finance/scrvusd/overview/" label={t`scrvUSD protocol docs`} />
-      <ExternalLink
-        href="https://docs.curve.finance/assets/pdf/ChainSecurity_Curve_scrvUSD_audit.pdf"
-        label={t`scrvUSD smart contract audits`}
-      />
+      <ExternalLink href={EXTERNAL_LINKS.docs.scrvUsd.overview} label={t`scrvUSD protocol docs`} />
+      <ExternalLink href={EXTERNAL_LINKS.docs.assets.scrvUsdAudit} label={t`scrvUSD smart contract audits`} />
     </Stack>
 
     <Header>{t`crvUSD Dependency`}</Header>
@@ -66,9 +64,7 @@ export const SCrvUsd = () => (
 
           <Box component="li">
             <Typography variant="bodyMBold" component="span">
-              <LegalExternalLink href="https://docs.curve.finance/crvUSD/pegkeepers/overview/">
-                {t`PegKeeper Dependency:`}
-              </LegalExternalLink>
+              <LegalExternalLink link="docs.crvUsd.pegKeepers">{t`PegKeeper Dependency:`}</LegalExternalLink>
               {': '}
             </Typography>
 
@@ -107,12 +103,10 @@ export const SCrvUsd = () => (
     <Section>
       <Paragraph>
         {t`To obtain scrvUSD, users deposit crvUSD into a Savings Vault which make use of`}{' '}
-        <LegalExternalLink href="https://docs.yearn.fi/developers/v3/overview">{t`Yearn V3 vaults`}</LegalExternalLink>
+        <LegalExternalLink link="docs.yearn.v3Vaults">{t`Yearn V3 vaults`}</LegalExternalLink>
         {'. '}
         {t`While Yearn vaults have undergone extensive`}{' '}
-        <LegalExternalLink href="https://github.com/yearn/yearn-vaults-v3/tree/master/audits">
-          {t`audits`}
-        </LegalExternalLink>{' '}
+        <LegalExternalLink link="github.yearnVaultsV3Audits">{t`audits`}</LegalExternalLink>{' '}
         {t`and demonstrated resilience and security, users should be aware of the technical risks associated with interacting with smart contracts.`}
       </Paragraph>
 
