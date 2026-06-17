@@ -11,6 +11,7 @@ import InputAdornment from '@mui/material/InputAdornment'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
+import { EXTERNAL_LINKS } from '@ui/utils'
 import { FormProvider } from '@ui-kit/features/forms'
 import { usePinataJwt } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
@@ -74,7 +75,7 @@ export const CreateVoteModal = ({ isOpen, onClose }: CreateVoteModalProps) => {
 
             <Typography variant="bodySRegular">
               {t`1. New gauge votes are encouraged to have a proposal on the governance forum`}{' '}
-              <InlineLink to="https://gov.curve.finance/" hideIcon>{t`at this address`}</InlineLink>
+              <InlineLink to={EXTERNAL_LINKS.curve.gov} hideIcon>{t`at this address`}</InlineLink>
             </Typography>
 
             <Typography variant="bodySRegular">

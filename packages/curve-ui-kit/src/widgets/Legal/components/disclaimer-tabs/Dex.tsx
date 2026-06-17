@@ -53,9 +53,7 @@ export const Dex = () => (
 
       <Paragraph>
         {t`The Curve Emergency Admin is a`}{' '}
-        <LegalExternalLink href="https://etherscan.io/address/0x467947EE34aF926cF1DCac093870f613C96B1E0c">
-          {t`5-of-9 multisig`}
-        </LegalExternalLink>
+        <LegalExternalLink link="etherscan.curveEmergencyAdmin">{t`5-of-9 multisig`}</LegalExternalLink>
         {t`, composed of Curve community members. It has restricted rights to undertake actions that do not directly
           impact users' funds, including canceling parameter changes authorized by the DAO and halting CRV emissions to
           a pool. Early pool implementations included a timelimited function to freeze swaps and deposits in case of

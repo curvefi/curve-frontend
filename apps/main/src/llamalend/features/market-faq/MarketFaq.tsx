@@ -1,5 +1,6 @@
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { EXTERNAL_LINKS } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Accordion } from '@ui-kit/shared/ui/Accordion'
 import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
@@ -51,7 +52,7 @@ export const MarketFaq = () => (
       </Typography>
 
       <ExternalLink
-        href="https://docs.curve.finance/user/llamalend/overview"
+        href={EXTERNAL_LINKS.docs.user.llamalend.overview}
         label={t`Go to knowledge base`}
         variant="outlined"
         color="secondary"

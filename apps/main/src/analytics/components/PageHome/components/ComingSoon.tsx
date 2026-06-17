@@ -5,6 +5,7 @@ import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { EXTERNAL_LINKS } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { CrvHubIcon } from '@ui-kit/shared/icons/CrvHubIcon'
 import { LAFIcon } from '@ui-kit/shared/icons/LAFIcon'
@@ -53,7 +54,7 @@ export const ComingSoon = () => (
             wide
             variant="contained"
             color="primary"
-            href="https://curvemonitor.com/"
+            href={EXTERNAL_LINKS.monitoring.curveMonitor}
             label={t`CurveMonitor`}
             startIcon={<LAFIcon color="warning" />}
           />
@@ -62,7 +63,7 @@ export const ComingSoon = () => (
             wide
             variant="contained"
             color="primary"
-            href="https://crvhub.com/"
+            href={EXTERNAL_LINKS.monitoring.crvHub}
             label={t`CRVHub`}
             startIcon={<CrvHubIcon />}
           />

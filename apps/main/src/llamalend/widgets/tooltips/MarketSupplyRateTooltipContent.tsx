@@ -1,4 +1,3 @@
-import type { SupplyExtraIncentive } from '@/llamalend/rates.types'
 import {
   TooltipDescription,
   TooltipFooter,
@@ -9,6 +8,7 @@ import {
 import Stack from '@mui/material/Stack'
 import type { CampaignRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
+import type { ExtraIncentive } from '@ui-kit/types/market'
 import { AVERAGE_CATEGORIES, formatNumber } from '@ui-kit/utils'
 import { RewardsTooltipItems } from './RewardTooltipItems'
 
@@ -24,7 +24,7 @@ type MarketSupplyRateTooltipContentProps = {
   averageSupplyApy: number | null | undefined
   periodLabel: string
   extraRewards: CampaignRewards[]
-  extraIncentives: SupplyExtraIncentive[]
+  extraIncentives: ExtraIncentive[]
   totalApy: number | null | undefined
   totalAverageApy: number | null | undefined
   boost: SupplyBoost

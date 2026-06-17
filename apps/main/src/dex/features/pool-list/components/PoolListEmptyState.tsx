@@ -2,6 +2,7 @@ import { AlertBox } from '@ui/AlertBox'
 import { Box } from '@ui/Box'
 import { Button } from '@ui/Button'
 import { ExternalLink } from '@ui/Link/ExternalLink'
+import { CURVE_SOCIALS } from '@ui/utils'
 import { Trans } from '@ui-kit/lib/i18n'
 import type { PoolListFilter } from '../hooks/usePoolListUrlState'
 
@@ -40,7 +41,7 @@ export const PoolListEmptyState = ({ poolType, poolTypeFilters, resetFilters, se
   ) : (
     <Trans>
       Can&apos;t find what you&apos;re looking for?{' '}
-      <ExternalLink $noStyles href="https://t.me/curvefi">
+      <ExternalLink $noStyles href={CURVE_SOCIALS.telegram.en}>
         Feel free to ask us on Telegram
       </ExternalLink>
     </Trans>

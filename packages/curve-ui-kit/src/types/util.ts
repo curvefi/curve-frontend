@@ -1,8 +1,19 @@
 import { useMemo } from 'react'
-import { maybe } from '@primitives/objects.utils'
+import { type Falsy, maybe } from '@primitives/objects.utils'
 import type { UseQueryResult } from '@tanstack/react-query'
 
 export type Range<T> = [T, T]
+
+type DotPathPrefix<TPrefix extends string, TKey extends string> = TPrefix extends '' ? TKey : `${TPrefix}.${TKey}`
+
+/** Builds a union of dot-paths in T whose resolved leaf value extends TValue. */
+export type DotPathByValue<T, TValue, TPrefix extends string = ''> = {
+  [TKey in keyof T & string]: T[TKey] extends TValue
+    ? DotPathPrefix<TPrefix, TKey>
+    : T[TKey] extends Record<string, unknown>
+      ? DotPathByValue<T[TKey], TValue, DotPathPrefix<TPrefix, TKey>>
+      : never
+}[keyof T & string]
 
 /**
  * Creates a deep partial type that makes all properties optional recursively,
@@ -62,6 +73,13 @@ export const q = <T>({ data, isLoading, error }: Query<T>) =>
     error,
   }) as QueryProp<T>
 
+type QueryData<TQuery> = TQuery extends Query<infer TData> ? TData : never
+
+export const fallbackQ = <const TQueries extends readonly (Query<unknown> | Falsy)[]>(...queries: TQueries) => {
+  const filtered = queries.filter((x): x is Query<unknown> => !!x)
+  return q(filtered.find(q => !q.error) ?? filtered[0]) as QueryProp<QueryData<TQueries[number]>>
+}
+
 /**
  * Maps a Query type to extract partial data from it.
  * Preserves error and loading states while transforming the data.
@@ -78,6 +96,12 @@ export const mapQuery = <TSource, TResult>(
 
 /** Creates a QueryProp constant data, no loading or error state. */
 export const constQ = <T>(data: T) => q({ data, isLoading: false, error: null })
+
+/**
+ * Creates a fake query that assumes the data is loading when null or undefined.
+ * Avoid this when possible, prefer real queries instead!
+ **/
+export const fakeLoadingQ = <T>(data: T | undefined) => q({ data, isLoading: data == null, error: null })
 
 /** Hook similar to mapQuery for queries that need memoization */
 export const useMappedQuery = <TSource, TResult>(

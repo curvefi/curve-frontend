@@ -5,6 +5,7 @@ import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { constQ } from '@ui-kit/types/util'
 import { formatNumber, weiToEther } from '@ui-kit/utils'
 import { useMetrics } from '../hooks/useMetrics'
 
@@ -36,7 +37,7 @@ export const Metrics = ({
         <Metric
           size="medium"
           label={t`Liquidity utilization`}
-          value={liquidityUtilization}
+          value={constQ(liquidityUtilization)}
           valueOptions={{ unit: 'percentage', abbreviate: false }}
         />
       </Grid>
@@ -45,7 +46,7 @@ export const Metrics = ({
         <Metric
           size="medium"
           label={t`LP Staked`}
-          value={maybe(gaugeTotalSupply, supply => weiToEther(supply))}
+          value={constQ(maybe(gaugeTotalSupply, supply => weiToEther(supply)))}
           valueOptions={{ abbreviate: true }}
           notional={maybe(
             totalStakedPercent,

@@ -495,15 +495,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/llamalend-api@npm:2.2.3":
-  version: 2.2.3
-  resolution: "@curvefi/llamalend-api@npm:2.2.3"
+"@curvefi/llamalend-api@npm:2.2.4":
+  version: 2.2.4
+  resolution: "@curvefi/llamalend-api@npm:2.2.4"
   dependencies:
     "@curvefi/ethcall": "npm:6.0.16"
     bignumber.js: "npm:9.3.1"
     ethers: "npm:6.15.0"
     memoizee: "npm:0.4.17"
-  checksum: 10c0/dd6db1c408507e46ea912a37c74f66e3712d2bcdef3fe36e67458e19a0f5ed9df0b9e9c9a4e9f5115193983c589b32fd1faa1650b290f910ff9aec061c2180f6
+  checksum: 10c0/5c37b84bf1cf6deea90a1a97cd6a66d6dcfa2a019732d66595a693c713adc4dddf459bba892093ce15684d29a3af07b9daa893a37230dcd814de51bb659def4f
   languageName: node
   linkType: hard
 
@@ -1987,22 +1987,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/connect-evm@npm:2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/connect-evm@npm:2.0.0"
+"@metamask/connect-evm@npm:2.1.0":
+  version: 2.1.0
+  resolution: "@metamask/connect-evm@npm:2.1.0"
   dependencies:
     "@metamask/analytics": "npm:^0.6.0"
+    "@metamask/connect-multichain": "npm:^1.1.0"
     "@metamask/utils": "npm:^11.8.1"
     semver: "npm:^7.7.4"
-  peerDependencies:
-    "@metamask/connect-multichain": ^1.0.0
-  checksum: 10c0/e3fc00e03070b6d142315804eed2bfbf08de3e6bd88fa55405eec0741ce07552a964c07ea6acd41783e4bc293181bf4a4bf73f7bf281affc1083c183b90c7367
+  checksum: 10c0/40f32d4edcdce058ee1d1f6fe4e6738ad918d83e9a23af1f37a4467d720d27bf3d8f305c07bbcff36861cbe16a652b6877b0df3b0dd2a68ab581aa2bdb0fbd0f
   languageName: node
   linkType: hard
 
-"@metamask/connect-multichain@npm:1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/connect-multichain@npm:1.0.0"
+"@metamask/connect-multichain@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@metamask/connect-multichain@npm:1.1.0"
   dependencies:
     "@metamask/analytics": "npm:^0.6.0"
     "@metamask/mobile-wallet-protocol-core": "npm:^0.4.0"
@@ -2026,7 +2025,7 @@ __metadata:
   peerDependenciesMeta:
     "@react-native-async-storage/async-storage":
       optional: true
-  checksum: 10c0/9c3a38c59430336517d89d10d38a25099fd11c91d493f4e2ccbdb38cf3b45e19ba739916a88bc65f2009909ef07d0fcaec94236d54157208d568d99d4e11b2ac
+  checksum: 10c0/82671e10d6850929a60ac840f5a9f6a858912dd13c89dabe570125f5cd3cf8caf224daa0be48c78d1c52901b9db53ffbd3c06ff7f77e57c449a93179bfc3184f
   languageName: node
   linkType: hard
 
@@ -2846,13 +2845,6 @@ __metadata:
   version: 1.0.2
   resolution: "@protobufjs/float@npm:1.0.2"
   checksum: 10c0/18f2bdede76ffcf0170708af15c9c9db6259b771e6b84c51b06df34a9c339dbbeec267d14ce0bddd20acc142b1d980d983d31434398df7f98eb0c94a0eb79069
-  languageName: node
-  linkType: hard
-
-"@protobufjs/inquire@npm:^1.1.2":
-  version: 1.1.2
-  resolution: "@protobufjs/inquire@npm:1.1.2"
-  checksum: 10c0/af69597818a14cac6a00a74cd5b3fb85aa96658b9dbbae73e6d907cb154ebf470953a8c537b3e6095a43de565ec4e6c5b40227c72f4a7d762d34fbec7ac179e7
   languageName: node
   linkType: hard
 
@@ -7643,8 +7635,7 @@ __metadata:
     "@emotion/react": "npm:11.14.0"
     "@emotion/styled": "npm:11.14.1"
     "@hookform/resolvers": "npm:5.4.0"
-    "@metamask/connect-evm": "npm:2.0.0"
-    "@metamask/connect-multichain": "npm:1.0.0"
+    "@metamask/connect-evm": "npm:2.1.0"
     "@mui/icons-material": "npm:9.0.1"
     "@mui/material": "npm:9.0.1"
     "@safe-global/safe-apps-provider": "npm:0.18.6"
@@ -9540,15 +9531,15 @@ __metadata:
   linkType: hard
 
 "form-data@npm:^4.0.5, form-data@npm:~4.0.4":
-  version: 4.0.5
-  resolution: "form-data@npm:4.0.5"
+  version: 4.0.6
+  resolution: "form-data@npm:4.0.6"
   dependencies:
     asynckit: "npm:^0.4.0"
     combined-stream: "npm:^1.0.8"
     es-set-tostringtag: "npm:^2.1.0"
-    hasown: "npm:^2.0.2"
-    mime-types: "npm:^2.1.12"
-  checksum: 10c0/dd6b767ee0bbd6d84039db12a0fa5a2028160ffbfaba1800695713b46ae974a5f6e08b3356c3195137f8530dcd9dfcb5d5ae1eeff53d0db1e5aad863b619ce3b
+    hasown: "npm:^2.0.4"
+    mime-types: "npm:^2.1.35"
+  checksum: 10c0/43947a77bf0ff45c6ceed789778982d47a3f3e720a74b71721174ebf3310a5f1a8be1d6b38a3ee3688e8a18a2c4273073ec0844cd37efda3eaf46d41c9c318ff
   languageName: node
   linkType: hard
 
@@ -9820,6 +9811,15 @@ __metadata:
   dependencies:
     function-bind: "npm:^1.1.2"
   checksum: 10c0/3769d434703b8ac66b209a4cca0737519925bbdb61dd887f93a16372b14694c63ff4e797686d87c90f08168e81082248b9b028bad60d4da9e0d1148766f56eb9
+  languageName: node
+  linkType: hard
+
+"hasown@npm:^2.0.4":
+  version: 2.0.4
+  resolution: "hasown@npm:2.0.4"
+  dependencies:
+    function-bind: "npm:^1.1.2"
+  checksum: 10c0/2d8de939e270b70618f8cebb69746620db10617dbb495bc66ddad326955ea24d3ca4af133aff3eb7c1853e0218f867bc2b050ec26fe02e3aea58f880ffc5e506
   languageName: node
   linkType: hard
 
@@ -10712,7 +10712,7 @@ __metadata:
   resolution: "main@workspace:apps/main"
   dependencies:
     "@curvefi/api": "npm:*"
-    "@curvefi/llamalend-api": "npm:2.2.3"
+    "@curvefi/llamalend-api": "npm:2.2.4"
     "@sentry/vite-plugin": "npm:5.3.0"
     "@supercharge/promise-pool": "npm:3.3.0"
     "@tanstack/react-router": "npm:1.170.11"
@@ -10851,7 +10851,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mime-types@npm:^2.1.12, mime-types@npm:~2.1.19":
+"mime-types@npm:^2.1.35, mime-types@npm:~2.1.19":
   version: 2.1.35
   resolution: "mime-types@npm:2.1.35"
   dependencies:
@@ -11943,8 +11943,8 @@ __metadata:
   linkType: hard
 
 "protobufjs@npm:^7.6.0":
-  version: 7.6.2
-  resolution: "protobufjs@npm:7.6.2"
+  version: 7.6.4
+  resolution: "protobufjs@npm:7.6.4"
   dependencies:
     "@protobufjs/aspromise": "npm:^1.1.2"
     "@protobufjs/base64": "npm:^1.1.2"
@@ -11952,13 +11952,12 @@ __metadata:
     "@protobufjs/eventemitter": "npm:^1.1.1"
     "@protobufjs/fetch": "npm:^1.1.1"
     "@protobufjs/float": "npm:^1.0.2"
-    "@protobufjs/inquire": "npm:^1.1.2"
     "@protobufjs/path": "npm:^1.1.2"
     "@protobufjs/pool": "npm:^1.1.0"
     "@protobufjs/utf8": "npm:^1.1.1"
     "@types/node": "npm:>=13.7.0"
     long: "npm:^5.3.2"
-  checksum: 10c0/3c552dfe3cbcfad2d6c312a76cd189cf5be9fb36b203f6292f79c6020d675f7f33d5531ce312441c42ae75deb24ced32760e64fe4aa3d5b3c2295fd67cea270c
+  checksum: 10c0/6403eaa9c5a72cc6450c11f38fefafdde243fd806e7ac606ac8d591bc3fdaec45ae764febf83181a2d9aac51aca624e0f46dec368ceea191f7e85e2d6ccaaf93
   languageName: node
   linkType: hard
 

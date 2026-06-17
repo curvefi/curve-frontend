@@ -36,13 +36,13 @@ const getSections = (currentApp: AppName, networkId: string): NavigationSection[
   {
     title: t`Documentation`,
     links: [
-      { href: EXTERNAL_LINKS.news, label: t`News` },
+      { href: EXTERNAL_LINKS.curve.news, label: t`News` },
       { href: EXTERNAL_LINKS.docs.user.llamalend.overview, label: t`User Resources` },
-      { href: EXTERNAL_LINKS.docs.root, label: t`Developer Resources` },
+      { href: EXTERNAL_LINKS.curve.docs, label: t`Developer Resources` },
       { href: getInternalUrl(currentApp, networkId, PAGE_LEGAL), label: t`Legal` },
       { href: getInternalUrl(currentApp, networkId, PAGE_INTEGRATIONS), label: t`Integrations` },
       { href: EXTERNAL_LINKS.brand.assets, label: t`Branding` },
-      ...(isChinese() ? [{ href: EXTERNAL_LINKS.wiki.curve, label: t`Wiki` }] : []),
+      ...(isChinese() ? [{ href: EXTERNAL_LINKS.curve.chinese.wiki, label: t`Wiki` }] : []),
     ],
   },
   {
@@ -50,9 +50,8 @@ const getSections = (currentApp: AppName, networkId: string): NavigationSection[
     links: [
       { href: EXTERNAL_LINKS.docs.user.security.audits, label: t`Audits` },
       { href: EXTERNAL_LINKS.docs.user.security.bugBounty, label: t`Bug Bounty` },
-      { href: EXTERNAL_LINKS.analytics.duneCurveFi, label: t`Dune Analytics` },
-      { href: EXTERNAL_LINKS.security.curveMonitor, label: t`Curve Monitor` },
-      { href: EXTERNAL_LINKS.security.crvHub, label: t`Crvhub` },
+      { href: EXTERNAL_LINKS.monitoring.curveMonitor, label: t`Curve Monitor` },
+      { href: EXTERNAL_LINKS.monitoring.crvHub, label: t`Crvhub` },
     ],
   },
 ]

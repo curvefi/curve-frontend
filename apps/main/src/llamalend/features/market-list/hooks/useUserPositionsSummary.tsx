@@ -14,10 +14,10 @@ import { getTokenUsdRateQueryOptions } from '@ui-kit/lib/model/entities/token-us
 import { combineQueriesMeta } from '@ui-kit/lib/queries/combine'
 import { type QueryOptionsData } from '@ui-kit/lib/queries/types'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { mapQuery, type Query } from '@ui-kit/types/util'
+import { mapQuery, q, type QueryProp } from '@ui-kit/types/util'
 import { requireChainId } from '@ui-kit/utils'
 
-export type UserPositionSummaryMetric = { label: string; metric: Query<Amount> }
+export type UserPositionSummaryMetric = { label: string; metric: QueryProp<Amount> }
 
 type LendBorrowStatsData = QueryOptionsData<ReturnType<typeof getUserLendingVaultStatsOptions>>
 type MintBorrowStatsData = QueryOptionsData<ReturnType<typeof getUserMintMarketsStatsOptions>>
@@ -30,7 +30,7 @@ const MISSING_PRICE_RESULT: TokenPrice = 0
 const getTokenPriceEntryKey = ({ chainId, tokenAddress }: TokenPriceEntry) => `${chainId}:${tokenAddress.toLowerCase()}`
 const createUniqueTokenPriceEntries = (entries: TokenPriceEntry[]) => uniqBy(entries, getTokenPriceEntryKey)
 
-const createMetric = <T extends Amount>(label: string, metric: Query<T>): UserPositionSummaryMetric => ({
+const createMetric = <T extends Amount>(label: string, metric: QueryProp<T>): UserPositionSummaryMetric => ({
   label,
   metric,
 })
@@ -180,6 +180,6 @@ export const useUserPositionsSummary = ({
       t`Total Borrowed`,
       mapQuery(borrowSummary, d => d.totalBorrowedValue),
     ),
-    createMetric(t`Total Supplied`, supplySummary),
+    createMetric(t`Total Supplied`, q(supplySummary)),
   ]
 }
