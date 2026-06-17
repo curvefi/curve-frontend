@@ -23,15 +23,15 @@ const LendManageMenu = [
   {
     value: 'loan-increase',
     label: t`Borrow`,
-    component: ({ rChainId: chainId, ...props }: ManageLoanProps) => (
-      <BorrowMoreForm chainId={chainId} networks={networks} {...props} />
+    component: ({ chainId: chainId, marketQuery: { data: market }, ...props }: ManageLoanProps) => (
+      <BorrowMoreForm chainId={chainId} networks={networks} market={market} {...props} />
     ),
   },
   {
     value: 'loan-decrease',
     label: t`Repay`,
-    component: ({ rChainId: chainId, ...props }: ManageLoanProps) => (
-      <RepayForm chainId={chainId} networks={networks} {...props} />
+    component: ({ chainId: chainId, marketQuery: { data: market }, ...props }: ManageLoanProps) => (
+      <RepayForm chainId={chainId} networks={networks} market={market} {...props} />
     ),
   },
   {
@@ -41,15 +41,15 @@ const LendManageMenu = [
       {
         value: 'add',
         label: t`Add`,
-        component: ({ rChainId: chainId, ...props }: ManageLoanProps) => (
-          <AddCollateralForm networks={networks} chainId={chainId} {...props} />
+        component: ({ chainId: chainId, marketQuery: { data: market }, ...props }: ManageLoanProps) => (
+          <AddCollateralForm networks={networks} chainId={chainId} market={market} {...props} />
         ),
       },
       {
         value: 'remove',
         label: t`Remove`,
-        component: ({ rChainId: chainId, ...props }: ManageLoanProps) => (
-          <RemoveCollateralForm networks={networks} chainId={chainId} {...props} />
+        component: ({ chainId: chainId, marketQuery: { data: market }, ...props }: ManageLoanProps) => (
+          <RemoveCollateralForm networks={networks} chainId={chainId} market={market} {...props} />
         ),
       },
     ],
@@ -64,14 +64,14 @@ const LendManageSoftLiquidationMenu = [
       {
         value: 'improve-health',
         label: t`Improve health`,
-        component: ({ rChainId: chainId, ...props }: ManageLoanProps) => (
-          <ImproveHealthForm chainId={chainId} networks={networks} {...props} />
+        component: ({ chainId: chainId, marketQuery: { data: market }, ...props }: ManageLoanProps) => (
+          <ImproveHealthForm chainId={chainId} networks={networks} market={market} {...props} />
         ),
       },
       {
         value: 'close-position',
         label: t`Close`,
-        component: ({ rChainId: chainId, market }: ManageLoanProps) => (
+        component: ({ chainId: chainId, marketQuery: { data: market } }: ManageLoanProps) => (
           <ClosePositionForm chainId={chainId} networks={networks} market={market} />
         ),
       },
@@ -81,7 +81,7 @@ const LendManageSoftLiquidationMenu = [
 
 export const ManageLoanTabs = (params: ManageLoanProps) => {
   const { data: status } = useLiquidationStatus({
-    chainId: params.rChainId,
+    chainId: params.chainId,
     marketId: params.marketId,
     userAddress: params.userAddress,
   })

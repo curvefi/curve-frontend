@@ -1,5 +1,8 @@
 import { useMemo } from 'react'
+import { getAmmAddress } from '@/llamalend/llama.utils'
 import { useLlammaTrades } from '@/llamalend/queries/llamma-trades.query'
+import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
+import { isPricesApiChain } from '@curvefi/prices-api'
 import type { LlammaTrade } from '@curvefi/prices-api/llamma'
 import { scanAddressPath, scanTxPath } from '@ui/utils'
 import {
@@ -16,15 +19,17 @@ import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-tabl
 import { LlammaActivityTradesProps } from '../LlammaActivityTrades'
 
 export const useLlammaActivityTradesConfig = ({
-  isMarketAvailable,
-  network,
-  ammAddress,
-  endpoint,
+  marketQuery: { data: market },
   networkConfig,
 }: LlammaActivityTradesProps) => {
   const { isHydrated } = useCurve()
   const { tradesColumnVisibility } = useLlammaActivityVisibility()
   const { pagination, onPaginationChange, apiPage } = useManualPagination()
+  const networkId = networkConfig?.id.toLowerCase()
+  const network = networkId && isPricesApiChain(networkId) ? networkId : undefined
+  const ammAddress = getAmmAddress(market)
+  const endpoint = market instanceof MintMarketTemplate ? 'crvusd' : 'lending'
+  const isMarketAvailable = !!market
 
   const {
     data: tradesData,

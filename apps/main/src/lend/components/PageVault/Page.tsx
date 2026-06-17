@@ -6,6 +6,7 @@ import { networks } from '@/lend/networks'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/utilsRouter'
 import { SupplyPositionDetails } from '@/llamalend/features/market-position-details'
+import { getControllerAddress } from '@/llamalend/llama.utils'
 import { useUserShares } from '@/llamalend/queries/user/user-balances.query'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header'
@@ -14,6 +15,7 @@ import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
+import { mapQuery } from '@ui-kit/types/util'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 import { useLendMarket } from '../../hooks/useLendMarket'
 import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
@@ -22,7 +24,8 @@ export const Page = () => {
   const params = useParams<MarketUrlParams>()
   const { rMarket, rChainId: chainId } = parseMarketParams(params)
   const { llamaApi: api = null, provider, isHydrated } = useCurve()
-  const { data: market, isLoading: isMarketLoading, isSuccess } = useLendMarket(chainId, rMarket)
+  const marketQuery = useLendMarket({ chainId, rMarket })
+  const { data: market, isLoading: isMarketLoading, error } = marketQuery
   const network = networks[chainId]
   const { address: userAddress } = useConnection()
 
@@ -30,19 +33,20 @@ export const Page = () => {
 
   const pageProps: PageContentProps = {
     params,
-    rChainId: chainId,
+    chainId,
     marketId: market?.id ?? '',
     userAddress,
     api,
-    market,
+    marketQuery,
   }
 
   const supplied = +(useUserShares({ marketId: market?.id, chainId, userAddress }).data?.value ?? 0)
 
-  return isSuccess && !market ? (
+  return error ? (
     <ErrorPage
-      title="404"
-      subtitle={`${t`Market`} ${rMarket} ${t`Not Found`}`}
+      title={t`Error`}
+      subtitle={error.message}
+      error={error}
       continueUrl={getCollateralListPathname(params)}
     />
   ) : provider ? (
@@ -54,14 +58,15 @@ export const Page = () => {
           chainId={chainId}
           marketId={market?.id}
           isLoading={!isHydrated || isMarketLoading}
-          market={market}
+          marketQuery={marketQuery}
           marketType={LlamaMarketType.Lend}
         />
       }
     >
       <MarketBanners
         chainId={chainId}
-        market={market}
+        controllerAddress={mapQuery(marketQuery, getControllerAddress)}
+        marketType={LlamaMarketType.Lend}
         rewardsBanner={<CampaignRewardsBanner chainId={chainId} market={market} />}
       />
       {market && supplied > 0 && (

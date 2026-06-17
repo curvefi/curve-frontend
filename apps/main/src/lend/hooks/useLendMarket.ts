@@ -19,7 +19,7 @@ export function useLendMarketData(chainId: ChainId, marketId: string, enabled?: 
   return { ...lendMarket, ...(error && { error }) }
 }
 
-export const useLendMarket = (chainId: ChainId, rMarket: string, enabled?: boolean) => {
+export const useLendMarket = ({ rMarket, chainId }: { chainId: ChainId; rMarket: string }, enabled?: boolean) => {
   const { llamaApi: api } = useCurve()
   return useMappedQuery(
     useLendMarketData(chainId, rMarket, enabled),

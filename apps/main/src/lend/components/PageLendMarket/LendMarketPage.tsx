@@ -21,7 +21,7 @@ import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
-import { Range } from '@ui-kit/types/util'
+import { mapQuery, Range } from '@ui-kit/types/util'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 import { useLendMarket } from '../../hooks/useLendMarket'
 import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
@@ -29,7 +29,7 @@ import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
 export const LendMarketPage = () => {
   const params = useParams<MarketUrlParams>()
   const { rMarket, rChainId: chainId } = parseMarketParams(params)
-  const marketQuery = useLendMarket(chainId, rMarket)
+  const marketQuery = useLendMarket({ chainId, rMarket })
   const { data: market, isLoading: isMarketLoading, error } = marketQuery
   const { isHydrated, llamaApi: api = null, provider } = useCurve()
   const marketId = market?.id ?? '' // todo: use market?.id directly everywhere since we pass the market too!
@@ -54,12 +54,11 @@ export const LendMarketPage = () => {
 
   const pageProps = {
     params,
-    rChainId: chainId,
+    chainId,
     marketId,
     userAddress,
-    isLoaded: !!market,
     api,
-    market,
+    marketQuery,
     onPricesUpdated,
   }
 
@@ -92,7 +91,8 @@ export const LendMarketPage = () => {
     >
       <MarketBanners
         chainId={chainId}
-        market={market}
+        controllerAddress={mapQuery(marketQuery, getControllerAddress)}
+        marketType={LlamaMarketType.Lend}
         rewardsBanner={<CampaignRewardsBanner chainId={chainId} market={market} />}
       />
       <PositionDetailsComposite

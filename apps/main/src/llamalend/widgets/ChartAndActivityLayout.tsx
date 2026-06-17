@@ -7,9 +7,9 @@ import {
   type LlammaActivityProps,
   LlammaActivityTrades,
 } from '@/llamalend/features/llamma-activity'
+import type { MarketTokens } from '@/llamalend/llama.utils'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
-import { type Token } from '@primitives/address.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { ChartWrapper, type OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
 import { SOFT_LIQUIDATION_DESCRIPTION, TIME_OPTIONS } from '@ui-kit/features/candle-chart/constants'
@@ -22,6 +22,7 @@ import { type LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
 import { ToggleBandsChartButton } from '@ui-kit/shared/ui/Chart/ToggleBandsChartButton'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { QueryProp } from '@ui-kit/types/util'
 
 const { Spacing } = SizesAndSpaces
 
@@ -49,19 +50,16 @@ type ChartAndActivityLayoutProps = {
     legendSets: LegendItem[]
     ohlcChartProps: OhlcChartProps & { selectChartList: ChartSelections[] }
   }
-  bands?: {
-    chartData: ChartDataPoint[] | undefined
+  bands: QueryProp<{
+    chartData: ChartDataPoint[]
     userBandsBalances: FetchedBandsBalances[]
     oraclePrice: string | undefined
-    isLoading: boolean
-    error: Error | null
-    collateralToken: Token | undefined
-    borrowToken: Token | undefined
-  }
+  }>
+  tokens: QueryProp<MarketTokens>
   activity: LlammaActivityProps
 }
 
-export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActivityLayoutProps) => {
+export const ChartAndActivityLayout = ({ chart, bands, activity, tokens }: ChartAndActivityLayoutProps) => {
   const theme = useTheme()
   const [isBandsVisible, setIsBandsVisible] = useBandsChartVisible()
   const toggleBandsVisible = useCallback(() => setIsBandsVisible(prev => !prev), [setIsBandsVisible])
@@ -75,13 +73,12 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
     )
   }, [])
 
-  const showBands = bands && isBandsVisible
-  const hasUserBands = !!bands?.userBandsBalances?.length
-  const collateralSymbol = bands?.collateralToken?.symbol
-  const borrowSymbol = bands?.borrowToken?.symbol
+  const hasUserBands = !!bands.data?.userBandsBalances?.length
+  const collateralSymbol = tokens.data?.collateralToken?.symbol
+  const borrowSymbol = tokens.data?.borrowToken?.symbol
   const chartFooterLegendSets = useMemo(
     () =>
-      showBands && hasUserBands
+      isBandsVisible && hasUserBands
         ? notFalsy<LegendItem>(
             ...chart.legendSets,
             collateralSymbol && { label: collateralSymbol, box: { fill: bandsPalette.userCollateralShareColor } },
@@ -89,7 +86,7 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
           )
         : chart.legendSets,
     [
-      showBands,
+      isBandsVisible,
       hasUserBands,
       chart.legendSets,
       collateralSymbol,
@@ -125,27 +122,27 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
             />
             <Stack
               sx={{
-                display: showBands ? 'grid' : undefined,
-                gridTemplateColumns: showBands ? { mobile: '5fr 1fr', tablet: '7fr 1fr' } : undefined,
+                display: isBandsVisible ? 'grid' : undefined,
+                gridTemplateColumns: isBandsVisible ? { mobile: '5fr 1fr', tablet: '7fr 1fr' } : undefined,
               }}
             >
               <ChartWrapper
                 {...chart.ohlcChartProps}
                 betaBackgroundColor={theme.design.Layer[1].Fill}
-                onVisiblePriceRangeChange={showBands ? handleVisiblePriceRangeChange : undefined}
+                onVisiblePriceRangeChange={isBandsVisible ? handleVisiblePriceRangeChange : undefined}
               />
-              {showBands && (
+              {isBandsVisible && (
                 <BandsChart
                   isLoading={bands.isLoading}
                   error={bands.error}
-                  collateralToken={bands.collateralToken}
-                  borrowToken={bands.borrowToken}
-                  chartData={bands.chartData}
-                  userBandsBalances={bands.userBandsBalances ?? EMPTY_ARRAY}
+                  collateralToken={tokens.data?.collateralToken}
+                  borrowToken={tokens.data?.borrowToken}
+                  chartData={bands.data?.chartData}
+                  userBandsBalances={bands.data?.userBandsBalances ?? EMPTY_ARRAY}
                   newLiquidationRange={chart.ohlcChartProps.liquidationRange?.new}
                   liqRangeCurrentVisible={chart.ohlcChartProps.liqRangeCurrentVisible}
                   liqRangeNewVisible={chart.ohlcChartProps.liqRangeNewVisible}
-                  oraclePrice={bands.oraclePrice}
+                  oraclePrice={bands.data?.oraclePrice}
                   priceRange={candlePriceRange}
                 />
               )}

@@ -18,15 +18,15 @@ const VaultMenu = [
       {
         value: 'deposit',
         label: t`Deposit`,
-        component: ({ rChainId, market }: VaultProps) => (
-          <DepositForm networks={networks} chainId={rChainId} market={market} />
+        component: ({ chainId, marketQuery: { data: market } }: VaultProps) => (
+          <DepositForm networks={networks} chainId={chainId} market={market} />
         ),
       },
       {
         value: 'withdraw',
         label: t`Withdraw`,
-        component: ({ rChainId, market }: VaultProps) => (
-          <WithdrawForm networks={networks} chainId={rChainId} market={market} />
+        component: ({ chainId, marketQuery: { data: market } }: VaultProps) => (
+          <WithdrawForm networks={networks} chainId={chainId} market={market} />
         ),
       },
     ],
@@ -38,15 +38,15 @@ const VaultMenu = [
       {
         value: 'stake',
         label: t`Stake`,
-        component: ({ rChainId, market }: VaultProps) => (
-          <StakeForm networks={networks} chainId={rChainId} market={market} />
+        component: ({ chainId, marketQuery: { data: market } }: VaultProps) => (
+          <StakeForm networks={networks} chainId={chainId} market={market} />
         ),
       },
       {
         value: 'unstake',
         label: t`Unstake`,
-        component: ({ rChainId, market }: VaultProps) => (
-          <UnstakeForm networks={networks} chainId={rChainId} market={market} />
+        component: ({ chainId, marketQuery: { data: market } }: VaultProps) => (
+          <UnstakeForm networks={networks} chainId={chainId} market={market} />
         ),
       },
     ],
@@ -54,8 +54,8 @@ const VaultMenu = [
   {
     value: 'claim',
     label: t`Claim`,
-    component: ({ rChainId, market }: VaultProps) => (
-      <ClaimTab networks={networks} chainId={rChainId} market={market} />
+    component: ({ chainId, marketQuery: { data: market } }: VaultProps) => (
+      <ClaimTab networks={networks} chainId={chainId} market={market} />
     ),
   },
 ] satisfies FormTab<VaultProps>[]

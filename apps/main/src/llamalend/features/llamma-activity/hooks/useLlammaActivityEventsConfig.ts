@@ -1,6 +1,10 @@
 import { useMemo } from 'react'
+import { getAmmAddress, getTokens } from '@/llamalend/llama.utils'
 import { useLlammaEvents } from '@/llamalend/queries/llamma-events.query'
+import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
+import { isPricesApiChain } from '@curvefi/prices-api'
 import type { LlammaEvent } from '@curvefi/prices-api/llamma'
+import { maybe } from '@primitives/objects.utils'
 import { scanAddressPath, scanTxPath } from '@ui/utils'
 import {
   type LlammaEventRow,
@@ -16,17 +20,18 @@ import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-tabl
 import { LlammaActivityProps } from '..'
 
 export const useLlammaActivityEventsConfig = ({
-  isMarketAvailable,
-  network,
-  collateralToken,
-  borrowToken,
-  ammAddress,
-  endpoint,
+  marketQuery: { data: market },
   networkConfig,
 }: LlammaActivityProps) => {
   const { isHydrated } = useCurve()
   const { eventsColumnVisibility } = useLlammaActivityVisibility()
   const { pagination, onPaginationChange, apiPage } = useManualPagination()
+  const { collateralToken, borrowToken } = maybe(market, getTokens) ?? {}
+  const networkId = networkConfig?.id.toLowerCase()
+  const network = networkId && isPricesApiChain(networkId) ? networkId : undefined
+  const ammAddress = getAmmAddress(market)
+  const endpoint = market instanceof MintMarketTemplate ? 'crvusd' : 'lending'
+  const isMarketAvailable = !!market
 
   const {
     data: eventsData,

@@ -20,12 +20,12 @@ const { Spacing } = SizesAndSpaces
 
 type AdvancedDetailsProps = {
   chainId: number | undefined | null
-  marketId: string | undefined | null
   market: LlamaMarketTemplate | undefined
   marketType: LlamaMarketType
 }
 
-export const AdvancedDetails = ({ chainId, marketId, market, marketType }: AdvancedDetailsProps) => {
+export const AdvancedDetails = ({ chainId, market, marketType }: AdvancedDetailsProps) => {
+  const marketId = market?.id
   const { collateral, availableLiquidity, maxLeverage, solvency, totalBorrowers, averageHealth } =
     useAdvancedDetailsData({
       chainId,

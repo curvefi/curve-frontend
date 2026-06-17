@@ -1,4 +1,3 @@
-import { getAddress } from 'ethers'
 import type { Chain } from '@curvefi/prices-api'
 import { getOracle, type Endpoint, type OraclePool } from '@curvefi/prices-api/lending'
 import { getOHLC } from '@curvefi/prices-api/llamma'
@@ -26,13 +25,9 @@ type BaseOhlcQueryParams = {
   enabled?: boolean
 }
 
-type OraclePoolOhlcQueryParams = BaseOhlcQueryParams & {
-  controller: string
-}
+type OraclePoolOhlcQueryParams = BaseOhlcQueryParams & { controller: Address | undefined }
 
-type LlammaOhlcQueryParams = BaseOhlcQueryParams & {
-  llamma: string
-}
+type LlammaOhlcQueryParams = BaseOhlcQueryParams & { llamma: Address | undefined }
 
 export type OraclePoolOhlcPage = OhlcPageResult & {
   ohlcData: LpPriceOhlcDataFormatted[]
@@ -97,7 +92,7 @@ export const useOraclePoolOhlcQuery = ({
         {
           endpoint,
           chain: validChain,
-          controller: getAddress(controller) as Address,
+          controller: controller!,
           interval,
           units,
           start: pageParam.start,
@@ -149,7 +144,7 @@ export const useLlammaOhlcQuery = ({
         {
           endpoint,
           chain: validChain,
-          llamma: llamma as Address,
+          llamma: llamma!,
           interval,
           units,
           start: pageParam.start,

@@ -52,15 +52,14 @@ export const MarketRateCurveChart = ({
   market,
   blockchainId,
   chainId,
-  marketId,
 }: {
   market: LendMarketTemplate | undefined | null
   blockchainId: Chain | undefined
   chainId: number | undefined
-  marketId: string | undefined
 }) => {
   const [visibleSeries, setVisibleSeries] = useState<RateCurveSeriesKey[]>(SERIES_CONFIG.map(({ key }) => key))
   const controllerAddress = market?.addresses.controller as Address | undefined
+  const marketId = market?.id
   const { collateralToken, borrowToken } = market ? getTokens(market) : {}
   const {
     design: { Color },

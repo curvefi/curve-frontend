@@ -3,6 +3,7 @@ import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { Address } from '@primitives/address.utils'
 import type { BaseConfig } from '@ui/utils'
 import type { LlamaApi } from '@ui-kit/features/connect-wallet'
+import type { QueryProp } from '@ui-kit/types/util'
 
 export type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 export type { Wallet } from '@ui-kit/features/connect-wallet'
@@ -29,11 +30,11 @@ export type NetworkConfig<TId extends string = string, TChainId extends number =
 
 export type PageContentProps<T = UrlParams> = {
   params: T
-  rChainId: ChainId
+  chainId: ChainId
   marketId: string
   userAddress: Address | undefined
   api: LlamaApi | null
-  market: LendMarketTemplate | undefined
+  marketQuery: QueryProp<LendMarketTemplate>
 }
 
 export type RewardOther = {

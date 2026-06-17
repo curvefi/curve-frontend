@@ -14,8 +14,8 @@ const menu = [
   {
     value: 'create',
     label: t`Borrow`,
-    component: ({ market, rChainId, onPricesUpdated }: CreateLoanProps) => (
-      <CreateLoanForm networks={networks} chainId={rChainId} market={market} onPricesUpdated={onPricesUpdated} />
+    component: ({ marketQuery: { data: market }, chainId, onPricesUpdated }: CreateLoanProps) => (
+      <CreateLoanForm networks={networks} chainId={chainId} market={market} onPricesUpdated={onPricesUpdated} />
     ),
   },
 ] satisfies FormTab<CreateLoanProps>[]

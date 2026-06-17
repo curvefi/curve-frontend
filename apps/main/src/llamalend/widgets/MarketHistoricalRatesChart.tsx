@@ -54,7 +54,6 @@ type MarketHistoricalRatesChartProps = {
   market: LlamaMarketTemplate | undefined | null
   blockchainId: Chain | undefined
   chainId: number
-  marketId: string
   rateMode: MarketRateType
 }
 
@@ -116,7 +115,6 @@ export const MarketHistoricalRatesChart = ({
   market,
   blockchainId,
   chainId,
-  marketId,
   rateMode,
 }: MarketHistoricalRatesChartProps) => {
   const [timeOption, setTimeOption] = useState<TimeOption>('1M')
@@ -127,7 +125,7 @@ export const MarketHistoricalRatesChart = ({
     design: { Color },
   } = useTheme()
 
-  const marketRates = useMarketRates({ chainId, marketId })
+  const marketRates = useMarketRates({ chainId, marketId: market?.id })
 
   const snapshots = useLlamaSnapshot({ market, blockchainId, range: { kind: 'timeRange', timeOption } })
 

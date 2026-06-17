@@ -11,53 +11,45 @@ import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
-import type { Range } from '@ui-kit/types/util'
+import type { QueryProp, Range } from '@ui-kit/types/util'
 import { BlockchainIds, Chain } from '@ui-kit/utils/network'
 import { PAGE_SPACING } from '@ui-kit/widgets/DetailPageLayout/constants'
 import { networks } from '../networks'
 
 type MarketInformationCompProps = {
-  market: Llamma | null
-  marketId: string
+  marketQuery: QueryProp<Llamma>
   chainId: ChainId
   previewPrices: Range<Decimal> | undefined
 }
 
-export const MarketInformationComposite = ({
-  market,
-  marketId,
-  chainId,
-  previewPrices,
-}: MarketInformationCompProps) => (
-  <Stack sx={{ gap: PAGE_SPACING }}>
-    <ChartAndActivityComp chainId={chainId} marketId={marketId} market={market} previewPrices={previewPrices} />
-    <MarketHistoricalRatesChart
-      market={market}
-      blockchainId={BlockchainIds[Chain.Ethereum]}
-      chainId={chainId}
-      marketId={marketId}
-      rateMode={MarketRateType.Borrow}
-    />
-    <CrvUsdPriceChart />
+export const MarketInformationComposite = ({ marketQuery, chainId, previewPrices }: MarketInformationCompProps) => {
+  const { data: market } = marketQuery
 
-    <Card size="small">
-      <CardHeader title={t`Advanced Details`} />
-      <CardContent component={Stack}>
-        <AdvancedDetails
-          chainId={chainId}
-          marketId={marketId}
-          market={market ?? undefined}
-          marketType={LlamaMarketType.Mint}
-        />
-        <MarketInfoLayout
-          chainId={chainId}
-          marketType={LlamaMarketType.Mint}
-          market={market ?? undefined}
-          network={networks[chainId]}
-        />
-      </CardContent>
-    </Card>
+  return (
+    <Stack sx={{ gap: PAGE_SPACING }}>
+      <ChartAndActivityComp chainId={chainId} marketQuery={marketQuery} previewPrices={previewPrices} />
+      <MarketHistoricalRatesChart
+        market={market}
+        blockchainId={BlockchainIds[Chain.Ethereum]}
+        chainId={chainId}
+        rateMode={MarketRateType.Borrow}
+      />
+      <CrvUsdPriceChart />
 
-    <MarketFaq />
-  </Stack>
-)
+      <Card size="small">
+        <CardHeader title={t`Advanced Details`} />
+        <CardContent component={Stack}>
+          <AdvancedDetails chainId={chainId} market={market} marketType={LlamaMarketType.Mint} />
+          <MarketInfoLayout
+            chainId={chainId}
+            marketType={LlamaMarketType.Mint}
+            market={market}
+            network={networks[chainId]}
+          />
+        </CardContent>
+      </Card>
+
+      <MarketFaq />
+    </Stack>
+  )
+}
