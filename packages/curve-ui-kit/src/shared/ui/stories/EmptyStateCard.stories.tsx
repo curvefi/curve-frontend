@@ -8,6 +8,8 @@ const meta: Meta<typeof EmptyStateCard> = {
   render: args => <EmptyStateCard {...args} />,
   args: {
     title: 'No markets found',
+    subtitle: 'Try adjusting your filters or search query.',
+    action: { label: 'Reset filters', onClick: fn },
   },
 }
 
@@ -15,9 +17,17 @@ type Story = StoryObj<typeof EmptyStateCard>
 
 export const Default: Story = {}
 
+export const WithTitle: Story = {
+  args: {
+    subtitle: undefined,
+    action: undefined,
+  },
+}
+
 export const WithSubtitle: Story = {
   args: {
     subtitle: 'Try adjusting your filters or search query.',
+    action: undefined,
   },
 }
 
