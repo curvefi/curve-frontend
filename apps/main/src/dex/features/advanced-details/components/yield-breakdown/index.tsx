@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
@@ -8,7 +7,11 @@ import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-tabl
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { useYieldBreakdown } from '../../hooks/useYieldBreakdown'
-import { createYieldBreakdownColumns, type YieldBreakdownRow } from './columns/columns.definitions'
+import {
+  YIELD_BREAKDOWN_COLUMNS,
+  YIELD_BREAKDOWN_MOBILE_COLUMN_VISIBILITY,
+  type YieldBreakdownRow,
+} from './columns/columns.definitions'
 import { FooterRow } from './FooterRow'
 
 export const YieldBreakdown = ({
@@ -20,14 +23,18 @@ export const YieldBreakdown = ({
   poolDataCacheOrApi: PoolDataCacheOrApi
   poolId: string
 }) => {
+  const isMobile = useIsMobile()
   const { baseTotal, total, rows } = useYieldBreakdown({
     chainId,
     poolDataCacheOrApi,
     poolId,
   })
-  const isMobile = useIsMobile()
-  const columns = useMemo(() => createYieldBreakdownColumns({ isMobile }), [isMobile])
-  const table = useTable({ data: rows, columns, ...getTableOptions(rows) })
+  const table = useTable({
+    data: rows,
+    columns: YIELD_BREAKDOWN_COLUMNS,
+    state: { columnVisibility: isMobile ? YIELD_BREAKDOWN_MOBILE_COLUMN_VISIBILITY : undefined },
+    ...getTableOptions(rows),
+  })
 
   return (
     rows.length > 0 && (

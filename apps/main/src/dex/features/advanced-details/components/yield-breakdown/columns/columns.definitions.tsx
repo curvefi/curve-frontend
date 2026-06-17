@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { maybe } from '@primitives/objects.utils'
-import { createColumnHelper } from '@tanstack/react-table'
+import { createColumnHelper, type VisibilityState } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import type { TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
@@ -29,7 +29,13 @@ const headers = {
   [YieldBreakdownColumnId.Apy]: t`APY`,
 } as const
 
-export const createYieldBreakdownColumns = ({ isMobile }: { isMobile: boolean }) => [
+export const YIELD_BREAKDOWN_MOBILE_COLUMN_VISIBILITY = {
+  [YieldBreakdownColumnId.Source]: true,
+  [YieldBreakdownColumnId.Price]: false,
+  [YieldBreakdownColumnId.Apy]: true,
+} satisfies VisibilityState
+
+export const YIELD_BREAKDOWN_COLUMNS = [
   columnHelper.accessor('source', {
     id: YieldBreakdownColumnId.Source,
     header: headers[YieldBreakdownColumnId.Source],
@@ -38,21 +44,17 @@ export const createYieldBreakdownColumns = ({ isMobile }: { isMobile: boolean })
     ),
     enableSorting: false,
   }),
-  ...(isMobile
-    ? []
-    : [
-        columnHelper.accessor('price', {
-          id: YieldBreakdownColumnId.Price,
-          header: headers[YieldBreakdownColumnId.Price],
-          cell: ({ getValue }) => (
-            <InlineTableCell>
-              <Typography>{formatNumber(getValue(), 'usd.amount')}</Typography>
-            </InlineTableCell>
-          ),
-          enableSorting: false,
-          meta: { type: 'numeric' },
-        }),
-      ]),
+  columnHelper.accessor('price', {
+    id: YieldBreakdownColumnId.Price,
+    header: headers[YieldBreakdownColumnId.Price],
+    cell: ({ getValue }) => (
+      <InlineTableCell>
+        <Typography>{formatNumber(getValue(), 'usd.amount')}</Typography>
+      </InlineTableCell>
+    ),
+    enableSorting: false,
+    meta: { type: 'numeric' },
+  }),
   columnHelper.accessor('apy', {
     id: YieldBreakdownColumnId.Apy,
     header: headers[YieldBreakdownColumnId.Apy],

@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { maybe } from '@primitives/objects.utils'
-import { createColumnHelper } from '@tanstack/react-table'
+import { createColumnHelper, type VisibilityState } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import type { TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
@@ -29,28 +29,31 @@ const headers = {
   [MarketCompositionColumnId.TokenAmount]: t`Amount`,
 } as const
 
-export const createMarketCompositionColumns = ({ isMobile }: { isMobile: boolean }) => [
+export const MARKET_COMPOSITION_MOBILE_COLUMN_VISIBILITY = {
+  [MarketCompositionColumnId.Asset]: true,
+  [MarketCompositionColumnId.Price]: false,
+  [MarketCompositionColumnId.MarketShare]: true,
+  [MarketCompositionColumnId.TokenAmount]: true,
+} satisfies VisibilityState
+
+export const MARKET_COMPOSITION_COLUMNS = [
   columnHelper.accessor('source', {
     id: MarketCompositionColumnId.Asset,
     header: headers[MarketCompositionColumnId.Asset],
     cell: ({ getValue, row }) => <TokenCell source={getValue()} explorerUrl={row.original.explorerUrl} />,
     enableSorting: false,
   }),
-  ...(isMobile
-    ? []
-    : [
-        columnHelper.accessor('price', {
-          id: MarketCompositionColumnId.Price,
-          header: headers[MarketCompositionColumnId.Price],
-          cell: ({ getValue }) => (
-            <InlineTableCell>
-              <Typography>{formatNumber(getValue(), 'usd.amount')}</Typography>
-            </InlineTableCell>
-          ),
-          enableSorting: false,
-          meta: { type: 'numeric' },
-        }),
-      ]),
+  columnHelper.accessor('price', {
+    id: MarketCompositionColumnId.Price,
+    header: headers[MarketCompositionColumnId.Price],
+    cell: ({ getValue }) => (
+      <InlineTableCell>
+        <Typography>{formatNumber(getValue(), 'usd.amount')}</Typography>
+      </InlineTableCell>
+    ),
+    enableSorting: false,
+    meta: { type: 'numeric' },
+  }),
   columnHelper.accessor('marketShare', {
     id: MarketCompositionColumnId.MarketShare,
     header: headers[MarketCompositionColumnId.MarketShare],
