@@ -110,8 +110,13 @@ describe('BorrowMoreForm (mocked)', () => {
             />
           </MockLoanTestWrapper>,
         )
-
-        writeBorrowMoreForm({ debt: borrow, userCollateral, hasLeverageManagement, leverageEnabled })
+        writeBorrowMoreForm({
+          debt: borrow,
+          userCollateral,
+          hasLeverageManagement,
+          leverageEnabled,
+          waitForRoutes: leverageImplementation === 'zapV2',
+        })
         checkBorrowMoreDetailsLoaded({
           expectedCurrentDebt,
           expectedFutureDebt,

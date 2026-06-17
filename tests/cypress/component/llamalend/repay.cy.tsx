@@ -77,7 +77,7 @@ describe('RepayForm (mocked)', () => {
       )
 
       selectRepayToken({ ...token, hasLeverageManagement })
-      writeRepayLoanForm({ amount })
+      writeRepayLoanForm({ amount, waitForRoutes: leverage })
       checkRepayDetailsLoaded({
         debt: { current: currentDebt, future: futureDebt, symbol: 'crvUSD' },
         leverageEnabled: leverage,

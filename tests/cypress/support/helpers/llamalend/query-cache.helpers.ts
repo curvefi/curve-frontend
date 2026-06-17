@@ -52,15 +52,18 @@ export const seedErc20BalanceForAddresses = ({
   rawBalance: bigint
   decimals?: number
 }) =>
-  addresses.forEach(userAddress =>
-    seedErc20BalanceQuery({
-      chainId,
-      tokenAddress,
-      userAddress,
-      rawBalance,
-      decimals,
-    }),
-  )
+  addresses.forEach(userAddress => {
+    const userAddresses = new Set<Address>([userAddress, userAddress.toLowerCase() as Address])
+    userAddresses.forEach(address =>
+      seedErc20BalanceQuery({
+        chainId,
+        tokenAddress,
+        userAddress: address,
+        rawBalance,
+        decimals,
+      }),
+    )
+  })
 
 export const seedCrvUsdBalance = ({
   chainId,

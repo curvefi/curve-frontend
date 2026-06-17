@@ -58,7 +58,7 @@ describe('CreateLoanForm (mocked)', () => {
         </MockLoanTestWrapper>,
       )
 
-      writeCreateLoanForm({ collateral, borrow, leverageEnabled, hasLeverage })
+      writeCreateLoanForm({ collateral, borrow, leverageEnabled, hasLeverage, waitForRoutes: leverageEnabled })
       checkLoanDetailsLoaded({ leverageEnabled })
 
       cy.then(assertPreSubmit)

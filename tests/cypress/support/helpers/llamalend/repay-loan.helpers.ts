@@ -1,4 +1,4 @@
-import { submitLoanForm } from '@cy/support/helpers/llamalend/create-loan.helpers'
+import { submitLoanForm, waitForRoutesLoaded } from '@cy/support/helpers/llamalend/create-loan.helpers'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
@@ -26,10 +26,11 @@ export function selectRepayToken({
   cy.get('[data-testid^="repay-input-"]', LOAD_TIMEOUT).contains(symbol).should('be.visible')
 }
 
-export function writeRepayLoanForm({ amount }: { amount: Decimal }) {
+export function writeRepayLoanForm({ amount, waitForRoutes }: { amount: Decimal; waitForRoutes?: boolean }) {
   getRepayInput().clear()
   getRepayInput().type(amount)
   getRepayInput().blur() // make sure field is touched to open the action info list
+  if (waitForRoutes) waitForRoutesLoaded({ submitButtonTestId: 'repay-submit-button' })
 }
 
 export const touchRepayLoanForm = () => touchInput(getRepayInput)

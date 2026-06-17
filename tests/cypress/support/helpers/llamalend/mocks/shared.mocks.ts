@@ -76,9 +76,10 @@ export const routeMutationMeta = {
 } as const
 
 export const mockRouterRoutes = (chainId: number) => {
-  cy.intercept({ method: 'GET', pathname: '/api/router/v1/routes' }, req => {
+  cy.intercept('GET', '**/api/router/v1/routes*', req => {
     const { router, amountIn, tokenIn, tokenOut } = req.query as RoutesQuery
     req.reply({
+      statusCode: 200,
       body: [
         {
           router,
@@ -103,7 +104,7 @@ export const mockRouterRoutes = (chainId: number) => {
         },
       ],
     })
-  })
+  }).as('routerRoutes')
 }
 
 export const createMockLendLoanMarket = ({
