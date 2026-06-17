@@ -6,6 +6,7 @@ import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
 import { Responsive } from '@ui-kit/themes/basic-theme'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { applySxProps } from '@ui-kit/utils'
+import { ExternalLink } from './ExternalLink'
 
 const { Spacing, IconSize, MaxWidth, LineHeight } = SizesAndSpaces
 
@@ -13,7 +14,7 @@ type EmptyStateButtonProps = ButtonProps & { label: ReactNode; testId?: string }
 
 type EmptyStateCardProps = {
   title?: ReactNode
-  subtitle?: ReactNode
+  description?: ReactNode
   isLoading?: boolean
   size?: 'sm' | 'md'
   button?: EmptyStateButtonProps
@@ -44,23 +45,24 @@ const EmptyStateButton = ({
   button: NonNullable<EmptyStateCardProps['button']>
   size: NonNullable<EmptyStateCardProps['size']>
 }) => {
-  const { label, sx: buttonSx, testId, fullWidth: buttonFullWidth, ...buttonProps } = button ?? {}
-  return (
-    <Button
-      {...buttonProps}
-      variant="outlined"
-      size={BUTTON_SIZE[size]}
-      sx={applySxProps({ alignSelf: 'center' }, buttonSx)}
-      data-testid={testId}
-    >
-      {label}
-    </Button>
+  const { label, sx: buttonSx, testId, href, ...buttonProps } = button ?? {}
+  const sharedProps = {
+    ...buttonProps,
+    variant: 'outlined',
+    size: BUTTON_SIZE[size],
+    sx: applySxProps({ alignSelf: 'center' }, buttonSx),
+    'data-testid': testId,
+  } as const
+  return href?.startsWith('https') ? (
+    <ExternalLink {...sharedProps} href={href} label={label} wide />
+  ) : (
+    <Button {...sharedProps}>{label}</Button>
   )
 }
 
 export const EmptyStateCard = ({
   title,
-  subtitle,
+  description,
   button,
   secondaryButton,
   isLoading,
@@ -85,9 +87,9 @@ export const EmptyStateCard = ({
               {title}
             </Typography>
           )}
-          {subtitle && (
+          {description && (
             <Typography component="span" variant="bodySRegular" color="textSecondary">
-              {subtitle}
+              {description}
             </Typography>
           )}
         </Stack>

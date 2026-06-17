@@ -9,7 +9,7 @@ const meta: Meta<typeof EmptyStateCard> = {
   render: args => <EmptyStateCard {...args} />,
   args: {
     title: 'No markets found',
-    subtitle: 'Try adjusting your filters or search query.',
+    description: 'Try adjusting your filters or search query.',
     button: { label: 'Reset filters', onClick: fn() },
   },
 }
@@ -20,28 +20,28 @@ export const Default: Story = {}
 
 export const WithTitle: Story = {
   args: {
-    subtitle: undefined,
+    description: undefined,
     button: undefined,
   },
 }
 
 export const WithSubtitle: Story = {
   args: {
-    subtitle: 'Try adjusting your filters or search query.',
+    description: 'Try adjusting your filters or search query.',
     button: undefined,
   },
 }
 
 export const WithButton: Story = {
   args: {
-    subtitle: 'Try adjusting your filters or search query.',
+    description: 'Try adjusting your filters or search query.',
     button: { label: 'Reset filters', onClick: fn() },
   },
 }
 
 export const With2Buttons: Story = {
   args: {
-    subtitle: 'Try adjusting your filters or search query.',
+    description: 'Try adjusting your filters or search query.',
     button: { label: 'Reset filters', onClick: fn() },
     secondaryButton: { label: 'Reload', onClick: fn(), startIcon: <ReloadIcon /> },
   },

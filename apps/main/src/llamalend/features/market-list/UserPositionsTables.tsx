@@ -85,7 +85,7 @@ export const UserPositionsTables = ({
                 <EmptyStateCard
                   isLoading={isLoading}
                   title={t`No active positions`}
-                  subtitle={t`Borrow with LLAMMA to stay exposed and lend assets to earn yield.`}
+                  description={t`Borrow with LLAMMA to stay exposed and lend assets to earn yield.`}
                 />
               )
             ) : (

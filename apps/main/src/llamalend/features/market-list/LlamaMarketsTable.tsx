@@ -79,7 +79,7 @@ export const LlamaMarketsTable = ({
           <EmptyStateRow table={table}>
             <EmptyStateCard
               title={isError ? t`Could not load markets` : t`No markets found`}
-              subtitle={!isError && t`Try adjusting your filters or search query`}
+              description={!isError && t`Try adjusting your filters or search query`}
               button={{ onClick: isError ? onReload : resetFilters, label: isError ? t`Reload` : t`Show All Markets` }}
             />
           </EmptyStateRow>

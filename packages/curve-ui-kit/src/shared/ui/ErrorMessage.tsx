@@ -27,7 +27,7 @@ export const ErrorMessage = ({
     <Stack sx={applySxProps({ alignItems: 'center' }, sx)}>
       <EmptyStateCard
         title={title}
-        subtitle={subtitle}
+        description={subtitle}
         button={{ label: t`Submit error report`, testId: 'submit-error-report-button', onClick: openReportModal }}
         {...(refreshData && {
           secondaryButton: {
