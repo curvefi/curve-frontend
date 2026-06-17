@@ -1,5 +1,5 @@
 import { formatEther } from 'viem'
-import { useReadContract, useSimulateContract, useWriteContract } from 'wagmi'
+import { useConnection, useReadContract, useSimulateContract, useWriteContract } from 'wagmi'
 import type { Decimal } from '@primitives/decimal.utils'
 import { fallbackQ, mapQuery } from '@ui-kit/types/util'
 import { abi as pegkeeperAbi } from '../abi/pegkeeper'
@@ -11,6 +11,8 @@ import type { PegKeeper } from '../types'
 const formatWei = (value: bigint) => formatEther(value) as Decimal
 
 export function usePegkeeper({ address, pool: { address: poolAddress } }: PegKeeper) {
+  const { isConnected } = useConnection()
+
   const debt = useReadContract({
     abi: pegkeeperAbi,
     address,
@@ -23,14 +25,14 @@ export function usePegkeeper({ address, pool: { address: poolAddress } }: PegKee
     abi: pegkeeperAbi,
     address,
     functionName: 'update',
-    query: { retry: false }, // If it fails it's most likely because the profit is actually zero
+    query: { enabled: isConnected, retry: false }, // If it fails it's most likely because the profit is actually zero
   })
 
   const estCallerProfitFallback = useReadContract({
     abi: pegkeeperAbi,
     address,
     functionName: 'estimate_caller_profit',
-    query: { enabled: !!estCallerProfit.error },
+    query: { enabled: !isConnected || !!estCallerProfit.error },
   })
 
   const debtCeiling = useReadContract({
@@ -72,7 +74,7 @@ export function usePegkeeper({ address, pool: { address: poolAddress } }: PegKee
     rate: fallbackQ(mapQuery(priceOracle, formatWei), mapQuery(priceOracleFallback, formatWei)),
     debt: mapQuery(debt, formatWei),
     estCallerProfit: fallbackQ(
-      mapQuery(estCallerProfit, p => formatWei(p.result)),
+      isConnected && mapQuery(estCallerProfit, p => formatWei(p.result)),
       mapQuery(estCallerProfitFallback, formatWei),
     ),
     debtCeiling: mapQuery(debtCeiling, formatWei),
