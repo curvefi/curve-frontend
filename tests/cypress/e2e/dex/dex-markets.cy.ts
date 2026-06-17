@@ -2,6 +2,7 @@
 import { orderBy } from 'lodash'
 import { oneOf } from '@cy/support/generators'
 import { getHiddenCount, withFilterChips } from '@cy/support/helpers/data-table.helpers'
+import { mockMerklCampaigns } from '@cy/support/helpers/lending-mocks'
 import { API_LOAD_TIMEOUT, type Breakpoint, LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
 import { assert } from '@primitives/objects.utils'
 
@@ -56,6 +57,7 @@ describe('DEX Pools', () => {
   let width: number, height: number
 
   beforeEach(() => {
+    mockMerklCampaigns()
     ;[width, height, breakpoint] = oneViewport()
   })
 
@@ -164,8 +166,8 @@ describe('DEX Pools', () => {
   })
 
   it('paginates', () => {
-    const getPages = ($buttons: JQuery) =>
-      Cypress.$.makeArray($buttons).map(el => el.dataset.testid?.replace('btn-page-', ''))
+    const getPages = (...$buttons: JQuery[]) =>
+      $buttons.flatMap(el => Cypress.$.makeArray(el)).map(e => e.dataset.testid?.replace('btn-page-', ''))
 
     // open page 5 (1-based)
     visitAndWait(width, height, { query: { page: '5' } })
@@ -173,7 +175,7 @@ describe('DEX Pools', () => {
     // Current page selected
     cy.get('[data-testid="btn-page-5"]').should('have.class', 'Mui-selected')
     cy.get('[data-testid^="btn-page-"]').then($buttons => {
-      const [prevLastPage, lastPage] = [$buttons.length - 1, $buttons.length]
+      const [prevLastPage, lastPage] = getPages($buttons.eq($buttons.length - 3), $buttons.eq($buttons.length - 2))
       expect(getPages($buttons)).to.deep.equal([
         'prev',
         '1',
