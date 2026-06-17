@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { maybe } from '@primitives/objects.utils'
+import { type Falsy, maybe } from '@primitives/objects.utils'
 import type { UseQueryResult } from '@tanstack/react-query'
 
 export type Range<T> = [T, T]
@@ -75,9 +75,10 @@ export const q = <T>({ data, isLoading, error }: Query<T>) =>
 
 type QueryData<TQuery> = TQuery extends Query<infer TData> ? TData : never
 
-export const fallbackQ = <const TQueries extends readonly [Query<unknown>, ...Query<unknown>[]]>(
-  ...queries: TQueries
-) => q(queries.find(q => !q.error) ?? queries[0]) as QueryProp<QueryData<TQueries[number]>>
+export const fallbackQ = <const TQueries extends readonly (Query<unknown> | Falsy)[]>(...queries: TQueries) => {
+  const filtered = queries.filter((x): x is Query<unknown> => !!x)
+  return q(filtered.find(q => !q.error) ?? filtered[0]) as QueryProp<QueryData<TQueries[number]>>
+}
 
 /**
  * Maps a Query type to extract partial data from it.
