@@ -35,7 +35,7 @@ const Skeletons = () => (
 )
 
 export const EmptyStateCard = ({ title, subtitle, button, isLoading, size = 'md' }: EmptyStateCardProps) => {
-  const { label, sx, testId, ...buttonProps } = button ?? {}
+  const { label, sx: buttonSx, testId, ...buttonProps } = button ?? {}
   return (
     <Stack
       sx={{
@@ -67,7 +67,7 @@ export const EmptyStateCard = ({ title, subtitle, button, isLoading, size = 'md'
               {...buttonProps}
               variant="outlined"
               size={BUTTON_SIZE[size]}
-              sx={applySxProps({ alignSelf: 'center' }, sx)}
+              sx={applySxProps({ alignSelf: 'center' }, buttonSx)}
               data-testid={testId}
             >
               {label}
