@@ -1987,22 +1987,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/connect-evm@npm:2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/connect-evm@npm:2.0.0"
+"@metamask/connect-evm@npm:2.1.0":
+  version: 2.1.0
+  resolution: "@metamask/connect-evm@npm:2.1.0"
   dependencies:
     "@metamask/analytics": "npm:^0.6.0"
+    "@metamask/connect-multichain": "npm:^1.1.0"
     "@metamask/utils": "npm:^11.8.1"
     semver: "npm:^7.7.4"
-  peerDependencies:
-    "@metamask/connect-multichain": ^1.0.0
-  checksum: 10c0/e3fc00e03070b6d142315804eed2bfbf08de3e6bd88fa55405eec0741ce07552a964c07ea6acd41783e4bc293181bf4a4bf73f7bf281affc1083c183b90c7367
+  checksum: 10c0/40f32d4edcdce058ee1d1f6fe4e6738ad918d83e9a23af1f37a4467d720d27bf3d8f305c07bbcff36861cbe16a652b6877b0df3b0dd2a68ab581aa2bdb0fbd0f
   languageName: node
   linkType: hard
 
-"@metamask/connect-multichain@npm:1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/connect-multichain@npm:1.0.0"
+"@metamask/connect-multichain@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@metamask/connect-multichain@npm:1.1.0"
   dependencies:
     "@metamask/analytics": "npm:^0.6.0"
     "@metamask/mobile-wallet-protocol-core": "npm:^0.4.0"
@@ -2026,7 +2025,7 @@ __metadata:
   peerDependenciesMeta:
     "@react-native-async-storage/async-storage":
       optional: true
-  checksum: 10c0/9c3a38c59430336517d89d10d38a25099fd11c91d493f4e2ccbdb38cf3b45e19ba739916a88bc65f2009909ef07d0fcaec94236d54157208d568d99d4e11b2ac
+  checksum: 10c0/82671e10d6850929a60ac840f5a9f6a858912dd13c89dabe570125f5cd3cf8caf224daa0be48c78d1c52901b9db53ffbd3c06ff7f77e57c449a93179bfc3184f
   languageName: node
   linkType: hard
 
@@ -7636,8 +7635,7 @@ __metadata:
     "@emotion/react": "npm:11.14.0"
     "@emotion/styled": "npm:11.14.1"
     "@hookform/resolvers": "npm:5.4.0"
-    "@metamask/connect-evm": "npm:2.0.0"
-    "@metamask/connect-multichain": "npm:1.0.0"
+    "@metamask/connect-evm": "npm:2.1.0"
     "@mui/icons-material": "npm:9.0.1"
     "@mui/material": "npm:9.0.1"
     "@safe-global/safe-apps-provider": "npm:0.18.6"
