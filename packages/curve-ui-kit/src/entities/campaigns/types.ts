@@ -5,7 +5,8 @@ export type CampaignRewards = Pick<Campaign, 'campaignName' | 'platform' | 'plat
     description: CampaignPool['description'] | null
     steps?: string[]
     lock: boolean
-    multiplier?: number | string // Can be 5 as parsed from "5x", or just the token like "FXN". Kept as number for sorting.
+    /** Can be 5 as parsed from "5x", or just the token like "FXN". Kept as number for sorting. Could also be an APR if it ends with % */
+    multiplier?: number | string
     period?: readonly [Date, Date]
   }
 
