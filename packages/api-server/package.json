@@ -16,7 +16,7 @@
   "main": "src/index.ts",
   "types": "src/index.ts",
   "dependencies": {
-    "fastify": "5.8.5"
+    "fastify": "*"
   },
   "devDependencies": {
     "@types/node": "*",

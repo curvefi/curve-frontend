@@ -465,7 +465,7 @@ __metadata:
   dependencies:
     "@types/node": "npm:*"
     eslint: "npm:*"
-    fastify: "npm:5.8.5"
+    fastify: "npm:*"
     typescript: "npm:*"
     vitest: "npm:*"
   languageName: unknown
@@ -10845,7 +10845,7 @@ __metadata:
   dependencies:
     "@types/node": "npm:*"
     eslint: "npm:*"
-    fastify: "npm:5.8.5"
+    fastify: "npm:*"
     tsx: "npm:4.22.4"
     typescript: "npm:*"
     vitest: "npm:*"
@@ -12534,7 +12534,7 @@ __metadata:
     "@curvefi/api": "npm:*"
     "@types/node": "npm:*"
     eslint: "npm:*"
-    fastify: "npm:5.8.5"
+    fastify: "npm:*"
     tsx: "npm:4.22.4"
     typescript: "npm:*"
     vitest: "npm:*"
