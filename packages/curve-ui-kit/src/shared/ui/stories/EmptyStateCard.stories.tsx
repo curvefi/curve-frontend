@@ -1,0 +1,31 @@
+import { fn } from 'storybook/test'
+import type { Meta, StoryObj } from '@storybook/react-vite'
+import { EmptyStateCard } from '../EmptyStateCard'
+
+const meta: Meta<typeof EmptyStateCard> = {
+  title: 'UI Kit/Widgets/EmptyStateCard',
+  component: EmptyStateCard,
+  render: args => <EmptyStateCard {...args} />,
+  args: {
+    title: 'No markets found',
+  },
+}
+
+type Story = StoryObj<typeof EmptyStateCard>
+
+export const Default: Story = {}
+
+export const WithSubtitle: Story = {
+  args: {
+    subtitle: 'Try adjusting your filters or search query.',
+  },
+}
+
+export const WithAction: Story = {
+  args: {
+    subtitle: 'Try adjusting your filters or search query.',
+    action: { label: 'Reset filters', onClick: fn },
+  },
+}
+
+export default meta
