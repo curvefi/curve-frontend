@@ -3,7 +3,7 @@ import { getOpportunities } from './routes/opportunities'
 import { OpportunitiesOpts, OpportunitiesPath } from './routes/opportunities.schemas'
 
 export const createMerklServer = (
-  { npm_package_version, NODE_ENV, SERVICE_NAME, LOG_LEVEL, MERKL_API_URL, MERKL_API_KEY } = process.env,
+  { npm_package_version, NODE_ENV, SERVICE_NAME, LOG_LEVEL, MERKL_API_KEY } = process.env,
 ) =>
   createFastify({ logger: { level: LOG_LEVEL || (NODE_ENV === 'production' ? 'info' : 'debug') } })
     .get('/health', () => ({
@@ -14,4 +14,4 @@ export const createMerklServer = (
       uptime: process.uptime(),
       timestamp: new Date().toISOString(),
     }))
-    .get(OpportunitiesPath, OpportunitiesOpts, getOpportunities({ MERKL_API_URL, MERKL_API_KEY }))
+    .get(OpportunitiesPath, OpportunitiesOpts, getOpportunities({ MERKL_API_KEY }))

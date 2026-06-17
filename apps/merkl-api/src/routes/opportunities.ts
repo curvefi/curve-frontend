@@ -1,10 +1,9 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import type { OpportunitiesQuery } from './opportunities.schemas'
 
-const DEFAULT_MERKL_API_URL = 'https://api.merkl.xyz'
+const MERKL_API_URL = 'https://api.merkl.xyz'
 
 type MerklConfig = {
-  MERKL_API_URL?: string
   MERKL_API_KEY?: string
 }
 
@@ -17,7 +16,7 @@ const buildMerklOpportunitiesUrl = (baseUrl: string, query: OpportunitiesQuery) 
 }
 
 export const getOpportunities =
-  ({ MERKL_API_URL = DEFAULT_MERKL_API_URL, MERKL_API_KEY }: MerklConfig = {}) =>
+  ({ MERKL_API_KEY }: MerklConfig = {}) =>
   async (request: FastifyRequest<{ Querystring: OpportunitiesQuery }>, reply: FastifyReply) => {
     const url = buildMerklOpportunitiesUrl(MERKL_API_URL, request.query)
     const headers: Record<string, string> = { accept: 'application/json' }
