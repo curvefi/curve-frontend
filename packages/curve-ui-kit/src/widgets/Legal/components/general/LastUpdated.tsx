@@ -3,7 +3,7 @@ import Typography from '@mui/material/Typography'
 import { formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
-const LAST_UPDATED_DATE = new Date(2025, 11, 17) // Month is 0-indexed
+const LAST_UPDATED_DATE = new Date(2026, 5, 17) // Month is 0-indexed
 
 export const LastUpdated = () => (
   <Stack sx={{ justifyContent: 'space-evenly', alignItems: 'end' }}>
