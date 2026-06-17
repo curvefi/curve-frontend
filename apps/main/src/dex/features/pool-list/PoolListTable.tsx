@@ -59,7 +59,6 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
     sortBy,
     sortDirection,
   })
-  const loading = isPending
   const apiResultCount = isPlaceholderData ? undefined : poolList?.count
   const data = useMemo(
     () => poolList?.pools.map(pool => getPoolListItem(network, pool, getUserPositionOptions(pool.address))) ?? EMPTY,
@@ -85,7 +84,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
     manualPagination: true,
     manualSorting: true,
     manualFiltering: true,
-    pageCount: poolList ? Math.ceil(poolList.count / POOL_LIST_PAGE_SIZE) : -1,
+    pageCount: poolList?.pageCount ?? -1,
     autoResetPageIndex: false,
   })
 
@@ -107,7 +106,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
         }
         expandedPanel={PoolListMobileExpandedPanel}
         shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
-        isLoading={loading}
+        isLoading={isPending}
       >
         <TableFilters<PoolListColumnId>
           testIdPrefix={LOCAL_STORAGE_KEY}
