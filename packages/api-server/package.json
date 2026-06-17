@@ -9,7 +9,9 @@
   "scripts": {
     "lint": "eslint --cache --cache-location ../../.cache/eslint/api-server --cache-strategy content .",
     "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/api-server --cache-strategy content . --fix",
-    "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/packages-api-server.tsbuildinfo"
+    "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/packages-api-server.tsbuildinfo",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "main": "src/index.ts",
   "types": "src/index.ts",
@@ -19,6 +21,7 @@
   "devDependencies": {
     "@types/node": "*",
     "eslint": "*",
-    "typescript": "*"
+    "typescript": "*",
+    "vitest": "*"
   }
 }

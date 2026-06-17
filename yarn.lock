@@ -467,6 +467,7 @@ __metadata:
     eslint: "npm:*"
     fastify: "npm:5.8.5"
     typescript: "npm:*"
+    vitest: "npm:*"
   languageName: unknown
   linkType: soft
 
