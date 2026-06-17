@@ -1,7 +1,7 @@
 import { formatEther } from 'viem'
-import { useReadContracts } from 'wagmi'
-import type { Decimal } from '@primitives/decimal.utils'
-import { maybe } from '@primitives/objects.utils'
+import { useReadContracts, type UseReadContractsReturnType } from 'wagmi'
+import { type Decimal } from '@primitives/decimal.utils'
+import { mapQuery } from '@ui-kit/types/util'
 import { abi as pegkeeperAbi } from '../abi/pegkeeper'
 import { abi as pegkeeperDebtCeilingAbi } from '../abi/pegkeeperDebtCeiling'
 import { PEG_KEEPER_DEBT_CEILINGS_CONTRACT_ADDRESS, PEG_KEEPERS } from '../constants'
@@ -19,39 +19,19 @@ const pegkeeperDebtCeilingContracts = PEG_KEEPERS.map(pegkeeper => ({
   args: [pegkeeper.address],
 }))
 
-export function useStatistics() {
-  const {
-    data: debt,
-    isFetching: isFetchingDebt,
-    isError: isErrorDebt,
-  } = useReadContracts({
-    contracts: pegkeeperDebtContracts,
-  })
+const sumSuccess = (results: NonNullable<UseReadContractsReturnType<typeof pegkeeperDebtContracts>['data']>) =>
+  formatEther(
+    results
+      .filter(x => x.status === 'success')
+      .map(x => x.result)
+      .reduce((acc, curr) => acc + curr, 0n),
+  ) as Decimal
 
-  const totalDebt = debt
-    ?.filter(x => x.status === 'success')
-    .map(x => x.result)
-    .reduce((acc, curr) => acc + curr, 0n)
-
-  const {
-    data: ceiling,
-    isFetching: isFetchingCeiling,
-    isError: isErrorCeiling,
-  } = useReadContracts({
-    contracts: pegkeeperDebtCeilingContracts,
-  })
-
-  const totalCeiling = ceiling
-    ?.filter(x => x.status === 'success')
-    .map(x => x.result)
-    .reduce((acc, curr) => acc + curr, 0n)
-
+export const useStatistics = () => {
+  const totalDebtQuery = useReadContracts({ contracts: pegkeeperDebtContracts })
+  const totalCeilingQuery = useReadContracts({ contracts: pegkeeperDebtCeilingContracts })
   return {
-    totalDebt: maybe(totalDebt, totalDebt => formatEther(totalDebt) as Decimal),
-    totalCeiling: maybe(totalCeiling, totalCeiling => formatEther(totalCeiling) as Decimal),
-    isFetchingDebt,
-    isFetchingCeiling,
-    isErrorDebt,
-    isErrorCeiling,
+    totalDebt: mapQuery(totalDebtQuery, sumSuccess),
+    totalCeiling: mapQuery(totalCeilingQuery, sumSuccess),
   }
 }

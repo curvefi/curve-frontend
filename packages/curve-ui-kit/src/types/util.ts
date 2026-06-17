@@ -73,6 +73,12 @@ export const q = <T>({ data, isLoading, error }: Query<T>) =>
     error,
   }) as QueryProp<T>
 
+type QueryData<TQuery> = TQuery extends Query<infer TData> ? TData : never
+
+export const fallbackQ = <const TQueries extends readonly [Query<unknown>, ...Query<unknown>[]]>(
+  ...queries: TQueries
+) => q(queries.find(q => !q.error) ?? queries[0]) as QueryProp<QueryData<TQueries[number]>>
+
 /**
  * Maps a Query type to extract partial data from it.
  * Preserves error and loading states while transforming the data.
@@ -89,6 +95,12 @@ export const mapQuery = <TSource, TResult>(
 
 /** Creates a QueryProp constant data, no loading or error state. */
 export const constQ = <T>(data: T) => q({ data, isLoading: false, error: null })
+
+/**
+ * Creates a fake query that assumes the data is loading when null or undefined.
+ * Avoid this when possible, prefer real queries instead!
+ **/
+export const fakeLoadingQ = <T>(data: T | undefined) => q({ data, isLoading: data == null, error: null })
 
 /** Hook similar to mapQuery for queries that need memoization */
 export const useMappedQuery = <TSource, TResult>(

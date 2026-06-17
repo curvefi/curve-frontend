@@ -1,23 +1,24 @@
-import { ReactNode, useCallback, useMemo } from 'react'
+import { type ReactNode, useCallback, useMemo } from 'react'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
+import { type ButtonProps } from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
-import Typography, { TypographyProps } from '@mui/material/Typography'
+import Typography, { type TypographyProps } from '@mui/material/Typography'
 import { toArray } from '@primitives/array.utils'
 import type { Amount } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
-import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
+import { ErrorIconButton } from '@ui-kit/shared/ui/ErrorIconButton'
 import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
-import type { MakeOptional } from '@ui-kit/types/util'
+import type { MakeOptional, QueryProp } from '@ui-kit/types/util'
 import {
+  applySxProps,
   copyToClipboard,
+  decomposeNumber,
   defaultNumberFormatter,
   formatNumber,
-  decomposeNumber,
   type NumberFormatOptions,
   type SxProps,
-  applySxProps,
 } from '@ui-kit/utils'
 import { showToast } from '@ui-kit/widgets/Toast/toast.util'
 import { WithSkeleton } from './WithSkeleton'
@@ -50,6 +51,13 @@ const MetricChangeSize = {
   large: 'highlightM',
   extraLarge: 'highlightM',
 } as const satisfies Record<string, TypographyVariantKey>
+
+const MetricButtonSize = {
+  small: 'extraSmall',
+  medium: 'extraSmall',
+  large: 'small',
+  extraLarge: 'medium',
+} satisfies Record<keyof typeof MetricSize, ButtonProps['size']>
 
 // eslint-disable-next-line react-refresh/only-export-components -- Existing violation before enabling this rule.
 export const SIZES = Object.keys(MetricSize) as (keyof typeof MetricSize)[]
@@ -91,13 +99,14 @@ const notionalsToString = (notionals: MetricProps['notional']) =>
 /** At the moment of writing the default formatter already formats to 2 decimals, but I really want to make this explicit for potential future changes. */
 const formatChange = (value: number): string => defaultNumberFormatter(value, { decimals: 2 })
 
-type MetricValueProps = Pick<MetricProps, 'value' | 'valueOptions' | 'change' | 'testId'> & {
+type MetricValueProps = Pick<MetricProps, 'valueOptions' | 'change' | 'testId'> & {
+  value: Amount | null
   size: NonNullable<MetricProps['size']>
   tooltip?: MetricProps['valueTooltip']
   copyValue?: () => void
 }
 
-const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip, testId }: MetricValueProps) => {
+const MetricValue = ({ value, valueOptions = {}, change, size, copyValue, tooltip, testId }: MetricValueProps) => {
   const numberValue = useMemo(() => ((value || value === 0) && isFinite(Number(value)) ? Number(value) : null), [value])
   const { color = 'textPrimary', abbreviate = true, fallback = t`N/A`, ...formattingOptions } = valueOptions
   const { prefix, mainValue, scaleSuffix, suffix } =
@@ -156,8 +165,8 @@ const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip, te
 
 export type MetricProps = {
   /** The actual metric value to display */
-  value: Amount | '' | false | undefined | null
-  valueOptions: MakeOptional<NumberFormatOptions, 'abbreviate'> /* defaults to true */ & {
+  value: QueryProp<MetricValueProps['value']>
+  valueOptions?: MakeOptional<NumberFormatOptions, 'abbreviate'> /* defaults to true */ & {
     color?: TypographyProps['color']
   }
 
@@ -178,20 +187,17 @@ export type MetricProps = {
   /** Optional content to display to the right of the value */
   rightAdornment?: ReactNode
 
-  /** Shows an error triangle icon on the metric value row. */
-  error?: Error | null
   /** Optional tooltip shown when hovering the error triangle icon. Must include both title and body. */
   errorTooltip?: MetricErrorTooltip
 
   size?: keyof typeof MetricSize
   alignment?: Alignment
-  loading?: boolean
   testId?: string
   sx?: SxProps
 }
 
 export const Metric = ({
-  value,
+  value: { error, data, isLoading },
   valueOptions = {},
   change,
 
@@ -203,22 +209,20 @@ export const Metric = ({
   notional,
 
   rightAdornment,
-  error = undefined,
   errorTooltip,
 
   size = 'medium',
   alignment = 'start',
-  loading = false,
   testId = 'metric',
   sx,
 }: MetricProps) => {
   const notionals = useMemo(() => notionalsToString(notional), [notional])
   const copyValue = useCallback(() => {
-    if (value || value === 0) {
-      void copyToClipboard(value.toString())
-      showToast({ title: copyText, message: value, severity: 'info' })
+    if (data || data === 0) {
+      void copyToClipboard(data.toString())
+      showToast({ title: copyText, message: data, severity: 'info' })
     }
-  }, [value, copyText])
+  }, [data, copyText])
 
   return (
     <Stack data-testid={testId} sx={applySxProps({ alignItems: alignment }, sx)}>
@@ -233,23 +237,21 @@ export const Metric = ({
           </Tooltip>
         )}
       </Typography>
-      <WithSkeleton loading={loading}>
+      <WithSkeleton loading={isLoading}>
         <Stack direction="row" sx={{ alignItems: 'baseline' }}>
           {/* Keep error state vertical rhythm aligned with regular metric values by inheriting metric typography sizing. */}
           {error ? (
             <Tooltip arrow placement="bottom" title={errorTooltip?.title} body={errorTooltip?.body} {...errorTooltip}>
-              <Typography component="span" variant={MetricSize[size]} color="error">
-                <ExclamationTriangleIcon fontSize="inherit" />
-              </Typography>
+              <ErrorIconButton size={MetricButtonSize[size]} error={error} />
             </Tooltip>
           ) : (
             <>
               <MetricValue
-                value={value}
+                value={data ?? null}
                 valueOptions={valueOptions}
                 change={change}
                 size={size}
-                copyValue={value || value === 0 ? copyValue : undefined}
+                copyValue={data || data === 0 ? copyValue : undefined}
                 tooltip={valueTooltip}
                 testId={testId}
               />
