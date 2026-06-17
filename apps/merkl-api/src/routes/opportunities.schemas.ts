@@ -4,9 +4,9 @@ const opportunitiesQuerySchema = {
   type: 'object',
   additionalProperties: false,
   properties: {
-    mainProtocolId: { type: 'string', minLength: 1 },
+    mainProtocolId: { type: 'string', minLength: 1, enum: ['curve', 'llamalend'] },
     test: { type: 'boolean' },
-    status: { type: 'string', minLength: 1 },
+    status: { type: 'string', minLength: 1, enum: ['LIVE'] },
     action: { type: 'string', minLength: 1 },
     items: { type: 'integer', minimum: 1 },
     page: { type: 'integer', minimum: 0 },

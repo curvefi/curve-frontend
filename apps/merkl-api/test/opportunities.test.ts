@@ -89,6 +89,50 @@ describe('GET opportunities', () => {
     )
   })
 
+  it('rejects unsupported main protocol IDs', async () => {
+    const fetchMock = vi.fn<typeof fetch>(() => Promise.resolve(jsonResponse([])))
+    vi.stubGlobal('fetch', fetchMock)
+    const server = createServer()
+
+    try {
+      const { statusCode, json } = await server.inject({
+        url: '/api/merkl/v1/opportunities',
+        query: { mainProtocolId: 'other-protocol', status: 'LIVE' },
+      })
+
+      expect(statusCode).toBe(400)
+      expect(json()).toMatchObject({
+        code: 'FST_ERR_VALIDATION',
+        message: 'querystring/mainProtocolId must be equal to one of the allowed values',
+      })
+      expect(fetchMock).not.toHaveBeenCalled()
+    } finally {
+      await server.close()
+    }
+  })
+
+  it('rejects unsupported campaign statuses', async () => {
+    const fetchMock = vi.fn<typeof fetch>(() => Promise.resolve(jsonResponse([])))
+    vi.stubGlobal('fetch', fetchMock)
+    const server = createServer()
+
+    try {
+      const { statusCode, json } = await server.inject({
+        url: '/api/merkl/v1/opportunities',
+        query: { mainProtocolId: 'curve', status: 'PAST' },
+      })
+
+      expect(statusCode).toBe(400)
+      expect(json()).toMatchObject({
+        code: 'FST_ERR_VALIDATION',
+        message: 'querystring/status must be equal to one of the allowed values',
+      })
+      expect(fetchMock).not.toHaveBeenCalled()
+    } finally {
+      await server.close()
+    }
+  })
+
   it('returns upstream failures without leaking secrets or upstream bodies', async () => {
     const fetchMock = vi.fn<typeof fetch>(() =>
       Promise.resolve(new Response('upstream secret body', { status: 429, statusText: 'Too Many Requests' })),
