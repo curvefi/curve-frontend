@@ -11,6 +11,7 @@ import storybook from 'eslint-plugin-storybook'
 import unusedImports from 'eslint-plugin-unused-imports'
 import tseslint from 'typescript-eslint'
 import { useMaybePatternRule } from './.eslint/use-maybe-pattern.rule.mjs'
+import { stableHookCallbacksRule } from './.eslint/stable-hook-callbacks.rule.mjs'
 import { noDoubleNegativeRule } from './.eslint/no-double-negative.rule.mjs'
 import { noJsxStringLiteralBracesRule } from './.eslint/no-jsx-string-literal-braces.rule.mjs'
 import { noRedundantTernaryRule } from './.eslint/no-redundant-ternary.rule.mjs'
@@ -52,6 +53,7 @@ const config = [
       local: {
         rules: {
           'use-maybe-pattern': useMaybePatternRule,
+          'stable-hook-callbacks': stableHookCallbacksRule,
           'no-double-negative': noDoubleNegativeRule,
           'no-jsx-string-literal-braces': noJsxStringLiteralBracesRule,
           'no-redundant-ternary': noRedundantTernaryRule,
@@ -76,6 +78,7 @@ const config = [
     },
     rules: {
       'local/use-maybe-pattern': 'error',
+      'local/stable-hook-callbacks': 'error',
       'local/no-double-negative': 'error',
       'local/no-jsx-string-literal-braces': 'error',
       'local/no-redundant-ternary': 'error',

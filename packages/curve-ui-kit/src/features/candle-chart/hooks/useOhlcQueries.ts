@@ -147,7 +147,13 @@ export const useOhlcPagesAdapter = <TPage, TData>({ query, selectData }: UseOhlc
 }
 
 export const useOhlcQueryAdapter = <TPage, TItem>({ query, selectItems }: UseOhlcQueryAdapterParams<TPage, TItem>) =>
-  useOhlcPagesAdapter({ query, selectData: pages => flattenOhlcPagesChronologically(pages, selectItems) })
+  useOhlcPagesAdapter({
+    query,
+    selectData: useCallback(
+      (pages: TPage[] | undefined) => flattenOhlcPagesChronologically(pages, selectItems),
+      [selectItems],
+    ),
+  })
 
 const createOhlcAnchor = (resetKey: string): OhlcAnchor => ({
   anchorEnd: Math.floor(Date.now() / 1000),

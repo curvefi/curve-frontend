@@ -50,3 +50,5 @@ export const { useQuery: useRefuelTimeseries } = queryFactory({
   category: 'analytics.chart',
   keepPreviousData: true,
 })
+
+export type RefuelTimeSeriesData = NonNullable<ReturnType<typeof useRefuelTimeseries>['data']>

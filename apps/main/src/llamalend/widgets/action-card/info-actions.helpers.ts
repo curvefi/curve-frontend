@@ -31,11 +31,6 @@ export const combineActionInfoState = (...queries: (Query<unknown> | undefined)[
   return { loading: isLoading, error }
 }
 
-export const combineMetricState = <T>(query: Query<T> | undefined) => ({
-  value: query?.data,
-  ...combineActionInfoState(query),
-})
-
 // Returns whether an action info should stay visible when its value differs from the reference value.
 export const isQueryValueDifferent = (
   value: QueryProp<Decimal | null> | undefined,

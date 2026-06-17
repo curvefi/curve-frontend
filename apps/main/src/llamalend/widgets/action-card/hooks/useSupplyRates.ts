@@ -60,7 +60,7 @@ export function useSupplyRates<ChainId extends IChainId>(
 ) {
   const blockchainId = maybe(chainId, chainId => BlockchainIds[chainId])
   const market = marketId ? requireVault(marketId) : undefined
-  const snapshotsQuery = useLlamaSnapshot(market, blockchainId, enabled)
+  const snapshotsQuery = useLlamaSnapshot({ market, blockchainId, enabled })
   const lendingSnapshotsQuery = q({
     ...snapshotsQuery,
     data: snapshotsQuery.data as LendingSnapshot[] | undefined,

@@ -8,6 +8,7 @@ import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { mapQuery } from '@ui-kit/types/util'
 import { useRefuelPool } from '../queries/pools.query'
 
 const { Spacing } = SizesAndSpaces
@@ -21,9 +22,8 @@ export const BorrowInformationContainer = ({
   blockchainId: Chain
   poolAddress: Address
 }) => {
-  const { data: pool, isLoading: isPoolLoading, error: poolError } = useRefuelPool({ blockchainId, poolAddress })
+  const refuel = useRefuelPool({ blockchainId, poolAddress })
   const isMobile = useIsMobile()
-
   return (
     <Card size="small" data-testid="refuel-pool-information">
       <CardHeader title={t`Pool Information`} />
@@ -33,10 +33,8 @@ export const BorrowInformationContainer = ({
             <Metric
               label={t`TVL`}
               size={isMobile ? 'small' : 'medium'}
-              value={pool?.tvlUsd}
+              value={mapQuery(refuel, pool => pool.tvlUsd)}
               valueOptions={{ unit: 'dollar', abbreviate: true }}
-              loading={isPoolLoading}
-              error={poolError}
               testId="refuel-pool-tvl"
             />
           </Grid>
@@ -45,10 +43,8 @@ export const BorrowInformationContainer = ({
             <Metric
               label={t`Volume`}
               size={isMobile ? 'small' : 'medium'}
-              value={pool?.tradingVolume24h}
+              value={mapQuery(refuel, pool => pool.tradingVolume24h)}
               valueOptions={{ unit: 'dollar', abbreviate: true }}
-              loading={isPoolLoading}
-              error={poolError}
               testId="refuel-pool-volume"
             />
           </Grid>
@@ -57,10 +53,8 @@ export const BorrowInformationContainer = ({
             <Metric
               label={t`24h fees`}
               size={isMobile ? 'small' : 'medium'}
-              value={pool?.tradingFee24h}
+              value={mapQuery(refuel, pool => pool.tradingFee24h)}
               valueOptions={{ unit: 'dollar', abbreviate: true }}
-              loading={isPoolLoading}
-              error={poolError}
               testId="refuel-pool-fees"
             />
           </Grid>
@@ -69,10 +63,8 @@ export const BorrowInformationContainer = ({
             <Metric
               label={t`1W APR`}
               size={isMobile ? 'small' : 'medium'}
-              value={pool?.baseWeeklyApr}
+              value={mapQuery(refuel, pool => pool.baseWeeklyApr)}
               valueOptions={{ unit: 'percentage', abbreviate: true }}
-              loading={isPoolLoading}
-              error={poolError}
               testId="refuel-pool-apr"
             />
           </Grid>

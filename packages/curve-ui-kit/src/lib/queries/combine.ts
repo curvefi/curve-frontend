@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { UseQueryOptions } from '@tanstack/react-query'
 import { Query, QueryProp } from '@ui-kit/types/util'
@@ -15,14 +16,29 @@ type QueriesData<TQueries extends Queries> = {
   [K in keyof TQueries]: TQueries[K] extends Query<infer TData> ? Exclude<TData, undefined> : never
 }
 
+const combineQueryData = <const TQueries extends Queries, TResult>(
+  queries: TQueries,
+  selector: (...data: QueriesData<TQueries>) => TResult | null | undefined,
+) =>
+  queries.some(({ data }) => data === undefined)
+    ? undefined
+    : selector(...(queries.map(({ data }) => data) as QueriesData<TQueries>))
+
 export const combineQueries = <const TQueries extends Queries, TResult>(
+  queries: TQueries,
+  selector: (...data: QueriesData<TQueries>) => TResult | null | undefined,
+) => ({ data: combineQueryData(queries, selector), ...combineQueryState(...queries) }) as QueryProp<TResult>
+
+export const useCombinedQueries = <const TQueries extends Queries, TResult>(
   queries: TQueries,
   selector: (...data: QueriesData<TQueries>) => TResult | null | undefined,
 ) =>
   ({
-    data: queries.some(({ data }) => data === undefined)
-      ? undefined
-      : selector(...(queries.map(({ data }) => data) as QueriesData<TQueries>)),
+    data: useMemo(
+      () => combineQueryData(queries, selector),
+      // eslint-disable-next-line @eslint-react/exhaustive-deps
+      [selector, ...queries.map(({ data }) => data)],
+    ),
     ...combineQueryState(...queries),
   }) as QueryProp<TResult>
 

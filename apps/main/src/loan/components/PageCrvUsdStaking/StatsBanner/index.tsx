@@ -7,6 +7,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { mapQuery } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
@@ -15,10 +16,10 @@ export const StatsBanner = () => {
   const {
     design: { Color },
   } = useTheme()
-  const { data: statisticsData, isLoading: isStatisticsLoading } = useScrvUsdStatistics({})
+  const statistics = useScrvUsdStatistics({})
 
   const exampleBalance = '100000' as const
-  const scrvUsdApy = decimal(statisticsData?.apyProjected)
+  const scrvUsdApy = mapQuery(statistics, ({ apyProjected }) => decimal(apyProjected))
 
   return (
     <Stack
@@ -45,9 +46,8 @@ export const StatsBanner = () => {
       >
         <Metric
           label={t`30 Days Projection`}
-          value={scrvUsdApy ? oneMonthProjectionYield(scrvUsdApy, exampleBalance) : undefined}
+          value={mapQuery(scrvUsdApy, apy => oneMonthProjectionYield(apy, exampleBalance))}
           valueOptions={{ unit: 'dollar' }}
-          loading={isStatisticsLoading}
           labelTooltip={{
             title: t`This is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`,
           }}
@@ -55,9 +55,8 @@ export const StatsBanner = () => {
         />
         <Metric
           label={t`1 Year Projection`}
-          value={scrvUsdApy ? oneYearProjectionYield(scrvUsdApy, exampleBalance) : undefined}
+          value={mapQuery(scrvUsdApy, apy => oneYearProjectionYield(apy, exampleBalance))}
           valueOptions={{ unit: 'dollar' }}
-          loading={isStatisticsLoading}
           labelTooltip={{
             title: t`This is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`,
           }}
@@ -67,7 +66,6 @@ export const StatsBanner = () => {
           label={t`Estimated APY`}
           value={scrvUsdApy}
           valueOptions={{ unit: 'percentage' }}
-          loading={isStatisticsLoading}
           labelTooltip={{
             title: t`Annual percentage yield (APY) refers to how much interest is distributed on savings and takes compounded interest into account. 
 This value is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`,
