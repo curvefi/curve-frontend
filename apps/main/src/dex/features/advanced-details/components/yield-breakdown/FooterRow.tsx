@@ -31,7 +31,7 @@ const footerCellByColumnId: Record<YieldBreakdownColumnId, (props: FooterCellPro
       <Typography variant="tableCellMBold">{formatNumber(total, 'percent.rate')}</Typography>
       {maybe(baseTotal, x => (
         <Typography variant="tableCellSRegular" color="textSecondary">
-          {t`Base ${formatNumber(x, 'percent.rate')}`}
+          {t`Unboosted ${formatNumber(x, 'percent.rate')}`}
         </Typography>
       ))}
     </TableCell>

@@ -67,7 +67,7 @@ export const YIELD_BREAKDOWN_COLUMNS = [
               icon={null}
               iconPosition="right"
               primary={formatNumber(getValue(), 'percent.rate')}
-              secondary={maybe(row.original.apySecondary, value => t`Base ${formatNumber(value, 'percent.rate')}`)}
+              secondary={maybe(row.original.apySecondary, value => t`Unboosted ${formatNumber(value, 'percent.rate')}`)}
             />
           </Box>
         </Tooltip>
