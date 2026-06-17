@@ -37,7 +37,8 @@ export const YieldBreakdown = ({
   })
 
   return (
-    rows.length > 0 && (
+    rows.length > 0 &&
+    total > 0 && (
       <Stack>
         <CardHeader title={t`Yield Breakdown`} size="small" />
         <DataTable<YieldBreakdownRow>
