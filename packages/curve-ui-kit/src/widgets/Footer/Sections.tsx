@@ -1,7 +1,6 @@
 import BeenhereOutlinedIcon from '@mui/icons-material/BeenhereOutlined'
 import BugReportOutlinedIcon from '@mui/icons-material/BugReportOutlined'
 import GitHubIcon from '@mui/icons-material/GitHub'
-import MonitorHeartOutlinedIcon from '@mui/icons-material/MonitorHeartOutlined'
 import YouTubeIcon from '@mui/icons-material/YouTube'
 import { CURVE_SOCIALS, EXTERNAL_LINKS } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
@@ -9,7 +8,6 @@ import { BrandAssetsIcon } from '@ui-kit/shared/icons/BrandAssetsIcon'
 import { CrvHubIcon } from '@ui-kit/shared/icons/CrvHubIcon'
 import { DiscordIcon } from '@ui-kit/shared/icons/DiscordIcon'
 import { DocsIcon } from '@ui-kit/shared/icons/DocsIcon'
-import { DuneIcon } from '@ui-kit/shared/icons/DuneIcon'
 import { IntegrationsIcon } from '@ui-kit/shared/icons/IntegrationsIcon'
 import { LAFIcon } from '@ui-kit/shared/icons/LAFIcon'
 import { NewsIcon } from '@ui-kit/shared/icons/NewsIcon'
@@ -65,12 +63,12 @@ export const getSections = () => [
     links: [
       {
         label: t`News`,
-        href: EXTERNAL_LINKS.news,
+        href: EXTERNAL_LINKS.curve.news,
         icon: <NewsIcon />,
       },
       {
         label: t`Documentation`,
-        href: EXTERNAL_LINKS.docs.root,
+        href: EXTERNAL_LINKS.curve.docs,
         icon: <DocsIcon />,
       },
       {
@@ -111,23 +109,13 @@ export const getSections = () => [
       },
       {
         label: t`Curve Monitor`,
-        href: EXTERNAL_LINKS.security.curveMonitor,
+        href: EXTERNAL_LINKS.monitoring.curveMonitor,
         icon: <LAFIcon />,
       },
       {
         label: t`CrvHub`,
-        href: EXTERNAL_LINKS.security.crvHub,
+        href: EXTERNAL_LINKS.monitoring.crvHub,
         icon: <CrvHubIcon />,
-      },
-      {
-        label: t`Dune Analytics`,
-        href: EXTERNAL_LINKS.analytics.duneCurveFi,
-        icon: <DuneIcon />,
-      },
-      {
-        label: t`API Status`,
-        href: EXTERNAL_LINKS.security.apiStatus,
-        icon: <MonitorHeartOutlinedIcon />,
       },
     ],
   },

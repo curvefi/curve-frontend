@@ -46,7 +46,7 @@ export const PegKeeper = ({ sx, testId = 'pegkeeper', ...pegkeeper }: Props) => 
         />
 
         <PegKeeperRebalanceButton
-          canRebalance={!!estCallerProfit && estCallerProfit !== '0'}
+          canRebalance={!!Number(estCallerProfit.data)}
           isRebalancing={isRebalancing}
           onRebalance={rebalance}
           testId={testId}

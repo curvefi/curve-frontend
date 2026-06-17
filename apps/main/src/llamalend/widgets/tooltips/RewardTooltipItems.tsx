@@ -1,4 +1,3 @@
-import type { SupplyExtraIncentive } from '@/llamalend/rates.types'
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
 import { Stack } from '@mui/material'
 import Link from '@mui/material/Link'
@@ -6,6 +5,7 @@ import { CampaignRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { ExtraIncentive } from '@ui-kit/types/market'
 import { formatNumber } from '@ui-kit/utils'
 import type { RewardsAction } from '@external-rewards'
 import { TooltipItem } from './TooltipComponents'
@@ -17,7 +17,7 @@ type RewardsTooltipItemsProps = {
   boostedApr?: number | null | undefined
   extraRewards: CampaignRewards[]
   tooltipType: Extract<RewardsAction, 'borrow' | 'supply'>
-  extraIncentives: SupplyExtraIncentive[]
+  extraIncentives: ExtraIncentive[]
 }
 
 export const RewardsTooltipItems = ({

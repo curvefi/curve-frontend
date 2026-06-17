@@ -154,7 +154,9 @@ export const Dashboard = ({
                     tableLabel: TABLE_LABEL,
                     fetchBoost: {
                       fetchUserPoolBoost:
-                        rChainId === 1 ? () => userPoolBoost(rChainId, poolData.pool, walletAddress as Address) : null,
+                        rChainId === 1
+                          ? () => userPoolBoost(rChainId, poolData.pool, walletAddress as Address).then(r => r ?? '')
+                          : null,
                     },
                     formValues,
                     poolData,
