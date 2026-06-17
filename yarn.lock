@@ -459,6 +459,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@curvefi/api-server@workspace:packages/api-server":
+  version: 0.0.0-use.local
+  resolution: "@curvefi/api-server@workspace:packages/api-server"
+  dependencies:
+    "@types/node": "npm:*"
+    eslint: "npm:*"
+    fastify: "npm:5.8.5"
+    typescript: "npm:*"
+  languageName: unknown
+  linkType: soft
+
 "@curvefi/api@npm:2.69.4":
   version: 2.69.4
   resolution: "@curvefi/api@npm:2.69.4"

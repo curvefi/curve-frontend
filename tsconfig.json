@@ -6,6 +6,7 @@
     { "path": "./apps/main" },
     { "path": "./apps/merkl-api" },
     { "path": "./apps/router-api" },
+    { "path": "./packages/api-server" },
     { "path": "./packages/curve-ui-kit" },
     { "path": "./packages/external-rewards" },
     { "path": "./packages/primitives" },

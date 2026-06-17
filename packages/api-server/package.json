@@ -1,0 +1,24 @@
+{
+  "name": "@curvefi/api-server",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "24"
+  },
+  "scripts": {
+    "lint": "eslint --cache --cache-location ../../.cache/eslint/api-server --cache-strategy content .",
+    "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/api-server --cache-strategy content . --fix",
+    "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/packages-api-server.tsbuildinfo"
+  },
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "dependencies": {
+    "fastify": "5.8.5"
+  },
+  "devDependencies": {
+    "@types/node": "*",
+    "eslint": "*",
+    "typescript": "*"
+  }
+}
