@@ -1,4 +1,4 @@
-import type { RefObject } from 'react'
+import { useState, type RefObject } from 'react'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
@@ -42,6 +42,7 @@ export const LlamaTableFiltersOverlay = ({
   ...filterProps
 }: LlamaTableFiltersOverlayProps) => {
   const isMobile = useIsMobile()
+  const [testId, setTestId] = useState<string | null>(null)
   const content = <LendingMarketsFilters table={table} marketsQuery={marketsQuery} {...filterProps} />
   const resetButton = (
     <Button
@@ -71,9 +72,10 @@ export const LlamaTableFiltersOverlay = ({
         paper: {
           sx: { backgroundColor: t => t.design.Layer[3].Fill, width: Width.modal.md },
         },
+        transition: { onEntered: () => setTestId('table-filters-popover'), onExit: () => setTestId(null) },
       }}
     >
-      <Stack sx={directChildrenAfterFirst({ borderTop: borderStyle })} data-testid="table-filters-popover">
+      <Stack sx={directChildrenAfterFirst({ borderTop: borderStyle })} data-testid={testId}>
         <Stack
           direction="row"
           sx={{
