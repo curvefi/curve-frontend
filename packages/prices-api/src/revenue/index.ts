@@ -42,14 +42,14 @@ export async function getCushions(chain: string, options?: Options) {
   return Schema.getCushionsResponse.parse(response)
 }
 
-export async function getDistributions(options?: Options) {
+export async function getDistributions(perPage = 100, options?: Options) {
   const host = getHost(options)
-  const fs = (page: number) =>
-    fetch(`${host}/v1/dao/fees/distributions?page=${page}&per_page=100`).then(resp =>
-      Schema.getDistributionsResponse.parse(resp),
+  const getPage = (page: number) =>
+    fetch(`${host}/v1/dao/fees/distributions?page=${page}&per_page=${perPage}`).then(response =>
+      Schema.getDistributionsResponse.parse(response),
     )
 
-  return await paginate(fs, 1, 100)
+  return paginate(getPage, 1, perPage)
 }
 
 export async function getCowSwapSettlements(timestamp?: number, options?: Options) {

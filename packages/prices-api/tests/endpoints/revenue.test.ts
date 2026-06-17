@@ -10,7 +10,7 @@ runEndpointCases('revenue', [
   endpointCase('getCrvUsdWeekly', () => revenue.getCrvUsdWeekly(requestOptions)),
   endpointCase('getPoolsWeekly', () => revenue.getPoolsWeekly(requestOptions)),
   endpointCase('getCushions', () => revenue.getCushions(chainSeed(), requestOptions)),
-  endpointCase('getDistributions', () => revenue.getDistributions(requestOptions)),
+  endpointCase('getDistributions', () => revenue.getDistributions(100, requestOptions)),
   endpointCase('getCowSwapSettlements', () => revenue.getCowSwapSettlements(undefined, requestOptions)),
   endpointCase('getFeesCollected', () => revenue.getFeesCollected(requestOptions)),
   endpointCase('getFeesStaged', () => revenue.getFeesStaged(requestOptions)),

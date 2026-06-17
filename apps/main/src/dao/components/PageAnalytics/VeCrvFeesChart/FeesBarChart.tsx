@@ -11,9 +11,6 @@ type FeesBarChartProps = {
 }
 
 export const FeesBarChart = ({ data, height = 500 }: FeesBarChartProps) => {
-  const {
-    design: { Color },
-  } = useTheme()
   const currentDate = useCurrentDate()
 
   return (
@@ -21,11 +18,7 @@ export const FeesBarChart = ({ data, height = 500 }: FeesBarChartProps) => {
       data={data}
       xKey="timestamp"
       yKey="feesUsd"
-      barColor={Color.Primary[300]}
-      grid={{
-        right: 20,
-        left: 10,
-      }}
+      barColor={useTheme().design.Chart.Lines[1]}
       height={height}
       renderTooltip={({ datum }) => <FeesBarChartTooltip datum={datum} currentDate={currentDate} />}
       xTickFormatter={value => formatDate(value)}

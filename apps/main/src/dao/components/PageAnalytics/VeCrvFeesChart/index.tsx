@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { useVeCrvFeesQuery } from '@/dao/entities/vecrv-fees'
 import { Box } from '@ui/Box'
@@ -7,31 +6,26 @@ import { ChartStateWrapper } from '@ui-kit/shared/ui/Chart'
 import { FeesBarChart } from './FeesBarChart'
 
 const CHART_HEIGHT = 500
+const VECRV_FEES_WEEKS = 52
 
 export const VeCrvFeesChart = () => {
-  const { data = [], isLoading, error, refetch } = useVeCrvFeesQuery({})
-
-  const reverseOrderFees = useMemo(() => {
-    if (data.length === 0) return []
-
-    return [...data].reverse().slice(-52)
-  }, [data])
+  const { data: veCrvFees, isLoading, error, refetch } = useVeCrvFeesQuery({ order: 'asc', weeks: VECRV_FEES_WEEKS })
 
   return (
     <Wrapper>
       <TitleRow>
-        <BoxTitle>{t`veCRV Fees Last 52 Weeks`}</BoxTitle>
+        <BoxTitle>{t`veCRV Fees Last ${VECRV_FEES_WEEKS} Weeks`}</BoxTitle>
       </TitleRow>
       <Content>
         <ChartStateWrapper
           height={CHART_HEIGHT}
           isLoading={isLoading}
-          isEmpty={!isLoading && !error && reverseOrderFees.length === 0}
+          isEmpty={!isLoading && !error && veCrvFees?.length === 0}
           error={error}
           errorMessage={t`Unable to fetch veCRV fees data.`}
           refreshData={() => refetch()}
         >
-          <FeesBarChart height={CHART_HEIGHT} data={reverseOrderFees} />
+          {veCrvFees && <FeesBarChart height={CHART_HEIGHT} data={veCrvFees} />}
         </ChartStateWrapper>
       </Content>
     </Wrapper>

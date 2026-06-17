@@ -2,10 +2,7 @@ import type { EChartsOption } from 'echarts'
 import ReactECharts from 'echarts-for-react'
 import { useMemo, type ReactNode } from 'react'
 import { useTheme } from '@mui/material/styles'
-import {
-  getPaddedChartAxisBounds,
-  type ChartAxisTickLabelOptions,
-} from '@ui-kit/shared/ui/Chart/chart.utils'
+import { getPaddedChartAxisBounds, type ChartAxisTickLabelOptions } from '@ui-kit/shared/ui/Chart/chart.utils'
 import { useEChartsTooltip } from '@ui-kit/shared/ui/Chart/hooks/useEChartsTooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 

@@ -1,13 +1,12 @@
 import { useMemo, useState } from 'react'
 import { useEnsName } from 'wagmi'
-import { useVeCrvHoldersQuery, type VeCrvHolder } from '@/dao/entities/vecrv-holders'
+import { useVeCrvHoldersQuery } from '@/dao/entities/vecrv-holders'
 import type { UserUrlParams } from '@/dao/types/dao.types'
 import Box from '@mui/material/Box'
 import type { Address } from '@primitives/address.utils'
 import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
-import { decimal } from '@ui-kit/utils'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 import { UserGaugeVotesTable } from './UserGaugeVotesTable'
 import { UserHeader } from './UserHeader'
@@ -24,23 +23,16 @@ const tabs: TabOption<Tab>[] = [
 
 export const User = () => {
   const { userAddress: rUserAddress } = useParams<UserUrlParams>()
-  const { data: veCrvHolders = [], isLoading: holdersLoading } = useVeCrvHoldersQuery({})
+  const { data: veCrvHolders, isLoading: holdersLoading } = useVeCrvHoldersQuery({})
   const [tab, setTab] = useState<Tab>('proposals')
 
   const userAddress = rUserAddress.toLowerCase()
 
   const tableMinWidth = 41.875
 
-  const veCrvHolder = useMemo<VeCrvHolder>(
-    () =>
-      veCrvHolders.find(holder => holder.user.toLowerCase() === userAddress) ?? {
-        user: rUserAddress as VeCrvHolder['user'],
-        locked: decimal(0)!,
-        weight: decimal(0)!,
-        weightRatio: decimal(0)!,
-        unlockTime: null,
-      },
-    [rUserAddress, userAddress, veCrvHolders],
+  const veCrvHolder = useMemo(
+    () => veCrvHolders?.find(holder => holder.user.toLowerCase() === userAddress),
+    [userAddress, veCrvHolders],
   )
 
   const { data: userEnsName } = useEnsName({ address: userAddress as Address })

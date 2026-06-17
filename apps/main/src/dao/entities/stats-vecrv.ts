@@ -43,10 +43,9 @@ export const { useQuery: useStatsVecrvQuery } = queryFactory({
     })
     const totalLockedCrvDecimal = fromWei(totalLockedCrv.toString(), 18)
     const totalCrvDecimal = fromWei(totalCrv.toString(), 18)
-    const totalVeCrvDecimal = fromWei(totalVeCrv.toString(), 18)
 
     return {
-      totalVeCrv: totalVeCrvDecimal,
+      totalVeCrv: fromWei(totalVeCrv.toString(), 18),
       totalLockedCrv: totalLockedCrvDecimal,
       totalCrv: totalCrvDecimal,
       lockedPercentage: +totalCrvDecimal

@@ -6,6 +6,7 @@ import { useVeCrvHoldersQuery, type VeCrvHolder } from '@/dao/entities/vecrv-hol
 import type { AllHoldersSortBy } from '@/dao/types/dao.types'
 import { formatHolderName, getEthPath } from '@/dao/utils'
 import Stack from '@mui/material/Stack'
+import { sortBy } from '@primitives/array.utils'
 import { maybe } from '@primitives/objects.utils'
 import { formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
@@ -35,15 +36,10 @@ export const TopHoldersTable = () => {
 
   const tableMinWidth = 41.875
 
-  const holdersArray = useMemo(() => {
-    const orderMultiplier = allHoldersSortBy.order === 'asc' ? 1 : -1
-
-    return [...veCrvHolders].sort(
-      (a, b) =>
-        (getSortableHolderValue(a, allHoldersSortBy.key) - getSortableHolderValue(b, allHoldersSortBy.key)) *
-        orderMultiplier,
-    )
-  }, [allHoldersSortBy, veCrvHolders])
+  const holdersArray = useMemo(
+    () => sortBy(veCrvHolders, holder => getSortableHolderValue(holder, allHoldersSortBy.key), allHoldersSortBy.order),
+    [allHoldersSortBy, veCrvHolders],
+  )
 
   const HOLDERS_LABELS: Column<VeCrvHolder>[] = [
     { key: 'user', label: 'Holder', disabled: true },

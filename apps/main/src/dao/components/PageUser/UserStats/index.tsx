@@ -11,7 +11,7 @@ import { formatNumber } from '@ui-kit/utils'
 const { Spacing } = SizesAndSpaces
 
 type UserStatsProps = {
-  veCrvHolder: VeCrvHolder
+  veCrvHolder?: VeCrvHolder
   holdersLoading: boolean
 }
 
@@ -22,24 +22,36 @@ export const UserStats = ({ veCrvHolder, holdersLoading }: UserStatsProps) => (
       <MetricsComp
         loading={holdersLoading}
         title={t`Total veCRV`}
-        data={<MetricsColumnData>{formatNumber(veCrvHolder.weight, { abbreviate: false })}</MetricsColumnData>}
+        data={
+          <MetricsColumnData>
+            {formatNumber(veCrvHolder?.weight, { abbreviate: false, fallback: 'N/A' })}
+          </MetricsColumnData>
+        }
       />
       <MetricsComp
         loading={holdersLoading}
         title={t`Locked CRV`}
-        data={<MetricsColumnData>{formatNumber(veCrvHolder.locked, { abbreviate: false })}</MetricsColumnData>}
+        data={
+          <MetricsColumnData>
+            {formatNumber(veCrvHolder?.locked, { abbreviate: false, fallback: 'N/A' })}
+          </MetricsColumnData>
+        }
       />
       <MetricsComp
         loading={holdersLoading}
         title={t`Unlock Time`}
         data={
-          <MetricsColumnData>{veCrvHolder.unlockTime ? formatDate(veCrvHolder.unlockTime) : 'N/A'}</MetricsColumnData>
+          <MetricsColumnData>{veCrvHolder?.unlockTime ? formatDate(veCrvHolder.unlockTime) : 'N/A'}</MetricsColumnData>
         }
       />
       <MetricsComp
         loading={holdersLoading}
         title={t`Weight Ratio`}
-        data={<MetricsColumnData>{formatNumber(veCrvHolder.weightRatio, { abbreviate: false })}%</MetricsColumnData>}
+        data={
+          <MetricsColumnData>
+            {veCrvHolder ? `${formatNumber(veCrvHolder.weightRatio, { abbreviate: false })}%` : 'N/A'}
+          </MetricsColumnData>
+        }
       />
     </MetricsContainer>
   </Stack>
