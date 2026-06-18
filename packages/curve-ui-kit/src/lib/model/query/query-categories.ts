@@ -35,7 +35,7 @@ export const QUERY_CATEGORIES = {
 
   // LlamaLend / crvUSD lending
   'llamalend.appStats': marketDetail,
-  'llamalend.marketList': table,
+  'llamalend.marketList': user,
   'llamalend.market': marketDetail,
   'llamalend.marketParams': staticData,
   'llamalend.user': user,

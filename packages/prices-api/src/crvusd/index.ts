@@ -6,6 +6,8 @@ import * as Schema from './schema'
 
 export type * from './schema'
 
+const REVALIDATE_BROWSER_CACHE = { cache: 'no-cache' } satisfies RequestInit
+
 /** Retrieve all markets for a specific chain, sorted by date of creation. */
 export async function getMarkets(
   chain: Chain,
@@ -16,7 +18,12 @@ export async function getMarkets(
   options?: Options,
 ) {
   const host = getHost(options)
-  const response = await fetch(`${host}/v1/crvusd/markets/${chain}${addQueryString(params)}`)
+  const response = await fetch(
+    `${host}/v1/crvusd/markets/${chain}${addQueryString(params)}`,
+    undefined,
+    options?.signal,
+    REVALIDATE_BROWSER_CACHE,
+  )
 
   return Schema.getMarketsResponse.parse(response)
 }
@@ -30,7 +37,12 @@ export async function getAllMarkets(
   options?: Options,
 ) {
   const host = getHost(options)
-  const response = await fetch(`${host}/v1/crvusd/markets${addQueryString(params)}`)
+  const response = await fetch(
+    `${host}/v1/crvusd/markets${addQueryString(params)}`,
+    undefined,
+    options?.signal,
+    REVALIDATE_BROWSER_CACHE,
+  )
 
   return Schema.getAllMarketsResponse.parse(response)
 }

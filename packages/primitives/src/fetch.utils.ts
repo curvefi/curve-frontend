@@ -28,17 +28,28 @@ export class FetchError extends Error {
  * @param url - The URL to fetch from.
  * @param body - Optional request body for POST requests.
  * @param signal - Optional AbortSignal to abort the fetch request.
+ * @param init - Optional fetch configuration for cache mode, credentials, etc.
  * @returns A Promise that resolves to the parsed JSON data of type T.
  * @throws Error if the fetch fails or returns a non-2xx status code.
  */
-export async function fetchJson<T>(url: string, body?: Record<string, unknown>, signal?: AbortSignal): Promise<T> {
+export async function fetchJson<T>(
+  url: string,
+  body?: Record<string, unknown>,
+  signal?: AbortSignal,
+  init?: Omit<RequestInit, 'body' | 'method' | 'signal'>,
+): Promise<T> {
+  let headers = init?.headers ? new Headers(init.headers) : undefined
+  if (body) {
+    headers = headers ?? new Headers()
+    headers.set('Accept', headers.get('Accept') ?? 'application/json')
+    headers.set('Content-Type', headers.get('Content-Type') ?? 'application/json')
+  }
+
   const resp = await fetch(url, {
+    ...init,
     method: body ? 'POST' : 'GET',
+    ...(headers && { headers }),
     ...(body && {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
       body: JSON.stringify(body),
     }),
     signal,

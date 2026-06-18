@@ -6,6 +6,8 @@ export { tvl } from './util'
 
 export type * from './schema'
 
+const REVALIDATE_BROWSER_CACHE = { cache: 'no-cache' } satisfies RequestInit
+
 export async function getChains(options?: Options): Promise<Chain[]> {
   const host = getHost(options)
 
@@ -20,7 +22,12 @@ export async function getAllMarkets(
   options?: Options,
 ) {
   const host = getHost(options)
-  const response = await fetch(`${host}/v1/lending/markets${addQueryString(params)}`)
+  const response = await fetch(
+    `${host}/v1/lending/markets${addQueryString(params)}`,
+    undefined,
+    options?.signal,
+    REVALIDATE_BROWSER_CACHE,
+  )
 
   return Schema.getAllMarketsResponse.parse(response)
 }
@@ -34,7 +41,12 @@ export async function getMarkets(
   options?: Options,
 ) {
   const host = getHost(options)
-  const response = await fetch(`${host}/v1/lending/markets/${chain}${addQueryString(params)}`)
+  const response = await fetch(
+    `${host}/v1/lending/markets/${chain}${addQueryString(params)}`,
+    undefined,
+    options?.signal,
+    REVALIDATE_BROWSER_CACHE,
+  )
 
   return Schema.getMarketsResponse.parse(response)
 }
