@@ -1,11 +1,11 @@
 import { styled } from 'styled-components'
 import { Box } from '@ui/Box'
 import { ExternalLink } from '@ui/Link'
-import { extraRewardType, type CampaignRewards } from '@ui-kit/entities/campaigns'
+import type { CampaignRewards } from '@ui-kit/entities/campaigns'
 import { formatDate } from '../utils'
 
 export const TooltipMessage = ({ rewardsPool }: { rewardsPool: CampaignRewards }) => {
-  const { campaignName, platform, description, action, dashboardLink, period, steps } = rewardsPool
+  const { campaignName, platform, description, action, dashboardLink, period, steps, symbol } = rewardsPool
 
   const title = () => {
     if (campaignName && platform) {
@@ -27,13 +27,11 @@ export const TooltipMessage = ({ rewardsPool }: { rewardsPool: CampaignRewards }
       return description
     }
 
-    const rewardType = extraRewardType(rewardsPool) === 'points' ? 'points' : 'tokens'
-
     if (action === 'supply') {
-      return `Earn ${rewardType} by supplying liquidity.`
+      return `Earn ${symbol ?? '?'} by supplying liquidity.`
     }
 
-    return `Earn ${rewardType} by borrowing.`
+    return `Earn ${symbol ?? '?'} by borrowing.`
   }
 
   return (
