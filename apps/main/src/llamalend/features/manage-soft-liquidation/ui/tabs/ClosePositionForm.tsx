@@ -106,7 +106,13 @@ export const ClosePositionForm = ({
               )}
         </Button>
       </Stack>
-      <FormAlerts error={closeError ?? null} formErrors={formErrors} handledErrors={[]} />
+
+      <FormAlerts
+        // the table can keep rows visible on query errors, so surface the table error here too
+        error={closeError ?? table.error ?? null}
+        formErrors={formErrors}
+        handledErrors={[]}
+      />
     </Form>
   )
 }
