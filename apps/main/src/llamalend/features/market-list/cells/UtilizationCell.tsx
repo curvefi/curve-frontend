@@ -15,8 +15,6 @@ import { formatNumber } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
-const isUsd = (symbol: string) => symbol === 'USD' || symbol === 'crvUSD' // show crvUSD as USD
-
 const Currency = ({
   balance,
   symbol,
@@ -28,21 +26,9 @@ const Currency = ({
   balance: number | null
   chain: Chain
 }) => (
-  <Stack
-    direction="row"
-    component="span"
-    sx={{
-      alignItems: 'center',
-      justifyContent: 'flex-end',
-      gap: 1,
-      display: 'inline-flex',
-    }}
-  >
+  <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center' }}>
+    {formatNumber(balance, 'token.compact')}
     <TokenIcon blockchainId={chain} address={address} tooltip={symbol} size="mui-sm" />
-    <span>
-      {formatNumber(balance, { unit: isUsd(symbol) ? 'dollar' : undefined, abbreviate: true, fallback: '-' })}
-      {!isUsd(symbol) && ` ${symbol}`}
-    </span>
   </Stack>
 )
 
