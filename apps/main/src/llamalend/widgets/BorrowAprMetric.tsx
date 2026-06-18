@@ -37,8 +37,8 @@ export const BorrowAprMetric = ({ marketType, borrowRate, collateralSymbol, alig
     <Metric
       size="medium"
       alignment={alignment}
-      label={t`Borrow APR`}
-      value={mapQuery(borrowRate, borrowRate => borrowRate.rate)}
+      label={t`Net Borrow APR`}
+      value={mapQuery(borrowRate, borrowRate => borrowRate.totalBorrowRate)}
       valueOptions={{ unit: 'percentage' }}
       notional={maybe(borrowRate.data?.averageRate, data => ({
         value: data,
