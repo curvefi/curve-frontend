@@ -70,7 +70,6 @@ const TooltipWrapper = styled.div`
   flex-direction: column;
   gap: var(--spacing-2);
   text-align: left;
-  z-index: 2;
 `
 
 const TooltipTitle = styled.h3`
