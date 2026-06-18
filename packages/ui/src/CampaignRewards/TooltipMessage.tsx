@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
 import { Box } from '@ui/Box'
 import { ExternalLink } from '@ui/Link'
-import type { CampaignRewards } from '@ui-kit/entities/campaigns'
+import { extraRewardType, type CampaignRewards } from '@ui-kit/entities/campaigns'
 import { formatDate } from '../utils'
 
 export const TooltipMessage = ({ rewardsPool }: { rewardsPool: CampaignRewards }) => {
@@ -27,11 +27,13 @@ export const TooltipMessage = ({ rewardsPool }: { rewardsPool: CampaignRewards }
       return description
     }
 
+    const rewardType = extraRewardType(rewardsPool) === 'points' ? 'points' : 'tokens'
+
     if (action === 'supply') {
-      return 'Earn points by supplying liquidity.'
+      return `Earn ${rewardType} by supplying liquidity.`
     }
 
-    return 'Earn points by borrowing.'
+    return `Earn ${rewardType} by borrowing.`
   }
 
   return (
