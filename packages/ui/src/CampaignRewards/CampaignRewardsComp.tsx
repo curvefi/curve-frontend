@@ -29,7 +29,7 @@ export const RewardsCompSmall = ({ rewardsPool, highContrast, mobile, banner }: 
           <Multiplier highContrast={highContrast}>
             {action}{' '}
             {reward.type === 'apr'
-              ? formatNumber(aprToApy(reward.value), 'percent.rate')
+              ? formatNumber(action === 'supply' ? aprToApy(reward.value) : reward.value, 'percent.rate')
               : formatNumber(reward.value, 'multiplier')}
           </Multiplier>
         )}
