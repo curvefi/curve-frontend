@@ -3,17 +3,11 @@ import { useConnection } from 'wagmi'
 import { useUserPools } from '@/dex/queries/user-pools.query'
 import { useStore } from '@/dex/store/useStore'
 import type { ChainId } from '@/dex/types/main.types'
-import { fromEntries } from '@primitives/objects.utils'
+import { fromEntries, notFalsy } from '@primitives/objects.utils'
 import { useCurve } from '@ui-kit/features/connect-wallet'
-import {
-  getCurvePoolIdByAddressEntries,
-  getHasPosition,
-  getPoolIdByAddressEntries,
-  normalizeAddress,
-  type PoolListItemOptions,
-} from '../poolList.utils'
+import { getCurvePoolIdByAddressEntries, getPoolIdByAddressEntries, normalizeAddress } from '../poolList.utils'
 
-export const usePoolListUserPositionOptions = (chainId: ChainId) => {
+export const usePoolListUserHasPosition = (chainId: ChainId) => {
   const { curveApi, isHydrated } = useCurve()
   const { address: userAddress } = useConnection()
   const poolDataMapper = useStore(state => state.pools.poolsMapper[chainId])
@@ -31,13 +25,11 @@ export const usePoolListUserPositionOptions = (chainId: ChainId) => {
   const userPoolIds = useMemo(() => userPools && new Set(userPools.map(normalizeAddress)), [userPools])
 
   return useCallback(
-    (poolAddress: string): PoolListItemOptions => {
+    (poolAddress: string) => {
       const normalizedPoolAddress = normalizeAddress(poolAddress)
       const poolId = poolIdByAddress[normalizedPoolAddress]
 
-      return {
-        hasPosition: getHasPosition(userPoolIds, normalizedPoolAddress, poolId),
-      }
+      return userPoolIds && notFalsy(poolId, normalizedPoolAddress).some(id => userPoolIds.has(normalizeAddress(id)))
     },
     [poolIdByAddress, userPoolIds],
   )

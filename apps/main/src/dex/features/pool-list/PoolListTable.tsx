@@ -17,7 +17,7 @@ import { PoolListMobileExpandedPanel } from './components/PoolListMobileExpanded
 import { PoolListFilterDrawer } from './drawers/PoolListFilterDrawer'
 import { PoolListSortDrawer } from './drawers/PoolListSortDrawer'
 import { POOL_LIST_PAGE_SIZE, usePoolListUrlState } from './hooks/usePoolListUrlState'
-import { usePoolListUserPositionOptions } from './hooks/usePoolListUserPositionOptions'
+import { usePoolListUserHasPosition } from './hooks/usePoolListUserHasPosition'
 import { usePoolListVisibilitySettings } from './hooks/usePoolListVisibilitySettings'
 import { getPoolListItem } from './poolList.utils'
 
@@ -26,7 +26,7 @@ const EMPTY: never[] = []
 
 export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
   const isMobile = useIsMobile()
-  const getUserPositionOptions = usePoolListUserPositionOptions(network.chainId)
+  const hasUserPoolPosition = usePoolListUserHasPosition(network.chainId)
   const {
     activeFilterCount,
     onSearch,
@@ -61,8 +61,8 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
   })
   const apiResultCount = isPlaceholderData ? undefined : poolList?.count
   const data = useMemo(
-    () => poolList?.pools.map(pool => getPoolListItem(network, pool, getUserPositionOptions(pool.address))) ?? EMPTY,
-    [getUserPositionOptions, network, poolList?.pools],
+    () => poolList?.pools.map(pool => getPoolListItem(network, pool, hasUserPoolPosition(pool.address))) ?? EMPTY,
+    [hasUserPoolPosition, network, poolList?.pools],
   )
   const userHasPositions = data.some(({ hasPosition }) => hasPosition)
   const [expanded, setExpanded] = useState<ExpandedState>({})
