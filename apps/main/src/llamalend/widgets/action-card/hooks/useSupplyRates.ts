@@ -1,3 +1,4 @@
+import type { Address } from 'viem'
 import { useLlamaSnapshot } from '@/llamalend/queries/llamma-snapshots.query'
 import { useMarketSupplyFutureRates, useMarketRates, useMarketVaultOnChainRewards } from '@/llamalend/queries/market'
 import { useUserSupplyBoost } from '@/llamalend/queries/user'
@@ -5,12 +6,14 @@ import { requireVault } from '@/llamalend/queries/validation/supply.validation'
 import {
   getLatestSnapshotValue,
   getSupplyApyMetrics,
+  sumCampaignsApy,
   sumOnChainExtraIncentivesApy,
   toNumberOrNull,
 } from '@/llamalend/rates.utils'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
+import { useCampaignsByAddress, type CampaignRewards } from '@ui-kit/entities/campaigns'
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
 import type { UserMarketParams } from '@ui-kit/lib/model'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
@@ -29,6 +32,7 @@ const addNetApy = <T extends { lendApy?: Decimal }>(
   rates: Query<T>,
   snapshotsQuery: Query<LendingSnapshot[] | undefined>,
   marketOnChainRewardsQuery: Query<SupplyRewards | undefined>,
+  campaignsQuery: Query<CampaignRewards[] | undefined>,
   userSupplyBoostQuery: Query<Decimal | null>,
 ) => {
   const rebasingYieldApy = getLatestSnapshotValue(snapshotsQuery.data, snapshot => snapshot.borrowedToken.rebasingYield)
@@ -38,6 +42,7 @@ const addNetApy = <T extends { lendApy?: Decimal }>(
     crvBoostApr: marketOnChainRewardsQuery.data?.crvRates,
     rebasingYieldApy: rebasingYieldApy ?? 0,
     extraIncentivesApy: sumOnChainExtraIncentivesApy(marketOnChainRewardsQuery.data?.rewardsApr),
+    campaignsApy: sumCampaignsApy(campaignsQuery.data),
     userSupplyBoost: userSupplyBoostQuery.data,
   })
   const netSupplyApy = q({
@@ -67,18 +72,21 @@ export function useSupplyRates<ChainId extends IChainId>(
   })
   const marketOnChainRewardsQuery = useMarketVaultOnChainRewards({ chainId, marketId }, enabled)
   const userSupplyBoostQuery = useUserSupplyBoost({ chainId, marketId, userAddress }, enabled)
+  const campaignsQuery = useCampaignsByAddress({ blockchainId, address: market?.addresses.controller as Address })
 
   // Without `reservesDelta`, `rates`/`netSupplyApy` are disabled on purpose. `ActionInfo` shows `prevRates` as current.
   const [rates, netSupplyApy] = addNetApy(
     useMarketSupplyFutureRates({ chainId, marketId, reserves: reservesDelta }, enabled),
     lendingSnapshotsQuery,
     marketOnChainRewardsQuery,
+    campaignsQuery,
     userSupplyBoostQuery,
   )
   const [prevRates, prevNetSupplyApy] = addNetApy(
     useMarketRates({ chainId, marketId }, enabled),
     lendingSnapshotsQuery,
     marketOnChainRewardsQuery,
+    campaignsQuery,
     userSupplyBoostQuery,
   )
 

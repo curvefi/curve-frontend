@@ -459,6 +459,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@curvefi/api-server@workspace:packages/api-server":
+  version: 0.0.0-use.local
+  resolution: "@curvefi/api-server@workspace:packages/api-server"
+  dependencies:
+    "@types/node": "npm:*"
+    eslint: "npm:*"
+    fastify: "npm:*"
+    typescript: "npm:*"
+    vitest: "npm:*"
+  languageName: unknown
+  linkType: soft
+
 "@curvefi/api@npm:2.69.4":
   version: 2.69.4
   resolution: "@curvefi/api@npm:2.69.4"
@@ -10827,6 +10839,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"merkl-api@workspace:apps/merkl-api":
+  version: 0.0.0-use.local
+  resolution: "merkl-api@workspace:apps/merkl-api"
+  dependencies:
+    "@types/node": "npm:*"
+    eslint: "npm:*"
+    fastify: "npm:*"
+    tsx: "npm:4.22.4"
+    typescript: "npm:*"
+    vitest: "npm:*"
+  languageName: unknown
+  linkType: soft
+
 "micro-ftch@npm:^0.3.1":
   version: 0.3.1
   resolution: "micro-ftch@npm:0.3.1"
@@ -12509,7 +12534,7 @@ __metadata:
     "@curvefi/api": "npm:*"
     "@types/node": "npm:*"
     eslint: "npm:*"
-    fastify: "npm:5.8.5"
+    fastify: "npm:*"
     tsx: "npm:4.22.4"
     typescript: "npm:*"
     vitest: "npm:*"

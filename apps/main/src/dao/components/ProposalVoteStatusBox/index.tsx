@@ -31,16 +31,9 @@ export const ProposalVoteStatusBox = ({ proposalData, className }: ProposalVoteS
             <HighlightedData>{t`Quorum`} </HighlightedData>
           </Box>
           <Box flex flexGap="var(--spacing-1)" flexAlignItems="flex-end">
-            <HighlightedData>
-              {formatNumber(currentQuorumPercentage, {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-                abbreviate: false,
-              })}
-              %
-            </HighlightedData>{' '}
+            <HighlightedData>{formatNumber(currentQuorumPercentage, 'percent.rate')}</HighlightedData>{' '}
             <Data>
-              ({formatNumber(minAcceptQuorumPercent, { abbreviate: true })}% {t`needed`})
+              ({formatNumber(minAcceptQuorumPercent, 'percent.rate')} {t`needed`})
             </Data>
             <TooltipIcon>{t`The minimum share of For votes required to reach quorum is ${minAcceptQuorumPercent}% for this proposal.`}</TooltipIcon>
           </Box>
