@@ -13,6 +13,6 @@ type ChartEmptyProps = {
 
 export const ChartEmpty = ({ height, message }: ChartEmptyProps) => (
   <Stack sx={{ alignItems: 'center', justifyContent: 'center', padding: Spacing.md, minHeight: height }}>
-    <EmptyStateCard title={t`No chart data found`} subtitle={message} />
+    <EmptyStateCard title={t`No chart data found`} description={message} />
   </Stack>
 )

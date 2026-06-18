@@ -1,5 +1,6 @@
 import { fn } from 'storybook/test'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
 import { EmptyStateCard } from '../EmptyStateCard'
 
 const meta: Meta<typeof EmptyStateCard> = {
@@ -8,7 +9,7 @@ const meta: Meta<typeof EmptyStateCard> = {
   render: args => <EmptyStateCard {...args} />,
   args: {
     title: 'No markets found',
-    subtitle: 'Try adjusting your filters or search query.',
+    description: 'Try adjusting your filters or search query.',
     button: { label: 'Reset filters', onClick: fn() },
   },
 }
@@ -19,22 +20,30 @@ export const Default: Story = {}
 
 export const WithTitle: Story = {
   args: {
-    subtitle: undefined,
+    description: undefined,
     button: undefined,
   },
 }
 
 export const WithSubtitle: Story = {
   args: {
-    subtitle: 'Try adjusting your filters or search query.',
+    description: 'Try adjusting your filters or search query.',
     button: undefined,
   },
 }
 
 export const WithButton: Story = {
   args: {
-    subtitle: 'Try adjusting your filters or search query.',
+    description: 'Try adjusting your filters or search query.',
     button: { label: 'Reset filters', onClick: fn() },
+  },
+}
+
+export const With2Buttons: Story = {
+  args: {
+    description: 'Try adjusting your filters or search query.',
+    button: { label: 'Reset filters', onClick: fn() },
+    secondaryButton: { label: 'Reload', onClick: fn(), startIcon: <ReloadIcon /> },
   },
 }
 

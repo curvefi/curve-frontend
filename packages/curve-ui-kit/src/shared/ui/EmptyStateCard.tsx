@@ -1,21 +1,24 @@
 import { ReactNode } from 'react'
-import { Button, ButtonProps, Skeleton } from '@mui/material'
+import { Box, Button, ButtonProps, Skeleton } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
 import { Responsive } from '@ui-kit/themes/basic-theme'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { applySxProps } from '@ui-kit/utils'
+import { ExternalLink } from './ExternalLink'
 
 const { Spacing, IconSize, MaxWidth, LineHeight } = SizesAndSpaces
 
+type EmptyStateButtonProps = ButtonProps & { label: ReactNode; testId?: string }
+
 type EmptyStateCardProps = {
   title?: ReactNode
-  subtitle?: ReactNode
+  description?: ReactNode
   isLoading?: boolean
   size?: 'sm' | 'md'
-  button?: ButtonProps & { label: ReactNode; testId?: string }
-  rightAction?: ReactNode
+  button?: EmptyStateButtonProps
+  secondaryButton?: EmptyStateButtonProps
 }
 
 const ICON_SIZE: Record<NonNullable<EmptyStateCardProps['size']>, Responsive> = {
@@ -35,59 +38,75 @@ const Skeletons = () => (
   </Stack>
 )
 
-export const EmptyStateCard = ({
-  title,
-  subtitle,
+const EmptyStateButton = ({
   button,
-  rightAction,
-  isLoading,
-  size = 'md',
-}: EmptyStateCardProps) => {
-  const { label, sx: buttonSx, testId, ...buttonProps } = button ?? {}
-  return (
-    <Stack
-      sx={{
-        gap: Spacing.xs,
-        alignItems: 'center',
-        justifySelf: 'center',
-        maxWidth: MaxWidth.emptyStateCard,
-      }}
-    >
-      <LlamaIcon sx={{ width: ICON_SIZE[size], height: ICON_SIZE[size] }} />
-      {isLoading ? (
-        <Skeletons />
-      ) : (
-        <Stack sx={{ gap: Spacing.sm }}>
-          <Stack sx={{ textAlign: 'center' }}>
-            {title && (
-              <Typography component="span" variant="headingXsBold">
-                {title}
-              </Typography>
-            )}
-            {subtitle && (
-              <Typography component="span" variant="bodySRegular" color="textSecondary">
-                {subtitle}
-              </Typography>
-            )}
-          </Stack>
-          {(!!button || !!rightAction) && (
-            <Stack direction="row" sx={{ flexWrap: 'wrap', gap: Spacing.sm, alignItems: 'center' }}>
-              {button && (
-                <Button
-                  {...buttonProps}
-                  variant="outlined"
-                  size={BUTTON_SIZE[size]}
-                  sx={applySxProps({ alignSelf: 'center' }, buttonSx)}
-                  data-testid={testId}
-                >
-                  {label}
-                </Button>
-              )}
-              {rightAction}
-            </Stack>
-          )}
-        </Stack>
-      )}
-    </Stack>
+  size,
+}: {
+  button: NonNullable<EmptyStateCardProps['button']>
+  size: NonNullable<EmptyStateCardProps['size']>
+}) => {
+  const { label, sx: buttonSx, testId, href, ...buttonProps } = button ?? {}
+  const sharedProps = {
+    ...buttonProps,
+    variant: 'outlined',
+    size: BUTTON_SIZE[size],
+    sx: applySxProps({ alignSelf: 'center' }, buttonSx),
+    'data-testid': testId,
+  } as const
+  return href?.startsWith('https') ? (
+    <ExternalLink {...sharedProps} href={href} label={label} wide />
+  ) : (
+    <Button {...sharedProps}>{label}</Button>
   )
 }
+
+export const EmptyStateCard = ({
+  title,
+  description,
+  button,
+  secondaryButton,
+  isLoading,
+  size = 'md',
+}: EmptyStateCardProps) => (
+  <Stack
+    sx={{
+      gap: Spacing.xs,
+      alignItems: 'center',
+      justifySelf: 'center',
+      maxWidth: MaxWidth.emptyStateCard,
+    }}
+  >
+    <LlamaIcon sx={{ width: ICON_SIZE[size], height: ICON_SIZE[size] }} />
+    {isLoading ? (
+      <Skeletons />
+    ) : (
+      <Stack sx={{ gap: Spacing.sm }}>
+        <Stack sx={{ textAlign: 'center' }}>
+          {title && (
+            <Typography component="span" variant="headingXsBold">
+              {title}
+            </Typography>
+          )}
+          {description && (
+            <Typography component="span" variant="bodySRegular" color="textSecondary">
+              {description}
+            </Typography>
+          )}
+        </Stack>
+        {(!!button || !!secondaryButton) && (
+          <Box
+            sx={{
+              display: 'grid', // Using grid here for equal sized buttons
+              gridTemplateColumns: !!button && !!secondaryButton ? { tablet: '1fr 1fr' } : undefined,
+              gap: Spacing.xs,
+              justifyContent: 'center',
+            }}
+          >
+            {button && <EmptyStateButton button={button} size={size} />}
+            {secondaryButton && <EmptyStateButton button={secondaryButton} size={size} />}
+          </Box>
+        )}
+      </Stack>
+    )}
+  </Stack>
+)
