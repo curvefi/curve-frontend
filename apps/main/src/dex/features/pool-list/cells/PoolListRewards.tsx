@@ -5,7 +5,6 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
-import { Badge } from '@ui-kit/shared/ui/Badge'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { formatNumber } from '@ui-kit/utils'
 import type { PoolListItem } from '../poolList.types'
@@ -15,7 +14,6 @@ type CrvRewards = Pick<PoolListItem, 'crvApr' | 'crvAprBoosted'>
 
 const MIN_VISIBLE_CRV_APR = 0.01
 const MAX_CRV_BOOST = '2.50'
-const REWARD_BADGE_SIZE = 'small'
 const CRV_SYMBOL = 'CRV'
 
 const getCrvRewardsLabel = ({ crvApr, crvAprBoosted }: CrvRewards) => {
@@ -61,12 +59,16 @@ export const PoolListRewards = ({ pool, mobile }: { pool: PoolListItem; mobile?:
           title={t`CRV LP reward annualized (max tAPR can be reached with max boost of ${MAX_CRV_BOOST})`}
           placement="bottom-end"
         >
-          <Badge size={REWARD_BADGE_SIZE} label={crvRewardsLabel} />
+          <Typography component="span" variant="tableCellMBold">
+            {crvRewardsLabel}
+          </Typography>
         </Tooltip>
       )}
       {extraRewards.map(({ apr, symbol }, index) => (
         // eslint-disable-next-line @eslint-react/no-array-index-key -- Extra rewards are display-only API rows without a required stable id.
-        <Badge key={index} size={REWARD_BADGE_SIZE} label={`${formatNumber(apr, 'percent.value')} ${symbol ?? ''}`} />
+        <Typography key={index} component="span" variant="tableCellMBold">
+          {formatNumber(apr, 'percent.value')} {symbol ?? ''}
+        </Typography>
       ))}
       {hasCampaignRewards && <CampaignRewardsRow rewardItems={campaigns} mobile={mobile} />}
     </Stack>
