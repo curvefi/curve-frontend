@@ -11,7 +11,7 @@ import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { formatNumber } from '@ui-kit/utils'
+import { CRVUSD, formatNumber } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -71,7 +71,8 @@ const UtilizationTooltipContent = ({
         </TooltipItem>
         {debtCeiling != null && (
           <TooltipItem title={t`Debt ceiling`}>
-            <Currency {...borrowed} balance={debtCeiling} />
+            {/** Only mint markets have a debt ceiling which is in crvUSD */}
+            <Currency {...CRVUSD} balance={debtCeiling} />
           </TooltipItem>
         )}
       </TooltipItems>
