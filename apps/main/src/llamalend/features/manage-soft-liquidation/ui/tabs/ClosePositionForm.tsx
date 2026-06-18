@@ -71,7 +71,7 @@ export const ClosePositionForm = ({
           <EmptyStateRow table={table}>
             <EmptyStateCard
               title={table.error ? t`Could not load position close data` : t`No close position data`}
-              subtitle={table.error?.message}
+              description={table.error?.message}
             />
           </EmptyStateRow>
         }
