@@ -13,7 +13,7 @@ type CampaignRewardsCompProps = {
 }
 
 export const RewardsCompSmall = ({ rewardsPool, highContrast, mobile, banner }: CampaignRewardsCompProps) => {
-  const { platform, reward, platformImageId, action } = rewardsPool
+  const { platform, reward, platformImageId, action, symbol } = rewardsPool
 
   return (
     <Tooltip
@@ -25,12 +25,14 @@ export const RewardsCompSmall = ({ rewardsPool, highContrast, mobile, banner }: 
     >
       <Container highContrast={highContrast}>
         <TokenIcon src={platformImageId} alt={platform} width={16} height={16} />
-        {reward && (
+        {(reward != null || symbol) && (
           <Multiplier highContrast={highContrast}>
             {action != 'lp' && `${action} `}
-            {reward.type === 'apr'
-              ? formatNumber(action === 'supply' ? aprToApy(reward.value) : reward.value, 'percent.rate')
-              : formatNumber(reward.value, 'multiplier')}
+            {reward?.value
+              ? reward.type === 'apr'
+                ? formatNumber(action === 'supply' ? aprToApy(reward.value) : reward.value, 'percent.rate')
+                : formatNumber(reward.value, 'multiplier')
+              : symbol}
           </Multiplier>
         )}
         {rewardsPool.lock && <StyledIcon size={16} name="Locked" $highContrast={highContrast} />}
