@@ -27,10 +27,15 @@ const mergeVisibilityGroups = (
     return oldGroup
       ? {
           ...initialGroup,
-          options: initialGroup.options.map(
-            initialOption =>
-              oldGroup.options.find(oldOption => isEqual(oldOption.columns, initialOption.columns)) ?? initialOption,
-          ),
+          options: initialGroup.options.map(initialOption => {
+            const oldOption =
+              oldGroup.options.find(oldOption => isEqual(oldOption.columns, initialOption.columns)) ?? initialOption
+            return isEqual(initialOption.columns, [LlamaMarketColumnId.NetBorrowRate])
+              ? { ...oldOption, active: initialOption.active }
+              : isEqual(initialOption.columns, [LlamaMarketColumnId.BorrowRate])
+                ? { ...oldOption, active: false }
+                : oldOption
+          }),
         }
       : initialGroup
   })
