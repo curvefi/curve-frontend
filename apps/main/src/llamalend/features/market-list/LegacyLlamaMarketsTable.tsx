@@ -11,7 +11,7 @@ import { LegacyDataTable } from '@ui-kit/shared/ui/DataTable/LegacyDataTable'
 import { LegacyTableFilters } from '@ui-kit/shared/ui/DataTable/LegacyTableFilters'
 import { LegacyTableFiltersTitles } from '@ui-kit/shared/ui/DataTable/LegacyTableFiltersTitles'
 import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
-import { constQ } from '@ui-kit/types/util'
+import { constQ, q } from '@ui-kit/types/util'
 import { LegacyLlamaListChips } from './chips/LegacyLlamaListChips'
 import { LlamaChainFilterChips } from './chips/LlamaChainFilterChips'
 import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS, LlamaMarketColumnId } from './columns'
@@ -53,7 +53,7 @@ export const LegacyLlamaMarketsTable = ({
 
   const table = useTable({
     columns: LLAMA_MARKET_COLUMNS,
-    data,
+    query: q({ data, isLoading: loading, error: isError ? new Error('Could not load markets') : null }),
     state: { expanded, sorting, columnVisibility, columnFilters, globalFilter },
     initialState: { pagination },
     onSortingChange,

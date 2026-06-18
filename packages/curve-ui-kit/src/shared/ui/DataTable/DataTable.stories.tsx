@@ -6,6 +6,7 @@ import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { createColumnHelper } from '@tanstack/react-table'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { q } from '@ui-kit/types/util'
 import { formatNumber } from '@ui-kit/utils'
 import { EmptyStateCard } from '../EmptyStateCard'
 import { type ColumnDefinition, getTableOptions, type TableItem, useTable } from './data-table.utils'
@@ -39,6 +40,7 @@ type DataTableProps = Parameters<typeof DataTable<MarketRow>>[0]
 type DemoDataTableProps = Omit<DataTableProps, 'table' | 'emptyState' | 'children' | 'footerRow' | 'expandedPanel'> & {
   rowCount?: number
   extraColumnCount?: number
+  isLoading?: boolean
   isError?: boolean
   wrapperWidth?: string
   showFooterRow?: boolean
@@ -158,7 +160,7 @@ const DemoDataTable = ({
   const data = isLoading || isError ? [] : generatedRows
   const columns = useMemo(() => createMarketColumns(extraColumnCount), [extraColumnCount])
   const table = useTable({
-    data,
+    query: q({ data, isLoading: !!isLoading, error: isError ? new globalThis.Error('Could not load markets') : null }),
     columns,
     initialState: { pagination },
     ...getTableOptions(data),
@@ -176,7 +178,6 @@ const DemoDataTable = ({
           />
         </EmptyStateRow>
       }
-      isLoading={!!isLoading}
       disableStickyHeader={disableStickyHeader}
       shouldStickFirstColumn={shouldStickFirstColumn}
       hideHeader={hideHeader}

@@ -11,6 +11,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
+import { q } from '@ui-kit/types/util'
 import { RECENT_REFUELS_PAGE_SIZE, useRecentRefuels } from '../../queries/recent-refuels.query'
 import { createRecentRefuelsColumns, type RecentRefuelRow } from './columns/columns.definitions'
 
@@ -33,19 +34,19 @@ export const RecentRefuels = ({
     pageSize: RECENT_REFUELS_PAGE_SIZE,
   })
 
-  const rows = useMemo<RecentRefuelRow[]>(
+  const rows = useMemo<RecentRefuelRow[] | undefined>(
     () =>
       data?.data.map(event => ({
         ...event,
         donorUrl: event.donor ? scanAddressPath(networkConfig, event.donor) : undefined,
-      })) ?? [],
+      })),
     [data?.data, networkConfig],
   )
   const columns = useMemo(() => createRecentRefuelsColumns(data?.tokens ?? []), [data?.tokens])
   const pageCount = getPageCount(data?.count, RECENT_REFUELS_PAGE_SIZE)
   const table = useTable({
-    data: rows,
     columns,
+    query: q({ data: rows, isLoading: isLoading || isFetching, error }),
     state: { pagination },
     manualPagination: true,
     pageCount,
@@ -63,7 +64,6 @@ export const RecentRefuels = ({
             {error ? t`Could not load recent refuels: ${error.message}` : t`No recent refuels found.`}
           </EmptyStateRow>
         }
-        isLoading={isLoading || isFetching}
       />
     </Stack>
   )

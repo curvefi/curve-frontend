@@ -18,6 +18,7 @@ import { useCurve } from '@ui-kit/features/connect-wallet'
 import { combineQueryState } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { q } from '@ui-kit/types/util'
 
 type UsePoolActivityProps = {
   chainId: ChainId
@@ -53,23 +54,26 @@ export const usePoolActivityTradesConfig = ({ chainId, poolAddress }: UsePoolAct
   const pageCount = getPageCount(tradesData?.count, DEFAULT_PAGE_SIZE)
 
   // Transform trades data with block explorer URLs
-  const tradesWithUrls: PoolTradeRow[] = useMemo(
+  const tradesWithUrls: PoolTradeRow[] | undefined = useMemo(
     () =>
-      (network &&
-        tradesData?.trades.map(trade => ({
-          ...trade,
-          buyerUrl: scanAddressPath(networkConfig, trade.buyer),
-          txUrl: scanTxPath(networkConfig, trade.txHash),
-          network,
-        }))) ??
-      [],
+      network &&
+      tradesData?.trades.map(trade => ({
+        ...trade,
+        buyerUrl: scanAddressPath(networkConfig, trade.buyer),
+        txUrl: scanTxPath(networkConfig, trade.txHash),
+        network,
+      })),
     [tradesData?.trades, networkConfig, network],
   )
 
   const { error, isLoading } = combineQueryState(poolTrades, poolPriceApi)
 
   const table = useTable({
-    data: tradesWithUrls,
+    query: q({
+      data: tradesWithUrls,
+      isLoading: isLoading || !isHydrated,
+      error: isHydrated ? error : null,
+    }),
     columns: POOL_TRADES_COLUMNS,
     state: { columnVisibility: tradesColumnVisibility, pagination },
     manualPagination: true,
@@ -80,8 +84,6 @@ export const usePoolActivityTradesConfig = ({ chainId, poolAddress }: UsePoolAct
 
   return {
     table,
-    isLoading: isLoading || !isHydrated,
-    isError: !!error && isHydrated,
     emptyMessage: t`No swap data found.`,
     errorMessage: t`Could not load swap data.`,
   }

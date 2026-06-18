@@ -11,6 +11,7 @@ import { useFilters } from '@ui-kit/shared/ui/DataTable/hooks/useFilters'
 import { LegacyDataTable } from '@ui-kit/shared/ui/DataTable/LegacyDataTable'
 import { LegacyTableFilters } from '@ui-kit/shared/ui/DataTable/LegacyTableFilters'
 import { LegacyTableFiltersTitles } from '@ui-kit/shared/ui/DataTable/LegacyTableFiltersTitles'
+import { q } from '@ui-kit/types/util'
 import { PoolListChips } from './chips/PoolListChips'
 import { POOL_LIST_COLUMNS, PoolColumnId, getDefaultSort } from './columns'
 import { PoolListEmptyState } from './components/PoolListEmptyState'
@@ -47,7 +48,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
 
   const table = useTable({
     columns: POOL_LIST_COLUMNS,
-    data: data ?? EMPTY,
+    query: q({ data: data ?? EMPTY, isLoading, error: null }), // TODO: get error and loading state properly
     state: { expanded, sorting, columnVisibility, columnFilters, pagination, globalFilter },
     onSortingChange,
     onExpandedChange,

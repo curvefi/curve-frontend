@@ -18,6 +18,7 @@ import { useCurve } from '@ui-kit/features/connect-wallet'
 import { combineQueryState } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { q } from '@ui-kit/types/util'
 
 type UsePoolActivityProps = {
   chainId: ChainId
@@ -53,17 +54,16 @@ export const usePoolActivityEventsConfig = ({ chainId, poolAddress }: UsePoolAct
   const pageCount = getPageCount(liquidityData?.count, DEFAULT_PAGE_SIZE)
 
   // Transform liquidity data with block explorer URLs and pool tokens
-  const liquidityWithUrls: PoolLiquidityRow[] = useMemo(
+  const liquidityWithUrls: PoolLiquidityRow[] | undefined = useMemo(
     () =>
-      (network &&
-        liquidityData?.events.map(event => ({
-          ...event,
-          providerUrl: scanAddressPath(networkConfig, event.provider),
-          txUrl: scanTxPath(networkConfig, event.txHash),
-          network,
-          poolTokens,
-        }))) ??
-      [],
+      network &&
+      liquidityData?.events.map(event => ({
+        ...event,
+        providerUrl: scanAddressPath(networkConfig, event.provider),
+        txUrl: scanTxPath(networkConfig, event.txHash),
+        network,
+        poolTokens,
+      })),
     [liquidityData?.events, network, networkConfig, poolTokens],
   )
 
@@ -75,7 +75,11 @@ export const usePoolActivityEventsConfig = ({ chainId, poolAddress }: UsePoolAct
   const { error, isLoading } = combineQueryState(poolLiquidityEvents, poolPriceApi)
 
   const table = useTable({
-    data: liquidityWithUrls,
+    query: q({
+      data: liquidityWithUrls,
+      isLoading: isLoading || !isHydrated,
+      error: isHydrated ? error : null,
+    }),
     columns: liquidityColumns,
     state: { columnVisibility: liquidityColumnVisibility, pagination },
     manualPagination: true,
@@ -86,8 +90,6 @@ export const usePoolActivityEventsConfig = ({ chainId, poolAddress }: UsePoolAct
 
   return {
     table,
-    isLoading: isLoading || !isHydrated,
-    isError: !!error && isHydrated,
     emptyMessage: t`No liquidity data found.`,
     errorMessage: t`Could not load liquidity data.`,
   }

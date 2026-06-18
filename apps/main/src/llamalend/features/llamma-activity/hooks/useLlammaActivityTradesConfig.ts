@@ -12,6 +12,7 @@ import {
 } from '@ui-kit/features/activity-table'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { q } from '@ui-kit/types/util'
 import { LlammaActivityTradesProps } from '../LlammaActivityTrades'
 
 export const useLlammaActivityTradesConfig = ({
@@ -26,8 +27,8 @@ export const useLlammaActivityTradesConfig = ({
 
   const {
     data: tradesData,
+    error: tradesError,
     isLoading: isTradesLoading,
-    isError: isTradesError,
   } = useLlammaTrades({
     chain: network,
     llamma: ammAddress,
@@ -53,7 +54,11 @@ export const useLlammaActivityTradesConfig = ({
   )
 
   const table = useTable({
-    data: tradesWithUrls,
+    query: q({
+      data: tradesWithUrls,
+      isLoading: isTradesLoading || !isMarketAvailable,
+      error: isMarketAvailable ? tradesError : null,
+    }),
     columns: LLAMMA_TRADES_COLUMNS,
     state: { columnVisibility: tradesColumnVisibility, pagination },
     manualPagination: true,
@@ -64,8 +69,6 @@ export const useLlammaActivityTradesConfig = ({
 
   return {
     table,
-    isLoading: isTradesLoading || !isMarketAvailable,
-    isError: isTradesError && isMarketAvailable,
     emptyMessage: t`No swap data found.`,
     errorMessage: t`Could not load swap data.`,
   }

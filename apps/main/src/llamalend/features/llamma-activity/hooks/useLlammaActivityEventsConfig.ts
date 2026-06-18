@@ -12,6 +12,7 @@ import {
 } from '@ui-kit/features/activity-table'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { q } from '@ui-kit/types/util'
 import { LlammaActivityProps } from '..'
 
 export const useLlammaActivityEventsConfig = ({
@@ -28,8 +29,8 @@ export const useLlammaActivityEventsConfig = ({
 
   const {
     data: eventsData,
+    error: eventsError,
     isLoading: isEventsLoading,
-    isError: isEventsError,
   } = useLlammaEvents({
     chain: network,
     llamma: ammAddress,
@@ -41,7 +42,7 @@ export const useLlammaActivityEventsConfig = ({
   const pageCount = getPageCount(eventsData?.count, DEFAULT_PAGE_SIZE)
 
   // Transform events data with block explorer URLs
-  const eventsWithUrls: LlammaEventRow[] = useMemo(
+  const eventsWithUrls: LlammaEventRow[] | undefined = useMemo(
     () =>
       (network &&
         eventsData?.events.map((event: LlammaEvent) => ({
@@ -57,7 +58,11 @@ export const useLlammaActivityEventsConfig = ({
   )
 
   const table = useTable({
-    data: eventsWithUrls,
+    query: q({
+      data: eventsWithUrls,
+      isLoading: isEventsLoading || !isMarketAvailable,
+      error: isMarketAvailable ? eventsError : null,
+    }),
     columns: LLAMMA_EVENTS_COLUMNS,
     state: { columnVisibility: eventsColumnVisibility, pagination },
     manualPagination: true,
@@ -68,8 +73,6 @@ export const useLlammaActivityEventsConfig = ({
 
   return {
     table,
-    isLoading: isEventsLoading || !isMarketAvailable,
-    isError: isEventsError && isMarketAvailable,
     emptyMessage: t`No activity data found.`,
     errorMessage: t`Could not load activity data.`,
   }

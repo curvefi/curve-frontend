@@ -7,6 +7,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
+import { q } from '@ui-kit/types/util'
 import { useMarketComposition } from '../../hooks/useMarketComposition'
 import { MARKET_COMPOSITION_COLUMNS, type MarketCompositionRow } from './columns/columns.definitions'
 import { FooterRow } from './FooterRow'
@@ -22,14 +23,14 @@ export const MarketComposition = ({
   poolId: string
   pricesApiPoolData?: PricesApiPool
 }) => {
-  const { isLoading, rows, totalUsd } = useMarketComposition({
+  const { isLoading, error, rows, totalUsd } = useMarketComposition({
     chainId,
     poolDataCacheOrApi,
     poolId,
     pricesApiPoolData,
   })
   const table = useTable({
-    data: rows,
+    query: q({ data: rows, isLoading, error }),
     columns: MARKET_COMPOSITION_COLUMNS,
     ...getTableOptions(rows),
   })
@@ -39,7 +40,6 @@ export const MarketComposition = ({
       <CardHeader title={t`Market Composition`} size="small" />
       <DataTable<MarketCompositionRow>
         table={table}
-        isLoading={isLoading}
         disableStickyHeader
         increasingLengthOptions={{ ...DEFAULT_INCREASING_LENGTH, maxLength: DEFAULT_INCREASING_LENGTH.initialLength }}
         emptyState={<EmptyStateRow table={table} size="sm">{t`No market composition found.`}</EmptyStateRow>}

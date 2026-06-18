@@ -18,6 +18,7 @@ import {
 } from '@tanstack/react-table'
 import { RowData, type Table, TableOptions } from '@tanstack/table-core'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { QueryProp } from '@ui-kit/types/util'
 import { borderStyle } from '@ui-kit/utils'
 
 const { Spacing, Sizing } = SizesAndSpaces
@@ -41,7 +42,7 @@ export type ColumnDefinition<T> = ColumnDef<T, any>
 /** Required fields for the data in the table. */
 export type TableItem = { url?: string | null }
 
-export type TanstackTable<T extends TableItem> = ReturnType<typeof useReactTable<T>>
+export type TanstackTable<T extends TableItem> = ReturnType<typeof useTable<T>>
 
 export type ColumnMeta = TanstackColumnMeta<TableItem, unknown>
 
@@ -50,7 +51,12 @@ export type ColumnMeta = TanstackColumnMeta<TableItem, unknown>
  * We ignore the lint rule for now as Tanstack table isn't supported with the React compiler yet.
  * Note we don't use the compiler due to this reason, we only use the lint rules.
  */
-export const useTable = <TData extends RowData>(options: TableOptions<TData>) => useReactTable<TData>(options)
+export const useTable = <TData extends RowData>(
+  options: Omit<TableOptions<TData>, 'data'> & { query: QueryProp<TData[]> },
+) => {
+  const table = useReactTable<TData>({ ...options, data: options.query.data ?? [] })
+  return { ...table, isLoading: options.query.isLoading, error: options.query.error }
+}
 
 /** Define the alignment of the data or header cell based on the column type. */
 export const getAlignment = <T extends TableItem>({ columnDef }: Column<T>) =>

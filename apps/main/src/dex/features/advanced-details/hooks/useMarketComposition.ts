@@ -64,7 +64,9 @@ export const useMarketComposition = ({
     .filter(({ amount }) => amount)
 
   return {
-    isLoading: usePricesApiReserves ? !pricesApiPoolData?.balances.length : !currencyReserves, // this isn't a proper loading check, but we need a bigger refactor for that later on
+    error: null, // TODO: correctly handle error and loading state
+    // this isn't a proper loading check, but we need a bigger refactor for that later on
+    isLoading: usePricesApiReserves ? !pricesApiPoolData?.balances.length : !currencyReserves,
     rows,
     totalUsd: usePricesApiReserves ? pricesApiTotalUsd?.toString() : currencyReserves?.totalUsd,
   }

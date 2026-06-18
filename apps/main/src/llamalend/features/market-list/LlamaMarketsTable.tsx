@@ -13,7 +13,7 @@ import { useFilters } from '@ui-kit/shared/ui/DataTable/hooks/useFilters'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableHeader } from '@ui-kit/shared/ui/DataTable/TableHeader'
 import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
-import { mapQuery, QueryProp } from '@ui-kit/types/util'
+import { mapQuery, type QueryProp } from '@ui-kit/types/util'
 import { LlamaListChips } from './chips/LlamaListChips'
 import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS, LlamaMarketColumnId } from './columns'
 import { MarketSortDrawer } from './drawers/MarketSortDrawer'
@@ -58,7 +58,7 @@ export const LlamaMarketsTable = ({
 
   const table = useTable({
     columns: LLAMA_MARKET_COLUMNS,
-    data,
+    query: mapQuery(tableQuery, d => d.markets),
     state: { expanded, sorting, columnVisibility, columnFilters, globalFilter },
     initialState: { pagination },
     onSortingChange,
@@ -86,7 +86,6 @@ export const LlamaMarketsTable = ({
         }
         expandedPanel={LlamaMarketExpandedPanel}
         shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
-        isLoading={isLoading}
       >
         <TableFilters<LlamaMarketColumnId>
           testIdPrefix={LOCAL_STORAGE_KEY}

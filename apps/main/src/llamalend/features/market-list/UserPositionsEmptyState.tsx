@@ -1,7 +1,7 @@
 import { PositionsEmptyState } from '@/llamalend/constants'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
-import type { Table } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
+import type { TanstackTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
 import { MarketRateType } from '@ui-kit/types/market'
@@ -14,7 +14,7 @@ type EmptyStateConfig = {
 }
 
 type UserPositionsEmptyStateProps = {
-  table: Table<LlamaMarket>
+  table: TanstackTable<LlamaMarket>
   state: PositionsEmptyState
   marketRateType: MarketRateType
   onReload: () => void
