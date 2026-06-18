@@ -36,6 +36,8 @@ export const useLLv2 = () => {
   )
 }
 
+export const use0xRouter = useBetaChannel
+
 /** New market list and search layout */
 export const useNewMarketListLayout = useStableChannel
 

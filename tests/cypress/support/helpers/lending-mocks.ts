@@ -187,7 +187,7 @@ export const mockLendingSnapshots = (chain = oneOf(...LendingChains)) =>
 
 /** Mock Merkl API to provide campaign rewards for the RewardsTestAddress vault used in tests */
 export const mockMerklCampaigns = () =>
-  cy.intercept('https://api.merkl.xyz/v4/opportunities*', {
+  cy.intercept('GET', '**/api/merkl/v1/opportunities*', {
     body: [
       {
         type: 'POOL',

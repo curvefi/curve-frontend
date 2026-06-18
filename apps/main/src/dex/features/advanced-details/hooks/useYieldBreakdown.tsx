@@ -92,8 +92,8 @@ export const useYieldBreakdown = ({
     })
 
     campaigns
-      .filter(({ tags }) => !tags.includes('points'))
-      .forEach(({ address, multiplier, platform, platformImageId }) => {
+      .filter(({ reward }) => reward?.type === 'apr')
+      .forEach(({ address, reward, platform, platformImageId }) => {
         rows.push({
           source: {
             icon: (
@@ -109,7 +109,7 @@ export const useYieldBreakdown = ({
           },
           address,
           explorerUrl: scanAddressPath(network, address),
-          apy: aprToApy(Number(multiplier), COMPOUND_WINDOW) ?? undefined,
+          apy: aprToApy(reward?.value, COMPOUND_WINDOW) ?? undefined,
         })
       })
 

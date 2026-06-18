@@ -12,6 +12,8 @@ import {
   getSnapshotCollateralRebasingYieldApr,
   getSupplyApyAverageMetrics,
   getSupplyApyMetrics,
+  sumCampaignsApr,
+  sumCampaignsApy,
   sumOnChainExtraIncentivesApy,
   toNumberOrNull,
 } from '@/llamalend/rates.utils'
@@ -56,6 +58,7 @@ function buildSupplyRate({
     rebasingYieldApy: toNumberOrNull(rebasingYieldApy),
     crvBoostApr: marketOnChainRewards?.crvRates,
     extraIncentivesApy: sumOnChainExtraIncentivesApy(marketOnChainRewards?.rewardsApr),
+    campaignsApy: sumCampaignsApy(campaigns),
   })
   const supplyAverageMetrics = getSupplyApyAverageMetrics({
     snapshots: lendingSnapshots,
@@ -118,6 +121,7 @@ export const usePageHeader = ({
     borrowRate: combineQueries([marketRates, snapshot, marketQuery], ({ borrowApr }, snapshots) => {
       const { averageRate, averageRebasingYield, averageTotalRate, rebasingYield, totalRate } = getBorrowRateMetrics({
         borrowRate: toNumberOrNull(borrowApr),
+        campaignsRate: sumCampaignsApr(borrowCampaigns),
         snapshots,
         getBorrowRate: getSnapshotBorrowApr,
         getRebasingYield: getSnapshotCollateralRebasingYieldApr,
