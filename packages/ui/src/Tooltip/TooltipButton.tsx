@@ -79,7 +79,7 @@ export function TooltipButton({
       slotProps={{
         popper: {
           sx: {
-            ...(increaseZIndex && { zIndex: 2 }),
+            ...(increaseZIndex && { zIndex: theme => theme.zIndex.tooltip }),
             '& .MuiTooltip-tooltip': {
               maxWidth: minWidth || '20rem',
               textAlign,

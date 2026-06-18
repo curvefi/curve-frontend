@@ -6,7 +6,7 @@ import type { Chain as BlockchainId } from '@curvefi/prices-api'
 import Box from '@mui/material/Box'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { decimal, formatNumber } from '@ui-kit/utils'
+import { formatNumber } from '@ui-kit/utils'
 import type { PointsCampaignsRow } from '../components/points-campaigns/columns/columns.definitions'
 
 const { IconSize } = SizesAndSpaces
@@ -28,9 +28,9 @@ export const usePointsCampaigns = ({
   const rows = useMemo(
     () =>
       campaigns
-        .filter(({ tags }) => tags.includes('points'))
+        .filter(({ reward }) => reward?.type === 'points')
         .map(
-          ({ dashboardLink, multiplier, platform, platformImageId }): PointsCampaignsRow => ({
+          ({ dashboardLink, reward, platform, platformImageId }): PointsCampaignsRow => ({
             source: {
               icon: (
                 <Box
@@ -43,7 +43,7 @@ export const usePointsCampaigns = ({
               iconPosition: 'left',
               primary: platform,
             },
-            multiplier: formatNumber(decimal(multiplier), 'multiplier'),
+            multiplier: formatNumber(reward?.value, 'multiplier'),
             campaignUrl: dashboardLink,
           }),
         ),
