@@ -5,7 +5,7 @@ import type {
   V2PoolFilterType as PoolType,
   V2PoolSortField as PoolSortField,
 } from '@curvefi/prices-api/pools'
-import { mapRecord, notFalsy, recordEntries, recordValues } from '@primitives/objects.utils'
+import { maybe, notFalsy, recordEntries, recordValues } from '@primitives/objects.utils'
 import type { OnChangeFn, SortingState } from '@tanstack/react-table'
 import { useSearchNavigate, useSearchParams } from '@ui-kit/hooks/router'
 import { usePageFromQueryString } from '@ui-kit/hooks/usePageFromQueryString'
@@ -54,15 +54,12 @@ type ColumnSort = { id: PoolListSortableColumn; desc: boolean }
 export type PoolListSorting = [ColumnSort]
 
 const SORT_OPTIONS = recordEntries(SORT_COLUMNS).map(([id, { label }]) => ({ id, label }))
+const DEFAULT_FILTER_QUERY = { [SEARCH_QUERY_FIELD]: null, [POOL_TYPE_QUERY_FIELD]: null }
 
 const isPoolType = (value: string | null): value is PoolListPoolType => value != null && POOL_TYPE_SET.has(value)
 
-const getPoolType = (value: string | null): PoolListPoolType | undefined => {
-  if (value == null) return undefined
-  if (CRYPTO_POOL_TYPE_ALIASES.has(value)) return 'crypto'
-
-  return isPoolType(value) ? value : undefined
-}
+const getPoolType = (value: string | null): PoolListPoolType | undefined =>
+  maybe(value, value => (CRYPTO_POOL_TYPE_ALIASES.has(value) ? 'crypto' : isPoolType(value) ? value : undefined))
 
 const isPoolListSortColumn = (value: string | undefined): value is PoolListSortableColumn =>
   value != null && value in SORT_COLUMNS
@@ -120,10 +117,7 @@ export const usePoolListUrlState = ({ isLite }: Pick<NetworkConfig, 'isLite'>) =
     (value: PoolListPoolType | null) => updateQueryAndResetPage({ [POOL_TYPE_QUERY_FIELD]: value }),
     [updateQueryAndResetPage],
   )
-  const resetFilters = useCallback(
-    () => updateQueryAndResetPage(mapRecord(activeFilters, () => null)),
-    [activeFilters, updateQueryAndResetPage],
-  )
+  const resetFilters = useCallback(() => updateQueryAndResetPage(DEFAULT_FILTER_QUERY), [updateQueryAndResetPage])
   const activeFilterCount = notFalsy(...recordValues(activeFilters)).length
 
   return {

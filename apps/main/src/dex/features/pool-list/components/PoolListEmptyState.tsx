@@ -32,7 +32,7 @@ export const PoolListEmptyState = ({ poolType, poolTypeFilters, resetFilters, se
     </Box>
   ) : errorKey === ERROR.search || errorKey === ERROR.filter ? (
     <Trans>
-      No pool found {errorSearchedValue && `for "${errorSearchedValue}"`}.
+      <p>No pool found {errorSearchedValue && `for "${errorSearchedValue}"`}.</p>
       <br />{' '}
       <Button variant="text" onClick={resetFilters}>
         View all

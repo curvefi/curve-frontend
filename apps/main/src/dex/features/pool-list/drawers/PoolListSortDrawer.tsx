@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useRef } from 'react'
 import { MenuItem, MenuList } from '@mui/material'
 import Typography from '@mui/material/Typography'
 import type { OnChangeFn, SortingState } from '@tanstack/react-table'
@@ -26,14 +26,6 @@ export const PoolListSortDrawer = ({ onSortingChange, options, sortField }: Prop
   const [open, , closeDrawer, toggleDrawer, setOpen] = useSwitch(false)
   const menuRef = useRef<HTMLLIElement | null>(null)
 
-  const handleSort = useCallback(
-    (id: PoolListSortableColumn) => {
-      onSortingChange([{ id, desc: true }])
-      closeDrawer()
-    },
-    [onSortingChange, closeDrawer],
-  )
-
   return (
     <SwipeableDrawer
       paperSx={{ maxHeight: SizesAndSpaces.MaxHeight.drawer }}
@@ -58,7 +50,10 @@ export const PoolListSortDrawer = ({ onSortingChange, options, sortField }: Prop
                 ref={menuRef}
                 value={id}
                 selected={sortField === id}
-                onClick={() => handleSort(id)}
+                onClick={() => {
+                  onSortingChange([{ id, desc: true }])
+                  closeDrawer()
+                }}
                 sx={{ justifyContent: 'space-between', minHeight: ButtonSize.sm }}
               >
                 <Typography component="span" variant="bodyMBold">
