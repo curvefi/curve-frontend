@@ -38,6 +38,8 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
+apps/merkl-api/.env
+
 # IDE config
 .idea/
 .vscode/

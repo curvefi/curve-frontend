@@ -5,7 +5,6 @@ export default defineConfig({
   resolve: {
     alias: {
       '@curvefi/api-server': resolve(__dirname, '../../packages/api-server/src/index.ts'),
-      '@primitives': resolve(__dirname, '../../packages/primitives/src'),
     },
   },
   test: {
@@ -13,7 +12,5 @@ export default defineConfig({
     include: ['test/**/*.test.ts'],
     globals: true,
     exclude: ['dist/**'],
-    testTimeout: 120_000,
-    hookTimeout: 120_000,
   },
 })
