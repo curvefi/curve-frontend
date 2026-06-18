@@ -27,7 +27,7 @@ export const RewardsCompSmall = ({ rewardsPool, highContrast, mobile, banner }: 
         <TokenIcon src={platformImageId} alt={platform} width={16} height={16} />
         {reward && (
           <Multiplier highContrast={highContrast}>
-            {action}{' '}
+            {action != 'lp' && `${action} `}
             {reward.type === 'apr'
               ? formatNumber(action === 'supply' ? aprToApy(reward.value) : reward.value, 'percent.rate')
               : formatNumber(reward.value, 'multiplier')}
