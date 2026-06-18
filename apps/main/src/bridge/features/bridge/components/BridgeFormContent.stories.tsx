@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react'
+import { WagmiProvider } from 'wagmi'
 import type { IFastBridgeNetwork } from '@curvefi/api/lib/bridge'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { NetworkDef } from '@ui/utils'
+import { createTestWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/wagmi-test-config'
+import { TestQueryProvider } from '@ui-kit/lib/queries/test-query.provider.test'
 import { constQ } from '@ui-kit/types/util'
 import { Chain, decimal } from '@ui-kit/utils'
 import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
@@ -58,10 +61,6 @@ const BridgeForm = (props: BridgeFormContentParams) => {
     }, 2000)
   }, [walletBalance])
 
-  // Simulate connecting
-  const [isConnected, setIsConnected] = useState(props.isConnected)
-  const [isConnecting, setIsConnecting] = useState(false)
-
   // Simulate wrong network
   const [isWrongNetwork, setIsWrongNetwork] = useState(props.isWrongNetwork)
 
@@ -100,8 +99,7 @@ const BridgeForm = (props: BridgeFormContentParams) => {
         }
         isPending={isPending}
         isApproved={isApproved}
-        isConnected={isConnected}
-        isConnecting={isConnecting}
+        isConnected={props.isConnected}
         isWrongNetwork={isWrongNetwork}
         onSubmit={() => {
           setIsPending(true)
@@ -119,13 +117,6 @@ const BridgeForm = (props: BridgeFormContentParams) => {
           }, 2000)
         }}
         onAmount={setAmount}
-        onConnect={() => {
-          setIsConnecting(true)
-          setTimeout(() => {
-            setIsConnecting(false)
-            setIsConnected(true)
-          }, 2000)
-        }}
         onChangeNetwork={() => setIsWrongNetwork(false)}
         onNetworkSelected={network => setFromChainId(network.chainId)}
       />
@@ -146,7 +137,13 @@ export const Default: Story = {
 }
 
 export const NotConnected: Story = {
-  render: args => <BridgeForm {...args} />,
+  render: args => (
+    <WagmiProvider config={createTestWagmiConfig()}>
+      <TestQueryProvider data={[]}>
+        <BridgeForm {...args} />
+      </TestQueryProvider>
+    </WagmiProvider>
+  ),
   parameters: { docs: { description: { story: 'No connected wallet' } } },
   args: { isConnected: false },
 }

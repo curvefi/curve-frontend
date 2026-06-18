@@ -48,9 +48,9 @@ export const RewardsTooltipItems = ({
 
         return (
           r.action === tooltipType && (
-            // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
             <TooltipItem
               variant="subItem"
+              // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
               key={i}
               title={rewardType === 'apr' ? t`APR` : t`Points`}
               imageId={r.platformImageId}

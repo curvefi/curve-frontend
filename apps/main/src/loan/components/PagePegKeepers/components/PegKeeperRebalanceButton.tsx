@@ -1,6 +1,5 @@
 import { useConnection } from 'wagmi'
 import Button from '@mui/material/Button'
-import { useWallet } from '@ui-kit/features/connect-wallet'
 import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -12,9 +11,7 @@ type Props = {
 }
 
 export const PegKeeperRebalanceButton = ({ canRebalance, isRebalancing, onRebalance, testId = 'pegkeeper' }: Props) => {
-  const { isConnected, isConnecting } = useConnection()
-  const { connect } = useWallet()
-
+  const { isConnected } = useConnection()
   return isConnected ? (
     <Button
       variant="contained"
@@ -27,6 +24,6 @@ export const PegKeeperRebalanceButton = ({ canRebalance, isRebalancing, onRebala
       {isRebalancing ? t`Rebalancing...` : t`Rebalance`}
     </Button>
   ) : (
-    <ConnectWalletButton onClick={() => void connect()} loading={isConnecting} fullWidth />
+    <ConnectWalletButton fullWidth />
   )
 }
