@@ -35,6 +35,7 @@ export const Page = () => {
     userAddress,
     api,
     market,
+    apiMarket,
   }
 
   const supplied = +(useUserShares({ marketId: market?.id, chainId, userAddress }).data?.value ?? 0)

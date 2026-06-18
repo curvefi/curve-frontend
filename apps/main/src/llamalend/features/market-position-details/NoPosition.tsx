@@ -5,19 +5,21 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing, IconSize, MaxWidth } = SizesAndSpaces
 
-type AppType = 'borrow' | 'supply'
+type NoPositionType = 'borrow' | 'supply' | 'disconnected'
 type NoPositionProps = {
-  type: AppType
+  type: NoPositionType
 }
 
-const title: Record<AppType, string> = {
+const title: Record<NoPositionType, string> = {
   borrow: t`No active position`,
   supply: t`You're not earning yet`,
+  disconnected: t`Disconnected`,
 }
 
-const description: Record<AppType, string> = {
+const description: Record<NoPositionType, string> = {
   borrow: t`Borrow with LLAMMA to stay exposed, reduce liquidation risk and access liquidity without selling.`,
   supply: t`Lend assets to earn yield and support deep liquidity across Curve.`,
+  disconnected: t`Please connect your wallet to view your positions.`,
 }
 
 export const NoPosition = ({ type }: NoPositionProps) => (

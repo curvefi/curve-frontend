@@ -16,7 +16,6 @@ import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-tabl
 import { LlammaActivityTradesProps } from '../LlammaActivityTrades'
 
 export const useLlammaActivityTradesConfig = ({
-  isMarketAvailable,
   network,
   ammAddress,
   endpoint,
@@ -66,8 +65,8 @@ export const useLlammaActivityTradesConfig = ({
 
   return {
     table,
-    isLoading: isTradesLoading || !isHydrated || !isMarketAvailable,
-    isError: isTradesError && isHydrated && isMarketAvailable,
+    isLoading: isTradesLoading || !isHydrated || !ammAddress,
+    isError: isTradesError && isHydrated && !!ammAddress,
     emptyMessage: t`No swap data found.`,
     errorMessage: t`Could not load swap data.`,
   }

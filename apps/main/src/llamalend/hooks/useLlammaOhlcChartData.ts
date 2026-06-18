@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import type { Chain } from '@curvefi/prices-api'
+import type { Address } from '@primitives/address.utils'
 import { notFalsy, maybe, maybes } from '@primitives/objects.utils'
 import {
   fetchMoreOhlcQueries,
@@ -27,11 +28,11 @@ type HistoricalSelection = {
 type UseLlammaOhlcChartDataParams = {
   anchorEnd: number
   chain: Chain | undefined
-  controller: string
+  controller: Address | undefined
   enabled?: boolean
   endpoint: Endpoint
   interval: number
-  llamma: string
+  llamma: Address | undefined
   oraclePrice: string | undefined
   timeOption: TimeOption
   units: OhlcTimeUnit

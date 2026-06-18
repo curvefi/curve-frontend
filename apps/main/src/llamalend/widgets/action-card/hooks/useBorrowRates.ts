@@ -1,12 +1,13 @@
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useLlamaSnapshot } from '@/llamalend/queries/llamma-snapshots.query'
 import { useMarketFutureRates, useMarketRates } from '@/llamalend/queries/market'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { CrvUsdSnapshot } from '@ui-kit/entities/crvusd-snapshots'
 import { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
 import type { MarketParams } from '@ui-kit/lib/model'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
+import type { LlamaMarketType } from '@ui-kit/types/market'
 import { q, Query, type QueryProp } from '@ui-kit/types/util'
 import { BlockchainIds, decimal, decimalMinus } from '@ui-kit/utils'
 
@@ -31,15 +32,22 @@ export function useBorrowRates<ChainId extends IChainId>(
   {
     params: { chainId, marketId },
     debtDelta,
-    market,
+    marketType,
+    controllerAddress,
   }: {
     params: MarketParams<ChainId>
-    market: LlamaMarketTemplate | undefined
+    marketType: LlamaMarketType
+    controllerAddress: Address | undefined
     debtDelta?: Decimal | null
   },
   enabled: boolean,
 ) {
-  const snapshots = useLlamaSnapshot({ market, blockchainId: chainId && BlockchainIds[chainId], enabled })
+  const snapshots = useLlamaSnapshot({
+    marketType,
+    controllerAddress,
+    blockchainId: chainId && BlockchainIds[chainId],
+    enabled,
+  })
   // Without `debt`, `rates`/`netBorrowApr` are disabled on purpose. `ActionInfo` shows `prevRates` as current.
   const [rates, netBorrowApr] = addNetApr(useMarketFutureRates({ chainId, marketId, debtDelta }, enabled), snapshots)
   const [prevRates, prevNetBorrowApr] = addNetApr(useMarketRates({ chainId, marketId }, enabled), snapshots)

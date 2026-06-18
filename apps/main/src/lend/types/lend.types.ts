@@ -1,8 +1,10 @@
+import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { IChainId, INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { Address } from '@primitives/address.utils'
 import type { BaseConfig } from '@ui/utils'
 import type { LlamaApi } from '@ui-kit/features/connect-wallet'
+import type { QueryProp } from '@ui-kit/types/util'
 
 export type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 export type { Wallet } from '@ui-kit/features/connect-wallet'
@@ -34,6 +36,7 @@ export type PageContentProps<T = UrlParams> = {
   userAddress: Address | undefined
   api: LlamaApi | null
   market: LendMarketTemplate | undefined
+  apiMarket: QueryProp<LlamaMarket>
 }
 
 export type RewardOther = {

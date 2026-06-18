@@ -1,11 +1,11 @@
 import { sortBy } from 'lodash'
 import { useMemo, useState } from 'react'
 import { Address } from 'viem'
-import { formatCollateralNotional, getTokens, getUtilizationPercent } from '@/llamalend/llama.utils'
+import { formatCollateralNotional, getUtilizationPercent } from '@/llamalend/llama.utils'
 import { useMarketCapAndAvailable, useMarketTotalCollateral, useRateCurve } from '@/llamalend/queries/market'
+import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { TooltipOptions, TotalCollateralTooltip, UtilizationTooltip } from '@/llamalend/widgets/tooltips'
 import { RateCurveTooltip } from '@/llamalend/widgets/tooltips/chart/RateCurveTooltip'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { Chain } from '@curvefi/prices-api'
 import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
@@ -27,7 +27,7 @@ import {
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { fallbackQ, mapQuery, useMappedQuery } from '@ui-kit/types/util'
+import { fallbackQ, mapQuery, type QueryProp, useMappedQuery } from '@ui-kit/types/util'
 import { decimal, decimalMax, decimalMinus, formatNumber } from '@ui-kit/utils'
 
 const { Spacing, Height } = SizesAndSpaces
@@ -49,19 +49,23 @@ const transform = ({ rates = [] }: { rates: RateCurveChartPoint[] | undefined })
   sortBy(rates, 'utilization')
 
 export const MarketRateCurveChart = ({
-  market,
+  collateralToken,
+  borrowToken,
+  controllerAddress,
   blockchainId,
   chainId,
   marketId,
+  apiMarket,
 }: {
-  market: LendMarketTemplate | undefined | null
   blockchainId: Chain | undefined
   chainId: number | undefined
   marketId: string | undefined
+  collateralToken: { address: Address; symbol: string } | undefined
+  borrowToken: { address: Address; symbol: string } | undefined
+  controllerAddress: Address | undefined
+  apiMarket: QueryProp<LlamaMarket>
 }) => {
   const [visibleSeries, setVisibleSeries] = useState<RateCurveSeriesKey[]>(SERIES_CONFIG.map(({ key }) => key))
-  const controllerAddress = market?.addresses.controller as Address | undefined
-  const { collateralToken, borrowToken } = market ? getTokens(market) : {}
   const {
     design: { Color },
   } = useTheme()
@@ -138,6 +142,7 @@ export const MarketRateCurveChart = ({
     [seriesColors, visibleSeries],
   )
 
+  const useApiData = !!apiMarket.data && !marketId
   return (
     <Card size="small">
       <CardHeader title={t`Interest Rate & Utilization`} />
@@ -152,7 +157,10 @@ export const MarketRateCurveChart = ({
           <Metric
             size="medium"
             label={t`Utilization`}
-            value={currentUtilization}
+            value={fallbackQ(
+              !useApiData && currentUtilization,
+              mapQuery(apiMarket, m => m.utilizationPercent),
+            )}
             valueOptions={{ unit: 'percentage' }}
             notional={utilizationBreakdown.data}
             valueTooltip={{
@@ -164,17 +172,25 @@ export const MarketRateCurveChart = ({
           <Metric
             size="medium"
             label={t`Total borrowed`}
-            value={totalBorrowed}
+            value={fallbackQ(
+              !useApiData && totalBorrowed,
+              mapQuery(apiMarket, m => m.assets.borrowed.balance),
+            )}
             valueOptions={{
               unit: borrowToken?.symbol ? { symbol: ` ${borrowToken.symbol}`, position: 'suffix' } : undefined,
               abbreviate: true,
             }}
-            notional={maybe(totalBorrowedUsdValue.data, val => formatNumber(val, 'usd.notional'))}
+            notional={maybe(totalBorrowedUsdValue.data ?? apiMarket.data?.assets.borrowed.balanceUsd, val =>
+              formatNumber(val, 'usd.notional'),
+            )}
           />
           <Metric
             size="medium"
             label={t`Total collateral`}
-            value={combinedCollateralUsdValue}
+            value={fallbackQ(
+              !useApiData && combinedCollateralUsdValue,
+              mapQuery(apiMarket, m => m.totalCollateralUsd),
+            )}
             valueOptions={{ unit: 'dollar' }}
             notional={maybe(totalCollateral.data, ({ collateral, borrowed }) =>
               formatCollateralNotional(

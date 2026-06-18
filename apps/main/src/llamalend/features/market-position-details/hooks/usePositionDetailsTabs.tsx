@@ -38,7 +38,7 @@ export const usePositionDetailsTabs = ({
             hasPosition ? (
               <BorrowPositionDetails tokens={tokens} params={{ chainId, marketId, userAddress }} />
             ) : (
-              <NoPosition type="borrow" />
+              <NoPosition type={userAddress ? 'borrow' : 'disconnected'} />
             ),
         },
         events?.length && {

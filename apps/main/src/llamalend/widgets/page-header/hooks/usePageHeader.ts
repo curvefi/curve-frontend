@@ -1,8 +1,10 @@
+import { useSnapshots } from '@/llamalend/features/market-list/hooks/useSnapshots'
 import { useFilteredRewards } from '@/llamalend/hooks/useFilteredRewards'
 import { getControllerAddress } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useLlamaSnapshot } from '@/llamalend/queries/llamma-snapshots.query'
 import { useMarketCapAndAvailable, useMarketRates, useMarketVaultOnChainRewards } from '@/llamalend/queries/market'
+import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import {
   aprToApy,
   formatSupplyExtraIncentives,
@@ -24,7 +26,7 @@ import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
 import { combineQueries } from '@ui-kit/lib'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
-import { fakeLoadingQ, Query, type Range } from '@ui-kit/types/util'
+import { fakeLoadingQ, fallbackQ, mapQuery, Query, type QueryProp, type Range } from '@ui-kit/types/util'
 import { AVERAGE_CATEGORIES, type AverageCategory, CRVUSD_ADDRESS, decimalMultiply } from '@ui-kit/utils'
 
 const RATE_CATEGORY: AverageCategory = 'llamalend.market.rate'
@@ -89,19 +91,32 @@ export const usePageHeader = ({
   marketId,
   market,
   blockchainId,
+  apiMarket,
 }: {
   chainId: number
   marketId: string | undefined
   market: LlamaMarketTemplate | null | undefined
   blockchainId: Chain | undefined
+  apiMarket: QueryProp<LlamaMarket>
 }) => {
   const isLendMarket = market instanceof LendMarketTemplate
-  const vaultAddress = (isLendMarket ? market.addresses.vault : undefined) as Address | undefined
-  const controllerAddress = getControllerAddress(market)
-  const borrowTokenAddress = (isLendMarket ? market.addresses.borrowed_token : CRVUSD_ADDRESS) as Address | undefined
-  const marketType = isLendMarket ? LlamaMarketType.Lend : LlamaMarketType.Mint
+  const vaultAddress = (isLendMarket ? market.addresses.vault : apiMarket.data?.vaultAddress) as Address | undefined
+  const controllerAddress = getControllerAddress(market) ?? apiMarket.data?.controllerAddress
+  const borrowTokenAddress = (
+    isLendMarket
+      ? market.addresses.borrowed_token
+      : apiMarket.data
+        ? apiMarket.data.assets.borrowed.address
+        : CRVUSD_ADDRESS
+  ) as Address | undefined
+  const marketType = apiMarket.data ? apiMarket.data.type : isLendMarket ? LlamaMarketType.Lend : LlamaMarketType.Mint
 
-  const snapshot = useLlamaSnapshot({ market, blockchainId, range: { kind: 'limit', limit: RATE_WINDOW } })
+  const snapshot = useLlamaSnapshot({
+    marketType,
+    controllerAddress,
+    blockchainId,
+    range: { kind: 'limit', limit: RATE_WINDOW },
+  })
   const marketRates = useMarketRates({ chainId, marketId })
   const capAndAvailable = useMarketCapAndAvailable({ chainId, marketId })
   const borrowUsdRate = useTokenUsdRate({ chainId, tokenAddress: borrowTokenAddress })
@@ -114,51 +129,84 @@ export const usePageHeader = ({
   const supplyCampaigns = useFilteredRewards(campaigns, marketType, MarketRateType.Supply)
   const marketQuery = fakeLoadingQ(market) // todo: use a proper query, see #2729
 
-  return {
-    borrowRate: combineQueries([marketRates, snapshot, marketQuery], ({ borrowApr }, snapshots) => {
-      const { averageRate, averageRebasingYield, averageTotalRate, rebasingYield, totalRate } = getBorrowRateMetrics({
-        borrowRate: toNumberOrNull(borrowApr),
-        snapshots,
-        getBorrowRate: getSnapshotBorrowApr,
-        getRebasingYield: getSnapshotCollateralRebasingYieldApr,
-        daysBack: RATE_WINDOW,
-      })
-      return {
-        rate: toNumberOrNull(borrowApr),
-        averageRate,
-        averageCategory: RATE_CATEGORY,
-        rebasingYield,
-        averageRebasingYield,
-        totalBorrowRate: totalRate,
-        totalAverageBorrowRate: averageTotalRate,
-        extraRewards: borrowCampaigns,
-      }
-    }),
-    supplyRate: isLendMarket
-      ? combineQueries(
-          [marketRates, snapshot as Query<LendingSnapshot[]>, onChainRewards, marketQuery],
-          (marketRates, lendingSnapshots, marketOnChainRewards) =>
-            buildSupplyRate({
-              supplyApy: marketRates?.lendApy,
-              rebasingYieldApy: getLatestSnapshotValue(
-                lendingSnapshots,
-                snapshot => snapshot.borrowedToken.rebasingYield,
-              ),
-              marketOnChainRewards,
+  const borrowRate = combineQueries([marketRates, snapshot, marketQuery], ({ borrowApr }, snapshots) => {
+    const { averageRate, averageRebasingYield, averageTotalRate, rebasingYield, totalRate } = getBorrowRateMetrics({
+      borrowRate: toNumberOrNull(borrowApr),
+      snapshots,
+      getBorrowRate: getSnapshotBorrowApr,
+      getRebasingYield: getSnapshotCollateralRebasingYieldApr,
+      daysBack: RATE_WINDOW,
+    })
+    return {
+      rate: toNumberOrNull(borrowApr),
+      averageRate,
+      averageCategory: RATE_CATEGORY,
+      rebasingYield,
+      averageRebasingYield,
+      totalBorrowRate: totalRate,
+      totalAverageBorrowRate: averageTotalRate,
+      extraRewards: borrowCampaigns,
+    }
+  })
+  const supplyRate = isLendMarket
+    ? combineQueries(
+        [marketRates, snapshot as Query<LendingSnapshot[]>, onChainRewards, marketQuery],
+        (marketRates, lendingSnapshots, marketOnChainRewards) =>
+          buildSupplyRate({
+            supplyApy: marketRates?.lendApy,
+            rebasingYieldApy: getLatestSnapshotValue(
               lendingSnapshots,
-              campaigns: supplyCampaigns,
-              blockchainId,
-              category: RATE_CATEGORY,
-            }),
-        )
-      : undefined,
-    availableLiquidity: combineQueries(
-      [borrowUsdRate, capAndAvailable, marketQuery],
-      (borrowUsdRate, { available, totalAssets }) => ({
-        value: available,
-        max: totalAssets,
-        notional: maybes([available, borrowUsdRate], ([liq, rate]) => decimalMultiply(liq, rate)),
-      }),
+              snapshot => snapshot.borrowedToken.rebasingYield,
+            ),
+            marketOnChainRewards,
+            lendingSnapshots,
+            campaigns: supplyCampaigns,
+            blockchainId,
+            category: RATE_CATEGORY,
+          }),
+      )
+    : undefined
+  const availableLiquidity = combineQueries(
+    [borrowUsdRate, capAndAvailable, marketQuery],
+    (borrowUsdRate, { available, totalAssets }) => ({
+      value: available,
+      max: totalAssets,
+      notional: maybes([available, borrowUsdRate], ([liq, rate]) => decimalMultiply(liq, rate)),
+    }),
+  )
+  const useApiMarket = !!apiMarket.data && !marketQuery.data
+  const {
+    averageRate: averageApr,
+    averageTotalBorrowRate: totalAverageBorrowApr,
+    isLoading,
+    error,
+  } = useSnapshots(apiMarket.data, { type: MarketRateType.Borrow, category: RATE_CATEGORY }, useApiMarket)
+
+  return {
+    borrowRate: fallbackQ(
+      !useApiMarket && borrowRate,
+      mapQuery(apiMarket, d => ({
+        rate: d.rates.borrowApr,
+        averageRate: averageApr,
+        averageCategory: 'llamalend.marketList.rate',
+        rebasingYield: d.rates.borrowApr,
+        totalBorrowRate: d.rates.borrowTotalApr,
+        totalAverageBorrowRate: totalAverageBorrowApr,
+        extraRewards: d.rewards,
+      })),
+    ),
+    supplyRate,
+    // supplyRate: fallbackQ(
+    //   !useApiMarket && supplyRate,
+    //   mapQuery(apiMarket, d => d.rates.lendApy),
+    // ),
+    availableLiquidity: fallbackQ(
+      !useApiMarket && availableLiquidity,
+      combineQueries([apiMarket, borrowUsdRate], (d, rate) => ({
+        value: d.liquidityUsd / rate,
+        max: d.debtCeiling,
+        notional: d.liquidityUsd,
+      })),
     ),
   }
 }

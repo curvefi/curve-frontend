@@ -4,9 +4,9 @@ import { ethAddress } from 'viem'
 import { LLAMMALEND_V2_DATE } from '@/llamalend/constants'
 import { calculateMarketSolvency, createGetBadDebtMarket, lowSolvencyDeprecatedMessage } from '@/llamalend/llama.utils'
 import { aprToApy, computeTotalRate, getSupplyApyMetrics } from '@/llamalend/rates.utils'
-import { type Chain } from '@curvefi/prices-api'
+import { type Chain, getBlockchainId } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
-import { assert, recordValues } from '@primitives/objects.utils'
+import { assert, maybe, recordValues } from '@primitives/objects.utils'
 import type { QueriesResults } from '@tanstack/react-query'
 import { useQueries } from '@tanstack/react-query'
 import { type CampaignRewards, combineCampaigns } from '@ui-kit/entities/campaigns'
@@ -16,6 +16,7 @@ import { useStateTimeout } from '@ui-kit/hooks/useStateTimeout'
 import { combineQueriesMeta, PartialQueryResult, RESOLVED_QUERY_RESULT } from '@ui-kit/lib'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
 import { type ExtraIncentive, LlamaMarketType, LlamaMarketVersion, MarketRateType } from '@ui-kit/types/market'
+import { useMappedQuery } from '@ui-kit/types/util'
 import { DEPRECATED_LLAMAS, NO_LEVERAGE_LEND } from '../../llama-markets.constants'
 import { getBadDebtLendMarketsOptions, getBadDebtMintMarketsOptions } from '../market/market-bad-debt.query'
 import { getFavoriteMarketOptions } from './favorite-markets'
@@ -439,3 +440,18 @@ export const useLlamaMarkets = (
     ),
   })
 }
+
+export const useLlamaMarket = (
+  { market, network, ...params }: LlamaMarketParams & { market: string; network: string },
+  enabled?: boolean,
+) =>
+  useMappedQuery(
+    useLlamaMarkets(params, enabled),
+    useCallback(
+      data =>
+        maybe(getBlockchainId(network), chain =>
+          data?.markets.find(m => m.chain === chain && m.controllerAddress === market),
+        ),
+      [network, market],
+    ),
+  )
