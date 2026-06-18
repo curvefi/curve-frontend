@@ -52,7 +52,6 @@ export const POINTS_CAMPAIGNS_COLUMNS = [
         <ExternalLink
           href={getValue()}
           label={
-            // Avoid need of useIsMobile hook
             <Box component="span" sx={{ display: { mobile: 'none', tablet: 'inline' } }}>
               {t`To campaign`}
             </Box>
