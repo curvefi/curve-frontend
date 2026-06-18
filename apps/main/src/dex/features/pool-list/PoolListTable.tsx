@@ -16,7 +16,9 @@ import { PoolListFilterChips } from './components/PoolListFilterChips'
 import { PoolListMobileExpandedPanel } from './components/PoolListMobileExpandedPanel'
 import { PoolListFilterDrawer } from './drawers/PoolListFilterDrawer'
 import { PoolListSortDrawer } from './drawers/PoolListSortDrawer'
-import { POOL_LIST_PAGE_SIZE, usePoolListUrlState } from './hooks/usePoolListUrlState'
+import { usePoolListFilters } from './hooks/usePoolListFilters'
+import { POOL_LIST_PAGE_SIZE, usePoolListPagination } from './hooks/usePoolListPagination'
+import { usePoolListSorting } from './hooks/usePoolListSorting'
 import { usePoolListUserHasPosition } from './hooks/usePoolListUserHasPosition'
 import { usePoolListVisibilitySettings } from './hooks/usePoolListVisibilitySettings'
 import { getPoolListItem } from './poolList.utils'
@@ -27,23 +29,13 @@ const EMPTY: never[] = []
 export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
   const isMobile = useIsMobile()
   const hasUserPoolPosition = usePoolListUserHasPosition(network.chainId)
-  const {
-    activeFilterCount,
-    onSearch,
-    onPaginationChange,
-    onSortingChange,
-    pagination,
-    poolType,
-    poolTypeFilters,
-    resetFilters,
-    searchText,
-    setPoolType,
-    sortBy,
-    sortDirection,
-    sortField,
-    sorting,
-    sortOptions,
-  } = usePoolListUrlState(network)
+  const { onPaginationChange, pagination, updateQueryAndResetPage } = usePoolListPagination()
+  const { activeFilterCount, onSearch, poolType, poolTypeFilters, resetFilters, searchText, setPoolType } =
+    usePoolListFilters(updateQueryAndResetPage)
+  const { onSortingChange, sortBy, sortDirection, sortField, sorting, sortOptions } = usePoolListSorting(
+    network.isLite,
+    updateQueryAndResetPage,
+  )
 
   const {
     data: poolList,

@@ -1,7 +1,7 @@
 import Grid from '@mui/material/Grid'
 import { GridChip } from '@ui-kit/shared/ui/DataTable/chips/GridChip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { PoolListPoolType } from '../hooks/usePoolListUrlState'
+import type { PoolListPoolType } from '../hooks/usePoolListFilters'
 
 const { Spacing } = SizesAndSpaces
 

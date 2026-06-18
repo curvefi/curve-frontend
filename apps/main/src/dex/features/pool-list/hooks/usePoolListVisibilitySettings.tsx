@@ -5,7 +5,7 @@ import type { MigrationOptions } from '@ui-kit/hooks/useStoredState'
 import { useVisibilitySettings } from '@ui-kit/shared/ui/DataTable/hooks/useVisibilitySettings'
 import type { VisibilityGroup } from '@ui-kit/shared/ui/DataTable/visibility.types'
 import { POOL_LIST_COLUMNS, POOL_LIST_COLUMN_OPTIONS, PoolListColumnId, type PoolListColumnVariant } from '../columns'
-import type { PoolListSorting } from './usePoolListUrlState'
+import type { PoolListSorting } from './usePoolListSorting'
 
 const migration: MigrationOptions<Record<PoolListColumnVariant, VisibilityGroup<PoolListColumnId>[]>> = {
   version: 1,
