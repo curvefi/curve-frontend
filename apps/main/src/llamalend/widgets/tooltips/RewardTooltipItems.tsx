@@ -1,7 +1,7 @@
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
 import { Stack } from '@mui/material'
 import Link from '@mui/material/Link'
-import { CampaignRewards } from '@ui-kit/entities/campaigns'
+import { CampaignRewards, extraRewardType } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -43,11 +43,18 @@ export const RewardsTooltipItems = ({
           {formatNumber(percentage, 'percent.rate')}
         </TooltipItem>
       ))}
-      {extraRewards.map(
-        (r, i) =>
+      {extraRewards.map((r, i) => {
+        const rewardType = extraRewardType(r)
+
+        return (
           r.action === tooltipType && (
             // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
-            <TooltipItem variant="subItem" key={i} title={t`Points`} imageId={r.platformImageId}>
+            <TooltipItem
+              variant="subItem"
+              key={i}
+              title={rewardType === 'apr' ? t`APR` : t`Points`}
+              imageId={r.platformImageId}
+            >
               <Stack
                 component={Link}
                 href={r.dashboardLink}
@@ -63,12 +70,13 @@ export const RewardsTooltipItems = ({
                 }}
               >
                 {r.multiplier}
-                {typeof r.multiplier === 'number' ? 'x' : ''}
+                {rewardType === 'points' ? 'x' : ''}
                 <ArrowOutwardIcon />
               </Stack>
             </TooltipItem>
-          ),
-      )}
+          )
+        )
+      })}
     </>
   )
 }

@@ -70,7 +70,7 @@ export const MarketSupplyRateTooltipContent = ({
         {hasIncentives && (
           <TooltipItems secondary>
             <RewardsTooltipItems
-              title={t`Lending incentives APY*`}
+              title={t`Supplying incentives`}
               tooltipType="supply"
               extraRewards={extraRewards}
               extraIncentives={extraIncentives}

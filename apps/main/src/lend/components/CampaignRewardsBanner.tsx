@@ -4,7 +4,7 @@ import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
 import { CampaignBannerComp } from '@ui/CampaignRewards/CampaignBannerComp'
-import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
+import { extraRewardType, useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 
 type CampaignRewardsBannerProps = {
@@ -23,17 +23,25 @@ export const CampaignRewardsBanner = ({ chainId, market }: CampaignRewardsBanner
     address: market?.addresses.controller as Address | undefined,
   })
 
+  const action =
+    supplyCampaigns.length && borrowCampaigns.length
+      ? t`Suppling and borrowing`
+      : supplyCampaigns.length
+        ? t`Supplying`
+        : borrowCampaigns.length
+          ? t`Borrowing`
+          : ''
+
+  const rewardTypes = supplyCampaigns.concat(borrowCampaigns).map(campaign => extraRewardType(campaign))
+  const hasApr = rewardTypes.includes('apr')
+  const hasPoints = rewardTypes.includes('points') || rewardTypes.includes('symbol')
+  const rewardType = hasApr && hasPoints ? t`yield / points` : hasApr ? t`yield` : hasPoints ? t`points` : ''
+
   return (
     supplyCampaigns.length + borrowCampaigns.length > 0 && (
       <CampaignBannerComp
         campaignRewards={[...supplyCampaigns, ...borrowCampaigns]}
-        message={
-          supplyCampaigns.length && borrowCampaigns.length
-            ? t`Supplying and borrowing in this pool earns points!`
-            : supplyCampaigns
-              ? t`Supplying in this pool earns points!`
-              : t`Borrowing in this pool earns points!`
-        }
+        message={t`${action} in this market earns ${rewardType}`}
       />
     )
   )

@@ -58,6 +58,9 @@ const ACTIONS: Record<MerklAction, RewardsAction> = {
   LEND: 'supply',
 }
 
+/** New campaigns / markets might temporarily have a huge APR as things are being bootstrapped. This number has been copied from Merkl's own website. */
+const MAX_APR = 10000
+
 const opportunityToCampaignRewards = (opp: MerklOpportunity): CampaignRewards[] => {
   const network = opp.chain.name.toLocaleLowerCase()
 
@@ -78,7 +81,9 @@ const opportunityToCampaignRewards = (opp: MerklOpportunity): CampaignRewards[] 
         lock: false, // Merkl doesn't offer 'locked' rewards.
 
         // Merkl campaigns don't have a multiplier, just a token. And APR is only available for the whole opportunity.
-        multiplier: opp.apr ? formatNumber(opp.apr, 'percent.rate') : token.symbol,
+        multiplier: opp.apr
+          ? `${opp.apr > MAX_APR ? '>' : ''} ${formatNumber(Math.min(opp.apr, MAX_APR), 'percent.rate')}`
+          : token.symbol,
 
         tags: ['tokens'], // Merkl rewards are tokens only as far as I know; no points.
         action: ACTIONS[opp.action],
