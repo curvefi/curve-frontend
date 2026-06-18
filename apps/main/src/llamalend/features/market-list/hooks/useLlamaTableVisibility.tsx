@@ -43,7 +43,7 @@ export const getLlamaMarketsColumnVariant = (
     : 'hasPositions' // show the general market table, for users with positions
 
 const migration: MigrationOptions<Record<LlamaColumnVariant, VisibilityGroup<LlamaMarketColumnId>[]>> = {
-  version: 5,
+  version: 6,
   migrate: (oldValue, initialValue) =>
     mapRecord(initialValue, (variant, initialGroups) => mergeVisibilityGroups(oldValue[variant], initialGroups)),
 }

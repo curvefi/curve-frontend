@@ -13,7 +13,7 @@ type CampaignRewardsCompProps = {
 }
 
 export const RewardsCompSmall = ({ rewardsPool, highContrast, mobile, banner }: CampaignRewardsCompProps) => {
-  const { platform, reward, platformImageId } = rewardsPool
+  const { platform, reward, platformImageId, action } = rewardsPool
 
   return (
     <Tooltip
@@ -27,6 +27,7 @@ export const RewardsCompSmall = ({ rewardsPool, highContrast, mobile, banner }: 
         <TokenIcon src={platformImageId} alt={platform} width={16} height={16} />
         {reward && (
           <Multiplier highContrast={highContrast}>
+            {action}{' '}
             {reward.type === 'apr'
               ? formatNumber(aprToApy(reward.value), 'percent.rate')
               : formatNumber(reward.value, 'multiplier')}
