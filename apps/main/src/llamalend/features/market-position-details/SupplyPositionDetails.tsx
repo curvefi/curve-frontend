@@ -11,6 +11,7 @@ import {
   getLatestSnapshotValue,
   getSupplyApyAverageMetrics,
   getSupplyApyMetrics,
+  sumCampaignsApy,
   sumOnChainExtraIncentivesApy,
   toNumberOrNull,
 } from '@/llamalend/rates.utils'
@@ -86,6 +87,7 @@ export const SupplyPositionDetails = ({ chainId, market, userAddress, blockchain
         rebasingYieldApy: rebasingYield,
         crvBoostApr: crvRates,
         extraIncentivesApy: sumOnChainExtraIncentivesApy(rewardsApr),
+        campaignsApy: sumCampaignsApy(campaigns),
         userSupplyBoost,
       }),
   )

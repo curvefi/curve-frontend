@@ -68,7 +68,7 @@ export const RewardsTooltipItems = ({
                 }}
               >
                 {r.reward?.type === 'apr'
-                  ? formatNumber(aprToApy(r.reward.value), 'percent.rate')
+                  ? `${tooltipType === 'supply' ? '+' : ''}${formatNumber(tooltipType === 'supply' ? aprToApy(r.reward.value) : -r.reward.value, 'percent.rate')}`
                   : formatNumber(r.reward?.value, 'multiplier')}
                 <ArrowOutwardIcon />
               </Stack>
