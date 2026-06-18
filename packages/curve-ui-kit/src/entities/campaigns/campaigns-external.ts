@@ -1,15 +1,15 @@
 import { groupBy, inRange } from 'lodash'
-import type { Address } from '@primitives/address.utils'
 import { mapRecord } from '@primitives/objects.utils'
 import { CURVE_ASSETS_URL } from '@ui/utils'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model'
 import { campaigns } from '@external-rewards'
+import type { CampaignRewards } from './types'
 
 const REWARDS = groupBy(
   // Can't use Object.groupBy until we support ES2024
   campaigns.flatMap(campaign =>
-    campaign.pools.map(pool => ({
+    campaign.pools.map<CampaignRewards>(pool => ({
       // Campaign specific properties
       campaignName: campaign.campaignName,
       platform: campaign.platform,
@@ -18,15 +18,15 @@ const REWARDS = groupBy(
 
       // Pool specific properties
       ...pool,
-      address: pool.address.toLocaleLowerCase() as Address,
+      address: pool.address.toLocaleLowerCase(),
       description: pool.description !== 'null' ? pool.description : campaign.description,
       lock: pool.lock === 'true',
-      // Remove possible 'x' suffix and convert to number if numeric, otherwise keep as string
-      multiplier: (() => {
+      // Remove possible 'x' suffix and convert to number if numeric, otherwise keep as symbol string
+      ...(() => {
         if (!pool.multiplier || pool.multiplier.trim() === '') return undefined
         const withoutSuffix = pool.multiplier.replace(/x$/i, '')
         const numericValue = Number(withoutSuffix)
-        return isNaN(numericValue) ? pool.multiplier : numericValue
+        return isNaN(numericValue) ? { symbol: pool.multiplier } : { reward: { type: 'points', value: numericValue } }
       })(),
       ...(+pool.campaignStart &&
         +pool.campaignEnd && {

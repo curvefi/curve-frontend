@@ -3,8 +3,9 @@ import { ChainId } from '@/lend/types/lend.types'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
+import { notFalsy } from '@primitives/objects.utils'
 import { CampaignBannerComp } from '@ui/CampaignRewards/CampaignBannerComp'
-import { extraRewardType, useCampaignsByAddress } from '@ui-kit/entities/campaigns'
+import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 
 type CampaignRewardsBannerProps = {
@@ -32,9 +33,9 @@ export const CampaignRewardsBanner = ({ chainId, market }: CampaignRewardsBanner
           ? t`Borrowing`
           : ''
 
-  const rewardTypes = supplyCampaigns.concat(borrowCampaigns).map(campaign => extraRewardType(campaign))
+  const rewardTypes = notFalsy(...supplyCampaigns.concat(borrowCampaigns).map(campaign => campaign.reward?.type))
   const hasApr = rewardTypes.includes('apr')
-  const hasPoints = rewardTypes.includes('points') || rewardTypes.includes('symbol')
+  const hasPoints = rewardTypes.includes('points')
   const rewardType = hasApr && hasPoints ? t`yield / points` : hasApr ? t`yield` : hasPoints ? t`points` : ''
 
   return (

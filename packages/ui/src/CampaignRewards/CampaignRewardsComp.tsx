@@ -3,6 +3,7 @@ import { TooltipMessage } from '@ui/CampaignRewards/TooltipMessage'
 import { Icon } from '@ui/Icon'
 import { TooltipButton as Tooltip } from '@ui/Tooltip/TooltipButton'
 import type { CampaignRewards } from '@ui-kit/entities/campaigns'
+import { aprToApy, formatNumber } from '@ui-kit/utils'
 
 type CampaignRewardsCompProps = {
   rewardsPool: CampaignRewards
@@ -12,7 +13,7 @@ type CampaignRewardsCompProps = {
 }
 
 export const RewardsCompSmall = ({ rewardsPool, highContrast, mobile, banner }: CampaignRewardsCompProps) => {
-  const { platform, multiplier, platformImageId } = rewardsPool
+  const { platform, reward, platformImageId } = rewardsPool
 
   return (
     <Tooltip
@@ -24,10 +25,11 @@ export const RewardsCompSmall = ({ rewardsPool, highContrast, mobile, banner }: 
     >
       <Container highContrast={highContrast}>
         <TokenIcon src={platformImageId} alt={platform} width={16} height={16} />
-        {multiplier && (
+        {reward && (
           <Multiplier highContrast={highContrast}>
-            {multiplier}
-            {typeof multiplier === 'number' ? 'x' : ''}
+            {reward.type === 'apr'
+              ? formatNumber(aprToApy(reward.value), 'percent.rate')
+              : formatNumber(reward.value, 'multiplier')}
           </Multiplier>
         )}
         {rewardsPool.lock && <StyledIcon size={16} name="Locked" $highContrast={highContrast} />}
