@@ -47,4 +47,10 @@ export const With2Buttons: Story = {
   },
 }
 
+export const Loading: Story = {
+  args: {
+    isLoading: true,
+  },
+}
+
 export default meta

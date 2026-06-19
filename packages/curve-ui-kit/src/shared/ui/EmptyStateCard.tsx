@@ -12,7 +12,12 @@ import { ExternalLink } from './ExternalLink'
 
 const { Spacing, IconSize, MaxWidth, LineHeight } = SizesAndSpaces
 
-type EmptyStateButtonProps = ButtonProps & { label?: ReactNode; isConnectWalletButton?: boolean; testId?: string }
+type EmptyStateButtonProps = ButtonProps & {
+  label?: ReactNode
+  // renders the empty state action as a wallet connect button instead of a regular MUI button.
+  isConnectWalletButton?: boolean
+  testId?: string
+}
 
 type EmptyStateCardProps = {
   title?: ReactNode
@@ -23,14 +28,12 @@ type EmptyStateCardProps = {
   secondaryButton?: EmptyStateButtonProps
 }
 
-const ICON_SIZE: Record<NonNullable<EmptyStateCardProps['size']>, Responsive> = {
-  sm: IconSize.lg,
-  md: IconSize.xxl,
-}
-
-const BUTTON_SIZE: Record<NonNullable<EmptyStateCardProps['size']>, ButtonProps['size']> = {
-  sm: 'small',
-  md: 'medium',
+const SIZE_CONFIG: Record<
+  NonNullable<EmptyStateCardProps['size']>,
+  { icon: Responsive; button: ButtonProps['size'] }
+> = {
+  sm: { icon: IconSize.lg, button: 'small' },
+  md: { icon: IconSize.xxl, button: 'medium' },
 }
 
 const Skeletons = () => (
@@ -50,7 +53,7 @@ const EmptyStateButton = ({
   const sharedProps = {
     ...buttonProps,
     variant: 'outlined',
-    size: BUTTON_SIZE[size],
+    size: SIZE_CONFIG[size].button,
     href,
     sx: applySxProps({ alignSelf: 'center' }, buttonSx),
     ...(testId && { 'data-testid': testId }),
@@ -80,7 +83,7 @@ export const EmptyStateCard = ({
       maxWidth: MaxWidth.emptyStateCard,
     }}
   >
-    <LlamaIcon sx={{ width: ICON_SIZE[size], height: ICON_SIZE[size] }} />
+    <LlamaIcon sx={{ width: SIZE_CONFIG[size].icon, height: SIZE_CONFIG[size].icon }} />
     {isLoading ? (
       <Skeletons />
     ) : (
