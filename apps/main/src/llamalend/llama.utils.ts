@@ -93,7 +93,10 @@ export const canRepayFromUserCollateral = (market: LlamaMarketTemplate) =>
 export const hasVault = (market: LlamaMarketTemplate) => market instanceof LendMarketTemplate && 'vault' in market
 
 export const hasZapV2 = (market: LlamaMarketTemplate) =>
-  isZapV2Enabled() && market instanceof LendMarketTemplate && market.leverageZapV2.hasLeverage()
+  isZapV2Enabled() &&
+  market instanceof LendMarketTemplate &&
+  market.leverageZapV2.hasLeverage() &&
+  market.version === 'v1'
 
 export const isRouterRequired = (
   type: 'zapV2' | 'V0' | 'V1' | 'V2' | 'deleverage' | 'unleveragedMint' | 'unleveragedLend' | 'unleveraged',
