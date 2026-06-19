@@ -2,13 +2,18 @@ import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { DEFAULT_INCREASING_LENGTH } from '@ui-kit/hooks/useIncreasingLength'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { useMarketComposition } from '../../hooks/useMarketComposition'
-import { MARKET_COMPOSITION_COLUMNS, type MarketCompositionRow } from './columns/columns.definitions'
+import {
+  MARKET_COMPOSITION_COLUMNS,
+  MARKET_COMPOSITION_MOBILE_COLUMN_VISIBILITY,
+  type MarketCompositionRow,
+} from './columns/columns.definitions'
 import { FooterRow } from './FooterRow'
 
 export const MarketComposition = ({
@@ -22,6 +27,7 @@ export const MarketComposition = ({
   poolId: string
   pricesApiPoolData?: PricesApiPool
 }) => {
+  const isMobile = useIsMobile()
   const { isLoading, rows, totalUsd } = useMarketComposition({
     chainId,
     poolDataCacheOrApi,
@@ -31,6 +37,7 @@ export const MarketComposition = ({
   const table = useTable({
     data: rows,
     columns: MARKET_COMPOSITION_COLUMNS,
+    state: { columnVisibility: isMobile ? MARKET_COMPOSITION_MOBILE_COLUMN_VISIBILITY : undefined },
     ...getTableOptions(rows),
   })
 
@@ -43,7 +50,11 @@ export const MarketComposition = ({
         disableStickyHeader
         increasingLengthOptions={{ ...DEFAULT_INCREASING_LENGTH, maxLength: DEFAULT_INCREASING_LENGTH.initialLength }}
         emptyState={<EmptyStateRow table={table} size="sm">{t`No market composition found.`}</EmptyStateRow>}
-        footerRow={rows.length > 0 && <FooterRow isLoading={isLoading} totalUsd={totalUsd} />}
+        footerRow={
+          rows.length > 0 && (
+            <FooterRow visibleColumns={table.getVisibleLeafColumns()} isLoading={isLoading} totalUsd={totalUsd} />
+          )
+        }
       />
     </Stack>
   )

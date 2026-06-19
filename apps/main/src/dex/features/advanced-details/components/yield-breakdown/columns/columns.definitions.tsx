@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { maybe } from '@primitives/objects.utils'
-import { createColumnHelper } from '@tanstack/react-table'
+import { createColumnHelper, type VisibilityState } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import type { TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
@@ -28,6 +28,12 @@ const headers = {
   [YieldBreakdownColumnId.Price]: t`Price`,
   [YieldBreakdownColumnId.Apy]: t`APY`,
 } as const
+
+export const YIELD_BREAKDOWN_MOBILE_COLUMN_VISIBILITY = {
+  [YieldBreakdownColumnId.Source]: true,
+  [YieldBreakdownColumnId.Price]: false,
+  [YieldBreakdownColumnId.Apy]: true,
+} satisfies VisibilityState
 
 export const YIELD_BREAKDOWN_COLUMNS = [
   columnHelper.accessor('source', {
@@ -61,7 +67,7 @@ export const YIELD_BREAKDOWN_COLUMNS = [
               icon={null}
               iconPosition="right"
               primary={formatNumber(getValue(), 'percent.rate')}
-              secondary={maybe(row.original.apySecondary, value => t`Base ${formatNumber(value, 'percent.rate')}`)}
+              secondary={maybe(row.original.apySecondary, value => t`Unboosted ${formatNumber(value, 'percent.rate')}`)}
             />
           </Box>
         </Tooltip>
