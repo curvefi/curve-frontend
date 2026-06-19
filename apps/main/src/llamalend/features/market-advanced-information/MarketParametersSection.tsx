@@ -1,3 +1,4 @@
+import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
@@ -6,6 +7,7 @@ import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import type { QueryProp } from '@ui-kit/types/util'
 import { MarketLoanParameters } from './MarketLoanParameters'
 import { MarketIdRow, MarketPricesRows } from './MarketParameterRows'
 
@@ -15,14 +17,15 @@ type MarketParametersProps = {
   chainId: IChainId
   marketId: string | undefined
   marketType: LlamaMarketType
+  apiMarket: QueryProp<LlamaMarket>
 }
 
-export const MarketParametersSection = ({ chainId, marketId, marketType }: MarketParametersProps) => (
+export const MarketParametersSection = ({ chainId, marketId, marketType, apiMarket }: MarketParametersProps) => (
   <Stack>
     <Card size="inline">
       <CardHeader title={t`Parameters`} />
       <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
-        <MarketLoanParameters chainId={chainId} marketId={marketId} />
+        <MarketLoanParameters chainId={chainId} marketId={marketId} apiMarket={apiMarket} />
       </CardContent>
     </Card>
 
@@ -33,6 +36,7 @@ export const MarketParametersSection = ({ chainId, marketId, marketType }: Marke
           chainId={chainId}
           marketId={marketId}
           enablePricePerShare={marketType === LlamaMarketType.Lend}
+          apiMarket={apiMarket}
         />
       </CardContent>
     </Card>
@@ -40,7 +44,7 @@ export const MarketParametersSection = ({ chainId, marketId, marketType }: Marke
     <Card size="inline">
       <CardHeader title={t`Market`} />
       <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
-        <MarketIdRow marketId={marketId} />
+        <MarketIdRow marketId={marketId ?? apiMarket.data?.controllerAddress} />
       </CardContent>
     </Card>
   </Stack>

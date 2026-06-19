@@ -1,5 +1,6 @@
 import { formatCollateralNotional } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import {
   MaxLeverageTooltip,
   SolvencyTooltip,
@@ -12,7 +13,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { mapQuery } from '@ui-kit/types/util'
+import { mapQuery, type QueryProp } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 import { useAdvancedDetailsData } from './hooks/useAdvancedDetailsData'
 
@@ -23,15 +24,17 @@ type AdvancedDetailsProps = {
   marketId: string | undefined | null
   market: LlamaMarketTemplate | undefined
   marketType: LlamaMarketType
+  apiMarket: QueryProp<LlamaMarket>
 }
 
-export const AdvancedDetails = ({ chainId, marketId, market, marketType }: AdvancedDetailsProps) => {
+export const AdvancedDetails = ({ chainId, marketId, market, marketType, apiMarket }: AdvancedDetailsProps) => {
   const { collateral, availableLiquidity, maxLeverage, solvency, totalBorrowers, averageHealth } =
     useAdvancedDetailsData({
       chainId,
       market,
       marketId,
       marketType,
+      apiMarket,
     })
   const isLendMarket = marketType === LlamaMarketType.Lend
 

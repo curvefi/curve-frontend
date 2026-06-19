@@ -59,6 +59,10 @@ export type LlamaMarket = {
   assets: Assets
   version: LlamaMarketVersion
   maxLtv: number
+  loans: number
+  oraclePrice?: number
+  monetaryPolicyAddress?: Address
+  oracleAddress?: Address
   utilizationPercent: number
   liquidityUsd: number
   tvl: number
@@ -128,6 +132,10 @@ const convertLendingVault = (
     maxLtv,
     createdAt,
     version,
+    nLoans,
+    priceOracle,
+    policy,
+    oracle,
   }: LendingVault,
   favoriteMarkets: Set<Address>,
   campaigns: Record<string, CampaignRewards[]> = {},
@@ -174,6 +182,10 @@ const convertLendingVault = (
       },
     },
     maxLtv,
+    loans: nLoans,
+    oraclePrice: priceOracle,
+    monetaryPolicyAddress: policy,
+    oracleAddress: oracle,
     utilizationPercent: totalAssetsUsd && (100 * totalDebtUsd) / totalAssetsUsd,
     solvencyPercent,
     badDebtUsd,
@@ -240,6 +252,7 @@ const convertMintMarket = (
     borrowedUsd,
     borrowable,
     debtCeiling,
+    loans,
     leverage,
     chain,
     maxLtv,
@@ -289,6 +302,7 @@ const convertMintMarket = (
       },
     },
     maxLtv,
+    loans,
     utilizationPercent: Math.min(100, (100 * borrowed) / debtCeiling), // debt ceiling may be lowered, so cap at 100%
     // solvency is only relevant for lending markets; if mint markets have bad debt that's a protocol problem, not a user problem
     solvencyPercent: null,

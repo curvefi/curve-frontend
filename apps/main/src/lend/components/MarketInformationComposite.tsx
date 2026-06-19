@@ -82,20 +82,25 @@ export const MarketInformationComposite = ({ pageProps, rateType, previewPrices 
         marketId={marketId}
         apiMarket={apiMarket}
       />
-      {!apiMarket.data && (
-        <Card size="small">
-          <CardHeader title={t`Advanced Details`} />
-          <CardContent component={Stack}>
-            <AdvancedDetails chainId={rChainId} marketId={marketId} market={market} marketType={LlamaMarketType.Lend} />
-            <MarketInfoLayout
-              chainId={rChainId}
-              marketType={LlamaMarketType.Lend}
-              market={market}
-              network={networks[rChainId]}
-            />
-          </CardContent>
-        </Card>
-      )}
+      <Card size="small">
+        <CardHeader title={t`Advanced Details`} />
+        <CardContent component={Stack}>
+          <AdvancedDetails
+            chainId={rChainId}
+            marketId={marketId}
+            market={market}
+            marketType={LlamaMarketType.Lend}
+            apiMarket={apiMarket}
+          />
+          <MarketInfoLayout
+            chainId={rChainId}
+            marketType={LlamaMarketType.Lend}
+            market={market}
+            apiMarket={apiMarket}
+            network={networks[rChainId]}
+          />
+        </CardContent>
+      </Card>
 
       <MarketFaq />
     </Stack>

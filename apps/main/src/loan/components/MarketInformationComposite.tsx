@@ -63,25 +63,25 @@ export const MarketInformationComposite = ({
       />
       <CrvUsdPriceChart />
 
-      {!apiMarket.data && (
-        <Card size="small">
-          <CardHeader title={t`Advanced Details`} />
-          <CardContent component={Stack}>
-            <AdvancedDetails
-              chainId={chainId}
-              marketId={marketId}
-              market={market ?? undefined}
-              marketType={LlamaMarketType.Mint}
-            />
-            <MarketInfoLayout
-              chainId={chainId}
-              marketType={LlamaMarketType.Mint}
-              market={market ?? undefined}
-              network={networks[chainId]}
-            />
-          </CardContent>
-        </Card>
-      )}
+      <Card size="small">
+        <CardHeader title={t`Advanced Details`} />
+        <CardContent component={Stack}>
+          <AdvancedDetails
+            chainId={chainId}
+            marketId={marketId}
+            market={market ?? undefined}
+            marketType={LlamaMarketType.Mint}
+            apiMarket={apiMarket}
+          />
+          <MarketInfoLayout
+            chainId={chainId}
+            marketType={LlamaMarketType.Mint}
+            market={market ?? undefined}
+            apiMarket={apiMarket}
+            network={networks[chainId]}
+          />
+        </CardContent>
+      </Card>
 
       <MarketFaq />
     </Stack>
