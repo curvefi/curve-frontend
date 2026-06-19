@@ -79,8 +79,8 @@ const opportunityToCampaignRewards = (opp: MerklOpportunity) => {
         steps: opp.howToSteps,
         lock: false, // Merkl doesn't offer 'locked' rewards.
 
-        // Merkl campaigns don't have a multiplier, just a token. And APR is only available for the whole opportunity.
-        reward: { type: 'apr', value: Math.min(opp.apr, MAX_APR) },
+        // Merkl campaigns might be a points campaign or just a token, but those campaigns report an APR of 0 as their only distinction
+        reward: opp.apr ? { type: 'apr', value: Math.min(opp.apr, MAX_APR) } : undefined,
         symbol: token.symbol,
 
         tags: ['tokens'], // Merkl rewards are tokens only as far as I know; no points.
