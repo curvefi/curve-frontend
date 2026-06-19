@@ -19,11 +19,7 @@ export const PointsCampaigns = ({
     chainId,
     poolDataCacheOrApi,
   })
-  const table = useTable({
-    data: rows,
-    columns: POINTS_CAMPAIGNS_COLUMNS,
-    ...getTableOptions(rows),
-  })
+  const table = useTable({ data: rows, columns: POINTS_CAMPAIGNS_COLUMNS, ...getTableOptions(rows) })
 
   return (
     rows.length > 0 && (

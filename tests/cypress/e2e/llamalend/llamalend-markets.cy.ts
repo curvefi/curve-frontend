@@ -112,8 +112,8 @@ testCases.forEach(([width, height, breakpoint]) => {
       cy.get(`[data-testid="${element}"]`).should('not.exist')
     })
 
-    it('should display Borrow APR by default', () => {
-      const borrowColumnId = LlamaMarketColumnId.BorrowRate
+    it('should display Net Borrow APR by default', () => {
+      const borrowColumnId = LlamaMarketColumnId.NetBorrowRate
 
       if (breakpoint === 'mobile') {
         // On mobile, expand the first row and check the metric is visible in the expanded panel
@@ -152,7 +152,7 @@ testCases.forEach(([width, height, breakpoint]) => {
         // note: not possible currently to sort ascending
         return cy.get(`[data-testid="metric-${utilizationColumnId}"]`).contains('99%', LOAD_TIMEOUT)
       } else {
-        cy.get(`[data-testid="data-table-cell-${LlamaMarketColumnId.BorrowRate}"]`).first().contains('%')
+        cy.get(`[data-testid="data-table-cell-${LlamaMarketColumnId.NetBorrowRate}"]`).first().contains('%')
         cy.get(`[data-testid="data-table-header-${utilizationColumnId}"]`).click()
         cy.get(`[data-testid="data-table-cell-${utilizationColumnId}"]`).first().contains('99%', LOAD_TIMEOUT)
         cy.get(`[data-testid="data-table-header-${utilizationColumnId}"]`).click()

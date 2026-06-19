@@ -1,5 +1,5 @@
 name: CI
-on: [ push ]
+on: [push]
 env:
   DO_NOT_TRACK: 1
   VERCEL_ALLOW_NODEJS_24: 1
@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          fetch-depth: 0  # needed to diff yarn.lock against the base branch commit
+          fetch-depth: 0 # needed to diff yarn.lock against the base branch commit
       - uses: actions/setup-node@v6
         with:
           node-version: 24
@@ -62,7 +62,7 @@ jobs:
         uses: ./.github/actions/restore-cache
       - run: yarn set version stable
       - run: yarn install --immutable
-      - run: yarn build  # make sure the build works + uploads source maps to Sentry
+      - run: yarn build # make sure the build works + uploads source maps to Sentry
       - run: yarn test
         env:
           ENSO_API_KEY: ${{ secrets.ENSO_API_KEY }}
@@ -72,8 +72,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [ chrome, firefox, electron ]
-        count: [ 1 ]
+        browser: [chrome, firefox, electron]
+        count: [1]
     name: Cypress component tests in ${{ matrix.browser }} ${{ matrix.count }}
     timeout-minutes: 15
     runs-on: ubuntu-latest
@@ -87,7 +87,7 @@ jobs:
         uses: ./.github/actions/restore-cache
       - run: yarn set version stable
       - run: yarn install --immutable
-      - name: Optimize dependencies  # fix 'Failed to fetch dynamically imported module' when vite optimizes during tests
+      - name: Optimize dependencies # fix 'Failed to fetch dynamically imported module' when vite optimizes during tests
         run: yarn vite optimize --config vite.config.ts
         working-directory: tests
 
@@ -125,7 +125,7 @@ jobs:
         uses: ./.github/actions/restore-cache
       - run: yarn set version stable
       - run: yarn install --immutable
-      - name: Optimize dependencies  # fix 'Failed to fetch dynamically imported module' when vite optimizes during tests
+      - name: Optimize dependencies # fix 'Failed to fetch dynamically imported module' when vite optimizes during tests
         run: yarn vite optimize --config vite.config.ts
         working-directory: tests
 
@@ -164,8 +164,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [ chrome, firefox, electron ]
-        count: [ 1 ]
+        browser: [chrome, firefox, electron]
+        count: [1]
         include:
           - browser: chrome
             count: 2
@@ -193,9 +193,13 @@ jobs:
         run: yarn start 2>&1 | tee ../../e2e-dev-${{ matrix.browser }}-${{ matrix.count }}.log &
         working-directory: apps/main
 
-      - name: Start api server
+      - name: Start router api server
         run: yarn dev 2>&1 | tee ../../e2e-api-${{ matrix.browser }}-${{ matrix.count }}.log &
         working-directory: apps/router-api
+
+      - name: Start merkl api server
+        run: yarn dev 2>&1 | tee ../../e2e-api-${{ matrix.browser }}-${{ matrix.count }}.log &
+        working-directory: apps/merkl-api
 
       - name: e2e tests
         working-directory: tests
@@ -208,7 +212,7 @@ jobs:
         env:
           ELECTRON_ENABLE_LOGGING: true # send console logs to stdout in electron browser
           NODE_ENV: test
-          CYPRESS_VIDEO: ${{ matrix.browser == 'firefox' && 'false' || 'true' }}  # Firefox doesn't support recording
+          CYPRESS_VIDEO: ${{ matrix.browser == 'firefox' && 'false' || 'true' }} # Firefox doesn't support recording
 
       - name: Check runtime errors
         if: always()
@@ -246,7 +250,7 @@ jobs:
     if: failure() && github.ref_name == 'main'
     runs-on: ubuntu-latest
     timeout-minutes: 1
-    needs: [ lint, test, cypress-e2e, cypress-component, cypress-component-rpc ]
+    needs: [lint, test, cypress-e2e, cypress-component, cypress-component-rpc]
     steps:
       - name: Send Slack alert
         run: |

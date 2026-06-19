@@ -5,7 +5,7 @@ const server = createRouterApiServer()
 
 /**
  * Vercel handler for API routes, using fastify under the hood. This is only used when deployed to Vercel.
- * While in development, vite's dev server redirects /api/* calls to the router-api dev server.
+ * While in development, vite's dev server redirects /api/router/* calls to the router-api dev server.
  * This file is automatically detected by vite-plugin-vercel because it is in the "_api" folder.
  */
 export default async function handler(request: IncomingMessage, response: ServerResponse) {

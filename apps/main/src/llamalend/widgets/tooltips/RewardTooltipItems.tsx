@@ -1,12 +1,12 @@
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
 import { Stack } from '@mui/material'
 import Link from '@mui/material/Link'
-import { CampaignRewards, extraRewardType } from '@ui-kit/entities/campaigns'
+import { CampaignRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { ExtraIncentive } from '@ui-kit/types/market'
-import { formatNumber } from '@ui-kit/utils'
+import { aprToApy, formatNumber } from '@ui-kit/utils'
 import type { RewardsAction } from '@external-rewards'
 import { TooltipItem } from './TooltipComponents'
 
@@ -43,16 +43,14 @@ export const RewardsTooltipItems = ({
           {formatNumber(percentage, 'percent.rate')}
         </TooltipItem>
       ))}
-      {extraRewards.map((r, i) => {
-        const rewardType = extraRewardType(r)
-
-        return (
+      {extraRewards.map(
+        (r, i) =>
           r.action === tooltipType && (
             <TooltipItem
               variant="subItem"
               // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
               key={i}
-              title={rewardType === 'apr' ? t`APR` : t`Points`}
+              title={r.reward?.type === 'apr' ? r.symbol || '' : t`Points`}
               imageId={r.platformImageId}
             >
               <Stack
@@ -69,14 +67,14 @@ export const RewardsTooltipItems = ({
                   '&:hover svg': { fontSize: 20 },
                 }}
               >
-                {r.multiplier}
-                {rewardType === 'points' ? 'x' : ''}
+                {r.reward?.type === 'apr'
+                  ? `${tooltipType === 'supply' ? '+' : ''}${formatNumber(tooltipType === 'supply' ? aprToApy(r.reward.value) : -r.reward.value, 'percent.rate')}`
+                  : formatNumber(r.reward?.value, 'multiplier')}
                 <ArrowOutwardIcon />
               </Stack>
             </TooltipItem>
-          )
-        )
-      })}
+          ),
+      )}
     </>
   )
 }

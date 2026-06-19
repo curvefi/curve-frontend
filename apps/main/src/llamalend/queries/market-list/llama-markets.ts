@@ -3,7 +3,13 @@ import { useCallback, useMemo } from 'react'
 import { ethAddress } from 'viem'
 import { LLAMMALEND_V2_DATE } from '@/llamalend/constants'
 import { calculateMarketSolvency, createGetBadDebtMarket, lowSolvencyDeprecatedMessage } from '@/llamalend/llama.utils'
-import { aprToApy, computeTotalRate, getSupplyApyMetrics } from '@/llamalend/rates.utils'
+import {
+  aprToApy,
+  computeTotalRate,
+  getSupplyApyMetrics,
+  sumCampaignsApr,
+  sumCampaignsApy,
+} from '@/llamalend/rates.utils'
 import { type Chain, getBlockchainId } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
 import { assert, maybe, recordValues } from '@primitives/objects.utils'
@@ -134,11 +140,16 @@ const convertLendingVault = (
   const totalExtraRewardApy =
     // sumBy returns 0 for empty arrays
     extraRewardApr.length ? sumBy(extraRewardApr, reward => aprToApy(reward.rate)!) : null
+  const rewards = [...(campaigns[vault.toLowerCase()] ?? []), ...(campaigns[controller.toLowerCase()] ?? [])]
+  const borrowCampaignsApr = sumCampaignsApr(rewards.filter(r => r.action === 'borrow'))
+  const borrowCampaignsApy = sumCampaignsApy(rewards.filter(r => r.action === 'borrow'))
+  const supplyCampaignsApy = sumCampaignsApy(rewards.filter(r => r.action === 'supply'))
   const { totalMinBoost, totalMaxBoost } = getSupplyApyMetrics({
     supplyApy: lendApy,
     crvBoostApr: [lendCrvAprUnboosted, lendCrvAprBoosted],
     rebasingYieldApy: borrowedToken?.rebasingYield,
     extraIncentivesApy: totalExtraRewardApy,
+    campaignsApy: supplyCampaignsApy,
   })
   const solvencyPercent = calculateMarketSolvency({ totalAssetsUsd, badDebtUsd })
 
@@ -182,9 +193,9 @@ const convertLendingVault = (
       lendTotalApyMinBoosted: totalMinBoost,
       lendTotalApyMaxBoosted: totalMaxBoost,
       borrowApy,
-      borrowTotalApy: computeTotalRate(borrowApy, collateralToken.rebasingYield ?? 0),
+      borrowTotalApy: computeTotalRate(borrowApy, collateralToken.rebasingYield ?? 0, borrowCampaignsApy ?? 0),
       borrowApr,
-      borrowTotalApr: computeTotalRate(borrowApr, collateralToken.rebasingYieldApr ?? 0),
+      borrowTotalApr: computeTotalRate(borrowApr, collateralToken.rebasingYieldApr ?? 0, borrowCampaignsApr ?? 0),
       incentives: extraRewardApr
         ? extraRewardApr.map(({ address, symbol, rate }) => ({
             title: symbol,
@@ -200,7 +211,7 @@ const convertLendingVault = (
     deprecatedMessage:
       DEPRECATED_LLAMAS[marketType][chain]?.[controller]?.message ?? lowSolvencyDeprecatedMessage(solvencyPercent),
     isFavorite: favoriteMarkets.has(vault),
-    rewards: [...(campaigns[vault.toLowerCase()] ?? []), ...(campaigns[controller.toLowerCase()] ?? [])],
+    rewards,
     leverage: NO_LEVERAGE_LEND[chain]?.includes(controller) ? null : leverage,
     userHasPositions:
       hasBorrowed || lendingPosition
@@ -244,6 +255,10 @@ const convertMintMarket = (
   const hasBorrow = userMintMarkets.has(address)
   const [collateralSymbol, collateralAddress] = getCollateral(collateralToken)
   const name = collateralIndex > 1 ? `${collateralSymbol}${collateralIndex}` : collateralSymbol
+  const rewards = [...(campaigns[address.toLowerCase()] ?? []), ...(campaigns[llamma.toLowerCase()] ?? [])]
+  const borrowCampaignsApr = sumCampaignsApr(rewards.filter(r => r.action === 'borrow'))
+  const borrowCampaignsApy = sumCampaignsApy(rewards.filter(r => r.action === 'borrow'))
+
   return {
     chain,
     controllerAddress: address,
@@ -290,16 +305,16 @@ const convertMintMarket = (
       lendTotalApyMinBoosted: null,
       lendTotalApyMaxBoosted: null,
       borrowApy,
-      borrowTotalApy: computeTotalRate(borrowApy, collateralToken.rebasingYield ?? 0),
+      borrowTotalApy: computeTotalRate(borrowApy, collateralToken.rebasingYield ?? 0, borrowCampaignsApy ?? 0),
       borrowApr,
-      borrowTotalApr: computeTotalRate(borrowApr, collateralToken.rebasingYieldApr ?? 0),
+      borrowTotalApr: computeTotalRate(borrowApr, collateralToken.rebasingYieldApr ?? 0, borrowCampaignsApr ?? 0),
       incentives: [],
     },
     type: marketType,
     deprecatedMessage: DEPRECATED_LLAMAS[marketType][chain]?.[address]?.message ?? null,
     url: getInternalUrl('crvusd', chain, `${CRVUSD_ROUTES.PAGE_MARKETS}/${name}`),
     isFavorite: favoriteMarkets.has(llamma),
-    rewards: [...(campaigns[address.toLowerCase()] ?? []), ...(campaigns[llamma.toLowerCase()] ?? [])],
+    rewards,
     leverage,
     userHasPositions: hasBorrow ? { [MarketRateType.Borrow]: hasBorrow, [MarketRateType.Supply]: false } : null,
     createdAt: new Date(createdAt).getTime(),

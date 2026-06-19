@@ -2,7 +2,6 @@ import { capitalize, groupBy } from 'lodash'
 import type { Address } from 'viem'
 import { paginate } from '@curvefi/prices-api/paginate'
 import { addQueryString, FetchError } from '@primitives/fetch.utils'
-import { formatNumber, isCypress } from '@ui-kit/utils'
 import type { RewardsAction } from '@external-rewards'
 import type { CampaignRewards } from './types'
 
@@ -61,7 +60,7 @@ const ACTIONS: Record<MerklAction, RewardsAction> = {
 /** New campaigns / markets might temporarily have a huge APR as things are being bootstrapped. This number has been copied from Merkl's own website. */
 const MAX_APR = 10000
 
-const opportunityToCampaignRewards = (opp: MerklOpportunity): CampaignRewards[] => {
+const opportunityToCampaignRewards = (opp: MerklOpportunity) => {
   const network = opp.chain.name.toLocaleLowerCase()
 
   return (
@@ -69,21 +68,20 @@ const opportunityToCampaignRewards = (opp: MerklOpportunity): CampaignRewards[] 
       // Filter rewards with a value of 0. Maybe campaign devs are testing something, as such campaigns exist in real life data.
       .filter(({ value }) => value > 0)
       // Convert actual token reward data into the more generic data type we use all across the app.
-      .map(({ token }) => ({
+      .map<CampaignRewards>(({ token }) => ({
         campaignName: opp.name,
         platform: opp.tags.map(tag => capitalize(tag)).join(', '),
         platformImageId: token.icon,
         dashboardLink: `https://app.merkl.xyz/opportunities/${network}/${opp.type}/${opp.identifier}`,
 
-        address: opp.explorerAddress.toLocaleLowerCase() as Address,
+        address: opp.explorerAddress.toLocaleLowerCase(),
         description: opp.description,
         steps: opp.howToSteps,
         lock: false, // Merkl doesn't offer 'locked' rewards.
 
         // Merkl campaigns don't have a multiplier, just a token. And APR is only available for the whole opportunity.
-        multiplier: opp.apr
-          ? `${opp.apr > MAX_APR ? '>' : ''} ${formatNumber(Math.min(opp.apr, MAX_APR), 'percent.rate')}`
-          : token.symbol,
+        reward: { type: 'apr', value: Math.min(opp.apr, MAX_APR) },
+        symbol: token.symbol,
 
         tags: ['tokens'], // Merkl rewards are tokens only as far as I know; no points.
         action: ACTIONS[opp.action],
@@ -100,10 +98,9 @@ const opportunityToCampaignRewards = (opp: MerklOpportunity): CampaignRewards[] 
  *
  * API is also available in the browser for testing and experimenting at https://api.merkl.xyz/docs
  */
-export const fetchMerklRewards = async (params: object) => {
-  if (window.location.hostname === 'localhost' && !isCypress) return {} // todo: ask merkl to add localhost to allowed CORS headers
+export const fetchMerklRewards = async (params: Record<string, string | number | boolean | null | undefined>) => {
   const fetchPage = async (page: number, items: number) => {
-    const url = `https://api.merkl.xyz/v4/opportunities${addQueryString({
+    const url = `/api/merkl/v1/opportunities${addQueryString({
       ...params,
       items,
       page,
