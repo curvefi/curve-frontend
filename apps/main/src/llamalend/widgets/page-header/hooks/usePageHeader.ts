@@ -20,14 +20,14 @@ import {
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
-import { maybes, notFalsyArray } from '@primitives/objects.utils'
+import { notFalsyArray } from '@primitives/objects.utils'
 import { type CampaignRewards, useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
 import { combineQueries } from '@ui-kit/lib'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 import { fakeLoadingQ, Query, type Range } from '@ui-kit/types/util'
-import { AVERAGE_CATEGORIES, type AverageCategory, CRVUSD_ADDRESS, decimalMultiply } from '@ui-kit/utils'
+import { AVERAGE_CATEGORIES, type AverageCategory, CRVUSD_ADDRESS } from '@ui-kit/utils'
 
 const RATE_CATEGORY: AverageCategory = 'llamalend.market.rate'
 
@@ -161,7 +161,7 @@ export const usePageHeader = ({
       (borrowUsdRate, { available, totalAssets }) => ({
         value: available,
         max: totalAssets,
-        notional: maybes([available, borrowUsdRate], ([liq, rate]) => decimalMultiply(liq, rate)),
+        usdRate: borrowUsdRate,
       }),
     ),
   }

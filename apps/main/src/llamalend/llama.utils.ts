@@ -13,12 +13,13 @@ import { getUserMarketCollateralEvents as getLendUserMarketCollateralEvents } fr
 import type { BadDebt } from '@curvefi/prices-api/liquidations'
 import { type Address, Hex } from '@primitives/address.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
-import { assert, maybe, notFalsy, objectKeys } from '@primitives/objects.utils'
+import { assert, maybe, maybes, notFalsy, objectKeys } from '@primitives/objects.utils'
 import { getLib, requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
-import { isZapV2Enabled } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
+import { MetricProps } from '@ui-kit/shared/ui/Metric'
 import { LlamaMarketType, LlamaMarketVersion } from '@ui-kit/types/market'
-import { CRVUSD, decimalMinus, decimalSum, formatNumber } from '@ui-kit/utils'
+import { QueryProp } from '@ui-kit/types/util'
+import { CRVUSD, decimal, decimalMinus, decimalMultiply, decimalSum, formatNumber } from '@ui-kit/utils'
 import { SOLVENCY_THRESHOLDS } from './llama-markets.constants'
 
 /**
@@ -438,3 +439,51 @@ export const lowSolvencyDeprecatedMessage = (solvencyPercent: number | null) =>
     : null
 
 export const getZapAddress = (market: LlamaMarketTemplate) => market.getZapAddress() as Address
+
+/**
+ * Returns the total collateral expressed in collateral-token units.
+ * The borrowed-token portion can appear in collateral after soft liquidation, so it must be converted through USD rates
+ * before being added to the native collateral amount.
+ *
+ * Example: 10 WETH collateral + 4,000 crvUSD borrowed collateral, with WETH at $2,000 and crvUSD at $1,
+ * becomes 12 WETH: 10 + (4,000 * 1 / 2,000).
+ */
+export const calculateCombinedCollateral = ({
+  collateral,
+  borrowed,
+  collateralUsdRate,
+  borrowUsdRate,
+}: {
+  collateral: Decimal | undefined
+  borrowed: Decimal | undefined
+  collateralUsdRate: number
+  borrowUsdRate: number
+}) =>
+  collateralUsdRate === 0
+    ? undefined
+    : maybes([collateral, borrowed], ([collateral, borrowed]) =>
+        decimalSum(collateral, decimalMultiply(borrowed, borrowUsdRate / collateralUsdRate)),
+      )
+
+/** Builds Metric props for a token-denominated value with the matching USD notional shown below it. */
+export const tokenMetric = ({
+  value,
+  symbol,
+  usdRate,
+}: {
+  value: MetricProps['value']
+  symbol: string | null | undefined
+  usdRate: QueryProp<Amount | null | undefined>
+}) => {
+  const notionalValue = maybes([decimal(value.data), usdRate.data], ([value, usdRate]) =>
+    decimalMultiply(value, usdRate),
+  )
+  return {
+    value,
+    valueOptions: {
+      abbreviate: true,
+      unit: maybe(symbol, symbol => ({ symbol, position: 'suffix' as const })),
+    },
+    notional: maybe(notionalValue, value => ({ value, unit: 'dollar' as const })),
+  } satisfies Pick<MetricProps, 'value' | 'valueOptions' | 'notional'>
+}
