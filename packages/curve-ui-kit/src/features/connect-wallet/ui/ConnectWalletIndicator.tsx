@@ -6,17 +6,10 @@ import { ConnectWalletButton } from './ConnectWalletButton'
 
 export const ConnectWalletIndicator = ({ sx, onConnect }: { sx?: SxProps; onConnect?: () => void }) => {
   const { address, isConnecting } = useConnection()
-  const { connect, disconnect } = useWallet()
+  const { disconnect } = useWallet()
   return address ? (
     <ConnectedWalletLabel address={address} onClick={() => disconnect()} loading={isConnecting} sx={sx} />
   ) : (
-    <ConnectWalletButton
-      onClick={() => {
-        onConnect?.()
-        void connect()
-      }}
-      loading={isConnecting}
-      sx={sx}
-    />
+    <ConnectWalletButton onConnect={onConnect} sx={sx} />
   )
 }

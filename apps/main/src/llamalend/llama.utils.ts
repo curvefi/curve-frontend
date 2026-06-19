@@ -13,11 +13,11 @@ import { getUserMarketCollateralEvents as getLendUserMarketCollateralEvents } fr
 import type { BadDebt } from '@curvefi/prices-api/liquidations'
 import { type Address, Hex } from '@primitives/address.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
-import { maybe, notFalsy, objectKeys } from '@primitives/objects.utils'
+import { assert, maybe, notFalsy, objectKeys } from '@primitives/objects.utils'
 import { getLib, requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
 import { isZapV2Enabled } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { LlamaMarketType, LlamaMarketVersion } from '@ui-kit/types/market'
 import { CRVUSD, decimalMinus, decimalSum, formatNumber } from '@ui-kit/utils'
 import { SOLVENCY_THRESHOLDS } from './llama-markets.constants'
 
@@ -102,6 +102,12 @@ export const hasGauge = (market: LlamaMarketTemplate) =>
 
 export const getMarketType = (market: LlamaMarketTemplate | null | undefined) =>
   market ? (market instanceof LendMarketTemplate ? LlamaMarketType.Lend : LlamaMarketType.Mint) : undefined
+
+export const getLendMarketVersion = (market: LendMarketTemplate): LlamaMarketVersion =>
+  assert(
+    { v1: LlamaMarketVersion.v1, v2: LlamaMarketVersion.v2 }[market.version],
+    `Unsupported LlamaLend market version: ${market.version}`,
+  )
 
 const getBorrowSymbol = (market: LlamaMarketTemplate) =>
   market instanceof MintMarketTemplate ? CRVUSD.symbol : market.borrowed_token.symbol

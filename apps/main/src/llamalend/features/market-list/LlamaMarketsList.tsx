@@ -3,7 +3,6 @@ import { useConnection } from 'wagmi'
 import { invalidateBadDebtMarkets } from '@/llamalend/queries/market'
 import Box from '@mui/material/Box'
 import type { Address } from '@primitives/address.utils'
-import { useWallet } from '@ui-kit/features/connect-wallet'
 import { CONNECT_WALLET_TEST_ID } from '@ui-kit/features/connect-wallet/ui/utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useLLv2, useNewMarketListLayout } from '@ui-kit/hooks/useFeatureFlags'
@@ -80,8 +79,7 @@ const useTableLlamaMarkets = (address: Address | undefined) => {
 
 /** Page for displaying the lending markets table. */
 export const LlamaMarketsList = () => {
-  const { connect } = useWallet()
-  const { address, isConnecting } = useConnection()
+  const { address } = useConnection()
 
   const {
     tableQuery: { data, isLoading, error },
