@@ -6,11 +6,14 @@ import { networks } from '@/lend/networks'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/utilsRouter'
 import { SupplyPositionDetails } from '@/llamalend/features/market-position-details'
+import { useLlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { useUserShares } from '@/llamalend/queries/user/user-balances.query'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header'
-import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
+import { useCurve } from '@ui-kit/features/connect-wallet'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useParams } from '@ui-kit/hooks/router'
+import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
@@ -21,42 +24,49 @@ import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
 export const Page = () => {
   const params = useParams<MarketUrlParams>()
   const { rMarket, rChainId: chainId } = parseMarketParams(params)
-  const { llamaApi: api = null, provider, isHydrated } = useCurve()
-  const { data: market, isLoading: isMarketLoading, isSuccess } = useLendMarket(chainId, rMarket)
+  const { llamaApi: api = null, isHydrated } = useCurve()
+  const { data: market, isLoading: isMarketLoading, error: marketError } = useLendMarket({ chainId, rMarket })
   const network = networks[chainId]
   const { address: userAddress } = useConnection()
 
   useLendPageTitle(market?.collateral_token?.symbol, t`Supply`)
 
-  const pageProps: PageContentProps = {
-    params,
-    rChainId: chainId,
-    marketId: market?.id ?? '',
-    userAddress,
-    api,
-    market,
-    apiMarket,
-  }
+  const isLoading = !isHydrated || isMarketLoading
+  const apiMarket = useLlamaMarket(
+    {
+      rMarket,
+      network: params.network,
+      marketType: LlamaMarketType.Lend,
+      userAddress,
+      enableLLv2: useLLv2(),
+      enableDeprecatedMarkets: useUserProfileStore(state => state.showDeprecatedMarkets),
+    },
+    !isLoading && !market,
+  )
+
+  const pageProps: PageContentProps = { params, rChainId: chainId, userAddress, api, market, apiMarket }
 
   const supplied = +(useUserShares({ marketId: market?.id, chainId, userAddress }).data?.value ?? 0)
 
-  return isSuccess && !market ? (
+  const error = marketError ?? apiMarket.error
+  return error ? (
     <ErrorPage
-      title="404"
-      subtitle={`${t`Market`} ${rMarket} ${t`Not Found`}`}
+      title={t`Error`}
+      subtitle={error.message}
+      error={error}
       continueUrl={getCollateralListPathname(params)}
     />
-  ) : provider ? (
+  ) : (
     <DetailPageLayout
-      formTabs={chainId && <VaultTabs {...pageProps} params={params} />}
+      formTabs={market && <VaultTabs {...pageProps} params={params} />}
       header={
         <MarketPageHeader
           blockchainId={network.id}
           chainId={chainId}
-          marketId={market?.id}
-          isLoading={!isHydrated || isMarketLoading}
+          isLoading={isLoading}
           market={market}
           marketType={LlamaMarketType.Lend}
+          apiMarket={apiMarket}
         />
       }
     >
@@ -75,7 +85,5 @@ export const Page = () => {
       )}
       <MarketInformationComposite pageProps={pageProps} rateType={MarketRateType.Supply} />
     </DetailPageLayout>
-  ) : (
-    <ConnectWalletPrompt description={t`Connect your wallet to view market`} />
   )
 }

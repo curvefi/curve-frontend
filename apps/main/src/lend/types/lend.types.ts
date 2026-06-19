@@ -32,7 +32,6 @@ export type NetworkConfig<TId extends string = string, TChainId extends number =
 export type PageContentProps<T = UrlParams> = {
   params: T
   rChainId: ChainId
-  marketId: string
   userAddress: Address | undefined
   api: LlamaApi | null
   market: LendMarketTemplate | undefined

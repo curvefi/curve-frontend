@@ -74,7 +74,7 @@ export function usePegkeeper({ address, pool: { address: poolAddress } }: PegKee
     rate: fallbackQ(mapQuery(priceOracle, formatWei), mapQuery(priceOracleFallback, formatWei)),
     debt: mapQuery(debt, formatWei),
     estCallerProfit: fallbackQ(
-      isConnected && mapQuery(estCallerProfit, p => formatWei(p.result)),
+      mapQuery(estCallerProfit, p => formatWei(p.result)),
       mapQuery(estCallerProfitFallback, formatWei),
     ),
     debtCeiling: mapQuery(debtCeiling, formatWei),

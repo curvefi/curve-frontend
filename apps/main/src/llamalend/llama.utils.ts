@@ -154,6 +154,9 @@ export const getControllerAddress = <T extends LlamaMarketTemplate | null | unde
     market => (market instanceof LendMarketTemplate ? market.addresses.controller : market.controller) as Address,
   )
 
+export const getVaultAddress = <T extends LlamaMarketTemplate | null | undefined>(market: T) =>
+  maybe(market, market => (market instanceof LendMarketTemplate ? (market.addresses.vault as Address) : null))
+
 /**
  * Calculates the loan-to-value ratio of a market.
  * @param debtAmount - The amount of debt in the market.

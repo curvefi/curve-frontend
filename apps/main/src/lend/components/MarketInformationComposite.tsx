@@ -29,7 +29,8 @@ type MarketInformationCompProps = {
  * Reusable component for OHLC charts, Bands (if applicable), and market parameters, used in market and vault pages.
  */
 export const MarketInformationComposite = ({ pageProps, rateType, previewPrices }: MarketInformationCompProps) => {
-  const { rChainId, marketId, market, apiMarket } = pageProps
+  const { rChainId, market, apiMarket } = pageProps
+  const marketId = market?.id ?? '' // todo: get rid of this
   const api = getLib('llamaApi')
   const isBorrow = rateType === MarketRateType.Borrow
   const blockchainId = networks[rChainId].id as Chain

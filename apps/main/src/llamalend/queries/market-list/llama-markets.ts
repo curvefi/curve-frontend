@@ -14,6 +14,7 @@ import { getCampaignsExternalOptions } from '@ui-kit/entities/campaigns/campaign
 import { getCampaignsMarketsMerklOptions } from '@ui-kit/entities/campaigns/campaigns-markets-merkl'
 import { useStateTimeout } from '@ui-kit/hooks/useStateTimeout'
 import { combineQueriesMeta, PartialQueryResult, RESOLVED_QUERY_RESULT } from '@ui-kit/lib'
+import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
 import { type ExtraIncentive, LlamaMarketType, LlamaMarketVersion, MarketRateType } from '@ui-kit/types/market'
 import { useMappedQuery } from '@ui-kit/types/util'
@@ -442,16 +443,30 @@ export const useLlamaMarkets = (
 }
 
 export const useLlamaMarket = (
-  { market, network, ...params }: LlamaMarketParams & { market: string; network: string },
+  {
+    rMarket,
+    marketType,
+    network,
+    ...params
+  }: LlamaMarketParams & { rMarket: string; network: string; marketType: LlamaMarketType },
   enabled?: boolean,
-) =>
-  useMappedQuery(
-    useLlamaMarkets(params, enabled),
+) => {
+  const markets = useLlamaMarkets(params, enabled)
+
+  const market = useMappedQuery(
+    markets,
     useCallback(
-      data =>
+      ({ markets }) =>
         maybe(getBlockchainId(network), chain =>
-          data?.markets.find(m => m.chain === chain && m.controllerAddress === market),
+          markets.find(m => m.chain === chain && m.url.toLowerCase().endsWith(`/${rMarket.toLowerCase()}`)),
         ),
-      [network, market],
+      [network, rMarket],
     ),
   )
+  const error = useMemo(
+    () => markets.data && !market.data && new Error(`${t`Market`} ${rMarket} ${t`Not Found`}`),
+    [markets.data, market.data, rMarket],
+  )
+
+  return { ...market, ...(error && { error }) }
+}

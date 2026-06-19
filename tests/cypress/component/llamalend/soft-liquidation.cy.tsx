@@ -21,6 +21,7 @@ import {
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createSoftLiquidationScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
+import { LlamaMarketType } from '@ui-kit/types/market'
 import { constQ } from '@ui-kit/types/util'
 
 const chainId = 1
@@ -53,6 +54,7 @@ describe('Soft Liquidation Forms (mocked)', () => {
               networks={llamaNetworks}
               chainId={chainId}
               collateralEvents={constQ(undefined)}
+              marketType={LlamaMarketType.Mint}
             />
           </MockLoanTestWrapper>,
         )

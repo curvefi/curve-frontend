@@ -1,4 +1,5 @@
-import { Stack, Typography } from '@mui/material'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -30,6 +31,7 @@ export const NoPosition = ({ type }: NoPositionProps) => (
       gap: Spacing.sm,
       padding: Spacing.md,
     }}
+    data-testid={`no-position-${type}`}
   >
     <LlamaIcon sx={{ width: IconSize.xxl, height: IconSize.xxl }} />
     <Stack sx={{ alignItems: 'center' }}>

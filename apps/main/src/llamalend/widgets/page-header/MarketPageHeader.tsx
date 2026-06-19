@@ -7,6 +7,7 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Chain } from '@curvefi/prices-api'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
+import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
@@ -27,7 +28,6 @@ const { Spacing } = SizesAndSpaces
 export const MarketPageHeader = ({
   blockchainId,
   chainId,
-  marketId,
   isLoading,
   market,
   marketType,
@@ -35,7 +35,6 @@ export const MarketPageHeader = ({
 }: {
   blockchainId: Chain
   chainId: number
-  marketId: string | undefined
   isLoading: boolean
   market: LlamaMarketTemplate | undefined
   marketType: LlamaMarketType
@@ -44,12 +43,15 @@ export const MarketPageHeader = ({
   const { address: userAddress } = useConnection()
   const { borrowRate, supplyRate, availableLiquidity } = usePageHeader({
     chainId,
-    marketId,
     market,
     blockchainId,
     apiMarket,
+    marketType,
   })
-  const { collateralToken, borrowToken } = (market && getTokens(market)) ?? {}
+  const { collateralToken, borrowToken } =
+    maybe(market, getTokens) ??
+    maybe(apiMarket.data, ({ assets }) => ({ collateralToken: assets.collateral, borrowToken: assets.borrowed })) ??
+    {}
 
   const title =
     (collateralToken &&

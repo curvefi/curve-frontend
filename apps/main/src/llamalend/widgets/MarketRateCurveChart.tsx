@@ -158,7 +158,7 @@ export const MarketRateCurveChart = ({
             size="medium"
             label={t`Utilization`}
             value={fallbackQ(
-              !useApiData && currentUtilization,
+              currentUtilization,
               mapQuery(apiMarket, m => m.utilizationPercent),
             )}
             valueOptions={{ unit: 'percentage' }}
@@ -173,7 +173,7 @@ export const MarketRateCurveChart = ({
             size="medium"
             label={t`Total borrowed`}
             value={fallbackQ(
-              !useApiData && totalBorrowed,
+              totalBorrowed,
               mapQuery(apiMarket, m => m.assets.borrowed.balance),
             )}
             valueOptions={{
@@ -188,7 +188,7 @@ export const MarketRateCurveChart = ({
             size="medium"
             label={t`Total collateral`}
             value={fallbackQ(
-              !useApiData && combinedCollateralUsdValue,
+              combinedCollateralUsdValue,
               mapQuery(apiMarket, m => m.totalCollateralUsd),
             )}
             valueOptions={{ unit: 'dollar' }}

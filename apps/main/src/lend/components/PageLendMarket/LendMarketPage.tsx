@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { MarketInformationComposite } from '@/lend/components/MarketInformationComposite'
 import { CreateLoanTabs } from '@/lend/components/PageLendMarket/CreateLoanTabs'
-import { ManageLoanTabs } from '@/lend/components/PageLendMarket/ManageLoanTabs'
+import { type LendManageLoanProps, ManageLoanTabs } from '@/lend/components/PageLendMarket/ManageLoanTabs'
 import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
 import { networks } from '@/lend/networks'
 import { type MarketUrlParams } from '@/lend/types/lend.types'
@@ -31,9 +31,8 @@ import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
 export const LendMarketPage = () => {
   const params = useParams<MarketUrlParams>()
   const { rMarket, rChainId: chainId } = parseMarketParams(params)
-  const { data: market, isLoading: isMarketLoading, isSuccess } = useLendMarket(chainId, rMarket)
+  const { data: market, isLoading: isMarketLoading, error: marketError } = useLendMarket({ chainId, rMarket })
   const { llamaApi: api = null, isInitialized } = useCurve()
-  const marketId = market?.id ?? '' // todo: use market?.id directly everywhere since we pass the market too!
   const { address: userAddress } = useConnection()
   useLendPageTitle(market?.collateral_token?.symbol ?? rMarket, t`Lend`)
 
@@ -42,7 +41,7 @@ export const LendMarketPage = () => {
   const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists(
     {
       chainId,
-      marketId,
+      marketId: market?.id,
       userAddress,
     },
     !!market, // enable query as soon as market is defined, the validation suite isn't able to detect it otherwise
@@ -62,10 +61,12 @@ export const LendMarketPage = () => {
   })
 
   const isLoading = !isInitialized || isMarketLoading
-  const useApiData = !isLoading && !marketId
+  const useApiData = !isLoading && !market?.id
   const apiMarket = useLlamaMarket(
     {
-      ...params,
+      rMarket,
+      network: params.network,
+      marketType: LlamaMarketType.Lend,
       userAddress,
       enableLLv2: useLLv2(),
       enableDeprecatedMarkets: useUserProfileStore(state => state.showDeprecatedMarkets),
@@ -73,24 +74,19 @@ export const LendMarketPage = () => {
     useApiData,
   )
 
-  const pageProps = {
+  const pageProps: Omit<LendManageLoanProps, 'collateralEvents'> = {
     params,
     rChainId: chainId,
-    marketId,
     userAddress,
-    isLoaded: !isLoading,
     api,
     market,
     onPricesUpdated,
     apiMarket,
   }
 
-  return isSuccess && !market ? (
-    <ErrorPage
-      title="404"
-      subtitle={`${t`Market`} ${rMarket} ${t`Not Found`}`}
-      continueUrl={getCollateralListPathname(params)}
-    />
+  const error = marketError ?? apiMarket.error
+  return error ? (
+    <ErrorPage title={t`Error`} subtitle={error.message} continueUrl={getCollateralListPathname(params)} />
   ) : (
     <DetailPageLayout
       formTabs={
@@ -105,7 +101,6 @@ export const LendMarketPage = () => {
         <MarketPageHeader
           blockchainId={network.id}
           chainId={chainId}
-          marketId={marketId}
           isLoading={isLoading}
           market={market}
           marketType={LlamaMarketType.Lend}
@@ -122,7 +117,7 @@ export const LendMarketPage = () => {
         hasPosition={loanExists}
         events={collateralEvents}
         tokens={tokens}
-        params={{ chainId, marketId, userAddress }}
+        params={{ chainId, marketId: market?.id, userAddress }}
       />
       <MarketInformationComposite
         pageProps={pageProps}

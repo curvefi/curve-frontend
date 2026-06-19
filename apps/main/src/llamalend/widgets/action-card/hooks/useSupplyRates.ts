@@ -1,3 +1,4 @@
+import { getControllerAddress } from '@/llamalend/llama.utils'
 import { useLlamaSnapshot } from '@/llamalend/queries/llamma-snapshots.query'
 import { useMarketSupplyFutureRates, useMarketRates, useMarketVaultOnChainRewards } from '@/llamalend/queries/market'
 import { useUserSupplyBoost } from '@/llamalend/queries/user'
@@ -14,6 +15,7 @@ import { maybe } from '@primitives/objects.utils'
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
 import type { UserMarketParams } from '@ui-kit/lib/model'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
+import { LlamaMarketType } from '@ui-kit/types/market'
 import { q, type Query, type QueryProp, type Range } from '@ui-kit/types/util'
 import { BlockchainIds, decimal } from '@ui-kit/utils'
 
@@ -60,7 +62,12 @@ export function useSupplyRates<ChainId extends IChainId>(
 ) {
   const blockchainId = maybe(chainId, chainId => BlockchainIds[chainId])
   const market = marketId ? requireVault(marketId) : undefined
-  const snapshotsQuery = useLlamaSnapshot({ market, blockchainId, enabled })
+  const snapshotsQuery = useLlamaSnapshot({
+    marketType: LlamaMarketType.Lend,
+    controllerAddress: getControllerAddress(market),
+    blockchainId,
+    enabled,
+  })
   const lendingSnapshotsQuery = q({
     ...snapshotsQuery,
     data: snapshotsQuery.data as LendingSnapshot[] | undefined,
