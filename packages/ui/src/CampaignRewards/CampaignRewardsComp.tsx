@@ -20,7 +20,7 @@ export const RewardsCompSmall = ({ rewardsPool, highContrast, mobile, banner }: 
       clickable
       tooltip={<TooltipMessage rewardsPool={rewardsPool} />}
       minWidth="400px"
-      placement={mobile ? 'top' : 'auto'}
+      placement={mobile ? 'top' : banner ? 'left' : 'auto'}
       increaseZIndex={banner}
     >
       <Container highContrast={highContrast}>
