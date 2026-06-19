@@ -183,6 +183,8 @@ const generateLlammaEvents = (count: number, collateralToken: Token, borrowToken
   })
 }
 
+const liquidityColumns = createPoolLiquidityColumns({ blockchainId: 'ethereum', poolTokens: POOL_TOKENS })
+
 /**
  * DEX Pool Activity Component
  * Pool: TriCrypto (0x4eBdF703948ddCEA3B11f675B4D1Fba9d2414A14)
@@ -190,10 +192,6 @@ const generateLlammaEvents = (count: number, collateralToken: Token, borrowToken
 const DexPoolActivityComponent = () => {
   const tradesData = useMemo(() => generatePoolTrades(20), [])
   const liquidityData = useMemo(() => generatePoolLiquidity(15), [])
-  const liquidityColumns = useMemo(
-    () => createPoolLiquidityColumns({ blockchainId: 'ethereum', poolTokens: POOL_TOKENS }),
-    [],
-  )
 
   const tradesTable = useTable({
     query: constQ(tradesData),
