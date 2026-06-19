@@ -113,13 +113,16 @@ export const KebabMenu = <T extends string | number>({
             startAdornment,
             endAdornment,
             suffix,
+            disabled,
+            icon,
             // avoids passing the alwaysInKebab prop to the DOM element
             alwaysInKebab: _alwaysInKebab,
-            ...props
           }) => (
             <Tab
               key={val}
               value={val}
+              disabled={disabled}
+              icon={icon}
               label={
                 <TabLabel
                   label={label}
@@ -130,7 +133,6 @@ export const KebabMenu = <T extends string | number>({
                 />
               }
               {...(href && { href, component: Link })}
-              {...props}
             />
           ),
         )}
