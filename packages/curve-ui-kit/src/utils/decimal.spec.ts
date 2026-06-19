@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { describe, expect, it } from 'vitest'
-import { amount, decimal } from './decimal'
+import { amount, decimal, decimalSqrt } from './decimal'
 
 describe('decimal', () => {
   it('handles basic, normal numbers', () => {
@@ -76,4 +76,12 @@ describe('amount', () => {
       expect(amount(invalidValue)).toBe(undefined)
     },
   )
+})
+
+describe('decimalSqrt', () => {
+  it('returns square roots as Decimal strings', () => {
+    expect(decimalSqrt('4')).toBe('2')
+    expect(decimalSqrt('2.25')).toBe('1.5')
+    expect(decimalSqrt('0.000000000000000001')).toBe('0.000000001')
+  })
 })

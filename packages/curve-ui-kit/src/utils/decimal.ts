@@ -56,6 +56,8 @@ export const decimalGreaterThan = (first: Decimal, second: Decimal) => BigNumber
 export const decimalMultiply = (first: Decimal, ...items: Amount[]) =>
   items.reduce((p, c) => p.multipliedBy(c), new BigNumber(first)).toFixed() as Decimal
 
+export const decimalSqrt = (value: Decimal): Decimal => new BigNumber(value).squareRoot().toFixed() as Decimal
+
 /** Divides the 1st by the 2nd decimal. Does NOT guard for division-by-zero! */
 export const decimalDiv = (first: Decimal, second: Decimal) =>
   new BigNumber(first).dividedBy(second).toFixed() as Decimal
