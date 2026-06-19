@@ -51,6 +51,7 @@ const EmptyStateButton = ({
     ...buttonProps,
     variant: 'outlined',
     size: BUTTON_SIZE[size],
+    href,
     sx: applySxProps({ alignSelf: 'center' }, buttonSx),
     ...(testId && { 'data-testid': testId }),
   } as const
