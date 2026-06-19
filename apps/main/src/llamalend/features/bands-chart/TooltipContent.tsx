@@ -5,12 +5,11 @@ import { t } from '@ui-kit/lib/i18n'
 import { formatChartAxisNumber } from '@ui-kit/shared/ui/Chart'
 import { LegendBox } from '@ui-kit/shared/ui/Chart/LegendSet'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { decimalDiv, decimalGreaterThan, decimalMultiply, formatNumber } from '@ui-kit/utils'
+import { decimalDiv, decimalGreaterThan, decimalMultiply, formatNumber, ZERO } from '@ui-kit/utils'
 import { useBandsChartPalette } from './hooks/useBandsChartPalette'
 import type { BandsChartToken, ChartDataPoint } from './types'
 
 const { Spacing } = SizesAndSpaces
-const ZERO: Decimal = '0'
 
 type TooltipContentProps = {
   data: ChartDataPoint

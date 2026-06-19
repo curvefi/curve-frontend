@@ -1,9 +1,8 @@
 import { useMemo } from 'react'
 import type { Decimal } from '@primitives/decimal.utils'
-import { decimalSum } from '@ui-kit/utils/decimal'
+import { decimalSum, ZERO } from '@ui-kit/utils/decimal'
 import type { ChartDataPoint, DerivedChartData } from '../types'
 
-const ZERO: Decimal = '0'
 const toNumber = (value: Decimal | undefined): number => Number(value ?? ZERO)
 
 /**
@@ -30,8 +29,8 @@ export const useDerivedChartData = (chartData: ChartDataPoint[]): DerivedChartDa
       // Use median price for y-axis labels
       yAxisData.push(d.pUpDownMedian)
 
-      const userCollateralValue = d.userBandCollateralValue ?? ZERO
-      const userBorrowedValue = d.userBandBorrowedAmount ?? ZERO
+      const userCollateralValue = d.userBandCollateralValue
+      const userBorrowedValue = d.userBandBorrowedAmount
       const totalBandValue = d.bandTotalValue ?? decimalSum(userCollateralValue, userBorrowedValue)
 
       userCollateralData.push(toNumber(userCollateralValue))

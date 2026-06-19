@@ -84,4 +84,8 @@ describe('decimalSqrt', () => {
     expect(decimalSqrt('2.25')).toBe('1.5')
     expect(decimalSqrt('0.000000000000000001')).toBe('0.000000001')
   })
+
+  it('rejects negative numbers', () => {
+    expect(() => decimalSqrt('-1')).toThrow('Cannot calculate square root of a negative Decimal: -1')
+  })
 })
