@@ -176,7 +176,7 @@ export const MarketRateCurveChart = ({
             label={t`Total collateral`}
             value={collateralTotal}
             valueOptions={{
-              unit: collateralToken?.symbol ? { symbol: ` ${collateralToken.symbol}`, position: 'suffix' } : undefined,
+              unit: maybe(collateralToken?.symbol, symbol => ({ symbol, position: 'suffix' })),
               abbreviate: true,
             }}
             notional={maybe(combinedCollateralUsdValue.data, val => formatNumber(val, 'usd.notional'))}

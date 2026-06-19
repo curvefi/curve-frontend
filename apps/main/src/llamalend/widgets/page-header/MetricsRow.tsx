@@ -82,7 +82,7 @@ export const MetricsRow = ({
         label={t`Available liquidity`}
         value={mapQuery(availableLiquidity, availableLiquidity => availableLiquidity.value)}
         valueOptions={{
-          unit: borrowToken?.symbol ? { symbol: ` ${borrowToken.symbol}`, position: 'suffix' } : undefined,
+          unit: maybe(borrowToken?.symbol, symbol => ({ symbol, position: 'suffix' })),
         }}
         valueTooltip={{
           title: t`Available Liquidity ${MarketTypeSuffix[marketType]}`,
