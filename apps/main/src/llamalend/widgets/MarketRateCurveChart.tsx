@@ -1,7 +1,7 @@
 import { sortBy } from 'lodash'
 import { useMemo, useState } from 'react'
 import { Address } from 'viem'
-import { formatCollateralNotional, getTokens, getUtilizationPercent } from '@/llamalend/llama.utils'
+import { getTokens, getUtilizationPercent } from '@/llamalend/llama.utils'
 import { useMarketCapAndAvailable, useMarketTotalCollateral, useRateCurve } from '@/llamalend/queries/market'
 import { TooltipOptions, TotalCollateralTooltip, UtilizationTooltip } from '@/llamalend/widgets/tooltips'
 import { RateCurveTooltip } from '@/llamalend/widgets/tooltips/chart/RateCurveTooltip'
@@ -28,7 +28,7 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { fallbackQ, mapQuery, useMappedQuery } from '@ui-kit/types/util'
-import { decimal, decimalMax, decimalMinus, formatNumber } from '@ui-kit/utils'
+import { decimalMax, decimalMinus, formatNumber } from '@ui-kit/utils'
 
 const { Spacing, Height } = SizesAndSpaces
 
@@ -174,14 +174,12 @@ export const MarketRateCurveChart = ({
           <Metric
             size="medium"
             label={t`Total collateral`}
-            value={combinedCollateralUsdValue}
-            valueOptions={{ unit: 'dollar' }}
-            notional={maybe(totalCollateral.data, ({ collateral, borrowed }) =>
-              formatCollateralNotional(
-                { value: decimal(collateral), symbol: collateralToken?.symbol },
-                { value: decimal(borrowed), symbol: borrowToken?.symbol },
-              ),
-            )}
+            value={collateralTotal}
+            valueOptions={{
+              unit: maybe(collateralToken?.symbol, symbol => ({ symbol, position: 'suffix' })),
+              abbreviate: true,
+            }}
+            notional={maybe(combinedCollateralUsdValue.data, val => formatNumber(val, 'usd.notional'))}
             valueTooltip={{
               title: t`Total Collateral`,
               body: (

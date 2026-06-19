@@ -104,6 +104,7 @@ export const MarketPageHeader = ({
           availableLiquidity={availableLiquidity}
           marketType={marketType}
           collateral={collateralToken}
+          borrowToken={borrowToken}
         />
       }
     />
