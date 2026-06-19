@@ -3,11 +3,8 @@ import { useConnection } from 'wagmi'
 import { invalidateBadDebtMarkets } from '@/llamalend/queries/market'
 import Box from '@mui/material/Box'
 import type { Address } from '@primitives/address.utils'
-import { useWallet } from '@ui-kit/features/connect-wallet'
-import { CONNECT_WALLET_TEST_ID } from '@ui-kit/features/connect-wallet/ui/utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useLLv2, useNewMarketListLayout } from '@ui-kit/hooks/useFeatureFlags'
-import { t } from '@ui-kit/lib/i18n'
 import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q } from '@ui-kit/types/util'
@@ -80,8 +77,7 @@ const useTableLlamaMarkets = (address: Address | undefined) => {
 
 /** Page for displaying the lending markets table. */
 export const LlamaMarketsList = () => {
-  const { connect } = useWallet()
-  const { address, isConnecting } = useConnection()
+  const { address } = useConnection()
 
   const {
     tableQuery: { data, isLoading, error },
@@ -99,14 +95,7 @@ export const LlamaMarketsList = () => {
         data?.userHasPositions && <LegacyUserPositionsTable onReload={onReload} tableQuery={tableQuery} />
       ) : (
         <Box sx={{ paddingBlock: Spacing.md, backgroundColor: t => t.design.Layer[1].Fill }}>
-          <EmptyStateCard
-            button={{
-              label: t`Connect to view positions`,
-              onClick: () => void connect(),
-              testId: CONNECT_WALLET_TEST_ID,
-              loading: isConnecting,
-            }}
-          />
+          <EmptyStateCard button={{ isConnectWalletButton: true }} />
         </Box>
       )}
       {isNewLayout ? (

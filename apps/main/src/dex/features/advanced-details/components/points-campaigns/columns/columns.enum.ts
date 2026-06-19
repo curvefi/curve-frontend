@@ -1,5 +1,5 @@
 export enum PointsCampaignsColumnId {
   Source = 'source',
-  Points = 'points',
+  Multiplier = 'multiplier',
   CampaignUrl = 'campaignUrl',
 }

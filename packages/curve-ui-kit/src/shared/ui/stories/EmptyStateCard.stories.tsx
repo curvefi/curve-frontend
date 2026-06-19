@@ -25,7 +25,7 @@ export const WithTitle: Story = {
   },
 }
 
-export const WithSubtitle: Story = {
+export const WithDescription: Story = {
   args: {
     description: 'Try adjusting your filters or search query.',
     button: undefined,
@@ -44,6 +44,12 @@ export const With2Buttons: Story = {
     description: 'Try adjusting your filters or search query.',
     button: { label: 'Reset filters', onClick: fn() },
     secondaryButton: { label: 'Reload', onClick: fn(), startIcon: <ReloadIcon /> },
+  },
+}
+
+export const Loading: Story = {
+  args: {
+    isLoading: true,
   },
 }
 

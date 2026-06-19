@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import Button, { type ButtonOwnProps } from '@mui/material/Button'
 import { ArrowTopRightIcon } from '@ui-kit/shared/icons/ArrowTopRightIcon'
 import { applySxProps } from '@ui-kit/utils'
