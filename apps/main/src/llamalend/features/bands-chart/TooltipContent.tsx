@@ -26,10 +26,14 @@ const calculateBandShare = (numerator: Decimal | undefined, denominator: Decimal
     : '?'
 
 const formatAbbreviatedNumber = (value: Decimal | undefined): string =>
-  value != null ? `${formatNumber(value, { abbreviate: true })}` : '?'
+  formatNumber(value, { abbreviate: true, fallback: '?' })
 
-const formatBorrowTokenValue = (value: Decimal | undefined, borrowTokenSuffix: string): string =>
-  value != null ? `${formatNumber(value, { abbreviate: true })}${borrowTokenSuffix}` : '?'
+const formatBorrowTokenValue = (value: Decimal | undefined, borrowTokenSymbol: string | undefined): string =>
+  formatNumber(value, {
+    abbreviate: true,
+    fallback: '?',
+    unit: { symbol: borrowTokenSymbol ? ` ${borrowTokenSymbol}` : '', position: 'suffix' },
+  })
 
 export const TooltipContent = ({ data, collateralToken, borrowToken }: TooltipContentProps) => {
   const palette = useBandsChartPalette()
@@ -72,7 +76,7 @@ export const TooltipContent = ({ data, collateralToken, borrowToken }: TooltipCo
               </TooltipItem>
             </TooltipItems>
             <TooltipItem variant="primary" title={t`Your band liquidity`}>
-              {formatBorrowTokenValue(data.userBandTotalValue, borrowTokenSuffix)}
+              {formatBorrowTokenValue(data.userBandTotalValue, borrowToken?.symbol)}
             </TooltipItem>
           </Stack>
         )}
@@ -93,7 +97,7 @@ export const TooltipContent = ({ data, collateralToken, borrowToken }: TooltipCo
               </TooltipItem>
             </TooltipItems>
             <TooltipItem variant="primary" title={t`Band liquidity`}>
-              {formatBorrowTokenValue(data.bandTotalValue, borrowTokenSuffix)}
+              {formatBorrowTokenValue(data.bandTotalValue, borrowToken?.symbol)}
             </TooltipItem>
           </>
         )}

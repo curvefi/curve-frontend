@@ -2,6 +2,7 @@ import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import type { FetchedBandsBalances, SortedBandBalance } from '@/llamalend/queries/bands/types'
 import { getPricesImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import { sortBy } from '@primitives/array.utils'
+import { recordEntries } from '@primitives/objects.utils'
 import PromisePool from '@supercharge/promise-pool'
 import {
   decimal,
@@ -16,7 +17,7 @@ type BandsBalances = Record<number, { borrowed: string; collateral: string }>
 
 export const sortBands = (bandsBalances: BandsBalances): SortedBandBalance[] =>
   sortBy(
-    Object.entries(bandsBalances).map(([band, { borrowed, collateral }]) => ({
+    recordEntries(bandsBalances).map(([band, { borrowed, collateral }]) => ({
       borrowed: decimal(borrowed)!,
       collateral: decimal(collateral)!,
       band: Number(band),
