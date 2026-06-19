@@ -24,14 +24,14 @@ import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
 export const Page = () => {
   const params = useParams<MarketUrlParams>()
   const { rMarket, rChainId: chainId } = parseMarketParams(params)
-  const { llamaApi: api = null, isHydrated } = useCurve()
+  const { llamaApi: api = null, isInitialized } = useCurve()
   const { data: market, isLoading: isMarketLoading, error: marketError } = useLendMarket({ chainId, rMarket })
   const network = networks[chainId]
   const { address: userAddress } = useConnection()
 
   useLendPageTitle(market?.collateral_token?.symbol, t`Supply`)
 
-  const isLoading = !isHydrated || isMarketLoading
+  const isLoading = !isInitialized || isMarketLoading
   const apiMarket = useLlamaMarket(
     {
       rMarket,
@@ -58,7 +58,7 @@ export const Page = () => {
     />
   ) : (
     <DetailPageLayout
-      formTabs={market && <VaultTabs {...pageProps} params={params} />}
+      formTabs={(market ?? apiMarket.data) && <VaultTabs {...pageProps} params={params} />}
       header={
         <MarketPageHeader
           blockchainId={network.id}

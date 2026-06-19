@@ -38,23 +38,17 @@ export const LendMarketPage = () => {
 
   const network = networks[chainId]
   const tokens = useMemo(() => (market ? getTokens(market) : {}), [market])
-  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists(
-    {
-      chainId,
-      marketId: market?.id,
-      userAddress,
-    },
-    !!market, // enable query as soon as market is defined, the validation suite isn't able to detect it otherwise
-  )
+  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists({
+    chainId,
+    marketId: market?.id,
+    userAddress,
+  })
 
-  // eslint-disable-next-line @eslint-react/use-state -- Existing violation before enabling this rule.
-  const [previewPrices, onPricesUpdated] = useState<Range<Decimal> | undefined>(undefined)
-  const controllerAddress = getControllerAddress(market)
-  const blockchainId = getBlockchainId(network.id)
+  const [previewPrices, setPreviewPrices] = useState<Range<Decimal> | undefined>(undefined)
   const collateralEvents = useUserCollateralEvents({
     app: LlamaMarketType.Lend,
-    chain: blockchainId,
-    controllerAddress,
+    chain: getBlockchainId(network.id),
+    controllerAddress: getControllerAddress(market),
     userAddress,
     tokens,
     network,
@@ -80,7 +74,7 @@ export const LendMarketPage = () => {
     userAddress,
     api,
     market,
-    onPricesUpdated,
+    onPricesUpdated: setPreviewPrices,
     apiMarket,
   }
 

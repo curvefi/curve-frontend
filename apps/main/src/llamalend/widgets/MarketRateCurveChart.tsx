@@ -142,7 +142,6 @@ export const MarketRateCurveChart = ({
     [seriesColors, visibleSeries],
   )
 
-  const useApiData = !!apiMarket.data && !marketId
   return (
     <Card size="small">
       <CardHeader title={t`Interest Rate & Utilization`} />

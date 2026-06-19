@@ -25,12 +25,7 @@ const description: Record<NoPositionType, string> = {
 
 export const NoPosition = ({ type }: NoPositionProps) => (
   <Stack
-    sx={{
-      flexDirection: 'column',
-      alignItems: 'center',
-      gap: Spacing.sm,
-      padding: Spacing.md,
-    }}
+    sx={{ flexDirection: 'column', alignItems: 'center', gap: Spacing.sm, padding: Spacing.md }}
     data-testid={`no-position-${type}`}
   >
     <LlamaIcon sx={{ width: IconSize.xxl, height: IconSize.xxl }} />

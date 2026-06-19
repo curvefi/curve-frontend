@@ -39,15 +39,12 @@ export const MintMarketPage = () => {
     isLoading: isMarketLoading,
     error: marketError,
   } = useMintMarket({ chainId, rMarket: rCollateralId })
-  const userMarketParams = { chainId, marketId: market?.id, userAddress: address }
-  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists(
-    {
-      chainId,
-      marketId: market?.id,
-      userAddress: address,
-    },
-    !!market, // enable query as soon as market is defined, the validation suite isn't able to detect it otherwise
-  )
+
+  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists({
+    chainId,
+    marketId: market?.id,
+    userAddress: address,
+  })
 
   const network = networks[chainId]
   const tokens = useMemo(() => (market ? getTokens(market) : {}), [market])
@@ -114,9 +111,9 @@ export const MintMarketPage = () => {
       <MarketBanners chainId={chainId} market={market} />
       <PositionDetailsComposite
         tokens={tokens}
-        params={userMarketParams}
         hasPosition={loanExists}
         events={collateralEvents}
+        params={{ chainId, marketId: market?.id, userAddress: address }}
       />
       <MarketInformationComposite
         market={market ?? null}
