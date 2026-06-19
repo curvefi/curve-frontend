@@ -43,6 +43,10 @@ import { waitFor } from '@ui-kit/utils/time.utils'
 
 const testCases = recordValues(LlamaMarketType).map(marketType => oneLoanTestMarket(marketType))
 
+/** Leverage is temporarily hidden in the app */
+const hasLeverage = false
+const hasLeverageManagement = false
+
 /**
  * The lend markets have a memoize() around the userState function that we cannot control from the outside.
  * This leads to the borrow more form detecting maxDebt=0 during the first render. It needs to be recalled once the user state is updated.
@@ -73,8 +77,6 @@ testCases.forEach(
     repay,
     improveHealth,
     chainId,
-    hasLeverage,
-    hasLeverageManagement,
     label,
     marketType,
   }) => {
