@@ -27,11 +27,9 @@ export const BridgeFormContent = ({
   isPending,
   isApproved,
   isConnected,
-  isConnecting,
   isWrongNetwork,
   onAmount,
   onSubmit,
-  onConnect,
   onChangeNetwork,
   onNetworkSelected,
 }: BridgeFormContentParams) => (
@@ -45,7 +43,7 @@ export const BridgeFormContent = ({
     />
 
     <BridgeAmount
-      disabled={loading || !isConnected || isConnecting || !!isWrongNetwork}
+      disabled={loading || !isConnected || !!isWrongNetwork}
       amount={amount}
       walletBalance={walletBalance}
       inputBalanceUsd={inputBalanceUsd}
@@ -57,16 +55,13 @@ export const BridgeFormContent = ({
       <AlertDisableForm>{bridgeDisabledAlert.message}</AlertDisableForm>
     ) : (
       <BridgeButton
-        disableConnect={loading || isConnecting}
         disableChangeNetwork={loading}
         disableBridge={!!amountError || !amount || loading || isApproved == null}
         isPending={isPending}
         isApproved={isApproved}
         isConnected={isConnected}
-        isConnecting={isConnecting}
         isWrongNetwork={isWrongNetwork}
         onSubmit={onSubmit}
-        onConnect={onConnect}
         onChangeNetwork={onChangeNetwork}
       />
     )}

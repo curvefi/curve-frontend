@@ -43,6 +43,10 @@ import { waitFor } from '@ui-kit/utils/time.utils'
 
 const testCases = recordValues(LlamaMarketType).map(marketType => oneLoanTestMarket(marketType))
 
+/** Leverage is temporarily hidden in the app */
+const hasLeverage = false
+const hasLeverageManagement = false
+
 /**
  * The lend markets have a memoize() around the userState function that we cannot control from the outside.
  * This leads to the borrow more form detecting maxDebt=0 during the first render. It needs to be recalled once the user state is updated.
@@ -73,8 +77,6 @@ testCases.forEach(
     repay,
     improveHealth,
     chainId,
-    hasLeverage,
-    hasLeverageManagement,
     label,
     marketType,
   }) => {
@@ -108,17 +110,21 @@ testCases.forEach(
         const { adminRpcUrl: nextAdminRpcUrl, publicRpcUrl } = getRpcUrls(vnet)
         adminRpcUrl = nextAdminRpcUrl
         if (chainId === Chain.Optimism) {
-          const borrowCap = '10' as const
+          const borrowedLiquidity = '10' as const
+          // keep the borrow cap above existing fork debt, otherwise LLv2 max_borrowable returns 0.
+          const borrowCap = '1000' as const
+
           setControllerBorrowCap({
             adminRpcUrl,
             publicRpcUrl,
             controllerAddress,
             borrowCap,
+            availableBalance: borrowedLiquidity,
             borrowedDecimals,
           })
           fundErc20({
             adminRpcUrl,
-            amountWei: `0x${parseUnits(borrowCap, borrowedDecimals).toString(16)}`,
+            amountWei: `0x${parseUnits(borrowedLiquidity, borrowedDecimals).toString(16)}`,
             tokenAddress: borrowedAddress,
             recipientAddresses: [controllerAddress],
           })

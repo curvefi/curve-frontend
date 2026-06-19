@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import Button, { type ButtonOwnProps } from '@mui/material/Button'
 import { ArrowTopRightIcon } from '@ui-kit/shared/icons/ArrowTopRightIcon'
 import { applySxProps } from '@ui-kit/utils'
@@ -9,7 +10,7 @@ export const ExternalLink = ({
   ...buttonProps
 }: {
   href: string
-  label: string
+  label: ReactNode
   /** Puts start icon on the left with the label, and end icon all the way to the right */
   wide?: boolean
 } & ButtonOwnProps) => (

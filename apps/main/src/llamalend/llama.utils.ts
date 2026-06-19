@@ -13,11 +13,11 @@ import { getUserMarketCollateralEvents as getLendUserMarketCollateralEvents } fr
 import type { BadDebt } from '@curvefi/prices-api/liquidations'
 import { type Address, Hex } from '@primitives/address.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
-import { maybe, notFalsy, objectKeys } from '@primitives/objects.utils'
+import { assert, maybe, notFalsy, objectKeys } from '@primitives/objects.utils'
 import { getLib, requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
 import { isZapV2Enabled } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { LlamaMarketType, LlamaMarketVersion } from '@ui-kit/types/market'
 import { CRVUSD, decimalMinus, decimalSum, formatNumber } from '@ui-kit/utils'
 import { SOLVENCY_THRESHOLDS } from './llama-markets.constants'
 
@@ -60,10 +60,12 @@ export const hasLeverageValue = (market: LlamaMarketTemplate) =>
   (market instanceof LendMarketTemplate && hasV1Leverage(market)) ||
   (market instanceof MintMarketTemplate && hasV2Leverage(market))
 
-export const hasV1Leverage = (market: LlamaMarketTemplate) =>
-  market instanceof LendMarketTemplate ? market.leverage.hasLeverage() : market?.leverageZap !== zeroAddress
+export const hasV1Leverage = (_market: LlamaMarketTemplate) => false
+/** market instanceof LendMarketTemplate
+    ? market.leverage.hasLeverage()
+    : market?.leverageZap !== zeroAddress */
 
-export const hasV2Leverage = (market: MintMarketTemplate) => market?.leverageV2.hasLeverage()
+export const hasV2Leverage = (_market: MintMarketTemplate) => false // market?.leverageV2.hasLeverage()
 
 const hasV1Deleverage = (market: LlamaMarketTemplate) =>
   market instanceof LendMarketTemplate ? hasV1Leverage(market) : market?.deleverageZap !== zeroAddress
@@ -90,8 +92,10 @@ export const canRepayFromUserCollateral = (market: LlamaMarketTemplate) =>
 
 export const hasVault = (market: LlamaMarketTemplate) => market instanceof LendMarketTemplate && 'vault' in market
 
-export const hasZapV2 = (market: LlamaMarketTemplate) =>
-  isZapV2Enabled() && market instanceof LendMarketTemplate && market.leverageZapV2.hasLeverage()
+export const hasZapV2 = (_market: LlamaMarketTemplate) => false
+/** isZapV2Enabled() &&
+  market instanceof LendMarketTemplate &&
+  market.leverageZapV2.hasLeverage() */
 
 export const isRouterRequired = (
   type: 'zapV2' | 'V0' | 'V1' | 'V2' | 'deleverage' | 'unleveragedMint' | 'unleveragedLend' | 'unleveraged',
@@ -102,6 +106,12 @@ export const hasGauge = (market: LlamaMarketTemplate) =>
 
 export const getMarketType = (market: LlamaMarketTemplate | null | undefined) =>
   market ? (market instanceof LendMarketTemplate ? LlamaMarketType.Lend : LlamaMarketType.Mint) : undefined
+
+export const getLendMarketVersion = (market: LendMarketTemplate): LlamaMarketVersion =>
+  assert(
+    { v1: LlamaMarketVersion.v1, v2: LlamaMarketVersion.v2 }[market.version],
+    `Unsupported LlamaLend market version: ${market.version}`,
+  )
 
 const getBorrowSymbol = (market: LlamaMarketTemplate) =>
   market instanceof MintMarketTemplate ? CRVUSD.symbol : market.borrowed_token.symbol

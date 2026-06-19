@@ -1,4 +1,5 @@
 import Box from '@mui/material/Box'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useCopyToClipboard } from '@ui-kit/hooks/useCopyToClipboard'
 import { t } from '@ui-kit/lib/i18n'
 import { ClickableInRowClass } from '@ui-kit/shared/ui/DataTable/data-table.utils'
@@ -38,7 +39,8 @@ export const TokenCell = ({
             {...source}
             boldPrimary
             secondary={
-              address ? (
+              !useIsMobile() &&
+              address && (
                 <Box
                   component="span"
                   className={ClickableInRowClass}
@@ -50,8 +52,6 @@ export const TokenCell = ({
                 >
                   {shortenAddress(address)}
                 </Box>
-              ) : (
-                source.secondary
               )
             }
           />

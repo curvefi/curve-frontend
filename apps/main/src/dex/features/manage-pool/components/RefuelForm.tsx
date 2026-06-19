@@ -3,7 +3,6 @@ import { useConnection } from 'wagmi'
 import type { Chain } from '@curvefi/prices-api'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
-import { useWallet } from '@ui-kit/features/connect-wallet'
 import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
 import { t } from '@ui-kit/lib/i18n'
 import { HelperMessage, LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
@@ -24,8 +23,7 @@ export type RefuelFormParams = {
 }
 
 export const RefuelForm = ({ chainId, blockchainId, poolAddress }: RefuelFormParams) => {
-  const { isConnected, isConnecting } = useConnection()
-  const { connect } = useWallet()
+  const { isConnected } = useConnection()
 
   const { form, values, tokenA, tokenB, poolTvl, refuelError, formErrors, isPending, isDisabled, onSubmit } =
     useRefuelForm({
@@ -98,13 +96,7 @@ export const RefuelForm = ({ chainId, blockchainId, poolAddress }: RefuelFormPar
           {t`Refuel`}
         </Button>
       ) : (
-        <ConnectWalletButton
-          type="button"
-          size="large"
-          loading={isConnecting}
-          onClick={() => void connect()}
-          data-testid="refuel-connect-wallet-button"
-        />
+        <ConnectWalletButton size="large" testId="refuel-connect-wallet-button" />
       )}
 
       <FormAlerts error={refuelError} formErrors={formErrors} handledErrors={['tokenAAmount', 'tokenBAmount']} />

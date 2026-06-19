@@ -134,15 +134,17 @@ export const TabsSwitcher = <T extends string | number>({
               endAdornment,
               suffix,
               sx: tabSx,
+              disabled,
+              icon,
               // avoids passing the alwaysInKebab prop to the DOM element
               alwaysInKebab: _alwaysInKebab,
-
-              ...props
             }) => (
               <Tab
                 data-testid={`${testIdPrefix}-${val}`}
                 key={val}
                 value={val}
+                disabled={disabled}
+                icon={icon}
                 label={
                   <TabLabel
                     label={label}
@@ -158,7 +160,6 @@ export const TabsSwitcher = <T extends string | number>({
                     hiddenValues.has(val) && { visibility: 'hidden', position: 'absolute', pointerEvents: 'none' }),
                 }}
                 {...(href && { href, component: Link })}
-                {...props}
               />
             ),
           )}

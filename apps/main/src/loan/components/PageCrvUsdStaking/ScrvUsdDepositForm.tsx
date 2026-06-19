@@ -5,7 +5,6 @@ import { networks, networksIdMapper } from '@/loan/networks'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
 import Button from '@mui/material/Button'
 import { joinButtonText } from '@primitives/string.utils'
-import { useWallet } from '@ui-kit/features/connect-wallet'
 import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
 import { t } from '@ui-kit/lib/i18n'
 import { q } from '@ui-kit/types/util'
@@ -15,8 +14,7 @@ import { useScrvUsdDepositForm } from './hooks/useScrvUsdDepositForm'
 import { ScrvUsdDepositInfoList } from './ScrvUsdDepositInfoList'
 
 export const ScrvUsdDepositForm = ({ network }: NetworkUrlParams) => {
-  const { isConnected, isConnecting } = useConnection()
-  const { connect } = useWallet()
+  const { isConnected } = useConnection()
   const chainId = networksIdMapper[network]
   const {
     form,
@@ -65,13 +63,7 @@ export const ScrvUsdDepositForm = ({ network }: NetworkUrlParams) => {
           {isPending ? t`Processing...` : joinButtonText(isApproved.data === false && t`Approve`, t`Deposit`)}
         </Button>
       ) : (
-        <ConnectWalletButton
-          type="button"
-          size="large"
-          loading={isConnecting}
-          onClick={() => void connect()}
-          data-testid="scrvusd-deposit-connect-wallet-button"
-        />
+        <ConnectWalletButton size="large" testId="scrvusd-deposit-connect-wallet-button" />
       )}
       <FormAlerts error={error} formErrors={formErrors} handledErrors={['depositAmount']} />
     </Form>

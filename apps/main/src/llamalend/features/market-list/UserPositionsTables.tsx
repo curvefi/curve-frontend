@@ -1,7 +1,6 @@
 import { useConnection } from 'wagmi'
 import Stack from '@mui/material/Stack'
 import { fromEntries, maybe, recordValues } from '@primitives/objects.utils'
-import { useWallet } from '@ui-kit/features/connect-wallet'
 import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
 import { t } from '@ui-kit/lib/i18n'
 import { getInternalUrl, LEND_MARKET_ROUTES, LEND_ROUTES } from '@ui-kit/shared/routes'
@@ -34,8 +33,7 @@ export const UserPositionsTables = ({
   tableQuery,
   tableQuery: { data: queryData, isLoading },
 }: UserPositionsTableProps) => {
-  const { address, isConnecting } = useConnection()
-  const { connect } = useWallet()
+  const { address } = useConnection()
   // Tracks whether the user has any positions for each market rate type.
   const hasUserPositions = maybe(queryData?.userHasPositions, userHasPositions =>
     fromEntries(
@@ -89,15 +87,7 @@ export const UserPositionsTables = ({
                 />
               )
             ) : (
-              <EmptyStateCard
-                action={
-                  <ConnectWalletButton
-                    label={t`Connect to view positions`}
-                    onClick={() => void connect()}
-                    loading={isConnecting}
-                  />
-                }
-              />
+              <EmptyStateCard action={<ConnectWalletButton label={t`Connect to view positions`} />} />
             )}
           </Stack>
         )}
