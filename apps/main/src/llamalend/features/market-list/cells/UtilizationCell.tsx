@@ -60,7 +60,8 @@ const UtilizationTooltipContent = ({
         <TooltipItem variant="primary" title={t`Utilization breakdown`} />
         {type === LlamaMarketType.Lend && (
           <TooltipItem title={t`Total supplied`}>
-            <Currency {...collateral} />
+            {/* The supplied token is the same as the token people borrow, even though we use the collateral balance in this case */}
+            <Currency {...borrowed} balance={collateral.balance} />
           </TooltipItem>
         )}
         <TooltipItem title={t`Total borrowed`}>
