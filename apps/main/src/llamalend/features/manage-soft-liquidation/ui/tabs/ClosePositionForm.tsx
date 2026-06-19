@@ -39,7 +39,7 @@ export const ClosePositionForm = ({
     table,
     debtTokenSymbol,
     collateralToRecover,
-    collateralToRecoverUsd,
+    hasBadDebt,
     missing,
     borrowedBalance,
     isDisabled,
@@ -94,7 +94,7 @@ export const ClosePositionForm = ({
       {missing != null && borrowedBalance != null && +missing > 0 ? (
         <AlertAdditionalDebtToken debtTokenSymbol={debtTokenSymbol} missing={missing} balance={borrowedBalance} />
       ) : (
-        <AlertClosePosition badDebt={collateralToRecoverUsd <= 0} />
+        <AlertClosePosition hasBadDebt={hasBadDebt} />
       )}
       <Stack sx={{ gap: Spacing.xs }}>
         <Button type="submit" loading={isPending} disabled={isDisabled} data-testid="close-position-submit-button">
@@ -102,7 +102,7 @@ export const ClosePositionForm = ({
             ? t`Processing...`
             : joinButtonText(
                 isApproved?.data === false && t`Approve`,
-                ...(collateralToRecoverUsd <= 0 ? [t`Repay bad debt`] : [t`Repay debt`, t`Recover collateral`]),
+                ...(hasBadDebt ? [t`Repay bad debt`] : [t`Repay debt`, t`Recover collateral`]),
               )}
         </Button>
       </Stack>

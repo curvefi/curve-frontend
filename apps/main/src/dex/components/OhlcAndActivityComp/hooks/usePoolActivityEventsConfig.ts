@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolLiquidityEvents } from '@/dex/entities/pool-liquidity.query'
 import { usePoolsPricesApi } from '@/dex/queries/pools-prices-api.query'
@@ -15,10 +15,10 @@ import {
   DEFAULT_PAGE_SIZE,
 } from '@ui-kit/features/activity-table'
 import { useCurve } from '@ui-kit/features/connect-wallet'
-import { combineQueryState } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
+import { useCombinedQueries } from '@ui-kit/lib/queries/combine'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { q } from '@ui-kit/types/util'
+import { fakeLoadingQ } from '@ui-kit/types/util'
 
 type UsePoolActivityProps = {
   chainId: ChainId
@@ -54,17 +54,20 @@ export const usePoolActivityEventsConfig = ({ chainId, poolAddress }: UsePoolAct
   const pageCount = getPageCount(liquidityData?.count, DEFAULT_PAGE_SIZE)
 
   // Transform liquidity data with block explorer URLs and pool tokens
-  const liquidityWithUrls: PoolLiquidityRow[] | undefined = useMemo(
-    () =>
-      network &&
-      liquidityData?.events.map(event => ({
-        ...event,
-        providerUrl: scanAddressPath(networkConfig, event.provider),
-        txUrl: scanTxPath(networkConfig, event.txHash),
-        network,
-        poolTokens,
-      })),
-    [liquidityData?.events, network, networkConfig, poolTokens],
+  const liquidityWithUrls = useCombinedQueries(
+    [poolLiquidityEvents, poolPriceApi, fakeLoadingQ(isHydrated || undefined)],
+    useCallback(
+      liquidityData =>
+        network &&
+        liquidityData.events.map(event => ({
+          ...event,
+          providerUrl: scanAddressPath(networkConfig, event.provider),
+          txUrl: scanTxPath(networkConfig, event.txHash),
+          network,
+          poolTokens,
+        })),
+      [network, networkConfig, poolTokens],
+    ),
   )
 
   const liquidityColumns = useMemo(
@@ -72,20 +75,14 @@ export const usePoolActivityEventsConfig = ({ chainId, poolAddress }: UsePoolAct
     [network, poolTokens],
   )
 
-  const { error, isLoading } = combineQueryState(poolLiquidityEvents, poolPriceApi)
-
   const table = useTable({
-    query: q({
-      data: liquidityWithUrls,
-      isLoading: isLoading || !isHydrated,
-      error: isHydrated ? error : null,
-    }),
+    query: liquidityWithUrls,
     columns: liquidityColumns,
     state: { columnVisibility: liquidityColumnVisibility, pagination },
     manualPagination: true,
     pageCount,
     onPaginationChange,
-    ...getTableOptions(liquidityWithUrls),
+    ...getTableOptions<PoolLiquidityRow>(liquidityWithUrls.data),
   })
 
   return {

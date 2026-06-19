@@ -3,7 +3,7 @@ import { fromDate } from '@curvefi/prices-api/timestamp'
 import type { Address, Token } from '@primitives/address.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { constQ, q } from '@ui-kit/types/util'
+import { constQ, fakeLoadingQ, q } from '@ui-kit/types/util'
 import { ActivityTable } from './ActivityTable'
 import {
   createPoolLiquidityColumns,
@@ -318,7 +318,7 @@ export const LendMarketActivity: LendStory = {
 
 const LoadingStateComponent = () => {
   const table = useTable({
-    query: q({ data: [] as PoolTradeRow[], isLoading: true, error: null }),
+    query: fakeLoadingQ<PoolTradeRow[]>(undefined),
     columns: POOL_TRADES_COLUMNS,
     ...getTableOptions<PoolTradeRow>([]),
   })
