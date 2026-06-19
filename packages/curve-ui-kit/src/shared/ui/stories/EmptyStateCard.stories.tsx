@@ -25,7 +25,7 @@ export const WithTitle: Story = {
   },
 }
 
-export const WithSubtitle: Story = {
+export const WithDescription: Story = {
   args: {
     description: 'Try adjusting your filters or search query.',
     button: undefined,
