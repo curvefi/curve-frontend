@@ -57,7 +57,7 @@ export const DexPool: Story = {
     icon: (
       <IconStack iconSize="lg">
         {[TOKENS.crvUSD, TOKENS.usdc, TOKENS.usdt].map(({ address, symbol }) => (
-          <TokenIcon key={`${address}-${symbol}`} blockchainId="ethereum" address={address} tooltip={symbol} />
+          <TokenIcon key={address} blockchainId="ethereum" address={address} tooltip={symbol} />
         ))}
       </IconStack>
     ),
