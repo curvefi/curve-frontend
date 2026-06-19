@@ -1,4 +1,3 @@
-import { sum, zip } from 'lodash'
 import { formatChartAxisNumber } from '@ui-kit/shared/ui/Chart'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { generateOracleReferenceLines, generateRangeBoundaryLines, type HorizontalLine } from './horizontalLines'
@@ -316,10 +315,10 @@ export const getChartOptions = (
   const priceMin = getPriceMin(chartData, oraclePrice, rangeOverlays)
   const priceMax = getPriceMax(chartData, oraclePrice, rangeOverlays)
 
-  // Calculate x-axis extent for horizontal lines (max endX value across all series)
+  // Calculate x-axis extent for horizontal lines (max endX value across all bands)
   // data format: [median, startX, widthX, pDown, pUp, isLiq, endX]
-  // endX is at index 6, and for the full extent we need marketWidth + userWidth
-  const xEnd = Math.max(...zip(derived.marketData, derived.userCollateralData, derived.userBorrowedData).map(sum))
+  // endX is at index 6 and spans the total band value.
+  const xEnd = Math.max(...derived.bandTotalData)
   const xStart = 0
 
   return {
@@ -409,10 +408,9 @@ export const getChartOptions = (
         const pDown = d.p_down
         const pUp = d.p_up
         const isLiq = derived.isLiquidation[i] ? 1 : 0
-        const marketWidth = derived.marketData[i] ?? 0
         const userCollateralWidth = derived.userCollateralData[i] ?? 0
         const userBorrowedWidth = derived.userBorrowedData[i] ?? 0
-        const totalWidth = marketWidth + userCollateralWidth + userBorrowedWidth
+        const totalWidth = derived.bandTotalData[i] ?? 0
         marketSeriesData.push([median, 0, totalWidth, pDown, pUp, isLiq, totalWidth])
         userCollateralSeriesData.push([median, 0, userCollateralWidth, pDown, pUp, isLiq, userCollateralWidth])
         userBorrowedSeriesData.push([

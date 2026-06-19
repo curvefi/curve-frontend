@@ -1,13 +1,18 @@
 import { useMemo } from 'react'
-import { ChartDataPoint, DerivedChartData } from '../types'
+import type { Decimal } from '@primitives/decimal.utils'
+import { decimalSum } from '@ui-kit/utils/decimal'
+import type { ChartDataPoint, DerivedChartData } from '../types'
+
+const ZERO: Decimal = '0'
+const toNumber = (value: Decimal | undefined): number => Number(value ?? ZERO)
 
 /**
  * Derives chart-specific data from raw band data
  *
  * Transforms the raw chart data into arrays optimized for ECharts rendering:
  * - yAxisData: Price values for the y-axis (median of band price range)
- * - marketData: Total market value per band
- * - userData: User's current position value per band
+ * - userData: User's current position value per band, denominated in the borrow token
+ * - bandTotalData: Total band value per band, denominated in the borrow token
  * - isLiquidation: Flags indicating if a band is in soft liquidation
  *
  * @param chartData - Raw chart data points
@@ -16,25 +21,24 @@ import { ChartDataPoint, DerivedChartData } from '../types'
 export const useDerivedChartData = (chartData: ChartDataPoint[]): DerivedChartData =>
   useMemo(() => {
     const yAxisData: number[] = []
-    const marketData: number[] = []
     const userCollateralData: number[] = []
     const userBorrowedData: number[] = []
+    const bandTotalData: number[] = []
     const isLiquidation: boolean[] = []
 
     for (const d of chartData) {
       // Use median price for y-axis labels
       yAxisData.push(d.pUpDownMedian)
 
-      const totalBandValue = (d.bandCollateralValueUsd ?? 0) + (d.bandBorrowedValueUsd ?? 0)
-      const userCollateralValue = d.userBandCollateralValueUsd ?? 0
-      const userBorrowedValue = d.userBandBorrowedValueUsd ?? 0
-      const marketBandValue = totalBandValue - userCollateralValue - userBorrowedValue
+      const userCollateralValue = d.userBandCollateralValue ?? ZERO
+      const userBorrowedValue = d.userBandBorrowedAmount ?? ZERO
+      const totalBandValue = d.bandTotalValue ?? decimalSum(userCollateralValue, userBorrowedValue)
 
-      marketData.push(marketBandValue)
-      userCollateralData.push(userCollateralValue)
-      userBorrowedData.push(userBorrowedValue)
+      userCollateralData.push(toNumber(userCollateralValue))
+      userBorrowedData.push(toNumber(userBorrowedValue))
+      bandTotalData.push(toNumber(totalBandValue))
       isLiquidation.push(d.isLiquidationBand)
     }
 
-    return { yAxisData, marketData, userCollateralData, userBorrowedData, isLiquidation }
+    return { yAxisData, userCollateralData, userBorrowedData, bandTotalData, isLiquidation }
   }, [chartData])
