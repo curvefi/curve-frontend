@@ -16,6 +16,7 @@ import { TablePagination } from '@ui-kit/shared/ui/DataTable/TablePagination'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { EmptyStateCard, EmptyStateCardProps } from '../EmptyStateCard'
+import { ErrorMessage } from '../ErrorMessage'
 import { DataTableHeaderHeight, type DataTableSize, type TableItem, type TanstackTable } from './data-table.utils'
 import { DataRow, type DataRowProps } from './DataRow'
 import { EmptyStateRow } from './EmptyStateRow'
@@ -37,7 +38,7 @@ type TableEmptyState = {
   emptyButton?: EmptyStateCardProps['button']
   errorTitle?: EmptyStateCardProps['title']
   errorMessage?: EmptyStateCardProps['description']
-  errorButton?: EmptyStateCardProps['button']
+  onReload?: () => Promise<unknown> | void
 } & Pick<EmptyStateCardProps, 'size'>
 
 /**
@@ -117,7 +118,7 @@ export const DataTable = <T extends TableItem>({
     }),
   })
   const showFooter = !isLoading && (showPagination || showViewAllButton || footerRow)
-  const { emptyTitle, emptyMessage, emptyButton, errorTitle, errorMessage, errorButton } = emptyState ?? {}
+  const { emptyTitle, emptyMessage, emptyButton, errorTitle, errorMessage, onReload } = emptyState ?? {}
 
   return (
     <WithWrapper Wrapper={Box} shouldWrap={maxHeight} sx={{ maxHeight, overflowY: 'auto' }} ref={containerRef}>
@@ -171,15 +172,20 @@ export const DataTable = <T extends TableItem>({
                 />
               ) : rows.length === 0 ? (
                 <EmptyStateRow table={table}>
-                  <EmptyStateCard
-                    title={error ? (errorTitle ?? t`Could not load data`) : (emptyTitle ?? t`No results found`)}
-                    description={
-                      error
-                        ? (errorMessage ?? error.message)
-                        : (emptyMessage ?? t`Try adjusting your filters or search query`)
-                    }
-                    button={error ? errorButton : emptyButton}
-                  />
+                  {error ? (
+                    <ErrorMessage
+                      title={errorTitle ?? t`Could not load data`}
+                      subtitle={errorMessage ?? error.message}
+                      error={error}
+                      refreshData={onReload}
+                    />
+                  ) : (
+                    <EmptyStateCard
+                      title={emptyTitle ?? t`No results found`}
+                      description={emptyMessage ?? t`Try adjusting your filters or search query`}
+                      button={emptyButton}
+                    />
+                  )}
                 </EmptyStateRow>
               ) : (
                 visibleRows.map(row => (

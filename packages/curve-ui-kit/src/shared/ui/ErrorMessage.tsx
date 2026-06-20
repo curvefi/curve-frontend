@@ -1,3 +1,4 @@
+import { ReactNode } from 'react'
 import { Stack, SxProps } from '@mui/material'
 import { ErrorReportModal } from '@ui-kit/features/report-error'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
@@ -10,14 +11,12 @@ export const ErrorMessage = ({
   title,
   subtitle,
   error,
-  errorMessage,
   refreshData,
   sx,
 }: {
-  title: string
-  subtitle?: string
+  title: ReactNode
+  subtitle?: ReactNode
   error?: Error | string
-  errorMessage: string
   refreshData?: () => Promise<unknown> | void
   sx?: SxProps
 }) => {
@@ -31,7 +30,7 @@ export const ErrorMessage = ({
         button={{ label: t`Submit error report`, testId: 'submit-error-report-button', onClick: openReportModal }}
         {...(refreshData && {
           secondaryButton: {
-            label: 'Refresh',
+            label: 'Reload',
             startIcon: <ReloadIcon />,
             onClick: () => {
               void refreshData()
@@ -39,11 +38,7 @@ export const ErrorMessage = ({
           },
         })}
       />
-      <ErrorReportModal
-        isOpen={isReportOpen}
-        onClose={closeReportModal}
-        context={{ error, title, subtitle: errorMessage }}
-      />
+      <ErrorReportModal isOpen={isReportOpen} onClose={closeReportModal} context={{ error, title, subtitle }} />
     </Stack>
   )
 }

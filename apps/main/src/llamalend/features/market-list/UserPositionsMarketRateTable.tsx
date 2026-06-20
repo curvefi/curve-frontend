@@ -76,7 +76,7 @@ export const UserPositionsMarketRateTable = ({ tableQuery, marketRateType, onRel
         emptyTitle: t`No active positions`,
         emptyMessage: EMPTY_POSITIONS_SUBTITLE[marketRateType],
         errorTitle: t`Could not load positions`,
-        errorButton: { label: t`Reload`, onClick: onReload },
+        onReload,
       }}
       expandedPanel={LlamaMarketExpandedPanel}
       shouldStickFirstColumn={Boolean(useIsTablet() && rowCount)}
