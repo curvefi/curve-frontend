@@ -28,9 +28,9 @@ export const usePointsCampaigns = ({
   const rows = useMemo(
     () =>
       campaigns
-        .filter(({ reward }) => reward?.type === 'points')
+        .filter(({ reward, symbol }) => reward?.type === 'points' || (!reward?.type && symbol))
         .map(
-          ({ dashboardLink, reward, platform, platformImageId }): PointsCampaignsRow => ({
+          ({ dashboardLink, reward, platform, platformImageId, symbol }): PointsCampaignsRow => ({
             source: {
               icon: (
                 <Box
@@ -43,7 +43,7 @@ export const usePointsCampaigns = ({
               iconPosition: 'left',
               primary: platform,
             },
-            multiplier: formatNumber(reward?.value, 'multiplier'),
+            multiplier: reward?.value != null || symbol == null ? formatNumber(reward?.value, 'multiplier') : symbol,
             campaignUrl: dashboardLink,
           }),
         ),
