@@ -1,36 +1,28 @@
 import { useCallback, useMemo } from 'react'
-import type { V2PoolFilterType as PoolType } from '@curvefi/prices-api/pools'
 import { maybe, notFalsy, recordValues } from '@primitives/objects.utils'
 import { useSearchParams } from '@ui-kit/hooks/router'
-import { t } from '@ui-kit/lib/i18n'
+import {
+  POOL_LIST_CRYPTO_POOL_TYPE_ALIASES,
+  POOL_LIST_POOL_TYPE_FILTERS,
+  POOL_LIST_POOL_TYPES,
+  type PoolListPoolType,
+} from '../poolList.constants'
 import type { PoolListQueryUpdater } from './usePoolListPagination'
 
 const POOL_TYPE_QUERY_FIELD = 'filter'
 const SEARCH_QUERY_FIELD = 'search'
 
-// Omitted "main" and "factory" from available filters.
-const POOL_TYPE_FILTERS = [
-  { key: 'stableswapng', label: t`Stable NG` },
-  { key: 'crvusd', label: t`crvUSD` },
-  { key: 'crypto', label: t`Twocrypto` },
-  { key: 'factory_tricrypto', label: t`Tricrypto` },
-] satisfies { key: PoolType; label: string }[]
-
-export type PoolListPoolType = (typeof POOL_TYPE_FILTERS)[number]['key']
-export type PoolListFilter = (typeof POOL_TYPE_FILTERS)[number]
-
-const POOL_TYPES = POOL_TYPE_FILTERS.map(({ key }) => key)
-const POOL_TYPE_SET = new Set<string>(POOL_TYPES)
-
-// The API bundles crypto, factory_crypto, and twocryptong pools under the "crypto" filter.
-const CRYPTO_POOL_TYPE_ALIASES = new Set<string>(['factory_crypto', 'twocryptong'])
+const POOL_TYPE_SET = new Set<string>(POOL_LIST_POOL_TYPES)
 
 const DEFAULT_FILTER_QUERY = { [SEARCH_QUERY_FIELD]: null, [POOL_TYPE_QUERY_FIELD]: null }
 
 const isPoolType = (value: string | null): value is PoolListPoolType => value != null && POOL_TYPE_SET.has(value)
 
+// The API exposes crypto aliases that map back to the single "crypto" UI filter.
 export const getPoolTypeFromQuery = (value: string | null): PoolListPoolType | undefined =>
-  maybe(value, value => (CRYPTO_POOL_TYPE_ALIASES.has(value) ? 'crypto' : isPoolType(value) ? value : undefined))
+  maybe(value, value =>
+    POOL_LIST_CRYPTO_POOL_TYPE_ALIASES.has(value) ? 'crypto' : isPoolType(value) ? value : undefined,
+  )
 
 /**
  * Pool list filters are prices API query params, not TanStack column filters.
@@ -64,7 +56,7 @@ export const usePoolListFilters = (updateQueryAndResetPage: PoolListQueryUpdater
     activeFilterCount,
     onSearch,
     poolType,
-    poolTypeFilters: POOL_TYPE_FILTERS,
+    poolTypeFilters: POOL_LIST_POOL_TYPE_FILTERS,
     resetFilters,
     searchText,
     setPoolType,

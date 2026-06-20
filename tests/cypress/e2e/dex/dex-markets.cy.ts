@@ -1,5 +1,10 @@
 import { orderBy } from 'lodash'
 import { oneOf } from '@cy/support/generators'
+import {
+  DEX_POOL_LIST_NAVIGATION_POOL,
+  DEX_POOL_LIST_SEARCH,
+  setupDexPoolListMocks,
+} from '@cy/support/helpers/dex-pool-list-mocks'
 import { mockMerklCampaigns } from '@cy/support/helpers/lending-mocks'
 import { API_LOAD_TIMEOUT, type Breakpoint, LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
 import { assert } from '@primitives/objects.utils'
@@ -28,6 +33,7 @@ function visitAndWait(
 ) {
   cy.viewport(width, height)
   cy.visitWithoutTestConnector(`dex/${network}/pools/${query ? `?${new URLSearchParams(query)}` : ''}`, options)
+  cy.wait('@dex-pools', API_LOAD_TIMEOUT)
   cy.get('[data-testid^="data-table-row-"]', API_LOAD_TIMEOUT).should('have.length.greaterThan', 0)
   if (query?.page) {
     cy.get('[data-testid="table-pagination"]').should('be.visible')
@@ -54,6 +60,7 @@ describe('DEX Pools', () => {
   let width: number, height: number
 
   beforeEach(() => {
+    setupDexPoolListMocks()
     mockMerklCampaigns()
     ;[width, height, breakpoint] = oneViewport()
   })
@@ -78,6 +85,7 @@ describe('DEX Pools', () => {
         cy.get(`[data-testid="data-table-header-${field}"]`).click()
         cy.get('[data-testid="drawer-sort-menu-dex-pools"]').should('not.exist')
       }
+      cy.wait('@dex-pools', API_LOAD_TIMEOUT)
       if (expectedOrder) {
         cy.get(`[data-testid="icon-sort-${field}-${expectedOrder}"]`).should('be.visible')
       } else {
@@ -96,6 +104,7 @@ describe('DEX Pools', () => {
       }
       cy.get(`[data-testid="filter-chip-${chip}"]`).click()
       cy.get('[data-testid="drawer-filter-menu-dex-pools"]').should(isMobile ? 'not.be.visible' : 'not.exist')
+      cy.wait('@dex-pools', API_LOAD_TIMEOUT)
     }
 
     it('sorts by volume', () => {
@@ -127,21 +136,29 @@ describe('DEX Pools', () => {
     })
 
     it('navigates to pool deposit page by clicking a row', () => {
-      cy.get('[data-testid^="data-table-row-"]').first().click()
+      const poolLink = `[data-testid="market-link-${DEX_POOL_LIST_NAVIGATION_POOL.address}"]`
+
       if (breakpoint === 'mobile') {
-        cy.get('[data-testid="collapse-icon"]').first().should('be.visible')
+        cy.get(poolLink, API_LOAD_TIMEOUT).closest('[data-testid^="data-table-row-"]').click()
+        cy.get('[data-testid="collapse-icon"]').should('be.visible')
         cy.get('[data-testid="pool-link-deposit"]').click()
+      } else {
+        cy.get(poolLink, API_LOAD_TIMEOUT).click()
       }
-      cy.url(LOAD_TIMEOUT).should('match', /\/dex\/arbitrum\/pools\/[^/]+\/(deposit|swap)\/?$/)
-      cy.title().should('match', /Curve - Pool - .* - Curve/)
+      cy.url(LOAD_TIMEOUT).should(
+        'include',
+        `/dex/${DEX_POOL_LIST_NAVIGATION_POOL.network}/pools/${DEX_POOL_LIST_NAVIGATION_POOL.address}/deposit`,
+      )
+      cy.get('[data-testid="pool-form-tab-deposit"]', API_LOAD_TIMEOUT).should('be.visible')
     })
   })
 
   it('searches pools and preserves search after navigation', () => {
     visitAndWait(width, height, { network: 'ethereum' })
-    const filter = 'ebUSD'
+    const filter = DEX_POOL_LIST_SEARCH
     cy.get('[data-testid="table-text-search-dex-pool-list"] input').type(filter)
     cy.url().should('include', `?search=${filter}`)
+    cy.wait('@dex-pools', API_LOAD_TIMEOUT)
     cy.contains('[data-testid^="market-link-"]', filter, API_LOAD_TIMEOUT).should('be.visible')
     if (breakpoint === 'mobile') {
       cy.get('[data-testid^="data-table-row-"]').first().click()

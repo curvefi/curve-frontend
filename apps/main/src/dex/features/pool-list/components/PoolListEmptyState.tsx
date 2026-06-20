@@ -4,7 +4,7 @@ import { Button } from '@ui/Button'
 import { ExternalLink } from '@ui/Link/ExternalLink'
 import { CURVE_SOCIALS } from '@ui/utils'
 import { Trans } from '@ui-kit/lib/i18n'
-import type { PoolListFilter } from '../hooks/usePoolListFilters'
+import type { PoolListFilter } from '../poolList.constants'
 
 enum ERROR {
   api = 'api',

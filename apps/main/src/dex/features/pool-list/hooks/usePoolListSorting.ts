@@ -5,21 +5,27 @@ import type { OnChangeFn, SortingState } from '@tanstack/react-table'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
 import { POOL_LIST_TITLES, PoolListColumnId, getDefaultSort } from '../columns'
+import { POOL_LIST_SORT_BY, type PoolListSortableColumn } from '../poolList.constants'
 import type { PoolListQueryUpdater } from './usePoolListPagination'
 
 const SORT_QUERY_FIELD = 'sort'
-
-export type PoolListSortableColumn =
-  | PoolListColumnId.PoolName
-  | PoolListColumnId.RewardsBase
-  | PoolListColumnId.Volume
-  | PoolListColumnId.Tvl
-
 const SORT_COLUMNS = {
-  [PoolListColumnId.PoolName]: { sortBy: 'name', label: POOL_LIST_TITLES[PoolListColumnId.PoolName] },
-  [PoolListColumnId.RewardsBase]: { sortBy: 'base_daily_apr', label: POOL_LIST_TITLES[PoolListColumnId.RewardsBase] },
-  [PoolListColumnId.Volume]: { sortBy: 'volume', label: POOL_LIST_TITLES[PoolListColumnId.Volume] },
-  [PoolListColumnId.Tvl]: { sortBy: 'tvl', label: t`Total Value Locked` },
+  [PoolListColumnId.PoolName]: {
+    sortBy: POOL_LIST_SORT_BY[PoolListColumnId.PoolName],
+    label: POOL_LIST_TITLES[PoolListColumnId.PoolName],
+  },
+  [PoolListColumnId.RewardsBase]: {
+    sortBy: POOL_LIST_SORT_BY[PoolListColumnId.RewardsBase],
+    label: POOL_LIST_TITLES[PoolListColumnId.RewardsBase],
+  },
+  [PoolListColumnId.Volume]: {
+    sortBy: POOL_LIST_SORT_BY[PoolListColumnId.Volume],
+    label: POOL_LIST_TITLES[PoolListColumnId.Volume],
+  },
+  [PoolListColumnId.Tvl]: {
+    sortBy: POOL_LIST_SORT_BY[PoolListColumnId.Tvl],
+    label: t`Total Value Locked`,
+  },
 } as const satisfies Record<PoolListSortableColumn, { sortBy: PoolSortField; label: string }>
 
 type ColumnSort = { id: PoolListSortableColumn; desc: boolean }
