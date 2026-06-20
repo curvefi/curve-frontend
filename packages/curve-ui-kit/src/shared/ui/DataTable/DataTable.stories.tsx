@@ -8,10 +8,8 @@ import { createColumnHelper } from '@tanstack/react-table'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q } from '@ui-kit/types/util'
 import { formatNumber } from '@ui-kit/utils'
-import { EmptyStateCard } from '../EmptyStateCard'
 import { type ColumnDefinition, getTableOptions, type TableItem, useTable } from './data-table.utils'
 import { DataTable } from './DataTable'
-import { EmptyStateRow } from './EmptyStateRow'
 
 const { Spacing } = SizesAndSpaces
 
@@ -46,7 +44,7 @@ type DemoDataTableProps = Omit<DataTableProps, 'table' | 'emptyState' | 'childre
   showFooterRow?: boolean
   showFilterRow?: boolean
   emptyTitle?: string
-  emptySubtitle?: string
+  emptyMessage?: string
 }
 
 const columnHelper = createColumnHelper<MarketRow>()
@@ -154,13 +152,17 @@ const DemoDataTable = ({
   showFooterRow,
   showFilterRow,
   emptyTitle,
-  emptySubtitle,
+  emptyMessage,
 }: DemoDataTableProps) => {
   const generatedRows = useMemo(() => generateMarketRows(rowCount), [rowCount])
   const data = isLoading || isError ? [] : generatedRows
   const columns = useMemo(() => createMarketColumns(extraColumnCount), [extraColumnCount])
   const table = useTable({
-    query: q({ data, isLoading: !!isLoading, error: isError ? new globalThis.Error('Could not load markets') : null }),
+    query: q({
+      data,
+      isLoading: !!isLoading,
+      error: isError ? new globalThis.Error('Network request failed while loading data') : null,
+    }),
     columns,
     initialState: { pagination },
     ...getTableOptions(data),
@@ -170,14 +172,10 @@ const DemoDataTable = ({
   const tableElement = (
     <DataTable
       table={table}
-      emptyState={
-        <EmptyStateRow table={table}>
-          <EmptyStateCard
-            title={isError ? 'Could not load markets' : emptyTitle || 'No markets found'}
-            description={isError ? 'Refresh and try again.' : emptySubtitle || 'Try adjusting the table filters.'}
-          />
-        </EmptyStateRow>
-      }
+      emptyState={{
+        emptyTitle,
+        emptyMessage,
+      }}
       disableStickyHeader={disableStickyHeader}
       shouldStickFirstColumn={shouldStickFirstColumn}
       hideHeader={hideHeader}
@@ -226,8 +224,6 @@ const meta: Meta<typeof DemoDataTable> = {
     wrapperWidth: undefined,
     showFooterRow: false,
     showFilterRow: false,
-    emptyTitle: 'No markets found',
-    emptySubtitle: 'Try adjusting the table filters.',
   },
   argTypes: {
     rowCount: {
@@ -292,7 +288,7 @@ const meta: Meta<typeof DemoDataTable> = {
       control: 'text',
       description: 'Title for the non-error empty state.',
     },
-    emptySubtitle: {
+    emptyMessage: {
       control: 'text',
       description: 'Subtitle for the non-error empty state.',
     },
@@ -322,17 +318,17 @@ export const LimitedRows: Story = {
   },
 }
 
-export const Empty: Story = {
-  args: {
-    rowCount: 0,
-    emptyTitle: 'No markets found',
-    emptySubtitle: 'Generated market rows are intentionally empty in this story.',
-  },
-}
-
 export const Loading: Story = {
   args: {
     isLoading: true,
+  },
+}
+
+export const Empty: Story = {
+  args: {
+    rowCount: 0,
+    emptyTitle: 'No results found',
+    emptyMessage: 'Generated market rows are intentionally empty in this story.',
   },
 }
 

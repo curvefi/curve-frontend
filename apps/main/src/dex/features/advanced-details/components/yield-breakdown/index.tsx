@@ -5,7 +5,6 @@ import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
-import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { constQ } from '@ui-kit/types/util'
 import { useYieldBreakdown } from '../../hooks/useYieldBreakdown'
 import {
@@ -45,7 +44,7 @@ export const YieldBreakdown = ({
         <DataTable<YieldBreakdownRow>
           table={table}
           disableStickyHeader
-          emptyState={<EmptyStateRow table={table} size="sm">{t`No yield breakdown found.`}</EmptyStateRow>}
+          emptyState={{ size: 'sm', emptyTitle: t`No yield breakdown found.` }}
           footerRow={<FooterRow visibleColumns={table.getVisibleLeafColumns()} baseTotal={baseTotal} total={total} />}
         />
       </Stack>

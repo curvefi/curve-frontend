@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { PositionsEmptyState } from '@/llamalend/constants'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { ExpandedState } from '@tanstack/react-table'
@@ -15,9 +14,13 @@ import type { LlamaMarket } from '../../queries/market-list/llama-markets'
 import { DEFAULT_SORT_BORROW, DEFAULT_SORT_SUPPLY, LLAMA_MARKET_COLUMNS } from './columns'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
-import { UserPositionsEmptyState } from './UserPositionsEmptyState'
 
 const { Spacing, Sizing } = SizesAndSpaces
+
+const EMPTY_POSITIONS_SUBTITLE: Record<MarketRateType, string> = {
+  [MarketRateType.Borrow]: t`Borrow with LLAMMA to stay exposed, reduce liquidation risk, and access liquidity without selling.`,
+  [MarketRateType.Supply]: t`Lend assets to earn yield and support deep liquidity across Curve.`,
+}
 
 const TABLE_CONFIG = {
   [MarketRateType.Borrow]: {
@@ -34,9 +37,6 @@ const TABLE_CONFIG = {
   },
 }
 
-const getEmptyState = (isError: boolean): PositionsEmptyState =>
-  isError ? PositionsEmptyState.Error : PositionsEmptyState.NoPositions
-
 type UserPositionsTableProps = {
   tableQuery: QueryProp<LlamaMarket[]>
   marketRateType: MarketRateType
@@ -46,12 +46,7 @@ type UserPositionsTableProps = {
 const pagination = { pageIndex: 0, pageSize: 50 }
 const DEFAULT_VISIBLE_ROWS = 3
 
-export const UserPositionsMarketRateTable = ({
-  tableQuery,
-  tableQuery: { data = [], error },
-  marketRateType,
-  onReload,
-}: UserPositionsTableProps) => {
+export const UserPositionsMarketRateTable = ({ tableQuery, marketRateType, onReload }: UserPositionsTableProps) => {
   const { label, defaultSort, sortQueryField, storageKey } = TABLE_CONFIG[marketRateType]
   const [sorting, onSortingChange] = useSortFromQueryString(defaultSort, sortQueryField)
   const { columnVisibility } = useLlamaTableVisibility(storageKey, sorting, marketRateType)
@@ -66,25 +61,25 @@ export const UserPositionsMarketRateTable = ({
     onExpandedChange: setExpanded,
     ...getTableOptions(tableQuery.data),
   })
+  const rowCount = table.getRowModel().rows.length
+
   return (
     <DataTable
       table={table}
       defaultVisibleRows={{
         max: DEFAULT_VISIBLE_ROWS,
-        buttonLabel: t`View all ${data.length} ${marketRateType.toLowerCase()} positions`,
+        buttonLabel: t`View all ${rowCount} ${marketRateType.toLowerCase()} positions`,
       }}
       // with two user positions tables let's avoid having too many skeletons rows when loading
       increasingLengthOptions={{ initialLength: 1, maxLength: 3 }}
-      emptyState={
-        <UserPositionsEmptyState
-          state={getEmptyState(!!error)}
-          table={table}
-          marketRateType={marketRateType}
-          onReload={onReload}
-        />
-      }
+      emptyState={{
+        emptyTitle: t`No active positions`,
+        emptyMessage: EMPTY_POSITIONS_SUBTITLE[marketRateType],
+        errorTitle: t`Could not load positions`,
+        errorButton: { label: t`Reload`, onClick: onReload },
+      }}
       expandedPanel={LlamaMarketExpandedPanel}
-      shouldStickFirstColumn={Boolean(useIsTablet() && data.length)}
+      shouldStickFirstColumn={Boolean(useIsTablet() && rowCount)}
     >
       <Stack
         sx={{

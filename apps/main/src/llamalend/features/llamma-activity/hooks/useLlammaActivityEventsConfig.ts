@@ -73,7 +73,7 @@ export const useLlammaActivityEventsConfig = ({
 
   return {
     table,
-    emptyMessage: t`No activity data found.`,
-    errorMessage: t`Could not load activity data.`,
+    emptyTitle: t`No activity data found.`,
+    errorTitle: t`Could not load activity data.`,
   }
 }

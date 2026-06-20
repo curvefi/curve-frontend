@@ -19,7 +19,7 @@ type EmptyStateButtonProps = ButtonProps & {
   testId?: string
 }
 
-type EmptyStateCardProps = {
+export type EmptyStateCardProps = {
   title?: ReactNode
   description?: ReactNode
   isLoading?: boolean

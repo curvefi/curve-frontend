@@ -1,7 +1,5 @@
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import Alert from '@mui/material/Alert'
-import AlertTitle from '@mui/material/AlertTitle'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
@@ -31,7 +29,6 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
     params,
     claimableTokens,
     isLoading,
-    isError,
     isCrvDisabled,
     isRewardsDisabled,
     isCrvPending,
@@ -54,13 +51,7 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
       >
         <DataTable<ClaimableToken>
           table={table}
-          emptyState={
-            !isError && (
-              <Alert severity="info" variant="outlined" data-testid={`${TEST_ID_PREFIX}-empty-state`}>
-                <AlertTitle>{t`No rewards to claim`}</AlertTitle>
-              </Alert>
-            )
-          }
+          emptyState={{ size: 'sm', emptyTitle: t`No rewards to claim` }}
           hideHeader
           footerRow={
             !!claimableTokens.length &&

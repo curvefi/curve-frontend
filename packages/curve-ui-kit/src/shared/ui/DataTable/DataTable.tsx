@@ -15,8 +15,10 @@ import { t } from '@ui-kit/lib/i18n'
 import { TablePagination } from '@ui-kit/shared/ui/DataTable/TablePagination'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { EmptyStateCard, EmptyStateCardProps } from '../EmptyStateCard'
 import { DataTableHeaderHeight, type DataTableSize, type TableItem, type TanstackTable } from './data-table.utils'
 import { DataRow, type DataRowProps } from './DataRow'
+import { EmptyStateRow } from './EmptyStateRow'
 import { FilterRow } from './FilterRow'
 import { HeaderCell } from './HeaderCell'
 import { useScrollToTopOnFilterChange, useScrollToTopOnPageChange } from './hooks/useTableScroll'
@@ -28,6 +30,15 @@ import { useTableRowLimit } from './useTableRowLimit'
 const TABLE_FILTERS_TEST_ID = 'table-filters'
 
 const { Height } = SizesAndSpaces
+
+type TableEmptyState = {
+  emptyTitle?: EmptyStateCardProps['title']
+  emptyMessage?: EmptyStateCardProps['description']
+  emptyButton?: EmptyStateCardProps['button']
+  errorTitle?: EmptyStateCardProps['title']
+  errorMessage?: EmptyStateCardProps['description']
+  errorButton?: EmptyStateCardProps['button']
+} & Pick<EmptyStateCardProps, 'size'>
 
 /**
  * Resets the table pagination to the first page whenever the number of filtered results changes.
@@ -65,7 +76,8 @@ export const DataTable = <T extends TableItem>({
   ...rowProps
 }: {
   table: TanstackTable<T>
-  emptyState: ReactNode
+  // Optional overrides for the built-in empty/error state title, description, and action button.
+  emptyState?: TableEmptyState
   children?: ReactNode // passed to <FilterRow />
   size?: DataTableSize
   maxHeight?: `${number}rem` // also sets overflowY to 'auto'
@@ -77,7 +89,7 @@ export const DataTable = <T extends TableItem>({
   increasingLengthOptions?: IncreasingLengthOptions // optional props for the SkeletonRows
 } & Omit<DataRowProps<T>, 'table' | 'row'>) => {
   const { table } = rowProps
-  const { isLoading } = table
+  const { isLoading, error } = table
   const { max: rowLimit, buttonLabel: viewAllLabel } = defaultVisibleRows ?? {}
   const { rows } = table.getRowModel()
   const { isLimited, isLoading: isLoadingViewAll, onShowAll } = useTableRowLimit(rowLimit, rows.length)
@@ -105,6 +117,7 @@ export const DataTable = <T extends TableItem>({
     }),
   })
   const showFooter = !isLoading && (showPagination || showViewAllButton || footerRow)
+  const { emptyTitle, emptyMessage, emptyButton, errorTitle, errorMessage, errorButton } = emptyState ?? {}
 
   return (
     <WithWrapper Wrapper={Box} shouldWrap={maxHeight} sx={{ maxHeight, overflowY: 'auto' }} ref={containerRef}>
@@ -157,7 +170,17 @@ export const DataTable = <T extends TableItem>({
                   {...increasingLengthOptions}
                 />
               ) : rows.length === 0 ? (
-                emptyState
+                <EmptyStateRow table={table}>
+                  <EmptyStateCard
+                    title={error ? (errorTitle ?? t`Could not load data`) : (emptyTitle ?? t`No results found`)}
+                    description={
+                      error
+                        ? (errorMessage ?? error.message)
+                        : (emptyMessage ?? t`Try adjusting your filters or search query`)
+                    }
+                    button={error ? errorButton : emptyButton}
+                  />
+                </EmptyStateRow>
               ) : (
                 visibleRows.map(row => (
                   <DataRow<T> key={row.id} row={row} shouldStickFirstColumn={shouldStickFirstColumn} {...rowProps} />

@@ -7,7 +7,6 @@ import { DEFAULT_INCREASING_LENGTH } from '@ui-kit/hooks/useIncreasingLength'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
-import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { q } from '@ui-kit/types/util'
 import { useMarketComposition } from '../../hooks/useMarketComposition'
 import {
@@ -49,7 +48,7 @@ export const MarketComposition = ({
         table={table}
         disableStickyHeader
         increasingLengthOptions={{ ...DEFAULT_INCREASING_LENGTH, maxLength: DEFAULT_INCREASING_LENGTH.initialLength }}
-        emptyState={<EmptyStateRow table={table} size="sm">{t`No market composition found.`}</EmptyStateRow>}
+        emptyState={{ size: 'sm', emptyTitle: t`No market composition found.` }}
         footerRow={
           rows.length > 0 && (
             <FooterRow visibleColumns={table.getVisibleLeafColumns()} isLoading={isLoading} totalUsd={totalUsd} />

@@ -10,7 +10,6 @@ import { useManualPagination, getPageCount } from '@ui-kit/features/activity-tab
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
-import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { q } from '@ui-kit/types/util'
 import { RECENT_REFUELS_PAGE_SIZE, useRecentRefuels } from '../../queries/recent-refuels.query'
 import { createRecentRefuelsColumns, type RecentRefuelRow } from './columns/columns.definitions'
@@ -59,11 +58,10 @@ export const RecentRefuels = ({
       <CardHeader title={t`Recent Refuels`} size="small" />
       <DataTable<RecentRefuelRow>
         table={table}
-        emptyState={
-          <EmptyStateRow table={table}>
-            {error ? t`Could not load recent refuels: ${error.message}` : t`No recent refuels found.`}
-          </EmptyStateRow>
-        }
+        emptyState={{
+          emptyTitle: t`No recent refuels found.`,
+          errorTitle: t`Could not load recent refuels`,
+        }}
       />
     </Stack>
   )
