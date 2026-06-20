@@ -137,17 +137,17 @@ describe('DEX Pools', () => {
     })
   })
 
-  it('filter by text and navigates', () => {
+  it('searches pools and preserves search after navigation', () => {
     visitAndWait(width, height, { network: 'ethereum' })
-    if (breakpoint === 'mobile') {
-      cy.get('[data-testid="btn-expand-search-dex-pool-list"]').click()
-    }
     const filter = 'ebUSD'
-    cy.get('[data-testid="table-text-search-dex-pool-list"]').type(filter)
+    cy.get('[data-testid="table-text-search-dex-pool-list"] input').type(filter)
     cy.url().should('include', `?search=${filter}`)
-    cy.contains('[data-testid^="market-link-"]', filter, API_LOAD_TIMEOUT).click()
+    cy.contains('[data-testid^="market-link-"]', filter, API_LOAD_TIMEOUT).should('be.visible')
     if (breakpoint === 'mobile') {
+      cy.get('[data-testid^="data-table-row-"]').first().click()
       cy.get(`[data-testid="pool-link-deposit"]`).click()
+    } else {
+      cy.contains('[data-testid^="market-link-"]', filter).click()
     }
     cy.get('[data-testid="pool-form-tab-deposit"]', API_LOAD_TIMEOUT).should('be.visible')
     cy.window().then(win => win.history.go(-1))
