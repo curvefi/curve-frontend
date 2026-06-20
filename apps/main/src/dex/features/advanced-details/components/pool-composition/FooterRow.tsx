@@ -26,7 +26,7 @@ const footerCellByColumnId: Record<PoolCompositionColumnId, (props: FooterCellPr
     </TableCell>
   ),
   [PoolCompositionColumnId.Price]: ({ columnId }: FooterCellProps) => <TableCell key={columnId} />,
-  [PoolCompositionColumnId.MarketShare]: ({ columnId }: FooterCellProps) => (
+  [PoolCompositionColumnId.Balance]: ({ columnId }: FooterCellProps) => (
     <TableCell key={columnId} sx={{ paddingInline: Spacing.sm, paddingBlock: Spacing.sm, textAlign: 'right' }}>
       <Typography variant="tableCellMBold">100%</Typography>
     </TableCell>

@@ -25,14 +25,14 @@ const columnHelper = createColumnHelper<PoolCompositionRow>()
 const headers = {
   [PoolCompositionColumnId.Asset]: t`Asset`,
   [PoolCompositionColumnId.Price]: t`Price`,
-  [PoolCompositionColumnId.MarketShare]: t`% of Market`,
+  [PoolCompositionColumnId.Balance]: t`Balance`,
   [PoolCompositionColumnId.TokenAmount]: t`Amount`,
 } as const
 
 export const POOL_COMPOSITION_MOBILE_COLUMN_VISIBILITY = {
   [PoolCompositionColumnId.Asset]: true,
   [PoolCompositionColumnId.Price]: false,
-  [PoolCompositionColumnId.MarketShare]: true,
+  [PoolCompositionColumnId.Balance]: true,
   [PoolCompositionColumnId.TokenAmount]: true,
 } satisfies VisibilityState
 
@@ -55,8 +55,8 @@ export const POOL_COMPOSITION_COLUMNS = [
     meta: { type: 'numeric' },
   }),
   columnHelper.accessor('marketShare', {
-    id: PoolCompositionColumnId.MarketShare,
-    header: headers[PoolCompositionColumnId.MarketShare],
+    id: PoolCompositionColumnId.Balance,
+    header: headers[PoolCompositionColumnId.Balance],
     cell: ({ getValue }) => (
       <InlineTableCell>
         <Typography>{formatNumber(getValue(), 'percent.rate')}</Typography>
