@@ -14,7 +14,9 @@ export const POOL_LIST_POOL_TYPE_FILTERS = [
 export type PoolListFilter = (typeof POOL_LIST_POOL_TYPE_FILTERS)[number]
 export type PoolListPoolType = PoolListFilter['key']
 
-export const POOL_LIST_POOL_TYPES = POOL_LIST_POOL_TYPE_FILTERS.map(({ key }) => key) satisfies readonly PoolListPoolType[]
+export const POOL_LIST_POOL_TYPES = POOL_LIST_POOL_TYPE_FILTERS.map(
+  ({ key }) => key,
+) satisfies readonly PoolListPoolType[]
 
 // The API bundles factory_crypto and twocryptong pools under the "crypto" filter.
 export const POOL_LIST_CRYPTO_POOL_TYPE_ALIASES: ReadonlySet<string> = new Set(['factory_crypto', 'twocryptong'])
