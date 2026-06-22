@@ -1,57 +1,38 @@
-import { styled } from 'styled-components'
-import { RewardBase, PoolData, PoolDataCache } from '@/dex/types/main.types'
+import type { V2Pool } from '@curvefi/prices-api/pools'
 import Box from '@mui/material/Box'
-import { Chip } from '@ui/Typography'
+import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
-import { formatNumber, amount } from '@ui-kit/utils'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { formatNumber } from '@ui-kit/utils'
 
-export const TooltipBaseApy = ({
-  baseApy,
-  poolData,
-}: {
-  baseApy: RewardBase | undefined
-  poolData: PoolDataCache | PoolData | undefined
-}) => {
-  let label = t`Pool APY`
+const { Spacing } = SizesAndSpaces
 
-  if (poolData?.pool.isLending) {
-    label = t`Pool APY + Lending APY`
-  } else if (poolData?.tokenAddresses?.includes('0xae7ab96520de3a18e5e111b5eaab095312d7fe84')) {
-    // hard coding steth label, not defined in pool object
-    label = t`Pool APY + Staking APY`
-  } else if (
-    poolData?.pool?.implementation === '0x36dc03c0e12a1c241306a6a8f327fe28ba2be5b0' ||
-    poolData?.pool?.implementation === '0x7ca46a636b02d4abc66883d7ff164bde506dc66a'
-  ) {
-    label = t`Pool APY + Interest APY`
-  }
-
-  return (
-    <Box>
-      <Title>
-        {label} <Chip size="xs">(annualized)</Chip>
-      </Title>
-      <ul>
-        <li>Daily: {formatNumber(amount(baseApy?.day), 'percent.value')}</li>
-        <li>Weekly: {formatNumber(amount(baseApy?.week), 'percent.value')}</li>
-      </ul>
-
-      {baseApy?.day && Number(baseApy.day) < 0 && (
-        <NegativeBaseApy>
-          {t`Base vAPY can temporarily be negative when A parameter is ramped down, or crypto pools spend profit to rebalance.`}
-        </NegativeBaseApy>
-      )}
-    </Box>
-  )
+type TooltipBaseApyProps = {
+  baseDailyApr: V2Pool['baseDailyApr']
+  baseWeeklyApr: V2Pool['baseWeeklyApr']
 }
 
-const Title = styled.p`
-  font-weight: bold;
-  margin-bottom: var(--spacing-1);
-  white-space: nowrap;
-`
+export const TooltipBaseApy = ({ baseDailyApr, baseWeeklyApr }: TooltipBaseApyProps) => (
+  <Box>
+    <Typography component="p" variant="bodySBold" sx={{ marginBottom: Spacing.xs, whiteSpace: 'nowrap' }}>
+      {t`Pool APY`}{' '}
+      <Typography component="span" variant="bodyXsRegular" color="textTertiary">
+        {t`(annualized)`}
+      </Typography>
+    </Typography>
+    <Box component="ul" sx={{ margin: 0, paddingInlineStart: Spacing.md }}>
+      <Typography component="li" variant="bodySRegular">
+        {t`Daily`}: {formatNumber(baseDailyApr, 'percent.value')}
+      </Typography>
+      <Typography component="li" variant="bodySRegular">
+        {t`Weekly`}: {formatNumber(baseWeeklyApr, 'percent.value')}
+      </Typography>
+    </Box>
 
-const NegativeBaseApy = styled(Chip)`
-  display: block;
-  margin-top: var(--spacing-2);
-`
+    {baseDailyApr != null && baseDailyApr < 0 && (
+      <Typography component="p" variant="bodySRegular" color="warning" sx={{ marginTop: Spacing.sm }}>
+        {t`Base vAPY can temporarily be negative when A parameter is ramped down, or crypto pools spend profit to rebalance.`}
+      </Typography>
+    )}
+  </Box>
+)

@@ -9,6 +9,8 @@ import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
 
 type Props = {
   resetFilters: () => void
+  searchText: string
+  isError: boolean
 }
 
 export const PoolListEmptyState = ({ resetFilters }: Props) => {

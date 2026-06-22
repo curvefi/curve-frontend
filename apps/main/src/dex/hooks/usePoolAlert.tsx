@@ -1,23 +1,24 @@
 import { useMemo } from 'react'
 import { ROUTE } from '@/dex/constants'
-import { PoolAlert, PoolData, PoolDataCache, type UrlParams } from '@/dex/types/main.types'
-import { useParams } from '@ui-kit/hooks/router'
+import { PoolAlert } from '@/dex/types/main.types'
 import { t, Trans } from '@ui-kit/lib/i18n'
 import { getInternalUrl } from '@ui-kit/shared/routes'
 import { InlineLink } from '@ui-kit/shared/ui/InlineLink'
 import { PoolAlertMessage } from '../components/pool-alert-messages'
 
-export const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
-  const { network } = useParams<UrlParams>()
+type PoolAlertTarget = {
+  network: string | undefined
+  poolAddress: string | undefined
+  hasVyperVulnerability: boolean | undefined
+}
 
-  const poolAddress = poolData?.pool.address
-  const hasVyperVulnerability = poolData?.hasVyperVulnerability
-
-  return useMemo(
-    () => Alerts[network]?.[poolAddress ?? ''] || (hasVyperVulnerability ? vyperExploitedAlert() : null),
+export const usePoolAlert = ({ network, poolAddress, hasVyperVulnerability }: PoolAlertTarget) =>
+  useMemo(
+    () =>
+      (network && Alerts[network]?.[poolAddress?.toLowerCase() ?? '']) ||
+      (hasVyperVulnerability ? getVyperExploitedAlert() : null),
     [poolAddress, network, hasVyperVulnerability],
   )
-}
 
 const zunamiAlert = (): PoolAlert => ({
   alertType: 'danger',
@@ -213,7 +214,7 @@ const atricryptoAlert = (): PoolAlert => ({
 })
 
 // all networks
-const vyperExploitedAlert = (): PoolAlert => ({
+const getVyperExploitedAlert = (): PoolAlert => ({
   alertType: 'danger',
   isDisableDeposit: true,
   isInformationOnly: true,

@@ -1,0 +1,52 @@
+import lodash from 'lodash'
+import { useMemo } from 'react'
+import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
+import { useTokenAlert } from '@/dex/hooks/useTokenAlert'
+import Stack from '@mui/material/Stack'
+import type { Address } from '@primitives/address.utils'
+import type { CellContext } from '@tanstack/react-table'
+import { t } from '@ui-kit/lib/i18n'
+import { UserPositionIndicator } from '@ui-kit/shared/ui/DataTable/UserPositionIndicator'
+import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { MarketTitle } from '@ui-kit/widgets/MarketTitle'
+import type { LegacyPoolListItem } from '../../legacyPoolList.types'
+import { PoolAlertBadge } from './PoolAlertBadge'
+import { PoolAlertIcons } from './PoolAlertIcons'
+import { PoolTokens } from './PoolTokens'
+
+const { Spacing, Height } = SizesAndSpaces
+
+export const LegacyPoolTitleCell = ({
+  row: { original: poolData },
+  column: { getFilterValue },
+}: CellContext<LegacyPoolListItem, string>) => {
+  const { tokenAddresses, tokens, tokenAddressesAll, pool, url, network } = poolData
+  const tokenList = useMemo(
+    () => lodash.zip(tokens, tokenAddresses).map(([symbol, address]) => ({ symbol: symbol!, address: address! })),
+    [tokens, tokenAddresses],
+  )
+  const poolAlert = usePoolAlert({
+    network,
+    poolAddress: pool.address,
+    hasVyperVulnerability: poolData.hasVyperVulnerability,
+  })
+  const tokenAlert = useTokenAlert(tokenAddressesAll)
+
+  return (
+    <Stack direction="row" sx={{ height: Height.row }}>
+      {poolData.hasPosition && <UserPositionIndicator tooltipTitle={t`You have a balance in this pool`} />}
+      <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.sm }}>
+        <TokenIcons blockchainId={network} tokens={tokenList} />
+        <Stack direction="column">
+          <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
+            <PoolAlertIcons poolAlert={poolAlert} tokenAlert={tokenAlert} />
+            <MarketTitle url={url} address={pool.address as Address} title={pool.name} />
+          </Stack>
+          <PoolTokens tokenList={tokenList} filterValue={getFilterValue() as string} />
+        </Stack>
+      </Stack>
+      {poolAlert && <PoolAlertBadge alert={poolAlert} />}
+    </Stack>
+  )
+}

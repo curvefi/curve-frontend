@@ -7,11 +7,11 @@ import {
   LLAMMA_EVENTS_COLUMNS,
   useLlammaActivityVisibility,
   useManualPagination,
-  getPageCount,
   DEFAULT_PAGE_SIZE,
 } from '@ui-kit/features/activity-table'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { getPageCount } from '@ui-kit/utils'
 import { LlammaActivityProps } from '..'
 
 export const useLlammaActivityEventsConfig = ({
