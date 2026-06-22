@@ -12,10 +12,9 @@ import { ExternalLink } from './ExternalLink'
 
 const { Spacing, IconSize, MaxWidth, LineHeight } = SizesAndSpaces
 
-type EmptyStateButtonProps = ButtonProps & {
+type EmptyStateButtonProps = Omit<ButtonProps, 'type'> & {
   label?: ReactNode
-  // renders the empty state action as a wallet connect button instead of a regular MUI button.
-  isConnectWalletButton?: boolean
+  type?: 'button' | 'connect-wallet'
   testId?: string
 }
 
@@ -49,7 +48,7 @@ const EmptyStateButton = ({
   button: NonNullable<EmptyStateCardProps['button']>
   size: NonNullable<EmptyStateCardProps['size']>
 }) => {
-  const { label, sx: buttonSx, testId, href, isConnectWalletButton, ...buttonProps } = button ?? {}
+  const { label, sx: buttonSx, testId, href, type = 'button', ...buttonProps } = button ?? {}
   const sharedProps = {
     ...buttonProps,
     variant: 'outlined',
@@ -58,10 +57,10 @@ const EmptyStateButton = ({
     sx: applySxProps({ alignSelf: 'center' }, buttonSx),
     ...(testId && { 'data-testid': testId }),
   } as const
-  return href?.startsWith('https') ? (
-    <ExternalLink {...sharedProps} href={href} label={label} wide />
-  ) : isConnectWalletButton ? (
+  return type === 'connect-wallet' ? (
     <ConnectWalletButton {...sharedProps} label={label ?? t`Connect to view positions`} />
+  ) : href?.startsWith('https') ? (
+    <ExternalLink {...sharedProps} href={href} label={label} wide />
   ) : (
     <Button {...sharedProps}>{label}</Button>
   )

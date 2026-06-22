@@ -95,7 +95,7 @@ export const LlamaMarketsList = () => {
         data?.userHasPositions && <LegacyUserPositionsTable onReload={onReload} tableQuery={tableQuery} />
       ) : (
         <Box sx={{ paddingBlock: Spacing.md, backgroundColor: t => t.design.Layer[1].Fill }}>
-          <EmptyStateCard button={{ isConnectWalletButton: true }} />
+          <EmptyStateCard button={{ type: 'connect-wallet' }} />
         </Box>
       )}
       {isNewLayout ? (
