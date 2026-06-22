@@ -1,4 +1,5 @@
 import { MarketTypeSuffix, NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
+import { tokenMetric } from '@/llamalend/llama.utils'
 import { BorrowAprMetric } from '@/llamalend/widgets/BorrowAprMetric'
 import { MarketSupplyRateTooltipContent, AvailableLiquidityTooltip, TooltipOptions } from '@/llamalend/widgets/tooltips'
 import Stack from '@mui/material/Stack'
@@ -82,16 +83,16 @@ export const MetricsRow = ({
         alignment={metricAlignment}
         testId="market-available-liquidity"
         label={t`Available liquidity`}
-        value={mapQuery(availableLiquidity, availableLiquidity => availableLiquidity.value)}
-        valueOptions={{
-          unit: maybe(borrowToken?.symbol, symbol => ({ symbol, position: 'suffix' })),
-        }}
+        {...tokenMetric({
+          value: mapQuery(availableLiquidity, d => d.value),
+          symbol: borrowToken?.symbol,
+          usdRate: mapQuery(availableLiquidity, d => d.usdRate),
+        })}
         valueTooltip={{
           title: t`Available Liquidity ${MarketTypeSuffix[marketType]}`,
           body: <AvailableLiquidityTooltip marketType={marketType} />,
           ...TooltipOptions,
         }}
-        notional={maybe(availableLiquidity.data?.notional, x => ({ value: x, unit: 'dollar' }))}
       />
     </Stack>
   )

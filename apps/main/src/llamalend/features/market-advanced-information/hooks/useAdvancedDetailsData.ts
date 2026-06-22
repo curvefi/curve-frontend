@@ -15,7 +15,7 @@ import { combineQueries } from '@ui-kit/lib'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import type { MarketParams } from '@ui-kit/lib/model/query/root-keys'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { fallbackQ, mapQuery, type QueryProp } from '@ui-kit/types/util'
+import { fallbackQ, mapQuery, q, type QueryProp } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 import { requireBlockchainId } from '@ui-kit/utils/network'
 
@@ -112,17 +112,20 @@ export const useAdvancedDetailsData = ({
         available,
         totalAssets,
         borrowCap,
+        borrowSymbol: borrowToken?.symbol,
       })),
       mapQuery(apiMarket, ({ debtCeiling, liquidityUsd }) => ({
         available: decimal(liquidityUsd),
         totalAssets: maybe(debtCeiling, decimal),
         borrowCap: maybe(debtCeiling, decimal),
+        borrowSymbol: borrowToken?.symbol,
       })),
     ),
     totalBorrowers: fallbackQ(
       mapQuery(marketUsers, ({ count }) => ({ value: count })),
       mapQuery(apiMarket, ({ loans }) => ({ value: loans })),
     ),
+    borrowedUsdRate: q(borrowedUsdRate),
     averageHealth: mapQuery(liquidationHealthDistribution, distribution => ({
       value: distribution.meanHealth,
       distribution,

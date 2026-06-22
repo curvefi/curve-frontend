@@ -239,12 +239,14 @@ export const useAvailableLiquidity = ({
     (borrowUsdRate, { available, totalAssets }) => ({
       value: available,
       max: totalAssets,
+      usdRate: borrowUsdRate,
       notional: maybes([available, borrowUsdRate], ([liq, rate]) => decimalMultiply(liq, rate)),
     }),
   )
   const apiLiquidity = combineQueries([apiMarket, borrowUsdRate], (d, rate) => ({
     value: d.liquidityUsd / rate,
     max: d.debtCeiling,
+    usdRate: rate,
     notional: d.liquidityUsd,
   }))
   return fallbackQ(onChainLiquidity, apiLiquidity)
