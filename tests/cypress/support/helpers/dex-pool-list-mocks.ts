@@ -72,7 +72,7 @@ const createPool = ({
   name?: string
   poolType?: PoolType
 }) => ({
-  chain_id: chainId,
+  chain_id: Number(chainId),
   name: name ?? `Mock Pool ${chainId}-${index.toString().padStart(3, '0')}`,
   address: address ?? oneAddress(),
   pool_type: poolType ?? POOL_LIST_POOL_TYPES[index % POOL_LIST_POOL_TYPES.length],
