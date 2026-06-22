@@ -6,9 +6,9 @@ import { getChainPoolIdActiveKey } from '@/dex/utils'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
 import { maybe } from '@primitives/objects.utils'
 import { scanTokenPath } from '@ui/utils'
-import type { MarketCompositionRow } from '../components/market-composition/columns/columns.definitions'
+import type { PoolCompositionRow } from '../components/pool-composition/columns/columns.definitions'
 
-export const useMarketComposition = ({
+export const usePoolComposition = ({
   chainId,
   poolDataCacheOrApi,
   poolId,
@@ -42,7 +42,7 @@ export const useMarketComposition = ({
       })
     : currencyReserves?.tokens
 
-  const rows: MarketCompositionRow[] = poolDataCacheOrApi.tokens
+  const rows: PoolCompositionRow[] = poolDataCacheOrApi.tokens
     .map((symbol, index) => {
       const tokenAddress = poolDataCacheOrApi.tokenAddresses[index]
       const reserve = reserves?.find(token => token.tokenAddress.toLowerCase() === tokenAddress.toLowerCase())

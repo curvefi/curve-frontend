@@ -1,6 +1,6 @@
-export enum MarketCompositionColumnId {
+export enum PoolCompositionColumnId {
   Asset = 'asset',
   Price = 'price',
-  MarketShare = 'marketShare',
+  Balance = 'balance',
   TokenAmount = 'tokenAmount',
 }
