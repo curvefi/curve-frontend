@@ -13,6 +13,7 @@ import { useForm } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { useCombinedQueries } from '@ui-kit/lib/queries/combine'
+import { QueryData } from '@ui-kit/lib/queries/types'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { mapQuery } from '@ui-kit/types/util'
 import { decimal, decimalNegate } from '@ui-kit/utils'
@@ -26,10 +27,9 @@ const formOptions = {
   defaultValues: { ...userDefaultValues, slippage: SLIPPAGE[LEVERAGE].default },
 } as const
 
-type UserStateData = NonNullable<ReturnType<typeof useUserState>['data']>
-type UserBalancesData = NonNullable<ReturnType<typeof useUserBalances>['data']>
-type TokenUsdRate = NonNullable<ReturnType<typeof useTokenUsdRate>['data']>
-
+type UserStateData = QueryData<typeof useUserState>
+type UserBalancesData = QueryData<typeof useUserBalances>
+type TokenUsdRate = QueryData<typeof useTokenUsdRate>
 /** Hook to build state for the close-position form */
 export function useClosePositionForm({
   market,
