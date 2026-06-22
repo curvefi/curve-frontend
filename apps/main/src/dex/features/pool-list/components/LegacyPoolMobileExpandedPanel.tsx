@@ -20,8 +20,8 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { constQ } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 import { PoolRewardsTooltipContent } from '../../../components/PoolRewardsTooltipContent'
-import { PoolColumnId } from '../columns'
-import type { PoolListItem } from '../types'
+import { LegacyPoolColumnId } from '../columns'
+import type { LegacyPoolListItem } from '../legacyPoolList.types'
 
 const { Spacing } = SizesAndSpaces
 
@@ -38,7 +38,7 @@ const ListInfoItem = ({
 
 const highlight = { color: 'success' as const }
 
-export const PoolMobileExpandedPanel: ExpandedPanel<PoolListItem> = ({ row, table }) => {
+export const LegacyPoolMobileExpandedPanel: ExpandedPanel<LegacyPoolListItem> = ({ row, table }) => {
   const { original: poolData } = row
   const {
     pool: { id: poolId, address },
@@ -53,7 +53,7 @@ export const PoolMobileExpandedPanel: ExpandedPanel<PoolListItem> = ({ row, tabl
   const { volume, tvl, rewards } = poolData
 
   const { isCrvRewardsEnabled } = useNetworkFromUrl() ?? {}
-  const hasVolume = table.getColumn(PoolColumnId.Volume)?.getIsVisible()
+  const hasVolume = table.getColumn(LegacyPoolColumnId.Volume)?.getIsVisible()
   return (
     <>
       <Grid container spacing={Spacing.md}>
@@ -61,19 +61,19 @@ export const PoolMobileExpandedPanel: ExpandedPanel<PoolListItem> = ({ row, tabl
           <ListInfoItem
             label={t`24h Volume`}
             value={volume}
-            valueOptions={{ unit: 'dollar', ...(isSortedBy(table, PoolColumnId.Volume) && highlight) }}
+            valueOptions={{ unit: 'dollar', ...(isSortedBy(table, LegacyPoolColumnId.Volume) && highlight) }}
           />
         )}
         <ListInfoItem
           label={t`TVL`}
           value={tvl}
-          valueOptions={{ unit: 'dollar', ...(isSortedBy(table, PoolColumnId.Tvl) && highlight) }}
+          valueOptions={{ unit: 'dollar', ...(isSortedBy(table, LegacyPoolColumnId.Tvl) && highlight) }}
         />
 
         <ListInfoItem
           label={t`BASE vAPY`}
           value={rewards?.base?.day}
-          valueOptions={{ unit: 'percentage', ...(isSortedBy(table, PoolColumnId.RewardsBase) && highlight) }}
+          valueOptions={{ unit: 'percentage', ...(isSortedBy(table, LegacyPoolColumnId.RewardsBase) && highlight) }}
         />
 
         {!poolData?.gauge.isKilled && (
@@ -83,7 +83,8 @@ export const PoolMobileExpandedPanel: ExpandedPanel<PoolListItem> = ({ row, tabl
                 value={totalAPR}
                 valueOptions={{
                   unit: 'percentage',
-                  ...(isSortedBy(table, PoolColumnId.RewardsCrv) || isSortedBy(table, PoolColumnId.RewardsOther)
+                  ...(isSortedBy(table, LegacyPoolColumnId.RewardsCrv) ||
+                  isSortedBy(table, LegacyPoolColumnId.RewardsOther)
                     ? highlight
                     : {}),
                 }}
@@ -94,9 +95,9 @@ export const PoolMobileExpandedPanel: ExpandedPanel<PoolListItem> = ({ row, tabl
                   body: (
                     <PoolRewardsTooltipContent
                       poolData={poolData}
-                      isHighlightBase={isSortedBy(table, PoolColumnId.RewardsBase)}
-                      isHighlightCrv={isSortedBy(table, PoolColumnId.RewardsCrv)}
-                      isHighlightOther={isSortedBy(table, PoolColumnId.RewardsOther)}
+                      isHighlightBase={isSortedBy(table, LegacyPoolColumnId.RewardsBase)}
+                      isHighlightCrv={isSortedBy(table, LegacyPoolColumnId.RewardsCrv)}
+                      isHighlightOther={isSortedBy(table, LegacyPoolColumnId.RewardsOther)}
                       rewardsApy={rewards}
                     />
                   ),
@@ -105,11 +106,14 @@ export const PoolMobileExpandedPanel: ExpandedPanel<PoolListItem> = ({ row, tabl
             ) : (
               <ListInfoItem
                 value={totalAPR}
-                valueOptions={{ unit: 'percentage', ...(isSortedBy(table, PoolColumnId.RewardsOther) && highlight) }}
+                valueOptions={{
+                  unit: 'percentage',
+                  ...(isSortedBy(table, LegacyPoolColumnId.RewardsOther) && highlight),
+                }}
                 valueTooltip={{
                   title: (
                     <TableCellRewardsOthers
-                      isHighlight={isSortedBy(table, PoolColumnId.RewardsOther)}
+                      isHighlight={isSortedBy(table, LegacyPoolColumnId.RewardsOther)}
                       rewardsApy={rewards}
                     />
                   ),

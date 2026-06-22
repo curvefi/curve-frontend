@@ -1,3 +1,6 @@
 export * from './column.enum'
 export * from './column.definitions'
 export * from './column.options'
+export * from './legacy-column.enum'
+export * from './legacy-column.definitions'
+export * from './legacy-column.options'

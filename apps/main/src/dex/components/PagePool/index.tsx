@@ -53,7 +53,11 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
   const { signerAddress } = curve ?? {}
   const push = useNavigate()
-  const poolAlert = usePoolAlert(poolData)
+  const poolAlert = usePoolAlert({
+    network: params.network,
+    poolAddress: poolData?.pool.address,
+    hasVyperVulnerability: poolData?.hasVyperVulnerability,
+  })
   const { tokensMapper } = useTokensMapper(rChainId)
   const chainIdPoolId = getChainPoolIdActiveKey(rChainId, poolId)
   const currencyReserves = useStore(state => state.pools.currencyReserves[chainIdPoolId])

@@ -5,16 +5,21 @@ import Typography from '@mui/material/Typography'
 import type { CellContext } from '@tanstack/react-table'
 import { isSortedBy } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { formatNumber } from '@ui-kit/utils'
-import { PoolColumnId } from '../columns'
-import { useHasPoolRewards } from '../hooks/useHasPoolRewards'
-import type { PoolListItem } from '../types'
+import { LegacyPoolColumnId } from '../columns'
+import { useLegacyHasPoolRewards } from '../hooks/useLegacyHasPoolRewards'
+import type { LegacyPoolListItem } from '../legacyPoolList.types'
 import { Placeholder } from './Placeholder'
 
-type Prop = CellContext<PoolListItem, RewardsApy | undefined> & { placeholder?: boolean }
+type Prop = CellContext<LegacyPoolListItem, RewardsApy | undefined> & { placeholder?: boolean }
 
-export const RewardsIncentivesCell = ({ getValue, table, row: { original: poolData }, placeholder = true }: Prop) => {
+export const LegacyRewardsIncentivesCell = ({
+  getValue,
+  table,
+  row: { original: poolData },
+  placeholder = true,
+}: Prop) => {
   const rewards = getValue()
-  const { hasIncentives, campaigns } = useHasPoolRewards(rewards, poolData)
+  const { hasIncentives, campaigns } = useLegacyHasPoolRewards(rewards, poolData)
   const { other } = rewards ?? {}
 
   return hasIncentives ? (
@@ -22,7 +27,7 @@ export const RewardsIncentivesCell = ({ getValue, table, row: { original: poolDa
       {other?.map(o => (
         <Typography
           key={o.tokenAddress}
-          sx={{ fontWeight: isSortedBy(table, PoolColumnId.RewardsIncentives) ? 'bold' : 'normal' }}
+          sx={{ fontWeight: isSortedBy(table, LegacyPoolColumnId.RewardsIncentives) ? 'bold' : 'normal' }}
         >
           {formatNumber(o.apy, 'percent.value')} {o.symbol}
         </Typography>
