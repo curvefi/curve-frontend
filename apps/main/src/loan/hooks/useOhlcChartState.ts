@@ -1,7 +1,5 @@
-import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { useLlammaOhlcChartStateModel } from '@/llamalend/hooks/useLlammaOhlcChartStateModel'
-import { getTokens } from '@/llamalend/llama.utils'
 import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useUserPrices } from '@/llamalend/queries/user'
 import { networks } from '@/loan/networks'
@@ -9,8 +7,6 @@ import { ChainId, Llamma } from '@/loan/types/loan.types'
 import { isPricesApiChain } from '@curvefi/prices-api'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { Range } from '@ui-kit/types/util'
-
-type LlammaLiquidityCoins = ReturnType<typeof getTokens> | undefined | null
 
 type OhlcChartStateProps = {
   chainId: ChainId
@@ -27,7 +23,7 @@ export const useOhlcChartState = ({ chainId, market, marketId, previewPrices }: 
   const { data: oraclePrice } = useMarketOraclePrice({ chainId, marketId })
   const networkId = networks[chainId].id.toLowerCase()
   const network = isPricesApiChain(networkId) ? networkId : undefined
-  const chartState = useLlammaOhlcChartStateModel({
+  return useLlammaOhlcChartStateModel({
     endpoint: 'crvusd',
     chainKey: chainId,
     marketId,
@@ -39,12 +35,4 @@ export const useOhlcChartState = ({ chainId, market, marketId, previewPrices }: 
     userPrices,
     previewPrices,
   })
-
-  const coins: LlammaLiquidityCoins = useMemo(() => market && getTokens(market), [market])
-
-  return {
-    poolAddress,
-    coins,
-    ...chartState,
-  }
 }

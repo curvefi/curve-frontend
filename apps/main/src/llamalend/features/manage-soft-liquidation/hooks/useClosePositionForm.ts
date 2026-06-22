@@ -39,7 +39,7 @@ export function useClosePositionForm({
   const marketId = market?.id
 
   // Token data
-  const { borrowToken, collateralToken } = market ? getTokens(market) : {}
+  const { borrowToken, collateralToken } = getTokens(market) ?? {}
 
   const {
     data: borrowTokenUsdRate,

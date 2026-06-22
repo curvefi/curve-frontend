@@ -87,7 +87,7 @@ export const MarketRateCurveChart = ({
 }) => {
   const [visibleSeries, setVisibleSeries] = useState<RateCurveSeriesKey[]>(SERIES_CONFIG.map(({ key }) => key))
   const controllerAddress = market?.addresses.controller as Address | undefined
-  const { collateralToken, borrowToken } = market ? getTokens(market) : {}
+  const { collateralToken, borrowToken } = getTokens(market) ?? {}
   const {
     design: { Color },
   } = useTheme()

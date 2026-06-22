@@ -35,7 +35,7 @@ export function RepayTokenList<ChainId extends IChainId>({
   stateCollateral: { data: positionCollateral },
 }: RepayTokenListProps<ChainId>) {
   const { address: userAddress } = useConnection()
-  const { borrowToken, collateralToken } = market ? getTokens(market) : {}
+  const { borrowToken, collateralToken } = getTokens(market) ?? {}
   const tokenAddresses = useMemo(
     () => notFalsy(collateralToken?.address, borrowToken?.address),
     [collateralToken?.address, borrowToken?.address],

@@ -39,7 +39,7 @@ export const MarketPageHeader = ({
 }) => {
   const { address: userAddress } = useConnection()
   const { borrowRate, supplyRate, availableLiquidity } = usePageHeader({ chainId, marketId, market, blockchainId })
-  const { collateralToken, borrowToken } = (market && getTokens(market)) ?? {}
+  const { collateralToken, borrowToken } = getTokens(market) ?? {}
 
   const title =
     (collateralToken &&

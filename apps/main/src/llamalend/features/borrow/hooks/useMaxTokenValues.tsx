@@ -32,7 +32,7 @@ export function useMaxTokenValues({
     data: userBalance,
     error: balanceError,
     isLoading: isBalanceLoading,
-  } = useTokenBalance({ ...params, tokenAddress: (market && getTokens(market))?.collateralToken.address })
+  } = useTokenBalance({ ...params, tokenAddress: getTokens(market)?.collateralToken.address })
   const { data: maxBorrow, error: maxBorrowError, isLoading: isLoadingMaxBorrow } = useCreateLoanMaxReceive(params)
   const {
     data: maxTotalLeverage,

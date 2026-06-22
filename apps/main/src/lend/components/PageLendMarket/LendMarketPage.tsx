@@ -35,7 +35,7 @@ export const LendMarketPage = () => {
   useLendPageTitle(market?.collateral_token?.symbol ?? rMarket, t`Lend`)
 
   const network = networks[chainId]
-  const tokens = useMemo(() => (market ? getTokens(market) : {}), [market])
+  const tokens = useMemo(() => getTokens(market) ?? {}, [market])
   const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists(
     {
       chainId,
