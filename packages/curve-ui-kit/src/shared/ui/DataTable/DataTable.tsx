@@ -36,6 +36,7 @@ type TableEmptyState = {
   emptyTitle?: EmptyStateCardProps['title']
   emptyMessage?: EmptyStateCardProps['description']
   emptyButton?: EmptyStateCardProps['button']
+  emptySecondaryButton?: EmptyStateCardProps['secondaryButton']
   errorTitle?: EmptyStateCardProps['title']
   errorMessage?: EmptyStateCardProps['description']
   onReload?: () => Promise<unknown> | void
@@ -118,7 +119,8 @@ export const DataTable = <T extends TableItem>({
     }),
   })
   const showFooter = !isLoading && (showPagination || showViewAllButton || footerRow)
-  const { emptyTitle, emptyMessage, emptyButton, errorTitle, errorMessage, onReload } = emptyState ?? {}
+  const { emptyTitle, emptyMessage, emptyButton, emptySecondaryButton, errorTitle, errorMessage, onReload } =
+    emptyState ?? {}
 
   return (
     <WithWrapper Wrapper={Box} shouldWrap={maxHeight} sx={{ maxHeight, overflowY: 'auto' }} ref={containerRef}>
@@ -184,6 +186,7 @@ export const DataTable = <T extends TableItem>({
                       title={emptyTitle ?? t`No results found`}
                       description={emptyMessage ?? t`Try adjusting your filters or search query`}
                       button={emptyButton}
+                      secondaryButton={emptySecondaryButton}
                     />
                   )}
                 </EmptyStateRow>
