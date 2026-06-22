@@ -190,7 +190,10 @@ export const MarketRateCurveChart = ({
               combinedCollateralUsdValue,
               mapQuery(apiMarket, m => m.totalCollateralUsd),
             )}
-            valueOptions={{ unit: 'dollar' }}
+            valueOptions={{
+              unit: maybe(collateralToken, ({ symbol }) => ({ symbol, position: 'suffix' })),
+              abbreviate: true,
+            }}
             notional={maybe(totalCollateral.data, ({ collateral, borrowed }) =>
               formatCollateralNotional(
                 { value: decimal(collateral), symbol: collateralToken?.symbol },

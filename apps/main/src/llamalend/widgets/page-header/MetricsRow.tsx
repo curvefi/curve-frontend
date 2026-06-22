@@ -20,12 +20,14 @@ export const MetricsRow = ({
   availableLiquidity,
   marketType,
   collateral,
+  borrowToken,
 }: {
   borrowRate: QueryProp<BorrowRate>
   supplyRate?: QueryProp<SupplyRate>
   availableLiquidity: QueryProp<AvailableLiquidity>
   marketType: LlamaMarketType
   collateral: { symbol: string } | undefined
+  borrowToken: { symbol: string } | undefined
 }) => {
   const isMobile = useIsMobile()
   const metricAlignment = isMobile ? 'start' : 'end'
@@ -79,7 +81,9 @@ export const MetricsRow = ({
         alignment={metricAlignment}
         label={t`Available liquidity`}
         value={mapQuery(availableLiquidity, availableLiquidity => availableLiquidity.value)}
-        valueOptions={{ unit: 'none' }} // We could've shown the supply token symbol, but it's a bit ugly and it's implicit anyway
+        valueOptions={{
+          unit: maybe(borrowToken?.symbol, symbol => ({ symbol, position: 'suffix' })),
+        }}
         valueTooltip={{
           title: t`Available Liquidity ${MarketTypeSuffix[marketType]}`,
           body: <AvailableLiquidityTooltip marketType={marketType} />,

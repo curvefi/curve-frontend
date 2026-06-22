@@ -9,9 +9,9 @@ import { TokenInfo, type TokenInfoTokenIconProps } from '@ui-kit/shared/ui/Token
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { formatNumber } from '@ui-kit/utils'
 import { TokenCell } from '../../TokenCell'
-import { MarketCompositionColumnId } from './columns.enum'
+import { PoolCompositionColumnId } from './columns.enum'
 
-export type MarketCompositionRow = TableItem & {
+export type PoolCompositionRow = TableItem & {
   source: TokenInfoTokenIconProps
   explorerUrl?: string
   marketShare?: number
@@ -20,32 +20,32 @@ export type MarketCompositionRow = TableItem & {
   price?: number
 }
 
-const columnHelper = createColumnHelper<MarketCompositionRow>()
+const columnHelper = createColumnHelper<PoolCompositionRow>()
 
 const headers = {
-  [MarketCompositionColumnId.Asset]: t`Asset`,
-  [MarketCompositionColumnId.Price]: t`Price`,
-  [MarketCompositionColumnId.MarketShare]: t`% of Market`,
-  [MarketCompositionColumnId.TokenAmount]: t`Amount`,
+  [PoolCompositionColumnId.Asset]: t`Asset`,
+  [PoolCompositionColumnId.Price]: t`Price`,
+  [PoolCompositionColumnId.Balance]: t`Balance`,
+  [PoolCompositionColumnId.TokenAmount]: t`Amount`,
 } as const
 
-export const MARKET_COMPOSITION_MOBILE_COLUMN_VISIBILITY = {
-  [MarketCompositionColumnId.Asset]: true,
-  [MarketCompositionColumnId.Price]: false,
-  [MarketCompositionColumnId.MarketShare]: true,
-  [MarketCompositionColumnId.TokenAmount]: true,
+export const POOL_COMPOSITION_MOBILE_COLUMN_VISIBILITY = {
+  [PoolCompositionColumnId.Asset]: true,
+  [PoolCompositionColumnId.Price]: false,
+  [PoolCompositionColumnId.Balance]: true,
+  [PoolCompositionColumnId.TokenAmount]: true,
 } satisfies VisibilityState
 
-export const MARKET_COMPOSITION_COLUMNS = [
+export const POOL_COMPOSITION_COLUMNS = [
   columnHelper.accessor('source', {
-    id: MarketCompositionColumnId.Asset,
-    header: headers[MarketCompositionColumnId.Asset],
+    id: PoolCompositionColumnId.Asset,
+    header: headers[PoolCompositionColumnId.Asset],
     cell: ({ getValue, row }) => <TokenCell source={getValue()} explorerUrl={row.original.explorerUrl} />,
     enableSorting: false,
   }),
   columnHelper.accessor('price', {
-    id: MarketCompositionColumnId.Price,
-    header: headers[MarketCompositionColumnId.Price],
+    id: PoolCompositionColumnId.Price,
+    header: headers[PoolCompositionColumnId.Price],
     cell: ({ getValue }) => (
       <InlineTableCell>
         <Typography>{formatNumber(getValue(), 'usd.amount')}</Typography>
@@ -55,8 +55,8 @@ export const MARKET_COMPOSITION_COLUMNS = [
     meta: { type: 'numeric' },
   }),
   columnHelper.accessor('marketShare', {
-    id: MarketCompositionColumnId.MarketShare,
-    header: headers[MarketCompositionColumnId.MarketShare],
+    id: PoolCompositionColumnId.Balance,
+    header: headers[PoolCompositionColumnId.Balance],
     cell: ({ getValue }) => (
       <InlineTableCell>
         <Typography>{formatNumber(getValue(), 'percent.rate')}</Typography>
@@ -66,8 +66,8 @@ export const MARKET_COMPOSITION_COLUMNS = [
     meta: { type: 'numeric' },
   }),
   columnHelper.accessor('amount', {
-    id: MarketCompositionColumnId.TokenAmount,
-    header: headers[MarketCompositionColumnId.TokenAmount],
+    id: PoolCompositionColumnId.TokenAmount,
+    header: headers[PoolCompositionColumnId.TokenAmount],
     cell: ({ getValue, row }) => {
       const symbol = row.original.source.primary
 
