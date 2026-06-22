@@ -64,13 +64,13 @@ export const ClosePositionForm = ({
       }
     >
       <DataTable<ClosePositionRow>
+        category="form"
         table={table}
         emptyState={{
           emptyTitle: t`No close position data`,
           errorTitle: t`Could not load close position data`,
         }}
         verticalAlign="top"
-        hideHeader
         footerRow={
           !table.isLoading &&
           collateralToRecover != null && (

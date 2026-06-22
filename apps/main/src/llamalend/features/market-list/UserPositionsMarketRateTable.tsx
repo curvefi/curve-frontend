@@ -44,7 +44,6 @@ type UserPositionsTableProps = {
 }
 
 const pagination = { pageIndex: 0, pageSize: 50 }
-const DEFAULT_VISIBLE_ROWS = 3
 
 export const UserPositionsMarketRateTable = ({ tableQuery, marketRateType, onReload }: UserPositionsTableProps) => {
   const { label, defaultSort, sortQueryField, storageKey } = TABLE_CONFIG[marketRateType]
@@ -65,12 +64,9 @@ export const UserPositionsMarketRateTable = ({ tableQuery, marketRateType, onRel
 
   return (
     <DataTable
+      category="limited"
       table={table}
-      defaultVisibleRows={{
-        max: DEFAULT_VISIBLE_ROWS,
-        buttonLabel: t`View all ${rowCount} ${marketRateType.toLowerCase()} positions`,
-      }}
-      increasingLength="userPositionsMarketRate"
+      viewAllLabel={t`View all ${rowCount} ${marketRateType.toLowerCase()} positions`}
       emptyState={{
         emptyTitle: t`No active positions`,
         emptyMessage: EMPTY_POSITIONS_SUBTITLE[marketRateType],

@@ -19,7 +19,7 @@ import { EmptyStateCard, EmptyStateCardProps } from '../EmptyStateCard'
 import { ErrorMessage } from '../ErrorMessage'
 import { DataTableHeaderHeight, type DataTableSize, type TableItem, type TanstackTable } from './data-table.utils'
 import { DataRow, type DataRowProps } from './DataRow'
-import { EmptyStateRow } from './EmptyStateRow'
+import { EmptyStateRow, type EmptyStateRowSize } from './EmptyStateRow'
 import { FilterRow } from './FilterRow'
 import { HeaderCell } from './HeaderCell'
 import { useScrollToTopOnFilterChange, useScrollToTopOnPageChange } from './hooks/useTableScroll'
@@ -40,7 +40,63 @@ type TableEmptyState = {
   errorTitle?: EmptyStateCardProps['title']
   errorMessage?: EmptyStateCardProps['description']
   onReload?: () => Promise<unknown> | void
-} & Pick<EmptyStateCardProps, 'size'>
+}
+
+type DataTableCategoryConfig = {
+  size: DataTableSize
+  maxHeight?: `${number}rem` // also sets overflowY to 'auto'
+  defaultVisibleRows?: number // maximum number of visible rows
+  disableStickyHeader?: boolean // can also be disabled by limited rows or table width overflow.
+  hideHeader?: boolean
+  increasingLength: IncreasingLengthCategory
+  emptyStateSize: NonNullable<EmptyStateCardProps['size']>
+  emptyStateRowSize: EmptyStateRowSize
+}
+
+export type DataTableCategory = keyof typeof DATA_TABLE_CATEGORIES
+
+const DATA_TABLE_CATEGORIES = {
+  // Default full table for primary searchable/filterable lists.
+  list: {
+    size: 'small',
+    increasingLength: 'default',
+    emptyStateSize: 'md',
+    emptyStateRowSize: 'lg',
+  },
+  // User/list preview table that starts short and reveals all rows via a footer action.
+  limited: {
+    size: 'small',
+    defaultVisibleRows: 3,
+    increasingLength: 'limited',
+    emptyStateSize: 'md',
+    emptyStateRowSize: 'lg',
+  },
+  // Long activity/history table constrained inside a scrollable viewport.
+  scrollable: {
+    size: 'small',
+    maxHeight: SizesAndSpaces.MaxHeight.userEventsTable,
+    increasingLength: 'default',
+    emptyStateSize: 'md',
+    emptyStateRowSize: 'sm',
+  },
+  // Compact contextual detail table inside a secondary card or advanced-details section.
+  detail: {
+    size: 'small',
+    disableStickyHeader: true,
+    increasingLength: 'disabled',
+    emptyStateSize: 'sm',
+    emptyStateRowSize: 'sm',
+  },
+  // Compact form/action summary table, usually without visible column headers.
+  form: {
+    size: 'small',
+    disableStickyHeader: true,
+    hideHeader: true,
+    increasingLength: 'disabled',
+    emptyStateSize: 'sm',
+    emptyStateRowSize: 'sm',
+  },
+} as const satisfies Record<string, DataTableCategoryConfig>
 
 /**
  * Resets the table pagination to the first page whenever the number of filtered results changes.
@@ -65,34 +121,34 @@ function useResetPageOnResultChange<T extends TableItem>(table: TanstackTable<T>
  * When the table is wider than its parent, the header stops being sticky and the table becomes horizontally scrollable.
  */
 export const DataTable = <T extends TableItem>({
+  category = 'list',
   emptyState,
   children,
-  size = 'small',
-  maxHeight,
-  defaultVisibleRows,
-  disableStickyHeader = false,
   shouldStickFirstColumn = false,
-  hideHeader = false,
   footerRow,
-  increasingLength,
+  viewAllLabel,
   ...rowProps
 }: {
+  category?: DataTableCategory
   table: TanstackTable<T>
   // Optional overrides for the built-in empty/error state title, description, and action button.
   emptyState?: TableEmptyState
   children?: ReactNode // passed to <FilterRow />
-  size?: DataTableSize
-  maxHeight?: `${number}rem` // also sets overflowY to 'auto'
-  // maximum number of visible rows and the button's label to expand them all
-  defaultVisibleRows?: { max: number; buttonLabel: string }
-  disableStickyHeader?: boolean // can also be disabled by limited rows or table width overflow.
-  hideHeader?: boolean
   footerRow?: ReactNode
-  increasingLength?: IncreasingLengthCategory
+  viewAllLabel?: string // button's label to expand all rows. defaultVisibleRows must be first set
 } & Omit<DataRowProps<T>, 'table' | 'row'>) => {
+  const {
+    size,
+    maxHeight,
+    defaultVisibleRows: rowLimit,
+    disableStickyHeader = false,
+    hideHeader = false,
+    increasingLength,
+    emptyStateSize,
+    emptyStateRowSize,
+  } = DATA_TABLE_CATEGORIES[category] as DataTableCategoryConfig
   const { table } = rowProps
   const { isLoading, error } = table
-  const { max: rowLimit, buttonLabel: viewAllLabel } = defaultVisibleRows ?? {}
   const { rows } = table.getRowModel()
   const { isLimited, isLoading: isLoadingViewAll, onShowAll } = useTableRowLimit(rowLimit, rows.length)
   // When number of rows are limited, show only rowLimit rows
@@ -173,13 +229,14 @@ export const DataTable = <T extends TableItem>({
                   increasingLength={increasingLength}
                 />
               ) : rows.length === 0 ? (
-                <EmptyStateRow table={table}>
+                <EmptyStateRow table={table} size={emptyStateRowSize}>
                   {error ? (
                     <ErrorMessage
                       title={errorTitle ?? t`Could not load data`}
                       subtitle={errorMessage ?? error.message}
                       error={error}
                       refreshData={onReload}
+                      size={emptyStateSize}
                     />
                   ) : (
                     <EmptyStateCard
@@ -187,6 +244,7 @@ export const DataTable = <T extends TableItem>({
                       description={emptyMessage ?? t`Try adjusting your filters or search query`}
                       button={emptyButton}
                       secondaryButton={emptySecondaryButton}
+                      size={emptyStateSize}
                     />
                   )}
                 </EmptyStateRow>

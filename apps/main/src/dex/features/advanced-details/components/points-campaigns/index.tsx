@@ -30,9 +30,9 @@ export const PointsCampaigns = ({
       <Stack>
         <CardHeader title={t`Points Campaigns`} size="small" />
         <DataTable<PointsCampaignsRow>
+          category="detail"
           table={table}
-          disableStickyHeader
-          emptyState={{ size: 'sm', emptyTitle: t`No points campaigns found.` }}
+          emptyState={{ emptyTitle: t`No points campaigns found.` }}
         />
       </Stack>
     )

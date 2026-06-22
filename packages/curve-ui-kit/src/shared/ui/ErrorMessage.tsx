@@ -5,7 +5,7 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
 import { applySxProps } from '@ui-kit/utils'
-import { EmptyStateCard } from './EmptyStateCard'
+import { EmptyStateCard, EmptyStateCardProps } from './EmptyStateCard'
 
 export const ErrorMessage = ({
   title,
@@ -13,12 +13,14 @@ export const ErrorMessage = ({
   error,
   refreshData,
   sx,
+  size,
 }: {
   title: ReactNode
   subtitle?: ReactNode
   error?: Error | string
   refreshData?: () => Promise<unknown> | void
   sx?: SxProps
+  size?: EmptyStateCardProps['size']
 }) => {
   const [isReportOpen, openReportModal, closeReportModal] = useSwitch(false)
 
@@ -27,6 +29,7 @@ export const ErrorMessage = ({
       <EmptyStateCard
         title={title}
         description={subtitle}
+        size={size}
         button={{ label: t`Submit error report`, testId: 'submit-error-report-button', onClick: openReportModal }}
         {...(refreshData && {
           secondaryButton: {

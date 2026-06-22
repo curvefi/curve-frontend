@@ -6,7 +6,7 @@ import type { TableItem, TanstackTable } from './data-table.utils'
 
 const { MinHeight } = SizesAndSpaces
 
-type Size = keyof typeof MinHeight.tableNoResults
+export type EmptyStateRowSize = keyof typeof MinHeight.tableNoResults
 
 export const EmptyStateRow = <T extends TableItem>({
   table,
@@ -14,7 +14,7 @@ export const EmptyStateRow = <T extends TableItem>({
   children,
 }: {
   children: ReactNode
-  size?: Size
+  size?: EmptyStateRowSize
   table: TanstackTable<T>
 }) => (
   <TableRow data-testid="table-empty-row" sx={{ height: MinHeight.tableNoResults[size] }}>

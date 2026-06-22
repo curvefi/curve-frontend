@@ -44,10 +44,9 @@ export const PoolComposition = ({
     <Stack>
       <CardHeader title={t`Pool Composition`} size="small" />
       <DataTable<PoolCompositionRow>
+        category="detail"
         table={table}
-        disableStickyHeader
-        increasingLength="disabled"
-        emptyState={{ size: 'sm', emptyTitle: t`No market composition found.` }}
+        emptyState={{ emptyTitle: t`No market composition found.` }}
         footerRow={
           rows.length > 0 && (
             <FooterRow visibleColumns={table.getVisibleLeafColumns()} isLoading={isLoading} totalUsd={totalUsd} />

@@ -137,17 +137,14 @@ const ScrollableStoryWrapper = ({ children, width = '100%' }: { children: ReactN
 const pagination = { pageIndex: 0, pageSize: 20 }
 
 const DemoDataTable = ({
+  category,
   rowCount,
   extraColumnCount,
   isLoading,
   isError,
-  disableStickyHeader,
   shouldStickFirstColumn,
-  hideHeader,
-  size,
   verticalAlign,
-  maxHeight,
-  defaultVisibleRows,
+  viewAllLabel,
   wrapperWidth,
   showFooterRow,
   showFilterRow,
@@ -171,18 +168,15 @@ const DemoDataTable = ({
 
   const tableElement = (
     <DataTable
+      category={category}
       table={table}
       emptyState={{
         emptyTitle,
         emptyMessage,
       }}
-      disableStickyHeader={disableStickyHeader}
       shouldStickFirstColumn={shouldStickFirstColumn}
-      hideHeader={hideHeader}
-      size={size}
       verticalAlign={verticalAlign}
-      maxHeight={maxHeight}
-      defaultVisibleRows={defaultVisibleRows}
+      viewAllLabel={viewAllLabel}
       footerRow={
         showFooterRow && (
           <TableCell colSpan={columnCount} sx={{ textAlign: 'center' }}>
@@ -214,13 +208,10 @@ const meta: Meta<typeof DemoDataTable> = {
     extraColumnCount: 0,
     isLoading: false,
     isError: false,
-    disableStickyHeader: false,
+    category: 'list',
     shouldStickFirstColumn: false,
-    hideHeader: false,
-    size: 'small',
     verticalAlign: 'middle',
-    defaultVisibleRows: undefined,
-    maxHeight: undefined,
+    viewAllLabel: undefined,
     wrapperWidth: undefined,
     showFooterRow: false,
     showFilterRow: false,
@@ -242,35 +233,23 @@ const meta: Meta<typeof DemoDataTable> = {
       control: 'boolean',
       description: 'Shows the error empty state.',
     },
-    disableStickyHeader: {
-      control: 'boolean',
-      description: 'Disables sticky table header behavior.',
-    },
     shouldStickFirstColumn: {
       control: 'boolean',
       description: 'Makes the first visible column sticky.',
     },
-    hideHeader: {
-      control: 'boolean',
-      description: 'Hides the table header rows.',
-    },
-    size: {
+    category: {
       control: 'select',
-      options: ['extraSmall', 'small', 'medium', 'large'],
-      description: 'DataTable header size.',
+      options: ['list', 'limitedList', 'scrollableList', 'detail', 'summary'],
+      description: 'Preset table behavior and sizing category.',
     },
     verticalAlign: {
       control: 'radio',
       options: ['top', 'middle', 'bottom'],
       description: 'Vertical alignment passed to body rows.',
     },
-    maxHeight: {
+    viewAllLabel: {
       control: 'text',
-      description: 'Optional max-height for the vertical scrolling wrapper, for example 24rem.',
-    },
-    defaultVisibleRows: {
-      control: 'object',
-      description: 'Limits initially visible rows and shows the view-all row when set.',
+      description: 'Optional label for the limited-list view-all row.',
     },
     wrapperWidth: {
       control: 'text',
@@ -314,7 +293,8 @@ export const Default: Story = {
 export const LimitedRows: Story = {
   args: {
     rowCount: 40,
-    defaultVisibleRows: { max: 5, buttonLabel: 'View all markets' },
+    category: 'limited',
+    viewAllLabel: 'View all markets',
   },
 }
 
@@ -341,21 +321,20 @@ export const Error: Story = {
 export const StickyHeader: Story = {
   args: {
     rowCount: 40,
-    maxHeight: '24rem',
+    category: 'scrollable',
   },
 }
 
 export const HeaderNotSticky: Story = {
   args: {
     rowCount: 40,
-    disableStickyHeader: true,
-    maxHeight: '24rem',
+    category: 'detail',
   },
 }
 
 export const HiddenHeader: Story = {
   args: {
-    hideHeader: true,
+    category: 'form',
   },
 }
 
@@ -379,7 +358,7 @@ export const HorizontalOverflow: Story = {
 export const WithFilterRow: Story = {
   args: {
     showFilterRow: true,
-    maxHeight: '24rem',
+    category: 'scrollable',
   },
 }
 

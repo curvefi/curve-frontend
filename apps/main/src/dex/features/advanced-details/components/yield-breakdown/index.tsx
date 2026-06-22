@@ -42,9 +42,9 @@ export const YieldBreakdown = ({
       <Stack>
         <CardHeader title={t`Yield Breakdown`} size="small" />
         <DataTable<YieldBreakdownRow>
+          category="detail"
           table={table}
-          disableStickyHeader
-          emptyState={{ size: 'sm', emptyTitle: t`No yield breakdown found.` }}
+          emptyState={{ emptyTitle: t`No yield breakdown found.` }}
           footerRow={
             rows.length > 1 && (
               <FooterRow visibleColumns={table.getVisibleLeafColumns()} baseTotal={baseTotal} total={total} />

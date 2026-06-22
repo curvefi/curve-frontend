@@ -50,9 +50,9 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
         footer={<ClaimActionInfoList params={params} networks={networks} isOpen={!!claimableTokens.length} />}
       >
         <DataTable<ClaimableToken>
+          category="form"
           table={table}
-          emptyState={{ size: 'sm', emptyTitle: t`No rewards to claim` }}
-          hideHeader
+          emptyState={{ emptyTitle: t`No rewards to claim` }}
           footerRow={
             !!claimableTokens.length &&
             !isLoading && (

@@ -14,7 +14,6 @@ type ActivityTableProps<TData extends TableItem> = {
   table: TanstackTable<TData>
   emptyTitle: string
   errorTitle: string
-  height?: `${number}rem`
   expandedPanel?: ExpandedPanel<TData>
 }
 
@@ -22,10 +21,14 @@ export const ActivityTable = <TData extends TableItem>({
   table,
   emptyTitle,
   errorTitle,
-  height = MaxHeight.userEventsTable,
   expandedPanel = DefaultExpandedPanel,
 }: ActivityTableProps<TData>) => (
-  <Box sx={{ minHeight: height }}>
-    <DataTable table={table} emptyState={{ emptyTitle, errorTitle }} maxHeight={height} expandedPanel={expandedPanel} />
+  <Box sx={{ minHeight: MaxHeight.userEventsTable }}>
+    <DataTable
+      category="scrollable"
+      table={table}
+      emptyState={{ emptyTitle, errorTitle }}
+      expandedPanel={expandedPanel}
+    />
   </Box>
 )
