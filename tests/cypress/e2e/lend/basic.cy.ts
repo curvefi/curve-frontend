@@ -1,6 +1,15 @@
+import { mockMerklCampaigns } from '@cy/support/helpers/lending-mocks'
+import {
+  shouldLoadLendBorrowDetails,
+  shouldLoadLendVaultDetails,
+} from '@cy/support/helpers/llamalend/market-details.helpers'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
 
+const LEND_MARKET = '0x23F5a668A9590130940eF55964ead9787976f2CC'
+
 describe('Basic Access Test', () => {
+  beforeEach(() => mockMerklCampaigns())
+
   it('should open the Lend DApp successfully', () => {
     cy.visit('/lend/')
     cy.url(LOAD_TIMEOUT).should('match', /http:\/\/localhost:\d+\/llamalend\/ethereum\/markets\/?$/)
@@ -17,8 +26,13 @@ describe('Basic Access Test', () => {
     cy.title().should('equal', 'Legal - Curve')
   })
 
-  it('should open a lend market page succesfully', () => {
-    cy.visit('/lend/ethereum/markets/0x23F5a668A9590130940eF55964ead9787976f2CC') // some WETH lend market on ethereum
-    cy.get('[data-testid^="detail-page-layout"]', LOAD_TIMEOUT).should('be.visible')
+  it('should load lend market details with a wallet', () => {
+    cy.visit(`/lend/ethereum/markets/${LEND_MARKET}`)
+    shouldLoadLendBorrowDetails({ hasWallet: true })
+  })
+
+  it('should load lend vault details with a wallet', () => {
+    cy.visit(`/lend/ethereum/markets/${LEND_MARKET}/vault`)
+    shouldLoadLendVaultDetails({ hasWallet: true })
   })
 })

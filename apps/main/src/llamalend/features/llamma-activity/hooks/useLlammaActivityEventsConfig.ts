@@ -68,7 +68,7 @@ export const useLlammaActivityEventsConfig = ({
   return {
     table,
     isLoading: isEventsLoading || !ammAddress,
-    isError: isEventsError,
+    isError: isEventsError && !!ammAddress,
     emptyMessage: t`No activity data found.`,
     errorMessage: t`Could not load activity data.`,
   }

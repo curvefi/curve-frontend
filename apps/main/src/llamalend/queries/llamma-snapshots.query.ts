@@ -1,42 +1,34 @@
-import { getControllerAddress } from '@/llamalend/llama.utils'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { Chain } from '@curvefi/prices-api'
-import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
-import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
+import { type CrvUsdSnapshot, useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
+import { type LendingSnapshot, useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
 import type { SnapshotRange } from '@ui-kit/lib/model/query/time-option-validation'
-import type { LlamaMarketTemplate } from 'main/src/llamalend/llamalend.types'
+import { LlamaMarketType } from '@ui-kit/types/market'
+import type { Query } from '@ui-kit/types/util'
+import type { Address } from 'viem'
 
 export function useLlamaSnapshot({
   blockchainId,
   enabled = true,
-  market,
   range = { kind: 'timeRange', timeOption: '1M' },
+  controllerAddress,
+  marketType,
 }: {
-  market: LlamaMarketTemplate | undefined | null
   blockchainId: Chain | undefined | null
   enabled?: boolean
   range?: SnapshotRange
-}) {
-  const isLendMarket = market instanceof LendMarketTemplate
+  controllerAddress: Address | undefined
+  marketType: LlamaMarketType
+}): Query<LendingSnapshot[] | CrvUsdSnapshot[]> {
   const timeOption = range.kind === 'timeRange' ? range.timeOption : undefined
   const limit = range.kind === 'limit' ? range.limit : undefined
-  const lendingSnapshotsQuery = useLendingSnapshots(
-    {
-      blockchainId,
-      contractAddress: getControllerAddress(market),
-      timeOption,
-      limit,
-    },
-    enabled && isLendMarket,
-  )
-  const crvUsdSnapshotsQuery = useCrvUsdSnapshots(
-    {
-      blockchainId,
-      contractAddress: getControllerAddress(market),
-      timeOption,
-      limit,
-    },
-    enabled && !isLendMarket,
-  )
-  return isLendMarket ? lendingSnapshotsQuery : crvUsdSnapshotsQuery
+  return {
+    Lend: useLendingSnapshots(
+      { blockchainId, contractAddress: controllerAddress, timeOption, limit },
+      enabled && marketType === LlamaMarketType.Lend,
+    ),
+    Mint: useCrvUsdSnapshots(
+      { blockchainId, contractAddress: controllerAddress, timeOption, limit },
+      enabled && marketType === LlamaMarketType.Mint,
+    ),
+  }[marketType]
 }
