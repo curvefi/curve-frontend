@@ -86,7 +86,7 @@ export const UserPositionsTables = ({
                 />
               )
             ) : (
-              <EmptyStateCard button={{ type: 'connect-wallet' }} />
+              <EmptyStateCard button={{ type: 'connect-wallet', label: t`Connect to view positions` }} />
             )}
           </Stack>
         )}

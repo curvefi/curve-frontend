@@ -3,7 +3,6 @@ import { Box, Button, ButtonProps, Skeleton } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
-import { t } from '@ui-kit/lib/i18n'
 import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
 import { Responsive } from '@ui-kit/themes/basic-theme'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -58,7 +57,7 @@ const EmptyStateButton = ({
     ...(testId && { 'data-testid': testId }),
   } as const
   return type === 'connect-wallet' ? (
-    <ConnectWalletButton {...sharedProps} label={label ?? t`Connect to view positions`} />
+    <ConnectWalletButton {...sharedProps} label={label} />
   ) : href?.startsWith('https') ? (
     <ExternalLink {...sharedProps} href={href} label={label} wide />
   ) : (

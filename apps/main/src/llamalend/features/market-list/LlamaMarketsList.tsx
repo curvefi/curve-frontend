@@ -5,6 +5,7 @@ import Box from '@mui/material/Box'
 import type { Address } from '@primitives/address.utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useLLv2, useNewMarketListLayout } from '@ui-kit/hooks/useFeatureFlags'
+import { t } from '@ui-kit/lib/i18n'
 import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q } from '@ui-kit/types/util'
@@ -95,7 +96,7 @@ export const LlamaMarketsList = () => {
         data?.userHasPositions && <LegacyUserPositionsTable onReload={onReload} tableQuery={tableQuery} />
       ) : (
         <Box sx={{ paddingBlock: Spacing.md, backgroundColor: t => t.design.Layer[1].Fill }}>
-          <EmptyStateCard button={{ type: 'connect-wallet' }} />
+          <EmptyStateCard button={{ type: 'connect-wallet', label: t`Connect to view positions` }} />
         </Box>
       )}
       {isNewLayout ? (
