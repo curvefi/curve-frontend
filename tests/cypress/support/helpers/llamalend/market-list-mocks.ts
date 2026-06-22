@@ -19,7 +19,7 @@ export const blockUnmockedLlamaMarketApis = () => {
         req.reply({ statusCode: 503, body: { error: `Unexpected API request in Cypress test: ${req.url}` } }),
       ),
   )
-  cy.intercept('GET', '**/api/merkl/v1/opportunities*', req =>
+  cy.intercept('/api/merkl/v1/opportunities*', req =>
     req.reply({ statusCode: 503, body: { error: `Unexpected API request in Cypress test: ${req.url}` } }),
   )
 }
