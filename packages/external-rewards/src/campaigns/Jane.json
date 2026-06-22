@@ -1,0 +1,21 @@
+{
+  "campaignName": "JANE",
+  "platform": "3Jane",
+  "description": "Tokens for providing liquidity.",
+  "platformImageId": "jane.png",
+  "dashboardLink": "https://app.3jane.xyz/farm/",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x7BA89Bc658c07569cfa6d7947adAA80181a24568",
+      "network": "ethereum",
+      "multiplier": "jane",
+      "tags": ["tokens"],
+      "lock": "false"
+    }
+  ]
+}
