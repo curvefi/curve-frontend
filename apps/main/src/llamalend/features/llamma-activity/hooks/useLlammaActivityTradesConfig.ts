@@ -9,7 +9,6 @@ import {
   useManualPagination,
   DEFAULT_PAGE_SIZE,
 } from '@ui-kit/features/activity-table'
-import { useCurve } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { getPageCount } from '@ui-kit/utils'
@@ -22,7 +21,6 @@ export const useLlammaActivityTradesConfig = ({
   endpoint,
   networkConfig,
 }: LlammaActivityTradesProps) => {
-  const { isHydrated } = useCurve()
   const { tradesColumnVisibility } = useLlammaActivityVisibility()
   const { pagination, onPaginationChange, apiPage } = useManualPagination()
 
@@ -66,8 +64,8 @@ export const useLlammaActivityTradesConfig = ({
 
   return {
     table,
-    isLoading: isTradesLoading || !isHydrated || !isMarketAvailable,
-    isError: isTradesError && isHydrated && isMarketAvailable,
+    isLoading: isTradesLoading || !isMarketAvailable,
+    isError: isTradesError && isMarketAvailable,
     emptyMessage: t`No swap data found.`,
     errorMessage: t`Could not load swap data.`,
   }

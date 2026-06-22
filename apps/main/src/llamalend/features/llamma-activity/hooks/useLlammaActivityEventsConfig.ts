@@ -9,7 +9,6 @@ import {
   useManualPagination,
   DEFAULT_PAGE_SIZE,
 } from '@ui-kit/features/activity-table'
-import { useCurve } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { getPageCount } from '@ui-kit/utils'
@@ -24,7 +23,6 @@ export const useLlammaActivityEventsConfig = ({
   endpoint,
   networkConfig,
 }: LlammaActivityProps) => {
-  const { isHydrated } = useCurve()
   const { eventsColumnVisibility } = useLlammaActivityVisibility()
   const { pagination, onPaginationChange, apiPage } = useManualPagination()
 
@@ -70,8 +68,8 @@ export const useLlammaActivityEventsConfig = ({
 
   return {
     table,
-    isLoading: isEventsLoading || !isHydrated || !isMarketAvailable,
-    isError: isEventsError && isHydrated && isMarketAvailable,
+    isLoading: isEventsLoading || !isMarketAvailable,
+    isError: isEventsError && isMarketAvailable,
     emptyMessage: t`No activity data found.`,
     errorMessage: t`Could not load activity data.`,
   }
