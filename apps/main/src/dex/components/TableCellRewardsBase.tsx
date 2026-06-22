@@ -4,7 +4,7 @@ import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
 import { Chip } from '@ui/Typography'
 import { formatNumber, amount } from '@ui-kit/utils'
 import { ChipVolatileBaseApy } from './ChipVolatileBaseApy'
-import { TooltipBaseApy } from './TooltipBaseApy'
+import { LegacyTooltipBaseApy } from './LegacyTooltipBaseApy'
 
 type Props = {
   base: RewardBase | undefined
@@ -31,7 +31,7 @@ export const TableCellRewardsBase = ({ base, isHighlight, poolData }: Props) => 
               <Chip
                 isBold={isHighlight}
                 size="md"
-                tooltip={base ? <TooltipBaseApy poolData={poolData} baseApy={base} /> : null}
+                tooltip={base ? <LegacyTooltipBaseApy poolData={poolData} baseApy={base} /> : null}
                 tooltipProps={{
                   placement: 'bottom-end',
                   textAlign: 'left',

@@ -4,40 +4,40 @@ import { OnChangeFn, SortingState } from '@tanstack/react-table'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { HiddenCountResetButton } from '@ui-kit/shared/ui/DataTable/HiddenCountResetButton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { PoolColumnId } from '../columns'
-import { PoolListFilterChips, PoolListFilterChipsProps } from '../components/PoolListFilterChips'
-import { PoolListFilterDrawer } from '../drawers/PoolListFilterDrawer'
-import { PoolSortDrawer } from '../drawers/PoolSortDrawer'
+import { LegacyPoolColumnId } from '../columns'
+import { LegacyPoolListFilterChips, LegacyPoolListFilterChipsProps } from '../components/LegacyPoolListFilterChips'
+import { LegacyPoolListFilterDrawer } from '../drawers/LegacyPoolListFilterDrawer'
+import { LegacyPoolSortDrawer } from '../drawers/LegacyPoolSortDrawer'
 
 const { Spacing } = SizesAndSpaces
 
-export const PoolListChips = ({
+export const LegacyPoolListChips = ({
   hiddenCount,
+  searchText,
   resetFilters,
   onSortingChange,
-  sortField,
-  searchText,
   onSearch,
+  sortField,
   ...filterProps
 }: {
   hiddenCount: number
   resetFilters: () => void
   children?: ReactNode
   onSortingChange: OnChangeFn<SortingState>
-  sortField: PoolColumnId
+  sortField: LegacyPoolColumnId
   searchText: string
   onSearch: (value: string) => void
-} & PoolListFilterChipsProps) => {
+} & LegacyPoolListFilterChipsProps) => {
   const isMobile = useIsMobile()
   return (
     <Grid container spacing={Spacing.sm} size={{ mobile: 12, tablet: 'auto' }}>
       {isMobile ? (
         <Grid container columnSpacing={Spacing.sm} size={12}>
           <Grid size={6}>
-            <PoolSortDrawer onSortingChange={onSortingChange} sortField={sortField} />
+            <LegacyPoolSortDrawer onSortingChange={onSortingChange} sortField={sortField} />
           </Grid>
           <Grid size={6}>
-            <PoolListFilterDrawer
+            <LegacyPoolListFilterDrawer
               hiddenCount={hiddenCount}
               resetFilters={resetFilters}
               searchText={searchText}
@@ -53,7 +53,7 @@ export const PoolListChips = ({
           size={{ mobile: 12, tablet: 'auto' }}
           sx={{ justifyContent: 'flex-end' }}
         >
-          <PoolListFilterChips {...filterProps} />
+          <LegacyPoolListFilterChips {...filterProps} />
         </Grid>
       )}
       {!isMobile && <HiddenCountResetButton hiddenCount={hiddenCount} resetFilters={resetFilters} />}

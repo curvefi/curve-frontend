@@ -8,6 +8,7 @@ export const address = z.string().transform(value => value as Address)
 export const chain = z.enum(chains)
 export const decimal = z.string().transform(value => value as Decimal)
 export const hex = z.string().transform(value => value as Hex)
+export const sortDirection = z.enum(['asc', 'desc'])
 export const timestamp = z
   .union([z.number(), z.string()])
   .transform(value => parseTimestamp(value as TimestampResponse))

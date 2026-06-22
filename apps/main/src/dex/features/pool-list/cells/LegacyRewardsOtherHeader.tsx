@@ -6,22 +6,22 @@ import { type HeaderContext } from '@tanstack/table-core'
 import { t } from '@ui-kit/lib/i18n'
 import { Sortable } from '@ui-kit/shared/ui/DataTable/Sortable'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { PoolColumnId } from '../columns'
-import type { PoolListItem } from '../types'
+import { LegacyPoolColumnId } from '../columns'
+import type { LegacyPoolListItem } from '../legacyPoolList.types'
 
 const { Spacing } = SizesAndSpaces
 
-export const RewardsOtherHeader = ({ table }: HeaderContext<PoolListItem, RewardsApy | undefined>) => (
+export const LegacyRewardsOtherHeader = ({ table }: HeaderContext<LegacyPoolListItem, RewardsApy | undefined>) => (
   <Stack>
     <Box>{t`Rewards tAPR`}</Box>
     <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'end' }}>
       {useNetworkFromUrl()?.isCrvRewardsEnabled && (
         <>
-          <Sortable column={table.getColumn(PoolColumnId.RewardsCrv)} size="large">{`CRV`}</Sortable>
+          <Sortable column={table.getColumn(LegacyPoolColumnId.RewardsCrv)} size="large">{`CRV`}</Sortable>
           <Box component="span">{'+'}</Box>
         </>
       )}
-      <Sortable column={table.getColumn(PoolColumnId.RewardsIncentives)} size="large">{`Incentives`}</Sortable>
+      <Sortable column={table.getColumn(LegacyPoolColumnId.RewardsIncentives)} size="large">{`Incentives`}</Sortable>
     </Stack>
   </Stack>
 )

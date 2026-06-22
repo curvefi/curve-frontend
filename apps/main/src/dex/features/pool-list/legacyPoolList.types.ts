@@ -2,7 +2,7 @@ import { type PoolData, type RewardsApy } from '@/dex/types/main.types'
 import type { INetworkName } from '@curvefi/api/lib/interfaces'
 import type { Decimal } from '@primitives/decimal.utils'
 
-export type PoolTag =
+export type LegacyPoolTag =
   | 'btc'
   | 'crypto'
   | 'kava'
@@ -15,13 +15,13 @@ export type PoolTag =
   | 'stableng'
   | 'cross-chain'
 
-export type PoolListItem = PoolData & {
+export type LegacyPoolListItem = PoolData & {
   rewards: RewardsApy | undefined
   volume: Decimal | undefined
   tvl: Decimal | undefined
   hasPosition: boolean | undefined
   network: INetworkName
   url: string
-  tags: PoolTag[]
+  tags: LegacyPoolTag[]
   totalAPR: number
 }
