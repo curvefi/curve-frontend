@@ -15,7 +15,6 @@ import { type Address, Hex } from '@primitives/address.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { assert, maybe, notFalsy, objectKeys } from '@primitives/objects.utils'
 import { getLib, requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
-import { isZapV2Enabled } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaMarketType, LlamaMarketVersion } from '@ui-kit/types/market'
 import { CRVUSD, decimalMinus, decimalSum, formatNumber } from '@ui-kit/utils'
@@ -60,10 +59,8 @@ export const hasLeverageValue = (market: LlamaMarketTemplate) =>
   (market instanceof LendMarketTemplate && hasV1Leverage(market)) ||
   (market instanceof MintMarketTemplate && hasV2Leverage(market))
 
-export const hasV1Leverage = (_market: LlamaMarketTemplate) => false
-/** market instanceof LendMarketTemplate
-    ? market.leverage.hasLeverage()
-    : market?.leverageZap !== zeroAddress */
+export const hasV1Leverage = (market: LlamaMarketTemplate) =>
+  market instanceof LendMarketTemplate ? market.leverage.hasLeverage() : market?.leverageZap !== zeroAddress
 
 export const hasV2Leverage = (_market: MintMarketTemplate) => false // market?.leverageV2.hasLeverage()
 
