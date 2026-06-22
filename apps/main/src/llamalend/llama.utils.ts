@@ -60,7 +60,9 @@ export const hasLeverageValue = (market: LlamaMarketTemplate) =>
   (market instanceof MintMarketTemplate && hasV2Leverage(market))
 
 export const hasV1Leverage = (market: LlamaMarketTemplate) =>
-  market instanceof LendMarketTemplate ? market.leverage.hasLeverage() : market?.leverageZap !== zeroAddress
+  market instanceof LendMarketTemplate
+    ? market.version === 'v1' && market.leverage.hasLeverage()
+    : market?.leverageZap !== zeroAddress
 
 export const hasV2Leverage = (_market: MintMarketTemplate) => false // market?.leverageV2.hasLeverage()
 

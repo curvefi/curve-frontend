@@ -109,8 +109,8 @@ export const LOAN_TEST_MARKETS = {
       improveHealth: '0.01',
       chainId: Chain.Optimism,
       path: '/lend/optimism/markets/0x745422BF49f3F6e4A8E12E4abD19339E7910F8C9',
-      hasLeverage: true,
-      hasLeverageManagement: true,
+      hasLeverage: false, // leverage is temporarily disabled for v2 markets
+      hasLeverageManagement: false, // leverage is temporarily disabled for v2 markets
       collateralDecimals,
       borrowedAddress: '0x4200000000000000000000000000000000000006', // WETH
       borrowedDecimals,
