@@ -2,7 +2,8 @@ import { type Address, createPublicClient, encodeFunctionData, http, parseAbi, p
 import { sendAdminTransaction } from '@cy/support/helpers/tenderly/vnet-tx'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
-import { fundEth } from '../tenderly/vnet-fund'
+import { Chain } from '@ui-kit/utils'
+import { fundErc20, fundEth } from '../tenderly/vnet-fund'
 
 const CONTROLLER_V2_ABI = parseAbi([
   'function configurator() view returns (address)',
@@ -78,4 +79,40 @@ export const setControllerBorrowCap = ({
         }),
       ),
   )
+}
+
+export const setupLlv2BorrowingLiquidity = ({
+  adminRpcUrl,
+  publicRpcUrl,
+  chainId,
+  controllerAddress,
+  borrowedAddress,
+  borrowedDecimals,
+}: {
+  adminRpcUrl: string
+  publicRpcUrl: string
+  chainId: Chain
+  controllerAddress: Address
+  borrowedAddress: Address
+  borrowedDecimals: number
+}) => {
+  if (chainId !== Chain.Optimism) return
+
+  const borrowedLiquidity = '10' as const
+  const borrowCap = '1000' as const
+
+  setControllerBorrowCap({
+    adminRpcUrl,
+    publicRpcUrl,
+    controllerAddress,
+    borrowCap,
+    availableBalance: borrowedLiquidity,
+    borrowedDecimals,
+  })
+  fundErc20({
+    adminRpcUrl,
+    amountWei: `0x${parseUnits(borrowedLiquidity, borrowedDecimals).toString(16)}`,
+    tokenAddress: borrowedAddress,
+    recipientAddresses: [controllerAddress],
+  })
 }
