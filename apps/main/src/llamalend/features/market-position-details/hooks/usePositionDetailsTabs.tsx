@@ -8,9 +8,10 @@ import { useTabs } from '@ui-kit/hooks/useTabs'
 import { t } from '@ui-kit/lib/i18n'
 import type { UserMarketParams } from '@ui-kit/lib/model'
 import { type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
+import { MarketRateType } from '@ui-kit/types/market'
 import type { QueryProp } from '@ui-kit/types/util'
 import { BorrowPositionDetails } from '../BorrowPositionDetails'
-import { NoPosition } from '../NoPosition'
+import { MarketEmptyPosition } from '../MarketEmptyPosition'
 
 export type PositionDetailsTab = 'borrowDetails' | 'activity'
 type PositionDetailsTabOption = TabOption<PositionDetailsTab> & { render: () => ReactNode }
@@ -38,7 +39,7 @@ export const usePositionDetailsTabs = ({
             hasPosition ? (
               <BorrowPositionDetails tokens={tokens} params={{ chainId, marketId, userAddress }} />
             ) : (
-              <NoPosition type="borrow" />
+              <MarketEmptyPosition rateType={MarketRateType.Borrow} />
             ),
         },
         events?.length && {

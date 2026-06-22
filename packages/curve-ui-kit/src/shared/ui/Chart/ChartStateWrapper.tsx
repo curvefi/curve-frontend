@@ -8,7 +8,6 @@ type ChartStateWrapperProps = {
   height: number
   isLoading: boolean
   isEmpty?: boolean
-  emptyTitle?: ReactNode
   emptyMessage?: ReactNode
   error?: Error | null
   errorMessage: string
@@ -22,7 +21,6 @@ export const ChartStateWrapper = ({
   height,
   isLoading,
   isEmpty,
-  emptyTitle,
   emptyMessage,
   error,
   errorMessage,
@@ -31,7 +29,7 @@ export const ChartStateWrapper = ({
 }: ChartStateWrapperProps) => {
   if (isLoading) return <ChartLoading height={height} />
   if (error) return <ChartError height={height} error={error} errorMessage={errorMessage} refreshData={refreshData} />
-  if (isEmpty) return <ChartEmpty height={height} title={emptyTitle} message={emptyMessage} />
+  if (isEmpty) return <ChartEmpty height={height} message={emptyMessage} />
 
   return (
     <ErrorBoundary

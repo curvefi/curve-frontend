@@ -1,6 +1,5 @@
 import { PositionsEmptyState } from '@/llamalend/constants'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
-import Button from '@mui/material/Button'
 import type { Table } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
@@ -9,7 +8,7 @@ import { MarketRateType } from '@ui-kit/types/market'
 
 type EmptyStateConfig = {
   title: string
-  subtitle?: string
+  description?: string
   buttonLabel?: string
   onButtonClick?: () => void
 }
@@ -34,11 +33,11 @@ const emptyStateConfigs = (
   },
   [PositionsEmptyState.NoPositions]: {
     title: t`No active positions`,
-    subtitle: noPositionsSubTitle[marketRateType],
+    description: noPositionsSubTitle[marketRateType],
   },
   [PositionsEmptyState.Filtered]: {
     title: t`No positions found`,
-    subtitle: t`Try adjusting your filters or search query`,
+    description: t`Try adjusting your filters or search query`,
     buttonLabel: t`Show All Positions`,
     onButtonClick: resetFilters,
   },
@@ -57,20 +56,14 @@ export const UserPositionsEmptyState = ({
   resetFilters,
 }: UserPositionsEmptyStateProps) => {
   const configs = emptyStateConfigs(marketRateType, onReload, resetFilters)
-  const { title, subtitle, buttonLabel, onButtonClick } = configs[state]
+  const { title, description, buttonLabel, onButtonClick } = configs[state]
 
   return (
     <EmptyStateRow size="sm" table={table}>
       <EmptyStateCard
         title={title}
-        subtitle={subtitle}
-        action={
-          onButtonClick && (
-            <Button size="small" onClick={onButtonClick}>
-              {buttonLabel}
-            </Button>
-          )
-        }
+        description={description}
+        {...(onButtonClick && { button: { label: buttonLabel, onClick: onButtonClick } })}
       />
     </EmptyStateRow>
   )
