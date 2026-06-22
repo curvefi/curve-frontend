@@ -84,7 +84,7 @@ export const useOraclePoolOhlcQuery = ({
         {
           endpoint,
           chain: validChain,
-          controller: controller!,
+          controller: controller!, // validated via `enabled` prop
           interval,
           units,
           start: pageParam.start,
@@ -96,12 +96,7 @@ export const useOraclePoolOhlcQuery = ({
       const ohlcData = formatCandleOhlcData(ohlc)
       const oraclePriceData = formatOraclePriceData(data)
 
-      return {
-        ohlcData,
-        oraclePriceData,
-        ...createOhlcPageResult(data),
-        ...getOraclePoolTokenPair(pools),
-      }
+      return { ohlcData, oraclePriceData, ...createOhlcPageResult(data), ...getOraclePoolTokenPair(pools) }
     },
   })
 
@@ -136,7 +131,7 @@ export const useLlammaOhlcQuery = ({
         {
           endpoint,
           chain: validChain,
-          llamma: llamma!, // already checked by enabled bool
+          llamma: llamma!, // validated via `enabled` prop
           interval,
           units,
           start: pageParam.start,
