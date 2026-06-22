@@ -23,6 +23,8 @@ import { borderStyle } from '@ui-kit/utils'
 
 const { Spacing, Sizing } = SizesAndSpaces
 
+const EMPTY_ARRAY: never[] = []
+
 /** css class to hide elements on desktop unless the row is hovered */
 export const DesktopOnlyHoverClass = 'desktop-only-on-hover'
 
@@ -54,7 +56,7 @@ export type ColumnMeta = TanstackColumnMeta<TableItem, unknown>
 export const useTable = <TData extends RowData>(
   options: Omit<TableOptions<TData>, 'data'> & { query: QueryProp<TData[]> },
 ) => {
-  const table = useReactTable<TData>({ ...options, data: options.query.data ?? [] })
+  const table = useReactTable<TData>({ ...options, data: options.query.data ?? EMPTY_ARRAY })
   return { ...table, isLoading: options.query.isLoading, error: options.query.error }
 }
 

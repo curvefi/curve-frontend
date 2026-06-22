@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+import { sum } from 'lodash'
 import { useCallback } from 'react'
 import { useConnection } from 'wagmi'
 import { LEVERAGE } from '@/llamalend/constants'
@@ -185,7 +186,7 @@ export function useClosePositionForm({
       const collateralToRecover = notFalsy(collateralAmount, Number(excess) > 0 && excessStablecoinAmount)
       const collateralToRecoverUsd = collateralToRecover.some(({ usd }) => usd == null)
         ? undefined
-        : collateralToRecover.reduce((sum, { usd }) => sum + Number(usd), 0)
+        : sum(collateralToRecover.map(col => Number(col.usd)))
       const hasBadDebt = collateralToRecoverUsd != null && collateralToRecoverUsd <= 0
 
       return { rows, collateralToRecover, hasBadDebt, missing, borrowedBalance: borrowed }
