@@ -20,6 +20,58 @@ export async function getPool(chain: Chain, poolAddr: string, options?: Options)
   return Schema.getPoolResponse.parse(response)
 }
 
+export async function listPoolChains(options?: Options) {
+  const host = getHost(options)
+  const response = await fetch(`${host}/v2/pools/chains/`)
+
+  return Schema.listPoolChainsResponse.parse(response)
+}
+
+export type ListPoolsParams = {
+  chainId: number
+  page?: number
+  pagination?: number
+  searchString?: string
+  poolType?: Schema.V2PoolFilterType
+  sortBy?: Schema.V2PoolSortField
+  sortDirection?: Schema.SortDirection
+}
+
+export async function listPools(
+  {
+    page = 1,
+    pagination = 50,
+    searchString,
+    poolType,
+    chainId,
+    sortBy = 'tvl',
+    sortDirection = 'desc',
+  }: ListPoolsParams,
+  options?: Options,
+) {
+  const host = getHost(options)
+  const query = addQueryString({
+    page,
+    pagination,
+    search_string: searchString,
+    pool_type: poolType,
+    chain_id: chainId,
+    sort_by: sortBy,
+    sort_direction: sortDirection,
+  })
+  const response = await fetch(`${host}/v2/pools/${query}`)
+
+  return Schema.listPoolsResponse.parse(response)
+}
+
+export async function listPoolRegistries({ chainId }: { chainId: number }, options?: Options) {
+  const host = getHost(options)
+  const query = addQueryString({ chain_id: chainId })
+  const response = await fetch(`${host}/v2/pools/registries/${query}`)
+
+  return Schema.listPoolRegistriesResponse.parse(response)
+}
+
 export async function getVolume(chain: Chain, poolAddr: string, options?: Options) {
   const host = getHost(options)
 

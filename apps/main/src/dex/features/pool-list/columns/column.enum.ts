@@ -1,11 +1,7 @@
-export enum PoolColumnId {
-  UserHasPositions = 'hasPosition',
+export enum PoolListColumnId {
   PoolName = 'PoolName',
   RewardsBase = 'RewardsBase',
-  RewardsCrv = 'RewardsCrv',
-  RewardsIncentives = 'RewardsIncentives',
-  RewardsOther = 'RewardsOther', // == RewardsCrv + RewardsIncentives
+  RewardsOther = 'RewardsOther',
   Volume = 'volume',
   Tvl = 'tvl',
-  PoolTags = 'filter', // using `filter` to keep the old links valid
 }
