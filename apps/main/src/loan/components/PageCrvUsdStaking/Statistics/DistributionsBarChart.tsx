@@ -21,7 +21,6 @@ export const RevenueDistributionsBarChart = ({ data, height }: RevenueDistributi
       barColor={barColor}
       height={height}
       renderTooltip={DistributionsChartTooltip}
-      showVerticalGrid
       xTickFormatter={time => formatDate(time)}
       yTickFormatter={value => formatNumber(+value, 'usd.notional')}
     />

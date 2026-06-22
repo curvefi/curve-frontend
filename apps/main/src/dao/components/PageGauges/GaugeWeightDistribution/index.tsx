@@ -4,6 +4,7 @@ import { useConnection } from 'wagmi'
 import { useUserGaugeWeightVotesQuery } from '@/dao/entities/user-gauge-weight-votes'
 import { useGauges } from '@/dao/queries/gauges.query'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
+import { truncateToShortenedAddressLength } from '@/dao/utils'
 import { useTheme } from '@mui/material/styles'
 import { Box } from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
@@ -106,9 +107,9 @@ export const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistribution
               barColor={getBarColor}
               height={CHART_HEIGHT}
               renderTooltip={GaugeVotingBarChartCustomTooltip}
-              xAxisHeight={60}
               xAxisInterval={getXAxisInterval(userVoteData.length)}
               xAxisLabelRotate={-45}
+              xTickFormatter={value => truncateToShortenedAddressLength(String(value))}
               yTickFormatter={value => formatChartAxisNumber(+value, { unit: 'percentage' })}
             />
           ) : (
@@ -119,9 +120,9 @@ export const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistribution
               barColor={getBarColor}
               height={CHART_HEIGHT}
               renderTooltip={renderGaugesTooltip}
-              xAxisHeight={60}
               xAxisInterval={getXAxisInterval(gaugeData.length)}
               xAxisLabelRotate={-45}
+              xTickFormatter={value => truncateToShortenedAddressLength(String(value))}
               yTickFormatter={value => formatChartAxisNumber(+value, { unit: 'percentage' })}
             />
           )}

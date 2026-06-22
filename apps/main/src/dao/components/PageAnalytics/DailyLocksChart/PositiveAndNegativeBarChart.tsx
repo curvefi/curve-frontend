@@ -21,6 +21,7 @@ export const PositiveAndNegativeBarChart = ({ data, height = 500 }: PositiveAndN
       barColor={datum => getChartSignedValueColor(theme, +datum.amount)}
       height={height}
       renderTooltip={PositiveAndNegativeBarChartTooltip}
+      showVerticalGrid
       xTickFormatter={value => formatDate(value)}
       yTickFormatter={value => formatChartAxisNumber(+value)}
     />

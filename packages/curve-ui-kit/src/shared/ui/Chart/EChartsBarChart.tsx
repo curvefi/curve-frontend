@@ -2,25 +2,13 @@ import type { EChartsOption } from 'echarts'
 import ReactECharts from 'echarts-for-react'
 import { useMemo, type ReactNode } from 'react'
 import { useTheme } from '@mui/material/styles'
-import { getPaddedChartAxisBounds, type ChartAxisTickLabelOptions } from '@ui-kit/shared/ui/Chart/chart.utils'
 import { useEChartsTooltip } from '@ui-kit/shared/ui/Chart/hooks/useEChartsTooltip'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-
-const { FontSize } = SizesAndSpaces
 
 export type EChartsBarChartTooltipContext<TData> = {
   datum: TData
 }
 
 type BarColor<TData> = string | ((datum: TData, index: number) => string)
-
-type ChartGrid = {
-  left?: number | string
-  top?: number | string
-  right?: number | string
-  bottom?: number | string
-  containLabel?: boolean
-}
 
 type CategoryAxisValue = string | number
 
@@ -41,21 +29,12 @@ export const EChartsBarChart = <
   xKey,
   yKey,
   barColor,
-  barMaxWidth,
-  grid,
   renderTooltip,
-  showHorizontalGrid = true,
   showVerticalGrid = false,
-  xAxisHeight,
-  xAxisInterval = 'auto',
+  xAxisInterval,
   xAxisLabelRotate = 0,
-  xAxisTickLabelOptions,
   xTickFormatter,
   yValue,
-  yAxisLine = false,
-  yAxisPosition = 'right',
-  yAxisTickLabelOptions,
-  yPaddingRatio = 0.2,
   yTickFormatter,
 }: {
   data: TData[]
@@ -63,35 +42,22 @@ export const EChartsBarChart = <
   xKey: TXKey
   yKey: TYKey
   barColor: BarColor<TData>
-  barMaxWidth?: number
-  grid?: ChartGrid
   renderTooltip?: (context: EChartsBarChartTooltipContext<TData>) => ReactNode
-  showHorizontalGrid?: boolean
   showVerticalGrid?: boolean
-  xAxisHeight?: number
-  xAxisInterval?: number | 'auto'
+  xAxisInterval?: number
   xAxisLabelRotate?: number
-  xAxisTickLabelOptions?: ChartAxisTickLabelOptions
   xTickFormatter?: (value: number | string) => string
   yValue?: (datum: TData, index: number) => number
-  yAxisLine?: boolean
-  yAxisPosition?: 'left' | 'right'
-  yAxisTickLabelOptions?: ChartAxisTickLabelOptions
-  /** Sets the padding ratio for the y-axis while preserving a zero baseline for single-sign bar data. */
-  yPaddingRatio?: number
   yTickFormatter?: (value: number | string) => string
 }) => {
   const theme = useTheme()
   const {
     design: { Color, Text },
+    typography,
   } = theme
 
   const gridLineColor = Color.Neutral[300]
   const gridTextColor = Text.TextColors.Tertiary
-  const xAxisShowMinLabel = xAxisTickLabelOptions?.showMinLabel ?? true
-  const xAxisShowMaxLabel = xAxisTickLabelOptions?.showMaxLabel ?? false
-  const yAxisShowMinLabel = yAxisTickLabelOptions?.showMinLabel ?? true
-  const yAxisShowMaxLabel = yAxisTickLabelOptions?.showMaxLabel ?? true
 
   const tooltipFormatter = useEChartsTooltip(
     data,
@@ -103,50 +69,30 @@ export const EChartsBarChart = <
     () => data.map((item, index) => (yValue ? yValue(item, index) : Number(item[yKey]))),
     [data, yKey, yValue],
   )
-  const { min: yMin, max: yMax } = useMemo(
-    () =>
-      getPaddedChartAxisBounds({
-        values: yAxisData,
-        includeZero: true,
-        paddingRatio: yPaddingRatio,
-      }),
-    [yAxisData, yPaddingRatio],
-  )
 
   const option: EChartsOption = useMemo(
     () => ({
       animation: false,
+      backgroundColor: 'transparent',
+      textStyle: { fontFamily: typography.bodyMRegular.fontFamily as string, color: gridTextColor },
       grid: {
         left: 0,
-        top: 0,
         right: 0,
         bottom: 0,
-        containLabel: true,
-        ...grid,
+        top: 0,
       },
       xAxis: {
         type: 'category',
         data: xAxisData,
-        axisLine: { show: false },
-        axisTick: { show: true, lineStyle: { color: gridLineColor, width: 0.5 } },
-        splitLine: {
-          show: showVerticalGrid,
-          lineStyle: {
-            color: gridLineColor,
-            width: 0.5,
-            type: 'solid',
-          },
-        },
+        boundaryGap: false,
+        axisLine: { show: true, onZero: false, lineStyle: { color: gridLineColor } },
+        axisTick: { show: true, lineStyle: { color: gridLineColor } },
+        splitLine: { show: showVerticalGrid, showMaxLine: false, lineStyle: { color: gridLineColor } },
         axisLabel: {
           color: gridTextColor,
-          fontSize: FontSize.xs.desktop,
-          hideOverlap: true,
-          interval: xAxisInterval,
-          rotate: xAxisLabelRotate,
-          showMinLabel: xAxisShowMinLabel,
-          showMaxLabel: xAxisShowMaxLabel,
           align: 'left',
-          ...(xAxisHeight && { height: xAxisHeight }),
+          ...(xAxisInterval != null && { interval: xAxisInterval }),
+          ...(xAxisLabelRotate !== 0 && { rotate: xAxisLabelRotate }),
           formatter: (value: string | number, index?: number) => {
             const formatterValue = index == null ? value : (xAxisData[index] ?? value)
             return xTickFormatter ? xTickFormatter(formatterValue) : String(formatterValue)
@@ -155,24 +101,16 @@ export const EChartsBarChart = <
       },
       yAxis: {
         type: 'value',
-        position: yAxisPosition,
-        min: yMin,
-        max: yMax,
-        axisLine: { show: yAxisLine, lineStyle: { color: gridLineColor, width: 0.5 } },
-        axisTick: { show: true, lineStyle: { color: gridLineColor, width: 0.5 } },
+        position: 'right',
+        axisLine: { show: true, lineStyle: { color: gridLineColor } },
+        axisTick: { show: true, lineStyle: { color: gridLineColor } },
         splitLine: {
-          show: showHorizontalGrid,
           lineStyle: {
             color: gridLineColor,
-            width: 0.5,
-            type: 'solid',
           },
         },
         axisLabel: {
           color: gridTextColor,
-          fontSize: FontSize.xs.desktop,
-          showMinLabel: yAxisShowMinLabel,
-          showMaxLabel: yAxisShowMaxLabel,
           formatter: (value: number) => (yTickFormatter ? yTickFormatter(value) : `${value}`),
         },
       },
@@ -198,34 +136,22 @@ export const EChartsBarChart = <
             value: yAxisData[index],
             itemStyle: { color: typeof barColor === 'function' ? barColor(item, index) : barColor },
           })),
-          ...(barMaxWidth && { barMaxWidth }),
         },
       ],
     }),
     [
       barColor,
-      barMaxWidth,
       data,
-      grid,
       gridLineColor,
       gridTextColor,
-      showHorizontalGrid,
       showVerticalGrid,
       tooltipFormatter,
-      xAxisHeight,
+      typography.bodyMRegular.fontFamily,
       xAxisInterval,
       xAxisLabelRotate,
-      xAxisShowMaxLabel,
-      xAxisShowMinLabel,
       xAxisData,
       xTickFormatter,
-      yAxisLine,
-      yAxisPosition,
-      yAxisShowMaxLabel,
-      yAxisShowMinLabel,
       yAxisData,
-      yMax,
-      yMin,
       yTickFormatter,
     ],
   )

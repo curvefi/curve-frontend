@@ -32,7 +32,6 @@ export const TopHoldersBarChart = ({ data, filter }: TopHoldersBarChartProps) =>
       barColor={getBarColor}
       height={CHART_HEIGHT}
       renderTooltip={CustomTooltip}
-      xAxisHeight={60}
       xAxisLabelRotate={-45}
       xAxisInterval={0}
       xTickFormatter={value => formatHolderName(String(value))}
