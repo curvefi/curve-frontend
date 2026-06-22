@@ -87,13 +87,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
         table={table}
         emptyState={
           <EmptyStateRow table={table}>
-            <PoolListEmptyState
-              poolType={poolType}
-              poolTypeFilters={poolTypeFilters}
-              resetFilters={resetFilters}
-              searchText={searchText}
-              isError={isError}
-            />
+            <PoolListEmptyState resetFilters={resetFilters} isError={isError} />
           </EmptyStateRow>
         }
         expandedPanel={PoolListMobileExpandedPanel}

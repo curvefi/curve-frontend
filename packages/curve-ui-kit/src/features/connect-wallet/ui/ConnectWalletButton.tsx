@@ -1,3 +1,4 @@
+import { type ReactNode } from 'react'
 import { useConnection } from 'wagmi'
 import Button, { type ButtonProps } from '@mui/material/Button'
 import { t } from '@ui-kit/lib/i18n'
@@ -8,7 +9,7 @@ export const ConnectWalletButton = ({
   testId = 'navigation-connect-wallet',
   onConnect,
   ...props
-}: Pick<ButtonProps, 'size' | 'fullWidth' | 'sx'> & { label?: string; testId?: string; onConnect?: () => void }) => {
+}: Pick<ButtonProps, 'size' | 'fullWidth' | 'sx'> & { label?: ReactNode; testId?: string; onConnect?: () => void }) => {
   const { isConnecting, isConnected } = useConnection()
   const { connect } = useWallet()
   return (

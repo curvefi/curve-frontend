@@ -6,6 +6,7 @@ import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { LegacyTableSearchField } from '@ui-kit/shared/ui/DataTable/LegacyTableSearchField'
+import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
 import type { Partner } from '@ui-kit/shared/ui/PartnerCard'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { BridgeGrid } from './BridgeGrid'
@@ -58,7 +59,17 @@ export const BridgeOverview = ({ bridges, title }: { bridges: Partner[]; title: 
           isExpanded={isExpandedOrValue}
         />
       </Stack>
-      <BridgeGrid bridges={filteredBridges} sx={{ paddingBlock: Spacing.md }} />
+      {filteredBridges.length ? (
+        <BridgeGrid bridges={filteredBridges} sx={{ paddingBlock: Spacing.md }} />
+      ) : (
+        <Stack sx={{ paddingBlock: Spacing.md, alignItems: 'center' }}>
+          <EmptyStateCard
+            title={t`No bridges found`}
+            description={t`Try adjusting your search query`}
+            button={{ label: t`Clear search`, onClick: () => setSearchText('') }}
+          />
+        </Stack>
+      )}
     </Stack>
   )
 }

@@ -172,7 +172,7 @@ const DemoDataTable = ({
         <EmptyStateRow table={table}>
           <EmptyStateCard
             title={isError ? 'Could not load markets' : emptyTitle || 'No markets found'}
-            subtitle={isError ? 'Refresh and try again.' : emptySubtitle || 'Try adjusting the table filters.'}
+            description={isError ? 'Refresh and try again.' : emptySubtitle || 'Try adjusting the table filters.'}
           />
         </EmptyStateRow>
       }

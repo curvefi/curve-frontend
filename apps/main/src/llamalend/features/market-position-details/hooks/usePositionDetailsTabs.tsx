@@ -7,10 +7,12 @@ import { notFalsy } from '@primitives/objects.utils'
 import { useTabs } from '@ui-kit/hooks/useTabs'
 import { t } from '@ui-kit/lib/i18n'
 import type { UserMarketParams } from '@ui-kit/lib/model'
+import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
 import { type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
+import { MarketRateType } from '@ui-kit/types/market'
 import type { QueryProp } from '@ui-kit/types/util'
 import { BorrowPositionDetails } from '../BorrowPositionDetails'
-import { NoPosition } from '../NoPosition'
+import { MarketEmptyPosition } from '../MarketEmptyPosition'
 
 export type PositionDetailsTab = 'borrowDetails' | 'activity'
 type PositionDetailsTabOption = TabOption<PositionDetailsTab> & { render: () => ReactNode }
@@ -37,8 +39,13 @@ export const usePositionDetailsTabs = ({
           render: () =>
             hasPosition ? (
               <BorrowPositionDetails tokens={tokens} params={{ chainId, marketId, userAddress }} />
+            ) : userAddress ? (
+              <MarketEmptyPosition rateType={MarketRateType.Borrow} />
             ) : (
-              <NoPosition type={userAddress ? 'borrow' : 'disconnected'} />
+              <EmptyStateCard
+                title={t`Disconnected`}
+                description={t`Please connect your wallet to view your positions.`}
+              />
             ),
         },
         events?.length && {

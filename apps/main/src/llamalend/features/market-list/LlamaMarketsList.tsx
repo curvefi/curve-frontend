@@ -3,7 +3,6 @@ import { useConnection } from 'wagmi'
 import { invalidateBadDebtMarkets } from '@/llamalend/queries/market'
 import Box from '@mui/material/Box'
 import type { Address } from '@primitives/address.utils'
-import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useLLv2, useNewMarketListLayout } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
@@ -97,7 +96,7 @@ export const LlamaMarketsList = () => {
         data?.userHasPositions && <LegacyUserPositionsTable onReload={onReload} tableQuery={tableQuery} />
       ) : (
         <Box sx={{ paddingBlock: Spacing.md, backgroundColor: t => t.design.Layer[1].Fill }}>
-          <EmptyStateCard action={<ConnectWalletButton label={t`Connect to view positions`} />} />
+          <EmptyStateCard button={{ type: 'connect-wallet', label: t`Connect to view positions` }} />
         </Box>
       )}
       {isNewLayout ? (
