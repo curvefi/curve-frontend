@@ -1,23 +1,28 @@
 import type { EChartsOption } from 'echarts-for-react'
 import type { Decimal } from '@primitives/decimal.utils'
 
+export type { FetchedBandsBalances } from '@/llamalend/queries/bands/types'
+
 export type BandsChartToken = { symbol: string; address: string } | undefined
 
+/**
+ * `*Value` fields are denominated in the market borrow token.
+ * Collateral values use the band price to convert collateral amount into borrow-token notional.
+ * Borrowed amounts are already in the borrow token and are used directly as borrowed values.
+ */
 export type ChartDataPoint = {
   n: number
   pUpDownMedian: number
   p_up: number
   p_down: number
-  bandCollateralAmount?: number
-  bandCollateralValueUsd?: number
-  bandBorrowedAmount?: number
-  bandBorrowedValueUsd?: number
-  bandTotalCollateralValueUsd?: number
-  userBandCollateralAmount?: number
-  userBandCollateralValueUsd?: number
-  userBandBorrowedAmount?: number
-  userBandBorrowedValueUsd?: number
-  userBandTotalCollateralValueUsd?: number
+  bandCollateralAmount?: Decimal
+  bandCollateralValue?: Decimal
+  bandBorrowedAmount?: Decimal
+  bandTotalValue?: Decimal
+  userBandCollateralAmount?: Decimal
+  userBandCollateralValue?: Decimal
+  userBandBorrowedAmount?: Decimal
+  userBandTotalValue?: Decimal
   isLiquidationBand: boolean
 }
 
@@ -59,9 +64,9 @@ export type UserBandsPriceRange = {
 
 export type DerivedChartData = {
   yAxisData: number[]
-  marketData: number[]
   userCollateralData: number[]
   userBorrowedData: number[]
+  bandTotalData: number[]
   isLiquidation: boolean[]
 }
 
@@ -120,16 +125,4 @@ export type BandsChartSeries =
 
 export type BandsChartOption = Omit<EChartsOption, 'series'> & {
   series?: BandsChartSeries[]
-}
-
-export type FetchedBandsBalances = {
-  borrowed: Decimal
-  collateral: Decimal
-  collateralUsd: number
-  collateralBorrowedUsd: number
-  isLiquidationBand: boolean
-  n: number
-  p_up: number
-  p_down: number
-  pUpDownMedian: number
 }

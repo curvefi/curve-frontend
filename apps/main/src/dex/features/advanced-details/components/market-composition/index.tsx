@@ -3,7 +3,6 @@ import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
-import { DEFAULT_INCREASING_LENGTH } from '@ui-kit/hooks/useIncreasingLength'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
@@ -48,7 +47,7 @@ export const MarketComposition = ({
       <DataTable<MarketCompositionRow>
         table={table}
         disableStickyHeader
-        increasingLengthOptions={{ ...DEFAULT_INCREASING_LENGTH, maxLength: DEFAULT_INCREASING_LENGTH.initialLength }}
+        increasingLength="disabled"
         emptyState={<EmptyStateRow table={table} size="sm">{t`No market composition found.`}</EmptyStateRow>}
         footerRow={
           rows.length > 0 && (
