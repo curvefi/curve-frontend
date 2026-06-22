@@ -60,10 +60,12 @@ export const hasLeverageValue = (market: LlamaMarketTemplate) =>
   (market instanceof LendMarketTemplate && hasV1Leverage(market)) ||
   (market instanceof MintMarketTemplate && hasV2Leverage(market))
 
-export const hasV1Leverage = (market: LlamaMarketTemplate) =>
-  market instanceof LendMarketTemplate ? market.leverage.hasLeverage() : market?.leverageZap !== zeroAddress
+export const hasV1Leverage = (_market: LlamaMarketTemplate) => false
+/** market instanceof LendMarketTemplate
+    ? market.leverage.hasLeverage()
+    : market?.leverageZap !== zeroAddress */
 
-export const hasV2Leverage = (market: MintMarketTemplate) => market?.leverageV2.hasLeverage()
+export const hasV2Leverage = (_market: MintMarketTemplate) => false // market?.leverageV2.hasLeverage()
 
 const hasV1Deleverage = (market: LlamaMarketTemplate) =>
   market instanceof LendMarketTemplate ? hasV1Leverage(market) : market?.deleverageZap !== zeroAddress
@@ -90,8 +92,10 @@ export const canRepayFromUserCollateral = (market: LlamaMarketTemplate) =>
 
 export const hasVault = (market: LlamaMarketTemplate) => market instanceof LendMarketTemplate && 'vault' in market
 
-export const hasZapV2 = (market: LlamaMarketTemplate) =>
-  isZapV2Enabled() && market instanceof LendMarketTemplate && market.leverageZapV2.hasLeverage()
+export const hasZapV2 = (_market: LlamaMarketTemplate) => false
+/** isZapV2Enabled() &&
+  market instanceof LendMarketTemplate &&
+  market.leverageZapV2.hasLeverage() */
 
 export const isRouterRequired = (
   type: 'zapV2' | 'V0' | 'V1' | 'V2' | 'deleverage' | 'unleveragedMint' | 'unleveragedLend' | 'unleveraged',

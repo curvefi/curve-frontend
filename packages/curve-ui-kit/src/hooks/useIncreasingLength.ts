@@ -1,27 +1,31 @@
 import { useEffect, useState } from 'react'
 import { setTimeoutInterval } from '@ui-kit/utils/timers'
 
-export type IncreasingLengthOptions = {
+type IncreasingLengthOptions = {
   initialLength?: number
   increaseEveryMs?: number
   maxLength?: number
 }
 
-export const DEFAULT_INCREASING_LENGTH: Required<IncreasingLengthOptions> = {
+const DEFAULT: Required<IncreasingLengthOptions> = {
   initialLength: 3,
   increaseEveryMs: 5000,
   maxLength: 10,
 }
 
-/**
- * Returns a length value that starts at `initialLength` and increases by one every `increaseEveryMs` until it reaches
- * `maxLength`.
- */
-export const useIncreasingLength = ({
-  initialLength = DEFAULT_INCREASING_LENGTH.initialLength,
-  increaseEveryMs = DEFAULT_INCREASING_LENGTH.increaseEveryMs,
-  maxLength = DEFAULT_INCREASING_LENGTH.maxLength,
-}: IncreasingLengthOptions = {}) => {
+const INCREASING_LENGTH_CATEGORIES = {
+  default: DEFAULT,
+  disabled: { ...DEFAULT, maxLength: DEFAULT.initialLength },
+  chips: { ...DEFAULT, maxLength: 5 },
+  /** With two user positions tables let's avoid having too many skeletons rows when loading */
+  userPositionsMarketRate: { ...DEFAULT, initialLength: 1, maxLength: 3 },
+} as const satisfies Record<string, IncreasingLengthOptions>
+
+export type IncreasingLengthCategory = keyof typeof INCREASING_LENGTH_CATEGORIES
+
+/** Returns a length value that starts at `initialLength` and increases by one every `increaseEveryMs` until it reaches `maxLength` */
+export const useIncreasingLength = (category: IncreasingLengthCategory = 'default') => {
+  const { initialLength, increaseEveryMs, maxLength } = INCREASING_LENGTH_CATEGORIES[category]
   const [length, setLength] = useState(initialLength)
 
   useEffect(

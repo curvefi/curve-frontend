@@ -73,8 +73,7 @@ export const UserPositionsMarketRateTable = ({
         max: DEFAULT_VISIBLE_ROWS,
         buttonLabel: t`View all ${data.length} ${marketRateType.toLowerCase()} positions`,
       }}
-      // with two user positions tables let's avoid having too many skeletons rows when loading
-      increasingLengthOptions={{ initialLength: 1, maxLength: 3 }}
+      increasingLength="userPositionsMarketRate"
       emptyState={
         <UserPositionsEmptyState
           state={getEmptyState(!!error)}

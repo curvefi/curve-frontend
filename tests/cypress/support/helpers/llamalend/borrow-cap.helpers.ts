@@ -19,16 +19,19 @@ export const setControllerBorrowCap = ({
   publicRpcUrl,
   controllerAddress,
   borrowCap,
+  availableBalance = borrowCap,
   borrowedDecimals,
 }: {
   adminRpcUrl: string
   publicRpcUrl: string
   controllerAddress: Address
   borrowCap: Decimal
+  availableBalance?: Decimal
   borrowedDecimals: number
 }) => {
   cy.then(LOAD_TIMEOUT, async () => {
     const borrowCapWei = parseUnits(borrowCap, borrowedDecimals)
+    const availableBalanceWei = parseUnits(availableBalance, borrowedDecimals)
     const client = createPublicClient({ transport: http(publicRpcUrl) })
     const configuratorAddress = await client.readContract({
       address: controllerAddress,
@@ -41,8 +44,8 @@ export const setControllerBorrowCap = ({
       functionName: 'vault',
     })
 
-    return { borrowCapWei, client, configuratorAddress, vaultAddress }
-  }).then(({ borrowCapWei, client, configuratorAddress, vaultAddress }) =>
+    return { availableBalanceWei, borrowCapWei, client, configuratorAddress, vaultAddress }
+  }).then(({ availableBalanceWei, borrowCapWei, client, configuratorAddress, vaultAddress }) =>
     fundEth({
       adminRpcUrl,
       amountWei: '0xde0b6b3a7640000',
@@ -69,7 +72,7 @@ export const setControllerBorrowCap = ({
           data: encodeFunctionData({
             abi: CONTROLLER_V2_ABI,
             functionName: 'on_borrowed_token_transfer_in',
-            args: [borrowCapWei],
+            args: [availableBalanceWei],
           }),
           client,
         }),
