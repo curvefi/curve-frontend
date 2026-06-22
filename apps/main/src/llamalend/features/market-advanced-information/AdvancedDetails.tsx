@@ -1,4 +1,4 @@
-import { formatCollateralNotional } from '@/llamalend/llama.utils'
+import { formatCollateralNotional, tokenMetric } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import {
   MaxLeverageTooltip,
@@ -26,7 +26,7 @@ type AdvancedDetailsProps = {
 }
 
 export const AdvancedDetails = ({ chainId, marketId, market, marketType }: AdvancedDetailsProps) => {
-  const { collateral, availableLiquidity, maxLeverage, solvency, totalBorrowers, averageHealth } =
+  const { borrowedUsdRate, collateral, availableLiquidity, maxLeverage, solvency, totalBorrowers, averageHealth } =
     useAdvancedDetailsData({
       chainId,
       market,
@@ -47,8 +47,11 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
         <Metric
           size="medium"
           label={t`Borrow cap`}
-          value={mapQuery(availableLiquidity, ({ borrowCap }) => borrowCap)}
-          valueOptions={{ abbreviate: true }}
+          {...tokenMetric({
+            value: mapQuery(availableLiquidity, d => d.borrowCap),
+            symbol: availableLiquidity.data?.borrowSymbol,
+            usdRate: borrowedUsdRate,
+          })}
         />
       )}
       <Metric

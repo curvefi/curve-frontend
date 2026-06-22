@@ -13,11 +13,13 @@ import { getUserMarketCollateralEvents as getLendUserMarketCollateralEvents } fr
 import type { BadDebt } from '@curvefi/prices-api/liquidations'
 import { type Address, Hex } from '@primitives/address.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
-import { assert, maybe, notFalsy, objectKeys } from '@primitives/objects.utils'
+import { assert, maybe, maybes, notFalsy, objectKeys } from '@primitives/objects.utils'
 import { getLib, requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
+import { MetricProps } from '@ui-kit/shared/ui/Metric'
 import { LlamaMarketType, LlamaMarketVersion } from '@ui-kit/types/market'
-import { CRVUSD, decimalMinus, decimalSum, formatNumber } from '@ui-kit/utils'
+import { QueryProp } from '@ui-kit/types/util'
+import { CRVUSD, decimal, decimalMinus, decimalMultiply, decimalSum, formatNumber } from '@ui-kit/utils'
 import { SOLVENCY_THRESHOLDS } from './llama-markets.constants'
 
 /**
@@ -59,10 +61,10 @@ export const hasLeverageValue = (market: LlamaMarketTemplate) =>
   (market instanceof LendMarketTemplate && hasV1Leverage(market)) ||
   (market instanceof MintMarketTemplate && hasV2Leverage(market))
 
-export const hasV1Leverage = (_market: LlamaMarketTemplate) => false
-/** market instanceof LendMarketTemplate
-    ? market.leverage.hasLeverage()
-    : market?.leverageZap !== zeroAddress */
+export const hasV1Leverage = (market: LlamaMarketTemplate) =>
+  market instanceof LendMarketTemplate
+    ? market.version === 'v1' && market.leverage.hasLeverage()
+    : market?.leverageZap !== zeroAddress
 
 export const hasV2Leverage = (_market: MintMarketTemplate) => false // market?.leverageV2.hasLeverage()
 
@@ -437,3 +439,25 @@ export const lowSolvencyDeprecatedMessage = (solvencyPercent: number | null) =>
     : null
 
 export const getZapAddress = (market: LlamaMarketTemplate) => market.getZapAddress() as Address
+
+/** Builds Metric props for a token-denominated value with the matching USD notional shown below it. */
+export const tokenMetric = ({
+  value,
+  symbol,
+  usdRate,
+}: {
+  value: MetricProps['value']
+  symbol: string | null | undefined
+  usdRate: QueryProp<Amount>
+}) =>
+  ({
+    value,
+    valueOptions: {
+      abbreviate: true,
+      unit: maybe(symbol, symbol => ({ symbol, position: 'suffix' as const })),
+    },
+    notional: maybes([decimal(value.data), usdRate.data], ([value, usdRate]) => ({
+      value: decimalMultiply(value, usdRate),
+      unit: 'dollar' as const,
+    })),
+  }) satisfies Pick<MetricProps, 'value' | 'valueOptions' | 'notional'>
