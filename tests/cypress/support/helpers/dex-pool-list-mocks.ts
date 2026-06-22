@@ -5,32 +5,24 @@ import {
   POOL_LIST_SORT_FIELDS,
 } from '@/dex/features/pool-list/poolList.constants'
 import type { PoolType, SortDirection, V2PoolSortField } from '@curvefi/prices-api/pools'
-import { oneAddress, oneFloat } from '@cy/support/generators'
+import { oneAddress } from '@cy/support/generators'
 import { oneToken } from '@cy/support/helpers/tokens'
 import type { Address } from '@primitives/address.utils'
-import { maybe, range } from '@primitives/objects.utils'
+import { DEFAULT_DECIMALS, maybe, range } from '@primitives/objects.utils'
 import { Chain, requireBlockchainId } from '@ui-kit/utils/network'
 
-const MOCK_CHAIN_IDS = [Chain.Ethereum, Chain.Arbitrum] as const
-type MockChainId = (typeof MOCK_CHAIN_IDS)[number]
+const MOCK_CHAIN_ID = Chain.Ethereum
 
 // Large enough to exercise pagination controls and page-number truncation.
 const POOL_COUNT = 500
 const MAX_GENERATED_POOL_VOLUME_USD = 1_000_000_000
 const POOL_USD_STEP = 1_000_000
-const onePriorityPoolUsdValue = () =>
-  oneFloat(MAX_GENERATED_POOL_VOLUME_USD + POOL_USD_STEP, MAX_GENERATED_POOL_VOLUME_USD * 2)
 
-// Known Ethereum pool used by search assertions.
-const SearchPool = {
+// Real Ethereum pool used by search and navigation assertions.
+export const DEX_POOL_LIST_NAVIGATION_POOL = {
   name: '3pool',
   address: '0xbebc44782c7db0a1a60cb6fe97d0b483032ff1c7' as Address,
-} as const
-
-export const DEX_POOL_LIST_NAVIGATION_POOL = {
-  name: '2pool',
-  address: '0x7f90122bf0700f9e7e1f688fe926940e8839f353' as Address,
-  network: 'arbitrum',
+  network: 'ethereum',
 } as const
 
 type PoolListQuery = {
@@ -43,8 +35,8 @@ type PoolListQuery = {
   sortDirection: SortDirection
 }
 
-const createCoins = (chainId: MockChainId) => {
-  const blockchainId = requireBlockchainId(chainId)
+const createCoins = () => {
+  const blockchainId = requireBlockchainId(MOCK_CHAIN_ID)
 
   return range(2).map(poolIndex => {
     const { address, symbol } = oneToken(blockchainId)
@@ -54,26 +46,24 @@ const createCoins = (chainId: MockChainId) => {
       symbol,
       address,
       name: symbol,
-      decimals: 18,
+      decimals: DEFAULT_DECIMALS,
     }
   })
 }
 
 const createPool = ({
   address,
-  chainId,
   index,
   name,
   poolType,
 }: {
   address?: Address
-  chainId: MockChainId
   index: number
   name?: string
   poolType?: PoolType
 }) => ({
-  chain_id: chainId,
-  name: name ?? `Mock Pool ${chainId}-${index.toString().padStart(3, '0')}`,
+  chain_id: Number(MOCK_CHAIN_ID),
+  name: name ?? `Mock Pool ${MOCK_CHAIN_ID}-${index.toString().padStart(3, '0')}`,
   address: address ?? oneAddress(),
   pool_type: poolType ?? POOL_LIST_POOL_TYPES[index % POOL_LIST_POOL_TYPES.length],
   is_metapool: false,
@@ -83,7 +73,7 @@ const createPool = ({
   trading_fee_24h: 1_000 + index,
   liquidity_volume_24h: 10_000 + index,
   liquidity_fee_24h: 100 + index,
-  coins: createCoins(chainId),
+  coins: createCoins(),
   base_daily_apr: (index % 50) / 1_000,
   base_weekly_apr: (index % 50) / 900,
   crv_apr: null,
@@ -95,80 +85,44 @@ const createPool = ({
 
 type MockPool = ReturnType<typeof createPool>
 
-// Hardcode known pools where tests need exact search text, or a real address because
-// generated addresses do not resolve on the pool detail page.
-const createMockPools = (chainId: MockChainId): MockPool[] => [
-  ...(chainId === Chain.Ethereum
-    ? [
-        {
-          ...createPool({
-            address: SearchPool.address,
-            chainId,
-            index: POOL_COUNT,
-            name: SearchPool.name,
-            poolType: 'main',
-          }),
-          coins: [
-            {
-              pool_index: 0,
-              symbol: 'DAI',
-              address: '0x6b175474e89094c44da98b954eedeac495271d0f' as Address,
-              name: 'Dai Stablecoin',
-              decimals: 18,
-            },
-            {
-              pool_index: 1,
-              symbol: 'USDC',
-              address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as Address,
-              name: 'USD Coin',
-              decimals: 6,
-            },
-            {
-              pool_index: 2,
-              symbol: 'USDT',
-              address: '0xdac17f958d2ee523a2206206994597c13d831ec7' as Address,
-              name: 'Tether USD',
-              decimals: 6,
-            },
-          ],
-        },
-      ]
-    : []),
-  ...(chainId === Chain.Arbitrum
-    ? [
-        {
-          ...createPool({
-            address: DEX_POOL_LIST_NAVIGATION_POOL.address,
-            chainId,
-            index: POOL_COUNT + 1,
-            name: DEX_POOL_LIST_NAVIGATION_POOL.name,
-            poolType: 'main',
-          }),
-          tvl_usd: onePriorityPoolUsdValue(),
-          trading_volume_24h: onePriorityPoolUsdValue(),
-          coins: [
-            {
-              pool_index: 0,
-              symbol: 'USDC',
-              address: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8' as Address,
-              name: 'USD Coin',
-              decimals: 6,
-            },
-            {
-              pool_index: 1,
-              symbol: 'USDT',
-              address: '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9' as Address,
-              name: 'Tether USD',
-              decimals: 6,
-            },
-          ],
-        },
-      ]
-    : []),
-  ...range(POOL_COUNT).map(index => createPool({ chainId, index })),
+const createMockPools = (): MockPool[] => [
+  {
+    ...createPool({
+      address: DEX_POOL_LIST_NAVIGATION_POOL.address,
+      index: POOL_COUNT,
+      name: DEX_POOL_LIST_NAVIGATION_POOL.name,
+      poolType: 'main',
+    }),
+    tvl_usd: MAX_GENERATED_POOL_VOLUME_USD + POOL_USD_STEP,
+    trading_volume_24h: MAX_GENERATED_POOL_VOLUME_USD + POOL_USD_STEP,
+    coins: [
+      {
+        pool_index: 0,
+        symbol: 'DAI',
+        address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+        name: 'Dai Stablecoin',
+        decimals: 18,
+      },
+      {
+        pool_index: 1,
+        symbol: 'USDC',
+        address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        name: 'USD Coin',
+        decimals: 6,
+      },
+      {
+        pool_index: 2,
+        symbol: 'USDT',
+        address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+        name: 'Tether USD',
+        decimals: 6,
+      },
+    ],
+  },
+  ...range(POOL_COUNT).map(index => createPool({ index })),
 ]
 
-const MOCK_POOLS = MOCK_CHAIN_IDS.flatMap(createMockPools)
+const MOCK_POOLS = createMockPools()
 
 const parseNumberParam = (value: string | null, fallback: number) => maybe(value, Number) ?? fallback
 
@@ -229,7 +183,7 @@ export const mockDexPoolChains = () =>
     { method: 'GET', hostname: 'prices.curve.finance', pathname: '/v2/pools/chains/' },
     {
       body: {
-        data: MOCK_CHAIN_IDS.map(chainId => ({ chain_id: chainId, name: requireBlockchainId(chainId) })),
+        data: [{ chain_id: MOCK_CHAIN_ID, name: requireBlockchainId(MOCK_CHAIN_ID) }],
       },
     },
   )
@@ -251,4 +205,4 @@ export const setupDexPoolListMocks = () => {
   mockDexPoolList().as('dex-pools')
 }
 
-export const DEX_POOL_LIST_SEARCH = SearchPool.name
+export const DEX_POOL_LIST_SEARCH = DEX_POOL_LIST_NAVIGATION_POOL.name
