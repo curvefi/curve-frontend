@@ -1,35 +1,31 @@
 import { useConnection } from 'wagmi'
 import { useLlammaOhlcChartStateModel } from '@/llamalend/hooks/useLlammaOhlcChartStateModel'
+import { getAmmAddress, getControllerAddress } from '@/llamalend/llama.utils'
 import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useUserPrices } from '@/llamalend/queries/user'
 import { networks } from '@/loan/networks'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
-import { isPricesApiChain } from '@curvefi/prices-api'
+import { getBlockchainId } from '@curvefi/prices-api'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { Range } from '@ui-kit/types/util'
 
 type OhlcChartStateProps = {
   chainId: ChainId
   market: Llamma | null
-  marketId: string
   previewPrices: Range<Decimal> | undefined
 }
 
-export const useOhlcChartState = ({ chainId, market, marketId, previewPrices }: OhlcChartStateProps) => {
+export const useOhlcChartState = ({ chainId, market, previewPrices }: OhlcChartStateProps) => {
   const { address: userAddress } = useConnection()
-  const { data: userPrices } = useUserPrices({ chainId, marketId, userAddress })
-  const poolAddress = market?.address ?? ''
-  const controllerAddress = market?.controller ?? ''
-  const { data: oraclePrice } = useMarketOraclePrice({ chainId, marketId })
-  const networkId = networks[chainId].id.toLowerCase()
-  const network = isPricesApiChain(networkId) ? networkId : undefined
+  const { data: userPrices } = useUserPrices({ chainId, userAddress })
+  const { data: oraclePrice } = useMarketOraclePrice({ chainId })
   return useLlammaOhlcChartStateModel({
     endpoint: 'crvusd',
     chainKey: chainId,
-    marketId,
-    network,
-    controllerAddress,
-    llammaAddress: poolAddress,
+    marketId: market?.id,
+    network: getBlockchainId(networks[chainId].id),
+    controllerAddress: getControllerAddress(market),
+    llammaAddress: getAmmAddress(market),
     oraclePrice,
     enabled: !!market,
     userPrices,

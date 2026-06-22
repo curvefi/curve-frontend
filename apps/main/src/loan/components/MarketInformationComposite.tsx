@@ -30,7 +30,7 @@ export const MarketInformationComposite = ({
   previewPrices,
 }: MarketInformationCompProps) => (
   <Stack sx={{ gap: PAGE_SPACING }}>
-    <ChartAndActivityComp chainId={chainId} marketId={marketId} market={market} previewPrices={previewPrices} />
+    <ChartAndActivityComp chainId={chainId} market={market} previewPrices={previewPrices} />
     <MarketHistoricalRatesChart
       market={market}
       blockchainId={BlockchainIds[Chain.Ethereum]}

@@ -3,7 +3,7 @@ import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolTrades } from '@/dex/entities/pool-trades.query'
 import { usePoolsPricesApi } from '@/dex/queries/pools-prices-api.query'
 import { ChainId } from '@/dex/types/main.types'
-import type { Chain } from '@curvefi/prices-api'
+import { getBlockchainId } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
 import { scanAddressPath, scanTxPath } from '@ui/utils'
 import {
@@ -30,7 +30,7 @@ type UsePoolActivityProps = {
  */
 export const usePoolActivityTradesConfig = ({ chainId, poolAddress }: UsePoolActivityProps) => {
   const { data: networkConfig } = useNetworkByChain({ chainId })
-  const network = networkConfig?.id.toLowerCase() as Chain
+  const network = getBlockchainId(networkConfig?.id)
   const { isHydrated } = useCurve()
   const { pagination, onPaginationChange, apiPage } = useManualPagination()
 
