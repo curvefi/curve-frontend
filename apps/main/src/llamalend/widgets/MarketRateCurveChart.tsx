@@ -1,7 +1,7 @@
 import { sortBy } from 'lodash'
 import { useMemo, useState } from 'react'
 import { Address } from 'viem'
-import { calculateCombinedCollateral, getTokens, getUtilizationPercent, tokenMetric } from '@/llamalend/llama.utils'
+import { getTokens, getUtilizationPercent, tokenMetric } from '@/llamalend/llama.utils'
 import { useMarketCapAndAvailable, useMarketTotalCollateral, useRateCurve } from '@/llamalend/queries/market'
 import { TooltipOptions, TotalCollateralTooltip, UtilizationTooltip } from '@/llamalend/widgets/tooltips'
 import { RateCurveTooltip } from '@/llamalend/widgets/tooltips/chart/RateCurveTooltip'
@@ -11,6 +11,7 @@ import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import { useTheme } from '@mui/material/styles'
+import { Decimal } from '@primitives/decimal.utils'
 import { maybes, notFalsy } from '@primitives/objects.utils'
 import { combineQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
@@ -28,7 +29,7 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { fallbackQ, mapQuery, q, useMappedQuery } from '@ui-kit/types/util'
-import { decimalMax, decimalMinus, formatNumber } from '@ui-kit/utils'
+import { decimalMax, decimalMinus, decimalMultiply, decimalSum, formatNumber } from '@ui-kit/utils'
 
 const { Spacing, Height } = SizesAndSpaces
 
@@ -47,6 +48,31 @@ const SERIES_CONFIG: { key: RateCurveSeriesKey; label: string; dash?: ChartLineD
 
 const transform = ({ rates = [] }: { rates: RateCurveChartPoint[] | undefined }): RateCurveChartPoint[] =>
   sortBy(rates, 'utilization')
+
+/**
+ * Returns the total collateral expressed in collateral-token units.
+ * The borrowed-token portion can appear in collateral after soft liquidation, so it must be converted through USD rates
+ * before being added to the native collateral amount.
+ *
+ * Example: 10 WETH collateral + 4,000 crvUSD borrowed collateral, with WETH at $2,000 and crvUSD at $1,
+ * becomes 12 WETH: 10 + (4,000 * 1 / 2,000).
+ */
+const calculateCombinedCollateral = ({
+  collateral,
+  borrowed,
+  collateralUsdRate,
+  borrowUsdRate,
+}: {
+  collateral: Decimal | undefined
+  borrowed: Decimal | undefined
+  collateralUsdRate: number
+  borrowUsdRate: number
+}) =>
+  collateralUsdRate === 0
+    ? undefined
+    : maybes([collateral, borrowed], ([collateral, borrowed]) =>
+        decimalSum(collateral, decimalMultiply(borrowed, borrowUsdRate / collateralUsdRate)),
+      )
 
 export const MarketRateCurveChart = ({
   market,

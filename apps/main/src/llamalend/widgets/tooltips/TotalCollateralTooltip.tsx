@@ -39,7 +39,7 @@ export const TotalCollateralTooltip = ({
   return (
     <TooltipWrapper>
       <TooltipDescription
-        text={t`The total collateral deposited and converted in this market, shown in the collateral token.`}
+        text={t`The total collateral deposited and converted in this market, all denominated in the collateral token.`}
       />
       <TooltipDescription text={t`Used as backing for borrowed or minted debt (e.g., crvUSD).`} />
       <TooltipDescription

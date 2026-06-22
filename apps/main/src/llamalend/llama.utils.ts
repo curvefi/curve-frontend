@@ -440,31 +440,6 @@ export const lowSolvencyDeprecatedMessage = (solvencyPercent: number | null) =>
 
 export const getZapAddress = (market: LlamaMarketTemplate) => market.getZapAddress() as Address
 
-/**
- * Returns the total collateral expressed in collateral-token units.
- * The borrowed-token portion can appear in collateral after soft liquidation, so it must be converted through USD rates
- * before being added to the native collateral amount.
- *
- * Example: 10 WETH collateral + 4,000 crvUSD borrowed collateral, with WETH at $2,000 and crvUSD at $1,
- * becomes 12 WETH: 10 + (4,000 * 1 / 2,000).
- */
-export const calculateCombinedCollateral = ({
-  collateral,
-  borrowed,
-  collateralUsdRate,
-  borrowUsdRate,
-}: {
-  collateral: Decimal | undefined
-  borrowed: Decimal | undefined
-  collateralUsdRate: number
-  borrowUsdRate: number
-}) =>
-  collateralUsdRate === 0
-    ? undefined
-    : maybes([collateral, borrowed], ([collateral, borrowed]) =>
-        decimalSum(collateral, decimalMultiply(borrowed, borrowUsdRate / collateralUsdRate)),
-      )
-
 /** Builds Metric props for a token-denominated value with the matching USD notional shown below it. */
 export const tokenMetric = ({
   value,
@@ -473,17 +448,16 @@ export const tokenMetric = ({
 }: {
   value: MetricProps['value']
   symbol: string | null | undefined
-  usdRate: QueryProp<Amount | null | undefined>
-}) => {
-  const notionalValue = maybes([decimal(value.data), usdRate.data], ([value, usdRate]) =>
-    decimalMultiply(value, usdRate),
-  )
-  return {
+  usdRate: QueryProp<Amount>
+}) =>
+  ({
     value,
     valueOptions: {
       abbreviate: true,
       unit: maybe(symbol, symbol => ({ symbol, position: 'suffix' as const })),
     },
-    notional: maybe(notionalValue, value => ({ value, unit: 'dollar' as const })),
-  } satisfies Pick<MetricProps, 'value' | 'valueOptions' | 'notional'>
-}
+    notional: maybes([decimal(value.data), usdRate.data], ([value, usdRate]) => ({
+      value: decimalMultiply(value, usdRate),
+      unit: 'dollar' as const,
+    })),
+  }) satisfies Pick<MetricProps, 'value' | 'valueOptions' | 'notional'>
