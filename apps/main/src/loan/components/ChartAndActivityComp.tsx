@@ -3,10 +3,9 @@ import { ChartAndActivityLayout } from '@/llamalend/widgets/ChartAndActivityLayo
 import { useOhlcChartState } from '@/loan/hooks/useOhlcChartState'
 import { networks } from '@/loan/networks'
 import { ChainId } from '@/loan/types/loan.types'
-import type { Chain } from '@curvefi/prices-api'
+import { getBlockchainId } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useBandsChartVisible } from '@ui-kit/hooks/useLocalStorage'
 import type { Range } from '@ui-kit/types/util'
 
@@ -29,12 +28,8 @@ export const ChartAndActivityComp = ({
   ammAddress,
   controllerAddress,
 }: ChartAndActivityCompProps) => {
-  const { llamaApi: api = null } = useCurve()
   const [isBandsVisible] = useBandsChartVisible()
-
   const networkConfig = networks[chainId]
-  const network = networkConfig?.id.toLowerCase() as Chain
-
   const {
     isLoading: isChartLoading,
     selectedChartKey,
@@ -58,7 +53,6 @@ export const ChartAndActivityComp = ({
   } = useBandsData({
     chainId,
     marketId,
-    api,
     enabled: isBandsVisible,
   })
 
@@ -81,7 +75,7 @@ export const ChartAndActivityComp = ({
         borrowToken,
       }}
       activity={{
-        network,
+        network: getBlockchainId(networkConfig?.id),
         ammAddress,
         collateralToken,
         borrowToken,

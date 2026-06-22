@@ -6,7 +6,7 @@ import { networks } from '@/lend/networks'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/utilsRouter'
 import { SupplyPositionDetails } from '@/llamalend/features/market-position-details'
-import { useLlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
+import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
 import { useUserShares } from '@/llamalend/queries/user/user-balances.query'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header'
@@ -36,12 +36,11 @@ export const Page = () => {
     {
       rMarket,
       network: params.network,
-      marketType: LlamaMarketType.Lend,
       userAddress,
       enableLLv2: useLLv2(),
       enableDeprecatedMarkets: useUserProfileStore(state => state.showDeprecatedMarkets),
     },
-    !isLoading && !market,
+    !isLoading && !market, // only enable API data when wallet is disconnected
   )
 
   const pageProps: PageContentProps = { params, rChainId: chainId, userAddress, api, market, apiMarket }

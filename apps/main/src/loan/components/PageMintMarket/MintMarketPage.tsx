@@ -2,8 +2,8 @@ import { useMemo, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { PositionDetailsComposite } from '@/llamalend/features/market-position-details'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
 import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
-import { useLlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header'
@@ -50,14 +50,13 @@ export const MintMarketPage = () => {
   const isLoading = !isInitialized || isMarketLoading
   const apiMarket = useLlamaMarket(
     {
-      marketType: LlamaMarketType.Mint,
       network: params.network,
       rMarket: rCollateralId,
       userAddress: address,
       enableLLv2: useLLv2(),
       enableDeprecatedMarkets: useUserProfileStore(state => state.showDeprecatedMarkets),
     },
-    !isLoading && !market?.id,
+    !isLoading && !market, // only enable API data when wallet is disconnected
   )
   const tokens = useMemo(() => getTokens(market, apiMarket.data) ?? {}, [apiMarket.data, market])
 

@@ -71,6 +71,7 @@ export const useLlammaOhlcChartStateModel = ({
   const { timeOption, setTimeOption, chartInterval, timeUnit } = useChartTimeSettings()
   const { anchorEnd, isAnchorEndReady } = useStableOhlcAnchorEnd(chainKey, marketId ?? '', timeOption)
 
+  const enabled = !!network && !!controllerAddress && isAnchorEndReady
   const {
     oraclePoolsChartQuery,
     oraclePriceFallbackQuery,
@@ -89,7 +90,7 @@ export const useLlammaOhlcChartStateModel = ({
     timeOption,
     units: timeUnit,
     anchorEnd,
-    enabled: !!network && isAnchorEndReady,
+    enabled,
   })
   const oraclePoolCandles = oraclePoolsChartQuery.data?.ohlcData ?? []
   const oraclePoolOracleLine = oraclePoolsChartQuery.data?.oraclePriceData ?? []
@@ -101,7 +102,7 @@ export const useLlammaOhlcChartStateModel = ({
       llammaOracleLine,
     })
 
-  const isLoading = !isAnchorEndReady || oraclePoolsChartQuery.isLoading || isWaitingForFallbackChartData
+  const isLoading = !enabled || oraclePoolsChartQuery.isLoading || isWaitingForFallbackChartData
   const selectedChartKey = isLoading ? undefined : isOracleLineOnly ? 'llamma' : 'oracle'
   const currentError = hasAnySeries ? null : (oraclePriceFallbackQuery.error ?? oraclePoolsChartQuery.error)
   const noDataAvailable = !isLoading && !currentError && !hasAnySeries

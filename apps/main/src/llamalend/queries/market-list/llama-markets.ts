@@ -10,9 +10,9 @@ import {
   sumCampaignsApr,
   sumCampaignsApy,
 } from '@/llamalend/rates.utils'
-import { type Chain, getBlockchainId } from '@curvefi/prices-api'
+import { type Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
-import { assert, maybe, recordValues } from '@primitives/objects.utils'
+import { assert, recordValues } from '@primitives/objects.utils'
 import type { QueriesResults } from '@tanstack/react-query'
 import { useQueries } from '@tanstack/react-query'
 import { type CampaignRewards, combineCampaigns } from '@ui-kit/entities/campaigns'
@@ -20,10 +20,8 @@ import { getCampaignsExternalOptions } from '@ui-kit/entities/campaigns/campaign
 import { getCampaignsMarketsMerklOptions } from '@ui-kit/entities/campaigns/campaigns-markets-merkl'
 import { useStateTimeout } from '@ui-kit/hooks/useStateTimeout'
 import { combineQueriesMeta, PartialQueryResult, RESOLVED_QUERY_RESULT } from '@ui-kit/lib'
-import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
 import { type ExtraIncentive, LlamaMarketType, LlamaMarketVersion, MarketRateType } from '@ui-kit/types/market'
-import { useMappedQuery } from '@ui-kit/types/util'
 import { DEPRECATED_LLAMAS, NO_LEVERAGE_LEND } from '../../llama-markets.constants'
 import { getBadDebtLendMarketsOptions, getBadDebtMintMarketsOptions } from '../market/market-bad-debt.query'
 import { getFavoriteMarketOptions } from './favorite-markets'
@@ -362,7 +360,12 @@ type LlamaMarketsQueries = [
   ReturnType<typeof getUserLendingSuppliesOptions>,
   ReturnType<typeof getUserMintMarketsOptions>,
 ]
-type LlamaMarketParams = { userAddress: Address | undefined; enableLLv2: boolean; enableDeprecatedMarkets: boolean }
+
+export type LlamaMarketParams = {
+  userAddress: Address | undefined
+  enableLLv2: boolean
+  enableDeprecatedMarkets: boolean
+}
 
 /**
  * Query hook combining all lend and mint markets of all chains into a single list, converting them to a common format.
@@ -472,33 +475,4 @@ export const useLlamaMarkets = (
       [enabled, userAddress, enableLLv2, enableDeprecatedMarkets, isTimedOut, setIsReady],
     ),
   })
-}
-
-export const useLlamaMarket = (
-  {
-    rMarket,
-    marketType,
-    network,
-    ...params
-  }: LlamaMarketParams & { rMarket: string; network: string; marketType: LlamaMarketType },
-  enabled?: boolean,
-) => {
-  const markets = useLlamaMarkets(params, enabled)
-
-  const market = useMappedQuery(
-    markets,
-    useCallback(
-      ({ markets }) =>
-        maybe(getBlockchainId(network), chain =>
-          markets.find(m => m.chain === chain && m.url.toLowerCase().endsWith(`/${rMarket.toLowerCase()}`)),
-        ),
-      [network, rMarket],
-    ),
-  )
-  const error = useMemo(
-    () => markets.data && !market.data && new Error(`${t`Market`} ${rMarket} ${t`Not Found`}`),
-    [markets.data, market.data, rMarket],
-  )
-
-  return { ...market, ...(error && { error }) }
 }

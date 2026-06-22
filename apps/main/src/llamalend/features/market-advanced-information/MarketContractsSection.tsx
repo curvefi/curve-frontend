@@ -47,13 +47,10 @@ const TokenLabel = ({ blockchainId, address, label }: TokenIconProps & { label: 
 
 export const MarketContractsSection = ({ chainId, market, apiMarket, network }: MarketContractsProps) => {
   const { collateralToken, borrowToken } = getTokens(market, apiMarket.data) ?? {}
-  const { data: oracleAddress, isLoading: oracleAddressIsLoading } = useMarketOracleAddress(
-    {
-      chainId,
-      marketId: market?.id,
-    },
-    !!market?.id,
-  )
+  const { data: oracleAddress, isLoading: oracleAddressIsLoading } = useMarketOracleAddress({
+    chainId,
+    marketId: market?.id,
+  })
   const loading = !network || (!market && !apiMarket.data) || (!!market && oracleAddressIsLoading)
 
   const tokenItems: ContractItem[] =

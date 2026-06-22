@@ -186,7 +186,7 @@ export const MarketHistoricalRatesChart = ({
   )
 
   return (
-    <Card size="small">
+    <Card size="small" data-testid={`historical-${rateMode.toLowerCase()}-rate-chart`}>
       <CardHeader
         title={modeConfig.chartTitle}
         action={

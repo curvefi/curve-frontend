@@ -76,13 +76,14 @@ export const q = <T>({ data, isLoading, error }: Query<T>) =>
 type QueryData<TQuery> = TQuery extends Query<infer TData> ? TData : never
 
 /**
- * Takes the first query with data or the first query without error or the first query.
- * Use the disabled query property to ignore a query.
+ * Takes the first query with data, then the first query with an error, then the first query that is loading,
+ * and finally the first query in the list. Use the disabled query property to ignore a query and use the fallback.
  */
 export const fallbackQ = <const TQueries extends readonly QueryProp<unknown>[]>(...queries: TQueries) =>
-  (queries.find(q => q.data != null) ?? queries.find(q => !q.error) ?? queries[0]) as QueryProp<
-    QueryData<TQueries[number]>
-  >
+  (queries.find(q => q.data != null) ??
+    queries.find(q => q.error) ??
+    queries.find(q => q.isLoading) ??
+    queries[0]) as QueryProp<QueryData<TQueries[number]>>
 
 /**
  * Maps a Query type to extract partial data from it.

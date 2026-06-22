@@ -6,13 +6,12 @@ import { MarketFaq } from '@/llamalend/features/market-faq'
 import { getAmmAddress, getControllerAddress, getTokens } from '@/llamalend/llama.utils'
 import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
 import { MarketRateCurveChart } from '@/llamalend/widgets/MarketRateCurveChart'
-import type { Chain } from '@curvefi/prices-api'
+import { getBlockchainId } from '@curvefi/prices-api'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
-import { getLib } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
@@ -29,36 +28,31 @@ type MarketInformationCompProps = {
  */
 export const MarketInformationComposite = ({ pageProps, rateType, previewPrices }: MarketInformationCompProps) => {
   const { rChainId, market, apiMarket } = pageProps
-  const api = getLib('llamaApi')
-  const isBorrow = rateType === MarketRateType.Borrow
-  const blockchainId = networks[rChainId].id as Chain
-
+  const blockchainId = getBlockchainId(networks[rChainId].id)
   const controllerAddress = getControllerAddress(market, apiMarket.data)
-  const ammAddress = getAmmAddress(market, apiMarket.data)
   const { collateralToken, borrowToken } = getTokens(market, apiMarket.data) ?? {}
   return (
     <Stack sx={{ gap: PAGE_SPACING }}>
-      {isBorrow && (
-        <ChartAndActivityComp
-          rChainId={rChainId}
-          marketId={market?.id}
-          api={api}
-          previewPrices={previewPrices}
-          controllerAddress={controllerAddress}
-          ammAddress={ammAddress}
-          borrowToken={borrowToken}
-          collateralToken={collateralToken}
-        />
-      )}
-      {isBorrow && (
-        <MarketHistoricalRatesChart
-          marketType={LlamaMarketType.Lend}
-          controllerAddress={controllerAddress}
-          blockchainId={blockchainId}
-          chainId={rChainId}
-          marketId={market?.id}
-          rateMode={MarketRateType.Borrow}
-        />
+      {rateType === MarketRateType.Borrow && (
+        <>
+          <ChartAndActivityComp
+            rChainId={rChainId}
+            marketId={market?.id}
+            previewPrices={previewPrices}
+            controllerAddress={controllerAddress}
+            ammAddress={getAmmAddress(market, apiMarket.data)}
+            borrowToken={borrowToken}
+            collateralToken={collateralToken}
+          />
+          <MarketHistoricalRatesChart
+            marketType={LlamaMarketType.Lend}
+            controllerAddress={controllerAddress}
+            blockchainId={blockchainId}
+            chainId={rChainId}
+            marketId={market?.id}
+            rateMode={MarketRateType.Borrow}
+          />
+        </>
       )}
       <MarketHistoricalRatesChart
         marketType={LlamaMarketType.Lend}

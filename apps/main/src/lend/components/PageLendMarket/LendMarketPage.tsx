@@ -9,8 +9,8 @@ import { type MarketUrlParams } from '@/lend/types/lend.types'
 import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/utilsRouter'
 import { PositionDetailsComposite } from '@/llamalend/features/market-position-details'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
 import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
-import { useLlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header'
@@ -45,17 +45,15 @@ export const LendMarketPage = () => {
 
   const [previewPrices, setPreviewPrices] = useState<Range<Decimal> | undefined>(undefined)
   const isLoading = !isInitialized || isMarketLoading
-  const useApiData = !isLoading && !market?.id
   const apiMarket = useLlamaMarket(
     {
       rMarket,
       network: params.network,
-      marketType: LlamaMarketType.Lend,
       userAddress,
       enableLLv2: useLLv2(),
       enableDeprecatedMarkets: useUserProfileStore(state => state.showDeprecatedMarkets),
     },
-    useApiData,
+    !isLoading && !market, // only enable API data when wallet is disconnected
   )
   const tokens = useMemo(() => getTokens(market, apiMarket.data) ?? {}, [apiMarket.data, market])
   const collateralEvents = useUserCollateralEvents({
