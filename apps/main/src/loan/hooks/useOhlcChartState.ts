@@ -40,7 +40,7 @@ export const useOhlcChartState = ({ chainId, market, marketId, previewPrices }: 
     previewPrices,
   })
 
-  const coins: LlammaLiquidityCoins = useMemo(() => market && getTokens(market), [market])
+  const coins: LlammaLiquidityCoins = useMemo(() => getTokens(market), [market])
 
   return {
     poolAddress,

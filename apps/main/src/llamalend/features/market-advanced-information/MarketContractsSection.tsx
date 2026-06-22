@@ -42,7 +42,7 @@ const TokenLabel = ({ blockchainId, address, label }: TokenIconProps & { label: 
 )
 
 export const MarketContractsSection = ({ chainId, market, network }: MarketContractsProps) => {
-  const { collateralToken, borrowToken } = market ? getTokens(market) : {}
+  const { collateralToken, borrowToken } = getTokens(market) ?? {}
   const { data: oracleAddress, isLoading: oracleAddressIsLoading } = useMarketOracleAddress({
     chainId,
     marketId: market?.id,
@@ -103,22 +103,39 @@ export const MarketContractsSection = ({ chainId, market, network }: MarketContr
     : []
 
   return (
-    <Card size="inline">
+    <Card size="inline" data-testid="market-contracts-section">
       <CardHeader title={t`Contracts`} />
       <CardContent component={Stack} sx={{ marginBlock: Spacing.sm, gap: Spacing.sm }}>
         <WithSkeleton loading={loading} variant="rectangular" height="4lh" width="100%">
           <Stack>
             {tokenItems.map(({ key, label, address }) => (
-              <AddressActionInfo key={key} network={network} title={label} address={address} />
+              <AddressActionInfo
+                key={key}
+                testId={`market-contract-${key}`}
+                network={network}
+                title={label}
+                address={address}
+              />
             ))}
           </Stack>
         </WithSkeleton>
         <Stack>
           {infraItems.map(({ key, label, address, fallbackValue }) =>
             fallbackValue ? (
-              <ActionInfo key={key} label={label} value={fallbackValue ?? t`No gauge`} />
+              <ActionInfo
+                key={key}
+                testId={`market-contract-${key}`}
+                label={label}
+                value={fallbackValue ?? t`No gauge`}
+              />
             ) : (
-              <AddressActionInfo key={key} network={network} title={label} address={address} />
+              <AddressActionInfo
+                key={key}
+                testId={`market-contract-${key}`}
+                network={network}
+                title={label}
+                address={address}
+              />
             ),
           )}
         </Stack>

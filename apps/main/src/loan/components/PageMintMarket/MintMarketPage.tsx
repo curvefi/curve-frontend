@@ -43,7 +43,7 @@ export const MintMarketPage = () => {
   )
 
   const network = networks[rChainId]
-  const tokens = useMemo(() => (market ? getTokens(market) : {}), [market])
+  const tokens = useMemo(() => getTokens(market) ?? {}, [market])
 
   const collateralEvents = useUserCollateralEvents({
     app: LlamaMarketType.Mint,

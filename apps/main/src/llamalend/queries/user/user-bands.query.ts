@@ -1,7 +1,9 @@
-import { reverseBands } from '@/llamalend/llama.utils'
 import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } from '@ui-kit/lib/model'
 import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-validation'
+import type { Range } from '@ui-kit/types/util'
+
+const reverseBands = (bands: number[]): Range<number> => [bands[1], bands[0]]
 
 /**
  * Query to get the user's band positions in a market.

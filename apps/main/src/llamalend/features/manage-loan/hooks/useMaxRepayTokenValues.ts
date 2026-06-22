@@ -27,7 +27,7 @@ export function useMaxRepayTokenValues(
   },
   enabled?: boolean,
 ) {
-  const { borrowToken, collateralToken } = market ? getTokens(market) : {}
+  const { borrowToken, collateralToken } = getTokens(market) ?? {}
   const { update: updateForm } = form
   const { chainId, userAddress } = params
   const maxUserCollateral = useTokenBalance({

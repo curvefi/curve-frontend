@@ -45,7 +45,7 @@ export const useOhlcChartState = ({ rChainId, marketId, previewPrices }: UseOhlc
     previewPrices,
   })
 
-  const coins: LendingMarketTokens = useMemo(() => market && getTokens(market), [market])
+  const coins: LendingMarketTokens = useMemo(() => getTokens(market), [market])
 
   return {
     coins,
