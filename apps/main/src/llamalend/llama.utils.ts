@@ -1,8 +1,7 @@
 import { BigNumber } from 'bignumber.js'
-import { sortBy } from 'lodash'
 import { zeroAddress } from 'viem'
-import type { HealthColorKey, LlamaMarketTemplate, UserPositionStatus } from '@/llamalend/llamalend.types'
-import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
+import type { LlamaMarketTemplate, UserPositionStatus } from '@/llamalend/llamalend.types'
+import type { AssetDetails, LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { UserState } from '@/llamalend/queries/user'
 import { MarketNetBorrowAprTooltipContentProps } from '@/llamalend/widgets/tooltips'
 import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -14,7 +13,7 @@ import { getUserMarketCollateralEvents as getLendUserMarketCollateralEvents } fr
 import type { BadDebt } from '@curvefi/prices-api/liquidations'
 import { type Address, Hex } from '@primitives/address.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
-import { assert, maybe, notFalsy, objectKeys } from '@primitives/objects.utils'
+import { assert, maybe, notFalsy } from '@primitives/objects.utils'
 import { getLib, requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaMarketType, LlamaMarketVersion } from '@ui-kit/types/market'
@@ -127,21 +126,27 @@ export const formatTokenAmounts = (
       `${formatNumber(userCollateral, { abbreviate: false })} ${getCollateralSymbol(market)}`,
   ).join(', ')
 
-type Token = { symbol: string; address: Address; decimals: number }
+type Token = Pick<AssetDetails, 'symbol' | 'address' | 'decimals'>
 export type MarketTokens = { collateralToken: Token; borrowToken: Token }
 
-export function getTokens(market: LlamaMarketTemplate, apiMarket?: LlamaMarket): MarketTokens
-export function getTokens(market: null | undefined, apiMarket?: LlamaMarket): MarketTokens | undefined
-export function getTokens(
-  market: LlamaMarketTemplate | null | undefined,
+type MarketOrApiValue<T, Value> = T extends LlamaMarketTemplate ? Value : Value | undefined
+
+const getMarketOrApiValue = <T extends LlamaMarketTemplate | null | undefined, Value>(
+  market: T,
+  apiMarket: LlamaMarket | undefined,
+  getMarketValue: (market: LlamaMarketTemplate) => Value,
+  getApiValue: (apiMarket: LlamaMarket) => Value,
+): MarketOrApiValue<T, Value> =>
+  maybe(market, getMarketValue) ?? (maybe(apiMarket, getApiValue) as MarketOrApiValue<T, Value>)
+
+export const getTokens = <T extends LlamaMarketTemplate | null | undefined>(
+  market: T,
   apiMarket?: LlamaMarket,
-): MarketTokens | undefined
-export function getTokens(
-  market: LlamaMarketTemplate | null | undefined,
-  apiMarket?: LlamaMarket,
-): MarketTokens | undefined {
-  return (
-    maybe(market, market =>
+): MarketOrApiValue<T, MarketTokens> =>
+  getMarketOrApiValue(
+    market,
+    apiMarket,
+    (market: LlamaMarketTemplate): MarketTokens =>
       market instanceof MintMarketTemplate
         ? {
             collateralToken: {
@@ -163,62 +168,41 @@ export function getTokens(
               decimals: market.borrowed_token.decimals,
             },
           },
-    ) ?? maybe(apiMarket, ({ assets }) => ({ collateralToken: assets.collateral, borrowToken: assets.borrowed }))
+    ({ assets }) => ({ collateralToken: assets.collateral, borrowToken: assets.borrowed }),
   )
-}
 
-export function getAmmAddress(market: LlamaMarketTemplate, apiMarket?: LlamaMarket): Address
-export function getAmmAddress(market: null | undefined, apiMarket?: LlamaMarket): Address | undefined
-export function getAmmAddress(
-  market: LlamaMarketTemplate | null | undefined,
+export const getAmmAddress = <T extends LlamaMarketTemplate | null | undefined>(
+  market: T,
   apiMarket?: LlamaMarket,
-): Address | undefined
-export function getAmmAddress(
-  market: LlamaMarketTemplate | null | undefined,
-  apiMarket?: LlamaMarket,
-): Address | undefined {
-  return (
-    maybe(
-      market,
-      market => (market instanceof LendMarketTemplate ? market.addresses.amm : market.address) as Address,
-    ) ?? apiMarket?.ammAddress
+): MarketOrApiValue<T, Address> =>
+  getMarketOrApiValue(
+    market,
+    apiMarket,
+    market => (market instanceof LendMarketTemplate ? market.addresses.amm : market.address) as Address,
+    m => m.ammAddress,
   )
-}
 
-export function getControllerAddress(market: LlamaMarketTemplate, apiMarket?: LlamaMarket): Address
-export function getControllerAddress(market: null | undefined, apiMarket?: LlamaMarket): Address | undefined
-export function getControllerAddress(
-  market: LlamaMarketTemplate | null | undefined,
+export const getControllerAddress = <T extends LlamaMarketTemplate | null | undefined>(
+  market: T,
   apiMarket?: LlamaMarket,
-): Address | undefined
-export function getControllerAddress(
-  market: LlamaMarketTemplate | null | undefined,
-  apiMarket?: LlamaMarket,
-): Address | undefined {
-  return (
-    maybe(
-      market,
-      market => (market instanceof LendMarketTemplate ? market.addresses.controller : market.controller) as Address,
-    ) ?? apiMarket?.controllerAddress
+): MarketOrApiValue<T, Address> =>
+  getMarketOrApiValue(
+    market,
+    apiMarket,
+    market => (market instanceof LendMarketTemplate ? market.addresses.controller : market.controller) as Address,
+    m => m.controllerAddress,
   )
-}
 
-export function getVaultAddress(market: LlamaMarketTemplate, apiMarket?: LlamaMarket): Address | null
-export function getVaultAddress(market: null | undefined, apiMarket?: LlamaMarket): Address | null | undefined
-export function getVaultAddress(
-  market: LlamaMarketTemplate | null | undefined,
+export const getVaultAddress = <T extends LlamaMarketTemplate | null | undefined>(
+  market: T,
   apiMarket?: LlamaMarket,
-): Address | null | undefined
-export function getVaultAddress(
-  market: LlamaMarketTemplate | null | undefined,
-  apiMarket?: LlamaMarket,
-): Address | null | undefined {
-  return market
-    ? market instanceof LendMarketTemplate
-      ? (market.addresses.vault as Address)
-      : null
-    : apiMarket?.vaultAddress
-}
+): MarketOrApiValue<T, Address | null> =>
+  getMarketOrApiValue(
+    market,
+    apiMarket,
+    market => (market instanceof LendMarketTemplate ? (market.addresses.vault as Address) : null),
+    m => m.vaultAddress,
+  )
 
 /**
  * Calculates the loan-to-value ratio of a market.
@@ -335,38 +319,6 @@ export function getLiquidationStatus(
   return 'healthy' as const
 }
 
-/** @deprecated Use {@link getLiquidationStatus} — this legacy version returns label/tooltip for the old forms. */
-export function getLiquidationStatusLegacy(
-  healthNotFull: string,
-  userIsCloseToLiquidation: boolean,
-  userStateStablecoin: string,
-) {
-  const userStatus: { label: string; colorKey: HealthColorKey; tooltip: string } = {
-    label: 'Healthy',
-    colorKey: 'healthy',
-    tooltip: '',
-  }
-
-  const threshold = getSoftLiquidationThreshold(userIsCloseToLiquidation)
-
-  if (+healthNotFull < 0) {
-    userStatus.label = 'Hard liquidatable'
-    userStatus.colorKey = 'hard_liquidation'
-    userStatus.tooltip =
-      'Hard liquidation is like a usual liquidation, which can happen only if you experience significant losses in soft liquidation so that you get below 0 health.'
-  } else if (+userStateStablecoin > threshold) {
-    userStatus.label = 'Soft liquidation'
-    userStatus.colorKey = 'soft_liquidation'
-    userStatus.tooltip =
-      'Soft liquidation is the initial process of collateral being converted into stablecoin, you may experience some degree of loss.'
-  } else if (userIsCloseToLiquidation) {
-    userStatus.label = 'Close to liquidation'
-    userStatus.colorKey = 'close_to_liquidation'
-  }
-
-  return userStatus
-}
-
 export function getIsUserCloseToSoftLiquidation(
   userFirstBand: number,
   userLiquidationBand: number | null,
@@ -378,31 +330,6 @@ export function getIsUserCloseToSoftLiquidation(
     return userFirstBand <= oraclePriceBand + 2
   }
   return false
-}
-
-export function reverseBands(bands: [number, number] | number[]) {
-  return [bands[1], bands[0]] as [number, number]
-}
-
-// There's a slight difference in types (borrowed vs stablecoin) that I didn't want to touch at the risk of breaking things;
-// I only want to move code, not change. At least they're neatly in the same place now.
-
-export function sortBandsLend(bandsBalances: Record<number, { borrowed: string; collateral: string }>) {
-  const sortedKeys = sortBy(objectKeys(bandsBalances), k => +k)
-  const bandsBalancesArr: { borrowed: string; collateral: string; band: number }[] = []
-  for (const k of sortedKeys) {
-    bandsBalancesArr.push({ ...bandsBalances[k], band: k })
-  }
-  return { bandsBalancesArr, bandsBalances }
-}
-
-export function sortBandsMint(bandBalances: Record<string, { stablecoin: string; collateral: string }>) {
-  const sortedKeys = sortBy(objectKeys(bandBalances).map(k => +k))
-  const bandBalancesArr: { stablecoin: string; collateral: string; band: string }[] = []
-  for (const k of sortedKeys) {
-    bandBalancesArr.push({ ...bandBalances[k], band: `${k}` })
-  }
-  return { bandBalancesArr, bandBalances }
 }
 
 /**
