@@ -12,7 +12,6 @@ import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 import type { QueryProp, Range } from '@ui-kit/types/util'
@@ -34,12 +33,9 @@ export const MarketInformationComposite = ({
   previewPrices,
   apiMarket,
 }: MarketInformationCompProps) => {
-  const controllerAddress = getControllerAddress(market) ?? apiMarket.data?.controllerAddress
-  const ammAddress = getAmmAddress(market) ?? apiMarket.data?.ammAddress
-  const { collateralToken, borrowToken } =
-    maybe(market, getTokens) ??
-    maybe(apiMarket.data, ({ assets }) => ({ collateralToken: assets.collateral, borrowToken: assets.borrowed })) ??
-    {}
+  const controllerAddress = getControllerAddress(market, apiMarket.data)
+  const ammAddress = getAmmAddress(market, apiMarket.data)
+  const { collateralToken, borrowToken } = getTokens(market, apiMarket.data) ?? {}
   const blockchainId = networks[chainId].id as Chain
 
   return (

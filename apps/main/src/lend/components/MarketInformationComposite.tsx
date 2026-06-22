@@ -12,7 +12,6 @@ import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybe } from '@primitives/objects.utils'
 import { getLib } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
@@ -35,12 +34,9 @@ export const MarketInformationComposite = ({ pageProps, rateType, previewPrices 
   const isBorrow = rateType === MarketRateType.Borrow
   const blockchainId = networks[rChainId].id as Chain
 
-  const controllerAddress = getControllerAddress(market) ?? apiMarket.data?.controllerAddress
-  const ammAddress = getAmmAddress(market) ?? apiMarket.data?.ammAddress
-  const { collateralToken, borrowToken } =
-    maybe(market, getTokens) ??
-    maybe(apiMarket.data, ({ assets }) => ({ collateralToken: assets.collateral, borrowToken: assets.borrowed })) ??
-    {}
+  const controllerAddress = getControllerAddress(market, apiMarket.data)
+  const ammAddress = getAmmAddress(market, apiMarket.data)
+  const { collateralToken, borrowToken } = getTokens(market, apiMarket.data) ?? {}
   return (
     <Stack sx={{ gap: PAGE_SPACING }}>
       {isBorrow && (

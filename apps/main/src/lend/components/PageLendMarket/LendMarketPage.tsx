@@ -37,7 +37,6 @@ export const LendMarketPage = () => {
   useLendPageTitle(market?.collateral_token?.symbol ?? rMarket, t`Lend`)
 
   const network = networks[chainId]
-  const tokens = useMemo(() => (market ? getTokens(market) : {}), [market])
   const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists({
     chainId,
     marketId: market?.id,
@@ -45,15 +44,6 @@ export const LendMarketPage = () => {
   })
 
   const [previewPrices, setPreviewPrices] = useState<Range<Decimal> | undefined>(undefined)
-  const collateralEvents = useUserCollateralEvents({
-    app: LlamaMarketType.Lend,
-    chain: getBlockchainId(network.id),
-    controllerAddress: getControllerAddress(market),
-    userAddress,
-    tokens,
-    network,
-  })
-
   const isLoading = !isInitialized || isMarketLoading
   const useApiData = !isLoading && !market?.id
   const apiMarket = useLlamaMarket(
@@ -67,6 +57,15 @@ export const LendMarketPage = () => {
     },
     useApiData,
   )
+  const tokens = useMemo(() => getTokens(market, apiMarket.data) ?? {}, [apiMarket.data, market])
+  const collateralEvents = useUserCollateralEvents({
+    app: LlamaMarketType.Lend,
+    chain: getBlockchainId(network.id),
+    controllerAddress: getControllerAddress(market, apiMarket.data),
+    userAddress,
+    tokens,
+    network,
+  })
 
   const pageProps: Omit<LendManageLoanProps, 'collateralEvents'> = {
     params,

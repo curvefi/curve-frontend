@@ -7,7 +7,6 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Chain } from '@curvefi/prices-api'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
-import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
@@ -48,10 +47,7 @@ export const MarketPageHeader = ({
     apiMarket,
     marketType,
   })
-  const { collateralToken, borrowToken } =
-    maybe(market, getTokens) ??
-    maybe(apiMarket.data, ({ assets }) => ({ collateralToken: assets.collateral, borrowToken: assets.borrowed })) ??
-    {}
+  const { collateralToken, borrowToken } = getTokens(market, apiMarket.data) ?? {}
 
   const title =
     (collateralToken &&

@@ -26,7 +26,7 @@ import {
 } from '@/llamalend/rates.utils'
 import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
-import { maybe, maybes, notFalsyArray } from '@primitives/objects.utils'
+import { maybes, notFalsyArray } from '@primitives/objects.utils'
 import { type CampaignRewards, useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import type { CrvUsdSnapshot } from '@ui-kit/entities/crvusd-snapshots'
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
@@ -229,7 +229,7 @@ export const useAvailableLiquidity = ({
   marketQuery: QueryProp<LlamaMarketTemplate>
   apiMarket: QueryProp<LlamaMarket>
 }) => {
-  const borrowTokenAddress = maybe(market, getTokens)?.borrowToken?.address ?? apiMarket.data?.assets.borrowed.address
+  const borrowTokenAddress = getTokens(market, apiMarket.data)?.borrowToken.address
   const capAndAvailable = useMarketCapAndAvailable({ chainId, marketId: market?.id })
   const borrowUsdRate = useTokenUsdRate({ chainId, tokenAddress: borrowTokenAddress })
   const marketQuery = fakeLoadingQ(market) // todo: use a proper query, see #2729
@@ -279,8 +279,8 @@ export const usePageHeader = ({
   apiMarket: QueryProp<LlamaMarket>
   marketType: LlamaMarketType
 }) => {
-  const vaultAddress = maybe(market, getVaultAddress) ?? apiMarket.data?.vaultAddress
-  const controllerAddress = getControllerAddress(market) ?? apiMarket.data?.controllerAddress
+  const vaultAddress = getVaultAddress(market, apiMarket.data)
+  const controllerAddress = getControllerAddress(market, apiMarket.data)
   const snapshot = q(
     useLlamaSnapshot({ marketType, controllerAddress, blockchainId, range: { kind: 'limit', limit: RATE_WINDOW } }),
   )

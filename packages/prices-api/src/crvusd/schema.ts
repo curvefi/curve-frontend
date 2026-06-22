@@ -7,6 +7,7 @@ const token = z
   .object({
     symbol: z.string(),
     address,
+    decimals: z.number(),
     rebasing_yield: z.number().nullable().optional(),
     rebasing_yield_apr: z.number().nullable().optional(),
   })

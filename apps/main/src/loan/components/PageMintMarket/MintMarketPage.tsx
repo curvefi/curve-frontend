@@ -47,7 +47,6 @@ export const MintMarketPage = () => {
   })
 
   const network = networks[chainId]
-  const tokens = useMemo(() => (market ? getTokens(market) : {}), [market])
   const isLoading = !isInitialized || isMarketLoading
   const apiMarket = useLlamaMarket(
     {
@@ -60,11 +59,12 @@ export const MintMarketPage = () => {
     },
     !isLoading && !market?.id,
   )
+  const tokens = useMemo(() => getTokens(market, apiMarket.data) ?? {}, [apiMarket.data, market])
 
   const collateralEvents = useUserCollateralEvents({
     app: LlamaMarketType.Mint,
     chain: getBlockchainId(network.id),
-    controllerAddress: getControllerAddress(market),
+    controllerAddress: getControllerAddress(market, apiMarket.data),
     userAddress: address,
     network,
     tokens,

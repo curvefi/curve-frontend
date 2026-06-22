@@ -97,7 +97,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
       footer={
         <CreateLoanInfoList
           marketType={marketType}
-          controllerAddress={getControllerAddress(market) ?? apiMarket.data?.controllerAddress}
+          controllerAddress={getControllerAddress(market, apiMarket.data)}
           form={form}
           params={params}
           values={values}

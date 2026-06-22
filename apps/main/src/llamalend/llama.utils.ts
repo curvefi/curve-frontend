@@ -2,9 +2,10 @@ import { BigNumber } from 'bignumber.js'
 import { sortBy } from 'lodash'
 import { zeroAddress } from 'viem'
 import type { HealthColorKey, LlamaMarketTemplate, UserPositionStatus } from '@/llamalend/llamalend.types'
+import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { UserState } from '@/llamalend/queries/user'
 import { MarketNetBorrowAprTooltipContentProps } from '@/llamalend/widgets/tooltips'
-import type { INetworkName as LlamaNetworkId, IOneWayMarket } from '@curvefi/llamalend-api/lib/interfaces'
+import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { Chain } from '@curvefi/prices-api'
@@ -126,42 +127,98 @@ export const formatTokenAmounts = (
       `${formatNumber(userCollateral, { abbreviate: false })} ${getCollateralSymbol(market)}`,
   ).join(', ')
 
-export const getTokens = (market: LlamaMarketTemplate | IOneWayMarket) =>
-  market instanceof MintMarketTemplate
-    ? {
-        collateralToken: {
-          symbol: market.collateralSymbol,
-          address: market.collateral as Address,
-          decimals: market.collateralDecimals,
-        },
-        borrowToken: CRVUSD,
-      }
-    : {
-        collateralToken: {
-          symbol: market.collateral_token.symbol,
-          address: market.collateral_token.address as Address,
-          decimals: market.collateral_token.decimals,
-        },
-        borrowToken: {
-          symbol: market.borrowed_token.symbol,
-          address: market.borrowed_token.address as Address,
-          decimals: market.borrowed_token.decimals,
-        },
-      }
+type Token = { symbol: string; address: Address; decimals: number }
+export type MarketTokens = { collateralToken: Token; borrowToken: Token }
 
-export type MarketTokens = ReturnType<typeof getTokens>
-
-export const getAmmAddress = <T extends LlamaMarketTemplate | null | undefined>(market: T) =>
-  maybe(market, market => (market instanceof LendMarketTemplate ? market.addresses.amm : market.address) as Address)
-
-export const getControllerAddress = <T extends LlamaMarketTemplate | null | undefined>(market: T) =>
-  maybe(
-    market,
-    market => (market instanceof LendMarketTemplate ? market.addresses.controller : market.controller) as Address,
+export function getTokens(market: LlamaMarketTemplate, apiMarket?: LlamaMarket): MarketTokens
+export function getTokens(market: null | undefined, apiMarket?: LlamaMarket): MarketTokens | undefined
+export function getTokens(
+  market: LlamaMarketTemplate | null | undefined,
+  apiMarket?: LlamaMarket,
+): MarketTokens | undefined
+export function getTokens(
+  market: LlamaMarketTemplate | null | undefined,
+  apiMarket?: LlamaMarket,
+): MarketTokens | undefined {
+  return (
+    maybe(market, market =>
+      market instanceof MintMarketTemplate
+        ? {
+            collateralToken: {
+              symbol: market.collateralSymbol,
+              address: market.collateral as Address,
+              decimals: market.collateralDecimals,
+            },
+            borrowToken: CRVUSD,
+          }
+        : {
+            collateralToken: {
+              symbol: market.collateral_token.symbol,
+              address: market.collateral_token.address as Address,
+              decimals: market.collateral_token.decimals,
+            },
+            borrowToken: {
+              symbol: market.borrowed_token.symbol,
+              address: market.borrowed_token.address as Address,
+              decimals: market.borrowed_token.decimals,
+            },
+          },
+    ) ?? maybe(apiMarket, ({ assets }) => ({ collateralToken: assets.collateral, borrowToken: assets.borrowed }))
   )
+}
 
-export const getVaultAddress = <T extends LlamaMarketTemplate | null | undefined>(market: T) =>
-  maybe(market, market => (market instanceof LendMarketTemplate ? (market.addresses.vault as Address) : null))
+export function getAmmAddress(market: LlamaMarketTemplate, apiMarket?: LlamaMarket): Address
+export function getAmmAddress(market: null | undefined, apiMarket?: LlamaMarket): Address | undefined
+export function getAmmAddress(
+  market: LlamaMarketTemplate | null | undefined,
+  apiMarket?: LlamaMarket,
+): Address | undefined
+export function getAmmAddress(
+  market: LlamaMarketTemplate | null | undefined,
+  apiMarket?: LlamaMarket,
+): Address | undefined {
+  return (
+    maybe(
+      market,
+      market => (market instanceof LendMarketTemplate ? market.addresses.amm : market.address) as Address,
+    ) ?? apiMarket?.ammAddress
+  )
+}
+
+export function getControllerAddress(market: LlamaMarketTemplate, apiMarket?: LlamaMarket): Address
+export function getControllerAddress(market: null | undefined, apiMarket?: LlamaMarket): Address | undefined
+export function getControllerAddress(
+  market: LlamaMarketTemplate | null | undefined,
+  apiMarket?: LlamaMarket,
+): Address | undefined
+export function getControllerAddress(
+  market: LlamaMarketTemplate | null | undefined,
+  apiMarket?: LlamaMarket,
+): Address | undefined {
+  return (
+    maybe(
+      market,
+      market => (market instanceof LendMarketTemplate ? market.addresses.controller : market.controller) as Address,
+    ) ?? apiMarket?.controllerAddress
+  )
+}
+
+export function getVaultAddress(market: LlamaMarketTemplate, apiMarket?: LlamaMarket): Address | null
+export function getVaultAddress(market: null | undefined, apiMarket?: LlamaMarket): Address | null | undefined
+export function getVaultAddress(
+  market: LlamaMarketTemplate | null | undefined,
+  apiMarket?: LlamaMarket,
+): Address | null | undefined
+export function getVaultAddress(
+  market: LlamaMarketTemplate | null | undefined,
+  apiMarket?: LlamaMarket,
+): Address | null | undefined {
+  return market
+    ? market instanceof LendMarketTemplate
+      ? (market.addresses.vault as Address)
+      : null
+    : apiMarket?.vaultAddress
+}
 
 /**
  * Calculates the loan-to-value ratio of a market.

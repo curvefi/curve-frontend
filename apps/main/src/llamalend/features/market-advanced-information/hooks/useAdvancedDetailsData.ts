@@ -35,12 +35,9 @@ export const useAdvancedDetailsData = ({
   marketType: LlamaMarketType
   apiMarket: QueryProp<LlamaMarket>
 }) => {
-  const { collateralToken, borrowToken } =
-    maybe(market, getTokens) ??
-    maybe(apiMarket.data, ({ assets }) => ({ collateralToken: assets.collateral, borrowToken: assets.borrowed })) ??
-    {}
+  const { collateralToken, borrowToken } = getTokens(market, apiMarket.data) ?? {}
   const blockchainId = maybe(chainId, chainId => requireBlockchainId(chainId))
-  const controllerAddress = getControllerAddress(market) ?? apiMarket.data?.controllerAddress
+  const controllerAddress = getControllerAddress(market, apiMarket.data)
   const endpoint = endpointFromMarketType[marketType]
 
   const maxLeverage = useMarketMaxLeverage({
