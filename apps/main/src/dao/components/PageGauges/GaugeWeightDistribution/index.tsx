@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import { styled } from 'styled-components'
 import { useConnection } from 'wagmi'
+import { DAO_COMPACT_CHART_HEIGHT } from '@/dao/components/Charts/constants'
 import { useUserGaugeWeightVotesQuery } from '@/dao/entities/user-gauge-weight-votes'
 import { useGauges } from '@/dao/queries/gauges.query'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
@@ -17,8 +18,6 @@ import {
 import { Chain } from '@ui-kit/utils/network'
 import { GaugesBarChartCustomTooltip } from '../../Charts/GaugesBarChartCustomTooltip'
 import { GaugeVotingBarChartCustomTooltip } from '../../Charts/GaugeVotingBarChartCustomTooltip'
-
-const CHART_HEIGHT = 300
 
 const getXAxisInterval = (length: number) => (length > 50 ? 1 : 0)
 
@@ -91,7 +90,7 @@ export const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistribution
       <Box flex flexColumn padding="var(--spacing-3) 0 0">
         <ChartTitle>{isUserVotes ? t`User Vote Weight Distribution` : t`Relative Weight Distribution`}</ChartTitle>
         <ChartStateWrapper
-          height={CHART_HEIGHT}
+          height={DAO_COMPACT_CHART_HEIGHT}
           isLoading={isLoading}
           isEmpty={!isLoading && !error && dataLength === 0}
           emptyMessage={isUserVotes ? t`No gauge votes found` : t`No gauges with >0.5% relative gauge weight found`}
@@ -105,7 +104,7 @@ export const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistribution
               xKey="title"
               yKey="userPower"
               barColor={getBarColor}
-              height={CHART_HEIGHT}
+              height={DAO_COMPACT_CHART_HEIGHT}
               renderTooltip={GaugeVotingBarChartCustomTooltip}
               xAxisInterval={getXAxisInterval(userVoteData.length)}
               xAxisLabelRotate={-45}
@@ -118,7 +117,7 @@ export const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistribution
               xKey="title"
               yKey="gauge_relative_weight"
               barColor={getBarColor}
-              height={CHART_HEIGHT}
+              height={DAO_COMPACT_CHART_HEIGHT}
               renderTooltip={renderGaugesTooltip}
               xAxisInterval={getXAxisInterval(gaugeData.length)}
               xAxisLabelRotate={-45}

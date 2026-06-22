@@ -7,10 +7,10 @@ import { FeesBarChartTooltip } from './FeesBarChartTooltip'
 
 type FeesBarChartProps = {
   data: VeCrvFee[]
-  height?: number
+  height: number
 }
 
-export const FeesBarChart = ({ data, height = 500 }: FeesBarChartProps) => {
+export const FeesBarChart = ({ data, height }: FeesBarChartProps) => {
   const currentDate = useCurrentDate()
 
   return (

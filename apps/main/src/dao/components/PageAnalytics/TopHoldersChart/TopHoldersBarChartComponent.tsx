@@ -7,10 +7,10 @@ import { createChartSeriesColorScale, EChartsBarChart, formatChartAxisNumber } f
 import { TopHoldersBarChartTooltip as CustomTooltip } from './TopHoldersBarChartTooltip'
 
 type TopHoldersBarChartProps = {
+  height: number
   data: VeCrvHolder[]
   filter: TopHoldersSortBy
 }
-const CHART_HEIGHT = 300
 
 const getValueByFilter: Record<TopHoldersSortBy, (datum: VeCrvHolder) => number> = {
   locked: datum => +datum.locked,
@@ -18,7 +18,7 @@ const getValueByFilter: Record<TopHoldersSortBy, (datum: VeCrvHolder) => number>
   weightRatio: datum => +datum.weightRatio,
 }
 
-export const TopHoldersBarChart = ({ data, filter }: TopHoldersBarChartProps) => {
+export const TopHoldersBarChart = ({ height, data, filter }: TopHoldersBarChartProps) => {
   const theme = useTheme()
   const barColors = useMemo(() => createChartSeriesColorScale(theme), [theme])
   const getBarColor = useCallback((_: VeCrvHolder, index: number) => barColors[index % barColors.length], [barColors])
@@ -30,7 +30,7 @@ export const TopHoldersBarChart = ({ data, filter }: TopHoldersBarChartProps) =>
       yKey={filter}
       yValue={getValueByFilter[filter]}
       barColor={getBarColor}
-      height={CHART_HEIGHT}
+      height={height}
       renderTooltip={CustomTooltip}
       xAxisLabelRotate={-45}
       xAxisInterval={0}

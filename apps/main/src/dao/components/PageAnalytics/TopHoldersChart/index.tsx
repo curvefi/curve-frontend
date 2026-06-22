@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { styled } from 'styled-components'
+import { DAO_COMPACT_CHART_HEIGHT } from '@/dao/components/Charts/constants'
 import { TOP_HOLDERS_FILTERS } from '@/dao/components/PageAnalytics/constants'
 import { TopHoldersBarChart as TopHoldersBarChartComponent } from '@/dao/components/PageAnalytics/TopHoldersChart/TopHoldersBarChartComponent'
 import { useStatsVecrvQuery } from '@/dao/entities/stats-vecrv'
@@ -13,7 +14,6 @@ import { t } from '@ui-kit/lib/i18n'
 import { ChartStateWrapper } from '@ui-kit/shared/ui/Chart'
 import { decimal, decimalMinus, decimalSum } from '@ui-kit/utils'
 
-const CHART_HEIGHT = 300
 const TOP_HOLDERS_LIMIT = 100
 const MIN_TOP_HOLDER_WEIGHT_RATIO = 0.3
 
@@ -75,14 +75,14 @@ export const TopLockers = () => {
       </TitleRow>
       <Content>
         <ChartStateWrapper
-          height={CHART_HEIGHT}
+          height={DAO_COMPACT_CHART_HEIGHT}
           isLoading={isLoading}
           isEmpty={!isLoading && !chartError && chartData.length === 0}
           error={chartError}
           errorMessage={t`Unable to fetch veCRV holders data.`}
           refreshData={() => Promise.all([refetchHolders(), refetchStats()])}
         >
-          <TopHoldersBarChartComponent data={chartData} filter={topHoldersSortBy} />
+          <TopHoldersBarChartComponent height={DAO_COMPACT_CHART_HEIGHT} data={chartData} filter={topHoldersSortBy} />
         </ChartStateWrapper>
       </Content>
     </MuiBox>

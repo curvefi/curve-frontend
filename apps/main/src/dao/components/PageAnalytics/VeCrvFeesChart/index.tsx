@@ -1,11 +1,11 @@
 import { styled } from 'styled-components'
+import { DAO_CHART_HEIGHT } from '@/dao/components/Charts/constants'
 import { useVeCrvFeesQuery } from '@/dao/entities/vecrv-fees'
 import { Box } from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
 import { ChartStateWrapper } from '@ui-kit/shared/ui/Chart'
 import { FeesBarChart } from './FeesBarChart'
 
-const CHART_HEIGHT = 500
 const VECRV_FEES_WEEKS = 52
 
 export const VeCrvFeesChart = () => {
@@ -18,14 +18,14 @@ export const VeCrvFeesChart = () => {
       </TitleRow>
       <Content>
         <ChartStateWrapper
-          height={CHART_HEIGHT}
+          height={DAO_CHART_HEIGHT}
           isLoading={isLoading}
           isEmpty={!isLoading && !error && veCrvFees?.length === 0}
           error={error}
           errorMessage={t`Unable to fetch veCRV fees data.`}
           refreshData={() => refetch()}
         >
-          {veCrvFees && <FeesBarChart height={CHART_HEIGHT} data={veCrvFees} />}
+          {veCrvFees && <FeesBarChart height={DAO_CHART_HEIGHT} data={veCrvFees} />}
         </ChartStateWrapper>
       </Content>
     </Wrapper>

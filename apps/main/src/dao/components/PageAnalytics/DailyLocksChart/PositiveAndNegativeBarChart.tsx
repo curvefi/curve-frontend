@@ -6,10 +6,10 @@ import { PositiveAndNegativeBarChartTooltip } from './PositiveAndNegativeBarChar
 
 type PositiveAndNegativeBarChartProps = {
   data: VeCrvLock[]
-  height?: number
+  height: number
 }
 
-export const PositiveAndNegativeBarChart = ({ data, height = 500 }: PositiveAndNegativeBarChartProps) => {
+export const PositiveAndNegativeBarChart = ({ data, height }: PositiveAndNegativeBarChartProps) => {
   const theme = useTheme()
 
   return (

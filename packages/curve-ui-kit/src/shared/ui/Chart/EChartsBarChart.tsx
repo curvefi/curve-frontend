@@ -11,6 +11,7 @@ export type EChartsBarChartTooltipContext<TData> = {
 type BarColor<TData> = string | ((datum: TData, index: number) => string)
 
 type CategoryAxisValue = string | number
+const CHART_LINE_WIDTH = 0.5
 
 const toCategoryAxisValue = (value: unknown): CategoryAxisValue => {
   if (value instanceof Date) return value.getTime()
@@ -85,9 +86,13 @@ export const EChartsBarChart = <
         type: 'category',
         data: xAxisData,
         boundaryGap: false,
-        axisLine: { show: true, onZero: false, lineStyle: { color: gridLineColor } },
-        axisTick: { show: true, lineStyle: { color: gridLineColor } },
-        splitLine: { show: showVerticalGrid, showMaxLine: false, lineStyle: { color: gridLineColor } },
+        axisLine: { show: true, onZero: false, lineStyle: { color: gridLineColor, width: CHART_LINE_WIDTH } },
+        axisTick: { show: true, lineStyle: { color: gridLineColor, width: CHART_LINE_WIDTH } },
+        splitLine: {
+          show: showVerticalGrid,
+          showMaxLine: false,
+          lineStyle: { color: gridLineColor, width: CHART_LINE_WIDTH },
+        },
         axisLabel: {
           color: gridTextColor,
           align: 'left',
@@ -102,11 +107,12 @@ export const EChartsBarChart = <
       yAxis: {
         type: 'value',
         position: 'right',
-        axisLine: { show: true, lineStyle: { color: gridLineColor } },
-        axisTick: { show: true, lineStyle: { color: gridLineColor } },
+        axisLine: { show: true, lineStyle: { color: gridLineColor, width: CHART_LINE_WIDTH } },
+        axisTick: { show: true, lineStyle: { color: gridLineColor, width: CHART_LINE_WIDTH } },
         splitLine: {
           lineStyle: {
             color: gridLineColor,
+            width: CHART_LINE_WIDTH,
           },
         },
         axisLabel: {
@@ -120,7 +126,7 @@ export const EChartsBarChart = <
         axisPointer: {
           type: 'line',
           lineStyle: {
-            width: 1,
+            width: CHART_LINE_WIDTH,
             color: gridTextColor,
           },
         },
