@@ -2,10 +2,6 @@ import { SetStateAction, useCallback, useMemo, useState } from 'react'
 import type { PaginationState } from '@tanstack/react-table'
 import { DEFAULT_PAGE_SIZE } from '../constants'
 
-/** Compute page count from total item count and page size */
-export const getPageCount = (totalCount: number | undefined, pageSize: number) =>
-  totalCount ? Math.ceil(totalCount / pageSize) : 0
-
 /**
  * Hook to manage manual pagination state for TanStack Table.
  * Handles the conversion between 0-based table pagination and 1-based API pagination.

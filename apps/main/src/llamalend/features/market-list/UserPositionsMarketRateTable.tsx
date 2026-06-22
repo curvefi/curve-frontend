@@ -70,8 +70,7 @@ export const UserPositionsMarketRateTable = ({ tableQuery, marketRateType, onRel
         max: DEFAULT_VISIBLE_ROWS,
         buttonLabel: t`View all ${rowCount} ${marketRateType.toLowerCase()} positions`,
       }}
-      // with two user positions tables let's avoid having too many skeletons rows when loading
-      increasingLengthOptions={{ initialLength: 1, maxLength: 3 }}
+      increasingLength="userPositionsMarketRate"
       emptyState={{
         emptyTitle: t`No active positions`,
         emptyMessage: EMPTY_POSITIONS_SUBTITLE[marketRateType],

@@ -43,9 +43,8 @@ const TYPOGRAPHY_VARIANT_FROM_CHIP_SIZE: Record<
   extraLarge: 'bodyMRegular',
 }
 
-const SkeletonChips = ({ chipSize }: { chipSize: NonNullable<SelectableChipProps['size']> }) => {
-  const length = useIncreasingLength({ maxLength: 5 })
-  return Array.from({ length }).map((_, i) => (
+const SkeletonChips = ({ chipSize }: { chipSize: NonNullable<SelectableChipProps['size']> }) =>
+  Array.from({ length: useIncreasingLength('chips') }).map((_, i) => (
     <Skeleton
       // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
       key={`skeleton-chain-chip-${i}`}
@@ -56,7 +55,6 @@ const SkeletonChips = ({ chipSize }: { chipSize: NonNullable<SelectableChipProps
       }}
     />
   ))
-}
 
 /**
  * Returns the chains sorted with Ethereum first, then the rest alphabetically,

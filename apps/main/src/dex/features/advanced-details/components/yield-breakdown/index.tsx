@@ -45,7 +45,11 @@ export const YieldBreakdown = ({
           table={table}
           disableStickyHeader
           emptyState={{ size: 'sm', emptyTitle: t`No yield breakdown found.` }}
-          footerRow={<FooterRow visibleColumns={table.getVisibleLeafColumns()} baseTotal={baseTotal} total={total} />}
+          footerRow={
+            rows.length > 1 && (
+              <FooterRow visibleColumns={table.getVisibleLeafColumns()} baseTotal={baseTotal} total={total} />
+            )
+          }
         />
       </Stack>
     )

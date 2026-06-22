@@ -14,7 +14,7 @@ import { combineQueries } from '@ui-kit/lib'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import type { MarketParams } from '@ui-kit/lib/model/query/root-keys'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { mapQuery } from '@ui-kit/types/util'
+import { mapQuery, q } from '@ui-kit/types/util'
 import { requireBlockchainId } from '@ui-kit/utils/network'
 
 const endpointFromMarketType: Record<LlamaMarketType, Endpoint> = {
@@ -82,10 +82,12 @@ export const useAdvancedDetailsData = ({
       }),
     ),
     maxLeverage: mapQuery(maxLeverage, value => ({ value })),
+    borrowedUsdRate: q(borrowedUsdRate),
     availableLiquidity: mapQuery(capAndAvailable, ({ available, totalAssets, borrowCap }) => ({
       available,
       totalAssets,
       borrowCap,
+      borrowSymbol: borrowToken?.symbol,
     })),
     totalBorrowers: mapQuery(marketUsers, ({ count }) => ({ value: count })),
     averageHealth: mapQuery(liquidationHealthDistribution, distribution => ({

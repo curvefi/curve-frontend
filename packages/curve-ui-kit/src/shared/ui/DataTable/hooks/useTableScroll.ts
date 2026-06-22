@@ -43,7 +43,7 @@ export function useScrollToTopOnPageChange<T extends TableItem>({
   const { pageIndex } = table.getState().pagination
   useEffectOnValueChange(pageIndex, () => {
     // scroll after the user changes pages
-    if (containerRef) containerRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
+    if (containerRef?.current) containerRef.current.scrollTo({ top: 0, behavior: 'smooth' })
     else if (tableTopRef) scrollTableTopIntoView(tableTopRef)
   })
 }

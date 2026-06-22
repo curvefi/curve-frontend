@@ -61,7 +61,7 @@ export const LOAN_TEST_MARKETS = {
   [LlamaMarketType.Lend]: [
     {
       id: 'one-way-market-2',
-      label: 'tBTC-crvUSD Old Lend Market',
+      label: 'tBTC-crvUSD v0 Lend Market',
       collateralAddress: '0x18084fba666a33d37592fa2633fd49a74dd93a88', // tBTC
       controllerAddress: '0x413fd2511bad510947a91f5c6c79ebd8138c29fc',
       collateral: '100',
@@ -80,7 +80,7 @@ export const LOAN_TEST_MARKETS = {
     },
     {
       id: 'one-way-market-41',
-      label: 'sreUSD-crvUSD New Lend Market',
+      label: 'sreUSD-crvUSD v1 Lend Market',
       collateralAddress: '0x557ab1e003951a73c12d16f0fea8490e39c33c35', // sreUSD
       controllerAddress: '0x4f79fe450a2baf833e8f50340bd230f5a3ecafe9',
       collateral: '1',
@@ -99,7 +99,7 @@ export const LOAN_TEST_MARKETS = {
     },
     {
       id: 'one-way-market-v2-0',
-      label: 'wstETH-WETH LLv2',
+      label: 'wstETH-WETH LLv2 Lend Market',
       collateralAddress: '0x1f32b1c2345538c0c6f582fcb022739c4a194ebb', // wstETH
       controllerAddress: '0x745422BF49f3F6e4A8E12E4abD19339E7910F8C9',
       collateral: '1',
@@ -109,8 +109,8 @@ export const LOAN_TEST_MARKETS = {
       improveHealth: '0.01',
       chainId: Chain.Optimism,
       path: '/lend/optimism/markets/0x745422BF49f3F6e4A8E12E4abD19339E7910F8C9',
-      hasLeverage: true,
-      hasLeverageManagement: true,
+      hasLeverage: false, // leverage is temporarily disabled for v2 markets
+      hasLeverageManagement: false, // leverage is temporarily disabled for v2 markets
       collateralDecimals,
       borrowedAddress: '0x4200000000000000000000000000000000000006', // WETH
       borrowedDecimals,

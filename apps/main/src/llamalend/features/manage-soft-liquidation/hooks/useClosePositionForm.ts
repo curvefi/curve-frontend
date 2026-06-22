@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+import { sum } from 'lodash'
 import { useCallback } from 'react'
 import { useConnection } from 'wagmi'
 import { LEVERAGE } from '@/llamalend/constants'
@@ -13,6 +14,7 @@ import { useForm } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { useCombinedQueries } from '@ui-kit/lib/queries/combine'
+import { QueryData } from '@ui-kit/lib/queries/types'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { mapQuery } from '@ui-kit/types/util'
 import { decimal, decimalNegate } from '@ui-kit/utils'
@@ -26,10 +28,9 @@ const formOptions = {
   defaultValues: { ...userDefaultValues, slippage: SLIPPAGE[LEVERAGE].default },
 } as const
 
-type UserStateData = NonNullable<ReturnType<typeof useUserState>['data']>
-type UserBalancesData = NonNullable<ReturnType<typeof useUserBalances>['data']>
-type TokenUsdRate = NonNullable<ReturnType<typeof useTokenUsdRate>['data']>
-
+type UserStateData = QueryData<typeof useUserState>
+type UserBalancesData = QueryData<typeof useUserBalances>
+type TokenUsdRate = QueryData<typeof useTokenUsdRate>
 /** Hook to build state for the close-position form */
 export function useClosePositionForm({
   market,
@@ -185,7 +186,7 @@ export function useClosePositionForm({
       const collateralToRecover = notFalsy(collateralAmount, Number(excess) > 0 && excessStablecoinAmount)
       const collateralToRecoverUsd = collateralToRecover.some(({ usd }) => usd == null)
         ? undefined
-        : collateralToRecover.reduce((sum, { usd }) => sum + Number(usd), 0)
+        : sum(collateralToRecover.map(col => Number(col.usd)))
       const hasBadDebt = collateralToRecoverUsd != null && collateralToRecoverUsd <= 0
 
       return { rows, collateralToRecover, hasBadDebt, missing, borrowedBalance: borrowed }

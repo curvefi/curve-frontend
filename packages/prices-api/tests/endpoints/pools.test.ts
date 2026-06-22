@@ -8,6 +8,9 @@ const poolSeed = endpointSeed(getPoolSeed)
 runEndpointCases('pools', [
   endpointCase('getPools', () => pools.getPools(chainSeed(), requestOptions)),
   endpointCase('getPool', () => pools.getPool(poolSeed().chain, poolSeed().poolAddress, requestOptions)),
+  endpointCase('listPoolChains', () => pools.listPoolChains(requestOptions)),
+  endpointCase('listPools', () => pools.listPools({ chainId: 1, pagination: 2 }, requestOptions)),
+  endpointCase('listPoolRegistries', () => pools.listPoolRegistries({ chainId: 1 }, requestOptions)),
   endpointCase('getVolume', () => pools.getVolume(poolSeed().chain, poolSeed().poolAddress, requestOptions)),
   endpointCase('getTvl', () => pools.getTvl(poolSeed().chain, poolSeed().poolAddress, requestOptions)),
   endpointCase('getPoolTrades', () => pools.getPoolTrades({ ...poolSeed(), page: 1, perPage: 10 }, requestOptions)),

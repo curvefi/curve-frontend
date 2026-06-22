@@ -19,10 +19,10 @@ import { cardContentSmallStyles } from '@ui-kit/themes/components/card-content'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Alerts } from './components/Alerts'
 import { Contracts } from './components/Contracts'
-import { MarketComposition } from './components/market-composition'
 import { Metrics } from './components/Metrics'
 import { Parameters } from './components/Parameters'
 import { PointsCampaigns } from './components/points-campaigns'
+import { PoolComposition } from './components/pool-composition'
 import { YieldBreakdown } from './components/yield-breakdown'
 
 const { Spacing } = SizesAndSpaces
@@ -76,7 +76,7 @@ export const AdvancedDetails = ({
               poolId={resolvedPoolId}
               pricesApiPoolData={pricesApiPoolData}
             />
-            <MarketComposition
+            <PoolComposition
               chainId={chainId}
               poolDataCacheOrApi={poolDataCacheOrApi}
               poolId={resolvedPoolId}

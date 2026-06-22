@@ -1,98 +1,150 @@
-import { useState } from 'react'
-import { type NetworkConfig } from '@/dex/types/main.types'
-import { ExpandedState, getPaginationRowModel } from '@tanstack/react-table'
-import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
-import { usePageFromQueryString } from '@ui-kit/hooks/usePageFromQueryString'
-import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
+import { useCallback, useState } from 'react'
+import { usePoolList } from '@/dex/queries/pool-list.query'
+import type { NetworkConfig } from '@/dex/types/main.types'
+import type { SortDirection as PoolSortDirection, V2PoolSortField as PoolSortField } from '@curvefi/prices-api/pools'
+import CardHeader from '@mui/material/CardHeader'
+import Stack from '@mui/material/Stack'
+import { type ExpandedState, getCoreRowModel, getExpandedRowModel } from '@tanstack/react-table'
+import { useIsMobile, useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
-import { getHiddenCount, getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
-import { useFilters } from '@ui-kit/shared/ui/DataTable/hooks/useFilters'
-import { LegacyDataTable } from '@ui-kit/shared/ui/DataTable/LegacyDataTable'
-import { LegacyTableFilters } from '@ui-kit/shared/ui/DataTable/LegacyTableFilters'
-import { LegacyTableFiltersTitles } from '@ui-kit/shared/ui/DataTable/LegacyTableFiltersTitles'
-import { q } from '@ui-kit/types/util'
-import { PoolListChips } from './chips/PoolListChips'
-import { POOL_LIST_COLUMNS, PoolColumnId, getDefaultSort } from './columns'
+import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
+import { useMappedQuery } from '@ui-kit/types/util'
+import { POOL_LIST_COLUMNS, PoolListColumnId } from './columns'
 import { PoolListEmptyState } from './components/PoolListEmptyState'
-import { PoolMobileExpandedPanel } from './components/PoolMobileExpandedPanel'
-import { usePoolListData } from './hooks/usePoolListData'
+import { PoolListFilterChips } from './components/PoolListFilterChips'
+import { PoolListMobileExpandedPanel } from './components/PoolListMobileExpandedPanel'
+import { PoolListFilterDrawer } from './drawers/PoolListFilterDrawer'
+import { PoolListSortDrawer } from './drawers/PoolListSortDrawer'
+import { usePoolListFilters } from './hooks/usePoolListFilters'
+import { POOL_LIST_PAGE_SIZE, usePoolListPagination } from './hooks/usePoolListPagination'
+import { usePoolListSorting } from './hooks/usePoolListSorting'
+import { usePoolListUserHasPosition } from './hooks/usePoolListUserHasPosition'
 import { usePoolListVisibilitySettings } from './hooks/usePoolListVisibilitySettings'
-import { usePoolsGlobalFilterFn } from './poolsGlobalFilter'
+import type { PoolListPoolType } from './poolList.constants'
+import { getPoolListItem } from './poolList.utils'
 
 const LOCAL_STORAGE_KEY = 'dex-pool-list'
 
-const PER_PAGE = 50
-const EMPTY: never[] = []
+type PoolListTableParams = {
+  network: NetworkConfig
+  page: number
+  searchText: string
+  poolType: PoolListPoolType | undefined
+  sortBy: PoolSortField
+  sortDirection: PoolSortDirection
+}
+
+/** Fetches the current pool page and maps API rows into table rows. */
+const usePoolListTable = ({ network, page, searchText, poolType, sortBy, sortDirection }: PoolListTableParams) => {
+  const hasUserPoolPosition = usePoolListUserHasPosition(network.chainId)
+  const poolListQuery = usePoolList({
+    chainId: network.chainId,
+    page,
+    pageSize: POOL_LIST_PAGE_SIZE,
+    searchString: searchText || undefined,
+    poolType,
+    sortBy,
+    sortDirection,
+  })
+  const { data: poolList, isPlaceholderData } = poolListQuery
+  const tableQuery = useMappedQuery(
+    poolListQuery,
+    useCallback(
+      ({ pools }) => pools.map(pool => getPoolListItem(network, pool, hasUserPoolPosition(pool.address))),
+      [hasUserPoolPosition, network],
+    ),
+  )
+
+  return {
+    apiResultCount: isPlaceholderData ? undefined : poolList?.count,
+    pageCount: poolList?.pageCount ?? -1,
+    userHasPositions: tableQuery.data?.some(({ hasPosition }) => hasPosition),
+    tableQuery,
+  }
+}
 
 export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
-  const { isLite, poolFilters } = network
-
-  const { data, isLoading, userHasPositions } = usePoolListData(network)
-
-  const { globalFilter, setGlobalFilter, columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useFilters(
-    {
-      columns: PoolColumnId,
-    },
+  const isMobile = useIsMobile()
+  const { onPaginationChange, pagination, updateQueryAndResetPage } = usePoolListPagination()
+  const { activeFilterCount, onSearch, poolType, poolTypeFilters, resetFilters, searchText, setPoolType } =
+    usePoolListFilters(updateQueryAndResetPage)
+  const { onSortingChange, sortBy, sortDirection, sortField, sorting, sortOptions } = usePoolListSorting(
+    network.isLite,
+    updateQueryAndResetPage,
   )
-  const globalFilterFn = usePoolsGlobalFilterFn(data ?? [], globalFilter)
-  const [sorting, onSortingChange] = useSortFromQueryString(getDefaultSort(isLite))
-  const [pagination, onPaginationChange] = usePageFromQueryString(PER_PAGE)
-  const { columnSettings, columnVisibility, sortField } = usePoolListVisibilitySettings(LOCAL_STORAGE_KEY, {
-    isLite,
+
+  const [expanded, setExpanded] = useState<ExpandedState>({})
+  const { columnSettings, columnVisibility, toggleVisibility } = usePoolListVisibilitySettings(LOCAL_STORAGE_KEY, {
+    isLite: network.isLite,
     sorting,
   })
-  // eslint-disable-next-line @eslint-react/use-state -- Existing violation before enabling this rule.
-  const [expanded, onExpandedChange] = useState<ExpandedState>({})
-  const filterProps = { columnFiltersById, setColumnFilter }
+  const filterProps = { poolType, poolTypeFilters, setPoolType }
+
+  const { apiResultCount, pageCount, userHasPositions, tableQuery } = usePoolListTable({
+    network,
+    page: pagination.pageIndex + 1,
+    searchText,
+    poolType,
+    sortBy,
+    sortDirection,
+  })
 
   const table = useTable({
     columns: POOL_LIST_COLUMNS,
-    query: q({ data: data ?? EMPTY, isLoading, error: null }), // TODO: get error and loading state properly
-    state: { expanded, sorting, columnVisibility, columnFilters, pagination, globalFilter },
-    onSortingChange,
-    onExpandedChange,
+    query: tableQuery,
+    state: { expanded, sorting, pagination, columnVisibility },
+    onExpandedChange: setExpanded,
     onPaginationChange,
-    globalFilterFn,
-    ...getTableOptions(data),
-    getPaginationRowModel: getPaginationRowModel(),
+    onSortingChange,
+    getCoreRowModel: getCoreRowModel(),
+    getExpandedRowModel: getExpandedRowModel(),
+    manualPagination: true,
+    manualSorting: true,
+    manualFiltering: true,
+    pageCount,
+    autoResetPageIndex: false,
   })
 
-  const resultCount = table.getFilteredRowModel().rows.length
   return (
-    <LegacyDataTable
-      table={table}
-      emptyState={
-        <EmptyStateRow table={table}>
-          <PoolListEmptyState resetFilters={resetFilters} />
-        </EmptyStateRow>
-      }
-      expandedPanel={PoolMobileExpandedPanel}
-      shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
-      loading={isLoading}
-    >
-      <LegacyTableFilters<PoolColumnId>
-        filterExpandedKey={LOCAL_STORAGE_KEY}
-        leftChildren={<LegacyTableFiltersTitles title={t`Pools`} subtitle={t`Find your next opportunity`} />}
-        loading={isLoading}
-        visibilityGroups={columnSettings}
-        searchText={globalFilter}
-        onSearch={setGlobalFilter}
-        hasSearchBar
-        chips={
-          <PoolListChips
-            poolFilters={poolFilters}
-            hiddenCount={getHiddenCount(table)}
-            resetFilters={resetFilters}
-            onSortingChange={onSortingChange}
-            sortField={sortField}
-            searchText={globalFilter}
-            onSearch={setGlobalFilter}
-            resultCount={data ? resultCount : undefined}
-            {...filterProps}
-          />
+    <Stack>
+      <CardHeader title={t`Pools`} />
+      <DataTable
+        table={table}
+        emptyState={
+          <EmptyStateRow table={table}>
+            <PoolListEmptyState resetFilters={resetFilters} isError={!!tableQuery.error} />
+          </EmptyStateRow>
         }
-      />
-    </LegacyDataTable>
+        expandedPanel={PoolListMobileExpandedPanel}
+        shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
+      >
+        <TableFilters<PoolListColumnId>
+          testIdPrefix={LOCAL_STORAGE_KEY}
+          visibilityGroups={columnSettings}
+          toggleVisibility={toggleVisibility}
+          searchText={searchText}
+          onSearch={onSearch}
+          filterChip={
+            isMobile && (
+              <PoolListFilterDrawer
+                activeFilterCount={activeFilterCount}
+                resetFilters={resetFilters}
+                resultCount={apiResultCount}
+                {...filterProps}
+              />
+            )
+          }
+          sortChip={
+            isMobile && (
+              <PoolListSortDrawer onSortingChange={onSortingChange} options={sortOptions} sortField={sortField} />
+            )
+          }
+          chips={<PoolListFilterChips resultCount={apiResultCount} {...filterProps} />}
+        />
+      </DataTable>
+    </Stack>
   )
 }
