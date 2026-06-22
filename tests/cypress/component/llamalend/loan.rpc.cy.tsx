@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { BigNumber } from 'bignumber.js'
-import { parseUnits } from 'viem'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { checkCurrentDebt, checkDebt } from '@cy/support/helpers/llamalend/action-info.helpers'
-import { setControllerBorrowCap } from '@cy/support/helpers/llamalend/borrow-cap.helpers'
+import { setupLlv2BorrowingLiquidity } from '@cy/support/helpers/llamalend/borrow-cap.helpers'
 import {
   checkBorrowMoreDetailsLoaded,
   submitBorrowMoreForm,
@@ -38,7 +37,6 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { recordValues } from '@primitives/objects.utils'
 import { getLib } from '@ui-kit/features/connect-wallet'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { Chain } from '@ui-kit/utils'
 import { waitFor } from '@ui-kit/utils/time.utils'
 
 const testCases = recordValues(LlamaMarketType).map(marketType => oneLoanTestMarket(marketType))
@@ -107,26 +105,14 @@ testCases.forEach(
         const vnet = getVirtualNetwork()
         const { adminRpcUrl: nextAdminRpcUrl, publicRpcUrl } = getRpcUrls(vnet)
         adminRpcUrl = nextAdminRpcUrl
-        if (chainId === Chain.Optimism) {
-          const borrowedLiquidity = '10' as const
-          // keep the borrow cap above existing fork debt, otherwise LLv2 max_borrowable returns 0.
-          const borrowCap = '1000' as const
-
-          setControllerBorrowCap({
-            adminRpcUrl,
-            publicRpcUrl,
-            controllerAddress,
-            borrowCap,
-            availableBalance: borrowedLiquidity,
-            borrowedDecimals,
-          })
-          fundErc20({
-            adminRpcUrl,
-            amountWei: `0x${parseUnits(borrowedLiquidity, borrowedDecimals).toString(16)}`,
-            tokenAddress: borrowedAddress,
-            recipientAddresses: [controllerAddress],
-          })
-        }
+        setupLlv2BorrowingLiquidity({
+          adminRpcUrl,
+          publicRpcUrl,
+          chainId,
+          controllerAddress,
+          borrowedAddress,
+          borrowedDecimals,
+        })
       })
 
       beforeEach(() => {

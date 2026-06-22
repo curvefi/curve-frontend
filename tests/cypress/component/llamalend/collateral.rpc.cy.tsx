@@ -1,5 +1,6 @@
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
+import { setupLlv2BorrowingLiquidity } from '@cy/support/helpers/llamalend/borrow-cap.helpers'
 import {
   checkCurrentCollateral,
   getCollateralInput,
@@ -11,6 +12,7 @@ import { LOAN_TEST_MARKETS, oneLoanTestMarket } from '@cy/support/helpers/llamal
 import { LlammalendTestCase } from '@cy/support/helpers/llamalend/LlammalendTestCase'
 import { setupTenderlyLoan } from '@cy/support/helpers/llamalend/loan-setup.helpers'
 import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
+import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { skipTestsAfterFailure } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { objectKeys } from '@primitives/objects.utils'
@@ -24,6 +26,8 @@ describe('Collateral forms', () => {
   testCases.forEach(
     ({
       borrow,
+      borrowedAddress,
+      borrowedDecimals,
       chainId,
       collateral,
       collateralAddress,
@@ -41,6 +45,7 @@ describe('Collateral forms', () => {
         const getVirtualNetwork = createVirtualTestnet(uuid => ({
           slug: `collateral-integration-${uuid}`,
           display_name: `CollateralIntegration (${uuid})`,
+          chain_id: chainId,
           fork_config: { block_number: 'latest' },
         }))
 
@@ -63,17 +68,28 @@ describe('Collateral forms', () => {
           />
         )
 
-        before(() =>
+        before(() => {
+          const vnet = getVirtualNetwork()
+          const { adminRpcUrl, publicRpcUrl } = getRpcUrls(vnet)
+
+          setupLlv2BorrowingLiquidity({
+            adminRpcUrl,
+            publicRpcUrl,
+            chainId,
+            controllerAddress,
+            borrowedAddress,
+            borrowedDecimals,
+          })
           setupTenderlyLoan({
-            vnet: getVirtualNetwork(),
+            vnet,
             userAddress: address,
             collateralAddress,
             controllerAddress,
             collateral,
             collateralDecimals,
             borrow,
-          }),
-        )
+          })
+        })
 
         beforeEach(() => {
           onPricesUpdated = cy.stub().as('onPricesUpdated')
