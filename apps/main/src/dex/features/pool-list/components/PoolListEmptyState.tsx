@@ -4,7 +4,8 @@ import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
 
 type Props = { resetFilters: () => void; isError: boolean }
 
-export const PoolListEmptyState = ({ resetFilters, isError }: Props) => isError ? (
+export const PoolListEmptyState = ({ resetFilters, isError }: Props) =>
+  isError ? (
     <EmptyStateCard title={t`Unable to retrieve pool list.`} description={t`Please try again later.`} />
   ) : (
     <EmptyStateCard
