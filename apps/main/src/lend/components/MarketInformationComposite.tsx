@@ -29,7 +29,6 @@ type MarketInformationCompProps = {
  */
 export const MarketInformationComposite = ({ pageProps, rateType, previewPrices }: MarketInformationCompProps) => {
   const { rChainId, market, apiMarket } = pageProps
-  const marketId = market?.id ?? '' // todo: get rid of this
   const api = getLib('llamaApi')
   const isBorrow = rateType === MarketRateType.Borrow
   const blockchainId = networks[rChainId].id as Chain
@@ -42,7 +41,7 @@ export const MarketInformationComposite = ({ pageProps, rateType, previewPrices 
       {isBorrow && (
         <ChartAndActivityComp
           rChainId={rChainId}
-          marketId={marketId}
+          marketId={market?.id}
           api={api}
           previewPrices={previewPrices}
           controllerAddress={controllerAddress}
@@ -57,7 +56,7 @@ export const MarketInformationComposite = ({ pageProps, rateType, previewPrices 
           controllerAddress={controllerAddress}
           blockchainId={blockchainId}
           chainId={rChainId}
-          marketId={marketId}
+          marketId={market?.id}
           rateMode={MarketRateType.Borrow}
         />
       )}
@@ -66,7 +65,7 @@ export const MarketInformationComposite = ({ pageProps, rateType, previewPrices 
         controllerAddress={controllerAddress}
         blockchainId={blockchainId}
         chainId={rChainId}
-        marketId={marketId}
+        marketId={market?.id}
         rateMode={MarketRateType.Supply}
       />
       <MarketRateCurveChart
@@ -75,7 +74,7 @@ export const MarketInformationComposite = ({ pageProps, rateType, previewPrices 
         controllerAddress={controllerAddress}
         blockchainId={blockchainId}
         chainId={rChainId}
-        marketId={marketId}
+        marketId={market?.id}
         apiMarket={apiMarket}
       />
       <Card size="small">
@@ -83,7 +82,7 @@ export const MarketInformationComposite = ({ pageProps, rateType, previewPrices 
         <CardContent component={Stack}>
           <AdvancedDetails
             chainId={rChainId}
-            marketId={marketId}
+            marketId={market?.id}
             market={market}
             marketType={LlamaMarketType.Lend}
             apiMarket={apiMarket}

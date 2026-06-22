@@ -138,7 +138,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
               tooltip={t`Max borrow`}
               symbol={borrowToken?.symbol}
               balance={maxDebt.data}
-              loading={isConnected && maxDebt.isLoading}
+              loading={maxDebt.isLoading}
               onClick={useCallback(() => updateForm({ debt: values.maxDebt }), [updateForm, values.maxDebt])}
               buttonTestId="borrow-set-debt-to-max"
             />

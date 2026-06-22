@@ -19,7 +19,7 @@ type LlammaOhlcChartStateModelParams = {
   controllerAddress: Address | undefined
   endpoint: Parameters<typeof useLlammaOhlcChartData>[0]['endpoint']
   llammaAddress: Address | undefined
-  marketId: string
+  marketId: string | undefined
   network: Chain | undefined
   oraclePrice: string | undefined
   previewPrices: Range<Decimal> | undefined
@@ -69,7 +69,7 @@ export const useLlammaOhlcChartStateModel = ({
   userPrices,
 }: LlammaOhlcChartStateModelParams) => {
   const { timeOption, setTimeOption, chartInterval, timeUnit } = useChartTimeSettings()
-  const { anchorEnd, isAnchorEndReady } = useStableOhlcAnchorEnd(chainKey, marketId, timeOption)
+  const { anchorEnd, isAnchorEndReady } = useStableOhlcAnchorEnd(chainKey, marketId ?? '', timeOption)
 
   const {
     oraclePoolsChartQuery,

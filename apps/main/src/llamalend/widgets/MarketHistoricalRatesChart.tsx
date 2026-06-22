@@ -54,7 +54,7 @@ type MarketHistoricalRatesChartProps = {
   marketType: LlamaMarketType
   blockchainId: Chain | undefined
   chainId: number
-  marketId: string
+  marketId: string | undefined
   rateMode: MarketRateType
 }
 

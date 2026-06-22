@@ -29,7 +29,7 @@ export const MarketLoanParameters = ({
     data: parameters,
     isLoading: isLoadingParameters,
     error: errorParameters,
-  } = useMarketParameters({ chainId, marketId }, !!marketId)
+  } = useMarketParameters({ chainId, marketId })
 
   const loading = !!marketId && isLoadingParameters
   const maxLtv = parameters ? getMaxLTV(parameters.A ?? 0, parameters.loan_discount) : apiMarket.data?.maxLtv

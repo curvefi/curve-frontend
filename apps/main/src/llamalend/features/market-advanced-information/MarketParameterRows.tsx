@@ -3,8 +3,8 @@ import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
-import type { QueryProp } from '@ui-kit/types/util'
-import { formatNumber, amount } from '@ui-kit/utils'
+import { fallbackQ, mapQuery, q, type QueryProp } from '@ui-kit/types/util'
+import { formatNumber, decimal } from '@ui-kit/utils'
 
 type MarketPricesRowsProps = {
   chainId: IChainId
@@ -14,35 +14,27 @@ type MarketPricesRowsProps = {
 }
 
 export const MarketPricesRows = ({ chainId, marketId, enablePricePerShare, apiMarket }: MarketPricesRowsProps) => {
-  const {
-    data: oraclePrice,
-    isLoading: isLoadingOraclePrice,
-    error: errorOraclePrice,
-  } = useMarketOraclePrice({ chainId, marketId }, !!marketId)
-
-  const {
-    data: pricePerShare,
-    isLoading: isLoadingPricePerShare,
-    error: errorPricePerShare,
-  } = useMarketVaultPricePerShare({ chainId, marketId }, enablePricePerShare && !!marketId)
-  const displayedOraclePrice = oraclePrice ?? apiMarket.data?.oraclePrice
-  const oraclePriceLoading = marketId ? isLoadingOraclePrice : apiMarket.isLoading
-
+  const oraclePriceOnChain = useMarketOraclePrice({ chainId, marketId })
+  const pricePerShare = useMarketVaultPricePerShare({ chainId, marketId }, enablePricePerShare)
+  const oraclePrice = fallbackQ(
+    q(oraclePriceOnChain),
+    mapQuery(apiMarket, m => decimal(m.oraclePrice)),
+  )
   return (
     <>
       <ActionInfo
         label={t`Oracle price`}
-        value={formatNumber(displayedOraclePrice, { abbreviate: false, fallback: '-' })}
-        valueTooltip={formatNumber(displayedOraclePrice, { decimals: 5, abbreviate: false, fallback: '-' })}
-        loading={oraclePriceLoading}
-        error={errorOraclePrice}
+        value={formatNumber(oraclePrice.data, { abbreviate: false, fallback: '-' })}
+        valueTooltip={formatNumber(oraclePrice.data, { decimals: 5, abbreviate: false, fallback: '-' })}
+        loading={oraclePrice.isLoading}
+        error={oraclePrice.error}
       />
       {enablePricePerShare && marketId && (
         <ActionInfo
           label={t`Price per share`}
-          value={formatNumber(amount(pricePerShare), { decimals: 5, abbreviate: false, fallback: '-' })}
-          loading={isLoadingPricePerShare}
-          error={errorPricePerShare}
+          value={formatNumber(pricePerShare.data, { decimals: 5, abbreviate: false, fallback: '-' })}
+          loading={pricePerShare.isLoading}
+          error={pricePerShare.error}
         />
       )}
     </>

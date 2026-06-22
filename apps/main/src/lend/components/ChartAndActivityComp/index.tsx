@@ -11,7 +11,7 @@ import type { Range } from '@ui-kit/types/util'
 
 type ChartAndActivityCompProps = {
   rChainId: ChainId
-  marketId: string
+  marketId: string | undefined
   api: Api | undefined
   previewPrices: Range<Decimal> | undefined
   collateralToken: { address: Address; symbol: string } | undefined

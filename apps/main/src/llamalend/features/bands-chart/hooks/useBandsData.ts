@@ -14,7 +14,7 @@ export const useBandsData = ({
   enabled = true,
 }: {
   chainId: IChainId
-  marketId: string
+  marketId: string | undefined
   api: LlamaApi | undefined | null
   enabled?: boolean
 }) => {
@@ -56,11 +56,5 @@ export const useBandsData = ({
     isLoanExistsLoading ||
     isUserBandsBalancesLoading
 
-  return {
-    isLoading,
-    error: marketBandsBalancesError,
-    chartData: processedChartData,
-    userBandsBalances,
-    oraclePrice,
-  }
+  return { isLoading, error: marketBandsBalancesError, chartData: processedChartData, userBandsBalances, oraclePrice }
 }

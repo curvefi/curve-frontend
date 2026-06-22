@@ -11,7 +11,7 @@ import type { Range } from '@ui-kit/types/util'
 
 type UseOhlcChartStateProps = {
   rChainId: ChainId
-  marketId: string
+  marketId: string | undefined
   previewPrices: Range<Decimal> | undefined
   controllerAddress: Address | undefined
   ammAddress: Address | undefined
