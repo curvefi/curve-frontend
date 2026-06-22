@@ -27,7 +27,7 @@ function visitAndWait(
   height: number,
   {
     query,
-    network = 'ethereum',
+    network = 'arbitrum',
     ...options
   }: { network?: string; query?: Record<string, string> } & Partial<Cypress.VisitOptions> = {},
 ) {
@@ -154,7 +154,7 @@ describe('DEX Pools', () => {
   })
 
   it('searches pools and preserves search after navigation', () => {
-    visitAndWait(width, height)
+    visitAndWait(width, height, { network: 'ethereum' })
     const filter = DEX_POOL_LIST_SEARCH
     cy.get('[data-testid="table-text-search-dex-pool-list"] input').type(filter)
     cy.url().should('include', `?search=${filter}`)
