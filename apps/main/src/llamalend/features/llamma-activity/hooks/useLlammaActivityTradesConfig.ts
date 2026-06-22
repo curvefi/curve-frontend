@@ -16,7 +16,6 @@ import { getPageCount } from '@ui-kit/utils'
 import { LlammaActivityTradesProps } from '../LlammaActivityTrades'
 
 export const useLlammaActivityTradesConfig = ({
-  isMarketAvailable,
   network,
   ammAddress,
   endpoint,
@@ -66,8 +65,8 @@ export const useLlammaActivityTradesConfig = ({
 
   return {
     table,
-    isLoading: isTradesLoading || !isHydrated || !isMarketAvailable,
-    isError: isTradesError && isHydrated && isMarketAvailable,
+    isLoading: isTradesLoading || !isHydrated,
+    isError: isTradesError && isHydrated,
     emptyMessage: t`No swap data found.`,
     errorMessage: t`Could not load swap data.`,
   }

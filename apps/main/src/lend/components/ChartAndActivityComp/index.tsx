@@ -63,7 +63,6 @@ export const ChartAndActivityComp = ({ rChainId, market, previewPrices }: ChartA
         borrowToken,
       }}
       activity={{
-        isMarketAvailable: !!market,
         network: getBlockchainId(networkConfig?.id),
         ammAddress: getAmmAddress(market),
         collateralToken,

@@ -1,5 +1,6 @@
 import { AdvancedDetails, MarketInfoLayout } from '@/llamalend/features/market-advanced-information'
 import { MarketFaq } from '@/llamalend/features/market-faq'
+import { getAmmAddress, getControllerAddress, getTokens } from '@/llamalend/llama.utils'
 import { CrvUsdPriceChart } from '@/llamalend/widgets/CrvUsdPriceChart'
 import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
 import { ChartAndActivityComp } from '@/loan/components/ChartAndActivityComp'
@@ -28,36 +29,47 @@ export const MarketInformationComposite = ({
   marketId,
   chainId,
   previewPrices,
-}: MarketInformationCompProps) => (
-  <Stack sx={{ gap: PAGE_SPACING }}>
-    <ChartAndActivityComp chainId={chainId} market={market} previewPrices={previewPrices} />
-    <MarketHistoricalRatesChart
-      market={market}
-      blockchainId={BlockchainIds[Chain.Ethereum]}
-      chainId={chainId}
-      marketId={marketId}
-      rateMode={MarketRateType.Borrow}
-    />
-    <CrvUsdPriceChart />
+}: MarketInformationCompProps) => {
+  const { collateralToken, borrowToken } = getTokens(market) ?? {}
+  return (
+    <Stack sx={{ gap: PAGE_SPACING }}>
+      <ChartAndActivityComp
+        chainId={chainId}
+        marketId={marketId}
+        previewPrices={previewPrices}
+        controllerAddress={getControllerAddress(market)}
+        ammAddress={getAmmAddress(market)}
+        borrowToken={borrowToken}
+        collateralToken={collateralToken}
+      />
+      <MarketHistoricalRatesChart
+        market={market}
+        blockchainId={BlockchainIds[Chain.Ethereum]}
+        chainId={chainId}
+        marketId={marketId}
+        rateMode={MarketRateType.Borrow}
+      />
+      <CrvUsdPriceChart />
 
-    <Card size="small">
-      <CardHeader title={t`Advanced Details`} />
-      <CardContent component={Stack}>
-        <AdvancedDetails
-          chainId={chainId}
-          marketId={marketId}
-          market={market ?? undefined}
-          marketType={LlamaMarketType.Mint}
-        />
-        <MarketInfoLayout
-          chainId={chainId}
-          marketType={LlamaMarketType.Mint}
-          market={market ?? undefined}
-          network={networks[chainId]}
-        />
-      </CardContent>
-    </Card>
+      <Card size="small">
+        <CardHeader title={t`Advanced Details`} />
+        <CardContent component={Stack}>
+          <AdvancedDetails
+            chainId={chainId}
+            marketId={marketId}
+            market={market ?? undefined}
+            marketType={LlamaMarketType.Mint}
+          />
+          <MarketInfoLayout
+            chainId={chainId}
+            marketType={LlamaMarketType.Mint}
+            market={market ?? undefined}
+            network={networks[chainId]}
+          />
+        </CardContent>
+      </Card>
 
-    <MarketFaq />
-  </Stack>
-)
+      <MarketFaq />
+    </Stack>
+  )
+}

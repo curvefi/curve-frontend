@@ -16,7 +16,6 @@ import { getPageCount } from '@ui-kit/utils'
 import { LlammaActivityProps } from '..'
 
 export const useLlammaActivityEventsConfig = ({
-  isMarketAvailable,
   network,
   collateralToken,
   borrowToken,
@@ -70,8 +69,8 @@ export const useLlammaActivityEventsConfig = ({
 
   return {
     table,
-    isLoading: isEventsLoading || !isHydrated || !isMarketAvailable,
-    isError: isEventsError && isHydrated && isMarketAvailable,
+    isLoading: isEventsLoading || !isHydrated,
+    isError: isEventsError && isHydrated,
     emptyMessage: t`No activity data found.`,
     errorMessage: t`Could not load activity data.`,
   }
