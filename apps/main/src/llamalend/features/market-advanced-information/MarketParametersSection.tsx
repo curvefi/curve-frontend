@@ -22,14 +22,14 @@ type MarketParametersProps = {
 
 export const MarketParametersSection = ({ chainId, marketId, marketType, apiMarket }: MarketParametersProps) => (
   <Stack>
-    <Card size="inline">
+    <Card size="inline" data-testid="market-parameters-section">
       <CardHeader title={t`Parameters`} />
       <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
         <MarketLoanParameters chainId={chainId} marketId={marketId} apiMarket={apiMarket} />
       </CardContent>
     </Card>
 
-    <Card size="inline">
+    <Card size="inline" data-testid="market-prices-section">
       <CardHeader title={t`Prices`} />
       <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
         <MarketPricesRows
@@ -41,7 +41,7 @@ export const MarketParametersSection = ({ chainId, marketId, marketType, apiMark
       </CardContent>
     </Card>
 
-    <Card size="inline">
+    <Card size="inline" data-testid="market-id-section">
       <CardHeader title={t`Market`} />
       <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
         <MarketIdRow marketId={marketId ?? apiMarket.data?.controllerAddress} />

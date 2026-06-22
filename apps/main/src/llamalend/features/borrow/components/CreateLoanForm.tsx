@@ -138,7 +138,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
               tooltip={t`Max borrow`}
               symbol={borrowToken?.symbol}
               balance={maxDebt.data}
-              loading={maxDebt.isLoading}
+              loading={isConnected && maxDebt.isLoading} // TODO: maxDebt.isLoading is always true when !market even without wallet.
               onClick={useCallback(() => updateForm({ debt: values.maxDebt }), [updateForm, values.maxDebt])}
               buttonTestId="borrow-set-debt-to-max"
             />

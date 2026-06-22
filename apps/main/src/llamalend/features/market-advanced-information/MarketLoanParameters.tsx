@@ -33,45 +33,56 @@ export const MarketLoanParameters = ({
 
   const loading = !!marketId && isLoadingParameters
   const maxLtv = parameters ? getMaxLTV(parameters.A ?? 0, parameters.loan_discount) : apiMarket.data?.maxLtv
+  const apiOnly = !!apiMarket.data && !marketId
 
   return (
     <>
-      <ActionInfo
-        label={t`AMM swap fee`}
-        value={formatNumber(parameters?.fee, 'percent.rate')}
-        loading={loading}
-        error={errorParameters}
-      />
+      {!apiOnly && (
+        <>
+          <ActionInfo
+            testId="market-param-amm-swap-fee"
+            label={t`AMM swap fee`}
+            value={formatNumber(parameters?.fee, 'percent.rate')}
+            loading={loading}
+            error={errorParameters}
+          />
+
+          <ActionInfo
+            testId="market-param-admin-fee"
+            label={t`Admin fee`}
+            value={formatNumber(parameters?.admin_fee, 'percent.rate')}
+            loading={loading}
+            error={errorParameters}
+          />
+
+          <ActionInfo
+            testId="market-param-band-width-factor"
+            label={t`Band width factor`}
+            value={formatNumber(parameters?.A, { abbreviate: false, useGrouping: false })}
+            loading={loading}
+            error={errorParameters}
+          />
+
+          <ActionInfo
+            testId="market-param-loan-discount"
+            label={t`Loan discount`}
+            value={formatNumber(parameters?.loan_discount, 'percent.rate')}
+            loading={loading}
+            error={errorParameters}
+          />
+
+          <ActionInfo
+            testId="market-param-liquidation-discount"
+            label={t`Liquidation discount`}
+            value={formatNumber(parameters?.liquidation_discount, 'percent.rate')}
+            loading={loading}
+            error={errorParameters}
+          />
+        </>
+      )}
 
       <ActionInfo
-        label={t`Admin fee`}
-        value={formatNumber(parameters?.admin_fee, 'percent.rate')}
-        loading={loading}
-        error={errorParameters}
-      />
-
-      <ActionInfo
-        label={t`Band width factor`}
-        value={formatNumber(parameters?.A ?? 0, { abbreviate: false, useGrouping: false })}
-        loading={loading}
-        error={errorParameters}
-      />
-
-      <ActionInfo
-        label={t`Loan discount`}
-        value={formatNumber(parameters?.loan_discount, 'percent.rate')}
-        loading={loading}
-        error={errorParameters}
-      />
-
-      <ActionInfo
-        label={t`Liquidation discount`}
-        value={formatNumber(parameters?.liquidation_discount, 'percent.rate')}
-        loading={loading}
-        error={errorParameters}
-      />
-
-      <ActionInfo
+        testId="market-param-max-ltv"
         label={t`Max LTV`}
         value={formatNumber(maxLtv, 'percent.rate')}
         valueTooltip={t`Max possible loan at N=4`}

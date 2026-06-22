@@ -23,6 +23,7 @@ export const MarketPricesRows = ({ chainId, marketId, enablePricePerShare, apiMa
   return (
     <>
       <ActionInfo
+        testId="market-price-oracle"
         label={t`Oracle price`}
         value={formatNumber(oraclePrice.data, { abbreviate: false, fallback: '-' })}
         valueTooltip={formatNumber(oraclePrice.data, { decimals: 5, abbreviate: false, fallback: '-' })}
@@ -31,6 +32,7 @@ export const MarketPricesRows = ({ chainId, marketId, enablePricePerShare, apiMa
       />
       {enablePricePerShare && marketId && (
         <ActionInfo
+          testId="market-price-per-share"
           label={t`Price per share`}
           value={formatNumber(pricePerShare.data, { decimals: 5, abbreviate: false, fallback: '-' })}
           loading={pricePerShare.isLoading}
@@ -42,5 +44,5 @@ export const MarketPricesRows = ({ chainId, marketId, enablePricePerShare, apiMa
 }
 
 export const MarketIdRow = ({ marketId }: { marketId: string | undefined }) => (
-  <ActionInfo label={t`ID`} value={marketId} loading={!marketId} />
+  <ActionInfo testId="market-id" label={t`ID`} value={marketId} loading={!marketId} />
 )
