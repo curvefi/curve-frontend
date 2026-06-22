@@ -102,7 +102,7 @@ export const EmptyStateCard = ({
           <Box
             sx={{
               display: 'grid', // Using grid here for equal sized buttons
-              gridTemplateColumns: !!button && !!secondaryButton ? { tablet: '1fr 1fr' } : undefined,
+              gridTemplateColumns: button && secondaryButton ? { tablet: '1fr 1fr' } : undefined,
               gap: Spacing.xs,
               justifyContent: 'center',
             }}
