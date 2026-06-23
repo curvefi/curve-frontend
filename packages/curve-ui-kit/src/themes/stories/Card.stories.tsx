@@ -9,7 +9,7 @@ import CardMedia from '@mui/material/CardMedia'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
+import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { SizesAndSpaces } from '../design/1_sizes_spaces'
 
@@ -92,17 +92,16 @@ const CardStoryInline = (props: CardProps) => (
   </Card>
 )
 
-const CardStoryTokenPairAvatar = (props: CardProps) => (
+const CardStoryTokenIconsAvatar = (props: CardProps) => (
   <Card sx={{ maxWidth: '20rem' }} {...props}>
     <CardHeader
       avatar={
-        <TokenPair
-          hideChainIcon
-          chain="ethereum"
-          assets={{
-            primary: { symbol: 'crvUSD', address: CRVUSD_ADDRESS },
-            secondary: { symbol: 'USDC', address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' },
-          }}
+        <TokenIcons
+          blockchainId="ethereum"
+          tokens={[
+            { symbol: 'crvUSD', address: CRVUSD_ADDRESS },
+            { symbol: 'USDC', address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' },
+          ]}
         />
       }
       title="USDC/crvUSD"
@@ -138,6 +137,6 @@ export const Default: Story = { render: args => <CardStory {...args} /> }
 export const Simple: Story = { render: args => <CardStorySimple {...args} /> }
 export const HeaderOnly: Story = { render: args => <CardStoryHeaderOnly {...args} /> }
 export const Inline: Story = { render: args => <CardStoryInline {...args} /> }
-export const TokenPairAvatar: Story = { render: args => <CardStoryTokenPairAvatar {...args} /> }
+export const TokenIconsAvatar: Story = { render: args => <CardStoryTokenIconsAvatar {...args} /> }
 
 export default meta
