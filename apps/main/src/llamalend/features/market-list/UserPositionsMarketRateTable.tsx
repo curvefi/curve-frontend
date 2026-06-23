@@ -48,7 +48,7 @@ const DEFAULT_VISIBLE_ROWS = 3
 
 export const UserPositionsMarketRateTable = ({
   tableQuery,
-  tableQuery: { data = [], isLoading, error },
+  tableQuery: { data = [], error },
   marketRateType,
   onReload,
 }: UserPositionsTableProps) => {
@@ -59,7 +59,7 @@ export const UserPositionsMarketRateTable = ({
 
   const table = useTable({
     columns: LLAMA_MARKET_COLUMNS,
-    data,
+    query: tableQuery,
     state: { expanded, sorting, columnVisibility },
     initialState: { pagination },
     onSortingChange,
@@ -84,7 +84,6 @@ export const UserPositionsMarketRateTable = ({
       }
       expandedPanel={LlamaMarketExpandedPanel}
       shouldStickFirstColumn={Boolean(useIsTablet() && data.length)}
-      isLoading={isLoading}
     >
       <Stack
         sx={{

@@ -6,6 +6,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
+import { constQ } from '@ui-kit/types/util'
 import { useYieldBreakdown } from '../../hooks/useYieldBreakdown'
 import {
   YIELD_BREAKDOWN_COLUMNS,
@@ -30,7 +31,7 @@ export const YieldBreakdown = ({
     poolId,
   })
   const table = useTable({
-    data: rows,
+    query: constQ(rows), // TODO: get error and loading state properly
     columns: YIELD_BREAKDOWN_COLUMNS,
     state: { columnVisibility: isMobile ? YIELD_BREAKDOWN_MOBILE_COLUMN_VISIBILITY : undefined },
     ...getTableOptions(rows),
