@@ -93,7 +93,7 @@ export const shouldLoadMintBorrowDetails = ({ hasWallet }: WalletOptions) => {
 
 export const shouldLoadLendVaultDetails = ({ hasWallet }: WalletOptions) => {
   cy.get('[data-testid="supply-deposit-input"]').should('be.visible')
-  cy.get(`[data-testid='no-position-disconnected']`).should(hasWallet ? 'not.exist' : 'be.visible')
+  cy.get(`[data-testid='no-position-disconnected']`).should('not.exist')
   cy.get('[data-testid="supply-deposit-submit-button"]').should(hasWallet ? 'be.visible' : 'not.exist')
   getActionValue('market-net-supply-apy').should('match', DECIMAL_REGEX)
   shouldShowCanvas('historical-supply-rate-chart')
