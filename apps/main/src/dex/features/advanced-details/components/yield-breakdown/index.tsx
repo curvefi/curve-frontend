@@ -44,7 +44,7 @@ export const YieldBreakdown = ({
         <DataTable<YieldBreakdownRow>
           category="detail"
           table={table}
-          emptyState={{ emptyTitle: t`No yield breakdown found.` }}
+          emptyState={{ emptyTitle: t`No yield breakdown found` }}
           footerRow={
             rows.length > 1 && (
               <FooterRow visibleColumns={table.getVisibleLeafColumns()} baseTotal={baseTotal} total={total} />

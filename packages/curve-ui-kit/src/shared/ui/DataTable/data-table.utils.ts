@@ -209,6 +209,7 @@ export const DATA_TABLE_CATEGORIES = {
   limited: {
     defaultVisibleRows: 3,
     increasingLength: 'limited',
+    emptyStateSize: 'sm',
   },
   // table with many rows constrained inside a scrollable viewport, e.g. ActivityTable or UserEventsTable.
   scrollable: {
@@ -224,7 +225,7 @@ export const DATA_TABLE_CATEGORIES = {
   form: {
     disableStickyHeader: true,
     hideHeader: true,
-    increasingLength: 'disabled',
+    increasingLength: 'limited',
     emptyStateSize: 'sm',
   },
 } as const satisfies Record<string, DataTableCategoryConfig>

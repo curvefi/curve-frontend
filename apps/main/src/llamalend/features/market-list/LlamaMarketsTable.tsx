@@ -74,6 +74,7 @@ export const LlamaMarketsTable = ({
         table={table}
         emptyState={{
           emptyTitle: t`No markets found`,
+          emptyMessage: t`Try adjusting your filters or search query`,
           errorTitle: t`Could not load markets`,
           emptyButton: { onClick: resetFilters, label: t`Show All Markets` },
           onReload,

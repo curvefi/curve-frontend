@@ -275,7 +275,10 @@ export const SizesAndSpaces = {
     modal: MappedModalHeight,
     table: {
       events: '28.875rem', // 462px
-      noResults: { sm: '10rem', lg: '25rem' },
+      noResults: {
+        sm: '8rem', // 128px
+        lg: '25rem', // 400px
+      },
     },
     row: Sizing[700],
     chart: 420, // lightweight charts require height in number format

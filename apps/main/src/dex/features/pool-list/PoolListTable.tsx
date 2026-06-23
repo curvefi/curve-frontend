@@ -113,10 +113,11 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
       <DataTable
         table={table}
         emptyState={{
-          errorTitle: t`Unable to retrieve pool list.`,
+          errorTitle: t`Unable to retrieve pool list`,
           emptyTitle: t`Can't find what you're looking for?`,
-          emptyButton: { label: t`Telegram`, href: CURVE_SOCIALS.telegram.en },
-          emptySecondaryButton: { label: t`Show all pools`, onClick: resetFilters },
+          emptyMessage: t`Try adjusting your filters or search query. Or feel free to ask us on Telegram.`,
+          emptyButton: { label: t`Show all pools`, onClick: resetFilters },
+          emptySecondaryButton: { label: t`Telegram`, href: CURVE_SOCIALS.telegram.en },
         }}
         expandedPanel={PoolListMobileExpandedPanel}
         shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}

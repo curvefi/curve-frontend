@@ -60,7 +60,7 @@ export const RecentRefuels = ({
       <DataTable<RecentRefuelRow>
         table={table}
         emptyState={{
-          emptyTitle: t`No recent refuels found.`,
+          emptyTitle: t`No recent refuels found`,
           errorTitle: t`Could not load recent refuels`,
         }}
       />

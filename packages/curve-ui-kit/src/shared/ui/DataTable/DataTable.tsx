@@ -175,7 +175,7 @@ export const DataTable = <T extends TableItem>({
                   ) : (
                     <EmptyStateCard
                       title={emptyTitle ?? t`No results found`}
-                      description={emptyMessage ?? t`Try adjusting your filters or search query`}
+                      description={emptyMessage}
                       button={emptyButton}
                       secondaryButton={emptySecondaryButton}
                       size={emptyStateSize}
