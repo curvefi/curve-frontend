@@ -19,4 +19,4 @@ export const { useQuery: useMarketRates, invalidate: invalidateMarketRates } = q
   validationSuite: marketIdValidationSuite,
 })
 
-export type MarketRates = ReturnType<typeof useMarketRates>['data']
+export type MarketRates = NonNullable<ReturnType<typeof useMarketRates>['data']>

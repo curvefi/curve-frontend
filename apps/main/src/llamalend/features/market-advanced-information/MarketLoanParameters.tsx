@@ -41,7 +41,6 @@ export const MarketLoanParameters = ({
         <>
           <ActionInfo
             testId="market-param-amm-swap-fee"
-            testId="market-param-amm-swap-fee"
             label={t`AMM swap fee`}
             value={formatNumber(parameters?.fee, 'percent.rate')}
             loading={loading}

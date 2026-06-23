@@ -2,7 +2,7 @@ import { sortBy } from 'lodash'
 import { useCallback, useMemo, useState } from 'react'
 import { Address } from 'viem'
 import { useLlamaSnapshot } from '@/llamalend/queries/llamma-snapshots.query'
-import { useMarketRates } from '@/llamalend/queries/market'
+import { type MarketRates, useMarketRates } from '@/llamalend/queries/market'
 import { HistoricalRatesTooltip } from '@/llamalend/widgets/tooltips/chart/HistoricalRatesTooltip'
 import type { Chain } from '@curvefi/prices-api'
 import { CardContent, Stack } from '@mui/material'
@@ -45,7 +45,6 @@ export type RateChartPoint = {
 
 type RateSeriesKey = 'rate' | 'movingAverage' | 'totalAverage'
 
-type MarketRates = NonNullable<ReturnType<typeof useMarketRates>['data']>
 type RateSnapshot = CrvUsdSnapshot | LendingSnapshot
 type RateValue = Amount | null | undefined
 
