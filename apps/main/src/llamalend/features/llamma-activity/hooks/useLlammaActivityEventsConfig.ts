@@ -15,7 +15,6 @@ import { getPageCount } from '@ui-kit/utils'
 import { LlammaActivityProps } from '..'
 
 export const useLlammaActivityEventsConfig = ({
-  isMarketAvailable,
   network,
   collateralToken,
   borrowToken,
@@ -54,8 +53,8 @@ export const useLlammaActivityEventsConfig = ({
   const table = useTable({
     query: q({
       data: eventsWithUrlsQuery.data,
-      isLoading: eventsWithUrlsQuery.isLoading || !isMarketAvailable,
-      error: isMarketAvailable ? eventsWithUrlsQuery.error : null,
+      isLoading: eventsWithUrlsQuery.isLoading || !ammAddress,
+      error: ammAddress ? eventsWithUrlsQuery.error : null,
     }),
     columns: LLAMMA_EVENTS_COLUMNS,
     state: { columnVisibility: eventsColumnVisibility, pagination },

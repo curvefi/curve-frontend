@@ -46,7 +46,7 @@ export function useClosePositionForm({
   const marketId = market?.id
 
   // Token data
-  const { borrowToken, collateralToken } = market ? getTokens(market) : {}
+  const { borrowToken, collateralToken } = getTokens(market) ?? {}
 
   const borrowTokenUsdRateQuery = useTokenUsdRate({ chainId, tokenAddress: borrowToken?.address }, enabled)
 

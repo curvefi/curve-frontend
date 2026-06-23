@@ -25,7 +25,7 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>({
   collateralEvents: QueryProp<UserCollateralEvents>
 }) {
   const { chainId, userAddress, marketId } = params
-  const { borrowToken, collateralToken } = market ? getTokens(market) : {}
+  const { borrowToken, collateralToken } = getTokens(market) ?? {}
 
   const maxUserCollateral = useTokenBalance({
     chainId,

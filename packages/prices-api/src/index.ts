@@ -43,6 +43,8 @@ export const chains = [
 export type Chain = (typeof chains)[number]
 
 export const isPricesApiChain = (chain: string): chain is Chain => chains.includes(chain as Chain)
+export const getBlockchainId = (networkId: string): Chain | undefined =>
+  isPricesApiChain(networkId) ? networkId : undefined
 
 export type PaginationMeta = {
   page: number

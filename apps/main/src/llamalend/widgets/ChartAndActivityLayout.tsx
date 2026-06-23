@@ -100,7 +100,7 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
   )
 
   return (
-    <Stack>
+    <Stack data-testid="market-chart-and-activity">
       <TabsSwitcher variant="contained" value={tab} onChange={setTab} options={TABS} />
       <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
         {tab === 'events' && <LlammaActivityEvents {...activity} />}

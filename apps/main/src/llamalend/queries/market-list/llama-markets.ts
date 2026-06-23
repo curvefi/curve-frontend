@@ -42,6 +42,7 @@ export type Assets = {
 export type AssetDetails = {
   symbol: string
   address: Address
+  decimals: number
   chain: Chain
   balance: number | null
   balanceUsd: number | null
@@ -270,6 +271,7 @@ const convertMintMarket = (
       borrowed: {
         symbol: stablecoinToken.symbol,
         address: stablecoinToken.address,
+        decimals: stablecoinToken.decimals,
         chain,
         balance: borrowed,
         balanceUsd: borrowedUsd,
@@ -279,6 +281,7 @@ const convertMintMarket = (
       collateral: {
         symbol: collateralSymbol,
         address: collateralAddress,
+        decimals: collateralToken.decimals,
         chain,
         balance: collateralAmount,
         balanceUsd: collateralAmountUsd,

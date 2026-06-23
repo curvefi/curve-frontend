@@ -25,11 +25,13 @@
           "stablecoin_amount": 1.9563e-14,
           "collateral_token": {
             "symbol": "sfrxETH",
-            "address": "0xac3E018457B222d93114458476f3E3416Abbe38F"
+            "address": "0xac3E018457B222d93114458476f3E3416Abbe38F",
+            "decimals": 18
           },
           "stablecoin_token": {
             "symbol": "crvUSD",
-            "address": "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E"
+            "address": "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E",
+            "decimals": 18
           },
           "created_at": "2025-01-01T00:00:00.000Z",
           "max_ltv": 0.8
@@ -56,11 +58,13 @@
           "stablecoin_amount": 62088.49949432901,
           "collateral_token": {
             "symbol": "wstETH",
-            "address": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0"
+            "address": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
+            "decimals": 18
           },
           "stablecoin_token": {
             "symbol": "crvUSD",
-            "address": "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E"
+            "address": "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E",
+            "decimals": 18
           },
           "created_at": "2025-01-01T00:00:00.000Z",
           "max_ltv": 0.8
@@ -87,11 +91,13 @@
           "stablecoin_amount": 159411.21751495206,
           "collateral_token": {
             "symbol": "WBTC",
-            "address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599"
+            "address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+            "decimals": 8
           },
           "stablecoin_token": {
             "symbol": "crvUSD",
-            "address": "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E"
+            "address": "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E",
+            "decimals": 18
           },
           "created_at": "2025-01-01T00:00:00.000Z",
           "max_ltv": 0.8
@@ -118,11 +124,13 @@
           "stablecoin_amount": 1037797.418483593,
           "collateral_token": {
             "symbol": "WETH",
-            "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+            "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+            "decimals": 18
           },
           "stablecoin_token": {
             "symbol": "crvUSD",
-            "address": "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E"
+            "address": "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E",
+            "decimals": 18
           },
           "created_at": "2025-01-01T00:00:00.000Z",
           "max_ltv": 0.8
@@ -149,11 +157,13 @@
           "stablecoin_amount": 0.0,
           "collateral_token": {
             "symbol": "sfrxETH",
-            "address": "0xac3E018457B222d93114458476f3E3416Abbe38F"
+            "address": "0xac3E018457B222d93114458476f3E3416Abbe38F",
+            "decimals": 18
           },
           "stablecoin_token": {
             "symbol": "crvUSD",
-            "address": "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E"
+            "address": "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E",
+            "decimals": 18
           },
           "created_at": "2025-01-01T00:00:00.000Z",
           "max_ltv": 0.8
@@ -180,11 +190,13 @@
           "stablecoin_amount": 0.0,
           "collateral_token": {
             "symbol": "tBTC",
-            "address": "0x18084fbA666a33d37592fA2633fD49a74DD93a88"
+            "address": "0x18084fbA666a33d37592fA2633fD49a74DD93a88",
+            "decimals": 18
           },
           "stablecoin_token": {
             "symbol": "crvUSD",
-            "address": "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E"
+            "address": "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E",
+            "decimals": 18
           },
           "created_at": "2025-01-01T00:00:00.000Z",
           "max_ltv": 0.8

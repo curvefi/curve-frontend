@@ -24,6 +24,6 @@ export const PegKeeperRebalanceButton = ({ canRebalance, isRebalancing, onRebala
       {isRebalancing ? t`Rebalancing...` : t`Rebalance`}
     </Button>
   ) : (
-    <ConnectWalletButton fullWidth />
+    <ConnectWalletButton testId="pegkeeper-connect-wallet" fullWidth />
   )
 }
