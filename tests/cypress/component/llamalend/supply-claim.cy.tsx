@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { ClaimTab } from '@/llamalend/features/supply/components/ClaimTab'
+import { getCrvTokenAddress } from '@/llamalend/llama.utils'
 import { oneAddress } from '@cy/support/generators'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import {
@@ -50,7 +51,13 @@ describe('ClaimTab (mocked)', () => {
 
       cy.mount(
         <MockLoanTestWrapper llamaApi={llamaApi}>
-          <ClaimTab market={market} networks={llamaNetworks} chainId={chainId} enabled />
+          <ClaimTab
+            marketId={market.id}
+            crvTokenAddress={getCrvTokenAddress(market)}
+            networks={llamaNetworks}
+            chainId={chainId}
+            enabled
+          />
         </MockLoanTestWrapper>,
       )
 

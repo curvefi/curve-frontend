@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { WithdrawForm } from '@/llamalend/features/supply/components/WithdrawForm'
+import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import { createWithdrawScenario } from '@cy/support/helpers/llamalend/supply/supply-test-scenarios.helpers'
 import {
@@ -33,7 +34,14 @@ describe('WithdrawForm (mocked)', () => {
 
       cy.mount(
         <MockLoanTestWrapper llamaApi={llamaApi}>
-          <WithdrawForm market={market} networks={llamaNetworks} chainId={chainId} enabled />
+          <WithdrawForm
+            marketId={market.id}
+            controllerAddress={getControllerAddress(market)}
+            tokens={getTokens(market)}
+            networks={llamaNetworks}
+            chainId={chainId}
+            enabled
+          />
         </MockLoanTestWrapper>,
       )
 

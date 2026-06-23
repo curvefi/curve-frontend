@@ -1,12 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import {
-  canRepayFromStateCollateral,
-  canRepayFromUserCollateral,
-  getTokens,
-  isPositionLeveraged,
-} from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import { type MarketTokens, isPositionLeveraged } from '@/llamalend/llama.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import type { TokenOption } from '@ui-kit/features/select-token'
 import type { QueryProp } from '@ui-kit/types/util'
@@ -17,60 +11,67 @@ export type RepayTokenOption = TokenOption & { field: 'stateCollateral' | 'userC
  * Get token options for repayment based on market and network
  */
 const getRepayTokenOptions = ({
-  market,
+  tokens: { borrowToken, collateralToken },
   networkId,
+  canRepayFromStateCollateral,
+  canRepayFromUserCollateral,
 }: {
-  market: LlamaMarketTemplate | undefined
+  tokens: Partial<MarketTokens>
   networkId: string
-}) => {
-  const { borrowToken, collateralToken } = getTokens(market) ?? {}
-  return notFalsy<RepayTokenOption>(
+  canRepayFromStateCollateral: boolean
+  canRepayFromUserCollateral: boolean
+}) =>
+  notFalsy<RepayTokenOption>(
     borrowToken && {
       address: borrowToken.address,
       chain: networkId,
       symbol: borrowToken.symbol,
       field: 'userBorrowed',
     },
-    market &&
-      collateralToken &&
-      canRepayFromStateCollateral(market) && {
+    collateralToken &&
+      canRepayFromStateCollateral && {
         address: collateralToken.address,
         chain: networkId,
         symbol: collateralToken.symbol,
         field: 'stateCollateral',
       },
-    market &&
-      collateralToken &&
-      canRepayFromUserCollateral(market) && {
+    collateralToken &&
+      canRepayFromUserCollateral && {
         address: collateralToken.address,
         chain: networkId,
         symbol: collateralToken.symbol,
         field: 'userCollateral',
       },
   )
-}
 
 /**
  * Hook that returns repay token options, containing the logic to select between different repayment sources
  */
 export const useRepayTokens = ({
-  market,
+  tokens,
   networkId,
+  canRepayFromStateCollateral,
+  canRepayFromUserCollateral,
   collateralEvents,
 }: {
-  market: LlamaMarketTemplate | undefined
+  tokens: Partial<MarketTokens>
   networkId: string
+  canRepayFromStateCollateral: boolean
+  canRepayFromUserCollateral: boolean
   collateralEvents: QueryProp<UserCollateralEvents>
 }) => {
   const [token, setToken] = useState<RepayTokenOption | undefined>()
-  const tokens = useMemo(() => getRepayTokenOptions({ market, networkId }), [market, networkId])
+  const repayTokens = useMemo(
+    () => getRepayTokenOptions({ tokens, networkId, canRepayFromStateCollateral, canRepayFromUserCollateral }),
+    [canRepayFromStateCollateral, canRepayFromUserCollateral, networkId, tokens],
+  )
   const isLeveraged = collateralEvents.data && isPositionLeveraged(collateralEvents.data?.originalLeverage)
   const field = isLeveraged === true ? 'stateCollateral' : isLeveraged === false ? 'userBorrowed' : undefined
-  const defaultToken = tokens.find(t => t.field === field)
+  const defaultToken = repayTokens.find(t => t.field === field)
   useEffect(() => {
     // override the user's choice when we get to know they have a (non)-leveraged position
     // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     if (defaultToken) setToken(defaultToken)
   }, [defaultToken])
-  return { tokens, token: token ?? tokens[0], onToken: setToken }
+  return { tokens: repayTokens, token: token ?? repayTokens[0], onToken: setToken }
 }

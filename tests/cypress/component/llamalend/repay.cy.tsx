@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
+import { getAmmAddress, getControllerAddress, getTokens, getZapAddress } from '@/llamalend/llama.utils'
 import { fakeCollateralEvents, TEST_ADDRESS } from '@cy/support/helpers/llamalend/mock-loan-test-data'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import { seedCrvUsdBalance } from '@cy/support/helpers/llamalend/query-cache.helpers'
@@ -49,6 +50,11 @@ describe('RepayForm (mocked)', () => {
         <MockLoanTestWrapper llamaApi={llamaApi}>
           <RepayForm
             market={market}
+            marketId={market.id}
+            ammAddress={getAmmAddress(market)}
+            zapAddress={getZapAddress(market)}
+            controllerAddress={getControllerAddress(market)}
+            tokens={getTokens(market)}
             networks={llamaNetworks}
             chainId={chainId}
             onPricesUpdated={onPricesUpdated}

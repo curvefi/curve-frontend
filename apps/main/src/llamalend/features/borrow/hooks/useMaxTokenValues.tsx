@@ -1,6 +1,5 @@
 import { BigNumber } from 'bignumber.js'
 import { useCallback, useEffect, useRef } from 'react'
-import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { resetCreateLoanExpectedCollateral } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
 import { useMarketMaxLeverage } from '@/llamalend/queries/market'
@@ -20,10 +19,14 @@ import type { CreateLoanForm, CreateLoanFormQueryParams } from '../types'
  */
 export function useMaxTokenValues({
   market,
+  marketId,
+  collateralTokenAddress,
   params,
   form,
 }: {
   market: LlamaMarketTemplate | undefined
+  marketId: string | undefined
+  collateralTokenAddress: Address | undefined
   params: CreateLoanFormQueryParams & { userAddress?: Address }
   form: UseFormReturn<CreateLoanForm>
 }) {
@@ -32,7 +35,7 @@ export function useMaxTokenValues({
     data: userBalance,
     error: balanceError,
     isLoading: isBalanceLoading,
-  } = useTokenBalance({ ...params, tokenAddress: getTokens(market)?.collateralToken.address })
+  } = useTokenBalance({ ...params, tokenAddress: collateralTokenAddress })
   const { data: maxBorrow, error: maxBorrowError, isLoading: isLoadingMaxBorrow } = useCreateLoanMaxReceive(params)
   const {
     data: maxTotalLeverage,
@@ -80,14 +83,10 @@ export function useMaxTokenValues({
     setRange,
     collateral: {
       data: maxCollateral,
-      isLoading: !market || isLoadingMaxBorrow || isBalanceLoading,
+      isLoading: !marketId || isLoadingMaxBorrow || isBalanceLoading,
       error: maxBorrowError ?? balanceError,
     },
-    debt: {
-      data: maxDebt,
-      isLoading: !market || isLoadingMaxBorrow,
-      error: maxBorrowError,
-    },
+    debt: { data: maxDebt, isLoading: !marketId || isLoadingMaxBorrow, error: maxBorrowError },
     maxLeverage: {
       data: maxLeverage,
       isLoading: isLoadingMaxLeverage || isLoadingMaxBorrow,

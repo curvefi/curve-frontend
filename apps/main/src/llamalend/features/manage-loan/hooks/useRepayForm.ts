@@ -3,7 +3,7 @@ import { useConnection } from 'wagmi'
 import { LEVERAGE } from '@/llamalend/constants'
 import { useMaxRepayTokenValues } from '@/llamalend/features/manage-loan/hooks/useMaxRepayTokenValues'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
-import { getAmmAddress, getZapAddress, getTokens, isRouterRequired } from '@/llamalend/llama.utils'
+import { type MarketTokens, isRouterRequired } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useRepayMutation } from '@/llamalend/mutations/repay.mutation'
 import { getRepayLoanEstimateGasOptions } from '@/llamalend/queries/repay/repay-gas-estimate.query'
@@ -20,6 +20,7 @@ import { invalidateRepayRouteQueries } from '@/llamalend/queries/repay/repay-rou
 import type { RepayFormData, RepayFormParams } from '@/llamalend/queries/validation/repay.types'
 import { repayFormValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy, pick } from '@primitives/objects.utils'
 import type { RouteResponse } from '@ui-kit/entities/router-api'
@@ -106,22 +107,26 @@ const isRepayRouteRequired = (
 
 export const useRepayForm = <ChainId extends LlamaChainId>({
   market,
+  marketId,
+  ammAddress,
+  zapAddress,
+  tokens: { borrowToken, collateralToken },
   networks,
   chainId,
   enabled,
   onPricesUpdated,
 }: {
   market: LlamaMarketTemplate | undefined
+  marketId: string | undefined
+  ammAddress: Address | undefined
+  zapAddress: Address | undefined
+  tokens: Partial<MarketTokens>
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
   const { address: userAddress } = useConnection()
-  const marketId = market?.id
-
-  const { borrowToken, collateralToken } = getTokens(market) ?? {}
-
   const form = useForm<RepayFormData>({
     ...formOptions,
     validation: useMemo(() => repayFormValidationSuite(market), [market]),
@@ -144,7 +149,16 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
   useCallbackSync(useRepayPrices(params, enabled), onPricesUpdated)
 
   const { data: isAvailable } = useRepayIsAvailable(params, enabled)
-  const { isFull, max } = useMaxRepayTokenValues({ market, params, form }, enabled)
+  const { isFull, max } = useMaxRepayTokenValues(
+    {
+      market,
+      borrowTokenAddress: borrowToken?.address,
+      collateralTokenAddress: collateralToken?.address,
+      params,
+      form,
+    },
+    enabled,
+  )
 
   const priceImpact = q(useRepayPriceImpact(params, enabled))
   const { formState } = form
@@ -172,7 +186,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     isApproved: useRepayIsApproved(params, enabled),
     routes: useMarketRoutes({
       chainId,
-      marketAddress: getAmmAddress(market),
+      marketAddress: ammAddress,
       tokenIn: collateralToken,
       tokenOut: borrowToken,
       amountIn: decimalSum(params.userCollateral, params.stateCollateral),
@@ -184,7 +198,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
       },
       getRouteGasOptions: (routeId: string | undefined) => getRepayLoanEstimateGasOptions({ ...params, routeId }),
       networks,
-      zapAddress: market && getZapAddress(market),
+      zapAddress,
     }),
     formErrors: useMemo(
       // only show the 'not available' warn when there are no other form errors

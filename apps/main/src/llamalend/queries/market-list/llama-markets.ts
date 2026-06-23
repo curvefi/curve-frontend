@@ -57,6 +57,8 @@ export type LlamaMarket = {
   vaultAddress: Address | null
   assets: Assets
   version: LlamaMarketVersion
+  minBand?: number
+  maxBand?: number
   maxLtv: number
   loans: number
   oraclePrice?: number
@@ -129,6 +131,8 @@ const convertLendingVault = (
     leverage,
     extraRewardApr,
     maxLtv,
+    minBand,
+    maxBand,
     createdAt,
     version,
     nLoans,
@@ -181,6 +185,8 @@ const convertLendingVault = (
       },
     },
     maxLtv,
+    minBand,
+    maxBand,
     loans: nLoans,
     oraclePrice: priceOracle,
     monetaryPolicyAddress: policy,

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { StakeForm } from '@/llamalend/features/supply/components/StakeForm'
+import { getControllerAddress, getGaugeAddress, getTokens, getVaultToken } from '@/llamalend/llama.utils'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import {
   checkStakeSubmit,
@@ -36,7 +37,16 @@ describe('StakeForm (mocked)', () => {
 
       cy.mount(
         <MockLoanTestWrapper llamaApi={llamaApi}>
-          <StakeForm market={market} networks={llamaNetworks} chainId={chainId} enabled />
+          <StakeForm
+            marketId={market.id}
+            controllerAddress={getControllerAddress(market)}
+            tokens={getTokens(market)}
+            vaultToken={getVaultToken(market)}
+            gaugeAddress={getGaugeAddress(market)}
+            networks={llamaNetworks}
+            chainId={chainId}
+            enabled
+          />
         </MockLoanTestWrapper>,
       )
 

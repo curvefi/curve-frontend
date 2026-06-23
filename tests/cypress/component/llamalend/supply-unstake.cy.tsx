@@ -1,4 +1,5 @@
 import { UnstakeForm } from '@/llamalend/features/supply/components/UnstakeForm'
+import { getControllerAddress, getTokens, getVaultToken } from '@/llamalend/llama.utils'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import { createUnstakeScenario } from '@cy/support/helpers/llamalend/supply/supply-test-scenarios.helpers'
 import {
@@ -32,7 +33,15 @@ describe('UnstakeForm (mocked)', () => {
 
     cy.mount(
       <MockLoanTestWrapper llamaApi={llamaApi}>
-        <UnstakeForm market={market} networks={llamaNetworks} chainId={chainId} enabled />
+        <UnstakeForm
+          marketId={market.id}
+          controllerAddress={getControllerAddress(market)}
+          tokens={getTokens(market)}
+          vaultToken={getVaultToken(market)}
+          networks={llamaNetworks}
+          chainId={chainId}
+          enabled
+        />
       </MockLoanTestWrapper>,
     )
 

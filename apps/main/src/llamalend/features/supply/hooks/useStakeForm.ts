@@ -1,17 +1,17 @@
 import { useMemo } from 'react'
+import { zeroAddress } from 'viem'
 import { useConnection } from 'wagmi'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
-import { getControllerAddress, getTokens, hasGauge, hasVault } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
+import type { MarketTokens } from '@/llamalend/llama.utils'
+import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useStakeMutation } from '@/llamalend/mutations/stake.mutation'
 import { useStakeIsApproved } from '@/llamalend/queries/supply/supply-stake-approved.query'
 import { type StakeForm, stakeFormValidationSuite, StakeParams } from '@/llamalend/queries/validation/supply.validation'
 import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { Address } from '@primitives/address.utils'
+import type { Address, Token } from '@primitives/address.utils'
 import { useForm, useFormSync } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
-import { t } from '@ui-kit/lib/i18n'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { mapQuery } from '@ui-kit/types/util'
 import { useVaultUserBalances } from './useVaultUserBalances'
@@ -23,31 +23,29 @@ const emptyStakeForm = (): StakeForm => ({
   maxStakeAmount: undefined,
 })
 
-const getVaultToken = (market: LlamaMarketTemplate | undefined): { address: Address; symbol: string } | undefined =>
-  market && hasVault(market)
-    ? {
-        address: market.addresses.vault as Address,
-        symbol: t`Vault shares`,
-      }
-    : undefined
-
 export const useStakeForm = <ChainId extends LlamaChainId>({
-  market,
+  marketId,
+  controllerAddress,
+  tokens,
+  vaultToken,
+  gaugeAddress,
   network,
   enabled,
 }: {
-  market: LlamaMarketTemplate | undefined
+  marketId: string | undefined
+  controllerAddress: Address | undefined
+  tokens: Partial<MarketTokens>
+  vaultToken: Token | undefined
+  gaugeAddress: Address | undefined
   network: LlamaNetwork<ChainId>
   enabled?: boolean
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
-  const marketId = market?.id
-  const marketHasGauge = !!market && hasGauge(market)
-  const marketAlert = useMarketAlert(chainId, getControllerAddress(market), LlamaMarketType.Lend)
+  const marketHasGauge = !!gaugeAddress && gaugeAddress !== zeroAddress
+  const marketAlert = useMarketAlert(chainId, controllerAddress, LlamaMarketType.Lend)
 
-  const vaultToken = getVaultToken(market)
-  const { borrowToken, collateralToken } = getTokens(market) ?? {}
+  const { borrowToken, collateralToken } = tokens
 
   const userBalances = useVaultUserBalances({ chainId, marketId, userAddress }, enabled)
   const maxUserStake = { ...mapQuery(userBalances, d => d.depositedShares), fieldName: 'maxStakeAmount' as const }
@@ -80,7 +78,8 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
     onClose,
     isOpen,
   } = useFormLowSolvency({
-    market,
+    controllerAddress,
+    marketType: LlamaMarketType.Lend,
     chainId,
     onSubmit: onMutationSubmit,
     handleFormSubmit: form.handleSubmit,
@@ -96,7 +95,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
     values,
     params,
     isPending,
-    isLoading: isPending || !market || isSolvencyLoading,
+    isLoading: isPending || !marketId || isSolvencyLoading,
     onSubmit,
     isDisabled: !!disabledAlert || !formState.isValid || !marketHasGauge || isPending || isDebouncing,
     vaultToken,

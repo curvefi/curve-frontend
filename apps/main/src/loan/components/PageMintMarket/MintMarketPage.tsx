@@ -3,7 +3,16 @@ import { useConnection } from 'wagmi'
 import { PositionDetailsComposite } from '@/llamalend/features/market-position-details'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
-import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
+import {
+  getControllerAddress,
+  getCrvTokenAddress,
+  getGaugeAddress,
+  getAmmAddress,
+  getMarketBandRange,
+  getTokens,
+  getVaultToken,
+  getZapAddress,
+} from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header'
@@ -59,11 +68,13 @@ export const MintMarketPage = () => {
     !isLoading && !market, // only enable API data when wallet is disconnected
   )
   const tokens = useMemo(() => getTokens(market, apiMarket.data) ?? {}, [apiMarket.data, market])
+  const controllerAddress = getControllerAddress(market, apiMarket.data)
+  const { minBands, maxBands } = getMarketBandRange(market, apiMarket.data) ?? {}
 
   const collateralEvents = useUserCollateralEvents({
     app: LlamaMarketType.Mint,
     chain: getBlockchainId(network.id),
-    controllerAddress: getControllerAddress(market, apiMarket.data),
+    controllerAddress,
     userAddress: address,
     network,
     tokens,
@@ -72,7 +83,18 @@ export const MintMarketPage = () => {
   const pageProps: Omit<MintManageLoanProps, 'collateralEvents'> = {
     curve,
     market,
-    rChainId: chainId,
+    marketId: market?.id,
+    ammAddress: getAmmAddress(market, apiMarket.data),
+    zapAddress: market && getZapAddress(market),
+    controllerAddress,
+    tokens,
+    marketType: LlamaMarketType.Mint,
+    vaultToken: getVaultToken(market, apiMarket.data),
+    gaugeAddress: getGaugeAddress(market),
+    minBands,
+    maxBands,
+    crvTokenAddress: getCrvTokenAddress(market),
+    chainId,
     params,
     onPricesUpdated: setPreviewPrices,
     apiMarket,

@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
-import { getTokens, hasVault } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
+import type { MarketTokens } from '@/llamalend/llama.utils'
+import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useUnstakeMutation } from '@/llamalend/mutations/unstake.mutation'
 import {
   type UnstakeForm,
@@ -9,10 +9,9 @@ import {
   UnstakeParams,
 } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { Address } from '@primitives/address.utils'
+import type { Token } from '@primitives/address.utils'
 import { useFormSync, useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
-import { t } from '@ui-kit/lib/i18n'
 import { mapQuery } from '@ui-kit/types/util'
 import { useVaultUserBalances } from './useVaultUserBalances'
 
@@ -23,29 +22,23 @@ const emptyUnstakeForm = (): UnstakeForm => ({
   maxUnstakeAmount: undefined,
 })
 
-const getVaultToken = (market: LlamaMarketTemplate | undefined): { address: Address; symbol: string } | undefined =>
-  market && hasVault(market)
-    ? {
-        address: market.addresses.vault as Address,
-        symbol: t`Vault shares`,
-      }
-    : undefined
-
 export const useUnstakeForm = <ChainId extends LlamaChainId>({
-  market,
+  marketId,
+  tokens,
+  vaultToken,
   network,
   enabled,
 }: {
-  market: LlamaMarketTemplate | undefined
+  marketId: string | undefined
+  tokens: Partial<MarketTokens>
+  vaultToken: Token | undefined
   network: LlamaNetwork<ChainId>
   enabled?: boolean
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
-  const marketId = market?.id
 
-  const vaultToken = getVaultToken(market)
-  const { borrowToken, collateralToken } = getTokens(market) ?? {}
+  const { borrowToken, collateralToken } = tokens
 
   const userBalances = useVaultUserBalances({ chainId, marketId, userAddress }, enabled)
   const maxUserUnstake = { ...mapQuery(userBalances, d => d.stakedShares), fieldName: 'maxUnstakeAmount' as const }

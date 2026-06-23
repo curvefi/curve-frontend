@@ -1,8 +1,10 @@
+import type { MarketTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
+import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
 import type { LlamaMarketType } from '@ui-kit/types/market'
@@ -14,12 +16,18 @@ import { AddCollateralInfoList } from './AddCollateralInfoList'
 
 export const AddCollateralForm = <ChainId extends IChainId>({
   market,
+  marketId,
+  controllerAddress,
+  tokens,
   networks,
   chainId,
   onPricesUpdated,
   marketType,
 }: {
   market: LlamaMarketTemplate | undefined
+  marketId: string | undefined
+  controllerAddress: Address | undefined
+  tokens: Partial<MarketTokens>
   networks: NetworkDict<ChainId>
   chainId: ChainId
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
@@ -40,7 +48,7 @@ export const AddCollateralForm = <ChainId extends IChainId>({
     collateralToken,
     borrowToken,
     maxCollateral,
-  } = useAddCollateralForm({ market, network, onPricesUpdated })
+  } = useAddCollateralForm({ market, marketId, tokens, network, onPricesUpdated })
 
   return (
     <Form
@@ -55,7 +63,7 @@ export const AddCollateralForm = <ChainId extends IChainId>({
           collateralToken={collateralToken}
           borrowToken={borrowToken}
           networks={networks}
-          market={market}
+          controllerAddress={controllerAddress}
           marketType={marketType}
         />
       }
@@ -77,7 +85,7 @@ export const AddCollateralForm = <ChainId extends IChainId>({
 
       <Button
         type="submit"
-        loading={isPending || !market}
+        loading={isPending || !marketId}
         disabled={isDisabled}
         data-testid="add-collateral-submit-button"
       >

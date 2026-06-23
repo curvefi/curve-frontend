@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
-import { getTokens } from '@/llamalend/llama.utils'
+import type { MarketTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useAddCollateralMutation } from '@/llamalend/mutations/add-collateral.mutation'
 import { useAddCollateralIsApproved } from '@/llamalend/queries/add-collateral/add-collateral-approved.query'
@@ -30,18 +30,20 @@ const formOptions = {
 
 export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   market,
+  marketId,
+  tokens,
   network,
   onPricesUpdated,
 }: {
   market: LlamaMarketTemplate | undefined
+  marketId: string | undefined
+  tokens: Partial<MarketTokens>
   network: LlamaNetwork<ChainId>
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
-  const marketId = market?.id
 
-  const tokens = getTokens(market)
   const collateralToken = tokens?.collateralToken
   const borrowToken = tokens?.borrowToken
   const maxCollateral = useTokenBalance({ chainId, userAddress, tokenAddress: collateralToken?.address })

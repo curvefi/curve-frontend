@@ -1,19 +1,11 @@
 import { useMemo } from 'react'
-import { Address } from 'viem'
 import { useConnection } from 'wagmi'
 import { LEVERAGE } from '@/llamalend/constants'
 import { useMaxBorrowMoreValues } from '@/llamalend/features/manage-loan/hooks/useMaxBorrowMoreValues'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
-import {
-  getAmmAddress,
-  getControllerAddress,
-  getZapAddress,
-  getMarketType,
-  getTokens,
-  isRouterRequired,
-} from '@/llamalend/llama.utils'
+import { type MarketTokens, isRouterRequired } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useBorrowMoreMutation } from '@/llamalend/mutations/borrow-more.mutation'
 import { useBorrowMoreLeverage } from '@/llamalend/queries/borrow-more/borrow-more-future-leverage.query'
@@ -32,11 +24,13 @@ import {
 } from '@/llamalend/queries/validation/borrow-more.validation'
 import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { pick } from '@primitives/objects.utils'
 import type { RouteResponse } from '@ui-kit/entities/router-api'
 import { useCallbackSync, useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
+import type { LlamaMarketType } from '@ui-kit/types/market'
 import { q, type QueryProp, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
 import { shouldBlockTransaction } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
@@ -101,22 +95,33 @@ const isRouteRequired = (market: LlamaMarketTemplate | undefined, leverageEnable
 
 export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   market,
+  marketId,
+  ammAddress,
+  zapAddress,
+  controllerAddress,
+  tokens,
+  marketType,
   networks,
   chainId,
   onPricesUpdated,
   collateralEvents,
 }: {
   market: LlamaMarketTemplate | undefined
+  marketId: string | undefined
+  ammAddress: Address | undefined
+  zapAddress: Address | undefined
+  controllerAddress: Address | undefined
+  tokens: Partial<MarketTokens>
+  marketType: LlamaMarketType
   networks: NetworkDict<ChainId>
   chainId: ChainId
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
   collateralEvents: QueryProp<UserCollateralEvents>
 }) => {
   const { address: userAddress } = useConnection()
-  const marketId = market?.id
-  const marketAlert = useMarketAlert(chainId, getControllerAddress(market), getMarketType(market))
+  const marketAlert = useMarketAlert(chainId, controllerAddress, marketType)
 
-  const { borrowToken, collateralToken } = getTokens(market) ?? {}
+  const { borrowToken, collateralToken } = tokens
 
   const form = useForm<BorrowMoreForm>({
     validation: borrowMoreFormValidationSuite,
@@ -144,7 +149,8 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     onClose,
     isOpen,
   } = useFormLowSolvency({
-    market,
+    controllerAddress,
+    marketType,
     chainId,
     onSubmit: onMutationSubmit,
     handleFormSubmit: form.handleSubmit,
@@ -181,7 +187,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     },
     routes: useMarketRoutes({
       chainId,
-      marketAddress: getAmmAddress(market),
+      marketAddress: ammAddress,
       tokenIn: borrowToken,
       tokenOut: collateralToken,
       amountIn: decimalSum(params.debt, params.userBorrowed),
@@ -193,11 +199,18 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
       },
       getRouteGasOptions: (routeId: string | undefined) => getBorrowMoreGasEstimateQueryOptions({ ...params, routeId }),
       networks,
-      zapAddress: market && getZapAddress(market),
+      zapAddress,
     }),
-    max: useMaxBorrowMoreValues({ params, form, market, collateralEvents }),
+    max: useMaxBorrowMoreValues({
+      params,
+      form,
+      market,
+      borrowTokenAddress: borrowToken?.address,
+      collateralTokenAddress: collateralToken?.address,
+      collateralEvents,
+    }),
     isLeverageEnabled,
     leverage: useBorrowMoreLeverage(params),
-    zapAddress: market && getZapAddress(market),
+    zapAddress,
   }
 }

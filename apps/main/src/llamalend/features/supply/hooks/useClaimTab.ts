@@ -1,8 +1,9 @@
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
-import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
+import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useClaimCrvMutation, useClaimRewardsMutation } from '@/llamalend/mutations/claim.mutation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { Address } from '@primitives/address.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { UserMarketParams } from '@ui-kit/lib/model'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
@@ -10,17 +11,18 @@ import { CLAIM_TAB_COLUMNS, type ClaimableToken } from '../components/columns'
 import { useClaimableTokens } from './useClaimableTokens'
 
 export const useClaimTab = <ChainId extends LlamaChainId>({
-  market,
+  marketId,
+  crvTokenAddress,
   network,
   enabled,
 }: {
-  market: LlamaMarketTemplate | undefined
+  marketId: string | undefined
+  crvTokenAddress: Address | undefined
   network: LlamaNetwork<ChainId>
   enabled?: boolean
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
-  const marketId = market?.id
 
   const params = useMemo(
     (): UserMarketParams<ChainId> => ({ chainId, marketId, userAddress }),
@@ -37,9 +39,9 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
     usdRateError,
     hasClaimableCrv,
     hasClaimableRewards,
-    crvTokenAddress,
+    crvTokenAddress: claimableCrvTokenAddress,
     rewardTokenAddresses,
-  } = useClaimableTokens(params, market, enabled)
+  } = useClaimableTokens(params, crvTokenAddress, enabled)
 
   const tableData = useMemo(
     () => claimableTokens.map(token => ({ ...token, networkId: network.id, isLoading: usdRateLoading })),
@@ -56,7 +58,7 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
     onSubmit: onSubmitCrv,
     isPending: isClaimCrvPending,
     error: claimCrvError,
-  } = useClaimCrvMutation({ marketId, network, userAddress, crvTokenAddress })
+  } = useClaimCrvMutation({ marketId, network, userAddress, crvTokenAddress: claimableCrvTokenAddress })
   const {
     onSubmit: onSubmitRewards,
     isPending: isClaimRewardsPending,

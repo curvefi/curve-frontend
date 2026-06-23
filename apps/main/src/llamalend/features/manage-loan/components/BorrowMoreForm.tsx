@@ -3,6 +3,7 @@ import { LEVERAGE } from '@/llamalend/constants'
 import { BorrowMoreLoanInfoList } from '@/llamalend/features/borrow/components/BorrowMoreLoanInfoList'
 import { LeverageInput } from '@/llamalend/features/borrow/components/LeverageInput'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import type { MarketTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { isLeverageBorrowMoreSupported } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
@@ -10,6 +11,7 @@ import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolve
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
+import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { joinButtonText } from '@primitives/string.utils'
@@ -28,6 +30,11 @@ const { Spacing } = SizesAndSpaces
 
 export const BorrowMoreForm = <ChainId extends IChainId>({
   market,
+  marketId,
+  ammAddress,
+  zapAddress,
+  controllerAddress,
+  tokens,
   networks,
   chainId,
   onPricesUpdated,
@@ -35,6 +42,11 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   marketType,
 }: {
   market: LlamaMarketTemplate | undefined
+  marketId: string | undefined
+  ammAddress: Address | undefined
+  zapAddress: Address | undefined
+  controllerAddress: Address | undefined
+  tokens: Partial<MarketTokens>
   networks: NetworkDict<ChainId>
   chainId: ChainId
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
@@ -64,6 +76,12 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     solvencyModal: { onConfirm, onClose, isOpen },
   } = useBorrowMoreForm({
     market,
+    marketId,
+    ammAddress,
+    zapAddress,
+    controllerAddress,
+    tokens,
+    marketType,
     networks,
     chainId,
     onPricesUpdated,
@@ -85,7 +103,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
       onSubmit={onSubmit}
       footer={
         <BorrowMoreLoanInfoList
-          market={market}
+          controllerAddress={controllerAddress}
           form={form}
           params={params}
           values={values}

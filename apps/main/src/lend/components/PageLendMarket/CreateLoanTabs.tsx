@@ -3,7 +3,6 @@ import { type MarketUrlParams, type PageContentProps } from '@/lend/types/lend.t
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
 import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
-import { LlamaMarketType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
@@ -12,20 +11,7 @@ type CreateLoanProps = PageContentProps<MarketUrlParams> & {
 }
 
 const menu = [
-  {
-    value: 'create',
-    label: t`Borrow`,
-    component: ({ market, rChainId, onPricesUpdated, apiMarket }: CreateLoanProps) => (
-      <CreateLoanForm
-        networks={networks}
-        chainId={rChainId}
-        market={market}
-        onPricesUpdated={onPricesUpdated}
-        apiMarket={apiMarket}
-        marketType={LlamaMarketType.Lend}
-      />
-    ),
-  },
+  { value: 'create', label: t`Borrow`, component: props => <CreateLoanForm networks={networks} {...props} /> },
 ] satisfies FormTab<CreateLoanProps>[]
 
 export const CreateLoanTabs = (pageProps: CreateLoanProps) => <FormTabs params={pageProps} menu={menu} />

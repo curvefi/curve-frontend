@@ -27,8 +27,8 @@ type MarketInformationCompProps = {
  * Reusable component for OHLC charts, Bands (if applicable), and market parameters, used in market and vault pages.
  */
 export const MarketInformationComposite = ({ pageProps, rateType, previewPrices }: MarketInformationCompProps) => {
-  const { rChainId, market, apiMarket } = pageProps
-  const blockchainId = getBlockchainId(networks[rChainId].id)
+  const { chainId, market, apiMarket } = pageProps
+  const blockchainId = getBlockchainId(networks[chainId].id)
   const controllerAddress = getControllerAddress(market, apiMarket.data)
   const { collateralToken, borrowToken } = getTokens(market, apiMarket.data) ?? {}
   return (
@@ -36,7 +36,7 @@ export const MarketInformationComposite = ({ pageProps, rateType, previewPrices 
       {rateType === MarketRateType.Borrow && (
         <>
           <ChartAndActivityComp
-            rChainId={rChainId}
+            rChainId={chainId}
             marketId={market?.id}
             previewPrices={previewPrices}
             controllerAddress={controllerAddress}
@@ -48,7 +48,7 @@ export const MarketInformationComposite = ({ pageProps, rateType, previewPrices 
             marketType={LlamaMarketType.Lend}
             controllerAddress={controllerAddress}
             blockchainId={blockchainId}
-            chainId={rChainId}
+            chainId={chainId}
             marketId={market?.id}
             rateMode={MarketRateType.Borrow}
           />
@@ -58,7 +58,7 @@ export const MarketInformationComposite = ({ pageProps, rateType, previewPrices 
         marketType={LlamaMarketType.Lend}
         controllerAddress={controllerAddress}
         blockchainId={blockchainId}
-        chainId={rChainId}
+        chainId={chainId}
         marketId={market?.id}
         rateMode={MarketRateType.Supply}
       />
@@ -67,7 +67,7 @@ export const MarketInformationComposite = ({ pageProps, rateType, previewPrices 
         borrowToken={borrowToken}
         controllerAddress={controllerAddress}
         blockchainId={blockchainId}
-        chainId={rChainId}
+        chainId={chainId}
         marketId={market?.id}
         apiMarket={apiMarket}
       />
@@ -75,18 +75,18 @@ export const MarketInformationComposite = ({ pageProps, rateType, previewPrices 
         <CardHeader title={t`Advanced Details`} />
         <CardContent component={Stack}>
           <AdvancedDetails
-            chainId={rChainId}
+            chainId={chainId}
             marketId={market?.id}
             market={market}
             marketType={LlamaMarketType.Lend}
             apiMarket={apiMarket}
           />
           <MarketInfoLayout
-            chainId={rChainId}
+            chainId={chainId}
             marketType={LlamaMarketType.Lend}
             market={market}
             apiMarket={apiMarket}
-            network={networks[rChainId]}
+            network={networks[chainId]}
           />
         </CardContent>
       </Card>

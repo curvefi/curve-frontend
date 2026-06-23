@@ -1,6 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
 import {
+  getAmmAddress,
+  getControllerAddress,
+  getMarketBandRange,
+  getTokens,
+  getZapAddress,
+} from '@/llamalend/llama.utils'
+import {
   checkLoanDetailsLoaded,
   submitCreateLoanForm,
   writeCreateLoanForm,
@@ -9,7 +16,6 @@ import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestW
 import { llamaNetworks, setGasInfo, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createCreateLoanScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { constQ } from '@ui-kit/types/util'
 
 const chainId = 1
 const testCases = [
@@ -29,15 +35,22 @@ describe('CreateLoanForm (mocked)', () => {
 
       setLlamaApi(llamaApi)
       setGasInfo({ chainId, networks: llamaNetworks })
+      const { minBands, maxBands } = getMarketBandRange(market) ?? {}
 
       cy.mount(
         <MockLoanTestWrapper llamaApi={llamaApi}>
           <CreateLoanForm
             market={market}
+            marketId={market.id}
+            ammAddress={getAmmAddress(market)}
+            zapAddress={getZapAddress(market)}
+            controllerAddress={getControllerAddress(market)}
+            tokens={getTokens(market)}
+            minBands={minBands}
+            maxBands={maxBands}
             networks={llamaNetworks}
             chainId={chainId}
             onPricesUpdated={onPricesUpdated}
-            apiMarket={constQ(undefined)}
             marketType={LlamaMarketType.Mint}
           />
         </MockLoanTestWrapper>,

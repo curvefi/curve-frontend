@@ -1,8 +1,10 @@
+import type { MarketTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
+import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
@@ -15,12 +17,18 @@ import { RemoveCollateralInfoList } from './RemoveCollateralInfoList'
 
 export const RemoveCollateralForm = <ChainId extends IChainId>({
   market,
+  marketId,
+  controllerAddress,
+  tokens,
   networks,
   chainId,
   onPricesUpdated,
   marketType,
 }: {
   market: LlamaMarketTemplate | undefined
+  marketId: string | undefined
+  controllerAddress: Address | undefined
+  tokens: Partial<MarketTokens>
   networks: NetworkDict<ChainId>
   chainId: ChainId
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
@@ -41,7 +49,7 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
     formErrors,
     collateralToken,
     borrowToken,
-  } = useRemoveCollateralForm({ market, network, onPricesUpdated })
+  } = useRemoveCollateralForm({ market, marketId, tokens, network, onPricesUpdated })
 
   return (
     <Form
@@ -56,7 +64,7 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
           collateralToken={collateralToken}
           borrowToken={borrowToken}
           networks={networks}
-          market={market}
+          controllerAddress={controllerAddress}
           marketType={marketType}
         />
       }
@@ -90,7 +98,7 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
 
       <Button
         type="submit"
-        loading={isPending || !market}
+        loading={isPending || !marketId}
         disabled={isDisabled}
         data-testid="remove-collateral-submit-button"
       >

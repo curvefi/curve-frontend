@@ -1,11 +1,12 @@
 import { useConnection } from 'wagmi'
-import { getControllerAddress } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import type { MarketTokens } from '@/llamalend/llama.utils'
+import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
 import { StakeTokenLabel } from '@/llamalend/widgets/action-card/StakeTokenLabel'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
+import type { Address, Token } from '@primitives/address.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
 import { t } from '@ui-kit/lib/i18n'
@@ -17,7 +18,11 @@ import { AlertNoGauge } from './alerts/AlertNoGauge'
 import { StakeSupplyInfoList } from './StakeSupplyInfoList'
 
 type StakeFormProps<ChainId extends IChainId> = {
-  market: LlamaMarketTemplate | undefined
+  marketId: string | undefined
+  controllerAddress: Address | undefined
+  tokens: Partial<MarketTokens>
+  vaultToken: Token | undefined
+  gaugeAddress: Address | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
@@ -26,7 +31,11 @@ type StakeFormProps<ChainId extends IChainId> = {
 const TEST_ID_PREFIX = 'supply-stake'
 
 export const StakeForm = <ChainId extends IChainId>({
-  market,
+  marketId,
+  controllerAddress,
+  tokens,
+  vaultToken,
+  gaugeAddress,
   networks,
   chainId,
   enabled,
@@ -42,7 +51,7 @@ export const StakeForm = <ChainId extends IChainId>({
     isLoading,
     onSubmit,
     isDisabled,
-    vaultToken,
+    vaultToken: stakeVaultToken,
     borrowToken,
     collateralToken,
     error,
@@ -52,7 +61,7 @@ export const StakeForm = <ChainId extends IChainId>({
     max,
     disabledAlert,
     solvencyModal: { onConfirm, onClose, isOpen },
-  } = useStakeForm({ market, network, enabled })
+  } = useStakeForm({ marketId, controllerAddress, tokens, vaultToken, gaugeAddress, network, enabled })
 
   return (
     <Form
@@ -65,13 +74,13 @@ export const StakeForm = <ChainId extends IChainId>({
           params={params}
           networks={networks}
           tokens={{ borrowToken }}
-          controllerAddress={getControllerAddress(market)}
+          controllerAddress={controllerAddress}
         />
       }
     >
       <LoanFormTokenInput
         label={t`Amount to stake`}
-        token={vaultToken}
+        token={stakeVaultToken}
         blockchainId={blockchainId}
         name="stakeAmount"
         form={form}
@@ -81,7 +90,7 @@ export const StakeForm = <ChainId extends IChainId>({
         tokenSelector={
           <StakeTokenLabel
             blockchainId={blockchainId}
-            vaultTokenLabel={vaultToken?.symbol}
+            vaultTokenLabel={stakeVaultToken?.symbol}
             collateralTokenAddress={collateralToken?.address}
             borrowTokenAddress={borrowToken?.address}
           />
@@ -114,7 +123,7 @@ export const StakeForm = <ChainId extends IChainId>({
         open={isOpen}
         onClose={onClose}
         onConfirm={onConfirm}
-        tokenSymbol={vaultToken?.symbol}
+        tokenSymbol={stakeVaultToken?.symbol}
       />
 
       <FormAlerts error={error} formErrors={formErrors} handledErrors={['stakeAmount']} />

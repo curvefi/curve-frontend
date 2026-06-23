@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
-import { getTokens } from '@/llamalend/llama.utils'
+import type { MarketTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useRemoveCollateralMutation } from '@/llamalend/mutations/remove-collateral.mutation'
 import {
@@ -34,18 +34,20 @@ export const useRemoveCollateralForm = <
   NetworkName extends LlamaNetworkId = LlamaNetworkId,
 >({
   market,
+  marketId,
+  tokens,
   network,
   onPricesUpdated,
 }: {
   market: LlamaMarketTemplate | undefined
+  marketId: string | undefined
+  tokens: Partial<MarketTokens>
   network: BaseConfig<NetworkName, ChainId>
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
-  const marketId = market?.id
 
-  const tokens = getTokens(market)
   const collateralToken = tokens?.collateralToken
   const borrowToken = tokens?.borrowToken
 

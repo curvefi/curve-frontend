@@ -2,8 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { LEVERAGE } from '@/llamalend/constants'
-import { getTokens } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import type { MarketTokens } from '@/llamalend/llama.utils'
 import { type CloseLoanMutation, useClosePositionMutation } from '@/llamalend/mutations/close-position.mutation'
 import { useCloseLoanIsApproved } from '@/llamalend/queries/close-loan/close-loan-is-approved.query'
 import { useUserBalances, useUserState } from '@/llamalend/queries/user'
@@ -26,20 +25,21 @@ const formOptions = {
 
 /** Hook to build state for the close-position form */
 export function useClosePositionForm({
-  market,
+  marketId,
+  tokens,
   network,
   enabled,
 }: {
-  market: LlamaMarketTemplate | undefined
+  marketId: string | undefined
+  tokens: Partial<MarketTokens>
   network: { id: LlamaNetworkId; chainId: LlamaChainId; name: string }
   enabled?: boolean
 }) {
   const { address: userAddress } = useConnection()
   const { chainId } = network
-  const marketId = market?.id
 
   // Token data
-  const { borrowToken, collateralToken } = getTokens(market) ?? {}
+  const { borrowToken, collateralToken } = tokens
 
   const {
     data: borrowTokenUsdRate,

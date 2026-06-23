@@ -1,10 +1,11 @@
 import { useConnection } from 'wagmi'
-import { getControllerAddress } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import type { MarketTokens } from '@/llamalend/llama.utils'
+import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { StakeTokenLabel } from '@/llamalend/widgets/action-card/StakeTokenLabel'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
+import type { Address, Token } from '@primitives/address.utils'
 import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
 import { t } from '@ui-kit/lib/i18n'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
@@ -14,7 +15,10 @@ import { AlertUnstakeOnly } from './alerts/AlertUnstakeOnly'
 import { UnstakeSupplyInfoList } from './UnstakeSupplyInfoList'
 
 type UnstakeFormProps<ChainId extends IChainId> = {
-  market: LlamaMarketTemplate | undefined
+  marketId: string | undefined
+  controllerAddress: Address | undefined
+  tokens: Partial<MarketTokens>
+  vaultToken: Token | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
@@ -23,7 +27,10 @@ type UnstakeFormProps<ChainId extends IChainId> = {
 const TEST_ID_PREFIX = 'supply-unstake'
 
 export const UnstakeForm = <ChainId extends IChainId>({
-  market,
+  marketId,
+  controllerAddress,
+  tokens,
+  vaultToken,
   networks,
   chainId,
   enabled,
@@ -38,13 +45,13 @@ export const UnstakeForm = <ChainId extends IChainId>({
     isPending,
     onSubmit,
     isDisabled,
-    vaultToken,
+    vaultToken: unstakeVaultToken,
     borrowToken,
     collateralToken,
     unstakeError,
     formErrors,
     max,
-  } = useUnstakeForm({ market, network, enabled })
+  } = useUnstakeForm({ marketId, tokens, vaultToken, network, enabled })
 
   return (
     <Form
@@ -57,13 +64,13 @@ export const UnstakeForm = <ChainId extends IChainId>({
           params={params}
           networks={networks}
           tokens={{ borrowToken }}
-          controllerAddress={getControllerAddress(market)}
+          controllerAddress={controllerAddress}
         />
       }
     >
       <LoanFormTokenInput
         label={t`Amount to unstake`}
-        token={vaultToken}
+        token={unstakeVaultToken}
         blockchainId={blockchainId}
         name="unstakeAmount"
         form={form}
@@ -77,7 +84,7 @@ export const UnstakeForm = <ChainId extends IChainId>({
         tokenSelector={
           <StakeTokenLabel
             blockchainId={blockchainId}
-            vaultTokenLabel={vaultToken?.symbol}
+            vaultTokenLabel={unstakeVaultToken?.symbol}
             collateralTokenAddress={collateralToken?.address}
             borrowTokenAddress={borrowToken?.address}
           />
@@ -88,7 +95,7 @@ export const UnstakeForm = <ChainId extends IChainId>({
       {isConnected ? (
         <Button
           type="submit"
-          loading={isPending || !market}
+          loading={isPending || !marketId}
           disabled={isDisabled}
           data-testid={`${TEST_ID_PREFIX}-submit-button`}
         >

@@ -1,9 +1,11 @@
+import type { MarketTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { IChainId, INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { Address } from '@primitives/address.utils'
 import type { BaseConfig } from '@ui/utils'
 import type { LlamaApi } from '@ui-kit/features/connect-wallet'
+import type { LlamaMarketType } from '@ui-kit/types/market'
 import type { QueryProp } from '@ui-kit/types/util'
 
 export type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
@@ -31,10 +33,21 @@ export type NetworkConfig<TId extends string = string, TChainId extends number =
 
 export type PageContentProps<T = UrlParams> = {
   params: T
-  rChainId: ChainId
+  chainId: ChainId
   userAddress: Address | undefined
   api: LlamaApi | null
   market: LendMarketTemplate | undefined
+  marketId: string | undefined
+  ammAddress: Address | undefined
+  zapAddress: Address | undefined
+  controllerAddress: Address | undefined
+  tokens: Partial<MarketTokens>
+  marketType: LlamaMarketType
+  vaultToken: MarketTokens['borrowToken'] | undefined
+  gaugeAddress: Address | undefined
+  minBands: number | undefined
+  maxBands: number | undefined
+  crvTokenAddress: Address | undefined
   apiMarket: QueryProp<LlamaMarket>
 }
 

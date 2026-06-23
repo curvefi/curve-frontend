@@ -12,11 +12,8 @@ import { networks } from '@/loan/networks'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useLoanImplementationKey } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
-import { LlamaMarketType } from '@ui-kit/types/market'
 import type { QueryProp } from '@ui-kit/types/util'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
-
-const { Mint } = LlamaMarketType
 
 // casting the networks for the loan app so we don't need to make the whole form generic
 const softLiqNetworks = networks as unknown as NetworkDict<LlamaChainId>
@@ -27,16 +24,12 @@ const MintManageMenu = [
   {
     value: 'borrow',
     label: t`Borrow`,
-    component: ({ rChainId, ...props }: MintManageLoanProps) => (
-      <BorrowMoreForm networks={networks} chainId={rChainId} marketType={Mint} {...props} />
-    ),
+    component: props => <BorrowMoreForm networks={networks} {...props} />,
   },
   {
     value: 'repay',
     label: t`Repay`,
-    component: ({ rChainId, ...props }: MintManageLoanProps) => (
-      <RepayForm networks={networks} chainId={rChainId} marketType={Mint} {...props} />
-    ),
+    component: props => <RepayForm networks={networks} {...props} />,
   },
   {
     value: 'collateral',
@@ -45,16 +38,12 @@ const MintManageMenu = [
       {
         value: 'add',
         label: t`Add`,
-        component: ({ rChainId, ...props }: MintManageLoanProps) => (
-          <AddCollateralForm networks={networks} chainId={rChainId} marketType={Mint} {...props} />
-        ),
+        component: props => <AddCollateralForm networks={networks} {...props} />,
       },
       {
         value: 'remove',
         label: t`Remove`,
-        component: ({ rChainId, ...props }: MintManageLoanProps) => (
-          <RemoveCollateralForm networks={networks} chainId={rChainId} marketType={Mint} {...props} />
-        ),
+        component: props => <RemoveCollateralForm networks={networks} {...props} />,
       },
     ],
   },
@@ -68,32 +57,22 @@ const MintManageSoftLiquidationMenu = [
       {
         value: 'improve-health',
         label: t`Improve health`,
-        component: ({ rChainId, ...props }: MintManageLoanProps) => (
-          <ImproveHealthForm
-            chainId={rChainId}
-            networks={softLiqNetworks}
-            marketType={Mint}
-            {...props}
-            isInSoftLiquidation
-          />
-        ),
+        component: props => <ImproveHealthForm networks={softLiqNetworks} {...props} isInSoftLiquidation />,
       },
       {
         value: 'close-position',
         label: t`Close`,
-        component: ({ rChainId, market }: MintManageLoanProps) => (
-          <ClosePositionForm chainId={rChainId} market={market} networks={softLiqNetworks} />
-        ),
+        component: props => <ClosePositionForm networks={softLiqNetworks} {...props} />,
       },
     ],
   },
 ] satisfies FormTab<MintManageLoanProps>[]
 
 export const ManageLoanTabs = (params: MintManageLoanProps) => {
-  const { market, curve, rChainId } = params
+  const { marketId, curve, chainId } = params
   const { data: status } = useLiquidationStatus({
-    chainId: rChainId,
-    marketId: market?.id,
+    chainId,
+    marketId,
     userAddress: curve?.signerAddress,
   })
   const isSoftLiquidation = ['softLiquidation', 'hardLiquidation'].includes(status ?? '')

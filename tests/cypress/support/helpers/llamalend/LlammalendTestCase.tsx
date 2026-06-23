@@ -11,6 +11,16 @@ import { DepositForm } from '@/llamalend/features/supply/components/DepositForm'
 import { StakeForm } from '@/llamalend/features/supply/components/StakeForm'
 import { UnstakeForm } from '@/llamalend/features/supply/components/UnstakeForm'
 import { WithdrawForm } from '@/llamalend/features/supply/components/WithdrawForm'
+import {
+  getAmmAddress,
+  getControllerAddress,
+  getCrvTokenAddress,
+  getGaugeAddress,
+  getMarketBandRange,
+  getTokens,
+  getVaultToken,
+  getZapAddress,
+} from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { useMintMarket } from '@/loan/hooks/useMintMarket'
 import { ChainId as MintChain } from '@/loan/types/loan.types'
@@ -52,7 +62,6 @@ type SupplyTab = keyof typeof SupplyComponents
 type LlammalendTestProps = UserMarketQuery<LlamaChainId> & {
   type: 'loan' | 'supply'
   tab?: LoanTab | SupplyTab
-  onSuccess?: ReturnType<typeof cy.stub>
   onPricesUpdated?: (prices: Range<Decimal> | undefined) => void
   marketType: LlamaMarketType
 }
@@ -78,15 +87,23 @@ function LlammalendTest({ tab, onPricesUpdated, type, marketType, ...props }: Ll
       : CreateLoanForm
     : tab && SupplyComponents[tab as SupplyTab]
 
+  const { minBands, maxBands } = getMarketBandRange(market) ?? {}
   return market && Component ? (
     <Component
       market={market}
+      ammAddress={getAmmAddress(market)}
+      zapAddress={getZapAddress(market)}
+      controllerAddress={getControllerAddress(market)}
+      tokens={getTokens(market) ?? {}}
+      minBands={minBands}
+      maxBands={maxBands}
+      vaultToken={getVaultToken(market)}
+      gaugeAddress={getGaugeAddress(market)}
+      crvTokenAddress={getCrvTokenAddress(market)}
       networks={llamaNetworks}
       onPricesUpdated={onPricesUpdated!}
-      onSuccess={cy.stub()}
       enabled
       collateralEvents={constQ(fakeCollateralEvents)}
-      apiMarket={constQ(undefined)}
       marketType={marketType}
       {...props}
     />

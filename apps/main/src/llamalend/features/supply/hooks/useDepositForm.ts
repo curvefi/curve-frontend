@@ -2,8 +2,8 @@ import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import { useMaxDepositTokenValues } from '@/llamalend/features/supply/hooks/useMaxDeposit'
-import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
+import type { MarketTokens } from '@/llamalend/llama.utils'
+import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useDepositMutation } from '@/llamalend/mutations/deposit.mutation'
 import { useDepositIsApproved } from '@/llamalend/queries/supply/supply-deposit-approved.query'
 import {
@@ -13,6 +13,7 @@ import {
 } from '@/llamalend/queries/validation/supply.validation'
 import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { Address } from '@primitives/address.utils'
 import { useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { LlamaMarketType } from '@ui-kit/types/market'
@@ -26,20 +27,25 @@ const formOptions = {
   defaultValues: emptyDepositForm(),
 }
 export const useDepositForm = <ChainId extends LlamaChainId>({
-  market,
+  marketId,
+  controllerAddress,
+  tokens,
+  marketType,
   network,
   enabled,
 }: {
-  market: LlamaMarketTemplate | undefined
+  marketId: string | undefined
+  controllerAddress: Address | undefined
+  tokens: Partial<MarketTokens>
+  marketType: LlamaMarketType
   network: LlamaNetwork<ChainId>
   enabled?: boolean
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
-  const marketId = market?.id
-  const marketAlert = useMarketAlert(chainId, getControllerAddress(market), LlamaMarketType.Lend)
+  const marketAlert = useMarketAlert(chainId, controllerAddress, marketType)
 
-  const { borrowToken } = getTokens(market) ?? {}
+  const { borrowToken } = tokens
 
   const form = useForm<DepositForm>(formOptions)
 
@@ -70,7 +76,8 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
     onClose,
     isOpen,
   } = useFormLowSolvency({
-    market,
+    controllerAddress,
+    marketType,
     chainId,
     onSubmit: onMutationSubmit,
     handleFormSubmit: form.handleSubmit,
@@ -84,7 +91,7 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
     form,
     params,
     isPending,
-    isLoading: isPending || !market || isSolvencyLoading,
+    isLoading: isPending || !marketId || isSolvencyLoading,
     onSubmit,
     isDisabled: !!disabledAlert || !formState.isValid || isPending || isDebouncing,
     borrowToken,

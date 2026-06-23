@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { useMaxWithdrawTokenValues } from '@/llamalend/features/supply/hooks/useMaxWithdraw'
-import { getTokens } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
+import type { MarketTokens } from '@/llamalend/llama.utils'
+import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useWithdrawMutation } from '@/llamalend/mutations/withdraw.mutation'
 import {
   type WithdrawForm,
@@ -22,19 +22,20 @@ const emptyWithdrawForm = (): WithdrawForm => ({
 })
 
 export const useWithdrawForm = <ChainId extends LlamaChainId>({
-  market,
+  marketId,
+  tokens,
   network,
   enabled,
 }: {
-  market: LlamaMarketTemplate | undefined
+  marketId: string | undefined
+  tokens: Partial<MarketTokens>
   network: LlamaNetwork<ChainId>
   enabled?: boolean
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
-  const marketId = market?.id
 
-  const { borrowToken } = getTokens(market) ?? {}
+  const { borrowToken } = tokens
 
   const form = useForm<WithdrawForm>({
     validation: withdrawFormValidationSuite,

@@ -1,7 +1,8 @@
 import { sumBy } from 'lodash'
 import { useClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/hooks/useClosePositionForm'
 import { ClosePositionInfoList } from '@/llamalend/features/manage-soft-liquidation/ui/ClosePositionInfoList'
-import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import type { MarketTokens } from '@/llamalend/llama.utils'
+import type { NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
@@ -22,12 +23,14 @@ import type { ClosePositionRow } from '../columns/columns.definitions'
 const { Spacing } = SizesAndSpaces
 
 export const ClosePositionForm = ({
-  market,
+  marketId,
+  tokens,
   networks,
   chainId,
   enabled,
 }: {
-  market: LlamaMarketTemplate | undefined
+  marketId: string | undefined
+  tokens: Partial<MarketTokens>
   networks: NetworkDict<LlamaChainId>
   chainId: LlamaChainId
   enabled?: boolean
@@ -49,7 +52,7 @@ export const ClosePositionForm = ({
     isApproved,
     onSubmit,
     formErrors,
-  } = useClosePositionForm({ market, network, enabled })
+  } = useClosePositionForm({ marketId, tokens, network, enabled })
 
   const collateralToRecoverUsd = sumBy(collateralToRecover, ({ usd }) => Number(usd) || 0)
 
@@ -60,7 +63,8 @@ export const ClosePositionForm = ({
       onSubmit={onSubmit}
       footer={
         <ClosePositionInfoList
-          market={market}
+          marketId={marketId}
+          tokens={tokens}
           chainId={network.chainId}
           networks={networks}
           values={values}

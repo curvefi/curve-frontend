@@ -1,10 +1,11 @@
 import { useConnection } from 'wagmi'
-import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import type { NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
+import type { Address } from '@primitives/address.utils'
 import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
 import { t } from '@ui-kit/lib/i18n'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
@@ -17,7 +18,8 @@ import { type ClaimableToken } from './columns'
 import { TotalNotionalRow } from './columns/notional-cells'
 
 type ClaimTabProps<ChainId extends IChainId> = {
-  market: LlamaMarketTemplate | undefined
+  marketId: string | undefined
+  crvTokenAddress: Address | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
@@ -26,7 +28,13 @@ type ClaimTabProps<ChainId extends IChainId> = {
 const TEST_ID_PREFIX = 'supply-claim'
 const { Spacing } = SizesAndSpaces
 
-export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, enabled }: ClaimTabProps<ChainId>) => {
+export const ClaimTab = <ChainId extends IChainId>({
+  marketId,
+  crvTokenAddress,
+  networks,
+  chainId,
+  enabled,
+}: ClaimTabProps<ChainId>) => {
   const { isConnected } = useConnection()
   const network = networks[chainId]
 
@@ -46,7 +54,8 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
     onSubmitRewards,
     errors,
   } = useClaimTab({
-    market,
+    marketId,
+    crvTokenAddress,
     network,
     enabled,
   })
@@ -82,7 +91,7 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
             <Button
               fullWidth
               type="button"
-              loading={isCrvPending || !market}
+              loading={isCrvPending || !marketId}
               disabled={isCrvDisabled}
               data-testid={`${TEST_ID_PREFIX}-crv-rewards-submit-button`}
               onClick={onSubmitCrv}
@@ -93,7 +102,7 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
               color="secondary"
               fullWidth
               type="button"
-              loading={isRewardsPending || !market}
+              loading={isRewardsPending || !marketId}
               disabled={isRewardsDisabled}
               data-testid={`${TEST_ID_PREFIX}-other-rewards-submit-button`}
               onClick={onSubmitRewards}

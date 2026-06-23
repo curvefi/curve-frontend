@@ -1,21 +1,26 @@
 import { useConnection } from 'wagmi'
-import { getControllerAddress } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import type { MarketTokens } from '@/llamalend/llama.utils'
+import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
+import type { Address } from '@primitives/address.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
 import { t } from '@ui-kit/lib/i18n'
 import { AlertDisableForm } from '@ui-kit/shared/ui/AlertDisableForm'
+import type { LlamaMarketType } from '@ui-kit/types/market'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { useDepositForm } from '../hooks/useDepositForm'
 import { DepositSupplyInfoList } from './DepositSupplyInfoList'
 
 type DepositFormProps<ChainId extends IChainId> = {
-  market: LlamaMarketTemplate | undefined
+  marketId: string | undefined
+  controllerAddress: Address | undefined
+  tokens: Partial<MarketTokens>
+  marketType: LlamaMarketType
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
@@ -24,7 +29,10 @@ type DepositFormProps<ChainId extends IChainId> = {
 const TEST_ID_PREFIX = 'supply-deposit'
 
 export const DepositForm = <ChainId extends IChainId>({
-  market,
+  marketId,
+  controllerAddress,
+  tokens,
+  marketType,
   networks,
   chainId,
   enabled,
@@ -46,7 +54,7 @@ export const DepositForm = <ChainId extends IChainId>({
     max,
     disabledAlert,
     solvencyModal: { onConfirm, onClose, isOpen },
-  } = useDepositForm({ market, network, enabled })
+  } = useDepositForm({ marketId, controllerAddress, tokens, marketType, network, enabled })
 
   return (
     <Form
@@ -59,7 +67,7 @@ export const DepositForm = <ChainId extends IChainId>({
           params={params}
           networks={networks}
           tokens={{ borrowToken }}
-          controllerAddress={getControllerAddress(market)}
+          controllerAddress={controllerAddress}
         />
       }
     >

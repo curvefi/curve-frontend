@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { ClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePositionForm'
 import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealthForm'
+import { getAmmAddress, getControllerAddress, getTokens, getZapAddress } from '@/llamalend/llama.utils'
 import { oneInt } from '@cy/support/generators'
 import { TEST_ADDRESS } from '@cy/support/helpers/llamalend/mock-loan-test-data'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
@@ -51,6 +52,11 @@ describe('Soft Liquidation Forms (mocked)', () => {
           <MockLoanTestWrapper llamaApi={llamaApi}>
             <ImproveHealthForm
               market={market}
+              marketId={market.id}
+              ammAddress={getAmmAddress(market)}
+              zapAddress={getZapAddress(market)}
+              controllerAddress={getControllerAddress(market)}
+              tokens={getTokens(market)}
               networks={llamaNetworks}
               chainId={chainId}
               collateralEvents={constQ(undefined)}
@@ -107,7 +113,12 @@ describe('Soft Liquidation Forms (mocked)', () => {
 
         cy.mount(
           <MockLoanTestWrapper llamaApi={llamaApi}>
-            <ClosePositionForm market={market} networks={llamaNetworks} chainId={chainId} />
+            <ClosePositionForm
+              marketId={market.id}
+              tokens={getTokens(market)}
+              networks={llamaNetworks}
+              chainId={chainId}
+            />
           </MockLoanTestWrapper>,
         )
 

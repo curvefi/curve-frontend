@@ -7,6 +7,16 @@ import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/utilsRouter'
 import { SupplyPositionDetails } from '@/llamalend/features/market-position-details'
 import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
+import {
+  getControllerAddress,
+  getCrvTokenAddress,
+  getGaugeAddress,
+  getAmmAddress,
+  getMarketBandRange,
+  getTokens,
+  getVaultToken,
+  getZapAddress,
+} from '@/llamalend/llama.utils'
 import { useUserShares } from '@/llamalend/queries/user/user-balances.query'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header'
@@ -42,8 +52,29 @@ export const Page = () => {
     },
     !isLoading && !market, // only enable API data when wallet is disconnected
   )
+  const tokens = getTokens(market, apiMarket.data) ?? {}
+  const controllerAddress = getControllerAddress(market, apiMarket.data)
+  const { minBands, maxBands } = getMarketBandRange(market, apiMarket.data) ?? {}
 
-  const pageProps: PageContentProps = { params, rChainId: chainId, userAddress, api, market, apiMarket }
+  const pageProps: PageContentProps = {
+    params,
+    chainId,
+    userAddress,
+    api,
+    market,
+    marketId: market?.id,
+    ammAddress: getAmmAddress(market, apiMarket.data),
+    zapAddress: market && getZapAddress(market),
+    controllerAddress,
+    tokens,
+    marketType: LlamaMarketType.Lend,
+    vaultToken: getVaultToken(market, apiMarket.data),
+    gaugeAddress: getGaugeAddress(market),
+    minBands,
+    maxBands,
+    crvTokenAddress: getCrvTokenAddress(market),
+    apiMarket,
+  }
 
   const supplied = +(useUserShares({ marketId: market?.id, chainId, userAddress }).data?.value ?? 0)
 

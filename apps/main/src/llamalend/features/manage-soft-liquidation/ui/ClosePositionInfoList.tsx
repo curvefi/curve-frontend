@@ -1,6 +1,6 @@
 import { useConnection } from 'wagmi'
-import { getTokens } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import type { MarketTokens } from '@/llamalend/llama.utils'
+import type { NetworkDict } from '@/llamalend/llamalend.types'
 import type { CloseLoanMutation } from '@/llamalend/mutations/close-position.mutation'
 import { useCloseEstimateGas } from '@/llamalend/queries/close-loan/close-loan-gas-estimate.query'
 import { useCloseLoanIsApproved } from '@/llamalend/queries/close-loan/close-loan-is-approved.query'
@@ -12,7 +12,8 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { constQ, q } from '@ui-kit/types/util'
 
 type ClosePositionInfoListProps = {
-  market: LlamaMarketTemplate | undefined
+  marketId: string | undefined
+  tokens: Partial<MarketTokens>
   chainId: LlamaChainId
   networks: NetworkDict<LlamaChainId>
   values: CloseLoanMutation
@@ -21,13 +22,13 @@ type ClosePositionInfoListProps = {
 
 export function ClosePositionInfoList({
   chainId,
-  market,
+  marketId,
+  tokens: { borrowToken, collateralToken },
   networks,
   values: { slippage },
   onSlippageChange,
 }: ClosePositionInfoListProps) {
-  const { borrowToken, collateralToken } = getTokens(market) ?? {}
-  const params = { chainId, marketId: market?.id, userAddress: useConnection().address, slippage }
+  const params = { chainId, marketId, userAddress: useConnection().address, slippage }
   return (
     <LoanActionInfoList
       isOpen

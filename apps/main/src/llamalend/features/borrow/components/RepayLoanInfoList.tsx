@@ -3,8 +3,8 @@ import { useMemo } from 'react'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
-import { calculateReturnToWallet, getControllerAddress } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import { calculateReturnToWallet } from '@/llamalend/llama.utils'
+import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useRepayExpectedBorrowed } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
 import { useRepayFutureLeverage } from '@/llamalend/queries/repay/repay-future-leverage.query'
@@ -18,7 +18,7 @@ import { useBorrowRates } from '@/llamalend/widgets/action-card/hooks/useBorrowR
 import { usePrevLoanState } from '@/llamalend/widgets/action-card/hooks/usePrevLoanState'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { type Token } from '@primitives/address.utils'
+import { type Address, type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { UseFormReturn } from '@ui-kit/features/forms'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
@@ -83,7 +83,7 @@ function useReturnToWallet(
 }
 
 export function RepayLoanInfoList<ChainId extends IChainId>({
-  market,
+  controllerAddress,
   marketType,
   params,
   values: { slippage, stateCollateral, userCollateral, userBorrowed, isFull },
@@ -96,7 +96,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   prices,
   prevPrices,
 }: {
-  market: LlamaMarketTemplate | undefined
+  controllerAddress: Address | undefined
   marketType: LlamaMarketType
   params: RepayParams
   values: RepayFormData
@@ -167,7 +167,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
         priceImpact: useRepayPriceImpact(params, isOpen),
         collateralDelta: userCollateral,
       })}
-      {...useBorrowRates({ params, marketType, controllerAddress: getControllerAddress(market), debtDelta }, isOpen)}
+      {...useBorrowRates({ params, marketType, controllerAddress, debtDelta }, isOpen)}
       {...prevLoanState}
     />
   )

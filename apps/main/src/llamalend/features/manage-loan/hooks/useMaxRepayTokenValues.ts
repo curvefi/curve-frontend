@@ -1,5 +1,4 @@
 import { useEffect } from 'react'
-import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import {
   resetRepayExpectedBorrowed,
@@ -8,6 +7,7 @@ import {
 import { useRepayIsFull } from '@/llamalend/queries/repay/repay-is-full.query'
 import { useUserState } from '@/llamalend/queries/user'
 import type { RepayFormData, RepayParams } from '@/llamalend/queries/validation/repay.types'
+import type { Address } from '@primitives/address.utils'
 import { maybe } from '@primitives/objects.utils'
 import { useFormSync, useOnChangeCallback } from '@ui-kit/features/forms'
 import type { UseFormReturn } from '@ui-kit/features/forms'
@@ -18,27 +18,30 @@ import { mapQuery, q } from '@ui-kit/types/util'
 export function useMaxRepayTokenValues(
   {
     market,
+    borrowTokenAddress,
+    collateralTokenAddress,
     params,
     form,
   }: {
     market: LlamaMarketTemplate | undefined
+    borrowTokenAddress: Address | undefined
+    collateralTokenAddress: Address | undefined
     params: RepayParams
     form: UseFormReturn<RepayFormData>
   },
   enabled?: boolean,
 ) {
-  const { borrowToken, collateralToken } = getTokens(market) ?? {}
   const { update: updateForm } = form
   const { chainId, userAddress } = params
   const maxUserCollateral = useTokenBalance({
     chainId,
     userAddress,
-    tokenAddress: collateralToken?.address,
+    tokenAddress: collateralTokenAddress,
   })
   const maxUserBorrowed = useTokenBalance({
     chainId,
     userAddress,
-    tokenAddress: borrowToken?.address,
+    tokenAddress: borrowTokenAddress,
   })
   const userState = useUserState(params, enabled)
   // required for isFull query

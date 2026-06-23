@@ -1,9 +1,10 @@
 import { useConnection } from 'wagmi'
-import { getControllerAddress } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import type { MarketTokens } from '@/llamalend/llama.utils'
+import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
+import type { Address } from '@primitives/address.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
 import { t } from '@ui-kit/lib/i18n'
@@ -14,7 +15,9 @@ import { AlertUnstakeFirst } from './alerts/AlertUnstakeFirst'
 import { WithdrawSupplyInfoList } from './WithdrawSupplyInfoList'
 
 type WithdrawFormProps<ChainId extends IChainId> = {
-  market: LlamaMarketTemplate | undefined
+  marketId: string | undefined
+  controllerAddress: Address | undefined
+  tokens: Partial<MarketTokens>
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
@@ -23,7 +26,9 @@ type WithdrawFormProps<ChainId extends IChainId> = {
 const TEST_ID_PREFIX = 'supply-withdraw'
 
 export const WithdrawForm = <ChainId extends IChainId>({
-  market,
+  marketId,
+  controllerAddress,
+  tokens,
   networks,
   chainId,
   enabled,
@@ -43,7 +48,7 @@ export const WithdrawForm = <ChainId extends IChainId>({
     max,
     maxStakedShares,
     isFull,
-  } = useWithdrawForm({ market, network, enabled })
+  } = useWithdrawForm({ marketId, tokens, network, enabled })
 
   return (
     <Form
@@ -56,7 +61,7 @@ export const WithdrawForm = <ChainId extends IChainId>({
           params={params}
           networks={networks}
           tokens={{ borrowToken }}
-          controllerAddress={getControllerAddress(market)}
+          controllerAddress={controllerAddress}
         />
       }
     >
@@ -82,7 +87,7 @@ export const WithdrawForm = <ChainId extends IChainId>({
       {isConnected ? (
         <Button
           type="submit"
-          loading={isPending || !market}
+          loading={isPending || !marketId}
           disabled={isDisabled}
           data-testid={`${TEST_ID_PREFIX}-submit-button`}
         >
