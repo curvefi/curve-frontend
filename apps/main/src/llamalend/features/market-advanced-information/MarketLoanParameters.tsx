@@ -1,15 +1,18 @@
 import { useMarketParameters } from '@/llamalend/queries/market'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { maybes } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { formatNumber } from '@ui-kit/utils'
 
-/** Max LTV at N=4. loanDiscount comes from the API as a percent value, e.g. "11" for 11%. */
-const getMaxLTV = (a: number | undefined, loanDiscount: string | undefined) =>
-  maybes([a, loanDiscount], ([a, loanDiscount]) =>
-    a === 0 ? undefined : ((a - 1) / a) ** 2 * (1 - Number(loanDiscount) / 100) * 100,
-  )
+// In [1]: ltv = lambda x: ((x[0] - 1) / x[0])**2 * (1 - x[1])
+// In [2]: ltv((30, 0.11))
+// Out[2]: 0.8316555555555556
+// where x[0] is A, x[1] is loan discount normalised between 0 and 1 (so 11% is 0.11). multiply ltv by 100 to show percentage.
+// always show 'max ltv' which is the max possible loan at N=4 (not advisable but hey it exists!).
+function getMaxLTV(a: number | undefined, loanDiscount: string | undefined) {
+  if (a == null || loanDiscount == null) return
+  return ((+a - 1) / +a) ** 2 * (1 - +loanDiscount / 100) * 100
+}
 
 export const MarketLoanParameters = ({ chainId, marketId }: { chainId: IChainId; marketId: string | undefined }) => {
   const {
@@ -50,7 +53,7 @@ export const MarketLoanParameters = ({ chainId, marketId }: { chainId: IChainId;
         labelTooltip={{
           title: t`A setting that controls how wide the liquidation bands are and how gradually soft liquidation plays out.`,
         }}
-        value={formatNumber(parameters?.A, { abbreviate: false, useGrouping: false })}
+        value={formatNumber(parameters?.A ?? 0, { abbreviate: false, useGrouping: false })}
         loading={loading}
         error={errorParameters}
       />
@@ -79,7 +82,7 @@ export const MarketLoanParameters = ({ chainId, marketId }: { chainId: IChainId;
         testId="market-param-max-ltv"
         label={t`Max LTV`}
         labelTooltip={{ title: t`The highest loan-to-value ratio allowed when opening or increasing a position.` }}
-        value={formatNumber(getMaxLTV(parameters?.A, parameters?.loan_discount), 'percent.rate')}
+        value={formatNumber(getMaxLTV(parameters?.A ?? 0, parameters?.loan_discount), 'percent.rate')}
         valueTooltip={t`Max possible loan at N=4`}
         loading={loading}
         error={errorParameters}
