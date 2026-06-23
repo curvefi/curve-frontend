@@ -1,4 +1,5 @@
 import { fetchJson } from '@primitives/fetch.utils'
+import { maybe } from '@primitives/objects.utils'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model'
 
@@ -76,11 +77,14 @@ type GaugeCurveApiDataMapper = Record<string, CurveApiGaugeData>
 const isFundraisingGauge = (gaugeData: CurveApiGaugeData): gaugeData is CurveApiFundraisingGauge =>
   !gaugeData.isPool && 'type' in gaugeData && gaugeData.type === 'fundraising'
 
-export const getGaugeDepositUrl = (gaugeData: CurveApiGaugeData | undefined) => {
-  // fundraising gauge has no deposit link
-  if (!gaugeData || isFundraisingGauge(gaugeData)) return undefined
-  return gaugeData.isPool ? gaugeData.poolUrls.deposit[0] : gaugeData.lendingVaultUrls.deposit
-}
+export const getGaugeDepositUrl = (gaugeData: CurveApiGaugeData | undefined) =>
+  maybe(gaugeData, gaugeData =>
+    isFundraisingGauge(gaugeData)
+      ? undefined
+      : gaugeData.isPool
+        ? gaugeData.poolUrls.deposit[0]
+        : gaugeData.lendingVaultUrls.deposit,
+  )
 
 /**
  * Legacy refers to the fact that we're using the old api.curve.finance endpoint.
