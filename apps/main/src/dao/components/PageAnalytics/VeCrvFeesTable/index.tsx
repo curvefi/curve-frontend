@@ -9,7 +9,7 @@ import { formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { formatNumber } from '@ui-kit/utils'
 import { SpinnerComponent as Spinner } from '../../Spinner'
-import { VeCrvFeesChart } from '../VeCrvFeesChart'
+import { VECRV_FEES_CHART_WEEKS, VeCrvFeesChart } from '../VeCrvFeesChart'
 
 export const VeCrcFees = () => {
   const {
@@ -20,43 +20,40 @@ export const VeCrcFees = () => {
     refetch,
   } = useVeCrvFeesQuery({})
   const totalFees = useMemo(() => sumBy(veCrvFees, fee => +fee.feesUsd), [veCrvFees])
+  /*
+   * Reuse the full fees query for the chart instead of fetching `{ weeks: 52 }` separately.
+   * The response is newest-first, so slice the latest weeks before reversing for chronological display.
+   */
+  const chartData = useMemo(() => veCrvFees.slice(0, VECRV_FEES_CHART_WEEKS).toReversed(), [veCrvFees])
 
   return (
     <MuiBox sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
       <Wrapper>
-        {feesLoading ? (
-          <Spinner height="27.125rem" />
-        ) : (
+        {feesLoading && <Spinner height="27.125rem" />}
+        {feesError && <ErrorMessage message="Error fetching veCRV historical fees" onClick={() => void refetch()} />}
+        {feesReady && (
           <>
-            <VeCrvFeesChart />
+            <VeCrvFeesChart data={chartData} />
             <FeesBox flex flexColumn>
               <FeesTitlesRow>
                 <FeesSubtitle>{t`Distribution Date`}</FeesSubtitle>
                 <FeesSubtitle>{t`Fees`}</FeesSubtitle>
               </FeesTitlesRow>
-              {feesLoading && <Spinner height="27.125rem" />}
-              {feesError && (
-                <ErrorMessage message="Error fetching veCRV historical fees" onClick={() => void refetch()} />
-              )}
-              {feesReady && (
-                <>
-                  <FeesContainer>
-                    {veCrvFees.map(item => (
-                      <FeeRow key={item.timestamp}>
-                        <FeeDate>
-                          {formatDate(item.timestamp)}
-                          {new Date(item.timestamp) > new Date() && <span> {t`(in progress)`}</span>}
-                        </FeeDate>
-                        <FeeData>{formatNumber(item.feesUsd, 'usd.notional')}</FeeData>
-                      </FeeRow>
-                    ))}
-                  </FeesContainer>
-                  <TotalFees>
-                    <FeeDate>{t`Total Fees:`}</FeeDate>
-                    <FeeData>{formatNumber(totalFees, 'usd.notional')}</FeeData>
-                  </TotalFees>
-                </>
-              )}
+              <FeesContainer>
+                {veCrvFees.map(item => (
+                  <FeeRow key={item.timestamp}>
+                    <FeeDate>
+                      {formatDate(item.timestamp)}
+                      {new Date(item.timestamp) > new Date() && <span> {t`(in progress)`}</span>}
+                    </FeeDate>
+                    <FeeData>{formatNumber(item.feesUsd, 'usd.notional')}</FeeData>
+                  </FeeRow>
+                ))}
+              </FeesContainer>
+              <TotalFees>
+                <FeeDate>{t`Total Fees:`}</FeeDate>
+                <FeeData>{formatNumber(totalFees, 'usd.notional')}</FeeData>
+              </TotalFees>
             </FeesBox>
           </>
         )}
