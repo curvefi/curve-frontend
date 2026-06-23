@@ -56,7 +56,7 @@ const shouldLoadMarketParameters = ({
 
 export const shouldLoadMarketDetails = ({ hasWallet }: WalletOptions) => {
   cy.get('[data-testid^="detail-page-layout"]', LOAD_TIMEOUT).should('be.visible')
-  cy.get('[data-testid="navigation-connect-wallet"]').should(hasWallet ? 'not.exist' : 'be.visible')
+  cy.get('[data-testid="no-position-disconnected"]').should(hasWallet ? 'not.exist' : 'be.visible')
   getActionValue('market-available-liquidity').should('match', DECIMAL_REGEX)
   cy.get('[data-testid="market-advanced-details"]', LOAD_TIMEOUT).should('be.visible')
   getActionValue('market-total-borrowers').should('match', DECIMAL_REGEX)
@@ -67,10 +67,7 @@ export const shouldLoadBorrowDetails = ({ hasWallet }: WalletOptions) => {
   cy.get(`[data-testid="no-position-${hasWallet ? 'borrow' : 'disconnected'}"]`).should('be.visible')
   cy.get('[data-testid="borrow-collateral-input"]').should('be.visible')
   cy.get('[data-testid="borrow-debt-input"]').should('be.visible')
-  cy.get(`[data-testid="${hasWallet ? 'create-loan-submit-button' : 'navigation-connect-wallet'}"]`).should(
-    'be.visible',
-  )
-  if (hasWallet) cy.get('[data-testid="navigation-connect-wallet"]').should('not.exist')
+  cy.get(`[data-testid='no-position-disconnected']`).should(hasWallet ? 'not.exist' : 'be.visible')
   cy.get('[data-testid="create-loan-submit-button"]').should(hasWallet ? 'be.visible' : 'not.exist')
   getActionValue('market-net-borrow-apr').should('match', DECIMAL_REGEX)
   shouldShowCanvas('market-chart-and-activity')
@@ -96,10 +93,7 @@ export const shouldLoadMintBorrowDetails = ({ hasWallet }: WalletOptions) => {
 
 export const shouldLoadLendVaultDetails = ({ hasWallet }: WalletOptions) => {
   cy.get('[data-testid="supply-deposit-input"]').should('be.visible')
-  cy.get(`[data-testid="${hasWallet ? 'supply-deposit-submit-button' : 'navigation-connect-wallet'}"]`).should(
-    'be.visible',
-  )
-  if (hasWallet) cy.get('[data-testid="navigation-connect-wallet"]').should('not.exist')
+  cy.get(`[data-testid='no-position-disconnected']`).should(hasWallet ? 'not.exist' : 'be.visible')
   cy.get('[data-testid="supply-deposit-submit-button"]').should(hasWallet ? 'be.visible' : 'not.exist')
   getActionValue('market-net-supply-apy').should('match', DECIMAL_REGEX)
   shouldShowCanvas('historical-supply-rate-chart')

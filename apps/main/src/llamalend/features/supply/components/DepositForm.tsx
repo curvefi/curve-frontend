@@ -1,4 +1,5 @@
 import { useConnection } from 'wagmi'
+import { getControllerAddress } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
@@ -52,7 +53,15 @@ export const DepositForm = <ChainId extends IChainId>({
       {...form}
       // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
       onSubmit={onSubmit}
-      footer={<DepositSupplyInfoList form={form} params={params} networks={networks} tokens={{ borrowToken }} />}
+      footer={
+        <DepositSupplyInfoList
+          form={form}
+          params={params}
+          networks={networks}
+          tokens={{ borrowToken }}
+          controllerAddress={getControllerAddress(market)}
+        />
+      }
     >
       <LoanFormTokenInput
         label={t`Amount to deposit`}

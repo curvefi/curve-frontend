@@ -5,7 +5,7 @@ import type { UnstakeForm, UnstakeParams } from '@/llamalend/queries/validation/
 import { useSupplyRates } from '@/llamalend/widgets/action-card/hooks/useSupplyRates'
 import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { type Token } from '@primitives/address.utils'
+import { type Address, type Token } from '@primitives/address.utils'
 import type { UseFormReturn } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
 import { mapQuery, q } from '@ui-kit/types/util'
@@ -17,6 +17,7 @@ type UnstakeSupplyInfoListProps<ChainId extends IChainId> = {
   networks: NetworkDict<ChainId>
   tokens: { borrowToken: Token | undefined }
   form: UseFormReturn<UnstakeForm>
+  controllerAddress: Address | undefined
 }
 
 export function UnstakeSupplyInfoList<ChainId extends IChainId>({
@@ -24,11 +25,12 @@ export function UnstakeSupplyInfoList<ChainId extends IChainId>({
   networks,
   tokens,
   form,
+  controllerAddress,
 }: UnstakeSupplyInfoListProps<ChainId>) {
   const { chainId, marketId, userAddress, unstakeAmount } = params
   const isOpen = form.isTouched('unstakeAmount')
 
-  const { prevRates, prevNetSupplyApy } = useSupplyRates({ params }, isOpen)
+  const { prevRates, prevNetSupplyApy } = useSupplyRates({ params, controllerAddress }, isOpen)
 
   const userBalances = useVaultUserBalances({ chainId, marketId, userAddress }, isOpen)
   const amountUnstakedAssets = useSharesToAssetsAmount({ ...params, shares: unstakeAmount }, isOpen)
