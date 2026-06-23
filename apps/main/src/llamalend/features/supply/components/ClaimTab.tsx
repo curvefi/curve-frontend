@@ -64,7 +64,6 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
               </Alert>
             )
           }
-          isLoading={isLoading}
           hideHeader
           footerRow={
             !!claimableTokens.length &&

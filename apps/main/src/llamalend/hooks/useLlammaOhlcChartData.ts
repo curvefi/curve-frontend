@@ -73,8 +73,8 @@ export const useLlammaOhlcChartData = ({
     selectData: selectOraclePoolChartData,
   })
   const oraclePoolIsSettled = oraclePoolQuery.isSuccess || oraclePoolQuery.isError
-  const oraclePoolsHaveOraclePriceData = oraclePoolsChartAdapter.data.oraclePriceData.length > 0
-  const oraclePoolsHaveChartData = oraclePoolsChartAdapter.data.ohlcData.length > 0 || oraclePoolsHaveOraclePriceData
+  const oraclePoolsHaveOraclePriceData = !!oraclePoolsChartAdapter.data.oraclePriceData?.length
+  const oraclePoolsHaveChartData = !!oraclePoolsChartAdapter.data.ohlcData?.length || oraclePoolsHaveOraclePriceData
   const shouldFetchLlammaQuery = enabled && !!llamma && oraclePoolIsSettled && !oraclePoolsHaveOraclePriceData
   const llammaQuery = useLlammaOhlcQuery({
     endpoint,

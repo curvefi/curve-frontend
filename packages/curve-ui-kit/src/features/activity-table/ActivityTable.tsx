@@ -1,7 +1,7 @@
 import { Box } from '@mui/material'
 import type { Row, Table } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
-import type { TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import type { TableItem, TanstackTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import type { ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
@@ -15,9 +15,7 @@ const { MaxHeight } = SizesAndSpaces
 const DefaultExpandedPanel = <T extends TableItem>(_props: { row: Row<T>; table: Table<T> }) => null
 
 type ActivityTableProps<TData extends TableItem> = {
-  table: Table<TData>
-  isLoading: boolean
-  isError: boolean
+  table: TanstackTable<TData>
   emptyMessage: string
   errorMessage: string
   height?: `${number}rem`
@@ -26,8 +24,6 @@ type ActivityTableProps<TData extends TableItem> = {
 
 export const ActivityTable = <TData extends TableItem>({
   table,
-  isLoading,
-  isError,
   emptyMessage,
   errorMessage,
   height = MaxHeight.userEventsTable,
@@ -38,14 +34,13 @@ export const ActivityTable = <TData extends TableItem>({
       table={table}
       emptyState={
         <EmptyStateRow table={table} size="sm">
-          {isError ? (
+          {table.error ? (
             <ErrorMessage title={t`Hm... Something went wrong.`} subtitle={errorMessage} errorMessage={errorMessage} />
           ) : (
             <EmptyStateCard title={emptyMessage} />
           )}
         </EmptyStateRow>
       }
-      isLoading={isLoading}
       maxHeight={height}
       expandedPanel={expandedPanel}
     />

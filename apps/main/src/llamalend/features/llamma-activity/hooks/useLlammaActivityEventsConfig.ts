@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useLlammaEvents } from '@/llamalend/queries/llamma-events.query'
 import type { LlammaEvent } from '@curvefi/prices-api/llamma'
 import { scanAddressPath, scanTxPath } from '@ui/utils'
@@ -9,66 +8,51 @@ import {
   useManualPagination,
   DEFAULT_PAGE_SIZE,
 } from '@ui-kit/features/activity-table'
+import { combineQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { fakeLoadingQ } from '@ui-kit/types/util'
 import { getPageCount } from '@ui-kit/utils'
 import { LlammaActivityProps } from '..'
 
 export const useLlammaActivityEventsConfig = ({
-  network,
+  network: chain,
   collateralToken,
   borrowToken,
-  ammAddress,
+  ammAddress: llamma,
   endpoint,
   networkConfig,
 }: LlammaActivityProps) => {
   const { eventsColumnVisibility } = useLlammaActivityVisibility()
-  const { pagination, onPaginationChange, apiPage } = useManualPagination()
+  const { pagination, onPaginationChange, apiPage: page } = useManualPagination()
 
-  const {
-    data: eventsData,
-    isLoading: isEventsLoading,
-    isError: isEventsError,
-  } = useLlammaEvents({
-    chain: network,
-    llamma: ammAddress,
-    endpoint,
-    page: apiPage,
-    perPage: DEFAULT_PAGE_SIZE,
-  })
-
-  const pageCount = getPageCount(eventsData?.count, DEFAULT_PAGE_SIZE)
+  const eventsQuery = useLlammaEvents({ chain, llamma, endpoint, page, perPage: DEFAULT_PAGE_SIZE })
 
   // Transform events data with block explorer URLs
-  const eventsWithUrls: LlammaEventRow[] = useMemo(
-    () =>
-      (network &&
-        eventsData?.events.map((event: LlammaEvent) => ({
-          ...event,
-          providerUrl: scanAddressPath(networkConfig, event.provider),
-          txUrl: scanTxPath(networkConfig, event.txHash),
-          network,
-          collateralToken,
-          borrowToken,
-        }))) ??
-      [],
-    [eventsData?.events, network, networkConfig, collateralToken, borrowToken],
+  const query = combineQueries(
+    [eventsQuery, fakeLoadingQ(llamma)],
+    ({ events }) =>
+      chain &&
+      events.map((event: LlammaEvent) => ({
+        ...event,
+        providerUrl: scanAddressPath(networkConfig, event.provider),
+        txUrl: scanTxPath(networkConfig, event.txHash),
+        network: chain,
+        collateralToken,
+        borrowToken,
+      })),
   )
 
-  const table = useTable({
-    data: eventsWithUrls,
-    columns: LLAMMA_EVENTS_COLUMNS,
-    state: { columnVisibility: eventsColumnVisibility, pagination },
-    manualPagination: true,
-    pageCount,
-    onPaginationChange,
-    ...getTableOptions(eventsWithUrls),
-  })
-
   return {
-    table,
-    isLoading: isEventsLoading || !ammAddress,
-    isError: isEventsError && !!ammAddress,
+    table: useTable({
+      query,
+      columns: LLAMMA_EVENTS_COLUMNS,
+      state: { columnVisibility: eventsColumnVisibility, pagination },
+      manualPagination: true,
+      pageCount: getPageCount(eventsQuery.data?.count, DEFAULT_PAGE_SIZE),
+      onPaginationChange,
+      ...getTableOptions<LlammaEventRow>(query.data),
+    }),
     emptyMessage: t`No activity data found.`,
     errorMessage: t`Could not load activity data.`,
   }

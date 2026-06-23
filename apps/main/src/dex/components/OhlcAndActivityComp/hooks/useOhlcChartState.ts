@@ -53,7 +53,7 @@ export const useOhlcChartState = ({ rChainId, pricesApiPoolData }: UseOhlcChartS
     fetchMore,
   } = useOhlcQueryAdapter({ query: chartQuery, selectItems: selectDexOhlcData })
   const isLoading = !isAnchorEndReady || isQueryLoading
-  const isEmpty = !isLoading && !error && ohlcData.length === 0
+  const isEmpty = !isLoading && !error && ohlcData?.length === 0
 
   const ohlcChartProps: OhlcChartProps = {
     hideCandleSeriesLabel: false,
