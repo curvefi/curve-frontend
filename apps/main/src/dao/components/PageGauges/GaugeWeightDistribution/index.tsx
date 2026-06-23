@@ -8,10 +8,11 @@ import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import { truncateToShortenedAddressLength } from '@/dao/utils'
 import { useTheme } from '@mui/material/styles'
 import { sortBy, toArray } from '@primitives/array.utils'
-import { recordValues } from '@primitives/objects.utils'
+import { recordValues, notFalsy } from '@primitives/objects.utils'
 import { Box } from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
 import {
+  CHART_X_AXIS_LABEL_ROTATION,
   ChartStateWrapper,
   createChartSeriesColorScale,
   EChartsBarChart,
@@ -31,10 +32,6 @@ export const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistribution
   const theme = useTheme()
   const barColors = useMemo(() => createChartSeriesColorScale(theme), [theme])
   const getBarColor = useCallback((_: unknown, index: number) => barColors[index % barColors.length], [barColors])
-  const renderGaugesTooltip = useCallback(
-    ({ datum }: { datum: GaugeFormattedData }) => <GaugesBarChartCustomTooltip datum={datum} />,
-    [],
-  )
   const { address: userAddress } = useConnection()
   const {
     data: userGaugeWeightVotes,
@@ -76,7 +73,7 @@ export const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistribution
 
   const dataLength = isUserVotes ? userVoteData.length : gaugeData.length
   const refreshData = () =>
-    isUserVotes ? Promise.all([refetchUserGaugeWeights(), refetchGaugeMapper()]) : refetchGaugeMapper()
+    Promise.all(notFalsy<Promise<unknown>>(isUserVotes && refetchUserGaugeWeights(), refetchGaugeMapper()))
 
   if (!userAddress && isUserVotes) {
     return (
@@ -111,7 +108,7 @@ export const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistribution
               height={DAO_COMPACT_CHART_HEIGHT}
               renderTooltip={GaugeVotingBarChartCustomTooltip}
               xAxisInterval={getXAxisInterval(userVoteData.length)}
-              xAxisLabelRotate={-45}
+              xAxisLabelRotate={CHART_X_AXIS_LABEL_ROTATION}
               xTickFormatter={value => truncateToShortenedAddressLength(String(value))}
               yTickFormatter={value => formatChartAxisNumber(+value, { unit: 'percentage' })}
             />
@@ -122,9 +119,9 @@ export const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistribution
               yKey="gauge_relative_weight"
               barColor={getBarColor}
               height={DAO_COMPACT_CHART_HEIGHT}
-              renderTooltip={renderGaugesTooltip}
+              renderTooltip={GaugesBarChartCustomTooltip}
               xAxisInterval={getXAxisInterval(gaugeData.length)}
-              xAxisLabelRotate={-45}
+              xAxisLabelRotate={CHART_X_AXIS_LABEL_ROTATION}
               xTickFormatter={value => truncateToShortenedAddressLength(String(value))}
               yTickFormatter={value => formatChartAxisNumber(+value, { unit: 'percentage' })}
             />

@@ -4,6 +4,7 @@ import { styled } from 'styled-components'
 import { useStatsVecrvQuery } from '@/dao/entities/stats-vecrv'
 import { useVeCrvFeesQuery } from '@/dao/entities/vecrv-fees'
 import { useVeCrvHoldersQuery } from '@/dao/entities/vecrv-holders'
+import { maybe } from '@primitives/objects.utils'
 import { Box } from '@ui/Box'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useCombinedQueries } from '@ui-kit/lib'
@@ -48,9 +49,8 @@ export const CrvStats = () => {
 
         return {
           current: weeklyRateToApr(+(fees[1]?.feesUsd ?? 0) / totalVeCrvUsd),
-          fourWeekAverage: completedFees.length
-            ? meanBy(completedFees, fee => weeklyRateToApr(+fee.feesUsd / totalVeCrvUsd))
-            : 0,
+          fourWeekAverage:
+            completedFees.length && meanBy(completedFees, fee => weeklyRateToApr(+fee.feesUsd / totalVeCrvUsd)),
         }
       },
       [isMainnet],
@@ -86,7 +86,7 @@ export const CrvStats = () => {
             value={mapQuery(holdersSummary, ({ totalHolders }) => totalHolders)}
             valueOptions={{ abbreviate: false, decimals: 0 }}
             labelTooltip={{
-              title: t`${holdersSummary.data?.canCreateVote ?? 0} veCRV holders can create a new proposal (minimum 2500 veCRV is required)`,
+              title: t`${holdersSummary.data?.canCreateVote ?? '...'} veCRV holders can create a new proposal (minimum 2500 veCRV is required)`,
             }}
           />
           <Metric
@@ -100,11 +100,10 @@ export const CrvStats = () => {
             label={t`veCRV APR`}
             value={mapQuery(veCrvApr, ({ current }) => current)}
             valueOptions={{ unit: 'percentage' }}
-            notional={
-              veCrvApr.data
-                ? `${formatNumber(veCrvApr.data.fourWeekAverage, 'percent.value')} ${VECRV_APR_AVERAGE_WEEKS}w avg`
-                : undefined
-            }
+            notional={maybe(
+              veCrvApr.data,
+              v => `${formatNumber(v.fourWeekAverage, 'percent.value')} ${VECRV_APR_AVERAGE_WEEKS}w avg`,
+            )}
           />
         </MetricsContainer>
       </Container>

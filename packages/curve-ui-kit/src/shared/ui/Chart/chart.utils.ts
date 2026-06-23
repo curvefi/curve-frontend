@@ -13,6 +13,7 @@ export type ChartAxisTickLabelOptions = {
 }
 
 export const DEFAULT_CHART_SIGNIFICANT_DIGITS = 5
+export const CHART_X_AXIS_LABEL_ROTATION = -45
 const DEFAULT_CHART_ABBREVIATE_FROM = 10000
 const CHART_COLOR_INDICES = [1, 2, 3, 4, 5, 6, 7, 8] as const
 
@@ -35,10 +36,11 @@ export const createChartSeriesColorScale = (theme: Theme) => CHART_COLOR_INDICES
 export const createChartSeriesSurfaceColorScale = (theme: Theme) =>
   CHART_COLOR_INDICES.map(i => theme.design.Chart.Surfaces[i])
 
-export const getChartSignedValueColor = (theme: Theme, value: number | bigint) =>
-  (typeof value === 'bigint' ? value > 0n : value > 0)
-    ? theme.design.Chart.Candles.Positive
-    : theme.design.Chart.Candles.Negative
+export const getChartSignedValueColor = (theme: Theme, value: number | bigint) => {
+  const { Negative, Positive } = theme.design.Chart.Candles
+
+  return (typeof value === 'bigint' ? value > 0n : value > 0) ? Positive : Negative
+}
 
 /**
  * Computes min/max axis bounds from chart values, optional reference lines, and proportional padding.
@@ -67,8 +69,8 @@ export const getPaddedChartAxisBounds = ({
   const padding = (max - min) * paddingRatio
 
   return {
-    min: includeZero && min >= 0 ? 0 : min - padding,
-    max: includeZero && max <= 0 ? 0 : max + padding,
+    min: includeZero && Math.min(min, 0) - padding,
+    max: includeZero && Math.max(max, 0) + padding,
   }
 }
 

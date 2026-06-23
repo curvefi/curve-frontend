@@ -18,10 +18,10 @@ export const DailyLocks = () => {
         <ChartStateWrapper
           height={DAO_CHART_HEIGHT}
           isLoading={isLoading}
-          isEmpty={!isLoading && !error && locks?.length === 0}
+          isEmpty={locks?.length === 0}
           error={error}
           errorMessage={t`Unable to fetch daily veCRV locks.`}
-          refreshData={() => refetch()}
+          refreshData={refetch}
         >
           {locks && <PositiveAndNegativeBarChart height={DAO_CHART_HEIGHT} data={locks} />}
         </ChartStateWrapper>

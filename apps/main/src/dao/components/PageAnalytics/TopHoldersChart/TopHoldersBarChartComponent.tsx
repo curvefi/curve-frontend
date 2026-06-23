@@ -3,7 +3,12 @@ import type { VeCrvHolder } from '@/dao/entities/vecrv-holders'
 import type { TopHoldersSortBy } from '@/dao/types/dao.types'
 import { formatHolderName } from '@/dao/utils'
 import { useTheme } from '@mui/material/styles'
-import { createChartSeriesColorScale, EChartsBarChart, formatChartAxisNumber } from '@ui-kit/shared/ui/Chart'
+import {
+  CHART_X_AXIS_LABEL_ROTATION,
+  createChartSeriesColorScale,
+  EChartsBarChart,
+  formatChartAxisNumber,
+} from '@ui-kit/shared/ui/Chart'
 import { TopHoldersBarChartTooltip as CustomTooltip } from './TopHoldersBarChartTooltip'
 
 type TopHoldersBarChartProps = {
@@ -32,7 +37,7 @@ export const TopHoldersBarChart = ({ height, data, filter }: TopHoldersBarChartP
       barColor={getBarColor}
       height={height}
       renderTooltip={CustomTooltip}
-      xAxisLabelRotate={-45}
+      xAxisLabelRotate={CHART_X_AXIS_LABEL_ROTATION}
       xAxisInterval={0}
       xTickFormatter={value => formatHolderName(String(value))}
       yTickFormatter={value =>

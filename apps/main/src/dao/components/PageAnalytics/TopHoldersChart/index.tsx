@@ -12,7 +12,7 @@ import { Box } from '@ui/Box'
 import { SelectSortingMethod } from '@ui/Select/SelectSortingMethod'
 import { t } from '@ui-kit/lib/i18n'
 import { ChartStateWrapper } from '@ui-kit/shared/ui/Chart'
-import { decimal, decimalMinus, decimalSum } from '@ui-kit/utils'
+import { decimalMinus, decimalSum } from '@ui-kit/utils'
 
 const TOP_HOLDERS_LIMIT = 100
 const MIN_TOP_HOLDER_WEIGHT_RATIO = 0.3
@@ -30,8 +30,8 @@ export const TopLockers = () => {
   const chartError = holdersError ?? statsError
   const isLoading = holdersLoading || statsLoading
 
-  const chartData: VeCrvHolder[] = useMemo(() => {
-    if (!veCrvHolders || !veCrvData) return []
+  const chartData: VeCrvHolder[] | undefined = useMemo(() => {
+    if (!veCrvHolders || !veCrvData) return undefined
 
     const topHolders = sortBy(veCrvHolders, holder => +holder.weightRatio, 'desc')
       .slice(0, TOP_HOLDERS_LIMIT)
@@ -43,7 +43,7 @@ export const TopLockers = () => {
     }
     const othersVeCrv = decimalMinus(veCrvData.totalVeCrv, totalValues.weight)
     const otherLockedCrv = decimalMinus(veCrvData.totalLockedCrv, totalValues.locked)
-    const othersWeightRatio = decimal((100 - +totalValues.weightRatio).toFixed(2))!
+    const othersWeightRatio = decimalMinus('100', totalValues.weightRatio)
 
     return sortBy(
       [
@@ -78,12 +78,16 @@ export const TopLockers = () => {
         <ChartStateWrapper
           height={DAO_COMPACT_CHART_HEIGHT}
           isLoading={isLoading}
-          isEmpty={!isLoading && !chartError && chartData.length === 0}
+          isEmpty={chartData?.length === 0}
           error={chartError}
           errorMessage={t`Unable to fetch veCRV holders data.`}
           refreshData={() => Promise.all([refetchHolders(), refetchStats()])}
         >
-          <TopHoldersBarChartComponent height={DAO_COMPACT_CHART_HEIGHT} data={chartData} filter={topHoldersSortBy} />
+          <TopHoldersBarChartComponent
+            height={DAO_COMPACT_CHART_HEIGHT}
+            data={chartData ?? []}
+            filter={topHoldersSortBy}
+          />
         </ChartStateWrapper>
       </Content>
     </MuiBox>
