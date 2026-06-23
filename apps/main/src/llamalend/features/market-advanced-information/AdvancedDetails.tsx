@@ -40,13 +40,31 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
       sx={{
         display: 'grid',
         gap: Spacing.lg,
-        gridTemplateColumns: { mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)', desktop: 'repeat(6, 1fr)' },
+        gridTemplateColumns: {
+          mobile: 'repeat(2, minmax(0, 1fr))',
+          tablet: 'repeat(4, minmax(0, 1fr))',
+          desktop: 'repeat(6, minmax(0, 1fr))',
+        },
       }}
     >
+      {solvency && (
+        <Metric
+          size="medium"
+          label={t`Solvency`}
+          value={mapQuery(solvency, ({ value }) => value)}
+          valueOptions={{ unit: 'percentage' }}
+          valueTooltip={{
+            title: t`Solvency`,
+            body: <SolvencyTooltip type={marketType} />,
+            ...TooltipOptions,
+          }}
+        />
+      )}
       {availableLiquidity.data?.borrowCap && (
         <Metric
           size="medium"
           label={t`Borrow cap`}
+          labelTooltip={{ title: t`The maximum total amount that can be borrowed from this market.` }}
           {...tokenMetric({
             value: mapQuery(availableLiquidity, d => d.borrowCap),
             symbol: availableLiquidity.data?.borrowSymbol,
@@ -82,19 +100,6 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
           valueTooltip={{
             title: t`Total Collateral`,
             body: <TotalCollateralTooltip {...collateral.data} />,
-            ...TooltipOptions,
-          }}
-        />
-      )}
-      {solvency && (
-        <Metric
-          size="medium"
-          label={t`Solvency`}
-          value={mapQuery(solvency, ({ value }) => value)}
-          valueOptions={{ unit: 'percentage' }}
-          valueTooltip={{
-            title: t`Solvency`,
-            body: <SolvencyTooltip type={marketType} />,
             ...TooltipOptions,
           }}
         />
