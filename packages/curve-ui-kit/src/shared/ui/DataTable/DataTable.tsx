@@ -40,15 +40,19 @@ const TABLE_FILTERS_TEST_ID = 'table-filters'
 const { Height } = SizesAndSpaces
 
 type TableEmptyState = {
-  emptyTitle?: EmptyStateCardProps['title']
-  emptyMessage?: EmptyStateCardProps['description']
-  emptyButton?: EmptyStateCardProps['button']
-  emptySecondaryButton?: EmptyStateCardProps['secondaryButton']
-  emptyTestId?: string
-  errorTitle?: EmptyStateCardProps['title']
-  errorMessage?: EmptyStateCardProps['description']
-  onReload?: () => Promise<unknown> | void
-}
+  testId?: string
+} & Pick<EmptyStateCardProps, 'title' | 'description' | 'button' | 'secondaryButton'>
+type TableErrorState = { onReload?: () => Promise<unknown> | void } & Pick<EmptyStateCardProps, 'title' | 'description'>
+
+export type DataTableProps<T extends TableItem> = {
+  category?: DataTableCategory
+  table: TanstackTable<T>
+  emptyState?: TableEmptyState // optional overrides for the built-in empty state
+  errorState?: TableErrorState // optional overrides for the built-in error state
+  children?: ReactNode // passed to <FilterRow />
+  footerRow?: ReactNode
+  viewAllLabel?: string // button's label to expand all rows. defaultVisibleRows must be first set
+} & Omit<DataRowProps<T>, 'table' | 'row'>
 
 /**
  * DataTable component to render the table with headers and rows.
@@ -58,20 +62,13 @@ type TableEmptyState = {
 export const DataTable = <T extends TableItem>({
   category = 'list',
   emptyState,
+  errorState,
   children,
   shouldStickFirstColumn = false,
   footerRow,
   viewAllLabel,
   ...rowProps
-}: {
-  category?: DataTableCategory
-  table: TanstackTable<T>
-  // Optional overrides for the built-in empty/error state title, description, and action button.
-  emptyState?: TableEmptyState
-  children?: ReactNode // passed to <FilterRow />
-  footerRow?: ReactNode
-  viewAllLabel?: string // button's label to expand all rows. defaultVisibleRows must be first set
-} & Omit<DataRowProps<T>, 'table' | 'row'>) => {
+}: DataTableProps<T>) => {
   const {
     size = 'small',
     height,
@@ -110,16 +107,6 @@ export const DataTable = <T extends TableItem>({
     }),
   })
   const showFooter = !isLoading && (showPagination || showViewAllButton || footerRow)
-  const {
-    emptyTitle,
-    emptyMessage,
-    emptyButton,
-    emptySecondaryButton,
-    emptyTestId,
-    errorTitle,
-    errorMessage,
-    onReload,
-  } = emptyState ?? {}
 
   return (
     <WithWrapper Wrapper={Box} shouldWrap={height} sx={{ height, overflowY: 'auto' }} ref={containerRef}>
@@ -175,20 +162,20 @@ export const DataTable = <T extends TableItem>({
                 <EmptyStateRow table={table} size={emptyStateRowSize}>
                   {error ? (
                     <ErrorMessage
-                      title={errorTitle ?? t`Could not load data`}
-                      subtitle={errorMessage ?? error.message}
+                      title={errorState?.title ?? t`Could not load data`}
+                      subtitle={errorState?.description ?? error.message}
                       error={error}
-                      refreshData={onReload}
+                      refreshData={errorState?.onReload}
                       size={emptyStateSize}
                     />
                   ) : (
                     <EmptyStateCard
-                      title={emptyTitle ?? t`No results found`}
-                      description={emptyMessage}
-                      button={emptyButton}
-                      secondaryButton={emptySecondaryButton}
+                      title={emptyState?.title ?? t`No results found`}
+                      description={emptyState?.description}
+                      button={emptyState?.button}
+                      secondaryButton={emptyState?.secondaryButton}
                       size={emptyStateSize}
-                      testId={emptyTestId}
+                      testId={emptyState?.testId}
                     />
                   )}
                 </EmptyStateRow>

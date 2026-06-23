@@ -46,7 +46,7 @@ export const PoolComposition = ({
       <DataTable<PoolCompositionRow>
         category="detail"
         table={table}
-        emptyState={{ emptyTitle: t`No market composition found` }}
+        emptyState={{ title: t`No market composition found` }}
         footerRow={
           rows.length > 0 && (
             <FooterRow visibleColumns={table.getVisibleLeafColumns()} isLoading={isLoading} totalUsd={totalUsd} />

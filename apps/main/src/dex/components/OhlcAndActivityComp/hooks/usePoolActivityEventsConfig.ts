@@ -87,7 +87,7 @@ export const usePoolActivityEventsConfig = ({ chainId, poolAddress }: UsePoolAct
 
   return {
     table,
-    emptyTitle: t`No liquidity data found.`,
-    errorTitle: t`Could not load liquidity data.`,
+    emptyState: { title: t`No liquidity data found.` },
+    errorState: { title: t`Could not load liquidity data.` },
   }
 }

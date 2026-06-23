@@ -59,10 +59,8 @@ export const RecentRefuels = ({
       <CardHeader title={t`Recent Refuels`} size="small" />
       <DataTable<RecentRefuelRow>
         table={table}
-        emptyState={{
-          emptyTitle: t`No recent refuels found`,
-          errorTitle: t`Could not load recent refuels`,
-        }}
+        emptyState={{ title: t`No recent refuels found` }}
+        errorState={{ title: t`Could not load recent refuels` }}
       />
     </Stack>
   )

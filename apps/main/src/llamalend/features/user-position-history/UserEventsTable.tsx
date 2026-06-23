@@ -32,7 +32,8 @@ export const UserEventsTable = ({ eventsQuery }: UserEventsTableProps) => {
     <DataTable
       category="scrollable"
       table={table}
-      emptyState={{ emptyTitle: t`No events found`, errorTitle: t`Could not load events` }}
+      emptyState={{ title: t`No events found` }}
+      errorState={{ title: t`Could not load events` }}
       expandedPanel={RowExpandedPanel}
     />
   )

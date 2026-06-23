@@ -9,7 +9,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q } from '@ui-kit/types/util'
 import { formatNumber } from '@ui-kit/utils'
 import { type ColumnDefinition, getTableOptions, type TableItem, useTable } from './data-table.utils'
-import { DataTable } from './DataTable'
+import { DataTable, DataTableProps } from './DataTable'
 
 const { Spacing } = SizesAndSpaces
 
@@ -33,9 +33,10 @@ type MarketRow = TableItem & {
   extraMetrics: number[]
 }
 
-type DataTableProps = Parameters<typeof DataTable<MarketRow>>[0]
-
-type DemoDataTableProps = Omit<DataTableProps, 'table' | 'emptyState' | 'children' | 'footerRow' | 'expandedPanel'> & {
+type DemoDataTableProps = Omit<
+  DataTableProps<MarketRow>,
+  'table' | 'emptyState' | 'children' | 'footerRow' | 'expandedPanel'
+> & {
   rowCount?: number
   extraColumnCount?: number
   isLoading?: boolean
@@ -170,10 +171,7 @@ const DemoDataTable = ({
     <DataTable
       category={category}
       table={table}
-      emptyState={{
-        emptyTitle,
-        emptyMessage,
-      }}
+      emptyState={{ title: emptyTitle, description: emptyMessage }}
       shouldStickFirstColumn={shouldStickFirstColumn}
       verticalAlign={verticalAlign}
       viewAllLabel={viewAllLabel}

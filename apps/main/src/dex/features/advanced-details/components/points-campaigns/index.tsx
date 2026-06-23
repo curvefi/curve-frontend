@@ -32,7 +32,7 @@ export const PointsCampaigns = ({
         <DataTable<PointsCampaignsRow>
           category="detail"
           table={table}
-          emptyState={{ emptyTitle: t`No points campaigns found` }}
+          emptyState={{ title: t`No points campaigns found` }}
         />
       </Stack>
     )

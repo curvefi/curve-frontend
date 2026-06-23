@@ -11,7 +11,7 @@ export const LlammaActivityTrades = ({
   endpoint,
   networkConfig,
 }: LlammaActivityTradesProps) => {
-  const { table, emptyTitle, errorTitle } = useLlammaActivityTradesConfig({
+  const { table, emptyState, errorState } = useLlammaActivityTradesConfig({
     isMarketAvailable,
     network,
     ammAddress,
@@ -22,8 +22,8 @@ export const LlammaActivityTrades = ({
   return (
     <ActivityTable
       table={table}
-      emptyTitle={emptyTitle}
-      errorTitle={errorTitle}
+      emptyState={emptyState}
+      errorState={errorState}
       expandedPanel={LlammaTradesExpandedPanel}
     />
   )

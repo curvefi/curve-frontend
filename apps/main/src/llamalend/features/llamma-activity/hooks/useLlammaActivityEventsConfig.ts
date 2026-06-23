@@ -67,7 +67,7 @@ export const useLlammaActivityEventsConfig = ({
 
   return {
     table,
-    emptyTitle: t`No activity data found.`,
-    errorTitle: t`Could not load activity data.`,
+    emptyState: { title: t`No activity data found.` },
+    errorState: { title: t`Could not load activity data.` },
   }
 }

@@ -73,12 +73,11 @@ export const LlamaMarketsTable = ({
       <DataTable
         table={table}
         emptyState={{
-          emptyTitle: t`No markets found`,
-          emptyMessage: t`Try adjusting your filters or search query`,
-          errorTitle: t`Could not load markets`,
-          emptyButton: { onClick: resetFilters, label: t`Show All Markets` },
-          onReload,
+          title: t`No markets found`,
+          description: t`Try adjusting your filters or search query`,
+          button: { onClick: resetFilters, label: t`Show All Markets` },
         }}
+        errorState={{ title: t`Could not load markets`, onReload }}
         expandedPanel={LlamaMarketExpandedPanel}
         shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       >
