@@ -30,7 +30,7 @@ const buildVaultUrl = (market: LlamaMarket) =>
 export const UserPositionsTables = ({
   onReload,
   tableQuery,
-  tableQuery: { data: queryData, isLoading },
+  tableQuery: { data: queryData, isLoading, error },
 }: UserPositionsTableProps) => {
   const { address } = useConnection()
   // Tracks whether the user has any positions for each market rate type.
@@ -48,7 +48,7 @@ export const UserPositionsTables = ({
       <TableHeader title={t`Your Positions`} onReload={onReload} isLoading={isLoading} />
       <Stack sx={directChildrenAfterFirst({ borderTop: borderStyle })}>
         <UserPositionSummary markets={queryData?.markets} selectedChains={undefined} />
-        {hasUserPositions?.[MarketRateType.Borrow] && (
+        {[hasUserPositions?.[MarketRateType.Borrow], error].some(Boolean) && (
           <UserPositionsMarketRateTable
             tableQuery={mapQuery(tableQuery, ({ markets }) =>
               markets.filter(market => market.userHasPositions?.[MarketRateType.Borrow]),
@@ -57,7 +57,7 @@ export const UserPositionsTables = ({
             onReload={onReload}
           />
         )}
-        {hasUserPositions?.[MarketRateType.Supply] && (
+        {[hasUserPositions?.[MarketRateType.Supply], error].some(Boolean) && (
           <UserPositionsMarketRateTable
             tableQuery={mapQuery(tableQuery, ({ markets }) =>
               markets

@@ -107,7 +107,6 @@ export const DataTable = <T extends TableItem>({
     }),
   })
   const showFooter = !isLoading && (showPagination || showViewAllButton || footerRow)
-
   return (
     <WithWrapper Wrapper={Box} shouldWrap={height} sx={{ height, overflowY: 'auto' }} ref={containerRef}>
       {/* Wrapper used to scroll back to the table without hiding it behind the sticky nav. */}

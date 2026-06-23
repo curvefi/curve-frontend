@@ -17,11 +17,6 @@ import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
 
 const { Spacing, Sizing } = SizesAndSpaces
 
-const EMPTY_POSITIONS_SUBTITLE: Record<MarketRateType, string> = {
-  [MarketRateType.Borrow]: t`Borrow with LLAMMA to stay exposed, reduce liquidation risk, and access liquidity without selling.`,
-  [MarketRateType.Supply]: t`Lend assets to earn yield and support deep liquidity across Curve.`,
-}
-
 const TABLE_CONFIG = {
   [MarketRateType.Borrow]: {
     label: t`Borrowing`,
@@ -67,11 +62,7 @@ export const UserPositionsMarketRateTable = ({ tableQuery, marketRateType, onRel
       category="limited"
       table={table}
       viewAllLabel={t`View all ${rowCount} ${marketRateType.toLowerCase()} positions`}
-      emptyState={{
-        title: t`No active positions`,
-        description: EMPTY_POSITIONS_SUBTITLE[marketRateType],
-      }}
-      errorState={{ title: t`Could not load positions`, onReload }}
+      errorState={{ title: t`Could not load ${marketRateType.toLowerCase()} positions`, onReload }}
       expandedPanel={LlamaMarketExpandedPanel}
       shouldStickFirstColumn={Boolean(useIsTablet() && rowCount)}
     >
