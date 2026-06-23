@@ -273,12 +273,15 @@ export const SizesAndSpaces = {
   },
   Height: {
     modal: MappedModalHeight,
+    table: {
+      events: '28.875rem', // 462px
+      noResults: { sm: '10rem', lg: '25rem' },
+    },
     row: Sizing[700],
     chart: 420, // lightweight charts require height in number format
     shortChart: 210,
   },
   MinHeight: {
-    tableNoResults: { sm: '15vh', lg: '35vh' },
     pageContent: '80vh',
     popoverHeader: '2rem', // 32px
     maintenancePage: '100vh',
@@ -286,7 +289,6 @@ export const SizesAndSpaces = {
   MaxHeight: {
     popover: '17rem', // 272px
     tokenSelector: '47rem', // 752px
-    userEventsTable: '28.875rem', // 462px
     drawer: '80vh',
   },
 } as const

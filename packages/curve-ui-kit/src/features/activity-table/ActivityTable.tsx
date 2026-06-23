@@ -1,11 +1,7 @@
-import { Box } from '@mui/material'
 import type { Row, Table } from '@tanstack/react-table'
 import type { TableItem, TanstackTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import type { ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-
-const { MaxHeight } = SizesAndSpaces
 
 /** Default expanded panel that renders nothing (for tables without mobile expansion) */
 const DefaultExpandedPanel = <T extends TableItem>(_props: { row: Row<T>; table: Table<T> }) => null
@@ -23,12 +19,10 @@ export const ActivityTable = <TData extends TableItem>({
   errorTitle,
   expandedPanel = DefaultExpandedPanel,
 }: ActivityTableProps<TData>) => (
-  <Box sx={{ minHeight: MaxHeight.userEventsTable }}>
-    <DataTable
-      category="scrollable"
-      table={table}
-      emptyState={{ emptyTitle, errorTitle }}
-      expandedPanel={expandedPanel}
-    />
-  </Box>
+  <DataTable
+    category="scrollable"
+    table={table}
+    emptyState={{ emptyTitle, errorTitle }}
+    expandedPanel={expandedPanel}
+  />
 )

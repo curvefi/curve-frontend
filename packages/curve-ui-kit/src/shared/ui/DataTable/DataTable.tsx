@@ -43,58 +43,44 @@ type TableEmptyState = {
 }
 
 type DataTableCategoryConfig = {
-  size: DataTableSize
-  maxHeight?: `${number}rem` // also sets overflowY to 'auto'
+  size?: DataTableSize
+  height?: `${number}rem` // also sets overflowY to 'auto'
   defaultVisibleRows?: number // maximum number of visible rows
   disableStickyHeader?: boolean // can also be disabled by limited rows or table width overflow.
   hideHeader?: boolean
-  increasingLength: IncreasingLengthCategory
-  emptyStateSize: NonNullable<EmptyStateCardProps['size']>
-  emptyStateRowSize: EmptyStateRowSize
+  increasingLength?: IncreasingLengthCategory
+  emptyStateSize?: NonNullable<EmptyStateCardProps['size']>
+  emptyStateRowSize?: EmptyStateRowSize
 }
 
 export type DataTableCategory = keyof typeof DATA_TABLE_CATEGORIES
 
 const DATA_TABLE_CATEGORIES = {
-  // Default full table for primary searchable/filterable lists.
+  // default full-list table, e.g. LlamaMarketsTable or PoolListTable.
   list: {
-    size: 'small',
-    increasingLength: 'default',
-    emptyStateSize: 'md',
     emptyStateRowSize: 'lg',
   },
-  // User/list preview table that starts short and reveals all rows via a footer action.
+  // preview table that starts with a few rows, e.g. UserPositionsMarketRateTable.
   limited: {
-    size: 'small',
     defaultVisibleRows: 3,
     increasingLength: 'limited',
-    emptyStateSize: 'md',
+  },
+  // table with many rows constrained inside a scrollable viewport, e.g. ActivityTable or UserEventsTable.
+  scrollable: {
+    height: Height.table.events,
     emptyStateRowSize: 'lg',
   },
-  // Long activity/history table constrained inside a scrollable viewport.
-  scrollable: {
-    size: 'small',
-    maxHeight: SizesAndSpaces.MaxHeight.userEventsTable,
-    increasingLength: 'default',
-    emptyStateSize: 'md',
-    emptyStateRowSize: 'sm',
-  },
-  // Compact contextual detail table inside a secondary card or advanced-details section.
+  // compact detail table inside a secondary card or advanced-details section, e.g. PoolComposition or YieldBreakdown.
   detail: {
-    size: 'small',
     disableStickyHeader: true,
     increasingLength: 'disabled',
-    emptyStateSize: 'sm',
-    emptyStateRowSize: 'sm',
   },
-  // Compact form/action summary table, usually without visible column headers.
+  // compact form table without visible column headers, e.g. ClaimTab or ClosePositionForm.
   form: {
-    size: 'small',
     disableStickyHeader: true,
     hideHeader: true,
     increasingLength: 'disabled',
     emptyStateSize: 'sm',
-    emptyStateRowSize: 'sm',
   },
 } as const satisfies Record<string, DataTableCategoryConfig>
 
@@ -138,14 +124,14 @@ export const DataTable = <T extends TableItem>({
   viewAllLabel?: string // button's label to expand all rows. defaultVisibleRows must be first set
 } & Omit<DataRowProps<T>, 'table' | 'row'>) => {
   const {
-    size,
-    maxHeight,
+    size = 'small',
+    height,
     defaultVisibleRows: rowLimit,
     disableStickyHeader = false,
     hideHeader = false,
-    increasingLength,
-    emptyStateSize,
-    emptyStateRowSize,
+    increasingLength = 'default',
+    emptyStateSize = 'md',
+    emptyStateRowSize = 'sm',
   } = DATA_TABLE_CATEGORIES[category] as DataTableCategoryConfig
   const { table } = rowProps
   const { isLoading, error } = table
@@ -169,7 +155,7 @@ export const DataTable = <T extends TableItem>({
   const tableHeaderSx = (t: Theme) => ({
     ...(shouldStickyHeader && {
       position: 'sticky',
-      top: maxHeight ? 0 : top,
+      top: height ? 0 : top,
       zIndex: t.zIndex.tableHeader,
       marginBlockEnd: Height.row, // last row should not be hidden by the sticky header
     }),
@@ -179,7 +165,7 @@ export const DataTable = <T extends TableItem>({
     emptyState ?? {}
 
   return (
-    <WithWrapper Wrapper={Box} shouldWrap={maxHeight} sx={{ maxHeight, overflowY: 'auto' }} ref={containerRef}>
+    <WithWrapper Wrapper={Box} shouldWrap={height} sx={{ height, overflowY: 'auto' }} ref={containerRef}>
       {/* Wrapper used to scroll back to the table without hiding it behind the sticky nav. */}
       <Box ref={tableTopRef} sx={{ scrollMarginTop: `${top}px` }}>
         {/* Children are placed outside the table header when the table content is horizontally scrollable in order to
