@@ -45,7 +45,7 @@ export const useRemoveCollateralForm = <
   const { chainId } = network
   const marketId = market?.id
 
-  const tokens = market && getTokens(market)
+  const tokens = getTokens(market)
   const collateralToken = tokens?.collateralToken
   const borrowToken = tokens?.borrowToken
 

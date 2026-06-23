@@ -10,6 +10,6 @@ export const ConnectWalletIndicator = ({ sx, onConnect }: { sx?: SxProps; onConn
   return address ? (
     <ConnectedWalletLabel address={address} onClick={() => disconnect()} loading={isConnecting} sx={sx} />
   ) : (
-    <ConnectWalletButton onConnect={onConnect} sx={sx} />
+    <ConnectWalletButton onConnect={onConnect} sx={sx} testId="navigation-connect-wallet" />
   )
 }

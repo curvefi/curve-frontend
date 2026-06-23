@@ -4,15 +4,8 @@ import { LlammaActivityProps } from './'
 
 export type LlammaActivityTradesProps = Omit<LlammaActivityProps, 'borrowToken' | 'collateralToken'>
 
-export const LlammaActivityTrades = ({
-  isMarketAvailable,
-  network,
-  ammAddress,
-  endpoint,
-  networkConfig,
-}: LlammaActivityTradesProps) => {
-  const { table, isLoading, isError, emptyMessage, errorMessage } = useLlammaActivityTradesConfig({
-    isMarketAvailable,
+export const LlammaActivityTrades = ({ network, ammAddress, endpoint, networkConfig }: LlammaActivityTradesProps) => {
+  const { table, emptyMessage, errorMessage } = useLlammaActivityTradesConfig({
     network,
     ammAddress,
     endpoint,
@@ -22,8 +15,6 @@ export const LlammaActivityTrades = ({
   return (
     <ActivityTable
       table={table}
-      isLoading={isLoading}
-      isError={isError}
       emptyMessage={emptyMessage}
       errorMessage={errorMessage}
       expandedPanel={LlammaTradesExpandedPanel}

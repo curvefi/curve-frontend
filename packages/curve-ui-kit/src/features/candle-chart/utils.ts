@@ -1,6 +1,6 @@
 import type { OhlcData, UTCTimestamp } from 'lightweight-charts'
 import { sortBy } from 'lodash'
-import { notFalsy } from '@primitives/objects.utils'
+import { maybe, notFalsy } from '@primitives/objects.utils'
 import { toLocalTimestampSeconds } from '@primitives/timestamp.utils'
 import { formatNumber } from '../../utils/number'
 import type { LpPriceOhlcDataFormatted, OraclePriceData } from './types'
@@ -52,7 +52,7 @@ export const applyLatestOraclePrice = (data: OraclePriceData[], oraclePrice: num
 export const flattenOhlcPagesChronologically = <TPage, TItem>(
   pages: TPage[] | undefined,
   selectItems: (page: TPage) => TItem[],
-) => [...(pages ?? [])].reverse().flatMap(selectItems)
+) => maybe(pages, pages => pages.reverse().flatMap(selectItems))
 
 const clampPercentile = (value: number, fallback: number) =>
   Number.isFinite(value) ? Math.max(0, Math.min(1, value)) : fallback

@@ -39,7 +39,7 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
   const marketId = market?.id
   const marketAlert = useMarketAlert(chainId, getControllerAddress(market), LlamaMarketType.Lend)
 
-  const { borrowToken } = market ? getTokens(market) : {}
+  const { borrowToken } = getTokens(market) ?? {}
 
   const form = useForm<DepositForm>(formOptions)
 

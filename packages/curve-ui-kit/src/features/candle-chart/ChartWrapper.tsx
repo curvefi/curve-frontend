@@ -17,7 +17,7 @@ export type OhlcChartProps = {
   emptyMessage?: string
   error: Error | null
   betaBackgroundColor?: string // Used during the beta phase of the new theme migration to pass theme bg color
-  ohlcData: LpPriceOhlcDataFormatted[]
+  ohlcData: LpPriceOhlcDataFormatted[] | undefined
   oraclePriceData?: OraclePriceData[]
   liquidationRange?: LiquidationRanges
   selectedChartKey: string | undefined

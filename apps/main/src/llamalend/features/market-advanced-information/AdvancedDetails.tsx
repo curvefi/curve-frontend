@@ -37,6 +37,7 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
 
   return (
     <Box
+      data-testid="market-advanced-details"
       sx={{
         display: 'grid',
         gap: Spacing.lg,
@@ -73,6 +74,7 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
         />
       )}
       <Metric
+        testId="market-total-borrowers"
         size="medium"
         label={t`Total borrowers`}
         value={mapQuery(totalBorrowers, ({ value }) => value)}
@@ -87,6 +89,7 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
       {/* we show total collateral in the rate curve card for lend markets */}
       {!isLendMarket && (
         <Metric
+          testId="market-total-collateral"
           size="medium"
           label={t`Total collateral`}
           value={mapQuery(collateral, ({ combinedCollateralUsdValue }) => combinedCollateralUsdValue)}

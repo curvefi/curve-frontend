@@ -211,7 +211,7 @@ export const ActionInfo = ({
                     error={error}
                     valueColor={valueColor}
                     testId={`${testId}-value`}
-                    value={value}
+                    value={copyValue ?? value}
                     onClick={copyValue && !loading && !error ? copyToClipboard : undefined}
                   >
                     {typeof loading === 'string' ? loading : error ? '' : (value ?? '-')}

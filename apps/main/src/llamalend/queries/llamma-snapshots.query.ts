@@ -1,4 +1,4 @@
-import { Address } from 'viem'
+import { getControllerAddress } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { Chain } from '@curvefi/prices-api'
 import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
@@ -18,13 +18,12 @@ export function useLlamaSnapshot({
   range?: SnapshotRange
 }) {
   const isLendMarket = market instanceof LendMarketTemplate
-  const controllerAddress = (isLendMarket ? market?.addresses.controller : market?.controller) as Address | undefined
   const timeOption = range.kind === 'timeRange' ? range.timeOption : undefined
   const limit = range.kind === 'limit' ? range.limit : undefined
   const lendingSnapshotsQuery = useLendingSnapshots(
     {
       blockchainId,
-      contractAddress: controllerAddress,
+      contractAddress: getControllerAddress(market),
       timeOption,
       limit,
     },
@@ -33,7 +32,7 @@ export function useLlamaSnapshot({
   const crvUsdSnapshotsQuery = useCrvUsdSnapshots(
     {
       blockchainId,
-      contractAddress: controllerAddress,
+      contractAddress: getControllerAddress(market),
       timeOption,
       limit,
     },

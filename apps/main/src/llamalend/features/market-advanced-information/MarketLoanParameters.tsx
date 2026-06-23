@@ -5,14 +5,11 @@ import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { formatNumber } from '@ui-kit/utils'
 
-// In [1]: ltv = lambda x: ((x[0] - 1) / x[0])**2 * (1 - x[1])
-// In [2]: ltv((30, 0.11))
-// Out[2]: 0.8316555555555556
-// where x[0] is A, x[1] is loan discount normalised between 0 and 1 (so 11% is 0.11). multiply ltv by 100 to show percentage.
-// always show 'max ltv' which is the max possible loan at N=4 (not advisable but hey it exists!).
-function getMaxLTV(a: number | undefined, loanDiscount: string | undefined) {
-  return maybes([a, loanDiscount], ([a, loanDiscount]) => ((a - 1) / a) ** 2 * (1 - +loanDiscount / 100) * 100)
-}
+/** Max LTV at N=4. loanDiscount comes from the API as a percent value, e.g. "11" for 11%. */
+const getMaxLTV = (a: number | undefined, loanDiscount: string | undefined) =>
+  maybes([a, loanDiscount], ([a, loanDiscount]) =>
+    a === 0 ? undefined : ((a - 1) / a) ** 2 * (1 - Number(loanDiscount) / 100) * 100,
+  )
 
 export const MarketLoanParameters = ({ chainId, marketId }: { chainId: IChainId; marketId: string | undefined }) => {
   const {
@@ -26,7 +23,8 @@ export const MarketLoanParameters = ({ chainId, marketId }: { chainId: IChainId;
   return (
     <>
       <ActionInfo
-        label={t`AMM swap fees`}
+        testId="market-param-amm-swap-fee"
+        label={t`AMM swap fee`}
         labelTooltip={{
           title: t`The LLAMMA fee applied when collateral is gradually converted across liquidation bands.`,
         }}
@@ -36,6 +34,7 @@ export const MarketLoanParameters = ({ chainId, marketId }: { chainId: IChainId;
       />
 
       <ActionInfo
+        testId="market-param-admin-fee"
         label={t`Admin fee`}
         labelTooltip={{
           title: t`The share of market interest routed to the market admin or fee receiver instead of lenders.`,
@@ -46,6 +45,7 @@ export const MarketLoanParameters = ({ chainId, marketId }: { chainId: IChainId;
       />
 
       <ActionInfo
+        testId="market-param-band-width-factor"
         label={t`Band width factor`}
         labelTooltip={{
           title: t`A setting that controls how wide the liquidation bands are and how gradually soft liquidation plays out.`,
@@ -56,6 +56,7 @@ export const MarketLoanParameters = ({ chainId, marketId }: { chainId: IChainId;
       />
 
       <ActionInfo
+        testId="market-param-loan-discount"
         label={t`Loan discount`}
         labelTooltip={{ title: t`A safety buffer that lowers the maximum amount you can borrow against collateral.` }}
         value={formatNumber(parameters?.loan_discount, 'percent.rate')}
@@ -64,6 +65,7 @@ export const MarketLoanParameters = ({ chainId, marketId }: { chainId: IChainId;
       />
 
       <ActionInfo
+        testId="market-param-liquidation-discount"
         label={t`Liquidation discount`}
         labelTooltip={{
           title: t`A discount given to liquidators to ensure prompt liquidation when positions enter hard liquidations.`,
@@ -74,6 +76,7 @@ export const MarketLoanParameters = ({ chainId, marketId }: { chainId: IChainId;
       />
 
       <ActionInfo
+        testId="market-param-max-ltv"
         label={t`Max LTV`}
         labelTooltip={{ title: t`The highest loan-to-value ratio allowed when opening or increasing a position.` }}
         value={formatNumber(getMaxLTV(parameters?.A, parameters?.loan_discount), 'percent.rate')}

@@ -10,7 +10,7 @@ import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { maybe, notFalsy } from '@primitives/objects.utils'
+import { notFalsy } from '@primitives/objects.utils'
 import { type BaseConfig } from '@ui/utils'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
@@ -27,6 +27,7 @@ type AddressItem = {
   key: string
   label: ReactNode
   address?: string
+  fallbackValue?: ReactNode
   labelTooltip?: ActionInfoProps['labelTooltip']
 }
 
@@ -56,16 +57,19 @@ const AssetRow = ({
   network,
   title,
   token,
+  testId,
 }: {
   network: BaseConfig | undefined
   title: ReactNode
   token: { symbol?: string; address?: string } | undefined
+  testId: string
 }) => (
   <Stack>
     <Typography variant="bodyMBold" color="textSecondary">
       {title}
     </Typography>
     <AddressActionInfo
+      testId={testId}
       network={network}
       title={
         <TokenLabel
@@ -82,7 +86,7 @@ const AssetRow = ({
 
 export const MarketContractsSection = ({ chainId, market, network }: MarketContractsProps) => {
   const isMobile = useIsMobile()
-  const { collateralToken, borrowToken } = maybe(market, getTokens) ?? {}
+  const { collateralToken, borrowToken } = getTokens(market) ?? {}
   const { data: oracleAddress, isLoading: oracleAddressIsLoading } = useMarketOracleAddress({
     chainId,
     marketId: market?.id,
@@ -94,7 +98,6 @@ export const MarketContractsSection = ({ chainId, market, network }: MarketContr
   const gaugeAddress = market instanceof LendMarketTemplate ? market.addresses.gauge : undefined
 
   const infraAddressItems = notFalsy<AddressItem>(
-    market && { key: 'oracle', label: t`Oracle`, address: oracleAddress },
     market && { key: 'amm', label: t`AMM`, address: isLendMarket ? market.addresses.amm : market.address },
     isLendMarket && { key: 'vault', label: t`Vault`, address: market.addresses.vault },
     market && {
@@ -103,24 +106,39 @@ export const MarketContractsSection = ({ chainId, market, network }: MarketContr
       address: isLendMarket ? market.addresses.controller : market.controller,
     },
     market && {
-      key: 'rate-policy',
+      key: 'monetary-policy',
       label: t`Rate policy`,
       labelTooltip: {
         title: t`The rule set that controls how fast borrow costs rise or fall as market conditions change.`,
       },
       address: isLendMarket ? market.addresses.monetary_policy : market.monetaryPolicy,
     },
+    gaugeAddress &&
+      (gaugeAddress === zeroAddress
+        ? { key: 'gauge', label: t`Gauge`, fallbackValue: t`No gauge` }
+        : { key: 'gauge', label: <GaugeLabel />, address: gaugeAddress }),
+    market && { key: 'oracle', label: t`Oracle`, address: oracleAddress },
   )
 
   return (
-    <Stack>
-      <Card size="inline">
+    <Stack data-testid="market-contracts-section">
+      <Card size="inline" data-testid="market-assets-section">
         <CardHeader title={t`Assets`} />
         <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
           <WithSkeleton loading={assetsLoading} variant="rectangular" height="4lh" width="100%">
             <Stack>
-              <AssetRow network={network} title={t`Collateral`} token={collateralToken} />
-              <AssetRow network={network} title={t`Borrowed`} token={borrowToken} />
+              <AssetRow
+                testId="market-contract-collateral-token"
+                network={network}
+                title={t`Collateral`}
+                token={collateralToken}
+              />
+              <AssetRow
+                testId="market-contract-borrow-token"
+                network={network}
+                title={t`Borrowed`}
+                token={borrowToken}
+              />
             </Stack>
           </WithSkeleton>
         </CardContent>
@@ -131,25 +149,29 @@ export const MarketContractsSection = ({ chainId, market, network }: MarketContr
         <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
           <WithSkeleton loading={contractsLoading} variant="rectangular" height="8lh" width="100%">
             <Stack>
-              {infraAddressItems.map(({ key, label, labelTooltip, address }) => (
-                <AddressActionInfo
-                  key={key}
-                  network={network}
-                  title={label}
-                  labelTooltip={labelTooltip}
-                  address={address}
-                />
-              ))}
-              {gaugeAddress &&
-                (gaugeAddress === zeroAddress ? (
-                  <ActionInfo label={t`Gauge`} value={t`No gauge`} />
+              {infraAddressItems.map(({ key, label, labelTooltip, address, fallbackValue }) =>
+                fallbackValue != null ? (
+                  <ActionInfo
+                    key={key}
+                    testId={`market-contract-${key}`}
+                    label={label}
+                    labelTooltip={labelTooltip}
+                    value={fallbackValue}
+                  />
                 ) : (
-                  <AddressActionInfo network={network} title={<GaugeLabel />} address={gaugeAddress} />
-                ))}
+                  <AddressActionInfo
+                    key={key}
+                    testId={`market-contract-${key}`}
+                    network={network}
+                    title={label}
+                    labelTooltip={labelTooltip}
+                    address={address}
+                  />
+                ),
+              )}
             </Stack>
           </WithSkeleton>
         </CardContent>
-        <ActionInfo label={t`Market ID`} value={market?.id} loading={!market?.id} />
       </Card>
     </Stack>
   )

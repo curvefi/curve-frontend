@@ -13,7 +13,7 @@ import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header'
-import { isPricesApiChain } from '@curvefi/prices-api'
+import { getBlockchainId } from '@curvefi/prices-api'
 import type { Decimal } from '@primitives/decimal.utils'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { useParams } from '@ui-kit/hooks/router'
@@ -35,7 +35,7 @@ export const LendMarketPage = () => {
   useLendPageTitle(market?.collateral_token?.symbol ?? rMarket, t`Lend`)
 
   const network = networks[chainId]
-  const tokens = useMemo(() => (market ? getTokens(market) : {}), [market])
+  const tokens = useMemo(() => getTokens(market) ?? {}, [market])
   const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists(
     {
       chainId,
@@ -50,7 +50,7 @@ export const LendMarketPage = () => {
   const controllerAddress = getControllerAddress(market)
   const collateralEvents = useUserCollateralEvents({
     app: LlamaMarketType.Lend,
-    chain: isPricesApiChain(network.id) ? network.id : undefined,
+    chain: getBlockchainId(network.id),
     controllerAddress,
     userAddress,
     tokens,

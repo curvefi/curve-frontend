@@ -13,6 +13,7 @@ type AddressActionInfoProps = {
   labelTooltip?: ActionInfoProps['labelTooltip']
   address: string | undefined
   isBorderBottom?: boolean
+  testId?: string
 }
 
 export const AddressActionInfo = ({
@@ -21,8 +22,10 @@ export const AddressActionInfo = ({
   labelTooltip,
   address,
   isBorderBottom,
+  testId,
 }: AddressActionInfoProps) => (
   <ActionInfo
+    testId={testId}
     label={title}
     labelTooltip={labelTooltip}
     value={
