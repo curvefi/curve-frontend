@@ -7,7 +7,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { MarketLoanParameters } from './MarketLoanParameters'
-import { MarketIdRow, MarketPricesRows } from './MarketParameterRows'
+import { MarketPricesRows } from './MarketParameterRows'
 
 const { Spacing } = SizesAndSpaces
 
@@ -20,13 +20,6 @@ type MarketParametersProps = {
 export const MarketParametersSection = ({ chainId, marketId, marketType }: MarketParametersProps) => (
   <Stack>
     <Card size="inline">
-      <CardHeader title={t`Parameters`} />
-      <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
-        <MarketLoanParameters chainId={chainId} marketId={marketId} />
-      </CardContent>
-    </Card>
-
-    <Card size="inline">
       <CardHeader title={t`Prices`} />
       <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
         <MarketPricesRows
@@ -38,9 +31,9 @@ export const MarketParametersSection = ({ chainId, marketId, marketType }: Marke
     </Card>
 
     <Card size="inline">
-      <CardHeader title={t`Market`} />
+      <CardHeader title={t`Parameters`} />
       <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
-        <MarketIdRow marketId={marketId} />
+        <MarketLoanParameters chainId={chainId} marketId={marketId} />
       </CardContent>
     </Card>
   </Stack>
