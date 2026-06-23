@@ -106,7 +106,6 @@ export const useLlammaOhlcChartStateModel = ({
   const isLoading = !enabled || !isAnchorEndReady || oraclePoolsChartQuery.isLoading || isWaitingForFallbackChartData
   const selectedChartKey = isLoading ? undefined : isOracleLineOnly ? 'llamma' : 'oracle'
   const currentError = hasAnySeries ? null : (oraclePriceFallbackQuery.error ?? oraclePoolsChartQuery.error)
-  const noDataAvailable = enabled && !isLoading && !currentError && !hasAnySeries
   const emptyMessage = isLlammaFallbackEnabled
     ? t`No LLAMMA OHLC data found. Data may be unavailable for this pool.`
     : t`No oracle OHLC data found. Data may be unavailable for this pool.`
@@ -138,7 +137,7 @@ export const useLlammaOhlcChartStateModel = ({
     hideCandleSeriesLabel: true,
     chartHeight: Height.chart,
     isLoading,
-    isEmpty: noDataAvailable,
+    isEmpty: oraclePoolsChartQuery.data?.ohlcData?.length === 0,
     emptyMessage,
     error: currentError,
     ohlcData,
