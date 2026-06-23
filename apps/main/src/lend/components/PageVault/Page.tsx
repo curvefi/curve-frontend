@@ -9,7 +9,7 @@ import { SupplyPositionDetails } from '@/llamalend/features/market-position-deta
 import { useUserShares } from '@/llamalend/queries/user/user-balances.query'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header'
-import { useCurve } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
@@ -41,7 +41,7 @@ export const Page = () => {
       error={error}
       continueUrl={getCollateralListPathname(params)}
     />
-  ) : (
+  ) : userAddress ? (
     <DetailPageLayout
       formTabs={market && <VaultTabs {...pageProps} params={params} />}
       header={
@@ -69,5 +69,7 @@ export const Page = () => {
       )}
       <MarketInformationComposite pageProps={pageProps} rateType={MarketRateType.Supply} />
     </DetailPageLayout>
+  ) : (
+    <ConnectWalletPrompt description={t`Connect your wallet to view market`} testId="btn-connect-prompt" />
   )
 }

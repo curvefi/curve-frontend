@@ -118,7 +118,7 @@ export const CrvUsdPriceChart = () => {
   )
 
   return (
-    <Card size="small">
+    <Card size="small" data-testid="crvusd-price-chart">
       <CardHeader
         title={t`Historical crvUSD Peg`}
         action={

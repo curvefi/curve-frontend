@@ -15,7 +15,7 @@ import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header'
 import { getBlockchainId } from '@curvefi/prices-api'
 import type { Decimal } from '@primitives/decimal.utils'
-import { useCurve } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
@@ -65,7 +65,7 @@ export const LendMarketPage = () => {
   const error = marketError
   return error ? (
     <ErrorPage title={t`Error`} subtitle={error.message} continueUrl={getCollateralListPathname(params)} />
-  ) : (
+  ) : userAddress ? (
     <DetailPageLayout
       formTabs={
         !!market &&
@@ -103,5 +103,7 @@ export const LendMarketPage = () => {
         previewPrices={previewPrices}
       />
     </DetailPageLayout>
+  ) : (
+    <ConnectWalletPrompt description={t`Connect your wallet to view market`} testId="btn-connect-prompt" />
   )
 }

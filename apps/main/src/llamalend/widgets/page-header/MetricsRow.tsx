@@ -45,6 +45,7 @@ export const MetricsRow = ({
       {supplyRate && (
         <Metric
           alignment={metricAlignment}
+          testId="market-net-supply-apy"
           label={NET_SUPPLY_RATE_TITLE}
           value={mapQuery(supplyRate, supplyRate => supplyRate.totalMinBoost)}
           valueOptions={{ unit: 'percentage' }}
@@ -80,6 +81,7 @@ export const MetricsRow = ({
       )}
       <Metric
         alignment={metricAlignment}
+        testId="market-available-liquidity"
         label={t`Available liquidity`}
         {...tokenMetric({
           value: mapQuery(availableLiquidity, d => d.value),

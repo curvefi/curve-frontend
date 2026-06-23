@@ -14,7 +14,7 @@ import { type CollateralUrlParams } from '@/loan/types/loan.types'
 import { getChainId, getCollateralListPathname } from '@/loan/utils/utilsRouter'
 import { getBlockchainId } from '@curvefi/prices-api'
 import type { Decimal } from '@primitives/decimal.utils'
-import { useCurve } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
@@ -28,7 +28,7 @@ export const MintMarketPage = () => {
   const rCollateralId = params.collateralId.toLowerCase()
   const { llamaApi: curve = null, isInitialized } = useCurve()
   const chainId = getChainId(params)
-  const { address } = useConnection()
+  const { address: userAddress } = useConnection()
   const [previewPrices, setPreviewPrices] = useState<Range<Decimal> | undefined>(undefined)
 
   const {
@@ -40,7 +40,7 @@ export const MintMarketPage = () => {
   const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists({
     chainId,
     marketId: market?.id,
-    userAddress: address,
+    userAddress,
   })
 
   const network = networks[chainId]
@@ -51,7 +51,7 @@ export const MintMarketPage = () => {
     app: LlamaMarketType.Mint,
     chain: getBlockchainId(network.id),
     controllerAddress: getControllerAddress(market),
-    userAddress: address,
+    userAddress,
     network,
     tokens,
   })
@@ -72,7 +72,7 @@ export const MintMarketPage = () => {
       error={error}
       continueUrl={getCollateralListPathname(params)}
     />
-  ) : (
+  ) : userAddress ? (
     <DetailPageLayout
       formTabs={
         !!market &&
@@ -98,7 +98,7 @@ export const MintMarketPage = () => {
         tokens={tokens}
         hasPosition={loanExists}
         events={collateralEvents}
-        params={{ chainId, marketId: market?.id, userAddress: address }}
+        params={{ chainId, marketId: market?.id, userAddress }}
       />
       <MarketInformationComposite
         market={market ?? null}
@@ -107,5 +107,7 @@ export const MintMarketPage = () => {
         previewPrices={previewPrices}
       />
     </DetailPageLayout>
+  ) : (
+    <ConnectWalletPrompt description={t`Connect your wallet to view market`} testId="btn-connect-prompt" />
   )
 }
