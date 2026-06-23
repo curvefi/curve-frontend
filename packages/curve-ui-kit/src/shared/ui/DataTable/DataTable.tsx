@@ -1,5 +1,5 @@
 /// <reference types="./DataTable.d.ts" />
-import { type ReactNode, useEffect, useEffectEvent, useMemo, useRef } from 'react'
+import { type ReactNode, useMemo, useRef } from 'react'
 import Box from '@mui/material/Box'
 import { Theme } from '@mui/material/styles'
 import Table from '@mui/material/Table'
@@ -10,18 +10,25 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
-import type { IncreasingLengthCategory } from '@ui-kit/hooks/useIncreasingLength'
 import { t } from '@ui-kit/lib/i18n'
 import { TablePagination } from '@ui-kit/shared/ui/DataTable/TablePagination'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { EmptyStateCard, EmptyStateCardProps } from '../EmptyStateCard'
 import { ErrorMessage } from '../ErrorMessage'
-import { DataTableHeaderHeight, type DataTableSize, type TableItem, type TanstackTable } from './data-table.utils'
+import {
+  DATA_TABLE_CATEGORIES,
+  DataTableCategory,
+  DataTableCategoryConfig,
+  DataTableHeaderHeight,
+  type TableItem,
+  type TanstackTable,
+} from './data-table.utils'
 import { DataRow, type DataRowProps } from './DataRow'
-import { EmptyStateRow, type EmptyStateRowSize } from './EmptyStateRow'
+import { EmptyStateRow } from './EmptyStateRow'
 import { FilterRow } from './FilterRow'
 import { HeaderCell } from './HeaderCell'
+import { useResetPageOnResultChange } from './hooks/useResetPageOnResultChange'
 import { useScrollToTopOnFilterChange, useScrollToTopOnPageChange } from './hooks/useTableScroll'
 import { useTableStickyHeader } from './hooks/useTableStickyHeader'
 import { SkeletonRows } from './SkeletonRows'
@@ -42,65 +49,6 @@ type TableEmptyState = {
   onReload?: () => Promise<unknown> | void
 }
 
-type DataTableCategoryConfig = {
-  size?: DataTableSize
-  height?: `${number}rem` // also sets overflowY to 'auto'
-  defaultVisibleRows?: number // maximum number of visible rows
-  disableStickyHeader?: boolean // can also be disabled by limited rows or table width overflow.
-  hideHeader?: boolean
-  increasingLength?: IncreasingLengthCategory
-  emptyStateSize?: NonNullable<EmptyStateCardProps['size']>
-  emptyStateRowSize?: EmptyStateRowSize
-}
-
-export type DataTableCategory = keyof typeof DATA_TABLE_CATEGORIES
-
-const DATA_TABLE_CATEGORIES = {
-  // default full-list table, e.g. LlamaMarketsTable or PoolListTable.
-  list: {
-    emptyStateRowSize: 'lg',
-  },
-  // preview table that starts with a few rows, e.g. UserPositionsMarketRateTable.
-  limited: {
-    defaultVisibleRows: 3,
-    increasingLength: 'limited',
-  },
-  // table with many rows constrained inside a scrollable viewport, e.g. ActivityTable or UserEventsTable.
-  scrollable: {
-    height: Height.table.events,
-    emptyStateRowSize: 'lg',
-  },
-  // compact detail table inside a secondary card or advanced-details section, e.g. PoolComposition or YieldBreakdown.
-  detail: {
-    disableStickyHeader: true,
-    increasingLength: 'disabled',
-  },
-  // compact form table without visible column headers, e.g. ClaimTab or ClosePositionForm.
-  form: {
-    disableStickyHeader: true,
-    hideHeader: true,
-    increasingLength: 'disabled',
-    emptyStateSize: 'sm',
-  },
-} as const satisfies Record<string, DataTableCategoryConfig>
-
-/**
- * Resets the table pagination to the first page whenever the number of filtered results changes.
- * Skipped for manual pagination since data changes on every page change.
- */
-function useResetPageOnResultChange<T extends TableItem>(table: TanstackTable<T>) {
-  const isManualPagination = table.options.manualPagination
-  const resultCount = table.getFilteredRowModel().rows.length
-  const onPaginationChangeEvent = useEffectEvent(table.setPagination)
-  const lastResultCountRef = useRef<number>(resultCount)
-  useEffect(() => {
-    // Skip for manual pagination - data is expected to change on page change
-    if (isManualPagination) return
-    // Reset to first page, but only if result amount wasn't 0 (links must keep working while data might still be loading)
-    if (lastResultCountRef.current && resultCount) onPaginationChangeEvent(prev => ({ ...prev, pageIndex: 0 }))
-    lastResultCountRef.current = resultCount
-  }, [resultCount, isManualPagination])
-}
 /**
  * DataTable component to render the table with headers and rows.
  * The table header stays sticky only when enabled, rows are not limited, and table content fits within its parent.
