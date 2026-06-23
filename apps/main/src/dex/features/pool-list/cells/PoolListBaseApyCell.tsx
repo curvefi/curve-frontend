@@ -11,14 +11,14 @@ import type { PoolListItem } from '../poolList.types'
 export const PoolListBaseApyCell = ({
   row: { original: pool },
   getValue,
-}: CellContext<PoolListItem, number | null | undefined>) =>
-  maybe(getValue(), baseDailyApr =>
-    baseDailyApr > LARGE_APY ? (
+}: CellContext<PoolListItem, PoolListItem['baseDailyApy']>) =>
+  maybe(getValue(), baseDailyApy =>
+    baseDailyApy > LARGE_APY ? (
       <ChipVolatileBaseApy />
     ) : (
-      <Tooltip title={<TooltipBaseApy baseDailyApr={baseDailyApr} baseWeeklyApr={pool.baseWeeklyApr} />}>
+      <Tooltip title={<TooltipBaseApy baseDailyApy={baseDailyApy} baseWeeklyApy={pool.baseWeeklyApy} />}>
         <Typography component="span" variant="tableCellMBold">
-          {formatNumber(baseDailyApr, 'percent.rate')}
+          {formatNumber(baseDailyApy, 'percent.rate')}
         </Typography>
       </Tooltip>
     ),

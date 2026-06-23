@@ -55,7 +55,7 @@ export const PoolListMobileExpandedPanel: ExpandedPanel<PoolListItem> = ({ row, 
         />
         <ListInfoItem
           label={t`BASE vAPY`}
-          value={pool.baseDailyApr}
+          value={pool.baseDailyApy}
           valueOptions={{
             unit: 'percentage',
             ...(table.getColumn(PoolListColumnId.RewardsBase)?.getIsSorted() && highlight),

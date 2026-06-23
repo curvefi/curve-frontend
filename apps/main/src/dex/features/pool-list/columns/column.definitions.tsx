@@ -49,7 +49,7 @@ export const POOL_LIST_COLUMNS = [
   accessor(PoolListColumnId.PoolName, 'name', {
     cell: PoolListTitleCell,
   }),
-  accessor(PoolListColumnId.RewardsBase, 'baseDailyApr', {
+  accessor(PoolListColumnId.RewardsBase, 'baseDailyApy', {
     cell: PoolListBaseApyCell,
     meta: {
       type: 'numeric',
