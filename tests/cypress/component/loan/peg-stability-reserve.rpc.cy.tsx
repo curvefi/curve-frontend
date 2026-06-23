@@ -42,7 +42,7 @@ describe('Peg stability reserve', () => {
     cy.get('[data-testid="pegkeeper-action-info-contract-value"]').invoke('text').should('eq', '0x92...40')
     cy.get('[data-testid="pegkeeper-action-info-profit-value"]').as('est-profit').invoke('text').should('eq', '3.31562')
 
-    cy.get('[data-testid="navigation-connect-wallet"]').as('connect-wallet').should('exist')
+    cy.get('[data-testid="pegkeeper-connect-wallet"]').as('connect-wallet').should('exist')
 
     // Connect wallet
     cy.get('@connect-wallet').click()

@@ -11,7 +11,6 @@ import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
-import { getLib } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
@@ -28,15 +27,12 @@ type MarketInformationCompProps = {
  */
 export const MarketInformationComposite = ({ pageProps, rateType, previewPrices }: MarketInformationCompProps) => {
   const { rChainId, marketId, market } = pageProps
-  const api = getLib('llamaApi')
   const isBorrow = rateType === MarketRateType.Borrow
   const blockchainId = networks[rChainId].id as Chain
 
   return (
     <Stack sx={{ gap: PAGE_SPACING }}>
-      {isBorrow && (
-        <ChartAndActivityComp rChainId={rChainId} marketId={marketId} api={api} previewPrices={previewPrices} />
-      )}
+      {isBorrow && <ChartAndActivityComp rChainId={rChainId} market={market} previewPrices={previewPrices} />}
       {isBorrow && (
         <MarketHistoricalRatesChart
           market={market}

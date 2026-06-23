@@ -7,7 +7,6 @@ export { LlammaActivityEvents } from './LlammaActivityEvents'
 export { LlammaActivityTrades } from './LlammaActivityTrades'
 
 export type LlammaActivityProps = {
-  isMarketAvailable: boolean
   network: Chain | undefined
   collateralToken: Token | undefined
   borrowToken: Token | undefined

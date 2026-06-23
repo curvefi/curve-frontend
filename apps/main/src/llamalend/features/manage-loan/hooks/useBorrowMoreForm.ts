@@ -116,7 +116,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   const marketId = market?.id
   const marketAlert = useMarketAlert(chainId, getControllerAddress(market), getMarketType(market))
 
-  const { borrowToken, collateralToken } = market ? getTokens(market) : {}
+  const { borrowToken, collateralToken } = getTokens(market) ?? {}
 
   const form = useForm<BorrowMoreForm>({
     validation: borrowMoreFormValidationSuite,

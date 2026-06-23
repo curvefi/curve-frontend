@@ -45,7 +45,7 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({
   const marketId = market?.id
 
   const vaultToken = getVaultToken(market)
-  const { borrowToken, collateralToken } = market ? getTokens(market) : {}
+  const { borrowToken, collateralToken } = getTokens(market) ?? {}
 
   const userBalances = useVaultUserBalances({ chainId, marketId, userAddress }, enabled)
   const maxUserUnstake = { ...mapQuery(userBalances, d => d.stakedShares), fieldName: 'maxUnstakeAmount' as const }

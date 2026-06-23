@@ -152,7 +152,7 @@ export const LegacyUserPositionsTable = ({
 
   const table = useTable({
     columns: LLAMA_MARKET_COLUMNS,
-    data: userData,
+    query: userQuery,
     state: { expanded, sorting, columnVisibility, columnFilters, globalFilter },
     initialState: { pagination },
     onSortingChange,
@@ -194,7 +194,7 @@ export const LegacyUserPositionsTable = ({
           collapsible={<LegacyLendingMarketsFilters data={userData} {...filterProps} />}
           chips={
             <>
-              <LlamaChainFilterChips marketsQuery={{ ...tableQuery, data: userData }} {...filterProps} />
+              <LlamaChainFilterChips marketsQuery={userQuery} {...filterProps} />
               <LegacyLlamaListChips
                 hiddenCount={getHiddenCount(table)}
                 resetFilters={resetFilters}

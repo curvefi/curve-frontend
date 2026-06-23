@@ -1,4 +1,3 @@
-import { sumBy } from 'lodash'
 import { useClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/hooks/useClosePositionForm'
 import { ClosePositionInfoList } from '@/llamalend/features/manage-soft-liquidation/ui/ClosePositionInfoList'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
@@ -10,6 +9,7 @@ import { joinButtonText } from '@primitives/string.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
+import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
@@ -39,19 +39,16 @@ export const ClosePositionForm = ({
     table,
     debtTokenSymbol,
     collateralToRecover,
+    hasBadDebt,
     missing,
     borrowedBalance,
     isDisabled,
     isPending,
-    isLoading,
-    error,
     closeError,
     isApproved,
     onSubmit,
     formErrors,
   } = useClosePositionForm({ market, network, enabled })
-
-  const collateralToRecoverUsd = sumBy(collateralToRecover, ({ usd }) => Number(usd) || 0)
 
   return (
     <Form
@@ -72,14 +69,16 @@ export const ClosePositionForm = ({
         table={table}
         emptyState={
           <EmptyStateRow table={table}>
-            {error ? t`Could not load position data: ${error.message}` : t`Could not load position close data`}
+            <EmptyStateCard
+              title={table.error ? t`Could not load position close data` : t`No close position data`}
+              description={table.error?.message}
+            />
           </EmptyStateRow>
         }
-        isLoading={isLoading}
         verticalAlign="top"
         hideHeader
         footerRow={
-          !isLoading &&
+          !table.isLoading &&
           collateralToRecover != null && (
             <>
               <TableCell sx={{ padding: Spacing.md }}>
@@ -95,7 +94,7 @@ export const ClosePositionForm = ({
       {missing != null && borrowedBalance != null && +missing > 0 ? (
         <AlertAdditionalDebtToken debtTokenSymbol={debtTokenSymbol} missing={missing} balance={borrowedBalance} />
       ) : (
-        <AlertClosePosition badDebt={collateralToRecoverUsd <= 0} />
+        <AlertClosePosition hasBadDebt={hasBadDebt} />
       )}
       <Stack sx={{ gap: Spacing.xs }}>
         <Button type="submit" loading={isPending} disabled={isDisabled} data-testid="close-position-submit-button">
@@ -103,11 +102,17 @@ export const ClosePositionForm = ({
             ? t`Processing...`
             : joinButtonText(
                 isApproved?.data === false && t`Approve`,
-                ...(collateralToRecoverUsd <= 0 ? [t`Repay bad debt`] : [t`Repay debt`, t`Recover collateral`]),
+                ...(hasBadDebt ? [t`Repay bad debt`] : [t`Repay debt`, t`Recover collateral`]),
               )}
         </Button>
       </Stack>
-      <FormAlerts error={error ?? closeError ?? null} formErrors={formErrors} handledErrors={[]} />
+
+      <FormAlerts
+        // the table can keep rows visible on query errors, so surface the table error here too
+        error={closeError ?? table.error ?? null}
+        formErrors={formErrors}
+        handledErrors={[]}
+      />
     </Form>
   )
 }

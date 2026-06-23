@@ -47,7 +47,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
   const marketAlert = useMarketAlert(chainId, getControllerAddress(market), LlamaMarketType.Lend)
 
   const vaultToken = getVaultToken(market)
-  const { borrowToken, collateralToken } = market ? getTokens(market) : {}
+  const { borrowToken, collateralToken } = getTokens(market) ?? {}
 
   const userBalances = useVaultUserBalances({ chainId, marketId, userAddress }, enabled)
   const maxUserStake = { ...mapQuery(userBalances, d => d.depositedShares), fieldName: 'maxStakeAmount' as const }

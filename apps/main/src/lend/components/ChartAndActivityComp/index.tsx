@@ -1,44 +1,35 @@
 import { useOhlcChartState } from '@/lend/hooks/useOhlcChartState'
 import { networks } from '@/lend/networks'
-import { Api, ChainId } from '@/lend/types/lend.types'
+import { ChainId } from '@/lend/types/lend.types'
 import { getBandsChartToken } from '@/llamalend/features/bands-chart/bands-chart.utils'
 import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
+import { getAmmAddress } from '@/llamalend/llama.utils'
 import { ChartAndActivityLayout } from '@/llamalend/widgets/ChartAndActivityLayout'
-import type { Chain } from '@curvefi/prices-api'
-import type { Address, Token } from '@primitives/address.utils'
+import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import { getBlockchainId } from '@curvefi/prices-api'
+import type { Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { useBandsChartVisible } from '@ui-kit/hooks/useLocalStorage'
 import type { Range } from '@ui-kit/types/util'
-import { useLendMarketData } from '../../hooks/useLendMarket'
 
 type ChartAndActivityCompProps = {
   rChainId: ChainId
-  marketId: string
-  api: Api | undefined
+  market: LendMarketTemplate | undefined
   previewPrices: Range<Decimal> | undefined
 }
 
-export const ChartAndActivityComp = ({ rChainId, marketId, api, previewPrices }: ChartAndActivityCompProps) => {
+export const ChartAndActivityComp = ({ rChainId, market, previewPrices }: ChartAndActivityCompProps) => {
   const [isBandsVisible] = useBandsChartVisible()
-  const market = useLendMarketData(rChainId, marketId).data
   const collateralTokenAddress = market?.collateral_token.address
   const borrowedTokenAddress = market?.borrowed_token.address
-
   const networkConfig = networks[rChainId]
-  const network = networkConfig?.id.toLowerCase() as Chain
-  const ammAddress = market?.addresses.amm as Address | undefined
-
   const {
     isLoading: isChartLoading,
     selectedChartKey,
     setTimeOption,
     legendSets,
     ohlcChartProps,
-  } = useOhlcChartState({
-    rChainId,
-    marketId,
-    previewPrices,
-  })
+  } = useOhlcChartState({ rChainId, market, previewPrices })
 
   const {
     chartData,
@@ -46,12 +37,7 @@ export const ChartAndActivityComp = ({ rChainId, marketId, api, previewPrices }:
     oraclePrice,
     isLoading: isBandsLoading,
     error: bandsError,
-  } = useBandsData({
-    chainId: rChainId,
-    marketId,
-    api,
-    enabled: isBandsVisible,
-  })
+  } = useBandsData({ chainId: rChainId, marketId: market?.id, enabled: isBandsVisible })
 
   const collateralToken = getBandsChartToken(collateralTokenAddress, market?.collateral_token.symbol) as
     | Token
@@ -77,9 +63,8 @@ export const ChartAndActivityComp = ({ rChainId, marketId, api, previewPrices }:
         borrowToken,
       }}
       activity={{
-        isMarketAvailable: !!market,
-        network,
-        ammAddress,
+        network: getBlockchainId(networkConfig?.id),
+        ammAddress: getAmmAddress(market),
         collateralToken,
         borrowToken,
         endpoint: 'lending',

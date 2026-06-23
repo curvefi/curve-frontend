@@ -34,7 +34,7 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({
   const { chainId } = network
   const marketId = market?.id
 
-  const { borrowToken } = market ? getTokens(market) : {}
+  const { borrowToken } = getTokens(market) ?? {}
 
   const form = useForm<WithdrawForm>({
     validation: withdrawFormValidationSuite,

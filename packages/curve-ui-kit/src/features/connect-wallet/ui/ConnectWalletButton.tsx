@@ -6,7 +6,7 @@ import { useWallet } from '../lib'
 
 export const ConnectWalletButton = ({
   label = t`Connect Wallet`,
-  testId = 'navigation-connect-wallet',
+  testId,
   onConnect,
   ...props
 }: Pick<ButtonProps, 'size' | 'fullWidth' | 'sx'> & { label?: ReactNode; testId?: string; onConnect?: () => void }) => {
