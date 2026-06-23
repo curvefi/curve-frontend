@@ -20,7 +20,7 @@ type PositionDetailsTabOption = TabOption<PositionDetailsTab> & { render: () => 
 const DEFAULT_TAB: PositionDetailsTab = 'borrowDetails'
 
 export const usePositionDetailsTabs = ({
-  events: { data: events, isLoading: activityIsLoading, error: activityError },
+  events,
   hasPosition,
   params: { chainId, marketId, userAddress },
   tokens,
@@ -49,22 +49,17 @@ export const usePositionDetailsTabs = ({
               />
             ),
         },
-        events?.length && {
+        events.data?.length && {
           value: 'activity' as const,
           label: t`Activity`,
           render: () => (
             <Stack>
-              <UserPositionHistory
-                variant="flat"
-                events={events}
-                isLoading={activityIsLoading}
-                isError={!!activityError}
-              />
+              <UserPositionHistory variant="flat" eventsQuery={events} />
             </Stack>
           ),
         },
       ),
-    [events, hasPosition, tokens, chainId, marketId, userAddress, activityIsLoading, activityError],
+    [events, hasPosition, tokens, chainId, marketId, userAddress],
   )
 
   const { tab = DEFAULT_TAB, onTabChange } = useTabs(tabOptions, DEFAULT_TAB)

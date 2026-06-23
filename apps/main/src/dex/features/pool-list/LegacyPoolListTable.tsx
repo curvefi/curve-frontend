@@ -11,6 +11,7 @@ import { useFilters } from '@ui-kit/shared/ui/DataTable/hooks/useFilters'
 import { LegacyDataTable } from '@ui-kit/shared/ui/DataTable/LegacyDataTable'
 import { LegacyTableFilters } from '@ui-kit/shared/ui/DataTable/LegacyTableFilters'
 import { LegacyTableFiltersTitles } from '@ui-kit/shared/ui/DataTable/LegacyTableFiltersTitles'
+import { q } from '@ui-kit/types/util'
 import { LegacyPoolListChips } from './chips/LegacyPoolListChips'
 import { LEGACY_POOL_LIST_COLUMNS, LegacyPoolColumnId, getLegacyDefaultSort } from './columns'
 import { LegacyPoolListEmptyState } from './components/LegacyPoolListEmptyState'
@@ -22,7 +23,6 @@ import { useLegacyPoolsGlobalFilterFn } from './legacyPoolsGlobalFilter'
 const LOCAL_STORAGE_KEY = 'dex-pool-list'
 
 const PER_PAGE = 50
-const EMPTY: never[] = []
 
 export const LegacyPoolListTable = ({ network }: { network: NetworkConfig }) => {
   const { isLite, poolFilters } = network
@@ -47,7 +47,7 @@ export const LegacyPoolListTable = ({ network }: { network: NetworkConfig }) => 
 
   const table = useTable({
     columns: LEGACY_POOL_LIST_COLUMNS,
-    data: data ?? EMPTY,
+    query: q({ data, isLoading, error: null }),
     state: { expanded, sorting, columnVisibility, columnFilters, pagination, globalFilter },
     onSortingChange,
     onExpandedChange,
