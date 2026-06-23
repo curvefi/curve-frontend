@@ -237,7 +237,7 @@ const meta: Meta<typeof DemoDataTable> = {
     },
     category: {
       control: 'select',
-      options: ['list', 'limitedList', 'scrollableList', 'detail', 'summary'],
+      options: ['list', 'limited', 'scrollable', 'detail', 'form'],
       description: 'Preset table behavior and sizing category.',
     },
     verticalAlign: {
