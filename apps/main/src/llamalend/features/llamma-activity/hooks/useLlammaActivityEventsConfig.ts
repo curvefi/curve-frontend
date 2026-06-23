@@ -8,64 +8,51 @@ import {
   useManualPagination,
   DEFAULT_PAGE_SIZE,
 } from '@ui-kit/features/activity-table'
+import { combineQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { mapQuery, q } from '@ui-kit/types/util'
+import { fakeLoadingQ } from '@ui-kit/types/util'
 import { getPageCount } from '@ui-kit/utils'
 import { LlammaActivityProps } from '..'
 
 export const useLlammaActivityEventsConfig = ({
-  network,
+  network: chain,
   collateralToken,
   borrowToken,
-  ammAddress,
+  ammAddress: llamma,
   endpoint,
   networkConfig,
 }: LlammaActivityProps) => {
   const { eventsColumnVisibility } = useLlammaActivityVisibility()
-  const { pagination, onPaginationChange, apiPage } = useManualPagination()
+  const { pagination, onPaginationChange, apiPage: page } = useManualPagination()
 
-  const eventsQuery = useLlammaEvents({
-    chain: network,
-    llamma: ammAddress,
-    endpoint,
-    page: apiPage,
-    perPage: DEFAULT_PAGE_SIZE,
-  })
-
-  const pageCount = getPageCount(eventsQuery.data?.count, DEFAULT_PAGE_SIZE)
+  const eventsQuery = useLlammaEvents({ chain, llamma, endpoint, page, perPage: DEFAULT_PAGE_SIZE })
 
   // Transform events data with block explorer URLs
-  const eventsWithUrlsQuery = mapQuery(
-    eventsQuery,
+  const query = combineQueries(
+    [eventsQuery, fakeLoadingQ(llamma)],
     ({ events }) =>
-      network &&
+      chain &&
       events.map((event: LlammaEvent) => ({
         ...event,
         providerUrl: scanAddressPath(networkConfig, event.provider),
         txUrl: scanTxPath(networkConfig, event.txHash),
-        network,
+        network: chain,
         collateralToken,
         borrowToken,
       })),
   )
 
-  const table = useTable({
-    query: q({
-      data: eventsWithUrlsQuery.data,
-      isLoading: eventsWithUrlsQuery.isLoading || !ammAddress,
-      error: ammAddress ? eventsWithUrlsQuery.error : null,
-    }),
-    columns: LLAMMA_EVENTS_COLUMNS,
-    state: { columnVisibility: eventsColumnVisibility, pagination },
-    manualPagination: true,
-    pageCount,
-    onPaginationChange,
-    ...getTableOptions<LlammaEventRow>(eventsWithUrlsQuery.data),
-  })
-
   return {
-    table,
+    table: useTable({
+      query,
+      columns: LLAMMA_EVENTS_COLUMNS,
+      state: { columnVisibility: eventsColumnVisibility, pagination },
+      manualPagination: true,
+      pageCount: getPageCount(eventsQuery.data?.count, DEFAULT_PAGE_SIZE),
+      onPaginationChange,
+      ...getTableOptions<LlammaEventRow>(query.data),
+    }),
     emptyMessage: t`No activity data found.`,
     errorMessage: t`Could not load activity data.`,
   }

@@ -1,10 +1,10 @@
 import type { Chain } from '@curvefi/prices-api'
+import { Address } from '@primitives/address.utils'
 import { type CrvUsdSnapshot, useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
 import { type LendingSnapshot, useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
 import type { SnapshotRange } from '@ui-kit/lib/model/query/time-option-validation'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import type { Query } from '@ui-kit/types/util'
-import type { Address } from 'viem'
 
 export function useLlamaSnapshot({
   blockchainId,
