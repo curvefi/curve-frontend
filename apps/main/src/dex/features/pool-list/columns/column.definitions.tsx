@@ -48,6 +48,7 @@ export const POOL_LIST_TITLES: Record<PoolListColumnId, string> = {
 export const POOL_LIST_COLUMNS = [
   accessor(PoolListColumnId.PoolName, 'name', {
     cell: PoolListTitleCell,
+    enableHiding: false,
   }),
   accessor(PoolListColumnId.RewardsBase, 'baseDailyApy', {
     cell: PoolListBaseApyCell,
