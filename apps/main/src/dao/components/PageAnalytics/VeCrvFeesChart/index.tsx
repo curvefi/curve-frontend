@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { DAO_CHART_HEIGHT } from '@/dao/components/Charts/constants'
 import { useVeCrvFeesQuery } from '@/dao/entities/vecrv-fees'
@@ -9,7 +10,9 @@ import { FeesBarChart } from './FeesBarChart'
 const VECRV_FEES_WEEKS = 52
 
 export const VeCrvFeesChart = () => {
-  const { data: veCrvFees, isLoading, error, refetch } = useVeCrvFeesQuery({ order: 'asc', weeks: VECRV_FEES_WEEKS })
+  const { data: veCrvFees, isLoading, error, refetch } = useVeCrvFeesQuery({ weeks: VECRV_FEES_WEEKS })
+  // The API returns newest distributions first; charts read more naturally from oldest to newest.
+  const chartData = useMemo(() => veCrvFees?.toReversed(), [veCrvFees])
 
   return (
     <Wrapper>
@@ -20,12 +23,12 @@ export const VeCrvFeesChart = () => {
         <ChartStateWrapper
           height={DAO_CHART_HEIGHT}
           isLoading={isLoading}
-          isEmpty={!isLoading && !error && veCrvFees?.length === 0}
+          isEmpty={!isLoading && !error && chartData?.length === 0}
           error={error}
           errorMessage={t`Unable to fetch veCRV fees data.`}
           refreshData={() => refetch()}
         >
-          {veCrvFees && <FeesBarChart height={DAO_CHART_HEIGHT} data={veCrvFees} />}
+          {chartData && <FeesBarChart height={DAO_CHART_HEIGHT} data={chartData} />}
         </ChartStateWrapper>
       </Content>
     </Wrapper>

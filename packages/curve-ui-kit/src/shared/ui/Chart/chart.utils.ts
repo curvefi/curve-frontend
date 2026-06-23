@@ -1,6 +1,7 @@
 import { meanBy } from 'lodash'
 import type { Theme } from '@mui/material/styles'
 import { movingAverage } from '@primitives/array.utils'
+import { notFalsyArray } from '@primitives/objects.utils'
 import { TIME_FRAMES } from '@ui-kit/lib/model/time'
 import { formatNumber, type NumberFormatOptions } from '@ui-kit/utils/number'
 
@@ -55,7 +56,7 @@ export const getPaddedChartAxisBounds = ({
   referenceValues?: number[]
   values: number[]
 }) => {
-  const boundsValues = [...values, ...referenceValues, ...(includeZero ? [0] : [])]
+  const boundsValues = notFalsyArray(values, referenceValues, includeZero && [0])
   if (!boundsValues.length) return { min: 0, max: 0 }
 
   const min = Math.min(...boundsValues)

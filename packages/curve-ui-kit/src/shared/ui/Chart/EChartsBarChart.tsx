@@ -2,6 +2,7 @@ import type { EChartsOption } from 'echarts'
 import ReactECharts from 'echarts-for-react'
 import { useMemo, type ReactNode } from 'react'
 import { useTheme } from '@mui/material/styles'
+import { maybe } from '@primitives/objects.utils'
 import { useEChartsTooltip } from '@ui-kit/shared/ui/Chart/hooks/useEChartsTooltip'
 
 export type EChartsBarChartTooltipContext<TData> = {
@@ -63,7 +64,7 @@ export const EChartsBarChart = <
   const tooltipFormatter = useEChartsTooltip(
     data,
     theme,
-    renderTooltip ? (datum: TData) => renderTooltip({ datum }) : undefined,
+    maybe(renderTooltip, render => datum => render({ datum })),
   )
   const xAxisData = useMemo(() => data.map(item => toCategoryAxisValue(item[xKey])), [data, xKey])
   const yAxisData = useMemo(

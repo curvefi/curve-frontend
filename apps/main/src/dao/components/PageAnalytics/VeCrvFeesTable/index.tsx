@@ -1,3 +1,4 @@
+import { sumBy } from 'lodash'
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { ErrorMessage } from '@/dao/components/ErrorMessage'
@@ -18,7 +19,7 @@ export const VeCrcFees = () => {
     isSuccess: feesReady,
     refetch,
   } = useVeCrvFeesQuery({})
-  const totalFees = useMemo(() => veCrvFees.reduce((total, fee) => total + +fee.feesUsd, 0), [veCrvFees])
+  const totalFees = useMemo(() => sumBy(veCrvFees, fee => +fee.feesUsd), [veCrvFees])
 
   return (
     <MuiBox sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>

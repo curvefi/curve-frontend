@@ -7,6 +7,8 @@ import { useGauges } from '@/dao/queries/gauges.query'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import { truncateToShortenedAddressLength } from '@/dao/utils'
 import { useTheme } from '@mui/material/styles'
+import { sortBy, toArray } from '@primitives/array.utils'
+import { recordValues } from '@primitives/objects.utils'
 import { Box } from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
 import {
@@ -55,18 +57,20 @@ export const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistribution
 
   const userVoteData: UserGaugeVoteWeight[] = useMemo(
     () =>
-      userGaugeWeightVotes?.gauges.map(gauge => ({
+      toArray(userGaugeWeightVotes?.gauges).map(gauge => ({
         ...gauge,
         title: gaugeMapper?.[gauge.gaugeAddress]?.title ?? '',
-      })) ?? [],
+      })),
     [gaugeMapper, userGaugeWeightVotes?.gauges],
   )
 
   const gaugeData: GaugeFormattedData[] = useMemo(
     () =>
-      Object.values(gaugeMapper ?? {})
-        .filter(gauge => gauge.gauge_relative_weight > 0.5)
-        .sort((a, b) => b.gauge_relative_weight - a.gauge_relative_weight),
+      sortBy(
+        recordValues(gaugeMapper ?? {}).filter(gauge => gauge.gauge_relative_weight > 0.5),
+        gauge => gauge.gauge_relative_weight,
+        'desc',
+      ),
     [gaugeMapper],
   )
 

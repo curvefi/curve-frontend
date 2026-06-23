@@ -1,4 +1,4 @@
-import { meanBy } from 'lodash'
+import { meanBy, sumBy } from 'lodash'
 import { useCallback } from 'react'
 import { styled } from 'styled-components'
 import { useStatsVecrvQuery } from '@/dao/entities/stats-vecrv'
@@ -10,12 +10,13 @@ import { useCombinedQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { Metric } from '@ui-kit/shared/ui/Metric'
-import { mapQuery, q } from '@ui-kit/types/util'
+import { constQ, mapQuery } from '@ui-kit/types/util'
 import { formatNumber, MAINNET_CRV_ADDRESS } from '@ui-kit/utils'
 import { Chain } from '@ui-kit/utils/network'
 
 const WEEKS_PER_YEAR = 52
 const VECRV_APR_AVERAGE_WEEKS = 4
+const VECRV_APR_FEE_WEEKS = VECRV_APR_AVERAGE_WEEKS + 1
 const PROPOSAL_MIN_VECRV = 2500
 
 const weeklyRateToApr = (weeklyRate: number) => weeklyRate * WEEKS_PER_YEAR * 100
@@ -23,15 +24,15 @@ const weeklyRateToApr = (weeklyRate: number) => weeklyRate * WEEKS_PER_YEAR * 10
 export const CrvStats = () => {
   const { curveApi: { chainId } = {} } = useCurve()
   const statsQuery = useStatsVecrvQuery({})
-  const feesQuery = useVeCrvFeesQuery({})
+  const feesQuery = useVeCrvFeesQuery({ weeks: VECRV_APR_FEE_WEEKS })
   const holdersQuery = useVeCrvHoldersQuery({})
   const isMainnet = chainId === Chain.Ethereum
   const crvUsdRateQuery = useTokenUsdRate({ chainId, tokenAddress: MAINNET_CRV_ADDRESS }, isMainnet)
-  const crvUsdRate = isMainnet ? crvUsdRateQuery : q({ data: 0, isLoading: false, error: null })
+  const crvUsdRate = isMainnet ? crvUsdRateQuery : constQ(0)
 
   const holdersSummary = mapQuery(holdersQuery, holders => ({
     totalHolders: holders.length,
-    canCreateVote: holders.filter(holder => +holder.weight > PROPOSAL_MIN_VECRV).length,
+    canCreateVote: sumBy(holders, holder => (+holder.weight > PROPOSAL_MIN_VECRV ? 1 : 0)),
   }))
 
   const veCrvApr = useCombinedQueries(

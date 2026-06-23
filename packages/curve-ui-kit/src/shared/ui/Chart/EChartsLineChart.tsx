@@ -1,6 +1,7 @@
 import ReactECharts, { type EChartsOption } from 'echarts-for-react'
 import { useEffect, useMemo, useRef, type ReactNode } from 'react'
 import { useTheme } from '@mui/material/styles'
+import { maybe } from '@primitives/objects.utils'
 import {
   getPaddedChartAxisBounds,
   type ChartAxisTickLabelOptions,
@@ -96,7 +97,7 @@ export const EChartsLineChart = <
   const tooltipFormatter = useEChartsTooltip(
     data,
     theme,
-    renderTooltip ? (datum: TData) => renderTooltip({ datum, visibleSeries: activeSeries }) : undefined,
+    maybe(renderTooltip, render => datum => render({ datum, visibleSeries: activeSeries })),
   )
 
   const option: EChartsOption = useMemo(

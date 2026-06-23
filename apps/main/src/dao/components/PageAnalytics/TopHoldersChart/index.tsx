@@ -36,29 +36,30 @@ export const TopLockers = () => {
     const topHolders = sortBy(veCrvHolders, holder => +holder.weightRatio, 'desc')
       .slice(0, TOP_HOLDERS_LIMIT)
       .filter(holder => +holder.weightRatio > MIN_TOP_HOLDER_WEIGHT_RATIO)
-    const totalValues = topHolders.reduce(
-      (acc, holder) => ({
-        weight: decimalSum(acc.weight, holder.weight),
-        locked: decimalSum(acc.locked, holder.locked),
-        weightRatio: decimalSum(acc.weightRatio, holder.weightRatio),
-      }),
-      { weight: decimal(0)!, locked: decimal(0)!, weightRatio: decimal(0)! },
-    )
+    const totalValues = {
+      weight: decimalSum(...topHolders.map(({ weight }) => weight)),
+      locked: decimalSum(...topHolders.map(({ locked }) => locked)),
+      weightRatio: decimalSum(...topHolders.map(({ weightRatio }) => weightRatio)),
+    }
     const othersVeCrv = decimalMinus(veCrvData.totalVeCrv, totalValues.weight)
     const otherLockedCrv = decimalMinus(veCrvData.totalLockedCrv, totalValues.locked)
     const othersWeightRatio = decimal((100 - +totalValues.weightRatio).toFixed(2))!
 
-    return [
-      ...topHolders,
-      {
-        user: 'Others(<0.3%)',
-        weight: othersVeCrv,
-        locked: otherLockedCrv,
-        weightRatio: othersWeightRatio,
-        unlockTime: null,
-      },
-    ]
-  }, [veCrvData, veCrvHolders])
+    return sortBy(
+      [
+        ...topHolders,
+        {
+          user: 'Others(<0.3%)',
+          weight: othersVeCrv,
+          locked: otherLockedCrv,
+          weightRatio: othersWeightRatio,
+          unlockTime: null,
+        },
+      ],
+      holder => +holder[topHoldersSortBy],
+      'desc',
+    )
+  }, [topHoldersSortBy, veCrvData, veCrvHolders])
 
   return (
     <MuiBox sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
