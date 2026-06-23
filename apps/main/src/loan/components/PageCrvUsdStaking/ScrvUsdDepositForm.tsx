@@ -3,9 +3,7 @@ import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormToke
 import { CRVUSD_ADDRESS } from '@/loan/constants'
 import { networks, networksIdMapper } from '@/loan/networks'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
-import Button from '@mui/material/Button'
-import { joinButtonText } from '@primitives/string.utils'
-import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
+import { FormButton } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
 import { q } from '@ui-kit/types/util'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
@@ -58,13 +56,13 @@ export const ScrvUsdDepositForm = ({ network }: NetworkUrlParams) => {
         hideBalance={!isConnected}
         disabled={!isConnected}
       />
-      {isConnected ? (
-        <Button type="submit" loading={isPending} disabled={isDisabled} data-testid="scrvusd-deposit-submit-button">
-          {isPending ? t`Processing...` : joinButtonText(isApproved.data === false && t`Approve`, t`Deposit`)}
-        </Button>
-      ) : (
-        <ConnectWalletButton size="large" testId="scrvusd-deposit-connect-wallet-button" />
-      )}
+      <FormButton
+        pending={isPending}
+        disabled={isDisabled}
+        connectWalletTestId="scrvusd-deposit-connect-wallet-button"
+        label={[isApproved.data === false && t`Approve`, t`Deposit`]}
+        testId="scrvusd-deposit-submit-button"
+      />
       <FormAlerts error={error} formErrors={formErrors} handledErrors={['depositAmount']} />
     </Form>
   )
