@@ -19,13 +19,15 @@ const { Spacing, Sizing } = SizesAndSpaces
 
 const TABLE_CONFIG = {
   [MarketRateType.Borrow]: {
-    label: t`Borrowing`,
+    title: t`Borrowing`,
+    label: t`borrow`,
     defaultSort: DEFAULT_SORT_BORROW,
     sortQueryField: 'userSortBorrow',
     storageKey: 'My Borrow Positions',
   },
   [MarketRateType.Supply]: {
-    label: t`Supplying`,
+    title: t`Supplying`,
+    label: t`supply`,
     defaultSort: DEFAULT_SORT_SUPPLY,
     sortQueryField: 'userSortSupply',
     storageKey: 'My Supply Positions',
@@ -41,7 +43,7 @@ type UserPositionsTableProps = {
 const pagination = { pageIndex: 0, pageSize: 50 }
 
 export const UserPositionsMarketRateTable = ({ tableQuery, marketRateType, onReload }: UserPositionsTableProps) => {
-  const { label, defaultSort, sortQueryField, storageKey } = TABLE_CONFIG[marketRateType]
+  const { title, label, defaultSort, sortQueryField, storageKey } = TABLE_CONFIG[marketRateType]
   const [sorting, onSortingChange] = useSortFromQueryString(defaultSort, sortQueryField)
   const { columnVisibility } = useLlamaTableVisibility(storageKey, sorting, marketRateType)
   const [expanded, setExpanded] = useState<ExpandedState>({})
@@ -61,8 +63,8 @@ export const UserPositionsMarketRateTable = ({ tableQuery, marketRateType, onRel
     <DataTable
       category="limited"
       table={table}
-      viewAllLabel={t`View all ${rowCount} ${marketRateType.toLowerCase()} positions`}
-      errorState={{ title: t`Could not load ${marketRateType.toLowerCase()} positions`, onReload }}
+      viewAllLabel={t`View all ${rowCount} ${label} positions`}
+      errorState={{ title: t`Could not load ${label} positions`, onReload }}
       expandedPanel={LlamaMarketExpandedPanel}
       shouldStickFirstColumn={Boolean(useIsTablet() && rowCount)}
     >
@@ -74,7 +76,7 @@ export const UserPositionsMarketRateTable = ({ tableQuery, marketRateType, onRel
           paddingInline: Spacing.md,
         }}
       >
-        <CardHeader title={label} size="small" />
+        <CardHeader title={title} size="small" />
       </Stack>
     </DataTable>
   )

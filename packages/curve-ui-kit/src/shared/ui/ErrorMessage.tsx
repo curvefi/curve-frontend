@@ -33,7 +33,7 @@ export const ErrorMessage = ({
         button={{ label: t`Submit error report`, testId: 'submit-error-report-button', onClick: openReportModal }}
         {...(refreshData && {
           secondaryButton: {
-            label: 'Reload',
+            label: t`Reload`,
             startIcon: <ReloadIcon />,
             onClick: () => {
               void refreshData()

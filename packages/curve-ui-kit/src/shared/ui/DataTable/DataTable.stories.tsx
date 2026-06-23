@@ -159,7 +159,7 @@ const DemoDataTable = ({
     query: q({
       data,
       isLoading: !!isLoading,
-      error: isError ? new globalThis.Error('Network request failed while loading data') : null,
+      error: isError ? new Error('Network request failed while loading data') : null,
     }),
     columns,
     initialState: { pagination },
@@ -310,7 +310,7 @@ export const Empty: Story = {
   },
 }
 
-export const Error: Story = {
+export const WithError: Story = {
   args: {
     isError: true,
   },
