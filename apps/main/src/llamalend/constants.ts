@@ -18,13 +18,6 @@ export const PRESET_RANGES = {
   [LoanPreset.Custom]: 10,
 }
 
-// Enum for the empty state of the user positions table
-export enum PositionsEmptyState {
-  Error = 'error',
-  NoPositions = 'no-positions',
-  Filtered = 'filtered',
-}
-
 /**
  * Reference cutoff date used to infer and display the Llamalend market version in the UI, until the price API returns the version explicitly.
  */

@@ -38,9 +38,6 @@ export const useLLv2 = () => {
 
 export const use0xRouter = useBetaChannel
 
-/** New market list and search layout */
-export const useNewMarketListLayout = useStableChannel
-
 /** New DEX pool list backed by Prices API v2 */
 export const useDexPoolListV2 = useBetaChannel
 
