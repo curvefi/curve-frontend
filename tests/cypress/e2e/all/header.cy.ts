@@ -42,8 +42,7 @@ describe('Header', () => {
       ;[width, height] = oneDesktopViewport()
       cy.viewport(width, height)
       dismissPhishingWarningBanner()
-      route = 'llamalend/ethereum/markets' as const
-      // route = oneAppRoute()
+      route = oneAppRoute()
       cy.visitWithoutTestConnector(route)
       waitIsLoaded(route)
     })
