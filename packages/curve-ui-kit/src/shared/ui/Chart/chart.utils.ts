@@ -1,16 +1,10 @@
 import { meanBy } from 'lodash'
 import type { Theme } from '@mui/material/styles'
 import { movingAverage } from '@primitives/array.utils'
-import { notFalsyArray } from '@primitives/objects.utils'
 import { TIME_FRAMES } from '@ui-kit/lib/model/time'
 import { formatNumber, type NumberFormatOptions } from '@ui-kit/utils/number'
 
 export type ChartLineDashPattern = number[]
-
-export type ChartAxisTickLabelOptions = {
-  showMinLabel?: boolean
-  showMaxLabel?: boolean
-}
 
 export const DEFAULT_CHART_SIGNIFICANT_DIGITS = 5
 export const CHART_X_AXIS_LABEL_ROTATION = -45
@@ -40,38 +34,6 @@ export const getChartSignedValueColor = (theme: Theme, value: number | bigint) =
   const { Negative, Positive } = theme.design.Chart.Candles
 
   return (typeof value === 'bigint' ? value > 0n : value > 0) ? Positive : Negative
-}
-
-/**
- * Computes min/max axis bounds from chart values, optional reference lines, and proportional padding.
- * `includeZero` keeps single-sign charts anchored to zero, which is useful for bars where a non-zero baseline would
- * misrepresent magnitude, while still adding headroom on the data side.
- */
-export const getPaddedChartAxisBounds = ({
-  includeZero = false,
-  paddingRatio,
-  referenceValues = [],
-  values,
-}: {
-  includeZero?: boolean
-  paddingRatio: number
-  referenceValues?: number[]
-  values: number[]
-}) => {
-  const boundsValues = notFalsyArray(values, referenceValues, includeZero && [0])
-  if (!boundsValues.length) return { min: 0, max: 0 }
-
-  const min = Math.min(...boundsValues)
-  const max = Math.max(...boundsValues)
-
-  if (min === max) return { min: min - 1, max: max + 1 }
-
-  const padding = (max - min) * paddingRatio
-
-  return {
-    min: includeZero && Math.min(min, 0) - padding,
-    max: includeZero && Math.max(max, 0) + padding,
-  }
 }
 
 /**
