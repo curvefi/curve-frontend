@@ -1,4 +1,8 @@
-import { checkLeverageCheckbox, submitLoanForm } from '@cy/support/helpers/llamalend/create-loan.helpers'
+import {
+  checkLeverageCheckbox,
+  submitLoanForm,
+  waitForRoutesLoaded,
+} from '@cy/support/helpers/llamalend/create-loan.helpers'
 import type { Decimal } from '@primitives/decimal.utils'
 import { LOAD_TIMEOUT } from '../../ui'
 import { checkDebt, DECIMAL_REGEX, getActionValue, touchInput } from './action-info.helpers'
@@ -16,11 +20,13 @@ export function writeBorrowMoreForm({
   userCollateral,
   leverageEnabled,
   hasLeverageManagement,
+  waitForRoutes,
 }: {
   debt: Decimal
   userCollateral?: Decimal
   leverageEnabled: boolean
   hasLeverageManagement: boolean
+  waitForRoutes?: boolean
 }) {
   if (userCollateral) {
     getCollateralInput().clear()
@@ -31,6 +37,7 @@ export function writeBorrowMoreForm({
   getDebtInput().blur() // make sure field is touched to open the action info list
   if (leverageEnabled) cy.get('[data-testid="leverage-checkbox"]').click()
   checkLeverageCheckbox({ leverageEnabled, hasLeverage: hasLeverageManagement })
+  if (waitForRoutes) waitForRoutesLoaded({ submitButtonTestId: 'borrow-more-submit-button' })
 }
 
 export const touchBorrowMoreForm = () => touchInput(getDebtInput)
