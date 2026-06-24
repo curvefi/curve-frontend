@@ -6,6 +6,14 @@ type ApiServerEnv = Partial<
 
 type DevServerEnv = Partial<Record<'HOST' | 'PORT', string | undefined>>
 
+const loadEnvFile = (path?: string) => {
+  try {
+    process.loadEnvFile(path)
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error
+  }
+}
+
 export const createApiServer = ({ serviceName, env = process.env }: { serviceName: string; env?: ApiServerEnv }) => {
   const { LOG_LEVEL, NODE_ENV, SERVICE_NAME, npm_package_version } = env
 
@@ -39,7 +47,8 @@ export async function startDevServer({
   failureMessage: string
   env?: DevServerEnv
 }): Promise<void> {
-  process.loadEnvFile()
+  loadEnvFile('.env.local')
+  loadEnvFile()
 
   const server = createServer()
 
