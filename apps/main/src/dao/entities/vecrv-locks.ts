@@ -1,5 +1,6 @@
 import { getLocksDaily, type LocksDaily } from '@curvefi/prices-api/dao'
 import type { Decimal } from '@primitives/decimal.utils'
+import { DEFAULT_DECIMALS } from '@primitives/objects.utils'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { EmptyValidationSuite, type FieldsOf } from '@ui-kit/lib/validation'
 import { fromWei } from '@ui-kit/utils'
@@ -17,7 +18,7 @@ export const { useQuery: useVeCrvLocksQuery } = queryFactory({
     (await getLocksDaily(days)).map(
       ({ amount, ...lock }): VeCrvLock => ({
         ...lock,
-        amount: fromWei(amount.toString(), 18),
+        amount: fromWei(amount.toString(), DEFAULT_DECIMALS),
       }),
     ),
   category: 'dao.stats',

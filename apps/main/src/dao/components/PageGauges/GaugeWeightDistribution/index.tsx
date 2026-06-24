@@ -22,6 +22,7 @@ import { Chain } from '@ui-kit/utils/network'
 import { GaugesBarChartCustomTooltip } from '../../Charts/GaugesBarChartCustomTooltip'
 import { GaugeVotingBarChartCustomTooltip } from '../../Charts/GaugeVotingBarChartCustomTooltip'
 
+// Show every other x-axis label for large gauge sets to reduce visual busyness of labels.
 const getXAxisInterval = (length: number) => (length > 50 ? 1 : 0)
 
 type GaugeWeightDistributionProps = {
