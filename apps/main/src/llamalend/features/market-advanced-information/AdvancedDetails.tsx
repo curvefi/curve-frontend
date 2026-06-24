@@ -26,7 +26,7 @@ type AdvancedDetailsProps = {
 }
 
 export const AdvancedDetails = ({ chainId, marketId, market, marketType }: AdvancedDetailsProps) => {
-  const { borrowedUsdRate, collateral, availableLiquidity, maxLeverage, solvency, totalBorrowers, averageHealth } =
+  const { borrowedUsdRate, collateral, availableLiquidity, tvl, maxLeverage, solvency, totalBorrowers, averageHealth } =
     useAdvancedDetailsData({
       chainId,
       market,
@@ -67,6 +67,13 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
         label={t`Average health`}
         value={mapQuery(averageHealth, ({ value }) => value)}
         valueOptions={{ decimals: 1 }}
+      />
+      <Metric
+        testId="market-tvl"
+        size="medium"
+        label={t`TVL`}
+        value={mapQuery(tvl, ({ value }) => value)}
+        valueOptions={{ unit: 'dollar' }}
       />
       {/* we show total collateral in the rate curve card for lend markets */}
       {!isLendMarket && (

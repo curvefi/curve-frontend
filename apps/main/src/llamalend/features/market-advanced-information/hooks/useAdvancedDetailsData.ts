@@ -1,5 +1,10 @@
 import { useSolvencyMarket } from '@/llamalend/hooks/useSolvencyMarket'
-import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
+import {
+  calculateLendMarketTvlUsd,
+  calculateMintMarketTvlUsd,
+  getControllerAddress,
+  getTokens,
+} from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import {
   useMarketCapAndAvailable,
@@ -63,6 +68,7 @@ export const useAdvancedDetailsData = ({
     blockchainId,
     contractAddress: controllerAddress,
   })
+
   return {
     marketType,
     collateral: combineQueries(
@@ -89,6 +95,28 @@ export const useAdvancedDetailsData = ({
       borrowCap,
       borrowSymbol: borrowToken?.symbol,
     })),
+    tvl:
+      marketType === LlamaMarketType.Lend
+        ? combineQueries(
+            [totalCollateral, capAndAvailable, collateralUsdRate, borrowedUsdRate],
+            ({ borrowed, collateral }, { totalAssets, available }, collateralUsdRate, borrowedUsdRate) =>
+              maybes(
+                [borrowed, collateral, totalAssets, available, collateralUsdRate, borrowedUsdRate],
+                ([borrowed, collateral, totalAssets, available, collateralUsdRate, borrowedUsdRate]) => ({
+                  value: calculateLendMarketTvlUsd({
+                    borrowedBalanceUsd: +borrowed * borrowedUsdRate,
+                    collateralBalanceUsd: +collateral * collateralUsdRate,
+                    totalAssetsUsd: +totalAssets * borrowedUsdRate,
+                    totalDebtUsd: (+totalAssets - +available) * borrowedUsdRate,
+                  }),
+                }),
+              ),
+          )
+        : combineQueries([totalCollateral, collateralUsdRate], ({ collateral }, collateralUsdRate) =>
+            maybes([collateral, collateralUsdRate], ([collateral, collateralUsdRate]) => ({
+              value: calculateMintMarketTvlUsd({ collateralAmountUsd: +collateral * collateralUsdRate }),
+            })),
+          ),
     totalBorrowers: mapQuery(marketUsers, ({ count }) => ({ value: count })),
     averageHealth: mapQuery(liquidationHealthDistribution, distribution => ({
       value: distribution.meanHealth,
