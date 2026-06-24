@@ -5,6 +5,7 @@ import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
+import type { LlamaMarketType } from '@ui-kit/types/market'
 import { q, type Range } from '@ui-kit/types/util'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
@@ -16,11 +17,13 @@ export const AddCollateralForm = <ChainId extends IChainId>({
   networks,
   chainId,
   onPricesUpdated,
+  marketType,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
+  marketType: LlamaMarketType
 }) => {
   const network = networks[chainId]
 
@@ -53,6 +56,7 @@ export const AddCollateralForm = <ChainId extends IChainId>({
           borrowToken={borrowToken}
           networks={networks}
           market={market}
+          marketType={marketType}
         />
       }
     >

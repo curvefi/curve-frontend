@@ -16,6 +16,7 @@ import {
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createRepayScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
+import { LlamaMarketType } from '@ui-kit/types/market'
 import { constQ } from '@ui-kit/types/util'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 
@@ -52,6 +53,7 @@ describe('RepayForm (mocked)', () => {
             chainId={chainId}
             onPricesUpdated={onPricesUpdated}
             collateralEvents={constQ(fakeCollateralEvents)}
+            marketType={LlamaMarketType.Mint}
           />
         </MockLoanTestWrapper>,
       )

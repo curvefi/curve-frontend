@@ -24,7 +24,7 @@ const EMPTY_MARKET_CONFIG: Record<NoPositionProps['rateType'], { title: string; 
 export const MarketEmptyPosition = ({ rateType }: NoPositionProps) => {
   const { title, description } = EMPTY_MARKET_CONFIG[rateType]
   return (
-    <Stack sx={{ alignItems: 'center', padding: Spacing.md }}>
+    <Stack sx={{ alignItems: 'center', padding: Spacing.md }} data-testid={`no-position-${rateType.toLowerCase()}`}>
       <EmptyStateCard title={title} description={description} />
     </Stack>
   )

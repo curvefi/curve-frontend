@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
-import { calculateReturnToWallet } from '@/llamalend/llama.utils'
+import { calculateReturnToWallet, getControllerAddress } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useRepayExpectedBorrowed } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
@@ -22,6 +22,7 @@ import { type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { UseFormReturn } from '@ui-kit/features/forms'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
+import type { LlamaMarketType } from '@ui-kit/types/market'
 import { constQ, mapQuery, q, type Query, type QueryProp, type Range } from '@ui-kit/types/util'
 import { decimal, decimalMinus, decimalNegate } from '@ui-kit/utils'
 import { getLeverageInfoFields } from '../../../widgets/action-card/hooks/getLeverageInfoFields'
@@ -83,6 +84,7 @@ function useReturnToWallet(
 
 export function RepayLoanInfoList<ChainId extends IChainId>({
   market,
+  marketType,
   params,
   values: { slippage, stateCollateral, userCollateral, userBorrowed, isFull },
   tokens: { collateralToken, borrowToken },
@@ -95,6 +97,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   prevPrices,
 }: {
   market: LlamaMarketTemplate | undefined
+  marketType: LlamaMarketType
   params: RepayParams
   values: RepayFormData
   tokens: { collateralToken: Token | undefined; borrowToken: Token | undefined }
@@ -164,7 +167,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
         priceImpact: useRepayPriceImpact(params, isOpen),
         collateralDelta: userCollateral,
       })}
-      {...useBorrowRates({ params, market, debtDelta }, isOpen)}
+      {...useBorrowRates({ params, marketType, controllerAddress: getControllerAddress(market), debtDelta }, isOpen)}
       {...prevLoanState}
     />
   )

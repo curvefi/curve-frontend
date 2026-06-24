@@ -17,6 +17,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { AlertDisableForm } from '@ui-kit/shared/ui/AlertDisableForm'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { LlamaMarketType } from '@ui-kit/types/market'
 import { q, type QueryProp, type Range } from '@ui-kit/types/util'
 import { isDevelopment } from '@ui-kit/utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
@@ -31,12 +32,14 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   chainId,
   onPricesUpdated,
   collateralEvents,
+  marketType,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
   collateralEvents: QueryProp<UserCollateralEvents>
+  marketType: LlamaMarketType
 }) => {
   const network = networks[chainId]
   const {
@@ -89,6 +92,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           tokens={{ collateralToken, borrowToken }}
           networks={networks}
           routes={routes}
+          marketType={marketType}
           onSlippageChange={value => updateForm({ slippage: value })}
           leverageEnabled={values.leverageEnabled}
         />
