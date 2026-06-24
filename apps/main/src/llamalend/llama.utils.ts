@@ -232,6 +232,21 @@ export const calculateLtv = (
   return (debtValue / collateralValue) * 100
 }
 
+export const calculateLendMarketTvlUsd = ({
+  borrowedBalanceUsd,
+  collateralBalanceUsd,
+  totalAssetsUsd,
+  totalDebtUsd,
+}: {
+  borrowedBalanceUsd: number
+  collateralBalanceUsd: number
+  totalAssetsUsd: number
+  totalDebtUsd: number
+}) => borrowedBalanceUsd + collateralBalanceUsd + totalAssetsUsd - totalDebtUsd
+
+export const calculateMintMarketTvlUsd = ({ collateralAmountUsd }: { collateralAmountUsd: number }) =>
+  collateralAmountUsd
+
 /**
  * Sends a new transaction hash to the backend to update user events.
  * Note that the backend data will not be directly updated, but this will trigger a background refresh.
