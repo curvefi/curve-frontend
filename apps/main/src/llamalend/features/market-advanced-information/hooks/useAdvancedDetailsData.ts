@@ -28,7 +28,7 @@ export const useAdvancedDetailsData = ({
   marketId,
   marketType,
 }: MarketParams & { market: LlamaMarketTemplate | undefined; marketType: LlamaMarketType }) => {
-  const { collateralToken, borrowToken } = market ? getTokens(market) : {}
+  const { collateralToken, borrowToken } = getTokens(market) ?? {}
   const blockchainId = maybe(chainId, chainId => requireBlockchainId(chainId))
   const controllerAddress = getControllerAddress(market)
   const endpoint = endpointFromMarketType[marketType]

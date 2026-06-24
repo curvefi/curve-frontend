@@ -5,16 +5,21 @@ import {
   POOL_LIST_SORT_FIELDS,
 } from '@/dex/features/pool-list/poolList.constants'
 import type { PoolType, SortDirection, V2PoolSortField } from '@curvefi/prices-api/pools'
+import { oneAddress, oneFloat } from '@cy/support/generators'
+import { oneToken } from '@cy/support/helpers/tokens'
 import type { Address } from '@primitives/address.utils'
-import { range } from '@primitives/objects.utils'
+import { maybe, range } from '@primitives/objects.utils'
+import { Chain, requireBlockchainId } from '@ui-kit/utils/network'
 
-const ChainId = {
-  Ethereum: 1,
-  Arbitrum: 42161,
-} as const
+const MOCK_CHAIN_IDS = [Chain.Ethereum, Chain.Arbitrum] as const
+type MockChainId = (typeof MOCK_CHAIN_IDS)[number]
 
 // Large enough to exercise pagination controls and page-number truncation.
 const POOL_COUNT = 500
+const MAX_GENERATED_POOL_VOLUME_USD = 1_000_000_000
+const POOL_USD_STEP = 1_000_000
+const onePriorityPoolUsdValue = () =>
+  oneFloat(MAX_GENERATED_POOL_VOLUME_USD + POOL_USD_STEP, MAX_GENERATED_POOL_VOLUME_USD * 2)
 
 // Known Ethereum pool used by search assertions.
 const SearchPool = {
@@ -38,17 +43,21 @@ type PoolListQuery = {
   sortDirection: SortDirection
 }
 
-const mockAddress = (chainId: number, index: number, offset = 0): Address =>
-  `0x${(BigInt(chainId) * 1_000_000n + BigInt(index) * 10n + BigInt(offset)).toString(16).padStart(40, '0')}`
+const createCoins = (chainId: MockChainId) => {
+  const blockchainId = requireBlockchainId(chainId)
 
-const createCoins = (chainId: number, index: number) =>
-  range(2).map(poolIndex => ({
-    pool_index: poolIndex,
-    symbol: `MOCK${poolIndex + 1}`,
-    address: mockAddress(chainId, index, poolIndex + 1),
-    name: `Mock Token ${poolIndex + 1}`,
-    decimals: 18,
-  }))
+  return range(2).map(poolIndex => {
+    const { address, symbol } = oneToken(blockchainId)
+
+    return {
+      pool_index: poolIndex,
+      symbol,
+      address,
+      name: symbol,
+      decimals: 18,
+    }
+  })
+}
 
 const createPool = ({
   address,
@@ -58,23 +67,23 @@ const createPool = ({
   poolType,
 }: {
   address?: Address
-  chainId: number
+  chainId: MockChainId
   index: number
   name?: string
   poolType?: PoolType
 }) => ({
-  chain_id: chainId,
+  chain_id: Number(chainId),
   name: name ?? `Mock Pool ${chainId}-${index.toString().padStart(3, '0')}`,
-  address: address ?? mockAddress(chainId, index),
+  address: address ?? oneAddress(),
   pool_type: poolType ?? POOL_LIST_POOL_TYPES[index % POOL_LIST_POOL_TYPES.length],
   is_metapool: false,
   base_pool: null,
-  tvl_usd: 1_000_000 + index * 1_000_000,
-  trading_volume_24h: 1_000_000_000 - index * 1_000_000,
+  tvl_usd: POOL_USD_STEP + index * POOL_USD_STEP,
+  trading_volume_24h: MAX_GENERATED_POOL_VOLUME_USD - index * POOL_USD_STEP,
   trading_fee_24h: 1_000 + index,
   liquidity_volume_24h: 10_000 + index,
   liquidity_fee_24h: 100 + index,
-  coins: createCoins(chainId, index),
+  coins: createCoins(chainId),
   base_daily_apr: (index % 50) / 1_000,
   base_weekly_apr: (index % 50) / 900,
   crv_apr: null,
@@ -86,8 +95,10 @@ const createPool = ({
 
 type MockPool = ReturnType<typeof createPool>
 
-const createMockPools = (chainId: number): MockPool[] => [
-  ...(chainId === ChainId.Ethereum
+// Hardcode known pools where tests need exact search text, or a real address because
+// generated addresses do not resolve on the pool detail page.
+const createMockPools = (chainId: MockChainId): MockPool[] => [
+  ...(chainId === Chain.Ethereum
     ? [
         {
           ...createPool({
@@ -123,7 +134,7 @@ const createMockPools = (chainId: number): MockPool[] => [
         },
       ]
     : []),
-  ...(chainId === ChainId.Arbitrum
+  ...(chainId === Chain.Arbitrum
     ? [
         {
           ...createPool({
@@ -133,8 +144,8 @@ const createMockPools = (chainId: number): MockPool[] => [
             name: DEX_POOL_LIST_NAVIGATION_POOL.name,
             poolType: 'main',
           }),
-          tvl_usd: 2_000_000_000,
-          trading_volume_24h: 2_000_000_000,
+          tvl_usd: onePriorityPoolUsdValue(),
+          trading_volume_24h: onePriorityPoolUsdValue(),
           coins: [
             {
               pool_index: 0,
@@ -157,12 +168,9 @@ const createMockPools = (chainId: number): MockPool[] => [
   ...range(POOL_COUNT).map(index => createPool({ chainId, index })),
 ]
 
-const MOCK_POOLS = [...createMockPools(ChainId.Ethereum), ...createMockPools(ChainId.Arbitrum)]
+const MOCK_POOLS = MOCK_CHAIN_IDS.flatMap(createMockPools)
 
-const parsePositiveInt = (value: string | null, fallback: number) => {
-  const parsed = Number(value)
-  return Number.isInteger(parsed) && parsed > 0 ? parsed : fallback
-}
+const parseNumberParam = (value: string | null, fallback: number) => maybe(value, Number) ?? fallback
 
 const isOneOf = <T extends string>(values: readonly T[], value: string | null): value is T =>
   value != null && (values as readonly string[]).includes(value)
@@ -171,8 +179,8 @@ const parseSortBy = (value: string | null): V2PoolSortField => (isOneOf(POOL_LIS
 
 const parsePoolListQuery = (url: URL): PoolListQuery => ({
   chainId: Number(url.searchParams.get('chain_id')),
-  page: parsePositiveInt(url.searchParams.get('page'), 1),
-  pagination: parsePositiveInt(url.searchParams.get('pagination'), 50),
+  page: parseNumberParam(url.searchParams.get('page'), 1),
+  pagination: parseNumberParam(url.searchParams.get('pagination'), 50),
   search: url.searchParams.get('search_string')?.toLowerCase() ?? '',
   poolType: url.searchParams.get('pool_type'),
   sortBy: parseSortBy(url.searchParams.get('sort_by')),
@@ -221,10 +229,7 @@ export const mockDexPoolChains = () =>
     { method: 'GET', hostname: 'prices.curve.finance', pathname: '/v2/pools/chains/' },
     {
       body: {
-        data: [
-          { chain_id: ChainId.Ethereum, name: 'ethereum' },
-          { chain_id: ChainId.Arbitrum, name: 'arbitrum' },
-        ],
+        data: MOCK_CHAIN_IDS.map(chainId => ({ chain_id: chainId, name: requireBlockchainId(chainId) })),
       },
     },
   )

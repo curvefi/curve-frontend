@@ -23,7 +23,7 @@ const getRepayTokenOptions = ({
   market: LlamaMarketTemplate | undefined
   networkId: string
 }) => {
-  const { borrowToken, collateralToken } = market ? getTokens(market) : {}
+  const { borrowToken, collateralToken } = getTokens(market) ?? {}
   return notFalsy<RepayTokenOption>(
     borrowToken && {
       address: borrowToken.address,

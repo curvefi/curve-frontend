@@ -12,10 +12,12 @@ type AddressActionInfoProps = {
   title: ReactNode
   address: string | undefined
   isBorderBottom?: boolean
+  testId?: string
 }
 
-export const AddressActionInfo = ({ network, title, address, isBorderBottom }: AddressActionInfoProps) => (
+export const AddressActionInfo = ({ network, title, address, isBorderBottom, testId }: AddressActionInfoProps) => (
   <ActionInfo
+    testId={testId}
     label={title}
     value={
       /** TODO: Clarify: The design has this typography component as as semi-bold,

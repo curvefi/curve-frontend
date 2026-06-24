@@ -15,7 +15,6 @@ import { getPageCount } from '@ui-kit/utils'
 import { LlammaActivityTradesProps } from '../LlammaActivityTrades'
 
 export const useLlammaActivityTradesConfig = ({
-  isMarketAvailable,
   network,
   ammAddress,
   endpoint,
@@ -50,8 +49,8 @@ export const useLlammaActivityTradesConfig = ({
   const table = useTable({
     query: q({
       data: tradesWithUrlsQuery.data,
-      isLoading: tradesWithUrlsQuery.isLoading || !isMarketAvailable,
-      error: isMarketAvailable ? tradesWithUrlsQuery.error : null,
+      isLoading: tradesWithUrlsQuery.isLoading || !ammAddress,
+      error: ammAddress ? tradesWithUrlsQuery.error : null,
     }),
     columns: LLAMMA_TRADES_COLUMNS,
     state: { columnVisibility: tradesColumnVisibility, pagination },
