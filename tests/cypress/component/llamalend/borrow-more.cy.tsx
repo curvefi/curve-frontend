@@ -16,6 +16,7 @@ import {
 } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createBorrowMoreScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
 import { mockMintSnapshots } from '@cy/support/helpers/minting-mocks'
+import { LlamaMarketType } from '@ui-kit/types/market'
 import { constQ } from '@ui-kit/types/util'
 import { Chain } from '@ui-kit/utils'
 
@@ -75,6 +76,7 @@ describe('BorrowMoreForm (mocked)', () => {
             chainId={chainId}
             onPricesUpdated={onPricesUpdated}
             collateralEvents={constQ(fakeCollateralEvents)}
+            marketType={LlamaMarketType.Mint}
           />
         </MockLoanTestWrapper>,
       )

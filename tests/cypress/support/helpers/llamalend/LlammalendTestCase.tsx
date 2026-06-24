@@ -60,9 +60,14 @@ type LlammalendTestProps = UserMarketQuery<LlamaChainId> & {
 function LlammalendTest({ tab, onPricesUpdated, type, marketType, ...props }: LlammalendTestProps) {
   const isLoan = type === 'loan'
   const { marketId, chainId } = props
-  const mintChain = chainId as MintChain
-  const { data: lendMarket, error: lendError } = useLendMarket(chainId, marketId, marketType === LlamaMarketType.Lend)
-  const { data: mintMarket, error: mintError } = useMintMarket(mintChain, marketId, marketType === LlamaMarketType.Mint)
+  const { data: lendMarket, error: lendError } = useLendMarket(
+    { chainId, rMarket: marketId },
+    marketType === LlamaMarketType.Lend,
+  )
+  const { data: mintMarket, error: mintError } = useMintMarket(
+    { chainId: chainId as MintChain, rMarket: marketId },
+    marketType === LlamaMarketType.Mint,
+  )
   const market = lendMarket ?? mintMarket
   const error = lendError ?? mintError
   const { data: loanExists } = useLoanExists(props, isLoan && !!market)
@@ -81,6 +86,7 @@ function LlammalendTest({ tab, onPricesUpdated, type, marketType, ...props }: Ll
       onSuccess={cy.stub()}
       enabled
       collateralEvents={constQ(fakeCollateralEvents)}
+      marketType={marketType}
       {...props}
     />
   ) : market ? (

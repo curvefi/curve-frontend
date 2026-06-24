@@ -1,8 +1,10 @@
+import { useConnection } from 'wagmi'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { StakeTokenLabel } from '@/llamalend/widgets/action-card/StakeTokenLabel'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
+import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
 import { t } from '@ui-kit/lib/i18n'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
@@ -25,6 +27,7 @@ export const UnstakeForm = <ChainId extends IChainId>({
   chainId,
   enabled,
 }: UnstakeFormProps<ChainId>) => {
+  const { isConnected } = useConnection()
   const network = networks[chainId]
   const blockchainId = network.id
 
@@ -73,14 +76,18 @@ export const UnstakeForm = <ChainId extends IChainId>({
       />
       {Number(max.data) > 0 && <AlertUnstakeOnly />}
 
-      <Button
-        type="submit"
-        loading={isPending || !market}
-        disabled={isDisabled}
-        data-testid={`${TEST_ID_PREFIX}-submit-button`}
-      >
-        {isPending ? t`Processing...` : t`Unstake`}
-      </Button>
+      {isConnected ? (
+        <Button
+          type="submit"
+          loading={isPending || !market}
+          disabled={isDisabled}
+          data-testid={`${TEST_ID_PREFIX}-submit-button`}
+        >
+          {isPending ? t`Processing...` : t`Unstake`}
+        </Button>
+      ) : (
+        <ConnectWalletButton />
+      )}
 
       <FormAlerts error={unstakeError} formErrors={formErrors} handledErrors={['unstakeAmount']} />
     </Form>

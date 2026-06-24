@@ -3,9 +3,10 @@ import { networks } from '@/lend/networks'
 import { PageContentProps } from '@/lend/types/lend.types'
 import { AdvancedDetails, MarketInfoLayout } from '@/llamalend/features/market-advanced-information'
 import { MarketFaq } from '@/llamalend/features/market-faq'
+import { getAmmAddress, getControllerAddress, getTokens } from '@/llamalend/llama.utils'
 import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
 import { MarketRateCurveChart } from '@/llamalend/widgets/MarketRateCurveChart'
-import type { Chain } from '@curvefi/prices-api'
+import { getBlockchainId } from '@curvefi/prices-api'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
@@ -26,34 +27,53 @@ type MarketInformationCompProps = {
  * Reusable component for OHLC charts, Bands (if applicable), and market parameters, used in market and vault pages.
  */
 export const MarketInformationComposite = ({ pageProps, rateType, previewPrices }: MarketInformationCompProps) => {
-  const { rChainId, marketId, market } = pageProps
-  const isBorrow = rateType === MarketRateType.Borrow
-  const blockchainId = networks[rChainId].id as Chain
-
+  const { rChainId, market } = pageProps
+  const blockchainId = getBlockchainId(networks[rChainId].id)
+  const controllerAddress = getControllerAddress(market)
+  const { collateralToken, borrowToken } = getTokens(market) ?? {}
   return (
     <Stack sx={{ gap: PAGE_SPACING }}>
-      {isBorrow && <ChartAndActivityComp rChainId={rChainId} market={market} previewPrices={previewPrices} />}
-      {isBorrow && (
-        <MarketHistoricalRatesChart
-          market={market}
-          blockchainId={blockchainId}
-          chainId={rChainId}
-          marketId={marketId}
-          rateMode={MarketRateType.Borrow}
-        />
+      {rateType === MarketRateType.Borrow && (
+        <>
+          <ChartAndActivityComp
+            rChainId={rChainId}
+            marketId={market?.id}
+            previewPrices={previewPrices}
+            controllerAddress={controllerAddress}
+            ammAddress={getAmmAddress(market)}
+            borrowToken={borrowToken}
+            collateralToken={collateralToken}
+          />
+          <MarketHistoricalRatesChart
+            marketType={LlamaMarketType.Lend}
+            controllerAddress={controllerAddress}
+            blockchainId={blockchainId}
+            chainId={rChainId}
+            marketId={market?.id}
+            rateMode={MarketRateType.Borrow}
+          />
+        </>
       )}
       <MarketHistoricalRatesChart
-        market={market}
+        marketType={LlamaMarketType.Lend}
+        controllerAddress={controllerAddress}
         blockchainId={blockchainId}
         chainId={rChainId}
-        marketId={marketId}
+        marketId={market?.id}
         rateMode={MarketRateType.Supply}
       />
-      <MarketRateCurveChart market={market} blockchainId={blockchainId} chainId={rChainId} marketId={marketId} />
+      <MarketRateCurveChart
+        collateralToken={collateralToken}
+        borrowToken={borrowToken}
+        controllerAddress={controllerAddress}
+        blockchainId={blockchainId}
+        chainId={rChainId}
+        marketId={market?.id}
+      />
       <Card size="small">
         <CardHeader title={t`Advanced Details`} />
         <CardContent component={Stack}>
-          <AdvancedDetails chainId={rChainId} marketId={marketId} market={market} marketType={LlamaMarketType.Lend} />
+          <AdvancedDetails chainId={rChainId} marketId={market?.id} market={market} marketType={LlamaMarketType.Lend} />
           <MarketInfoLayout
             chainId={rChainId}
             marketType={LlamaMarketType.Lend}

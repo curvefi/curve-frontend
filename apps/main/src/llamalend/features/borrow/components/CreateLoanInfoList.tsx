@@ -1,11 +1,12 @@
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
-import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
 import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { type Token } from '@primitives/address.utils'
+import { type Address, type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { UseFormReturn } from '@ui-kit/features/forms'
+import type { LlamaMarketType } from '@ui-kit/types/market'
 import { constQ, mapQuery, q } from '@ui-kit/types/util'
 import { useCreateLoanEstimateGas } from '../../../queries/create-loan/create-loan-estimate-gas.query'
 import { useCreateLoanExpectedCollateral } from '../../../queries/create-loan/create-loan-expected-collateral.query'
@@ -19,7 +20,8 @@ import { useLoanToValue } from '../hooks/useLoanToValue'
 import { type CreateLoanForm, type CreateLoanFormQueryParams } from '../types'
 
 export const CreateLoanInfoList = <ChainId extends IChainId>({
-  market,
+  marketType,
+  controllerAddress,
   params,
   values: { slippage, leverageEnabled, userCollateral, debt },
   collateralToken,
@@ -29,7 +31,8 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
   onSlippageChange,
   form,
 }: {
-  market: LlamaMarketTemplate | undefined
+  marketType: LlamaMarketType
+  controllerAddress: Address | undefined
   params: CreateLoanFormQueryParams<ChainId>
   values: CreateLoanForm
   collateralToken: Token | undefined
@@ -71,7 +74,7 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
         leverageTotalCollateral: mapQuery(expectedCollateral, data => data.totalCollateral),
         expected: expectedCollateral,
       })}
-      {...useBorrowRates({ params, market, debtDelta: debt }, isOpen)}
+      {...useBorrowRates({ params, marketType, controllerAddress, debtDelta: debt }, isOpen)}
     />
   )
 }
