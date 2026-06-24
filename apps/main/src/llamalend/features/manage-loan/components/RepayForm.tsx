@@ -23,6 +23,7 @@ import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { LlamaMarketType } from '@ui-kit/types/market'
 import { q, type QueryProp, type Range } from '@ui-kit/types/util'
 import { CRVUSD } from '@ui-kit/utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
@@ -69,6 +70,7 @@ export const RepayForm = <ChainId extends IChainId>({
   onPricesUpdated,
   collateralEvents,
   isInSoftLiquidation,
+  marketType,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
@@ -77,6 +79,7 @@ export const RepayForm = <ChainId extends IChainId>({
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
   collateralEvents: QueryProp<UserCollateralEvents>
   isInSoftLiquidation?: boolean
+  marketType: LlamaMarketType
 }) => {
   const network = networks[chainId]
   const {
@@ -141,6 +144,7 @@ export const RepayForm = <ChainId extends IChainId>({
       footer={
         <RepayLoanInfoList
           market={market}
+          marketType={marketType}
           form={form}
           params={params}
           values={values}

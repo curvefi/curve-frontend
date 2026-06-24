@@ -5,6 +5,7 @@ import { CrvUsdPriceChart } from '@/llamalend/widgets/CrvUsdPriceChart'
 import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
 import { ChartAndActivityComp } from '@/loan/components/ChartAndActivityComp'
 import type { ChainId, Llamma } from '@/loan/types/loan.types'
+import { getBlockchainId } from '@curvefi/prices-api'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
@@ -13,7 +14,6 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
-import { BlockchainIds, Chain } from '@ui-kit/utils/network'
 import { PAGE_SPACING } from '@ui-kit/widgets/DetailPageLayout/constants'
 import { networks } from '../networks'
 
@@ -30,6 +30,7 @@ export const MarketInformationComposite = ({
   chainId,
   previewPrices,
 }: MarketInformationCompProps) => {
+  const controllerAddress = getControllerAddress(market)
   const { collateralToken, borrowToken } = getTokens(market) ?? {}
   return (
     <Stack sx={{ gap: PAGE_SPACING }}>
@@ -37,14 +38,15 @@ export const MarketInformationComposite = ({
         chainId={chainId}
         marketId={marketId}
         previewPrices={previewPrices}
-        controllerAddress={getControllerAddress(market)}
+        controllerAddress={controllerAddress}
         ammAddress={getAmmAddress(market)}
         borrowToken={borrowToken}
         collateralToken={collateralToken}
       />
       <MarketHistoricalRatesChart
-        market={market}
-        blockchainId={BlockchainIds[Chain.Ethereum]}
+        marketType={LlamaMarketType.Mint}
+        controllerAddress={controllerAddress}
+        blockchainId={getBlockchainId(networks[chainId].id)}
         chainId={chainId}
         marketId={marketId}
         rateMode={MarketRateType.Borrow}

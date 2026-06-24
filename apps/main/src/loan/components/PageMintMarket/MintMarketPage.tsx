@@ -8,10 +8,10 @@ import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header'
 import { MarketInformationComposite } from '@/loan/components/MarketInformationComposite'
 import { CreateLoanTabs } from '@/loan/components/PageMintMarket/CreateLoanTabs'
-import { ManageLoanTabs } from '@/loan/components/PageMintMarket/ManageLoanTabs'
+import { ManageLoanTabs, type MintManageLoanProps } from '@/loan/components/PageMintMarket/ManageLoanTabs'
 import { networks } from '@/loan/networks'
 import { type CollateralUrlParams } from '@/loan/types/loan.types'
-import { getCollateralListPathname, getChainId } from '@/loan/utils/utilsRouter'
+import { getChainId, getCollateralListPathname } from '@/loan/utils/utilsRouter'
 import { getBlockchainId } from '@curvefi/prices-api'
 import type { Decimal } from '@primitives/decimal.utils'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
@@ -26,45 +26,56 @@ import { useMintMarket } from '../../hooks/useMintMarket'
 export const MintMarketPage = () => {
   const params = useParams<CollateralUrlParams>()
   const rCollateralId = params.collateralId.toLowerCase()
-  const { llamaApi: curve = null, isHydrated, provider } = useCurve()
-  const rChainId = getChainId(params)
-  const { address } = useConnection()
+  const { llamaApi: curve = null, isInitialized } = useCurve()
+  const chainId = getChainId(params)
+  const { address: userAddress } = useConnection()
   const [previewPrices, setPreviewPrices] = useState<Range<Decimal> | undefined>(undefined)
 
-  const { data: market, isLoading: isMarketLoading, isSuccess } = useMintMarket(rChainId, rCollateralId)
-  const userMarketParams = { chainId: rChainId, marketId: market?.id, userAddress: address }
-  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists(
-    {
-      chainId: rChainId,
-      marketId: market?.id,
-      userAddress: address,
-    },
-    !!market, // enable query as soon as market is defined, the validation suite isn't able to detect it otherwise
-  )
+  const {
+    data: market,
+    isLoading: isMarketLoading,
+    error: marketError,
+  } = useMintMarket({ chainId, rMarket: rCollateralId })
 
-  const network = networks[rChainId]
+  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists({
+    chainId,
+    marketId: market?.id,
+    userAddress,
+  })
+
+  const network = networks[chainId]
+  const isLoading = !isInitialized || isMarketLoading
   const tokens = useMemo(() => getTokens(market) ?? {}, [market])
 
   const collateralEvents = useUserCollateralEvents({
     app: LlamaMarketType.Mint,
     chain: getBlockchainId(network.id),
     controllerAddress: getControllerAddress(market),
-    userAddress: curve?.signerAddress,
+    userAddress,
     network,
     tokens,
   })
 
-  const pageProps = { curve, market, rChainId, params, onPricesUpdated: setPreviewPrices }
+  const pageProps: Omit<MintManageLoanProps, 'collateralEvents'> = {
+    curve,
+    market,
+    rChainId: chainId,
+    params,
+    onPricesUpdated: setPreviewPrices,
+  }
 
-  return isSuccess && !market ? (
+  const error = marketError
+  return error ? (
     <ErrorPage
-      title="404"
-      subtitle={`${t`Market`} ${rCollateralId} ${t`Not Found`}`}
+      title={t`Error`}
+      subtitle={error.message}
+      error={error}
       continueUrl={getCollateralListPathname(params)}
     />
-  ) : provider ? (
+  ) : userAddress ? (
     <DetailPageLayout
       formTabs={
+        !!market &&
         !isLoanExistsLoading &&
         (loanExists ? (
           <ManageLoanTabs {...pageProps} collateralEvents={collateralEvents} />
@@ -75,29 +86,28 @@ export const MintMarketPage = () => {
       header={
         <MarketPageHeader
           blockchainId={network.id}
-          chainId={rChainId}
-          marketId={market?.id ?? ''}
-          isLoading={!isHydrated || isMarketLoading}
+          chainId={chainId}
+          isLoading={isLoading}
           market={market}
           marketType={LlamaMarketType.Mint}
         />
       }
     >
-      <MarketBanners chainId={rChainId} market={market} />
+      <MarketBanners chainId={chainId} market={market} />
       <PositionDetailsComposite
         tokens={tokens}
-        params={userMarketParams}
         hasPosition={loanExists}
         events={collateralEvents}
+        params={{ chainId, marketId: market?.id, userAddress }}
       />
       <MarketInformationComposite
         market={market ?? null}
         marketId={market?.id ?? ''}
-        chainId={rChainId}
+        chainId={chainId}
         previewPrices={previewPrices}
       />
     </DetailPageLayout>
   ) : (
-    <ConnectWalletPrompt description={t`Connect your wallet to view market`} />
+    <ConnectWalletPrompt description={t`Connect your wallet to view market`} testId="btn-connect-prompt" />
   )
 }

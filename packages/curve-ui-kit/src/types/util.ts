@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { type Falsy, maybe } from '@primitives/objects.utils'
+import { maybe } from '@primitives/objects.utils'
 import type { UseQueryResult } from '@tanstack/react-query'
 
 export type Range<T> = [T, T]
@@ -75,10 +75,15 @@ export const q = <T>({ data, isLoading, error }: Query<T>) =>
 
 type QueryData<TQuery> = TQuery extends Query<infer TData> ? TData : never
 
-export const fallbackQ = <const TQueries extends readonly (Query<unknown> | Falsy)[]>(...queries: TQueries) => {
-  const filtered = queries.filter((x): x is Query<unknown> => !!x)
-  return q(filtered.find(q => !q.error) ?? filtered[0]) as QueryProp<QueryData<TQueries[number]>>
-}
+/**
+ * Takes the first query with data, then the first query with an error, then the first query that is loading,
+ * and finally the first query in the list. Use the disabled query property to ignore a query and use the fallback.
+ */
+export const fallbackQ = <const TQueries extends readonly QueryProp<unknown>[]>(...queries: TQueries) =>
+  (queries.find(q => q.data != null) ??
+    queries.find(q => q.error) ??
+    queries.find(q => q.isLoading) ??
+    queries[0]) as QueryProp<QueryData<TQueries[number]>>
 
 /**
  * Maps a Query type to extract partial data from it.

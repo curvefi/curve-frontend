@@ -1,5 +1,6 @@
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
+import { getControllerAddress } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useBorrowMoreExpectedCollateral } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
 import { useBorrowMoreFutureLeverage } from '@/llamalend/queries/borrow-more/borrow-more-future-leverage.query'
@@ -19,6 +20,7 @@ import { type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { UseFormReturn } from '@ui-kit/features/forms'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
+import type { LlamaMarketType } from '@ui-kit/types/market'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
 import { getLeverageInfoFields } from '../../../widgets/action-card/hooks/getLeverageInfoFields'
@@ -32,6 +34,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   leverageEnabled,
   form,
   market,
+  marketType,
   routes,
 }: {
   params: BorrowMoreParams<ChainId>
@@ -39,6 +42,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   tokens: { collateralToken: Token | undefined; borrowToken: Token | undefined }
   networks: NetworkDict<ChainId>
   market: LlamaMarketTemplate | undefined
+  marketType: LlamaMarketType
   onSlippageChange: (newSlippage: Decimal) => void
   leverageEnabled: boolean | undefined
   form: UseFormReturn<BorrowMoreForm>
@@ -90,7 +94,10 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
         priceImpact: useBorrowMorePriceImpact(params, isOpen),
         collateralDelta,
       })}
-      {...useBorrowRates({ params, market, debtDelta: debt }, isOpen)}
+      {...useBorrowRates(
+        { params, marketType, controllerAddress: getControllerAddress(market), debtDelta: debt },
+        isOpen,
+      )}
       {...prevLoanState}
     />
   )

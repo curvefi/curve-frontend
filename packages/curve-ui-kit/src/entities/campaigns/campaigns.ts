@@ -106,7 +106,7 @@ const useCampaigns = ({ blockchainId }: UseCampaignsOptions = {}) =>
 export const useCampaignsByAddress = ({
   address,
   blockchainId,
-}: { address: Address | undefined } & UseCampaignsOptions) => {
+}: { address: Address | null | undefined } & UseCampaignsOptions) => {
   const query = useMappedQuery(
     useCampaigns({ blockchainId, enabled: Boolean(address) }),
     useCallback(campaigns => address && campaigns[address], [address]),
