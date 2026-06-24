@@ -22,14 +22,14 @@ export const getPoolIdByAddressEntries = (poolMapper: PoolIdByAddressSource | un
 export const getCurvePoolIdByAddressEntries = (curve: CurveApi) =>
   curve.getPoolList().map(poolId => [normalizeAddress(curve.getPool(poolId).address), poolId] as const)
 
+export const getPoolYieldApy = (apr: number | null | undefined) => aprToApy(apr, POOL_YIELD_COMPOUND_WINDOW)
+
 export const getPoolListItem = (
   network: NetworkConfig,
   pool: V2Pool,
   hasPosition: PoolListItem['hasPosition'],
 ): PoolListItem => ({
   ...pool,
-  baseDailyApy: aprToApy(pool.baseDailyApr, POOL_YIELD_COMPOUND_WINDOW),
-  baseWeeklyApy: aprToApy(pool.baseWeeklyApr, POOL_YIELD_COMPOUND_WINDOW),
   hasPosition,
   hasVyperVulnerability: pool.vyperVersion != null && VYPER_EXPLOIT_VERSIONS.has(pool.vyperVersion),
   network: network.id,
