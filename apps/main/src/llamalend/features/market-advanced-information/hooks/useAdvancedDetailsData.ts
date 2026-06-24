@@ -3,7 +3,6 @@ import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import {
   useMarketCapAndAvailable,
-  useMarketLiquidationHealthDistribution,
   useMarketMaxLeverage,
   useMarketTotalCollateral,
   useMarketUsers,
@@ -58,11 +57,6 @@ export const useAdvancedDetailsData = ({
     blockchainId,
     contractAddress: controllerAddress,
   })
-  const liquidationHealthDistribution = useMarketLiquidationHealthDistribution({
-    endpoint,
-    blockchainId,
-    contractAddress: controllerAddress,
-  })
   return {
     marketType,
     collateral: combineQueries(
@@ -90,10 +84,6 @@ export const useAdvancedDetailsData = ({
       borrowSymbol: borrowToken?.symbol,
     })),
     totalBorrowers: mapQuery(marketUsers, ({ count }) => ({ value: count })),
-    averageHealth: mapQuery(liquidationHealthDistribution, distribution => ({
-      value: distribution.meanHealth,
-      distribution,
-    })),
     ...(marketType === LlamaMarketType.Lend && {
       solvency: mapQuery(solvency, ({ solvencyPercent, badDebtUsd }) => ({ value: solvencyPercent, badDebtUsd })),
     }),
