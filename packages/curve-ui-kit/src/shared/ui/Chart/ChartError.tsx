@@ -24,12 +24,6 @@ export const ChartError = ({
       minHeight: height,
     }}
   >
-    <ErrorMessage
-      title={t`An error occurred`}
-      subtitle={errorMessage}
-      error={error}
-      refreshData={refreshData}
-      errorMessage={errorMessage}
-    />
+    <ErrorMessage title={t`An error occurred`} subtitle={errorMessage} error={error} refreshData={refreshData} />
   </Box>
 )

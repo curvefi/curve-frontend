@@ -4,9 +4,14 @@ import Typography from '@mui/material/Typography'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TableItem, TanstackTable } from './data-table.utils'
 
-const { MinHeight } = SizesAndSpaces
+const { Height, Spacing } = SizesAndSpaces
 
-type Size = keyof typeof MinHeight.tableNoResults
+export type EmptyStateRowSize = keyof typeof Height.table.noResults
+
+const SPACING_SIZE_MAP: Record<EmptyStateRowSize, keyof typeof Spacing> = {
+  sm: 'md',
+  lg: 'xl',
+}
 
 export const EmptyStateRow = <T extends TableItem>({
   table,
@@ -14,15 +19,15 @@ export const EmptyStateRow = <T extends TableItem>({
   children,
 }: {
   children: ReactNode
-  size?: Size
+  size?: EmptyStateRowSize
   table: TanstackTable<T>
 }) => (
-  <TableRow data-testid="table-empty-row" sx={{ height: MinHeight.tableNoResults[size] }}>
+  <TableRow data-testid="table-empty-row" sx={{ height: Height.table.noResults[size] }}>
     <Typography
       variant="tableCellL"
       colSpan={table.getHeaderGroups().reduce((count, { headers }) => count + headers.length, 0)}
       component="td"
-      sx={{ padding: 7, textAlign: 'center' }}
+      sx={{ padding: Spacing[SPACING_SIZE_MAP[size]], textAlign: 'center' }}
     >
       {children}
     </Typography>

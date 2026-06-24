@@ -1,13 +1,10 @@
-import { useConnection } from 'wagmi'
 import { getControllerAddress } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
 import { StakeTokenLabel } from '@/llamalend/widgets/action-card/StakeTokenLabel'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import Button from '@mui/material/Button'
-import { notFalsy } from '@primitives/objects.utils'
-import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
+import { FormButton } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
 import { AlertDisableForm } from '@ui-kit/shared/ui/AlertDisableForm'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
@@ -31,7 +28,6 @@ export const StakeForm = <ChainId extends IChainId>({
   chainId,
   enabled,
 }: StakeFormProps<ChainId>) => {
-  const { isConnected } = useConnection()
   const network = networks[chainId]
   const blockchainId = network.id
 
@@ -88,26 +84,15 @@ export const StakeForm = <ChainId extends IChainId>({
         }
       />
 
-      {isConnected ? (
-        hasGauge ? (
-          disabledAlert ? (
-            <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>
-          ) : (
-            <Button
-              type="submit"
-              loading={isLoading}
-              disabled={isDisabled}
-              data-testid={`${TEST_ID_PREFIX}-submit-button`}
-            >
-              {isPending ? t`Processing...` : notFalsy(isApproved.data === false && t`Approve`, t`Stake`).join(' & ')}
-            </Button>
-          )
-        ) : (
-          <AlertNoGauge />
-        )
-      ) : (
-        <ConnectWalletButton />
-      )}
+      <FormButton
+        pending={isPending}
+        loading={isLoading}
+        disabled={isDisabled}
+        label={[isApproved.data === false && t`Approve`, t`Stake`]}
+        testId={`${TEST_ID_PREFIX}-submit-button`}
+      >
+        {hasGauge ? disabledAlert && <AlertDisableForm>{disabledAlert.message}</AlertDisableForm> : <AlertNoGauge />}
+      </FormButton>
 
       <LowSolvencyActionModal
         action="stake"

@@ -81,7 +81,7 @@ export const usePoolActivityTradesConfig = ({ chainId, poolAddress }: UsePoolAct
 
   return {
     table,
-    emptyMessage: t`No swap data found.`,
-    errorMessage: t`Could not load swap data.`,
+    emptyState: { title: t`No swap data found.` },
+    errorState: { title: t`Could not load swap data.` },
   }
 }

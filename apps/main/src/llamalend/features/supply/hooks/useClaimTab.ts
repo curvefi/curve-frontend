@@ -76,7 +76,6 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
     isCrvDisabled: [!hasClaimableCrv, !!claimableCrvError, claimableTokens.length === 0].some(Boolean),
     isRewardsDisabled: [!hasClaimableRewards, !!claimableRewardsError, claimableTokens.length === 0].some(Boolean),
     isLoading: isClaimablesLoading,
-    isError: [!!claimableCrvError, !!claimableRewardsError].some(Boolean),
     table,
     onSubmitCrv,
     onSubmitRewards,

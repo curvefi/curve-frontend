@@ -1,9 +1,9 @@
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
+import { FormButton } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import type { LlamaMarketType } from '@ui-kit/types/market'
@@ -88,14 +88,13 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
 
       <FormAlerts error={action.error} formErrors={formErrors} handledErrors={['userCollateral']} />
 
-      <Button
-        type="submit"
-        loading={isPending || !market}
+      <FormButton
+        pending={isPending}
+        loading={!market}
         disabled={isDisabled}
-        data-testid="remove-collateral-submit-button"
-      >
-        {isPending ? t`Processing...` : t`Remove collateral`}
-      </Button>
+        label={t`Remove collateral`}
+        testId="remove-collateral-submit-button"
+      />
     </Form>
   )
 }

@@ -3,15 +3,11 @@ import { SortingState } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
-import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { QueryProp } from '@ui-kit/types/util'
 import { DEFAULT_SORT, USER_POSITION_HISTORY_COLUMNS } from './columns'
 import { ParsedUserCollateralEvent } from './hooks/useUserCollateralEvents'
 import { useUserPositionHistoryVisibility } from './hooks/useUserPositionHistoryVisibility'
 import { RowExpandedPanel } from './RowExpandedPanel'
-
-const { MaxHeight } = SizesAndSpaces
 
 type UserEventsTableProps = {
   eventsQuery: QueryProp<ParsedUserCollateralEvent[]>
@@ -34,11 +30,10 @@ export const UserEventsTable = ({ eventsQuery }: UserEventsTableProps) => {
 
   return (
     <DataTable
+      category="scrollable"
       table={table}
-      emptyState={
-        <EmptyStateRow table={table}>{table.error ? t`Could not load events` : t`No events found`}</EmptyStateRow>
-      }
-      maxHeight={MaxHeight.userEventsTable}
+      emptyState={{ title: t`No events found` }}
+      errorState={{ title: t`Could not load events` }}
       expandedPanel={RowExpandedPanel}
     />
   )
