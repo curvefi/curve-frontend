@@ -2,7 +2,13 @@ import { countBy, sumBy } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import { ethAddress } from 'viem'
 import { LLAMMALEND_V2_DATE } from '@/llamalend/constants'
-import { calculateMarketSolvency, createGetBadDebtMarket, lowSolvencyDeprecatedMessage } from '@/llamalend/llama.utils'
+import {
+  calculateLendMarketTvlUsd,
+  calculateMarketSolvency,
+  calculateMintMarketTvlUsd,
+  createGetBadDebtMarket,
+  lowSolvencyDeprecatedMessage,
+} from '@/llamalend/llama.utils'
 import {
   aprToApy,
   computeTotalRate,
@@ -180,11 +186,8 @@ const convertLendingVault = (
     liquidityUsd: totalAssetsUsd - totalDebtUsd,
     totalDebtUsd,
     totalCollateralUsd: collateralBalanceUsd + borrowedBalanceUsd,
-    tvl:
-      borrowedBalanceUsd + // collateral converted to crvusd
-      collateralBalanceUsd + // collateral
-      totalAssetsUsd - // supplied assets
-      totalDebtUsd,
+    // TVL = collateral converted to borrow token + collateral + unborrowed supplied assets.
+    tvl: calculateLendMarketTvlUsd({ borrowedBalanceUsd, collateralBalanceUsd, totalAssetsUsd, totalDebtUsd }),
     rates: {
       lendApy,
       lendCrvAprUnboosted,
@@ -257,6 +260,7 @@ const convertMintMarket = (
   const rewards = [...(campaigns[address.toLowerCase()] ?? []), ...(campaigns[llamma.toLowerCase()] ?? [])]
   const borrowCampaignsApr = sumCampaignsApr(rewards.filter(r => r.action === 'borrow'))
   const borrowCampaignsApy = sumCampaignsApy(rewards.filter(r => r.action === 'borrow'))
+  const tvl = calculateMintMarketTvlUsd({ collateralAmountUsd })
 
   return {
     chain,
@@ -296,9 +300,9 @@ const convertMintMarket = (
     badDebtUsd,
     debtCeiling,
     liquidityUsd: borrowable,
-    tvl: collateralAmountUsd,
+    tvl,
     totalDebtUsd: borrowedUsd,
-    totalCollateralUsd: collateralAmountUsd,
+    totalCollateralUsd: tvl,
     rates: {
       lendApy: null,
       lendCrvAprBoosted: null,
