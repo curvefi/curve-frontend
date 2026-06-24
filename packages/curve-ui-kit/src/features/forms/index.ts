@@ -1,4 +1,5 @@
 export * from './useFormContext'
+export * from './FormButton'
 export * from './useForm'
 export * from './FormProvider'
 export * from './form.types'

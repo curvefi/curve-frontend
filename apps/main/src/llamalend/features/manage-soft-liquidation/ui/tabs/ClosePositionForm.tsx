@@ -2,14 +2,11 @@ import { useClosePositionForm } from '@/llamalend/features/manage-soft-liquidati
 import { ClosePositionInfoList } from '@/llamalend/features/manage-soft-liquidation/ui/ClosePositionInfoList'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import TableCell from '@mui/material/TableCell'
-import { joinButtonText } from '@primitives/string.utils'
+import { FormButton } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
-import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
-import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
@@ -66,17 +63,11 @@ export const ClosePositionForm = ({
       }
     >
       <DataTable<ClosePositionRow>
+        category="form"
         table={table}
-        emptyState={
-          <EmptyStateRow table={table}>
-            <EmptyStateCard
-              title={table.error ? t`Could not load position close data` : t`No close position data`}
-              description={table.error?.message}
-            />
-          </EmptyStateRow>
-        }
+        emptyState={{ title: t`No close position data` }}
+        errorState={{ title: t`Could not load close position data` }}
         verticalAlign="top"
-        hideHeader
         footerRow={
           !table.isLoading &&
           collateralToRecover != null && (
@@ -97,14 +88,15 @@ export const ClosePositionForm = ({
         <AlertClosePosition hasBadDebt={hasBadDebt} />
       )}
       <Stack sx={{ gap: Spacing.xs }}>
-        <Button type="submit" loading={isPending} disabled={isDisabled} data-testid="close-position-submit-button">
-          {isPending
-            ? t`Processing...`
-            : joinButtonText(
-                isApproved?.data === false && t`Approve`,
-                ...(hasBadDebt ? [t`Repay bad debt`] : [t`Repay debt`, t`Recover collateral`]),
-              )}
-        </Button>
+        <FormButton
+          pending={isPending}
+          disabled={isDisabled}
+          label={[
+            isApproved?.data === false && t`Approve`,
+            ...(hasBadDebt ? [t`Repay bad debt`] : [t`Repay debt`, t`Recover collateral`]),
+          ]}
+          testId="close-position-submit-button"
+        />
       </Stack>
 
       <FormAlerts

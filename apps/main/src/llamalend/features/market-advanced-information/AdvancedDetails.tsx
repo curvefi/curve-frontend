@@ -26,7 +26,7 @@ type AdvancedDetailsProps = {
 }
 
 export const AdvancedDetails = ({ chainId, marketId, market, marketType }: AdvancedDetailsProps) => {
-  const { borrowedUsdRate, collateral, availableLiquidity, maxLeverage, solvency, totalBorrowers } =
+  const { borrowedUsdRate, collateral, availableLiquidity, tvl, maxLeverage, solvency, totalBorrowers } =
     useAdvancedDetailsData({
       chainId,
       market,
@@ -48,19 +48,13 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
         },
       }}
     >
-      {solvency && (
-        <Metric
-          size="medium"
-          label={t`Solvency`}
-          value={mapQuery(solvency, ({ value }) => value)}
-          valueOptions={{ unit: 'percentage' }}
-          valueTooltip={{
-            title: t`Solvency`,
-            body: <SolvencyTooltip type={marketType} />,
-            ...TooltipOptions,
-          }}
-        />
-      )}
+      <Metric
+        testId="market-tvl"
+        size="medium"
+        label={t`TVL`}
+        value={mapQuery(tvl, ({ value }) => value)}
+        valueOptions={{ unit: 'dollar' }}
+      />
       {availableLiquidity.data?.borrowCap && (
         <Metric
           size="medium"
@@ -97,6 +91,19 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
           valueTooltip={{
             title: t`Total Collateral`,
             body: <TotalCollateralTooltip {...collateral.data} />,
+            ...TooltipOptions,
+          }}
+        />
+      )}
+      {solvency && (
+        <Metric
+          size="medium"
+          label={t`Solvency`}
+          value={mapQuery(solvency, ({ value }) => value)}
+          valueOptions={{ unit: 'percentage' }}
+          valueTooltip={{
+            title: t`Solvency`,
+            body: <SolvencyTooltip type={marketType} />,
             ...TooltipOptions,
           }}
         />

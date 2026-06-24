@@ -8,11 +8,9 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
-import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { useFilters } from '@ui-kit/shared/ui/DataTable/hooks/useFilters'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableHeader } from '@ui-kit/shared/ui/DataTable/TableHeader'
-import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
 import { mapQuery, type QueryProp } from '@ui-kit/types/util'
 import { LlamaListChips } from './chips/LlamaListChips'
 import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS, LlamaMarketColumnId } from './columns'
@@ -32,13 +30,12 @@ const pagination = { pageIndex: 0, pageSize: 200 }
 export const LlamaMarketsTable = ({
   onReload,
   tableQuery,
-  tableQuery: { data: queryData, isLoading, error },
+  tableQuery: { data: queryData, isLoading },
 }: {
   onReload: () => void
   tableQuery: QueryProp<LlamaMarketsResult>
 }) => {
   const { markets: data = [], userHasPositions, hasFavorites } = queryData ?? {}
-  const isError = !!error
   const [filtersOpen, , , , setFiltersOpen] = useSwitch(false)
   const filterChipRef = useRef<HTMLDivElement>(null)
   const isMobile = useIsMobile()
@@ -75,15 +72,12 @@ export const LlamaMarketsTable = ({
       <TableHeader title={t`Markets`} onReload={onReload} isLoading={isLoading} />
       <DataTable
         table={table}
-        emptyState={
-          <EmptyStateRow table={table}>
-            <EmptyStateCard
-              title={isError ? t`Could not load markets` : t`No markets found`}
-              description={!isError && t`Try adjusting your filters or search query`}
-              button={{ onClick: isError ? onReload : resetFilters, label: isError ? t`Reload` : t`Show All Markets` }}
-            />
-          </EmptyStateRow>
-        }
+        emptyState={{
+          title: t`No markets found`,
+          description: t`Try adjusting your filters or search query`,
+          button: { onClick: resetFilters, label: t`Show All Markets` },
+        }}
+        errorState={{ title: t`Could not load markets`, onReload }}
         expandedPanel={LlamaMarketExpandedPanel}
         shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       >

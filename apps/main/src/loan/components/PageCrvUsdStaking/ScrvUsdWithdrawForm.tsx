@@ -3,8 +3,7 @@ import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormToke
 import { SCRVUSD_VAULT_ADDRESS } from '@/loan/constants'
 import { networks, networksIdMapper } from '@/loan/networks'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
-import Button from '@mui/material/Button'
-import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
+import { FormButton } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
 import { q } from '@ui-kit/types/util'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
@@ -41,13 +40,13 @@ export const ScrvUsdWithdrawForm = ({ network }: NetworkUrlParams) => {
         hideBalance={!isConnected}
         disabled={!isConnected}
       />
-      {isConnected ? (
-        <Button type="submit" loading={isPending} disabled={isDisabled} data-testid="scrvusd-withdraw-submit-button">
-          {isPending ? t`Processing...` : params.isFull ? t`Redeem` : t`Withdraw`}
-        </Button>
-      ) : (
-        <ConnectWalletButton size="large" testId="scrvusd-withdraw-connect-wallet-button" />
-      )}
+      <FormButton
+        pending={isPending}
+        disabled={isDisabled}
+        connectWalletTestId="scrvusd-withdraw-connect-wallet-button"
+        label={params.isFull ? t`Redeem` : t`Withdraw`}
+        testId="scrvusd-withdraw-submit-button"
+      />
       <FormAlerts error={error} formErrors={formErrors} handledErrors={['withdrawAmount']} />
     </Form>
   )

@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { PositionsEmptyState } from '@/llamalend/constants'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { ExpandedState } from '@tanstack/react-table'
@@ -15,27 +14,25 @@ import type { LlamaMarket } from '../../queries/market-list/llama-markets'
 import { DEFAULT_SORT_BORROW, DEFAULT_SORT_SUPPLY, LLAMA_MARKET_COLUMNS } from './columns'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
-import { UserPositionsEmptyState } from './UserPositionsEmptyState'
 
 const { Spacing, Sizing } = SizesAndSpaces
 
 const TABLE_CONFIG = {
   [MarketRateType.Borrow]: {
-    label: t`Borrowing`,
+    title: t`Borrowing`,
+    label: t`borrow`,
     defaultSort: DEFAULT_SORT_BORROW,
     sortQueryField: 'userSortBorrow',
     storageKey: 'My Borrow Positions',
   },
   [MarketRateType.Supply]: {
-    label: t`Supplying`,
+    title: t`Supplying`,
+    label: t`supply`,
     defaultSort: DEFAULT_SORT_SUPPLY,
     sortQueryField: 'userSortSupply',
     storageKey: 'My Supply Positions',
   },
 }
-
-const getEmptyState = (isError: boolean): PositionsEmptyState =>
-  isError ? PositionsEmptyState.Error : PositionsEmptyState.NoPositions
 
 type UserPositionsTableProps = {
   tableQuery: QueryProp<LlamaMarket[]>
@@ -44,15 +41,9 @@ type UserPositionsTableProps = {
 }
 
 const pagination = { pageIndex: 0, pageSize: 50 }
-const DEFAULT_VISIBLE_ROWS = 3
 
-export const UserPositionsMarketRateTable = ({
-  tableQuery,
-  tableQuery: { data = [], error },
-  marketRateType,
-  onReload,
-}: UserPositionsTableProps) => {
-  const { label, defaultSort, sortQueryField, storageKey } = TABLE_CONFIG[marketRateType]
+export const UserPositionsMarketRateTable = ({ tableQuery, marketRateType, onReload }: UserPositionsTableProps) => {
+  const { title, label, defaultSort, sortQueryField, storageKey } = TABLE_CONFIG[marketRateType]
   const [sorting, onSortingChange] = useSortFromQueryString(defaultSort, sortQueryField)
   const { columnVisibility } = useLlamaTableVisibility(storageKey, sorting, marketRateType)
   const [expanded, setExpanded] = useState<ExpandedState>({})
@@ -66,24 +57,16 @@ export const UserPositionsMarketRateTable = ({
     onExpandedChange: setExpanded,
     ...getTableOptions(tableQuery.data),
   })
+  const rowCount = table.getRowModel().rows.length
+
   return (
     <DataTable
+      category="limited"
       table={table}
-      defaultVisibleRows={{
-        max: DEFAULT_VISIBLE_ROWS,
-        buttonLabel: t`View all ${data.length} ${marketRateType.toLowerCase()} positions`,
-      }}
-      increasingLength="userPositionsMarketRate"
-      emptyState={
-        <UserPositionsEmptyState
-          state={getEmptyState(!!error)}
-          table={table}
-          marketRateType={marketRateType}
-          onReload={onReload}
-        />
-      }
+      viewAllLabel={t`View all ${rowCount} ${label} positions`}
+      errorState={{ title: t`Could not load ${label} positions`, onReload }}
       expandedPanel={LlamaMarketExpandedPanel}
-      shouldStickFirstColumn={Boolean(useIsTablet() && data.length)}
+      shouldStickFirstColumn={Boolean(useIsTablet() && rowCount)}
     >
       <Stack
         sx={{
@@ -93,7 +76,7 @@ export const UserPositionsMarketRateTable = ({
           paddingInline: Spacing.md,
         }}
       >
-        <CardHeader title={label} size="small" />
+        <CardHeader title={title} size="small" />
       </Stack>
     </DataTable>
   )

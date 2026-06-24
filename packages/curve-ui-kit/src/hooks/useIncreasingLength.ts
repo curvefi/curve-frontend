@@ -17,8 +17,7 @@ const INCREASING_LENGTH_CATEGORIES = {
   default: DEFAULT,
   disabled: { ...DEFAULT, maxLength: DEFAULT.initialLength },
   chips: { ...DEFAULT, maxLength: 5 },
-  /** With two user positions tables let's avoid having too many skeletons rows when loading */
-  userPositionsMarketRate: { ...DEFAULT, initialLength: 1, maxLength: 3 },
+  limited: { ...DEFAULT, initialLength: 1, maxLength: 3 },
 } as const satisfies Record<string, IncreasingLengthOptions>
 
 export type IncreasingLengthCategory = keyof typeof INCREASING_LENGTH_CATEGORIES
