@@ -209,6 +209,9 @@ export const getVaultAddress = <T extends LlamaMarketTemplate | null | undefined
     m => m.vaultAddress,
   )
 
+export const getGaugeAddress = (market: LlamaMarketTemplate | null | undefined): Address | undefined =>
+  market instanceof LendMarketTemplate ? (market.addresses.gauge as Address) : undefined
+
 /**
  * Calculates the loan-to-value ratio of a market.
  * @param debtAmount - The amount of debt in the market.

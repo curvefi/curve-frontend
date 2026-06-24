@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 import { zeroAddress } from 'viem'
-import { getTokens } from '@/llamalend/llama.utils'
+import { getAmmAddress, getControllerAddress, getGaugeAddress, getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useMarketOracleAddress } from '@/llamalend/queries/market'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -96,15 +96,15 @@ export const MarketContractsSection = ({ chainId, market, network }: MarketContr
   const assetsLoading = !network || !market
   const contractsLoading = assetsLoading || oracleAddressIsLoading
   const isLendMarket = market instanceof LendMarketTemplate
-  const gaugeAddress = market instanceof LendMarketTemplate ? market.addresses.gauge : undefined
+  const gaugeAddress = getGaugeAddress(market)
 
   const infraAddressItems = notFalsy<AddressItem>(
-    market && { key: 'amm', label: t`AMM`, address: isLendMarket ? market.addresses.amm : market.address },
+    market && { key: 'amm', label: t`AMM`, address: getAmmAddress(market) },
     isLendMarket && { key: 'vault', label: t`Vault`, address: market.addresses.vault },
     market && {
       key: 'controller',
       label: t`Controller`,
-      address: isLendMarket ? market.addresses.controller : market.controller,
+      address: getControllerAddress(market),
     },
     market && {
       key: 'monetary-policy',
