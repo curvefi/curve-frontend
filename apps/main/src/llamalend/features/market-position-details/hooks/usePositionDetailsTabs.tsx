@@ -45,7 +45,7 @@ export const usePositionDetailsTabs = ({
               <EmptyStateCard
                 title={t`Disconnected`}
                 description={t`Please connect your wallet to view your positions.`}
-                button={{ type: 'connect-wallet', label: t`Connect Wallet`, testId: 'market-disconnected' }}
+                button={{ type: 'connect-wallet', testId: 'market-disconnected' }}
               />
             ),
         },
