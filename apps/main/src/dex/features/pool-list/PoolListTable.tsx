@@ -5,15 +5,14 @@ import type { SortDirection as PoolSortDirection, V2PoolSortField as PoolSortFie
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { type ExpandedState, getCoreRowModel, getExpandedRowModel } from '@tanstack/react-table'
+import { CURVE_SOCIALS } from '@ui/utils'
 import { useIsMobile, useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
-import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { useMappedQuery } from '@ui-kit/types/util'
 import { POOL_LIST_COLUMNS, PoolListColumnId } from './columns'
-import { PoolListEmptyState } from './components/PoolListEmptyState'
 import { PoolListFilterChips } from './components/PoolListFilterChips'
 import { PoolListMobileExpandedPanel } from './components/PoolListMobileExpandedPanel'
 import { PoolListFilterDrawer } from './drawers/PoolListFilterDrawer'
@@ -113,11 +112,13 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
       <CardHeader title={t`Pools`} />
       <DataTable
         table={table}
-        emptyState={
-          <EmptyStateRow table={table}>
-            <PoolListEmptyState resetFilters={resetFilters} isError={!!tableQuery.error} />
-          </EmptyStateRow>
-        }
+        emptyState={{
+          title: t`Can't find what you're looking for?`,
+          description: t`Try adjusting your filters or search query. Or feel free to ask us on Telegram.`,
+          button: { label: t`Show all pools`, onClick: resetFilters },
+          secondaryButton: { label: t`Telegram`, href: CURVE_SOCIALS.telegram.en },
+        }}
+        errorState={{ title: t`Unable to retrieve pool list` }}
         expandedPanel={PoolListMobileExpandedPanel}
         shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       >

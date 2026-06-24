@@ -17,13 +17,14 @@ type EmptyStateButtonProps = Omit<ButtonProps, 'type'> & {
   testId?: string
 }
 
-type EmptyStateCardProps = {
+export type EmptyStateCardProps = {
   title?: ReactNode
   description?: ReactNode
   isLoading?: boolean
   size?: 'sm' | 'md'
   button?: EmptyStateButtonProps
   secondaryButton?: EmptyStateButtonProps
+  testId?: string
 }
 
 const SIZE_CONFIG: Record<
@@ -72,6 +73,7 @@ export const EmptyStateCard = ({
   secondaryButton,
   isLoading,
   size = 'md',
+  testId,
 }: EmptyStateCardProps) => (
   <Stack
     sx={{
@@ -80,6 +82,7 @@ export const EmptyStateCard = ({
       justifySelf: 'center',
       maxWidth: MaxWidth.emptyStateCard,
     }}
+    data-testid={testId}
   >
     <LlamaIcon sx={{ width: SIZE_CONFIG[size].icon, height: SIZE_CONFIG[size].icon }} />
     {isLoading ? (

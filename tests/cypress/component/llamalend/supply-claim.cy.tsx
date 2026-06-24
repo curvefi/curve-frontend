@@ -59,12 +59,10 @@ describe('ClaimTab (mocked)', () => {
         otherRewardsButtonDisabled: expected.otherRewardsButtonDisabled,
       })
 
-      // if (!expected.crvButtonDisabled || !expected.otherRewardsButtonDisabled) {
       checkClaimTableState({
         rows: expected.table.rows,
         totalNotional: expected.table.totalNotional,
       })
-      // }
 
       cy.then(() => {
         expect(stubs.claimableCrv).to.have.been.calledWithExactly(...expected.claimableCrv)

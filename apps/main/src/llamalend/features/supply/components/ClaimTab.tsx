@@ -1,8 +1,6 @@
 import { useConnection } from 'wagmi'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import Alert from '@mui/material/Alert'
-import AlertTitle from '@mui/material/AlertTitle'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
@@ -34,7 +32,6 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
     params,
     claimableTokens,
     isLoading,
-    isError,
     isCrvDisabled,
     isRewardsDisabled,
     isCrvPending,
@@ -56,15 +53,9 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
         footer={<ClaimActionInfoList params={params} networks={networks} isOpen={!!claimableTokens.length} />}
       >
         <DataTable<ClaimableToken>
+          category="form"
           table={table}
-          emptyState={
-            !isError && (
-              <Alert severity="info" variant="outlined" data-testid={`${TEST_ID_PREFIX}-empty-state`}>
-                <AlertTitle>{t`No rewards to claim`}</AlertTitle>
-              </Alert>
-            )
-          }
-          hideHeader
+          emptyState={{ title: t`No rewards to claim`, testId: `${TEST_ID_PREFIX}-empty-state` }}
           footerRow={
             !!claimableTokens.length &&
             !isLoading && (

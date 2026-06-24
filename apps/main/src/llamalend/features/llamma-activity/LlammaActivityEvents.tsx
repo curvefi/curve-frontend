@@ -10,7 +10,7 @@ export const LlammaActivityEvents = ({
   endpoint,
   networkConfig,
 }: LlammaActivityProps) => {
-  const { table, emptyMessage, errorMessage } = useLlammaActivityEventsConfig({
+  const { table, emptyState, errorState } = useLlammaActivityEventsConfig({
     network,
     collateralToken,
     borrowToken,
@@ -22,8 +22,8 @@ export const LlammaActivityEvents = ({
   return (
     <ActivityTable
       table={table}
-      emptyMessage={emptyMessage}
-      errorMessage={errorMessage}
+      emptyState={emptyState}
+      errorState={errorState}
       expandedPanel={LlammaEventsExpandedPanel}
     />
   )

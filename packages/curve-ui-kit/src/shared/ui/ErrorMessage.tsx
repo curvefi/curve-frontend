@@ -1,25 +1,26 @@
+import { ReactNode } from 'react'
 import { Stack, SxProps } from '@mui/material'
 import { ErrorReportModal } from '@ui-kit/features/report-error'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
 import { applySxProps } from '@ui-kit/utils'
-import { EmptyStateCard } from './EmptyStateCard'
+import { EmptyStateCard, EmptyStateCardProps } from './EmptyStateCard'
 
 export const ErrorMessage = ({
   title,
   subtitle,
   error,
-  errorMessage,
   refreshData,
   sx,
+  size,
 }: {
-  title: string
-  subtitle?: string
+  title: ReactNode
+  subtitle?: ReactNode
   error?: Error | string
-  errorMessage: string
   refreshData?: () => Promise<unknown> | void
   sx?: SxProps
+  size?: EmptyStateCardProps['size']
 }) => {
   const [isReportOpen, openReportModal, closeReportModal] = useSwitch(false)
 
@@ -28,10 +29,11 @@ export const ErrorMessage = ({
       <EmptyStateCard
         title={title}
         description={subtitle}
+        size={size}
         button={{ label: t`Submit error report`, testId: 'submit-error-report-button', onClick: openReportModal }}
         {...(refreshData && {
           secondaryButton: {
-            label: 'Refresh',
+            label: t`Reload`,
             startIcon: <ReloadIcon />,
             onClick: () => {
               void refreshData()
@@ -39,11 +41,7 @@ export const ErrorMessage = ({
           },
         })}
       />
-      <ErrorReportModal
-        isOpen={isReportOpen}
-        onClose={closeReportModal}
-        context={{ error, title, subtitle: errorMessage }}
-      />
+      <ErrorReportModal isOpen={isReportOpen} onClose={closeReportModal} context={{ error, title, subtitle }} />
     </Stack>
   )
 }

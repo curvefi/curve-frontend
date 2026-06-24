@@ -1,5 +1,5 @@
 /// <reference types="./DataTable.d.ts" />
-import { type ReactNode, useEffect, useEffectEvent, useMemo, useRef } from 'react'
+import { type ReactNode, useMemo, useRef } from 'react'
 import Box from '@mui/material/Box'
 import { Theme } from '@mui/material/styles'
 import Table from '@mui/material/Table'
@@ -10,15 +10,25 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
-import type { IncreasingLengthCategory } from '@ui-kit/hooks/useIncreasingLength'
 import { t } from '@ui-kit/lib/i18n'
 import { TablePagination } from '@ui-kit/shared/ui/DataTable/TablePagination'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { DataTableHeaderHeight, type DataTableSize, type TableItem, type TanstackTable } from './data-table.utils'
+import { EmptyStateCard, EmptyStateCardProps } from '../EmptyStateCard'
+import { ErrorMessage } from '../ErrorMessage'
+import {
+  DATA_TABLE_CATEGORIES,
+  DataTableCategory,
+  DataTableCategoryConfig,
+  DataTableHeaderHeight,
+  type TableItem,
+  type TanstackTable,
+} from './data-table.utils'
 import { DataRow, type DataRowProps } from './DataRow'
+import { EmptyStateRow } from './EmptyStateRow'
 import { FilterRow } from './FilterRow'
 import { HeaderCell } from './HeaderCell'
+import { useResetPageOnResultChange } from './hooks/useResetPageOnResultChange'
 import { useScrollToTopOnFilterChange, useScrollToTopOnPageChange } from './hooks/useTableScroll'
 import { useTableStickyHeader } from './hooks/useTableStickyHeader'
 import { SkeletonRows } from './SkeletonRows'
@@ -29,56 +39,48 @@ const TABLE_FILTERS_TEST_ID = 'table-filters'
 
 const { Height } = SizesAndSpaces
 
-/**
- * Resets the table pagination to the first page whenever the number of filtered results changes.
- * Skipped for manual pagination since data changes on every page change.
- */
-function useResetPageOnResultChange<T extends TableItem>(table: TanstackTable<T>) {
-  const isManualPagination = table.options.manualPagination
-  const resultCount = table.getFilteredRowModel().rows.length
-  const onPaginationChangeEvent = useEffectEvent(table.setPagination)
-  const lastResultCountRef = useRef<number>(resultCount)
-  useEffect(() => {
-    // Skip for manual pagination - data is expected to change on page change
-    if (isManualPagination) return
-    // Reset to first page, but only if result amount wasn't 0 (links must keep working while data might still be loading)
-    if (lastResultCountRef.current && resultCount) onPaginationChangeEvent(prev => ({ ...prev, pageIndex: 0 }))
-    lastResultCountRef.current = resultCount
-  }, [resultCount, isManualPagination])
-}
+type TableEmptyState = {
+  testId?: string
+} & Pick<EmptyStateCardProps, 'title' | 'description' | 'button' | 'secondaryButton'>
+type TableErrorState = { onReload?: () => Promise<unknown> | void } & Pick<EmptyStateCardProps, 'title' | 'description'>
+
+export type DataTableProps<T extends TableItem> = {
+  category?: DataTableCategory
+  table: TanstackTable<T>
+  emptyState?: TableEmptyState // optional overrides for the built-in empty state
+  errorState?: TableErrorState // optional overrides for the built-in error state
+  children?: ReactNode // passed to <FilterRow />
+  footerRow?: ReactNode
+  viewAllLabel?: string // button's label to expand all rows. defaultVisibleRows must be first set
+} & Omit<DataRowProps<T>, 'table' | 'row'>
+
 /**
  * DataTable component to render the table with headers and rows.
  * The table header stays sticky only when enabled, rows are not limited, and table content fits within its parent.
  * When the table is wider than its parent, the header stops being sticky and the table becomes horizontally scrollable.
  */
 export const DataTable = <T extends TableItem>({
+  category = 'list',
   emptyState,
+  errorState,
   children,
-  size = 'small',
-  maxHeight,
-  defaultVisibleRows,
-  disableStickyHeader = false,
   shouldStickFirstColumn = false,
-  hideHeader = false,
   footerRow,
-  increasingLength,
+  viewAllLabel,
   ...rowProps
-}: {
-  table: TanstackTable<T>
-  emptyState: ReactNode
-  children?: ReactNode // passed to <FilterRow />
-  size?: DataTableSize
-  maxHeight?: `${number}rem` // also sets overflowY to 'auto'
-  // maximum number of visible rows and the button's label to expand them all
-  defaultVisibleRows?: { max: number; buttonLabel: string }
-  disableStickyHeader?: boolean // can also be disabled by limited rows or table width overflow.
-  hideHeader?: boolean
-  footerRow?: ReactNode
-  increasingLength?: IncreasingLengthCategory
-} & Omit<DataRowProps<T>, 'table' | 'row'>) => {
+}: DataTableProps<T>) => {
+  const {
+    size = 'small',
+    height,
+    defaultVisibleRows: rowLimit,
+    disableStickyHeader = false,
+    hideHeader = false,
+    increasingLength = 'default',
+    emptyStateSize = 'md',
+    emptyStateRowSize = 'sm',
+  } = DATA_TABLE_CATEGORIES[category] as DataTableCategoryConfig
   const { table } = rowProps
-  const { isLoading } = table
-  const { max: rowLimit, buttonLabel: viewAllLabel } = defaultVisibleRows ?? {}
+  const { isLoading, error } = table
   const { rows } = table.getRowModel()
   const { isLimited, isLoading: isLoadingViewAll, onShowAll } = useTableRowLimit(rowLimit, rows.length)
   // When number of rows are limited, show only rowLimit rows
@@ -99,15 +101,14 @@ export const DataTable = <T extends TableItem>({
   const tableHeaderSx = (t: Theme) => ({
     ...(shouldStickyHeader && {
       position: 'sticky',
-      top: maxHeight ? 0 : top,
+      top: height ? 0 : top,
       zIndex: t.zIndex.tableHeader,
       marginBlockEnd: Height.row, // last row should not be hidden by the sticky header
     }),
   })
   const showFooter = !isLoading && (showPagination || showViewAllButton || footerRow)
-
   return (
-    <WithWrapper Wrapper={Box} shouldWrap={maxHeight} sx={{ maxHeight, overflowY: 'auto' }} ref={containerRef}>
+    <WithWrapper Wrapper={Box} shouldWrap={height} sx={{ height, overflowY: 'auto' }} ref={containerRef}>
       {/* Wrapper used to scroll back to the table without hiding it behind the sticky nav. */}
       <Box ref={tableTopRef} sx={{ scrollMarginTop: `${top}px` }}>
         {/* Children are placed outside the table header when the table content is horizontally scrollable in order to
@@ -157,7 +158,26 @@ export const DataTable = <T extends TableItem>({
                   increasingLength={increasingLength}
                 />
               ) : rows.length === 0 ? (
-                emptyState
+                <EmptyStateRow table={table} size={emptyStateRowSize}>
+                  {error ? (
+                    <ErrorMessage
+                      title={errorState?.title ?? t`Could not load data`}
+                      subtitle={errorState?.description ?? error.message}
+                      error={error}
+                      refreshData={errorState?.onReload}
+                      size={emptyStateSize}
+                    />
+                  ) : (
+                    <EmptyStateCard
+                      title={emptyState?.title ?? t`No results found`}
+                      description={emptyState?.description}
+                      button={emptyState?.button}
+                      secondaryButton={emptyState?.secondaryButton}
+                      size={emptyStateSize}
+                      testId={emptyState?.testId}
+                    />
+                  )}
+                </EmptyStateRow>
               ) : (
                 visibleRows.map(row => (
                   <DataRow<T> key={row.id} row={row} shouldStickFirstColumn={shouldStickFirstColumn} {...rowProps} />

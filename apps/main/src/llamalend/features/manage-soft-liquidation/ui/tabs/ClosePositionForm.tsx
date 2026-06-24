@@ -7,8 +7,6 @@ import TableCell from '@mui/material/TableCell'
 import { FormButton } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
-import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
-import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
@@ -65,17 +63,11 @@ export const ClosePositionForm = ({
       }
     >
       <DataTable<ClosePositionRow>
+        category="form"
         table={table}
-        emptyState={
-          <EmptyStateRow table={table}>
-            <EmptyStateCard
-              title={table.error ? t`Could not load position close data` : t`No close position data`}
-              description={table.error?.message}
-            />
-          </EmptyStateRow>
-        }
+        emptyState={{ title: t`No close position data` }}
+        errorState={{ title: t`Could not load close position data` }}
         verticalAlign="top"
-        hideHeader
         footerRow={
           !table.isLoading &&
           collateralToRecover != null && (
