@@ -19,13 +19,6 @@ type MarketParametersProps = {
 
 export const MarketParametersSection = ({ chainId, marketId, marketType }: MarketParametersProps) => (
   <Stack>
-    <Card size="inline" data-testid="market-parameters-section">
-      <CardHeader title={t`Parameters`} />
-      <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
-        <MarketLoanParameters chainId={chainId} marketId={marketId} />
-      </CardContent>
-    </Card>
-
     <Card size="inline" data-testid="market-prices-section">
       <CardHeader title={t`Prices`} />
       <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
@@ -34,6 +27,13 @@ export const MarketParametersSection = ({ chainId, marketId, marketType }: Marke
           marketId={marketId}
           enablePricePerShare={marketType === LlamaMarketType.Lend}
         />
+      </CardContent>
+    </Card>
+
+    <Card size="inline" data-testid="market-parameters-section">
+      <CardHeader title={t`Parameters`} />
+      <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
+        <MarketLoanParameters chainId={chainId} marketId={marketId} />
       </CardContent>
     </Card>
 

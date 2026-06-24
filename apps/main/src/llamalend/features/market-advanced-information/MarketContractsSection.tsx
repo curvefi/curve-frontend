@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 import { zeroAddress } from 'viem'
-import { getTokens } from '@/llamalend/llama.utils'
+import { getAmmAddress, getControllerAddress, getGaugeAddress, getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useMarketOracleAddress } from '@/llamalend/queries/market'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -10,10 +10,13 @@ import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { notFalsy } from '@primitives/objects.utils'
 import { type BaseConfig } from '@ui/utils'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
-import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
+import { ActionInfo, type ActionInfoProps } from '@ui-kit/shared/ui/ActionInfo'
 import { AddressActionInfo } from '@ui-kit/shared/ui/AddressActionInfo'
+import { Badge } from '@ui-kit/shared/ui/Badge'
 import { TokenIcon, type TokenIconProps } from '@ui-kit/shared/ui/TokenIcon'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -21,11 +24,12 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 const { Spacing } = SizesAndSpaces
 
 /** Either `address` (for a link) or `fallbackValue` (e.g. gauge = zeroAddress) is provided, not both */
-type ContractItem = {
+type AddressItem = {
   key: string
   label: ReactNode
   address?: string
   fallbackValue?: ReactNode
+  labelTooltip?: ActionInfoProps['labelTooltip']
 }
 
 type MarketContractsProps = {
@@ -34,112 +38,142 @@ type MarketContractsProps = {
   network: BaseConfig | undefined
 }
 
-const TokenLabel = ({ blockchainId, address, label }: TokenIconProps & { label: string }) => (
+const GaugeLabel = () => (
   <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center' }}>
-    <TokenIcon blockchainId={blockchainId} address={address} size="mui-md" />
+    <Typography variant="bodyMRegular" color="textSecondary">
+      {t`Gauge`}
+    </Typography>
+    <Badge size="extraSmall" color="active" label={t`Active`} />
+  </Stack>
+)
+
+const TokenLabel = ({ blockchainId, address, label, tooltip }: TokenIconProps & { label: string }) => (
+  <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center' }}>
+    <TokenIcon blockchainId={blockchainId} address={address} tooltip={tooltip} size="mui-md" />
     <Typography variant="bodyMRegular">{label}</Typography>
   </Stack>
 )
 
+const AssetRow = ({
+  network,
+  title,
+  token,
+  testId,
+}: {
+  network: BaseConfig | undefined
+  title: ReactNode
+  token: { symbol?: string; address?: string } | undefined
+  testId: string
+}) => (
+  <Stack>
+    <Typography variant="bodyMBold" color="textSecondary">
+      {title}
+    </Typography>
+    <AddressActionInfo
+      testId={testId}
+      network={network}
+      title={
+        <TokenLabel
+          blockchainId={network?.id}
+          tooltip={token?.symbol}
+          address={token?.address}
+          label={token?.symbol ?? ''}
+        />
+      }
+      address={token?.address}
+    />
+  </Stack>
+)
+
 export const MarketContractsSection = ({ chainId, market, network }: MarketContractsProps) => {
+  const isMobile = useIsMobile()
   const { collateralToken, borrowToken } = getTokens(market) ?? {}
   const { data: oracleAddress, isLoading: oracleAddressIsLoading } = useMarketOracleAddress({
     chainId,
     marketId: market?.id,
   })
-  const loading = !network || !market || oracleAddressIsLoading
 
-  const tokenItems: ContractItem[] = market
-    ? [
-        {
-          key: 'collateral-token',
-          label: (
-            <TokenLabel
-              blockchainId={network?.id}
-              tooltip={collateralToken?.symbol}
-              address={collateralToken?.address}
-              label={collateralToken?.symbol ?? ''}
-            />
-          ),
-          address: collateralToken?.address,
-        },
-        {
-          key: 'borrow-token',
-          label: (
-            <TokenLabel
-              blockchainId={network?.id}
-              tooltip={borrowToken?.symbol}
-              address={borrowToken?.address}
-              label={borrowToken?.symbol ?? ''}
-            />
-          ),
-          address: borrowToken?.address,
-        },
-      ]
-    : []
+  const assetsLoading = !network || !market
+  const contractsLoading = assetsLoading || oracleAddressIsLoading
+  const isLendMarket = market instanceof LendMarketTemplate
+  const gaugeAddress = getGaugeAddress(market)
 
-  const infraItems: ContractItem[] = market
-    ? market instanceof LendMarketTemplate
-      ? [
-          { key: 'amm', label: t`AMM`, address: market.addresses.amm },
-          { key: 'vault', label: t`Vault`, address: market.addresses.vault },
-          { key: 'controller', label: t`Controller`, address: market.addresses.controller },
-          {
-            key: 'gauge',
-            label: t`Gauge`,
-            ...(market.addresses.gauge === zeroAddress
-              ? { fallbackValue: t`No gauge` }
-              : { address: market.addresses.gauge }),
-          },
-          { key: 'monetary-policy', label: t`Monetary policy`, address: market.addresses.monetary_policy },
-          { key: 'oracle', label: t`Oracle`, address: oracleAddress },
-        ]
-      : [
-          { key: 'amm', label: t`AMM`, address: market.address },
-          { key: 'controller', label: t`Controller`, address: market.controller },
-          { key: 'monetary-policy', label: t`Monetary policy`, address: market.monetaryPolicy },
-          { key: 'oracle', label: t`Oracle`, address: oracleAddress },
-        ]
-    : []
+  const infraAddressItems = notFalsy<AddressItem>(
+    market && { key: 'amm', label: t`AMM`, address: getAmmAddress(market) },
+    isLendMarket && { key: 'vault', label: t`Vault`, address: market.addresses.vault },
+    market && {
+      key: 'controller',
+      label: t`Controller`,
+      address: getControllerAddress(market),
+    },
+    market && {
+      key: 'monetary-policy',
+      label: t`Rate policy`,
+      labelTooltip: {
+        title: t`The rule set that controls how fast borrow costs rise or fall as market conditions change.`,
+      },
+      address: isLendMarket ? market.addresses.monetary_policy : market.monetaryPolicy,
+    },
+    gaugeAddress &&
+      (gaugeAddress === zeroAddress
+        ? { key: 'gauge', label: t`Gauge`, fallbackValue: t`No gauge` }
+        : { key: 'gauge', label: <GaugeLabel />, address: gaugeAddress }),
+    market && { key: 'oracle', label: t`Oracle`, address: oracleAddress },
+  )
 
   return (
-    <Card size="inline" data-testid="market-contracts-section">
-      <CardHeader title={t`Contracts`} />
-      <CardContent component={Stack} sx={{ marginBlock: Spacing.sm, gap: Spacing.sm }}>
-        <WithSkeleton loading={loading} variant="rectangular" height="4lh" width="100%">
-          <Stack>
-            {tokenItems.map(({ key, label, address }) => (
-              <AddressActionInfo
-                key={key}
-                testId={`market-contract-${key}`}
+    <Stack data-testid="market-contracts-section">
+      <Card size="inline" data-testid="market-assets-section">
+        <CardHeader title={t`Assets`} />
+        <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
+          <WithSkeleton loading={assetsLoading} variant="rectangular" height="4lh" width="100%">
+            <Stack>
+              <AssetRow
+                testId="market-contract-collateral-token"
                 network={network}
-                title={label}
-                address={address}
+                title={t`Collateral`}
+                token={collateralToken}
               />
-            ))}
-          </Stack>
-        </WithSkeleton>
-        <Stack>
-          {infraItems.map(({ key, label, address, fallbackValue }) =>
-            fallbackValue ? (
-              <ActionInfo
-                key={key}
-                testId={`market-contract-${key}`}
-                label={label}
-                value={fallbackValue ?? t`No gauge`}
-              />
-            ) : (
-              <AddressActionInfo
-                key={key}
-                testId={`market-contract-${key}`}
+              <AssetRow
+                testId="market-contract-borrow-token"
                 network={network}
-                title={label}
-                address={address}
+                title={t`Borrowed`}
+                token={borrowToken}
               />
-            ),
-          )}
-        </Stack>
-      </CardContent>
-    </Card>
+            </Stack>
+          </WithSkeleton>
+        </CardContent>
+      </Card>
+
+      <Card size="inline">
+        <CardHeader title={isMobile ? t`Market Contracts` : t`Contracts`} />
+        <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
+          <WithSkeleton loading={contractsLoading} variant="rectangular" height="8lh" width="100%">
+            <Stack>
+              {infraAddressItems.map(({ key, label, labelTooltip, address, fallbackValue }) =>
+                fallbackValue != null ? (
+                  <ActionInfo
+                    key={key}
+                    testId={`market-contract-${key}`}
+                    label={label}
+                    labelTooltip={labelTooltip}
+                    value={fallbackValue}
+                  />
+                ) : (
+                  <AddressActionInfo
+                    key={key}
+                    testId={`market-contract-${key}`}
+                    network={network}
+                    title={label}
+                    labelTooltip={labelTooltip}
+                    address={address}
+                  />
+                ),
+              )}
+            </Stack>
+          </WithSkeleton>
+        </CardContent>
+      </Card>
+    </Stack>
   )
 }

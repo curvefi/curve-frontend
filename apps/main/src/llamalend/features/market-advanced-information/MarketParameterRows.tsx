@@ -28,6 +28,9 @@ export const MarketPricesRows = ({ chainId, marketId, enablePricePerShare }: Mar
       <ActionInfo
         testId="market-price-oracle"
         label={t`Oracle price`}
+        labelTooltip={{
+          title: t`The price source that determines your collateral value, health, and when your position moves toward soft liquidation.`,
+        }}
         value={formatNumber(oraclePrice, { abbreviate: false, fallback: '-' })}
         valueTooltip={formatNumber(oraclePrice, { decimals: 5, abbreviate: false, fallback: '-' })}
         loading={isLoadingOraclePrice || !marketId}

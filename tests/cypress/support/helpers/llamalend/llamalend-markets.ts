@@ -1,5 +1,4 @@
 import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns/columns.enum'
-import { calculateLendMarketTvlUsd } from '@/llamalend/llama.utils'
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
 import { oneOf, type TokenType } from '@cy/support/generators'
 import { getTableCellAssets, withFilters, withMultiSelectFilter } from '@cy/support/helpers/data-table.helpers'
@@ -44,12 +43,7 @@ export const getOneColumnMedianValue = (
     data.map(
       ({ borrowed_balance_usd, collateral_balance_usd, total_assets_usd, total_debt_usd, borrow_apr, max_ltv }) => ({
         [LlamaMarketColumnId.LiquidityUsd]: total_assets_usd - total_debt_usd,
-        [LlamaMarketColumnId.Tvl]: calculateLendMarketTvlUsd({
-          borrowedBalanceUsd: borrowed_balance_usd,
-          collateralBalanceUsd: collateral_balance_usd,
-          totalAssetsUsd: total_assets_usd,
-          totalDebtUsd: total_debt_usd,
-        }),
+        [LlamaMarketColumnId.Tvl]: borrowed_balance_usd + collateral_balance_usd + total_assets_usd - total_debt_usd,
         [LlamaMarketColumnId.BorrowRate]: borrow_apr,
         [LlamaMarketColumnId.UtilizationPercent]: total_assets_usd ? (100 * total_debt_usd) / total_assets_usd : 0,
         [LlamaMarketColumnId.MaxLtv]: max_ltv,

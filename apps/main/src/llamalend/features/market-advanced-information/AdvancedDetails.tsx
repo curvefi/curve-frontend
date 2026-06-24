@@ -26,7 +26,7 @@ type AdvancedDetailsProps = {
 }
 
 export const AdvancedDetails = ({ chainId, marketId, market, marketType }: AdvancedDetailsProps) => {
-  const { borrowedUsdRate, collateral, availableLiquidity, tvl, maxLeverage, solvency, totalBorrowers, averageHealth } =
+  const { borrowedUsdRate, collateral, availableLiquidity, maxLeverage, solvency, totalBorrowers } =
     useAdvancedDetailsData({
       chainId,
       market,
@@ -41,13 +41,31 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
       sx={{
         display: 'grid',
         gap: Spacing.lg,
-        gridTemplateColumns: { mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)', desktop: 'repeat(6, 1fr)' },
+        gridTemplateColumns: {
+          mobile: 'repeat(2, minmax(0, 1fr))',
+          tablet: 'repeat(4, minmax(0, 1fr))',
+          desktop: 'repeat(6, minmax(0, 1fr))',
+        },
       }}
     >
+      {solvency && (
+        <Metric
+          size="medium"
+          label={t`Solvency`}
+          value={mapQuery(solvency, ({ value }) => value)}
+          valueOptions={{ unit: 'percentage' }}
+          valueTooltip={{
+            title: t`Solvency`,
+            body: <SolvencyTooltip type={marketType} />,
+            ...TooltipOptions,
+          }}
+        />
+      )}
       {availableLiquidity.data?.borrowCap && (
         <Metric
           size="medium"
           label={t`Borrow cap`}
+          labelTooltip={{ title: t`The maximum total amount that can be borrowed from this market.` }}
           {...tokenMetric({
             value: mapQuery(availableLiquidity, d => d.borrowCap),
             symbol: availableLiquidity.data?.borrowSymbol,
@@ -61,19 +79,6 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
         label={t`Total borrowers`}
         value={mapQuery(totalBorrowers, ({ value }) => value)}
         valueOptions={{ abbreviate: true }}
-      />
-      <Metric
-        size="medium"
-        label={t`Average health`}
-        value={mapQuery(averageHealth, ({ value }) => value)}
-        valueOptions={{ decimals: 1 }}
-      />
-      <Metric
-        testId="market-tvl"
-        size="medium"
-        label={t`TVL`}
-        value={mapQuery(tvl, ({ value }) => value)}
-        valueOptions={{ unit: 'dollar' }}
       />
       {/* we show total collateral in the rate curve card for lend markets */}
       {!isLendMarket && (
@@ -92,19 +97,6 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
           valueTooltip={{
             title: t`Total Collateral`,
             body: <TotalCollateralTooltip {...collateral.data} />,
-            ...TooltipOptions,
-          }}
-        />
-      )}
-      {solvency && (
-        <Metric
-          size="medium"
-          label={t`Solvency`}
-          value={mapQuery(solvency, ({ value }) => value)}
-          valueOptions={{ unit: 'percentage' }}
-          valueTooltip={{
-            title: t`Solvency`,
-            body: <SolvencyTooltip type={marketType} />,
             ...TooltipOptions,
           }}
         />
