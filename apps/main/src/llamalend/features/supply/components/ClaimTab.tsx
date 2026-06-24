@@ -1,9 +1,11 @@
+import { useConnection } from 'wagmi'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
+import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
 import { t } from '@ui-kit/lib/i18n'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -25,6 +27,7 @@ const TEST_ID_PREFIX = 'supply-claim'
 const { Spacing } = SizesAndSpaces
 
 export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, enabled }: ClaimTabProps<ChainId>) => {
+  const { isConnected } = useConnection()
   const network = networks[chainId]
 
   const {
@@ -61,7 +64,6 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
               </Alert>
             )
           }
-          isLoading={isLoading}
           hideHeader
           footerRow={
             !!claimableTokens.length &&
@@ -74,29 +76,33 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
             )
           }
         />
-        <Stack sx={{ flexDirection: 'column', gap: Spacing.xs }}>
-          <Button
-            fullWidth
-            type="button"
-            loading={isCrvPending || !market}
-            disabled={isCrvDisabled}
-            data-testid={`${TEST_ID_PREFIX}-crv-rewards-submit-button`}
-            onClick={onSubmitCrv}
-          >
-            {isCrvPending ? t`Processing...` : t`Claim CRV rewards`}
-          </Button>
-          <Button
-            color="secondary"
-            fullWidth
-            type="button"
-            loading={isRewardsPending || !market}
-            disabled={isRewardsDisabled}
-            data-testid={`${TEST_ID_PREFIX}-other-rewards-submit-button`}
-            onClick={onSubmitRewards}
-          >
-            {isRewardsPending ? t`Processing...` : t`Claim other rewards`}
-          </Button>
-        </Stack>
+        {isConnected ? (
+          <Stack sx={{ flexDirection: 'column', gap: Spacing.xs }}>
+            <Button
+              fullWidth
+              type="button"
+              loading={isCrvPending || !market}
+              disabled={isCrvDisabled}
+              data-testid={`${TEST_ID_PREFIX}-crv-rewards-submit-button`}
+              onClick={onSubmitCrv}
+            >
+              {isCrvPending ? t`Processing...` : t`Claim CRV rewards`}
+            </Button>
+            <Button
+              color="secondary"
+              fullWidth
+              type="button"
+              loading={isRewardsPending || !market}
+              disabled={isRewardsDisabled}
+              data-testid={`${TEST_ID_PREFIX}-other-rewards-submit-button`}
+              onClick={onSubmitRewards}
+            >
+              {isRewardsPending ? t`Processing...` : t`Claim other rewards`}
+            </Button>
+          </Stack>
+        ) : (
+          <ConnectWalletButton />
+        )}
 
         <FormAlerts error={errors.find(Boolean) ?? null} formErrors={[]} handledErrors={[]} />
       </FormContent>

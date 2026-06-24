@@ -26,6 +26,7 @@ export const MarketLoanParameters = ({ chainId, marketId }: { chainId: IChainId;
   return (
     <>
       <ActionInfo
+        testId="market-param-amm-swap-fee"
         label={t`AMM swap fee`}
         value={formatNumber(parameters?.fee, 'percent.rate')}
         loading={loading}
@@ -33,6 +34,7 @@ export const MarketLoanParameters = ({ chainId, marketId }: { chainId: IChainId;
       />
 
       <ActionInfo
+        testId="market-param-admin-fee"
         label={t`Admin fee`}
         value={formatNumber(parameters?.admin_fee, 'percent.rate')}
         loading={loading}
@@ -40,6 +42,7 @@ export const MarketLoanParameters = ({ chainId, marketId }: { chainId: IChainId;
       />
 
       <ActionInfo
+        testId="market-param-band-width-factor"
         label={t`Band width factor`}
         value={formatNumber(parameters?.A ?? 0, { abbreviate: false, useGrouping: false })}
         loading={loading}
@@ -47,6 +50,7 @@ export const MarketLoanParameters = ({ chainId, marketId }: { chainId: IChainId;
       />
 
       <ActionInfo
+        testId="market-param-loan-discount"
         label={t`Loan discount`}
         value={formatNumber(parameters?.loan_discount, 'percent.rate')}
         loading={loading}
@@ -54,6 +58,7 @@ export const MarketLoanParameters = ({ chainId, marketId }: { chainId: IChainId;
       />
 
       <ActionInfo
+        testId="market-param-liquidation-discount"
         label={t`Liquidation discount`}
         value={formatNumber(parameters?.liquidation_discount, 'percent.rate')}
         loading={loading}
@@ -61,6 +66,7 @@ export const MarketLoanParameters = ({ chainId, marketId }: { chainId: IChainId;
       />
 
       <ActionInfo
+        testId="market-param-max-ltv"
         label={t`Max LTV`}
         value={formatNumber(getMaxLTV(parameters?.A ?? 0, parameters?.loan_discount), 'percent.rate')}
         valueTooltip={t`Max possible loan at N=4`}

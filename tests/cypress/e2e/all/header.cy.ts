@@ -1,3 +1,4 @@
+import { mockMerklCampaigns } from '@cy/support/helpers/lending-mocks'
 import {
   APP_ROUTES,
   AppRoute,
@@ -118,6 +119,7 @@ describe('Header', () => {
       cy.viewport(width, height)
       dismissPhishingWarningBanner()
       route = oneAppRoute()
+      mockMerklCampaigns()
       cy.visitWithoutTestConnector(route)
       waitIsLoaded(route)
     })

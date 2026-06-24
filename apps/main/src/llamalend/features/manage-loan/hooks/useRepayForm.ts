@@ -120,7 +120,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
   const { address: userAddress } = useConnection()
   const marketId = market?.id
 
-  const { borrowToken, collateralToken } = market ? getTokens(market) : {}
+  const { borrowToken, collateralToken } = getTokens(market) ?? {}
 
   const form = useForm<RepayFormData>({
     ...formOptions,

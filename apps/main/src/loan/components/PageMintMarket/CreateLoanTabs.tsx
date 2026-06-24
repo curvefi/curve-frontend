@@ -2,6 +2,7 @@ import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoa
 import type { LoanTabProps } from '@/loan/components/PageMintMarket/types'
 import { networks } from '@/loan/networks'
 import { t } from '@ui-kit/lib/i18n'
+import { LlamaMarketType } from '@ui-kit/types/market'
 import { FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
 const menu = [
@@ -9,7 +10,13 @@ const menu = [
     value: 'create',
     label: t`Borrow`,
     component: ({ market, rChainId, onPricesUpdated }: LoanTabProps) => (
-      <CreateLoanForm networks={networks} chainId={rChainId} market={market} onPricesUpdated={onPricesUpdated} />
+      <CreateLoanForm
+        networks={networks}
+        chainId={rChainId}
+        market={market}
+        onPricesUpdated={onPricesUpdated}
+        marketType={LlamaMarketType.Mint}
+      />
     ),
   },
 ] satisfies FormTab<LoanTabProps>[]

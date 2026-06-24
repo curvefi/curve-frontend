@@ -140,7 +140,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   const disabledAlert = (marketAlert?.isBorrowDisabled ? marketAlert : undefined) ?? solvencyDisabledAlert
 
   const { formState } = form
-  const { borrowToken, collateralToken } = market ? getTokens(market) : {}
+  const { borrowToken, collateralToken } = getTokens(market) ?? {}
   const maxTokenValues = useMaxTokenValues({ market, params, form })
   const expectedCollateral = useCreateLoanExpectedCollateral(params, values.leverageEnabled)
 

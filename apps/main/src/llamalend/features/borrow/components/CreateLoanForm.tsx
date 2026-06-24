@@ -1,6 +1,7 @@
 import { type ChangeEvent, useCallback } from 'react'
+import { useConnection } from 'wagmi'
 import { LoanPreset, LEVERAGE } from '@/llamalend/constants'
-import { hasLeverage } from '@/llamalend/llama.utils'
+import { getControllerAddress, hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
@@ -10,11 +11,13 @@ import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { joinButtonText } from '@primitives/string.utils'
+import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
 import { useCreateLoanPreset } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { AlertDisableForm } from '@ui-kit/shared/ui/AlertDisableForm'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { LlamaMarketType } from '@ui-kit/types/market'
 import { q, type Range } from '@ui-kit/types/util'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
@@ -38,12 +41,15 @@ export const CreateLoanForm = <ChainId extends IChainId>({
   networks,
   chainId,
   onPricesUpdated,
+  marketType,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
+  marketType: LlamaMarketType
 }) => {
+  const { isConnected } = useConnection()
   const network = networks[chainId]
   const [preset, setPreset] = useCreateLoanPreset<LoanPreset>(LoanPreset.Safe)
   const {
@@ -87,7 +93,8 @@ export const CreateLoanForm = <ChainId extends IChainId>({
       onSubmit={onSubmit}
       footer={
         <CreateLoanInfoList
-          market={market}
+          marketType={marketType}
+          controllerAddress={getControllerAddress(market)}
           form={form}
           params={params}
           values={values}
@@ -128,7 +135,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
               tooltip={t`Max borrow`}
               symbol={borrowToken?.symbol}
               balance={maxDebt.data}
-              loading={maxDebt.isLoading}
+              loading={isConnected && maxDebt.isLoading} // TODO: maxDebt.isLoading is always true when !market even without wallet.
               onClick={useCallback(() => updateForm({ debt: values.maxDebt }), [updateForm, values.maxDebt])}
               buttonTestId="borrow-set-debt-to-max"
             />
@@ -158,12 +165,16 @@ export const CreateLoanForm = <ChainId extends IChainId>({
       </LoanPresetSelector>
       <HighPriceImpactAlert priceImpact={priceImpact} values={values} max={q(maxLeverage)} slippageType={LEVERAGE} />
       <HighLiquidationRiskAlert isHighLiquidationRisk={isHighLiquidationRisk} />
-      {disabledAlert ? (
-        <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>
+      {isConnected ? (
+        disabledAlert ? (
+          <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>
+        ) : (
+          <Button type="submit" loading={isLoading} disabled={isDisabled} data-testid="create-loan-submit-button">
+            {isPending ? t`Processing...` : joinButtonText(isApproved?.data === false && t`Approve`, t`Borrow`)}
+          </Button>
+        )
       ) : (
-        <Button type="submit" loading={isLoading} disabled={isDisabled} data-testid="create-loan-submit-button">
-          {isPending ? t`Processing...` : joinButtonText(isApproved?.data === false && t`Approve`, t`Borrow`)}
-        </Button>
+        <ConnectWalletButton />
       )}
       <LowSolvencyActionModal
         action="borrow"

@@ -1,5 +1,6 @@
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
+import { getControllerAddress } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useRemoveCollateralFutureLeverage } from '@/llamalend/queries/remove-collateral/remove-collateral-future-leverage.query'
@@ -15,6 +16,7 @@ import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionIn
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
 import type { UseFormReturn } from '@ui-kit/features/forms'
+import type { LlamaMarketType } from '@ui-kit/types/market'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimalMax, decimalMinus, decimalNegate } from '@ui-kit/utils'
 import { getLeverageInfoFields } from '../../../widgets/action-card/hooks/getLeverageInfoFields'
@@ -27,6 +29,7 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
   networks,
   form,
   market,
+  marketType,
 }: {
   params: CollateralParams<ChainId>
   values: CollateralForm
@@ -35,6 +38,7 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
   networks: NetworkDict<ChainId>
   form: UseFormReturn<CollateralForm>
   market: LlamaMarketTemplate | undefined
+  marketType: LlamaMarketType
 }) {
   const isOpen = form.isTouched('userCollateral')
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken }, isOpen)
@@ -74,7 +78,7 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
         collateralDelta: userCollateral && decimalNegate(userCollateral),
       })}
       {...prevLoanState}
-      {...useBorrowRates({ params, market }, isOpen)}
+      {...useBorrowRates({ params, marketType, controllerAddress: getControllerAddress(market) }, isOpen)}
     />
   )
 }

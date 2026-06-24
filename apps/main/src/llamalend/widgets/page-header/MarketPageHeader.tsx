@@ -25,21 +25,24 @@ const { Spacing } = SizesAndSpaces
 export const MarketPageHeader = ({
   blockchainId,
   chainId,
-  marketId,
   isLoading,
   market,
   marketType,
 }: {
   blockchainId: Chain
   chainId: number
-  marketId: string | undefined
   isLoading: boolean
   market: LlamaMarketTemplate | undefined
   marketType: LlamaMarketType
 }) => {
   const { address: userAddress } = useConnection()
-  const { borrowRate, supplyRate, availableLiquidity } = usePageHeader({ chainId, marketId, market, blockchainId })
-  const { collateralToken, borrowToken } = (market && getTokens(market)) ?? {}
+  const { borrowRate, supplyRate, availableLiquidity } = usePageHeader({
+    chainId,
+    market,
+    blockchainId,
+    marketType,
+  })
+  const { collateralToken, borrowToken } = getTokens(market) ?? {}
 
   const title =
     (collateralToken &&

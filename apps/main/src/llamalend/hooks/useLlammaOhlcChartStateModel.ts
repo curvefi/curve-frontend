@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import type { Chain } from '@curvefi/prices-api'
+import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 import { useChartLegendToggles, useChartTimeSettings, useLiquidationRange } from '@ui-kit/features/candle-chart'
@@ -15,11 +16,11 @@ const { Height } = SizesAndSpaces
 
 type LlammaOhlcChartStateModelParams = {
   chainKey: string | number
-  controllerAddress: string
+  controllerAddress: Address | undefined
   enabled?: boolean
   endpoint: Parameters<typeof useLlammaOhlcChartData>[0]['endpoint']
-  llammaAddress: string
-  marketId: string
+  llammaAddress: Address | undefined
+  marketId: string | undefined
   network: Chain | undefined
   oraclePrice: string | undefined
   previewPrices: Range<Decimal> | undefined
@@ -70,7 +71,7 @@ export const useLlammaOhlcChartStateModel = ({
   userPrices,
 }: LlammaOhlcChartStateModelParams) => {
   const { timeOption, setTimeOption, chartInterval, timeUnit } = useChartTimeSettings()
-  const { anchorEnd, isAnchorEndReady } = useStableOhlcAnchorEnd(chainKey, marketId, timeOption)
+  const { anchorEnd, isAnchorEndReady } = useStableOhlcAnchorEnd(chainKey, marketId ?? '', timeOption)
 
   const {
     oraclePoolsChartQuery,
@@ -105,7 +106,6 @@ export const useLlammaOhlcChartStateModel = ({
   const isLoading = !enabled || !isAnchorEndReady || oraclePoolsChartQuery.isLoading || isWaitingForFallbackChartData
   const selectedChartKey = isLoading ? undefined : isOracleLineOnly ? 'llamma' : 'oracle'
   const currentError = hasAnySeries ? null : (oraclePriceFallbackQuery.error ?? oraclePoolsChartQuery.error)
-  const noDataAvailable = enabled && !isLoading && !currentError && !hasAnySeries
   const emptyMessage = isLlammaFallbackEnabled
     ? t`No LLAMMA OHLC data found. Data may be unavailable for this pool.`
     : t`No oracle OHLC data found. Data may be unavailable for this pool.`
@@ -137,7 +137,7 @@ export const useLlammaOhlcChartStateModel = ({
     hideCandleSeriesLabel: true,
     chartHeight: Height.chart,
     isLoading,
-    isEmpty: noDataAvailable,
+    isEmpty: oraclePoolsChartQuery.data?.ohlcData?.length === 0,
     emptyMessage,
     error: currentError,
     ohlcData,

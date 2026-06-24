@@ -8,6 +8,7 @@ import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { createTenderlyWagmiConfigFromVNet, forkVirtualTestnet } from '@cy/support/helpers/tenderly'
 import Skeleton from '@mui/material/Skeleton'
 import { CurveProvider, useCurve } from '@ui-kit/features/connect-wallet'
+import { LlamaMarketType } from '@ui-kit/types/market'
 import { constQ } from '@ui-kit/types/util'
 import { Chain } from '@ui-kit/utils'
 
@@ -35,6 +36,7 @@ describe('Manage soft liquidation', () => {
         chainId={chainId}
         enabled={isHydrated}
         collateralEvents={constQ(undefined)}
+        marketType={LlamaMarketType.Mint}
       />
     )
   }

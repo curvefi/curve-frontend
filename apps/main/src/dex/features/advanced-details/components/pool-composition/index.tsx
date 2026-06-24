@@ -7,6 +7,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
+import { q } from '@ui-kit/types/util'
 import { usePoolComposition } from '../../hooks/usePoolComposition'
 import {
   POOL_COMPOSITION_COLUMNS,
@@ -27,14 +28,14 @@ export const PoolComposition = ({
   pricesApiPoolData?: PricesApiPool
 }) => {
   const isMobile = useIsMobile()
-  const { isLoading, rows, totalUsd } = usePoolComposition({
+  const { isLoading, error, rows, totalUsd } = usePoolComposition({
     chainId,
     poolDataCacheOrApi,
     poolId,
     pricesApiPoolData,
   })
   const table = useTable({
-    data: rows,
+    query: q({ data: rows, isLoading, error }),
     columns: POOL_COMPOSITION_COLUMNS,
     state: { columnVisibility: isMobile ? POOL_COMPOSITION_MOBILE_COLUMN_VISIBILITY : undefined },
     ...getTableOptions(rows),
@@ -45,7 +46,6 @@ export const PoolComposition = ({
       <CardHeader title={t`Pool Composition`} size="small" />
       <DataTable<PoolCompositionRow>
         table={table}
-        isLoading={isLoading}
         disableStickyHeader
         increasingLength="disabled"
         emptyState={<EmptyStateRow table={table} size="sm">{t`No market composition found.`}</EmptyStateRow>}

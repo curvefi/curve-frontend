@@ -1,11 +1,10 @@
 import { sortBy } from 'lodash'
 import { useMemo, useState } from 'react'
 import { Address } from 'viem'
-import { getTokens, getUtilizationPercent, tokenMetric } from '@/llamalend/llama.utils'
+import { getUtilizationPercent, tokenMetric } from '@/llamalend/llama.utils'
 import { useMarketCapAndAvailable, useMarketTotalCollateral, useRateCurve } from '@/llamalend/queries/market'
 import { TooltipOptions, TotalCollateralTooltip, UtilizationTooltip } from '@/llamalend/widgets/tooltips'
 import { RateCurveTooltip } from '@/llamalend/widgets/tooltips/chart/RateCurveTooltip'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { Chain } from '@curvefi/prices-api'
 import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
@@ -75,19 +74,21 @@ const calculateCombinedCollateral = ({
       )
 
 export const MarketRateCurveChart = ({
-  market,
+  collateralToken,
+  borrowToken,
+  controllerAddress,
   blockchainId,
   chainId,
   marketId,
 }: {
-  market: LendMarketTemplate | undefined | null
   blockchainId: Chain | undefined
   chainId: number | undefined
   marketId: string | undefined
+  collateralToken: { address: Address; symbol: string } | undefined
+  borrowToken: { address: Address; symbol: string } | undefined
+  controllerAddress: Address | undefined
 }) => {
   const [visibleSeries, setVisibleSeries] = useState<RateCurveSeriesKey[]>(SERIES_CONFIG.map(({ key }) => key))
-  const controllerAddress = market?.addresses.controller as Address | undefined
-  const { collateralToken, borrowToken } = market ? getTokens(market) : {}
   const {
     design: { Color },
   } = useTheme()
@@ -121,6 +122,7 @@ export const MarketRateCurveChart = ({
     ({ collateral, borrowed }, collateralUsdRate, borrowUsdRate) =>
       calculateCombinedCollateral({ collateral, borrowed, collateralUsdRate, borrowUsdRate }),
   )
+
   const collateralUsdValue = combineQueries([collateralTotal, collateralUsdRate], (total, usdRate) => +total * usdRate)
   const borrowedCollateralUsdValue = combineQueries(
     [borrowedCollateralTotal, borrowedUsdRate],
@@ -166,7 +168,7 @@ export const MarketRateCurveChart = ({
   )
 
   return (
-    <Card size="small">
+    <Card size="small" data-testid="interest-rate-utilization-chart">
       <CardHeader title={t`Interest Rate & Utilization`} />
       <CardContent component={Stack} sx={{ gap: Spacing.md }}>
         <Stack
