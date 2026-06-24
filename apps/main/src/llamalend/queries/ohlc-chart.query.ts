@@ -45,16 +45,10 @@ const getOraclePoolTokenPair = (pools: OraclePool[]): Pick<OraclePoolOhlcPage, '
 
   return {
     ...maybe(collateralPool, ({ collateralAddress, collateralSymbol }) => ({
-      collateralToken: {
-        address: collateralAddress,
-        symbol: collateralSymbol,
-      },
+      collateralToken: { address: collateralAddress, symbol: collateralSymbol },
     })),
     ...maybe(borrowedPool, ({ borrowedAddress, borrowedSymbol }) => ({
-      borrowedToken: {
-        address: borrowedAddress,
-        symbol: borrowedSymbol,
-      },
+      borrowedToken: { address: borrowedAddress, symbol: borrowedSymbol },
     })),
   }
 }
@@ -145,7 +139,6 @@ export const useLlammaOhlcQuery = ({
         },
         { signal },
       )
-
       return { oraclePriceData: formatOraclePriceData(ohlc), ...createOhlcPageResult(ohlc) }
     },
   })

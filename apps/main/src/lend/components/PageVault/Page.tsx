@@ -21,39 +21,34 @@ import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
 export const Page = () => {
   const params = useParams<MarketUrlParams>()
   const { rMarket, rChainId: chainId } = parseMarketParams(params)
-  const { llamaApi: api = null, provider, isHydrated } = useCurve()
-  const { data: market, isLoading: isMarketLoading, isSuccess } = useLendMarket(chainId, rMarket)
+  const { llamaApi: api = null, isInitialized } = useCurve()
+  const { data: market, isLoading: isMarketLoading, error: marketError } = useLendMarket({ chainId, rMarket })
   const network = networks[chainId]
   const { address: userAddress } = useConnection()
 
   useLendPageTitle(market?.collateral_token?.symbol, t`Supply`)
 
-  const pageProps: PageContentProps = {
-    params,
-    rChainId: chainId,
-    marketId: market?.id ?? '',
-    userAddress,
-    api,
-    market,
-  }
+  const isLoading = !isInitialized || isMarketLoading
+  const pageProps: PageContentProps = { params, rChainId: chainId, userAddress, api, market }
 
   const supplied = +(useUserShares({ marketId: market?.id, chainId, userAddress }).data?.value ?? 0)
 
-  return isSuccess && !market ? (
+  const error = marketError
+  return error ? (
     <ErrorPage
-      title="404"
-      subtitle={`${t`Market`} ${rMarket} ${t`Not Found`}`}
+      title={t`Error`}
+      subtitle={error.message}
+      error={error}
       continueUrl={getCollateralListPathname(params)}
     />
-  ) : provider ? (
+  ) : userAddress ? (
     <DetailPageLayout
-      formTabs={chainId && <VaultTabs {...pageProps} params={params} />}
+      formTabs={market && <VaultTabs {...pageProps} params={params} />}
       header={
         <MarketPageHeader
           blockchainId={network.id}
           chainId={chainId}
-          marketId={market?.id}
-          isLoading={!isHydrated || isMarketLoading}
+          isLoading={isLoading}
           market={market}
           marketType={LlamaMarketType.Lend}
         />
@@ -75,6 +70,6 @@ export const Page = () => {
       <MarketInformationComposite pageProps={pageProps} rateType={MarketRateType.Supply} />
     </DetailPageLayout>
   ) : (
-    <ConnectWalletPrompt description={t`Connect your wallet to view market`} />
+    <ConnectWalletPrompt description={t`Connect your wallet to view market`} testId="btn-connect-prompt" />
   )
 }
