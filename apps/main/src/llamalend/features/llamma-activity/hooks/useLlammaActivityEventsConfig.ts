@@ -53,7 +53,7 @@ export const useLlammaActivityEventsConfig = ({
       onPaginationChange,
       ...getTableOptions<LlammaEventRow>(query.data),
     }),
-    emptyMessage: t`No activity data found.`,
-    errorMessage: t`Could not load activity data.`,
+    emptyState: { title: t`No activity data found.` },
+    errorState: { title: t`Could not load activity data.` },
   }
 }

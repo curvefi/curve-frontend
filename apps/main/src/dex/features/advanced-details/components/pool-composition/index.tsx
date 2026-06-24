@@ -6,7 +6,6 @@ import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
-import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { q } from '@ui-kit/types/util'
 import { usePoolComposition } from '../../hooks/usePoolComposition'
 import {
@@ -45,10 +44,9 @@ export const PoolComposition = ({
     <Stack>
       <CardHeader title={t`Pool Composition`} size="small" />
       <DataTable<PoolCompositionRow>
+        category="detail"
         table={table}
-        disableStickyHeader
-        increasingLength="disabled"
-        emptyState={<EmptyStateRow table={table} size="sm">{t`No market composition found.`}</EmptyStateRow>}
+        emptyState={{ title: t`No market composition found` }}
         footerRow={
           rows.length > 0 && (
             <FooterRow visibleColumns={table.getVisibleLeafColumns()} isLoading={isLoading} totalUsd={totalUsd} />

@@ -17,11 +17,14 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import { RowData, type Table, TableOptions } from '@tanstack/table-core'
+import { IncreasingLengthCategory } from '@ui-kit/hooks/useIncreasingLength'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { QueryProp } from '@ui-kit/types/util'
 import { borderStyle } from '@ui-kit/utils'
+import { EmptyStateCardProps } from '../EmptyStateCard'
+import { EmptyStateRowSize } from './EmptyStateRow'
 
-const { Spacing, Sizing } = SizesAndSpaces
+const { Spacing, Sizing, Height } = SizesAndSpaces
 
 const EMPTY_ARRAY: never[] = []
 
@@ -183,3 +186,46 @@ export const DataTableHeaderCellSortableAlign = {
   medium: 'end',
   large: 'end',
 }
+
+export type DataTableCategoryConfig = {
+  size?: DataTableSize
+  height?: `${number}rem` // also sets overflowY to 'auto'
+  defaultVisibleRows?: number // maximum number of visible rows
+  disableStickyHeader?: boolean // can also be disabled by limited rows or table width overflow.
+  hideHeader?: boolean
+  increasingLength?: IncreasingLengthCategory
+  emptyStateSize?: NonNullable<EmptyStateCardProps['size']>
+  emptyStateRowSize?: EmptyStateRowSize
+}
+
+export type DataTableCategory = keyof typeof DATA_TABLE_CATEGORIES
+
+export const DATA_TABLE_CATEGORIES = {
+  // default full-list table, e.g. LlamaMarketsTable or PoolListTable.
+  list: {
+    emptyStateRowSize: 'lg',
+  },
+  // preview table that starts with a few rows, e.g. UserPositionsMarketRateTable.
+  limited: {
+    defaultVisibleRows: 3,
+    increasingLength: 'limited',
+    emptyStateSize: 'sm',
+  },
+  // table with many rows constrained inside a scrollable viewport, e.g. ActivityTable or UserEventsTable.
+  scrollable: {
+    height: Height.table.events,
+    emptyStateRowSize: 'lg',
+  },
+  // compact detail table inside a secondary card or advanced-details section, e.g. PoolComposition or YieldBreakdown.
+  detail: {
+    disableStickyHeader: true,
+    increasingLength: 'disabled',
+  },
+  // compact form table without visible column headers, e.g. ClaimTab or ClosePositionForm.
+  form: {
+    disableStickyHeader: true,
+    hideHeader: true,
+    increasingLength: 'limited',
+    emptyStateSize: 'sm',
+  },
+} as const satisfies Record<string, DataTableCategoryConfig>
