@@ -1,9 +1,9 @@
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
+import { FormButton } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
 import type { LlamaMarketType } from '@ui-kit/types/market'
 import { q, type Range } from '@ui-kit/types/util'
@@ -75,18 +75,13 @@ export const AddCollateralForm = <ChainId extends IChainId>({
 
       <FormAlerts error={action.error} formErrors={formErrors} handledErrors={['userCollateral']} />
 
-      <Button
-        type="submit"
-        loading={isPending || !market}
+      <FormButton
+        pending={isPending}
+        loading={!market}
         disabled={isDisabled}
-        data-testid="add-collateral-submit-button"
-      >
-        {isPending
-          ? t`Processing...`
-          : isApproved.data || isApproved.isPending || !values.userCollateral
-            ? t`Add collateral`
-            : t`Approve & Add collateral`}
-      </Button>
+        label={[isApproved.data === false && t`Approve`, t`Add collateral`]}
+        testId="add-collateral-submit-button"
+      />
     </Form>
   )
 }
