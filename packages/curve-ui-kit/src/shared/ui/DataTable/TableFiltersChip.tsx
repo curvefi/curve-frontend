@@ -2,30 +2,23 @@ import type { RefObject } from 'react'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { FilterIcon } from '@ui-kit/shared/icons/FilterIcon'
-import { GridChip } from '@ui-kit/shared/ui/DataTable/chips/GridChip'
 import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
+import { GridChip } from './chips/GridChip'
 
-const OPEN_FILTERS_TEST_ID = 'btn-open-filters'
-
-type LlamaTableFiltersChipProps = {
+type TableFiltersChipProps = {
   open: boolean
-  setOpen: (open: boolean) => void
   popoverFilterChipRef: RefObject<HTMLDivElement | null>
+  setOpen: (open: boolean) => void
+  testId: string
 }
 
-/** Button that opens the Llama market filters drawer or popover. */
-export const LlamaTableFiltersChip = ({ open, setOpen, popoverFilterChipRef }: LlamaTableFiltersChipProps) => {
+/** Button that opens table filters in a drawer or popover. */
+export const TableFiltersChip = ({ open, popoverFilterChipRef, setOpen, testId }: TableFiltersChipProps) => {
   const isMobile = useIsMobile()
   const openFilters = () => setOpen(true)
 
   return isMobile ? (
-    <SelectableChip
-      size="medium"
-      selected={open}
-      icon={<FilterIcon />}
-      toggle={openFilters}
-      data-testid={OPEN_FILTERS_TEST_ID}
-    />
+    <SelectableChip size="medium" selected={open} icon={<FilterIcon />} toggle={openFilters} data-testid={testId} />
   ) : (
     <GridChip
       ref={popoverFilterChipRef}
@@ -34,7 +27,7 @@ export const LlamaTableFiltersChip = ({ open, setOpen, popoverFilterChipRef }: L
       selected={open}
       icon={<FilterIcon />}
       toggle={openFilters}
-      data-testid={OPEN_FILTERS_TEST_ID}
+      data-testid={testId}
     />
   )
 }

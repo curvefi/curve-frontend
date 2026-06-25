@@ -3,35 +3,26 @@ import { useCallback } from 'react'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
-import { type FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { NumericTextField, type NumericTextFieldProps } from '@ui-kit/shared/ui/NumericTextField'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { Range } from '@ui-kit/types/util'
 import { amount, decimal, formatNumber } from '@ui-kit/utils'
-import { useRangeFilter } from './RangeSliderFilter/useRangeFilter'
 
 const { Spacing } = SizesAndSpaces
 
-type RangeFilterProps<TColumnId extends string> = FilterProps<TColumnId> & {
-  id: TColumnId
+type InputIndex = 0 | 1
+
+type RangeFilterProps = {
+  id: string
+  range: Range<number | null>
+  setRange: (range: Range<number | null>) => void
   adornment?: NumericTextFieldProps['adornment']
-  isLoading?: boolean
+  disabled?: boolean
   min?: number
   max?: number
 }
 
-type InputIndex = 0 | 1
-
-export const RangeFilter = <TColumnId extends string>({
-  id,
-  adornment,
-  isLoading = false,
-  min,
-  max,
-  ...filterProps
-}: RangeFilterProps<TColumnId>) => {
-  const [range, setRange] = useRangeFilter({ isLoading, id, min, max, ...filterProps })
-
+export const RangeFilter = ({ id, range, setRange, adornment, disabled = false, min, max }: RangeFilterProps) => {
   const handleInputChange = useCallback(
     (index: InputIndex) => (newValue: string | undefined) => {
       const nextFirst = index === 0 ? (amount(newValue) as number) : range[0]
@@ -78,7 +69,7 @@ export const RangeFilter = <TColumnId extends string>({
       max={decimal(max)}
       onChange={handleInputChange(index)}
       onBlur={handleInputBlur(index)}
-      disabled={isLoading}
+      disabled={disabled}
       adornment={adornment}
       format={value => (value == null ? '' : formatNumber(value, { abbreviate: true }))}
       placeholder={placeholder}
@@ -89,16 +80,8 @@ export const RangeFilter = <TColumnId extends string>({
 
   return (
     <Stack direction="row" sx={{ gap: Spacing.sm }}>
-      {renderInputField({
-        index: 0,
-        placeholder: t`Min`,
-        testId: 'min',
-      })}
-      {renderInputField({
-        index: 1,
-        placeholder: t`Max`,
-        testId: 'max',
-      })}
+      {renderInputField({ index: 0, placeholder: t`Min`, testId: 'min' })}
+      {renderInputField({ index: 1, placeholder: t`Max`, testId: 'max' })}
     </Stack>
   )
 }
