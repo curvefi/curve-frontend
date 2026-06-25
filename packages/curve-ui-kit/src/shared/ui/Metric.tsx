@@ -1,5 +1,4 @@
 import { type ReactNode, useCallback, useMemo } from 'react'
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import { type ButtonProps } from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
@@ -21,9 +20,10 @@ import {
   type SxProps,
 } from '@ui-kit/utils'
 import { showToast } from '@ui-kit/widgets/Toast/toast.util'
+import { LabelTooltipIcon } from './LabelTooltipIcon'
 import { WithSkeleton } from './WithSkeleton'
 
-const { Spacing, IconSize } = SizesAndSpaces
+const { Spacing } = SizesAndSpaces
 
 // Correspond to flexbox align items values.
 // eslint-disable-next-line react-refresh/only-export-components
@@ -228,14 +228,7 @@ export const Metric = ({
     <Stack data-testid={testId} sx={applySxProps({ alignItems: alignment }, sx)}>
       <Typography variant="bodyXsRegular" color="textTertiary">
         {label}
-        {labelTooltip && (
-          <Tooltip arrow placement="top" {...labelTooltip}>
-            <span>
-              {' '}
-              <InfoOutlinedIcon sx={{ width: IconSize.xs, height: IconSize.xs }} />
-            </span>
-          </Tooltip>
-        )}
+        <LabelTooltipIcon tooltip={labelTooltip} />
       </Typography>
       <WithSkeleton loading={isLoading}>
         <Stack direction="row" sx={{ alignItems: 'baseline' }}>

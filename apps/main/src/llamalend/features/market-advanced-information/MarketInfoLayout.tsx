@@ -32,7 +32,7 @@ export const MarketInfoLayout = ({ chainId, marketType, market, apiMarket, netwo
       },
     }}
   >
-    <MarketContractsSection chainId={chainId} market={market} apiMarket={apiMarket} network={network} />
     <MarketParametersSection chainId={chainId} marketId={market?.id} marketType={marketType} apiMarket={apiMarket} />
+    <MarketContractsSection chainId={chainId} market={market} apiMarket={apiMarket} network={network} />
   </Stack>
 )
