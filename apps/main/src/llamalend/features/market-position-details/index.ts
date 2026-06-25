@@ -1,5 +1,6 @@
 export * from './BorrowInformation'
 export * from './BorrowPositionDetails'
+export * from './HealthAndBufferBar'
 export * from './HealthBar'
 export * from './HealthDetails'
 export * from './PositionDetailsComposite'
