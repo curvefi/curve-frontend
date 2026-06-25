@@ -1,4 +1,4 @@
-import { DECIMAL_REGEX, getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
+import { DECIMAL_REGEX, getActionValue, getMetricValue } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
 
 type WalletOptions = { hasWallet: boolean }
@@ -7,6 +7,16 @@ const ADDRESS_PATTERN = /^0x[a-fA-F0-9]{40}$/
 
 const shouldShowCanvas = (testId: string) =>
   cy.get(`[data-testid="${testId}"] canvas`, LOAD_TIMEOUT).should('be.visible')
+
+const shouldLoadHistoricalBorrowRateChart = () => {
+  getMetricValue('historical-borrow-current-rate').should('match', DECIMAL_REGEX)
+  shouldShowCanvas('historical-borrow-rate-chart')
+}
+
+const shouldLoadHistoricalSupplyRateChart = () => {
+  getMetricValue('historical-supply-current-rate').should('match', DECIMAL_REGEX)
+  shouldShowCanvas('historical-supply-rate-chart')
+}
 
 const shouldLoadMarketContracts = ({
   hasMonetaryPolicy,
@@ -70,13 +80,13 @@ export const shouldLoadBorrowDetails = ({ hasWallet }: WalletOptions) => {
   cy.get('[data-testid="create-loan-submit-button"]').should(hasWallet ? 'be.visible' : 'not.exist')
   getActionValue('market-net-borrow-apr').should('match', DECIMAL_REGEX)
   shouldShowCanvas('market-chart-and-activity')
-  shouldShowCanvas('historical-borrow-rate-chart')
+  shouldLoadHistoricalBorrowRateChart()
   shouldLoadMarketDetails()
 }
 
 export const shouldLoadLendBorrowDetails = ({ hasWallet }: WalletOptions) => {
   shouldLoadBorrowDetails({ hasWallet })
-  shouldShowCanvas('historical-supply-rate-chart')
+  shouldLoadHistoricalSupplyRateChart()
   shouldShowCanvas('interest-rate-utilization-chart')
   shouldLoadMarketContracts({ hasMonetaryPolicy: true, hasOracle: true, hasVault: true })
   shouldLoadMarketParameters({ hasOnChainParameters: hasWallet, hasOraclePrice: true, hasPricePerShare: false })
@@ -95,7 +105,7 @@ export const shouldLoadLendVaultDetails = ({ hasWallet }: WalletOptions) => {
   cy.get(`[data-testid='no-position-disconnected']`).should('not.exist')
   cy.get('[data-testid="supply-deposit-submit-button"]').should(hasWallet ? 'be.visible' : 'not.exist')
   getActionValue('market-net-supply-apy').should('match', DECIMAL_REGEX)
-  shouldShowCanvas('historical-supply-rate-chart')
+  shouldLoadHistoricalSupplyRateChart()
   shouldShowCanvas('interest-rate-utilization-chart')
   shouldLoadMarketContracts({ hasMonetaryPolicy: true, hasOracle: true, hasVault: true })
   shouldLoadMarketParameters({ hasOnChainParameters: hasWallet, hasOraclePrice: true, hasPricePerShare: hasWallet })
