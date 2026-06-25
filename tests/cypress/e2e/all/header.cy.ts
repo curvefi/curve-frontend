@@ -33,6 +33,8 @@ const expectedFooterMaxWidth = 1536
 describe('Header', () => {
   let width: number, height: number
 
+  beforeEach(() => mockMerklCampaigns())
+
   describe('Desktop', () => {
     let route: AppRoute
 
@@ -119,7 +121,6 @@ describe('Header', () => {
       cy.viewport(width, height)
       dismissPhishingWarningBanner()
       route = oneAppRoute()
-      mockMerklCampaigns()
       cy.visitWithoutTestConnector(route)
       waitIsLoaded(route)
     })

@@ -1,6 +1,7 @@
 import { useConnection } from 'wagmi'
 import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Chain } from '@curvefi/prices-api'
@@ -15,6 +16,7 @@ import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import type { QueryProp } from '@ui-kit/types/util'
 import { isDevelopment } from '@ui-kit/utils'
 import { PageHeader } from '@ui-kit/widgets/PageHeader'
 import { usePageHeader } from './hooks/usePageHeader'
@@ -28,21 +30,24 @@ export const MarketPageHeader = ({
   isLoading,
   market,
   marketType,
+  apiMarket,
 }: {
   blockchainId: Chain
   chainId: number
   isLoading: boolean
   market: LlamaMarketTemplate | undefined
   marketType: LlamaMarketType
+  apiMarket: QueryProp<LlamaMarket>
 }) => {
   const { address: userAddress } = useConnection()
   const { borrowRate, supplyRate, availableLiquidity } = usePageHeader({
     chainId,
     market,
     blockchainId,
+    apiMarket,
     marketType,
   })
-  const { collateralToken, borrowToken } = getTokens(market) ?? {}
+  const { collateralToken, borrowToken } = getTokens(market, apiMarket.data) ?? {}
 
   const title =
     (collateralToken &&

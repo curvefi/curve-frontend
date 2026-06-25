@@ -29,10 +29,11 @@ const RateKeys = {
 } as const satisfies Record<MarketRateType, 'borrowApr' | 'lendApy'>
 
 export function useSnapshots<T extends CrvUsdSnapshot | LendingSnapshot>(
-  { chain, controllerAddress, type: marketType, rates }: LlamaMarket,
+  market: LlamaMarket | undefined,
   { type, category }: { type: MarketRateType; category: AverageCategory },
   enabled: boolean,
 ): UseSnapshotsResult<T> {
+  const { chain, controllerAddress, type: marketType, rates } = market ?? {}
   const isLend = marketType == LlamaMarketType.Lend
   const showLendGraph = isLend && enabled
   const showMintGraph = !isLend && type === MarketRateType.Borrow && enabled
@@ -67,7 +68,7 @@ export function useSnapshots<T extends CrvUsdSnapshot | LendingSnapshot>(
         ({
           [MarketRateType.Borrow]: () =>
             getBorrowRateMetrics({
-              borrowRate: rates.borrowApr,
+              borrowRate: rates?.borrowApr,
               snapshots: snapshots ?? undefined,
               getBorrowRate: getSnapshotBorrowApr,
               getRebasingYield: getSnapshotCollateralRebasingYieldApr,
@@ -76,7 +77,7 @@ export function useSnapshots<T extends CrvUsdSnapshot | LendingSnapshot>(
           [MarketRateType.Supply]: () => null,
         }) satisfies Record<MarketRateType, () => ReturnType<typeof getBorrowRateMetrics> | null>
       )[type](),
-    [rateWindow, rates.borrowApr, snapshots, type],
+    [rateWindow, rates?.borrowApr, snapshots, type],
   )
 
   const supplyRateMetrics = useMemo(
@@ -94,7 +95,7 @@ export function useSnapshots<T extends CrvUsdSnapshot | LendingSnapshot>(
     snapshots,
     isLoading,
     snapshotKey,
-    rate: rates[RateKeys[type]],
+    rate: rates?.[RateKeys[type]] ?? null,
     averageRate:
       type === MarketRateType.Supply
         ? (supplyRateMetrics?.averageLendApy ?? null)

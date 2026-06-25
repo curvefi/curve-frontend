@@ -52,11 +52,5 @@ export const useBandsData = ({
     isLoanExistsLoading ||
     isUserBandsBalancesLoading
 
-  return {
-    isLoading,
-    error: marketBandsBalancesError,
-    chartData: processedChartData,
-    userBandsBalances,
-    oraclePrice,
-  }
+  return { isLoading, error: marketBandsBalancesError, chartData: processedChartData, userBandsBalances, oraclePrice }
 }

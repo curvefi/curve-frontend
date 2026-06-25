@@ -1,9 +1,6 @@
-import type { Address } from 'viem'
-import { getControllerAddress } from '@/llamalend/llama.utils'
 import { useLlamaSnapshot } from '@/llamalend/queries/llamma-snapshots.query'
 import { useMarketRates, useMarketSupplyFutureRates, useMarketVaultOnChainRewards } from '@/llamalend/queries/market'
 import { useUserSupplyBoost } from '@/llamalend/queries/user'
-import { requireVault } from '@/llamalend/queries/validation/supply.validation'
 import {
   getLatestSnapshotValue,
   getSupplyApyMetrics,
@@ -12,6 +9,7 @@ import {
   toNumberOrNull,
 } from '@/llamalend/rates.utils'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 import { type CampaignRewards, useCampaignsByAddress } from '@ui-kit/entities/campaigns'
@@ -58,18 +56,19 @@ const addNetApy = <T extends { lendApy?: Decimal }>(
 export function useSupplyRates<ChainId extends IChainId>(
   {
     params: { chainId, marketId, userAddress },
+    controllerAddress,
     reservesDelta,
   }: {
     params: UserMarketParams<ChainId>
     reservesDelta?: Decimal | null
+    controllerAddress: Address | undefined
   },
   enabled: boolean,
 ) {
   const blockchainId = maybe(chainId, chainId => BlockchainIds[chainId])
-  const market = marketId ? requireVault(marketId) : undefined
   const snapshotsQuery = useLlamaSnapshot({
     marketType: LlamaMarketType.Lend,
-    controllerAddress: getControllerAddress(market),
+    controllerAddress,
     blockchainId,
     enabled,
   })
@@ -79,7 +78,7 @@ export function useSupplyRates<ChainId extends IChainId>(
   })
   const marketOnChainRewardsQuery = useMarketVaultOnChainRewards({ chainId, marketId }, enabled)
   const userSupplyBoostQuery = useUserSupplyBoost({ chainId, marketId, userAddress }, enabled)
-  const campaignsQuery = useCampaignsByAddress({ blockchainId, address: market?.addresses.controller as Address })
+  const campaignsQuery = useCampaignsByAddress({ blockchainId, address: controllerAddress })
 
   // Without `reservesDelta`, `rates`/`netSupplyApy` are disabled on purpose. `ActionInfo` shows `prevRates` as current.
   const [rates, netSupplyApy] = addNetApy(

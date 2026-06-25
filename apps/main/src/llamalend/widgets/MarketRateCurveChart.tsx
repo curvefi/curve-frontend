@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react'
 import { Address } from 'viem'
 import { getUtilizationPercent, tokenMetric } from '@/llamalend/llama.utils'
 import { useMarketCapAndAvailable, useMarketTotalCollateral, useRateCurve } from '@/llamalend/queries/market'
+import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { TooltipOptions, TotalCollateralTooltip, UtilizationTooltip } from '@/llamalend/widgets/tooltips'
 import { RateCurveTooltip } from '@/llamalend/widgets/tooltips/chart/RateCurveTooltip'
 import type { Chain } from '@curvefi/prices-api'
@@ -27,8 +28,8 @@ import {
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { fallbackQ, mapQuery, q, useMappedQuery } from '@ui-kit/types/util'
-import { decimalMax, decimalMinus, decimalMultiply, decimalSum, formatNumber } from '@ui-kit/utils'
+import { fallbackQ, mapQuery, q, type QueryProp, useMappedQuery } from '@ui-kit/types/util'
+import { decimal, decimalMax, decimalMinus, decimalMultiply, decimalSum, formatNumber } from '@ui-kit/utils'
 
 const { Spacing, Height } = SizesAndSpaces
 
@@ -80,6 +81,7 @@ export const MarketRateCurveChart = ({
   blockchainId,
   chainId,
   marketId,
+  apiMarket,
 }: {
   blockchainId: Chain | undefined
   chainId: number | undefined
@@ -87,6 +89,7 @@ export const MarketRateCurveChart = ({
   collateralToken: { address: Address; symbol: string } | undefined
   borrowToken: { address: Address; symbol: string } | undefined
   controllerAddress: Address | undefined
+  apiMarket: QueryProp<LlamaMarket>
 }) => {
   const [visibleSeries, setVisibleSeries] = useState<RateCurveSeriesKey[]>(SERIES_CONFIG.map(({ key }) => key))
   const {
@@ -181,7 +184,10 @@ export const MarketRateCurveChart = ({
           <Metric
             size="medium"
             label={t`Utilization`}
-            value={currentUtilization}
+            value={fallbackQ(
+              currentUtilization,
+              mapQuery(apiMarket, m => m.utilizationPercent),
+            )}
             valueOptions={{ unit: 'percentage' }}
             notional={utilizationBreakdown.data}
             valueTooltip={{
@@ -194,7 +200,10 @@ export const MarketRateCurveChart = ({
             size="medium"
             label={t`Total borrowed`}
             {...tokenMetric({
-              value: totalBorrowed,
+              value: fallbackQ(
+                totalBorrowed,
+                mapQuery(apiMarket, m => m.assets.borrowed.balance),
+              ),
               symbol: borrowToken?.symbol,
               usdRate: q(borrowedUsdRate),
             })}
@@ -203,7 +212,12 @@ export const MarketRateCurveChart = ({
             size="medium"
             label={t`Total collateral`}
             {...tokenMetric({
-              value: combinedCollateral,
+              value: fallbackQ(
+                combinedCollateral,
+                combineQueries([apiMarket, collateralUsdRate], (market, collateralUsdRate) =>
+                  collateralUsdRate ? decimal(market.totalCollateralUsd / collateralUsdRate) : undefined,
+                ),
+              ),
               symbol: collateralToken?.symbol,
               usdRate: q(collateralUsdRate),
             })}

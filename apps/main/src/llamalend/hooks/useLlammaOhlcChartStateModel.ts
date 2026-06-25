@@ -17,7 +17,6 @@ const { Height } = SizesAndSpaces
 type LlammaOhlcChartStateModelParams = {
   chainKey: string | number
   controllerAddress: Address | undefined
-  enabled?: boolean
   endpoint: Parameters<typeof useLlammaOhlcChartData>[0]['endpoint']
   llammaAddress: Address | undefined
   marketId: string | undefined
@@ -61,7 +60,6 @@ const resolveLlammaChartSeries = ({
 export const useLlammaOhlcChartStateModel = ({
   chainKey,
   controllerAddress,
-  enabled = true,
   endpoint,
   llammaAddress,
   marketId,
@@ -73,6 +71,7 @@ export const useLlammaOhlcChartStateModel = ({
   const { timeOption, setTimeOption, chartInterval, timeUnit } = useChartTimeSettings()
   const { anchorEnd, isAnchorEndReady } = useStableOhlcAnchorEnd(chainKey, marketId ?? '', timeOption)
 
+  const enabled = !!network && !!controllerAddress && isAnchorEndReady
   const {
     oraclePoolsChartQuery,
     oraclePriceFallbackQuery,
@@ -91,7 +90,7 @@ export const useLlammaOhlcChartStateModel = ({
     timeOption,
     units: timeUnit,
     anchorEnd,
-    enabled: enabled && !!network && isAnchorEndReady,
+    enabled,
   })
   const oraclePoolCandles = oraclePoolsChartQuery.data?.ohlcData ?? []
   const oraclePoolOracleLine = oraclePoolsChartQuery.data?.oraclePriceData ?? []
@@ -103,12 +102,10 @@ export const useLlammaOhlcChartStateModel = ({
       llammaOracleLine,
     })
 
-  const isLoading = !enabled || !isAnchorEndReady || oraclePoolsChartQuery.isLoading || isWaitingForFallbackChartData
+  const isLoading = !enabled || oraclePoolsChartQuery.isLoading || isWaitingForFallbackChartData
   const selectedChartKey = isLoading ? undefined : isOracleLineOnly ? 'llamma' : 'oracle'
   const currentError = hasAnySeries ? null : (oraclePriceFallbackQuery.error ?? oraclePoolsChartQuery.error)
-  const emptyMessage = isLlammaFallbackEnabled
-    ? t`No LLAMMA OHLC data found. Data may be unavailable for this pool.`
-    : t`No oracle OHLC data found. Data may be unavailable for this pool.`
+  const emptyMessage = t`No ${isLlammaFallbackEnabled ? 'LLAMMA' : 'oracle'} OHLC data found. Data may be unavailable for this market.`
 
   const oraclePoolLabel = oracleTokens
     ? t`${oracleTokens.collateralSymbol} / ${oracleTokens.borrowedSymbol}`

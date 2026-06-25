@@ -86,6 +86,7 @@ function LlammalendTest({ tab, onPricesUpdated, type, marketType, ...props }: Ll
       onSuccess={cy.stub()}
       enabled
       collateralEvents={constQ(fakeCollateralEvents)}
+      apiMarket={constQ(undefined)}
       marketType={marketType}
       {...props}
     />

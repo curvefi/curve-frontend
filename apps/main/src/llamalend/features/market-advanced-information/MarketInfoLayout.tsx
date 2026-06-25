@@ -1,9 +1,11 @@
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Stack from '@mui/material/Stack'
 import { type BaseConfig } from '@ui/utils'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import type { QueryProp } from '@ui-kit/types/util'
 import { MarketContractsSection } from './MarketContractsSection'
 import { MarketParametersSection } from './MarketParametersSection'
 
@@ -13,10 +15,11 @@ type MarketInfoSectionsProps = {
   chainId: IChainId
   marketType: LlamaMarketType
   market: LlamaMarketTemplate | undefined
+  apiMarket: QueryProp<LlamaMarket>
   network: BaseConfig | undefined
 }
 
-export const MarketInfoLayout = ({ chainId, marketType, market, network }: MarketInfoSectionsProps) => (
+export const MarketInfoLayout = ({ chainId, marketType, market, apiMarket, network }: MarketInfoSectionsProps) => (
   <Stack
     sx={{
       display: 'grid',
@@ -29,7 +32,7 @@ export const MarketInfoLayout = ({ chainId, marketType, market, network }: Marke
       },
     }}
   >
-    <MarketContractsSection chainId={chainId} market={market} network={network} />
-    <MarketParametersSection chainId={chainId} marketId={market?.id} marketType={marketType} />
+    <MarketContractsSection chainId={chainId} market={market} apiMarket={apiMarket} network={network} />
+    <MarketParametersSection chainId={chainId} marketId={market?.id} marketType={marketType} apiMarket={apiMarket} />
   </Stack>
 )
