@@ -102,8 +102,8 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
     // out of `fetchPools` that depends on all pool ids should be manually invalidated.
     // You could argue that hooks with 'isHydrated' in the `enabled` parameter would suffice,
     // but we're still encountering situations where not all data is properly loaded.
-    await Promise.all([refetchPoolVolumes({ chainId }), refetchPoolTvls({ chainId })])
-    await state.pools.fetchPools(curveApi, poolIds)
+    const [poolVolumes] = await Promise.all([refetchPoolVolumes({ chainId }), refetchPoolTvls({ chainId })])
+    await state.pools.fetchPools(curveApi, poolIds, poolVolumes)
 
     log(`Hydrated DEX - Complete in ${formatTimeDiff(start)}`)
   },

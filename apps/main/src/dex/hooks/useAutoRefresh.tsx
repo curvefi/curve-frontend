@@ -5,6 +5,7 @@ import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { useNetworks } from '../entities/networks'
+import { refetchPoolVolumes } from '../queries/pool-volume.query'
 
 export const useAutoRefresh = (chainId: number | undefined) => {
   const { curveApi, isHydrated } = useCurve()
@@ -17,5 +18,10 @@ export const useAutoRefresh = (chainId: number | undefined) => {
 
   useGasInfoAndUpdateLib({ chainId, networks })
 
-  usePageVisibleInterval(() => curveApi && poolIds && fetchPools(curveApi, poolIds), REFRESH_INTERVAL['15m'])
+  usePageVisibleInterval(async () => {
+    if (curveApi && poolIds) {
+      const poolVolumes = await refetchPoolVolumes({ chainId: curveApi.chainId })
+      await fetchPools(curveApi, poolIds, poolVolumes)
+    }
+  }, REFRESH_INTERVAL['15m'])
 }
