@@ -28,9 +28,11 @@ export const Prices = ({
   const { data: snapshots } = usePoolSnapshots({ chain, poolAddress })
   const { priceOracle, priceScale } = parameters ?? {}
   const snapshotData = snapshots?.[0]
+  // Prices API snapshot values are 1e18-scaled, while pool parameters are already human-scale.
+  const priceOracleData = priceOracle?.length ? priceOracle : snapshotData?.priceOracle?.map(price => price / 10 ** 18)
+  const priceScaleData = priceScale?.length ? priceScale : snapshotData?.priceScale?.map(price => price / 10 ** 18)
 
   // Curve price oracle/scale arrays omit the base token, so value index 0 belongs to token index 1.
-  // Both price oracle and scale only show up when a wallet is connected, we need a Prices API fallback later.
   const priceRows = poolDataCacheOrApi.tokens.slice(1).map((label, index) => ({
     key: poolDataCacheOrApi.tokenAddresses[index + 1] ?? `${label}-${index + 1}`,
     label,
@@ -39,7 +41,7 @@ export const Prices = ({
 
   return (
     <>
-      {!!priceOracle?.length && (
+      {!!priceOracleData?.length && (
         <Card size="inline">
           <CardHeader title={t`Price Oracle`} />
           <CardContent component={Stack}>
@@ -47,14 +49,14 @@ export const Prices = ({
               <ActionInfo
                 key={`price-oracle-${key}`}
                 label={label}
-                value={formatNumber(amount(priceOracle?.[index]), 'pool.parameter')}
+                value={formatNumber(amount(priceOracleData?.[index]), 'pool.parameter')}
               />
             ))}
           </CardContent>
         </Card>
       )}
 
-      {!!priceScale?.length && (
+      {!!priceScaleData?.length && (
         <Card size="inline">
           <CardHeader title={t`Price Scale`} />
           <CardContent component={Stack}>
@@ -62,7 +64,7 @@ export const Prices = ({
               <ActionInfo
                 key={`price-scale-${key}`}
                 label={label}
-                value={formatNumber(amount(priceScale?.[index]), 'pool.parameter')}
+                value={formatNumber(amount(priceScaleData?.[index]), 'pool.parameter')}
               />
             ))}
           </CardContent>
