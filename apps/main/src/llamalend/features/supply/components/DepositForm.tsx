@@ -33,7 +33,6 @@ export const DepositForm = <ChainId extends IChainId>({
   chainId,
 }: DepositFormProps<ChainId>) => {
   const network = networks[chainId]
-
   const {
     form,
     params,
@@ -82,6 +81,7 @@ export const DepositForm = <ChainId extends IChainId>({
         disabled={isDisabled}
         label={[isApproved.data === false && t`Approve`, t`Deposit`]}
         testId={`${TEST_ID_PREFIX}-submit-button`}
+        connectWalletTestId="form-connect-wallet"
       >
         {disabledAlert && <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>}
       </FormButton>

@@ -53,6 +53,7 @@ export const MarketInformationComposite = ({
         chainId={chainId}
         marketId={marketId}
         rateMode={MarketRateType.Borrow}
+        apiMarket={apiMarket}
       />
       <CrvUsdPriceChart />
 

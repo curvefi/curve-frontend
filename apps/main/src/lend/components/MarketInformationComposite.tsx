@@ -51,6 +51,7 @@ export const MarketInformationComposite = ({ pageProps, rateType, previewPrices 
             chainId={chainId}
             marketId={market?.id}
             rateMode={MarketRateType.Borrow}
+            apiMarket={apiMarket}
           />
         </>
       )}
@@ -61,6 +62,7 @@ export const MarketInformationComposite = ({ pageProps, rateType, previewPrices 
         chainId={chainId}
         marketId={market?.id}
         rateMode={MarketRateType.Supply}
+        apiMarket={apiMarket}
       />
       <MarketRateCurveChart
         collateralToken={collateralToken}

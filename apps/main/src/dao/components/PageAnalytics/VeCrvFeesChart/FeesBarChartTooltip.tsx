@@ -1,72 +1,20 @@
-import { TooltipProps } from 'recharts'
-import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
-import { styled } from 'styled-components'
-import type { Distribution } from '@curvefi/prices-api/revenue'
-import { Box } from '@ui/Box'
+import type { VeCrvFee } from '@/dao/entities/vecrv-fees'
 import { formatDate } from '@ui/utils'
-import { useCurrentDate } from '@ui-kit/hooks/useCurrentDate'
 import { t } from '@ui-kit/lib/i18n'
+import { ChartTooltipDataRow, ChartTooltipSeriesGroup, ChartTooltipShell } from '@ui-kit/shared/ui/Chart'
 import { formatNumber } from '@ui-kit/utils'
 
-export const FeesBarChartTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
-  const currentDate = useCurrentDate()
-  if (active && payload?.length) {
-    const { feesUsd, timestamp } = payload[0].payload as Distribution
-
-    return (
-      <TooltipWrapper>
-        <Box flex flexColumn flexGap="var(--spacing-1)">
-          <TooltipColumn>
-            <TooltipDataTitle>{t`Distribution Date`}</TooltipDataTitle>
-            <TooltipData>
-              {formatDate(timestamp)}
-              {new Date(timestamp) > currentDate && <strong> {t`(in progress)`}</strong>}
-            </TooltipData>
-          </TooltipColumn>
-        </Box>
-
-        <Box flex flexColumn flexGap="var(--spacing-1)">
-          <TooltipColumn>
-            <TooltipDataTitle>{t`veCRV Fees`}</TooltipDataTitle>
-            <TooltipData>{formatNumber(feesUsd, 'usd.notional')}</TooltipData>
-          </TooltipColumn>
-        </Box>
-      </TooltipWrapper>
-    )
-  }
-
-  return null
-}
-
-const TooltipWrapper = styled.div`
-  background-color: var(--summary_content--background-color);
-  padding: var(--spacing-3);
-  border-radius: var(--border-radius-1);
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-2);
-`
-
-const TooltipColumn = styled.div`
-  display: flex;
-  flex-direction: column;
-`
-
-const TooltipDataTitle = styled.p`
-  font-size: var(--font-size-1);
-  font-weight: var(--bold);
-  opacity: 0.7;
-  color: var(--page--text-color);
-`
-
-const TooltipData = styled.p`
-  font-size: var(--font-size-2);
-  color: var(--page--text-color);
-  font-weight: var(--bold);
-  &.positive {
-    color: var(--chart-green);
-  }
-  &.negative {
-    color: var(--chart-red);
-  }
-`
+export const FeesBarChartTooltip = ({ datum, currentDate }: { datum: VeCrvFee; currentDate: Date }) => (
+  <ChartTooltipShell
+    title={
+      <>
+        {formatDate(datum.timestamp)}
+        {new Date(datum.timestamp) > currentDate && <strong> {t`(in progress)`}</strong>}
+      </>
+    }
+  >
+    <ChartTooltipSeriesGroup>
+      <ChartTooltipDataRow label={t`veCRV Fees`} value={formatNumber(datum.feesUsd, 'usd.notional')} />
+    </ChartTooltipSeriesGroup>
+  </ChartTooltipShell>
+)

@@ -1,6 +1,6 @@
 import { styled } from 'styled-components'
 import { MetricsColumnData, MetricsComp } from '@/dao/components/MetricsComp'
-import type { Locker } from '@curvefi/prices-api/dao'
+import type { VeCrvHolder } from '@/dao/entities/vecrv-holders'
 import Stack from '@mui/material/Stack'
 import { Box } from '@ui/Box'
 import { formatDate } from '@ui/utils/'
@@ -11,7 +11,7 @@ import { formatNumber } from '@ui-kit/utils'
 const { Spacing } = SizesAndSpaces
 
 type UserStatsProps = {
-  veCrvHolder: Locker
+  veCrvHolder?: VeCrvHolder
   holdersLoading: boolean
 }
 
@@ -23,27 +23,35 @@ export const UserStats = ({ veCrvHolder, holdersLoading }: UserStatsProps) => (
         loading={holdersLoading}
         title={t`Total veCRV`}
         data={
-          <MetricsColumnData>{formatNumber(veCrvHolder.weight.fromWei(), { abbreviate: false })}</MetricsColumnData>
+          <MetricsColumnData>
+            {formatNumber(veCrvHolder?.weight, { abbreviate: false, fallback: 'N/A' })}
+          </MetricsColumnData>
         }
       />
       <MetricsComp
         loading={holdersLoading}
         title={t`Locked CRV`}
         data={
-          <MetricsColumnData>{formatNumber(veCrvHolder.locked.fromWei(), { abbreviate: false })}</MetricsColumnData>
+          <MetricsColumnData>
+            {formatNumber(veCrvHolder?.locked, { abbreviate: false, fallback: 'N/A' })}
+          </MetricsColumnData>
         }
       />
       <MetricsComp
         loading={holdersLoading}
         title={t`Unlock Time`}
         data={
-          <MetricsColumnData>{veCrvHolder.unlockTime ? formatDate(veCrvHolder.unlockTime) : 'N/A'}</MetricsColumnData>
+          <MetricsColumnData>{veCrvHolder?.unlockTime ? formatDate(veCrvHolder.unlockTime) : 'N/A'}</MetricsColumnData>
         }
       />
       <MetricsComp
         loading={holdersLoading}
         title={t`Weight Ratio`}
-        data={<MetricsColumnData>{formatNumber(veCrvHolder.weightRatio, { abbreviate: false })}%</MetricsColumnData>}
+        data={
+          <MetricsColumnData>
+            {veCrvHolder ? `${formatNumber(veCrvHolder.weightRatio, { abbreviate: false })}%` : 'N/A'}
+          </MetricsColumnData>
+        }
       />
     </MetricsContainer>
   </Stack>

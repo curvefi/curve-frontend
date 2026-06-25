@@ -1,105 +1,48 @@
-import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import { styled } from 'styled-components'
-import { TOP_HOLDERS } from '@/dao/constants'
+import { useCallback, useMemo } from 'react'
+import type { VeCrvHolder } from '@/dao/entities/vecrv-holders'
 import type { TopHoldersSortBy } from '@/dao/types/dao.types'
-import type { Locker } from '@curvefi/prices-api/dao'
-import { shortenAddress, formatNumber, amount } from '@ui-kit/utils'
+import { formatHolderName } from '@/dao/utils'
+import { useTheme } from '@mui/material/styles'
+import {
+  CHART_X_AXIS_LABEL_ROTATION,
+  createChartSeriesColorScale,
+  EChartsBarChart,
+  formatChartAxisNumber,
+} from '@ui-kit/shared/ui/Chart'
 import { TopHoldersBarChartTooltip as CustomTooltip } from './TopHoldersBarChartTooltip'
 
 type TopHoldersBarChartProps = {
-  data: Locker[]
+  height: number
+  data: VeCrvHolder[]
   filter: TopHoldersSortBy
 }
 
-const COLORS = [
-  '#f94144',
-  '#f3722c',
-  '#F8961E',
-  '#F9844A',
-  '#F9C74F',
-  '#90BE6D',
-  '#43AA8B',
-  '#4D908E',
-  '#577590',
-  '#277DA1',
-]
-
-export const TopHoldersBarChart = ({ data, filter }: TopHoldersBarChartProps) => {
-  const height = 300
-  const labelWidth = 100
-
-  const userFormatter = (user: string): string => {
-    const address = user.toLowerCase()
-
-    if (TOP_HOLDERS[address]) {
-      return TOP_HOLDERS[address].title
-    }
-
-    return user.length > 15 ? (shortenAddress(user)?.toString() ?? user) : user
-  }
-
-  const dataFormatted = data.map(x => ({ ...x, weight: x.weight.fromWei(), locked: x.locked.fromWei() }))
-
-  return (
-    <ChartContainer height={height}>
-      <ResponsiveContainer width="100%" height={height} debounce={200}>
-        <BarChart
-          layout="horizontal"
-          width={500}
-          height={height}
-          data={dataFormatted}
-          margin={{
-            top: 16,
-            right: 16,
-            left: 0,
-            bottom: 16,
-          }}
-        >
-          <CartesianGrid fillOpacity={0.6} strokeWidth={0.3} horizontal={true} vertical={false} />
-          <XAxis
-            type="category"
-            dataKey="user"
-            width={labelWidth}
-            tickFormatter={userFormatter}
-            tick={{
-              fill: 'var(--page--text-color)',
-              fontWeight: 'var(--bold)',
-              fontSize: 'var(--font-size-1)',
-              textAnchor: 'end',
-            }}
-            tickLine={{ opacity: 0.3, strokeWidth: 0.3 }}
-            axisLine={{ opacity: 0.3, strokeWidth: 0.3 }}
-            angle={-45}
-            height={60}
-          />
-          <YAxis
-            type="number"
-            dataKey={filter}
-            interval={0}
-            tick={{ fill: 'var(--page--text-color)', fontWeight: 'var(--bold)', fontSize: 'var(--font-size-1)' }}
-            tickFormatter={value =>
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
-              filter === 'weightRatio' ? `${value}%` : formatNumber(amount(value), { abbreviate: true, fallback: '-' })
-            }
-            tickLine={{ opacity: 0.3, strokeWidth: 0.3 }}
-            axisLine={false}
-            dx={-4}
-          />
-          <Tooltip content={CustomTooltip} cursor={{ opacity: 0.3 }} />
-          <Bar dataKey={filter} label={false} isAnimationActive={false}>
-            {dataFormatted.map((_entry, index) => (
-              // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
-              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-            ))}
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
-    </ChartContainer>
-  )
+const getValueByFilter: Record<TopHoldersSortBy, (datum: VeCrvHolder) => number> = {
+  locked: datum => +datum.locked,
+  weight: datum => +datum.weight,
+  weightRatio: datum => +datum.weightRatio,
 }
 
-const ChartContainer = styled.div<{ height: number }>`
-  position: relative;
-  width: 100%;
-  height: ${({ height }) => height}px;
-`
+export const TopHoldersBarChart = ({ height, data, filter }: TopHoldersBarChartProps) => {
+  const theme = useTheme()
+  const barColors = useMemo(() => createChartSeriesColorScale(theme), [theme])
+  const getBarColor = useCallback((_: VeCrvHolder, index: number) => barColors[index % barColors.length], [barColors])
+
+  return (
+    <EChartsBarChart
+      data={data}
+      xKey="user"
+      yKey={filter}
+      yValue={getValueByFilter[filter]}
+      barColor={getBarColor}
+      height={height}
+      renderTooltip={CustomTooltip}
+      xAxisLabelRotate={CHART_X_AXIS_LABEL_ROTATION}
+      xAxisInterval={0}
+      xTickFormatter={value => formatHolderName(String(value))}
+      yTickFormatter={value =>
+        filter === 'weightRatio' ? formatChartAxisNumber(+value, { unit: 'percentage' }) : formatChartAxisNumber(+value)
+      }
+    />
+  )
+}
