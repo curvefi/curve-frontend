@@ -67,7 +67,7 @@ export const HelperMessage = ({ message, isError, onNumberClick }: HelperMessage
         variant="bodyXsRegular"
         component="div"
         // todo: replace with alert component and add filledfeedback colors to alert component.
-        sx={{ color: t => getTextColor(t, isError) }}
+        sx={{ color: t => getTextColor(t, isError), whiteSpace: 'pre-line' /** Allows for \n newlines */ }}
         data-testid={`helper-message-${isError ? 'error' : 'info'}`}
       >
         {onNumberClick ? buildClickableMessage(message, isError, onNumberClick) : message}

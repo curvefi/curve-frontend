@@ -38,6 +38,9 @@ export const useLLv2 = () => {
 
 export const use0xRouter = useBetaChannel
 
+/** Reset position form for LlamaLend soft liquidation */
+export const useLlamaResetPosition = useBetaChannel
+
 /** New DEX pool list backed by Prices API v2 */
 export const useDexPoolListV2 = useBetaChannel
 
