@@ -1,6 +1,13 @@
 import { ReactNode } from 'react'
 import { zeroAddress } from 'viem'
-import { getAmmAddress, getControllerAddress, getGaugeAddress, getTokens } from '@/llamalend/llama.utils'
+import {
+  getAmmAddress,
+  getControllerAddress,
+  getGaugeAddress,
+  getTokens,
+  getVaultAddress,
+  getMonetaryPolicy,
+} from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useMarketOracleAddress } from '@/llamalend/queries/market'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -97,10 +104,11 @@ export const MarketContractsSection = ({ chainId, market, network }: MarketContr
   const contractsLoading = assetsLoading || oracleAddressIsLoading
   const isLendMarket = market instanceof LendMarketTemplate
   const gaugeAddress = getGaugeAddress(market)
+  const vaultAddress = getVaultAddress(market) ?? undefined
 
   const infraAddressItems = notFalsy<AddressItem>(
     market && { key: 'amm', label: t`AMM`, address: getAmmAddress(market) },
-    isLendMarket && { key: 'vault', label: t`Vault`, address: market.addresses.vault },
+    isLendMarket && { key: 'vault', label: t`Vault`, address: vaultAddress },
     market && {
       key: 'controller',
       label: t`Controller`,
@@ -112,7 +120,7 @@ export const MarketContractsSection = ({ chainId, market, network }: MarketContr
       labelTooltip: {
         title: t`The rule set that controls how fast borrow costs rise or fall as market conditions change.`,
       },
-      address: isLendMarket ? market.addresses.monetary_policy : market.monetaryPolicy,
+      address: getMonetaryPolicy(market),
     },
     gaugeAddress &&
       (gaugeAddress === zeroAddress
