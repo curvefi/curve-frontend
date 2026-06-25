@@ -6,7 +6,10 @@ import { curvejsApi } from '@/dex/lib/curvejs'
 import { fetchPoolIds } from '@/dex/lib/pool-ids'
 import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi, NetworkConfigFromApi, Wallet } from '@/dex/types/main.types'
+import { notFalsy } from '@primitives/objects.utils'
+import { isDexPoolListV2Enabled } from '@ui-kit/hooks/useFeatureFlags'
 import { log } from '@ui-kit/lib/logging'
+import type { ReleaseChannel } from '@ui-kit/utils'
 import { formatTimeDiff } from '@ui-kit/utils/time.utils'
 import { fetchNetworks } from '../entities/networks'
 import { refetchPoolTvls } from '../queries/pool-tvl.query'
@@ -30,6 +33,7 @@ export type GlobalSlice = {
     curveApi: CurveApi | undefined,
     prevCurveApi: CurveApi | undefined,
     wallet: Wallet | undefined,
+    releaseChannel: ReleaseChannel,
   ) => Promise<void>
 
   setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean) => void
@@ -69,8 +73,9 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
       }),
     )
   },
-  hydrate: async (_config, curveApi, prevCurveApi) => {
+  hydrate: async (_config, curveApi, prevCurveApi, _wallet, releaseChannel) => {
     if (!curveApi) return
+    const isLegacyDexList = !isDexPoolListV2Enabled(releaseChannel)
 
     const state = get()
     const isNetworkSwitched = prevCurveApi?.chainId !== curveApi.chainId
@@ -102,8 +107,13 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
     // out of `fetchPools` that depends on all pool ids should be manually invalidated.
     // You could argue that hooks with 'isHydrated' in the `enabled` parameter would suffice,
     // but we're still encountering situations where not all data is properly loaded.
-    const [poolVolumes] = await Promise.all([refetchPoolVolumes({ chainId }), refetchPoolTvls({ chainId })])
-    await state.pools.fetchPools(curveApi, poolIds, poolVolumes)
+    const [poolVolumes] = await Promise.all([
+      // Pool volumes are still needed in beta to preserve volume-based token sorting.
+      refetchPoolVolumes({ chainId }),
+      // Legacy TVL/gauge enrichment is skipped there because the v2 pool list uses backend data.
+      ...notFalsy(isLegacyDexList && refetchPoolTvls({ chainId })),
+    ])
+    await state.pools.fetchPools(curveApi, poolIds, poolVolumes, isLegacyDexList)
 
     log(`Hydrated DEX - Complete in ${formatTimeDiff(start)}`)
   },

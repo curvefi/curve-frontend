@@ -50,6 +50,7 @@ export type PoolsSlice = {
       curve: CurveApi,
       poolIds: string[],
       poolVolumes: PoolVolumes,
+      includeGaugeData: boolean,
     ) => Promise<{ poolsMapper: PoolDataMapper; poolDatas: PoolData[] } | undefined>
     fetchNewPool: (curve: CurveApi, poolId: string) => Promise<PoolData | undefined>
     fetchPoolsRewardsApy: (chainId: ChainId, poolDatas: PoolData[], useApi?: boolean) => Promise<void>
@@ -80,7 +81,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchPools: async (curve, poolIds, poolVolumes) => {
+    fetchPools: async (curve, poolIds, poolVolumes, includeGaugeData) => {
       const { pools, storeCache, tokens } = get()
       const { chainId } = curve
 
@@ -114,6 +115,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
           new Set(blacklist),
           networks[chainId],
           failedFetching24hOldVprice,
+          includeGaugeData,
         )
 
         const poolDatas = Object.entries(poolsMapper).map(([_, v]) => v)
@@ -162,7 +164,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         curve.stableNgFactory.fetchNewPools(),
       ])
       const poolVolumes = await refetchPoolVolumes({ chainId: curve.chainId })
-      const resp = await get()[sliceKey].fetchPools(curve, [poolId], poolVolumes)
+      const resp = await get()[sliceKey].fetchPools(curve, [poolId], poolVolumes, true)
       return resp?.poolsMapper?.[poolId]
     },
     fetchPoolCurrenciesReserves: async (curve, poolData) => {

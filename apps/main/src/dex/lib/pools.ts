@@ -54,7 +54,8 @@ export async function getPools(
   poolList: string[],
   blacklist: Set<Address>,
   network: NetworkConfig,
-  failedFetching24hOldVprice?: Record<string, boolean> | null,
+  failedFetching24hOldVprice: Record<string, boolean> | null,
+  includeGaugeData: boolean,
 ) {
   const { getPool } = curve
   const { orgUIPath } = network
@@ -108,27 +109,29 @@ export async function getPools(
     { poolsMapper: {}, poolsMapperCache: {} },
   )
 
-  // get gauge info
-  await PromisePool.for(Object.values(resp.poolsMapper)).process(async ({ pool }) => {
-    const [gaugeStatusResult, isGaugeKilledResult] = await Promise.allSettled([
-      pool.gaugeStatus(),
-      pool.isGaugeKilled(),
-    ])
-    const gaugeStatus = (fulfilledValue(gaugeStatusResult) ?? null) as GaugeStatus | null
-    const isGaugeKilled = fulfilledValue(isGaugeKilledResult) ?? null
+  if (includeGaugeData) {
+    // get gauge info
+    await PromisePool.for(Object.values(resp.poolsMapper)).process(async ({ pool }) => {
+      const [gaugeStatusResult, isGaugeKilledResult] = await Promise.allSettled([
+        pool.gaugeStatus(),
+        pool.isGaugeKilled(),
+      ])
+      const gaugeStatus = (fulfilledValue(gaugeStatusResult) ?? null) as GaugeStatus | null
+      const isGaugeKilled = fulfilledValue(isGaugeKilledResult) ?? null
 
-    resp.poolsMapper[pool.id].gauge = { status: gaugeStatus, isKilled: isGaugeKilled }
-    resp.poolsMapperCache[pool.id].gauge = { status: gaugeStatus, isKilled: isGaugeKilled }
+      resp.poolsMapper[pool.id].gauge = { status: gaugeStatus, isKilled: isGaugeKilled }
+      resp.poolsMapperCache[pool.id].gauge = { status: gaugeStatus, isKilled: isGaugeKilled }
 
-    if (gaugeStatus?.rewardsNeedNudging || gaugeStatus?.areCrvRewardsStuckInBridge) {
-      log(
-        'rewardsNeedNudging, areCrvRewardsStuckInBridge',
-        pool.id,
-        gaugeStatus.rewardsNeedNudging,
-        gaugeStatus.areCrvRewardsStuckInBridge,
-      )
-    }
-  })
+      if (gaugeStatus?.rewardsNeedNudging || gaugeStatus?.areCrvRewardsStuckInBridge) {
+        log(
+          'rewardsNeedNudging, areCrvRewardsStuckInBridge',
+          pool.id,
+          gaugeStatus.rewardsNeedNudging,
+          gaugeStatus.areCrvRewardsStuckInBridge,
+        )
+      }
+    })
+  }
 
   return resp
 }
