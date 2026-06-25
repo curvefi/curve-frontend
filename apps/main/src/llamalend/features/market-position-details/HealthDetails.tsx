@@ -5,7 +5,7 @@ import type { UserMarketParams } from '@ui-kit/lib/model'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { mapQuery, q, type QueryProp } from '@ui-kit/types/util'
+import { mapQuery, type QueryProp } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 import { HEALTH_TOOLTIP } from './tooltips'
 import { getHealthValueColor, HealthAndBufferBar, HealthBar } from './'
@@ -42,11 +42,7 @@ export const HealthDetails = ({
           <Tooltip title={title} body={body}>
             <Stack sx={{ flex: 1 }}>
               {useNewHealth ? (
-                <HealthAndBufferBar
-                  health={health}
-                  liquidationBuffer={liquidationBuffer}
-                  softLiquidation={softLiquidation}
-                />
+                <HealthAndBufferBar health={health} liquidationBuffer={liquidationBuffer} />
               ) : (
                 <HealthBar health={legacyHealth && +legacyHealth} softLiquidation={softLiquidation} />
               )}

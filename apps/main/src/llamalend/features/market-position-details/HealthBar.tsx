@@ -2,7 +2,10 @@ import { Stack, type SxProps, Typography, useTheme } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
 import { LinearProgress } from '@ui-kit/shared/ui/LinearProgress'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { HEALTH_THRESHOLDS, getHealthTrackColor } from './'
+
+const { Height } = SizesAndSpaces
 
 type HealthBarProps = {
   health: number | undefined | null
@@ -13,7 +16,6 @@ type HealthBarProps = {
 
 type HealthLevel = 'hardLiquidation' | 'liquidationProtection' | 'risky' | 'good' | 'pristine'
 
-const BAR_HEIGHT = '2rem' // 36px
 /** Inset from the container border so labels sit inside the filled portion of the bar */
 const LABEL_INSET = '0.125rem' // 2px
 
@@ -52,7 +54,7 @@ export const HealthBar = ({ health, softLiquidation, small, sx }: HealthBarProps
         sx={{
           position: 'relative',
           width: '100%',
-          height: BAR_HEIGHT,
+          height: Height.healthBar.legacy,
           backgroundColor: t => t.design.Color.Neutral[300],
           transition: `background-color ${TransitionFunction}`,
         }}

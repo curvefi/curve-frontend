@@ -227,6 +227,7 @@ const NUMBER_FORMAT_CATEGORIES = {
     maximumSignificantDigits: undefined,
     fallback: '-',
   },
+  'number.compact': { abbreviate: true, fallback: '-' },
 } as const satisfies Record<string, NumberFormatOptions & { fallback: string }>
 
 export type NumberFormatCategory = keyof typeof NUMBER_FORMAT_CATEGORIES
