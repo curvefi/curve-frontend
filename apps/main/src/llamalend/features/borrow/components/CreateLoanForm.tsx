@@ -172,6 +172,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
         disabled={isDisabled}
         label={[isApproved?.data === false && t`Approve`, t`Borrow`]}
         testId="create-loan-submit-button"
+        connectWalletTestId="form-connect-wallet"
       >
         {disabledAlert && <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>}
       </FormButton>
