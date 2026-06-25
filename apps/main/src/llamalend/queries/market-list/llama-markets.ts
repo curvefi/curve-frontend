@@ -12,7 +12,7 @@ import {
 } from '@/llamalend/rates.utils'
 import { type Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
-import { assert, recordValues } from '@primitives/objects.utils'
+import { assert, maybe, recordValues } from '@primitives/objects.utils'
 import type { QueriesResults } from '@tanstack/react-query'
 import { useQueries } from '@tanstack/react-query'
 import { type CampaignRewards, combineCampaigns } from '@ui-kit/entities/campaigns'
@@ -64,6 +64,7 @@ export type LlamaMarket = {
   oraclePrice?: number
   monetaryPolicyAddress?: Address
   oracleAddress?: Address
+  parameters: { A: number | null; loanDiscount: number | null; liquidationDiscount: number | null }
   utilizationPercent: number
   liquidityUsd: number
   tvl: number
@@ -131,6 +132,8 @@ const convertLendingVault = (
     leverage,
     extraRewardApr,
     maxLtv,
+    loanDiscount,
+    liquidationDiscount,
     minBand,
     maxBand,
     createdAt,
@@ -191,6 +194,11 @@ const convertLendingVault = (
     oraclePrice: priceOracle,
     monetaryPolicyAddress: policy,
     oracleAddress: oracle,
+    parameters: {
+      A: null,
+      loanDiscount: maybe(loanDiscount, value => (value * 100) / 1e18) ?? null,
+      liquidationDiscount: maybe(liquidationDiscount, value => (value * 100) / 1e18) ?? null,
+    },
     utilizationPercent: totalAssetsUsd && (100 * totalDebtUsd) / totalAssetsUsd,
     solvencyPercent,
     badDebtUsd,
@@ -261,6 +269,14 @@ const convertMintMarket = (
     leverage,
     chain,
     maxLtv,
+    monetaryPolicyAddress,
+    oracle,
+    priceOracle,
+    ammA,
+    loanDiscount,
+    liquidationDiscount,
+    minBand,
+    maxBand,
     createdAt,
   }: MintMarket,
   favoriteMarkets: Set<Address>,
@@ -309,7 +325,17 @@ const convertMintMarket = (
       },
     },
     maxLtv,
+    minBand,
+    maxBand,
     loans,
+    oraclePrice: priceOracle,
+    monetaryPolicyAddress,
+    oracleAddress: oracle,
+    parameters: {
+      A: ammA ?? null,
+      loanDiscount: maybe(loanDiscount, value => (value * 100) / 1e18) ?? null,
+      liquidationDiscount: maybe(liquidationDiscount, value => (value * 100) / 1e18) ?? null,
+    },
     utilizationPercent: Math.min(100, (100 * borrowed) / debtCeiling), // debt ceiling may be lowered, so cap at 100%
     // solvency is only relevant for lending markets; if mint markets have bad debt that's a protocol problem, not a user problem
     solvencyPercent: null,
