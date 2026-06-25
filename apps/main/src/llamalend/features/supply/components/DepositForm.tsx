@@ -76,6 +76,7 @@ export const DepositForm = <ChainId extends IChainId>({
         disabled={isDisabled}
         label={[isApproved.data === false && t`Approve`, t`Deposit`]}
         testId={`${TEST_ID_PREFIX}-submit-button`}
+        connectWalletTestId="vault-no-position-disconnected"
       >
         {disabledAlert && <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>}
       </FormButton>
