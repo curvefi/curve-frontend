@@ -1,55 +1,29 @@
-import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, ResponsiveContainer } from 'recharts'
-import { LocksDaily } from '@curvefi/prices-api/dao'
+import type { VeCrvLock } from '@/dao/entities/vecrv-locks'
+import { useTheme } from '@mui/material/styles'
 import { formatDate } from '@ui/utils'
-import { formatNumber } from '@ui-kit/utils'
+import { EChartsBarChart, formatChartAxisNumber, getChartSignedValueColor } from '@ui-kit/shared/ui/Chart'
 import { PositiveAndNegativeBarChartTooltip } from './PositiveAndNegativeBarChartTooltip'
 
 type PositiveAndNegativeBarChartProps = {
-  data: LocksDaily[]
-  height?: number
+  data: VeCrvLock[]
+  height: number
 }
 
-export const PositiveAndNegativeBarChart = ({ data, height = 500 }: PositiveAndNegativeBarChartProps) => (
-  <ResponsiveContainer width="100%" height={height} debounce={200}>
-    <BarChart
-      width={500}
-      height={300}
-      data={data.map(x => ({ ...x, amount: x.amount.fromWei() }))}
-      margin={{
-        top: 16,
-        right: 20,
-        left: 20,
-        bottom: 16,
-      }}
-    >
-      <CartesianGrid fillOpacity={0.6} strokeWidth={0.3} horizontal={true} vertical={false} />
-      <XAxis
-        dataKey="day"
-        tick={{ fill: 'var(--page--text-color)', fontSize: 'var(--font-size-1)' }}
-        tickFormatter={(value: string) => formatDate(value)}
-        tickLine={{ opacity: 0.3, strokeWidth: 0.3 }}
-        axisLine={{ opacity: 0.3, strokeWidth: 0.3 }}
-        minTickGap={20}
-        allowDataOverflow={false}
-      />
-      <YAxis
-        dataKey="amount"
-        tick={{ fill: 'var(--page--text-color)', fontSize: 'var(--font-size-1)' }}
-        tickLine={{ opacity: 0.3, strokeWidth: 0.3 }}
-        axisLine={{ opacity: 0.3, strokeWidth: 0.3 }}
-        tickFormatter={(value: number) =>
-          `${formatNumber(value, { ...(value > 10 && { decimals: 0 }), abbreviate: false })}`
-        }
-        tickCount={10}
-      />
-      <Tooltip content={PositiveAndNegativeBarChartTooltip} cursor={{ opacity: 0.3 }} />
-      <ReferenceLine y={0} stroke="#000" opacity={0.3} />
-      <Bar dataKey="amount" label={false} fill="#8884d8" isAnimationActive={false}>
-        {data.map((entry, index) => (
-          // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
-          <Cell key={`$cell-${index}`} fill={entry.amount > 0n ? 'var(--chart-green)' : 'var(--chart-red)'} />
-        ))}
-      </Bar>
-    </BarChart>
-  </ResponsiveContainer>
-)
+export const PositiveAndNegativeBarChart = ({ data, height }: PositiveAndNegativeBarChartProps) => {
+  const theme = useTheme()
+
+  return (
+    <EChartsBarChart
+      data={data}
+      xKey="day"
+      yKey="amount"
+      yValue={datum => +datum.amount}
+      barColor={datum => getChartSignedValueColor(theme, +datum.amount)}
+      height={height}
+      renderTooltip={PositiveAndNegativeBarChartTooltip}
+      showVerticalGrid
+      xTickFormatter={value => formatDate(value)}
+      yTickFormatter={value => formatChartAxisNumber(+value)}
+    />
+  )
+}

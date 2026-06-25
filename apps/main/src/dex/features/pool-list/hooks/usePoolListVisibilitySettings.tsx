@@ -8,7 +8,7 @@ import { POOL_LIST_COLUMNS, POOL_LIST_COLUMN_OPTIONS, PoolListColumnId, type Poo
 import type { PoolListSorting } from './usePoolListSorting'
 
 const migration: MigrationOptions<Record<PoolListColumnVariant, VisibilityGroup<PoolListColumnId>[]>> = {
-  version: 1,
+  version: 2,
 }
 
 /**

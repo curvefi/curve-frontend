@@ -1,0 +1,2 @@
+export const DAO_CHART_HEIGHT = 500
+export const DAO_COMPACT_CHART_HEIGHT = 300
