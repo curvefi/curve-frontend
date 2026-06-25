@@ -120,7 +120,14 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
               }}
               isLoading={chart.isLoading}
               customButton={
-                bands && <ToggleBandsChartButton label="Bands" isVisible={isBandsVisible} toggle={toggleBandsVisible} />
+                bands && (
+                  <ToggleBandsChartButton
+                    label={t`Bands`}
+                    tooltip={t`The price ranges your position can move through during soft liquidation.`}
+                    isVisible={isBandsVisible}
+                    toggle={toggleBandsVisible}
+                  />
+                )
               }
             />
             <Stack
