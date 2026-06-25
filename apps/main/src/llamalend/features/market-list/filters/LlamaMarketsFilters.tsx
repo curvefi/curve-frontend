@@ -5,14 +5,14 @@ import { TableFilterItem } from '@ui-kit/shared/ui/DataTable/TableFilterItem'
 import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { type AssetDetails } from '../../queries/market-list/llama-markets'
-import { LlamaChainFilterChips } from './chips/LlamaChainFilterChips'
-import { LLAMA_MARKET_TITLES, LlamaMarketColumnId } from './columns'
-import { type LlamaMarketsFiltersProps, useLlamaMarketsFilters } from './filters/hooks/useLlamaMarketsFilters'
-import { MultiSelectFilter } from './filters/MultiSelectFilter'
-import { RangeFilter } from './filters/RangeFilter'
-import { RangeSliderRowFilter } from './filters/RangeSliderRowFilter'
-import { TableFilterButtonGroup } from './filters/TableFilterButtonGroup'
+import { type AssetDetails } from '../../../queries/market-list/llama-markets'
+import { LlamaChainFilterChips } from '../chips/LlamaChainFilterChips'
+import { LLAMA_MARKET_TITLES, LlamaMarketColumnId } from '../columns'
+import { type LlamaMarketsFiltersProps, useLlamaMarketsFilters } from './hooks/useLlamaMarketsFilters'
+import { MultiSelectFilter } from './MultiSelectFilter'
+import { RangeFilter } from './RangeFilter'
+import { RangeSliderRowFilter } from './RangeSliderRowFilter'
+import { TableFilterButtonGroup } from './TableFilterButtonGroup'
 
 const { Spacing } = SizesAndSpaces
 
@@ -37,7 +37,7 @@ const SelectedToken = ({ symbol }: { symbol: string }) => (
 /**
  * Filters for the LlamaLend markets table, including chain, token, APR, and range-based filters.
  */
-export const LendingMarketsFilters = (props: LlamaMarketsFiltersProps) => {
+export const LlamaMarketsFilters = (props: LlamaMarketsFiltersProps) => {
   const {
     filterProps,
     tokens,
