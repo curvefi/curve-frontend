@@ -3,7 +3,7 @@ import { LEVERAGE } from '@/llamalend/constants'
 import { BorrowMoreLoanInfoList } from '@/llamalend/features/borrow/components/BorrowMoreLoanInfoList'
 import { LeverageInput } from '@/llamalend/features/borrow/components/LeverageInput'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import type { MarketTokens } from '@/llamalend/llama.utils'
+import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { isLeverageBorrowMoreSupported } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
@@ -45,7 +45,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   ammAddress: Address | undefined
   zapAddress: Address | undefined
   controllerAddress: Address | undefined
-  tokens: Partial<MarketTokens>
+  tokens: MarketTokensOrEmpty
   networks: NetworkDict<ChainId>
   chainId: ChainId
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void

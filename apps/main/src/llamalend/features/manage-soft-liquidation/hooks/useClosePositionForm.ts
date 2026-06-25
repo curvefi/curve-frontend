@@ -3,7 +3,7 @@ import { sum } from 'lodash'
 import { useCallback } from 'react'
 import { useConnection } from 'wagmi'
 import { LEVERAGE } from '@/llamalend/constants'
-import type { MarketTokens } from '@/llamalend/llama.utils'
+import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import { type CloseLoanMutation, useClosePositionMutation } from '@/llamalend/mutations/close-position.mutation'
 import { useCloseLoanIsApproved } from '@/llamalend/queries/close-loan/close-loan-is-approved.query'
 import { useUserBalances, useUserState } from '@/llamalend/queries/user'
@@ -38,7 +38,7 @@ export function useClosePositionForm({
   enabled,
 }: {
   marketId: string | undefined
-  tokens: Partial<MarketTokens>
+  tokens: MarketTokensOrEmpty
   network: { id: LlamaNetworkId; chainId: LlamaChainId; name: string }
   enabled?: boolean
 }) {

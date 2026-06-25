@@ -1,4 +1,4 @@
-import type { MarketTokens } from '@/llamalend/llama.utils'
+import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { StakeTokenLabel } from '@/llamalend/widgets/action-card/StakeTokenLabel'
@@ -15,7 +15,7 @@ import { UnstakeSupplyInfoList } from './UnstakeSupplyInfoList'
 type UnstakeFormProps<ChainId extends IChainId> = {
   marketId: string | undefined
   controllerAddress: Address | undefined
-  tokens: Partial<MarketTokens>
+  tokens: MarketTokensOrEmpty
   vaultToken: Token | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
@@ -36,19 +36,8 @@ export const UnstakeForm = <ChainId extends IChainId>({
   const network = networks[chainId]
   const blockchainId = network.id
 
-  const {
-    form,
-    params,
-    isPending,
-    onSubmit,
-    isDisabled,
-    vaultToken: unstakeVaultToken,
-    borrowToken,
-    collateralToken,
-    unstakeError,
-    formErrors,
-    max,
-  } = useUnstakeForm({ marketId, tokens, vaultToken, network, enabled })
+  const { form, params, isPending, onSubmit, isDisabled, borrowToken, collateralToken, unstakeError, formErrors, max } =
+    useUnstakeForm({ marketId, tokens, network, enabled })
 
   return (
     <Form
@@ -60,28 +49,25 @@ export const UnstakeForm = <ChainId extends IChainId>({
           form={form}
           params={params}
           networks={networks}
-          tokens={{ borrowToken }}
+          borrowToken={borrowToken}
           controllerAddress={controllerAddress}
         />
       }
     >
       <LoanFormTokenInput
         label={t`Amount to unstake`}
-        token={unstakeVaultToken}
+        token={vaultToken}
         blockchainId={blockchainId}
         name="unstakeAmount"
         form={form}
         max={max}
         testId={`${TEST_ID_PREFIX}-input`}
         network={network}
-        positionBalance={{
-          position: max,
-          tooltip: t`Staked vault shares`,
-        }}
+        positionBalance={{ position: max, tooltip: t`Staked vault shares` }}
         tokenSelector={
           <StakeTokenLabel
             blockchainId={blockchainId}
-            vaultTokenLabel={unstakeVaultToken?.symbol}
+            vaultTokenLabel={vaultToken?.symbol}
             collateralTokenAddress={collateralToken?.address}
             borrowTokenAddress={borrowToken?.address}
           />

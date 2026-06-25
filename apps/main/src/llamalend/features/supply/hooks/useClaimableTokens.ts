@@ -9,11 +9,15 @@ import { UserMarketParams } from '@ui-kit/lib/model'
 import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { MAINNET_CRV } from '@ui-kit/utils'
 
-export const useClaimableTokens = <ChainId extends LlamaChainId>(
-  params: UserMarketParams<ChainId>,
-  crvAddress: Address | undefined,
+export const useClaimableTokens = <ChainId extends LlamaChainId>({
+  params,
+  crvAddress,
   enabled = true,
-) => {
+}: {
+  params: UserMarketParams<ChainId>
+  crvAddress: Address | undefined
+  enabled?: boolean
+}) => {
   const { chainId } = params
 
   const {
@@ -60,7 +64,6 @@ export const useClaimableTokens = <ChainId extends LlamaChainId>(
     claimableRewardsError,
     hasClaimableCrv: Number(claimableCrv) > 0,
     hasClaimableRewards: hasClaimableRewards(claimableRewards),
-    crvTokenAddress: crvAddress,
     rewardTokenAddresses: rewardsAddresses,
     claimableTokens,
     totalNotionals,

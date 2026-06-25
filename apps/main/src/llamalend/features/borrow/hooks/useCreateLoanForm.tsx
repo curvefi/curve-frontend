@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
-import { type MarketTokens } from '@/llamalend/llama.utils'
+import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { getCreateLoanEstimateGasOptions } from '@/llamalend/queries/create-loan/create-loan-estimate-gas.query'
 import { useCreateLoanExpectedCollateral } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
@@ -50,7 +50,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   ammAddress,
   zapAddress,
   controllerAddress,
-  tokens,
+  tokens: { borrowToken, collateralToken },
   marketType,
   networks,
   chainId,
@@ -62,7 +62,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   ammAddress: Address | undefined
   zapAddress: Address | undefined
   controllerAddress: Address | undefined
-  tokens: Partial<MarketTokens>
+  tokens: MarketTokensOrEmpty
   marketType: LlamaMarketType
   networks: NetworkDict<ChainId>
   chainId: ChainId
@@ -148,14 +148,8 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   const disabledAlert = (marketAlert?.isBorrowDisabled ? marketAlert : undefined) ?? solvencyDisabledAlert
 
   const { formState } = form
-  const { borrowToken, collateralToken } = tokens
-  const maxTokenValues = useMaxTokenValues({
-    market,
-    marketId,
-    collateralTokenAddress: collateralToken?.address,
-    params,
-    form,
-  })
+  const collateralTokenAddress = collateralToken?.address
+  const maxTokenValues = useMaxTokenValues({ market, marketId, collateralTokenAddress, params, form })
   const expectedCollateral = useCreateLoanExpectedCollateral(params, values.leverageEnabled)
 
   useCallbackSync(useCreateLoanPrices(params), onPricesUpdated)

@@ -1,7 +1,7 @@
 import { type ChangeEvent, useCallback } from 'react'
 import { useConnection } from 'wagmi'
 import { LoanPreset, LEVERAGE } from '@/llamalend/constants'
-import { hasLeverage, type MarketTokens } from '@/llamalend/llama.utils'
+import { hasLeverage, type MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
@@ -54,7 +54,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
   ammAddress: Address | undefined
   zapAddress: Address | undefined
   controllerAddress: Address | undefined
-  tokens: Partial<MarketTokens>
+  tokens: MarketTokensOrEmpty
   minBands: number | undefined
   maxBands: number | undefined
   networks: NetworkDict<ChainId>

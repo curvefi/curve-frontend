@@ -1,5 +1,5 @@
 import { useLiquidationStatus } from '@/llamalend/features/market-position-details/hooks/useUserLiquidationStatus'
-import { type MarketTokens } from '@/llamalend/llama.utils'
+import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import { getPositionStatusContent } from '@/llamalend/position-status-content'
 import { Alert, AlertTitle, Stack, Typography } from '@mui/material'
 import type { UserMarketParams } from '@ui-kit/lib/model'
@@ -10,12 +10,10 @@ import { HealthDetails } from './HealthDetails'
 
 const { Spacing } = SizesAndSpaces
 
-export type BorrowPositionDetailsProps = { params: UserMarketParams; tokens: Partial<MarketTokens> }
+export type BorrowPositionDetailsProps = { params: UserMarketParams; tokens: MarketTokensOrEmpty }
 
-export const BorrowPositionDetails = ({
-  params,
-  tokens: { collateralToken, borrowToken },
-}: BorrowPositionDetailsProps) => {
+export const BorrowPositionDetails = ({ params, tokens }: BorrowPositionDetailsProps) => {
+  const { collateralToken, borrowToken } = tokens
   const liquidationStatus = useLiquidationStatus(params)
   const statusContent =
     liquidationStatus.data &&
@@ -35,7 +33,7 @@ export const BorrowPositionDetails = ({
           params={params}
           softLiquidation={mapQuery(liquidationStatus, positionStatus => positionStatus === 'softLiquidation')}
         />
-        <BorrowInformation params={params} tokens={{ borrowToken, collateralToken }} />
+        <BorrowInformation params={params} tokens={tokens} />
       </Stack>
     </Stack>
   )

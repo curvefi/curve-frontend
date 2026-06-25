@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
-import type { MarketTokens } from '@/llamalend/llama.utils'
+import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useAddCollateralMutation } from '@/llamalend/mutations/add-collateral.mutation'
 import { useAddCollateralIsApproved } from '@/llamalend/queries/add-collateral/add-collateral-approved.query'
@@ -37,7 +37,7 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
 }: {
   market: LlamaMarketTemplate | undefined
   marketId: string | undefined
-  tokens: Partial<MarketTokens>
+  tokens: MarketTokensOrEmpty
   network: LlamaNetwork<ChainId>
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {

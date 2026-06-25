@@ -1,4 +1,4 @@
-import type { MarketTokens } from '@/llamalend/llama.utils'
+import type { MarketTokens, MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { IChainId, INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
@@ -41,7 +41,7 @@ export type PageContentProps<T = UrlParams> = {
   ammAddress: Address | undefined
   zapAddress: Address | undefined
   controllerAddress: Address | undefined
-  tokens: Partial<MarketTokens>
+  tokens: MarketTokensOrEmpty
   marketType: LlamaMarketType
   vaultToken: MarketTokens['borrowToken'] | undefined
   gaugeAddress: Address | undefined

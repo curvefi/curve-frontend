@@ -9,7 +9,7 @@ import {
   canRepayFromStateCollateral,
   canRepayFromUserCollateral,
   hasLeverageValue,
-  type MarketTokens,
+  type MarketTokensOrEmpty,
 } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
@@ -87,7 +87,7 @@ export const RepayForm = <ChainId extends IChainId>({
   ammAddress: Address | undefined
   zapAddress: Address | undefined
   controllerAddress: Address | undefined
-  tokens: Partial<MarketTokens>
+  tokens: MarketTokensOrEmpty
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean

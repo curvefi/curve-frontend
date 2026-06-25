@@ -1,4 +1,4 @@
-import type { MarketTokens } from '@/llamalend/llama.utils'
+import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
@@ -16,7 +16,7 @@ import { DepositSupplyInfoList } from './DepositSupplyInfoList'
 type DepositFormProps<ChainId extends IChainId> = {
   marketId: string | undefined
   controllerAddress: Address | undefined
-  tokens: Partial<MarketTokens>
+  tokens: MarketTokensOrEmpty
   marketType: LlamaMarketType
   networks: NetworkDict<ChainId>
   chainId: ChainId

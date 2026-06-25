@@ -1,6 +1,6 @@
 import { useClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/hooks/useClosePositionForm'
 import { ClosePositionInfoList } from '@/llamalend/features/manage-soft-liquidation/ui/ClosePositionInfoList'
-import type { MarketTokens } from '@/llamalend/llama.utils'
+import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Stack from '@mui/material/Stack'
@@ -27,7 +27,7 @@ export const ClosePositionForm = ({
   enabled,
 }: {
   marketId: string | undefined
-  tokens: Partial<MarketTokens>
+  tokens: MarketTokensOrEmpty
   networks: NetworkDict<LlamaChainId>
   chainId: LlamaChainId
   enabled?: boolean

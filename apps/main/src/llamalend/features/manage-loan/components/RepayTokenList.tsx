@@ -2,7 +2,7 @@ import { partition } from 'lodash'
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { RepayTokenOption } from '@/llamalend/features/manage-loan/hooks/useRepayTokens'
-import type { MarketTokens } from '@/llamalend/llama.utils'
+import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Alert from '@mui/material/Alert'
@@ -20,7 +20,7 @@ import { QueryProp } from '@ui-kit/types/util'
 const { Spacing } = SizesAndSpaces
 
 export type RepayTokenListProps<ChainId extends IChainId> = {
-  marketTokens: Partial<MarketTokens>
+  marketTokens: MarketTokensOrEmpty
   network: NetworkDict<ChainId>[ChainId]
   onToken: (token: RepayTokenOption) => void
   tokens: RepayTokenOption[]

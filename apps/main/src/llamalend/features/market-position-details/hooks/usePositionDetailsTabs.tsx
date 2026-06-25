@@ -1,7 +1,7 @@
 import { type ReactNode, useMemo } from 'react'
 import { UserPositionHistory } from '@/llamalend/features/user-position-history'
 import type { ParsedUserCollateralEvent } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import type { MarketTokens } from '@/llamalend/llama.utils'
+import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import Stack from '@mui/material/Stack'
 import { notFalsy } from '@primitives/objects.utils'
 import { useTabs } from '@ui-kit/hooks/useTabs'
@@ -27,7 +27,7 @@ export const usePositionDetailsTabs = ({
   events: QueryProp<ParsedUserCollateralEvent[]>
   hasPosition: boolean | undefined
   params: UserMarketParams
-  tokens: Partial<MarketTokens>
+  tokens: MarketTokensOrEmpty
 }) => {
   const tabOptions = useMemo<PositionDetailsTabOption[]>(
     () =>

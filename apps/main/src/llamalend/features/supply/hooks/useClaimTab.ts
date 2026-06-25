@@ -40,9 +40,8 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
     usdRateError,
     hasClaimableCrv,
     hasClaimableRewards,
-    crvTokenAddress: claimableCrvTokenAddress,
     rewardTokenAddresses,
-  } = useClaimableTokens(params, crvTokenAddress, enabled)
+  } = useClaimableTokens({ params, crvAddress: crvTokenAddress, enabled })
 
   const tableData = useMemo(
     () => claimableTokens.map(token => ({ ...token, networkId: network.id, isLoading: usdRateLoading })),
@@ -63,7 +62,7 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
     onSubmit: onSubmitCrv,
     isPending: isClaimCrvPending,
     error: claimCrvError,
-  } = useClaimCrvMutation({ marketId, network, userAddress, crvTokenAddress: claimableCrvTokenAddress })
+  } = useClaimCrvMutation({ marketId, network, userAddress, crvTokenAddress })
   const {
     onSubmit: onSubmitRewards,
     isPending: isClaimRewardsPending,

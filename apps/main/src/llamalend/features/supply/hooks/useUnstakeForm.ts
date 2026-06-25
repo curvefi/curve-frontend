@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
-import type { MarketTokens } from '@/llamalend/llama.utils'
+import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useUnstakeMutation } from '@/llamalend/mutations/unstake.mutation'
 import {
@@ -9,7 +9,6 @@ import {
   UnstakeParams,
 } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { Token } from '@primitives/address.utils'
 import { useFormSync, useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { mapQuery } from '@ui-kit/types/util'
@@ -25,13 +24,11 @@ const emptyUnstakeForm = (): UnstakeForm => ({
 export const useUnstakeForm = <ChainId extends LlamaChainId>({
   marketId,
   tokens,
-  vaultToken,
   network,
   enabled,
 }: {
   marketId: string | undefined
-  tokens: Partial<MarketTokens>
-  vaultToken: Token | undefined
+  tokens: MarketTokensOrEmpty
   network: LlamaNetwork<ChainId>
   enabled?: boolean
 }) => {
@@ -80,7 +77,6 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({
     isPending,
     onSubmit: form.handleSubmit(onSubmit),
     isDisabled: !formState.isValid || isPending || isDebouncing,
-    vaultToken,
     borrowToken,
     collateralToken,
     unstakeError,

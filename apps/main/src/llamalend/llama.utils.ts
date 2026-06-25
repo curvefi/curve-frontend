@@ -13,7 +13,7 @@ import { getUserMarketCollateralEvents as getLendUserMarketCollateralEvents } fr
 import type { BadDebt } from '@curvefi/prices-api/liquidations'
 import { type Address, Hex } from '@primitives/address.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
-import { assert, DEFAULT_DECIMALS, maybe, maybes, notFalsy } from '@primitives/objects.utils'
+import { type AllOrNone, assert, DEFAULT_DECIMALS, maybe, maybes, notFalsy } from '@primitives/objects.utils'
 import { getLib, requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { MetricProps } from '@ui-kit/shared/ui/Metric'
@@ -136,8 +136,12 @@ export const formatTokenAmounts = (
       `${formatNumber(userCollateral, { abbreviate: false })} ${getCollateralSymbol(market)}`,
   ).join(', ')
 
-type Token = Pick<AssetDetails, 'symbol' | 'address' | 'decimals'>
-export type MarketTokens = { collateralToken: Token; borrowToken: Token }
+export type MarketToken = Pick<AssetDetails, 'symbol' | 'address' | 'decimals'>
+
+export type MarketTokens = { collateralToken: MarketToken; borrowToken: MarketToken }
+
+/** Accepts either both tokens or an empty object. Avoid Partial<> because it could allow one of the tokens only */
+export type MarketTokensOrEmpty = AllOrNone<MarketTokens>
 
 type MarketOrApiValue<T, Value> = T extends LlamaMarketTemplate ? Value : Value | undefined
 
@@ -233,7 +237,7 @@ export const getGaugeAddress = (market: LlamaMarketTemplate | null | undefined):
 export const getVaultToken = <T extends LlamaMarketTemplate | null | undefined>(
   market: T,
   apiMarket?: LlamaMarket,
-): MarketOrApiValue<T, Token | undefined> =>
+): MarketOrApiValue<T, MarketToken | undefined> =>
   maybe(getVaultAddress(market, apiMarket), address => ({
     address,
     symbol: t`Vault shares`,
@@ -248,13 +252,7 @@ export const getMarketBandRange = <T extends LlamaMarketTemplate | null | undefi
     market,
     apiMarket,
     m => ({ minBands: +m.minBands, maxBands: +m.maxBands }),
-    m =>
-      maybe(m.minBand, minBand =>
-        maybe(m.maxBand, maxBand => ({
-          minBands: minBand,
-          maxBands: maxBand,
-        })),
-      ),
+    m => maybes([m.minBand, m.maxBand], ([minBands, maxBands]) => ({ minBands, maxBands })),
   )
 
 export const getCrvTokenAddress = (market: LlamaMarketTemplate | null | undefined): Address =>

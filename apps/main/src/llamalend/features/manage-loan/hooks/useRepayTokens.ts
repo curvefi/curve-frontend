@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import { type MarketTokens, isPositionLeveraged } from '@/llamalend/llama.utils'
+import { isPositionLeveraged, type MarketToken, type MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import type { TokenOption } from '@ui-kit/features/select-token'
 import type { QueryProp } from '@ui-kit/types/util'
@@ -11,12 +11,14 @@ export type RepayTokenOption = TokenOption & { field: 'stateCollateral' | 'userC
  * Get token options for repayment based on market and network
  */
 const getRepayTokenOptions = ({
-  tokens: { borrowToken, collateralToken },
+  borrowToken,
+  collateralToken,
   networkId,
   canRepayFromStateCollateral,
   canRepayFromUserCollateral,
 }: {
-  tokens: Partial<MarketTokens>
+  borrowToken: MarketToken | undefined
+  collateralToken: MarketToken | undefined
   networkId: string
   canRepayFromStateCollateral: boolean
   canRepayFromUserCollateral: boolean
@@ -48,30 +50,37 @@ const getRepayTokenOptions = ({
  * Hook that returns repay token options, containing the logic to select between different repayment sources
  */
 export const useRepayTokens = ({
-  tokens,
+  tokens: { borrowToken, collateralToken },
   networkId,
   canRepayFromStateCollateral,
   canRepayFromUserCollateral,
   collateralEvents,
 }: {
-  tokens: Partial<MarketTokens>
+  tokens: MarketTokensOrEmpty
   networkId: string
   canRepayFromStateCollateral: boolean
   canRepayFromUserCollateral: boolean
   collateralEvents: QueryProp<UserCollateralEvents>
 }) => {
   const [token, setToken] = useState<RepayTokenOption | undefined>()
-  const repayTokens = useMemo(
-    () => getRepayTokenOptions({ tokens, networkId, canRepayFromStateCollateral, canRepayFromUserCollateral }),
-    [canRepayFromStateCollateral, canRepayFromUserCollateral, networkId, tokens],
+  const tokens = useMemo(
+    () =>
+      getRepayTokenOptions({
+        borrowToken,
+        collateralToken,
+        networkId,
+        canRepayFromStateCollateral,
+        canRepayFromUserCollateral,
+      }),
+    [borrowToken, collateralToken, networkId, canRepayFromStateCollateral, canRepayFromUserCollateral],
   )
   const isLeveraged = collateralEvents.data && isPositionLeveraged(collateralEvents.data?.originalLeverage)
   const field = isLeveraged === true ? 'stateCollateral' : isLeveraged === false ? 'userBorrowed' : undefined
-  const defaultToken = repayTokens.find(t => t.field === field)
+  const defaultToken = tokens.find(t => t.field === field)
   useEffect(() => {
     // override the user's choice when we get to know they have a (non)-leveraged position
     // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     if (defaultToken) setToken(defaultToken)
   }, [defaultToken])
-  return { tokens: repayTokens, token: token ?? repayTokens[0], onToken: setToken }
+  return { tokens, token: token ?? tokens[0], onToken: setToken }
 }

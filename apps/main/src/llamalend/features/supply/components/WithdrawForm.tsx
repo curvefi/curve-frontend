@@ -1,4 +1,4 @@
-import type { MarketTokens } from '@/llamalend/llama.utils'
+import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -14,7 +14,7 @@ import { WithdrawSupplyInfoList } from './WithdrawSupplyInfoList'
 type WithdrawFormProps<ChainId extends IChainId> = {
   marketId: string | undefined
   controllerAddress: Address | undefined
-  tokens: Partial<MarketTokens>
+  tokens: MarketTokensOrEmpty
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean

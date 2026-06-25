@@ -1,4 +1,4 @@
-import type { MarketTokens } from '@/llamalend/llama.utils'
+import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
@@ -17,7 +17,7 @@ import { StakeSupplyInfoList } from './StakeSupplyInfoList'
 type StakeFormProps<ChainId extends IChainId> = {
   marketId: string | undefined
   controllerAddress: Address | undefined
-  tokens: Partial<MarketTokens>
+  tokens: MarketTokensOrEmpty
   vaultToken: Token | undefined
   gaugeAddress: Address | undefined
   networks: NetworkDict<ChainId>
@@ -47,7 +47,6 @@ export const StakeForm = <ChainId extends IChainId>({
     isLoading,
     onSubmit,
     isDisabled,
-    vaultToken: stakeVaultToken,
     borrowToken,
     collateralToken,
     error,
@@ -57,7 +56,7 @@ export const StakeForm = <ChainId extends IChainId>({
     max,
     disabledAlert,
     solvencyModal: { onConfirm, onClose, isOpen },
-  } = useStakeForm({ marketId, controllerAddress, tokens, vaultToken, gaugeAddress, network, enabled })
+  } = useStakeForm({ marketId, controllerAddress, tokens, gaugeAddress, network, enabled })
 
   return (
     <Form
@@ -76,7 +75,7 @@ export const StakeForm = <ChainId extends IChainId>({
     >
       <LoanFormTokenInput
         label={t`Amount to stake`}
-        token={stakeVaultToken}
+        token={vaultToken}
         blockchainId={blockchainId}
         name="stakeAmount"
         form={form}
@@ -86,7 +85,7 @@ export const StakeForm = <ChainId extends IChainId>({
         tokenSelector={
           <StakeTokenLabel
             blockchainId={blockchainId}
-            vaultTokenLabel={stakeVaultToken?.symbol}
+            vaultTokenLabel={vaultToken?.symbol}
             collateralTokenAddress={collateralToken?.address}
             borrowTokenAddress={borrowToken?.address}
           />
@@ -108,7 +107,7 @@ export const StakeForm = <ChainId extends IChainId>({
         open={isOpen}
         onClose={onClose}
         onConfirm={onConfirm}
-        tokenSymbol={stakeVaultToken?.symbol}
+        tokenSymbol={vaultToken?.symbol}
       />
 
       <FormAlerts error={error} formErrors={formErrors} handledErrors={['stakeAmount']} />

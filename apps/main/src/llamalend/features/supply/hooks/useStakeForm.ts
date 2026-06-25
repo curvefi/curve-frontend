@@ -2,14 +2,14 @@ import { useMemo } from 'react'
 import { zeroAddress } from 'viem'
 import { useConnection } from 'wagmi'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
-import type { MarketTokens } from '@/llamalend/llama.utils'
+import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useStakeMutation } from '@/llamalend/mutations/stake.mutation'
 import { useStakeIsApproved } from '@/llamalend/queries/supply/supply-stake-approved.query'
 import { type StakeForm, stakeFormValidationSuite, StakeParams } from '@/llamalend/queries/validation/supply.validation'
 import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { Address, Token } from '@primitives/address.utils'
+import type { Address } from '@primitives/address.utils'
 import { useForm, useFormSync } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { LlamaMarketType } from '@ui-kit/types/market'
@@ -27,15 +27,13 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
   marketId,
   controllerAddress,
   tokens,
-  vaultToken,
   gaugeAddress,
   network,
   enabled,
 }: {
   marketId: string | undefined
   controllerAddress: Address | undefined
-  tokens: Partial<MarketTokens>
-  vaultToken: Token | undefined
+  tokens: MarketTokensOrEmpty
   gaugeAddress: Address | undefined
   network: LlamaNetwork<ChainId>
   enabled?: boolean
@@ -98,7 +96,6 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
     isLoading: isPending || !marketId || isSolvencyLoading,
     onSubmit,
     isDisabled: !!disabledAlert || !formState.isValid || !marketHasGauge || isPending || isDebouncing,
-    vaultToken,
     borrowToken,
     collateralToken,
     error: stakeError ?? solvencyError,

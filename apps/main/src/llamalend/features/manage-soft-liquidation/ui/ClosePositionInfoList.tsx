@@ -1,5 +1,5 @@
 import { useConnection } from 'wagmi'
-import type { MarketTokens } from '@/llamalend/llama.utils'
+import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import type { CloseLoanMutation } from '@/llamalend/mutations/close-position.mutation'
 import { useCloseEstimateGas } from '@/llamalend/queries/close-loan/close-loan-gas-estimate.query'
@@ -13,7 +13,7 @@ import { constQ, q } from '@ui-kit/types/util'
 
 type ClosePositionInfoListProps = {
   marketId: string | undefined
-  tokens: Partial<MarketTokens>
+  tokens: MarketTokensOrEmpty
   chainId: LlamaChainId
   networks: NetworkDict<LlamaChainId>
   values: CloseLoanMutation
