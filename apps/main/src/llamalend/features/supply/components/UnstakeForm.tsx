@@ -19,7 +19,6 @@ type UnstakeFormProps<ChainId extends IChainId> = {
   vaultToken: Token | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
-  enabled?: boolean
 }
 
 const TEST_ID_PREFIX = 'supply-unstake'
@@ -31,13 +30,12 @@ export const UnstakeForm = <ChainId extends IChainId>({
   vaultToken,
   networks,
   chainId,
-  enabled,
 }: UnstakeFormProps<ChainId>) => {
   const network = networks[chainId]
   const blockchainId = network.id
 
   const { form, params, isPending, onSubmit, isDisabled, borrowToken, collateralToken, unstakeError, formErrors, max } =
-    useUnstakeForm({ marketId, tokens, network, enabled })
+    useUnstakeForm({ marketId, tokens, network })
 
   return (
     <Form

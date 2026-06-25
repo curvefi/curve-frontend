@@ -29,14 +29,12 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
   tokens,
   gaugeAddress,
   network,
-  enabled,
 }: {
   marketId: string | undefined
   controllerAddress: Address | undefined
   tokens: MarketTokensOrEmpty
   gaugeAddress: Address | undefined
   network: LlamaNetwork<ChainId>
-  enabled?: boolean
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -45,7 +43,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
 
   const { borrowToken, collateralToken } = tokens
 
-  const userBalances = useVaultUserBalances({ chainId, marketId, userAddress }, enabled)
+  const userBalances = useVaultUserBalances({ chainId, marketId, userAddress })
   const maxUserStake = { ...mapQuery(userBalances, d => d.depositedShares), fieldName: 'maxStakeAmount' as const }
 
   const form = useForm<StakeForm>({
@@ -100,7 +98,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
     collateralToken,
     error: stakeError ?? solvencyError,
     max: maxUserStake,
-    isApproved: useStakeIsApproved(params, enabled),
+    isApproved: useStakeIsApproved(params),
     hasGauge: marketHasGauge,
     formErrors: formState.visibleErrors,
     disabledAlert,

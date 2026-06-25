@@ -25,12 +25,10 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({
   marketId,
   tokens,
   network,
-  enabled,
 }: {
   marketId: string | undefined
   tokens: MarketTokensOrEmpty
   network: LlamaNetwork<ChainId>
-  enabled?: boolean
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -57,7 +55,7 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({
     ),
   )
 
-  const { maxWithdrawAmount: max, maxStakedShares, isFull } = useMaxWithdrawTokenValues({ params, form }, enabled)
+  const { maxWithdrawAmount: max, maxStakedShares, isFull } = useMaxWithdrawTokenValues({ params, form })
 
   const {
     onSubmit,

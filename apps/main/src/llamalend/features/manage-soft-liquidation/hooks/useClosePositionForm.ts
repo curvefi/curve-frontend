@@ -35,12 +35,10 @@ export function useClosePositionForm({
   marketId,
   tokens,
   network,
-  enabled,
 }: {
   marketId: string | undefined
   tokens: MarketTokensOrEmpty
   network: { id: LlamaNetworkId; chainId: LlamaChainId; name: string }
-  enabled?: boolean
 }) {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -48,13 +46,13 @@ export function useClosePositionForm({
   // Token data
   const { borrowToken, collateralToken } = tokens
 
-  const borrowTokenUsdRateQuery = useTokenUsdRate({ chainId, tokenAddress: borrowToken?.address }, enabled)
+  const borrowTokenUsdRateQuery = useTokenUsdRate({ chainId, tokenAddress: borrowToken?.address })
 
-  const collateralTokenUsdRateQuery = useTokenUsdRate({ chainId, tokenAddress: collateralToken?.address }, enabled)
+  const collateralTokenUsdRateQuery = useTokenUsdRate({ chainId, tokenAddress: collateralToken?.address })
 
-  const userBalancesQuery = useUserBalances({ chainId, marketId, userAddress }, enabled)
+  const userBalancesQuery = useUserBalances({ chainId, marketId, userAddress })
 
-  const userStateQuery = useUserState({ chainId, marketId, userAddress }, enabled)
+  const userStateQuery = useUserState({ chainId, marketId, userAddress })
 
   // Form state
   const form = useForm<CloseLoanMutation>(formOptions)
@@ -220,7 +218,7 @@ export function useClosePositionForm({
     borrowedBalance: closePositionData?.borrowedBalance,
     closeError,
     formErrors: visibleErrors,
-    isApproved: useCloseLoanIsApproved({ chainId, marketId, userAddress }, enabled),
+    isApproved: useCloseLoanIsApproved({ chainId, marketId, userAddress }),
     onSubmit: form.handleSubmit(onSubmit),
   }
 }

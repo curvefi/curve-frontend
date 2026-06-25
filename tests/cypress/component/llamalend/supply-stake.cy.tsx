@@ -45,7 +45,6 @@ describe('StakeForm (mocked)', () => {
             gaugeAddress={getGaugeAddress(market)}
             networks={llamaNetworks}
             chainId={chainId}
-            enabled
           />
         </MockLoanTestWrapper>,
       )

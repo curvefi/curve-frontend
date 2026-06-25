@@ -15,12 +15,10 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
   marketId,
   crvTokenAddress,
   network,
-  enabled,
 }: {
   marketId: string | undefined
   crvTokenAddress: Address | undefined
   network: LlamaNetwork<ChainId>
-  enabled?: boolean
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -41,7 +39,7 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
     hasClaimableCrv,
     hasClaimableRewards,
     rewardTokenAddresses,
-  } = useClaimableTokens({ params, crvAddress: crvTokenAddress, enabled })
+  } = useClaimableTokens({ params, crvAddress: crvTokenAddress })
 
   const tableData = useMemo(
     () => claimableTokens.map(token => ({ ...token, networkId: network.id, isLoading: usdRateLoading })),

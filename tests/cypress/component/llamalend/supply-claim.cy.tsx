@@ -56,7 +56,6 @@ describe('ClaimTab (mocked)', () => {
             crvTokenAddress={getCrvTokenAddress(market)}
             networks={llamaNetworks}
             chainId={chainId}
-            enabled
           />
         </MockLoanTestWrapper>,
       )

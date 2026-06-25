@@ -113,7 +113,6 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
   tokens: { borrowToken, collateralToken },
   networks,
   chainId,
-  enabled,
   onPricesUpdated,
 }: {
   market: LlamaMarketTemplate | undefined
@@ -123,7 +122,6 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
   tokens: MarketTokensOrEmpty
   networks: NetworkDict<ChainId>
   chainId: ChainId
-  enabled?: boolean
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
   const { address: userAddress } = useConnection()
@@ -146,21 +144,18 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     userAddress,
   })
 
-  useCallbackSync(useRepayPrices(params, enabled), onPricesUpdated)
+  useCallbackSync(useRepayPrices(params), onPricesUpdated)
 
-  const { data: isAvailable } = useRepayIsAvailable(params, enabled)
-  const { isFull, max } = useMaxRepayTokenValues(
-    {
-      market,
-      borrowTokenAddress: borrowToken?.address,
-      collateralTokenAddress: collateralToken?.address,
-      params,
-      form,
-    },
-    enabled,
-  )
+  const { data: isAvailable } = useRepayIsAvailable(params)
+  const { isFull, max } = useMaxRepayTokenValues({
+    market,
+    borrowTokenAddress: borrowToken?.address,
+    collateralTokenAddress: collateralToken?.address,
+    params,
+    form,
+  })
 
-  const priceImpact = q(useRepayPriceImpact(params, enabled))
+  const priceImpact = q(useRepayPriceImpact(params))
   const { formState } = form
   const isPending = formState.isSubmitting || isRepaying
   return {
@@ -183,7 +178,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     collateralToken,
     repayError,
     priceImpact,
-    isApproved: useRepayIsApproved(params, enabled),
+    isApproved: useRepayIsApproved(params),
     routes: useMarketRoutes({
       chainId,
       marketAddress: ammAddress,

@@ -20,7 +20,6 @@ type DepositFormProps<ChainId extends IChainId> = {
   marketType: LlamaMarketType
   networks: NetworkDict<ChainId>
   chainId: ChainId
-  enabled?: boolean
 }
 
 const TEST_ID_PREFIX = 'supply-deposit'
@@ -32,7 +31,6 @@ export const DepositForm = <ChainId extends IChainId>({
   marketType,
   networks,
   chainId,
-  enabled,
 }: DepositFormProps<ChainId>) => {
   const network = networks[chainId]
 
@@ -50,7 +48,7 @@ export const DepositForm = <ChainId extends IChainId>({
     max,
     disabledAlert,
     solvencyModal: { onConfirm, onClose, isOpen },
-  } = useDepositForm({ marketId, controllerAddress, tokens, marketType, network, enabled })
+  } = useDepositForm({ marketId, controllerAddress, tokens, marketType, network })
 
   return (
     <Form

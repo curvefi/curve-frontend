@@ -12,11 +12,9 @@ import { MAINNET_CRV } from '@ui-kit/utils'
 export const useClaimableTokens = <ChainId extends LlamaChainId>({
   params,
   crvAddress,
-  enabled = true,
 }: {
   params: UserMarketParams<ChainId>
   crvAddress: Address | undefined
-  enabled?: boolean
 }) => {
   const { chainId } = params
 
@@ -24,12 +22,8 @@ export const useClaimableTokens = <ChainId extends LlamaChainId>({
     data: claimableRewards,
     isLoading: isClaimableRewardsLoading,
     error: claimableRewardsError,
-  } = useClaimableRewards(params, enabled)
-  const {
-    data: claimableCrv,
-    isLoading: isClaimableCrvLoading,
-    error: claimableCrvError,
-  } = useClaimableCrv(params, enabled)
+  } = useClaimableRewards(params)
+  const { data: claimableCrv, isLoading: isClaimableCrvLoading, error: claimableCrvError } = useClaimableCrv(params)
 
   const rewardsAddresses = useMemo(() => claimableRewards?.map(r => r.token) ?? [], [claimableRewards])
 

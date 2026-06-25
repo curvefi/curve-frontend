@@ -32,14 +32,12 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
   tokens,
   marketType,
   network,
-  enabled,
 }: {
   marketId: string | undefined
   controllerAddress: Address | undefined
   tokens: MarketTokensOrEmpty
   marketType: LlamaMarketType
   network: LlamaNetwork<ChainId>
-  enabled?: boolean
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -96,8 +94,8 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
     isDisabled: !!disabledAlert || !formState.isValid || isPending || isDebouncing,
     borrowToken,
     error: depositError ?? solvencyError,
-    max: useMaxDepositTokenValues({ params, borrowToken: borrowToken?.address, form }, enabled),
-    isApproved: useDepositIsApproved(params, enabled),
+    max: useMaxDepositTokenValues({ params, borrowToken: borrowToken?.address, form }),
+    isApproved: useDepositIsApproved(params),
     formErrors: formState.visibleErrors,
     disabledAlert,
     solvencyModal: {

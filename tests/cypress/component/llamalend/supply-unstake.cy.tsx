@@ -40,7 +40,6 @@ describe('UnstakeForm (mocked)', () => {
           vaultToken={getVaultToken(market)}
           networks={llamaNetworks}
           chainId={chainId}
-          enabled
         />
       </MockLoanTestWrapper>,
     )

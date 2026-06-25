@@ -24,13 +24,11 @@ export const ClosePositionForm = ({
   tokens,
   networks,
   chainId,
-  enabled,
 }: {
   marketId: string | undefined
   tokens: MarketTokensOrEmpty
   networks: NetworkDict<LlamaChainId>
   chainId: LlamaChainId
-  enabled?: boolean
 }) => {
   const network = networks[chainId]
   const {
@@ -48,7 +46,7 @@ export const ClosePositionForm = ({
     isApproved,
     onSubmit,
     formErrors,
-  } = useClosePositionForm({ marketId, tokens, network, enabled })
+  } = useClosePositionForm({ marketId, tokens, network })
 
   return (
     <Form

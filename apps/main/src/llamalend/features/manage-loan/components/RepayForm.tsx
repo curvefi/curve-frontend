@@ -76,7 +76,6 @@ export const RepayForm = <ChainId extends IChainId>({
   tokens: marketTokens,
   networks,
   chainId,
-  enabled,
   onPricesUpdated,
   collateralEvents,
   isInSoftLiquidation,
@@ -90,7 +89,6 @@ export const RepayForm = <ChainId extends IChainId>({
   tokens: MarketTokensOrEmpty
   networks: NetworkDict<ChainId>
   chainId: ChainId
-  enabled?: boolean
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
   collateralEvents: QueryProp<UserCollateralEvents>
   isInSoftLiquidation?: boolean
@@ -121,7 +119,6 @@ export const RepayForm = <ChainId extends IChainId>({
     tokens: marketTokens,
     networks,
     chainId,
-    enabled,
     onPricesUpdated,
   })
   const { token, onToken, tokens } = useRepayTokens({

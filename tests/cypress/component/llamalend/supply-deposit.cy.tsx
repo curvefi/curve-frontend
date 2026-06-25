@@ -77,7 +77,6 @@ describe('DepositForm (mocked)', () => {
               marketType={LlamaMarketType.Lend}
               networks={llamaNetworks}
               chainId={chainId}
-              enabled
             />
           </MockLoanTestWrapper>,
         )

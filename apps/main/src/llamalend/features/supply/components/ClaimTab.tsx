@@ -20,7 +20,6 @@ type ClaimTabProps<ChainId extends IChainId> = {
   crvTokenAddress: Address | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
-  enabled?: boolean
 }
 
 const TEST_ID_PREFIX = 'supply-claim'
@@ -31,7 +30,6 @@ export const ClaimTab = <ChainId extends IChainId>({
   crvTokenAddress,
   networks,
   chainId,
-  enabled,
 }: ClaimTabProps<ChainId>) => {
   const { isConnected } = useConnection()
   const network = networks[chainId]
@@ -54,7 +52,6 @@ export const ClaimTab = <ChainId extends IChainId>({
     marketId,
     crvTokenAddress,
     network,
-    enabled,
   })
   return (
     <>

@@ -22,7 +22,6 @@ type StakeFormProps<ChainId extends IChainId> = {
   gaugeAddress: Address | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
-  enabled?: boolean
 }
 
 const TEST_ID_PREFIX = 'supply-stake'
@@ -35,7 +34,6 @@ export const StakeForm = <ChainId extends IChainId>({
   gaugeAddress,
   networks,
   chainId,
-  enabled,
 }: StakeFormProps<ChainId>) => {
   const network = networks[chainId]
   const blockchainId = network.id
@@ -56,7 +54,7 @@ export const StakeForm = <ChainId extends IChainId>({
     max,
     disabledAlert,
     solvencyModal: { onConfirm, onClose, isOpen },
-  } = useStakeForm({ marketId, controllerAddress, tokens, gaugeAddress, network, enabled })
+  } = useStakeForm({ marketId, controllerAddress, tokens, gaugeAddress, network })
 
   return (
     <Form

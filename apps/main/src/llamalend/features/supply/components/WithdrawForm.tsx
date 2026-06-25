@@ -17,7 +17,6 @@ type WithdrawFormProps<ChainId extends IChainId> = {
   tokens: MarketTokensOrEmpty
   networks: NetworkDict<ChainId>
   chainId: ChainId
-  enabled?: boolean
 }
 
 const TEST_ID_PREFIX = 'supply-withdraw'
@@ -28,7 +27,6 @@ export const WithdrawForm = <ChainId extends IChainId>({
   tokens,
   networks,
   chainId,
-  enabled,
 }: WithdrawFormProps<ChainId>) => {
   const network = networks[chainId]
 
@@ -44,7 +42,7 @@ export const WithdrawForm = <ChainId extends IChainId>({
     max,
     maxStakedShares,
     isFull,
-  } = useWithdrawForm({ marketId, tokens, network, enabled })
+  } = useWithdrawForm({ marketId, tokens, network })
 
   return (
     <Form

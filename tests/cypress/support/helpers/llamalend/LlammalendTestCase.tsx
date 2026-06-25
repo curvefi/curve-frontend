@@ -102,7 +102,6 @@ function LlammalendTest({ tab, onPricesUpdated, type, marketType, ...props }: Ll
       crvTokenAddress={getCrvTokenAddress(market)}
       networks={llamaNetworks}
       onPricesUpdated={onPricesUpdated!}
-      enabled
       collateralEvents={constQ(fakeCollateralEvents)}
       marketType={marketType}
       {...props}

@@ -15,22 +15,19 @@ import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { queryMinimum } from '@ui-kit/lib'
 import { mapQuery, q } from '@ui-kit/types/util'
 
-export function useMaxRepayTokenValues(
-  {
-    market,
-    borrowTokenAddress,
-    collateralTokenAddress,
-    params,
-    form,
-  }: {
-    market: LlamaMarketTemplate | undefined
-    borrowTokenAddress: Address | undefined
-    collateralTokenAddress: Address | undefined
-    params: RepayParams
-    form: UseFormReturn<RepayFormData>
-  },
-  enabled?: boolean,
-) {
+export function useMaxRepayTokenValues({
+  market,
+  borrowTokenAddress,
+  collateralTokenAddress,
+  params,
+  form,
+}: {
+  market: LlamaMarketTemplate | undefined
+  borrowTokenAddress: Address | undefined
+  collateralTokenAddress: Address | undefined
+  params: RepayParams
+  form: UseFormReturn<RepayFormData>
+}) {
   const { update: updateForm } = form
   const { chainId, userAddress } = params
   const maxUserCollateral = useTokenBalance({
@@ -43,9 +40,9 @@ export function useMaxRepayTokenValues(
     userAddress,
     tokenAddress: borrowTokenAddress,
   })
-  const userState = useUserState(params, enabled)
+  const userState = useUserState(params)
   // required for isFull query
-  const isFull = useRepayIsFull(params, enabled)
+  const isFull = useRepayIsFull(params)
 
   const maxBorrowed = queryMinimum(
     maxUserBorrowed,

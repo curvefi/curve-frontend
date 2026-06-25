@@ -40,7 +40,6 @@ describe('WithdrawForm (mocked)', () => {
             tokens={getTokens(market)}
             networks={llamaNetworks}
             chainId={chainId}
-            enabled
           />
         </MockLoanTestWrapper>,
       )

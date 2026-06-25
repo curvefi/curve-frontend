@@ -40,7 +40,6 @@ describe('Manage soft liquidation', () => {
         tokens={getTokens(market)}
         networks={softLiqNetworks}
         chainId={chainId}
-        enabled={isHydrated}
         collateralEvents={constQ(undefined)}
         marketType={LlamaMarketType.Mint}
       />
