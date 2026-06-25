@@ -6,13 +6,11 @@ import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.typ
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import Button from '@mui/material/Button'
 import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { joinButtonText } from '@primitives/string.utils'
-import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
+import { FormButton } from '@ui-kit/features/forms'
 import { useCreateLoanPreset } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { AlertDisableForm } from '@ui-kit/shared/ui/AlertDisableForm'
@@ -187,17 +185,15 @@ export const CreateLoanForm = <ChainId extends IChainId>({
       </LoanPresetSelector>
       <HighPriceImpactAlert priceImpact={priceImpact} values={values} max={q(maxLeverage)} slippageType={LEVERAGE} />
       <HighLiquidationRiskAlert isHighLiquidationRisk={isHighLiquidationRisk} />
-      {isConnected ? (
-        disabledAlert ? (
-          <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>
-        ) : (
-          <Button type="submit" loading={isLoading} disabled={isDisabled} data-testid="create-loan-submit-button">
-            {isPending ? t`Processing...` : joinButtonText(isApproved?.data === false && t`Approve`, t`Borrow`)}
-          </Button>
-        )
-      ) : (
-        <ConnectWalletButton />
-      )}
+      <FormButton
+        pending={isPending}
+        loading={isLoading}
+        disabled={isDisabled}
+        label={[isApproved?.data === false && t`Approve`, t`Borrow`]}
+        testId="create-loan-submit-button"
+      >
+        {disabledAlert && <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>}
+      </FormButton>
       <LowSolvencyActionModal
         action="borrow"
         open={isOpen}

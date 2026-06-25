@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js'
-import { useMemo } from 'react'
+import { sum } from 'lodash'
+import { useCallback } from 'react'
 import { useConnection } from 'wagmi'
 import { LEVERAGE } from '@/llamalend/constants'
 import type { MarketTokens } from '@/llamalend/llama.utils'
@@ -7,11 +8,14 @@ import { type CloseLoanMutation, useClosePositionMutation } from '@/llamalend/mu
 import { useCloseLoanIsApproved } from '@/llamalend/queries/close-loan/close-loan-is-approved.query'
 import { useUserBalances, useUserState } from '@/llamalend/queries/user'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
-import { notFalsy } from '@primitives/objects.utils'
+import { maybe, maybes, notFalsy } from '@primitives/objects.utils'
 import { useForm } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { useCombinedQueries } from '@ui-kit/lib/queries/combine'
+import { QueryData } from '@ui-kit/lib/queries/types'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { mapQuery } from '@ui-kit/types/util'
 import { decimal, decimalNegate } from '@ui-kit/utils'
 import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import { CLOSE_POSITION_COLUMNS, type ClosePositionRow } from '../ui/columns/columns.definitions'
@@ -23,6 +27,9 @@ const formOptions = {
   defaultValues: { ...userDefaultValues, slippage: SLIPPAGE[LEVERAGE].default },
 } as const
 
+type UserStateData = QueryData<typeof useUserState>
+type UserBalancesData = QueryData<typeof useUserBalances>
+type TokenUsdRate = QueryData<typeof useTokenUsdRate>
 /** Hook to build state for the close-position form */
 export function useClosePositionForm({
   marketId,
@@ -41,35 +48,13 @@ export function useClosePositionForm({
   // Token data
   const { borrowToken, collateralToken } = tokens
 
-  const {
-    data: borrowTokenUsdRate,
-    error: borrowTokenUsdRateError,
-    isLoading: borrowTokenUsdRateLoading,
-  } = useTokenUsdRate({ chainId, tokenAddress: borrowToken?.address }, enabled)
+  const borrowTokenUsdRateQuery = useTokenUsdRate({ chainId, tokenAddress: borrowToken?.address }, enabled)
 
-  const {
-    data: collateralTokenUsdRate,
-    error: collateralTokenUsdRateError,
-    isLoading: collateralTokenUsdRateLoading,
-  } = useTokenUsdRate({ chainId, tokenAddress: collateralToken?.address }, enabled)
+  const collateralTokenUsdRateQuery = useTokenUsdRate({ chainId, tokenAddress: collateralToken?.address }, enabled)
 
-  const {
-    data: userBalancesData,
-    error: userBalancesError,
-    isLoading: userBalancesLoading,
-  } = useUserBalances({ chainId, marketId, userAddress }, enabled)
+  const userBalancesQuery = useUserBalances({ chainId, marketId, userAddress }, enabled)
 
-  const { borrowed } = userBalancesData ?? {}
-
-  const {
-    data: userState,
-    error: userStateError,
-    isLoading: userStateLoading,
-  } = useUserState({ chainId, marketId, userAddress }, enabled)
-
-  const { collateral, debt, stablecoin } = userState ?? {}
-
-  const error = userStateError ?? userBalancesError ?? borrowTokenUsdRateError ?? collateralTokenUsdRateError
+  const userStateQuery = useUserState({ chainId, marketId, userAddress }, enabled)
 
   // Form state
   const form = useForm<CloseLoanMutation>(formOptions)
@@ -89,84 +74,77 @@ export function useClosePositionForm({
   const { isSubmitting, visibleErrors } = form.formState
   const isPending = isSubmitting || isClosing
 
-  // Combine all user state balances with their token data and USD rates
-  const collateralAmount = useMemo(
-    () =>
-      collateral != null &&
-      +collateral > 0 &&
-      collateralToken && {
-        symbol: collateralToken.symbol,
-        amount: collateral,
-        usd: decimal(collateralTokenUsdRate && BigNumber(collateral).times(collateralTokenUsdRate)),
-      },
-    [collateral, collateralToken, collateralTokenUsdRate],
-  )
+  const selectTableData = useCallback(
+    (
+      { collateral, debt, stablecoin }: UserStateData,
+      { borrowed }: UserBalancesData,
+      borrowTokenUsdRate: TokenUsdRate,
+      collateralTokenUsdRate: TokenUsdRate,
+    ) => {
+      // Combine all user state balances with their token data and USD rates
+      const collateralAmount = maybes([collateral, collateralToken], ([collateral, collateralToken]) =>
+        +collateral > 0
+          ? {
+              symbol: collateralToken.symbol,
+              amount: collateral,
+              usd: maybe(collateralTokenUsdRate, rate => decimal(BigNumber(collateral).times(rate))),
+            }
+          : undefined,
+      )
 
-  const debtAmount = useMemo(
-    () =>
-      debt != null &&
-      +debt > 0 &&
-      borrowToken && {
-        symbol: borrowToken.symbol,
-        amount: debt,
-        usd: decimal(borrowTokenUsdRate && BigNumber(debt).times(borrowTokenUsdRate)),
-      },
-    [borrowToken, borrowTokenUsdRate, debt],
-  )
+      const debtAmount = maybes([debt, borrowToken], ([debt, borrowToken]) =>
+        +debt > 0
+          ? {
+              symbol: borrowToken.symbol,
+              amount: debt,
+              usd: maybe(borrowTokenUsdRate, rate => decimal(BigNumber(debt).times(rate))),
+            }
+          : undefined,
+      )
 
-  const stablecoinAmount = useMemo(
-    () =>
-      stablecoin != null &&
-      +stablecoin > 0 &&
-      borrowToken && {
-        symbol: borrowToken.symbol,
-        amount: stablecoin,
-        usd: decimal(borrowTokenUsdRate && BigNumber(stablecoin).times(borrowTokenUsdRate)),
-      },
-    [borrowToken, borrowTokenUsdRate, stablecoin],
-  )
+      const stablecoinAmount = maybes([stablecoin, borrowToken], ([stablecoin, borrowToken]) =>
+        +stablecoin > 0
+          ? {
+              symbol: borrowToken.symbol,
+              amount: stablecoin,
+              usd: maybe(borrowTokenUsdRate, rate => decimal(BigNumber(stablecoin).times(rate))),
+            }
+          : undefined,
+      )
 
-  /**
-   * The portion of outstanding debt covered by the stablecoin already held in the AMM
-   * (converted from collateral during soft liquidation).
-   * Capped at the debt amount — any surplus becomes the recoverable `excess`.
-   */
-  const paidFromCollateral = decimalNegate(decimal(stablecoin && debt && BigNumber.min(stablecoin, debt)))
-  const paidFromCollateralAmount = useMemo(
-    () =>
-      paidFromCollateral != null &&
-      +paidFromCollateral < 0 &&
-      borrowToken && {
-        symbol: borrowToken.symbol,
-        amount: paidFromCollateral,
-        usd: decimalNegate(decimal(borrowTokenUsdRate && BigNumber(-+paidFromCollateral).times(borrowTokenUsdRate))),
-      },
-    [borrowToken, borrowTokenUsdRate, paidFromCollateral],
-  )
+      /**
+       * The portion of outstanding debt covered by the stablecoin already held in the AMM
+       * (converted from collateral during soft liquidation).
+       * Capped at the debt amount — any surplus becomes the recoverable `excess`.
+       */
+      const paidFromCollateral = maybes([stablecoin, debt], ([stablecoin, debt]) =>
+        decimalNegate(decimal(BigNumber.min(stablecoin, debt))),
+      )
+      const paidFromCollateralAmount = maybes(
+        [paidFromCollateral, borrowToken],
+        ([paidFromCollateral, borrowToken]) =>
+          +paidFromCollateral < 0 && {
+            symbol: borrowToken.symbol,
+            amount: paidFromCollateral,
+            usd: maybe(borrowTokenUsdRate, rate => decimalNegate(decimal(BigNumber(-+paidFromCollateral).times(rate)))),
+          },
+      )
 
-  /**
-   * Calculates the excess borrow tokens (if borrow AMM balance > outstanding debt)
-   * Can be negative, which indicates the additional amount needed from the user's wallet
-   * to cover the debt after using up the stablecoin in the AMM. This is used to determine
-   * if the user needs to pay additional from their wallet and how much,
-   * or if there's an excess that can be recovered.
-   */
-  const excess = decimal(stablecoin && debt && BigNumber(stablecoin).minus(debt))
-  const excessStablecoinAmount = useMemo(
-    () =>
-      excess &&
-      borrowToken && {
+      /**
+       * Calculates the excess borrow tokens (if borrow AMM balance > outstanding debt)
+       * Can be negative, which indicates the additional amount needed from the user's wallet
+       * to cover the debt after using up the stablecoin in the AMM. This is used to determine
+       * if the user needs to pay additional from their wallet and how much,
+       * or if there's an excess that can be recovered.
+       */
+      const excess = maybes([stablecoin, debt], ([stablecoin, debt]) => decimal(BigNumber(stablecoin).minus(debt)))
+      const excessStablecoinAmount = maybes([excess, borrowToken], ([excess, borrowToken]) => ({
         symbol: borrowToken.symbol,
         amount: excess,
-        usd: decimalNegate(decimal(borrowTokenUsdRate && BigNumber(-+excess).times(borrowTokenUsdRate))),
-      },
-    [borrowToken, borrowTokenUsdRate, excess],
-  )
+        usd: maybe(borrowTokenUsdRate, rate => decimalNegate(decimal(BigNumber(-+excess).times(rate)))),
+      }))
 
-  // Table creation
-  const tableData: ClosePositionRow[] = useMemo(
-    () =>
-      notFalsy(
+      const rows: ClosePositionRow[] = notFalsy(
         { label: t`Collateral`, value: notFalsy(collateralAmount, stablecoinAmount) },
         { label: t`Outstanding debt`, value: notFalsy(debtAmount), testId: 'outstanding-debt' },
         paidFromCollateralAmount && {
@@ -179,53 +157,67 @@ export function useClosePositionForm({
           label: t`Paid from wallet`,
           value: notFalsy(excessStablecoinAmount),
         },
-      ),
-    [collateralAmount, stablecoinAmount, debtAmount, paidFromCollateralAmount, excessStablecoinAmount],
+      )
+
+      /**
+       * Determines if a user can close their position and calculates how much
+       * additional borrowed stablecoin is required. Applies a safety buffer
+       * to account for potential contract execution edge cases where exact balance
+       * matching might fail due to rounding or state changes between transaction
+       * submission and execution.
+       *
+       * The calculation is: max(0, (debt - stablecoin) * CLOSE_POSITION_SAFETY_BUFFER - borrowed)
+       * where:
+       * - debt: Total amount owed
+       * - stablecoin: User's stablecoin balance already present in the AMM
+       * - borrowed: User's borrowed token balance
+       */
+      const missing = maybes([debt, stablecoin, borrowed], ([debt, stablecoin, borrowed]) =>
+        decimal(
+          BigNumber.max(0, new BigNumber(debt).minus(stablecoin).times(CLOSE_POSITION_SAFETY_BUFFER).minus(borrowed)),
+        ),
+      )
+
+      /**
+       * The recoverable collateral and borrow tokens when closing a position in soft liquidation
+       * 1. Any remaining collateral tokens (if collateral > 0)
+       * 2. Excess borrow tokens (if borrow AMM balance > outstanding debt)
+       */
+      const collateralToRecover = notFalsy(collateralAmount, Number(excess) > 0 && excessStablecoinAmount)
+      const collateralToRecoverUsd = collateralToRecover.some(({ usd }) => usd == null)
+        ? undefined
+        : sum(collateralToRecover.map(col => Number(col.usd)))
+      const hasBadDebt = collateralToRecoverUsd != null && collateralToRecoverUsd <= 0
+
+      return { rows, collateralToRecover, hasBadDebt, missing, borrowedBalance: borrowed }
+    },
+    [borrowToken, collateralToken],
   )
+
+  const tableDataQuery = useCombinedQueries(
+    [userStateQuery, userBalancesQuery, borrowTokenUsdRateQuery, collateralTokenUsdRateQuery],
+    selectTableData,
+  )
+  const { data: closePositionData } = tableDataQuery
+  const missing = closePositionData?.missing
 
   const table = useTable({
     columns: CLOSE_POSITION_COLUMNS,
-    data: tableData,
-    ...getTableOptions(tableData),
+    query: mapQuery(tableDataQuery, ({ rows }) => rows),
+    ...getTableOptions(closePositionData?.rows),
   })
-
-  /**
-   * Determines if a user can close their position and calculates how much
-   * additional borrowed stablecoin is required. Applies a safety buffer
-   * to account for potential contract execution edge cases where exact balance
-   * matching might fail due to rounding or state changes between transaction
-   * submission and execution.
-   *
-   * The calculation is: max(0, (debt - stablecoin) * CLOSE_POSITION_SAFETY_BUFFER - borrowed)
-   * where:
-   * - debt: Total amount owed
-   * - stablecoin: User's stablecoin balance already present in the AMM
-   * - borrowed: User's borrowed token balance
-   */
-  const missing =
-    debt != null && stablecoin != null && borrowed != null
-      ? decimal(
-          BigNumber.max(0, new BigNumber(debt).minus(stablecoin).times(CLOSE_POSITION_SAFETY_BUFFER).minus(borrowed)),
-        )
-      : undefined
 
   return {
     form,
     values,
-    isLoading: userStateLoading || userBalancesLoading || borrowTokenUsdRateLoading || collateralTokenUsdRateLoading,
     isPending,
-    isDisabled: isPending || !!error || Number(missing) > 0,
+    isDisabled: isPending || !!table.error || Number(missing) > 0,
     table,
     debtTokenSymbol: borrowToken?.symbol,
-    /**
-     * The recoverable collateral and borrow tokens when closing a position in soft liquidation
-     * 1. Any remaining collateral tokens (if collateral > 0)
-     * 2. Excess borrow tokens (if borrow AMM balance > outstanding debt)
-     */
-    collateralToRecover: notFalsy(collateralAmount, Number(excess) > 0 && excessStablecoinAmount),
+    collateralToRecover: closePositionData?.collateralToRecover,
+    hasBadDebt: closePositionData?.hasBadDebt ?? false,
     missing,
-    borrowedBalance: borrowed,
-    error,
+    borrowedBalance: closePositionData?.borrowedBalance,
     closeError,
     formErrors: visibleErrors,
     isApproved: useCloseLoanIsApproved({ chainId, marketId, userAddress }, enabled),

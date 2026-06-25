@@ -7,6 +7,7 @@ import type { Address } from '@primitives/address.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { UserMarketParams } from '@ui-kit/lib/model'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { q } from '@ui-kit/types/util'
 import { CLAIM_TAB_COLUMNS, type ClaimableToken } from '../components/columns'
 import { useClaimableTokens } from './useClaimableTokens'
 
@@ -50,7 +51,11 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
 
   const table = useTable({
     columns: CLAIM_TAB_COLUMNS,
-    data: tableData,
+    query: q({
+      data: tableData,
+      isLoading: isClaimablesLoading,
+      error: claimableCrvError ?? claimableRewardsError ?? null,
+    }),
     ...getTableOptions<ClaimableToken>(tableData),
   })
 
@@ -73,7 +78,6 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
     isCrvDisabled: [!hasClaimableCrv, !!claimableCrvError, claimableTokens.length === 0].some(Boolean),
     isRewardsDisabled: [!hasClaimableRewards, !!claimableRewardsError, claimableTokens.length === 0].some(Boolean),
     isLoading: isClaimablesLoading,
-    isError: [!!claimableCrvError, !!claimableRewardsError].some(Boolean),
     table,
     onSubmitCrv,
     onSubmitRewards,

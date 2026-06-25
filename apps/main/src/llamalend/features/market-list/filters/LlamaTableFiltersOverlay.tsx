@@ -16,7 +16,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { QueryProp } from '@ui-kit/types/util'
 import { borderStyle, directChildrenAfterFirst } from '@ui-kit/utils'
 import { LlamaMarketColumnId } from '../columns'
-import { LendingMarketsFilters } from '../LendingMarketsFilters'
+import { LlamaMarketsFilters } from './LlamaMarketsFilters'
 
 const { Spacing, Width, MinHeight } = SizesAndSpaces
 
@@ -43,7 +43,7 @@ export const LlamaTableFiltersOverlay = ({
 }: LlamaTableFiltersOverlayProps) => {
   const isMobile = useIsMobile()
   const [testId, setTestId] = useState<string | null>(null)
-  const content = <LendingMarketsFilters table={table} marketsQuery={marketsQuery} {...filterProps} />
+  const content = <LlamaMarketsFilters table={table} marketsQuery={marketsQuery} {...filterProps} />
   const resetButton = (
     <Button
       color="ghost"

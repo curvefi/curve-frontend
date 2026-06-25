@@ -9,12 +9,11 @@ import { isLeverageBorrowMoreSupported } from '@/llamalend/queries/borrow-more/b
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
-import { joinButtonText } from '@primitives/string.utils'
+import { FormButton } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
 import { AlertDisableForm } from '@ui-kit/shared/ui/AlertDisableForm'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
@@ -177,36 +176,15 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         max={q(max.maxLeverage)}
         slippageType={LEVERAGE}
       />
-      {disabledAlert ? (
-        <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>
-      ) : (
-        <Button
-          type="submit"
-          loading={isLoading}
-          disabled={isDisabled}
-          data-testid="borrow-more-submit-button"
-          data-validation={JSON.stringify({
-            hasMarket: !!market,
-            isLeverageEnabled,
-            isPending,
-            isDisabled,
-            isValid: form.formState.isValid,
-            isSubmitting: form.formState.isSubmitting,
-            isApproved: q(isApproved),
-            formErrors,
-            rawFormErrors: Object.entries(form.formState.errors),
-            dirtyFields: form.formState.dirtyFields,
-          })}
-        >
-          {isPending
-            ? t`Processing...`
-            : joinButtonText(
-                Number(values.userCollateral) && t`Add`,
-                isApproved?.data === false && t`Approve`,
-                t`Borrow More`,
-              )}
-        </Button>
-      )}
+      <FormButton
+        pending={isPending}
+        loading={isLoading}
+        disabled={isDisabled}
+        label={[Number(values.userCollateral) && t`Add`, isApproved?.data === false && t`Approve`, t`Borrow More`]}
+        testId="borrow-more-submit-button"
+      >
+        {disabledAlert && <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>}
+      </FormButton>
       <LowSolvencyActionModal
         action="borrow"
         open={isOpen}

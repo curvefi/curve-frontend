@@ -1,17 +1,18 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { usePoolList } from '@/dex/queries/pool-list.query'
 import type { NetworkConfig } from '@/dex/types/main.types'
+import type { SortDirection as PoolSortDirection, V2PoolSortField as PoolSortField } from '@curvefi/prices-api/pools'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { type ExpandedState, getCoreRowModel, getExpandedRowModel } from '@tanstack/react-table'
+import { CURVE_SOCIALS } from '@ui/utils'
 import { useIsMobile, useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
-import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
+import { useMappedQuery } from '@ui-kit/types/util'
 import { POOL_LIST_COLUMNS, PoolListColumnId } from './columns'
-import { PoolListEmptyState } from './components/PoolListEmptyState'
 import { PoolListFilterChips } from './components/PoolListFilterChips'
 import { PoolListMobileExpandedPanel } from './components/PoolListMobileExpandedPanel'
 import { PoolListFilterDrawer } from './drawers/PoolListFilterDrawer'
@@ -21,14 +22,51 @@ import { POOL_LIST_PAGE_SIZE, usePoolListPagination } from './hooks/usePoolListP
 import { usePoolListSorting } from './hooks/usePoolListSorting'
 import { usePoolListUserHasPosition } from './hooks/usePoolListUserHasPosition'
 import { usePoolListVisibilitySettings } from './hooks/usePoolListVisibilitySettings'
+import type { PoolListPoolType } from './poolList.constants'
 import { getPoolListItem } from './poolList.utils'
 
 const LOCAL_STORAGE_KEY = 'dex-pool-list'
-const EMPTY: never[] = []
+
+type PoolListTableParams = {
+  network: NetworkConfig
+  page: number
+  searchText: string
+  poolType: PoolListPoolType | undefined
+  sortBy: PoolSortField
+  sortDirection: PoolSortDirection
+}
+
+/** Fetches the current pool page and maps API rows into table rows. */
+const usePoolListTable = ({ network, page, searchText, poolType, sortBy, sortDirection }: PoolListTableParams) => {
+  const hasUserPoolPosition = usePoolListUserHasPosition(network.chainId)
+  const poolListQuery = usePoolList({
+    chainId: network.chainId,
+    page,
+    pageSize: POOL_LIST_PAGE_SIZE,
+    searchString: searchText || undefined,
+    poolType,
+    sortBy,
+    sortDirection,
+  })
+  const { data: poolList, isPlaceholderData } = poolListQuery
+  const tableQuery = useMappedQuery(
+    poolListQuery,
+    useCallback(
+      ({ pools }) => pools.map(pool => getPoolListItem(network, pool, hasUserPoolPosition(pool.address))),
+      [hasUserPoolPosition, network],
+    ),
+  )
+
+  return {
+    apiResultCount: isPlaceholderData ? undefined : poolList?.count,
+    pageCount: poolList?.pageCount ?? -1,
+    userHasPositions: tableQuery.data?.some(({ hasPosition }) => hasPosition),
+    tableQuery,
+  }
+}
 
 export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
   const isMobile = useIsMobile()
-  const hasUserPoolPosition = usePoolListUserHasPosition(network.chainId)
   const { onPaginationChange, pagination, updateQueryAndResetPage } = usePoolListPagination()
   const { activeFilterCount, onSearch, poolType, poolTypeFilters, resetFilters, searchText, setPoolType } =
     usePoolListFilters(updateQueryAndResetPage)
@@ -37,26 +75,6 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
     updateQueryAndResetPage,
   )
 
-  const {
-    data: poolList,
-    isPlaceholderData,
-    isPending,
-    isError,
-  } = usePoolList({
-    chainId: network.chainId,
-    page: pagination.pageIndex + 1,
-    pageSize: POOL_LIST_PAGE_SIZE,
-    searchString: searchText || undefined,
-    poolType,
-    sortBy,
-    sortDirection,
-  })
-  const apiResultCount = isPlaceholderData ? undefined : poolList?.count
-  const data = useMemo(
-    () => poolList?.pools.map(pool => getPoolListItem(network, pool, hasUserPoolPosition(pool.address))) ?? EMPTY,
-    [hasUserPoolPosition, network, poolList?.pools],
-  )
-  const userHasPositions = data.some(({ hasPosition }) => hasPosition)
   const [expanded, setExpanded] = useState<ExpandedState>({})
   const { columnSettings, columnVisibility, toggleVisibility } = usePoolListVisibilitySettings(LOCAL_STORAGE_KEY, {
     isLite: network.isLite,
@@ -64,9 +82,18 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
   })
   const filterProps = { poolType, poolTypeFilters, setPoolType }
 
+  const { apiResultCount, pageCount, userHasPositions, tableQuery } = usePoolListTable({
+    network,
+    page: pagination.pageIndex + 1,
+    searchText,
+    poolType,
+    sortBy,
+    sortDirection,
+  })
+
   const table = useTable({
     columns: POOL_LIST_COLUMNS,
-    data,
+    query: tableQuery,
     state: { expanded, sorting, pagination, columnVisibility },
     onExpandedChange: setExpanded,
     onPaginationChange,
@@ -76,7 +103,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
     manualPagination: true,
     manualSorting: true,
     manualFiltering: true,
-    pageCount: poolList?.pageCount ?? -1,
+    pageCount,
     autoResetPageIndex: false,
   })
 
@@ -85,14 +112,15 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
       <CardHeader title={t`Pools`} />
       <DataTable
         table={table}
-        emptyState={
-          <EmptyStateRow table={table}>
-            <PoolListEmptyState resetFilters={resetFilters} isError={isError} />
-          </EmptyStateRow>
-        }
+        emptyState={{
+          title: t`Can't find what you're looking for?`,
+          description: t`Try adjusting your filters or search query. Or feel free to ask us on Telegram.`,
+          button: { label: t`Show all pools`, onClick: resetFilters },
+          secondaryButton: { label: t`Telegram`, href: CURVE_SOCIALS.telegram.en },
+        }}
+        errorState={{ title: t`Unable to retrieve pool list` }}
         expandedPanel={PoolListMobileExpandedPanel}
         shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
-        isLoading={isPending}
       >
         <TableFilters<PoolListColumnId>
           testIdPrefix={LOCAL_STORAGE_KEY}

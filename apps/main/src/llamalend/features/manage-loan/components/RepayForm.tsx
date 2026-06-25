@@ -16,12 +16,11 @@ import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
 import { useUserPrices } from '@/llamalend/queries/user'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
-import { joinButtonText } from '@primitives/string.utils'
+import { FormButton } from '@ui-kit/features/forms'
 import { TokenSelector } from '@ui-kit/features/select-token'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
@@ -229,15 +228,17 @@ export const RepayForm = <ChainId extends IChainId>({
       <HighPriceImpactAlert priceImpact={priceImpact} values={values} max={q(max.expected)} slippageType={LEVERAGE} />
       {isInSoftLiquidation && <AlertRepayDebtToIncreaseHealth />}
       <Stack sx={{ gap: Spacing.xs }}>
-        <Button type="submit" loading={isPending || !market} disabled={isDisabled} data-testid="repay-submit-button">
-          {isPending
-            ? t`Processing...`
-            : joinButtonText(
-                isApproved.data === false && t`Approve`,
-                notFalsy(t`Repay`, fromPosition && t`from Position`).join(' '),
-                isFull.data ? t`Close Position` : isInSoftLiquidation && t`Increase Health`,
-              )}
-        </Button>
+        <FormButton
+          pending={isPending}
+          loading={!market}
+          disabled={isDisabled}
+          label={[
+            isApproved.data === false && t`Approve`,
+            notFalsy(t`Repay`, fromPosition && t`from Position`).join(' '),
+            isFull.data ? t`Close Position` : isInSoftLiquidation && t`Increase Health`,
+          ]}
+          testId="repay-submit-button"
+        />
 
         {isInSoftLiquidation && selectedToken?.symbol === CRVUSD.symbol && (
           <ExternalLink href={crvSwapUrl} label={t`Get crvUSD`} />

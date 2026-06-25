@@ -141,11 +141,11 @@ export const useBorrowRate = ({
   const apiBorrowRate = mapQuery(apiMarket, d => ({
     rate: d.rates.borrowApr,
     averageRate: averageApr,
-    averageCategory: 'llamalend.marketList.rate' as const,
-    rebasingYield: d.rates.borrowApr,
+    averageCategory: RATE_CATEGORY,
+    rebasingYield: d.assets.collateral.rebasingYieldApr,
     totalBorrowRate: d.rates.borrowTotalApr,
     totalAverageBorrowRate: totalAverageBorrowApr,
-    extraRewards: d.rewards,
+    extraRewards: borrowCampaigns,
   }))
 
   return fallbackQ(onChainBorrowRate, apiBorrowRate)
@@ -214,7 +214,7 @@ export const useSupplyRate = ({
       lendingSnapshots: apiSupplySnapshots.snapshots ?? undefined,
       campaigns: apiSupplyCampaigns,
       blockchainId,
-      category: 'llamalend.marketList.rate',
+      category: RATE_CATEGORY,
     }),
   )
   return enabled ? fallbackQ(onChainSupplyRate, apiSupplyRate) : undefined

@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolTrades } from '@/dex/entities/pool-trades.query'
 import { usePoolsPricesApi } from '@/dex/queries/pools-prices-api.query'
@@ -14,9 +14,10 @@ import {
   DEFAULT_PAGE_SIZE,
 } from '@ui-kit/features/activity-table'
 import { useCurve } from '@ui-kit/features/connect-wallet'
-import { combineQueryState } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
+import { useCombinedQueries } from '@ui-kit/lib/queries/combine'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { fakeLoadingQ } from '@ui-kit/types/util'
 import { getPageCount } from '@ui-kit/utils'
 
 type UsePoolActivityProps = {
@@ -53,36 +54,34 @@ export const usePoolActivityTradesConfig = ({ chainId, poolAddress }: UsePoolAct
   const pageCount = getPageCount(tradesData?.count, DEFAULT_PAGE_SIZE)
 
   // Transform trades data with block explorer URLs
-  const tradesWithUrls: PoolTradeRow[] = useMemo(
-    () =>
-      (network &&
-        tradesData?.trades.map(trade => ({
+  const tradesWithUrls = useCombinedQueries(
+    [poolTrades, poolPriceApi, fakeLoadingQ(isHydrated || undefined)],
+    useCallback(
+      tradesData =>
+        network &&
+        tradesData.trades.map(trade => ({
           ...trade,
           buyerUrl: scanAddressPath(networkConfig, trade.buyer),
           txUrl: scanTxPath(networkConfig, trade.txHash),
           network,
-        }))) ??
-      [],
-    [tradesData?.trades, networkConfig, network],
+        })),
+      [networkConfig, network],
+    ),
   )
 
-  const { error, isLoading } = combineQueryState(poolTrades, poolPriceApi)
-
   const table = useTable({
-    data: tradesWithUrls,
+    query: tradesWithUrls,
     columns: POOL_TRADES_COLUMNS,
     state: { columnVisibility: tradesColumnVisibility, pagination },
     manualPagination: true,
     pageCount,
     onPaginationChange,
-    ...getTableOptions(tradesWithUrls),
+    ...getTableOptions<PoolTradeRow>(tradesWithUrls.data),
   })
 
   return {
     table,
-    isLoading: isLoading || !isHydrated,
-    isError: !!error && isHydrated,
-    emptyMessage: t`No swap data found.`,
-    errorMessage: t`Could not load swap data.`,
+    emptyState: { title: t`No swap data found.` },
+    errorState: { title: t`Could not load swap data.` },
   }
 }

@@ -1,8 +1,6 @@
 import { useConnection } from 'wagmi'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import Alert from '@mui/material/Alert'
-import AlertTitle from '@mui/material/AlertTitle'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
@@ -42,7 +40,6 @@ export const ClaimTab = <ChainId extends IChainId>({
     params,
     claimableTokens,
     isLoading,
-    isError,
     isCrvDisabled,
     isRewardsDisabled,
     isCrvPending,
@@ -65,16 +62,9 @@ export const ClaimTab = <ChainId extends IChainId>({
         footer={<ClaimActionInfoList params={params} networks={networks} isOpen={!!claimableTokens.length} />}
       >
         <DataTable<ClaimableToken>
+          category="form"
           table={table}
-          emptyState={
-            !isError && (
-              <Alert severity="info" variant="outlined" data-testid={`${TEST_ID_PREFIX}-empty-state`}>
-                <AlertTitle>{t`No rewards to claim`}</AlertTitle>
-              </Alert>
-            )
-          }
-          isLoading={isLoading}
-          hideHeader
+          emptyState={{ title: t`No rewards to claim`, testId: `${TEST_ID_PREFIX}-empty-state` }}
           footerRow={
             !!claimableTokens.length &&
             !isLoading && (

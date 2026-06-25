@@ -29,7 +29,7 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { fallbackQ, mapQuery, q, type QueryProp, useMappedQuery } from '@ui-kit/types/util'
-import { decimalMax, decimalMinus, decimalMultiply, decimalSum, formatNumber } from '@ui-kit/utils'
+import { decimal, decimalMax, decimalMinus, decimalMultiply, decimalSum, formatNumber } from '@ui-kit/utils'
 
 const { Spacing, Height } = SizesAndSpaces
 
@@ -214,7 +214,9 @@ export const MarketRateCurveChart = ({
             {...tokenMetric({
               value: fallbackQ(
                 combinedCollateral,
-                mapQuery(apiMarket, m => m.totalCollateralUsd),
+                combineQueries([apiMarket, collateralUsdRate], (market, collateralUsdRate) =>
+                  collateralUsdRate ? decimal(market.totalCollateralUsd / collateralUsdRate) : undefined,
+                ),
               ),
               symbol: collateralToken?.symbol,
               usdRate: q(collateralUsdRate),

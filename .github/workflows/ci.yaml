@@ -200,6 +200,8 @@ jobs:
       - name: Start merkl api server
         run: yarn dev 2>&1 | tee ../../e2e-api-${{ matrix.browser }}-${{ matrix.count }}.log &
         working-directory: apps/merkl-api
+        env:
+          MERKL_API_KEY: ${{ secrets.MERKL_API_KEY }}
 
       - name: e2e tests
         working-directory: tests

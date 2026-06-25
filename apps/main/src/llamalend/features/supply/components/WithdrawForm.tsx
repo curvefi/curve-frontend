@@ -1,12 +1,9 @@
-import { useConnection } from 'wagmi'
 import type { MarketTokens } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import Button from '@mui/material/Button'
 import type { Address } from '@primitives/address.utils'
-import { notFalsy } from '@primitives/objects.utils'
-import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
+import { FormButton } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
@@ -33,7 +30,6 @@ export const WithdrawForm = <ChainId extends IChainId>({
   chainId,
   enabled,
 }: WithdrawFormProps<ChainId>) => {
-  const { isConnected } = useConnection()
   const network = networks[chainId]
 
   const {
@@ -84,18 +80,13 @@ export const WithdrawForm = <ChainId extends IChainId>({
         <AlertUnstakeFirst />
       )}
 
-      {isConnected ? (
-        <Button
-          type="submit"
-          loading={isPending || !marketId}
-          disabled={isDisabled}
-          data-testid={`${TEST_ID_PREFIX}-submit-button`}
-        >
-          {isPending ? t`Processing...` : notFalsy(t`Withdraw`, isFull.data && t`All`).join(' ')}
-        </Button>
-      ) : (
-        <ConnectWalletButton />
-      )}
+      <FormButton
+        pending={isPending}
+        loading={!marketId}
+        disabled={isDisabled}
+        label={isFull.data ? t`Withdraw All` : t`Withdraw`}
+        testId={`${TEST_ID_PREFIX}-submit-button`}
+      />
 
       <FormAlerts error={withdrawError} formErrors={formErrors} handledErrors={['withdrawAmount']} />
     </Form>

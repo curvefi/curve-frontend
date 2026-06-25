@@ -6,11 +6,10 @@ import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { createColumnHelper } from '@tanstack/react-table'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { q } from '@ui-kit/types/util'
 import { formatNumber } from '@ui-kit/utils'
-import { EmptyStateCard } from '../EmptyStateCard'
 import { type ColumnDefinition, getTableOptions, type TableItem, useTable } from './data-table.utils'
-import { DataTable } from './DataTable'
-import { EmptyStateRow } from './EmptyStateRow'
+import { DataTable, DataTableProps } from './DataTable'
 
 const { Spacing } = SizesAndSpaces
 
@@ -34,17 +33,19 @@ type MarketRow = TableItem & {
   extraMetrics: number[]
 }
 
-type DataTableProps = Parameters<typeof DataTable<MarketRow>>[0]
-
-type DemoDataTableProps = Omit<DataTableProps, 'table' | 'emptyState' | 'children' | 'footerRow' | 'expandedPanel'> & {
+type DemoDataTableProps = Omit<
+  DataTableProps<MarketRow>,
+  'table' | 'emptyState' | 'children' | 'footerRow' | 'expandedPanel'
+> & {
   rowCount?: number
   extraColumnCount?: number
+  isLoading?: boolean
   isError?: boolean
   wrapperWidth?: string
   showFooterRow?: boolean
   showFilterRow?: boolean
   emptyTitle?: string
-  emptySubtitle?: string
+  emptyMessage?: string
 }
 
 const columnHelper = createColumnHelper<MarketRow>()
@@ -137,28 +138,29 @@ const ScrollableStoryWrapper = ({ children, width = '100%' }: { children: ReactN
 const pagination = { pageIndex: 0, pageSize: 20 }
 
 const DemoDataTable = ({
+  category,
   rowCount,
   extraColumnCount,
   isLoading,
   isError,
-  disableStickyHeader,
   shouldStickFirstColumn,
-  hideHeader,
-  size,
   verticalAlign,
-  maxHeight,
-  defaultVisibleRows,
+  viewAllLabel,
   wrapperWidth,
   showFooterRow,
   showFilterRow,
   emptyTitle,
-  emptySubtitle,
+  emptyMessage,
 }: DemoDataTableProps) => {
   const generatedRows = useMemo(() => generateMarketRows(rowCount), [rowCount])
   const data = isLoading || isError ? [] : generatedRows
   const columns = useMemo(() => createMarketColumns(extraColumnCount), [extraColumnCount])
   const table = useTable({
-    data,
+    query: q({
+      data,
+      isLoading: !!isLoading,
+      error: isError ? new Error('Network request failed while loading data') : null,
+    }),
     columns,
     initialState: { pagination },
     ...getTableOptions(data),
@@ -167,23 +169,12 @@ const DemoDataTable = ({
 
   const tableElement = (
     <DataTable
+      category={category}
       table={table}
-      emptyState={
-        <EmptyStateRow table={table}>
-          <EmptyStateCard
-            title={isError ? 'Could not load markets' : emptyTitle || 'No markets found'}
-            description={isError ? 'Refresh and try again.' : emptySubtitle || 'Try adjusting the table filters.'}
-          />
-        </EmptyStateRow>
-      }
-      isLoading={!!isLoading}
-      disableStickyHeader={disableStickyHeader}
+      emptyState={{ title: emptyTitle, description: emptyMessage }}
       shouldStickFirstColumn={shouldStickFirstColumn}
-      hideHeader={hideHeader}
-      size={size}
       verticalAlign={verticalAlign}
-      maxHeight={maxHeight}
-      defaultVisibleRows={defaultVisibleRows}
+      viewAllLabel={viewAllLabel}
       footerRow={
         showFooterRow && (
           <TableCell colSpan={columnCount} sx={{ textAlign: 'center' }}>
@@ -215,18 +206,13 @@ const meta: Meta<typeof DemoDataTable> = {
     extraColumnCount: 0,
     isLoading: false,
     isError: false,
-    disableStickyHeader: false,
+    category: 'list',
     shouldStickFirstColumn: false,
-    hideHeader: false,
-    size: 'small',
     verticalAlign: 'middle',
-    defaultVisibleRows: undefined,
-    maxHeight: undefined,
+    viewAllLabel: undefined,
     wrapperWidth: undefined,
     showFooterRow: false,
     showFilterRow: false,
-    emptyTitle: 'No markets found',
-    emptySubtitle: 'Try adjusting the table filters.',
   },
   argTypes: {
     rowCount: {
@@ -245,35 +231,23 @@ const meta: Meta<typeof DemoDataTable> = {
       control: 'boolean',
       description: 'Shows the error empty state.',
     },
-    disableStickyHeader: {
-      control: 'boolean',
-      description: 'Disables sticky table header behavior.',
-    },
     shouldStickFirstColumn: {
       control: 'boolean',
       description: 'Makes the first visible column sticky.',
     },
-    hideHeader: {
-      control: 'boolean',
-      description: 'Hides the table header rows.',
-    },
-    size: {
+    category: {
       control: 'select',
-      options: ['extraSmall', 'small', 'medium', 'large'],
-      description: 'DataTable header size.',
+      options: ['list', 'limited', 'scrollable', 'detail', 'form'],
+      description: 'Preset table behavior and sizing category.',
     },
     verticalAlign: {
       control: 'radio',
       options: ['top', 'middle', 'bottom'],
       description: 'Vertical alignment passed to body rows.',
     },
-    maxHeight: {
+    viewAllLabel: {
       control: 'text',
-      description: 'Optional max-height for the vertical scrolling wrapper, for example 24rem.',
-    },
-    defaultVisibleRows: {
-      control: 'object',
-      description: 'Limits initially visible rows and shows the view-all row when set.',
+      description: 'Optional label for the limited-list view-all row.',
     },
     wrapperWidth: {
       control: 'text',
@@ -291,7 +265,7 @@ const meta: Meta<typeof DemoDataTable> = {
       control: 'text',
       description: 'Title for the non-error empty state.',
     },
-    emptySubtitle: {
+    emptyMessage: {
       control: 'text',
       description: 'Subtitle for the non-error empty state.',
     },
@@ -317,15 +291,8 @@ export const Default: Story = {
 export const LimitedRows: Story = {
   args: {
     rowCount: 40,
-    defaultVisibleRows: { max: 5, buttonLabel: 'View all markets' },
-  },
-}
-
-export const Empty: Story = {
-  args: {
-    rowCount: 0,
-    emptyTitle: 'No markets found',
-    emptySubtitle: 'Generated market rows are intentionally empty in this story.',
+    category: 'limited',
+    viewAllLabel: 'View all markets',
   },
 }
 
@@ -335,7 +302,15 @@ export const Loading: Story = {
   },
 }
 
-export const Error: Story = {
+export const Empty: Story = {
+  args: {
+    rowCount: 0,
+    emptyTitle: 'No results found',
+    emptyMessage: 'Generated market rows are intentionally empty in this story.',
+  },
+}
+
+export const WithError: Story = {
   args: {
     isError: true,
   },
@@ -344,21 +319,20 @@ export const Error: Story = {
 export const StickyHeader: Story = {
   args: {
     rowCount: 40,
-    maxHeight: '24rem',
+    category: 'scrollable',
   },
 }
 
 export const HeaderNotSticky: Story = {
   args: {
     rowCount: 40,
-    disableStickyHeader: true,
-    maxHeight: '24rem',
+    category: 'detail',
   },
 }
 
 export const HiddenHeader: Story = {
   args: {
-    hideHeader: true,
+    category: 'form',
   },
 }
 
@@ -382,7 +356,7 @@ export const HorizontalOverflow: Story = {
 export const WithFilterRow: Story = {
   args: {
     showFilterRow: true,
-    maxHeight: '24rem',
+    category: 'scrollable',
   },
 }
 
