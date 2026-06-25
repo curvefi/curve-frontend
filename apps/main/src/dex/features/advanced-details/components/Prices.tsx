@@ -29,7 +29,13 @@ export const Prices = ({
   const { priceOracle, priceScale } = parameters ?? {}
   const snapshotData = snapshots?.[0]
 
-  const getPriceLabel = (index: number) => poolDataCacheOrApi.tokens[index + 1] ?? t`Token ${index + 2}`
+  // Curve price oracle/scale arrays omit the base token, so value index 0 belongs to token index 1.
+  // Both price oracle and scale only show up when a wallet is connected, we need a Prices API fallback later.
+  const priceRows = poolDataCacheOrApi.tokens.slice(1).map((label, index) => ({
+    key: poolDataCacheOrApi.tokenAddresses[index + 1] ?? `${label}-${index + 1}`,
+    label,
+    index,
+  }))
 
   return (
     <>
@@ -37,17 +43,13 @@ export const Prices = ({
         <Card size="inline">
           <CardHeader title={t`Price Oracle`} />
           <CardContent component={Stack}>
-            {priceOracle.map((price, index) => {
-              const label = getPriceLabel(index)
-
-              return (
-                <ActionInfo
-                  key={`${label}-${price}`}
-                  label={label}
-                  value={formatNumber(amount(price), 'pool.parameter')}
-                />
-              )
-            })}
+            {priceRows.map(({ key, label, index }) => (
+              <ActionInfo
+                key={`price-oracle-${key}`}
+                label={label}
+                value={formatNumber(amount(priceOracle?.[index]), 'pool.parameter')}
+              />
+            ))}
           </CardContent>
         </Card>
       )}
@@ -56,17 +58,13 @@ export const Prices = ({
         <Card size="inline">
           <CardHeader title={t`Price Scale`} />
           <CardContent component={Stack}>
-            {priceScale.map((price, index) => {
-              const label = getPriceLabel(index)
-
-              return (
-                <ActionInfo
-                  key={`${label}-${price}`}
-                  label={label}
-                  value={formatNumber(amount(price), 'pool.parameter')}
-                />
-              )
-            })}
+            {priceRows.map(({ key, label, index }) => (
+              <ActionInfo
+                key={`price-scale-${key}`}
+                label={label}
+                value={formatNumber(amount(priceScale?.[index]), 'pool.parameter')}
+              />
+            ))}
           </CardContent>
         </Card>
       )}
