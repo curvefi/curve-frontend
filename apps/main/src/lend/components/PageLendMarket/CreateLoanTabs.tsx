@@ -15,12 +15,13 @@ const menu = [
   {
     value: 'create',
     label: t`Borrow`,
-    component: ({ market, rChainId, onPricesUpdated }: CreateLoanProps) => (
+    component: ({ market, rChainId, onPricesUpdated, apiMarket }: CreateLoanProps) => (
       <CreateLoanForm
         networks={networks}
         chainId={rChainId}
         market={market}
         onPricesUpdated={onPricesUpdated}
+        apiMarket={apiMarket}
         marketType={LlamaMarketType.Lend}
       />
     ),

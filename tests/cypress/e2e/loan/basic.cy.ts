@@ -20,11 +20,11 @@ describe('Basic Access Test', () => {
 
   it('should load mint market details with a wallet', () => {
     cy.visit(`/crvusd/ethereum/markets/${MINT_MARKET}`)
-    shouldLoadMintBorrowDetails()
+    shouldLoadMintBorrowDetails({ hasWallet: true })
   })
 
   it('should load mint market details without a wallet', () => {
     cy.visitWithoutTestConnector(`crvusd/ethereum/markets/${MINT_MARKET}`)
-    cy.get(`[data-testid="btn-connect-prompt"]`).should('be.visible')
+    shouldLoadMintBorrowDetails({ hasWallet: false })
   })
 })

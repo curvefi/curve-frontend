@@ -7,10 +7,10 @@ import { MarketRateType } from '@ui-kit/types/market'
 const { Spacing } = SizesAndSpaces
 
 type NoPositionProps = {
-  rateType: MarketRateType
+  type: MarketRateType | 'disconnected'
 }
 
-const EMPTY_MARKET_CONFIG: Record<NoPositionProps['rateType'], { title: string; description: string }> = {
+const EMPTY_MARKET_CONFIG: Record<NoPositionProps['type'], { title: string; description: string }> = {
   [MarketRateType.Borrow]: {
     title: t`No active position`,
     description: t`Borrow with LLAMMA to stay exposed, reduce liquidation risk and access liquidity without selling.`,
@@ -19,13 +19,23 @@ const EMPTY_MARKET_CONFIG: Record<NoPositionProps['rateType'], { title: string; 
     title: t`You're not earning yet`,
     description: t`Lend assets to earn yield and support deep liquidity across Curve.`,
   },
+  disconnected: {
+    title: t`Disconnected`,
+    description: t`Please connect your wallet to view your positions.`,
+  },
 }
 
-export const MarketEmptyPosition = ({ rateType }: NoPositionProps) => {
-  const { title, description } = EMPTY_MARKET_CONFIG[rateType]
+export const MarketEmptyPosition = ({ type }: NoPositionProps) => {
+  const { title, description } = EMPTY_MARKET_CONFIG[type]
   return (
-    <Stack sx={{ alignItems: 'center', padding: Spacing.md }} data-testid={`no-position-${rateType.toLowerCase()}`}>
-      <EmptyStateCard title={title} description={description} />
+    <Stack sx={{ alignItems: 'center', padding: Spacing.md }} data-testid={`no-position-${type.toLowerCase()}`}>
+      <EmptyStateCard
+        title={title}
+        description={description}
+        {...(type === 'disconnected' && {
+          button: { testId: 'no-position-disconnected', type: 'connect-wallet' },
+        })}
+      />
     </Stack>
   )
 }

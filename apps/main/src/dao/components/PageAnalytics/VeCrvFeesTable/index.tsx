@@ -1,64 +1,59 @@
-import { useEffect } from 'react'
+import { sumBy } from 'lodash'
+import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { ErrorMessage } from '@/dao/components/ErrorMessage'
-import { useStore } from '@/dao/store/useStore'
+import { useVeCrvFeesQuery } from '@/dao/entities/vecrv-fees'
 import MuiBox from '@mui/material/Box'
 import { Box } from '@ui/Box'
 import { formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { formatNumber } from '@ui-kit/utils'
 import { SpinnerComponent as Spinner } from '../../Spinner'
-import { VeCrvFeesChart } from '../VeCrvFeesChart'
+import { VECRV_FEES_CHART_WEEKS, VeCrvFeesChart } from '../VeCrvFeesChart'
 
 export const VeCrcFees = () => {
-  const getVeCrvFees = useStore(state => state.analytics.getVeCrvFees)
-  const veCrvFees = useStore(state => state.analytics.veCrvFees)
-
-  const feesLoading = veCrvFees.fetchStatus === 'LOADING'
-  const feesError = veCrvFees.fetchStatus === 'ERROR'
-  const feesReady = veCrvFees.fetchStatus === 'SUCCESS'
-
-  useEffect(() => {
-    if (veCrvFees.fees.length === 0 && !feesError) {
-      void getVeCrvFees()
-    }
-  }, [getVeCrvFees, veCrvFees, feesError])
+  const {
+    data: veCrvFees = [],
+    isLoading: feesLoading,
+    isError: feesError,
+    isSuccess: feesReady,
+    refetch,
+  } = useVeCrvFeesQuery({})
+  const totalFees = useMemo(() => sumBy(veCrvFees, fee => +fee.feesUsd), [veCrvFees])
+  /*
+   * Reuse the full fees query for the chart instead of fetching `{ weeks: 52 }` separately.
+   * The response is newest-first, so slice the latest weeks before reversing for chronological display.
+   */
+  const chartData = useMemo(() => veCrvFees.slice(0, VECRV_FEES_CHART_WEEKS).toReversed(), [veCrvFees])
 
   return (
     <MuiBox sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
       <Wrapper>
-        {feesLoading ? (
-          <Spinner height="27.125rem" />
-        ) : (
+        {feesLoading && <Spinner height="27.125rem" />}
+        {feesError && <ErrorMessage message="Error fetching veCRV historical fees" onClick={() => void refetch()} />}
+        {feesReady && (
           <>
-            <VeCrvFeesChart />
+            <VeCrvFeesChart data={chartData} />
             <FeesBox flex flexColumn>
               <FeesTitlesRow>
                 <FeesSubtitle>{t`Distribution Date`}</FeesSubtitle>
                 <FeesSubtitle>{t`Fees`}</FeesSubtitle>
               </FeesTitlesRow>
-              {feesLoading && <Spinner height="27.125rem" />}
-              {/* eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule. */}
-              {feesError && <ErrorMessage message="Error fetching veCRV historical fees" onClick={getVeCrvFees} />}
-              {feesReady && (
-                <>
-                  <FeesContainer>
-                    {veCrvFees.fees.map(item => (
-                      <FeeRow key={item.timestamp}>
-                        <FeeDate>
-                          {formatDate(item.timestamp)}
-                          {new Date(item.timestamp) > new Date() && <span> {t`(in progress)`}</span>}
-                        </FeeDate>
-                        <FeeData>{formatNumber(item.feesUsd, 'usd.notional')}</FeeData>
-                      </FeeRow>
-                    ))}
-                  </FeesContainer>
-                  <TotalFees>
-                    <FeeDate>{t`Total Fees:`}</FeeDate>
-                    <FeeData>{formatNumber(veCrvFees.veCrvTotalFees, 'usd.notional')}</FeeData>
-                  </TotalFees>
-                </>
-              )}
+              <FeesContainer>
+                {veCrvFees.map(item => (
+                  <FeeRow key={item.timestamp}>
+                    <FeeDate>
+                      {formatDate(item.timestamp)}
+                      {new Date(item.timestamp) > new Date() && <span> {t`(in progress)`}</span>}
+                    </FeeDate>
+                    <FeeData>{formatNumber(item.feesUsd, 'usd.notional')}</FeeData>
+                  </FeeRow>
+                ))}
+              </FeesContainer>
+              <TotalFees>
+                <FeeDate>{t`Total Fees:`}</FeeDate>
+                <FeeData>{formatNumber(totalFees, 'usd.notional')}</FeeData>
+              </TotalFees>
             </FeesBox>
           </>
         )}

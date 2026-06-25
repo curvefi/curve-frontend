@@ -3,6 +3,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { Address } from 'viem'
 import { useLlamaSnapshot } from '@/llamalend/queries/llamma-snapshots.query'
 import { type MarketRates, useMarketRates } from '@/llamalend/queries/market'
+import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { HistoricalRatesTooltip } from '@/llamalend/widgets/tooltips/chart/HistoricalRatesTooltip'
 import type { Chain } from '@curvefi/prices-api'
 import { CardContent, Stack } from '@mui/material'
@@ -30,7 +31,7 @@ import {
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
-import { mapQuery, useMappedQuery } from '@ui-kit/types/util'
+import { fallbackQ, mapQuery, q, type QueryProp, useMappedQuery } from '@ui-kit/types/util'
 import { formatNumber } from '@ui-kit/utils'
 import { calculateAverageRates } from '@ui-kit/utils/averageRates'
 
@@ -55,6 +56,7 @@ type MarketHistoricalRatesChartProps = {
   chainId: number
   marketId: string | undefined
   rateMode: MarketRateType
+  apiMarket: QueryProp<LlamaMarket>
 }
 
 type RateSeriesConfig = { key: RateSeriesKey; label: string; dash?: ChartLineDashPattern }
@@ -64,6 +66,7 @@ type RateModeConfig = {
   oneWeekAverageLabel: string
   series: RateSeriesConfig[]
   getLiveRate: (marketRates: MarketRates | undefined) => RateValue
+  getApiRate: (market: LlamaMarket) => RateValue
   getSnapshotRate: (snapshot: RateSnapshot) => RateValue
 }
 
@@ -92,6 +95,7 @@ const RATE_MODE_CONFIG = {
       { key: 'totalAverage', label: t`Average APR`, dash: CHART_LINE_DASH_PATTERNS.regular },
     ],
     getLiveRate: marketRates => marketRates?.borrowApr ?? null,
+    getApiRate: market => market.rates.borrowApr,
     getSnapshotRate: snapshot => snapshot.borrowApr,
   },
   [MarketRateType.Supply]: {
@@ -104,6 +108,7 @@ const RATE_MODE_CONFIG = {
       { key: 'totalAverage', label: t`Average APY`, dash: CHART_LINE_DASH_PATTERNS.regular },
     ],
     getLiveRate: marketRates => marketRates?.lendApy ?? null,
+    getApiRate: market => market.rates.lendApy,
     getSnapshotRate: snapshot => ('lendApy' in snapshot ? snapshot.lendApy * 100 : null),
   },
 } satisfies Record<MarketRateType, RateModeConfig>
@@ -118,6 +123,7 @@ export const MarketHistoricalRatesChart = ({
   chainId,
   marketId,
   rateMode,
+  apiMarket,
 }: MarketHistoricalRatesChartProps) => {
   const [timeOption, setTimeOption] = useState<TimeOption>('1M')
   const modeConfig = RATE_MODE_CONFIG[rateMode]
@@ -127,7 +133,7 @@ export const MarketHistoricalRatesChart = ({
     design: { Color },
   } = useTheme()
 
-  const marketRates = useMarketRates({ chainId, marketId })
+  const marketRates = q(useMarketRates({ chainId, marketId }))
 
   const snapshots = useLlamaSnapshot({
     controllerAddress,
@@ -208,8 +214,12 @@ export const MarketHistoricalRatesChart = ({
           <Metric
             size="medium"
             label={modeConfig.currentRateLabel}
-            value={mapQuery(marketRates, marketRates => toRateNumber(modeConfig.getLiveRate(marketRates)))}
+            value={fallbackQ(
+              mapQuery(marketRates, marketRates => toRateNumber(modeConfig.getLiveRate(marketRates))),
+              mapQuery(apiMarket, market => toRateNumber(modeConfig.getApiRate(market))),
+            )}
             valueOptions={{ unit: 'percentage' }}
+            testId={`historical-${rateMode.toLowerCase()}-current-rate`}
           />
           <Metric
             size="medium"

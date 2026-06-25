@@ -13,6 +13,7 @@ import { decimal } from '@ui-kit/utils'
 import { PoolListRewards } from '../cells/PoolListRewards'
 import { PoolListColumnId } from '../columns/column.enum'
 import type { PoolListItem } from '../poolList.types'
+import { getPoolYieldApy } from '../poolList.utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -55,7 +56,7 @@ export const PoolListMobileExpandedPanel: ExpandedPanel<PoolListItem> = ({ row, 
         />
         <ListInfoItem
           label={t`BASE vAPY`}
-          value={pool.baseDailyApr}
+          value={getPoolYieldApy(pool.baseDailyApr)}
           valueOptions={{
             unit: 'percentage',
             ...(table.getColumn(PoolListColumnId.RewardsBase)?.getIsSorted() && highlight),

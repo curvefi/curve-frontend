@@ -211,12 +211,15 @@ export const getVaultAddress = <T extends LlamaMarketTemplate | null | undefined
 
 export const getMonetaryPolicy = <T extends LlamaMarketTemplate | null | undefined>(
   market: T,
-): MarketOrApiValue<T, Address> =>
-  maybe(
+  apiMarket?: LlamaMarket,
+): MarketOrApiValue<T, Address | undefined> =>
+  getMarketOrApiValue(
     market,
+    apiMarket,
     market =>
       (market instanceof LendMarketTemplate ? market.addresses.monetary_policy : market.monetaryPolicy) as Address,
-  ) as MarketOrApiValue<T, Address>
+    m => m.monetaryPolicyAddress,
+  )
 
 export const getGaugeAddress = (market: LlamaMarketTemplate | null | undefined): Address | undefined =>
   market instanceof LendMarketTemplate ? (market.addresses.gauge as Address) : undefined

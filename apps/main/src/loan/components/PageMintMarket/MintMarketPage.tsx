@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { PositionDetailsComposite } from '@/llamalend/features/market-position-details'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
 import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
@@ -14,8 +15,10 @@ import { type CollateralUrlParams } from '@/loan/types/loan.types'
 import { getChainId, getCollateralListPathname } from '@/loan/utils/utilsRouter'
 import { getBlockchainId } from '@curvefi/prices-api'
 import type { Decimal } from '@primitives/decimal.utils'
-import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
+import { useCurve } from '@ui-kit/features/connect-wallet'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useParams } from '@ui-kit/hooks/router'
+import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { LlamaMarketType } from '@ui-kit/types/market'
@@ -28,7 +31,7 @@ export const MintMarketPage = () => {
   const rCollateralId = params.collateralId.toLowerCase()
   const { llamaApi: curve = null, isInitialized } = useCurve()
   const chainId = getChainId(params)
-  const { address: userAddress } = useConnection()
+  const { address } = useConnection()
   const [previewPrices, setPreviewPrices] = useState<Range<Decimal> | undefined>(undefined)
 
   const {
@@ -40,18 +43,28 @@ export const MintMarketPage = () => {
   const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists({
     chainId,
     marketId: market?.id,
-    userAddress,
+    userAddress: address,
   })
 
   const network = networks[chainId]
   const isLoading = !isInitialized || isMarketLoading
-  const tokens = useMemo(() => getTokens(market) ?? {}, [market])
+  const apiMarket = useLlamaMarket(
+    {
+      network: params.network,
+      rMarket: rCollateralId,
+      userAddress: address,
+      enableLLv2: useLLv2(),
+      enableDeprecatedMarkets: useUserProfileStore(state => state.showDeprecatedMarkets),
+    },
+    !isLoading && !market, // only enable API data when wallet is disconnected
+  )
+  const tokens = useMemo(() => getTokens(market, apiMarket.data) ?? {}, [apiMarket.data, market])
 
   const collateralEvents = useUserCollateralEvents({
     app: LlamaMarketType.Mint,
     chain: getBlockchainId(network.id),
-    controllerAddress: getControllerAddress(market),
-    userAddress,
+    controllerAddress: getControllerAddress(market, apiMarket.data),
+    userAddress: address,
     network,
     tokens,
   })
@@ -62,9 +75,10 @@ export const MintMarketPage = () => {
     rChainId: chainId,
     params,
     onPricesUpdated: setPreviewPrices,
+    apiMarket,
   }
 
-  const error = marketError
+  const error = marketError ?? apiMarket.error
   return error ? (
     <ErrorPage
       title={t`Error`}
@@ -72,11 +86,10 @@ export const MintMarketPage = () => {
       error={error}
       continueUrl={getCollateralListPathname(params)}
     />
-  ) : userAddress ? (
+  ) : (
     <DetailPageLayout
       formTabs={
-        !!market &&
-        !isLoanExistsLoading &&
+        ((!!market && !isLoanExistsLoading) || apiMarket.data) &&
         (loanExists ? (
           <ManageLoanTabs {...pageProps} collateralEvents={collateralEvents} />
         ) : (
@@ -90,6 +103,7 @@ export const MintMarketPage = () => {
           isLoading={isLoading}
           market={market}
           marketType={LlamaMarketType.Mint}
+          apiMarket={apiMarket}
         />
       }
     >
@@ -98,16 +112,15 @@ export const MintMarketPage = () => {
         tokens={tokens}
         hasPosition={loanExists}
         events={collateralEvents}
-        params={{ chainId, marketId: market?.id, userAddress }}
+        params={{ chainId, marketId: market?.id, userAddress: address }}
       />
       <MarketInformationComposite
         market={market ?? null}
         marketId={market?.id ?? ''}
         chainId={chainId}
         previewPrices={previewPrices}
+        apiMarket={apiMarket}
       />
     </DetailPageLayout>
-  ) : (
-    <ConnectWalletPrompt description={t`Connect your wallet to view market`} testId="btn-connect-prompt" />
   )
 }

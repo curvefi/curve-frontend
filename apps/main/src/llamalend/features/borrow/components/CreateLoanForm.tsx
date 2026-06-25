@@ -3,6 +3,7 @@ import { useConnection } from 'wagmi'
 import { LoanPreset, LEVERAGE } from '@/llamalend/constants'
 import { getControllerAddress, hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -16,7 +17,7 @@ import { AlertDisableForm } from '@ui-kit/shared/ui/AlertDisableForm'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { LlamaMarketType } from '@ui-kit/types/market'
-import { q, type Range } from '@ui-kit/types/util'
+import { q, type QueryProp, type Range } from '@ui-kit/types/util'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { useCreateLoanForm } from '../hooks/useCreateLoanForm'
@@ -39,12 +40,14 @@ export const CreateLoanForm = <ChainId extends IChainId>({
   networks,
   chainId,
   onPricesUpdated,
+  apiMarket,
   marketType,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
+  apiMarket: QueryProp<LlamaMarket>
   marketType: LlamaMarketType
 }) => {
   const { isConnected } = useConnection()
@@ -92,7 +95,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
       footer={
         <CreateLoanInfoList
           marketType={marketType}
-          controllerAddress={getControllerAddress(market)}
+          controllerAddress={getControllerAddress(market, apiMarket.data)}
           form={form}
           params={params}
           values={values}
@@ -169,6 +172,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
         disabled={isDisabled}
         label={[isApproved?.data === false && t`Approve`, t`Borrow`]}
         testId="create-loan-submit-button"
+        connectWalletTestId="form-connect-wallet"
       >
         {disabledAlert && <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>}
       </FormButton>

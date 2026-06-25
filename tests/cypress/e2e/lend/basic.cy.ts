@@ -27,22 +27,22 @@ describe('Basic Access Test', () => {
   })
 
   it('should load lend market details with a wallet', () => {
-    cy.visit(`/lend/ethereum/markets/${LEND_MARKET}`)
-    shouldLoadLendBorrowDetails()
+    cy.visit(`/lend/ethereum/markets/${LEND_MARKET}${''}`)
+    shouldLoadLendBorrowDetails({ hasWallet: true })
   })
 
   it('should load lend vault details with a wallet', () => {
-    cy.visit(`/lend/ethereum/markets/${LEND_MARKET}/vault`)
-    shouldLoadLendVaultDetails()
+    cy.visit(`/lend/ethereum/markets/${LEND_MARKET}${'/vault'}`)
+    shouldLoadLendVaultDetails({ hasWallet: true })
   })
 
   it('should load lend market details without a wallet', () => {
-    cy.visitWithoutTestConnector(`lend/ethereum/markets/${LEND_MARKET}`)
-    cy.get(`[data-testid="btn-connect-prompt"]`).should('be.visible')
+    cy.visitWithoutTestConnector(`lend/ethereum/markets/${LEND_MARKET}${''}`)
+    shouldLoadLendBorrowDetails({ hasWallet: false })
   })
 
   it('should load lend vault details without a wallet', () => {
-    cy.visitWithoutTestConnector(`lend/ethereum/markets/${LEND_MARKET}/vault`)
-    cy.get(`[data-testid="btn-connect-prompt"]`).should('be.visible')
+    cy.visitWithoutTestConnector(`lend/ethereum/markets/${LEND_MARKET}${'/vault'}`)
+    shouldLoadLendVaultDetails({ hasWallet: false })
   })
 })

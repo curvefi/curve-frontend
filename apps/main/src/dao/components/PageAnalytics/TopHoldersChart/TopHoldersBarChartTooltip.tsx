@@ -1,96 +1,18 @@
-import { TooltipProps } from 'recharts'
-import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
-import { styled } from 'styled-components'
-import type { Locker } from '@curvefi/prices-api/dao'
-import { Box } from '@ui/Box'
+import type { VeCrvHolder } from '@/dao/entities/vecrv-holders'
+import { formatHolderName } from '@/dao/utils'
+import { maybe } from '@primitives/objects.utils'
 import { formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { ChartTooltipDataRow, ChartTooltipSeriesGroup, ChartTooltipShell } from '@ui-kit/shared/ui/Chart'
 import { formatNumber } from '@ui-kit/utils'
 
-type Payload = Omit<Locker, 'weight' | 'locked'> & {
-  weight: number
-  locked: number
-}
-
-export const TopHoldersBarChartTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
-  if (active && payload?.length) {
-    const { user, locked, weight, weightRatio, unlockTime } = payload[0].payload as Payload
-
-    return (
-      <TooltipWrapper>
-        <Box flex flexColumn flexGap="var(--spacing-1)">
-          <TooltipColumn>
-            <TooltipDataTitle>{t`Holder`}</TooltipDataTitle>
-            <TooltipData>{user}</TooltipData>
-          </TooltipColumn>
-          <TooltipColumn>
-            <TooltipDataTitle>{t`Relative Weight`}</TooltipDataTitle>
-            <TooltipData>{weightRatio}%</TooltipData>
-          </TooltipColumn>
-          <TooltipColumn>
-            <TooltipDataTitle>{t`veCRV`}</TooltipDataTitle>
-            <TooltipData>{formatNumber(weight, { abbreviate: false, fallback: '-' })}</TooltipData>
-          </TooltipColumn>
-          <TooltipColumn>
-            <TooltipDataTitle>{t`Locked CRV`}</TooltipDataTitle>
-            <TooltipData>{formatNumber(locked, { abbreviate: false, fallback: '-' })}</TooltipData>
-          </TooltipColumn>
-          <TooltipColumn>
-            <TooltipDataTitle>{t`Unlock Date`}</TooltipDataTitle>
-            {unlockTime ? (
-              <TooltipData>{formatDate(unlockTime)}</TooltipData>
-            ) : (
-              <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>
-            )}
-          </TooltipColumn>
-        </Box>
-      </TooltipWrapper>
-    )
-  }
-
-  return null
-}
-
-const TooltipWrapper = styled.div`
-  background-color: var(--summary_content--background-color);
-  padding: var(--spacing-3);
-  border-radius: var(--border-radius-1);
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-2);
-  max-width: 10rem;
-  @media (min-width: 25rem) {
-    max-width: 15rem;
-  }
-`
-
-const TooltipColumn = styled.div`
-  display: flex;
-  flex-direction: column;
-`
-
-const TooltipDataTitle = styled.p`
-  font-size: var(--font-size-1);
-  font-weight: var(--bold);
-  opacity: 0.7;
-  color: var(--page--text-color);
-`
-
-const TooltipData = styled.p`
-  font-size: var(--font-size-2);
-  color: var(--page--text-color);
-  font-weight: var(--bold);
-  word-break: break-all;
-  &.positive {
-    color: var(--chart-green);
-  }
-  &.negative {
-    color: var(--chart-red);
-  }
-`
-const TooltipDataNotAvailable = styled.p`
-  font-size: var(--font-size-1);
-  font-weight: var(--semi-bold);
-  color: var(--page--text-color);
-  font-style: italic;
-`
+export const TopHoldersBarChartTooltip = ({ datum }: { datum: VeCrvHolder }) => (
+  <ChartTooltipShell title={formatHolderName(datum.user)}>
+    <ChartTooltipSeriesGroup>
+      <ChartTooltipDataRow label={t`Relative Weight`} value={formatNumber(datum.weightRatio, 'percent.value')} />
+      <ChartTooltipDataRow label={t`veCRV`} value={formatNumber(datum.weight, 'token.amount')} />
+      <ChartTooltipDataRow label={t`Locked CRV`} value={formatNumber(datum.locked, 'token.amount')} />
+      <ChartTooltipDataRow label={t`Unlock Date`} value={maybe(datum.unlockTime, formatDate) ?? t`N/A`} />
+    </ChartTooltipSeriesGroup>
+  </ChartTooltipShell>
+)

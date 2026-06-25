@@ -10,8 +10,8 @@ import {
 } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useMarketOracleAddress } from '@/llamalend/queries/market'
+import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
@@ -27,6 +27,7 @@ import { Badge } from '@ui-kit/shared/ui/Badge'
 import { TokenIcon, type TokenIconProps } from '@ui-kit/shared/ui/TokenIcon'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { QueryProp } from '@ui-kit/types/util'
 
 const { Spacing } = SizesAndSpaces
 
@@ -42,6 +43,7 @@ type AddressItem = {
 type MarketContractsProps = {
   chainId: IChainId
   market: LlamaMarketTemplate | undefined
+  apiMarket: QueryProp<LlamaMarket>
   network: BaseConfig | undefined
 }
 
@@ -92,41 +94,43 @@ const AssetRow = ({
   </Stack>
 )
 
-export const MarketContractsSection = ({ chainId, market, network }: MarketContractsProps) => {
+export const MarketContractsSection = ({ chainId, market, apiMarket, network }: MarketContractsProps) => {
   const isMobile = useIsMobile()
-  const { collateralToken, borrowToken } = getTokens(market) ?? {}
-  const { data: oracleAddress, isLoading: oracleAddressIsLoading } = useMarketOracleAddress({
+  const { collateralToken, borrowToken } = getTokens(market, apiMarket.data) ?? {}
+  const { data: onChainOracleAddress, isLoading: oracleAddressIsLoading } = useMarketOracleAddress({
     chainId,
     marketId: market?.id,
   })
 
-  const assetsLoading = !network || !market
-  const contractsLoading = assetsLoading || oracleAddressIsLoading
-  const isLendMarket = market instanceof LendMarketTemplate
+  const hasContractData = !!market || !!apiMarket.data
+  const assetsLoading = !network || !hasContractData
+  const contractsLoading = assetsLoading || (!!market && oracleAddressIsLoading)
   const gaugeAddress = getGaugeAddress(market)
-  const vaultAddress = getVaultAddress(market) ?? undefined
+  const vaultAddress = getVaultAddress(market, apiMarket.data) ?? undefined
+  const monetaryPolicyAddress = getMonetaryPolicy(market, apiMarket.data)
+  const oracleAddress = market ? onChainOracleAddress : apiMarket.data?.oracleAddress
 
   const infraAddressItems = notFalsy<AddressItem>(
-    market && { key: 'amm', label: t`AMM`, address: getAmmAddress(market) },
-    isLendMarket && { key: 'vault', label: t`Vault`, address: vaultAddress },
-    market && {
+    hasContractData && { key: 'amm', label: t`AMM`, address: getAmmAddress(market, apiMarket.data) },
+    vaultAddress && { key: 'vault', label: t`Vault`, address: vaultAddress },
+    hasContractData && {
       key: 'controller',
       label: t`Controller`,
-      address: getControllerAddress(market),
+      address: getControllerAddress(market, apiMarket.data),
     },
-    market && {
+    (market ?? monetaryPolicyAddress) && {
       key: 'monetary-policy',
       label: t`Rate policy`,
       labelTooltip: {
         title: t`The rule set that controls how fast borrow costs rise or fall as market conditions change.`,
       },
-      address: getMonetaryPolicy(market),
+      address: monetaryPolicyAddress,
     },
     gaugeAddress &&
       (gaugeAddress === zeroAddress
         ? { key: 'gauge', label: t`Gauge`, fallbackValue: t`No gauge` }
         : { key: 'gauge', label: <GaugeLabel />, address: gaugeAddress }),
-    market && { key: 'oracle', label: t`Oracle`, address: oracleAddress },
+    (market ?? oracleAddress) && { key: 'oracle', label: t`Oracle`, address: oracleAddress },
   )
 
   return (

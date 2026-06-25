@@ -9,14 +9,17 @@ import { type MarketUrlParams } from '@/lend/types/lend.types'
 import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/utilsRouter'
 import { PositionDetailsComposite } from '@/llamalend/features/market-position-details'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
 import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header'
 import { getBlockchainId } from '@curvefi/prices-api'
 import type { Decimal } from '@primitives/decimal.utils'
-import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
+import { useCurve } from '@ui-kit/features/connect-wallet'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useParams } from '@ui-kit/hooks/router'
+import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
@@ -42,12 +45,21 @@ export const LendMarketPage = () => {
 
   const [previewPrices, setPreviewPrices] = useState<Range<Decimal> | undefined>(undefined)
   const isLoading = !isInitialized || isMarketLoading
-
-  const tokens = useMemo(() => getTokens(market) ?? {}, [market])
+  const apiMarket = useLlamaMarket(
+    {
+      rMarket,
+      network: params.network,
+      userAddress,
+      enableLLv2: useLLv2(),
+      enableDeprecatedMarkets: useUserProfileStore(state => state.showDeprecatedMarkets),
+    },
+    !isLoading && !market, // only enable API data when wallet is disconnected
+  )
+  const tokens = useMemo(() => getTokens(market, apiMarket.data) ?? {}, [apiMarket.data, market])
   const collateralEvents = useUserCollateralEvents({
     app: LlamaMarketType.Lend,
     chain: getBlockchainId(network.id),
-    controllerAddress: getControllerAddress(market),
+    controllerAddress: getControllerAddress(market, apiMarket.data),
     userAddress,
     tokens,
     network,
@@ -60,16 +72,16 @@ export const LendMarketPage = () => {
     api,
     market,
     onPricesUpdated: setPreviewPrices,
+    apiMarket,
   }
 
-  const error = marketError
+  const error = marketError ?? apiMarket.error
   return error ? (
     <ErrorPage title={t`Error`} subtitle={error.message} continueUrl={getCollateralListPathname(params)} />
-  ) : userAddress ? (
+  ) : (
     <DetailPageLayout
       formTabs={
-        !!market &&
-        !isLoanExistsLoading &&
+        ((!!market && !isLoanExistsLoading) || apiMarket.data) &&
         (loanExists ? (
           <ManageLoanTabs {...pageProps} collateralEvents={collateralEvents} />
         ) : (
@@ -83,6 +95,7 @@ export const LendMarketPage = () => {
           isLoading={isLoading}
           market={market}
           marketType={LlamaMarketType.Lend}
+          apiMarket={apiMarket}
         />
       }
     >
@@ -103,7 +116,5 @@ export const LendMarketPage = () => {
         previewPrices={previewPrices}
       />
     </DetailPageLayout>
-  ) : (
-    <ConnectWalletPrompt description={t`Connect your wallet to view market`} testId="btn-connect-prompt" />
   )
 }
