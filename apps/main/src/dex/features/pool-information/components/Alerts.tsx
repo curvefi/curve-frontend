@@ -14,7 +14,7 @@ const alertTypeToSeverity: Record<AlertType, AlertProps['severity']> = {
 }
 
 export const Alerts = ({ poolAlert, tokenAlert }: { poolAlert: PoolAlert | null; tokenAlert: PoolAlert | null }) => (
-  <Stack sx={{ gap: Spacing.sm, paddingBlockStart: Spacing.md }}>
+  <Stack sx={{ gap: Spacing.sm, paddingBlockStart: Spacing.md, ':empty': { display: 'none' } }}>
     {poolAlert && !poolAlert.isDisableDeposit && !poolAlert.isInformationOnlyAndShowInForm && (
       <Alert variant="filled" severity={alertTypeToSeverity[poolAlert.alertType]}>
         {poolAlert.message}

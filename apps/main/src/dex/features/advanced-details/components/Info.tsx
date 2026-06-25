@@ -1,14 +1,17 @@
 import { type Address } from 'viem'
-import { formatCryptoA, FXSWAP } from '@/dex/components/PageCreatePool/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolMetadata } from '@/dex/entities/pool-metadata.query'
-import { usePoolSnapshots } from '@/dex/entities/pool-snapshots.query'
 import { useBasePools } from '@/dex/queries/base-pools.query'
-import { usePoolParameters } from '@/dex/queries/pool-parameters.query'
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import type { Chain as BlockchainId } from '@curvefi/prices-api'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import CardHeader from '@mui/material/CardHeader'
+import { maybe, notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
-import { amount, Chain, formatNumber } from '@ui-kit/utils'
+import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
+import { AddressActionInfo } from '@ui-kit/shared/ui/AddressActionInfo'
+import { Section } from './Section'
 
 const getPoolType = ({
   pool,
@@ -31,14 +34,14 @@ const getPoolType = ({
   return pool.implementation
 }
 
-export const useParameters = ({
+export const Info = ({
   chainId,
-  poolDataCacheOrApi,
   poolId,
+  poolDataCacheOrApi,
 }: {
   chainId: ChainId
-  poolDataCacheOrApi: PoolDataCacheOrApi
   poolId: string
+  poolDataCacheOrApi: PoolDataCacheOrApi
 }) => {
   const { pool } = poolDataCacheOrApi
   const poolAddress = pool.address as Address
@@ -46,46 +49,38 @@ export const useParameters = ({
   const chain = network.networkId as BlockchainId
   const { data: basePools } = useBasePools({ chainId })
   const { data: metadata } = usePoolMetadata({ chain, poolAddress })
-  const { data: parameters, isLoading: isLoadingParameters } = usePoolParameters({ chainId, poolId })
-  const { data: snapshots } = usePoolSnapshots({ chain, poolAddress })
   const isFxSwap = metadata?.hasDonations ?? false
+  const poolType =
+    getPoolType({ pool, isFxSwap, tokenCount: metadata?.coins.length ?? poolDataCacheOrApi.tokens.length }) ||
+    metadata?.poolType ||
+    '-'
 
-  const {
-    A,
-    initial_A,
-    initial_A_time,
-    future_A,
-    future_A_time,
-    virtualPrice,
-    gamma,
-    adminFee = '',
-    fee,
-  } = parameters ?? {}
+  return (
+    <Card size="inline">
+      <CardHeader title={t`Info`} />
+      <CardContent component={Section}>
+        <ActionInfo
+          label={t`Pool type`}
+          value={notFalsy(
+            poolType,
+            metadata?.metapool && `${t`Metapool`}`,
+            basePools?.some(pool => pool.pool === poolAddress) && `${t`Basepool`}`,
+          ).join(', ')}
+        />
 
-  return {
-    A,
-    adminFee,
-    basePools,
-    fee,
-    formatADisplay: (a: number | string | undefined) =>
-      formatNumber(amount(!isFxSwap || a == null ? a : formatCryptoA(a, FXSWAP)), { abbreviate: false, fallback: '-' }),
-    future_A,
-    future_A_time,
-    gamma,
-    initial_A,
-    initial_A_time,
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
-    isEywaPool: chainId === Chain.Fantom && poolId.startsWith('factory-eywa'),
-    isLoadingParameters,
-    metadata,
-    network,
-    poolAddress,
-    poolId,
-    poolType:
-      getPoolType({ pool, isFxSwap, tokenCount: metadata?.coins.length ?? poolDataCacheOrApi.tokens.length }) ||
-      metadata?.poolType ||
-      '-',
-    snapshotData: snapshots?.[0],
-    virtualPrice,
-  }
+        {maybe(metadata?.basePool, x => (
+          <AddressActionInfo network={network} title={t`Basepool`} address={x} />
+        ))}
+
+        {maybe(metadata?.vyperVersion, x => (
+          <ActionInfo label={t`Vyper version`} value={x} />
+        ))}
+
+        {maybe(metadata?.registry, x => (
+          <AddressActionInfo network={network} title={t`Registry`} address={x} />
+        ))}
+        <ActionInfo label={t`ID`} value={poolId} loading={!poolId} />
+      </CardContent>
+    </Card>
+  )
 }
