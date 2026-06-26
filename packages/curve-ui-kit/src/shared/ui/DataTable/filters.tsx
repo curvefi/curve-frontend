@@ -24,9 +24,9 @@ export const parseRangeFilter = (serialized: string | undefined) =>
 export const getRangeFilterLabel = (
   [min, max]: Range<number | null>,
   unit?: Unit,
-  { defaultMin = 0 }: { defaultMin?: number } = {},
+  { defaultMin = 0 }: { defaultMin?: number | null } = {},
 ) => {
-  const hasMin = min != null && min !== defaultMin
+  const hasMin = min != null && (defaultMin == null || min !== defaultMin)
   const formatValue = (value: number) => formatNumber(value, { abbreviate: true, ...(unit && { unit }) })
 
   if (!hasMin && max != null) return `<${formatValue(max)}`
