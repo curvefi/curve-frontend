@@ -6,14 +6,13 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { HealthAndBufferBar } from '..'
 import { HEALTH_TOOLTIP, LIQUIDATION_BUFFER_TOOLTIP } from '../tooltips'
-import { getHealthColor, getState } from './utils'
+import { getState, getHealthColor } from './utils'
 
 const { Spacing } = SizesAndSpaces
 
 export const HealthDetails = ({ params }: { params: UserMarketParams }) => {
   const theme = useTheme()
   const healthQuery = useUserHealthValue(params)
-
   const { state, isHealthy } = getState(healthQuery.data)
   const { tooltip, value } = isHealthy
     ? { tooltip: HEALTH_TOOLTIP, value: mapQuery(healthQuery, d => d.health) }
@@ -34,7 +33,6 @@ export const HealthDetails = ({ params }: { params: UserMarketParams }) => {
             valueTooltip={tooltip}
             size="medium"
           />
-          {/* TODO: implement 2 tooltips for the health and buffer bar */}
           <Stack sx={{ flex: 1 }}>
             <HealthAndBufferBar healthQuery={q(healthQuery)} />
           </Stack>
