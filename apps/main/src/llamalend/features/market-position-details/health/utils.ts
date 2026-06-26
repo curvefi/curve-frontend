@@ -107,11 +107,13 @@ export const getLiquidationBufferPercent = (
 export const getHealthDetailsState = (healthData: QueryData<typeof useUserHealthValue> | undefined) => {
   const { health, liquidationBuffer } = healthData ?? {}
   // it returns the current type of the position, to either show the "health" or the "liquidationBuffer"
-  const type: HealthType = health
-    ? +health > HEALTH_THRESHOLDS.softLiquidation
-      ? 'health'
-      : 'liquidationBuffer'
-    : 'health'
+  const type: HealthType =
+    liquidationBuffer != null && health != null
+      ? +liquidationBuffer <= LIQUIDATION_BUFFER_THRESHOLDS.hardLiquidation ||
+        +health <= HEALTH_THRESHOLDS.softLiquidation
+        ? 'liquidationBuffer'
+        : 'health'
+      : 'health'
 
   const state = maybes([health, liquidationBuffer], ([health, liquidationBuffer]) => {
     const stateByType = {
