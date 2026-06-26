@@ -95,12 +95,7 @@ export const MintMarketPage = () => {
         header={<MarketPageHeader isLoading={isLoading} />}
       >
         <MarketBanners chainId={chainId} market={market} />
-        <PositionDetailsComposite
-          tokens={tokens}
-          hasPosition={loanExists}
-          events={collateralEvents}
-          params={{ chainId, marketId: market?.id, userAddress: address }}
-        />
+        <PositionDetailsComposite hasPosition={loanExists} events={collateralEvents} />
         <MarketInformationComposite previewPrices={previewPrices} />
       </DetailPageLayout>
     </MarketContextProvider>

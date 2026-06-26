@@ -94,12 +94,7 @@ export const LendMarketPage = () => {
           market={market}
           rewardsBanner={<CampaignRewardsBanner chainId={chainId} market={market} />}
         />
-        <PositionDetailsComposite
-          hasPosition={loanExists}
-          events={collateralEvents}
-          tokens={tokens}
-          params={{ chainId, marketId: market?.id, userAddress }}
-        />
+        <PositionDetailsComposite hasPosition={loanExists} events={collateralEvents} />
         <MarketInformationComposite rateType={MarketRateType.Borrow} previewPrices={previewPrices} />
       </DetailPageLayout>
     </MarketContextProvider>
