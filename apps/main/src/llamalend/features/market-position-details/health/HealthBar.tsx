@@ -37,7 +37,7 @@ const getHealthLevel = (health: number | undefined | null, softLiquidation: bool
   return 'pristine'
 }
 
-export const LegacyHealthBar = ({ health, softLiquidation, small, sx }: HealthBarProps) => {
+export const HealthBar = ({ health, softLiquidation, small, sx }: HealthBarProps) => {
   const theme = useTheme()
   // Clamps health percentage between 0 and 100
   return small ? (

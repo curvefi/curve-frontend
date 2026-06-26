@@ -1,6 +1,6 @@
 import type { Theme } from '@mui/material/styles'
 import { Decimal } from '@primitives/decimal.utils'
-import { maybe } from '@primitives/objects.utils'
+import { maybe, maybes } from '@primitives/objects.utils'
 
 type HealthState = 'pristine' | 'good' | 'tight' | 'softLiquidation'
 type LiquidationBufferState = 'risky' | 'critical' | 'hardLiquidation'
@@ -42,7 +42,7 @@ export const getLiquidationBufferState = (liquidationBuffer: number): Liquidatio
   return 'risky'
 }
 
-export const getHealthBarFillColor = (state: HealthAndBufferState) => (theme: Theme) => {
+export const getHealthColor = (state: HealthAndBufferState | undefined) => (theme: Theme) => {
   const { Layer } = theme.design
   switch (state) {
     case 'pristine':
@@ -60,7 +60,7 @@ export const getHealthBarFillColor = (state: HealthAndBufferState) => (theme: Th
   }
 }
 
-export const getLiquidationBufferBarFillColor = (state: HealthAndBufferState) => (theme: Theme) => {
+export const getLiquidationBufferColor = (state: HealthAndBufferState | undefined) => (theme: Theme) => {
   const { Layer } = theme.design
   switch (state) {
     case 'pristine':
@@ -80,11 +80,26 @@ export const getLiquidationBufferBarFillColor = (state: HealthAndBufferState) =>
  * If `healthValue` is defined, it returns true if the position has not entered soft liquidation (health > 0), false if it has.
  * It returns undefined if the value is not defined
  */
-export const getIsHealthy = (healthValue: Decimal | null | undefined) =>
+const getIsHealthy = (healthValue: Decimal | null | undefined) =>
   maybe(healthValue, healthValue => +healthValue > HEALTH_THRESHOLDS.softLiquidation)
 
-export const getHealthPercent = (state: HealthAndBufferState, health: Decimal | null | undefined) => {
-  if (health == null) return 100
+export const getState = ({
+  health,
+  liquidationBuffer,
+}: {
+  health: Decimal | null | undefined
+  liquidationBuffer: Decimal | null | undefined
+}) => {
+  const isHealthy = getIsHealthy(health)
+  const state = maybes([health, liquidationBuffer], ([health, liquidationBuffer]) =>
+    isHealthy ? getHealthState(+health) : getLiquidationBufferState(+liquidationBuffer),
+  )
+
+  return { state, isHealthy }
+}
+
+export const getHealthPercent = (state: HealthAndBufferState | undefined, health: Decimal | null | undefined) => {
+  if (health == null || state == null) return 0
   switch (state) {
     case 'pristine':
     case 'hardLiquidation':
@@ -98,9 +113,15 @@ export const getHealthPercent = (state: HealthAndBufferState, health: Decimal | 
 }
 
 export const getLiquidationBufferPercent = (
-  state: HealthAndBufferState,
+  state: HealthAndBufferState | undefined,
   liquidationBuffer: Decimal | null | undefined,
-) =>
-  ['risky', 'critical'].includes(state) && liquidationBuffer
-    ? clampPercent((+liquidationBuffer / LIQ_BUFFER_BASE_PERCENTAGE) * 100)
-    : 100
+) => {
+  if (liquidationBuffer == null || state == null) return 0
+  switch (state) {
+    case 'risky':
+    case 'critical':
+      return clampPercent((+liquidationBuffer / LIQ_BUFFER_BASE_PERCENTAGE) * 100)
+    default:
+      return 100
+  }
+}

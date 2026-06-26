@@ -3,18 +3,17 @@ import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import type { Theme } from '@mui/material/styles'
 import type { Decimal } from '@primitives/decimal.utils'
+import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { applySxProps, formatNumber } from '@ui-kit/utils'
 import {
-  getHealthBarFillColor,
+  getHealthColor,
   getHealthPercent,
-  getHealthState,
-  getIsHealthy,
-  getLiquidationBufferBarFillColor,
+  getLiquidationBufferColor,
   getLiquidationBufferPercent,
-  getLiquidationBufferState,
+  getState,
   HealthAndBufferState,
 } from './utils'
 
@@ -63,7 +62,7 @@ const GridSegment = ({
   percent: number
   fillColor: (theme: Theme) => string | undefined
   value: Decimal | null | undefined
-  label: string
+  label?: string
 }) => {
   const { title, withDivider } = SEGMENT_CONFIG[type]
   return (
@@ -78,7 +77,8 @@ const GridSegment = ({
         {withDivider && <DashedDivider />}
         <Stack sx={{ flex: 1 }}>
           <Typography variant="bodyXsRegular" color="textTertiary">
-            {title} ({formatNumber(value, 'number.compact')})
+            {/* TODO: add the parenthesis as a number unit? */}
+            {title} {maybe(value, v => '(' + formatNumber(v, 'number.compact') + ')')}
           </Typography>
           <Stack
             sx={{
@@ -89,17 +89,19 @@ const GridSegment = ({
               overflow: 'hidden',
             }}
           >
-            <Box
-              sx={{
-                position: 'absolute',
-                left: Spacing.xs,
-                paddingInline: Spacing.xxs,
-                backgroundColor: theme => theme.design.Layer[3].Fill,
-                border: theme => `1px solid ${theme.design.Layer[3].Outline}`,
-              }}
-            >
-              <Typography variant="bodyXsRegular">{label}</Typography>
-            </Box>
+            {isActive && label && (
+              <Box
+                sx={{
+                  position: 'absolute',
+                  left: Spacing.xs,
+                  paddingInline: Spacing.xxs,
+                  backgroundColor: theme => theme.design.Layer[3].Fill,
+                  border: theme => `1px solid ${theme.design.Layer[3].Outline}`,
+                }}
+              >
+                <Typography variant="bodyXsRegular">{label}</Typography>
+              </Box>
+            )}
             <Box sx={{ height: '100%', width: `${percent}%`, backgroundColor: fillColor }} />
           </Stack>
         </Stack>
@@ -117,11 +119,8 @@ export const HealthAndBufferBar = ({
   liquidationBuffer: Decimal | null | undefined
   sx?: SxProps
 }) => {
-  // todo: health and liquidationBuffer should be returned defined (loading skeleton in the parent)
-  if (health == null || liquidationBuffer == null) return undefined
-  const isHealthy = getIsHealthy(health)
-  const state = isHealthy ? getHealthState(+health) : getLiquidationBufferState(+liquidationBuffer)
-  const label = STATE_LABEL[state]
+  const { state, isHealthy = true } = getState({ health, liquidationBuffer })
+  const label = maybe(state, s => STATE_LABEL[s])
 
   return (
     <Grid container columnSpacing={DIVIDER_SPACING} sx={applySxProps(sx)}>
@@ -130,7 +129,7 @@ export const HealthAndBufferBar = ({
         type="liquidationBuffer"
         value={liquidationBuffer}
         percent={getLiquidationBufferPercent(state, liquidationBuffer)}
-        fillColor={getLiquidationBufferBarFillColor(state)}
+        fillColor={getLiquidationBufferColor(state)}
         label={label}
       />
       <GridSegment
@@ -138,7 +137,7 @@ export const HealthAndBufferBar = ({
         type="health"
         value={health}
         percent={getHealthPercent(state, health)}
-        fillColor={getHealthBarFillColor(state)}
+        fillColor={getHealthColor(state)}
         label={label}
       />
     </Grid>

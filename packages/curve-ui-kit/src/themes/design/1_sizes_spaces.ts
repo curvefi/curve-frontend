@@ -285,7 +285,7 @@ export const SizesAndSpaces = {
     shortChart: 210,
     healthBar: {
       legacy: '2rem', // 36px
-      new: '1.375rem', // 22px
+      new: '1.5rem', // 24px
     },
   },
   MinHeight: {

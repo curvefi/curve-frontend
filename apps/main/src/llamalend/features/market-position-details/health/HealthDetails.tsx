@@ -1,14 +1,12 @@
 import { useUserHealthValue } from '@/llamalend/queries/user/user-health.query'
 import { Stack, useTheme } from '@mui/material'
-import { useNewLlamalendHealth } from '@ui-kit/hooks/useFeatureFlags'
 import type { UserMarketParams } from '@ui-kit/lib/model'
 import { Metric } from '@ui-kit/shared/ui/Metric'
-import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { mapQuery, type QueryProp } from '@ui-kit/types/util'
-import { decimal } from '@ui-kit/utils'
-import { getHealthValueColor, HealthAndBufferBar, LegacyHealthBar } from '..'
-import { HEALTH_TOOLTIP } from '../tooltips'
+import { HealthAndBufferBar } from '..'
+import { HEALTH_TOOLTIP, LIQUIDATION_BUFFER_TOOLTIP } from '../tooltips'
+import { getHealthColor, getState } from './utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -20,34 +18,33 @@ export const HealthDetails = ({
   softLiquidation: QueryProp<boolean>
 }) => {
   const theme = useTheme()
-  const useNewHealth = useNewLlamalendHealth()
   const healthQuery = useUserHealthValue(params)
-  const { legacyHealth, health, liquidationBuffer } = healthQuery.data ?? {}
-  const { title, body } = HEALTH_TOOLTIP
+  const { health, liquidationBuffer } = healthQuery.data ?? {}
+
+  const { state, isHealthy } = getState({ health, liquidationBuffer })
+  const { tooltip, value } = isHealthy
+    ? { tooltip: HEALTH_TOOLTIP, value: mapQuery(healthQuery, d => d.health) }
+    : { tooltip: LIQUIDATION_BUFFER_TOOLTIP, value: mapQuery(healthQuery, d => d.liquidationBuffer) }
 
   return (
     <Stack>
       <Stack sx={{ gap: Spacing.xs }}>
         <Stack direction="row" sx={{ alignItems: 'flex-end', gap: Spacing.md.mobile }}>
           <Metric
-            label={title}
-            value={mapQuery(healthQuery, d => d.legacyHealth)}
+            label={tooltip.shortTitle}
+            value={value}
             valueOptions={{
               unit: 'none',
-              color: getHealthValueColor({ health: decimal(legacyHealth), theme }),
+              // TODO: fix metric color (either accept all string or return primitives "caution", "success" ...)
+              color: getHealthColor(state)(theme),
             }}
-            valueTooltip={HEALTH_TOOLTIP}
+            valueTooltip={tooltip}
             size="medium"
           />
-          <Tooltip title={title} body={body}>
-            <Stack sx={{ flex: 1 }}>
-              {useNewHealth ? (
-                <HealthAndBufferBar health={health} liquidationBuffer={liquidationBuffer} />
-              ) : (
-                <LegacyHealthBar health={legacyHealth && +legacyHealth} softLiquidation={softLiquidation} />
-              )}
-            </Stack>
-          </Tooltip>
+          {/* TODO: implement 2 tooltips for the health and buffer bar */}
+          <Stack sx={{ flex: 1 }}>
+            <HealthAndBufferBar health={health} liquidationBuffer={liquidationBuffer} />
+          </Stack>
         </Stack>
       </Stack>
     </Stack>

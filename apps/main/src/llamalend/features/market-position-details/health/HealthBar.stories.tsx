@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { LegacyHealthBar } from '..'
+import { HealthBar } from '..'
 
 // Helper component to show both versions
 const HealthBarStory = ({
@@ -13,14 +13,14 @@ const HealthBarStory = ({
 }) => (
   <Box sx={{ minWidth: 400, padding: 2 }}>
     <Stack spacing={4}>
-      <LegacyHealthBar health={health} softLiquidation={softLiquidation} />
-      <LegacyHealthBar health={health} softLiquidation={softLiquidation} small />
+      <HealthBar health={health} softLiquidation={softLiquidation} />
+      <HealthBar health={health} softLiquidation={softLiquidation} small />
     </Stack>
   </Box>
 )
 
 const meta: Meta<typeof HealthBarStory> = {
-  title: 'UI Kit/Widgets/LegacyHealthBar',
+  title: 'UI Kit/Widgets/HealthBar',
   component: HealthBarStory,
   parameters: {
     layout: 'centered',

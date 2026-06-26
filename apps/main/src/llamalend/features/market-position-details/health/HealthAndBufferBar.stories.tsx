@@ -49,6 +49,10 @@ export const Tight: Story = {
   args: { health: '4.9', liquidationBuffer: '8' },
 }
 
+export const Undefined: Story = {
+  args: { health: undefined, liquidationBuffer: undefined },
+}
+
 export const AtRisk: Story = {
   args: { health: '0', liquidationBuffer: '22.5' },
 }
@@ -62,6 +66,7 @@ export const HardLiquidation: Story = {
 }
 
 const allStates = [
+  { name: 'Undefined', args: Undefined.args },
   { name: 'Pristine', args: Pristine.args },
   { name: 'Good', args: Good.args },
   { name: 'Tight', args: Tight.args },

@@ -1,4 +1,4 @@
-import { LegacyHealthBar } from '@/llamalend/features/market-position-details'
+import { HealthBar } from '@/llamalend/features/market-position-details'
 import { getPositionStatusContent } from '@/llamalend/position-status-content'
 import { useUserMarketStats } from '@/llamalend/queries/market-list/llama-market-stats'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
@@ -30,7 +30,7 @@ export const HealthCell = ({ row }: CellContext<LlamaMarket, number>) => {
     >
       <Stack sx={{ gap: Spacing.xs }}>
         {formatNumber(health, 'percent.value')}
-        <LegacyHealthBar small health={health} softLiquidation={softLiquidation} />
+        <HealthBar small health={health} softLiquidation={softLiquidation} />
       </Stack>
     </Tooltip>
   )
