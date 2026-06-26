@@ -1,15 +1,12 @@
+import { useUserHealthValue } from '@/llamalend/queries/user/user-health.query'
 import type { Theme } from '@mui/material/styles'
 import { Decimal } from '@primitives/decimal.utils'
 import { maybe, maybes } from '@primitives/objects.utils'
+import { QueryData } from '@ui-kit/lib'
 
 type HealthState = 'pristine' | 'good' | 'tight' | 'softLiquidation'
 type LiquidationBufferState = 'risky' | 'critical' | 'hardLiquidation'
 export type HealthAndBufferState = HealthState | LiquidationBufferState
-
-// the base on wich to calculate the "percentage" of the liquidation buffer bar: liqudation_baffer / base
-const LIQ_BUFFER_BASE_PERCENTAGE = 10
-// the base on wich to calculate the "percentage" of the health bar: health / base
-const HEALTH_BASE_PERCENTAGE = 100
 
 const HEALTH_THRESHOLDS: Record<Exclude<HealthState, 'pristine'>, number> = {
   /** Below this value the position enter soft liquidation */
@@ -24,10 +21,10 @@ const LIQUIDATION_BUFFER_THRESHOLDS: Record<Exclude<LiquidationBufferState, 'ris
   /** Below this value the position is hard liquidated */
   hardLiquidation: 0,
   /** Below this value the position is critical. Above it is risky */
-  critical: 20,
+  critical: 10,
 } as const
 
-export const clampPercent = (value: number) => Math.max(0, Math.min(value, 100))
+export const clampPercentage = (health: number | undefined | null): number => Math.max(0, Math.min(health ?? 0, 100))
 
 export const getHealthState = (health: number): HealthState => {
   if (health > HEALTH_THRESHOLDS.good) return 'pristine'
@@ -81,15 +78,12 @@ export const getLiquidationBufferColor = (state: HealthAndBufferState | undefine
  * It returns undefined if the value is not defined
  */
 const getIsHealthy = (healthValue: Decimal | null | undefined) =>
-  maybe(healthValue, healthValue => +healthValue > HEALTH_THRESHOLDS.softLiquidation)
+  maybe(healthValue, healthValue => +healthValue > HEALTH_THRESHOLDS.softLiquidation) ??
+  // by default we show the health configuratin (health bar & metric)
+  true
 
-export const getState = ({
-  health,
-  liquidationBuffer,
-}: {
-  health: Decimal | null | undefined
-  liquidationBuffer: Decimal | null | undefined
-}) => {
+export const getState = (healthData: QueryData<typeof useUserHealthValue> | undefined) => {
+  const { health, liquidationBuffer } = healthData ?? {}
   const isHealthy = getIsHealthy(health)
   const state = maybes([health, liquidationBuffer], ([health, liquidationBuffer]) =>
     isHealthy ? getHealthState(+health) : getLiquidationBufferState(+liquidationBuffer),
@@ -106,7 +100,8 @@ export const getHealthPercent = (state: HealthAndBufferState | undefined, health
       return 100
     case 'good':
     case 'tight':
-      return clampPercent((+health / HEALTH_BASE_PERCENTAGE) * 100)
+      // TODO: get the last thresholds rather then hardcoding it
+      return clampPercentage((+health / HEALTH_THRESHOLDS.good) * 100)
     default:
       return 0
   }
@@ -120,7 +115,8 @@ export const getLiquidationBufferPercent = (
   switch (state) {
     case 'risky':
     case 'critical':
-      return clampPercent((+liquidationBuffer / LIQ_BUFFER_BASE_PERCENTAGE) * 100)
+      // TODO: get the last thresholds rather then hardcoding it
+      return clampPercentage((+liquidationBuffer / LIQUIDATION_BUFFER_THRESHOLDS.critical) * 100)
     default:
       return 100
   }

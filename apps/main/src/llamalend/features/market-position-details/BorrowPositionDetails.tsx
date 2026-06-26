@@ -36,7 +36,7 @@ export const BorrowPositionDetails = ({
       )}
       <Stack sx={{ gap: Spacing.sm }}>
         {useNewHealth ? (
-          <HealthDetails params={params} softLiquidation={softLiquidation} />
+          <HealthDetails params={params} />
         ) : (
           <LegacyHealthDetails params={params} softLiquidation={softLiquidation} />
         )}

@@ -1,3 +1,4 @@
+import { useUserHealthValue } from '@/llamalend/queries/user/user-health.query'
 import { Stack, type SxProps, Typography } from '@mui/material'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
@@ -5,8 +6,11 @@ import type { Theme } from '@mui/material/styles'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
+import { QueryData } from '@ui-kit/lib/queries/types'
+import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { QueryProp } from '@ui-kit/types/util'
 import { applySxProps, formatNumber } from '@ui-kit/utils'
 import {
   getHealthColor,
@@ -56,6 +60,7 @@ const GridSegment = ({
   type,
   value,
   label,
+  isLoading,
 }: {
   isActive?: boolean // wether the segment is active. This control the widths of the segment (larger when active)
   type: SegmentType
@@ -63,6 +68,7 @@ const GridSegment = ({
   fillColor: (theme: Theme) => string | undefined
   value: Decimal | null | undefined
   label?: string
+  isLoading: boolean | undefined
 }) => {
   const { title, withDivider } = SEGMENT_CONFIG[type]
   return (
@@ -80,30 +86,32 @@ const GridSegment = ({
             {/* TODO: add the parenthesis as a number unit? */}
             {title} {maybe(value, v => '(' + formatNumber(v, 'number.compact') + ')')}
           </Typography>
-          <Stack
-            sx={{
-              position: 'relative',
-              justifyContent: 'center',
-              height: Height.healthBar.new,
-              backgroundColor: theme => theme.design.Color.Neutral[300],
-              overflow: 'hidden',
-            }}
-          >
-            {isActive && label && (
-              <Box
-                sx={{
-                  position: 'absolute',
-                  left: Spacing.xs,
-                  paddingInline: Spacing.xxs,
-                  backgroundColor: theme => theme.design.Layer[3].Fill,
-                  border: theme => `1px solid ${theme.design.Layer[3].Outline}`,
-                }}
-              >
-                <Typography variant="bodyXsRegular">{label}</Typography>
-              </Box>
-            )}
-            <Box sx={{ height: '100%', width: `${percent}%`, backgroundColor: fillColor }} />
-          </Stack>
+          <WithSkeleton loading={!!isLoading} variant="rectangular" width="100%" height={Height.healthBar.new}>
+            <Stack
+              sx={{
+                position: 'relative',
+                justifyContent: 'center',
+                height: Height.healthBar.new,
+                backgroundColor: theme => theme.design.Color.Neutral[300],
+                overflow: 'hidden',
+              }}
+            >
+              {isActive && label && (
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    left: Spacing.xs,
+                    paddingInline: Spacing.xxs,
+                    backgroundColor: theme => theme.design.Layer[3].Fill,
+                    border: theme => `1px solid ${theme.design.Layer[3].Outline}`,
+                  }}
+                >
+                  <Typography variant="bodyXsRegular">{label}</Typography>
+                </Box>
+              )}
+              <Box sx={{ height: '100%', width: `${percent}%`, backgroundColor: fillColor }} />
+            </Stack>
+          </WithSkeleton>
         </Stack>
       </WithWrapper>
     </Grid>
@@ -111,15 +119,14 @@ const GridSegment = ({
 }
 
 export const HealthAndBufferBar = ({
-  health,
-  liquidationBuffer,
+  healthQuery: { data, isLoading },
   sx,
 }: {
-  health: Decimal | null | undefined
-  liquidationBuffer: Decimal | null | undefined
+  healthQuery: QueryProp<QueryData<typeof useUserHealthValue>>
   sx?: SxProps
 }) => {
-  const { state, isHealthy = true } = getState({ health, liquidationBuffer })
+  const { health, liquidationBuffer } = data ?? {}
+  const { state, isHealthy } = getState(data)
   const label = maybe(state, s => STATE_LABEL[s])
 
   return (
@@ -131,6 +138,7 @@ export const HealthAndBufferBar = ({
         percent={getLiquidationBufferPercent(state, liquidationBuffer)}
         fillColor={getLiquidationBufferColor(state)}
         label={label}
+        isLoading={isLoading}
       />
       <GridSegment
         isActive={isHealthy}
@@ -139,6 +147,7 @@ export const HealthAndBufferBar = ({
         percent={getHealthPercent(state, health)}
         fillColor={getHealthColor(state)}
         label={label}
+        isLoading={isLoading}
       />
     </Grid>
   )

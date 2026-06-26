@@ -2,7 +2,7 @@ import { TooltipDescription, TooltipWrapper } from '@/llamalend/widgets/tooltips
 import Box from '@mui/material/Box'
 import { t, Trans } from '@ui-kit/lib/i18n'
 
-export const HealthTooltipContent = () => (
+export const LegacyHealthTooltipContent = () => (
   <TooltipWrapper>
     <TooltipDescription text={t`Health shows your cushion before hard liquidation.`} />
     <TooltipDescription

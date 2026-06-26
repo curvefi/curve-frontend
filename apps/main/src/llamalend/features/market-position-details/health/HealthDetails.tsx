@@ -3,25 +3,18 @@ import { Stack, useTheme } from '@mui/material'
 import type { UserMarketParams } from '@ui-kit/lib/model'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { mapQuery, type QueryProp } from '@ui-kit/types/util'
+import { mapQuery, q } from '@ui-kit/types/util'
 import { HealthAndBufferBar } from '..'
 import { HEALTH_TOOLTIP, LIQUIDATION_BUFFER_TOOLTIP } from '../tooltips'
 import { getHealthColor, getState } from './utils'
 
 const { Spacing } = SizesAndSpaces
 
-export const HealthDetails = ({
-  params,
-  softLiquidation: { data: softLiquidation },
-}: {
-  params: UserMarketParams
-  softLiquidation: QueryProp<boolean>
-}) => {
+export const HealthDetails = ({ params }: { params: UserMarketParams }) => {
   const theme = useTheme()
   const healthQuery = useUserHealthValue(params)
-  const { health, liquidationBuffer } = healthQuery.data ?? {}
 
-  const { state, isHealthy } = getState({ health, liquidationBuffer })
+  const { state, isHealthy } = getState(healthQuery.data)
   const { tooltip, value } = isHealthy
     ? { tooltip: HEALTH_TOOLTIP, value: mapQuery(healthQuery, d => d.health) }
     : { tooltip: LIQUIDATION_BUFFER_TOOLTIP, value: mapQuery(healthQuery, d => d.liquidationBuffer) }
@@ -43,7 +36,7 @@ export const HealthDetails = ({
           />
           {/* TODO: implement 2 tooltips for the health and buffer bar */}
           <Stack sx={{ flex: 1 }}>
-            <HealthAndBufferBar health={health} liquidationBuffer={liquidationBuffer} />
+            <HealthAndBufferBar healthQuery={q(healthQuery)} />
           </Stack>
         </Stack>
       </Stack>

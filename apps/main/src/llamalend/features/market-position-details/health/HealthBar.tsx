@@ -4,6 +4,7 @@ import { LinearProgress } from '@ui-kit/shared/ui/LinearProgress'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { HEALTH_THRESHOLDS, getHealthTrackColor } from '..'
+import { clampPercentage } from './utils'
 
 const { Height } = SizesAndSpaces
 
@@ -26,8 +27,6 @@ const insetLabelText = {
   good: t`Good`,
   pristine: t`Pristine`,
 } as const satisfies Record<HealthLevel, string>
-
-const clampPercentage = (health: number | undefined | null): number => Math.max(0, Math.min(health ?? 0, 100))
 
 const getHealthLevel = (health: number | undefined | null, softLiquidation: boolean): HealthLevel => {
   if (softLiquidation) return 'liquidationProtection'
