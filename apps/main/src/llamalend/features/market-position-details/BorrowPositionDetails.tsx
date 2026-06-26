@@ -6,7 +6,7 @@ import type { UserMarketParams } from '@ui-kit/lib/model'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { mapQuery } from '@ui-kit/types/util'
 import { BorrowInformation } from './BorrowInformation'
-import { HealthDetails } from './HealthDetails'
+import { HealthDetails } from './health/HealthDetails'
 
 const { Spacing } = SizesAndSpaces
 

@@ -2,24 +2,24 @@ import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { HealthAndBufferBar } from './'
+import { HealthAndBufferBar } from '..'
 
 const { Spacing } = SizesAndSpaces
 
-type HealthDetailsStoryProps = {
+type HealthAndBufferBarStoryProps = {
   health: Decimal | null
   liquidationBuffer: Decimal | null
 }
 
-const HealthDetailsStory = ({ health, liquidationBuffer }: HealthDetailsStoryProps) => (
+const HealthAndBufferBarStory = ({ health, liquidationBuffer }: HealthAndBufferBarStoryProps) => (
   <Stack sx={{ width: '100%', maxWidth: '61.5rem' }}>
     <HealthAndBufferBar health={health} liquidationBuffer={liquidationBuffer} />
   </Stack>
 )
 
-const meta: Meta<typeof HealthDetailsStory> = {
-  title: 'Llamalend/HealthDetails',
-  component: HealthDetailsStory,
+const meta: Meta<typeof HealthAndBufferBarStory> = {
+  title: 'Llamalend/HealthAndBufferBar',
+  component: HealthAndBufferBarStory,
   parameters: {
     layout: 'padded',
     docs: {
@@ -35,7 +35,7 @@ const meta: Meta<typeof HealthDetailsStory> = {
 }
 
 export default meta
-type Story = StoryObj<typeof HealthDetailsStory>
+type Story = StoryObj<typeof HealthAndBufferBarStory>
 
 export const Pristine: Story = {
   args: { health: '426.9', liquidationBuffer: '24.1' },

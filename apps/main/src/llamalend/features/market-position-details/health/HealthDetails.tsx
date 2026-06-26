@@ -7,8 +7,8 @@ import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { mapQuery, type QueryProp } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
-import { HEALTH_TOOLTIP } from './tooltips'
-import { getHealthValueColor, HealthAndBufferBar, HealthBar } from './'
+import { getHealthValueColor, HealthAndBufferBar, LegacyHealthBar } from '..'
+import { HEALTH_TOOLTIP } from '../tooltips'
 
 const { Spacing } = SizesAndSpaces
 
@@ -44,7 +44,7 @@ export const HealthDetails = ({
               {useNewHealth ? (
                 <HealthAndBufferBar health={health} liquidationBuffer={liquidationBuffer} />
               ) : (
-                <HealthBar health={legacyHealth && +legacyHealth} softLiquidation={softLiquidation} />
+                <LegacyHealthBar health={legacyHealth && +legacyHealth} softLiquidation={softLiquidation} />
               )}
             </Stack>
           </Tooltip>

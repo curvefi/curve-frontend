@@ -3,7 +3,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { LinearProgress } from '@ui-kit/shared/ui/LinearProgress'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { HEALTH_THRESHOLDS, getHealthTrackColor } from './'
+import { HEALTH_THRESHOLDS, getHealthTrackColor } from '..'
 
 const { Height } = SizesAndSpaces
 
@@ -37,7 +37,7 @@ const getHealthLevel = (health: number | undefined | null, softLiquidation: bool
   return 'pristine'
 }
 
-export const HealthBar = ({ health, softLiquidation, small, sx }: HealthBarProps) => {
+export const LegacyHealthBar = ({ health, softLiquidation, small, sx }: HealthBarProps) => {
   const theme = useTheme()
   // Clamps health percentage between 0 and 100
   return small ? (
