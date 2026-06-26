@@ -5,7 +5,6 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { fallbackQ, mapQuery, type QueryProp } from '@ui-kit/types/util'
-import { decimal } from '@ui-kit/utils'
 
 // In [1]: ltv = lambda x: ((x[0] - 1) / x[0])**2 * (1 - x[1])
 // In [2]: ltv((30, 0.11))
@@ -70,7 +69,7 @@ export const MarketLoanParameters = ({
         {...actionInfoQuery(
           fallbackQ(
             mapQuery(parameters, p => p.loan_discount),
-            mapQuery(apiMarket, m => decimal(m.parameters.loanDiscount)),
+            mapQuery(apiMarket, m => m.parameters.loanDiscount),
           ),
           'percent.rate',
         )}
@@ -82,7 +81,7 @@ export const MarketLoanParameters = ({
         {...actionInfoQuery(
           fallbackQ(
             mapQuery(parameters, p => p.liquidation_discount),
-            mapQuery(apiMarket, m => decimal(m.parameters.liquidationDiscount)),
+            mapQuery(apiMarket, m => m.parameters.liquidationDiscount),
           ),
           'percent.rate',
         )}
