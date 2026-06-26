@@ -52,8 +52,8 @@ export const tryGetLlamaMarket = (marketId: LlamaMarketTemplate | string | null 
  * - Lend Market and its `leverage` property has leverage
  * - Mint Market and either its `leverageZap` is not the zero address or its `leverageV2` property has leverage
  */
-export const hasLeverage = (market: LlamaMarketTemplate) =>
-  hasV1Leverage(market) || (market instanceof MintMarketTemplate && hasV2Leverage(market))
+export const hasLeverage = <T extends LlamaMarketTemplate | undefined>(market: T) =>
+  maybe(market, market => hasV1Leverage(market) || (market instanceof MintMarketTemplate && hasV2Leverage(market)))
 
 /**
  * Checks if leverage value (multiplier) can be calculated and displayed for this market.
@@ -244,10 +244,13 @@ export const getVaultToken = <T extends LlamaMarketTemplate | null | undefined>(
     decimals: DEFAULT_DECIMALS,
   }))
 
+export type BandRange = { minBands: number; maxBands: number }
+export type BandRangeOrEmpty = AllOrNone<BandRange>
+
 export const getMarketBandRange = <T extends LlamaMarketTemplate | null | undefined>(
   market: T,
   apiMarket?: LlamaMarket,
-): MarketOrApiValue<T, { minBands: number; maxBands: number } | undefined> =>
+): MarketOrApiValue<T, BandRange | undefined> =>
   getMarketOrApiValue(
     market,
     apiMarket,

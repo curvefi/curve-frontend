@@ -1,19 +1,17 @@
 import { useMemo } from 'react'
 import { zeroAddress } from 'viem'
-import { useConnection } from 'wagmi'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
-import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useStakeMutation } from '@/llamalend/mutations/stake.mutation'
 import { useStakeIsApproved } from '@/llamalend/queries/supply/supply-stake-approved.query'
 import { type StakeForm, stakeFormValidationSuite, StakeParams } from '@/llamalend/queries/validation/supply.validation'
 import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { Address } from '@primitives/address.utils'
 import { useForm, useFormSync } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { mapQuery } from '@ui-kit/types/util'
+import { useMarketContext } from '../../market-context'
 import { useVaultUserBalances } from './useVaultUserBalances'
 
 const userDefaultValues = { stakeAmount: undefined }
@@ -23,20 +21,8 @@ const emptyStakeForm = (): StakeForm => ({
   maxStakeAmount: undefined,
 })
 
-export const useStakeForm = <ChainId extends LlamaChainId>({
-  marketId,
-  controllerAddress,
-  tokens,
-  gaugeAddress,
-  network,
-}: {
-  marketId: string | undefined
-  controllerAddress: Address | undefined
-  tokens: MarketTokensOrEmpty
-  gaugeAddress: Address | undefined
-  network: LlamaNetwork<ChainId>
-}) => {
-  const { address: userAddress } = useConnection()
+export const useStakeForm = <ChainId extends LlamaChainId>({ network }: { network: LlamaNetwork<ChainId> }) => {
+  const { marketId, controllerAddress, tokens, gaugeAddress, userAddress } = useMarketContext<ChainId>()
   const { chainId } = network
   const marketHasGauge = !!gaugeAddress && gaugeAddress !== zeroAddress
   const marketAlert = useMarketAlert(chainId, controllerAddress, LlamaMarketType.Lend)

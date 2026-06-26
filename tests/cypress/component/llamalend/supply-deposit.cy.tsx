@@ -2,7 +2,6 @@
 import type { Address } from 'viem'
 import { DepositForm } from '@/llamalend/features/supply/components/DepositForm'
 import { SOLVENCY_THRESHOLDS } from '@/llamalend/llama-markets.constants'
-import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import {
   checkDepositSubmit,
@@ -21,6 +20,7 @@ import {
 import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import { constQ } from '@ui-kit/types/util'
 import { Chain } from '@ui-kit/utils'
 
 const chainId = Chain.Ethereum
@@ -69,15 +69,14 @@ describe('DepositForm (mocked)', () => {
         setGasInfo({ chainId, networks: llamaNetworks })
 
         cy.mount(
-          <MockLoanTestWrapper llamaApi={llamaApi}>
-            <DepositForm
-              marketId={market.id}
-              controllerAddress={getControllerAddress(market)}
-              tokens={getTokens(market)}
-              marketType={LlamaMarketType.Lend}
-              networks={llamaNetworks}
-              chainId={chainId}
-            />
+          <MockLoanTestWrapper
+            llamaApi={llamaApi}
+            chainId={chainId}
+            marketQuery={constQ(market)}
+            apiMarket={constQ(undefined)}
+            marketType={LlamaMarketType.Lend}
+          >
+            <DepositForm networks={llamaNetworks} />
           </MockLoanTestWrapper>,
         )
 

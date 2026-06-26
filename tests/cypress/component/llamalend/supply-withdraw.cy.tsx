@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { WithdrawForm } from '@/llamalend/features/supply/components/WithdrawForm'
-import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import { createWithdrawScenario } from '@cy/support/helpers/llamalend/supply/supply-test-scenarios.helpers'
 import {
@@ -14,6 +13,8 @@ import {
   setGasInfo,
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
+import { LlamaMarketType } from '@ui-kit/types/market'
+import { constQ } from '@ui-kit/types/util'
 import { Chain } from '@ui-kit/utils'
 
 const chainId = Chain.Ethereum
@@ -33,14 +34,14 @@ describe('WithdrawForm (mocked)', () => {
       setGasInfo({ chainId, networks: llamaNetworks })
 
       cy.mount(
-        <MockLoanTestWrapper llamaApi={llamaApi}>
-          <WithdrawForm
-            marketId={market.id}
-            controllerAddress={getControllerAddress(market)}
-            tokens={getTokens(market)}
-            networks={llamaNetworks}
-            chainId={chainId}
-          />
+        <MockLoanTestWrapper
+          llamaApi={llamaApi}
+          chainId={chainId}
+          marketQuery={constQ(market)}
+          apiMarket={constQ(undefined)}
+          marketType={LlamaMarketType.Lend}
+        >
+          <WithdrawForm networks={llamaNetworks} />
         </MockLoanTestWrapper>,
       )
 

@@ -1,33 +1,23 @@
-import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { Address } from '@primitives/address.utils'
 import { FormButton } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
+import { useMarketContext } from '../../market-context'
 import { useWithdrawForm } from '../hooks/useWithdrawForm'
 import { AlertUnstakeFirst } from './alerts/AlertUnstakeFirst'
 import { WithdrawSupplyInfoList } from './WithdrawSupplyInfoList'
 
 type WithdrawFormProps<ChainId extends IChainId> = {
-  marketId: string | undefined
-  controllerAddress: Address | undefined
-  tokens: MarketTokensOrEmpty
   networks: NetworkDict<ChainId>
-  chainId: ChainId
 }
 
 const TEST_ID_PREFIX = 'supply-withdraw'
 
-export const WithdrawForm = <ChainId extends IChainId>({
-  marketId,
-  controllerAddress,
-  tokens,
-  networks,
-  chainId,
-}: WithdrawFormProps<ChainId>) => {
+export const WithdrawForm = <ChainId extends IChainId>({ networks }: WithdrawFormProps<ChainId>) => {
+  const { chainId, marketId, controllerAddress } = useMarketContext<ChainId>()
   const network = networks[chainId]
 
   const {
@@ -42,7 +32,7 @@ export const WithdrawForm = <ChainId extends IChainId>({
     max,
     maxStakedShares,
     isFull,
-  } = useWithdrawForm({ marketId, tokens, network })
+  } = useWithdrawForm({ network })
 
   return (
     <Form

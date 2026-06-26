@@ -1,5 +1,4 @@
 import { networks } from '@/lend/networks'
-import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { ClaimTab } from '@/llamalend/features/supply/components/ClaimTab'
 import { DepositForm } from '@/llamalend/features/supply/components/DepositForm'
 import { StakeForm } from '@/llamalend/features/supply/components/StakeForm'
@@ -7,8 +6,6 @@ import { UnstakeForm } from '@/llamalend/features/supply/components/UnstakeForm'
 import { WithdrawForm } from '@/llamalend/features/supply/components/WithdrawForm'
 import { t } from '@ui-kit/lib/i18n'
 import { FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
-
-type VaultProps = PageContentProps<MarketUrlParams>
 
 const VaultMenu = [
   {
@@ -28,6 +25,6 @@ const VaultMenu = [
     ],
   },
   { value: 'claim', label: t`Claim`, component: props => <ClaimTab networks={networks} {...props} /> },
-] satisfies FormTab<VaultProps>[]
+] satisfies FormTab<object>[]
 
-export const VaultTabs = (pageProps: VaultProps) => <FormTabs params={pageProps} menu={VaultMenu} />
+export const VaultTabs = () => <FormTabs params={{}} menu={VaultMenu} />

@@ -1,7 +1,7 @@
+import { MarketContextProvider } from 'main/src/llamalend/features/market-context/MarketContextProvider'
 import { type ReactNode, useMemo } from 'react'
 import { ClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePositionForm'
 import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealthForm'
-import { getAmmAddress, getControllerAddress, getTokens, getZapAddress } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { networks } from '@/loan/networks'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -29,20 +29,19 @@ describe('Manage soft liquidation', () => {
     const { isHydrated, llamaApi } = useCurve()
     const market = useMemo(() => isHydrated && llamaApi?.getMintMarket(MARKET_ID), [isHydrated, llamaApi])
     if (!market) return <Skeleton />
-    const Component = { 'improve-health': ImproveHealthForm, 'close-position': ClosePositionForm }[tab]
     return (
-      <Component
-        market={market}
-        marketId={market.id}
-        ammAddress={getAmmAddress(market)}
-        zapAddress={getZapAddress(market)}
-        controllerAddress={getControllerAddress(market)}
-        tokens={getTokens(market)}
-        networks={softLiqNetworks}
+      <MarketContextProvider
         chainId={chainId}
-        collateralEvents={constQ(undefined)}
+        marketQuery={constQ(market)}
+        apiMarket={constQ(undefined)}
         marketType={LlamaMarketType.Mint}
-      />
+      >
+        {tab === 'improve-health' ? (
+          <ImproveHealthForm networks={softLiqNetworks} collateralEvents={constQ(undefined)} />
+        ) : (
+          <ClosePositionForm networks={softLiqNetworks} />
+        )}
+      </MarketContextProvider>
     )
   }
 

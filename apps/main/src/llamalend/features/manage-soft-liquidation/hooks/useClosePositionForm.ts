@@ -1,9 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { sum } from 'lodash'
 import { useCallback } from 'react'
-import { useConnection } from 'wagmi'
 import { LEVERAGE } from '@/llamalend/constants'
-import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import { type CloseLoanMutation, useClosePositionMutation } from '@/llamalend/mutations/close-position.mutation'
 import { useCloseLoanIsApproved } from '@/llamalend/queries/close-loan/close-loan-is-approved.query'
 import { useUserBalances, useUserState } from '@/llamalend/queries/user'
@@ -18,6 +16,7 @@ import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-tabl
 import { mapQuery } from '@ui-kit/types/util'
 import { decimal, decimalNegate } from '@ui-kit/utils'
 import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
+import { useMarketContext } from '../../market-context'
 import { CLOSE_POSITION_COLUMNS, type ClosePositionRow } from '../ui/columns/columns.definitions'
 
 const CLOSE_POSITION_SAFETY_BUFFER = 1.0001 // 0.01% safety margin
@@ -32,15 +31,11 @@ type UserBalancesData = QueryData<typeof useUserBalances>
 type TokenUsdRate = QueryData<typeof useTokenUsdRate>
 /** Hook to build state for the close-position form */
 export function useClosePositionForm({
-  marketId,
-  tokens,
   network,
 }: {
-  marketId: string | undefined
-  tokens: MarketTokensOrEmpty
   network: { id: LlamaNetworkId; chainId: LlamaChainId; name: string }
 }) {
-  const { address: userAddress } = useConnection()
+  const { marketId, tokens, userAddress } = useMarketContext<LlamaChainId>()
   const { chainId } = network
 
   // Token data

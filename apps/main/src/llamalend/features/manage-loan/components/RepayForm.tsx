@@ -5,19 +5,12 @@ import { RepayTokenList, type RepayTokenListProps } from '@/llamalend/features/m
 import { RepayTokenOption, useRepayTokens } from '@/llamalend/features/manage-loan/hooks/useRepayTokens'
 import { AlertRepayDebtToIncreaseHealth } from '@/llamalend/features/manage-soft-liquidation/ui/alerts/AlertRepayDebtToIncreaseHealth'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import {
-  canRepayFromStateCollateral,
-  canRepayFromUserCollateral,
-  hasLeverageValue,
-  type MarketTokensOrEmpty,
-} from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
 import { useUserPrices } from '@/llamalend/queries/user'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Stack from '@mui/material/Stack'
-import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { FormButton } from '@ui-kit/features/forms'
@@ -28,12 +21,12 @@ import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { LlamaMarketType } from '@ui-kit/types/market'
 import { q, type QueryProp, type Range } from '@ui-kit/types/util'
 import { CRVUSD } from '@ui-kit/utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { useCrvSwapUrl } from '../../manage-soft-liquidation/hooks/useCrvSwapUrl'
+import { useMarketContext } from '../../market-context'
 import { useRepayForm } from '../hooks/useRepayForm'
 import { useTokenAmountConversion } from '../hooks/useTokenAmountConversion'
 
@@ -68,38 +61,24 @@ function RepayTokenSelector<ChainId extends IChainId>({
 
 // todo: net borrow APR (includes the intrinsic yield + rewards, while the Borrow APR doesn't)
 export const RepayForm = <ChainId extends IChainId>({
-  market,
-  marketId,
-  ammAddress,
-  zapAddress,
-  controllerAddress,
-  tokens: marketTokens,
   networks,
-  chainId,
   onPricesUpdated,
   collateralEvents,
   isInSoftLiquidation,
-  marketType,
 }: {
-  market: LlamaMarketTemplate | undefined
-  marketId: string | undefined
-  ammAddress: Address | undefined
-  zapAddress: Address | undefined
-  controllerAddress: Address | undefined
-  tokens: MarketTokensOrEmpty
   networks: NetworkDict<ChainId>
-  chainId: ChainId
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
   collateralEvents: QueryProp<UserCollateralEvents>
   isInSoftLiquidation?: boolean
-  marketType: LlamaMarketType
 }) => {
+  const { chainId, controllerAddress, tokens: marketTokens, marketType } = useMarketContext<ChainId>()
   const network = networks[chainId]
   const {
     form,
     values,
     params,
     isPending,
+    isLoading,
     isDisabled,
     onSubmit,
     borrowToken,
@@ -111,21 +90,18 @@ export const RepayForm = <ChainId extends IChainId>({
     max,
     isFull,
     priceImpact,
+    canRepayFromStateCollateral,
+    canRepayFromUserCollateral,
+    hasLeverageValue,
   } = useRepayForm({
-    market,
-    marketId,
-    ammAddress,
-    zapAddress,
-    tokens: marketTokens,
     networks,
-    chainId,
     onPricesUpdated,
   })
   const { token, onToken, tokens } = useRepayTokens({
     tokens: marketTokens,
     networkId: network.id,
-    canRepayFromStateCollateral: !!market && canRepayFromStateCollateral(market),
-    canRepayFromUserCollateral: !!market && canRepayFromUserCollateral(market),
+    canRepayFromStateCollateral,
+    canRepayFromUserCollateral,
     collateralEvents,
   })
 
@@ -133,7 +109,7 @@ export const RepayForm = <ChainId extends IChainId>({
   const selectedToken = selectedField == 'userBorrowed' ? borrowToken : collateralToken
 
   const fromPosition = isFull.data === false && selectedField === 'stateCollateral'
-  const showLeverage = selectedToken !== borrowToken && !!market && hasLeverageValue(market)
+  const showLeverage = selectedToken !== borrowToken && hasLeverageValue
   const { update: updateForm, formState } = form
   const isSelectedDirty = formState.dirtyFields[selectedField]
 
@@ -227,7 +203,7 @@ export const RepayForm = <ChainId extends IChainId>({
       <Stack sx={{ gap: Spacing.xs }}>
         <FormButton
           pending={isPending}
-          loading={!market}
+          loading={isLoading}
           disabled={isDisabled}
           label={[
             isApproved.data === false && t`Approve`,

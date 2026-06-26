@@ -1,6 +1,5 @@
 import { sortBy } from 'lodash'
 import { useCallback, useMemo, useState } from 'react'
-import { Address } from 'viem'
 import { useLlamaSnapshot } from '@/llamalend/queries/llamma-snapshots.query'
 import { type MarketRates, useMarketRates } from '@/llamalend/queries/market'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
@@ -30,10 +29,11 @@ import {
 } from '@ui-kit/shared/ui/Chart'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
-import { fallbackQ, mapQuery, q, type QueryProp, useMappedQuery } from '@ui-kit/types/util'
+import { MarketRateType } from '@ui-kit/types/market'
+import { fallbackQ, mapQuery, q, useMappedQuery } from '@ui-kit/types/util'
 import { formatNumber } from '@ui-kit/utils'
 import { calculateAverageRates } from '@ui-kit/utils/averageRates'
+import { useMarketContext } from '../features/market-context'
 
 const { Spacing, Height } = SizesAndSpaces
 
@@ -50,13 +50,8 @@ type RateSnapshot = CrvUsdSnapshot | LendingSnapshot
 type RateValue = Amount | null | undefined
 
 type MarketHistoricalRatesChartProps = {
-  controllerAddress: Address | undefined
-  marketType: LlamaMarketType
   blockchainId: Chain | undefined
-  chainId: number
-  marketId: string | undefined
   rateMode: MarketRateType
-  apiMarket: QueryProp<LlamaMarket>
 }
 
 type RateSeriesConfig = { key: RateSeriesKey; label: string; dash?: ChartLineDashPattern }
@@ -116,15 +111,8 @@ const RATE_MODE_CONFIG = {
 const averageRates = (ratePoints: { rate: number; timestamp: number }[]) =>
   calculateAverageRates(ratePoints, 7, { rate: ({ rate }) => rate })?.rate
 
-export const MarketHistoricalRatesChart = ({
-  marketType,
-  controllerAddress,
-  blockchainId,
-  chainId,
-  marketId,
-  rateMode,
-  apiMarket,
-}: MarketHistoricalRatesChartProps) => {
+export const MarketHistoricalRatesChart = ({ blockchainId, rateMode }: MarketHistoricalRatesChartProps) => {
+  const { chainId, marketId, controllerAddress, marketType, apiMarket } = useMarketContext()
   const [timeOption, setTimeOption] = useState<TimeOption>('1M')
   const modeConfig = RATE_MODE_CONFIG[rateMode]
   const activeSeriesConfig = modeConfig.series

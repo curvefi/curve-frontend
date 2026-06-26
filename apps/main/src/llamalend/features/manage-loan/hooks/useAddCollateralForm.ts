@@ -1,7 +1,5 @@
 import { useMemo } from 'react'
-import { useConnection } from 'wagmi'
-import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
+import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useAddCollateralMutation } from '@/llamalend/mutations/add-collateral.mutation'
 import { useAddCollateralIsApproved } from '@/llamalend/queries/add-collateral/add-collateral-approved.query'
 import { useAddCollateralPrices } from '@/llamalend/queries/add-collateral/add-collateral-prices.query'
@@ -17,6 +15,7 @@ import { useCallbackSync, useForm, useFormSync, useOnChangeCallback } from '@ui-
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import type { Range } from '@ui-kit/types/util'
+import { useMarketContext } from '../../market-context'
 
 const userDefaultValues = { userCollateral: undefined }
 const defaultValues = {
@@ -29,19 +28,13 @@ const formOptions = {
 }
 
 export const useAddCollateralForm = <ChainId extends LlamaChainId>({
-  market,
-  marketId,
-  tokens,
   network,
   onPricesUpdated,
 }: {
-  market: LlamaMarketTemplate | undefined
-  marketId: string | undefined
-  tokens: MarketTokensOrEmpty
   network: LlamaNetwork<ChainId>
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
-  const { address: userAddress } = useConnection()
+  const { market, marketId, tokens, userAddress } = useMarketContext<ChainId>()
   const { chainId } = network
 
   const collateralToken = tokens?.collateralToken

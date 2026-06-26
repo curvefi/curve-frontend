@@ -1,6 +1,4 @@
 import { formatCollateralNotional, tokenMetric } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import {
   MaxLeverageTooltip,
   SolvencyTooltip,
@@ -13,21 +11,15 @@ import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { mapQuery, type QueryProp } from '@ui-kit/types/util'
+import { mapQuery } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
+import { useMarketContext } from '../market-context'
 import { useAdvancedDetailsData } from './hooks/useAdvancedDetailsData'
 
 const { Spacing } = SizesAndSpaces
 
-type AdvancedDetailsProps = {
-  chainId: number | undefined | null
-  marketId: string | undefined | null
-  market: LlamaMarketTemplate | undefined
-  marketType: LlamaMarketType
-  apiMarket: QueryProp<LlamaMarket>
-}
-
-export const AdvancedDetails = ({ chainId, marketId, market, marketType, apiMarket }: AdvancedDetailsProps) => {
+export const AdvancedDetails = () => {
+  const { chainId, marketId, market, marketType, apiMarket } = useMarketContext()
   const { borrowedUsdRate, collateral, availableLiquidity, tvl, maxLeverage, solvency, totalBorrowers } =
     useAdvancedDetailsData({
       chainId,

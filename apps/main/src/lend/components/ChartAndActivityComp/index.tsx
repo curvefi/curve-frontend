@@ -2,34 +2,27 @@ import { useOhlcChartState } from '@/lend/hooks/useOhlcChartState'
 import { networks } from '@/lend/networks'
 import { ChainId } from '@/lend/types/lend.types'
 import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
+import { useMarketContext } from '@/llamalend/features/market-context'
 import { ChartAndActivityLayout } from '@/llamalend/widgets/ChartAndActivityLayout'
 import { getBlockchainId } from '@curvefi/prices-api'
-import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { useBandsChartVisible } from '@ui-kit/hooks/useLocalStorage'
 import type { Range } from '@ui-kit/types/util'
 
 type ChartAndActivityCompProps = {
-  rChainId: ChainId
-  marketId: string | undefined
   previewPrices: Range<Decimal> | undefined
-  collateralToken: { address: Address; symbol: string } | undefined
-  borrowToken: { address: Address; symbol: string } | undefined
-  ammAddress: Address | undefined
-  controllerAddress: Address | undefined
 }
 
-export const ChartAndActivityComp = ({
-  rChainId,
-  marketId,
-  previewPrices,
-  collateralToken,
-  borrowToken,
-  ammAddress,
-  controllerAddress,
-}: ChartAndActivityCompProps) => {
+export const ChartAndActivityComp = ({ previewPrices }: ChartAndActivityCompProps) => {
+  const {
+    chainId,
+    marketId,
+    ammAddress,
+    controllerAddress,
+    tokens: { collateralToken, borrowToken },
+  } = useMarketContext<ChainId>()
   const [isBandsVisible] = useBandsChartVisible()
-  const networkConfig = networks[rChainId]
+  const networkConfig = networks[chainId]
   const {
     isLoading: isChartLoading,
     selectedChartKey,
@@ -37,7 +30,7 @@ export const ChartAndActivityComp = ({
     legendSets,
     ohlcChartProps,
   } = useOhlcChartState({
-    rChainId,
+    chainId,
     marketId,
     previewPrices,
     controllerAddress,
@@ -51,7 +44,7 @@ export const ChartAndActivityComp = ({
     isLoading: isBandsLoading,
     error: bandsError,
   } = useBandsData({
-    chainId: rChainId,
+    chainId,
     marketId,
     enabled: isBandsVisible,
   })

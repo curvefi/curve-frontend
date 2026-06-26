@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { ClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePositionForm'
 import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealthForm'
-import { getAmmAddress, getControllerAddress, getTokens, getZapAddress } from '@/llamalend/llama.utils'
 import { oneInt } from '@cy/support/generators'
 import { TEST_ADDRESS } from '@cy/support/helpers/llamalend/mock-loan-test-data'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
@@ -49,19 +48,14 @@ describe('Soft Liquidation Forms (mocked)', () => {
         seedCrvUsdBalance({ chainId, addresses: [TEST_ADDRESS], min: borrow })
 
         cy.mount(
-          <MockLoanTestWrapper llamaApi={llamaApi}>
-            <ImproveHealthForm
-              market={market}
-              marketId={market.id}
-              ammAddress={getAmmAddress(market)}
-              zapAddress={getZapAddress(market)}
-              controllerAddress={getControllerAddress(market)}
-              tokens={getTokens(market)}
-              networks={llamaNetworks}
-              chainId={chainId}
-              collateralEvents={constQ(undefined)}
-              marketType={LlamaMarketType.Mint}
-            />
+          <MockLoanTestWrapper
+            llamaApi={llamaApi}
+            chainId={chainId}
+            marketQuery={constQ(market)}
+            apiMarket={constQ(undefined)}
+            marketType={LlamaMarketType.Mint}
+          >
+            <ImproveHealthForm networks={llamaNetworks} collateralEvents={constQ(undefined)} />
           </MockLoanTestWrapper>,
         )
 
@@ -112,13 +106,14 @@ describe('Soft Liquidation Forms (mocked)', () => {
         seedCrvUsdBalance({ chainId, addresses: [TEST_ADDRESS], min: `${oneInt(15, 90)}` })
 
         cy.mount(
-          <MockLoanTestWrapper llamaApi={llamaApi}>
-            <ClosePositionForm
-              marketId={market.id}
-              tokens={getTokens(market)}
-              networks={llamaNetworks}
-              chainId={chainId}
-            />
+          <MockLoanTestWrapper
+            llamaApi={llamaApi}
+            chainId={chainId}
+            marketQuery={constQ(market)}
+            apiMarket={constQ(undefined)}
+            marketType={LlamaMarketType.Mint}
+          >
+            <ClosePositionForm networks={llamaNetworks} />
           </MockLoanTestWrapper>,
         )
 
