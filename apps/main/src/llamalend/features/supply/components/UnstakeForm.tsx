@@ -1,41 +1,29 @@
-import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { StakeTokenLabel } from '@/llamalend/widgets/action-card/StakeTokenLabel'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { Address, Token } from '@primitives/address.utils'
 import { FormButton } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
+import { useMarketContext } from '../../market-context'
 import { useUnstakeForm } from '../hooks/useUnstakeForm'
 import { AlertUnstakeOnly } from './alerts/AlertUnstakeOnly'
 import { UnstakeSupplyInfoList } from './UnstakeSupplyInfoList'
 
 type UnstakeFormProps<ChainId extends IChainId> = {
-  marketId: string | undefined
-  controllerAddress: Address | undefined
-  tokens: MarketTokensOrEmpty
-  vaultToken: Token | undefined
   networks: NetworkDict<ChainId>
-  chainId: ChainId
 }
 
 const TEST_ID_PREFIX = 'supply-unstake'
 
-export const UnstakeForm = <ChainId extends IChainId>({
-  marketId,
-  controllerAddress,
-  tokens,
-  vaultToken,
-  networks,
-  chainId,
-}: UnstakeFormProps<ChainId>) => {
+export const UnstakeForm = <ChainId extends IChainId>({ networks }: UnstakeFormProps<ChainId>) => {
+  const { chainId, marketId, controllerAddress, vaultToken } = useMarketContext<ChainId>()
   const network = networks[chainId]
   const blockchainId = network.id
 
   const { form, params, isPending, onSubmit, isDisabled, borrowToken, collateralToken, unstakeError, formErrors, max } =
-    useUnstakeForm({ marketId, tokens, network })
+    useUnstakeForm({ network })
 
   return (
     <Form

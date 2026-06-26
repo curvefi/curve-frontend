@@ -34,6 +34,9 @@ export const MarketLoanParameters = ({
           <ActionInfo
             testId="market-param-amm-swap-fee"
             label={t`AMM swap fee`}
+            labelTooltip={{
+              title: t`The LLAMMA fee applied when collateral is gradually converted across liquidation bands.`,
+            }}
             {...actionInfoQuery(
               mapQuery(parameters, d => d.fee),
               'percent.rate',
@@ -43,6 +46,9 @@ export const MarketLoanParameters = ({
           <ActionInfo
             testId="market-param-admin-fee"
             label={t`Admin fee`}
+            labelTooltip={{
+              title: t`The share of market interest routed to the market admin or fee receiver instead of lenders.`,
+            }}
             {...actionInfoQuery(
               mapQuery(parameters, d => d.admin_fee),
               'percent.rate',
@@ -54,6 +60,9 @@ export const MarketLoanParameters = ({
       <ActionInfo
         testId="market-param-band-width-factor"
         label={t`Band width factor`}
+        labelTooltip={{
+          title: t`A setting that controls how wide the liquidation bands are and how gradually soft liquidation plays out.`,
+        }}
         {...actionInfoQuery(
           fallbackQ(
             mapQuery(parameters, p => p.A),
@@ -66,6 +75,7 @@ export const MarketLoanParameters = ({
       <ActionInfo
         testId="market-param-loan-discount"
         label={t`Loan discount`}
+        labelTooltip={{ title: t`A safety buffer that lowers the maximum amount you can borrow against collateral.` }}
         {...actionInfoQuery(
           fallbackQ(
             mapQuery(parameters, p => p.loan_discount),
@@ -78,6 +88,9 @@ export const MarketLoanParameters = ({
       <ActionInfo
         testId="market-param-liquidation-discount"
         label={t`Liquidation discount`}
+        labelTooltip={{
+          title: t`A discount given to liquidators to ensure prompt liquidation when positions enter hard liquidations.`,
+        }}
         {...actionInfoQuery(
           fallbackQ(
             mapQuery(parameters, p => p.liquidation_discount),
@@ -90,6 +103,7 @@ export const MarketLoanParameters = ({
       <ActionInfo
         testId="market-param-max-ltv"
         label={t`Max LTV`}
+        labelTooltip={{ title: t`The highest loan-to-value ratio allowed when opening or increasing a position.` }}
         valueTooltip={t`Max possible loan at N=4`}
         {...actionInfoQuery(
           fallbackQ(

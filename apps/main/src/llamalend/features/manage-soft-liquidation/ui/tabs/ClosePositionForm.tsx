@@ -1,6 +1,6 @@
 import { useClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/hooks/useClosePositionForm'
 import { ClosePositionInfoList } from '@/llamalend/features/manage-soft-liquidation/ui/ClosePositionInfoList'
-import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
+import { useMarketContext } from '@/llamalend/features/market-context'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Stack from '@mui/material/Stack'
@@ -19,17 +19,8 @@ import type { ClosePositionRow } from '../columns/columns.definitions'
 
 const { Spacing } = SizesAndSpaces
 
-export const ClosePositionForm = ({
-  marketId,
-  tokens,
-  networks,
-  chainId,
-}: {
-  marketId: string | undefined
-  tokens: MarketTokensOrEmpty
-  networks: NetworkDict<LlamaChainId>
-  chainId: LlamaChainId
-}) => {
+export const ClosePositionForm = ({ networks }: { networks: NetworkDict<LlamaChainId> }) => {
+  const { chainId, marketId, tokens } = useMarketContext<LlamaChainId>()
   const network = networks[chainId]
   const {
     form,
@@ -46,7 +37,7 @@ export const ClosePositionForm = ({
     isApproved,
     onSubmit,
     formErrors,
-  } = useClosePositionForm({ marketId, tokens, network })
+  } = useClosePositionForm({ network })
 
   return (
     <Form

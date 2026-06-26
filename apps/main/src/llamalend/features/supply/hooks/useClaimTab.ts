@@ -1,26 +1,17 @@
 import { useMemo } from 'react'
-import { useConnection } from 'wagmi'
 import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useClaimCrvMutation, useClaimRewardsMutation } from '@/llamalend/mutations/claim.mutation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { Address } from '@primitives/address.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { UserMarketParams } from '@ui-kit/lib/model'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { q } from '@ui-kit/types/util'
+import { useMarketContext } from '../../market-context'
 import { CLAIM_TAB_COLUMNS, type ClaimableToken } from '../components/columns'
 import { useClaimableTokens } from './useClaimableTokens'
 
-export const useClaimTab = <ChainId extends LlamaChainId>({
-  marketId,
-  crvTokenAddress,
-  network,
-}: {
-  marketId: string | undefined
-  crvTokenAddress: Address | undefined
-  network: LlamaNetwork<ChainId>
-}) => {
-  const { address: userAddress } = useConnection()
+export const useClaimTab = <ChainId extends LlamaChainId>({ network }: { network: LlamaNetwork<ChainId> }) => {
+  const { marketId, crvTokenAddress, userAddress } = useMarketContext<ChainId>()
   const { chainId } = network
 
   const params = useMemo(

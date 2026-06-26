@@ -1,37 +1,24 @@
-import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { Address } from '@primitives/address.utils'
 import { FormButton } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
 import { AlertDisableForm } from '@ui-kit/shared/ui/AlertDisableForm'
-import type { LlamaMarketType } from '@ui-kit/types/market'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
+import { useMarketContext } from '../../market-context'
 import { useDepositForm } from '../hooks/useDepositForm'
 import { DepositSupplyInfoList } from './DepositSupplyInfoList'
 
 type DepositFormProps<ChainId extends IChainId> = {
-  marketId: string | undefined
-  controllerAddress: Address | undefined
-  tokens: MarketTokensOrEmpty
-  marketType: LlamaMarketType
   networks: NetworkDict<ChainId>
-  chainId: ChainId
 }
 
 const TEST_ID_PREFIX = 'supply-deposit'
 
-export const DepositForm = <ChainId extends IChainId>({
-  marketId,
-  controllerAddress,
-  tokens,
-  marketType,
-  networks,
-  chainId,
-}: DepositFormProps<ChainId>) => {
+export const DepositForm = <ChainId extends IChainId>({ networks }: DepositFormProps<ChainId>) => {
+  const { chainId, controllerAddress } = useMarketContext<ChainId>()
   const network = networks[chainId]
   const {
     form,
@@ -47,7 +34,7 @@ export const DepositForm = <ChainId extends IChainId>({
     max,
     disabledAlert,
     solvencyModal: { onConfirm, onClose, isOpen },
-  } = useDepositForm({ marketId, controllerAddress, tokens, marketType, network })
+  } = useDepositForm({ network })
 
   return (
     <Form

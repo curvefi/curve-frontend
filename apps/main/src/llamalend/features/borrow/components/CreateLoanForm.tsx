@@ -1,14 +1,12 @@
 import { type ChangeEvent, useCallback } from 'react'
 import { useConnection } from 'wagmi'
 import { LoanPreset, LEVERAGE } from '@/llamalend/constants'
-import { hasLeverage, type MarketTokensOrEmpty } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
-import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { FormButton } from '@ui-kit/features/forms'
 import { useCreateLoanPreset } from '@ui-kit/hooks/useLocalStorage'
@@ -16,10 +14,10 @@ import { t } from '@ui-kit/lib/i18n'
 import { AlertDisableForm } from '@ui-kit/shared/ui/AlertDisableForm'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { LlamaMarketType } from '@ui-kit/types/market'
 import { q, type Range } from '@ui-kit/types/util'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
+import { useMarketContext } from '../../market-context'
 import { useCreateLoanForm } from '../hooks/useCreateLoanForm'
 import { AdvancedCreateLoanOptions } from './AdvancedCreateLoanOptions'
 import { CreateLoanInfoList } from './CreateLoanInfoList'
@@ -31,37 +29,17 @@ const { Spacing } = SizesAndSpaces
 
 /**
  * The form contents for the create loan tab.
- * @param market The market to create a loan.
  * @param network The network configuration.
  * @param onPricesUpdated Callback to sync liquidation prices with the chart.
  */
 export const CreateLoanForm = <ChainId extends IChainId>({
-  market,
-  marketId,
-  ammAddress,
-  zapAddress,
-  controllerAddress,
-  tokens,
-  minBands,
-  maxBands,
   networks,
-  chainId,
   onPricesUpdated,
-  marketType,
 }: {
-  market: LlamaMarketTemplate | undefined
-  marketId: string | undefined
-  ammAddress: Address | undefined
-  zapAddress: Address | undefined
-  controllerAddress: Address | undefined
-  tokens: MarketTokensOrEmpty
-  minBands: number | undefined
-  maxBands: number | undefined
   networks: NetworkDict<ChainId>
-  chainId: ChainId
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
-  marketType: LlamaMarketType
 }) => {
+  const { chainId, controllerAddress, bands, marketType } = useMarketContext<ChainId>()
   const { isConnected } = useConnection()
   const network = networks[chainId]
   const [preset, setPreset] = useCreateLoanPreset<LoanPreset>(LoanPreset.Safe)
@@ -85,16 +63,9 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     priceImpact,
     solvencyModal: { onConfirm, onClose, isOpen },
     isHighLiquidationRisk,
+    isLeverageSupported,
   } = useCreateLoanForm({
-    market,
-    marketId,
-    ammAddress,
-    zapAddress,
-    controllerAddress,
-    tokens,
-    marketType,
     networks,
-    chainId,
     preset,
     onPricesUpdated,
   })
@@ -161,7 +132,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           }
         />
       </Stack>
-      {!!market && hasLeverage(market) && (
+      {isLeverageSupported && (
         <LeverageInput
           checked={values.leverageEnabled}
           leverage={leverage}
@@ -172,8 +143,8 @@ export const CreateLoanForm = <ChainId extends IChainId>({
       <LoanPresetSelector preset={preset} setPreset={setPreset} setRange={setRange}>
         <Collapse in={preset === LoanPreset.Custom}>
           <AdvancedCreateLoanOptions
-            minBands={minBands}
-            maxBands={maxBands}
+            minBands={bands.minBands}
+            maxBands={bands.maxBands}
             values={values}
             params={params}
             setRange={setRange}

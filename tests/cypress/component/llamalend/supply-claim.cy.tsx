@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { ClaimTab } from '@/llamalend/features/supply/components/ClaimTab'
-import { getCrvTokenAddress } from '@/llamalend/llama.utils'
 import { oneAddress } from '@cy/support/generators'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import {
@@ -17,6 +16,8 @@ import {
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { Decimal } from '@primitives/decimal.utils'
+import { LlamaMarketType } from '@ui-kit/types/market'
+import { constQ } from '@ui-kit/types/util'
 import { Chain } from '@ui-kit/utils'
 
 const chainId = Chain.Ethereum
@@ -50,13 +51,14 @@ describe('ClaimTab (mocked)', () => {
       setGasInfo({ chainId, networks: llamaNetworks })
 
       cy.mount(
-        <MockLoanTestWrapper llamaApi={llamaApi}>
-          <ClaimTab
-            marketId={market.id}
-            crvTokenAddress={getCrvTokenAddress(market)}
-            networks={llamaNetworks}
-            chainId={chainId}
-          />
+        <MockLoanTestWrapper
+          llamaApi={llamaApi}
+          network={llamaNetworks[chainId]}
+          marketQuery={constQ(market)}
+          apiMarket={constQ(undefined)}
+          marketType={LlamaMarketType.Lend}
+        >
+          <ClaimTab networks={llamaNetworks} />
         </MockLoanTestWrapper>,
       )
 

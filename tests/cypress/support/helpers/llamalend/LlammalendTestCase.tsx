@@ -1,3 +1,4 @@
+import { MarketContextProvider } from 'main/src/llamalend/features/market-context/MarketContextProvider'
 import { useLendMarket } from '@/lend/hooks/useLendMarket'
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
 import { AddCollateralForm } from '@/llamalend/features/manage-loan/components/AddCollateralForm'
@@ -11,16 +12,6 @@ import { DepositForm } from '@/llamalend/features/supply/components/DepositForm'
 import { StakeForm } from '@/llamalend/features/supply/components/StakeForm'
 import { UnstakeForm } from '@/llamalend/features/supply/components/UnstakeForm'
 import { WithdrawForm } from '@/llamalend/features/supply/components/WithdrawForm'
-import {
-  getAmmAddress,
-  getControllerAddress,
-  getCrvTokenAddress,
-  getGaugeAddress,
-  getMarketBandRange,
-  getTokens,
-  getVaultToken,
-  getZapAddress,
-} from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { useMintMarket } from '@/loan/hooks/useMintMarket'
 import { ChainId as MintChain } from '@/loan/types/loan.types'
@@ -39,7 +30,7 @@ import { LlamaMarketType } from '@ui-kit/types/market'
 import { constQ, type Range } from '@ui-kit/types/util'
 
 // todo: soft liquidation should be detected not forced by passing a tab. However, that detection is in the separate apps for now.
-const LoanComponents = {
+const LoanComponentMap = {
   'borrow-more': BorrowMoreForm,
   'add-collateral': AddCollateralForm,
   'remove-collateral': RemoveCollateralForm,
@@ -56,7 +47,7 @@ const SupplyComponents = {
   withdraw: WithdrawForm,
 }
 
-type LoanTab = keyof typeof LoanComponents
+type LoanTab = keyof typeof LoanComponentMap
 type SupplyTab = keyof typeof SupplyComponents
 
 type LlammalendTestProps = UserMarketQuery<LlamaChainId> & {
@@ -83,29 +74,31 @@ function LlammalendTest({ tab, onPricesUpdated, type, marketType, ...props }: Ll
 
   const Component = isLoan
     ? loanExists
-      ? tab && LoanComponents[tab as LoanTab]
+      ? tab && LoanComponentMap[tab as LoanTab]
       : CreateLoanForm
     : tab && SupplyComponents[tab as SupplyTab]
 
-  const { minBands, maxBands } = getMarketBandRange(market) ?? {}
   return market && Component ? (
-    <Component
-      market={market}
-      ammAddress={getAmmAddress(market)}
-      zapAddress={getZapAddress(market)}
-      controllerAddress={getControllerAddress(market)}
-      tokens={getTokens(market) ?? {}}
-      minBands={minBands}
-      maxBands={maxBands}
-      vaultToken={getVaultToken(market)}
-      gaugeAddress={getGaugeAddress(market)}
-      crvTokenAddress={getCrvTokenAddress(market)}
-      networks={llamaNetworks}
-      onPricesUpdated={onPricesUpdated!}
-      collateralEvents={constQ(fakeCollateralEvents)}
+    <MarketContextProvider
+      network={llamaNetworks[chainId]}
+      marketQuery={constQ(market)}
+      apiMarket={constQ(undefined)}
       marketType={marketType}
-      {...props}
-    />
+    >
+      {isLoan ? (
+        loanExists ? (
+          tab === 'close' ? (
+            <ClosePositionForm networks={llamaNetworks} />
+          ) : (
+            <LoanComponent tab={tab as Exclude<LoanTab, 'close'>} onPricesUpdated={onPricesUpdated!} />
+          )
+        ) : (
+          <CreateLoanForm networks={llamaNetworks} onPricesUpdated={onPricesUpdated!} />
+        )
+      ) : (
+        <SupplyComponent tab={tab as SupplyTab} />
+      )}
+    </MarketContextProvider>
   ) : market ? (
     `Invalid arguments given to LlammalendTestCase: ${JSON.stringify({ tab, type, loanExists, marketType })}.`
   ) : error ? (
@@ -113,6 +106,28 @@ function LlammalendTest({ tab, onPricesUpdated, type, marketType, ...props }: Ll
   ) : (
     <Skeleton width="100%" height={400} />
   )
+}
+
+const LoanComponent = ({
+  tab,
+  onPricesUpdated,
+}: {
+  tab: Exclude<LoanTab, 'close'>
+  onPricesUpdated: (prices: Range<Decimal> | undefined) => void
+}) => {
+  const Component = LoanComponentMap[tab]
+  return (
+    <Component
+      networks={llamaNetworks}
+      onPricesUpdated={onPricesUpdated}
+      collateralEvents={constQ(fakeCollateralEvents)}
+    />
+  )
+}
+
+const SupplyComponent = ({ tab }: { tab: SupplyTab }) => {
+  const Component = SupplyComponents[tab]
+  return <Component networks={llamaNetworks} />
 }
 
 export type LlammalendTestCaseProps = LlammalendTestProps & TenderlyWagmiConfigFromVNet

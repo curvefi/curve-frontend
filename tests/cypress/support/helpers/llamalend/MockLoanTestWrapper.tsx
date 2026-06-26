@@ -1,8 +1,14 @@
+import { MarketContextProvider } from 'main/src/llamalend/features/market-context/MarketContextProvider'
 import { type ReactElement } from 'react'
+import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
+import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import Box from '@mui/material/Box'
 import { CurveContext } from '@ui-kit/features/connect-wallet/lib/CurveContext'
 import { ConnectState } from '@ui-kit/features/connect-wallet/lib/types'
 import { useWallet } from '@ui-kit/features/connect-wallet/lib/useWallet'
+import type { LlamaMarketType } from '@ui-kit/types/market'
+import type { QueryProp } from '@ui-kit/types/util'
 import { ComponentTestWrapper } from '../ComponentTestWrapper'
 import { createMockLlamaApi, TEST_ADDRESS } from './mock-loan-test-data'
 import { mockedWagmiConfig } from './test-wagmi.helpers'
@@ -10,6 +16,10 @@ import { mockedWagmiConfig } from './test-wagmi.helpers'
 type MockLoanTestWrapperProps = {
   children: ReactElement
   llamaApi: ReturnType<typeof createMockLlamaApi>
+  network: { id: LlamaNetworkId; chainId: LlamaChainId }
+  marketQuery: QueryProp<LlamaMarketTemplate>
+  apiMarket: QueryProp<LlamaMarket>
+  marketType: LlamaMarketType
 }
 
 /**
@@ -21,7 +31,14 @@ const WalletStateSync = () => {
   return null
 }
 
-export const MockLoanTestWrapper = ({ children, llamaApi }: MockLoanTestWrapperProps) => (
+export const MockLoanTestWrapper = ({
+  children,
+  llamaApi,
+  network,
+  marketQuery,
+  apiMarket,
+  marketType,
+}: MockLoanTestWrapperProps) => (
   <ComponentTestWrapper config={mockedWagmiConfig}>
     <CurveContext
       value={{
@@ -35,7 +52,16 @@ export const MockLoanTestWrapper = ({ children, llamaApi }: MockLoanTestWrapperP
       }}
     >
       <WalletStateSync />
-      <Box sx={{ maxWidth: 520 }}>{children}</Box>
+      <Box sx={{ maxWidth: 520 }}>
+        <MarketContextProvider
+          network={network}
+          marketQuery={marketQuery}
+          apiMarket={apiMarket}
+          marketType={marketType}
+        >
+          {children}
+        </MarketContextProvider>
+      </Box>
     </CurveContext>
   </ComponentTestWrapper>
 )

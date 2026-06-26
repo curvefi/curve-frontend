@@ -3,34 +3,27 @@ import type { NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
-import type { Address } from '@primitives/address.utils'
 import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
 import { t } from '@ui-kit/lib/i18n'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
+import { useMarketContext } from '../../market-context'
 import { useClaimTab } from '../hooks/useClaimTab'
 import { ClaimActionInfoList } from './ClaimActionInfoList'
 import { type ClaimableToken } from './columns'
 import { TotalNotionalRow } from './columns/notional-cells'
 
 type ClaimTabProps<ChainId extends IChainId> = {
-  marketId: string | undefined
-  crvTokenAddress: Address | undefined
   networks: NetworkDict<ChainId>
-  chainId: ChainId
 }
 
 const TEST_ID_PREFIX = 'supply-claim'
 const { Spacing } = SizesAndSpaces
 
-export const ClaimTab = <ChainId extends IChainId>({
-  marketId,
-  crvTokenAddress,
-  networks,
-  chainId,
-}: ClaimTabProps<ChainId>) => {
+export const ClaimTab = <ChainId extends IChainId>({ networks }: ClaimTabProps<ChainId>) => {
+  const { chainId, marketId } = useMarketContext<ChainId>()
   const { isConnected } = useConnection()
   const network = networks[chainId]
 
@@ -48,11 +41,7 @@ export const ClaimTab = <ChainId extends IChainId>({
     onSubmitCrv,
     onSubmitRewards,
     errors,
-  } = useClaimTab({
-    marketId,
-    crvTokenAddress,
-    network,
-  })
+  } = useClaimTab({ network })
   return (
     <>
       <FormContent

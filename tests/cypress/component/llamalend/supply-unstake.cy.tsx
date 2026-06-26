@@ -1,5 +1,4 @@
 import { UnstakeForm } from '@/llamalend/features/supply/components/UnstakeForm'
-import { getControllerAddress, getTokens, getVaultToken } from '@/llamalend/llama.utils'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import { createUnstakeScenario } from '@cy/support/helpers/llamalend/supply/supply-test-scenarios.helpers'
 import {
@@ -18,6 +17,8 @@ import {
   setGasInfo,
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
+import { LlamaMarketType } from '@ui-kit/types/market'
+import { constQ } from '@ui-kit/types/util'
 import { Chain } from '@ui-kit/utils'
 
 const chainId = Chain.Ethereum
@@ -32,15 +33,14 @@ describe('UnstakeForm (mocked)', () => {
     setGasInfo({ chainId, networks: llamaNetworks })
 
     cy.mount(
-      <MockLoanTestWrapper llamaApi={llamaApi}>
-        <UnstakeForm
-          marketId={market.id}
-          controllerAddress={getControllerAddress(market)}
-          tokens={getTokens(market)}
-          vaultToken={getVaultToken(market)}
-          networks={llamaNetworks}
-          chainId={chainId}
-        />
+      <MockLoanTestWrapper
+        llamaApi={llamaApi}
+        network={llamaNetworks[chainId]}
+        marketQuery={constQ(market)}
+        apiMarket={constQ(undefined)}
+        marketType={LlamaMarketType.Lend}
+      >
+        <UnstakeForm networks={llamaNetworks} />
       </MockLoanTestWrapper>,
     )
 

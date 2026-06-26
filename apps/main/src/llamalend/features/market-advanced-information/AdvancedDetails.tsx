@@ -1,6 +1,4 @@
 import { formatCollateralNotional, tokenMetric } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import {
   MaxLeverageTooltip,
   SolvencyTooltip,
@@ -13,22 +11,16 @@ import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { mapQuery, type QueryProp } from '@ui-kit/types/util'
+import { mapQuery } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
+import { useMarketContext } from '../market-context'
 import { useAdvancedDetailsData } from './hooks/useAdvancedDetailsData'
 
 const { Spacing } = SizesAndSpaces
 
-type AdvancedDetailsProps = {
-  chainId: number | undefined | null
-  marketId: string | undefined | null
-  market: LlamaMarketTemplate | undefined
-  marketType: LlamaMarketType
-  apiMarket: QueryProp<LlamaMarket>
-}
-
-export const AdvancedDetails = ({ chainId, marketId, market, marketType, apiMarket }: AdvancedDetailsProps) => {
-  const { borrowedUsdRate, collateral, availableLiquidity, maxLeverage, solvency, totalBorrowers, averageHealth } =
+export const AdvancedDetails = () => {
+  const { chainId, marketId, market, marketType, apiMarket } = useMarketContext()
+  const { borrowedUsdRate, collateral, availableLiquidity, tvl, maxLeverage, solvency, totalBorrowers } =
     useAdvancedDetailsData({
       chainId,
       market,
@@ -44,13 +36,25 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType, apiMark
       sx={{
         display: 'grid',
         gap: Spacing.lg,
-        gridTemplateColumns: { mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)', desktop: 'repeat(6, 1fr)' },
+        gridTemplateColumns: {
+          mobile: 'repeat(2, minmax(0, 1fr))',
+          tablet: 'repeat(4, minmax(0, 1fr))',
+          desktop: 'repeat(6, minmax(0, 1fr))',
+        },
       }}
     >
+      <Metric
+        testId="market-tvl"
+        size="medium"
+        label={t`TVL`}
+        value={mapQuery(tvl, ({ value }) => value)}
+        valueOptions={{ unit: 'dollar' }}
+      />
       {availableLiquidity.data?.borrowCap && (
         <Metric
           size="medium"
           label={t`Borrow cap`}
+          labelTooltip={{ title: t`The maximum total amount that can be borrowed from this market.` }}
           {...tokenMetric({
             value: mapQuery(availableLiquidity, d => d.borrowCap),
             symbol: availableLiquidity.data?.borrowSymbol,
@@ -64,12 +68,6 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType, apiMark
         label={t`Total borrowers`}
         value={mapQuery(totalBorrowers, ({ value }) => value)}
         valueOptions={{ abbreviate: true }}
-      />
-      <Metric
-        size="medium"
-        label={t`Average health`}
-        value={mapQuery(averageHealth, ({ value }) => value)}
-        valueOptions={{ decimals: 1 }}
       />
       {/* we show total collateral in the rate curve card for lend markets */}
       {!isLendMarket && (

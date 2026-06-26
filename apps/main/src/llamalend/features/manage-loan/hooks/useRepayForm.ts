@@ -1,9 +1,13 @@
 import { useMemo } from 'react'
-import { useConnection } from 'wagmi'
 import { LEVERAGE } from '@/llamalend/constants'
 import { useMaxRepayTokenValues } from '@/llamalend/features/manage-loan/hooks/useMaxRepayTokenValues'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
-import { isRouterRequired, type MarketTokensOrEmpty } from '@/llamalend/llama.utils'
+import {
+  canRepayFromStateCollateral,
+  canRepayFromUserCollateral,
+  hasLeverageValue,
+  isRouterRequired,
+} from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useRepayMutation } from '@/llamalend/mutations/repay.mutation'
 import { getRepayLoanEstimateGasOptions } from '@/llamalend/queries/repay/repay-gas-estimate.query'
@@ -20,7 +24,6 @@ import { invalidateRepayRouteQueries } from '@/llamalend/queries/repay/repay-rou
 import type { RepayFormData, RepayFormParams } from '@/llamalend/queries/validation/repay.types'
 import { repayFormValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy, pick } from '@primitives/objects.utils'
 import type { RouteResponse } from '@ui-kit/entities/router-api'
@@ -31,6 +34,7 @@ import { type AllowUndefined, q, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
 import { shouldBlockTransaction } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
+import { useMarketContext } from '../../market-context'
 
 const NOT_AVAILABLE = ['root', t`Repay is not available, increase the repayment amount or repay fully.`] as const
 
@@ -106,25 +110,21 @@ const isRepayRouteRequired = (
 ) => !!market && isRouterRequired(getRepayImplementationType(market, { stateCollateral, userCollateral, userBorrowed }))
 
 export const useRepayForm = <ChainId extends LlamaChainId>({
-  market,
-  marketId,
-  ammAddress,
-  zapAddress,
-  tokens: { borrowToken, collateralToken },
   networks,
-  chainId,
   onPricesUpdated,
 }: {
-  market: LlamaMarketTemplate | undefined
-  marketId: string | undefined
-  ammAddress: Address | undefined
-  zapAddress: Address | undefined
-  tokens: MarketTokensOrEmpty
   networks: NetworkDict<ChainId>
-  chainId: ChainId
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
-  const { address: userAddress } = useConnection()
+  const {
+    chainId,
+    market,
+    marketId,
+    ammAddress,
+    zapAddress,
+    tokens: { borrowToken, collateralToken },
+    userAddress,
+  } = useMarketContext<ChainId>()
   const form = useForm<RepayFormData>({
     ...formOptions,
     validation: useMemo(() => repayFormValidationSuite(market), [market]),
@@ -163,6 +163,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     values,
     params,
     isPending,
+    isLoading: !market,
     isDisabled:
       !formState.isValid ||
       isPending ||
@@ -202,5 +203,8 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     ),
     isFull,
     max,
+    canRepayFromStateCollateral: !!market && canRepayFromStateCollateral(market),
+    canRepayFromUserCollateral: !!market && canRepayFromUserCollateral(market),
+    hasLeverageValue: !!market && hasLeverageValue(market),
   }
 }

@@ -1,40 +1,26 @@
-import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
 import { StakeTokenLabel } from '@/llamalend/widgets/action-card/StakeTokenLabel'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { Address, Token } from '@primitives/address.utils'
 import { FormButton } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
 import { AlertDisableForm } from '@ui-kit/shared/ui/AlertDisableForm'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
+import { useMarketContext } from '../../market-context'
 import { useStakeForm } from '../hooks/useStakeForm'
 import { AlertNoGauge } from './alerts/AlertNoGauge'
 import { StakeSupplyInfoList } from './StakeSupplyInfoList'
 
 type StakeFormProps<ChainId extends IChainId> = {
-  marketId: string | undefined
-  controllerAddress: Address | undefined
-  tokens: MarketTokensOrEmpty
-  vaultToken: Token | undefined
-  gaugeAddress: Address | undefined
   networks: NetworkDict<ChainId>
-  chainId: ChainId
 }
 
 const TEST_ID_PREFIX = 'supply-stake'
 
-export const StakeForm = <ChainId extends IChainId>({
-  marketId,
-  controllerAddress,
-  tokens,
-  vaultToken,
-  gaugeAddress,
-  networks,
-  chainId,
-}: StakeFormProps<ChainId>) => {
+export const StakeForm = <ChainId extends IChainId>({ networks }: StakeFormProps<ChainId>) => {
+  const { chainId, controllerAddress, vaultToken } = useMarketContext<ChainId>()
   const network = networks[chainId]
   const blockchainId = network.id
 
@@ -54,7 +40,7 @@ export const StakeForm = <ChainId extends IChainId>({
     max,
     disabledAlert,
     solvencyModal: { onConfirm, onClose, isOpen },
-  } = useStakeForm({ marketId, controllerAddress, tokens, gaugeAddress, network })
+  } = useStakeForm({ network })
 
   return (
     <Form

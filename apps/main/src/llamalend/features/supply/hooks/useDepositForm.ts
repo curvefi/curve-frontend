@@ -1,8 +1,6 @@
 import { useMemo } from 'react'
-import { useConnection } from 'wagmi'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import { useMaxDepositTokenValues } from '@/llamalend/features/supply/hooks/useMaxDeposit'
-import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useDepositMutation } from '@/llamalend/mutations/deposit.mutation'
 import { useDepositIsApproved } from '@/llamalend/queries/supply/supply-deposit-approved.query'
@@ -13,10 +11,9 @@ import {
 } from '@/llamalend/queries/validation/supply.validation'
 import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { Address } from '@primitives/address.utils'
 import { useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { useMarketContext } from '../../market-context'
 
 const userDefaultValues = { depositAmount: undefined }
 
@@ -26,20 +23,8 @@ const formOptions = {
   validation: depositFormValidationSuite,
   defaultValues: emptyDepositForm(),
 }
-export const useDepositForm = <ChainId extends LlamaChainId>({
-  marketId,
-  controllerAddress,
-  tokens,
-  marketType,
-  network,
-}: {
-  marketId: string | undefined
-  controllerAddress: Address | undefined
-  tokens: MarketTokensOrEmpty
-  marketType: LlamaMarketType
-  network: LlamaNetwork<ChainId>
-}) => {
-  const { address: userAddress } = useConnection()
+export const useDepositForm = <ChainId extends LlamaChainId>({ network }: { network: LlamaNetwork<ChainId> }) => {
+  const { marketId, controllerAddress, tokens, marketType, userAddress } = useMarketContext<ChainId>()
   const { chainId } = network
   const marketAlert = useMarketAlert(chainId, controllerAddress, marketType)
 

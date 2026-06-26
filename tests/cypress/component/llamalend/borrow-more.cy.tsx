@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { BorrowMoreForm } from '@/llamalend/features/manage-loan/components/BorrowMoreForm'
-import { getAmmAddress, getControllerAddress, getTokens, getZapAddress } from '@/llamalend/llama.utils'
 import { oneDecimal } from '@cy/support/generators'
 import {
   checkBorrowMoreDetailsLoaded,
@@ -70,19 +69,17 @@ describe('BorrowMoreForm (mocked)', () => {
       setGasInfo({ chainId, networks: llamaNetworks })
 
       cy.mount(
-        <MockLoanTestWrapper llamaApi={llamaApi}>
+        <MockLoanTestWrapper
+          llamaApi={llamaApi}
+          network={llamaNetworks[chainId]}
+          marketQuery={constQ(market)}
+          apiMarket={constQ(undefined)}
+          marketType={LlamaMarketType.Mint}
+        >
           <BorrowMoreForm
-            market={market}
-            marketId={market.id}
-            ammAddress={getAmmAddress(market)}
-            zapAddress={getZapAddress(market)}
-            controllerAddress={getControllerAddress(market)}
-            tokens={getTokens(market)}
             networks={llamaNetworks}
-            chainId={chainId}
             onPricesUpdated={onPricesUpdated}
             collateralEvents={constQ(fakeCollateralEvents)}
-            marketType={LlamaMarketType.Mint}
           />
         </MockLoanTestWrapper>,
       )

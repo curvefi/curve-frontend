@@ -1,6 +1,4 @@
 import { useMemo } from 'react'
-import { useConnection } from 'wagmi'
-import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useUnstakeMutation } from '@/llamalend/mutations/unstake.mutation'
 import {
@@ -12,6 +10,7 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import { useFormSync, useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { mapQuery } from '@ui-kit/types/util'
+import { useMarketContext } from '../../market-context'
 import { useVaultUserBalances } from './useVaultUserBalances'
 
 const userDefaultValues = { unstakeAmount: undefined }
@@ -21,16 +20,8 @@ const emptyUnstakeForm = (): UnstakeForm => ({
   maxUnstakeAmount: undefined,
 })
 
-export const useUnstakeForm = <ChainId extends LlamaChainId>({
-  marketId,
-  tokens,
-  network,
-}: {
-  marketId: string | undefined
-  tokens: MarketTokensOrEmpty
-  network: LlamaNetwork<ChainId>
-}) => {
-  const { address: userAddress } = useConnection()
+export const useUnstakeForm = <ChainId extends LlamaChainId>({ network }: { network: LlamaNetwork<ChainId> }) => {
+  const { marketId, tokens, userAddress } = useMarketContext<ChainId>()
   const { chainId } = network
 
   const { borrowToken, collateralToken } = tokens

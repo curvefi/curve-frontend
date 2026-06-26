@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { StakeForm } from '@/llamalend/features/supply/components/StakeForm'
-import { getControllerAddress, getGaugeAddress, getTokens, getVaultToken } from '@/llamalend/llama.utils'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import {
   checkStakeSubmit,
@@ -16,6 +15,8 @@ import {
   setGasInfo,
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
+import { LlamaMarketType } from '@ui-kit/types/market'
+import { constQ } from '@ui-kit/types/util'
 import { Chain } from '@ui-kit/utils'
 
 const chainId = Chain.Ethereum
@@ -36,16 +37,14 @@ describe('StakeForm (mocked)', () => {
       setGasInfo({ chainId, networks: llamaNetworks })
 
       cy.mount(
-        <MockLoanTestWrapper llamaApi={llamaApi}>
-          <StakeForm
-            marketId={market.id}
-            controllerAddress={getControllerAddress(market)}
-            tokens={getTokens(market)}
-            vaultToken={getVaultToken(market)}
-            gaugeAddress={getGaugeAddress(market)}
-            networks={llamaNetworks}
-            chainId={chainId}
-          />
+        <MockLoanTestWrapper
+          llamaApi={llamaApi}
+          network={llamaNetworks[chainId]}
+          marketQuery={constQ(market)}
+          apiMarket={constQ(undefined)}
+          marketType={LlamaMarketType.Lend}
+        >
+          <StakeForm networks={llamaNetworks} />
         </MockLoanTestWrapper>,
       )
 

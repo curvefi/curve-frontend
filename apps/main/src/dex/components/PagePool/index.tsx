@@ -15,6 +15,7 @@ import { useGaugeManager, useGaugeRewardsDistributors } from '@/dex/entities/gau
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolSnapshots } from '@/dex/entities/pool-snapshots.query'
 import { AdvancedDetails } from '@/dex/features/advanced-details'
+import { PoolInformation } from '@/dex/features/pool-information'
 import { UserPosition } from '@/dex/features/user-position'
 import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
 import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
@@ -245,14 +246,17 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
           <OhlcAndActivityComp rChainId={rChainId} poolAddress={poolAddress} pricesApiPoolData={pricesApiPoolData} />
         )}
         {isPoolFreshupEnabled ? (
-          <AdvancedDetails
-            curve={curve}
-            routerParams={routerParams}
-            poolData={poolData}
-            poolDataCacheOrApi={poolDataCacheOrApi}
-            poolAlert={poolAlert}
-            pricesApiPoolData={pricesApiPoolData}
-          />
+          <>
+            <PoolInformation
+              curve={curve}
+              routerParams={routerParams}
+              poolData={poolData}
+              poolDataCacheOrApi={poolDataCacheOrApi}
+              poolAlert={poolAlert}
+              pricesApiPoolData={pricesApiPoolData}
+            />
+            <AdvancedDetails routerParams={routerParams} poolData={poolData} poolDataCacheOrApi={poolDataCacheOrApi} />
+          </>
         ) : (
           <Stack>
             <Stack direction="row">
