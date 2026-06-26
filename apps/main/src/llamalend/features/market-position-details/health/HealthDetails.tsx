@@ -1,22 +1,33 @@
 import { useUserHealthValue } from '@/llamalend/queries/user/user-health.query'
 import { Stack, useTheme } from '@mui/material'
 import type { UserMarketParams } from '@ui-kit/lib/model'
-import { Metric } from '@ui-kit/shared/ui/Metric'
+import { Metric, type MetricProps } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { HealthAndBufferBar } from '..'
 import { HEALTH_TOOLTIP, LIQUIDATION_BUFFER_TOOLTIP } from '../tooltips'
-import { getHealthDetailsState, getHealthColor } from './utils'
+import { getHealthDetailsState, getHealthColor, HealthType } from './utils'
 
 const { Spacing } = SizesAndSpaces
+
+type HealthMetricConfig = {
+  tooltip: typeof HEALTH_TOOLTIP | typeof LIQUIDATION_BUFFER_TOOLTIP
+  value: MetricProps['value']
+}
 
 export const HealthDetails = ({ params }: { params: UserMarketParams }) => {
   const theme = useTheme()
   const healthQuery = useUserHealthValue(params)
-  const { state, isHealthy } = getHealthDetailsState(healthQuery.data)
-  const { tooltip, value } = isHealthy
-    ? { tooltip: HEALTH_TOOLTIP, value: mapQuery(healthQuery, d => d.health) }
-    : { tooltip: LIQUIDATION_BUFFER_TOOLTIP, value: mapQuery(healthQuery, d => d.liquidationBuffer) }
+  const { state, type } = getHealthDetailsState(healthQuery.data)
+  const { tooltip, value } = (
+    {
+      health: { tooltip: HEALTH_TOOLTIP, value: mapQuery(healthQuery, d => d.health) },
+      liquidationBuffer: {
+        tooltip: LIQUIDATION_BUFFER_TOOLTIP,
+        value: mapQuery(healthQuery, d => d.liquidationBuffer),
+      },
+    } satisfies Record<HealthType, HealthMetricConfig>
+  )[type]
 
   return (
     <Stack>

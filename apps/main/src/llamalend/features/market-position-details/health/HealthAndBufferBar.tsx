@@ -7,7 +7,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { QueryData } from '@ui-kit/lib/queries/types'
-import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
+import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -21,13 +21,14 @@ import {
   HealthAndBufferState,
   getHealthColor,
   getHealthPercent,
+  HealthType,
 } from './utils'
 
 const { Spacing, Height } = SizesAndSpaces
 
-type SegmentType = 'liquidationBuffer' | 'health'
-
 const DIVIDER_SPACING = Spacing.xxs
+
+type HealthQuery = QueryProp<QueryData<typeof useUserHealthValue>>
 
 const STATE_LABEL: Record<HealthAndBufferState, string> = {
   pristine: t`Pristine`,
@@ -40,22 +41,28 @@ const STATE_LABEL: Record<HealthAndBufferState, string> = {
 }
 
 const SEGMENT_CONFIG: Record<
-  SegmentType,
+  HealthType,
   {
     title: string
+    tooltip: typeof HEALTH_TOOLTIP | typeof LIQUIDATION_BUFFER_TOOLTIP
     withDivider?: boolean
+    getValue: (data: QueryData<typeof useUserHealthValue>) => Decimal | null | undefined
     getColor: (state: HealthAndBufferState | undefined) => (theme: Theme) => string | undefined
     getPercentage: (state: HealthAndBufferState | undefined, liquidationBuffer: Decimal | null | undefined) => number
   }
 > = {
   liquidationBuffer: {
     title: t`Buffer`,
+    tooltip: LIQUIDATION_BUFFER_TOOLTIP,
+    getValue: data => data.liquidationBuffer,
     getColor: getLiquidationBufferColor,
     getPercentage: getLiquidationBufferPercent,
   },
   health: {
     title: t`Health`,
+    tooltip: HEALTH_TOOLTIP,
     withDivider: true,
+    getValue: data => data.health,
     getColor: getHealthColor,
     getPercentage: getHealthPercent,
   },
@@ -73,20 +80,21 @@ const DashedDivider = () => (
 )
 
 const GridSegment = ({
-  isActive,
   state,
-  tooltip,
   type,
-  query: { data, isLoading },
+  activeType,
+  query,
 }: {
-  isActive?: boolean // wether the segment is active. This control the widths of the segment (larger when active)
   state: HealthAndBufferState | undefined
-  tooltip: Pick<TooltipProps, 'title' | 'body'>
-  type: SegmentType
-  query: QueryProp<Decimal | null | undefined>
+  type: HealthType
+  activeType: HealthType
+  query: HealthQuery
 }) => {
-  const { title, withDivider, getColor, getPercentage } = SEGMENT_CONFIG[type]
+  const { title, tooltip, withDivider, getValue, getColor, getPercentage } = SEGMENT_CONFIG[type]
+  const { data, isLoading } = mapQuery(query, getValue)
   const label = maybe(state, s => STATE_LABEL[s])
+  // this controls the widths of the segment (larger when active) and rendering the label
+  const isActive = type === activeType
   return (
     <Grid size={isActive ? 9 : 3}>
       <WithWrapper
@@ -138,31 +146,13 @@ const GridSegment = ({
   )
 }
 
-export const HealthAndBufferBar = ({
-  healthQuery,
-  sx,
-}: {
-  healthQuery: QueryProp<QueryData<typeof useUserHealthValue>>
-  sx?: SxProps
-}) => {
-  const { state, isHealthy } = getHealthDetailsState(healthQuery.data)
+export const HealthAndBufferBar = ({ healthQuery, sx }: { healthQuery: HealthQuery; sx?: SxProps }) => {
+  const { state, type: activeType } = getHealthDetailsState(healthQuery.data)
 
   return (
     <Grid container columnSpacing={DIVIDER_SPACING} sx={applySxProps(sx)}>
-      <GridSegment
-        state={state}
-        isActive={!isHealthy}
-        tooltip={LIQUIDATION_BUFFER_TOOLTIP}
-        type="liquidationBuffer"
-        query={mapQuery(healthQuery, d => d.liquidationBuffer)}
-      />
-      <GridSegment
-        state={state}
-        isActive={isHealthy}
-        tooltip={HEALTH_TOOLTIP}
-        type="health"
-        query={mapQuery(healthQuery, d => d.health)}
-      />
+      <GridSegment state={state} activeType={activeType} type="liquidationBuffer" query={healthQuery} />
+      <GridSegment state={state} activeType={activeType} type="health" query={healthQuery} />
     </Grid>
   )
 }

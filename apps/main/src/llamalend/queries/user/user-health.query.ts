@@ -41,7 +41,7 @@ export const useUserHealthValue = (params: UserMarketParams) => {
       legacyHealth: +notFull < 0 ? notFull : full,
       /** Distance from entering liquidation protection: the above-band cushion, clamped at zero. */
       health: decimalMax(decimalMinus(full, notFull), ZERO) ?? ZERO,
-      /** Remaining buffer before full liquidation, using the band-valued health returned by the protocol. */
+      /** Remaining buffer before full liquidation, using the band-valued health. */
       liquidationBuffer: notFull,
     })),
     ...combineQueryState(healthFull, healthNotFull),

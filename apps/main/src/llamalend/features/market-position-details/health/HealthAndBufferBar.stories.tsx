@@ -17,19 +17,15 @@ type HealthAndBufferBarStoryProps = {
   isLoading?: boolean
 }
 
-type HealthData = QueryData<typeof useUserHealthValue>
-
 const getHealthQuery = ({ health, liquidationBuffer, isLoading }: HealthAndBufferBarStoryProps) =>
-  q<HealthData>({
+  q<QueryData<typeof useUserHealthValue>>({
     data: maybes([health, liquidationBuffer], ([h, lb]) => ({ legacyHealth: ZERO, health: h, liquidationBuffer: lb })),
     isLoading: isLoading ?? false,
     error: null,
   })
 
 const HealthAndBufferBarStory = (props: HealthAndBufferBarStoryProps) => (
-  <Stack sx={{ width: '100%', maxWidth: '61.5rem' }}>
-    <HealthAndBufferBar healthQuery={getHealthQuery(props)} />
-  </Stack>
+  <HealthAndBufferBar healthQuery={getHealthQuery(props)} />
 )
 
 const meta: Meta<typeof HealthAndBufferBarStory> = {
@@ -73,7 +69,7 @@ const allStates = [
 
 export const AllStates: Story = {
   render: () => (
-    <Stack sx={{ width: '100%', maxWidth: '60rem', gap: Spacing.sm }}>
+    <Stack sx={{ gap: Spacing.sm }}>
       {allStates.map(({ name, args }) => (
         <HealthAndBufferBar key={name} healthQuery={getHealthQuery(args ?? {})} />
       ))}

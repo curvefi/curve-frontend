@@ -1,12 +1,13 @@
 import { useUserHealthValue } from '@/llamalend/queries/user/user-health.query'
 import type { Theme } from '@mui/material/styles'
 import { Decimal } from '@primitives/decimal.utils'
-import { maybe, maybes } from '@primitives/objects.utils'
+import { maybes } from '@primitives/objects.utils'
 import { QueryData } from '@ui-kit/lib'
 
 type HealthState = 'pristine' | 'good' | 'tight' | 'softLiquidation'
 type LiquidationBufferState = 'risky' | 'critical' | 'hardLiquidation'
 export type HealthAndBufferState = HealthState | LiquidationBufferState
+export type HealthType = 'liquidationBuffer' | 'health'
 
 const HEALTH_THRESHOLDS: Record<Exclude<HealthState, 'pristine'>, number> = {
   /** Below this value the position enter soft liquidation */
@@ -73,25 +74,6 @@ export const getLiquidationBufferColor = (state: HealthAndBufferState | undefine
   }
 }
 
-/**
- * If `healthValue` is defined, it returns true if the position has not entered soft liquidation (health > 0), false if it has.
- * It returns undefined if the value is not defined
- */
-const getIsHealthy = (healthValue: Decimal | null | undefined) =>
-  maybe(healthValue, healthValue => +healthValue > HEALTH_THRESHOLDS.softLiquidation) ??
-  // by default we show the health configuratin (health bar & metric)
-  true
-
-export const getHealthDetailsState = (healthData: QueryData<typeof useUserHealthValue> | undefined) => {
-  const { health, liquidationBuffer } = healthData ?? {}
-  const isHealthy = getIsHealthy(health)
-  const state = maybes([health, liquidationBuffer], ([health, liquidationBuffer]) =>
-    isHealthy ? getHealthState(+health) : getLiquidationBufferState(+liquidationBuffer),
-  )
-
-  return { state, isHealthy }
-}
-
 export const getHealthPercent = (state: HealthAndBufferState | undefined, health: Decimal | null | undefined) => {
   if (health == null || state == null) return 0
   switch (state) {
@@ -120,4 +102,25 @@ export const getLiquidationBufferPercent = (
     default:
       return 100
   }
+}
+
+export const getHealthDetailsState = (healthData: QueryData<typeof useUserHealthValue> | undefined) => {
+  const { health, liquidationBuffer } = healthData ?? {}
+  // it returns the current type of the position, to either show the "health" or the "liquidationBuffer"
+  const type: HealthType = health
+    ? +health > HEALTH_THRESHOLDS.softLiquidation
+      ? 'health'
+      : 'liquidationBuffer'
+    : 'health'
+
+  const state = maybes([health, liquidationBuffer], ([health, liquidationBuffer]) => {
+    const stateByType = {
+      health: getHealthState(+health),
+      liquidationBuffer: getLiquidationBufferState(+liquidationBuffer),
+    } satisfies Record<HealthType, HealthAndBufferState>
+
+    return stateByType[type]
+  })
+
+  return { state, type }
 }
