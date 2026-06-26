@@ -29,6 +29,7 @@ describe('Manage soft liquidation', () => {
     const { isHydrated, llamaApi } = useCurve()
     const market = useMemo(() => isHydrated && llamaApi?.getMintMarket(MARKET_ID), [isHydrated, llamaApi])
     if (!market) return <Skeleton />
+    const Component = { 'improve-health': ImproveHealthForm, 'close-position': ClosePositionForm }[tab]
     return (
       <MarketContextProvider
         network={network}
@@ -36,11 +37,7 @@ describe('Manage soft liquidation', () => {
         apiMarket={constQ(undefined)}
         marketType={LlamaMarketType.Mint}
       >
-        {tab === 'improve-health' ? (
-          <ImproveHealthForm networks={softLiqNetworks} collateralEvents={constQ(undefined)} />
-        ) : (
-          <ClosePositionForm networks={softLiqNetworks} />
-        )}
+        <Component networks={softLiqNetworks} collateralEvents={constQ(undefined)} />
       </MarketContextProvider>
     )
   }

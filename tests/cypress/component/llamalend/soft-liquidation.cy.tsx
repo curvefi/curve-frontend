@@ -21,7 +21,6 @@ import {
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createSoftLiquidationScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
-import { LlamaMarketType } from '@ui-kit/types/market'
 import { constQ } from '@ui-kit/types/util'
 
 const chainId = 1
@@ -48,13 +47,7 @@ describe('Soft Liquidation Forms (mocked)', () => {
         seedCrvUsdBalance({ chainId, addresses: [TEST_ADDRESS], min: borrow })
 
         cy.mount(
-          <MockLoanTestWrapper
-            llamaApi={llamaApi}
-            network={llamaNetworks[chainId]}
-            marketQuery={constQ(market)}
-            apiMarket={constQ(undefined)}
-            marketType={LlamaMarketType.Mint}
-          >
+          <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
             <ImproveHealthForm networks={llamaNetworks} collateralEvents={constQ(undefined)} />
           </MockLoanTestWrapper>,
         )
@@ -106,13 +99,7 @@ describe('Soft Liquidation Forms (mocked)', () => {
         seedCrvUsdBalance({ chainId, addresses: [TEST_ADDRESS], min: `${oneInt(15, 90)}` })
 
         cy.mount(
-          <MockLoanTestWrapper
-            llamaApi={llamaApi}
-            network={llamaNetworks[chainId]}
-            marketQuery={constQ(market)}
-            apiMarket={constQ(undefined)}
-            marketType={LlamaMarketType.Mint}
-          >
+          <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
             <ClosePositionForm networks={llamaNetworks} />
           </MockLoanTestWrapper>,
         )

@@ -5,6 +5,7 @@ import { RepayTokenList, type RepayTokenListProps } from '@/llamalend/features/m
 import { RepayTokenOption, useRepayTokens } from '@/llamalend/features/manage-loan/hooks/useRepayTokens'
 import { AlertRepayDebtToIncreaseHealth } from '@/llamalend/features/manage-soft-liquidation/ui/alerts/AlertRepayDebtToIncreaseHealth'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import { hasLeverageValue } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
 import { useUserPrices } from '@/llamalend/queries/user'
@@ -71,7 +72,7 @@ export const RepayForm = <ChainId extends IChainId>({
   collateralEvents: QueryProp<UserCollateralEvents>
   isInSoftLiquidation?: boolean
 }) => {
-  const { chainId, controllerAddress, tokens: marketTokens, marketType } = useMarketContext<ChainId>()
+  const { chainId, controllerAddress, market, tokens: marketTokens, marketType } = useMarketContext<ChainId>()
   const network = networks[chainId]
   const {
     form,
@@ -90,9 +91,6 @@ export const RepayForm = <ChainId extends IChainId>({
     max,
     isFull,
     priceImpact,
-    canRepayFromStateCollateral,
-    canRepayFromUserCollateral,
-    hasLeverageValue,
   } = useRepayForm({
     networks,
     onPricesUpdated,
@@ -100,8 +98,6 @@ export const RepayForm = <ChainId extends IChainId>({
   const { token, onToken, tokens } = useRepayTokens({
     tokens: marketTokens,
     networkId: network.id,
-    canRepayFromStateCollateral,
-    canRepayFromUserCollateral,
     collateralEvents,
   })
 
@@ -109,7 +105,7 @@ export const RepayForm = <ChainId extends IChainId>({
   const selectedToken = selectedField == 'userBorrowed' ? borrowToken : collateralToken
 
   const fromPosition = isFull.data === false && selectedField === 'stateCollateral'
-  const showLeverage = selectedToken !== borrowToken && hasLeverageValue
+  const showLeverage = selectedToken !== borrowToken && (market ? hasLeverageValue(market) : undefined)
   const { update: updateForm, formState } = form
   const isSelectedDirty = formState.dirtyFields[selectedField]
 

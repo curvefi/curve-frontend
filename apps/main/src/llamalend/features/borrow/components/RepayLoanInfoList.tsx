@@ -39,7 +39,7 @@ function useRepayRemainingDebt(
     prevDebt,
   }: {
     params: RepayParams
-    showLeverage: boolean
+    showLeverage: boolean | undefined
     prevDebt: Query<Decimal | null>
   },
   { isFull, userBorrowed }: Pick<RepayFormData, 'userBorrowed' | 'isFull'>,
@@ -103,7 +103,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   tokens: { collateralToken: Token | undefined; borrowToken: Token | undefined }
   networks: NetworkDict<ChainId>
   onSlippageChange: (newSlippage: Decimal) => void
-  showLeverage: boolean
+  showLeverage: boolean | undefined
   routes: MarketRoutes | undefined
   form: UseFormReturn<RepayFormData>
   prices?: QueryProp<Range<Decimal> | null>

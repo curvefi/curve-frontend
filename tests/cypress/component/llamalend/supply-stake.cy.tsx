@@ -15,8 +15,6 @@ import {
   setGasInfo,
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
-import { LlamaMarketType } from '@ui-kit/types/market'
-import { constQ } from '@ui-kit/types/util'
 import { Chain } from '@ui-kit/utils'
 
 const chainId = Chain.Ethereum
@@ -37,13 +35,7 @@ describe('StakeForm (mocked)', () => {
       setGasInfo({ chainId, networks: llamaNetworks })
 
       cy.mount(
-        <MockLoanTestWrapper
-          llamaApi={llamaApi}
-          network={llamaNetworks[chainId]}
-          marketQuery={constQ(market)}
-          apiMarket={constQ(undefined)}
-          marketType={LlamaMarketType.Lend}
-        >
+        <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
           <StakeForm networks={llamaNetworks} />
         </MockLoanTestWrapper>,
       )

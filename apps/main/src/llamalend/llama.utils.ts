@@ -19,15 +19,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { MetricProps } from '@ui-kit/shared/ui/Metric'
 import { LlamaMarketType, LlamaMarketVersion } from '@ui-kit/types/market'
 import { QueryProp } from '@ui-kit/types/util'
-import {
-  CRVUSD,
-  decimal,
-  decimalMinus,
-  decimalMultiply,
-  decimalSum,
-  formatNumber,
-  MAINNET_CRV_ADDRESS,
-} from '@ui-kit/utils'
+import { CRVUSD, decimal, decimalMinus, decimalMultiply, decimalSum, formatNumber } from '@ui-kit/utils'
 import { SOLVENCY_THRESHOLDS } from './llama-markets.constants'
 
 /**
@@ -258,8 +250,8 @@ export const getMarketBandRange = <T extends LlamaMarketTemplate | null | undefi
     m => maybes([m.minBand, m.maxBand], ([minBands, maxBands]) => ({ minBands, maxBands })),
   )
 
-export const getCrvTokenAddress = (market: LlamaMarketTemplate | null | undefined): Address =>
-  maybe(market, m => m.getLlamalend().constants.ALIASES.crv as Address) ?? MAINNET_CRV_ADDRESS
+export const getCrvTokenAddress = (market: LlamaMarketTemplate | null | undefined): Address | undefined =>
+  maybe(market, m => m.getLlamalend().constants.ALIASES.crv as Address)
 
 export const getMonetaryPolicy = <T extends LlamaMarketTemplate | null | undefined>(
   market: T,

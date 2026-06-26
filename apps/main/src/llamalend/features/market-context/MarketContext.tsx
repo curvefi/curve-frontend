@@ -6,4 +6,7 @@ import { type MarketContextValue } from './MarketContextValue'
 export const MarketContext = createContext<MarketContextValue<IChainId> | undefined>(undefined)
 
 export const useMarketContext = <ChainId extends IChainId = IChainId>() =>
-  assert(use(MarketContext), 'useMarketContext must be used within MarketContext') as MarketContextValue<ChainId>
+  assert(
+    use(MarketContext),
+    'useMarketContext must be used within MarketContextProvider',
+  ) as MarketContextValue<ChainId>
