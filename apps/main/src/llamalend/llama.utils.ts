@@ -501,7 +501,8 @@ export const lowSolvencyDeprecatedMessage = (solvencyPercent: number | null) =>
     ? t`This market is deprecated due to low solvency`
     : null
 
-export const getZapAddress = (market: LlamaMarketTemplate) => market.getZapAddress() as Address
+export const getZapAddress = <T extends LlamaMarketTemplate | undefined>(market: T) =>
+  maybe(market, m => (hasZapV2(m) ? (m.getZapAddress() as Address) : undefined))
 
 /** Builds Metric props for a token-denominated value with the matching USD notional shown below it. */
 export const tokenMetric = ({

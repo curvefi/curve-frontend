@@ -68,11 +68,7 @@ export const SupplyPositionDetails = ({ chainId, market, userAddress, blockchain
   const userSupplyBoost = useUserSupplyBoost(params)
   const onChainRewards = useMarketVaultOnChainRewards(params)
   const snapshots = mapQuery(
-    useLendingSnapshots({
-      blockchainId,
-      contractAddress: market && getControllerAddress(market),
-      limit: rateWindow,
-    }),
+    useLendingSnapshots({ blockchainId, contractAddress: getControllerAddress(market), limit: rateWindow }),
     snapshots => ({
       rebasingYield: getLatestSnapshotValue(snapshots, snapshot => snapshot.borrowedToken.rebasingYield),
       supplyAverageMetrics: getSupplyApyAverageMetrics({ snapshots, daysBack: rateWindow }),

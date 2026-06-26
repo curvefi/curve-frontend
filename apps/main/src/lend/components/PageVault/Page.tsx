@@ -64,7 +64,7 @@ export const Page = () => {
     market,
     marketId: market?.id,
     ammAddress: getAmmAddress(market, apiMarket.data),
-    zapAddress: market && getZapAddress(market),
+    zapAddress: getZapAddress(market),
     controllerAddress,
     tokens,
     marketType: LlamaMarketType.Lend,
