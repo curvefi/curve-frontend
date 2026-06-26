@@ -228,6 +228,7 @@ const NUMBER_FORMAT_CATEGORIES = {
     fallback: '-',
   },
   'number.compact': { abbreviate: true, fallback: '-' },
+  'pool.parameter': { unit: 'none', abbreviate: false, fallback: '-', decimals: 5 },
 } as const satisfies Record<string, NumberFormatOptions & { fallback: string }>
 
 export type NumberFormatCategory = keyof typeof NUMBER_FORMAT_CATEGORIES

@@ -28,7 +28,7 @@ type AdvancedDetailsProps = {
 }
 
 export const AdvancedDetails = ({ chainId, marketId, market, marketType, apiMarket }: AdvancedDetailsProps) => {
-  const { borrowedUsdRate, collateral, availableLiquidity, maxLeverage, solvency, totalBorrowers, averageHealth } =
+  const { borrowedUsdRate, collateral, availableLiquidity, tvl, maxLeverage, solvency, totalBorrowers } =
     useAdvancedDetailsData({
       chainId,
       market,
@@ -44,13 +44,25 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType, apiMark
       sx={{
         display: 'grid',
         gap: Spacing.lg,
-        gridTemplateColumns: { mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)', desktop: 'repeat(6, 1fr)' },
+        gridTemplateColumns: {
+          mobile: 'repeat(2, minmax(0, 1fr))',
+          tablet: 'repeat(4, minmax(0, 1fr))',
+          desktop: 'repeat(6, minmax(0, 1fr))',
+        },
       }}
     >
+      <Metric
+        testId="market-tvl"
+        size="medium"
+        label={t`TVL`}
+        value={mapQuery(tvl, ({ value }) => value)}
+        valueOptions={{ unit: 'dollar' }}
+      />
       {availableLiquidity.data?.borrowCap && (
         <Metric
           size="medium"
           label={t`Borrow cap`}
+          labelTooltip={{ title: t`The maximum total amount that can be borrowed from this market.` }}
           {...tokenMetric({
             value: mapQuery(availableLiquidity, d => d.borrowCap),
             symbol: availableLiquidity.data?.borrowSymbol,
@@ -64,12 +76,6 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType, apiMark
         label={t`Total borrowers`}
         value={mapQuery(totalBorrowers, ({ value }) => value)}
         valueOptions={{ abbreviate: true }}
-      />
-      <Metric
-        size="medium"
-        label={t`Average health`}
-        value={mapQuery(averageHealth, ({ value }) => value)}
-        valueOptions={{ decimals: 1 }}
       />
       {/* we show total collateral in the rate curve card for lend markets */}
       {!isLendMarket && (

@@ -71,7 +71,7 @@
     ]
   },
   "resolutions": {
-    "@curvefi/api": "2.69.4",
+    "@curvefi/api": "2.69.7",
     "@types/node": "25.6.0",
     "@types/react": "19.2.16",
     "@types/react-dom": "19.2.3",

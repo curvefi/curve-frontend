@@ -10,7 +10,8 @@ import { IconButtonIconSize } from '@ui-kit/themes/components/button'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
 import { applySxProps } from '@ui-kit/utils'
-import { Tooltip } from '../Tooltip'
+import { LabelTooltipIcon } from '../LabelTooltipIcon'
+import { Tooltip, type TooltipProps } from '../Tooltip'
 import { WithSkeleton } from '../WithSkeleton'
 import { WithWrapper } from '../WithWrapper'
 
@@ -21,6 +22,8 @@ export type ActionInfoSize = 'small' | 'medium'
 export type ActionInfoProps = {
   /** Label displayed on the left side */
   label: ReactNode
+  /** Optional tooltip content shown next to the label with an info icon */
+  labelTooltip?: Omit<TooltipProps, 'children'>
   /** Custom color for the label text */
   labelColor?: TypographyProps['color']
   /** Primary value to display and copy */
@@ -121,6 +124,7 @@ const ValueDecorator = (props: ValueDecoratorProps) => (
 )
 export const ActionInfo = ({
   label,
+  labelTooltip,
   labelColor,
   prevValue: givenPrevValue,
   prevValueColor,
@@ -159,6 +163,7 @@ export const ActionInfo = ({
         sx={{ flexGrow: 1, textAlign: 'start', whiteSpace: 'nowrap' }}
       >
         {label}
+        <LabelTooltipIcon tooltip={labelTooltip} />
       </Typography>
       <Stack direction="row" className="ActionInfo-valueGroup" sx={{ alignItems: 'center', gap: Spacing.xs }}>
         <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs, flexWrap: 'wrap', justifyContent: 'end' }}>
