@@ -82,7 +82,7 @@ const getIsHealthy = (healthValue: Decimal | null | undefined) =>
   // by default we show the health configuratin (health bar & metric)
   true
 
-export const getState = (healthData: QueryData<typeof useUserHealthValue> | undefined) => {
+export const getHealthDetailsState = (healthData: QueryData<typeof useUserHealthValue> | undefined) => {
   const { health, liquidationBuffer } = healthData ?? {}
   const isHealthy = getIsHealthy(health)
   const state = maybes([health, liquidationBuffer], ([health, liquidationBuffer]) =>

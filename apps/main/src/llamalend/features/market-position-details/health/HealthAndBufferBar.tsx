@@ -15,7 +15,7 @@ import { mapQuery, QueryProp } from '@ui-kit/types/util'
 import { applySxProps, formatNumber } from '@ui-kit/utils'
 import { HEALTH_TOOLTIP, LIQUIDATION_BUFFER_TOOLTIP } from '../tooltips'
 import {
-  getState,
+  getHealthDetailsState,
   getLiquidationBufferColor,
   getLiquidationBufferPercent,
   HealthAndBufferState,
@@ -145,7 +145,7 @@ export const HealthAndBufferBar = ({
   healthQuery: QueryProp<QueryData<typeof useUserHealthValue>>
   sx?: SxProps
 }) => {
-  const { state, isHealthy } = getState(healthQuery.data)
+  const { state, isHealthy } = getHealthDetailsState(healthQuery.data)
 
   return (
     <Grid container columnSpacing={DIVIDER_SPACING} sx={applySxProps(sx)}>
