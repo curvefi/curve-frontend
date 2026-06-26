@@ -258,6 +258,18 @@ export const getMarketBandRange = <T extends LlamaMarketTemplate | null | undefi
 export const getCrvTokenAddress = (market: LlamaMarketTemplate | null | undefined): Address =>
   maybe(market, m => m.getLlamalend().constants.ALIASES.crv as Address) ?? MAINNET_CRV_ADDRESS
 
+export const getMonetaryPolicy = <T extends LlamaMarketTemplate | null | undefined>(
+  market: T,
+  apiMarket?: LlamaMarket,
+): MarketOrApiValue<T, Address | undefined> =>
+  getMarketOrApiValue(
+    market,
+    apiMarket,
+    market =>
+      (market instanceof LendMarketTemplate ? market.addresses.monetary_policy : market.monetaryPolicy) as Address,
+    m => m.monetaryPolicyAddress,
+  )
+
 /**
  * Calculates the loan-to-value ratio of a market.
  * @param debtAmount - The amount of debt in the market.
@@ -280,6 +292,21 @@ export const calculateLtv = (
   if (collateralValue === 0 || debtValue === 0) return 0
   return (debtValue / collateralValue) * 100
 }
+
+export const calculateLendMarketTvlUsd = ({
+  borrowedBalanceUsd,
+  collateralBalanceUsd,
+  totalAssetsUsd,
+  totalDebtUsd,
+}: {
+  borrowedBalanceUsd: number
+  collateralBalanceUsd: number
+  totalAssetsUsd: number
+  totalDebtUsd: number
+}) => borrowedBalanceUsd + collateralBalanceUsd + totalAssetsUsd - totalDebtUsd
+
+export const calculateMintMarketTvlUsd = ({ collateralAmountUsd }: { collateralAmountUsd: number }) =>
+  collateralAmountUsd
 
 /**
  * Sends a new transaction hash to the backend to update user events.

@@ -1,9 +1,13 @@
 import { useSolvencyMarket } from '@/llamalend/hooks/useSolvencyMarket'
-import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
+import {
+  calculateLendMarketTvlUsd,
+  calculateMintMarketTvlUsd,
+  getControllerAddress,
+  getTokens,
+} from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import {
   useMarketCapAndAvailable,
-  useMarketLiquidationHealthDistribution,
   useMarketMaxLeverage,
   useMarketTotalCollateral,
   useMarketUsers,
@@ -65,11 +69,31 @@ export const useAdvancedDetailsData = ({
     blockchainId,
     contractAddress: controllerAddress,
   })
-  const liquidationHealthDistribution = useMarketLiquidationHealthDistribution({
-    endpoint,
-    blockchainId,
-    contractAddress: controllerAddress,
-  })
+  const tvl = fallbackQ(
+    marketType === LlamaMarketType.Lend
+      ? combineQueries(
+          [totalCollateral, capAndAvailable, collateralUsdRate, borrowedUsdRate],
+          ({ borrowed, collateral }, { totalAssets, available }, collateralUsdRate, borrowedUsdRate) =>
+            maybes(
+              [borrowed, collateral, totalAssets, available, collateralUsdRate, borrowedUsdRate],
+              ([borrowed, collateral, totalAssets, available, collateralUsdRate, borrowedUsdRate]) => ({
+                value: calculateLendMarketTvlUsd({
+                  borrowedBalanceUsd: +borrowed * borrowedUsdRate,
+                  collateralBalanceUsd: +collateral * collateralUsdRate,
+                  totalAssetsUsd: +totalAssets * borrowedUsdRate,
+                  totalDebtUsd: (+totalAssets - +available) * borrowedUsdRate,
+                }),
+              }),
+            ),
+        )
+      : combineQueries([totalCollateral, collateralUsdRate], ({ collateral }, collateralUsdRate) =>
+          maybes([collateral, collateralUsdRate], ([collateral, collateralUsdRate]) => ({
+            value: calculateMintMarketTvlUsd({ collateralAmountUsd: +collateral * collateralUsdRate }),
+          })),
+        ),
+    mapQuery(apiMarket, ({ tvl }) => ({ value: tvl })),
+  )
+
   return {
     marketType,
     collateral: fallbackQ(
@@ -126,10 +150,7 @@ export const useAdvancedDetailsData = ({
       mapQuery(apiMarket, ({ loans }) => ({ value: loans })),
     ),
     borrowedUsdRate: q(borrowedUsdRate),
-    averageHealth: mapQuery(liquidationHealthDistribution, distribution => ({
-      value: distribution.meanHealth,
-      distribution,
-    })),
+    tvl,
     ...(marketType === LlamaMarketType.Lend && {
       solvency: mapQuery(solvency, ({ solvencyPercent, badDebtUsd }) => ({ value: solvencyPercent, badDebtUsd })),
     }),

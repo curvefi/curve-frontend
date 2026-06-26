@@ -11,9 +11,7 @@ import Stack from '@mui/material/Stack'
 import { notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { AddressActionInfo } from '@ui-kit/shared/ui/AddressActionInfo'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-
-const { Spacing } = SizesAndSpaces
+import { Section } from './Section'
 
 export const Contracts = ({
   chainId,
@@ -51,8 +49,8 @@ export const Contracts = ({
   return (
     <Card size="inline">
       <CardHeader title={t`Contracts`} />
-      <CardContent component={Stack} sx={{ marginBlock: Spacing.sm, gap: Spacing.md }}>
-        <Stack>
+      <CardContent component={Stack}>
+        <Section>
           {poolAddress && (
             <AddressActionInfo
               network={network}
@@ -76,13 +74,13 @@ export const Contracts = ({
               }
             />
           )}
-        </Stack>
+        </Section>
 
-        <Stack sx={{ '&:empty': { display: 'none' } }}>
+        <Section>
           {oracles.map(oracle => (
             <AddressActionInfo key={oracle.address} network={network} {...oracle} />
           ))}
-        </Stack>
+        </Section>
       </CardContent>
     </Card>
   )

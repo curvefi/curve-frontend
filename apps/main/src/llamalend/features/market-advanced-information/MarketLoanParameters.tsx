@@ -42,6 +42,9 @@ export const MarketLoanParameters = ({
           <ActionInfo
             testId="market-param-amm-swap-fee"
             label={t`AMM swap fee`}
+            labelTooltip={{
+              title: t`The LLAMMA fee applied when collateral is gradually converted across liquidation bands.`,
+            }}
             value={formatNumber(parameters?.fee, 'percent.rate')}
             loading={loading}
             error={errorParameters}
@@ -50,6 +53,9 @@ export const MarketLoanParameters = ({
           <ActionInfo
             testId="market-param-admin-fee"
             label={t`Admin fee`}
+            labelTooltip={{
+              title: t`The share of market interest routed to the market admin or fee receiver instead of lenders.`,
+            }}
             value={formatNumber(parameters?.admin_fee, 'percent.rate')}
             loading={loading}
             error={errorParameters}
@@ -58,6 +64,9 @@ export const MarketLoanParameters = ({
           <ActionInfo
             testId="market-param-band-width-factor"
             label={t`Band width factor`}
+            labelTooltip={{
+              title: t`A setting that controls how wide the liquidation bands are and how gradually soft liquidation plays out.`,
+            }}
             value={formatNumber(parameters?.A, { abbreviate: false, useGrouping: false })}
             loading={loading}
             error={errorParameters}
@@ -66,6 +75,9 @@ export const MarketLoanParameters = ({
           <ActionInfo
             testId="market-param-loan-discount"
             label={t`Loan discount`}
+            labelTooltip={{
+              title: t`A safety buffer that lowers the maximum amount you can borrow against collateral.`,
+            }}
             value={formatNumber(parameters?.loan_discount, 'percent.rate')}
             loading={loading}
             error={errorParameters}
@@ -74,6 +86,9 @@ export const MarketLoanParameters = ({
           <ActionInfo
             testId="market-param-liquidation-discount"
             label={t`Liquidation discount`}
+            labelTooltip={{
+              title: t`A discount given to liquidators to ensure prompt liquidation when positions enter hard liquidations.`,
+            }}
             value={formatNumber(parameters?.liquidation_discount, 'percent.rate')}
             loading={loading}
             error={errorParameters}
@@ -84,6 +99,7 @@ export const MarketLoanParameters = ({
       <ActionInfo
         testId="market-param-max-ltv"
         label={t`Max LTV`}
+        labelTooltip={{ title: t`The highest loan-to-value ratio allowed when opening or increasing a position.` }}
         value={formatNumber(maxLtv, 'percent.rate')}
         valueTooltip={t`Max possible loan at N=4`}
         loading={loading}
