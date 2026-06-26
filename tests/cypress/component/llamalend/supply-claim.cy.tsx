@@ -53,7 +53,7 @@ describe('ClaimTab (mocked)', () => {
       cy.mount(
         <MockLoanTestWrapper
           llamaApi={llamaApi}
-          chainId={chainId}
+          network={llamaNetworks[chainId]}
           marketQuery={constQ(market)}
           apiMarket={constQ(undefined)}
           marketType={LlamaMarketType.Lend}

@@ -78,7 +78,7 @@ export const MintMarketPage = () => {
     />
   ) : (
     <MarketContextProvider
-      chainId={chainId}
+      network={network}
       marketQuery={marketQuery}
       apiMarket={apiMarket}
       marketType={LlamaMarketType.Mint}
@@ -92,16 +92,7 @@ export const MintMarketPage = () => {
             <CreateLoanTabs onPricesUpdated={setPreviewPrices} />
           ))
         }
-        header={
-          <MarketPageHeader
-            blockchainId={network.id}
-            chainId={chainId}
-            isLoading={isLoading}
-            market={market}
-            marketType={LlamaMarketType.Mint}
-            apiMarket={apiMarket}
-          />
-        }
+        header={<MarketPageHeader isLoading={isLoading} />}
       >
         <MarketBanners chainId={chainId} market={market} />
         <PositionDetailsComposite

@@ -2,7 +2,7 @@ import { MarketContextProvider } from 'main/src/llamalend/features/market-contex
 import { type ReactElement } from 'react'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
-import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import Box from '@mui/material/Box'
 import { CurveContext } from '@ui-kit/features/connect-wallet/lib/CurveContext'
 import { ConnectState } from '@ui-kit/features/connect-wallet/lib/types'
@@ -16,7 +16,7 @@ import { mockedWagmiConfig } from './test-wagmi.helpers'
 type MockLoanTestWrapperProps = {
   children: ReactElement
   llamaApi: ReturnType<typeof createMockLlamaApi>
-  chainId: IChainId
+  network: { id: LlamaNetworkId; chainId: LlamaChainId }
   marketQuery: QueryProp<LlamaMarketTemplate>
   apiMarket: QueryProp<LlamaMarket>
   marketType: LlamaMarketType
@@ -34,7 +34,7 @@ const WalletStateSync = () => {
 export const MockLoanTestWrapper = ({
   children,
   llamaApi,
-  chainId,
+  network,
   marketQuery,
   apiMarket,
   marketType,
@@ -54,7 +54,7 @@ export const MockLoanTestWrapper = ({
       <WalletStateSync />
       <Box sx={{ maxWidth: 520 }}>
         <MarketContextProvider
-          chainId={chainId}
+          network={network}
           marketQuery={marketQuery}
           apiMarket={apiMarket}
           marketType={marketType}

@@ -4,7 +4,6 @@ import { CrvUsdPriceChart } from '@/llamalend/widgets/CrvUsdPriceChart'
 import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
 import { ChartAndActivityComp } from '@/loan/components/ChartAndActivityComp'
 import type { ChainId } from '@/loan/types/loan.types'
-import { getBlockchainId } from '@curvefi/prices-api'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
@@ -26,10 +25,7 @@ export const MarketInformationComposite = ({ previewPrices }: MarketInformationC
   return (
     <Stack sx={{ gap: PAGE_SPACING }}>
       <ChartAndActivityComp previewPrices={previewPrices} />
-      <MarketHistoricalRatesChart
-        blockchainId={getBlockchainId(networks[chainId].id)}
-        rateMode={MarketRateType.Borrow}
-      />
+      <MarketHistoricalRatesChart rateMode={MarketRateType.Borrow} />
       <CrvUsdPriceChart />
 
       <Card size="small">

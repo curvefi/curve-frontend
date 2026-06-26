@@ -56,37 +56,21 @@ export const Page = () => {
     />
   ) : (
     <MarketContextProvider
-      chainId={chainId}
+      network={network}
       marketQuery={marketQuery}
       apiMarket={apiMarket}
       marketType={LlamaMarketType.Lend}
     >
       <DetailPageLayout
         formTabs={(market ?? apiMarket.data) && <VaultTabs />}
-        header={
-          <MarketPageHeader
-            blockchainId={network.id}
-            chainId={chainId}
-            isLoading={isLoading}
-            market={market}
-            marketType={LlamaMarketType.Lend}
-            apiMarket={apiMarket}
-          />
-        }
+        header={<MarketPageHeader isLoading={isLoading} />}
       >
         <MarketBanners
           chainId={chainId}
           market={market}
           rewardsBanner={<CampaignRewardsBanner chainId={chainId} market={market} />}
         />
-        {market && supplied > 0 && (
-          <SupplyPositionDetails
-            chainId={chainId}
-            market={market}
-            userAddress={userAddress}
-            blockchainId={networks[chainId].id}
-          />
-        )}
+        {market && supplied > 0 && <SupplyPositionDetails />}
         <MarketInformationComposite rateType={MarketRateType.Supply} />
       </DetailPageLayout>
     </MarketContextProvider>

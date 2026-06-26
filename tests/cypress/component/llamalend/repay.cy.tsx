@@ -48,7 +48,7 @@ describe('RepayForm (mocked)', () => {
       cy.mount(
         <MockLoanTestWrapper
           llamaApi={llamaApi}
-          chainId={chainId}
+          network={llamaNetworks[chainId]}
           marketQuery={constQ(market)}
           apiMarket={constQ(undefined)}
           marketType={LlamaMarketType.Mint}

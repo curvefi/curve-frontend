@@ -31,7 +31,7 @@ describe('Manage soft liquidation', () => {
     if (!market) return <Skeleton />
     return (
       <MarketContextProvider
-        chainId={chainId}
+        network={network}
         marketQuery={constQ(market)}
         apiMarket={constQ(undefined)}
         marketType={LlamaMarketType.Mint}

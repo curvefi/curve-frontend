@@ -4,7 +4,6 @@ import { getUtilizationPercent, tokenMetric } from '@/llamalend/llama.utils'
 import { useMarketCapAndAvailable, useMarketTotalCollateral, useRateCurve } from '@/llamalend/queries/market'
 import { TooltipOptions, TotalCollateralTooltip, UtilizationTooltip } from '@/llamalend/widgets/tooltips'
 import { RateCurveTooltip } from '@/llamalend/widgets/tooltips/chart/RateCurveTooltip'
-import type { Chain } from '@curvefi/prices-api'
 import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
@@ -73,9 +72,10 @@ const calculateCombinedCollateral = ({
         decimalSum(collateral, decimalMultiply(borrowed, borrowUsdRate / collateralUsdRate)),
       )
 
-export const MarketRateCurveChart = ({ blockchainId }: { blockchainId: Chain | undefined }) => {
+export const MarketRateCurveChart = () => {
   const {
     chainId,
+    blockchainId,
     marketId,
     controllerAddress,
     apiMarket,

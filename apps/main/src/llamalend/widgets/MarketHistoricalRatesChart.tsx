@@ -4,7 +4,6 @@ import { useLlamaSnapshot } from '@/llamalend/queries/llamma-snapshots.query'
 import { type MarketRates, useMarketRates } from '@/llamalend/queries/market'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { HistoricalRatesTooltip } from '@/llamalend/widgets/tooltips/chart/HistoricalRatesTooltip'
-import type { Chain } from '@curvefi/prices-api'
 import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
@@ -50,7 +49,6 @@ type RateSnapshot = CrvUsdSnapshot | LendingSnapshot
 type RateValue = Amount | null | undefined
 
 type MarketHistoricalRatesChartProps = {
-  blockchainId: Chain | undefined
   rateMode: MarketRateType
 }
 
@@ -111,8 +109,8 @@ const RATE_MODE_CONFIG = {
 const averageRates = (ratePoints: { rate: number; timestamp: number }[]) =>
   calculateAverageRates(ratePoints, 7, { rate: ({ rate }) => rate })?.rate
 
-export const MarketHistoricalRatesChart = ({ blockchainId, rateMode }: MarketHistoricalRatesChartProps) => {
-  const { chainId, marketId, controllerAddress, marketType, apiMarket } = useMarketContext()
+export const MarketHistoricalRatesChart = ({ rateMode }: MarketHistoricalRatesChartProps) => {
+  const { chainId, blockchainId, marketId, controllerAddress, marketType, apiMarket } = useMarketContext()
   const [timeOption, setTimeOption] = useState<TimeOption>('1M')
   const modeConfig = RATE_MODE_CONFIG[rateMode]
   const activeSeriesConfig = modeConfig.series

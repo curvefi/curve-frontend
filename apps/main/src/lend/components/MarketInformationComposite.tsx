@@ -5,7 +5,6 @@ import { useMarketContext } from '@/llamalend/features/market-context'
 import { MarketFaq } from '@/llamalend/features/market-faq'
 import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
 import { MarketRateCurveChart } from '@/llamalend/widgets/MarketRateCurveChart'
-import { getBlockchainId } from '@curvefi/prices-api'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
@@ -26,17 +25,16 @@ type MarketInformationCompProps = {
  */
 export const MarketInformationComposite = ({ rateType, previewPrices }: MarketInformationCompProps) => {
   const { chainId } = useMarketContext()
-  const blockchainId = getBlockchainId(networks[chainId].id)
   return (
     <Stack sx={{ gap: PAGE_SPACING }}>
       {rateType === MarketRateType.Borrow && (
         <>
           <ChartAndActivityComp previewPrices={previewPrices} />
-          <MarketHistoricalRatesChart blockchainId={blockchainId} rateMode={MarketRateType.Borrow} />
+          <MarketHistoricalRatesChart rateMode={MarketRateType.Borrow} />
         </>
       )}
-      <MarketHistoricalRatesChart blockchainId={blockchainId} rateMode={MarketRateType.Supply} />
-      <MarketRateCurveChart blockchainId={blockchainId} />
+      <MarketHistoricalRatesChart rateMode={MarketRateType.Supply} />
+      <MarketRateCurveChart />
       <Card size="small">
         <CardHeader title={t`Advanced Details`} />
         <CardContent component={Stack}>

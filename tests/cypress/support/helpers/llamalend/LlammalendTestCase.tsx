@@ -80,7 +80,7 @@ function LlammalendTest({ tab, onPricesUpdated, type, marketType, ...props }: Ll
 
   return market && Component ? (
     <MarketContextProvider
-      chainId={chainId}
+      network={llamaNetworks[chainId]}
       marketQuery={constQ(market)}
       apiMarket={constQ(undefined)}
       marketType={marketType}
