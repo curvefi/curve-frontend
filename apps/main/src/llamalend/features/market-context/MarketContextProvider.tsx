@@ -3,7 +3,7 @@ import { useConnection } from 'wagmi'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import type { LlamaMarketType } from '@ui-kit/types/market'
-import type { QueryProp } from '@ui-kit/types/util'
+import { q, type QueryProp } from '@ui-kit/types/util'
 import type { LlamaMarketTemplate } from '../../llamalend.types'
 import type { LlamaMarket } from '../../queries/market-list/llama-markets'
 import { MarketContext } from './MarketContext'
@@ -24,6 +24,8 @@ export const MarketContextProvider = <ChainId extends LlamaChainId>({
 }) => {
   const { address: userAddress } = useConnection()
   const { llamaApi: api = null } = useCurve()
+  const { data: market, isLoading: isMarketLoading, error: marketError } = marketQuery
+  const { data: apiMarketData, isLoading: isApiMarketLoading, error: apiMarketError } = apiMarket
   return (
     <MarketContext
       value={useMemo(
@@ -31,13 +33,25 @@ export const MarketContextProvider = <ChainId extends LlamaChainId>({
           createMarketContextValue({
             chainId: network.chainId,
             blockchainId: network.id,
-            marketQuery,
-            apiMarket,
+            marketQuery: q({ data: market, isLoading: isMarketLoading, error: marketError }),
+            apiMarket: q({ data: apiMarketData, isLoading: isApiMarketLoading, error: apiMarketError }),
             marketType,
             userAddress,
             api,
           }),
-        [api, apiMarket, marketQuery, marketType, network.chainId, network.id, userAddress],
+        [
+          api,
+          apiMarketData,
+          apiMarketError,
+          isApiMarketLoading,
+          isMarketLoading,
+          market,
+          marketError,
+          marketType,
+          network.chainId,
+          network.id,
+          userAddress,
+        ],
       )}
     >
       {children}

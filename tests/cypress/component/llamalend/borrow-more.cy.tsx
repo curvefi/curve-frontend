@@ -16,7 +16,6 @@ import {
 } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createBorrowMoreScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
 import { mockMintSnapshots } from '@cy/support/helpers/minting-mocks'
-import { LlamaMarketType } from '@ui-kit/types/market'
 import { constQ } from '@ui-kit/types/util'
 import { Chain } from '@ui-kit/utils'
 
@@ -69,13 +68,7 @@ describe('BorrowMoreForm (mocked)', () => {
       setGasInfo({ chainId, networks: llamaNetworks })
 
       cy.mount(
-        <MockLoanTestWrapper
-          llamaApi={llamaApi}
-          network={llamaNetworks[chainId]}
-          marketQuery={constQ(market)}
-          apiMarket={constQ(undefined)}
-          marketType={LlamaMarketType.Mint}
-        >
+        <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
           <BorrowMoreForm
             networks={llamaNetworks}
             onPricesUpdated={onPricesUpdated}

@@ -85,19 +85,11 @@ function LlammalendTest({ tab, onPricesUpdated, type, marketType, ...props }: Ll
       apiMarket={constQ(undefined)}
       marketType={marketType}
     >
-      {isLoan ? (
-        loanExists ? (
-          tab === 'close' ? (
-            <ClosePositionForm networks={llamaNetworks} />
-          ) : (
-            <LoanComponent tab={tab as Exclude<LoanTab, 'close'>} onPricesUpdated={onPricesUpdated!} />
-          )
-        ) : (
-          <CreateLoanForm networks={llamaNetworks} onPricesUpdated={onPricesUpdated!} />
-        )
-      ) : (
-        <SupplyComponent tab={tab as SupplyTab} />
-      )}
+      <Component
+        networks={llamaNetworks}
+        onPricesUpdated={onPricesUpdated!}
+        collateralEvents={constQ(fakeCollateralEvents)}
+      />
     </MarketContextProvider>
   ) : market ? (
     `Invalid arguments given to LlammalendTestCase: ${JSON.stringify({ tab, type, loanExists, marketType })}.`
@@ -106,28 +98,6 @@ function LlammalendTest({ tab, onPricesUpdated, type, marketType, ...props }: Ll
   ) : (
     <Skeleton width="100%" height={400} />
   )
-}
-
-const LoanComponent = ({
-  tab,
-  onPricesUpdated,
-}: {
-  tab: Exclude<LoanTab, 'close'>
-  onPricesUpdated: (prices: Range<Decimal> | undefined) => void
-}) => {
-  const Component = LoanComponentMap[tab]
-  return (
-    <Component
-      networks={llamaNetworks}
-      onPricesUpdated={onPricesUpdated}
-      collateralEvents={constQ(fakeCollateralEvents)}
-    />
-  )
-}
-
-const SupplyComponent = ({ tab }: { tab: SupplyTab }) => {
-  const Component = SupplyComponents[tab]
-  return <Component networks={llamaNetworks} />
 }
 
 export type LlammalendTestCaseProps = LlammalendTestProps & TenderlyWagmiConfigFromVNet

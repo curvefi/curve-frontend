@@ -2,12 +2,7 @@ import { useMemo } from 'react'
 import { LEVERAGE } from '@/llamalend/constants'
 import { useMaxRepayTokenValues } from '@/llamalend/features/manage-loan/hooks/useMaxRepayTokenValues'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
-import {
-  canRepayFromStateCollateral,
-  canRepayFromUserCollateral,
-  hasLeverageValue,
-  isRouterRequired,
-} from '@/llamalend/llama.utils'
+import { isRouterRequired } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useRepayMutation } from '@/llamalend/mutations/repay.mutation'
 import { getRepayLoanEstimateGasOptions } from '@/llamalend/queries/repay/repay-gas-estimate.query'
@@ -203,8 +198,5 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     ),
     isFull,
     max,
-    canRepayFromStateCollateral: !!market && canRepayFromStateCollateral(market),
-    canRepayFromUserCollateral: !!market && canRepayFromUserCollateral(market),
-    hasLeverageValue: !!market && hasLeverageValue(market),
   }
 }
