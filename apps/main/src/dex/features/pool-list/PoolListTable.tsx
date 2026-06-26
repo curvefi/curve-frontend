@@ -1,75 +1,41 @@
-import { useCallback, useState } from 'react'
-import { usePoolList } from '@/dex/queries/pool-list.query'
+import { useRef, useState } from 'react'
 import type { NetworkConfig } from '@/dex/types/main.types'
-import type { SortDirection as PoolSortDirection, V2PoolSortField as PoolSortField } from '@curvefi/prices-api/pools'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { type ExpandedState, getCoreRowModel, getExpandedRowModel } from '@tanstack/react-table'
 import { CURVE_SOCIALS } from '@ui/utils'
 import { useIsMobile, useIsTablet } from '@ui-kit/hooks/useBreakpoints'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
-import { useMappedQuery } from '@ui-kit/types/util'
+import { TableFiltersChip } from '@ui-kit/shared/ui/DataTable/TableFiltersChip'
 import { POOL_LIST_COLUMNS, PoolListColumnId } from './columns'
-import { PoolListFilterChips } from './components/PoolListFilterChips'
 import { PoolListMobileExpandedPanel } from './components/PoolListMobileExpandedPanel'
-import { PoolListFilterDrawer } from './drawers/PoolListFilterDrawer'
 import { PoolListSortDrawer } from './drawers/PoolListSortDrawer'
+import { PoolListFiltersCollapsible } from './filters/PoolListFiltersCollapsible'
+import { PoolListFiltersOverlay } from './filters/PoolListFiltersOverlay'
+import { usePoolListFilterControls } from './hooks/usePoolListFilterControls'
 import { usePoolListFilters } from './hooks/usePoolListFilters'
-import { POOL_LIST_PAGE_SIZE, usePoolListPagination } from './hooks/usePoolListPagination'
+import { usePoolListPagination } from './hooks/usePoolListPagination'
 import { usePoolListSorting } from './hooks/usePoolListSorting'
-import { usePoolListUserHasPosition } from './hooks/usePoolListUserHasPosition'
+import { usePoolListTable } from './hooks/usePoolListTable'
 import { usePoolListVisibilitySettings } from './hooks/usePoolListVisibilitySettings'
-import type { PoolListPoolType } from './poolList.constants'
-import { getPoolListItem } from './poolList.utils'
 
 const LOCAL_STORAGE_KEY = 'dex-pool-list'
 
-type PoolListTableParams = {
-  network: NetworkConfig
-  page: number
-  searchText: string
-  poolType: PoolListPoolType | undefined
-  sortBy: PoolSortField
-  sortDirection: PoolSortDirection
-}
-
-/** Fetches the current pool page and maps API rows into table rows. */
-const usePoolListTable = ({ network, page, searchText, poolType, sortBy, sortDirection }: PoolListTableParams) => {
-  const hasUserPoolPosition = usePoolListUserHasPosition(network.chainId)
-  const poolListQuery = usePoolList({
-    chainId: network.chainId,
-    page,
-    pageSize: POOL_LIST_PAGE_SIZE,
-    searchString: searchText || undefined,
-    poolType,
-    sortBy,
-    sortDirection,
-  })
-  const { data: poolList, isPlaceholderData } = poolListQuery
-  const tableQuery = useMappedQuery(
-    poolListQuery,
-    useCallback(
-      ({ pools }) => pools.map(pool => getPoolListItem(network, pool, hasUserPoolPosition(pool.address))),
-      [hasUserPoolPosition, network],
-    ),
-  )
-
-  return {
-    apiResultCount: isPlaceholderData ? undefined : poolList?.count,
-    pageCount: poolList?.pageCount ?? -1,
-    userHasPositions: tableQuery.data?.some(({ hasPosition }) => hasPosition),
-    tableQuery,
-  }
-}
-
 export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
   const isMobile = useIsMobile()
+  const [filtersOpen, , , , setFiltersOpen] = useSwitch(false)
+  const filterChipRef = useRef<HTMLDivElement>(null)
   const { onPaginationChange, pagination, updateQueryAndResetPage } = usePoolListPagination()
-  const { activeFilterCount, onSearch, poolType, poolTypeFilters, resetFilters, searchText, setPoolType } =
+  const { apiParams, filterProps, hasActiveFilters, onSearch, resetFilters, searchText } =
     usePoolListFilters(updateQueryAndResetPage)
+  const { appliedFilterProps, draftFilterProps, resetPoolFilters } = usePoolListFilterControls({
+    filterProps,
+    resetFilters,
+  })
   const { onSortingChange, sortBy, sortDirection, sortField, sorting, sortOptions } = usePoolListSorting(
     network.isLite,
     updateQueryAndResetPage,
@@ -80,13 +46,12 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
     isLite: network.isLite,
     sorting,
   })
-  const filterProps = { poolType, poolTypeFilters, setPoolType }
 
-  const { apiResultCount, pageCount, userHasPositions, tableQuery } = usePoolListTable({
+  const { pageCount, userHasPositions, tableQuery } = usePoolListTable({
+    filters: apiParams,
     network,
     page: pagination.pageIndex + 1,
     searchText,
-    poolType,
     sortBy,
     sortDirection,
   })
@@ -115,7 +80,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
         emptyState={{
           title: t`Can't find what you're looking for?`,
           description: t`Try adjusting your filters or search query. Or feel free to ask us on Telegram.`,
-          button: { label: t`Show all pools`, onClick: resetFilters },
+          button: { label: t`Show all pools`, onClick: resetPoolFilters, testId: 'dex-pool-empty-state-reset' },
           secondaryButton: { label: t`Telegram`, href: CURVE_SOCIALS.telegram.en },
         }}
         errorState={{ title: t`Unable to retrieve pool list` }}
@@ -128,24 +93,40 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
           toggleVisibility={toggleVisibility}
           searchText={searchText}
           onSearch={onSearch}
-          filterChip={
-            isMobile && (
-              <PoolListFilterDrawer
-                activeFilterCount={activeFilterCount}
-                resetFilters={resetFilters}
-                resultCount={apiResultCount}
-                {...filterProps}
+          collapsibleFilters={{
+            collapsible: (
+              <PoolListFiltersCollapsible
+                hasActiveFilters={hasActiveFilters}
+                resetFilters={resetPoolFilters}
+                {...appliedFilterProps}
               />
-            )
+            ),
+            hasActiveFilters,
+          }}
+          filterChip={
+            <TableFiltersChip
+              popoverFilterChipRef={filterChipRef}
+              open={filtersOpen}
+              setOpen={setFiltersOpen}
+              testId="btn-open-filters-dex-pools"
+            />
           }
           sortChip={
             isMobile && (
               <PoolListSortDrawer onSortingChange={onSortingChange} options={sortOptions} sortField={sortField} />
             )
           }
-          chips={<PoolListFilterChips resultCount={apiResultCount} {...filterProps} />}
         />
       </DataTable>
+      {/* Keep the overlay outside DataTable children because DataTable remounts them when switching sticky header layout. */}
+      <PoolListFiltersOverlay
+        anchorRef={filterChipRef}
+        hasActiveFilters={hasActiveFilters}
+        open={filtersOpen}
+        resetFilters={resetPoolFilters}
+        setOpen={setFiltersOpen}
+        {...draftFilterProps}
+      />
     </Stack>
   )
 }
