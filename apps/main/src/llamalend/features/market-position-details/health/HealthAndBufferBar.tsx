@@ -33,8 +33,10 @@ type HealthQuery = QueryProp<QueryData<typeof useUserHealthValue>>
 const STATE_LABEL: Record<HealthAndBufferState, string> = {
   pristine: t`Pristine`,
   good: t`Good`,
+  caution: t`Caution`,
   tight: t`Tight`,
   softLiquidation: t`Soft Liquidation`,
+  light: t`At risk`,
   risky: t`At risk`,
   critical: t`Critical`,
   hardLiquidation: t`Hard liquidation`,
@@ -95,6 +97,7 @@ const GridSegment = ({
   const label = maybe(state, s => STATE_LABEL[s])
   // this controls the widths of the segment (larger when active) and rendering the label
   const isActive = type === activeType
+
   return (
     <Grid size={isActive ? 9 : 3}>
       <WithWrapper
