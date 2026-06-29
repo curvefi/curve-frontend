@@ -35,4 +35,4 @@ export const combineActionInfoState = (...queries: (Query<unknown> | undefined)[
 export const isQueryValueDifferent = (
   value: QueryProp<Decimal | null> | undefined,
   comparedValue: Decimal | null | undefined,
-) => maybes([value?.data, comparedValue], ([data, comparedValue]) => !new BigNumber(data).isEqualTo(comparedValue))
+) => maybes([value?.data, comparedValue], (data, comparedValue) => !new BigNumber(data).isEqualTo(comparedValue))

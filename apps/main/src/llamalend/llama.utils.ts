@@ -515,7 +515,7 @@ export const tokenMetric = ({
       abbreviate: true,
       unit: maybe(symbol, symbol => ({ symbol, position: 'suffix' as const })),
     },
-    notional: maybes([decimal(value.data), usdRate.data], ([value, usdRate]) => ({
+    notional: maybes([decimal(value.data), usdRate.data], (value, usdRate) => ({
       value: decimalMultiply(value, usdRate),
       unit: 'dollar' as const,
     })),
