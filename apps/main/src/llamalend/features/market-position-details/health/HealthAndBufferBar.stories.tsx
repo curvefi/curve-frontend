@@ -7,7 +7,7 @@ import type { QueryData } from '@ui-kit/lib/queries/types'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q } from '@ui-kit/types/util'
 import { ZERO } from '@ui-kit/utils'
-import { HealthAndBufferBar } from '..'
+import { HealthAndBufferBar } from './HealthAndBufferBar'
 
 const { Spacing } = SizesAndSpaces
 

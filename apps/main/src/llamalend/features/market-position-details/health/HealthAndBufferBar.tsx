@@ -111,8 +111,7 @@ const GridSegment = ({
         <Tooltip title={tooltip.title} body={tooltip.body}>
           <Stack sx={{ flex: 1 }}>
             <Typography variant="bodyXsRegular" color="textTertiary">
-              {/* TODO: add the parenthesis as a number unit? */}
-              {title} {maybe(data, v => '(' + formatNumber(v, 'number.compact') + ')')}
+              {title}
             </Typography>
             <WithSkeleton loading={isLoading} variant="rectangular" width="100%" height={Height.healthBar.new}>
               <Stack
