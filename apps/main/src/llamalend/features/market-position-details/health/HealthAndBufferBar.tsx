@@ -9,7 +9,6 @@ import { t } from '@ui-kit/lib/i18n'
 import { QueryData } from '@ui-kit/lib/queries/types'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
-import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { mapQuery, QueryProp } from '@ui-kit/types/util'
 import { HEALTH_TOOLTIP, LIQUIDATION_BUFFER_TOOLTIP } from '../tooltips'
@@ -24,8 +23,6 @@ import {
 } from './utils'
 
 const { Spacing, Height } = SizesAndSpaces
-
-const DIVIDER_SPACING = Spacing.xxs
 
 type HealthQuery = QueryProp<QueryData<typeof useUserHealthValue>>
 
@@ -46,7 +43,6 @@ const SEGMENT_CONFIG: Record<
   {
     title: string
     tooltip: typeof HEALTH_TOOLTIP | typeof LIQUIDATION_BUFFER_TOOLTIP
-    withDivider?: boolean
     getValue: (data: QueryData<typeof useUserHealthValue>) => Decimal | null | undefined
     getColor: (state: HealthAndBufferState | undefined) => (theme: Theme) => string | undefined
     getPercentage: (state: HealthAndBufferState | undefined, liquidationBuffer: Decimal | null | undefined) => number
@@ -62,22 +58,11 @@ const SEGMENT_CONFIG: Record<
   health: {
     title: t`Health`,
     tooltip: HEALTH_TOOLTIP,
-    withDivider: true,
     getValue: data => data.health,
     getColor: getHealthColor,
     getPercentage: getHealthPercent,
   },
 }
-
-const DashedDivider = () => (
-  <Box
-    component="span"
-    sx={{
-      alignSelf: 'stretch',
-      borderRight: theme => `2px dashed ${theme.design.Color.Neutral[400]}`,
-    }}
-  />
-)
 
 const GridSegment = ({
   state,
@@ -90,7 +75,7 @@ const GridSegment = ({
   activeType: HealthType
   query: HealthQuery
 }) => {
-  const { title, tooltip, withDivider, getValue, getColor, getPercentage } = SEGMENT_CONFIG[type]
+  const { title, tooltip, getValue, getColor, getPercentage } = SEGMENT_CONFIG[type]
   const { data, isLoading } = mapQuery(query, getValue)
   const label = maybe(state, s => STATE_LABEL[s])
   // this controls the widths of the segment (larger when active) and rendering the label
@@ -98,50 +83,39 @@ const GridSegment = ({
 
   return (
     <Grid size={isActive ? 9 : 3}>
-      <WithWrapper
-        shouldWrap={withDivider}
-        Wrapper={Stack}
-        sx={{ flex: 1, alignItems: 'stretch' }}
-        spacing={DIVIDER_SPACING}
-        direction="row"
-      >
-        {withDivider && <DashedDivider />}
-        <Tooltip title={tooltip.title} body={tooltip.body}>
-          <Stack sx={{ flex: 1 }}>
-            <Typography variant="bodyXsRegular" color="textTertiary">
-              {title}
-            </Typography>
-            <WithSkeleton loading={isLoading} variant="rectangular" width="100%" height={Height.healthBar.new}>
-              <Stack
-                sx={{
-                  position: 'relative',
-                  justifyContent: 'center',
-                  height: Height.healthBar.new,
-                  backgroundColor: theme => theme.design.Color.Neutral[300],
-                  overflow: 'hidden',
-                }}
-              >
-                {isActive && label && (
-                  <Box
-                    sx={{
-                      position: 'absolute',
-                      left: Spacing.xs,
-                      paddingInline: Spacing.xxs,
-                      backgroundColor: theme => theme.design.Layer[3].Fill,
-                      border: theme => `1px solid ${theme.design.Layer[3].Outline}`,
-                    }}
-                  >
-                    <Typography variant="bodyXsRegular">{label}</Typography>
-                  </Box>
-                )}
+      <Tooltip title={tooltip.title} body={tooltip.body}>
+        <Stack sx={{ flex: 1 }}>
+          <Typography variant="bodyXsRegular" color="textTertiary">
+            {title}
+          </Typography>
+          <WithSkeleton loading={isLoading} variant="rectangular" width="100%" height={Height.healthBar.new}>
+            <Stack
+              sx={{
+                position: 'relative',
+                justifyContent: 'center',
+                height: Height.healthBar.new,
+                backgroundColor: theme => theme.design.Color.Neutral[300],
+                overflow: 'hidden',
+              }}
+            >
+              {isActive && label && (
                 <Box
-                  sx={{ height: '100%', width: `${getPercentage(state, data)}%`, backgroundColor: getColor(state) }}
-                />
-              </Stack>
-            </WithSkeleton>
-          </Stack>
-        </Tooltip>
-      </WithWrapper>
+                  sx={{
+                    position: 'absolute',
+                    left: Spacing.xs,
+                    paddingInline: Spacing.xxs,
+                    backgroundColor: theme => theme.design.Layer[3].Fill,
+                    border: theme => `1px solid ${theme.design.Layer[3].Outline}`,
+                  }}
+                >
+                  <Typography variant="bodyXsRegular">{label}</Typography>
+                </Box>
+              )}
+              <Box sx={{ height: '100%', width: `${getPercentage(state, data)}%`, backgroundColor: getColor(state) }} />
+            </Stack>
+          </WithSkeleton>
+        </Stack>
+      </Tooltip>
     </Grid>
   )
 }
@@ -150,7 +124,7 @@ export const HealthAndBufferBar = ({ healthQuery, sx }: { healthQuery: HealthQue
   const { state, type: activeType } = getHealthDetailsState(healthQuery.data)
 
   return (
-    <Grid container columnSpacing={DIVIDER_SPACING} sx={sx}>
+    <Grid container columnSpacing={Spacing['3xs']} sx={sx}>
       <GridSegment state={state} activeType={activeType} type="liquidationBuffer" query={healthQuery} />
       <GridSegment state={state} activeType={activeType} type="health" query={healthQuery} />
     </Grid>
