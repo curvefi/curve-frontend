@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useConnection } from 'wagmi'
+import { MarketContextProvider } from '@/llamalend/features/market-context'
 import { PositionDetailsComposite } from '@/llamalend/features/market-position-details'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
@@ -9,7 +10,7 @@ import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header'
 import { MarketInformationComposite } from '@/loan/components/MarketInformationComposite'
 import { CreateLoanTabs } from '@/loan/components/PageMintMarket/CreateLoanTabs'
-import { ManageLoanTabs, type MintManageLoanProps } from '@/loan/components/PageMintMarket/ManageLoanTabs'
+import { ManageLoanTabs } from '@/loan/components/PageMintMarket/ManageLoanTabs'
 import { networks } from '@/loan/networks'
 import { type CollateralUrlParams } from '@/loan/types/loan.types'
 import { getChainId, getCollateralListPathname } from '@/loan/utils/utilsRouter'
@@ -29,16 +30,13 @@ import { useMintMarket } from '../../hooks/useMintMarket'
 export const MintMarketPage = () => {
   const params = useParams<CollateralUrlParams>()
   const rCollateralId = params.collateralId.toLowerCase()
-  const { llamaApi: curve = null, isInitialized } = useCurve()
+  const { isInitialized } = useCurve()
   const chainId = getChainId(params)
   const { address } = useConnection()
   const [previewPrices, setPreviewPrices] = useState<Range<Decimal> | undefined>(undefined)
 
-  const {
-    data: market,
-    isLoading: isMarketLoading,
-    error: marketError,
-  } = useMintMarket({ chainId, rMarket: rCollateralId })
+  const marketQuery = useMintMarket({ chainId, rMarket: rCollateralId })
+  const { data: market, isLoading: isMarketLoading, error: marketError } = marketQuery
 
   const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists({
     chainId,
@@ -56,27 +54,19 @@ export const MintMarketPage = () => {
       enableLLv2: useLLv2(),
       enableDeprecatedMarkets: useUserProfileStore(state => state.showDeprecatedMarkets),
     },
-    !isLoading && !market, // only enable API data when wallet is disconnected
+    !isLoading && !market,
   )
   const tokens = useMemo(() => getTokens(market, apiMarket.data) ?? {}, [apiMarket.data, market])
+  const controllerAddress = getControllerAddress(market, apiMarket.data)
 
   const collateralEvents = useUserCollateralEvents({
     app: LlamaMarketType.Mint,
     chain: getBlockchainId(network.id),
-    controllerAddress: getControllerAddress(market, apiMarket.data),
+    controllerAddress,
     userAddress: address,
     network,
     tokens,
   })
-
-  const pageProps: Omit<MintManageLoanProps, 'collateralEvents'> = {
-    curve,
-    market,
-    rChainId: chainId,
-    params,
-    onPricesUpdated: setPreviewPrices,
-    apiMarket,
-  }
 
   const error = marketError ?? apiMarket.error
   return error ? (
@@ -87,40 +77,27 @@ export const MintMarketPage = () => {
       continueUrl={getCollateralListPathname(params)}
     />
   ) : (
-    <DetailPageLayout
-      formTabs={
-        ((!!market && !isLoanExistsLoading) || apiMarket.data) &&
-        (loanExists ? (
-          <ManageLoanTabs {...pageProps} collateralEvents={collateralEvents} />
-        ) : (
-          <CreateLoanTabs {...pageProps} />
-        ))
-      }
-      header={
-        <MarketPageHeader
-          blockchainId={network.id}
-          chainId={chainId}
-          isLoading={isLoading}
-          market={market}
-          marketType={LlamaMarketType.Mint}
-          apiMarket={apiMarket}
-        />
-      }
+    <MarketContextProvider
+      network={network}
+      marketQuery={marketQuery}
+      apiMarket={apiMarket}
+      marketType={LlamaMarketType.Mint}
     >
-      <MarketBanners chainId={chainId} market={market} />
-      <PositionDetailsComposite
-        tokens={tokens}
-        hasPosition={loanExists}
-        events={collateralEvents}
-        params={{ chainId, marketId: market?.id, userAddress: address }}
-      />
-      <MarketInformationComposite
-        market={market ?? null}
-        marketId={market?.id ?? ''}
-        chainId={chainId}
-        previewPrices={previewPrices}
-        apiMarket={apiMarket}
-      />
-    </DetailPageLayout>
+      <DetailPageLayout
+        formTabs={
+          ((!!market && !isLoanExistsLoading) || apiMarket.data) &&
+          (loanExists ? (
+            <ManageLoanTabs onPricesUpdated={setPreviewPrices} collateralEvents={collateralEvents} />
+          ) : (
+            <CreateLoanTabs onPricesUpdated={setPreviewPrices} />
+          ))
+        }
+        header={<MarketPageHeader isLoading={isLoading} />}
+      >
+        <MarketBanners chainId={chainId} market={market} />
+        <PositionDetailsComposite hasPosition={loanExists} events={collateralEvents} />
+        <MarketInformationComposite previewPrices={previewPrices} />
+      </DetailPageLayout>
+    </MarketContextProvider>
   )
 }

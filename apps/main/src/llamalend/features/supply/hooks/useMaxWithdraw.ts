@@ -34,20 +34,17 @@ const getIsWithdrawFull = ({
   // Flip to full mode once the entered amount reaches the current max withdrawable assets.
   decimalEqual(withdrawAmount, maxWithdrawAmount)
 
-export function useMaxWithdrawTokenValues<ChainId extends LlamaChainId>(
-  {
-    params,
-    form,
-  }: {
-    params: WithdrawParams<ChainId>
-    form: UseFormReturn<WithdrawForm>
-  },
-  enabled?: boolean,
-) {
+export function useMaxWithdrawTokenValues<ChainId extends LlamaChainId>({
+  params,
+  form,
+}: {
+  params: WithdrawParams<ChainId>
+  form: UseFormReturn<WithdrawForm>
+}) {
   const { update: updateForm } = form
-  const userBalances = useVaultUserBalances(params, enabled)
-  const maxWithdrawAmount = useVaultMaxWithdrawAmount(params, enabled)
-  const maxRedeemShares = useVaultMaxRedeemShares(params, enabled)
+  const userBalances = useVaultUserBalances(params)
+  const maxWithdrawAmount = useVaultMaxWithdrawAmount(params)
+  const maxRedeemShares = useVaultMaxRedeemShares(params)
   const isFull = {
     data: getIsWithdrawFull({
       withdrawAmount: params.withdrawAmount ?? undefined,

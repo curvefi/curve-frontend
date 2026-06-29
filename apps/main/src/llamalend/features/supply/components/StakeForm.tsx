@@ -1,5 +1,4 @@
-import { getControllerAddress } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
 import { StakeTokenLabel } from '@/llamalend/widgets/action-card/StakeTokenLabel'
@@ -9,25 +8,19 @@ import { t } from '@ui-kit/lib/i18n'
 import { AlertDisableForm } from '@ui-kit/shared/ui/AlertDisableForm'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
+import { useMarketContext } from '../../market-context'
 import { useStakeForm } from '../hooks/useStakeForm'
 import { AlertNoGauge } from './alerts/AlertNoGauge'
 import { StakeSupplyInfoList } from './StakeSupplyInfoList'
 
 type StakeFormProps<ChainId extends IChainId> = {
-  market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
-  chainId: ChainId
-  enabled?: boolean
 }
 
 const TEST_ID_PREFIX = 'supply-stake'
 
-export const StakeForm = <ChainId extends IChainId>({
-  market,
-  networks,
-  chainId,
-  enabled,
-}: StakeFormProps<ChainId>) => {
+export const StakeForm = <ChainId extends IChainId>({ networks }: StakeFormProps<ChainId>) => {
+  const { chainId, controllerAddress, vaultToken } = useMarketContext<ChainId>()
   const network = networks[chainId]
   const blockchainId = network.id
 
@@ -38,7 +31,6 @@ export const StakeForm = <ChainId extends IChainId>({
     isLoading,
     onSubmit,
     isDisabled,
-    vaultToken,
     borrowToken,
     collateralToken,
     error,
@@ -48,7 +40,7 @@ export const StakeForm = <ChainId extends IChainId>({
     max,
     disabledAlert,
     solvencyModal: { onConfirm, onClose, isOpen },
-  } = useStakeForm({ market, network, enabled })
+  } = useStakeForm({ network })
 
   return (
     <Form
@@ -61,7 +53,7 @@ export const StakeForm = <ChainId extends IChainId>({
           params={params}
           networks={networks}
           tokens={{ borrowToken }}
-          controllerAddress={getControllerAddress(market)}
+          controllerAddress={controllerAddress}
         />
       }
     >

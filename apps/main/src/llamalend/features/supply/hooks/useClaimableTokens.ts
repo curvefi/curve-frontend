@@ -1,7 +1,6 @@
 import { sum } from 'lodash'
 import { useMemo } from 'react'
 import type { Address } from 'viem'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useClaimableCrv, useClaimableRewards } from '@/llamalend/queries/supply/supply-claimable-rewards.query'
 import { hasClaimableRewards } from '@/llamalend/queries/supply/supply-query.helpers'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -10,28 +9,22 @@ import { UserMarketParams } from '@ui-kit/lib/model'
 import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { MAINNET_CRV } from '@ui-kit/utils'
 
-const getCrvAddress = (market: LlamaMarketTemplate) =>
-  market?.getLlamalend().constants.ALIASES.crv as Address | undefined
-
-export const useClaimableTokens = <ChainId extends LlamaChainId>(
-  params: UserMarketParams<ChainId>,
-  market: LlamaMarketTemplate | undefined,
-  enabled = true,
-) => {
+export const useClaimableTokens = <ChainId extends LlamaChainId>({
+  params,
+  crvAddress,
+}: {
+  params: UserMarketParams<ChainId>
+  crvAddress: Address | undefined
+}) => {
   const { chainId } = params
 
   const {
     data: claimableRewards,
     isLoading: isClaimableRewardsLoading,
     error: claimableRewardsError,
-  } = useClaimableRewards(params, enabled)
-  const {
-    data: claimableCrv,
-    isLoading: isClaimableCrvLoading,
-    error: claimableCrvError,
-  } = useClaimableCrv(params, enabled)
+  } = useClaimableRewards(params)
+  const { data: claimableCrv, isLoading: isClaimableCrvLoading, error: claimableCrvError } = useClaimableCrv(params)
 
-  const crvAddress = useMemo(() => market && getCrvAddress(market), [market])
   const rewardsAddresses = useMemo(() => claimableRewards?.map(r => r.token) ?? [], [claimableRewards])
 
   const {
@@ -65,7 +58,6 @@ export const useClaimableTokens = <ChainId extends LlamaChainId>(
     claimableRewardsError,
     hasClaimableCrv: Number(claimableCrv) > 0,
     hasClaimableRewards: hasClaimableRewards(claimableRewards),
-    crvTokenAddress: crvAddress,
     rewardTokenAddresses: rewardsAddresses,
     claimableTokens,
     totalNotionals,

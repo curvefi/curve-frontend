@@ -15,7 +15,7 @@ import { getLendingVaultsOptions } from '../queries/market-list/lending-vaults'
 type SolvencyMarketParams = {
   blockchainId: Chain | undefined
   controllerAddress: Address | undefined
-  marketType: LlamaMarketType
+  marketType: LlamaMarketType | undefined
 }
 
 type SolvencyMarketsQueries = [
