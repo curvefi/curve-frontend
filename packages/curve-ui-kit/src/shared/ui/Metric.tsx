@@ -100,6 +100,13 @@ const notionalsToString = (notionals: MetricProps['notional']) =>
 /** At the moment of writing the default formatter already formats to 2 decimals, but I really want to make this explicit for potential future changes. */
 const formatChange = (value: number): string => defaultNumberFormatter(value, { decimals: 2 })
 
+/**
+ * MUI Typography resolves the `color` prop through registered theme color names.
+ * Hex values need to be applied as CSS to avoid being treated as unresolved theme colors.
+ */
+const getTypographyColorProps = (color: TypographyProps['color']) =>
+  typeof color === 'string' && color.startsWith('#') ? { sx: { color } } : { color }
+
 type MetricValueProps = Pick<MetricProps, 'valueOptions' | 'change' | 'testId'> & {
   value: Amount | null
   size: NonNullable<MetricProps['size']>
@@ -115,6 +122,7 @@ const MetricValue = ({ value, valueOptions = {}, change, size, copyValue, toolti
 
   const fontVariant = MetricSize[size]
   const fontVariantUnit = MetricUnitSize[size]
+  const valueColorProps = getTypographyColorProps(color)
 
   return (
     <Stack direction="row" sx={{ gap: Spacing.xxs, alignItems: 'baseline' }}>
@@ -135,12 +143,16 @@ const MetricValue = ({ value, valueOptions = {}, change, size, copyValue, toolti
             </Typography>
           )}
 
-          <Typography variant={fontVariant} color={color}>
+          <Typography variant={fontVariant} {...valueColorProps}>
             {mainValue ?? fallback}
           </Typography>
 
           {scaleSuffix && (
-            <Typography variant={fontVariant} color="textPrimary" sx={{ textTransform: 'capitalize' }}>
+            <Typography
+              variant={fontVariant}
+              {...valueColorProps}
+              sx={applySxProps(valueColorProps.sx, { textTransform: 'capitalize' })}
+            >
               {scaleSuffix}
             </Typography>
           )}
