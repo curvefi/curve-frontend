@@ -14,7 +14,11 @@ import { ActionInfo, ActionInfoGasEstimate, type TxGasInfo } from '@ui-kit/share
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { mapQuery, type QueryProp, type Range } from '@ui-kit/types/util'
 import { decimal, formatNumber } from '@ui-kit/utils'
-import { getPriceImpactDisplay } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
+import {
+  getPriceImpactDisplay,
+  getPriceImpactPercent,
+  type PriceImpact,
+} from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { RouteProvidersAccordion } from '@ui-kit/widgets/RouteProvider'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 import { ActionInfoCollapse } from './ActionInfoCollapse'
@@ -49,7 +53,7 @@ export type LoanActionInfoListProps = {
   leverageCollateral?: QueryProp<Decimal | null>
   prevLeverageTotalCollateral?: QueryProp<Decimal | null>
   leverageTotalCollateral?: QueryProp<Decimal | null>
-  priceImpact?: QueryProp<Decimal | null>
+  priceImpact?: QueryProp<PriceImpact | Decimal | null>
   slippage?: Decimal
   onSlippageChange?: (newSlippage: Decimal) => void
   collateralSymbol?: string
@@ -279,7 +283,9 @@ export const LoanActionInfoList = ({
         {priceImpact && (
           <ActionInfo
             label={priceImpactLabel}
-            value={priceImpact.data == null ? '-' : formatNumber(priceImpact.data, 'percent.rate')}
+            value={
+              priceImpact.data == null ? '-' : formatNumber(getPriceImpactPercent(priceImpact.data), 'percent.rate')
+            }
             valueColor={priceImpactColor}
             error={priceImpact.error}
             loading={priceImpact.isLoading}

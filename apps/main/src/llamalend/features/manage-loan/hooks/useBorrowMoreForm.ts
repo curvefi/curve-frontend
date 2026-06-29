@@ -170,7 +170,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
       onClose,
       onConfirm,
     },
-    routes: useMarketRoutes({
+    ...useMarketRoutes({
       chainId,
       marketAddress: ammAddress,
       tokenIn: borrowToken,

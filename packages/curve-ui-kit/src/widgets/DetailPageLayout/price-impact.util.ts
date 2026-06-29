@@ -1,6 +1,5 @@
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
-import { getRouteById } from '@ui-kit/entities/router-api'
 import { t } from '@ui-kit/lib/i18n'
 import { Query } from '@ui-kit/types/util'
 import { decimalGreaterThan } from '@ui-kit/utils'
@@ -9,6 +8,19 @@ import { SLIPPAGE, type SlippageType } from '../SlippageSettings/slippage.utils'
 /** Threshold above which price impact blocks the transaction (shown as red alert) */
 const HIGH_PRICE_IMPACT_CRITICAL_THRESHOLD = '25' satisfies Decimal
 
+const MIN_USD_PRICE_IMPACT_WARN = 1000
+
+export type PriceImpact = {
+  priceImpact: Decimal | undefined
+  tokenInUsd: Decimal | undefined
+}
+
+const isPriceImpactSignificant = (priceImpact: PriceImpact | Decimal | null | undefined) =>
+  !(Number((priceImpact as PriceImpact)?.tokenInUsd) < MIN_USD_PRICE_IMPACT_WARN)
+
+export const getPriceImpactPercent = (priceImpact: PriceImpact | Decimal | null | undefined) =>
+  typeof priceImpact === 'string' ? priceImpact : (priceImpact?.priceImpact ?? '0')
+
 /**
  * Returns the alert severity based on price impact vs. slippage tolerance and critical threshold:
  * - 'error' if price impact exceeds HIGH_PRICE_IMPACT_CRITICAL_THRESHOLD (blocks the transaction)
@@ -16,21 +28,16 @@ const HIGH_PRICE_IMPACT_CRITICAL_THRESHOLD = '25' satisfies Decimal
  * - null if no alert is needed
  */
 export const getPriceImpactSeverity = (
-  { data: priceImpact }: Pick<Query<Decimal | null>, 'data'>,
+  priceImpact: PriceImpact | Decimal | null | undefined,
   { slippage, slippageType }: { slippage: Decimal | null | undefined; slippageType: SlippageType },
 ): 'error' | 'warning' | null =>
-  decimalGreaterThan(priceImpact ?? '0', HIGH_PRICE_IMPACT_CRITICAL_THRESHOLD)
-    ? 'error'
-    : decimalGreaterThan(priceImpact ?? '0', slippage ?? SLIPPAGE[slippageType].default)
-      ? 'warning'
-      : null
-
-/**
- * When using zapv2, the transaction often gets blocked because odos and enso give a nonsensical price impact.
- * For 0x and curve-solver, the price impact is not available yet.
- */
-const disablePriceImpactCheck = (routeId: string | undefined) =>
-  !!routeId && ['curve-solver', '0x', 'odos', 'enso'].includes(getRouteById(routeId).router)
+  isPriceImpactSignificant(priceImpact)
+    ? decimalGreaterThan(getPriceImpactPercent(priceImpact), HIGH_PRICE_IMPACT_CRITICAL_THRESHOLD)
+      ? 'error'
+      : decimalGreaterThan(getPriceImpactPercent(priceImpact), slippage ?? SLIPPAGE[slippageType].default)
+        ? 'warning'
+        : null
+    : null
 
 /**
  * Defines whether to block the transaction due to the price impact.
@@ -38,27 +45,26 @@ const disablePriceImpactCheck = (routeId: string | undefined) =>
  * We don't check the isLoading property as the query will be disabled until maxDebt is calculated.
  */
 export const shouldBlockTransaction = (
-  priceImpact: Query<Decimal | null>,
+  priceImpact: Query<PriceImpact | Decimal | null>,
   {
     slippage,
     leverageEnabled,
     slippageType,
-    routeId,
   }: {
     slippage: Decimal | null | undefined
     leverageEnabled: boolean | undefined
     slippageType: SlippageType
-    routeId?: string
   },
 ) =>
-  (leverageEnabled == true && priceImpact.data == null && !disablePriceImpactCheck(routeId)) ||
-  getPriceImpactSeverity(priceImpact, { slippage, slippageType }) === 'error'
+  (leverageEnabled == true && priceImpact.data == null) ||
+  (getPriceImpactSeverity(priceImpact.data, { slippage, slippageType }) === 'error' &&
+    isPriceImpactSignificant(priceImpact.data))
 
 export const getPriceImpactDisplay = (
-  priceImpact: Query<Decimal | null> | undefined,
+  priceImpact: Query<PriceImpact | Decimal | null> | undefined,
   { slippage, slippageType }: { slippage: Decimal | null | undefined; slippageType: SlippageType | undefined },
 ) => {
-  const severity = priceImpact && slippageType && getPriceImpactSeverity(priceImpact, { slippage, slippageType })
+  const severity = priceImpact && slippageType && getPriceImpactSeverity(priceImpact.data, { slippage, slippageType })
   return {
     label: severity ? t`High price impact` : t`Price impact`,
     color: maybe(severity, s => ({ error: 'error', warning: 'warning.main' })[s]),

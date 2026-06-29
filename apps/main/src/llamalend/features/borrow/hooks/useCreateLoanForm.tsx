@@ -12,14 +12,14 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import type { Decimal } from '@primitives/decimal.utils'
 import { pick } from '@primitives/objects.utils'
 import type { RouteResponse } from '@ui-kit/entities/router-api'
-import { useForm, useCallbackSync } from '@ui-kit/features/forms'
+import { useCallbackSync, useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { q, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
 import { shouldBlockTransaction } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
-import { LoanPreset, PRESET_RANGES, LEVERAGE } from '../../../constants'
+import { LEVERAGE, LoanPreset, PRESET_RANGES } from '../../../constants'
 import { useCreateLoanMutation } from '../../../mutations/create-loan.mutation'
 import { useCreateLoanIsApproved } from '../../../queries/create-loan/create-loan-approved.query'
 import { invalidateCreateLoanRouteQueries } from '../../../queries/create-loan/create-loan-route-invalidation'
@@ -146,7 +146,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
 
   useCallbackSync(useCreateLoanPrices(params), onPricesUpdated)
 
-  const priceImpact = q(useCreateLoanPriceImpact(params, values.leverageEnabled))
+  const priceImpact = q(useCreateLoanPriceImpact(params, !zapAddress))
   const isHighLiquidationRisk = q(useIsHighLiquidationRisk(params))
 
   const isPending = formState.isSubmitting || isCreating
@@ -180,7 +180,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
       onClose,
       onConfirm,
     },
-    routes: useMarketRoutes({
+    ...useMarketRoutes({
       chainId,
       marketAddress: ammAddress,
       tokenIn: borrowToken,

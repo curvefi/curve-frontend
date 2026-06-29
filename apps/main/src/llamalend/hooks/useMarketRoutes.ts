@@ -1,5 +1,7 @@
 import { useEffect, useEffectEvent, useMemo, useState, useTransition } from 'react'
 import { useConnection } from 'wagmi'
+import { usePriceImpact } from '@/llamalend/hooks/usePriceImpact'
+import type { MarketToken } from '@/llamalend/llama.utils'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { Address } from '@primitives/address.utils'
 import { toArray } from '@primitives/array.utils'
@@ -18,6 +20,7 @@ import {
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { q, type QueryProp } from '@ui-kit/types/util'
 import { decimalCompare, decimalMax, toWei } from '@ui-kit/utils'
+import type { PriceImpact } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 
 export type MarketRoutes = {
   queries: RouteQueries
@@ -53,8 +56,8 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
 }: {
   chainId: number
   marketAddress: Address | undefined
-  tokenIn: { symbol: string; address: Address; decimals: number } | undefined
-  tokenOut: { symbol: string; address: Address; decimals: number } | undefined
+  tokenIn: MarketToken | undefined
+  tokenOut: MarketToken | undefined
   amountIn: Decimal | undefined
   slippage: Decimal | undefined
   enabled: boolean
@@ -62,26 +65,27 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
   getRouteGasOptions: GetGasCallback<TData, GasQueryKey>
   zapAddress: Address | undefined
   onChange: (option: RouteResponse | undefined) => Promise<void>
-}): MarketRoutes | undefined {
+}): { routes: MarketRoutes | undefined; priceImpact?: QueryProp<PriceImpact | Decimal | null> } {
   const [chosenRouter, setChosenRouter] = useState<RouteProvider | undefined>(undefined) // keep the preferred router while mounted
   const { address: userAddress } = useConnection()
   const [, startTransition] = useTransition() // todo: use isTransitioning for something
 
+  const params = {
+    chainId,
+    tokenIn: tokenIn?.address,
+    tokenOut: tokenOut?.address,
+    amountIn: amountIn && tokenIn && toWei(amountIn, tokenIn.decimals),
+    blacklist: toArray(marketAddress),
+    userAddress,
+    zapAddress,
+    slippage,
+  }
   const { queries, onRefresh } = useRouterQueries<TData, GasQueryKey>(
-    {
-      chainId,
-      tokenIn: tokenIn?.address,
-      tokenOut: tokenOut?.address,
-      amountIn: amountIn && tokenIn && toWei(amountIn, tokenIn.decimals),
-      blacklist: toArray(marketAddress),
-      userAddress,
-      zapAddress,
-      slippage,
-    },
+    params,
     getRouteGasOptions,
     enabled && !!slippage, // enforce slippage, important for ZapV2 but not required for API
   )
-  const usdRate = q(useTokenUsdRate({ tokenAddress: tokenOut?.address, chainId }, enabled))
+
   const selectedRoute = useMemo(
     () =>
       chosenRouter
@@ -99,15 +103,21 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
   const onChangeEffect = useEffectEvent(onChangeProp)
   useEffect(() => startTransition(() => onChangeEffect(selectedRoute)), [selectedRoute])
 
+  const selectedRouter = chosenRouter ?? selectedRoute?.router
+  const priceImpact = usePriceImpact({ params, selectedRoute, tokenIn, tokenOut, chainId }, enabled)
+
   return {
-    networks,
-    chainId,
-    queries,
-    enabled,
-    selectedRoute,
-    selectedRouter: chosenRouter ?? selectedRoute?.router,
-    onChange: setChosenRouter,
-    onRefresh,
-    tokenOut: { ...tokenOut, usdRate },
+    routes: {
+      networks,
+      chainId,
+      queries,
+      enabled,
+      selectedRoute,
+      selectedRouter,
+      onChange: setChosenRouter,
+      onRefresh,
+      tokenOut: { ...tokenOut, usdRate: q(useTokenUsdRate({ tokenAddress: tokenOut?.address, chainId }, enabled)) },
+    },
+    ...(enabled && { priceImpact }),
   }
 }
