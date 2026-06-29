@@ -12,7 +12,6 @@ import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { mapQuery, QueryProp } from '@ui-kit/types/util'
-import { applySxProps, formatNumber } from '@ui-kit/utils'
 import { HEALTH_TOOLTIP, LIQUIDATION_BUFFER_TOOLTIP } from '../tooltips'
 import {
   getHealthDetailsState,
@@ -76,7 +75,6 @@ const DashedDivider = () => (
     sx={{
       alignSelf: 'stretch',
       borderRight: theme => `2px dashed ${theme.design.Color.Neutral[400]}`,
-      pointerEvents: 'none',
     }}
   />
 )
@@ -152,7 +150,7 @@ export const HealthAndBufferBar = ({ healthQuery, sx }: { healthQuery: HealthQue
   const { state, type: activeType } = getHealthDetailsState(healthQuery.data)
 
   return (
-    <Grid container columnSpacing={DIVIDER_SPACING} sx={applySxProps(sx)}>
+    <Grid container columnSpacing={DIVIDER_SPACING} sx={sx}>
       <GridSegment state={state} activeType={activeType} type="liquidationBuffer" query={healthQuery} />
       <GridSegment state={state} activeType={activeType} type="health" query={healthQuery} />
     </Grid>

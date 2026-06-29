@@ -38,23 +38,21 @@ export const HealthDetails = ({ params }: { params: UserMarketParams }) => {
   )[type]
 
   return (
-    <Stack>
-      <Stack sx={{ gap: Spacing.xs }}>
-        <Stack direction="row" sx={{ alignItems: 'flex-end', gap: Spacing.md.mobile }}>
-          <Metric
-            label={tooltip.shortTitle}
-            value={value}
-            valueOptions={{
-              unit: 'none',
-              // TODO: fix metric typography color only resolves registered variants and it's not applied to the entire value
-              color: getMetricColor(state)(theme),
-            }}
-            valueTooltip={tooltip}
-            size="medium"
-          />
-          <Stack sx={{ flex: 1 }}>
-            <HealthAndBufferBar healthQuery={q(healthQuery)} />
-          </Stack>
+    <Stack sx={{ gap: Spacing.xs }}>
+      <Stack direction="row" sx={{ alignItems: 'flex-end', gap: Spacing.md }}>
+        <Metric
+          label={tooltip.shortTitle}
+          value={value}
+          valueOptions={{
+            unit: 'none',
+            // TODO: fix metric typography color only resolves registered variants and it's not applied to the entire value
+            color: getMetricColor(state)(theme),
+          }}
+          valueTooltip={tooltip}
+          size="medium"
+        />
+        <Stack sx={{ flex: 1 }}>
+          <HealthAndBufferBar healthQuery={q(healthQuery)} />
         </Stack>
       </Stack>
     </Stack>
