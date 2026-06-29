@@ -76,7 +76,7 @@ export const useAdvancedDetailsData = ({
           ({ borrowed, collateral }, { totalAssets, available }, collateralUsdRate, borrowedUsdRate) =>
             maybes(
               [borrowed, collateral, totalAssets, available, collateralUsdRate, borrowedUsdRate],
-              ([borrowed, collateral, totalAssets, available, collateralUsdRate, borrowedUsdRate]) => ({
+              (borrowed, collateral, totalAssets, available, collateralUsdRate, borrowedUsdRate) => ({
                 value: calculateLendMarketTvlUsd({
                   borrowedBalanceUsd: +borrowed * borrowedUsdRate,
                   collateralBalanceUsd: +collateral * collateralUsdRate,
@@ -87,7 +87,7 @@ export const useAdvancedDetailsData = ({
             ),
         )
       : combineQueries([totalCollateral, collateralUsdRate], ({ collateral }, collateralUsdRate) =>
-          maybes([collateral, collateralUsdRate], ([collateral, collateralUsdRate]) => ({
+          maybes([collateral, collateralUsdRate], (collateral, collateralUsdRate) => ({
             value: calculateMintMarketTvlUsd({ collateralAmountUsd: +collateral * collateralUsdRate }),
           })),
         ),
