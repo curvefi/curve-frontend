@@ -18,8 +18,6 @@ type MockChainId = (typeof MOCK_CHAIN_IDS)[number]
 const POOL_COUNT = 500
 const MAX_GENERATED_POOL_VOLUME_USD = 1_000_000_000
 const POOL_USD_STEP = 1_000_000
-const DAY_SECONDS = 24 * 60 * 60
-const MOCK_POOL_CREATION_START_SECONDS = Date.UTC(2024, 0, 1) / 1000
 const onePriorityPoolUsdValue = () =>
   oneFloat(MAX_GENERATED_POOL_VOLUME_USD + POOL_USD_STEP, MAX_GENERATED_POOL_VOLUME_USD * 2)
 
@@ -47,8 +45,6 @@ type PoolListQuery = {
   maxVolume: number | undefined
   minApy: number | undefined
   maxApy: number | undefined
-  minCreationDate: number | undefined
-  maxCreationDate: number | undefined
   sortBy: V2PoolSortField
   sortDirection: SortDirection
 }
@@ -88,7 +84,6 @@ const createPool = ({
   pool_type: poolType ?? POOL_LIST_POOL_TYPES[index % POOL_LIST_POOL_TYPES.length],
   is_metapool: false,
   base_pool: null,
-  creation_ts: MOCK_POOL_CREATION_START_SECONDS + index * DAY_SECONDS,
   tvl_usd: POOL_USD_STEP + index * POOL_USD_STEP,
   trading_volume_24h: MAX_GENERATED_POOL_VOLUME_USD - index * POOL_USD_STEP,
   trading_fee_24h: 1_000 + index,
@@ -206,8 +201,6 @@ const parsePoolListQuery = (url: URL): PoolListQuery => ({
   maxVolume: parseOptionalNumberParam(url.searchParams.get('max_volume')),
   minApy: parseOptionalNumberParam(url.searchParams.get('min_apy')),
   maxApy: parseOptionalNumberParam(url.searchParams.get('max_apy')),
-  minCreationDate: parseOptionalNumberParam(url.searchParams.get('min_creation_date')),
-  maxCreationDate: parseOptionalNumberParam(url.searchParams.get('max_creation_date')),
   sortBy: parseSortBy(url.searchParams.get('sort_by')),
   sortDirection: url.searchParams.get('sort_direction') === 'asc' ? 'asc' : 'desc',
 })
@@ -241,8 +234,7 @@ const getPoolListResponse = (query: PoolListQuery) => {
       .filter(pool => matchesSearch(pool, query.search))
       .filter(pool => matchesRange(pool.tvl_usd, query.minTvl, query.maxTvl))
       .filter(pool => matchesRange(pool.trading_volume_24h, query.minVolume, query.maxVolume))
-      .filter(pool => matchesRange(pool.base_daily_apr, query.minApy, query.maxApy))
-      .filter(pool => matchesRange(pool.creation_ts, query.minCreationDate, query.maxCreationDate)),
+      .filter(pool => matchesRange(pool.base_daily_apr, query.minApy, query.maxApy)),
     pool => getSortValue(pool, query.sortBy),
     query.sortDirection,
   )

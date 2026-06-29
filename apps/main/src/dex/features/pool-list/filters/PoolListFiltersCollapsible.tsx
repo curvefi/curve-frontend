@@ -6,7 +6,7 @@ import { TableActiveFilterChip } from '@ui-kit/shared/ui/DataTable/TableActiveFi
 import { TableActiveFiltersBar } from '@ui-kit/shared/ui/DataTable/TableActiveFiltersBar'
 import { emptyUrlRange } from '@ui-kit/shared/ui/DataTable/urlFilter.utils'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { PoolListDateRange, PoolListFilterProps } from '../hooks/usePoolListFilters'
+import type { PoolListFilterProps } from '../hooks/usePoolListFilters'
 
 const { Spacing } = SizesAndSpaces
 
@@ -15,23 +15,13 @@ type PoolListFiltersCollapsibleProps = {
   resetFilters: () => void
 } & PoolListFilterProps
 
-const getDateRangeLabel = ([min, max]: PoolListDateRange) => {
-  if (!min && max) return `<${max}`
-  if (min && !max) return `>${min}`
-  if (min && max) return `${min} - ${max}`
-
-  return null
-}
-
 export const PoolListFiltersCollapsible = ({
   apyRange,
-  creationDateRange,
   hasActiveFilters,
   poolType,
   poolTypeFilters,
   resetFilters,
   setApyRange,
-  setCreationDateRange,
   setPoolType,
   setTvlRange,
   setVolumeRange,
@@ -42,7 +32,6 @@ export const PoolListFiltersCollapsible = ({
   const tvlLabel = getRangeFilterLabel(tvlRange, 'dollar')
   const volumeLabel = getRangeFilterLabel(volumeRange, 'dollar')
   const apyLabel = getRangeFilterLabel(apyRange, 'percentage', { defaultMin: null })
-  const creationDateLabel = getDateRangeLabel(creationDateRange)
   const activeFilterChips = notFalsy(
     poolTypeLabel && {
       label: `${t`Type`}: ${poolTypeLabel}`,
@@ -63,11 +52,6 @@ export const PoolListFiltersCollapsible = ({
       label: `${t`Base vAPY`}: ${apyLabel}`,
       toggle: () => setApyRange(emptyUrlRange<number>()),
       testId: 'dex-pool-active-filter-apy',
-    },
-    creationDateLabel && {
-      label: `${t`Created`}: ${creationDateLabel}`,
-      toggle: () => setCreationDateRange(emptyUrlRange<string>()),
-      testId: 'dex-pool-active-filter-creation-date',
     },
   )
 

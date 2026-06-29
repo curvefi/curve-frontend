@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { normalizeRangeFilterDefaults } from '@ui-kit/shared/ui/DataTable/filters'
 import { useDebouncedTableRangeFilter } from '@ui-kit/shared/ui/DataTable/hooks/useDebouncedTableRangeFilter'
-import { emptyUrlRange, sortDateUrlRange } from '@ui-kit/shared/ui/DataTable/urlFilter.utils'
+import { emptyUrlRange } from '@ui-kit/shared/ui/DataTable/urlFilter.utils'
 import {
   POOL_LIST_DEFAULT_NON_NEGATIVE_RANGE,
   type PoolListFilterProps,
@@ -16,11 +16,9 @@ type UsePoolListFilterControlsParams = {
 export const usePoolListFilterControls = ({ filterProps, resetFilters }: UsePoolListFilterControlsParams) => {
   const {
     apyRange,
-    creationDateRange,
     poolType,
     poolTypeFilters,
     setApyRange,
-    setCreationDateRange,
     setPoolType,
     setTvlRange,
     setVolumeRange,
@@ -52,32 +50,19 @@ export const usePoolListFilterControls = ({ filterProps, resetFilters }: UsePool
     setAppliedRange: setAppliedApyRange,
     resetDraftRange: resetDraftApyRange,
   } = useDebouncedTableRangeFilter({ range: apyRange, setRange: setApyRange })
-  const {
-    draftRange: draftCreationDateRange,
-    setDraftRange: setDraftCreationDateRange,
-    setAppliedRange: setAppliedCreationDateRange,
-    resetDraftRange: resetDraftCreationDateRange,
-  } = useDebouncedTableRangeFilter({
-    range: creationDateRange,
-    setRange: setCreationDateRange,
-    sanitize: sortDateUrlRange,
-  })
 
   const resetPoolFilters = useCallback(() => {
     resetDraftTvlRange(emptyUrlRange<number>())
     resetDraftVolumeRange(emptyUrlRange<number>())
     resetDraftApyRange(emptyUrlRange<number>())
-    resetDraftCreationDateRange(emptyUrlRange<string>())
     resetFilters()
-  }, [resetDraftApyRange, resetDraftCreationDateRange, resetDraftTvlRange, resetDraftVolumeRange, resetFilters])
+  }, [resetDraftApyRange, resetDraftTvlRange, resetDraftVolumeRange, resetFilters])
 
   const appliedFilterProps: PoolListFilterProps = {
     apyRange,
-    creationDateRange,
     poolType,
     poolTypeFilters,
     setApyRange: setAppliedApyRange,
-    setCreationDateRange: setAppliedCreationDateRange,
     setPoolType,
     setTvlRange: setAppliedTvlRange,
     setVolumeRange: setAppliedVolumeRange,
@@ -87,9 +72,7 @@ export const usePoolListFilterControls = ({ filterProps, resetFilters }: UsePool
   const draftFilterProps: PoolListFilterProps = {
     ...appliedFilterProps,
     apyRange: draftApyRange,
-    creationDateRange: draftCreationDateRange,
     setApyRange: setDraftApyRange,
-    setCreationDateRange: setDraftCreationDateRange,
     setTvlRange: setDraftTvlRange,
     setVolumeRange: setDraftVolumeRange,
     tvlRange: draftTvlRange,

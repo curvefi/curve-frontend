@@ -3,12 +3,9 @@ import { normalizeRangeFilterDefaults, type RangeFilterDefaults, serializeRangeF
 
 export type UrlRange<T extends string | number> = Range<T | null>
 export type NumberUrlRange = UrlRange<number>
-export type DateUrlRange = UrlRange<string>
 export type ParsedUrlRange<T extends string | number> = { range: UrlRange<T>; shouldCleanUrl: boolean }
 
 const RANGE_SEPARATOR = '~'
-const DATE_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/
-const DAY_IN_SECONDS = 24 * 60 * 60
 
 export const emptyUrlRange = <T extends string | number>(): UrlRange<T> => [null, null]
 const emptyParsedUrlRange = <T extends string | number>(shouldCleanUrl = false): ParsedUrlRange<T> => ({
@@ -57,59 +54,3 @@ export const parseNumberUrlRange = (
 
   return parsedUrlRange(normalizeRangeFilterDefaults(range, defaults), value)
 }
-
-type UtcDateParts = { day: number; month: number; year: number }
-
-const getValidUtcDateParts = (value: string | null): UtcDateParts | null => {
-  const match = value?.match(DATE_PATTERN)
-  if (!match) return null
-
-  const [, yearValue, monthValue, dayValue] = match
-  const year = Number(yearValue)
-  const month = Number(monthValue)
-  const day = Number(dayValue)
-  const date = new Date(Date.UTC(year, month - 1, day))
-
-  // Validate the UTC calendar day instead of relying on browser parsing, which can vary by locale/timezone.
-  return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day
-    ? { day, month, year }
-    : null
-}
-
-const parseDateBound = (value: string): string | null | undefined => {
-  if (!value) return null
-
-  return getValidUtcDateParts(value) ? value : undefined
-}
-
-export const parseDateUrlRange = (value: string | null): ParsedUrlRange<string> => {
-  if (value == null) return emptyParsedUrlRange()
-
-  const parts = splitUrlRange(value)
-  if (!parts) return invalidUrlRange()
-
-  const min = parseDateBound(parts[0])
-  const max = parseDateBound(parts[1])
-  if (min === undefined || max === undefined) return invalidUrlRange()
-
-  const range: DateUrlRange = [min, max]
-  if (isReversedRange(range)) return invalidUrlRange()
-
-  return parsedUrlRange(range, value)
-}
-
-export const sortDateUrlRange = (range: DateUrlRange): DateUrlRange =>
-  range[0] && range[1] && range[0] > range[1] ? [range[1], range[0]] : range
-
-const dateToUtcUnixSeconds = (date: string | null, endOfDay = false) => {
-  const dateParts = getValidUtcDateParts(date)
-  if (!dateParts) return undefined
-
-  const { day, month, year } = dateParts
-  return Date.UTC(year, month - 1, day) / 1000 + (endOfDay ? DAY_IN_SECONDS - 1 : 0)
-}
-
-export const dateRangeToUtcUnixSeconds = ([min, max]: DateUrlRange) => ({
-  min: dateToUtcUnixSeconds(min),
-  max: dateToUtcUnixSeconds(max, true),
-})

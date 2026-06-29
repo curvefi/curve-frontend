@@ -6,8 +6,6 @@ import { assert } from '@primitives/objects.utils'
 
 const POOL_LIST_PAGE_SIZE = 50
 const RANGE_FILTER_DEBOUNCE_WAIT = 500
-const CREATION_DATE_FILTER = '2025-04-01'
-const CREATION_DATE_FILTER_SECONDS = Date.UTC(2025, 3, 1) / 1000
 
 // Parse compact USD strings like "$1.2M", "$950K", "$0", "-"
 function parseCompactUsd(value: string): number {
@@ -208,15 +206,6 @@ describe('DEX Pools', () => {
       })
       expectUrlQueryParam('apy', '0~')
       cy.get('[data-testid="dex-pool-active-filter-apy"]').should('be.visible')
-    })
-
-    it('applies creation date filters from the URL', () => {
-      visitAndWait(width, height, { query: { creation_date: `${CREATION_DATE_FILTER}~` } })
-      expectLastPoolRequestUrl(url => {
-        expect(url).to.include(`min_creation_date=${CREATION_DATE_FILTER_SECONDS}`)
-      })
-      expectUrlQueryParam('creation_date', `${CREATION_DATE_FILTER}~`)
-      cy.get('[data-testid="dex-pool-active-filter-creation-date"]').should('be.visible')
     })
 
     it('cancels pending range drafts when resetting filters', () => {
