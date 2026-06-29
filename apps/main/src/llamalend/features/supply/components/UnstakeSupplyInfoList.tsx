@@ -15,7 +15,7 @@ import { useVaultUserBalances } from '../hooks/useVaultUserBalances'
 type UnstakeSupplyInfoListProps<ChainId extends IChainId> = {
   params: UnstakeParams<ChainId>
   networks: NetworkDict<ChainId>
-  tokens: { borrowToken: Token | undefined }
+  borrowToken: Token | undefined
   form: UseFormReturn<UnstakeForm>
   controllerAddress: Address | undefined
 }
@@ -23,7 +23,7 @@ type UnstakeSupplyInfoListProps<ChainId extends IChainId> = {
 export function UnstakeSupplyInfoList<ChainId extends IChainId>({
   params,
   networks,
-  tokens,
+  borrowToken,
   form,
   controllerAddress,
 }: UnstakeSupplyInfoListProps<ChainId>) {
@@ -40,7 +40,7 @@ export function UnstakeSupplyInfoList<ChainId extends IChainId>({
       sharesLabel={t`Staked shares`}
       amountLabel={t`Amount staked`}
       isOpen={isOpen}
-      suppliedSymbol={tokens.borrowToken?.symbol}
+      suppliedSymbol={borrowToken?.symbol}
       prevVaultShares={mapQuery(userBalances, d => d.stakedShares)}
       vaultShares={mapQuery(
         userBalances,

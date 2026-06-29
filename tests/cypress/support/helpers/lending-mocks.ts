@@ -57,6 +57,7 @@ const oneLendingPool = (
     lend_apr_crv_0_boost: oneFloat(),
     lend_apr_crv_max_boost: oneFloat(),
     n_loans: oneInt(),
+    amm_a: oneInt(1),
     price_oracle: onePrice(),
     amm_price: onePrice(),
     base_price: onePrice(),

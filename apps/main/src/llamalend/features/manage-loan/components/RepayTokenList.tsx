@@ -2,8 +2,8 @@ import { partition } from 'lodash'
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { RepayTokenOption } from '@/llamalend/features/manage-loan/hooks/useRepayTokens'
-import { getTokens } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import type { MarketTokensOrEmpty } from '@/llamalend/llama.utils'
+import type { NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
@@ -20,7 +20,7 @@ import { QueryProp } from '@ui-kit/types/util'
 const { Spacing } = SizesAndSpaces
 
 export type RepayTokenListProps<ChainId extends IChainId> = {
-  market: LlamaMarketTemplate | undefined
+  marketTokens: MarketTokensOrEmpty
   network: NetworkDict<ChainId>[ChainId]
   onToken: (token: RepayTokenOption) => void
   tokens: RepayTokenOption[]
@@ -28,14 +28,14 @@ export type RepayTokenListProps<ChainId extends IChainId> = {
 }
 
 export function RepayTokenList<ChainId extends IChainId>({
-  market,
+  marketTokens,
   network,
   onToken,
   tokens,
   stateCollateral: { data: positionCollateral },
 }: RepayTokenListProps<ChainId>) {
   const { address: userAddress } = useConnection()
-  const { borrowToken, collateralToken } = getTokens(market) ?? {}
+  const { borrowToken, collateralToken } = marketTokens
   const tokenAddresses = useMemo(
     () => notFalsy(collateralToken?.address, borrowToken?.address),
     [collateralToken?.address, borrowToken?.address],

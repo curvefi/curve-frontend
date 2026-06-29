@@ -1,5 +1,6 @@
 export type Falsy = false | 0 | '' | null | undefined
 export type PartialRecord<Key extends PropertyKey, Value> = Partial<Record<Key, Value>>
+export type AllOrNone<T extends object> = T | { [K in keyof T]?: never }
 
 /** Object.keys with better type inference */
 export const objectKeys = <T extends object>(values: T): (keyof T)[] => Object.keys(values) as (keyof T)[]

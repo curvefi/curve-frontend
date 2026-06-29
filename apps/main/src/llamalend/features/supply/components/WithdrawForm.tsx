@@ -1,30 +1,23 @@
-import { getControllerAddress } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { FormButton } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
+import { useMarketContext } from '../../market-context'
 import { useWithdrawForm } from '../hooks/useWithdrawForm'
 import { AlertUnstakeFirst } from './alerts/AlertUnstakeFirst'
 import { WithdrawSupplyInfoList } from './WithdrawSupplyInfoList'
 
 type WithdrawFormProps<ChainId extends IChainId> = {
-  market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
-  chainId: ChainId
-  enabled?: boolean
 }
 
 const TEST_ID_PREFIX = 'supply-withdraw'
 
-export const WithdrawForm = <ChainId extends IChainId>({
-  market,
-  networks,
-  chainId,
-  enabled,
-}: WithdrawFormProps<ChainId>) => {
+export const WithdrawForm = <ChainId extends IChainId>({ networks }: WithdrawFormProps<ChainId>) => {
+  const { chainId, marketId, controllerAddress } = useMarketContext<ChainId>()
   const network = networks[chainId]
 
   const {
@@ -39,7 +32,7 @@ export const WithdrawForm = <ChainId extends IChainId>({
     max,
     maxStakedShares,
     isFull,
-  } = useWithdrawForm({ market, network, enabled })
+  } = useWithdrawForm({ network })
 
   return (
     <Form
@@ -52,7 +45,7 @@ export const WithdrawForm = <ChainId extends IChainId>({
           params={params}
           networks={networks}
           tokens={{ borrowToken }}
-          controllerAddress={getControllerAddress(market)}
+          controllerAddress={controllerAddress}
         />
       }
     >
@@ -77,7 +70,7 @@ export const WithdrawForm = <ChainId extends IChainId>({
 
       <FormButton
         pending={isPending}
-        loading={!market}
+        loading={!marketId}
         disabled={isDisabled}
         label={isFull.data ? t`Withdraw All` : t`Withdraw`}
         testId={`${TEST_ID_PREFIX}-submit-button`}

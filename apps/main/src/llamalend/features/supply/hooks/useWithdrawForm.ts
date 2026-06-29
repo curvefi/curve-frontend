@@ -1,8 +1,6 @@
 import { useMemo } from 'react'
-import { useConnection } from 'wagmi'
 import { useMaxWithdrawTokenValues } from '@/llamalend/features/supply/hooks/useMaxWithdraw'
-import { getTokens } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
+import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useWithdrawMutation } from '@/llamalend/mutations/withdraw.mutation'
 import {
   type WithdrawForm,
@@ -12,6 +10,7 @@ import {
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
+import { useMarketContext } from '../../market-context'
 
 const userDefaultValues = { withdrawAmount: undefined, userVaultShares: undefined }
 
@@ -21,20 +20,11 @@ const emptyWithdrawForm = (): WithdrawForm => ({
   isFull: false,
 })
 
-export const useWithdrawForm = <ChainId extends LlamaChainId>({
-  market,
-  network,
-  enabled,
-}: {
-  market: LlamaMarketTemplate | undefined
-  network: LlamaNetwork<ChainId>
-  enabled?: boolean
-}) => {
-  const { address: userAddress } = useConnection()
+export const useWithdrawForm = <ChainId extends LlamaChainId>({ network }: { network: LlamaNetwork<ChainId> }) => {
+  const { marketId, tokens, userAddress } = useMarketContext<ChainId>()
   const { chainId } = network
-  const marketId = market?.id
 
-  const { borrowToken } = getTokens(market) ?? {}
+  const { borrowToken } = tokens
 
   const form = useForm<WithdrawForm>({
     validation: withdrawFormValidationSuite,
@@ -56,7 +46,7 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({
     ),
   )
 
-  const { maxWithdrawAmount: max, maxStakedShares, isFull } = useMaxWithdrawTokenValues({ params, form }, enabled)
+  const { maxWithdrawAmount: max, maxStakedShares, isFull } = useMaxWithdrawTokenValues({ params, form })
 
   const {
     onSubmit,

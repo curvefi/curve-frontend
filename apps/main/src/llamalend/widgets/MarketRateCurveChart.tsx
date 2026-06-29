@@ -1,12 +1,9 @@
 import { sortBy } from 'lodash'
 import { useMemo, useState } from 'react'
-import { Address } from 'viem'
 import { getUtilizationPercent, tokenMetric } from '@/llamalend/llama.utils'
 import { useMarketCapAndAvailable, useMarketTotalCollateral, useRateCurve } from '@/llamalend/queries/market'
-import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { TooltipOptions, TotalCollateralTooltip, UtilizationTooltip } from '@/llamalend/widgets/tooltips'
 import { RateCurveTooltip } from '@/llamalend/widgets/tooltips/chart/RateCurveTooltip'
-import type { Chain } from '@curvefi/prices-api'
 import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
@@ -28,8 +25,9 @@ import {
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { fallbackQ, mapQuery, q, type QueryProp, useMappedQuery } from '@ui-kit/types/util'
+import { fallbackQ, mapQuery, q, useMappedQuery } from '@ui-kit/types/util'
 import { decimal, decimalMax, decimalMinus, decimalMultiply, decimalSum, formatNumber } from '@ui-kit/utils'
+import { useMarketContext } from '../features/market-context'
 
 const { Spacing, Height } = SizesAndSpaces
 
@@ -74,23 +72,15 @@ const calculateCombinedCollateral = ({
         decimalSum(collateral, decimalMultiply(borrowed, borrowUsdRate / collateralUsdRate)),
       )
 
-export const MarketRateCurveChart = ({
-  collateralToken,
-  borrowToken,
-  controllerAddress,
-  blockchainId,
-  chainId,
-  marketId,
-  apiMarket,
-}: {
-  blockchainId: Chain | undefined
-  chainId: number | undefined
-  marketId: string | undefined
-  collateralToken: { address: Address; symbol: string } | undefined
-  borrowToken: { address: Address; symbol: string } | undefined
-  controllerAddress: Address | undefined
-  apiMarket: QueryProp<LlamaMarket>
-}) => {
+export const MarketRateCurveChart = () => {
+  const {
+    chainId,
+    blockchainId,
+    marketId,
+    controllerAddress,
+    apiMarket,
+    tokens: { collateralToken, borrowToken },
+  } = useMarketContext()
   const [visibleSeries, setVisibleSeries] = useState<RateCurveSeriesKey[]>(SERIES_CONFIG.map(({ key }) => key))
   const {
     design: { Color },

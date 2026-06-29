@@ -16,7 +16,6 @@ import {
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createRepayScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
-import { LlamaMarketType } from '@ui-kit/types/market'
 import { constQ } from '@ui-kit/types/util'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 
@@ -46,14 +45,11 @@ describe('RepayForm (mocked)', () => {
       seedCrvUsdBalance({ chainId, addresses: [TEST_ADDRESS], min: borrow })
 
       cy.mount(
-        <MockLoanTestWrapper llamaApi={llamaApi}>
+        <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
           <RepayForm
-            market={market}
             networks={llamaNetworks}
-            chainId={chainId}
             onPricesUpdated={onPricesUpdated}
             collateralEvents={constQ(fakeCollateralEvents)}
-            marketType={LlamaMarketType.Mint}
           />
         </MockLoanTestWrapper>,
       )

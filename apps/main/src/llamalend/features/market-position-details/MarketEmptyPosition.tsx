@@ -1,3 +1,4 @@
+import { useConnection } from 'wagmi'
 import { Stack } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
 import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
@@ -7,10 +8,12 @@ import { MarketRateType } from '@ui-kit/types/market'
 const { Spacing } = SizesAndSpaces
 
 type NoPositionProps = {
-  type: MarketRateType | 'disconnected'
+  type: MarketRateType
 }
 
-const EMPTY_MARKET_CONFIG: Record<NoPositionProps['type'], { title: string; description: string }> = {
+type EmptyMarketType = MarketRateType | 'disconnected'
+
+const EMPTY_MARKET_CONFIG: Record<EmptyMarketType, { title: string; description: string }> = {
   [MarketRateType.Borrow]: {
     title: t`No active position`,
     description: t`Borrow with LLAMMA to stay exposed, reduce liquidation risk and access liquidity without selling.`,
@@ -26,13 +29,14 @@ const EMPTY_MARKET_CONFIG: Record<NoPositionProps['type'], { title: string; desc
 }
 
 export const MarketEmptyPosition = ({ type }: NoPositionProps) => {
-  const { title, description } = EMPTY_MARKET_CONFIG[type]
+  const emptyType = useConnection().address ? type : 'disconnected'
+  const { title, description } = EMPTY_MARKET_CONFIG[emptyType]
   return (
-    <Stack sx={{ alignItems: 'center', padding: Spacing.md }} data-testid={`no-position-${type.toLowerCase()}`}>
+    <Stack sx={{ alignItems: 'center', padding: Spacing.md }} data-testid={`no-position-${emptyType.toLowerCase()}`}>
       <EmptyStateCard
         title={title}
         description={description}
-        {...(type === 'disconnected' && {
+        {...(emptyType === 'disconnected' && {
           button: { testId: 'no-position-disconnected', type: 'connect-wallet' },
         })}
       />
