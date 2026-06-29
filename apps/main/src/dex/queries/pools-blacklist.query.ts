@@ -129,6 +129,7 @@ const blacklist: Partial<Record<ChainBlacklist, Address[]>> = {
     '0x120Ee0D780f90F974250c9b14956702c1a4eE584', // factory-v2-131 - duplicate and empty
     '0x3a2BeA29CB51975Ba337dd6ABf89a5F7D68f8EB7', // factory-v2-132 - duplicate and empty
     '0x4808064427fee6b44f087Ac6d31E9E865C005d41', // factory-v2-134 - duplicate and empty
+    '0x907d9a72336d7f9a0809a44dbdfec28e5a99a83a', // factory-stable-ng-449 - deprecated token, team asked to hide it
   ],
   avalanche: [
     // List from api.curve.finance
