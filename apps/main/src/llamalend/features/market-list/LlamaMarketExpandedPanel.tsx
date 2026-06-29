@@ -65,7 +65,7 @@ const RateItem = ({ market, type }: { market: LlamaMarket; type: MarketRateType 
               label={title}
               value={constQ(rateValue)}
               valueOptions={{ unit: 'percentage' }}
-              rightAdornment={<RewardsIcons market={market} rateType={type} />}
+              leadingIcon={<RewardsIcons market={market} rateType={type} />}
             />
           </Stack>
         </Tooltip>

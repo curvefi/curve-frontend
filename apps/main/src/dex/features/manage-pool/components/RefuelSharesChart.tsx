@@ -161,7 +161,7 @@ export const RefuelSharesChart = ({
               label={t`Refuel duration`}
               value={mapQuery(refuelDuration, value => (Number(value) / TIME_FRAMES.DAY_MS) * 1000)}
               valueOptions={{ abbreviate: false, decimals: 0 }}
-              rightAdornment={
+              leadingIcon={
                 <Typography variant="highlightS" color="textSecondary">
                   {t`days`}
                 </Typography>

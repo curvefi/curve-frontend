@@ -1,13 +1,23 @@
+import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { FireIcon } from '@ui-kit/shared/icons/FireIcon'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { constQ, q } from '@ui-kit/types/util'
+import { borderStyle } from '@ui-kit/utils'
 import { Metric, SIZES, ALIGNMENTS } from '../Metric'
+
+const { Spacing } = SizesAndSpaces
 
 const meta: Meta<typeof Metric> = {
   title: 'UI Kit/Widgets/Metric',
   component: Metric,
   argTypes: {
+    orientation: {
+      control: 'select',
+      options: ['vertical', 'horizontal'],
+      description: 'The orientation of the component',
+    },
     size: {
       control: 'select',
       options: SIZES,
@@ -46,6 +56,11 @@ const meta: Meta<typeof Metric> = {
       control: 'object',
       description: 'Optional notional values that gives context or underlying value of the key metric',
     },
+    leadingIcon: {
+      control: false,
+      description:
+        'Optional icon shown after the value in vertical orientation and before the label in horizontal orientation',
+    },
     errorTooltip: {
       control: 'object',
       description: 'Optional tooltip shown on the error icon. Requires both title and body',
@@ -63,10 +78,18 @@ const meta: Meta<typeof Metric> = {
     label: 'Metrics label',
     copyText: 'Copied metric value',
   },
+  render: args => (
+    <Stack sx={{ alignItems: 'center', gap: Spacing.lg, width: '440px' }}>
+      <Metric {...args} orientation="vertical" />
+      <Stack sx={{ flexGrow: 1, alignSelf: 'stretch', flex: 1, border: borderStyle }} />
+      <Metric {...args} orientation="horizontal" />
+    </Stack>
+  ),
 }
 
 type Story = StoryObj<typeof Metric>
 export const Default: Story = {
+  render: args => <Metric {...args} />,
   parameters: {
     docs: {
       description: {
@@ -191,15 +214,15 @@ export const NotAvailable: Story = {
   },
 }
 
-export const RightAdornment: Story = {
+export const LeadingIcon: Story = {
   args: {
     size: 'large',
-    rightAdornment: <FireIcon fontSize="small" color="error" />,
+    leadingIcon: <FireIcon fontSize="small" color="error" />,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Demonstrates the Metric component with a right adornment',
+        story: 'Demonstrates the Metric component with a leading icon',
       },
     },
   },

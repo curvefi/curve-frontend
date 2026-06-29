@@ -22,6 +22,7 @@ import {
 import { showToast } from '@ui-kit/widgets/Toast/toast.util'
 import { LabelTooltipIcon } from './LabelTooltipIcon'
 import { WithSkeleton } from './WithSkeleton'
+import { WithWrapper } from './WithWrapper'
 
 const { Spacing } = SizesAndSpaces
 
@@ -163,6 +164,12 @@ const MetricValue = ({ value, valueOptions = {}, change, size, copyValue, toolti
   )
 }
 
+const NotionalTypography = ({ children }: { children: ReactNode }) => (
+  <Typography variant="highlightXsNotional" color="textTertiary">
+    {children}
+  </Typography>
+)
+
 export type MetricProps = {
   /** The actual metric value to display */
   value: QueryProp<MetricValueProps['value']>
@@ -184,12 +191,13 @@ export type MetricProps = {
   /** Notional values give extra context to the metric, like underlying value */
   notional?: number | string | Notional | Notional[]
 
-  /** Optional content to display to the right of the value */
-  rightAdornment?: ReactNode
+  /** Optional icon shown after the value in vertical orientation and before the label in the horizontal orientation. */
+  leadingIcon?: ReactNode
 
   /** Optional tooltip shown when hovering the error triangle icon. Must include both title and body. */
   errorTooltip?: MetricErrorTooltip
 
+  orientation?: 'vertical' | 'horizontal'
   size?: keyof typeof MetricSize
   alignment?: Alignment
   testId?: string
@@ -208,14 +216,16 @@ export const Metric = ({
 
   notional,
 
-  rightAdornment,
+  leadingIcon,
   errorTooltip,
 
+  orientation = 'vertical',
   size = 'medium',
   alignment = 'start',
   testId = 'metric',
   sx,
 }: MetricProps) => {
+  const isHorizontal = orientation === 'horizontal'
   const notionals = useMemo(() => notionalsToString(notional), [notional])
   const copyValue = useCallback(() => {
     if (data || data === 0) {
@@ -225,13 +235,46 @@ export const Metric = ({
   }, [data, copyText])
 
   return (
-    <Stack data-testid={testId} sx={applySxProps({ alignItems: alignment }, sx)}>
-      <Typography variant="bodyXsRegular" color="textTertiary">
-        {label}
-        <LabelTooltipIcon tooltip={labelTooltip} />
-      </Typography>
+    <Stack
+      data-testid={testId}
+      direction={isHorizontal ? 'row' : 'column'}
+      sx={applySxProps(
+        { alignItems: isHorizontal ? 'baseline' : alignment },
+        isHorizontal && {
+          justifyContent: 'space-between',
+          alignSelf: 'stretch',
+          columnGap: Spacing.sm,
+        },
+        sx,
+      )}
+    >
+      <WithWrapper
+        shouldWrap={isHorizontal}
+        Wrapper={Stack}
+        direction="row"
+        sx={{ alignItems: 'baseline', flexShrink: 0 }}
+      >
+        {isHorizontal && leadingIcon}
+        <Typography
+          variant={isHorizontal ? 'bodyMRegular' : 'bodyXsRegular'}
+          color={isHorizontal ? 'textSecondary' : 'textTertiary'}
+        >
+          {label}
+          <LabelTooltipIcon tooltip={labelTooltip} />
+        </Typography>
+      </WithWrapper>
       <WithSkeleton loading={isLoading}>
-        <Stack direction="row" sx={{ alignItems: 'baseline' }}>
+        <Stack
+          direction="row"
+          sx={applySxProps(
+            { alignItems: 'baseline' },
+            isHorizontal && {
+              flexWrap: 'wrap',
+              gap: Spacing.xxs,
+              justifyContent: 'flex-end',
+            },
+          )}
+        >
           {/* Keep error state vertical rhythm aligned with regular metric values by inheriting metric typography sizing. */}
           {error ? (
             <Tooltip arrow placement="bottom" title={errorTooltip?.title} body={errorTooltip?.body} {...errorTooltip}>
@@ -248,16 +291,13 @@ export const Metric = ({
                 tooltip={valueTooltip}
                 testId={testId}
               />
-              {rightAdornment}
+              {!isHorizontal && leadingIcon}
             </>
           )}
+          {isHorizontal && notionals && <NotionalTypography>{notionals}</NotionalTypography>}
         </Stack>
       </WithSkeleton>
-      {notionals && (
-        <Typography variant="highlightXsNotional" color="textTertiary">
-          {notionals}
-        </Typography>
-      )}
+      {!isHorizontal && notionals && <NotionalTypography>{notionals}</NotionalTypography>}
     </Stack>
   )
 }
