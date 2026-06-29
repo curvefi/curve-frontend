@@ -81,6 +81,7 @@ const blacklist: Partial<Record<ChainBlacklist, Address[]>> = {
     '0x349d27E78B3267180279687bf82caE3BD78F41e1', // factory-twocrypto-279 - IDRS token has broken balanceOf
     '0x771c91e699B4B23420de3F81dE2aA38C4041632b', // factory-stable-ng-506 - Team asked to hide, pool will not used
     '0x184F3Fed33D4194A5603C14481241BD089268e4b', // factory-stable-ng-685 - Team asked to hide
+    '0x907d9a72336d7f9a0809a44dbdfec28e5a99a83a', // factory-stable-ng-449 - deprecated token, team asked to hide it
   ],
   arbitrum: [
     '0x15FB53Cb126140dfbfDED07d0057E1896B2dbCa3', // factory-stable-ng-206 - Unitos.net/USDT - scam pool pretending to be USDT
@@ -129,7 +130,6 @@ const blacklist: Partial<Record<ChainBlacklist, Address[]>> = {
     '0x120Ee0D780f90F974250c9b14956702c1a4eE584', // factory-v2-131 - duplicate and empty
     '0x3a2BeA29CB51975Ba337dd6ABf89a5F7D68f8EB7', // factory-v2-132 - duplicate and empty
     '0x4808064427fee6b44f087Ac6d31E9E865C005d41', // factory-v2-134 - duplicate and empty
-    '0x907d9a72336d7f9a0809a44dbdfec28e5a99a83a', // factory-stable-ng-449 - deprecated token, team asked to hide it
   ],
   avalanche: [
     // List from api.curve.finance
