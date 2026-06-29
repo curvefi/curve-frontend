@@ -8,11 +8,8 @@ import {
   type RangeFilterDefaults,
 } from '@ui-kit/shared/ui/DataTable/filters'
 import {
-  dateRangeToUtcUnixSeconds,
   isActiveUrlRange,
-  parseDateUrlRange,
   parseNumberUrlRange,
-  type DateUrlRange,
   type NumberUrlRange,
   type ParsedUrlRange,
   type UrlRange,
@@ -31,8 +28,7 @@ const SEARCH_QUERY_FIELD = 'search'
 const TVL_QUERY_FIELD = 'tvl'
 const VOLUME_QUERY_FIELD = 'volume'
 const APY_QUERY_FIELD = 'apy'
-const CREATION_DATE_QUERY_FIELD = 'creation_date'
-const RANGE_QUERY_FIELDS = [TVL_QUERY_FIELD, VOLUME_QUERY_FIELD, APY_QUERY_FIELD, CREATION_DATE_QUERY_FIELD] as const
+const RANGE_QUERY_FIELDS = [TVL_QUERY_FIELD, VOLUME_QUERY_FIELD, APY_QUERY_FIELD] as const
 const FILTER_QUERY_FIELDS = [SEARCH_QUERY_FIELD, POOL_TYPE_QUERY_FIELD, ...RANGE_QUERY_FIELDS] as const
 type RangeQueryField = (typeof RANGE_QUERY_FIELDS)[number]
 type NumberRangeQueryField = typeof TVL_QUERY_FIELD | typeof VOLUME_QUERY_FIELD | typeof APY_QUERY_FIELD
@@ -45,14 +41,11 @@ export const POOL_LIST_DEFAULT_NON_NEGATIVE_RANGE = [0, null] satisfies RangeFil
 const DEFAULT_FILTER_QUERY = fromEntries(FILTER_QUERY_FIELDS.map(field => [field, null]))
 
 export type PoolListNumberRange = NumberUrlRange
-export type PoolListDateRange = DateUrlRange
 export type PoolListFilterProps = {
   apyRange: PoolListNumberRange
-  creationDateRange: PoolListDateRange
   poolType: PoolListPoolType | undefined
   poolTypeFilters: readonly PoolListFilter[]
   setApyRange: (range: PoolListNumberRange) => void
-  setCreationDateRange: (range: PoolListDateRange) => void
   setPoolType: (poolType: PoolListPoolType | null) => void
   setTvlRange: (range: PoolListNumberRange) => void
   setVolumeRange: (range: PoolListNumberRange) => void
@@ -61,24 +54,10 @@ export type PoolListFilterProps = {
 }
 export type PoolListApiParams = Pick<
   ListPoolsParams,
-  | 'poolType'
-  | 'minTvl'
-  | 'maxTvl'
-  | 'minVolume'
-  | 'maxVolume'
-  | 'minApy'
-  | 'maxApy'
-  | 'minCreationDate'
-  | 'maxCreationDate'
+  'poolType' | 'minTvl' | 'maxTvl' | 'minVolume' | 'maxVolume' | 'minApy' | 'maxApy'
 >
 
 const isPoolType = (value: string | null): value is PoolListPoolType => value != null && POOL_TYPE_SET.has(value)
-
-const getApiDateRangeParams = (range: PoolListDateRange) => {
-  const { min: minCreationDate, max: maxCreationDate } = dateRangeToUtcUnixSeconds(range)
-
-  return { minCreationDate, maxCreationDate }
-}
 
 const getApiNumberRangeParams = ({
   apyRange: [minApy, maxApy],
@@ -146,24 +125,17 @@ export const usePoolListFilters = (updateQueryAndResetPage: PoolListQueryUpdater
     () => parseNumberUrlRange(searchParams.get(APY_QUERY_FIELD), POOL_LIST_DEFAULT_NUMBER_RANGE),
     [searchParams],
   )
-  // Dates are validated as UTC calendar days to avoid local-time rollover or browser parsing differences.
-  const creationDateRangeState = useMemo(
-    () => parseDateUrlRange(searchParams.get(CREATION_DATE_QUERY_FIELD)),
-    [searchParams],
-  )
   const tvlRange = tvlRangeState.range
   const volumeRange = volumeRangeState.range
   const apyRange = apyRangeState.range
-  const creationDateRange = creationDateRangeState.range
   const filterUrlCleanup = useMemo(
     () => ({
       ...(poolTypeQueryValue != null && !poolType ? { [POOL_TYPE_QUERY_FIELD]: null } : {}),
       ...getRangeCleanupUpdate(TVL_QUERY_FIELD, tvlRangeState),
       ...getRangeCleanupUpdate(VOLUME_QUERY_FIELD, volumeRangeState),
       ...getRangeCleanupUpdate(APY_QUERY_FIELD, apyRangeState),
-      ...getRangeCleanupUpdate(CREATION_DATE_QUERY_FIELD, creationDateRangeState),
     }),
-    [apyRangeState, creationDateRangeState, poolType, poolTypeQueryValue, tvlRangeState, volumeRangeState],
+    [apyRangeState, poolType, poolTypeQueryValue, tvlRangeState, volumeRangeState],
   )
   useEffect(() => {
     if (!isEmpty(filterUrlCleanup)) {
@@ -195,25 +167,17 @@ export const usePoolListFilters = (updateQueryAndResetPage: PoolListQueryUpdater
       updateQueryAndResetPage(getNumberRangeUpdate(APY_QUERY_FIELD, value, POOL_LIST_DEFAULT_NUMBER_RANGE)),
     [updateQueryAndResetPage],
   )
-  const setCreationDateRange = useCallback(
-    (value: PoolListDateRange) => updateQueryAndResetPage(getRangeUpdate(CREATION_DATE_QUERY_FIELD, value)),
-    [updateQueryAndResetPage],
-  )
   const resetFilters = useCallback(() => updateQueryAndResetPage(DEFAULT_FILTER_QUERY), [updateQueryAndResetPage])
-  const hasActiveFilters =
-    Boolean(poolType) || [tvlRange, volumeRange, apyRange, creationDateRange].some(isActiveUrlRange)
+  const hasActiveFilters = Boolean(poolType) || [tvlRange, volumeRange, apyRange].some(isActiveUrlRange)
   const apiParams: PoolListApiParams = {
     ...getApiNumberRangeParams({ apyRange, tvlRange, volumeRange }),
-    ...getApiDateRangeParams(creationDateRange),
     poolType,
   }
   const filterProps: PoolListFilterProps = {
     apyRange,
-    creationDateRange,
     poolType,
     poolTypeFilters: POOL_LIST_POOL_TYPE_FILTERS,
     setApyRange,
-    setCreationDateRange,
     setPoolType,
     setTvlRange,
     setVolumeRange,

@@ -10,7 +10,6 @@ import { TableFilterItem } from '@ui-kit/shared/ui/DataTable/TableFilterItem'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { PoolListFilterProps, PoolListNumberRange } from '../hooks/usePoolListFilters'
 import type { PoolListPoolType } from '../poolList.constants'
-import { PoolListDateRangeFilter } from './PoolListDateRangeFilter'
 
 const { Spacing } = SizesAndSpaces
 
@@ -28,11 +27,9 @@ type NumberRangeFilter = {
 
 export const PoolListFilters = ({
   apyRange,
-  creationDateRange,
   poolType,
   poolTypeFilters,
   setApyRange,
-  setCreationDateRange,
   setPoolType,
   setTvlRange,
   setVolumeRange,
@@ -78,9 +75,6 @@ export const PoolListFilters = ({
           <RangeFilter {...filter} />
         </TableFilterItem>
       ))}
-      <TableFilterItem title={t`Creation date`}>
-        <PoolListDateRangeFilter range={creationDateRange} setRange={setCreationDateRange} />
-      </TableFilterItem>
       <TableFilterButtonGroup
         title={t`Pool type`}
         value={poolType ?? ALL_FILTER_VALUE}
