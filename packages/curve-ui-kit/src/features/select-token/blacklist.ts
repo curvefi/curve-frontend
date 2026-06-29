@@ -26,4 +26,8 @@ export const blacklist: BlacklistEntry[] = [
     address: '0x0D57436F2d39c0664C6f0f2E349229483f87EA38', // A7A5 token
     reason: 'Adverse media detected',
   },
+  {
+    address: '0xe58ddc61c0e8ee1729d235b82c64896dbe390be9', // USAD token
+    reason: 'Deprecated token, no longer in use. Use USAD (0x7ec90ed9297dbc5702b1e616a938235afd20a1de) instead.',
+  },
 ]
