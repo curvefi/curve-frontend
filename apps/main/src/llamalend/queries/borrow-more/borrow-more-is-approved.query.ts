@@ -13,7 +13,6 @@ export const {
     marketId,
     userAddress,
     userCollateral = '0',
-    userBorrowed = '0',
     maxDebt,
     leverageEnabled,
     routeId,
@@ -22,19 +21,19 @@ export const {
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'borrowMoreIsApproved',
       { userCollateral },
-      { userBorrowed },
       { maxDebt },
       { leverageEnabled },
       { routeId },
     ] as const,
-  queryFn: async ({ marketId, userCollateral = '0', userBorrowed = '0', leverageEnabled }: BorrowMoreQuery) => {
+  queryFn: async ({ marketId, userCollateral = '0', leverageEnabled }: BorrowMoreQuery) => {
+    const deprecatedBorrowedFromWallet = '0'
     const [type, impl] = getBorrowMoreImplementation(marketId, leverageEnabled)
     switch (type) {
       case 'zapV2':
-        return await impl.borrowMoreIsApproved({ userCollateral, userBorrowed })
+        return await impl.borrowMoreIsApproved({ userCollateral })
       case 'V1':
       case 'V2':
-        return await impl.borrowMoreIsApproved(userCollateral, userBorrowed)
+        return await impl.borrowMoreIsApproved(userCollateral, deprecatedBorrowedFromWallet)
       case 'unleveraged':
         return await impl.borrowMoreIsApproved(userCollateral)
     }

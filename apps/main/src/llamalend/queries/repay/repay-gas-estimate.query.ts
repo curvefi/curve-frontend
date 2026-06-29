@@ -19,7 +19,7 @@ const {
     marketId,
     stateCollateral = '0',
     userCollateral = '0',
-    userBorrowed = '0',
+    debt = '0',
     userAddress,
     isFull,
     slippage,
@@ -30,7 +30,7 @@ const {
       'estimateGas.repay',
       { stateCollateral },
       { userCollateral },
-      { userBorrowed },
+      { debt },
       { isFull },
       { slippage },
       { routeId },
@@ -39,7 +39,7 @@ const {
     marketId,
     stateCollateral,
     userCollateral,
-    userBorrowed,
+    debt,
     isFull,
     userAddress,
     slippage,
@@ -52,7 +52,7 @@ const {
     const [type, impl, args] = getRepayImplementation(marketId, {
       userCollateral,
       stateCollateral,
-      userBorrowed,
+      debt,
       routeId,
       slippage,
     })
@@ -81,7 +81,7 @@ const { useQuery: useRepayApproveGasEstimate, invalidate: invalidateRepayApprove
     marketId,
     stateCollateral = '0',
     userCollateral = '0',
-    userBorrowed = '0',
+    debt = '0',
     userAddress,
     isFull,
     slippage,
@@ -92,7 +92,7 @@ const { useQuery: useRepayApproveGasEstimate, invalidate: invalidateRepayApprove
       'estimateGas.repayApprove',
       { stateCollateral },
       { userCollateral },
-      { userBorrowed },
+      { debt },
       { isFull },
       { slippage },
       { routeId },
@@ -101,7 +101,7 @@ const { useQuery: useRepayApproveGasEstimate, invalidate: invalidateRepayApprove
     marketId,
     stateCollateral,
     userCollateral,
-    userBorrowed,
+    debt,
     isFull,
     userAddress,
     slippage,
@@ -114,22 +114,22 @@ const { useQuery: useRepayApproveGasEstimate, invalidate: invalidateRepayApprove
     const [type, impl] = getRepayImplementation(marketId, {
       userCollateral,
       stateCollateral,
-      userBorrowed,
+      debt,
       routeId,
       slippage,
     })
     switch (type) {
       case 'zapV2':
-        return await impl.estimateGas.repayApprove({ userCollateral, userBorrowed })
+        return await impl.estimateGas.repayApprove({ userCollateral })
       case 'V1':
       case 'V2':
-        return await impl.estimateGas.repayApprove(userCollateral, userBorrowed)
+        return await impl.estimateGas.repayApprove(userCollateral, debt)
       case 'deleverage':
         throw new Error('estimateGas.repayApprove is not supported for deleverage repay')
       case 'unleveragedMint':
-        return await impl.estimateGas.repayApprove(userBorrowed)
+        return await impl.estimateGas.repayApprove(debt)
       case 'unleveragedLend':
-        return await impl.estimateGas.repayApprove(userBorrowed)
+        return await impl.estimateGas.repayApprove(debt)
     }
   },
   category: 'llamalend.repay',

@@ -14,7 +14,7 @@ export const {
     marketId,
     stateCollateral = '0',
     userCollateral = '0',
-    userBorrowed = '0',
+    debt = '0',
     userAddress,
     isFull,
     slippage,
@@ -25,7 +25,7 @@ export const {
       'repayIsApproved',
       { stateCollateral },
       { userCollateral },
-      { userBorrowed },
+      { debt },
       { isFull },
       { slippage },
       { routeId },
@@ -34,7 +34,7 @@ export const {
     marketId,
     stateCollateral,
     userCollateral,
-    userBorrowed,
+    debt,
     isFull,
     userAddress,
     slippage,
@@ -45,22 +45,22 @@ export const {
     const [type, impl] = getRepayImplementation(marketId, {
       userCollateral,
       stateCollateral,
-      userBorrowed,
+      debt,
       slippage,
       routeId,
     })
     switch (type) {
       case 'zapV2':
-        return await impl.repayIsApproved({ userCollateral, userBorrowed })
+        return await impl.repayIsApproved({ userCollateral })
       case 'V1':
       case 'V2':
-        return await impl.repayIsApproved(userCollateral, userBorrowed)
+        return await impl.repayIsApproved(userCollateral, debt)
       case 'deleverage':
         return true // deleverage query doesn't need approval because it only uses the user stateCollateral
       case 'unleveragedMint':
-        return await impl.repayIsApproved(userBorrowed)
+        return await impl.repayIsApproved(debt)
       case 'unleveragedLend':
-        return await impl.repayIsApproved(userBorrowed)
+        return await impl.repayIsApproved(debt)
     }
   },
   category: 'llamalend.repay',

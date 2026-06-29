@@ -13,7 +13,7 @@ export const { useQuery: useRepayPriceImpact, invalidate: invalidateRepayPriceIm
     marketId,
     stateCollateral = '0',
     userCollateral = '0',
-    userBorrowed = '0',
+    debt = '0',
     userAddress,
     slippage,
     routeId,
@@ -23,7 +23,7 @@ export const { useQuery: useRepayPriceImpact, invalidate: invalidateRepayPriceIm
       'repayPriceImpact',
       { stateCollateral },
       { userCollateral },
-      { userBorrowed },
+      { debt },
       { slippage },
       { routeId },
     ] as const,
@@ -31,7 +31,7 @@ export const { useQuery: useRepayPriceImpact, invalidate: invalidateRepayPriceIm
     marketId,
     stateCollateral,
     userCollateral,
-    userBorrowed,
+    debt,
     userAddress,
     slippage,
     routeId,
@@ -39,7 +39,7 @@ export const { useQuery: useRepayPriceImpact, invalidate: invalidateRepayPriceIm
     const [type, impl] = getRepayImplementation(marketId, {
       userCollateral,
       stateCollateral,
-      userBorrowed,
+      debt,
       slippage,
       routeId,
     })
@@ -48,7 +48,6 @@ export const { useQuery: useRepayPriceImpact, invalidate: invalidateRepayPriceIm
         const { priceImpact } = await impl.repayExpectedMetrics({
           stateCollateral,
           userCollateral,
-          userBorrowed,
           healthIsFull: true, // this will be removed, we don't care about health here
           address: userAddress,
           ...parseRoute(routeId),

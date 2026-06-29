@@ -14,7 +14,6 @@ export const { invalidate: invalidateCreateLoanBands } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
-    userBorrowed = '0',
     userCollateral = '0',
     debt = '0',
     leverageEnabled,
@@ -26,7 +25,6 @@ export const { invalidate: invalidateCreateLoanBands } = queryFactory({
       ...rootKeys.market({ chainId, marketId }),
       'createLoanBands',
       { userCollateral },
-      { userBorrowed },
       { debt },
       { leverageEnabled },
       { range },
@@ -35,22 +33,20 @@ export const { invalidate: invalidateCreateLoanBands } = queryFactory({
     ] as const,
   queryFn: async ({
     marketId,
-    userBorrowed = '0',
     userCollateral = '0',
     debt = '0',
     leverageEnabled,
     range,
     routeId,
   }: CreateLoanDebtQuery): Promise<CreateLoanBandsResult> => {
+    const deprecatedBorrowedFromWallet = '0'
     const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
     switch (type) {
       case 'zapV2':
-        return (
-          await impl.createLoanExpectedMetrics({ userCollateral, userBorrowed, debt, range, ...parseRoute(routeId) })
-        ).bands
+        return (await impl.createLoanExpectedMetrics({ userCollateral, debt, range, ...parseRoute(routeId) })).bands
       case 'V1':
       case 'V2':
-        return impl.createLoanBands(userCollateral, userBorrowed, debt, range)
+        return impl.createLoanBands(userCollateral, deprecatedBorrowedFromWallet, debt, range)
       case 'V0':
       case 'unleveraged':
         return impl.createLoanBands(userCollateral, debt, range)

@@ -14,7 +14,7 @@ const { Spacing } = SizesAndSpaces
 export const AdvancedCreateLoanOptions = ({
   network,
   params,
-  values: { debt, userBorrowed, leverageEnabled, range },
+  values: { debt, leverageEnabled, range },
   setRange,
   minBands,
   maxBands,
@@ -46,11 +46,8 @@ export const AdvancedCreateLoanOptions = ({
           loading={routeImageLoading || expectedCollateralLoading}
           swapFrom={borrowToken}
           swapTo={collateralToken}
-          swapFromAmounts={[
-            { value: `${debt ?? 0}`, label: t`Debt` },
-            { value: `${userBorrowed ?? 0}`, label: t`Wallet` },
-          ]}
-          swapToAmounts={[expectedCollateral?.collateralFromDebt, expectedCollateral?.collateralFromUserBorrowed]}
+          swapFromAmounts={[{ value: `${debt ?? 0}`, label: t`Debt` }]}
+          swapToAmounts={[expectedCollateral?.collateralFromDebt]}
           nonSwapAmount={{
             value: expectedCollateral?.userCollateral,
             label: '',

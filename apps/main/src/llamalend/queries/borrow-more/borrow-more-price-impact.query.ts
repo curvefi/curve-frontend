@@ -10,7 +10,6 @@ export const { useQuery: useBorrowMorePriceImpact, invalidate: invalidateBorrowM
     chainId,
     marketId,
     userAddress,
-    userBorrowed = '0',
     debt = '0',
     maxDebt,
     leverageEnabled,
@@ -20,7 +19,6 @@ export const { useQuery: useBorrowMorePriceImpact, invalidate: invalidateBorrowM
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'borrowMorePriceImpact',
-      { userBorrowed },
       { debt },
       { maxDebt },
       { leverageEnabled },
@@ -30,15 +28,14 @@ export const { useQuery: useBorrowMorePriceImpact, invalidate: invalidateBorrowM
   queryFn: async ({
     marketId,
     userCollateral = '0',
-    userBorrowed = '0',
     debt = '0',
     leverageEnabled,
     slippage,
     routeId,
   }: BorrowMoreQuery) => {
+    const deprecatedBorrowedFromWallet = '0'
     const [type, impl, args] = getBorrowMoreImplementationArgs(marketId, {
       userCollateral,
-      userBorrowed,
       debt,
       leverageEnabled,
       routeId,
@@ -48,7 +45,7 @@ export const { useQuery: useBorrowMorePriceImpact, invalidate: invalidateBorrowM
     const priceImpact =
       type === 'zapV2'
         ? (await impl.borrowMoreExpectedMetrics(...args)).priceImpact
-        : await impl.borrowMorePriceImpact(userBorrowed, debt)
+        : await impl.borrowMorePriceImpact(deprecatedBorrowedFromWallet, debt)
     return decimal(priceImpact) ?? null
   },
   category: 'llamalend.borrowMore',

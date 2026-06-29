@@ -29,38 +29,36 @@ export function getBorrowMoreImplementation(
 /**
  * Determines the borrow more implementation and constructs its argument tuple.
  * For unleveraged markets, returns `[type, impl, [userCollateral, debt]]`.
- * For leveraged (V1/V2) markets, returns `[type, impl, [userCollateral, userBorrowed, debt]]`.
+ * For leveraged (V1/V2) markets, returns `[type, impl, [userCollateral, '0', debt]]`.
  */
 export function getBorrowMoreImplementationArgs(
   marketId: string | LlamaMarketTemplate,
   {
     userCollateral,
-    userBorrowed,
     debt,
     leverageEnabled,
     routeId,
     slippage,
-  }: Pick<BorrowMoreQuery, 'userCollateral' | 'userBorrowed' | 'debt' | 'routeId' | 'slippage'> & {
+  }: Pick<BorrowMoreQuery, 'userCollateral' | 'debt' | 'routeId' | 'slippage'> & {
     leverageEnabled?: boolean | null
   },
 ) {
+  const deprecatedBorrowedFromWallet = '0'
   const market = getLlamaMarket(marketId)
   const [type, impl] = getBorrowMoreImplementation(market, leverageEnabled)
   if (type === 'unleveraged') {
-    if (+userBorrowed) throw new Error(`Invalid userBorrowed for unleveraged borrow more: ${userBorrowed}`)
     return [type, impl, [userCollateral, debt]] as const
   }
   if (type === 'zapV2') {
     const routerArgs = {
       userCollateral,
-      userBorrowed,
       dDebt: debt,
       debt,
       ...parseMutationRoute(market, { routeId, slippage, isRepay: false }),
     }
     return [type, impl, [routerArgs]] as const
   }
-  const args = [userCollateral, userBorrowed, debt] as const
+  const args = [userCollateral, deprecatedBorrowedFromWallet, debt] as const
   if (type == 'V1') return [type, impl, args] as const
   return [type, impl, args] as const
 }

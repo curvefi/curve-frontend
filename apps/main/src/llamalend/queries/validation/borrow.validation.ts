@@ -7,7 +7,6 @@ import {
   validateMaxDebt,
   validateRange,
   validateRoute,
-  validateUserBorrowed,
   validateUserCollateral,
 } from '@/llamalend/queries/validation/borrow-fields.validation'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
@@ -18,7 +17,6 @@ import { getCreateLoanImplementation } from '../create-loan/create-loan-query.he
 
 const createLoanFormValidationGroup = (
   {
-    userBorrowed,
     userCollateral,
     debt,
     range,
@@ -43,7 +41,6 @@ const createLoanFormValidationGroup = (
   },
 ) =>
   group('createLoanFormValidationGroup', () => {
-    validateUserBorrowed(userBorrowed)
     validateUserCollateral(userCollateral, { required: collateralRequired })
     validateDebt(debt, { required: debtRequired })
     validateSlippage({ slippage })

@@ -13,7 +13,6 @@ export const { useQuery: useCreateLoanHealth, invalidate: invalidateCreateLoanHe
   queryKey: ({
     chainId,
     marketId,
-    userBorrowed,
     userCollateral,
     debt,
     leverageEnabled,
@@ -25,7 +24,6 @@ export const { useQuery: useCreateLoanHealth, invalidate: invalidateCreateLoanHe
       ...rootKeys.market({ chainId, marketId }),
       'createLoanHealth',
       { userCollateral },
-      { userBorrowed },
       { debt },
       { leverageEnabled },
       { range },
@@ -34,23 +32,22 @@ export const { useQuery: useCreateLoanHealth, invalidate: invalidateCreateLoanHe
     ] as const,
   queryFn: async ({
     marketId,
-    userBorrowed = '0',
     userCollateral = '0',
     debt = '0',
     leverageEnabled,
     range,
     routeId,
   }: CreateLoanDebtQuery): Promise<Decimal> => {
+    const deprecatedBorrowedFromWallet = '0'
     const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
     switch (type) {
       case 'zapV2':
         return decimal(
-          (await impl.createLoanExpectedMetrics({ userCollateral, userBorrowed, debt, range, ...parseRoute(routeId) }))
-            .health,
+          (await impl.createLoanExpectedMetrics({ userCollateral, debt, range, ...parseRoute(routeId) })).health,
         )!
       case 'V1':
       case 'V2':
-        return decimal(await impl.createLoanHealth(userCollateral, userBorrowed, debt, range))!
+        return decimal(await impl.createLoanHealth(userCollateral, deprecatedBorrowedFromWallet, debt, range))!
       case 'V0':
       case 'unleveraged':
         return decimal(await impl.createLoanHealth(userCollateral, debt, range))!

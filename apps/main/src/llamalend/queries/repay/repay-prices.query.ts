@@ -13,7 +13,7 @@ export const { useQuery: useRepayPrices, invalidate: invalidateRepayPrices } = q
     marketId,
     stateCollateral = '0',
     userCollateral = '0',
-    userBorrowed = '0',
+    debt = '0',
     userAddress,
     slippage,
     routeId,
@@ -24,7 +24,7 @@ export const { useQuery: useRepayPrices, invalidate: invalidateRepayPrices } = q
       'repayPrices',
       { stateCollateral },
       { userCollateral },
-      { userBorrowed },
+      { debt },
       { slippage },
       { routeId },
       { isFull },
@@ -33,7 +33,7 @@ export const { useQuery: useRepayPrices, invalidate: invalidateRepayPrices } = q
     marketId,
     stateCollateral,
     userCollateral,
-    userBorrowed,
+    debt,
     slippage,
     routeId,
     userAddress,
@@ -43,7 +43,7 @@ export const { useQuery: useRepayPrices, invalidate: invalidateRepayPrices } = q
     const [type, impl, args] = getRepayImplementation(marketId, {
       userCollateral,
       stateCollateral,
-      userBorrowed,
+      debt,
       slippage,
       routeId,
     })
@@ -54,7 +54,6 @@ export const { useQuery: useRepayPrices, invalidate: invalidateRepayPrices } = q
           await impl.repayExpectedMetrics({
             stateCollateral,
             userCollateral,
-            userBorrowed,
             healthIsFull: true,
             address: userAddress,
             ...parseRoute(routeId),

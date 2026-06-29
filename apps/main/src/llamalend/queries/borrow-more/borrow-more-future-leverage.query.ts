@@ -14,7 +14,6 @@ export const { useQuery: useBorrowMoreFutureLeverage, invalidate: invalidateBorr
     marketId,
     userAddress,
     userCollateral = '0',
-    userBorrowed = '0',
     debt = '0',
     maxDebt,
     slippage,
@@ -25,7 +24,6 @@ export const { useQuery: useBorrowMoreFutureLeverage, invalidate: invalidateBorr
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'borrowMoreFutureLeverage',
       { userCollateral },
-      { userBorrowed },
       { debt },
       { maxDebt },
       { slippage },
@@ -35,7 +33,6 @@ export const { useQuery: useBorrowMoreFutureLeverage, invalidate: invalidateBorr
   queryFn: async ({
     marketId,
     userCollateral = '0',
-    userBorrowed = '0',
     debt = '0',
     leverageEnabled,
     routeId,
@@ -43,7 +40,6 @@ export const { useQuery: useBorrowMoreFutureLeverage, invalidate: invalidateBorr
   }: BorrowMoreQuery): Promise<Decimal | null> => {
     const [type, impl, args] = getBorrowMoreImplementationArgs(marketId, {
       userCollateral,
-      userBorrowed,
       debt,
       leverageEnabled,
       routeId,

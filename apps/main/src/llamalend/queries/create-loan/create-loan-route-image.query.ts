@@ -5,21 +5,21 @@ import type { CreateLoanDebtParams, CreateLoanDebtQuery } from '../../features/b
 import { createLoanQueryValidationSuite } from '../validation/borrow.validation'
 
 export const { useQuery: useCreateLoanRouteImage } = queryFactory({
-  queryKey: ({ chainId, marketId, userBorrowed = '0', debt = '0', maxDebt, leverageEnabled }: CreateLoanDebtParams) =>
+  queryKey: ({ chainId, marketId, debt = '0', maxDebt, leverageEnabled }: CreateLoanDebtParams) =>
     [
       ...rootKeys.market({ chainId, marketId }),
       'createLoanRouteImage',
-      { userBorrowed },
       { debt },
       { maxDebt },
       { leverageEnabled },
     ] as const,
-  queryFn: async ({ marketId, userBorrowed = '0', debt = '0', leverageEnabled }: CreateLoanDebtQuery) => {
+  queryFn: async ({ marketId, debt = '0', leverageEnabled }: CreateLoanDebtQuery) => {
+    const deprecatedBorrowedFromWallet = '0'
     const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
     switch (type) {
       case 'V1':
       case 'V2':
-        return await impl.createLoanRouteImage(userBorrowed, debt)
+        return await impl.createLoanRouteImage(deprecatedBorrowedFromWallet, debt)
       case 'V0':
       case 'unleveraged':
       case 'zapV2':

@@ -9,8 +9,8 @@ import type { FieldsOf } from '@ui-kit/lib'
 import { type UserMarketQuery } from '@ui-kit/lib/model'
 import { getUserState } from '../user/user-state.query'
 
-type RepayFields = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'userBorrowed' | 'routeId' | 'slippage'>
-export type RepayFormFields = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'userBorrowed'>
+type RepayFields = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'debt' | 'routeId' | 'slippage'>
+export type RepayFormFields = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'debt'>
 
 /** Returns true when repayment closes the loan using only debt tokens from the wallet. */
 export const isFullRepayFromDebtToken = (
@@ -27,32 +27,31 @@ export const isFullRepayFromDebtToken = (
  */
 export function getRepayImplementation(
   marketId: string | LlamaMarketTemplate,
-  { stateCollateral, userCollateral, userBorrowed, routeId, slippage }: RepayFields,
+  { stateCollateral, userCollateral, debt, routeId, slippage }: RepayFields,
   routeMeta?: Partial<RouteMutationMeta>,
 ) {
   const market = getLlamaMarket(marketId)
-  const [hasUserBorrowed, hasUserCollateral, hasStateCollateral] = [userBorrowed, userCollateral, stateCollateral].map(
-    v => !!+v,
-  )
+  const [hasDebt, hasUserCollateral, hasStateCollateral] = [debt, userCollateral, stateCollateral].map(v => !!+v)
+  const deprecatedDebtInput = '0'
   if (market instanceof MintMarketTemplate) {
-    if (!hasUserCollateral && !hasStateCollateral) return ['unleveragedMint', market, [userBorrowed]] as const
+    if (!hasUserCollateral && !hasStateCollateral) return ['unleveragedMint', market, [debt]] as const
     if (hasV2Leverage(market))
-      return ['V2', market.leverageV2, [stateCollateral, userCollateral, userBorrowed]] as const
-    if (hasStateCollateral && !hasUserBorrowed && !hasUserCollateral && hasDeleverage(market))
+      return ['V2', market.leverageV2, [stateCollateral, userCollateral, deprecatedDebtInput]] as const
+    if (hasStateCollateral && !hasDebt && !hasUserCollateral && hasDeleverage(market))
       return ['deleverage', market.deleverage, [stateCollateral]] as const
   } else {
-    if (!hasUserCollateral && !hasStateCollateral)
-      return ['unleveragedLend', market.loan, [{ debt: userBorrowed }]] as const
+    if (!hasUserCollateral && !hasStateCollateral) return ['unleveragedLend', market.loan, [{ debt }]] as const
     if (hasZapV2(market)) {
       const route = (routeMeta as RouteMutationMeta) ?? parseMutationRoute(market, { routeId, slippage, isRepay: true })
-      return ['zapV2', market.leverageZapV2, [{ stateCollateral, userCollateral, userBorrowed, ...route }]] as const
+      return ['zapV2', market.leverageZapV2, [{ stateCollateral, userCollateral, ...route }]] as const
     }
-    if (hasLeverage(market)) return ['V1', market.leverage, [stateCollateral, userCollateral, userBorrowed]] as const
+    if (hasLeverage(market))
+      return ['V1', market.leverage, [stateCollateral, userCollateral, deprecatedDebtInput]] as const
   }
   throw new Error(
     // eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions -- Existing violation before enabling this rule.
     `Invalid repay implementation for ${market.constructor.name} market: ${marketId} with ${notFalsy(
-      hasUserBorrowed && 'user borrowed',
+      hasDebt && 'debt',
       hasUserCollateral && 'user collateral',
       hasStateCollateral && 'state collateral',
     ).join(', ')}`,
@@ -61,7 +60,7 @@ export function getRepayImplementation(
 
 export function getRepayImplementationType(
   marketId: string | LlamaMarketTemplate,
-  { userCollateral, stateCollateral, userBorrowed }: FieldsOf<RepayFormFields>,
+  { userCollateral, stateCollateral, debt }: FieldsOf<RepayFormFields>,
 ) {
   const routeMeta = {} // we are ignoring the args in this helper anyway
   const [implementationType] = getRepayImplementation(
@@ -69,7 +68,7 @@ export function getRepayImplementationType(
     {
       userCollateral: userCollateral ?? '0',
       stateCollateral: stateCollateral ?? '0',
-      userBorrowed: userBorrowed ?? '0',
+      debt: debt ?? '0',
       slippage: '0', // irrelevant for this specific helper
       routeId: undefined,
     },

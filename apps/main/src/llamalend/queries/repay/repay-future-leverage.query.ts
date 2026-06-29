@@ -11,7 +11,7 @@ export const { useQuery: useRepayFutureLeverage, invalidate: invalidateRepayFutu
     marketId,
     stateCollateral = '0',
     userCollateral = '0',
-    userBorrowed = '0',
+    debt = '0',
     userAddress,
     slippage,
     routeId,
@@ -22,7 +22,7 @@ export const { useQuery: useRepayFutureLeverage, invalidate: invalidateRepayFutu
       'repayFutureLeverage',
       { stateCollateral },
       { userCollateral },
-      { userBorrowed },
+      { debt },
       { slippage },
       { routeId },
       { isFull },
@@ -32,7 +32,7 @@ export const { useQuery: useRepayFutureLeverage, invalidate: invalidateRepayFutu
     userAddress,
     stateCollateral,
     userCollateral,
-    userBorrowed,
+    debt,
     slippage,
     routeId,
     isFull,
@@ -41,7 +41,7 @@ export const { useQuery: useRepayFutureLeverage, invalidate: invalidateRepayFutu
     const [type, impl, args] = getRepayImplementation(marketId, {
       userCollateral,
       stateCollateral,
-      userBorrowed,
+      debt,
       routeId,
       slippage,
     })
@@ -54,7 +54,7 @@ export const { useQuery: useRepayFutureLeverage, invalidate: invalidateRepayFutu
       case 'unleveragedMint':
         return decimal(await impl.repayFutureLeverage(...args, userAddress)) ?? null
       case 'unleveragedLend':
-        return decimal(await impl.repayFutureLeverage(userBorrowed, userAddress)) ?? null
+        return decimal(await impl.repayFutureLeverage(debt, userAddress)) ?? null
       case 'deleverage':
         throw new Error('Future leverage is not available for deleverage repay')
     }

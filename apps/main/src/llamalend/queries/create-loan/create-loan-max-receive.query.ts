@@ -1,7 +1,6 @@
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { assert } from '@primitives/objects.utils'
 import { getExpectedFn } from '@ui-kit/entities/router-api'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
@@ -52,7 +51,6 @@ export const {
     chainId,
     marketId,
     userAddress,
-    userBorrowed = `0`,
     userCollateral = `0`,
     range,
     leverageEnabled,
@@ -61,7 +59,6 @@ export const {
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'createLoanMaxRecv',
-      { userBorrowed },
       { userCollateral },
       { range },
       { leverageEnabled },
@@ -71,19 +68,18 @@ export const {
     chainId,
     marketId,
     userAddress,
-    userBorrowed = `0`,
     userCollateral = `0`,
     range,
     leverageEnabled,
     slippage,
   }: CreateLoanMaxReceiveQuery): Promise<CreateLoanMaxReceiveResult> => {
+    const deprecatedBorrowedFromWallet = '0'
     const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
     switch (type) {
       case 'zapV2': {
         return convertNumbers(
           await impl.createLoanMaxRecv({
             userCollateral,
-            userBorrowed,
             range,
             getExpected: getExpectedFn({ chainId, userAddress, slippage }),
           }),
@@ -91,9 +87,8 @@ export const {
       }
       case 'V1':
       case 'V2':
-        return convertNumbers(await impl.createLoanMaxRecv(userCollateral, userBorrowed, range))
+        return convertNumbers(await impl.createLoanMaxRecv(userCollateral, deprecatedBorrowedFromWallet, range))
       case 'V0': {
-        assert(!+userBorrowed, `userBorrowed must be 0 for non-leverage mint markets`)
         const result = await impl.createLoanMaxRecv(userCollateral, range)
         const { maxBorrowable, maxCollateral } = result // leverage and routeIdx fields are unused
         return convertNumbers({ maxDebt: maxBorrowable, maxTotalCollateral: maxCollateral })

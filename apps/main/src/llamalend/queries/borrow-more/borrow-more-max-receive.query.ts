@@ -48,7 +48,6 @@ export const { useQuery: useBorrowMoreMaxReceive, invalidate: invalidateBorrowMo
     marketId,
     userAddress,
     userCollateral = '0',
-    userBorrowed = '0',
     leverageEnabled,
     routeId,
     slippage,
@@ -57,7 +56,6 @@ export const { useQuery: useBorrowMoreMaxReceive, invalidate: invalidateBorrowMo
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'borrowMoreMaxRecv',
       { userCollateral },
-      { userBorrowed },
       { leverageEnabled },
       { routeId },
       { slippage },
@@ -65,20 +63,19 @@ export const { useQuery: useBorrowMoreMaxReceive, invalidate: invalidateBorrowMo
   queryFn: async ({
     marketId,
     userCollateral = '0',
-    userBorrowed = '0',
     leverageEnabled,
     chainId,
     routeId,
     userAddress,
     slippage,
   }: BorrowMoreQuery): Promise<BorrowMoreMaxReceiveResult> => {
+    const deprecatedBorrowedFromWallet = '0'
     const [type, impl] = getBorrowMoreImplementation(marketId, leverageEnabled)
     switch (type) {
       case 'zapV2': {
         return castFieldsToDecimal(
           await impl.borrowMoreMaxRecv({
             userCollateral,
-            userBorrowed,
             address: userAddress,
             getExpected: getExpectedFn({
               chainId,
@@ -91,7 +88,7 @@ export const { useQuery: useBorrowMoreMaxReceive, invalidate: invalidateBorrowMo
       }
       case 'V1':
       case 'V2':
-        return castFieldsToDecimal(await impl.borrowMoreMaxRecv(userCollateral, userBorrowed))
+        return castFieldsToDecimal(await impl.borrowMoreMaxRecv(userCollateral, deprecatedBorrowedFromWallet))
       case 'unleveraged':
         return { maxDebt: (await impl.borrowMoreMaxRecv(userCollateral)) as Decimal }
     }

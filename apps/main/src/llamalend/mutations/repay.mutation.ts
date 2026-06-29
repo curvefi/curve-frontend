@@ -19,7 +19,7 @@ import { waitForApproval } from '@ui-kit/utils'
 type RepayMutation = {
   stateCollateral: Decimal
   userCollateral: Decimal
-  userBorrowed: Decimal
+  debt: Decimal
   isFull: boolean
   slippage: Decimal
   routeId: string | undefined
@@ -34,7 +34,7 @@ type RepayOptions = {
 
 const approveRepay = async (
   market: LlamaMarketTemplate,
-  { stateCollateral = '0', userCollateral = '0', userBorrowed = '0', isFull, routeId, slippage }: RepayMutation,
+  { stateCollateral = '0', userCollateral = '0', debt = '0', isFull, routeId, slippage }: RepayMutation,
 ) => {
   if (isFullRepayFromDebtToken(isFull, stateCollateral, userCollateral)) {
     return (await getLoanImplementation(market).fullRepayApprove()) as Hex[]
@@ -42,28 +42,28 @@ const approveRepay = async (
   const [type, impl] = getRepayImplementation(market.id, {
     userCollateral,
     stateCollateral,
-    userBorrowed,
+    debt,
     routeId,
     slippage,
   })
   switch (type) {
     case 'zapV2':
-      return (await impl.repayApprove({ userCollateral, userBorrowed })) as Hex[]
+      return (await impl.repayApprove({ userCollateral })) as Hex[]
     case 'V1':
     case 'V2':
-      return (await impl.repayApprove(userCollateral, userBorrowed)) as Hex[]
+      return (await impl.repayApprove(userCollateral, debt)) as Hex[]
     case 'deleverage':
       return [] // no approve needed, paying from state
     case 'unleveragedMint':
-      return (await impl.repayApprove(userBorrowed)) as Hex[]
+      return (await impl.repayApprove(debt)) as Hex[]
     case 'unleveragedLend':
-      return (await impl.repayApprove(userBorrowed)) as Hex[]
+      return (await impl.repayApprove(debt)) as Hex[]
   }
 }
 
 const repay = async (
   market: LlamaMarketTemplate,
-  { stateCollateral = '0', userCollateral = '0', userBorrowed = '0', isFull, slippage, routeId }: RepayMutation,
+  { stateCollateral = '0', userCollateral = '0', debt = '0', isFull, slippage, routeId }: RepayMutation,
 ): Promise<Hex> => {
   if (isFullRepayFromDebtToken(isFull, stateCollateral, userCollateral)) {
     return (await getLoanImplementation(market).fullRepay()) as Hex
@@ -71,7 +71,7 @@ const repay = async (
   const [type, impl] = getRepayImplementation(market, {
     userCollateral,
     stateCollateral,
-    userBorrowed,
+    debt,
     routeId,
     slippage,
   })
@@ -80,19 +80,18 @@ const repay = async (
       return (await impl.repay({
         stateCollateral,
         userCollateral,
-        userBorrowed,
         ...parseMutationRoute(market, { routeId, slippage, isRepay: true }),
       })) as Hex
     case 'V1':
     case 'V2':
-      await impl.repayExpectedBorrowed(stateCollateral, userCollateral, userBorrowed, +slippage)
-      return (await impl.repay(stateCollateral, userCollateral, userBorrowed, +slippage)) as Hex
+      await impl.repayExpectedBorrowed(stateCollateral, userCollateral, debt, +slippage)
+      return (await impl.repay(stateCollateral, userCollateral, debt, +slippage)) as Hex
     case 'deleverage':
       return (await impl.repay(stateCollateral, +slippage)) as Hex
     case 'unleveragedMint':
-      return (await impl.repay(userBorrowed)) as Hex
+      return (await impl.repay(debt)) as Hex
     case 'unleveragedLend':
-      return (await impl.repay({ debt: userBorrowed })) as Hex
+      return (await impl.repay({ debt })) as Hex
   }
 }
 
@@ -120,11 +119,11 @@ export const useRepayMutation = ({ network, network: { chainId }, marketId, user
 
   const onSubmit = useCallback(
     // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
-    async ({ userBorrowed = '0', isFull, ...form }: RepayFormData) =>
+    async ({ debt = '0', isFull, ...form }: RepayFormData) =>
       mutate({
         ...form,
         isFull,
-        userBorrowed,
+        debt,
       } as RepayMutation),
     [mutate],
   )

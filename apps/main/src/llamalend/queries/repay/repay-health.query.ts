@@ -12,7 +12,7 @@ export const { getQueryOptions: getRepayHealthOptions, invalidate: invalidateRep
     marketId,
     stateCollateral = '0',
     userCollateral = '0',
-    userBorrowed = '0',
+    debt = '0',
     userAddress,
     isHealthFull,
     slippage,
@@ -23,7 +23,7 @@ export const { getQueryOptions: getRepayHealthOptions, invalidate: invalidateRep
       'repayHealth',
       { stateCollateral },
       { userCollateral },
-      { userBorrowed },
+      { debt },
       { isHealthFull },
       { slippage },
       { routeId },
@@ -32,7 +32,7 @@ export const { getQueryOptions: getRepayHealthOptions, invalidate: invalidateRep
     marketId,
     stateCollateral,
     userCollateral,
-    userBorrowed,
+    debt,
     isHealthFull,
     userAddress,
     slippage,
@@ -41,7 +41,7 @@ export const { getQueryOptions: getRepayHealthOptions, invalidate: invalidateRep
     const [type, impl] = getRepayImplementation(marketId, {
       userCollateral,
       stateCollateral,
-      userBorrowed,
+      debt,
       routeId,
       slippage,
     })
@@ -51,7 +51,6 @@ export const { getQueryOptions: getRepayHealthOptions, invalidate: invalidateRep
           await impl.repayExpectedMetrics({
             stateCollateral,
             userCollateral,
-            userBorrowed,
             healthIsFull: isHealthFull,
             address: userAddress,
             ...parseRoute(routeId),
@@ -59,13 +58,13 @@ export const { getQueryOptions: getRepayHealthOptions, invalidate: invalidateRep
         ).health as Decimal
       case 'V1':
       case 'V2':
-        return (await impl.repayHealth(stateCollateral, userCollateral, userBorrowed, isHealthFull)) as Decimal
+        return (await impl.repayHealth(stateCollateral, userCollateral, debt, isHealthFull)) as Decimal
       case 'deleverage':
         return (await impl.repayHealth(stateCollateral, isHealthFull)) as Decimal
       case 'unleveragedMint':
-        return (await impl.repayHealth(userBorrowed, isHealthFull)) as Decimal
+        return (await impl.repayHealth(debt, isHealthFull)) as Decimal
       case 'unleveragedLend':
-        return (await impl.repayHealth({ debt: userBorrowed, full: isHealthFull })) as Decimal
+        return (await impl.repayHealth({ debt, full: isHealthFull })) as Decimal
     }
   },
   category: 'llamalend.repay',

@@ -11,7 +11,6 @@ export const { useQuery: useCreateLoanPriceImpact, invalidate: invalidateCreateL
   queryKey: ({
     chainId,
     marketId,
-    userBorrowed = '0',
     userCollateral = '0',
     debt = '0',
     leverageEnabled,
@@ -23,7 +22,6 @@ export const { useQuery: useCreateLoanPriceImpact, invalidate: invalidateCreateL
       ...rootKeys.market({ chainId, marketId }),
       'createLoanPriceImpact',
       { userCollateral },
-      { userBorrowed },
       { debt },
       { leverageEnabled },
       { range },
@@ -32,19 +30,18 @@ export const { useQuery: useCreateLoanPriceImpact, invalidate: invalidateCreateL
     ] as const,
   queryFn: async ({
     marketId,
-    userBorrowed = '0',
     userCollateral = '0',
     debt = '0',
     leverageEnabled,
     range,
     routeId,
   }: CreateLoanDebtQuery): Promise<Decimal | null> => {
+    const deprecatedBorrowedFromWallet = '0'
     const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
     switch (type) {
       case 'zapV2': {
         const { priceImpact } = await impl.createLoanExpectedMetrics({
           userCollateral,
-          userBorrowed,
           debt,
           range,
           ...parseRoute(routeId),
@@ -53,7 +50,7 @@ export const { useQuery: useCreateLoanPriceImpact, invalidate: invalidateCreateL
       }
       case 'V1':
       case 'V2':
-        return decimal(await impl.createLoanPriceImpact(userBorrowed, debt)) ?? null
+        return decimal(await impl.createLoanPriceImpact(deprecatedBorrowedFromWallet, debt)) ?? null
       case 'V0':
         return decimal(await impl.priceImpact(userCollateral, debt)) ?? null
       case 'unleveraged':

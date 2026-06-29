@@ -31,14 +31,12 @@ import type { RouteResponse } from '@ui-kit/entities/router-api'
 import { useCallbackSync, useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { q, type QueryProp, type Range } from '@ui-kit/types/util'
-import { decimalSum } from '@ui-kit/utils'
 import { shouldBlockTransaction } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import { useMarketContext } from '../../market-context'
 
 const useBorrowMoreParams = <ChainId extends LlamaChainId>({
   userCollateral,
-  userBorrowed,
   debt,
   maxDebt,
   slippage,
@@ -59,7 +57,6 @@ const useBorrowMoreParams = <ChainId extends LlamaChainId>({
         marketId,
         userAddress,
         userCollateral,
-        userBorrowed,
         debt,
         maxDebt,
         slippage,
@@ -67,13 +64,12 @@ const useBorrowMoreParams = <ChainId extends LlamaChainId>({
         routeId,
         slippageType: LEVERAGE,
       }),
-      [chainId, marketId, userAddress, userCollateral, userBorrowed, debt, maxDebt, slippage, leverageEnabled, routeId],
+      [chainId, marketId, userAddress, userCollateral, debt, maxDebt, slippage, leverageEnabled, routeId],
     ),
   )
 
 const userDefaultValues = {
   userCollateral: undefined,
-  userBorrowed: undefined,
   debt: undefined,
   routeId: undefined,
 } satisfies Partial<BorrowMoreForm>
@@ -175,7 +171,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
       marketAddress: ammAddress,
       tokenIn: borrowToken,
       tokenOut: collateralToken,
-      amountIn: decimalSum(params.debt, params.userBorrowed),
+      amountIn: params.debt,
       ...pick(params, 'slippage'),
       enabled: isRouteRequired(market, values.leverageEnabled),
       onChange: async (route: RouteResponse | undefined) => {
@@ -190,7 +186,6 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
       params,
       form,
       market,
-      borrowTokenAddress: borrowToken?.address,
       collateralTokenAddress: collateralToken?.address,
       collateralEvents,
     }),

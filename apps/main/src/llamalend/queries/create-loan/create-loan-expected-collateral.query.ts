@@ -1,6 +1,5 @@
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import type { Decimal } from '@primitives/decimal.utils'
-import { assert } from '@primitives/objects.utils'
 import { parseRoute as parseRoute } from '@ui-kit/entities/router-api'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { decimal } from '@ui-kit/utils'
@@ -48,7 +47,6 @@ export const {
   queryKey: ({
     chainId,
     marketId,
-    userBorrowed = '0',
     userCollateral = '0',
     debt,
     slippage,
@@ -60,7 +58,6 @@ export const {
       ...rootKeys.market({ chainId, marketId }),
       'createLoanExpectedCollateral',
       { userCollateral },
-      { userBorrowed },
       { debt },
       { slippage },
       { leverageEnabled },
@@ -69,24 +66,23 @@ export const {
     ] as const,
   queryFn: async ({
     marketId,
-    userBorrowed = '0',
     userCollateral = '0',
     debt,
     slippage,
     leverageEnabled,
     routeId,
   }: CreateLoanDebtQuery): Promise<CreateLoanExpectedCollateralResult> => {
+    const deprecatedBorrowedFromWallet = '0'
     const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
     switch (type) {
       case 'zapV2':
-        return convertNumbers(
-          await impl.createLoanExpectedCollateral({ userCollateral, userBorrowed, debt, ...parseRoute(routeId) }),
-        )
+        return convertNumbers(await impl.createLoanExpectedCollateral({ userCollateral, debt, ...parseRoute(routeId) }))
       case 'V1':
       case 'V2':
-        return convertNumbers(await impl.createLoanExpectedCollateral(userCollateral, userBorrowed, debt, +slippage))
+        return convertNumbers(
+          await impl.createLoanExpectedCollateral(userCollateral, deprecatedBorrowedFromWallet, debt, +slippage),
+        )
       case 'V0': {
-        assert(!+userBorrowed, `userBorrowed must be 0 for non-leverage mint markets`)
         const { collateral, leverage } = await impl.createLoanCollateral(userCollateral, debt)
         return convertNumbers({ userCollateral, leverage, totalCollateral: collateral })
       }

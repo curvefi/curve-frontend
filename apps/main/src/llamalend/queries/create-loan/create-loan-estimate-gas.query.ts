@@ -17,27 +17,22 @@ type GasEstimateParams<T = IChainId> = FieldsOf<CreateLoanEstimateGasQuery<T>>
 
 const { useQuery: useCreateLoanApproveEstimateGas, invalidate: invalidateCreateLoanApproveEstimateGasQuery } =
   queryFactory({
-    queryKey: ({ chainId, marketId, userBorrowed = '0', userCollateral = '0', leverageEnabled }: GasEstimateParams) =>
+    queryKey: ({ chainId, marketId, userCollateral = '0', leverageEnabled }: GasEstimateParams) =>
       [
         ...rootKeys.market({ chainId, marketId }),
         'estimateGas.createLoanApprove',
-        { userBorrowed },
         { userCollateral },
         { leverageEnabled },
       ] as const,
-    queryFn: async ({
-      marketId,
-      userBorrowed = '0',
-      userCollateral = '0',
-      leverageEnabled,
-    }: CreateLoanEstimateGasQuery) => {
+    queryFn: async ({ marketId, userCollateral = '0', leverageEnabled }: CreateLoanEstimateGasQuery) => {
+      const deprecatedBorrowedFromWallet = '0'
       const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
       switch (type) {
         case 'zapV2':
-          return await impl.estimateGas.createLoanApprove({ userCollateral, userBorrowed })
+          return await impl.estimateGas.createLoanApprove({ userCollateral })
         case 'V1':
         case 'V2':
-          return await impl.estimateGas.createLoanApprove(userCollateral, userBorrowed)
+          return await impl.estimateGas.createLoanApprove(userCollateral, deprecatedBorrowedFromWallet)
         case 'V0':
         case 'unleveraged':
           return await impl.estimateGas.createLoanApprove(userCollateral)
@@ -56,7 +51,6 @@ const {
   queryKey: ({
     chainId,
     marketId,
-    userBorrowed = '0',
     userCollateral = '0',
     debt = '0',
     leverageEnabled,
@@ -67,7 +61,6 @@ const {
     [
       ...rootKeys.market({ chainId, marketId }),
       'estimateGas.createLoan',
-      { userBorrowed },
       { userCollateral },
       { debt },
       { leverageEnabled },
@@ -77,7 +70,6 @@ const {
     ] as const,
   queryFn: async ({
     marketId,
-    userBorrowed = '0',
     userCollateral = '0',
     debt = '0',
     leverageEnabled,
@@ -86,19 +78,19 @@ const {
     routeId,
   }: CreateLoanEstimateGasQuery): Promise<TGas> => {
     const market = getLlamaMarket(marketId)
+    const deprecatedBorrowedFromWallet = '0'
     const [type, impl] = getCreateLoanImplementation(market, leverageEnabled)
     switch (type) {
       case 'zapV2':
         return await impl.estimateGas.createLoan({
           userCollateral,
-          userBorrowed,
           debt,
           range,
           ...parseMutationRoute(market, { routeId, slippage, isRepay: false }),
         })
       case 'V1':
       case 'V2':
-        return await impl.estimateGas.createLoan(userCollateral, userBorrowed, debt, range, +slippage)
+        return await impl.estimateGas.createLoan(userCollateral, deprecatedBorrowedFromWallet, debt, range, +slippage)
       case 'V0':
         return await impl.estimateGas.createLoan(userCollateral, debt, range, +slippage)
       case 'unleveraged':

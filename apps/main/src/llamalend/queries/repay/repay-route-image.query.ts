@@ -9,7 +9,7 @@ export const { invalidate: invalidateRepayRouteImage } = queryFactory({
     marketId,
     stateCollateral = '0',
     userCollateral = '0',
-    userBorrowed = '0',
+    debt = '0',
     userAddress,
     slippage,
     routeId,
@@ -19,15 +19,15 @@ export const { invalidate: invalidateRepayRouteImage } = queryFactory({
       'repayRouteImage',
       { stateCollateral },
       { userCollateral },
-      { userBorrowed },
+      { debt },
       { slippage },
       { routeId },
     ] as const,
-  queryFn: async ({ marketId, stateCollateral, userCollateral, userBorrowed, slippage, routeId }: RepayQuery) => {
+  queryFn: async ({ marketId, stateCollateral, userCollateral, debt, slippage, routeId }: RepayQuery) => {
     const [type, impl] = getRepayImplementation(marketId, {
       userCollateral,
       stateCollateral,
-      userBorrowed,
+      debt,
       slippage,
       routeId,
     })

@@ -16,7 +16,6 @@ const { useQuery: useBorrowMoreApproveGasEstimate, invalidate: invalidateBorrowM
       marketId,
       userAddress,
       userCollateral = '0',
-      userBorrowed = '0',
       maxDebt,
       leverageEnabled,
       routeId,
@@ -25,24 +24,19 @@ const { useQuery: useBorrowMoreApproveGasEstimate, invalidate: invalidateBorrowM
         ...rootKeys.userMarket({ chainId, marketId, userAddress }),
         'estimateGas.borrowMoreApprove',
         { userCollateral },
-        { userBorrowed },
         { maxDebt },
         { leverageEnabled },
         { routeId },
       ] as const,
-    queryFn: async ({
-      marketId,
-      userCollateral = '0',
-      userBorrowed = '0',
-      leverageEnabled,
-    }: BorrowMoreQuery): Promise<TGas | null> => {
+    queryFn: async ({ marketId, userCollateral = '0', leverageEnabled }: BorrowMoreQuery): Promise<TGas | null> => {
+      const deprecatedBorrowedFromWallet = '0'
       const [type, impl] = getBorrowMoreImplementation(marketId, leverageEnabled)
       switch (type) {
         case 'zapV2':
-          return await impl.estimateGas.borrowMoreApprove({ userCollateral, userBorrowed })
+          return await impl.estimateGas.borrowMoreApprove({ userCollateral })
         case 'V1':
         case 'V2':
-          return await impl.estimateGas.borrowMoreApprove(userCollateral, userBorrowed)
+          return await impl.estimateGas.borrowMoreApprove(userCollateral, deprecatedBorrowedFromWallet)
         case 'unleveraged':
           return await impl.estimateGas.borrowMoreApprove(userCollateral)
       }
@@ -61,7 +55,6 @@ const {
     marketId,
     userAddress,
     userCollateral = '0',
-    userBorrowed = '0',
     debt = '0',
     slippage,
     leverageEnabled,
@@ -71,7 +64,6 @@ const {
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'estimateGas.borrowMore',
       { userCollateral },
-      { userBorrowed },
       { debt },
       { slippage },
       { leverageEnabled },
@@ -80,16 +72,15 @@ const {
   queryFn: async ({
     marketId,
     userCollateral = '0',
-    userBorrowed = '0',
     debt = '0',
     slippage,
     leverageEnabled,
     routeId,
   }: BorrowMoreQuery): Promise<TGas | null> => {
     if (!+debt) return null
+    const deprecatedBorrowedFromWallet = '0'
     const [type, impl, args] = getBorrowMoreImplementationArgs(marketId, {
       userCollateral,
-      userBorrowed,
       debt,
       leverageEnabled,
       routeId,
@@ -100,7 +91,7 @@ const {
         return await impl.estimateGas.borrowMore(...args)
       case 'V1':
       case 'V2':
-        await impl.borrowMoreExpectedCollateral(userCollateral, userBorrowed, debt, +slippage)
+        await impl.borrowMoreExpectedCollateral(userCollateral, deprecatedBorrowedFromWallet, debt, +slippage)
         return await impl.estimateGas.borrowMore(...args, +slippage)
       case 'unleveraged':
         return await impl.estimateGas.borrowMore(...args)

@@ -42,20 +42,23 @@ function useRepayRemainingDebt(
     showLeverage: boolean | undefined
     prevDebt: Query<Decimal | null>
   },
-  { isFull, userBorrowed }: Pick<RepayFormData, 'userBorrowed' | 'isFull'>,
+  { isFull, debt: repayDebtAmount }: Pick<RepayFormData, 'debt' | 'isFull'>,
   enabled: boolean,
 ) {
   const expectedBorrowedQuery = useRepayExpectedBorrowed(params, enabled)
   const prev = prevDebt.data
-  const debt: QueryProp<Decimal | null> = isFull
+  const remainingDebtQuery: QueryProp<Decimal | null> = isFull
     ? constQ('0')
     : showLeverage
       ? {
           data: prev && expectedBorrowedQuery.data && remainingDebt(prev, expectedBorrowedQuery.data.totalBorrowed),
           ...combineQueryState(prevDebt, expectedBorrowedQuery),
         }
-      : mapQuery(prevDebt, () => prev && remainingDebt(prev, userBorrowed ?? '0'))
-  return { debt, debtDelta: debt.data && prev && decimalMinus(debt.data, prev) }
+      : mapQuery(prevDebt, () => prev && remainingDebt(prev, repayDebtAmount ?? '0'))
+  return {
+    debt: remainingDebtQuery,
+    debtDelta: remainingDebtQuery.data && prev && decimalMinus(remainingDebtQuery.data, prev),
+  }
 }
 
 function useReturnToWallet(
@@ -67,26 +70,26 @@ function useReturnToWallet(
   enabled: boolean,
 ) {
   const userState = useUserState(params, enabled)
-  const userBorrowed = useRepayExpectedBorrowed(params, enabled)
+  const debt = useRepayExpectedBorrowed(params, enabled)
   const data = useMemo(
     () =>
       calculateReturnToWallet({
-        totalBorrowed: userBorrowed.data?.totalBorrowed,
+        totalBorrowed: debt.data?.totalBorrowed,
         userState: userState.data,
         stateCollateralDelta: params.stateCollateral ?? undefined,
         collateralSymbol,
         borrowedSymbol,
       }),
-    [collateralSymbol, params.stateCollateral, borrowedSymbol, userState.data, userBorrowed.data],
+    [collateralSymbol, params.stateCollateral, borrowedSymbol, userState.data, debt.data],
   )
-  return enabled ? { data, ...combineQueryState(userBorrowed, userState) } : undefined
+  return enabled ? { data, ...combineQueryState(debt, userState) } : undefined
 }
 
 export function RepayLoanInfoList<ChainId extends IChainId>({
   controllerAddress,
   marketType,
   params,
-  values: { slippage, stateCollateral, userCollateral, userBorrowed, isFull },
+  values: { slippage, stateCollateral, userCollateral, debt: repayDebtAmount, isFull },
   tokens: { collateralToken, borrowToken },
   networks,
   onSlippageChange,
@@ -109,12 +112,12 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   prices?: QueryProp<Range<Decimal> | null>
   prevPrices?: QueryProp<Range<Decimal>>
 }) {
-  const isOpen = form.isTouched('stateCollateral', 'userCollateral', 'userBorrowed')
+  const isOpen = form.isTouched('stateCollateral', 'userCollateral', 'debt')
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken, prevPrices }, isOpen)
   const { prevCollateral, prevDebt } = prevLoanState
   const { debt, debtDelta } = useRepayRemainingDebt(
     { params, showLeverage, prevDebt },
-    { isFull, userBorrowed },
+    { isFull, debt: repayDebtAmount },
     isOpen,
   )
 

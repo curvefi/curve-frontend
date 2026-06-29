@@ -35,7 +35,6 @@ export const {
     marketId,
     userAddress,
     userCollateral = '0',
-    userBorrowed = '0',
     debt = '0',
     maxDebt,
     slippage,
@@ -46,7 +45,6 @@ export const {
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'borrowMoreExpectedCollateral',
       { userCollateral },
-      { userBorrowed },
       { debt },
       { maxDebt },
       { slippage },
@@ -56,7 +54,6 @@ export const {
   queryFn: async ({
     marketId,
     userCollateral = '0',
-    userBorrowed = '0',
     debt = '0',
     slippage,
     leverageEnabled,
@@ -64,7 +61,6 @@ export const {
   }: BorrowMoreQuery) => {
     const [type, impl, args] = getBorrowMoreImplementationArgs(marketId, {
       userCollateral,
-      userBorrowed,
       debt,
       leverageEnabled,
       routeId,

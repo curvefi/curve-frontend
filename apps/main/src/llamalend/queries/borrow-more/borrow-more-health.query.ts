@@ -14,7 +14,6 @@ export const { useQuery: useBorrowMoreHealth, invalidate: invalidateBorrowMoreHe
     marketId,
     userAddress,
     userCollateral = '0',
-    userBorrowed = '0',
     debt = '0',
     maxDebt,
     leverageEnabled,
@@ -25,7 +24,6 @@ export const { useQuery: useBorrowMoreHealth, invalidate: invalidateBorrowMoreHe
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'borrowMoreHealth',
       { userCollateral },
-      { userBorrowed },
       { debt },
       { maxDebt },
       { leverageEnabled },
@@ -35,7 +33,6 @@ export const { useQuery: useBorrowMoreHealth, invalidate: invalidateBorrowMoreHe
   queryFn: async ({
     marketId,
     userCollateral = '0',
-    userBorrowed = '0',
     debt = '0',
     leverageEnabled,
     slippage,
@@ -43,7 +40,6 @@ export const { useQuery: useBorrowMoreHealth, invalidate: invalidateBorrowMoreHe
   }: BorrowMoreQuery) => {
     const [type, impl, args] = getBorrowMoreImplementationArgs(marketId, {
       userCollateral,
-      userBorrowed,
       debt,
       leverageEnabled,
       slippage,
