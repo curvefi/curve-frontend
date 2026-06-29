@@ -8,8 +8,6 @@ import {
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import { llamaNetworks, setGasInfo, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createCreateLoanScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
-import { LlamaMarketType } from '@ui-kit/types/market'
-import { constQ } from '@ui-kit/types/util'
 
 const chainId = 1
 const testCases = [
@@ -31,15 +29,8 @@ describe('CreateLoanForm (mocked)', () => {
       setGasInfo({ chainId, networks: llamaNetworks })
 
       cy.mount(
-        <MockLoanTestWrapper llamaApi={llamaApi}>
-          <CreateLoanForm
-            market={market}
-            networks={llamaNetworks}
-            chainId={chainId}
-            onPricesUpdated={onPricesUpdated}
-            apiMarket={constQ(undefined)}
-            marketType={LlamaMarketType.Mint}
-          />
+        <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
+          <CreateLoanForm networks={llamaNetworks} onPricesUpdated={onPricesUpdated} />
         </MockLoanTestWrapper>,
       )
 

@@ -32,8 +32,8 @@ describe('WithdrawForm (mocked)', () => {
       setGasInfo({ chainId, networks: llamaNetworks })
 
       cy.mount(
-        <MockLoanTestWrapper llamaApi={llamaApi}>
-          <WithdrawForm market={market} networks={llamaNetworks} chainId={chainId} enabled />
+        <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
+          <WithdrawForm networks={llamaNetworks} />
         </MockLoanTestWrapper>,
       )
 

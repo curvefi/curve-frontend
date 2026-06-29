@@ -1,9 +1,7 @@
 import { type ChangeEvent, useCallback } from 'react'
 import { useConnection } from 'wagmi'
 import { LoanPreset, LEVERAGE } from '@/llamalend/constants'
-import { getControllerAddress, hasLeverage } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
-import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
+import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -16,10 +14,10 @@ import { t } from '@ui-kit/lib/i18n'
 import { AlertDisableForm } from '@ui-kit/shared/ui/AlertDisableForm'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { LlamaMarketType } from '@ui-kit/types/market'
-import { q, type QueryProp, type Range } from '@ui-kit/types/util'
+import { q, type Range } from '@ui-kit/types/util'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
+import { useMarketContext } from '../../market-context'
 import { useCreateLoanForm } from '../hooks/useCreateLoanForm'
 import { AdvancedCreateLoanOptions } from './AdvancedCreateLoanOptions'
 import { CreateLoanInfoList } from './CreateLoanInfoList'
@@ -31,25 +29,17 @@ const { Spacing } = SizesAndSpaces
 
 /**
  * The form contents for the create loan tab.
- * @param market The market to create a loan.
  * @param network The network configuration.
  * @param onPricesUpdated Callback to sync liquidation prices with the chart.
  */
 export const CreateLoanForm = <ChainId extends IChainId>({
-  market,
   networks,
-  chainId,
   onPricesUpdated,
-  apiMarket,
-  marketType,
 }: {
-  market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
-  chainId: ChainId
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
-  apiMarket: QueryProp<LlamaMarket>
-  marketType: LlamaMarketType
 }) => {
+  const { chainId, controllerAddress, bands, marketType } = useMarketContext<ChainId>()
   const { isConnected } = useConnection()
   const network = networks[chainId]
   const [preset, setPreset] = useCreateLoanPreset<LoanPreset>(LoanPreset.Safe)
@@ -73,10 +63,9 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     priceImpact,
     solvencyModal: { onConfirm, onClose, isOpen },
     isHighLiquidationRisk,
+    isLeverageSupported,
   } = useCreateLoanForm({
-    market,
     networks,
-    chainId,
     preset,
     onPricesUpdated,
   })
@@ -95,7 +84,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
       footer={
         <CreateLoanInfoList
           marketType={marketType}
-          controllerAddress={getControllerAddress(market, apiMarket.data)}
+          controllerAddress={controllerAddress}
           form={form}
           params={params}
           values={values}
@@ -136,14 +125,14 @@ export const CreateLoanForm = <ChainId extends IChainId>({
               tooltip={t`Max borrow`}
               symbol={borrowToken?.symbol}
               balance={maxDebt.data}
-              loading={isConnected && maxDebt.isLoading} // TODO: maxDebt.isLoading is always true when !market even without wallet.
+              loading={isConnected && maxDebt.isLoading}
               onClick={useCallback(() => updateForm({ debt: values.maxDebt }), [updateForm, values.maxDebt])}
               buttonTestId="borrow-set-debt-to-max"
             />
           }
         />
       </Stack>
-      {!!market && hasLeverage(market) && (
+      {isLeverageSupported && (
         <LeverageInput
           checked={values.leverageEnabled}
           leverage={leverage}
@@ -154,7 +143,8 @@ export const CreateLoanForm = <ChainId extends IChainId>({
       <LoanPresetSelector preset={preset} setPreset={setPreset} setRange={setRange}>
         <Collapse in={preset === LoanPreset.Custom}>
           <AdvancedCreateLoanOptions
-            market={market}
+            minBands={bands.minBands}
+            maxBands={bands.maxBands}
             values={values}
             params={params}
             setRange={setRange}

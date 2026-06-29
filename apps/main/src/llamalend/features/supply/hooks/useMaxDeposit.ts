@@ -8,25 +8,22 @@ import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { queryMinimum } from '@ui-kit/lib'
 import { q } from '@ui-kit/types/util'
 
-export function useMaxDepositTokenValues<ChainId extends LlamaChainId>(
-  {
-    params,
-    borrowToken,
-    form,
-  }: {
-    params: DepositParams<ChainId>
-    borrowToken: Address | undefined
-    form: UseFormReturn<DepositForm>
-  },
-  enabled?: boolean,
-) {
+export function useMaxDepositTokenValues<ChainId extends LlamaChainId>({
+  params,
+  borrowToken,
+  form,
+}: {
+  params: DepositParams<ChainId>
+  borrowToken: Address | undefined
+  form: UseFormReturn<DepositForm>
+}) {
   const { chainId, marketId, userAddress } = params
   const maxUserDeposit = useTokenBalance({
     chainId,
     userAddress,
     tokenAddress: borrowToken,
   })
-  const maxVaultDeposit = useMarketVaultMaxDeposit({ chainId, marketId }, enabled)
+  const maxVaultDeposit = useMarketVaultMaxDeposit({ chainId, marketId })
   const maxDepositAmount = queryMinimum(maxUserDeposit, maxVaultDeposit)
 
   useFormSync(form, { maxDepositAmount: maxDepositAmount.data })
