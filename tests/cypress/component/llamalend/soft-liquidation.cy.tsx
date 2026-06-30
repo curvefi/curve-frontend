@@ -47,13 +47,8 @@ describe('Soft Liquidation Forms (mocked)', () => {
         seedCrvUsdBalance({ chainId, addresses: [TEST_ADDRESS], min: borrow })
 
         cy.mount(
-          <MockLoanTestWrapper llamaApi={llamaApi}>
-            <ImproveHealthForm
-              market={market}
-              networks={llamaNetworks}
-              chainId={chainId}
-              collateralEvents={constQ(undefined)}
-            />
+          <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
+            <ImproveHealthForm networks={llamaNetworks} collateralEvents={constQ(undefined)} />
           </MockLoanTestWrapper>,
         )
 
@@ -104,8 +99,8 @@ describe('Soft Liquidation Forms (mocked)', () => {
         seedCrvUsdBalance({ chainId, addresses: [TEST_ADDRESS], min: `${oneInt(15, 90)}` })
 
         cy.mount(
-          <MockLoanTestWrapper llamaApi={llamaApi}>
-            <ClosePositionForm market={market} networks={llamaNetworks} chainId={chainId} />
+          <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
+            <ClosePositionForm networks={llamaNetworks} />
           </MockLoanTestWrapper>,
         )
 

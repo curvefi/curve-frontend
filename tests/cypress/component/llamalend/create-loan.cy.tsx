@@ -29,13 +29,8 @@ describe('CreateLoanForm (mocked)', () => {
       setGasInfo({ chainId, networks: llamaNetworks })
 
       cy.mount(
-        <MockLoanTestWrapper llamaApi={llamaApi}>
-          <CreateLoanForm
-            market={market}
-            networks={llamaNetworks}
-            chainId={chainId}
-            onPricesUpdated={onPricesUpdated}
-          />
+        <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
+          <CreateLoanForm networks={llamaNetworks} onPricesUpdated={onPricesUpdated} />
         </MockLoanTestWrapper>,
       )
 

@@ -2,7 +2,8 @@ import { type Address, createPublicClient, encodeFunctionData, http, parseAbi, p
 import { sendAdminTransaction } from '@cy/support/helpers/tenderly/vnet-tx'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
-import { fundEth } from '../tenderly/vnet-fund'
+import { Chain } from '@ui-kit/utils'
+import { fundErc20, fundEth } from '../tenderly/vnet-fund'
 
 const CONTROLLER_V2_ABI = parseAbi([
   'function configurator() view returns (address)',
@@ -19,16 +20,19 @@ export const setControllerBorrowCap = ({
   publicRpcUrl,
   controllerAddress,
   borrowCap,
+  availableBalance = borrowCap,
   borrowedDecimals,
 }: {
   adminRpcUrl: string
   publicRpcUrl: string
   controllerAddress: Address
   borrowCap: Decimal
+  availableBalance?: Decimal
   borrowedDecimals: number
 }) => {
   cy.then(LOAD_TIMEOUT, async () => {
     const borrowCapWei = parseUnits(borrowCap, borrowedDecimals)
+    const availableBalanceWei = parseUnits(availableBalance, borrowedDecimals)
     const client = createPublicClient({ transport: http(publicRpcUrl) })
     const configuratorAddress = await client.readContract({
       address: controllerAddress,
@@ -41,8 +45,8 @@ export const setControllerBorrowCap = ({
       functionName: 'vault',
     })
 
-    return { borrowCapWei, client, configuratorAddress, vaultAddress }
-  }).then(({ borrowCapWei, client, configuratorAddress, vaultAddress }) =>
+    return { availableBalanceWei, borrowCapWei, client, configuratorAddress, vaultAddress }
+  }).then(({ availableBalanceWei, borrowCapWei, client, configuratorAddress, vaultAddress }) =>
     fundEth({
       adminRpcUrl,
       amountWei: '0xde0b6b3a7640000',
@@ -69,10 +73,46 @@ export const setControllerBorrowCap = ({
           data: encodeFunctionData({
             abi: CONTROLLER_V2_ABI,
             functionName: 'on_borrowed_token_transfer_in',
-            args: [borrowCapWei],
+            args: [availableBalanceWei],
           }),
           client,
         }),
       ),
   )
+}
+
+export const setupLlv2BorrowingLiquidity = ({
+  adminRpcUrl,
+  publicRpcUrl,
+  chainId,
+  controllerAddress,
+  borrowedAddress,
+  borrowedDecimals,
+}: {
+  adminRpcUrl: string
+  publicRpcUrl: string
+  chainId: Chain
+  controllerAddress: Address
+  borrowedAddress: Address
+  borrowedDecimals: number
+}) => {
+  if (chainId !== Chain.Optimism) return
+
+  const borrowedLiquidity = '10' as const
+  const borrowCap = '1000' as const
+
+  setControllerBorrowCap({
+    adminRpcUrl,
+    publicRpcUrl,
+    controllerAddress,
+    borrowCap,
+    availableBalance: borrowedLiquidity,
+    borrowedDecimals,
+  })
+  fundErc20({
+    adminRpcUrl,
+    amountWei: `0x${parseUnits(borrowedLiquidity, borrowedDecimals).toString(16)}`,
+    tokenAddress: borrowedAddress,
+    recipientAddresses: [controllerAddress],
+  })
 }

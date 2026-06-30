@@ -16,6 +16,7 @@
     "start": "yarn workspace main start",
     "dev": "yarn workspace main dev",
     "dev-router-api": "yarn workspace router-api dev",
+    "dev-merkl-api": "yarn workspace merkl-api dev",
     "lint": "yarn workspaces foreach --parallel --all --exclude curve-frontend run lint",
     "lint:fix": "yarn workspaces foreach --parallel --all --exclude curve-frontend run lint:fix",
     "typecheck": "node -e \"require('fs').mkdirSync('.cache/typecheck', {recursive: true})\" && yarn workspaces foreach --parallel --all run typecheck",
@@ -70,7 +71,7 @@
     ]
   },
   "resolutions": {
-    "@curvefi/api": "2.69.4",
+    "@curvefi/api": "2.69.7",
     "@types/node": "25.6.0",
     "@types/react": "19.2.16",
     "@types/react-dom": "19.2.3",
@@ -80,6 +81,7 @@
     "echarts-for-react": "3.0.6",
     "eslint": "10.4.1",
     "ethers": "6.16.0",
+    "fastify": "5.8.5",
     "immer": "11.1.8",
     "lodash": "4.18.1",
     "react": "19.2.7",

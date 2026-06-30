@@ -1,11 +1,6 @@
 import { useMemo } from 'react'
-import { useConnection } from 'wagmi'
-import { getAmmAddress, getControllerAddress } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import { useMarketOraclePrice } from '@/llamalend/queries/market'
-import { useUserPrices } from '@/llamalend/queries/user'
-import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { isPricesApiChain } from '@curvefi/prices-api'
+import type { Chain } from '@curvefi/prices-api'
+import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 import { useChartLegendToggles, useChartTimeSettings, useLiquidationRange } from '@ui-kit/features/candle-chart'
@@ -14,18 +9,21 @@ import { useStableOhlcAnchorEnd } from '@ui-kit/features/candle-chart/hooks/useO
 import type { LpPriceOhlcDataFormatted, OraclePriceData } from '@ui-kit/features/candle-chart/types'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { LlamaMarketType } from '@ui-kit/types/market'
-import { type QueryProp, type Range } from '@ui-kit/types/util'
+import type { QueryProp, Range } from '@ui-kit/types/util'
 import { useLlammaOhlcChartData } from './useLlammaOhlcChartData'
 
 const { Height } = SizesAndSpaces
 
 type LlammaOhlcChartStateModelParams = {
-  marketType: LlamaMarketType
-  marketQuery: QueryProp<LlamaMarketTemplate>
-  networkId: string
-  chainId: LlamaChainId
+  chainKey: string | number
+  controllerAddress: Address | undefined
+  endpoint: Parameters<typeof useLlammaOhlcChartData>[0]['endpoint']
+  llammaAddress: Address | undefined
+  marketId: string | undefined
+  network: Chain | undefined
+  oraclePrice: string | undefined
   previewPrices: Range<Decimal> | undefined
+  userPrices: QueryProp<Range<Decimal>>
 }
 
 /**
@@ -60,20 +58,20 @@ const resolveLlammaChartSeries = ({
 }
 
 export const useLlammaOhlcChartStateModel = ({
-  marketType,
-  marketQuery: { data: market },
-  networkId,
-  chainId,
+  chainKey,
+  controllerAddress,
+  endpoint,
+  llammaAddress,
+  marketId,
+  network,
+  oraclePrice,
   previewPrices,
+  userPrices,
 }: LlammaOhlcChartStateModelParams) => {
-  const network = isPricesApiChain(networkId) ? networkId : undefined
-  const marketId = market?.id
-  const { address: userAddress } = useConnection()
-  const { data: oraclePrice } = useMarketOraclePrice({ chainId, marketId })
-  const userPrices = useUserPrices({ chainId, marketId, userAddress })
   const { timeOption, setTimeOption, chartInterval, timeUnit } = useChartTimeSettings()
-  const { anchorEnd, isAnchorEndReady } = useStableOhlcAnchorEnd(chainId, marketId, timeOption)
+  const { anchorEnd, isAnchorEndReady } = useStableOhlcAnchorEnd(chainKey, marketId ?? '', timeOption)
 
+  const enabled = !!network && !!controllerAddress && isAnchorEndReady
   const {
     oraclePoolsChartQuery,
     oraclePriceFallbackQuery,
@@ -83,16 +81,16 @@ export const useLlammaOhlcChartStateModel = ({
     isWaitingForFallbackChartData,
     isLlammaFallbackEnabled,
   } = useLlammaOhlcChartData({
-    endpoint: ({ Lend: 'lending', Mint: 'crvusd' } as const)[marketType],
+    endpoint,
     chain: network,
-    controller: getControllerAddress(market),
-    llamma: getAmmAddress(market),
+    controller: controllerAddress,
+    llamma: llammaAddress,
     oraclePrice,
     interval: chartInterval,
     timeOption,
     units: timeUnit,
     anchorEnd,
-    enabled: !!market && !!network && isAnchorEndReady,
+    enabled,
   })
   const oraclePoolCandles = oraclePoolsChartQuery.data?.ohlcData ?? []
   const oraclePoolOracleLine = oraclePoolsChartQuery.data?.oraclePriceData ?? []
@@ -104,14 +102,10 @@ export const useLlammaOhlcChartStateModel = ({
       llammaOracleLine,
     })
 
-  const enabled = !!market
-  const isLoading = !enabled || !isAnchorEndReady || oraclePoolsChartQuery.isLoading || isWaitingForFallbackChartData
+  const isLoading = !enabled || oraclePoolsChartQuery.isLoading || isWaitingForFallbackChartData
   const selectedChartKey = isLoading ? undefined : isOracleLineOnly ? 'llamma' : 'oracle'
   const currentError = hasAnySeries ? null : (oraclePriceFallbackQuery.error ?? oraclePoolsChartQuery.error)
-  const noDataAvailable = enabled && !isLoading && !currentError && !hasAnySeries
-  const emptyMessage = isLlammaFallbackEnabled
-    ? t`No LLAMMA OHLC data found. Data may be unavailable for this pool.`
-    : t`No oracle OHLC data found. Data may be unavailable for this pool.`
+  const emptyMessage = t`No ${isLlammaFallbackEnabled ? 'LLAMMA' : 'oracle'} OHLC data found. Data may be unavailable for this market.`
 
   const oraclePoolLabel = oracleTokens
     ? t`${oracleTokens.collateralSymbol} / ${oracleTokens.borrowedSymbol}`
@@ -124,7 +118,7 @@ export const useLlammaOhlcChartStateModel = ({
 
   const { oraclePriceVisible, liqRangeCurrentVisible, liqRangeNewVisible, legendSets } = useChartLegendToggles({
     hasNewLiquidationRange: !!previewPrices,
-    hasLiquidationRange: !!userPrices,
+    hasLiquidationRange: !!userPrices.data,
     llammaEndpoint: isOracleLineOnly,
   })
   const shouldFetchFallbackOracleLine = isOracleLineOnly || (oraclePriceVisible && oraclePoolOracleLine.length === 0)
@@ -140,7 +134,7 @@ export const useLlammaOhlcChartStateModel = ({
     hideCandleSeriesLabel: true,
     chartHeight: Height.chart,
     isLoading,
-    isEmpty: noDataAvailable,
+    isEmpty: oraclePoolsChartQuery.data?.ohlcData?.length === 0,
     emptyMessage,
     error: currentError,
     ohlcData,
@@ -157,5 +151,11 @@ export const useLlammaOhlcChartStateModel = ({
     latestOraclePrice: maybe(oraclePrice, Number),
   }
 
-  return { ohlcChartProps, isLoading, selectedChartKey, setTimeOption, legendSets }
+  return {
+    ohlcChartProps,
+    isLoading,
+    selectedChartKey,
+    setTimeOption,
+    legendSets,
+  }
 }

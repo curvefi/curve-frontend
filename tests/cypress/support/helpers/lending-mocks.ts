@@ -1,7 +1,7 @@
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
 import { MAX_USD_VALUE, oneAddress, oneDate, oneFloat, oneInt, oneOf, onePrice } from '@cy/support/generators'
 import { oneToken } from '@cy/support/helpers/tokens'
-import { fromEntries, range } from '@primitives/objects.utils'
+import { DEFAULT_DECIMALS, fromEntries, range } from '@primitives/objects.utils'
 
 export const LendingChains = ['ethereum', 'fraxtal', 'arbitrum'] as const
 export type Chain = (typeof LendingChains)[number]
@@ -12,6 +12,7 @@ const oneTvl = () => oneFloat(MAX_USD_VALUE)
 const oneApiToken = (token: ReturnType<typeof oneToken>) => ({
   symbol: token.symbol,
   address: token.address,
+  decimals: DEFAULT_DECIMALS,
   rebasing_yield: null,
   rebasing_yield_apr: null,
 })
@@ -56,6 +57,7 @@ const oneLendingPool = (
     lend_apr_crv_0_boost: oneFloat(),
     lend_apr_crv_max_boost: oneFloat(),
     n_loans: oneInt(),
+    amm_a: oneInt(1),
     price_oracle: onePrice(),
     amm_price: onePrice(),
     base_price: onePrice(),
@@ -187,7 +189,7 @@ export const mockLendingSnapshots = (chain = oneOf(...LendingChains)) =>
 
 /** Mock Merkl API to provide campaign rewards for the RewardsTestAddress vault used in tests */
 export const mockMerklCampaigns = () =>
-  cy.intercept('https://api.merkl.xyz/v4/opportunities*', {
+  cy.intercept('/api/merkl/v1/opportunities*', {
     body: [
       {
         type: 'POOL',

@@ -1,3 +1,4 @@
+import { MarketContextProvider } from 'main/src/llamalend/features/market-context/MarketContextProvider'
 import { type ReactNode, useMemo } from 'react'
 import { ClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePositionForm'
 import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealthForm'
@@ -8,6 +9,7 @@ import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { createTenderlyWagmiConfigFromVNet, forkVirtualTestnet } from '@cy/support/helpers/tenderly'
 import Skeleton from '@mui/material/Skeleton'
 import { CurveProvider, useCurve } from '@ui-kit/features/connect-wallet'
+import { LlamaMarketType } from '@ui-kit/types/market'
 import { constQ } from '@ui-kit/types/util'
 import { Chain } from '@ui-kit/utils'
 
@@ -29,13 +31,14 @@ describe('Manage soft liquidation', () => {
     if (!market) return <Skeleton />
     const Component = { 'improve-health': ImproveHealthForm, 'close-position': ClosePositionForm }[tab]
     return (
-      <Component
-        market={market}
-        networks={softLiqNetworks}
-        chainId={chainId}
-        enabled={isHydrated}
-        collateralEvents={constQ(undefined)}
-      />
+      <MarketContextProvider
+        network={network}
+        marketQuery={constQ(market)}
+        apiMarket={constQ(undefined)}
+        marketType={LlamaMarketType.Mint}
+      >
+        <Component networks={softLiqNetworks} collateralEvents={constQ(undefined)} />
+      </MarketContextProvider>
     )
   }
 

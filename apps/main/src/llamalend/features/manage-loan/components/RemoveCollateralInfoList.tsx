@@ -1,6 +1,6 @@
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
-import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useRemoveCollateralFutureLeverage } from '@/llamalend/queries/remove-collateral/remove-collateral-future-leverage.query'
 import { useRemoveCollateralEstimateGas } from '@/llamalend/queries/remove-collateral/remove-collateral-gas-estimate.query'
@@ -13,8 +13,9 @@ import { useBorrowRates } from '@/llamalend/widgets/action-card/hooks/useBorrowR
 import { usePrevLoanState } from '@/llamalend/widgets/action-card/hooks/usePrevLoanState'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { type Token } from '@primitives/address.utils'
+import { type Address, type Token } from '@primitives/address.utils'
 import type { UseFormReturn } from '@ui-kit/features/forms'
+import type { LlamaMarketType } from '@ui-kit/types/market'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimalMax, decimalMinus, decimalNegate } from '@ui-kit/utils'
 import { getLeverageInfoFields } from '../../../widgets/action-card/hooks/getLeverageInfoFields'
@@ -26,7 +27,8 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
   borrowToken,
   networks,
   form,
-  market,
+  controllerAddress,
+  marketType,
 }: {
   params: CollateralParams<ChainId>
   values: CollateralForm
@@ -34,7 +36,8 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
   borrowToken: Token | undefined
   networks: NetworkDict<ChainId>
   form: UseFormReturn<CollateralForm>
-  market: LlamaMarketTemplate | undefined
+  controllerAddress: Address | undefined
+  marketType: LlamaMarketType
 }) {
   const isOpen = form.isTouched('userCollateral')
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken }, isOpen)
@@ -74,7 +77,7 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
         collateralDelta: userCollateral && decimalNegate(userCollateral),
       })}
       {...prevLoanState}
-      {...useBorrowRates({ params, market }, isOpen)}
+      {...useBorrowRates({ params, marketType, controllerAddress }, isOpen)}
     />
   )
 }

@@ -1,8 +1,10 @@
 import { useMarketParameters } from '@/llamalend/queries/market'
+import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
+import { actionInfoQuery } from '@/llamalend/widgets/action-card/info-actions.helpers'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
-import { formatNumber } from '@ui-kit/utils'
+import { fallbackQ, mapQuery, type QueryProp } from '@ui-kit/types/util'
 
 // In [1]: ltv = lambda x: ((x[0] - 1) / x[0])**2 * (1 - x[1])
 // In [2]: ltv((30, 0.11))
@@ -14,58 +16,102 @@ function getMaxLTV(a: number | undefined, loanDiscount: string | undefined) {
   return ((+a - 1) / +a) ** 2 * (1 - +loanDiscount / 100) * 100
 }
 
-export const MarketLoanParameters = ({ chainId, marketId }: { chainId: IChainId; marketId: string | undefined }) => {
-  const {
-    data: parameters,
-    isLoading: isLoadingParameters,
-    error: errorParameters,
-  } = useMarketParameters({ chainId, marketId })
-
-  const loading = !marketId || isLoadingParameters
-
+export const MarketLoanParameters = ({
+  chainId,
+  marketId,
+  apiMarket,
+}: {
+  chainId: IChainId
+  marketId: string | undefined
+  apiMarket: QueryProp<LlamaMarket>
+}) => {
+  const parameters = useMarketParameters({ chainId, marketId })
   return (
     <>
-      <ActionInfo
-        label={t`AMM swap fee`}
-        value={formatNumber(parameters?.fee, 'percent.rate')}
-        loading={loading}
-        error={errorParameters}
-      />
+      {(!apiMarket.data || marketId) && (
+        // these fields are not exposed by the API yet
+        <>
+          <ActionInfo
+            testId="market-param-amm-swap-fee"
+            label={t`AMM swap fee`}
+            labelTooltip={{
+              title: t`The LLAMMA fee applied when collateral is gradually converted across liquidation bands.`,
+            }}
+            {...actionInfoQuery(
+              mapQuery(parameters, d => d.fee),
+              'percent.rate',
+            )}
+          />
+
+          <ActionInfo
+            testId="market-param-admin-fee"
+            label={t`Admin fee`}
+            labelTooltip={{
+              title: t`The share of market interest routed to the market admin or fee receiver instead of lenders.`,
+            }}
+            {...actionInfoQuery(
+              mapQuery(parameters, d => d.admin_fee),
+              'percent.rate',
+            )}
+          />
+        </>
+      )}
 
       <ActionInfo
-        label={t`Admin fee`}
-        value={formatNumber(parameters?.admin_fee, 'percent.rate')}
-        loading={loading}
-        error={errorParameters}
-      />
-
-      <ActionInfo
+        testId="market-param-band-width-factor"
         label={t`Band width factor`}
-        value={formatNumber(parameters?.A ?? 0, { abbreviate: false, useGrouping: false })}
-        loading={loading}
-        error={errorParameters}
+        labelTooltip={{
+          title: t`A setting that controls how wide the liquidation bands are and how gradually soft liquidation plays out.`,
+        }}
+        {...actionInfoQuery(
+          fallbackQ(
+            mapQuery(parameters, p => p.A),
+            mapQuery(apiMarket, m => m.parameters.A),
+          ),
+          { abbreviate: false, useGrouping: false },
+        )}
       />
 
       <ActionInfo
+        testId="market-param-loan-discount"
         label={t`Loan discount`}
-        value={formatNumber(parameters?.loan_discount, 'percent.rate')}
-        loading={loading}
-        error={errorParameters}
+        labelTooltip={{ title: t`A safety buffer that lowers the maximum amount you can borrow against collateral.` }}
+        {...actionInfoQuery(
+          fallbackQ(
+            mapQuery(parameters, p => p.loan_discount),
+            mapQuery(apiMarket, m => m.parameters.loanDiscount),
+          ),
+          'percent.rate',
+        )}
       />
 
       <ActionInfo
+        testId="market-param-liquidation-discount"
         label={t`Liquidation discount`}
-        value={formatNumber(parameters?.liquidation_discount, 'percent.rate')}
-        loading={loading}
-        error={errorParameters}
+        labelTooltip={{
+          title: t`A discount given to liquidators to ensure prompt liquidation when positions enter hard liquidations.`,
+        }}
+        {...actionInfoQuery(
+          fallbackQ(
+            mapQuery(parameters, p => p.liquidation_discount),
+            mapQuery(apiMarket, m => m.parameters.liquidationDiscount),
+          ),
+          'percent.rate',
+        )}
       />
 
       <ActionInfo
+        testId="market-param-max-ltv"
         label={t`Max LTV`}
-        value={formatNumber(getMaxLTV(parameters?.A ?? 0, parameters?.loan_discount), 'percent.rate')}
+        labelTooltip={{ title: t`The highest loan-to-value ratio allowed when opening or increasing a position.` }}
         valueTooltip={t`Max possible loan at N=4`}
-        loading={loading}
-        error={errorParameters}
+        {...actionInfoQuery(
+          fallbackQ(
+            mapQuery(parameters, ({ A, loan_discount }) => getMaxLTV(A, loan_discount)),
+            mapQuery(apiMarket, m => m.maxLtv),
+          ),
+          'percent.rate',
+        )}
       />
     </>
   )

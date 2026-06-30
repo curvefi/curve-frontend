@@ -1,25 +1,29 @@
 import { zeroAddress } from 'viem'
+import { MarketContext, createMarketContextValue } from '@/llamalend/features/market-context'
 import { BorrowPositionDetails } from '@/llamalend/features/market-position-details'
 import { getLiquidationStatus } from '@/llamalend/llama.utils'
-import type { UserPositionStatusKey } from '@/llamalend/llamalend.types'
+import type { LlamaMarketTemplate, UserPositionStatusKey } from '@/llamalend/llamalend.types'
 import { getPositionStatusContent } from '@/llamalend/position-status-content'
 import {
   getMarketLiquidationBandKey,
   getMarketOraclePriceBandKey,
   getMarketOraclePriceKey,
 } from '@/llamalend/queries/market'
+import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { getUserCurrentLeverageKey } from '@/llamalend/queries/user'
 import { getUserBandsKey } from '@/llamalend/queries/user/user-bands.query'
 import { getUserHealthKey } from '@/llamalend/queries/user/user-health.query'
 import { getUserPricesKey } from '@/llamalend/queries/user/user-prices.query'
 import { getUserStateKey } from '@/llamalend/queries/user/user-state.query'
+import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, DEFAULT_DECIMALS } from '@primitives/objects.utils'
 import { getTokenUsdRateKey } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { TestQueryProvider } from '@ui-kit/lib/queries/test-query.provider.test'
-import type { Range } from '@ui-kit/types/util'
+import { LlamaMarketType } from '@ui-kit/types/market'
+import { constQ, type Range } from '@ui-kit/types/util'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 
 const ALERT_TEST_ID = '[data-testid="borrow-position-status-alert"]'
@@ -64,29 +68,42 @@ const PositionDetailsTest = ({
   params,
 }: typeof baseProps) => (
   <ComponentTestWrapper>
-    <TestQueryProvider
-      data={[
-        [getMarketOraclePriceBandKey(params), oraclePrice],
-        [getUserCurrentLeverageKey(params), `${leverage}`],
-        [getUserBandsKey(params), userBands],
-        [getUserPricesKey(params), userPrices],
-        [getUserHealthKey({ ...params, isFull: true }), `${healthFull}`],
-        [getUserHealthKey({ ...params, isFull: false }), maybe(healthNotFull, h => `${h}`) ?? null],
-        [getMarketOraclePriceKey(params), `${oraclePrice}`],
-        [getMarketLiquidationBandKey(params), marketLiquidationBand],
-        [getTokenUsdRateKey({ ...params, tokenAddress: collateralAddress }), collateralUsdPrice],
-        [getTokenUsdRateKey({ ...params, tokenAddress: borrowAddress }), borrowUsdPrice],
-        [getUserStateKey(params), { collateral: `${collateral}`, stablecoin: `${borrow}`, debt: `${totalDebt}` }],
-      ]}
-    >
-      <BorrowPositionDetails
-        tokens={{
+    <MarketContext
+      value={{
+        ...createMarketContextValue({
+          chainId: params.chainId as IChainId,
+          blockchainId: 'ethereum',
+          marketQuery: constQ(undefined as LlamaMarketTemplate | undefined),
+          apiMarket: constQ(undefined as LlamaMarket | undefined),
+          marketType: LlamaMarketType.Mint,
+          userAddress: params.userAddress,
+          api: null,
+        }),
+        marketId: params.marketId,
+        tokens: {
           collateralToken: { address: collateralAddress, symbol: collateralSymbol, decimals: DEFAULT_DECIMALS },
           borrowToken: { symbol: borrowSymbol, address: borrowAddress, decimals: DEFAULT_DECIMALS },
-        }}
-        params={params}
-      />
-    </TestQueryProvider>
+        },
+      }}
+    >
+      <TestQueryProvider
+        data={[
+          [getMarketOraclePriceBandKey(params), oraclePrice],
+          [getUserCurrentLeverageKey(params), `${leverage}`],
+          [getUserBandsKey(params), userBands],
+          [getUserPricesKey(params), userPrices],
+          [getUserHealthKey({ ...params, isFull: true }), `${healthFull}`],
+          [getUserHealthKey({ ...params, isFull: false }), maybe(healthNotFull, h => `${h}`) ?? null],
+          [getMarketOraclePriceKey(params), `${oraclePrice}`],
+          [getMarketLiquidationBandKey(params), marketLiquidationBand],
+          [getTokenUsdRateKey({ ...params, tokenAddress: collateralAddress }), collateralUsdPrice],
+          [getTokenUsdRateKey({ ...params, tokenAddress: borrowAddress }), borrowUsdPrice],
+          [getUserStateKey(params), { collateral: `${collateral}`, stablecoin: `${borrow}`, debt: `${totalDebt}` }],
+        ]}
+      >
+        <BorrowPositionDetails />
+      </TestQueryProvider>
+    </MarketContext>
   </ComponentTestWrapper>
 )
 

@@ -18,3 +18,5 @@ export const { useQuery: useMarketRates, invalidate: invalidateMarketRates } = q
   category: 'llamalend.market',
   validationSuite: marketIdValidationSuite,
 })
+
+export type MarketRates = NonNullable<ReturnType<typeof useMarketRates>['data']>

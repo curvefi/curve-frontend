@@ -8,6 +8,7 @@ import { assert, notFalsy, maybe } from '@primitives/objects.utils'
 import { type RouteProvider, RouteProviders, type RouterRouteResponse } from '@primitives/router.utils'
 import { useQuery, type QueryKey, type UseQueryOptions } from '@tanstack/react-query'
 import { createHash } from '@ui-kit/entities/router-api/router-api.utils'
+import { use0xRouter } from '@ui-kit/hooks/useFeatureFlags'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { NoRetryError } from '@ui-kit/lib/model/query/factory'
@@ -184,7 +185,7 @@ export const useRouterQueries = <TData extends TGas | null, TKey extends QueryKe
       'curve-solver': useRouterQuery({ ...params, userAddress: zapAddress }, 'curve-solver', enabled),
       enso: useRouterQuery({ ...params, userAddress: zapAddress }, 'enso', !!zapAddress && enabled),
       odos: useRouterQuery({ ...params, userAddress: zapAddress }, 'odos', !!zapAddress && enabled),
-      '0x': useRouterQuery({ ...params, userAddress: zapAddress }, '0x', enabled),
+      '0x': useRouterQuery({ ...params, userAddress: zapAddress }, '0x', use0xRouter() && enabled),
     },
     onRefresh: useCallback(
       () => Promise.all(RouteProviders.map(router => fetchApiRoutes({ ...params, router }))),

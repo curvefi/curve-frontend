@@ -47,7 +47,6 @@ export const ErrorBoundary = ({
             title={title}
             subtitle={subtitle}
             error={error}
-            errorMessage={error.message}
             refreshData={refreshData}
             sx={{ alignSelf: 'center' }}
           />

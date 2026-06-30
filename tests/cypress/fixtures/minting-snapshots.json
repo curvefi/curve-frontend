@@ -29,11 +29,13 @@
       "collateral_token": {
         "symbol": "wstETH",
         "address": "0x7f39c581f595b53c5cb5bbd59eae13dd6c3c6c5d",
+        "decimals": 18,
         "rebasing_yield": null
       },
       "stablecoin_token": {
         "symbol": "crvUSD",
         "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
+        "decimals": 18,
         "rebasing_yield": null
       },
       "max_ltv": 0.8
@@ -65,11 +67,13 @@
       "collateral_token": {
         "symbol": "wstETH",
         "address": "0x7f39c581f595b53c5cb5bbd59eae13dd6c3c6c5d",
+        "decimals": 18,
         "rebasing_yield": null
       },
       "stablecoin_token": {
         "symbol": "crvUSD",
         "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
+        "decimals": 18,
         "rebasing_yield": null
       },
       "max_ltv": 0.8
@@ -101,11 +105,13 @@
       "collateral_token": {
         "symbol": "wstETH",
         "address": "0x7f39c581f595b53c5cb5bbd59eae13dd6c3c6c5d",
+        "decimals": 18,
         "rebasing_yield": null
       },
       "stablecoin_token": {
         "symbol": "crvUSD",
         "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
+        "decimals": 18,
         "rebasing_yield": null
       },
       "max_ltv": 0.8
@@ -137,11 +143,13 @@
       "collateral_token": {
         "symbol": "wstETH",
         "address": "0x7f39c581f595b53c5cb5bbd59eae13dd6c3c6c5d",
+        "decimals": 18,
         "rebasing_yield": null
       },
       "stablecoin_token": {
         "symbol": "crvUSD",
         "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
+        "decimals": 18,
         "rebasing_yield": null
       },
       "max_ltv": 0.8
@@ -173,11 +181,13 @@
       "collateral_token": {
         "symbol": "wstETH",
         "address": "0x7f39c581f595b53c5cb5bbd59eae13dd6c3c6c5d",
+        "decimals": 18,
         "rebasing_yield": null
       },
       "stablecoin_token": {
         "symbol": "crvUSD",
         "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
+        "decimals": 18,
         "rebasing_yield": null
       },
       "max_ltv": 0.8
@@ -209,11 +219,13 @@
       "collateral_token": {
         "symbol": "wstETH",
         "address": "0x7f39c581f595b53c5cb5bbd59eae13dd6c3c6c5d",
+        "decimals": 18,
         "rebasing_yield": null
       },
       "stablecoin_token": {
         "symbol": "crvUSD",
         "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
+        "decimals": 18,
         "rebasing_yield": null
       },
       "max_ltv": 0.8
@@ -245,11 +257,13 @@
       "collateral_token": {
         "symbol": "wstETH",
         "address": "0x7f39c581f595b53c5cb5bbd59eae13dd6c3c6c5d",
+        "decimals": 18,
         "rebasing_yield": null
       },
       "stablecoin_token": {
         "symbol": "crvUSD",
         "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
+        "decimals": 18,
         "rebasing_yield": null
       },
       "max_ltv": 0.8
@@ -281,11 +295,13 @@
       "collateral_token": {
         "symbol": "wstETH",
         "address": "0x7f39c581f595b53c5cb5bbd59eae13dd6c3c6c5d",
+        "decimals": 18,
         "rebasing_yield": null
       },
       "stablecoin_token": {
         "symbol": "crvUSD",
         "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
+        "decimals": 18,
         "rebasing_yield": null
       },
       "max_ltv": 0.8
@@ -317,11 +333,13 @@
       "collateral_token": {
         "symbol": "wstETH",
         "address": "0x7f39c581f595b53c5cb5bbd59eae13dd6c3c6c5d",
+        "decimals": 18,
         "rebasing_yield": null
       },
       "stablecoin_token": {
         "symbol": "crvUSD",
         "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
+        "decimals": 18,
         "rebasing_yield": null
       },
       "max_ltv": 0.8
@@ -353,11 +371,13 @@
       "collateral_token": {
         "symbol": "wstETH",
         "address": "0x7f39c581f595b53c5cb5bbd59eae13dd6c3c6c5d",
+        "decimals": 18,
         "rebasing_yield": null
       },
       "stablecoin_token": {
         "symbol": "crvUSD",
         "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
+        "decimals": 18,
         "rebasing_yield": null
       },
       "max_ltv": 0.8
@@ -389,11 +409,13 @@
       "collateral_token": {
         "symbol": "wstETH",
         "address": "0x7f39c581f595b53c5cb5bbd59eae13dd6c3c6c5d",
+        "decimals": 18,
         "rebasing_yield": null
       },
       "stablecoin_token": {
         "symbol": "crvUSD",
         "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
+        "decimals": 18,
         "rebasing_yield": null
       },
       "max_ltv": 0.8
@@ -425,11 +447,13 @@
       "collateral_token": {
         "symbol": "wstETH",
         "address": "0x7f39c581f595b53c5cb5bbd59eae13dd6c3c6c5d",
+        "decimals": 18,
         "rebasing_yield": null
       },
       "stablecoin_token": {
         "symbol": "crvUSD",
         "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
+        "decimals": 18,
         "rebasing_yield": null
       },
       "max_ltv": 0.8

@@ -3,7 +3,7 @@ import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
 import type { Column } from '@tanstack/react-table'
-import { IncreasingLengthOptions, useIncreasingLength } from '@ui-kit/hooks/useIncreasingLength'
+import { useIncreasingLength, type IncreasingLengthCategory } from '@ui-kit/hooks/useIncreasingLength'
 import { useCellSx, getCellVariant, type TableItem, type TanstackTable } from './data-table.utils'
 
 const SkeletonCell = <T extends TableItem>({ column, isSticky }: { isSticky: boolean; column: Column<T> }) => (
@@ -23,33 +23,21 @@ const SkeletonCell = <T extends TableItem>({ column, isSticky }: { isSticky: boo
 export const SkeletonRows = <T extends TableItem>({
   table,
   shouldStickFirstColumn,
-  initialLength,
-  increaseEveryMs,
-  maxLength,
+  increasingLength,
 }: {
   table: TanstackTable<T>
   shouldStickFirstColumn: boolean
-} & IncreasingLengthOptions) => {
-  const length = useIncreasingLength({ initialLength, increaseEveryMs, maxLength })
-
-  return (
-    <>
-      {Array.from({ length }).map(
-        (
-          _,
-          rowIndex, // note: length is part of the key, so all rows are recreated and the skeleton animation is restarted
-        ) => (
-          // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
-          <TableRow key={`loading-row-${rowIndex}-${length}`} data-testid={`data-table-loading-${rowIndex}`}>
-            {table
-              .getHeaderGroups()
-              .flatMap(headerGroup => headerGroup.headers)
-              .map(({ column }, columnIndex) => (
-                <SkeletonCell key={column.id} isSticky={shouldStickFirstColumn && !columnIndex} column={column} />
-              ))}
-          </TableRow>
-        ),
-      )}
-    </>
-  )
-}
+  increasingLength?: IncreasingLengthCategory
+}) =>
+  Array.from({ length: useIncreasingLength(increasingLength) }).map((_, rowIndex, array) => (
+    // note: length is part of the key, so all rows are recreated and the skeleton animation is restarted
+    // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
+    <TableRow key={`loading-row-${rowIndex}-${array.length}`} data-testid={`data-table-loading-${rowIndex}`}>
+      {table
+        .getHeaderGroups()
+        .flatMap(headerGroup => headerGroup.headers)
+        .map(({ column }, columnIndex) => (
+          <SkeletonCell key={column.id} isSticky={shouldStickFirstColumn && !columnIndex} column={column} />
+        ))}
+    </TableRow>
+  ))

@@ -6,7 +6,7 @@ import type { DepositForm, DepositParams } from '@/llamalend/queries/validation/
 import { useSupplyRates } from '@/llamalend/widgets/action-card/hooks/useSupplyRates'
 import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { type Token } from '@primitives/address.utils'
+import { type Address, type Token } from '@primitives/address.utils'
 import type { UseFormReturn } from '@ui-kit/features/forms'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { mapQuery, q } from '@ui-kit/types/util'
@@ -18,6 +18,7 @@ type DepositSupplyInfoListProps<ChainId extends IChainId> = {
   networks: NetworkDict<ChainId>
   tokens: { borrowToken: Token | undefined }
   form: UseFormReturn<DepositForm>
+  controllerAddress: Address | undefined
 }
 
 export function DepositSupplyInfoList<ChainId extends IChainId>({
@@ -25,6 +26,7 @@ export function DepositSupplyInfoList<ChainId extends IChainId>({
   networks,
   tokens,
   form,
+  controllerAddress,
 }: DepositSupplyInfoListProps<ChainId>) {
   const { chainId, marketId, userAddress, depositAmount } = params
   const isOpen = form.isTouched('depositAmount')
@@ -32,7 +34,7 @@ export function DepositSupplyInfoList<ChainId extends IChainId>({
   const { data: isApproved } = useDepositIsApproved(params, isOpen)
 
   const { prevRates, rates, prevNetSupplyApy, netSupplyApy } = useSupplyRates(
-    { params, reservesDelta: depositAmount },
+    { params, reservesDelta: depositAmount, controllerAddress },
     isOpen,
   )
 

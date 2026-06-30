@@ -11,11 +11,9 @@ import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { formatNumber } from '@ui-kit/utils'
+import { CRVUSD, formatNumber } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
-
-const isUsd = (symbol: string) => symbol === 'USD' || symbol === 'crvUSD' // show crvUSD as USD
 
 const Currency = ({
   balance,
@@ -28,21 +26,9 @@ const Currency = ({
   balance: number | null
   chain: Chain
 }) => (
-  <Stack
-    direction="row"
-    component="span"
-    sx={{
-      alignItems: 'center',
-      justifyContent: 'flex-end',
-      gap: 1,
-      display: 'inline-flex',
-    }}
-  >
+  <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center' }}>
+    {formatNumber(balance, 'token.compact')}
     <TokenIcon blockchainId={chain} address={address} tooltip={symbol} size="mui-sm" />
-    <span>
-      {formatNumber(balance, { unit: isUsd(symbol) ? 'dollar' : undefined, abbreviate: true, fallback: '-' })}
-      {!isUsd(symbol) && ` ${symbol}`}
-    </span>
   </Stack>
 )
 
@@ -74,19 +60,23 @@ const UtilizationTooltipContent = ({
         <TooltipItem variant="primary" title={t`Utilization breakdown`} />
         {type === LlamaMarketType.Lend && (
           <TooltipItem title={t`Total supplied`}>
-            {/* as we are displaying the utilization breakdown, display everything as borrowed token */}
-            <Currency {...borrowed} balance={collateral.balanceUsd} />
+            {/* The supplied token is the same as the token people borrow, even though we use the collateral balance in this case */}
+            <Currency {...borrowed} balance={collateral.balance} />
           </TooltipItem>
         )}
         <TooltipItem title={t`Total borrowed`}>
           <Currency {...borrowed} />
         </TooltipItem>
-        <TooltipItem title={t`Available to borrow`}>
-          <Currency {...borrowed} balance={liquidityUsd} />
-        </TooltipItem>
+        {/** liquidityUsd is as the name says, in usd, but we want it denominated in the borrow token, and we have enough info to deduce the borrow token price directly (if both are > 0) */}
+        {borrowed.balance && borrowed.balanceUsd && (
+          <TooltipItem title={t`Available to borrow`}>
+            <Currency {...borrowed} balance={liquidityUsd * (borrowed.balance / borrowed.balanceUsd)} />
+          </TooltipItem>
+        )}
         {debtCeiling != null && (
           <TooltipItem title={t`Debt ceiling`}>
-            <Currency {...borrowed} balance={debtCeiling} />
+            {/** Only mint markets have a debt ceiling which is in crvUSD */}
+            <Currency {...CRVUSD} balance={debtCeiling} />
           </TooltipItem>
         )}
       </TooltipItems>

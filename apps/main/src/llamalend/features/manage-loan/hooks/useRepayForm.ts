@@ -1,9 +1,8 @@
 import { useMemo } from 'react'
-import { useConnection } from 'wagmi'
 import { LEVERAGE } from '@/llamalend/constants'
 import { useMaxRepayTokenValues } from '@/llamalend/features/manage-loan/hooks/useMaxRepayTokenValues'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
-import { getAmmAddress, getZapAddress, getTokens, isRouterRequired } from '@/llamalend/llama.utils'
+import { isRouterRequired } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useRepayMutation } from '@/llamalend/mutations/repay.mutation'
 import { getRepayLoanEstimateGasOptions } from '@/llamalend/queries/repay/repay-gas-estimate.query'
@@ -30,6 +29,7 @@ import { type AllowUndefined, q, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
 import { shouldBlockTransaction } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
+import { useMarketContext } from '../../market-context'
 
 const NOT_AVAILABLE = ['root', t`Repay is not available, increase the repayment amount or repay fully.`] as const
 
@@ -105,23 +105,21 @@ const isRepayRouteRequired = (
 ) => !!market && isRouterRequired(getRepayImplementationType(market, { stateCollateral, userCollateral, userBorrowed }))
 
 export const useRepayForm = <ChainId extends LlamaChainId>({
-  market,
   networks,
-  chainId,
-  enabled,
   onPricesUpdated,
 }: {
-  market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
-  chainId: ChainId
-  enabled?: boolean
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
-  const { address: userAddress } = useConnection()
-  const marketId = market?.id
-
-  const { borrowToken, collateralToken } = market ? getTokens(market) : {}
-
+  const {
+    chainId,
+    market,
+    marketId,
+    ammAddress,
+    zapAddress,
+    tokens: { borrowToken, collateralToken },
+    userAddress,
+  } = useMarketContext<ChainId>()
   const form = useForm<RepayFormData>({
     ...formOptions,
     validation: useMemo(() => repayFormValidationSuite(market), [market]),
@@ -141,12 +139,18 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     userAddress,
   })
 
-  useCallbackSync(useRepayPrices(params, enabled), onPricesUpdated)
+  useCallbackSync(useRepayPrices(params), onPricesUpdated)
 
-  const { data: isAvailable } = useRepayIsAvailable(params, enabled)
-  const { isFull, max } = useMaxRepayTokenValues({ market, params, form }, enabled)
+  const { data: isAvailable } = useRepayIsAvailable(params)
+  const { isFull, max } = useMaxRepayTokenValues({
+    market,
+    borrowTokenAddress: borrowToken?.address,
+    collateralTokenAddress: collateralToken?.address,
+    params,
+    form,
+  })
 
-  const priceImpact = q(useRepayPriceImpact(params, enabled))
+  const priceImpact = q(useRepayPriceImpact(params))
   const { formState } = form
   const isPending = formState.isSubmitting || isRepaying
   return {
@@ -154,6 +158,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     values,
     params,
     isPending,
+    isLoading: !market,
     isDisabled:
       !formState.isValid ||
       isPending ||
@@ -169,10 +174,10 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     collateralToken,
     repayError,
     priceImpact,
-    isApproved: useRepayIsApproved(params, enabled),
+    isApproved: useRepayIsApproved(params),
     routes: useMarketRoutes({
       chainId,
-      marketAddress: getAmmAddress(market),
+      marketAddress: ammAddress,
       tokenIn: collateralToken,
       tokenOut: borrowToken,
       amountIn: decimalSum(params.userCollateral, params.stateCollateral),
@@ -184,7 +189,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
       },
       getRouteGasOptions: (routeId: string | undefined) => getRepayLoanEstimateGasOptions({ ...params, routeId }),
       networks,
-      zapAddress: market && getZapAddress(market),
+      zapAddress,
     }),
     formErrors: useMemo(
       // only show the 'not available' warn when there are no other form errors

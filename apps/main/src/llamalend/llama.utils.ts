@@ -1,10 +1,10 @@
 import { BigNumber } from 'bignumber.js'
-import { sortBy } from 'lodash'
 import { zeroAddress } from 'viem'
-import type { HealthColorKey, LlamaMarketTemplate, UserPositionStatus } from '@/llamalend/llamalend.types'
+import type { LlamaMarketTemplate, UserPositionStatus } from '@/llamalend/llamalend.types'
+import type { AssetDetails, LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { UserState } from '@/llamalend/queries/user'
 import { MarketNetBorrowAprTooltipContentProps } from '@/llamalend/widgets/tooltips'
-import type { INetworkName as LlamaNetworkId, IOneWayMarket } from '@curvefi/llamalend-api/lib/interfaces'
+import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { Chain } from '@curvefi/prices-api'
@@ -13,12 +13,13 @@ import { getUserMarketCollateralEvents as getLendUserMarketCollateralEvents } fr
 import type { BadDebt } from '@curvefi/prices-api/liquidations'
 import { type Address, Hex } from '@primitives/address.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
-import { maybe, notFalsy, objectKeys } from '@primitives/objects.utils'
+import { type AllOrNone, assert, DEFAULT_DECIMALS, maybe, maybes, notFalsy } from '@primitives/objects.utils'
 import { getLib, requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
-import { isZapV2Enabled } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
-import { LlamaMarketType } from '@ui-kit/types/market'
-import { CRVUSD, decimalMinus, decimalSum, formatNumber } from '@ui-kit/utils'
+import { MetricProps } from '@ui-kit/shared/ui/Metric'
+import { LlamaMarketType, LlamaMarketVersion } from '@ui-kit/types/market'
+import { QueryProp } from '@ui-kit/types/util'
+import { CRVUSD, decimal, decimalMinus, decimalMultiply, decimalSum, formatNumber } from '@ui-kit/utils'
 import { SOLVENCY_THRESHOLDS } from './llama-markets.constants'
 
 /**
@@ -43,8 +44,8 @@ export const tryGetLlamaMarket = (marketId: LlamaMarketTemplate | string | null 
  * - Lend Market and its `leverage` property has leverage
  * - Mint Market and either its `leverageZap` is not the zero address or its `leverageV2` property has leverage
  */
-export const hasLeverage = (market: LlamaMarketTemplate) =>
-  hasV1Leverage(market) || (market instanceof MintMarketTemplate && hasV2Leverage(market))
+export const hasLeverage = <T extends LlamaMarketTemplate | undefined>(market: T) =>
+  maybe(market, market => hasV1Leverage(market) || (market instanceof MintMarketTemplate && hasV2Leverage(market)))
 
 /**
  * Checks if leverage value (multiplier) can be calculated and displayed for this market.
@@ -61,9 +62,11 @@ export const hasLeverageValue = (market: LlamaMarketTemplate) =>
   (market instanceof MintMarketTemplate && hasV2Leverage(market))
 
 export const hasV1Leverage = (market: LlamaMarketTemplate) =>
-  market instanceof LendMarketTemplate ? market.leverage.hasLeverage() : market?.leverageZap !== zeroAddress
+  market instanceof LendMarketTemplate
+    ? market.version === 'v1' && market.leverage.hasLeverage()
+    : market?.leverageZap !== zeroAddress
 
-export const hasV2Leverage = (market: MintMarketTemplate) => market?.leverageV2.hasLeverage()
+export const hasV2Leverage = (_market: MintMarketTemplate) => false // market?.leverageV2.hasLeverage()
 
 const hasV1Deleverage = (market: LlamaMarketTemplate) =>
   market instanceof LendMarketTemplate ? hasV1Leverage(market) : market?.deleverageZap !== zeroAddress
@@ -90,8 +93,10 @@ export const canRepayFromUserCollateral = (market: LlamaMarketTemplate) =>
 
 export const hasVault = (market: LlamaMarketTemplate) => market instanceof LendMarketTemplate && 'vault' in market
 
-export const hasZapV2 = (market: LlamaMarketTemplate) =>
-  isZapV2Enabled() && market instanceof LendMarketTemplate && market.leverageZapV2.hasLeverage()
+export const hasZapV2 = (_market: LlamaMarketTemplate) => false
+/** isZapV2Enabled() &&
+  market instanceof LendMarketTemplate &&
+  market.leverageZapV2.hasLeverage() */
 
 export const isRouterRequired = (
   type: 'zapV2' | 'V0' | 'V1' | 'V2' | 'deleverage' | 'unleveragedMint' | 'unleveragedLend' | 'unleveraged',
@@ -100,8 +105,11 @@ export const isRouterRequired = (
 export const hasGauge = (market: LlamaMarketTemplate) =>
   market instanceof LendMarketTemplate && market.addresses.gauge !== zeroAddress
 
-export const getMarketType = (market: LlamaMarketTemplate | null | undefined) =>
-  market ? (market instanceof LendMarketTemplate ? LlamaMarketType.Lend : LlamaMarketType.Mint) : undefined
+export const getLendMarketVersion = (market: LendMarketTemplate): LlamaMarketVersion =>
+  assert(
+    { v1: LlamaMarketVersion.v1, v2: LlamaMarketVersion.v2 }[market.version],
+    `Unsupported LlamaLend market version: ${market.version}`,
+  )
 
 const getBorrowSymbol = (market: LlamaMarketTemplate) =>
   market instanceof MintMarketTemplate ? CRVUSD.symbol : market.borrowed_token.symbol
@@ -120,38 +128,141 @@ export const formatTokenAmounts = (
       `${formatNumber(userCollateral, { abbreviate: false })} ${getCollateralSymbol(market)}`,
   ).join(', ')
 
-export const getTokens = (market: LlamaMarketTemplate | IOneWayMarket) =>
-  market instanceof MintMarketTemplate
-    ? {
-        collateralToken: {
-          symbol: market.collateralSymbol,
-          address: market.collateral as Address,
-          decimals: market.collateralDecimals,
-        },
-        borrowToken: CRVUSD,
-      }
-    : {
-        collateralToken: {
-          symbol: market.collateral_token.symbol,
-          address: market.collateral_token.address as Address,
-          decimals: market.collateral_token.decimals,
-        },
-        borrowToken: {
-          symbol: market.borrowed_token.symbol,
-          address: market.borrowed_token.address as Address,
-          decimals: market.borrowed_token.decimals,
-        },
-      }
+export type MarketToken = Pick<AssetDetails, 'symbol' | 'address' | 'decimals'>
 
-export type MarketTokens = ReturnType<typeof getTokens>
+export type MarketTokens = { collateralToken: MarketToken; borrowToken: MarketToken }
 
-export const getAmmAddress = <T extends LlamaMarketTemplate | null | undefined>(market: T) =>
-  maybe(market, market => (market instanceof LendMarketTemplate ? market.addresses.amm : market.address) as Address)
+/** Accepts either both tokens or an empty object. Avoid Partial<> because it could allow one of the tokens only */
+export type MarketTokensOrEmpty = AllOrNone<MarketTokens>
 
-export const getControllerAddress = <T extends LlamaMarketTemplate | null | undefined>(market: T) =>
-  maybe(
+type MarketOrApiValue<T, Value> = T extends LlamaMarketTemplate ? Value : Value | undefined
+
+const getMarketOrApiValue = <T extends LlamaMarketTemplate | null | undefined, Value>(
+  market: T,
+  apiMarket: LlamaMarket | undefined,
+  getMarketValue: (market: LlamaMarketTemplate) => Value,
+  getApiValue: (apiMarket: LlamaMarket) => Value,
+): MarketOrApiValue<T, Value> =>
+  maybe(market, getMarketValue) ?? (maybe(apiMarket, getApiValue) as MarketOrApiValue<T, Value>)
+
+export const getMarketType = <T extends LlamaMarketTemplate | null | undefined>(
+  market: T,
+  apiMarket?: LlamaMarket,
+): MarketOrApiValue<T, LlamaMarketType> =>
+  getMarketOrApiValue(
     market,
+    apiMarket,
+    m => (m instanceof LendMarketTemplate ? LlamaMarketType.Lend : LlamaMarketType.Mint),
+    m => m.type,
+  )
+
+export const getTokens = <T extends LlamaMarketTemplate | null | undefined>(
+  market: T,
+  apiMarket?: LlamaMarket,
+): MarketOrApiValue<T, MarketTokens> =>
+  getMarketOrApiValue(
+    market,
+    apiMarket,
+    (market: LlamaMarketTemplate): MarketTokens =>
+      market instanceof MintMarketTemplate
+        ? {
+            collateralToken: {
+              symbol: market.collateralSymbol,
+              address: market.collateral as Address,
+              decimals: market.collateralDecimals,
+            },
+            borrowToken: CRVUSD,
+          }
+        : {
+            collateralToken: {
+              symbol: market.collateral_token.symbol,
+              address: market.collateral_token.address as Address,
+              decimals: market.collateral_token.decimals,
+            },
+            borrowToken: {
+              symbol: market.borrowed_token.symbol,
+              address: market.borrowed_token.address as Address,
+              decimals: market.borrowed_token.decimals,
+            },
+          },
+    ({ assets }) => ({ collateralToken: assets.collateral, borrowToken: assets.borrowed }),
+  )
+
+export const getAmmAddress = <T extends LlamaMarketTemplate | null | undefined>(
+  market: T,
+  apiMarket?: LlamaMarket,
+): MarketOrApiValue<T, Address> =>
+  getMarketOrApiValue(
+    market,
+    apiMarket,
+    market => (market instanceof LendMarketTemplate ? market.addresses.amm : market.address) as Address,
+    m => m.ammAddress,
+  )
+
+export const getControllerAddress = <T extends LlamaMarketTemplate | null | undefined>(
+  market: T,
+  apiMarket?: LlamaMarket,
+): MarketOrApiValue<T, Address> =>
+  getMarketOrApiValue(
+    market,
+    apiMarket,
     market => (market instanceof LendMarketTemplate ? market.addresses.controller : market.controller) as Address,
+    m => m.controllerAddress,
+  )
+
+export const getVaultAddress = <T extends LlamaMarketTemplate | null | undefined>(
+  market: T,
+  apiMarket?: LlamaMarket,
+): MarketOrApiValue<T, Address | null> =>
+  getMarketOrApiValue(
+    market,
+    apiMarket,
+    market => (market instanceof LendMarketTemplate ? (market.addresses.vault as Address) : null),
+    m => m.vaultAddress,
+  )
+
+export const getGaugeAddress = (market: LlamaMarketTemplate | null | undefined): Address | undefined =>
+  market instanceof LendMarketTemplate && market.addresses.gauge !== zeroAddress
+    ? (market.addresses.gauge as Address)
+    : undefined
+
+export const getVaultToken = <T extends LlamaMarketTemplate | null | undefined>(
+  market: T,
+  apiMarket?: LlamaMarket,
+): MarketOrApiValue<T, MarketToken | undefined> =>
+  maybe(getVaultAddress(market, apiMarket), address => ({
+    address,
+    symbol: t`Vault shares`,
+    decimals: DEFAULT_DECIMALS,
+  }))
+
+export type BandRange = { minBands: number; maxBands: number }
+export type BandRangeOrEmpty = AllOrNone<BandRange>
+
+export const getMarketBandRange = <T extends LlamaMarketTemplate | null | undefined>(
+  market: T,
+  apiMarket?: LlamaMarket,
+): MarketOrApiValue<T, BandRange | undefined> =>
+  getMarketOrApiValue(
+    market,
+    apiMarket,
+    m => ({ minBands: +m.minBands, maxBands: +m.maxBands }),
+    m => maybes([m.minBand, m.maxBand], (minBands, maxBands) => ({ minBands, maxBands })),
+  )
+
+export const getCrvTokenAddress = (market: LlamaMarketTemplate | null | undefined): Address | undefined =>
+  maybe(market, m => m.getLlamalend().constants.ALIASES.crv as Address)
+
+export const getMonetaryPolicy = <T extends LlamaMarketTemplate | null | undefined>(
+  market: T,
+  apiMarket?: LlamaMarket,
+): MarketOrApiValue<T, Address | undefined> =>
+  getMarketOrApiValue(
+    market,
+    apiMarket,
+    market =>
+      (market instanceof LendMarketTemplate ? market.addresses.monetary_policy : market.monetaryPolicy) as Address,
+    m => m.monetaryPolicyAddress,
   )
 
 /**
@@ -176,6 +287,21 @@ export const calculateLtv = (
   if (collateralValue === 0 || debtValue === 0) return 0
   return (debtValue / collateralValue) * 100
 }
+
+export const calculateLendMarketTvlUsd = ({
+  borrowedBalanceUsd,
+  collateralBalanceUsd,
+  totalAssetsUsd,
+  totalDebtUsd,
+}: {
+  borrowedBalanceUsd: number
+  collateralBalanceUsd: number
+  totalAssetsUsd: number
+  totalDebtUsd: number
+}) => borrowedBalanceUsd + collateralBalanceUsd + totalAssetsUsd - totalDebtUsd
+
+export const calculateMintMarketTvlUsd = ({ collateralAmountUsd }: { collateralAmountUsd: number }) =>
+  collateralAmountUsd
 
 /**
  * Sends a new transaction hash to the backend to update user events.
@@ -269,38 +395,6 @@ export function getLiquidationStatus(
   return 'healthy' as const
 }
 
-/** @deprecated Use {@link getLiquidationStatus} — this legacy version returns label/tooltip for the old forms. */
-export function getLiquidationStatusLegacy(
-  healthNotFull: string,
-  userIsCloseToLiquidation: boolean,
-  userStateStablecoin: string,
-) {
-  const userStatus: { label: string; colorKey: HealthColorKey; tooltip: string } = {
-    label: 'Healthy',
-    colorKey: 'healthy',
-    tooltip: '',
-  }
-
-  const threshold = getSoftLiquidationThreshold(userIsCloseToLiquidation)
-
-  if (+healthNotFull < 0) {
-    userStatus.label = 'Hard liquidatable'
-    userStatus.colorKey = 'hard_liquidation'
-    userStatus.tooltip =
-      'Hard liquidation is like a usual liquidation, which can happen only if you experience significant losses in soft liquidation so that you get below 0 health.'
-  } else if (+userStateStablecoin > threshold) {
-    userStatus.label = 'Soft liquidation'
-    userStatus.colorKey = 'soft_liquidation'
-    userStatus.tooltip =
-      'Soft liquidation is the initial process of collateral being converted into stablecoin, you may experience some degree of loss.'
-  } else if (userIsCloseToLiquidation) {
-    userStatus.label = 'Close to liquidation'
-    userStatus.colorKey = 'close_to_liquidation'
-  }
-
-  return userStatus
-}
-
 export function getIsUserCloseToSoftLiquidation(
   userFirstBand: number,
   userLiquidationBand: number | null,
@@ -312,31 +406,6 @@ export function getIsUserCloseToSoftLiquidation(
     return userFirstBand <= oraclePriceBand + 2
   }
   return false
-}
-
-export function reverseBands(bands: [number, number] | number[]) {
-  return [bands[1], bands[0]] as [number, number]
-}
-
-// There's a slight difference in types (borrowed vs stablecoin) that I didn't want to touch at the risk of breaking things;
-// I only want to move code, not change. At least they're neatly in the same place now.
-
-export function sortBandsLend(bandsBalances: Record<number, { borrowed: string; collateral: string }>) {
-  const sortedKeys = sortBy(objectKeys(bandsBalances), k => +k)
-  const bandsBalancesArr: { borrowed: string; collateral: string; band: number }[] = []
-  for (const k of sortedKeys) {
-    bandsBalancesArr.push({ ...bandsBalances[k], band: k })
-  }
-  return { bandsBalancesArr, bandsBalances }
-}
-
-export function sortBandsMint(bandBalances: Record<string, { stablecoin: string; collateral: string }>) {
-  const sortedKeys = sortBy(objectKeys(bandBalances).map(k => +k))
-  const bandBalancesArr: { stablecoin: string; collateral: string; band: string }[] = []
-  for (const k of sortedKeys) {
-    bandBalancesArr.push({ ...bandBalances[k], band: `${k}` })
-  }
-  return { bandBalancesArr, bandBalances }
 }
 
 /**
@@ -427,4 +496,27 @@ export const lowSolvencyDeprecatedMessage = (solvencyPercent: number | null) =>
     ? t`This market is deprecated due to low solvency`
     : null
 
-export const getZapAddress = (market: LlamaMarketTemplate) => market.getZapAddress() as Address
+export const getZapAddress = <T extends LlamaMarketTemplate | undefined>(market: T) =>
+  maybe(market, m => (hasZapV2(m) ? (m.getZapAddress() as Address) : undefined))
+
+/** Builds Metric props for a token-denominated value with the matching USD notional shown below it. */
+export const tokenMetric = ({
+  value,
+  symbol,
+  usdRate,
+}: {
+  value: MetricProps['value']
+  symbol: string | null | undefined
+  usdRate: QueryProp<Amount>
+}) =>
+  ({
+    value,
+    valueOptions: {
+      abbreviate: true,
+      unit: maybe(symbol, symbol => ({ symbol, position: 'suffix' as const })),
+    },
+    notional: maybes([decimal(value.data), usdRate.data], (value, usdRate) => ({
+      value: decimalMultiply(value, usdRate),
+      unit: 'dollar' as const,
+    })),
+  }) satisfies Pick<MetricProps, 'value' | 'valueOptions' | 'notional'>

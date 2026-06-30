@@ -2,12 +2,11 @@ import { ReactNode } from 'react'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import { useDeprecatedMarket } from '@/llamalend/hooks/useDeprecatedMarket'
 import { useSolvencyMarket } from '@/llamalend/hooks/useSolvencyMarket'
+import { getControllerAddress, getMarketType } from '@/llamalend/llama.utils'
+import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Stack from '@mui/material/Stack'
-import type { Address } from '@primitives/address.utils'
 import { AlertType } from '@ui/AlertBox/types'
-import { LlamaMarketType } from '@ui-kit/types/market'
-import type { QueryProp } from '@ui-kit/types/util'
 import { BlockchainIds } from '@ui-kit/utils/network'
 import { DeprecatedMarketBanner } from './DeprecatedMarketBanner'
 import { LowSolvencyBanner } from './LowSolvencyBanner'
@@ -23,17 +22,17 @@ const HIDE_IF_EMPTY = { '&:empty': { display: 'none' } }
 
 export const MarketBanners = <ChainId extends IChainId>({
   chainId,
-  marketType,
-  controllerAddress: { data: controllerAddress },
+  market,
   rewardsBanner,
 }: {
   chainId: ChainId
-  marketType: LlamaMarketType
-  controllerAddress: QueryProp<Address>
+  market: LlamaMarketTemplate | undefined
   // additional banner not shared across all markets type and hidden if market alert has high severity
   rewardsBanner?: ReactNode
 }) => {
   const blockchainId = BlockchainIds[chainId]
+  const controllerAddress = getControllerAddress(market)
+  const marketType = getMarketType(market)
   const marketAlert = useMarketAlert(chainId, controllerAddress, marketType)
   const deprecatedMarket = useDeprecatedMarket({ blockchainId, controllerAddress, marketType })
   const { data: solvencyMarket } = useSolvencyMarket({ blockchainId, controllerAddress, marketType })

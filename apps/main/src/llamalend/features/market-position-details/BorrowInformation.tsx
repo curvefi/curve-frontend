@@ -1,4 +1,4 @@
-import { formatCollateralNotional, isPositionLeveraged, type MarketTokens } from '@/llamalend/llama.utils'
+import { formatCollateralNotional, isPositionLeveraged, type MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import { useUserCurrentLeverage, useUserState } from '@/llamalend/queries/user'
 import { useRangeToLiquidation } from '@/llamalend/queries/user/user-prices.query'
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
@@ -25,7 +25,7 @@ const dollarUnitOptions = {
 
 type BorrowInformationProps = {
   params: UserMarketParams
-  tokens: Partial<MarketTokens>
+  tokens: MarketTokensOrEmpty
 }
 
 export const BorrowInformation = ({ params, tokens: { collateralToken, borrowToken } }: BorrowInformationProps) => {

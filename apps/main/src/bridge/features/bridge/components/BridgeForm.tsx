@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
-import { useWallet } from '@ui-kit/features/connect-wallet'
 import { useNavigate, usePathname } from '@ui-kit/hooks/router'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { getCurrentApp, getInternalUrl } from '@ui-kit/shared/routes'
@@ -21,8 +20,7 @@ export const BridgeForm = ({
   networks,
   bridgeDisabledAlert,
 }: BridgeFormParams & { bridgeDisabledAlert?: Pick<BridgeAlert, 'alertType' | 'message'> }) => {
-  const { isConnected, isConnecting } = useConnection()
-  const { connect } = useWallet()
+  const { isConnected } = useConnection()
   const navigate = useNavigate()
   const pathname = usePathname()
 
@@ -79,10 +77,8 @@ export const BridgeForm = ({
         isPending={isPending}
         isApproved={isApproved?.data}
         isConnected={isConnected}
-        isConnecting={isConnecting}
         isWrongNetwork={fromChainId != null && chainId !== fromChainId}
         onAmount={amount => form.update({ amount })}
-        onConnect={() => void connect()}
         onChangeNetwork={() =>
           navigate(getInternalUrl(getCurrentApp(pathname), requireBlockchainId(fromChainId as Chain)))
         }

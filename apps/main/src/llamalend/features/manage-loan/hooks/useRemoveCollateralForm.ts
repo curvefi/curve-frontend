@@ -1,7 +1,4 @@
 import { useMemo } from 'react'
-import { useConnection } from 'wagmi'
-import { getTokens } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useRemoveCollateralMutation } from '@/llamalend/mutations/remove-collateral.mutation'
 import {
   invalidateMaxRemovableCollateral,
@@ -21,6 +18,7 @@ import type { BaseConfig } from '@ui/utils'
 import { useCallbackSync, useFormSync, useForm, useOnChangeCallback } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { mapQuery, type Range } from '@ui-kit/types/util'
+import { useMarketContext } from '../../market-context'
 
 const userDefaultValues = { userCollateral: undefined }
 const defaultValues = { ...userDefaultValues, maxCollateral: undefined }
@@ -33,19 +31,15 @@ export const useRemoveCollateralForm = <
   ChainId extends LlamaChainId,
   NetworkName extends LlamaNetworkId = LlamaNetworkId,
 >({
-  market,
   network,
   onPricesUpdated,
 }: {
-  market: LlamaMarketTemplate | undefined
   network: BaseConfig<NetworkName, ChainId>
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
-  const { address: userAddress } = useConnection()
+  const { market, marketId, tokens, userAddress } = useMarketContext<ChainId>()
   const { chainId } = network
-  const marketId = market?.id
 
-  const tokens = market && getTokens(market)
   const collateralToken = tokens?.collateralToken
   const borrowToken = tokens?.borrowToken
 

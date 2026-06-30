@@ -7,6 +7,7 @@ const token = z
   .object({
     symbol: z.string(),
     address,
+    decimals: z.number(),
     rebasing_yield: z.number().nullable(),
     rebasing_yield_apr: z.number().nullable(),
   })
@@ -46,6 +47,7 @@ const market = z
     lend_apr_crv_0_boost: z.number(),
     lend_apr_crv_max_boost: z.number(),
     n_loans: z.number(),
+    amm_a: z.number(),
     price_oracle: z.number(),
     amm_price: z.number(),
     base_price: z.number(),

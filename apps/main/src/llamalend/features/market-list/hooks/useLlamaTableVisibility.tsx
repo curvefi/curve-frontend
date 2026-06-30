@@ -27,10 +27,15 @@ const mergeVisibilityGroups = (
     return oldGroup
       ? {
           ...initialGroup,
-          options: initialGroup.options.map(
-            initialOption =>
-              oldGroup.options.find(oldOption => isEqual(oldOption.columns, initialOption.columns)) ?? initialOption,
-          ),
+          options: initialGroup.options.map(initialOption => {
+            const oldOption =
+              oldGroup.options.find(oldOption => isEqual(oldOption.columns, initialOption.columns)) ?? initialOption
+            return isEqual(initialOption.columns, [LlamaMarketColumnId.NetBorrowRate])
+              ? { ...oldOption, active: initialOption.active }
+              : isEqual(initialOption.columns, [LlamaMarketColumnId.BorrowRate])
+                ? { ...oldOption, active: false }
+                : oldOption
+          }),
         }
       : initialGroup
   })
@@ -43,7 +48,7 @@ export const getLlamaMarketsColumnVariant = (
     : 'hasPositions' // show the general market table, for users with positions
 
 const migration: MigrationOptions<Record<LlamaColumnVariant, VisibilityGroup<LlamaMarketColumnId>[]>> = {
-  version: 5,
+  version: 6,
   migrate: (oldValue, initialValue) =>
     mapRecord(initialValue, (variant, initialGroups) => mergeVisibilityGroups(oldValue[variant], initialGroups)),
 }

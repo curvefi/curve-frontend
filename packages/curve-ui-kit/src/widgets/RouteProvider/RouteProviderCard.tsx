@@ -8,6 +8,7 @@ import { maybe, maybes } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
 import type { BaseConfig } from '@ui/utils'
 import type { RouteQuery } from '@ui-kit/entities/router-api'
+import { use0xRouter } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { useEstimateGas } from '@ui-kit/lib/model/entities/gas-info'
 import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
@@ -48,80 +49,83 @@ export const RouteProviderCard = ({
   chainId,
   networks,
 }: RouteProviderCardProps) => {
-  const out = maybes([route, decimals], ([{ amountOut }, decimals]) => fromWei(amountOut[0], decimals))
+  const out = maybes([route, decimals], ({ amountOut }, decimals) => fromWei(amountOut[0], decimals))
   const { data: gasEstimate } = useEstimateGas(networks, chainId, route?.gas)
   const Icon = RouteProviderIcons[router]
   const disabledTooltip = t`${RouteProviderLabels[router]} is unavailable on ${networks[chainId].name}.`
+  const onClick = useCallback(() => (enabled ? onSelect(router) : undefined), [onSelect, router, enabled])
   return (
-    <WithWrapper shouldWrap={!enabled} Wrapper={Tooltip} title={disabledTooltip}>
-      <SelectableCard
-        onClick={useCallback(() => (enabled ? onSelect(router) : undefined), [onSelect, router, enabled])}
-        isSelected={isSelected}
-        isError={!!error}
-        data-testid="route-provider-card"
-        sx={{ padding: Spacing.sm.desktop }}
-      >
-        <Stack
-          data-testid="route-provider-rows"
-          sx={{
-            gap: Spacing.xxs,
-            width: '100%',
-            ...(!enabled && { opacity: 0.5, pointerEvents: 'none', cursor: 'not-allowed' }),
-          }}
+    (use0xRouter() || router !== '0x') && (
+      <WithWrapper shouldWrap={!enabled} Wrapper={Tooltip} title={disabledTooltip}>
+        <SelectableCard
+          onClick={onClick}
+          isSelected={isSelected}
+          isError={!!error}
+          data-testid="route-provider-card"
+          sx={{ padding: Spacing.sm.desktop }}
         >
-          <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-            <Box sx={{ display: 'flex', alignItems: 'baseline', gap: Spacing.xxs }}>
-              <WithSkeleton loading={isLoading}>
-                <Typography
-                  variant="tableCellMBold"
-                  component="p"
-                  color="textPrimary"
-                  data-testid="route-provider-amount"
-                >
-                  {isLoading ? PLACEHOLDER : (maybe(out, n => formatNumber(n, { abbreviate: false })) ?? '-')}
-                </Typography>
-              </WithSkeleton>
-              {toTokenSymbol && (
-                <Typography variant="bodyXsRegular" component="span" color="textSecondary">
-                  {toTokenSymbol}
-                </Typography>
+          <Stack
+            data-testid="route-provider-rows"
+            sx={{
+              gap: Spacing.xxs,
+              width: '100%',
+              ...(!enabled && { opacity: 0.5, pointerEvents: 'none', cursor: 'not-allowed' }),
+            }}
+          >
+            <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+              <Box sx={{ display: 'flex', alignItems: 'baseline', gap: Spacing.xxs }}>
+                <WithSkeleton loading={isLoading}>
+                  <Typography
+                    variant="tableCellMBold"
+                    component="p"
+                    color="textPrimary"
+                    data-testid="route-provider-amount"
+                  >
+                    {isLoading ? PLACEHOLDER : (maybe(out, n => formatNumber(n, { abbreviate: false })) ?? '-')}
+                  </Typography>
+                </WithSkeleton>
+                {toTokenSymbol && (
+                  <Typography variant="bodyXsRegular" component="span" color="textSecondary">
+                    {toTokenSymbol}
+                  </Typography>
+                )}
+              </Box>
+              {error ? (
+                <ErrorIconButton error={error} size="extraSmall" />
+              ) : (
+                route && <RouteComparisonChip maxAmountOut={bestOutputAmount} amountOut={route.amountOut} />
               )}
-            </Box>
-            {error ? (
-              <ErrorIconButton error={error} size="extraSmall" />
-            ) : (
-              route && <RouteComparisonChip maxAmountOut={bestOutputAmount} amountOut={route.amountOut} />
-            )}
-          </Stack>
-          <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-            <Stack direction="row" sx={{ gap: Spacing.xxs, alignItems: 'center' }}>
-              <WithSkeleton loading={isLoading}>
-                <Typography variant="bodyXsRegular" color="textTertiary" data-testid="route-provider-usd">
-                  {isLoading || usdRate.isLoading
-                    ? PLACEHOLDER_USD
-                    : (maybes(
-                        [out, usdRate.data],
-                        ([out, usd]) => `~${formatNumber(parseFloat(out) * usd, 'usd.notional')}`,
-                      ) ?? t`No route available`)}
-                </Typography>
-              </WithSkeleton>
-              {gasEstimate?.estGasCostUsd != null && !isFetching && (
-                <Typography variant="bodyXsRegular" color="textTertiary">
-                  {' - '}
-                  {formatNumber(gasEstimate.estGasCostUsd, 'usd.notional')}
-                </Typography>
-              )}
-              {isFetching && <ReloadIcon sx={{ ...LoadingAnimation, width: IconSize.xxs, height: IconSize.xxs }} />}
             </Stack>
-            <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xxs }}>
-              <Icon />
-              <Typography variant="bodyXsRegular" color="textSecondary">
-                {RouteProviderLabels[router]}
-              </Typography>
+            <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+              <Stack direction="row" sx={{ gap: Spacing.xxs, alignItems: 'center' }}>
+                <WithSkeleton loading={isLoading}>
+                  <Typography variant="bodyXsRegular" color="textTertiary" data-testid="route-provider-usd">
+                    {isLoading || usdRate.isLoading
+                      ? PLACEHOLDER_USD
+                      : (maybes(
+                          [out, usdRate.data],
+                          (out, usd) => `~${formatNumber(parseFloat(out) * usd, 'usd.notional')}`,
+                        ) ?? t`No route available`)}
+                  </Typography>
+                </WithSkeleton>
+                {gasEstimate?.estGasCostUsd != null && !isFetching && (
+                  <Typography variant="bodyXsRegular" color="textTertiary">
+                    {' - '}
+                    {formatNumber(gasEstimate.estGasCostUsd, 'usd.notional')}
+                  </Typography>
+                )}
+                {isFetching && <ReloadIcon sx={{ ...LoadingAnimation, width: IconSize.xxs, height: IconSize.xxs }} />}
+              </Stack>
+              <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xxs }}>
+                <Icon />
+                <Typography variant="bodyXsRegular" color="textSecondary">
+                  {RouteProviderLabels[router]}
+                </Typography>
+              </Stack>
             </Stack>
           </Stack>
-        </Stack>
-      </SelectableCard>
-    </WithWrapper>
+        </SelectableCard>
+      </WithWrapper>
+    )
   )
 }

@@ -1,22 +1,26 @@
+import { useOhlcChartState } from '@/lend/hooks/useOhlcChartState'
 import { networks } from '@/lend/networks'
 import { ChainId } from '@/lend/types/lend.types'
 import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
-import { useLlammaOhlcChartStateModel } from '@/llamalend/hooks/useLlammaOhlcChartStateModel'
-import { getTokens } from '@/llamalend/llama.utils'
+import { useMarketContext } from '@/llamalend/features/market-context'
 import { ChartAndActivityLayout } from '@/llamalend/widgets/ChartAndActivityLayout'
-import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import { getBlockchainId } from '@curvefi/prices-api'
 import type { Decimal } from '@primitives/decimal.utils'
 import { useBandsChartVisible } from '@ui-kit/hooks/useLocalStorage'
-import { LlamaMarketType } from '@ui-kit/types/market'
-import { mapQuery, type QueryProp, type Range } from '@ui-kit/types/util'
+import type { Range } from '@ui-kit/types/util'
 
 type ChartAndActivityCompProps = {
-  chainId: ChainId
-  marketQuery: QueryProp<LendMarketTemplate>
-  previewPrices?: Range<Decimal>
+  previewPrices: Range<Decimal> | undefined
 }
 
-export const ChartAndActivityComp = ({ chainId, marketQuery, previewPrices }: ChartAndActivityCompProps) => {
+export const ChartAndActivityComp = ({ previewPrices }: ChartAndActivityCompProps) => {
+  const {
+    chainId,
+    marketId,
+    ammAddress,
+    controllerAddress,
+    tokens: { collateralToken, borrowToken },
+  } = useMarketContext<ChainId>()
   const [isBandsVisible] = useBandsChartVisible()
   const networkConfig = networks[chainId]
   const {
@@ -25,12 +29,24 @@ export const ChartAndActivityComp = ({ chainId, marketQuery, previewPrices }: Ch
     setTimeOption,
     legendSets,
     ohlcChartProps,
-  } = useLlammaOhlcChartStateModel({
-    marketType: LlamaMarketType.Lend,
+  } = useOhlcChartState({
     chainId,
-    marketQuery,
-    networkId: networkConfig.id.toLowerCase(),
+    marketId,
     previewPrices,
+    controllerAddress,
+    ammAddress,
+  })
+
+  const {
+    chartData,
+    userBandsBalances,
+    oraclePrice,
+    isLoading: isBandsLoading,
+    error: bandsError,
+  } = useBandsData({
+    chainId,
+    marketId,
+    enabled: isBandsVisible,
   })
 
   return (
@@ -42,9 +58,23 @@ export const ChartAndActivityComp = ({ chainId, marketQuery, previewPrices }: Ch
         legendSets,
         ohlcChartProps,
       }}
-      bands={useBandsData({ chainId, marketQuery, enabled: isBandsVisible })}
-      tokens={mapQuery(marketQuery, getTokens)}
-      activity={{ marketQuery, networkConfig }}
+      bands={{
+        chartData,
+        userBandsBalances: userBandsBalances ?? [],
+        oraclePrice,
+        isLoading: isBandsLoading,
+        error: bandsError,
+        collateralToken,
+        borrowToken,
+      }}
+      activity={{
+        network: getBlockchainId(networkConfig?.id),
+        ammAddress,
+        collateralToken,
+        borrowToken,
+        endpoint: 'lending',
+        networkConfig,
+      }}
     />
   )
 }

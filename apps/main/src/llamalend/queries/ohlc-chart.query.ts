@@ -36,9 +36,7 @@ export type OraclePoolOhlcPage = OhlcPageResult & {
   collateralToken?: Token
 }
 
-export type LlammaOhlcPage = OhlcPageResult & {
-  oraclePriceData: OraclePriceData[]
-}
+export type LlammaOhlcPage = OhlcPageResult & { oraclePriceData: OraclePriceData[] }
 
 // Oracle pools are ordered as the price route from market collateral to borrowed token.
 const getOraclePoolTokenPair = (pools: OraclePool[]): Pick<OraclePoolOhlcPage, 'borrowedToken' | 'collateralToken'> => {
@@ -47,16 +45,10 @@ const getOraclePoolTokenPair = (pools: OraclePool[]): Pick<OraclePoolOhlcPage, '
 
   return {
     ...maybe(collateralPool, ({ collateralAddress, collateralSymbol }) => ({
-      collateralToken: {
-        address: collateralAddress,
-        symbol: collateralSymbol,
-      },
+      collateralToken: { address: collateralAddress, symbol: collateralSymbol },
     })),
     ...maybe(borrowedPool, ({ borrowedAddress, borrowedSymbol }) => ({
-      borrowedToken: {
-        address: borrowedAddress,
-        symbol: borrowedSymbol,
-      },
+      borrowedToken: { address: borrowedAddress, symbol: borrowedSymbol },
     })),
   }
 }
@@ -92,7 +84,7 @@ export const useOraclePoolOhlcQuery = ({
         {
           endpoint,
           chain: validChain,
-          controller: controller!,
+          controller: controller!, // validated via `enabled` prop
           interval,
           units,
           start: pageParam.start,
@@ -104,12 +96,7 @@ export const useOraclePoolOhlcQuery = ({
       const ohlcData = formatCandleOhlcData(ohlc)
       const oraclePriceData = formatOraclePriceData(data)
 
-      return {
-        ohlcData,
-        oraclePriceData,
-        ...createOhlcPageResult(data),
-        ...getOraclePoolTokenPair(pools),
-      }
+      return { ohlcData, oraclePriceData, ...createOhlcPageResult(data), ...getOraclePoolTokenPair(pools) }
     },
   })
 
@@ -144,7 +131,7 @@ export const useLlammaOhlcQuery = ({
         {
           endpoint,
           chain: validChain,
-          llamma: llamma!,
+          llamma: llamma!, // validated via `enabled` prop
           interval,
           units,
           start: pageParam.start,
@@ -152,12 +139,6 @@ export const useLlammaOhlcQuery = ({
         },
         { signal },
       )
-
-      const oraclePriceData = formatOraclePriceData(ohlc)
-
-      return {
-        oraclePriceData,
-        ...createOhlcPageResult(ohlc),
-      }
+      return { oraclePriceData: formatOraclePriceData(ohlc), ...createOhlcPageResult(ohlc) }
     },
   })

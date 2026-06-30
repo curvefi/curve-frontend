@@ -45,11 +45,9 @@ describe('RepayForm (mocked)', () => {
       seedCrvUsdBalance({ chainId, addresses: [TEST_ADDRESS], min: borrow })
 
       cy.mount(
-        <MockLoanTestWrapper llamaApi={llamaApi}>
+        <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
           <RepayForm
-            market={market}
             networks={llamaNetworks}
-            chainId={chainId}
             onPricesUpdated={onPricesUpdated}
             collateralEvents={constQ(fakeCollateralEvents)}
           />

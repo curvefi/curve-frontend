@@ -3,16 +3,14 @@ import { LEVERAGE } from '@/llamalend/constants'
 import { BorrowMoreLoanInfoList } from '@/llamalend/features/borrow/components/BorrowMoreLoanInfoList'
 import { LeverageInput } from '@/llamalend/features/borrow/components/LeverageInput'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
-import { isLeverageBorrowMoreSupported } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
+import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
-import { joinButtonText } from '@primitives/string.utils'
+import { FormButton } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
 import { AlertDisableForm } from '@ui-kit/shared/ui/AlertDisableForm'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
@@ -21,23 +19,21 @@ import { q, type QueryProp, type Range } from '@ui-kit/types/util'
 import { isDevelopment } from '@ui-kit/utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
+import { useMarketContext } from '../../market-context'
 import { useBorrowMoreForm } from '../hooks/useBorrowMoreForm'
 
 const { Spacing } = SizesAndSpaces
 
 export const BorrowMoreForm = <ChainId extends IChainId>({
-  market,
   networks,
-  chainId,
   onPricesUpdated,
   collateralEvents,
 }: {
-  market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
-  chainId: ChainId
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
   collateralEvents: QueryProp<UserCollateralEvents>
 }) => {
+  const { chainId, controllerAddress, marketType } = useMarketContext<ChainId>()
   const network = networks[chainId]
   const {
     form,
@@ -56,13 +52,12 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     max,
     leverage,
     isLeverageEnabled,
+    isLeverageSupported,
     priceImpact,
     disabledAlert,
     solvencyModal: { onConfirm, onClose, isOpen },
   } = useBorrowMoreForm({
-    market,
     networks,
-    chainId,
     onPricesUpdated,
     collateralEvents,
   })
@@ -82,13 +77,14 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
       onSubmit={onSubmit}
       footer={
         <BorrowMoreLoanInfoList
-          market={market}
+          controllerAddress={controllerAddress}
           form={form}
           params={params}
           values={values}
           tokens={{ collateralToken, borrowToken }}
           networks={networks}
           routes={routes}
+          marketType={marketType}
           onSlippageChange={value => updateForm({ slippage: value })}
           leverageEnabled={values.leverageEnabled}
         />
@@ -141,7 +137,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           }
         />
       </Stack>
-      {isLeverageBorrowMoreSupported(market) && (
+      {isLeverageSupported && (
         <LeverageInput
           checked={values.leverageEnabled}
           leverage={leverage}
@@ -155,36 +151,15 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         max={q(max.maxLeverage)}
         slippageType={LEVERAGE}
       />
-      {disabledAlert ? (
-        <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>
-      ) : (
-        <Button
-          type="submit"
-          loading={isLoading}
-          disabled={isDisabled}
-          data-testid="borrow-more-submit-button"
-          data-validation={JSON.stringify({
-            hasMarket: !!market,
-            isLeverageEnabled,
-            isPending,
-            isDisabled,
-            isValid: form.formState.isValid,
-            isSubmitting: form.formState.isSubmitting,
-            isApproved: q(isApproved),
-            formErrors,
-            rawFormErrors: Object.entries(form.formState.errors),
-            dirtyFields: form.formState.dirtyFields,
-          })}
-        >
-          {isPending
-            ? t`Processing...`
-            : joinButtonText(
-                Number(values.userCollateral) && t`Add`,
-                isApproved?.data === false && t`Approve`,
-                t`Borrow More`,
-              )}
-        </Button>
-      )}
+      <FormButton
+        pending={isPending}
+        loading={isLoading}
+        disabled={isDisabled}
+        label={[Number(values.userCollateral) && t`Add`, isApproved?.data === false && t`Approve`, t`Borrow More`]}
+        testId="borrow-more-submit-button"
+      >
+        {disabledAlert && <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>}
+      </FormButton>
       <LowSolvencyActionModal
         action="borrow"
         open={isOpen}

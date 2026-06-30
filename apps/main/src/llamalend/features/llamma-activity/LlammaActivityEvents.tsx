@@ -2,16 +2,28 @@ import { ActivityTable, LlammaEventsExpandedPanel } from '@ui-kit/features/activ
 import { useLlammaActivityEventsConfig } from './hooks/useLlammaActivityEventsConfig'
 import { LlammaActivityProps } from './'
 
-export const LlammaActivityEvents = (props: LlammaActivityProps) => {
-  const { table, isLoading, isError, emptyMessage, errorMessage } = useLlammaActivityEventsConfig(props)
+export const LlammaActivityEvents = ({
+  network,
+  collateralToken,
+  borrowToken,
+  ammAddress,
+  endpoint,
+  networkConfig,
+}: LlammaActivityProps) => {
+  const { table, emptyState, errorState } = useLlammaActivityEventsConfig({
+    network,
+    collateralToken,
+    borrowToken,
+    ammAddress,
+    endpoint,
+    networkConfig,
+  })
 
   return (
     <ActivityTable
       table={table}
-      isLoading={isLoading}
-      isError={isError}
-      emptyMessage={emptyMessage}
-      errorMessage={errorMessage}
+      emptyState={emptyState}
+      errorState={errorState}
       expandedPanel={LlammaEventsExpandedPanel}
     />
   )

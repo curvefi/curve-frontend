@@ -1,5 +1,6 @@
-import { useRef } from 'react'
-import { Line, LineChart, YAxis } from 'recharts'
+import type { EChartsOption } from 'echarts'
+import ReactECharts from 'echarts-for-react'
+import { useMemo, useRef } from 'react'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
@@ -25,12 +26,14 @@ function getColor<T>(design: DesignSystem, data: T[], snapshotKey: keyof T) {
 }
 
 /** Center the y-axis around the first value */
-const calculateDomain =
-  (first: number) =>
-  ([dataMin, dataMax]: [number, number]): [number, number] => {
-    const diff = Math.max(dataMax - first, first - dataMin)
-    return [first - diff, first + diff]
-  }
+const calculateDomain = <T extends Record<string, unknown>>(data: T[], snapshotKey: keyof T): [number, number] => {
+  const first = Number(data[0][snapshotKey])
+  const values = data.map(snapshot => Number(snapshot[snapshotKey]))
+  const dataMin = Math.min(...values)
+  const dataMax = Math.max(...values)
+  const diff = Math.max(dataMax - first, first - dataMin)
+  return [first - diff, first + diff]
+}
 
 type RateCellProps = {
   market: LlamaMarket
@@ -50,21 +53,53 @@ export const LineGraphCell = ({ market, type, graphSize = defaultGraphSize }: Ra
     isIntersecting,
   )
   const { design } = useTheme()
+  const lineColor = getColor(design, snapshots ?? [], snapshotKey)
+  const chartOption: EChartsOption | null = useMemo(() => {
+    if (!snapshots?.length) return null
+
+    const [min, max] = calculateDomain(snapshots, snapshotKey)
+
+    return {
+      animation: false,
+      grid: { left: 0, top: 0, right: 0, bottom: 0 },
+      xAxis: {
+        type: 'category',
+        show: false,
+        boundaryGap: false,
+        data: snapshots.map((_, index) => index),
+      },
+      yAxis: {
+        type: 'value',
+        show: false,
+        min,
+        max,
+      },
+      series: [
+        {
+          type: 'line',
+          data: snapshots.map(snapshot => Number(snapshot[snapshotKey])),
+          showSymbol: false,
+          smooth: true,
+          silent: true,
+          lineStyle: {
+            color: lineColor,
+            width: 1,
+          },
+        },
+      ],
+    }
+  }, [lineColor, snapshotKey, snapshots])
+
   // supply yield disabled for mint markets
   return maybe(rate, () => (
     <Box data-testid={`line-graph-${type}`} ref={ref}>
-      {snapshots?.length ? (
-        <LineChart data={snapshots} {...graphSize} compact>
-          <YAxis hide type="number" domain={calculateDomain(snapshots[0][snapshotKey] as number)} />
-          <Line
-            type="monotone"
-            dataKey={snapshotKey}
-            stroke={getColor(design, snapshots, snapshotKey)}
-            strokeWidth={1}
-            dot={false}
-            isAnimationActive={false}
-          />
-        </LineChart>
+      {chartOption ? (
+        <ReactECharts
+          option={chartOption}
+          notMerge
+          opts={{ renderer: 'svg' }}
+          style={{ width: graphSize.width, height: graphSize.height }}
+        />
       ) : isLoading && !error ? (
         <Skeleton {...graphSize} />
       ) : (

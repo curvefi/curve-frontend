@@ -1,37 +1,36 @@
-import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import { useConnection } from 'wagmi'
+import type { NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import Alert from '@mui/material/Alert'
-import AlertTitle from '@mui/material/AlertTitle'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
+import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
 import { t } from '@ui-kit/lib/i18n'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
+import { useMarketContext } from '../../market-context'
 import { useClaimTab } from '../hooks/useClaimTab'
 import { ClaimActionInfoList } from './ClaimActionInfoList'
 import { type ClaimableToken } from './columns'
 import { TotalNotionalRow } from './columns/notional-cells'
 
 type ClaimTabProps<ChainId extends IChainId> = {
-  market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
-  chainId: ChainId
-  enabled?: boolean
 }
 
 const TEST_ID_PREFIX = 'supply-claim'
 const { Spacing } = SizesAndSpaces
 
-export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, enabled }: ClaimTabProps<ChainId>) => {
+export const ClaimTab = <ChainId extends IChainId>({ networks }: ClaimTabProps<ChainId>) => {
+  const { chainId, marketId } = useMarketContext<ChainId>()
+  const { isConnected } = useConnection()
   const network = networks[chainId]
 
   const {
     params,
     claimableTokens,
     isLoading,
-    isError,
     isCrvDisabled,
     isRewardsDisabled,
     isCrvPending,
@@ -42,27 +41,16 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
     onSubmitCrv,
     onSubmitRewards,
     errors,
-  } = useClaimTab({
-    market,
-    network,
-    enabled,
-  })
+  } = useClaimTab({ network })
   return (
     <>
       <FormContent
         footer={<ClaimActionInfoList params={params} networks={networks} isOpen={!!claimableTokens.length} />}
       >
         <DataTable<ClaimableToken>
+          category="form"
           table={table}
-          emptyState={
-            !isError && (
-              <Alert severity="info" variant="outlined" data-testid={`${TEST_ID_PREFIX}-empty-state`}>
-                <AlertTitle>{t`No rewards to claim`}</AlertTitle>
-              </Alert>
-            )
-          }
-          isLoading={isLoading}
-          hideHeader
+          emptyState={{ title: t`No rewards to claim`, testId: `${TEST_ID_PREFIX}-empty-state` }}
           footerRow={
             !!claimableTokens.length &&
             !isLoading && (
@@ -74,29 +62,33 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
             )
           }
         />
-        <Stack sx={{ flexDirection: 'column', gap: Spacing.xs }}>
-          <Button
-            fullWidth
-            type="button"
-            loading={isCrvPending || !market}
-            disabled={isCrvDisabled}
-            data-testid={`${TEST_ID_PREFIX}-crv-rewards-submit-button`}
-            onClick={onSubmitCrv}
-          >
-            {isCrvPending ? t`Processing...` : t`Claim CRV rewards`}
-          </Button>
-          <Button
-            color="secondary"
-            fullWidth
-            type="button"
-            loading={isRewardsPending || !market}
-            disabled={isRewardsDisabled}
-            data-testid={`${TEST_ID_PREFIX}-other-rewards-submit-button`}
-            onClick={onSubmitRewards}
-          >
-            {isRewardsPending ? t`Processing...` : t`Claim other rewards`}
-          </Button>
-        </Stack>
+        {isConnected ? (
+          <Stack sx={{ flexDirection: 'column', gap: Spacing.xs }}>
+            <Button
+              fullWidth
+              type="button"
+              loading={isCrvPending || !marketId}
+              disabled={isCrvDisabled}
+              data-testid={`${TEST_ID_PREFIX}-crv-rewards-submit-button`}
+              onClick={onSubmitCrv}
+            >
+              {isCrvPending ? t`Processing...` : t`Claim CRV rewards`}
+            </Button>
+            <Button
+              color="secondary"
+              fullWidth
+              type="button"
+              loading={isRewardsPending || !marketId}
+              disabled={isRewardsDisabled}
+              data-testid={`${TEST_ID_PREFIX}-other-rewards-submit-button`}
+              onClick={onSubmitRewards}
+            >
+              {isRewardsPending ? t`Processing...` : t`Claim other rewards`}
+            </Button>
+          </Stack>
+        ) : (
+          <ConnectWalletButton />
+        )}
 
         <FormAlerts error={errors.find(Boolean) ?? null} formErrors={[]} handledErrors={[]} />
       </FormContent>

@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from 'react'
+import { useConnection } from 'wagmi'
 import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
 import { useBandsChartPalette } from '@/llamalend/features/bands-chart/hooks/useBandsChartPalette'
 import type { ChartDataPoint, FetchedBandsBalances } from '@/llamalend/features/bands-chart/types'
@@ -7,9 +8,9 @@ import {
   type LlammaActivityProps,
   LlammaActivityTrades,
 } from '@/llamalend/features/llamma-activity'
-import type { MarketTokens } from '@/llamalend/llama.utils'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
+import { type Token } from '@primitives/address.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { ChartWrapper, type OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
 import { SOFT_LIQUIDATION_DESCRIPTION, TIME_OPTIONS } from '@ui-kit/features/candle-chart/constants'
@@ -22,7 +23,6 @@ import { type LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
 import { ToggleBandsChartButton } from '@ui-kit/shared/ui/Chart/ToggleBandsChartButton'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { QueryProp } from '@ui-kit/types/util'
 
 const { Spacing } = SizesAndSpaces
 
@@ -50,16 +50,20 @@ type ChartAndActivityLayoutProps = {
     legendSets: LegendItem[]
     ohlcChartProps: OhlcChartProps & { selectChartList: ChartSelections[] }
   }
-  bands: QueryProp<{
-    chartData: ChartDataPoint[]
+  bands?: {
+    chartData: ChartDataPoint[] | undefined
     userBandsBalances: FetchedBandsBalances[]
     oraclePrice: string | undefined
-  }>
-  tokens: QueryProp<MarketTokens>
+    isLoading: boolean
+    error: Error | null
+    collateralToken: Token | undefined
+    borrowToken: Token | undefined
+  }
   activity: LlammaActivityProps
 }
 
-export const ChartAndActivityLayout = ({ chart, bands, activity, tokens }: ChartAndActivityLayoutProps) => {
+export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActivityLayoutProps) => {
+  const { isConnected } = useConnection()
   const theme = useTheme()
   const [isBandsVisible, setIsBandsVisible] = useBandsChartVisible()
   const toggleBandsVisible = useCallback(() => setIsBandsVisible(prev => !prev), [setIsBandsVisible])
@@ -73,12 +77,13 @@ export const ChartAndActivityLayout = ({ chart, bands, activity, tokens }: Chart
     )
   }, [])
 
-  const hasUserBands = !!bands.data?.userBandsBalances?.length
-  const collateralSymbol = tokens.data?.collateralToken?.symbol
-  const borrowSymbol = tokens.data?.borrowToken?.symbol
+  const showBands = bands && isBandsVisible && isConnected
+  const hasUserBands = !!bands?.userBandsBalances?.length
+  const collateralSymbol = bands?.collateralToken?.symbol
+  const borrowSymbol = bands?.borrowToken?.symbol
   const chartFooterLegendSets = useMemo(
     () =>
-      isBandsVisible && hasUserBands
+      showBands && hasUserBands
         ? notFalsy<LegendItem>(
             ...chart.legendSets,
             collateralSymbol && { label: collateralSymbol, box: { fill: bandsPalette.userCollateralShareColor } },
@@ -86,7 +91,7 @@ export const ChartAndActivityLayout = ({ chart, bands, activity, tokens }: Chart
           )
         : chart.legendSets,
     [
-      isBandsVisible,
+      showBands,
       hasUserBands,
       chart.legendSets,
       collateralSymbol,
@@ -97,7 +102,7 @@ export const ChartAndActivityLayout = ({ chart, bands, activity, tokens }: Chart
   )
 
   return (
-    <Stack>
+    <Stack data-testid="market-chart-and-activity">
       <TabsSwitcher variant="contained" value={tab} onChange={setTab} options={TABS} />
       <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
         {tab === 'events' && <LlammaActivityEvents {...activity} />}
@@ -117,32 +122,40 @@ export const ChartAndActivityLayout = ({ chart, bands, activity, tokens }: Chart
               }}
               isLoading={chart.isLoading}
               customButton={
-                bands && <ToggleBandsChartButton label="Bands" isVisible={isBandsVisible} toggle={toggleBandsVisible} />
+                isConnected &&
+                bands && (
+                  <ToggleBandsChartButton
+                    label={t`Bands`}
+                    tooltip={t`The price ranges your position can move through during soft liquidation.`}
+                    isVisible={isBandsVisible}
+                    toggle={toggleBandsVisible}
+                  />
+                )
               }
             />
             <Stack
               sx={{
-                display: isBandsVisible ? 'grid' : undefined,
-                gridTemplateColumns: isBandsVisible ? { mobile: '5fr 1fr', tablet: '7fr 1fr' } : undefined,
+                display: showBands ? 'grid' : undefined,
+                gridTemplateColumns: showBands ? { mobile: '5fr 1fr', tablet: '7fr 1fr' } : undefined,
               }}
             >
               <ChartWrapper
                 {...chart.ohlcChartProps}
                 betaBackgroundColor={theme.design.Layer[1].Fill}
-                onVisiblePriceRangeChange={isBandsVisible ? handleVisiblePriceRangeChange : undefined}
+                onVisiblePriceRangeChange={showBands ? handleVisiblePriceRangeChange : undefined}
               />
-              {isBandsVisible && (
+              {showBands && (
                 <BandsChart
                   isLoading={bands.isLoading}
                   error={bands.error}
-                  collateralToken={tokens.data?.collateralToken}
-                  borrowToken={tokens.data?.borrowToken}
-                  chartData={bands.data?.chartData}
-                  userBandsBalances={bands.data?.userBandsBalances ?? EMPTY_ARRAY}
+                  collateralToken={bands.collateralToken}
+                  borrowToken={bands.borrowToken}
+                  chartData={bands.chartData}
+                  userBandsBalances={bands.userBandsBalances ?? EMPTY_ARRAY}
                   newLiquidationRange={chart.ohlcChartProps.liquidationRange?.new}
                   liqRangeCurrentVisible={chart.ohlcChartProps.liqRangeCurrentVisible}
                   liqRangeNewVisible={chart.ohlcChartProps.liqRangeNewVisible}
-                  oraclePrice={bands.data?.oraclePrice}
+                  oraclePrice={bands.oraclePrice}
                   priceRange={candlePriceRange}
                 />
               )}

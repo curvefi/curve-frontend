@@ -1,37 +1,41 @@
-import { useMemo } from 'react'
+import { useConnection } from 'wagmi'
 import { useLlammaOhlcChartStateModel } from '@/llamalend/hooks/useLlammaOhlcChartStateModel'
-import { getAmmAddress, getTokens } from '@/llamalend/llama.utils'
+import { useMarketOraclePrice } from '@/llamalend/queries/market'
+import { useUserPrices } from '@/llamalend/queries/user'
 import { networks } from '@/loan/networks'
-import { ChainId, Llamma } from '@/loan/types/loan.types'
+import { ChainId } from '@/loan/types/loan.types'
+import { getBlockchainId } from '@curvefi/prices-api'
+import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { LlamaMarketType } from '@ui-kit/types/market'
-import type { QueryProp, Range } from '@ui-kit/types/util'
-
-type LlammaLiquidityCoins = ReturnType<typeof getTokens> | undefined | null
+import type { Range } from '@ui-kit/types/util'
 
 type OhlcChartStateProps = {
   chainId: ChainId
-  marketQuery: QueryProp<Llamma>
+  marketId: string
   previewPrices: Range<Decimal> | undefined
+  controllerAddress: Address | undefined
+  ammAddress: Address | undefined
 }
 
-export const useOhlcChartState = ({ chainId, marketQuery, previewPrices }: OhlcChartStateProps) => {
-  const market = marketQuery.data
-  const networkId = networks[chainId].id.toLowerCase()
-  const chartState = useLlammaOhlcChartStateModel({
-    marketType: LlamaMarketType.Mint,
-    chainId,
-    marketQuery,
-    networkId,
+export const useOhlcChartState = ({
+  chainId,
+  marketId,
+  previewPrices,
+  controllerAddress,
+  ammAddress,
+}: OhlcChartStateProps) => {
+  const { address: userAddress } = useConnection()
+  const userPrices = useUserPrices({ chainId, marketId, userAddress })
+  const { data: oraclePrice } = useMarketOraclePrice({ chainId, marketId })
+  return useLlammaOhlcChartStateModel({
+    endpoint: 'crvusd',
+    chainKey: chainId,
+    marketId,
+    network: getBlockchainId(networks[chainId].id),
+    controllerAddress,
+    llammaAddress: ammAddress,
+    oraclePrice,
+    userPrices,
     previewPrices,
   })
-
-  const poolAddress = getAmmAddress(market)
-  const coins: LlammaLiquidityCoins = useMemo(() => market && getTokens(market), [market])
-
-  return {
-    poolAddress,
-    coins,
-    ...chartState,
-  }
 }

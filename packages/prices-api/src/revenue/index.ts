@@ -1,4 +1,4 @@
-import { fetchJson as fetch } from '@primitives/fetch.utils'
+import { addQueryString, fetchJson as fetch } from '@primitives/fetch.utils'
 import { getHost, type Options } from '..'
 import { paginate } from '../paginate'
 import * as Schema from './schema'
@@ -42,14 +42,22 @@ export async function getCushions(chain: string, options?: Options) {
   return Schema.getCushionsResponse.parse(response)
 }
 
-export async function getDistributions(options?: Options) {
+export async function getDistributionsPage(
+  { page = 1, per_page = 100 }: { page?: number; per_page?: number } = {},
+  options?: Options,
+) {
   const host = getHost(options)
-  const fs = (page: number) =>
-    fetch(`${host}/v1/dao/fees/distributions?page=${page}&per_page=100`).then(resp =>
-      Schema.getDistributionsResponse.parse(resp),
-    )
+  const response = await fetch(
+    `${host}/v1/dao/fees/distributions${addQueryString({ page, per_page })}`,
+    undefined,
+    options?.signal,
+  )
 
-  return await paginate(fs, 1, 100)
+  return Schema.getDistributionsResponse.parse(response)
+}
+
+export async function getDistributions(options?: Options) {
+  return paginate((page, perPage) => getDistributionsPage({ page, per_page: perPage }, options), 1, 100)
 }
 
 export async function getCowSwapSettlements(timestamp?: number, options?: Options) {

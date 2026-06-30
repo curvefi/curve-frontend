@@ -10,6 +10,7 @@ import Fx from './Fx.json'
 import GoNuts from './GoNuts.json'
 import Hyperwave from './Hyperwave.json'
 import Infinifi from './Infinifi.json'
+import Jane from './Jane.json'
 import Liquity from './Liquity.json'
 import Lombard from './Lombard.json'
 import Loop from './Loop.json'
@@ -48,4 +49,5 @@ export {
   Yld,
   Tangent,
   Apyx,
+  Jane,
 }

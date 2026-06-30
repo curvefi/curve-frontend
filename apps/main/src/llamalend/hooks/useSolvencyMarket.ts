@@ -15,7 +15,7 @@ import { getLendingVaultsOptions } from '../queries/market-list/lending-vaults'
 type SolvencyMarketParams = {
   blockchainId: Chain | undefined
   controllerAddress: Address | undefined
-  marketType: LlamaMarketType
+  marketType: LlamaMarketType | undefined
 }
 
 type SolvencyMarketsQueries = [
@@ -63,7 +63,7 @@ export const useSolvencyMarket = (
 
         return {
           ...combineQueriesMeta(results),
-          data: maybes([solvencyPercent, badDebtUsd], ([solvencyPercent, badDebtUsd]) => ({
+          data: maybes([solvencyPercent, badDebtUsd], (solvencyPercent, badDebtUsd) => ({
             solvencyPercent,
             badDebtUsd,
           })),

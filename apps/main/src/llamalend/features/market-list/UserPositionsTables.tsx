@@ -1,12 +1,12 @@
+import { ReactNode } from 'react'
 import { useConnection } from 'wagmi'
 import Stack from '@mui/material/Stack'
 import { fromEntries, maybe, recordValues } from '@primitives/objects.utils'
-import { useWallet } from '@ui-kit/features/connect-wallet'
-import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
 import { t } from '@ui-kit/lib/i18n'
 import { getInternalUrl, LEND_MARKET_ROUTES, LEND_ROUTES } from '@ui-kit/shared/routes'
 import { TableHeader } from '@ui-kit/shared/ui/DataTable/TableHeader'
 import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
+import { ErrorMessage } from '@ui-kit/shared/ui/ErrorMessage'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
 import { mapQuery, QueryProp } from '@ui-kit/types/util'
@@ -29,13 +29,24 @@ const buildVaultUrl = (market: LlamaMarket) =>
     `${LEND_ROUTES.PAGE_MARKETS}/${market.controllerAddress}${LEND_MARKET_ROUTES.PAGE_VAULT}`,
   )
 
+const CenteredEmptyState = ({ children }: { children: ReactNode }) => (
+  <Stack
+    sx={{
+      alignItems: 'center',
+      paddingBlock: Spacing.md,
+      backgroundColor: t => t.design.Layer[1].Fill,
+    }}
+  >
+    {children}
+  </Stack>
+)
+
 export const UserPositionsTables = ({
   onReload,
   tableQuery,
-  tableQuery: { data: queryData, isLoading },
+  tableQuery: { data: queryData, isLoading, error },
 }: UserPositionsTableProps) => {
-  const { address, isConnecting } = useConnection()
-  const { connect } = useWallet()
+  const { address } = useConnection()
   // Tracks whether the user has any positions for each market rate type.
   const hasUserPositions = maybe(queryData?.userHasPositions, userHasPositions =>
     fromEntries(
@@ -51,55 +62,54 @@ export const UserPositionsTables = ({
       <TableHeader title={t`Your Positions`} onReload={onReload} isLoading={isLoading} />
       <Stack sx={directChildrenAfterFirst({ borderTop: borderStyle })}>
         <UserPositionSummary markets={queryData?.markets} selectedChains={undefined} />
-        {hasUserPositions?.[MarketRateType.Borrow] && (
-          <UserPositionsMarketRateTable
-            tableQuery={mapQuery(tableQuery, ({ markets }) =>
-              markets.filter(market => market.userHasPositions?.[MarketRateType.Borrow]),
-            )}
-            marketRateType={MarketRateType.Borrow}
-            onReload={onReload}
-          />
-        )}
-        {hasUserPositions?.[MarketRateType.Supply] && (
-          <UserPositionsMarketRateTable
-            tableQuery={mapQuery(tableQuery, ({ markets }) =>
-              markets
-                .filter(market => market.userHasPositions?.[MarketRateType.Supply])
-                // For supply positions, navigate to vault page instead of borrow page
-                .map(market => ({ ...market, url: buildVaultUrl(market) })),
-            )}
-            marketRateType={MarketRateType.Supply}
-            onReload={onReload}
-          />
-        )}
-        {(!hasUserPositions || !address) && (
-          <Stack
-            sx={{
-              alignItems: 'center',
-              paddingBlock: Spacing.md,
-              backgroundColor: t => t.design.Layer[1].Fill,
-            }}
-          >
-            {address ? (
-              !hasUserPositions && (
+
+        {address ? (
+          hasUserPositions ? (
+            <>
+              {[hasUserPositions?.[MarketRateType.Borrow], error].some(Boolean) && (
+                <UserPositionsMarketRateTable
+                  tableQuery={mapQuery(tableQuery, ({ markets }) =>
+                    markets.filter(market => market.userHasPositions?.[MarketRateType.Borrow]),
+                  )}
+                  marketRateType={MarketRateType.Borrow}
+                  onReload={onReload}
+                />
+              )}
+              {[hasUserPositions?.[MarketRateType.Supply], error].some(Boolean) && (
+                <UserPositionsMarketRateTable
+                  tableQuery={mapQuery(tableQuery, ({ markets }) =>
+                    markets
+                      .filter(market => market.userHasPositions?.[MarketRateType.Supply])
+                      // For supply positions, navigate to vault page instead of borrow page
+                      .map(market => ({ ...market, url: buildVaultUrl(market) })),
+                  )}
+                  marketRateType={MarketRateType.Supply}
+                  onReload={onReload}
+                />
+              )}
+            </>
+          ) : (
+            <CenteredEmptyState>
+              {error ? (
+                <ErrorMessage
+                  title={t`Could not load positions`}
+                  subtitle={error.message}
+                  error={error}
+                  refreshData={onReload}
+                />
+              ) : (
                 <EmptyStateCard
                   isLoading={isLoading}
                   title={t`No active positions`}
-                  subtitle={t`Borrow with LLAMMA to stay exposed and lend assets to earn yield.`}
+                  description={t`Borrow with LLAMMA to stay exposed and lend assets to earn yield.`}
                 />
-              )
-            ) : (
-              <EmptyStateCard
-                action={
-                  <ConnectWalletButton
-                    label={t`Connect to view positions`}
-                    onClick={() => void connect()}
-                    loading={isConnecting}
-                  />
-                }
-              />
-            )}
-          </Stack>
+              )}
+            </CenteredEmptyState>
+          )
+        ) : (
+          <CenteredEmptyState>
+            <EmptyStateCard button={{ type: 'connect-wallet', label: t`Connect to view positions` }} />
+          </CenteredEmptyState>
         )}
       </Stack>
     </Stack>

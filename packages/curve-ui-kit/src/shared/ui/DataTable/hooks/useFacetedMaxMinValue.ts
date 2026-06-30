@@ -17,6 +17,6 @@ export const useFacetedMaxMinValue = <TData extends TableItem>({
   return {
     min,
     max,
-    step: useMemo(() => maybes([max, min], ([max, min]) => Math.max((max - min) / 100, 0)), [min, max]),
+    step: useMemo(() => maybes([max, min], (max, min) => Math.max((max - min) / 100, 0)), [min, max]),
   }
 }

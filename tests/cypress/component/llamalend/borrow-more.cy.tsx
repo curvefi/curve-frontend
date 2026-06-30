@@ -68,11 +68,9 @@ describe('BorrowMoreForm (mocked)', () => {
       setGasInfo({ chainId, networks: llamaNetworks })
 
       cy.mount(
-        <MockLoanTestWrapper llamaApi={llamaApi}>
+        <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
           <BorrowMoreForm
-            market={market}
             networks={llamaNetworks}
-            chainId={chainId}
             onPricesUpdated={onPricesUpdated}
             collateralEvents={constQ(fakeCollateralEvents)}
           />

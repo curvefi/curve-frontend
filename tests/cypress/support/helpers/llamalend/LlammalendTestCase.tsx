@@ -1,3 +1,4 @@
+import { MarketContextProvider } from 'main/src/llamalend/features/market-context/MarketContextProvider'
 import { useLendMarket } from '@/lend/hooks/useLendMarket'
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
 import { AddCollateralForm } from '@/llamalend/features/manage-loan/components/AddCollateralForm'
@@ -29,7 +30,7 @@ import { LlamaMarketType } from '@ui-kit/types/market'
 import { constQ, type Range } from '@ui-kit/types/util'
 
 // todo: soft liquidation should be detected not forced by passing a tab. However, that detection is in the separate apps for now.
-const LoanComponents = {
+const LoanComponentMap = {
   'borrow-more': BorrowMoreForm,
   'add-collateral': AddCollateralForm,
   'remove-collateral': RemoveCollateralForm,
@@ -46,13 +47,12 @@ const SupplyComponents = {
   withdraw: WithdrawForm,
 }
 
-type LoanTab = keyof typeof LoanComponents
+type LoanTab = keyof typeof LoanComponentMap
 type SupplyTab = keyof typeof SupplyComponents
 
 type LlammalendTestProps = UserMarketQuery<LlamaChainId> & {
   type: 'loan' | 'supply'
   tab?: LoanTab | SupplyTab
-  onSuccess?: ReturnType<typeof cy.stub>
   onPricesUpdated?: (prices: Range<Decimal> | undefined) => void
   marketType: LlamaMarketType
 }
@@ -74,20 +74,23 @@ function LlammalendTest({ tab, onPricesUpdated, type, marketType, ...props }: Ll
 
   const Component = isLoan
     ? loanExists
-      ? tab && LoanComponents[tab as LoanTab]
+      ? tab && LoanComponentMap[tab as LoanTab]
       : CreateLoanForm
     : tab && SupplyComponents[tab as SupplyTab]
 
   return market && Component ? (
-    <Component
-      market={market}
-      networks={llamaNetworks}
-      onPricesUpdated={onPricesUpdated!}
-      onSuccess={cy.stub()}
-      enabled
-      collateralEvents={constQ(fakeCollateralEvents)}
-      {...props}
-    />
+    <MarketContextProvider
+      network={llamaNetworks[chainId]}
+      marketQuery={constQ(market)}
+      apiMarket={constQ(undefined)}
+      marketType={marketType}
+    >
+      <Component
+        networks={llamaNetworks}
+        onPricesUpdated={onPricesUpdated!}
+        collateralEvents={constQ(fakeCollateralEvents)}
+      />
+    </MarketContextProvider>
   ) : market ? (
     `Invalid arguments given to LlammalendTestCase: ${JSON.stringify({ tab, type, loanExists, marketType })}.`
   ) : error ? (

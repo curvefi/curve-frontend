@@ -1,3 +1,4 @@
+import { mockMerklCampaigns } from '@cy/support/helpers/lending-mocks'
 import {
   APP_ROUTES,
   AppRoute,
@@ -31,6 +32,8 @@ const expectedFooterMaxWidth = 1536
 
 describe('Header', () => {
   let width: number, height: number
+
+  beforeEach(() => mockMerklCampaigns())
 
   describe('Desktop', () => {
     let route: AppRoute

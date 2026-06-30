@@ -1,28 +1,26 @@
-import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
+import { FormButton } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { q, type Range } from '@ui-kit/types/util'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
+import { useMarketContext } from '../../market-context'
 import { useRemoveCollateralForm } from '../hooks/useRemoveCollateralForm'
 import { RemoveCollateralInfoList } from './RemoveCollateralInfoList'
 
 export const RemoveCollateralForm = <ChainId extends IChainId>({
-  market,
   networks,
-  chainId,
   onPricesUpdated,
 }: {
-  market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
-  chainId: ChainId
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
+  const { chainId, marketId, controllerAddress, marketType } = useMarketContext<ChainId>()
   const network = networks[chainId]
 
   const {
@@ -38,7 +36,7 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
     formErrors,
     collateralToken,
     borrowToken,
-  } = useRemoveCollateralForm({ market, network, onPricesUpdated })
+  } = useRemoveCollateralForm({ network, onPricesUpdated })
 
   return (
     <Form
@@ -53,7 +51,8 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
           collateralToken={collateralToken}
           borrowToken={borrowToken}
           networks={networks}
-          market={market}
+          controllerAddress={controllerAddress}
+          marketType={marketType}
         />
       }
     >
@@ -84,14 +83,13 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
 
       <FormAlerts error={action.error} formErrors={formErrors} handledErrors={['userCollateral']} />
 
-      <Button
-        type="submit"
-        loading={isPending || !market}
+      <FormButton
+        pending={isPending}
+        loading={!marketId}
         disabled={isDisabled}
-        data-testid="remove-collateral-submit-button"
-      >
-        {isPending ? t`Processing...` : t`Remove collateral`}
-      </Button>
+        label={t`Remove collateral`}
+        testId="remove-collateral-submit-button"
+      />
     </Form>
   )
 }

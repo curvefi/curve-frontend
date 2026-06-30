@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 import { zeroAddress } from 'viem'
 import { USER_NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
-import { getControllerAddress } from '@/llamalend/llama.utils'
+import { useMarketContext } from '@/llamalend/features/market-context'
 import { useMarketRates, useMarketVaultOnChainRewards, useMarketVaultPricePerShare } from '@/llamalend/queries/market'
 import { useUserSupplyBoost } from '@/llamalend/queries/user'
 import { useUserShares } from '@/llamalend/queries/user/user-balances.query'
@@ -11,17 +11,17 @@ import {
   getLatestSnapshotValue,
   getSupplyApyAverageMetrics,
   getSupplyApyMetrics,
+  sumCampaignsApy,
   sumOnChainExtraIncentivesApy,
   toNumberOrNull,
 } from '@/llamalend/rates.utils'
 import { BoostTooltipContent } from '@/llamalend/widgets/tooltips/BoostTooltipContent'
 import { MarketSupplyRateTooltipContent } from '@/llamalend/widgets/tooltips/MarketSupplyRateTooltipContent'
-import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
-import type { Chain } from '@curvefi/prices-api'
+import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { Grid, Stack } from '@mui/material'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybe } from '@primitives/objects.utils'
+import { assert, maybe } from '@primitives/objects.utils'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
 import { LlamaChainId } from '@ui-kit/features/connect-wallet/lib/types'
@@ -45,20 +45,25 @@ export type SupplyAsset = {
   depositedUsdValue: Decimal
 }
 
-export type SupplyPositionDetailsProps = {
-  chainId: LlamaChainId
-  market: LendMarketTemplate
-  userAddress: Address | undefined
-  blockchainId: Chain
-}
-
 const SUPPLY_POSITION_TAB = 'supplyPosition'
 
 const RATE_CATEGORY: AverageCategory = 'llamalend.market.rate'
 
 const MetricGrid = ({ children }: { children: ReactNode }) => <Grid size={{ mobile: 6, tablet: 3 }}>{children}</Grid>
 
-export const SupplyPositionDetails = ({ chainId, market, userAddress, blockchainId }: SupplyPositionDetailsProps) => {
+export const SupplyPositionDetails = () => {
+  const {
+    chainId,
+    blockchainId,
+    market: contextMarket,
+    userAddress,
+    controllerAddress,
+  } = useMarketContext<LlamaChainId>()
+  const market = assert(
+    contextMarket instanceof LendMarketTemplate ? contextMarket : undefined,
+    'SupplyPositionDetails requires a lend market',
+  )
+
   const params = { chainId, marketId: market.id, userAddress }
   const { window: rateWindow } = AVERAGE_CATEGORIES[RATE_CATEGORY]
   const { data: campaigns } = useCampaignsByAddress({ blockchainId, address: market.addresses.vault as Address })
@@ -67,11 +72,7 @@ export const SupplyPositionDetails = ({ chainId, market, userAddress, blockchain
   const userSupplyBoost = useUserSupplyBoost(params)
   const onChainRewards = useMarketVaultOnChainRewards(params)
   const snapshots = mapQuery(
-    useLendingSnapshots({
-      blockchainId,
-      contractAddress: market && getControllerAddress(market),
-      limit: rateWindow,
-    }),
+    useLendingSnapshots({ blockchainId, contractAddress: controllerAddress, limit: rateWindow }),
     snapshots => ({
       rebasingYield: getLatestSnapshotValue(snapshots, snapshot => snapshot.borrowedToken.rebasingYield),
       supplyAverageMetrics: getSupplyApyAverageMetrics({ snapshots, daysBack: rateWindow }),
@@ -86,6 +87,7 @@ export const SupplyPositionDetails = ({ chainId, market, userAddress, blockchain
         rebasingYieldApy: rebasingYield,
         crvBoostApr: crvRates,
         extraIncentivesApy: sumOnChainExtraIncentivesApy(rewardsApr),
+        campaignsApy: sumCampaignsApy(campaigns),
         userSupplyBoost,
       }),
   )
