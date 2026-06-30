@@ -101,13 +101,10 @@ export const useLlammaOhlcChartData = ({
   )
   const oracleTokens = useMemo(
     () =>
-      maybes(
-        [oracleTokenPage?.collateralToken, oracleTokenPage?.borrowedToken],
-        ([collateralToken, borrowedToken]) => ({
-          collateralSymbol: collateralToken.symbol,
-          borrowedSymbol: borrowedToken.symbol,
-        }),
-      ),
+      maybes([oracleTokenPage?.collateralToken, oracleTokenPage?.borrowedToken], (collateralToken, borrowedToken) => ({
+        collateralSymbol: collateralToken.symbol,
+        borrowedSymbol: borrowedToken.symbol,
+      })),
     [oracleTokenPage],
   )
   const refetch = useCallback(

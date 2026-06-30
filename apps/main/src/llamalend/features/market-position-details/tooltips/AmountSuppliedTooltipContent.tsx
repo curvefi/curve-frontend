@@ -20,7 +20,7 @@ const formatAmount = (
 ) =>
   maybes(
     [percentage, depositedAmount, symbol],
-    ([percentage, depositedAmount, symbol]) =>
+    (percentage, depositedAmount, symbol) =>
       `${formatNumber(decimalMultiply(percentage, depositedAmount), { abbreviate: true })} ${symbol}`,
   )
 
@@ -37,11 +37,11 @@ export const AmountSuppliedTooltipContent = ({
   const { value, staked } = shares ?? {}
   const { symbol, depositedAmount } = supplyAsset ?? {}
 
-  const unstaked = maybes([value, staked], ([value, staked]) => decimalMinus(value, staked))
-  const unstakedPercentage = maybes([value, unstaked], ([value, unstaked]) =>
+  const unstaked = maybes([value, staked], (value, staked) => decimalMinus(value, staked))
+  const unstakedPercentage = maybes([value, unstaked], (value, unstaked) =>
     +value ? decimalDiv(unstaked, value) : null,
   )
-  const stakedPercentage = maybes([value, staked], ([value, staked]) => (+value ? decimalDiv(staked, value) : null))
+  const stakedPercentage = maybes([value, staked], (value, staked) => (+value ? decimalDiv(staked, value) : null))
 
   return (
     <TooltipWrapper>
@@ -64,7 +64,7 @@ export const AmountSuppliedTooltipContent = ({
       <TooltipItem variant="primary" title={t`Total supplied`}>
         {maybes(
           [depositedAmount, symbol],
-          ([depositedAmount, symbol]) => `${formatNumber(depositedAmount, { abbreviate: true })} ${symbol}`,
+          (depositedAmount, symbol) => `${formatNumber(depositedAmount, { abbreviate: true })} ${symbol}`,
         ) ?? UnavailableNotation}
       </TooltipItem>
     </TooltipWrapper>
