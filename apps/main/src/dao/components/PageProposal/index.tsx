@@ -78,7 +78,7 @@ export const Proposal = () => {
 
   const snapshotVeCrv = useMemo(
     () =>
-      maybes([proposal, votingPower], ([proposal, votingPower]) => ({
+      maybes([proposal, votingPower], (proposal, votingPower) => ({
         value: votingPower,
         blockNumber: proposal.block,
       })),

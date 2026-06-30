@@ -154,7 +154,7 @@ export const getSupplyApyMetrics = ({
 
   const crvMinBoostApy = aprToApy(crvMinBoostApr)
   const crvMaxBoostApy = aprToApy(crvMaxBoostApr)
-  const userBoostApy = maybes([crvMinBoostApr, userSupplyBoost], ([apr, boost]) => aprToApy(apr * +boost)) ?? null
+  const userBoostApy = maybes([crvMinBoostApr, userSupplyBoost], (apr, boost) => aprToApy(apr * +boost)) ?? null
 
   const totalWithoutBoost = sumRates(supplyApy, rebasingYieldApy, extraIncentivesApy, campaignsApy)
 
@@ -167,7 +167,7 @@ export const getSupplyApyMetrics = ({
     extraIncentivesTotalApy: extraIncentivesApy,
     totalMinBoost: sumRates(totalWithoutBoost, crvMinBoostApy),
     totalMaxBoost: sumRates(totalWithoutBoost, crvMaxBoostApy),
-    totalUserBoost: maybes([totalWithoutBoost, userBoostApy], ([total, boost]) => sumRates(total, boost)) ?? null,
+    totalUserBoost: maybes([totalWithoutBoost, userBoostApy], (total, boost) => sumRates(total, boost)) ?? null,
   }
 }
 
