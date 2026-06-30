@@ -1,4 +1,5 @@
 /* eslint-disable no-restricted-imports */
+import { type BaseSyntheticEvent } from 'react'
 import { type FieldValues, type Path, type PathValue } from 'react-hook-form'
 import { type PartialRecord } from '@primitives/objects.utils'
 
@@ -20,9 +21,10 @@ export type FormState<T extends FieldValues> = {
   dirtyFields: PartialFields<T>
 }
 
+export type FormSubmitHandler = (event?: BaseSyntheticEvent) => Promise<void> | void
 export type UseFormHandleSubmit<T extends FieldValues = FieldValues> = (
   onSubmit: (data: T) => Promise<void> | void,
-) => () => Promise<void> | void
+) => FormSubmitHandler
 
 export type FormUpdates<TFieldValues extends FieldValues> = Partial<{
   [K in FieldPath<TFieldValues>]: FieldPathValue<TFieldValues, K>
