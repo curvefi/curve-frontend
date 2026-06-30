@@ -1,5 +1,6 @@
 import { networks } from '@/lend/networks'
 import { ChainId } from '@/lend/types/lend.types'
+import { getControllerAddress } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
@@ -19,10 +20,7 @@ export const CampaignRewardsBanner = ({ chainId, market }: CampaignRewardsBanner
     blockchainId,
     address: market?.addresses.vault as Address | undefined,
   })
-  const { data: borrowCampaigns } = useCampaignsByAddress({
-    blockchainId,
-    address: market?.addresses.controller as Address | undefined,
-  })
+  const { data: borrowCampaigns } = useCampaignsByAddress({ blockchainId, address: getControllerAddress(market) })
 
   const action =
     supplyCampaigns.length && borrowCampaigns.length
