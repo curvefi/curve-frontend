@@ -19,7 +19,7 @@ const isPriceImpactSignificant = (priceImpact: PriceImpact | Decimal | null | un
   !(Number((priceImpact as PriceImpact)?.tokenInUsd) < MIN_USD_PRICE_IMPACT_WARN)
 
 export const getPriceImpactPercent = (priceImpact: PriceImpact | Decimal | null | undefined) =>
-  typeof priceImpact === 'string' ? priceImpact : (priceImpact?.priceImpact ?? '0')
+  typeof priceImpact === 'string' ? priceImpact : priceImpact?.priceImpact
 
 /**
  * Returns the alert severity based on price impact vs. slippage tolerance and critical threshold:
@@ -32,9 +32,9 @@ export const getPriceImpactSeverity = (
   { slippage, slippageType }: { slippage: Decimal | null | undefined; slippageType: SlippageType },
 ): 'error' | 'warning' | null =>
   isPriceImpactSignificant(priceImpact)
-    ? decimalGreaterThan(getPriceImpactPercent(priceImpact), HIGH_PRICE_IMPACT_CRITICAL_THRESHOLD)
+    ? decimalGreaterThan(getPriceImpactPercent(priceImpact) ?? '0', HIGH_PRICE_IMPACT_CRITICAL_THRESHOLD)
       ? 'error'
-      : decimalGreaterThan(getPriceImpactPercent(priceImpact), slippage ?? SLIPPAGE[slippageType].default)
+      : decimalGreaterThan(getPriceImpactPercent(priceImpact) ?? '0', slippage ?? SLIPPAGE[slippageType].default)
         ? 'warning'
         : null
     : null

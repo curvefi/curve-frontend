@@ -283,9 +283,7 @@ export const LoanActionInfoList = ({
         {priceImpact && (
           <ActionInfo
             label={priceImpactLabel}
-            value={
-              priceImpact.data == null ? '-' : formatNumber(getPriceImpactPercent(priceImpact.data), 'percent.rate')
-            }
+            value={formatNumber(getPriceImpactPercent(priceImpact.data), 'percent.rate')}
             valueColor={priceImpactColor}
             error={priceImpact.error}
             loading={priceImpact.isLoading}
