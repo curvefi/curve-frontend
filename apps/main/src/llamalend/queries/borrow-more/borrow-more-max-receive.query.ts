@@ -2,6 +2,7 @@ import { getBorrowMoreImplementation } from '@/llamalend/queries/borrow-more/bor
 import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreValidationGroup } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { Decimal } from '@primitives/decimal.utils'
+import { assert } from '@primitives/objects.utils'
 import { getExpectedFn, getRouteById } from '@ui-kit/entities/router-api'
 import { createValidationSuite } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
@@ -48,6 +49,7 @@ export const { useQuery: useBorrowMoreMaxReceive, invalidate: invalidateBorrowMo
     marketId,
     userAddress,
     userCollateral = '0',
+    userBorrowed = '0',
     leverageEnabled,
     routeId,
     slippage,
@@ -56,6 +58,7 @@ export const { useQuery: useBorrowMoreMaxReceive, invalidate: invalidateBorrowMo
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'borrowMoreMaxRecv',
       { userCollateral },
+      { userBorrowed },
       { leverageEnabled },
       { routeId },
       { slippage },
@@ -63,16 +66,17 @@ export const { useQuery: useBorrowMoreMaxReceive, invalidate: invalidateBorrowMo
   queryFn: async ({
     marketId,
     userCollateral = '0',
+    userBorrowed = '0',
     leverageEnabled,
     chainId,
     routeId,
     userAddress,
     slippage,
   }: BorrowMoreQuery): Promise<BorrowMoreMaxReceiveResult> => {
-    const deprecatedBorrowedFromWallet = '0'
     const [type, impl] = getBorrowMoreImplementation(marketId, leverageEnabled)
     switch (type) {
       case 'zapV2': {
+        assert(!+userBorrowed, `Unsupported userBorrowed for zapv2: ${userBorrowed}`)
         return castFieldsToDecimal(
           await impl.borrowMoreMaxRecv({
             userCollateral,
@@ -88,7 +92,7 @@ export const { useQuery: useBorrowMoreMaxReceive, invalidate: invalidateBorrowMo
       }
       case 'V1':
       case 'V2':
-        return castFieldsToDecimal(await impl.borrowMoreMaxRecv(userCollateral, deprecatedBorrowedFromWallet))
+        return castFieldsToDecimal(await impl.borrowMoreMaxRecv(userCollateral, userBorrowed))
       case 'unleveraged':
         return { maxDebt: (await impl.borrowMoreMaxRecv(userCollateral)) as Decimal }
     }

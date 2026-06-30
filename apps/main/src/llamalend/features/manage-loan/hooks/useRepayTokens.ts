@@ -12,7 +12,7 @@ import type { TokenOption } from '@ui-kit/features/select-token'
 import type { QueryProp } from '@ui-kit/types/util'
 import { useMarketContext } from '../../market-context'
 
-export type RepayTokenOption = TokenOption & { field: 'stateCollateral' | 'userCollateral' | 'debt' }
+export type RepayTokenOption = TokenOption & { field: 'stateCollateral' | 'userCollateral' | 'userBorrowed' }
 
 /**
  * Get token options for repayment based on market and network
@@ -35,7 +35,7 @@ const getRepayTokenOptions = ({
       address: borrowToken.address,
       chain: networkId,
       symbol: borrowToken.symbol,
-      field: 'debt',
+      field: 'userBorrowed',
     },
     collateralToken &&
       canRepayFromStateCollateral && {
@@ -81,7 +81,7 @@ export const useRepayTokens = ({
     [borrowToken, collateralToken, networkId, canRepayFromStateCollateralValue, canRepayFromUserCollateralValue],
   )
   const isLeveraged = collateralEvents.data && isPositionLeveraged(collateralEvents.data?.originalLeverage)
-  const field = isLeveraged === true ? 'stateCollateral' : isLeveraged === false ? 'debt' : undefined
+  const field = isLeveraged === true ? 'stateCollateral' : isLeveraged === false ? 'userBorrowed' : undefined
   const defaultToken = tokens.find(t => t.field === field)
   useEffect(() => {
     // override the user's choice when we get to know they have a (non)-leveraged position

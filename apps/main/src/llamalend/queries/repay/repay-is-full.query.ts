@@ -11,7 +11,7 @@ export const { useQuery: useRepayIsFull, invalidate: invalidateRepayIsFull } = q
     marketId,
     stateCollateral = '0',
     userCollateral = '0',
-    debt = '0',
+    userBorrowed = '0',
     userAddress,
     slippage,
     routeId,
@@ -21,7 +21,7 @@ export const { useQuery: useRepayIsFull, invalidate: invalidateRepayIsFull } = q
       'repayIsFull',
       { stateCollateral },
       { userCollateral },
-      { debt },
+      { userBorrowed },
       { slippage },
       { routeId },
     ] as const,
@@ -30,7 +30,7 @@ export const { useQuery: useRepayIsFull, invalidate: invalidateRepayIsFull } = q
     marketId,
     stateCollateral,
     userCollateral,
-    debt,
+    userBorrowed,
     userAddress,
     slippage,
     routeId,
@@ -38,7 +38,7 @@ export const { useQuery: useRepayIsFull, invalidate: invalidateRepayIsFull } = q
     const [type, impl, args] = getRepayImplementation(marketId, {
       userCollateral,
       stateCollateral,
-      debt,
+      userBorrowed,
       slippage,
       routeId,
     })
@@ -52,8 +52,8 @@ export const { useQuery: useRepayIsFull, invalidate: invalidateRepayIsFull } = q
         return await impl.isFullRepayment(...args, userAddress)
       case 'unleveragedLend':
       case 'unleveragedMint':
-        // For unleveraged markets, full repayment is when debt >= userDebt
-        return +debt >= getUserDebtFromQueryCache({ chainId, marketId, userAddress })
+        // For unleveraged markets, full repayment is when userBorrowed >= userDebt
+        return +userBorrowed >= getUserDebtFromQueryCache({ chainId, marketId, userAddress })
     }
   },
   category: 'llamalend.repay',

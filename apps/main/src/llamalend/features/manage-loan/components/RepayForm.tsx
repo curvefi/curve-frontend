@@ -101,8 +101,8 @@ export const RepayForm = <ChainId extends IChainId>({
     collateralEvents,
   })
 
-  const selectedField = token?.field ?? 'debt'
-  const selectedToken = selectedField == 'debt' ? borrowToken : collateralToken
+  const selectedField = token?.field ?? 'userBorrowed'
+  const selectedToken = selectedField == 'userBorrowed' ? borrowToken : collateralToken
 
   const fromPosition = isFull.data === false && selectedField === 'stateCollateral'
   const showLeverage = selectedToken !== borrowToken && (market ? hasLeverageValue(market) : undefined)

@@ -5,9 +5,11 @@ import {
   validateDebt,
   validateLeverageEnabled,
   validateLeverageSupported,
+  validateMaxBorrowed,
   validateMaxCollateral,
   validateMaxDebt,
   validateRoute,
+  validateUserBorrowed,
   validateUserCollateral,
 } from '@/llamalend/queries/validation/borrow-fields.validation'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -21,6 +23,7 @@ import type { MakeOptional } from '@ui-kit/types/util'
 
 export type BorrowMoreMutation = {
   userCollateral: Decimal
+  userBorrowed: Decimal
   debt: Decimal
   slippage: Decimal
   leverageEnabled: boolean | undefined // undefined until we know if the position is leveraged
@@ -33,7 +36,8 @@ type CalculatedValues = {
   maxBorrowed: Decimal | undefined
 }
 
-export type BorrowMoreForm = MakeOptional<BorrowMoreMutation, 'userCollateral' | 'debt'> & CalculatedValues
+export type BorrowMoreForm = MakeOptional<BorrowMoreMutation, 'userCollateral' | 'userBorrowed' | 'debt'> &
+  CalculatedValues
 
 export type BorrowMoreQuery<ChainId = number> = UserMarketQuery<ChainId> &
   BorrowMoreMutation &
@@ -60,9 +64,20 @@ const validateBorrowMoreFieldsForMarket = ({
 
 // Form validation suite (for real-time form validation)
 export const borrowMoreFormValidationSuite = createValidationSuite(
-  ({ userCollateral = '0', debt, maxCollateral, maxDebt, slippage, leverageEnabled }: BorrowMoreForm) => {
+  ({
+    userCollateral = '0',
+    userBorrowed = '0',
+    debt,
+    maxBorrowed,
+    maxCollateral,
+    maxDebt,
+    slippage,
+    leverageEnabled,
+  }: BorrowMoreForm) => {
     validateUserCollateral(userCollateral, { required: false })
     validateMaxCollateral(userCollateral, maxCollateral, { required: false })
+    validateUserBorrowed(userBorrowed)
+    validateMaxBorrowed(userBorrowed, { label: `debt amount`, maxBorrowed, required: true })
     validateDebt(debt, { required: true })
     validateMaxDebt(debt, maxDebt, { required: true })
     validateSlippage({ slippage })
@@ -76,6 +91,7 @@ export const borrowMoreValidationGroup = <IChainId extends number>(
     chainId,
     marketId,
     userCollateral = '0',
+    userBorrowed = '0',
     debt,
     maxDebt,
     userAddress,
@@ -100,6 +116,7 @@ export const borrowMoreValidationGroup = <IChainId extends number>(
   marketIdValidationGroup({ marketId })
   evmAddressValidationGroup({ evmAddress: userAddress })
   validateUserCollateral(userCollateral, { required: false })
+  validateUserBorrowed(userBorrowed)
   validateDebt(debt, { required: debtRequired })
   if (!ignoreMaxDebt) validateMaxDebt(debt, maxDebt, { required: maxDebtRequired })
   validateBorrowMoreFieldsForMarket({ marketId, leverageEnabled, routeId, debt })

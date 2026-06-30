@@ -7,7 +7,7 @@ import type { MakeOptional } from '@ui-kit/types/util'
 export type CompleteRepayForm = {
   userCollateral: Decimal
   stateCollateral: Decimal
-  debt: Decimal
+  userBorrowed: Decimal
   slippage: Decimal
   routeId: string | undefined
 }
@@ -19,7 +19,7 @@ type RepayCalculatedValues = {
   isFull: boolean | undefined
 }
 
-export type RepayFormData = MakeOptional<CompleteRepayForm, 'userCollateral' | 'debt' | 'stateCollateral'> &
+export type RepayFormData = MakeOptional<CompleteRepayForm, 'userCollateral' | 'userBorrowed' | 'stateCollateral'> &
   RepayCalculatedValues
 export type RepayFormParams = RepayFormData & UserMarketParams<IChainId>
 

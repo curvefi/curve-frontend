@@ -15,6 +15,7 @@ import {
 } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Address, type Hex } from '@primitives/address.utils'
+import { assert } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
 import { waitForApproval } from '@ui-kit/utils'
@@ -28,16 +29,16 @@ type BorrowMoreOptions = {
 
 const approveBorrowMore = async (
   market: LlamaMarketTemplate,
-  { userCollateral = '0', leverageEnabled }: BorrowMoreMutation,
+  { userCollateral = '0', userBorrowed = '0', leverageEnabled }: BorrowMoreMutation,
 ): Promise<Hex[]> => {
-  const deprecatedBorrowedFromWallet = '0'
   const [type, impl] = getBorrowMoreImplementation(market.id, leverageEnabled)
   switch (type) {
     case 'zapV2':
+      assert(!+userBorrowed, `Unsupported userBorrowed for zapv2: ${userBorrowed}`)
       return (await impl.borrowMoreApprove({ userCollateral })) as Hex[]
     case 'V1':
     case 'V2':
-      return (await impl.borrowMoreApprove(userCollateral, deprecatedBorrowedFromWallet)) as Hex[]
+      return (await impl.borrowMoreApprove(userCollateral, userBorrowed)) as Hex[]
     case 'unleveraged':
       return (await impl.borrowMoreApprove(userCollateral)) as Hex[]
   }
@@ -45,11 +46,11 @@ const approveBorrowMore = async (
 
 const borrowMore = async (
   market: LlamaMarketTemplate,
-  { userCollateral = '0', debt = '0', slippage, leverageEnabled, routeId }: BorrowMoreMutation,
+  { userCollateral = '0', userBorrowed = '0', debt = '0', slippage, leverageEnabled, routeId }: BorrowMoreMutation,
 ): Promise<Hex> => {
-  const deprecatedBorrowedFromWallet = '0'
   const [type, impl, args] = getBorrowMoreImplementationArgs(market.id, {
     userCollateral,
+    userBorrowed,
     debt,
     leverageEnabled,
     routeId,
@@ -60,7 +61,7 @@ const borrowMore = async (
       return (await impl.borrowMore(...args)) as Hex
     case 'V1':
     case 'V2':
-      await impl.borrowMoreExpectedCollateral(userCollateral, deprecatedBorrowedFromWallet, debt, +slippage)
+      await impl.borrowMoreExpectedCollateral(userCollateral, userBorrowed, debt, +slippage)
       return (await impl.borrowMore(...args, +slippage)) as Hex
     case 'unleveraged':
       return (await impl.borrowMore(...args)) as Hex

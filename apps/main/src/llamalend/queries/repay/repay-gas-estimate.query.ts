@@ -4,7 +4,7 @@ import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.
 import type { RepayParams, RepayQuery } from '@/llamalend/queries/validation/repay.types'
 import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
-import { notFalsy } from '@primitives/objects.utils'
+import { assert, notFalsy } from '@primitives/objects.utils'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { createApprovedEstimateGasHook } from '@ui-kit/lib/model/entities/gas-info'
 import { getRepayImplementation, isFullRepayFromDebtToken, isRepayLeveraged } from './repay-query.helpers'
@@ -19,7 +19,7 @@ const {
     marketId,
     stateCollateral = '0',
     userCollateral = '0',
-    debt = '0',
+    userBorrowed = '0',
     userAddress,
     isFull,
     slippage,
@@ -30,7 +30,7 @@ const {
       'estimateGas.repay',
       { stateCollateral },
       { userCollateral },
-      { debt },
+      { userBorrowed },
       { isFull },
       { slippage },
       { routeId },
@@ -39,7 +39,7 @@ const {
     marketId,
     stateCollateral,
     userCollateral,
-    debt,
+    userBorrowed,
     isFull,
     userAddress,
     slippage,
@@ -52,7 +52,7 @@ const {
     const [type, impl, args] = getRepayImplementation(marketId, {
       userCollateral,
       stateCollateral,
-      debt,
+      userBorrowed,
       routeId,
       slippage,
     })
@@ -81,7 +81,7 @@ const { useQuery: useRepayApproveGasEstimate, invalidate: invalidateRepayApprove
     marketId,
     stateCollateral = '0',
     userCollateral = '0',
-    debt = '0',
+    userBorrowed = '0',
     userAddress,
     isFull,
     slippage,
@@ -92,7 +92,7 @@ const { useQuery: useRepayApproveGasEstimate, invalidate: invalidateRepayApprove
       'estimateGas.repayApprove',
       { stateCollateral },
       { userCollateral },
-      { debt },
+      { userBorrowed },
       { isFull },
       { slippage },
       { routeId },
@@ -101,7 +101,7 @@ const { useQuery: useRepayApproveGasEstimate, invalidate: invalidateRepayApprove
     marketId,
     stateCollateral,
     userCollateral,
-    debt,
+    userBorrowed,
     isFull,
     userAddress,
     slippage,
@@ -114,22 +114,23 @@ const { useQuery: useRepayApproveGasEstimate, invalidate: invalidateRepayApprove
     const [type, impl] = getRepayImplementation(marketId, {
       userCollateral,
       stateCollateral,
-      debt,
+      userBorrowed,
       routeId,
       slippage,
     })
     switch (type) {
       case 'zapV2':
+        assert(!+userBorrowed, `Unsupported userBorrowed for zapv2: ${userBorrowed}`)
         return await impl.estimateGas.repayApprove({ userCollateral })
       case 'V1':
       case 'V2':
-        return await impl.estimateGas.repayApprove(userCollateral, debt)
+        return await impl.estimateGas.repayApprove(userCollateral, userBorrowed)
       case 'deleverage':
         throw new Error('estimateGas.repayApprove is not supported for deleverage repay')
       case 'unleveragedMint':
-        return await impl.estimateGas.repayApprove(debt)
+        return await impl.estimateGas.repayApprove(userBorrowed)
       case 'unleveragedLend':
-        return await impl.estimateGas.repayApprove(debt)
+        return await impl.estimateGas.repayApprove(userBorrowed)
     }
   },
   category: 'llamalend.repay',

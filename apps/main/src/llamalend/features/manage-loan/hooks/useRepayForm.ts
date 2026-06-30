@@ -39,7 +39,7 @@ const useRepayParams = ({
   userAddress,
   stateCollateral,
   userCollateral,
-  debt,
+  userBorrowed,
   maxCollateral,
   maxStateCollateral,
   maxBorrowed,
@@ -55,7 +55,7 @@ const useRepayParams = ({
         userAddress,
         stateCollateral,
         userCollateral,
-        debt,
+        userBorrowed,
         maxCollateral,
         maxStateCollateral,
         maxBorrowed,
@@ -69,7 +69,7 @@ const useRepayParams = ({
         userAddress,
         stateCollateral,
         userCollateral,
-        debt,
+        userBorrowed,
         maxCollateral,
         maxStateCollateral,
         maxBorrowed,
@@ -83,7 +83,7 @@ const useRepayParams = ({
 const userDefaultValues = {
   stateCollateral: undefined,
   userCollateral: undefined,
-  debt: undefined,
+  userBorrowed: undefined,
   routeId: undefined,
 }
 
@@ -101,8 +101,8 @@ const formOptions = {
 
 const isRepayRouteRequired = (
   market: LlamaMarketTemplate | undefined,
-  { stateCollateral = '0', debt = '0', userCollateral = '0' }: AllowUndefined<RepayFormFields>,
-) => !!market && isRouterRequired(getRepayImplementationType(market, { stateCollateral, userCollateral, debt }))
+  { stateCollateral = '0', userBorrowed = '0', userCollateral = '0' }: AllowUndefined<RepayFormFields>,
+) => !!market && isRouterRequired(getRepayImplementationType(market, { stateCollateral, userCollateral, userBorrowed }))
 
 export const useRepayForm = <ChainId extends LlamaChainId>({
   networks,

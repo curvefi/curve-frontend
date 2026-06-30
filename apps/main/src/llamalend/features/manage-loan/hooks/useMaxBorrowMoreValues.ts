@@ -18,12 +18,14 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>({
   params,
   form,
   market,
+  borrowTokenAddress,
   collateralTokenAddress,
   collateralEvents: { data: events },
 }: {
   params: BorrowMoreParams<ChainId>
   form: UseFormReturn<BorrowMoreForm>
   market: LlamaMarketTemplate | undefined
+  borrowTokenAddress: Address | undefined
   collateralTokenAddress: Address | undefined
   collateralEvents: QueryProp<UserCollateralEvents>
 }) {
@@ -34,10 +36,17 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>({
     userAddress,
     tokenAddress: collateralTokenAddress,
   })
+  const maxUserBorrowed = useTokenBalance({
+    chainId,
+    userAddress,
+    tokenAddress: borrowTokenAddress,
+  })
+
   const maxReceive = useBorrowMoreMaxReceive(params)
   const maxLeverage = useMarketMaxLeverage({ chainId, marketId, range: PRESET_RANGES.MaxLtv })
 
   useFormSync(form, { maxCollateral: maxUserCollateral.data })
+  useFormSync(form, { maxBorrowed: maxUserBorrowed.data })
   useFormSync(form, { maxDebt: maxReceive.data?.maxDebt })
   // the leverage checkbox only shows after this value is known, purposefully override the value if the backend changes
   useFormSync(form, { leverageEnabled: events && isPositionLeveraged(events.originalLeverage) })
@@ -47,6 +56,7 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>({
 
   return {
     userCollateral: { ...maxUserCollateral, field: 'maxCollateral' as const },
+    userBorrowed: { ...maxUserBorrowed, field: 'maxBorrowed' as const },
     debt: { ...mapQuery(maxReceive, d => decimal(d.maxDebt)), field: 'maxDebt' as const },
     maxLeverage,
   }

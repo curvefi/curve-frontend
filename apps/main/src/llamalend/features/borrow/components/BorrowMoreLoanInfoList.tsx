@@ -47,7 +47,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   form: UseFormReturn<BorrowMoreForm>
   routes: MarketRoutes | undefined
 }) {
-  const isOpen = form.isTouched('userCollateral', 'debt')
+  const isOpen = form.isTouched('userCollateral', 'userBorrowed', 'debt')
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken }, isOpen)
   const { prevCollateral, prevDebt } = prevLoanState
 

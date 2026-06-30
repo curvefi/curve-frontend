@@ -16,6 +16,7 @@ import { useForm, useCallbackSync } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { q, type Range } from '@ui-kit/types/util'
+import { decimalSum } from '@ui-kit/utils'
 import { shouldBlockTransaction } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import { LoanPreset, PRESET_RANGES, LEVERAGE } from '../../../constants'
@@ -30,6 +31,7 @@ import { useMaxTokenValues } from './useMaxTokenValues'
 
 const userDefaultValues = {
   userCollateral: undefined,
+  userBorrowed: `0` satisfies Decimal,
   debt: undefined,
   routeId: undefined,
 } satisfies Partial<CreateLoanForm>
@@ -88,6 +90,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
         slippage: values.slippage,
         leverageEnabled: values.leverageEnabled,
         userCollateral: values.userCollateral,
+        userBorrowed: values.userBorrowed,
         routeId: values.routeId,
         slippageType: LEVERAGE,
       }),
@@ -102,6 +105,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
         values.slippage,
         values.leverageEnabled,
         values.userCollateral,
+        values.userBorrowed,
         values.routeId,
       ],
     ),
@@ -181,7 +185,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
       marketAddress: ammAddress,
       tokenIn: borrowToken,
       tokenOut: collateralToken,
-      amountIn: params.debt,
+      amountIn: decimalSum(params.debt, params.userBorrowed),
       ...pick(params, 'slippage'),
       enabled: params.leverageEnabled && !!zapAddress,
       onChange: async (route: RouteResponse | undefined) => {

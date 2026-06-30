@@ -9,7 +9,7 @@ type RepayExpectedBorrowedResult = {
   totalBorrowed: Decimal
   borrowedFromStateCollateral?: Decimal
   borrowedFromUserCollateral?: Decimal
-  debt?: Decimal
+  userBorrowed?: Decimal
   avgPrice?: Decimal
 }
 
@@ -24,7 +24,7 @@ export const {
     marketId,
     stateCollateral = '0',
     userCollateral = '0',
-    debt = '0',
+    userBorrowed = '0',
     userAddress,
     slippage,
     routeId,
@@ -34,7 +34,7 @@ export const {
       'repayExpectedBorrowed',
       { stateCollateral },
       { userCollateral },
-      { debt },
+      { userBorrowed },
       { slippage },
       { routeId },
     ] as const,
@@ -44,14 +44,14 @@ export const {
     userAddress,
     stateCollateral,
     userCollateral,
-    debt,
+    userBorrowed,
     slippage,
     routeId,
   }: RepayQuery) => {
     const [type, impl, args] = getRepayImplementation(marketId, {
       userCollateral,
       stateCollateral,
-      debt,
+      userBorrowed,
       routeId,
       slippage,
     })
@@ -68,7 +68,7 @@ export const {
       case 'unleveragedMint':
       case 'unleveragedLend':
         return {
-          totalBorrowed: decimal(getUserDebtFromQueryCache({ chainId, marketId, userAddress }) - +debt)!,
+          totalBorrowed: decimal(getUserDebtFromQueryCache({ chainId, marketId, userAddress }) - +userBorrowed)!,
         }
     }
   },

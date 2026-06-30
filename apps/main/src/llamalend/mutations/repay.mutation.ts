@@ -11,6 +11,7 @@ import { repayValidationSuite } from '@/llamalend/queries/validation/repay.valid
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Address, type Hex } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { assert } from '@primitives/objects.utils'
 import { parseMutationRoute } from '@ui-kit/entities/router-api'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
@@ -19,7 +20,7 @@ import { waitForApproval } from '@ui-kit/utils'
 type RepayMutation = {
   stateCollateral: Decimal
   userCollateral: Decimal
-  debt: Decimal
+  userBorrowed: Decimal
   isFull: boolean
   slippage: Decimal
   routeId: string | undefined
@@ -34,7 +35,7 @@ type RepayOptions = {
 
 const approveRepay = async (
   market: LlamaMarketTemplate,
-  { stateCollateral = '0', userCollateral = '0', debt = '0', isFull, routeId, slippage }: RepayMutation,
+  { stateCollateral = '0', userCollateral = '0', userBorrowed = '0', isFull, routeId, slippage }: RepayMutation,
 ) => {
   if (isFullRepayFromDebtToken(isFull, stateCollateral, userCollateral)) {
     return (await getLoanImplementation(market).fullRepayApprove()) as Hex[]
@@ -42,28 +43,29 @@ const approveRepay = async (
   const [type, impl] = getRepayImplementation(market.id, {
     userCollateral,
     stateCollateral,
-    debt,
+    userBorrowed,
     routeId,
     slippage,
   })
   switch (type) {
     case 'zapV2':
+      assert(!+userBorrowed, `Unsupported userBorrowed for zapv2: ${userBorrowed}`)
       return (await impl.repayApprove({ userCollateral })) as Hex[]
     case 'V1':
     case 'V2':
-      return (await impl.repayApprove(userCollateral, debt)) as Hex[]
+      return (await impl.repayApprove(userCollateral, userBorrowed)) as Hex[]
     case 'deleverage':
       return [] // no approve needed, paying from state
     case 'unleveragedMint':
-      return (await impl.repayApprove(debt)) as Hex[]
+      return (await impl.repayApprove(userBorrowed)) as Hex[]
     case 'unleveragedLend':
-      return (await impl.repayApprove(debt)) as Hex[]
+      return (await impl.repayApprove(userBorrowed)) as Hex[]
   }
 }
 
 const repay = async (
   market: LlamaMarketTemplate,
-  { stateCollateral = '0', userCollateral = '0', debt = '0', isFull, slippage, routeId }: RepayMutation,
+  { stateCollateral = '0', userCollateral = '0', userBorrowed = '0', isFull, slippage, routeId }: RepayMutation,
 ): Promise<Hex> => {
   if (isFullRepayFromDebtToken(isFull, stateCollateral, userCollateral)) {
     return (await getLoanImplementation(market).fullRepay()) as Hex
@@ -71,12 +73,13 @@ const repay = async (
   const [type, impl] = getRepayImplementation(market, {
     userCollateral,
     stateCollateral,
-    debt,
+    userBorrowed,
     routeId,
     slippage,
   })
   switch (type) {
     case 'zapV2':
+      assert(!+userBorrowed, `Unsupported userBorrowed for zapv2: ${userBorrowed}`)
       return (await impl.repay({
         stateCollateral,
         userCollateral,
@@ -84,14 +87,14 @@ const repay = async (
       })) as Hex
     case 'V1':
     case 'V2':
-      await impl.repayExpectedBorrowed(stateCollateral, userCollateral, debt, +slippage)
-      return (await impl.repay(stateCollateral, userCollateral, debt, +slippage)) as Hex
+      await impl.repayExpectedBorrowed(stateCollateral, userCollateral, userBorrowed, +slippage)
+      return (await impl.repay(stateCollateral, userCollateral, userBorrowed, +slippage)) as Hex
     case 'deleverage':
       return (await impl.repay(stateCollateral, +slippage)) as Hex
     case 'unleveragedMint':
-      return (await impl.repay(debt)) as Hex
+      return (await impl.repay(userBorrowed)) as Hex
     case 'unleveragedLend':
-      return (await impl.repay({ debt })) as Hex
+      return (await impl.repay({ debt: userBorrowed })) as Hex
   }
 }
 
@@ -119,11 +122,11 @@ export const useRepayMutation = ({ network, network: { chainId }, marketId, user
 
   const onSubmit = useCallback(
     // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
-    async ({ debt = '0', isFull, ...form }: RepayFormData) =>
+    async ({ userBorrowed = '0', isFull, ...form }: RepayFormData) =>
       mutate({
         ...form,
         isFull,
-        debt,
+        userBorrowed,
       } as RepayMutation),
     [mutate],
   )

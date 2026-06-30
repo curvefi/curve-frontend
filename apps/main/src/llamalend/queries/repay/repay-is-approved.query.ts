@@ -1,6 +1,7 @@
 import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import type { RepayParams, RepayQuery } from '@/llamalend/queries/validation/repay.types'
 import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
+import { assert } from '@primitives/objects.utils'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { getRepayImplementation, isFullRepayFromDebtToken } from './repay-query.helpers'
 
@@ -14,7 +15,7 @@ export const {
     marketId,
     stateCollateral = '0',
     userCollateral = '0',
-    debt = '0',
+    userBorrowed = '0',
     userAddress,
     isFull,
     slippage,
@@ -25,7 +26,7 @@ export const {
       'repayIsApproved',
       { stateCollateral },
       { userCollateral },
-      { debt },
+      { userBorrowed },
       { isFull },
       { slippage },
       { routeId },
@@ -34,7 +35,7 @@ export const {
     marketId,
     stateCollateral,
     userCollateral,
-    debt,
+    userBorrowed,
     isFull,
     userAddress,
     slippage,
@@ -45,22 +46,23 @@ export const {
     const [type, impl] = getRepayImplementation(marketId, {
       userCollateral,
       stateCollateral,
-      debt,
+      userBorrowed,
       slippage,
       routeId,
     })
     switch (type) {
       case 'zapV2':
+        assert(!+userBorrowed, `Unsupported userBorrowed for zapv2: ${userBorrowed}`)
         return await impl.repayIsApproved({ userCollateral })
       case 'V1':
       case 'V2':
-        return await impl.repayIsApproved(userCollateral, debt)
+        return await impl.repayIsApproved(userCollateral, userBorrowed)
       case 'deleverage':
         return true // deleverage query doesn't need approval because it only uses the user stateCollateral
       case 'unleveragedMint':
-        return await impl.repayIsApproved(debt)
+        return await impl.repayIsApproved(userBorrowed)
       case 'unleveragedLend':
-        return await impl.repayIsApproved(debt)
+        return await impl.repayIsApproved(userBorrowed)
     }
   },
   category: 'llamalend.repay',

@@ -35,7 +35,7 @@ export function useMaxRepayTokenValues({
     userAddress,
     tokenAddress: collateralTokenAddress,
   })
-  const maxDebt = useTokenBalance({
+  const maxUserBorrowed = useTokenBalance({
     chainId,
     userAddress,
     tokenAddress: borrowTokenAddress,
@@ -45,7 +45,7 @@ export function useMaxRepayTokenValues({
   const isFull = useRepayIsFull(params)
 
   const maxBorrowed = queryMinimum(
-    maxDebt,
+    maxUserBorrowed,
     mapQuery(userState, d => d.debt),
   )
 
@@ -64,7 +64,7 @@ export function useMaxRepayTokenValues({
     isFull,
     max: {
       userCollateral: { ...q(maxUserCollateral), fieldName: 'maxCollateral' as const },
-      debt: { ...q(maxBorrowed), fieldName: 'maxBorrowed' as const },
+      userBorrowed: { ...q(maxBorrowed), fieldName: 'maxBorrowed' as const },
       stateCollateral: { ...mapQuery(userState, d => d.collateral), fieldName: 'maxStateCollateral' as const },
       expected: useRepayExpectedBorrowed(params),
     },

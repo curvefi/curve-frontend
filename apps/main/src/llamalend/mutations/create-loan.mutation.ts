@@ -8,6 +8,7 @@ import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/cre
 import { createLoanQueryValidationSuite } from '@/llamalend/queries/validation/borrow.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Address } from '@primitives/address.utils'
+import { assert } from '@primitives/objects.utils'
 import { parseMutationRoute } from '@ui-kit/entities/router-api'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
@@ -28,15 +29,18 @@ export type CreateLoanOptions = {
   userAddress: Address | undefined
 }
 
-const approve = async (market: LlamaMarketTemplate, { userCollateral, leverageEnabled }: CreateLoanMutation) => {
-  const deprecatedBorrowedFromWallet = '0'
+const approve = async (
+  market: LlamaMarketTemplate,
+  { userCollateral, userBorrowed, leverageEnabled }: CreateLoanMutation,
+) => {
   const [type, impl] = getCreateLoanImplementation(market.id, leverageEnabled)
   switch (type) {
     case 'zapV2':
+      assert(!+userBorrowed, `Unsupported userBorrowed for zapv2: ${userBorrowed}`)
       return (await impl.createLoanApprove({ userCollateral })) as Address[]
     case 'V2':
     case 'V1':
-      return (await impl.createLoanApprove(userCollateral, deprecatedBorrowedFromWallet)) as Address[]
+      return (await impl.createLoanApprove(userCollateral, userBorrowed)) as Address[]
     case 'V0':
     case 'unleveraged':
       return (await impl.createLoanApprove(userCollateral)) as Address[]
@@ -45,12 +49,12 @@ const approve = async (market: LlamaMarketTemplate, { userCollateral, leverageEn
 
 const create = async (
   market: LlamaMarketTemplate,
-  { debt, userCollateral, leverageEnabled, range, slippage, routeId }: CreateLoanMutation,
+  { debt, userCollateral, userBorrowed, leverageEnabled, range, slippage, routeId }: CreateLoanMutation,
 ) => {
-  const deprecatedBorrowedFromWallet = '0'
   const [type, impl] = getCreateLoanImplementation(market, leverageEnabled)
   switch (type) {
     case 'zapV2':
+      assert(!+userBorrowed, `Unsupported userBorrowed for zapv2: ${userBorrowed}`)
       return (await impl.createLoan({
         userCollateral,
         debt,
@@ -59,7 +63,7 @@ const create = async (
       })) as Address
     case 'V2':
     case 'V1':
-      return (await impl.createLoan(userCollateral, deprecatedBorrowedFromWallet, debt, range, +slippage)) as Address
+      return (await impl.createLoan(userCollateral, userBorrowed, debt, range, +slippage)) as Address
     case 'V0':
     case 'unleveraged':
       return (await impl.createLoan(userCollateral, debt, range, +slippage)) as Address

@@ -28,10 +28,10 @@ const validateRepayCollateralField = (
   })
 }
 
-const validateRepayBorrowedField = (debt: Decimal | null | undefined): void => {
-  skipWhen(debt == null, () =>
-    test('debt', 'Borrow amount must be a non-negative number', () => {
-      enforce(debt).isDecimal().gte(0)
+const validateRepayBorrowedField = (userBorrowed: Decimal | null | undefined): void => {
+  skipWhen(userBorrowed == null, () =>
+    test('userBorrowed', 'Borrow amount must be a non-negative number', () => {
+      enforce(userBorrowed).isDecimal().gte(0)
     }),
   )
 }
@@ -39,10 +39,10 @@ const validateRepayBorrowedField = (debt: Decimal | null | undefined): void => {
 const validateRepayHasValue = (
   stateCollateral: Decimal | null | undefined,
   userCollateral: Decimal | null | undefined,
-  debt: Decimal | null | undefined,
+  userBorrowed: Decimal | null | undefined,
 ) => {
   test('root', 'Enter an amount to repay', () => {
-    enforce(stateCollateral ?? userCollateral ?? debt)
+    enforce(stateCollateral ?? userCollateral ?? userBorrowed)
       .isDecimal()
       .greaterThan(0)
   })
@@ -52,7 +52,7 @@ const validateRepayFieldsForMarket = (
   marketId: LlamaMarketTemplate | string | null | undefined,
   stateCollateral: Decimal | null | undefined,
   userCollateral: Decimal | null | undefined,
-  debt: Decimal | null | undefined,
+  userBorrowed: Decimal | null | undefined,
   routeId: string | null | undefined,
 ) => {
   const market = tryGetLlamaMarket(marketId)
@@ -63,7 +63,7 @@ const validateRepayFieldsForMarket = (
       getRepayImplementationType(market, {
         stateCollateral: stateCollateral ?? '0',
         userCollateral: userCollateral ?? '0',
-        debt: debt ?? '0',
+        userBorrowed: userBorrowed ?? '0',
       })
     const swapRequired = stateCollateral || userCollateral || routeId
     validateRoute(routeId, !!(type && swapRequired && isRouterRequired(type)))
@@ -75,7 +75,7 @@ const repayValidationGroup = (
   {
     stateCollateral,
     userCollateral,
-    debt,
+    userBorrowed,
     slippage,
     routeId,
     isFull,
@@ -92,15 +92,15 @@ const repayValidationGroup = (
   const market = tryGetLlamaMarket(marketId)
   validateRepayCollateralField('userCollateral', userCollateral)
   validateRepayCollateralField('stateCollateral', stateCollateral)
-  validateRepayBorrowedField(debt)
-  validateRepayHasValue(stateCollateral, userCollateral, debt)
-  validateRepayFieldsForMarket(market, stateCollateral, userCollateral, debt, routeId)
+  validateRepayBorrowedField(userBorrowed)
+  validateRepayHasValue(stateCollateral, userCollateral, userBorrowed)
+  validateRepayFieldsForMarket(market, stateCollateral, userCollateral, userBorrowed, routeId)
   validateSlippage({ slippage })
   validateLeverageSupported(market, { required: leverageRequired })
   validateIsFull(isFull)
 
   skipWhen(!validateMax, () => {
-    validateMaxBorrowed(debt, { label: `repay amount`, maxBorrowed, required: maxRequired })
+    validateMaxBorrowed(userBorrowed, { label: `repay amount`, maxBorrowed, required: maxRequired })
     validateMaxCollateral(userCollateral, maxCollateral, { required: maxRequired })
     validateMaxStateCollateral(stateCollateral, maxStateCollateral, { required: maxRequired })
   })

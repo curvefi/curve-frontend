@@ -1,5 +1,6 @@
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import type { Decimal } from '@primitives/decimal.utils'
+import { assert } from '@primitives/objects.utils'
 import { parseRoute as parseRoute } from '@ui-kit/entities/router-api'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { decimal } from '@ui-kit/utils'
@@ -11,6 +12,7 @@ export const { useQuery: useCreateLoanPriceImpact, invalidate: invalidateCreateL
   queryKey: ({
     chainId,
     marketId,
+    userBorrowed = '0',
     userCollateral = '0',
     debt = '0',
     leverageEnabled,
@@ -22,6 +24,7 @@ export const { useQuery: useCreateLoanPriceImpact, invalidate: invalidateCreateL
       ...rootKeys.market({ chainId, marketId }),
       'createLoanPriceImpact',
       { userCollateral },
+      { userBorrowed },
       { debt },
       { leverageEnabled },
       { range },
@@ -30,16 +33,17 @@ export const { useQuery: useCreateLoanPriceImpact, invalidate: invalidateCreateL
     ] as const,
   queryFn: async ({
     marketId,
+    userBorrowed = '0',
     userCollateral = '0',
     debt = '0',
     leverageEnabled,
     range,
     routeId,
   }: CreateLoanDebtQuery): Promise<Decimal | null> => {
-    const deprecatedBorrowedFromWallet = '0'
     const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
     switch (type) {
       case 'zapV2': {
+        assert(!+userBorrowed, `Unsupported userBorrowed for zapv2: ${userBorrowed}`)
         const { priceImpact } = await impl.createLoanExpectedMetrics({
           userCollateral,
           debt,
@@ -50,7 +54,7 @@ export const { useQuery: useCreateLoanPriceImpact, invalidate: invalidateCreateL
       }
       case 'V1':
       case 'V2':
-        return decimal(await impl.createLoanPriceImpact(deprecatedBorrowedFromWallet, debt)) ?? null
+        return decimal(await impl.createLoanPriceImpact(userBorrowed, debt)) ?? null
       case 'V0':
         return decimal(await impl.priceImpact(userCollateral, debt)) ?? null
       case 'unleveraged':

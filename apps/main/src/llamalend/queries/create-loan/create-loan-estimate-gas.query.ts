@@ -2,7 +2,7 @@ import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { createLoanExpectedCollateralQueryKey } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import type { IChainId, TGas } from '@curvefi/llamalend-api/lib/interfaces'
-import { notFalsy } from '@primitives/objects.utils'
+import { assert, notFalsy } from '@primitives/objects.utils'
 import { parseMutationRoute } from '@ui-kit/entities/router-api'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
@@ -17,22 +17,28 @@ type GasEstimateParams<T = IChainId> = FieldsOf<CreateLoanEstimateGasQuery<T>>
 
 const { useQuery: useCreateLoanApproveEstimateGas, invalidate: invalidateCreateLoanApproveEstimateGasQuery } =
   queryFactory({
-    queryKey: ({ chainId, marketId, userCollateral = '0', leverageEnabled }: GasEstimateParams) =>
+    queryKey: ({ chainId, marketId, userBorrowed = '0', userCollateral = '0', leverageEnabled }: GasEstimateParams) =>
       [
         ...rootKeys.market({ chainId, marketId }),
         'estimateGas.createLoanApprove',
+        { userBorrowed },
         { userCollateral },
         { leverageEnabled },
       ] as const,
-    queryFn: async ({ marketId, userCollateral = '0', leverageEnabled }: CreateLoanEstimateGasQuery) => {
-      const deprecatedBorrowedFromWallet = '0'
+    queryFn: async ({
+      marketId,
+      userBorrowed = '0',
+      userCollateral = '0',
+      leverageEnabled,
+    }: CreateLoanEstimateGasQuery) => {
       const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
       switch (type) {
         case 'zapV2':
+          assert(!+userBorrowed, `Unsupported userBorrowed for zapv2: ${userBorrowed}`)
           return await impl.estimateGas.createLoanApprove({ userCollateral })
         case 'V1':
         case 'V2':
-          return await impl.estimateGas.createLoanApprove(userCollateral, deprecatedBorrowedFromWallet)
+          return await impl.estimateGas.createLoanApprove(userCollateral, userBorrowed)
         case 'V0':
         case 'unleveraged':
           return await impl.estimateGas.createLoanApprove(userCollateral)
@@ -51,6 +57,7 @@ const {
   queryKey: ({
     chainId,
     marketId,
+    userBorrowed = '0',
     userCollateral = '0',
     debt = '0',
     leverageEnabled,
@@ -61,6 +68,7 @@ const {
     [
       ...rootKeys.market({ chainId, marketId }),
       'estimateGas.createLoan',
+      { userBorrowed },
       { userCollateral },
       { debt },
       { leverageEnabled },
@@ -70,6 +78,7 @@ const {
     ] as const,
   queryFn: async ({
     marketId,
+    userBorrowed = '0',
     userCollateral = '0',
     debt = '0',
     leverageEnabled,
@@ -78,10 +87,10 @@ const {
     routeId,
   }: CreateLoanEstimateGasQuery): Promise<TGas> => {
     const market = getLlamaMarket(marketId)
-    const deprecatedBorrowedFromWallet = '0'
     const [type, impl] = getCreateLoanImplementation(market, leverageEnabled)
     switch (type) {
       case 'zapV2':
+        assert(!+userBorrowed, `Unsupported userBorrowed for zapv2: ${userBorrowed}`)
         return await impl.estimateGas.createLoan({
           userCollateral,
           debt,
@@ -90,7 +99,7 @@ const {
         })
       case 'V1':
       case 'V2':
-        return await impl.estimateGas.createLoan(userCollateral, deprecatedBorrowedFromWallet, debt, range, +slippage)
+        return await impl.estimateGas.createLoan(userCollateral, userBorrowed, debt, range, +slippage)
       case 'V0':
         return await impl.estimateGas.createLoan(userCollateral, debt, range, +slippage)
       case 'unleveraged':

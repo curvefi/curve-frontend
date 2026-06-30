@@ -2,6 +2,7 @@ import { getLlamaMarket, hasLeverage, hasV2Leverage, hasZapV2 } from '@/llamalen
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import type { BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
+import { assert } from '@primitives/objects.utils'
 import { parseMutationRoute } from '@ui-kit/entities/router-api'
 
 /**
@@ -29,36 +30,39 @@ export function getBorrowMoreImplementation(
 /**
  * Determines the borrow more implementation and constructs its argument tuple.
  * For unleveraged markets, returns `[type, impl, [userCollateral, debt]]`.
- * For leveraged (V1/V2) markets, returns `[type, impl, [userCollateral, '0', debt]]`.
+ * For leveraged (V1/V2) markets, returns `[type, impl, [userCollateral, userBorrowed, debt]]`.
  */
 export function getBorrowMoreImplementationArgs(
   marketId: string | LlamaMarketTemplate,
   {
     userCollateral,
+    userBorrowed,
     debt,
     leverageEnabled,
     routeId,
     slippage,
-  }: Pick<BorrowMoreQuery, 'userCollateral' | 'debt' | 'routeId' | 'slippage'> & {
+  }: Pick<BorrowMoreQuery, 'userCollateral' | 'userBorrowed' | 'debt' | 'routeId' | 'slippage'> & {
     leverageEnabled?: boolean | null
   },
 ) {
-  const deprecatedBorrowedFromWallet = '0'
   const market = getLlamaMarket(marketId)
   const [type, impl] = getBorrowMoreImplementation(market, leverageEnabled)
   if (type === 'unleveraged') {
+    assert(!+userBorrowed, `Unsupported userBorrowed for unleveraged borrow more: ${userBorrowed}`)
     return [type, impl, [userCollateral, debt]] as const
   }
   if (type === 'zapV2') {
+    assert(!+userBorrowed, `Unsupported userBorrowed for zapv2: ${userBorrowed}`)
     const routerArgs = {
       userCollateral,
+      userBorrowed,
       dDebt: debt,
       debt,
       ...parseMutationRoute(market, { routeId, slippage, isRepay: false }),
     }
     return [type, impl, [routerArgs]] as const
   }
-  const args = [userCollateral, deprecatedBorrowedFromWallet, debt] as const
+  const args = [userCollateral, userBorrowed, debt] as const
   if (type == 'V1') return [type, impl, args] as const
   return [type, impl, args] as const
 }

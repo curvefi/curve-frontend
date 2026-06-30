@@ -16,6 +16,7 @@ import { AlertDisableForm } from '@ui-kit/shared/ui/AlertDisableForm'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q, type QueryProp, type Range } from '@ui-kit/types/util'
+import { isDevelopment } from '@ui-kit/utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { useMarketContext } from '../../market-context'
@@ -50,6 +51,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     routes,
     max,
     leverage,
+    isLeverageEnabled,
     isLeverageSupported,
     priceImpact,
     disabledAlert,
@@ -61,6 +63,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   })
 
   const { update: updateForm } = form
+  const fromBorrowed = isLeverageEnabled && isDevelopment // todo: delete this if users do not complain about it, for now dev-only feature
 
   const onLeverageToggle = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => updateForm({ leverageEnabled: event.target.checked, routeId: undefined }),
@@ -98,6 +101,19 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           testId="borrow-more-input-collateral"
           network={network}
         />
+        {fromBorrowed && (
+          <LoanFormTokenInput
+            label={t`Add borrowed from wallet`}
+            token={borrowToken}
+            blockchainId={network.id}
+            name="userBorrowed"
+            form={form}
+            max={{ ...q(max.userBorrowed), fieldName: max.userBorrowed.field }}
+            testId="borrow-more-input-user-borrowed"
+            network={network}
+          />
+        )}
+
         <LoanFormTokenInput
           label={t`Amount to borrow`}
           token={borrowToken}
@@ -154,7 +170,14 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
       <FormAlerts
         error={error}
         formErrors={formErrors}
-        handledErrors={notFalsy('userCollateral', max.userCollateral.field, 'debt', max.debt.field)}
+        handledErrors={notFalsy(
+          'userCollateral',
+          max.userCollateral.field,
+          fromBorrowed && 'userBorrowed',
+          fromBorrowed && max.userBorrowed.field,
+          'debt',
+          max.debt.field,
+        )}
       />
     </Form>
   )

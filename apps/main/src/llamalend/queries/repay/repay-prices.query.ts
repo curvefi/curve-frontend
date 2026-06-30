@@ -2,6 +2,7 @@ import { repayExpectedBorrowedQueryKey } from '@/llamalend/queries/repay/repay-e
 import type { RepayParams, RepayQuery } from '@/llamalend/queries/validation/repay.types'
 import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import type { Decimal } from '@primitives/decimal.utils'
+import { assert } from '@primitives/objects.utils'
 import { parseRoute } from '@ui-kit/entities/router-api'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { type Range } from '@ui-kit/types/util'
@@ -13,7 +14,7 @@ export const { useQuery: useRepayPrices, invalidate: invalidateRepayPrices } = q
     marketId,
     stateCollateral = '0',
     userCollateral = '0',
-    debt = '0',
+    userBorrowed = '0',
     userAddress,
     slippage,
     routeId,
@@ -24,7 +25,7 @@ export const { useQuery: useRepayPrices, invalidate: invalidateRepayPrices } = q
       'repayPrices',
       { stateCollateral },
       { userCollateral },
-      { debt },
+      { userBorrowed },
       { slippage },
       { routeId },
       { isFull },
@@ -33,7 +34,7 @@ export const { useQuery: useRepayPrices, invalidate: invalidateRepayPrices } = q
     marketId,
     stateCollateral,
     userCollateral,
-    debt,
+    userBorrowed,
     slippage,
     routeId,
     userAddress,
@@ -43,13 +44,14 @@ export const { useQuery: useRepayPrices, invalidate: invalidateRepayPrices } = q
     const [type, impl, args] = getRepayImplementation(marketId, {
       userCollateral,
       stateCollateral,
-      debt,
+      userBorrowed,
       slippage,
       routeId,
     })
     // it looks like all implementations have the same signature, but `args` is typed differently for each
     switch (type) {
       case 'zapV2':
+        assert(!+userBorrowed, `Unsupported userBorrowed for zapv2: ${userBorrowed}`)
         return (
           await impl.repayExpectedMetrics({
             stateCollateral,
