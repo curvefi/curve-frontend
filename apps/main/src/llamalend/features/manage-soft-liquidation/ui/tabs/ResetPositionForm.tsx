@@ -35,7 +35,6 @@ export const ResetPositionForm = ({ networks }: { networks: NetworkDict<LlamaCha
   return (
     <Form
       {...form}
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
       onSubmit={onSubmit}
       footer={
         <ResetPositionInfoList
