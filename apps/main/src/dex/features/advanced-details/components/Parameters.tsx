@@ -54,7 +54,7 @@ export const Parameters = ({
   // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
   const isEywaPool = chainId === Chain.Fantom && poolId.startsWith('factory-eywa')
 
-  const rampADetails = maybes([initial_A, future_A_time, future_A], ([initial_A, future_A_time, future_A]) => ({
+  const rampADetails = maybes([initial_A, future_A_time, future_A], (initial_A, future_A_time, future_A) => ({
     isFutureATimePassedToday: dayjs().isAfter(future_A_time, 'day'),
     isRampUp: Number(future_A) > Number(initial_A),
   }))
@@ -112,7 +112,7 @@ export const Parameters = ({
                   {rampADetails?.isFutureATimePassedToday &&
                     maybes(
                       [initial_A_time, future_A_time],
-                      ([initial_A_time, future_A_time]) =>
+                      (initial_A_time, future_A_time) =>
                         t`Last change occurred between ${formatDate(initial_A_time, 'short')} and ${formatDate(
                           future_A_time,
                           'short',

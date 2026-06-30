@@ -75,7 +75,7 @@ export function useClosePositionForm({
       collateralTokenUsdRate: TokenUsdRate,
     ) => {
       // Combine all user state balances with their token data and USD rates
-      const collateralAmount = maybes([collateral, collateralToken], ([collateral, collateralToken]) =>
+      const collateralAmount = maybes([collateral, collateralToken], (collateral, collateralToken) =>
         +collateral > 0
           ? {
               symbol: collateralToken.symbol,
@@ -85,7 +85,7 @@ export function useClosePositionForm({
           : undefined,
       )
 
-      const debtAmount = maybes([debt, borrowToken], ([debt, borrowToken]) =>
+      const debtAmount = maybes([debt, borrowToken], (debt, borrowToken) =>
         +debt > 0
           ? {
               symbol: borrowToken.symbol,
@@ -95,7 +95,7 @@ export function useClosePositionForm({
           : undefined,
       )
 
-      const stablecoinAmount = maybes([stablecoin, borrowToken], ([stablecoin, borrowToken]) =>
+      const stablecoinAmount = maybes([stablecoin, borrowToken], (stablecoin, borrowToken) =>
         +stablecoin > 0
           ? {
               symbol: borrowToken.symbol,
@@ -110,12 +110,12 @@ export function useClosePositionForm({
        * (converted from collateral during soft liquidation).
        * Capped at the debt amount — any surplus becomes the recoverable `excess`.
        */
-      const paidFromCollateral = maybes([stablecoin, debt], ([stablecoin, debt]) =>
+      const paidFromCollateral = maybes([stablecoin, debt], (stablecoin, debt) =>
         decimalNegate(decimal(BigNumber.min(stablecoin, debt))),
       )
       const paidFromCollateralAmount = maybes(
         [paidFromCollateral, borrowToken],
-        ([paidFromCollateral, borrowToken]) =>
+        (paidFromCollateral, borrowToken) =>
           +paidFromCollateral < 0 && {
             symbol: borrowToken.symbol,
             amount: paidFromCollateral,
@@ -130,8 +130,8 @@ export function useClosePositionForm({
        * if the user needs to pay additional from their wallet and how much,
        * or if there's an excess that can be recovered.
        */
-      const excess = maybes([stablecoin, debt], ([stablecoin, debt]) => decimal(BigNumber(stablecoin).minus(debt)))
-      const excessStablecoinAmount = maybes([excess, borrowToken], ([excess, borrowToken]) => ({
+      const excess = maybes([stablecoin, debt], (stablecoin, debt) => decimal(BigNumber(stablecoin).minus(debt)))
+      const excessStablecoinAmount = maybes([excess, borrowToken], (excess, borrowToken) => ({
         symbol: borrowToken.symbol,
         amount: excess,
         usd: maybe(borrowTokenUsdRate, rate => decimalNegate(decimal(BigNumber(-+excess).times(rate)))),
@@ -165,7 +165,7 @@ export function useClosePositionForm({
        * - stablecoin: User's stablecoin balance already present in the AMM
        * - borrowed: User's borrowed token balance
        */
-      const missing = maybes([debt, stablecoin, borrowed], ([debt, stablecoin, borrowed]) =>
+      const missing = maybes([debt, stablecoin, borrowed], (debt, stablecoin, borrowed) =>
         decimal(
           BigNumber.max(0, new BigNumber(debt).minus(stablecoin).times(CLOSE_POSITION_SAFETY_BUFFER).minus(borrowed)),
         ),

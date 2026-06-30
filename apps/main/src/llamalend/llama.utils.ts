@@ -249,7 +249,7 @@ export const getMarketBandRange = <T extends LlamaMarketTemplate | null | undefi
     market,
     apiMarket,
     m => ({ minBands: +m.minBands, maxBands: +m.maxBands }),
-    m => maybes([m.minBand, m.maxBand], ([minBands, maxBands]) => ({ minBands, maxBands })),
+    m => maybes([m.minBand, m.maxBand], (minBands, maxBands) => ({ minBands, maxBands })),
   )
 
 export const getCrvTokenAddress = (market: LlamaMarketTemplate | null | undefined): Address | undefined =>
@@ -517,7 +517,7 @@ export const tokenMetric = ({
       abbreviate: true,
       unit: maybe(symbol, symbol => ({ symbol, position: 'suffix' as const })),
     },
-    notional: maybes([decimal(value.data), usdRate.data], ([value, usdRate]) => ({
+    notional: maybes([decimal(value.data), usdRate.data], (value, usdRate) => ({
       value: decimalMultiply(value, usdRate),
       unit: 'dollar' as const,
     })),

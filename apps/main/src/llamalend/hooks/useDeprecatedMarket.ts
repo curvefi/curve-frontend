@@ -19,7 +19,7 @@ export const useDeprecatedMarket = ({
     () =>
       maybes(
         [blockchainId, controllerAddress, marketType],
-        ([blockchainId, controllerAddress, marketType]) =>
+        (blockchainId, controllerAddress, marketType) =>
           recordEntries(DEPRECATED_LLAMAS[marketType][blockchainId] ?? {}).find(([address]) =>
             isAddressEqual(address, controllerAddress),
           )?.[1],

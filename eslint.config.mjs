@@ -14,6 +14,7 @@ import { useMaybePatternRule } from './.eslint/use-maybe-pattern.rule.mjs'
 import { stableHookCallbacksRule } from './.eslint/stable-hook-callbacks.rule.mjs'
 import { noDoubleNegativeRule } from './.eslint/no-double-negative.rule.mjs'
 import { noJsxStringLiteralBracesRule } from './.eslint/no-jsx-string-literal-braces.rule.mjs'
+import { noQueryComponentPropsRule } from './.eslint/no-query-component-props.rule.mjs'
 import { noRedundantTernaryRule } from './.eslint/no-redundant-ternary.rule.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -56,6 +57,7 @@ const config = [
           'stable-hook-callbacks': stableHookCallbacksRule,
           'no-double-negative': noDoubleNegativeRule,
           'no-jsx-string-literal-braces': noJsxStringLiteralBracesRule,
+          'no-query-component-props': noQueryComponentPropsRule,
           'no-redundant-ternary': noRedundantTernaryRule,
         },
       },
@@ -81,6 +83,7 @@ const config = [
       'local/stable-hook-callbacks': 'error',
       'local/no-double-negative': 'error',
       'local/no-jsx-string-literal-braces': 'error',
+      'local/no-query-component-props': 'error',
       'local/no-redundant-ternary': 'error',
 
       'object-shorthand': 'warn',
