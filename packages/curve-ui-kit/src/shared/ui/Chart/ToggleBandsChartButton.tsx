@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 import Stack from '@mui/material/Stack'
 import ToggleButton from '@mui/material/ToggleButton'
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import { EyeClosed } from '@ui-kit/shared/icons/EyeClosed'
 import { EyeOpen } from '@ui-kit/shared/icons/EyeOpen'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
@@ -20,12 +21,14 @@ export const ToggleBandsChartButton = ({
   toggle: () => void
   tooltip?: ReactNode
 }) => (
-  <ToggleButton size="extraSmall" onClick={toggle} value={true}>
-    <WithWrapper Wrapper={Tooltip} title={tooltip} placement="top" shouldWrap={tooltip}>
-      <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
-        {isVisible ? <EyeOpen /> : <EyeClosed />}
-        {label}
-      </Stack>
-    </WithWrapper>
-  </ToggleButton>
+  <ToggleButtonGroup value={isVisible}>
+    <ToggleButton size="extraSmall" onClick={toggle} value={true}>
+      <WithWrapper Wrapper={Tooltip} title={tooltip} placement="top" shouldWrap={tooltip}>
+        <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
+          {isVisible ? <EyeOpen /> : <EyeClosed />}
+          {label}
+        </Stack>
+      </WithWrapper>
+    </ToggleButton>
+  </ToggleButtonGroup>
 )
