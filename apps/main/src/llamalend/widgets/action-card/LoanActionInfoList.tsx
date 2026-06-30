@@ -12,14 +12,14 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate, type TxGasInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
-import { mapQuery, type QueryProp, type Range } from '@ui-kit/types/util'
+import { constQ, mapQuery, UNDEFINED_Q, type QueryProp, type Range } from '@ui-kit/types/util'
 import { decimal, formatNumber } from '@ui-kit/utils'
 import { getPriceImpactDisplay } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { RouteProvidersAccordion } from '@ui-kit/widgets/RouteProvider'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 import { ActionInfoCollapse } from './ActionInfoCollapse'
 import { useShouldShowNetRate } from './hooks/useShouldShowNetRate'
-import { ACTION_INFO_GROUP_SX, combineActionInfoState, formatAmount, formatLeverage } from './info-actions.helpers'
+import { ACTION_INFO_GROUP_SX, formatAmount, formatLeverage } from './info-actions.helpers'
 
 export type LoanActionInfoListProps = {
   isOpen: boolean
@@ -105,8 +105,6 @@ export const LoanActionInfoList = ({
     slippage,
     slippageType: LEVERAGE,
   })
-  const exchangeRateValue = decimal(exchangeRate?.data)
-
   const shouldShowNetBorrowApr = useShouldShowNetRate({
     tokenSymbol: collateralSymbol,
     prevNetRate: prevNetBorrowApr,
@@ -121,9 +119,8 @@ export const LoanActionInfoList = ({
       {(debt ?? prevDebt) && (
         <ActionInfo
           label={t`Debt`}
-          value={debt?.data && formatNumber(debt.data, { abbreviate: false })}
+          value={mapQuery(debt ?? UNDEFINED_Q, data => formatNumber(data, { abbreviate: false }))}
           prevValue={prevDebt?.data && formatNumber(prevDebt.data, { abbreviate: false })}
-          {...combineActionInfoState(debt, prevDebt)}
           valueRight={borrowSymbol}
           size="small"
           testId="borrow-debt"
@@ -140,9 +137,11 @@ export const LoanActionInfoList = ({
           {(rates ?? prevRates) && (
             <ActionInfo
               label={t`Borrow APR`}
-              value={rates?.data?.borrowApr && formatNumber(rates.data.borrowApr, 'percent.rate')}
+              value={mapQuery(
+                rates ?? UNDEFINED_Q,
+                data => data?.borrowApr && formatNumber(data.borrowApr, 'percent.rate'),
+              )}
               prevValue={prevRates?.data?.borrowApr && formatNumber(prevRates.data.borrowApr, 'percent.rate')}
-              {...combineActionInfoState(rates, prevRates)}
               size="small"
               testId="borrow-apr"
             />
@@ -150,9 +149,8 @@ export const LoanActionInfoList = ({
           {shouldShowNetBorrowApr && (
             <ActionInfo
               label={t`Net borrow APR`}
-              value={netBorrowApr?.data && formatNumber(netBorrowApr.data, 'percent.rate')}
+              value={mapQuery(netBorrowApr ?? UNDEFINED_Q, data => formatNumber(data, 'percent.rate'))}
               prevValue={prevNetBorrowApr?.data && formatNumber(prevNetBorrowApr.data, 'percent.rate')}
-              {...combineActionInfoState(netBorrowApr, prevNetBorrowApr)}
               size="small"
               testId="borrow-net-apr"
             />
@@ -161,11 +159,14 @@ export const LoanActionInfoList = ({
         <Stack>
           <ActionInfo
             label={t`Health`}
-            value={health?.data && !isFullRepay ? formatNumber(health.data, { abbreviate: true }) : '∞'}
+            value={
+              !health || isFullRepay
+                ? constQ('∞')
+                : mapQuery(health, data => formatNumber(data, { abbreviate: true, fallback: '∞' }))
+            }
             {...(prevHealth && {
               prevValue: prevHealth.data ? formatNumber(prevHealth.data, { abbreviate: true }) : '∞',
             })}
-            {...combineActionInfoState(health, prevHealth)}
             valueColor={getHealthValueColor({
               health: health?.data,
               prevHealth: prevHealth?.data,
@@ -182,9 +183,8 @@ export const LoanActionInfoList = ({
                   <span>{t`LTV`}</span>
                 </Tooltip>
               }
-              value={loanToValue?.data && formatNumber(loanToValue.data, 'percent.rate')}
+              value={mapQuery(loanToValue ?? UNDEFINED_Q, data => formatNumber(data, 'percent.rate'))}
               prevValue={prevLoanToValue?.data && formatNumber(prevLoanToValue.data, 'percent.rate')}
-              {...combineActionInfoState(loanToValue, prevLoanToValue)}
               size="small"
               testId="borrow-ltv"
             />
@@ -198,10 +198,11 @@ export const LoanActionInfoList = ({
           {(prices ?? prevPrices) && !isFullRepay && (
             <ActionInfo
               label={t`Liquidation range`}
-              value={prices?.data?.map(p => formatNumber(p, { abbreviate: false })).join(' - ')}
+              value={mapQuery(prices ?? UNDEFINED_Q, data =>
+                data?.map(p => formatNumber(p, { abbreviate: false })).join(' - '),
+              )}
               prevValue={prevPrices?.data?.map(p => formatNumber(p, { abbreviate: false })).join(' - ')}
               valueRight={notFalsy(collateralSymbol, borrowSymbol).join('/')}
-              {...combineActionInfoState(prices, prevPrices)}
               size="small"
               testId="borrow-price-range"
             />
@@ -211,9 +212,10 @@ export const LoanActionInfoList = ({
           {(collateral ?? prevCollateral) && (
             <ActionInfo
               label={t`Collateral`}
-              value={isFullRepay ? 0 : collateral?.data && formatNumber(collateral.data, { abbreviate: false })}
+              value={mapQuery(collateral ?? UNDEFINED_Q, data =>
+                isFullRepay ? 0 : formatNumber(data, { abbreviate: false }),
+              )}
               prevValue={prevCollateral?.data && formatNumber(prevCollateral.data, { abbreviate: false })}
-              {...combineActionInfoState(collateral, prevCollateral)}
               valueRight={collateralSymbol}
               size="small"
               testId="borrow-collateral"
@@ -228,9 +230,8 @@ export const LoanActionInfoList = ({
           {(prevLeverageValue ?? leverageValue) && (
             <ActionInfo
               label={t`Leverage`}
-              value={formatLeverage(leverageValue?.data ?? prevLeverageValue?.data)}
+              value={mapQuery(leverageValue ?? UNDEFINED_Q, data => formatLeverage(data))}
               prevValue={leverageValue?.data && prevLeverageValue?.data && formatLeverage(prevLeverageValue.data)}
-              {...combineActionInfoState(leverageValue, prevLeverageValue)}
               size="small"
               testId="borrow-leverage"
             />
@@ -238,13 +239,12 @@ export const LoanActionInfoList = ({
           {(prevLeverageCollateral ?? leverageCollateral) && (
             <ActionInfo
               label={t`Leverage collateral`}
-              value={formatAmount(leverageCollateral?.data ?? prevLeverageCollateral?.data, collateralSymbol)}
+              value={mapQuery(leverageCollateral ?? UNDEFINED_Q, data => formatAmount(data, collateralSymbol))}
               prevValue={
                 leverageCollateral?.data &&
                 prevLeverageCollateral?.data &&
                 formatAmount(prevLeverageCollateral.data, collateralSymbol)
               }
-              {...combineActionInfoState(leverageCollateral, prevLeverageCollateral)}
               size="small"
               testId="borrow-leverage-collateral"
             />
@@ -252,13 +252,12 @@ export const LoanActionInfoList = ({
           {(prevLeverageTotalCollateral ?? leverageTotalCollateral) && (
             <ActionInfo
               label={t`Total collateral`}
-              value={formatAmount(leverageTotalCollateral?.data ?? prevLeverageTotalCollateral?.data, collateralSymbol)}
+              value={mapQuery(leverageTotalCollateral ?? UNDEFINED_Q, data => formatAmount(data, collateralSymbol))}
               prevValue={
                 leverageTotalCollateral?.data &&
                 prevLeverageTotalCollateral?.data &&
                 formatAmount(prevLeverageTotalCollateral.data, collateralSymbol)
               }
-              {...combineActionInfoState(leverageTotalCollateral, prevLeverageTotalCollateral)}
               size="small"
               testId="borrow-leverage-total-collateral"
             />
@@ -279,10 +278,8 @@ export const LoanActionInfoList = ({
         {priceImpact && (
           <ActionInfo
             label={priceImpactLabel}
-            value={priceImpact.data == null ? '-' : formatNumber(priceImpact.data, 'percent.rate')}
+            value={mapQuery(priceImpact, data => formatNumber(data, 'percent.rate'))}
             valueColor={priceImpactColor}
-            error={priceImpact.error}
-            loading={priceImpact.isLoading}
             size="small"
             testId="borrow-price-impact"
           />
@@ -291,12 +288,11 @@ export const LoanActionInfoList = ({
         {exchangeRate && collateralSymbol && borrowSymbol && (
           <ActionInfo
             label={t`Exchange rate`}
-            value={
-              exchangeRateValue &&
-              `1 ${collateralSymbol} = ${formatNumber(exchangeRateValue, { abbreviate: false, highPrecision: true })} ${borrowSymbol}`
-            }
-            error={exchangeRate.error}
-            loading={exchangeRate.isLoading}
+            value={mapQuery(
+              exchangeRate,
+              data =>
+                `1 ${collateralSymbol} = ${formatNumber(decimal(data), { abbreviate: false, highPrecision: true })} ${borrowSymbol}`,
+            )}
             size="small"
             testId="borrow-exchange-rate"
           />

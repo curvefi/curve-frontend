@@ -1,5 +1,5 @@
 import { ActionInfoCollapse } from '@/llamalend/widgets/action-card/ActionInfoCollapse'
-import { ACTION_INFO_GROUP_SX, combineActionInfoState } from '@/llamalend/widgets/action-card/info-actions.helpers'
+import { ACTION_INFO_GROUP_SX } from '@/llamalend/widgets/action-card/info-actions.helpers'
 import { useScrvUsdDepositEstimateGas } from '@/loan/entities/scrvusd-deposit-estimate-gas.query'
 import { useScrvUsdPreviewDeposit } from '@/loan/entities/scrvusd-preview.query'
 import type { ScrvUsdDepositParams } from '@/loan/entities/scrvusd.validation'
@@ -10,7 +10,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate } from '@ui-kit/shared/ui/ActionInfo'
-import { q } from '@ui-kit/types/util'
+import { mapQuery, q } from '@ui-kit/types/util'
 import { formatNumber } from '@ui-kit/utils'
 import { InfiniteAllowanceActionInfo } from './InfiniteAllowanceActionInfo'
 import { ScrvUsdExchangeRateActionInfo } from './ScrvUsdExchangeRateActionInfo'
@@ -44,8 +44,7 @@ export const ScrvUsdDepositInfoList = ({
         <ScrvUsdExchangeRateActionInfo chainId={chainId} enabled={isOpen} />
         <ActionInfo
           label={t`To Vault`}
-          value={formatTokenAmount(expectedScrvUsd.data, 'scrvUSD')}
-          {...combineActionInfoState(q(expectedScrvUsd))}
+          value={mapQuery(expectedScrvUsd, data => formatTokenAmount(data, 'scrvUSD'))}
           size="small"
           testId="scrvusd-deposit-to-vault"
         />

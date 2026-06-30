@@ -4,11 +4,11 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { useShowNetRate } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate, type TxGasInfo } from '@ui-kit/shared/ui/ActionInfo'
-import type { QueryProp } from '@ui-kit/types/util'
+import { mapQuery, UNDEFINED_Q, type QueryProp } from '@ui-kit/types/util'
 import { formatNumber } from '@ui-kit/utils'
 import { ActionInfoCollapse } from './ActionInfoCollapse'
 import { useShouldShowNetRate } from './hooks/useShouldShowNetRate'
-import { formatAmount, ACTION_INFO_GROUP_SX, combineActionInfoState } from './info-actions.helpers'
+import { formatAmount, ACTION_INFO_GROUP_SX } from './info-actions.helpers'
 
 type SupplyActionInfoListProps = {
   isOpen: boolean
@@ -71,9 +71,8 @@ export const SupplyActionInfoList = ({
           {(supplyApy ?? prevSupplyApy) && (
             <ActionInfo
               label={t`Supply APY`}
-              value={supplyApy?.data && formatNumber(supplyApy.data, 'percent.rate')}
+              value={mapQuery(supplyApy ?? UNDEFINED_Q, data => formatNumber(data, 'percent.rate'))}
               prevValue={prevSupplyApy?.data && formatNumber(prevSupplyApy.data, 'percent.rate')}
-              {...combineActionInfoState(supplyApy, prevSupplyApy)}
               size="small"
               testId="supply-apy"
             />
@@ -81,9 +80,8 @@ export const SupplyActionInfoList = ({
           {shouldShowNetSupplyApy && (
             <ActionInfo
               label={NET_SUPPLY_RATE_TITLE}
-              value={netSupplyApy?.data && formatNumber(netSupplyApy.data, 'percent.rate')}
+              value={mapQuery(netSupplyApy ?? UNDEFINED_Q, data => formatNumber(data, 'percent.rate'))}
               prevValue={prevNetSupplyApy?.data && formatNumber(prevNetSupplyApy.data, 'percent.rate')}
-              {...combineActionInfoState(netSupplyApy, prevNetSupplyApy)}
               size="small"
               testId="supply-net-apy"
             />
@@ -92,18 +90,16 @@ export const SupplyActionInfoList = ({
         <Stack>
           <ActionInfo
             label={sharesLabel}
-            value={vaultShares?.data && formatAmount(vaultShares.data)}
+            value={mapQuery(vaultShares, data => formatAmount(data))}
             prevValue={prevVaultShares?.data && formatAmount(prevVaultShares.data)}
-            {...combineActionInfoState(vaultShares, prevVaultShares)}
             size="small"
             testId="supply-vault-shares"
           />
           {(amountSupplied ?? prevAmountSupplied) && (
             <ActionInfo
               label={amountLabel}
-              value={amountSupplied?.data && formatNumber(amountSupplied.data, { abbreviate: false })}
+              value={mapQuery(amountSupplied ?? UNDEFINED_Q, data => formatNumber(data, { abbreviate: false }))}
               prevValue={prevAmountSupplied?.data && formatNumber(prevAmountSupplied.data, { abbreviate: false })}
-              {...combineActionInfoState(amountSupplied, prevAmountSupplied)}
               valueRight={suppliedSymbol}
               size="small"
               testId="supply-amount"
