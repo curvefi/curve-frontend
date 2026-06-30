@@ -4,7 +4,7 @@ import { notFalsy, maybes } from '@primitives/objects.utils'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Query, QueryProp } from '@ui-kit/types/util'
-import { decimal, formatNumber } from '@ui-kit/utils'
+import { decimal, formatNumber, type NumberFormatCategory, type NumberFormatOptions } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -31,8 +31,16 @@ export const combineActionInfoState = (...queries: (Query<unknown> | undefined)[
   return { loading: isLoading, error }
 }
 
+export const actionInfoQuery = <T extends Amount>(
+  query: Query<T>,
+  options: NumberFormatCategory | NumberFormatOptions,
+) => ({
+  value: formatNumber(query.data, options as NumberFormatCategory),
+  ...combineActionInfoState(query),
+})
+
 // Returns whether an action info should stay visible when its value differs from the reference value.
 export const isQueryValueDifferent = (
   value: QueryProp<Decimal | null> | undefined,
   comparedValue: Decimal | null | undefined,
-) => maybes([value?.data, comparedValue], ([data, comparedValue]) => !new BigNumber(data).isEqualTo(comparedValue))
+) => maybes([value?.data, comparedValue], (data, comparedValue) => !new BigNumber(data).isEqualTo(comparedValue))

@@ -74,10 +74,10 @@ type NonNullishTuple<T extends readonly unknown[]> = {
 }
 
 /** Preserves non-null return types when the input tuple is statically non-nullish, avoiding wrapper overloads. */
-export const maybes = <const T extends readonly unknown[], R>(value: T, mapper: (value: NonNullishTuple<T>) => R) =>
+export const maybes = <const T extends readonly unknown[], R>(value: T, mapper: (...value: NonNullishTuple<T>) => R) =>
   (value == null || value.some(x => x == null)
     ? undefined
-    : mapper(value as NonNullishTuple<T>)) as null extends T[number]
+    : mapper(...(value as NonNullishTuple<T>))) as null extends T[number]
     ? R | undefined
     : undefined extends T[number]
       ? R | undefined

@@ -18,6 +18,7 @@ import {
 } from '@/llamalend/rates.utils'
 import { type Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { assert, recordValues } from '@primitives/objects.utils'
 import type { QueriesResults } from '@tanstack/react-query'
 import { useQueries } from '@tanstack/react-query'
@@ -28,6 +29,7 @@ import { useStateTimeout } from '@ui-kit/hooks/useStateTimeout'
 import { combineQueriesMeta, PartialQueryResult, RESOLVED_QUERY_RESULT } from '@ui-kit/lib'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
 import { type ExtraIncentive, LlamaMarketType, LlamaMarketVersion, MarketRateType } from '@ui-kit/types/market'
+import { decimal, decimalDiv } from '@ui-kit/utils'
 import { DEPRECATED_LLAMAS, NO_LEVERAGE_LEND } from '../../llama-markets.constants'
 import { getBadDebtLendMarketsOptions, getBadDebtMintMarketsOptions } from '../market/market-bad-debt.query'
 import { getFavoriteMarketOptions } from './favorite-markets'
@@ -70,6 +72,7 @@ export type LlamaMarket = {
   oraclePrice?: number
   monetaryPolicyAddress?: Address
   oracleAddress?: Address
+  parameters: { A: number | null; loanDiscount: Decimal; liquidationDiscount: Decimal }
   utilizationPercent: number
   liquidityUsd: number
   tvl: number
@@ -115,6 +118,10 @@ const toMarketVersion = (version: number): LlamaMarketVersion =>
     `Unsupported LlamaLend market version: ${version}`,
   )
 
+/** Converts API 1e18-scaled discount fractions to UI percent units (div by 1e18*100). */
+const scaledFractionToPercent = (value: number): Decimal =>
+  decimalDiv(assert(decimal(value), `Invalid scaled discount: ${value}`), '10000000000000000')
+
 const convertLendingVault = (
   {
     controller,
@@ -137,6 +144,9 @@ const convertLendingVault = (
     leverage,
     extraRewardApr,
     maxLtv,
+    ammA,
+    loanDiscount,
+    liquidationDiscount,
     minBand,
     maxBand,
     createdAt,
@@ -197,6 +207,11 @@ const convertLendingVault = (
     oraclePrice: priceOracle,
     monetaryPolicyAddress: policy,
     oracleAddress: oracle,
+    parameters: {
+      A: ammA,
+      loanDiscount: scaledFractionToPercent(loanDiscount),
+      liquidationDiscount: scaledFractionToPercent(liquidationDiscount),
+    },
     utilizationPercent: totalAssetsUsd && (100 * totalDebtUsd) / totalAssetsUsd,
     solvencyPercent,
     badDebtUsd,
@@ -264,6 +279,14 @@ const convertMintMarket = (
     leverage,
     chain,
     maxLtv,
+    monetaryPolicyAddress,
+    oracle,
+    priceOracle,
+    ammA,
+    loanDiscount,
+    liquidationDiscount,
+    minBand,
+    maxBand,
     createdAt,
   }: MintMarket,
   favoriteMarkets: Set<Address>,
@@ -313,7 +336,17 @@ const convertMintMarket = (
       },
     },
     maxLtv,
+    minBand,
+    maxBand,
     loans,
+    oraclePrice: priceOracle,
+    monetaryPolicyAddress,
+    oracleAddress: oracle,
+    parameters: {
+      A: ammA ?? null,
+      loanDiscount: scaledFractionToPercent(loanDiscount),
+      liquidationDiscount: scaledFractionToPercent(liquidationDiscount),
+    },
     utilizationPercent: Math.min(100, (100 * borrowed) / debtCeiling), // debt ceiling may be lowered, so cap at 100%
     // solvency is only relevant for lending markets; if mint markets have bad debt that's a protocol problem, not a user problem
     solvencyPercent: null,
