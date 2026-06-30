@@ -1,7 +1,6 @@
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
-import { getControllerAddress } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useBorrowMoreExpectedCollateral } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
 import { useBorrowMoreFutureLeverage } from '@/llamalend/queries/borrow-more/borrow-more-future-leverage.query'
 import { useBorrowMoreEstimateGas } from '@/llamalend/queries/borrow-more/borrow-more-gas-estimate.query'
@@ -16,7 +15,7 @@ import { useBorrowRates } from '@/llamalend/widgets/action-card/hooks/useBorrowR
 import { usePrevLoanState } from '@/llamalend/widgets/action-card/hooks/usePrevLoanState'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { type Token } from '@primitives/address.utils'
+import { type Address, type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { UseFormReturn } from '@ui-kit/features/forms'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
@@ -33,7 +32,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   onSlippageChange,
   leverageEnabled,
   form,
-  market,
+  controllerAddress,
   marketType,
   routes,
 }: {
@@ -41,7 +40,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   values: BorrowMoreForm
   tokens: { collateralToken: Token | undefined; borrowToken: Token | undefined }
   networks: NetworkDict<ChainId>
-  market: LlamaMarketTemplate | undefined
+  controllerAddress: Address | undefined
   marketType: LlamaMarketType
   onSlippageChange: (newSlippage: Decimal) => void
   leverageEnabled: boolean | undefined
@@ -94,10 +93,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
         priceImpact: useBorrowMorePriceImpact(params, isOpen),
         collateralDelta,
       })}
-      {...useBorrowRates(
-        { params, marketType, controllerAddress: getControllerAddress(market), debtDelta: debt },
-        isOpen,
-      )}
+      {...useBorrowRates({ params, marketType, controllerAddress, debtDelta: debt }, isOpen)}
       {...prevLoanState}
     />
   )

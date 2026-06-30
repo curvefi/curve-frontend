@@ -67,8 +67,8 @@ describe('DepositForm (mocked)', () => {
         setGasInfo({ chainId, networks: llamaNetworks })
 
         cy.mount(
-          <MockLoanTestWrapper llamaApi={llamaApi}>
-            <DepositForm market={market} networks={llamaNetworks} chainId={chainId} enabled />
+          <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
+            <DepositForm networks={llamaNetworks} />
           </MockLoanTestWrapper>,
         )
 

@@ -7,12 +7,6 @@ const createVisibility = ({ isLite }: { isLite: boolean }): VisibilityGroup<Pool
     label: t`Markets`,
     options: [
       {
-        label: t`Pool`,
-        columns: [PoolListColumnId.PoolName],
-        active: true,
-        enabled: true,
-      },
-      {
         label: t`Rewards Base`,
         columns: [PoolListColumnId.RewardsBase],
         active: !isLite,

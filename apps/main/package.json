@@ -18,7 +18,7 @@
     "postpublish": "pinst --enable"
   },
   "dependencies": {
-    "@curvefi/llamalend-api": "2.2.4",
+    "@curvefi/llamalend-api": "2.2.6",
     "@supercharge/promise-pool": "3.3.0",
     "@tanstack/react-router": "1.170.11",
     "@tanstack/react-router-devtools": "1.167.0",
@@ -28,7 +28,6 @@
     "fuse.js": "7.4.1",
     "lightweight-charts": "5.2.0",
     "memoizee": "0.4.17",
-    "recharts": "2.15.4",
     "ui": "*",
     "vest": "5.4.6",
     "vite-plugin-svgr": "*",

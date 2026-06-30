@@ -1,5 +1,4 @@
-import { getControllerAddress } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -8,26 +7,19 @@ import { t } from '@ui-kit/lib/i18n'
 import { AlertDisableForm } from '@ui-kit/shared/ui/AlertDisableForm'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
+import { useMarketContext } from '../../market-context'
 import { useDepositForm } from '../hooks/useDepositForm'
 import { DepositSupplyInfoList } from './DepositSupplyInfoList'
 
 type DepositFormProps<ChainId extends IChainId> = {
-  market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
-  chainId: ChainId
-  enabled?: boolean
 }
 
 const TEST_ID_PREFIX = 'supply-deposit'
 
-export const DepositForm = <ChainId extends IChainId>({
-  market,
-  networks,
-  chainId,
-  enabled,
-}: DepositFormProps<ChainId>) => {
+export const DepositForm = <ChainId extends IChainId>({ networks }: DepositFormProps<ChainId>) => {
+  const { chainId, controllerAddress } = useMarketContext<ChainId>()
   const network = networks[chainId]
-
   const {
     form,
     params,
@@ -42,7 +34,7 @@ export const DepositForm = <ChainId extends IChainId>({
     max,
     disabledAlert,
     solvencyModal: { onConfirm, onClose, isOpen },
-  } = useDepositForm({ market, network, enabled })
+  } = useDepositForm({ network })
 
   return (
     <Form
@@ -55,7 +47,7 @@ export const DepositForm = <ChainId extends IChainId>({
           params={params}
           networks={networks}
           tokens={{ borrowToken }}
-          controllerAddress={getControllerAddress(market)}
+          controllerAddress={controllerAddress}
         />
       }
     >
@@ -76,6 +68,7 @@ export const DepositForm = <ChainId extends IChainId>({
         disabled={isDisabled}
         label={[isApproved.data === false && t`Approve`, t`Deposit`]}
         testId={`${TEST_ID_PREFIX}-submit-button`}
+        connectWalletTestId="form-connect-wallet"
       >
         {disabledAlert && <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>}
       </FormButton>

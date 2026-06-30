@@ -40,7 +40,7 @@ const normalizeLiquidationRangePoints = (range?: LlammaLiquididationRange | null
     Array.from(
       pointMap,
       ([time, { upper, lower }]) =>
-        maybes([upper, lower], points => ({
+        maybes([upper, lower], (...points) => ({
           time,
           upper: Math.max(...points),
           lower: Math.min(...points),

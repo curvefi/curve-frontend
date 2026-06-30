@@ -1,3 +1,4 @@
+import { useMarketContext } from '@/llamalend/features/market-context'
 import { useSnapshots } from '@/llamalend/features/market-list/hooks/useSnapshots'
 import { useFilteredRewards } from '@/llamalend/hooks/useFilteredRewards'
 import { getControllerAddress, getTokens, getVaultAddress } from '@/llamalend/llama.utils'
@@ -203,7 +204,7 @@ export const useSupplyRate = ({
       rebasingYieldApy: assets.borrowed.rebasingYield,
       marketOnChainRewards: {
         crvRates:
-          maybes([rates.lendCrvAprUnboosted, rates.lendCrvAprBoosted], ([min, max]) => [min, max] as Range<number>) ??
+          maybes([rates.lendCrvAprUnboosted, rates.lendCrvAprBoosted], (min, max) => [min, max] as Range<number>) ??
           null,
         rewardsApr: rates.incentives.map(({ percentage, title, address }) => ({
           apy: percentage,
@@ -240,7 +241,7 @@ export const useAvailableLiquidity = ({
       value: available,
       max: totalAssets,
       usdRate: borrowUsdRate,
-      notional: maybes([available, borrowUsdRate], ([liq, rate]) => decimalMultiply(liq, rate)),
+      notional: maybes([available, borrowUsdRate], (liq, rate) => decimalMultiply(liq, rate)),
     }),
   )
   const apiLiquidity = combineQueries([apiMarket, borrowUsdRate], (d, rate) => ({
@@ -268,19 +269,8 @@ function useCampaigns({
   return marketType === LlamaMarketType.Lend ? [...vaultCampaigns, ...controllerCampaigns] : controllerCampaigns
 }
 
-export const usePageHeader = ({
-  chainId,
-  market,
-  blockchainId,
-  apiMarket,
-  marketType,
-}: {
-  chainId: number
-  market: LlamaMarketTemplate | null | undefined
-  blockchainId: Chain | undefined
-  apiMarket: QueryProp<LlamaMarket>
-  marketType: LlamaMarketType
-}) => {
+export const usePageHeader = () => {
+  const { chainId, blockchainId, market, marketQuery, apiMarket, marketType } = useMarketContext()
   const vaultAddress = getVaultAddress(market, apiMarket.data)
   const controllerAddress = getControllerAddress(market, apiMarket.data)
   const snapshot = q(
@@ -288,7 +278,6 @@ export const usePageHeader = ({
   )
   const marketRates = q(useMarketRates({ chainId, marketId: market?.id }))
   const campaigns = useCampaigns({ blockchainId, controllerAddress, vaultAddress, marketType })
-  const marketQuery = fakeLoadingQ(market ?? undefined) // todo: use a proper query, see #2729
   const useApiMarket = !!apiMarket.data && !marketQuery.data
 
   return {

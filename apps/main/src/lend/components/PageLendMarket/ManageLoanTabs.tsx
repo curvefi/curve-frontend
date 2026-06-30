@@ -1,59 +1,36 @@
 import { networks } from '@/lend/networks'
-import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { AddCollateralForm } from '@/llamalend/features/manage-loan/components/AddCollateralForm'
 import { BorrowMoreForm } from '@/llamalend/features/manage-loan/components/BorrowMoreForm'
 import { RemoveCollateralForm } from '@/llamalend/features/manage-loan/components/RemoveCollateralForm'
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
 import { ClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePositionForm'
 import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealthForm'
+import { useMarketContext } from '@/llamalend/features/market-context'
 import { useLiquidationStatus } from '@/llamalend/features/market-position-details/hooks/useUserLiquidationStatus'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { Decimal } from '@primitives/decimal.utils'
 import { useLoanImplementationKey } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
-import { LlamaMarketType } from '@ui-kit/types/market'
 import type { QueryProp, Range } from '@ui-kit/types/util'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
-const { Lend } = LlamaMarketType
-
-export type LendManageLoanProps = PageContentProps<MarketUrlParams> & {
+type LendManageLoanProps = {
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
   collateralEvents: QueryProp<UserCollateralEvents>
 }
 
 const LendManageMenu = [
-  {
-    value: 'loan-increase',
-    label: t`Borrow`,
-    component: ({ rChainId: chainId, ...props }: LendManageLoanProps) => (
-      <BorrowMoreForm chainId={chainId} networks={networks} marketType={Lend} {...props} />
-    ),
-  },
-  {
-    value: 'loan-decrease',
-    label: t`Repay`,
-    component: ({ rChainId: chainId, ...props }: LendManageLoanProps) => (
-      <RepayForm chainId={chainId} networks={networks} marketType={Lend} {...props} />
-    ),
-  },
+  { value: 'loan-increase', label: t`Borrow`, component: props => <BorrowMoreForm networks={networks} {...props} /> },
+  { value: 'loan-decrease', label: t`Repay`, component: props => <RepayForm networks={networks} {...props} /> },
   {
     value: 'collateral',
     label: t`Collateral`,
     subTabs: [
-      {
-        value: 'add',
-        label: t`Add`,
-        component: ({ rChainId: chainId, ...props }: LendManageLoanProps) => (
-          <AddCollateralForm networks={networks} chainId={chainId} marketType={Lend} {...props} />
-        ),
-      },
+      { value: 'add', label: t`Add`, component: props => <AddCollateralForm networks={networks} {...props} /> },
       {
         value: 'remove',
         label: t`Remove`,
-        component: ({ rChainId: chainId, ...props }: LendManageLoanProps) => (
-          <RemoveCollateralForm networks={networks} chainId={chainId} marketType={Lend} {...props} />
-        ),
+        component: props => <RemoveCollateralForm networks={networks} {...props} />,
       },
     ],
   },
@@ -67,27 +44,20 @@ const LendManageSoftLiquidationMenu = [
       {
         value: 'improve-health',
         label: t`Improve health`,
-        component: ({ rChainId: chainId, ...props }: LendManageLoanProps) => (
-          <ImproveHealthForm chainId={chainId} networks={networks} marketType={Lend} {...props} />
-        ),
+        component: props => <ImproveHealthForm networks={networks} {...props} />,
       },
       {
         value: 'close-position',
         label: t`Close`,
-        component: ({ rChainId: chainId, market }: LendManageLoanProps) => (
-          <ClosePositionForm chainId={chainId} networks={networks} market={market} />
-        ),
+        component: props => <ClosePositionForm networks={networks} {...props} />,
       },
     ],
   },
 ] satisfies FormTab<LendManageLoanProps>[]
 
 export const ManageLoanTabs = (params: LendManageLoanProps) => {
-  const { data: status } = useLiquidationStatus({
-    chainId: params.rChainId,
-    marketId: params.market?.id,
-    userAddress: params.userAddress,
-  })
+  const { chainId, marketId, userAddress } = useMarketContext()
+  const { data: status } = useLiquidationStatus({ chainId, marketId, userAddress })
   const isSoftLiquidation = ['softLiquidation', 'hardLiquidation'].includes(status ?? '')
   const menu = isSoftLiquidation ? LendManageSoftLiquidationMenu : LendManageMenu
   return <FormTabs key={useLoanImplementationKey()} params={params} menu={menu} />

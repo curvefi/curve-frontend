@@ -1,4 +1,3 @@
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { RouteDetails } from '@/llamalend/widgets/RouteDetails'
 import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import Stack from '@mui/material/Stack'
@@ -17,7 +16,8 @@ export const AdvancedCreateLoanOptions = ({
   params,
   values: { debt, userBorrowed, leverageEnabled, range },
   setRange,
-  market,
+  minBands,
+  maxBands,
   collateralToken,
   borrowToken,
 }: {
@@ -25,7 +25,8 @@ export const AdvancedCreateLoanOptions = ({
   params: CreateLoanFormQueryParams
   values: CreateLoanForm
   setRange: (n: number) => void
-  market: LlamaMarketTemplate | undefined
+  minBands: number | undefined
+  maxBands: number | undefined
   collateralToken: Token | undefined
   borrowToken: Token | undefined
 }) => {
@@ -37,7 +38,7 @@ export const AdvancedCreateLoanOptions = ({
 
   return (
     <Stack sx={{ gap: Spacing.sm, marginBlock: Spacing.sm }}>
-      <LiquidationRangeSlider market={market} range={range} setRange={setRange} />
+      <LiquidationRangeSlider minBands={minBands} maxBands={maxBands} range={range} setRange={setRange} />
       {leverageEnabled && (
         <RouteDetails
           network={network}

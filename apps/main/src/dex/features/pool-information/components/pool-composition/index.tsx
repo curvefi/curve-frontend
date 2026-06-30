@@ -42,7 +42,7 @@ export const PoolComposition = ({
 
   return (
     <Stack>
-      <CardHeader title={t`Pool Composition`} size="small" />
+      <CardHeader title={t`Composition`} size="small" />
       <DataTable<PoolCompositionRow>
         category="detail"
         table={table}

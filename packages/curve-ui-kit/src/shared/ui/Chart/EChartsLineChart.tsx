@@ -1,6 +1,8 @@
 import ReactECharts, { type EChartsOption } from 'echarts-for-react'
-import { useEffect, useMemo, useRef, type ReactNode } from 'react'
+import { useMemo, type ReactNode } from 'react'
 import { useTheme } from '@mui/material/styles'
+import { maybe } from '@primitives/objects.utils'
+import { useLatestValueRef } from '@ui-kit/hooks/useLatestValueRef'
 import type { ChartLineDashPattern } from '@ui-kit/shared/ui/Chart/chart.utils'
 import { useEChartsTooltip } from '@ui-kit/shared/ui/Chart/hooks/useEChartsTooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -75,12 +77,8 @@ export const EChartsLineChart = <
   const gridLineColor = Color.Neutral[300]
   const gridTextColor = Text.TextColors.Tertiary
 
-  const xTickFormatterRef = useRef(xTickFormatter)
-  const yTickFormatterRef = useRef(yTickFormatter)
-  useEffect(() => {
-    xTickFormatterRef.current = xTickFormatter
-    yTickFormatterRef.current = yTickFormatter
-  })
+  const xTickFormatterRef = useLatestValueRef(xTickFormatter)
+  const yTickFormatterRef = useLatestValueRef(yTickFormatter)
 
   const activeSeries = useMemo(
     () => (visibleSeries ? series.filter(item => visibleSeries.includes(item.key)) : series),
@@ -95,7 +93,7 @@ export const EChartsLineChart = <
   const tooltipFormatter = useEChartsTooltip(
     data,
     theme,
-    renderTooltip ? (datum: TData) => renderTooltip({ datum, visibleSeries: activeSeries }) : undefined,
+    maybe(renderTooltip, render => datum => render({ datum, visibleSeries: activeSeries })),
   )
 
   const option: EChartsOption = useMemo(
@@ -220,7 +218,20 @@ export const EChartsLineChart = <
           }),
       })),
     }),
-    [activeSeries, data, gridLineColor, gridTextColor, markLines, tooltipFormatter, xAxisType, xKey, yMax, yMin],
+    [
+      activeSeries,
+      data,
+      gridLineColor,
+      gridTextColor,
+      markLines,
+      tooltipFormatter,
+      xAxisType,
+      xKey,
+      xTickFormatterRef,
+      yMax,
+      yMin,
+      yTickFormatterRef,
+    ],
   )
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.

@@ -1,21 +1,26 @@
 import { zeroAddress } from 'viem'
+import { MarketContext, createMarketContextValue } from '@/llamalend/features/market-context'
+import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import {
   getMarketLiquidationBandKey,
   getMarketOraclePriceBandKey,
   getMarketOraclePriceKey,
 } from '@/llamalend/queries/market'
+import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { getUserBandsKey } from '@/llamalend/queries/user/user-bands.query'
 import { getUserCurrentLeverageKey } from '@/llamalend/queries/user/user-current-leverage.query'
 import { getUserHealthKey } from '@/llamalend/queries/user/user-health.query'
 import { getUserPricesKey } from '@/llamalend/queries/user/user-prices.query'
 import { getUserStateKey } from '@/llamalend/queries/user/user-state.query'
+import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { DEFAULT_DECIMALS } from '@primitives/objects.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { getTokenUsdRateKey } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { TestQueryProvider } from '@ui-kit/lib/queries/test-query.provider.test'
-import type { Range } from '@ui-kit/types/util'
+import { LlamaMarketType } from '@ui-kit/types/market'
+import { constQ, type Range } from '@ui-kit/types/util'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { BorrowPositionDetails } from './'
 
@@ -58,29 +63,42 @@ const BorrowPositionDetailsStory = ({
   leverage,
   params,
 }: typeof baseProps) => (
-  <TestQueryProvider
-    data={[
-      [getMarketOraclePriceBandKey(params), oraclePrice],
-      [getUserCurrentLeverageKey(params), `${leverage}`],
-      [getUserBandsKey(params), userBands],
-      [getUserPricesKey(params), userPrices],
-      [getUserHealthKey({ ...params, isFull: true }), `${healthFull}`],
-      [getUserHealthKey({ ...params, isFull: false }), `${healthNotFull}`],
-      [getMarketOraclePriceKey(params), `${oraclePrice}`],
-      [getMarketLiquidationBandKey(params), marketLiquidationBand],
-      [getTokenUsdRateKey({ ...params, tokenAddress: collateralAddress }), collateralUsdPrice],
-      [getTokenUsdRateKey({ ...params, tokenAddress: borrowAddress }), borrowUsdPrice],
-      [getUserStateKey(params), { collateral: `${collateral}`, stablecoin: `${borrow}`, debt: `${totalDebt}` }],
-    ]}
-  >
-    <BorrowPositionDetails
-      tokens={{
+  <MarketContext
+    value={{
+      ...createMarketContextValue({
+        chainId: params.chainId as IChainId,
+        blockchainId: 'ethereum',
+        marketQuery: constQ<LlamaMarketTemplate | undefined>(undefined),
+        apiMarket: constQ<LlamaMarket | undefined>(undefined),
+        marketType: LlamaMarketType.Mint,
+        userAddress: params.userAddress,
+        api: null,
+      }),
+      marketId: params.marketId,
+      tokens: {
         collateralToken: { address: collateralAddress, symbol: collateralSymbol, decimals: DEFAULT_DECIMALS },
         borrowToken: { symbol: borrowSymbol, address: borrowAddress, decimals: DEFAULT_DECIMALS },
-      }}
-      params={params}
-    />
-  </TestQueryProvider>
+      },
+    }}
+  >
+    <TestQueryProvider
+      data={[
+        [getMarketOraclePriceBandKey(params), oraclePrice],
+        [getUserCurrentLeverageKey(params), `${leverage}`],
+        [getUserBandsKey(params), userBands],
+        [getUserPricesKey(params), userPrices],
+        [getUserHealthKey({ ...params, isFull: true }), `${healthFull}`],
+        [getUserHealthKey({ ...params, isFull: false }), `${healthNotFull}`],
+        [getMarketOraclePriceKey(params), `${oraclePrice}`],
+        [getMarketLiquidationBandKey(params), marketLiquidationBand],
+        [getTokenUsdRateKey({ ...params, tokenAddress: collateralAddress }), collateralUsdPrice],
+        [getTokenUsdRateKey({ ...params, tokenAddress: borrowAddress }), borrowUsdPrice],
+        [getUserStateKey(params), { collateral: `${collateral}`, stablecoin: `${borrow}`, debt: `${totalDebt}` }],
+      ]}
+    >
+      <BorrowPositionDetails />
+    </TestQueryProvider>
+  </MarketContext>
 )
 
 const meta: Meta<typeof BorrowPositionDetailsStory> = {

@@ -1,25 +1,16 @@
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
-import type { LoanTabProps } from '@/loan/components/PageMintMarket/types'
 import { networks } from '@/loan/networks'
+import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import type { Range } from '@ui-kit/types/util'
 import { FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
-const menu = [
-  {
-    value: 'create',
-    label: t`Borrow`,
-    component: ({ market, rChainId, onPricesUpdated, apiMarket }: LoanTabProps) => (
-      <CreateLoanForm
-        networks={networks}
-        chainId={rChainId}
-        market={market}
-        onPricesUpdated={onPricesUpdated}
-        apiMarket={apiMarket}
-        marketType={LlamaMarketType.Mint}
-      />
-    ),
-  },
-] satisfies FormTab<LoanTabProps>[]
+type CreateLoanTabsProps = {
+  onPricesUpdated: (prices: Range<Decimal> | undefined) => void
+}
 
-export const CreateLoanTabs = (props: LoanTabProps) => <FormTabs params={props} menu={menu} />
+const menu = [
+  { value: 'create', label: t`Borrow`, component: props => <CreateLoanForm networks={networks} {...props} /> },
+] satisfies FormTab<CreateLoanTabsProps>[]
+
+export const CreateLoanTabs = (props: CreateLoanTabsProps) => <FormTabs params={props} menu={menu} />

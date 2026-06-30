@@ -1,10 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { sum } from 'lodash'
 import { useCallback } from 'react'
-import { useConnection } from 'wagmi'
 import { LEVERAGE } from '@/llamalend/constants'
-import { getTokens } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { type CloseLoanMutation, useClosePositionMutation } from '@/llamalend/mutations/close-position.mutation'
 import { useCloseLoanIsApproved } from '@/llamalend/queries/close-loan/close-loan-is-approved.query'
 import { useUserBalances, useUserState } from '@/llamalend/queries/user'
@@ -19,6 +16,7 @@ import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-tabl
 import { mapQuery } from '@ui-kit/types/util'
 import { decimal, decimalNegate } from '@ui-kit/utils'
 import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
+import { useMarketContext } from '../../market-context'
 import { CLOSE_POSITION_COLUMNS, type ClosePositionRow } from '../ui/columns/columns.definitions'
 
 const CLOSE_POSITION_SAFETY_BUFFER = 1.0001 // 0.01% safety margin
@@ -33,28 +31,23 @@ type UserBalancesData = QueryData<typeof useUserBalances>
 type TokenUsdRate = QueryData<typeof useTokenUsdRate>
 /** Hook to build state for the close-position form */
 export function useClosePositionForm({
-  market,
   network,
-  enabled,
 }: {
-  market: LlamaMarketTemplate | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId; name: string }
-  enabled?: boolean
 }) {
-  const { address: userAddress } = useConnection()
+  const { marketId, tokens, userAddress } = useMarketContext<LlamaChainId>()
   const { chainId } = network
-  const marketId = market?.id
 
   // Token data
-  const { borrowToken, collateralToken } = getTokens(market) ?? {}
+  const { borrowToken, collateralToken } = tokens
 
-  const borrowTokenUsdRateQuery = useTokenUsdRate({ chainId, tokenAddress: borrowToken?.address }, enabled)
+  const borrowTokenUsdRateQuery = useTokenUsdRate({ chainId, tokenAddress: borrowToken?.address })
 
-  const collateralTokenUsdRateQuery = useTokenUsdRate({ chainId, tokenAddress: collateralToken?.address }, enabled)
+  const collateralTokenUsdRateQuery = useTokenUsdRate({ chainId, tokenAddress: collateralToken?.address })
 
-  const userBalancesQuery = useUserBalances({ chainId, marketId, userAddress }, enabled)
+  const userBalancesQuery = useUserBalances({ chainId, marketId, userAddress })
 
-  const userStateQuery = useUserState({ chainId, marketId, userAddress }, enabled)
+  const userStateQuery = useUserState({ chainId, marketId, userAddress })
 
   // Form state
   const form = useForm<CloseLoanMutation>(formOptions)
@@ -82,7 +75,7 @@ export function useClosePositionForm({
       collateralTokenUsdRate: TokenUsdRate,
     ) => {
       // Combine all user state balances with their token data and USD rates
-      const collateralAmount = maybes([collateral, collateralToken], ([collateral, collateralToken]) =>
+      const collateralAmount = maybes([collateral, collateralToken], (collateral, collateralToken) =>
         +collateral > 0
           ? {
               symbol: collateralToken.symbol,
@@ -92,7 +85,7 @@ export function useClosePositionForm({
           : undefined,
       )
 
-      const debtAmount = maybes([debt, borrowToken], ([debt, borrowToken]) =>
+      const debtAmount = maybes([debt, borrowToken], (debt, borrowToken) =>
         +debt > 0
           ? {
               symbol: borrowToken.symbol,
@@ -102,7 +95,7 @@ export function useClosePositionForm({
           : undefined,
       )
 
-      const stablecoinAmount = maybes([stablecoin, borrowToken], ([stablecoin, borrowToken]) =>
+      const stablecoinAmount = maybes([stablecoin, borrowToken], (stablecoin, borrowToken) =>
         +stablecoin > 0
           ? {
               symbol: borrowToken.symbol,
@@ -117,12 +110,12 @@ export function useClosePositionForm({
        * (converted from collateral during soft liquidation).
        * Capped at the debt amount — any surplus becomes the recoverable `excess`.
        */
-      const paidFromCollateral = maybes([stablecoin, debt], ([stablecoin, debt]) =>
+      const paidFromCollateral = maybes([stablecoin, debt], (stablecoin, debt) =>
         decimalNegate(decimal(BigNumber.min(stablecoin, debt))),
       )
       const paidFromCollateralAmount = maybes(
         [paidFromCollateral, borrowToken],
-        ([paidFromCollateral, borrowToken]) =>
+        (paidFromCollateral, borrowToken) =>
           +paidFromCollateral < 0 && {
             symbol: borrowToken.symbol,
             amount: paidFromCollateral,
@@ -137,8 +130,8 @@ export function useClosePositionForm({
        * if the user needs to pay additional from their wallet and how much,
        * or if there's an excess that can be recovered.
        */
-      const excess = maybes([stablecoin, debt], ([stablecoin, debt]) => decimal(BigNumber(stablecoin).minus(debt)))
-      const excessStablecoinAmount = maybes([excess, borrowToken], ([excess, borrowToken]) => ({
+      const excess = maybes([stablecoin, debt], (stablecoin, debt) => decimal(BigNumber(stablecoin).minus(debt)))
+      const excessStablecoinAmount = maybes([excess, borrowToken], (excess, borrowToken) => ({
         symbol: borrowToken.symbol,
         amount: excess,
         usd: maybe(borrowTokenUsdRate, rate => decimalNegate(decimal(BigNumber(-+excess).times(rate)))),
@@ -172,7 +165,7 @@ export function useClosePositionForm({
        * - stablecoin: User's stablecoin balance already present in the AMM
        * - borrowed: User's borrowed token balance
        */
-      const missing = maybes([debt, stablecoin, borrowed], ([debt, stablecoin, borrowed]) =>
+      const missing = maybes([debt, stablecoin, borrowed], (debt, stablecoin, borrowed) =>
         decimal(
           BigNumber.max(0, new BigNumber(debt).minus(stablecoin).times(CLOSE_POSITION_SAFETY_BUFFER).minus(borrowed)),
         ),
@@ -220,7 +213,7 @@ export function useClosePositionForm({
     borrowedBalance: closePositionData?.borrowedBalance,
     closeError,
     formErrors: visibleErrors,
-    isApproved: useCloseLoanIsApproved({ chainId, marketId, userAddress }, enabled),
+    isApproved: useCloseLoanIsApproved({ chainId, marketId, userAddress }),
     onSubmit: form.handleSubmit(onSubmit),
   }
 }

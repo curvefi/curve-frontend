@@ -1,26 +1,25 @@
-import type { ReactNode } from 'react'
+import { type Address } from 'viem'
+import { formatCryptoA, FXSWAP } from '@/dex/components/PageCreatePool/constants'
+import { useNetworkByChain } from '@/dex/entities/networks'
+import { usePoolMetadata } from '@/dex/entities/pool-metadata.query'
+import { usePoolSnapshots } from '@/dex/entities/pool-snapshots.query'
+import { usePoolParameters } from '@/dex/queries/pool-parameters.query'
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
+import type { Chain as BlockchainId } from '@curvefi/prices-api'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
-import { maybe, maybes, notFalsy } from '@primitives/objects.utils'
+import { maybe, maybes } from '@primitives/objects.utils'
 import { formatDate } from '@ui/utils'
 import { dayjs } from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
-import { AddressActionInfo } from '@ui-kit/shared/ui/AddressActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { amount, formatNumber } from '@ui-kit/utils'
-import { useParameters } from '../hooks/useParameters'
+import { amount, Chain, formatNumber } from '@ui-kit/utils'
+import { Section } from './Section'
 
 const { Spacing } = SizesAndSpaces
-
-const formatParam = (number: number) => formatNumber(number, { decimals: 5, abbreviate: false })
-
-const Section = ({ children }: { children: ReactNode }) => (
-  <Stack sx={{ paddingBlock: Spacing.sm, '&:empty': { display: 'none' } }}>{children}</Stack>
-)
 
 export const Parameters = ({
   chainId,
@@ -31,28 +30,31 @@ export const Parameters = ({
   poolId: string
   poolDataCacheOrApi: PoolDataCacheOrApi
 }) => {
+  const poolAddress = poolDataCacheOrApi.pool.address as Address
+  const { data: network } = useNetworkByChain({ chainId })
+  const chain = network.networkId as BlockchainId
+  const { data: metadata } = usePoolMetadata({ chain, poolAddress })
+  const { data: parameters, isLoading: isLoadingParameters } = usePoolParameters({ chainId, poolId })
+  const { data: snapshots } = usePoolSnapshots({ chain, poolAddress })
+  const snapshotData = snapshots?.[0]
+  const isFxSwap = metadata?.hasDonations ?? false
   const {
     A,
-    adminFee,
-    basePools,
-    fee,
-    formatADisplay,
+    initial_A,
+    initial_A_time,
+    virtualPrice,
     future_A,
     future_A_time,
     gamma,
-    initial_A,
-    initial_A_time,
-    isEywaPool,
-    isLoadingParameters,
-    metadata,
-    network,
-    poolAddress,
-    poolType,
-    snapshotData,
-    virtualPrice,
-  } = useParameters({ chainId, poolDataCacheOrApi, poolId })
+    adminFee = '',
+    fee,
+  } = parameters ?? {}
+  const formatADisplay = (a: number | string | undefined) =>
+    formatNumber(amount(!isFxSwap || a == null ? a : formatCryptoA(a, FXSWAP)), { abbreviate: false, fallback: '-' })
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
+  const isEywaPool = chainId === Chain.Fantom && poolId.startsWith('factory-eywa')
 
-  const rampADetails = maybes([initial_A, future_A_time, future_A], ([initial_A, future_A_time, future_A]) => ({
+  const rampADetails = maybes([initial_A, future_A_time, future_A], (initial_A, future_A_time, future_A) => ({
     isFutureATimePassedToday: dayjs().isAfter(future_A_time, 'day'),
     isRampUp: Number(future_A) > Number(initial_A),
   }))
@@ -110,7 +112,7 @@ export const Parameters = ({
                   {rampADetails?.isFutureATimePassedToday &&
                     maybes(
                       [initial_A_time, future_A_time],
-                      ([initial_A_time, future_A_time]) =>
+                      (initial_A_time, future_A_time) =>
                         t`Last change occurred between ${formatDate(initial_A_time, 'short')} and ${formatDate(
                           future_A_time,
                           'short',
@@ -134,17 +136,17 @@ export const Parameters = ({
           )}
 
           {maybe(snapshotData?.offpegFeeMultiplier, x => (
-            <ActionInfo label={t`Off peg multiplier`} value={formatParam(x / 10 ** 10)} />
+            <ActionInfo label={t`Off peg multiplier`} value={formatNumber(x / 10 ** 10, 'pool.parameter')} />
           ))}
         </Section>
 
         <Section>
           {maybe(snapshotData?.midFee, x => (
-            <ActionInfo label={t`Mid fee`} value={formatParam(x / 10 ** 8)} />
+            <ActionInfo label={t`Mid fee`} value={formatNumber(x / 10 ** 8, 'pool.parameter')} />
           ))}
 
           {maybe(snapshotData?.outFee, x => (
-            <ActionInfo label={t`Out fee`} value={formatParam(x / 10 ** 8)} />
+            <ActionInfo label={t`Out fee`} value={formatNumber(x / 10 ** 8, 'pool.parameter')} />
           ))}
         </Section>
 
@@ -157,17 +159,17 @@ export const Parameters = ({
           )}
 
           {maybe(snapshotData?.feeGamma, x => (
-            <ActionInfo label={t`Fee Gamma`} value={formatParam(x / 10 ** 18)} />
+            <ActionInfo label={t`Fee Gamma`} value={formatNumber(x / 10 ** 18, 'pool.parameter')} />
           ))}
 
           {maybe(snapshotData?.allowedExtraProfit, x => (
-            <ActionInfo label={t`Allowed extra profit`} value={formatParam(x / 10 ** 18)} />
+            <ActionInfo label={t`Allowed extra profit`} value={formatNumber(x / 10 ** 18, 'pool.parameter')} />
           ))}
         </Section>
 
         <Section>
           {maybe(snapshotData?.adjustmentStep, x => (
-            <ActionInfo label={t`Adjustment step`} value={formatParam(x / 10 ** 18)} />
+            <ActionInfo label={t`Adjustment step`} value={formatNumber(x / 10 ** 18, 'pool.parameter')} />
           ))}
 
           {maybe(snapshotData?.maHalfTime, x => (
@@ -176,30 +178,6 @@ export const Parameters = ({
               value={formatNumber(x, { useGrouping: false, abbreviate: false })}
             />
           ))}
-        </Section>
-
-        <Section>
-          <ActionInfo
-            label={t`Pool type`}
-            value={notFalsy(
-              poolType,
-              metadata?.metapool && `${t`Metapool`}`,
-              basePools?.some(pool => pool.pool === poolAddress) && `${t`Basepool`}`,
-            ).join(', ')}
-          />
-
-          {maybe(metadata?.basePool, x => (
-            <AddressActionInfo network={network} title={t`Basepool`} address={x} />
-          ))}
-
-          {maybe(metadata?.vyperVersion, x => (
-            <ActionInfo label={t`Vyper version`} value={x} />
-          ))}
-
-          {maybe(metadata?.registry, x => (
-            <AddressActionInfo network={network} title={t`Registry`} address={x} />
-          ))}
-          <ActionInfo label={t`ID`} value={poolId} loading={!poolId} />
         </Section>
       </CardContent>
     </Card>

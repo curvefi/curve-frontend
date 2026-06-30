@@ -43,4 +43,4 @@ export const useDexPoolListV2 = useBetaChannel
 export const isDexPoolListV2Enabled = (releaseChannel: ReleaseChannel) => releaseChannel === ReleaseChannel.Beta
 
 /** Fresh pool page experience */
-export const usePoolFreshup = useBetaChannel
+export const usePoolFreshup = useStableChannel
