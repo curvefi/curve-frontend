@@ -14,7 +14,6 @@ export const {
     userAddress,
     userCollateral = '0',
     userBorrowed = '0',
-    maxDebt,
     leverageEnabled,
     routeId,
   }: BorrowMoreParams) =>
@@ -23,7 +22,6 @@ export const {
       'borrowMoreIsApproved',
       { userCollateral },
       { userBorrowed },
-      { maxDebt },
       { leverageEnabled },
       { routeId },
     ] as const,
