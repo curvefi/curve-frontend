@@ -204,7 +204,7 @@ export const useSupplyRate = ({
       rebasingYieldApy: assets.borrowed.rebasingYield,
       marketOnChainRewards: {
         crvRates:
-          maybes([rates.lendCrvAprUnboosted, rates.lendCrvAprBoosted], ([min, max]) => [min, max] as Range<number>) ??
+          maybes([rates.lendCrvAprUnboosted, rates.lendCrvAprBoosted], (min, max) => [min, max] as Range<number>) ??
           null,
         rewardsApr: rates.incentives.map(({ percentage, title, address }) => ({
           apy: percentage,
@@ -241,7 +241,7 @@ export const useAvailableLiquidity = ({
       value: available,
       max: totalAssets,
       usdRate: borrowUsdRate,
-      notional: maybes([available, borrowUsdRate], ([liq, rate]) => decimalMultiply(liq, rate)),
+      notional: maybes([available, borrowUsdRate], (liq, rate) => decimalMultiply(liq, rate)),
     }),
   )
   const apiLiquidity = combineQueries([apiMarket, borrowUsdRate], (d, rate) => ({
