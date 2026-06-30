@@ -11,7 +11,6 @@ import { useLiquidationStatus } from '@/llamalend/features/market-position-detai
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { hasResetPosition } from '@/llamalend/llama.utils'
 import { Decimal } from '@primitives/decimal.utils'
-import { notFalsy } from '@primitives/objects.utils'
 import { useLlamaResetPosition, useLoanImplementationKey } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import type { QueryProp, Range } from '@ui-kit/types/util'
@@ -42,11 +41,13 @@ const LendManageMenu = [
   },
 ] satisfies LendManageLoanTab[]
 
-const ResetSoftLiquidationTab = {
-  value: 'reset',
-  label: t`Reset`,
-  component: props => <ResetPositionForm networks={networks} {...props} />,
-} satisfies LendManageLoanSubTab
+const createResetSoftLiquidationTab = (visible: boolean) =>
+  ({
+    value: 'reset',
+    label: t`Reset`,
+    visible,
+    component: props => <ResetPositionForm networks={networks} {...props} />,
+  }) satisfies LendManageLoanSubTab
 
 const CloseSoftLiquidationTab = {
   value: 'close-position',
@@ -65,7 +66,7 @@ const createSoftLiqMenu = (showReset: boolean) =>
     {
       value: 'soft-liquidation',
       label: t`Manage soft liquidation`,
-      subTabs: notFalsy(showReset && ResetSoftLiquidationTab, CloseSoftLiquidationTab, ImproveHealthSoftLiquidationTab),
+      subTabs: [createResetSoftLiquidationTab(showReset), CloseSoftLiquidationTab, ImproveHealthSoftLiquidationTab],
     },
   ] satisfies LendManageLoanTab[]
 
