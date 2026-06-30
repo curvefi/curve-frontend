@@ -146,7 +146,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   useCallbackSync(useBorrowMorePrices(params), onPricesUpdated)
 
   const isLeverageEnabled = isLeverageBorrowMore(market, values.leverageEnabled)
-  const priceImpact = q(useBorrowMorePriceImpact(params, isLeverageEnabled))
+  const priceImpact = q(useBorrowMorePriceImpact(params, !zapAddress))
   const { formState } = form
   const isPending = formState.isSubmitting || isBorrowing
   return {
@@ -195,7 +195,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
       collateralEvents,
     }),
     // todo: delete this if users do not complain about it, for now dev-only feature
-    showUserBorrowed: isLeverageEnabled && canLeverageUserBorrowed(market) && isDevelopment,
+    showUserBorrowed: isLeverageEnabled && !!canLeverageUserBorrowed(market) && isDevelopment,
     isLeverageSupported: isLeverageBorrowMoreSupported(market),
     leverage: useBorrowMoreLeverage(params),
     zapAddress,

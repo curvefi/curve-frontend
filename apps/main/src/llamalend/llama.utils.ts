@@ -37,7 +37,7 @@ export const getLlamaMarket = (id: string | LlamaMarketTemplate, lib = requireLi
 export const tryGetLlamaMarket = (marketId: LlamaMarketTemplate | string | null | undefined) => {
   if (typeof marketId === 'object') return marketId
   const lib = getLib('llamaApi') // retrieve lib separately to avoid crashing the whole app when uninitialized
-  return marketId && lib && getLlamaMarket(marketId, lib)
+  return maybes([marketId, lib], ([marketId, lib]) => getLlamaMarket(marketId, lib))
 }
 
 /**
@@ -58,9 +58,13 @@ export const hasLeverage = <T extends LlamaMarketTemplate | undefined>(market: T
  * Note: Some older Mint markets (marketId < 6) support leverage operations (open/close positions)
  * but cannot calculate the leverage multiplier value.
  */
-export const hasLeverageValue = (market: LlamaMarketTemplate) =>
-  (market instanceof LendMarketTemplate && hasV1Leverage(market)) ||
-  (market instanceof MintMarketTemplate && hasV2Leverage(market))
+export const hasLeverageValue = <T extends LlamaMarketTemplate | null | undefined>(market: T) =>
+  maybe(
+    market,
+    market =>
+      (market instanceof LendMarketTemplate && hasV1Leverage(market)) ||
+      (market instanceof MintMarketTemplate && hasV2Leverage(market)),
+  )
 
 export const hasV1Leverage = (market: LlamaMarketTemplate) =>
   market instanceof LendMarketTemplate

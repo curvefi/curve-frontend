@@ -150,7 +150,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     form,
   })
 
-  const priceImpact = q(useRepayPriceImpact(params))
+  const priceImpact = q(useRepayPriceImpact(params, !zapAddress))
   const { formState } = form
   const isPending = formState.isSubmitting || isRepaying
   return {

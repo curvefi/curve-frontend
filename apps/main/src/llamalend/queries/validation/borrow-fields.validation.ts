@@ -93,7 +93,7 @@ export const validateLeverageValuesSupported = (
   const market = tryGetLlamaMarket(marketId)
   skipWhen(!market || !required, () => {
     test('marketId', 'Market does not support leverage values', () => {
-      enforce(market && hasLeverageValue(market)).isTruthy()
+      enforce(hasLeverageValue(market)).isTruthy()
     })
   })
 }

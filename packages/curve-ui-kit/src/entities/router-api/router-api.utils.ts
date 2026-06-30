@@ -48,8 +48,9 @@ export const getExpectedFn =
     chainId,
     router,
     userAddress,
+    zapAddress,
     slippage,
-  }: Pick<RoutesQuery, 'chainId' | 'router' | 'slippage' | 'userAddress'>): GetExpectedFn =>
+  }: Pick<RoutesQuery, 'chainId' | 'router' | 'slippage' | 'userAddress' | 'zapAddress'>): GetExpectedFn =>
   async (tokenIn, tokenOut, amountIn, blacklist) => {
     const routes = await fetchApiRoutes({
       chainId,
@@ -60,6 +61,7 @@ export const getExpectedFn =
       router: router ?? 'curve', // use curve router for getting the maximum amounts
       slippage,
       userAddress,
+      zapAddress,
     })
     const route = assert(routes?.[0], 'No route available')
     return parseRoute(route.id).quote

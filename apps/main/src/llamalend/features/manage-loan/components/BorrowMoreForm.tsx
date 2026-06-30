@@ -85,6 +85,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           marketType={marketType}
           onSlippageChange={value => updateForm({ slippage: value })}
           leverageEnabled={values.leverageEnabled}
+          priceImpact={priceImpact}
         />
       }
     >

@@ -105,7 +105,7 @@ export const RepayForm = <ChainId extends IChainId>({
   const selectedToken = selectedField == 'userBorrowed' ? borrowToken : collateralToken
 
   const fromPosition = isFull.data === false && selectedField === 'stateCollateral'
-  const showLeverage = selectedToken !== borrowToken && (market ? hasLeverageValue(market) : undefined)
+  const showLeverage = selectedToken !== borrowToken && hasLeverageValue(market)
   const { update: updateForm, formState } = form
   const isSelectedDirty = formState.dirtyFields[selectedField]
 
@@ -155,6 +155,7 @@ export const RepayForm = <ChainId extends IChainId>({
           routes={routes}
           prices={q(useRepayPrices(params, !isInSoftLiquidation))} // when in soft liquidation, the prices do not change
           prevPrices={q(useUserPrices(params))}
+          priceImpact={priceImpact}
         />
       }
     >
