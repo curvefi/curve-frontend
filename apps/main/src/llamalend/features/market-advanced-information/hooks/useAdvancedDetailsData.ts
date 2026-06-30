@@ -76,7 +76,7 @@ export const useAdvancedDetailsData = ({
           ({ borrowed, collateral }, { totalAssets, available }, collateralUsdRate, borrowedUsdRate) =>
             maybes(
               [borrowed, collateral, totalAssets, available, collateralUsdRate, borrowedUsdRate],
-              ([borrowed, collateral, totalAssets, available, collateralUsdRate, borrowedUsdRate]) => ({
+              (borrowed, collateral, totalAssets, available, collateralUsdRate, borrowedUsdRate) => ({
                 value: calculateLendMarketTvlUsd({
                   borrowedBalanceUsd: +borrowed * borrowedUsdRate,
                   collateralBalanceUsd: +collateral * collateralUsdRate,
@@ -87,7 +87,7 @@ export const useAdvancedDetailsData = ({
             ),
         )
       : combineQueries([totalCollateral, collateralUsdRate], ({ collateral }, collateralUsdRate) =>
-          maybes([collateral, collateralUsdRate], ([collateral, collateralUsdRate]) => ({
+          maybes([collateral, collateralUsdRate], (collateral, collateralUsdRate) => ({
             value: calculateMintMarketTvlUsd({ collateralAmountUsd: +collateral * collateralUsdRate }),
           })),
         ),
@@ -106,7 +106,7 @@ export const useAdvancedDetailsData = ({
           totalBorrowed: borrowed,
           combinedCollateralUsdValue: maybes(
             [collateralUsdRate, borrowedUsdRate, collateral, borrowed],
-            ([collateralUsdRate, borrowedUsdRate, collateral, borrowed]) =>
+            (collateralUsdRate, borrowedUsdRate, collateral, borrowed) =>
               +collateral * collateralUsdRate + +borrowed * borrowedUsdRate,
           ),
           collateralUsdRate,
@@ -119,10 +119,10 @@ export const useAdvancedDetailsData = ({
         borrowedSymbol: assets.borrowed.symbol,
         totalBorrowed: decimal(assets.borrowed.balance ?? 0),
         combinedCollateralUsdValue: totalCollateralUsd,
-        collateralUsdRate: maybes([assets.collateral.balance, assets.collateral.balanceUsd], ([balance, balanceUsd]) =>
+        collateralUsdRate: maybes([assets.collateral.balance, assets.collateral.balanceUsd], (balance, balanceUsd) =>
           balance ? balanceUsd / balance : undefined,
         ),
-        borrowedUsdRate: maybes([assets.borrowed.balance, assets.borrowed.balanceUsd], ([balance, balanceUsd]) =>
+        borrowedUsdRate: maybes([assets.borrowed.balance, assets.borrowed.balanceUsd], (balance, balanceUsd) =>
           balance ? balanceUsd / balance : undefined,
         ),
       })),

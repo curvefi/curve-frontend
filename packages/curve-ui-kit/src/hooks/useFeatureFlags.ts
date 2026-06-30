@@ -45,4 +45,4 @@ export const useLlamaResetPosition = useBetaChannel
 export const useDexPoolListV2 = useBetaChannel
 
 /** Fresh pool page experience */
-export const usePoolFreshup = useBetaChannel
+export const usePoolFreshup = useStableChannel
