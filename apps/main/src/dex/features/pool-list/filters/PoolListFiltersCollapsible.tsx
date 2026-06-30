@@ -1,11 +1,15 @@
-import { notFalsy } from '@primitives/objects.utils'
+import { maybe, notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { getRangeFilterLabel } from '@ui-kit/shared/ui/DataTable/filters'
 import { TableActiveFilterChip } from '@ui-kit/shared/ui/DataTable/TableActiveFilterChip'
 import { TableActiveFilterGroups } from '@ui-kit/shared/ui/DataTable/TableActiveFilterGroups'
 import { TableActiveFiltersBar } from '@ui-kit/shared/ui/DataTable/TableActiveFiltersBar'
 import { emptyUrlRange } from '@ui-kit/shared/ui/DataTable/urlFilter.utils'
-import type { PoolListFilterProps } from '../hooks/usePoolListFilters'
+import { POOL_LIST_DEFAULT_TVL_MIN, type PoolListFilterProps } from '../hooks/usePoolListFilters'
+
+// Show the hidden default TVL min in active range chips once a max bound is active.
+const getTvlFilterLabel = ([min, max]: PoolListFilterProps['tvlRange']) =>
+  getRangeFilterLabel([min ?? maybe(max, () => POOL_LIST_DEFAULT_TVL_MIN) ?? null, max], 'dollar', { defaultMin: null })
 
 type PoolListFiltersCollapsibleProps = {
   hasActiveFilters: boolean
@@ -26,7 +30,7 @@ export const PoolListFiltersCollapsible = ({
   volumeRange,
 }: PoolListFiltersCollapsibleProps) => {
   const poolTypeLabel = poolTypeFilters.find(({ key }) => key === poolType)?.label
-  const tvlLabel = getRangeFilterLabel(tvlRange, 'dollar')
+  const tvlLabel = getTvlFilterLabel(tvlRange)
   const volumeLabel = getRangeFilterLabel(volumeRange, 'dollar')
   const apyLabel = getRangeFilterLabel(apyRange, 'percentage', { defaultMin: null })
   const activeFilterGroups = notFalsy(

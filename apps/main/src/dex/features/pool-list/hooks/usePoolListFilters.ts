@@ -31,10 +31,13 @@ const APY_QUERY_FIELD = 'apy'
 const RANGE_QUERY_FIELDS = [TVL_QUERY_FIELD, VOLUME_QUERY_FIELD, APY_QUERY_FIELD] as const
 const FILTER_QUERY_FIELDS = [SEARCH_QUERY_FIELD, POOL_TYPE_QUERY_FIELD, ...RANGE_QUERY_FIELDS] as const
 type RangeQueryField = (typeof RANGE_QUERY_FIELDS)[number]
-type NumberRangeQueryField = typeof TVL_QUERY_FIELD | typeof VOLUME_QUERY_FIELD | typeof APY_QUERY_FIELD
+type DefaultNumberRangeQueryField = typeof VOLUME_QUERY_FIELD | typeof APY_QUERY_FIELD
 
 const POOL_TYPE_SET = new Set<string>(POOL_LIST_POOL_TYPES)
-// TVL and Volume are non-negative, so min 0 is the default. APY can be negative, so min 0 is an active filter.
+// Hide dust pools by default, without treating the default min as an active URL/UI filter on its own.
+export const POOL_LIST_DEFAULT_TVL_MIN = 10_000
+export const POOL_LIST_DEFAULT_TVL_RANGE = [POOL_LIST_DEFAULT_TVL_MIN, null] satisfies RangeFilterDefaults<number>
+// Volume is non-negative, so min 0 is the default. APY can be negative, so min 0 is an active filter.
 const POOL_LIST_DEFAULT_NUMBER_RANGE = [null, null] satisfies RangeFilterDefaults<number>
 export const POOL_LIST_DEFAULT_NON_NEGATIVE_RANGE = [0, null] satisfies RangeFilterDefaults<number>
 
@@ -59,6 +62,7 @@ export type PoolListApiParams = Pick<
 
 const isPoolType = (value: string | null): value is PoolListPoolType => value != null && POOL_TYPE_SET.has(value)
 
+// The prices API should always receive the default TVL min even when URL/UI state is empty.
 const getApiNumberRangeParams = ({
   apyRange: [minApy, maxApy],
   tvlRange: [minTvl, maxTvl],
@@ -68,7 +72,7 @@ const getApiNumberRangeParams = ({
   maxTvl: maxTvl ?? undefined,
   maxVolume: maxVolume ?? undefined,
   minApy: minApy ?? undefined,
-  minTvl: minTvl ?? undefined,
+  minTvl: minTvl ?? POOL_LIST_DEFAULT_TVL_MIN,
   minVolume: minVolume ?? undefined,
 })
 
@@ -77,10 +81,23 @@ const getRangeUpdate = <T extends string | number>(field: RangeQueryField, value
 })
 
 const getNumberRangeUpdate = (
-  field: NumberRangeQueryField,
+  field: DefaultNumberRangeQueryField,
   value: PoolListNumberRange,
   defaults: RangeFilterDefaults<number>,
 ) => getRangeUpdate(field, normalizeRangeFilterDefaults(value, defaults))
+
+// Keep `tvl=10000~max` when a max exists so URL consumers can display a complete range.
+// Default-min-only stays hidden as no `tvl` param.
+const getTvlRangeUrlValue = (range: PoolListNumberRange) => {
+  const [minTvl, maxTvl] = normalizeRangeFilterDefaults(range, POOL_LIST_DEFAULT_TVL_RANGE)
+  const urlMinTvl = minTvl ?? maybe(maxTvl, () => POOL_LIST_DEFAULT_TVL_MIN) ?? null
+
+  return serializeRangeFilter([urlMinTvl, maxTvl])
+}
+
+const getTvlRangeUpdate = (value: PoolListNumberRange) => ({
+  [TVL_QUERY_FIELD]: getTvlRangeUrlValue(value),
+})
 
 const getRangeUrlCleanupValue = <T extends string | number>({ range, shouldCleanUrl }: ParsedUrlRange<T>) =>
   shouldCleanUrl ? serializeRangeFilter(range) : undefined
@@ -92,6 +109,18 @@ const getRangeCleanupUpdate = <T extends string | number>(
   const value = getRangeUrlCleanupValue(rangeState)
 
   return value === undefined ? {} : { [field]: value }
+}
+
+const getTvlRangeCleanupUpdate = (
+  originalValue: string | null,
+  rangeState: ParsedUrlRange<number>,
+): PoolListQueryUpdate => {
+  if (originalValue == null) return {}
+
+  // Canonicalize shared/bookmarked TVL URLs to the same hidden-default contract used by user edits.
+  const value = getTvlRangeUrlValue(rangeState.range)
+
+  return value === originalValue ? {} : { [TVL_QUERY_FIELD]: value }
 }
 
 // The API exposes crypto aliases that map back to the single "crypto" UI filter.
@@ -114,7 +143,7 @@ export const usePoolListFilters = (updateQueryAndResetPage: PoolListQueryUpdater
   // URL params are untrusted: users can manually edit or share stale links.
   // Drop invalid filter values here so chips, active counts, and API params all derive from the same valid state.
   const tvlRangeState = useMemo(
-    () => parseNumberUrlRange(searchParams.get(TVL_QUERY_FIELD), POOL_LIST_DEFAULT_NON_NEGATIVE_RANGE),
+    () => parseNumberUrlRange(searchParams.get(TVL_QUERY_FIELD), POOL_LIST_DEFAULT_TVL_RANGE),
     [searchParams],
   )
   const volumeRangeState = useMemo(
@@ -131,11 +160,11 @@ export const usePoolListFilters = (updateQueryAndResetPage: PoolListQueryUpdater
   const filterUrlCleanup = useMemo(
     () => ({
       ...(poolTypeQueryValue != null && !poolType ? { [POOL_TYPE_QUERY_FIELD]: null } : {}),
-      ...getRangeCleanupUpdate(TVL_QUERY_FIELD, tvlRangeState),
+      ...getTvlRangeCleanupUpdate(searchParams.get(TVL_QUERY_FIELD), tvlRangeState),
       ...getRangeCleanupUpdate(VOLUME_QUERY_FIELD, volumeRangeState),
       ...getRangeCleanupUpdate(APY_QUERY_FIELD, apyRangeState),
     }),
-    [apyRangeState, poolType, poolTypeQueryValue, tvlRangeState, volumeRangeState],
+    [apyRangeState, poolType, poolTypeQueryValue, searchParams, tvlRangeState, volumeRangeState],
   )
   useEffect(() => {
     if (!isEmpty(filterUrlCleanup)) {
@@ -153,8 +182,7 @@ export const usePoolListFilters = (updateQueryAndResetPage: PoolListQueryUpdater
     [updateQueryAndResetPage],
   )
   const setTvlRange = useCallback(
-    (value: PoolListNumberRange) =>
-      updateQueryAndResetPage(getNumberRangeUpdate(TVL_QUERY_FIELD, value, POOL_LIST_DEFAULT_NON_NEGATIVE_RANGE)),
+    (value: PoolListNumberRange) => updateQueryAndResetPage(getTvlRangeUpdate(value)),
     [updateQueryAndResetPage],
   )
   const setVolumeRange = useCallback(
