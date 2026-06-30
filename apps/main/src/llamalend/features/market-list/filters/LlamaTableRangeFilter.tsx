@@ -27,7 +27,7 @@ export const LlamaTableRangeFilter = <TColumnId extends string>({
       range={range}
       setRange={setRange}
       adornment={adornment}
-      disabled={isLoading}
+      isLoading={isLoading}
       min={min}
       max={max}
     />

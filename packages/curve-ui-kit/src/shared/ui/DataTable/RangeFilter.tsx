@@ -17,12 +17,12 @@ type RangeFilterProps = {
   range: Range<number | null>
   setRange: (range: Range<number | null>) => void
   adornment?: NumericTextFieldProps['adornment']
-  disabled?: boolean
+  isLoading?: boolean
   min?: number
   max?: number
 }
 
-export const RangeFilter = ({ id, range, setRange, adornment, disabled = false, min, max }: RangeFilterProps) => {
+export const RangeFilter = ({ id, range, setRange, adornment, isLoading = false, min, max }: RangeFilterProps) => {
   const handleInputChange = useCallback(
     (index: InputIndex) => (newValue: string | undefined) => {
       const nextFirst = index === 0 ? (amount(newValue) as number) : range[0]
@@ -69,7 +69,7 @@ export const RangeFilter = ({ id, range, setRange, adornment, disabled = false, 
       max={decimal(max)}
       onChange={handleInputChange(index)}
       onBlur={handleInputBlur(index)}
-      disabled={disabled}
+      disabled={isLoading}
       adornment={adornment}
       format={value => (value == null ? '' : formatNumber(value, { abbreviate: true }))}
       placeholder={placeholder}

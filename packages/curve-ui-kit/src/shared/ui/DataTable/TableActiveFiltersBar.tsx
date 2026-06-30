@@ -15,7 +15,7 @@ type TableActiveFiltersBarProps = {
   testId: string
 }
 
-/** Collapsible active-filter row for DataTable screens. Extracted from the LlamaLend markets list. */
+/** Collapsible active-filter row for DataTable. */
 export const TableActiveFiltersBar = ({
   children,
   endSlot,
