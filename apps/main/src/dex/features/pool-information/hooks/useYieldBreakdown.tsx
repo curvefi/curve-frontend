@@ -117,9 +117,10 @@ export const useYieldBreakdown = ({
       source: {
         icon: null,
         iconPosition: 'left',
-        primary: t`Swap fees`,
+        primary: t`Base APY`,
       },
       apy: maybe(rewardsApy?.base?.day, x => (+x > 0 ? +x : undefined)), // already APY, no need to calculate
+      apyTooltip: t`Base variable APY (vAPY) is the annualized yield from trading fees based on the activity over the past 24h. If a pool holds a yield bearing asset, the intrinsic yield is added.`,
     })
 
     return rows
