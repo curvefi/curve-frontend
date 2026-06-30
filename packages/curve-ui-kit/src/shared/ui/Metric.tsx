@@ -4,6 +4,7 @@ import Stack from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
 import { toArray } from '@primitives/array.utils'
 import type { Amount } from '@primitives/decimal.utils'
+import { useBreakpoint } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorIconButton } from '@ui-kit/shared/ui/ErrorIconButton'
 import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
@@ -21,6 +22,7 @@ import {
 } from '@ui-kit/utils'
 import { showToast } from '@ui-kit/widgets/Toast/toast.util'
 import { LabelTooltipIcon } from './LabelTooltipIcon'
+import { METRIC_CATEGORIES, type MetricCategory, type MetricLayout } from './metric-categories'
 import { WithSkeleton } from './WithSkeleton'
 import { WithWrapper } from './WithWrapper'
 
@@ -59,9 +61,6 @@ const MetricButtonSize = {
   large: 'small',
   extraLarge: 'medium',
 } satisfies Record<keyof typeof MetricSize, ButtonProps['size']>
-
-// eslint-disable-next-line react-refresh/only-export-components -- Existing violation before enabling this rule.
-export const SIZES = Object.keys(MetricSize) as (keyof typeof MetricSize)[]
 
 type Notional = Omit<NumberFormatOptions, 'abbreviate'> & {
   value: Amount
@@ -109,7 +108,7 @@ const getTypographyColorProps = (color: TypographyProps['color']) =>
 
 type MetricValueProps = Pick<MetricProps, 'valueOptions' | 'change' | 'testId'> & {
   value: Amount | null
-  size: NonNullable<MetricProps['size']>
+  size: MetricLayout['size']
   tooltip?: MetricProps['valueTooltip']
   copyValue?: () => void
 }
@@ -209,8 +208,7 @@ export type MetricProps = {
   /** Optional tooltip shown when hovering the error triangle icon. Must include both title and body. */
   errorTooltip?: MetricErrorTooltip
 
-  orientation?: 'vertical' | 'horizontal'
-  size?: keyof typeof MetricSize
+  category: MetricCategory
   alignment?: Alignment
   testId?: string
   sx?: SxProps
@@ -231,12 +229,13 @@ export const Metric = ({
   leadingIcon,
   errorTooltip,
 
-  orientation = 'vertical',
-  size = 'medium',
+  category,
   alignment = 'start',
   testId = 'metric',
   sx,
 }: MetricProps) => {
+  const breakpoint = useBreakpoint()
+  const { orientation, size } = METRIC_CATEGORIES[category][breakpoint]
   const isHorizontal = orientation === 'horizontal'
   const notionals = useMemo(() => notionalsToString(notional), [notional])
   const copyValue = useCallback(() => {

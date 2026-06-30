@@ -20,9 +20,9 @@ const { Spacing } = SizesAndSpaces
 const ListInfoItem = ({
   value,
   ...props
-}: Omit<MetricProps, 'value'> & { value: number | string | undefined | null }) => (
+}: Omit<MetricProps, 'value' | 'category'> & { value: number | string | undefined | null }) => (
   <Grid size={6}>
-    <Metric value={constQ(decimal(value) ?? null)} {...props} />
+    <Metric category="dex.poolListMobileExpanded" value={constQ(decimal(value) ?? null)} {...props} />
   </Grid>
 )
 

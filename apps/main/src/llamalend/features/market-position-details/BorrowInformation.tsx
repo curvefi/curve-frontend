@@ -23,6 +23,8 @@ const dollarUnitOptions = {
   },
 }
 
+const METRIC_CATEGORY = 'llamalend.positionBorrowDetails'
+
 type BorrowInformationProps = {
   params: UserMarketParams
   tokens: MarketTokensOrEmpty
@@ -48,11 +50,11 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
         sx={{
           display: 'grid',
           gap: 3,
-          gridTemplateColumns: { mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)', desktop: 'repeat(5, 1fr)' },
+          gridTemplateColumns: { mobile: 'repeat(1, 1fr)', tablet: 'repeat(4, 1fr)', desktop: 'repeat(5, 1fr)' },
         }}
       >
         <Metric
-          size="small"
+          category={METRIC_CATEGORY}
           label={t`Collateral value`}
           value={collateralValue}
           valueOptions={{ unit: 'dollar' }}
@@ -79,7 +81,7 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
           }}
         />
         <Metric
-          size="small"
+          category={METRIC_CATEGORY}
           label={t`Liquidation threshold`}
           value={mapQuery(userPrices, ([, liquidationThreshold]) => liquidationThreshold)}
           valueOptions={dollarUnitOptions}
@@ -102,7 +104,7 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
           }))}
         />
         <Metric
-          size="small"
+          category={METRIC_CATEGORY}
           label={t`Total debt`}
           value={mapQuery(userState, ({ debt }) => debt)}
           valueOptions={{ unit: { symbol: borrowToken?.symbol ?? '?', position: 'suffix' } }}
@@ -115,7 +117,12 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
           }}
         />
         {isPositionLeveraged(leverage.data) && (
-          <Metric size="small" label={t`Leverage`} value={q(leverage)} valueOptions={{ unit: 'multiplier' }} />
+          <Metric
+            category={METRIC_CATEGORY}
+            label={t`Leverage`}
+            value={q(leverage)}
+            valueOptions={{ unit: 'multiplier' }}
+          />
         )}
       </Stack>
     </Stack>
