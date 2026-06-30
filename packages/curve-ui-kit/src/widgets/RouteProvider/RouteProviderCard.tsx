@@ -49,7 +49,7 @@ export const RouteProviderCard = ({
   chainId,
   networks,
 }: RouteProviderCardProps) => {
-  const out = maybes([route, decimals], ([{ amountOut }, decimals]) => fromWei(amountOut[0], decimals))
+  const out = maybes([route, decimals], ({ amountOut }, decimals) => fromWei(amountOut[0], decimals))
   const { data: gasEstimate } = useEstimateGas(networks, chainId, route?.gas)
   const Icon = RouteProviderIcons[router]
   const disabledTooltip = t`${RouteProviderLabels[router]} is unavailable on ${networks[chainId].name}.`
@@ -104,7 +104,7 @@ export const RouteProviderCard = ({
                       ? PLACEHOLDER_USD
                       : (maybes(
                           [out, usdRate.data],
-                          ([out, usd]) => `~${formatNumber(parseFloat(out) * usd, 'usd.notional')}`,
+                          (out, usd) => `~${formatNumber(parseFloat(out) * usd, 'usd.notional')}`,
                         ) ?? t`No route available`)}
                   </Typography>
                 </WithSkeleton>

@@ -115,7 +115,7 @@ export const QuickSwap = ({
   const slippageType = routesAndOutput && getSlippageType(routesAndOutput)
   const storeSlippage = useUserProfileStore(state => state.maxSlippage)
   const maxSlippage = slippageType && storeSlippage[slippageType]
-  const slippageImpact = maybes([routesAndOutput, maxSlippage], ([r, maxSlippage]) =>
+  const slippageImpact = maybes([routesAndOutput, maxSlippage], (r, maxSlippage) =>
     getSlippageImpact({ maxSlippage, ...r }),
   )
 
