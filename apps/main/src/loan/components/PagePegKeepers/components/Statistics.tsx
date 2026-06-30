@@ -10,6 +10,8 @@ import { useStatistics } from '../hooks/useStatistics'
 
 const { Spacing } = SizesAndSpaces
 
+const METRIC_CATEGORY = 'loan.pegKeeperOverview'
+
 export const Statistics = () => {
   const { totalDebt, totalCeiling } = useStatistics()
 
@@ -19,6 +21,7 @@ export const Statistics = () => {
       <CardContent>
         <Stack direction="row" sx={{ gap: Spacing.md }}>
           <Metric
+            category={METRIC_CATEGORY}
             label={t`Peg stabilisation reserve`}
             value={totalDebt}
             valueOptions={{ unit: CRVUSD_UNIT }}
@@ -27,6 +30,7 @@ export const Statistics = () => {
           />
 
           <Metric
+            category={METRIC_CATEGORY}
             label={t`Total debt ceiling`}
             value={totalCeiling}
             valueOptions={{ unit: CRVUSD_UNIT }}

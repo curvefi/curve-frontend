@@ -4,24 +4,21 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { FireIcon } from '@ui-kit/shared/icons/FireIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { constQ, q } from '@ui-kit/types/util'
-import { borderStyle } from '@ui-kit/utils'
-import { Metric, SIZES, ALIGNMENTS } from '../Metric'
+import { ALIGNMENTS, Metric } from '../Metric'
+import { METRIC_CATEGORIES } from '../metric-categories'
+import { borderStyle } from '@ui-kit/utils/mui'
 
 const { Spacing } = SizesAndSpaces
+const CATEGORIES = Object.keys(METRIC_CATEGORIES)
 
 const meta: Meta<typeof Metric> = {
   title: 'UI Kit/Widgets/Metric',
   component: Metric,
   argTypes: {
-    orientation: {
+    category: {
       control: 'select',
-      options: ['vertical', 'horizontal'],
-      description: 'The orientation of the component',
-    },
-    size: {
-      control: 'select',
-      options: SIZES,
-      description: 'The size of the component',
+      options: CATEGORIES,
+      description: 'The category that controls responsive size and orientation',
     },
     alignment: {
       control: 'select',
@@ -67,7 +64,7 @@ const meta: Meta<typeof Metric> = {
     },
   },
   args: {
-    size: 'medium',
+    category: 'storybook.metric.standard',
     alignment: 'start',
     value: constQ(26539422),
     valueOptions: {
@@ -80,15 +77,15 @@ const meta: Meta<typeof Metric> = {
   },
   render: args => (
     <Stack sx={{ alignItems: 'center', gap: Spacing.lg, width: '440px' }}>
-      <Metric {...args} orientation="vertical" />
+      <Metric {...args} />
       <Stack sx={{ flexGrow: 1, alignSelf: 'stretch', flex: 1, border: borderStyle }} />
-      <Metric {...args} orientation="horizontal" />
+      <Metric {...args} category="storybook.metric.horizontal" />
     </Stack>
   ),
 }
 
 type Story = StoryObj<typeof Metric>
-export const Default: Story = {
+export const Standard: Story = {
   render: args => <Metric {...args} />,
   parameters: {
     docs: {
@@ -97,6 +94,13 @@ export const Default: Story = {
         story: 'Simple metric widget showing a dollar value with no special features',
       },
     },
+  },
+}
+
+export const Compact: Story = {
+  render: args => <Metric {...args} />,
+  args: {
+    category: 'storybook.metric.compact',
   },
 }
 
@@ -113,22 +117,6 @@ export const Percentage: Story = {
 export const Tooltip: Story = {
   args: {
     labelTooltip: { title: "Alu's future portfolio value", body: <Typography variant="headingXxl">ZERO</Typography> },
-  },
-}
-
-export const LargeCenter: Story = {
-  args: {
-    size: 'large',
-    alignment: 'center',
-    change: -5,
-  },
-}
-
-export const ExtraLargeRight: Story = {
-  args: {
-    size: 'extraLarge',
-    alignment: 'end',
-    change: 5,
   },
 }
 
@@ -154,7 +142,6 @@ export const Notionals: Story = {
     value: constQ(650450),
     valueOptions: { unit: 'dollar' },
     label: 'Collateral to recover',
-    size: 'large',
     alignment: 'center',
     notional: [
       {
@@ -216,7 +203,6 @@ export const NotAvailable: Story = {
 
 export const LeadingIcon: Story = {
   args: {
-    size: 'large',
     leadingIcon: <FireIcon fontSize="small" color="error" />,
   },
   parameters: {

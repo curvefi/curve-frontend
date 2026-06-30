@@ -27,11 +27,11 @@ export const HealthDetails = ({
       <Stack sx={{ gap: Spacing.xs }}>
         <Stack direction="row" sx={{ alignItems: 'flex-end', gap: Spacing.md.mobile }}>
           <Metric
+            category="llamalend.positionHealth"
             label={title}
             value={q(health)}
             valueOptions={{ unit: 'none', color: getHealthValueColor({ health: decimal(health.data), theme }) }}
             valueTooltip={HEALTH_TOOLTIP}
-            size="medium"
           />
           <Tooltip title={title} body={body}>
             <Stack sx={{ flex: 1 }}>
