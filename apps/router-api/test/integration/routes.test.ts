@@ -66,7 +66,7 @@ const successCasesByProvider: PartialRecord<RouteProvider, Record<string, Succes
         tokenOut: [ETHEREUM_USDC],
         amountIn: [toWei('1000', USD_DECIMALS)],
         router: ['enso'],
-        userAddress: ['0xF977814e90dA44bFA03b6295A0616a897441aceC'], // binance hot wallet (largest USDT holder on Ethereum now)
+        zapAddress: '0xF977814e90dA44bFA03b6295A0616a897441aceC', // binance hot wallet (largest USDT holder on Ethereum now)
       },
     },
     'arbitrum amountIn': {
@@ -76,7 +76,7 @@ const successCasesByProvider: PartialRecord<RouteProvider, Record<string, Succes
         tokenOut: [ARBITRUM_USDT],
         amountIn: [toWei('100', USD_DECIMALS)],
         router: ['enso'],
-        userAddress: '0x2Df1c51E09aECF9cacB7bc98cB1742757f163dF7', // Hyperliquid: Deposit Bridge 2 (largest USDC holder on Arbitrum now)
+        zapAddress: '0x2Df1c51E09aECF9cacB7bc98cB1742757f163dF7', // Hyperliquid: Deposit Bridge 2 (largest USDC holder on Arbitrum now)
       },
     },
     'arbitrum amountOut': {
@@ -99,7 +99,7 @@ const successCasesByProvider: PartialRecord<RouteProvider, Record<string, Succes
         blacklist: [ETHEREUM_USDC],
         router: ['odos'],
         // Odos requires a caller (leverage zap) and a blacklist address; any valid addresses are acceptable for quoting
-        userAddress: '0xC5898606BdB494a994578453B92e7910a90aA873',
+        zapAddress: '0xC5898606BdB494a994578453B92e7910a90aA873',
         slippage: '0.5',
       },
     },
