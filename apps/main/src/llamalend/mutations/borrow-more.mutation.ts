@@ -15,6 +15,7 @@ import {
 } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Address, type Hex } from '@primitives/address.utils'
+import { assert } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
 import { waitForApproval } from '@ui-kit/utils'
@@ -33,7 +34,8 @@ const approveBorrowMore = async (
   const [type, impl] = getBorrowMoreImplementation(market.id, leverageEnabled)
   switch (type) {
     case 'zapV2':
-      return (await impl.borrowMoreApprove({ userCollateral, userBorrowed })) as Hex[]
+      assert(!+userBorrowed, `Unsupported userBorrowed for zapv2: ${userBorrowed}`)
+      return (await impl.borrowMoreApprove({ userCollateral })) as Hex[]
     case 'V1':
     case 'V2':
       return (await impl.borrowMoreApprove(userCollateral, userBorrowed)) as Hex[]

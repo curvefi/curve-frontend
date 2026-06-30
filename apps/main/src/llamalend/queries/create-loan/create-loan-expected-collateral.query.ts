@@ -79,9 +79,8 @@ export const {
     const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
     switch (type) {
       case 'zapV2':
-        return convertNumbers(
-          await impl.createLoanExpectedCollateral({ userCollateral, userBorrowed, debt, ...parseRoute(routeId) }),
-        )
+        assert(!+userBorrowed, `Unsupported userBorrowed for zapv2: ${userBorrowed}`)
+        return convertNumbers(await impl.createLoanExpectedCollateral({ userCollateral, debt, ...parseRoute(routeId) }))
       case 'V1':
       case 'V2':
         return convertNumbers(await impl.createLoanExpectedCollateral(userCollateral, userBorrowed, debt, +slippage))

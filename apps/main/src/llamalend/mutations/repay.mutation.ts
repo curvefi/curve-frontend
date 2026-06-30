@@ -11,6 +11,7 @@ import { repayValidationSuite } from '@/llamalend/queries/validation/repay.valid
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Address, type Hex } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { assert } from '@primitives/objects.utils'
 import { parseMutationRoute } from '@ui-kit/entities/router-api'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
@@ -48,7 +49,8 @@ const approveRepay = async (
   })
   switch (type) {
     case 'zapV2':
-      return (await impl.repayApprove({ userCollateral, userBorrowed })) as Hex[]
+      assert(!+userBorrowed, `Unsupported userBorrowed for zapv2: ${userBorrowed}`)
+      return (await impl.repayApprove({ userCollateral })) as Hex[]
     case 'V1':
     case 'V2':
       return (await impl.repayApprove(userCollateral, userBorrowed)) as Hex[]
@@ -77,10 +79,10 @@ const repay = async (
   })
   switch (type) {
     case 'zapV2':
+      assert(!+userBorrowed, `Unsupported userBorrowed for zapv2: ${userBorrowed}`)
       return (await impl.repay({
         stateCollateral,
         userCollateral,
-        userBorrowed,
         ...parseMutationRoute(market, { routeId, slippage, isRepay: true }),
       })) as Hex
     case 'V1':

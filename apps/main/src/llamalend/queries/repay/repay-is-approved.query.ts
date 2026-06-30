@@ -1,6 +1,7 @@
 import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import type { RepayParams, RepayQuery } from '@/llamalend/queries/validation/repay.types'
 import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
+import { assert } from '@primitives/objects.utils'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { getRepayImplementation, isFullRepayFromDebtToken } from './repay-query.helpers'
 
@@ -51,7 +52,8 @@ export const {
     })
     switch (type) {
       case 'zapV2':
-        return await impl.repayIsApproved({ userCollateral, userBorrowed })
+        assert(!+userBorrowed, `Unsupported userBorrowed for zapv2: ${userBorrowed}`)
+        return await impl.repayIsApproved({ userCollateral })
       case 'V1':
       case 'V2':
         return await impl.repayIsApproved(userCollateral, userBorrowed)

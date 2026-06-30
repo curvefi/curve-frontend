@@ -79,16 +79,15 @@ export const {
   }: CreateLoanMaxReceiveQuery): Promise<CreateLoanMaxReceiveResult> => {
     const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
     switch (type) {
-      case 'zapV2': {
+      case 'zapV2':
+        assert(!+userBorrowed, `Unsupported userBorrowed for zapv2: ${userBorrowed}`)
         return convertNumbers(
           await impl.createLoanMaxRecv({
             userCollateral,
-            userBorrowed,
             range,
             getExpected: getExpectedFn({ chainId, userAddress, slippage }),
           }),
         )
-      }
       case 'V1':
       case 'V2':
         return convertNumbers(await impl.createLoanMaxRecv(userCollateral, userBorrowed, range))

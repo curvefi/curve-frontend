@@ -86,11 +86,14 @@ export const hasDeleverage = (market: LlamaMarketTemplate) =>
 export const isPositionLeveraged = (leverage: Amount | undefined | null) =>
   leverage != null && !BigNumber(leverage).isZero() && !BigNumber(leverage).isEqualTo(1)
 
-export const canRepayFromStateCollateral = (market: LlamaMarketTemplate) =>
-  market instanceof MintMarketTemplate ? hasDeleverage(market) : hasLeverage(market)
+export const canRepayFromStateCollateral = <T extends LlamaMarketTemplate | undefined>(market: T) =>
+  maybe(market, market => (market instanceof MintMarketTemplate ? hasDeleverage(market) : hasLeverage(market)))
 
-export const canRepayFromUserCollateral = (market: LlamaMarketTemplate) =>
-  market instanceof MintMarketTemplate ? hasV2Leverage(market) : hasLeverage(market)
+export const canRepayFromUserCollateral = <T extends LlamaMarketTemplate | undefined>(market: T) =>
+  maybe(market, market => (market instanceof MintMarketTemplate ? hasV2Leverage(market) : hasLeverage(market)))
+
+export const canLeverageUserBorrowed = <T extends LlamaMarketTemplate | undefined>(market: T) =>
+  maybe(market, market => hasLeverage(market) && !hasZapV2(market))
 
 export const hasVault = (market: LlamaMarketTemplate) => market instanceof LendMarketTemplate && 'vault' in market
 

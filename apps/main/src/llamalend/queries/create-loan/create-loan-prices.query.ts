@@ -1,6 +1,6 @@
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import type { Decimal } from '@primitives/decimal.utils'
-import { notFalsy } from '@primitives/objects.utils'
+import { assert, notFalsy } from '@primitives/objects.utils'
 import { parseRoute as parseRoute } from '@ui-kit/entities/router-api'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
@@ -50,9 +50,9 @@ export const { useQuery: useCreateLoanPrices, invalidate: invalidateCreateLoanPr
     const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
     switch (type) {
       case 'zapV2':
-        return (
-          await impl.createLoanExpectedMetrics({ userCollateral, userBorrowed, debt, range, ...parseRoute(routeId) })
-        ).prices as [Decimal, Decimal]
+        assert(!+userBorrowed, `Unsupported userBorrowed for zapv2: ${userBorrowed}`)
+        return (await impl.createLoanExpectedMetrics({ userCollateral, debt, range, ...parseRoute(routeId) }))
+          .prices as [Decimal, Decimal]
       case 'V1':
       case 'V2':
         return convertNumbers(await impl.createLoanPrices(userCollateral, userBorrowed, debt, range))

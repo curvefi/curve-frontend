@@ -4,7 +4,7 @@ import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.
 import type { RepayParams, RepayQuery } from '@/llamalend/queries/validation/repay.types'
 import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
-import { notFalsy } from '@primitives/objects.utils'
+import { assert, notFalsy } from '@primitives/objects.utils'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { createApprovedEstimateGasHook } from '@ui-kit/lib/model/entities/gas-info'
 import { getRepayImplementation, isFullRepayFromDebtToken, isRepayLeveraged } from './repay-query.helpers'
@@ -120,7 +120,8 @@ const { useQuery: useRepayApproveGasEstimate, invalidate: invalidateRepayApprove
     })
     switch (type) {
       case 'zapV2':
-        return await impl.estimateGas.repayApprove({ userCollateral, userBorrowed })
+        assert(!+userBorrowed, `Unsupported userBorrowed for zapv2: ${userBorrowed}`)
+        return await impl.estimateGas.repayApprove({ userCollateral })
       case 'V1':
       case 'V2':
         return await impl.estimateGas.repayApprove(userCollateral, userBorrowed)
