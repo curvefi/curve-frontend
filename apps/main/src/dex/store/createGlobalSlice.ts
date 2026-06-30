@@ -75,7 +75,6 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
   },
   hydrate: async (_config, curveApi, prevCurveApi, _wallet, releaseChannel) => {
     if (!curveApi) return
-    const isLegacyDexList = !isDexPoolListV2Enabled(releaseChannel)
 
     const state = get()
     const isNetworkSwitched = prevCurveApi?.chainId !== curveApi.chainId
@@ -100,7 +99,8 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
     // update network settings from api
     state.setNetworkConfigFromApi(curveApi)
 
-    await fetchNetworks() // Pool ids have a dependency on networks
+    const networks = await fetchNetworks() // Pool ids have a dependency on networks
+    const isLegacyDexList = !isDexPoolListV2Enabled(releaseChannel) || !networks[chainId]?.pricesApi
     const poolIds = await fetchPoolIds(curveApi, { chainId })
 
     // After pool bootstrap is completed above, any future query refactored

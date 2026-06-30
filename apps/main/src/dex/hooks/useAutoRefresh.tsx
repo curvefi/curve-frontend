@@ -23,7 +23,8 @@ export const useAutoRefresh = (chainId: number | undefined) => {
   usePageVisibleInterval(async () => {
     if (curveApi && poolIds) {
       const poolVolumes = await refetchPoolVolumes({ chainId: curveApi.chainId })
-      await fetchPools(curveApi, poolIds, poolVolumes, !isDexPoolListV2)
+      const isLegacyDexList = !isDexPoolListV2 || !networks[curveApi.chainId]?.pricesApi
+      await fetchPools(curveApi, poolIds, poolVolumes, isLegacyDexList)
     }
   }, REFRESH_INTERVAL['15m'])
 }
