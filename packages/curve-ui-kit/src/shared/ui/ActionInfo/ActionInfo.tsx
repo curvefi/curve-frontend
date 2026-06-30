@@ -9,7 +9,7 @@ import { ErrorIconButton } from '@ui-kit/shared/ui/ErrorIconButton'
 import { IconButtonIconSize } from '@ui-kit/themes/components/button'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
-import type { QueryProp } from '@ui-kit/types/util'
+import { isQuery, type QueryProp } from '@ui-kit/types/util'
 import { applySxProps } from '@ui-kit/utils'
 import { LabelTooltipIcon } from '../LabelTooltipIcon'
 import { Tooltip, type TooltipProps } from '../Tooltip'
@@ -140,8 +140,6 @@ const ValueDecorator = (props: ValueDecoratorProps) => (
     {props.value}
   </WithWrapper>
 )
-const isQuery = (value: ActionInfoProps['value']): value is QueryProp<ReactNode> =>
-  value != null && typeof value === 'object'
 
 export const ActionInfo = (props: ActionInfoProps) => {
   const {
