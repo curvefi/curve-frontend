@@ -62,7 +62,7 @@ testCases.forEach(([width, height, breakpoint]) => {
       filterByMarketType([width, height], type)
       cy.get(`[data-testid^="market-link-"]`).first().click()
       if (breakpoint === 'mobile') {
-        cy.get(`[data-testid^="llama-market-go-to-market"]`).click()
+        cy.get(`[data-testid^="llama-market-go-to-borrow"]`).click()
       }
       cy.url(LOAD_TIMEOUT).should('match', urlRegex)
     })

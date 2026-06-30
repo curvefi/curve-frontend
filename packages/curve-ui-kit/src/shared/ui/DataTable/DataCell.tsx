@@ -2,11 +2,10 @@ import { Stack } from '@mui/material'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { type Cell, flexRender } from '@tanstack/react-table'
-import { ChevronDownIcon } from '@ui-kit/shared/icons/ChevronDownIcon'
+import { TriangleDown } from '@ui-kit/shared/icons/TriangleDown'
 import { applySxProps } from '@ui-kit/utils'
 import { useCellSx, getCellVariant, type TableItem } from './data-table.utils'
 import { RotatableIcon } from './RotatableIcon'
-import { TriangleDown } from '@ui-kit/shared/icons/TriangleDown'
 
 export const DataCell = <T extends TableItem>({
   cell,
