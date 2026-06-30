@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from 'react'
+import { useConnection } from 'wagmi'
 import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
 import { useBandsChartPalette } from '@/llamalend/features/bands-chart/hooks/useBandsChartPalette'
 import type { ChartDataPoint, FetchedBandsBalances } from '@/llamalend/features/bands-chart/types'
@@ -62,6 +63,7 @@ type ChartAndActivityLayoutProps = {
 }
 
 export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActivityLayoutProps) => {
+  const { isConnected } = useConnection()
   const theme = useTheme()
   const [isBandsVisible, setIsBandsVisible] = useBandsChartVisible()
   const toggleBandsVisible = useCallback(() => setIsBandsVisible(prev => !prev), [setIsBandsVisible])
@@ -75,7 +77,7 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
     )
   }, [])
 
-  const showBands = bands && isBandsVisible
+  const showBands = bands && isBandsVisible && isConnected
   const hasUserBands = !!bands?.userBandsBalances?.length
   const collateralSymbol = bands?.collateralToken?.symbol
   const borrowSymbol = bands?.borrowToken?.symbol
@@ -120,6 +122,7 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
               }}
               isLoading={chart.isLoading}
               customButton={
+                isConnected &&
                 bands && (
                   <ToggleBandsChartButton
                     label={t`Bands`}
