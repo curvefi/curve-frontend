@@ -31,6 +31,11 @@ export const METRIC_TYPES = {
     tablet: { size: 'medium', orientation: 'vertical' },
     desktop: { size: 'medium', orientation: 'vertical' },
   },
+  mobileStandardRow: {
+    mobile: { size: 'medium', orientation: 'horizontal' },
+    tablet: { size: 'medium', orientation: 'vertical' },
+    desktop: { size: 'medium', orientation: 'vertical' },
+  },
   compactMobileRow: {
     mobile: { size: 'small', orientation: 'horizontal' },
     tablet: { size: 'small', orientation: 'vertical' },
@@ -72,7 +77,7 @@ export const METRIC_CATEGORIES = {
   'llamalend.marketListRates': METRIC_TYPES.standard,
   'llamalend.marketListExpandedDetails': METRIC_TYPES.mobileCompactRow,
   'llamalend.marketListPosition': METRIC_TYPES.standard,
-  'llamalend.marketListSummary': METRIC_TYPES.mobileCompactRow,
+  'llamalend.marketListSummary': METRIC_TYPES.mobileStandardRow,
   'llamalend.positionBorrowDetails': METRIC_TYPES.compactMobileRow,
   'llamalend.positionSupplyDetails': METRIC_TYPES.compactMobileRow,
   'llamalend.positionHealth': METRIC_TYPES.standard,

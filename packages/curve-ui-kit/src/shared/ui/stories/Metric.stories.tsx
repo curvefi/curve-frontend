@@ -4,9 +4,9 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { FireIcon } from '@ui-kit/shared/icons/FireIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { constQ, q } from '@ui-kit/types/util'
+import { borderStyle } from '@ui-kit/utils/mui'
 import { ALIGNMENTS, Metric } from '../Metric'
 import { METRIC_CATEGORIES } from '../metric-categories'
-import { borderStyle } from '@ui-kit/utils/mui'
 
 const { Spacing } = SizesAndSpaces
 const CATEGORIES = Object.keys(METRIC_CATEGORIES)
