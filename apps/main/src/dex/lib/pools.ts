@@ -109,29 +109,31 @@ export async function getPools(
     { poolsMapper: {}, poolsMapperCache: {} },
   )
 
-  if (includeGaugeData) {
-    // get gauge info
-    await PromisePool.for(Object.values(resp.poolsMapper)).process(async ({ pool }) => {
-      const [gaugeStatusResult, isGaugeKilledResult] = await Promise.allSettled([
-        pool.gaugeStatus(),
-        pool.isGaugeKilled(),
-      ])
-      const gaugeStatus = (fulfilledValue(gaugeStatusResult) ?? null) as GaugeStatus | null
-      const isGaugeKilled = fulfilledValue(isGaugeKilledResult) ?? null
-
-      resp.poolsMapper[pool.id].gauge = { status: gaugeStatus, isKilled: isGaugeKilled }
-      resp.poolsMapperCache[pool.id].gauge = { status: gaugeStatus, isKilled: isGaugeKilled }
-
-      if (gaugeStatus?.rewardsNeedNudging || gaugeStatus?.areCrvRewardsStuckInBridge) {
-        log(
-          'rewardsNeedNudging, areCrvRewardsStuckInBridge',
-          pool.id,
-          gaugeStatus.rewardsNeedNudging,
-          gaugeStatus.areCrvRewardsStuckInBridge,
-        )
-      }
-    })
+  if (!includeGaugeData) {
+    return resp
   }
+
+  // get gauge info
+  await PromisePool.for(Object.values(resp.poolsMapper)).process(async ({ pool }) => {
+    const [gaugeStatusResult, isGaugeKilledResult] = await Promise.allSettled([
+      pool.gaugeStatus(),
+      pool.isGaugeKilled(),
+    ])
+    const gaugeStatus = (fulfilledValue(gaugeStatusResult) ?? null) as GaugeStatus | null
+    const isGaugeKilled = fulfilledValue(isGaugeKilledResult) ?? null
+
+    resp.poolsMapper[pool.id].gauge = { status: gaugeStatus, isKilled: isGaugeKilled }
+    resp.poolsMapperCache[pool.id].gauge = { status: gaugeStatus, isKilled: isGaugeKilled }
+
+    if (gaugeStatus?.rewardsNeedNudging || gaugeStatus?.areCrvRewardsStuckInBridge) {
+      log(
+        'rewardsNeedNudging, areCrvRewardsStuckInBridge',
+        pool.id,
+        gaugeStatus.rewardsNeedNudging,
+        gaugeStatus.areCrvRewardsStuckInBridge,
+      )
+    }
+  })
 
   return resp
 }

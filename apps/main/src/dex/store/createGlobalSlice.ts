@@ -6,8 +6,8 @@ import { curvejsApi } from '@/dex/lib/curvejs'
 import { fetchPoolIds } from '@/dex/lib/pool-ids'
 import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi, NetworkConfigFromApi, Wallet } from '@/dex/types/main.types'
+import { isLegacyList } from '@/dex/utils'
 import { notFalsy } from '@primitives/objects.utils'
-import { isDexPoolListV2Enabled } from '@ui-kit/hooks/useFeatureFlags'
 import { log } from '@ui-kit/lib/logging'
 import type { ReleaseChannel } from '@ui-kit/utils'
 import { formatTimeDiff } from '@ui-kit/utils/time.utils'
@@ -100,7 +100,7 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
     state.setNetworkConfigFromApi(curveApi)
 
     const networks = await fetchNetworks() // Pool ids have a dependency on networks
-    const isLegacyDexList = !isDexPoolListV2Enabled(releaseChannel) || !networks[chainId]?.pricesApi
+    const isLegacy = isLegacyList(releaseChannel, networks[chainId])
     const poolIds = await fetchPoolIds(curveApi, { chainId })
 
     // After pool bootstrap is completed above, any future query refactored
@@ -111,9 +111,9 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
       // Pool volumes are still needed in beta to preserve volume-based token sorting.
       refetchPoolVolumes({ chainId }),
       // Legacy TVL/gauge enrichment is skipped there because the v2 pool list uses backend data.
-      ...notFalsy(isLegacyDexList && refetchPoolTvls({ chainId })),
+      ...notFalsy(isLegacy && refetchPoolTvls({ chainId })),
     ])
-    await state.pools.fetchPools(curveApi, poolIds, poolVolumes, isLegacyDexList)
+    await state.pools.fetchPools(curveApi, poolIds, poolVolumes, isLegacy)
 
     log(`Hydrated DEX - Complete in ${formatTimeDiff(start)}`)
   },

@@ -15,17 +15,14 @@ export const Page = () => {
    */
   const isSupported = supportedPoolChains.some(({ chainId }) => chainId === network?.chainId)
 
-  if (!network || (isBetaPoolListEnabled && isLoading)) {
-    return <ListPageWrapper>{null}</ListPageWrapper>
-  }
-
   return (
     <ListPageWrapper>
-      {isBetaPoolListEnabled && isSupported ? (
-        <PoolListTable network={network} />
-      ) : (
-        <LegacyPoolListTable network={network} />
-      )}
+      {network &&
+        (isBetaPoolListEnabled ? (
+          isSupported && !isLoading && <PoolListTable network={network} />
+        ) : (
+          <LegacyPoolListTable network={network} />
+        ))}
     </ListPageWrapper>
   )
 }
