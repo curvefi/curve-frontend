@@ -6,7 +6,6 @@ import {
 import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreValidationSuite } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
-import { assert } from '@primitives/objects.utils'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { createApprovedEstimateGasHook } from '@ui-kit/lib/model/entities/gas-info'
 
@@ -40,7 +39,6 @@ const { useQuery: useBorrowMoreApproveGasEstimate, invalidate: invalidateBorrowM
       const [type, impl] = getBorrowMoreImplementation(marketId, leverageEnabled)
       switch (type) {
         case 'zapV2':
-          assert(!+userBorrowed, `Unsupported userBorrowed for zapv2: ${userBorrowed}`)
           return await impl.estimateGas.borrowMoreApprove({ userCollateral })
         case 'V1':
         case 'V2':

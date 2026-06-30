@@ -80,7 +80,6 @@ export const {
     const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
     switch (type) {
       case 'zapV2':
-        assert(!+userBorrowed, `Unsupported userBorrowed for zapv2: ${userBorrowed}`)
         return convertNumbers(
           await impl.createLoanMaxRecv({
             userCollateral,

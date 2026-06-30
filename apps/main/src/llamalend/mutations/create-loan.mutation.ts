@@ -8,7 +8,6 @@ import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/cre
 import { createLoanQueryValidationSuite } from '@/llamalend/queries/validation/borrow.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Address } from '@primitives/address.utils'
-import { assert } from '@primitives/objects.utils'
 import { parseMutationRoute } from '@ui-kit/entities/router-api'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
@@ -36,7 +35,6 @@ const approve = async (
   const [type, impl] = getCreateLoanImplementation(market.id, leverageEnabled)
   switch (type) {
     case 'zapV2':
-      assert(!+userBorrowed, `Unsupported userBorrowed for zapv2: ${userBorrowed}`)
       return (await impl.createLoanApprove({ userCollateral })) as Address[]
     case 'V2':
     case 'V1':
@@ -54,7 +52,6 @@ const create = async (
   const [type, impl] = getCreateLoanImplementation(market, leverageEnabled)
   switch (type) {
     case 'zapV2':
-      assert(!+userBorrowed, `Unsupported userBorrowed for zapv2: ${userBorrowed}`)
       return (await impl.createLoan({
         userCollateral,
         debt,

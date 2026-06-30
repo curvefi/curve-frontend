@@ -2,7 +2,6 @@ import { repayExpectedBorrowedQueryKey } from '@/llamalend/queries/repay/repay-e
 import type { RepayQuery, RepayParams } from '@/llamalend/queries/validation/repay.types'
 import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import type { Decimal } from '@primitives/decimal.utils'
-import { assert } from '@primitives/objects.utils'
 import { parseRoute } from '@ui-kit/entities/router-api'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { decimal } from '@ui-kit/utils'
@@ -46,7 +45,6 @@ export const { useQuery: useRepayPriceImpact, invalidate: invalidateRepayPriceIm
     })
     switch (type) {
       case 'zapV2': {
-        assert(!+userBorrowed, `Unsupported userBorrowed for zapv2: ${userBorrowed}`)
         const { priceImpact } = await impl.repayExpectedMetrics({
           stateCollateral,
           userCollateral,

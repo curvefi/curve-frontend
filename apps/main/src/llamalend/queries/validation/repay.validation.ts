@@ -67,6 +67,11 @@ const validateRepayFieldsForMarket = (
       })
     const swapRequired = stateCollateral || userCollateral || routeId
     validateRoute(routeId, !!(type && swapRequired && isRouterRequired(type)))
+    skipWhen(type === 'V1' || type === 'V2' || type == null, () => {
+      test('userBorrowed', `Borrow amount is not supported for ${type}`, () => {
+        enforce(+(userBorrowed ?? '0')).equals(0)
+      })
+    })
   })
 }
 

@@ -2,7 +2,7 @@ import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { createLoanExpectedCollateralQueryKey } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import type { IChainId, TGas } from '@curvefi/llamalend-api/lib/interfaces'
-import { assert, notFalsy } from '@primitives/objects.utils'
+import { notFalsy } from '@primitives/objects.utils'
 import { parseMutationRoute } from '@ui-kit/entities/router-api'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
@@ -34,7 +34,6 @@ const { useQuery: useCreateLoanApproveEstimateGas, invalidate: invalidateCreateL
       const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
       switch (type) {
         case 'zapV2':
-          assert(!+userBorrowed, `Unsupported userBorrowed for zapv2: ${userBorrowed}`)
           return await impl.estimateGas.createLoanApprove({ userCollateral })
         case 'V1':
         case 'V2':
@@ -90,7 +89,6 @@ const {
     const [type, impl] = getCreateLoanImplementation(market, leverageEnabled)
     switch (type) {
       case 'zapV2':
-        assert(!+userBorrowed, `Unsupported userBorrowed for zapv2: ${userBorrowed}`)
         return await impl.estimateGas.createLoan({
           userCollateral,
           debt,
