@@ -72,7 +72,7 @@ export const SupplyActionInfoList = ({
             <ActionInfo
               label={t`Supply APY`}
               value={mapQuery(supplyApy ?? UNDEFINED_Q, data => formatNumber(data, 'percent.rate'))}
-              prevValue={prevSupplyApy?.data && formatNumber(prevSupplyApy.data, 'percent.rate')}
+              prevValue={prevSupplyApy && mapQuery(prevSupplyApy, data => formatNumber(data, 'percent.rate'))}
               size="small"
               testId="supply-apy"
             />
@@ -81,7 +81,7 @@ export const SupplyActionInfoList = ({
             <ActionInfo
               label={NET_SUPPLY_RATE_TITLE}
               value={mapQuery(netSupplyApy ?? UNDEFINED_Q, data => formatNumber(data, 'percent.rate'))}
-              prevValue={prevNetSupplyApy?.data && formatNumber(prevNetSupplyApy.data, 'percent.rate')}
+              prevValue={prevNetSupplyApy && mapQuery(prevNetSupplyApy, data => formatNumber(data, 'percent.rate'))}
               size="small"
               testId="supply-net-apy"
             />
@@ -91,7 +91,7 @@ export const SupplyActionInfoList = ({
           <ActionInfo
             label={sharesLabel}
             value={mapQuery(vaultShares, data => formatAmount(data))}
-            prevValue={prevVaultShares?.data && formatAmount(prevVaultShares.data)}
+            prevValue={prevVaultShares && mapQuery(prevVaultShares, data => formatAmount(data))}
             size="small"
             testId="supply-vault-shares"
           />
@@ -99,7 +99,9 @@ export const SupplyActionInfoList = ({
             <ActionInfo
               label={amountLabel}
               value={mapQuery(amountSupplied ?? UNDEFINED_Q, data => formatNumber(data, { abbreviate: false }))}
-              prevValue={prevAmountSupplied?.data && formatNumber(prevAmountSupplied.data, { abbreviate: false })}
+              prevValue={
+                prevAmountSupplied && mapQuery(prevAmountSupplied, data => formatNumber(data, { abbreviate: false }))
+              }
               valueRight={suppliedSymbol}
               size="small"
               testId="supply-amount"

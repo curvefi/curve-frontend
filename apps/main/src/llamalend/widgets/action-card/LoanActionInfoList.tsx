@@ -120,7 +120,7 @@ export const LoanActionInfoList = ({
         <ActionInfo
           label={t`Debt`}
           value={mapQuery(debt ?? UNDEFINED_Q, data => formatNumber(data, { abbreviate: false }))}
-          prevValue={prevDebt?.data && formatNumber(prevDebt.data, { abbreviate: false })}
+          prevValue={prevDebt && mapQuery(prevDebt, data => formatNumber(data, { abbreviate: false }))}
           valueRight={borrowSymbol}
           size="small"
           testId="borrow-debt"
@@ -141,7 +141,10 @@ export const LoanActionInfoList = ({
                 rates ?? UNDEFINED_Q,
                 data => data?.borrowApr && formatNumber(data.borrowApr, 'percent.rate'),
               )}
-              prevValue={prevRates?.data?.borrowApr && formatNumber(prevRates.data.borrowApr, 'percent.rate')}
+              prevValue={
+                prevRates &&
+                mapQuery(prevRates, data => data?.borrowApr && formatNumber(data.borrowApr, 'percent.rate'))
+              }
               size="small"
               testId="borrow-apr"
             />
@@ -150,7 +153,7 @@ export const LoanActionInfoList = ({
             <ActionInfo
               label={t`Net borrow APR`}
               value={mapQuery(netBorrowApr ?? UNDEFINED_Q, data => formatNumber(data, 'percent.rate'))}
-              prevValue={prevNetBorrowApr?.data && formatNumber(prevNetBorrowApr.data, 'percent.rate')}
+              prevValue={prevNetBorrowApr && mapQuery(prevNetBorrowApr, data => formatNumber(data, 'percent.rate'))}
               size="small"
               testId="borrow-net-apr"
             />
@@ -164,9 +167,7 @@ export const LoanActionInfoList = ({
                 ? constQ('∞')
                 : mapQuery(health, data => formatNumber(data, { abbreviate: true, fallback: '∞' }))
             }
-            {...(prevHealth && {
-              prevValue: prevHealth.data ? formatNumber(prevHealth.data, { abbreviate: true }) : '∞',
-            })}
+            prevValue={prevHealth && mapQuery(prevHealth, data => formatNumber(data, { abbreviate: true }))}
             valueColor={getHealthValueColor({
               health: health?.data,
               prevHealth: prevHealth?.data,
@@ -184,7 +185,7 @@ export const LoanActionInfoList = ({
                 </Tooltip>
               }
               value={mapQuery(loanToValue ?? UNDEFINED_Q, data => formatNumber(data, 'percent.rate'))}
-              prevValue={prevLoanToValue?.data && formatNumber(prevLoanToValue.data, 'percent.rate')}
+              prevValue={prevLoanToValue && mapQuery(prevLoanToValue, data => formatNumber(data, 'percent.rate'))}
               size="small"
               testId="borrow-ltv"
             />
@@ -201,7 +202,10 @@ export const LoanActionInfoList = ({
               value={mapQuery(prices ?? UNDEFINED_Q, data =>
                 data?.map(p => formatNumber(p, { abbreviate: false })).join(' - '),
               )}
-              prevValue={prevPrices?.data?.map(p => formatNumber(p, { abbreviate: false })).join(' - ')}
+              prevValue={
+                prevPrices &&
+                mapQuery(prevPrices, data => data.map(p => formatNumber(p, { abbreviate: false })).join(' - '))
+              }
               valueRight={notFalsy(collateralSymbol, borrowSymbol).join('/')}
               size="small"
               testId="borrow-price-range"
@@ -215,7 +219,7 @@ export const LoanActionInfoList = ({
               value={mapQuery(collateral ?? UNDEFINED_Q, data =>
                 isFullRepay ? 0 : formatNumber(data, { abbreviate: false }),
               )}
-              prevValue={prevCollateral?.data && formatNumber(prevCollateral.data, { abbreviate: false })}
+              prevValue={prevCollateral && mapQuery(prevCollateral, data => formatNumber(data, { abbreviate: false }))}
               valueRight={collateralSymbol}
               size="small"
               testId="borrow-collateral"
@@ -231,7 +235,11 @@ export const LoanActionInfoList = ({
             <ActionInfo
               label={t`Leverage`}
               value={mapQuery(leverageValue ?? UNDEFINED_Q, data => formatLeverage(data))}
-              prevValue={leverageValue?.data && prevLeverageValue?.data && formatLeverage(prevLeverageValue.data)}
+              prevValue={
+                leverageValue?.data && prevLeverageValue
+                  ? mapQuery(prevLeverageValue, data => formatLeverage(data))
+                  : undefined
+              }
               size="small"
               testId="borrow-leverage"
             />
@@ -241,9 +249,9 @@ export const LoanActionInfoList = ({
               label={t`Leverage collateral`}
               value={mapQuery(leverageCollateral ?? UNDEFINED_Q, data => formatAmount(data, collateralSymbol))}
               prevValue={
-                leverageCollateral?.data &&
-                prevLeverageCollateral?.data &&
-                formatAmount(prevLeverageCollateral.data, collateralSymbol)
+                leverageCollateral?.data && prevLeverageCollateral
+                  ? mapQuery(prevLeverageCollateral, data => formatAmount(data, collateralSymbol))
+                  : undefined
               }
               size="small"
               testId="borrow-leverage-collateral"
@@ -254,9 +262,9 @@ export const LoanActionInfoList = ({
               label={t`Total collateral`}
               value={mapQuery(leverageTotalCollateral ?? UNDEFINED_Q, data => formatAmount(data, collateralSymbol))}
               prevValue={
-                leverageTotalCollateral?.data &&
-                prevLeverageTotalCollateral?.data &&
-                formatAmount(prevLeverageTotalCollateral.data, collateralSymbol)
+                leverageTotalCollateral?.data && prevLeverageTotalCollateral
+                  ? mapQuery(prevLeverageTotalCollateral, data => formatAmount(data, collateralSymbol))
+                  : undefined
               }
               size="small"
               testId="borrow-leverage-total-collateral"

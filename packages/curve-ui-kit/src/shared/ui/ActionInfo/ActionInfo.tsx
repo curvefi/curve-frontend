@@ -38,8 +38,6 @@ type ActionInfoBaseProps = {
   valueRight?: ReactNode
   /** Tooltip text to display when hovering over the value */
   valueTooltip?: ReactNode
-  /** Previous value (if needed for comparison) */
-  prevValue?: ReactNode
   /** Custom color for the previous value text */
   prevValueColor?: TypographyProps['color']
   /** Value to be copied from the value text when clicked. */
@@ -56,27 +54,29 @@ type ActionInfoBaseProps = {
 
 export type ActionInfoOverrideProps = Partial<ActionInfoBaseProps>
 
-type ActionInfoValueProps =
-  | {
-      /** Primary value to display and copy */
-      value: ReactNode
-      /** Whether the component is in a loading state. Can be one of:
-       * - boolean
-       * - string (value is used for skeleton width inference)
-       * - [number, number] (explicit skeleton width and height in px)
-       **/
-      loading?: ActionInfoLoading
-      /** Error state; Unused for now, but kept for future use */
-      error?: ActionInfoError
-    }
-  | {
-      /** Query whose data is the primary value to display and copy. */
-      value: QueryProp<ReactNode>
-      loading?: never
-      error?: never
-    }
+type ActionInfoLegacyProps = {
+  /** Primary value to display and copy */
+  value: ReactNode
+  /** Whether the component is in a loading state. Can be one of:
+   * - boolean
+   * - string (value is used for skeleton width inference)
+   * - [number, number] (explicit skeleton width and height in px)
+   **/
+  loading?: ActionInfoLoading
+  /** Error state; Unused for now, but kept for future use */
+  error?: ActionInfoError
+}
 
-export type ActionInfoProps = ActionInfoBaseProps & ActionInfoValueProps
+type ActionInfoQueryProps = {
+  /** Query whose data is the primary value to display and copy. */
+  value: QueryProp<ReactNode>
+  loading?: never
+  error?: never
+  /** Previous value (if needed for comparison) */
+  prevValue?: QueryProp<ReactNode>
+}
+
+export type ActionInfoProps = ActionInfoBaseProps & (ActionInfoLegacyProps | ActionInfoQueryProps)
 
 const DEFAULT_SIZE: ActionInfoSize = 'medium'
 
@@ -146,7 +146,6 @@ export const ActionInfo = (props: ActionInfoProps) => {
     label,
     labelTooltip,
     labelColor,
-    prevValue: givenPrevValue,
     prevValueColor,
     value: propValue,
     valueColor,
@@ -164,6 +163,7 @@ export const ActionInfo = (props: ActionInfoProps) => {
     isLoading: loading,
     error,
   } = isQuery(propValue) ? propValue : { data: propValue, isLoading: props.loading ?? false, error: props.error }
+  const givenPrevValue = 'prevValue' in props ? props.prevValue?.data : undefined
   const buttonSize = iconButtonSize[size]
   const iconSize = IconButtonIconSize[buttonSize]
   const value = givenValue ?? givenPrevValue
