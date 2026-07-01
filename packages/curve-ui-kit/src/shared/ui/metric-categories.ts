@@ -90,9 +90,9 @@ export const METRIC_CATEGORIES = {
 
   // crvUSD / loan
   'loan.scrvusdBanner': metricLayout('primary', 'stack'),
-  'loan.scrvusdStats': metricLayout('secondary', 'stack'),
+  'loan.scrvusdStats': metricLayout('secondary', 'detail'),
   'loan.scrvusdUserPositionPrimary': metricLayout('primary', 'stack'),
-  'loan.scrvusdUserPositionSecondary': metricLayout('secondary', 'stack'),
+  'loan.scrvusdUserPositionSecondary': metricLayout('secondary', 'detail'),
   'loan.pegKeeperOverview': metricLayout('primary', 'stack'),
   'loan.pegKeeperDetailAmounts': metricLayout('secondary', 'stack'),
 } as const satisfies Record<string, MetricViewportLayout>

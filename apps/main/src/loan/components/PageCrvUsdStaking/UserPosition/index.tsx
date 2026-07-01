@@ -67,8 +67,18 @@ export const UserPosition = ({ chainId }: UserPositionProps) => {
           </Grid>
         </Grid>
 
-        <Grid container columnSpacing={Spacing.lg} rowSpacing={Spacing.md} wrap="wrap">
-          <Grid size={3}>
+        <Grid
+          container
+          columnSpacing={Spacing.lg}
+          rowSpacing={{ ...Spacing.md, mobile: 0 }}
+          wrap="wrap"
+          sx={{
+            display: 'grid',
+            gridAutoRows: '1fr',
+            gridTemplateColumns: { mobile: 'repeat(1, 1fr)', tablet: 'repeat(3, 1fr)' },
+          }}
+        >
+          <Grid>
             <Metric
               category={SECONDARY_METRIC_CATEGORY}
               label={t`30 Days Projection`}
@@ -80,8 +90,7 @@ export const UserPosition = ({ chainId }: UserPositionProps) => {
               testId="scrvusd-position-projection-30d"
             />
           </Grid>
-
-          <Grid size={3}>
+          <Grid>
             <Metric
               category={SECONDARY_METRIC_CATEGORY}
               label={t`1 Year Projection`}
@@ -93,8 +102,7 @@ export const UserPosition = ({ chainId }: UserPositionProps) => {
               testId="scrvusd-position-projection-1y"
             />
           </Grid>
-
-          <Grid size={3}>
+          <Grid>
             <Metric
               category={SECONDARY_METRIC_CATEGORY}
               label={t`Estimated APY`}
