@@ -9,7 +9,7 @@ import type { PoolListItem } from './poolList.types'
 
 const POOL_YIELD_COMPOUND_WINDOW = AVERAGE_CATEGORIES['dex.poolYield.compoundRate'].window
 
-export type PoolIdByAddressSource = Record<string, { pool: Pick<PoolData['pool'], 'address' | 'id'> }>
+type PoolIdByAddressSource = Record<string, { pool: Pick<PoolData['pool'], 'address' | 'id'> }>
 
 /**
  * Normalize v2 API addresses so they match legacy curve-js/store pool ids by address.

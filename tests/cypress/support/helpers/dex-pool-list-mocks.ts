@@ -27,7 +27,7 @@ const SearchPool = {
   address: '0xbebc44782c7db0a1a60cb6fe97d0b483032ff1c7' as Address,
 } as const
 
-export const DEX_POOL_LIST_NAVIGATION_POOL = {
+const DEX_POOL_LIST_NAVIGATION_POOL = {
   name: '2pool',
   address: '0x7f90122bf0700f9e7e1f688fe926940e8839f353' as Address,
   network: 'arbitrum',
@@ -248,7 +248,7 @@ const getPoolListResponse = (query: PoolListQuery) => {
   }
 }
 
-export const mockDexPoolChains = () =>
+const mockDexPoolChains = () =>
   cy.intercept(
     { method: 'GET', hostname: 'prices.curve.finance', pathname: '/v2/pools/chains/' },
     {
@@ -258,7 +258,7 @@ export const mockDexPoolChains = () =>
     },
   )
 
-export const mockDexPoolList = () =>
+const mockDexPoolList = () =>
   cy.intercept({ method: 'GET', hostname: 'prices.curve.finance', pathname: '/v2/pools/' }, req => {
     req.reply({ body: getPoolListResponse(parsePoolListQuery(new URL(req.url))) })
   })

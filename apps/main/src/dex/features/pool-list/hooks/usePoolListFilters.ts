@@ -36,7 +36,7 @@ type DefaultNumberRangeQueryField = typeof VOLUME_QUERY_FIELD | typeof APY_QUERY
 const POOL_TYPE_SET = new Set<string>(POOL_LIST_POOL_TYPES)
 // Hide dust pools by default, without treating the default min as an active URL/UI filter on its own.
 export const POOL_LIST_DEFAULT_TVL_MIN = 10_000
-export const POOL_LIST_DEFAULT_TVL_RANGE = [POOL_LIST_DEFAULT_TVL_MIN, null] satisfies RangeFilterDefaults<number>
+const POOL_LIST_DEFAULT_TVL_RANGE = [POOL_LIST_DEFAULT_TVL_MIN, null] satisfies RangeFilterDefaults<number>
 // Volume is non-negative, so min 0 is the default. APY can be negative, so min 0 is an active filter.
 const POOL_LIST_DEFAULT_NUMBER_RANGE = [null, null] satisfies RangeFilterDefaults<number>
 export const POOL_LIST_DEFAULT_NON_NEGATIVE_RANGE = [0, null] satisfies RangeFilterDefaults<number>
