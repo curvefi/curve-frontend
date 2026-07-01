@@ -1,4 +1,5 @@
 import { Chain } from '@primitives/network.utils'
+import { maybes } from '@primitives/objects.utils'
 
 /**
  * Static pool-address lookup for the Vyper vulnerability deposit warning.
@@ -55,6 +56,7 @@ export const VYPER_VULNERABLE_POOL_ADDRESS_LOOKUP: Partial<Record<number, Readon
 }
 
 export const isVyperVulnerablePool = (chainId: number | undefined, poolAddress: string | undefined) =>
-  chainId != null &&
-  poolAddress != null &&
-  VYPER_VULNERABLE_POOL_ADDRESS_LOOKUP[chainId]?.[poolAddress.toLowerCase()] === true
+  maybes(
+    [chainId, poolAddress],
+    (chainId, poolAddress) => VYPER_VULNERABLE_POOL_ADDRESS_LOOKUP[chainId]?.[poolAddress.toLowerCase()] === true,
+  )
