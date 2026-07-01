@@ -63,12 +63,11 @@ const RateItem = ({ market, type }: { market: LlamaMarket; type: MarketRateType 
       <Grid size={6}>
         <Tooltip market={market}>
           <Stack direction="row" sx={{ alignItems: 'center', gap: 2 }}>
-            {/* todo: omit metric component tooltip */}
             <Metric
               category="llamalend.marketListRates"
               label={title}
               value={constQ(rateValue)}
-              valueOptions={{ unit: 'percentage' }}
+              valueOptions={{ unit: 'percentage', disableTooltip: true }}
               leadingIcon={<RewardsIcons market={market} rateType={type} />}
             />
           </Stack>
@@ -115,7 +114,6 @@ export const LlamaMarketExpandedPanel = ({
     leverage,
     liquidityUsd,
     url,
-    userHasPositions,
     lendingPosition,
     utilizationPercent,
     tvl,
