@@ -1,5 +1,6 @@
 import { merge } from 'lodash'
 import { toArray } from '@primitives/array.utils'
+import { setLocalStorageItem } from '@ui-kit/hooks/useLocalStorage'
 
 const APP_STORAGE = {
   APP_DASHBOARD: 'curve-app-dashboard',
@@ -8,7 +9,7 @@ const APP_STORAGE = {
 type Key = keyof typeof APP_STORAGE
 
 export function getStorageValue(key: Key) {
-  const storedValue = window.localStorage.getItem(APP_STORAGE[key])
+  const storedValue = window.localStorage?.getItem(APP_STORAGE[key])
   let parsedStoredValue: Record<string, string> = {}
 
   if (storedValue) {
@@ -28,5 +29,5 @@ export function getStorageValue(key: Key) {
 export function setStorageValue<T>(key: Key, updatedValue: T) {
   const storedValue = getStorageValue(key)
   const mergedStoredValue = merge(storedValue, updatedValue)
-  window.localStorage.setItem(APP_STORAGE[key], JSON.stringify(mergedStoredValue))
+  setLocalStorageItem(APP_STORAGE[key], JSON.stringify(mergedStoredValue))
 }
