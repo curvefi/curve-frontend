@@ -3,7 +3,6 @@ import { getBorrowMoreImplementation } from '@/llamalend/queries/borrow-more/bor
 import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreValidationGroup } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { Decimal } from '@primitives/decimal.utils'
-import { assert } from '@primitives/objects.utils'
 import { getExpectedFn, getRouteById } from '@ui-kit/entities/router-api'
 import { createValidationSuite } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
@@ -78,7 +77,6 @@ export const { useQuery: useBorrowMoreMaxReceive, invalidate: invalidateBorrowMo
     const [type, impl] = getBorrowMoreImplementation(market, leverageEnabled)
     switch (type) {
       case 'zapV2': {
-        assert(!+userBorrowed, `Unsupported userBorrowed for zapv2: ${userBorrowed}`)
         return castFieldsToDecimal(
           await impl.borrowMoreMaxRecv({
             userCollateral,

@@ -1,5 +1,5 @@
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
-import { assert, notFalsy } from '@primitives/objects.utils'
+import { notFalsy } from '@primitives/objects.utils'
 import { parseRoute as parseRoute } from '@ui-kit/entities/router-api'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { Range } from '@ui-kit/types/util'
@@ -45,7 +45,6 @@ export const { invalidate: invalidateCreateLoanBands } = queryFactory({
     const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
     switch (type) {
       case 'zapV2':
-        assert(!+userBorrowed, `Unsupported userBorrowed for zapv2: ${userBorrowed}`)
         return (await impl.createLoanExpectedMetrics({ userCollateral, debt, range, ...parseRoute(routeId) })).bands
       case 'V1':
       case 'V2':

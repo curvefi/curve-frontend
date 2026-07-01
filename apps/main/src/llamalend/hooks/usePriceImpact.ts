@@ -56,14 +56,11 @@ export const usePriceImpact = (
 
   const tokenInDecimals = tokenIn?.decimals
   const tokenOutDecimals = tokenOut?.decimals
-  const tokenInUsd = maybes(
-    [route?.amountIn, tokenInDecimals, inUsdRate.data],
-    ([[amountIn], decimals, usdRate]: readonly [[`${number}`], number, number]) =>
-      decimalMultiply(fromWei(amountIn, decimals), `${usdRate}`),
+  const tokenInUsd = maybes([route?.amountIn, tokenInDecimals, inUsdRate.data], ([amountIn], decimals, usdRate) =>
+    decimalMultiply(fromWei(amountIn, decimals), `${usdRate}`),
   )
-  const referenceAmountIn = maybes(
-    [inUsdRate.data, tokenInDecimals],
-    ([usdRate, decimals]: readonly [number, number]) => toWei(decimalDiv(REFERENCE_USD_PRICE, `${usdRate}`), decimals),
+  const referenceAmountIn = maybes([inUsdRate.data, tokenInDecimals], (usdRate, decimals) =>
+    toWei(decimalDiv(REFERENCE_USD_PRICE, `${usdRate}`), decimals),
   )
   const isEnabled = enabled && !!route && !!referenceAmountIn && tokenInDecimals != null && tokenOutDecimals != null
 

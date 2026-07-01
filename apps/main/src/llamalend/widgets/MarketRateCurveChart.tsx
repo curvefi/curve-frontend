@@ -68,7 +68,7 @@ const calculateCombinedCollateral = ({
 }) =>
   collateralUsdRate === 0
     ? undefined
-    : maybes([collateral, borrowed], ([collateral, borrowed]) =>
+    : maybes([collateral, borrowed], (collateral, borrowed) =>
         decimalSum(collateral, decimalMultiply(borrowed, borrowUsdRate / collateralUsdRate)),
       )
 
@@ -96,9 +96,7 @@ export const MarketRateCurveChart = () => {
     mapQuery(rateCurve, ({ currentUtilization }) => currentUtilization),
   )
   const totalBorrowed = mapQuery(capAndAvailable, ({ available, totalAssets }) =>
-    maybes([available, totalAssets], ([available, totalAssets]) =>
-      decimalMax(decimalMinus(totalAssets, available), '0'),
-    ),
+    maybes([available, totalAssets], (available, totalAssets) => decimalMax(decimalMinus(totalAssets, available), '0')),
   )
   const utilizationBreakdown = combineQueries(
     [totalBorrowed, capAndAvailable],

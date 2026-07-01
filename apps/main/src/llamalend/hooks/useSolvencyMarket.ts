@@ -63,7 +63,7 @@ export const useSolvencyMarket = (
 
         return {
           ...combineQueriesMeta(results),
-          data: maybes([solvencyPercent, badDebtUsd], ([solvencyPercent, badDebtUsd]) => ({
+          data: maybes([solvencyPercent, badDebtUsd], (solvencyPercent, badDebtUsd) => ({
             solvencyPercent,
             badDebtUsd,
           })),

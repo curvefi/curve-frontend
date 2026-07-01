@@ -63,7 +63,7 @@ export const useScrvUsdDepositEstimateGas = (
 
   const gasEstimate = isApproved
     ? actionEstimate
-    : maybes([approveEstimate, userBalances], ([estimate, balances]) => +estimate + estimateDepositGas(balances))
+    : maybes([approveEstimate, userBalances], (estimate, balances) => +estimate + estimateDepositGas(balances))
   const {
     data,
     isLoading: conversionLoading,

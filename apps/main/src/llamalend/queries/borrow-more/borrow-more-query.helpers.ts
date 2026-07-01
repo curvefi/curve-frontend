@@ -2,7 +2,6 @@ import { getLlamaMarket, hasLeverage, hasV2Leverage, hasZapV2 } from '@/llamalen
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import type { BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
-import { assert } from '@primitives/objects.utils'
 import { parseMutationRoute } from '@ui-kit/entities/router-api'
 
 /**
@@ -48,11 +47,9 @@ export function getBorrowMoreImplementationArgs(
   const market = getLlamaMarket(marketId)
   const [type, impl] = getBorrowMoreImplementation(market, leverageEnabled)
   if (type === 'unleveraged') {
-    assert(!+userBorrowed, `Unsupported userBorrowed for unleveraged borrow more: ${userBorrowed}`)
     return [type, impl, [userCollateral, debt]] as const
   }
   if (type === 'zapV2') {
-    assert(!+userBorrowed, `Unsupported userBorrowed for zapv2: ${userBorrowed}`)
     const routerArgs = {
       userCollateral,
       userBorrowed,

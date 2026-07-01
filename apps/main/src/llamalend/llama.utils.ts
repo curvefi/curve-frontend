@@ -34,11 +34,8 @@ export const getLlamaMarket = (id: string | LlamaMarketTemplate, lib = requireLi
  * Helper to retrieve the llama market after initialization, avoiding crashing the components using it.
  * We use this helper during query validation since we cannot crash the validation suite outside `test()`
  */
-export const tryGetLlamaMarket = (marketId: LlamaMarketTemplate | string | null | undefined) => {
-  if (typeof marketId === 'object') return marketId
-  const lib = getLib('llamaApi') // retrieve lib separately to avoid crashing the whole app when uninitialized
-  return maybes([marketId, lib], ([marketId, lib]) => getLlamaMarket(marketId, lib))
-}
+export const tryGetLlamaMarket = (marketId: LlamaMarketTemplate | string | null | undefined) =>
+  typeof marketId === 'object' ? marketId : maybes([marketId, getLib('llamaApi')], getLlamaMarket)
 
 /**
  * Checks if a market supports leverage or not. A market supports leverage if:
@@ -253,7 +250,7 @@ export const getMarketBandRange = <T extends LlamaMarketTemplate | null | undefi
     market,
     apiMarket,
     m => ({ minBands: +m.minBands, maxBands: +m.maxBands }),
-    m => maybes([m.minBand, m.maxBand], ([minBands, maxBands]) => ({ minBands, maxBands })),
+    m => maybes([m.minBand, m.maxBand], (minBands, maxBands) => ({ minBands, maxBands })),
   )
 
 export const getCrvTokenAddress = (market: LlamaMarketTemplate | null | undefined): Address | undefined =>
@@ -521,7 +518,7 @@ export const tokenMetric = ({
       abbreviate: true,
       unit: maybe(symbol, symbol => ({ symbol, position: 'suffix' as const })),
     },
-    notional: maybes([decimal(value.data), usdRate.data], ([value, usdRate]) => ({
+    notional: maybes([decimal(value.data), usdRate.data], (value, usdRate) => ({
       value: decimalMultiply(value, usdRate),
       unit: 'dollar' as const,
     })),
