@@ -4,10 +4,11 @@ import type { V2Pool } from '@curvefi/prices-api/pools'
 import { recordValues } from '@primitives/objects.utils'
 import { DEX_ROUTES } from '@ui-kit/shared/routes'
 import { AVERAGE_CATEGORIES, aprToApy } from '@ui-kit/utils'
-import type { PoolListItem } from './poolList.types'
+import type { PoolListCampaignsByAddress, PoolListItem } from './poolList.types'
 
 const VYPER_EXPLOIT_VERSIONS = new Set(['0.2.15', '0.2.16', '0.3.0'])
 const POOL_YIELD_COMPOUND_WINDOW = AVERAGE_CATEGORIES['dex.poolYield.compoundRate'].window
+const EMPTY_CAMPAIGN_REWARDS: PoolListCampaignsByAddress[string] = []
 
 type PoolIdByAddressSource = Record<string, { pool: Pick<PoolData['pool'], 'address' | 'id'> }>
 
@@ -23,6 +24,9 @@ export const getCurvePoolIdByAddressEntries = (curve: CurveApi) =>
   curve.getPoolList().map(poolId => [normalizeAddress(curve.getPool(poolId).address), poolId] as const)
 
 export const getPoolYieldApy = (apr: number | null | undefined) => aprToApy(apr, POOL_YIELD_COMPOUND_WINDOW)
+
+export const getPoolListCampaigns = (campaignsByAddress: PoolListCampaignsByAddress | undefined, poolAddress: string) =>
+  campaignsByAddress?.[normalizeAddress(poolAddress)] ?? EMPTY_CAMPAIGN_REWARDS
 
 export const getPoolListItem = (
   network: NetworkConfig,
