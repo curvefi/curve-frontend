@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { ClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePositionForm'
 import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealthForm'
+import { ResetPositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ResetPositionForm'
 import { oneInt } from '@cy/support/generators'
 import { TEST_ADDRESS } from '@cy/support/helpers/llamalend/mock-loan-test-data'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
@@ -12,7 +13,14 @@ import {
 } from '@cy/support/helpers/llamalend/repay-loan.helpers'
 import {
   checkClosePositionDetailsLoaded,
+  checkResetPositionDetailsLoaded,
+  checkResetPositionInputsLoaded,
+  checkResetPositionMinimumWalletMessage,
+  checkResetPositionWalletAmount,
+  clickResetPositionMinimumWalletAmount,
   submitClosePositionForm,
+  submitResetPositionForm,
+  writeResetPositionWalletAmount,
 } from '@cy/support/helpers/llamalend/soft-liquidation.helpers'
 import {
   llamaNetworks,
@@ -20,7 +28,11 @@ import {
   setGasInfo,
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
-import { createSoftLiquidationScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
+import {
+  createResetPositionScenario,
+  createSoftLiquidationScenario,
+} from '@cy/support/helpers/llamalend/test-scenarios.helpers'
+import { LOAD_TIMEOUT } from '@cy/support/ui'
 import { constQ } from '@ui-kit/types/util'
 
 const chainId = 1
@@ -28,6 +40,19 @@ const testCases = [
   { approved: true, title: 'fills and submits (already approved)' },
   { approved: false, title: 'fills, approves, and submits' },
 ]
+
+const mountResetPositionForm = ({
+  llamaApi,
+  market,
+}: Pick<ReturnType<typeof createResetPositionScenario>, 'llamaApi' | 'market'>) => {
+  setLlamaApi(llamaApi)
+  setGasInfo({ chainId, networks: llamaNetworks })
+  cy.mount(
+    <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
+      <ResetPositionForm networks={llamaNetworks} />
+    </MockLoanTestWrapper>,
+  )
+}
 
 describe('Soft Liquidation Forms (mocked)', () => {
   afterEach(() => {
@@ -121,6 +146,167 @@ describe('Soft Liquidation Forms (mocked)', () => {
           expect(stubs.selfLiquidate).to.have.been.calledWithExactly(...expected.closePosition.submit)
         })
       })
+    })
+  })
+
+  describe('ResetPositionForm', () => {
+    testCases.forEach(({ approved, title }: { approved: boolean; title: string }) => {
+      it(title, () => {
+        const { convertedBorrowed, debt, expected, futureDebt, llamaApi, market, stubs, userBorrowed } =
+          createResetPositionScenario({ chainId, approved })
+
+        seedCrvUsdBalance({ chainId, addresses: [TEST_ADDRESS], min: userBorrowed })
+        mountResetPositionForm({ llamaApi, market })
+
+        checkResetPositionInputsLoaded({ convertedBorrowed })
+        cy.get('[data-testid="reset-position-submit-button"]').should('be.disabled')
+
+        clickResetPositionMinimumWalletAmount()
+        checkResetPositionWalletAmount({ amount: userBorrowed })
+        checkResetPositionDetailsLoaded({ debt: { current: debt, future: futureDebt, symbol: 'crvUSD' } })
+        cy.get('[data-testid="reset-position-submit-button"]', LOAD_TIMEOUT).should('not.be.disabled')
+
+        cy.then(() => {
+          expect(stubs.rates).to.have.been.calledWithExactly(...expected.rates)
+          expect(stubs.futureRates).to.have.been.calledWithExactly(...expected.futureRates)
+          expect(stubs.tokensToShrink).to.have.been.calledWithExactly(...expected.tokensToShrink)
+          expect(stubs.repayHealth).to.have.been.calledWithExactly(...expected.health)
+          expect(stubs.repayPrices).to.have.been.calledWithExactly(...expected.prices)
+          expect(stubs.repayIsApproved).to.have.been.calledWithExactly(...expected.isApproved)
+        })
+
+        submitResetPositionForm({ message: expected.successMessage }).then(() => {
+          expect(stubs.estimateGasRepay).to.have.been.calledWithExactly(...expected.estimateGas)
+          if (approved) {
+            expect(stubs.estimateGasRepayApprove).to.not.have.been.called
+            expect(stubs.repayApprove).to.not.have.been.called
+          } else {
+            expect(stubs.estimateGasRepayApprove).to.have.been.calledWithExactly(...expected.approve)
+            expect(stubs.repayApprove).to.have.been.calledWithExactly(...expected.approve)
+          }
+          expect(stubs.repay).to.have.been.calledWithExactly(...expected.submit)
+        })
+      })
+    })
+
+    it('allows empty wallet amount when no wallet tokens are required', () => {
+      const { convertedBorrowed, debt, getExpected, getFutureDebt, llamaApi, market, stubs } =
+        createResetPositionScenario({ chainId, approved: true, minBorrowed: '0' })
+      const expected = getExpected('0')
+
+      seedCrvUsdBalance({ chainId, addresses: [TEST_ADDRESS], min: '0' })
+      mountResetPositionForm({ llamaApi, market })
+
+      checkResetPositionInputsLoaded({ convertedBorrowed })
+      checkResetPositionDetailsLoaded({
+        debt: { current: debt, future: getFutureDebt('0'), symbol: 'crvUSD' },
+      })
+      cy.get('[data-testid="reset-position-submit-button"]', LOAD_TIMEOUT)
+        .should('not.be.disabled')
+        .and('contain.text', 'Reset position')
+        .and('not.contain.text', 'Approve')
+
+      cy.then(() => {
+        expect(stubs.futureRates).to.have.been.calledWithExactly(...expected.futureRates)
+        expect(stubs.tokensToShrink).to.have.been.calledWithExactly(...expected.tokensToShrink)
+        expect(stubs.repayHealth).to.have.been.calledWithExactly(...expected.health)
+        expect(stubs.repayPrices).to.have.been.calledWithExactly(...expected.prices)
+        expect(stubs.repayIsApproved).to.have.been.calledWithExactly(...expected.isApproved)
+        expect(stubs.estimateGasRepayApprove).to.not.have.been.called
+        expect(stubs.estimateGasRepay).to.have.been.calledWithExactly(...expected.estimateGas)
+      })
+
+      submitResetPositionForm({ message: expected.successMessage }).then(() => {
+        expect(stubs.repayIsApproved).to.have.been.calledWithExactly(...expected.isApproved)
+        expect(stubs.estimateGasRepayApprove).to.not.have.been.called
+        expect(stubs.repayApprove).to.not.have.been.called
+        expect(stubs.repay).to.have.been.calledWithExactly(...expected.submit)
+      })
+    })
+
+    it('requires the minimum wallet amount', () => {
+      const { belowMinBorrowed, convertedBorrowed, llamaApi, market, minBorrowed } = createResetPositionScenario({
+        chainId,
+        approved: true,
+      })
+
+      seedCrvUsdBalance({ chainId, addresses: [TEST_ADDRESS], min: minBorrowed })
+      mountResetPositionForm({ llamaApi, market })
+
+      checkResetPositionInputsLoaded({ convertedBorrowed })
+      checkResetPositionMinimumWalletMessage()
+      writeResetPositionWalletAmount({ amount: belowMinBorrowed })
+
+      void minBorrowed
+      cy.get('[data-testid="reset-position-input-user-borrowed"]')
+        .should('contain.text', 'Add at least')
+        .and('contain.text', 'from wallet to reset this position')
+      cy.get('[data-testid="reset-position-submit-button"]').should('be.disabled')
+    })
+
+    it('allows more than the minimum wallet amount', () => {
+      const { convertedBorrowed, debt, getExpected, getFutureDebt, llamaApi, market, moreUserBorrowed, stubs } =
+        createResetPositionScenario({ chainId, approved: true })
+      const expected = getExpected(moreUserBorrowed)
+
+      seedCrvUsdBalance({ chainId, addresses: [TEST_ADDRESS], min: moreUserBorrowed })
+      mountResetPositionForm({ llamaApi, market })
+
+      checkResetPositionInputsLoaded({ convertedBorrowed })
+      writeResetPositionWalletAmount({ amount: moreUserBorrowed })
+      checkResetPositionDetailsLoaded({
+        debt: { current: debt, future: getFutureDebt(moreUserBorrowed), symbol: 'crvUSD' },
+      })
+      cy.get('[data-testid="reset-position-submit-button"]', LOAD_TIMEOUT).should('not.be.disabled')
+
+      cy.then(() => {
+        expect(stubs.futureRates).to.have.been.calledWithExactly(...expected.futureRates)
+        expect(stubs.repayHealth).to.have.been.calledWithExactly(...expected.health)
+        expect(stubs.repayPrices).to.have.been.calledWithExactly(...expected.prices)
+        expect(stubs.repayIsApproved).to.have.been.calledWithExactly(...expected.isApproved)
+      })
+
+      submitResetPositionForm({ message: expected.successMessage }).then(() => {
+        expect(stubs.estimateGasRepay).to.have.been.calledWithExactly(...expected.estimateGas)
+        expect(stubs.repay).to.have.been.calledWithExactly(...expected.submit)
+      })
+    })
+
+    it('requires the wallet amount to be within the user balance', () => {
+      const { convertedBorrowed, llamaApi, market, moreUserBorrowed, userBorrowed } = createResetPositionScenario({
+        chainId,
+        approved: true,
+      })
+
+      seedCrvUsdBalance({ chainId, addresses: [TEST_ADDRESS], min: userBorrowed, max: userBorrowed })
+      mountResetPositionForm({ llamaApi, market })
+
+      checkResetPositionInputsLoaded({ convertedBorrowed })
+      writeResetPositionWalletAmount({ amount: moreUserBorrowed })
+
+      cy.get('[data-testid="reset-position-input-user-borrowed"]')
+        .should('contain.text', 'The maximum reset amount is')
+        .and('contain.text', '1k')
+      cy.get('[data-testid="reset-position-submit-button"]').should('be.disabled')
+    })
+
+    it('blocks full repay through reset', () => {
+      const { convertedBorrowed, fullRepayUserBorrowed, llamaApi, market } = createResetPositionScenario({
+        chainId,
+        approved: true,
+      })
+
+      seedCrvUsdBalance({ chainId, addresses: [TEST_ADDRESS], min: fullRepayUserBorrowed })
+      mountResetPositionForm({ llamaApi, market })
+
+      checkResetPositionInputsLoaded({ convertedBorrowed })
+      writeResetPositionWalletAmount({ amount: fullRepayUserBorrowed })
+
+      cy.get('[data-testid="reset-position-input-user-borrowed"]').should(
+        'contain.text',
+        'Use the close tab to fully repay and close this position',
+      )
+      cy.get('[data-testid="reset-position-submit-button"]').should('be.disabled')
     })
   })
 })

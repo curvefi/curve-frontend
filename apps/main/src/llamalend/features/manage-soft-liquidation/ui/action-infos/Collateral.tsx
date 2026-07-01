@@ -1,8 +1,8 @@
-import { type ActionInfoProps, ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
+import { type ActionInfoOverrideProps, ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import type { TokenAmount } from './types'
 import { formatTokens } from './util'
 
-export type Props = { collateral: TokenAmount[] } & Partial<ActionInfoProps>
+export type Props = { collateral: TokenAmount[] } & ActionInfoOverrideProps
 
 /** Array of collateral assets - only renders when provided */
 export const Collateral = ({ collateral, ...actionInfoProps }: Props) =>

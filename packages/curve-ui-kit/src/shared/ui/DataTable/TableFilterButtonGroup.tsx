@@ -3,7 +3,7 @@ import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import { notFalsy } from '@primitives/objects.utils'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
-import { TableFilterItem } from '@ui-kit/shared/ui/DataTable/TableFilterItem'
+import { TableFilterItem } from './TableFilterItem'
 
 export type TableFilterButtonOption<T extends string> = {
   value: T

@@ -20,7 +20,7 @@ export const ToggleBandsChartButton = ({
   toggle: () => void
   tooltip?: ReactNode
 }) => (
-  <ToggleButton size="extraSmall" onClick={toggle} value={true}>
+  <ToggleButton size="extraSmall" onClick={toggle} value="unused" selected={isVisible}>
     <WithWrapper Wrapper={Tooltip} title={tooltip} placement="top" shouldWrap={tooltip}>
       <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
         {isVisible ? <EyeOpen /> : <EyeClosed />}
