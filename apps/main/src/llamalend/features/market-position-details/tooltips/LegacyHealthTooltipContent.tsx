@@ -2,21 +2,21 @@ import { TooltipDescription, TooltipWrapper } from '@/llamalend/widgets/tooltips
 import Box from '@mui/material/Box'
 import { t, Trans } from '@ui-kit/lib/i18n'
 
-export const HealthTooltipContent = () => (
+export const LegacyHealthTooltipContent = () => (
   <TooltipWrapper>
-    <TooltipDescription text={t`Health shows the cushion before your position enters liquidation protection.`} />
+    <TooltipDescription text={t`Health shows your cushion before hard liquidation.`} />
     <TooltipDescription
       text={
         <Trans>
           Higher is safer;{' '}
           <Box component="span" sx={{ color: 'text.highlight' }}>
-            when at 0 liquidation protection has started.
+            below 0 means hard liquidation is possible.
           </Box>
         </Trans>
       }
     />
     <TooltipDescription
-      text={t`Once Health reaches 0, monitor the liquidation buffer to track your position before hard liquidation.`}
+      text={t`Unlike on standard lending apps, LLAMMA rebalancing can change health in both directions once your position is in the liquidation range. Monitor it together with the liquidation range.`}
     />
   </TooltipWrapper>
 )

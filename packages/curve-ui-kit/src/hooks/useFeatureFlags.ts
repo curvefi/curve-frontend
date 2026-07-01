@@ -41,6 +41,9 @@ export const use0xRouter = useBetaChannel
 /** Reset position form for LlamaLend soft liquidation */
 export const useLlamaResetPosition = useBetaChannel
 
+/** Split the LlamaLend (soon to be legacy) health into: Liquidation Buffer and Health */
+export const useNewLlamalendHealth = useBetaChannel
+
 /** New DEX pool list backed by Prices API v2 */
 export const useDexPoolListV2 = useBetaChannel
 
