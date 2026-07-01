@@ -1,3 +1,5 @@
+import { Chain } from '@primitives/network.utils'
+
 /**
  * Static pool-address lookup for the Vyper vulnerability deposit warning.
  *
@@ -13,8 +15,7 @@
  */
 
 export const VYPER_VULNERABLE_POOL_ADDRESS_LOOKUP: Partial<Record<number, Readonly<Record<string, true>>>> = {
-  // Ethereum (1)
-  1: {
+  [Chain.Ethereum]: {
     '0x7c0316c925e12ebfc55e0f325794b43ead425157': true, // factory-v2-155 - frxETH
     '0x6e8d2b6fb24117c675c2fabc524f28cc5d81f18a': true, // factory-v2-165 - cbETH
     '0xc22936d5ece78c048d6e7fe5d9f77fb6caa16dbb': true, // factory-v2-166 - aETH
@@ -26,8 +27,7 @@ export const VYPER_VULNERABLE_POOL_ADDRESS_LOOKUP: Partial<Record<number, Readon
     '0xc4c319e2d4d66cca4464c0c2b32c9bd23ebe784e': true, // factory-v2-38 - alETH
     '0xfb9a265b5a1f52d97838ec7274a0b1442efacc87': true, // factory-v2-56 - Ankr Reward-Earning Staked ETH
   },
-  // Polygon (137)
-  137: {
+  [Chain.Polygon]: {
     '0xcdb4f70ad54940cfe42f4a74e34c2a965ae66931': true, // factory-v2-204 - LATAM Peso
     '0x4f608b34e6ed644e69fbbd5c703727398996bf70': true, // factory-v2-235 - DFYN
     '0xbe775deb31b4ee5841a8b4564c9f3294987023fe': true, // factory-v2-237 - TESTABC + TESTZRX
@@ -38,21 +38,18 @@ export const VYPER_VULNERABLE_POOL_ADDRESS_LOOKUP: Partial<Record<number, Readon
     '0x67c728561fbf6272b03c567a0c757ea71602fddd': true, // factory-v2-386 - MATIC/EMI
     '0x39416bea4ef71f8f9ce1735299a5ab43e14cee2d': true, // factory-v2-387 - MATIC/EMI
   },
-  // Fantom (250)
-  250: {
+  [Chain.Fantom]: {
     '0x31d8f85bce2a4a096a2d207f8f113d1c3fec7c06': true, // factory-v2-135 - My aFTM Pool
     '0x8b63f036f5a34226065bc0a7b0ae5bb5eba1ff3d': true, // factory-v2-42 - Topshelf FTML
   },
-  // Arbitrum (42161)
-  42161: {
+  [Chain.Arbitrum]: {
     '0xc120ef573752aad82484ebc9a752dad6f3fec54b': true, // factory-v2-10 - Eleven.finance
     '0x0a824b5d4c96ea0ec46306efbd34bf88fe1277e0': true, // factory-v2-15 - deBridge-ETH
     '0xd39016475200ab8957e9c772c949ef54bda69111': true, // factory-v2-61 - ETHMAXY/ETH
     '0x305fc0a3eed959a3bbdc54300a1a140925b4b058': true, // factory-v2-62 - ETHMAXY/ETH
     '0x960ea3e3c7fb317332d990873d354e18d7645590': true, // tricrypto
   },
-  // Avalanche (43114)
-  43114: {
+  [Chain.Avalanche]: {
     '0x445109bcf194c538b73ea60c71bb773849bc9b79': true, // factory-v2-33 - Topshelf AVAXL
   },
 }
