@@ -31,7 +31,6 @@ export const RefuelForm = ({ chainId, blockchainId, poolAddress }: RefuelFormPar
   return (
     <Form
       {...form}
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
       onSubmit={onSubmit}
       footer={<RefuelFormList values={values} tokenA={tokenA} tokenB={tokenB} poolTvl={poolTvl} />}
     >

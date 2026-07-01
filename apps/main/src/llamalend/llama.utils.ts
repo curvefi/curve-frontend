@@ -73,6 +73,9 @@ const hasV1Deleverage = (market: LlamaMarketTemplate) =>
 export const hasDeleverage = (market: LlamaMarketTemplate) =>
   hasV1Deleverage(market) || (market instanceof MintMarketTemplate && hasV2Leverage(market))
 
+export const hasResetPosition = (market: LlamaMarketTemplate | null | undefined): market is LendMarketTemplate<'v2'> =>
+  market instanceof LendMarketTemplate && market.version === 'v2'
+
 /**
  * Check if an open position is a leveraged position, using the leverage value.
  * prevLeverage is 0 when the position didn't exist before, future leverage is 0 on full repayment.

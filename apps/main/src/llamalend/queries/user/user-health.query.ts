@@ -1,9 +1,11 @@
 import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import type { Decimal } from '@primitives/decimal.utils'
+import { maybes } from '@primitives/objects.utils'
 import { combineQueryState } from '@ui-kit/lib'
 import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } from '@ui-kit/lib/model'
 import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-validation'
 import { createValidationSuite } from '@ui-kit/lib/validation'
+import { decimalMax, decimalMinus, ZERO } from '@ui-kit/utils'
 import { validateIsFull } from '../validation/borrow-fields.validation'
 
 type UserHealthParams = UserMarketParams & { isFull: boolean }
@@ -32,8 +34,16 @@ export const {
 export const useUserHealthValue = (params: UserMarketParams) => {
   const healthFull = useUserHealth({ ...params, isFull: true })
   const healthNotFull = useUserHealth({ ...params, isFull: false })
+
   return {
-    data: healthFull.data && healthNotFull.data && (+healthNotFull.data < 0 ? healthNotFull.data : healthFull.data),
+    data: maybes([healthFull.data, healthNotFull.data], (full, notFull) => ({
+      /** Legacy displayed health: full health by default, but show band-valued health when it is negative. */
+      legacyHealth: +notFull < 0 ? notFull : full,
+      /** Distance from entering liquidation protection: the above-band cushion, clamped at zero. */
+      health: decimalMax(decimalMinus(full, notFull), ZERO) ?? ZERO,
+      /** Remaining buffer before full liquidation, using the band-valued health. */
+      liquidationBuffer: notFull,
+    })),
     ...combineQueryState(healthFull, healthNotFull),
   }
 }

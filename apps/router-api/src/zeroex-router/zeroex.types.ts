@@ -7,6 +7,9 @@ export type ZeroExQuoteRequest = {
   buyToken: Address
   sellAmount: Decimal
   taker: Address
+  swapFeeRecipient?: Address
+  swapFeeBps?: Decimal
+  swapFeeToken?: Address
 }
 
 export type ZeroExQuoteResponse = {
