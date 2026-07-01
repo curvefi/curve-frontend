@@ -62,8 +62,7 @@ export const ErrorReportModal = ({ isOpen, onClose, context }: ErrorReportModalP
       footer={
         <Button
           fullWidth
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
-          onClick={onSubmit}
+          onClick={event => void onSubmit(event)}
           data-testid="submit-error-report-submit"
           variant="contained"
           disabled={!form.formState.isValid}

@@ -39,7 +39,6 @@ export const DepositForm = <ChainId extends IChainId>({ networks }: DepositFormP
   return (
     <Form
       {...form}
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
       onSubmit={onSubmit}
       footer={
         <DepositSupplyInfoList

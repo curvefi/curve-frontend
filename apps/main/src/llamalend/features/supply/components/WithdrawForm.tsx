@@ -37,7 +37,6 @@ export const WithdrawForm = <ChainId extends IChainId>({ networks }: WithdrawFor
   return (
     <Form
       {...form}
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
       onSubmit={onSubmit}
       footer={
         <WithdrawSupplyInfoList
