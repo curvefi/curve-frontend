@@ -62,7 +62,7 @@ const validateBorrowMoreFieldsForMarket = ({
     const [type] = market ? getBorrowMoreImplementation(market, leverageEnabled) : []
     validateRoute(routeId, !!(debt && leverageEnabled && type && isRouterRequired(type)))
     skipWhen(type === 'V1' || type === 'V2' || type == null, () => {
-      test('userBorrowed', `Borrow amount is not supported for ${type}`, () => {
+      test('userBorrowed', `Borrow amount is not supported for borrow more ${type}`, () => {
         enforce(+(userBorrowed ?? '0')).equals(0)
       })
     })

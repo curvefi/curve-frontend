@@ -34,11 +34,8 @@ export const getLlamaMarket = (id: string | LlamaMarketTemplate, lib = requireLi
  * Helper to retrieve the llama market after initialization, avoiding crashing the components using it.
  * We use this helper during query validation since we cannot crash the validation suite outside `test()`
  */
-export const tryGetLlamaMarket = (marketId: LlamaMarketTemplate | string | null | undefined) => {
-  if (typeof marketId === 'object') return marketId
-  const lib = getLib('llamaApi') // retrieve lib separately to avoid crashing the whole app when uninitialized
-  return marketId && lib && getLlamaMarket(marketId, lib)
-}
+export const tryGetLlamaMarket = (marketId: LlamaMarketTemplate | string | null | undefined) =>
+  typeof marketId === 'object' ? marketId : maybes([marketId, getLib('llamaApi')], getLlamaMarket)
 
 /**
  * Checks if a market supports leverage or not. A market supports leverage if:

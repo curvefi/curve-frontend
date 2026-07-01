@@ -2,7 +2,6 @@ import { RouteDetails } from '@/llamalend/widgets/RouteDetails'
 import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import Stack from '@mui/material/Stack'
 import { type Token } from '@primitives/address.utils'
-import { notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useCreateLoanExpectedCollateral } from '../../../queries/create-loan/create-loan-expected-collateral.query'
@@ -47,10 +46,10 @@ export const AdvancedCreateLoanOptions = ({
           loading={routeImageLoading || expectedCollateralLoading}
           swapFrom={borrowToken}
           swapTo={collateralToken}
-          swapFromAmounts={notFalsy(
-            debt && { value: debt, label: t`Debt` },
-            userBorrowed && { value: userBorrowed, label: t`Wallet` },
-          )}
+          swapFromAmounts={[
+            { value: `${debt ?? 0}`, label: t`Debt` },
+            { value: `${userBorrowed ?? 0}`, label: t`Wallet` },
+          ]}
           swapToAmounts={[expectedCollateral?.collateralFromDebt, expectedCollateral?.collateralFromUserBorrowed]}
           nonSwapAmount={{
             value: expectedCollateral?.userCollateral,

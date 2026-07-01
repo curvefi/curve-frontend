@@ -67,8 +67,9 @@ const validateRepayFieldsForMarket = (
       })
     const swapRequired = stateCollateral || userCollateral || routeId
     validateRoute(routeId, !!(type && swapRequired && isRouterRequired(type)))
-    skipWhen(type === 'V1' || type === 'V2' || type == null, () => {
-      test('userBorrowed', `Borrow amount is not supported for ${type}`, () => {
+
+    skipWhen(!['deleverage', 'zapV2', null, undefined].includes(type), () => {
+      test('userBorrowed', `Borrow amount is not supported for repay ${type}`, () => {
         enforce(+(userBorrowed ?? '0')).equals(0)
       })
     })
