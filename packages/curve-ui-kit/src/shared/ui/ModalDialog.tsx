@@ -7,6 +7,7 @@ import CardHeader from '@mui/material/CardHeader'
 import Dialog from '@mui/material/Dialog'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
+import type { FormSubmitHandler } from '@ui-kit/features/forms'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { Responsive } from '@ui-kit/themes/basic-theme'
 import type { SxProps } from '@ui-kit/utils'
@@ -17,6 +18,10 @@ const {
   Width: { modal: modalWidth },
   Height: { modal: modalHeight },
 } = SizesAndSpaces
+
+type ModalFormProps = Omit<FormHTMLAttributes<HTMLFormElement>, 'children' | 'onSubmit'> & {
+  onSubmit?: FormSubmitHandler
+}
 
 type ModalDialogProps = {
   /** Content of the modal dialog */
@@ -69,7 +74,7 @@ type ModalDialogProps = {
    * When a form is used inside the modal, we need to wrap the contents of the modal with a form element,
    * so that we can keep the form submission in the footer.
    */
-  formProps?: Omit<FormHTMLAttributes<HTMLFormElement>, 'children'>
+  formProps?: ModalFormProps
 
   /** Optional test id for the dialog root */
   testId?: string
@@ -79,7 +84,9 @@ type ModalDialogProps = {
  * When we have a form inside the modal, we can use this component to wrap it with a form element,
  * so that we can keep the form submission in the footer.
  */
-const Form = (props: FormHTMLAttributes<HTMLFormElement>) => <form {...props} />
+const Form = ({ onSubmit, ...props }: ModalFormProps) => (
+  <form {...props} onSubmit={onSubmit ? event => void onSubmit(event) : undefined} />
+)
 
 export const ModalDialog = ({
   children,
