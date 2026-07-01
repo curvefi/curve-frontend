@@ -7,88 +7,94 @@ export type MetricLayout = {
 
 type MetricViewportLayout = Record<Breakpoint, MetricLayout>
 
-/**
- * First level, we keep the Metric layout behaviors used across the app in a small set of reusable types.
- */
-export const METRIC_TYPES = {
-  standard: {
-    mobile: { size: 'medium', orientation: 'vertical' },
-    tablet: { size: 'medium', orientation: 'vertical' },
-    desktop: { size: 'medium', orientation: 'vertical' },
-  },
-  compact: {
-    mobile: { size: 'small', orientation: 'vertical' },
-    tablet: { size: 'small', orientation: 'vertical' },
-    desktop: { size: 'small', orientation: 'vertical' },
-  },
-  mobileCompact: {
-    mobile: { size: 'small', orientation: 'vertical' },
-    tablet: { size: 'medium', orientation: 'vertical' },
-    desktop: { size: 'medium', orientation: 'vertical' },
-  },
-  mobileCompactRow: {
-    mobile: { size: 'small', orientation: 'horizontal' },
-    tablet: { size: 'medium', orientation: 'vertical' },
-    desktop: { size: 'medium', orientation: 'vertical' },
-  },
-  mobileStandardRow: {
-    mobile: { size: 'medium', orientation: 'horizontal' },
-    tablet: { size: 'medium', orientation: 'vertical' },
-    desktop: { size: 'medium', orientation: 'vertical' },
-  },
-  compactMobileRow: {
-    mobile: { size: 'small', orientation: 'horizontal' },
-    tablet: { size: 'small', orientation: 'vertical' },
-    desktop: { size: 'small', orientation: 'vertical' },
-  },
-  standardRow: {
-    mobile: { size: 'medium', orientation: 'horizontal' },
-    tablet: { size: 'medium', orientation: 'horizontal' },
-    desktop: { size: 'medium', orientation: 'horizontal' },
-  },
-} as const satisfies Record<string, MetricViewportLayout>
+const breakpointValues = <Value>(value: Value): Record<Breakpoint, Value> => ({
+  mobile: value,
+  tablet: value,
+  desktop: value,
+})
 
 /**
- * Second level, the app-specific categories map each Metric placement to one reusable layout type.
+ * Metric emphasis defines the visual hierarchy of a metric across breakpoints.
+ * - primary: dominant page metrics.
+ * - secondary: dense supporting metrics.
+ * - responsive: metrics that need less emphasis on mobile.
+ */
+const METRIC_EMPHASIS = {
+  primary: breakpointValues('medium'),
+  secondary: breakpointValues('small'),
+  responsive: {
+    mobile: 'small',
+    tablet: 'medium',
+    desktop: 'medium',
+  },
+} as const satisfies Record<string, Record<Breakpoint, MetricLayout['size']>>
+
+/**
+ * Metric presentation defines how label and value relate in the available space.
+ * - stack: standalone stat blocks.
+ * - detail: mobile list/detail rows.
+ * - inline: horizontal metric groups.
+ */
+const METRIC_PRESENTATION = {
+  stack: breakpointValues('vertical'),
+  detail: {
+    mobile: 'horizontal',
+    tablet: 'vertical',
+    desktop: 'vertical',
+  },
+  inline: breakpointValues('horizontal'),
+} as const satisfies Record<string, Record<Breakpoint, MetricLayout['orientation']>>
+
+const metricLayout = (
+  emphasis: keyof typeof METRIC_EMPHASIS,
+  presentation: keyof typeof METRIC_PRESENTATION,
+): MetricViewportLayout => ({
+  mobile: { size: METRIC_EMPHASIS[emphasis].mobile, orientation: METRIC_PRESENTATION[presentation].mobile },
+  tablet: { size: METRIC_EMPHASIS[emphasis].tablet, orientation: METRIC_PRESENTATION[presentation].tablet },
+  desktop: { size: METRIC_EMPHASIS[emphasis].desktop, orientation: METRIC_PRESENTATION[presentation].desktop },
+})
+
+/**
+ * App-specific categories map each Metric placement to a composed emphasis and presentation.
  * Format: 'app.surface' or 'app.surface.metricGroup'.
  */
 export const METRIC_CATEGORIES = {
   // Storybook
-  'storybook.metric.standard': METRIC_TYPES.standard,
-  'storybook.metric.compact': METRIC_TYPES.compact,
-  'storybook.metric.horizontal': METRIC_TYPES.standardRow,
+  'storybook.metric.standard': metricLayout('primary', 'stack'),
+  'storybook.metric.compact': metricLayout('secondary', 'stack'),
+  'storybook.metric.horizontal': metricLayout('primary', 'inline'),
 
   // DAO
-  'dao.crvStats': METRIC_TYPES.compact,
+  'dao.crvStats': metricLayout('secondary', 'stack'),
 
   // DEX
-  'dex.poolHeader': METRIC_TYPES.standard,
-  'dex.poolInformation': METRIC_TYPES.standard,
-  'dex.userLiquidityDetails': METRIC_TYPES.standard,
-  'dex.refuelCharts': METRIC_TYPES.standard,
-  'dex.refuelPoolInformation': METRIC_TYPES.mobileCompact,
-  'dex.poolListMobileExpanded': METRIC_TYPES.standard,
-  'dex.legacyPoolListMobileExpanded': METRIC_TYPES.standard,
+  'dex.poolHeader': metricLayout('primary', 'stack'),
+  'dex.poolInformation': metricLayout('primary', 'stack'),
+  'dex.userLiquidityDetails': metricLayout('primary', 'stack'),
+  'dex.refuelCharts': metricLayout('primary', 'stack'),
+  'dex.refuelPoolInformation': metricLayout('responsive', 'stack'),
+  'dex.poolListMobileExpanded': metricLayout('primary', 'stack'),
+  'dex.legacyPoolListMobileExpanded': metricLayout('primary', 'stack'),
 
   // LlamaLend
-  'llamalend.marketHeader': METRIC_TYPES.standard,
-  'llamalend.marketCharts': METRIC_TYPES.standard,
-  'llamalend.marketAdvancedDetails': METRIC_TYPES.mobileCompactRow,
-  'llamalend.marketListRates': METRIC_TYPES.standard,
-  'llamalend.marketListExpandedDetails': METRIC_TYPES.mobileCompactRow,
-  'llamalend.marketListPosition': METRIC_TYPES.standard,
-  'llamalend.marketListSummary': METRIC_TYPES.mobileStandardRow,
-  'llamalend.positionBorrowDetails': METRIC_TYPES.compactMobileRow,
-  'llamalend.positionSupplyDetails': METRIC_TYPES.compactMobileRow,
-  'llamalend.positionHealth': METRIC_TYPES.standard,
+  'llamalend.marketHeader': metricLayout('primary', 'stack'),
+  'llamalend.marketCharts': metricLayout('primary', 'stack'),
+  'llamalend.marketAdvancedDetails': metricLayout('responsive', 'detail'),
+  'llamalend.marketListRates': metricLayout('primary', 'stack'),
+  'llamalend.marketListExpandedDetails': metricLayout('responsive', 'detail'),
+  'llamalend.marketListPosition': metricLayout('primary', 'stack'),
+  'llamalend.marketListSummary': metricLayout('primary', 'detail'),
+  'llamalend.positionBorrowDetails': metricLayout('secondary', 'detail'),
+  'llamalend.positionSupplyDetails': metricLayout('secondary', 'detail'),
+  'llamalend.positionHealth': metricLayout('primary', 'stack'),
 
   // crvUSD / loan
-  'loan.scrvusdBanner': METRIC_TYPES.standard,
-  'loan.scrvusdStats': METRIC_TYPES.compact,
-  'loan.scrvusdUserPositionPrimary': METRIC_TYPES.standard,
-  'loan.scrvusdUserPositionSecondary': METRIC_TYPES.compact,
-  'loan.pegKeeperOverview': METRIC_TYPES.standard,
-  'loan.pegKeeperDetailAmounts': METRIC_TYPES.compact,
+  'loan.scrvusdBanner': metricLayout('primary', 'stack'),
+  'loan.scrvusdStats': metricLayout('secondary', 'stack'),
+  'loan.scrvusdUserPositionPrimary': metricLayout('primary', 'stack'),
+  'loan.scrvusdUserPositionSecondary': metricLayout('secondary', 'stack'),
+  'loan.pegKeeperOverview': metricLayout('primary', 'stack'),
+  'loan.pegKeeperDetailAmounts': metricLayout('secondary', 'stack'),
 } as const satisfies Record<string, MetricViewportLayout>
 
 export type MetricCategory = keyof typeof METRIC_CATEGORIES

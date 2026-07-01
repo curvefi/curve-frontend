@@ -1,6 +1,6 @@
 import { type ReactNode, useCallback, useMemo } from 'react'
 import { type ButtonProps } from '@mui/material/Button'
-import Stack from '@mui/material/Stack'
+import Stack, { StackProps } from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
 import { toArray } from '@primitives/array.utils'
 import type { Amount } from '@primitives/decimal.utils'
@@ -26,7 +26,10 @@ import { METRIC_CATEGORIES, type MetricCategory, type MetricLayout } from './met
 import { WithSkeleton } from './WithSkeleton'
 import { WithWrapper } from './WithWrapper'
 
-const { Spacing } = SizesAndSpaces
+const {
+  Spacing,
+  Metric: { horizontal: metricHorizontalSizes },
+} = SizesAndSpaces
 
 // Correspond to flexbox align items values.
 // eslint-disable-next-line react-refresh/only-export-components
@@ -61,6 +64,36 @@ const MetricButtonSize = {
   large: 'small',
   extraLarge: 'medium',
 } satisfies Record<keyof typeof MetricSize, ButtonProps['size']>
+
+const MetricMinHeight = {
+  small: metricHorizontalSizes.sm,
+  medium: metricHorizontalSizes.md,
+  large: metricHorizontalSizes.lg,
+  extraLarge: metricHorizontalSizes.xl,
+} satisfies Record<keyof typeof MetricSize, string>
+
+const ORIENTATION_STYLE = {
+  horizontal: {
+    direction: 'row',
+    alignItems: () => 'baseline',
+    labelVariant: 'bodyMRegular',
+    labelColor: 'textSecondary',
+  },
+  vertical: {
+    direction: 'column',
+    alignItems: (alignment: Alignment) => alignment,
+    labelVariant: 'bodyXsRegular',
+    labelColor: 'textTertiary',
+  },
+} as const satisfies Record<
+  MetricLayout['orientation'],
+  {
+    direction: StackProps['direction']
+    alignItems: (alignment: Alignment) => 'baseline' | Alignment
+    labelVariant: TypographyVariantKey
+    labelColor: TypographyProps['color']
+  }
+>
 
 type Notional = Omit<NumberFormatOptions, 'abbreviate'> & {
   value: Amount
@@ -203,7 +236,7 @@ export type MetricProps = {
   notional?: number | string | Notional | Notional[]
 
   /** Optional icon shown after the value in vertical orientation and before the label in the horizontal orientation. */
-  leadingIcon?: ReactNode
+  icon?: ReactNode
 
   /** Optional tooltip shown when hovering the error triangle icon. Must include both title and body. */
   errorTooltip?: MetricErrorTooltip
@@ -226,7 +259,7 @@ export const Metric = ({
 
   notional,
 
-  leadingIcon,
+  icon,
   errorTooltip,
 
   category,
@@ -236,6 +269,7 @@ export const Metric = ({
 }: MetricProps) => {
   const breakpoint = useBreakpoint()
   const { orientation, size } = METRIC_CATEGORIES[category][breakpoint]
+  const orientationStyle = ORIENTATION_STYLE[orientation]
   const isHorizontal = orientation === 'horizontal'
   const notionals = useMemo(() => notionalsToString(notional), [notional])
   const copyValue = useCallback(() => {
@@ -248,13 +282,14 @@ export const Metric = ({
   return (
     <Stack
       data-testid={testId}
-      direction={isHorizontal ? 'row' : 'column'}
+      direction={orientationStyle.direction}
       sx={applySxProps(
-        { alignItems: isHorizontal ? 'baseline' : alignment },
+        { alignItems: orientationStyle.alignItems(alignment) },
         isHorizontal && {
           justifyContent: 'space-between',
           alignSelf: 'stretch',
           columnGap: Spacing.sm,
+          minHeight: MetricMinHeight[size],
         },
         sx,
       )}
@@ -265,11 +300,8 @@ export const Metric = ({
         direction="row"
         sx={{ alignItems: 'baseline', flexShrink: 0 }}
       >
-        {isHorizontal && leadingIcon}
-        <Typography
-          variant={isHorizontal ? 'bodyMRegular' : 'bodyXsRegular'}
-          color={isHorizontal ? 'textSecondary' : 'textTertiary'}
-        >
+        {isHorizontal && icon}
+        <Typography variant={orientationStyle.labelVariant} color={orientationStyle.labelColor}>
           {label}
           <LabelTooltipIcon tooltip={labelTooltip} />
         </Typography>
@@ -302,7 +334,7 @@ export const Metric = ({
                 tooltip={valueTooltip}
                 testId={testId}
               />
-              {!isHorizontal && leadingIcon}
+              {!isHorizontal && icon}
             </>
           )}
           {isHorizontal && notionals && <NotionalTypography>{notionals}</NotionalTypography>}
