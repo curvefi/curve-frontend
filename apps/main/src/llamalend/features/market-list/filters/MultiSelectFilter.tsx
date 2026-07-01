@@ -11,11 +11,11 @@ import { t } from '@ui-kit/lib/i18n'
 import { CheckIcon } from '@ui-kit/shared/icons/CheckIcon'
 import { type FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { parseListFilter, serializeListFilter } from '@ui-kit/shared/ui/DataTable/filters'
+import { HiddenInlinedItems } from '@ui-kit/shared/ui/DataTable/HiddenInlinedItems'
+import { getInlinedItemsVisibility } from '@ui-kit/shared/ui/DataTable/HiddenInlinedItems.utils'
 import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
 import { Select } from '@ui-kit/shared/ui/Select'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { HiddenInlinedItems } from './HiddenInlinedItems'
-import { getInlinedItemsVisibility } from './utils'
 
 const { Spacing } = SizesAndSpaces
 

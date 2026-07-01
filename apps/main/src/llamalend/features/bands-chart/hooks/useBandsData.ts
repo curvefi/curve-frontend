@@ -4,7 +4,6 @@ import { useMarketBandsBalances, useUserBandsBalances } from '@/llamalend/querie
 import { useMarketLiquidationBand, useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useLoanExists } from '@/llamalend/queries/user'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { useCurve } from '@ui-kit/features/connect-wallet'
 
 export const useBandsData = ({
   chainId,
@@ -15,7 +14,6 @@ export const useBandsData = ({
   marketId: string | undefined
   enabled?: boolean
 }) => {
-  const { isHydrated } = useCurve()
   const { address: userAddress } = useConnection()
   const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists(
     { chainId, marketId, userAddress },
@@ -45,7 +43,6 @@ export const useBandsData = ({
   })
 
   const isLoading =
-    !isHydrated ||
     isLiquidationBandLoading ||
     isMarketBandsBalancesLoading ||
     isMarketOraclePriceLoading ||

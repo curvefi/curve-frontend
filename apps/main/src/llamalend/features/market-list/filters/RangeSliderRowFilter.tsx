@@ -1,10 +1,10 @@
 import { useCallback, useMemo } from 'react'
 import { type FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { useRangeFilter } from '@ui-kit/shared/ui/DataTable/hooks/useRangeFilter'
 import { type NumericTextFieldProps } from '@ui-kit/shared/ui/NumericTextField'
 import { type DecimalRangeValue, SliderInput } from '@ui-kit/shared/ui/SliderInput'
 import { Range } from '@ui-kit/types/util'
 import { decimal, formatNumber } from '@ui-kit/utils'
-import { useRangeFilter } from './RangeSliderFilter/useRangeFilter'
 
 type RangeSliderRowFilterProps<TColumnId extends string> = FilterProps<TColumnId> & {
   id: TColumnId
