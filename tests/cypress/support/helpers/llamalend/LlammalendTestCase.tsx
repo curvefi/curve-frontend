@@ -7,6 +7,7 @@ import { RemoveCollateralForm } from '@/llamalend/features/manage-loan/component
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
 import { ClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePositionForm'
 import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealthForm'
+import { ResetPositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ResetPositionForm'
 import { ClaimTab } from '@/llamalend/features/supply/components/ClaimTab'
 import { DepositForm } from '@/llamalend/features/supply/components/DepositForm'
 import { StakeForm } from '@/llamalend/features/supply/components/StakeForm'
@@ -35,6 +36,7 @@ const LoanComponentMap = {
   'add-collateral': AddCollateralForm,
   'remove-collateral': RemoveCollateralForm,
   repay: RepayForm,
+  reset: ResetPositionForm,
   'improve-health': ImproveHealthForm,
   close: ClosePositionForm,
 }

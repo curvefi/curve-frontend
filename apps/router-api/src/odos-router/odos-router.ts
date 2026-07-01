@@ -45,7 +45,7 @@ async function getOdosQuote(
   } satisfies Omit<Record<keyof CurveOdosQuoteRequest, string>, 'blacklist'>)
   blacklist.forEach(address => params.append('blacklist', address))
 
-  const quoteResponse = await fetch(`${ODOS_API_URL}/quote?${params}`, {
+  const quoteResponse = await fetch(`${ODOS_API_URL}/v3/quote?${params}`, {
     method: 'GET',
     headers: { accept: 'application/json' },
   })
