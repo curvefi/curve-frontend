@@ -36,7 +36,7 @@ export const useUserHealthValue = (params: UserMarketParams) => {
   const healthNotFull = useUserHealth({ ...params, isFull: false })
 
   return {
-    data: maybes([healthFull.data, healthNotFull.data], ([full, notFull]) => ({
+    data: maybes([healthFull.data, healthNotFull.data], (full, notFull) => ({
       /** Legacy displayed health: full health by default, but show band-valued health when it is negative. */
       legacyHealth: +notFull < 0 ? notFull : full,
       /** Distance from entering liquidation protection: the above-band cushion, clamped at zero. */

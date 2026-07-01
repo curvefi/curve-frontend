@@ -19,7 +19,7 @@ type HealthAndBufferBarStoryProps = {
 
 const getHealthQuery = ({ health, liquidationBuffer, isLoading }: HealthAndBufferBarStoryProps) =>
   q<QueryData<typeof useUserHealthValue>>({
-    data: maybes([health, liquidationBuffer], ([h, lb]) => ({ legacyHealth: ZERO, health: h, liquidationBuffer: lb })),
+    data: maybes([health, liquidationBuffer], (h, lb) => ({ legacyHealth: ZERO, health: h, liquidationBuffer: lb })),
     isLoading: isLoading ?? false,
     error: null,
   })
