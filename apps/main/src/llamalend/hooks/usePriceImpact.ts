@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import type { MarketToken } from '@/llamalend/llama.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { assert, maybes } from '@primitives/objects.utils'
+import { assert, maybe, maybes } from '@primitives/objects.utils'
 import { type RouteResponse, type RoutesParams, useRouterApi } from '@ui-kit/entities/router-api'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { mapQuery, q, type QueryProp } from '@ui-kit/types/util'
@@ -74,26 +74,18 @@ export const usePriceImpact = (
       isEnabled,
     ),
     useCallback(
-      ([referenceRoute]): PriceImpact | null =>
-        referenceRoute
-          ? {
-              priceImpact: calculatePriceImpact({
-                selectedAmountIn: assert(route?.amountIn[0], 'Route data is required to calculate price impact'),
-                selectedAmountOut: assert(route?.amountOut[0], 'Route data is required to calculate price impact'),
-                tokenInDecimals: assert(tokenInDecimals, 'TokenIn is required to calculate price impact'),
-                tokenOutDecimals: assert(tokenOutDecimals, 'TokenOut is required to calculate price impact'),
-                referenceAmountIn: assert(
-                  referenceRoute.amountIn[0],
-                  'Reference is required to calculate price impact',
-                ),
-                referenceAmountOut: assert(
-                  referenceRoute.amountOut[0],
-                  'Reference is required to calculate price impact',
-                ),
-              }),
-              tokenInUsd,
-            }
-          : null,
+      ([referenceRoute]) =>
+        maybe(referenceRoute, ({ amountIn, amountOut }) => ({
+          priceImpact: calculatePriceImpact({
+            selectedAmountIn: assert(route?.amountIn[0], 'Route data is required to calculate price impact'),
+            selectedAmountOut: assert(route?.amountOut[0], 'Route data is required to calculate price impact'),
+            tokenInDecimals: assert(tokenInDecimals, 'TokenIn is required to calculate price impact'),
+            tokenOutDecimals: assert(tokenOutDecimals, 'TokenOut is required to calculate price impact'),
+            referenceAmountIn: assert(amountIn[0], 'Reference amountIn is required to calculate price impact'),
+            referenceAmountOut: assert(amountOut[0], 'Reference amountOut is required to calculate price impact'),
+          }),
+          tokenInUsd,
+        })) ?? null,
       [route, tokenInDecimals, tokenOutDecimals, tokenInUsd],
     ),
   )
