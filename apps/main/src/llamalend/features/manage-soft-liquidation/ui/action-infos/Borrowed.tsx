@@ -1,9 +1,9 @@
 import type { Decimal } from '@primitives/decimal.utils'
-import { type ActionInfoProps, ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
+import { type ActionInfoOverrideProps, ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import type { TokenAmount } from './types'
 import { formatTokens } from './util'
 
-export type Props = TokenAmount & { next?: Decimal } & Partial<ActionInfoProps>
+export type Props = TokenAmount & { next?: Decimal } & ActionInfoOverrideProps
 
 /** Borrowed collateral token information */
 export const Borrowed = ({ symbol, amount, next, ...actionInfoProps }: Props) => (
