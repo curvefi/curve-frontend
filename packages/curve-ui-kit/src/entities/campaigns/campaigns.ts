@@ -76,7 +76,7 @@ const queries: CampaignQueries = [
  * const poolCampaigns = ethereumCampaigns['0x123...'] || []
  * ```
  */
-const useCampaigns = ({ blockchainId }: UseCampaignsOptions = {}) =>
+export const useCampaigns = ({ blockchainId }: UseCampaignsOptions = {}) =>
   useQueries({
     queries,
     combine: useCallback(

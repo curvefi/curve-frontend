@@ -1,16 +1,20 @@
+import { memo } from 'react'
 import { CampaignRewardsRow } from '@/dex/components/CampaignRewardsRow'
 import { ChipInactive } from '@/dex/components/ChipInactive'
-import type { Chain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
+import type { CampaignRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { formatNumber } from '@ui-kit/utils'
 import type { PoolListItem } from '../poolList.types'
-import { normalizeAddress } from '../poolList.utils'
 
 type CrvRewards = Pick<PoolListItem, 'crvApr' | 'crvAprBoosted'>
+type PoolListRewardsProps = {
+  campaigns: CampaignRewards[]
+  mobile?: boolean
+  pool: PoolListItem
+}
 
 const MIN_VISIBLE_CRV_APR = 0.01
 const MAX_CRV_BOOST = '2.50'
@@ -40,11 +44,8 @@ const EmptyRewards = () => (
   </Typography>
 )
 
-export const PoolListRewards = ({ pool, mobile }: { pool: PoolListItem; mobile?: boolean }) => {
-  const { data: campaigns } = useCampaignsByAddress({
-    blockchainId: pool.network as Chain,
-    address: normalizeAddress(pool.address) as typeof pool.address,
-  })
+// Rewards can be expensive to render once campaigns are present. Keep unchanged rows out of sort/filter-only renders.
+export const PoolListRewards = memo(function PoolListRewards({ campaigns, pool, mobile }: PoolListRewardsProps) {
   const crvRewardsLabel = getCrvRewardsLabel(pool)
   const extraRewards = pool.extraRewardsApr.filter(({ apr }) => apr > 0)
   const hasCampaignRewards = campaigns.length > 0
@@ -73,4 +74,4 @@ export const PoolListRewards = ({ pool, mobile }: { pool: PoolListItem; mobile?:
       {hasCampaignRewards && <CampaignRewardsRow rewardItems={campaigns} mobile={mobile} />}
     </Stack>
   )
-}
+})
