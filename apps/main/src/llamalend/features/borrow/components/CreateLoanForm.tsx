@@ -146,11 +146,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
             minBands={bands.minBands}
             maxBands={bands.maxBands}
             values={values}
-            params={params}
             setRange={setRange}
-            network={network.id}
-            collateralToken={collateralToken}
-            borrowToken={borrowToken}
           />
         </Collapse>
       </LoanPresetSelector>
