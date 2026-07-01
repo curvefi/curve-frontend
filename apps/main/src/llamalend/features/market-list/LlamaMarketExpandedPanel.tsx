@@ -1,8 +1,8 @@
 import { type FunctionComponent, ReactNode, useMemo } from 'react'
 import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import Button from '@mui/material/Button'
-import CardHeader from '@mui/material/CardHeader'
-import Grid from '@mui/material/Grid'
+import CardHeader, { CardHeaderProps } from '@mui/material/CardHeader'
+import Grid, { type GridProps } from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { useLayoutStore } from '@ui-kit/features/layout'
@@ -11,7 +11,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { LEND_MARKET_ROUTES } from '@ui-kit/shared/routes'
 import { CopyIconButton } from '@ui-kit/shared/ui/CopyIconButton'
 import { type ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
-import { Metric } from '@ui-kit/shared/ui/Metric'
+import { Metric, type MetricProps } from '@ui-kit/shared/ui/Metric'
 import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
@@ -78,13 +78,36 @@ const RateItem = ({ market, type }: { market: LlamaMarket; type: MarketRateType 
   )
 }
 
+const GridSection = ({ children }: { children: ReactNode }) => (
+  <Grid container spacing={Spacing.md} sx={{ paddingInline: Spacing.md }}>
+    {children}
+  </Grid>
+)
+
+const GridHeader = ({ ...props }: Omit<CardHeaderProps, 'sx'>) => (
+  <Grid size={12}>
+    <CardHeader {...props} sx={{ borderBottom: borderStyle }} />
+  </Grid>
+)
+
+const GridMetric = ({ size = 12, ...metricProps }: MetricProps & { size?: GridProps['size'] }) => (
+  <Grid size={size}>
+    <Metric {...metricProps} />
+  </Grid>
+)
+
 const LinkButton = ({ children, href, testId }: { children: ReactNode; href: string; testId: string }) => (
   <Button sx={{ flex: 1 }} component={Link} href={href} data-testid={testId}>
     {children}
   </Button>
 )
 
-export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { original: market } }) => {
+export const LlamaMarketExpandedPanel = ({
+  row: { original: market },
+  isUserPositionTable = false,
+}: Parameters<ExpandedPanel<LlamaMarket>>[0] & {
+  isUserPositionTable?: boolean
+}) => {
   const {
     controllerAddress,
     favoriteKey,
@@ -104,24 +127,21 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
 
   return (
     <>
-      <Grid container spacing={Spacing.md} sx={{ paddingInline: Spacing.md }}>
-        <Grid size={12}>
-          <CardHeader
-            title={t`Market Details`}
-            action={
-              <Stack direction="row" sx={{ gap: Spacing.sm }}>
-                <CopyIconButton
-                  label={t`Copy market address`}
-                  copyText={controllerAddress}
-                  confirmationText={t`Market address copied`}
-                  data-testid={`copy-market-address-${controllerAddress}`}
-                />
-                <FavoriteMarketButton address={favoriteKey} />
-              </Stack>
-            }
-            sx={{ borderBottom: borderStyle }}
-          />
-        </Grid>
+      <GridSection>
+        <GridHeader
+          title={t`Market Details`}
+          action={
+            <Stack direction="row" sx={{ gap: Spacing.sm }}>
+              <CopyIconButton
+                label={t`Copy market address`}
+                copyText={controllerAddress}
+                confirmationText={t`Market address copied`}
+                data-testid={`copy-market-address-${controllerAddress}`}
+              />
+              <FavoriteMarketButton address={favoriteKey} />
+            </Stack>
+          }
+        />
         <RateItem market={market} type={MarketRateType.Borrow} />
         <RateItem market={market} type={MarketRateType.Supply} />
         <Grid size={12} data-testid="llama-market-graph">
@@ -134,94 +154,91 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
           </Stack>
         </Grid>
         {leverage && (
-          <Grid size={12}>
-            <Metric
-              category={EXPANDED_DETAILS_METRIC_CATEGORY}
-              label={t`Leverage 🔥`}
-              value={constQ(leverage)}
-              valueOptions={{ unit: 'multiplier' }}
+          <GridMetric
+            category={EXPANDED_DETAILS_METRIC_CATEGORY}
+            label={t`Leverage 🔥`}
+            value={constQ(leverage)}
+            valueOptions={{ unit: 'multiplier' }}
+          />
+        )}
+        <GridMetric
+          category={EXPANDED_DETAILS_METRIC_CATEGORY}
+          label={t`Utilization`}
+          value={constQ(utilizationPercent)}
+          valueOptions={{ unit: 'percentage' }}
+          testId="metric-utilizationPercent"
+        />
+        <GridMetric
+          category={EXPANDED_DETAILS_METRIC_CATEGORY}
+          label={t`Available Liquidity`}
+          value={constQ(liquidityUsd)}
+          valueOptions={{ unit: 'dollar' }}
+        />
+        <GridMetric
+          category={EXPANDED_DETAILS_METRIC_CATEGORY}
+          label={t`Total Debt`}
+          value={constQ(totalDebtUsd)}
+          valueOptions={{ unit: 'dollar' }}
+        />
+        <GridMetric
+          category={EXPANDED_DETAILS_METRIC_CATEGORY}
+          label={t`Total Collateral`}
+          value={constQ(totalCollateralUsd)}
+          valueOptions={{ unit: 'dollar' }}
+        />
+        <GridMetric
+          category={EXPANDED_DETAILS_METRIC_CATEGORY}
+          label={t`TVL`}
+          value={constQ(tvl)}
+          valueOptions={{ unit: 'dollar' }}
+        />
+      </GridSection>
+      {/* TODO: implement borrow position metrics after backend endpoint is ready */}
+      {/* {userHasPositions?.Borrow && (
+        <GridSection>
+          <GridHeader title={t`Borrow details`} />
+        </GridSection>
+      )} */}
+      {lendingPosition && (
+        <GridSection>
+          <GridHeader title={t`Lending details`} />
+          {lendingPosition && (
+            <GridMetric
+              category={POSITION_METRIC_CATEGORY}
+              label={t`Earnings`}
+              value={constQ(lendingPosition.earnings)}
+              valueOptions={{ unit: 'dollar' }}
             />
-          </Grid>
-        )}
-        <Grid size={12}>
-          <Metric
-            category={EXPANDED_DETAILS_METRIC_CATEGORY}
-            label={t`Utilization`}
-            value={constQ(utilizationPercent)}
-            valueOptions={{ unit: 'percentage' }}
-            testId="metric-utilizationPercent"
-          />
-        </Grid>
-        <Grid size={12}>
-          <Metric
-            category={EXPANDED_DETAILS_METRIC_CATEGORY}
-            label={t`Available Liquidity`}
-            value={constQ(liquidityUsd)}
-            valueOptions={{ unit: 'dollar' }}
-          />
-        </Grid>
-        <Grid size={12}>
-          <Metric
-            category={EXPANDED_DETAILS_METRIC_CATEGORY}
-            label={t`Total Debt`}
-            value={constQ(totalDebtUsd)}
-            valueOptions={{ unit: 'dollar' }}
-          />
-        </Grid>
-        <Grid size={12}>
-          <Metric
-            category={EXPANDED_DETAILS_METRIC_CATEGORY}
-            label={t`Total Collateral`}
-            value={constQ(totalCollateralUsd)}
-            valueOptions={{ unit: 'dollar' }}
-          />
-        </Grid>
-        <Grid size={12}>
-          <Metric
-            category={EXPANDED_DETAILS_METRIC_CATEGORY}
-            label={t`TVL`}
-            value={constQ(tvl)}
-            valueOptions={{ unit: 'dollar' }}
-          />
-        </Grid>
-      </Grid>
-      {userHasPositions && (
-        <Grid container spacing={Spacing.md}>
-          <Grid size={12}>
-            <CardHeader title={t`Your Position`} sx={{ paddingInline: 0 }}></CardHeader>
-          </Grid>
-          {lendingPosition && (
-            <Grid size={6}>
-              <Metric
-                category={POSITION_METRIC_CATEGORY}
-                label={t`Earnings`}
-                value={constQ(lendingPosition.earnings)}
-                valueOptions={{ unit: 'dollar' }}
-              />
-            </Grid>
           )}
           {lendingPosition && (
-            <Grid size={6}>
-              <Metric
-                category={POSITION_METRIC_CATEGORY}
-                label={t`Supplied Amount`}
-                value={constQ(lendingPosition.supplied)}
-                valueOptions={{ unit: { symbol: assets.borrowed.symbol, position: 'suffix' } }}
-              />
-            </Grid>
+            <GridMetric
+              category={POSITION_METRIC_CATEGORY}
+              label={t`Supplied Amount`}
+              value={constQ(lendingPosition.supplied)}
+              valueOptions={{ unit: { symbol: assets.borrowed.symbol, position: 'suffix' } }}
+            />
           )}
-        </Grid>
+        </GridSection>
       )}
-      <Stack direction="row" sx={{ gap: Spacing.xs }}>
-        {type === LlamaMarketType.Lend && (
-          <LinkButton href={url + LEND_MARKET_ROUTES.PAGE_VAULT} testId="llama-market-go-to-vault">
-            {t`Earn`}
-          </LinkButton>
-        )}
-        <LinkButton href={url} testId="llama-market-go-to-borrow">
-          {t`Borrow`}
+      {isUserPositionTable ? (
+        <LinkButton
+          href={url} // the url is already build for borrow/supply in the UserPositionsMarketRateTable
+          testId="llama-market-go-to-position"
+        >
+          {t`Manage position`}
         </LinkButton>
-      </Stack>
+      ) : (
+        <Stack direction="row" sx={{ gap: Spacing.xs }}>
+          {type === LlamaMarketType.Lend && (
+            <LinkButton href={url + LEND_MARKET_ROUTES.PAGE_VAULT} testId="llama-market-go-to-vault">
+              {t`Earn`}
+            </LinkButton>
+          )}
+          <LinkButton href={url} testId="llama-market-go-to-borrow">
+            {t`Borrow`}
+          </LinkButton>
+        </Stack>
+      )}
     </>
   )
 }

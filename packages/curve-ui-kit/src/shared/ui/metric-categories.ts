@@ -76,7 +76,7 @@ export const METRIC_CATEGORIES = {
   'llamalend.marketAdvancedDetails': METRIC_TYPES.mobileCompactRow,
   'llamalend.marketListRates': METRIC_TYPES.standard,
   'llamalend.marketListExpandedDetails': METRIC_TYPES.mobileCompactRow,
-  'llamalend.marketListPosition': METRIC_TYPES.standard,
+  'llamalend.marketListPosition': METRIC_TYPES.mobileCompactRow,
   'llamalend.marketListSummary': METRIC_TYPES.mobileStandardRow,
   'llamalend.positionBorrowDetails': METRIC_TYPES.compactMobileRow,
   'llamalend.positionSupplyDetails': METRIC_TYPES.compactMobileRow,
