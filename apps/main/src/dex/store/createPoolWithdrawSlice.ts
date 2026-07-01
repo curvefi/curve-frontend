@@ -7,7 +7,6 @@ import { type Amount, DEFAULT_SLIPPAGE } from '@/dex/components/PagePool/utils'
 import { parseAmountsForAPI } from '@/dex/components/PagePool/utils'
 import type { FormStatus, FormType, FormValues } from '@/dex/components/PagePool/Withdraw/types'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/dex/components/PagePool/Withdraw/utils'
-import { invalidateUserPoolInfo } from '@/dex/hooks/useUserPoolInfo'
 import { curvejsApi } from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import {
@@ -24,6 +23,7 @@ import { useWallet } from '@ui-kit/features/connect-wallet'
 import { shortenAddress } from '@ui-kit/utils'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 import { fetchPoolLpTokenBalance } from '../hooks/usePoolTokenDepositBalances'
+import { invalidateUserPoolInfo } from '../queries/invalidation'
 import { invalidatePoolParameters } from '../queries/pool-parameters.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
