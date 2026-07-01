@@ -1,3 +1,4 @@
+import type { Decimal } from '@primitives/decimal.utils'
 import PromisePool from '@supercharge/promise-pool'
 import { requireLib, useCurve } from '@ui-kit/features/connect-wallet'
 import { createValidationSuite } from '@ui-kit/lib'
@@ -14,13 +15,13 @@ import { curveApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-valid
 import { poolValidationGroup } from '@ui-kit/lib/model/query/pool-validation'
 import { fetchNetworks, useNetworks } from '../entities/networks'
 
-const getPoolVolumeFromLib = ({ poolId }: Pick<PoolQuery, 'poolId'>) =>
-  requireLib('curveApi').getPool(poolId).stats.volume()
+const getPoolVolumeFromLib = async ({ poolId }: Pick<PoolQuery, 'poolId'>) =>
+  (await requireLib('curveApi').getPool(poolId).stats.volume()) as Decimal
 
 const { useQuery: usePoolVolumeQuery } = queryFactory({
   category: 'dex.pools',
   queryKey: ({ chainId, poolId }: PoolParams) => [...rootKeys.pool({ chainId, poolId }), 'stats.volume'] as const,
-  queryFn: async ({ poolId }: PoolQuery) => getPoolVolumeFromLib({ poolId }),
+  queryFn: async ({ poolId }: PoolQuery) => await getPoolVolumeFromLib({ poolId }),
   validationSuite: createValidationSuite((params: PoolParams) => {
     curveApiValidationGroup(params)
     chainValidationGroup(params)

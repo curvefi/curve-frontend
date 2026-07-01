@@ -20,7 +20,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { MetricProps } from '@ui-kit/shared/ui/Metric'
 import { LlamaMarketType, LlamaMarketVersion } from '@ui-kit/types/market'
 import { QueryProp } from '@ui-kit/types/util'
-import { CRVUSD, decimalMinus, decimalMultiply, decimalSum, formatNumber } from '@ui-kit/utils'
+import { CRVUSD, decimal, decimalMinus, decimalMultiply, decimalSum, formatNumber } from '@ui-kit/utils'
 import { SOLVENCY_THRESHOLDS } from './llama-markets.constants'
 
 /**
@@ -516,8 +516,7 @@ export const tokenMetric = ({
       abbreviate: true,
       unit: maybe(symbol, symbol => ({ symbol, position: 'suffix' as const })),
     },
-    notional: combineQueries([value, usdRate], (value, usdRate) => ({
-      value: decimalMultiply(value as Decimal, usdRate),
-      unit: 'dollar' as const,
-    })),
+    notional: combineQueries([value, usdRate], (value, usdRate) =>
+      maybe(decimal(value), value => ({ value: decimalMultiply(value, usdRate), unit: 'dollar' as const })),
+    ),
   }) satisfies Pick<MetricProps, 'value' | 'valueOptions' | 'notional'>

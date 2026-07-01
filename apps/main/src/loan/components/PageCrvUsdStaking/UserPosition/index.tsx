@@ -11,7 +11,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { mapQuery } from '@ui-kit/types/util'
-import { decimal, decimalDiv, decimalMultiply } from '@ui-kit/utils'
+import { decimal, decimalDiv, decimalPercent } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -34,9 +34,7 @@ export const UserPosition = ({ chainId }: UserPositionProps) => {
   const userScrvUsdBalanceInCrvUsd = combineQueries([userScrvUsdBalance, scrvUsdExchangeRate], (balance, rate) =>
     +rate ? decimalDiv(balance, rate) : undefined,
   )
-  const userShareOfTotalScrvUsdSupply = combineQueries([userScrvUsdBalance, totalScrvUsdSupply], (balance, supply) =>
-    +supply ? decimalMultiply(decimalDiv(balance, supply), '100') : '0',
-  )
+  const userShareOfTotalScrvUsdSupply = combineQueries([userScrvUsdBalance, totalScrvUsdSupply], decimalPercent)
   const thirtyDayProjection = combineQueries([scrvUsdApy, userScrvUsdBalance], oneMonthProjectionYield)
   const oneYearProjection = combineQueries([scrvUsdApy, userScrvUsdBalance], oneYearProjectionYield)
 

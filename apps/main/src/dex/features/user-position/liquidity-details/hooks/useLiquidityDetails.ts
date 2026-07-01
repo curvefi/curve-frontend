@@ -6,19 +6,15 @@ import { useUserPoolBoostQuery } from '@/dex/queries/user-pool-boost.query'
 import { useUserPoolLiquidityUsdQuery } from '@/dex/queries/user-pool-liquidity-usd.query'
 import { useUserPoolShareQuery } from '@/dex/queries/user-pool-share.query'
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
-import type { Decimal } from '@primitives/decimal.utils'
 import { combineQueries } from '@ui-kit/lib'
 import { mapQuery, q } from '@ui-kit/types/util'
-import { decimalDiv, decimalGreaterThan, decimalMultiply, decimalSum } from '@ui-kit/utils'
+import { decimalPercent, decimalSum } from '@ui-kit/utils'
 
 export type UseLiquidityDetailsParams = {
   chainId: ChainId
   poolDataCacheOrApi: PoolDataCacheOrApi
   poolId: string | undefined
 }
-
-const calculateShare = (part: Decimal, total: Decimal) =>
-  decimalGreaterThan(total, '0') ? decimalMultiply(decimalDiv(part, total), '100') : undefined
 
 export const useLiquidityDetails = ({ chainId, poolDataCacheOrApi, poolId }: UseLiquidityDetailsParams) => {
   const { address: userAddress } = useConnection()
@@ -40,8 +36,8 @@ export const useLiquidityDetails = ({ chainId, poolDataCacheOrApi, poolId }: Use
   const stakedBalance = q({ data: gaugeTokenBalance, ...tokenBalanceQueryState })
   const unstakedBalance = q({ data: lpTokenBalance, ...tokenBalanceQueryState })
   const lpTokenTotal = combineQueries([unstakedBalance, stakedBalance], decimalSum)
-  const stakedPercent = combineQueries([stakedBalance, lpTokenTotal], calculateShare)
-  const unstakedPercent = combineQueries([unstakedBalance, lpTokenTotal], calculateShare)
+  const stakedPercent = combineQueries([stakedBalance, lpTokenTotal], decimalPercent)
+  const unstakedPercent = combineQueries([unstakedBalance, lpTokenTotal], decimalPercent)
 
   const withdrawRows = useMemo(
     () =>

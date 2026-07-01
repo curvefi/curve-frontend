@@ -68,5 +68,8 @@ export const decimalSqrt = (value: Decimal): Decimal => {
 export const decimalDiv = (first: Decimal, second: Decimal) =>
   new BigNumber(first).dividedBy(second).toFixed() as Decimal
 
+export const decimalPercent = (part: Decimal, total: Decimal): Decimal =>
+  +total ? decimalMultiply(decimalDiv(part, total), '100') : '0'
+
 export const toWei = (n: string, decimals: number) => decimal(parseUnits(n, decimals))!
 export const fromWei = (n: string, decimals: number) => decimal(formatUnits(BigInt(n), decimals))!
