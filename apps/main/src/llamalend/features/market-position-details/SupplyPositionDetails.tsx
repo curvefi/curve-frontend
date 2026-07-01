@@ -21,7 +21,7 @@ import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { Grid, Stack } from '@mui/material'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { assert, maybe } from '@primitives/objects.utils'
+import { assert } from '@primitives/objects.utils'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
 import { LlamaChainId } from '@ui-kit/features/connect-wallet/lib/types'
@@ -137,7 +137,7 @@ export const SupplyPositionDetails = () => {
             label={USER_NET_SUPPLY_RATE_TITLE}
             value={mapQuery(supplyMetrics, ({ totalUserBoost }) => totalUserBoost)}
             valueOptions={{ unit: 'percentage', ...(noGauge && { fallback: `No Gauge` }) }}
-            notional={maybe(userSupplyBoost.data, data => t`your boost ${formatNumber(data, 'multiplier')}`)}
+            notional={mapQuery(userSupplyBoost, data => t`your boost ${formatNumber(data, 'multiplier')}`)}
             valueTooltip={{
               title: USER_NET_SUPPLY_RATE_TITLE,
               body: (
@@ -172,9 +172,9 @@ export const SupplyPositionDetails = () => {
             label={t`Amount supplied`}
             value={mapQuery(supplyAsset, ({ depositedUsdValue }) => depositedUsdValue)}
             valueOptions={{ unit: 'dollar' }}
-            notional={maybe(supplyAsset.data, ({ depositedAmount, symbol }) => ({
+            notional={mapQuery(supplyAsset, ({ depositedAmount, symbol }) => ({
               value: depositedAmount,
-              unit: { symbol: ` ${symbol}`, position: 'suffix' },
+              unit: { symbol: ` ${symbol}`, position: 'suffix' as const },
             }))}
             valueTooltip={{
               title: t`Amount Supplied`,
@@ -191,9 +191,9 @@ export const SupplyPositionDetails = () => {
             label={t`Vault shares`}
             value={mapQuery(shares, ({ value }) => value)}
             valueOptions={{}}
-            notional={maybe(shares.data, ({ percentage }) => ({
+            notional={mapQuery(shares, ({ percentage }) => ({
               value: percentage,
-              unit: { symbol: t`% staked`, position: 'suffix' },
+              unit: { symbol: t`% staked`, position: 'suffix' as const },
             }))}
             valueTooltip={{
               title: t`Vault Shares`,

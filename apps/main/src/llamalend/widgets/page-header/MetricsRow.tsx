@@ -49,10 +49,12 @@ export const MetricsRow = ({
           label={NET_SUPPLY_RATE_TITLE}
           value={mapQuery(supplyRate, supplyRate => supplyRate.totalMinBoost)}
           valueOptions={{ unit: 'percentage' }}
-          notional={maybe(supplyRate.data?.totalAverageMinBoost, data => ({
-            value: data,
-            unit: { symbol: `% ${supplyRatePeriod} Avg`, position: 'suffix' },
-          }))}
+          notional={mapQuery(supplyRate, ({ totalAverageMinBoost: data }) =>
+            maybe(data, value => ({
+              value,
+              unit: { symbol: `% ${supplyRatePeriod} Avg`, position: 'suffix' as const },
+            })),
+          )}
           valueTooltip={{
             title: NET_SUPPLY_RATE_TITLE,
             body: (

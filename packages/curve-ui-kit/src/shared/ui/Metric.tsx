@@ -2,8 +2,8 @@ import { type ReactNode, useCallback, useMemo } from 'react'
 import { type ButtonProps } from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
-import { toArray } from '@primitives/array.utils'
 import type { Amount } from '@primitives/decimal.utils'
+import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorIconButton } from '@ui-kit/shared/ui/ErrorIconButton'
 import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
@@ -67,16 +67,11 @@ type Notional = Omit<NumberFormatOptions, 'abbreviate'> & {
   abbreviate?: boolean // Defaults to true
 }
 
-type MetricErrorTooltip = Omit<TooltipProps, 'children' | 'title' | 'body'> & {
-  title: ReactNode
-  body: ReactNode
-}
-
 /**
  * Converts notional values to a formatted string representation.
  * Handles single numbers, strings, single notional objects, or arrays of notional objects.
  *
- * @param notionals - The notional value(s) to format. Can be:
+ * @param notional - The notional value(s) to format. Can be:
  *   - A string (returned as-is)
  *   - A number (converted to basic notional object)
  *   - A single Notional object with value, unit, decimals, and formatter
@@ -89,12 +84,12 @@ type MetricErrorTooltip = Omit<TooltipProps, 'children' | 'title' | 'body'> & {
  * notionalsToString({ value: 1000, unit: 'dollar' }) // "$1k"
  * notionalsToString([{ value: 1000, unit: 'dollar' }, { value: 50, unit: 'percentage' }]) // "$1k + 50%"
  */
-const notionalsToString = (notionals: MetricProps['notional']) =>
-  typeof notionals === 'string'
-    ? notionals
-    : toArray(typeof notionals === 'number' ? { value: notionals, abbreviate: true } : notionals)
-        .map(notional => formatNumber(notional.value, { ...notional, abbreviate: notional.abbreviate ?? true }))
-        .join(' + ')
+const formatNotional = (notional: number | string | Notional | null | undefined) =>
+  typeof notional === 'string'
+    ? notional
+    : typeof notional === 'number'
+      ? formatNumber(notional, { abbreviate: true })
+      : maybe(notional, ({ value, abbreviate = true, ...rest }) => formatNumber(value, { ...rest, abbreviate }))
 
 /** At the moment of writing the default formatter already formats to 2 decimals, but I really want to make this explicit for potential future changes. */
 const formatChange = (value: number): string => defaultNumberFormatter(value, { decimals: 2 })
@@ -182,13 +177,10 @@ export type MetricProps = {
   copyText?: string
 
   /** Notional values give extra context to the metric, like underlying value */
-  notional?: number | string | Notional | Notional[]
+  notional?: QueryProp<number | string | Notional | null>
 
   /** Optional content to display to the right of the value */
   rightAdornment?: ReactNode
-
-  /** Optional tooltip shown when hovering the error triangle icon. Must include both title and body. */
-  errorTooltip?: MetricErrorTooltip
 
   size?: keyof typeof MetricSize
   alignment?: Alignment
@@ -209,14 +201,12 @@ export const Metric = ({
   notional,
 
   rightAdornment,
-  errorTooltip,
 
   size = 'medium',
   alignment = 'start',
   testId = 'metric',
   sx,
 }: MetricProps) => {
-  const notionals = useMemo(() => notionalsToString(notional), [notional])
   const copyValue = useCallback(() => {
     if (data || data === 0) {
       void copyToClipboard(data.toString())
@@ -234,9 +224,7 @@ export const Metric = ({
         <Stack direction="row" sx={{ alignItems: 'baseline' }}>
           {/* Keep error state vertical rhythm aligned with regular metric values by inheriting metric typography sizing. */}
           {error ? (
-            <Tooltip arrow placement="bottom" title={errorTooltip?.title} body={errorTooltip?.body} {...errorTooltip}>
-              <ErrorIconButton size={MetricButtonSize[size]} error={error} />
-            </Tooltip>
+            <ErrorIconButton size={MetricButtonSize[size]} error={error} />
           ) : (
             <>
               <MetricValue
@@ -253,10 +241,13 @@ export const Metric = ({
           )}
         </Stack>
       </WithSkeleton>
-      {notionals && (
-        <Typography variant="highlightXsNotional" color="textTertiary">
-          {notionals}
-        </Typography>
+      {notional && (
+        <WithSkeleton loading={notional.isLoading}>
+          <Typography variant="highlightXsNotional" color="textTertiary">
+            {error && <ErrorIconButton size="extraExtraSmall" error={error} />}
+            {formatNotional(notional.data) ?? (notional.isLoading && 'placeholder')}
+          </Typography>
+        </WithSkeleton>
       )}
     </Stack>
   )

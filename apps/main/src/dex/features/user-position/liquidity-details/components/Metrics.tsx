@@ -1,9 +1,9 @@
 import type { ChainId } from '@/dex/types/main.types'
 import Grid from '@mui/material/Grid'
-import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { mapQuery } from '@ui-kit/types/util'
 import { amount, Chain, formatNumber } from '@ui-kit/utils'
 import type { LiquidityDetailsData } from '../hooks/useLiquidityDetails'
 
@@ -25,7 +25,7 @@ export const Metrics = ({
         label={t`Position value`}
         value={positionValue}
         valueOptions={{ unit: 'dollar', abbreviate: false }}
-        notional={maybe(lpTokenTotal.data, value => `${formatNumber(amount(value), 'token.balance')} LP Tokens`)}
+        notional={mapQuery(lpTokenTotal, value => `${formatNumber(amount(value), 'token.balance')} LP Tokens`)}
       />
     </Grid>
 

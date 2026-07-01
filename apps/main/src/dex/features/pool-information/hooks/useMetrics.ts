@@ -3,7 +3,9 @@ import { usePoolTvl } from '@/dex/queries/pool-tvl.query'
 import { usePoolVolume } from '@/dex/queries/pool-volume.query'
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
-import { maybe, maybes } from '@primitives/objects.utils'
+import { maybe } from '@primitives/objects.utils'
+import { combineQueries } from '@ui-kit/lib'
+import { constQ, fallbackQ, mapQuery } from '@ui-kit/types/util'
 
 export const useMetrics = ({
   chainId,
@@ -16,16 +18,21 @@ export const useMetrics = ({
   poolId: string
   pricesApiPoolData?: PricesApiPool
 }) => {
-  const { data: volumeFromCurve } = usePoolVolume({ chainId, poolId })
-  const { data: tvlFromCurve } = usePoolTvl({ chainId, poolId })
+  const volumeFromCurve = usePoolVolume({ chainId, poolId })
+  const tvlFromCurve = usePoolTvl({ chainId, poolId })
   const staked = usePoolTotalStaked(poolDataCacheOrApi)
+  const tvl = fallbackQ(
+    mapQuery(tvlFromCurve, data => +data),
+    constQ(maybe(pricesApiPoolData?.tvlUsd, x => +x)),
+  )
+  const volume = fallbackQ(
+    mapQuery(volumeFromCurve, data => +data),
+    constQ(maybe(pricesApiPoolData?.tradingVolume24h, x => +x)),
+  )
 
   return {
-    gaugeTotalSupply: maybe(staked?.gaugeTotalSupply, x => +x),
-    totalStakedPercent: maybe(staked?.totalStakedPercent, x => +x),
-    liquidityUtilization: maybes(
-      [tvlFromCurve ?? pricesApiPoolData?.tvlUsd, volumeFromCurve ?? pricesApiPoolData?.tradingVolume24h],
-      (tvl, volume) => +tvl && (+volume / +tvl) * 100,
-    ),
+    gaugeTotalSupply: constQ(maybe(staked?.gaugeTotalSupply, x => +x)),
+    totalStakedPercent: constQ(maybe(staked?.totalStakedPercent, x => +x)),
+    liquidityUtilization: combineQueries([tvl, volume], (tvl, volume) => tvl && (volume / tvl) * 100),
   }
 }

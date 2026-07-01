@@ -15,11 +15,12 @@ import { type Address, Hex } from '@primitives/address.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { type AllOrNone, assert, DEFAULT_DECIMALS, maybe, maybes, notFalsy } from '@primitives/objects.utils'
 import { getLib, requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
+import { combineQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { MetricProps } from '@ui-kit/shared/ui/Metric'
 import { LlamaMarketType, LlamaMarketVersion } from '@ui-kit/types/market'
 import { QueryProp } from '@ui-kit/types/util'
-import { CRVUSD, decimal, decimalMinus, decimalMultiply, decimalSum, formatNumber } from '@ui-kit/utils'
+import { CRVUSD, decimalMinus, decimalMultiply, decimalSum, formatNumber } from '@ui-kit/utils'
 import { SOLVENCY_THRESHOLDS } from './llama-markets.constants'
 
 /**
@@ -515,8 +516,8 @@ export const tokenMetric = ({
       abbreviate: true,
       unit: maybe(symbol, symbol => ({ symbol, position: 'suffix' as const })),
     },
-    notional: maybes([decimal(value.data), usdRate.data], (value, usdRate) => ({
-      value: decimalMultiply(value, usdRate),
+    notional: combineQueries([value, usdRate], (value, usdRate) => ({
+      value: decimalMultiply(value as Decimal, usdRate),
       unit: 'dollar' as const,
     })),
   }) satisfies Pick<MetricProps, 'value' | 'valueOptions' | 'notional'>

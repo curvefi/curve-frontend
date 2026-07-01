@@ -46,10 +46,6 @@ const meta: Meta<typeof Metric> = {
       control: 'object',
       description: 'Optional notional values that gives context or underlying value of the key metric',
     },
-    errorTooltip: {
-      control: 'object',
-      description: 'Optional tooltip shown on the error icon. Requires both title and body',
-    },
   },
   args: {
     size: 'medium',
@@ -117,42 +113,18 @@ export const Loading: Story = {
 
 export const Notional: Story = {
   args: {
-    notional: {
+    notional: constQ({
       value: 50012345.345353,
       decimals: 2,
       abbreviate: true,
       unit: { symbol: ' ETH', position: 'suffix' },
-    },
-  },
-}
-
-export const Notionals: Story = {
-  args: {
-    value: constQ(650450),
-    valueOptions: { unit: 'dollar' },
-    label: 'Collateral to recover',
-    size: 'large',
-    alignment: 'center',
-    notional: [
-      {
-        value: 26539422,
-        decimals: 0,
-        abbreviate: false,
-        unit: { symbol: ' ETH', position: 'suffix' },
-      },
-      {
-        value: 12450,
-        decimals: 2,
-        abbreviate: true,
-        unit: { symbol: ' crvUSD', position: 'suffix' },
-      },
-    ],
+    }),
   },
 }
 
 export const NotionalString: Story = {
   args: {
-    notional: '1337.69% close to reckage',
+    notional: constQ('1337.69% close to reckage'),
   },
 }
 
@@ -200,23 +172,6 @@ export const RightAdornment: Story = {
     docs: {
       description: {
         story: 'Demonstrates the Metric component with a right adornment',
-      },
-    },
-  },
-}
-
-export const ErrorWithTooltip: Story = {
-  args: {
-    value: q({ data: undefined, isLoading: false, error: new Error('Metric failed to load') }),
-    errorTooltip: {
-      title: 'Error fetching metric',
-      body: 'Some positions could not be loaded correctly.',
-    },
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Demonstrates the Metric component error icon with a tooltip.',
       },
     },
   },

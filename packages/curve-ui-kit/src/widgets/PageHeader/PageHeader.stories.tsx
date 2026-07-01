@@ -82,21 +82,21 @@ export const LlamalendLendMarket: Story = {
           label="Borrow APR"
           value={constQ(2.082)}
           valueOptions={{ unit: 'percentage' }}
-          notional={{ value: 2.075, unit: { symbol: '% 7d Avg', position: 'suffix' } }}
+          notional={constQ({ value: 2.075, unit: { symbol: '% 7d Avg', position: 'suffix' } })}
         />
         <Metric
           alignment="end"
           label="Net supply APY"
           value={constQ(4.037)}
           valueOptions={{ unit: 'percentage' }}
-          notional={{ value: 4.034, unit: { symbol: '% 7d Avg', position: 'suffix' } }}
+          notional={constQ({ value: 4.034, unit: { symbol: '% 7d Avg', position: 'suffix' } })}
         />
         <Metric
           alignment="end"
           label="Available liquidity"
           value={constQ(12_500_000)}
           valueOptions={{ unit: 'none' }}
-          notional={{ value: 12_750_000, unit: 'dollar' }}
+          notional={constQ({ value: 12_750_000, unit: 'dollar' })}
         />
       </Stack>
     ),

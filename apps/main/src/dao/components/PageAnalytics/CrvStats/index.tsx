@@ -4,7 +4,6 @@ import { styled } from 'styled-components'
 import { useStatsVecrvQuery } from '@/dao/entities/stats-vecrv'
 import { useVeCrvFeesQuery } from '@/dao/entities/vecrv-fees'
 import { useVeCrvHoldersQuery } from '@/dao/entities/vecrv-holders'
-import { maybe } from '@primitives/objects.utils'
 import { Box } from '@ui/Box'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useCombinedQueries } from '@ui-kit/lib'
@@ -100,8 +99,8 @@ export const CrvStats = () => {
             label={t`veCRV APR`}
             value={mapQuery(veCrvApr, ({ current }) => current)}
             valueOptions={{ unit: 'percentage' }}
-            notional={maybe(
-              veCrvApr.data,
+            notional={mapQuery(
+              veCrvApr,
               v => `${formatNumber(v.fourWeekAverage, 'percent.value')} ${VECRV_APR_AVERAGE_WEEKS}w avg`,
             )}
           />

@@ -177,7 +177,7 @@ export const MarketRateCurveChart = () => {
               mapQuery(apiMarket, m => m.utilizationPercent),
             )}
             valueOptions={{ unit: 'percentage' }}
-            notional={utilizationBreakdown.data}
+            notional={utilizationBreakdown}
             valueTooltip={{
               title: t`Utilization`,
               body: <UtilizationTooltip marketType={LlamaMarketType.Lend} />,
