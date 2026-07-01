@@ -95,6 +95,7 @@ export const mapQuery = <TSource, TResult>(
 ) =>
   q({
     isLoading,
+    // todo: maybe ignores null which is a valid query value and supported in combineQueries
     data: maybe(data, data => selector(data) ?? undefined),
     error,
   })

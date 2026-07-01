@@ -12,7 +12,7 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate, type TxGasInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
-import { constQ, mapQuery, UNDEFINED_Q, type QueryProp, type Range } from '@ui-kit/types/util'
+import { constQ, mapQuery, type QueryProp, type Range, UNDEFINED_Q } from '@ui-kit/types/util'
 import { decimal, formatNumber } from '@ui-kit/utils'
 import { getPriceImpactDisplay } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { RouteProvidersAccordion } from '@ui-kit/widgets/RouteProvider'
@@ -163,11 +163,18 @@ export const LoanActionInfoList = ({
           <ActionInfo
             label={t`Health`}
             value={
-              !health || isFullRepay
+              isFullRepay || health?.data === undefined
                 ? constQ('∞')
-                : mapQuery(health, data => formatNumber(data, { abbreviate: true, fallback: '∞' }))
+                : mapQuery(health, data =>
+                    formatNumber(data, {
+                      abbreviate: true,
+                      fallback: '∞',
+                    }),
+                  )
             }
-            prevValue={prevHealth && mapQuery(prevHealth, data => formatNumber(data, { abbreviate: true }))}
+            prevValue={
+              prevHealth && mapQuery(prevHealth, data => formatNumber(data, { abbreviate: true, fallback: '∞' }))
+            }
             valueColor={getHealthValueColor({
               health: health?.data,
               prevHealth: prevHealth?.data,

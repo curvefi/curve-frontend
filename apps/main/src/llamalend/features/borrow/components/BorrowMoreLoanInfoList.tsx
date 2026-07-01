@@ -59,7 +59,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
       isOpen={isOpen}
       isApproved={q(useBorrowMoreIsApproved(params, isOpen))}
       gas={q(useBorrowMoreEstimateGas(networks, params, isOpen))}
-      health={q(useBorrowMoreHealth(params, isOpen && !!debt))}
+      health={q(useBorrowMoreHealth(params, isOpen))}
       prices={q(useBorrowMorePrices(params, isOpen))}
       oraclePrice={q(useMarketOraclePrice(params, isOpen))}
       loanToValue={q(

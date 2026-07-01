@@ -146,6 +146,7 @@ export const ActionInfo = (props: ActionInfoProps) => {
     label,
     labelTooltip,
     labelColor,
+    prevValue: givenPrevValue,
     prevValueColor,
     value: propValue,
     valueColor,
@@ -157,17 +158,20 @@ export const ActionInfo = (props: ActionInfoProps) => {
     copiedTitle,
     testId = 'action-info',
     sx,
-  } = props
+  } = props as ActionInfoProps & ActionInfoQueryProps
   const {
     data: givenValue,
-    isLoading: loading,
-    error,
+    isLoading: valueLoading,
+    error: valueError,
   } = isQuery(propValue) ? propValue : { data: propValue, isLoading: props.loading ?? false, error: props.error }
-  const givenPrevValue = 'prevValue' in props ? props.prevValue?.data : undefined
   const buttonSize = iconButtonSize[size]
   const iconSize = IconButtonIconSize[buttonSize]
-  const value = givenValue ?? givenPrevValue
-  const prevValue = value === givenPrevValue ? null : givenPrevValue
+
+  const error = valueError ?? givenPrevValue?.error
+  const loading = valueLoading || givenPrevValue?.isLoading
+  const value = givenValue ?? givenPrevValue?.data
+  const prevValue = value === givenPrevValue?.data ? null : givenPrevValue?.data
+
   const copyToClipboard = useCopyToClipboard({
     copyText: copyValue ?? '',
     confirmationText: copiedTitle ?? t`Value has been copied to clipboard`,
@@ -196,7 +200,7 @@ export const ActionInfo = (props: ActionInfoProps) => {
               color={prevValueColor ?? 'textTertiary'}
               data-testid={`${testId}-previous`}
               // eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions -- Existing violation before enabling this rule.
-              data-value={`${givenPrevValue}`}
+              data-value={`${givenPrevValue?.data}`}
               sx={{ whiteSpace: 'nowrap' }}
             >
               {prevValue}
