@@ -5,7 +5,7 @@ import { assert, maybe, maybes } from '@primitives/objects.utils'
 import { type RouteResponse, type RoutesParams, useRouterApi } from '@ui-kit/entities/router-api'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { mapQuery, q, type QueryProp } from '@ui-kit/types/util'
-import { decimal, decimalDiv, decimalMax, decimalMinus, decimalMultiply, fromWei, toWei } from '@ui-kit/utils'
+import { decimalDiv, decimalMax, decimalMinus, decimalMultiply, fromWei, toWei } from '@ui-kit/utils'
 import type { PriceImpact } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 
 const REFERENCE_USD_PRICE = '0.1' as const
@@ -32,8 +32,7 @@ const calculatePriceImpact = ({
   const selectedRate = decimalDiv(amountOut, amountIn)
   const referenceRate = decimalDiv(referenceOut, referenceIn)
   const ratio = decimalDiv(selectedRate, referenceRate)
-  const priceImpact = decimalMax('0', decimalMultiply(decimalMinus('1', ratio), '100'))
-  return decimal(priceImpact)
+  return decimalMax('0', decimalMultiply(decimalMinus('1', ratio), '100'))
 }
 
 export const usePriceImpact = (

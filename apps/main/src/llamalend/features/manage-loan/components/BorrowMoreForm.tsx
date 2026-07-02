@@ -18,6 +18,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q, type QueryProp, type Range } from '@ui-kit/types/util'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
+import { shouldBlockTransaction } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { useMarketContext } from '../../market-context'
 import { useBorrowMoreForm } from '../hooks/useBorrowMoreForm'
 
@@ -152,7 +153,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
       <FormButton
         pending={isPending}
         loading={isLoading}
-        disabled={isDisabled}
+        disabled={isDisabled || shouldBlockTransaction(priceImpact, params)}
         label={[Number(values.userCollateral) && t`Add`, isApproved?.data === false && t`Approve`, t`Borrow More`]}
         testId="borrow-more-submit-button"
       >
