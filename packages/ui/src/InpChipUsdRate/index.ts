@@ -1,1 +1,0 @@
-export { InpChipUsdRate } from './InpChipUsdRate'
