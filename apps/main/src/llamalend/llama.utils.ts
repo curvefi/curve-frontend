@@ -16,6 +16,7 @@ import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { type AllOrNone, assert, DEFAULT_DECIMALS, maybe, maybes, notFalsy } from '@primitives/objects.utils'
 import { getLib, requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
 import { isZapV2Enabled } from '@ui-kit/hooks/useFeatureFlags'
+import { combineQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { MetricProps } from '@ui-kit/shared/ui/Metric'
 import { LlamaMarketType, LlamaMarketVersion } from '@ui-kit/types/market'
@@ -517,8 +518,7 @@ export const tokenMetric = ({
       abbreviate: true,
       unit: maybe(symbol, symbol => ({ symbol, position: 'suffix' as const })),
     },
-    notional: maybes([decimal(value.data), usdRate.data], (value, usdRate) => ({
-      value: decimalMultiply(value, usdRate),
-      unit: 'dollar' as const,
-    })),
+    notional: combineQueries([value, usdRate], (value, usdRate) =>
+      maybe(decimal(value), value => ({ value: decimalMultiply(value, usdRate), unit: 'dollar' as const })),
+    ),
   }) satisfies Pick<MetricProps, 'value' | 'valueOptions' | 'notional'>

@@ -1,12 +1,12 @@
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
 import Grid from '@mui/material/Grid'
-import { maybe } from '@primitives/objects.utils'
+import { DEFAULT_DECIMALS } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { constQ } from '@ui-kit/types/util'
-import { formatNumber, weiToEther } from '@ui-kit/utils'
+import { mapQuery } from '@ui-kit/types/util'
+import { formatNumber, fromWei } from '@ui-kit/utils'
 import { useMetrics } from '../hooks/useMetrics'
 
 const { Spacing } = SizesAndSpaces
@@ -38,7 +38,7 @@ export const Metrics = ({
         <Metric
           category={METRIC_CATEGORY}
           label={t`Liquidity utilization`}
-          value={constQ(liquidityUtilization)}
+          value={liquidityUtilization}
           valueOptions={{ unit: 'percentage', abbreviate: false }}
         />
       </Grid>
@@ -47,9 +47,9 @@ export const Metrics = ({
         <Metric
           category={METRIC_CATEGORY}
           label={t`LP Staked`}
-          value={constQ(maybe(gaugeTotalSupply, supply => weiToEther(supply)))}
+          value={mapQuery(gaugeTotalSupply, supply => fromWei(supply, DEFAULT_DECIMALS))}
           valueOptions={{ abbreviate: true }}
-          notional={maybe(
+          notional={mapQuery(
             totalStakedPercent,
             x => t`${formatNumber(x, { unit: 'percentage', abbreviate: false })} of Pool`,
           )}
