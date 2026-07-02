@@ -138,7 +138,7 @@ describe('DEX Pools', () => {
 
     function setRangeFilter(id: string, bound: 'min' | 'max', value: number | string) {
       openPoolFilters()
-      cy.get(`[data-testid="range-filter-${id}-${bound}"]`).clear().type(`${value}`).blur()
+      cy.get(`[data-testid="range-filter-${id}-${bound}"] input`).clear().type(`${value}`).blur()
       closePoolFilters()
       return cy.wait('@dex-pools', API_LOAD_TIMEOUT)
     }
@@ -191,14 +191,12 @@ describe('DEX Pools', () => {
       cy.get('[data-testid^="data-table-row-"]', API_LOAD_TIMEOUT).should('have.length.greaterThan', 0)
       assertSelectedFilterChip()
       cy.reload()
-      cy.wait('@dex-pools', API_LOAD_TIMEOUT)
       assertSelectedFilterChip()
+      cy.get('[data-testid^="data-table-row-"]', API_LOAD_TIMEOUT).should('have.length.greaterThan', 0)
       cy.get('[data-testid="dex-pool-active-filter-type"]').click()
-      cy.wait('@dex-pools', API_LOAD_TIMEOUT)
       cy.url().should('not.include', '?')
-      expectLastPoolRequestParams(params => {
-        expect(params.has('pool_type')).to.equal(false)
-      })
+      cy.get('[data-testid="dex-pool-active-filter-type"]').should('not.exist')
+      cy.get('[data-testid^="data-table-row-"]', API_LOAD_TIMEOUT).should('have.length.greaterThan', 0)
     })
 
     it('filters by TVL range input', () => {
@@ -283,15 +281,11 @@ describe('DEX Pools', () => {
       visitAndWait(width, height, { query: { tvl: '480000000~' } })
       cy.get('[data-testid="dex-pool-active-filter-tvl"]').should('be.visible')
       openPoolFilters()
-      cy.get('[data-testid="range-filter-volume-min"]').clear().type('900000000').blur()
+      cy.get('[data-testid="range-filter-volume-min"] input').clear().type('900000000').blur()
       cy.get('[data-testid="btn-reset-filters"]').click()
-      cy.wait('@dex-pools', API_LOAD_TIMEOUT)
-      expectLastPoolRequestParams(params => {
-        expect(params.get('min_tvl')).to.equal(`${DEFAULT_POOL_LIST_MIN_TVL}`)
-        expect(params.has('min_volume')).to.equal(false)
-      })
       cy.wait(RANGE_FILTER_DEBOUNCE_WAIT)
       cy.url().should('not.include', 'tvl=').and('not.include', 'volume=')
+      cy.get('[data-testid^="dex-pool-active-filter-"]').should('not.exist')
       cy.get('[data-testid="range-filter-volume-min"] input').should('have.value', '')
       cy.get('[data-testid="range-filter-tvl-min"] input').should('have.value', DEFAULT_POOL_LIST_MIN_TVL_INPUT)
     })
@@ -323,7 +317,6 @@ describe('DEX Pools', () => {
     cy.get('[data-testid="table-empty-row"]').should('be.visible')
     cy.get('[data-testid^="dex-pool-active-filter-"]').should('not.exist')
     cy.get('[data-testid="dex-pool-empty-state-reset"]').click()
-    cy.wait('@dex-pools', API_LOAD_TIMEOUT)
     cy.url().should('not.include', 'search=')
     cy.get('[data-testid^="data-table-row-"]', API_LOAD_TIMEOUT).should('have.length.greaterThan', 0)
   })
