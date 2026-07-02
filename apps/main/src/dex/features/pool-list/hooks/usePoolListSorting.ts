@@ -43,13 +43,13 @@ const isPoolListSortColumn = (value: string | undefined): value is PoolListSorta
 
 const isColumnSort = (sort: SortingState[number]): sort is ColumnSort => isPoolListSortColumn(sort.id)
 
-export const getPoolListSorting = (sorting: SortingState, defaultSort: SortingState): PoolListSorting => {
+const getPoolListSorting = (sorting: SortingState, defaultSort: SortingState): PoolListSorting => {
   const sort = sorting.find(isColumnSort) ?? defaultSort.find(isColumnSort)
 
   return sort ? [{ id: sort.id, desc: sort.desc }] : [{ id: PoolListColumnId.Tvl, desc: true }]
 }
 
-export const getPoolListSortParams = ([{ id: sortField, desc }]: PoolListSorting): PoolListSortParams => ({
+const getPoolListSortParams = ([{ id: sortField, desc }]: PoolListSorting): PoolListSortParams => ({
   sortBy: SORT_COLUMNS[sortField].sortBy,
   // TanStack table state uses `desc`; the prices API expects `sort_direction`.
   sortDirection: desc ? 'desc' : 'asc',

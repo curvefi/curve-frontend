@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { memo, useMemo } from 'react'
 import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
 import { useTokenAlert } from '@/dex/hooks/useTokenAlert'
 import Stack from '@mui/material/Stack'
@@ -14,11 +14,20 @@ import { PoolAlertIcons } from './PoolTitleCell/PoolAlertIcons'
 import { PoolTokens } from './PoolTitleCell/PoolTokens'
 
 const { Spacing, Height } = SizesAndSpaces
+type PoolListTitleProps = {
+  filterValue: string | undefined
+  pool: PoolListItem
+}
 
 export const PoolListTitleCell = ({
   row: { original: pool },
   column: { getFilterValue },
-}: CellContext<PoolListItem, string>) => {
+}: CellContext<PoolListItem, string>) => (
+  <PoolListTitle pool={pool} filterValue={getFilterValue() as string | undefined} />
+)
+
+// Title cells do alert lookup and token icon rendering. Memoization avoids repeating that work for unchanged rows.
+const PoolListTitle = memo(function PoolListTitle({ pool, filterValue }: PoolListTitleProps) {
   const tokenList = pool.coins
   const tokenAddresses = useMemo(() => tokenList.map(({ address }) => address), [tokenList])
   const poolAlert = usePoolAlert({
@@ -38,10 +47,10 @@ export const PoolListTitleCell = ({
             <PoolAlertIcons poolAlert={poolAlert} tokenAlert={tokenAlert} />
             <MarketTitle url={pool.url} address={pool.address} title={pool.name} />
           </Stack>
-          <PoolTokens tokenList={tokenList} filterValue={getFilterValue() as string} />
+          <PoolTokens tokenList={tokenList} filterValue={filterValue} />
         </Stack>
       </Stack>
       {poolAlert && <PoolAlertBadge alert={poolAlert} />}
     </Stack>
   )
-}
+})

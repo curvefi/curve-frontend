@@ -27,7 +27,7 @@ const SearchPool = {
   address: '0xbebc44782c7db0a1a60cb6fe97d0b483032ff1c7' as Address,
 } as const
 
-export const DEX_POOL_LIST_NAVIGATION_POOL = {
+const DEX_POOL_LIST_NAVIGATION_POOL = {
   name: '2pool',
   address: '0x7f90122bf0700f9e7e1f688fe926940e8839f353' as Address,
   network: 'arbitrum',
@@ -39,6 +39,12 @@ type PoolListQuery = {
   pagination: number
   search: string
   poolType: string | null
+  minTvl: number | undefined
+  maxTvl: number | undefined
+  minVolume: number | undefined
+  maxVolume: number | undefined
+  minApy: number | undefined
+  maxApy: number | undefined
   sortBy: V2PoolSortField
   sortDirection: SortDirection
 }
@@ -170,7 +176,13 @@ const createMockPools = (chainId: MockChainId): MockPool[] => [
 
 const MOCK_POOLS = MOCK_CHAIN_IDS.flatMap(createMockPools)
 
-const parseNumberParam = (value: string | null, fallback: number) => maybe(value, Number) ?? fallback
+const parseOptionalNumberParam = (value: string | null) => {
+  const parsed = maybe(value, Number)
+
+  return parsed != null && Number.isFinite(parsed) ? parsed : undefined
+}
+
+const parseNumberParam = (value: string | null, fallback: number) => parseOptionalNumberParam(value) ?? fallback
 
 const isOneOf = <T extends string>(values: readonly T[], value: string | null): value is T =>
   value != null && (values as readonly string[]).includes(value)
@@ -183,6 +195,12 @@ const parsePoolListQuery = (url: URL): PoolListQuery => ({
   pagination: parseNumberParam(url.searchParams.get('pagination'), 50),
   search: url.searchParams.get('search_string')?.toLowerCase() ?? '',
   poolType: url.searchParams.get('pool_type'),
+  minTvl: parseOptionalNumberParam(url.searchParams.get('min_tvl')),
+  maxTvl: parseOptionalNumberParam(url.searchParams.get('max_tvl')),
+  minVolume: parseOptionalNumberParam(url.searchParams.get('min_volume')),
+  maxVolume: parseOptionalNumberParam(url.searchParams.get('max_volume')),
+  minApy: parseOptionalNumberParam(url.searchParams.get('min_apy')),
+  maxApy: parseOptionalNumberParam(url.searchParams.get('max_apy')),
   sortBy: parseSortBy(url.searchParams.get('sort_by')),
   sortDirection: url.searchParams.get('sort_direction') === 'asc' ? 'asc' : 'desc',
 })
@@ -206,11 +224,17 @@ const matchesSearch = (pool: MockPool, search: string) =>
     value.toLowerCase().includes(search),
   )
 
+const matchesRange = (value: number, min: number | undefined, max: number | undefined) =>
+  (min == null || value >= min) && (max == null || value <= max)
+
 const getPoolListResponse = (query: PoolListQuery) => {
   const filtered = orderBy(
     MOCK_POOLS.filter(pool => pool.chain_id === query.chainId)
       .filter(pool => matchesPoolType(pool, query.poolType))
-      .filter(pool => matchesSearch(pool, query.search)),
+      .filter(pool => matchesSearch(pool, query.search))
+      .filter(pool => matchesRange(pool.tvl_usd, query.minTvl, query.maxTvl))
+      .filter(pool => matchesRange(pool.trading_volume_24h, query.minVolume, query.maxVolume))
+      .filter(pool => matchesRange(pool.base_daily_apr, query.minApy, query.maxApy)),
     pool => getSortValue(pool, query.sortBy),
     query.sortDirection,
   )
@@ -224,7 +248,7 @@ const getPoolListResponse = (query: PoolListQuery) => {
   }
 }
 
-export const mockDexPoolChains = () =>
+const mockDexPoolChains = () =>
   cy.intercept(
     { method: 'GET', hostname: 'prices.curve.finance', pathname: '/v2/pools/chains/' },
     {
@@ -234,7 +258,7 @@ export const mockDexPoolChains = () =>
     },
   )
 
-export const mockDexPoolList = () =>
+const mockDexPoolList = () =>
   cy.intercept({ method: 'GET', hostname: 'prices.curve.finance', pathname: '/v2/pools/' }, req => {
     req.reply({ body: getPoolListResponse(parsePoolListQuery(new URL(req.url))) })
   })

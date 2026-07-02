@@ -12,8 +12,8 @@ import { constQ } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 import { PoolListRewards } from '../cells/PoolListRewards'
 import { PoolListColumnId } from '../columns/column.enum'
-import type { PoolListItem } from '../poolList.types'
-import { getPoolYieldApy } from '../poolList.utils'
+import type { PoolListItem, PoolListTableMeta } from '../poolList.types'
+import { getPoolListCampaigns, getPoolYieldApy } from '../poolList.utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -32,6 +32,9 @@ export const PoolListMobileExpandedPanel: ExpandedPanel<PoolListItem> = ({ row, 
   const pool = row.original
   const path = getPath({ network: pool.network }, `${ROUTE.PAGE_POOLS}/${pool.address}`)
   const hasVolume = table.getColumn(PoolListColumnId.Volume)?.getIsVisible()
+  const { meta }: { meta?: PoolListTableMeta } = table.options
+  const campaignsByAddress = meta?.campaignsByAddress
+  const campaigns = getPoolListCampaigns(campaignsByAddress, pool.address)
 
   return (
     <>
@@ -63,7 +66,7 @@ export const PoolListMobileExpandedPanel: ExpandedPanel<PoolListItem> = ({ row, 
           }}
         />
         <Grid size={6}>
-          <PoolListRewards pool={pool} mobile />
+          <PoolListRewards pool={pool} campaigns={campaigns} mobile />
         </Grid>
       </Grid>
       <Stack sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 3, marginBlock: 3 }}>
