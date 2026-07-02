@@ -34,7 +34,7 @@ const { useQuery: useCreateLoanApproveEstimateGas, invalidate: invalidateCreateL
       const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
       switch (type) {
         case 'zapV2':
-          return await impl.estimateGas.createLoanApprove({ userCollateral, userBorrowed })
+          return await impl.estimateGas.createLoanApprove({ userCollateral })
         case 'V1':
         case 'V2':
           return await impl.estimateGas.createLoanApprove(userCollateral, userBorrowed)
@@ -91,7 +91,6 @@ const {
       case 'zapV2':
         return await impl.estimateGas.createLoan({
           userCollateral,
-          userBorrowed,
           debt,
           range,
           ...parseMutationRoute(market, { routeId, slippage, isRepay: false }),

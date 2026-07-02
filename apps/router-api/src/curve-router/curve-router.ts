@@ -64,6 +64,13 @@ function getWarnings(
 const getDecimals = (tokens: Address[], decimals: IDict<number>) =>
   tokens.map(t => decimals[t] ?? decimals[t.toLowerCase()] ?? DEFAULT_DECIMALS)
 
+function handleRouteError(e: unknown) {
+  if (/^Coin with address '0x[a-fA-F0-9]{40}' is not available$/.test((e as Error).message)) {
+    return { route: [], output: '0' }
+  }
+  throw e
+}
+
 /**
  * Runs the router to get the optimal route and builds the response.
  */
@@ -87,7 +94,9 @@ export async function buildCurveRouteResponse(
   const fromAmount = amountIn
     ? fromWei(amountIn, fromDecimals)
     : ((await curve.router.required(fromToken, toToken, outAmount)) as Decimal)
-  const { route: routes, output: toAmount } = await curve.router.getBestRouteAndOutput(fromToken, toToken, fromAmount)
+  const { route: routes, output: toAmount } = await curve.router
+    .getBestRouteAndOutput(fromToken, toToken, fromAmount)
+    .catch(handleRouteError)
   if (!routes.length) return []
 
   const [priceImpact, toStoredRate, tx] = await Promise.all([

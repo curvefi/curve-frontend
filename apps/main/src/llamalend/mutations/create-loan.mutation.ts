@@ -35,7 +35,7 @@ const approve = async (
   const [type, impl] = getCreateLoanImplementation(market.id, leverageEnabled)
   switch (type) {
     case 'zapV2':
-      return (await impl.createLoanApprove({ userCollateral, userBorrowed })) as Address[]
+      return (await impl.createLoanApprove({ userCollateral })) as Address[]
     case 'V2':
     case 'V1':
       return (await impl.createLoanApprove(userCollateral, userBorrowed)) as Address[]
@@ -54,7 +54,6 @@ const create = async (
     case 'zapV2':
       return (await impl.createLoan({
         userCollateral,
-        userBorrowed,
         debt,
         range,
         ...parseMutationRoute(market, { routeId, slippage, isRepay: false }),

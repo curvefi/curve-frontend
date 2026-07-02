@@ -45,8 +45,7 @@ export const { useQuery: useCreateLoanHealth, invalidate: invalidateCreateLoanHe
     switch (type) {
       case 'zapV2':
         return decimal(
-          (await impl.createLoanExpectedMetrics({ userCollateral, userBorrowed, debt, range, ...parseRoute(routeId) }))
-            .health,
+          (await impl.createLoanExpectedMetrics({ userCollateral, debt, range, ...parseRoute(routeId) })).health,
         )!
       case 'V1':
       case 'V2':

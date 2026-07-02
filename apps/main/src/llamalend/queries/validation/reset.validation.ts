@@ -34,7 +34,7 @@ export type ResetQuery<ChainId = IChainId> = UserMarketQuery<ChainId> & ResetInp
 export type ResetParams<ChainId = IChainId> = FieldsOf<ResetQuery<ChainId>>
 
 const validateResetSupported = (marketId: LlamaMarketTemplate | string | null | undefined) => {
-  const market = maybe(marketId, id => tryGetLlamaMarket(id) || undefined)
+  const market = maybe(marketId, id => tryGetLlamaMarket(id))
   skipWhen(!market, () => {
     test('marketId', 'Reset is only available for Llamalend v2 lend markets', () => {
       enforce(hasResetPosition(market)).isTruthy()

@@ -45,7 +45,7 @@ async function getOdosQuote(
   } satisfies Omit<Record<keyof CurveOdosQuoteRequest, string>, 'blacklist'>)
   blacklist.forEach(address => params.append('blacklist', address))
 
-  const quoteResponse = await fetch(`${ODOS_API_URL}/quote?${params}`, {
+  const quoteResponse = await fetch(`${ODOS_API_URL}/v3/quote?${params}`, {
     method: 'GET',
     headers: { accept: 'application/json' },
   })
@@ -70,14 +70,13 @@ async function assembleOdosQuote(
   })
   const { ok, status, statusText } = assembleResponse
   if (!ok) {
-    log.error({
+    return log.error({
       message: 'odos assemble request failed',
       status,
       statusText,
       params,
       body: await assembleResponse.text(),
     })
-    throw new Error(`Odos assemble error - ${status} ${statusText}`)
   }
   return (await assembleResponse.json()) as AssemblePathResponse
 }
@@ -112,10 +111,8 @@ export const buildOdosRouteResponse = async (
     pathVizImage,
     priceImpact = null,
   } = await getOdosQuote({ chainId, tokenIn, tokenOut, amountIn, blacklist, slippage, userAddress }, log)
-  const { transaction } = await assembleOdosQuote(
-    { pathId: assert(pathId, 'Odos quote missing pathId'), userAddress },
-    log,
-  )
+  const { transaction } =
+    (await assembleOdosQuote({ pathId: assert(pathId, 'Odos quote missing pathId'), userAddress }, log)) ?? {}
   return [
     {
       router: protocol,
