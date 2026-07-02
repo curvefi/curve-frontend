@@ -224,7 +224,9 @@ describe('DEX Pools', () => {
       })
       // URL range display expects both bounds once a max is present.
       expectUrlQueryParam('tvl', `${DEFAULT_POOL_LIST_MIN_TVL}~${maxTvl}`)
-      cy.get('[data-testid="dex-pool-active-filter-tvl"]').should('be.visible').and('contain.text', DEFAULT_POOL_LIST_TVL_MAX_CHIP)
+      cy.get('[data-testid="dex-pool-active-filter-tvl"]')
+        .should('be.visible')
+        .and('contain.text', DEFAULT_POOL_LIST_TVL_MAX_CHIP)
     })
 
     it('filters by Volume range input', () => {
@@ -256,7 +258,9 @@ describe('DEX Pools', () => {
         expect(params.get('max_tvl')).to.equal(`${maxTvl}`)
       })
       expectUrlQueryParam('tvl', `${DEFAULT_POOL_LIST_MIN_TVL}~${maxTvl}`)
-      cy.get('[data-testid="dex-pool-active-filter-tvl"]').should('be.visible').and('contain.text', DEFAULT_POOL_LIST_TVL_MAX_CHIP)
+      cy.get('[data-testid="dex-pool-active-filter-tvl"]')
+        .should('be.visible')
+        .and('contain.text', DEFAULT_POOL_LIST_TVL_MAX_CHIP)
     })
 
     it('keeps explicit zero TVL min as an active filter', () => {
