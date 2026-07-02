@@ -31,7 +31,7 @@ export const hyperliquid = defineChain({
   rpcUrls: { default: { http: RPC[ChainId.Hyperliquid] } },
 })
 
-export const tac = defineChain({
+const tac = defineChain({
   ...chainConfig,
   id: ChainId.Tac as const,
   name: 'tac',

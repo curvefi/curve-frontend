@@ -6,7 +6,7 @@ import { contractValidationSuite } from '@ui-kit/lib/model/query/contract-valida
 type Query = ContractQuery & { endpoint: Endpoint }
 type QueryParams = FieldsOf<Query>
 
-export const { useQuery: useMarketLiquidationHealthDistribution } = queryFactory({
+export const {} = queryFactory({
   queryKey: ({ blockchainId, contractAddress, endpoint }: QueryParams) =>
     [
       ...rootKeys.contract({ blockchainId, contractAddress }),

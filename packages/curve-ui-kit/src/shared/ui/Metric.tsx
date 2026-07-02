@@ -37,7 +37,7 @@ export const ALIGNMENTS = ['start', 'center', 'end'] as const
 type Alignment = (typeof ALIGNMENTS)[number]
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const MetricSize = {
+const MetricSize = {
   small: 'highlightM',
   medium: 'highlightL',
   large: 'highlightXl',

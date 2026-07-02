@@ -64,7 +64,7 @@ const BRIDGE_ROUTES = {
 export const AppNames = ['dex', 'lend', 'crvusd', 'dao', 'llamalend', 'bridge', 'analytics'] as const
 export type AppName = (typeof AppNames)[number]
 
-export const AppMenuOptions = ['dex', 'llamalend', 'dao', 'bridge', 'analytics'] as const
+const AppMenuOptions = ['dex', 'llamalend', 'dao', 'bridge', 'analytics'] as const
 export type AppMenuOption = (typeof AppMenuOptions)[number]
 
 export const LlamalendApps: AppName[] = ['crvusd', 'lend', 'llamalend']

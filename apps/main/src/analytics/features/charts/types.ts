@@ -1,5 +1,5 @@
 /** Not advised to use directly, because if we ever expand this we need to check if all charts using this directly supports the added period. */
-export const PERIODS = ['7d', '1m', '3m', '6m', '1y'] as const
+const PERIODS = ['7d', '1m', '3m', '6m', '1y'] as const
 export type Period = (typeof PERIODS)[number]
 export const DAYS: Record<Period, number> = {
   '7d': 7,

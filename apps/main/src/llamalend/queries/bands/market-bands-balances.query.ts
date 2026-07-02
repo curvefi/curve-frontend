@@ -42,5 +42,5 @@ export const { useQuery: useMarketBandsBalances } = queryFactory({
  * Prefix-based invalidation because the query key includes extra params (liquidationBand)
  * that aren't available at invalidation time. Band balances can change even when those params stay the same.
  */
-export const invalidateMarketBandsBalances = ({ chainId, marketId }: MarketParams) =>
+const invalidateMarketBandsBalances = ({ chainId, marketId }: MarketParams) =>
   queryClient.invalidateQueries({ queryKey: [...rootKeys.market({ chainId, marketId }), QUERY_KEY] })

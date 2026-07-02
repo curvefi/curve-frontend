@@ -160,7 +160,7 @@ export const claimableRewardsValidationSuite = createValidationSuite((params: Us
   validateHasGauge(params.marketId)
 })
 
-export const claimableCrvValidationSuite = createValidationSuite((params: UserMarketParams) => {
+const claimableCrvValidationSuite = createValidationSuite((params: UserMarketParams) => {
   supplyUserValidationGroup(params)
 })
 

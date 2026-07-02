@@ -12,4 +12,4 @@ export const FireIcon = createSvgIcon(
 )
 
 /** Useful for IDEs when looking for the gas burn icon. Provides additional context as well. */
-export const GasIcon = FireIcon
+const GasIcon = FireIcon

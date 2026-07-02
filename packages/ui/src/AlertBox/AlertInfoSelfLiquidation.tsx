@@ -7,7 +7,7 @@ import { AlertBox } from './AlertBox'
 
 const formatAmount = (value: string | number) => formatNumber(amount(value), 'token.amount')
 
-export const AlertInfoSelfLiquidation = ({
+const AlertInfoSelfLiquidation = ({
   errorMessage,
   titleSelfLiquidation,
   titleReceive,

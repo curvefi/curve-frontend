@@ -57,7 +57,7 @@ export type AppLib<A extends AppName> = Libs[AppLibMap[A]]
 export type AppChainId<A extends AppName> = LibChainId[(typeof AppLibs)[A]]
 export type AppNetworkId<A extends AppName> = LibNetworkId[(typeof AppLibs)[A]]
 
-export type Hydrator<App extends AppName> = (
+type Hydrator<App extends AppName> = (
   config: Config,
   lib: AppLib<App>,
   prevLib: AppLib<App> | undefined,
@@ -66,4 +66,4 @@ export type Hydrator<App extends AppName> = (
 ) => Promise<void>
 export type HydratorMap = { [A in AppName]?: Hydrator<A> }
 
-export { CurveChainId, LlamaChainId, CurveNetworkId, LlamaNetworkId }
+export { LlamaChainId }

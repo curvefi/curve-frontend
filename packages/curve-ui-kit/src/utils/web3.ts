@@ -21,7 +21,7 @@ export function weiToGwei(wai: number) {
   return Math.trunc(wai) / 1e9
 }
 
-export function getDecimalLength(val: string) {
+function getDecimalLength(val: string) {
   return val.includes('.') ? val.split('.')[1].length : 0
 }
 

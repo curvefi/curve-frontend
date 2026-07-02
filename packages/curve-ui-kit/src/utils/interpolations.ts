@@ -21,7 +21,7 @@ export const powerMap = (value: number, minVal: number, maxVal: number, p: numbe
 /**
  * Inverse of powerMap. Converts a value from [minVal, maxVal] to normalized slider space [0, 1]
  */
-export const invertPowerMap = (value: number, minVal: number, maxVal: number, p: number = POWER_P): number => {
+const invertPowerMap = (value: number, minVal: number, maxVal: number, p: number = POWER_P): number => {
   if (maxVal <= minVal) return 0
   const normalized = (value - minVal) / (maxVal - minVal)
   return Math.pow(normalized, 1 / p)

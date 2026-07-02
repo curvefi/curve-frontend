@@ -3,7 +3,7 @@ const createQueryStatus = ({ value }: { value: boolean }) => ({ isLoading: value
 const QUERY_SUCCESS_BASE = { isError: false, data: undefined, error: null }
 
 // Simulates a successful query that is currently fetching.
-export const FETCHING_QUERY_RESULT = {
+const FETCHING_QUERY_RESULT = {
   ...createQueryStatus({ value: true }),
   ...QUERY_SUCCESS_BASE,
 } as const

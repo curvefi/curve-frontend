@@ -10,7 +10,7 @@ import type { TokenAmount } from './types'
  * @param decimals - Number of decimal places (default: 2)
  * @returns Formatted number string or '-' for null/undefined values
  */
-export const formatValue = (x?: number, decimals = 2) =>
+const formatValue = (x?: number, decimals = 2) =>
   x == null
     ? '-'
     : x.toLocaleString(undefined, {

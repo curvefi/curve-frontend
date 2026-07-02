@@ -54,7 +54,7 @@ type ActionInfoBaseProps = {
   sx?: StackProps['sx']
 }
 
-export type ActionInfoOverrideProps = Partial<ActionInfoBaseProps>
+type ActionInfoOverrideProps = Partial<ActionInfoBaseProps>
 
 type ActionInfoValueProps =
   | {

@@ -1,7 +1,7 @@
 import { CSSProperties } from 'react'
 
-export type ValueOf<T> = T[keyof T]
-export type Variant = 'primary' | 'secondary'
+type ValueOf<T> = T[keyof T]
+type Variant = 'primary' | 'secondary'
 
 export type BoxProps = {
   className?: string

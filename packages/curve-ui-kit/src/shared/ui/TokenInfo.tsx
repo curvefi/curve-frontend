@@ -20,7 +20,7 @@ export type TokenInfoTokenIconProps = TokenInfoBaseProps & {
   icon?: never
 }
 
-export type TokenInfoCustomIconProps = TokenInfoBaseProps & {
+type TokenInfoCustomIconProps = TokenInfoBaseProps & {
   icon: ReactNode
   address?: never
   blockchainId?: never

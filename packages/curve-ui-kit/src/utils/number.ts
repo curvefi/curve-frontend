@@ -353,7 +353,7 @@ export function formatNumber(value: Amount | MissingAmount, options: NumberForma
   return [sign, decomposed.prefix, mainValue, decomposed.scaleSuffix, decomposed.suffix].filter(Boolean).join('')
 }
 
-export const formatNumberRange = (numbers: number[] | null | undefined) =>
+const formatNumberRange = (numbers: number[] | null | undefined) =>
   !numbers || numbers?.some(n => n == null) || numbers.every(n => !n)
     ? ''
     : numbers.map(n => formatNumber(n, { abbreviate: false })).join(' - ')

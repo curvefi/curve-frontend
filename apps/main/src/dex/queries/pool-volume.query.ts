@@ -82,7 +82,7 @@ export function usePoolVolumes({ chainId }: ChainParams) {
  *
  * @remarks Skips fetching on lite networks. Assumes the api is hydrated.
  */
-export async function fetchPoolVolumes({ chainId }: ChainParams) {
+async function fetchPoolVolumes({ chainId }: ChainParams) {
   const networks = await fetchNetworks()
   const network = networks?.[chainId ?? 0]
   if (!network || network.isLite) return {}

@@ -1,10 +1,10 @@
 import { parseUnits as ethersParseUnits, formatUnits as ethersFormatUnits } from 'ethers'
 
-export function getPercentage(val: bigint, percentage: bigint) {
+function getPercentage(val: bigint, percentage: bigint) {
   return (val * percentage) / 100n
 }
 
-export function sum(values: (string | bigint)[], unit: number | undefined = 18) {
+function sum(values: (string | bigint)[], unit: number | undefined = 18) {
   let sum = 0n
 
   values.forEach(val => {
@@ -14,21 +14,21 @@ export function sum(values: (string | bigint)[], unit: number | undefined = 18) 
   return sum
 }
 
-export function minus(val1: string, val2: string, unit: number | undefined = 18) {
+function minus(val1: string, val2: string, unit: number | undefined = 18) {
   const biVal1 = parseUnits(val1, unit)
   const biVal2 = parseUnits(val2, unit)
 
   return biVal1 - biVal2
 }
 
-export function isGreaterThan(inputVal: bigint | string, compareValue: string, unit: number | undefined = 18) {
+function isGreaterThan(inputVal: bigint | string, compareValue: string, unit: number | undefined = 18) {
   const biInputValue = parseUnits(inputVal)
   const biCompareValue = parseUnits(compareValue, unit)
 
   return biInputValue > biCompareValue
 }
 
-export function isGreaterThanOrEqualTo(inputVal: bigint | string, compareValue: string, unit: number | undefined = 18) {
+function isGreaterThanOrEqualTo(inputVal: bigint | string, compareValue: string, unit: number | undefined = 18) {
   const biInputValue = parseUnits(inputVal, unit)
   const biCompareValue = parseUnits(compareValue, unit)
 

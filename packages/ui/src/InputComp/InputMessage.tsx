@@ -8,7 +8,7 @@ type InputMessageProps = {
   message?: string
 }
 
-export const InputMessage = ({ message }: InputMessageProps) => {
+const InputMessage = ({ message }: InputMessageProps) => {
   const { inputVariant } = useInputContext() ?? {}
 
   const IconComp = useMemo(() => {

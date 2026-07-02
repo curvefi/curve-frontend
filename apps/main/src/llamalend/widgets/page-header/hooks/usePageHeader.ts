@@ -95,7 +95,7 @@ function buildSupplyRate({
   }
 }
 
-export const useBorrowRate = ({
+const useBorrowRate = ({
   apiMarket,
   marketRates,
   marketType,
@@ -152,7 +152,7 @@ export const useBorrowRate = ({
   return fallbackQ(onChainBorrowRate, apiBorrowRate)
 }
 
-export const useSupplyRate = ({
+const useSupplyRate = ({
   useApiMarket,
   marketRates,
   snapshot,
@@ -221,7 +221,7 @@ export const useSupplyRate = ({
   return enabled ? fallbackQ(onChainSupplyRate, apiSupplyRate) : undefined
 }
 
-export const useAvailableLiquidity = ({
+const useAvailableLiquidity = ({
   chainId,
   marketQuery: { data: market },
   apiMarket,

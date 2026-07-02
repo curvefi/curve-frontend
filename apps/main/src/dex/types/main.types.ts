@@ -20,7 +20,7 @@ export type NetworkConfigFromApi = {
 export type NetworkUrlParams = { network: INetworkName }
 export type PoolUrlParams = NetworkUrlParams & { poolIdOrAddress: string; formType?: RFormType }
 export type PoolAddressParams = NetworkUrlParams & { poolAddress: Address }
-export type CrvLockerUrlParams = NetworkUrlParams & { formType?: RFormType }
+type CrvLockerUrlParams = NetworkUrlParams & { formType?: RFormType }
 export type UrlParams = NetworkUrlParams & Partial<PoolUrlParams & CrvLockerUrlParams>
 
 export type NetworkConfig = {
@@ -67,16 +67,7 @@ export type CurrencyReserves = {
   totalUsd: string
 }
 export type CurrencyReservesMapper = Record<string, CurrencyReserves>
-export const FormTypes = [
-  'deposit',
-  'withdraw',
-  'swap',
-  'adjust_crv',
-  'adjust_date',
-  'create',
-  'manage-gauge',
-  '',
-] as const
+const FormTypes = ['deposit', 'withdraw', 'swap', 'adjust_crv', 'adjust_date', 'create', 'manage-gauge', ''] as const
 export type RFormType = (typeof FormTypes)[number]
 export type Pool = PoolTemplate
 export type ClaimableReward = {
@@ -120,7 +111,7 @@ export type TokensNameMapper = Record<string, string>
 export type PoolVolumes = Record<string, Decimal>
 export type GaugeStatus = { rewardsNeedNudging: boolean; areCrvRewardsStuckInBridge: boolean }
 
-export type Gauge = {
+type Gauge = {
   status: GaugeStatus | null
   isKilled: boolean | null
 }

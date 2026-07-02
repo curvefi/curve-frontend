@@ -11,7 +11,7 @@ import { hasClaimableRewards } from './supply-query.helpers'
 type ClaimEstimateParams<ChainId = number> = UserMarketParams<ChainId>
 type ClaimEstimateQuery = UserMarketQuery
 
-export const { useQuery: useClaimCrvEstimateGasQuery } = queryFactory({
+const { useQuery: useClaimCrvEstimateGasQuery } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress }: ClaimEstimateParams) =>
     [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'estimateGas.claimCrv'] as const,
   queryFn: async ({ marketId }: ClaimEstimateQuery) => await requireVault(marketId).vault.estimateGas.claimCrv(),
@@ -19,7 +19,7 @@ export const { useQuery: useClaimCrvEstimateGasQuery } = queryFactory({
   validationSuite: claimableRewardsValidationSuite,
 })
 
-export const { useQuery: useClaimRewardsEstimateQuery } = queryFactory({
+const { useQuery: useClaimRewardsEstimateQuery } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress }: ClaimEstimateParams) =>
     [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'estimateGas.claimRewards'] as const,
   queryFn: async ({ marketId }: ClaimEstimateQuery) => await requireGauge(marketId).vault.estimateGas.claimRewards(),

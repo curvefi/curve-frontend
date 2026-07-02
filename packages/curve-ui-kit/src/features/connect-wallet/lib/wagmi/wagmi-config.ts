@@ -89,4 +89,4 @@ export const resetWagmiConfigForTests = () => {
   _config = undefined
 }
 
-export type WagmiChainId = ReturnType<typeof createWagmiConfig>['chains'][number]['id']
+type WagmiChainId = ReturnType<typeof createWagmiConfig>['chains'][number]['id']

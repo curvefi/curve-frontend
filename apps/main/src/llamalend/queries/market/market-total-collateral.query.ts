@@ -5,7 +5,7 @@ import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-valid
 import { decimal } from '@ui-kit/utils'
 import { IS_GETTER, USE_API } from './market.constants'
 
-export const { useQuery: useMarketTotalCollateral, invalidate: invalidateMarketTotalCollateral } = queryFactory({
+export const { useQuery: useMarketTotalCollateral } = queryFactory({
   queryKey: (params: MarketParams) => [...rootKeys.market(params), 'totalCollateral'] as const,
   queryFn: async ({ marketId }: MarketQuery) => {
     const market = getLlamaMarket(marketId)

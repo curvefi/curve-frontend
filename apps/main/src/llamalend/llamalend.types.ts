@@ -10,7 +10,7 @@ export type NetworkDict<ChainId extends IChainId = IChainId> = Record<ChainId, L
 
 export type LlamaMarketTemplate = MintMarketTemplate | LendMarketTemplate
 
-export type HealthColorKey = 'healthy' | 'close_to_liquidation' | 'soft_liquidation' | 'hard_liquidation' | ''
+type HealthColorKey = 'healthy' | 'close_to_liquidation' | 'soft_liquidation' | 'hard_liquidation' | ''
 
 export type UserPositionStatusKey =
   | 'healthy'
@@ -20,7 +20,7 @@ export type UserPositionStatusKey =
   | 'incompleteConversion'
 export type UserPositionStatus = UserPositionStatusKey | undefined
 
-export type HealthMode = {
+type HealthMode = {
   percent: string
   colorKey: HealthColorKey
   icon: ReactNode
@@ -29,7 +29,7 @@ export type HealthMode = {
   warning: string
 }
 
-export type FormDisabledAlert = {
+type FormDisabledAlert = {
   alertType?: AlertType
   message?: ReactNode
 }

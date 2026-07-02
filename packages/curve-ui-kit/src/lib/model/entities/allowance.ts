@@ -14,10 +14,7 @@ type AllowanceQuery = ChainQuery & UserQuery & { tokenAddress: Address; spenderA
  * Uses a staletime of 0 to always be guaranteed of a fresh result.
  * The value returned is in raw token units, as returned by the token contract.
  */
-export const fetchAllowance = async (
-  config: Config,
-  { chainId, spenderAddress, tokenAddress, userAddress }: AllowanceQuery,
-) =>
+const fetchAllowance = async (config: Config, { chainId, spenderAddress, tokenAddress, userAddress }: AllowanceQuery) =>
   await queryClient.fetchQuery({
     ...readContractQueryOptions(config, {
       chainId,
