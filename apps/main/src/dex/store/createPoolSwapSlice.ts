@@ -12,7 +12,6 @@ import {
 } from '@/dex/components/PagePool/Swap/utils'
 import type { EstimatedGas as FormEstGas } from '@/dex/components/PagePool/types'
 import type { RoutesAndOutput, RoutesAndOutputModal } from '@/dex/components/PageRouterSwap/types'
-import { invalidateUserPoolInfo } from '@/dex/hooks/useUserPoolInfo'
 import { curvejsApi } from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import {
@@ -32,6 +31,7 @@ import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 import { fetchNetworks } from '../entities/networks'
 import { fetchPoolTokenBalances } from '../hooks/usePoolTokenBalances'
+import { invalidateUserPoolInfo } from '../queries/invalidation'
 import { invalidatePoolParameters } from '../queries/pool-parameters.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
