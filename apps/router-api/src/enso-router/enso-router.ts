@@ -2,7 +2,9 @@ import { FastifyBaseLogger } from 'fastify'
 import { Address } from 'viem'
 import { toArray } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { maybe } from '@primitives/objects.utils'
 import type { RouterRouteResponse, TransactionData } from '@primitives/router.utils'
+import { ROUTER_FEE_BPS, ROUTER_FEE_RECEIVER_BY_CHAIN_ID } from '../router-fees'
 import { type RoutesQuery } from '../routes/routes.schemas'
 
 const { ENSO_API_URL = 'https://api.enso.finance', ENSO_API_KEY } = process.env
@@ -59,6 +61,7 @@ export const buildEnsoRouteResponse = async (
     ...(tokenOut && { tokenOut }),
     ...(amountIn && { amountIn }),
     ...(minAmountOut && { minAmountOut }),
+    ...maybe(ROUTER_FEE_RECEIVER_BY_CHAIN_ID[chainId], feeReceiver => ({ fee: ROUTER_FEE_BPS, feeReceiver })),
   })}`
 
   const response = await fetch(url, {

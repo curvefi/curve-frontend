@@ -31,7 +31,6 @@ export const ScrvUsdDepositForm = ({ network }: NetworkUrlParams) => {
   return (
     <Form
       {...form}
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Form submit handlers are async through react-hook-form.
       onSubmit={onSubmit}
       footer={
         <ScrvUsdDepositInfoList

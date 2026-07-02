@@ -9,6 +9,7 @@ import { ErrorIconButton } from '@ui-kit/shared/ui/ErrorIconButton'
 import { IconButtonIconSize } from '@ui-kit/themes/components/button'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
+import { isQuery, type QueryProp } from '@ui-kit/types/util'
 import { applySxProps } from '@ui-kit/utils'
 import { LabelTooltipIcon } from '../LabelTooltipIcon'
 import { Tooltip, type TooltipProps } from '../Tooltip'
@@ -19,15 +20,16 @@ const { Spacing, ButtonSize, IconSize } = SizesAndSpaces
 
 export type ActionInfoSize = 'small' | 'medium'
 
-export type ActionInfoProps = {
+type ActionInfoLoading = boolean | [number, number] | string
+type ActionInfoError = boolean | Error | string | null
+
+type ActionInfoBaseProps = {
   /** Label displayed on the left side */
   label: ReactNode
   /** Optional tooltip content shown next to the label with an info icon */
   labelTooltip?: Omit<TooltipProps, 'children'>
   /** Custom color for the label text */
   labelColor?: TypographyProps['color']
-  /** Primary value to display and copy */
-  value: ReactNode
   /** Custom color for the value text */
   valueColor?: TypographyProps['color']
   /** Optional content to display to the left of the value */
@@ -46,19 +48,35 @@ export type ActionInfoProps = {
   copiedTitle?: string
   /** Size of the component */
   size?: ActionInfoSize
-  /** Whether the component is in a loading state. Can be one of:
-   * - boolean
-   * - string (value is used for skeleton width inference)
-   * - [number, number] (explicit skeleton width and height in px)
-   **/
-  loading?: boolean | [number, number] | string
-  /** Error state; Unused for now, but kept for future use */
-  error?: boolean | Error | string | null
   /** Test ID for the component */
   testId?: string
   /** Additional styles */
   sx?: StackProps['sx']
 }
+
+export type ActionInfoOverrideProps = Partial<ActionInfoBaseProps>
+
+type ActionInfoValueProps =
+  | {
+      /** Primary value to display and copy */
+      value: ReactNode
+      /** Whether the component is in a loading state. Can be one of:
+       * - boolean
+       * - string (value is used for skeleton width inference)
+       * - [number, number] (explicit skeleton width and height in px)
+       **/
+      loading?: ActionInfoLoading
+      /** Error state; Unused for now, but kept for future use */
+      error?: ActionInfoError
+    }
+  | {
+      /** Query whose data is the primary value to display and copy. */
+      value: QueryProp<ReactNode>
+      loading?: never
+      error?: never
+    }
+
+export type ActionInfoProps = ActionInfoBaseProps & ActionInfoValueProps
 
 const DEFAULT_SIZE: ActionInfoSize = 'medium'
 
@@ -84,7 +102,7 @@ const rowHeight: Record<ActionInfoSize, string> = {
   medium: ButtonSize.xs,
 }
 
-type ValueDecoratorProps = Pick<ActionInfoProps, 'size' | 'error' | 'valueColor' | 'testId' | 'value'>
+type ValueDecoratorProps = Pick<ActionInfoProps, 'size' | 'error' | 'valueColor' | 'testId'> & { value: ReactNode }
 
 const ValueTypography = ({
   size = DEFAULT_SIZE,
@@ -122,25 +140,30 @@ const ValueDecorator = (props: ValueDecoratorProps) => (
     {props.value}
   </WithWrapper>
 )
-export const ActionInfo = ({
-  label,
-  labelTooltip,
-  labelColor,
-  prevValue: givenPrevValue,
-  prevValueColor,
-  value: givenValue,
-  valueColor,
-  valueLeft,
-  valueRight,
-  valueTooltip,
-  size = DEFAULT_SIZE,
-  copyValue,
-  copiedTitle,
-  loading = false,
-  error = false,
-  testId = 'action-info',
-  sx,
-}: ActionInfoProps) => {
+
+export const ActionInfo = (props: ActionInfoProps) => {
+  const {
+    label,
+    labelTooltip,
+    labelColor,
+    prevValue: givenPrevValue,
+    prevValueColor,
+    value: propValue,
+    valueColor,
+    valueLeft,
+    valueRight,
+    valueTooltip,
+    size = DEFAULT_SIZE,
+    copyValue,
+    copiedTitle,
+    testId = 'action-info',
+    sx,
+  } = props
+  const {
+    data: givenValue,
+    isLoading: loading,
+    error,
+  } = isQuery(propValue) ? propValue : { data: propValue, isLoading: props.loading ?? false, error: props.error }
   const buttonSize = iconButtonSize[size]
   const iconSize = IconButtonIconSize[buttonSize]
   const value = givenValue ?? givenPrevValue

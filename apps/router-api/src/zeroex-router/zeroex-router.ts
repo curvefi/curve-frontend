@@ -1,6 +1,7 @@
 import { FastifyBaseLogger } from 'fastify'
-import { assert } from '@primitives/objects.utils'
+import { assert, maybe } from '@primitives/objects.utils'
 import type { RouteStep, RouterRouteResponse } from '@primitives/router.utils'
+import { ROUTER_FEE_BPS, ROUTER_FEE_RECEIVER_BY_CHAIN_ID } from '../router-fees'
 import { type RoutesQuery } from '../routes/routes.schemas'
 import type { ZeroExQuoteRequest, ZeroExQuoteResponse } from './zeroex.types'
 
@@ -51,7 +52,18 @@ export const buildZeroExRouteResponse = async (
     return []
   }
 
-  const params: ZeroExQuoteRequest = { chainId, sellToken, buyToken, sellAmount: amountIn, taker }
+  const params: ZeroExQuoteRequest = {
+    chainId,
+    sellToken,
+    buyToken,
+    sellAmount: amountIn,
+    taker,
+    ...maybe(ROUTER_FEE_RECEIVER_BY_CHAIN_ID[chainId], swapFeeRecipient => ({
+      swapFeeRecipient,
+      swapFeeBps: ROUTER_FEE_BPS,
+      swapFeeToken: sellToken,
+    })),
+  }
   const { buyAmount, route, sellAmount, transaction } = await getZeroExQuote(params, log)
   const { data, gas, to, value } = transaction
   return [

@@ -70,14 +70,13 @@ async function assembleOdosQuote(
   })
   const { ok, status, statusText } = assembleResponse
   if (!ok) {
-    log.error({
+    return log.error({
       message: 'odos assemble request failed',
       status,
       statusText,
       params,
       body: await assembleResponse.text(),
     })
-    throw new Error(`Odos assemble error - ${status} ${statusText}`)
   }
   return (await assembleResponse.json()) as AssemblePathResponse
 }
@@ -112,10 +111,8 @@ export const buildOdosRouteResponse = async (
     pathVizImage,
     priceImpact = null,
   } = await getOdosQuote({ chainId, tokenIn, tokenOut, amountIn, blacklist, slippage, zapAddress }, log)
-  const { transaction } = await assembleOdosQuote(
-    { pathId: assert(pathId, 'Odos quote missing pathId'), zapAddress },
-    log,
-  )
+  const { transaction } =
+    (await assembleOdosQuote({ pathId: assert(pathId, 'Odos quote missing pathId'), zapAddress }, log)) ?? {}
   return [
     {
       router: protocol,
