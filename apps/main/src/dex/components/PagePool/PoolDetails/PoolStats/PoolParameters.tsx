@@ -15,6 +15,7 @@ import { dayjs } from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { constQ } from '@ui-kit/types/util'
 import { Chain, weiToEther, formatNumber, amount } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
@@ -203,8 +204,10 @@ export const PoolParameters = ({
               <ActionInfo
                 label={t`Ramping A`}
                 valueTooltip={t`Slowly changing up A so that it doesn't negatively change virtual price growth of shares`}
-                prevValue={formatNumber(amount(initial_A), { useGrouping: false, abbreviate: false, fallback: '-' })}
-                value={formatNumber(amount(future_A), { useGrouping: false, abbreviate: false, fallback: '-' })}
+                prevValue={constQ(
+                  formatNumber(amount(initial_A), { useGrouping: false, abbreviate: false, fallback: '-' }),
+                )}
+                value={constQ(formatNumber(amount(future_A), { useGrouping: false, abbreviate: false, fallback: '-' }))}
               />
               <ActionInfo
                 label=" "
