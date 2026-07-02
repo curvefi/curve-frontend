@@ -48,8 +48,9 @@ export type SupplyAsset = {
 const SUPPLY_POSITION_TAB = 'supplyPosition'
 
 const RATE_CATEGORY: AverageCategory = 'llamalend.market.rate'
+const METRIC_CATEGORY = 'llamalend.positionSupplyDetails'
 
-const MetricGrid = ({ children }: { children: ReactNode }) => <Grid size={{ mobile: 6, tablet: 3 }}>{children}</Grid>
+const MetricGrid = ({ children }: { children: ReactNode }) => <Grid size={{ mobile: 12, tablet: 3 }}>{children}</Grid>
 
 export const SupplyPositionDetails = () => {
   const {
@@ -133,7 +134,7 @@ export const SupplyPositionDetails = () => {
       <Grid container spacing={Spacing.md} sx={{ padding: Spacing.sm, backgroundColor: t => t.design.Layer[1].Fill }}>
         <MetricGrid>
           <Metric
-            size="medium"
+            category={METRIC_CATEGORY}
             label={USER_NET_SUPPLY_RATE_TITLE}
             value={mapQuery(supplyMetrics, ({ totalUserBoost }) => totalUserBoost)}
             valueOptions={{ unit: 'percentage', ...(noGauge && { fallback: `No Gauge` }) }}
@@ -168,7 +169,7 @@ export const SupplyPositionDetails = () => {
         </MetricGrid>
         <MetricGrid>
           <Metric
-            size="medium"
+            category={METRIC_CATEGORY}
             label={t`Amount supplied`}
             value={mapQuery(supplyAsset, ({ depositedUsdValue }) => depositedUsdValue)}
             valueOptions={{ unit: 'dollar' }}
@@ -187,7 +188,7 @@ export const SupplyPositionDetails = () => {
         </MetricGrid>
         <MetricGrid>
           <Metric
-            size="medium"
+            category={METRIC_CATEGORY}
             label={t`Vault shares`}
             value={mapQuery(shares, ({ value }) => value)}
             valueOptions={{}}
@@ -206,7 +207,7 @@ export const SupplyPositionDetails = () => {
         </MetricGrid>
         <MetricGrid>
           <Metric
-            size="medium"
+            category={METRIC_CATEGORY}
             label={t`veCRV Boost`}
             value={q(userSupplyBoost)}
             valueOptions={{ unit: 'multiplier', ...(noGauge && { fallback: `No Gauge` }) }}

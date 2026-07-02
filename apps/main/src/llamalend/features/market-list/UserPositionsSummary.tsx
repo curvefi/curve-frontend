@@ -21,7 +21,7 @@ const UserPositionStatisticItem = ({
   <Grid size={itemSize}>
     <Metric
       value={metric}
-      size="medium"
+      category="llamalend.marketListSummary"
       valueOptions={{
         unit: 'dollar',
       }}
@@ -39,7 +39,7 @@ export const UserPositionSummary = ({ markets, selectedChains }: UserPositionSta
   return (
     <Grid
       container
-      spacing={Spacing.md}
+      spacing={Spacing.sm}
       sx={{
         paddingBlock: Spacing.sm,
         paddingInline: Spacing.md,
@@ -48,7 +48,7 @@ export const UserPositionSummary = ({ markets, selectedChains }: UserPositionSta
     >
       {summary.map((item, index) => (
         // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
-        <UserPositionStatisticItem key={index} itemSize={{ mobile: 6, tablet: 12 / summary.length }} {...item} />
+        <UserPositionStatisticItem key={index} itemSize={{ mobile: 12, tablet: 12 / summary.length }} {...item} />
       ))}
     </Grid>
   )

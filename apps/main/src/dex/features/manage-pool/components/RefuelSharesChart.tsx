@@ -38,6 +38,7 @@ const { Spacing } = SizesAndSpaces
 const REFUEL_SHARES_LABEL = t`Refuel shares`
 const UNLOCKED_SHARES_LABEL = t`Unlocked refuel shares`
 const PERIODS = ['7d', '1m', '3m', '6m', '1y'] as const satisfies Period[]
+const METRIC_CATEGORY = 'dex.refuelCharts'
 const SHARE_SERIES = [
   { key: 'donationShares', label: REFUEL_SHARES_LABEL },
   { key: 'unlockedShares', label: UNLOCKED_SHARES_LABEL },
@@ -149,6 +150,7 @@ export const RefuelSharesChart = ({
         <Grid container columnSpacing={Spacing.md} rowSpacing={Spacing.sm}>
           <Grid size={{ mobile: 6, tablet: 4 }}>
             <Metric
+              category={METRIC_CATEGORY}
               label={REFUEL_SHARES_LABEL}
               value={mapQuery(refuelShares, value => formatUnits(value, 18) as Decimal)}
               valueOptions={{ abbreviate: true }}
@@ -158,10 +160,11 @@ export const RefuelSharesChart = ({
 
           <Grid size={{ mobile: 6, tablet: 4 }}>
             <Metric
+              category={METRIC_CATEGORY}
               label={t`Refuel duration`}
               value={mapQuery(refuelDuration, value => (Number(value) / TIME_FRAMES.DAY_MS) * 1000)}
               valueOptions={{ abbreviate: false, decimals: 0 }}
-              rightAdornment={
+              icon={
                 <Typography variant="highlightS" color="textSecondary">
                   {t`days`}
                 </Typography>
@@ -172,6 +175,7 @@ export const RefuelSharesChart = ({
 
           <Grid size={{ mobile: 6, tablet: 4 }}>
             <Metric
+              category={METRIC_CATEGORY}
               label={t`Max ratio`}
               value={mapQuery(maxRatio, value => Number(formatUnits(value, 18)) * 100)}
               valueOptions={{ abbreviate: true, decimals: 2, unit: 'percentage' }}

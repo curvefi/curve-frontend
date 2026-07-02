@@ -4,7 +4,6 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Grid from '@mui/material/Grid'
-import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -14,6 +13,7 @@ import { useRefuelPool } from '../queries/pools.query'
 const { Spacing } = SizesAndSpaces
 
 const METRIC_SIZE = { mobile: 3, desktop: 2 }
+const METRIC_CATEGORY = 'dex.refuelPoolInformation'
 
 export const BorrowInformationContainer = ({
   blockchainId,
@@ -23,7 +23,6 @@ export const BorrowInformationContainer = ({
   poolAddress: Address
 }) => {
   const refuel = useRefuelPool({ blockchainId, poolAddress })
-  const isMobile = useIsMobile()
   return (
     <Card size="small" data-testid="refuel-pool-information">
       <CardHeader title={t`Pool Information`} />
@@ -31,8 +30,8 @@ export const BorrowInformationContainer = ({
         <Grid container columnSpacing={Spacing.md}>
           <Grid size={METRIC_SIZE}>
             <Metric
+              category={METRIC_CATEGORY}
               label={t`TVL`}
-              size={isMobile ? 'small' : 'medium'}
               value={mapQuery(refuel, pool => pool.tvlUsd)}
               valueOptions={{ unit: 'dollar', abbreviate: true }}
               testId="refuel-pool-tvl"
@@ -41,8 +40,8 @@ export const BorrowInformationContainer = ({
 
           <Grid size={METRIC_SIZE}>
             <Metric
+              category={METRIC_CATEGORY}
               label={t`Volume`}
-              size={isMobile ? 'small' : 'medium'}
               value={mapQuery(refuel, pool => pool.tradingVolume24h)}
               valueOptions={{ unit: 'dollar', abbreviate: true }}
               testId="refuel-pool-volume"
@@ -51,8 +50,8 @@ export const BorrowInformationContainer = ({
 
           <Grid size={METRIC_SIZE}>
             <Metric
+              category={METRIC_CATEGORY}
               label={t`24h fees`}
-              size={isMobile ? 'small' : 'medium'}
               value={mapQuery(refuel, pool => pool.tradingFee24h)}
               valueOptions={{ unit: 'dollar', abbreviate: true }}
               testId="refuel-pool-fees"
@@ -61,8 +60,8 @@ export const BorrowInformationContainer = ({
 
           <Grid size={METRIC_SIZE}>
             <Metric
+              category={METRIC_CATEGORY}
               label={t`1W APR`}
-              size={isMobile ? 'small' : 'medium'}
               value={mapQuery(refuel, pool => pool.baseWeeklyApr)}
               valueOptions={{ unit: 'percentage', abbreviate: true }}
               testId="refuel-pool-apr"

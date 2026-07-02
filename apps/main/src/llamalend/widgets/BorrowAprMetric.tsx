@@ -35,7 +35,7 @@ export const BorrowAprMetric = ({ marketType, borrowRate, collateralSymbol, alig
   })
   return (
     <Metric
-      size="medium"
+      category="llamalend.marketHeader"
       alignment={alignment}
       testId="market-net-borrow-apr"
       label={t`Net Borrow APR`}

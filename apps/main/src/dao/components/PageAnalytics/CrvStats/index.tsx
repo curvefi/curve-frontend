@@ -18,6 +18,7 @@ const WEEKS_PER_YEAR = 52
 const VECRV_APR_AVERAGE_WEEKS = 4
 const VECRV_APR_FEE_WEEKS = VECRV_APR_AVERAGE_WEEKS + 1
 const PROPOSAL_MIN_VECRV = 2500
+const METRIC_CATEGORY = 'dao.crvStats'
 
 const weeklyRateToApr = (weeklyRate: number) => weeklyRate * WEEKS_PER_YEAR * 100
 
@@ -62,25 +63,25 @@ export const CrvStats = () => {
         <h4>{t`VECRV METRICS`}</h4>
         <MetricsContainer>
           <Metric
-            size="small"
+            category={METRIC_CATEGORY}
             label={t`Total CRV`}
             value={mapQuery(statsQuery, ({ totalCrv }) => totalCrv)}
             valueOptions={{}}
           />
           <Metric
-            size="small"
+            category={METRIC_CATEGORY}
             label={t`Locked CRV`}
             value={mapQuery(statsQuery, ({ totalLockedCrv }) => totalLockedCrv)}
             valueOptions={{}}
           />
           <Metric
-            size="small"
+            category={METRIC_CATEGORY}
             label={t`veCRV`}
             value={mapQuery(statsQuery, ({ totalVeCrv }) => totalVeCrv)}
             valueOptions={{}}
           />
           <Metric
-            size="small"
+            category={METRIC_CATEGORY}
             label={t`Holders`}
             value={mapQuery(holdersSummary, ({ totalHolders }) => totalHolders)}
             valueOptions={{ abbreviate: false, decimals: 0 }}
@@ -89,13 +90,13 @@ export const CrvStats = () => {
             }}
           />
           <Metric
-            size="small"
+            category={METRIC_CATEGORY}
             label={t`CRV Supply Locked`}
             value={mapQuery(statsQuery, ({ lockedPercentage }) => lockedPercentage)}
             valueOptions={{ unit: 'percentage' }}
           />
           <Metric
-            size="small"
+            category={METRIC_CATEGORY}
             label={t`veCRV APR`}
             value={mapQuery(veCrvApr, ({ current }) => current)}
             valueOptions={{ unit: 'percentage' }}

@@ -12,6 +12,8 @@ import { decimal } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
+const METRIC_CATEGORY = 'loan.scrvusdBanner'
+
 export const StatsBanner = () => {
   const {
     design: { Color },
@@ -45,6 +47,7 @@ export const StatsBanner = () => {
         }}
       >
         <Metric
+          category={METRIC_CATEGORY}
           label={t`30 Days Projection`}
           value={mapQuery(scrvUsdApy, apy => oneMonthProjectionYield(apy, exampleBalance))}
           valueOptions={{ unit: 'dollar' }}
@@ -54,6 +57,7 @@ export const StatsBanner = () => {
           copyText={t`Copied 30 days projection`}
         />
         <Metric
+          category={METRIC_CATEGORY}
           label={t`1 Year Projection`}
           value={mapQuery(scrvUsdApy, apy => oneYearProjectionYield(apy, exampleBalance))}
           valueOptions={{ unit: 'dollar' }}
@@ -63,6 +67,7 @@ export const StatsBanner = () => {
           copyText={t`Copied 1 year projection`}
         />
         <Metric
+          category={METRIC_CATEGORY}
           label={t`Estimated APY`}
           value={scrvUsdApy}
           valueOptions={{ unit: 'percentage' }}

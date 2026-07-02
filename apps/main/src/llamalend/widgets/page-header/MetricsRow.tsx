@@ -15,6 +15,8 @@ import type { AvailableLiquidity, BorrowRate, SupplyRate } from './hooks/usePage
 
 const { Spacing } = SizesAndSpaces
 
+const METRIC_CATEGORY = 'llamalend.marketHeader'
+
 export const MetricsRow = ({
   borrowRate,
   supplyRate,
@@ -44,6 +46,7 @@ export const MetricsRow = ({
       />
       {supplyRate && (
         <Metric
+          category={METRIC_CATEGORY}
           alignment={metricAlignment}
           testId="market-net-supply-apy"
           label={NET_SUPPLY_RATE_TITLE}
@@ -82,6 +85,7 @@ export const MetricsRow = ({
         />
       )}
       <Metric
+        category={METRIC_CATEGORY}
         alignment={metricAlignment}
         testId="market-available-liquidity"
         label={t`Available liquidity`}
