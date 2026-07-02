@@ -4,7 +4,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { useShowNetRate } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate, type TxGasInfo } from '@ui-kit/shared/ui/ActionInfo'
-import { mapQuery, UNDEFINED_Q, type QueryProp } from '@ui-kit/types/util'
+import { mapQuery, DISABLED_Q, type QueryProp } from '@ui-kit/types/util'
 import { formatNumber } from '@ui-kit/utils'
 import { ActionInfoCollapse } from './ActionInfoCollapse'
 import { useShouldShowNetRate } from './hooks/useShouldShowNetRate'
@@ -71,7 +71,7 @@ export const SupplyActionInfoList = ({
           {(supplyApy ?? prevSupplyApy) && (
             <ActionInfo
               label={t`Supply APY`}
-              value={mapQuery(supplyApy ?? UNDEFINED_Q, data => formatNumber(data, 'percent.rate'))}
+              value={mapQuery(supplyApy ?? DISABLED_Q, data => formatNumber(data, 'percent.rate'))}
               prevValue={prevSupplyApy && mapQuery(prevSupplyApy, data => formatNumber(data, 'percent.rate'))}
               size="small"
               testId="supply-apy"
@@ -80,7 +80,7 @@ export const SupplyActionInfoList = ({
           {shouldShowNetSupplyApy && (
             <ActionInfo
               label={NET_SUPPLY_RATE_TITLE}
-              value={mapQuery(netSupplyApy ?? UNDEFINED_Q, data => formatNumber(data, 'percent.rate'))}
+              value={mapQuery(netSupplyApy ?? DISABLED_Q, data => formatNumber(data, 'percent.rate'))}
               prevValue={prevNetSupplyApy && mapQuery(prevNetSupplyApy, data => formatNumber(data, 'percent.rate'))}
               size="small"
               testId="supply-net-apy"
@@ -98,7 +98,7 @@ export const SupplyActionInfoList = ({
           {(amountSupplied ?? prevAmountSupplied) && (
             <ActionInfo
               label={amountLabel}
-              value={mapQuery(amountSupplied ?? UNDEFINED_Q, data => formatNumber(data, { abbreviate: false }))}
+              value={mapQuery(amountSupplied ?? DISABLED_Q, data => formatNumber(data, { abbreviate: false }))}
               prevValue={
                 prevAmountSupplied && mapQuery(prevAmountSupplied, data => formatNumber(data, { abbreviate: false }))
               }

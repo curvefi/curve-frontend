@@ -38,8 +38,6 @@ type ActionInfoBaseProps = {
   valueRight?: ReactNode
   /** Tooltip text to display when hovering over the value */
   valueTooltip?: ReactNode
-  /** Custom color for the previous value text */
-  prevValueColor?: TypographyProps['color']
   /** Value to be copied from the value text when clicked. */
   copyValue?: string
   /** Message displayed in the snackbar title when the value is copied */
@@ -74,6 +72,8 @@ type ActionInfoQueryProps = {
   error?: never
   /** Previous value (if needed for comparison) */
   prevValue?: QueryProp<ReactNode>
+  /** Custom color for the previous value text */
+  prevValueColor?: TypographyProps['color']
 }
 
 export type ActionInfoProps = ActionInfoBaseProps & (ActionInfoLegacyProps | ActionInfoQueryProps)
