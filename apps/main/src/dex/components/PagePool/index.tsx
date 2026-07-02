@@ -26,7 +26,9 @@ import type { Chain } from '@curvefi/prices-api'
 import { AlertBox } from '@ui/AlertBox'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
+import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
+import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
@@ -71,6 +73,13 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const poolAddress = poolData?.pool.address as Address
 
   const pricesApiPoolData = poolData && pricesApiPoolsMapper?.[poolData.pool.address]
+
+  const fetchPoolStats = useStore(state => state.pools.fetchPoolStats)
+  usePageVisibleInterval(() => {
+    if (curve && poolData) {
+      void fetchPoolStats(curve, poolData)
+    }
+  }, REFRESH_INTERVAL['5m'])
 
   // is seed
   useEffect(() => {
