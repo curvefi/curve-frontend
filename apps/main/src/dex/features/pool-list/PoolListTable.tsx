@@ -1,7 +1,6 @@
 import { useRef, useState } from 'react'
 import type { NetworkConfig } from '@/dex/types/main.types'
 import type { Chain } from '@curvefi/prices-api'
-import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { type ExpandedState, getCoreRowModel, getExpandedRowModel } from '@tanstack/react-table'
 import { CURVE_SOCIALS } from '@ui/utils'
@@ -13,6 +12,7 @@ import { useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableFiltersChip } from '@ui-kit/shared/ui/DataTable/TableFiltersChip'
+import { TableHeader } from '@ui-kit/shared/ui/DataTable/TableHeader'
 import { POOL_LIST_COLUMNS, PoolListColumnId } from './columns'
 import { PoolListMobileExpandedPanel } from './components/PoolListMobileExpandedPanel'
 import { PoolListSortDrawer } from './drawers/PoolListSortDrawer'
@@ -51,7 +51,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
     sorting,
   })
 
-  const { pageCount, userHasPositions, tableQuery } = usePoolListTable({
+  const { isFetching, onReload, pageCount, userHasPositions, tableQuery } = usePoolListTable({
     filters: apiParams,
     network,
     page: pagination.pageIndex + 1,
@@ -79,7 +79,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
 
   return (
     <Stack>
-      <CardHeader title={t`Pools`} />
+      <TableHeader title={t`Pools`} onReload={() => void onReload()} isLoading={isFetching} />
       <DataTable
         table={table}
         emptyState={{
@@ -88,7 +88,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
           button: { label: t`Show all pools`, onClick: resetPoolFilters, testId: 'dex-pool-empty-state-reset' },
           secondaryButton: { label: t`Telegram`, href: CURVE_SOCIALS.telegram.en },
         }}
-        errorState={{ title: t`Unable to retrieve pool list` }}
+        errorState={{ title: t`Unable to retrieve pool list`, onReload }}
         expandedPanel={PoolListMobileExpandedPanel}
         shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       >

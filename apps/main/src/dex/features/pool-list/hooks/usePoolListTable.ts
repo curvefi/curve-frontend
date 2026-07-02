@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { usePoolList } from '@/dex/queries/pool-list.query'
+import { resetPoolList, usePoolList } from '@/dex/queries/pool-list.query'
 import type { NetworkConfig } from '@/dex/types/main.types'
 import type { SortDirection as PoolSortDirection, V2PoolSortField as PoolSortField } from '@curvefi/prices-api/pools'
 import { useMappedQuery } from '@ui-kit/types/util'
@@ -27,7 +27,7 @@ export const usePoolListTable = ({
   sortDirection,
 }: PoolListTableParams) => {
   const hasUserPoolPosition = usePoolListUserHasPosition(network.chainId)
-  const poolListQuery = usePoolList({
+  const poolListParams = {
     chainId: network.chainId,
     page,
     pageSize: POOL_LIST_PAGE_SIZE,
@@ -35,8 +35,10 @@ export const usePoolListTable = ({
     ...filters,
     sortBy,
     sortDirection,
-  })
-  const { data: poolList } = poolListQuery
+  }
+  const poolListQuery = usePoolList(poolListParams)
+  const { data: poolList, isFetching } = poolListQuery
+
   const tableQuery = useMappedQuery(
     poolListQuery,
     useCallback(
@@ -46,6 +48,8 @@ export const usePoolListTable = ({
   )
 
   return {
+    isFetching,
+    onReload: () => resetPoolList(poolListParams),
     pageCount: poolList?.pageCount ?? -1,
     userHasPositions: tableQuery.data?.some(({ hasPosition }) => hasPosition),
     tableQuery,
