@@ -79,7 +79,6 @@ export const CreateLoanForm = <ChainId extends IChainId>({
   return (
     <Form
       {...form}
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
       onSubmit={onSubmit}
       footer={
         <CreateLoanInfoList
@@ -146,11 +145,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
             minBands={bands.minBands}
             maxBands={bands.maxBands}
             values={values}
-            params={params}
             setRange={setRange}
-            network={network.id}
-            collateralToken={collateralToken}
-            borrowToken={borrowToken}
           />
         </Collapse>
       </LoanPresetSelector>

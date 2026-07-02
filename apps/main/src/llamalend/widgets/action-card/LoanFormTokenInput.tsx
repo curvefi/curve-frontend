@@ -33,6 +33,7 @@ export type LoanFormTokenInputProps<
   name: TFieldName
   form: UseFormReturn<TFieldValues> // the form, used to set the value and get errors
   testId: string
+  message?: LargeTokenInputProps['message']
   maxMessage?: ReactNode
   /**
    * Optional, displays the position balance instead of the wallet balance.
@@ -74,6 +75,7 @@ export const LoanFormTokenInput = <
     formState: { errors: formErrors, touchedFields },
   },
   testId,
+  message,
   maxMessage,
   network,
   positionBalance,
@@ -146,9 +148,10 @@ export const LoanFormTokenInput = <
       {...(!hideBalance && { walletBalance })}
       maxBalance={max && { balance: max.data, chips: 'range', isLoading: max.isLoading }}
       inputBalanceUsd={decimal(usdRate && usdRate * +(value ?? 0))}
+      message={errorMessage ? undefined : message}
       disabled={disabled}
     >
-      {maxMessage && <HelperMessage onNumberClick={onBalance} message={maxMessage} />}
+      {maxMessage && !errorMessage && <HelperMessage onNumberClick={onBalance} message={maxMessage} />}
       {errorMessage && <HelperMessage message={errorMessage} onNumberClick={onBalance} isError />}
     </LargeTokenInput>
   )

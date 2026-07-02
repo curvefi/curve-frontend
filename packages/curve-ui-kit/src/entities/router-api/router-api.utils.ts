@@ -46,7 +46,7 @@ export const parseMutationRoute = (
 export const getExpectedFn =
   ({
     chainId,
-    router,
+    router = 'curve-solver', // router is unset when checking the max borrow
     userAddress,
     slippage,
   }: Pick<RoutesQuery, 'chainId' | 'router' | 'slippage' | 'userAddress'>): GetExpectedFn =>
@@ -57,7 +57,7 @@ export const getExpectedFn =
       tokenOut: tokenOut as Address,
       amountIn: `${amountIn}` as Decimal,
       blacklist: toArray(blacklist as Address | readonly Address[]),
-      router: router ?? 'curve', // use curve router for getting the maximum amounts
+      router,
       slippage,
       userAddress,
     })

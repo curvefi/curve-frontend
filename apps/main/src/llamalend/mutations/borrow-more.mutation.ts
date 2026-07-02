@@ -33,7 +33,7 @@ const approveBorrowMore = async (
   const [type, impl] = getBorrowMoreImplementation(market.id, leverageEnabled)
   switch (type) {
     case 'zapV2':
-      return (await impl.borrowMoreApprove({ userCollateral, userBorrowed })) as Hex[]
+      return (await impl.borrowMoreApprove({ userCollateral })) as Hex[]
     case 'V1':
     case 'V2':
       return (await impl.borrowMoreApprove(userCollateral, userBorrowed)) as Hex[]

@@ -43,9 +43,9 @@ export function getRepayImplementation(
   } else {
     if (!hasUserCollateral && !hasStateCollateral)
       return ['unleveragedLend', market.loan, [{ debt: userBorrowed }]] as const
-    if (hasZapV2(market)) {
+    if (hasZapV2(market) && !hasUserBorrowed) {
       const route = (routeMeta as RouteMutationMeta) ?? parseMutationRoute(market, { routeId, slippage, isRepay: true })
-      return ['zapV2', market.leverageZapV2, [{ stateCollateral, userCollateral, userBorrowed, ...route }]] as const
+      return ['zapV2', market.leverageZapV2, [{ stateCollateral, userCollateral, ...route }]] as const
     }
     if (hasLeverage(market)) return ['V1', market.leverage, [stateCollateral, userCollateral, userBorrowed]] as const
   }

@@ -15,6 +15,7 @@ import { type Address, Hex } from '@primitives/address.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { type AllOrNone, assert, DEFAULT_DECIMALS, maybe, maybes, notFalsy } from '@primitives/objects.utils'
 import { getLib, requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
+import { isZapV2Enabled } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { MetricProps } from '@ui-kit/shared/ui/Metric'
 import { LlamaMarketType, LlamaMarketVersion } from '@ui-kit/types/market'
@@ -33,11 +34,8 @@ export const getLlamaMarket = (id: string | LlamaMarketTemplate, lib = requireLi
  * Helper to retrieve the llama market after initialization, avoiding crashing the components using it.
  * We use this helper during query validation since we cannot crash the validation suite outside `test()`
  */
-export const tryGetLlamaMarket = (marketId: LlamaMarketTemplate | string | null | undefined) => {
-  if (typeof marketId === 'object') return marketId
-  const lib = getLib('llamaApi') // retrieve lib separately to avoid crashing the whole app when uninitialized
-  return marketId && lib && getLlamaMarket(marketId, lib)
-}
+export const tryGetLlamaMarket = (marketId: LlamaMarketTemplate | string | null | undefined) =>
+  typeof marketId === 'object' ? marketId : maybes([marketId, getLib('llamaApi')], getLlamaMarket)
 
 /**
  * Checks if a market supports leverage or not. A market supports leverage if:
@@ -75,6 +73,9 @@ const hasV1Deleverage = (market: LlamaMarketTemplate) =>
 export const hasDeleverage = (market: LlamaMarketTemplate) =>
   hasV1Deleverage(market) || (market instanceof MintMarketTemplate && hasV2Leverage(market))
 
+export const hasResetPosition = (market: LlamaMarketTemplate | null | undefined): market is LendMarketTemplate<'v2'> =>
+  market instanceof LendMarketTemplate && market.version === 'v2'
+
 /**
  * Check if an open position is a leveraged position, using the leverage value.
  * prevLeverage is 0 when the position didn't exist before, future leverage is 0 on full repayment.
@@ -85,18 +86,19 @@ export const hasDeleverage = (market: LlamaMarketTemplate) =>
 export const isPositionLeveraged = (leverage: Amount | undefined | null) =>
   leverage != null && !BigNumber(leverage).isZero() && !BigNumber(leverage).isEqualTo(1)
 
-export const canRepayFromStateCollateral = (market: LlamaMarketTemplate) =>
-  market instanceof MintMarketTemplate ? hasDeleverage(market) : hasLeverage(market)
+export const canRepayFromStateCollateral = <T extends LlamaMarketTemplate | undefined>(market: T) =>
+  maybe(market, market => (market instanceof MintMarketTemplate ? hasDeleverage(market) : hasLeverage(market)))
 
-export const canRepayFromUserCollateral = (market: LlamaMarketTemplate) =>
-  market instanceof MintMarketTemplate ? hasV2Leverage(market) : hasLeverage(market)
+export const canRepayFromUserCollateral = <T extends LlamaMarketTemplate | undefined>(market: T) =>
+  maybe(market, market => (market instanceof MintMarketTemplate ? hasV2Leverage(market) : hasLeverage(market)))
+
+export const canLeverageUserBorrowed = <T extends LlamaMarketTemplate | undefined>(market: T) =>
+  maybe(market, market => hasLeverage(market) && !hasZapV2(market))
 
 export const hasVault = (market: LlamaMarketTemplate) => market instanceof LendMarketTemplate && 'vault' in market
 
-export const hasZapV2 = (_market: LlamaMarketTemplate) => false
-/** isZapV2Enabled() &&
-  market instanceof LendMarketTemplate &&
-  market.leverageZapV2.hasLeverage() */
+export const hasZapV2 = (market: LlamaMarketTemplate) =>
+  isZapV2Enabled() && market instanceof LendMarketTemplate && market.leverageZapV2.hasLeverage()
 
 export const isRouterRequired = (
   type: 'zapV2' | 'V0' | 'V1' | 'V2' | 'deleverage' | 'unleveragedMint' | 'unleveragedLend' | 'unleveraged',

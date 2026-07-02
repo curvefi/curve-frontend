@@ -1,4 +1,5 @@
 import { FastifyBaseLogger } from 'fastify'
+import { noop } from 'lodash'
 import { ethAddress, zeroAddress } from 'viem'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -46,7 +47,7 @@ async function getOdosQuote(
   } satisfies Omit<Record<keyof CurveOdosQuoteRequest, string>, 'blacklist'>)
   blacklist.forEach(address => params.append('blacklist', address))
 
-  return await fetchJson<OdosQuoteResponse>(`${ODOS_API_URL}/quote?${params}`).catch(error =>
+  return await fetchJson<OdosQuoteResponse>(`${ODOS_API_URL}/v3/quote?${params}`).catch(error =>
     logOdosError(error, log, 'odos route request failed', fromEntries([...params.entries()])),
   )
 }
@@ -56,9 +57,9 @@ async function assembleOdosQuote(
   log: FastifyBaseLogger,
 ) {
   const params: Record<keyof CurveOdosAssembleRequest, string> = { path_id: pathId, user: userAddress }
-  return await fetchJson<AssemblePathResponse>(`${ODOS_API_URL}/assemble?${new URLSearchParams(params)}`).catch(error =>
-    logOdosError(error, log, 'odos assemble request failed', params),
-  )
+  return await fetchJson<AssemblePathResponse>(`${ODOS_API_URL}/assemble?${new URLSearchParams(params)}`)
+    .catch(error => logOdosError(error, log, 'odos assemble request failed', params))
+    .catch(noop) // assemble errors result in no tx data in response, but don't fail the whole request
 }
 
 /**
@@ -91,10 +92,8 @@ export const buildOdosRouteResponse = async (
     pathVizImage,
     priceImpact = null,
   } = await getOdosQuote({ chainId, tokenIn, tokenOut, amountIn, blacklist, slippage, userAddress }, log)
-  const { transaction } = await assembleOdosQuote(
-    { pathId: assert(pathId, 'Odos quote missing pathId'), userAddress },
-    log,
-  )
+  const { transaction } =
+    (await assembleOdosQuote({ pathId: assert(pathId, 'Odos quote missing pathId'), userAddress }, log)) ?? {}
   return [
     {
       router: protocol,
