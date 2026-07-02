@@ -3,22 +3,6 @@ import { abbreviateNumber, scaleSuffix } from '@ui-kit/utils'
 import type { TokenAmount } from './types'
 
 /**
- * Formats a number to a specified number of decimal places using locale string formatting.
- * Automatically removes trailing zeros for cleaner display.
- *
- * @param x - The number to format (returns '-' if null/undefined)
- * @param decimals - Number of decimal places (default: 2)
- * @returns Formatted number string or '-' for null/undefined values
- */
-const formatValue = (x?: number, decimals = 2) =>
-  x == null
-    ? '-'
-    : x.toLocaleString(undefined, {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: decimals,
-      })
-
-/**
  * Formats collateral into a readable string representation.
  * Handles both single collateral objects and arrays of collateral.
  * For arrays, concatenates all entries with ' + ' separator.

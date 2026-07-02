@@ -21,10 +21,6 @@ export function weiToGwei(wai: number) {
   return Math.trunc(wai) / 1e9
 }
 
-function getDecimalLength(val: string) {
-  return val.includes('.') ? val.split('.')[1].length : 0
-}
-
 /**
  * Waits for transaction execution by checking isSatisfied, and if not satisfied,
  * calls onExecute, waits for the transactions to be mined and then waits until

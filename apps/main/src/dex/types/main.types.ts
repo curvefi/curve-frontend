@@ -67,8 +67,7 @@ export type CurrencyReserves = {
   totalUsd: string
 }
 export type CurrencyReservesMapper = Record<string, CurrencyReserves>
-const FormTypes = ['deposit', 'withdraw', 'swap', 'adjust_crv', 'adjust_date', 'create', 'manage-gauge', ''] as const
-export type RFormType = (typeof FormTypes)[number]
+export type RFormType = 'deposit' | 'withdraw' | 'swap' | 'adjust_crv' | 'adjust_date' | 'create' | 'manage-gauge' | ''
 export type Pool = PoolTemplate
 export type ClaimableReward = {
   token: string

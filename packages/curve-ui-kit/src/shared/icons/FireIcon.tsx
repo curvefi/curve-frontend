@@ -1,6 +1,5 @@
 import { createSvgIcon } from '@mui/material/utils'
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const FireIcon = createSvgIcon(
   <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
@@ -10,6 +9,3 @@ export const FireIcon = createSvgIcon(
   </svg>,
   'FireIcon',
 )
-
-/** Useful for IDEs when looking for the gas burn icon. Provides additional context as well. */
-const GasIcon = FireIcon

@@ -1,5 +1,4 @@
 import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
-import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import type { BaseConfig } from '@ui/utils'
 
 export type ChainId = 1 // note lend also has other chains, but we only use eth in this app
@@ -15,8 +14,3 @@ export type NetworkConfig = { isActiveNetwork: boolean; showInSelectNetwork: boo
   NetworkEnum,
   ChainId
 >
-
-type Llamma = MintMarketTemplate
-
-export type FetchStatus = '' | 'loading' | 'success' | 'error'
-export type TransactionStatus = '' | 'loading' | 'confirming' | 'error' | 'success'

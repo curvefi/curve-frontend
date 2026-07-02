@@ -1,10 +1,8 @@
 import type { IChainId, INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import type { BaseConfig } from '@ui/utils'
 
-type AlertType = 'info' | 'warning' | 'error' | 'danger'
 export type ChainId = IChainId
 export type NetworkEnum = INetworkName
-type EstimatedGas = number | number[] | null
 
 export type NetworkUrlParams = { network: NetworkEnum }
 export type MarketUrlParams = NetworkUrlParams & { market: string }

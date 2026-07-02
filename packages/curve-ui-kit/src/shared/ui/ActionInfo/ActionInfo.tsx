@@ -54,8 +54,6 @@ type ActionInfoBaseProps = {
   sx?: StackProps['sx']
 }
 
-type ActionInfoOverrideProps = Partial<ActionInfoBaseProps>
-
 type ActionInfoValueProps =
   | {
       /** Primary value to display and copy */

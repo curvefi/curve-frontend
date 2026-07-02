@@ -31,15 +31,6 @@ export const hyperliquid = defineChain({
   rpcUrls: { default: { http: RPC[ChainId.Hyperliquid] } },
 })
 
-const tac = defineChain({
-  ...chainConfig,
-  id: ChainId.Tac as const,
-  name: 'tac',
-  testnet: true,
-  nativeCurrency: { name: 'tac', symbol: 'TAC', decimals: 8 },
-  rpcUrls: { default: { http: RPC[ChainId.Tac] } },
-})
-
 export const megaeth = defineChain({
   ...chainConfig,
   id: ChainId.MegaEth as const,

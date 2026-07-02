@@ -2,8 +2,7 @@ import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { fetchChartBandBalancesData, sortBands } from '@/llamalend/queries/bands/bands-balances.query-helpers'
 import { normalizeBands } from '@/llamalend/queries/market/market.query-helpers'
 import { liquidationBandValidationGroup } from '@/llamalend/queries/validation/bands-validation'
-import { queryClient } from '@ui-kit/lib/api/query-client'
-import type { MarketParams, MarketQuery } from '@ui-kit/lib/model'
+import type { MarketQuery } from '@ui-kit/lib/model'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 import { createValidationSuite, FieldsOf } from '@ui-kit/lib/validation'
@@ -37,10 +36,3 @@ export const { useQuery: useMarketBandsBalances } = queryFactory({
   category: 'llamalend.market',
   validationSuite: marketBandsBalancesValidationSuite,
 })
-
-/**
- * Prefix-based invalidation because the query key includes extra params (liquidationBand)
- * that aren't available at invalidation time. Band balances can change even when those params stay the same.
- */
-const invalidateMarketBandsBalances = ({ chainId, marketId }: MarketParams) =>
-  queryClient.invalidateQueries({ queryKey: [...rootKeys.market({ chainId, marketId }), QUERY_KEY] })

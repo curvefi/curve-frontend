@@ -33,8 +33,6 @@ export const evmAddressValidationGroup = <T extends string, TField extends strin
   })
 }
 
-const evmAddressValidationSuite = createValidationSuite(evmAddressValidationGroup)
-
 export const userAddressValidationGroup = <T extends string>({
   userAddress,
   required = true,
