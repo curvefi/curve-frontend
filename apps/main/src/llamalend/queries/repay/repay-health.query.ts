@@ -51,7 +51,6 @@ export const { getQueryOptions: getRepayHealthOptions, invalidate: invalidateRep
           await impl.repayExpectedMetrics({
             stateCollateral,
             userCollateral,
-            userBorrowed,
             healthIsFull: isHealthFull,
             address: userAddress,
             ...parseRoute(routeId),

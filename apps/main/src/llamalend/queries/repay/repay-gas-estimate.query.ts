@@ -120,7 +120,7 @@ const { useQuery: useRepayApproveGasEstimate, invalidate: invalidateRepayApprove
     })
     switch (type) {
       case 'zapV2':
-        return await impl.estimateGas.repayApprove({ userCollateral, userBorrowed })
+        return await impl.estimateGas.repayApprove({ userCollateral })
       case 'V1':
       case 'V2':
         return await impl.estimateGas.repayApprove(userCollateral, userBorrowed)

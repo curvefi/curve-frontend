@@ -33,7 +33,7 @@ export const {
     const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
     switch (type) {
       case 'zapV2':
-        return await impl.createLoanIsApproved({ userCollateral, userBorrowed })
+        return await impl.createLoanIsApproved({ userCollateral })
       case 'V1':
       case 'V2':
         return await impl.createLoanIsApproved(userCollateral, userBorrowed)
