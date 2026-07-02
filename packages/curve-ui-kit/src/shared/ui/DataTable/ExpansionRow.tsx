@@ -1,11 +1,9 @@
-import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useState } from 'react'
 import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
-import { useTheme } from '@mui/material/styles'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 import { type Row, type Table } from '@tanstack/react-table'
-import { getInsetShadow, getShadow } from '@ui-kit/themes/basic-theme/shadows'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TableItem } from './data-table.utils'
 
@@ -29,24 +27,12 @@ export function ExpansionRow<T extends TableItem>({
   colSpan: number
 }) {
   const { render, onExited, expanded } = useRowExpansion(row)
-  const { design } = useTheme()
-  const boxShadow = useMemo(() => getShadow(design, 3), [design])
-  const insetShadow = useMemo(() => getInsetShadow(design, 3), [design])
   return (
-    // add a scale(1) so the box-shadow is applied correctly on top of the next table row
     render && (
-      <TableRow sx={{ boxShadow, transform: 'scale(1)' }} data-testid="data-table-expansion-row">
-        <TableCell colSpan={colSpan} sx={{ padding: 0, boxShadow: insetShadow }}>
+      <TableRow data-testid="data-table-expansion-row">
+        <TableCell colSpan={colSpan} sx={{ padding: 0 }}>
           <Collapse in={expanded} onExited={onExited}>
-            <Stack
-              direction="column"
-              sx={{
-                gap: Spacing.lg,
-                paddingInline: Spacing.md,
-                paddingBlockStart: Spacing.md,
-                paddingBlockEnd: 0,
-              }}
-            >
+            <Stack direction="column" sx={{ gap: Spacing.md }}>
               <ExpandedPanel row={row} table={table} />
             </Stack>
           </Collapse>
