@@ -10,6 +10,7 @@ const RANGE_FILTER_DEBOUNCE_WAIT = 500
 const DEFAULT_POOL_LIST_MIN_TVL = 10_000
 const DEFAULT_POOL_LIST_MIN_TVL_INPUT = '10k'
 const DEFAULT_POOL_LIST_TVL_MAX_CHIP = '$10k - $500m'
+const EXPLICIT_ZERO_POOL_LIST_TVL_MAX_CHIP = '$0 - $500m'
 
 // Parse compact USD strings like "$1.2M", "$950K", "$0", "-"
 function parseCompactUsd(value: string): number {
@@ -214,19 +215,22 @@ describe('DEX Pools', () => {
       )
     })
 
-    it('filters by TVL max input with the default min in the URL and API request', () => {
+    it('filters by TVL max input with an explicit zero min in the URL and API request', () => {
       const maxTvl = 500_000_000
+
+      setRangeFilter('tvl', 'min', 0)
+      expectUrlQueryParam('tvl', '0~')
 
       setRangeFilter('tvl', 'max', maxTvl)
       expectLastPoolRequestParams(params => {
-        expect(params.get('min_tvl')).to.equal(`${DEFAULT_POOL_LIST_MIN_TVL}`)
+        expect(params.get('min_tvl')).to.equal('0')
         expect(params.get('max_tvl')).to.equal(`${maxTvl}`)
       })
-      // URL range display expects both bounds once a max is present.
-      expectUrlQueryParam('tvl', `${DEFAULT_POOL_LIST_MIN_TVL}~${maxTvl}`)
+      // Direct range-input edits preserve the component's explicit zero lower bound.
+      expectUrlQueryParam('tvl', `0~${maxTvl}`)
       cy.get('[data-testid="dex-pool-active-filter-tvl"]')
         .should('be.visible')
-        .and('contain.text', DEFAULT_POOL_LIST_TVL_MAX_CHIP)
+        .and('contain.text', EXPLICIT_ZERO_POOL_LIST_TVL_MAX_CHIP)
     })
 
     it('filters by Volume range input', () => {
