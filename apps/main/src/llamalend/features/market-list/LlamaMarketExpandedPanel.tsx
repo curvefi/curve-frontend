@@ -85,7 +85,7 @@ const GridSection = ({ children }: { children: ReactNode }) => (
 
 const GridHeader = ({ ...props }: Omit<CardHeaderProps, 'sx'>) => (
   <Grid size={12}>
-    <CardHeader {...props} sx={{ borderBottom: borderStyle }} />
+    <CardHeader {...props} size="small" sx={{ borderBottom: borderStyle }} />
   </Grid>
 )
 
@@ -154,7 +154,7 @@ export const LlamaMarketExpandedPanel = ({
         {leverage && (
           <GridMetric
             category={EXPANDED_DETAILS_METRIC_CATEGORY}
-            label={t`Leverage 🔥`}
+            label={t`Leverage`}
             value={constQ(leverage)}
             valueOptions={{ unit: 'multiplier' }}
           />
@@ -170,24 +170,6 @@ export const LlamaMarketExpandedPanel = ({
           category={EXPANDED_DETAILS_METRIC_CATEGORY}
           label={t`Available Liquidity`}
           value={constQ(liquidityUsd)}
-          valueOptions={{ unit: 'dollar' }}
-        />
-        <GridMetric
-          category={EXPANDED_DETAILS_METRIC_CATEGORY}
-          label={t`Total Debt`}
-          value={constQ(totalDebtUsd)}
-          valueOptions={{ unit: 'dollar' }}
-        />
-        <GridMetric
-          category={EXPANDED_DETAILS_METRIC_CATEGORY}
-          label={t`Total Collateral`}
-          value={constQ(totalCollateralUsd)}
-          valueOptions={{ unit: 'dollar' }}
-        />
-        <GridMetric
-          category={EXPANDED_DETAILS_METRIC_CATEGORY}
-          label={t`TVL`}
-          value={constQ(tvl)}
           valueOptions={{ unit: 'dollar' }}
         />
       </GridSection>
