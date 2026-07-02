@@ -28,5 +28,6 @@ declare global {
     exodus?: EIP1193Provider
     enkrypt?: { providers: { ethereum: EIP1193Provider } }
     eip6963Connectors: DetectedEip6963Connector[]
+    localStorage: Storage | null // storage can be null on iOS private mode
   }
 }
