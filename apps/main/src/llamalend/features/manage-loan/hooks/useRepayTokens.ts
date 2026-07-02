@@ -7,6 +7,7 @@ import {
   type MarketToken,
   type MarketTokensOrEmpty,
 } from '@/llamalend/llama.utils'
+import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { notFalsy } from '@primitives/objects.utils'
 import type { TokenOption } from '@ui-kit/features/select-token'
 import type { QueryProp } from '@ui-kit/types/util'
@@ -21,14 +22,12 @@ const getRepayTokenOptions = ({
   borrowToken,
   collateralToken,
   networkId,
-  canRepayFromStateCollateral,
-  canRepayFromUserCollateral,
+  market,
 }: {
   borrowToken: MarketToken | undefined
   collateralToken: MarketToken | undefined
   networkId: string
-  canRepayFromStateCollateral: boolean | undefined
-  canRepayFromUserCollateral: boolean | undefined
+  market: LlamaMarketTemplate | undefined
 }) =>
   notFalsy<RepayTokenOption>(
     borrowToken && {
@@ -38,14 +37,14 @@ const getRepayTokenOptions = ({
       field: 'userBorrowed',
     },
     collateralToken &&
-      canRepayFromStateCollateral && {
+      canRepayFromStateCollateral(market) && {
         address: collateralToken.address,
         chain: networkId,
         symbol: collateralToken.symbol,
         field: 'stateCollateral',
       },
     collateralToken &&
-      canRepayFromUserCollateral && {
+      canRepayFromUserCollateral(market) && {
         address: collateralToken.address,
         chain: networkId,
         symbol: collateralToken.symbol,
@@ -66,19 +65,10 @@ export const useRepayTokens = ({
   collateralEvents: QueryProp<UserCollateralEvents>
 }) => {
   const { market } = useMarketContext()
-  const canRepayFromStateCollateralValue = market ? canRepayFromStateCollateral(market) : undefined
-  const canRepayFromUserCollateralValue = market ? canRepayFromUserCollateral(market) : undefined
   const [token, setToken] = useState<RepayTokenOption | undefined>()
   const tokens = useMemo(
-    () =>
-      getRepayTokenOptions({
-        borrowToken,
-        collateralToken,
-        networkId,
-        canRepayFromStateCollateral: canRepayFromStateCollateralValue,
-        canRepayFromUserCollateral: canRepayFromUserCollateralValue,
-      }),
-    [borrowToken, collateralToken, networkId, canRepayFromStateCollateralValue, canRepayFromUserCollateralValue],
+    () => getRepayTokenOptions({ borrowToken, collateralToken, networkId, market }),
+    [borrowToken, collateralToken, networkId, market],
   )
   const isLeveraged = collateralEvents.data && isPositionLeveraged(collateralEvents.data?.originalLeverage)
   const field = isLeveraged === true ? 'stateCollateral' : isLeveraged === false ? 'userBorrowed' : undefined

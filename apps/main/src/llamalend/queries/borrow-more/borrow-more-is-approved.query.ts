@@ -29,7 +29,7 @@ export const {
     const [type, impl] = getBorrowMoreImplementation(marketId, leverageEnabled)
     switch (type) {
       case 'zapV2':
-        return await impl.borrowMoreIsApproved({ userCollateral, userBorrowed })
+        return await impl.borrowMoreIsApproved({ userCollateral })
       case 'V1':
       case 'V2':
         return await impl.borrowMoreIsApproved(userCollateral, userBorrowed)

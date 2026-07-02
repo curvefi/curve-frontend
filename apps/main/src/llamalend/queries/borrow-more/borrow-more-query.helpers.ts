@@ -47,7 +47,6 @@ export function getBorrowMoreImplementationArgs(
   const market = getLlamaMarket(marketId)
   const [type, impl] = getBorrowMoreImplementation(market, leverageEnabled)
   if (type === 'unleveraged') {
-    if (+userBorrowed) throw new Error(`Invalid userBorrowed for unleveraged borrow more: ${userBorrowed}`)
     return [type, impl, [userCollateral, debt]] as const
   }
   if (type === 'zapV2') {
