@@ -21,8 +21,8 @@ export const useMetrics = ({
 }) => {
   const staked = usePoolTotalStaked(poolDataCacheOrApi)
   return {
-    gaugeTotalSupply: constQ(staked?.gaugeTotalSupply),
-    totalStakedPercent: constQ(staked?.totalStakedPercent),
+    gaugeTotalSupply: constQ(decimal(staked?.gaugeTotalSupply)),
+    totalStakedPercent: constQ(decimal(staked?.totalStakedPercent)),
     liquidityUtilization: fallbackQ(
       combineQueries([usePoolTvl({ chainId, poolId }), usePoolVolume({ chainId, poolId })], decimalPercent),
       constQ(maybes([pricesApiPoolData?.tvlUsd, pricesApiPoolData?.tradingVolume24h].map(decimal), decimalPercent)),

@@ -1,5 +1,5 @@
 import { HEALTH_THRESHOLDS } from '@/llamalend/features/market-position-details'
-import { type ActionInfoProps, ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
+import { type ActionInfoOverrideProps, ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import type { Delta, TextColor } from './types'
 import { formatValue } from './util'
 
@@ -19,7 +19,7 @@ const newHealthColor = ({ current, next }: Props): TextColor =>
 const healthColor = (current: number): TextColor =>
   current <= HEALTH_THRESHOLDS.CRITICAL ? 'error' : current <= HEALTH_THRESHOLDS.RISKY ? 'warning' : 'success'
 
-export type Props = Delta & Partial<ActionInfoProps>
+export type Props = Delta & ActionInfoOverrideProps
 
 /**
  * Health display logic for the accordion title.

@@ -1,11 +1,12 @@
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
 import Grid from '@mui/material/Grid'
+import { DEFAULT_DECIMALS } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { mapQuery } from '@ui-kit/types/util'
-import { formatNumber, weiToEther } from '@ui-kit/utils'
+import { formatNumber, fromWei } from '@ui-kit/utils'
 import { useMetrics } from '../hooks/useMetrics'
 
 const { Spacing } = SizesAndSpaces
@@ -45,7 +46,7 @@ export const Metrics = ({
         <Metric
           size="medium"
           label={t`LP Staked`}
-          value={mapQuery(gaugeTotalSupply, supply => weiToEther(supply))}
+          value={mapQuery(gaugeTotalSupply, supply => fromWei(supply, DEFAULT_DECIMALS))}
           valueOptions={{ abbreviate: true }}
           notional={mapQuery(
             totalStakedPercent,

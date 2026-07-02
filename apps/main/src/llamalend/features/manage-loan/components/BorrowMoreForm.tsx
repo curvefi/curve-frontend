@@ -16,7 +16,6 @@ import { AlertDisableForm } from '@ui-kit/shared/ui/AlertDisableForm'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q, type QueryProp, type Range } from '@ui-kit/types/util'
-import { isDevelopment } from '@ui-kit/utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { useMarketContext } from '../../market-context'
@@ -51,7 +50,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     routes,
     max,
     leverage,
-    isLeverageEnabled,
+    showUserBorrowed,
     isLeverageSupported,
     priceImpact,
     disabledAlert,
@@ -63,7 +62,6 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   })
 
   const { update: updateForm } = form
-  const fromBorrowed = isLeverageEnabled && isDevelopment // todo: delete this if users do not complain about it, for now dev-only feature
 
   const onLeverageToggle = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => updateForm({ leverageEnabled: event.target.checked, routeId: undefined }),
@@ -73,7 +71,6 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   return (
     <Form
       {...form}
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
       onSubmit={onSubmit}
       footer={
         <BorrowMoreLoanInfoList
@@ -101,7 +98,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           testId="borrow-more-input-collateral"
           network={network}
         />
-        {fromBorrowed && (
+        {showUserBorrowed && (
           <LoanFormTokenInput
             label={t`Add borrowed from wallet`}
             token={borrowToken}
@@ -173,8 +170,8 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         handledErrors={notFalsy(
           'userCollateral',
           max.userCollateral.field,
-          fromBorrowed && 'userBorrowed',
-          fromBorrowed && max.userBorrowed.field,
+          showUserBorrowed && 'userBorrowed',
+          showUserBorrowed && max.userBorrowed.field,
           'debt',
           max.debt.field,
         )}

@@ -1,4 +1,4 @@
-import { skipWhen } from 'vest'
+import { enforce, skipWhen, test } from 'vest'
 import { isRouterRequired, tryGetLlamaMarket } from '@/llamalend/llama.utils'
 import { getBorrowMoreImplementation } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import {
@@ -49,16 +49,23 @@ const validateBorrowMoreFieldsForMarket = ({
   leverageEnabled,
   routeId,
   debt,
+  userBorrowed,
 }: {
   marketId: string | null | undefined
   leverageEnabled: boolean | null | undefined
   routeId: string | null | undefined
   debt: Decimal | null | undefined
+  userBorrowed: Decimal | null | undefined
 }) => {
   const market = tryGetLlamaMarket(marketId)
   skipWhen(!market, () => {
     const [type] = market ? getBorrowMoreImplementation(market, leverageEnabled) : []
     validateRoute(routeId, !!(debt && leverageEnabled && type && isRouterRequired(type)))
+    skipWhen(type === 'V1' || type === 'V2' || type == null, () => {
+      test('userBorrowed', `Borrow amount is not supported for borrow more ${type}`, () => {
+        enforce(+(userBorrowed ?? '0')).equals(0)
+      })
+    })
   })
 }
 
@@ -119,7 +126,7 @@ export const borrowMoreValidationGroup = <IChainId extends number>(
   validateUserBorrowed(userBorrowed)
   validateDebt(debt, { required: debtRequired })
   if (!ignoreMaxDebt) validateMaxDebt(debt, maxDebt, { required: maxDebtRequired })
-  validateBorrowMoreFieldsForMarket({ marketId, leverageEnabled, routeId, debt })
+  validateBorrowMoreFieldsForMarket({ marketId, leverageEnabled, routeId, debt, userBorrowed })
   validateSlippage({ slippage })
   validateLeverageEnabled(leverageEnabled, { required: leverageRequired })
   validateLeverageSupported(marketId, { required: leverageRequired })

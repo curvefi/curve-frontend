@@ -139,7 +139,6 @@ export const RepayForm = <ChainId extends IChainId>({
   return (
     <Form
       {...form}
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
       onSubmit={onSubmit}
       footer={
         <RepayLoanInfoList
