@@ -60,7 +60,8 @@ export type PoolListApiParams = Pick<
   'poolType' | 'minTvl' | 'maxTvl' | 'minVolume' | 'maxVolume' | 'minApy' | 'maxApy'
 >
 
-const isPoolType = (value: string | null): value is PoolListPoolType => value != null && POOL_TYPE_SET.has(value)
+const isPoolType = (value: string | null): value is PoolListPoolType =>
+  maybe(value, value => POOL_TYPE_SET.has(value)) ?? false
 
 // The prices API should always receive the default TVL min even when URL/UI state is empty.
 const getApiNumberRangeParams = ({
