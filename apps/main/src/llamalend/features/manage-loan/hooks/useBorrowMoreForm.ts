@@ -165,11 +165,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     priceImpact,
     formErrors: formState.visibleErrors,
     disabledAlert,
-    solvencyModal: {
-      isOpen,
-      onClose,
-      onConfirm,
-    },
+    solvencyModal: { isOpen, onClose, onConfirm },
     routes: useMarketRoutes({
       chainId,
       marketAddress: ammAddress,

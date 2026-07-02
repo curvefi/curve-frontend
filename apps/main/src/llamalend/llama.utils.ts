@@ -43,7 +43,11 @@ export const tryGetLlamaMarket = (marketId: LlamaMarketTemplate | string | null 
  * - Mint Market and either its `leverageZap` is not the zero address or its `leverageV2` property has leverage
  */
 export const hasLeverage = <T extends LlamaMarketTemplate | undefined>(market: T) =>
-  maybe(market, market => hasV1Leverage(market) || (market instanceof MintMarketTemplate && hasV2Leverage(market)))
+  maybe(
+    market,
+    market =>
+      hasZapV2(market) || hasV1Leverage(market) || (market instanceof MintMarketTemplate && hasV2Leverage(market)),
+  )
 
 /**
  * Checks if leverage value (multiplier) can be calculated and displayed for this market.
