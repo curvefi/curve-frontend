@@ -10,6 +10,7 @@ import type { LiquidityDetailsData } from '../hooks/useLiquidityDetails'
 const { Spacing } = SizesAndSpaces
 
 const METRIC_GRID_SIZE = { mobile: 6, desktop: 3 } as const
+const METRIC_CATEGORY = 'dex.userLiquidityDetails'
 
 export const Metrics = ({
   chainId,
@@ -21,7 +22,7 @@ export const Metrics = ({
   <Grid container spacing={Spacing.md}>
     <Grid size={METRIC_GRID_SIZE}>
       <Metric
-        size="medium"
+        category={METRIC_CATEGORY}
         label={t`Position value`}
         value={positionValue}
         valueOptions={{ unit: 'dollar', abbreviate: false }}
@@ -33,7 +34,7 @@ export const Metrics = ({
       {/** There's a ticket to support boost values on sidechains; for now we hide it explicitly instead of showing N/A */}
       {chainId === Number(Chain.Ethereum) && (
         <Metric
-          size="medium"
+          category={METRIC_CATEGORY}
           label={t`veCRV Boost`}
           value={boost}
           valueOptions={{ unit: 'multiplier', abbreviate: false }}

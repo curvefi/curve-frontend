@@ -29,4 +29,5 @@ export enum Chain {
   ExpChain = 18880,
   Monad = 143,
   Etherlink = 42793,
+  Robinhood = 4663,
 }

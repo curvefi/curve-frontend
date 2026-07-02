@@ -37,4 +37,5 @@ export const RPC: Record<ChainId, string[]> = {
   [ChainId.ZkSync]: ['https://zksync.drpc.org', 'https://mainnet.era.zksync.io'],
   [ChainId.Monad]: [],
   [ChainId.Etherlink]: [],
+  [ChainId.Robinhood]: ['https://rpc.mainnet.chain.robinhood.com'],
 } as const

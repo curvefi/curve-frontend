@@ -5,7 +5,7 @@ const MAX_VISIBLE_INLINED_ITEMS = 4
 
 /**
  * Split an array between visible and hidden items to maintain inline compaction.
- * Any remaining items are collapsed into a single "+N" item, if more than 1 item is hidden
+ * Any remaining items are collapsed into a single "+N" item, , if more than 1 item is hidden
  */
 export const getInlinedItemsVisibility = (
   selectedItems: string[] | undefined,

@@ -4,19 +4,19 @@ import { t, Trans } from '@ui-kit/lib/i18n'
 
 export const HealthTooltipContent = () => (
   <TooltipWrapper>
-    <TooltipDescription text={t`Health shows your cushion before hard liquidation.`} />
+    <TooltipDescription text={t`Health shows the cushion before your position enters liquidation protection.`} />
     <TooltipDescription
       text={
         <Trans>
           Higher is safer;{' '}
           <Box component="span" sx={{ color: 'text.highlight' }}>
-            below 0 means hard liquidation is possible.
+            when at 0 liquidation protection has started.
           </Box>
         </Trans>
       }
     />
     <TooltipDescription
-      text={t`Unlike on standard lending apps, LLAMMA rebalancing can change health in both directions once your position is in the liquidation range. Monitor it together with the liquidation range.`}
+      text={t`Once Health reaches 0, monitor the liquidation buffer to track your position before hard liquidation.`}
     />
   </TooltipWrapper>
 )

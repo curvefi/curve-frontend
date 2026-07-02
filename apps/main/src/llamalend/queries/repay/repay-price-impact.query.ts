@@ -48,7 +48,6 @@ export const { useQuery: useRepayPriceImpact, invalidate: invalidateRepayPriceIm
         const { priceImpact } = await impl.repayExpectedMetrics({
           stateCollateral,
           userCollateral,
-          userBorrowed,
           healthIsFull: true, // this will be removed, we don't care about health here
           address: userAddress,
           ...parseRoute(routeId),

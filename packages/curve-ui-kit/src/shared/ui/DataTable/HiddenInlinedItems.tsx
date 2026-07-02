@@ -1,6 +1,6 @@
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
-/** Renders the overflow indicator for items hidden behind a max visibility limit.  */
+/** Renders the overflow indicator for items hidden behind a max visibility limit. */
 export const HiddenInlinedItems = ({
   hiddenSelectedItemsLength,
   renderItem,

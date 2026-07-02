@@ -10,6 +10,7 @@ import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-tabl
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { useFilters } from '@ui-kit/shared/ui/DataTable/hooks/useFilters'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
+import { TableFiltersChip } from '@ui-kit/shared/ui/DataTable/TableFiltersChip'
 import { TableHeader } from '@ui-kit/shared/ui/DataTable/TableHeader'
 import { mapQuery, type QueryProp } from '@ui-kit/types/util'
 import { LlamaListChips } from './chips/LlamaListChips'
@@ -17,7 +18,6 @@ import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS, LlamaMarketColumnId } from './colum
 import { MarketSortDrawer } from './drawers/MarketSortDrawer'
 import { getLlamaFacetedRowModel } from './filters/llamaFaceting'
 import { useLlamaGlobalFilterFn } from './filters/llamaGlobalFilter'
-import { LlamaTableFiltersChip } from './filters/LlamaTableFiltersChip'
 import { LlamaTableFiltersCollapsible } from './filters/LlamaTableFiltersCollapsible'
 import { LlamaTableFiltersOverlay } from './filters/LlamaTableFiltersOverlay'
 import { getLlamaMarketsColumnVariant, useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
@@ -101,7 +101,12 @@ export const LlamaMarketsTable = ({
             hasActiveFilters,
           }}
           filterChip={
-            <LlamaTableFiltersChip popoverFilterChipRef={filterChipRef} open={filtersOpen} setOpen={setFiltersOpen} />
+            <TableFiltersChip
+              popoverFilterChipRef={filterChipRef}
+              open={filtersOpen}
+              setOpen={setFiltersOpen}
+              testId="btn-open-filters"
+            />
           }
           sortChip={isMobile && <MarketSortDrawer onSortingChange={onSortingChange} sortField={sortField} />}
           chips={<LlamaListChips hasFavorites={hasFavorites} {...filterProps} />}
