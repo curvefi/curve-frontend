@@ -44,7 +44,7 @@ export const parseMutationRoute = (
  * The curve-solver router supports more coins and routes than the curve router, e.g., sUSDe.
  * However, it doesn't support all chains such as Optimism. So in those cases, we prefer the curve router.
  */
-const PreferCurveSolver = [Chain.Ethereum, Chain.Arbitrum]
+const SOLVER_CHAINS = [Chain.Ethereum, Chain.Arbitrum] as const
 
 /**
  * This function can be used as a callback for curve-js calldata methods or llamalend.js leverageZapV2 methods.
@@ -52,7 +52,7 @@ const PreferCurveSolver = [Chain.Ethereum, Chain.Arbitrum]
 export const getExpectedFn =
   ({
     chainId,
-    router = PreferCurveSolver.includes(chainId) ? 'curve-solver' : 'curve', // router is unset when checking the max borrow
+    router = SOLVER_CHAINS.includes(chainId) ? 'curve-solver' : 'curve', // router is unset when checking the max borrow
     userAddress,
     slippage,
   }: Pick<RoutesQuery, 'chainId' | 'router' | 'slippage' | 'userAddress'>): GetExpectedFn =>

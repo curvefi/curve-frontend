@@ -60,6 +60,7 @@ export const hasLeverage = <T extends LlamaMarketTemplate | undefined>(market: T
  * but cannot calculate the leverage multiplier value.
  */
 export const hasLeverageValue = (market: LlamaMarketTemplate) =>
+  hasZapV2(market) ||
   (market instanceof LendMarketTemplate && hasV1Leverage(market)) ||
   (market instanceof MintMarketTemplate && hasV2Leverage(market))
 
