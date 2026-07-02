@@ -194,11 +194,11 @@ jobs:
         working-directory: apps/main
 
       - name: Start router api server
-        run: yarn dev 2>&1 | tee ../../e2e-api-${{ matrix.browser }}-${{ matrix.count }}.log &
+        run: yarn dev 2>&1 | tee ../../e2e-router-api-${{ matrix.browser }}-${{ matrix.count }}.log &
         working-directory: apps/router-api
 
       - name: Start merkl api server
-        run: yarn dev 2>&1 | tee ../../e2e-api-${{ matrix.browser }}-${{ matrix.count }}.log &
+        run: yarn dev 2>&1 | tee ../../e2e-merkl-api-${{ matrix.browser }}-${{ matrix.count }}.log &
         working-directory: apps/merkl-api
         env:
           MERKL_API_KEY: ${{ secrets.MERKL_API_KEY }}

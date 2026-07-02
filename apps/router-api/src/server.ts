@@ -8,6 +8,6 @@ export const createRouterApiServer = (env = process.env) =>
     RoutesOpts,
     async (request, reply) => {
       const { status, data } = await getRoutes(request)
-      return reply.code(status as 200).send(data)
+      return reply.code(status).send(data)
     },
   )

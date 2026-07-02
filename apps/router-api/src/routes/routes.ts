@@ -1,5 +1,5 @@
 import type { FastifyRequest } from 'fastify'
-import { minBy, partition } from 'lodash'
+import lodash from 'lodash'
 import { FetchError } from '@primitives/fetch.utils'
 import { handleTimeout } from '@primitives/objects.utils'
 import { type RouterRouteResponse } from '@primitives/router.utils'
@@ -11,6 +11,8 @@ import { decimalCompare, decimalMax } from '../router.utils'
 import { buildZeroExRouteResponse } from '../zeroex-router/zeroex-router'
 import { type RoutesQuery } from './routes.schemas'
 
+// eslint-disable-next-line @typescript-eslint/unbound-method
+const { minBy, partition } = lodash // bundler crashes when using new-style imports
 const ROUTE_TIMEOUT = 30_000 // 30 seconds
 
 const routers = {
@@ -33,8 +35,8 @@ function handleFailures(failures: PromiseRejectedResult[], router: string[]) {
   )
   if (fetchError) {
     const { body, status: status } = fetchError
-    return status >= 400 && status < 500 && body
-      ? { status, data: body }
+    return status >= 400 && status < 500 && status !== 403 && body
+      ? { status, data: body } // propagate body and status for 4xx, except 403 (forbidden)
       : { status: status >= 500 ? 502 : 500, data: `Upstream failed with status ${status}` }
   }
   if (reasons.length === 1) throw reasons[0]

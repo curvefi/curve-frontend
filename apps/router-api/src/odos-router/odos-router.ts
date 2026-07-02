@@ -1,5 +1,4 @@
 import { FastifyBaseLogger } from 'fastify'
-import { noop } from 'lodash'
 import { ethAddress, zeroAddress } from 'viem'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -59,7 +58,7 @@ async function assembleOdosQuote(
   const params: Record<keyof CurveOdosAssembleRequest, string> = { path_id: pathId, user: userAddress }
   return await fetchJson<AssemblePathResponse>(`${ODOS_API_URL}/assemble?${new URLSearchParams(params)}`)
     .catch(error => logOdosError(error, log, 'odos assemble request failed', params))
-    .catch(noop) // assemble errors result in no tx data in response, but don't fail the whole request
+    .catch(() => undefined) // assemble errors result in no tx data in response - but don't fail the whole request
 }
 
 /**
