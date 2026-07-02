@@ -4,9 +4,9 @@ import type { V2Pool } from '@curvefi/prices-api/pools'
 import { recordValues } from '@primitives/objects.utils'
 import { DEX_ROUTES } from '@ui-kit/shared/routes'
 import { AVERAGE_CATEGORIES, aprToApy } from '@ui-kit/utils'
+import { isVyperVulnerablePool } from './poolList.alerts'
 import type { PoolListCampaignsByAddress, PoolListItem } from './poolList.types'
 
-const VYPER_EXPLOIT_VERSIONS = new Set(['0.2.15', '0.2.16', '0.3.0'])
 const POOL_YIELD_COMPOUND_WINDOW = AVERAGE_CATEGORIES['dex.poolYield.compoundRate'].window
 const EMPTY_CAMPAIGN_REWARDS: PoolListCampaignsByAddress[string] = []
 
@@ -35,7 +35,7 @@ export const getPoolListItem = (
 ): PoolListItem => ({
   ...pool,
   hasPosition,
-  hasVyperVulnerability: pool.vyperVersion != null && VYPER_EXPLOIT_VERSIONS.has(pool.vyperVersion),
+  hasVyperVulnerability: isVyperVulnerablePool(network.chainId, pool.address),
   network: network.id,
   url: getPath({ network: network.id }, `${DEX_ROUTES.PAGE_POOLS}/${pool.address}/deposit`),
 })

@@ -19,7 +19,7 @@ const LLV2_STABLE_RELEASE_DATE = new Date('2026-06-10T13:00:00Z') // 15:00 CEST
 const useAlphaChannel = () => useBetaChannel() && defaultReleaseChannel === ReleaseChannel.Beta
 
 /** New ZapV2 leverage implementation for LlamaLend markets */
-export const isZapV2Enabled = () => getReleaseChannel() !== ReleaseChannel.Legacy && !isZapV2Disabled()
+export const isZapV2Enabled = () => getReleaseChannel() === ReleaseChannel.Beta && !isZapV2Disabled()
 
 const useZapV2 = () => [useStableChannel(), !useDisableZapV2()].every(Boolean)
 
@@ -38,11 +38,15 @@ export const useLLv2 = () => {
 
 export const use0xRouter = useBetaChannel
 
+/** Reset position form for LlamaLend soft liquidation */
+export const useLlamaResetPosition = useBetaChannel
+
 /** Split the LlamaLend (soon to be legacy) health into: Liquidation Buffer and Health */
 export const useNewLlamalendHealth = useBetaChannel
 
 /** New DEX pool list backed by Prices API v2 */
 export const useDexPoolListV2 = useBetaChannel
+export const isDexPoolListV2Enabled = (releaseChannel: ReleaseChannel) => releaseChannel === ReleaseChannel.Beta
 
 /** Fresh pool page experience */
 export const usePoolFreshup = useStableChannel

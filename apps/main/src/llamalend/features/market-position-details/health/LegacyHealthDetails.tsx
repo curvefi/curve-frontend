@@ -28,6 +28,7 @@ export const LegacyHealthDetails = ({
       <Stack sx={{ gap: Spacing.xs }}>
         <Stack direction="row" sx={{ alignItems: 'flex-end', gap: Spacing.md.mobile }}>
           <Metric
+            category="llamalend.positionHealth"
             label={title}
             value={mapQuery(healthQuery, d => d.legacyHealth)}
             valueOptions={{
@@ -35,7 +36,6 @@ export const LegacyHealthDetails = ({
               color: getHealthValueColor({ health: decimal(legacyHealth), theme }),
             }}
             valueTooltip={LEGACY_HEALTH_TOOLTIP}
-            size="medium"
           />
           <Tooltip title={title} body={body}>
             <Stack sx={{ flex: 1 }}>

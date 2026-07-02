@@ -34,6 +34,7 @@ const LAST_PRICE_LABEL = t`Last price`
 const ORACLE_PRICE_LABEL = t`Oracle price`
 const PRICE_SCALE_LABEL = t`Price scale`
 const PERIODS = ['7d', '1m', '3m', '6m', '1y'] as const satisfies Period[]
+const METRIC_CATEGORY = 'dex.refuelCharts'
 
 const PRICE_AXIS_PADDING_RATIO = 0.1
 const PRICE_AXIS_FALLBACK_PADDING_RATIO = 0.01
@@ -159,6 +160,7 @@ export const RefuelPricesChart = ({ blockchainId, poolAddress }: { blockchainId:
         <Grid container columnSpacing={Spacing.md} rowSpacing={Spacing.sm}>
           <Grid size={{ mobile: 6, tablet: 4 }}>
             <Metric
+              category={METRIC_CATEGORY}
               label={t`LP token value`}
               value={lpUsdPrice}
               valueOptions={{ abbreviate: true, unit: 'dollar' }}
@@ -168,6 +170,7 @@ export const RefuelPricesChart = ({ blockchainId, poolAddress }: { blockchainId:
 
           <Grid size={{ mobile: 6, tablet: 4 }}>
             <Metric
+              category={METRIC_CATEGORY}
               label={t`Virtual price`}
               value={virtualPrice}
               valueOptions={{ abbreviate: false, decimals: 6 }}

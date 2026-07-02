@@ -31,6 +31,8 @@ import { useMarketContext } from '../features/market-context'
 
 const { Spacing, Height } = SizesAndSpaces
 
+const METRIC_CATEGORY = 'llamalend.marketCharts'
+
 export type RateCurveChartPoint = {
   utilization: number
   borrowApr: number
@@ -170,7 +172,7 @@ export const MarketRateCurveChart = () => {
           }}
         >
           <Metric
-            size="medium"
+            category={METRIC_CATEGORY}
             label={t`Utilization`}
             value={fallbackQ(
               currentUtilization,
@@ -185,7 +187,7 @@ export const MarketRateCurveChart = () => {
             }}
           />
           <Metric
-            size="medium"
+            category={METRIC_CATEGORY}
             label={t`Total borrowed`}
             {...tokenMetric({
               value: fallbackQ(
@@ -197,7 +199,7 @@ export const MarketRateCurveChart = () => {
             })}
           />
           <Metric
-            size="medium"
+            category={METRIC_CATEGORY}
             label={t`Total collateral`}
             {...tokenMetric({
               value: fallbackQ(

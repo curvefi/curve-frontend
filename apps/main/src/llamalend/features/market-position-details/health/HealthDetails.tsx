@@ -41,6 +41,7 @@ export const HealthDetails = ({ params }: { params: UserMarketParams }) => {
     <Stack sx={{ gap: Spacing.xs }}>
       <Stack direction="row" sx={{ alignItems: 'flex-end', gap: Spacing.md }}>
         <Metric
+          category="llamalend.positionHealth"
           label={tooltip.shortTitle}
           value={value}
           valueOptions={{
@@ -49,7 +50,6 @@ export const HealthDetails = ({ params }: { params: UserMarketParams }) => {
             color: getMetricColor(state)(theme),
           }}
           valueTooltip={tooltip}
-          size="medium"
         />
         <Stack sx={{ flex: 1 }}>
           <HealthAndBufferBar healthQuery={q(healthQuery)} />

@@ -88,10 +88,6 @@ export const useStakeForm = <ChainId extends LlamaChainId>({ network }: { networ
     hasGauge: marketHasGauge,
     formErrors: formState.visibleErrors,
     disabledAlert,
-    solvencyModal: {
-      isOpen,
-      onClose,
-      onConfirm,
-    },
+    solvencyModal: { isOpen, onClose, onConfirm },
   }
 }
