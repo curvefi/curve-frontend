@@ -3,7 +3,6 @@ import { type ButtonProps } from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
 import type { Amount } from '@primitives/decimal.utils'
-import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorIconButton } from '@ui-kit/shared/ui/ErrorIconButton'
 import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
@@ -67,29 +66,14 @@ type Notional = Omit<NumberFormatOptions, 'abbreviate'> & {
   abbreviate?: boolean // Defaults to true
 }
 
-/**
- * Converts notional values to a formatted string representation.
- * Handles single numbers, strings, single notional objects, or arrays of notional objects.
- *
- * @param notional - The notional value(s) to format. Can be:
- *   - A string (returned as-is)
- *   - A number (converted to basic notional object)
- *   - A single Notional object with value, unit, decimals, and formatter
- *   - An array of Notional objects
- * @returns A string with formatted notional values joined by ' + '
- *
- * @example
- * notionalsToString("Custom text") // "Custom text"
- * notionalsToString(1000) // "1000"
- * notionalsToString({ value: 1000, unit: 'dollar' }) // "$1k"
- * notionalsToString([{ value: 1000, unit: 'dollar' }, { value: 50, unit: 'percentage' }]) // "$1k + 50%"
- */
 const formatNotional = (notional: number | string | Notional | null | undefined) =>
-  typeof notional === 'string'
-    ? notional
-    : typeof notional === 'number'
-      ? formatNumber(notional, { abbreviate: true })
-      : maybe(notional, ({ value, abbreviate = true, ...rest }) => formatNumber(value, { ...rest, abbreviate }))
+  notional == null
+    ? formatNumber(null, 'usd.notional')
+    : typeof notional === 'string'
+      ? notional
+      : typeof notional === 'number'
+        ? formatNumber(notional, { abbreviate: true })
+        : formatNumber(notional.value, { abbreviate: true, ...notional })
 
 /** At the moment of writing the default formatter already formats to 2 decimals, but I really want to make this explicit for potential future changes. */
 const formatChange = (value: number): string => defaultNumberFormatter(value, { decimals: 2 })
