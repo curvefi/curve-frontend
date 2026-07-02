@@ -29,9 +29,9 @@ const ListInfoItem = ({
   value,
   children,
   ...props
-}: Omit<MetricProps, 'value'> & { value: number | string | undefined | null; children?: ReactNode }) => (
+}: Omit<MetricProps, 'value' | 'category'> & { value: number | string | undefined | null; children?: ReactNode }) => (
   <Grid size={6}>
-    <Metric value={constQ(decimal(value))} {...props} />
+    <Metric category="dex.legacyPoolListMobileExpanded" value={constQ(decimal(value))} {...props} />
     {children}
   </Grid>
 )
