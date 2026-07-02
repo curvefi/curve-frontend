@@ -42,8 +42,8 @@ export const useReleaseChannel = () =>
     oldKey: 'beta',
   })
 
-export const useDisableZapV2 = () => useLocalStorage('disableZapV2', true)
-export const isZapV2Disabled = () => getFromLocalStorage<boolean>('disableZapV2') !== false
+export const useDisableZapV2 = () => useLocalStorage('disableZapV2', false)
+export const isZapV2Disabled = () => getFromLocalStorage<boolean>('disableZapV2') === true
 
 export const useFilterExpanded = (tableTitle: string) =>
   useLocalStorage<boolean>(`filter-expanded-${kebabCase(tableTitle)}`, false)

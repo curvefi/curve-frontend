@@ -171,11 +171,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     isLeverageSupported: !!market && hasLeverage(market),
     formErrors: formState.visibleErrors,
     disabledAlert,
-    solvencyModal: {
-      isOpen,
-      onClose,
-      onConfirm,
-    },
+    solvencyModal: { isOpen, onClose, onConfirm },
     priceImpact: q(useCreateLoanPriceImpact(params, !zapAddress)), // overridden by useMarketRoutes when zapv2 is enabled
     ...useMarketRoutes({
       chainId,

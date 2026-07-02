@@ -19,7 +19,7 @@ const LLV2_STABLE_RELEASE_DATE = new Date('2026-06-10T13:00:00Z') // 15:00 CEST
 const useAlphaChannel = () => useBetaChannel() && defaultReleaseChannel === ReleaseChannel.Beta
 
 /** New ZapV2 leverage implementation for LlamaLend markets */
-export const isZapV2Enabled = () => getReleaseChannel() !== ReleaseChannel.Legacy && !isZapV2Disabled()
+export const isZapV2Enabled = () => getReleaseChannel() === ReleaseChannel.Beta && !isZapV2Disabled()
 
 const useZapV2 = () => [useStableChannel(), !useDisableZapV2()].every(Boolean)
 

@@ -5,7 +5,7 @@ import type { Address } from '@primitives/address.utils'
 import { toArray } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
-import { formatUnits } from '@ui-kit/utils'
+import { Chain, formatUnits } from '@ui-kit/utils'
 import { fetchApiRoutes, getRouteById } from './router-api.query'
 import type { RouteMeta, RouteMutationMeta, RoutesQuery } from './router-api.types'
 
@@ -41,12 +41,18 @@ export const parseMutationRoute = (
 }
 
 /**
+ * The curve-solver router supports more coins and routes than the curve router, e.g., sUSDe.
+ * However, it doesn't support all chains such as Optimism. So in those cases, we prefer the curve router.
+ */
+const SOLVER_CHAINS = [Chain.Ethereum, Chain.Arbitrum] as const
+
+/**
  * This function can be used as a callback for curve-js calldata methods or llamalend.js leverageZapV2 methods.
  */
 export const getExpectedFn =
   ({
     chainId,
-    router = 'curve-solver', // router is unset when checking the max borrow
+    router = SOLVER_CHAINS.includes(chainId) ? 'curve-solver' : 'curve', // router is unset when checking the max borrow
     userAddress,
     zapAddress,
     slippage,

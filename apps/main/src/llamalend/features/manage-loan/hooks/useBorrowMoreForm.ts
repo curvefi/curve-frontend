@@ -161,11 +161,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     isApproved: useBorrowMoreIsApproved(params),
     formErrors: formState.visibleErrors,
     disabledAlert,
-    solvencyModal: {
-      isOpen,
-      onClose,
-      onConfirm,
-    },
+    solvencyModal: { isOpen, onClose, onConfirm },
     priceImpact: q(useBorrowMorePriceImpact(params, !zapAddress)), // overridden by useMarketRoutes when zapv2 is enabled
     ...useMarketRoutes({
       chainId,
