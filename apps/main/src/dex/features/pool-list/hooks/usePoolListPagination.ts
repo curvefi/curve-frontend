@@ -1,13 +1,11 @@
 import { useCallback } from 'react'
 import { useSearchNavigate, useSearchParams } from '@ui-kit/hooks/router'
 import { usePageFromQueryString } from '@ui-kit/hooks/usePageFromQueryString'
+import type { PoolListQueryUpdater } from '../poolListFilterQuery'
 
 export const POOL_LIST_PAGE_SIZE = 50
 
 const PAGE_QUERY_FIELD = 'page'
-
-export type PoolListQueryUpdate = Record<string, string | string[] | null>
-export type PoolListQueryUpdater = (update: PoolListQueryUpdate) => void
 
 export const usePoolListPagination = () => {
   const searchParams = useSearchParams()

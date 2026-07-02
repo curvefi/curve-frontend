@@ -2,22 +2,13 @@ import { useCallback } from 'react'
 import { normalizeRangeFilterDefaults } from '@ui-kit/shared/ui/DataTable/filters'
 import { useDebouncedTableRangeFilter } from '@ui-kit/shared/ui/DataTable/hooks/useDebouncedTableRangeFilter'
 import { emptyUrlRange } from '@ui-kit/shared/ui/DataTable/urlFilter.utils'
-import {
-  POOL_LIST_DEFAULT_NON_NEGATIVE_RANGE,
-  POOL_LIST_DEFAULT_TVL_MIN,
-  type PoolListFilterProps,
-  type PoolListNumberRange,
-} from './usePoolListFilters'
+import { getPoolListEditableTvlRange, POOL_LIST_DEFAULT_NON_NEGATIVE_RANGE } from '../poolListFilterQuery'
+import { type PoolListFilterProps, type PoolListNumberRange } from './usePoolListFilters'
 
 type UsePoolListFilterControlsParams = {
   filterProps: PoolListFilterProps
   resetFilters: () => void
 }
-
-const getEffectiveTvlRange = ([min, max]: PoolListNumberRange): PoolListNumberRange => [
-  min ?? POOL_LIST_DEFAULT_TVL_MIN,
-  max,
-]
 
 export const usePoolListFilterControls = ({ filterProps, resetFilters }: UsePoolListFilterControlsParams) => {
   const {
@@ -36,8 +27,6 @@ export const usePoolListFilterControls = ({ filterProps, resetFilters }: UsePool
     (range: PoolListNumberRange) => normalizeRangeFilterDefaults(range, POOL_LIST_DEFAULT_NON_NEGATIVE_RANGE),
     [],
   )
-  // TVL has a hidden default min of 10k, but filter inputs should display the effective range users are editing.
-  const sanitizeTvlRange = useCallback((range: PoolListNumberRange) => getEffectiveTvlRange(range), [])
 
   // API-backed filters debounce URL writes from a stable table scope so pending edits survive drawer/popover close.
   const {
@@ -45,7 +34,7 @@ export const usePoolListFilterControls = ({ filterProps, resetFilters }: UsePool
     setDraftRange: setDraftTvlRange,
     setAppliedRange: setAppliedTvlRange,
     resetDraftRange: resetDraftTvlRange,
-  } = useDebouncedTableRangeFilter({ range: tvlRange, setRange: setTvlRange, sanitize: sanitizeTvlRange })
+  } = useDebouncedTableRangeFilter({ range: tvlRange, setRange: setTvlRange, sanitize: getPoolListEditableTvlRange })
   const {
     draftRange: draftVolumeRange,
     setDraftRange: setDraftVolumeRange,
