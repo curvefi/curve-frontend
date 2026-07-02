@@ -2,9 +2,8 @@ import { countBy } from 'lodash'
 import type { StoreApi } from 'zustand'
 import { updateHaveSameTokenNames } from '@/dex/store/createPoolsSlice'
 import type { State } from '@/dex/store/useStore'
-import { Token, TokensMapper, TokensNameMapper, PoolData, type CurveApi } from '@/dex/types/main.types'
+import { Token, TokensMapper, TokensNameMapper, PoolData, PoolVolumes, type CurveApi } from '@/dex/types/main.types'
 import { log } from '@ui-kit/lib/logging'
-import { fetchPoolVolumes } from '../queries/pool-volume.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -19,7 +18,7 @@ const sliceKey = 'tokens'
 // prettier-ignore
 export type TokensSlice = {
   [sliceKey]: SliceState & {
-    setTokensMapper: (curve: CurveApi, poolDatas: PoolData[]) => Promise<string[]>
+    setTokensMapper: (curve: CurveApi, poolDatas: PoolData[], poolVolumes: PoolVolumes) => string[]
     setEmptyPoolListDefault: (curve: CurveApi) => void
 
     setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
@@ -50,7 +49,7 @@ export const createTokensSlice = (
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    setTokensMapper: async (curve, poolDatas) => {
+    setTokensMapper: (curve, poolDatas, poolVolumes) => {
       const { tokensMapper, ...sliceState } = get()[sliceKey]
 
       sliceState.setStateByKey('loading', true)
@@ -60,10 +59,8 @@ export const createTokensSlice = (
       let cTokensMapper: TokensMapper = { ...(tokensMapper[chainId] ?? DEFAULT_TOKEN_MAPPER) }
       const partialTokensMapper: TokensMapper = {}
 
-      const volumes = await fetchPoolVolumes({ chainId })
-
       for (const { pool, tokenAddressesAll, tokensAll, tokenDecimalsAll } of poolDatas) {
-        const volume = +volumes[pool.id] || 0
+        const volume = +poolVolumes[pool.id] || 0
         const counted = countBy(tokensAll)
 
         for (const [idx, address] of tokenAddressesAll.entries()) {

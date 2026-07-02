@@ -54,7 +54,8 @@ export async function getPools(
   poolList: string[],
   blacklist: Set<Address>,
   network: NetworkConfig,
-  failedFetching24hOldVprice?: Record<string, boolean> | null,
+  failedFetching24hOldVprice: Record<string, boolean> | null,
+  includeGaugeData: boolean,
 ) {
   const { getPool } = curve
   const { orgUIPath } = network
@@ -107,6 +108,10 @@ export async function getPools(
     },
     { poolsMapper: {}, poolsMapperCache: {} },
   )
+
+  if (!includeGaugeData) {
+    return resp
+  }
 
   // get gauge info
   await PromisePool.for(Object.values(resp.poolsMapper)).process(async ({ pool }) => {
