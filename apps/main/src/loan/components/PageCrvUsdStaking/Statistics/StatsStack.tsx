@@ -28,8 +28,8 @@ export const StatsStack = ({ chainId }: StatsStackProps) => {
       sx={{
         display: 'grid',
         gridAutoRows: '1fr',
-        gridTemplateColumns: { mobile: 'repeat(2, 1fr)', tablet: 'repeat(2, 1fr)', desktop: 'repeat(4, 1fr)' },
-        gap: Spacing.lg,
+        gridTemplateColumns: { mobile: 'repeat(1, 1fr)', tablet: 'repeat(2, 1fr)', desktop: 'repeat(4, 1fr)' },
+        gap: { ...Spacing.lg, mobile: 0 },
         paddingBlockEnd: Spacing.md,
       }}
     >

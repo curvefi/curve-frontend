@@ -1,6 +1,6 @@
-import { type SubmitEventHandler, type ReactNode } from 'react'
+import { type ReactNode } from 'react'
 import { FormProvider } from '@ui-kit/features/forms'
-import type { FieldValues, UseFormReturn } from '@ui-kit/features/forms'
+import type { FieldValues, FormSubmitHandler, UseFormReturn } from '@ui-kit/features/forms'
 import { FormContent } from './FormContent'
 
 /**
@@ -13,12 +13,12 @@ export const Form = <TFieldValues extends FieldValues>({
   footer,
   ...form
 }: {
-  onSubmit: SubmitEventHandler<HTMLFormElement>
+  onSubmit: FormSubmitHandler
   children: ReactNode
   footer: ReactNode
 } & UseFormReturn<TFieldValues>) => (
   <FormProvider {...form}>
-    <form onSubmit={onSubmit} style={{ overflowWrap: 'break-word' }}>
+    <form onSubmit={event => void onSubmit(event)} style={{ overflowWrap: 'break-word' }}>
       <FormContent footer={footer}>{children}</FormContent>
     </form>
   </FormProvider>

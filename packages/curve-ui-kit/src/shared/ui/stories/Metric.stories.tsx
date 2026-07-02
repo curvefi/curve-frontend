@@ -53,7 +53,7 @@ const meta: Meta<typeof Metric> = {
       control: 'object',
       description: 'Optional notional values that gives context or underlying value of the key metric',
     },
-    leadingIcon: {
+    icon: {
       control: false,
       description:
         'Optional icon shown after the value in vertical orientation and before the label in horizontal orientation',
@@ -201,9 +201,9 @@ export const NotAvailable: Story = {
   },
 }
 
-export const LeadingIcon: Story = {
+export const WithIcon: Story = {
   args: {
-    leadingIcon: <FireIcon fontSize="small" color="error" />,
+    icon: <FireIcon fontSize="small" color="error" />,
   },
   parameters: {
     docs: {
