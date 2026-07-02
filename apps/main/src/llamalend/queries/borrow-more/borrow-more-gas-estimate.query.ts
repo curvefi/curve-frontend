@@ -39,7 +39,7 @@ const { useQuery: useBorrowMoreApproveGasEstimate, invalidate: invalidateBorrowM
       const [type, impl] = getBorrowMoreImplementation(marketId, leverageEnabled)
       switch (type) {
         case 'zapV2':
-          return await impl.estimateGas.borrowMoreApprove({ userCollateral, userBorrowed })
+          return await impl.estimateGas.borrowMoreApprove({ userCollateral })
         case 'V1':
         case 'V2':
           return await impl.estimateGas.borrowMoreApprove(userCollateral, userBorrowed)

@@ -12,6 +12,7 @@ import { useMetrics } from '../hooks/useMetrics'
 const { Spacing } = SizesAndSpaces
 
 const METRIC_GRID_SIZE = { mobile: 6, tablet: 3 } as const
+const METRIC_CATEGORY = 'dex.poolInformation'
 
 export const Metrics = ({
   chainId,
@@ -35,7 +36,7 @@ export const Metrics = ({
     <Grid container spacing={Spacing.md}>
       <Grid size={METRIC_GRID_SIZE}>
         <Metric
-          size="medium"
+          category={METRIC_CATEGORY}
           label={t`Liquidity utilization`}
           value={constQ(liquidityUtilization)}
           valueOptions={{ unit: 'percentage', abbreviate: false }}
@@ -44,7 +45,7 @@ export const Metrics = ({
 
       <Grid size={METRIC_GRID_SIZE}>
         <Metric
-          size="medium"
+          category={METRIC_CATEGORY}
           label={t`LP Staked`}
           value={constQ(maybe(gaugeTotalSupply, supply => weiToEther(supply)))}
           valueOptions={{ abbreviate: true }}

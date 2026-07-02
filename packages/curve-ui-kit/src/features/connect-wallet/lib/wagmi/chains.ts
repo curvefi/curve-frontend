@@ -35,7 +35,7 @@ import {
   xLayer,
   zksync,
 } from '@wagmi/core/chains'
-import { ethereum as mainnet, expchain, hyperliquid, megaeth, strata } from './custom-chains'
+import { ethereum as mainnet, expchain, hyperliquid, megaeth, robinhood, strata } from './custom-chains'
 
 const wagmiChains = [
   arbitrum,
@@ -65,6 +65,7 @@ const wagmiChains = [
   plasma,
   plumeMainnet,
   polygon,
+  robinhood,
   sonic,
   stable,
   strata,

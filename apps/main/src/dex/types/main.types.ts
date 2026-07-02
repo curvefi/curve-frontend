@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 import type { IChainId, INetworkName } from '@curvefi/api/lib/interfaces'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BaseConfig } from '@ui/utils'
 import { BannerProps } from '@ui-kit/shared/ui/Banner'
@@ -116,6 +117,7 @@ export type Token = {
 }
 export type TokensMapper = Record<string, Token | undefined>
 export type TokensNameMapper = Record<string, string>
+export type PoolVolumes = Record<string, Decimal>
 export type GaugeStatus = { rewardsNeedNudging: boolean; areCrvRewardsStuckInBridge: boolean }
 
 export type Gauge = {

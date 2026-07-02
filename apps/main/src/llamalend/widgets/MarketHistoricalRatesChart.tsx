@@ -36,6 +36,8 @@ import { useMarketContext } from '../features/market-context'
 
 const { Spacing, Height } = SizesAndSpaces
 
+const METRIC_CATEGORY = 'llamalend.marketCharts'
+
 export type RateChartPoint = {
   timestamp: number
   rate: number
@@ -198,7 +200,7 @@ export const MarketHistoricalRatesChart = ({ rateMode }: MarketHistoricalRatesCh
           }}
         >
           <Metric
-            size="medium"
+            category={METRIC_CATEGORY}
             label={modeConfig.currentRateLabel}
             value={fallbackQ(
               mapQuery(marketRates, marketRates => toRateNumber(modeConfig.getLiveRate(marketRates))),
@@ -208,7 +210,7 @@ export const MarketHistoricalRatesChart = ({ rateMode }: MarketHistoricalRatesCh
             testId={`historical-${rateMode.toLowerCase()}-current-rate`}
           />
           <Metric
-            size="medium"
+            category={METRIC_CATEGORY}
             label={modeConfig.oneWeekAverageLabel}
             value={oneWeekAverageRateQuery}
             valueOptions={{ unit: 'percentage' }}

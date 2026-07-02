@@ -78,7 +78,6 @@ export const { useQuery: useBorrowMoreMaxReceive, invalidate: invalidateBorrowMo
         return castFieldsToDecimal(
           await impl.borrowMoreMaxRecv({
             userCollateral,
-            userBorrowed,
             address: userAddress,
             getExpected: getExpectedFn({
               chainId,

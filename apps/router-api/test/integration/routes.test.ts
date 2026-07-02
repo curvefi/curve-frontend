@@ -255,11 +255,11 @@ describe('GET routes integration', () => {
   Object.entries(successCasesByProvider).forEach(([router, cases]) => {
     Object.entries(cases).forEach(([label, { query, expectedRoutes = 1 }]) => {
       it(`returns a valid route for ${router} - ${label}`, async () => {
-        const { json, statusCode } = await server.inject({
+        const { json, body, statusCode } = await server.inject({
           url: '/api/router/v1/routes',
           query: { ...query, router },
         })
-        expect(statusCode).toBe(200)
+        expect(statusCode, `${router} - ${label} failed with response: ${body}`).toBe(200)
 
         const payload = json<RouterRouteResponse[]>()
         expect(payload).toHaveLength(expectedRoutes)

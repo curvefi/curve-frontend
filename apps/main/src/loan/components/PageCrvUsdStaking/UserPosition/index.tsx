@@ -16,6 +16,8 @@ import { decimal, decimalDiv, decimalMultiply } from '@ui-kit/utils'
 const { Spacing } = SizesAndSpaces
 
 const CRVUSD_OPTIONS = { symbol: 'crvUSD', position: 'suffix' as const, abbreviate: true }
+const PRIMARY_METRIC_CATEGORY = 'loan.scrvusdUserPositionPrimary'
+const SECONDARY_METRIC_CATEGORY = 'loan.scrvusdUserPositionSecondary'
 
 type UserPositionProps = {
   chainId: ChainId | undefined
@@ -47,6 +49,7 @@ export const UserPosition = ({ chainId }: UserPositionProps) => {
         <Grid container wrap="wrap" columnSpacing={Spacing.lg} rowSpacing={Spacing.md}>
           <Grid size={6}>
             <Metric
+              category={PRIMARY_METRIC_CATEGORY}
               label={t`Your crvUSD Staked`}
               valueOptions={{ unit: CRVUSD_OPTIONS }}
               value={userScrvUsdBalanceInCrvUsd}
@@ -55,6 +58,7 @@ export const UserPosition = ({ chainId }: UserPositionProps) => {
           </Grid>
           <Grid size={6}>
             <Metric
+              category={PRIMARY_METRIC_CATEGORY}
               label={t`Your share of the vault`}
               valueOptions={{ unit: 'percentage' }}
               value={userShareOfTotalScrvUsdSupply}
@@ -63,10 +67,20 @@ export const UserPosition = ({ chainId }: UserPositionProps) => {
           </Grid>
         </Grid>
 
-        <Grid container columnSpacing={Spacing.lg} rowSpacing={Spacing.md} wrap="wrap">
-          <Grid size={3}>
+        <Grid
+          container
+          columnSpacing={Spacing.lg}
+          rowSpacing={{ ...Spacing.md, mobile: 0 }}
+          wrap="wrap"
+          sx={{
+            display: 'grid',
+            gridAutoRows: '1fr',
+            gridTemplateColumns: { mobile: 'repeat(1, 1fr)', tablet: 'repeat(3, 1fr)' },
+          }}
+        >
+          <Grid>
             <Metric
-              size="small"
+              category={SECONDARY_METRIC_CATEGORY}
               label={t`30 Days Projection`}
               valueOptions={{ unit: 'dollar' }}
               value={thirtyDayProjection}
@@ -76,10 +90,9 @@ export const UserPosition = ({ chainId }: UserPositionProps) => {
               testId="scrvusd-position-projection-30d"
             />
           </Grid>
-
-          <Grid size={3}>
+          <Grid>
             <Metric
-              size="small"
+              category={SECONDARY_METRIC_CATEGORY}
               label={t`1 Year Projection`}
               valueOptions={{ unit: 'dollar' }}
               value={oneYearProjection}
@@ -89,10 +102,9 @@ export const UserPosition = ({ chainId }: UserPositionProps) => {
               testId="scrvusd-position-projection-1y"
             />
           </Grid>
-
-          <Grid size={3}>
+          <Grid>
             <Metric
-              size="small"
+              category={SECONDARY_METRIC_CATEGORY}
               label={t`Estimated APY`}
               valueOptions={{ unit: 'percentage' }}
               value={scrvUsdApy}

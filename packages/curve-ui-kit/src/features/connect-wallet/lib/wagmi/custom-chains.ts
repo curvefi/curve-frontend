@@ -66,3 +66,15 @@ export const expchain = defineChain({
   nativeCurrency: { name: 'tZKJ', symbol: 'tZKJ', decimals: 18 },
   rpcUrls: { default: { http: RPC[ChainId.ExpChain] } },
 })
+
+export const robinhood = defineChain({
+  ...chainConfig,
+  id: ChainId.Robinhood as const,
+  name: 'Robinhood',
+  testnet: false,
+  nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+  blockTime: 250,
+  rpcUrls: { default: { http: RPC[ChainId.Robinhood] } },
+  blockExplorers: { default: { name: 'Robinhood Explorer', url: 'https://robinhoodchain.blockscout.com' } },
+  contracts: { multicall3: { address: '0xca11bde05977b3631167028862be2a173976ca11' } },
+})
