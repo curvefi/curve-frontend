@@ -36,7 +36,7 @@ export const TableSortDrawer = <TSortId extends string>({
   options,
   sortField,
 }: TableSortDrawerProps<TSortId>) => {
-  const [open, , closeDrawer, toggleDrawer] = useSwitch(false)
+  const [open, , closeDrawer, toggleDrawer, setOpen] = useSwitch(false)
   const menuRef = useRef<HTMLLIElement | null>(null)
 
   const selectedOption = useMemo(() => options.find(option => option.id === sortField), [options, sortField])
@@ -62,7 +62,7 @@ export const TableSortDrawer = <TSortId extends string>({
         />
       }
       open={open}
-      setOpen={closeDrawer}
+      setOpen={setOpen}
     >
       <DrawerHeader title={t`Sort by`} />
       <DrawerItems data-testid={drawerTestId}>

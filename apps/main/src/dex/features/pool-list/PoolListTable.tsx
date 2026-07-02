@@ -30,7 +30,7 @@ const LOCAL_STORAGE_KEY = 'dex-pool-list'
 
 export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
   const isMobile = useIsMobile()
-  const { data: campaignsByAddress } = useCampaigns({ blockchainId: network.id as Chain })
+  const { data: campaignsByAddress } = useCampaigns({ blockchainId: network.networkId as Chain })
   const [filtersOpen, , , , setFiltersOpen] = useSwitch(false)
   const filterChipRef = useRef<HTMLDivElement>(null)
   const { onPaginationChange, pagination, updateQueryAndResetPage } = usePoolListPagination()
