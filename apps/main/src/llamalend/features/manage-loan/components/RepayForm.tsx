@@ -8,6 +8,7 @@ import type { UserCollateralEvents } from '@/llamalend/features/user-position-hi
 import { hasLeverageValue } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
+import { isRepayLeveraged } from '@/llamalend/queries/repay/repay-query.helpers'
 import { useUserPrices } from '@/llamalend/queries/user'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -26,6 +27,7 @@ import { q, type QueryProp, type Range } from '@ui-kit/types/util'
 import { CRVUSD } from '@ui-kit/utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
+import { shouldBlockTransaction } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { useCrvSwapUrl } from '../../manage-soft-liquidation/hooks/useCrvSwapUrl'
 import { useMarketContext } from '../../market-context'
 import { useRepayForm } from '../hooks/useRepayForm'
@@ -105,7 +107,7 @@ export const RepayForm = <ChainId extends IChainId>({
   const selectedToken = selectedField == 'userBorrowed' ? borrowToken : collateralToken
 
   const fromPosition = isFull.data === false && selectedField === 'stateCollateral'
-  const showLeverage = selectedToken !== borrowToken && (market ? hasLeverageValue(market) : undefined)
+  const showLeverage = selectedToken !== borrowToken && hasLeverageValue(market)
   const { update: updateForm, formState } = form
   const isSelectedDirty = formState.dirtyFields[selectedField]
 
@@ -154,6 +156,7 @@ export const RepayForm = <ChainId extends IChainId>({
           routes={routes}
           prices={q(useRepayPrices(params, !isInSoftLiquidation))} // when in soft liquidation, the prices do not change
           prevPrices={q(useUserPrices(params))}
+          priceImpact={priceImpact}
         />
       }
     >
@@ -199,7 +202,14 @@ export const RepayForm = <ChainId extends IChainId>({
         <FormButton
           pending={isPending}
           loading={isLoading}
-          disabled={isDisabled}
+          disabled={
+            isDisabled ||
+            shouldBlockTransaction(priceImpact, {
+              ...values,
+              leverageEnabled: isRepayLeveraged(values),
+              slippageType: LEVERAGE,
+            })
+          }
           label={[
             isApproved.data === false && t`Approve`,
             notFalsy(t`Repay`, fromPosition && t`from Position`).join(' '),

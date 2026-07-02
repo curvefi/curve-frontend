@@ -54,8 +54,9 @@ export const getExpectedFn =
     chainId,
     router = SOLVER_CHAINS.includes(chainId) ? 'curve-solver' : 'curve', // router is unset when checking the max borrow
     userAddress,
+    zapAddress,
     slippage,
-  }: Pick<RoutesQuery, 'chainId' | 'router' | 'slippage' | 'userAddress'>): GetExpectedFn =>
+  }: Pick<RoutesQuery, 'chainId' | 'router' | 'slippage' | 'userAddress' | 'zapAddress'>): GetExpectedFn =>
   async (tokenIn, tokenOut, amountIn, blacklist) => {
     const routes = await fetchApiRoutes({
       chainId,
@@ -66,6 +67,7 @@ export const getExpectedFn =
       router,
       slippage,
       userAddress,
+      zapAddress,
     })
     const route = assert(routes?.[0], 'No route available')
     return parseRoute(route.id).quote
