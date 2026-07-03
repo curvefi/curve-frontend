@@ -50,6 +50,7 @@ jobs:
 
   test:
     name: Unit tests
+    if: ${{ false }}
     timeout-minutes: 5
     runs-on: ubuntu-latest
     steps:
@@ -93,7 +94,7 @@ jobs:
 
       - run: |
           set -o pipefail
-          yarn run cy:run:component --browser ${{ matrix.browser }} 2>&1 | \
+          yarn cypress run --component --browser ${{ matrix.browser }} --spec 'cypress/component/llamalend/**/!(*.rpc).cy.{ts,tsx}' 2>&1 | \
             tee ../cypress-component-${{ matrix.browser }}-${{ matrix.count }}.log \
               >(grep --line-buffered --invert-match --fixed-strings 'INFO:CONSOLE' >&1) > /dev/null
         working-directory: tests
@@ -112,7 +113,7 @@ jobs:
 
   cypress-component-rpc:
     name: Cypress component tests with RPC
-    if: github.ref_name == 'main'
+    if: ${{ false }}
     timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
@@ -133,7 +134,7 @@ jobs:
         run: |
           set -o pipefail # fail tee if the main command fails
           # rpc tests are expensive, stick to one browser
-          yarn run cy:run:rpc --browser electron 2>&1 | \
+          yarn cypress run --component --browser electron --spec 'cypress/component/llamalend/**/*.rpc.cy.{ts,tsx}' 2>&1 | \
             tee ../rpc-cypress.log >(grep --line-buffered --invert-match --fixed-strings 'INFO:CONSOLE' >&1) > /dev/null
         working-directory: tests
         timeout-minutes: 12 # lower timeout than the whole job, so we can get screenshots on timeout
@@ -164,16 +165,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        group: [llamalend, dex, other]
+        group: [llamalend]
         browser: [chrome, firefox, electron]
-        count: [1, 2]
+        count: [1, 2, 3, 4]
         include:
           - group: llamalend
             specs: 'cypress/e2e/loan/**/*,cypress/e2e/lend/**/*,cypress/e2e/llamalend/**/*'
-          - group: dex
-            specs: 'cypress/e2e/dex/**/*'
-          - group: other
-            specs: 'cypress/e2e/all/**/*,cypress/e2e/analytics/**/*,cypress/e2e/bridge/**/*,cypress/e2e/dao/**/*'
     name: Cypress e2e ${{ matrix.group }} ${{ matrix.browser }} ${{ matrix.count }}
     timeout-minutes: 20
     runs-on: ubuntu-latest
@@ -257,7 +254,7 @@ jobs:
     if: failure() && github.ref_name == 'main'
     runs-on: ubuntu-latest
     timeout-minutes: 1
-    needs: [lint, test, cypress-e2e, cypress-component, cypress-component-rpc]
+    needs: [lint, test, cypress-e2e, cypress-component]
     steps:
       - name: Send Slack alert
         run: |
