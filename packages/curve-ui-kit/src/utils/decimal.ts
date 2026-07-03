@@ -11,11 +11,14 @@ export const amount = (value: number | string | BigNumber | bigint | null | unde
 
 /** Converts a string to a Decimal typed string, returning undefined for null, undefined, empty strings, or non-finite values. */
 export const decimal = (value: number | string | undefined | null | BigNumber | bigint): Decimal | undefined => {
-  if (value != null) {
-    const bigNumber = BigNumber(value)
-    if (bigNumber.isFinite() && !bigNumber.isNaN()) {
-      return bigNumber.toFixed() as Decimal
-    }
+  if (typeof value === 'number' || typeof value === 'bigint') {
+    value = BigNumber(value)
+  }
+  if (value instanceof BigNumber) {
+    value = value.toFixed()
+  }
+  if (value != null && !['', '-', '?', 'Infinity', '-Infinity'].includes(value) && !new BigNumber(value).isNaN()) {
+    return value as Decimal
   }
 }
 
