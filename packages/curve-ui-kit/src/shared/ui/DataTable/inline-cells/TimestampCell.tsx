@@ -29,7 +29,7 @@ export const TimestampCell = ({ timestamp, txUrl, align = 'start' }: TimestampCe
           window.open(txUrl, '_blank')
         },
       })}
-      sx={{ gap: Spacing.xxs }}
+      sx={{ gap: Spacing.xxs, whiteSpace: 'nowrap' }}
     >
       <Typography variant="tableCellMBold" sx={{ textAlign: align }}>
         {formatDate(timestamp, 'short', { omitYear: isMobile })}
@@ -45,7 +45,7 @@ export const TimestampCell = ({ timestamp, txUrl, align = 'start' }: TimestampCe
         <Typography variant="tableCellSRegular" className={TableSecondaryTextClass}>
           {formatTime(timestamp, { precise: !isMobile })}
         </Typography>
-        {clickable && <ArrowOutwardIcon className={TableSecondaryTextClass} sx={{ fontSize: 20 }} />}
+        {clickable && <ArrowOutwardIcon className={TableSecondaryTextClass} sx={{ flexShrink: 0, fontSize: 20 }} />}
       </Stack>
     </InlineTableCell>
   )
