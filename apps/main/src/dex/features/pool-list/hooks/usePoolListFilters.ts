@@ -19,7 +19,7 @@ const DEFAULT_FILTER_QUERY = { [SEARCH_QUERY_FIELD]: null, [POOL_TYPE_QUERY_FIEL
 const isPoolType = (value: string | null): value is PoolListPoolType => value != null && POOL_TYPE_SET.has(value)
 
 // The API exposes crypto aliases that map back to the single "crypto" UI filter.
-export const getPoolTypeFromQuery = (value: string | null): PoolListPoolType | undefined =>
+const getPoolTypeFromQuery = (value: string | null): PoolListPoolType | undefined =>
   maybe(value, value =>
     POOL_LIST_CRYPTO_POOL_TYPE_ALIASES.has(value) ? 'crypto' : isPoolType(value) ? value : undefined,
   )

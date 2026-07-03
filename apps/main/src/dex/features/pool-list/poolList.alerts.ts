@@ -15,7 +15,7 @@ import { maybes } from '@primitives/objects.utils'
  * Inline comments keep the curve-js pool id and display name for auditing.
  */
 
-export const VYPER_VULNERABLE_POOL_ADDRESS_LOOKUP: Partial<Record<number, Readonly<Record<string, true>>>> = {
+const VYPER_VULNERABLE_POOL_ADDRESS_LOOKUP: Partial<Record<number, Readonly<Record<string, true>>>> = {
   [Chain.Ethereum]: {
     '0x7c0316c925e12ebfc55e0f325794b43ead425157': true, // factory-v2-155 - frxETH
     '0x6e8d2b6fb24117c675c2fabc524f28cc5d81f18a': true, // factory-v2-165 - cbETH

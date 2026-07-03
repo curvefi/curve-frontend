@@ -6,7 +6,7 @@ import { DividerHorizontal } from '@ui/DividerHorizontal'
 import { SelectIconBtnDeleteProps, SelectIconBtnDelete } from '@ui/Select/SelectIconBtnDelete'
 import { focusVisible } from '@ui/utils/sharedStyles'
 
-export type ButtonVariant = 'outlined'
+type ButtonVariant = 'outlined'
 
 export type Popover2ButtonProps = AriaButtonOptions<'button'> &
   SelectIconBtnDeleteProps & {
