@@ -2,13 +2,13 @@ import { orderBy } from 'lodash'
 import {
   POOL_LIST_CRYPTO_POOL_TYPE_ALIASES,
   POOL_LIST_POOL_TYPES,
-  POOL_LIST_SORT_FIELDS,
+  POOL_LIST_SORT_BY,
 } from '@/dex/features/pool-list/poolList.constants'
 import type { PoolType, SortDirection, V2PoolSortField } from '@curvefi/prices-api/pools'
 import { oneAddress, oneFloat } from '@cy/support/generators'
 import { oneToken } from '@cy/support/helpers/tokens'
 import type { Address } from '@primitives/address.utils'
-import { maybe, range } from '@primitives/objects.utils'
+import { maybe, range, recordValues } from '@primitives/objects.utils'
 import { Chain, requireBlockchainId } from '@ui-kit/utils/network'
 
 const MOCK_CHAIN_IDS = [Chain.Ethereum, Chain.Arbitrum] as const
@@ -187,6 +187,7 @@ const parseNumberParam = (value: string | null, fallback: number) => parseOption
 const isOneOf = <T extends string>(values: readonly T[], value: string | null): value is T =>
   value != null && (values as readonly string[]).includes(value)
 
+const POOL_LIST_SORT_FIELDS = recordValues(POOL_LIST_SORT_BY)
 const parseSortBy = (value: string | null): V2PoolSortField => (isOneOf(POOL_LIST_SORT_FIELDS, value) ? value : 'tvl')
 
 const parsePoolListQuery = (url: URL): PoolListQuery => ({

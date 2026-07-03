@@ -14,7 +14,7 @@ export const CHART_LAYOUT = {
   },
 } as const
 
-export const ORACLE_MARKER_ARROW = {
+const ORACLE_MARKER_ARROW = {
   width: 11,
   height: 9,
   pathData: 'M5.19641 9L0.000234437 -0.0000342871L10.3926 -0.0000333786L5.19641 9Z',

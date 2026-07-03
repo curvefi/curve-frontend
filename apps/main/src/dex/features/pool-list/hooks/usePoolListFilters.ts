@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { useFilters } from '@ui-kit/shared/ui/DataTable/hooks/useFilters'
-import { POOL_LIST_POOL_TYPE_FILTERS, type PoolListFilter } from '../poolList.constants'
+import { POOL_LIST_POOL_TYPE_FILTERS } from '../poolList.constants'
 import {
   getPoolListApiParams,
   hasPoolListActiveFilters,
@@ -15,7 +15,7 @@ export { PoolListFilterId }
 export type { PoolListApiParams } from '../poolListFilterQuery'
 
 export type PoolListFilterProps = FilterProps<PoolListFilterId> & {
-  poolTypeFilters: readonly PoolListFilter[]
+  poolTypeFilters: typeof POOL_LIST_POOL_TYPE_FILTERS
 }
 
 /**

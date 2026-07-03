@@ -52,7 +52,7 @@ export type FormValues = {
 
 export type TableLabel = Record<SortId, { name: string; mobile: string }>
 
-export type StepKey = 'WITHDRAW' | 'CLAIM' | ''
+type StepKey = 'WITHDRAW' | 'CLAIM' | ''
 
 export type FormStatus = {
   loading: boolean

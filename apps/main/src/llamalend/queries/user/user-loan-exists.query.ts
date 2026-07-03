@@ -3,11 +3,7 @@ import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } from '@ui-kit/lib/model'
 import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-validation'
 
-export const {
-  useQuery: useLoanExists,
-  refetchQuery: refetchLoanExists,
-  getQueryData: getLoanExists,
-} = queryFactory({
+export const { useQuery: useLoanExists } = queryFactory({
   queryKey: (params: UserMarketParams) => [...rootKeys.userMarket(params), 'loanExists'] as const,
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) => {
     const market = getLlamaMarket(marketId)
