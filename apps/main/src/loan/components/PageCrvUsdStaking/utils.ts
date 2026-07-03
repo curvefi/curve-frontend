@@ -1,8 +1,5 @@
-import { FetchStatus } from '@/loan/types/loan.types'
 import type { Decimal } from '@primitives/decimal.utils'
 import { decimalDiv, decimalMultiply } from '@ui-kit/utils'
-
-export const isLoading = (status: FetchStatus) => status === 'loading'
 
 export const oneMonthProjectionYield = (apy: Decimal, balance: Decimal) =>
   decimalDiv(decimalMultiply(apy, balance), '1200')

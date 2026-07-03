@@ -32,7 +32,6 @@ import { useCallbackSync, useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { q, type QueryProp, type Range } from '@ui-kit/types/util'
 import { decimalSum, isDevelopment } from '@ui-kit/utils'
-import { shouldBlockTransaction } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import { useMarketContext } from '../../market-context'
 
@@ -146,7 +145,6 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   useCallbackSync(useBorrowMorePrices(params), onPricesUpdated)
 
   const isLeverageEnabled = isLeverageBorrowMore(market, values.leverageEnabled)
-  const priceImpact = q(useBorrowMorePriceImpact(params, isLeverageEnabled))
   const { formState } = form
   const isPending = formState.isSubmitting || isBorrowing
   return {
@@ -156,21 +154,16 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     isPending,
     isLoading: isPending || !market || isSolvencyLoading,
     onSubmit,
-    isDisabled:
-      !!disabledAlert || !formState.isValid || isPending || isDebouncing || shouldBlockTransaction(priceImpact, params),
+    isDisabled: !!disabledAlert || !formState.isValid || isPending || isDebouncing,
     borrowToken,
     collateralToken,
     error: borrowError ?? solvencyError,
     isApproved: useBorrowMoreIsApproved(params),
-    priceImpact,
     formErrors: formState.visibleErrors,
     disabledAlert,
-    solvencyModal: {
-      isOpen,
-      onClose,
-      onConfirm,
-    },
-    routes: useMarketRoutes({
+    solvencyModal: { isOpen, onClose, onConfirm },
+    priceImpact: q(useBorrowMorePriceImpact(params, !zapAddress)), // overridden by useMarketRoutes when zapv2 is enabled
+    ...useMarketRoutes({
       chainId,
       marketAddress: ammAddress,
       tokenIn: borrowToken,
@@ -195,7 +188,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
       collateralEvents,
     }),
     // todo: delete this if users do not complain about it, for now dev-only feature
-    showUserBorrowed: isLeverageEnabled && canLeverageUserBorrowed(market) && isDevelopment,
+    showUserBorrowed: isLeverageEnabled && !!canLeverageUserBorrowed(market) && isDevelopment,
     isLeverageSupported: isLeverageBorrowMoreSupported(market),
     leverage: useBorrowMoreLeverage(params),
     zapAddress,

@@ -11,7 +11,6 @@ import { useRepayFutureLeverage } from '@/llamalend/queries/repay/repay-future-l
 import { useRepayEstimateGas } from '@/llamalend/queries/repay/repay-gas-estimate.query'
 import { getRepayHealthOptions } from '@/llamalend/queries/repay/repay-health.query'
 import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
-import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impact.query'
 import { useUserCurrentLeverage, useUserState } from '@/llamalend/queries/user'
 import type { RepayFormData, RepayParams } from '@/llamalend/queries/validation/repay.types'
 import { useBorrowRates } from '@/llamalend/widgets/action-card/hooks/useBorrowRates'
@@ -25,6 +24,7 @@ import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import type { LlamaMarketType } from '@ui-kit/types/market'
 import { constQ, mapQuery, q, type Query, type QueryProp, type Range } from '@ui-kit/types/util'
 import { decimal, decimalMinus, decimalNegate } from '@ui-kit/utils'
+import type { PriceImpact } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { getLeverageInfoFields } from '../../../widgets/action-card/hooks/getLeverageInfoFields'
 
 const remainingDebt = (debt: Decimal, repayAmount: Decimal) => {
@@ -95,6 +95,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   form,
   prices,
   prevPrices,
+  priceImpact,
 }: {
   controllerAddress: Address | undefined
   marketType: LlamaMarketType
@@ -108,6 +109,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   form: UseFormReturn<RepayFormData>
   prices?: QueryProp<Range<Decimal> | null>
   prevPrices?: QueryProp<Range<Decimal>>
+  priceImpact: QueryProp<PriceImpact | Decimal | null>
 }) {
   const isOpen = form.isTouched('stateCollateral', 'userCollateral', 'userBorrowed')
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken, prevPrices }, isOpen)
@@ -164,7 +166,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
         // routeImage: useRepayRouteImage(params, isOpen),
         slippage,
         onSlippageChange,
-        priceImpact: useRepayPriceImpact(params, isOpen),
+        priceImpact,
         collateralDelta: userCollateral,
       })}
       {...useBorrowRates({ params, marketType, controllerAddress, debtDelta }, isOpen)}

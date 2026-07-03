@@ -70,7 +70,7 @@ export type DerivedChartData = {
   isLiquidation: boolean[]
 }
 
-export type RectSeriesDatum = [
+type RectSeriesDatum = [
   median: number,
   startX: number,
   widthX: number,
@@ -80,9 +80,9 @@ export type RectSeriesDatum = [
   endX: number,
 ]
 export type RectSeriesData = RectSeriesDatum[]
-export type RangeSeriesDatum = [xStart: number, xEnd: number, lowerPrice: number, upperPrice: number]
+type RangeSeriesDatum = [xStart: number, xEnd: number, lowerPrice: number, upperPrice: number]
 export type RangeSeriesData = RangeSeriesDatum[]
-export type HorizontalLineSeriesDatum = [xStart: number, xEnd: number, price: number]
+type HorizontalLineSeriesDatum = [xStart: number, xEnd: number, price: number]
 export type HorizontalLineSeriesData = HorizontalLineSeriesDatum[]
 
 export const BANDS_CHART_SERIES_TYPE = {

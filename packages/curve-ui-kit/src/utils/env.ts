@@ -9,7 +9,7 @@ export enum ReleaseChannel {
 export const isCypress = Boolean((window as { Cypress?: unknown }).Cypress)
 export const noCypressTestConnector = Boolean((window as { CypressNoTestConnector?: unknown }).CypressNoTestConnector)
 
-export const isDevelopment = NODE_ENV === 'development' || !!window.localStorage.getItem('developer')
+export const isDevelopment = NODE_ENV === 'development' || !!window.localStorage?.getItem('developer')
 export const isPreviewHost = window.location.hostname.includes('vercel.app')
 
 const isDefaultBeta = isDevelopment || isPreviewHost || isCypress

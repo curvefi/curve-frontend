@@ -15,7 +15,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing, ButtonSize } = SizesAndSpaces
 
-export type TableSortDrawerOption<TSortId extends string> = {
+type TableSortDrawerOption<TSortId extends string> = {
   id: TSortId
   label: string
 }

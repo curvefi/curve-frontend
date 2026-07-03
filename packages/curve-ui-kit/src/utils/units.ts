@@ -1,4 +1,4 @@
-export type UnitOptions = {
+type UnitOptions = {
   symbol: string
   position: 'prefix' | 'suffix'
 }

@@ -5,7 +5,7 @@ import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-valid
 import { convertRates } from '../../rates.utils'
 import { IS_GETTER, USE_API } from './market.constants'
 
-export const { useQuery: useMarketRates, invalidate: invalidateMarketRates } = queryFactory({
+export const { useQuery: useMarketRates } = queryFactory({
   queryKey: ({ chainId, marketId }: MarketParams) => [...rootKeys.market({ chainId, marketId }), 'rates'] as const,
   queryFn: async ({ marketId }: MarketQuery) => {
     const market = getLlamaMarket(marketId)

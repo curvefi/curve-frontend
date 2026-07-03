@@ -14,6 +14,7 @@ function getFromLocalStorage<T>(storageKey: string) {
 const get = <T>(key: string, initialValue: T): T => getFromLocalStorage<T>(key) ?? initialValue
 
 const set = <T>(storageKey: string, value: T) => {
+  if (!localStorage) return console.warn(`No local storage available`) // can happen e.g. in iOS private mode
   if (value == null) {
     return window.localStorage.removeItem(storageKey)
   }
@@ -42,8 +43,8 @@ export const useReleaseChannel = () =>
     oldKey: 'beta',
   })
 
-export const useDisableZapV2 = () => useLocalStorage('disableZapV2', true)
-export const isZapV2Disabled = () => getFromLocalStorage<boolean>('disableZapV2') !== false
+export const useDisableZapV2 = () => useLocalStorage('disableZapV2', false)
+export const isZapV2Disabled = () => getFromLocalStorage<boolean>('disableZapV2') === true
 
 export const useFilterExpanded = (tableTitle: string) =>
   useLocalStorage<boolean>(`filter-expanded-${kebabCase(tableTitle)}`, false)
@@ -118,3 +119,5 @@ export const useDismissMaintenanceBanner = (dateISO: string | undefined) =>
   useDismissBanner(`maintenance-banner-${dateISO}`, 'Daily')
 
 export const usePinataJwt = () => useLocalStorage<string | undefined>('pinataJwt', undefined)
+
+export const setLocalStorageItem = set

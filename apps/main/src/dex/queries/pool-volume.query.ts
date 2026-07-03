@@ -35,11 +35,7 @@ export function usePoolVolume({ chainId, poolId }: PoolParams) {
   return usePoolVolumeQuery({ chainId, poolId }, isHydrated && network && !network.isLite)
 }
 
-const {
-  useQuery: usePoolVolumesQuery,
-  fetchQuery: fetchPoolVolumesQuery,
-  refetchQuery: refetchPoolVolumesQuery,
-} = queryFactory({
+const { useQuery: usePoolVolumesQuery, refetchQuery: refetchPoolVolumesQuery } = queryFactory({
   queryKey: ({ chainId }: ChainParams) => [...rootKeys.chain({ chainId }), 'stats.volume'] as const,
   queryFn: async (_params: ChainQuery) => {
     const curveApi = requireLib('curveApi')
@@ -76,18 +72,6 @@ export function usePoolVolumes({ chainId }: ChainParams) {
   const network = chainId != null && networks[chainId]
 
   return usePoolVolumesQuery({ chainId }, isHydrated && network && !network.isLite)
-}
-
-/**
- * Fetch trading volumes for multiple pools into the query cache.
- *
- * @remarks Skips fetching on lite networks. Assumes the api is hydrated.
- */
-export async function fetchPoolVolumes({ chainId }: ChainParams) {
-  const networks = await fetchNetworks()
-  const network = networks?.[chainId ?? 0]
-  if (!network || network.isLite) return {}
-  return fetchPoolVolumesQuery({ chainId })
 }
 
 /**

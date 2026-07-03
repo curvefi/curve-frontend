@@ -6,6 +6,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { combineQueryState } from '@ui-kit/lib'
 import { mapQuery, q, type Query, type QueryProp } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
+import type { PriceImpact } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 
 type LeverageInfoFieldsOptions = {
   leverageEnabled: boolean | undefined
@@ -14,7 +15,7 @@ type LeverageInfoFieldsOptions = {
   prevCollateral: QueryProp<Decimal | null>
   leverageTotalCollateral: QueryProp<Decimal | null>
   expected?: Query<{ avgPrice?: Decimal }>
-  priceImpact?: Query<Decimal | null>
+  priceImpact?: Query<PriceImpact | Decimal | null>
   routes?: MarketRoutes | undefined
   slippage?: Decimal
   onSlippageChange?: (newSlippage: Decimal) => void

@@ -110,9 +110,9 @@ export const fakeLoadingQ = <T>(data: T | undefined) => q({ data, isLoading: dat
 
 /** Hook similar to mapQuery for queries that need memoization */
 export const useMappedQuery = <TSource, TResult>(
-  { isLoading, error, data }: Query<TSource>,
-  transform: (data: TSource) => TResult | null | undefined,
-) =>
+  { isLoading, error, data }: Query<TSource | null>,
+  transform: (data: TSource) => TResult,
+): QueryProp<TResult> =>
   q({
     isLoading,
     data: useMemo(() => maybe(data, data => transform(data) ?? undefined), [data, transform]),
