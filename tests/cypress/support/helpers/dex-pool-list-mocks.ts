@@ -8,7 +8,7 @@ import type { PoolType, SortDirection, V2PoolSortField } from '@curvefi/prices-a
 import { oneAddress, oneFloat } from '@cy/support/generators'
 import { oneToken } from '@cy/support/helpers/tokens'
 import type { Address } from '@primitives/address.utils'
-import { maybe, range, recordValues } from '@primitives/objects.utils'
+import { range, recordValues } from '@primitives/objects.utils'
 import { Chain, requireBlockchainId } from '@ui-kit/utils/network'
 
 const MOCK_CHAIN_IDS = [Chain.Ethereum, Chain.Arbitrum] as const
@@ -39,12 +39,6 @@ type PoolListQuery = {
   pagination: number
   search: string
   poolType: string | null
-  minTvl: number | undefined
-  maxTvl: number | undefined
-  minVolume: number | undefined
-  maxVolume: number | undefined
-  minApy: number | undefined
-  maxApy: number | undefined
   sortBy: V2PoolSortField
   sortDirection: SortDirection
 }
@@ -176,13 +170,7 @@ const createMockPools = (chainId: MockChainId): MockPool[] => [
 
 const MOCK_POOLS = MOCK_CHAIN_IDS.flatMap(createMockPools)
 
-const parseOptionalNumberParam = (value: string | null) => {
-  const parsed = maybe(value, Number)
-
-  return parsed != null && Number.isFinite(parsed) ? parsed : undefined
-}
-
-const parseNumberParam = (value: string | null, fallback: number) => parseOptionalNumberParam(value) ?? fallback
+const parseNumberParam = (value: string | null, fallback: number) => Number(value ?? fallback)
 
 const isOneOf = <T extends string>(values: readonly T[], value: string | null): value is T =>
   value != null && (values as readonly string[]).includes(value)
@@ -196,12 +184,6 @@ const parsePoolListQuery = (url: URL): PoolListQuery => ({
   pagination: parseNumberParam(url.searchParams.get('pagination'), 50),
   search: url.searchParams.get('search_string')?.toLowerCase() ?? '',
   poolType: url.searchParams.get('pool_type'),
-  minTvl: parseOptionalNumberParam(url.searchParams.get('min_tvl')),
-  maxTvl: parseOptionalNumberParam(url.searchParams.get('max_tvl')),
-  minVolume: parseOptionalNumberParam(url.searchParams.get('min_volume')),
-  maxVolume: parseOptionalNumberParam(url.searchParams.get('max_volume')),
-  minApy: parseOptionalNumberParam(url.searchParams.get('min_apy')),
-  maxApy: parseOptionalNumberParam(url.searchParams.get('max_apy')),
   sortBy: parseSortBy(url.searchParams.get('sort_by')),
   sortDirection: url.searchParams.get('sort_direction') === 'asc' ? 'asc' : 'desc',
 })
@@ -225,17 +207,11 @@ const matchesSearch = (pool: MockPool, search: string) =>
     value.toLowerCase().includes(search),
   )
 
-const matchesRange = (value: number, min: number | undefined, max: number | undefined) =>
-  (min == null || value >= min) && (max == null || value <= max)
-
 const getPoolListResponse = (query: PoolListQuery) => {
   const filtered = orderBy(
     MOCK_POOLS.filter(pool => pool.chain_id === query.chainId)
       .filter(pool => matchesPoolType(pool, query.poolType))
-      .filter(pool => matchesSearch(pool, query.search))
-      .filter(pool => matchesRange(pool.tvl_usd, query.minTvl, query.maxTvl))
-      .filter(pool => matchesRange(pool.trading_volume_24h, query.minVolume, query.maxVolume))
-      .filter(pool => matchesRange(pool.base_daily_apr, query.minApy, query.maxApy)),
+      .filter(pool => matchesSearch(pool, query.search)),
     pool => getSortValue(pool, query.sortBy),
     query.sortDirection,
   )

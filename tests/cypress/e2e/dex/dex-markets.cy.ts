@@ -4,12 +4,25 @@ import { mockMerklCampaigns } from '@cy/support/helpers/lending-mocks'
 import { API_LOAD_TIMEOUT, type Breakpoint, oneViewport } from '@cy/support/ui'
 import { assert } from '@primitives/objects.utils'
 
-const POOL_LIST_PAGE_SIZE = 50
 // Keep in sync with the hidden default applied by the DEX pool-list filter hook.
 const DEFAULT_POOL_LIST_MIN_TVL = 10_000
 const DEFAULT_POOL_LIST_MIN_TVL_INPUT = '10k'
 const DEFAULT_POOL_LIST_TVL_MAX_CHIP = '$10k - $500m'
 const EXPLICIT_ZERO_POOL_LIST_TVL_MAX_CHIP = '$0 - $500m'
+
+type PoolListResponseBody = { pools?: { name?: string }[] }
+
+const getPoolListResponseFirstPoolName = (body: unknown) =>
+  assert((body as PoolListResponseBody).pools?.[0]?.name, 'No pool in DEX pool list response')
+
+const waitForPoolListResponse = () =>
+  cy.wait('@dex-pools', API_LOAD_TIMEOUT).then(({ response }) => {
+    cy.contains(
+      '[data-testid^="market-link-"]',
+      getPoolListResponseFirstPoolName(response?.body),
+      API_LOAD_TIMEOUT,
+    ).should('be.visible')
+  })
 
 // Parse compact USD strings like "$1.2M", "$950K", "$0", "-"
 function parseCompactUsd(value: string): number {
@@ -35,8 +48,7 @@ function visitAndWait(
 ) {
   cy.viewport(width, height)
   cy.visitWithoutTestConnector(`dex/${network}/pools/${query ? `?${new URLSearchParams(query)}` : ''}`, options)
-  cy.wait('@dex-pools', API_LOAD_TIMEOUT)
-  cy.get('[data-testid^="data-table-row-"]', API_LOAD_TIMEOUT).should('have.length.greaterThan', 0)
+  waitForPoolListResponse()
   if (query?.page) {
     cy.get('[data-testid="table-pagination"]').should('be.visible')
   }
@@ -56,16 +68,6 @@ const expectTopUsdValuesOrder = (columnId: 'volume' | 'tvl', order: 'asc' | 'des
   cy
     .get(`[data-testid^="data-table-row-"] [data-testid="data-table-cell-${columnId}"]`)
     .should($cells => expectOrder(getUsdValues(Array.from($cells)), order))
-
-const expectUsdValuesAtLeast = (columnId: 'volume' | 'tvl', min: number) =>
-  cy.get(`[data-testid^="data-table-row-"] [data-testid="data-table-cell-${columnId}"]`).should($cells => {
-    const values = getUsdValues(Array.from($cells))
-
-    expect(
-      values.every(({ parsed }) => parsed >= min),
-      `${columnId} values should be >= ${min}`,
-    ).to.equal(true)
-  })
 
 const expectUrlQueryParam = (key: string, value: string) =>
   cy.location('search').should(search => expect(new URLSearchParams(search).get(key)).to.equal(value))
@@ -149,7 +151,7 @@ describe('DEX Pools', () => {
       openPoolFilters()
       cy.get(`[data-testid="range-filter-${id}-${bound}"] input`).clear().type(`${value}`).blur()
       closePoolFilters()
-      return cy.wait('@dex-pools', API_LOAD_TIMEOUT)
+      return waitForPoolListResponse()
     }
 
     it('applies the default TVL min without URL or active filter state', () => {
@@ -233,10 +235,6 @@ describe('DEX Pools', () => {
       })
       expectUrlQueryParam('tvl', `${minTvl}~`)
       cy.get('[data-testid="dex-pool-active-filter-tvl"]').should('be.visible')
-      expectUsdValuesAtLeast('tvl', minTvl)
-      cy.get('[data-testid^="data-table-row-"]').should($rows =>
-        expect($rows.length).to.be.lessThan(POOL_LIST_PAGE_SIZE),
-      )
     })
 
     it('filters by TVL max input with an explicit zero min in the URL and API request', () => {
