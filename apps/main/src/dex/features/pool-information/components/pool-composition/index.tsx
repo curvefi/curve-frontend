@@ -27,7 +27,7 @@ export const PoolComposition = ({
   pricesApiPoolData?: PricesApiPool
 }) => {
   const isMobile = useIsMobile()
-  const { isLoading, error, rows, totalUsd, hasBalance } = usePoolComposition({
+  const { isLoading, error, rows, totalUsd } = usePoolComposition({
     chainId,
     poolDataCacheOrApi,
     poolId,
@@ -53,7 +53,7 @@ export const PoolComposition = ({
               visibleColumns={table.getVisibleLeafColumns()}
               isLoading={isLoading}
               totalUsd={totalUsd}
-              hasBalance={hasBalance}
+              hasBalance={rows.some(row => row.amount)}
             />
           )
         }
