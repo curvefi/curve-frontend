@@ -103,7 +103,7 @@ export const GlobalBanner = ({ networkId, chainId, backendMaintenance }: GlobalB
       {showFantomRetirementBanner && chainId === +Chain.Fantom && (
         <Banner
           severity="alert"
-          subtitle={t`The Fantom chain will be retired at the end of June. Please withdraw from pools.`}
+          subtitle={t`The Fantom chain will be retired at the end of the year. Please withdraw from pools.`}
           onClick={dismissFantomRetirementBanner}
           learnMoreUrl="https://x.com/SonicLabs/status/2041551455254097988"
         >
