@@ -1,3 +1,4 @@
+import { ReactNode } from 'react'
 import { ROUTE } from '@/dex/constants'
 import { getPath } from '@/dex/utils/utilsRouter'
 import Button from '@mui/material/Button'
@@ -14,7 +15,6 @@ import { PoolListRewards } from '../cells/PoolListRewards'
 import { PoolListColumnId } from '../columns/column.enum'
 import type { PoolListItem } from '../poolList.types'
 import { getPoolYieldApy } from '../poolList.utils'
-import { ReactNode } from 'react'
 
 const { Spacing } = SizesAndSpaces
 
