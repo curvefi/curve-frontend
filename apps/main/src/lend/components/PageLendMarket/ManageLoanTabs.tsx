@@ -6,19 +6,18 @@ import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm
 import { ClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePositionForm'
 import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealthForm'
 import { ResetPositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ResetPositionForm'
-import { useMarketContext } from '@/llamalend/features/market-context'
-import { useLiquidationStatus } from '@/llamalend/features/market-position-details/hooks/useUserLiquidationStatus'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import { hasResetPosition } from '@/llamalend/llama.utils'
 import { Decimal } from '@primitives/decimal.utils'
-import { useLlamaResetPosition, useLoanImplementationKey } from '@ui-kit/hooks/useFeatureFlags'
+import { useLoanImplementationKey } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
-import type { QueryProp, Range } from '@ui-kit/types/util'
+import { type QueryProp, type Range } from '@ui-kit/types/util'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
 type LendManageLoanProps = {
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
   collateralEvents: QueryProp<UserCollateralEvents>
+  showReset: boolean
+  isSoftLiquidation: boolean
 }
 
 type LendManageLoanTab = FormTab<LendManageLoanProps>
@@ -41,41 +40,35 @@ const LendManageMenu = [
   },
 ] satisfies LendManageLoanTab[]
 
-const createResetSoftLiquidationTab = (visible: boolean) =>
-  ({
-    value: 'reset',
-    label: t`Reset`,
-    visible,
-    component: props => <ResetPositionForm networks={networks} {...props} />,
-  }) satisfies LendManageLoanSubTab
+const SoftLiquidationMenu = [
+  {
+    value: 'soft-liquidation',
+    label: t`Manage soft liquidation`,
+    subTabs: [
+      {
+        value: 'reset',
+        label: t`Reset`,
+        visible: p => p.showReset,
+        component: props => <ResetPositionForm networks={networks} {...props} />,
+      },
+      {
+        value: 'close-position',
+        label: t`Close`,
+        component: props => <ClosePositionForm networks={networks} {...props} />,
+      } satisfies LendManageLoanSubTab,
+      {
+        value: 'improve-health',
+        label: t`Improve health`,
+        component: props => <ImproveHealthForm networks={networks} {...props} />,
+      } satisfies LendManageLoanSubTab,
+    ],
+  },
+] satisfies LendManageLoanTab[]
 
-const CloseSoftLiquidationTab = {
-  value: 'close-position',
-  label: t`Close`,
-  component: props => <ClosePositionForm networks={networks} {...props} />,
-} satisfies LendManageLoanSubTab
-
-const ImproveHealthSoftLiquidationTab = {
-  value: 'improve-health',
-  label: t`Improve health`,
-  component: props => <ImproveHealthForm networks={networks} {...props} />,
-} satisfies LendManageLoanSubTab
-
-const createSoftLiqMenu = (showReset: boolean) =>
-  [
-    {
-      value: 'soft-liquidation',
-      label: t`Manage soft liquidation`,
-      subTabs: [createResetSoftLiquidationTab(showReset), CloseSoftLiquidationTab, ImproveHealthSoftLiquidationTab],
-    },
-  ] satisfies LendManageLoanTab[]
-
-export const ManageLoanTabs = (params: LendManageLoanProps) => {
-  const { chainId, marketId, userAddress, market } = useMarketContext()
-  const { data: status } = useLiquidationStatus({ chainId, marketId, userAddress })
-  const isSoftLiquidation = ['softLiquidation', 'hardLiquidation'].includes(status ?? '')
-  const showResetPosition = useLlamaResetPosition() && hasResetPosition(market)
-  const menu = isSoftLiquidation ? createSoftLiqMenu(showResetPosition) : LendManageMenu
-
-  return <FormTabs key={useLoanImplementationKey()} params={params} menu={menu} />
-}
+export const ManageLoanTabs = (params: LendManageLoanProps) => (
+  <FormTabs
+    key={useLoanImplementationKey()}
+    params={params}
+    menu={params.isSoftLiquidation ? SoftLiquidationMenu : LendManageMenu}
+  />
+)
