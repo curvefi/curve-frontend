@@ -27,7 +27,7 @@ export const useLendMarket = ({ rMarket, chainId }: MarketUrlParams, enabled?: b
   const { llamaApi: api } = useCurve()
   const { isConnected } = useConnection()
   return useCombinedQueries(
-    [useLendMarketData({ chainId, rMarket }, enabled), fakeLoadingQ(isConnected ? api : null)],
+    [useLendMarketData({ chainId, rMarket }, enabled), fakeLoadingQ(!isConnected || api)],
     useCallback(data => api?.getLendMarketByData(data.id, data), [api]),
   )
 }

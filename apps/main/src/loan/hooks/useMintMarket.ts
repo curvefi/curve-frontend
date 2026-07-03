@@ -26,7 +26,7 @@ export const useMintMarket = ({ rMarket, chainId }: MarketUrlParams, enabled?: b
   const { llamaApi: api } = useCurve()
   const { isConnected } = useConnection()
   return useCombinedQueries(
-    [useMintMarketData({ chainId, rMarket }, enabled), fakeLoadingQ(isConnected ? api : null)],
+    [useMintMarketData({ chainId, rMarket }, enabled), fakeLoadingQ(!isConnected || api)],
     useCallback(data => api?.getMintMarketByData(data.id, data), [api]),
   )
 }
