@@ -4,11 +4,7 @@ import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { ScrvUsdUserParams, ScrvUsdUserQuery } from './scrvusd.validation'
 import { scrvUsdUserValidationSuite } from './scrvusd.validation'
 
-export const {
-  useQuery: useScrvUsdDepositAllowance,
-  fetchQuery: fetchScrvUsdDepositAllowance,
-  invalidate: invalidateScrvUsdDepositAllowance,
-} = queryFactory({
+export const { invalidate: invalidateScrvUsdDepositAllowance } = queryFactory({
   queryKey: ({ chainId, userAddress }: ScrvUsdUserParams) =>
     [...rootKeys.userChain({ chainId, userAddress }), 'st_crvUSD.depositAllowance'] as const,
   queryFn: async (_: ScrvUsdUserQuery) => {

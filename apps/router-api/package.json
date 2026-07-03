@@ -18,10 +18,12 @@
     "fastify": "*"
   },
   "peerDependencies": {
-    "@curvefi/api": "*"
+    "@curvefi/api": "*",
+    "@curvefi/prices-api": "*"
   },
   "devDependencies": {
     "@curvefi/api": "*",
+    "@curvefi/prices-api": "*",
     "@types/node": "*",
     "eslint": "*",
     "tsx": "4.22.4",

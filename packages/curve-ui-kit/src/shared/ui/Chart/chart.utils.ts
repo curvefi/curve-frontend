@@ -6,7 +6,7 @@ import { formatNumber, type NumberFormatOptions } from '@ui-kit/utils/number'
 
 export type ChartLineDashPattern = number[]
 
-export const DEFAULT_CHART_SIGNIFICANT_DIGITS = 5
+const DEFAULT_CHART_SIGNIFICANT_DIGITS = 5
 export const CHART_X_AXIS_LABEL_ROTATION = -45
 const DEFAULT_CHART_ABBREVIATE_FROM = 10000
 const CHART_COLOR_INDICES = [1, 2, 3, 4, 5, 6, 7, 8] as const

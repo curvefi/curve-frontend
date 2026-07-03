@@ -18,6 +18,8 @@ import { useAdvancedDetailsData } from './hooks/useAdvancedDetailsData'
 
 const { Spacing } = SizesAndSpaces
 
+const METRIC_CATEGORY = 'llamalend.marketAdvancedDetails'
+
 export const AdvancedDetails = () => {
   const { chainId, marketId, market, marketType, apiMarket } = useMarketContext()
   const { borrowedUsdRate, collateral, availableLiquidity, tvl, maxLeverage, solvency, totalBorrowers } =
@@ -35,24 +37,24 @@ export const AdvancedDetails = () => {
       data-testid="market-advanced-details"
       sx={{
         display: 'grid',
-        gap: Spacing.lg,
+        gap: { ...Spacing.lg, mobile: 0 },
         gridTemplateColumns: {
-          mobile: 'repeat(2, minmax(0, 1fr))',
+          mobile: 'repeat(1, minmax(0, 1fr))',
           tablet: 'repeat(4, minmax(0, 1fr))',
           desktop: 'repeat(6, minmax(0, 1fr))',
         },
       }}
     >
       <Metric
+        category={METRIC_CATEGORY}
         testId="market-tvl"
-        size="medium"
         label={t`TVL`}
         value={mapQuery(tvl, ({ value }) => value)}
         valueOptions={{ unit: 'dollar' }}
       />
       {availableLiquidity.data?.borrowCap && (
         <Metric
-          size="medium"
+          category={METRIC_CATEGORY}
           label={t`Borrow cap`}
           labelTooltip={{ title: t`The maximum total amount that can be borrowed from this market.` }}
           {...tokenMetric({
@@ -63,8 +65,8 @@ export const AdvancedDetails = () => {
         />
       )}
       <Metric
+        category={METRIC_CATEGORY}
         testId="market-total-borrowers"
-        size="medium"
         label={t`Total borrowers`}
         value={mapQuery(totalBorrowers, ({ value }) => value)}
         valueOptions={{ abbreviate: true }}
@@ -72,8 +74,8 @@ export const AdvancedDetails = () => {
       {/* we show total collateral in the rate curve card for lend markets */}
       {!isLendMarket && (
         <Metric
+          category={METRIC_CATEGORY}
           testId="market-total-collateral"
-          size="medium"
           label={t`Total collateral`}
           value={mapQuery(collateral, ({ combinedCollateralUsdValue }) => combinedCollateralUsdValue)}
           valueOptions={{ unit: 'dollar' }}
@@ -92,7 +94,7 @@ export const AdvancedDetails = () => {
       )}
       {solvency && (
         <Metric
-          size="medium"
+          category={METRIC_CATEGORY}
           label={t`Solvency`}
           value={mapQuery(solvency, ({ value }) => value)}
           valueOptions={{ unit: 'percentage' }}
@@ -105,7 +107,7 @@ export const AdvancedDetails = () => {
       )}
       {maxLeverage && (
         <Metric
-          size="medium"
+          category={METRIC_CATEGORY}
           label={t`Max leverage`}
           value={mapQuery(maxLeverage, ({ value }) => value)}
           valueOptions={{ unit: 'multiplier' }}

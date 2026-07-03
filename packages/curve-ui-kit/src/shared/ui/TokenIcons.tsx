@@ -10,7 +10,7 @@ export type TokenIconsProps = {
   variant?: TokenIconsVariant
 }
 
-export type TokenIconsVariant = 'default' | 'icon'
+type TokenIconsVariant = 'default' | 'icon'
 
 /**
  * TokenIcons component displays a list of tokens in a grid layout.

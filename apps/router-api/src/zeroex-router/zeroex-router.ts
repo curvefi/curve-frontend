@@ -31,12 +31,12 @@ export const buildZeroExRouteResponse = async (
     tokenIn: [sellToken],
     tokenOut: [buyToken],
     amountIn: [amountIn] = [],
-    userAddress: taker,
+    zapAddress: taker,
   } = query
 
   if (amountIn == null || !taker) {
     // 0x requires an exact-input sellAmount and taker/user address for executable transaction assembly.
-    log.info({ message: '0x route request skipped, amountIn and userAddress are required', query })
+    log.info({ message: '0x route request skipped, amountIn and zapAddress are required', query })
     return []
   }
 

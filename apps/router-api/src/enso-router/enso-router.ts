@@ -46,18 +46,18 @@ export const buildEnsoRouteResponse = async (
     tokenOut: [tokenOut],
     amountIn: [amountIn] = [],
     amountOut: [minAmountOut] = [],
-    userAddress,
+    zapAddress,
   } = query
 
-  if (amountIn == null || !userAddress) {
-    // Enso requires amountIn and userAddress to be specified, no routes found otherwise
-    log.info({ message: 'enso route request skipped, amountIn and userAddress are required', query })
+  if (amountIn == null || !zapAddress) {
+    // Enso requires amountIn and zapAddress to be specified, no routes found otherwise
+    log.info({ message: 'enso route request skipped, amountIn and zapAddress are required', query })
     return []
   }
 
   const url = `${ENSO_API_URL}/api/v1/shortcuts/route?${new URLSearchParams({
     chainId: `${chainId}`,
-    fromAddress: userAddress,
+    fromAddress: zapAddress,
     ...(tokenIn && { tokenIn }),
     ...(tokenOut && { tokenOut }),
     ...(amountIn && { amountIn }),

@@ -23,7 +23,7 @@ async function getOdosQuote(
     amountIn,
     blacklist,
     slippage,
-    userAddress,
+    zapAddress,
   }: {
     chainId: number
     tokenIn: Address
@@ -31,7 +31,7 @@ async function getOdosQuote(
     amountIn: Decimal
     blacklist: readonly Address[]
     slippage: number
-    userAddress: Address
+    zapAddress: Address
   },
   log: FastifyBaseLogger,
 ) {
@@ -42,7 +42,7 @@ async function getOdosQuote(
     amount: amountIn,
     slippage: `${slippage}`,
     pathVizImage: 'false', // prices API isn't returning images, maybe we could use them instead of `generateId`
-    caller_address: userAddress,
+    caller_address: zapAddress,
   } satisfies Omit<Record<keyof CurveOdosQuoteRequest, string>, 'blacklist'>)
   blacklist.forEach(address => params.append('blacklist', address))
 
@@ -52,10 +52,10 @@ async function getOdosQuote(
 }
 
 async function assembleOdosQuote(
-  { pathId, userAddress }: { pathId: string; userAddress: Address },
+  { pathId, zapAddress }: { pathId: string; zapAddress: Address },
   log: FastifyBaseLogger,
 ) {
-  const params: Record<keyof CurveOdosAssembleRequest, string> = { path_id: pathId, user: userAddress }
+  const params: Record<keyof CurveOdosAssembleRequest, string> = { path_id: pathId, user: zapAddress }
   return await fetchJson<AssemblePathResponse>(`${ODOS_API_URL}/assemble?${new URLSearchParams(params)}`)
     .catch(error => logOdosError(error, log, 'odos assemble request failed', params))
     .catch(() => undefined) // assemble errors result in no tx data in response - but don't fail the whole request
@@ -75,12 +75,12 @@ export const buildOdosRouteResponse = async (
     tokenOut: [tokenOut],
     blacklist = [],
     amountIn: [amountIn] = [],
-    userAddress,
+    zapAddress,
     slippage = 0.5,
   } = query
 
-  if (amountIn == null || !userAddress) {
-    // Odos requires amount (amountIn), caller_address (leverage zap) and blacklist (AMM/controller)
+  if (amountIn == null || !zapAddress) {
+    // Odos requires amount (amountIn), caller_address (zapAddress) and blacklist (AMM/controller)
     log.info({ message: 'odos route request skipped', query })
     return []
   }
@@ -90,9 +90,9 @@ export const buildOdosRouteResponse = async (
     pathId,
     pathVizImage,
     priceImpact = null,
-  } = await getOdosQuote({ chainId, tokenIn, tokenOut, amountIn, blacklist, slippage, userAddress }, log)
+  } = await getOdosQuote({ chainId, tokenIn, tokenOut, amountIn, blacklist, slippage, zapAddress }, log)
   const { transaction } =
-    (await assembleOdosQuote({ pathId: assert(pathId, 'Odos quote missing pathId'), userAddress }, log)) ?? {}
+    (await assembleOdosQuote({ pathId: assert(pathId, 'Odos quote missing pathId'), zapAddress }, log)) ?? {}
   return [
     {
       router: protocol,

@@ -519,7 +519,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/prices-api@workspace:packages/prices-api":
+"@curvefi/prices-api@npm:*, @curvefi/prices-api@workspace:packages/prices-api":
   version: 0.0.0-use.local
   resolution: "@curvefi/prices-api@workspace:packages/prices-api"
   dependencies:
@@ -12307,6 +12307,7 @@ __metadata:
   resolution: "router-api@workspace:apps/router-api"
   dependencies:
     "@curvefi/api": "npm:*"
+    "@curvefi/prices-api": "npm:*"
     "@types/node": "npm:*"
     eslint: "npm:*"
     fastify: "npm:*"
@@ -12315,6 +12316,7 @@ __metadata:
     vitest: "npm:*"
   peerDependencies:
     "@curvefi/api": "*"
+    "@curvefi/prices-api": "*"
   languageName: unknown
   linkType: soft
 

@@ -12,6 +12,7 @@ import { weiToEther } from '@ui-kit/utils'
 const { Spacing } = SizesAndSpaces
 
 const CRVUSD_OPTION = { symbol: 'crvUSD', position: 'suffix' as const, abbreviate: true }
+const METRIC_CATEGORY = 'loan.scrvusdStats'
 
 type StatsStackProps = {
   chainId: ChainId | undefined
@@ -27,14 +28,14 @@ export const StatsStack = ({ chainId }: StatsStackProps) => {
       sx={{
         display: 'grid',
         gridAutoRows: '1fr',
-        gridTemplateColumns: { mobile: 'repeat(2, 1fr)', tablet: 'repeat(2, 1fr)', desktop: 'repeat(4, 1fr)' },
-        gap: Spacing.lg,
+        gridTemplateColumns: { mobile: 'repeat(1, 1fr)', tablet: 'repeat(2, 1fr)', desktop: 'repeat(4, 1fr)' },
+        gap: { ...Spacing.lg, mobile: 0 },
         paddingBlockEnd: Spacing.md,
       }}
     >
       <Grid>
         <Metric
-          size="small"
+          category={METRIC_CATEGORY}
           label="Total crvUSD Staked"
           value={mapQuery(supplies, s => s.crvUSD)}
           valueOptions={{ unit: CRVUSD_OPTION }}
@@ -43,7 +44,7 @@ export const StatsStack = ({ chainId }: StatsStackProps) => {
       </Grid>
       <Grid>
         <Metric
-          size="small"
+          category={METRIC_CATEGORY}
           label="Current projected APY"
           value={mapQuery(useScrvUsdStatistics({}), ({ apyProjected }) => apyProjected)}
           valueOptions={{ unit: 'percentage' }}
@@ -52,7 +53,7 @@ export const StatsStack = ({ chainId }: StatsStackProps) => {
       </Grid>
       <Grid>
         <Metric
-          size="small"
+          category={METRIC_CATEGORY}
           label="Total Revenue Distributed"
           value={mapQuery(revenue, ({ totalDistributed }) =>
             totalDistributed ? weiToEther(Number(totalDistributed)) : undefined,
@@ -63,7 +64,7 @@ export const StatsStack = ({ chainId }: StatsStackProps) => {
       </Grid>
       <Grid>
         <Metric
-          size="small"
+          category={METRIC_CATEGORY}
           label="Weekly Accumulated Revenue"
           value={mapQuery(revenue, ({ epochs }) => epochs[epochs.length - 1].weeklyRevenue)}
           valueOptions={{ unit: CRVUSD_OPTION }}

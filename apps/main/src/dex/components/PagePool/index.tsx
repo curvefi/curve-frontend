@@ -3,17 +3,13 @@ import { type Address, isAddressEqual } from 'viem'
 import { OhlcAndActivityComp } from '@/dex/components/OhlcAndActivityComp'
 import { CampaignRewardsBanner } from '@/dex/components/PagePool/components/CampaignRewardsBanner'
 import { Deposit } from '@/dex/components/PagePool/Deposit'
-import { PoolParameters } from '@/dex/components/PagePool/PoolDetails/PoolParameters'
-import { PoolStats } from '@/dex/components/PagePool/PoolDetails/PoolStats'
 import { Swap } from '@/dex/components/PagePool/Swap'
 import type { PageTransferProps, Seed, TransferFormType } from '@/dex/components/PagePool/types'
-import { MySharesStats } from '@/dex/components/PagePool/UserDetails'
 import { getSlippageType } from '@/dex/components/PagePool/utils'
 import { Withdraw } from '@/dex/components/PagePool/Withdraw'
 import { ROUTE } from '@/dex/constants'
 import { useGaugeManager, useGaugeRewardsDistributors } from '@/dex/entities/gauge'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import { usePoolSnapshots } from '@/dex/entities/pool-snapshots.query'
 import { AdvancedDetails } from '@/dex/features/advanced-details'
 import { PoolInformation } from '@/dex/features/pool-information'
 import { UserPosition } from '@/dex/features/user-position'
@@ -27,24 +23,17 @@ import { getPath } from '@/dex/utils/utilsRouter'
 import { ManageGauge } from '@/dex/widgets/manage-gauge'
 import { PoolPageHeader } from '@/dex/widgets/page-header'
 import type { Chain } from '@curvefi/prices-api'
-import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import { AlertBox } from '@ui/AlertBox'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
-import { usePoolFreshup } from '@ui-kit/hooks/useFeatureFlags'
 import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 import { FormMargins } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 import { PoolAlertBanner } from '../PoolAlertBanner'
-import { ManagePoolLink } from './components/ManagePoolLink'
-
-const { Spacing } = SizesAndSpaces
 
 const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
 
@@ -62,9 +51,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { tokensMapper } = useTokensMapper(rChainId)
   const chainIdPoolId = getChainPoolIdActiveKey(rChainId, poolId)
   const currencyReserves = useStore(state => state.pools.currencyReserves[chainIdPoolId])
-  const fetchPoolStats = useStore(state => state.pools.fetchPoolStats)
   const setPoolIsWrapped = useStore(state => state.pools.setPoolIsWrapped)
-  const { pool } = poolDataCacheOrApi
 
   const maxSlippage = useUserProfileStore(state => state.maxSlippage[getSlippageType(poolData) ?? 'stable'])
 
@@ -84,24 +71,10 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { networkId, isLite, pricesApi } = network
   const { data: pricesApiPoolsMapper } = usePoolsPricesApi({ blockchainId: networkId as Chain })
   const poolAddress = poolData?.pool.address as Address
-  const shouldFetchSnapshots = pricesApi && !!poolAddress
-  const { data: snapshots } = usePoolSnapshots({ chain: networkId as Chain, poolAddress }, shouldFetchSnapshots)
-  const snapshotData = snapshots?.[0]
 
   const pricesApiPoolData = poolData && pricesApiPoolsMapper?.[poolData.pool.address]
-  const isPoolFreshupEnabled = usePoolFreshup()
 
-  type DetailInfoTab = 'user' | 'pool' | 'advanced'
-  const poolInfoTabs = useMemo<TabOption<DetailInfoTab>[]>(
-    () => [
-      { value: 'pool' as const, label: t`Pool Details` },
-      ...(signerAddress ? [{ value: 'user' as const, label: t`Your Details` }] : []),
-      ...(pricesApi && pricesApiPoolData && snapshotData ? [{ value: 'advanced' as const, label: t`Advanced` }] : []),
-    ],
-    [signerAddress, pricesApi, pricesApiPoolData, snapshotData],
-  )
-  const [poolInfoTab, setPoolInfoTab] = useState<DetailInfoTab>('pool')
-
+  const fetchPoolStats = useStore(state => state.pools.fetchPoolStats)
   usePageVisibleInterval(() => {
     if (curve && poolData) {
       void fetchPoolStats(curve, poolData)
@@ -173,19 +146,13 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
       )}
       <DetailPageLayout
         header={
-          isPoolFreshupEnabled ? (
-            <PoolPageHeader
-              chainId={rChainId}
-              blockchainId={networkId}
-              poolIdOrAddress={rPoolIdOrAddress}
-              pricesApiPoolData={pricesApiPoolData}
-              backHref={getInternalUrl('dex', networkId, DEX_ROUTES.PAGE_POOLS)}
-            />
-          ) : (
-            <Typography variant="headingSBold" sx={{ paddingBlock: Spacing.sm }}>
-              {pool.name}
-            </Typography>
-          )
+          <PoolPageHeader
+            chainId={rChainId}
+            blockchainId={networkId}
+            poolIdOrAddress={rPoolIdOrAddress}
+            pricesApiPoolData={pricesApiPoolData}
+            backHref={getInternalUrl('dex', networkId, DEX_ROUTES.PAGE_POOLS)}
+          />
         }
         formTabs={
           <FormMargins>
@@ -234,62 +201,24 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
         }
       >
         {poolAddress && <CampaignRewardsBanner chainId={rChainId} address={poolAddress} />}
-        {isPoolFreshupEnabled && (
-          <UserPosition
-            blockchainId={networkId}
-            chainId={rChainId}
-            poolDataCacheOrApi={poolDataCacheOrApi}
-            poolId={poolId}
-          />
-        )}
+        <UserPosition
+          blockchainId={networkId}
+          chainId={rChainId}
+          poolDataCacheOrApi={poolDataCacheOrApi}
+          poolId={poolId}
+        />
         {!isLite && pricesApiPoolData && pricesApi && (
           <OhlcAndActivityComp rChainId={rChainId} poolAddress={poolAddress} pricesApiPoolData={pricesApiPoolData} />
         )}
-        {isPoolFreshupEnabled ? (
-          <>
-            <PoolInformation
-              curve={curve}
-              routerParams={routerParams}
-              poolData={poolData}
-              poolDataCacheOrApi={poolDataCacheOrApi}
-              poolAlert={poolAlert}
-              pricesApiPoolData={pricesApiPoolData}
-            />
-            <AdvancedDetails routerParams={routerParams} poolData={poolData} poolDataCacheOrApi={poolDataCacheOrApi} />
-          </>
-        ) : (
-          <Stack>
-            <Stack direction="row">
-              <TabsSwitcher
-                variant="contained"
-                value={poolInfoTab}
-                onChange={setPoolInfoTab}
-                options={poolInfoTabs}
-                testIdPrefix="pool-info-tab"
-              />
-              <ManagePoolLink chainId={rChainId} poolAddress={poolAddress} />
-            </Stack>
-            {poolInfoTab === 'user' && (
-              <MySharesStats
-                curve={curve}
-                poolData={poolData}
-                poolDataCacheOrApi={poolDataCacheOrApi}
-                routerParams={routerParams}
-                tokensMapper={tokensMapper}
-              />
-            )}
-            {poolInfoTab === 'pool' && (
-              <PoolStats
-                routerParams={routerParams}
-                poolData={poolData}
-                poolDataCacheOrApi={poolDataCacheOrApi}
-                poolAlert={poolAlert}
-                tokensMapper={tokensMapper}
-              />
-            )}
-            {poolInfoTab === 'advanced' && poolData && <PoolParameters poolData={poolData} rChainId={rChainId} />}
-          </Stack>
-        )}
+        <PoolInformation
+          curve={curve}
+          routerParams={routerParams}
+          poolData={poolData}
+          poolDataCacheOrApi={poolDataCacheOrApi}
+          poolAlert={poolAlert}
+          pricesApiPoolData={pricesApiPoolData}
+        />
+        <AdvancedDetails routerParams={routerParams} poolData={poolData} poolDataCacheOrApi={poolDataCacheOrApi} />
       </DetailPageLayout>
     </>
   )

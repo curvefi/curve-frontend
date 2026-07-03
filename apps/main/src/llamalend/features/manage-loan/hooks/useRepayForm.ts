@@ -10,11 +10,7 @@ import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.
 import { useRepayIsAvailable } from '@/llamalend/queries/repay/repay-is-available.query'
 import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impact.query'
 import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
-import {
-  getRepayImplementationType,
-  isRepayLeveraged,
-  type RepayFormFields,
-} from '@/llamalend/queries/repay/repay-query.helpers'
+import { getRepayImplementationType, type RepayFormFields } from '@/llamalend/queries/repay/repay-query.helpers'
 import { invalidateRepayRouteQueries } from '@/llamalend/queries/repay/repay-route-invalidation'
 import type { RepayFormData, RepayFormParams } from '@/llamalend/queries/validation/repay.types'
 import { repayFormValidationSuite } from '@/llamalend/queries/validation/repay.validation'
@@ -27,7 +23,6 @@ import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { type AllowUndefined, q, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
-import { shouldBlockTransaction } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import { useMarketContext } from '../../market-context'
 
@@ -150,7 +145,6 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     form,
   })
 
-  const priceImpact = q(useRepayPriceImpact(params))
   const { formState } = form
   const isPending = formState.isSubmitting || isRepaying
   return {
@@ -159,23 +153,14 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     params,
     isPending,
     isLoading: !market,
-    isDisabled:
-      !formState.isValid ||
-      isPending ||
-      isDebouncing ||
-      isFull.isLoading ||
-      shouldBlockTransaction(priceImpact, {
-        ...values,
-        leverageEnabled: isRepayLeveraged(values),
-        slippageType: LEVERAGE,
-      }),
+    isDisabled: !formState.isValid || isPending || isDebouncing || isFull.isLoading,
     onSubmit: form.handleSubmit(onSubmit),
     borrowToken,
     collateralToken,
     repayError,
-    priceImpact,
     isApproved: useRepayIsApproved(params),
-    routes: useMarketRoutes({
+    priceImpact: q(useRepayPriceImpact(params, !zapAddress)), // overridden by useMarketRoutes when zapv2 is enabled
+    ...useMarketRoutes({
       chainId,
       marketAddress: ammAddress,
       tokenIn: collateralToken,

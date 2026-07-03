@@ -83,10 +83,6 @@ export const useDepositForm = <ChainId extends LlamaChainId>({ network }: { netw
     isApproved: useDepositIsApproved(params),
     formErrors: formState.visibleErrors,
     disabledAlert,
-    solvencyModal: {
-      isOpen,
-      onClose,
-      onConfirm,
-    },
+    solvencyModal: { isOpen, onClose, onConfirm },
   }
 }

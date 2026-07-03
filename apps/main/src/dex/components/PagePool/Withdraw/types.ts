@@ -14,7 +14,7 @@ export type FormStatus = {
   error: string
 }
 
-export type SelectedType = 'lpToken' | 'imbalance' | 'token'
+type SelectedType = 'lpToken' | 'imbalance' | 'token'
 
 export type FormValues = {
   amounts: Amount[]
