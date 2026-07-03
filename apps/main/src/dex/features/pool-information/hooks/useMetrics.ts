@@ -24,8 +24,8 @@ export const useMetrics = ({
     gaugeTotalSupply: constQ(decimal(staked?.gaugeTotalSupply)),
     totalStakedPercent: constQ(decimal(staked?.totalStakedPercent)),
     liquidityUtilization: fallbackQ(
-      combineQueries([usePoolTvl({ chainId, poolId }), usePoolVolume({ chainId, poolId })], decimalPercent),
-      constQ(maybes([pricesApiPoolData?.tvlUsd, pricesApiPoolData?.tradingVolume24h].map(decimal), decimalPercent)),
+      combineQueries([usePoolVolume({ chainId, poolId }), usePoolTvl({ chainId, poolId })], decimalPercent),
+      constQ(maybes([pricesApiPoolData?.tradingVolume24h, pricesApiPoolData?.tvlUsd].map(decimal), decimalPercent)),
     ),
   }
 }

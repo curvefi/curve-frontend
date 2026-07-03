@@ -17,6 +17,7 @@ import {
   defaultNumberFormatter,
   formatNumber,
   type NumberFormatOptions,
+  PLACEHOLDER_USD,
   type SxProps,
 } from '@ui-kit/utils'
 import { showToast } from '@ui-kit/widgets/Toast/toast.util'
@@ -97,15 +98,7 @@ type Notional = Omit<NumberFormatOptions, 'abbreviate'> & {
   value: Amount
   abbreviate?: boolean // Defaults to true
 }
-
-const formatNotional = (notional: number | string | Notional | null | undefined) =>
-  notional == null
-    ? formatNumber(null, 'usd.notional')
-    : typeof notional === 'string'
-      ? notional
-      : typeof notional === 'number'
-        ? formatNumber(notional, { abbreviate: true })
-        : formatNumber(notional.value, { abbreviate: true, ...notional })
+type NotionalValue = number | string | Notional | null
 
 /** At the moment of writing the default formatter already formats to 2 decimals, but I really want to make this explicit for potential future changes. */
 const formatChange = (value: number): string => defaultNumberFormatter(value, { decimals: 2 })
@@ -186,10 +179,19 @@ const MetricValue = ({ value, valueOptions = {}, change, size, copyValue, toolti
   )
 }
 
-const NotionalTypography = ({ children }: { children: ReactNode }) => (
-  <Typography variant="highlightXsNotional" color="textTertiary">
-    {children}
-  </Typography>
+const Notional = ({ data, error, isLoading }: QueryProp<NotionalValue>) => (
+  <WithSkeleton loading={isLoading}>
+    <Typography variant="highlightXsNotional" color="textTertiary">
+      {error && <ErrorIconButton size="extraExtraSmall" error={error} />}
+      {data == null
+        ? formatNumber(isLoading ? PLACEHOLDER_USD : null, 'usd.notional')
+        : typeof data === 'string'
+          ? data
+          : typeof data === 'number'
+            ? formatNumber(data, { abbreviate: true })
+            : formatNumber(data.value, { abbreviate: true, ...data })}
+    </Typography>
+  </WithSkeleton>
 )
 
 export type MetricProps = {
@@ -211,7 +213,7 @@ export type MetricProps = {
   copyText?: string
 
   /** Notional values give extra context to the metric, like underlying value */
-  notional?: QueryProp<number | string | Notional | null>
+  notional?: QueryProp<NotionalValue>
 
   /** Optional icon shown after the value in vertical orientation and before the label in the horizontal orientation. */
   icon?: ReactNode
@@ -246,14 +248,6 @@ export const Metric = ({
   const { orientation, size } = METRIC_CATEGORIES[category][breakpoint]
   const orientationStyle = ORIENTATION_STYLE[orientation]
   const isHorizontal = orientation === 'horizontal'
-  const notionals = notional && (
-    <WithSkeleton loading={notional.isLoading}>
-      <Typography variant="highlightXsNotional" color="textTertiary">
-        {error && <ErrorIconButton size="extraExtraSmall" error={error} />}
-        {formatNotional(notional.data) ?? (notional.isLoading && 'placeholder')}
-      </Typography>
-    </WithSkeleton>
-  )
   const copyValue = useCallback(() => {
     if (data || data === 0) {
       void copyToClipboard(data.toString())
@@ -317,10 +311,10 @@ export const Metric = ({
               {!isHorizontal && icon}
             </>
           )}
-          {isHorizontal && notionals && <NotionalTypography>{notionals}</NotionalTypography>}
+          {isHorizontal && notional && <Notional {...notional} />}
         </Stack>
       </WithSkeleton>
-      {!isHorizontal && notionals && <NotionalTypography>{notionals}</NotionalTypography>}
+      {!isHorizontal && notional && <Notional {...notional} />}
     </Stack>
   )
 }
