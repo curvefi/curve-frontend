@@ -6,16 +6,15 @@ import { SwipeableDrawer } from '@ui-kit/shared/ui/SwipeableDrawer/SwipeableDraw
 import type { TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-const { ButtonSize, Spacing } = SizesAndSpaces
+const { Spacing } = SizesAndSpaces
 
 type MobileFormTabsDrawerProps = {
   children: ReactNode
-  selectedTab: string
   tabs: readonly TabOption<string>[]
   onSelectTab: (value: string) => void
 }
 
-export const MobileFormTabsDrawer = ({ children, selectedTab, tabs, onSelectTab }: MobileFormTabsDrawerProps) => {
+export const MobileFormTabsDrawer = ({ children, tabs, onSelectTab }: MobileFormTabsDrawerProps) => {
   const [open, , , , setOpen] = useSwitch(false)
 
   const openTab = useCallback(

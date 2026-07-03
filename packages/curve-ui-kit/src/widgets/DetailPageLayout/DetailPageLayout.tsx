@@ -3,6 +3,7 @@ import Grid from '@mui/material/Grid'
 import Stack, { StackProps } from '@mui/material/Stack'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
+import { useLlamalendMobileFormDrawer } from '@ui-kit/hooks/useFeatureFlags'
 import { useResizeObserver } from '@ui-kit/hooks/useResizeObserver'
 import { mapBreakpoints } from '@ui-kit/themes/basic-theme/basic-theme'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -67,6 +68,7 @@ export const DetailPageLayout = ({
   const headerRef = useRef<HTMLDivElement>(null)
   // page header metrics's notionals lazy rendering make the height change by 9px so we need a smaller threshold
   const [, pageHeaderHeight = 0] = useResizeObserver(headerRef, { threshold: 5 })
+  const showMobileDrawer = useLlamalendMobileFormDrawer() && isMobile
 
   const headerStack = header && (
     <Stack ref={headerRef} sx={stickyHeaderSx(navHeight)}>
@@ -86,7 +88,7 @@ export const DetailPageLayout = ({
         {isMobile && <Grid size={12}>{headerStack}</Grid>}
         {/* In Figma, columns are 12/4/3, but too small around breakpoints. I've added one extra column.
             Ultrawide isn't a breakpoint yet, use maxWidth so it's not too large. */}
-        {formTabs !== null && !isMobile && (
+        {formTabs !== null && !showMobileDrawer && (
           <Grid
             size={{ mobile: 12, tablet: 5, desktop: 4 }}
             sx={{
@@ -106,7 +108,7 @@ export const DetailPageLayout = ({
         </Grid>
         {footer && <Grid size={12}>{footer}</Grid>}
       </Grid>
-      {formTabs !== null && isMobile && formTabs}
+      {formTabs !== null && showMobileDrawer && formTabs}
     </>
   )
 }

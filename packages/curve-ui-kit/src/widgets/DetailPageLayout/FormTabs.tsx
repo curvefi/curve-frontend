@@ -4,6 +4,7 @@ import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
 import { notFalsy } from '@primitives/objects.utils'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
+import { useLlamalendMobileFormDrawer } from '@ui-kit/hooks/useFeatureFlags'
 import { findTab, useTabs } from '@ui-kit/hooks/useTabs'
 import { type TabOption, TabsSwitcher, TabsSwitcherProps } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
@@ -92,6 +93,7 @@ type FormTabsProps<T extends object> = UseFormTabOptions<T> & {
 
 /**
  * Form wrapper that displays tabs and handles tab switching. It supports sub-tabs as well.
+ * @param withMobileDrawer On mobile, renders the same tabbed form inside a bottom drawer opened by a fixed action bar.
  * @param shouldWrap Whether to wrap the form content in a `FormContent` component
  *                   DEPRECATED: for legacy forms only, use `Form` or `FormContent` for new components
  * @param overflow - the overflow mode of the tabs switcher, default is 'kebab'
@@ -104,15 +106,10 @@ export function FormTabs<T extends object>({
   ...options
 }: FormTabsProps<T>) {
   const { tab, tabs, subTabs, subTab, content, onChangeTab, onChangeSubTab } = useFormTabs(options)
-  const isMobileDrawer = useIsMobile() && withMobileDrawer
+  const enableMobileDrawer = useLlamalendMobileFormDrawer()
+  const isMobileDrawer = useIsMobile() && withMobileDrawer && enableMobileDrawer
   return (
-    <WithWrapper
-      shouldWrap={isMobileDrawer}
-      Wrapper={MobileFormTabsDrawer}
-      tabs={tabs}
-      selectedTab={tab.value}
-      onSelectTab={onChangeTab}
-    >
+    <WithWrapper shouldWrap={isMobileDrawer} Wrapper={MobileFormTabsDrawer} tabs={tabs} onSelectTab={onChangeTab}>
       <Stack sx={{ marginInline }}>
         <TabsSwitcher
           variant="contained"
