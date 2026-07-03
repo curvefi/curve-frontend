@@ -1,16 +1,17 @@
 import { ReactNode, useCallback, useEffect, useState } from 'react'
 import Collapse from '@mui/material/Collapse'
-import Stack from '@mui/material/Stack'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 import { type Row, type Table } from '@tanstack/react-table'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { TableItem } from './data-table.utils'
-
-const { Spacing } = SizesAndSpaces
+import type { DataTableCategory, TableItem } from './data-table.utils'
+import { DataRowProps } from './DataRow'
 
 // Panel used when row is expanded on mobile
-export type ExpandedPanel<T extends TableItem> = (props: { row: Row<T>; table: Table<T> }) => ReactNode
+export type ExpandedPanel<T extends TableItem> = (props: {
+  row: Row<T>
+  table: Table<T>
+  category: DataTableCategory
+}) => ReactNode
 
 /**
  * Expansion bar with that shows a details panel when the row is expanded on mobile.
@@ -19,11 +20,10 @@ export function ExpansionRow<T extends TableItem>({
   row,
   table,
   expandedPanel: ExpandedPanel,
+  category,
   colSpan,
-}: {
-  row: Row<T>
-  table: Table<T>
-  expandedPanel: ExpandedPanel<T>
+}: Pick<DataRowProps<T>, 'table' | 'row' | 'category'> & {
+  expandedPanel: NonNullable<DataRowProps<T>['expandedPanel']>
   colSpan: number
 }) {
   const { render, onExited, expanded } = useRowExpansion(row)
@@ -32,9 +32,7 @@ export function ExpansionRow<T extends TableItem>({
       <TableRow data-testid="data-table-expansion-row">
         <TableCell colSpan={colSpan} sx={{ padding: 0 }}>
           <Collapse in={expanded} onExited={onExited}>
-            <Stack direction="column" sx={{ gap: Spacing.md }}>
-              <ExpandedPanel row={row} table={table} />
-            </Stack>
+            <ExpandedPanel category={category} row={row} table={table} />
           </Collapse>
         </TableCell>
       </TableRow>

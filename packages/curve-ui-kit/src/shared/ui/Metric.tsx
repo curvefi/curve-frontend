@@ -169,14 +169,16 @@ const MetricValue = ({ value, valueOptions = {}, change, size, copyValue, toolti
         Wrapper={Tooltip}
         arrow
         placement="bottom"
-        onClick={copyValue}
-        sx={copyValue && { cursor: 'pointer' }}
         {...tooltip}
         title={tooltip?.title ?? (numberValue == null ? fallback : numberValue.toLocaleString())}
-        data-testid={`${testId}-value`}
-        data-value={value}
       >
-        <Stack direction="row" sx={{ alignItems: 'baseline' }}>
+        <Stack
+          direction="row"
+          sx={applySxProps({ alignItems: 'baseline' }, copyValue && { cursor: 'pointer' })}
+          onClick={copyValue}
+          data-testid={`${testId}-value`}
+          data-value={value}
+        >
           {prefix && (
             <Typography variant={fontVariantUnit} color="textSecondary">
               {prefix}

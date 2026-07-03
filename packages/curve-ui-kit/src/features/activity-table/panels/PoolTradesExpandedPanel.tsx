@@ -3,6 +3,7 @@ import Typography from '@mui/material/Typography'
 import { shortenString } from '@primitives/string.utils'
 import { t } from '@ui-kit/lib/i18n'
 import type { ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
+import { TableExpandedPanel } from '@ui-kit/shared/ui/DataTable/TableExpandedPanel'
 import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -15,9 +16,13 @@ export const PoolTradesExpandedPanel: ExpandedPanel<PoolTradeRow> = ({
   row: {
     original: { txUrl, tokensSold, tokenSold, buyer, network },
   },
+  category,
 }) => (
-  <Stack>
-    <Stack sx={{ paddingTop: Spacing.md, gap: Spacing.xs }}>
+  <TableExpandedPanel
+    category={category}
+    footer={txUrl && <ExternalLink href={txUrl} label={t`View Transaction`} size="extraSmall" />}
+  >
+    <Stack>
       <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
         <Typography variant="bodyMRegular" color="textSecondary">{t`Sold`}</Typography>
         <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
@@ -32,7 +37,5 @@ export const PoolTradesExpandedPanel: ExpandedPanel<PoolTradeRow> = ({
         <Typography variant="tableCellMBold">{shortenString(buyer)}</Typography>
       </Stack>
     </Stack>
-
-    {txUrl && <ExternalLink href={txUrl} label={t`View Transaction`} size="extraSmall" />}
-  </Stack>
+  </TableExpandedPanel>
 )

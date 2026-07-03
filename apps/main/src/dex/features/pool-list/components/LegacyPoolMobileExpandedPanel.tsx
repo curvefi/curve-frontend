@@ -14,6 +14,7 @@ import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { isSortedBy } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import type { ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
+import { TableExpandedPanel } from '@ui-kit/shared/ui/DataTable/TableExpandedPanel'
 import { Metric, MetricProps } from '@ui-kit/shared/ui/Metric'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -38,7 +39,7 @@ const ListInfoItem = ({
 
 const highlight = { color: 'success' as const }
 
-export const LegacyPoolMobileExpandedPanel: ExpandedPanel<LegacyPoolListItem> = ({ row, table }) => {
+export const LegacyPoolMobileExpandedPanel: ExpandedPanel<LegacyPoolListItem> = ({ row, table, category }) => {
   const { original: poolData } = row
   const {
     pool: { id: poolId, address },
@@ -55,8 +56,27 @@ export const LegacyPoolMobileExpandedPanel: ExpandedPanel<LegacyPoolListItem> = 
   const { isCrvRewardsEnabled } = useNetworkFromUrl() ?? {}
   const hasVolume = table.getColumn(LegacyPoolColumnId.Volume)?.getIsVisible()
   return (
-    <>
-      <Grid container spacing={Spacing.md}>
+    <TableExpandedPanel
+      category={category}
+      footer={
+        <>
+          <Button
+            data-testid="pool-link-deposit"
+            component={RouterLink}
+            href={path + ROUTE.PAGE_POOL_DEPOSIT}
+          >{t`Deposit`}</Button>
+          <Button component={RouterLink} href={path + ROUTE.PAGE_POOL_WITHDRAW}>{t`Withdraw`}</Button>
+          <Button component={RouterLink} href={path + ROUTE.PAGE_SWAP}>{t`Swap`}</Button>
+        </>
+      }
+    >
+      <Grid
+        container
+        spacing={Spacing.md}
+        sx={{
+          paddingBlockStart: Spacing.md, //temporary padding, should be using card header
+        }}
+      >
         {hasVolume && (
           <ListInfoItem
             label={t`24h Volume`}
@@ -134,15 +154,6 @@ export const LegacyPoolMobileExpandedPanel: ExpandedPanel<LegacyPoolListItem> = 
           </>
         )}
       </Grid>
-      <Stack sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 3, marginBlock: 3 }}>
-        <Button
-          data-testid="pool-link-deposit"
-          component={RouterLink}
-          href={path + ROUTE.PAGE_POOL_DEPOSIT}
-        >{t`Deposit`}</Button>
-        <Button component={RouterLink} href={path + ROUTE.PAGE_POOL_WITHDRAW}>{t`Withdraw`}</Button>
-        <Button component={RouterLink} href={path + ROUTE.PAGE_SWAP}>{t`Swap`}</Button>
-      </Stack>
-    </>
+    </TableExpandedPanel>
   )
 }

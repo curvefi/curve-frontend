@@ -2,9 +2,9 @@ import { ROUTE } from '@/dex/constants'
 import { getPath } from '@/dex/utils/utilsRouter'
 import Button from '@mui/material/Button'
 import Grid from '@mui/material/Grid'
-import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import type { ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
+import { TableExpandedPanel } from '@ui-kit/shared/ui/DataTable/TableExpandedPanel'
 import { Metric, type MetricProps } from '@ui-kit/shared/ui/Metric'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -28,14 +28,35 @@ const ListInfoItem = ({
 
 const highlight = { color: 'success' as const }
 
-export const PoolListMobileExpandedPanel: ExpandedPanel<PoolListItem> = ({ row, table }) => {
+export const PoolListMobileExpandedPanel: ExpandedPanel<PoolListItem> = ({ row, table, category }) => {
   const pool = row.original
   const path = getPath({ network: pool.network }, `${ROUTE.PAGE_POOLS}/${pool.address}`)
   const hasVolume = table.getColumn(PoolListColumnId.Volume)?.getIsVisible()
 
   return (
-    <>
-      <Grid container spacing={Spacing.md}>
+    <TableExpandedPanel
+      category={category}
+      footer={
+        <>
+          <Button data-testid="pool-link-deposit" component={RouterLink} href={path + ROUTE.PAGE_POOL_DEPOSIT}>
+            {t`Deposit`}
+          </Button>
+          <Button component={RouterLink} href={path + ROUTE.PAGE_POOL_WITHDRAW}>
+            {t`Withdraw`}
+          </Button>
+          <Button component={RouterLink} href={path + ROUTE.PAGE_SWAP}>
+            {t`Swap`}
+          </Button>
+        </>
+      }
+    >
+      <Grid
+        container
+        spacing={Spacing.md}
+        sx={{
+          paddingBlockStart: Spacing.md, //temporary padding, should be using card header
+        }}
+      >
         {hasVolume && (
           <ListInfoItem
             label={t`24h Volume`}
@@ -66,17 +87,6 @@ export const PoolListMobileExpandedPanel: ExpandedPanel<PoolListItem> = ({ row, 
           <PoolListRewards pool={pool} mobile />
         </Grid>
       </Grid>
-      <Stack sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 3, marginBlock: 3 }}>
-        <Button data-testid="pool-link-deposit" component={RouterLink} href={path + ROUTE.PAGE_POOL_DEPOSIT}>
-          {t`Deposit`}
-        </Button>
-        <Button component={RouterLink} href={path + ROUTE.PAGE_POOL_WITHDRAW}>
-          {t`Withdraw`}
-        </Button>
-        <Button component={RouterLink} href={path + ROUTE.PAGE_SWAP}>
-          {t`Swap`}
-        </Button>
-      </Stack>
-    </>
+    </TableExpandedPanel>
   )
 }

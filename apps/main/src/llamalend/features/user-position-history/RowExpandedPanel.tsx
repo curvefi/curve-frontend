@@ -2,19 +2,20 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { type ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
+import { TableExpandedPanel } from '@ui-kit/shared/ui/DataTable/TableExpandedPanel'
 import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
 import type { ParsedUserCollateralEvent } from './hooks/useUserCollateralEvents'
 
-const { Spacing } = SizesAndSpaces
-
-export const RowExpandedPanel: ExpandedPanel<ParsedUserCollateralEvent> = ({ row: { original: event } }) => {
+export const RowExpandedPanel: ExpandedPanel<ParsedUserCollateralEvent> = ({ row: { original: event }, category }) => {
   const { url, loanChange, borrowToken, collateralChange, collateralChangeUsd, collateralToken } = event
 
   return (
-    <Stack>
-      <Stack sx={{ paddingTop: Spacing.md }}>
+    <TableExpandedPanel
+      category={category}
+      footer={url && <ExternalLink href={url} label={t`View Transaction`} size="extraSmall" />}
+    >
+      <Stack>
         <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
           <Typography variant="bodyMRegular" color="textSecondary">{t`Collateral`}</Typography>
           <Typography
@@ -44,7 +45,6 @@ export const RowExpandedPanel: ExpandedPanel<ParsedUserCollateralEvent> = ({ row
           </Typography>
         </Stack>
       </Stack>
-      {url && <ExternalLink href={url} label={t`View Transaction`} size="extraSmall" />}
-    </Stack>
+    </TableExpandedPanel>
   )
 }

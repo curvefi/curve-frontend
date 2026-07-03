@@ -3,6 +3,7 @@ import Typography from '@mui/material/Typography'
 import { shortenString } from '@primitives/string.utils'
 import { t } from '@ui-kit/lib/i18n'
 import type { ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
+import { TableExpandedPanel } from '@ui-kit/shared/ui/DataTable/TableExpandedPanel'
 import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -15,6 +16,7 @@ export const PoolLiquidityExpandedPanel: ExpandedPanel<PoolLiquidityRow> = ({
   row: {
     original: { txUrl, tokenAmounts, poolTokens, provider, network, eventType },
   },
+  category,
 }) => {
   const isAdd = eventType === 'AddLiquidity'
 
@@ -24,8 +26,11 @@ export const PoolLiquidityExpandedPanel: ExpandedPanel<PoolLiquidityRow> = ({
     .filter(({ amount }) => amount !== 0)
 
   return (
-    <Stack>
-      <Stack sx={{ paddingTop: Spacing.md, gap: Spacing.xs }}>
+    <TableExpandedPanel
+      category={category}
+      footer={txUrl && <ExternalLink href={txUrl} label={t`View Transaction`} size="extraSmall" />}
+    >
+      <Stack>
         {nonZeroAmounts.map(({ amount, token }, index) => (
           <Stack
             key={token?.address ?? index}
@@ -48,7 +53,6 @@ export const PoolLiquidityExpandedPanel: ExpandedPanel<PoolLiquidityRow> = ({
           <Typography variant="tableCellMBold">{shortenString(provider)}</Typography>
         </Stack>
       </Stack>
-      {txUrl && <ExternalLink href={txUrl} label={t`View Transaction`} size="extraSmall" />}
-    </Stack>
+    </TableExpandedPanel>
   )
 }
