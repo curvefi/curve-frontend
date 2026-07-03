@@ -32,7 +32,7 @@ export type ListPoolsParams = {
   page?: number
   pagination?: number
   searchString?: string
-  poolType?: Schema.V2PoolFilterType
+  poolType?: string
   minTvl?: number
   maxTvl?: number
   minVolume?: number

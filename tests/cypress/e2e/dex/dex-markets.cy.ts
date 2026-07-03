@@ -5,7 +5,6 @@ import { API_LOAD_TIMEOUT, type Breakpoint, oneViewport } from '@cy/support/ui'
 import { assert } from '@primitives/objects.utils'
 
 const POOL_LIST_PAGE_SIZE = 50
-const RANGE_FILTER_DEBOUNCE_WAIT = 500
 // Keep in sync with the hidden default applied by the DEX pool-list filter hook.
 const DEFAULT_POOL_LIST_MIN_TVL = 10_000
 const DEFAULT_POOL_LIST_MIN_TVL_INPUT = '10k'
@@ -110,6 +109,15 @@ describe('DEX Pools', () => {
     cy.get('[data-testid="dex-pool-active-filter-type"]').should('be.visible')
   }
 
+  function expectPageResetAfter(action: () => void, waitForRequest = true) {
+    visitAndWait(width, height, { query: { page: '5' } })
+    action()
+    if (waitForRequest) {
+      cy.wait('@dex-pools', API_LOAD_TIMEOUT)
+    }
+    cy.location('search').should('not.include', 'page=')
+  }
+
   describe('First page', () => {
     beforeEach(() => visitAndWait(width, height))
 
@@ -200,6 +208,22 @@ describe('DEX Pools', () => {
       cy.get('[data-testid^="data-table-row-"]', API_LOAD_TIMEOUT).should('have.length.greaterThan', 0)
     })
 
+    it('resets page when search changes', () => {
+      expectPageResetAfter(() => {
+        cy.get('[data-testid="table-text-search-dex-pool-list"] input').type(DEX_POOL_LIST_SEARCH)
+      })
+      cy.location('search').should('include', `search=${DEX_POOL_LIST_SEARCH}`)
+    })
+
+    it('resets page when a filter changes', () => {
+      const poolType = 'crypto'
+
+      expectPageResetAfter(() => {
+        clickFilterChip(poolType)
+      }, false)
+      cy.location('search').should('include', `filter=${poolType}`)
+    })
+
     it('filters by TVL range input', () => {
       const minTvl = 480_000_000
 
@@ -249,11 +273,10 @@ describe('DEX Pools', () => {
       expectLastPoolRequestParams(params => {
         expect(params.get('min_tvl')).to.equal(`${DEFAULT_POOL_LIST_MIN_TVL}`)
       })
-      cy.location('search').should('not.include', 'tvl=')
       cy.get('[data-testid="dex-pool-active-filter-tvl"]').should('not.exist')
     })
 
-    it('normalizes default TVL min to max-only filtering', () => {
+    it('uses the default TVL min for max-only filtering without rewriting the URL', () => {
       const maxTvl = 500_000_000
 
       visitAndWait(width, height, { query: { tvl: `~${maxTvl}` } })
@@ -261,7 +284,6 @@ describe('DEX Pools', () => {
         expect(params.get('min_tvl')).to.equal(`${DEFAULT_POOL_LIST_MIN_TVL}`)
         expect(params.get('max_tvl')).to.equal(`${maxTvl}`)
       })
-      expectUrlQueryParam('tvl', `${DEFAULT_POOL_LIST_MIN_TVL}~${maxTvl}`)
       cy.get('[data-testid="dex-pool-active-filter-tvl"]')
         .should('be.visible')
         .and('contain.text', DEFAULT_POOL_LIST_TVL_MAX_CHIP)
@@ -283,19 +305,6 @@ describe('DEX Pools', () => {
       })
       expectUrlQueryParam('apy', '0~')
       cy.get('[data-testid="dex-pool-active-filter-apy"]').should('be.visible')
-    })
-
-    it('cancels pending range drafts when resetting filters', () => {
-      visitAndWait(width, height, { query: { tvl: '480000000~' } })
-      cy.get('[data-testid="dex-pool-active-filter-tvl"]').should('be.visible')
-      openPoolFilters()
-      cy.get('[data-testid="range-filter-volume-min"] input').clear().type('900000000').blur()
-      cy.get('[data-testid="btn-reset-filters"]').click()
-      cy.wait(RANGE_FILTER_DEBOUNCE_WAIT)
-      cy.url().should('not.include', 'tvl=').and('not.include', 'volume=')
-      cy.get('[data-testid^="dex-pool-active-filter-"]').should('not.exist')
-      cy.get('[data-testid="range-filter-volume-min"] input').should('have.value', '')
-      cy.get('[data-testid="range-filter-tvl-min"] input').should('have.value', DEFAULT_POOL_LIST_MIN_TVL_INPUT)
     })
   })
 

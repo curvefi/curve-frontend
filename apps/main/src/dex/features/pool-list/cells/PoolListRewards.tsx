@@ -12,7 +12,7 @@ import type { PoolListItem } from '../poolList.types'
 type CrvRewards = Pick<PoolListItem, 'crvApr' | 'crvAprBoosted'>
 type PoolListRewardsProps = {
   campaigns: CampaignRewards[]
-  mobile?: boolean
+  isMobile?: boolean
   pool: PoolListItem
 }
 
@@ -45,7 +45,7 @@ const EmptyRewards = () => (
 )
 
 // Rewards can be expensive to render once campaigns are present. Keep unchanged rows out of sort/filter-only renders.
-export const PoolListRewards = memo(function PoolListRewards({ campaigns, pool, mobile }: PoolListRewardsProps) {
+export const PoolListRewards = memo(function PoolListRewards({ campaigns, pool, isMobile }: PoolListRewardsProps) {
   const crvRewardsLabel = getCrvRewardsLabel(pool)
   const extraRewards = pool.extraRewardsApr.filter(({ apr }) => apr > 0)
   const hasCampaignRewards = campaigns.length > 0
@@ -71,7 +71,7 @@ export const PoolListRewards = memo(function PoolListRewards({ campaigns, pool, 
           {formatNumber(apr, 'percent.value')} {symbol ?? ''}
         </Typography>
       ))}
-      {hasCampaignRewards && <CampaignRewardsRow rewardItems={campaigns} mobile={mobile} />}
+      {hasCampaignRewards && <CampaignRewardsRow rewardItems={campaigns} mobile={isMobile} />}
     </Stack>
   )
 })

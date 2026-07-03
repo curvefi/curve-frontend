@@ -4,7 +4,7 @@ import type { NetworkConfig } from '@/dex/types/main.types'
 import type { SortDirection as PoolSortDirection, V2PoolSortField as PoolSortField } from '@curvefi/prices-api/pools'
 import { useMappedQuery } from '@ui-kit/types/util'
 import { getPoolListItem } from '../poolList.utils'
-import type { PoolListApiParams } from './usePoolListFilters'
+import type { PoolListApiParams } from '../poolListFilterQuery'
 import { POOL_LIST_PAGE_SIZE } from './usePoolListPagination'
 import { usePoolListUserHasPosition } from './usePoolListUserHasPosition'
 

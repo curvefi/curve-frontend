@@ -1,179 +1,72 @@
 import type { ListPoolsParams } from '@curvefi/prices-api/pools'
-import { fromEntries, maybe } from '@primitives/objects.utils'
-import {
-  normalizeRangeFilterDefaults,
-  serializeRangeFilter,
-  type RangeFilterDefaults,
-} from '@ui-kit/shared/ui/DataTable/filters'
-import {
-  isActiveUrlRange,
-  parseNumberUrlRange,
-  type NumberUrlRange,
-  type ParsedUrlRange,
-  type UrlRange,
-} from '@ui-kit/shared/ui/DataTable/urlFilter.utils'
-import { POOL_LIST_CRYPTO_POOL_TYPE_ALIASES, POOL_LIST_POOL_TYPES, type PoolListPoolType } from './poolList.constants'
+import { maybe, type PartialRecord } from '@primitives/objects.utils'
+import { parseRangeFilter } from '@ui-kit/shared/ui/DataTable/filters'
+import type { Range } from '@ui-kit/types/util'
 
-const POOL_TYPE_SET = new Set<string>(POOL_LIST_POOL_TYPES)
+export const POOL_LIST_SEARCH_QUERY_FIELD = 'search'
 
-export const POOL_LIST_FILTER_QUERY_FIELDS = {
-  search: 'search',
-  poolType: 'filter',
-  tvl: 'tvl',
-  volume: 'volume',
-  apy: 'apy',
-} as const
+export enum PoolListFilterId {
+  PoolType = 'filter',
+  Tvl = 'tvl',
+  Volume = 'volume',
+  Apy = 'apy',
+}
 
-const { apy, poolType, search, tvl, volume } = POOL_LIST_FILTER_QUERY_FIELDS
-const RANGE_QUERY_FIELDS = [tvl, volume, apy] as const
-const FILTER_QUERY_FIELDS = [search, poolType, ...RANGE_QUERY_FIELDS] as const
+export const POOL_LIST_FILTER_CHANGE_UPDATE = { page: null } as const
 
-type RangeQueryField = (typeof RANGE_QUERY_FIELDS)[number]
-type DefaultNumberRangeQueryField = typeof volume | typeof apy
-
-// Hide small pools by default, without treating the default min as an active URL/UI filter on its own.
+// Hide small pools by default, without treating the default min as an active UI filter on its own.
 export const POOL_LIST_DEFAULT_TVL_MIN = 10_000
-const POOL_LIST_DEFAULT_TVL_RANGE = [POOL_LIST_DEFAULT_TVL_MIN, null] satisfies RangeFilterDefaults<number>
-const POOL_LIST_DEFAULT_NUMBER_RANGE = [null, null] satisfies RangeFilterDefaults<number>
-// Volume is non-negative, so min 0 is the default. APY can be negative, so min 0 is an active filter.
-export const POOL_LIST_DEFAULT_NON_NEGATIVE_RANGE = [0, null] satisfies RangeFilterDefaults<number>
 
-const DEFAULT_FILTER_QUERY = fromEntries(FILTER_QUERY_FIELDS.map(field => [field, null]))
-
-export type PoolListNumberRange = NumberUrlRange
-export type PoolListQueryUpdate = Record<string, string | string[] | null>
-export type PoolListQueryUpdater = (update: PoolListQueryUpdate) => void
+type PoolListNumberRange = Range<number | null>
+type PoolListColumnFilters = PartialRecord<PoolListFilterId, string>
+export type PoolListQueryUpdater = (update: Record<string, string | string[] | null>) => void
 export type PoolListApiParams = Pick<
   ListPoolsParams,
   'poolType' | 'minTvl' | 'maxTvl' | 'minVolume' | 'maxVolume' | 'minApy' | 'maxApy'
 >
-export type PoolListFilterRanges = Readonly<{
-  apy: PoolListNumberRange
-  tvl: PoolListNumberRange
-  volume: PoolListNumberRange
-}>
-export type PoolListFilterQueryState = Readonly<{
-  cleanup: PoolListQueryUpdate
-  poolType: PoolListPoolType | undefined
-  ranges: PoolListFilterRanges
-  searchText: string
-}>
 
-const isPoolType = (value: string | null): value is PoolListPoolType =>
-  maybe(value, value => POOL_TYPE_SET.has(value)) ?? false
+const parseNumberBound = (value: string | undefined) => {
+  const trimmedValue = value?.trim()
 
-// The API exposes crypto aliases that map back to the single "crypto" UI filter.
-const getPoolTypeFromQuery = (value: string | null): PoolListPoolType | undefined =>
-  maybe(value, value =>
-    POOL_LIST_CRYPTO_POOL_TYPE_ALIASES.has(value) ? 'crypto' : isPoolType(value) ? value : undefined,
-  )
-
-const serializeRangeUpdate = <T extends string | number>(field: RangeQueryField, value: UrlRange<T>) => ({
-  [field]: serializeRangeFilter(value),
-})
-
-const serializeDefaultNumberRangeUpdate = (
-  field: DefaultNumberRangeQueryField,
-  value: PoolListNumberRange,
-  defaults: RangeFilterDefaults<number>,
-) => serializeRangeUpdate(field, normalizeRangeFilterDefaults(value, defaults))
-
-// Keep `tvl=10000~max` when a max exists so URL consumers can display a complete range.
-// Default-min-only stays hidden as no `tvl` param.
-const serializeTvlRange = (range: PoolListNumberRange) => {
-  const [minTvl, maxTvl] = normalizeRangeFilterDefaults(range, POOL_LIST_DEFAULT_TVL_RANGE)
-  const urlMinTvl = minTvl ?? maybe(maxTvl, () => POOL_LIST_DEFAULT_TVL_MIN) ?? null
-
-  return serializeRangeFilter([urlMinTvl, maxTvl])
+  return trimmedValue ? Number(trimmedValue) : null
 }
 
-const getRangeCleanupUpdate = <T extends string | number>(
-  field: RangeQueryField,
-  rangeState: ParsedUrlRange<T>,
-): PoolListQueryUpdate => (rangeState.shouldCleanUrl ? { [field]: serializeRangeFilter(rangeState.range) } : {})
+// URL params are raw API input. Do not reorder or reject manual ranges here.
+const parseApiRangeFilter = (value: string | undefined): PoolListNumberRange => {
+  const [min, max] = value?.split('~') ?? []
 
-const getTvlRangeCleanupUpdate = (
-  originalValue: string | null,
-  rangeState: ParsedUrlRange<number>,
-): PoolListQueryUpdate =>
-  maybe(originalValue, (originalValue): PoolListQueryUpdate => {
-    // Canonicalize shared/bookmarked TVL URLs to the same hidden-default contract used by user edits.
-    const value = serializeTvlRange(rangeState.range)
+  return [parseNumberBound(min), parseNumberBound(max)]
+}
 
-    return value === originalValue ? {} : { [tvl]: value }
-  }) ?? {}
+export const parsePoolListRangeFilter = (value: string | undefined): PoolListNumberRange =>
+  parseRangeFilter(value) ?? [null, null]
 
-export const getPoolListFilterQueryState = (searchParams: URLSearchParams): PoolListFilterQueryState => {
-  const poolTypeQueryValue = searchParams.get(poolType)
-  const tvlQueryValue = searchParams.get(tvl)
-  const volumeQueryValue = searchParams.get(volume)
-  const apyQueryValue = searchParams.get(apy)
-  const parsedPoolType = getPoolTypeFromQuery(poolTypeQueryValue)
-  const tvlRangeState = parseNumberUrlRange(tvlQueryValue, POOL_LIST_DEFAULT_TVL_RANGE)
-  const volumeRangeState = parseNumberUrlRange(volumeQueryValue, POOL_LIST_DEFAULT_NON_NEGATIVE_RANGE)
-  const apyRangeState = parseNumberUrlRange(apyQueryValue, POOL_LIST_DEFAULT_NUMBER_RANGE)
+const isActiveRangeFilter = ([min, max]: PoolListNumberRange, defaultMin: number | null) =>
+  max != null || (min != null && min !== defaultMin)
+
+export const getPoolListApiParams = (columnFiltersById: PoolListColumnFilters): PoolListApiParams => {
+  const [minApy, maxApy] = parseApiRangeFilter(columnFiltersById[PoolListFilterId.Apy])
+  const [minTvl, maxTvl] = parseApiRangeFilter(columnFiltersById[PoolListFilterId.Tvl])
+  const [minVolume, maxVolume] = parseApiRangeFilter(columnFiltersById[PoolListFilterId.Volume])
 
   return {
-    cleanup: {
-      ...(poolTypeQueryValue != null && !parsedPoolType ? { [poolType]: null } : {}),
-      ...getTvlRangeCleanupUpdate(tvlQueryValue, tvlRangeState),
-      ...getRangeCleanupUpdate(volume, volumeRangeState),
-      ...getRangeCleanupUpdate(apy, apyRangeState),
-    },
-    poolType: parsedPoolType,
-    ranges: {
-      apy: apyRangeState.range,
-      tvl: tvlRangeState.range,
-      volume: volumeRangeState.range,
-    },
-    searchText: searchParams.get(search) ?? '',
+    maxApy: maxApy ?? undefined,
+    maxTvl: maxTvl ?? undefined,
+    maxVolume: maxVolume ?? undefined,
+    minApy: minApy ?? undefined,
+    minTvl: minTvl ?? POOL_LIST_DEFAULT_TVL_MIN,
+    minVolume: minVolume ?? undefined,
+    poolType: columnFiltersById[PoolListFilterId.PoolType] || undefined,
   }
 }
 
-export const getPoolListApiParams = ({
-  poolType,
-  ranges: {
-    apy: [minApy, maxApy],
-    tvl: [minTvl, maxTvl],
-    volume: [minVolume, maxVolume],
-  },
-}: PoolListFilterQueryState): PoolListApiParams => ({
-  maxApy: maxApy ?? undefined,
-  maxTvl: maxTvl ?? undefined,
-  maxVolume: maxVolume ?? undefined,
-  minApy: minApy ?? undefined,
-  minTvl: minTvl ?? POOL_LIST_DEFAULT_TVL_MIN,
-  minVolume: minVolume ?? undefined,
-  poolType,
-})
-
-export const hasPoolListActiveFilters = ({ poolType, ranges }: PoolListFilterQueryState) =>
-  Boolean(poolType) || [ranges.tvl, ranges.volume, ranges.apy].some(isActiveUrlRange)
-
-export const getPoolListEditableTvlRange = ([min, max]: PoolListNumberRange): PoolListNumberRange => [
-  min ?? POOL_LIST_DEFAULT_TVL_MIN,
-  max,
-]
+export const hasPoolListActiveFilters = (columnFiltersById: PoolListColumnFilters) =>
+  Boolean(columnFiltersById[PoolListFilterId.PoolType]) ||
+  isActiveRangeFilter(parsePoolListRangeFilter(columnFiltersById[PoolListFilterId.Tvl]), POOL_LIST_DEFAULT_TVL_MIN) ||
+  isActiveRangeFilter(parsePoolListRangeFilter(columnFiltersById[PoolListFilterId.Volume]), 0) ||
+  isActiveRangeFilter(parsePoolListRangeFilter(columnFiltersById[PoolListFilterId.Apy]), null)
 
 export const getPoolListTvlLabelRange = ([min, max]: PoolListNumberRange): PoolListNumberRange => [
   min ?? maybe(max, () => POOL_LIST_DEFAULT_TVL_MIN) ?? null,
   max,
 ]
-
-export const getPoolListSearchUpdate = (value: string): PoolListQueryUpdate => ({ [search]: value || null })
-
-export const getPoolListPoolTypeUpdate = (value: PoolListPoolType | null): PoolListQueryUpdate => ({
-  [poolType]: value,
-})
-
-export const getPoolListTvlRangeUpdate = (value: PoolListNumberRange): PoolListQueryUpdate => ({
-  [tvl]: serializeTvlRange(value),
-})
-
-export const getPoolListVolumeRangeUpdate = (value: PoolListNumberRange): PoolListQueryUpdate =>
-  serializeDefaultNumberRangeUpdate(volume, value, POOL_LIST_DEFAULT_NON_NEGATIVE_RANGE)
-
-export const getPoolListApyRangeUpdate = (value: PoolListNumberRange): PoolListQueryUpdate =>
-  serializeDefaultNumberRangeUpdate(apy, value, POOL_LIST_DEFAULT_NUMBER_RANGE)
-
-export const getPoolListResetFiltersUpdate = (): PoolListQueryUpdate => ({ ...DEFAULT_FILTER_QUERY })
