@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 import type { IChainId, INetworkName } from '@curvefi/api/lib/interfaces'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BaseConfig } from '@ui/utils'
 import { BannerProps } from '@ui-kit/shared/ui/Banner'
@@ -19,7 +20,7 @@ export type NetworkConfigFromApi = {
 export type NetworkUrlParams = { network: INetworkName }
 export type PoolUrlParams = NetworkUrlParams & { poolIdOrAddress: string; formType?: RFormType }
 export type PoolAddressParams = NetworkUrlParams & { poolAddress: Address }
-export type CrvLockerUrlParams = NetworkUrlParams & { formType?: RFormType }
+type CrvLockerUrlParams = NetworkUrlParams & { formType?: RFormType }
 export type UrlParams = NetworkUrlParams & Partial<PoolUrlParams & CrvLockerUrlParams>
 
 export type NetworkConfig = {
@@ -66,17 +67,7 @@ export type CurrencyReserves = {
   totalUsd: string
 }
 export type CurrencyReservesMapper = Record<string, CurrencyReserves>
-export const FormTypes = [
-  'deposit',
-  'withdraw',
-  'swap',
-  'adjust_crv',
-  'adjust_date',
-  'create',
-  'manage-gauge',
-  '',
-] as const
-export type RFormType = (typeof FormTypes)[number]
+export type RFormType = 'deposit' | 'withdraw' | 'swap' | 'adjust_crv' | 'adjust_date' | 'create' | 'manage-gauge' | ''
 export type Pool = PoolTemplate
 export type ClaimableReward = {
   token: string
@@ -116,9 +107,10 @@ export type Token = {
 }
 export type TokensMapper = Record<string, Token | undefined>
 export type TokensNameMapper = Record<string, string>
+export type PoolVolumes = Record<string, Decimal>
 export type GaugeStatus = { rewardsNeedNudging: boolean; areCrvRewardsStuckInBridge: boolean }
 
-export type Gauge = {
+type Gauge = {
   status: GaugeStatus | null
   isKilled: boolean | null
 }

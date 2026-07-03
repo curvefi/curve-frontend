@@ -1,6 +1,6 @@
 import { ButtonHTMLAttributes } from 'react'
 
-export type Size = 'x-small' | 'small' | 'medium' | 'large' | 'x-large'
+type Size = 'x-small' | 'small' | 'medium' | 'large' | 'x-large'
 
 export type IconButtonProps = {
   hidden?: boolean

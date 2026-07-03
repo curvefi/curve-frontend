@@ -31,15 +31,6 @@ export const hyperliquid = defineChain({
   rpcUrls: { default: { http: RPC[ChainId.Hyperliquid] } },
 })
 
-export const tac = defineChain({
-  ...chainConfig,
-  id: ChainId.Tac as const,
-  name: 'tac',
-  testnet: true,
-  nativeCurrency: { name: 'tac', symbol: 'TAC', decimals: 8 },
-  rpcUrls: { default: { http: RPC[ChainId.Tac] } },
-})
-
 export const megaeth = defineChain({
   ...chainConfig,
   id: ChainId.MegaEth as const,
@@ -65,4 +56,16 @@ export const expchain = defineChain({
   testnet: true,
   nativeCurrency: { name: 'tZKJ', symbol: 'tZKJ', decimals: 18 },
   rpcUrls: { default: { http: RPC[ChainId.ExpChain] } },
+})
+
+export const robinhood = defineChain({
+  ...chainConfig,
+  id: ChainId.Robinhood as const,
+  name: 'Robinhood',
+  testnet: false,
+  nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+  blockTime: 250,
+  rpcUrls: { default: { http: RPC[ChainId.Robinhood] } },
+  blockExplorers: { default: { name: 'Robinhood Explorer', url: 'https://robinhoodchain.blockscout.com' } },
+  contracts: { multicall3: { address: '0xca11bde05977b3631167028862be2a173976ca11' } },
 })

@@ -4,7 +4,7 @@ import type { FieldsOf } from '@ui-kit/lib'
 import type { UserMarketParams, UserMarketQuery } from '@ui-kit/lib/model'
 import type { MakeOptional } from '@ui-kit/types/util'
 
-export type CompleteRepayForm = {
+type CompleteRepayForm = {
   userCollateral: Decimal
   stateCollateral: Decimal
   userBorrowed: Decimal

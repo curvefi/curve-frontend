@@ -51,7 +51,7 @@ export const {
     })
     switch (type) {
       case 'zapV2':
-        return await impl.repayIsApproved({ userCollateral, userBorrowed })
+        return await impl.repayIsApproved({ userCollateral })
       case 'V1':
       case 'V2':
         return await impl.repayIsApproved(userCollateral, userBorrowed)

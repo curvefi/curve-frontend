@@ -3,7 +3,7 @@ import type { TooltipProps } from '@ui/Tooltip/types'
 
 type ValueOf<T> = T[keyof T]
 
-export type ChipSize = 'xs' | 'sm' | 'md' | 'lg'
+type ChipSize = 'xs' | 'sm' | 'md' | 'lg'
 
 export type ChipProps = {
   className?: string

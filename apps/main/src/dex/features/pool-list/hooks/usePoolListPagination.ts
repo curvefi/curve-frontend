@@ -6,7 +6,7 @@ export const POOL_LIST_PAGE_SIZE = 50
 
 const PAGE_QUERY_FIELD = 'page'
 
-export type PoolListQueryUpdate = Record<string, string | string[] | null>
+type PoolListQueryUpdate = Record<string, string | string[] | null>
 export type PoolListQueryUpdater = (update: PoolListQueryUpdate) => void
 
 export const usePoolListPagination = () => {

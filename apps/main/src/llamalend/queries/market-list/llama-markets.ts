@@ -42,7 +42,7 @@ import {
 } from './lending-vaults'
 import { getMintMarketOptions, getUserMintMarketsOptions, MintMarket } from './mint-markets'
 
-export type Assets = {
+type Assets = {
   borrowed: AssetDetails
   collateral: AssetDetails
 }

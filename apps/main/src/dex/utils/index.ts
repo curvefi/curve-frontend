@@ -1,7 +1,9 @@
 import { zeroAddress } from 'viem'
-import type { ChainId, Token } from '@/dex/types/main.types'
+import type { ChainId, NetworkConfig, Token } from '@/dex/types/main.types'
 import type { Address } from '@primitives/address.utils'
 import type { TokenOption } from '@ui-kit/features/select-token'
+import { isDexPoolListV2Enabled } from '@ui-kit/hooks/useFeatureFlags'
+import { ReleaseChannel } from '@ui-kit/utils'
 
 export { getStorageValue, setStorageValue } from '@/dex/utils/storage'
 
@@ -67,3 +69,6 @@ export const toTokenOption =
     symbol: token.symbol,
     volume: token.volume,
   })
+
+export const isLegacyList = (releaseChannel: ReleaseChannel, network: NetworkConfig | undefined) =>
+  !isDexPoolListV2Enabled(releaseChannel) || !network?.pricesApi
