@@ -67,5 +67,6 @@ export const usePoolComposition = ({
     isLoading: usePricesApiReserves ? !pricesApiPoolData?.balances.length : !currencyReserves,
     rows,
     totalUsd: usePricesApiReserves ? pricesApiTotalUsd?.toString() : currencyReserves?.totalUsd,
+    hasBalance: sum(rows.map(row => row.amount ?? 0)) > 0,
   }
 }
