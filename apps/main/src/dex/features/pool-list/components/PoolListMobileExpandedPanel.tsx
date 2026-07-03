@@ -14,6 +14,7 @@ import { PoolListRewards } from '../cells/PoolListRewards'
 import { PoolListColumnId } from '../columns/column.enum'
 import type { PoolListItem } from '../poolList.types'
 import { getPoolYieldApy } from '../poolList.utils'
+import { ReactNode } from 'react'
 
 const { Spacing } = SizesAndSpaces
 
@@ -24,6 +25,12 @@ const ListInfoItem = ({
   <Grid size={6}>
     <Metric category="dex.poolListMobileExpanded" value={constQ(decimal(value) ?? null)} {...props} />
   </Grid>
+)
+
+const LinkButton = ({ children, href, testId }: { children: ReactNode; href: string; testId?: string }) => (
+  <Button component={RouterLink} href={href} data-testid={testId}>
+    {children}
+  </Button>
 )
 
 const highlight = { color: 'success' as const }
@@ -38,15 +45,11 @@ export const PoolListMobileExpandedPanel: ExpandedPanel<PoolListItem> = ({ row, 
       category={category}
       footer={
         <>
-          <Button data-testid="pool-link-deposit" component={RouterLink} href={path + ROUTE.PAGE_POOL_DEPOSIT}>
+          <LinkButton testId="pool-link-deposit" href={path + ROUTE.PAGE_POOL_DEPOSIT}>
             {t`Deposit`}
-          </Button>
-          <Button component={RouterLink} href={path + ROUTE.PAGE_POOL_WITHDRAW}>
-            {t`Withdraw`}
-          </Button>
-          <Button component={RouterLink} href={path + ROUTE.PAGE_SWAP}>
-            {t`Swap`}
-          </Button>
+          </LinkButton>
+          <LinkButton href={path + ROUTE.PAGE_POOL_WITHDRAW}>{t`Withdraw`}</LinkButton>
+          <LinkButton href={path + ROUTE.PAGE_SWAP}>{t`Swap`}</LinkButton>
         </>
       }
     >
@@ -54,7 +57,7 @@ export const PoolListMobileExpandedPanel: ExpandedPanel<PoolListItem> = ({ row, 
         container
         spacing={Spacing.md}
         sx={{
-          paddingBlockStart: Spacing.md, //temporary padding, should be using card header
+          paddingBlockStart: Spacing.md, // TODO: temporary padding, should be using card header
         }}
       >
         {hasVolume && (
