@@ -6,7 +6,6 @@ import { useBorrowMoreFutureLeverage } from '@/llamalend/queries/borrow-more/bor
 import { useBorrowMoreEstimateGas } from '@/llamalend/queries/borrow-more/borrow-more-gas-estimate.query'
 import { useBorrowMoreHealth } from '@/llamalend/queries/borrow-more/borrow-more-health.query'
 import { useBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
-import { useBorrowMorePriceImpact } from '@/llamalend/queries/borrow-more/borrow-more-price-impact.query'
 import { useBorrowMorePrices } from '@/llamalend/queries/borrow-more/borrow-more-prices.query'
 import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useUserCurrentLeverage } from '@/llamalend/queries/user'
@@ -20,8 +19,9 @@ import type { Decimal } from '@primitives/decimal.utils'
 import type { UseFormReturn } from '@ui-kit/features/forms'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import type { LlamaMarketType } from '@ui-kit/types/market'
-import { mapQuery, q } from '@ui-kit/types/util'
+import { mapQuery, q, type QueryProp } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
+import type { PriceImpact } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { getLeverageInfoFields } from '../../../widgets/action-card/hooks/getLeverageInfoFields'
 
 export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
@@ -35,6 +35,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   controllerAddress,
   marketType,
   routes,
+  priceImpact,
 }: {
   params: BorrowMoreParams<ChainId>
   values: BorrowMoreForm
@@ -46,6 +47,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   leverageEnabled: boolean | undefined
   form: UseFormReturn<BorrowMoreForm>
   routes: MarketRoutes | undefined
+  priceImpact: QueryProp<PriceImpact | Decimal | null>
 }) {
   const isOpen = form.isTouched('userCollateral', 'userBorrowed', 'debt')
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken }, isOpen)
@@ -90,7 +92,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
         routes,
         slippage,
         onSlippageChange,
-        priceImpact: useBorrowMorePriceImpact(params, isOpen),
+        priceImpact,
         collateralDelta,
       })}
       {...useBorrowRates({ params, marketType, controllerAddress, debtDelta: debt }, isOpen)}

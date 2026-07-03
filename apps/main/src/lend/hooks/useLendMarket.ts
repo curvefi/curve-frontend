@@ -6,7 +6,7 @@ import { useMappedQuery } from '@ui-kit/types/util'
 import { useLendMarkets } from '../queries/lend-markets.query'
 import { ChainId } from '../types/lend.types'
 
-export function useLendMarketData(chainId: ChainId, marketId: string, enabled?: boolean) {
+function useLendMarketData(chainId: ChainId, marketId: string, enabled?: boolean) {
   const lendMarkets = useLendMarkets({ chainId, enableLLv2: useLLv2() }, enabled)
   const lendMarket = useMappedQuery(
     lendMarkets,

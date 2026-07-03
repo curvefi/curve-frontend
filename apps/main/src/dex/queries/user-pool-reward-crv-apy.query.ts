@@ -11,13 +11,11 @@ export async function userPoolRewardCrvApy(pool: PoolTemplate, userAddress: Addr
   return String(result) === 'NaN' ? 0 : result
 }
 
-export const { useQuery: useUserPoolRewardCrvApyQuery, invalidate: invalidateUserPoolRewardCrvApyQuery } = queryFactory(
-  {
-    queryKey: ({ chainId, poolId, userAddress }: UserPoolParams) =>
-      [...rootKeys.userPool({ chainId, poolId, userAddress }), 'reward-crv-apy'] as const,
-    category: 'dex.user',
-    queryFn: async ({ poolId, userAddress }: UserPoolQuery) =>
-      userPoolRewardCrvApy(requireLib('curveApi').getPool(poolId), userAddress),
-    validationSuite: userPoolValidationSuite,
-  },
-)
+export const { invalidate: invalidateUserPoolRewardCrvApyQuery } = queryFactory({
+  queryKey: ({ chainId, poolId, userAddress }: UserPoolParams) =>
+    [...rootKeys.userPool({ chainId, poolId, userAddress }), 'reward-crv-apy'] as const,
+  category: 'dex.user',
+  queryFn: async ({ poolId, userAddress }: UserPoolQuery) =>
+    userPoolRewardCrvApy(requireLib('curveApi').getPool(poolId), userAddress),
+  validationSuite: userPoolValidationSuite,
+})

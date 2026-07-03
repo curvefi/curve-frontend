@@ -1,6 +1,6 @@
 export { useUserState, type UserState } from './user-state.query'
 export { useUserHealth, getUserHealthOptions } from './user-health.query'
-export { useLoanExists, refetchLoanExists, getLoanExists } from './user-loan-exists.query'
+export { useLoanExists } from './user-loan-exists.query'
 export { useUserPrices } from './user-prices.query'
 export { useUserCurrentLeverage, getUserCurrentLeverageKey } from './user-current-leverage.query'
 export { useUserBalances } from './user-balances.query'

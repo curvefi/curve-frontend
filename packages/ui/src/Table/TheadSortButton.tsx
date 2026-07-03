@@ -6,7 +6,7 @@ import { Spinner } from '@ui/Spinner/Spinner'
 import { TheadButton } from '@ui/Table'
 import type { IndicatorPlacement } from './types'
 
-export type Order = 'desc' | 'asc'
+type Order = 'desc' | 'asc'
 
 export type TheadSortButtonProps<T> = ButtonHTMLAttributes<HTMLButtonElement> &
   ButtonProps & {

@@ -59,10 +59,14 @@ export const hasLeverage = <T extends LlamaMarketTemplate | undefined>(market: T
  * Note: Some older Mint markets (marketId < 6) support leverage operations (open/close positions)
  * but cannot calculate the leverage multiplier value.
  */
-export const hasLeverageValue = (market: LlamaMarketTemplate) =>
-  hasZapV2(market) ||
-  (market instanceof LendMarketTemplate && hasV1Leverage(market)) ||
-  (market instanceof MintMarketTemplate && hasV2Leverage(market))
+export const hasLeverageValue = <T extends LlamaMarketTemplate | null | undefined>(market: T) =>
+  maybe(
+    market,
+    market =>
+      hasZapV2(market) ||
+      (market instanceof LendMarketTemplate && hasV1Leverage(market)) ||
+      (market instanceof MintMarketTemplate && hasV2Leverage(market)),
+  )
 
 export const hasV1Leverage = (market: LlamaMarketTemplate) =>
   market instanceof LendMarketTemplate

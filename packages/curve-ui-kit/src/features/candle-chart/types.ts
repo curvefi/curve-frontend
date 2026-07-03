@@ -22,7 +22,7 @@ export type OraclePriceData = {
   value: number
 }
 
-export type LiquidationRange = { value: number; time: UTCTimestamp }
+type LiquidationRange = { value: number; time: UTCTimestamp }
 
 export type LlammaLiquididationRange = {
   price1: LiquidationRange[]

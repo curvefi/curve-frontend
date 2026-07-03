@@ -50,8 +50,6 @@ type ActionInfoBaseProps = {
   sx?: StackProps['sx']
 }
 
-export type ActionInfoOverrideProps = Partial<ActionInfoBaseProps>
-
 type ActionInfoLegacyProps = {
   /** Primary value to display and copy */
   value: ReactNode

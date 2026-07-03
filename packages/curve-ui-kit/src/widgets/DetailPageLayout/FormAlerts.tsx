@@ -12,7 +12,11 @@ import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { type QueryProp } from '@ui-kit/types/util'
 import { formatNumber, getErrorMessage } from '@ui-kit/utils'
-import { getPriceImpactSeverity } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
+import {
+  getPriceImpactSeverity,
+  getPriceImpactPercent,
+  type PriceImpact,
+} from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import type { SlippageType } from '@ui-kit/widgets/SlippageSettings'
 
 type FormErrors<Field extends string> = readonly (readonly [Field, string])[]
@@ -76,13 +80,13 @@ export const HighPriceImpactAlert = ({
   values: { slippage },
   slippageType,
 }: {
-  priceImpact: QueryProp<Decimal | null>
+  priceImpact: QueryProp<PriceImpact | Decimal | null>
   max: QueryProp<unknown> // dependent query that is necessary before the price impact query is even enabled
   values: { slippage: Decimal | undefined }
   slippageType: SlippageType
 }) => {
   const isLoading = isImpactLoading || isMaxLoading // impact will only start loading after the max is available
-  const severity = getPriceImpactSeverity({ data }, { slippage, slippageType })
+  const severity = getPriceImpactSeverity(data, { slippage, slippageType })
   const prevSeverity = usePreviousValue(severity)
   return error ? (
     <Alert severity="error" data-testid="high-price-impact-error">
@@ -94,7 +98,7 @@ export const HighPriceImpactAlert = ({
       <WithSkeleton loading={isLoading}>
         <Alert severity={severity ?? 'warning'} data-testid="high-price-impact-alert" variant="outlined">
           <AlertTitle sx={{ color: { warning: 'warning.main', error: 'error.main' }[severity!] }}>
-            {t`High price impact:`} -{formatNumber(data, 'percent.rate')}
+            {t`High price impact:`} -{formatNumber(getPriceImpactPercent(data), 'percent.rate')}
           </AlertTitle>
           {t`Consider reducing the amount or waiting for better market conditions.`}
         </Alert>

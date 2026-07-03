@@ -1,3 +1,4 @@
+import { formatUnits } from 'ethers'
 import type { GetExpectedFn } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
@@ -5,7 +6,7 @@ import type { Address } from '@primitives/address.utils'
 import { toArray } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
-import { Chain, formatUnits } from '@ui-kit/utils'
+import { Chain } from '@ui-kit/utils'
 import { fetchApiRoutes, getRouteById } from './router-api.query'
 import type { RouteMeta, RouteMutationMeta, RoutesQuery } from './router-api.types'
 
@@ -54,8 +55,9 @@ export const getExpectedFn =
     chainId,
     router = SOLVER_CHAINS.includes(chainId) ? 'curve-solver' : 'curve', // router is unset when checking the max borrow
     userAddress,
+    zapAddress,
     slippage,
-  }: Pick<RoutesQuery, 'chainId' | 'router' | 'slippage' | 'userAddress'>): GetExpectedFn =>
+  }: Pick<RoutesQuery, 'chainId' | 'router' | 'slippage' | 'userAddress' | 'zapAddress'>): GetExpectedFn =>
   async (tokenIn, tokenOut, amountIn, blacklist) => {
     const routes = await fetchApiRoutes({
       chainId,
@@ -66,6 +68,7 @@ export const getExpectedFn =
       router,
       slippage,
       userAddress,
+      zapAddress,
     })
     const route = assert(routes?.[0], 'No route available')
     return parseRoute(route.id).quote

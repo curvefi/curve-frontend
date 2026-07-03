@@ -14,7 +14,7 @@ import type { Decimal } from '@primitives/decimal.utils'
  *   userAddr: "0x47E2D28169738039755586743E2dfCF3bd643f86",
  * };
  */
-export type AssemblePathRequest = {
+type AssemblePathRequest = {
   /**
    * Address of the user who will execute the assembled transaction.
    *
