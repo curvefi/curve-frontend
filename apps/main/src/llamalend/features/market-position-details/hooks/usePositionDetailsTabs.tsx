@@ -11,7 +11,7 @@ import type { QueryProp } from '@ui-kit/types/util'
 import { BorrowPositionDetails } from '../BorrowPositionDetails'
 import { MarketEmptyPosition } from '../MarketEmptyPosition'
 
-export type PositionDetailsTab = 'borrowDetails' | 'activity'
+type PositionDetailsTab = 'borrowDetails' | 'activity'
 type PositionDetailsTabOption = TabOption<PositionDetailsTab> & { render: () => ReactNode }
 
 const DEFAULT_TAB: PositionDetailsTab = 'borrowDetails'

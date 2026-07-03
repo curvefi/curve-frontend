@@ -48,7 +48,7 @@ const approveRepay = async (
   })
   switch (type) {
     case 'zapV2':
-      return (await impl.repayApprove({ userCollateral, userBorrowed })) as Hex[]
+      return (await impl.repayApprove({ userCollateral })) as Hex[]
     case 'V1':
     case 'V2':
       return (await impl.repayApprove(userCollateral, userBorrowed)) as Hex[]
@@ -80,7 +80,6 @@ const repay = async (
       return (await impl.repay({
         stateCollateral,
         userCollateral,
-        userBorrowed,
         ...parseMutationRoute(market, { routeId, slippage, isRepay: true }),
       })) as Hex
     case 'V1':

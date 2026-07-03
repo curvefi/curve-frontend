@@ -44,7 +44,6 @@ export const { useQuery: useCreateLoanPriceImpact, invalidate: invalidateCreateL
       case 'zapV2': {
         const { priceImpact } = await impl.createLoanExpectedMetrics({
           userCollateral,
-          userBorrowed,
           debt,
           range,
           ...parseRoute(routeId),

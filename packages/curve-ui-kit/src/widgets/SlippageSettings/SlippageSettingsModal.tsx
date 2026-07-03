@@ -46,7 +46,6 @@ export const SlippageSettingsModal = ({
             <FormAlerts formErrors={form.formState.visibleErrors} handledErrors={SLIPPAGE_TYPES} />
           </Stack>
         }
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         formProps={{ onSubmit }}
         compact
       >

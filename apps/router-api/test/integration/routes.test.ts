@@ -9,8 +9,12 @@ import { createRouterApiServer } from '../../src/server'
 process.loadEnvFile()
 
 const CHAIN_ID_ETHEREUM = '1'
+const CHAIN_ID_OPTIMISM = '10'
 const ETHEREUM_USDC = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'
 const ETHEREUM_USDT = '0xdac17f958d2ee523a2206206994597c13d831ec7'
+
+const OPTIMISM_USDC = '0x0b2c639c533813f4aa9d7837caf62653d097ff85'
+const OPTIMISM_USDT = '0x94b008aa00579c1307b0ef2c499ad98a8ce58e58'
 
 const CHAIN_ID_ARBITRUM = '42161'
 const ARBITRUM_USDC = '0xaf88d065e77c8cc2239327c5edb3a432268e5831'
@@ -66,7 +70,7 @@ const successCasesByProvider: PartialRecord<RouteProvider, Record<string, Succes
         tokenOut: [ETHEREUM_USDC],
         amountIn: [toWei('1000', USD_DECIMALS)],
         router: ['enso'],
-        userAddress: ['0xF977814e90dA44bFA03b6295A0616a897441aceC'], // binance hot wallet (largest USDT holder on Ethereum now)
+        zapAddress: '0xF977814e90dA44bFA03b6295A0616a897441aceC', // binance hot wallet (largest USDT holder on Ethereum now)
       },
     },
     'arbitrum amountIn': {
@@ -76,7 +80,17 @@ const successCasesByProvider: PartialRecord<RouteProvider, Record<string, Succes
         tokenOut: [ARBITRUM_USDT],
         amountIn: [toWei('100', USD_DECIMALS)],
         router: ['enso'],
-        userAddress: '0x2Df1c51E09aECF9cacB7bc98cB1742757f163dF7', // Hyperliquid: Deposit Bridge 2 (largest USDC holder on Arbitrum now)
+        zapAddress: '0x2Df1c51E09aECF9cacB7bc98cB1742757f163dF7', // Hyperliquid: Deposit Bridge 2 (largest USDC holder on Arbitrum now)
+      },
+    },
+    'optimism amountIn': {
+      query: {
+        chainId: CHAIN_ID_OPTIMISM,
+        tokenIn: [OPTIMISM_USDC],
+        tokenOut: [OPTIMISM_USDT],
+        amountIn: [toWei('100', USD_DECIMALS)],
+        router: ['enso'],
+        zapAddress: '0xBA12222222228d8Ba445958a75a0704d566BF2C8', // Balancer Vault
       },
     },
     'arbitrum amountOut': {
@@ -98,9 +112,40 @@ const successCasesByProvider: PartialRecord<RouteProvider, Record<string, Succes
         amountIn: [toWei('1000', USD_DECIMALS)],
         blacklist: [ETHEREUM_USDC],
         router: ['odos'],
-        // Odos requires a caller (leverage zap) and a blacklist address; any valid addresses are acceptable for quoting
-        userAddress: '0xC5898606BdB494a994578453B92e7910a90aA873',
+        zapAddress: '0xC5898606BdB494a994578453B92e7910a90aA873',
         slippage: '0.5',
+      },
+    },
+  },
+  '0x': {
+    'ethereum amountIn': {
+      query: {
+        chainId: CHAIN_ID_ETHEREUM,
+        tokenIn: [ETHEREUM_USDC],
+        tokenOut: [ETHEREUM_USDT],
+        amountIn: [toWei('1000', USD_DECIMALS)],
+        router: ['0x'],
+        zapAddress: '0xF977814e90dA44bFA03b6295A0616a897441aceC',
+      },
+    },
+    'optimism amountIn': {
+      query: {
+        chainId: CHAIN_ID_OPTIMISM,
+        tokenIn: [OPTIMISM_USDC],
+        tokenOut: [OPTIMISM_USDT],
+        amountIn: [toWei('100', USD_DECIMALS)],
+        router: ['0x'],
+        zapAddress: '0xBA12222222228d8Ba445958a75a0704d566BF2C8',
+      },
+    },
+    'arbitrum amountIn': {
+      query: {
+        chainId: CHAIN_ID_ARBITRUM,
+        tokenIn: [ARBITRUM_USDC],
+        tokenOut: [ARBITRUM_USDT],
+        amountIn: [toWei('100', USD_DECIMALS)],
+        router: ['0x'],
+        zapAddress: '0x2Df1c51E09aECF9cacB7bc98cB1742757f163dF7',
       },
     },
   },
@@ -209,11 +254,11 @@ describe('GET routes integration', () => {
   Object.entries(successCasesByProvider).forEach(([router, cases]) => {
     Object.entries(cases).forEach(([label, { query, expectedRoutes = 1 }]) => {
       it(`returns a valid route for ${router} - ${label}`, async () => {
-        const { json, statusCode } = await server.inject({
+        const { json, body, statusCode } = await server.inject({
           url: '/api/router/v1/routes',
           query: { ...query, router },
         })
-        expect(statusCode).toBe(200)
+        expect(statusCode, `${router} - ${label} failed with response: ${body}`).toBe(200)
 
         const payload = json<RouterRouteResponse[]>()
         expect(payload).toHaveLength(expectedRoutes)

@@ -7,6 +7,9 @@ export type ZeroExQuoteRequest = {
   buyToken: Address
   sellAmount: Decimal
   taker: Address
+  swapFeeRecipient?: Address
+  swapFeeBps?: Decimal
+  swapFeeToken?: Address
 }
 
 export type ZeroExQuoteResponse = {
@@ -28,14 +31,14 @@ export type ZeroExQuoteResponse = {
   zid: string
 }
 
-export type ZeroExRouteFill = {
+type ZeroExRouteFill = {
   from: Address
   to: Address
   source: string
   proportionBps: Decimal
 }
 
-export type ZeroExRouteToken = {
+type ZeroExRouteToken = {
   address: Address
   symbol: string
 }

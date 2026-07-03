@@ -5,7 +5,7 @@ import { useEstimateGas } from '@ui-kit/lib/model/entities/gas-info'
 import type { ScrvUsdWithdrawParams, ScrvUsdWithdrawQuery } from './scrvusd.validation'
 import { scrvUsdWithdrawMaxValidationSuite } from './scrvusd.validation'
 
-export const { useQuery: useScrvUsdWithdrawEstimateGasQuery } = queryFactory({
+const { useQuery: useScrvUsdWithdrawEstimateGasQuery } = queryFactory({
   queryKey: ({ chainId, userAddress, withdrawAmount, isFull, maxWithdrawAmount }: ScrvUsdWithdrawParams) =>
     [
       ...rootKeys.userChain({ chainId, userAddress }),

@@ -1,5 +1,4 @@
 import type { V2PoolFilterType, V2PoolSortField } from '@curvefi/prices-api/pools'
-import { recordValues } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { PoolListColumnId } from './columns/column.enum'
 
@@ -11,7 +10,7 @@ export const POOL_LIST_POOL_TYPE_FILTERS = [
   { key: 'factory_tricrypto', label: t`Tricrypto` },
 ] as const satisfies readonly { key: V2PoolFilterType; label: string }[]
 
-export type PoolListFilter = (typeof POOL_LIST_POOL_TYPE_FILTERS)[number]
+type PoolListFilter = (typeof POOL_LIST_POOL_TYPE_FILTERS)[number]
 export type PoolListPoolType = PoolListFilter['key']
 
 export const POOL_LIST_POOL_TYPES = POOL_LIST_POOL_TYPE_FILTERS.map(
@@ -33,5 +32,3 @@ export const POOL_LIST_SORT_BY = {
   [PoolListColumnId.Volume]: 'volume',
   [PoolListColumnId.Tvl]: 'tvl',
 } as const satisfies Record<PoolListSortableColumn, V2PoolSortField>
-
-export const POOL_LIST_SORT_FIELDS = recordValues(POOL_LIST_SORT_BY)

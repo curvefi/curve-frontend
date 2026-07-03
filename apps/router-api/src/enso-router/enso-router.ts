@@ -2,7 +2,9 @@ import { FastifyBaseLogger } from 'fastify'
 import { Address } from 'viem'
 import { toArray } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { maybe } from '@primitives/objects.utils'
 import type { RouterRouteResponse, TransactionData } from '@primitives/router.utils'
+import { ROUTER_FEE_BPS, ROUTER_FEE_RECEIVER_BY_CHAIN_ID } from '../router-fees'
 import { type RoutesQuery } from '../routes/routes.schemas'
 
 const { ENSO_API_URL = 'https://api.enso.finance', ENSO_API_KEY } = process.env
@@ -43,22 +45,23 @@ export const buildEnsoRouteResponse = async (
     tokenOut: [tokenOut],
     amountIn: [amountIn] = [],
     amountOut: [minAmountOut] = [],
-    userAddress,
+    zapAddress,
   } = query
 
-  if (amountIn == null || !userAddress) {
-    // Enso requires amountIn and userAddress to be specified, no routes found otherwise
-    log.info({ message: 'enso route request skipped, amountIn and userAddress are required', query })
+  if (amountIn == null || !zapAddress) {
+    // Enso requires amountIn and zapAddress to be specified, no routes found otherwise
+    log.info({ message: 'enso route request skipped, amountIn and zapAddress are required', query })
     return []
   }
 
   const url = `${ENSO_API_URL}/api/v1/shortcuts/route?${new URLSearchParams({
     chainId: `${chainId}`,
-    fromAddress: userAddress,
+    fromAddress: zapAddress,
     ...(tokenIn && { tokenIn }),
     ...(tokenOut && { tokenOut }),
     ...(amountIn && { amountIn }),
     ...(minAmountOut && { minAmountOut }),
+    ...maybe(ROUTER_FEE_RECEIVER_BY_CHAIN_ID[chainId], feeReceiver => ({ fee: ROUTER_FEE_BPS, feeReceiver })),
   })}`
 
   const response = await fetch(url, {

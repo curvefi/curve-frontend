@@ -170,7 +170,7 @@ export const Duration = {
     Actionable: REFRESH_INTERVAL['1m'],
     Informative: REFRESH_INTERVAL['5m'],
     DontShowAfter: REFRESH_INTERVAL['10m'],
-    SemiStatic: REFRESH_INTERVAL['1d'],
+    SemiStatic: REFRESH_INTERVAL['1h'],
   },
 }
 

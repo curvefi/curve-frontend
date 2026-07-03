@@ -7,11 +7,7 @@ import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } f
 import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-validation'
 import { QueryProp } from '@ui-kit/types/util'
 
-export const {
-  useQuery: useLoanExists,
-  refetchQuery: refetchLoanExists,
-  getQueryData: getLoanExists,
-} = queryFactory({
+export const { useQuery: useLoanExists } = queryFactory({
   queryKey: (params: UserMarketParams) => [...rootKeys.userMarket(params), 'loanExists'] as const,
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) => {
     const market = getLlamaMarket(marketId)

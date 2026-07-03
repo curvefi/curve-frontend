@@ -50,7 +50,7 @@
     "ethers": "*",
     "husky": "9.1.7",
     "immer": "*",
-    "lint-staged": "16.4.0",
+    "lint-staged": "17.0.8",
     "lodash": "*",
     "prettier": "3.8.3",
     "react": "*",

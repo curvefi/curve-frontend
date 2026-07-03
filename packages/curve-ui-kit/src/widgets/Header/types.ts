@@ -27,7 +27,7 @@ export type NavigationSection = {
   links: AppPage[]
 }
 
-export type HeaderBaseProps = {
+type HeaderBaseProps = {
   currentMenu: AppMenuOption
   isLite: boolean | undefined
   networkId: string // ID of the network as displayed in the URL

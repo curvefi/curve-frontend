@@ -1,3 +1,4 @@
+import { getLlamaMarket, getZapAddress } from '@/llamalend/llama.utils'
 import { getBorrowMoreImplementation } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreValidationGroup } from '@/llamalend/queries/validation/borrow-more.validation'
@@ -72,17 +73,18 @@ export const { useQuery: useBorrowMoreMaxReceive, invalidate: invalidateBorrowMo
     userAddress,
     slippage,
   }: BorrowMoreQuery): Promise<BorrowMoreMaxReceiveResult> => {
-    const [type, impl] = getBorrowMoreImplementation(marketId, leverageEnabled)
+    const market = getLlamaMarket(marketId)
+    const [type, impl] = getBorrowMoreImplementation(market, leverageEnabled)
     switch (type) {
       case 'zapV2': {
         return castFieldsToDecimal(
           await impl.borrowMoreMaxRecv({
             userCollateral,
-            userBorrowed,
             address: userAddress,
             getExpected: getExpectedFn({
               chainId,
               userAddress,
+              zapAddress: getZapAddress(market),
               slippage,
               ...(routeId && { router: getRouteById(routeId).router }),
             }),

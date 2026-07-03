@@ -1,7 +1,6 @@
 import { getAddress, isAddress } from 'viem'
 
 export * from './address'
-export * from './bigNumber'
 export * from './env'
 export * from './web3'
 export * from './network'

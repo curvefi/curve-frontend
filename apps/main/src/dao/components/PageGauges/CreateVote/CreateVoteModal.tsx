@@ -52,7 +52,6 @@ export const CreateVoteModal = ({ isOpen, onClose }: CreateVoteModalProps) => {
       compact
       open={isOpen}
       onClose={onClose}
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
       formProps={{ onSubmit }}
       footer={
         <Button
@@ -68,8 +67,7 @@ export const CreateVoteModal = ({ isOpen, onClose }: CreateVoteModalProps) => {
       }
     >
       <FormProvider {...form}>
-        {/* eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule. */}
-        <Stack component="form" spacing={Spacing.lg} onSubmit={onSubmit}>
+        <Stack spacing={Spacing.lg}>
           <Stack spacing={Spacing.xs}>
             <Typography variant="bodySBold">{t`Requirements:`}</Typography>
 

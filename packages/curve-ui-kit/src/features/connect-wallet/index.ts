@@ -1,5 +1,5 @@
 export type { Wallet, CurveApi, LlamaApi } from './lib/types'
-export { createWagmiConfig, type WagmiChainId } from './lib/wagmi/wagmi-config'
+export { createWagmiConfig } from './lib/wagmi/wagmi-config'
 export { DEPRECATED_CHAINS } from './lib/wagmi/chains'
 export { getLib, requireLib } from './lib/utils'
 export { useWallet } from './lib/useWallet'

@@ -14,6 +14,7 @@ export type RoutesQuery = {
   blacklist?: readonly Address[]
   router?: RouteProvider | readonly RouteProvider[]
   userAddress?: Address
+  zapAddress?: Address
   slippage?: Decimal
 }
 

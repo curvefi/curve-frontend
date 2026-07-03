@@ -57,6 +57,14 @@ const MappedButtonSize = {
   lg: Sizing[650], // 56px
 }
 
+const MappedHorizontalMetricSize = {
+  xs: Sizing[250], // 20px
+  sm: Sizing[300], // 24px
+  md: Sizing[400], // 32px
+  lg: Sizing[600], // 48px
+  xl: Sizing[800], // 88px
+}
+
 const MappedInputSize = {
   tiny: MappedButtonSize.xs,
   small: MappedButtonSize.sm,
@@ -241,6 +249,7 @@ export const SizesAndSpaces = {
   LargeTokenInput: MappedLargeTokenInput,
   Badge: MappedBadge,
   Grid: MappedGrid,
+  Metric: { horizontal: MappedHorizontalMetricSize },
   FontSize: MappedFontSize,
   FontWeight: MappedFontWeight,
   LineHeight: MappedLineHeight,
@@ -283,6 +292,10 @@ export const SizesAndSpaces = {
     row: Sizing[700],
     chart: 420, // lightweight charts require height in number format
     shortChart: 210,
+    healthBar: {
+      legacy: '2rem', // 36px
+      new: '1.5rem', // 24px
+    },
   },
   MinHeight: {
     pageContent: '80vh',

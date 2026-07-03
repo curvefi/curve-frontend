@@ -17,6 +17,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q, type Range } from '@ui-kit/types/util'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
+import { shouldBlockTransaction } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { useMarketContext } from '../../market-context'
 import { useCreateLoanForm } from '../hooks/useCreateLoanForm'
 import { AdvancedCreateLoanOptions } from './AdvancedCreateLoanOptions'
@@ -79,7 +80,6 @@ export const CreateLoanForm = <ChainId extends IChainId>({
   return (
     <Form
       {...form}
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
       onSubmit={onSubmit}
       footer={
         <CreateLoanInfoList
@@ -92,6 +92,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           borrowToken={borrowToken}
           networks={networks}
           routes={routes}
+          priceImpact={priceImpact}
           onSlippageChange={value => updateForm({ slippage: value })}
         />
       }
@@ -146,11 +147,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
             minBands={bands.minBands}
             maxBands={bands.maxBands}
             values={values}
-            params={params}
             setRange={setRange}
-            network={network.id}
-            collateralToken={collateralToken}
-            borrowToken={borrowToken}
           />
         </Collapse>
       </LoanPresetSelector>
@@ -159,7 +156,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
       <FormButton
         pending={isPending}
         loading={isLoading}
-        disabled={isDisabled}
+        disabled={isDisabled || shouldBlockTransaction(priceImpact, params)}
         label={[isApproved?.data === false && t`Approve`, t`Borrow`]}
         testId="create-loan-submit-button"
         connectWalletTestId="form-connect-wallet"

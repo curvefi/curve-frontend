@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { maybe } from '@primitives/objects.utils'
+import { maybe, objectKeys } from '@primitives/objects.utils'
 import type { UseQueryResult } from '@tanstack/react-query'
 
 export type Range<T> = [T, T]
@@ -110,11 +110,18 @@ export const fakeLoadingQ = <T>(data: T | undefined) => q({ data, isLoading: dat
 
 /** Hook similar to mapQuery for queries that need memoization */
 export const useMappedQuery = <TSource, TResult>(
-  { isLoading, error, data }: Query<TSource>,
-  transform: (data: TSource) => TResult | null | undefined,
-) =>
+  { isLoading, error, data }: Query<TSource | null>,
+  transform: (data: TSource) => TResult,
+): QueryProp<TResult> =>
   q({
     isLoading,
     data: useMemo(() => maybe(data, data => transform(data) ?? undefined), [data, transform]),
     error,
   })
+
+/** a list of keys for query objects, i.e., data, isLoading, error */
+const queryObjectKeys = objectKeys(constQ(1))
+
+/** Checks if a value is a query. */
+export const isQuery = <T>(value: unknown): value is QueryProp<T> =>
+  value != null && typeof value === 'object' && queryObjectKeys.every(key => key in value)

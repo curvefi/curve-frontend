@@ -54,7 +54,6 @@ export const { useQuery: useRepayPrices, invalidate: invalidateRepayPrices } = q
           await impl.repayExpectedMetrics({
             stateCollateral,
             userCollateral,
-            userBorrowed,
             healthIsFull: true,
             address: userAddress,
             ...parseRoute(routeId),

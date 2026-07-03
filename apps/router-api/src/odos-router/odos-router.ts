@@ -22,7 +22,7 @@ async function getOdosQuote(
     amountIn,
     blacklist,
     slippage,
-    userAddress,
+    zapAddress,
   }: {
     chainId: number
     tokenIn: Address
@@ -30,7 +30,7 @@ async function getOdosQuote(
     amountIn: Decimal
     blacklist: readonly Address[]
     slippage: number
-    userAddress: Address
+    zapAddress: Address
   },
   log: FastifyBaseLogger,
 ) {
@@ -41,11 +41,11 @@ async function getOdosQuote(
     amount: amountIn,
     slippage: `${slippage}`,
     pathVizImage: 'false', // prices API isn't returning images, maybe we could use them instead of `generateId`
-    caller_address: userAddress,
+    caller_address: zapAddress,
   } satisfies Omit<Record<keyof CurveOdosQuoteRequest, string>, 'blacklist'>)
   blacklist.forEach(address => params.append('blacklist', address))
 
-  const quoteResponse = await fetch(`${ODOS_API_URL}/quote?${params}`, {
+  const quoteResponse = await fetch(`${ODOS_API_URL}/v3/quote?${params}`, {
     method: 'GET',
     headers: { accept: 'application/json' },
   })
@@ -60,24 +60,23 @@ async function getOdosQuote(
 }
 
 async function assembleOdosQuote(
-  { pathId, userAddress }: { pathId: string; userAddress: Address },
+  { pathId, zapAddress }: { pathId: string; zapAddress: Address },
   log: FastifyBaseLogger,
 ) {
-  const params: Record<keyof CurveOdosAssembleRequest, string> = { path_id: pathId, user: userAddress }
+  const params: Record<keyof CurveOdosAssembleRequest, string> = { path_id: pathId, user: zapAddress }
   const assembleResponse = await fetch(`${ODOS_API_URL}/assemble?${new URLSearchParams(params)}`, {
     method: 'GET',
     headers: { accept: 'application/json' },
   })
   const { ok, status, statusText } = assembleResponse
   if (!ok) {
-    log.error({
+    return log.error({
       message: 'odos assemble request failed',
       status,
       statusText,
       params,
       body: await assembleResponse.text(),
     })
-    throw new Error(`Odos assemble error - ${status} ${statusText}`)
   }
   return (await assembleResponse.json()) as AssemblePathResponse
 }
@@ -96,12 +95,12 @@ export const buildOdosRouteResponse = async (
     tokenOut: [tokenOut],
     blacklist = [],
     amountIn: [amountIn] = [],
-    userAddress,
+    zapAddress,
     slippage = 0.5,
   } = query
 
-  if (amountIn == null || !userAddress) {
-    // Odos requires amount (amountIn), caller_address (leverage zap) and blacklist (AMM/controller)
+  if (amountIn == null || !zapAddress) {
+    // Odos requires amount (amountIn), caller_address (zapAddress) and blacklist (AMM/controller)
     log.info({ message: 'odos route request skipped', query })
     return []
   }
@@ -111,11 +110,9 @@ export const buildOdosRouteResponse = async (
     pathId,
     pathVizImage,
     priceImpact = null,
-  } = await getOdosQuote({ chainId, tokenIn, tokenOut, amountIn, blacklist, slippage, userAddress }, log)
-  const { transaction } = await assembleOdosQuote(
-    { pathId: assert(pathId, 'Odos quote missing pathId'), userAddress },
-    log,
-  )
+  } = await getOdosQuote({ chainId, tokenIn, tokenOut, amountIn, blacklist, slippage, zapAddress }, log)
+  const { transaction } =
+    (await assembleOdosQuote({ pathId: assert(pathId, 'Odos quote missing pathId'), zapAddress }, log)) ?? {}
   return [
     {
       router: protocol,

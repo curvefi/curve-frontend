@@ -1,6 +1,6 @@
 import type { Campaign, CampaignPool } from '@external-rewards'
 
-export type CampaignReward = { type: 'apr'; value: number } | { type: 'points'; value: number }
+type CampaignReward = { type: 'apr'; value: number } | { type: 'points'; value: number }
 
 export type CampaignRewards = Pick<Campaign, 'campaignName' | 'platform' | 'platformImageId' | 'dashboardLink'> &
   Pick<CampaignPool, 'action' | 'tags' | 'address' | 'network'> & {

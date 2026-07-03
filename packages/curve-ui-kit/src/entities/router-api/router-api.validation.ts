@@ -45,7 +45,18 @@ const validateAddressList = ({
   })
 
 export const routerApiValidation = createValidationSuite(
-  ({ chainId, tokenIn, tokenOut, amountIn, amountOut, blacklist, userAddress, slippage, router }: RoutesQuery) => {
+  ({
+    chainId,
+    tokenIn,
+    tokenOut,
+    amountIn,
+    amountOut,
+    blacklist,
+    userAddress,
+    zapAddress,
+    slippage,
+    router,
+  }: RoutesQuery) => {
     chainValidationGroup({ chainId })
     test('tokenIn', 'Invalid tokenIn address', () => {
       enforce(tokenIn).isAddress()
@@ -58,6 +69,7 @@ export const routerApiValidation = createValidationSuite(
     })
     validateAddressList({ addresses: blacklist, fieldName: 'blacklist' })
     evmAddressValidationGroup({ evmAddress: userAddress, required: false })
+    evmAddressValidationGroup({ evmAddress: zapAddress, required: false })
     validateSlippage({ slippage, required: false })
     validateRouter({ router, isRequired: false })
   },

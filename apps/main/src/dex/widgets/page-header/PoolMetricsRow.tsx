@@ -12,6 +12,8 @@ import { amount } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
+const METRIC_CATEGORY = 'dex.poolHeader'
+
 export const PoolMetricsRow = ({
   chainId,
   poolId,
@@ -27,6 +29,7 @@ export const PoolMetricsRow = ({
   return (
     <Stack direction="row" sx={{ gap: Spacing.xxl, alignItems: 'center', flexWrap: 'wrap' }}>
       <Metric
+        category={METRIC_CATEGORY}
         alignment={alignment}
         label={t`TVL`}
         value={fallbackQ(
@@ -37,6 +40,7 @@ export const PoolMetricsRow = ({
       />
 
       <Metric
+        category={METRIC_CATEGORY}
         alignment={alignment}
         label={t`24h volume`}
         value={fallbackQ(
