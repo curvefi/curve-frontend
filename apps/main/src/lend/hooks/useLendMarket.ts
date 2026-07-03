@@ -1,11 +1,11 @@
 import { useCallback, useMemo } from 'react'
-import { useConnection } from 'wagmi'
-import { useCurve } from '@ui-kit/features/connect-wallet'
+import type { LlamaApi } from '@ui-kit/features/connect-wallet'
+import { useLlamaQuery } from '@ui-kit/features/connect-wallet/lib/CurveContext'
 import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
 import { useCombinedQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
-import { fakeLoadingQ, useMappedQuery } from '@ui-kit/types/util'
-import { useLendMarkets } from '../queries/lend-markets.query'
+import { useMappedQuery } from '@ui-kit/types/util'
+import { type LendMarketData, useLendMarkets } from '../queries/lend-markets.query'
 import { ChainId } from '../types/lend.types'
 
 type MarketUrlParams = { chainId: ChainId; rMarket: string }
@@ -23,11 +23,7 @@ function useLendMarketData({ chainId, rMarket }: MarketUrlParams, enabled?: bool
   return { ...lendMarket, ...(error && { error }) }
 }
 
-export const useLendMarket = ({ rMarket, chainId }: MarketUrlParams, enabled?: boolean) => {
-  const { llamaApi: api } = useCurve()
-  const { isConnected } = useConnection()
-  return useCombinedQueries(
-    [useLendMarketData({ chainId, rMarket }, enabled), fakeLoadingQ(!isConnected || api)],
-    useCallback(data => api?.getLendMarketByData(data.id, data), [api]),
-  )
-}
+const getLendMarketByData = (data: LendMarketData, api: LlamaApi) => api.getLendMarketByData(data.id, data)
+
+export const useLendMarket = ({ rMarket, chainId }: MarketUrlParams, enabled?: boolean) =>
+  useCombinedQueries([useLendMarketData({ chainId, rMarket }, enabled), useLlamaQuery()], getLendMarketByData)

@@ -13,7 +13,7 @@ const { v1, v2 } = LlamaMarketVersion
 
 const v2chains = [Chain.Optimism]
 
-type LendMarketData = IOneWayMarket & { id: string }
+export type LendMarketData = IOneWayMarket & { id: string }
 
 /**
  * Extracts the necessary data from a LendMarketTemplate object so that the object can be recreated later on.

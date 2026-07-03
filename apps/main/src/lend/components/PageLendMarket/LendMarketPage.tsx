@@ -68,7 +68,7 @@ export const LendMarketPage = () => {
   const showReset = useLlamaResetPosition() && hasResetPosition(market)
   const { data: isSoftLiquidation, isLoading: isSoftLiquidationLoading } = useIsInSoftLiquidation(
     queryParams,
-    loanExists,
+    !!loanExists,
   )
 
   const error = marketError ?? apiMarket.error

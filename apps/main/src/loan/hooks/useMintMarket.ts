@@ -1,10 +1,10 @@
 import { useCallback, useMemo } from 'react'
-import { useConnection } from 'wagmi'
-import { useCurve } from '@ui-kit/features/connect-wallet'
+import type { LlamaApi } from '@ui-kit/features/connect-wallet'
+import { useLlamaQuery } from '@ui-kit/features/connect-wallet/lib/CurveContext'
 import { useCombinedQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
-import { fakeLoadingQ, useMappedQuery } from '@ui-kit/types/util'
-import { useMintMarkets } from '../entities/mint-markets.query'
+import { useMappedQuery } from '@ui-kit/types/util'
+import { type MintMarketData, useMintMarkets } from '../entities/mint-markets.query'
 import { ChainId } from '../types/loan.types'
 
 type MarketUrlParams = { chainId: ChainId; rMarket: string }
@@ -22,11 +22,7 @@ function useMintMarketData({ chainId, rMarket }: MarketUrlParams, enabled?: bool
   return { ...mintMarket, ...(error && { error }) }
 }
 
-export const useMintMarket = ({ rMarket, chainId }: MarketUrlParams, enabled?: boolean) => {
-  const { llamaApi: api } = useCurve()
-  const { isConnected } = useConnection()
-  return useCombinedQueries(
-    [useMintMarketData({ chainId, rMarket }, enabled), fakeLoadingQ(!isConnected || api)],
-    useCallback(data => api?.getMintMarketByData(data.id, data), [api]),
-  )
-}
+const getMintMarketByData = (data: MintMarketData, api: LlamaApi) => api.getMintMarketByData(data.id, data)
+
+export const useMintMarket = ({ rMarket, chainId }: MarketUrlParams, enabled?: boolean) =>
+  useCombinedQueries([useMintMarketData({ chainId, rMarket }, enabled), useLlamaQuery()], getMintMarketByData)
