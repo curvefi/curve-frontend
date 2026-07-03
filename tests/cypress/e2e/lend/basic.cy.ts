@@ -3,7 +3,7 @@ import {
   shouldLoadLendBorrowDetails,
   shouldLoadLendVaultDetails,
 } from '@cy/support/helpers/llamalend/market-details.helpers'
-import { LOAD_TIMEOUT } from '@cy/support/ui'
+import { LOAD_TIMEOUT, oneMobileViewport } from '@cy/support/ui'
 
 const LEND_MARKET = '0x23F5a668A9590130940eF55964ead9787976f2CC'
 
@@ -29,6 +29,13 @@ describe('Basic Access Test', () => {
   it('should load lend market details with a wallet', () => {
     cy.visit(`/lend/ethereum/markets/${LEND_MARKET}${''}`)
     shouldLoadLendBorrowDetails({ hasWallet: true })
+  })
+
+  it('should load lend market details form drawer on mobile', () => {
+    const [width, height, breakpoint] = oneMobileViewport()
+    cy.viewport(width, height)
+    cy.visit(`/lend/ethereum/markets/${LEND_MARKET}${''}`)
+    shouldLoadLendBorrowDetails({ breakpoint, hasWallet: true })
   })
 
   it('should load lend vault details with a wallet', () => {

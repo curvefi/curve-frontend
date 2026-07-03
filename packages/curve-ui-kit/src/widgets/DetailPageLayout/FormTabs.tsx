@@ -3,10 +3,12 @@ import { type ComponentType, type ReactNode } from 'react'
 import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
 import { notFalsy } from '@primitives/objects.utils'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { findTab, useTabs } from '@ui-kit/hooks/useTabs'
 import { type TabOption, TabsSwitcher, TabsSwitcherProps } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { FormContent } from './FormContent'
+import { MobileFormTabsDrawer } from './MobileFormTabsDrawer'
 
 type FnOrValue<Props extends object, Result> = ((props: Props) => Result | null | undefined) | Result
 
@@ -83,6 +85,7 @@ const marginInline = { mobile: 'auto', desktop: 0 } as const
 export const FormMargins = ({ children }: { children: ReactNode }) => <Stack sx={{ marginInline }}>{children}</Stack>
 
 type FormTabsProps<T extends object> = UseFormTabOptions<T> & {
+  withMobileDrawer?: boolean
   shouldWrap?: boolean
   overflow?: TabsSwitcherProps<T>['overflow']
 }
@@ -94,24 +97,44 @@ type FormTabsProps<T extends object> = UseFormTabOptions<T> & {
  * @param overflow - the overflow mode of the tabs switcher, default is 'kebab'
  * @param options - useFormTabs options
  */
-export function FormTabs<T extends object>({ shouldWrap, overflow = 'kebab', ...options }: FormTabsProps<T>) {
+export function FormTabs<T extends object>({
+  withMobileDrawer,
+  shouldWrap,
+  overflow = 'kebab',
+  ...options
+}: FormTabsProps<T>) {
   const { tab, tabs, subTabs, subTab, content, onChangeTab, onChangeSubTab } = useFormTabs(options)
+  const isMobileDrawer = useIsMobile() && withMobileDrawer
   return (
-    <Stack sx={{ marginInline }}>
-      <TabsSwitcher variant="contained" value={tab.value} options={tabs} onChange={onChangeTab} overflow={overflow} />
-      {subTab && subTabs.length > 1 && (
+    <WithWrapper
+      shouldWrap={isMobileDrawer}
+      Wrapper={MobileFormTabsDrawer}
+      tabs={tabs}
+      selectedTab={tab.value}
+      onSelectTab={onChangeTab}
+    >
+      <Stack sx={{ marginInline }}>
         <TabsSwitcher
-          variant="underlined"
-          value={subTab.value}
-          options={subTabs}
-          overflow="fullWidth"
-          sx={{ backgroundColor: t => t.design.Layer[1].Fill }}
-          onChange={onChangeSubTab}
+          variant="contained"
+          value={tab.value}
+          options={tabs}
+          onChange={onChangeTab}
+          overflow={isMobileDrawer ? 'fullWidth' : overflow}
         />
-      )}
-      <WithWrapper shouldWrap={shouldWrap} Wrapper={FormContent}>
-        {content}
-      </WithWrapper>
-    </Stack>
+        {subTab && subTabs.length > 1 && (
+          <TabsSwitcher
+            variant="underlined"
+            value={subTab.value}
+            options={subTabs}
+            overflow="fullWidth"
+            sx={{ backgroundColor: t => t.design.Layer[1].Fill }}
+            onChange={onChangeSubTab}
+          />
+        )}
+        <WithWrapper shouldWrap={shouldWrap} Wrapper={FormContent}>
+          {content}
+        </WithWrapper>
+      </Stack>
+    </WithWrapper>
   )
 }

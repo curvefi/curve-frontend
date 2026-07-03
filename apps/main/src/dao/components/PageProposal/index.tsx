@@ -21,7 +21,7 @@ import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { Chain, copyToClipboard } from '@ui-kit/utils'
-import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
+import { LegacyDetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/LegacyDetailPageLayout'
 import { BackButton } from '../BackButton'
 import { ProposalVoteStatusBox } from '../ProposalVoteStatusBox'
 import { UserBox } from '../UserBox'
@@ -86,7 +86,7 @@ export const Proposal = () => {
   )
 
   return (
-    <DetailPageLayout formTabs={null}>
+    <LegacyDetailPageLayout formTabs={null}>
       <BackButton path={getEthPath(DAO_ROUTES.PAGE_PROPOSALS)} label={t`Back to proposals`} />
       <Box flex>
         <Box flex flexDirection="column" flexGap="var(--spacing-1)" style={{ width: '100%' }}>
@@ -198,7 +198,7 @@ export const Proposal = () => {
           )}
         </SecondColumnBox>
       </Box>
-    </DetailPageLayout>
+    </LegacyDetailPageLayout>
   )
 }
 

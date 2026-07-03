@@ -4,7 +4,7 @@ import { useNetworks } from '@/dex/entities/networks'
 import { useChainId } from '@/dex/hooks/useChainId'
 import type { INetworkName } from '@curvefi/api/lib/interfaces'
 import { useParams } from '@ui-kit/hooks/router'
-import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
+import { LegacyDetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/LegacyDetailPageLayout'
 import { BridgeFormTabs } from './features/bridge/BridgeFormTabs'
 import { Bridges } from './features/bridges'
 
@@ -16,8 +16,8 @@ export const PageBridge = () => {
   const { data: networks } = useNetworks()
 
   return (
-    <DetailPageLayout formTabs={<BridgeFormTabs chainId={chainId} networks={networks} />}>
+    <LegacyDetailPageLayout formTabs={<BridgeFormTabs chainId={chainId} networks={networks} />}>
       <Bridges />
-    </DetailPageLayout>
+    </LegacyDetailPageLayout>
   )
 }

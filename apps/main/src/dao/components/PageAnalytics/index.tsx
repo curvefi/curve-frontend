@@ -3,7 +3,7 @@ import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { PAGE_SPACING } from '@ui-kit/widgets/DetailPageLayout/constants'
-import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
+import { LegacyDetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/LegacyDetailPageLayout'
 import { CrvStats } from './CrvStats'
 import { DailyLocks } from './DailyLocksChart'
 import { TopHoldersTable as HoldersTable } from './HoldersTable'
@@ -21,7 +21,7 @@ export const Analytics = () => {
   const [tab, setTab] = useState<Tab>('fees')
 
   return (
-    <DetailPageLayout formTabs={null} testId="analytics-page">
+    <LegacyDetailPageLayout formTabs={null} testId="analytics-page">
       <CrvStats />
       <Stack>
         <TabsSwitcher variant="contained" value={tab} onChange={setTab} options={tabs} />
@@ -34,6 +34,6 @@ export const Analytics = () => {
         )}
         {tab === 'locks' && <DailyLocks />}
       </Stack>
-    </DetailPageLayout>
+    </LegacyDetailPageLayout>
   )
 }

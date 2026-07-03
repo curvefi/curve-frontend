@@ -4,6 +4,7 @@ import MuiSwipeableDrawer from '@mui/material/SwipeableDrawer'
 type Props = {
   button?: ReactNode
   children: ReactNode
+  keepMounted?: boolean
   open: boolean
   setOpen: (open: boolean) => void
   paperSx?: SxProps<Theme>
@@ -19,7 +20,7 @@ const iOS = typeof navigator !== 'undefined' && /iPad|iPhone|iPod/.test(navigato
 /**
  * A swipeable drawer component that can be used to display a list of items.
  */
-export const SwipeableDrawer = ({ button, children, open, setOpen, paperSx }: Props) => (
+export const SwipeableDrawer = ({ button, children, keepMounted = false, open, setOpen, paperSx }: Props) => (
   <>
     {button && <Box sx={{ height: '100%' }}>{button}</Box>}
     <MuiSwipeableDrawer
@@ -30,7 +31,7 @@ export const SwipeableDrawer = ({ button, children, open, setOpen, paperSx }: Pr
       onClose={() => setOpen(false)}
       onOpen={() => setOpen(true)}
       disableSwipeToOpen={false}
-      keepMounted={false}
+      keepMounted={keepMounted}
       slotProps={{ paper: { sx: paperSx } }}
     >
       <Box sx={{ paddingBlockStart: 2 }}>

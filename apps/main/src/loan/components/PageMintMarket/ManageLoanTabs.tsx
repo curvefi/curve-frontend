@@ -81,5 +81,5 @@ export const ManageLoanTabs = (params: MintManageLoanProps) => {
   })
   const isSoftLiquidation = ['softLiquidation', 'hardLiquidation'].includes(status ?? '')
   const menu = isSoftLiquidation ? MintManageSoftLiquidationMenu : MintManageMenu
-  return <FormTabs key={useLoanImplementationKey()} params={params} menu={menu} />
+  return <FormTabs key={useLoanImplementationKey()} withMobileDrawer params={params} menu={menu} />
 }

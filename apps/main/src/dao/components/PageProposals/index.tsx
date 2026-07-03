@@ -13,7 +13,7 @@ import { SpinnerWrapper, Spinner } from '@ui/Spinner'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
-import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
+import { LegacyDetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/LegacyDetailPageLayout'
 import { invalidateProposals } from '../../entities/proposals-mapper'
 import { useProposalsList } from '../../hooks/useProposalsList'
 import { ProposalsFilters } from './components/ProposalsFilters'
@@ -45,7 +45,7 @@ export const Proposals = () => {
   )
 
   return (
-    <DetailPageLayout formTabs={null}>
+    <LegacyDetailPageLayout formTabs={null}>
       <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
         <Header>
           <h3 data-testid="proposal-title">{t`PROPOSALS`}</h3>
@@ -113,7 +113,7 @@ export const Proposals = () => {
           </ProposalsWrapper>
         </Box>
       </Stack>
-    </DetailPageLayout>
+    </LegacyDetailPageLayout>
   )
 }
 

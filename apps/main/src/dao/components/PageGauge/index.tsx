@@ -9,7 +9,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { PAGE_SPACING } from '@ui-kit/widgets/DetailPageLayout/constants'
-import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
+import { LegacyDetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/LegacyDetailPageLayout'
 import { BackButton } from '../BackButton'
 import { GaugeHeader } from './GaugeHeader'
 import { GaugeMetrics } from './GaugeMetrics'
@@ -26,7 +26,7 @@ export const Gauge = () => {
   const tableMinWidth = 21.875
 
   return (
-    <DetailPageLayout formTabs={null}>
+    <LegacyDetailPageLayout formTabs={null}>
       <BackButton path={getEthPath(DAO_ROUTES.PAGE_GAUGES)} label={t`Back to gauges`} />
       <Stack sx={{ gap: PAGE_SPACING, backgroundColor: t => t.design.Layer[1].Fill }}>
         <GaugeHeader gaugeData={gaugeData} dataLoading={gaugesIsLoading} />
@@ -36,6 +36,6 @@ export const Gauge = () => {
         </Stack>
         {gaugeData && <GaugeVotesTable gaugeAddress={gaugeData.address} tableMinWidth={tableMinWidth} />}
       </Stack>
-    </DetailPageLayout>
+    </LegacyDetailPageLayout>
   )
 }

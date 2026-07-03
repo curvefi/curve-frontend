@@ -7,7 +7,7 @@ import type { Address } from '@primitives/address.utils'
 import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
-import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
+import { LegacyDetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/LegacyDetailPageLayout'
 import { UserGaugeVotesTable } from './UserGaugeVotesTable'
 import { UserHeader } from './UserHeader'
 import { UserLocksTable } from './UserLocksTable'
@@ -38,7 +38,7 @@ export const User = () => {
   const { data: userEnsName } = useEnsName({ address: userAddress as Address })
 
   return (
-    <DetailPageLayout formTabs={null} testId="user-page">
+    <LegacyDetailPageLayout formTabs={null} testId="user-page">
       <Box>
         <UserHeader userAddress={userAddress} userEnsName={userEnsName} />
         <UserStats veCrvHolder={veCrvHolder} holdersLoading={holdersLoading} />
@@ -50,6 +50,6 @@ export const User = () => {
         {tab === 'gauge_votes' && <UserGaugeVotesTable userAddress={userAddress} tableMinWidth={tableMinWidth} />}
         {tab === 'locks' && <UserLocksTable userAddress={userAddress} />}
       </Box>
-    </DetailPageLayout>
+    </LegacyDetailPageLayout>
   )
 }

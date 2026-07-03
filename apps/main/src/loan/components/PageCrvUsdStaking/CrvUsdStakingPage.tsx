@@ -14,7 +14,7 @@ import { RCScrvUSDLogoSM } from '@ui/images'
 import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
+import { LegacyDetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/LegacyDetailPageLayout'
 import { PageHeader } from '@ui-kit/widgets/PageHeader'
 
 const { IconSize } = SizesAndSpaces
@@ -40,7 +40,7 @@ export const CrvUsdStakingPage = () => {
     (!isConnecting && !isUserScrvUsdBalanceFetching && isUserScrvUsdBalanceZero)
 
   return (
-    <DetailPageLayout
+    <LegacyDetailPageLayout
       header={
         <PageHeader
           icon={<Box component="img" sx={{ height: IconSize.xxl }} src={RCScrvUSDLogoSM} alt="crvUSD logo" />}
@@ -61,6 +61,6 @@ export const CrvUsdStakingPage = () => {
       {!isUserScrvUsdBalanceZero && <UserPosition chainId={chainId} />}
       <Statistics chainId={chainId} />
       <UserInformation params={params} />
-    </DetailPageLayout>
+    </LegacyDetailPageLayout>
   )
 }

@@ -1,6 +1,6 @@
 import { mockMerklCampaigns } from '@cy/support/helpers/lending-mocks'
 import { shouldLoadMintBorrowDetails } from '@cy/support/helpers/llamalend/market-details.helpers'
-import { LOAD_TIMEOUT } from '@cy/support/ui'
+import { LOAD_TIMEOUT, oneMobileViewport } from '@cy/support/ui'
 
 const MINT_MARKET = 'WBTC'
 
@@ -21,6 +21,13 @@ describe('Basic Access Test', () => {
   it('should load mint market details with a wallet', () => {
     cy.visit(`/crvusd/ethereum/markets/${MINT_MARKET}`)
     shouldLoadMintBorrowDetails({ hasWallet: true })
+  })
+
+  it('should load mint market details form drawer on mobile', () => {
+    const [width, height, breakpoint] = oneMobileViewport()
+    cy.viewport(width, height)
+    cy.visit(`/crvusd/ethereum/markets/${MINT_MARKET}`)
+    shouldLoadMintBorrowDetails({ breakpoint, hasWallet: true })
   })
 
   it('should load mint market details without a wallet', () => {

@@ -13,4 +13,4 @@ const menu = [
   { value: 'create', label: t`Borrow`, component: props => <CreateLoanForm networks={networks} {...props} /> },
 ] satisfies FormTab<CreateLoanTabsProps>[]
 
-export const CreateLoanTabs = (props: CreateLoanTabsProps) => <FormTabs params={props} menu={menu} />
+export const CreateLoanTabs = (props: CreateLoanTabsProps) => <FormTabs withMobileDrawer params={props} menu={menu} />

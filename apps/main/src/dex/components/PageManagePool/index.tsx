@@ -20,7 +20,7 @@ import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 import { Banner } from '@ui-kit/shared/ui/Banner'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
-import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
+import { LegacyDetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/LegacyDetailPageLayout'
 
 const { Spacing } = SizesAndSpaces
 
@@ -47,7 +47,7 @@ export const ManagePool = () => {
 
   return (
     poolAddress && (
-      <DetailPageLayout
+      <LegacyDetailPageLayout
         header={
           <PoolPageHeader
             chainId={chainId}
@@ -99,7 +99,7 @@ export const ManagePool = () => {
             <RecentRefuels chainId={chainId} blockchainId={blockchainId} poolAddress={poolAddress} />
           </Grid>
         </Grid>
-      </DetailPageLayout>
+      </LegacyDetailPageLayout>
     )
   )
 }

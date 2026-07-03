@@ -44,11 +44,11 @@ const stickyFormTabsSx = (navHeight: number, pageHeaderHeight: number) => ({
 
 /**
  * A grid that separates the detail page into two or three main sections:
- * 1. action form (`FormTabs`) (right side on large screens, inside a drawer on mobile)
+ * 1. action form (`FormTabs`) (left side on larger screens, right side in beta channel)
  * 2. market and user position details (right side on larger screens, left side in beta channel)
  * 3. an optional footer that goes at the bottom, but still inside the grid
  */
-export const DetailPageLayout = ({
+export const LegacyDetailPageLayout = ({
   formTabs,
   header,
   children,
@@ -75,38 +75,35 @@ export const DetailPageLayout = ({
   )
 
   return (
-    <>
-      <Grid
-        container
-        data-testid={testId ?? 'detail-page-layout'}
-        spacing={PAGE_SPACING}
-        sx={{ ...PAGE_MARGIN, ...(!header && { marginBlockStart: Spacing.xl }) }}
-        direction="row-reverse" // direction is only used when size<12 (on mobile, form shows first, otherwise children first)
-      >
-        {isMobile && <Grid size={12}>{headerStack}</Grid>}
-        {/* In Figma, columns are 12/4/3, but too small around breakpoints. I've added one extra column.
-            Ultrawide isn't a breakpoint yet, use maxWidth so it's not too large. */}
-        {formTabs !== null && !isMobile && (
-          <Grid
-            size={{ mobile: 12, tablet: 5, desktop: 4 }}
-            sx={{
-              maxWidth: { desktop: MaxWidth.actionCard },
-              ...stickyFormTabsSx(navHeight, pageHeaderHeight),
-            }}
-          >
-            {formTabs || <FormSkeleton />}
-          </Grid>
-        )}
-        <Grid size="grow">
-          {/* Additional Stack because no gap between the page header and the children */}
-          <Stack>
-            {!isMobile && headerStack}
-            <Stack sx={{ flexGrow: 1, gap: PAGE_SPACING }}>{children}</Stack>
-          </Stack>
+    <Grid
+      container
+      data-testid={testId ?? 'detail-page-layout'}
+      spacing={PAGE_SPACING}
+      sx={{ ...PAGE_MARGIN, ...(!header && { marginBlockStart: Spacing.xl }) }}
+      direction="row-reverse" // direction is only used when size<12 (on mobile, form shows first, otherwise children first)
+    >
+      {isMobile && <Grid size={12}>{headerStack}</Grid>}
+      {/* In Figma, columns are 12/4/3, but too small around breakpoints. I've added one extra column.
+          Ultrawide isn't a breakpoint yet, use maxWidth so it's not too large. */}
+      {formTabs !== null && (
+        <Grid
+          size={{ mobile: 12, tablet: 5, desktop: 4 }}
+          sx={{
+            maxWidth: { desktop: MaxWidth.actionCard },
+            ...stickyFormTabsSx(navHeight, pageHeaderHeight),
+          }}
+        >
+          {formTabs || <FormSkeleton />}
         </Grid>
-        {footer && <Grid size={12}>{footer}</Grid>}
+      )}
+      <Grid size="grow">
+        {/* Additional Stack because no gap between the page header and the children */}
+        <Stack>
+          {!isMobile && headerStack}
+          <Stack sx={{ flexGrow: 1, gap: PAGE_SPACING }}>{children}</Stack>
+        </Stack>
       </Grid>
-      {formTabs !== null && isMobile && formTabs}
-    </>
+      {footer && <Grid size={12}>{footer}</Grid>}
+    </Grid>
   )
 }

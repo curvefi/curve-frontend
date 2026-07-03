@@ -18,7 +18,7 @@ import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
-import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
+import { LegacyDetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/LegacyDetailPageLayout'
 import { useLendMarket } from '../../hooks/useLendMarket'
 import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
 
@@ -61,7 +61,7 @@ export const Page = () => {
       apiMarket={apiMarket}
       marketType={LlamaMarketType.Lend}
     >
-      <DetailPageLayout
+      <LegacyDetailPageLayout
         formTabs={(market ?? apiMarket.data) && <VaultTabs />}
         header={<MarketPageHeader isLoading={isLoading} />}
       >
@@ -72,7 +72,7 @@ export const Page = () => {
         />
         {market && supplied > 0 && <SupplyPositionDetails />}
         <MarketInformationComposite rateType={MarketRateType.Supply} />
-      </DetailPageLayout>
+      </LegacyDetailPageLayout>
     </MarketContextProvider>
   )
 }

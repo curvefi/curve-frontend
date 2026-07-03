@@ -31,8 +31,8 @@ import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
-import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 import { FormMargins } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
+import { LegacyDetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/LegacyDetailPageLayout'
 import { PoolAlertBanner } from '../PoolAlertBanner'
 
 const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
@@ -144,7 +144,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
           poolId={params.poolIdOrAddress}
         />
       )}
-      <DetailPageLayout
+      <LegacyDetailPageLayout
         header={
           <PoolPageHeader
             chainId={rChainId}
@@ -219,7 +219,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
           pricesApiPoolData={pricesApiPoolData}
         />
         <AdvancedDetails routerParams={routerParams} poolData={poolData} poolDataCacheOrApi={poolDataCacheOrApi} />
-      </DetailPageLayout>
+      </LegacyDetailPageLayout>
     </>
   )
 }

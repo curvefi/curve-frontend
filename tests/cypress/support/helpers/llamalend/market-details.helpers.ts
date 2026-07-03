@@ -1,12 +1,24 @@
 import { DECIMAL_REGEX, getActionValue, getMetricValue } from '@cy/support/helpers/llamalend/action-info.helpers'
-import { LOAD_TIMEOUT } from '@cy/support/ui'
+import { type Breakpoint, LOAD_TIMEOUT } from '@cy/support/ui'
 
-type WalletOptions = { hasWallet: boolean }
+type WalletOptions = { breakpoint?: Breakpoint; hasWallet: boolean }
 
 const ADDRESS_PATTERN = /^0x[a-fA-F0-9]{40}$/
 
 const shouldShowCanvas = (testId: string) =>
   cy.get(`[data-testid="${testId}"] canvas`, LOAD_TIMEOUT).should('be.visible')
+
+const withMarketFormDrawer = <T>(
+  breakpoint: Breakpoint | undefined,
+  action: string,
+  callback: () => Cypress.Chainable<T>,
+) => {
+  if (breakpoint !== 'mobile') return callback()
+
+  cy.get(`[data-testid="mobile-form-action-${action}"]`, LOAD_TIMEOUT).should('be.visible').click()
+  cy.get('[data-testid="mobile-form-drawer"]', LOAD_TIMEOUT).should('be.visible')
+  return callback()
+}
 
 const shouldLoadHistoricalBorrowRateChart = () => {
   getMetricValue('historical-borrow-current-rate').should('match', DECIMAL_REGEX)
@@ -72,12 +84,15 @@ export const shouldLoadMarketDetails = () => {
   cy.get('[data-testid="llamalend-market-faq"]').should('be.visible')
 }
 
-export const shouldLoadBorrowDetails = ({ hasWallet }: WalletOptions) => {
+export const shouldLoadBorrowDetails = ({ breakpoint, hasWallet }: WalletOptions) => {
   cy.get(`[data-testid="no-position-${hasWallet ? 'borrow' : 'disconnected'}"]`).should('be.visible')
-  cy.get('[data-testid="borrow-collateral-input"]').should('be.visible')
-  cy.get('[data-testid="borrow-debt-input"]').should('be.visible')
+  withMarketFormDrawer(breakpoint, 'create', () => {
+    cy.get('[data-testid="borrow-collateral-input"]').should('be.visible')
+    cy.get('[data-testid="borrow-debt-input"]').should('be.visible')
+    cy.get('[data-testid="create-loan-submit-button"]').should(hasWallet ? 'be.visible' : 'not.exist')
+    return cy.wrap(null)
+  })
   cy.get(`[data-testid='no-position-disconnected']`).should(hasWallet ? 'not.exist' : 'be.visible')
-  cy.get('[data-testid="create-loan-submit-button"]').should(hasWallet ? 'be.visible' : 'not.exist')
   getActionValue('market-net-borrow-apr').should('match', DECIMAL_REGEX)
   shouldShowCanvas('market-chart-and-activity')
   shouldLoadHistoricalBorrowRateChart()
