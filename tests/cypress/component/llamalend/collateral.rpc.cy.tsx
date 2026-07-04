@@ -31,8 +31,8 @@ describe('Collateral forms', () => {
       chainId,
       collateral,
       collateralAddress,
-      controllerAddress,
       collateralDecimals,
+      controllerAddress,
       id,
       label,
       marketType,
@@ -88,6 +88,9 @@ describe('Collateral forms', () => {
             collateral,
             collateralDecimals,
             borrow,
+            borrowedDecimals,
+            range: 10n,
+            collateralFundingMultiplier: 2n,
           })
         })
 
