@@ -1,17 +1,21 @@
 import { useRef, useState } from 'react'
-import type { LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
+import type { LlamaMarket, LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
+import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { ExpandedState } from '@tanstack/react-table'
 import { useIsMobile, useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
+import { LEND_MARKET_ROUTES } from '@ui-kit/shared/routes'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { useFilters } from '@ui-kit/shared/ui/DataTable/hooks/useFilters'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableFiltersChip } from '@ui-kit/shared/ui/DataTable/TableFiltersChip'
 import { TableHeader } from '@ui-kit/shared/ui/DataTable/TableHeader'
+import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
+import { LlamaMarketType } from '@ui-kit/types/market'
 import { mapQuery, type QueryProp } from '@ui-kit/types/util'
 import { LlamaListChips } from './chips/LlamaListChips'
 import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS, LlamaMarketColumnId } from './columns'
@@ -26,6 +30,19 @@ import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
 const LOCAL_STORAGE_KEY = 'Llamalend Markets'
 
 const pagination = { pageIndex: 0, pageSize: 200 }
+
+const MarketExpandedPanelFooter = ({ market }: { market: LlamaMarket }) => (
+  <>
+    {market.type === LlamaMarketType.Lend && (
+      <Button component={Link} href={market.url + LEND_MARKET_ROUTES.PAGE_VAULT} data-testid="llama-market-go-to-vault">
+        {t`Earn`}
+      </Button>
+    )}
+    <Button component={Link} href={market.url} data-testid="llama-market-go-to-borrow">
+      {t`Borrow`}
+    </Button>
+  </>
+)
 
 export const LlamaMarketsTable = ({
   onReload,
@@ -78,7 +95,9 @@ export const LlamaMarketsTable = ({
           button: { onClick: resetFilters, label: t`Show All Markets` },
         }}
         errorState={{ title: t`Could not load markets`, onReload }}
-        expandedPanel={LlamaMarketExpandedPanel}
+        expandedPanel={props => (
+          <LlamaMarketExpandedPanel {...props} footer={<MarketExpandedPanelFooter market={props.row.original} />} />
+        )}
         shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       >
         <TableFilters<LlamaMarketColumnId>

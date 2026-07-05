@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Button from '@mui/material/Button'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { ExpandedState } from '@tanstack/react-table'
@@ -7,6 +8,7 @@ import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
+import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
 import { QueryProp } from '@ui-kit/types/util'
@@ -42,6 +44,16 @@ type UserPositionsTableProps = {
 
 const pagination = { pageIndex: 0, pageSize: 50 }
 
+const UserPositionExpandedPanelFooter = ({ market }: { market: LlamaMarket }) => (
+  <Button
+    component={RouterLink}
+    href={market.url} // the url is already built for borrow/supply in the UserPositionsMarketRateTable
+    data-testid="llama-market-go-to-position"
+  >
+    {t`Manage position`}
+  </Button>
+)
+
 export const UserPositionsMarketRateTable = ({ tableQuery, marketRateType, onReload }: UserPositionsTableProps) => {
   const { title, label, defaultSort, sortQueryField, storageKey } = TABLE_CONFIG[marketRateType]
   const [sorting, onSortingChange] = useSortFromQueryString(defaultSort, sortQueryField)
@@ -65,7 +77,9 @@ export const UserPositionsMarketRateTable = ({ tableQuery, marketRateType, onRel
       table={table}
       viewAllLabel={t`View all ${rowCount} ${label} positions`}
       errorState={{ title: t`Could not load ${label} positions`, onReload }}
-      expandedPanel={props => <LlamaMarketExpandedPanel {...props} isUserPositionTable />}
+      expandedPanel={props => (
+        <LlamaMarketExpandedPanel {...props} footer={<UserPositionExpandedPanelFooter market={props.row.original} />} />
+      )}
       shouldStickFirstColumn={Boolean(useIsTablet() && rowCount)}
     >
       <Stack

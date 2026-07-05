@@ -1,6 +1,5 @@
 import { type FunctionComponent, ReactNode, useMemo } from 'react'
 import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
-import Button from '@mui/material/Button'
 import CardHeader, { CardHeaderProps } from '@mui/material/CardHeader'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
@@ -8,14 +7,12 @@ import Typography from '@mui/material/Typography'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useIsTiny } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
-import { LEND_MARKET_ROUTES } from '@ui-kit/shared/routes'
 import { CopyIconButton } from '@ui-kit/shared/ui/CopyIconButton'
 import { type ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { TableExpandedPanel } from '@ui-kit/shared/ui/DataTable/TableExpandedPanel'
 import { Metric } from '@ui-kit/shared/ui/Metric'
-import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
+import { MarketRateType } from '@ui-kit/types/market'
 import { constQ } from '@ui-kit/types/util'
 import { AVERAGE_CATEGORIES, borderStyle } from '@ui-kit/utils'
 import type { LlamaMarket } from '../../queries/market-list/llama-markets'
@@ -90,57 +87,18 @@ const GridHeader = ({ ...props }: Omit<CardHeaderProps, 'sx'>) => (
   </Grid>
 )
 
-const LinkButton = ({ children, href, testId }: { children: ReactNode; href: string; testId: string }) => (
-  <Button component={Link} href={href} data-testid={testId}>
-    {children}
-  </Button>
-)
-
 export const LlamaMarketExpandedPanel = ({
   row: { original: market },
   category,
-  isUserPositionTable = false,
+  footer,
 }: Parameters<ExpandedPanel<LlamaMarket>>[0] & {
-  isUserPositionTable?: boolean
+  footer?: ReactNode
 }) => {
-  const {
-    controllerAddress,
-    favoriteKey,
-    assets,
-    leverage,
-    liquidityUsd,
-    url,
-    lendingPosition,
-    utilizationPercent,
-    type,
-  } = market
+  const { controllerAddress, favoriteKey, assets, leverage, liquidityUsd, lendingPosition, utilizationPercent } = market
   const graphSize = useMobileGraphSize()
 
   return (
-    <TableExpandedPanel
-      category={category}
-      footer={
-        isUserPositionTable ? (
-          <LinkButton
-            href={url} // the url is already build for borrow/supply in the UserPositionsMarketRateTable
-            testId="llama-market-go-to-position"
-          >
-            {t`Manage position`}
-          </LinkButton>
-        ) : (
-          <>
-            {type === LlamaMarketType.Lend && (
-              <LinkButton href={url + LEND_MARKET_ROUTES.PAGE_VAULT} testId="llama-market-go-to-vault">
-                {t`Earn`}
-              </LinkButton>
-            )}
-            <LinkButton href={url} testId="llama-market-go-to-borrow">
-              {t`Borrow`}
-            </LinkButton>
-          </>
-        )
-      }
-    >
+    <TableExpandedPanel category={category} footer={footer}>
       <GridSection>
         <GridHeader
           title={t`Market Details`}
