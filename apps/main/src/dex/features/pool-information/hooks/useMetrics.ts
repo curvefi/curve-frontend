@@ -21,8 +21,8 @@ export const useMetrics = ({
   const staked = usePoolTotalStaked(poolDataCacheOrApi)
 
   return {
-    gaugeTotalSupply: maybe(staked?.gaugeTotalSupply, x => +x),
-    totalStakedPercent: maybe(staked?.totalStakedPercent, x => +x),
+    gaugeTotalSupply: maybe(staked?.gaugeTotalSupply, x => (x === 'N/A' ? 0 : +x)),
+    totalStakedPercent: maybe(staked?.totalStakedPercent, x => (x === 'N/A' ? 0 : +x)),
     liquidityUtilization: maybes(
       [tvlFromCurve ?? pricesApiPoolData?.tvlUsd, volumeFromCurve ?? pricesApiPoolData?.tradingVolume24h],
       (tvl, volume) => +tvl && (+volume / +tvl) * 100,
