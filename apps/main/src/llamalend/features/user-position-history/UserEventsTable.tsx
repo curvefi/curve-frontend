@@ -7,7 +7,7 @@ import type { QueryProp } from '@ui-kit/types/util'
 import { DEFAULT_SORT, USER_POSITION_HISTORY_COLUMNS } from './columns'
 import { ParsedUserCollateralEvent } from './hooks/useUserCollateralEvents'
 import { useUserPositionHistoryVisibility } from './hooks/useUserPositionHistoryVisibility'
-import { RowExpandedPanel } from './RowExpandedPanel'
+import { RowExpandedPanel, RowExpandedPanelFooter } from './RowExpandedPanel'
 
 type UserEventsTableProps = {
   eventsQuery: QueryProp<ParsedUserCollateralEvent[]>
@@ -34,7 +34,7 @@ export const UserEventsTable = ({ eventsQuery }: UserEventsTableProps) => {
       table={table}
       emptyState={{ title: t`No events found` }}
       errorState={{ title: t`Could not load events` }}
-      expandedPanel={RowExpandedPanel}
+      expandedPanel={{ body: RowExpandedPanel, footer: RowExpandedPanelFooter }}
     />
   )
 }

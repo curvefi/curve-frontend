@@ -15,7 +15,10 @@ import { q } from '@ui-kit/types/util'
 import { LegacyPoolListChips } from './chips/LegacyPoolListChips'
 import { LEGACY_POOL_LIST_COLUMNS, LegacyPoolColumnId, getLegacyDefaultSort } from './columns'
 import { LegacyPoolListEmptyState } from './components/LegacyPoolListEmptyState'
-import { LegacyPoolMobileExpandedPanel } from './components/LegacyPoolMobileExpandedPanel'
+import {
+  LegacyPoolMobileExpandedPanel,
+  LegacyPoolMobileExpandedPanelFooter,
+} from './components/LegacyPoolMobileExpandedPanel'
 import { useLegacyPoolListData } from './hooks/useLegacyPoolListData'
 import { useLegacyPoolListVisibilitySettings } from './hooks/useLegacyPoolListVisibilitySettings'
 import { useLegacyPoolsGlobalFilterFn } from './legacyPoolsGlobalFilter'
@@ -66,7 +69,7 @@ export const LegacyPoolListTable = ({ network }: { network: NetworkConfig }) => 
           <LegacyPoolListEmptyState columnFiltersById={columnFiltersById} resetFilters={resetFilters} />
         </EmptyStateRow>
       }
-      expandedPanel={LegacyPoolMobileExpandedPanel}
+      expandedPanel={{ body: LegacyPoolMobileExpandedPanel, footer: LegacyPoolMobileExpandedPanelFooter }}
       shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       loading={isLoading}
     >

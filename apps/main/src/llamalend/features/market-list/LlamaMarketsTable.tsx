@@ -10,6 +10,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { LEND_MARKET_ROUTES } from '@ui-kit/shared/routes'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
+import type { ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { useFilters } from '@ui-kit/shared/ui/DataTable/hooks/useFilters'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableFiltersChip } from '@ui-kit/shared/ui/DataTable/TableFiltersChip'
@@ -31,7 +32,7 @@ const LOCAL_STORAGE_KEY = 'Llamalend Markets'
 
 const pagination = { pageIndex: 0, pageSize: 200 }
 
-const MarketExpandedPanelFooter = ({ market }: { market: LlamaMarket }) => (
+const MarketExpandedPanelFooter: ExpandedPanel<LlamaMarket> = ({ row: { original: market } }) => (
   <>
     {market.type === LlamaMarketType.Lend && (
       <Button component={Link} href={market.url + LEND_MARKET_ROUTES.PAGE_VAULT} data-testid="llama-market-go-to-vault">
@@ -95,9 +96,7 @@ export const LlamaMarketsTable = ({
           button: { onClick: resetFilters, label: t`Show All Markets` },
         }}
         errorState={{ title: t`Could not load markets`, onReload }}
-        expandedPanel={props => (
-          <LlamaMarketExpandedPanel {...props} footer={<MarketExpandedPanelFooter market={props.row.original} />} />
-        )}
+        expandedPanel={{ body: LlamaMarketExpandedPanel, footer: MarketExpandedPanelFooter }}
         shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       >
         <TableFilters<LlamaMarketColumnId>

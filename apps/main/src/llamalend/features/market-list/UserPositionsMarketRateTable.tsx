@@ -8,6 +8,7 @@ import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
+import type { ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
@@ -44,7 +45,7 @@ type UserPositionsTableProps = {
 
 const pagination = { pageIndex: 0, pageSize: 50 }
 
-const UserPositionExpandedPanelFooter = ({ market }: { market: LlamaMarket }) => (
+const UserPositionExpandedPanelFooter: ExpandedPanel<LlamaMarket> = ({ row: { original: market } }) => (
   <Button
     component={RouterLink}
     href={market.url} // the url is already built for borrow/supply in the UserPositionsMarketRateTable
@@ -77,9 +78,7 @@ export const UserPositionsMarketRateTable = ({ tableQuery, marketRateType, onRel
       table={table}
       viewAllLabel={t`View all ${rowCount} ${label} positions`}
       errorState={{ title: t`Could not load ${label} positions`, onReload }}
-      expandedPanel={props => (
-        <LlamaMarketExpandedPanel {...props} footer={<UserPositionExpandedPanelFooter market={props.row.original} />} />
-      )}
+      expandedPanel={{ body: LlamaMarketExpandedPanel, footer: UserPositionExpandedPanelFooter }}
       shouldStickFirstColumn={Boolean(useIsTablet() && rowCount)}
     >
       <Stack

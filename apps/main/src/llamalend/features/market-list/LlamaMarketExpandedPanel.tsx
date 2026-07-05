@@ -9,7 +9,6 @@ import { useIsTiny } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { CopyIconButton } from '@ui-kit/shared/ui/CopyIconButton'
 import { type ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
-import { TableExpandedPanel } from '@ui-kit/shared/ui/DataTable/TableExpandedPanel'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
@@ -87,18 +86,12 @@ const GridHeader = ({ ...props }: Omit<CardHeaderProps, 'sx'>) => (
   </Grid>
 )
 
-export const LlamaMarketExpandedPanel = ({
-  row: { original: market },
-  category,
-  footer,
-}: Parameters<ExpandedPanel<LlamaMarket>>[0] & {
-  footer?: ReactNode
-}) => {
+export const LlamaMarketExpandedPanel = ({ row: { original: market } }: Parameters<ExpandedPanel<LlamaMarket>>[0]) => {
   const { controllerAddress, favoriteKey, assets, leverage, liquidityUsd, lendingPosition, utilizationPercent } = market
   const graphSize = useMobileGraphSize()
 
   return (
-    <TableExpandedPanel category={category} footer={footer}>
+    <>
       <GridSection>
         <GridHeader
           title={t`Market Details`}
@@ -178,6 +171,6 @@ export const LlamaMarketExpandedPanel = ({
           </Grid>
         </GridSection>
       )}
-    </TableExpandedPanel>
+    </>
   )
 }

@@ -15,7 +15,21 @@ import {
   type TableItem,
 } from './data-table.utils'
 import { DataCell } from './DataCell'
-import { type ExpandedPanel, ExpansionRow } from './ExpansionRow'
+import { ExpandedPanel, ExpansionRow } from './ExpansionRow'
+
+export type ExpandedPanelConfig<T extends TableItem> = {
+  body: ExpandedPanel<T>
+  footer?: ExpandedPanel<T>
+}
+
+export type DataRowProps<T extends TableItem> = {
+  table: Table<T>
+  row: Row<T>
+  category: DataTableCategory
+  expandedPanel?: ExpandedPanelConfig<T>
+  shouldStickFirstColumn?: boolean
+  verticalAlign?: 'top' | 'middle' | 'bottom'
+}
 
 const onCellClick = (target: EventTarget, url: string, routerNavigate: (href: string) => void) => {
   // ignore clicks on elements that should be clickable inside the row
@@ -27,15 +41,6 @@ const onCellClick = (target: EventTarget, url: string, routerNavigate: (href: st
   } else {
     routerNavigate(url) // internal link
   }
-}
-
-export type DataRowProps<T extends TableItem> = {
-  table: Table<T>
-  row: Row<T>
-  category: DataTableCategory
-  expandedPanel?: ExpandedPanel<T>
-  shouldStickFirstColumn?: boolean
-  verticalAlign?: 'top' | 'middle' | 'bottom'
 }
 
 export const DataRow = <T extends TableItem>({

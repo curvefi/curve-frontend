@@ -15,7 +15,8 @@ import {
   type TableItem,
 } from './data-table.utils'
 import { DataCell } from './DataCell'
-import { type ExpandedPanel, ExpansionRow } from './ExpansionRow'
+import { ExpandedPanelConfig } from './DataRow'
+import { ExpansionRow } from './ExpansionRow'
 
 const onCellClick = (target: EventTarget, url: string, routerNavigate: (href: string) => void) => {
   // ignore clicks on elements that should be clickable inside the row
@@ -33,7 +34,7 @@ export type LegacyDataRowProps<T extends TableItem> = {
   table: Table<T>
   row: Row<T>
   category?: DataTableCategory
-  expandedPanel?: ExpandedPanel<T>
+  expandedPanel?: ExpandedPanelConfig<T>
   isLastRow?: boolean
   shouldStickLastRowToTop?: boolean
   shouldStickFirstColumn?: boolean

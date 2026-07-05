@@ -1,4 +1,8 @@
-import { ActivityTable, LlammaTradesExpandedPanel } from '@ui-kit/features/activity-table'
+import {
+  ActivityTable,
+  LlammaTradesExpandedPanel,
+  LlammaTradesExpandedPanelFooter,
+} from '@ui-kit/features/activity-table'
 import { useLlammaActivityTradesConfig } from './hooks/useLlammaActivityTradesConfig'
 import { LlammaActivityProps } from './'
 
@@ -17,7 +21,7 @@ export const LlammaActivityTrades = ({ network, ammAddress, endpoint, networkCon
       table={table}
       emptyState={emptyState}
       errorState={errorState}
-      expandedPanel={LlammaTradesExpandedPanel}
+      expandedPanel={{ body: LlammaTradesExpandedPanel, footer: LlammaTradesExpandedPanelFooter }}
     />
   )
 }

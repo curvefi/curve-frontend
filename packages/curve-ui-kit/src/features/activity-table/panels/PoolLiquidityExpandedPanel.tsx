@@ -3,7 +3,6 @@ import Typography from '@mui/material/Typography'
 import { shortenString } from '@primitives/string.utils'
 import { t } from '@ui-kit/lib/i18n'
 import type { ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
-import { TableExpandedPanel } from '@ui-kit/shared/ui/DataTable/TableExpandedPanel'
 import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -14,9 +13,8 @@ const { Spacing } = SizesAndSpaces
 
 export const PoolLiquidityExpandedPanel: ExpandedPanel<PoolLiquidityRow> = ({
   row: {
-    original: { txUrl, tokenAmounts, poolTokens, provider, network, eventType },
+    original: { tokenAmounts, poolTokens, provider, network, eventType },
   },
-  category,
 }) => {
   const isAdd = eventType === 'AddLiquidity'
 
@@ -26,33 +24,34 @@ export const PoolLiquidityExpandedPanel: ExpandedPanel<PoolLiquidityRow> = ({
     .filter(({ amount }) => amount !== 0)
 
   return (
-    <TableExpandedPanel
-      category={category}
-      footer={txUrl && <ExternalLink href={txUrl} label={t`View Transaction`} size="extraSmall" />}
-    >
-      <Stack>
-        {nonZeroAmounts.map(({ amount, token }, index) => (
-          <Stack
-            key={token?.address ?? index}
-            direction="row"
-            sx={{ justifyContent: 'space-between', alignItems: 'center' }}
-          >
-            <Typography variant="bodyMRegular" color="textSecondary">
-              {token?.symbol ?? `Token ${index}`}
+    <Stack>
+      {nonZeroAmounts.map(({ amount, token }, index) => (
+        <Stack
+          key={token?.address ?? index}
+          direction="row"
+          sx={{ justifyContent: 'space-between', alignItems: 'center' }}
+        >
+          <Typography variant="bodyMRegular" color="textSecondary">
+            {token?.symbol ?? `Token ${index}`}
+          </Typography>
+          <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
+            <Typography variant="tableCellMBold" color={isAdd ? 'success' : 'error'}>
+              {formatNumber(amount, { abbreviate: false })}
             </Typography>
-            <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
-              <Typography variant="tableCellMBold" color={isAdd ? 'success' : 'error'}>
-                {formatNumber(amount, { abbreviate: false })}
-              </Typography>
-              <TokenIcon blockchainId={network} address={token?.address} size="mui-sm" />
-            </Stack>
+            <TokenIcon blockchainId={network} address={token?.address} size="mui-sm" />
           </Stack>
-        ))}
-        <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography variant="bodyMRegular" color="textSecondary">{t`User`}</Typography>
-          <Typography variant="tableCellMBold">{shortenString(provider)}</Typography>
         </Stack>
+      ))}
+      <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+        <Typography variant="bodyMRegular" color="textSecondary">{t`User`}</Typography>
+        <Typography variant="tableCellMBold">{shortenString(provider)}</Typography>
       </Stack>
-    </TableExpandedPanel>
+    </Stack>
   )
 }
+
+export const PoolLiquidityExpandedPanelFooter: ExpandedPanel<PoolLiquidityRow> = ({
+  row: {
+    original: { txUrl },
+  },
+}) => txUrl && <ExternalLink href={txUrl} label={t`View Transaction`} size="extraSmall" />
