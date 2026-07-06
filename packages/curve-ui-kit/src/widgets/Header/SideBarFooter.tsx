@@ -15,14 +15,17 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-const backgroundColor = 'background.paper'
+const BACKGROUND_COLOR = 'background.paper'
 
 export const SideBarFooter = ({ onConnect }: { onConnect: () => void }) => (
-  <Stack sx={{ ...MOBILE_SIDEBAR_WIDTH, backgroundColor }}>
+  <Stack sx={{ ...MOBILE_SIDEBAR_WIDTH, backgroundColor: BACKGROUND_COLOR }}>
     <ConnectWalletIndicator sx={{ flexGrow: 1, margin: Spacing.sm }} onConnect={onConnect} />
 
-    <Accordion sx={{ backgroundColor }} disableGutters>
-      <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ backgroundColor, paddingInline: Spacing.sm }}>
+    <Accordion sx={{ backgroundColor: BACKGROUND_COLOR }} disableGutters>
+      <AccordionSummary
+        expandIcon={<ExpandMoreIcon />}
+        sx={{ backgroundColor: BACKGROUND_COLOR, paddingInline: Spacing.sm }}
+      >
         <GearIcon sx={{ fontSize: 22, fill: 'transparent', stroke: 'currentColor' }} />
         <Typography
           sx={{ marginLeft: Spacing.sm, alignContent: 'center' }}
@@ -33,7 +36,9 @@ export const SideBarFooter = ({ onConnect }: { onConnect: () => void }) => (
           {t`Settings`}
         </Typography>
       </AccordionSummary>
-      <AccordionDetails sx={{ backgroundColor, borderTop: (t: Theme) => `1px solid ${t.palette.text.secondary}` }}>
+      <AccordionDetails
+        sx={{ backgroundColor: BACKGROUND_COLOR, borderTop: (t: Theme) => `1px solid ${t.palette.text.secondary}` }}
+      >
         <Settings />
       </AccordionDetails>
     </Accordion>

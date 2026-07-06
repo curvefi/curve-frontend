@@ -45,13 +45,13 @@ type RefuelPoolSeed = {
   poolAddress: Address
 }
 
-const preferredChain: Chain = 'ethereum'
-const pricesApiHost = process.env.PRICES_API_HOST
+const PREFERRED_CHAIN: Chain = 'ethereum'
+const PRICES_API_HOST = process.env.PRICES_API_HOST
 /** Active deterministic seed; set `PRICES_API_TEST_SEED` to replay random live selections. */
-export const endpointTestSeed = process.env.PRICES_API_TEST_SEED ?? `${Date.now()}-${Math.random()}`
+export const ENDPOINT_TEST_SEED = process.env.PRICES_API_TEST_SEED ?? `${Date.now()}-${Math.random()}`
 
 /** Optional host override so endpoint tests can target another Prices API deployment. */
-export const requestOptions: Options | undefined = pricesApiHost ? { host: pricesApiHost } : undefined
+export const requestOptions: Options | undefined = PRICES_API_HOST ? { host: PRICES_API_HOST } : undefined
 
 /** Loads a seed in `beforeAll` and returns a getter that fails only in cases that use it. */
 export const endpointSeed = <T>(load: () => Promise<T>) => {
@@ -69,7 +69,7 @@ export const endpointSeed = <T>(load: () => Promise<T>) => {
       value = await fetchTracker.run(load)
     } catch (seedError) {
       error = new Error(
-        `Failed to load live seed from ${load.name || 'endpointSeed'}\n\n${seedError instanceof Error ? seedError.message : String(seedError)}\n\nPRICES_API_TEST_SEED=${endpointTestSeed}\n\nSeed URL:\n${formatTrackedFetchUrls(fetchTracker.urls)}`,
+        `Failed to load live seed from ${load.name || 'endpointSeed'}\n\n${seedError instanceof Error ? seedError.message : String(seedError)}\n\nPRICES_API_TEST_SEED=${ENDPOINT_TEST_SEED}\n\nSeed URL:\n${formatTrackedFetchUrls(fetchTracker.urls)}`,
         { cause: error },
       )
     }
@@ -107,7 +107,7 @@ const hashSeed = (value: string) => {
   return hash >>> 0
 }
 
-let randomState = hashSeed(endpointTestSeed)
+let randomState = hashSeed(ENDPOINT_TEST_SEED)
 
 /** Deterministic PRNG used instead of `Math.random()` so live selections can be replayed. */
 const random = () => {
@@ -139,7 +139,7 @@ export const nowRange = (days = 7) => {
 export const getSupportedChainSeed = once(async () => {
   const supportedChains = await chains.getSupportedChains(requestOptions)
   return requireSeed(
-    supportedChains.find(chain => chain === preferredChain) ?? supportedChains[0],
+    supportedChains.find(chain => chain === PREFERRED_CHAIN) ?? supportedChains[0],
     'chains.getSupportedChains',
   )
 })
@@ -290,7 +290,7 @@ export const getYieldBasisPoolSeed = once(async () => {
 export const getRefuelPoolSeed = once(async (): Promise<RefuelPoolSeed> => {
   const supportedChains = await refuel.getRefuelChains(requestOptions)
   const chain =
-    supportedChains.find(chain => chain === preferredChain) ?? randomItem(supportedChains, 'refuel.getRefuelChains')
+    supportedChains.find(chain => chain === PREFERRED_CHAIN) ?? randomItem(supportedChains, 'refuel.getRefuelChains')
   const poolsResponse = await refuel.getRefuelPools(chain, requestOptions)
   const pool = randomItem(poolsResponse.pools, `refuel.getRefuelPools(${chain})`)
 

@@ -11,12 +11,13 @@ import { useSnapshots } from '../../hooks/useSnapshots'
 import { RateTooltipProps } from './RateCell'
 
 const rateType = MarketRateType.Supply
-const averageCategory = 'llamalend.marketList.rate'
+const AVERAGE_CATEGORY = 'llamalend.marketList.rate'
 
+const PERIOD_LABEL = AVERAGE_CATEGORIES[AVERAGE_CATEGORY].period
 const LendRateTooltipContent = ({ market, isOpen }: { market: LlamaMarket; isOpen: boolean }) => {
   const { minBoostedAprAverage, maxBoostedAprAverage, averageRate, isLoading } = useSnapshots(
     market,
-    { type: rateType, category: averageCategory },
+    { type: rateType, category: AVERAGE_CATEGORY },
     isOpen, // important: only call this when the tooltip is open
   ) // todo: `error` is ignored
   const {
@@ -33,7 +34,7 @@ const LendRateTooltipContent = ({ market, isOpen }: { market: LlamaMarket; isOpe
     <MarketSupplyRateTooltipContent
       supplyApy={lendApy}
       averageSupplyApy={averageRate}
-      periodLabel={AVERAGE_CATEGORIES[averageCategory].period}
+      periodLabel={PERIOD_LABEL}
       extraRewards={poolRewards}
       extraIncentives={formatSupplyExtraIncentives({
         incentives: rates.incentives.map(incentive => ({

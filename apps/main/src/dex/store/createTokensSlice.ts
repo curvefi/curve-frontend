@@ -13,11 +13,11 @@ type SliceState = {
   loading: boolean
 }
 
-const sliceKey = 'tokens'
+const SLICE_KEY = 'tokens'
 
 // prettier-ignore
 export type TokensSlice = {
-  [sliceKey]: SliceState & {
+  [SLICE_KEY]: SliceState & {
     setTokensMapper: (curve: CurveApi, poolDatas: PoolData[], poolVolumes: PoolVolumes) => string[]
     setEmptyPoolListDefault: (curve: CurveApi) => void
 
@@ -46,11 +46,11 @@ export const createTokensSlice = (
   _set: StoreApi<State>['setState'],
   get: StoreApi<State>['getState'],
 ): TokensSlice => ({
-  [sliceKey]: {
+  [SLICE_KEY]: {
     ...DEFAULT_STATE,
 
     setTokensMapper: (curve, poolDatas, poolVolumes) => {
-      const { tokensMapper, ...sliceState } = get()[sliceKey]
+      const { tokensMapper, ...sliceState } = get()[SLICE_KEY]
 
       sliceState.setStateByKey('loading', true)
 
@@ -104,7 +104,7 @@ export const createTokensSlice = (
     },
     // eslint-disable-next-line @typescript-eslint/no-misused-promises, @typescript-eslint/require-await -- Existing violation before enabling this rule.
     setEmptyPoolListDefault: async curve => {
-      const { [sliceKey]: sliceState } = get()
+      const { [SLICE_KEY]: sliceState } = get()
       const chainId = curve.chainId
       const nativeToken = curve.getNetworkConstants().NATIVE_TOKEN
 
@@ -135,16 +135,16 @@ export const createTokensSlice = (
 
     // slice helpers
     setStateByActiveKey: (key, activeKey, value) => {
-      get().setAppStateByActiveKey(sliceKey, key, activeKey, value)
+      get().setAppStateByActiveKey(SLICE_KEY, key, activeKey, value)
     },
     setStateByKey: (key, value) => {
-      get().setAppStateByKey(sliceKey, key, value)
+      get().setAppStateByKey(SLICE_KEY, key, value)
     },
     setStateByKeys: sliceState => {
-      get().setAppStateByKeys(sliceKey, sliceState)
+      get().setAppStateByKeys(SLICE_KEY, sliceState)
     },
     resetState: () => {
-      get().resetAppState(sliceKey, DEFAULT_STATE)
+      get().resetAppState(SLICE_KEY, DEFAULT_STATE)
     },
   },
 })

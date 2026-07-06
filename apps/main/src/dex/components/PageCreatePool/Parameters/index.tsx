@@ -7,7 +7,7 @@ import { WarningBox as TokenWarningBox } from '@/dex/components/PageCreatePool/c
 import {
   FXSWAP,
   FXSWAP_A_CONFIG,
-  STABLESWAP_MIN_MAX_PARAMETERS,
+  stableswapMinMaxParameters,
   TWOCRYPTO_MIN_MAX_PARAMETERS,
   TRICRYPTO_MIN_MAX_PARAMETERS,
   STABLESWAP,
@@ -71,10 +71,10 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
   const [midValue, setMidValue] = useState<string>(midFee)
   const [outValue, setOutValue] = useState<string>(outFee)
 
-  const STABLESWAP_MIN_MAX = STABLESWAP_MIN_MAX_PARAMETERS(+stableSwapFee)
+  const stableswapMinMax = stableswapMinMaxParameters(+stableSwapFee)
   const preset = POOL_PRESETS[poolPresetIndex]?.defaultParams
 
-  const CRYPTOSWAP_MIN_MAX = useMemo(() => {
+  const cryptoswapMinMax = useMemo(() => {
     if (tokensInPool.tokenA.address !== '' && tokensInPool.tokenB.address !== '' && tokensInPool.tokenC.address !== '')
       return TRICRYPTO_MIN_MAX_PARAMETERS
     return TWOCRYPTO_MIN_MAX_PARAMETERS
@@ -82,7 +82,7 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
   const isFxSwap = swapType === FXSWAP
   const [cryptoAMin, cryptoAMax] = isFxSwap
     ? [FXSWAP_A_CONFIG.min, FXSWAP_A_CONFIG.max]
-    : [CRYPTOSWAP_MIN_MAX.a.min, CRYPTOSWAP_MIN_MAX.a.max]
+    : [cryptoswapMinMax.a.min, cryptoswapMinMax.a.max]
 
   const updateStableFeeValue = (value: number) => {
     updateStableSwapFee(new BigNumber(value).toString())
@@ -108,11 +108,11 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
     setMidValue(midFee)
     // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     setOutValue(outFee)
-    if (+offpegFeeMultiplier > STABLESWAP_MIN_MAX.offpegFeeMultiplier.max) {
-      updateOffpegFeeMultiplier(STABLESWAP_MIN_MAX.offpegFeeMultiplier.max.toString())
+    if (+offpegFeeMultiplier > stableswapMinMax.offpegFeeMultiplier.max) {
+      updateOffpegFeeMultiplier(stableswapMinMax.offpegFeeMultiplier.max.toString())
     }
   }, [
-    STABLESWAP_MIN_MAX.offpegFeeMultiplier.max,
+    stableswapMinMax.offpegFeeMultiplier.max,
     midFee,
     offpegFeeMultiplier,
     outFee,
@@ -236,10 +236,10 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
           {swapType === STABLESWAP && (
             <>
               <NumberField
-                label={t`Swap Fee (${STABLESWAP_MIN_MAX.swapFee.min}% - ${STABLESWAP_MIN_MAX.swapFee.max}%)`}
+                label={t`Swap Fee (${stableswapMinMax.swapFee.min}% - ${stableswapMinMax.swapFee.max}%)`}
                 value={+stableFeeValue}
-                minValue={STABLESWAP_MIN_MAX.swapFee.min}
-                maxValue={STABLESWAP_MIN_MAX.swapFee.max}
+                minValue={stableswapMinMax.swapFee.min}
+                maxValue={stableswapMinMax.swapFee.max}
                 formatOptions={FEE_FORMAT_OPTIONS}
                 onChange={updateStableFeeValue}
               />
@@ -249,22 +249,22 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
             <>
               <NumberField
                 isDisabled={poolPresetIndex === null}
-                label={t`Mid Fee: (${CRYPTOSWAP_MIN_MAX.midFee.min}% - ${CRYPTOSWAP_MIN_MAX.midFee.max}%)`}
+                label={t`Mid Fee: (${cryptoswapMinMax.midFee.min}% - ${cryptoswapMinMax.midFee.max}%)`}
                 value={+midValue}
                 onChange={updateMidValue}
-                minValue={CRYPTOSWAP_MIN_MAX.midFee.min}
-                maxValue={CRYPTOSWAP_MIN_MAX.midFee.max}
+                minValue={cryptoswapMinMax.midFee.min}
+                maxValue={cryptoswapMinMax.midFee.max}
                 formatOptions={FEE_FORMAT_OPTIONS}
               />
               <Description>{t`Mid fee governs fees charged during low volatility.`}</Description>
               <NumberField
                 isDisabled={poolPresetIndex === null}
-                label={t`Out fee: (${midFee}% - ${CRYPTOSWAP_MIN_MAX.outFee.max}%)`}
+                label={t`Out fee: (${midFee}% - ${cryptoswapMinMax.outFee.max}%)`}
                 defaultValue={+outFee}
                 value={+outValue}
                 onChange={updateOutValue}
                 minValue={+midFee}
-                maxValue={CRYPTOSWAP_MIN_MAX.outFee.max}
+                maxValue={cryptoswapMinMax.outFee.max}
                 formatOptions={FEE_FORMAT_OPTIONS}
               />
               <Description>{t`Out fee governs fees charged during high volatility.`}</Description>
@@ -305,27 +305,27 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
               {advanced && swapType === STABLESWAP && (
                 <>
                   <NumberField
-                    label={t`A (${STABLESWAP_MIN_MAX.a.min} - ${STABLESWAP_MIN_MAX.a.max})`}
+                    label={t`A (${stableswapMinMax.a.min} - ${stableswapMinMax.a.max})`}
                     value={+stableA}
-                    minValue={STABLESWAP_MIN_MAX.a.min}
-                    maxValue={STABLESWAP_MIN_MAX.a.max}
+                    minValue={stableswapMinMax.a.min}
+                    maxValue={stableswapMinMax.a.max}
                     onChange={updateStableA}
                   />
                   {network.stableswapFactory && (
                     <>
                       <NumberField
-                        label={t`Offpeg Fee Multiplier (${STABLESWAP_MIN_MAX.offpegFeeMultiplier.min} - ${STABLESWAP_MIN_MAX.offpegFeeMultiplier.max})`}
+                        label={t`Offpeg Fee Multiplier (${stableswapMinMax.offpegFeeMultiplier.min} - ${stableswapMinMax.offpegFeeMultiplier.max})`}
                         value={+offpegFeeMultiplier}
-                        minValue={STABLESWAP_MIN_MAX.offpegFeeMultiplier.min}
-                        maxValue={STABLESWAP_MIN_MAX.offpegFeeMultiplier.max}
+                        minValue={stableswapMinMax.offpegFeeMultiplier.min}
+                        maxValue={stableswapMinMax.offpegFeeMultiplier.max}
                         onChange={updateOffpegFeeMultiplier}
                       />
                       {/* maExpTime renamed to Moving Average Time to simplify for the user */}
                       <NumberField
-                        label={t`Moving Average Time (${STABLESWAP_MIN_MAX.maExpTime.min} - ${STABLESWAP_MIN_MAX.maExpTime.max}) seconds`}
+                        label={t`Moving Average Time (${stableswapMinMax.maExpTime.min} - ${stableswapMinMax.maExpTime.max}) seconds`}
                         value={+maExpTime}
-                        minValue={STABLESWAP_MIN_MAX.maExpTime.min}
-                        maxValue={STABLESWAP_MIN_MAX.maExpTime.max}
+                        minValue={stableswapMinMax.maExpTime.min}
+                        maxValue={stableswapMinMax.maExpTime.max}
                         onChange={updateMaExpTime}
                         description={`Contract interprets time at a different scale: so, 600 seconds is 600 / log(2), which is 866 when the contract's ma_exp_time method is queried.`}
                       />
@@ -344,44 +344,44 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
                     onChange={updateCryptoAValue}
                   />
                   <NumberField
-                    label={`Gamma (${new BigNumber(CRYPTOSWAP_MIN_MAX.gamma.min).toString()} - ${new BigNumber(
-                      CRYPTOSWAP_MIN_MAX.gamma.max,
+                    label={`Gamma (${new BigNumber(cryptoswapMinMax.gamma.min).toString()} - ${new BigNumber(
+                      cryptoswapMinMax.gamma.max,
                     ).toString()})`}
                     value={+gamma}
-                    minValue={CRYPTOSWAP_MIN_MAX.gamma.min}
-                    maxValue={CRYPTOSWAP_MIN_MAX.gamma.max}
+                    minValue={cryptoswapMinMax.gamma.min}
+                    maxValue={cryptoswapMinMax.gamma.max}
                     formatOptions={CRYPTO_FORMAT_OPTIONS}
                     onChange={updateGamma}
                   />
                   <NumberField
-                    label={t`Allowed Extra Profit (${CRYPTOSWAP_MIN_MAX.allowedExtraProfit.min} - ${CRYPTOSWAP_MIN_MAX.allowedExtraProfit.max})`}
+                    label={t`Allowed Extra Profit (${cryptoswapMinMax.allowedExtraProfit.min} - ${cryptoswapMinMax.allowedExtraProfit.max})`}
                     value={+allowedExtraProfit}
-                    minValue={CRYPTOSWAP_MIN_MAX.allowedExtraProfit.min}
-                    maxValue={CRYPTOSWAP_MIN_MAX.allowedExtraProfit.max}
+                    minValue={cryptoswapMinMax.allowedExtraProfit.min}
+                    maxValue={cryptoswapMinMax.allowedExtraProfit.max}
                     formatOptions={CRYPTO_FORMAT_OPTIONS}
                     onChange={updateAllowedExtraProfit}
                   />
                   <NumberField
-                    label={t`Fee Gamma (${CRYPTOSWAP_MIN_MAX.feeGamma.min} - ${CRYPTOSWAP_MIN_MAX.feeGamma.max})`}
+                    label={t`Fee Gamma (${cryptoswapMinMax.feeGamma.min} - ${cryptoswapMinMax.feeGamma.max})`}
                     value={+feeGamma}
-                    minValue={CRYPTOSWAP_MIN_MAX.feeGamma.min}
-                    maxValue={CRYPTOSWAP_MIN_MAX.feeGamma.max}
+                    minValue={cryptoswapMinMax.feeGamma.min}
+                    maxValue={cryptoswapMinMax.feeGamma.max}
                     formatOptions={CRYPTO_FORMAT_OPTIONS}
                     onChange={updateFeeGamma}
                   />
                   <NumberField
-                    label={t`Adjustment Step (${CRYPTOSWAP_MIN_MAX.adjustmentStep.min} - ${CRYPTOSWAP_MIN_MAX.adjustmentStep.max})`}
+                    label={t`Adjustment Step (${cryptoswapMinMax.adjustmentStep.min} - ${cryptoswapMinMax.adjustmentStep.max})`}
                     value={+adjustmentStep}
-                    minValue={CRYPTOSWAP_MIN_MAX.adjustmentStep.min}
-                    maxValue={CRYPTOSWAP_MIN_MAX.adjustmentStep.max}
+                    minValue={cryptoswapMinMax.adjustmentStep.min}
+                    maxValue={cryptoswapMinMax.adjustmentStep.max}
                     formatOptions={CRYPTO_FORMAT_OPTIONS}
                     onChange={updateAdjustmentStep}
                   />
                   <NumberField
-                    label={t`Moving Average Time (${CRYPTOSWAP_MIN_MAX.maHalfTime.min} - ${CRYPTOSWAP_MIN_MAX.maHalfTime.max}) seconds`}
+                    label={t`Moving Average Time (${cryptoswapMinMax.maHalfTime.min} - ${cryptoswapMinMax.maHalfTime.max}) seconds`}
                     value={+maHalfTime}
-                    minValue={CRYPTOSWAP_MIN_MAX.maHalfTime.min}
-                    maxValue={CRYPTOSWAP_MIN_MAX.maHalfTime.max}
+                    minValue={cryptoswapMinMax.maHalfTime.min}
+                    maxValue={cryptoswapMinMax.maHalfTime.max}
                     formatOptions={CRYPTO_FORMAT_OPTIONS}
                     onChange={updateMaHalfTime}
                   />

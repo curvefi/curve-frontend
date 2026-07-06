@@ -3,12 +3,12 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { ChartLineDashPattern } from '@ui-kit/shared/ui/Chart/chart.utils'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
-import { Transition, Duration } from '@ui-kit/themes/design/0_primitives'
+import { TRANSITION, Duration } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-const TransitionFunction = `${Transition} ${Duration.Delay}ms`
+const TRANSITION_FUNCTION = `${TRANSITION} ${Duration.Delay}ms`
 
 export const LegendLine = ({
   color,
@@ -19,13 +19,13 @@ export const LegendLine = ({
   dash?: ChartLineDashPattern
   opacity?: number
 }) => (
-  <svg width="20" height="2" style={{ opacity, transition: `opacity ${TransitionFunction}` }}>
+  <svg width="20" height="2" style={{ opacity, transition: `opacity ${TRANSITION_FUNCTION}` }}>
     <line x1="0" y1="1" x2="20" y2="1" stroke={color} strokeWidth={2} strokeDasharray={dash?.join(' ')} />
   </svg>
 )
 
 export const LegendBox = ({ outline, fill, opacity = 1 }: { outline: string; fill: string; opacity?: number }) => (
-  <svg width="12" height="12" style={{ opacity, transition: `opacity ${TransitionFunction}` }}>
+  <svg width="12" height="12" style={{ opacity, transition: `opacity ${TRANSITION_FUNCTION}` }}>
     <rect x="0" y="0" width="12" height="12" stroke={outline} fill={fill} />
   </svg>
 )
@@ -53,7 +53,7 @@ export const LegendSet = ({ label, line, box, toggled = true, onToggle }: Legend
         variant="bodySRegular"
         sx={theme => ({
           color: toggled ? undefined : theme.palette.text.disabled,
-          transition: `color ${TransitionFunction}`,
+          transition: `color ${TRANSITION_FUNCTION}`,
           'button:hover &': { color: theme.palette.text.highlight },
         })}
       >

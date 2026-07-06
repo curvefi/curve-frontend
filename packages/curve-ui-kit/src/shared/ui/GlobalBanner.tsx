@@ -15,7 +15,7 @@ import {
 import { t } from '@ui-kit/lib/i18n'
 import { getCurrentApp } from '@ui-kit/shared/routes'
 import { Banner } from '@ui-kit/shared/ui/Banner'
-import { isCypress, ReleaseChannel } from '@ui-kit/utils'
+import { IS_CYPRESS, ReleaseChannel } from '@ui-kit/utils'
 import { Chain } from '@ui-kit/utils/network'
 import { PhishingWarningBanner } from '@ui-kit/widgets/Header/PhishingWarningBanner'
 import { StackBanners } from './StackBanners'
@@ -44,7 +44,7 @@ export const GlobalBanner = ({ networkId, chainId, backendMaintenance }: GlobalB
 
   return (
     <StackBanners>
-      {releaseChannel !== ReleaseChannel.Stable && !isCypress && (
+      {releaseChannel !== ReleaseChannel.Stable && !IS_CYPRESS && (
         <Banner
           icon="llama"
           onClick={() => setReleaseChannel(ReleaseChannel.Stable)}
@@ -53,7 +53,7 @@ export const GlobalBanner = ({ networkId, chainId, backendMaintenance }: GlobalB
           {t`${releaseChannel} Mode Enabled`}
         </Banner>
       )}
-      {backendMaintenance.showBanner && !isCypress && <BackendMaintenanceBanner {...backendMaintenance} />}
+      {backendMaintenance.showBanner && !IS_CYPRESS && <BackendMaintenanceBanner {...backendMaintenance} />}
       <PhishingWarningBanner />
       {isFailure(connectState) ? (
         <Banner severity="alert">

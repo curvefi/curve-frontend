@@ -14,7 +14,7 @@ import { getBoundaryErrorSubtitle } from '@ui-kit/utils/errors'
 
 const { MinHeight, MaxWidth, Spacing } = SizesAndSpaces
 
-const [imageWidth, imageHeight] = [1280, 720]
+const [IMAGE_WIDTH, IMAGE_HEIGHT] = [1280, 720]
 
 export const ErrorPage = ({
   title,
@@ -92,7 +92,7 @@ export const ErrorPage = ({
           {t`Submit error report`}
         </Button>
       </Stack>
-      <img src={ERROR_IMAGE_URL} alt={title} width={imageWidth} height={imageHeight} />
+      <img src={ERROR_IMAGE_URL} alt={title} width={IMAGE_WIDTH} height={IMAGE_HEIGHT} />
       <ErrorReportModal isOpen={isReportOpen} onClose={closeReportModal} context={{ error, title, subtitle }} />
     </Stack>
   )

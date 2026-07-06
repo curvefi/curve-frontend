@@ -35,7 +35,7 @@ import {
 import { LOAD_TIMEOUT } from '@cy/support/ui'
 import { constQ } from '@ui-kit/types/util'
 
-const chainId = 1
+const CHAIN_ID = 1
 const testCases = [
   { approved: true, title: 'fills and submits (already approved)' },
   { approved: false, title: 'fills, approves, and submits' },
@@ -46,7 +46,7 @@ const mountResetPositionForm = ({
   market,
 }: Pick<ReturnType<typeof createResetPositionScenario>, 'llamaApi' | 'market'>) => {
   setLlamaApi(llamaApi)
-  setGasInfo({ chainId, networks: llamaNetworks })
+  setGasInfo({ chainId: CHAIN_ID, networks: llamaNetworks })
   cy.mount(
     <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
       <ResetPositionForm networks={llamaNetworks} />
@@ -63,13 +63,13 @@ describe('Soft Liquidation Forms (mocked)', () => {
     testCases.forEach(({ approved, title }: { approved: boolean; title: string }) => {
       it(title, () => {
         const { borrow, debt, debtAfterImprove, expected, llamaApi, market, stubs } = createSoftLiquidationScenario({
-          chainId,
+          chainId: CHAIN_ID,
           approved,
         })
 
         setLlamaApi(llamaApi)
-        setGasInfo({ chainId, networks: llamaNetworks })
-        seedCrvUsdBalance({ chainId, addresses: [TEST_ADDRESS], min: borrow })
+        setGasInfo({ chainId: CHAIN_ID, networks: llamaNetworks })
+        seedCrvUsdBalance({ chainId: CHAIN_ID, addresses: [TEST_ADDRESS], min: borrow })
 
         cy.mount(
           <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
@@ -117,11 +117,14 @@ describe('Soft Liquidation Forms (mocked)', () => {
   describe('ClosePositionForm', () => {
     testCases.forEach(({ approved, title }: { approved: boolean; title: string }) => {
       it(title, () => {
-        const { debt, expected, llamaApi, market, stubs } = createSoftLiquidationScenario({ chainId, approved })
+        const { debt, expected, llamaApi, market, stubs } = createSoftLiquidationScenario({
+          chainId: CHAIN_ID,
+          approved,
+        })
 
         setLlamaApi(llamaApi)
-        setGasInfo({ chainId, networks: llamaNetworks })
-        seedCrvUsdBalance({ chainId, addresses: [TEST_ADDRESS], min: `${oneInt(15, 90)}` })
+        setGasInfo({ chainId: CHAIN_ID, networks: llamaNetworks })
+        seedCrvUsdBalance({ chainId: CHAIN_ID, addresses: [TEST_ADDRESS], min: `${oneInt(15, 90)}` })
 
         cy.mount(
           <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
@@ -153,9 +156,9 @@ describe('Soft Liquidation Forms (mocked)', () => {
     testCases.forEach(({ approved, title }: { approved: boolean; title: string }) => {
       it(title, () => {
         const { convertedBorrowed, debt, expected, futureDebt, llamaApi, market, stubs, userBorrowed } =
-          createResetPositionScenario({ chainId, approved })
+          createResetPositionScenario({ chainId: CHAIN_ID, approved })
 
-        seedCrvUsdBalance({ chainId, addresses: [TEST_ADDRESS], min: userBorrowed })
+        seedCrvUsdBalance({ chainId: CHAIN_ID, addresses: [TEST_ADDRESS], min: userBorrowed })
         mountResetPositionForm({ llamaApi, market })
 
         checkResetPositionInputsLoaded({ convertedBorrowed })
@@ -191,10 +194,10 @@ describe('Soft Liquidation Forms (mocked)', () => {
 
     it('allows empty wallet amount when no wallet tokens are required', () => {
       const { convertedBorrowed, debt, getExpected, getFutureDebt, llamaApi, market, stubs } =
-        createResetPositionScenario({ chainId, approved: true, minBorrowed: '0' })
+        createResetPositionScenario({ chainId: CHAIN_ID, approved: true, minBorrowed: '0' })
       const expected = getExpected('0')
 
-      seedCrvUsdBalance({ chainId, addresses: [TEST_ADDRESS], min: '0' })
+      seedCrvUsdBalance({ chainId: CHAIN_ID, addresses: [TEST_ADDRESS], min: '0' })
       mountResetPositionForm({ llamaApi, market })
 
       checkResetPositionInputsLoaded({ convertedBorrowed })
@@ -226,11 +229,11 @@ describe('Soft Liquidation Forms (mocked)', () => {
 
     it('requires the minimum wallet amount', () => {
       const { belowMinBorrowed, convertedBorrowed, llamaApi, market, minBorrowed } = createResetPositionScenario({
-        chainId,
+        chainId: CHAIN_ID,
         approved: true,
       })
 
-      seedCrvUsdBalance({ chainId, addresses: [TEST_ADDRESS], min: minBorrowed })
+      seedCrvUsdBalance({ chainId: CHAIN_ID, addresses: [TEST_ADDRESS], min: minBorrowed })
       mountResetPositionForm({ llamaApi, market })
 
       checkResetPositionInputsLoaded({ convertedBorrowed })
@@ -246,10 +249,10 @@ describe('Soft Liquidation Forms (mocked)', () => {
 
     it('allows more than the minimum wallet amount', () => {
       const { convertedBorrowed, debt, getExpected, getFutureDebt, llamaApi, market, moreUserBorrowed, stubs } =
-        createResetPositionScenario({ chainId, approved: true })
+        createResetPositionScenario({ chainId: CHAIN_ID, approved: true })
       const expected = getExpected(moreUserBorrowed)
 
-      seedCrvUsdBalance({ chainId, addresses: [TEST_ADDRESS], min: moreUserBorrowed })
+      seedCrvUsdBalance({ chainId: CHAIN_ID, addresses: [TEST_ADDRESS], min: moreUserBorrowed })
       mountResetPositionForm({ llamaApi, market })
 
       checkResetPositionInputsLoaded({ convertedBorrowed })
@@ -274,11 +277,11 @@ describe('Soft Liquidation Forms (mocked)', () => {
 
     it('requires the wallet amount to be within the user balance', () => {
       const { convertedBorrowed, llamaApi, market, moreUserBorrowed, userBorrowed } = createResetPositionScenario({
-        chainId,
+        chainId: CHAIN_ID,
         approved: true,
       })
 
-      seedCrvUsdBalance({ chainId, addresses: [TEST_ADDRESS], min: userBorrowed, max: userBorrowed })
+      seedCrvUsdBalance({ chainId: CHAIN_ID, addresses: [TEST_ADDRESS], min: userBorrowed, max: userBorrowed })
       mountResetPositionForm({ llamaApi, market })
 
       checkResetPositionInputsLoaded({ convertedBorrowed })
@@ -292,11 +295,11 @@ describe('Soft Liquidation Forms (mocked)', () => {
 
     it('blocks full repay through reset', () => {
       const { convertedBorrowed, fullRepayUserBorrowed, llamaApi, market } = createResetPositionScenario({
-        chainId,
+        chainId: CHAIN_ID,
         approved: true,
       })
 
-      seedCrvUsdBalance({ chainId, addresses: [TEST_ADDRESS], min: fullRepayUserBorrowed })
+      seedCrvUsdBalance({ chainId: CHAIN_ID, addresses: [TEST_ADDRESS], min: fullRepayUserBorrowed })
       mountResetPositionForm({ llamaApi, market })
 
       checkResetPositionInputsLoaded({ convertedBorrowed })

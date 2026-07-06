@@ -1,4 +1,4 @@
-import { formatMetricValue, formatPercentage, UnavailableNotation } from '@/llamalend/widgets/tooltips/tooltip.utils'
+import { formatMetricValue, formatPercentage, UNAVAILABLE_NOTATION } from '@/llamalend/widgets/tooltips/tooltip.utils'
 import {
   TooltipDescription,
   TooltipItem,
@@ -60,7 +60,7 @@ export const TotalCollateralTooltip = ({
       </Stack>
 
       <TooltipItem title={t`Total collateral value`} variant="independent">
-        {maybe(combinedCollateralUsdValue, usd => formatNumber(usd, 'usd.amount')) ?? UnavailableNotation}
+        {maybe(combinedCollateralUsdValue, usd => formatNumber(usd, 'usd.amount')) ?? UNAVAILABLE_NOTATION}
       </TooltipItem>
     </TooltipWrapper>
   )
