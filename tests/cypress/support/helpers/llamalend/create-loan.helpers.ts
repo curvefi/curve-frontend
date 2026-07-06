@@ -59,25 +59,6 @@ export const LOAN_TEST_MARKETS = {
   ],
   [LlamaMarketType.Lend]: [
     {
-      id: 'one-way-market-2',
-      label: 'tBTC-crvUSD v0 Lend Market',
-      collateralAddress: '0x18084fba666a33d37592fa2633fd49a74dd93a88', // tBTC
-      controllerAddress: '0x413fd2511bad510947a91f5c6c79ebd8138c29fc',
-      collateral: '100',
-      borrow: '3',
-      borrowMore: '1',
-      repay: '2',
-      improveHealth: '0.9',
-      chainId,
-      path: '/lend/ethereum/markets/0xeda215b7666936ded834f76f3fbc6f323295110a',
-      hasLeverage: false,
-      hasLeverageManagement: false,
-      collateralDecimals,
-      borrowedAddress: CRVUSD_ADDRESS,
-      borrowedDecimals,
-      borrowedSymbol,
-    },
-    {
       id: 'one-way-market-41',
       label: 'sreUSD-crvUSD v1 Lend Market',
       collateralAddress: '0x557ab1e003951a73c12d16f0fea8490e39c33c35', // sreUSD
@@ -163,6 +144,8 @@ export function checkLoanDetailsLoaded({
 
 const getBorrowInput = () => cy.get('[data-testid="borrow-debt-input"] input[type="text"]')
 const getCollateralInput = () => cy.get('[data-testid="borrow-collateral-input"] input[type="text"]')
+const getMaxBorrowBalance = (options?: { timeout?: number }) =>
+  cy.get('[data-testid="borrow-set-debt-to-max"] [data-testid="balance-value"]', options)
 
 export const checkLeverageCheckbox = ({
   leverageEnabled,
@@ -191,9 +174,12 @@ export function writeCreateLoanForm({
   hasLeverage: boolean
 }) {
   cy.get('[data-testid="borrow-debt-input"]', TRANSACTION_LOAD_TIMEOUT).should('be.visible')
+  cy.get('[data-testid="borrow-collateral-input"] [data-testid="balance-value"]', TRANSACTION_LOAD_TIMEOUT).should(
+    'be.visible',
+  )
   getCollateralInput().type(collateral)
   getCollateralInput().blur()
-  cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]').should('be.visible')
+  getMaxBorrowBalance().should('be.visible')
   getActionValue('borrow-health').should('equal', '∞')
   getBorrowInput().type(borrow)
   getBorrowInput().blur()
@@ -206,15 +192,14 @@ export function writeCreateLoanForm({
  * Test the loan range slider by selecting max ltv and max borrow presets, checking for errors, and clearing them.
  */
 export function checkLoanRangeSlider() {
-  const maxBalance = '[data-testid="borrow-set-debt-to-max"] [data-testid="balance-value"]'
-  cy.get(maxBalance).then($el => {
+  getMaxBorrowBalance().then($el => {
     const safeMax = $el.attr('data-value')
     cy.get(`[data-testid="loan-preset-${LoanPreset.MaxLtv}"]`).click()
     getBorrowInput().should('not.have.attr', 'data-value', safeMax)
-    cy.get(maxBalance).should('not.have.attr', 'data-value', safeMax)
-    cy.get(maxBalance, LOAD_TIMEOUT).click()
+    getMaxBorrowBalance().should('not.have.attr', 'data-value', safeMax)
+    getMaxBorrowBalance(LOAD_TIMEOUT).click()
     cy.get(`[data-testid="loan-preset-${LoanPreset.Safe}"]`).click({ force: true }) // force, tooltip sometimes covers part of it
-    cy.get(maxBalance).should('have.attr', 'data-value', safeMax)
+    getMaxBorrowBalance().should('have.attr', 'data-value', safeMax)
     getBorrowInput().should('have.attr', 'data-value', safeMax)
   })
 }

@@ -1,3 +1,4 @@
+import { mockMerklCampaigns } from '@cy/support/helpers/lending-mocks'
 import {
   checkLoanDetailsLoaded,
   checkLoanRangeSlider,
@@ -7,20 +8,19 @@ import {
 import { recordValues } from '@primitives/objects.utils'
 import { LlamaMarketType } from '@ui-kit/types/market'
 
-// Wallets update the Max Priority Fee and Max Fee cap based on current network conditions.
-// However, our test doesn't do that so we get the 'fee cap' error when the base fee exceeds the Max Fee cap.
-// With other network conditions when the fee is fine, we get 'insufficient funds' since account is generated and has no funds.
-const expectedErrorRegex = /(insufficient funds)|(fee cap)/i
+const testCases = recordValues(LlamaMarketType).map(marketType => oneLoanTestMarket(marketType))
 
 describe('Create loan', () => {
-  const testCases = recordValues(LlamaMarketType).map(marketType => oneLoanTestMarket(marketType))
+  beforeEach(() => mockMerklCampaigns())
 
-  testCases.forEach(({ collateral, borrow, path, label, hasLeverage }) => {
+  testCases.forEach(({ collateral, borrow, path, label, hasLeverage, chainId }) => {
     const leverageEnabled = hasLeverage && false // "max_borrowable" query always fails because of the 'fake' e2e account :(
     const expectError = 'maximum collateral amount'
 
     it(label, () => {
-      cy.visit(path)
+      cy.visit(path, {
+        onBeforeLoad: win => (win.CypressTestConnectorChain = chainId),
+      })
       writeCreateLoanForm({ collateral, borrow, leverageEnabled, hasLeverage })
       checkLoanDetailsLoaded({ leverageEnabled, expectError })
       checkLoanRangeSlider()
