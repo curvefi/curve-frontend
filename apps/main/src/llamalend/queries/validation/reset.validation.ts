@@ -26,6 +26,8 @@ type ResetCalculatedValues = {
   maxTotalBorrowed: Decimal | undefined
   /** Minimum wallet amount (userBorrowed) required to reset; returned by `tokensToShrink` */
   minBorrowed: Decimal | undefined
+  /** Whether the user's position can be reset with repay shrink */
+  resetAvailable: boolean | undefined
 }
 
 export type ResetForm = MakeOptional<ResetInputs, 'convertedBorrowed' | 'userBorrowed'> & ResetCalculatedValues
@@ -90,29 +92,37 @@ const validateMaxDebtReduction = (
   })
 }
 
-const validateResetAvailable = () => {
-  // TODO: Validate soft-liq mode, more than 4 clear bands, and more than 0 bands with borrowed token. This is curve-js stuff.
-  test('root', 'Position does not have enough non-converted bands below the current loan band', () => {
-    enforce(true).isTruthy()
+const validateResetAvailable = (
+  resetAvailable: boolean | null | undefined,
+  { requireLoaded }: { requireLoaded: boolean },
+) => {
+  if (requireLoaded) {
+    test('root', 'Reset availability must be loaded before it can be validated', () => {
+      enforce(resetAvailable != null).isTruthy()
+    })
+  }
+  skipWhen(resetAvailable == null, () => {
+    test('root', 'Reset is only available for soft-liquidation positions with enough non-converted bands', () => {
+      enforce(resetAvailable).isTruthy()
+    })
   })
 }
 
-const resetValidationGroup = ({
-  convertedBorrowed,
-  userBorrowed,
-  maxBorrowed,
-  maxTotalBorrowed,
-  minBorrowed,
-}: FieldsOf<ResetForm>) => {
-  validateAmount('convertedBorrowed', 'Converted collateral', convertedBorrowed)
-  validateAmount('userBorrowed', 'Wallet amount', userBorrowed)
-  validateMaxUserBorrowed(userBorrowed, maxBorrowed)
-  validateMinimumResetAmount(userBorrowed, minBorrowed)
-  validateMaxDebtReduction(convertedBorrowed, userBorrowed, maxTotalBorrowed)
-  validateResetAvailable()
+const resetValidationGroup = (
+  { convertedBorrowed, userBorrowed, maxBorrowed, maxTotalBorrowed, minBorrowed, resetAvailable }: FieldsOf<ResetForm>,
+  { requireLoadedAvailability }: { requireLoadedAvailability: boolean },
+) => {
+  validateResetAvailable(resetAvailable, { requireLoaded: requireLoadedAvailability })
+  skipWhen(!resetAvailable, () => {
+    validateAmount('convertedBorrowed', 'Converted collateral', convertedBorrowed)
+    validateAmount('userBorrowed', 'Wallet amount', userBorrowed)
+    validateMaxUserBorrowed(userBorrowed, maxBorrowed)
+    validateMinimumResetAmount(userBorrowed, minBorrowed)
+    validateMaxDebtReduction(convertedBorrowed, userBorrowed, maxTotalBorrowed)
+  })
 }
 
-export const tokensToShrinkValidationSuite = createValidationSuite(
+export const resetSupportedValidationSuite = createValidationSuite(
   ({ chainId, marketId, userAddress }: UserMarketParams<IChainId>) => {
     userMarketValidationSuite({ chainId, marketId, userAddress })
     validateResetSupported(marketId)
@@ -123,12 +133,12 @@ export const resetValidationSuite = createValidationSuite(
   ({ chainId, marketId, userAddress, ...params }: ResetParams) => {
     userMarketValidationSuite({ chainId, marketId, userAddress })
     validateResetSupported(marketId)
-    resetValidationGroup(params)
+    resetValidationGroup(params, { requireLoadedAvailability: true })
   },
 )
 
 export const resetFormValidationSuite = (market: LlamaMarketTemplate | undefined) =>
   createValidationSuite((params: ResetForm) => {
     validateResetSupported(market)
-    resetValidationGroup(params)
+    resetValidationGroup(params, { requireLoadedAvailability: false })
   })

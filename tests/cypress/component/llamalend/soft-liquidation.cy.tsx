@@ -167,6 +167,7 @@ describe('Soft Liquidation Forms (mocked)', () => {
         cy.get('[data-testid="reset-position-submit-button"]', LOAD_TIMEOUT).should('not.be.disabled')
 
         cy.then(() => {
+          expect(stubs.isRepayWithShrinkAvailable).to.have.been.calledWithExactly(...expected.isAvailable)
           expect(stubs.rates).to.have.been.calledWithExactly(...expected.rates)
           expect(stubs.futureRates).to.have.been.calledWithExactly(...expected.futureRates)
           expect(stubs.tokensToShrink).to.have.been.calledWithExactly(...expected.tokensToShrink)
@@ -186,6 +187,40 @@ describe('Soft Liquidation Forms (mocked)', () => {
           }
           expect(stubs.repay).to.have.been.calledWithExactly(...expected.submit)
         })
+      })
+    })
+
+    it('blocks reset when repay with shrink is not available', () => {
+      const { convertedBorrowed, expected, llamaApi, market, stubs, userBorrowed } = createResetPositionScenario({
+        chainId,
+        approved: true,
+        isResetAvailable: false,
+      })
+
+      seedCrvUsdBalance({ chainId, addresses: [TEST_ADDRESS], min: userBorrowed })
+      mountResetPositionForm({ llamaApi, market })
+
+      checkResetPositionInputsLoaded({ convertedBorrowed })
+      writeResetPositionWalletAmount({ amount: userBorrowed })
+
+      cy.get('[data-testid="loan-form-errors"]', LOAD_TIMEOUT)
+        .should(
+          'contain.text',
+          'Reset is only available for soft-liquidation positions with enough non-converted bands',
+        )
+        .and('not.contain.text', 'Reset availability must be loaded')
+        .and('not.contain.text', 'Minimum reset amount must be loaded')
+      cy.get('[data-testid="reset-position-submit-button"]').should('be.disabled')
+
+      cy.then(() => {
+        expect(stubs.isRepayWithShrinkAvailable).to.have.been.calledWithExactly(...expected.isAvailable)
+        expect(stubs.tokensToShrink).to.not.have.been.called
+        expect(stubs.repayHealth).to.not.have.been.called
+        expect(stubs.repayPrices).to.not.have.been.called
+        expect(stubs.repayIsApproved).to.not.have.been.called
+        expect(stubs.estimateGasRepay).to.not.have.been.called
+        expect(stubs.estimateGasRepayApprove).to.not.have.been.called
+        expect(stubs.repay).to.not.have.been.called
       })
     })
 
