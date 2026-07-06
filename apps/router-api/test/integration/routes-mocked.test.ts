@@ -46,6 +46,7 @@ describe('GET routes mocked unit tests', () => {
         amountIn: ['1000000000'],
         router,
         userAddress: zeroAddress,
+        zapAddress: zeroAddress,
       },
     })
 
