@@ -1,8 +1,7 @@
-import { combineActionInfoState } from '@/llamalend/widgets/action-card/info-actions.helpers'
 import { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
-import type { QueryProp } from '@ui-kit/types/util'
+import { mapQuery, type QueryProp } from '@ui-kit/types/util'
 import { formatNumber } from '@ui-kit/utils'
 
 export function ReturnToWalletActionInfo({
@@ -16,11 +15,10 @@ export function ReturnToWalletActionInfo({
       <ActionInfo
         label={t`Return to wallet`}
         valueTooltip={first && `${formatNumber(first.value, { abbreviate: false })} ${first.symbol}`}
-        value={first == null ? '-' : formatNumber(first.value, { abbreviate: true })}
+        value={mapQuery(returnToWallet, ([first]) => formatNumber(first?.value, { abbreviate: true, fallback: '-' }))}
         valueRight={first?.symbol}
         size="small"
         testId="return-to-wallet"
-        {...combineActionInfoState(returnToWallet)}
       />
       {second && (
         <ActionInfo
