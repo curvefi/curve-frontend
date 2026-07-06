@@ -58,7 +58,8 @@ export const MobileFormTabsDrawer = ({ children, tabs, onSelectTab }: MobileForm
           sx={{
             paddingInline: Spacing.sm,
             paddingBlockEnd: Spacing.md,
-            marginBlockEnd: ButtonSize.md, // margin needed for the form action button because it's fixed to the bottom
+            // Reserve space for the form submit button, which is fixed to the bottom of the drawer.
+            marginBlockEnd: ButtonSize.md,
           }}
         >
           {children}
