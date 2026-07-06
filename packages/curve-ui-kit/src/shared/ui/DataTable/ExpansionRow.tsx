@@ -54,7 +54,7 @@ export function ExpansionRow<T extends TableItem>({
                 <ExpandedPanelBody category={category} row={row} table={table} />
               </Stack>
               {ExpandedPanelFooter && (
-                <Stack direction="row" sx={{ gap: Spacing.xs, '& > *': { flex: 1 }, '&:empty': { display: 'none' } }}>
+                <Stack direction="row" sx={{ gap: Spacing.xs, '& > *': { flex: 1 } }}>
                   <ExpandedPanelFooter category={category} row={row} table={table} />
                 </Stack>
               )}
