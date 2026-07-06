@@ -23,6 +23,7 @@ export const BalanceTextField = ({ balance, name, isError, onChange, disabled }:
     fullWidth
     error={isError}
     slotProps={{
+      htmlInput: { 'data-value': balance },
       input: {
         disableUnderline: true,
         sx: theme => ({

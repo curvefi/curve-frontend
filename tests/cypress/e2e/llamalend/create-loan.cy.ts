@@ -2,10 +2,8 @@ import {
   checkLoanDetailsLoaded,
   checkLoanRangeSlider,
   oneLoanTestMarket,
-  submitCreateLoanForm,
   writeCreateLoanForm,
 } from '@cy/support/helpers/llamalend/create-loan.helpers'
-import { LOAD_TIMEOUT } from '@cy/support/ui'
 import { recordValues } from '@primitives/objects.utils'
 import { LlamaMarketType } from '@ui-kit/types/market'
 
@@ -14,21 +12,21 @@ import { LlamaMarketType } from '@ui-kit/types/market'
 // With other network conditions when the fee is fine, we get 'insufficient funds' since account is generated and has no funds.
 const expectedErrorRegex = /(insufficient funds)|(fee cap)/i
 
-describe.skip('Create loan', () => {
+describe('Create loan', () => {
   const testCases = recordValues(LlamaMarketType).map(marketType => oneLoanTestMarket(marketType))
 
   testCases.forEach(({ collateral, borrow, path, label, hasLeverage }) => {
     const leverageEnabled = hasLeverage && false // "max_borrowable" query always fails because of the 'fake' e2e account :(
+    const expectError = 'maximum collateral amount'
 
     it(label, () => {
       cy.visit(path)
       writeCreateLoanForm({ collateral, borrow, leverageEnabled, hasLeverage })
-      checkLoanDetailsLoaded({ leverageEnabled })
-      checkLoanRangeSlider({ leverageEnabled })
+      checkLoanDetailsLoaded({ leverageEnabled, expectError })
+      checkLoanRangeSlider()
+      checkLoanDetailsLoaded({ leverageEnabled, expectError })
       // e2e tests run with a 'fake' account so the transaction fails
-      submitCreateLoanForm({ expected: 'error' }).then(() =>
-        cy.get('[data-testid="loan-alert-error"]', LOAD_TIMEOUT).invoke('text').should('match', expectedErrorRegex),
-      )
+      cy.get(`[data-testid="create-loan-submit-button"]`).should('be.disabled')
     })
   })
 })

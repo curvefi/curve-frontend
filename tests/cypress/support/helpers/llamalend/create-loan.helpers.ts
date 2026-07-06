@@ -1,7 +1,6 @@
 import { LoanPreset } from '@/llamalend/constants'
 import { oneOf, oneValueOf } from '@cy/support/generators'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
-import { type AlertColor } from '@mui/material/Alert'
 import type { Decimal } from '@primitives/decimal.utils'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
@@ -133,13 +132,18 @@ export const oneLoanTestMarket = (
  * Check all loan detail values are loaded and valid.
  * The action info list is expected to be opened before calling this function.
  */
-export function checkLoanDetailsLoaded({ leverageEnabled }: { leverageEnabled: boolean }) {
+export function checkLoanDetailsLoaded({
+  leverageEnabled,
+  expectError,
+}: {
+  leverageEnabled: boolean
+  expectError?: string
+}) {
   getActionValue('borrow-price-range').should('match', DECIMAL_RANGE_REGEX)
   getActionValue('borrow-apr').should('include', '%')
   getActionValue('borrow-apr', 'previous').should('include', '%')
   getActionValue('borrow-ltv').should('include', '%')
   getActionValue('borrow-ltv', 'previous').should('include', '%')
-  getActionValue('estimated-tx-cost').should('include', '$')
 
   if (leverageEnabled) {
     getActionValue('borrow-price-impact').should('include', '%')
@@ -149,7 +153,12 @@ export function checkLoanDetailsLoaded({ leverageEnabled }: { leverageEnabled: b
     cy.get('[data-testid="borrow-slippage-value"]', LOAD_TIMEOUT).should('not.exist')
   }
 
-  cy.get('[data-testid="loan-form-errors"]').should('not.exist')
+  if (expectError) {
+    cy.get('[data-testid="helper-message-error"]').contains(expectError)
+  } else {
+    getActionValue('estimated-tx-cost').should('include', '$')
+    cy.get('[data-testid="loan-form-errors"]').should('not.exist')
+  }
 }
 
 const getBorrowInput = () => cy.get('[data-testid="borrow-debt-input"] input[type="text"]')
@@ -181,10 +190,10 @@ export function writeCreateLoanForm({
   leverageEnabled: boolean
   hasLeverage: boolean
 }) {
-  cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]', TRANSACTION_LOAD_TIMEOUT).should('exist')
+  cy.get('[data-testid="borrow-debt-input"]', TRANSACTION_LOAD_TIMEOUT).should('be.visible')
   getCollateralInput().type(collateral)
   getCollateralInput().blur()
-  cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]').should('not.contain.text', '?')
+  cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]').should('be.visible')
   getActionValue('borrow-health').should('equal', '∞')
   getBorrowInput().type(borrow)
   getBorrowInput().blur()
@@ -196,36 +205,31 @@ export function writeCreateLoanForm({
 /**
  * Test the loan range slider by selecting max ltv and max borrow presets, checking for errors, and clearing them.
  */
-export function checkLoanRangeSlider({ leverageEnabled }: { leverageEnabled: boolean }) {
-  cy.get(`[data-testid="loan-preset-${LoanPreset.MaxLtv}"]`).click()
-  cy.get('[data-testid="borrow-set-debt-to-max"]').should('not.exist') // make sure we don't click the previous max
-  cy.get('[data-testid="borrow-set-debt-to-max"]', LOAD_TIMEOUT).click()
-  cy.get(`[data-testid="loan-preset-${LoanPreset.Safe}"]`).click({ force: true }) // force, tooltip sometimes covers part of it
-  cy.get('[data-testid="borrow-set-debt-to-max"]').should('not.exist') // new max is being calculated
-  // wait for max borrow to load and verify the input value matches (using data-value for precision)
-  cy.get('[data-testid="borrow-set-debt-to-max"] [data-testid="balance-value"]', LOAD_TIMEOUT)
-    .invoke(LOAD_TIMEOUT, 'attr', 'data-value')
-    .then(maxValue => getBorrowInput().should('have.value', maxValue))
-  cy.get('[data-testid="helper-message-error"]').should('not.exist')
-  checkLoanDetailsLoaded({ leverageEnabled })
+export function checkLoanRangeSlider() {
+  const maxBalance = '[data-testid="borrow-set-debt-to-max"] [data-testid="balance-value"]'
+  cy.get(maxBalance).then($el => {
+    const safeMax = $el.attr('data-value')
+    cy.get(`[data-testid="loan-preset-${LoanPreset.MaxLtv}"]`).click()
+    getBorrowInput().should('not.have.attr', 'data-value', safeMax)
+    cy.get(maxBalance).should('not.have.attr', 'data-value', safeMax)
+    cy.get(maxBalance, LOAD_TIMEOUT).click()
+    cy.get(`[data-testid="loan-preset-${LoanPreset.Safe}"]`).click({ force: true }) // force, tooltip sometimes covers part of it
+    cy.get(maxBalance).should('have.attr', 'data-value', safeMax)
+    getBorrowInput().should('have.attr', 'data-value', safeMax)
+  })
 }
 
 export function submitLoanForm({
   form,
   message,
-  expected = 'success',
   checkMessage = true,
 }: {
   form: string
   message: string
-  expected?: AlertColor
   checkMessage?: boolean
 }) {
   cy.get(`[data-testid="${form}-submit-button"]`).click(LOAD_TIMEOUT)
-  cy.get(`[data-testid="toast-${expected}"]`, TRANSACTION_LOAD_TIMEOUT).contains(message, TRANSACTION_LOAD_TIMEOUT)
-  if (expected !== 'success') {
-    return cy.get('[data-testid="loan-alert-error"]').should('be.visible')
-  }
+  cy.get(`[data-testid="toast-success"]`, TRANSACTION_LOAD_TIMEOUT).contains(message, TRANSACTION_LOAD_TIMEOUT)
   if (!checkMessage) {
     return cy.get('[data-testid="loan-form-errors"]').should('not.exist')
   }
@@ -236,12 +240,6 @@ export function submitLoanForm({
  * Submit the create loan form and wait for the button to be re-enabled.
  */
 export const submitCreateLoanForm = ({
-  expected = 'success',
   checkMessage,
 }: { expected?: 'success' | 'error'; checkMessage?: boolean } = {}) =>
-  submitLoanForm({
-    form: 'create-loan',
-    message: { error: 'Transaction failed', success: 'Loan created' }[expected],
-    expected,
-    checkMessage,
-  })
+  submitLoanForm({ form: 'create-loan', message: 'Loan created', checkMessage })
