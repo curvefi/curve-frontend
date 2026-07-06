@@ -49,10 +49,7 @@ export const Metrics = ({
           label={t`LP Staked`}
           value={mapQuery(gaugeTotalSupply, supply => fromWei(supply, DEFAULT_DECIMALS))}
           valueOptions={{ abbreviate: true }}
-          notional={mapQuery(
-            totalStakedPercent,
-            x => t`${formatNumber(x, { unit: 'percentage', abbreviate: false })} of Pool`,
-          )}
+          notional={mapQuery(totalStakedPercent, x => t`${formatNumber(x, 'percent.rate')} of Pool`)}
         />
       </Grid>
     </Grid>
