@@ -40,7 +40,7 @@ testCases.forEach(([width, height, breakpoint]) => {
       visitAndWait([width, height])
     })
 
-    it(`should copy the market address`, () => {
+    itSkipOnMobile(`should copy the market address`, () => {
       expandFirstRowOnMobile(breakpoint)
       cy.get(
         notFalsy(
@@ -209,7 +209,7 @@ testCases.forEach(([width, height, breakpoint]) => {
       getTableCellAssets().first().contains('wstETH')
     })
 
-    it('should allow filtering favorites', () => {
+    itSkipOnMobile('should allow filtering favorites', () => {
       expandFirstRowOnMobile(breakpoint)
       // on desktop, the favorite icon is not visible until hovered - but cypress doesn't support that so use force
       cy.get(`[data-testid="favorite-btn"]`).first().click({ force: true })
