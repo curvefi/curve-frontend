@@ -31,7 +31,8 @@ export function openDrawer(breakpoint: Breakpoint, type: 'filter' | 'sort') {
 
 export function closeDrawer(breakpoint: Breakpoint) {
   if (breakpoint == 'mobile') {
-    cy.get('body').click(0, 0)
+    // MUI drawers close from backdrop clicks, clicking body does not dispatch the same outside-click event.
+    cy.get('.MuiBackdrop-root').should('be.visible').click('top')
   }
 }
 

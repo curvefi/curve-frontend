@@ -37,7 +37,6 @@ export const MobileFormTabsDrawer = ({ children, tabs, onSelectTab }: MobileForm
           bottom: 0,
           zIndex: t => t.zIndex.drawer - 1,
           gap: Spacing['3xs'],
-          backgroundColor: t => t.design.Layer[3].Fill,
         }}
       >
         {tabs.map(({ value, label, disabled }) => (

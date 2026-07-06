@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 import { Box, SxProps, Theme } from '@mui/material'
 import MuiSwipeableDrawer from '@mui/material/SwipeableDrawer'
+import { applySxProps } from '@ui-kit/utils'
 type Props = {
   button?: ReactNode
   children: ReactNode
@@ -32,7 +33,9 @@ export const SwipeableDrawer = ({ button, children, keepMounted = false, open, s
       onOpen={() => setOpen(true)}
       disableSwipeToOpen={false}
       keepMounted={keepMounted}
-      slotProps={{ paper: { sx: paperSx } }}
+      slotProps={{
+        paper: { sx: applySxProps({ backgroundColor: (t: Theme) => t.design.Layer.App.Background }, paperSx) },
+      }}
     >
       <Box sx={{ paddingBlockStart: 2 }}>
         <Puller />

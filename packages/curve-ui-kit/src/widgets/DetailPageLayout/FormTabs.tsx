@@ -2,14 +2,19 @@ import type { UrlObject } from 'url'
 import { type ComponentType, type ReactNode } from 'react'
 import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import { notFalsy } from '@primitives/objects.utils'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useLlamalendMobileFormDrawer } from '@ui-kit/hooks/useFeatureFlags'
 import { findTab, useTabs } from '@ui-kit/hooks/useTabs'
 import { type TabOption, TabsSwitcher, TabsSwitcherProps } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { applySxProps } from '@ui-kit/utils'
 import { FormContent } from './FormContent'
 import { MobileFormTabsDrawer } from './MobileFormTabsDrawer'
+
+const { ButtonSize } = SizesAndSpaces
 
 type FnOrValue<Props extends object, Result> = ((props: Props) => Result | null | undefined) | Result
 
@@ -65,6 +70,7 @@ function useFormTabs<T extends object>({ menu, params }: UseFormTabOptions<T>) {
   const { tab: tabKey, onTabChange: onChangeTab } = useTabs(tabs)
 
   const tab = findTab(menu, tabKey)
+  const tabOption = findTab(tabs, tabKey)
   const subTabs = createOptions(tab.subTabs, params)
   const { tab: subTabKey, onTabChange: onChangeSubTab } = useTabs(subTabs)
 
@@ -77,7 +83,7 @@ function useFormTabs<T extends object>({ menu, params }: UseFormTabOptions<T>) {
 
   const Component = components[0] || Skeleton // skeleton just for mui Tab validation, won't be rendered due to href
   const content = <Component {...params} />
-  return { tab, tabs, subTabs, subTab, content, onChangeTab, onChangeSubTab }
+  return { tab, tabOption, tabs, subTabs, subTab, content, onChangeTab, onChangeSubTab }
 }
 
 const marginInline = { mobile: 'auto', desktop: 0 } as const
@@ -105,26 +111,36 @@ export function FormTabs<T extends object>({
   overflow = 'kebab',
   ...options
 }: FormTabsProps<T>) {
-  const { tab, tabs, subTabs, subTab, content, onChangeTab, onChangeSubTab } = useFormTabs(options)
+  const { tab, tabOption, tabs, subTabs, subTab, content, onChangeTab, onChangeSubTab } = useFormTabs(options)
   const enableMobileDrawer = useLlamalendMobileFormDrawer()
   const isMobileDrawer = useIsMobile() && withMobileDrawer && enableMobileDrawer
   return (
     <WithWrapper shouldWrap={isMobileDrawer} Wrapper={MobileFormTabsDrawer} tabs={tabs} onSelectTab={onChangeTab}>
       <Stack sx={{ marginInline }}>
-        <TabsSwitcher
-          variant="contained"
-          value={tab.value}
-          options={tabs}
-          onChange={onChangeTab}
-          overflow={isMobileDrawer ? 'fullWidth' : overflow}
-        />
+        {isMobileDrawer ? (
+          <Typography
+            data-testid="mobile-form-active-action"
+            variant="headingSBold"
+            sx={{ display: 'flex', alignItems: 'flex-end', height: ButtonSize.sm }}
+          >
+            {tabOption.label}
+          </Typography>
+        ) : (
+          <TabsSwitcher
+            variant="contained"
+            value={tab.value}
+            options={tabs}
+            onChange={onChangeTab}
+            overflow={overflow}
+          />
+        )}
         {subTab && subTabs.length > 1 && (
           <TabsSwitcher
-            variant="underlined"
+            variant={isMobileDrawer ? 'contained' : 'underlined'}
             value={subTab.value}
             options={subTabs}
             overflow="fullWidth"
-            sx={{ backgroundColor: t => t.design.Layer[1].Fill }}
+            sx={applySxProps(!isMobileDrawer && { backgroundColor: t => t.design.Layer[1].Fill })}
             onChange={onChangeSubTab}
           />
         )}
