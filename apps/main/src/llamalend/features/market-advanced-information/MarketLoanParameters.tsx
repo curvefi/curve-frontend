@@ -1,10 +1,10 @@
 import { useMarketParameters } from '@/llamalend/queries/market'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
-import { actionInfoQuery } from '@/llamalend/widgets/action-card/info-actions.helpers'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { fallbackQ, mapQuery, type QueryProp } from '@ui-kit/types/util'
+import { formatNumber } from '@ui-kit/utils'
 
 // In [1]: ltv = lambda x: ((x[0] - 1) / x[0])**2 * (1 - x[1])
 // In [2]: ltv((30, 0.11))
@@ -37,9 +37,9 @@ export const MarketLoanParameters = ({
             labelTooltip={{
               title: t`The LLAMMA fee applied when collateral is gradually converted across liquidation bands.`,
             }}
-            {...actionInfoQuery(
+            value={mapQuery(
               mapQuery(parameters, d => d.fee),
-              'percent.rate',
+              value => formatNumber(value, 'percent.rate'),
             )}
           />
 
@@ -49,9 +49,9 @@ export const MarketLoanParameters = ({
             labelTooltip={{
               title: t`The share of market interest routed to the market admin or fee receiver instead of lenders.`,
             }}
-            {...actionInfoQuery(
+            value={mapQuery(
               mapQuery(parameters, d => d.admin_fee),
-              'percent.rate',
+              value => formatNumber(value, 'percent.rate'),
             )}
           />
         </>
@@ -63,12 +63,12 @@ export const MarketLoanParameters = ({
         labelTooltip={{
           title: t`A setting that controls how wide the liquidation bands are and how gradually soft liquidation plays out.`,
         }}
-        {...actionInfoQuery(
+        value={mapQuery(
           fallbackQ(
             mapQuery(parameters, p => p.A),
             mapQuery(apiMarket, m => m.parameters.A),
           ),
-          { abbreviate: false, useGrouping: false },
+          value => formatNumber(value, { abbreviate: false, useGrouping: false }),
         )}
       />
 
@@ -76,12 +76,12 @@ export const MarketLoanParameters = ({
         testId="market-param-loan-discount"
         label={t`Loan discount`}
         labelTooltip={{ title: t`A safety buffer that lowers the maximum amount you can borrow against collateral.` }}
-        {...actionInfoQuery(
+        value={mapQuery(
           fallbackQ(
             mapQuery(parameters, p => p.loan_discount),
             mapQuery(apiMarket, m => m.parameters.loanDiscount),
           ),
-          'percent.rate',
+          value => formatNumber(value, 'percent.rate'),
         )}
       />
 
@@ -91,12 +91,12 @@ export const MarketLoanParameters = ({
         labelTooltip={{
           title: t`A discount given to liquidators to ensure prompt liquidation when positions enter hard liquidations.`,
         }}
-        {...actionInfoQuery(
+        value={mapQuery(
           fallbackQ(
             mapQuery(parameters, p => p.liquidation_discount),
             mapQuery(apiMarket, m => m.parameters.liquidationDiscount),
           ),
-          'percent.rate',
+          value => formatNumber(value, 'percent.rate'),
         )}
       />
 
@@ -105,12 +105,12 @@ export const MarketLoanParameters = ({
         label={t`Max LTV`}
         labelTooltip={{ title: t`The highest loan-to-value ratio allowed when opening or increasing a position.` }}
         valueTooltip={t`Max possible loan at N=4`}
-        {...actionInfoQuery(
+        value={mapQuery(
           fallbackQ(
             mapQuery(parameters, ({ A, loan_discount }) => getMaxLTV(A, loan_discount)),
             mapQuery(apiMarket, m => m.maxLtv),
           ),
-          'percent.rate',
+          value => formatNumber(value, 'percent.rate'),
         )}
       />
     </>
