@@ -5,7 +5,7 @@ import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { FireIcon } from '@ui-kit/shared/icons/FireIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { QueryProp } from '@ui-kit/types/util'
+import { mapQuery, type QueryProp } from '@ui-kit/types/util'
 import { formatNumber } from '@ui-kit/utils'
 import { ActionInfo } from './ActionInfo'
 
@@ -39,12 +39,10 @@ export const ActionInfoGasEstimate = ({
         </Typography>
       </>
     }
-    value={maybe(gas.data?.estGasCostUsd, data => formatNumber(data, 'usd.notional'))}
+    value={mapQuery(gas, data => maybe(data?.estGasCostUsd, value => formatNumber(value, 'usd.notional')))}
     valueTooltip={gas.data?.tooltip}
-    loading={gas.isLoading}
     valueLeft={<FireIcon sx={{ width: IconSize.xs, height: IconSize.xs }} />}
     size="small"
-    error={gas.error}
     testId={testId}
   />
 )

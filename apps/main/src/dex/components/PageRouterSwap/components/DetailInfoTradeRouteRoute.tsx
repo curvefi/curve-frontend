@@ -10,6 +10,7 @@ import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { constQ } from '@ui-kit/types/util'
 import { shortenAddress } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
@@ -62,8 +63,8 @@ export const DetailInfoTradeRouteRoute = ({
           route?.name
         )
       }
-      prevValue={inputToken}
-      value={outputToken}
+      value={constQ(outputToken)}
+      prevValue={constQ(inputToken)}
     />
   )
 }

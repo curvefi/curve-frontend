@@ -4,6 +4,7 @@ import { Stack } from '@mui/material'
 import Switch from '@mui/material/Switch'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { t } from '@ui-kit/lib/i18n'
+import { constQ } from '@ui-kit/types/util'
 import { shortenAddress } from '@ui-kit/utils'
 import { ActionInfo } from '../ActionInfo'
 import { ActionInfoSize } from '../ActionInfo/ActionInfo'
@@ -101,8 +102,8 @@ export const Default: Story = {
 export const AllSizes: Story = {
   args: {
     label: 'Collateral',
-    value: '1,234.56',
-    prevValue: '234.56',
+    value: constQ('1,234.56'),
+    prevValue: constQ('234.56'),
     copyValue: '1,234.56',
     valueRight: 'crvUSD',
     size: 'small',
@@ -130,7 +131,8 @@ export const AllSizes: Story = {
 
 export const WithPreviousValue: Story = {
   args: {
-    prevValue: shortenAddress('0x1234567890123456789012345678901234567890'),
+    value: constQ(shortenAddress('0x0655977feb2f289a4ab78af67bab0d17aab84367')),
+    prevValue: constQ(shortenAddress('0x1234567890123456789012345678901234567890')),
     size: 'medium',
   },
   parameters: {
@@ -144,8 +146,9 @@ export const WithPreviousValue: Story = {
 
 export const CustomColors: Story = {
   args: {
+    value: constQ(shortenAddress('0x0655977feb2f289a4ab78af67bab0d17aab84367')),
     valueColor: 'success.main',
-    prevValue: shortenAddress('0x1234567890123456789012345678901234567890'),
+    prevValue: constQ(shortenAddress('0x1234567890123456789012345678901234567890')),
     prevValueColor: 'error.main',
     size: 'medium',
   },

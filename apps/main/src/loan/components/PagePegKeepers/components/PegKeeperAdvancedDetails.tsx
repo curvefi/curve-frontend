@@ -6,6 +6,7 @@ import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { mapQuery } from '@ui-kit/types/util'
 import { shortenAddress, formatNumber, amount } from '@ui-kit/utils'
 import type { PegKeeper, PegKeeperDetails, Pool } from '../types'
 
@@ -52,9 +53,9 @@ export const PegKeeperAdvancedDetails = ({
 
     <ActionInfo
       label={t`Est. rebalance profit`}
-      loading={estCallerProfit.isLoading}
-      error={estCallerProfit.error}
-      value={formatNumber(amount(estCallerProfit.data), { decimals: 5, abbreviate: false, fallback: '-' })}
+      value={mapQuery(estCallerProfit, data =>
+        formatNumber(amount(data), { decimals: 5, abbreviate: false, fallback: '-' }),
+      )}
       valueRight={
         <Tooltip arrow placement="top" title={t`Profit is denominated in ${poolName} LP Tokens`}>
           <InfoOutlinedIcon
