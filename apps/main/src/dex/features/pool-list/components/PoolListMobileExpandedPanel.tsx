@@ -1,7 +1,6 @@
 import { ROUTE } from '@/dex/constants'
 import { getPath } from '@/dex/utils/utilsRouter'
 import Button from '@mui/material/Button'
-import CardHeader from '@mui/material/CardHeader'
 import Grid from '@mui/material/Grid'
 import { t } from '@ui-kit/lib/i18n'
 import type { ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
@@ -9,7 +8,7 @@ import { Metric, type MetricProps } from '@ui-kit/shared/ui/Metric'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { constQ } from '@ui-kit/types/util'
-import { borderStyle, decimal } from '@ui-kit/utils'
+import { decimal } from '@ui-kit/utils'
 import { PoolListRewards } from '../cells/PoolListRewards'
 import { PoolListColumnId } from '../columns/column.enum'
 import type { PoolListItem } from '../poolList.types'
@@ -34,9 +33,6 @@ export const PoolListMobileExpandedPanel: ExpandedPanel<PoolListItem> = ({ row, 
 
   return (
     <Grid container spacing={Spacing.md}>
-      <Grid size={12}>
-        <CardHeader title={t`Pool Details`} size="small" sx={{ borderBottom: borderStyle }} />
-      </Grid>
       {hasVolume && (
         <ListInfoItem
           label={t`24h Volume`}

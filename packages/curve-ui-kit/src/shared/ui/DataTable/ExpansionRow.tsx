@@ -4,27 +4,14 @@ import Stack from '@mui/material/Stack'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 import { type Row, type Table } from '@tanstack/react-table'
-import { Responsive } from '@ui-kit/themes/basic-theme'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { DataTableCategory, TableItem } from './data-table.utils'
+import type { TableItem } from './data-table.utils'
 import { DataRowProps } from './DataRow'
 
 const { Spacing } = SizesAndSpaces
 
 // Panel used when row is expanded on mobile
-export type ExpandedPanel<T extends TableItem> = (props: {
-  row: Row<T>
-  table: Table<T>
-  category: DataTableCategory
-}) => ReactNode
-
-const PANEL_STYLE: Record<DataTableCategory, { paddingBlockStart?: Responsive }> = {
-  scrollable: { paddingBlockStart: Spacing.md },
-  list: {},
-  limited: {},
-  detail: {},
-  form: {},
-}
+export type ExpandedPanel<T extends TableItem> = (props: { row: Row<T>; table: Table<T> }) => ReactNode
 
 /**
  * Expansion bar with that shows a details panel when the row is expanded on mobile.
@@ -33,9 +20,8 @@ export function ExpansionRow<T extends TableItem>({
   row,
   table,
   expandedPanel,
-  category,
   colSpan,
-}: Pick<DataRowProps<T>, 'table' | 'row' | 'category'> & {
+}: Pick<DataRowProps<T>, 'table' | 'row'> & {
   expandedPanel: NonNullable<DataRowProps<T>['expandedPanel']>
   colSpan: number
 }) {
@@ -46,16 +32,13 @@ export function ExpansionRow<T extends TableItem>({
       <TableRow data-testid="data-table-expansion-row">
         <TableCell colSpan={colSpan} sx={{ padding: 0 }}>
           <Collapse in={expanded} onExited={onExited}>
-            <Stack
-              direction="column"
-              sx={{ gap: Spacing.md, paddingBlockStart: PANEL_STYLE[category]?.paddingBlockStart }}
-            >
+            <Stack direction="column" sx={{ gap: Spacing.md, paddingBlockStart: Spacing.md }}>
               <Stack sx={{ gap: Spacing.md, paddingInline: Spacing.md }}>
-                <ExpandedPanelBody category={category} row={row} table={table} />
+                <ExpandedPanelBody row={row} table={table} />
               </Stack>
               {ExpandedPanelFooter && (
                 <Stack direction="row" sx={{ gap: Spacing.xs, '& > *': { flex: 1 } }}>
-                  <ExpandedPanelFooter category={category} row={row} table={table} />
+                  <ExpandedPanelFooter row={row} table={table} />
                 </Stack>
               )}
             </Stack>

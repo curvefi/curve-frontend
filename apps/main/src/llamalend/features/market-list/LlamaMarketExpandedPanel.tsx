@@ -7,7 +7,6 @@ import Typography from '@mui/material/Typography'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useIsTiny } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
-import { CopyIconButton } from '@ui-kit/shared/ui/CopyIconButton'
 import { type ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -19,7 +18,6 @@ import { LineGraphCell, RateTooltipProps } from './cells'
 import { BorrowRateTooltip } from './cells/RateCell/BorrowRateTooltip'
 import { RewardsIcons } from './cells/RateCell/RewardsIcons'
 import { SupplyRateLendTooltip } from './cells/RateCell/SupplyRateLendTooltip'
-import { FavoriteMarketButton } from './chips/FavoriteMarketButton'
 
 const { Spacing } = SizesAndSpaces
 
@@ -87,26 +85,12 @@ const GridHeader = ({ ...props }: Omit<CardHeaderProps, 'sx'>) => (
 )
 
 export const LlamaMarketExpandedPanel = ({ row: { original: market } }: Parameters<ExpandedPanel<LlamaMarket>>[0]) => {
-  const { controllerAddress, favoriteKey, assets, leverage, liquidityUsd, lendingPosition, utilizationPercent } = market
+  const { assets, leverage, liquidityUsd, lendingPosition, utilizationPercent } = market
   const graphSize = useMobileGraphSize()
 
   return (
     <>
       <GridSection>
-        <GridHeader
-          title={t`Market Details`}
-          action={
-            <Stack direction="row" sx={{ gap: Spacing.sm }}>
-              <CopyIconButton
-                label={t`Copy market address`}
-                copyText={controllerAddress}
-                confirmationText={t`Market address copied`}
-                data-testid={`copy-market-address-${controllerAddress}`}
-              />
-              <FavoriteMarketButton address={favoriteKey} />
-            </Stack>
-          }
-        />
         <RateItem market={market} type={MarketRateType.Borrow} />
         <RateItem market={market} type={MarketRateType.Supply} />
         <Grid size={12} data-testid="llama-market-graph">

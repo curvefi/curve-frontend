@@ -54,13 +54,7 @@ export const LegacyPoolMobileExpandedPanel: ExpandedPanel<LegacyPoolListItem> = 
   const { isCrvRewardsEnabled } = useNetworkFromUrl() ?? {}
   const hasVolume = table.getColumn(LegacyPoolColumnId.Volume)?.getIsVisible()
   return (
-    <Grid
-      container
-      spacing={Spacing.md}
-      sx={{
-        paddingBlockStart: Spacing.md,
-      }}
-    >
+    <Grid container spacing={Spacing.md}>
       {hasVolume && (
         <ListInfoItem
           label={t`24h Volume`}

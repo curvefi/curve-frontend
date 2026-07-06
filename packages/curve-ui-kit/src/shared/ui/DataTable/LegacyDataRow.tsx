@@ -7,13 +7,7 @@ import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { hasParentWithClass } from '@ui-kit/utils/dom'
 import { InvertOnHover } from '../InvertOnHover'
-import {
-  ClickableInRowClass,
-  DataTableCategory,
-  DesktopOnlyHoverClass,
-  TableSecondaryTextClass,
-  type TableItem,
-} from './data-table.utils'
+import { ClickableInRowClass, DesktopOnlyHoverClass, TableSecondaryTextClass, type TableItem } from './data-table.utils'
 import { DataCell } from './DataCell'
 import { ExpandedPanelConfig } from './DataRow'
 import { ExpansionRow } from './ExpansionRow'
@@ -33,7 +27,6 @@ const onCellClick = (target: EventTarget, url: string, routerNavigate: (href: st
 export type LegacyDataRowProps<T extends TableItem> = {
   table: Table<T>
   row: Row<T>
-  category?: DataTableCategory
   expandedPanel?: ExpandedPanelConfig<T>
   isLastRow?: boolean
   shouldStickLastRowToTop?: boolean
@@ -44,7 +37,6 @@ export type LegacyDataRowProps<T extends TableItem> = {
 export const LegacyDataRow = <T extends TableItem>({
   table,
   row,
-  category = 'list',
   expandedPanel,
   isLastRow,
   shouldStickLastRowToTop,
@@ -115,13 +107,7 @@ export const LegacyDataRow = <T extends TableItem>({
       </InvertOnHover>
 
       {isMobile && expandedPanel && (
-        <ExpansionRow<T>
-          category={category}
-          colSpan={visibleCells.length}
-          row={row}
-          expandedPanel={expandedPanel}
-          table={table}
-        />
+        <ExpansionRow<T> colSpan={visibleCells.length} row={row} expandedPanel={expandedPanel} table={table} />
       )}
     </>
   )

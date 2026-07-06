@@ -52,7 +52,7 @@ export type DataTableProps<T extends TableItem> = {
   children?: ReactNode // passed to <FilterRow />
   footerRow?: ReactNode
   viewAllLabel?: string // button's label to expand all rows. defaultVisibleRows must be first set
-} & Omit<DataRowProps<T>, 'table' | 'row' | 'category'>
+} & Omit<DataRowProps<T>, 'table' | 'row'>
 
 /**
  * DataTable component to render the table with headers and rows.
@@ -180,13 +180,7 @@ export const DataTable = <T extends TableItem>({
                 </EmptyStateRow>
               ) : (
                 visibleRows.map(row => (
-                  <DataRow<T>
-                    key={row.id}
-                    row={row}
-                    shouldStickFirstColumn={shouldStickFirstColumn}
-                    {...rowProps}
-                    category={category}
-                  />
+                  <DataRow<T> key={row.id} row={row} shouldStickFirstColumn={shouldStickFirstColumn} {...rowProps} />
                 ))
               )}
             </TableBody>

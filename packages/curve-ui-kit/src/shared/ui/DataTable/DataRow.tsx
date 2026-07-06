@@ -7,13 +7,7 @@ import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { hasParentWithClass } from '@ui-kit/utils/dom'
 import { InvertOnHover } from '../InvertOnHover'
-import {
-  ClickableInRowClass,
-  DataTableCategory,
-  DesktopOnlyHoverClass,
-  TableSecondaryTextClass,
-  type TableItem,
-} from './data-table.utils'
+import { ClickableInRowClass, DesktopOnlyHoverClass, TableSecondaryTextClass, type TableItem } from './data-table.utils'
 import { DataCell } from './DataCell'
 import { ExpandedPanel, ExpansionRow } from './ExpansionRow'
 
@@ -25,7 +19,6 @@ export type ExpandedPanelConfig<T extends TableItem> = {
 export type DataRowProps<T extends TableItem> = {
   table: Table<T>
   row: Row<T>
-  category: DataTableCategory
   expandedPanel?: ExpandedPanelConfig<T>
   shouldStickFirstColumn?: boolean
   verticalAlign?: 'top' | 'middle' | 'bottom'
@@ -49,7 +42,6 @@ export const DataRow = <T extends TableItem>({
   expandedPanel,
   shouldStickFirstColumn,
   verticalAlign = 'middle',
-  category,
 }: DataRowProps<T>) => {
   const isMobile = useIsMobile()
   const [element, setElement] = useState<HTMLTableRowElement | null>(null) // note: useRef doesn't get updated in cypress
@@ -108,13 +100,7 @@ export const DataRow = <T extends TableItem>({
       </InvertOnHover>
 
       {isMobile && expandedPanel && (
-        <ExpansionRow<T>
-          category={category}
-          colSpan={visibleCells.length}
-          row={row}
-          expandedPanel={expandedPanel}
-          table={table}
-        />
+        <ExpansionRow<T> colSpan={visibleCells.length} row={row} expandedPanel={expandedPanel} table={table} />
       )}
     </>
   )
