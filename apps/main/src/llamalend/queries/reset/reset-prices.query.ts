@@ -1,3 +1,4 @@
+import { resetIsAvailableQueryKey } from '@/llamalend/queries/reset/reset-is-available.query'
 import { getResetImplementation } from '@/llamalend/queries/reset/reset-query.helpers'
 import {
   type ResetParams,
@@ -19,4 +20,5 @@ export const { useQuery: useResetPrices } = queryFactory({
     })) as Range<Decimal>,
   category: 'llamalend.repay',
   validationSuite: resetValidationSuite,
+  dependencies: params => [resetIsAvailableQueryKey(params)],
 })
