@@ -49,7 +49,12 @@ export const PoolComposition = ({
         emptyState={{ title: t`No market composition found` }}
         footerRow={
           rows.length > 0 && (
-            <FooterRow visibleColumns={table.getVisibleLeafColumns()} isLoading={isLoading} totalUsd={totalUsd} />
+            <FooterRow
+              visibleColumns={table.getVisibleLeafColumns()}
+              isLoading={isLoading}
+              totalUsd={totalUsd}
+              hasBalance={rows.some(row => row.amount)}
+            />
           )
         }
       />

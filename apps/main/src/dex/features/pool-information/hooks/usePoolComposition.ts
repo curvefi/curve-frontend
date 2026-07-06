@@ -42,26 +42,24 @@ export const usePoolComposition = ({
       })
     : currencyReserves?.tokens
 
-  const rows: PoolCompositionRow[] = poolDataCacheOrApi.tokens
-    .map((symbol, index) => {
-      const tokenAddress = poolDataCacheOrApi.tokenAddresses[index]
-      const reserve = reserves?.find(token => token.tokenAddress.toLowerCase() === tokenAddress.toLowerCase())
+  const rows: PoolCompositionRow[] = poolDataCacheOrApi.tokens.map((symbol, index) => {
+    const tokenAddress = poolDataCacheOrApi.tokenAddresses[index]
+    const reserve = reserves?.find(token => token.tokenAddress.toLowerCase() === tokenAddress.toLowerCase())
 
-      return {
-        source: {
-          address: tokenAddress,
-          blockchainId: network.id,
-          iconPosition: 'left' as const,
-          primary: symbol,
-        },
-        explorerUrl: scanTokenPath(network, tokenAddress),
-        marketShare: maybe(reserve?.percentShareInPool, x => +x),
-        amount: reserve?.balance,
-        amountUsd: reserve?.balanceUsd,
-        price: reserve?.usdRate,
-      }
-    })
-    .filter(({ amount }) => amount)
+    return {
+      source: {
+        address: tokenAddress,
+        blockchainId: network.id,
+        iconPosition: 'left' as const,
+        primary: symbol,
+      },
+      explorerUrl: scanTokenPath(network, tokenAddress),
+      marketShare: maybe(reserve?.percentShareInPool, x => +x),
+      amount: reserve?.balance,
+      amountUsd: reserve?.balanceUsd,
+      price: reserve?.usdRate,
+    }
+  })
 
   return {
     error: null, // TODO: correctly handle error and loading state
