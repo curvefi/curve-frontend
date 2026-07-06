@@ -311,7 +311,7 @@ describe('DEX Pools', () => {
         cy.get('[data-testid="collapse-icon"]').first().should('be.visible')
         cy.get('[data-testid="pool-link-deposit"]').click()
       }
-      cy.url(LOAD_TIMEOUT).should('match', /\/dex\/\w+\/pools\/0x[0-9A-F]{40}\/(deposit|swap)\/?$/)
+      cy.url(LOAD_TIMEOUT).should('match', /\/dex\/\w+\/pools\/0x[0-9a-fA-F]{40}\/(deposit|swap)\/?$/)
       cy.title().should('match', /Curve - Pool - .* - Curve/)
     })
   })
