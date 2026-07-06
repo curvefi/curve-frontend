@@ -9,8 +9,7 @@ import { hasParentWithClass } from '@ui-kit/utils/dom'
 import { InvertOnHover } from '../InvertOnHover'
 import { ClickableInRowClass, DesktopOnlyHoverClass, TableSecondaryTextClass, type TableItem } from './data-table.utils'
 import { DataCell } from './DataCell'
-import { ExpandedPanelConfig } from './DataRow'
-import { ExpansionRow } from './ExpansionRow'
+import { ExpandedPanelConfig, ExpansionRow } from './ExpansionRow'
 
 const onCellClick = (target: EventTarget, url: string, routerNavigate: (href: string) => void) => {
   // ignore clicks on elements that should be clickable inside the row

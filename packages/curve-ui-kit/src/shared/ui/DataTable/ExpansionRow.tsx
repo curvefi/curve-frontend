@@ -13,6 +13,11 @@ const { Spacing } = SizesAndSpaces
 // Panel used when row is expanded on mobile
 export type ExpandedPanel<T extends TableItem> = (props: { row: Row<T>; table: Table<T> }) => ReactNode
 
+export type ExpandedPanelConfig<T extends TableItem> = {
+  body: ExpandedPanel<T>
+  footer?: ExpandedPanel<T>
+}
+
 /**
  * Expansion bar with that shows a details panel when the row is expanded on mobile.
  */

@@ -9,12 +9,7 @@ import { hasParentWithClass } from '@ui-kit/utils/dom'
 import { InvertOnHover } from '../InvertOnHover'
 import { ClickableInRowClass, DesktopOnlyHoverClass, TableSecondaryTextClass, type TableItem } from './data-table.utils'
 import { DataCell } from './DataCell'
-import { ExpandedPanel, ExpansionRow } from './ExpansionRow'
-
-export type ExpandedPanelConfig<T extends TableItem> = {
-  body: ExpandedPanel<T>
-  footer?: ExpandedPanel<T>
-}
+import { ExpandedPanelConfig, ExpansionRow } from './ExpansionRow'
 
 export type DataRowProps<T extends TableItem> = {
   table: Table<T>
