@@ -31,8 +31,8 @@ import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
+import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 import { FormMargins } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
-import { LegacyDetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/LegacyDetailPageLayout'
 import { PoolAlertBanner } from '../PoolAlertBanner'
 
 const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
@@ -144,7 +144,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
           poolId={params.poolIdOrAddress}
         />
       )}
-      <LegacyDetailPageLayout
+      <DetailPageLayout
         header={
           <PoolPageHeader
             chainId={rChainId}
@@ -154,51 +154,53 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
             backHref={getInternalUrl('dex', networkId, DEX_ROUTES.PAGE_POOLS)}
           />
         }
-        formTabs={
-          <FormMargins>
-            <TabsSwitcher
-              variant="contained"
-              value={rFormType || 'deposit'}
-              onChange={key => toggleForm(key as TransferFormType)}
-              options={tabs}
-              testIdPrefix="pool-form-tab"
-            />
-            {rFormType === 'swap' ? (
-              poolAlert?.isDisableSwap ? (
-                <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
-              ) : (
-                <Swap
+        formTabs={{
+          content: (
+            <FormMargins>
+              <TabsSwitcher
+                variant="contained"
+                value={rFormType || 'deposit'}
+                onChange={key => toggleForm(key as TransferFormType)}
+                options={tabs}
+                testIdPrefix="pool-form-tab"
+              />
+              {rFormType === 'swap' ? (
+                poolAlert?.isDisableSwap ? (
+                  <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
+                ) : (
+                  <Swap
+                    {...pageTransferProps}
+                    poolAlert={poolAlert}
+                    maxSlippage={maxSlippage}
+                    seed={seed}
+                    tokensMapper={tokensMapper}
+                  />
+                )
+              ) : rFormType === 'deposit' ? (
+                <Deposit
                   {...pageTransferProps}
+                  blockchainId={networkId}
+                  hasDepositAndStake={hasDepositAndStake}
                   poolAlert={poolAlert}
                   maxSlippage={maxSlippage}
                   seed={seed}
                   tokensMapper={tokensMapper}
                 />
-              )
-            ) : rFormType === 'deposit' ? (
-              <Deposit
-                {...pageTransferProps}
-                blockchainId={networkId}
-                hasDepositAndStake={hasDepositAndStake}
-                poolAlert={poolAlert}
-                maxSlippage={maxSlippage}
-                seed={seed}
-                tokensMapper={tokensMapper}
-              />
-            ) : rFormType === 'withdraw' ? (
-              <Withdraw
-                {...pageTransferProps}
-                blockchainId={networkId}
-                poolAlert={poolAlert}
-                maxSlippage={maxSlippage}
-                seed={seed}
-                tokensMapper={tokensMapper}
-              />
-            ) : (
-              rFormType === 'manage-gauge' && poolData && <ManageGauge poolId={poolData.pool.id} chainId={rChainId} />
-            )}
-          </FormMargins>
-        }
+              ) : rFormType === 'withdraw' ? (
+                <Withdraw
+                  {...pageTransferProps}
+                  blockchainId={networkId}
+                  poolAlert={poolAlert}
+                  maxSlippage={maxSlippage}
+                  seed={seed}
+                  tokensMapper={tokensMapper}
+                />
+              ) : (
+                rFormType === 'manage-gauge' && poolData && <ManageGauge poolId={poolData.pool.id} chainId={rChainId} />
+              )}
+            </FormMargins>
+          ),
+        }}
       >
         {poolAddress && <CampaignRewardsBanner chainId={rChainId} address={poolAddress} />}
         <UserPosition
@@ -219,7 +221,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
           pricesApiPoolData={pricesApiPoolData}
         />
         <AdvancedDetails routerParams={routerParams} poolData={poolData} poolDataCacheOrApi={poolDataCacheOrApi} />
-      </LegacyDetailPageLayout>
+      </DetailPageLayout>
     </>
   )
 }

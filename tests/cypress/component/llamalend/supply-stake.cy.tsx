@@ -16,6 +16,7 @@ import {
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { Chain } from '@ui-kit/utils'
+import { FormPlacementProvider } from '@ui-kit/widgets/DetailPageLayout/form-context/FormPlacementProvider'
 
 const chainId = Chain.Ethereum
 const testCases: { approved: boolean; title: string; buttonText: string; hasGauge?: boolean }[] = [
@@ -36,7 +37,9 @@ describe('StakeForm (mocked)', () => {
 
       cy.mount(
         <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
-          <StakeForm networks={llamaNetworks} />
+          <FormPlacementProvider placement="inline">
+            <StakeForm networks={llamaNetworks} />
+          </FormPlacementProvider>
         </MockLoanTestWrapper>,
       )
 

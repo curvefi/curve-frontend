@@ -1,6 +1,7 @@
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { closeDrawer } from '@cy/support/helpers/data-table.helpers'
 import { LOAD_TIMEOUT, oneMobileViewport } from '@cy/support/ui'
+import { FormPlacementProvider } from '@ui-kit/widgets/DetailPageLayout/form-context/FormPlacementProvider'
 import { FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
 type EmptyParams = Record<string, never>
@@ -52,7 +53,9 @@ describe('Mobile FormTabs drawer', () => {
   it('opens the drawer on the selected market action', () => {
     cy.mount(
       <ComponentTestWrapper>
-        <FormTabs withMobileDrawer params={{}} menu={menu} />
+        <FormPlacementProvider placement="mobile-drawer">
+          <FormTabs params={{}} menu={menu} />
+        </FormPlacementProvider>
       </ComponentTestWrapper>,
     )
 

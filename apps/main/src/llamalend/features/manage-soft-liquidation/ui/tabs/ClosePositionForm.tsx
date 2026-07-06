@@ -3,7 +3,6 @@ import { ClosePositionInfoList } from '@/llamalend/features/manage-soft-liquidat
 import { useMarketContext } from '@/llamalend/features/market-context'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import Stack from '@mui/material/Stack'
 import TableCell from '@mui/material/TableCell'
 import { FormButton } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'

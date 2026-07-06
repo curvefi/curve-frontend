@@ -1,19 +1,17 @@
 import type { UrlObject } from 'url'
 import { type ComponentType, type ReactNode } from 'react'
+import CardHeader from '@mui/material/CardHeader'
 import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import { notFalsy } from '@primitives/objects.utils'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
-import { useLlamalendMobileFormDrawer } from '@ui-kit/hooks/useFeatureFlags'
 import { findTab, useTabs } from '@ui-kit/hooks/useTabs'
 import { type TabOption, TabsSwitcher, TabsSwitcherProps } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { applySxProps } from '@ui-kit/utils'
+import { useFormPlacement } from './form-context/FormPlacementContext'
 import { FormContent } from './FormContent'
 import { MobileFormTabsDrawer } from './MobileFormTabsDrawer'
-import { CardHeader } from '@mui/material'
 
 type FnOrValue<Props extends object, Result> = ((props: Props) => Result | null | undefined) | Result
 
@@ -91,28 +89,21 @@ const marginInline = { tablet: 'auto', desktop: 0 } as const
 export const FormMargins = ({ children }: { children: ReactNode }) => <Stack sx={{ marginInline }}>{children}</Stack>
 
 type FormTabsProps<T extends object> = UseFormTabOptions<T> & {
-  withMobileDrawer?: boolean
   shouldWrap?: boolean
   overflow?: TabsSwitcherProps<T>['overflow']
 }
 
 /**
  * Form wrapper that displays tabs and handles tab switching. It supports sub-tabs as well.
- * @param withMobileDrawer On mobile, renders the same tabbed form inside a bottom drawer opened by a fixed action bar.
  * @param shouldWrap Whether to wrap the form content in a `FormContent` component
  *                   DEPRECATED: for legacy forms only, use `Form` or `FormContent` for new components
  * @param overflow - the overflow mode of the tabs switcher, default is 'kebab'
  * @param options - useFormTabs options
  */
-export function FormTabs<T extends object>({
-  withMobileDrawer,
-  shouldWrap,
-  overflow = 'kebab',
-  ...options
-}: FormTabsProps<T>) {
+export function FormTabs<T extends object>({ shouldWrap, overflow = 'kebab', ...options }: FormTabsProps<T>) {
   const { tab, tabOption, tabs, subTabs, subTab, content, onChangeTab, onChangeSubTab } = useFormTabs(options)
-  const enableMobileDrawer = useLlamalendMobileFormDrawer()
-  const isMobileDrawer = useIsMobile() && withMobileDrawer && enableMobileDrawer
+  const placement = useFormPlacement()
+  const isMobileDrawer = useIsMobile() && placement === 'mobile-drawer'
   return (
     <WithWrapper shouldWrap={isMobileDrawer} Wrapper={MobileFormTabsDrawer} tabs={tabs} onSelectTab={onChangeTab}>
       <Stack sx={{ marginInline }}>

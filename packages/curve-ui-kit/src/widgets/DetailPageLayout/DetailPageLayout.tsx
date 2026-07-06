@@ -3,12 +3,13 @@ import Grid from '@mui/material/Grid'
 import Stack, { StackProps } from '@mui/material/Stack'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
-import { useLlamalendMobileFormDrawer } from '@ui-kit/hooks/useFeatureFlags'
 import { useResizeObserver } from '@ui-kit/hooks/useResizeObserver'
 import { mapBreakpoints } from '@ui-kit/themes/basic-theme/basic-theme'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { PAGE_SPACING } from './constants'
+import { FormPlacementProvider } from './form-context/FormPlacementProvider'
 import { FormSkeleton } from './FormSkeleton'
+import type { DetailPageLayoutFormTabs, FormPlacement } from './types'
 
 const { MaxWidth, Spacing } = SizesAndSpaces
 
@@ -56,7 +57,7 @@ export const DetailPageLayout = ({
   footer,
   testId,
 }: {
-  formTabs: ReactNode
+  formTabs: DetailPageLayoutFormTabs | null
   header?: ReactNode
   children?: ReactNode
   footer?: ReactNode
@@ -68,7 +69,8 @@ export const DetailPageLayout = ({
   const headerRef = useRef<HTMLDivElement>(null)
   // page header metrics's notionals lazy rendering make the height change by 9px so we need a smaller threshold
   const [, pageHeaderHeight = 0] = useResizeObserver(headerRef, { threshold: 5 })
-  const showMobileDrawer = useLlamalendMobileFormDrawer() && isMobile
+  const placement: FormPlacement = formTabs?.placement ?? 'inline'
+  const showMobileDrawer = placement === 'mobile-drawer' && isMobile
 
   const headerStack = header && (
     <Stack ref={headerRef} sx={stickyHeaderSx(navHeight)}>
@@ -88,7 +90,7 @@ export const DetailPageLayout = ({
         {isMobile && <Grid size={12}>{headerStack}</Grid>}
         {/* In Figma, columns are 12/4/3, but too small around breakpoints. I've added one extra column.
             Ultrawide isn't a breakpoint yet, use maxWidth so it's not too large. */}
-        {formTabs !== null && !showMobileDrawer && (
+        {formTabs && !showMobileDrawer && (
           <Grid
             size={{ mobile: 12, tablet: 5, desktop: 4 }}
             sx={{
@@ -96,7 +98,7 @@ export const DetailPageLayout = ({
               ...stickyFormTabsSx(navHeight, pageHeaderHeight),
             }}
           >
-            {formTabs || <FormSkeleton />}
+            <FormPlacementProvider placement={placement}>{formTabs?.content || <FormSkeleton />}</FormPlacementProvider>
           </Grid>
         )}
         <Grid size="grow">
@@ -108,7 +110,9 @@ export const DetailPageLayout = ({
         </Grid>
         {footer && <Grid size={12}>{footer}</Grid>}
       </Grid>
-      {formTabs !== null && showMobileDrawer && formTabs}
+      {formTabs && showMobileDrawer && (
+        <FormPlacementProvider placement={placement}>{formTabs?.content}</FormPlacementProvider>
+      )}
     </>
   )
 }

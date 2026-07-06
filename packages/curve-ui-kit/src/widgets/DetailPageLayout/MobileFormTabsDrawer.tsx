@@ -6,7 +6,7 @@ import { SwipeableDrawer } from '@ui-kit/shared/ui/SwipeableDrawer/SwipeableDraw
 import type { TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-const { Spacing } = SizesAndSpaces
+const { Spacing, ButtonSize } = SizesAndSpaces
 
 type MobileFormTabsDrawerProps = {
   children: ReactNode
@@ -53,7 +53,14 @@ export const MobileFormTabsDrawer = ({ children, tabs, onSelectTab }: MobileForm
         ))}
       </Stack>
       <SwipeableDrawer keepMounted open={!!open} setOpen={setOpen}>
-        <Stack data-testid="mobile-form-drawer" sx={{ paddingInline: Spacing.sm, paddingBlockEnd: Spacing.md }}>
+        <Stack
+          data-testid="mobile-form-drawer"
+          sx={{
+            paddingInline: Spacing.sm,
+            paddingBlockEnd: Spacing.md,
+            marginBlockEnd: ButtonSize.md, // margin needed for the form action button because it's fixed to the bottom
+          }}
+        >
           {children}
         </Stack>
       </SwipeableDrawer>

@@ -6,6 +6,7 @@ import Tab, { type TabProps } from '@mui/material/Tab'
 import Tabs, { type TabsProps } from '@mui/material/Tabs'
 import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { applySxProps } from '@ui-kit/utils/mui'
 import { useTabsOverflow } from '../../../hooks/useTabsOverflow'
 import {
   TABS_SIZES_CLASSES,
@@ -15,7 +16,6 @@ import {
 } from '../../../themes/components/tabs'
 import { TabLabel } from './TabLabel'
 import { KEBAB_TAB_VALUE, KebabMenu, KebabTab } from './tabs-kebab'
-import { applySxProps } from '@ui-kit/utils/mui'
 
 const { Spacing } = SizesAndSpaces
 

@@ -11,7 +11,7 @@ import { SpinnerWrapper, Spinner } from '@ui/Spinner'
 import { isLoading, useCurve } from '@ui-kit/features/connect-wallet'
 import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
-import { LegacyDetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/LegacyDetailPageLayout'
+import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 import { FormCrvLocker } from './components/FormCrvLocker'
 import { WrongNetwork } from './WrongNetwork'
 
@@ -36,7 +36,7 @@ export const VeCrv = () => {
   )
 
   return (
-    <LegacyDetailPageLayout formTabs={null} testId="vecrv-page">
+    <DetailPageLayout formTabs={null} testId="vecrv-page">
       <Stack sx={{ margin: 'auto', maxWidth: MAX_WIDTH, backgroundColor: t => t.design.Layer[1].Fill }}>
         <BoxHeader className="title-text">
           <IconButton hidden />
@@ -58,6 +58,6 @@ export const VeCrv = () => {
           <WrongNetwork />
         )}
       </Stack>
-    </LegacyDetailPageLayout>
+    </DetailPageLayout>
   )
 }

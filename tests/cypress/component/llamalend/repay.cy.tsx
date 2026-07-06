@@ -18,6 +18,7 @@ import {
 import { createRepayScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
 import { constQ } from '@ui-kit/types/util'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
+import { FormPlacementProvider } from '@ui-kit/widgets/DetailPageLayout/form-context/FormPlacementProvider'
 
 const chainId = 1
 const testCases = [
@@ -46,11 +47,13 @@ describe('RepayForm (mocked)', () => {
 
       cy.mount(
         <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
-          <RepayForm
-            networks={llamaNetworks}
-            onPricesUpdated={onPricesUpdated}
-            collateralEvents={constQ(fakeCollateralEvents)}
-          />
+          <FormPlacementProvider placement="inline">
+            <RepayForm
+              networks={llamaNetworks}
+              onPricesUpdated={onPricesUpdated}
+              collateralEvents={constQ(fakeCollateralEvents)}
+            />
+          </FormPlacementProvider>
         </MockLoanTestWrapper>,
       )
 

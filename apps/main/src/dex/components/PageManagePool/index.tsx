@@ -20,7 +20,7 @@ import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 import { Banner } from '@ui-kit/shared/ui/Banner'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
-import { LegacyDetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/LegacyDetailPageLayout'
+import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 
 const { Spacing } = SizesAndSpaces
 
@@ -47,7 +47,7 @@ export const ManagePool = () => {
 
   return (
     poolAddress && (
-      <LegacyDetailPageLayout
+      <DetailPageLayout
         header={
           <PoolPageHeader
             chainId={chainId}
@@ -56,7 +56,9 @@ export const ManagePool = () => {
             backHref={getInternalUrl('dex', blockchainId, `${DEX_ROUTES.PAGE_POOLS}/${poolAddress}`)}
           />
         }
-        formTabs={<RefuelFormTabs chainId={chainId} blockchainId={blockchainId} poolAddress={poolAddress} />}
+        formTabs={{
+          content: <RefuelFormTabs chainId={chainId} blockchainId={blockchainId} poolAddress={poolAddress} />,
+        }}
         testId="refuel-page"
       >
         <Grid container columnSpacing={Spacing.md}>
@@ -99,7 +101,7 @@ export const ManagePool = () => {
             <RecentRefuels chainId={chainId} blockchainId={blockchainId} poolAddress={poolAddress} />
           </Grid>
         </Grid>
-      </LegacyDetailPageLayout>
+      </DetailPageLayout>
     )
   )
 }

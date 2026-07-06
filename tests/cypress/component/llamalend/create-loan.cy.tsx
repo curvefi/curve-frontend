@@ -8,6 +8,7 @@ import {
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import { llamaNetworks, setGasInfo, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createCreateLoanScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
+import { FormPlacementProvider } from '@ui-kit/widgets/DetailPageLayout/form-context/FormPlacementProvider'
 
 const chainId = 1
 const testCases = [
@@ -30,7 +31,9 @@ describe('CreateLoanForm (mocked)', () => {
 
       cy.mount(
         <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
-          <CreateLoanForm networks={llamaNetworks} onPricesUpdated={onPricesUpdated} />
+          <FormPlacementProvider placement="inline">
+            <CreateLoanForm networks={llamaNetworks} onPricesUpdated={onPricesUpdated} />
+          </FormPlacementProvider>
         </MockLoanTestWrapper>,
       )
 

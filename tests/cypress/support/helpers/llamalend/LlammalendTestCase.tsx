@@ -29,6 +29,7 @@ import { CurveProvider } from '@ui-kit/features/connect-wallet/lib/CurveProvider
 import type { UserMarketQuery } from '@ui-kit/lib/model'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { constQ, type Range } from '@ui-kit/types/util'
+import { FormPlacementProvider } from '@ui-kit/widgets/DetailPageLayout/form-context/FormPlacementProvider'
 
 // todo: soft liquidation should be detected not forced by passing a tab. However, that detection is in the separate apps for now.
 const LoanComponentMap = {
@@ -87,11 +88,13 @@ function LlammalendTest({ tab, onPricesUpdated, type, marketType, ...props }: Ll
       apiMarket={constQ(undefined)}
       marketType={marketType}
     >
-      <Component
-        networks={llamaNetworks}
-        onPricesUpdated={onPricesUpdated!}
-        collateralEvents={constQ(fakeCollateralEvents)}
-      />
+      <FormPlacementProvider placement="inline">
+        <Component
+          networks={llamaNetworks}
+          onPricesUpdated={onPricesUpdated!}
+          collateralEvents={constQ(fakeCollateralEvents)}
+        />
+      </FormPlacementProvider>
     </MarketContextProvider>
   ) : market ? (
     `Invalid arguments given to LlammalendTestCase: ${JSON.stringify({ tab, type, loanExists, marketType })}.`

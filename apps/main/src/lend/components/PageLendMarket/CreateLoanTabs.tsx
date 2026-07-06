@@ -5,14 +5,12 @@ import { t } from '@ui-kit/lib/i18n'
 import type { Range } from '@ui-kit/types/util'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
-type CreateLoanTabsProps = {
+type CreateLoanTabsParams = {
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }
 
 const menu = [
   { value: 'create', label: t`Borrow`, component: props => <CreateLoanForm networks={networks} {...props} /> },
-] satisfies FormTab<CreateLoanTabsProps>[]
+] satisfies FormTab<CreateLoanTabsParams>[]
 
-export const CreateLoanTabs = (pageProps: CreateLoanTabsProps) => (
-  <FormTabs withMobileDrawer params={pageProps} menu={menu} />
-)
+export const CreateLoanTabs = (pageProps: CreateLoanTabsParams) => <FormTabs params={pageProps} menu={menu} />

@@ -20,7 +20,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useParams } from '@ui-kit/hooks/router'
-import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
+import { useLLv2, useLlamalendMobileFormDrawer } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
@@ -37,6 +37,7 @@ export const LendMarketPage = () => {
   const { isInitialized } = useCurve()
   const { address: userAddress } = useConnection()
   useLendPageTitle(market?.collateral_token?.symbol ?? rMarket, t`Lend`)
+  const isMobileFormDrawer = useLlamalendMobileFormDrawer()
 
   const network = networks[chainId]
   const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists({
@@ -79,14 +80,16 @@ export const LendMarketPage = () => {
       marketType={LlamaMarketType.Lend}
     >
       <DetailPageLayout
-        formTabs={
-          ((!!market && !isLoanExistsLoading) || apiMarket.data) &&
-          (loanExists ? (
-            <ManageLoanTabs onPricesUpdated={setPreviewPrices} collateralEvents={collateralEvents} />
-          ) : (
-            <CreateLoanTabs onPricesUpdated={setPreviewPrices} />
-          ))
-        }
+        formTabs={{
+          placement: isMobileFormDrawer ? 'mobile-drawer' : 'inline',
+          content:
+            ((!!market && !isLoanExistsLoading) || apiMarket.data) &&
+            (loanExists ? (
+              <ManageLoanTabs onPricesUpdated={setPreviewPrices} collateralEvents={collateralEvents} />
+            ) : (
+              <CreateLoanTabs onPricesUpdated={setPreviewPrices} />
+            )),
+        }}
         header={<MarketPageHeader isLoading={isLoading} />}
       >
         <MarketBanners

@@ -3,6 +3,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { FormPlacementProvider } from '../../../widgets/DetailPageLayout/form-context/FormPlacementProvider'
 import { FormTab, FormTabs } from '../../../widgets/DetailPageLayout/FormTabs'
 import { TabsSwitcherProps } from '../Tabs/TabsSwitcher'
 
@@ -111,7 +112,9 @@ type StoryArgs = DemoParams & {
 
 const FormTabsStory = ({ shouldWrap, overflow, menu, ...params }: StoryArgs) => (
   <Grid sx={{ maxWidth: { desktop: MaxWidth.actionCard } }}>
-    <FormTabs<DemoParams> params={params} shouldWrap={shouldWrap} overflow={overflow} menu={menu} />
+    <FormPlacementProvider placement="inline">
+      <FormTabs<DemoParams> params={params} shouldWrap={shouldWrap} overflow={overflow} menu={menu} />
+    </FormPlacementProvider>
   </Grid>
 )
 
@@ -229,7 +232,9 @@ export const KebabMenuAutoOverflow: Story = {
     <Stack sx={{ gap: 4 }}>
       {['40rem', '30rem', '20rem'].map(width => (
         <Grid key={width} sx={{ width }}>
-          <FormTabs<DemoParams> params={params} shouldWrap={shouldWrap} overflow={overflow} menu={menu} />
+          <FormPlacementProvider placement="inline">
+            <FormTabs<DemoParams> params={params} shouldWrap={shouldWrap} overflow={overflow} menu={menu} />
+          </FormPlacementProvider>
         </Grid>
       ))}
     </Stack>

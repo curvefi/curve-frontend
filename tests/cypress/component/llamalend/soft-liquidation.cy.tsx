@@ -34,6 +34,7 @@ import {
 } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
 import { constQ } from '@ui-kit/types/util'
+import { FormPlacementProvider } from '@ui-kit/widgets/DetailPageLayout/form-context/FormPlacementProvider'
 
 const chainId = 1
 const testCases = [
@@ -49,7 +50,9 @@ const mountResetPositionForm = ({
   setGasInfo({ chainId, networks: llamaNetworks })
   cy.mount(
     <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
-      <ResetPositionForm networks={llamaNetworks} />
+      <FormPlacementProvider placement="inline">
+        <ResetPositionForm networks={llamaNetworks} />
+      </FormPlacementProvider>
     </MockLoanTestWrapper>,
   )
 }
@@ -73,7 +76,9 @@ describe('Soft Liquidation Forms (mocked)', () => {
 
         cy.mount(
           <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
-            <ImproveHealthForm networks={llamaNetworks} collateralEvents={constQ(undefined)} />
+            <FormPlacementProvider placement="inline">
+              <ImproveHealthForm networks={llamaNetworks} collateralEvents={constQ(undefined)} />
+            </FormPlacementProvider>
           </MockLoanTestWrapper>,
         )
 
@@ -125,7 +130,9 @@ describe('Soft Liquidation Forms (mocked)', () => {
 
         cy.mount(
           <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
-            <ClosePositionForm networks={llamaNetworks} />
+            <FormPlacementProvider placement="inline">
+              <ClosePositionForm networks={llamaNetworks} />
+            </FormPlacementProvider>
           </MockLoanTestWrapper>,
         )
 

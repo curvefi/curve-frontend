@@ -77,5 +77,5 @@ export const ManageLoanTabs = (params: LendManageLoanProps) => {
   const showResetPosition = useLlamaResetPosition() && hasResetPosition(market)
   const menu = isSoftLiquidation ? createSoftLiqMenu(showResetPosition) : LendManageMenu
 
-  return <FormTabs key={useLoanImplementationKey()} withMobileDrawer params={params} menu={menu} />
+  return <FormTabs key={useLoanImplementationKey()} params={params} menu={menu} />
 }

@@ -18,6 +18,7 @@ import {
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { Chain } from '@ui-kit/utils'
+import { FormPlacementProvider } from '@ui-kit/widgets/DetailPageLayout/form-context/FormPlacementProvider'
 
 const chainId = Chain.Ethereum
 
@@ -32,7 +33,9 @@ describe('UnstakeForm (mocked)', () => {
 
     cy.mount(
       <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
-        <UnstakeForm networks={llamaNetworks} />
+        <FormPlacementProvider placement="inline">
+          <UnstakeForm networks={llamaNetworks} />
+        </FormPlacementProvider>
       </MockLoanTestWrapper>,
     )
 
