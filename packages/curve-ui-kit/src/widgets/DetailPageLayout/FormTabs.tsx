@@ -13,8 +13,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { applySxProps } from '@ui-kit/utils'
 import { FormContent } from './FormContent'
 import { MobileFormTabsDrawer } from './MobileFormTabsDrawer'
-
-const { ButtonSize } = SizesAndSpaces
+import { CardHeader } from '@mui/material'
 
 type FnOrValue<Props extends object, Result> = ((props: Props) => Result | null | undefined) | Result
 
@@ -86,7 +85,7 @@ function useFormTabs<T extends object>({ menu, params }: UseFormTabOptions<T>) {
   return { tab, tabOption, tabs, subTabs, subTab, content, onChangeTab, onChangeSubTab }
 }
 
-const marginInline = { mobile: 'auto', desktop: 0 } as const
+const marginInline = { tablet: 'auto', desktop: 0 } as const
 
 /** @deprecated This is only necessary until all the forms migrate to using the `FormTabs` component. **/
 export const FormMargins = ({ children }: { children: ReactNode }) => <Stack sx={{ marginInline }}>{children}</Stack>
@@ -118,13 +117,7 @@ export function FormTabs<T extends object>({
     <WithWrapper shouldWrap={isMobileDrawer} Wrapper={MobileFormTabsDrawer} tabs={tabs} onSelectTab={onChangeTab}>
       <Stack sx={{ marginInline }}>
         {isMobileDrawer ? (
-          <Typography
-            data-testid="mobile-form-active-action"
-            variant="headingSBold"
-            sx={{ display: 'flex', alignItems: 'flex-end', height: ButtonSize.sm }}
-          >
-            {tabOption.label}
-          </Typography>
+          <CardHeader title={tabOption.label} size="small" />
         ) : (
           <TabsSwitcher
             variant="contained"
@@ -136,7 +129,7 @@ export function FormTabs<T extends object>({
         )}
         {subTab && subTabs.length > 1 && (
           <TabsSwitcher
-            variant={isMobileDrawer ? 'contained' : 'underlined'}
+            variant="underlined"
             value={subTab.value}
             options={subTabs}
             overflow="fullWidth"

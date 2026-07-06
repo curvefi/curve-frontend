@@ -198,30 +198,27 @@ export const RepayForm = <ChainId extends IChainId>({
       />
       <HighPriceImpactAlert priceImpact={priceImpact} values={values} max={q(max.expected)} slippageType={LEVERAGE} />
       {isInSoftLiquidation && <AlertRepayDebtToIncreaseHealth />}
-      <Stack sx={{ gap: Spacing.xs }}>
-        <FormButton
-          pending={isPending}
-          loading={isLoading}
-          disabled={
-            isDisabled ||
-            shouldBlockTransaction(priceImpact, {
-              ...values,
-              leverageEnabled: isRepayLeveraged(values),
-              slippageType: LEVERAGE,
-            })
-          }
-          label={[
-            isApproved.data === false && t`Approve`,
-            notFalsy(t`Repay`, fromPosition && t`from Position`).join(' '),
-            isFull.data ? t`Close Position` : isInSoftLiquidation && t`Increase Health`,
-          ]}
-          testId="repay-submit-button"
-        />
-
-        {isInSoftLiquidation && selectedToken?.symbol === CRVUSD.symbol && (
-          <ExternalLink href={crvSwapUrl} label={t`Get crvUSD`} />
-        )}
-      </Stack>
+      <FormButton
+        pending={isPending}
+        loading={isLoading}
+        disabled={
+          isDisabled ||
+          shouldBlockTransaction(priceImpact, {
+            ...values,
+            leverageEnabled: isRepayLeveraged(values),
+            slippageType: LEVERAGE,
+          })
+        }
+        label={[
+          isApproved.data === false && t`Approve`,
+          notFalsy(t`Repay`, fromPosition && t`from Position`).join(' '),
+          isFull.data ? t`Close Position` : isInSoftLiquidation && t`Increase Health`,
+        ]}
+        testId="repay-submit-button"
+      />
+      {isInSoftLiquidation && selectedToken?.symbol === CRVUSD.symbol && (
+        <ExternalLink href={crvSwapUrl} label={t`Get crvUSD`} />
+      )}
       <FormAlerts
         error={repayError}
         formErrors={formErrors}

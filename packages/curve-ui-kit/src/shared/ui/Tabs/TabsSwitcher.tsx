@@ -15,6 +15,7 @@ import {
 } from '../../../themes/components/tabs'
 import { TabLabel } from './TabLabel'
 import { KEBAB_TAB_VALUE, KebabMenu, KebabTab } from './tabs-kebab'
+import { applySxProps } from '@ui-kit/utils/mui'
 
 const { Spacing } = SizesAndSpaces
 
@@ -118,11 +119,11 @@ export const TabsSwitcher = <T extends string | number>({
           onChange={(_, newValue) => onChange?.(newValue as T)}
           scrollButtons={false}
           className={tabsClassName}
-          sx={{
-            ...sx,
-            ...(overflow === 'fullWidth' && { '& .MuiTab-root': { flexGrow: 1 } }),
-            ...(isKebabMode && { width: '100%' }),
-          }}
+          sx={applySxProps(
+            sx,
+            overflow === 'fullWidth' && { '& .MuiTab-root': { flexGrow: 1 } },
+            isKebabMode && { width: '100%' },
+          )}
           {...props}
         >
           {renderedOptions.map(

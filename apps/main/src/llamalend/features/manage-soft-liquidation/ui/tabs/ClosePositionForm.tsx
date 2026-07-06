@@ -79,17 +79,15 @@ export const ClosePositionForm = ({ networks }: { networks: NetworkDict<LlamaCha
       ) : (
         <AlertClosePosition hasBadDebt={hasBadDebt} />
       )}
-      <Stack sx={{ gap: Spacing.xs }}>
-        <FormButton
-          pending={isPending}
-          disabled={isDisabled}
-          label={[
-            isApproved?.data === false && t`Approve`,
-            ...(hasBadDebt ? [t`Repay bad debt`] : [t`Repay debt`, t`Recover collateral`]),
-          ]}
-          testId="close-position-submit-button"
-        />
-      </Stack>
+      <FormButton
+        pending={isPending}
+        disabled={isDisabled}
+        label={[
+          isApproved?.data === false && t`Approve`,
+          ...(hasBadDebt ? [t`Repay bad debt`] : [t`Repay debt`, t`Recover collateral`]),
+        ]}
+        testId="close-position-submit-button"
+      />
 
       <FormAlerts
         // the table can keep rows visible on query errors, so surface the table error here too
