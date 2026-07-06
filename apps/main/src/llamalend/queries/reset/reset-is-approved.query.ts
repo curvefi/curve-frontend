@@ -1,3 +1,4 @@
+import { resetIsAvailableQueryKey } from '@/llamalend/queries/reset/reset-is-available.query'
 import { getResetImplementation } from '@/llamalend/queries/reset/reset-query.helpers'
 import {
   type ResetParams,
@@ -13,4 +14,5 @@ export const { useQuery: useResetIsApproved, fetchQuery: fetchResetIsApproved } 
     await getResetImplementation(marketId).repayIsApproved(params.userBorrowed),
   category: 'llamalend.repay',
   validationSuite: resetValidationSuite,
+  dependencies: params => [resetIsAvailableQueryKey(params)],
 })

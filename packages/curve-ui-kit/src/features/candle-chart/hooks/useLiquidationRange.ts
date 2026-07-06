@@ -1,4 +1,6 @@
-import { useMemo } from 'react'
+import { useCallback } from 'react'
+import type { Decimal } from '@primitives/decimal.utils'
+import { type QueryProp, type Range, useMappedQuery } from '@ui-kit/types/util'
 import type { LiquidationRanges, LlammaLiquididationRange, LpPriceOhlcDataFormatted, OraclePriceData } from '../types'
 
 type TimeSeriesData = LpPriceOhlcDataFormatted[] | OraclePriceData[]
@@ -9,7 +11,7 @@ type UseLiquidationRangeProps = {
   /** Fallback time series data (e.g., oracle price data) if chartData is empty */
   fallbackData?: OraclePriceData[]
   /** User's current liquidation price range [low, high] */
-  currentPrices: string[] | null | undefined
+  currentPrices: QueryProp<Range<Decimal>>
   /** New liquidation price range being calculated [low, high] */
   newPrices: string[] | null | undefined
 }
@@ -25,24 +27,30 @@ export const useLiquidationRange = ({
   fallbackData = [],
   currentPrices,
   newPrices,
-}: UseLiquidationRangeProps): LiquidationRanges =>
-  useMemo(() => {
-    const timeSeriesData: TimeSeriesData = chartData.length > 0 ? chartData : fallbackData
+}: UseLiquidationRangeProps) =>
+  useMappedQuery(
+    currentPrices,
+    useCallback(
+      (currentPrices): LiquidationRanges => {
+        const timeSeriesData: TimeSeriesData = chartData.length > 0 ? chartData : fallbackData
 
-    if (timeSeriesData.length === 0) {
-      return { current: null, new: null }
-    }
+        if (timeSeriesData.length === 0) {
+          return { current: null, new: null }
+        }
 
-    const formatRange = (prices: string[]): LlammaLiquididationRange => {
-      const [lowPrice, highPrice] = prices
-      return {
-        price1: timeSeriesData.map(data => ({ time: data.time, value: Number(highPrice) })),
-        price2: timeSeriesData.map(data => ({ time: data.time, value: Number(lowPrice) })),
-      }
-    }
+        const formatRange = (prices: string[]): LlammaLiquididationRange => {
+          const [lowPrice, highPrice] = prices
+          return {
+            price1: timeSeriesData.map(data => ({ time: data.time, value: Number(highPrice) })),
+            price2: timeSeriesData.map(data => ({ time: data.time, value: Number(lowPrice) })),
+          }
+        }
 
-    return {
-      current: currentPrices && currentPrices.length >= 2 ? formatRange(currentPrices) : null,
-      new: newPrices && newPrices.length >= 2 ? formatRange(newPrices) : null,
-    }
-  }, [chartData, fallbackData, currentPrices, newPrices])
+        return {
+          current: formatRange(currentPrices),
+          new: newPrices && newPrices.length >= 2 ? formatRange(newPrices) : null,
+        }
+      },
+      [chartData, fallbackData, newPrices],
+    ),
+  )
