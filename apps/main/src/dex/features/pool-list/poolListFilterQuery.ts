@@ -25,19 +25,6 @@ export type PoolListApiParams = Pick<
   'poolType' | 'minTvl' | 'maxTvl' | 'minVolume' | 'maxVolume' | 'minApy' | 'maxApy'
 >
 
-const parseNumberBound = (value: string | undefined) => {
-  const trimmedValue = value?.trim()
-
-  return trimmedValue ? Number(trimmedValue) : null
-}
-
-// URL params are raw API input. Do not reorder or reject manual ranges here.
-const parseApiRangeFilter = (value: string | undefined): PoolListNumberRange => {
-  const [min, max] = value?.split('~') ?? []
-
-  return [parseNumberBound(min), parseNumberBound(max)]
-}
-
 export const parsePoolListRangeFilter = (value: string | undefined): PoolListNumberRange =>
   parseRangeFilter(value) ?? [null, null]
 
@@ -45,9 +32,9 @@ const isActiveRangeFilter = ([min, max]: PoolListNumberRange, defaultMin: number
   max != null || (min != null && min !== defaultMin)
 
 export const getPoolListApiParams = (columnFiltersById: PoolListColumnFilters): PoolListApiParams => {
-  const [minApy, maxApy] = parseApiRangeFilter(columnFiltersById[PoolListFilterId.Apy])
-  const [minTvl, maxTvl] = parseApiRangeFilter(columnFiltersById[PoolListFilterId.Tvl])
-  const [minVolume, maxVolume] = parseApiRangeFilter(columnFiltersById[PoolListFilterId.Volume])
+  const [minApy, maxApy] = parsePoolListRangeFilter(columnFiltersById[PoolListFilterId.Apy])
+  const [minTvl, maxTvl] = parsePoolListRangeFilter(columnFiltersById[PoolListFilterId.Tvl])
+  const [minVolume, maxVolume] = parsePoolListRangeFilter(columnFiltersById[PoolListFilterId.Volume])
 
   return {
     maxApy: maxApy ?? undefined,
