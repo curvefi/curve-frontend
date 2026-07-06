@@ -16,6 +16,7 @@ import { dayjs } from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { constQ } from '@ui-kit/types/util'
 import { amount, Chain, formatNumber } from '@ui-kit/utils'
 import { Section } from './Section'
 
@@ -128,8 +129,8 @@ export const Parameters = ({
               <ActionInfo
                 label={t`Ramping ${rampADetails.isRampUp ? 'up' : 'down'} A`}
                 valueTooltip={t`Slowly changing ${rampADetails.isRampUp ? 'up' : 'down'} A so that it doesn't negatively change virtual price growth of shares`}
-                prevValue={formatADisplay(initial_A)}
-                value={formatADisplay(future_A)}
+                prevValue={constQ(formatADisplay(initial_A))}
+                value={constQ(formatADisplay(future_A))}
               />
               <ActionInfo label={t`Ramp ends`} value={future_A_time ? formatDate(future_A_time, 'short') : '-'} />
             </>

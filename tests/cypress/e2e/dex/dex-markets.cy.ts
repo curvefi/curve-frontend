@@ -1,7 +1,11 @@
 import { orderBy } from 'lodash'
-import { DEX_POOL_LIST_SEARCH, setupDexPoolListMocks } from '@cy/support/helpers/dex-pool-list-mocks'
+import {
+  DEX_POOL_LIST_NAVIGATION_POOL,
+  DEX_POOL_LIST_SEARCH,
+  setupDexPoolListMocks,
+} from '@cy/support/helpers/dex-pool-list-mocks'
 import { mockMerklCampaigns } from '@cy/support/helpers/lending-mocks'
-import { API_LOAD_TIMEOUT, type Breakpoint, oneViewport } from '@cy/support/ui'
+import { API_LOAD_TIMEOUT, type Breakpoint, LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
 import { assert } from '@primitives/objects.utils'
 
 // Keep in sync with the hidden default applied by the DEX pool-list filter hook.
@@ -303,6 +307,23 @@ describe('DEX Pools', () => {
       })
       expectUrlQueryParam('apy', '0~')
       cy.get('[data-testid="dex-pool-active-filter-apy"]').should('be.visible')
+    })
+
+    it('navigates to pool deposit page by clicking a row', () => {
+      const poolLink = `[data-testid="market-link-${DEX_POOL_LIST_NAVIGATION_POOL.address}"]`
+
+      if (breakpoint === 'mobile') {
+        cy.get(poolLink, API_LOAD_TIMEOUT).closest('[data-testid^="data-table-row-"]').click()
+        cy.get('[data-testid="collapse-icon"]').should('be.visible')
+        cy.get('[data-testid="pool-link-deposit"]').click()
+      } else {
+        cy.get(poolLink, API_LOAD_TIMEOUT).click()
+      }
+      cy.url(LOAD_TIMEOUT).should(
+        'include',
+        `/dex/${DEX_POOL_LIST_NAVIGATION_POOL.network}/pools/${DEX_POOL_LIST_NAVIGATION_POOL.address}/deposit`,
+      )
+      cy.get('[data-testid="pool-form-tab-deposit"]', API_LOAD_TIMEOUT).should('be.visible')
     })
   })
 
