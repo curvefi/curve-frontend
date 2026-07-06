@@ -195,12 +195,12 @@ describe('Soft Liquidation Forms (mocked)', () => {
 
     it('blocks reset when repay with shrink is not available', () => {
       const { convertedBorrowed, expected, llamaApi, market, stubs, userBorrowed } = createResetPositionScenario({
-        chainId,
+        chainId: CHAIN_ID,
         approved: true,
         isResetAvailable: false,
       })
 
-      seedCrvUsdBalance({ chainId, addresses: [TEST_ADDRESS], min: userBorrowed })
+      seedCrvUsdBalance({ chainId: CHAIN_ID, addresses: [TEST_ADDRESS], min: userBorrowed })
       mountResetPositionForm({ llamaApi, market })
 
       checkResetPositionInputsLoaded({ convertedBorrowed })
