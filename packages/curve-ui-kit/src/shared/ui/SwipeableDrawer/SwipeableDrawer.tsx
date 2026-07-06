@@ -11,10 +11,10 @@ type Props = {
 
 /**
  * The following properties are advised for optimal usability: https://mui.com/material-ui/react-drawer/#swipeable
- * I_OS is hosted on high-end devices. The backdrop transition can be enabled without dropping frames. The performance will be good enough.
- * I_OS has a "swipe to go back" feature that interferes with the discovery feature, so discovery has to be disabled.
+ * iOS is hosted on high-end devices. The backdrop transition can be enabled without dropping frames. The performance will be good enough.
+ * iOS has a "swipe to go back" feature that interferes with the discovery feature, so discovery has to be disabled.
  */
-const I_OS = typeof navigator !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent)
+const IS_IOS = /iPad|iPhone|iPod/.test(navigator?.userAgent)
 
 /**
  * A swipeable drawer component that can be used to display a list of items.
@@ -23,8 +23,8 @@ export const SwipeableDrawer = ({ button, children, open, setOpen, paperSx }: Pr
   <>
     {button && <Box sx={{ height: '100%' }}>{button}</Box>}
     <MuiSwipeableDrawer
-      disableBackdropTransition={!I_OS}
-      disableDiscovery={I_OS}
+      disableBackdropTransition={!IS_IOS}
+      disableDiscovery={IS_IOS}
       anchor="bottom"
       open={open}
       onClose={() => setOpen(false)}

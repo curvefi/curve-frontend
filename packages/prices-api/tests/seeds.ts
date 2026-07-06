@@ -70,7 +70,7 @@ export const endpointSeed = <T>(load: () => Promise<T>) => {
     } catch (seedError) {
       error = new Error(
         `Failed to load live seed from ${load.name || 'endpointSeed'}\n\n${seedError instanceof Error ? seedError.message : String(seedError)}\n\nPRICES_API_TEST_SEED=${ENDPOINT_TEST_SEED}\n\nSeed URL:\n${formatTrackedFetchUrls(fetchTracker.urls)}`,
-        { cause: error },
+        { cause: seedError },
       )
     }
   })
