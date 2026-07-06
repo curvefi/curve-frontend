@@ -1,8 +1,8 @@
 import { notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { getRangeFilterLabel } from '@ui-kit/shared/ui/DataTable/filters'
-import { TableActiveFilterChip } from '@ui-kit/shared/ui/DataTable/TableActiveFilterChip'
 import { TableActiveFilterGroups } from '@ui-kit/shared/ui/DataTable/TableActiveFilterGroups'
+import { createTableActiveFilterGroup } from '@ui-kit/shared/ui/DataTable/TableActiveFilterGroups.utils'
 import { TableActiveFiltersBar } from '@ui-kit/shared/ui/DataTable/TableActiveFiltersBar'
 import { POOL_LIST_DEFAULT_TVL_MIN, type PoolListFilterProps } from '../hooks/usePoolListFilters'
 import { getPoolListTvlLabelRange, parsePoolListRangeFilter, PoolListFilterId } from '../poolListFilterQuery'
@@ -45,50 +45,34 @@ export const PoolListFiltersCollapsible = ({
     },
   )
   const activeFilterGroups = notFalsy(
-    poolTypeLabel && {
-      chips: (
-        <TableActiveFilterChip
-          label={poolTypeLabel}
-          toggle={() => setColumnFilter(PoolListFilterId.PoolType, null)}
-          testId="dex-pool-active-filter-type"
-        />
-      ),
+    createTableActiveFilterGroup({
       key: 'pool-type',
+      labels: poolTypeLabel ? [poolTypeLabel] : null,
+      onRemove: () => setColumnFilter(PoolListFilterId.PoolType, null),
       title: t`Type`,
-    },
-    tvlLabel && {
-      chips: (
-        <TableActiveFilterChip
-          label={tvlLabel}
-          toggle={() => setColumnFilter(PoolListFilterId.Tvl, null)}
-          testId="dex-pool-active-filter-tvl"
-        />
-      ),
+      getChipTestId: () => 'dex-pool-active-filter-type',
+    }),
+    createTableActiveFilterGroup({
       key: 'tvl',
+      labels: tvlLabel ? [tvlLabel] : null,
+      onRemove: () => setColumnFilter(PoolListFilterId.Tvl, null),
       title: t`TVL`,
-    },
-    volumeLabel && {
-      chips: (
-        <TableActiveFilterChip
-          label={volumeLabel}
-          toggle={() => setColumnFilter(PoolListFilterId.Volume, null)}
-          testId="dex-pool-active-filter-volume"
-        />
-      ),
+      getChipTestId: () => 'dex-pool-active-filter-tvl',
+    }),
+    createTableActiveFilterGroup({
       key: 'volume',
+      labels: volumeLabel ? [volumeLabel] : null,
+      onRemove: () => setColumnFilter(PoolListFilterId.Volume, null),
       title: t`Volume`,
-    },
-    apyLabel && {
-      chips: (
-        <TableActiveFilterChip
-          label={apyLabel}
-          toggle={() => setColumnFilter(PoolListFilterId.Apy, null)}
-          testId="dex-pool-active-filter-apy"
-        />
-      ),
+      getChipTestId: () => 'dex-pool-active-filter-volume',
+    }),
+    createTableActiveFilterGroup({
       key: 'apy',
+      labels: apyLabel ? [apyLabel] : null,
+      onRemove: () => setColumnFilter(PoolListFilterId.Apy, null),
       title: t`Base vAPY`,
-    },
+      getChipTestId: () => 'dex-pool-active-filter-apy',
+    }),
   )
 
   return (
