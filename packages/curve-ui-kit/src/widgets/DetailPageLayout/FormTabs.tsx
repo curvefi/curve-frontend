@@ -106,7 +106,7 @@ export function FormTabs<T extends object>({ shouldWrap, overflow = 'kebab', ...
     <WithWrapper shouldWrap={isMobileDrawer} Wrapper={MobileFormTabsDrawer} tabs={tabs} onSelectTab={onChangeTab}>
       <Stack sx={{ marginInline }}>
         {isMobileDrawer ? (
-          <CardHeader title={tabOption.label} size="small" />
+          <CardHeader title={tabOption.label} size="small" data-testid="mobile-form-active-action" />
         ) : (
           <TabsSwitcher
             variant="contained"
