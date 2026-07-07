@@ -6,7 +6,7 @@ import { Box, ButtonBase, Collapse, Stack, type Theme, Typography } from '@mui/m
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { RotatableIcon } from '@ui-kit/shared/ui/DataTable/RotatableIcon'
 import type { Responsive } from '@ui-kit/themes/basic-theme'
-import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
+import { TRANSITION_FUNCTION } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
 import { applySxProps, borderStyle, type SxProps } from '@ui-kit/utils'
@@ -152,7 +152,7 @@ export const Accordion = ({
           paddingInline: ghost ? 0 : Spacing.sm,
           minHeight: size === 'extraSmall' ? IconSize.sm.mobile : IconSize.md.mobile,
           ...(isOpen && !ghost && { backgroundColor: (t: Theme) => t.design.Inputs.Base.Default.Fill.Active }),
-          transition: `background-color ${TransitionFunction}`,
+          transition: `background-color ${TRANSITION_FUNCTION}`,
           touchAction: 'manipulation',
 
           // Render border inside without layout shift on hover using a pseudo-element overlay

@@ -2,7 +2,7 @@ import { type ReactNode, useMemo } from 'react'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import { t } from '@ui-kit/lib/i18n'
 import { Accordion } from '@ui-kit/shared/ui/Accordion'
-import { isDevelopment } from '@ui-kit/utils'
+import { IS_DEVELOPMENT } from '@ui-kit/utils'
 import type { FieldValues, UseFormReturn } from './form.types'
 import { FormContext } from './useFormContext'
 
@@ -59,7 +59,7 @@ export const FormProvider = <T extends FieldValues>({
       )}
     >
       {children}
-      {isDevelopment && (
+      {IS_DEVELOPMENT && (
         <Accordion title={t`Form state`} ghost size="extraSmall">
           <AccordionDetails>
             <pre style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>

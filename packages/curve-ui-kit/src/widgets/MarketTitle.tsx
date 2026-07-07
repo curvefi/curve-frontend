@@ -5,7 +5,7 @@ import type { Address } from '@primitives/address.utils'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { CopyIconButton } from '../shared/ui/CopyIconButton'
-import { ClickableInRowClass, DesktopOnlyHoverClass } from '../shared/ui/DataTable/data-table.utils'
+import { CLICKABLE_IN_ROW_CLASS, DESKTOP_ONLY_HOVER_CLASS } from '../shared/ui/DataTable/data-table.utils'
 import { RouterLink } from '../shared/ui/RouterLink'
 import { responsiveTitleEllipsisSx } from '../shared/ui/titleTruncate'
 
@@ -22,7 +22,7 @@ export function MarketTitle({ address, title, url }: { address: Address; title: 
         color="inherit"
         underline="none"
         href={url}
-        className={ClickableInRowClass}
+        className={CLICKABLE_IN_ROW_CLASS}
         data-testid={`market-link-${address}`}
         {...(isMobile && {
           // cancel click on mobile so the panel can open, there is a separate button for navigating
@@ -37,7 +37,7 @@ export function MarketTitle({ address, title, url }: { address: Address; title: 
         {title}
       </RouterLink>
       <CopyIconButton
-        className={`${DesktopOnlyHoverClass} ${ClickableInRowClass}`}
+        className={`${DESKTOP_ONLY_HOVER_CLASS} ${CLICKABLE_IN_ROW_CLASS}`}
         label={t`Copy market address`}
         copyText={address}
         confirmationText={t`Market address copied`}

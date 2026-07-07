@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography'
 import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
-import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
+import { TRANSITION_FUNCTION } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { shortenAddress, formatNumber, amount } from '@ui-kit/utils'
 import type { TokenOption as Option } from '../../types'
@@ -51,7 +51,7 @@ export const TokenOption = ({
           tabIndex={0}
           sx={{
             minHeight: IconSize.xxl,
-            '&': { transition: `background-color ${TransitionFunction}` },
+            '&': { transition: `background-color ${TRANSITION_FUNCTION}` },
             ...(disabled && { cursor: 'not-allowed' }),
           }}
         >
