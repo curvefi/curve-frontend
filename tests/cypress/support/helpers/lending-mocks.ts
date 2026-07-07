@@ -86,9 +86,9 @@ const oneLendingPool = (
   }
 }
 
-export const HighTVLAddress = '0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' as const
-export const HighUtilizationAddress = '0xBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' as const
-const RewardsTestAddress = '0xCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa' as const
+export const HIGH_TVL_ADDRESS = '0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' as const
+export const HIGH_UTILIZATION_ADDRESS = '0xBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' as const
+const REWARDS_TEST_ADDRESS = '0xCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa' as const
 
 function oneLendingVaultResponse(chain: Chain): GetMarketsResponse {
   const count = oneInt(15, 20)
@@ -99,23 +99,23 @@ function oneLendingVaultResponse(chain: Chain): GetMarketsResponse {
           {
             // fixed vault address to test campaign rewards
             ...oneLendingPool(chain, { utilization: oneFloat(0.98) }),
-            vault: RewardsTestAddress,
+            vault: REWARDS_TEST_ADDRESS,
             extra_reward_apr: [{ address: oneAddress(), symbol: 'RWD', apr: 0.5 }],
           },
           {
             // largest TVL to test the sorting
             ...oneLendingPool(chain, { utilization: oneFloat(0.4, 0.8), tvl: MAX_USD_VALUE * 2 }),
-            address: HighTVLAddress,
-            vault: HighTVLAddress,
-            controller: HighTVLAddress,
+            address: HIGH_TVL_ADDRESS,
+            vault: HIGH_TVL_ADDRESS,
+            controller: HIGH_TVL_ADDRESS,
           },
           {
             // 99% utilization to test the sorting and slider filter
             ...oneLendingPool(chain, { utilization: 0.99 }),
             extra_reward_apr: [{ address: oneAddress(), symbol: 'RWD', apr: 0.5 }],
-            address: HighUtilizationAddress,
-            vault: HighUtilizationAddress,
-            controller: HighUtilizationAddress,
+            address: HIGH_UTILIZATION_ADDRESS,
+            vault: HIGH_UTILIZATION_ADDRESS,
+            controller: HIGH_UTILIZATION_ADDRESS,
           },
         ] as GetMarketsResponse['data'])
       : []),
@@ -187,7 +187,7 @@ export const mockLendingSnapshots = (chain = oneOf(...LendingChains)) =>
     },
   })
 
-/** Mock Merkl API to provide campaign rewards for the RewardsTestAddress vault used in tests */
+/** Mock Merkl API to provide campaign rewards for the REWARDS_TEST_ADDRESS vault used in tests */
 export const mockMerklCampaigns = () =>
   cy.intercept('/api/merkl/v1/opportunities*', {
     body: [
@@ -198,7 +198,7 @@ export const mockMerklCampaigns = () =>
         description: 'Test campaign for Cypress',
         howToSteps: ['Step 1'],
         apr: 0.1,
-        explorerAddress: RewardsTestAddress,
+        explorerAddress: REWARDS_TEST_ADDRESS,
         tags: ['curve'],
         chain: { id: 1, name: 'Ethereum' },
         rewardsRecord: {

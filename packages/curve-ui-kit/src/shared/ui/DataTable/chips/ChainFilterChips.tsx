@@ -24,7 +24,7 @@ type ChainFilterChipsProps = {
   toggleChain: (chain: string) => void
 }
 
-const ethereum = NETWORK_BASE_CONFIG[Chain.Ethereum].id
+const ETHEREUM = NETWORK_BASE_CONFIG[Chain.Ethereum].id
 const CHAIN_ICON_FROM_CHIP_SIZE: Record<NonNullable<SelectableChipProps['size']>, ChainIconProps['size']> = {
   extraSmall: 'xs',
   small: 'sm',
@@ -64,7 +64,7 @@ const useSortedChains = ({ chainsQuery: { data }, selectedChains = [], toggleCha
   useMemo(
     () =>
       data &&
-      [...notFalsy(data.find(c => c === ethereum)), ...data.filter(c => c !== ethereum)].map(chain => ({
+      [...notFalsy(data.find(c => c === ETHEREUM)), ...data.filter(c => c !== ETHEREUM)].map(chain => ({
         chain,
         label: capitalize(chain),
         onClick: () => toggleChain(chain),

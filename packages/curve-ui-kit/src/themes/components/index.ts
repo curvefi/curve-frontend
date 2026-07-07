@@ -31,7 +31,7 @@ export const MOBILE_SIDEBAR_WIDTH = { width: '100%', minWidth: 320, maxWidth: '1
  * `scrollbar-gutter: stable` keeps the scrollbar space reserved at all times.
  * Scroll locking itself is now handled via native CSS in index.css.
  */
-const disableScrollLock = true
+const DISABLE_SCROLL_LOCK = true
 
 export const createComponents = (
   design: DesignSystem,
@@ -131,8 +131,8 @@ export const createComponents = (
       },
     },
   },
-  MuiMenu: { defaultProps: { disableScrollLock } },
-  MuiModal: { defaultProps: { disableScrollLock } },
+  MuiMenu: { defaultProps: { disableScrollLock: DISABLE_SCROLL_LOCK } },
+  MuiModal: { defaultProps: { disableScrollLock: DISABLE_SCROLL_LOCK } },
   MuiToggleButton: defineMuiToggleButton(design),
   MuiToggleButtonGroup: {
     styleOverrides: { root: ({ ownerState }) => ({ columnGap: ownerState.compact ? '0rem' : '2px' }) },
@@ -199,7 +199,7 @@ export const createComponents = (
   },
   MuiPopover: {
     defaultProps: {
-      disableScrollLock,
+      disableScrollLock: DISABLE_SCROLL_LOCK,
       marginThreshold: 8, // allows the popover to be closer to the edge of the screen. Default is 16px
       elevation: 3,
     },

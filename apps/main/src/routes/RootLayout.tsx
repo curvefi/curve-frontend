@@ -26,7 +26,7 @@ import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { t } from '@ui-kit/lib/i18n'
 import { getCurrentApp } from '@ui-kit/shared/routes'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
-import { isCypress } from '@ui-kit/utils'
+import { IS_CYPRESS } from '@ui-kit/utils'
 import { ErrorBoundary } from '@ui-kit/widgets/ErrorBoundary'
 import { GlobalLayout } from './GlobalLayout'
 import { Loading } from './Loading'
@@ -83,7 +83,7 @@ const NetworkAwareLayout = ({ backendMaintenance }: { backendMaintenance: Mainte
 export const RootLayout = () => {
   const theme = useUserProfileStore(state => state.theme)
   const backendMaintenance = useMaintenance(BACKEND_MAINTENANCE)
-  const devTools = !isCypress
+  const devTools = !IS_CYPRESS
   useBodyThemeClass()
 
   return (
@@ -97,7 +97,7 @@ export const RootLayout = () => {
               ) : (
                 <NetworkAwareLayout backendMaintenance={backendMaintenance} />
               )}
-              {!isCypress && <BackendMaintenanceModal {...backendMaintenance} />}
+              {!IS_CYPRESS && <BackendMaintenanceModal {...backendMaintenance} />}
               {devTools && <ReactQueryDevtools />}
             </QueryProvider>
           </OverlayProvider>

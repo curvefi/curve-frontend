@@ -35,14 +35,14 @@ export type TabSwitcherVariants = keyof typeof TABS_VARIANT_CLASSES
 const { Spacing, ButtonSize } = SizesAndSpaces
 
 // css classes used by the TabSwitcher component
-const contained = 'variant-contained' as const
-const underlined = 'variant-underlined' as const
-const overlined = 'variant-overlined' as const
-const small = 'size-small' as const
-const medium = 'size-medium' as const
-const extraExtraLarge = 'size-extraExtraLarge' as const
-export const TABS_VARIANT_CLASSES = { contained, underlined, overlined }
-export const TABS_SIZES_CLASSES = { small, medium, extraExtraLarge }
+const CONTAINED = 'variant-contained' as const
+const UNDERLINED = 'variant-underlined' as const
+const OVERLINED = 'variant-overlined' as const
+const SMALL = 'size-small' as const
+const MEDIUM = 'size-medium' as const
+const EXTRA_EXTRA_LARGE = 'size-extraExtraLarge' as const
+export const TABS_VARIANT_CLASSES = { contained: CONTAINED, underlined: UNDERLINED, overlined: OVERLINED }
+export const TABS_SIZES_CLASSES = { small: SMALL, medium: MEDIUM, extraExtraLarge: EXTRA_EXTRA_LARGE }
 export const HIDE_INACTIVE_BORDERS_CLASS = 'hide-inactive-borders' as const
 export const TAB_SUFFIX_CLASS = 'tab-suffix' as const
 
@@ -67,17 +67,17 @@ const DEFAULT_TAB_PADDING: TabPadding = { inlineStart: 0, inlineEnd: 0, blockSta
 
 const DEFAULT_TAB_STYLES_BY_SIZE: Record<keyof typeof TABS_SIZES_CLASSES, TabSizeConfig> = {
   small: {
-    className: small,
+    className: SMALL,
     height: TAB_HEIGHT.small,
     padding: { ...DEFAULT_TAB_PADDING, inlineStart: 'sm', inlineEnd: 'sm' },
   },
   medium: {
-    className: medium,
+    className: MEDIUM,
     height: TAB_HEIGHT.medium,
     padding: { ...DEFAULT_TAB_PADDING, inlineStart: 'sm', inlineEnd: 'sm' },
   },
   extraExtraLarge: {
-    className: extraExtraLarge,
+    className: EXTRA_EXTRA_LARGE,
     height: TAB_HEIGHT.extraExtraLarge,
     padding: { ...DEFAULT_TAB_PADDING, inlineStart: 'md', inlineEnd: 'md' },
   },
@@ -215,7 +215,7 @@ export const defineMuiTabs = ({
     root: {
       minHeight: 0, // It's 48px by default in Mui, but we want it smaller
       position: 'relative', // For absolute positioning of scroll buttons
-      [`&.${contained}`]: {
+      [`&.${CONTAINED}`]: {
         ...muiTabStyles({
           root: {
             ...buildTabStateStylesByVariant(Contained),
@@ -233,7 +233,7 @@ export const defineMuiTabs = ({
         },
       },
 
-      [`&.${overlined}`]: {
+      [`&.${OVERLINED}`]: {
         ...muiTabStyles({
           root: {
             ...buildTabStateStylesByVariant(OverLined),
@@ -243,7 +243,7 @@ export const defineMuiTabs = ({
         ...muiTabStylesBySize({}),
       },
 
-      [`&.${underlined}`]: {
+      [`&.${UNDERLINED}`]: {
         ...muiTabStyles({
           root: {
             ...buildTabStateStylesByVariant(UnderLined),
@@ -259,7 +259,7 @@ export const defineMuiTabs = ({
       },
 
       // Inactive tabs have a smaller border size
-      [inactiveTabSelector({ hideInactiveBorders: false }, overlined, underlined)]: {
+      [inactiveTabSelector({ hideInactiveBorders: false }, OVERLINED, UNDERLINED)]: {
         height: BORDER_SIZE_INACTIVE,
         '.MuiTabs-vertical &': {
           height: '100%',
@@ -267,9 +267,9 @@ export const defineMuiTabs = ({
         },
       },
 
-      // ExtraExtraLarge tabs don't have a border hover for the underlined/overlined variants
+      // ExtraExtraLarge tabs don't have a border hover for the UNDERLINED/OVERLINED variants
       // Also override and hide inactive borders if configured so
-      [`${inactiveTabSelector({ hideInactiveBorders: true }, overlined, underlined)}, &.${extraExtraLarge} .MuiTab-root::after`]:
+      [`${inactiveTabSelector({ hideInactiveBorders: true }, OVERLINED, UNDERLINED)}, &.${EXTRA_EXTRA_LARGE} .MuiTab-root::after`]:
         {
           height: '0px !important',
           '.MuiTabs-vertical &': {
@@ -301,10 +301,10 @@ export const defineMuiTabs = ({
     },
     indicator: {
       backgroundColor: Layer.Highlight.Outline,
-      [`.${overlined} &`]: { top: 0 },
-      [`.${contained} &`]: { top: 0 },
+      [`.${OVERLINED} &`]: { top: 0 },
+      [`.${CONTAINED} &`]: { top: 0 },
 
-      [`.${extraExtraLarge} &`]: {
+      [`.${EXTRA_EXTRA_LARGE} &`]: {
         height: BORDER_SIZE_LARGE,
       },
 
@@ -313,7 +313,7 @@ export const defineMuiTabs = ({
         right: 'auto',
         width: BORDER_SIZE,
       },
-      [`.MuiTabs-vertical.${extraExtraLarge} &`]: {
+      [`.MuiTabs-vertical.${EXTRA_EXTRA_LARGE} &`]: {
         width: BORDER_SIZE_LARGE,
       },
     },
