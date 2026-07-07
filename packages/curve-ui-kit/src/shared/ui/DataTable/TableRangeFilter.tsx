@@ -6,11 +6,8 @@ import { type NumericTextFieldProps } from '@ui-kit/shared/ui/NumericTextField'
 type TableRangeFilterProps<TColumnId extends string> = FilterProps<TColumnId> & {
   id: TColumnId
   adornment?: NumericTextFieldProps['adornment']
-  debounceMs?: number
   displayDefaultMin?: number | null
-  displayDefaultMax?: number | null
   defaultMin?: number | null
-  defaultMax?: number | null
   isLoading?: boolean
   min?: number
   max?: number
@@ -19,21 +16,15 @@ type TableRangeFilterProps<TColumnId extends string> = FilterProps<TColumnId> & 
 export const TableRangeFilter = <TColumnId extends string>({
   id,
   adornment,
-  debounceMs,
   displayDefaultMin,
-  displayDefaultMax,
   defaultMin,
-  defaultMax,
   isLoading = false,
   min,
   max,
   ...filterProps
 }: TableRangeFilterProps<TColumnId>) => {
   const [range, setRange] = useRangeFilter({
-    debounceMs,
-    displayDefaultMax,
     displayDefaultMin,
-    defaultMax,
     defaultMin,
     isLoading,
     id,

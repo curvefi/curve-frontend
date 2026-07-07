@@ -5,12 +5,9 @@ import type { CampaignRewards } from '@ui-kit/entities/campaigns'
 export type PoolListCampaignsByAddress = Record<string, CampaignRewards[]>
 
 export type PoolListItem = V2Pool & {
+  campaigns: CampaignRewards[]
   hasPosition: boolean | undefined
   hasVyperVulnerability: boolean | undefined
   network: NetworkConfig['id']
   url: string
-}
-
-export type PoolListTableMeta = {
-  campaignsByAddress?: PoolListCampaignsByAddress
 }

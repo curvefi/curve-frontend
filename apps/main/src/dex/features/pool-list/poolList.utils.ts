@@ -32,8 +32,10 @@ export const getPoolListItem = (
   network: NetworkConfig,
   pool: V2Pool,
   hasPosition: PoolListItem['hasPosition'],
+  campaignsByAddress?: PoolListCampaignsByAddress,
 ): PoolListItem => ({
   ...pool,
+  campaigns: getPoolListCampaigns(campaignsByAddress, pool.address),
   hasPosition,
   hasVyperVulnerability: isVyperVulnerablePool(network.chainId, pool.address),
   network: network.id,

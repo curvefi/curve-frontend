@@ -6,8 +6,7 @@ import { PoolListBaseApyCell } from '../cells/PoolListBaseApyCell'
 import { PoolListRewards } from '../cells/PoolListRewards'
 import { PoolListTitleCell } from '../cells/PoolListTitleCell'
 import { PoolListUsdCell } from '../cells/PoolListUsdCell'
-import type { PoolListItem, PoolListTableMeta } from '../poolList.types'
-import { getPoolListCampaigns } from '../poolList.utils'
+import type { PoolListItem } from '../poolList.types'
 import { PoolListColumnId } from './column.enum'
 
 type Tooltip = ColumnMeta<never, never>['tooltip']
@@ -65,13 +64,7 @@ export const POOL_LIST_COLUMNS = [
     sortUndefined: 'last',
   }),
   display(PoolListColumnId.RewardsOther, {
-    cell: ({ row, table }) => {
-      const { meta }: { meta?: PoolListTableMeta } = table.options
-      const campaignsByAddress = meta?.campaignsByAddress
-      const campaigns = getPoolListCampaigns(campaignsByAddress, row.original.address)
-
-      return <PoolListRewards pool={row.original} campaigns={campaigns} />
-    },
+    cell: ({ row }) => <PoolListRewards pool={row.original} />,
     meta: { type: 'numeric', tooltip: { title: t`Token APR based on current prices of tokens and reward rates` } },
   }),
   accessor(PoolListColumnId.Volume, 'tradingVolume24h', {

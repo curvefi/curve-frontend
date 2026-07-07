@@ -9,66 +9,34 @@ import {
 import { Range } from '@ui-kit/types/util'
 
 export const useRangeFilter = <TColumnId extends string>({
-  debounceMs,
-  displayDefaultMax,
-  displayDefaultMin,
-  defaultMax,
-  defaultMin,
   isLoading = false,
   columnFiltersById,
   setColumnFilter,
   id,
   min = 0,
   max,
+  defaultMin = min,
+  displayDefaultMin = defaultMin,
 }: FilterProps<TColumnId> & {
-  debounceMs?: number
   displayDefaultMin?: number | null
-  displayDefaultMax?: number | null
   defaultMin?: number | null
-  defaultMax?: number | null
   id: TColumnId
   min?: number
   max?: number
   isLoading?: boolean
 }) => {
-  const filterDefaults = useMemo(
-    (): Range<number | null | undefined> => [
-      defaultMin === undefined ? min : defaultMin,
-      defaultMax === undefined ? max : defaultMax,
-    ],
-    [defaultMax, defaultMin, min, max],
-  )
-  const displayDefaults = useMemo(
-    (): Range<number | null | undefined> => [
-      displayDefaultMin === undefined ? filterDefaults[0] : displayDefaultMin,
-      displayDefaultMax === undefined ? filterDefaults[1] : displayDefaultMax,
-    ],
-    [displayDefaultMax, displayDefaultMin, filterDefaults],
-  )
-  const getDisplayRange = useCallback(
-    ([rangeMin, rangeMax]: Range<number | null>): Range<number | null> => {
-      const [defaultMin, defaultMax] = displayDefaults
-
-      return [
-        rangeMin ?? (isLoading ? null : (defaultMin ?? null)),
-        rangeMax ?? (isLoading ? null : (defaultMax ?? null)),
-      ]
-    },
-    [displayDefaults, isLoading],
-  )
+  const filterDefaults = useMemo((): Range<number | null | undefined> => [defaultMin, max], [defaultMin, max])
 
   return useUniqueDebounce({
     // Separate default and applied range, the input's onBlur event that didn't change anything could trigger the callback and clear the filter.
-    defaultValue: useMemo(
-      (): Range<number | null> => getDisplayRange(parseRangeFilter(columnFiltersById[id]) ?? [null, null]),
-      [columnFiltersById, getDisplayRange, id],
-    ),
+    defaultValue: useMemo((): Range<number | null> => {
+      const [minFilter, maxFilter] = parseRangeFilter(columnFiltersById[id]) ?? []
+      return [minFilter ?? (isLoading ? null : displayDefaultMin), maxFilter ?? (isLoading || max == null ? null : max)]
+    }, [columnFiltersById, displayDefaultMin, id, isLoading, max]),
     callback: useCallback(
       (newRange: Range<number | null>) =>
         setColumnFilter(id, serializeRangeFilter(normalizeRangeFilterDefaults(newRange, filterDefaults))),
       [filterDefaults, id, setColumnFilter],
     ),
-    debounceMs,
-    sanitize: getDisplayRange,
   })
 }

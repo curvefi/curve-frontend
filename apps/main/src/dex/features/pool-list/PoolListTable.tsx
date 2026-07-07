@@ -1,10 +1,8 @@
 import { useRef, useState } from 'react'
 import type { NetworkConfig } from '@/dex/types/main.types'
-import type { Chain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import { type ExpandedState, getCoreRowModel, getExpandedRowModel } from '@tanstack/react-table'
 import { CURVE_SOCIALS } from '@ui/utils'
-import { useCampaigns } from '@ui-kit/entities/campaigns'
 import { useIsMobile, useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
@@ -24,13 +22,11 @@ import { usePoolListPagination } from './hooks/usePoolListPagination'
 import { usePoolListSorting } from './hooks/usePoolListSorting'
 import { usePoolListTable } from './hooks/usePoolListTable'
 import { usePoolListVisibilitySettings } from './hooks/usePoolListVisibilitySettings'
-import type { PoolListTableMeta } from './poolList.types'
 
 const LOCAL_STORAGE_KEY = 'dex-pool-list'
 
 export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
   const isMobile = useIsMobile()
-  const { data: campaignsByAddress } = useCampaigns({ blockchainId: network.networkId as Chain })
   const [filtersOpen, , , , setFiltersOpen] = useSwitch(false)
   const filterChipRef = useRef<HTMLDivElement>(null)
   const { onPaginationChange, pagination, updateQueryAndResetPage } = usePoolListPagination()
@@ -67,7 +63,6 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
     manualPagination: true,
     manualSorting: true,
     manualFiltering: true,
-    meta: { campaignsByAddress } satisfies PoolListTableMeta,
     pageCount,
     autoResetPageIndex: false,
   })
