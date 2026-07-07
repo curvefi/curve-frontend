@@ -8,7 +8,6 @@ import { getReleaseChannel, isZapV2Disabled, useDisableZapV2, useReleaseChannel 
 
 const useBetaChannel = () => useReleaseChannel()[0] === ReleaseChannel.Beta
 const useStableChannel = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy
-const LLV2_STABLE_RELEASE_DATE = new Date('2026-06-10T13:00:00Z') // 15:00 CEST
 
 /**
  * Alpha channel works like beta for preview/localhost urls, but completely hidden in production.
