@@ -114,7 +114,7 @@ export const fetchMerklRewards = async (params: Record<string, string | number |
         console.warn('Ignored merkl error for local testing', message)
         return []
       }
-      throw new FetchError(resp.status, message)
+      throw new FetchError(resp.status, message, await resp.text())
     }
 
     return (await resp.json()) as MerklOpportunity[]
