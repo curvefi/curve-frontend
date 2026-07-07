@@ -8,7 +8,7 @@ import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/
 import { ResetPositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ResetPositionForm'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { Decimal } from '@primitives/decimal.utils'
-import { useLoanImplementationKey } from '@ui-kit/hooks/useFeatureFlags'
+import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { type QueryProp, type Range } from '@ui-kit/types/util'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
@@ -67,7 +67,7 @@ const SoftLiquidationMenu = [
 
 export const ManageLoanTabs = (params: LendManageLoanProps) => (
   <FormTabs
-    key={useLoanImplementationKey()}
+    key={useReleaseChannel()[0]} // remount tabs when zapv2 gets enabled
     params={params}
     menu={params.isSoftLiquidation ? SoftLiquidationMenu : LendManageMenu}
   />
