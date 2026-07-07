@@ -1,14 +1,16 @@
 import { orderBy } from 'lodash'
+import { getPoolListTvlLabelRange, POOL_LIST_DEFAULT_TVL_MIN } from '@/dex/features/pool-list/poolListFilterQuery'
 import { DEX_POOL_LIST_SEARCH, setupDexPoolListMocks } from '@cy/support/helpers/dex-pool-list-mocks'
 import { mockMerklCampaigns } from '@cy/support/helpers/lending-mocks'
 import { API_LOAD_TIMEOUT, type Breakpoint, LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
 import { assert } from '@primitives/objects.utils'
+import { getRangeFilterLabel } from '@ui-kit/shared/ui/DataTable/filters'
 
-// Keep in sync with the hidden default applied by the DEX pool-list filter hook.
-const DEFAULT_POOL_LIST_MIN_TVL = 10_000
 const DEFAULT_POOL_LIST_MIN_TVL_INPUT = '10k'
-const DEFAULT_POOL_LIST_TVL_MAX_CHIP = '$10k - $500m'
-const EXPLICIT_ZERO_POOL_LIST_TVL_MAX_CHIP = '$0 - $500m'
+const POOL_LIST_FILTER_POOL_TYPE = 'crypto'
+const POOL_LIST_FILTER_TVL_MIN = 480_000_000
+const POOL_LIST_FILTER_TVL_MAX = 500_000_000
+const POOL_LIST_FILTER_VOLUME_MAX = 500_000_000
 
 type PoolListResponseBody = { pools?: { name?: string }[] }
 
@@ -64,6 +66,14 @@ const expectOrder = (actual: UsdValue[], order: 'asc' | 'desc') =>
 const getUsdValues = (cells: HTMLElement[]) =>
   cells.map(({ innerText }): UsdValue => ({ text: innerText, parsed: parseCompactUsd(innerText) }))
 
+const getPoolListTvlRangeChip = (minTvl: number, maxTvl: number) =>
+  assert(
+    getRangeFilterLabel(getPoolListTvlLabelRange([minTvl, maxTvl]), 'dollar', {
+      defaultMin: null,
+    }),
+    'No TVL range filter chip label',
+  )
+
 const expectTopUsdValuesOrder = (columnId: 'volume' | 'tvl', order: 'asc' | 'desc') =>
   cy
     .get(`[data-testid^="data-table-row-"] [data-testid="data-table-cell-${columnId}"]`)
@@ -111,7 +121,7 @@ describe('DEX Pools', () => {
     cy.get('[data-testid="dex-pool-active-filter-type"]').should('be.visible')
   }
 
-  function expectPageResetAfter(action: () => void, waitForRequest = true) {
+  function expectPageResetAfter(action: () => void, { waitForRequest = true }: { waitForRequest?: boolean } = {}) {
     visitAndWait(width, height, { query: { page: '5' } })
     action()
     if (waitForRequest) {
@@ -157,7 +167,7 @@ describe('DEX Pools', () => {
     it('applies the default TVL min without URL or active filter state', () => {
       cy.location('search').should('not.include', 'tvl=')
       expectLastPoolRequestParams(params => {
-        expect(params.get('min_tvl')).to.equal(`${DEFAULT_POOL_LIST_MIN_TVL}`)
+        expect(params.get('min_tvl')).to.equal(`${POOL_LIST_DEFAULT_TVL_MIN}`)
       })
       cy.get('[data-testid="dex-pool-active-filter-tvl"]').should('not.exist')
       openPoolFilters()
@@ -168,7 +178,7 @@ describe('DEX Pools', () => {
     it('sorts by TVL (desc/asc)', () => {
       cy.url().should('not.include', 'tvl') // initial sort not in URL
       expectLastPoolRequestParams(params => {
-        expect(params.get('min_tvl')).to.equal(`${DEFAULT_POOL_LIST_MIN_TVL}`)
+        expect(params.get('min_tvl')).to.equal(`${POOL_LIST_DEFAULT_TVL_MIN}`)
         expect(params.get('sort_by')).to.equal('volume')
         expect(params.get('sort_direction')).to.equal('desc')
       })
@@ -192,7 +202,7 @@ describe('DEX Pools', () => {
     })
 
     it('filters by pool type, persists after reload, and clears from the active chip', () => {
-      const poolType = 'crypto'
+      const poolType = POOL_LIST_FILTER_POOL_TYPE
 
       clickFilterChip(poolType)
       cy.url().should('include', `filter=${poolType}`)
@@ -218,16 +228,14 @@ describe('DEX Pools', () => {
     })
 
     it('resets page when a filter changes', () => {
-      const poolType = 'crypto'
+      const poolType = POOL_LIST_FILTER_POOL_TYPE
 
-      expectPageResetAfter(() => {
-        clickFilterChip(poolType)
-      }, false)
+      expectPageResetAfter(() => clickFilterChip(poolType), { waitForRequest: false })
       cy.location('search').should('include', `filter=${poolType}`)
     })
 
     it('filters by TVL range input', () => {
-      const minTvl = 480_000_000
+      const minTvl = POOL_LIST_FILTER_TVL_MIN
 
       setRangeFilter('tvl', 'min', minTvl)
       expectLastPoolRequestParams(params => {
@@ -238,7 +246,7 @@ describe('DEX Pools', () => {
     })
 
     it('filters by TVL max input with an explicit zero min in the URL and API request', () => {
-      const maxTvl = 500_000_000
+      const maxTvl = POOL_LIST_FILTER_TVL_MAX
 
       setRangeFilter('tvl', 'min', 0)
       expectUrlQueryParam('tvl', '0~')
@@ -252,11 +260,11 @@ describe('DEX Pools', () => {
       expectUrlQueryParam('tvl', `0~${maxTvl}`)
       cy.get('[data-testid="dex-pool-active-filter-tvl"]')
         .should('be.visible')
-        .and('contain.text', EXPLICIT_ZERO_POOL_LIST_TVL_MAX_CHIP)
+        .and('contain.text', getPoolListTvlRangeChip(0, maxTvl))
     })
 
     it('filters by Volume range input', () => {
-      const maxVolume = 500_000_000
+      const maxVolume = POOL_LIST_FILTER_VOLUME_MAX
 
       setRangeFilter('volume', 'max', maxVolume)
       expectLastPoolRequestParams(params => {
@@ -267,24 +275,24 @@ describe('DEX Pools', () => {
     })
 
     it('treats default TVL min as inactive', () => {
-      visitAndWait(width, height, { query: { tvl: `${DEFAULT_POOL_LIST_MIN_TVL}~` } })
+      visitAndWait(width, height, { query: { tvl: `${POOL_LIST_DEFAULT_TVL_MIN}~` } })
       expectLastPoolRequestParams(params => {
-        expect(params.get('min_tvl')).to.equal(`${DEFAULT_POOL_LIST_MIN_TVL}`)
+        expect(params.get('min_tvl')).to.equal(`${POOL_LIST_DEFAULT_TVL_MIN}`)
       })
       cy.get('[data-testid="dex-pool-active-filter-tvl"]').should('not.exist')
     })
 
     it('uses the default TVL min for max-only filtering without rewriting the URL', () => {
-      const maxTvl = 500_000_000
+      const maxTvl = POOL_LIST_FILTER_TVL_MAX
 
       visitAndWait(width, height, { query: { tvl: `~${maxTvl}` } })
       expectLastPoolRequestParams(params => {
-        expect(params.get('min_tvl')).to.equal(`${DEFAULT_POOL_LIST_MIN_TVL}`)
+        expect(params.get('min_tvl')).to.equal(`${POOL_LIST_DEFAULT_TVL_MIN}`)
         expect(params.get('max_tvl')).to.equal(`${maxTvl}`)
       })
       cy.get('[data-testid="dex-pool-active-filter-tvl"]')
         .should('be.visible')
-        .and('contain.text', DEFAULT_POOL_LIST_TVL_MAX_CHIP)
+        .and('contain.text', getPoolListTvlRangeChip(POOL_LIST_DEFAULT_TVL_MIN, maxTvl))
     })
 
     it('keeps explicit zero TVL min as an active filter', () => {
