@@ -8,14 +8,16 @@ export enum ReleaseChannel {
   Legacy = 'Legacy',
 }
 
-export const isCypress = Boolean((window as { Cypress?: unknown }).Cypress)
-export const noCypressTestConnector = Boolean(window.CypressNoTestConnector)
-export const CypressConnectorChain = window.CypressTestConnectorChain ?? Chain.Ethereum
+export const CYPRESS_CONNECTOR_CHAIN = window.CypressTestConnectorChain ?? Chain.Ethereum
+export const IS_CYPRESS = Boolean((window as { Cypress?: unknown }).Cypress)
+export const NO_CYPRESS_TEST_CONNECTOR = Boolean(
+  (window as { CypressNoTestConnector?: unknown }).CypressNoTestConnector,
+)
 
-export const isDevelopment = NODE_ENV === 'development' || !!window.localStorage?.getItem('developer')
-export const isPreviewHost = window.location.hostname.includes('vercel.app')
+export const IS_DEVELOPMENT = NODE_ENV === 'development' || !!window.localStorage?.getItem('developer')
+export const IS_PREVIEW_HOST = window.location.hostname.includes('vercel.app')
 
-const isDefaultBeta = isDevelopment || isPreviewHost || isCypress
+const IS_DEFAULT_BETA = IS_DEVELOPMENT || IS_PREVIEW_HOST || IS_CYPRESS
 
-export const defaultReleaseChannel = isDefaultBeta ? ReleaseChannel.Beta : ReleaseChannel.Stable
-export const enableLogging = isDefaultBeta
+export const defaultReleaseChannel = IS_DEFAULT_BETA ? ReleaseChannel.Beta : ReleaseChannel.Stable
+export const ENABLE_LOGGING = IS_DEFAULT_BETA

@@ -8,7 +8,7 @@ import { loanExistsValidationGroup } from '@ui-kit/lib/model/query/loan-exists-v
 import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-validation'
 import { createValidationSuite, FieldsOf } from '@ui-kit/lib/validation'
 
-const isMarket = false
+const IS_MARKET = false
 const QUERY_KEY = 'userBandsBalances' as const
 
 type UserBandsBalancesQuery = UserMarketQuery & {
@@ -34,7 +34,7 @@ export const { useQuery: useUserBandsBalances } = queryFactory({
   queryFn: async ({ marketId, userAddress, liquidationBand }: UserBandsBalancesQuery) => {
     const market = getLlamaMarket(marketId)
     const userBandsBalances = normalizeBands(await getUserPositionImplementation(market).userBandsBalances(userAddress))
-    return fetchChartBandBalancesData(sortBands(userBandsBalances), liquidationBand, market, isMarket)
+    return fetchChartBandBalancesData(sortBands(userBandsBalances), liquidationBand, market, IS_MARKET)
   },
   category: 'llamalend.user',
   validationSuite: userBandsBalancesValidationSuite,

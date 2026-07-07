@@ -19,10 +19,10 @@ type SliceState = {
   routerFormValues: Record<string, SwapFormValuesCache>
 }
 
-const sliceKey = 'storeCache'
+const SLICE_KEY = 'storeCache'
 
 export type CacheSlice = {
-  [sliceKey]: SliceState & {
+  [SLICE_KEY]: SliceState & {
     setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => Promise<void>
     setStateByKey: <T>(key: StateKey, value: T) => Promise<void>
     setStateByKeys: (SliceState: Partial<SliceState>) => Promise<void>
@@ -46,18 +46,18 @@ export const createCacheSlice = (_: StoreApi<State>['setState'], get: StoreApi<S
     // slice helpers
     setStateByActiveKey: async <T>(key: StateKey, activeKey: string, value: T) => {
       await sleep(TIMEOUT_MS)
-      get().setAppStateByActiveKey(sliceKey, key, activeKey, value)
+      get().setAppStateByActiveKey(SLICE_KEY, key, activeKey, value)
     },
     setStateByKey: async <T>(key: StateKey, value: T) => {
       await sleep(TIMEOUT_MS)
-      get().setAppStateByKey(sliceKey, key, value)
+      get().setAppStateByKey(SLICE_KEY, key, value)
     },
     setStateByKeys: async (sliceState: Partial<SliceState>) => {
       await sleep(TIMEOUT_MS)
-      get().setAppStateByKeys(sliceKey, sliceState)
+      get().setAppStateByKeys(SLICE_KEY, sliceState)
     },
     resetState: () => {
-      get().resetAppState(sliceKey, DEFAULT_STATE)
+      get().resetAppState(SLICE_KEY, DEFAULT_STATE)
     },
   },
 })

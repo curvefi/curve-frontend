@@ -2,7 +2,7 @@
 /// <reference path="./mui-input-base.d.ts" />
 import type { Components, TypographyVariantsOptions } from '@mui/material/styles'
 import type { DesignSystem } from '@ui-kit/themes/design'
-import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
+import { TRANSITION_FUNCTION } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { InputSize, InputSpacing } = SizesAndSpaces
@@ -26,7 +26,7 @@ export const defineMuiInputBase = (
       '& .MuiOutlinedInput-notchedOutline': {
         borderWidth: 1,
         borderColor: InputSelect.Base.Default.Border.Default,
-        transition: `border-color ${TransitionFunction}`,
+        transition: `border-color ${TRANSITION_FUNCTION}`,
       },
       '&:hover:not(.Mui-focused):not(.Mui-error):not(.Mui-disabled)': {
         backgroundColor: InputSelect.Base.Default.Fill.Hover,

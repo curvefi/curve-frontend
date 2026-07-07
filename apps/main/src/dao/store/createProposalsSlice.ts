@@ -44,10 +44,10 @@ type SliceState = {
   activeSortDirection: SortDirection
 }
 
-const sliceKey = 'proposals'
+const SLICE_KEY = 'proposals'
 
 export type ProposalsSlice = {
-  [sliceKey]: SliceState & {
+  [SLICE_KEY]: SliceState & {
     setSearchValue: (searchValue: string) => void
     setActiveFilter: (filter: ProposalListFilter) => void
     setActiveSortBy: (sortBy: SortByFilterProposals) => void
@@ -73,19 +73,19 @@ export const createProposalsSlice = (
   set: StoreApi<State>['setState'],
   get: StoreApi<State>['getState'],
 ): ProposalsSlice => ({
-  [sliceKey]: {
+  [SLICE_KEY]: {
     ...DEFAULT_STATE,
     setSearchValue: filterValue => {
-      get()[sliceKey].setStateByKey('searchValue', filterValue)
+      get()[SLICE_KEY].setStateByKey('searchValue', filterValue)
     },
     setActiveFilter: (filter: ProposalListFilter) => {
-      get()[sliceKey].setStateByKey('activeFilter', filter)
+      get()[SLICE_KEY].setStateByKey('activeFilter', filter)
     },
     setActiveSortDirection: (direction: SortDirection) => {
-      get()[sliceKey].setStateByKey('activeSortDirection', direction)
+      get()[SLICE_KEY].setStateByKey('activeSortDirection', direction)
     },
     setActiveSortBy: (sortBy: SortByFilterProposals) => {
-      get()[sliceKey].setStateByKey('activeSortBy', sortBy)
+      get()[SLICE_KEY].setStateByKey('activeSortBy', sortBy)
     },
     castVote: async (voteId: number, voteType: ProposalType, support: boolean) => {
       const voteIdKey = `${voteId}-${voteType}`
@@ -95,8 +95,8 @@ export const createProposalsSlice = (
       if (!curve || !provider) return
 
       const { dismiss: dismissConfirm } = notify(t`Please confirm to cast vote.`, 'pending')
-      get()[sliceKey].setStateByKey('voteTxMapper', {
-        ...get()[sliceKey].voteTxMapper,
+      get()[SLICE_KEY].setStateByKey('voteTxMapper', {
+        ...get()[SLICE_KEY].voteTxMapper,
         [voteIdKey]: {
           status: 'CONFIRMING',
           hash: null,
@@ -115,8 +115,8 @@ export const createProposalsSlice = (
         )
 
         if (voteResponseHash) {
-          get()[sliceKey].setStateByKey('voteTxMapper', {
-            ...get()[sliceKey].voteTxMapper,
+          get()[SLICE_KEY].setStateByKey('voteTxMapper', {
+            ...get()[SLICE_KEY].voteTxMapper,
             [voteIdKey]: {
               status: 'LOADING',
               hash: null,
@@ -130,8 +130,8 @@ export const createProposalsSlice = (
           const { dismiss: dismissDeploying } = notify(deployingNotificationMessage, 'pending')
           dismissNotificationHandler = dismissDeploying
 
-          get()[sliceKey].setStateByKey('voteTxMapper', {
-            ...get()[sliceKey].voteTxMapper,
+          get()[SLICE_KEY].setStateByKey('voteTxMapper', {
+            ...get()[SLICE_KEY].voteTxMapper,
             [voteIdKey]: {
               status: 'LOADING',
               hash: voteResponseHash,
@@ -141,8 +141,8 @@ export const createProposalsSlice = (
 
           await helpers.waitForTransaction(voteResponseHash, provider)
 
-          get()[sliceKey].setStateByKey('voteTxMapper', {
-            ...get()[sliceKey].voteTxMapper,
+          get()[SLICE_KEY].setStateByKey('voteTxMapper', {
+            ...get()[SLICE_KEY].voteTxMapper,
             [voteIdKey]: {
               status: 'SUCCESS',
               hash: voteResponseHash,
@@ -166,8 +166,8 @@ export const createProposalsSlice = (
           dismissNotificationHandler()
         }
 
-        get()[sliceKey].setStateByKey('voteTxMapper', {
-          ...get()[sliceKey].voteTxMapper,
+        get()[SLICE_KEY].setStateByKey('voteTxMapper', {
+          ...get()[SLICE_KEY].voteTxMapper,
           [voteIdKey]: {
             status: 'ERROR',
             hash: null,
@@ -189,8 +189,8 @@ export const createProposalsSlice = (
       if (!curve || !provider) return
 
       const { dismiss: dismissConfirm } = notify(t`Please confirm to execute proposal.`, 'pending')
-      get()[sliceKey].setStateByKey('executeTxMapper', {
-        ...get()[sliceKey].executeTxMapper,
+      get()[SLICE_KEY].setStateByKey('executeTxMapper', {
+        ...get()[SLICE_KEY].executeTxMapper,
         [voteIdKey]: {
           status: 'CONFIRMING',
           hash: null,
@@ -205,8 +205,8 @@ export const createProposalsSlice = (
         const transactionHash = await curve.dao.executeVote(voteType.toUpperCase() as CurveJsProposalType, voteId)
 
         if (transactionHash) {
-          get()[sliceKey].setStateByKey('executeTxMapper', {
-            ...get()[sliceKey].executeTxMapper,
+          get()[SLICE_KEY].setStateByKey('executeTxMapper', {
+            ...get()[SLICE_KEY].executeTxMapper,
             [voteIdKey]: {
               status: 'LOADING',
               hash: null,
@@ -220,8 +220,8 @@ export const createProposalsSlice = (
           const { dismiss: dismissDeploying } = notify(deployingNotificationMessage, 'pending')
           dismissNotificationHandler = dismissDeploying
 
-          get()[sliceKey].setStateByKey('executeTxMapper', {
-            ...get()[sliceKey].executeTxMapper,
+          get()[SLICE_KEY].setStateByKey('executeTxMapper', {
+            ...get()[SLICE_KEY].executeTxMapper,
             [voteIdKey]: {
               status: 'LOADING',
               hash: transactionHash,
@@ -241,7 +241,7 @@ export const createProposalsSlice = (
 
           set(
             produce((state: State) => {
-              state[sliceKey].executeTxMapper[voteIdKey] = {
+              state[SLICE_KEY].executeTxMapper[voteIdKey] = {
                 status: 'SUCCESS',
                 hash: transactionHash,
                 txLink: scanTxPath(networks[1], transactionHash) ?? null,
@@ -255,8 +255,8 @@ export const createProposalsSlice = (
           dismissNotificationHandler()
         }
 
-        get()[sliceKey].setStateByKey('executeTxMapper', {
-          ...get()[sliceKey].executeTxMapper,
+        get()[SLICE_KEY].setStateByKey('executeTxMapper', {
+          ...get()[SLICE_KEY].executeTxMapper,
           [voteIdKey]: {
             status: 'ERROR',
             hash: null,
@@ -270,13 +270,13 @@ export const createProposalsSlice = (
       }
     },
     setStateByKey: (key, value) => {
-      get().setAppStateByKey(sliceKey, key, value)
+      get().setAppStateByKey(SLICE_KEY, key, value)
     },
     setStateByKeys: sliceState => {
-      get().setAppStateByKeys(sliceKey, sliceState)
+      get().setAppStateByKeys(SLICE_KEY, sliceState)
     },
     resetState: () => {
-      get().resetAppState(sliceKey, DEFAULT_STATE)
+      get().resetAppState(SLICE_KEY, DEFAULT_STATE)
     },
   },
 })

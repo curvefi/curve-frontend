@@ -6,8 +6,8 @@ import { API_LOAD_TIMEOUT, e2eBaseUrl, LOAD_TIMEOUT } from '@cy/support/ui'
 import type { ErrorContext, ErrorReportFormValues } from '@ui-kit/features/report-error'
 import { SENTRY_DSN } from '@ui-kit/features/sentry'
 
-const invalidIconAddress = '0x0000000000000000000000000000000000000001' as const
-const domMutationErrorMessage =
+const INVALID_ICON_ADDRESS = '0x0000000000000000000000000000000000000001' as const
+const DOM_MUTATION_ERROR =
   "Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node."
 
 const visitErrorBoundary = (errorFactory: (win: Cypress.AUTWindow) => Error) => {
@@ -18,7 +18,7 @@ const visitErrorBoundary = (errorFactory: (win: Cypress.AUTWindow) => Error) => 
       data: ethereum.data.map(market => ({
         ...market,
         // Keep the API response valid, then trigger the render error from the icon path below.
-        collateral_token: { ...market.collateral_token, address: invalidIconAddress },
+        collateral_token: { ...market.collateral_token, address: INVALID_ICON_ADDRESS },
       })),
     },
     ...otherChains,
@@ -31,7 +31,7 @@ const visitErrorBoundary = (errorFactory: (win: Cypress.AUTWindow) => Error) => 
       // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
       const originalToLowerCase = String.prototype.toLowerCase
       String.prototype.toLowerCase = function (this: string) {
-        if (this.toString() === invalidIconAddress) {
+        if (this.toString() === INVALID_ICON_ADDRESS) {
           throw errorFactory(win)
         }
         return originalToLowerCase.call(this)
@@ -143,7 +143,7 @@ describe('Error Boundary', () => {
   })
 
   it('should show some guidance when a DOM mutation error occurs', () => {
-    visitErrorBoundary(({ DOMException }) => new DOMException(domMutationErrorMessage, 'NotFoundError'))
+    visitErrorBoundary(({ DOMException }) => new DOMException(DOM_MUTATION_ERROR, 'NotFoundError'))
     cy.get('[data-testid="error-title"]', LOAD_TIMEOUT).should('contain.text', 'Unexpected Error')
     cy.get('[data-testid="error-subtitle"]').should('contain.text', 'Please refresh the page and try again.')
   })

@@ -12,9 +12,9 @@ import { DECIMAL_RANGE_REGEX, getActionValue } from './action-info.helpers'
 const chainId = Chain.Ethereum
 
 export const CREATE_LOAN_FUND_AMOUNT = '0x3635c9adc5dea00000' // 1000 ETH=1e21 wei
-const borrowedSymbol = 'crvUSD'
-const borrowedDecimals = DEFAULT_DECIMALS
-const collateralDecimals = DEFAULT_DECIMALS
+const BORROWED_SYMBOL = 'crvUSD'
+const BORROWED_DECIMALS = DEFAULT_DECIMALS
+const COLLATERAL_DECIMALS = DEFAULT_DECIMALS
 
 export const LOAN_TEST_MARKETS = {
   [LlamaMarketType.Mint]: [
@@ -33,10 +33,10 @@ export const LOAN_TEST_MARKETS = {
       path: '/crvusd/ethereum/markets/sfrxeth2',
       hasLeverage: true,
       hasLeverageManagement: false,
-      collateralDecimals,
+      collateralDecimals: COLLATERAL_DECIMALS,
       borrowedAddress: CRVUSD_ADDRESS,
-      borrowedDecimals,
-      borrowedSymbol,
+      borrowedDecimals: BORROWED_DECIMALS,
+      borrowedSymbol: BORROWED_SYMBOL,
     },
     {
       id: 'wbtc',
@@ -54,8 +54,8 @@ export const LOAN_TEST_MARKETS = {
       hasLeverageManagement: false,
       collateralDecimals: 8,
       borrowedAddress: CRVUSD_ADDRESS,
-      borrowedDecimals,
-      borrowedSymbol,
+      borrowedDecimals: BORROWED_DECIMALS,
+      borrowedSymbol: BORROWED_SYMBOL,
     },
   ],
   [LlamaMarketType.Lend]: [
@@ -73,10 +73,10 @@ export const LOAN_TEST_MARKETS = {
       path: '/lend/ethereum/markets/0x4F79Fe450a2BAF833E8f50340BD230f5A3eCaFe9',
       hasLeverage: true,
       hasLeverageManagement: true,
-      collateralDecimals,
+      collateralDecimals: COLLATERAL_DECIMALS,
       borrowedAddress: CRVUSD_ADDRESS,
-      borrowedDecimals,
-      borrowedSymbol,
+      borrowedDecimals: BORROWED_DECIMALS,
+      borrowedSymbol: BORROWED_SYMBOL,
     },
     {
       id: 'one-way-market-v2-0',
@@ -92,9 +92,9 @@ export const LOAN_TEST_MARKETS = {
       path: '/lend/optimism/markets/0x745422BF49f3F6e4A8E12E4abD19339E7910F8C9',
       hasLeverage: true,
       hasLeverageManagement: true,
-      collateralDecimals,
+      collateralDecimals: COLLATERAL_DECIMALS,
       borrowedAddress: '0x4200000000000000000000000000000000000006', // WETH
-      borrowedDecimals,
+      borrowedDecimals: BORROWED_DECIMALS,
       borrowedSymbol: 'WETH',
     },
   ],

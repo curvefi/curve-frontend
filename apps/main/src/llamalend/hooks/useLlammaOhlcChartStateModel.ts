@@ -23,7 +23,7 @@ type LlammaOhlcChartStateModelParams = {
   network: Chain | undefined
   oraclePrice: string | undefined
   previewPrices: Range<Decimal> | undefined
-  userPrices: QueryProp<Range<Decimal>>
+  userPrices: QueryProp<Range<Decimal> | null>
 }
 
 /**

@@ -1,9 +1,9 @@
 import type { Decimal } from '@primitives/decimal.utils'
-import { Transparent } from '@ui-kit/themes/design/0_primitives'
+import { TRANSPARENT } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { NumericTextField } from '../NumericTextField'
 
-const { AmountHeight } = SizesAndSpaces.LargeTokenInput
+const { AmountHeight: AMOUNT_HEIGHT } = SizesAndSpaces.LargeTokenInput
 
 type BalanceTextFieldProps = {
   balance: Decimal | undefined
@@ -27,12 +27,12 @@ export const BalanceTextField = ({ balance, name, isError, onChange, disabled }:
       input: {
         disableUnderline: true,
         sx: theme => ({
-          height: AmountHeight,
-          '&&&': { backgroundColor: Transparent },
+          height: AMOUNT_HEIGHT,
+          '&&&': { backgroundColor: TRANSPARENT },
           color: theme.design.Inputs.Text[isError ? 'Error' : 'Value'],
           ...theme.typography.headingSBold,
           '&& input.MuiInputBase-input': {
-            height: AmountHeight,
+            height: AMOUNT_HEIGHT,
             paddingInlineStart: 0,
             ...theme.typography.headingSBold,
           },
