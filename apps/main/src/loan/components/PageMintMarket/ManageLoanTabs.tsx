@@ -11,7 +11,7 @@ import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { networks } from '@/loan/networks'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Decimal } from '@primitives/decimal.utils'
-import { useLoanImplementationKey } from '@ui-kit/hooks/useFeatureFlags'
+import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import type { QueryProp, Range } from '@ui-kit/types/util'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
@@ -81,5 +81,6 @@ export const ManageLoanTabs = (params: MintManageLoanProps) => {
   })
   const isSoftLiquidation = ['softLiquidation', 'hardLiquidation'].includes(status ?? '')
   const menu = isSoftLiquidation ? MintManageSoftLiquidationMenu : MintManageMenu
-  return <FormTabs key={useLoanImplementationKey()} params={params} menu={menu} />
+  const [releaseChannel] = useReleaseChannel() // remount tabs when zapv2 gets enabled
+  return <FormTabs key={releaseChannel} params={params} menu={menu} />
 }
