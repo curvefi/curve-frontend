@@ -20,10 +20,11 @@ export function checkClosePositionDetailsLoaded({ debt }: { debt: Decimal }) {
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
 }
 
-export const submitClosePositionForm = () =>
+export const submitClosePositionForm = (expected: 'success' | 'error' = 'success') =>
   submitLoanForm({
     form: 'close-position',
-    message: 'Position closed successfully!',
+    message: { success: 'Position closed successfully!', error: 'Transaction failed' }[expected],
+    expected,
   })
 
 export function checkResetPositionInputsLoaded({ convertedBorrowed }: { convertedBorrowed: Decimal }) {

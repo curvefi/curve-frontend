@@ -1,6 +1,7 @@
 import { LoanPreset } from '@/llamalend/constants'
 import { oneOf, oneValueOf } from '@cy/support/generators'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
+import { type AlertColor } from '@mui/material/Alert'
 import type { Decimal } from '@primitives/decimal.utils'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
@@ -207,14 +208,19 @@ export function checkLoanRangeSlider() {
 export function submitLoanForm({
   form,
   message,
+  expected = 'success',
   checkMessage = true,
 }: {
   form: string
   message: string
+  expected?: AlertColor
   checkMessage?: boolean
 }) {
   cy.get(`[data-testid="${form}-submit-button"]`).click(LOAD_TIMEOUT)
-  cy.get(`[data-testid="toast-success"]`, TRANSACTION_LOAD_TIMEOUT).contains(message, TRANSACTION_LOAD_TIMEOUT)
+  cy.get(`[data-testid="toast-${expected}"]`, TRANSACTION_LOAD_TIMEOUT).contains(message, TRANSACTION_LOAD_TIMEOUT)
+  if (expected !== 'success') {
+    return cy.get('[data-testid="loan-alert-error"]').should('be.visible')
+  }
   if (!checkMessage) {
     return cy.get('[data-testid="loan-form-errors"]').should('not.exist')
   }
