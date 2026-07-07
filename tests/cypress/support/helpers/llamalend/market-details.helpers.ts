@@ -1,12 +1,12 @@
 import { DECIMAL_REGEX, getActionValue, getMetricValue } from '@cy/support/helpers/llamalend/action-info.helpers'
-import { LOAD_TIMEOUT } from '@cy/support/ui'
+import { API_LOAD_TIMEOUT, LOAD_TIMEOUT } from '@cy/support/ui'
 
 type WalletOptions = { hasWallet: boolean }
 
 const ADDRESS_PATTERN = /^0x[a-fA-F0-9]{40}$/
 
 const shouldShowCanvas = (testId: string) =>
-  cy.get(`[data-testid="${testId}"] canvas`, LOAD_TIMEOUT).should('be.visible')
+  cy.get(`[data-testid="${testId}"] canvas`, API_LOAD_TIMEOUT).should('be.visible')
 
 const shouldLoadHistoricalBorrowRateChart = () => {
   getMetricValue('historical-borrow-current-rate').should('match', DECIMAL_REGEX)
