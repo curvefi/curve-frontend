@@ -319,7 +319,7 @@ export const calculateMintMarketTvlUsd = ({ collateralAmountUsd }: { collateralA
  * Note that the backend data will not be directly updated, but this will trigger a background refresh.
  * Therefore, we don't invalidate the `userLendCollateralEvents` query immediately after calling this function.
  */
-export const updateUserEventsApi = (
+export const updateUserEventsApi = async (
   wallet: Wallet,
   { id: networkId }: { id: LlamaNetworkId },
   market: LlamaMarketTemplate,
@@ -329,7 +329,7 @@ export const updateUserEventsApi = (
     market instanceof LendMarketTemplate
       ? [market.addresses.controller, getLendUserMarketCollateralEvents]
       : [market.controller, getMintUserMarketCollateralEvents]
-  void updateEvents(wallet.address, networkId, address as Address, txHash as Hex)
+  return await updateEvents(wallet.address, networkId, address as Address, txHash as Hex)
 }
 
 /**
