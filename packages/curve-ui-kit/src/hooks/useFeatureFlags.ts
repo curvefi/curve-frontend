@@ -4,9 +4,10 @@
  */
 
 import { defaultReleaseChannel, ReleaseChannel } from '@ui-kit/utils'
-import { getReleaseChannel, isZapV2Disabled, useDisableZapV2, useReleaseChannel } from './useLocalStorage'
+import { useReleaseChannel } from './useLocalStorage'
 
 const useBetaChannel = () => useReleaseChannel()[0] === ReleaseChannel.Beta
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const useStableChannel = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy
 
 /**
@@ -15,14 +16,6 @@ const useStableChannel = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy
  **/
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const useAlphaChannel = () => useBetaChannel() && defaultReleaseChannel === ReleaseChannel.Beta
-
-/** New ZapV2 leverage implementation for LlamaLend markets */
-export const isZapV2Enabled = () => getReleaseChannel() === ReleaseChannel.Beta && !isZapV2Disabled()
-
-const useZapV2 = () => [useStableChannel(), !useDisableZapV2()].every(Boolean)
-
-/** gets a key to remount components when ZapV2 is toggled, forcing calls to non-reactive isZapV2Enabled */
-export const useLoanImplementationKey = () => (useZapV2() ? 'zapV2' : '')
 
 export const use0xRouter = useBetaChannel
 
@@ -34,4 +27,5 @@ export const useNewLlamalendHealth = useBetaChannel
 
 /** New DEX pool list backed by Prices API v2 */
 export const useDexPoolListV2 = useBetaChannel
+
 export const isDexPoolListV2Enabled = (releaseChannel: ReleaseChannel) => releaseChannel === ReleaseChannel.Beta
