@@ -3,7 +3,7 @@ import Typography from '@mui/material/Typography'
 import { shortenString } from '@primitives/string.utils'
 import { useCopyToClipboard } from '@ui-kit/hooks/useCopyToClipboard'
 import { t } from '@ui-kit/lib/i18n'
-import { TableSecondaryTextClass } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { TABLE_SECONDARY_TEXT_CLASS } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
@@ -26,7 +26,7 @@ type AddressCellProps = {
 export const AddressCell = ({ address, label, explorerUrl }: AddressCellProps) => (
   <InlineTableCell>
     {label && (
-      <Typography variant="bodyXsRegular" className={TableSecondaryTextClass}>
+      <Typography variant="bodyXsRegular" className={TABLE_SECONDARY_TEXT_CLASS}>
         {label}
       </Typography>
     )}

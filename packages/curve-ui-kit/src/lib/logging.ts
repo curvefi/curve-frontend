@@ -1,6 +1,6 @@
 import { toArray } from '@primitives/array.utils'
 import type { QueryKey } from '@tanstack/react-query'
-import { enableLogging, isCypress } from '@ui-kit/utils/env'
+import { ENABLE_LOGGING, IS_CYPRESS } from '@ui-kit/utils/env'
 
 export enum LogStatus {
   ERROR = 'error',
@@ -75,7 +75,7 @@ type LogKey = string | QueryKey | string[]
 
 // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
 export function log(key: LogKey, status?: LogStatus | unknown, ...args: unknown[]) {
-  if (!enableLogging) return
+  if (!ENABLE_LOGGING) return
 
   const timestamp = new Date().toISOString()
   const keyArray = typeof key === 'string' ? key.split('.') : toArray(key)
@@ -108,7 +108,7 @@ export function log(key: LogKey, status?: LogStatus | unknown, ...args: unknown[
         return console.info
     }
   }
-  if (isCypress && !isCypressOpenMode) {
+  if (IS_CYPRESS && !isCypressOpenMode) {
     // disable formatting when on cypress or server side. Electron prints logs to the output, but formatting breaks.
     return logMethod(status)(stringify({ status, keyArray, args }))
   }

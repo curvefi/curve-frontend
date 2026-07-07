@@ -3,7 +3,7 @@ import { Stack } from '@mui/material'
 import Link from '@mui/material/Link'
 import { CampaignRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
-import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
+import { TRANSITION_FUNCTION } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { ExtraIncentive } from '@ui-kit/types/market'
 import { aprToApy, formatNumber } from '@ui-kit/utils'
@@ -63,7 +63,7 @@ export const RewardsTooltipItems = ({
                   gap: Spacing.xs,
                   textDecoration: 'none',
                   color: t => t.design.Text.TextColors.Secondary,
-                  svg: { fontSize: 0, transition: `font-size ${TransitionFunction}` },
+                  svg: { fontSize: 0, transition: `font-size ${TRANSITION_FUNCTION}` },
                   '&:hover svg': { fontSize: 20 },
                 }}
               >

@@ -7,7 +7,7 @@ import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 import { createValidationSuite, FieldsOf } from '@ui-kit/lib/validation'
 
-const isMarket = true
+const IS_MARKET = true
 const QUERY_KEY = 'bandsBalances' as const
 
 type MarketBandsBalancesQuery = MarketQuery & {
@@ -30,7 +30,7 @@ export const { useQuery: useMarketBandsBalances } = queryFactory({
       sortBands(normalizeBands(await market.stats.bandsBalances())),
       normalizedLiquidationBand,
       market,
-      isMarket,
+      IS_MARKET,
     )
   },
   category: 'llamalend.market',

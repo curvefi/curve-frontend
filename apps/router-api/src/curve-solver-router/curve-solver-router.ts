@@ -5,7 +5,7 @@ import type { RouterRouteResponse, RouteStep } from '@primitives/router.utils'
 import { type RoutesQuery } from '../routes/routes.schemas'
 import type { CurveSolverQuoteRequest, CurveSolverQuoteResponse } from './curve-solver.types'
 
-const protocol = 'curve-solver' as const
+const PROTOCOL = 'curve-solver' as const
 
 const API_URLS: Record<number, string> = {
   [Chain.Ethereum]: 'https://ethereum.router.curve.finance',
@@ -52,7 +52,7 @@ export const buildCurveSolverRouteResponse = async (
 
   return [
     {
-      router: protocol,
+      router: PROTOCOL,
       amountIn: [amountIn],
       amountOut: [expected_out],
       gas: `${gas_estimate}`,
@@ -65,7 +65,7 @@ export const buildCurveSolverRouteResponse = async (
           name: pools?.[index] ?? `step ${index}`,
           tokenIn: [routeTokenIn],
           tokenOut: [routeTokenOut],
-          protocol,
+          protocol: PROTOCOL,
           action: 'swap',
           chainId,
           args: {
