@@ -89,7 +89,7 @@ export const shouldLoadBorrowDetails = ({ breakpoint, hasWallet }: WalletOptions
   withMarketFormDrawer(breakpoint, 'create', () => {
     cy.get('[data-testid="borrow-collateral-input"]').should('be.visible')
     cy.get('[data-testid="borrow-debt-input"]').should('be.visible')
-    cy.get('[data-testid="create-loan-submit-button"]').should(hasWallet ? 'be.visible' : 'not.exist')
+    cy.get(`[data-testid="${hasWallet ? 'create-loan-submit-button' : 'form-connect-wallet'}"]`).should('be.visible')
     return cy.wrap(null)
   })
   cy.get(`[data-testid='no-position-disconnected']`).should(hasWallet ? 'not.exist' : 'be.visible')
@@ -99,16 +99,16 @@ export const shouldLoadBorrowDetails = ({ breakpoint, hasWallet }: WalletOptions
   shouldLoadMarketDetails()
 }
 
-export const shouldLoadLendBorrowDetails = ({ hasWallet }: WalletOptions) => {
-  shouldLoadBorrowDetails({ hasWallet })
+export const shouldLoadLendBorrowDetails = ({ breakpoint, hasWallet }: WalletOptions) => {
+  shouldLoadBorrowDetails({ breakpoint, hasWallet })
   shouldLoadHistoricalSupplyRateChart()
   shouldShowCanvas('interest-rate-utilization-chart')
   shouldLoadMarketContracts({ hasMonetaryPolicy: true, hasOracle: true, hasVault: true })
   shouldLoadMarketParameters({ hasOnChainParameters: hasWallet, hasOraclePrice: true, hasPricePerShare: false })
 }
 
-export const shouldLoadMintBorrowDetails = ({ hasWallet }: WalletOptions) => {
-  shouldLoadBorrowDetails({ hasWallet })
+export const shouldLoadMintBorrowDetails = ({ breakpoint, hasWallet }: WalletOptions) => {
+  shouldLoadBorrowDetails({ breakpoint, hasWallet })
   shouldShowCanvas('crvusd-price-chart')
   getActionValue('market-total-collateral').should('match', DECIMAL_REGEX)
   shouldLoadMarketContracts({ hasMonetaryPolicy: hasWallet, hasOracle: hasWallet, hasVault: false })
