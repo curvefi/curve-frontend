@@ -24,9 +24,9 @@ export const parseRangeFilter = (serialized: string | undefined) =>
 export const getRangeFilterLabel = (
   [min, max]: Range<number | null>,
   unit?: Unit,
+  // APY can be negative, so it has no default lower bound; a selected `0` should still show as `>0%`.
   { defaultMin = 0 }: { defaultMin?: number | null } = {},
 ) => {
-  // APY can be negative, so it has no default lower bound; a selected `0` should still show as `>0%`.
   const shouldShowMin = min != null && min !== defaultMin
   const formatValue = (value: number) => formatNumber(value, { abbreviate: true, ...(unit && { unit }) })
 

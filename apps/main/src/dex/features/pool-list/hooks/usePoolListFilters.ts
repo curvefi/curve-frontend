@@ -5,7 +5,6 @@ import { POOL_LIST_POOL_TYPE_FILTERS } from '../poolList.constants'
 import {
   getPoolListApiParams,
   hasPoolListActiveFilters,
-  POOL_LIST_FILTER_CHANGE_UPDATE,
   PoolListFilterId,
   POOL_LIST_SEARCH_QUERY_FIELD,
 } from '../poolListFilterQuery'
@@ -25,7 +24,7 @@ export type PoolListFilterProps = FilterProps<PoolListFilterId> & {
 export const usePoolListFilters = () => {
   const { globalFilter, setGlobalFilter, columnFiltersById, setColumnFilter, resetFilters } = useFilters({
     columns: PoolListFilterId,
-    extraParamsOnFilterChange: POOL_LIST_FILTER_CHANGE_UPDATE,
+    resetPageOnChange: true,
     searchKey: POOL_LIST_SEARCH_QUERY_FIELD,
   })
 

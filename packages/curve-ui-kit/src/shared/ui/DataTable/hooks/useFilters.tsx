@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react'
-import { fromEntries, recordValues, type PartialRecord } from '@primitives/objects.utils'
+import { fromEntries, recordEntries, recordValues, type PartialRecord } from '@primitives/objects.utils'
 import { useSearchNavigate, useSearchParams } from '@ui-kit/hooks/router'
 
 /**
@@ -9,6 +9,9 @@ import { useSearchNavigate, useSearchParams } from '@ui-kit/hooks/router'
 type ColumnFilters<TColumnId extends string> = { id: TColumnId; value: string }[]
 
 type SearchParamsUpdate = Record<string, string | string[] | null>
+
+const DEFAULT_SEARCH_KEY = 'search'
+const RESET_PAGE_UPDATE: SearchParamsUpdate = { page: null }
 
 /** Maps display names to column ID strings for a given table. */
 type ColumnEnum<TColumnId extends string> = Record<string, TColumnId>
@@ -47,25 +50,26 @@ function parseFilters<TColumnId extends string>(
  */
 function useColumnFilters<TColumnId extends string>({
   columns,
-  extraParamsOnFilterChange,
+  resetPageOnChange,
   scope,
 }: {
   columns: ColumnEnum<TColumnId>
-  extraParamsOnFilterChange?: SearchParamsUpdate
+  resetPageOnChange?: boolean
   scope?: string
 }) {
   const searchParams = useSearchParams()
   const columnFilters = useMemo(() => parseFilters(searchParams, columns, scope), [searchParams, columns, scope])
   const searchNavigate = useSearchNavigate(searchParams)
-  const getScopedUpdate = useCallback(
-    (filters: PartialRecord<TColumnId, string | null>) =>
-      fromEntries(Object.entries(filters).map(([id, value]) => [scopedKey(scope, id), value])) as SearchParamsUpdate,
-    [scope],
-  )
   const updateColumnFilters = useCallback(
     (filters: PartialRecord<TColumnId, string | null>) =>
-      searchNavigate({ ...getScopedUpdate(filters), ...extraParamsOnFilterChange }, { replace: true }),
-    [extraParamsOnFilterChange, getScopedUpdate, searchNavigate],
+      searchNavigate(
+        {
+          ...fromEntries(recordEntries(filters).map(([id, value]) => [scopedKey(scope, id), value])),
+          ...(resetPageOnChange ? RESET_PAGE_UPDATE : {}),
+        },
+        { replace: true },
+      ),
+    [resetPageOnChange, scope, searchNavigate],
   )
 
   return {
@@ -79,23 +83,22 @@ function useColumnFilters<TColumnId extends string>({
   }
 }
 
-const DEFAULT_SEARCH_KEY = 'search'
-
 /**
  * Manages a global free-text search filter synced with the URL query string.
  * Returns the filter value, a setter, and a reset function.
  *
  * @param key URL query parameter name. Defaults to `"search"`. Override to avoid conflicts with other filters.
  */
-function useGlobalFilter(key = DEFAULT_SEARCH_KEY, extraParamsOnFilterChange?: SearchParamsUpdate) {
+function useGlobalFilter(key = DEFAULT_SEARCH_KEY, resetPageOnChange?: boolean) {
   const searchParams = useSearchParams()
   const searchNavigate = useSearchNavigate(searchParams)
 
   return {
     globalFilter: useMemo(() => searchParams.get(key) ?? '', [searchParams, key]),
     setGlobalFilter: useCallback(
-      (value: string) => searchNavigate({ [key]: value || null, ...extraParamsOnFilterChange }, { replace: true }),
-      [extraParamsOnFilterChange, key, searchNavigate],
+      (value: string) =>
+        searchNavigate({ [key]: value || null, ...(resetPageOnChange ? RESET_PAGE_UPDATE : {}) }, { replace: true }),
+      [key, resetPageOnChange, searchNavigate],
     ),
   }
 }
@@ -105,18 +108,18 @@ function useGlobalFilter(key = DEFAULT_SEARCH_KEY, extraParamsOnFilterChange?: S
  * for tables that need both per-column and free-text filtering, all synced with the URL.
  *
  * @param searchKey URL query parameter name for the global search. Defaults to `"search"`.
+ * @param resetPageOnChange Clear the page query parameter when filters change.
  * @param columnFilterOptions - All options accepted by {@link useColumnFilters}.
  */
 export const useFilters = <TColumnId extends string>({
-  extraParamsOnFilterChange,
+  resetPageOnChange,
   searchKey = DEFAULT_SEARCH_KEY,
   ...columnFilterOptions
 }: Parameters<typeof useColumnFilters<TColumnId>>[0] & {
-  extraParamsOnFilterChange?: SearchParamsUpdate
   searchKey?: string
 }) => {
-  const globalFilter = useGlobalFilter(searchKey, extraParamsOnFilterChange)
-  const columnFilters = useColumnFilters({ ...columnFilterOptions, extraParamsOnFilterChange })
+  const globalFilter = useGlobalFilter(searchKey, resetPageOnChange)
+  const columnFilters = useColumnFilters({ ...columnFilterOptions, resetPageOnChange })
 
   const searchParams = useSearchParams()
   const searchNavigate = useSearchNavigate(searchParams)
@@ -127,25 +130,19 @@ export const useFilters = <TColumnId extends string>({
     ...columnFilters,
     /**
      * Clears all filters (both global search and column filters) in a single navigation.
-     *
-     * Clearing global and column filters with separate navigations would not work
-     * because each navigation would be backed by a `searchNavigate` closure that
-     * captures a snapshot of `URLSearchParams` at render time. The second call would
-     * navigate relative to that same stale snapshot, effectively re-adding whatever
-     * the first call had just cleared.
-     *
-     * To avoid this, `resetFilters` owns its own `searchNavigate` and merges all keys
-     * to clear into one update, so only a single navigation occurs.
+     * Multiple navigations do not work because each one captures its own `searchNavigate`
+     * closure at render time. To avoid this, `resetFilters` merges all keys into one update,
+     * so only a single navigation occurs.
      */
     resetFilters: useCallback(() => {
       searchNavigate(
         {
           [searchKey]: null,
           ...Object.fromEntries(recordValues(columns).map(key => [scopedKey(scope, key), null])),
-          ...extraParamsOnFilterChange,
+          ...(resetPageOnChange ? RESET_PAGE_UPDATE : {}),
         },
         { replace: true },
       )
-    }, [extraParamsOnFilterChange, searchNavigate, searchKey, columns, scope]),
+    }, [resetPageOnChange, searchNavigate, searchKey, columns, scope]),
   }
 }

@@ -12,8 +12,6 @@ export enum PoolListFilterId {
   Apy = 'apy',
 }
 
-export const POOL_LIST_FILTER_CHANGE_UPDATE = { page: null } as const
-
 // Hide small pools by default, without treating the default min as an active UI filter on its own.
 export const POOL_LIST_DEFAULT_TVL_MIN = 10_000
 
