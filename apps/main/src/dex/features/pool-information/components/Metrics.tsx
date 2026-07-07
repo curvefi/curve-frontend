@@ -49,10 +49,7 @@ export const Metrics = ({
           label={t`LP Staked`}
           value={constQ(maybe(gaugeTotalSupply, supply => weiToEther(supply)))}
           valueOptions={{ abbreviate: true }}
-          notional={maybe(
-            totalStakedPercent,
-            x => t`${formatNumber(x, { unit: 'percentage', abbreviate: false })} of Pool`,
-          )}
+          notional={maybe(totalStakedPercent, x => t`${formatNumber(x, 'percent.rate')} of Pool`)}
         />
       </Grid>
     </Grid>

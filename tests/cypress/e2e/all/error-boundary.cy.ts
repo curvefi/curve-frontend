@@ -6,7 +6,7 @@ import { API_LOAD_TIMEOUT, e2eBaseUrl, LOAD_TIMEOUT } from '@cy/support/ui'
 import type { ErrorContext, ErrorReportFormValues } from '@ui-kit/features/report-error'
 import { SENTRY_DSN } from '@ui-kit/features/sentry'
 
-const invalidIconAddress = '0x0000000000000000000000000000000000000001' as const
+const INVALID_ICON_ADDRESS = '0x0000000000000000000000000000000000000001' as const
 
 const visitErrorBoundary = () => {
   const { ethereum, ...otherChains } = createLendingVaultChainsResponse()
@@ -16,7 +16,7 @@ const visitErrorBoundary = () => {
       data: ethereum.data.map(market => ({
         ...market,
         // Keep the API response valid, then trigger the render error from the icon path below.
-        collateral_token: { ...market.collateral_token, address: invalidIconAddress },
+        collateral_token: { ...market.collateral_token, address: INVALID_ICON_ADDRESS },
       })),
     },
     ...otherChains,
@@ -28,7 +28,7 @@ const visitErrorBoundary = () => {
       // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
       const originalToLowerCase = String.prototype.toLowerCase
       String.prototype.toLowerCase = function (this: string) {
-        if (this.toString() === invalidIconAddress) {
+        if (this.toString() === INVALID_ICON_ADDRESS) {
           throw new TypeError('toLowerCase is not a function')
         }
         return originalToLowerCase.call(this)

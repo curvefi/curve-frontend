@@ -79,7 +79,7 @@ export const defineMuiSelect = (
       boxSizing: 'border-box',
     },
     icon: {
-      // Not sure if there's a better way, and I don't want to use our custom TransitionFunction as it doesn't match
+      // Not sure if there's a better way, and I don't want to use our custom TRANSITION_FUNCTION as it doesn't match
       // the animation the MUI select option list uses when expanding.
       // Use hardcoded transition values instead of MUI's theme function, which isn't accessible here.
       color: design.Select.Text.Value,

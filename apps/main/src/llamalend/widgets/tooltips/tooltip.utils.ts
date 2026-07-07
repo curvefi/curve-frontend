@@ -1,12 +1,12 @@
 import { Amount } from '@primitives/decimal.utils'
 import { formatNumber } from '@ui-kit/utils'
 
-export const UnavailableNotation = '-'
+export const UNAVAILABLE_NOTATION = '-'
 
 export const formatMetricValue = (value: Amount | null | undefined) =>
-  value == null ? UnavailableNotation : formatNumber(value, { abbreviate: true })
+  value == null ? UNAVAILABLE_NOTATION : formatNumber(value, { abbreviate: true })
 
-// Returns null instead of UnavailableNotation to prevent showing UnavailableNotation twice
+// Returns null instead of UNAVAILABLE_NOTATION to prevent showing UNAVAILABLE_NOTATION twice
 export const formatPercentage = (
   value: Amount | undefined | null,
   totalValue: Amount | undefined | null,

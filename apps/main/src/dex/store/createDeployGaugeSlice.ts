@@ -43,10 +43,10 @@ type SliceState = {
   }
 }
 
-const sliceKey = 'deployGauge'
+const SLICE_KEY = 'deployGauge'
 
 export type DeployGaugeSlice = {
-  [sliceKey]: SliceState & {
+  [SLICE_KEY]: SliceState & {
     setCurveNetworks: () => void
     setSidechainGauge: (bool: boolean) => void
     setCurrentPoolType: (poolType: PoolType) => void

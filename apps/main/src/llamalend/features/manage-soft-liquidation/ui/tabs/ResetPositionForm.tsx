@@ -84,7 +84,7 @@ export const ResetPositionForm = ({ networks }: { networks: NetworkDict<LlamaCha
       <FormAlerts
         error={error}
         formErrors={formErrors}
-        handledErrors={['convertedBorrowed', 'userBorrowed', 'maxBorrowed', 'maxTotalBorrowed', 'minBorrowed', 'root']}
+        handledErrors={['convertedBorrowed', 'userBorrowed', 'maxBorrowed', 'maxTotalBorrowed', 'minBorrowed']}
       />
     </Form>
   )
