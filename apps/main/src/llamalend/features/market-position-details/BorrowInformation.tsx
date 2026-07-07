@@ -83,7 +83,7 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
         <Metric
           category={METRIC_CATEGORY}
           label={t`Liquidation threshold`}
-          value={mapQuery(userPrices, ([, liquidationThreshold]) => liquidationThreshold)}
+          value={mapQuery(userPrices, p => p?.[1])}
           valueOptions={dollarUnitOptions}
           valueTooltip={{
             title: t`Liquidation Threshold (LT)`,
