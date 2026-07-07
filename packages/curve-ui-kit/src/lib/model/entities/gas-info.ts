@@ -409,7 +409,6 @@ export const useEstimateGas = (
     data: gasInfo,
     isLoading: gasInfoLoading,
     error: gasInfoError,
-    v,
   } = useGasInfoAndUpdateLib({ chainId, networks }, enabled)
 
   const data = useMemo(
