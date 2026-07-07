@@ -47,11 +47,11 @@ type SliceState = {
   formValues: FormValues
 }
 
-const sliceKey = 'poolSwap'
+const SLICE_KEY = 'poolSwap'
 
 // prettier-ignore
 export type PoolSwapSlice = {
-  [sliceKey]: SliceState & {
+  [SLICE_KEY]: SliceState & {
     fetchIgnoreExchangeRateCheck: (curve: CurveApi, pool: Pool) => Promise<boolean>
     fetchExchangeOutput: (activeKey: string, storedActiveKey: string, config: Config, curve: CurveApi, pool: Pool, formValues: FormValues, maxSlippage: string) => Promise<void>
     fetchMaxAmount: (activeKey: string, config: Config, curve: CurveApi, pool: Pool, formValues: FormValues, maxSlippage: string) => Promise<string>
@@ -84,12 +84,12 @@ export const createPoolSwapSlice = (
   _set: StoreApi<State>['setState'],
   get: StoreApi<State>['getState'],
 ): PoolSwapSlice => ({
-  [sliceKey]: {
+  [SLICE_KEY]: {
     ...DEFAULT_STATE,
 
     fetchIgnoreExchangeRateCheck: async (curve: CurveApi, pool: Pool) => {
       const state = get()
-      const sliceState = state[sliceKey]
+      const sliceState = state[SLICE_KEY]
 
       const { chainId } = curve
 
@@ -127,7 +127,7 @@ export const createPoolSwapSlice = (
     },
     fetchExchangeOutput: async (activeKey, storedActiveKey: string, config, curve, pool, formValues, maxSlippage) => {
       const state = get()
-      const sliceState = state[sliceKey]
+      const sliceState = state[SLICE_KEY]
 
       const ignoreExchangeRateCheck = await sliceState.fetchIgnoreExchangeRateCheck(curve, pool)
       const resp = await curvejsApi.poolSwap.exchangeOutput(
@@ -143,8 +143,8 @@ export const createPoolSwapSlice = (
       cFormStatus.warning = ''
 
       if (resp.error) {
-        get()[sliceKey].setStateByKey('formStatus', { ...cFormStatus, error: resp.error })
-      } else if (resp.activeKey === get()[sliceKey].activeKey) {
+        get()[SLICE_KEY].setStateByKey('formStatus', { ...cFormStatus, error: resp.error })
+      } else if (resp.activeKey === get()[SLICE_KEY].activeKey) {
         const cFormValues = cloneDeep(formValues)
         // Only update the calculated field to avoid overwriting user input during race conditions
         if (cFormValues.isFrom) {
@@ -177,15 +177,15 @@ export const createPoolSwapSlice = (
           cFormValues.fromError = +userFromBalance >= +cFormValues.fromAmount ? '' : 'too-much'
 
           // update formValues only if activeKey hasn't changed during the async operation
-          if (get()[sliceKey].activeKey !== activeKey) return
+          if (get()[SLICE_KEY].activeKey !== activeKey) return
 
-          get()[sliceKey].setStateByKey('formValues', cloneDeep(cFormValues))
+          get()[SLICE_KEY].setStateByKey('formValues', cloneDeep(cFormValues))
           if (!cFormValues.fromError) {
-            get()[sliceKey].setStateByActiveKey('formEstGas', activeKey, {
-              ...(get()[sliceKey].formEstGas[storedActiveKey] ?? DEFAULT_EST_GAS),
+            get()[SLICE_KEY].setStateByActiveKey('formEstGas', activeKey, {
+              ...(get()[SLICE_KEY].formEstGas[storedActiveKey] ?? DEFAULT_EST_GAS),
               loading: true,
             })
-            void get()[sliceKey].fetchEstGasApproval(activeKey, curve.chainId, pool, cFormValues, maxSlippage)
+            void get()[SLICE_KEY].fetchEstGasApproval(activeKey, curve.chainId, pool, cFormValues, maxSlippage)
           }
         }
 
@@ -211,7 +211,7 @@ export const createPoolSwapSlice = (
         //     )
         //     isApproved = resp.isApproved
         //   }
-        //   get()[sliceKey].setStateByKey('routerSwapOutput', {
+        //   get()[SLICE_KEY].setStateByKey('routerSwapOutput', {
         //     [routerSwapRespActiveKey]: {
         //       ...routerSwapResp,
         //       exchangeRates: getRouterSwapsExchangeRates(routerSwapRespExchangeRates, cFormValues),
@@ -246,7 +246,7 @@ export const createPoolSwapSlice = (
         typeof basePlusPriority?.[0] !== 'undefined' &&
         +fromAmount > 0
       ) {
-        get()[sliceKey].setStateByKey('isMaxLoading', true)
+        get()[SLICE_KEY].setStateByKey('isMaxLoading', true)
         const resp = await curvejsApi.poolSwap.estGasApproval(
           activeKey,
           curve.chainId,
@@ -261,16 +261,16 @@ export const createPoolSwapSlice = (
         if (resp.estimatedGas) {
           fromAmount = getMaxAmountMinusGas(resp.estimatedGas, basePlusPriority[0], walletFromBalance)
         }
-        get()[sliceKey].setStateByKey('isMaxLoading', false)
+        get()[SLICE_KEY].setStateByKey('isMaxLoading', false)
       }
 
       return fromAmount
     },
     setFormValues: async (config, curve, poolId, poolData, updatedFormValues, isGetMaxFrom, isSeed, maxSlippage) => {
       // stored values
-      const storedActiveKey = get()[sliceKey].activeKey
-      const storedFormStatus = get()[sliceKey].formStatus
-      const storedFormValues = get()[sliceKey].formValues
+      const storedActiveKey = get()[SLICE_KEY].activeKey
+      const storedFormStatus = get()[SLICE_KEY].formStatus
+      const storedFormValues = get()[SLICE_KEY].formValues
 
       // update form values
       const cFormValues = cloneDeep({ ...storedFormValues, ...updatedFormValues })
@@ -278,7 +278,7 @@ export const createPoolSwapSlice = (
       cFormValues.fromError = ''
 
       let activeKey = getActiveKey(cFormValues, maxSlippage)
-      get()[sliceKey].setStateByKeys({
+      get()[SLICE_KEY].setStateByKeys({
         activeKey,
         formStatus: { ...DEFAULT_FORM_STATUS, isApproved: storedFormStatus.isApproved },
         formValues: cloneDeep(cFormValues),
@@ -300,7 +300,7 @@ export const createPoolSwapSlice = (
 
       // get max fromAmount
       if (isGetMaxFrom) {
-        cFormValues.fromAmount = await get()[sliceKey].fetchMaxAmount(
+        cFormValues.fromAmount = await get()[SLICE_KEY].fetchMaxAmount(
           activeKey,
           config,
           curve,
@@ -309,7 +309,7 @@ export const createPoolSwapSlice = (
           maxSlippage,
         )
         activeKey = getActiveKey(cFormValues, maxSlippage)
-        get()[sliceKey].setStateByKeys({ activeKey, formValues: cloneDeep(cFormValues) })
+        get()[SLICE_KEY].setStateByKeys({ activeKey, formValues: cloneDeep(cFormValues) })
       }
 
       if (!(+cFormValues.toAmount > 0 || +cFormValues.fromAmount > 0)) return
@@ -321,19 +321,19 @@ export const createPoolSwapSlice = (
 
         if (Array.isArray(currencyReserve?.tokens)) {
           cFormValues.toError = getReservesBalanceError(currencyReserve, cFormValues.toAddress, cFormValues.toAmount)
-          get()[sliceKey].setStateByKey('formValues', cloneDeep(cFormValues))
+          get()[SLICE_KEY].setStateByKey('formValues', cloneDeep(cFormValues))
         }
       }
 
       if (cFormValues.toError) return
 
       // get exchange rate info
-      get()[sliceKey].setStateByActiveKey(
+      get()[SLICE_KEY].setStateByActiveKey(
         'exchangeOutput',
         activeKey,
         cloneDeep({ ...DEFAULT_EXCHANGE_OUTPUT, loading: true }),
       )
-      void get()[sliceKey].fetchExchangeOutput(
+      void get()[SLICE_KEY].fetchExchangeOutput(
         activeKey,
         storedActiveKey,
         config,
@@ -359,13 +359,13 @@ export const createPoolSwapSlice = (
       )
 
       // set estimate gas state
-      get()[sliceKey].setStateByActiveKey('formEstGas', activeKey, { estimatedGas: resp.estimatedGas, loading: false })
+      get()[SLICE_KEY].setStateByActiveKey('formEstGas', activeKey, { estimatedGas: resp.estimatedGas, loading: false })
 
       // set form status
-      const storedFormStatus = get()[sliceKey].formStatus
+      const storedFormStatus = get()[SLICE_KEY].formStatus
       if (!storedFormStatus.formProcessing) {
-        get()[sliceKey].setStateByKey('formStatus', {
-          ...get()[sliceKey].formStatus,
+        get()[SLICE_KEY].setStateByKey('formStatus', {
+          ...get()[SLICE_KEY].formStatus,
           isApproved: resp.isApproved,
           error: storedFormStatus.error || resp.error,
         })
@@ -374,33 +374,33 @@ export const createPoolSwapSlice = (
     },
     fetchStepApprove: async (activeKey, config, curve, pool, formValues, maxSlippage) => {
       const { provider } = useWallet.getState()
-      if (!provider) return setMissingProvider(get()[sliceKey])
+      if (!provider) return setMissingProvider(get()[SLICE_KEY])
 
-      const storedActiveKey = get()[sliceKey].activeKey
-      get()[sliceKey].setStateByKey('formStatus', {
-        ...get()[sliceKey].formStatus,
+      const storedActiveKey = get()[SLICE_KEY].activeKey
+      get()[SLICE_KEY].setStateByKey('formStatus', {
+        ...get()[SLICE_KEY].formStatus,
         formProcessing: true,
         step: 'APPROVAL',
       })
       const { fromAddress, fromAmount, isWrapped } = formValues
       const resp = await curvejsApi.poolSwap.swapApprove(activeKey, provider, pool, isWrapped, fromAddress, fromAmount)
-      if (resp.activeKey === get()[sliceKey].activeKey) {
-        const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+      if (resp.activeKey === get()[SLICE_KEY].activeKey) {
+        const cFormStatus = cloneDeep(get()[SLICE_KEY].formStatus)
         cFormStatus.formProcessing = false
         cFormStatus.step = ''
         cFormStatus.error = ''
 
         if (resp.error) {
           cFormStatus.error = resp.error
-          get()[sliceKey].setStateByKey('formStatus', cFormStatus)
+          get()[SLICE_KEY].setStateByKey('formStatus', cFormStatus)
         } else {
           cFormStatus.formTypeCompleted = 'APPROVE'
           cFormStatus.isApproved = true
-          get()[sliceKey].setStateByKey('formStatus', cFormStatus)
+          get()[SLICE_KEY].setStateByKey('formStatus', cFormStatus)
 
           // fetch est gas, approval and exchange
-          void get()[sliceKey].fetchEstGasApproval(activeKey, curve.chainId, pool, formValues, maxSlippage)
-          await get()[sliceKey].fetchExchangeOutput(
+          void get()[SLICE_KEY].fetchEstGasApproval(activeKey, curve.chainId, pool, formValues, maxSlippage)
+          await get()[SLICE_KEY].fetchExchangeOutput(
             activeKey,
             storedActiveKey,
             config,
@@ -416,10 +416,10 @@ export const createPoolSwapSlice = (
     },
     fetchStepSwap: async (activeKey, curve, poolData, formValues, maxSlippage) => {
       const { provider } = useWallet.getState()
-      if (!provider) return setMissingProvider(get()[sliceKey])
+      if (!provider) return setMissingProvider(get()[SLICE_KEY])
 
-      get()[sliceKey].setStateByKey('formStatus', {
-        ...get()[sliceKey].formStatus,
+      get()[SLICE_KEY].setStateByKey('formStatus', {
+        ...get()[SLICE_KEY].formStatus,
         formProcessing: true,
         step: 'SWAP',
       })
@@ -434,15 +434,15 @@ export const createPoolSwapSlice = (
         fromAmount,
         maxSlippage,
       )
-      if (resp.activeKey === get()[sliceKey].activeKey) {
-        const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+      if (resp.activeKey === get()[SLICE_KEY].activeKey) {
+        const cFormStatus = cloneDeep(get()[SLICE_KEY].formStatus)
         cFormStatus.formProcessing = false
         cFormStatus.step = ''
         cFormStatus.error = ''
 
         if (resp.error) {
           cFormStatus.error = resp.error
-          get()[sliceKey].setStateByKey('formStatus', cFormStatus)
+          get()[SLICE_KEY].setStateByKey('formStatus', cFormStatus)
         } else {
           const cFormValues = cloneDeep(formValues)
           cFormValues.fromAmount = ''
@@ -450,7 +450,7 @@ export const createPoolSwapSlice = (
 
           cFormStatus.formTypeCompleted = 'SWAP'
 
-          get()[sliceKey].setStateByKeys({
+          get()[SLICE_KEY].setStateByKeys({
             formStatus: cFormStatus,
             activeKey: getActiveKey(cFormValues, maxSlippage),
             exchangeOutput: {},
@@ -481,20 +481,20 @@ export const createPoolSwapSlice = (
 
     // slice helpers
     setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => {
-      if (Object.keys(get()[sliceKey][key]).length > 30) {
-        get().setAppStateByKey(sliceKey, key, { [activeKey]: value })
+      if (Object.keys(get()[SLICE_KEY][key]).length > 30) {
+        get().setAppStateByKey(SLICE_KEY, key, { [activeKey]: value })
       } else {
-        get().setAppStateByActiveKey(sliceKey, key, activeKey, value)
+        get().setAppStateByActiveKey(SLICE_KEY, key, activeKey, value)
       }
     },
     setStateByKey: <T>(key: StateKey, value: T) => {
-      get().setAppStateByKey(sliceKey, key, value)
+      get().setAppStateByKey(SLICE_KEY, key, value)
     },
     setStateByKeys: (sliceState: Partial<SliceState>) => {
-      get().setAppStateByKeys(sliceKey, sliceState)
+      get().setAppStateByKeys(SLICE_KEY, sliceState)
     },
     resetState: ({ tokens, tokenAddresses, isWrapped }) => {
-      get().resetAppState(sliceKey, {
+      get().resetAppState(SLICE_KEY, {
         ...DEFAULT_STATE,
         formValues: {
           ...DEFAULT_FORM_VALUES,

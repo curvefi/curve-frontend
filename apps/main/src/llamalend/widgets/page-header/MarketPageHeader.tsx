@@ -12,7 +12,7 @@ import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { isDevelopment } from '@ui-kit/utils'
+import { IS_DEVELOPMENT } from '@ui-kit/utils'
 import { PageHeader } from '@ui-kit/widgets/PageHeader'
 import { usePageHeader } from './hooks/usePageHeader'
 import { MetricsRow } from './'
@@ -69,7 +69,7 @@ export const MarketPageHeader = ({ isLoading }: { isLoading: boolean }) => {
             </Stack>
           </WithSkeleton>
 
-          {isDevelopment && marketId && controllerAddress && userAddress && (
+          {IS_DEVELOPMENT && marketId && controllerAddress && userAddress && (
             <IconButton
               size="extraSmall"
               onClick={() =>
