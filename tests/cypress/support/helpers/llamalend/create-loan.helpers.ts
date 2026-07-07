@@ -133,13 +133,23 @@ export const oneLoanTestMarket = (
  * Check all loan detail values are loaded and valid.
  * The action info list is expected to be opened before calling this function.
  */
-export function checkLoanDetailsLoaded({ leverageEnabled }: { leverageEnabled: boolean }) {
+export function checkLoanDetailsLoaded({
+  leverageEnabled,
+  hasApi = true,
+}: {
+  leverageEnabled: boolean
+  hasApi?: boolean
+}) {
   getActionValue('borrow-price-range').should('match', DECIMAL_RANGE_REGEX)
   getActionValue('borrow-apr').should('include', '%')
   getActionValue('borrow-apr', 'previous').should('include', '%')
   getActionValue('borrow-ltv').should('include', '%')
   getActionValue('borrow-ltv', 'previous').should('include', '%')
-  getActionValue('estimated-tx-cost').should('include', '$')
+  if (hasApi) {
+    getActionValue('estimated-tx-cost').should('include', '$')
+  } else {
+    getActionValue('estimated-tx-cost').should('be.undefined')
+  }
 
   if (leverageEnabled) {
     getActionValue('borrow-price-impact').should('include', '%')

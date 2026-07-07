@@ -9,7 +9,7 @@ const getResetPositionConvertedInput = () =>
 const getResetPositionWalletInput = () =>
   cy.get('[data-testid="reset-position-input-user-borrowed"] input[type="text"]', LOAD_TIMEOUT)
 
-export function checkClosePositionDetailsLoaded({ debt }: { debt: Decimal }) {
+export function checkClosePositionDetailsLoaded({ debt, hasApi = true }: { debt: Decimal; hasApi?: boolean }) {
   cy.get('[data-testid="outstanding-debt"]').invoke('text').should('match', DECIMAL_REGEX) // first check the number is displayed before converting to number
   cy.get('[data-testid="outstanding-debt"]')
     .invoke('text')
@@ -17,6 +17,11 @@ export function checkClosePositionDetailsLoaded({ debt }: { debt: Decimal }) {
     .should('be.closeTo', Number(debt), Number(debt) * 0.01)
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
   cy.get('[data-testid="you-recover"]').invoke('text').should('match', DECIMAL_REGEX)
+  if (hasApi) {
+    getActionValue('estimated-tx-cost').should('include', '$')
+  } else {
+    getActionValue('estimated-tx-cost').should('be.undefined')
+  }
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
 }
 

@@ -1,7 +1,7 @@
 import { checkLeverageCheckbox, submitLoanForm } from '@cy/support/helpers/llamalend/create-loan.helpers'
 import type { Decimal } from '@primitives/decimal.utils'
 import { LOAD_TIMEOUT } from '../../ui'
-import { checkDebt, DECIMAL_REGEX, getActionInfo, getActionValue, touchInput } from './action-info.helpers'
+import { checkDebt, DECIMAL_REGEX, getActionValue, touchInput } from './action-info.helpers'
 
 type BorrowMoreField = 'collateral' | 'user-borrowed' | 'debt'
 
@@ -54,7 +54,7 @@ export function checkBorrowMoreDetailsLoaded({
   if (hasApi) {
     getActionValue('estimated-tx-cost').should('include', '$')
   } else {
-    getActionInfo('estimated-tx-cost').should('not.exist')
+    getActionValue('estimated-tx-cost').should('be.undefined')
   }
   checkDebt({ current: expectedCurrentDebt, future: expectedFutureDebt, symbol: borrowedSymbol })
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')

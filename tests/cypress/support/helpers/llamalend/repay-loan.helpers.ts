@@ -35,10 +35,12 @@ export function checkRepayDetailsLoaded({
   leverageEnabled,
   debt,
   isPriceChanged = true,
+  hasApi = true,
 }: {
   debt: DebtCheck
   leverageEnabled?: boolean
   isPriceChanged?: boolean
+  hasApi?: boolean
 }) {
   cy.get('[data-testid="borrow-leverage-info-list"]', LOAD_TIMEOUT).should(leverageEnabled ? 'be.visible' : 'not.exist')
   getActionValue('borrow-price-range', ...notFalsy(!isPriceChanged && 'previous')).should(
@@ -46,7 +48,11 @@ export function checkRepayDetailsLoaded({
     /(\d(\.\d+)?) - (\d(\.\d+)?)/,
   )
   getActionValue('borrow-apr').should('include', '%')
-  getActionValue('estimated-tx-cost').should('include', '$')
+  if (hasApi) {
+    getActionValue('estimated-tx-cost').should('include', '$')
+  } else {
+    getActionValue('estimated-tx-cost').should('be.undefined')
+  }
   checkDebt(debt)
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
 }
