@@ -1,7 +1,7 @@
 import { Stack, type SxProps, Typography, useTheme } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
 import { LinearProgress } from '@ui-kit/shared/ui/LinearProgress'
-import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
+import { TRANSITION_FUNCTION } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { HEALTH_THRESHOLDS, getHealthTrackColor } from '..'
 import { clampPercentage } from './utils'
@@ -55,7 +55,7 @@ export const HealthBar = ({ health, softLiquidation, small, sx }: HealthBarProps
           width: '100%',
           height: Height.healthBar.legacy,
           backgroundColor: t => t.design.Color.Neutral[300],
-          transition: `background-color ${TransitionFunction}`,
+          transition: `background-color ${TRANSITION_FUNCTION}`,
         }}
       >
         <Stack
@@ -66,7 +66,7 @@ export const HealthBar = ({ health, softLiquidation, small, sx }: HealthBarProps
                 : '0%',
             height: '100%',
             backgroundColor: health == null ? 'transparent' : getHealthTrackColor({ health, softLiquidation, theme }),
-            transition: `width ${TransitionFunction}, background-color ${TransitionFunction}`,
+            transition: `width ${TRANSITION_FUNCTION}, background-color ${TRANSITION_FUNCTION}`,
           }}
         />
         {/**

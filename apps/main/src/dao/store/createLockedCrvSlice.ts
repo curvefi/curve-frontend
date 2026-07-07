@@ -38,11 +38,11 @@ type SliceState = {
   }
 }
 
-const sliceKey = 'lockedCrv'
+const SLICE_KEY = 'lockedCrv'
 
 // prettier-ignore
 export type LockedCrvSlice = {
-  [sliceKey]: SliceState & {
+  [SLICE_KEY]: SliceState & {
     setFormValues: (curve: CurveApi | null, isLoadingCurve: boolean, rFormType: FormType, formValues: Partial<FormValues>, vecrvInfo: VecrvInfo, isFullReset?: boolean) =>  void
 
     // steps
@@ -78,12 +78,12 @@ export const createLockedCrvSlice = (
   set: StoreApi<State>['setState'],
   get: StoreApi<State>['getState'],
 ): LockedCrvSlice => ({
-  [sliceKey]: {
+  [SLICE_KEY]: {
     ...DEFAULT_STATE,
     // eslint-disable-next-line @typescript-eslint/no-misused-promises, @typescript-eslint/require-await -- Existing violation before enabling this rule.
     setFormValues: async (curve, isLoadingCurve, rFormType, updatedFormValues, vecrvInfo, isFullReset) => {
       // stored state
-      const storedFormValues = get()[sliceKey].formValues
+      const storedFormValues = get()[SLICE_KEY].formValues
 
       let cFormValues = cloneDeep({ ...storedFormValues, ...updatedFormValues })
       cFormValues.lockedAmtError = ''
@@ -97,7 +97,7 @@ export const createLockedCrvSlice = (
       }
 
       const activeKey = getActiveKey(rFormType, curve?.chainId, curve?.signerAddress)
-      get()[sliceKey].setStateByKeys({
+      get()[SLICE_KEY].setStateByKeys({
         activeKey,
         formValues: cloneDeep(cFormValues),
         formStatus: cloneDeep(cFormStatus),
@@ -107,7 +107,7 @@ export const createLockedCrvSlice = (
 
       // validate form
       cFormValues.lockedAmtError = +cFormValues.lockedAmt > +vecrvInfo.crv ? 'too-much' : ''
-      get()[sliceKey].setStateByKey('formValues', cloneDeep(cFormValues))
+      get()[SLICE_KEY].setStateByKey('formValues', cloneDeep(cFormValues))
 
       //   fetch est gas
       const isValidLockedAmt = +cFormValues.lockedAmt > 0 && !cFormValues.lockedAmtError
@@ -117,17 +117,17 @@ export const createLockedCrvSlice = (
       const isValidLockDateForm = rFormType === 'adjust_date' ? isValidDays : true
 
       if (isValidCreateForm && isValidLockCrvForm && isValidLockDateForm) {
-        void get()[sliceKey].fetchEstGasApproval(activeKey, curve, rFormType, cFormValues)
+        void get()[SLICE_KEY].fetchEstGasApproval(activeKey, curve, rFormType, cFormValues)
       } else {
-        get()[sliceKey].setStateByKey('formEstGas', { [activeKey]: DEFAULT_FORM_EST_GAS })
+        get()[SLICE_KEY].setStateByKey('formEstGas', { [activeKey]: DEFAULT_FORM_EST_GAS })
       }
     },
 
     fetchEstGasApproval: async (activeKey, curve, rFormType, formValues) => {
-      const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+      const cFormStatus = cloneDeep(get()[SLICE_KEY].formStatus)
       const cFormEstGas = cloneDeep({ ...DEFAULT_FORM_EST_GAS, loading: true })
 
-      get()[sliceKey].setStateByActiveKey('formEstGas', activeKey, cloneDeep(cFormEstGas))
+      get()[SLICE_KEY].setStateByActiveKey('formEstGas', activeKey, cloneDeep(cFormEstGas))
 
       const fn = networks[curve.chainId].api.lockCrv.estGasApproval
       const resp = await fn(activeKey, curve, rFormType, formValues.lockedAmt, formValues.days)
@@ -140,7 +140,7 @@ export const createLockedCrvSlice = (
         cFormEstGas.estimatedGas = resp.estimatedGas
         cFormStatus.isApproved = resp.isApproved
       }
-      get()[sliceKey].setStateByKeys({
+      get()[SLICE_KEY].setStateByKeys({
         formStatus: cloneDeep(cFormStatus),
         formEstGas: { [activeKey]: cFormEstGas },
       })
@@ -148,31 +148,31 @@ export const createLockedCrvSlice = (
     },
     fetchStepApprove: async (activeKey, curve, rFormType, formValues) => {
       const { provider } = useWallet.getState()
-      if (!provider) return setMissingProvider(get()[sliceKey])
+      if (!provider) return setMissingProvider(get()[SLICE_KEY])
 
       const cFormStatus = cloneDeep(DEFAULT_FORM_STATUS)
       cFormStatus.formProcessing = true
       cFormStatus.step = 'APPROVAL'
-      get()[sliceKey].setStateByKey('formStatus', cloneDeep(cFormStatus))
+      get()[SLICE_KEY].setStateByKey('formStatus', cloneDeep(cFormStatus))
 
       const { chainId } = curve
       const approveFn = networks[chainId].api.lockCrv.lockCrvApprove
       const resp = await approveFn(activeKey, provider, curve, formValues.lockedAmt)
 
-      if (resp.activeKey === get()[sliceKey].activeKey) {
+      if (resp.activeKey === get()[SLICE_KEY].activeKey) {
         cFormStatus.formProcessing = false
         cFormStatus.step = ''
 
         if (resp.error) {
           cFormStatus.error = resp.error
-          get()[sliceKey].setStateByKey('formStatus', cFormStatus)
+          get()[SLICE_KEY].setStateByKey('formStatus', cFormStatus)
         } else {
           cFormStatus.isApproved = true
           cFormStatus.formTypeCompleted = 'APPROVE'
-          get()[sliceKey].setStateByKey('formStatus', cFormStatus)
+          get()[SLICE_KEY].setStateByKey('formStatus', cFormStatus)
 
           // fetch est gas and approval
-          await get()[sliceKey].fetchEstGasApproval(activeKey, curve, rFormType, formValues)
+          await get()[SLICE_KEY].fetchEstGasApproval(activeKey, curve, rFormType, formValues)
         }
 
         return resp
@@ -180,30 +180,30 @@ export const createLockedCrvSlice = (
     },
     fetchStepCreate: async (activeKey, curve, formValues) => {
       const { provider } = useWallet.getState()
-      if (!provider) return setMissingProvider(get()[sliceKey])
+      if (!provider) return setMissingProvider(get()[SLICE_KEY])
 
       if (formValues.lockedAmt && formValues.utcDate && formValues.days) {
-        let cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+        let cFormStatus = cloneDeep(get()[SLICE_KEY].formStatus)
         cFormStatus.formProcessing = true
         cFormStatus.step = 'CREATE_LOCK'
-        get()[sliceKey].setStateByKey('formStatus', cloneDeep(cFormStatus))
+        get()[SLICE_KEY].setStateByKey('formStatus', cloneDeep(cFormStatus))
 
         const { chainId } = curve
         const fn = networks[chainId].api.lockCrv.createLock
         const resp = await fn(activeKey, curve, provider, formValues.lockedAmt, formValues.utcDate, formValues.days)
 
-        if (resp.activeKey === get()[sliceKey].activeKey) {
-          cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+        if (resp.activeKey === get()[SLICE_KEY].activeKey) {
+          cFormStatus = cloneDeep(get()[SLICE_KEY].formStatus)
           cFormStatus.formProcessing = false
           cFormStatus.step = ''
           cFormStatus.error = ''
 
           if (resp.error) {
             cFormStatus.error = resp.error
-            get()[sliceKey].setStateByKey('formStatus', cFormStatus)
+            get()[SLICE_KEY].setStateByKey('formStatus', cFormStatus)
           } else {
             cFormStatus.formTypeCompleted = 'CREATE_LOCK'
-            get()[sliceKey].setStateByKeys({
+            get()[SLICE_KEY].setStateByKeys({
               formValues: cloneDeep(DEFAULT_FORM_VALUES),
               formStatus: cloneDeep(cFormStatus),
             })
@@ -217,29 +217,29 @@ export const createLockedCrvSlice = (
     },
     fetchStepIncreaseCrv: async (activeKey, curve, formValues) => {
       const { provider } = useWallet.getState()
-      if (!provider) return setMissingProvider(get()[sliceKey])
+      if (!provider) return setMissingProvider(get()[SLICE_KEY])
 
-      let cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+      let cFormStatus = cloneDeep(get()[SLICE_KEY].formStatus)
       cFormStatus.formProcessing = true
       cFormStatus.step = 'INCREASE_CRV'
-      get()[sliceKey].setStateByKey('formStatus', cloneDeep(cFormStatus))
+      get()[SLICE_KEY].setStateByKey('formStatus', cloneDeep(cFormStatus))
 
       const { chainId } = curve
       const fn = networks[chainId].api.lockCrv.increaseAmount
       const resp = await fn(activeKey, curve, provider, formValues.lockedAmt)
 
-      if (resp.activeKey === get()[sliceKey].activeKey) {
-        cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+      if (resp.activeKey === get()[SLICE_KEY].activeKey) {
+        cFormStatus = cloneDeep(get()[SLICE_KEY].formStatus)
         cFormStatus.formProcessing = false
         cFormStatus.step = ''
         cFormStatus.error = ''
 
         if (resp.error) {
           cFormStatus.error = resp.error
-          get()[sliceKey].setStateByKey('formStatus', cFormStatus)
+          get()[SLICE_KEY].setStateByKey('formStatus', cFormStatus)
         } else {
           cFormStatus.formTypeCompleted = 'INCREASE_CRV'
-          get()[sliceKey].setStateByKeys({
+          get()[SLICE_KEY].setStateByKeys({
             formValues: cloneDeep(DEFAULT_FORM_VALUES),
             formStatus: cloneDeep(cFormStatus),
           })
@@ -254,29 +254,29 @@ export const createLockedCrvSlice = (
     },
     fetchStepIncreaseTime: async (activeKey, curve, formValues) => {
       const { provider } = useWallet.getState()
-      if (!provider) return setMissingProvider(get()[sliceKey])
+      if (!provider) return setMissingProvider(get()[SLICE_KEY])
 
-      let cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+      let cFormStatus = cloneDeep(get()[SLICE_KEY].formStatus)
       cFormStatus.formProcessing = true
       cFormStatus.step = 'INCREASE_TIME'
-      get()[sliceKey].setStateByKey('formStatus', cloneDeep(cFormStatus))
+      get()[SLICE_KEY].setStateByKey('formStatus', cloneDeep(cFormStatus))
 
       const { chainId } = curve
       const fn = networks[chainId].api.lockCrv.increaseUnlockTime
       const resp = await fn(activeKey, provider, curve, formValues.days)
 
-      if (resp.activeKey === get()[sliceKey].activeKey) {
-        cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+      if (resp.activeKey === get()[SLICE_KEY].activeKey) {
+        cFormStatus = cloneDeep(get()[SLICE_KEY].formStatus)
         cFormStatus.formProcessing = false
         cFormStatus.step = ''
         cFormStatus.error = ''
 
         if (resp.error) {
           cFormStatus.error = resp.error
-          get()[sliceKey].setStateByKey('formStatus', cFormStatus)
+          get()[SLICE_KEY].setStateByKey('formStatus', cFormStatus)
         } else {
           cFormStatus.formTypeCompleted = 'INCREASE_TIME'
-          get()[sliceKey].setStateByKeys({
+          get()[SLICE_KEY].setStateByKeys({
             formValues: cloneDeep(DEFAULT_FORM_VALUES),
             formStatus: cloneDeep(cFormStatus),
           })
@@ -293,7 +293,7 @@ export const createLockedCrvSlice = (
     // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
     withdrawLockedCrv: async () => {
       const { provider } = useWallet.getState()
-      if (!provider) return setMissingProvider(get()[sliceKey])
+      if (!provider) return setMissingProvider(get()[SLICE_KEY])
       const curve = requireLib('curveApi')
 
       let dismissNotificationHandler = notify(t`Please confirm to withdraw locked CRV.`, 'pending').dismiss
@@ -301,9 +301,9 @@ export const createLockedCrvSlice = (
       try {
         set(
           produce((state: State) => {
-            state[sliceKey].withdrawLockedCrvStatus.transactionState = 'CONFIRMING'
-            state[sliceKey].withdrawLockedCrvStatus.errorMessage = null
-            state[sliceKey].withdrawLockedCrvStatus.txHash = null
+            state[SLICE_KEY].withdrawLockedCrvStatus.transactionState = 'CONFIRMING'
+            state[SLICE_KEY].withdrawLockedCrvStatus.errorMessage = null
+            state[SLICE_KEY].withdrawLockedCrvStatus.txHash = null
           }),
         )
 
@@ -314,8 +314,8 @@ export const createLockedCrvSlice = (
 
         set(
           produce((state: State) => {
-            state[sliceKey].withdrawLockedCrvStatus.transactionState = 'LOADING'
-            state[sliceKey].withdrawLockedCrvStatus.txHash = hash
+            state[SLICE_KEY].withdrawLockedCrvStatus.transactionState = 'LOADING'
+            state[SLICE_KEY].withdrawLockedCrvStatus.txHash = hash
           }),
         )
 
@@ -323,7 +323,7 @@ export const createLockedCrvSlice = (
 
         set(
           produce((state: State) => {
-            state[sliceKey].withdrawLockedCrvStatus.transactionState = 'SUCCESS'
+            state[SLICE_KEY].withdrawLockedCrvStatus.transactionState = 'SUCCESS'
           }),
         )
 
@@ -337,9 +337,9 @@ export const createLockedCrvSlice = (
         console.warn(error)
         set(
           produce((state: State) => {
-            state[sliceKey].withdrawLockedCrvStatus.transactionState = 'ERROR'
-            state[sliceKey].withdrawLockedCrvStatus.errorMessage = getErrorMessage(error, 'error-withdraw-locked-crv')
-            state[sliceKey].withdrawLockedCrvStatus.txHash = null
+            state[SLICE_KEY].withdrawLockedCrvStatus.transactionState = 'ERROR'
+            state[SLICE_KEY].withdrawLockedCrvStatus.errorMessage = getErrorMessage(error, 'error-withdraw-locked-crv')
+            state[SLICE_KEY].withdrawLockedCrvStatus.txHash = null
           }),
         )
       }
@@ -347,20 +347,20 @@ export const createLockedCrvSlice = (
 
     // slice helpers
     setStateByActiveKey: (key, activeKey, value) => {
-      if (Object.keys(get()[sliceKey][key]).length > 30) {
-        get().setAppStateByKey(sliceKey, key, { [activeKey]: value })
+      if (Object.keys(get()[SLICE_KEY][key]).length > 30) {
+        get().setAppStateByKey(SLICE_KEY, key, { [activeKey]: value })
       } else {
-        get().setAppStateByActiveKey(sliceKey, key, activeKey, value)
+        get().setAppStateByActiveKey(SLICE_KEY, key, activeKey, value)
       }
     },
     setStateByKey: (key, value) => {
-      get().setAppStateByKey(sliceKey, key, value)
+      get().setAppStateByKey(SLICE_KEY, key, value)
     },
     setStateByKeys: sliceState => {
-      get().setAppStateByKeys(sliceKey, sliceState)
+      get().setAppStateByKeys(SLICE_KEY, sliceState)
     },
     resetState: () => {
-      get().resetAppState(sliceKey, cloneDeep(DEFAULT_STATE))
+      get().resetAppState(SLICE_KEY, cloneDeep(DEFAULT_STATE))
     },
   },
 })

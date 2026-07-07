@@ -36,13 +36,13 @@ type SliceState = {
   routesAndOutput: Record<string, RoutesAndOutput>
 }
 
-const sliceKey = 'quickSwap'
+const SLICE_KEY = 'quickSwap'
 
 /** Before we have any route, we cannot choose between crypto and stable slippage. Default to the higher one. **/
-const defaultSlippage = SLIPPAGE.crypto.default
+const DEFAULT_SLIPPAGE = SLIPPAGE.crypto.default
 
 export type QuickSwapSlice = {
-  [sliceKey]: SliceState & {
+  [SLICE_KEY]: SliceState & {
     fetchMaxAmount: (
       config: Config,
       curve: CurveApi,
@@ -106,12 +106,12 @@ export const createQuickSwapSlice = (
   _set: StoreApi<State>['setState'],
   get: StoreApi<State>['getState'],
 ): QuickSwapSlice => ({
-  [sliceKey]: {
+  [SLICE_KEY]: {
     ...DEFAULT_STATE,
 
     fetchMaxAmount: async (config, curve, searchedParams, maxSlippage) => {
       const state = get()
-      const sliceState = state[sliceKey]
+      const sliceState = state[SLICE_KEY]
 
       const { chainId, signerAddress } = curve
       const { fromAddress, toAddress } = searchedParams
@@ -169,7 +169,7 @@ export const createQuickSwapSlice = (
     },
     fetchRoutesAndOutput: async (config, curve, searchedParams, maxSlippage) => {
       const state = get()
-      const sliceState = state[sliceKey]
+      const sliceState = state[SLICE_KEY]
 
       const activeKey = sliceState.activeKey
       const { chainId, signerAddress } = curve
@@ -194,10 +194,10 @@ export const createQuickSwapSlice = (
         searchedParams,
       )
 
-      if (resp.activeKey === get()[sliceKey].activeKey) {
+      if (resp.activeKey === get()[SLICE_KEY].activeKey) {
         if (resp.error) {
           cFormStatus.error = resp.error
-          get()[sliceKey].setStateByKey('formStatus', cFormStatus)
+          get()[SLICE_KEY].setStateByKey('formStatus', cFormStatus)
         } else {
           // update to/from form values
           if (cFormValues.isFrom) {
@@ -241,13 +241,13 @@ export const createQuickSwapSlice = (
             tokenAddress: searchedParams.fromAddress as Address,
           })
           cFormValues.fromError = +cFormValues.fromAmount > +fromAmount ? 'too-much' : ''
-          get()[sliceKey].setStateByKey('formValues', cFormValues)
+          get()[SLICE_KEY].setStateByKey('formValues', cFormValues)
         }
       }
     },
     fetchEstGasApproval: async (curve, searchedParams, maxSlippage) => {
       const state = get()
-      const sliceState = state[sliceKey]
+      const sliceState = state[SLICE_KEY]
 
       const activeKey = sliceState.activeKey
       const { signerAddress } = curve
@@ -270,7 +270,7 @@ export const createQuickSwapSlice = (
       sliceState.setStateByKey('formEstGas', { [activeKey]: { estimatedGas: resp.estimatedGas, loading: false } })
 
       // update form status
-      const storedFormStatus = get()[sliceKey].formStatus
+      const storedFormStatus = get()[SLICE_KEY].formStatus
 
       if (storedFormStatus.formProcessing) return
 
@@ -282,7 +282,7 @@ export const createQuickSwapSlice = (
     },
     resetFormErrors: () => {
       const state = get()
-      const sliceState = state[sliceKey]
+      const sliceState = state[SLICE_KEY]
 
       sliceState.setStateByKeys({
         formStatus: { ...sliceState.formStatus, error: '', swapError: '' },
@@ -300,7 +300,7 @@ export const createQuickSwapSlice = (
       isRefetch, // x
     ) => {
       const state = get()
-      const sliceState = state[sliceKey]
+      const sliceState = state[SLICE_KEY]
 
       // stored values
       const storedFormStatus = sliceState.formStatus
@@ -322,7 +322,7 @@ export const createQuickSwapSlice = (
       const activeKey = getRouterActiveKey(curve, cFormValues, searchedParams, maxSlippage)
       const cFormStatus = cloneDeep(isRefetch ? { ...storedFormStatus, swapError: '' } : DEFAULT_FORM_STATUS)
 
-      get()[sliceKey].setStateByKeys({
+      get()[SLICE_KEY].setStateByKeys({
         activeKey,
         formValues: cloneDeep(cFormValues),
         formStatus: cloneDeep(cFormStatus),
@@ -356,7 +356,7 @@ export const createQuickSwapSlice = (
       }
 
       // get max if MAX button is clicked
-      maxSlippage ??= defaultSlippage
+      maxSlippage ??= DEFAULT_SLIPPAGE
       if (isGetMaxFrom) await sliceState.fetchMaxAmount(config, curve, searchedParams, maxSlippage)
 
       // api calls
@@ -367,10 +367,10 @@ export const createQuickSwapSlice = (
     // steps
     fetchStepApprove: async (activeKey, config, curve, formValues, searchedParams, maxSlippage) => {
       const state = get()
-      const sliceState = state[sliceKey]
+      const sliceState = state[SLICE_KEY]
 
       const { provider } = useWallet.getState()
-      if (!provider) return setMissingProvider(get()[sliceKey])
+      if (!provider) return setMissingProvider(get()[SLICE_KEY])
 
       sliceState.setStateByKey('formStatus', {
         ...sliceState.formStatus,
@@ -384,7 +384,7 @@ export const createQuickSwapSlice = (
 
       const resp = await curvejsApi.router.swapApprove(activeKey, curve, provider, fromAddress, fromAmount)
 
-      if (resp.activeKey === get()[sliceKey].activeKey) {
+      if (resp.activeKey === get()[SLICE_KEY].activeKey) {
         const cFormStatus = cloneDeep(sliceState.formStatus)
         cFormStatus.formProcessing = false
         cFormStatus.step = ''
@@ -399,7 +399,7 @@ export const createQuickSwapSlice = (
           sliceState.setStateByKey('formStatus', cFormStatus)
 
           // re-fetch est gas, approval, routes and output
-          maxSlippage ??= defaultSlippage
+          maxSlippage ??= DEFAULT_SLIPPAGE
           await sliceState.fetchRoutesAndOutput(config, curve, searchedParams, maxSlippage)
           void sliceState.fetchEstGasApproval(curve, searchedParams, maxSlippage)
         }
@@ -409,13 +409,13 @@ export const createQuickSwapSlice = (
     },
     fetchStepSwap: async (activeKey, config, curve, formValues, searchedParams, maxSlippage) => {
       const state = get()
-      const sliceState = state[sliceKey]
+      const sliceState = state[SLICE_KEY]
 
       const { provider } = useWallet.getState()
-      if (!provider) return setMissingProvider(get()[sliceKey])
+      if (!provider) return setMissingProvider(get()[SLICE_KEY])
 
-      get()[sliceKey].setStateByKey('formStatus', {
-        ...get()[sliceKey].formStatus,
+      get()[SLICE_KEY].setStateByKey('formStatus', {
+        ...get()[SLICE_KEY].formStatus,
         formProcessing: true,
         swapError: '',
         step: 'SWAP',
@@ -435,7 +435,7 @@ export const createQuickSwapSlice = (
         maxSlippage,
       )
 
-      if (resp.activeKey === get()[sliceKey].activeKey) {
+      if (resp.activeKey === get()[SLICE_KEY].activeKey) {
         const cFormStatus = cloneDeep(sliceState.formStatus)
         cFormStatus.formProcessing = false
         cFormStatus.step = ''
@@ -451,7 +451,7 @@ export const createQuickSwapSlice = (
           cFormValues.fromAmount = ''
           cFormValues.toAmount = ''
 
-          get()[sliceKey].setStateByKeys({
+          get()[SLICE_KEY].setStateByKeys({
             activeKey: getRouterActiveKey(curve, cFormValues, searchedParams, maxSlippage),
             formEstGas: {},
             formValues: cloneDeep(cFormValues),
@@ -482,23 +482,23 @@ export const createQuickSwapSlice = (
 
     // slice helpers
     setStateByActiveKey: (key, activeKey, value) => {
-      if (Object.keys(get()[sliceKey][key] as object).length > 30) {
-        get().setAppStateByKey(sliceKey, key, { [activeKey]: value })
+      if (Object.keys(get()[SLICE_KEY][key] as object).length > 30) {
+        get().setAppStateByKey(SLICE_KEY, key, { [activeKey]: value })
       } else {
-        get().setAppStateByActiveKey(sliceKey, key, activeKey, value)
+        get().setAppStateByActiveKey(SLICE_KEY, key, activeKey, value)
       }
     },
     setStateByKey: (key, value) => {
-      get().setAppStateByKey(sliceKey, key, value)
+      get().setAppStateByKey(SLICE_KEY, key, value)
     },
     setStateByKeys: sliceState => {
-      get().setAppStateByKeys(sliceKey, sliceState)
+      get().setAppStateByKeys(SLICE_KEY, sliceState)
     },
     resetState: () => {
-      get().resetAppState(sliceKey, {
+      get().resetAppState(SLICE_KEY, {
         ...DEFAULT_STATE,
         formValues: {
-          ...get()[sliceKey].formValues,
+          ...get()[SLICE_KEY].formValues,
           fromError: '',
         },
       })

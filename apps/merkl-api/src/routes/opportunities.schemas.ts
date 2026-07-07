@@ -1,4 +1,4 @@
-export const OpportunitiesPath = '/api/merkl/v1/opportunities'
+export const OPPORTUNITIES_PATH = '/api/merkl/v1/opportunities'
 
 const opportunitiesQuerySchema = {
   type: 'object',

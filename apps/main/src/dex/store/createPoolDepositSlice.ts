@@ -60,11 +60,11 @@ type SliceState = {
   slippage: Record<string, Slippage>
 }
 
-const sliceKey = 'poolDeposit'
+const SLICE_KEY = 'poolDeposit'
 
 // prettier-ignore
 export type PoolDepositSlice = {
-  [sliceKey]: SliceState & {
+  [SLICE_KEY]: SliceState & {
     fetchExpected: (activeKey: string, formType: FormType, pool: Pool, formValues: FormValues) => Promise<void>
     fetchMaxAmount: (config: Config, activeKey: string, chainId: ChainId, userAddress: Address, pool: Pool, loadMaxAmount: LoadMaxAmount, maxSlippage: string) => Promise<Amount[]>
     fetchSeedAmount: (poolData: PoolData, formValues: FormValues) => Promise<Pick<FormValues, 'amounts' | 'isWrapped'>>
@@ -102,7 +102,7 @@ export const createPoolDepositSlice = (
   _set: StoreApi<State>['setState'],
   get: StoreApi<State>['getState'],
 ): PoolDepositSlice => ({
-  [sliceKey]: {
+  [SLICE_KEY]: {
     ...DEFAULT_STATE,
 
     fetchExpected: async (activeKey, formType, pool, formValues) => {
@@ -115,7 +115,7 @@ export const createPoolDepositSlice = (
         pool.stats.parameters(),
       ])
 
-      get()[sliceKey].setStateByKey('formLpTokenExpected', {
+      get()[SLICE_KEY].setStateByKey('formLpTokenExpected', {
         [activeKey]: {
           ...fetchedExpected,
           loading: false,
@@ -124,7 +124,7 @@ export const createPoolDepositSlice = (
       })
     },
     fetchMaxAmount: async (config, activeKey, chainId, userAddress, pool, { tokenAddress, idx }, maxSlippage) => {
-      const cFormValues = cloneDeep(get()[sliceKey].formValues)
+      const cFormValues = cloneDeep(get()[SLICE_KEY].formValues)
       const userBalance = await fetchTokenBalance(config, {
         chainId,
         userAddress,
@@ -134,7 +134,7 @@ export const createPoolDepositSlice = (
       if (tokenAddress.toLowerCase() === ethAddress) {
         // set loading
         cFormValues.amounts[idx].value = ''
-        get()[sliceKey].setStateByKeys({
+        get()[SLICE_KEY].setStateByKeys({
           formValues: cloneDeep(cFormValues),
           maxLoading: idx,
         })
@@ -202,16 +202,16 @@ export const createPoolDepositSlice = (
           : await curvejsApi.poolDeposit.depositAndStakeBonus(activeKey, pool, isWrapped, amounts)
 
       if (resp.error) {
-        get()[sliceKey].setStateByKeys({
+        get()[SLICE_KEY].setStateByKeys({
           formStatus: {
             ...cloneDeep(DEFAULT_FORM_STATUS),
-            isApproved: get()[sliceKey].formStatus.isApproved,
+            isApproved: get()[SLICE_KEY].formStatus.isApproved,
             error: resp.error,
           },
           slippage: { [activeKey]: cloneDeep(DEFAULT_SLIPPAGE) },
         })
       } else {
-        get()[sliceKey].setStateByKey('slippage', {
+        get()[SLICE_KEY].setStateByKey('slippage', {
           [resp.activeKey]: {
             ...DEFAULT_SLIPPAGE,
             loading: false,
@@ -234,14 +234,14 @@ export const createPoolDepositSlice = (
       maxSlippage,
     ) => {
       // stored values
-      const storedActiveKey = get()[sliceKey].activeKey
-      const storedFormValues = get()[sliceKey].formValues
-      const storedFormStatus = get()[sliceKey].formStatus
+      const storedActiveKey = get()[SLICE_KEY].activeKey
+      const storedFormValues = get()[SLICE_KEY].formValues
+      const storedFormStatus = get()[SLICE_KEY].formStatus
 
       // update form values, form status, activeKey
       const cFormValues = cloneDeep({ ...storedFormValues, ...updatedFormValues })
       let activeKey = getActiveKey(poolId, formType, cFormValues, maxSlippage)
-      get()[sliceKey].setStateByKeys({
+      get()[SLICE_KEY].setStateByKeys({
         activeKey,
         formStatus: { ...DEFAULT_FORM_STATUS, isApproved: storedFormStatus.isApproved },
         formValues: cloneDeep(cFormValues),
@@ -255,7 +255,7 @@ export const createPoolDepositSlice = (
       if (formType === 'DEPOSIT' || formType === 'DEPOSIT_STAKE') {
         // max amount
         if (loadMaxAmount) {
-          cFormValues.amounts = await get()[sliceKey].fetchMaxAmount(
+          cFormValues.amounts = await get()[SLICE_KEY].fetchMaxAmount(
             config,
             activeKey,
             chainId,
@@ -265,7 +265,7 @@ export const createPoolDepositSlice = (
             maxSlippage,
           )
           activeKey = getActiveKey(pool.id, formType, cFormValues, maxSlippage)
-          get()[sliceKey].setStateByKeys({
+          get()[SLICE_KEY].setStateByKeys({
             activeKey,
             formValues: cloneDeep(cFormValues),
             maxLoading: null,
@@ -275,8 +275,8 @@ export const createPoolDepositSlice = (
           const resp = await curvejsApi.poolDeposit.depositBalancedAmounts(activeKey, pool, cFormValues.isWrapped)
 
           if (resp.error) {
-            get()[sliceKey].setStateByKey('formStatus', {
-              ...get()[sliceKey].formStatus,
+            get()[SLICE_KEY].setStateByKey('formStatus', {
+              ...get()[SLICE_KEY].formStatus,
               error: resp.error,
             })
           } else {
@@ -286,35 +286,35 @@ export const createPoolDepositSlice = (
               tokenAddress: address,
             }))
             activeKey = getActiveKey(pool.id, formType, cFormValues, maxSlippage)
-            get()[sliceKey].setStateByKeys({ activeKey, formValues: cloneDeep(cFormValues) })
+            get()[SLICE_KEY].setStateByKeys({ activeKey, formValues: cloneDeep(cFormValues) })
           }
         }
 
         // update amounts input based on options (Seed, MaxAmount, BalancedAmounts)
         if (isSeed) {
           // get seed amounts
-          const { amounts, isWrapped } = await get()[sliceKey].fetchSeedAmount(poolData, cFormValues)
+          const { amounts, isWrapped } = await get()[SLICE_KEY].fetchSeedAmount(poolData, cFormValues)
           cFormValues.amounts = amounts
           cFormValues.isWrapped = isWrapped
           activeKey = getActiveKey(pool.id, formType, cFormValues, maxSlippage)
-          get()[sliceKey].setStateByKeys({ activeKey, formValues: cloneDeep(cFormValues) })
+          get()[SLICE_KEY].setStateByKeys({ activeKey, formValues: cloneDeep(cFormValues) })
         }
 
         if (cFormValues.amounts.some(a => +a.value > 0)) {
           // fetch expected LP Tokens
-          get()[sliceKey].setStateByActiveKey('formLpTokenExpected', activeKey, {
-            ...(get()[sliceKey].formLpTokenExpected[storedActiveKey] ?? DEFAULT_FORM_LP_TOKEN_EXPECTED),
+          get()[SLICE_KEY].setStateByActiveKey('formLpTokenExpected', activeKey, {
+            ...(get()[SLICE_KEY].formLpTokenExpected[storedActiveKey] ?? DEFAULT_FORM_LP_TOKEN_EXPECTED),
             loading: true,
           })
-          void get()[sliceKey].fetchExpected(activeKey, formType, pool, cFormValues)
+          void get()[SLICE_KEY].fetchExpected(activeKey, formType, pool, cFormValues)
 
           if (!isSeed) {
             // fetch slippage
-            get()[sliceKey].setStateByActiveKey('slippage', activeKey, {
-              ...(get()[sliceKey].slippage[storedActiveKey] ?? DEFAULT_SLIPPAGE),
+            get()[SLICE_KEY].setStateByActiveKey('slippage', activeKey, {
+              ...(get()[SLICE_KEY].slippage[storedActiveKey] ?? DEFAULT_SLIPPAGE),
               loading: true,
             })
-            void get()[sliceKey].fetchSlippage(activeKey, formType, pool, cFormValues, maxSlippage)
+            void get()[SLICE_KEY].fetchSlippage(activeKey, formType, pool, cFormValues, maxSlippage)
           }
 
           if (signerAddress) {
@@ -323,17 +323,17 @@ export const createPoolDepositSlice = (
             const amountsError = getAmountsError(cFormValues.amounts, balances)
 
             if (amountsError) {
-              get()[sliceKey].setStateByKey('formStatus', {
-                ...get()[sliceKey].formStatus,
+              get()[SLICE_KEY].setStateByKey('formStatus', {
+                ...get()[SLICE_KEY].formStatus,
                 error: t`Not enough balance for ${amountsError}.`,
               })
             } else {
               // get est gas and approval
-              get()[sliceKey].setStateByActiveKey('formEstGas', activeKey, {
-                ...(get()[sliceKey].formEstGas[storedActiveKey] ?? DEFAULT_ESTIMATED_GAS),
+              get()[SLICE_KEY].setStateByActiveKey('formEstGas', activeKey, {
+                ...(get()[SLICE_KEY].formEstGas[storedActiveKey] ?? DEFAULT_ESTIMATED_GAS),
                 loading: true,
               })
-              void get()[sliceKey].fetchEstGasApproval(activeKey, chainId, formType, pool, maxSlippage)
+              void get()[SLICE_KEY].fetchEstGasApproval(activeKey, chainId, formType, pool, maxSlippage)
             }
           }
         }
@@ -344,17 +344,17 @@ export const createPoolDepositSlice = (
           const lpTokenError = +cFormValues.lpToken > +lpTokenBalance ? 'lpToken-too-much' : ''
 
           if (lpTokenError) {
-            get()[sliceKey].setStateByKey('formStatus', {
-              ...cloneDeep(get()[sliceKey].formStatus),
+            get()[SLICE_KEY].setStateByKey('formStatus', {
+              ...cloneDeep(get()[SLICE_KEY].formStatus),
               error: lpTokenError,
             })
           } else {
             // get est gas and approval
-            get()[sliceKey].setStateByActiveKey('formEstGas', activeKey, {
-              ...(get()[sliceKey].formEstGas[storedActiveKey] ?? DEFAULT_ESTIMATED_GAS),
+            get()[SLICE_KEY].setStateByActiveKey('formEstGas', activeKey, {
+              ...(get()[SLICE_KEY].formEstGas[storedActiveKey] ?? DEFAULT_ESTIMATED_GAS),
               loading: true,
             })
-            void get()[sliceKey].fetchEstGasApproval(activeKey, chainId, formType, pool, maxSlippage)
+            void get()[SLICE_KEY].fetchEstGasApproval(activeKey, chainId, formType, pool, maxSlippage)
           }
         }
       }
@@ -362,7 +362,7 @@ export const createPoolDepositSlice = (
 
     // steps
     fetchEstGasApproval: async (activeKey, chainId, formType, pool, maxSlippage) => {
-      const cFormValues = cloneDeep(get()[sliceKey].formValues)
+      const cFormValues = cloneDeep(get()[SLICE_KEY].formValues)
       const { amounts, isWrapped, lpToken } = cFormValues
       const resp =
         formType === 'DEPOSIT'
@@ -386,15 +386,15 @@ export const createPoolDepositSlice = (
             : await curvejsApi.poolDeposit.stakeEstGasApproval(activeKey, chainId, pool, lpToken)
 
       // set estimate gas state
-      get()[sliceKey].setStateByActiveKey('formEstGas', activeKey, {
+      get()[SLICE_KEY].setStateByActiveKey('formEstGas', activeKey, {
         estimatedGas: resp.estimatedGas,
         loading: false,
       })
 
       // set form status
-      const storedFormStatus = get()[sliceKey].formStatus
+      const storedFormStatus = get()[SLICE_KEY].formStatus
       if (!storedFormStatus.formProcessing) {
-        get()[sliceKey].setStateByKey('formStatus', {
+        get()[SLICE_KEY].setStateByKey('formStatus', {
           ...storedFormStatus,
           isApproved: resp.isApproved,
           error: storedFormStatus.error || resp.error,
@@ -404,10 +404,10 @@ export const createPoolDepositSlice = (
     },
     fetchStepApprove: async (activeKey, curve, formType, pool, formValues, maxSlippage) => {
       const { provider } = useWallet.getState()
-      if (!provider) return setMissingProvider(get()[sliceKey])
+      if (!provider) return setMissingProvider(get()[SLICE_KEY])
 
-      get()[sliceKey].setStateByKey('formStatus', {
-        ...get()[sliceKey].formStatus,
+      get()[SLICE_KEY].setStateByKey('formStatus', {
+        ...get()[SLICE_KEY].formStatus,
         formProcessing: true,
         step: 'APPROVAL',
       })
@@ -416,22 +416,22 @@ export const createPoolDepositSlice = (
       const approveFn =
         formType === 'DEPOSIT' ? curvejsApi.poolDeposit.depositApprove : curvejsApi.poolDeposit.depositAndStakeApprove
       const resp = await approveFn(activeKey, provider, pool, isWrapped, parseAmountsForAPI(amounts))
-      if (resp.activeKey === get()[sliceKey].activeKey) {
-        const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+      if (resp.activeKey === get()[SLICE_KEY].activeKey) {
+        const cFormStatus = cloneDeep(get()[SLICE_KEY].formStatus)
         cFormStatus.formProcessing = false
         cFormStatus.step = ''
         cFormStatus.error = ''
 
         if (resp.error) {
           cFormStatus.error = resp.error
-          get()[sliceKey].setStateByKey('formStatus', cFormStatus)
+          get()[SLICE_KEY].setStateByKey('formStatus', cFormStatus)
         } else {
           cFormStatus.formTypeCompleted = 'APPROVE'
           cFormStatus.isApproved = true
-          get()[sliceKey].setStateByKey('formStatus', cFormStatus)
+          get()[SLICE_KEY].setStateByKey('formStatus', cFormStatus)
 
           // fetch est gas and approval
-          await get()[sliceKey].fetchEstGasApproval(activeKey, chainId, formType, pool, maxSlippage)
+          await get()[SLICE_KEY].fetchEstGasApproval(activeKey, chainId, formType, pool, maxSlippage)
         }
 
         return resp
@@ -439,10 +439,10 @@ export const createPoolDepositSlice = (
     },
     fetchStepDeposit: async (activeKey, curve, poolData, formValues, maxSlippage) => {
       const { provider } = useWallet.getState()
-      if (!provider) return setMissingProvider(get()[sliceKey])
+      if (!provider) return setMissingProvider(get()[SLICE_KEY])
 
-      get()[sliceKey].setStateByKey('formStatus', {
-        ...get()[sliceKey].formStatus,
+      get()[SLICE_KEY].setStateByKey('formStatus', {
+        ...get()[SLICE_KEY].formStatus,
         formProcessing: true,
         step: 'DEPOSIT',
       })
@@ -458,18 +458,18 @@ export const createPoolDepositSlice = (
         maxSlippage,
       )
 
-      if (resp.activeKey === get()[sliceKey].activeKey) {
-        const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+      if (resp.activeKey === get()[SLICE_KEY].activeKey) {
+        const cFormStatus = cloneDeep(get()[SLICE_KEY].formStatus)
         cFormStatus.formProcessing = false
         cFormStatus.step = ''
         cFormStatus.error = ''
 
         if (resp.error) {
           cFormStatus.error = resp.error
-          get()[sliceKey].setStateByKey('formStatus', cFormStatus)
+          get()[SLICE_KEY].setStateByKey('formStatus', cFormStatus)
         } else {
           cFormStatus.formTypeCompleted = 'DEPOSIT'
-          get()[sliceKey].setStateByKeys({
+          get()[SLICE_KEY].setStateByKeys({
             formStatus: cFormStatus,
             formValues: resetFormValues(formValues),
           })
@@ -489,10 +489,10 @@ export const createPoolDepositSlice = (
     },
     fetchStepDepositStake: async (activeKey, curve, poolData, formValues, maxSlippage) => {
       const { provider } = useWallet.getState()
-      if (!provider) return setMissingProvider(get()[sliceKey])
+      if (!provider) return setMissingProvider(get()[SLICE_KEY])
 
-      get()[sliceKey].setStateByKey('formStatus', {
-        ...get()[sliceKey].formStatus,
+      get()[SLICE_KEY].setStateByKey('formStatus', {
+        ...get()[SLICE_KEY].formStatus,
         formProcessing: true,
         step: 'DEPOSIT_STAKE',
       })
@@ -506,18 +506,18 @@ export const createPoolDepositSlice = (
         parseAmountsForAPI(amounts),
         maxSlippage,
       )
-      if (resp.activeKey === get()[sliceKey].activeKey) {
-        const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+      if (resp.activeKey === get()[SLICE_KEY].activeKey) {
+        const cFormStatus = cloneDeep(get()[SLICE_KEY].formStatus)
         cFormStatus.formProcessing = false
         cFormStatus.step = ''
         cFormStatus.error = ''
 
         if (resp.error) {
           cFormStatus.error = resp.error
-          get()[sliceKey].setStateByKey('formStatus', cFormStatus)
+          get()[SLICE_KEY].setStateByKey('formStatus', cFormStatus)
         } else {
           cFormStatus.formTypeCompleted = 'DEPOSIT_STAKE'
-          get()[sliceKey].setStateByKeys({
+          get()[SLICE_KEY].setStateByKeys({
             formStatus: cFormStatus,
             formValues: resetFormValues(formValues),
           })
@@ -537,32 +537,32 @@ export const createPoolDepositSlice = (
     },
     fetchStepStakeApprove: async (activeKey, curve, formType, pool, formValues) => {
       const { provider } = useWallet.getState()
-      if (!provider) return setMissingProvider(get()[sliceKey])
+      if (!provider) return setMissingProvider(get()[SLICE_KEY])
 
-      get()[sliceKey].setStateByKey('formStatus', {
-        ...get()[sliceKey].formStatus,
+      get()[SLICE_KEY].setStateByKey('formStatus', {
+        ...get()[SLICE_KEY].formStatus,
         formProcessing: true,
         step: 'APPROVAL',
       })
       const { chainId } = curve
       const { lpToken } = formValues
       const resp = await curvejsApi.poolDeposit.stakeApprove(activeKey, provider, pool, lpToken)
-      if (resp.activeKey === get()[sliceKey].activeKey) {
-        const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+      if (resp.activeKey === get()[SLICE_KEY].activeKey) {
+        const cFormStatus = cloneDeep(get()[SLICE_KEY].formStatus)
         cFormStatus.formProcessing = false
         cFormStatus.step = ''
         cFormStatus.error = ''
 
         if (resp.error) {
           cFormStatus.error = resp.error
-          get()[sliceKey].setStateByKey('formStatus', cFormStatus)
+          get()[SLICE_KEY].setStateByKey('formStatus', cFormStatus)
         } else {
           cFormStatus.formTypeCompleted = 'APPROVE'
           cFormStatus.isApproved = true
-          get()[sliceKey].setStateByKey('formStatus', cFormStatus)
+          get()[SLICE_KEY].setStateByKey('formStatus', cFormStatus)
 
           // fetch est gas and approval
-          await get()[sliceKey].fetchEstGasApproval(activeKey, chainId, formType, pool, '')
+          await get()[SLICE_KEY].fetchEstGasApproval(activeKey, chainId, formType, pool, '')
         }
 
         return resp
@@ -570,28 +570,28 @@ export const createPoolDepositSlice = (
     },
     fetchStepStake: async (activeKey, curve, poolData, formValues) => {
       const { provider } = useWallet.getState()
-      if (!provider) return setMissingProvider(get()[sliceKey])
+      if (!provider) return setMissingProvider(get()[SLICE_KEY])
 
-      get()[sliceKey].setStateByKey('formStatus', {
-        ...get()[sliceKey].formStatus,
+      get()[SLICE_KEY].setStateByKey('formStatus', {
+        ...get()[SLICE_KEY].formStatus,
         formProcessing: true,
         step: 'STAKE',
       })
       const { pool } = poolData
       const { lpToken } = formValues
       const resp = await curvejsApi.poolDeposit.stake(activeKey, provider, pool, lpToken)
-      if (resp.activeKey === get()[sliceKey].activeKey) {
-        const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+      if (resp.activeKey === get()[SLICE_KEY].activeKey) {
+        const cFormStatus = cloneDeep(get()[SLICE_KEY].formStatus)
         cFormStatus.formProcessing = false
         cFormStatus.step = ''
         cFormStatus.error = ''
 
         if (resp.error) {
           cFormStatus.error = resp.error
-          get()[sliceKey].setStateByKey('formStatus', cFormStatus)
+          get()[SLICE_KEY].setStateByKey('formStatus', cFormStatus)
         } else {
           cFormStatus.formTypeCompleted = 'STAKE'
-          get()[sliceKey].setStateByKeys({
+          get()[SLICE_KEY].setStateByKeys({
             formStatus: cFormStatus,
             formValues: resetFormValues(formValues),
           })
@@ -612,21 +612,21 @@ export const createPoolDepositSlice = (
 
     // slice helpers
     setStateByActiveKey: (key, activeKey, value) => {
-      const foundKey = get()[sliceKey][key] as object
+      const foundKey = get()[SLICE_KEY][key] as object
       if (Object.keys(foundKey).length > 30) {
-        get().setAppStateByKey(sliceKey, key, { [activeKey]: value })
+        get().setAppStateByKey(SLICE_KEY, key, { [activeKey]: value })
       } else {
-        get().setAppStateByActiveKey(sliceKey, key, activeKey, value)
+        get().setAppStateByActiveKey(SLICE_KEY, key, activeKey, value)
       }
     },
     setStateByKey: (key, value) => {
-      get().setAppStateByKey(sliceKey, key, value)
+      get().setAppStateByKey(SLICE_KEY, key, value)
     },
     setStateByKeys: sliceState => {
-      get().setAppStateByKeys(sliceKey, sliceState)
+      get().setAppStateByKeys(SLICE_KEY, sliceState)
     },
     resetState: ({ tokens, tokenAddresses, isWrapped }, formType) => {
-      get().resetAppState(sliceKey, {
+      get().resetAppState(SLICE_KEY, {
         ...DEFAULT_STATE,
         formType,
         formValues: {

@@ -218,7 +218,7 @@ export const POOL_PRESETS: PRESETS = {
 
 // MIN-MAX PARAMS
 
-export const STABLESWAP_MIN_MAX_PARAMETERS = (swapFee: number) => ({
+export const stableswapMinMaxParameters = (swapFee: number) => ({
   swapFee: {
     min: 0,
     max: 1,
