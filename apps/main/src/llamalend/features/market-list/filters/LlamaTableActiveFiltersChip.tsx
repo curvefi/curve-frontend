@@ -14,8 +14,8 @@ import {
 import {
   TableActiveFilterGroups,
   type TableActiveFilterGroup,
+  type TableActiveFilterGroupChipsProps,
 } from '@ui-kit/shared/ui/DataTable/TableActiveFilterGroups'
-import { createTableActiveFilterGroup } from '@ui-kit/shared/ui/DataTable/TableActiveFilterGroups.utils'
 import { constQ } from '@ui-kit/types/util'
 import { LLAMA_MARKET_COLUMNS, LLAMA_MARKET_TITLES, LlamaMarketColumnId } from '../columns'
 
@@ -30,6 +30,10 @@ const getRangeLabel = (serializedRange: string | undefined, unit?: ColumnMeta['u
   const range = parseRangeFilter(serializedRange)
   return range ? getRangeFilterLabel(range, unit) : null
 }
+
+const ChainActiveFilterChips = ({ labels, onRemove }: TableActiveFilterGroupChipsProps) => (
+  <ChainFilterChips chainsQuery={constQ(labels)} selectedChains={labels} toggleChain={onRemove} />
+)
 
 export const LlamaTableActiveFiltersChip = <T extends TableItem>({
   table,
@@ -53,37 +57,30 @@ export const LlamaTableActiveFiltersChip = <T extends TableItem>({
 
   return (
     <TableActiveFilterGroups
-      groups={notFalsy(
-        ...sortedFiltersState.map(({ id, value }): TableActiveFilterGroup | false => {
-          const column = assert(table.getColumn(id), `no column with id ${id}`)
-          const isRangeFilterFn = column.getFilterFn() === rangeFilterFn
-          const labels = isRangeFilterFn
-            ? notFalsy(getRangeLabel(value, column.columnDef.meta?.unit))
-            : parseListFilter(value)
+      groups={sortedFiltersState.map(({ id, value }): TableActiveFilterGroup => {
+        const column = assert(table.getColumn(id), `no column with id ${id}`)
+        const isRangeFilterFn = column.getFilterFn() === rangeFilterFn
+        const labels = isRangeFilterFn
+          ? notFalsy(getRangeLabel(value, column.columnDef.meta?.unit))
+          : parseListFilter(value)
 
-          const removeClickedValue = (clickedValue: string | string[]) => {
-            const activeValues = parseListFilter(value)
-            const removedValues = new Set(toArray(clickedValue))
-            const remainingValues = activeValues?.filter(v => !removedValues.has(v))
-            setColumnFilter(id, serializeListFilter(remainingValues))
-          }
+        const removeClickedValue = (clickedValue: string | string[]) => {
+          const activeValues = parseListFilter(value)
+          const removedValues = new Set(toArray(clickedValue))
+          const remainingValues = activeValues?.filter(v => !removedValues.has(v))
+          setColumnFilter(id, serializeListFilter(remainingValues))
+        }
 
-          return createTableActiveFilterGroup({
-            key: `selected-chip-${id}`,
-            labels,
-            onRemove: isRangeFilterFn ? () => setColumnFilter(id, null) : removeClickedValue,
-            formatLabel: label => formatLabel(label, id),
-            renderChips:
-              id === LlamaMarketColumnId.Chain
-                ? ({ labels, onRemove }) => (
-                    <ChainFilterChips chainsQuery={constQ(labels)} selectedChains={labels} toggleChain={onRemove} />
-                  )
-                : undefined,
-            title: LLAMA_MARKET_TITLES[id],
-            testId: `${testIdPrefix}-active-filter-${id}`,
-          })
-        }),
-      )}
+        return {
+          key: `selected-chip-${id}`,
+          labels,
+          onRemove: isRangeFilterFn ? () => setColumnFilter(id, null) : removeClickedValue,
+          getChipLabel: label => formatLabel(label, id),
+          Chips: id === LlamaMarketColumnId.Chain ? ChainActiveFilterChips : undefined,
+          title: LLAMA_MARKET_TITLES[id],
+          testId: `${testIdPrefix}-active-filter-${id}`,
+        }
+      })}
     />
   )
 }
