@@ -60,6 +60,7 @@ export type Query<T> = Pick<UseQueryResult<T>, 'data' | 'isLoading' | 'error'>
 
 /** Branded {@link Query} to enforce it's been wrapped with `q()` or `mapQuery()`, stripping it of unserializable properties and reduce re-renders. */
 export type QueryProp<T> = Query<T> & { readonly __brand: 'QueryProp' }
+export type QueryOrValue<T> = QueryProp<T> | T
 
 /**
  * Helper to extract only the relevant fields from a UseQueryResult into the Query type.
@@ -132,3 +133,10 @@ const queryObjectKeys = objectKeys(DISABLED_Q)
 /** Checks if a value is a query. */
 export const isQuery = <T>(value: unknown): value is QueryProp<T> =>
   value != null && typeof value === 'object' && queryObjectKeys.every(key => key in value)
+
+export const toQuery = <T>(
+  value: QueryOrValue<T>,
+  { isLoading = false, error = null }: { isLoading?: boolean; error?: Error | null } = {},
+): QueryProp<T> => (isQuery(value) ? value : q({ data: value, isLoading, error }))
+
+export const toValue = <T>(value: QueryOrValue<T>): T | undefined => (isQuery(value) ? value.data : value)

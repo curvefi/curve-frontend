@@ -52,10 +52,6 @@ const meta: Meta<typeof ActionInfo> = {
       control: 'text',
       description: 'The value to be copied when clicking the value',
     },
-    copiedTitle: {
-      control: 'text',
-      description: 'Message title displayed in the snackbar when the value is copied',
-    },
     size: {
       control: 'select',
       options: SIZES,
@@ -81,7 +77,6 @@ const meta: Meta<typeof ActionInfo> = {
       />
     ),
     copyValue: '',
-    copiedTitle: 'Contract address copied!',
     loading: false,
   },
 }

@@ -50,7 +50,7 @@ import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { ActionInfo, ActionInfoGasEstimate } from '@ui-kit/shared/ui/ActionInfo'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { q } from '@ui-kit/types/util'
+import { mapQuery, q, toQuery } from '@ui-kit/types/util'
 import { decimal, formatNumber } from '@ui-kit/utils'
 import { getPriceImpactDisplay } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { SlippageToleranceActionInfo, type SlippageType } from '@ui-kit/widgets/SlippageSettings'
@@ -475,6 +475,7 @@ export const QuickSwap = ({
     { slippage: maxSlippage, slippageType },
   )
 
+  const routes = toQuery(routesAndOutput, { isLoading: routesAndOutputLoading })
   return (
     <Stack sx={{ gap: Spacing.sm }}>
       {/* SWAP FROM */}
@@ -585,25 +586,20 @@ export const QuickSwap = ({
           />
           <ActionInfo
             label={priceImpactLabel}
-            value={
-              routesAndOutput?.priceImpact == null ? '-' : formatNumber(routesAndOutput.priceImpact, 'percent.rate')
-            }
+            value={mapQuery(routes, ({ priceImpact }) => formatNumber(priceImpact, 'percent.rate'))}
             valueColor={priceImpactColor}
-            loading={routesAndOutputLoading}
             size="small"
             testId="price-impact"
           />
           <ActionInfo
             label={t`Exchange rate`}
-            value={routesAndOutput?.exchangeRate && formatExchangeRate(routesAndOutput.exchangeRate)}
-            loading={routesAndOutputLoading}
+            value={mapQuery(routes, ({ exchangeRate }) => exchangeRate && formatExchangeRate(exchangeRate))}
             size="small"
             testId="exchange-rate"
           />
           <RoutesActionInfo
             params={params}
-            loading={routesAndOutputLoading}
-            routes={routesAndOutput?.routes}
+            routes={mapQuery(routes, r => r.routes)}
             tokensNameMapper={tokensNameMapper}
             poolDataMapper={poolDataMapper}
             swapCustomRouteRedirect={network?.swapCustomRouteRedirect}

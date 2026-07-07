@@ -16,7 +16,8 @@ import { TxInfoBar } from '@ui/TxInfoBar'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { formatNumber, amount } from '@ui-kit/utils'
+import { mapQuery } from '@ui-kit/types/util'
+import { amount, formatNumber } from '@ui-kit/utils'
 import { getIsLockExpired } from '@ui-kit/utils/vecrv'
 
 const { IconSize } = SizesAndSpaces
@@ -33,9 +34,8 @@ export const FormWithdraw = ({ rChainId, vecrvInfo }: PageVecrv) => {
     vecrvInfo.lockedAmountAndUnlockTime.lockedAmount,
     vecrvInfo.lockedAmountAndUnlockTime.unlockTime,
   )
-  const { data: lockEstimateWithdrawGas, isLoading: isLoadingLockEstimateWithdrawGas } = useLockEstimateWithdrawGas(
-    { chainId: rChainId, userAddress: address },
-    canUnlock,
+  const gasEstimate = useEstimateGasConversion(
+    useLockEstimateWithdrawGas({ chainId: rChainId, userAddress: address }, canUnlock),
   )
 
   const loading = typeof vecrvInfo === 'undefined'
@@ -43,14 +43,6 @@ export const FormWithdraw = ({ rChainId, vecrvInfo }: PageVecrv) => {
     withdrawLockedCrvStatus.transactionState === 'CONFIRMING' || withdrawLockedCrvStatus.transactionState === 'LOADING'
   const withdrawTxError = withdrawLockedCrvStatus.transactionState === 'ERROR'
   const withdrawTxSuccess = withdrawLockedCrvStatus.transactionState === 'SUCCESS'
-
-  const { estGasCostUsd, tooltip } = useEstimateGasConversion(lockEstimateWithdrawGas)
-  const valueGas = formatNumber(estGasCostUsd, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 4,
-    abbreviate: false,
-    fallback: '-',
-  })
 
   useEffect(() => {
     if (withdrawTxSuccess) {
@@ -88,11 +80,18 @@ export const FormWithdraw = ({ rChainId, vecrvInfo }: PageVecrv) => {
           <ActionInfo
             label={t`Estimated TX cost`}
             labelColor="tertiary" // Change the label color to tertiary to work together with legacy background colors until we can fully upgrade to the new design system
-            value={valueGas !== '' && valueGas !== '0' ? `$${valueGas}` : '-'}
+            value={mapQuery(gasEstimate, ({ estGasCostUsd }) => {
+              const valueGas = formatNumber(estGasCostUsd, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 4,
+                abbreviate: false,
+                fallback: '-',
+              })
+              return valueGas !== '' && valueGas !== '0' ? `$${valueGas}` : '-'
+            })}
             valueColor="tertiary"
             valueLeft={<LocalFireDepartmentIcon sx={{ width: IconSize.sm, height: IconSize.sm }} />}
-            valueTooltip={tooltip}
-            loading={isLoadingLockEstimateWithdrawGas}
+            valueTooltip={mapQuery(gasEstimate, e => e.tooltip)}
           />
         )}
         <FormActions haveSigner={haveSigner} loading={loading}>
