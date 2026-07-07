@@ -5,7 +5,7 @@ import { formatNumber } from '@ui-kit/utils'
 
 type ActionInfoField = 'previous' | 'left' | 'right' | 'value'
 export const getActionInfo = (name: string, field: ActionInfoField = 'value') =>
-  cy.get(`[data-testid="${notFalsy(name, field).join('-')}"]`, TRANSACTION_LOAD_TIMEOUT)
+  cy.get(`[data-testid="${notFalsy(name, field).join('-')}"]`, TRANSACTION_LOAD_TIMEOUT && { timeout: 5000 })
 
 export const DECIMAL_REGEX = /(\d(\.\d+)?)/
 export const DECIMAL_RANGE_REGEX = new RegExp([DECIMAL_REGEX.source, DECIMAL_REGEX.source].join(' - '))

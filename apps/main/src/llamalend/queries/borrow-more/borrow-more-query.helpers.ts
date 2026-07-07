@@ -14,7 +14,7 @@ export function getBorrowMoreImplementation(
   leverageEnabled: boolean | null | undefined,
 ) {
   const market = getLlamaMarket(marketId)
-  leverageEnabled ??= true // until we know if leverage is supported, use the latest implementation available
+  leverageEnabled ??= false // we don't know if leverage is supported when the API is offline
   return market instanceof MintMarketTemplate
     ? leverageEnabled && hasV2Leverage(market)
       ? (['V2', market.leverageV2] as const)
