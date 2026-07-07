@@ -37,7 +37,13 @@ export const { useQuery: useLendMarkets } = queryFactory({
   // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- type is for documentation purposes
   queryFn: async (): Promise<Record<string | Address, LendMarketData>> => {
     const api = requireLib('llamaApi')
-    await Promise.all([v1, v2].map(version => api.lendMarkets.fetchMarkets({ useApi: USE_API, version })))
+    await Promise.all(
+      [v1, v2].map(version =>
+        api.lendMarkets.fetchMarkets({ useApi: USE_API, version }).catch(e => {
+          if (!(e as Error).message?.includes('not available for network')) throw e
+        }),
+      ),
+    )
     return Object.fromEntries(
       api.lendMarkets
         .getMarketList()
