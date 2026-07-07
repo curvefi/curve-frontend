@@ -4,12 +4,11 @@ import CardHeader from '@mui/material/CardHeader'
 import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
 import { notFalsy } from '@primitives/objects.utils'
-import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { findTab, useTabs } from '@ui-kit/hooks/useTabs'
 import { type TabOption, TabsSwitcher, TabsSwitcherProps } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { applySxProps } from '@ui-kit/utils'
-import { useFormPlacement } from './form-context/FormPlacementContext'
+import { useIsMobileFormDrawer } from './form-context/FormPlacementContext'
 import { FormContent } from './FormContent'
 import { MobileFormTabsDrawer } from './MobileFormTabsDrawer'
 
@@ -102,8 +101,7 @@ type FormTabsProps<T extends object> = UseFormTabOptions<T> & {
  */
 export function FormTabs<T extends object>({ shouldWrap, overflow = 'kebab', ...options }: FormTabsProps<T>) {
   const { tab, tabOption, tabs, subTabs, subTab, content, onChangeTab, onChangeSubTab } = useFormTabs(options)
-  const placement = useFormPlacement()
-  const isMobileDrawer = useIsMobile() && placement === 'mobile-drawer'
+  const isMobileDrawer = useIsMobileFormDrawer()
   return (
     <WithWrapper shouldWrap={isMobileDrawer} Wrapper={MobileFormTabsDrawer} tabs={tabs} onSelectTab={onChangeTab}>
       <Stack sx={{ marginInline }}>
