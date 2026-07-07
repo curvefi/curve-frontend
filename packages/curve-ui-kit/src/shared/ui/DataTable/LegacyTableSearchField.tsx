@@ -5,7 +5,7 @@ import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { SearchIcon } from '@ui-kit/shared/icons/SearchIcon'
 import { SearchField } from '@ui-kit/shared/ui/SearchField'
-import { Duration, TransitionFunction } from '@ui-kit/themes/design/0_primitives'
+import { Duration, TRANSITION_FUNCTION } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LegacyTableButton } from './LegacyTableButton'
 
@@ -70,7 +70,7 @@ export const LegacyTableSearchField = ({
       sx={{
         display: 'flex',
         // on mobile when search is de-expanded, animation doesn't look good
-        transition: isMobile && !isExpanded ? 'none' : TransitionFunction,
+        transition: isMobile && !isExpanded ? 'none' : TRANSITION_FUNCTION,
         flex: isExpanded ? '1 1 auto' : `0 0 ${ButtonSize.sm}`,
         width: isExpanded ? 0 : `${ButtonSize.sm}`,
         overflow: 'hidden',

@@ -29,13 +29,13 @@ const { Spacing, Sizing, Height } = SizesAndSpaces
 const EMPTY_ARRAY: never[] = []
 
 /** css class to hide elements on desktop unless the row is hovered */
-export const DesktopOnlyHoverClass = 'desktop-only-on-hover'
+export const DESKTOP_ONLY_HOVER_CLASS = 'desktop-only-on-hover'
 
 /** css class to make elements clickable in a row and ignore the row click */
-export const ClickableInRowClass = 'clickable-in-row'
+export const CLICKABLE_IN_ROW_CLASS = 'clickable-in-row'
 
 /** css class for secondary text inside data table rows */
-export const TableSecondaryTextClass = 'table-secondary-text'
+export const TABLE_SECONDARY_TEXT_CLASS = 'table-secondary-text'
 
 /**
  * We use `satisfies` when declaring columns, but when we want to receive that definition using ColumnDef<T, unknown>,

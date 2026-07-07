@@ -7,7 +7,7 @@ import { type RoutesQuery } from '../routes/routes.schemas'
 import type { ZeroExQuoteRequest, ZeroExQuoteResponse } from './zeroex.types'
 
 const { ZEROEX_API_URL = 'https://api.0x.org', ZEROEX_API_KEY } = process.env
-const protocol = '0x' as const
+const PROTOCOL = '0x' as const
 
 async function getZeroExQuote({ chainId, ...params }: ZeroExQuoteRequest) {
   const quote = await fetchJson<ZeroExQuoteResponse>(
@@ -58,7 +58,7 @@ export const buildZeroExRouteResponse = async (
   const { data, gas, to, value } = transaction
   return [
     {
-      router: protocol,
+      router: PROTOCOL,
       amountIn: [sellAmount],
       amountOut: [buyAmount],
       gas,
@@ -72,7 +72,7 @@ export const buildZeroExRouteResponse = async (
           name: fill.source,
           tokenIn: [fill.from],
           tokenOut: [fill.to],
-          protocol,
+          protocol: PROTOCOL,
           action: 'swap',
           chainId,
           args: { source: fill.source, proportionBps: fill.proportionBps },

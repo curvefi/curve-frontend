@@ -5,7 +5,7 @@ import { handleBreakpoints } from '../../basic-theme'
 import { DesignSystem } from '../../design'
 import { SizesAndSpaces } from '../../design/1_sizes_spaces'
 
-const { Spacing, ButtonSize, FontSize, LineHeight, OutlineWidth } = SizesAndSpaces
+const { Spacing, ButtonSize, FontSize, LineHeight, OutlineWidth: OUTLINE_WIDTH } = SizesAndSpaces
 
 type ToggleStyle = { Label?: string; Fill?: string }
 
@@ -74,7 +74,7 @@ export const defineMuiToggleButton = ({ Toggles, Button, Text }: DesignSystem): 
           margin: 0,
         },
 
-        border: `${OutlineWidth} solid transparent !important`, // Not even '&&' works, hence the !important
+        border: `${OUTLINE_WIDTH} solid transparent !important`, // Not even '&&' works, hence the !important
         borderRadius: 0,
         transition: Button.Transition,
         textTransform: 'uppercase',

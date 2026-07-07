@@ -13,10 +13,10 @@ type EndpointCatalogStatus = {
   staleExclusions: EndpointId[]
 }
 
-const dirnameCurrent = dirname(fileURLToPath(import.meta.url))
-const endpointTestsDir = resolve(dirnameCurrent, 'endpoints')
-const packageRoot = resolve(dirnameCurrent, '..')
-const srcDir = resolve(packageRoot, 'src')
+const DIRNAME_CURRENT = dirname(fileURLToPath(import.meta.url))
+const ENDPOINT_TESTS_DIR = resolve(DIRNAME_CURRENT, 'endpoints')
+const PACKAGE_ROOT = resolve(DIRNAME_CURRENT, '..')
+const SRC_DIR = resolve(PACKAGE_ROOT, 'src')
 const excludedEndpointIds = new Set<EndpointId>(['solver.getCompetition'])
 const exportedAsyncFunctionPattern = /\bexport\s+async\s+function\s+([A-Za-z_$][\w$]*)/g
 const runEndpointCasesPattern = /\brunEndpointCases\(\s*['"]([^'"]+)['"]/
@@ -75,10 +75,10 @@ const sortedDifference = (sourceIds: Iterable<EndpointId>, targetIds: ReadonlySe
   [...sourceIds].filter(id => !targetIds.has(id)).sort()
 
 const getExportedAsyncEndpointIds = () =>
-  readdirSync(srcDir, { withFileTypes: true })
+  readdirSync(SRC_DIR, { withFileTypes: true })
     .filter(entry => entry.isDirectory())
     .flatMap(entry => {
-      const indexFile = resolve(srcDir, entry.name, 'index.ts')
+      const indexFile = resolve(SRC_DIR, entry.name, 'index.ts')
 
       return existsSync(indexFile)
         ? matches(readFileSync(indexFile, 'utf8'), exportedAsyncFunctionPattern).map(functionName =>
@@ -88,11 +88,11 @@ const getExportedAsyncEndpointIds = () =>
     })
 
 const getCatalogEndpointIds = () =>
-  readdirSync(endpointTestsDir, { withFileTypes: true })
+  readdirSync(ENDPOINT_TESTS_DIR, { withFileTypes: true })
     .filter(entry => entry.isFile())
     .map(entry => entry.name)
     .filter(file => file.endsWith('.test.ts'))
-    .flatMap(file => getEndpointIdsFromTestFile(resolve(endpointTestsDir, file)))
+    .flatMap(file => getEndpointIdsFromTestFile(resolve(ENDPOINT_TESTS_DIR, file)))
 
 const getEndpointIdsFromTestFile = (file: string) => {
   const source = readFileSync(file, 'utf8')
