@@ -1,13 +1,12 @@
 import { useCallback, useMemo } from 'react'
 import { useCurve } from '@ui-kit/features/connect-wallet'
-import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { useMappedQuery } from '@ui-kit/types/util'
 import { useLendMarkets } from '../queries/lend-markets.query'
 import { ChainId } from '../types/lend.types'
 
 function useLendMarketData(chainId: ChainId, marketId: string, enabled?: boolean) {
-  const lendMarkets = useLendMarkets({ chainId, enableLLv2: useLLv2() }, enabled)
+  const lendMarkets = useLendMarkets({ chainId }, enabled)
   const lendMarket = useMappedQuery(
     lendMarkets,
     useCallback(data => data?.[marketId], [marketId]),

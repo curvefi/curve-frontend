@@ -18,11 +18,6 @@ export const PRESET_RANGES = {
   [LoanPreset.Custom]: 10,
 }
 
-/**
- * Reference cutoff date used to infer and display the Llamalend market version in the UI, until the price API returns the version explicitly.
- */
-export const LLAMMALEND_V2_DATE = new Date('2025-11-12T00:00:00Z') // November 12, 2025
-
 export const MarketTypeSuffix: Record<LlamaMarketType, string> = {
   [LlamaMarketType.Lend]: t`(Lending Markets)`,
   [LlamaMarketType.Mint]: t`(Mint Markets)`,

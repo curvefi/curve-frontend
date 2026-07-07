@@ -4,7 +4,6 @@
  */
 
 import { defaultReleaseChannel, ReleaseChannel } from '@ui-kit/utils'
-import { useCurrentDate } from './useCurrentDate'
 import { getReleaseChannel, isZapV2Disabled, useDisableZapV2, useReleaseChannel } from './useLocalStorage'
 
 const useBetaChannel = () => useReleaseChannel()[0] === ReleaseChannel.Beta
@@ -25,16 +24,6 @@ const useZapV2 = () => [useStableChannel(), !useDisableZapV2()].every(Boolean)
 
 /** gets a key to remount components when ZapV2 is toggled, forcing calls to non-reactive isZapV2Enabled */
 export const useLoanImplementationKey = () => (useZapV2() ? 'zapV2' : '')
-
-/** New LlamaLend v2 implementation */
-export const useLLv2 = () => {
-  const [releaseChannel] = useReleaseChannel()
-  const currentDate = useCurrentDate()
-  return (
-    releaseChannel === ReleaseChannel.Beta ||
-    (releaseChannel === ReleaseChannel.Stable && currentDate >= LLV2_STABLE_RELEASE_DATE)
-  )
-}
 
 export const use0xRouter = useBetaChannel
 
