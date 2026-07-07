@@ -15,6 +15,8 @@ import type { Address } from '@primitives/address.utils'
 import { Checkbox } from '@ui/Checkbox'
 import { useTokenBalances } from '@ui-kit/hooks/useTokenBalance'
 import { t } from '@ui-kit/lib/i18n'
+import { mapQuery } from '@ui-kit/types/util'
+import { decimal } from '@ui-kit/utils'
 import { Amount } from '../../utils'
 
 /**
@@ -134,7 +136,7 @@ export const FieldsDeposit = ({
   )
 
   const { address: userAddress } = useConnection()
-  const { data: userPoolBalances, isLoading: balancesLoading } = useTokenBalances({
+  const userPoolBalances = useTokenBalances({
     chainId,
     userAddress,
     tokenAddresses: poolDataCacheOrApi.tokenAddresses as Address[],
@@ -145,7 +147,7 @@ export const FieldsDeposit = ({
       {poolDataCacheOrApi.tokens.length === amountsInput.length &&
         poolDataCacheOrApi.tokens.map((token, idx) => {
           const tokenAddress = poolDataCacheOrApi.tokenAddresses[idx]
-          const addressBalanceAmount = userPoolBalances?.[tokenAddress] ?? '0'
+          const addressBalanceAmount = userPoolBalances.data?.[tokenAddress] ?? '0'
           const { ethAddress = tokenAddress } = tokensMapper[tokenAddress] ?? {}
           const haveSameTokenName = poolDataCacheOrApi.tokensCountBy[token] > 1
           const { value } = amountsInput[idx]
@@ -157,10 +159,9 @@ export const FieldsDeposit = ({
               key={`${tokenAddress}-${idx}`}
               idx={idx}
               amount={value}
-              balance={addressBalanceAmount}
-              balanceLoading={balancesLoading}
+              balance={mapQuery(userPoolBalances, t => decimal(t[tokenAddress]) ?? '0')}
               disabled={isDisableInput}
-              hasError={haveSigner && !formProcessing ? +(value || '0') > +addressBalanceAmount : false}
+              isNotEnough={haveSigner && !formProcessing ? +(value || '0') > +addressBalanceAmount : false}
               haveSameTokenName={haveSameTokenName}
               haveSigner={haveSigner}
               blockchainId={blockchainId}

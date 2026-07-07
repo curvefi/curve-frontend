@@ -11,7 +11,7 @@ export type BridgeAmountProps = {
   /** Callback invoked when the user changes the amount */
   onAmount: NonNullable<LargeTokenInputProps['onBalance']>
   /** Wallet balance of the current amount of tokens the user wants to bridge in their wallet */
-  walletBalance: Pick<NonNullable<LargeTokenInputProps['walletBalance']>, 'balance' | 'loading'>
+  walletBalance: Pick<NonNullable<LargeTokenInputProps['walletBalance']>, 'balance'>
   /** USD equivalent of the entered amount, displayed as helper text. */
   inputBalanceUsd: LargeTokenInputProps['inputBalanceUsd']
   /** Optional error to display below the input. */
@@ -34,12 +34,8 @@ export const BridgeAmount = ({
     // For now FastBride only support bridging crvUSD
     tokenSelector={<TokenLabel blockchainId="ethereum" address={CRVUSD_ADDRESS} label="crvUSD" />}
     balance={amount}
-    walletBalance={{
-      ...walletBalance,
-      symbol: 'crvUSD',
-    }}
+    walletBalance={{ ...walletBalance, symbol: 'crvUSD' }}
     inputBalanceUsd={inputBalanceUsd}
-    isError={!!error}
     onBalance={onAmount}
   >
     {error && <HelperMessage message={error} isError />}

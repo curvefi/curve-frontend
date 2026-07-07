@@ -1,13 +1,14 @@
 import { RefuelFormList } from '@/dex/features/manage-pool/components/RefuelFormList'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
+import { constQ } from '@ui-kit/types/util'
 
 type RefuelFormListProps = Parameters<typeof RefuelFormList>[0]
 
 const baseProps = {
   values: { tokenAAmount: undefined, tokenBAmount: undefined },
-  tokenA: { usdRate: 1, isLoading: false },
-  tokenB: { usdRate: 2, isLoading: false },
-  poolTvl: { usd: 1_000, isLoading: false },
+  tokenA: constQ(1),
+  tokenB: constQ(2),
+  poolTvl: constQ(1_000),
 } satisfies RefuelFormListProps
 
 const mountRefuelFormList = (props: RefuelFormListProps) => {
@@ -52,7 +53,7 @@ describe('RefuelFormList', () => {
     mountRefuelFormList({
       ...baseProps,
       values: { tokenAAmount: '10', tokenBAmount: undefined },
-      tokenB: { usdRate: undefined, isLoading: false },
+      tokenB: constQ(undefined),
     })
 
     expectEmptyProjections()

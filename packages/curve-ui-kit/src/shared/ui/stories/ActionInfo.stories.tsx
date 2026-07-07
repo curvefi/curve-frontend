@@ -1,10 +1,11 @@
+import type { ComponentProps, ReactNode } from 'react'
 import AcUnitIcon from '@mui/icons-material/AcUnit'
 import WhatshotIcon from '@mui/icons-material/Whatshot'
 import { Stack } from '@mui/material'
 import Switch from '@mui/material/Switch'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { t } from '@ui-kit/lib/i18n'
-import { constQ } from '@ui-kit/types/util'
+import { q } from '@ui-kit/types/util'
 import { shortenAddress } from '@ui-kit/utils'
 import { ActionInfo } from '../ActionInfo'
 import { ActionInfoSize } from '../ActionInfo/ActionInfo'
@@ -12,9 +13,27 @@ import { ExternalLink } from '../ExternalLink'
 
 const SIZES: ActionInfoSize[] = ['small', 'medium']
 
-const meta: Meta<typeof ActionInfo> = {
+type ActionInfoStoryArgs = Omit<ComponentProps<typeof ActionInfo>, 'value' | 'prevValue'> & {
+  value?: ReactNode
+  prevValue?: ReactNode
+  loading?: boolean
+  errorMessage?: string
+}
+
+const ActionInfoStory = ({ loading, errorMessage, value, ...args }: ActionInfoStoryArgs) => (
+  <ActionInfo
+    {...args}
+    value={
+      loading || errorMessage
+        ? q({ data: value, isLoading: !!loading, error: errorMessage ? new Error(errorMessage) : null })
+        : value
+    }
+  />
+)
+
+const meta: Meta<typeof ActionInfoStory> = {
   title: 'UI Kit/Widgets/ActionInfo',
-  component: ActionInfo,
+  component: ActionInfoStory,
   argTypes: {
     label: {
       control: 'text',
@@ -57,11 +76,15 @@ const meta: Meta<typeof ActionInfo> = {
       options: SIZES,
       description: 'The size of the component',
     },
+    skeleton: {
+      control: 'text',
+      description: 'Skeleton dimensions or fallback value shown while loading',
+    },
     loading: {
       control: 'boolean',
-      description: 'Whether the component is in a loading state. Can be boolean or string.',
+      description: 'Whether the component is in a loading state',
     },
-    error: {
+    errorMessage: {
       control: 'text',
       description: 'Error message to display instead of the value',
     },
@@ -78,10 +101,11 @@ const meta: Meta<typeof ActionInfo> = {
     ),
     copyValue: '',
     loading: false,
+    errorMessage: '',
   },
 }
 
-type Story = StoryObj<typeof ActionInfo>
+type Story = StoryObj<typeof ActionInfoStory>
 
 export const Default: Story = {
   parameters: {
@@ -97,8 +121,8 @@ export const Default: Story = {
 export const AllSizes: Story = {
   args: {
     label: 'Collateral',
-    value: constQ('1,234.56'),
-    prevValue: constQ('234.56'),
+    value: '1,234.56',
+    prevValue: '234.56',
     copyValue: '1,234.56',
     valueRight: 'crvUSD',
     size: 'small',
@@ -106,7 +130,7 @@ export const AllSizes: Story = {
   render: args => (
     <Stack sx={{ gap: 4, width: '25rem', alignItems: 'stretch' }}>
       {SIZES.map(size => (
-        <ActionInfo
+        <ActionInfoStory
           key={size}
           {...args}
           valueLeft={<WhatshotIcon fontSize={size === 'small' ? 'small' : 'medium'} color="error" />}
@@ -126,8 +150,8 @@ export const AllSizes: Story = {
 
 export const WithPreviousValue: Story = {
   args: {
-    value: constQ(shortenAddress('0x0655977feb2f289a4ab78af67bab0d17aab84367')),
-    prevValue: constQ(shortenAddress('0x1234567890123456789012345678901234567890')),
+    value: shortenAddress('0x0655977feb2f289a4ab78af67bab0d17aab84367'),
+    prevValue: shortenAddress('0x1234567890123456789012345678901234567890'),
     size: 'medium',
   },
   parameters: {
@@ -141,9 +165,9 @@ export const WithPreviousValue: Story = {
 
 export const CustomColors: Story = {
   args: {
-    value: constQ(shortenAddress('0x0655977feb2f289a4ab78af67bab0d17aab84367')),
+    value: shortenAddress('0x0655977feb2f289a4ab78af67bab0d17aab84367'),
     valueColor: 'success.main',
-    prevValue: constQ(shortenAddress('0x1234567890123456789012345678901234567890')),
+    prevValue: shortenAddress('0x1234567890123456789012345678901234567890'),
     prevValueColor: 'error.main',
     size: 'medium',
   },
@@ -225,7 +249,8 @@ export const WithEmptyValueAndSwitch: Story = {
 
 export const Loading: Story = {
   args: {
-    loading: shortenAddress('0x1234567890123456789012345678901234567890'),
+    value: shortenAddress('0x1234567890123456789012345678901234567890'),
+    loading: true,
     size: 'medium',
   },
   parameters: {
@@ -239,7 +264,7 @@ export const Loading: Story = {
 
 export const WithError: Story = {
   args: {
-    error: new Error('Failed to load contract address'),
+    errorMessage: 'Failed to load contract address',
     size: 'medium',
   },
   parameters: {

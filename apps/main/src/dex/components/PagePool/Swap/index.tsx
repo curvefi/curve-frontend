@@ -42,6 +42,7 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { q } from '@ui-kit/types/util'
 import { decimal, formatNumber } from '@ui-kit/utils'
 import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
@@ -94,25 +95,19 @@ export const Swap = ({
 
   const config = useConfig()
   const { address: userAddress } = useConnection()
-  const {
-    data: userFromBalance,
-    isLoading: userFromBalanceLoading,
-    refetch: refetchUserFromBalance,
-  } = useTokenBalance({
+  const userFromBalance = useTokenBalance({
     chainId,
     userAddress,
     tokenAddress: (formValues.fromAddress as Address) || undefined,
   })
+  const { refetch: refetchUserFromBalance } = userFromBalance
 
-  const {
-    data: userToBalance,
-    isLoading: userToBalanceLoading,
-    refetch: refetchUserToBalance,
-  } = useTokenBalance({
+  const userToBalance = useTokenBalance({
     chainId,
     userAddress,
     tokenAddress: (formValues.toAddress as Address) || undefined,
   })
+  const { refetch: refetchUserToBalance } = userToBalance
 
   const { data: fromUsdRate } = useTokenUsdRate(
     { chainId, tokenAddress: formValues.fromAddress },
@@ -332,7 +327,7 @@ export const Swap = ({
         steps,
         seed.isSeed,
         maxSlippage,
-        userFromBalanceLoading || userToBalanceLoading,
+        userFromBalance.isLoading || userToBalance.isLoading,
       )
       // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
       setSteps(updatedSteps)
@@ -349,8 +344,8 @@ export const Swap = ({
     formValues,
     maxSlippage,
     seed.isSeed,
-    userFromBalanceLoading,
-    userToBalanceLoading,
+    userFromBalance.isLoading,
+    userToBalance.isLoading,
   ])
 
   // pageVisible
@@ -415,19 +410,15 @@ export const Swap = ({
           }
           {...(formValues.fromError && {
             isError: true,
-            message: t`Amount > wallet balance ${formatNumber(userFromBalance, { abbreviate: false, fallback: '-' })}`,
+            message: t`Amount > wallet balance ${formatNumber(userFromBalance.data, { abbreviate: false, fallback: '-' })}`,
           })}
           disabled={isDisabled}
           walletBalance={{
-            balance: decimal(userFromBalance),
-            loading: userFromBalanceLoading || isMaxLoading,
+            balance: { ...q(userFromBalance), isLoading: userFromBalance.isLoading || isMaxLoading },
             symbol: fromToken?.symbol,
             usdRate: fromUsdRate,
           }}
-          maxBalance={{
-            balance: decimal(userFromBalance),
-            chips: 'range',
-          }}
+          maxBalance={{ balance: q(userFromBalance), chips: 'range' }}
         />
 
         <IconButton
@@ -490,12 +481,7 @@ export const Swap = ({
               />
             </TokenSelector>
           }
-          walletBalance={{
-            balance: decimal(userToBalance),
-            loading: userToBalanceLoading,
-            symbol: toToken?.symbol,
-            usdRate: toUsdRate,
-          }}
+          walletBalance={{ balance: q(userToBalance), symbol: toToken?.symbol, usdRate: toUsdRate }}
         />
 
         {poolDataCacheOrApi.hasWrapped && formValues.isWrapped !== null && (

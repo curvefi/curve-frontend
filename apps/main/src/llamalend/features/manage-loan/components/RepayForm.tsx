@@ -190,7 +190,6 @@ export const RepayForm = <ChainId extends IChainId>({
               tooltip={t`Max available to repay`}
               symbol={borrowToken?.symbol}
               balance={maxAmountInBorrowToken}
-              loading={max[selectedField].isLoading || maxAmountInBorrowTokenLoading}
               onClick={() => updateForm({ [selectedField]: max[selectedField].data })}
             />
           )

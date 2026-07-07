@@ -25,7 +25,7 @@ import type { Chain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { assert, maybes } from '@primitives/objects.utils'
+import { assert, maybe, maybes } from '@primitives/objects.utils'
 import type { RouterRouteResponse } from '@primitives/router.utils'
 import { AlertBox } from '@ui/AlertBox'
 import { Icon } from '@ui/Icon'
@@ -149,12 +149,7 @@ export const QuickSwap = ({
   const fromToken = tokens.find(x => x.address.toLocaleLowerCase() == fromAddress)
   const toToken = tokens.find(x => x.address.toLocaleLowerCase() == toAddress)
 
-  const {
-    data: userFromBalance,
-    isLoading: userFromBalanceLoading,
-    isFetched: userFromBalanceFetched,
-    refetch: refetchUserFromBalance,
-  } = useTokenBalance(
+  const userFromBalanceQ = useTokenBalance(
     {
       chainId,
       userAddress,
@@ -162,13 +157,9 @@ export const QuickSwap = ({
     },
     !!userAddress && !!fromAddress,
   )
+  const { isFetched: userFromBalanceFetched, refetch: refetchUserFromBalance } = userFromBalanceQ
 
-  const {
-    data: userToBalance,
-    isLoading: userToBalanceLoading,
-    isFetched: userToBalanceFetched,
-    refetch: refetchUserToBalance,
-  } = useTokenBalance(
+  const userToBalance = useTokenBalance(
     {
       chainId,
       userAddress,
@@ -176,6 +167,7 @@ export const QuickSwap = ({
     },
     !!userAddress && !!toAddress,
   )
+  const { isFetched: userToBalanceFetched, refetch: refetchUserToBalance } = userToBalance
 
   const { data: fromUsdRate } = useTokenUsdRate({ chainId, tokenAddress: fromAddress }, !!fromAddress)
   const { data: toUsdRate } = useTokenUsdRate({ chainId, tokenAddress: toAddress }, !!toAddress)
@@ -481,21 +473,20 @@ export const QuickSwap = ({
       {/* SWAP FROM */}
       <LargeTokenInput
         label={t`Sell`}
-        balance={decimal(formValues.fromAmount)}
+        balance={q({
+          data: decimal(formValues.fromAmount),
+          error: maybe(formValues.fromError, Error) ?? null,
+          isLoading: false,
+        })}
         onBalance={setFromAmount}
         name="fromAmount"
         inputBalanceUsd={decimal(formValues.fromAmount && fromUsdRate && fromUsdRate * +formValues.fromAmount)}
         walletBalance={{
-          loading: userFromBalanceLoading || isMaxLoading,
-          balance: decimal(userFromBalance),
+          balance: { ...mapQuery(userFromBalanceQ, decimal), isLoading: isMaxLoading || userFromBalanceQ.isLoading },
           symbol: fromToken?.symbol,
           usdRate: fromUsdRate,
         }}
-        maxBalance={{
-          balance: decimal(userFromBalance),
-          chips: 'range',
-        }}
-        isError={!!formValues.fromError}
+        maxBalance={{ balance: mapQuery(userFromBalanceQ, decimal), chips: 'range' }}
         disabled={isDisable}
         testId="from-amount"
         tokenSelector={
@@ -521,11 +512,10 @@ export const QuickSwap = ({
             />
           </TokenSelector>
         }
-        message={
-          formValues.fromError &&
-          userFromBalance != null &&
-          t`Amount > wallet balance ${formatNumber(userFromBalance, { abbreviate: false })}`
-        }
+        message={maybes(
+          [userFromBalanceQ.data, formValues.fromError],
+          v => t`Amount > wallet balance ${formatNumber(v, { abbreviate: false })}`,
+        )}
       />
       {/* SWAP ICON */}
       <IconButton
@@ -543,12 +533,7 @@ export const QuickSwap = ({
         inputBalanceUsd={decimal(formValues.toAmount && toUsdRate && toUsdRate * +formValues.toAmount)}
         onBalance={setToAmount}
         name="toAmount"
-        walletBalance={{
-          loading: userToBalanceLoading,
-          balance: decimal(userToBalance),
-          symbol: toToken?.symbol,
-          usdRate: toUsdRate,
-        }}
+        walletBalance={{ balance: mapQuery(userToBalance, decimal), symbol: toToken?.symbol, usdRate: toUsdRate }}
         disabled={isDisable}
         testId="to-amount"
         tokenSelector={

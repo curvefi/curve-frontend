@@ -12,7 +12,7 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate, type TxGasInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
-import { constQ, mapQuery, type QueryProp, type Range, DISABLED_Q } from '@ui-kit/types/util'
+import { mapQuery, type QueryProp, type Range, DISABLED_Q } from '@ui-kit/types/util'
 import { decimal, formatNumber } from '@ui-kit/utils'
 import {
   getPriceImpactDisplay,
@@ -169,7 +169,7 @@ export const LoanActionInfoList = ({
             value={
               // todo: do not ignore loading state for health - some forms/tests expect ∞ when the query is disabled
               isFullRepay || health?.data === undefined
-                ? constQ('∞')
+                ? '∞'
                 : mapQuery(health, data => formatNumber(data, { abbreviate: true, fallback: '∞' }))
             }
             prevValue={

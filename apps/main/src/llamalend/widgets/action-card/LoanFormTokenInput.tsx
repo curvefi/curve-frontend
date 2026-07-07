@@ -12,7 +12,7 @@ import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
 import type { LargeTokenInputProps } from '@ui-kit/shared/ui/LargeTokenInput'
 import { HelperMessage, LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import type { QueryProp } from '@ui-kit/types/util'
+import { q, type QueryProp } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 
 type WalletBalanceProps = NonNullable<LargeTokenInputProps['walletBalance']>
@@ -142,11 +142,10 @@ export const LoanFormTokenInput = <
           />
         )
       }
-      balance={value}
+      balance={q({ data: value, isLoading: false, error: error ?? null })}
       onBalance={onBalance}
-      isError={!!error}
       {...(!hideBalance && { walletBalance })}
-      maxBalance={max && { balance: max.data, chips: 'range', isLoading: max.isLoading }}
+      maxBalance={max && { chips: 'range', balance: max }}
       inputBalanceUsd={decimal(usdRate && usdRate * +(value ?? 0))}
       message={errorMessage ? undefined : message}
       disabled={disabled}

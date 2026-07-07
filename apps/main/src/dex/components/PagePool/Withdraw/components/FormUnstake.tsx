@@ -141,20 +141,15 @@ export const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams,
   const isDisabled = seed.isSeed === null || seed.isSeed || formStatus.formProcessing
 
   const { address: userAddress } = useConnection()
-  const { gaugeTokenBalance, isLoading: gaugeTokenLoading } = usePoolTokenDepositBalances({
-    chainId,
-    userAddress,
-    poolId,
-  })
+  const { gaugeTokenBalance } = usePoolTokenDepositBalances({ chainId, userAddress, poolId })
 
   return (
     <>
       {/* input fields */}
       <FieldLpToken
         amount={formValues.stakedLpToken}
-        balanceLoading={gaugeTokenLoading}
-        balance={gaugeTokenBalance ?? ''}
-        hasError={+formValues.stakedLpToken > +(gaugeTokenBalance ?? '')}
+        balance={gaugeTokenBalance}
+        isNotEnough={+formValues.stakedLpToken > +(gaugeTokenBalance.data ?? '0')}
         handleAmountChange={useCallback(stakedLpToken => updateFormValues({ stakedLpToken }), [updateFormValues])}
         disabled={isDisabled}
       />

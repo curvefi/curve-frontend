@@ -174,11 +174,7 @@ export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
   const disableForm = seed.isSeed === null || formStatus.formProcessing
 
   const { address: userAddress } = useConnection()
-  const { lpTokenBalance, isLoading: lpTokenBalanceLoading } = usePoolTokenDepositBalances({
-    chainId,
-    userAddress,
-    poolId,
-  })
+  const { lpTokenBalance } = usePoolTokenDepositBalances({ chainId, userAddress, poolId })
 
   return (
     <>
@@ -186,9 +182,8 @@ export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
       <FieldsWrapper>
         <FieldLpToken
           amount={formValues.lpToken}
-          balance={lpTokenBalance ?? ''}
-          balanceLoading={lpTokenBalanceLoading}
-          hasError={haveSigner ? new BigNumber(formValues.lpToken).isGreaterThan(lpTokenBalance ?? '0') : false}
+          balance={lpTokenBalance}
+          isNotEnough={haveSigner && new BigNumber(formValues.lpToken).isGreaterThan(lpTokenBalance.data ?? '0')}
           handleAmountChange={useCallback(lpToken => updateFormValues({ lpToken }), [updateFormValues])}
           disabled={disableForm}
         />
