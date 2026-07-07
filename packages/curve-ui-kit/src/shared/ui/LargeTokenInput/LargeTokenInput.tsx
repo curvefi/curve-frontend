@@ -18,7 +18,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { HelperMessage } from '@ui-kit/shared/ui/LargeTokenInput/HelperMessage'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { chipSizeClickable } from '@ui-kit/themes/components/chip'
-import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
+import { TRANSITION_FUNCTION } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { type QueryOrValue, toQuery, toValue } from '@ui-kit/types/util'
 import { decimal, formatNumber } from '@ui-kit/utils'
@@ -308,7 +308,7 @@ export const LargeTokenInput = ({
                   justifyContent: 'end',
                   // Hide by default, show on parent hover
                   opacity: { desktop: 0 },
-                  transition: `opacity ${TransitionFunction}`,
+                  transition: `opacity ${TRANSITION_FUNCTION}`,
                   // Show when parent stack is hovered
                   [`#${componentId}:hover &`]: { opacity: 1 },
                 }}

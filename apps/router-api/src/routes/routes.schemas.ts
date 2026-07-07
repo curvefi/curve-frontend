@@ -5,7 +5,7 @@ import { RouteProviders, type RouteProvider } from '@primitives/router.utils'
 const DECIMAL_PATTERN = '^-?\\d+(\\.\\d+)?$'
 const WEI_AMOUNT_PATTERN = '^\\d+$'
 
-export const RoutesPath = '/api/router/v1/routes'
+export const ROUTES_PATH = '/api/router/v1/routes'
 
 const AddressSchema = { type: 'string', pattern: ADDRESS_HEX_PATTERN } as const
 const AddressArraySchema = { type: 'array', items: AddressSchema, minItems: 1, maxItems: 1 } as const

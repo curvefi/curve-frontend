@@ -1,7 +1,7 @@
 import { meanBy } from 'lodash'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 
-const { Weekly, Monthly } = Duration.AverageRates
+const { Weekly: WEEKLY, Monthly: MONTHLY } = Duration.AverageRates
 
 /** A timestamped snapshot record */
 export type WithTimestamp = { timestamp: string | number | Date }
@@ -49,8 +49,8 @@ type AverageType = {
 }
 
 const { week, month } = {
-  week: { window: Weekly, period: `${Weekly}D`, adjective: 'weekly' },
-  month: { window: Monthly, period: `${Monthly}D`, adjective: 'monthly' },
+  week: { window: WEEKLY, period: `${WEEKLY}D`, adjective: 'weekly' },
+  month: { window: MONTHLY, period: `${MONTHLY}D`, adjective: 'monthly' },
 } satisfies Record<string, AverageType>
 
 export const AVERAGES_TYPES = {

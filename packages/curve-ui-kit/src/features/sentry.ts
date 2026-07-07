@@ -8,15 +8,15 @@ import {
   setUser as setSentryUser,
   withScope,
 } from '@sentry/react'
-import { isCypress, isPreviewHost } from '@ui-kit/utils/env'
+import { IS_CYPRESS, IS_PREVIEW_HOST } from '@ui-kit/utils/env'
 
 export const SENTRY_DSN =
   'https://946ac1b5b974fb993626876dd310b0d2@o4510753779220480.ingest.de.sentry.io/4510753786101840'
 
 const TLD = 'curve.finance'
-const environment = isCypress
+const ENVIRONMENT = IS_CYPRESS
   ? 'cypress'
-  : isPreviewHost
+  : IS_PREVIEW_HOST
     ? 'preview'
     : window.location.hostname === `www.${TLD}`
       ? 'production'
@@ -26,10 +26,10 @@ const environment = isCypress
 
 /** Initialize Sentry error reporting */
 export const initSentry = () =>
-  environment !== 'localhost' &&
+  ENVIRONMENT !== 'localhost' &&
   init({
     dsn: SENTRY_DSN,
-    environment,
+    environment: ENVIRONMENT,
     integrations: integrations => integrations.filter(i => i.name !== 'BrowserSession'), // we don't use session tracking
     sendClientReports: false, // prevents client_report envelopes for dropped events
     tracesSampleRate: 0.01, // Performance monitoring sample rate (adjust based on traffic)

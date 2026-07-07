@@ -11,7 +11,8 @@ import { useLiquidationStatus } from '@/llamalend/features/market-position-detai
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { hasResetPosition } from '@/llamalend/llama.utils'
 import { Decimal } from '@primitives/decimal.utils'
-import { useLlamaResetPosition, useLoanImplementationKey } from '@ui-kit/hooks/useFeatureFlags'
+import { useLlamaResetPosition } from '@ui-kit/hooks/useFeatureFlags'
+import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import type { QueryProp, Range } from '@ui-kit/types/util'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
@@ -76,6 +77,6 @@ export const ManageLoanTabs = (params: LendManageLoanProps) => {
   const isSoftLiquidation = ['softLiquidation', 'hardLiquidation'].includes(status ?? '')
   const showResetPosition = useLlamaResetPosition() && hasResetPosition(market)
   const menu = isSoftLiquidation ? createSoftLiqMenu(showResetPosition) : LendManageMenu
-
-  return <FormTabs key={useLoanImplementationKey()} params={params} menu={menu} />
+  const [releaseChannel] = useReleaseChannel() // remount tabs when zapv2 gets enabled
+  return <FormTabs key={releaseChannel} params={params} menu={menu} />
 }

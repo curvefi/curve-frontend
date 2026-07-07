@@ -40,7 +40,7 @@ export const SLIDER_BACKGROUND_VAR = '--slider-background'
 const BORDERED_SECTION_COUNT = 4
 
 // Shared selector for single-thumb sliders. Only thumbs have [data-index="n"] attribute
-export const singleThumbSelector = ':not(:has([data-index="1"]))'
+export const SINGLE_THUMB_SELECTOR = ':not(:has([data-index="1"]))'
 
 export const SLIDER_HEIGHT_VAR = '--slider-height'
 export const SLIDER_THUMB_WIDTH_VAR = '--slider-thumb-width'

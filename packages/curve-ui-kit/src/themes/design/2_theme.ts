@@ -1,9 +1,9 @@
 import { alpha } from '@mui/material'
-import { Blues, Grays, Greens, Oranges, Reds, Transparent, Violets, Yellows } from './0_primitives'
+import { Blues, Grays, Greens, Oranges, Reds, TRANSPARENT, Violets, Yellows } from './0_primitives'
 import { SurfacesAndText } from './1_surfaces_text'
 
-const InsetOverline = '0 0 auto' as const // Top border only
-const InsetUnderline = 'auto 0 0' as const // Bottom border only
+const INSET_OVERLINE = '0 0 auto' as const // Top border only
+const INSET_UNDERLINE = 'auto 0 0' as const // Bottom border only
 
 const Radius = { square: '0' } as const
 
@@ -206,15 +206,15 @@ export const createLightDesign = (
     Ghost: {
       Default: {
         Label: Text.TextColors.Highlight,
-        Fill: Transparent,
+        Fill: TRANSPARENT,
       },
       Hover: {
         Label: Grays[975],
-        Fill: Transparent,
+        Fill: TRANSPARENT,
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Transparent,
+        Fill: TRANSPARENT,
       },
     },
     Success: {
@@ -248,11 +248,11 @@ export const createLightDesign = (
     Navigation: {
       Default: {
         Label: Text.TextColors.Secondary,
-        Fill: Transparent,
+        Fill: TRANSPARENT,
       },
       Hover: {
         Label: Text.TextColors.Primary,
-        Fill: Transparent,
+        Fill: TRANSPARENT,
       },
       Current: {
         Label: Grays[10],
@@ -260,7 +260,7 @@ export const createLightDesign = (
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Transparent,
+        Fill: TRANSPARENT,
       },
     },
     Transition: 'Transition',
@@ -268,7 +268,7 @@ export const createLightDesign = (
 
   const Tabs = {
     UnderLined: {
-      Inset: InsetUnderline,
+      Inset: INSET_UNDERLINE,
       Container_Border: Light.Layer[1].Outline,
       Default: {
         Label: Text.TextColors.Secondary,
@@ -286,11 +286,11 @@ export const createLightDesign = (
     Contained: {
       Default: {
         Label: Text.TextColors.Secondary,
-        Fill: Transparent,
+        Fill: TRANSPARENT,
       },
       Hover: {
         Label: Text.TextColors.Highlight,
-        Fill: Transparent,
+        Fill: TRANSPARENT,
       },
       Current: {
         Label: Text.TextColors.Primary,
@@ -299,7 +299,7 @@ export const createLightDesign = (
       },
     },
     OverLined: {
-      Inset: InsetOverline,
+      Inset: INSET_OVERLINE,
       Default: {
         Label: Text.TextColors.Secondary,
         Outline: Layer[2].Outline,
@@ -546,7 +546,7 @@ export const createLightDesign = (
       },
       Disabled: {
         Fill: Color.Neutral[600],
-        Border: Transparent,
+        Border: TRANSPARENT,
         Dots: Color.Neutral[300],
       },
     },
@@ -762,15 +762,15 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
     Ghost: {
       Default: {
         Label: Text.TextColors.Highlight,
-        Fill: Transparent,
+        Fill: TRANSPARENT,
       },
       Hover: {
         Label: Grays[50],
-        Fill: Transparent,
+        Fill: TRANSPARENT,
       },
       Disabled: {
         Label: Blues[700],
-        Fill: Transparent,
+        Fill: TRANSPARENT,
       },
     },
     Success: {
@@ -804,11 +804,11 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
     Navigation: {
       Default: {
         Label: Text.TextColors.Tertiary,
-        Fill: Transparent,
+        Fill: TRANSPARENT,
       },
       Hover: {
         Label: Text.TextColors.Primary,
-        Fill: Transparent,
+        Fill: TRANSPARENT,
       },
       Current: {
         Label: Grays[975],
@@ -816,7 +816,7 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Transparent,
+        Fill: TRANSPARENT,
       },
     },
     Transition: 'Transition',
@@ -824,7 +824,7 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
 
   const Tabs = {
     UnderLined: {
-      Inset: InsetUnderline,
+      Inset: INSET_UNDERLINE,
       Container_Border: Dark.Layer[1].Outline,
       Default: {
         Label: Text.TextColors.Secondary,
@@ -842,11 +842,11 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
     Contained: {
       Default: {
         Label: Text.TextColors.Secondary,
-        Fill: Transparent,
+        Fill: TRANSPARENT,
       },
       Hover: {
         Label: Text.TextColors.Highlight,
-        Fill: Transparent,
+        Fill: TRANSPARENT,
       },
       Current: {
         Label: Text.TextColors.Primary,
@@ -855,7 +855,7 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
       },
     },
     OverLined: {
-      Inset: InsetOverline,
+      Inset: INSET_OVERLINE,
       Default: {
         Label: Text.TextColors.Secondary,
         Outline: Layer[2].Outline,
@@ -1102,7 +1102,7 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
       },
       Disabled: {
         Fill: Color.Neutral[600],
-        Border: Transparent,
+        Border: TRANSPARENT,
         Dots: Color.Neutral[300],
       },
     },
@@ -1279,15 +1279,15 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
     Ghost: {
       Default: {
         Label: Text.TextColors.Highlight,
-        Fill: Transparent,
+        Fill: TRANSPARENT,
       },
       Hover: {
         Label: Violets[800],
-        Fill: Transparent,
+        Fill: TRANSPARENT,
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Transparent,
+        Fill: TRANSPARENT,
       },
     },
     Success: {
@@ -1321,11 +1321,11 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
     Navigation: {
       Default: {
         Label: Text.TextColors.Tertiary,
-        Fill: Transparent,
+        Fill: TRANSPARENT,
       },
       Hover: {
         Label: Text.TextColors.Primary,
-        Fill: Transparent,
+        Fill: TRANSPARENT,
       },
       Current: {
         Label: Grays[10],
@@ -1333,7 +1333,7 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Transparent,
+        Fill: TRANSPARENT,
       },
     },
     Transition: 'Transition',
@@ -1341,7 +1341,7 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
 
   const Tabs = {
     UnderLined: {
-      Inset: InsetUnderline,
+      Inset: INSET_UNDERLINE,
       Container_Border: Layer[1].Outline,
       Default: {
         Label: Text.TextColors.Secondary,
@@ -1359,11 +1359,11 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
     Contained: {
       Default: {
         Label: Text.TextColors.Secondary,
-        Fill: Transparent,
+        Fill: TRANSPARENT,
       },
       Hover: {
         Label: Text.TextColors.Highlight,
-        Fill: Transparent,
+        Fill: TRANSPARENT,
       },
       Current: {
         Label: Text.TextColors.Primary,
@@ -1372,7 +1372,7 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
       },
     },
     OverLined: {
-      Inset: InsetOverline,
+      Inset: INSET_OVERLINE,
       Default: {
         Label: Text.TextColors.Secondary,
         Outline: Layer[2].Outline,
@@ -1619,7 +1619,7 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
       },
       Disabled: {
         Fill: Color.Neutral[600],
-        Border: Transparent,
+        Border: TRANSPARENT,
         Dots: Color.Neutral[300],
       },
     },

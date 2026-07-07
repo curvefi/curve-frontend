@@ -10,7 +10,7 @@ import type { AssemblePathResponse, CurveOdosAssembleRequest } from './odos-asse
 import type { CurveOdosQuoteRequest, OdosQuoteResponse } from './odos-quote.types'
 
 const { ODOS_API_URL = 'https://prices.curve.finance/odos' } = process.env
-const protocol = 'odos' as const
+const PROTOCOL = 'odos' as const
 
 /** Odos expects the zero address for ETH */
 const getToken = (address: Address): Address => (address == ethAddress ? zeroAddress : address)
@@ -95,7 +95,7 @@ export const buildOdosRouteResponse = async (
     (await assembleOdosQuote({ pathId: assert(pathId, 'Odos quote missing pathId'), zapAddress }, log)) ?? {}
   return [
     {
-      router: protocol,
+      router: PROTOCOL,
       amountIn: [amountIn],
       amountOut: outAmounts as [Decimal],
       priceImpact,
@@ -108,7 +108,7 @@ export const buildOdosRouteResponse = async (
           name: 'Odos route',
           tokenIn: [tokenIn],
           tokenOut: [tokenOut],
-          protocol,
+          protocol: PROTOCOL,
           action: 'swap',
           chainId,
           args: { pathId, pathVizImage },
