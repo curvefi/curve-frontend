@@ -14,7 +14,7 @@ import { MarketPageHeader } from '@/llamalend/widgets/page-header'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useParams } from '@ui-kit/hooks/router'
-import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
+import { useLlamalendMobileFormDrawer, useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
@@ -30,6 +30,7 @@ export const Page = () => {
   const { data: market, isLoading: isMarketLoading, error: marketError } = marketQuery
   const network = networks[chainId]
   const { address: userAddress } = useConnection()
+  const isMobileFormDrawer = useLlamalendMobileFormDrawer()
 
   useLendPageTitle(market?.collateral_token?.symbol, t`Supply`)
 
@@ -62,7 +63,10 @@ export const Page = () => {
       marketType={LlamaMarketType.Lend}
     >
       <DetailPageLayout
-        formTabs={{ content: (market ?? apiMarket.data) && <VaultTabs /> }}
+        formTabs={{
+          content: (market ?? apiMarket.data) && <VaultTabs />,
+          placement: isMobileFormDrawer ? 'mobile-drawer' : 'inline',
+        }}
         header={<MarketPageHeader isLoading={isLoading} />}
       >
         <MarketBanners

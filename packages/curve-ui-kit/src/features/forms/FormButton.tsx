@@ -7,6 +7,7 @@ import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectW
 import { t } from '@ui-kit/lib/i18n'
 import { applySxProps } from '@ui-kit/utils'
 import { useFormPlacement } from '@ui-kit/widgets/DetailPageLayout/form-context/FormPlacementContext'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 
 type FormButtonLabelPart = string | Exclude<Falsy, ''>
 
@@ -32,7 +33,9 @@ export const FormButton = ({
   sx,
   testId,
 }: FormButtonProps) => {
-  const isFixed = useFormPlacement() === 'mobile-drawer'
+  const isMobile = useIsMobile()
+  const isFixed = useFormPlacement() === 'mobile-drawer' && isMobile
+
   return useConnection().isConnected ? (
     children || (
       <Button

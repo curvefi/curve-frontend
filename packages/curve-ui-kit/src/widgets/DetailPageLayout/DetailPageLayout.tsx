@@ -1,9 +1,11 @@
 import { type ReactNode, useRef } from 'react'
+import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Stack, { StackProps } from '@mui/material/Stack'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useResizeObserver } from '@ui-kit/hooks/useResizeObserver'
+import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { mapBreakpoints } from '@ui-kit/themes/basic-theme/basic-theme'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { PAGE_SPACING } from './constants'
@@ -14,6 +16,14 @@ import type { DetailPageLayoutFormTabs, FormPlacement } from './types'
 const { MaxWidth, Spacing } = SizesAndSpaces
 
 const PAGE_MARGIN = { marginInline: Spacing.md, marginBlockStart: Spacing.md, marginBlockEnd: Spacing.xxl }
+
+/**
+ * Creates the scroll container boundary for the mobile drawer action bar. The action bar is position: sticky, so
+ * wrapping the page content keeps it from scrolling past DetailPageLayout into the global footer.
+ */
+const MobileDrawerBoundary = ({ children }: { children: ReactNode }) => (
+  <Box sx={{ position: 'relative' }}>{children}</Box>
+)
 
 /**
  * CSS rules for making the page header sticky.
@@ -79,7 +89,7 @@ export const DetailPageLayout = ({
   )
 
   return (
-    <>
+    <WithWrapper shouldWrap={showMobileDrawer} Wrapper={MobileDrawerBoundary}>
       <Grid
         container
         data-testid={testId ?? 'detail-page-layout'}
@@ -113,6 +123,6 @@ export const DetailPageLayout = ({
       {formTabs && showMobileDrawer && (
         <FormPlacementProvider placement={placement}>{formTabs?.content}</FormPlacementProvider>
       )}
-    </>
+    </WithWrapper>
   )
 }
