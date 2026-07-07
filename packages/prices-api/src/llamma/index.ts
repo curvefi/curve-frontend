@@ -80,11 +80,9 @@ export async function getOHLC(
     end: range.end.toString(),
   })
 
-  const response = await fetch(
-    `${host}/v1/${endpointParam}/llamma_ohlc/${chain}/${llamma}?${params}`,
-    undefined,
-    options?.signal,
-  )
+  const response = await fetch(`${host}/v1/${endpointParam}/llamma_ohlc/${chain}/${llamma}?${params}`, {
+    signal: options?.signal,
+  })
 
   return Schema.getLlammaOHLCResponse.parse(response)
 }

@@ -3,16 +3,22 @@ import { Duration } from '@ui-kit/themes/design/0_primitives'
 /**
  * First level, we try to pick only a few different intervals for all queries.
  */
-const { Urgent, Actionable, Informative, DontShowAfter, SemiStatic } = Duration.DataRefresh
+const {
+  Urgent: URGENT,
+  Actionable: ACTIONABLE,
+  Informative: INFORMATIVE,
+  DontShowAfter: DONT_SHOW_AFTER,
+  SemiStatic: SEMI_STATIC,
+} = Duration.DataRefresh
 
 /**
  * Second level, we try to pick only a few different `timing` options for all queries.
  */
 const { urgent, actionable, informative, dontRefetch } = {
-  urgent: { staleTime: Actionable, gcTime: DontShowAfter, refetchInterval: Urgent },
-  actionable: { staleTime: Informative, gcTime: DontShowAfter, refetchInterval: Actionable },
-  informative: { staleTime: Informative, gcTime: DontShowAfter, refetchInterval: Informative },
-  dontRefetch: { staleTime: SemiStatic, gcTime: SemiStatic },
+  urgent: { staleTime: ACTIONABLE, gcTime: DONT_SHOW_AFTER, refetchInterval: URGENT },
+  actionable: { staleTime: INFORMATIVE, gcTime: DONT_SHOW_AFTER, refetchInterval: ACTIONABLE },
+  informative: { staleTime: INFORMATIVE, gcTime: DONT_SHOW_AFTER, refetchInterval: INFORMATIVE },
+  dontRefetch: { staleTime: SEMI_STATIC, gcTime: SEMI_STATIC },
 } satisfies Record<
   string,
   /** Timing settings for each query category. We could extend this further to support other react-query options. */

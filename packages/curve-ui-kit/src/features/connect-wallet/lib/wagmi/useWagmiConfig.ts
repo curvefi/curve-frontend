@@ -3,7 +3,7 @@ import type { Chain } from 'viem'
 import { generatePrivateKey } from 'viem/accounts'
 import { mapRecord, recordValues } from '@primitives/objects.utils'
 import type { NetworkMapping } from '@ui/utils'
-import { isCypress, noCypressTestConnector } from '@ui-kit/utils/env'
+import { IS_CYPRESS, NO_CYPRESS_TEST_CONNECTOR } from '@ui-kit/utils/env'
 import { Chain as ChainEnum } from '@ui-kit/utils/network'
 import { createChainFromNetwork } from './chains'
 import { createTransportFromNetwork, defaultGetRpcUrls } from './transports'
@@ -22,8 +22,8 @@ export const useWagmiConfig = <T extends NetworkMapping>(networks: T | undefined
     return createWagmiConfig({
       chains,
       transports: mapRecord(networks, (_, network) => createTransportFromNetwork(network, defaultGetRpcUrls)),
-      ...(isCypress &&
-        !noCypressTestConnector && {
+      ...(IS_CYPRESS &&
+        !NO_CYPRESS_TEST_CONNECTOR && {
           connectors: [
             createTestConnector({
               privateKey: generatePrivateKey(),

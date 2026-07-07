@@ -1,6 +1,6 @@
 import ButtonBase, { type ButtonBaseProps } from '@mui/material/ButtonBase'
 import Card from '@mui/material/Card'
-import { Sizing, TransitionFunction } from '@ui-kit/themes/design/0_primitives'
+import { Sizing, TRANSITION_FUNCTION } from '@ui-kit/themes/design/0_primitives'
 import { applySxProps } from '@ui-kit/utils'
 
 export const SelectableCard = ({
@@ -25,7 +25,7 @@ export const SelectableCard = ({
             ? t.design.Layer.Highlight.Outline
             : t.design.Layer[1].Outline,
         outlineOffset: `-${Sizing[10]}`,
-        transition: `background-color ${TransitionFunction}, outline-color ${TransitionFunction}`,
+        transition: `background-color ${TRANSITION_FUNCTION}, outline-color ${TRANSITION_FUNCTION}`,
         '&:hover, &.cypress-hover': {
           backgroundColor: t.design.Layer.TypeAction.Hover,
         },

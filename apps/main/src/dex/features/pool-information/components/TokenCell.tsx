@@ -2,7 +2,7 @@ import Box from '@mui/material/Box'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useCopyToClipboard } from '@ui-kit/hooks/useCopyToClipboard'
 import { t } from '@ui-kit/lib/i18n'
-import { ClickableInRowClass } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { CLICKABLE_IN_ROW_CLASS } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
 import { TokenInfo, type TokenInfoProps } from '@ui-kit/shared/ui/TokenInfo'
@@ -43,7 +43,7 @@ export const TokenCell = ({
               address && (
                 <Box
                   component="span"
-                  className={ClickableInRowClass}
+                  className={CLICKABLE_IN_ROW_CLASS}
                   onClick={event => {
                     event.stopPropagation()
                     copyAddress()

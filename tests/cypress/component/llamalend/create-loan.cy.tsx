@@ -9,7 +9,7 @@ import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestW
 import { llamaNetworks, setGasInfo, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createCreateLoanScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
 
-const chainId = 1
+const CHAIN_ID = 1
 const testCases = [
   { approved: false, title: 'fills, approves, and submits' },
   { approved: true, title: 'fills and submits' },
@@ -19,14 +19,14 @@ describe('CreateLoanForm (mocked)', () => {
   testCases.forEach(({ approved, title }: { approved: boolean; title: string }) => {
     it(title, () => {
       const { llamaApi, expected, market, borrow, stubs, collateral } = createCreateLoanScenario({
-        chainId,
+        chainId: CHAIN_ID,
         presetRange: 50,
         approved,
       })
       const onPricesUpdated = cy.spy().as('onPricesUpdated')
 
       setLlamaApi(llamaApi)
-      setGasInfo({ chainId, networks: llamaNetworks })
+      setGasInfo({ chainId: CHAIN_ID, networks: llamaNetworks })
 
       cy.mount(
         <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
