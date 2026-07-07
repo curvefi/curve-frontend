@@ -2,7 +2,8 @@ import { FastifyBaseLogger } from 'fastify'
 import { ethAddress, zeroAddress } from 'viem'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { assert } from '@primitives/objects.utils'
+import { FetchError, fetchJson } from '@primitives/fetch.utils'
+import { assert, fromEntries } from '@primitives/objects.utils'
 import type { RouterRouteResponse } from '@primitives/router.utils'
 import { type RoutesQuery } from '../routes/routes.schemas'
 import type { AssemblePathResponse, CurveOdosAssembleRequest } from './odos-assemble.types'
@@ -45,18 +46,9 @@ async function getOdosQuote(
   } satisfies Omit<Record<keyof CurveOdosQuoteRequest, string>, 'blacklist'>)
   blacklist.forEach(address => params.append('blacklist', address))
 
-  const quoteResponse = await fetch(`${ODOS_API_URL}/v3/quote?${params}`, {
-    method: 'GET',
-    headers: { accept: 'application/json' },
-  })
-
-  const { ok, status, statusText } = quoteResponse
-  if (!ok) {
-    log.error({ message: 'odos route request failed', status, statusText, params, body: await quoteResponse.text() })
-    throw new Error(`Odos quote error - ${status} ${statusText}`)
-  }
-
-  return (await quoteResponse.json()) as OdosQuoteResponse
+  return await fetchJson<OdosQuoteResponse>(`${ODOS_API_URL}/v3/quote?${params}`).catch(error =>
+    logOdosError(error, log, 'odos route request failed', fromEntries([...params.entries()])),
+  )
 }
 
 async function assembleOdosQuote(
@@ -64,21 +56,9 @@ async function assembleOdosQuote(
   log: FastifyBaseLogger,
 ) {
   const params: Record<keyof CurveOdosAssembleRequest, string> = { path_id: pathId, user: zapAddress }
-  const assembleResponse = await fetch(`${ODOS_API_URL}/assemble?${new URLSearchParams(params)}`, {
-    method: 'GET',
-    headers: { accept: 'application/json' },
-  })
-  const { ok, status, statusText } = assembleResponse
-  if (!ok) {
-    return log.error({
-      message: 'odos assemble request failed',
-      status,
-      statusText,
-      params,
-      body: await assembleResponse.text(),
-    })
-  }
-  return (await assembleResponse.json()) as AssemblePathResponse
+  return await fetchJson<AssemblePathResponse>(`${ODOS_API_URL}/assemble?${new URLSearchParams(params)}`)
+    .catch(error => logOdosError(error, log, 'odos assemble request failed', params))
+    .catch(() => undefined) // assemble errors result in no tx data in response - but don't fail the whole request
 }
 
 /**
@@ -137,4 +117,11 @@ export const buildOdosRouteResponse = async (
       ...(transaction && { tx: transaction }),
     },
   ]
+}
+
+function logOdosError(error: unknown, log: FastifyBaseLogger, message: string, params: Record<string, string>): never {
+  if (error instanceof FetchError) {
+    log.error({ message, status: error.status, params })
+  }
+  throw error
 }

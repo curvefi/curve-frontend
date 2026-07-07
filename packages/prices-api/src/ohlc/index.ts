@@ -54,7 +54,7 @@ const getOhlcQuery = ({
 
 const fetchOhlc = async (url: string, options?: Options) => {
   const host = getHost(options)
-  const response = await fetch(`${host}${url}`, undefined, options?.signal)
+  const response = await fetch(`${host}${url}`, { signal: options?.signal })
 
   return Schema.getOHLCResponse.parse(response)
 }
