@@ -13,6 +13,7 @@ const {
   SENTRY_ORG,
   SENTRY_PROJECT,
   GITHUB_SHA,
+  SENTRY_APPLICATION_KEY = 'curve-frontend',
 } = process.env
 const shouldUploadSourcemaps = !!SENTRY_PROJECT || !!GITHUB_SHA
 
@@ -44,17 +45,16 @@ export default defineConfig(({ command }) => ({
     react(),
     svgr(),
     vercel(),
-    ...(shouldUploadSourcemaps
-      ? [
-          sentryVitePlugin({
-            authToken: SENTRY_AUTH_TOKEN,
-            org: SENTRY_ORG!,
-            project: SENTRY_PROJECT!,
-            release: { name: GITHUB_SHA! },
-            sourcemaps: { assets: './dist/**' },
-            telemetry: false,
-          }),
-        ]
+    ...(SENTRY_PROJECT
+      ? sentryVitePlugin({
+          applicationKey: SENTRY_APPLICATION_KEY,
+          authToken: SENTRY_AUTH_TOKEN,
+          org: SENTRY_ORG,
+          project: SENTRY_PROJECT,
+          ...(GITHUB_SHA && { release: { name: GITHUB_SHA } }),
+          sourcemaps: { assets: './dist/**' },
+          telemetry: false,
+        })
       : []),
   ],
   optimizeDeps: { include: ['styled-components', '@mui/material', '@mui/icons-material'] },
