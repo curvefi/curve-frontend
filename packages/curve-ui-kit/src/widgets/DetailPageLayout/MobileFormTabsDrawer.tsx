@@ -33,7 +33,6 @@ export const MobileFormTabsDrawer = ({ children, tabs, onSelectTab }: MobileForm
         sx={{
           position: 'sticky',
           bottom: 0,
-
           zIndex: t => t.zIndex.appBar - 2,
           gap: Spacing['3xs'],
           backgroundColor: t => t.design.Layer[1].Fill,

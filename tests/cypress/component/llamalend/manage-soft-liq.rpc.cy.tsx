@@ -38,9 +38,7 @@ describe('Manage soft liquidation', () => {
         apiMarket={constQ(undefined)}
         marketType={LlamaMarketType.Mint}
       >
-        <FormPlacementProvider placement="inline">
-          <Component networks={softLiqNetworks} collateralEvents={constQ(undefined)} />
-        </FormPlacementProvider>
+        <Component networks={softLiqNetworks} collateralEvents={constQ(undefined)} />
       </MarketContextProvider>
     )
   }
@@ -51,7 +49,7 @@ describe('Manage soft liquidation', () => {
       autoConnect
     >
       <CurveProvider app="llamalend" network={network} onChainUnavailable={console.error}>
-        {children}
+        <FormPlacementProvider placement="inline">{children}</FormPlacementProvider>
       </CurveProvider>
     </ComponentTestWrapper>
   )

@@ -62,6 +62,7 @@ type UseFormTabOptions<T extends object> = {
 
 /** Hook to manage form tabs and sub-tabs. */
 function useFormTabs<T extends object>({ menu, params }: UseFormTabOptions<T>) {
+  const isMobileDrawer = useIsMobileFormDrawer()
   const tabs = createOptions(menu, params)
   const { tab: tabKey, onTabChange: onChangeTab } = useTabs(tabs)
 
@@ -79,7 +80,7 @@ function useFormTabs<T extends object>({ menu, params }: UseFormTabOptions<T>) {
 
   const Component = components[0] || Skeleton // skeleton just for mui Tab validation, won't be rendered due to href
   const content = <Component {...params} />
-  return { tab, tabOption, tabs, subTabs, subTab, content, onChangeTab, onChangeSubTab }
+  return { tab, tabOption, tabs, subTabs, subTab, content, onChangeTab, onChangeSubTab, isMobileDrawer }
 }
 
 const marginInline = { tablet: 'auto', desktop: 0 } as const
@@ -100,8 +101,8 @@ type FormTabsProps<T extends object> = UseFormTabOptions<T> & {
  * @param options - useFormTabs options
  */
 export function FormTabs<T extends object>({ shouldWrap, overflow = 'kebab', ...options }: FormTabsProps<T>) {
-  const { tab, tabOption, tabs, subTabs, subTab, content, onChangeTab, onChangeSubTab } = useFormTabs(options)
-  const isMobileDrawer = useIsMobileFormDrawer()
+  const { tab, tabOption, tabs, subTabs, subTab, content, onChangeTab, onChangeSubTab, isMobileDrawer } =
+    useFormTabs(options)
   return (
     <WithWrapper shouldWrap={isMobileDrawer} Wrapper={MobileFormTabsDrawer} tabs={tabs} onSelectTab={onChangeTab}>
       <Stack sx={{ marginInline }}>

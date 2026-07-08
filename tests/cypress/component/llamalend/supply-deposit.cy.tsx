@@ -20,7 +20,6 @@ import {
 import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Chain } from '@ui-kit/utils'
-import { FormPlacementProvider } from '@ui-kit/widgets/DetailPageLayout/form-context/FormPlacementProvider'
 
 const chainId = Chain.Ethereum
 
@@ -69,9 +68,7 @@ describe('DepositForm (mocked)', () => {
 
         cy.mount(
           <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
-            <FormPlacementProvider placement="inline">
-              <DepositForm networks={llamaNetworks} />
-            </FormPlacementProvider>
+            <DepositForm networks={llamaNetworks} />
           </MockLoanTestWrapper>,
         )
 

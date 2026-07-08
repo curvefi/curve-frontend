@@ -18,7 +18,6 @@ import { createBorrowMoreScenario } from '@cy/support/helpers/llamalend/test-sce
 import { mockMintSnapshots } from '@cy/support/helpers/minting-mocks'
 import { constQ } from '@ui-kit/types/util'
 import { Chain } from '@ui-kit/utils'
-import { FormPlacementProvider } from '@ui-kit/widgets/DetailPageLayout/form-context/FormPlacementProvider'
 
 const chainId = Chain.Ethereum
 
@@ -70,13 +69,11 @@ describe('BorrowMoreForm (mocked)', () => {
 
       cy.mount(
         <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
-          <FormPlacementProvider placement="inline">
-            <BorrowMoreForm
-              networks={llamaNetworks}
-              onPricesUpdated={onPricesUpdated}
-              collateralEvents={constQ(fakeCollateralEvents)}
-            />
-          </FormPlacementProvider>
+          <BorrowMoreForm
+            networks={llamaNetworks}
+            onPricesUpdated={onPricesUpdated}
+            collateralEvents={constQ(fakeCollateralEvents)}
+          />
         </MockLoanTestWrapper>,
       )
 

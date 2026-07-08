@@ -64,12 +64,12 @@ describe('scrvUSD', () => {
     return (
       <ComponentTestWrapper config={createTenderlyWagmiConfigFromVNet({ vnet, privateKey })} autoConnect>
         <CurveProvider app="llamalend" network={networks[Chain.Ethereum]} onChainUnavailable={console.error}>
-          <Stack sx={{ maxWidth: 520, gap: 2 }}>
-            <UserPosition chainId={Chain.Ethereum} />
-            <FormPlacementProvider placement="inline">
+          <FormPlacementProvider placement="inline">
+            <Stack sx={{ maxWidth: 520, gap: 2 }}>
+              <UserPosition chainId={Chain.Ethereum} />
               <FormComponent network={SCRVUSD_NETWORK} />
-            </FormPlacementProvider>
-          </Stack>
+            </Stack>
+          </FormPlacementProvider>
         </CurveProvider>
       </ComponentTestWrapper>
     )

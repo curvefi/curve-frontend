@@ -15,7 +15,7 @@ const withMarketFormDrawer = <T>(
 ) => {
   if (breakpoint !== 'mobile') return callback()
 
-  cy.get(`[data-testid="mobile-form-action-${action}"]`, LOAD_TIMEOUT).should('be.visible').click()
+  cy.get(`[data-testid="mobile-form-action-${action}"]`, LOAD_TIMEOUT).click()
   cy.get('[data-testid="mobile-form-drawer"]', LOAD_TIMEOUT).should('be.visible')
   return callback()
 }

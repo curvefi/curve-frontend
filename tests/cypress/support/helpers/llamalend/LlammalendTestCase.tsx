@@ -88,13 +88,11 @@ function LlammalendTest({ tab, onPricesUpdated, type, marketType, ...props }: Ll
       apiMarket={constQ(undefined)}
       marketType={marketType}
     >
-      <FormPlacementProvider placement="inline">
-        <Component
-          networks={llamaNetworks}
-          onPricesUpdated={onPricesUpdated!}
-          collateralEvents={constQ(fakeCollateralEvents)}
-        />
-      </FormPlacementProvider>
+      <Component
+        networks={llamaNetworks}
+        onPricesUpdated={onPricesUpdated!}
+        collateralEvents={constQ(fakeCollateralEvents)}
+      />
     </MarketContextProvider>
   ) : market ? (
     `Invalid arguments given to LlammalendTestCase: ${JSON.stringify({ tab, type, loanExists, marketType })}.`
@@ -111,7 +109,9 @@ export const LlammalendTestCase = ({ vnet, privateKey, chainId, marketType, ...p
   <ComponentTestWrapper config={createTenderlyWagmiConfigFromVNet({ vnet, privateKey })} autoConnect>
     <CurveProvider app="llamalend" network={llamaNetworks[chainId]} onChainUnavailable={console.error}>
       <Box sx={{ maxWidth: 520 }}>
-        <LlammalendTest {...props} chainId={chainId} marketType={marketType} />
+        <FormPlacementProvider placement="inline">
+          <LlammalendTest {...props} chainId={chainId} marketType={marketType} />
+        </FormPlacementProvider>
       </Box>
     </CurveProvider>
   </ComponentTestWrapper>

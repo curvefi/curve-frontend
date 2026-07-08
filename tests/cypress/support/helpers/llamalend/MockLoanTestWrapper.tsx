@@ -8,6 +8,7 @@ import { CurveContext } from '@ui-kit/features/connect-wallet/lib/CurveContext'
 import { ConnectState } from '@ui-kit/features/connect-wallet/lib/types'
 import { useWallet } from '@ui-kit/features/connect-wallet/lib/useWallet'
 import { constQ } from '@ui-kit/types/util'
+import { FormPlacementProvider } from '@ui-kit/widgets/DetailPageLayout/form-context/FormPlacementProvider'
 import { ComponentTestWrapper } from '../ComponentTestWrapper'
 import { createMockLlamaApi, TEST_ADDRESS } from './mock-loan-test-data'
 import { llamaNetworks } from './test-context.helpers'
@@ -49,7 +50,7 @@ export const MockLoanTestWrapper = ({ children, llamaApi, market }: MockLoanTest
           apiMarket={constQ(undefined)}
           marketType={getMarketType(market)}
         >
-          {children}
+          <FormPlacementProvider placement="inline">{children}</FormPlacementProvider>
         </MarketContextProvider>
       </Box>
     </CurveContext>
