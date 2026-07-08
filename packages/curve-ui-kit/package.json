@@ -33,7 +33,7 @@
     "@walletconnect/ethereum-provider": "2.23.10",
     "dayjs": "1.11.21",
     "lodash": "*",
-    "react-hook-form": "7.80.0",
+    "react-hook-form": "7.77.0",
     "viem": "2.54.1",
     "wagmi": "3.6.21"
   },

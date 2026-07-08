@@ -7747,7 +7747,7 @@ __metadata:
     dayjs: "npm:1.11.21"
     eslint: "npm:*"
     lodash: "npm:*"
-    react-hook-form: "npm:7.80.0"
+    react-hook-form: "npm:7.77.0"
     storybook: "npm:10.4.6"
     typescript: "npm:*"
     viem: "npm:2.54.1"
@@ -12221,12 +12221,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-hook-form@npm:7.80.0":
-  version: 7.80.0
-  resolution: "react-hook-form@npm:7.80.0"
+"react-hook-form@npm:7.77.0":
+  version: 7.77.0
+  resolution: "react-hook-form@npm:7.77.0"
   peerDependencies:
     react: ^16.8.0 || ^17 || ^18 || ^19
-  checksum: 10c0/9a2a1316a562d3a144e3854ce22123b08fe886c8e0327a0682d3d30312a851beac115049f285bacd20d9dd1bdfe7d05333b5dab8ecb9b18c2976557220c8e648
+  checksum: 10c0/b61c9d739cf0fb4fde235cf1e36ae7bb69a583acbf144c9a1e403b47a0406bef5418cc0deb432b0b7e3e50738a998c5c44fad50aa881d85e5233b66c7a67d868
   languageName: node
   linkType: hard
 
