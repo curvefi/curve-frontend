@@ -32,7 +32,7 @@ export const useLLv2 = () => {
 export const use0xRouter = useBetaChannel
 
 /** Reset position form for LlamaLend soft liquidation */
-export const useLlamaResetPosition = useBetaChannel
+export const useLlamaResetPosition = useStableChannel
 
 /** Split the LlamaLend (soon to be legacy) health into: Liquidation Buffer and Health */
 export const useNewLlamalendHealth = useBetaChannel
