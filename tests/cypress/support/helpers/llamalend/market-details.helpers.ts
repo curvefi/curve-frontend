@@ -115,10 +115,13 @@ export const shouldLoadMintBorrowDetails = ({ breakpoint, hasWallet }: WalletOpt
   shouldLoadMarketParameters({ hasOnChainParameters: hasWallet, hasOraclePrice: hasWallet, hasPricePerShare: false })
 }
 
-export const shouldLoadLendVaultDetails = ({ hasWallet }: WalletOptions) => {
-  cy.get('[data-testid="supply-deposit-input"]').should('be.visible')
+export const shouldLoadLendVaultDetails = ({ breakpoint, hasWallet }: WalletOptions) => {
+  withMarketFormDrawer(breakpoint, 'supply', () => {
+    cy.get('[data-testid="supply-deposit-input"]').should('be.visible')
+    cy.get('[data-testid="supply-deposit-submit-button"]').should(hasWallet ? 'be.visible' : 'not.exist')
+    return cy.wrap(null)
+  })
   cy.get(`[data-testid='no-position-disconnected']`).should('not.exist')
-  cy.get('[data-testid="supply-deposit-submit-button"]').should(hasWallet ? 'be.visible' : 'not.exist')
   getActionValue('market-net-supply-apy').should('match', DECIMAL_REGEX)
   shouldLoadHistoricalSupplyRateChart()
   shouldShowCanvas('interest-rate-utilization-chart')

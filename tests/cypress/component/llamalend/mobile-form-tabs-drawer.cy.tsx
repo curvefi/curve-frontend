@@ -46,10 +46,10 @@ const openMobileAction = (action: string, label: string, panelTestId: string, as
   closeDrawer('mobile')
   cy.get(`[data-testid="${panelTestId}"]`).should('not.be.visible')
 }
-const [width, height] = oneMobileViewport()
+const [WIDTH, HEIGHT] = oneMobileViewport()
 
 describe('Mobile FormTabs drawer', () => {
-  beforeEach(() => cy.viewport(width, height))
+  beforeEach(() => cy.viewport(WIDTH, HEIGHT))
   it('opens the drawer on the selected market action', () => {
     cy.mount(
       <ComponentTestWrapper>

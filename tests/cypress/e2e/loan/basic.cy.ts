@@ -1,11 +1,16 @@
 import { mockMerklCampaigns } from '@cy/support/helpers/lending-mocks'
 import { shouldLoadMintBorrowDetails } from '@cy/support/helpers/llamalend/market-details.helpers'
-import { LOAD_TIMEOUT, oneMobileViewport } from '@cy/support/ui'
+import { LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
 
 const MINT_MARKET = 'WBTC'
 
+const [WIDTH, HEIGHT, BREAKPOINT] = oneViewport()
+
 describe('Basic Access Test', () => {
-  beforeEach(() => mockMerklCampaigns())
+  beforeEach(() => {
+    mockMerklCampaigns()
+    cy.viewport(WIDTH, HEIGHT)
+  })
 
   it('should open the crvUSD DApp successfully', () => {
     cy.visit('/crvusd')
@@ -20,18 +25,11 @@ describe('Basic Access Test', () => {
 
   it('should load mint market details with a wallet', () => {
     cy.visit(`/crvusd/ethereum/markets/${MINT_MARKET}`)
-    shouldLoadMintBorrowDetails({ hasWallet: true })
-  })
-
-  it('should load mint market details form drawer on mobile', () => {
-    const [width, height, breakpoint] = oneMobileViewport()
-    cy.viewport(width, height)
-    cy.visit(`/crvusd/ethereum/markets/${MINT_MARKET}`)
-    shouldLoadMintBorrowDetails({ breakpoint, hasWallet: true })
+    shouldLoadMintBorrowDetails({ breakpoint: BREAKPOINT, hasWallet: true })
   })
 
   it('should load mint market details without a wallet', () => {
     cy.visitWithoutTestConnector(`crvusd/ethereum/markets/${MINT_MARKET}`)
-    shouldLoadMintBorrowDetails({ hasWallet: false })
+    shouldLoadMintBorrowDetails({ breakpoint: BREAKPOINT, hasWallet: false })
   })
 })
