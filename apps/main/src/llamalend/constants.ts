@@ -27,3 +27,6 @@ export const NET_SUPPLY_RATE_TITLE = t`Net supply APY`
 export const USER_NET_SUPPLY_RATE_TITLE = t`Your net supply APY`
 
 export const LEVERAGE = 'leverage' as const satisfies SlippageType
+
+/** Any v1 lend market created after this date is considered deprecated. */
+export const LEND_V1_DEPRECATION_DATE = new Date('2025-11-12T00:00:00Z') // November 12, 2025

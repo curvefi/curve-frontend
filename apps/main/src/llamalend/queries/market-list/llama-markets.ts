@@ -1,6 +1,7 @@
 import { countBy, sumBy } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import { ethAddress } from 'viem'
+import { LEND_V1_DEPRECATION_DATE } from '@/llamalend/constants'
 import {
   calculateLendMarketTvlUsd,
   calculateMarketSolvency,
@@ -481,16 +482,18 @@ export const useLlamaMarkets = ({ userAddress, enableDeprecatedMarkets }: LlamaM
                   : null,
               hasFavorites: favoriteMarketsSet.size > 0,
               markets: [
-                ...(lendingVaults.data ?? []).map(vault =>
-                  convertLendingVault(
-                    vault,
-                    favoriteMarketsSet,
-                    campaigns,
-                    userBorrows,
-                    userSuppliedMarkets.data?.[vault.chain]?.[vault.vault],
-                    getLendMarketBadDebt(vault.chain, vault.controller),
+                ...(lendingVaults.data ?? [])
+                  .filter(({ createdAt, version }) => version != 1 || createdAt <= LEND_V1_DEPRECATION_DATE.getTime())
+                  .map(vault =>
+                    convertLendingVault(
+                      vault,
+                      favoriteMarketsSet,
+                      campaigns,
+                      userBorrows,
+                      userSuppliedMarkets.data?.[vault.chain]?.[vault.vault],
+                      getLendMarketBadDebt(vault.chain, vault.controller),
+                    ),
                   ),
-                ),
                 ...(mintMarkets.data ?? []).map(market =>
                   convertMintMarket(
                     market,
