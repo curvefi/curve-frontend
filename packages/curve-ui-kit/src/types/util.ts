@@ -95,12 +95,19 @@ export const mapQuery = <TSource, TResult>(
 ) =>
   q({
     isLoading,
+    // todo: maybe ignores null which is a valid query value and supported in combineQueries
     data: maybe(data, data => selector(data) ?? undefined),
     error,
   })
 
 /** Creates a QueryProp constant data, no loading or error state. */
 export const constQ = <T>(data: T) => q({ data, isLoading: false, error: null })
+
+/**
+ * A disabled query without any data. Currently used because ActionInfo requires some query and doesn't accept undefined.
+ * TODO: Get rid of this and create `type MaybeQuery<T> = T | QueryProp<T>`
+ */
+export const DISABLED_Q = constQ(undefined)
 
 /**
  * Creates a fake query that assumes the data is loading when null or undefined.
@@ -110,17 +117,18 @@ export const fakeLoadingQ = <T>(data: T | undefined) => q({ data, isLoading: dat
 
 /** Hook similar to mapQuery for queries that need memoization */
 export const useMappedQuery = <TSource, TResult>(
-  { isLoading, error, data }: Query<TSource | null>,
+  { isLoading, error, data }: Query<TSource>,
   transform: (data: TSource) => TResult,
 ): QueryProp<TResult> =>
   q({
     isLoading,
-    data: useMemo(() => maybe(data, data => transform(data) ?? undefined), [data, transform]),
+    // eslint-disable-next-line local/use-maybe-pattern -- we want to ignore undefined, but not null in this case
+    data: useMemo(() => (data === undefined ? undefined : transform(data)), [data, transform]),
     error,
   })
 
 /** a list of keys for query objects, i.e., data, isLoading, error */
-const queryObjectKeys = objectKeys(constQ(1))
+const queryObjectKeys = objectKeys(DISABLED_Q)
 
 /** Checks if a value is a query. */
 export const isQuery = <T>(value: unknown): value is QueryProp<T> =>

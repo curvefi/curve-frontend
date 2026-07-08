@@ -27,7 +27,7 @@ const HIDE_SCROLLBAR = {
   scrollbarWidth: 'none', // Firefox
 }
 
-const paddingBlock = 3
+const PADDING_BLOCK = 3
 
 export const MobileHeader = ({
   currentMenu,
@@ -70,7 +70,7 @@ export const MobileHeader = ({
       data-testid="mobile-main-bar"
     >
       <GlobalBanner networkId={networkId} chainId={chainId} backendMaintenance={backendMaintenance} />
-      <Toolbar sx={t => ({ paddingBlock, zIndex: t.zIndex.drawer + 1 })}>
+      <Toolbar sx={t => ({ paddingBlock: PADDING_BLOCK, zIndex: t.zIndex.drawer + 1 })}>
         <MobileTopBar networks={supportedNetworks} isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
         <Drawer

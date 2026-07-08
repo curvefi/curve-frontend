@@ -8,7 +8,7 @@ import { Sizing } from '../../design/0_primitives'
 import { SizesAndSpaces } from '../../design/1_sizes_spaces'
 import { buttonColor } from './utils'
 
-const { LineHeight, OutlineWidth, ButtonSize, FontSize } = SizesAndSpaces
+const { LineHeight, OutlineWidth: OUTLINE_WIDTH, ButtonSize, FontSize } = SizesAndSpaces
 
 type ButtonSize = {
   height: keyof typeof ButtonSize
@@ -101,7 +101,7 @@ export const defineMuiButton = ({ Button, Text }: DesignSystem): Components['Mui
     styleOverrides: {
       root: {
         borderRadius: 0,
-        border: `${OutlineWidth} solid transparent`,
+        border: `${OUTLINE_WIDTH} solid transparent`,
         boxSizing: 'border-box',
         '&:focus-visible': { borderColor: Focus_Outline },
         textTransform: 'uppercase',

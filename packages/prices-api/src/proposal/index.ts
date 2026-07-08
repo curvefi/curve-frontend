@@ -67,7 +67,8 @@ export async function getUserProposalVote(
     }
 
     if (userVotes.length < pagination) {
-      throw new FetchError(404, `Fetch error 404 for user proposal vote: ${user}/${proposalType}/${proposalId}`)
+      const message = `Fetch error 404 for user proposal vote: ${user}/${proposalType}/${proposalId}`
+      throw new FetchError(404, message, message)
     }
 
     page += 1

@@ -7,9 +7,9 @@ import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { DesignSystem } from '../design'
 
-const { Spacing, IconSize, OutlineWidth } = SizesAndSpaces
+const { Spacing, IconSize, OutlineWidth: OUTLINE_WIDTH } = SizesAndSpaces
 
-const titleAndIconSelector = '.MuiAlertTitle-root, .MuiAlert-icon'
+const TITLE_AND_ICON_SELECTOR = '.MuiAlertTitle-root, .MuiAlert-icon'
 
 export const defineMuiAlert = (
   { Layer: { 1: Layer1, Feedback, Highlight }, Text: { TextColors } }: DesignSystem,
@@ -27,7 +27,7 @@ export const defineMuiAlert = (
     root: {
       ...handleBreakpoints({
         ...bodyXsRegular,
-        borderWidth: OutlineWidth,
+        borderWidth: OUTLINE_WIDTH,
         boxShadow: 'none',
         paddingInline: Spacing.xs,
         paddingBlockStart: 0,
@@ -47,19 +47,19 @@ export const defineMuiAlert = (
       backgroundColor: Layer1.Fill,
       color: TextColors.Secondary,
       '&.MuiAlert-colorInfo': {
-        [titleAndIconSelector]: { color: TextColors.Highlight },
+        [TITLE_AND_ICON_SELECTOR]: { color: TextColors.Highlight },
         borderColor: Highlight.Outline,
       },
       '&.MuiAlert-colorSuccess': {
-        [titleAndIconSelector]: { color: TextColors.Feedback.Success },
+        [TITLE_AND_ICON_SELECTOR]: { color: TextColors.Feedback.Success },
         borderColor: Feedback.Success,
       },
       '&.MuiAlert-colorWarning': {
-        [titleAndIconSelector]: { color: TextColors.Feedback.Warning },
+        [TITLE_AND_ICON_SELECTOR]: { color: TextColors.Feedback.Warning },
         borderColor: Feedback.Warning,
       },
       '&.MuiAlert-colorError': {
-        [titleAndIconSelector]: { color: TextColors.Feedback.Error },
+        [TITLE_AND_ICON_SELECTOR]: { color: TextColors.Feedback.Error },
         borderColor: Feedback.Error,
       },
     },

@@ -4,13 +4,13 @@ import type { SliderProps } from '@mui/material/Slider'
 import type { Components } from '@mui/material/styles'
 import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 import { type DesignSystem } from '@ui-kit/themes/design'
-import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
+import { TRANSITION_FUNCTION } from '@ui-kit/themes/design/0_primitives'
 import { SliderSize } from './types'
 import {
   borderedRailBackground,
   orientationToDirection,
   getOrientationConfig,
-  singleThumbSelector,
+  SINGLE_THUMB_SELECTOR,
   SLIDER_BACKGROUND_VAR,
   SLIDER_HEIGHT_VAR,
   SLIDER_THUMB_WIDTH_VAR,
@@ -104,7 +104,7 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
         width: size.width,
         height: size.height,
         background: `${SliderHandle.Default.Fill} url(${sliderThumbImage}) center no-repeat`,
-        transition: `background ${TransitionFunction}, border ${TransitionFunction}`,
+        transition: `background ${TRANSITION_FUNCTION}, border ${TRANSITION_FUNCTION}`,
         border: `1px solid ${SliderHandle.Default.Border}`,
         borderRadius: 0,
         zIndex: 1,
@@ -147,7 +147,7 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
           ...beforeSize,
         },
         // Only fill the left border gap if there's a single thumb
-        [`.MuiSlider-root${singleThumbSelector} &::before`]: {
+        [`.MuiSlider-root${SINGLE_THUMB_SELECTOR} &::before`]: {
           backgroundColor: design.Color.Primary[500],
         },
 

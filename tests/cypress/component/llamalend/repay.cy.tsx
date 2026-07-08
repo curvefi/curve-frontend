@@ -20,7 +20,7 @@ import { constQ } from '@ui-kit/types/util'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { FormPlacementProvider } from '@ui-kit/widgets/DetailPageLayout/form-context/FormPlacementProvider'
 
-const chainId = 1
+const CHAIN_ID = 1
 const testCases = [
   { approved: true, title: 'fills and submits (already approved)' },
   { approved: false, title: 'fills, approves, and submits' },
@@ -34,7 +34,7 @@ describe('RepayForm (mocked)', () => {
   testCases.forEach(({ approved, title }: { approved: boolean; title: string }) => {
     it(title, () => {
       const { borrow, collateral, currentDebt, expected, futureDebt, llamaApi, market, stubs } = createRepayScenario({
-        chainId,
+        chainId: CHAIN_ID,
         approved,
       })
 
@@ -42,8 +42,8 @@ describe('RepayForm (mocked)', () => {
 
       void collateral
       setLlamaApi(llamaApi)
-      setGasInfo({ chainId, networks: llamaNetworks })
-      seedCrvUsdBalance({ chainId, addresses: [TEST_ADDRESS], min: borrow })
+      setGasInfo({ chainId: CHAIN_ID, networks: llamaNetworks })
+      seedCrvUsdBalance({ chainId: CHAIN_ID, addresses: [TEST_ADDRESS], min: borrow })
 
       cy.mount(
         <MockLoanTestWrapper llamaApi={llamaApi} market={market}>

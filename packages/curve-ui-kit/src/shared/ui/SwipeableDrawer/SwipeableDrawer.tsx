@@ -16,7 +16,7 @@ type Props = {
  * iOS is hosted on high-end devices. The backdrop transition can be enabled without dropping frames. The performance will be good enough.
  * iOS has a "swipe to go back" feature that interferes with the discovery feature, so discovery has to be disabled.
  */
-const iOS = typeof navigator !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent)
+const IS_IOS = /iPad|iPhone|iPod/.test(navigator?.userAgent)
 
 /**
  * A swipeable drawer component that can be used to display a list of items.
@@ -25,8 +25,8 @@ export const SwipeableDrawer = ({ button, children, keepMounted = false, open, s
   <>
     {button && <Box sx={{ height: '100%' }}>{button}</Box>}
     <MuiSwipeableDrawer
-      disableBackdropTransition={!iOS}
-      disableDiscovery={iOS}
+      disableBackdropTransition={!IS_IOS}
+      disableDiscovery={IS_IOS}
       anchor="bottom"
       open={open}
       onClose={() => setOpen(false)}

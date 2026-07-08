@@ -5,7 +5,6 @@ import { WagmiProvider } from 'wagmi'
 import { useNetworksQuery } from '@/dex/entities/networks'
 import { useStore as useDexStore } from '@/dex/store/useStore'
 import { BACKEND_MAINTENANCE } from '@/maintenances'
-import { GlobalLayout } from '@/routes/GlobalLayout'
 import isPropValid from '@emotion/is-prop-valid'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { HeadContent, Outlet } from '@tanstack/react-router'
@@ -27,8 +26,10 @@ import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { t } from '@ui-kit/lib/i18n'
 import { getCurrentApp } from '@ui-kit/shared/routes'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
-import { isCypress } from '@ui-kit/utils'
+import { IS_CYPRESS } from '@ui-kit/utils'
 import { ErrorBoundary } from '@ui-kit/widgets/ErrorBoundary'
+import { GlobalLayout } from './GlobalLayout'
+import { Loading } from './Loading'
 
 /**
  * This implements the default behavior from styled-components v5
@@ -56,32 +57,33 @@ const NetworkAwareLayout = ({ backendMaintenance }: { backendMaintenance: Mainte
   useBreadcrumbs(pathname)
   useLayoutStoreResponsive()
 
-  return (
-    config &&
-    networks && (
-      <WagmiProvider config={config}>
-        <CurveProvider app={currentApp} network={network} onChainUnavailable={onChainUnavailable} hydrate={hydrate}>
-          {network && (
-            <GlobalLayout
-              backendMaintenance={backendMaintenance}
-              currentApp={currentApp}
-              network={network}
-              networks={networks}
-            >
-              <HeadContent />
-              <Outlet />
-            </GlobalLayout>
-          )}
-        </CurveProvider>
-      </WagmiProvider>
-    )
+  return config && networks ? (
+    <WagmiProvider config={config}>
+      <CurveProvider app={currentApp} network={network} onChainUnavailable={onChainUnavailable} hydrate={hydrate}>
+        {network ? (
+          <GlobalLayout
+            backendMaintenance={backendMaintenance}
+            currentApp={currentApp}
+            network={network}
+            networks={networks}
+          >
+            <HeadContent />
+            <Outlet />
+          </GlobalLayout>
+        ) : (
+          <Loading />
+        )}
+      </CurveProvider>
+    </WagmiProvider>
+  ) : (
+    <Loading />
   )
 }
 
 export const RootLayout = () => {
   const theme = useUserProfileStore(state => state.theme)
   const backendMaintenance = useMaintenance(BACKEND_MAINTENANCE)
-  const devTools = !isCypress
+  const devTools = !IS_CYPRESS
   useBodyThemeClass()
 
   return (
@@ -95,7 +97,7 @@ export const RootLayout = () => {
               ) : (
                 <NetworkAwareLayout backendMaintenance={backendMaintenance} />
               )}
-              {!isCypress && <BackendMaintenanceModal {...backendMaintenance} />}
+              {!IS_CYPRESS && <BackendMaintenanceModal {...backendMaintenance} />}
               {devTools && <ReactQueryDevtools />}
             </QueryProvider>
           </OverlayProvider>

@@ -339,10 +339,12 @@ export const createResetPositionScenario = ({
   chainId,
   approved,
   minBorrowed = '1000',
+  isResetAvailable = true,
 }: {
   chainId: number
   approved: boolean
   minBorrowed?: Decimal
+  isResetAvailable?: boolean
 }) => {
   seedMarketBalances(chainId, DEFAULT_COLLATERAL_ADDRESS)
   const convertedBorrowed = '4500' as const
@@ -362,6 +364,7 @@ export const createResetPositionScenario = ({
       tokensToShrink: ['0', TEST_ADDRESS] as const,
       rates: [false, false] as const,
       futureRates: ['0', decimalMinus(getFutureDebt(walletBorrowed), debt), false] as const,
+      isAvailable: [TEST_ADDRESS] as const,
       health: [{ ...resetRepayParams, full: false }] as const,
       prices: [resetRepayParams] as const,
       isApproved: [walletBorrowed] as const,
@@ -378,6 +381,7 @@ export const createResetPositionScenario = ({
     futureRates: createStub(generateMarketRates()),
     estimateGasRepay: createStub(oneInt(120_000, 240_000)),
     estimateGasRepayApprove: createStub(oneInt(90_000, 180_000)),
+    isRepayWithShrinkAvailable: createStub(isResetAvailable),
     tokensToShrink: createStub(minBorrowed),
     repayHealth: createStub(oneDecimal(30, 98, 2)),
     repayPrices: createStub([oneDecimal(2500, 4200, 2), oneDecimal(2200, 3900, 2)]),
@@ -396,6 +400,7 @@ export const createResetPositionScenario = ({
     version: 'v2',
     stats: { rates: stubs.rates, futureRates: stubs.futureRates },
     loan: {
+      isRepayWithShrinkAvailable: stubs.isRepayWithShrinkAvailable,
       tokensToShrink: stubs.tokensToShrink,
       repayHealth: stubs.repayHealth,
       repayPrices: stubs.repayPrices,

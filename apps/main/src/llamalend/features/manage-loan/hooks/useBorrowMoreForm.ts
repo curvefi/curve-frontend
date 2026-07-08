@@ -31,7 +31,7 @@ import type { RouteResponse } from '@ui-kit/entities/router-api'
 import { useCallbackSync, useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { q, type QueryProp, type Range } from '@ui-kit/types/util'
-import { decimalSum, isDevelopment } from '@ui-kit/utils'
+import { decimalSum, IS_DEVELOPMENT } from '@ui-kit/utils'
 import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import { useMarketContext } from '../../market-context'
 
@@ -188,7 +188,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
       collateralEvents,
     }),
     // todo: delete this if users do not complain about it, for now dev-only feature
-    showUserBorrowed: isLeverageEnabled && !!canLeverageUserBorrowed(market) && isDevelopment,
+    showUserBorrowed: isLeverageEnabled && !!canLeverageUserBorrowed(market) && IS_DEVELOPMENT,
     isLeverageSupported: isLeverageBorrowMoreSupported(market),
     leverage: useBorrowMoreLeverage(params),
     zapAddress,

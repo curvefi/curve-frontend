@@ -2,7 +2,7 @@
 import { describe, expect, it, type TestContext } from 'vitest'
 import { endpointId, getEndpointCatalogSkipReason, type EndpointId, type EndpointModule } from './catalog'
 import { createFetchTracker, formatTrackedFetchUrls } from './fetch-tracker'
-import { endpointTestSeed } from './seeds'
+import { ENDPOINT_TEST_SEED } from './seeds'
 
 export { endpointId, type EndpointId, type EndpointModule }
 
@@ -54,7 +54,7 @@ const runEndpointCase = async (endpoint: EndpointCase, annotate: TestContext['an
     const result = await fetchTracker.run(endpoint.run)
     expect(result).toBeDefined()
   } catch (error) {
-    await annotate(`PRICES_API_TEST_SEED=${endpointTestSeed}`, 'endpoint-seed')
+    await annotate(`PRICES_API_TEST_SEED=${ENDPOINT_TEST_SEED}`, 'endpoint-seed')
 
     if (fetchTracker.urls.length > 0) {
       await annotate(formatTrackedFetchUrls(fetchTracker.urls), 'endpoint-url')
