@@ -2,7 +2,7 @@ import type { SvgIcon } from '@mui/material'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import type { Amount } from '@primitives/decimal.utils'
-import { maybes } from '@primitives/objects.utils'
+import { maybe, maybes } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { BalanceAmount } from '@ui-kit/shared/ui/LargeTokenInput/BalanceAmount'
 import { BalanceButton } from '@ui-kit/shared/ui/LargeTokenInput/BalanceButton'
@@ -54,9 +54,8 @@ export const Balance = <T extends Amount>({
 }: Props<T>) => {
   const { data: balance, isLoading: loading } = toQuery(balanceProp)
   const usdRate = toValue(usdRateProp)
-  const notionalValueUsd = notionalValueUsdProp
-    ? toValue(notionalValueUsdProp)
-    : maybes([balance, usdRate], (usdRate, balance) => +usdRate * +balance)
+  const notionalValueUsd =
+    maybe(notionalValueUsdProp, toValue) ?? maybes([balance, usdRate], (usdRate, balance) => +usdRate * +balance)
   return (
     <WithWrapper
       Wrapper={BalanceButton}
@@ -100,7 +99,7 @@ export const Balance = <T extends Amount>({
           >
             {symbol}
           </Typography>{' '}
-          {!!notionalValueUsd && !loading && (
+          {!!Number(notionalValueUsd) && !loading && (
             <Typography
               variant="bodyXsRegular"
               sx={{ ...VERTICAL_CENTER_TEXT, color: t => t.design.Inputs.Text.MetaSubtle }}

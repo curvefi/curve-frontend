@@ -8,7 +8,7 @@ const DEFAULT_CONFIRMATION_TEXT = t`Value has been copied to clipboard`
 const DEFAULT_ADDRESS_CONFIRMATION_TEXT = t`Address has been copied to clipboard`
 
 export const useCopyToClipboard = ({
-  copyText = '<empty text>',
+  copyText,
   confirmationText,
   testId = DEFAULT_TEST_ID,
 }: {
@@ -17,7 +17,8 @@ export const useCopyToClipboard = ({
   testId?: string
 }) =>
   useCallback(() => {
-    console.info(`Copying to clipboard: ${copyText}`)
+    if (!copyText) return showToast({ title: t`Nothing to copy`, severity: 'warning', testId })
+
     const title =
       confirmationText ?? (ADDRESS_REGEX.test(copyText) ? DEFAULT_ADDRESS_CONFIRMATION_TEXT : DEFAULT_CONFIRMATION_TEXT)
     return void (

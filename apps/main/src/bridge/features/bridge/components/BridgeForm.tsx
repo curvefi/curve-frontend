@@ -67,8 +67,7 @@ export const BridgeForm = ({
       <BridgeFormContent
         networks={supportedNetworks}
         fromChainId={fromChainId}
-        amount={amount}
-        amountError={amountError}
+        amount={q({ data: amount, isLoading: false, error: amountError ? new Error(amountError) : null })}
         walletBalance={walletBalance}
         inputBalanceUsd={inputBalanceUsd}
         bridgeDisabledAlert={bridgeDisabledAlert}

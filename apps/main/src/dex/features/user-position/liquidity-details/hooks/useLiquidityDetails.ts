@@ -20,7 +20,7 @@ export const useLiquidityDetails = ({ chainId, poolDataCacheOrApi, poolId }: Use
   const { address: userAddress } = useConnection()
   const { lpTokenBalance, gaugeTokenBalance } = usePoolTokenDepositBalances({ chainId, poolId, userAddress })
 
-  const hasPosition = Number(lpTokenBalance) > 0 || Number(gaugeTokenBalance) > 0
+  const hasPosition = Number(lpTokenBalance.data) > 0 || Number(gaugeTokenBalance.data) > 0
   const queryParams = { chainId, poolId, userAddress }
 
   const userBalances = useUserPoolBalancesQuery(queryParams, hasPosition)

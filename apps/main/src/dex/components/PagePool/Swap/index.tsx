@@ -374,7 +374,11 @@ export const Swap = ({
           label={t`Sell`}
           name="fromAmount"
           onBalance={setFromAmount}
-          balance={decimal(formValues.fromAmount)}
+          balance={q({
+            data: decimal(formValues.fromAmount),
+            isLoading: false,
+            error: formValues.fromError ? new Error(formValues.fromError) : null,
+          })}
           inputBalanceUsd={decimal(formValues.fromAmount && fromUsdRate && fromUsdRate * +formValues.fromAmount)}
           tokenSelector={
             <TokenSelector
@@ -409,7 +413,6 @@ export const Swap = ({
             </TokenSelector>
           }
           {...(formValues.fromError && {
-            isError: true,
             message: t`Amount > wallet balance ${formatNumber(userFromBalance.data, { abbreviate: false, fallback: '-' })}`,
           })}
           disabled={isDisabled}

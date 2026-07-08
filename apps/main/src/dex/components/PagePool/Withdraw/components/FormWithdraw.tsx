@@ -146,7 +146,7 @@ export const FormWithdraw = ({
     ) => {
       const haveFormLpToken = +formValues.lpToken > 0
       const haveUserLpToken = lpTokenBalance.data != null && +lpTokenBalance.data > 0
-      const isValidLpToken = haveUserLpToken && haveFormLpToken && +lpTokenBalance >= +formValues.lpToken
+      const isValidLpToken = haveUserLpToken && haveFormLpToken && +lpTokenBalance.data! >= +formValues.lpToken
       let isValid = haveSigner && !isSeed && isValidLpToken && !!formValues.selected && !formStatus.error
 
       if (isValid && (formValues.selected === 'token' || formValues.selected === 'imbalance')) {
@@ -327,7 +327,7 @@ export const FormWithdraw = ({
       <FieldLpToken
         amount={formValues.lpToken}
         balance={lpTokenBalance}
-        isNotEnough={haveSigner && +formValues.lpToken > +(lpTokenBalance ?? '')}
+        isNotEnough={haveSigner && +formValues.lpToken > +(lpTokenBalance.data ?? '0')}
         handleAmountChange={useCallback(
           (lpToken: string) =>
             updateFormValues({ amounts: resetFormAmounts(useStore.getState().poolWithdraw.formValues), lpToken }, null),

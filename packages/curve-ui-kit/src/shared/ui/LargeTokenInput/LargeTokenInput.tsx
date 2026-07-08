@@ -194,10 +194,10 @@ export const LargeTokenInput = ({
     equals: bigNumEquals,
   })
 
-  const showSlider = !!maxBalance?.showSlider && !!maxBalance?.balance
   const chips = typeof maxBalance?.chips === 'string' ? CHIPS_PRESETS[maxBalance.chips] : maxBalance?.chips
   const showChips = !!chips?.length
   const { data: maxBalanceValue, isLoading: maxBalanceLoading, error: maxBalanceError } = toQuery(maxBalance?.balance)
+  const showSlider = !!maxBalance?.showSlider && maxBalanceValue != null
   const chipDisabled = !!disabled || maxBalanceLoading
   const isError = !!maxBalanceError || !!error
 
