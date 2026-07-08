@@ -4,7 +4,6 @@ import { useRangeToLiquidation } from '@/llamalend/queries/user/user-prices.quer
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
 import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'
 import { Stack } from '@mui/material'
-import { maybe } from '@primitives/objects.utils'
 import { combineQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import type { UserMarketParams } from '@ui-kit/lib/model'
@@ -58,14 +57,12 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
           label={t`Collateral value`}
           value={collateralValue}
           valueOptions={{ unit: 'dollar' }}
-          notional={
-            collateral
-              ? formatCollateralNotional(
-                  { value: collateral, symbol: collateralToken?.symbol },
-                  { value: borrowed, symbol: borrowToken?.symbol },
-                )
-              : undefined
-          }
+          notional={mapQuery(userState, ({ collateral, stablecoin }) =>
+            formatCollateralNotional(
+              { value: collateral, symbol: collateralToken?.symbol },
+              { value: stablecoin, symbol: borrowToken?.symbol },
+            ),
+          )}
           valueTooltip={{
             title: t`Collateral value`,
             body: (
@@ -98,9 +95,9 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
             arrow: false,
             clickable: true,
           }}
-          notional={maybe(rangeToLiquidation.data, value => ({
+          notional={mapQuery(rangeToLiquidation, value => ({
             value,
-            unit: { symbol: `% distance to LT`, position: 'suffix' },
+            unit: { symbol: `% distance to LT`, position: 'suffix' as const },
           }))}
         />
         <Metric
