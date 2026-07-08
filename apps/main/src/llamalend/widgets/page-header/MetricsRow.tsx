@@ -4,7 +4,6 @@ import { BorrowAprMetric } from '@/llamalend/widgets/BorrowAprMetric'
 import { MarketSupplyRateTooltipContent, AvailableLiquidityTooltip, TooltipOptions } from '@/llamalend/widgets/tooltips'
 import Stack from '@mui/material/Stack'
 import { maybe } from '@primitives/objects.utils'
-import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -32,18 +31,19 @@ export const MetricsRow = ({
   collateral: { symbol: string } | undefined
   borrowToken: { symbol: string } | undefined
 }) => {
-  const isMobile = useIsMobile()
-  const metricAlignment = isMobile ? 'start' : 'end'
   const supplyRatePeriod = supplyRate?.data ? AVERAGE_CATEGORIES[supplyRate.data.averageCategory].period : null
 
   return (
     <Stack
       direction="row"
       sx={{
-        gap: Spacing.xxl,
+        display: { mobile: 'grid', desktop: 'flex' },
+        gridTemplateColumns: { mobile: 'repeat(2, minmax(0, 1fr))', desktop: 'none' },
+        columnGap: Spacing.xxl,
+        rowGap: { mobile: Spacing.lg.mobile, desktop: Spacing.xxl.desktop },
         alignItems: 'center',
         flexWrap: 'wrap',
-        justifyContent: { mobile: 'flex-start', tablet: 'flex-end' },
+        justifyContent: 'flex-start',
         minWidth: 0,
         maxWidth: '100%',
       }}
@@ -52,12 +52,10 @@ export const MetricsRow = ({
         marketType={marketType}
         borrowRate={borrowRate}
         collateralSymbol={collateral?.symbol}
-        alignment={metricAlignment}
       />
       {supplyRate && (
         <Metric
           category={METRIC_CATEGORY}
-          alignment={metricAlignment}
           testId="market-net-supply-apy"
           label={NET_SUPPLY_RATE_TITLE}
           value={mapQuery(supplyRate, supplyRate => supplyRate.totalMinBoost)}
@@ -97,7 +95,6 @@ export const MetricsRow = ({
       {marketType === LlamaMarketType.Lend && (
         <Metric
           category={METRIC_CATEGORY}
-          alignment={metricAlignment}
           testId="market-total-liquidity"
           label={t`Total liquidity`}
           {...tokenMetric({
@@ -114,7 +111,6 @@ export const MetricsRow = ({
       )}
       <Metric
         category={METRIC_CATEGORY}
-        alignment={metricAlignment}
         testId="market-available-liquidity"
         label={t`Available liquidity`}
         {...tokenMetric({

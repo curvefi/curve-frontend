@@ -49,6 +49,7 @@ export const MarketPageHeader = ({ isLoading }: { isLoading: boolean }) => {
       subtitle={subtitle}
       titleLoading={isLoading}
       subtitleLoading={isLoading}
+      rightItemsRowBreakpoint="desktop"
       icon={
         <WithSkeleton loading={isLoading} variant="rectangular" width={35} height={35}>
           {collateralToken && borrowToken && (
