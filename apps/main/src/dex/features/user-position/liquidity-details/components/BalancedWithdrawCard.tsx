@@ -6,6 +6,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { mapQuery } from '@ui-kit/types/util'
 import { amount, formatNumber } from '@ui-kit/utils'
 import type { LiquidityDetailsData } from '../hooks/useLiquidityDetails'
 
@@ -30,9 +31,7 @@ export const BalancedWithdrawCard = ({
               {row.symbol}
             </Stack>
           }
-          loading={rows.isLoading}
-          error={rows.error}
-          value={formatNumber(amount(row.amount), 'token.balance')}
+          value={mapQuery(rows, () => formatNumber(amount(row.amount), 'token.balance'))}
         />
       ))}
     </CardContent>

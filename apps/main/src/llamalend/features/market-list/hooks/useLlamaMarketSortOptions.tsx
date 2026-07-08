@@ -1,8 +1,10 @@
+import type { ReactNode } from 'react'
 import { useConnection } from 'wagmi'
 import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { t } from '@ui-kit/lib/i18n'
-import type { Option } from '@ui-kit/shared/ui/DataTable/SelectFilter'
 import { LlamaMarketColumnId } from '../columns'
+
+type Option<T = string> = { id: T; label: ReactNode }
 
 /**
  * Creates a list of select options for sorting the Llama Market table (used for mobile only)

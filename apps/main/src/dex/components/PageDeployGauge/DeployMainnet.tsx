@@ -20,7 +20,7 @@ type Props = {
   chainId: ChainId
 }
 
-const mainnet = 1
+const MAINNET = 1
 
 export const DeployMainnet = ({ chainId }: Props) => {
   const currentPoolType = useStore(state => state.deployGauge.currentPoolType)
@@ -28,7 +28,7 @@ export const DeployMainnet = ({ chainId }: Props) => {
   const poolAddress = useStore(state => state.deployGauge.poolAddress)
   const setPoolAddress = useStore(state => state.deployGauge.setPoolAddress)
 
-  const { data: network } = useNetworkByChain({ chainId: mainnet })
+  const { data: network } = useNetworkByChain({ chainId: MAINNET })
 
   const poolTypesList: PoolType[] = useMemo(() => {
     const list: PoolType[] = []
@@ -52,7 +52,7 @@ export const DeployMainnet = ({ chainId }: Props) => {
 
   return (
     <Wrapper flex flexColumn>
-      {chainId === mainnet ? (
+      {chainId === MAINNET ? (
         <>
           <SelectorWrapper>
             <Box flex>

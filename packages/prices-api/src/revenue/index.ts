@@ -7,7 +7,7 @@ export type * from './schema'
 
 export async function getByChain(options?: Options) {
   const host = getHost(options)
-  const response = await fetch(`${host}/v1/chains/fees`, undefined, options?.signal)
+  const response = await fetch(`${host}/v1/chains/fees`, { signal: options?.signal })
 
   return Schema.getByChainResponse.parse(response)
 }
@@ -47,11 +47,9 @@ export async function getDistributionsPage(
   options?: Options,
 ) {
   const host = getHost(options)
-  const response = await fetch(
-    `${host}/v1/dao/fees/distributions${addQueryString({ page, per_page })}`,
-    undefined,
-    options?.signal,
-  )
+  const response = await fetch(`${host}/v1/dao/fees/distributions${addQueryString({ page, per_page })}`, {
+    signal: options?.signal,
+  })
 
   return Schema.getDistributionsResponse.parse(response)
 }

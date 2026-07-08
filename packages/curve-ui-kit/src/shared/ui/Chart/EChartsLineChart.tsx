@@ -35,7 +35,7 @@ const getYAxisBounds = <TData extends Record<string, unknown>, TSeriesKey extend
 
   const min = Math.min(...values)
   const max = Math.max(...values)
-  const padding = min === max ? 1 : (max - min) * paddingRatio
+  const padding = max - min < 1e-10 ? 0.1 : (max - min) * paddingRatio
   return { yMin: min - padding, yMax: max + padding }
 }
 

@@ -1,4 +1,4 @@
-export type VisibilityOption<ColumnIds> = {
+type VisibilityOption<ColumnIds> = {
   columns: ColumnIds[] // the column ids that are affected by this option
   active: boolean // whether the column is currently visible in the table
   label: string // the label for the popover, without a label the option is not shown

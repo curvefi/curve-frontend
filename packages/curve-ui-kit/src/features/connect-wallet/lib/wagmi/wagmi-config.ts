@@ -88,5 +88,3 @@ export const resetWagmiConfigForTests = () => {
   // otherwise wagmi config is memoized and breaks reconnect on tests
   _config = undefined
 }
-
-export type WagmiChainId = ReturnType<typeof createWagmiConfig>['chains'][number]['id']

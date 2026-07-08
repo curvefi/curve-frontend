@@ -1,6 +1,5 @@
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import Stack from '@mui/material/Stack'
-import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 import { Badge, BadgeProps } from '@ui-kit/shared/ui/Badge'
@@ -38,7 +37,7 @@ export const MarketBadges = ({ market, isMobile }: { market: LlamaMarket; isMobi
       sx={{ gap: Spacing.xs, alignItems: 'center', ...(isMobile && { height: Sizing.md.mobile }) }}
     >
       <ChainIcon blockchainId={chain} />
-      {useLLv2() && <MarketBadge label={marketVersionLabel[version]} data-testid={`badge-market-version-${version}`} />}
+      <MarketBadge label={marketVersionLabel[version]} data-testid={`badge-market-version-${version}`} />
       <Tooltip title={marketTypeDetails[type].description}>
         <MarketBadge label={marketTypeDetails[type].label} data-testid={`badge-market-type-${type}`} />
       </Tooltip>

@@ -42,11 +42,11 @@ type SliceState = {
   vecrvInfo: Record<string, Awaited<ReturnType<typeof curvejsApi.lockCrv.vecrvInfo>>['resp'] | null>
 }
 
-const sliceKey = 'dashboard'
+const SLICE_KEY = 'dashboard'
 
 // prettier-ignore
 export type DashboardSlice = {
-  [sliceKey]: SliceState & {
+  [SLICE_KEY]: SliceState & {
     fetchVeCrvAndClaimables: (activeKey: string, curve: CurveApi, walletAddress: string) => Promise<void>
     fetchDashboardData: (curve: CurveApi, walletAddress: string, poolDataMapper: PoolDataMapper) => Promise<{ dashboardDataMapper: DashboardDataMapper, error: string }>
     sortFn: (chainId: ChainId, sortBy: SortId, sortByOrder: Order, walletPoolDatas: WalletPoolData[]) => WalletPoolData[]
@@ -87,7 +87,7 @@ export const createDashboardSlice = (
 
     fetchVeCrvAndClaimables: async (activeKey, curve, walletAddress) => {
       const {
-        [sliceKey]: { ...sliceState },
+        [SLICE_KEY]: { ...sliceState },
       } = get()
 
       // loading state
@@ -99,7 +99,7 @@ export const createDashboardSlice = (
         curvejsApi.wallet.userClaimableFees(curve, activeKey, walletAddress),
       ])
 
-      if (veCrvResp.activeKey !== get()[sliceKey].activeKey) return
+      if (veCrvResp.activeKey !== get()[SLICE_KEY].activeKey) return
 
       const formType: FormStatus['formType'] = veCrvResp.error ? 'VECRV' : claimablesResp.error ? 'CLAIMABLE_FEES' : ''
       const error = veCrvResp.error || claimablesResp.error || ''
@@ -113,7 +113,7 @@ export const createDashboardSlice = (
     fetchDashboardData: async (curve, walletAddress, poolDataMapper) => {
       const {
         pools: poolsState,
-        [sliceKey]: { activeKey, ...sliceState },
+        [SLICE_KEY]: { activeKey, ...sliceState },
       } = get()
 
       const { chainId } = curve
@@ -217,7 +217,7 @@ export const createDashboardSlice = (
     // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
     setFormValues: async (rChainId, curve, poolDataMapper, updatedFormValues) => {
       const {
-        [sliceKey]: {
+        [SLICE_KEY]: {
           activeKey: storedActiveKey,
           formValues: storedFormValues,
           dashboardDatasMapper: storedDashboardDatasMapper,
@@ -305,20 +305,20 @@ export const createDashboardSlice = (
       })
     },
     setFormStatusClaimFees: updatedFormStatus => {
-      const { formStatus, ...sliceState } = get()[sliceKey]
+      const { formStatus, ...sliceState } = get()[SLICE_KEY]
       sliceState.setStateByKey('formStatus', { ...formStatus, ...updatedFormStatus })
     },
     setFormStatusVecrv: updatedFormStatusVecrv => {
-      const { formStatus, ...sliceState } = get()[sliceKey]
+      const { formStatus, ...sliceState } = get()[SLICE_KEY]
       sliceState.setStateByKey('formStatus', { ...formStatus, ...updatedFormStatusVecrv })
     },
 
     // steps
     fetchStepClaimFees: async (activeKey, curve, walletAddress, key) => {
       const { pools } = get()
-      const { claimableFees, ...sliceState } = get()[sliceKey]
+      const { claimableFees, ...sliceState } = get()[SLICE_KEY]
       const { provider } = useWallet.getState()
-      if (!provider) return setMissingProvider(get()[sliceKey])
+      if (!provider) return setMissingProvider(get()[SLICE_KEY])
 
       const { chainId } = curve
 
@@ -333,7 +333,7 @@ export const createDashboardSlice = (
 
       const resp = await curvejsApi.lockCrv.claimFees(activeKey, curve, provider, key)
 
-      if (resp.activeKey !== get()[sliceKey].activeKey) return
+      if (resp.activeKey !== get()[SLICE_KEY].activeKey) return
 
       if (resp.error) {
         sliceState.setStateByKey('formStatus', { ...formStatus, formProcessing: false, step: '', error: resp.error })
@@ -356,10 +356,10 @@ export const createDashboardSlice = (
     },
     fetchStepWithdrawVecrv: async (_, curve, walletAddress) => {
       const {
-        [sliceKey]: { formValues, ...sliceState },
+        [SLICE_KEY]: { formValues, ...sliceState },
       } = get()
       const { provider } = useWallet.getState()
-      if (!provider) return setMissingProvider(get()[sliceKey])
+      if (!provider) return setMissingProvider(get()[SLICE_KEY])
 
       // update form
       const formStatus: FormStatus = {
@@ -384,21 +384,21 @@ export const createDashboardSlice = (
 
     // slice helpers
     setStateByActiveKey: (key, activeKey, value) => {
-      if (Object.keys(get()[sliceKey][key]).length > 30) {
-        get().setAppStateByKey(sliceKey, key, { [activeKey]: value })
+      if (Object.keys(get()[SLICE_KEY][key]).length > 30) {
+        get().setAppStateByKey(SLICE_KEY, key, { [activeKey]: value })
       } else {
-        get().setAppStateByActiveKey(sliceKey, key, activeKey, value)
+        get().setAppStateByActiveKey(SLICE_KEY, key, activeKey, value)
       }
     },
     setStateByKey: (key, value) => {
-      get().setAppStateByKey(sliceKey, key, value)
+      get().setAppStateByKey(SLICE_KEY, key, value)
     },
     setStateByKeys: sliceState => {
-      get().setAppStateByKeys(sliceKey, sliceState)
+      get().setAppStateByKeys(SLICE_KEY, sliceState)
     },
     resetState: () => {
-      const { walletAddress } = get()[sliceKey].formValues
-      get().resetAppState(sliceKey, {
+      const { walletAddress } = get()[SLICE_KEY].formValues
+      get().resetAppState(SLICE_KEY, {
         ...DEFAULT_STATE,
         formValues: { ...DEFAULT_STATE.formValues, walletAddress },
       })

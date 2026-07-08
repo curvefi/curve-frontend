@@ -21,7 +21,7 @@ export function usePrevLoanState<ChainId extends IChainId>(
     params: UserMarketParams<ChainId>
     collateralToken: Token | undefined
     borrowToken: Token | undefined
-    prevPrices?: QueryProp<Range<Decimal>>
+    prevPrices?: QueryProp<Range<Decimal> | null>
   },
   enabled = true,
 ) {

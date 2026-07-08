@@ -4,7 +4,7 @@ import type { Address } from '@primitives/address.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { FavoriteHeartIcon } from '@ui-kit/shared/icons/HeartIcon'
-import { ClickableInRowClass, DesktopOnlyHoverClass } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { CLICKABLE_IN_ROW_CLASS, DESKTOP_ONLY_HOVER_CLASS } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { classNames } from '@ui-kit/utils/dom'
 
@@ -18,7 +18,7 @@ export function FavoriteMarketButton({ address, desktopOnly }: { address: Addres
         data-testid={notFalsy('favorite-btn', isFavorite && '-active').join('')}
         {...{
           ...(desktopOnly && {
-            className: classNames(!isFavorite && DesktopOnlyHoverClass, ClickableInRowClass),
+            className: classNames(!isFavorite && DESKTOP_ONLY_HOVER_CLASS, CLICKABLE_IN_ROW_CLASS),
             sx: { display: { mobile: 'none', tablet: 'flex' } },
           }),
         }}

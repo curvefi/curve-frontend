@@ -165,6 +165,22 @@ const config = [
         },
       ],
       '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
+      '@typescript-eslint/naming-convention': [
+        'error',
+        {
+          selector: 'variable',
+          modifiers: ['global', 'const'],
+          types: ['function'],
+          format: ['camelCase', 'PascalCase'],
+          leadingUnderscore: 'allow',
+        },
+        {
+          selector: 'variable',
+          modifiers: ['global', 'const'],
+          types: ['boolean', 'string', 'number'],
+          format: ['UPPER_CASE'],
+        },
+      ],
       '@typescript-eslint/prefer-nullish-coalescing': ['error', { ignorePrimitives: { string: true, number: true } }],
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
 

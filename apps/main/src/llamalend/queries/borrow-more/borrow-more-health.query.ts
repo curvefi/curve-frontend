@@ -60,7 +60,7 @@ export const { useQuery: useBorrowMoreHealth, invalidate: invalidateBorrowMoreHe
     }
   },
   category: 'llamalend.borrowMore',
-  validationSuite: borrowMoreValidationSuite({ debtRequired: true, leverageRequired: false }),
+  validationSuite: borrowMoreValidationSuite({ debtRequired: true, leverageRequired: false, maxDebtRequired: false }),
   dependencies: params =>
     isLeverageBorrowMore(params.marketId, params.leverageEnabled) ? [getBorrowMoreExpectedCollateralKey(params)] : [],
 })

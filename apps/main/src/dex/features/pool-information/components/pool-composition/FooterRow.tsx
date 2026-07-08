@@ -15,6 +15,7 @@ type FooterRowProps = {
   visibleColumns: Column<PoolCompositionRow, unknown>[]
   isLoading: boolean
   totalUsd: string
+  hasBalance: boolean
 }
 
 type FooterCellProps = FooterRowProps & { columnId: PoolCompositionColumnId }
@@ -26,9 +27,9 @@ const footerCellByColumnId: Record<PoolCompositionColumnId, (props: FooterCellPr
     </TableCell>
   ),
   [PoolCompositionColumnId.Price]: ({ columnId }: FooterCellProps) => <TableCell key={columnId} />,
-  [PoolCompositionColumnId.Balance]: ({ columnId }: FooterCellProps) => (
+  [PoolCompositionColumnId.Balance]: ({ columnId, hasBalance }: FooterCellProps) => (
     <TableCell key={columnId} sx={{ paddingInline: Spacing.sm, paddingBlock: Spacing.sm, textAlign: 'right' }}>
-      <Typography variant="tableCellMBold">100%</Typography>
+      <Typography variant="tableCellMBold">{hasBalance ? '100%' : '-'}</Typography>
     </TableCell>
   ),
   [PoolCompositionColumnId.TokenAmount]: ({ columnId, isLoading, totalUsd }: FooterCellProps) => (

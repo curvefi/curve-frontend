@@ -164,12 +164,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        group: [llamalend, dex, other]
         browser: [chrome, firefox, electron]
-        count: [1]
+        count: [1, 2]
         include:
-          - browser: chrome
-            count: 2
-    name: Cypress e2e tests in ${{ matrix.browser }} ${{ matrix.count }}
+          - group: llamalend
+            specs: 'cypress/e2e/loan/**/*,cypress/e2e/lend/**/*,cypress/e2e/llamalend/**/*'
+          - group: dex
+            specs: 'cypress/e2e/dex/**/*'
+          - group: other
+            specs: 'cypress/e2e/all/**/*,cypress/e2e/analytics/**/*,cypress/e2e/bridge/**/*,cypress/e2e/dao/**/*'
+    name: Cypress e2e ${{ matrix.group }} ${{ matrix.browser }} ${{ matrix.count }}
     timeout-minutes: 20
     runs-on: ubuntu-latest
     steps:
@@ -187,18 +192,18 @@ jobs:
       - name: Build app
         run: |
           set -o pipefail # fail tee if the main command fails
-          yarn build 2>&1 | tee e2e-build-${{ matrix.browser }}-${{ matrix.count }}.log
+          yarn build 2>&1 | tee e2e-build-${{ matrix.group }}-${{ matrix.browser }}-${{ matrix.count }}.log
 
       - name: Start dev server
-        run: yarn start 2>&1 | tee ../../e2e-dev-${{ matrix.browser }}-${{ matrix.count }}.log &
+        run: yarn start 2>&1 | tee ../../e2e-dev-${{ matrix.group }}-${{ matrix.browser }}-${{ matrix.count }}.log &
         working-directory: apps/main
 
       - name: Start router api server
-        run: yarn dev 2>&1 | tee ../../e2e-api-${{ matrix.browser }}-${{ matrix.count }}.log &
+        run: yarn dev 2>&1 | tee ../../e2e-router-api-${{ matrix.group }}-${{ matrix.browser }}-${{ matrix.count }}.log &
         working-directory: apps/router-api
 
       - name: Start merkl api server
-        run: yarn dev 2>&1 | tee ../../e2e-api-${{ matrix.browser }}-${{ matrix.count }}.log &
+        run: yarn dev 2>&1 | tee ../../e2e-merkl-api-${{ matrix.group }}-${{ matrix.browser }}-${{ matrix.count }}.log &
         working-directory: apps/merkl-api
         env:
           MERKL_API_KEY: ${{ secrets.MERKL_API_KEY }}
@@ -207,8 +212,8 @@ jobs:
         working-directory: tests
         run: |
           set -o pipefail # fail tee if the main command fails
-          yarn run cy:run:e2e --browser ${{ matrix.browser }} 2>&1 | \
-            tee ../e2e-cypress-${{ matrix.browser }}-${{ matrix.count }}.log \
+          yarn run cy:run:e2e --browser ${{ matrix.browser }} --spec '${{ matrix.specs }}' 2>&1 | \
+            tee ../e2e-cypress-${{ matrix.group }}-${{ matrix.browser }}-${{ matrix.count }}.log \
               >(grep --line-buffered --invert-match --fixed-strings 'INFO:CONSOLE' >&1) > /dev/null
         timeout-minutes: 15 # lower timeout than the whole job, so we can get screenshots on timeout
         env:
@@ -235,7 +240,7 @@ jobs:
       - uses: actions/upload-artifact@v7
         if: failure()
         with:
-          name: cypress-e2e-${{ matrix.browser }}-${{ matrix.count }}
+          name: cypress-e2e-${{ matrix.group }}-${{ matrix.browser }}-${{ matrix.count }}
           path: tests/cypress/screenshots
           retention-days: 3
           if-no-files-found: error
@@ -243,7 +248,7 @@ jobs:
       - uses: actions/upload-artifact@v7
         if: failure()
         with:
-          name: dev-server-log-${{ matrix.browser }}-${{ matrix.count }}
+          name: dev-server-log-${{ matrix.group }}-${{ matrix.browser }}-${{ matrix.count }}
           if-no-files-found: error
           path: e2e-*.log
 

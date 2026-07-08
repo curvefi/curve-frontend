@@ -1,3 +1,4 @@
+import { LEND_V1_DEPRECATION_DATE } from '@/llamalend/constants'
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
 import { MAX_USD_VALUE, oneAddress, oneDate, oneFloat, oneInt, oneOf, onePrice } from '@cy/support/generators'
 import { oneToken } from '@cy/support/helpers/tokens'
@@ -38,9 +39,15 @@ const oneLendingPool = (
   const borrowedBalanceUsd = remainderUsd - collateralBalanceUsd
   const collateralBalance = collateralBalanceUsd / collateralPrice
   const borrowedBalance = borrowedBalanceUsd / borrowedPrice
+  const version = oneOf(1, 2)
+  const createdAt = oneDate({
+    // v1 markets must be created before deprecation, v2 markets must be created after v1 deprecation
+    minDate: { 1: new Date(2020), 2: LEND_V1_DEPRECATION_DATE }[version],
+    maxDate: { 1: LEND_V1_DEPRECATION_DATE, 2: new Date() }[version],
+  })
   return {
     name: [collateral.symbol, borrowed.symbol].join('-'),
-    version: oneOf(1, 2),
+    version,
     controller: oneAddress(),
     vault: oneAddress(),
     llamma: oneAddress(),
@@ -81,14 +88,14 @@ const oneLendingPool = (
     collateral_token: oneApiToken(collateral),
     borrowed_token: oneApiToken(borrowed),
     extra_reward_apr: [],
-    created_at: oneDate().getTime() / 1000,
+    created_at: createdAt.getTime() / 1000,
     max_ltv: oneFloat(60, 110), // between 60% and 110%
   }
 }
 
-export const HighTVLAddress = '0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' as const
-export const HighUtilizationAddress = '0xBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' as const
-const RewardsTestAddress = '0xCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa' as const
+export const HIGH_TVL_ADDRESS = '0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' as const
+export const HIGH_UTILIZATION_ADDRESS = '0xBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' as const
+const REWARDS_TEST_ADDRESS = '0xCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa' as const
 
 function oneLendingVaultResponse(chain: Chain): GetMarketsResponse {
   const count = oneInt(15, 20)
@@ -99,23 +106,23 @@ function oneLendingVaultResponse(chain: Chain): GetMarketsResponse {
           {
             // fixed vault address to test campaign rewards
             ...oneLendingPool(chain, { utilization: oneFloat(0.98) }),
-            vault: RewardsTestAddress,
+            vault: REWARDS_TEST_ADDRESS,
             extra_reward_apr: [{ address: oneAddress(), symbol: 'RWD', apr: 0.5 }],
           },
           {
             // largest TVL to test the sorting
             ...oneLendingPool(chain, { utilization: oneFloat(0.4, 0.8), tvl: MAX_USD_VALUE * 2 }),
-            address: HighTVLAddress,
-            vault: HighTVLAddress,
-            controller: HighTVLAddress,
+            address: HIGH_TVL_ADDRESS,
+            vault: HIGH_TVL_ADDRESS,
+            controller: HIGH_TVL_ADDRESS,
           },
           {
             // 99% utilization to test the sorting and slider filter
             ...oneLendingPool(chain, { utilization: 0.99 }),
             extra_reward_apr: [{ address: oneAddress(), symbol: 'RWD', apr: 0.5 }],
-            address: HighUtilizationAddress,
-            vault: HighUtilizationAddress,
-            controller: HighUtilizationAddress,
+            address: HIGH_UTILIZATION_ADDRESS,
+            vault: HIGH_UTILIZATION_ADDRESS,
+            controller: HIGH_UTILIZATION_ADDRESS,
           },
         ] as GetMarketsResponse['data'])
       : []),
@@ -187,7 +194,7 @@ export const mockLendingSnapshots = (chain = oneOf(...LendingChains)) =>
     },
   })
 
-/** Mock Merkl API to provide campaign rewards for the RewardsTestAddress vault used in tests */
+/** Mock Merkl API to provide campaign rewards for the REWARDS_TEST_ADDRESS vault used in tests */
 export const mockMerklCampaigns = () =>
   cy.intercept('/api/merkl/v1/opportunities*', {
     body: [
@@ -198,7 +205,7 @@ export const mockMerklCampaigns = () =>
         description: 'Test campaign for Cypress',
         howToSteps: ['Step 1'],
         apr: 0.1,
-        explorerAddress: RewardsTestAddress,
+        explorerAddress: REWARDS_TEST_ADDRESS,
         tags: ['curve'],
         chain: { id: 1, name: 'Ethereum' },
         rewardsRecord: {

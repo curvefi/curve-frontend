@@ -3,8 +3,6 @@ import { requireLib } from '@ui-kit/features/connect-wallet'
 import { queryFactory, rootKeys, type UserChainParams, type UserChainQuery } from '@ui-kit/lib/model/query'
 import { scrvUsdUserValidationSuite } from './scrvusd.validation'
 
-export type ScrvUsdUserBalances = { crvUSD: Decimal; scrvUSD: Decimal }
-
 export const { useQuery: useScrvUsdUserBalances, invalidate: invalidateScrvUsdUserBalances } = queryFactory({
   queryKey: ({ chainId, userAddress }: UserChainParams) =>
     [...rootKeys.userChain({ chainId, userAddress }), 'st_crvUSD.userBalances'] as const,

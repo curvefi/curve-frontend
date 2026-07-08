@@ -4,6 +4,7 @@ import { useConnection, useConnectorClient } from 'wagmi'
 import type { NetworkDef } from '@ui/utils'
 import { setUser } from '@ui-kit/features/sentry'
 import type { Provider } from '@ui-kit/lib/ethers'
+import { constQ, fakeLoadingQ } from '@ui-kit/types/util'
 import { ConnectState, type CurveApi, type LlamaApi, type Wallet } from './types'
 
 const { FAILURE, LOADING } = ConnectState
@@ -65,3 +66,9 @@ export function useWagmiWallet() {
 }
 
 export const useCurve = () => use(CurveContext)
+
+export function useLlamaQuery() {
+  const { llamaApi: api } = useCurve()
+  const { isConnected } = useConnection()
+  return isConnected ? fakeLoadingQ(api) : constQ(undefined)
+}

@@ -1,5 +1,5 @@
 import { useUserBands } from '@/llamalend/queries/user'
-import { UnavailableNotation } from '@/llamalend/widgets/tooltips/tooltip.utils'
+import { UNAVAILABLE_NOTATION } from '@/llamalend/widgets/tooltips/tooltip.utils'
 import {
   TooltipItem,
   TooltipItems,
@@ -13,8 +13,8 @@ import type { QueryProp, Range } from '@ui-kit/types/util'
 import { formatNumber } from '@ui-kit/utils'
 
 type LiquidationThresholdTooltipContentProps = {
-  userPrices: QueryProp<Range<Decimal>>
-  rangeToLiquidation: QueryProp<Decimal>
+  userPrices: QueryProp<Range<Decimal> | null>
+  rangeToLiquidation: QueryProp<Decimal | null>
   params: UserMarketParams
 }
 
@@ -34,16 +34,18 @@ export const LiquidationThresholdTooltipContent = ({
       />
       <TooltipItems secondary>
         <TooltipItem title={t`Distance to LT`} variant="independent">
-          {rangeToLiquidation != null ? formatNumber(rangeToLiquidation, 'percent.value') : UnavailableNotation}
+          {rangeToLiquidation != null ? formatNumber(rangeToLiquidation, 'percent.value') : UNAVAILABLE_NOTATION}
         </TooltipItem>
         <TooltipItem title={t`Liquidation range`} variant="independent">
-          {liquidationRange?.map(price => formatNumber(price, 'usd.amount')).join(' to ') ?? UnavailableNotation}
+          {liquidationRange?.map(price => formatNumber(price, 'usd.amount')).join(' to ') ?? UNAVAILABLE_NOTATION}
         </TooltipItem>
         <TooltipItem title={t`Amount of bands`} variant="independent">
-          {bandRange ? formatNumber(Math.abs(bandRange[0] - bandRange[1]), { abbreviate: false }) : UnavailableNotation}
+          {bandRange
+            ? formatNumber(Math.abs(bandRange[0] - bandRange[1]), { abbreviate: false })
+            : UNAVAILABLE_NOTATION}
         </TooltipItem>
         <TooltipItem title={t`Band range`} variant="independent">
-          {bandRange ? `${bandRange[0]} to ${bandRange[1]}` : UnavailableNotation}
+          {bandRange ? `${bandRange[0]} to ${bandRange[1]}` : UNAVAILABLE_NOTATION}
         </TooltipItem>
       </TooltipItems>
     </TooltipWrapper>
