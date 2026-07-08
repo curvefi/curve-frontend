@@ -63,7 +63,7 @@
     "vitest": "*",
     "zustand": "*"
   },
-  "packageManager": "yarn@4.15.0",
+  "packageManager": "yarn@4.17.1",
   "lint-staged": {
     "{apps,tests,packages}/**/*.{js,jsx,ts,tsx}": [
       "prettier --write",
