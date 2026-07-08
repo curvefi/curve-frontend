@@ -67,7 +67,6 @@ function useFormTabs<T extends object>({ menu, params }: UseFormTabOptions<T>) {
   const { tab: tabKey, onTabChange: onChangeTab } = useTabs(tabs)
 
   const tab = findTab(menu, tabKey)
-  const tabOption = findTab(tabs, tabKey)
   const subTabs = createOptions(tab.subTabs, params)
   const { tab: subTabKey, onTabChange: onChangeSubTab } = useTabs(subTabs)
 
@@ -80,7 +79,17 @@ function useFormTabs<T extends object>({ menu, params }: UseFormTabOptions<T>) {
 
   const Component = components[0] || Skeleton // skeleton just for mui Tab validation, won't be rendered due to href
   const content = <Component {...params} />
-  return { tab, tabOption, tabs, subTabs, subTab, content, onChangeTab, onChangeSubTab, isMobileDrawer }
+  return {
+    tab,
+    tabLabel: findTab(tabs, tabKey).label,
+    tabs,
+    subTabs,
+    subTab,
+    content,
+    onChangeTab,
+    onChangeSubTab,
+    isMobileDrawer,
+  }
 }
 
 const marginInline = { tablet: 'auto', desktop: 0 } as const
@@ -101,13 +110,13 @@ type FormTabsProps<T extends object> = UseFormTabOptions<T> & {
  * @param options - useFormTabs options
  */
 export function FormTabs<T extends object>({ shouldWrap, overflow = 'kebab', ...options }: FormTabsProps<T>) {
-  const { tab, tabOption, tabs, subTabs, subTab, content, onChangeTab, onChangeSubTab, isMobileDrawer } =
+  const { tab, tabLabel, tabs, subTabs, subTab, content, onChangeTab, onChangeSubTab, isMobileDrawer } =
     useFormTabs(options)
   return (
     <WithWrapper shouldWrap={isMobileDrawer} Wrapper={MobileFormTabsDrawer} tabs={tabs} onSelectTab={onChangeTab}>
       <Stack sx={{ marginInline }}>
         {isMobileDrawer ? (
-          <CardHeader title={tabOption.label} size="small" data-testid="mobile-form-active-action" />
+          <CardHeader title={tabLabel} size="small" data-testid="mobile-form-active-action" />
         ) : (
           <TabsSwitcher
             variant="contained"

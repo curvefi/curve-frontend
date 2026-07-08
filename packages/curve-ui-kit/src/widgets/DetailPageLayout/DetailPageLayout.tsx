@@ -12,7 +12,7 @@ import { PAGE_SPACING } from './constants'
 import { getIsMobileFormDrawer } from './form-context/FormPlacementContext'
 import { FormPlacementProvider } from './form-context/FormPlacementProvider'
 import { FormSkeleton } from './FormSkeleton'
-import type { DetailPageLayoutFormTabs, FormPlacement } from './types'
+import type { DetailPageLayoutFormTabs } from './types'
 
 const { MaxWidth, Spacing } = SizesAndSpaces
 
@@ -80,7 +80,7 @@ export const DetailPageLayout = ({
   const headerRef = useRef<HTMLDivElement>(null)
   // page header metrics's notionals lazy rendering make the height change by 9px so we need a smaller threshold
   const [, pageHeaderHeight = 0] = useResizeObserver(headerRef, { threshold: 5 })
-  const placement: FormPlacement = formTabs?.placement ?? 'inline'
+  const placement = formTabs?.placement ?? 'inline'
   const showMobileDrawer = getIsMobileFormDrawer(placement, isMobile)
 
   const headerStack = header && (
@@ -101,7 +101,7 @@ export const DetailPageLayout = ({
         {isMobile && <Grid size={12}>{headerStack}</Grid>}
         {/* In Figma, columns are 12/4/3, but too small around breakpoints. I've added one extra column.
             Ultrawide isn't a breakpoint yet, use maxWidth so it's not too large. */}
-        {formTabs && !showMobileDrawer && (
+        {formTabs !== null && !showMobileDrawer && (
           <Grid
             size={{ mobile: 12, tablet: 5, desktop: 4 }}
             sx={{
@@ -121,7 +121,7 @@ export const DetailPageLayout = ({
         </Grid>
         {footer && <Grid size={12}>{footer}</Grid>}
       </Grid>
-      {formTabs && showMobileDrawer && (
+      {formTabs !== null && showMobileDrawer && (
         <FormPlacementProvider placement={placement}>{formTabs?.content}</FormPlacementProvider>
       )}
     </WithWrapper>
