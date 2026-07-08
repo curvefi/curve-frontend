@@ -25,7 +25,7 @@ export const BalanceAmount = <T extends Amount>({
     <Typography
       className="balance"
       variant="highlightXs"
-      {...{ ...(children != null && { 'data-testid': testId }) }}
+      {...(children != null && { 'data-testid': testId })}
       data-value={children ?? ''}
       sx={{
         ...VERTICAL_CENTER_TEXT,
