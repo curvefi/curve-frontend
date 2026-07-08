@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { MarketContextProvider } from '@/llamalend/features/market-context'
 import { PositionDetailsComposite } from '@/llamalend/features/market-position-details'
+import { useIsInSoftLiquidation } from '@/llamalend/features/market-position-details/hooks/useUserLiquidationStatus'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
 import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
@@ -19,7 +20,6 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useParams } from '@ui-kit/hooks/router'
-import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { LlamaMarketType } from '@ui-kit/types/market'
@@ -38,11 +38,8 @@ export const MintMarketPage = () => {
   const marketQuery = useMintMarket({ chainId, rMarket: rCollateralId })
   const { data: market, isLoading: isMarketLoading, error: marketError } = marketQuery
 
-  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists({
-    chainId,
-    marketId: market?.id,
-    userAddress: address,
-  })
+  const queryParams = { chainId, marketId: market?.id, userAddress: address }
+  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists(queryParams)
 
   const network = networks[chainId]
   const isLoading = !isInitialized || isMarketLoading
@@ -51,7 +48,6 @@ export const MintMarketPage = () => {
       network: params.network,
       rMarket: rCollateralId,
       userAddress: address,
-      enableLLv2: useLLv2(),
       enableDeprecatedMarkets: useUserProfileStore(state => state.showDeprecatedMarkets),
     },
     !isLoading && !market,
@@ -67,6 +63,10 @@ export const MintMarketPage = () => {
     network,
     tokens,
   })
+  const { data: isSoftLiquidation, isLoading: isSoftLiquidationLoading } = useIsInSoftLiquidation(
+    queryParams,
+    !!loanExists,
+  )
 
   const error = marketError ?? apiMarket.error
   return error ? (
@@ -85,9 +85,15 @@ export const MintMarketPage = () => {
     >
       <DetailPageLayout
         formTabs={
-          ((!!market && !isLoanExistsLoading) || apiMarket.data) &&
+          !isLoading &&
+          !isLoanExistsLoading &&
+          !isSoftLiquidationLoading &&
           (loanExists ? (
-            <ManageLoanTabs onPricesUpdated={setPreviewPrices} collateralEvents={collateralEvents} />
+            <ManageLoanTabs
+              onPricesUpdated={setPreviewPrices}
+              collateralEvents={collateralEvents}
+              isSoftLiquidation={!!isSoftLiquidation}
+            />
           ) : (
             <CreateLoanTabs onPricesUpdated={setPreviewPrices} />
           ))

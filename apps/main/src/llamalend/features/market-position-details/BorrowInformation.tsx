@@ -4,6 +4,7 @@ import { useRangeToLiquidation } from '@/llamalend/queries/user/user-prices.quer
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
 import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'
 import { Stack } from '@mui/material'
+import { maybe } from '@primitives/objects.utils'
 import { combineQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import type { UserMarketParams } from '@ui-kit/lib/model'
@@ -15,11 +16,7 @@ import { LiquidationThresholdTooltipContent } from './'
 
 const dollarUnitOptions = {
   abbreviate: false,
-  unit: {
-    symbol: '$',
-    position: 'prefix' as const,
-    abbreviate: false,
-  },
+  unit: { symbol: '$', position: 'prefix' as const, abbreviate: false },
 }
 
 const METRIC_CATEGORY = 'llamalend.positionBorrowDetails'
@@ -80,7 +77,7 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
         <Metric
           category={METRIC_CATEGORY}
           label={t`Liquidation threshold`}
-          value={mapQuery(userPrices, ([, liquidationThreshold]) => liquidationThreshold)}
+          value={mapQuery(userPrices, p => p?.[1])}
           valueOptions={dollarUnitOptions}
           valueTooltip={{
             title: t`Liquidation Threshold (LT)`,
@@ -95,10 +92,9 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
             arrow: false,
             clickable: true,
           }}
-          notional={mapQuery(rangeToLiquidation, value => ({
-            value,
-            unit: { symbol: `% distance to LT`, position: 'suffix' as const },
-          }))}
+          notional={mapQuery(rangeToLiquidation, v =>
+            maybe(v, value => ({ value, unit: { symbol: `% distance to LT`, position: 'suffix' as const } })),
+          )}
         />
         <Metric
           category={METRIC_CATEGORY}

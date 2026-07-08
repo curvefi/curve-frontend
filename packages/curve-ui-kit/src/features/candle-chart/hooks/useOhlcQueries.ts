@@ -162,7 +162,7 @@ const createOhlcAnchor = (resetKey: string): OhlcAnchor => ({
 
 const replaceOhlcAnchor = (_current: OhlcAnchor, next: OhlcAnchor) => next
 
-export const useStableOhlcAnchorEnd = (...resetKeyParts: readonly (string | number)[]) => {
+export const useStableOhlcAnchorEnd = (...resetKeyParts: readonly (string | number | undefined)[]) => {
   const resetKey = JSON.stringify(resetKeyParts)
   const [anchor, replaceAnchor] = useReducer(replaceOhlcAnchor, resetKey, createOhlcAnchor)
   const isAnchorEndReady = anchor.resetKey === resetKey
