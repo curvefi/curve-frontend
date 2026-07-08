@@ -1,3 +1,4 @@
+import { noop } from 'lodash'
 import { MarketContextProvider } from 'main/src/llamalend/features/market-context/MarketContextProvider'
 import { useLendMarket } from '@/lend/hooks/useLendMarket'
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
@@ -89,7 +90,7 @@ function LlammalendTest({ tab, onPricesUpdated, type, marketType, ...props }: Ll
     >
       <Component
         networks={llamaNetworks}
-        onPricesUpdated={onPricesUpdated!}
+        onPricesUpdated={onPricesUpdated ?? noop}
         collateralEvents={constQ(fakeCollateralEvents)}
       />
     </MarketContextProvider>
