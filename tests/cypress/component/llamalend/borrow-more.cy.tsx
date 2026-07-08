@@ -86,13 +86,17 @@ describe('BorrowMoreForm (mocked)', () => {
       })
       cy.get('[data-testid="borrow-more-submit-button"]').should('have.text', buttonText)
 
+      // Debounced form queries can call stubs with intermediate typed values before the final amount.
+      cy.wrap(stubs.borrowMoreHealth).should('have.been.calledWithExactly', ...expected.health)
+      if (approved) {
+        cy.wrap(stubs.estimateGasBorrowMore).should('have.been.calledWithExactly', ...expected.estimateGas)
+      }
+
       cy.then(() => {
         expect(stubs.parameters).to.have.been.calledWithExactly()
-        expect(stubs.borrowMoreHealth).to.have.been.calledWithExactly(...expected.health)
         expect(stubs.borrowMoreMaxRecv).to.have.been.calledWithExactly(...expected.maxRecv)
         expect(stubs.borrowMoreIsApproved).to.have.been.calledWithExactly(...expected.isApproved)
         if (approved) {
-          expect(stubs.estimateGasBorrowMore).to.have.been.calledWithExactly(...expected.estimateGas)
           expect(stubs.estimateGasBorrowMoreApprove).to.not.have.been.called
         } else {
           expect(stubs.estimateGasBorrowMoreApprove).to.have.been.calledWithExactly(...expected.estimateGasApprove)
