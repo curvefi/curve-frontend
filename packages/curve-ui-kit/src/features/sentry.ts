@@ -6,12 +6,14 @@ import {
   init,
   setTag,
   setUser as setSentryUser,
+  thirdPartyErrorFilterIntegration,
   withScope,
 } from '@sentry/react'
 import { IS_CYPRESS, IS_PREVIEW_HOST } from '@ui-kit/utils/env'
 
 export const SENTRY_DSN =
   'https://946ac1b5b974fb993626876dd310b0d2@o4510753779220480.ingest.de.sentry.io/4510753786101840'
+const SENTRY_APPLICATION_KEY = 'curve-frontend' // defined in vite.config.ts
 
 const TLD = 'curve.finance'
 const ENVIRONMENT = IS_CYPRESS
@@ -30,7 +32,13 @@ export const initSentry = () =>
   init({
     dsn: SENTRY_DSN,
     environment: ENVIRONMENT,
-    integrations: integrations => integrations.filter(i => i.name !== 'BrowserSession'), // we don't use session tracking
+    integrations: integrations => [
+      ...integrations.filter(i => i.name !== 'BrowserSession'), // we don't use session tracking
+      thirdPartyErrorFilterIntegration({
+        filterKeys: [SENTRY_APPLICATION_KEY],
+        behaviour: 'drop-error-if-exclusively-contains-third-party-frames',
+      }),
+    ],
     sendClientReports: false, // prevents client_report envelopes for dropped events
     tracesSampleRate: 0.01, // Performance monitoring sample rate (adjust based on traffic)
     // Filter out noise
