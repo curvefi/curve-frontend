@@ -14,7 +14,6 @@ import { MarketPageHeader } from '@/llamalend/widgets/page-header'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useParams } from '@ui-kit/hooks/router'
-import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
@@ -39,7 +38,6 @@ export const Page = () => {
       rMarket,
       network: params.network,
       userAddress,
-      enableLLv2: useLLv2(),
       enableDeprecatedMarkets: useUserProfileStore(state => state.showDeprecatedMarkets),
     },
     !isLoading && !market, // only enable API data when wallet is disconnected

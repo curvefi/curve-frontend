@@ -108,7 +108,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   routes: MarketRoutes | undefined
   form: UseFormReturn<RepayFormData>
   prices?: QueryProp<Range<Decimal> | null>
-  prevPrices?: QueryProp<Range<Decimal>>
+  prevPrices?: QueryProp<Range<Decimal> | null>
   priceImpact: QueryProp<PriceImpact | Decimal | null>
 }) {
   const isOpen = form.isTouched('stateCollateral', 'userCollateral', 'userBorrowed')

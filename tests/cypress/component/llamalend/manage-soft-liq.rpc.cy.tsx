@@ -1,103 +1,106 @@
-import { MarketContextProvider } from 'main/src/llamalend/features/market-context/MarketContextProvider'
-import { type ReactNode, useMemo } from 'react'
-import { ClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePositionForm'
-import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealthForm'
-import type { NetworkDict } from '@/llamalend/llamalend.types'
-import { networks } from '@/loan/networks'
-import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
-import { createTenderlyWagmiConfigFromVNet, forkVirtualTestnet } from '@cy/support/helpers/tenderly'
-import Skeleton from '@mui/material/Skeleton'
-import { CurveProvider, useCurve } from '@ui-kit/features/connect-wallet'
+import { parseUnits } from 'viem'
+import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
+import { setupLlv2BorrowingLiquidity } from '@cy/support/helpers/llamalend/borrow-cap.helpers'
+import { LlammalendTestCase } from '@cy/support/helpers/llamalend/LlammalendTestCase'
+import { setupTenderlySoftLiquidation } from '@cy/support/helpers/llamalend/soft-liq-setup.helpers'
+import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
+import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
+import { fundErc20 } from '@cy/support/helpers/tenderly/vnet-fund'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { constQ } from '@ui-kit/types/util'
 import { Chain } from '@ui-kit/utils'
 
-describe('Manage soft liquidation', () => {
-  const chainId = Chain.Ethereum
-  const privateKey = '0xc9dc976b6701eb9d79c8358317c565cfc6d238a6ecbb0839b352d4f5d71953c9' // 0xDD84Be02F834295ebE3328e0fE03C015492e2A51
-  const network = networks[chainId]
-  const softLiqNetworks = networks as unknown as NetworkDict<LlamaChainId>
-  const MARKET_ID = 'wsteth' // https://www.curve.finance/crvusd/ethereum/markets/wstETH/create
+const WSTETH_USDC_MARKET = {
+  id: 'one-way-market-v2-2',
+  controllerAddress: '0xb5EC7A3D591877A66BE4f3eafdC4205E98A1BCAA',
+  ammAddress: '0x1C6056540690BAE459a6DC6EFaDDA148Fe43C9dc',
+  collateralAddress: '0x1F32b1c2345538c0c6f582fCB022739c4A194Ebb',
+  collateralDecimals: 18,
+  borrowedAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+  borrowedDecimals: 6,
+} as const
 
-  const getVirtualNetwork = forkVirtualTestnet(uuid => ({
-    vnet_id: 'a967f212-c4a3-4d65-afb6-2e79055f7a6f',
-    display_name: `crvUSD wstETH Soft Liquidation Fork ${uuid}`,
+describe('Manage soft liquidation', () => {
+  const chainId = Chain.Optimism // Atm llv2 is only deployed on optimism
+  const privateKey = generatePrivateKey()
+  const { address: userAddress } = privateKeyToAccount(privateKey)
+
+  const getVirtualNetwork = createVirtualTestnet(uuid => ({
+    chain_id: chainId,
+    slug: `wsteth-usdc-soft-liq-${uuid}`,
+    display_name: `wstETH USDC Soft Liquidation (${uuid})`,
+    fork_config: { block_number: '153784690' },
   }))
 
-  const TestComponent = ({ tab }: { tab: 'improve-health' | 'close-position' }) => {
-    const { isHydrated, llamaApi } = useCurve()
-    const market = useMemo(() => isHydrated && llamaApi?.getMintMarket(MARKET_ID), [isHydrated, llamaApi])
-    if (!market) return <Skeleton />
-    const Component = { 'improve-health': ImproveHealthForm, 'close-position': ClosePositionForm }[tab]
-    return (
-      <MarketContextProvider
-        network={network}
-        marketQuery={constQ(market)}
-        apiMarket={constQ(undefined)}
-        marketType={LlamaMarketType.Mint}
-      >
-        <Component networks={softLiqNetworks} collateralEvents={constQ(undefined)} />
-      </MarketContextProvider>
-    )
-  }
+  before(() => {
+    const vnet = getVirtualNetwork()
+    const { adminRpcUrl, publicRpcUrl } = getRpcUrls(vnet)
 
-  const TestComponentWrapper = ({ children }: { children: ReactNode }) => (
-    <ComponentTestWrapper
-      config={createTenderlyWagmiConfigFromVNet({ vnet: getVirtualNetwork(), privateKey })}
-      autoConnect
-    >
-      <CurveProvider app="llamalend" network={network} onChainUnavailable={console.error}>
-        {children}
-      </CurveProvider>
-    </ComponentTestWrapper>
+    const borrow = '1000' as const
+
+    setupLlv2BorrowingLiquidity({
+      adminRpcUrl,
+      publicRpcUrl,
+      chainId,
+      borrowedLiquidity: '50000',
+      borrowCap: '100000',
+      ...WSTETH_USDC_MARKET,
+    })
+
+    setupTenderlySoftLiquidation({
+      vnet,
+      userAddress,
+      collateral: '1',
+      targetPrice: '1500',
+      borrow,
+      range: 50n,
+      collateralFundingMultiplier: 2n,
+      ...WSTETH_USDC_MARKET,
+    })
+
+    // Give extra borrowed funds to test (full or additional) repays
+    fundErc20({
+      adminRpcUrl,
+      amountWei: `0x${parseUnits(borrow, WSTETH_USDC_MARKET.borrowedDecimals).toString(16)}`,
+      tokenAddress: WSTETH_USDC_MARKET.borrowedAddress,
+      recipientAddresses: [userAddress],
+    })
+  })
+
+  const ManageSoftLiquidationTest = ({ tab }: { tab: 'reset' | 'improve-health' | 'close' }) => (
+    <LlammalendTestCase
+      type="loan"
+      tab={tab}
+      vnet={getVirtualNetwork()}
+      privateKey={privateKey}
+      chainId={chainId}
+      userAddress={userAddress}
+      marketId={WSTETH_USDC_MARKET.id}
+      marketType={LlamaMarketType.Lend}
+    />
   )
 
   beforeEach(() => {
-    // Makes the card more readable
+    // Makes the card more readable.
     cy.viewport(450, 720)
   })
 
-  describe('improve health form', () => {
-    it.skip(`manual test`, () => {
-      cy.mount(
-        <TestComponentWrapper>
-          <TestComponent tab="improve-health" />
-        </TestComponentWrapper>,
-      )
+  describe('should show soft liquidation forms', () => {
+    it.skip('shows reset position form', () => {
+      cy.mount(<ManageSoftLiquidationTest tab="reset" />)
+      cy.get('[data-testid="reset-position-submit-button"]').should('exist')
+      cy.pause()
+    })
+
+    it.skip('shows improve health form', () => {
+      cy.mount(<ManageSoftLiquidationTest tab="improve-health" />)
+      cy.get('[data-testid="repay-submit-button"]').should('exist')
+      cy.pause()
+    })
+
+    it.skip('shows close position form', () => {
+      cy.mount(<ManageSoftLiquidationTest tab="close" />)
+      cy.get('[data-testid="close-position-submit-button"]').should('exist')
       cy.pause()
     })
   })
-
-  describe('close position form', () => {
-    it.skip(`manual test`, () => {
-      cy.mount(
-        <TestComponentWrapper>
-          <TestComponent tab="close-position" />
-        </TestComponentWrapper>,
-      )
-      cy.pause()
-    })
-  })
-
-  /**
-   * TODO
-   * Add an automated component test that:
-   * 0. Verify initial amounts in action infos, user wallet balance and metric values in the "Close Position" tab.
-   * 1. When a user inputs a balance to repay to improve health, the action infos update accordingly.
-   * 2. When a user inputs more than their wallet balance, an error is shown.
-   * 3. When a user inputs more than the total debt, an error is shown.
-   * 4. When a user clicks the "Repay" button
-   *  a. The button text changes to a loading state.
-   *  b. The max button's value will be reduced by the repaid amount.
-   *  c. The user crvUSD wallet balance gets reduced by the repaid amount.
-   *  d. The action infos update accordingly.
-   * 5. User goes to "Close Position" tab.
-   * 6. Verify the metric values in the "Close Position" tab now a part has been repaid
-   * 7. User clicks the "Close Position" button
-   *  a. The button text changes to a loading state.
-   *  b. The metric values are zero.
-   *  c. Action infos are updated accordingly.
-   *  d. User wallet balances are updated accordingly in improve health tab.
-   */
 })

@@ -1,7 +1,7 @@
 import { countBy, sumBy } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import { ethAddress } from 'viem'
-import { LLAMMALEND_V2_DATE } from '@/llamalend/constants'
+import { LEND_V1_DEPRECATION_DATE } from '@/llamalend/constants'
 import {
   calculateLendMarketTvlUsd,
   calculateMarketSolvency,
@@ -406,7 +406,6 @@ type LlamaMarketsQueries = [
 
 export type LlamaMarketParams = {
   userAddress: Address | undefined
-  enableLLv2: boolean
   enableDeprecatedMarkets: boolean
 }
 
@@ -414,10 +413,7 @@ export type LlamaMarketParams = {
  * Query hook combining all lend and mint markets of all chains into a single list, converting them to a common format.
  * It also fetches the user's favorite markets and user's positions list (without the details).
  */
-export const useLlamaMarkets = (
-  { userAddress, enableLLv2, enableDeprecatedMarkets }: LlamaMarketParams,
-  enabled = true,
-) => {
+export const useLlamaMarkets = ({ userAddress, enableDeprecatedMarkets }: LlamaMarketParams, enabled = true) => {
   const [isTimedOut, setIsReady] = useStateTimeout()
   return useQueries({
     queries: useMemo<LlamaMarketsQueries>(
@@ -486,16 +482,18 @@ export const useLlamaMarkets = (
                   : null,
               hasFavorites: favoriteMarketsSet.size > 0,
               markets: [
-                ...(lendingVaults.data ?? []).map(vault =>
-                  convertLendingVault(
-                    vault,
-                    favoriteMarketsSet,
-                    campaigns,
-                    userBorrows,
-                    userSuppliedMarkets.data?.[vault.chain]?.[vault.vault],
-                    getLendMarketBadDebt(vault.chain, vault.controller),
+                ...(lendingVaults.data ?? [])
+                  .filter(({ createdAt, version }) => version != 1 || createdAt <= LEND_V1_DEPRECATION_DATE.getTime())
+                  .map(vault =>
+                    convertLendingVault(
+                      vault,
+                      favoriteMarketsSet,
+                      campaigns,
+                      userBorrows,
+                      userSuppliedMarkets.data?.[vault.chain]?.[vault.vault],
+                      getLendMarketBadDebt(vault.chain, vault.controller),
+                    ),
                   ),
-                ),
                 ...(mintMarkets.data ?? []).map(market =>
                   convertMintMarket(
                     market,
@@ -507,15 +505,14 @@ export const useLlamaMarkets = (
                   ),
                 ),
               ].filter(
-                ({ createdAt, deprecatedMessage, userHasPositions }) =>
-                  (createdAt <= LLAMMALEND_V2_DATE.getTime() || enableLLv2) &&
-                  (!deprecatedMessage || enableDeprecatedMarkets || userHasPositions),
+                ({ deprecatedMessage, userHasPositions }) =>
+                  !deprecatedMessage || enableDeprecatedMarkets || userHasPositions,
               ),
             }
           : undefined
         return { ...combineQueriesMeta(results), data }
       },
-      [enabled, userAddress, enableLLv2, enableDeprecatedMarkets, isTimedOut, setIsReady],
+      [enabled, userAddress, enableDeprecatedMarkets, isTimedOut, setIsReady],
     ),
   })
 }

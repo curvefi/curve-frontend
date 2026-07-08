@@ -1,7 +1,7 @@
 import { custom, PrivateKeyAccount, type RpcTransactionRequest } from 'viem'
 import type { TenderlyConfig } from '@cy/support/helpers/tenderly/account'
 import { createTestConnector, CreateTestConnectorOptions } from '@ui-kit/features/connect-wallet/lib/wagmi/wagmi-test'
-import { sendVnetTransaction } from './vnet-transaction'
+import { sendVnetTransaction } from './vnet-tx'
 
 /**
  * Creates a custom transport that intercepts JSON-RPC requests to handle account retrieval and

@@ -1,10 +1,9 @@
 import { useMemo } from 'react'
 import type { Chain } from 'viem'
 import { generatePrivateKey } from 'viem/accounts'
-import { mapRecord, recordValues } from '@primitives/objects.utils'
+import { assert, mapRecord, recordValues } from '@primitives/objects.utils'
 import type { NetworkMapping } from '@ui/utils'
-import { IS_CYPRESS, NO_CYPRESS_TEST_CONNECTOR } from '@ui-kit/utils/env'
-import { Chain as ChainEnum } from '@ui-kit/utils/network'
+import { CYPRESS_CONNECTOR_CHAIN, IS_CYPRESS, NO_CYPRESS_TEST_CONNECTOR } from '@ui-kit/utils/env'
 import { createChainFromNetwork } from './chains'
 import { createTransportFromNetwork, defaultGetRpcUrls } from './transports'
 import { createWagmiConfig } from './wagmi-config'
@@ -27,8 +26,10 @@ export const useWagmiConfig = <T extends NetworkMapping>(networks: T | undefined
           connectors: [
             createTestConnector({
               privateKey: generatePrivateKey(),
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
-              chain: chains.find(chain => chain.id === ChainEnum.Ethereum)!,
+              chain: assert(
+                chains.find(chain => chain.id === CYPRESS_CONNECTOR_CHAIN),
+                `Chain ${CYPRESS_CONNECTOR_CHAIN} not found in networks ${chains.map(chain => chain.id).join(', ')}`,
+              ),
             }),
           ],
         }),
