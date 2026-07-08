@@ -9,7 +9,7 @@ import { LlamaMarketVersion } from '@ui-kit/types/market'
 
 const { v1, v2 } = LlamaMarketVersion
 
-type LendMarketData = IOneWayMarket & { id: string }
+export type LendMarketData = IOneWayMarket & { id: string }
 
 /**
  * Extracts the necessary data from a LendMarketTemplate object so that the object can be recreated later on.

@@ -1,12 +1,8 @@
 import '@/global-extensions'
-import { rootRoute } from '@/routes/root.routes'
-import { redirectTo } from '@/routes/util'
-import Skeleton from '@mui/material/Skeleton'
 import { createRoute, createRouter } from '@tanstack/react-router'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { analyticsRoutes } from './analytics.routes'
 import { bridgeRoutes } from './bridge.routes'
 import { crvusdRoutes } from './crvusd.routes'
@@ -14,14 +10,14 @@ import { daoRoutes } from './dao.routes'
 import { dexRoutes } from './dex.routes'
 import { lendRoutes } from './lend.routes'
 import { llamalendRoutes } from './llamalend.routes'
-
-const { MinHeight } = SizesAndSpaces
+import { Loading } from './Loading'
+import { rootRoute } from './root.routes'
+import { redirectTo } from './util'
 
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
-  /** Redirect is handled by the `RootLayout` component */
-  component: () => <Skeleton width="100%" height={MinHeight.pageContent} />,
+  component: Loading, // Redirect is handled by the `useOnChainUnavailable` hook
   head: () => ({ meta: [{ title: 'Curve.finance' }] }),
 })
 
@@ -33,7 +29,7 @@ const integrationsRedirectRoute = createRoute({
 
 export const router = createRouter({
   scrollRestoration: true,
-  defaultPendingComponent: () => <Skeleton width="100%" height={MinHeight.pageContent} />,
+  defaultPendingComponent: Loading,
   defaultPendingMs: Duration.Transition,
   routeTree: rootRoute.addChildren([
     indexRoute,

@@ -1,27 +1,28 @@
 import { useCallback, useMemo } from 'react'
-import { useCurve } from '@ui-kit/features/connect-wallet'
+import type { LlamaApi } from '@ui-kit/features/connect-wallet'
+import { useLlamaQuery } from '@ui-kit/features/connect-wallet/lib/CurveContext'
+import { useCombinedQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { useMappedQuery } from '@ui-kit/types/util'
-import { useLendMarkets } from '../queries/lend-markets.query'
+import { type LendMarketData, useLendMarkets } from '../queries/lend-markets.query'
 import { ChainId } from '../types/lend.types'
 
-function useLendMarketData(chainId: ChainId, marketId: string, enabled?: boolean) {
+type MarketUrlParams = { chainId: ChainId; rMarket: string }
+
+function useLendMarketData({ chainId, rMarket }: MarketUrlParams, enabled?: boolean) {
   const lendMarkets = useLendMarkets({ chainId }, enabled)
   const lendMarket = useMappedQuery(
     lendMarkets,
-    useCallback(data => data?.[marketId], [marketId]),
+    useCallback(data => data?.[rMarket], [rMarket]),
   )
   const error = useMemo(
-    () => lendMarkets.data && !lendMarket.data && new Error(`${t`Market`} ${marketId} ${t`Not Found`}`),
-    [lendMarket.data, lendMarkets.data, marketId],
+    () => lendMarkets.data && !lendMarket.data && new Error(`${t`Market`} ${rMarket} ${t`Not Found`}`),
+    [lendMarket.data, lendMarkets.data, rMarket],
   )
   return { ...lendMarket, ...(error && { error }) }
 }
 
-export const useLendMarket = ({ rMarket, chainId }: { chainId: ChainId; rMarket: string }, enabled?: boolean) => {
-  const { llamaApi: api } = useCurve()
-  return useMappedQuery(
-    useLendMarketData(chainId, rMarket, enabled),
-    useCallback(data => api && data && api.getLendMarketByData(data.id, data), [api]),
-  )
-}
+const getLendMarketByData = (data: LendMarketData, api: LlamaApi) => api.getLendMarketByData(data.id, data)
+
+export const useLendMarket = ({ rMarket, chainId }: MarketUrlParams, enabled?: boolean) =>
+  useCombinedQueries([useLendMarketData({ chainId, rMarket }, enabled), useLlamaQuery()], getLendMarketByData)

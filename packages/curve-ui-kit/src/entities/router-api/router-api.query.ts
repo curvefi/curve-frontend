@@ -147,7 +147,7 @@ const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
 
 function useRouterQuery(params: Omit<RoutesParams, 'router'>, router: RouteProvider, enabled = true): RouteQuery {
   const { data, isLoading, error, isFetching } = useRouterApi({ ...params, router }, enabled)
-  const route = maybe(data, ([route = null]) => route)
+  const route = maybe(data, ([route]) => route) ?? null
   return useMemo(
     () => ({ ...q({ isLoading, data: route, error }), isFetching, enabled }),
     [isLoading, route, error, isFetching, enabled],
@@ -174,7 +174,8 @@ function useCurveRouterQuery<TData extends TGas | null, TKey extends QueryKey>(
     ...useMappedQuery(
       curveRoutes,
       useCallback(
-        (data: RouteResponse) => (gas ? { ...data, gas: decimal(toArray(gas)[0]) ?? null } : (data ?? null)),
+        (data: RouteResponse | null) =>
+          gas && data ? { ...data, gas: decimal(toArray(gas)[0]) ?? null } : (data ?? null),
         [gas],
       ),
     ),
