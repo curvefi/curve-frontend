@@ -18,21 +18,9 @@ import { t } from '@ui-kit/lib/i18n'
 type Props = {
   curve: CurveApi
   from:
-    | typeof TOKEN_A
-    | typeof TOKEN_B
-    | typeof TOKEN_C
-    | typeof TOKEN_D
-    | typeof TOKEN_E
-    | typeof TOKEN_F
-    | typeof TOKEN_G
+    typeof TOKEN_A | typeof TOKEN_B | typeof TOKEN_C | typeof TOKEN_D | typeof TOKEN_E | typeof TOKEN_F | typeof TOKEN_G
   to:
-    | typeof TOKEN_B
-    | typeof TOKEN_C
-    | typeof TOKEN_D
-    | typeof TOKEN_E
-    | typeof TOKEN_F
-    | typeof TOKEN_G
-    | typeof TOKEN_H
+    typeof TOKEN_B | typeof TOKEN_C | typeof TOKEN_D | typeof TOKEN_E | typeof TOKEN_F | typeof TOKEN_G | typeof TOKEN_H
   disabled?: boolean
   className?: string
 }

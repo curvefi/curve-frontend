@@ -29,24 +29,22 @@ export const usePointsCampaigns = ({
     () =>
       campaigns
         .filter(({ reward, symbol }) => reward?.type === 'points' || (!reward?.type && symbol))
-        .map(
-          ({ dashboardLink, reward, platform, platformImageId, symbol }): PointsCampaignsRow => ({
-            source: {
-              icon: (
-                <Box
-                  component="img"
-                  src={platformImageId}
-                  alt={platform}
-                  sx={{ borderRadius: '50%', width: IconSize.lg, height: IconSize.lg }}
-                />
-              ),
-              iconPosition: 'left',
-              primary: platform,
-            },
-            multiplier: reward?.value != null || symbol == null ? formatNumber(reward?.value, 'multiplier') : symbol,
-            campaignUrl: dashboardLink,
-          }),
-        ),
+        .map(({ dashboardLink, reward, platform, platformImageId, symbol }): PointsCampaignsRow => ({
+          source: {
+            icon: (
+              <Box
+                component="img"
+                src={platformImageId}
+                alt={platform}
+                sx={{ borderRadius: '50%', width: IconSize.lg, height: IconSize.lg }}
+              />
+            ),
+            iconPosition: 'left',
+            primary: platform,
+          },
+          multiplier: reward?.value != null || symbol == null ? formatNumber(reward?.value, 'multiplier') : symbol,
+          campaignUrl: dashboardLink,
+        })),
     [campaigns],
   )
 

@@ -11,16 +11,7 @@ import { useMappedQuery } from '@ui-kit/types/util'
 
 // We allow blocking more than just the chains supported by prices api.
 type ChainBlacklist =
-  | Chain
-  | 'avalanche'
-  | 'moonbeam'
-  | 'kava'
-  | 'xdc'
-  | 'tac'
-  | 'etherlink'
-  | 'plume'
-  | 'unichain'
-  | 'monad'
+  Chain | 'avalanche' | 'moonbeam' | 'kava' | 'xdc' | 'tac' | 'etherlink' | 'plume' | 'unichain' | 'monad'
 
 /**
  * A local hardcoded blacklist of pools we don't want to show in the front-end for whatever reason.
