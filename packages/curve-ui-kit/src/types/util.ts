@@ -92,12 +92,12 @@ export const fallbackQ = <const TQueries extends readonly QueryProp<unknown>[]>(
  */
 export const mapQuery = <TSource, TResult>(
   { data, isLoading, error }: Query<TSource>,
-  selector: (data: TSource) => TResult | null | undefined,
+  selector: (data: TSource) => TResult | undefined,
 ) =>
   q({
     isLoading,
-    // todo: maybe ignores null which is a valid query value and supported in combineQueries
-    data: maybe(data, data => selector(data) ?? undefined),
+    // eslint-disable-next-line local/use-maybe-pattern -- queries may return null, but not undefined
+    data: data === undefined ? undefined : selector(data),
     error,
   })
 

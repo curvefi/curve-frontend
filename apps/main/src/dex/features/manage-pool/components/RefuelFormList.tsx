@@ -23,7 +23,7 @@ type RefuelFormListProps = {
 const formatPercentage = (value: number | undefined) =>
   formatNumber(value, { unit: 'percentage', decimals: 2, abbreviate: false, fallback: '-' })
 
-const extrapolateYearly = (value: number | undefined, donationsPerYear: number) =>
+const extrapolateYearly = (value: number | null, donationsPerYear: number) =>
   maybe(value, value => value * donationsPerYear)
 
 export const RefuelFormList = ({ values, tokenA, tokenB, poolTvl }: RefuelFormListProps) => {
@@ -32,7 +32,7 @@ export const RefuelFormList = ({ values, tokenA, tokenB, poolTvl }: RefuelFormLi
     useCallback(
       (tokenAUsdRate, tokenBUsdRate, poolUsd) =>
         poolUsd === 0 || (values.tokenAAmount == null && values.tokenBAmount == null)
-          ? undefined
+          ? null
           : ((+(values.tokenAAmount ?? 0) * tokenAUsdRate + +(values.tokenBAmount ?? 0) * tokenBUsdRate) / poolUsd) *
             100,
       [values.tokenAAmount, values.tokenBAmount],

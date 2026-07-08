@@ -112,11 +112,7 @@ export const RepayForm = <ChainId extends IChainId>({
   const isSelectedDirty = formState.dirtyFields[selectedField]
 
   // The max repay amount in the helper message should always be denominated in terms of the borrow token.
-  const {
-    data: maxAmountInBorrowToken,
-    isLoading: maxAmountInBorrowTokenLoading,
-    error: maxAmountInBorrowTokenError,
-  } = useTokenAmountConversion({
+  const { data: maxAmountInBorrowToken, error: maxAmountInBorrowTokenError } = useTokenAmountConversion({
     chainId,
     amountIn: max[selectedField],
     tokenInAddress: selectedToken?.address,

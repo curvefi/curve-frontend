@@ -173,7 +173,7 @@ export const ActionInfo = (props: ActionInfoProps) => {
               variant={prevValueSize[size]}
               color={prevValueColor ?? 'textTertiary'}
               data-testid={`${testId}-previous`}
-              data-value={typeof givenPrevValue == 'object' ? JSON.stringify(givenPrevValue) : `${givenPrevValue}`}
+              data-value={givenPrevValue && typeof givenPrevValue == 'object' ? 'Object' : `${givenPrevValue}`}
               sx={{ whiteSpace: 'nowrap' }}
             >
               {prevValue}
