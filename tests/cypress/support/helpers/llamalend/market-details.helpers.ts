@@ -20,18 +20,6 @@ const withMarketFormDrawer = <T>(
   return callback()
 }
 
-const withMarketFormDrawer = <T>(
-  breakpoint: Breakpoint | undefined,
-  action: string,
-  callback: () => Cypress.Chainable<T>,
-) => {
-  if (breakpoint !== 'mobile') return callback()
-
-  cy.get(`[data-testid="mobile-form-action-${action}"]`, LOAD_TIMEOUT).click()
-  cy.get('[data-testid="mobile-form-drawer"]', LOAD_TIMEOUT).should('be.visible')
-  return callback()
-}
-
 const shouldLoadHistoricalBorrowRateChart = () => {
   getMetricValue('historical-borrow-current-rate').should('match', DECIMAL_REGEX)
   shouldShowCanvas('historical-borrow-rate-chart')

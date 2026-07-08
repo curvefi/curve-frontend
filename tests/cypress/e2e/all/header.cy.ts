@@ -10,6 +10,7 @@ import {
 } from '@cy/support/routes'
 import {
   API_LOAD_TIMEOUT,
+  type Breakpoint,
   LOAD_TIMEOUT,
   oneDesktopViewport,
   oneMobileOrTabletViewport,
@@ -31,7 +32,7 @@ const EXPECTED_FOOTER_MIN_WIDTH = 273
 const EXPECTED_FOOTER_MAX_WIDTH = 1536
 
 describe('Header', () => {
-  let width: number, height: number
+  let width: number, height: number, viewport: Breakpoint
 
   beforeEach(() => mockMerklCampaigns())
 
@@ -39,7 +40,7 @@ describe('Header', () => {
     let route: AppRoute
 
     beforeEach(() => {
-      ;[width, height] = oneDesktopViewport()
+      ;[width, height, viewport] = oneDesktopViewport()
       cy.viewport(width, height)
       dismissPhishingWarningBanner()
       route = oneAppRoute()
@@ -117,7 +118,7 @@ describe('Header', () => {
     let route: AppRoute
 
     beforeEach(() => {
-      ;[width, height] = oneMobileOrTabletViewport()
+      ;[width, height, viewport] = oneMobileOrTabletViewport()
       cy.viewport(width, height)
       dismissPhishingWarningBanner()
       route = oneAppRoute()
@@ -204,7 +205,7 @@ describe('Header', () => {
 
   describe('Phishing Warning Banner', () => {
     function visitWithDismissedBanner(dismissedDate?: number) {
-      ;[width, height] = oneViewport()
+      ;[width, height, viewport] = oneViewport()
       cy.viewport(width, height)
       const route = oneAppRoute()
       cy.visitWithoutTestConnector(route, {
@@ -242,7 +243,7 @@ describe('Header', () => {
 
   describe('chain selector', () => {
     beforeEach(() => {
-      ;[width, height] = oneDesktopViewport()
+      ;[width, height, viewport] = oneDesktopViewport()
       cy.viewport(width, height)
       const route = APP_ROUTES.dex() as unknown as AppRoute
       cy.visitWithoutTestConnector(route)
@@ -263,7 +264,9 @@ describe('Header', () => {
   }
 
   function waitIsLoaded(route: AppRoute) {
-    cy.get(`[data-testid='${getRouteTestId(route)}']`, API_LOAD_TIMEOUT).should('be.visible')
+    const testId = getRouteTestId(route, viewport)
+    const selector = `[data-testid${testId.endsWith('-') ? '^' : ''}='${testId}']`
+    cy.get(selector, API_LOAD_TIMEOUT).should('be.visible')
   }
 
   function switchEthToArbitrum() {

@@ -1,6 +1,6 @@
 import { oneAddress, oneOf, oneValueOf } from '@cy/support/generators'
-import { type AppPath, oneAppPath } from '@cy/support/ui'
-import { recordValues, assert } from '@primitives/objects.utils'
+import { type AppPath, type Breakpoint, oneAppPath } from '@cy/support/ui'
+import { recordEntries, recordValues, assert } from '@primitives/objects.utils'
 import {
   CRVUSD_ROUTES,
   DAO_ROUTES,
@@ -11,9 +11,12 @@ import {
   PAGE_INTEGRATIONS,
   PAGE_LEGAL,
 } from '@ui-kit/shared/routes'
+import { basicMuiTheme } from '@ui-kit/themes/basic-theme'
 
 const WBTC_LEND_POOL = '0xcaD85b7fe52B1939DCEebEe9bCf0b2a5Aa0cE617'
 const DEFAULT_NETWORK = 'ethereum'
+
+type RouteTestId = string | Partial<Record<Breakpoint, string>>
 
 export const CRVUSD_PAGE_MARKETS_ROUTE = `crvusd/${DEFAULT_NETWORK}${CRVUSD_ROUTES.PAGE_MARKETS}/`
 
@@ -89,22 +92,43 @@ const ROUTE_TEST_IDS = {
   crvusd: {
     [CRVUSD_ROUTES.PAGE_PSR]: 'pegkeepers',
     [CRVUSD_ROUTES.PAGE_CRVUSD_STAKING]: 'scrvusd-page',
-    [CRVUSD_ROUTES.PAGE_MARKETS]: 'form-connect-wallet',
+    [CRVUSD_ROUTES.PAGE_MARKETS]: { mobile: 'mobile-form-action-', tablet: 'form-connect-wallet' },
     ...COMMON_ROUTE_TEST_IDS,
   },
-  lend: { [LEND_ROUTES.PAGE_MARKETS]: 'form-connect-wallet', ...COMMON_ROUTE_TEST_IDS },
+  lend: {
+    [LEND_ROUTES.PAGE_MARKETS]: { mobile: 'mobile-form-action-', tablet: 'form-connect-wallet' },
+    ...COMMON_ROUTE_TEST_IDS,
+  },
   llamalend: { [LLAMALEND_ROUTES.PAGE_MARKETS]: 'data-table-head', ...COMMON_ROUTE_TEST_IDS },
+}
+
+function getBreakpointTestId(testId: RouteTestId, viewport: Breakpoint) {
+  if (typeof testId === 'string') return testId
+
+  const breakpointValues = basicMuiTheme.breakpoints.values
+  const viewportValue = breakpointValues[viewport]
+  // Use the closest configured breakpoint at or below the current viewport, matching MUI responsive fallback behavior.
+  const breakpointTestId = recordEntries(testId)
+    .filter(([breakpoint]) => breakpointValues[breakpoint] <= viewportValue)
+    .sort(([a], [b]) => breakpointValues[b] - breakpointValues[a])
+    .map(([, testId]) => testId)[0]
+
+  return assert(breakpointTestId, `No test-id mapping for ${viewport}. Found: ${Object.keys(testId).join(', ')}`)
 }
 
 /**
  * Gets the test id for a given route, used to determine if the page has loaded
  */
-export const getRouteTestId = (route: AppRoute) => {
+export const getRouteTestId = (route: AppRoute, viewport: Breakpoint) => {
   const app = getRouteApp(route)
   const appRoutes = ROUTE_TEST_IDS[app]
   // extract part after /{app}/{network}
   const afterNetwork = assert(route.replace(/^\w+\/ethereum/, ''), `No route after network from ${route}`)
   const [, testId] = Object.entries(appRoutes).find(([route]) => afterNetwork.startsWith(route)) ?? []
-  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions -- Existing violation before enabling this rule.
-  return assert(testId, `No test-id mapping for ${app} → ${afterNetwork}. Found: ${Object.keys(appRoutes)}`)
+
+  return getBreakpointTestId(
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions -- Existing violation before enabling this rule.
+    assert(testId, `No test-id mapping for ${app} → ${afterNetwork}. Found: ${Object.keys(appRoutes)}`),
+    viewport,
+  )
 }
