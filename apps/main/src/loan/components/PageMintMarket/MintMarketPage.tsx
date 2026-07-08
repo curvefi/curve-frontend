@@ -20,7 +20,6 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useParams } from '@ui-kit/hooks/router'
-import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { LlamaMarketType } from '@ui-kit/types/market'
@@ -49,7 +48,6 @@ export const MintMarketPage = () => {
       network: params.network,
       rMarket: rCollateralId,
       userAddress: address,
-      enableLLv2: useLLv2(),
       enableDeprecatedMarkets: useUserProfileStore(state => state.showDeprecatedMarkets),
     },
     !isLoading && !market,
