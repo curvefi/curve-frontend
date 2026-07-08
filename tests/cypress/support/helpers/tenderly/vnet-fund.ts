@@ -1,4 +1,7 @@
+import { encodeFunctionData, erc20Abi, type Address, type PublicClient } from 'viem'
 import { oneInt } from '@cy/support/generators'
+import type { TenderlyConfig } from '@cy/support/helpers/tenderly/account'
+import { sendVnetTransactionAndWait } from '@cy/support/helpers/tenderly/vnet-tx'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Hex } from '@primitives/address.utils'
 
@@ -59,4 +62,34 @@ export const fundErc20 = ({
       id: oneInt(),
     },
     ...LOAD_TIMEOUT,
+  })
+
+export const approveErc20 = ({
+  client,
+  spenderAddress,
+  tenderly,
+  tokenAddress,
+  tokenAmountWei,
+  userAddress,
+}: {
+  client: PublicClient
+  spenderAddress: Address
+  tenderly: TenderlyConfig
+  tokenAddress: Address
+  tokenAmountWei: bigint
+  userAddress: Address
+}) =>
+  sendVnetTransactionAndWait({
+    client,
+    errorMessage: 'Tenderly approve transaction failed',
+    tenderly,
+    tx: {
+      from: userAddress,
+      to: tokenAddress,
+      data: encodeFunctionData({
+        abi: erc20Abi,
+        functionName: 'approve',
+        args: [spenderAddress, tokenAmountWei],
+      }),
+    },
   })

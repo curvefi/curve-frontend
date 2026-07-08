@@ -64,15 +64,5 @@ export function checkResetPositionWalletAmount({ amount }: { amount: Decimal }) 
   getResetPositionWalletInput().should('have.value', amount)
 }
 
-export const submitResetPositionForm = ({
-  expected = 'success',
-  message,
-}: {
-  expected?: 'success' | 'error'
-  message?: string
-} = {}) =>
-  submitLoanForm({
-    form: 'reset-position',
-    message: message ?? { success: 'Position reset!', error: 'Transaction failed' }[expected],
-    expected,
-  })
+export const submitResetPositionForm = ({ message }: { message: string }) =>
+  submitLoanForm({ form: 'reset-position', message })

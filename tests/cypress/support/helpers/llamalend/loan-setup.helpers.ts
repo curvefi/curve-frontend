@@ -1,13 +1,21 @@
-import { encodeFunctionData, parseAbi, parseEther, parseUnits, type Address } from 'viem'
-import { loadTenderlyAccount, type TenderlyAccount } from '@cy/support/helpers/tenderly/account'
+import {
+  createPublicClient,
+  encodeFunctionData,
+  http,
+  parseAbi,
+  parseEther,
+  parseUnits,
+  type Address,
+  type PublicClient,
+} from 'viem'
+import { loadTenderlyAccount, type TenderlyConfig } from '@cy/support/helpers/tenderly/account'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import type { CreateVirtualTestnetResponse } from '@cy/support/helpers/tenderly/vnet-create'
-import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
-import { sendVnetTransaction } from '@cy/support/helpers/tenderly/vnet-transaction'
+import { approveErc20, fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
+import { sendVnetTransactionAndWait } from '@cy/support/helpers/tenderly/vnet-tx'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 
-const ERC20_ABI = parseAbi(['function approve(address spender, uint256 amount)'])
 const CONTROLLER_ABI = parseAbi(['function create_loan(uint256 collateral, uint256 debt, uint256 N)'])
 
 /**
@@ -35,54 +43,27 @@ const fundUserForLoanSetup = ({
   })
 }
 
-/** Approves a token for a spender so the loan can be created. */
-const approveTokenForSpender = ({
-  vnet,
-  userAddress,
-  tokenAddress,
-  spenderAddress,
-  tokenAmountWei,
-  tenderlyAccount,
-}: {
-  vnet: CreateVirtualTestnetResponse
-  userAddress: Address
-  tokenAddress: Address
-  spenderAddress: Address
-  tokenAmountWei: bigint
-  tenderlyAccount: TenderlyAccount
-}) =>
-  sendVnetTransaction({
-    tenderly: { ...tenderlyAccount, vnetId: vnet.id },
-    tx: {
-      from: userAddress,
-      to: tokenAddress,
-      data: encodeFunctionData({
-        abi: ERC20_ABI,
-        functionName: 'approve',
-        args: [spenderAddress, tokenAmountWei],
-      }),
-    },
-  })
-
-const createLoanOnController = ({
-  vnet,
+const createLoanOnController = async ({
+  client,
+  tenderly,
   userAddress,
   controllerAddress,
   collateralAmountWei,
   debtAmountWei,
   range = 10n,
-  tenderlyAccount,
 }: {
-  vnet: CreateVirtualTestnetResponse
+  client: PublicClient
+  tenderly: TenderlyConfig
   userAddress: Address
   controllerAddress: Address
   collateralAmountWei: bigint
   debtAmountWei: bigint
   range?: bigint
-  tenderlyAccount: TenderlyAccount
 }) =>
-  sendVnetTransaction({
-    tenderly: { ...tenderlyAccount, vnetId: vnet.id },
+  sendVnetTransactionAndWait({
+    client,
+    errorMessage: 'Tenderly create_loan transaction failed',
+    tenderly,
     tx: {
       from: userAddress,
       to: controllerAddress,
@@ -100,25 +81,31 @@ const createLoanOnController = ({
 export const setupTenderlyLoan = ({
   vnet,
   userAddress,
-  collateralAddress,
   controllerAddress,
-  collateralDecimals,
   collateral,
+  collateralAddress,
+  collateralDecimals,
+  borrowedDecimals,
   borrow,
-  collateralFundingMultiplier = 2n,
+  range,
+  collateralFundingMultiplier,
 }: {
   vnet: CreateVirtualTestnetResponse
   userAddress: Address
-  collateralAddress: Address
-  controllerAddress: Address
-  collateralDecimals: number
   collateral: Decimal
+  collateralAddress: Address
+  collateralDecimals: number
+  controllerAddress: Address
   borrow: Decimal
-  collateralFundingMultiplier?: bigint
+  borrowedDecimals: number
+  range: bigint
+  collateralFundingMultiplier: bigint
 }) => {
   const collateralWei = parseUnits(collateral, collateralDecimals)
-  const borrowWei = parseUnits(borrow, 18)
+  const borrowWei = parseUnits(borrow, borrowedDecimals)
   const fundedCollateral = collateralWei * collateralFundingMultiplier
+  const { publicRpcUrl } = getRpcUrls(vnet)
+  const client = createPublicClient({ transport: http(publicRpcUrl) })
 
   fundUserForLoanSetup({
     vnet,
@@ -129,21 +116,23 @@ export const setupTenderlyLoan = ({
 
   // the call above uses cy.request, but to use async we need cy.then()
   loadTenderlyAccount().then(LOAD_TIMEOUT, async tenderlyAccount => {
-    await approveTokenForSpender({
-      vnet,
+    await approveErc20({
+      client,
+      tenderly: { ...tenderlyAccount, vnetId: vnet.id },
       userAddress,
       tokenAddress: collateralAddress,
       spenderAddress: controllerAddress,
       tokenAmountWei: collateralWei,
-      tenderlyAccount,
     })
+
     await createLoanOnController({
-      vnet,
+      client,
+      tenderly: { ...tenderlyAccount, vnetId: vnet.id },
       userAddress,
       controllerAddress,
       collateralAmountWei: collateralWei,
       debtAmountWei: borrowWei,
-      tenderlyAccount,
+      range,
     })
   })
 }
