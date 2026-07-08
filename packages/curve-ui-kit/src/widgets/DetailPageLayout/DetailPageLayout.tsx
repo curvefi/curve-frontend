@@ -9,6 +9,7 @@ import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { mapBreakpoints } from '@ui-kit/themes/basic-theme/basic-theme'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { PAGE_SPACING } from './constants'
+import { getIsMobileFormDrawer } from './form-context/FormPlacementContext'
 import { FormPlacementProvider } from './form-context/FormPlacementProvider'
 import { FormSkeleton } from './FormSkeleton'
 import type { DetailPageLayoutFormTabs, FormPlacement } from './types'
@@ -80,7 +81,7 @@ export const DetailPageLayout = ({
   // page header metrics's notionals lazy rendering make the height change by 9px so we need a smaller threshold
   const [, pageHeaderHeight = 0] = useResizeObserver(headerRef, { threshold: 5 })
   const placement: FormPlacement = formTabs?.placement ?? 'inline'
-  const showMobileDrawer = placement === 'mobile-drawer' && isMobile
+  const showMobileDrawer = getIsMobileFormDrawer(placement, isMobile)
 
   const headerStack = header && (
     <Stack ref={headerRef} sx={stickyHeaderSx(navHeight)}>

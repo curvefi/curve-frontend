@@ -10,7 +10,12 @@ const useFormPlacement = () => {
   return placement
 }
 
+export const getIsMobileFormDrawer = (placement: FormPlacement, isMobile: boolean) =>
+  placement === 'mobile-drawer' && isMobile
+
+/** Returns true only when forms are rendered in the mobile bottom drawer layout. */
 export const useIsMobileFormDrawer = () => {
   const isMobile = useIsMobile()
-  return useFormPlacement() === 'mobile-drawer' && isMobile
+  const placement = useFormPlacement()
+  return getIsMobileFormDrawer(placement, isMobile)
 }
