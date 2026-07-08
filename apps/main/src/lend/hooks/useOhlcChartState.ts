@@ -25,7 +25,7 @@ export const useOhlcChartState = ({
   controllerAddress,
 }: UseOhlcChartStateProps) => {
   const { address: userAddress } = useConnection()
-  const { data: userPrices } = useUserPrices({ chainId, marketId, userAddress })
+  const userPrices = useUserPrices({ chainId, marketId, userAddress })
   const { data: oraclePrice } = useMarketOraclePrice({ chainId, marketId })
   return useLlammaOhlcChartStateModel({
     endpoint: 'lending',

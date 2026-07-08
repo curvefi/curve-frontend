@@ -5,10 +5,10 @@ import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
 import { defaultNetworks } from '@/dex/lib/networks'
 import { useStore } from '@/dex/store/useStore'
 import type { ChainId } from '@/dex/types/main.types'
+import { Loading } from '@/routes/Loading'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { createTenderlyWagmiConfigFromVNet } from '@cy/support/helpers/tenderly'
 import type { TenderlyWagmiConfigFromVNet } from '@cy/support/helpers/tenderly/vnet'
-import Skeleton from '@mui/material/Skeleton'
 import type { Address } from '@primitives/address.utils'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { CurveProvider } from '@ui-kit/features/connect-wallet/lib/CurveProvider'
@@ -32,7 +32,7 @@ function QuickSwapTest({
   const { tokensMapper, tokensMapperStr } = useTokensMapper(chainId)
   const { isPending } = useNetworksQuery() // `useNetworks` throws while networks are loading
   return isPending ? (
-    <Skeleton width="100%" height={400} />
+    <Loading />
   ) : (
     <QuickSwap
       curve={curveApi}

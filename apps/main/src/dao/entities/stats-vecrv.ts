@@ -4,7 +4,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { getWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/wagmi-config'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { EmptyValidationSuite } from '@ui-kit/lib/validation'
-import { Chain, decimalDiv, decimalMultiply, fromWei, MAINNET_CRV_ADDRESS } from '@ui-kit/utils'
+import { Chain, decimalPercent, fromWei, MAINNET_CRV_ADDRESS } from '@ui-kit/utils'
 import { multicall } from '@wagmi/core'
 
 export type VeCrvStats = {
@@ -48,9 +48,7 @@ export const { useQuery: useStatsVecrvQuery } = queryFactory({
       totalVeCrv: fromWei(totalVeCrv.toString(), 18),
       totalLockedCrv: totalLockedCrvDecimal,
       totalCrv: totalCrvDecimal,
-      lockedPercentage: +totalCrvDecimal
-        ? decimalMultiply(decimalDiv(totalLockedCrvDecimal, totalCrvDecimal), '100')
-        : '0',
+      lockedPercentage: decimalPercent(totalLockedCrvDecimal, totalCrvDecimal),
     }
   },
   category: 'dao.stats',
