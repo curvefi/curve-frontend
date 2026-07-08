@@ -32,7 +32,7 @@ const LIQUIDATION_BUFFER_THRESHOLDS: Record<
   /** Below this value the position is critical */
   critical: 2.5,
   /** Below this value the position is risky. Above it is light */
-  risky: 25,
+  risky: 100,
 } as const
 
 export const clampPercentage = (health: number | undefined | null): number => Math.max(0, Math.min(health ?? 0, 100))
