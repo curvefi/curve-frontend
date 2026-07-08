@@ -1,11 +1,12 @@
 import { TooltipItem, TooltipItems, TooltipWrapper } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import { Box, Stack, Typography } from '@mui/material'
 import type { Decimal } from '@primitives/decimal.utils'
+import { maybes } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { formatChartAxisNumber } from '@ui-kit/shared/ui/Chart'
 import { LegendBox } from '@ui-kit/shared/ui/Chart/LegendSet'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { decimalDiv, decimalGreaterThan, decimalMultiply, formatNumber, ZERO } from '@ui-kit/utils'
+import { decimalGreaterThan, decimalPercent, formatNumber, ZERO } from '@ui-kit/utils'
 import { useBandsChartPalette } from './hooks/useBandsChartPalette'
 import type { BandsChartToken, ChartDataPoint } from './types'
 
@@ -19,10 +20,11 @@ type TooltipContentProps = {
 
 const isPositiveDecimal = (value: Decimal | undefined): boolean => value != null && decimalGreaterThan(value, ZERO)
 
-const calculateBandShare = (numerator: Decimal | undefined, denominator: Decimal | undefined): string =>
-  numerator != null && denominator != null && decimalGreaterThan(denominator, ZERO)
-    ? `${formatNumber(decimalMultiply(decimalDiv(numerator, denominator), '100'), 'percent.rate')}`
-    : '?'
+const calculateBandShare = (part: Decimal | undefined, total: Decimal | undefined) =>
+  formatNumber(
+    maybes([part, total], (part, total) => decimalPercent(part, total)),
+    'percent.rate',
+  )
 
 const formatAbbreviatedNumber = (value: Decimal | undefined): string =>
   formatNumber(value, { abbreviate: true, fallback: '?' })

@@ -12,7 +12,7 @@ export const amount = (value: number | string | BigNumber | bigint | null | unde
 /** Converts a string to a Decimal typed string, returning undefined for null, undefined, empty strings, or non-finite values. */
 export const decimal = (value: number | string | undefined | null | BigNumber | bigint): Decimal | undefined => {
   if (typeof value === 'number' || typeof value === 'bigint') {
-    value = value.toString()
+    value = BigNumber(value)
   }
   if (value instanceof BigNumber) {
     value = value.toFixed()
@@ -67,6 +67,9 @@ export const decimalSqrt = (value: Decimal): Decimal => {
 /** Divides the 1st by the 2nd decimal. Does NOT guard for division-by-zero! */
 export const decimalDiv = (first: Decimal, second: Decimal) =>
   new BigNumber(first).dividedBy(second).toFixed() as Decimal
+
+export const decimalPercent = (part: Decimal, total: Decimal): Decimal =>
+  +total ? decimalMultiply(decimalDiv(part, total), '100') : '0'
 
 export const toWei = (n: string, decimals: number) => decimal(parseUnits(n, decimals))!
 export const fromWei = (n: string, decimals: number) => decimal(formatUnits(BigInt(n), decimals))!

@@ -1,13 +1,14 @@
 import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { requireLib, useCurve } from '@ui-kit/features/connect-wallet'
 import { createValidationSuite } from '@ui-kit/lib'
 import {
-  queryFactory,
-  rootKeys,
   type ChainParams,
   type ChainQuery,
   type PoolParams,
   type PoolQuery,
+  queryFactory,
+  rootKeys,
 } from '@ui-kit/lib/model'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { curveApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
@@ -17,7 +18,7 @@ import { fetchNetworks, useNetworks } from '../entities/networks'
 const { useQuery: usePoolVolumeQuery } = queryFactory({
   category: 'dex.pools',
   queryKey: ({ chainId, poolId }: PoolParams) => [...rootKeys.pool({ chainId, poolId }), 'stats.volume'] as const,
-  queryFn: async ({ poolId }: PoolQuery) => await requireLib('curveApi').getPool(poolId).stats.volume(),
+  queryFn: async ({ poolId }: PoolQuery) => (await requireLib('curveApi').getPool(poolId).stats.volume()) as Decimal,
   validationSuite: createValidationSuite((params: PoolParams) => {
     curveApiValidationGroup(params)
     chainValidationGroup(params)
