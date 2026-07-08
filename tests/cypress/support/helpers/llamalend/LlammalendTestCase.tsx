@@ -16,6 +16,7 @@ import { WithdrawForm } from '@/llamalend/features/supply/components/WithdrawFor
 import { useLoanExists } from '@/llamalend/queries/user'
 import { useMintMarket } from '@/loan/hooks/useMintMarket'
 import { ChainId as MintChain } from '@/loan/types/loan.types'
+import { Loading } from '@/routes/Loading'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { fakeCollateralEvents } from '@cy/support/helpers/llamalend/mock-loan-test-data'
@@ -23,12 +24,12 @@ import { llamaNetworks } from '@cy/support/helpers/llamalend/test-context.helper
 import { createTenderlyWagmiConfigFromVNet } from '@cy/support/helpers/tenderly'
 import { type TenderlyWagmiConfigFromVNet } from '@cy/support/helpers/tenderly/vnet'
 import Box from '@mui/material/Box'
-import Skeleton from '@mui/material/Skeleton'
 import type { Decimal } from '@primitives/decimal.utils'
 import { CurveProvider } from '@ui-kit/features/connect-wallet/lib/CurveProvider'
 import type { UserMarketQuery } from '@ui-kit/lib/model'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { constQ, type Range } from '@ui-kit/types/util'
+import { FormPlacementProvider } from '@ui-kit/widgets/DetailPageLayout/form-context/FormPlacementProvider'
 
 // todo: soft liquidation should be detected not forced by passing a tab. However, that detection is in the separate apps for now.
 const LoanComponentMap = {
@@ -98,7 +99,7 @@ function LlammalendTest({ tab, onPricesUpdated, type, marketType, ...props }: Ll
   ) : error ? (
     `Error retrieving market: ${error.message}`
   ) : (
-    <Skeleton width="100%" height={400} />
+    <Loading />
   )
 }
 
@@ -108,7 +109,9 @@ export const LlammalendTestCase = ({ vnet, privateKey, chainId, marketType, ...p
   <ComponentTestWrapper config={createTenderlyWagmiConfigFromVNet({ vnet, privateKey })} autoConnect>
     <CurveProvider app="llamalend" network={llamaNetworks[chainId]} onChainUnavailable={console.error}>
       <Box sx={{ maxWidth: 520 }}>
-        <LlammalendTest {...props} chainId={chainId} marketType={marketType} />
+        <FormPlacementProvider placement="inline">
+          <LlammalendTest {...props} chainId={chainId} marketType={marketType} />
+        </FormPlacementProvider>
       </Box>
     </CurveProvider>
   </ComponentTestWrapper>

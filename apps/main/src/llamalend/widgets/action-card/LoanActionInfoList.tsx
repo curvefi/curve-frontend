@@ -32,7 +32,7 @@ export type LoanActionInfoListProps = {
   prevHealth?: QueryProp<Decimal | null>
   isFullRepay?: boolean
   prices?: QueryProp<Range<Decimal> | null>
-  prevPrices?: QueryProp<Range<Decimal>>
+  prevPrices?: QueryProp<Range<Decimal> | null>
   rates?: QueryProp<{ borrowApr?: Decimal } | null>
   prevRates?: QueryProp<{ borrowApr?: Decimal } | null>
   exchangeRate?: QueryProp<Decimal | null>
@@ -211,7 +211,7 @@ export const LoanActionInfoList = ({
               )}
               prevValue={
                 prevPrices &&
-                mapQuery(prevPrices, data => data.map(p => formatNumber(p, { abbreviate: false })).join(' - '))
+                mapQuery(prevPrices, data => data?.map(p => formatNumber(p, { abbreviate: false })).join(' - '))
               }
               valueRight={notFalsy(collateralSymbol, borrowSymbol).join('/')}
               size="small"

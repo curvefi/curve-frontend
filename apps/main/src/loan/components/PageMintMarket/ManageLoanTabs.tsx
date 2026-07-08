@@ -4,14 +4,12 @@ import { RemoveCollateralForm } from '@/llamalend/features/manage-loan/component
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
 import { ClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePositionForm'
 import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealthForm'
-import { useMarketContext } from '@/llamalend/features/market-context'
-import { useLiquidationStatus } from '@/llamalend/features/market-position-details/hooks/useUserLiquidationStatus'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { networks } from '@/loan/networks'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Decimal } from '@primitives/decimal.utils'
-import { useLoanImplementationKey } from '@ui-kit/hooks/useFeatureFlags'
+import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import type { QueryProp, Range } from '@ui-kit/types/util'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
@@ -22,6 +20,7 @@ const softLiqNetworks = networks as unknown as NetworkDict<LlamaChainId>
 type MintManageLoanProps = {
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
   collateralEvents: QueryProp<UserCollateralEvents>
+  isSoftLiquidation: boolean
 }
 
 const MintManageMenu = [
@@ -53,7 +52,7 @@ const MintManageMenu = [
   },
 ] satisfies FormTab<MintManageLoanProps>[]
 
-const MintManageSoftLiquidationMenu = [
+const SoftLiquidationMenu = [
   {
     value: 'soft-liquidation',
     label: t`Manage soft liquidation`,
@@ -72,14 +71,10 @@ const MintManageSoftLiquidationMenu = [
   },
 ] satisfies FormTab<MintManageLoanProps>[]
 
-export const ManageLoanTabs = (params: MintManageLoanProps) => {
-  const { marketId, userAddress, chainId } = useMarketContext()
-  const { data: status } = useLiquidationStatus({
-    chainId,
-    marketId,
-    userAddress,
-  })
-  const isSoftLiquidation = ['softLiquidation', 'hardLiquidation'].includes(status ?? '')
-  const menu = isSoftLiquidation ? MintManageSoftLiquidationMenu : MintManageMenu
-  return <FormTabs key={useLoanImplementationKey()} params={params} menu={menu} />
-}
+export const ManageLoanTabs = (params: MintManageLoanProps) => (
+  <FormTabs
+    key={useReleaseChannel()[0]} // remount tabs when zapv2 gets enabled
+    params={params}
+    menu={params.isSoftLiquidation ? SoftLiquidationMenu : MintManageMenu}
+  />
+)

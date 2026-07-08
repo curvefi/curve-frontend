@@ -5,6 +5,8 @@ import type { Falsy } from '@primitives/objects.utils'
 import { joinButtonText } from '@primitives/string.utils'
 import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
 import { t } from '@ui-kit/lib/i18n'
+import { applySxProps } from '@ui-kit/utils'
+import { useIsMobileFormDrawer } from '@ui-kit/widgets/DetailPageLayout/form-context/FormPlacementContext'
 
 type FormButtonLabelPart = string | Exclude<Falsy, ''>
 
@@ -15,6 +17,8 @@ export type FormButtonProps = Pick<ButtonProps, 'disabled' | 'fullWidth' | 'load
   pending?: boolean
   testId?: string
 }
+
+const fixedBottomSx = { position: 'fixed', bottom: 0, left: 0, right: 0 } as const
 
 export const FormButton = ({
   children,
@@ -27,21 +31,29 @@ export const FormButton = ({
   size,
   sx,
   testId,
-}: FormButtonProps) =>
-  useConnection().isConnected ? (
+}: FormButtonProps) => {
+  const isMobileDrawer = useIsMobileFormDrawer()
+
+  return useConnection().isConnected ? (
     children || (
       <Button
         type="submit"
         disabled={disabled}
-        fullWidth={fullWidth}
+        fullWidth={isMobileDrawer || fullWidth}
         loading={loading ?? pending}
         size={size}
-        sx={sx}
+        sx={applySxProps(sx, isMobileDrawer && fixedBottomSx)}
         data-testid={testId}
       >
         {pending ? t`Processing...` : Array.isArray(label) ? joinButtonText(...label) : label}
       </Button>
     )
   ) : (
-    <ConnectWalletButton size={size} fullWidth={fullWidth} sx={sx} testId={connectWalletTestId} />
+    <ConnectWalletButton
+      size={size}
+      fullWidth={isMobileDrawer || fullWidth}
+      sx={applySxProps(sx, isMobileDrawer && fixedBottomSx)}
+      testId={connectWalletTestId}
+    />
   )
+}

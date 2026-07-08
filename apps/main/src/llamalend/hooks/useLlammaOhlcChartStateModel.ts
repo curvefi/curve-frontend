@@ -9,7 +9,7 @@ import { useStableOhlcAnchorEnd } from '@ui-kit/features/candle-chart/hooks/useO
 import type { LpPriceOhlcDataFormatted, OraclePriceData } from '@ui-kit/features/candle-chart/types'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { Range } from '@ui-kit/types/util'
+import type { QueryProp, Range } from '@ui-kit/types/util'
 import { useLlammaOhlcChartData } from './useLlammaOhlcChartData'
 
 const { Height } = SizesAndSpaces
@@ -23,7 +23,7 @@ type LlammaOhlcChartStateModelParams = {
   network: Chain | undefined
   oraclePrice: string | undefined
   previewPrices: Range<Decimal> | undefined
-  userPrices: Range<Decimal> | undefined
+  userPrices: QueryProp<Range<Decimal> | null>
 }
 
 /**
@@ -119,7 +119,7 @@ export const useLlammaOhlcChartStateModel = ({
 
   const { oraclePriceVisible, liqRangeCurrentVisible, liqRangeNewVisible, legendSets } = useChartLegendToggles({
     hasNewLiquidationRange: !!previewPrices,
-    hasLiquidationRange: !!userPrices,
+    hasLiquidationRange: !!userPrices.data,
     llammaEndpoint: isOracleLineOnly,
   })
   const shouldFetchFallbackOracleLine = isOracleLineOnly || (oraclePriceVisible && oraclePoolOracleLine.length === 0)
@@ -140,7 +140,7 @@ export const useLlammaOhlcChartStateModel = ({
     error: currentError,
     ohlcData,
     oraclePriceData,
-    liquidationRange: selectedLiqRange,
+    liquidationRange: selectedLiqRange.data,
     timeOption,
     selectedChartKey,
     selectChartList,

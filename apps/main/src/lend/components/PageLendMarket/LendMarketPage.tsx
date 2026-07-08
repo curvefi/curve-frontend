@@ -9,9 +9,10 @@ import { type MarketUrlParams } from '@/lend/types/lend.types'
 import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/utilsRouter'
 import { MarketContextProvider } from '@/llamalend/features/market-context'
 import { PositionDetailsComposite } from '@/llamalend/features/market-position-details'
+import { useIsInSoftLiquidation } from '@/llamalend/features/market-position-details/hooks/useUserLiquidationStatus'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
-import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
+import { getControllerAddress, getTokens, hasResetPosition } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header'
@@ -20,7 +21,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useParams } from '@ui-kit/hooks/router'
-import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
+import { useLlamaResetPosition, useLLv2, useLlamalendMobileFormDrawer } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
@@ -37,13 +38,11 @@ export const LendMarketPage = () => {
   const { isInitialized } = useCurve()
   const { address: userAddress } = useConnection()
   useLendPageTitle(market?.collateral_token?.symbol ?? rMarket, t`Lend`)
+  const isMobileFormDrawer = useLlamalendMobileFormDrawer()
 
   const network = networks[chainId]
-  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists({
-    chainId,
-    marketId: market?.id,
-    userAddress,
-  })
+  const queryParams = { chainId, marketId: market?.id, userAddress }
+  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists(queryParams)
 
   const [previewPrices, setPreviewPrices] = useState<Range<Decimal> | undefined>(undefined)
   const isLoading = !isInitialized || isMarketLoading
@@ -67,6 +66,11 @@ export const LendMarketPage = () => {
     tokens,
     network,
   })
+  const showReset = useLlamaResetPosition() && hasResetPosition(market)
+  const { data: isSoftLiquidation, isLoading: isSoftLiquidationLoading } = useIsInSoftLiquidation(
+    queryParams,
+    !!loanExists,
+  )
 
   const error = marketError ?? apiMarket.error
   return error ? (
@@ -79,14 +83,23 @@ export const LendMarketPage = () => {
       marketType={LlamaMarketType.Lend}
     >
       <DetailPageLayout
-        formTabs={
-          ((!!market && !isLoanExistsLoading) || apiMarket.data) &&
-          (loanExists ? (
-            <ManageLoanTabs onPricesUpdated={setPreviewPrices} collateralEvents={collateralEvents} />
-          ) : (
-            <CreateLoanTabs onPricesUpdated={setPreviewPrices} />
-          ))
-        }
+        formTabs={{
+          placement: isMobileFormDrawer ? 'mobile-drawer' : 'inline',
+          content:
+            !isLoading &&
+            !isLoanExistsLoading &&
+            !isSoftLiquidationLoading &&
+            (loanExists ? (
+              <ManageLoanTabs
+                onPricesUpdated={setPreviewPrices}
+                collateralEvents={collateralEvents}
+                showReset={showReset}
+                isSoftLiquidation={!!isSoftLiquidation}
+              />
+            ) : (
+              <CreateLoanTabs onPricesUpdated={setPreviewPrices} />
+            )),
+        }}
         header={<MarketPageHeader isLoading={isLoading} />}
       >
         <MarketBanners

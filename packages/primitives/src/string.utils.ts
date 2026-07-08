@@ -38,3 +38,5 @@ export const joinButtonText = (...texts: (string | Falsy)[]) =>
   notFalsy(...texts)
     .map((t, i, all) => (i ? `${i === all.length - 1 ? ' & ' : ', '}${t}` : t))
     .join('')
+
+export const capitalize = (string: string) => string.charAt(0).toUpperCase() + string.slice(1)

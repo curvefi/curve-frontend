@@ -6,6 +6,7 @@ import Tab, { type TabProps } from '@mui/material/Tab'
 import Tabs, { type TabsProps } from '@mui/material/Tabs'
 import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { applySxProps } from '@ui-kit/utils/mui'
 import { useTabsOverflow } from '../../../hooks/useTabsOverflow'
 import {
   TABS_SIZES_CLASSES,
@@ -118,11 +119,11 @@ export const TabsSwitcher = <T extends string | number>({
           onChange={(_, newValue) => onChange?.(newValue as T)}
           scrollButtons={false}
           className={tabsClassName}
-          sx={{
-            ...sx,
-            ...(overflow === 'fullWidth' && { '& .MuiTab-root': { flexGrow: 1 } }),
-            ...(isKebabMode && { width: '100%' }),
-          }}
+          sx={applySxProps(
+            sx,
+            overflow === 'fullWidth' && { '& .MuiTab-root': { flexGrow: 1 } },
+            isKebabMode && { width: '100%' },
+          )}
           {...props}
         >
           {renderedOptions.map(

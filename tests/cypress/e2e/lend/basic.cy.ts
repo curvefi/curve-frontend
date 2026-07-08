@@ -3,12 +3,17 @@ import {
   shouldLoadLendBorrowDetails,
   shouldLoadLendVaultDetails,
 } from '@cy/support/helpers/llamalend/market-details.helpers'
-import { LOAD_TIMEOUT } from '@cy/support/ui'
+import { LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
 
 const LEND_MARKET = '0x23F5a668A9590130940eF55964ead9787976f2CC'
 
+const [WIDTH, HEIGHT, BREAKPOINT] = oneViewport()
+
 describe('Basic Access Test', () => {
-  beforeEach(() => mockMerklCampaigns())
+  beforeEach(() => {
+    mockMerklCampaigns()
+    cy.viewport(WIDTH, HEIGHT)
+  })
 
   it('should open the Lend DApp successfully', () => {
     cy.visit('/lend/')
@@ -28,21 +33,21 @@ describe('Basic Access Test', () => {
 
   it('should load lend market details with a wallet', () => {
     cy.visit(`/lend/ethereum/markets/${LEND_MARKET}${''}`)
-    shouldLoadLendBorrowDetails({ hasWallet: true })
+    shouldLoadLendBorrowDetails({ breakpoint: BREAKPOINT, hasWallet: true })
   })
 
   it('should load lend vault details with a wallet', () => {
     cy.visit(`/lend/ethereum/markets/${LEND_MARKET}${'/vault'}`)
-    shouldLoadLendVaultDetails({ hasWallet: true })
+    shouldLoadLendVaultDetails({ breakpoint: BREAKPOINT, hasWallet: true })
   })
 
   it('should load lend market details without a wallet', () => {
     cy.visitWithoutTestConnector(`lend/ethereum/markets/${LEND_MARKET}${''}`)
-    shouldLoadLendBorrowDetails({ hasWallet: false })
+    shouldLoadLendBorrowDetails({ breakpoint: BREAKPOINT, hasWallet: false })
   })
 
   it('should load lend vault details without a wallet', () => {
     cy.visitWithoutTestConnector(`lend/ethereum/markets/${LEND_MARKET}${'/vault'}`)
-    shouldLoadLendVaultDetails({ hasWallet: false })
+    shouldLoadLendVaultDetails({ breakpoint: BREAKPOINT, hasWallet: false })
   })
 })

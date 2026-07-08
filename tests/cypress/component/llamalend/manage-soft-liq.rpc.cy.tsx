@@ -12,6 +12,7 @@ import { CurveProvider, useCurve } from '@ui-kit/features/connect-wallet'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { constQ } from '@ui-kit/types/util'
 import { Chain } from '@ui-kit/utils'
+import { FormPlacementProvider } from '@ui-kit/widgets/DetailPageLayout/form-context/FormPlacementProvider'
 
 describe('Manage soft liquidation', () => {
   const chainId = Chain.Ethereum
@@ -48,7 +49,7 @@ describe('Manage soft liquidation', () => {
       autoConnect
     >
       <CurveProvider app="llamalend" network={network} onChainUnavailable={console.error}>
-        {children}
+        <FormPlacementProvider placement="inline">{children}</FormPlacementProvider>
       </CurveProvider>
     </ComponentTestWrapper>
   )

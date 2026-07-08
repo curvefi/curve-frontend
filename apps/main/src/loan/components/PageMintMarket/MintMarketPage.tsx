@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { MarketContextProvider } from '@/llamalend/features/market-context'
 import { PositionDetailsComposite } from '@/llamalend/features/market-position-details'
+import { useIsInSoftLiquidation } from '@/llamalend/features/market-position-details/hooks/useUserLiquidationStatus'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
 import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
@@ -19,7 +20,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useParams } from '@ui-kit/hooks/router'
-import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
+import { useLlamalendMobileFormDrawer, useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { LlamaMarketType } from '@ui-kit/types/market'
@@ -34,15 +35,13 @@ export const MintMarketPage = () => {
   const chainId = getChainId(params)
   const { address } = useConnection()
   const [previewPrices, setPreviewPrices] = useState<Range<Decimal> | undefined>(undefined)
+  const isMobileFormDrawer = useLlamalendMobileFormDrawer()
 
   const marketQuery = useMintMarket({ chainId, rMarket: rCollateralId })
   const { data: market, isLoading: isMarketLoading, error: marketError } = marketQuery
 
-  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists({
-    chainId,
-    marketId: market?.id,
-    userAddress: address,
-  })
+  const queryParams = { chainId, marketId: market?.id, userAddress: address }
+  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists(queryParams)
 
   const network = networks[chainId]
   const isLoading = !isInitialized || isMarketLoading
@@ -67,6 +66,10 @@ export const MintMarketPage = () => {
     network,
     tokens,
   })
+  const { data: isSoftLiquidation, isLoading: isSoftLiquidationLoading } = useIsInSoftLiquidation(
+    queryParams,
+    !!loanExists,
+  )
 
   const error = marketError ?? apiMarket.error
   return error ? (
@@ -84,14 +87,22 @@ export const MintMarketPage = () => {
       marketType={LlamaMarketType.Mint}
     >
       <DetailPageLayout
-        formTabs={
-          ((!!market && !isLoanExistsLoading) || apiMarket.data) &&
-          (loanExists ? (
-            <ManageLoanTabs onPricesUpdated={setPreviewPrices} collateralEvents={collateralEvents} />
-          ) : (
-            <CreateLoanTabs onPricesUpdated={setPreviewPrices} />
-          ))
-        }
+        formTabs={{
+          placement: isMobileFormDrawer ? 'mobile-drawer' : 'inline',
+          content:
+            !isLoading &&
+            !isLoanExistsLoading &&
+            !isSoftLiquidationLoading &&
+            (loanExists ? (
+              <ManageLoanTabs
+                onPricesUpdated={setPreviewPrices}
+                collateralEvents={collateralEvents}
+                isSoftLiquidation={!!isSoftLiquidation}
+              />
+            ) : (
+              <CreateLoanTabs onPricesUpdated={setPreviewPrices} />
+            )),
+        }}
         header={<MarketPageHeader isLoading={isLoading} />}
       >
         <MarketBanners chainId={chainId} market={market} />
