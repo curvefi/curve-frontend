@@ -86,6 +86,7 @@ export const shouldLoadBorrowDetails = ({ hasWallet }: WalletOptions) => {
 
 export const shouldLoadLendBorrowDetails = ({ hasWallet }: WalletOptions) => {
   shouldLoadBorrowDetails({ hasWallet })
+  getActionValue('market-total-liquidity').should('match', DECIMAL_REGEX)
   shouldLoadHistoricalSupplyRateChart()
   shouldShowCanvas('interest-rate-utilization-chart')
   shouldLoadMarketContracts({ hasMonetaryPolicy: true, hasOracle: true, hasVault: true })
@@ -104,6 +105,7 @@ export const shouldLoadLendVaultDetails = ({ hasWallet }: WalletOptions) => {
   cy.get('[data-testid="supply-deposit-input"]').should('be.visible')
   cy.get(`[data-testid='no-position-disconnected']`).should('not.exist')
   cy.get('[data-testid="supply-deposit-submit-button"]').should(hasWallet ? 'be.visible' : 'not.exist')
+  getActionValue('market-total-liquidity').should('match', DECIMAL_REGEX)
   getActionValue('market-net-supply-apy').should('match', DECIMAL_REGEX)
   shouldLoadHistoricalSupplyRateChart()
   shouldShowCanvas('interest-rate-utilization-chart')

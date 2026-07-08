@@ -239,14 +239,14 @@ const useAvailableLiquidity = ({
     [borrowUsdRate, capAndAvailable, marketQuery],
     (borrowUsdRate, { available, totalAssets }) => ({
       value: available,
-      max: totalAssets,
+      total: totalAssets,
       usdRate: borrowUsdRate,
       notional: maybes([available, borrowUsdRate], (liq, rate) => decimalMultiply(liq, rate)),
     }),
   )
   const apiLiquidity = combineQueries([apiMarket, borrowUsdRate], (d, rate) => ({
     value: d.liquidityUsd / rate,
-    max: d.debtCeiling,
+    total: d.type === LlamaMarketType.Lend ? d.assets.collateral.balance : d.debtCeiling,
     usdRate: rate,
     notional: d.liquidityUsd,
   }))

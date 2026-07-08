@@ -37,7 +37,17 @@ export const MetricsRow = ({
   const supplyRatePeriod = supplyRate?.data ? AVERAGE_CATEGORIES[supplyRate.data.averageCategory].period : null
 
   return (
-    <Stack direction="row" sx={{ gap: Spacing.xxl, alignItems: 'center', flexWrap: 'wrap' }}>
+    <Stack
+      direction="row"
+      sx={{
+        gap: Spacing.xxl,
+        alignItems: 'center',
+        flexWrap: 'wrap',
+        justifyContent: { mobile: 'flex-start', tablet: 'flex-end' },
+        minWidth: 0,
+        maxWidth: '100%',
+      }}
+    >
       <BorrowAprMetric
         marketType={marketType}
         borrowRate={borrowRate}
@@ -80,6 +90,24 @@ export const MetricsRow = ({
                 extraIncentives={supplyRate.data?.extraIncentives ?? []}
               />
             ),
+            ...TooltipOptions,
+          }}
+        />
+      )}
+      {marketType === LlamaMarketType.Lend && (
+        <Metric
+          category={METRIC_CATEGORY}
+          alignment={metricAlignment}
+          testId="market-total-liquidity"
+          label={t`Total liquidity`}
+          {...tokenMetric({
+            value: mapQuery(availableLiquidity, d => d.total),
+            symbol: borrowToken?.symbol,
+            usdRate: mapQuery(availableLiquidity, d => d.usdRate),
+          })}
+          valueTooltip={{
+            title: t`Total liquidity`,
+            body: t`Total liquidity is the total amount of the borrow token supplied to this lending market, including both available and borrowed liquidity.`,
             ...TooltipOptions,
           }}
         />
