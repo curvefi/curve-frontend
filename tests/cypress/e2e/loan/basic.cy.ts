@@ -1,6 +1,6 @@
 import { mockMerklCampaigns } from '@cy/support/helpers/lending-mocks'
 import { shouldLoadMintBorrowDetails } from '@cy/support/helpers/llamalend/market-details.helpers'
-import { blockUnmockedLlamaMarketApis } from '@cy/support/helpers/llamalend/market-list-mocks'
+import { blockUnmockedApis } from '@cy/support/helpers/llamalend/market-list-mocks'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
 
 const MINT_MARKET = 'WBTC'
@@ -30,7 +30,7 @@ describe('Mint app', () => {
       shouldLoadMintBorrowDetails({ hasWallet: false })
     })
     it('when API is offline', () => {
-      blockUnmockedLlamaMarketApis()
+      blockUnmockedApis()
       cy.visit(url)
       shouldLoadMintBorrowDetails({ hasWallet: true, hasApi: false })
     })

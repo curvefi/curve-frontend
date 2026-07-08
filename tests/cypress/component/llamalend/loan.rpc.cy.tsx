@@ -19,7 +19,7 @@ import {
   writeCreateLoanForm,
 } from '@cy/support/helpers/llamalend/create-loan.helpers'
 import { LlammalendTestCase, type LlammalendTestCaseProps } from '@cy/support/helpers/llamalend/LlammalendTestCase'
-import { blockUnmockedLlamaMarketApis } from '@cy/support/helpers/llamalend/market-list-mocks'
+import { blockUnmockedApis } from '@cy/support/helpers/llamalend/market-list-mocks'
 import {
   checkRepayDetailsLoaded,
   selectRepayToken,
@@ -126,7 +126,7 @@ testCases.forEach(
         fundErc20({ adminRpcUrl, amountWei: CREATE_LOAN_FUND_AMOUNT, tokenAddress, recipientAddresses: [address] })
         cy.log(`Funded some eth and collateral to ${address} in vnet ${vnet.slug}`)
 
-        if (!hasApi) blockUnmockedLlamaMarketApis()
+        if (!hasApi) blockUnmockedApis()
       })
 
       const LoanTestWrapper = ({ tab }: Pick<LlammalendTestCaseProps, 'tab'>) => (
@@ -204,7 +204,7 @@ testCases.forEach(
           recipientAddresses: [address],
         })
         cy.mount(<LoanTestWrapper tab="close" />)
-        checkClosePositionDetailsLoaded({ debt: debtAfterImproveHealth, hasApi })
+        checkClosePositionDetailsLoaded({ debt: debtAfterImproveHealth, hasErrors: true })
         checkDebt({ current: debtAfterImproveHealth, future: '0', symbol: borrowedSymbol })
         submitClosePositionForm('error').then(() => {
           // unfortunately cannot cause soft liquidation in the tests yet

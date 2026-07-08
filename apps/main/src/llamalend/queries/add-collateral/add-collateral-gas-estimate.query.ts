@@ -1,14 +1,27 @@
-import { type NetworkDict } from '@/llamalend/llamalend.types'
 import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { useEstimateGas } from '@ui-kit/lib/model/entities/gas-info'
+import { createApprovedEstimateGasHook } from '@ui-kit/lib/model/entities/gas-info'
+import { useAddCollateralIsApproved } from './add-collateral-approved.query'
 import type { CollateralQuery } from '../validation/manage-loan.types'
 import { collateralValidationSuite } from '../validation/manage-loan.validation'
 
 type AddCollateralGasQuery<T = IChainId> = CollateralQuery<T>
 type AddCollateralGasParams<T = IChainId> = FieldsOf<AddCollateralGasQuery<T>>
+
+const { useQuery: useAddCollateralApproveGasEstimate } = queryFactory({
+  queryKey: ({ chainId, marketId, userAddress, userCollateral }: AddCollateralGasParams) =>
+    [
+      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+      'estimateGas.addCollateralApprove',
+      { userCollateral },
+    ] as const,
+  queryFn: async ({ marketId, userCollateral }: AddCollateralGasQuery) =>
+    await getLoanImplementation(marketId).estimateGas.addCollateralApprove(userCollateral),
+  category: 'llamalend.addCollateral',
+  validationSuite: collateralValidationSuite,
+})
 
 const { useQuery: useAddCollateralGasEstimate } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, userCollateral }: AddCollateralGasParams) =>
@@ -17,39 +30,14 @@ const { useQuery: useAddCollateralGasEstimate } = queryFactory({
       'estimateGas.addCollateral',
       { userCollateral },
     ] as const,
-  queryFn: async ({ marketId, userCollateral }: AddCollateralGasQuery) => {
-    const market = getLoanImplementation(marketId)
-    const isApproved = await market.addCollateralIsApproved(userCollateral)
-
-    if (isApproved) {
-      return market.estimateGas.addCollateral(userCollateral)
-    }
-    // When not approved, sum both approval gas and addCollateral gas
-    const [approveGas, addCollateralGas] = await Promise.all([
-      market.estimateGas.addCollateralApprove(userCollateral),
-      market.estimateGas.addCollateral(userCollateral),
-    ])
-    return Number(approveGas) + Number(addCollateralGas)
-  },
+  queryFn: async ({ marketId, userCollateral }: AddCollateralGasQuery) =>
+    await getLoanImplementation(marketId).estimateGas.addCollateral(userCollateral),
   category: 'llamalend.addCollateral',
   validationSuite: collateralValidationSuite,
 })
 
-export const useAddCollateralEstimateGas = <ChainId extends IChainId>(
-  networks: NetworkDict<ChainId>,
-  query: AddCollateralGasParams<ChainId>,
-  enabled?: boolean,
-) => {
-  const { chainId } = query
-  const {
-    data: estimate,
-    isLoading: estimateLoading,
-    error: estimateError,
-  } = useAddCollateralGasEstimate(query, enabled)
-  const {
-    data,
-    isLoading: conversionLoading,
-    error: conversionError,
-  } = useEstimateGas(networks, chainId, estimate, enabled)
-  return { data, isLoading: estimateLoading || conversionLoading, error: estimateError ?? conversionError }
-}
+export const useAddCollateralEstimateGas = createApprovedEstimateGasHook({
+  useIsApproved: useAddCollateralIsApproved,
+  useApproveEstimate: useAddCollateralApproveGasEstimate,
+  useActionEstimate: useAddCollateralGasEstimate,
+})

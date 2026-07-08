@@ -2,7 +2,7 @@ import { submitLoanForm } from '@cy/support/helpers/llamalend/create-loan.helper
 import { LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
-import { checkDebt, type DebtCheck, getActionValue, touchInput } from './action-info.helpers'
+import { checkDebt, checkEstimatedTxCost, type DebtCheck, getActionValue, touchInput } from './action-info.helpers'
 
 const getRepayInput = () => cy.get('[data-testid^="repay-input-"] input[type="text"]', LOAD_TIMEOUT).first()
 
@@ -48,11 +48,7 @@ export function checkRepayDetailsLoaded({
     /(\d(\.\d+)?) - (\d(\.\d+)?)/,
   )
   getActionValue('borrow-apr').should('include', '%')
-  if (hasApi) {
-    getActionValue('estimated-tx-cost').should('include', '$')
-  } else {
-    getActionValue('estimated-tx-cost').should('be.undefined')
-  }
+  checkEstimatedTxCost({ hasValue: hasApi })
   checkDebt(debt)
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
 }

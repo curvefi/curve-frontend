@@ -7,7 +7,7 @@ import { LlamaMarketType } from '@ui-kit/types/market'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { Chain } from '@ui-kit/utils/network'
 import { DEFAULT_DECIMALS } from '@ui-kit/utils/units'
-import { DECIMAL_RANGE_REGEX, getActionValue } from './action-info.helpers'
+import { checkEstimatedTxCost, DECIMAL_RANGE_REGEX, getActionValue } from './action-info.helpers'
 
 const chainId = Chain.Ethereum
 
@@ -145,11 +145,7 @@ export function checkLoanDetailsLoaded({
   getActionValue('borrow-apr', 'previous').should('include', '%')
   getActionValue('borrow-ltv').should('include', '%')
   getActionValue('borrow-ltv', 'previous').should('include', '%')
-  if (hasApi) {
-    getActionValue('estimated-tx-cost').should('include', '$')
-  } else {
-    getActionValue('estimated-tx-cost').should('be.undefined')
-  }
+  checkEstimatedTxCost({ hasValue: hasApi })
 
   if (leverageEnabled) {
     getActionValue('borrow-price-impact').should('include', '%')

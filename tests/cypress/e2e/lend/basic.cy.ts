@@ -3,7 +3,7 @@ import {
   shouldLoadLendBorrowDetails,
   shouldLoadLendVaultDetails,
 } from '@cy/support/helpers/llamalend/market-details.helpers'
-import { blockUnmockedLlamaMarketApis } from '@cy/support/helpers/llamalend/market-list-mocks'
+import { blockUnmockedApis } from '@cy/support/helpers/llamalend/market-list-mocks'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
 
 const LEND_MARKET = '0x23F5a668A9590130940eF55964ead9787976f2CC'
@@ -38,7 +38,7 @@ describe('Lend app', () => {
       shouldLoadLendBorrowDetails({ hasWallet: false })
     })
     it('when API is offline', () => {
-      blockUnmockedLlamaMarketApis()
+      blockUnmockedApis()
       cy.visit(url)
       shouldLoadLendBorrowDetails({ hasWallet: true, hasApi: false })
     })
@@ -55,7 +55,7 @@ describe('Lend app', () => {
       shouldLoadLendVaultDetails({ hasWallet: false })
     })
     it('when API is offline', () => {
-      blockUnmockedLlamaMarketApis()
+      blockUnmockedApis()
       cy.visit(url)
       shouldLoadLendVaultDetails({ hasWallet: true, hasApi: false })
     })

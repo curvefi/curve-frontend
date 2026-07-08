@@ -12,7 +12,7 @@ import { mockTokenPrices } from '../tokens'
 /**
  * To make sure our tests do not depend on real APIs, we just block them.
  */
-export const blockUnmockedLlamaMarketApis = () => {
+export const blockUnmockedApis = () => {
   ;['prices.curve.finance', 'api.curve.finance', 'api.merkl.xyz', 'api-core.curve.finance'].forEach(
     hostname =>
       void cy.intercept({ hostname }, req =>
@@ -55,7 +55,7 @@ const mockEmptyCrvUsdAmms = () =>
   )
 
 export function setupLlamalendListMocks(vaultData = createLendingVaultChainsResponse()) {
-  blockUnmockedLlamaMarketApis()
+  blockUnmockedApis()
   mockEmptyLlamaMarketUserData()
   mockEmptyLlamaMarketBadDebt()
   mockEmptyCrvUsdAmms()
