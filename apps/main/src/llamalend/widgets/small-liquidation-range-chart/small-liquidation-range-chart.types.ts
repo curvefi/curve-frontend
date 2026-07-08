@@ -8,7 +8,7 @@ export type SplitMode = 'split-left' | 'split-right'
 
 export type SmallLiquidationRangeChartProps = {
   prices: QueryProp<Range<Decimal> | null> | undefined
-  prevPrices: QueryProp<Range<Decimal>> | undefined
+  prevPrices: QueryProp<Range<Decimal> | null> | undefined
   oraclePrice: QueryProp<Decimal | null>
   isFullRepay: boolean | undefined
 }

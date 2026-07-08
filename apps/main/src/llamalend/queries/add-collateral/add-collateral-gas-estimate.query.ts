@@ -3,9 +3,9 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { createApprovedEstimateGasHook } from '@ui-kit/lib/model/entities/gas-info'
-import { useAddCollateralIsApproved } from './add-collateral-approved.query'
 import type { CollateralQuery } from '../validation/manage-loan.types'
 import { collateralValidationSuite } from '../validation/manage-loan.validation'
+import { useAddCollateralIsApproved } from './add-collateral-approved.query'
 
 type AddCollateralGasQuery<T = IChainId> = CollateralQuery<T>
 type AddCollateralGasParams<T = IChainId> = FieldsOf<AddCollateralGasQuery<T>>

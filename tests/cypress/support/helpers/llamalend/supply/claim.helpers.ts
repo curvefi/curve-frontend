@@ -1,11 +1,11 @@
 import { type Address, encodeFunctionData, parseAbi } from 'viem'
-import { advanceVirtualNetworkClock } from '@cy/support/helpers/tenderly/vnet-admin'
 import type { CreateVirtualTestnetResponse } from '@cy/support/helpers/tenderly/vnet-create'
+import { advanceVirtualNetworkClock } from '@cy/support/helpers/tenderly/vnet-time'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@ui-kit/utils'
 import { loadTenderlyAccount } from '../../tenderly/account'
-import { sendVnetTransaction } from '../../tenderly/vnet-transaction'
+import { sendVnetTransaction } from '../../tenderly/vnet-tx'
 import { checkEstimatedTxCost as checkEstimatedTxCostValue, getActionInfo } from '../action-info.helpers'
 import { submitSupplyForm, SupplyActionType } from './supply.helpers'
 

@@ -1,3 +1,4 @@
+import { LEND_V1_DEPRECATION_DATE } from '@/llamalend/constants'
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
 import { MAX_USD_VALUE, oneAddress, oneDate, oneFloat, oneInt, oneOf, onePrice } from '@cy/support/generators'
 import { oneToken } from '@cy/support/helpers/tokens'
@@ -38,9 +39,15 @@ const oneLendingPool = (
   const borrowedBalanceUsd = remainderUsd - collateralBalanceUsd
   const collateralBalance = collateralBalanceUsd / collateralPrice
   const borrowedBalance = borrowedBalanceUsd / borrowedPrice
+  const version = oneOf(1, 2)
+  const createdAt = oneDate({
+    // v1 markets must be created before deprecation, v2 markets must be created after v1 deprecation
+    minDate: { 1: new Date(2020), 2: LEND_V1_DEPRECATION_DATE }[version],
+    maxDate: { 1: LEND_V1_DEPRECATION_DATE, 2: new Date() }[version],
+  })
   return {
     name: [collateral.symbol, borrowed.symbol].join('-'),
-    version: oneOf(1, 2),
+    version,
     controller: oneAddress(),
     vault: oneAddress(),
     llamma: oneAddress(),
@@ -81,7 +88,7 @@ const oneLendingPool = (
     collateral_token: oneApiToken(collateral),
     borrowed_token: oneApiToken(borrowed),
     extra_reward_apr: [],
-    created_at: oneDate().getTime() / 1000,
+    created_at: createdAt.getTime() / 1000,
     max_ltv: oneFloat(60, 110), // between 60% and 110%
   }
 }
