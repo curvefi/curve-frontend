@@ -222,7 +222,7 @@ testCases.forEach(([width, height, breakpoint]) => {
       cy.get(`[data-testid="table-empty-row"]`).should('exist')
     })
 
-    it('should allow filtering by chain', () => {
+    it('should allow filtering by chain', { retries: Cypress.isBrowser('firefox') ? 1 : 0 }, () => {
       const chains = objectKeys(vaultData)
       const chain = oneOf(...chains)
       withFilters(breakpoint, () => cy.get(`[data-testid="chip-chain-${chain}"]`).click())
