@@ -6,7 +6,7 @@ import TableRow from '@mui/material/TableRow'
 import { type Row, type Table } from '@tanstack/react-table'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TableItem } from './data-table.utils'
-import { DataRowProps } from './DataRow'
+import type { DataRowProps } from './DataRow'
 
 const { Spacing } = SizesAndSpaces
 
