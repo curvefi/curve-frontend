@@ -18,6 +18,5 @@ export const HealthTooltipContent = () => (
     <TooltipDescription
       text={t`Once Health reaches 0, monitor the liquidation buffer to track your position before hard liquidation.`}
     />
-    <TooltipDescription text={t`Calculated as: (oracle_price - top_band_price) * collateral / debt`} />
   </TooltipWrapper>
 )
