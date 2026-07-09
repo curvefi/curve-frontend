@@ -122,7 +122,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
           secondaryButton: { label: t`Telegram`, href: CURVE_SOCIALS.telegram.en },
         }}
         errorState={{ title: t`Unable to retrieve pool list` }}
-        expandedPanel={{ body: PoolListMobileExpandedPanel, footer: PoolListMobileExpandedPanelFooter }}
+        expandedPanel={{ Body: PoolListMobileExpandedPanel, Footer: PoolListMobileExpandedPanelFooter }}
         shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       >
         <TableFilters<PoolListColumnId>

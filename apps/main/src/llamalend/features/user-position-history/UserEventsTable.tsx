@@ -34,7 +34,7 @@ export const UserEventsTable = ({ eventsQuery }: UserEventsTableProps) => {
       table={table}
       emptyState={{ title: t`No events found` }}
       errorState={{ title: t`Could not load events` }}
-      expandedPanel={{ body: RowExpandedPanel, footer: RowExpandedPanelFooter }}
+      expandedPanel={{ Body: RowExpandedPanel, Footer: RowExpandedPanelFooter }}
     />
   )
 }

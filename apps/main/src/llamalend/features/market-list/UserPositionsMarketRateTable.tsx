@@ -78,7 +78,7 @@ export const UserPositionsMarketRateTable = ({ tableQuery, marketRateType, onRel
       table={table}
       viewAllLabel={t`View all ${rowCount} ${label} positions`}
       errorState={{ title: t`Could not load ${label} positions`, onReload }}
-      expandedPanel={{ body: LlamaMarketExpandedPanel, footer: UserPositionExpandedPanelFooter }}
+      expandedPanel={{ Body: LlamaMarketExpandedPanel, Footer: UserPositionExpandedPanelFooter }}
       shouldStickFirstColumn={Boolean(useIsTablet() && rowCount)}
     >
       <Stack

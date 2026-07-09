@@ -69,7 +69,7 @@ export const LegacyPoolListTable = ({ network }: { network: NetworkConfig }) => 
           <LegacyPoolListEmptyState columnFiltersById={columnFiltersById} resetFilters={resetFilters} />
         </EmptyStateRow>
       }
-      expandedPanel={{ body: LegacyPoolMobileExpandedPanel, footer: LegacyPoolMobileExpandedPanelFooter }}
+      expandedPanel={{ Body: LegacyPoolMobileExpandedPanel, Footer: LegacyPoolMobileExpandedPanelFooter }}
       shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       loading={isLoading}
     >

@@ -96,7 +96,7 @@ export const LlamaMarketsTable = ({
           button: { onClick: resetFilters, label: t`Show All Markets` },
         }}
         errorState={{ title: t`Could not load markets`, onReload }}
-        expandedPanel={{ body: LlamaMarketExpandedPanel, footer: MarketExpandedPanelFooter }}
+        expandedPanel={{ Body: LlamaMarketExpandedPanel, Footer: MarketExpandedPanelFooter }}
         shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       >
         <TableFilters<LlamaMarketColumnId>

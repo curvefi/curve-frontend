@@ -28,7 +28,7 @@ export const LlammaActivityEvents = ({
       table={table}
       emptyState={emptyState}
       errorState={errorState}
-      expandedPanel={{ body: LlammaEventsExpandedPanel, footer: LlammaEventsExpandedPanelFooter }}
+      expandedPanel={{ Body: LlammaEventsExpandedPanel, Footer: LlammaEventsExpandedPanelFooter }}
     />
   )
 }

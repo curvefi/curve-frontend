@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useEffect, useState } from 'react'
+import { FunctionComponent, useCallback, useEffect, useState } from 'react'
 import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
 import TableCell from '@mui/material/TableCell'
@@ -11,11 +11,11 @@ import type { DataRowProps } from './DataRow'
 const { Spacing } = SizesAndSpaces
 
 // Panel used when row is expanded on mobile
-export type ExpandedPanel<T extends TableItem> = (props: { row: Row<T>; table: Table<T> }) => ReactNode
+export type ExpandedPanel<T extends TableItem> = FunctionComponent<{ row: Row<T>; table: Table<T> }>
 
 export type ExpandedPanelConfig<T extends TableItem> = {
-  body: ExpandedPanel<T>
-  footer?: ExpandedPanel<T>
+  Body: ExpandedPanel<T>
+  Footer?: ExpandedPanel<T>
 }
 
 /**
@@ -31,7 +31,7 @@ export function ExpansionRow<T extends TableItem>({
   colSpan: number
 }) {
   const { render, onExited, expanded } = useRowExpansion(row)
-  const { body: ExpandedPanelBody, footer: ExpandedPanelFooter } = expandedPanel
+  const { Body: ExpandedPanelBody, Footer: ExpandedPanelFooter } = expandedPanel
   return (
     render && (
       <TableRow data-testid="data-table-expansion-row">
