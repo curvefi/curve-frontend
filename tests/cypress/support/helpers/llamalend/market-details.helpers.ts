@@ -89,7 +89,7 @@ export const shouldLoadBorrowDetails = ({ breakpoint, hasWallet }: WalletOptions
   withMarketFormDrawer(breakpoint, 'create', () => {
     cy.get('[data-testid="borrow-collateral-input"]').should('be.visible')
     cy.get('[data-testid="borrow-debt-input"]').should('be.visible')
-    cy.get(`[data-testid="${hasWallet ? 'create-loan-submit-button' : 'form-connect-wallet'}"]`).should('be.visible')
+    cy.get(`[data-testid="${hasWallet ? 'create-loan-submit-button' : 'form-market-page'}"]`).should('be.visible')
     return cy.wrap(null)
   })
   cy.get(`[data-testid='no-position-disconnected']`).should(hasWallet ? 'not.exist' : 'be.visible')
