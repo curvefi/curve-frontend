@@ -8,7 +8,7 @@ import {
   openDrawer,
   withFilters,
 } from '@cy/support/helpers/data-table.helpers'
-import { Chain, HighTVLAddress, HighUtilizationAddress } from '@cy/support/helpers/lending-mocks'
+import { Chain, HIGH_TVL_ADDRESS, HIGH_UTILIZATION_ADDRESS } from '@cy/support/helpers/lending-mocks'
 import {
   checkChainSelection,
   checkCoinSelection,
@@ -25,8 +25,8 @@ import { assertInViewport, assertNotInViewport, LOAD_TIMEOUT, oneDesktopViewport
 import { assert, notFalsy, objectKeys, recordValues, repeat } from '@primitives/objects.utils'
 import { LlamaMarketType, LlamaMarketVersion, MarketRateType } from '@ui-kit/types/market'
 
-const wstEthMarket = '0x100dAa78fC509Db39Ef7D04DE0c1ABD299f4C6CE' as const
-const sfrxEthMarket = '0x8472A9A7632b173c8Cf3a86D3afec50c35548e76' as const
+const WST_ETH_MARKET = '0x100dAa78fC509Db39Ef7D04DE0c1ABD299f4C6CE' as const
+const SFRX_ETH_MARKET = '0x8472A9A7632b173c8Cf3a86D3afec50c35548e76' as const
 
 const testCases = [oneViewport()] as const
 
@@ -132,7 +132,7 @@ testCases.forEach(([width, height, breakpoint]) => {
       const utilizationColumnId = LlamaMarketColumnId.UtilizationPercent
       cy.get(`[data-testid^="data-table-row"]`)
         .first()
-        .find(`[data-testid="market-link-${HighTVLAddress}"]`)
+        .find(`[data-testid="market-link-${HIGH_TVL_ADDRESS}"]`)
         .should('exist')
       if (breakpoint == 'mobile') {
         withFilters(breakpoint, () => {
@@ -146,7 +146,7 @@ testCases.forEach(([width, height, breakpoint]) => {
         cy.get('[data-testid="drawer-sort-menu-lamalend-markets"]').should('not.be.visible')
         cy.get(`[data-testid^="data-table-row"]`)
           .first()
-          .find(`[data-testid="market-link-${HighUtilizationAddress}"]`)
+          .find(`[data-testid="market-link-${HIGH_UTILIZATION_ADDRESS}"]`)
           .should('exist')
         expandFirstRowOnMobile(breakpoint)
         // note: not possible currently to sort ascending
@@ -171,7 +171,7 @@ testCases.forEach(([width, height, breakpoint]) => {
       }
       checkLineGraphColor(MarketRateType.Borrow, '#ed242f')
 
-      cy.get(`@lend-snapshots.all`, LOAD_TIMEOUT).then(calls1 => {
+      cy.get<unknown[]>(`@lend-snapshots.all`, LOAD_TIMEOUT).then(calls1 => {
         expect(calls1.length).to.be.greaterThan(0).lessThan(vaultCount) // make sure we have some calls before scrolling, but not all
         cy.wait(repeat('@lend-snapshots', calls1.length), LOAD_TIMEOUT)
 
@@ -187,7 +187,7 @@ testCases.forEach(([width, height, breakpoint]) => {
         cy.get('[data-testid^="data-table-row"]').last().should('be.visible')
         cy.wait(`@lend-snapshots`, LOAD_TIMEOUT) // wait for an extra request
         cy.get('[data-testid^="data-table-row"]').last().should('contain.html', 'path') // wait for the graph to render
-        cy.get(`@lend-snapshots.all`, LOAD_TIMEOUT).then(calls2 =>
+        cy.get<unknown[]>(`@lend-snapshots.all`, LOAD_TIMEOUT).then(calls2 =>
           expect(calls2.length).to.be.greaterThan(calls1.length),
         )
       })
@@ -198,14 +198,14 @@ testCases.forEach(([width, height, breakpoint]) => {
       cy.get("[data-testid='table-text-search-Llamalend Markets'] input").type('wstETH crvUSD')
       cy.url().should('include', 'search=wstETH+crvUSD')
       cy.scrollTo(0, 0)
-      cy.get(`[data-testid='market-link-${sfrxEthMarket}']`).should('not.exist')
-      cy.get(`[data-testid="market-link-${wstEthMarket}"]`).should('exist')
+      cy.get(`[data-testid='market-link-${SFRX_ETH_MARKET}']`).should('not.exist')
+      cy.get(`[data-testid="market-link-${WST_ETH_MARKET}"]`).should('exist')
     })
 
     it('should persists search filter across reload', () => {
       visitAndWait([width, height], `/llamalend/ethereum/markets/?search=wstETH+crvUSD`)
       cy.get("[data-testid='table-text-search-Llamalend Markets'] input").should('have.value', 'wstETH crvUSD')
-      cy.get(`[data-testid="market-link-${wstEthMarket}"]`).should('exist')
+      cy.get(`[data-testid="market-link-${WST_ETH_MARKET}"]`).should('exist')
       getTableCellAssets().first().contains('wstETH')
     })
 

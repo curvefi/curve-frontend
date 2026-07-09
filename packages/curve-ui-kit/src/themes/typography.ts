@@ -2,11 +2,11 @@ import { Breakpoint } from '@mui/material'
 import { type TypographyVariantsOptions } from '@mui/material/styles'
 import { basicMuiTheme } from './basic-theme'
 import { DesignSystem } from './design'
-import { Sizing, Spacing, TransitionFunction } from './design/0_primitives'
+import { Sizing, Spacing, TRANSITION_FUNCTION } from './design/0_primitives'
 import { SizesAndSpaces } from './design/1_sizes_spaces'
 import { Fonts } from './fonts'
 
-const TabularNums = 'tabular-nums'
+const TABULAR_NUMS = 'tabular-nums'
 
 const disabledTypographyKeys = [
   'h1',
@@ -34,7 +34,7 @@ export type TypographyVariantDefinition = {
   lineHeight?: string | keyof typeof LineHeight
   letterSpacing?: string
   textCase?: 'uppercase' | 'capitalize'
-  fontVariantNumeric?: typeof TabularNums
+  fontVariantNumeric?: typeof TABULAR_NUMS
   marginBottom?: number
 }
 
@@ -70,7 +70,7 @@ const variant = (
     marginRight: `calc(${letterSpacing} * -1)`,
   }),
   textTransform: textCase ?? 'none',
-  transition: `color ${TransitionFunction}, border ${TransitionFunction}`, // border is used in the chip, for example
+  transition: `color ${TRANSITION_FUNCTION}, border ${TRANSITION_FUNCTION}`, // border is used in the chip, for example
   ...(!(fontSize in FontSize) && { fontSize }),
   ...(!(lineHeight in LineHeight) && { lineHeight }),
   ...responsiveValues(fontSize, lineHeight, 'mobile'),
@@ -102,21 +102,21 @@ export const TYPOGRAPHY_VARIANTS = {
   buttonTabsM: { fontWeight: 'Bold', fontSize: 'sm', lineHeight: ButtonSize.xxs, textCase: 'uppercase' },
   buttonTabsL: { fontWeight: 'Bold', fontSize: 'xl', lineHeight: 'lg', textCase: 'uppercase' },
 
-  tableHeaderM: { fontWeight: 'Medium', fontSize: 'sm', lineHeight: 'xs', fontVariantNumeric: TabularNums },
-  tableHeaderS: { fontWeight: 'Medium', fontSize: 'xs', lineHeight: 'xs', fontVariantNumeric: TabularNums },
-  tableCellL: { fontWeight: 'Bold', fontSize: Sizing[200], lineHeight: Spacing[400], fontVariantNumeric: TabularNums },
-  tableCellMRegular: { fontWeight: 'Normal', fontSize: 'md', lineHeight: 'sm', fontVariantNumeric: TabularNums },
-  tableCellMBold: { fontWeight: 'Bold', fontSize: 'md', lineHeight: 'sm', fontVariantNumeric: TabularNums },
-  tableCellSRegular: { fontWeight: 'Normal', fontSize: 'sm', lineHeight: 'xs', fontVariantNumeric: TabularNums },
-  tableCellSBold: { fontWeight: 'Bold', fontSize: 'sm', lineHeight: 'xs', fontVariantNumeric: TabularNums },
+  tableHeaderM: { fontWeight: 'Medium', fontSize: 'sm', lineHeight: 'xs', fontVariantNumeric: TABULAR_NUMS },
+  tableHeaderS: { fontWeight: 'Medium', fontSize: 'xs', lineHeight: 'xs', fontVariantNumeric: TABULAR_NUMS },
+  tableCellL: { fontWeight: 'Bold', fontSize: Sizing[200], lineHeight: Spacing[400], fontVariantNumeric: TABULAR_NUMS },
+  tableCellMRegular: { fontWeight: 'Normal', fontSize: 'md', lineHeight: 'sm', fontVariantNumeric: TABULAR_NUMS },
+  tableCellMBold: { fontWeight: 'Bold', fontSize: 'md', lineHeight: 'sm', fontVariantNumeric: TABULAR_NUMS },
+  tableCellSRegular: { fontWeight: 'Normal', fontSize: 'sm', lineHeight: 'xs', fontVariantNumeric: TABULAR_NUMS },
+  tableCellSBold: { fontWeight: 'Bold', fontSize: 'sm', lineHeight: 'xs', fontVariantNumeric: TABULAR_NUMS },
 
-  highlightXsNotional: { fontWeight: 'Normal', fontSize: 'xs', fontVariantNumeric: TabularNums },
-  highlightXs: { fontWeight: 'Bold', fontSize: 'xs', fontVariantNumeric: TabularNums },
-  highlightS: { fontWeight: 'Bold', fontSize: 'sm', fontVariantNumeric: TabularNums },
-  highlightM: { fontWeight: 'Bold', fontSize: 'md', lineHeight: 'sm', fontVariantNumeric: TabularNums },
-  highlightL: { fontWeight: 'Bold', fontSize: 'lg', lineHeight: Sizing[300], fontVariantNumeric: TabularNums },
-  highlightXl: { fontWeight: 'Bold', fontSize: 'xl', lineHeight: 'lg', letterSpacing: '-1.28px', fontVariantNumeric: TabularNums },
-  highlightXxl: { fontWeight: 'Bold', fontSize: 'xxl', letterSpacing: '-2.56px', fontVariantNumeric: TabularNums },
+  highlightXsNotional: { fontWeight: 'Normal', fontSize: 'xs', fontVariantNumeric: TABULAR_NUMS },
+  highlightXs: { fontWeight: 'Bold', fontSize: 'xs', fontVariantNumeric: TABULAR_NUMS },
+  highlightS: { fontWeight: 'Bold', fontSize: 'sm', fontVariantNumeric: TABULAR_NUMS },
+  highlightM: { fontWeight: 'Bold', fontSize: 'md', lineHeight: 'sm', fontVariantNumeric: TABULAR_NUMS },
+  highlightL: { fontWeight: 'Bold', fontSize: 'lg', lineHeight: Sizing[300], fontVariantNumeric: TABULAR_NUMS },
+  highlightXl: { fontWeight: 'Bold', fontSize: 'xl', lineHeight: 'lg', letterSpacing: '-1.28px', fontVariantNumeric: TABULAR_NUMS },
+  highlightXxl: { fontWeight: 'Bold', fontSize: 'xxl', letterSpacing: '-2.56px', fontVariantNumeric: TABULAR_NUMS },
 } as const satisfies Record<string, TypographyVariantDefinition>
 
 export const createTypography = ({ Text }: DesignSystem) =>

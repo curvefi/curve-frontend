@@ -3,7 +3,6 @@ import { useConnection } from 'wagmi'
 import { invalidateBadDebtMarkets } from '@/llamalend/queries/market'
 import type { Address } from '@primitives/address.utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
 import { q } from '@ui-kit/types/util'
 import { ListPageWrapper } from '@ui-kit/widgets/ListPageWrapper'
 import {
@@ -55,7 +54,6 @@ const useTableLlamaMarkets = (address: Address | undefined) => {
   const enableDeprecatedMarkets = useUserProfileStore(state => state.showDeprecatedMarkets)
   const query = useLlamaMarkets({
     userAddress: address,
-    enableLLv2: useLLv2(),
     enableDeprecatedMarkets,
   })
   const { data, isError, isLoading, isFetching } = query

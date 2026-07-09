@@ -1,4 +1,5 @@
 import { FastifyBaseLogger } from 'fastify'
+import { FetchError, fetchJson } from '@primitives/fetch.utils'
 import { assert, maybe } from '@primitives/objects.utils'
 import type { RouteStep, RouterRouteResponse } from '@primitives/router.utils'
 import { ROUTER_FEE_BPS, ROUTER_FEE_RECEIVER_BY_CHAIN_ID } from '../router-fees'
@@ -6,27 +7,14 @@ import { type RoutesQuery } from '../routes/routes.schemas'
 import type { ZeroExQuoteRequest, ZeroExQuoteResponse } from './zeroex.types'
 
 const { ZEROEX_API_URL = 'https://api.0x.org', ZEROEX_API_KEY } = process.env
-const protocol = '0x' as const
+const PROTOCOL = '0x' as const
 
-async function getZeroExQuote({ chainId, ...params }: ZeroExQuoteRequest, log: FastifyBaseLogger) {
-  const response = await fetch(
+async function getZeroExQuote({ chainId, ...params }: ZeroExQuoteRequest) {
+  const quote = await fetchJson<ZeroExQuoteResponse>(
     `${ZEROEX_API_URL}/swap/allowance-holder/quote?${new URLSearchParams({ ...params, chainId: `${chainId}` })}`,
-    {
-      method: 'GET',
-      headers: { '0x-api-key': assert(ZEROEX_API_KEY, 'Missing 0x API KEY'), '0x-version': 'v2' },
-    },
+    { headers: { '0x-api-key': assert(ZEROEX_API_KEY, 'Missing 0x API KEY'), '0x-version': 'v2' } },
   )
-  const { ok, status, statusText } = response
-  if (!ok) {
-    const body = await response.text()
-    log.error({ message: '0x route request failed', status, statusText, params, body })
-    throw new Error(`0x error - ${status} ${statusText}`)
-  }
-  const quote = (await response.json()) as ZeroExQuoteResponse
-  if (!quote.liquidityAvailable) {
-    log.error({ message: '0x quote error - no liquidity available', params, quote })
-    throw new Error(`0x quote error - no liquidity available`)
-  }
+  assert(quote.liquidityAvailable, `0x quote error - no liquidity available`)
   return quote
 }
 
@@ -64,11 +52,13 @@ export const buildZeroExRouteResponse = async (
       swapFeeToken: sellToken,
     })),
   }
-  const { buyAmount, route, sellAmount, transaction } = await getZeroExQuote(params, log)
+  const { buyAmount, route, sellAmount, transaction } = await getZeroExQuote(params).catch(error =>
+    logZeroExError(error, log, params),
+  )
   const { data, gas, to, value } = transaction
   return [
     {
-      router: protocol,
+      router: PROTOCOL,
       amountIn: [sellAmount],
       amountOut: [buyAmount],
       gas,
@@ -77,17 +67,22 @@ export const buildZeroExRouteResponse = async (
       warnings: [],
       isStableswapRoute: false,
       tx: { to, data, from: taker, value },
-      route: route.fills.map(
-        (fill): RouteStep => ({
-          name: fill.source,
-          tokenIn: [fill.from],
-          tokenOut: [fill.to],
-          protocol,
-          action: 'swap',
-          chainId,
-          args: { source: fill.source, proportionBps: fill.proportionBps },
-        }),
-      ),
+      route: route.fills.map((fill): RouteStep => ({
+        name: fill.source,
+        tokenIn: [fill.from],
+        tokenOut: [fill.to],
+        protocol: PROTOCOL,
+        action: 'swap',
+        chainId,
+        args: { source: fill.source, proportionBps: fill.proportionBps },
+      })),
     },
   ]
+}
+
+function logZeroExError(error: unknown, log: FastifyBaseLogger, params: Partial<ZeroExQuoteRequest>): never {
+  if (error instanceof FetchError) {
+    log.error({ message: '0x route request failed', status: error.status, params })
+  }
+  throw error
 }

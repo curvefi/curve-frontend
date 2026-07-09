@@ -1,8 +1,7 @@
 import Stack from '@mui/material/Stack'
-import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate, type EstimatedTxCostProps } from '@ui-kit/shared/ui/ActionInfo'
-import type { QueryProp } from '@ui-kit/types/util'
+import { mapQuery, type QueryProp } from '@ui-kit/types/util'
 import { formatNumber } from '@ui-kit/utils'
 
 type BridgeActionInfosProps = EstimatedTxCostProps & {
@@ -15,7 +14,7 @@ export const BridgeActionInfos = ({ bridgeCost, gas, isApproved, nativeTokenSymb
   <Stack>
     <ActionInfo
       label={t`Estimated bridge cost`}
-      value={maybe(bridgeCost.data, data =>
+      value={mapQuery(bridgeCost, data =>
         formatNumber(data, {
           unit: {
             symbol: ` ${nativeTokenSymbol}`,
@@ -25,8 +24,6 @@ export const BridgeActionInfos = ({ bridgeCost, gas, isApproved, nativeTokenSymb
         }),
       )}
       size="small"
-      loading={bridgeCost.isLoading}
-      error={bridgeCost.error}
     />
 
     <ActionInfoGasEstimate gas={gas} isApproved={isApproved} />

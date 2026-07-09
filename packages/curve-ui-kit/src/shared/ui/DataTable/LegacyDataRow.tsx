@@ -4,16 +4,21 @@ import { type Row } from '@tanstack/react-table'
 import type { Table } from '@tanstack/table-core'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
-import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
+import { TRANSITION_FUNCTION } from '@ui-kit/themes/design/0_primitives'
 import { hasParentWithClass } from '@ui-kit/utils/dom'
 import { InvertOnHover } from '../InvertOnHover'
-import { ClickableInRowClass, DesktopOnlyHoverClass, TableSecondaryTextClass, type TableItem } from './data-table.utils'
+import {
+  CLICKABLE_IN_ROW_CLASS,
+  DESKTOP_ONLY_HOVER_CLASS,
+  TABLE_SECONDARY_TEXT_CLASS,
+  type TableItem,
+} from './data-table.utils'
 import { DataCell } from './DataCell'
 import { ExpandedPanelConfig, ExpansionRow } from './ExpansionRow'
 
 const onCellClick = (target: EventTarget, url: string, routerNavigate: (href: string) => void) => {
   // ignore clicks on elements that should be clickable inside the row
-  if (hasParentWithClass(target, ClickableInRowClass, { untilTag: 'TR' })) {
+  if (hasParentWithClass(target, CLICKABLE_IN_ROW_CLASS, { untilTag: 'TR' })) {
     return
   }
   if (url.startsWith('http')) {
@@ -63,21 +68,21 @@ export const LegacyDataRow = <T extends TableItem>({
               marginBlock: 0,
               cursor: hasUrl ? 'pointer' : 'default',
               verticalAlign,
-              transition: `border-bottom ${TransitionFunction}`,
-              [`& .${DesktopOnlyHoverClass}`]: {
+              transition: `border-bottom ${TRANSITION_FUNCTION}`,
+              [`& .${DESKTOP_ONLY_HOVER_CLASS}`]: {
                 opacity: { mobile: 1, desktop: 0 },
-                transition: `opacity ${TransitionFunction}`,
+                transition: `opacity ${TRANSITION_FUNCTION}`,
               },
-              [`& .${TableSecondaryTextClass}`]: {
+              [`& .${TABLE_SECONDARY_TEXT_CLASS}`]: {
                 color: t => t.design.Table.Text.Default.Secondary,
               },
               '&:hover': {
-                [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: 1 } },
+                [`& .${DESKTOP_ONLY_HOVER_CLASS}`]: { opacity: { desktop: 1 } },
                 '& td, & th': {
                   backgroundColor: t => t.design.Table.Row.Hover,
                   color: t => t.design.Table.Text.Hover.Primary,
                 },
-                [`& .${TableSecondaryTextClass}`]: {
+                [`& .${TABLE_SECONDARY_TEXT_CLASS}`]: {
                   color: t => t.design.Table.Text.Hover.Secondary,
                 },
               },

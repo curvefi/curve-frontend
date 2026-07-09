@@ -1,4 +1,5 @@
 import { useResetIsApproved } from '@/llamalend/queries/reset/reset-is-approved.query'
+import { resetIsAvailableQueryKey } from '@/llamalend/queries/reset/reset-is-available.query'
 import { getResetImplementation } from '@/llamalend/queries/reset/reset-query.helpers'
 import {
   type ResetParams,
@@ -20,6 +21,7 @@ const { useQuery: useResetLoanEstimateGas } = queryFactory({
     }),
   category: 'llamalend.repay',
   validationSuite: resetValidationSuite,
+  dependencies: params => [resetIsAvailableQueryKey(params)],
 })
 
 const { useQuery: useResetApproveGasEstimate } = queryFactory({
@@ -29,6 +31,7 @@ const { useQuery: useResetApproveGasEstimate } = queryFactory({
     await getResetImplementation(marketId).estimateGas.repayApprove(params.userBorrowed),
   category: 'llamalend.repay',
   validationSuite: resetValidationSuite,
+  dependencies: params => [resetIsAvailableQueryKey(params)],
 })
 
 export const useResetEstimateGas = createApprovedEstimateGasHook({

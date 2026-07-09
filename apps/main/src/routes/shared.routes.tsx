@@ -1,10 +1,8 @@
-import Skeleton from '@mui/material/Skeleton'
 import { createRoute, lazyRouteComponent } from '@tanstack/react-router'
 import type { AppName } from '@ui-kit/shared/routes'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { Loading } from './Loading'
 import { redirectTo } from './util'
 
-const { MinHeight } = SizesAndSpaces
 const LegalPage = lazyRouteComponent(() => import('@ui-kit/widgets/Legal'), 'LegalPage')
 const Integrations = lazyRouteComponent(() => import('@ui-kit/features/integrations'), 'Integrations')
 
@@ -17,8 +15,7 @@ type LayoutProps = Pick<Parameters<typeof createRoute>[0], 'getParentRoute'>
 export const createSharedRoutes = (app: AppName, layoutProps: LayoutProps) => [
   createRoute({
     path: '/',
-    /** Redirect is handled by the `RootLayout` component */
-    component: () => <Skeleton width="100%" height={MinHeight.pageContent} />,
+    component: Loading, // Redirect is handled by the `useOnChainUnavailable` hook
     head: () => ({ meta: [{ title: 'Curve' }] }),
     ...layoutProps,
   }),

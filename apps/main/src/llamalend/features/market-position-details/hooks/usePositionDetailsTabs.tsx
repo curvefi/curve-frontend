@@ -1,4 +1,4 @@
-import { type ReactNode, useMemo } from 'react'
+import { type ReactNode, useEffect, useMemo } from 'react'
 import { UserPositionHistory } from '@/llamalend/features/user-position-history'
 import type { ParsedUserCollateralEvent } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import Stack from '@mui/material/Stack'
@@ -46,5 +46,12 @@ export const usePositionDetailsTabs = ({
   )
 
   const { tab = DEFAULT_TAB, onTabChange } = useTabs(tabOptions, DEFAULT_TAB)
+
+  useEffect(() => {
+    if (hasPosition === false && events.data?.length) {
+      onTabChange('activity')
+    }
+  }, [events.data?.length, hasPosition, onTabChange])
+
   return { tab, onTabChange, tabOptions }
 }

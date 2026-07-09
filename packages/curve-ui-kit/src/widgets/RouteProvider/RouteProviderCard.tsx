@@ -20,7 +20,7 @@ import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { LoadingAnimation } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { QueryProp } from '@ui-kit/types/util'
-import { formatNumber, fromWei } from '@ui-kit/utils'
+import { formatNumber, fromWei, PLACEHOLDER, PLACEHOLDER_USD } from '@ui-kit/utils'
 import { RouteComparisonChip } from '@ui-kit/widgets/RouteProvider/RouteComparisonChip'
 import { RouteProviderIcons, RouteProviderLabels } from '@ui-kit/widgets/RouteProvider/RouteProviders'
 
@@ -36,8 +36,6 @@ export type RouteProviderCardProps = {
   networks: Record<number, BaseConfig>
   chainId: number
 }
-
-const [PLACEHOLDER, PLACEHOLDER_USD] = [0.00001, 0.001]
 
 export const RouteProviderCard = ({
   query: { data: route, error, isLoading, isFetching, enabled },

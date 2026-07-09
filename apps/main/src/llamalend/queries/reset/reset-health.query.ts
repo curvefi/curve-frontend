@@ -1,3 +1,4 @@
+import { resetIsAvailableQueryKey } from '@/llamalend/queries/reset/reset-is-available.query'
 import { getResetImplementation } from '@/llamalend/queries/reset/reset-query.helpers'
 import { resetValidationSuite, type ResetQuery } from '@/llamalend/queries/validation/reset.validation'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -25,4 +26,5 @@ export const { getQueryOptions: getResetHealthOptions } = queryFactory({
     })) as Decimal,
   category: 'llamalend.repay',
   validationSuite: resetValidationSuite,
+  dependencies: params => [resetIsAvailableQueryKey(params)],
 })

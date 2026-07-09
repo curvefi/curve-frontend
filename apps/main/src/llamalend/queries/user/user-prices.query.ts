@@ -6,8 +6,8 @@ import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } f
 import { loanExistsValidationGroup } from '@ui-kit/lib/model/query/loan-exists-validation'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 import { createValidationSuite } from '@ui-kit/lib/validation'
-import { q, type Range } from '@ui-kit/types/util'
-import { decimalMultiply, decimalDiv, decimalMinus } from '@ui-kit/utils'
+import { constQ, q, type Range } from '@ui-kit/types/util'
+import { decimalDiv, decimalMinus, decimalMultiply } from '@ui-kit/utils'
 import { useLoanExists } from './user-loan-exists.query'
 
 type UserPricesQuery = UserMarketQuery & { loanExists: boolean }
@@ -31,7 +31,7 @@ const { useQuery: useUserPricesQuery, queryKey: getUserPricesKey } = queryFactor
 export const useUserPrices = (params: UserMarketParams, enabled?: boolean) => {
   const loan = useLoanExists(params, enabled)
   const prices = useUserPricesQuery({ ...params, loanExists: loan.data }, enabled)
-  return { ...q(prices), ...combineQueryState(loan, prices) }
+  return { ...(loan.data === false ? constQ(null) : q(prices)), ...combineQueryState(loan, prices) }
 }
 
 export function useRangeToLiquidation({ params }: { params: UserMarketParams }) {

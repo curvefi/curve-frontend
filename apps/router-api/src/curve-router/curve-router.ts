@@ -125,17 +125,15 @@ export async function buildCurveRouteResponse(
       warnings,
       gas: null, // curve-js doesn't return gas estimates without a signer.
       tx: tx as TransactionData | undefined,
-      route: parsedRoutes.map(
-        ({ name, inputCoinAddress, outputCoinAddress, ...args }): RouteStep => ({
-          name,
-          action: 'swap',
-          tokenIn: [inputCoinAddress as Address],
-          tokenOut: [outputCoinAddress as Address],
-          protocol: 'curve',
-          chainId,
-          args,
-        }),
-      ),
+      route: parsedRoutes.map(({ name, inputCoinAddress, outputCoinAddress, ...args }): RouteStep => ({
+        name,
+        action: 'swap',
+        tokenIn: [inputCoinAddress as Address],
+        tokenOut: [outputCoinAddress as Address],
+        protocol: 'curve',
+        chainId,
+        args,
+      })),
     },
   ]
 }

@@ -18,14 +18,14 @@
     "postpublish": "pinst --enable"
   },
   "dependencies": {
-    "@curvefi/llamalend-api": "2.3.1",
+    "@curvefi/llamalend-api": "2.3.2",
     "@supercharge/promise-pool": "3.3.0",
-    "@tanstack/react-router": "1.170.11",
+    "@tanstack/react-router": "1.170.17",
     "@tanstack/react-router-devtools": "1.167.0",
     "@types/memoizee": "0.4.12",
     "curve-ui-kit": "*",
     "external-rewards": "*",
-    "fuse.js": "7.4.1",
+    "fuse.js": "7.4.2",
     "lightweight-charts": "5.2.0",
     "memoizee": "0.4.17",
     "ui": "*",

@@ -1,3 +1,4 @@
+import { noop } from 'lodash'
 import { MarketContextProvider } from 'main/src/llamalend/features/market-context/MarketContextProvider'
 import { useLendMarket } from '@/lend/hooks/useLendMarket'
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
@@ -16,6 +17,7 @@ import { WithdrawForm } from '@/llamalend/features/supply/components/WithdrawFor
 import { useLoanExists } from '@/llamalend/queries/user'
 import { useMintMarket } from '@/loan/hooks/useMintMarket'
 import { ChainId as MintChain } from '@/loan/types/loan.types'
+import { Loading } from '@/routes/Loading'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { fakeCollateralEvents } from '@cy/support/helpers/llamalend/mock-loan-test-data'
@@ -23,7 +25,6 @@ import { llamaNetworks } from '@cy/support/helpers/llamalend/test-context.helper
 import { createTenderlyWagmiConfigFromVNet } from '@cy/support/helpers/tenderly'
 import { type TenderlyWagmiConfigFromVNet } from '@cy/support/helpers/tenderly/vnet'
 import Box from '@mui/material/Box'
-import Skeleton from '@mui/material/Skeleton'
 import type { Decimal } from '@primitives/decimal.utils'
 import { CurveProvider } from '@ui-kit/features/connect-wallet/lib/CurveProvider'
 import type { UserMarketQuery } from '@ui-kit/lib/model'
@@ -89,7 +90,7 @@ function LlammalendTest({ tab, onPricesUpdated, type, marketType, ...props }: Ll
     >
       <Component
         networks={llamaNetworks}
-        onPricesUpdated={onPricesUpdated!}
+        onPricesUpdated={onPricesUpdated ?? noop}
         collateralEvents={constQ(fakeCollateralEvents)}
       />
     </MarketContextProvider>
@@ -98,7 +99,7 @@ function LlammalendTest({ tab, onPricesUpdated, type, marketType, ...props }: Ll
   ) : error ? (
     `Error retrieving market: ${error.message}`
   ) : (
-    <Skeleton width="100%" height={400} />
+    <Loading />
   )
 }
 

@@ -30,11 +30,11 @@ type SliceState = {
   }
 }
 
-const sliceKey = 'user'
+const SLICE_KEY = 'user'
 
 // prettier-ignore
 export type UserSlice = {
-  [sliceKey]: SliceState & {
+  [SLICE_KEY]: SliceState & {
     setUserProposalVotesSortBy: (sortBy: UserProposalVotesSortBy) => void
     setUserLocksSortBy: (sortBy: UserLocksSortBy) => void
     setUserGaugeVotesSortBy: (sortBy: UserGaugeVotesSortBy) => void
@@ -69,10 +69,10 @@ const DEFAULT_STATE: SliceState = {
 // key user address for user specific snapshots, votes, mappers
 
 export const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): UserSlice => ({
-  [sliceKey]: {
+  [SLICE_KEY]: {
     ...DEFAULT_STATE,
     setUserLocksSortBy: (sortBy: UserLocksSortBy) => {
-      const { userLocksSortBy } = get()[sliceKey]
+      const { userLocksSortBy } = get()[SLICE_KEY]
       let order = userLocksSortBy.order
 
       if (sortBy === userLocksSortBy.key) {
@@ -80,20 +80,20 @@ export const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<
 
         set(
           produce((state: State) => {
-            state[sliceKey].userLocksSortBy.order = order
+            state[SLICE_KEY].userLocksSortBy.order = order
           }),
         )
       } else {
         set(
           produce((state: State) => {
-            state[sliceKey].userLocksSortBy.key = sortBy
-            state[sliceKey].userLocksSortBy.order = 'desc'
+            state[SLICE_KEY].userLocksSortBy.key = sortBy
+            state[SLICE_KEY].userLocksSortBy.order = 'desc'
           }),
         )
       }
     },
     setUserProposalVotesSortBy: (sortBy: UserProposalVotesSortBy) => {
-      const { userProposalVotesSortBy } = get()[sliceKey]
+      const { userProposalVotesSortBy } = get()[SLICE_KEY]
       let order = userProposalVotesSortBy.order
 
       if (sortBy === userProposalVotesSortBy.key) {
@@ -104,13 +104,13 @@ export const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<
 
       set(
         produce((state: State) => {
-          state[sliceKey].userProposalVotesSortBy.key = sortBy
-          state[sliceKey].userProposalVotesSortBy.order = order
+          state[SLICE_KEY].userProposalVotesSortBy.key = sortBy
+          state[SLICE_KEY].userProposalVotesSortBy.order = order
         }),
       )
     },
     setUserGaugeVotesSortBy: (sortBy: UserGaugeVotesSortBy) => {
-      const { userGaugeVotesSortBy } = get()[sliceKey]
+      const { userGaugeVotesSortBy } = get()[SLICE_KEY]
       let order = userGaugeVotesSortBy.order
 
       if (sortBy === userGaugeVotesSortBy.key) {
@@ -118,20 +118,20 @@ export const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<
 
         set(
           produce((state: State) => {
-            state[sliceKey].userGaugeVotesSortBy.order = order
+            state[SLICE_KEY].userGaugeVotesSortBy.order = order
           }),
         )
       } else {
         set(
           produce((state: State) => {
-            state[sliceKey].userGaugeVotesSortBy.key = sortBy
-            state[sliceKey].userGaugeVotesSortBy.order = 'desc'
+            state[SLICE_KEY].userGaugeVotesSortBy.key = sortBy
+            state[SLICE_KEY].userGaugeVotesSortBy.order = 'desc'
           }),
         )
       }
     },
     setUserGaugeVoteWeightsSortBy: (sortBy: UserGaugeVoteWeightSortBy) => {
-      const { userGaugeVoteWeightsSortBy } = get()[sliceKey]
+      const { userGaugeVoteWeightsSortBy } = get()[SLICE_KEY]
       let order = userGaugeVoteWeightsSortBy.order
 
       if (sortBy === userGaugeVoteWeightsSortBy.key) {
@@ -139,30 +139,30 @@ export const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<
 
         set(
           produce((state: State) => {
-            state[sliceKey].userGaugeVoteWeightsSortBy.order = order
+            state[SLICE_KEY].userGaugeVoteWeightsSortBy.order = order
           }),
         )
       } else {
         set(
           produce((state: State) => {
-            state[sliceKey].userGaugeVoteWeightsSortBy.key = sortBy
-            state[sliceKey].userGaugeVoteWeightsSortBy.order = 'desc'
+            state[SLICE_KEY].userGaugeVoteWeightsSortBy.key = sortBy
+            state[SLICE_KEY].userGaugeVoteWeightsSortBy.order = 'desc'
           }),
         )
       }
     },
     // slice helpers
     setStateByActiveKey: (key, activeKey, value) => {
-      get().setAppStateByActiveKey(sliceKey, key, activeKey, value)
+      get().setAppStateByActiveKey(SLICE_KEY, key, activeKey, value)
     },
     setStateByKey: (key, value) => {
-      get().setAppStateByKey(sliceKey, key, value)
+      get().setAppStateByKey(SLICE_KEY, key, value)
     },
     setStateByKeys: sliceState => {
-      get().setAppStateByKeys(sliceKey, sliceState)
+      get().setAppStateByKeys(SLICE_KEY, sliceState)
     },
     resetState: () => {
-      get().resetAppState(sliceKey, DEFAULT_STATE)
+      get().resetAppState(SLICE_KEY, DEFAULT_STATE)
     },
   },
 })

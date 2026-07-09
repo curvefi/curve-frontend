@@ -47,6 +47,8 @@ describe('decimal', () => {
   it('accepts numbers as parameter', () => {
     expect(decimal(0)).toBe('0')
     expect(decimal(3.14)).toBe('3.14')
+    expect(decimal(123e22)).toBe('1230000000000000000000000')
+    expect(decimal(1e26)).toBe('100000000000000000000000000')
   })
 })
 
@@ -68,6 +70,7 @@ describe('amount', () => {
   it('converts BigNumber and bigint inputs to decimal strings', () => {
     expect(amount(new BigNumber('123.45'))).toBe('123.45')
     expect(amount(123n)).toBe('123')
+    expect(decimal(12300000000000000000000000000n)).toBe('12300000000000000000000000000')
   })
 
   it.each([undefined, null, '', '?', '-', NaN, 'abc', '12.34.56', '12a34', 'Infinity'])(
