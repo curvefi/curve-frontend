@@ -1,12 +1,12 @@
 import { type Address, encodeFunctionData, parseAbi } from 'viem'
-import { advanceVirtualNetworkClock } from '@cy/support/helpers/tenderly/vnet-admin'
 import type { CreateVirtualTestnetResponse } from '@cy/support/helpers/tenderly/vnet-create'
+import { advanceVirtualNetworkClock } from '@cy/support/helpers/tenderly/vnet-time'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@ui-kit/utils'
 import { loadTenderlyAccount } from '../../tenderly/account'
-import { sendVnetTransaction } from '../../tenderly/vnet-transaction'
-import { getActionInfo, getActionValue } from '../action-info.helpers'
+import { sendVnetTransaction } from '../../tenderly/vnet-tx'
+import { checkEstimatedTxCost as checkEstimatedTxCostValue, getActionInfo } from '../action-info.helpers'
 import { submitSupplyForm, SupplyActionType } from './supply.helpers'
 
 const CLAIMABLE_AMOUNT_REGEX = /(\d[\d,]*(?:\.\d+)?)/
@@ -119,11 +119,13 @@ export function checkClaimDetailsLoaded({
   hasOtherRewards = true,
   expectedSymbols,
   checkEstimatedTxCost = hasCrvRewards || hasOtherRewards,
+  hasApi = true,
 }: {
   hasCrvRewards?: boolean
   hasOtherRewards?: boolean
   expectedSymbols?: string[]
   checkEstimatedTxCost?: boolean
+  hasApi?: boolean
 } = {}) {
   if (hasCrvRewards || hasOtherRewards) {
     cy.get('[data-testid="claim-action-info-list"]').should('be.visible')
@@ -134,14 +136,16 @@ export function checkClaimDetailsLoaded({
 
   if (checkEstimatedTxCost) {
     if (hasCrvRewards) {
-      getActionValue('claim-crv-rewards-estimated-tx-cost').should('include', '$')
+      checkEstimatedTxCostValue({ hasValue: hasApi, name: 'claim-crv-rewards-estimated-tx-cost' })
     } else {
+      checkEstimatedTxCostValue({ hasValue: false, name: 'claim-crv-rewards-estimated-tx-cost' })
       getActionInfo('claim-crv-rewards-estimated-tx-cost').should('have.text', '-')
     }
 
     if (hasOtherRewards) {
-      getActionValue('claim-other-rewards-estimated-tx-cost').should('include', '$')
+      checkEstimatedTxCostValue({ hasValue: hasApi, name: 'claim-other-rewards-estimated-tx-cost' })
     } else {
+      checkEstimatedTxCostValue({ hasValue: false, name: 'claim-other-rewards-estimated-tx-cost' })
       getActionInfo('claim-other-rewards-estimated-tx-cost').should('have.text', '-')
     }
   }

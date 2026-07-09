@@ -1,7 +1,14 @@
 import { submitLoanForm } from '@cy/support/helpers/llamalend/create-loan.helpers'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
-import { checkDebt, DECIMAL_RANGE_REGEX, DECIMAL_REGEX, getActionValue, type DebtCheck } from './action-info.helpers'
+import {
+  checkDebt,
+  checkEstimatedTxCost,
+  DECIMAL_RANGE_REGEX,
+  DECIMAL_REGEX,
+  getActionValue,
+  type DebtCheck,
+} from './action-info.helpers'
 
 const getResetPositionConvertedInput = () =>
   cy.get('[data-testid="reset-position-input-converted-borrowed"] input[type="text"]', LOAD_TIMEOUT)
@@ -9,7 +16,7 @@ const getResetPositionConvertedInput = () =>
 const getResetPositionWalletInput = () =>
   cy.get('[data-testid="reset-position-input-user-borrowed"] input[type="text"]', LOAD_TIMEOUT)
 
-export function checkClosePositionDetailsLoaded({ debt }: { debt: Decimal }) {
+export function checkClosePositionDetailsLoaded({ debt, hasErrors = false }: { debt: Decimal; hasErrors?: boolean }) {
   cy.get('[data-testid="outstanding-debt"]').invoke('text').should('match', DECIMAL_REGEX) // first check the number is displayed before converting to number
   cy.get('[data-testid="outstanding-debt"]')
     .invoke('text')
@@ -17,6 +24,7 @@ export function checkClosePositionDetailsLoaded({ debt }: { debt: Decimal }) {
     .should('be.closeTo', Number(debt), Number(debt) * 0.01)
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
   cy.get('[data-testid="you-recover"]').invoke('text').should('match', DECIMAL_REGEX)
+  checkEstimatedTxCost({ hasValue: !hasErrors })
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
 }
 
@@ -42,7 +50,7 @@ export function checkResetPositionMinimumWalletMessage() {
 export function checkResetPositionDetailsLoaded({ debt }: { debt: DebtCheck }) {
   getActionValue('borrow-price-range').should('match', DECIMAL_RANGE_REGEX)
   getActionValue('borrow-apr').should('include', '%')
-  getActionValue('estimated-tx-cost').should('include', '$')
+  checkEstimatedTxCost({ hasValue: true })
   checkDebt(debt)
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
 }
@@ -64,15 +72,5 @@ export function checkResetPositionWalletAmount({ amount }: { amount: Decimal }) 
   getResetPositionWalletInput().should('have.value', amount)
 }
 
-export const submitResetPositionForm = ({
-  expected = 'success',
-  message,
-}: {
-  expected?: 'success' | 'error'
-  message?: string
-} = {}) =>
-  submitLoanForm({
-    form: 'reset-position',
-    message: message ?? { success: 'Position reset!', error: 'Transaction failed' }[expected],
-    expected,
-  })
+export const submitResetPositionForm = ({ message }: { message: string }) =>
+  submitLoanForm({ form: 'reset-position', message })

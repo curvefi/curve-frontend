@@ -1,26 +1,26 @@
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
-import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
+import { oneBool } from '@cy/support/generators'
 import { setupLlv2BorrowingLiquidity } from '@cy/support/helpers/llamalend/borrow-cap.helpers'
 import {
+  checkCollateralDetailsLoaded,
   checkCurrentCollateral,
   getCollateralInput,
   submitCollateralAddForm,
   submitCollateralRemoveForm,
   touchCollateralForm,
 } from '@cy/support/helpers/llamalend/collateral.helpers'
-import { LOAN_TEST_MARKETS, oneLoanTestMarket } from '@cy/support/helpers/llamalend/create-loan.helpers'
+import { oneLoanTestMarket } from '@cy/support/helpers/llamalend/create-loan.helpers'
 import { LlammalendTestCase } from '@cy/support/helpers/llamalend/LlammalendTestCase'
 import { setupTenderlyLoan } from '@cy/support/helpers/llamalend/loan-setup.helpers'
+import { blockUnmockedApis } from '@cy/support/helpers/llamalend/market-list-mocks'
 import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { skipTestsAfterFailure } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
-import { objectKeys } from '@primitives/objects.utils'
-import { formatNumber } from '@ui-kit/utils'
+import { recordValues } from '@primitives/objects.utils'
+import { LlamaMarketType } from '@ui-kit/types/market'
 
-const testCases = objectKeys(LOAN_TEST_MARKETS).map(type =>
-  oneLoanTestMarket(type, market => !market.hasLeverageManagement),
-)
+const testCases = recordValues(LlamaMarketType).map(type => oneLoanTestMarket(type))
 
 describe('Collateral forms', () => {
   testCases.forEach(
@@ -31,8 +31,8 @@ describe('Collateral forms', () => {
       chainId,
       collateral,
       collateralAddress,
-      controllerAddress,
       collateralDecimals,
+      controllerAddress,
       id,
       label,
       marketType,
@@ -40,6 +40,7 @@ describe('Collateral forms', () => {
       describe(label, () => {
         skipTestsAfterFailure() // the remove collateral test needs the collateral to be added first
 
+        const hasApi = oneBool() // tests must work with or without api access
         const privateKey = generatePrivateKey()
         const { address } = privateKeyToAccount(privateKey)
         const getVirtualNetwork = createVirtualTestnet(uuid => ({
@@ -88,22 +89,22 @@ describe('Collateral forms', () => {
             collateral,
             collateralDecimals,
             borrow,
+            borrowedDecimals,
+            range: 10n,
+            collateralFundingMultiplier: 2n,
           })
         })
 
         beforeEach(() => {
           onPricesUpdated = cy.stub().as('onPricesUpdated')
+          if (!hasApi) blockUnmockedApis()
         })
 
         it('adds collateral', () => {
           cy.mount(<CollateralTest tab="add-collateral" />)
 
           getCollateralInput('add-collateral-input').type(addAmount)
-          getActionValue('borrow-collateral', 'previous').should(
-            'equal',
-            formatNumber(collateral, { abbreviate: false }),
-          )
-          getActionValue('borrow-collateral').should('equal', formatNumber(collateralAfterAdd, { abbreviate: false }))
+          checkCollateralDetailsLoaded({ current: collateral, future: collateralAfterAdd, hasApi })
 
           submitCollateralAddForm()
           touchCollateralForm('add-collateral-input')
@@ -114,14 +115,7 @@ describe('Collateral forms', () => {
           cy.mount(<CollateralTest tab="remove-collateral" />)
 
           getCollateralInput('remove-collateral-input').type(removeAmount)
-          getActionValue('borrow-collateral', 'previous').should(
-            'equal',
-            formatNumber(collateralAfterAdd, { abbreviate: false }),
-          )
-          getActionValue('borrow-collateral').should(
-            'equal',
-            formatNumber(collateralAfterRemove, { abbreviate: false }),
-          )
+          checkCollateralDetailsLoaded({ current: collateralAfterAdd, future: collateralAfterRemove, hasApi })
 
           submitCollateralRemoveForm()
           touchCollateralForm('remove-collateral-input')

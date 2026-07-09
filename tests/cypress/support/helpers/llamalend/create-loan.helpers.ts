@@ -7,7 +7,7 @@ import { LlamaMarketType } from '@ui-kit/types/market'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { Chain } from '@ui-kit/utils/network'
 import { DEFAULT_DECIMALS } from '@ui-kit/utils/units'
-import { DECIMAL_RANGE_REGEX, getActionValue } from './action-info.helpers'
+import { checkEstimatedTxCost, DECIMAL_RANGE_REGEX, getActionValue } from './action-info.helpers'
 
 const chainId = Chain.Ethereum
 
@@ -59,25 +59,6 @@ export const LOAN_TEST_MARKETS = {
     },
   ],
   [LlamaMarketType.Lend]: [
-    {
-      id: 'one-way-market-2',
-      label: 'tBTC-crvUSD v0 Lend Market',
-      collateralAddress: '0x18084fba666a33d37592fa2633fd49a74dd93a88', // tBTC
-      controllerAddress: '0x413fd2511bad510947a91f5c6c79ebd8138c29fc',
-      collateral: '100',
-      borrow: '3',
-      borrowMore: '1',
-      repay: '2',
-      improveHealth: '0.9',
-      chainId,
-      path: '/lend/ethereum/markets/0xeda215b7666936ded834f76f3fbc6f323295110a',
-      hasLeverage: false,
-      hasLeverageManagement: false,
-      collateralDecimals: COLLATERAL_DECIMALS,
-      borrowedAddress: CRVUSD_ADDRESS,
-      borrowedDecimals: BORROWED_DECIMALS,
-      borrowedSymbol: BORROWED_SYMBOL,
-    },
     {
       id: 'one-way-market-41',
       label: 'sreUSD-crvUSD v1 Lend Market',
@@ -133,13 +114,21 @@ export const oneLoanTestMarket = (
  * Check all loan detail values are loaded and valid.
  * The action info list is expected to be opened before calling this function.
  */
-export function checkLoanDetailsLoaded({ leverageEnabled }: { leverageEnabled: boolean }) {
+export function checkLoanDetailsLoaded({
+  leverageEnabled,
+  expectError,
+  hasApi = true,
+}: {
+  leverageEnabled: boolean
+  expectError?: string
+  hasApi?: boolean
+}) {
   getActionValue('borrow-price-range').should('match', DECIMAL_RANGE_REGEX)
   getActionValue('borrow-apr').should('include', '%')
   getActionValue('borrow-apr', 'previous').should('include', '%')
   getActionValue('borrow-ltv').should('include', '%')
   getActionValue('borrow-ltv', 'previous').should('include', '%')
-  getActionValue('estimated-tx-cost').should('include', '$')
+  checkEstimatedTxCost({ hasValue: hasApi && !expectError })
 
   if (leverageEnabled) {
     getActionValue('borrow-price-impact').should('include', '%')
@@ -149,11 +138,17 @@ export function checkLoanDetailsLoaded({ leverageEnabled }: { leverageEnabled: b
     cy.get('[data-testid="borrow-slippage-value"]', LOAD_TIMEOUT).should('not.exist')
   }
 
-  cy.get('[data-testid="loan-form-errors"]').should('not.exist')
+  if (expectError) {
+    cy.get('[data-testid="helper-message-error"]').contains(expectError)
+  } else {
+    cy.get('[data-testid="loan-form-errors"]').should('not.exist')
+  }
 }
 
 const getBorrowInput = () => cy.get('[data-testid="borrow-debt-input"] input[type="text"]')
 const getCollateralInput = () => cy.get('[data-testid="borrow-collateral-input"] input[type="text"]')
+const getMaxBorrowBalance = (options?: { timeout?: number }) =>
+  cy.get('[data-testid="borrow-set-debt-to-max"] [data-testid="balance-value"]', options)
 
 export const checkLeverageCheckbox = ({
   leverageEnabled,
@@ -181,10 +176,13 @@ export function writeCreateLoanForm({
   leverageEnabled: boolean
   hasLeverage: boolean
 }) {
-  cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]', TRANSACTION_LOAD_TIMEOUT).should('exist')
+  cy.get('[data-testid="borrow-debt-input"]', TRANSACTION_LOAD_TIMEOUT).should('be.visible')
+  cy.get('[data-testid="borrow-collateral-input"] [data-testid="balance-value"]', TRANSACTION_LOAD_TIMEOUT).should(
+    'be.visible',
+  )
   getCollateralInput().type(collateral)
   getCollateralInput().blur()
-  cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]').should('not.contain.text', '?')
+  getMaxBorrowBalance().should('be.visible')
   getActionValue('borrow-health').should('equal', '∞')
   getBorrowInput().type(borrow)
   getBorrowInput().blur()
@@ -196,18 +194,17 @@ export function writeCreateLoanForm({
 /**
  * Test the loan range slider by selecting max ltv and max borrow presets, checking for errors, and clearing them.
  */
-export function checkLoanRangeSlider({ leverageEnabled }: { leverageEnabled: boolean }) {
-  cy.get(`[data-testid="loan-preset-${LoanPreset.MaxLtv}"]`).click()
-  cy.get('[data-testid="borrow-set-debt-to-max"]').should('not.exist') // make sure we don't click the previous max
-  cy.get('[data-testid="borrow-set-debt-to-max"]', LOAD_TIMEOUT).click()
-  cy.get(`[data-testid="loan-preset-${LoanPreset.Safe}"]`).click({ force: true }) // force, tooltip sometimes covers part of it
-  cy.get('[data-testid="borrow-set-debt-to-max"]').should('not.exist') // new max is being calculated
-  // wait for max borrow to load and verify the input value matches (using data-value for precision)
-  cy.get('[data-testid="borrow-set-debt-to-max"] [data-testid="balance-value"]', LOAD_TIMEOUT)
-    .invoke(LOAD_TIMEOUT, 'attr', 'data-value')
-    .then(maxValue => getBorrowInput().should('have.value', maxValue))
-  cy.get('[data-testid="helper-message-error"]').should('not.exist')
-  checkLoanDetailsLoaded({ leverageEnabled })
+export function checkLoanRangeSlider() {
+  getMaxBorrowBalance().then($el => {
+    const safeMax = $el.attr('data-value')
+    cy.get(`[data-testid="loan-preset-${LoanPreset.MaxLtv}"]`).click()
+    getBorrowInput().should('not.have.attr', 'data-value', safeMax)
+    getMaxBorrowBalance().should('not.have.attr', 'data-value', safeMax)
+    getMaxBorrowBalance(LOAD_TIMEOUT).click()
+    cy.get(`[data-testid="loan-preset-${LoanPreset.Safe}"]`).click({ force: true }) // force, tooltip sometimes covers part of it
+    getMaxBorrowBalance().should('have.attr', 'data-value', safeMax)
+    getBorrowInput().should('have.attr', 'data-value', safeMax)
+  })
 }
 
 export function submitLoanForm({
@@ -236,12 +233,6 @@ export function submitLoanForm({
  * Submit the create loan form and wait for the button to be re-enabled.
  */
 export const submitCreateLoanForm = ({
-  expected = 'success',
   checkMessage,
 }: { expected?: 'success' | 'error'; checkMessage?: boolean } = {}) =>
-  submitLoanForm({
-    form: 'create-loan',
-    message: { error: 'Transaction failed', success: 'Loan created' }[expected],
-    expected,
-    checkMessage,
-  })
+  submitLoanForm({ form: 'create-loan', message: 'Loan created', checkMessage })

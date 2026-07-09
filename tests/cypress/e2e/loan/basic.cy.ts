@@ -1,30 +1,38 @@
 import { mockMerklCampaigns } from '@cy/support/helpers/lending-mocks'
 import { shouldLoadMintBorrowDetails } from '@cy/support/helpers/llamalend/market-details.helpers'
+import { blockUnmockedApis } from '@cy/support/helpers/llamalend/market-list-mocks'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
 
 const MINT_MARKET = 'WBTC'
 
-describe('Basic Access Test', () => {
+describe('Mint app', () => {
   beforeEach(() => mockMerklCampaigns())
 
-  it('should open the crvUSD DApp successfully', () => {
+  it('should open', () => {
     cy.visit('/crvusd')
     cy.title(LOAD_TIMEOUT).should('include', 'Markets')
   })
 
-  it(`should redirect from the old URL successfully`, () => {
+  it('should redirect from the old root URL', () => {
     cy.visit(`/crvusd/#/ethereum/scrvUSD`)
     cy.title(LOAD_TIMEOUT).should('equal', 'Savings crvUSD - Curve')
     cy.url().should('match', /http:\/\/localhost:\d+\/crvusd\/ethereum\/scrvUSD\/?$/)
   })
 
-  it('should load mint market details with a wallet', () => {
-    cy.visit(`/crvusd/ethereum/markets/${MINT_MARKET}`)
-    shouldLoadMintBorrowDetails({ hasWallet: true })
-  })
-
-  it('should load mint market details without a wallet', () => {
-    cy.visitWithoutTestConnector(`crvusd/ethereum/markets/${MINT_MARKET}`)
-    shouldLoadMintBorrowDetails({ hasWallet: false })
+  describe('lend market details', () => {
+    const url = `/crvusd/ethereum/markets/${MINT_MARKET}`
+    it('with a wallet', () => {
+      cy.visit(url)
+      shouldLoadMintBorrowDetails({ hasWallet: true })
+    })
+    it('without a wallet', () => {
+      cy.visitWithoutTestConnector(url)
+      shouldLoadMintBorrowDetails({ hasWallet: false })
+    })
+    it('when API is offline', () => {
+      blockUnmockedApis()
+      cy.visit(url)
+      shouldLoadMintBorrowDetails({ hasWallet: true, hasApi: false })
+    })
   })
 })
