@@ -40,7 +40,7 @@ export const MetricsRow = ({
         display: { mobile: 'grid', desktop: 'flex' },
         gridTemplateColumns: { mobile: 'repeat(2, minmax(0, 1fr))', desktop: 'none' },
         columnGap: Spacing.xxl,
-        rowGap: { mobile: Spacing.lg, desktop: Spacing.xxl },
+        rowGap: { mobile: Spacing.xl, desktop: Spacing.xxl },
         alignItems: 'center',
         flexWrap: 'wrap',
         justifyContent: 'start',
