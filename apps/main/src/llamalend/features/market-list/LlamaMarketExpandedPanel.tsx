@@ -15,7 +15,6 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
-import { constQ } from '@ui-kit/types/util'
 import { AVERAGE_CATEGORIES, borderStyle } from '@ui-kit/utils'
 import type { LlamaMarket } from '../../queries/market-list/llama-markets'
 import { LineGraphCell, RateTooltipProps } from './cells'
@@ -67,7 +66,7 @@ const RateItem = ({ market, type }: { market: LlamaMarket; type: MarketRateType 
             <Metric
               category="llamalend.marketListRates"
               label={title}
-              value={constQ(rateValue)}
+              value={rateValue}
               valueOptions={{ unit: 'percentage' }}
               icon={<RewardsIcons market={market} rateType={type} />}
             />
@@ -130,7 +129,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
             <Metric
               category={EXPANDED_DETAILS_METRIC_CATEGORY}
               label={t`Leverage 🔥`}
-              value={constQ(leverage)}
+              value={leverage}
               valueOptions={{ unit: 'multiplier' }}
             />
           </Grid>
@@ -139,7 +138,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
           <Metric
             category={EXPANDED_DETAILS_METRIC_CATEGORY}
             label={t`Utilization`}
-            value={constQ(utilizationPercent)}
+            value={utilizationPercent}
             valueOptions={{ unit: 'percentage' }}
             testId="metric-utilizationPercent"
           />
@@ -148,7 +147,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
           <Metric
             category={EXPANDED_DETAILS_METRIC_CATEGORY}
             label={t`Available Liquidity`}
-            value={constQ(liquidityUsd)}
+            value={liquidityUsd}
             valueOptions={{ unit: 'dollar' }}
           />
         </Grid>
@@ -156,7 +155,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
           <Metric
             category={EXPANDED_DETAILS_METRIC_CATEGORY}
             label={t`Total Debt`}
-            value={constQ(totalDebtUsd)}
+            value={totalDebtUsd}
             valueOptions={{ unit: 'dollar' }}
           />
         </Grid>
@@ -164,7 +163,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
           <Metric
             category={EXPANDED_DETAILS_METRIC_CATEGORY}
             label={t`Total Collateral`}
-            value={constQ(totalCollateralUsd)}
+            value={totalCollateralUsd}
             valueOptions={{ unit: 'dollar' }}
           />
         </Grid>
@@ -172,7 +171,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
           <Metric
             category={EXPANDED_DETAILS_METRIC_CATEGORY}
             label={t`TVL`}
-            value={constQ(tvl)}
+            value={tvl}
             valueOptions={{ unit: 'dollar' }}
           />
         </Grid>
@@ -187,7 +186,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
               <Metric
                 category={POSITION_METRIC_CATEGORY}
                 label={t`Earnings`}
-                value={constQ(lendingPosition.earnings)}
+                value={lendingPosition.earnings}
                 valueOptions={{ unit: 'dollar' }}
               />
             </Grid>
@@ -197,7 +196,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
               <Metric
                 category={POSITION_METRIC_CATEGORY}
                 label={t`Supplied Amount`}
-                value={constQ(lendingPosition.supplied)}
+                value={lendingPosition.supplied}
                 valueOptions={{ unit: { symbol: assets.borrowed.symbol, position: 'suffix' } }}
               />
             </Grid>

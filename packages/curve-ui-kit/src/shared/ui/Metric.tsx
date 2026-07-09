@@ -9,7 +9,7 @@ import { ErrorIconButton } from '@ui-kit/shared/ui/ErrorIconButton'
 import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
-import type { MakeOptional, QueryProp } from '@ui-kit/types/util'
+import { type MakeOptional, type QueryOrValue, type QueryProp, toQuery } from '@ui-kit/types/util'
 import {
   applySxProps,
   copyToClipboard,
@@ -100,7 +100,7 @@ type Notional = Omit<NumberFormatOptions, 'abbreviate'> & {
 }
 type NotionalValue = number | string | Notional | null
 
-/** At the moment of writing the default formatter already formats to 2 decimals, but I really want to make this explicit for potential future changes. */
+/** At the moment of writing, the default formatter already formats to 2 decimals, but I really want to make this explicit for potential future changes. */
 const formatChange = (value: number): string => defaultNumberFormatter(value, { decimals: 2 })
 
 /**
@@ -111,7 +111,7 @@ const getTypographyColorProps = (color: TypographyProps['color']) =>
   typeof color === 'string' && color.startsWith('#') ? { sx: { color } } : { color }
 
 type MetricValueProps = Pick<MetricProps, 'valueOptions' | 'change' | 'testId'> & {
-  value: Amount | null
+  value: Amount | null | undefined
   size: MetricLayout['size']
   tooltip?: MetricProps['valueTooltip']
   copyValue?: () => void
@@ -196,7 +196,7 @@ const Notional = ({ data, error, isLoading }: QueryProp<NotionalValue>) => (
 
 export type MetricProps = {
   /** The actual metric value to display */
-  value: QueryProp<MetricValueProps['value']>
+  value: QueryOrValue<MetricValueProps['value']>
   valueOptions?: MakeOptional<NumberFormatOptions, 'abbreviate'> /* defaults to true */ & {
     color?: TypographyProps['color']
   }
@@ -226,7 +226,7 @@ export type MetricProps = {
 }
 
 export const Metric = ({
-  value: { error, data, isLoading },
+  value,
   valueOptions = {},
   change,
 
@@ -244,6 +244,7 @@ export const Metric = ({
   testId = 'metric',
   sx,
 }: MetricProps) => {
+  const { error, data, isLoading } = toQuery(value)
   const breakpoint = useBreakpoint()
   const { orientation, size } = METRIC_CATEGORIES[category][breakpoint]
   const orientationStyle = ORIENTATION_STYLE[orientation]

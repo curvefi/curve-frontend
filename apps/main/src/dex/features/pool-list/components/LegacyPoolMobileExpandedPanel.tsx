@@ -17,7 +17,6 @@ import type { ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { Metric, MetricProps } from '@ui-kit/shared/ui/Metric'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { constQ } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 import { PoolRewardsTooltipContent } from '../../../components/PoolRewardsTooltipContent'
 import { LegacyPoolColumnId } from '../columns'
@@ -31,7 +30,7 @@ const ListInfoItem = ({
   ...props
 }: Omit<MetricProps, 'value' | 'category'> & { value: number | string | undefined | null; children?: ReactNode }) => (
   <Grid size={6}>
-    <Metric category="dex.legacyPoolListMobileExpanded" value={constQ(decimal(value))} {...props} />
+    <Metric category="dex.legacyPoolListMobileExpanded" value={decimal(value)} {...props} />
     {children}
   </Grid>
 )
