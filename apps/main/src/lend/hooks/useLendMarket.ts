@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import type { LlamaApi } from '@ui-kit/features/connect-wallet'
 import { useLlamaQuery } from '@ui-kit/features/connect-wallet/lib/CurveContext'
-import { useLLv2 } from '@ui-kit/hooks/useFeatureFlags'
 import { useCombinedQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { useMappedQuery } from '@ui-kit/types/util'
@@ -11,7 +10,7 @@ import { ChainId } from '../types/lend.types'
 type MarketUrlParams = { chainId: ChainId; rMarket: string }
 
 function useLendMarketData({ chainId, rMarket }: MarketUrlParams, enabled?: boolean) {
-  const lendMarkets = useLendMarkets({ chainId, enableLLv2: useLLv2() }, enabled)
+  const lendMarkets = useLendMarkets({ chainId }, enabled)
   const lendMarket = useMappedQuery(
     lendMarkets,
     useCallback(data => data?.[rMarket], [rMarket]),

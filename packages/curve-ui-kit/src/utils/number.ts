@@ -4,6 +4,8 @@ import { getUnitOptions, type Unit } from './units'
 // Sometimes API returns overflowed USD values. Don't show them!
 const MAX_USD_VALUE = 100_000_000_000_000 // $ 100T 🤑
 
+export const [PLACEHOLDER, PLACEHOLDER_USD] = [0.00001, 0.001]
+
 /** Locale used for consistent number formatting across the application */
 const LOCALE = 'en-US'
 const DEFAULT_DECIMALS = 2

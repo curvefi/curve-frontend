@@ -1,8 +1,6 @@
 import { useMemo } from 'react'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
-import { TooltipDescription } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import Grid, { GridProps } from '@mui/material/Grid'
-import { t } from '@ui-kit/lib/i18n'
 import { parseListFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -28,11 +26,6 @@ const UserPositionStatisticItem = ({
         unit: 'dollar',
       }}
       label={label}
-      errorTooltip={{
-        placement: 'top',
-        title: t`Error fetching ${label}`,
-        body: <TooltipDescription text={t`Some positions could not be loaded correctly.`} />,
-      }}
     />
   </Grid>
 )

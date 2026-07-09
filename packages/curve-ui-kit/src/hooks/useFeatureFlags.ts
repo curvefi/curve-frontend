@@ -4,13 +4,11 @@
  */
 
 import { defaultReleaseChannel, ReleaseChannel } from '@ui-kit/utils'
-import { useCurrentDate } from './useCurrentDate'
 import { useReleaseChannel } from './useLocalStorage'
 
 const useBetaChannel = () => useReleaseChannel()[0] === ReleaseChannel.Beta
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+ 
 const useStableChannel = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy
-const LLV2_STABLE_RELEASE_DATE = new Date('2026-06-10T13:00:00Z') // 15:00 CEST
 
 /**
  * Alpha channel works like beta for preview/localhost urls, but completely hidden in production.
@@ -19,20 +17,10 @@ const LLV2_STABLE_RELEASE_DATE = new Date('2026-06-10T13:00:00Z') // 15:00 CEST
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const useAlphaChannel = () => useBetaChannel() && defaultReleaseChannel === ReleaseChannel.Beta
 
-/** New LlamaLend v2 implementation */
-export const useLLv2 = () => {
-  const [releaseChannel] = useReleaseChannel()
-  const currentDate = useCurrentDate()
-  return (
-    releaseChannel === ReleaseChannel.Beta ||
-    (releaseChannel === ReleaseChannel.Stable && currentDate >= LLV2_STABLE_RELEASE_DATE)
-  )
-}
-
 export const use0xRouter = useBetaChannel
 
 /** Reset position form for LlamaLend soft liquidation */
-export const useLlamaResetPosition = useBetaChannel
+export const useLlamaResetPosition = useStableChannel
 
 /** Split the LlamaLend (soon to be legacy) health into: Liquidation Buffer and Health */
 export const useNewLlamalendHealth = useBetaChannel

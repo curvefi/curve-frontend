@@ -15,12 +15,10 @@ export type VeCrvLock = Omit<LocksDaily, 'amount'> & {
 export const { useQuery: useVeCrvLocksQuery } = queryFactory({
   queryKey: ({ days }: VeCrvLocksParams) => ['vecrv-locks', { days }] as const,
   queryFn: async ({ days }: VeCrvLocksQuery) =>
-    (await getLocksDaily(days)).map(
-      ({ amount, ...lock }): VeCrvLock => ({
-        ...lock,
-        amount: fromWei(amount.toString(), DEFAULT_DECIMALS),
-      }),
-    ),
+    (await getLocksDaily(days)).map(({ amount, ...lock }): VeCrvLock => ({
+      ...lock,
+      amount: fromWei(amount.toString(), DEFAULT_DECIMALS),
+    })),
   category: 'dao.stats',
   validationSuite: EmptyValidationSuite,
 })
