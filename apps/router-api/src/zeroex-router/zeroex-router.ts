@@ -67,17 +67,15 @@ export const buildZeroExRouteResponse = async (
       warnings: [],
       isStableswapRoute: false,
       tx: { to, data, from: taker, value },
-      route: route.fills.map(
-        (fill): RouteStep => ({
-          name: fill.source,
-          tokenIn: [fill.from],
-          tokenOut: [fill.to],
-          protocol: PROTOCOL,
-          action: 'swap',
-          chainId,
-          args: { source: fill.source, proportionBps: fill.proportionBps },
-        }),
-      ),
+      route: route.fills.map((fill): RouteStep => ({
+        name: fill.source,
+        tokenIn: [fill.from],
+        tokenOut: [fill.to],
+        protocol: PROTOCOL,
+        action: 'swap',
+        chainId,
+        args: { source: fill.source, proportionBps: fill.proportionBps },
+      })),
     },
   ]
 }

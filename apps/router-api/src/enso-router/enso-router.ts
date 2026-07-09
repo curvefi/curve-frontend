@@ -69,24 +69,22 @@ export const buildEnsoRouteResponse = async (
   const json = await fetchJson<EnsoRouteResponse | EnsoRouteResponse[]>(url, {
     ...(ENSO_API_KEY && { headers: { Authorization: `Bearer ${ENSO_API_KEY}` } }),
   }).catch(error => logEnsoError(error, log, url))
-  return toArray(json).map(
-    ({ route, amountOut, gas, ...routeProps }): RouterRouteResponse => ({
-      router: 'enso',
-      gas: gas as Decimal,
-      amountIn: [amountIn],
-      amountOut: [amountOut],
-      warnings: [], // legacy code seems to only use warnings for stableswap routes
-      route: route.map(({ action, chainId: routeChainId, primary, protocol, ...stepProps }) => ({
-        name: primary || `${protocol}:${action}`,
-        chainId: routeChainId ?? chainId,
-        protocol,
-        action,
-        primary,
-        ...stepProps,
-      })),
-      ...routeProps,
-    }),
-  )
+  return toArray(json).map(({ route, amountOut, gas, ...routeProps }): RouterRouteResponse => ({
+    router: 'enso',
+    gas: gas as Decimal,
+    amountIn: [amountIn],
+    amountOut: [amountOut],
+    warnings: [], // legacy code seems to only use warnings for stableswap routes
+    route: route.map(({ action, chainId: routeChainId, primary, protocol, ...stepProps }) => ({
+      name: primary || `${protocol}:${action}`,
+      chainId: routeChainId ?? chainId,
+      protocol,
+      action,
+      primary,
+      ...stepProps,
+    })),
+    ...routeProps,
+  }))
 }
 
 function logEnsoError(error: unknown, log: FastifyBaseLogger, url: string): never {
