@@ -2,13 +2,13 @@ import type { FormStatus, FormValues } from '@/dex/components/PageDashboard/type
 import type { TooltipProps } from '@ui/Tooltip/types'
 
 export enum SORT_ID {
-  'poolName' = 'poolName',
-  'userCrvApy' = 'userCrvApy',
-  'rewardBase' = 'rewardBase',
-  'rewardOthers' = 'rewardOthers',
-  'liquidityUsd' = 'liquidityUsd',
-  'profits' = 'profits',
-  'claimables' = 'claimables',
+  poolName = 'poolName',
+  userCrvApy = 'userCrvApy',
+  rewardBase = 'rewardBase',
+  rewardOthers = 'rewardOthers',
+  liquidityUsd = 'liquidityUsd',
+  profits = 'profits',
+  claimables = 'claimables',
 }
 
 export const DEFAULT_FORM_VALUES: FormValues = {

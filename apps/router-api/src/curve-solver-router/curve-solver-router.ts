@@ -60,21 +60,19 @@ export const buildCurveSolverRouteResponse = async (
       createdAt: Date.now(),
       warnings: [], // todo: add warnings
       isStableswapRoute: false, // todo: check whether stable route is selected
-      route: coins?.map(
-        ([routeTokenIn, routeTokenOut], index): RouteStep => ({
-          name: pools?.[index] ?? `step ${index}`,
-          tokenIn: [routeTokenIn],
-          tokenOut: [routeTokenOut],
-          protocol: PROTOCOL,
-          action: 'swap',
-          chainId,
-          args: {
-            poolAddress: pool_addresses?.[index],
-            swapAddress: swap_addresses?.[index],
-            swapParams: swap_params?.[index],
-          },
-        }),
-      ),
+      route: coins?.map(([routeTokenIn, routeTokenOut], index): RouteStep => ({
+        name: pools?.[index] ?? `step ${index}`,
+        tokenIn: [routeTokenIn],
+        tokenOut: [routeTokenOut],
+        protocol: PROTOCOL,
+        action: 'swap',
+        chainId,
+        args: {
+          poolAddress: pool_addresses?.[index],
+          swapAddress: swap_addresses?.[index],
+          swapParams: swap_params?.[index],
+        },
+      })),
       // Solver only returns executable calldata when receiver is provided.
       ...(calldata &&
         router_address &&

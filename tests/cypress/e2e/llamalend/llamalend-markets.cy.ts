@@ -171,7 +171,7 @@ testCases.forEach(([width, height, breakpoint]) => {
       }
       checkLineGraphColor(MarketRateType.Borrow, '#ed242f')
 
-      cy.get(`@lend-snapshots.all`, LOAD_TIMEOUT).then(calls1 => {
+      cy.get<unknown[]>(`@lend-snapshots.all`, LOAD_TIMEOUT).then(calls1 => {
         expect(calls1.length).to.be.greaterThan(0).lessThan(vaultCount) // make sure we have some calls before scrolling, but not all
         cy.wait(repeat('@lend-snapshots', calls1.length), LOAD_TIMEOUT)
 
@@ -187,7 +187,7 @@ testCases.forEach(([width, height, breakpoint]) => {
         cy.get('[data-testid^="data-table-row"]').last().should('be.visible')
         cy.wait(`@lend-snapshots`, LOAD_TIMEOUT) // wait for an extra request
         cy.get('[data-testid^="data-table-row"]').last().should('contain.html', 'path') // wait for the graph to render
-        cy.get(`@lend-snapshots.all`, LOAD_TIMEOUT).then(calls2 =>
+        cy.get<unknown[]>(`@lend-snapshots.all`, LOAD_TIMEOUT).then(calls2 =>
           expect(calls2.length).to.be.greaterThan(calls1.length),
         )
       })
