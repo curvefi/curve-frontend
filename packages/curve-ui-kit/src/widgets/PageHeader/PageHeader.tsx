@@ -24,7 +24,6 @@ export const PageHeader = ({
   icon,
   titleItems,
   rightItems,
-  rightItemsRowBreakpoint = 'tablet',
   backHref,
 }: {
   title: string
@@ -35,10 +34,9 @@ export const PageHeader = ({
   icon?: ReactNode
   titleItems?: ReactNode
   rightItems?: ReactNode
-  rightItemsRowBreakpoint?: 'tablet' | 'desktop'
 }) => (
   <Stack
-    direction={{ mobile: 'column', [rightItemsRowBreakpoint]: 'row' }}
+    direction={{ mobile: 'column', desktop: 'row' }}
     sx={{ justifyContent: 'space-between', gap: Spacing.md, paddingBlock: Spacing.sm, flexWrap: 'wrap' }}
   >
     <Stack direction="row" sx={{ alignItems: 'center' }}>

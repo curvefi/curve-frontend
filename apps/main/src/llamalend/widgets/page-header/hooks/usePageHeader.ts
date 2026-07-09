@@ -246,7 +246,7 @@ const useAvailableLiquidity = ({
   )
   const apiLiquidity = combineQueries([apiMarket, borrowUsdRate], (d, rate) => ({
     value: d.liquidityUsd / rate,
-    total: d.type === LlamaMarketType.Lend ? d.assets.collateral.balance : d.debtCeiling,
+    total: { Lend: d.assets.collateral.balance, Mint: d.debtCeiling }[d.type],
     usdRate: rate,
     notional: d.liquidityUsd,
   }))

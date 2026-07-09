@@ -40,12 +40,10 @@ export const MetricsRow = ({
         display: { mobile: 'grid', desktop: 'flex' },
         gridTemplateColumns: { mobile: 'repeat(2, minmax(0, 1fr))', desktop: 'none' },
         columnGap: Spacing.xxl,
-        rowGap: { mobile: Spacing.lg.mobile, desktop: Spacing.xxl.desktop },
+        rowGap: { mobile: Spacing.lg, desktop: Spacing.xxl },
         alignItems: 'center',
         flexWrap: 'wrap',
-        justifyContent: 'flex-start',
-        minWidth: 0,
-        maxWidth: '100%',
+        justifyContent: 'start',
       }}
     >
       <BorrowAprMetric
