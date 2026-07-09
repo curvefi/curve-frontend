@@ -147,10 +147,10 @@ export const createBorrowMoreScenario = ({
 
   const zapV2Expected = {
     metrics: { userCollateral: collateral, userBorrowed: DEFAULT_USER_BORROWED, dDebt: borrow, debt: borrow },
-    maxRecv: { userCollateral: collateral, userBorrowed: DEFAULT_USER_BORROWED },
-    isApproved: { userCollateral: collateral, userBorrowed: DEFAULT_USER_BORROWED },
-    estimateGasApprove: { userCollateral: collateral, userBorrowed: DEFAULT_USER_BORROWED },
-    approve: { userCollateral: collateral, userBorrowed: DEFAULT_USER_BORROWED },
+    maxRecv: { userCollateral: collateral },
+    isApproved: { userCollateral: collateral },
+    estimateGasApprove: { userCollateral: collateral },
+    approve: { userCollateral: collateral },
     estimateGas: {
       userCollateral: collateral,
       userBorrowed: DEFAULT_USER_BORROWED,

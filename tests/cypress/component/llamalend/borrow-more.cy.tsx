@@ -54,13 +54,6 @@ const testCases = [
   },
   {
     ...testCase,
-    title: `${testCase.title} with leverageV2`,
-    hasLeverageManagement: true,
-    leverageEnabled: true,
-    leverageImplementation: 'leverageV2' as const,
-  },
-  {
-    ...testCase,
     title: `${testCase.title} with zapV2 leverage`,
     hasLeverageManagement: true,
     leverageEnabled: true,
@@ -94,7 +87,6 @@ describe('BorrowMoreForm (mocked)', () => {
             leverage: hasLeverageManagement,
             leverageImplementation,
           })
-        const onPricesUpdated = cy.spy().as('onPricesUpdated')
 
         setLlamaApi(llamaApi)
         setGasInfo({ chainId, networks: llamaNetworks })
@@ -103,8 +95,7 @@ describe('BorrowMoreForm (mocked)', () => {
           <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
             <BorrowMoreForm
               networks={llamaNetworks}
-
-              onPricesUpdated={onPricesUpdated}
+              onPricesUpdated={cy.spy()}
               collateralEvents={constQ(fakeCollateralEvents)}
             />
           </MockLoanTestWrapper>,

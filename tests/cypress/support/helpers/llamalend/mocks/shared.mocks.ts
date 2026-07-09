@@ -8,7 +8,7 @@ import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import { TEST_ADDRESS } from '../mock-loan-test-data'
 import { createMockLendMarket, createMockLendStats, createMockMintMarket } from '../mock-market.helpers'
 import { seedErc20BalanceForAddresses } from '../query-cache.helpers'
-import { createStub, type TestStub, type TestStubArg } from '../test-stub.utils'
+import { createStub, createSyncStub, type TestStub, type TestStubArg } from '../test-stub.utils'
 
 /** Seed token balances for both collateral and borrow (crvUSD) tokens so useReadContracts doesn't make real RPC calls */
 export const seedMarketBalances = (chainId: number, collateralAddress: Address) => {
@@ -156,6 +156,7 @@ export const createMockLendLoanMarket = ({
     loan,
     leverage: { hasLeverage: () => true, ...leverage },
     leverageZapV2,
+    getZapAddress: createSyncStub(oneAddress()),
     userPosition: {
       ...(userState && { userState }),
       ...(userHealth && { userHealth }),

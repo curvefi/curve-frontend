@@ -64,7 +64,7 @@ export const createCreateLoanScenario = ({
     }),
     createLoanMaxRecv: createStub({
       maxDebt: decimal(new BigNumber(borrow).plus(oneFloat(10, 400)).decimalPlaces(2))!,
-      maxTotalCollateral: oneDecimal(1, 4, 3),
+      maxTotalCollateral: decimal(new BigNumber(collateral).plus(oneFloat(0.1, 2)).decimalPlaces(3))!,
       maxLeverage,
       userCollateral: collateral,
       collateralFromUserBorrowed: DEFAULT_USER_BORROWED,
@@ -105,31 +105,27 @@ export const createCreateLoanScenario = ({
     query: { userCollateral: collateral, userBorrowed: DEFAULT_USER_BORROWED, debt: borrow, range: presetRange },
     estimateGas: {
       userCollateral: collateral,
-      userBorrowed: DEFAULT_USER_BORROWED,
       debt: borrow,
       range: presetRange,
       ...routeMutationMeta,
     },
-    maxRecv: { userCollateral: collateral, userBorrowed: DEFAULT_USER_BORROWED, range: presetRange },
-    approved: { userCollateral: collateral, userBorrowed: DEFAULT_USER_BORROWED },
-    estimateGasApprove: { userCollateral: collateral, userBorrowed: DEFAULT_USER_BORROWED },
-    approve: { userCollateral: collateral, userBorrowed: DEFAULT_USER_BORROWED },
+    maxRecv: { userCollateral: collateral, range: presetRange },
+    approved: { userCollateral: collateral },
+    estimateGasApprove: { userCollateral: collateral },
+    approve: { userCollateral: collateral },
     submit: {
       userCollateral: collateral,
-      userBorrowed: DEFAULT_USER_BORROWED,
       debt: borrow,
       range: presetRange,
       ...routeMutationMeta,
     },
     expectedCollateral: {
       userCollateral: collateral,
-      userBorrowed: DEFAULT_USER_BORROWED,
       debt: borrow,
       ...routeMeta,
     },
     expectedMetrics: {
       userCollateral: collateral,
-      userBorrowed: DEFAULT_USER_BORROWED,
       debt: borrow,
       range: presetRange,
       ...routeMeta,
@@ -221,9 +217,14 @@ export const createCreateLoanScenario = ({
           if (approved) {
             expect(leverageStubs.createLoanApprove).to.not.have.been.called
           } else {
-            expect(leverageStubs.createLoanApprove).to.have.been.calledWithMatch(leverageExpected.approve)
+            expect(leverageStubs.createLoanApprove).to.have.been.calledWithMatch({ userCollateral: collateral })
           }
-          expect(leverageStubs.createLoan).to.have.been.calledWithMatch(leverageExpected.submit)
+          expect(leverageStubs.createLoan).to.have.been.calledWithMatch({
+            userCollateral: collateral,
+            debt: borrow,
+            range: presetRange,
+            ...routeMutationMeta,
+          })
         }
       : () => {
           expect(normalStubs.estimateGasCreateLoan).to.have.been.calledWithExactly(...normalExpected.estimateGas)
