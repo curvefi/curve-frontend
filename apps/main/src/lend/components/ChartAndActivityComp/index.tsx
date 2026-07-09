@@ -3,7 +3,7 @@ import { networks } from '@/lend/networks'
 import { ChainId } from '@/lend/types/lend.types'
 import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
 import { useMarketContext } from '@/llamalend/features/market-context'
-import { ChartAndActivityLayout } from '@/llamalend/widgets/ChartAndActivityLayout'
+import { ChartAndActivityLayout, type ChartAndActivityTab } from '@/llamalend/widgets/ChartAndActivityLayout'
 import { getBlockchainId } from '@curvefi/prices-api'
 import type { Decimal } from '@primitives/decimal.utils'
 import { useBandsChartVisible } from '@ui-kit/hooks/useLocalStorage'
@@ -11,9 +11,11 @@ import type { Range } from '@ui-kit/types/util'
 
 type ChartAndActivityCompProps = {
   previewPrices: Range<Decimal> | undefined
+  tab?: ChartAndActivityTab
+  onTabChange?: (tab: ChartAndActivityTab) => void
 }
 
-export const ChartAndActivityComp = ({ previewPrices }: ChartAndActivityCompProps) => {
+export const ChartAndActivityComp = ({ previewPrices, tab, onTabChange }: ChartAndActivityCompProps) => {
   const {
     chainId,
     marketId,
@@ -75,6 +77,8 @@ export const ChartAndActivityComp = ({ previewPrices }: ChartAndActivityCompProp
         endpoint: 'lending',
         networkConfig,
       }}
+      tab={tab}
+      onTabChange={onTabChange}
     />
   )
 }

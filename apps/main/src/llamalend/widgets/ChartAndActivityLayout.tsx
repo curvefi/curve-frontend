@@ -26,10 +26,10 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-type Tab = 'chart' | 'trades' | 'events'
-const DEFAULT_TAB: Tab = 'chart'
+export type ChartAndActivityTab = 'chart' | 'trades' | 'events'
+const DEFAULT_TAB: ChartAndActivityTab = 'chart'
 
-const TABS: TabOption<Tab>[] = [
+const TABS: TabOption<ChartAndActivityTab>[] = [
   { value: 'chart', label: t`Chart` },
   { value: 'trades', label: t`Swaps` },
   { value: 'events', label: t`Activity` },
@@ -60,16 +60,20 @@ type ChartAndActivityLayoutProps = {
     borrowToken: Token | undefined
   }
   activity: LlammaActivityProps
+  tab?: ChartAndActivityTab
+  onTabChange?: (tab: ChartAndActivityTab) => void
 }
 
-export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActivityLayoutProps) => {
+export const ChartAndActivityLayout = ({ chart, bands, activity, tab, onTabChange }: ChartAndActivityLayoutProps) => {
   const { isConnected } = useConnection()
   const theme = useTheme()
   const [isBandsVisible, setIsBandsVisible] = useBandsChartVisible()
   const toggleBandsVisible = useCallback(() => setIsBandsVisible(prev => !prev), [setIsBandsVisible])
   const bandsPalette = useBandsChartPalette()
-  const [tab, setTab] = useState<Tab>(DEFAULT_TAB)
+  const [internalTab, setInternalTab] = useState<ChartAndActivityTab>(DEFAULT_TAB)
   const [candlePriceRange, setCandlePriceRange] = useState<{ min: number; max: number } | undefined>()
+  const activeTab = tab ?? internalTab
+  const setActiveTab = onTabChange ?? setInternalTab
 
   const handleVisiblePriceRangeChange = useCallback((min: number, max: number) => {
     setCandlePriceRange(previous =>
@@ -103,11 +107,11 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
 
   return (
     <Stack data-testid="market-chart-and-activity">
-      <TabsSwitcher variant="contained" value={tab} onChange={setTab} options={TABS} />
+      <TabsSwitcher variant="contained" value={activeTab} onChange={setActiveTab} options={TABS} />
       <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
-        {tab === 'events' && <LlammaActivityEvents {...activity} />}
-        {tab === 'trades' && <LlammaActivityTrades {...activity} />}
-        {tab === 'chart' && (
+        {activeTab === 'events' && <LlammaActivityEvents {...activity} />}
+        {activeTab === 'trades' && <LlammaActivityTrades {...activity} />}
+        {activeTab === 'chart' && (
           <Stack sx={{ gap: Spacing.sm, padding: Spacing.sm }}>
             <ChartHeader
               chartOptionVariant="select"

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { MarketContextProvider } from '@/llamalend/features/market-context'
 import { PositionDetailsComposite } from '@/llamalend/features/market-position-details'
@@ -8,6 +8,12 @@ import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
 import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
+import type { ChartAndActivityTab } from '@/llamalend/widgets/ChartAndActivityLayout'
+import {
+  MarketSection,
+  MarketSectionNav,
+  type MarketSectionOption,
+} from '@/llamalend/widgets/market-section-nav'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header'
 import { MarketInformationComposite } from '@/loan/components/MarketInformationComposite'
 import { CreateLoanTabs } from '@/loan/components/PageMintMarket/CreateLoanTabs'
@@ -16,6 +22,7 @@ import { networks } from '@/loan/networks'
 import { type CollateralUrlParams } from '@/loan/types/loan.types'
 import { getChainId, getCollateralListPathname } from '@/loan/utils/utilsRouter'
 import { getBlockchainId } from '@curvefi/prices-api'
+import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
@@ -34,6 +41,12 @@ export const MintMarketPage = () => {
   const chainId = getChainId(params)
   const { address } = useConnection()
   const [previewPrices, setPreviewPrices] = useState<Range<Decimal> | undefined>(undefined)
+  const [chartAndActivityTab, setChartAndActivityTab] = useState<ChartAndActivityTab>('chart')
+  const positionDetailsRef = useRef<HTMLElement | null>(null)
+  const chartAndActivityRef = useRef<HTMLElement | null>(null)
+  const historicalRatesRef = useRef<HTMLElement | null>(null)
+  const advancedDetailsRef = useRef<HTMLElement | null>(null)
+  const faqsRef = useRef<HTMLElement | null>(null)
 
   const marketQuery = useMintMarket({ chainId, rMarket: rCollateralId })
   const { data: market, isLoading: isMarketLoading, error: marketError } = marketQuery
@@ -69,6 +82,31 @@ export const MintMarketPage = () => {
   )
 
   const error = marketError ?? apiMarket.error
+  const sectionRefs = {
+    chartAndActivity: chartAndActivityRef,
+    historicalRates: historicalRatesRef,
+    advancedDetails: advancedDetailsRef,
+    faqs: faqsRef,
+  }
+  const sections: MarketSectionOption[] = [
+    { value: 'position-details', label: t`Position Details`, ref: positionDetailsRef },
+    {
+      value: 'price-chart',
+      label: t`Price Chart`,
+      ref: chartAndActivityRef,
+      onClick: () => setChartAndActivityTab('chart'),
+    },
+    {
+      value: 'market-activity',
+      label: t`Market Activity`,
+      ref: chartAndActivityRef,
+      onClick: () => setChartAndActivityTab('events'),
+    },
+    { value: 'historical-rates', label: t`Historical Rates`, ref: historicalRatesRef },
+    { value: 'advanced-details', label: t`Advanced Details`, ref: advancedDetailsRef },
+    { value: 'faqs', label: t`FAQs`, ref: faqsRef },
+  ]
+
   return error ? (
     <ErrorPage
       title={t`Error`}
@@ -98,11 +136,23 @@ export const MintMarketPage = () => {
             <CreateLoanTabs onPricesUpdated={setPreviewPrices} />
           ))
         }
-        header={<MarketPageHeader isLoading={isLoading} />}
+        header={
+          <Stack>
+            <MarketPageHeader isLoading={isLoading} />
+            <MarketSectionNav sections={sections} />
+          </Stack>
+        }
       >
         <MarketBanners chainId={chainId} market={market} />
-        <PositionDetailsComposite hasPosition={loanExists} events={collateralEvents} />
-        <MarketInformationComposite previewPrices={previewPrices} />
+        <MarketSection id="position-details" sectionRef={positionDetailsRef}>
+          <PositionDetailsComposite hasPosition={loanExists} events={collateralEvents} />
+        </MarketSection>
+        <MarketInformationComposite
+          previewPrices={previewPrices}
+          sectionRefs={sectionRefs}
+          chartAndActivityTab={chartAndActivityTab}
+          onChartAndActivityTabChange={setChartAndActivityTab}
+        />
       </DetailPageLayout>
     </MarketContextProvider>
   )

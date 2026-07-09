@@ -1,5 +1,5 @@
 import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
-import { ChartAndActivityLayout } from '@/llamalend/widgets/ChartAndActivityLayout'
+import { ChartAndActivityLayout, type ChartAndActivityTab } from '@/llamalend/widgets/ChartAndActivityLayout'
 import { useOhlcChartState } from '@/loan/hooks/useOhlcChartState'
 import { networks } from '@/loan/networks'
 import type { ChainId } from '@/loan/types/loan.types'
@@ -11,9 +11,11 @@ import { useMarketContext } from '../../llamalend/features/market-context'
 
 type ChartAndActivityCompProps = {
   previewPrices: Range<Decimal> | undefined
+  tab?: ChartAndActivityTab
+  onTabChange?: (tab: ChartAndActivityTab) => void
 }
 
-export const ChartAndActivityComp = ({ previewPrices }: ChartAndActivityCompProps) => {
+export const ChartAndActivityComp = ({ previewPrices, tab, onTabChange }: ChartAndActivityCompProps) => {
   const {
     chainId,
     marketId,
@@ -75,6 +77,8 @@ export const ChartAndActivityComp = ({ previewPrices }: ChartAndActivityCompProp
         endpoint: 'crvusd',
         networkConfig,
       }}
+      tab={tab}
+      onTabChange={onTabChange}
     />
   )
 }

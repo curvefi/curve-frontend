@@ -8,6 +8,52 @@ const ADDRESS_PATTERN = /^0x[a-fA-F0-9]{40}$/
 const shouldShowCanvas = (testId: string) =>
   cy.get(`[data-testid="${testId}"] canvas`, LOAD_TIMEOUT).should('be.visible')
 
+const getMarketSectionNavTab = (section: string) => cy.get(`[data-testid="market-section-nav-${section}"]`)
+
+const shouldShowMarketSection = (section: string) =>
+  cy.get(`[data-testid="market-section-${section}"]`, LOAD_TIMEOUT).should('be.visible')
+
+const shouldLoadMarketSectionNav = () => {
+  cy.get('[data-testid="market-section-nav"]', LOAD_TIMEOUT).should('be.visible')
+  getMarketSectionNavTab('advanced-details').should('be.visible')
+  getMarketSectionNavTab('faqs').should('be.visible')
+}
+
+const shouldNavigateBorrowMarketSections = () => {
+  getMarketSectionNavTab('position-details').should('be.visible')
+  getMarketSectionNavTab('price-chart').should('be.visible').click()
+  shouldShowMarketSection('price-chart')
+  cy.get('[data-testid="tab-chart"]').should('have.attr', 'aria-selected', 'true')
+
+  getMarketSectionNavTab('market-activity').should('be.visible').click()
+  shouldShowMarketSection('price-chart')
+  cy.get('[data-testid="tab-events"]').should('have.attr', 'aria-selected', 'true')
+
+  getMarketSectionNavTab('historical-rates').should('be.visible').click()
+  shouldShowMarketSection('historical-rates')
+
+  getMarketSectionNavTab('advanced-details').click()
+  shouldShowMarketSection('advanced-details')
+
+  getMarketSectionNavTab('faqs').click()
+  shouldShowMarketSection('faqs')
+}
+
+const shouldNavigateVaultMarketSections = ({ hasPosition }: { hasPosition: boolean }) => {
+  getMarketSectionNavTab('price-chart').should('not.exist')
+  getMarketSectionNavTab('market-activity').should('not.exist')
+  getMarketSectionNavTab('position-details').should(hasPosition ? 'be.visible' : 'not.exist')
+
+  getMarketSectionNavTab('historical-rates').should('be.visible').click()
+  shouldShowMarketSection('historical-rates')
+
+  getMarketSectionNavTab('advanced-details').click()
+  shouldShowMarketSection('advanced-details')
+
+  getMarketSectionNavTab('faqs').click()
+  shouldShowMarketSection('faqs')
+}
+
 const shouldLoadHistoricalBorrowRateChart = () => {
   getMetricValue('historical-borrow-current-rate').should('match', DECIMAL_REGEX)
   shouldShowCanvas('historical-borrow-rate-chart')
@@ -66,6 +112,7 @@ const shouldLoadMarketParameters = ({
 
 export const shouldLoadMarketDetails = () => {
   cy.get('[data-testid^="detail-page-layout"]', LOAD_TIMEOUT).should('be.visible')
+  shouldLoadMarketSectionNav()
   getActionValue('market-available-liquidity').should('match', DECIMAL_REGEX)
   cy.get('[data-testid="market-advanced-details"]', LOAD_TIMEOUT).should('be.visible')
   getActionValue('market-total-borrowers').should('match', DECIMAL_REGEX)
@@ -90,6 +137,7 @@ export const shouldLoadLendBorrowDetails = ({ hasWallet }: WalletOptions) => {
   shouldShowCanvas('interest-rate-utilization-chart')
   shouldLoadMarketContracts({ hasMonetaryPolicy: true, hasOracle: true, hasVault: true })
   shouldLoadMarketParameters({ hasOnChainParameters: hasWallet, hasOraclePrice: true, hasPricePerShare: false })
+  shouldNavigateBorrowMarketSections()
 }
 
 export const shouldLoadMintBorrowDetails = ({ hasWallet }: WalletOptions) => {
@@ -98,6 +146,7 @@ export const shouldLoadMintBorrowDetails = ({ hasWallet }: WalletOptions) => {
   getActionValue('market-total-collateral').should('match', DECIMAL_REGEX)
   shouldLoadMarketContracts({ hasMonetaryPolicy: hasWallet, hasOracle: hasWallet, hasVault: false })
   shouldLoadMarketParameters({ hasOnChainParameters: hasWallet, hasOraclePrice: hasWallet, hasPricePerShare: false })
+  shouldNavigateBorrowMarketSections()
 }
 
 export const shouldLoadLendVaultDetails = ({ hasWallet }: WalletOptions) => {
@@ -110,4 +159,5 @@ export const shouldLoadLendVaultDetails = ({ hasWallet }: WalletOptions) => {
   shouldLoadMarketContracts({ hasMonetaryPolicy: true, hasOracle: true, hasVault: true })
   shouldLoadMarketParameters({ hasOnChainParameters: hasWallet, hasOraclePrice: true, hasPricePerShare: hasWallet })
   shouldLoadMarketDetails()
+  shouldNavigateVaultMarketSections({ hasPosition: hasWallet })
 }
