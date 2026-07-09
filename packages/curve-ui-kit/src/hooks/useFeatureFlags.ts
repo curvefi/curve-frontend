@@ -7,7 +7,7 @@ import { defaultReleaseChannel, ReleaseChannel } from '@ui-kit/utils'
 import { useReleaseChannel } from './useLocalStorage'
 
 const useBetaChannel = () => useReleaseChannel()[0] === ReleaseChannel.Beta
- 
+
 const useStableChannel = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy
 
 /**

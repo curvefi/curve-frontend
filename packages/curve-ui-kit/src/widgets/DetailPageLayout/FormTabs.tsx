@@ -25,8 +25,8 @@ type FormSubTab<Props extends object> = Omit<FormTab<Props>, 'subTabs'>
 export type FormTab<Props extends object> = {
   /** Unique value of the tab, it might be used in the URL later */
   value: string
-  /** Label of the tab, can be a function that receives the form props */
-  label: FnOrValue<Props, ReactNode>
+  /** Label of the tab */
+  label: ReactNode
   /** Optional href for tabs that should link out instead of rendering content */
   href?: FnOrValue<Props, string | UrlObject>
   /** Optional sub-tabs of the tab */
@@ -49,7 +49,7 @@ const createOptions = <Props extends object>(
     ?.filter(({ visible }) => applyFnOrValue(visible, params) !== false)
     .map(({ value, label, disabled, alwaysInKebab, href }) => ({
       value,
-      label: applyFnOrValue(label, params),
+      label,
       disabled: applyFnOrValue(disabled, params),
       alwaysInKebab: applyFnOrValue(alwaysInKebab, params),
       href: applyFnOrValue(href, params),
@@ -81,7 +81,6 @@ function useFormTabs<T extends object>({ menu, params }: UseFormTabOptions<T>) {
   const content = <Component {...params} />
   return {
     tab,
-    tabLabel: findTab(tabs, tabKey).label,
     tabs,
     subTabs,
     subTab,
@@ -110,13 +109,12 @@ type FormTabsProps<T extends object> = UseFormTabOptions<T> & {
  * @param options - useFormTabs options
  */
 export function FormTabs<T extends object>({ shouldWrap, overflow = 'kebab', ...options }: FormTabsProps<T>) {
-  const { tab, tabLabel, tabs, subTabs, subTab, content, onChangeTab, onChangeSubTab, isMobileDrawer } =
-    useFormTabs(options)
+  const { tab, tabs, subTabs, subTab, content, onChangeTab, onChangeSubTab, isMobileDrawer } = useFormTabs(options)
   return (
     <WithWrapper shouldWrap={isMobileDrawer} Wrapper={MobileFormTabsDrawer} tabs={tabs} onSelectTab={onChangeTab}>
       <Stack sx={{ marginInline }}>
         {isMobileDrawer ? (
-          <CardHeader title={tabLabel} size="small" data-testid="mobile-form-active-action" />
+          <CardHeader title={tab.label} size="small" data-testid="mobile-form-active-action" />
         ) : (
           <TabsSwitcher
             variant="contained"
