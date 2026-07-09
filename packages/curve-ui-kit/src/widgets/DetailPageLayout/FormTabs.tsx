@@ -37,6 +37,8 @@ export type FormTab<Props extends object> = {
   disabled?: FnOrValue<Props, boolean>
   /** Force the tab into the kebab menu */
   alwaysInKebab?: FnOrValue<Props, boolean>
+  /** Whether this tab renders a standard fixed form button in the mobile drawer */
+  withFormButton?: boolean
   /** Component to render when the tab is selected */
   component?: ComponentType<Props>
 }
@@ -47,12 +49,13 @@ const createOptions = <Props extends object>(
 ): TabOption<string>[] =>
   tabs
     ?.filter(({ visible }) => applyFnOrValue(visible, params) !== false)
-    .map(({ value, label, disabled, alwaysInKebab, href }) => ({
+    .map(({ value, label, disabled, alwaysInKebab, href, withFormButton = true }) => ({
       value,
       label,
       disabled: applyFnOrValue(disabled, params),
       alwaysInKebab: applyFnOrValue(alwaysInKebab, params),
       href: applyFnOrValue(href, params),
+      withFormButton,
     })) ?? []
 
 type UseFormTabOptions<T extends object> = {
@@ -111,7 +114,13 @@ type FormTabsProps<T extends object> = UseFormTabOptions<T> & {
 export function FormTabs<T extends object>({ shouldWrap, overflow = 'kebab', ...options }: FormTabsProps<T>) {
   const { tab, tabs, subTabs, subTab, content, onChangeTab, onChangeSubTab, isMobileDrawer } = useFormTabs(options)
   return (
-    <WithWrapper shouldWrap={isMobileDrawer} Wrapper={MobileFormTabsDrawer} tabs={tabs} onSelectTab={onChangeTab}>
+    <WithWrapper
+      shouldWrap={isMobileDrawer}
+      Wrapper={MobileFormTabsDrawer}
+      value={tab.value}
+      tabs={tabs}
+      onSelectTab={onChangeTab}
+    >
       <Stack sx={{ marginInline }}>
         {isMobileDrawer ? (
           <CardHeader title={tab.label} size="small" data-testid="mobile-form-active-action" />

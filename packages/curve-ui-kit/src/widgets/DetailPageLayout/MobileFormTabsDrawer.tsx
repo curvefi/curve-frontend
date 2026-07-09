@@ -1,23 +1,25 @@
-import { type ReactNode, useCallback } from 'react'
+import { type ReactNode, useCallback, useState } from 'react'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { BUTTON_FORM_SIZE } from '@ui-kit/features/forms/constants'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { SwipeableDrawer } from '@ui-kit/shared/ui/SwipeableDrawer/SwipeableDrawer'
 import type { TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { MUI_BUTTON_SIZE } from '@ui-kit/themes/components/button'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { applySxProps } from '@ui-kit/utils'
 
 const { Spacing, ButtonSize } = SizesAndSpaces
 
 type MobileFormTabsDrawerProps = {
   children: ReactNode
+  value: string
   tabs: readonly TabOption<string>[]
   onSelectTab: (value: string) => void
 }
 
-export const MobileFormTabsDrawer = ({ children, tabs, onSelectTab }: MobileFormTabsDrawerProps) => {
-  const [open, , , , setOpen] = useSwitch(false)
+export const MobileFormTabsDrawer = ({ children, value, tabs, onSelectTab }: MobileFormTabsDrawerProps) => {
+  const [open, setOpen] = useState(false)
+  const withFormButton = tabs.find(tab => tab.value === value)?.withFormButton ?? true
 
   const openTab = useCallback(
     (value: string) => {
@@ -55,12 +57,14 @@ export const MobileFormTabsDrawer = ({ children, tabs, onSelectTab }: MobileForm
       <SwipeableDrawer keepMounted open={!!open} setOpen={setOpen}>
         <Stack
           data-testid="mobile-form-drawer"
-          sx={{
-            paddingInline: Spacing.sm,
-            paddingBlockEnd: Spacing.md,
+          sx={applySxProps(
+            {
+              paddingInline: Spacing.sm,
+              paddingBlockEnd: Spacing.md,
+            },
             // Reserve space for the form submit button, which is fixed to the bottom of the drawer.
-            marginBlockEnd: ButtonSize[MUI_BUTTON_SIZE[BUTTON_FORM_SIZE].height],
-          }}
+            withFormButton && { marginBlockEnd: ButtonSize[MUI_BUTTON_SIZE[BUTTON_FORM_SIZE].height] },
+          )}
         >
           {children}
         </Stack>
