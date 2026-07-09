@@ -7,7 +7,7 @@ import { defaultReleaseChannel, ReleaseChannel } from '@ui-kit/utils'
 import { useReleaseChannel } from './useLocalStorage'
 
 const useBetaChannel = () => useReleaseChannel()[0] === ReleaseChannel.Beta
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+ 
 const useStableChannel = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy
 
 /**

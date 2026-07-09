@@ -8,7 +8,6 @@ import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { fundErc20 } from '@cy/support/helpers/tenderly/vnet-fund'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { Chain } from '@ui-kit/utils'
-import { FormPlacementProvider } from '@ui-kit/widgets/DetailPageLayout/form-context/FormPlacementProvider'
 
 const WSTETH_USDC_MARKET = {
   id: 'one-way-market-v2-2',
