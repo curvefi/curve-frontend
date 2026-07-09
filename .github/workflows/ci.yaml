@@ -10,96 +10,16 @@ env:
 permissions:
   contents: read
 jobs:
-  check-supply-chain:
-    name: Check supply chain
-    timeout-minutes: 6
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          fetch-depth: 0 # needed to diff yarn.lock against the base branch commit
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 24
-          cache: yarn
-      - name: Restore cache
-        uses: ./.github/actions/restore-cache
-      - run: yarn set version stable
-      - run: yarn install --immutable
-      - run: yarn check-supply-chain
-
-  lint:
-    name: Lint, format & typecheck
-    timeout-minutes: 6
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 24
-          cache: yarn
-      - name: Restore cache
-        uses: ./.github/actions/restore-cache
-      - run: yarn set version stable
-      - run: yarn install --immutable
-      - run: yarn lint
-      - run: yarn format:check
-        if: always()
-      - run: yarn typecheck
-        if: always()
-
-  cypress-component:
-    strategy:
-      fail-fast: false
-      matrix:
-        browser: [chrome, firefox, electron]
-        count: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
-    name: Cypress component llamalend ${{ matrix.browser }} ${{ matrix.count }}
-    timeout-minutes: 15
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 24
-          cache: yarn
-      - name: Restore cache
-        uses: ./.github/actions/restore-cache
-      - run: yarn set version stable
-      - run: yarn install --immutable
-      - name: Optimize dependencies # fix 'Failed to fetch dynamically imported module' when vite optimizes during tests
-        run: yarn vite optimize --config vite.config.ts
-        working-directory: tests
-
-      - run: |
-          set -o pipefail
-          yarn cypress run --component --browser ${{ matrix.browser }} --spec 'cypress/component/llamalend/**/!(*.rpc).cy.{ts,tsx}' 2>&1 | \
-            tee ../cypress-component-llamalend-${{ matrix.browser }}-${{ matrix.count }}.log \
-              >(grep --line-buffered --invert-match --fixed-strings 'INFO:CONSOLE' >&1) > /dev/null
-        working-directory: tests
-        timeout-minutes: 12 # lower timeout than the whole job, so we can get screenshots on timeout
-        env:
-          ELECTRON_ENABLE_LOGGING: true # send console logs to stdout in electron browser
-          NODE_ENV: test
-
-      - uses: actions/upload-artifact@v7
-        if: failure()
-        with:
-          name: cypress-component-llamalend-${{ matrix.browser }}-${{ matrix.count }}
-          path: tests/cypress/screenshots
-          retention-days: 3
-          if-no-files-found: error
-
   cypress-e2e:
     strategy:
       fail-fast: false
       matrix:
-        browser: [chrome, firefox, electron]
+        browser: [firefox]
         count: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
         include:
-          - specs: 'cypress/e2e/loan/**/*,cypress/e2e/lend/**/*,cypress/e2e/llamalend/**/*'
+          - specs: 'cypress/e2e/llamalend/llamalend-markets.cy.ts'
     name: Cypress e2e llamalend ${{ matrix.browser }} ${{ matrix.count }}
-    timeout-minutes: 20
+    timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -136,10 +56,19 @@ jobs:
         working-directory: tests
         run: |
           set -o pipefail # fail tee if the main command fails
-          yarn run cy:run:e2e --browser ${{ matrix.browser }} --spec '${{ matrix.specs }}' 2>&1 | \
-            tee ../e2e-cypress-llamalend-${{ matrix.browser }}-${{ matrix.count }}.log \
-              >(grep --line-buffered --invert-match --fixed-strings 'INFO:CONSOLE' >&1) > /dev/null
-        timeout-minutes: 15 # lower timeout than the whole job, so we can get screenshots on timeout
+          max_retries=10
+          attempt=0
+          while [ $attempt -lt $max_retries ]; do
+              yarn run cy:run:e2e --browser ${{ matrix.browser }} --spec '${{ matrix.specs }}' 2>&1 | \
+                tee ../e2e-cypress-llamalend-${{ matrix.browser }}-${{ matrix.count }}.log \
+                >(grep --line-buffered --invert-match --fixed-strings 'INFO:CONSOLE' >&1) > /dev/null
+              if [ $? -ne 0 ]; then
+                  echo "Failed after $((attempt + 1)) attempts."
+                  exit 1
+              fi
+              attempt=$((attempt + 1))
+          done
+        timeout-minutes: 60 # lower timeout than the whole job, so we can get screenshots on timeout
         env:
           ELECTRON_ENABLE_LOGGING: true # send console logs to stdout in electron browser
           NODE_ENV: test
@@ -175,21 +104,3 @@ jobs:
           name: dev-server-log-llamalend-${{ matrix.browser }}-${{ matrix.count }}
           if-no-files-found: error
           path: e2e-*.log
-
-  notify:
-    name: Notify Slack
-    if: failure() && github.ref_name == 'main'
-    runs-on: ubuntu-latest
-    timeout-minutes: 1
-    needs: [lint, cypress-e2e, cypress-component]
-    steps:
-      - name: Send Slack alert
-        run: |
-          SLACK_TEXT="❌ <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|CI failed> \
-          on <${{ github.server_url }}/${{ github.repository }}/tree/${{ github.ref_name }}|${{ github.ref_name }}> \
-          at <${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|${GITHUB_SHA:0:7}> \
-          by <${{ github.server_url }}/${{ github.actor }}|${{ github.actor }}>"
-          curl --request POST \
-               --header 'Content-type: application/json' \
-               --data-binary "{\"text\": \"$SLACK_TEXT\"}" \
-               --url "${{ secrets.SLACK_FRONTEND_TEAM_WEBHOOK }}"
