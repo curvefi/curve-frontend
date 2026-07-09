@@ -84,25 +84,22 @@ describe('BorrowMoreForm (mocked)', () => {
         leverageEnabled,
         borrowedSymbol: 'crvUSD',
       })
+      cy.get('[data-testid="borrow-more-submit-button"]').should('have.text', buttonText)
 
-      // Form queries can lag behind typing; wait for the approval-dependent path before checking the button label.
+      // Debounced form queries can call stubs with intermediate typed values before the final amount.
       cy.wrap(stubs.borrowMoreHealth).should('have.been.calledWithExactly', ...expected.health)
-      cy.wrap(stubs.borrowMoreIsApproved).should('have.been.calledWithExactly', ...expected.isApproved)
       if (approved) {
         cy.wrap(stubs.estimateGasBorrowMore).should('have.been.calledWithExactly', ...expected.estimateGas)
-      } else {
-        cy.wrap(stubs.estimateGasBorrowMoreApprove).should(
-          'have.been.calledWithExactly',
-          ...expected.estimateGasApprove,
-        )
       }
-      cy.get('[data-testid="borrow-more-submit-button"]').should('have.text', buttonText)
 
       cy.then(() => {
         expect(stubs.parameters).to.have.been.calledWithExactly()
         expect(stubs.borrowMoreMaxRecv).to.have.been.calledWithExactly(...expected.maxRecv)
+        expect(stubs.borrowMoreIsApproved).to.have.been.calledWithExactly(...expected.isApproved)
         if (approved) {
           expect(stubs.estimateGasBorrowMoreApprove).to.not.have.been.called
+        } else {
+          expect(stubs.estimateGasBorrowMoreApprove).to.have.been.calledWithExactly(...expected.estimateGasApprove)
         }
       })
 
