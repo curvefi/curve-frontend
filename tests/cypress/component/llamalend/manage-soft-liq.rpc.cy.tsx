@@ -19,7 +19,8 @@ const WSTETH_USDC_MARKET = {
   borrowedDecimals: 6,
 } as const
 
-describe('Manage soft liquidation', () => {
+// These tests are skipped as they are primarily used for manual testing. We need to skip the top level describe to avoid setting up the tenderly vnet in `before()` for no purpose.
+describe.skip('Manage soft liquidation', () => {
   const chainId = Chain.Optimism // Atm llv2 is only deployed on optimism
   const privateKey = generatePrivateKey()
   const { address: userAddress } = privateKeyToAccount(privateKey)
@@ -85,19 +86,19 @@ describe('Manage soft liquidation', () => {
   })
 
   describe('should show soft liquidation forms', () => {
-    it.skip('shows reset position form', () => {
+    it('shows reset position form', () => {
       cy.mount(<ManageSoftLiquidationTest tab="reset" />)
       cy.get('[data-testid="reset-position-submit-button"]').should('exist')
       cy.pause()
     })
 
-    it.skip('shows improve health form', () => {
+    it('shows improve health form', () => {
       cy.mount(<ManageSoftLiquidationTest tab="improve-health" />)
       cy.get('[data-testid="repay-submit-button"]').should('exist')
       cy.pause()
     })
 
-    it.skip('shows close position form', () => {
+    it('shows close position form', () => {
       cy.mount(<ManageSoftLiquidationTest tab="close" />)
       cy.get('[data-testid="close-position-submit-button"]').should('exist')
       cy.pause()
