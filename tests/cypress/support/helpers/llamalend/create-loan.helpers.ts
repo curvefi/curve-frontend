@@ -128,7 +128,7 @@ export function checkLoanDetailsLoaded({
   getActionValue('borrow-apr', 'previous').should('include', '%')
   getActionValue('borrow-ltv').should('include', '%')
   getActionValue('borrow-ltv', 'previous').should('include', '%')
-  checkEstimatedTxCost({ hasValue: hasApi })
+  checkEstimatedTxCost({ hasValue: hasApi && !expectError })
 
   if (leverageEnabled) {
     getActionValue('borrow-price-impact').should('include', '%')
@@ -141,7 +141,6 @@ export function checkLoanDetailsLoaded({
   if (expectError) {
     cy.get('[data-testid="helper-message-error"]').contains(expectError)
   } else {
-    getActionValue('estimated-tx-cost').should('include', '$')
     cy.get('[data-testid="loan-form-errors"]').should('not.exist')
   }
 }
