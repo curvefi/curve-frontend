@@ -1,9 +1,11 @@
 import { type ReactNode, useCallback } from 'react'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
+import { BUTTON_FORM_SIZE } from '@ui-kit/features/forms/constants'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { SwipeableDrawer } from '@ui-kit/shared/ui/SwipeableDrawer/SwipeableDrawer'
 import type { TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
+import { MUI_BUTTON_SIZE } from '@ui-kit/themes/components/button'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing, ButtonSize } = SizesAndSpaces
@@ -57,7 +59,7 @@ export const MobileFormTabsDrawer = ({ children, tabs, onSelectTab }: MobileForm
             paddingInline: Spacing.sm,
             paddingBlockEnd: Spacing.md,
             // Reserve space for the form submit button, which is fixed to the bottom of the drawer.
-            marginBlockEnd: ButtonSize.md,
+            marginBlockEnd: ButtonSize[MUI_BUTTON_SIZE[BUTTON_FORM_SIZE].height],
           }}
         >
           {children}
