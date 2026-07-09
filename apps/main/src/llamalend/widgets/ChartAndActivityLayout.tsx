@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from 'react'
+import { useConnection } from 'wagmi'
 import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
 import { useBandsChartPalette } from '@/llamalend/features/bands-chart/hooks/useBandsChartPalette'
 import type { ChartDataPoint, FetchedBandsBalances } from '@/llamalend/features/bands-chart/types'
@@ -62,6 +63,7 @@ type ChartAndActivityLayoutProps = {
 }
 
 export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActivityLayoutProps) => {
+  const { isConnected } = useConnection()
   const theme = useTheme()
   const [isBandsVisible, setIsBandsVisible] = useBandsChartVisible()
   const toggleBandsVisible = useCallback(() => setIsBandsVisible(prev => !prev), [setIsBandsVisible])
@@ -75,7 +77,7 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
     )
   }, [])
 
-  const showBands = bands && isBandsVisible
+  const showBands = bands && isBandsVisible && isConnected
   const hasUserBands = !!bands?.userBandsBalances?.length
   const collateralSymbol = bands?.collateralToken?.symbol
   const borrowSymbol = bands?.borrowToken?.symbol
@@ -100,7 +102,7 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
   )
 
   return (
-    <Stack>
+    <Stack data-testid="market-chart-and-activity">
       <TabsSwitcher variant="contained" value={tab} onChange={setTab} options={TABS} />
       <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
         {tab === 'events' && <LlammaActivityEvents {...activity} />}
@@ -120,7 +122,15 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
               }}
               isLoading={chart.isLoading}
               customButton={
-                bands && <ToggleBandsChartButton label="Bands" isVisible={isBandsVisible} toggle={toggleBandsVisible} />
+                isConnected &&
+                bands && (
+                  <ToggleBandsChartButton
+                    label={t`Bands`}
+                    tooltip={t`The price ranges your position can move through during soft liquidation.`}
+                    isVisible={isBandsVisible}
+                    toggle={toggleBandsVisible}
+                  />
+                )
               }
             />
             <Stack

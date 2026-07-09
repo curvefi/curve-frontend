@@ -2,6 +2,7 @@ import type { EChartsOption, SeriesOption } from 'echarts'
 import type { Theme } from '@mui/material/styles'
 import { toArray } from '@primitives/array.utils'
 import { mapRecord } from '@primitives/objects.utils'
+import { createChartSeriesColorScale, createChartSeriesSurfaceColorScale } from '@ui-kit/shared/ui/Chart/chart.utils'
 import type { LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
 import type { DeepPartial } from '@ui-kit/types/util'
 
@@ -13,8 +14,6 @@ const deepMerge = <T>(target: T, source: DeepPartial<T>): T => ({
   ),
 })
 
-const CHART_COLOR_INDICES = [1, 2, 3, 4, 5, 6, 7, 8] as const // not an array to prevent typing as number[]
-
 /** Creates a color palette (and font settings) derived from the MUI theme for use in ECharts options. */
 export const createPalette = ({ theme }: { theme: Theme }) => ({
   fontFamily: theme.typography.bodyMRegular.fontFamily as string,
@@ -23,8 +22,8 @@ export const createPalette = ({ theme }: { theme: Theme }) => ({
   gridLinesColor: theme.design.Color.Neutral[300],
   axisLabelsColor: theme.design.Text.TextColors.Tertiary,
 
-  colors: CHART_COLOR_INDICES.map(i => theme.design.Chart.Lines[i]),
-  surfaceColors: CHART_COLOR_INDICES.map(i => theme.design.Chart.Surfaces[i]),
+  colors: createChartSeriesColorScale(theme),
+  surfaceColors: createChartSeriesSurfaceColorScale(theme),
 })
 
 type ChartPalette = ReturnType<typeof createPalette>

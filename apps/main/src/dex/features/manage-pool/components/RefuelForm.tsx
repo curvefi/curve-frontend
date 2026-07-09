@@ -1,10 +1,7 @@
 import type { Address } from 'viem'
-import { useConnection } from 'wagmi'
 import type { Chain } from '@curvefi/prices-api'
-import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
-import { useWallet } from '@ui-kit/features/connect-wallet'
-import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
+import { FormButton } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
 import { HelperMessage, LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
@@ -24,9 +21,6 @@ export type RefuelFormParams = {
 }
 
 export const RefuelForm = ({ chainId, blockchainId, poolAddress }: RefuelFormParams) => {
-  const { isConnected, isConnecting } = useConnection()
-  const { connect } = useWallet()
-
   const { form, values, tokenA, tokenB, poolTvl, refuelError, formErrors, isPending, isDisabled, onSubmit } =
     useRefuelForm({
       chainId,
@@ -37,7 +31,6 @@ export const RefuelForm = ({ chainId, blockchainId, poolAddress }: RefuelFormPar
   return (
     <Form
       {...form}
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
       onSubmit={onSubmit}
       footer={<RefuelFormList values={values} tokenA={tokenA} tokenB={tokenB} poolTvl={poolTvl} />}
     >
@@ -93,19 +86,14 @@ export const RefuelForm = ({ chainId, blockchainId, poolAddress }: RefuelFormPar
         </LargeTokenInput>
       </Stack>
 
-      {isConnected ? (
-        <Button type="submit" size="large" loading={isPending} disabled={isDisabled} data-testid="refuel-submit-button">
-          {t`Refuel`}
-        </Button>
-      ) : (
-        <ConnectWalletButton
-          type="button"
-          size="large"
-          loading={isConnecting}
-          onClick={() => void connect()}
-          data-testid="refuel-connect-wallet-button"
-        />
-      )}
+      <FormButton
+        pending={isPending}
+        size="large"
+        disabled={isDisabled}
+        connectWalletTestId="refuel-connect-wallet-button"
+        label={t`Refuel`}
+        testId="refuel-submit-button"
+      />
 
       <FormAlerts error={refuelError} formErrors={formErrors} handledErrors={['tokenAAmount', 'tokenBAmount']} />
     </Form>

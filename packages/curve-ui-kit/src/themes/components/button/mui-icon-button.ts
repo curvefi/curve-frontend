@@ -8,7 +8,7 @@ import { DesignSystem } from '../../design'
 import { SizesAndSpaces } from '../../design/1_sizes_spaces'
 import { buttonColor } from './utils'
 
-const { ButtonSize, OutlineWidth, IconSize } = SizesAndSpaces
+const { ButtonSize, OutlineWidth: OUTLINE_WIDTH, IconSize } = SizesAndSpaces
 
 type IconButtonSize = NonNullable<IconButtonProps['size']>
 
@@ -48,7 +48,7 @@ export const defineMuiIconButton = ({ Button }: DesignSystem): Components['MuiIc
       root: {
         height: ButtonSize.sm,
         minWidth: ButtonSize.sm,
-        border: `${OutlineWidth} solid transparent`,
+        border: `${OUTLINE_WIDTH} solid transparent`,
         borderRadius: '0',
         padding: 0,
         // default color to Ghost

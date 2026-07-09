@@ -3,6 +3,8 @@ import { formatUnits, parseUnits } from 'viem'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 
+export const ZERO: Decimal = '0'
+
 /** Converts loose numeric input to an Amount for formatting, returning undefined for empty or non-numeric values. */
 export const amount = (value: number | string | BigNumber | bigint | null | undefined): Amount | undefined =>
   value == null || value === '' || Number.isNaN(value) ? undefined : typeof value === 'number' ? value : decimal(value)
@@ -10,7 +12,7 @@ export const amount = (value: number | string | BigNumber | bigint | null | unde
 /** Converts a string to a Decimal typed string, returning undefined for null, undefined, empty strings, or non-finite values. */
 export const decimal = (value: number | string | undefined | null | BigNumber | bigint): Decimal | undefined => {
   if (typeof value === 'number' || typeof value === 'bigint') {
-    value = value.toString()
+    value = BigNumber(value)
   }
   if (value instanceof BigNumber) {
     value = value.toFixed()
@@ -56,9 +58,18 @@ export const decimalGreaterThan = (first: Decimal, second: Decimal) => BigNumber
 export const decimalMultiply = (first: Decimal, ...items: Amount[]) =>
   items.reduce((p, c) => p.multipliedBy(c), new BigNumber(first)).toFixed() as Decimal
 
+export const decimalSqrt = (value: Decimal): Decimal => {
+  const decimalValue = new BigNumber(value)
+  if (decimalValue.isNegative()) throw new Error(`Cannot calculate square root of a negative Decimal: ${value}`)
+  return decimalValue.squareRoot().toFixed() as Decimal
+}
+
 /** Divides the 1st by the 2nd decimal. Does NOT guard for division-by-zero! */
 export const decimalDiv = (first: Decimal, second: Decimal) =>
   new BigNumber(first).dividedBy(second).toFixed() as Decimal
+
+export const decimalPercent = (part: Decimal, total: Decimal): Decimal =>
+  +total ? decimalMultiply(decimalDiv(part, total), '100') : '0'
 
 export const toWei = (n: string, decimals: number) => decimal(parseUnits(n, decimals))!
 export const fromWei = (n: string, decimals: number) => decimal(formatUnits(BigInt(n), decimals))!

@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react'
-import { useStore } from '@/dao/store/useStore'
+import { useState } from 'react'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
@@ -19,15 +18,7 @@ const tabs: TabOption<Tab>[] = [
 ]
 
 export const Analytics = () => {
-  const getVeCrvHolders = useStore(state => state.analytics.getVeCrvHolders)
-  const veCrvHolders = useStore(state => state.analytics.veCrvHolders)
   const [tab, setTab] = useState<Tab>('fees')
-
-  useEffect(() => {
-    if (veCrvHolders.topHolders.length === 0 && veCrvHolders.fetchStatus !== 'ERROR') {
-      void getVeCrvHolders()
-    }
-  }, [getVeCrvHolders, veCrvHolders.topHolders.length, veCrvHolders.fetchStatus])
 
   return (
     <DetailPageLayout formTabs={null} testId="analytics-page">

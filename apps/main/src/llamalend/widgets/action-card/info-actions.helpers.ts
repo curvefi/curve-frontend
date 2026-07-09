@@ -1,9 +1,8 @@
 import { BigNumber } from 'bignumber.js'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { notFalsy, maybes } from '@primitives/objects.utils'
-import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { Query, QueryProp } from '@ui-kit/types/util'
+import type { QueryProp } from '@ui-kit/types/util'
 import { decimal, formatNumber } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
@@ -26,13 +25,8 @@ export const calculateLeverageCollateral = (
 
 export const ACTION_INFO_GROUP_SX = { gap: Spacing.sm }
 
-export const combineActionInfoState = (...queries: (Query<unknown> | undefined)[]) => {
-  const { isLoading, error } = combineQueryState(...queries)
-  return { loading: isLoading, error }
-}
-
 // Returns whether an action info should stay visible when its value differs from the reference value.
 export const isQueryValueDifferent = (
   value: QueryProp<Decimal | null> | undefined,
   comparedValue: Decimal | null | undefined,
-) => maybes([value?.data, comparedValue], ([data, comparedValue]) => !new BigNumber(data).isEqualTo(comparedValue))
+) => maybes([value?.data, comparedValue], (data, comparedValue) => !new BigNumber(data).isEqualTo(comparedValue))

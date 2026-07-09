@@ -3,10 +3,10 @@ import { Stack } from '@mui/material'
 import Link from '@mui/material/Link'
 import { CampaignRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
-import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
+import { TRANSITION_FUNCTION } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { ExtraIncentive } from '@ui-kit/types/market'
-import { formatNumber } from '@ui-kit/utils'
+import { aprToApy, formatNumber } from '@ui-kit/utils'
 import type { RewardsAction } from '@external-rewards'
 import { TooltipItem } from './TooltipComponents'
 
@@ -46,8 +46,13 @@ export const RewardsTooltipItems = ({
       {extraRewards.map(
         (r, i) =>
           r.action === tooltipType && (
-            // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
-            <TooltipItem variant="subItem" key={i} title={t`Points`} imageId={r.platformImageId}>
+            <TooltipItem
+              variant="subItem"
+              // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
+              key={i}
+              title={r.reward?.type === 'apr' ? r.symbol || '' : t`Points`}
+              imageId={r.platformImageId}
+            >
               <Stack
                 component={Link}
                 href={r.dashboardLink}
@@ -58,12 +63,13 @@ export const RewardsTooltipItems = ({
                   gap: Spacing.xs,
                   textDecoration: 'none',
                   color: t => t.design.Text.TextColors.Secondary,
-                  svg: { fontSize: 0, transition: `font-size ${TransitionFunction}` },
+                  svg: { fontSize: 0, transition: `font-size ${TRANSITION_FUNCTION}` },
                   '&:hover svg': { fontSize: 20 },
                 }}
               >
-                {r.multiplier}
-                {typeof r.multiplier === 'number' ? 'x' : ''}
+                {r.reward?.type === 'apr'
+                  ? `${tooltipType === 'supply' ? '+' : ''}${formatNumber(tooltipType === 'supply' ? aprToApy(r.reward.value) : -r.reward.value, 'percent.rate')}`
+                  : formatNumber(r.reward?.value, 'multiplier')}
                 <ArrowOutwardIcon />
               </Stack>
             </TooltipItem>

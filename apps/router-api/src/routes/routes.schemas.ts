@@ -6,7 +6,7 @@ export const ADDRESS_HEX_PATTERN = '^0x[a-fA-F0-9]{40}$'
 const DECIMAL_PATTERN = '^-?\\d+(\\.\\d+)?$'
 const WEI_AMOUNT_PATTERN = '^\\d+$'
 
-export const RoutesPath = '/api/router/v1/routes'
+export const ROUTES_PATH = '/api/router/v1/routes'
 
 const AddressSchema = { type: 'string', pattern: ADDRESS_HEX_PATTERN } as const
 const AddressArraySchema = { type: 'array', items: AddressSchema, minItems: 1, maxItems: 1 } as const
@@ -35,6 +35,7 @@ const routesQuerySchema = {
     amountIn: { ...WeiAmountArraySchema, description: 'Amount of tokenIn in wei (integer, no decimals).' },
     amountOut: { ...WeiAmountArraySchema, description: 'Amount of tokenOut in wei (integer, no decimals).' },
     userAddress: AddressSchema,
+    zapAddress: AddressSchema,
     slippage: { type: 'number', minimum: 0 },
   },
 } as const
@@ -48,6 +49,7 @@ export type RoutesQuery = {
   amountIn?: [Decimal]
   amountOut?: [Decimal]
   userAddress?: Address
+  zapAddress?: Address
   slippage?: number
 }
 

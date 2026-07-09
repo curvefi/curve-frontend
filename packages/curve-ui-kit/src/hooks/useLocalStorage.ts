@@ -14,6 +14,7 @@ function getFromLocalStorage<T>(storageKey: string) {
 const get = <T>(key: string, initialValue: T): T => getFromLocalStorage<T>(key) ?? initialValue
 
 const set = <T>(storageKey: string, value: T) => {
+  if (!localStorage) return console.warn(`No local storage available`) // can happen e.g. in iOS private mode
   if (value == null) {
     return window.localStorage.removeItem(storageKey)
   }
@@ -32,17 +33,17 @@ const useLocalStorage = <T>(key: string, initialValue: T, migration?: MigrationO
 /* -- Export specific hooks so that we can keep an overview of all the local storage keys used in the app -- */
 export const useShowTestNets = () => useLocalStorage<boolean>('showTestnets', false)
 
-const [ReleaseChannelKey, ReleaseChannelVersion] = ['release-channel', 1] as const
+const [RELEASE_CHANNEL_KEY, RELEASE_CHANNEL_VERSION] = ['release-channel', 1] as const
 export const getReleaseChannel = () =>
-  getFromLocalStorage<ReleaseChannel>(getStorageKey(ReleaseChannelKey, ReleaseChannelVersion)) ?? defaultReleaseChannel
+  getFromLocalStorage<ReleaseChannel>(getStorageKey(RELEASE_CHANNEL_KEY, RELEASE_CHANNEL_VERSION)) ??
+  defaultReleaseChannel
 export const useReleaseChannel = () =>
-  useLocalStorage<ReleaseChannel>(ReleaseChannelKey, defaultReleaseChannel, {
-    version: ReleaseChannelVersion,
+  useLocalStorage<ReleaseChannel>(RELEASE_CHANNEL_KEY, defaultReleaseChannel, {
+    version: RELEASE_CHANNEL_VERSION,
     migrate: oldValue => (oldValue ? ReleaseChannel.Beta : ReleaseChannel.Stable),
     oldKey: 'beta',
   })
 
-export const useDisableZapV2 = () => useLocalStorage('disableZapV2', false)
 export const isZapV2Disabled = () => getFromLocalStorage<boolean>('disableZapV2') === true
 
 export const useFilterExpanded = (tableTitle: string) =>
@@ -73,11 +74,11 @@ export const useTableColumnVisibility = <Variant extends string, ColumnIds>(
     migration,
   )
 
-const FavoriteMarketsKey = 'favoriteMarkets'
-export const getFavoriteMarkets = () => getFromLocalStorage<Address[]>(FavoriteMarketsKey) ?? []
+const FAVORITE_MARKETS_KEY = 'favoriteMarkets'
+export const getFavoriteMarkets = () => getFromLocalStorage<Address[]>(FAVORITE_MARKETS_KEY) ?? []
 export const useFavoriteMarkets = () => {
   const initialValue = useMemo(() => [], [])
-  return useLocalStorage<Address[]>(FavoriteMarketsKey, initialValue)
+  return useLocalStorage<Address[]>(FAVORITE_MARKETS_KEY, initialValue)
 }
 
 export const useBandsChartVisible = () => useLocalStorage<boolean>('bands-chart-visible', false)
@@ -118,3 +119,5 @@ export const useDismissMaintenanceBanner = (dateISO: string | undefined) =>
   useDismissBanner(`maintenance-banner-${dateISO}`, 'Daily')
 
 export const usePinataJwt = () => useLocalStorage<string | undefined>('pinataJwt', undefined)
+
+export const setLocalStorageItem = set

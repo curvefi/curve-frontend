@@ -40,7 +40,7 @@ const normalizeLiquidationRangePoints = (range?: LlammaLiquididationRange | null
     Array.from(
       pointMap,
       ([time, { upper, lower }]) =>
-        maybes([upper, lower], points => ({
+        maybes([upper, lower], (...points) => ({
           time,
           upper: Math.max(...points),
           lower: Math.min(...points),
@@ -90,7 +90,7 @@ type Props = {
    */
   hideCandleSeriesLabel: boolean
   chartHeight: number
-  ohlcData: LpPriceOhlcDataFormatted[]
+  ohlcData: LpPriceOhlcDataFormatted[] | undefined
   oraclePriceData?: OraclePriceData[]
   liquidationRange?: LiquidationRanges
   timeOption: string
@@ -145,7 +145,7 @@ export const CandleChart = ({
   const oraclePriceSeriesRef = useRef<ISeriesApi<'Line'> | null>(null)
   const ohlcDataRef = useLatestValueRef(ohlcData)
 
-  const hasSeriesData = ohlcData.length > 0 || (oraclePriceData?.length ?? 0) > 0
+  const hasSeriesData = !!ohlcData?.length || (oraclePriceData?.length ?? 0) > 0
   const memoizedColors = useMemo(() => colors, [colors])
 
   const getSeriesAppearance = useCallback(
@@ -495,12 +495,12 @@ export const CandleChart = ({
     // Oracle data drives historical pagination only for fallback-only charts.
     // In candle charts, candle updates restore the viewport; restoring here can
     // consume the pending range before the candle page arrives.
-    const isOracleOnlyChart = ohlcData.length === 0
+    const isOracleOnlyChart = ohlcData?.length === 0
 
     if (isOracleOnlyChart) {
       restoreVisibleRangeAfterDataUpdate()
     }
-  }, [ohlcData.length, oraclePriceData, restoreVisibleRangeAfterDataUpdate])
+  }, [ohlcData?.length, oraclePriceData, restoreVisibleRangeAfterDataUpdate])
 
   // Update oracle price series visibility and color when they change
   useEffect(() => {

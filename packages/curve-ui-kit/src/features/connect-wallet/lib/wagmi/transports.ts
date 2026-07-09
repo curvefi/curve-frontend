@@ -7,10 +7,10 @@ import { fallback, http, unstable_connector } from '@wagmi/core'
 import { wagmiChainsMap } from './chains'
 import { RPC } from './rpc'
 
-const { Size, Time } = Duration.WagmiBatch
+const { Size: SIZE, Time: TIME } = Duration.WagmiBatch
 
 export const WAGMI_HTTP_OPTIONS = {
-  batch: { batchSize: Size, wait: Time },
+  batch: { batchSize: SIZE, wait: TIME },
   // exclude write methods from fallbacks: even if the RPC fails, it might have processed the transaction
   methods: { exclude: ['eth_sendTransaction', 'eth_sendRawTransaction'] },
 } satisfies HttpTransportConfig

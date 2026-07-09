@@ -35,15 +35,18 @@ export const BorrowAprMetric = ({ marketType, borrowRate, collateralSymbol, alig
   })
   return (
     <Metric
-      size="medium"
+      category="llamalend.marketHeader"
       alignment={alignment}
-      label={t`Borrow APR`}
-      value={mapQuery(borrowRate, borrowRate => borrowRate.rate)}
+      testId="market-net-borrow-apr"
+      label={t`Net Borrow APR`}
+      value={mapQuery(borrowRate, borrowRate => borrowRate.totalBorrowRate)}
       valueOptions={{ unit: 'percentage' }}
-      notional={maybe(borrowRate.data?.averageRate, data => ({
-        value: data,
-        unit: { symbol: `% ${averageRatePeriod} Avg`, position: 'suffix' },
-      }))}
+      notional={mapQuery(borrowRate, ({ totalAverageBorrowRate: data }) =>
+        maybe(data, value => ({
+          value,
+          unit: { symbol: `% ${averageRatePeriod} Avg`, position: 'suffix' as const },
+        })),
+      )}
       valueTooltip={{
         title,
         body: (

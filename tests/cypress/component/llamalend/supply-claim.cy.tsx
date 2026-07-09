@@ -49,8 +49,8 @@ describe('ClaimTab (mocked)', () => {
       setGasInfo({ chainId, networks: llamaNetworks })
 
       cy.mount(
-        <MockLoanTestWrapper llamaApi={llamaApi}>
-          <ClaimTab market={market} networks={llamaNetworks} chainId={chainId} enabled />
+        <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
+          <ClaimTab networks={llamaNetworks} />
         </MockLoanTestWrapper>,
       )
 
@@ -59,12 +59,10 @@ describe('ClaimTab (mocked)', () => {
         otherRewardsButtonDisabled: expected.otherRewardsButtonDisabled,
       })
 
-      // if (!expected.crvButtonDisabled || !expected.otherRewardsButtonDisabled) {
       checkClaimTableState({
         rows: expected.table.rows,
         totalNotional: expected.table.totalNotional,
       })
-      // }
 
       cy.then(() => {
         expect(stubs.claimableCrv).to.have.been.calledWithExactly(...expected.claimableCrv)

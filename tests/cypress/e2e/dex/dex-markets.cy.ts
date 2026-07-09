@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 import { orderBy } from 'lodash'
 import { oneOf } from '@cy/support/generators'
-import { getHiddenCount, withFilterChips } from '@cy/support/helpers/data-table.helpers'
+import { DEX_POOL_LIST_SEARCH, setupDexPoolListMocks } from '@cy/support/helpers/dex-pool-list-mocks'
 import { mockMerklCampaigns } from '@cy/support/helpers/lending-mocks'
 import { API_LOAD_TIMEOUT, type Breakpoint, LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
 import { assert } from '@primitives/objects.utils'
@@ -30,6 +29,7 @@ function visitAndWait(
 ) {
   cy.viewport(width, height)
   cy.visitWithoutTestConnector(`dex/${network}/pools/${query ? `?${new URLSearchParams(query)}` : ''}`, options)
+  cy.wait('@dex-pools', API_LOAD_TIMEOUT)
   cy.get('[data-testid^="data-table-row-"]', API_LOAD_TIMEOUT).should('have.length.greaterThan', 0)
   if (query?.page) {
     cy.get('[data-testid="table-pagination"]').should('be.visible')
@@ -43,23 +43,31 @@ const expectOrder = (actual: UsdValue[], order: 'asc' | 'desc') =>
     JSON.stringify(orderBy(actual, 'parsed', order)),
   )
 
-const getTopUsdValues = (columnId: 'volume' | 'tvl') =>
+const getUsdValues = (cells: HTMLElement[]) =>
+  cells.map(({ innerText }): UsdValue => ({ text: innerText, parsed: parseCompactUsd(innerText) }))
+
+const expectTopUsdValuesOrder = (columnId: 'volume' | 'tvl', order: 'asc' | 'desc') =>
   cy
-    .get(`[data-testid="data-table-cell-${columnId}"]`)
-    .then($cells =>
-      Cypress.$.makeArray($cells).map(
-        ({ innerText }): UsdValue => ({ text: innerText, parsed: parseCompactUsd(innerText) }),
-      ),
-    )
+    .get(`[data-testid^="data-table-row-"] [data-testid="data-table-cell-${columnId}"]`)
+    .should($cells => expectOrder(getUsdValues(Array.from($cells)), order))
 
 describe('DEX Pools', () => {
   let breakpoint: Breakpoint
   let width: number, height: number
 
   beforeEach(() => {
+    setupDexPoolListMocks()
     mockMerklCampaigns()
     ;[width, height, breakpoint] = oneViewport()
   })
+
+  function assertSelectedFilterChip(chip: string) {
+    if (breakpoint === 'mobile') {
+      cy.get('[data-testid="btn-drawer-filter-dex-pools"]').click()
+      cy.get('[data-testid="drawer-filter-menu-dex-pools"]').should('be.visible')
+    }
+    cy.get(`[data-testid="filter-chip-${chip}"]`).contains(/\(\d+\)/)
+  }
 
   describe('First page', () => {
     beforeEach(() => visitAndWait(width, height))
@@ -73,6 +81,7 @@ describe('DEX Pools', () => {
         cy.get(`[data-testid="data-table-header-${field}"]`).click()
         cy.get('[data-testid="drawer-sort-menu-dex-pools"]').should('not.exist')
       }
+      cy.wait('@dex-pools', API_LOAD_TIMEOUT)
       if (expectedOrder) {
         cy.get(`[data-testid="icon-sort-${field}-${expectedOrder}"]`).should('be.visible')
       } else {
@@ -91,40 +100,35 @@ describe('DEX Pools', () => {
       }
       cy.get(`[data-testid="filter-chip-${chip}"]`).click()
       cy.get('[data-testid="drawer-filter-menu-dex-pools"]').should(isMobile ? 'not.be.visible' : 'not.exist')
+      cy.wait('@dex-pools', API_LOAD_TIMEOUT)
     }
 
     it('sorts by volume', () => {
-      getTopUsdValues('volume').then(vals => expectOrder(vals, 'desc')) // initial is Volume desc
+      expectTopUsdValuesOrder('volume', 'desc') // initial is Volume desc
       cy.url().should('not.include', 'volume') // initial sort not in URL
       if (breakpoint === 'mobile') return // on mobile, we cannot sort ascending at the moment
       sortBy('volume', 'asc')
-      getTopUsdValues('volume').then(vals => expectOrder(vals, 'asc'))
+      expectTopUsdValuesOrder('volume', 'asc')
       cy.url().should('include', 'sort=volume')
     })
 
     it('sorts by TVL (desc/asc)', () => {
       cy.url().should('not.include', 'tvl') // initial sort not in URL
       sortBy('tvl', 'desc')
-      getTopUsdValues('tvl').then(vals => expectOrder(vals, 'desc'))
+      expectTopUsdValuesOrder('tvl', 'desc')
       cy.url().should('include', 'sort=-tvl')
       if (breakpoint === 'mobile') return // on mobile, we cannot sort ascending at the moment
       sortBy('tvl', 'asc')
-      getTopUsdValues('tvl').then(vals => expectOrder(vals, 'asc'))
+      expectTopUsdValuesOrder('tvl', 'asc')
       cy.url().should('include', 'sort=tvl')
     })
 
-    it('filters by currency chip', () => {
-      const currency = oneOf('usd', 'btc')
-      getHiddenCount(breakpoint).then(beforeCount => {
-        expect(isNaN(+beforeCount), `Cannot parse hidden count ${beforeCount}`).to.be.false
-        clickFilterChip(currency)
-        getHiddenCount(breakpoint).then(afterCount => {
-          expect(+afterCount).to.be.greaterThan(+beforeCount)
-          // chip is in the drawer for mobile, check on desktop that we show count
-          if (breakpoint !== 'mobile') cy.get(`[data-testid="filter-chip-${currency}"]`).contains(/\(\d+\)/)
-        })
-        cy.get('[data-testid="data-table-cell-PoolName"]').contains(currency.toUpperCase())
-      })
+    it('filters by pool type chip', () => {
+      const poolType = oneOf('stableswapng', 'crypto')
+      clickFilterChip(poolType)
+      cy.url().should('include', `filter=${poolType}`)
+      cy.get('[data-testid^="data-table-row-"]', API_LOAD_TIMEOUT).should('have.length.greaterThan', 0)
+      assertSelectedFilterChip(poolType)
     })
 
     it('navigates to pool deposit page by clicking a row', () => {
@@ -138,30 +142,30 @@ describe('DEX Pools', () => {
     })
   })
 
-  it('filter by text and navigates', () => {
+  it('searches pools and preserves search after navigation', () => {
     visitAndWait(width, height, { network: 'ethereum' })
-    if (breakpoint === 'mobile') {
-      cy.get('[data-testid="btn-expand-search-dex-pool-list"]').click()
-    }
-    const [filter, address] = ['ebUSD', '0xd25f2cc6819fbd34641712122397efbaf9b6a6e2'] as const
-    cy.get('[data-testid="table-text-search-dex-pool-list"]').type(filter)
+    const filter = DEX_POOL_LIST_SEARCH
+    cy.get('[data-testid="table-text-search-dex-pool-list"] input').type(filter)
     cy.url().should('include', `?search=${filter}`)
-    cy.get(`[data-testid="market-link-${address}"]`).click()
+    cy.wait('@dex-pools', API_LOAD_TIMEOUT)
+    cy.contains('[data-testid^="market-link-"]', filter, API_LOAD_TIMEOUT).should('be.visible')
     if (breakpoint === 'mobile') {
+      cy.get('[data-testid^="data-table-row-"]').first().click()
       cy.get(`[data-testid="pool-link-deposit"]`).click()
+    } else {
+      cy.contains('[data-testid^="market-link-"]', filter).click()
     }
     cy.get('[data-testid="pool-form-tab-deposit"]', API_LOAD_TIMEOUT).should('be.visible')
     cy.window().then(win => win.history.go(-1))
     cy.url().should('include', `?search=${filter}`)
   })
 
-  it('persists currency filter across reload', () => {
-    const filter = oneOf('usd', 'btc')
+  it('persists pool type filter across reload', () => {
+    const filter = 'crypto'
     visitAndWait(width, height, { query: { filter } })
-    cy.get('[data-testid^="data-table-row-"]', API_LOAD_TIMEOUT).should('have.length.greaterThan', 0)
     cy.url().should('include', `filter=${filter}`)
-    cy.get('[data-testid="data-table-cell-PoolName"]').first().contains(filter.toUpperCase())
-    withFilterChips(breakpoint, () => cy.get(`[data-testid="reset-filter"]`).click())
+    assertSelectedFilterChip(filter)
+    cy.get(`[data-testid="filter-chip-${filter}"]`).click()
     cy.url().should('not.include', '?')
   })
 

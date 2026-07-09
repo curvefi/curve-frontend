@@ -4,7 +4,7 @@ import { ExternalLinkIconButton } from '@/dao/components/ExternalLinkIconButton'
 import { MetricsColumnData, MetricsComp } from '@/dao/components/MetricsComp'
 import { ETHEREUM_CHAIN_ID } from '@/dao/constants'
 import { networks } from '@/dao/networks'
-import { useGaugesLegacy } from '@/dao/queries/gauges-legacy.query'
+import { getGaugeDepositUrl, useGaugesLegacy } from '@/dao/queries/gauges-legacy.query'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { getChainIdFromGaugeData } from '@/dao/utils'
 import { parseTimestamp } from '@curvefi/prices-api/timestamp'
@@ -25,9 +25,7 @@ export const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
   const chainId = getChainIdFromGaugeData(gaugeData)
   const isSideChain = chainId !== Chain.Ethereum
   const emissions = isSideChain ? gaugeData?.prev_epoch_emissions : gaugeData?.emissions
-  const gaugeExternalLink = gaugeCurveApiData?.isPool
-    ? gaugeCurveApiData.poolUrls.deposit[0]
-    : gaugeCurveApiData?.lendingVaultUrls.deposit
+  const gaugeExternalLink = getGaugeDepositUrl(gaugeCurveApiData)
 
   return (
     <Wrapper>

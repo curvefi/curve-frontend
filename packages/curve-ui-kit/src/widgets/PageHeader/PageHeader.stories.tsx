@@ -14,6 +14,8 @@ import { PageHeader } from './PageHeader'
 
 const { Spacing } = SizesAndSpaces
 
+const METRIC_CATEGORY = 'storybook.metric.standard'
+
 const TOKENS = {
   crvUSD: { symbol: 'crvUSD', address: CRVUSD_ADDRESS },
   scrvUSD: { symbol: 'scrvUSD', address: '0x0655977feb2f289a4ab78af67bab0d17aab84367' },
@@ -61,8 +63,20 @@ export const DexPool: Story = {
     ),
     rightItems: (
       <Stack direction="row" sx={{ gap: Spacing.xl }}>
-        <Metric label="TVL" value={constQ(246_800_000)} valueOptions={{ unit: 'dollar' }} alignment="end" />
-        <Metric label="24h volume" value={constQ(48_200_000)} valueOptions={{ unit: 'dollar' }} alignment="end" />
+        <Metric
+          category={METRIC_CATEGORY}
+          label="TVL"
+          value={constQ(246_800_000)}
+          valueOptions={{ unit: 'dollar' }}
+          alignment="end"
+        />
+        <Metric
+          category={METRIC_CATEGORY}
+          label="24h volume"
+          value={constQ(48_200_000)}
+          valueOptions={{ unit: 'dollar' }}
+          alignment="end"
+        />
       </Stack>
     ),
   },
@@ -78,25 +92,28 @@ export const LlamalendLendMarket: Story = {
     rightItems: (
       <Stack direction="row" sx={{ gap: Spacing.xxl, flexWrap: 'wrap' }}>
         <Metric
+          category={METRIC_CATEGORY}
           alignment="end"
           label="Borrow APR"
           value={constQ(2.082)}
           valueOptions={{ unit: 'percentage' }}
-          notional={{ value: 2.075, unit: { symbol: '% 7d Avg', position: 'suffix' } }}
+          notional={constQ({ value: 2.075, unit: { symbol: '% 7d Avg', position: 'suffix' } })}
         />
         <Metric
+          category={METRIC_CATEGORY}
           alignment="end"
           label="Net supply APY"
           value={constQ(4.037)}
           valueOptions={{ unit: 'percentage' }}
-          notional={{ value: 4.034, unit: { symbol: '% 7d Avg', position: 'suffix' } }}
+          notional={constQ({ value: 4.034, unit: { symbol: '% 7d Avg', position: 'suffix' } })}
         />
         <Metric
+          category={METRIC_CATEGORY}
           alignment="end"
           label="Available liquidity"
           value={constQ(12_500_000)}
           valueOptions={{ unit: 'none' }}
-          notional={{ value: 12_750_000, unit: 'dollar' }}
+          notional={constQ({ value: 12_750_000, unit: 'dollar' })}
         />
       </Stack>
     ),
@@ -122,12 +139,14 @@ export const Loading: Story = {
     rightItems: (
       <>
         <Metric
+          category={METRIC_CATEGORY}
           label="24h volume"
           value={q({ isLoading: true, data: undefined, error: null })}
           valueOptions={{ unit: 'dollar' }}
           alignment="end"
         />
         <Metric
+          category={METRIC_CATEGORY}
           label="TVL"
           value={q({ isLoading: true, data: undefined, error: null })}
           valueOptions={{ unit: 'dollar' }}
@@ -142,6 +161,7 @@ export const ErrorState: Story = {
   args: {
     rightItems: (
       <Metric
+        category={METRIC_CATEGORY}
         label="24h volume"
         value={q({ isLoading: false, data: undefined, error: new Error('An error occurred') })}
         valueOptions={{ unit: 'dollar' }}

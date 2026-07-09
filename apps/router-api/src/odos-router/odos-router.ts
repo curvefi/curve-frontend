@@ -2,14 +2,15 @@ import { FastifyBaseLogger } from 'fastify'
 import { ethAddress, zeroAddress } from 'viem'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { assert } from '@primitives/objects.utils'
+import { FetchError, fetchJson } from '@primitives/fetch.utils'
+import { assert, fromEntries } from '@primitives/objects.utils'
 import type { RouterRouteResponse } from '@primitives/router.utils'
 import { type RoutesQuery } from '../routes/routes.schemas'
 import type { AssemblePathResponse, CurveOdosAssembleRequest } from './odos-assemble.types'
 import type { CurveOdosQuoteRequest, OdosQuoteResponse } from './odos-quote.types'
 
 const { ODOS_API_URL = 'https://prices.curve.finance/odos' } = process.env
-const protocol = 'odos' as const
+const PROTOCOL = 'odos' as const
 
 /** Odos expects the zero address for ETH */
 const getToken = (address: Address): Address => (address == ethAddress ? zeroAddress : address)
@@ -22,7 +23,7 @@ async function getOdosQuote(
     amountIn,
     blacklist,
     slippage,
-    userAddress,
+    zapAddress,
   }: {
     chainId: number
     tokenIn: Address
@@ -30,7 +31,7 @@ async function getOdosQuote(
     amountIn: Decimal
     blacklist: readonly Address[]
     slippage: number
-    userAddress: Address
+    zapAddress: Address
   },
   log: FastifyBaseLogger,
 ) {
@@ -41,45 +42,23 @@ async function getOdosQuote(
     amount: amountIn,
     slippage: `${slippage}`,
     pathVizImage: 'false', // prices API isn't returning images, maybe we could use them instead of `generateId`
-    caller_address: userAddress,
+    caller_address: zapAddress,
   } satisfies Omit<Record<keyof CurveOdosQuoteRequest, string>, 'blacklist'>)
   blacklist.forEach(address => params.append('blacklist', address))
 
-  const quoteResponse = await fetch(`${ODOS_API_URL}/quote?${params}`, {
-    method: 'GET',
-    headers: { accept: 'application/json' },
-  })
-
-  const { ok, status, statusText } = quoteResponse
-  if (!ok) {
-    log.error({ message: 'odos route request failed', status, statusText, params, body: await quoteResponse.text() })
-    throw new Error(`Odos quote error - ${status} ${statusText}`)
-  }
-
-  return (await quoteResponse.json()) as OdosQuoteResponse
+  return await fetchJson<OdosQuoteResponse>(`${ODOS_API_URL}/v3/quote?${params}`).catch(error =>
+    logOdosError(error, log, 'odos route request failed', fromEntries([...params.entries()])),
+  )
 }
 
 async function assembleOdosQuote(
-  { pathId, userAddress }: { pathId: string; userAddress: Address },
+  { pathId, zapAddress }: { pathId: string; zapAddress: Address },
   log: FastifyBaseLogger,
 ) {
-  const params: Record<keyof CurveOdosAssembleRequest, string> = { path_id: pathId, user: userAddress }
-  const assembleResponse = await fetch(`${ODOS_API_URL}/assemble?${new URLSearchParams(params)}`, {
-    method: 'GET',
-    headers: { accept: 'application/json' },
-  })
-  const { ok, status, statusText } = assembleResponse
-  if (!ok) {
-    log.error({
-      message: 'odos assemble request failed',
-      status,
-      statusText,
-      params,
-      body: await assembleResponse.text(),
-    })
-    throw new Error(`Odos assemble error - ${status} ${statusText}`)
-  }
-  return (await assembleResponse.json()) as AssemblePathResponse
+  const params: Record<keyof CurveOdosAssembleRequest, string> = { path_id: pathId, user: zapAddress }
+  return await fetchJson<AssemblePathResponse>(`${ODOS_API_URL}/assemble?${new URLSearchParams(params)}`)
+    .catch(error => logOdosError(error, log, 'odos assemble request failed', params))
+    .catch(() => undefined) // assemble errors result in no tx data in response - but don't fail the whole request
 }
 
 /**
@@ -96,12 +75,12 @@ export const buildOdosRouteResponse = async (
     tokenOut: [tokenOut],
     blacklist = [],
     amountIn: [amountIn] = [],
-    userAddress,
+    zapAddress,
     slippage = 0.5,
   } = query
 
-  if (amountIn == null || !userAddress) {
-    // Odos requires amount (amountIn), caller_address (leverage zap) and blacklist (AMM/controller)
+  if (amountIn == null || !zapAddress) {
+    // Odos requires amount (amountIn), caller_address (zapAddress) and blacklist (AMM/controller)
     log.info({ message: 'odos route request skipped', query })
     return []
   }
@@ -111,14 +90,12 @@ export const buildOdosRouteResponse = async (
     pathId,
     pathVizImage,
     priceImpact = null,
-  } = await getOdosQuote({ chainId, tokenIn, tokenOut, amountIn, blacklist, slippage, userAddress }, log)
-  const { transaction } = await assembleOdosQuote(
-    { pathId: assert(pathId, 'Odos quote missing pathId'), userAddress },
-    log,
-  )
+  } = await getOdosQuote({ chainId, tokenIn, tokenOut, amountIn, blacklist, slippage, zapAddress }, log)
+  const { transaction } =
+    (await assembleOdosQuote({ pathId: assert(pathId, 'Odos quote missing pathId'), zapAddress }, log)) ?? {}
   return [
     {
-      router: protocol,
+      router: PROTOCOL,
       amountIn: [amountIn],
       amountOut: outAmounts as [Decimal],
       priceImpact,
@@ -131,7 +108,7 @@ export const buildOdosRouteResponse = async (
           name: 'Odos route',
           tokenIn: [tokenIn],
           tokenOut: [tokenOut],
-          protocol,
+          protocol: PROTOCOL,
           action: 'swap',
           chainId,
           args: { pathId, pathVizImage },
@@ -140,4 +117,11 @@ export const buildOdosRouteResponse = async (
       ...(transaction && { tx: transaction }),
     },
   ]
+}
+
+function logOdosError(error: unknown, log: FastifyBaseLogger, message: string, params: Record<string, string>): never {
+  if (error instanceof FetchError) {
+    log.error({ message, status: error.status, params })
+  }
+  throw error
 }

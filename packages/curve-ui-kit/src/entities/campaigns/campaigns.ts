@@ -1,10 +1,11 @@
 import memoizee from 'memoizee'
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
 import { fromEntries, notFalsy, objectKeys } from '@primitives/objects.utils'
 import { type QueriesResults, useQueries } from '@tanstack/react-query'
 import { combineQueriesMeta } from '@ui-kit/lib'
+import { useMappedQuery } from '@ui-kit/types/util'
 import { getCampaignsExternalOptions } from './campaigns-external'
 import { getCampaignsMarketsMerklOptions } from './campaigns-markets-merkl'
 import { getCampaignsPoolsMerklOptions } from './campaigns-pools-merkl'
@@ -105,8 +106,15 @@ const useCampaigns = ({ blockchainId }: UseCampaignsOptions = {}) =>
 export const useCampaignsByAddress = ({
   address,
   blockchainId,
-}: { address: Address | undefined } & UseCampaignsOptions) => {
-  const { data } = useCampaigns({ blockchainId, enabled: Boolean(address) })
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-  return { data: useMemo(() => (address && data[address]) || [], [address, data]) }
+}: { address: Address | null | undefined } & UseCampaignsOptions) => {
+  const query = useMappedQuery(
+    useCampaigns({ blockchainId, enabled: Boolean(address) }),
+    useCallback(campaigns => address && campaigns[address], [address]),
+  )
+
+  // TODO: Temporarily map undefined data to [], needs a proper fix
+  return {
+    ...query,
+    data: query.data ?? [],
+  }
 }

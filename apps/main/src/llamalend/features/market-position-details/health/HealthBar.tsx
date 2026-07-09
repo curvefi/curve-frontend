@@ -1,0 +1,121 @@
+import { Stack, type SxProps, Typography, useTheme } from '@mui/material'
+import { t } from '@ui-kit/lib/i18n'
+import { LinearProgress } from '@ui-kit/shared/ui/LinearProgress'
+import { TRANSITION_FUNCTION } from '@ui-kit/themes/design/0_primitives'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { HEALTH_THRESHOLDS, getHealthTrackColor } from '..'
+import { clampPercentage } from './utils'
+
+const { Height } = SizesAndSpaces
+
+type HealthBarProps = {
+  health: number | undefined | null
+  small?: boolean
+  softLiquidation: boolean | undefined | null
+  sx?: SxProps
+}
+
+type HealthLevel = 'hardLiquidation' | 'liquidationProtection' | 'risky' | 'good' | 'pristine'
+
+/** Inset from the container border so labels sit inside the filled portion of the bar */
+const LABEL_INSET = '0.125rem' // 2px
+
+const insetLabelText = {
+  hardLiquidation: t`Liquidation protection disabled`,
+  liquidationProtection: t`Liquidation protection`,
+  risky: t`Risky`,
+  good: t`Good`,
+  pristine: t`Pristine`,
+} as const satisfies Record<HealthLevel, string>
+
+const getHealthLevel = (health: number | undefined | null, softLiquidation: boolean): HealthLevel => {
+  if (softLiquidation) return 'liquidationProtection'
+  if (health == null || health <= HEALTH_THRESHOLDS.HARD_LIQUIDATION) return 'hardLiquidation'
+  if (health <= HEALTH_THRESHOLDS.RISKY) return 'risky'
+  if (health <= HEALTH_THRESHOLDS.GOOD) return 'good'
+  return 'pristine'
+}
+
+export const HealthBar = ({ health, softLiquidation, small, sx }: HealthBarProps) => {
+  const theme = useTheme()
+  // Clamps health percentage between 0 and 100
+  return small ? (
+    health != null && (
+      <LinearProgress
+        percent={clampPercentage(health)}
+        size="medium"
+        barColor={getHealthTrackColor({ health, softLiquidation, theme })}
+      />
+    )
+  ) : (
+    <Stack sx={sx}>
+      <Stack
+        sx={{
+          position: 'relative',
+          width: '100%',
+          height: Height.healthBar.legacy,
+          backgroundColor: t => t.design.Color.Neutral[300],
+          transition: `background-color ${TRANSITION_FUNCTION}`,
+        }}
+      >
+        <Stack
+          sx={{
+            width:
+              health != null
+                ? `${health <= HEALTH_THRESHOLDS.HARD_LIQUIDATION ? 100 : clampPercentage(health)}%`
+                : '0%',
+            height: '100%',
+            backgroundColor: health == null ? 'transparent' : getHealthTrackColor({ health, softLiquidation, theme }),
+            transition: `width ${TRANSITION_FUNCTION}, background-color ${TRANSITION_FUNCTION}`,
+          }}
+        />
+        {/**
+         * Text color logic for health bar label:
+         *
+         * - health <= HARD_LIQUIDATION: Bar is 100% red, text is fully white
+         * - HARD_LIQUIDATION < health < CRITICAL: Split-color effect - black base with white
+         *   overlay clipped to bar width. Two identical labels are stacked; the overlay uses
+         *   overflow:hidden to show white text over the red bar and black text over the gray background.
+         * - health >= CRITICAL: Single label in warning color
+         * - health >= GOOD: Single label in alert primary color (white)
+         */}
+        {health != null && (
+          <Typography
+            variant="bodyXsRegular"
+            sx={{
+              position: 'absolute',
+              bottom: LABEL_INSET,
+              left: LABEL_INSET,
+              color: t =>
+                health <= HEALTH_THRESHOLDS.HARD_LIQUIDATION || health >= HEALTH_THRESHOLDS.GOOD
+                  ? t.design.Text.TextColors.FilledFeedback.Alert.Primary // Full white when bar is 100% red
+                  : health < HEALTH_THRESHOLDS.CRITICAL
+                    ? t.design.Text.TextColors.Primary // Black base for split effect
+                    : t.design.Text.TextColors.FilledFeedback.Warning.Primary,
+            }}
+          >
+            {insetLabelText[getHealthLevel(health, !!softLiquidation)]}
+          </Typography>
+        )}
+        {health != null && health < HEALTH_THRESHOLDS.CRITICAL && health > HEALTH_THRESHOLDS.HARD_LIQUIDATION && (
+          <Stack
+            sx={{
+              position: 'absolute',
+              bottom: LABEL_INSET,
+              left: LABEL_INSET,
+              width: `calc(${clampPercentage(health)}% - ${LABEL_INSET})`,
+              overflow: 'hidden',
+            }}
+          >
+            <Typography
+              variant="bodyXsRegular"
+              sx={{ color: t => t.design.Text.TextColors.FilledFeedback.Alert.Primary, whiteSpace: 'nowrap' }}
+            >
+              {insetLabelText[getHealthLevel(health, !!softLiquidation)]}
+            </Typography>
+          </Stack>
+        )}
+      </Stack>
+    </Stack>
+  )
+}

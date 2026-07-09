@@ -3,8 +3,8 @@ import type { ReactNode } from 'react'
 import type { AlertProps } from '@mui/material/Alert'
 
 const onToast = new EventTarget()
-const addMessageKey = 'curveToast' as const
-const removeMessageKey = 'dismissCurveToast' as const
+const ADD_MESSAGE_KEY = 'curveToast' as const
+const REMOVE_MESSAGE_KEY = 'dismissCurveToast' as const
 
 export type ToastItem = {
   id: string
@@ -17,8 +17,8 @@ export type ToastItem = {
 
 export const showToast = (item: Omit<ToastItem, 'id'>): { dismiss: () => void } => {
   const detail: ToastItem = { id: random(0, 1e16).toString(), ...item }
-  onToast.dispatchEvent(new CustomEvent<ToastItem>(addMessageKey, { detail }))
-  const dismiss = () => onToast.dispatchEvent(new CustomEvent(removeMessageKey, { detail }))
+  onToast.dispatchEvent(new CustomEvent<ToastItem>(ADD_MESSAGE_KEY, { detail }))
+  const dismiss = () => onToast.dispatchEvent(new CustomEvent(REMOVE_MESSAGE_KEY, { detail }))
   return { dismiss }
 }
 
@@ -27,10 +27,10 @@ export const watchToasts = (onAdd: (toast: ToastItem) => void, onRemove: (toast:
   const addListener = (event: Event) => onAdd((event as CustomEvent).detail)
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Existing violation before enabling this rule.
   const removeListener = (event: Event) => onRemove((event as CustomEvent).detail)
-  onToast.addEventListener(addMessageKey, addListener)
-  onToast.addEventListener(removeMessageKey, removeListener)
+  onToast.addEventListener(ADD_MESSAGE_KEY, addListener)
+  onToast.addEventListener(REMOVE_MESSAGE_KEY, removeListener)
   return () => {
-    onToast.removeEventListener(addMessageKey, addListener)
-    onToast.removeEventListener(removeMessageKey, removeListener)
+    onToast.removeEventListener(ADD_MESSAGE_KEY, addListener)
+    onToast.removeEventListener(REMOVE_MESSAGE_KEY, removeListener)
   }
 }

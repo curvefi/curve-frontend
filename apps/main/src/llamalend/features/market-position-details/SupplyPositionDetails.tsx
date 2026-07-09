@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 import { zeroAddress } from 'viem'
 import { USER_NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
-import { getControllerAddress } from '@/llamalend/llama.utils'
+import { useMarketContext } from '@/llamalend/features/market-context'
 import { useMarketRates, useMarketVaultOnChainRewards, useMarketVaultPricePerShare } from '@/llamalend/queries/market'
 import { useUserSupplyBoost } from '@/llamalend/queries/user'
 import { useUserShares } from '@/llamalend/queries/user/user-balances.query'
@@ -11,17 +11,17 @@ import {
   getLatestSnapshotValue,
   getSupplyApyAverageMetrics,
   getSupplyApyMetrics,
+  sumCampaignsApy,
   sumOnChainExtraIncentivesApy,
   toNumberOrNull,
 } from '@/llamalend/rates.utils'
 import { BoostTooltipContent } from '@/llamalend/widgets/tooltips/BoostTooltipContent'
 import { MarketSupplyRateTooltipContent } from '@/llamalend/widgets/tooltips/MarketSupplyRateTooltipContent'
-import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
-import type { Chain } from '@curvefi/prices-api'
+import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { Grid, Stack } from '@mui/material'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybe } from '@primitives/objects.utils'
+import { assert } from '@primitives/objects.utils'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
 import { LlamaChainId } from '@ui-kit/features/connect-wallet/lib/types'
@@ -45,20 +45,26 @@ export type SupplyAsset = {
   depositedUsdValue: Decimal
 }
 
-export type SupplyPositionDetailsProps = {
-  chainId: LlamaChainId
-  market: LendMarketTemplate
-  userAddress: Address | undefined
-  blockchainId: Chain
-}
-
 const SUPPLY_POSITION_TAB = 'supplyPosition'
 
 const RATE_CATEGORY: AverageCategory = 'llamalend.market.rate'
+const METRIC_CATEGORY = 'llamalend.positionSupplyDetails'
 
-const MetricGrid = ({ children }: { children: ReactNode }) => <Grid size={{ mobile: 6, tablet: 3 }}>{children}</Grid>
+const MetricGrid = ({ children }: { children: ReactNode }) => <Grid size={{ mobile: 12, tablet: 3 }}>{children}</Grid>
 
-export const SupplyPositionDetails = ({ chainId, market, userAddress, blockchainId }: SupplyPositionDetailsProps) => {
+export const SupplyPositionDetails = () => {
+  const {
+    chainId,
+    blockchainId,
+    market: contextMarket,
+    userAddress,
+    controllerAddress,
+  } = useMarketContext<LlamaChainId>()
+  const market = assert(
+    contextMarket instanceof LendMarketTemplate ? contextMarket : undefined,
+    'SupplyPositionDetails requires a lend market',
+  )
+
   const params = { chainId, marketId: market.id, userAddress }
   const { window: rateWindow } = AVERAGE_CATEGORIES[RATE_CATEGORY]
   const { data: campaigns } = useCampaignsByAddress({ blockchainId, address: market.addresses.vault as Address })
@@ -67,11 +73,7 @@ export const SupplyPositionDetails = ({ chainId, market, userAddress, blockchain
   const userSupplyBoost = useUserSupplyBoost(params)
   const onChainRewards = useMarketVaultOnChainRewards(params)
   const snapshots = mapQuery(
-    useLendingSnapshots({
-      blockchainId,
-      contractAddress: market && getControllerAddress(market),
-      limit: rateWindow,
-    }),
+    useLendingSnapshots({ blockchainId, contractAddress: controllerAddress, limit: rateWindow }),
     snapshots => ({
       rebasingYield: getLatestSnapshotValue(snapshots, snapshot => snapshot.borrowedToken.rebasingYield),
       supplyAverageMetrics: getSupplyApyAverageMetrics({ snapshots, daysBack: rateWindow }),
@@ -86,6 +88,7 @@ export const SupplyPositionDetails = ({ chainId, market, userAddress, blockchain
         rebasingYieldApy: rebasingYield,
         crvBoostApr: crvRates,
         extraIncentivesApy: sumOnChainExtraIncentivesApy(rewardsApr),
+        campaignsApy: sumCampaignsApy(campaigns),
         userSupplyBoost,
       }),
   )
@@ -131,11 +134,11 @@ export const SupplyPositionDetails = ({ chainId, market, userAddress, blockchain
       <Grid container spacing={Spacing.md} sx={{ padding: Spacing.sm, backgroundColor: t => t.design.Layer[1].Fill }}>
         <MetricGrid>
           <Metric
-            size="medium"
+            category={METRIC_CATEGORY}
             label={USER_NET_SUPPLY_RATE_TITLE}
             value={mapQuery(supplyMetrics, ({ totalUserBoost }) => totalUserBoost)}
             valueOptions={{ unit: 'percentage', ...(noGauge && { fallback: `No Gauge` }) }}
-            notional={maybe(userSupplyBoost.data, data => t`your boost ${formatNumber(data, 'multiplier')}`)}
+            notional={mapQuery(userSupplyBoost, data => t`your boost ${formatNumber(data, 'multiplier')}`)}
             valueTooltip={{
               title: USER_NET_SUPPLY_RATE_TITLE,
               body: (
@@ -166,13 +169,13 @@ export const SupplyPositionDetails = ({ chainId, market, userAddress, blockchain
         </MetricGrid>
         <MetricGrid>
           <Metric
-            size="medium"
+            category={METRIC_CATEGORY}
             label={t`Amount supplied`}
             value={mapQuery(supplyAsset, ({ depositedUsdValue }) => depositedUsdValue)}
             valueOptions={{ unit: 'dollar' }}
-            notional={maybe(supplyAsset.data, ({ depositedAmount, symbol }) => ({
+            notional={mapQuery(supplyAsset, ({ depositedAmount, symbol }) => ({
               value: depositedAmount,
-              unit: { symbol: ` ${symbol}`, position: 'suffix' },
+              unit: { symbol: ` ${symbol}`, position: 'suffix' as const },
             }))}
             valueTooltip={{
               title: t`Amount Supplied`,
@@ -185,13 +188,13 @@ export const SupplyPositionDetails = ({ chainId, market, userAddress, blockchain
         </MetricGrid>
         <MetricGrid>
           <Metric
-            size="medium"
+            category={METRIC_CATEGORY}
             label={t`Vault shares`}
             value={mapQuery(shares, ({ value }) => value)}
             valueOptions={{}}
-            notional={maybe(shares.data, ({ percentage }) => ({
+            notional={mapQuery(shares, ({ percentage }) => ({
               value: percentage,
-              unit: { symbol: t`% staked`, position: 'suffix' },
+              unit: { symbol: t`% staked`, position: 'suffix' as const },
             }))}
             valueTooltip={{
               title: t`Vault Shares`,
@@ -204,7 +207,7 @@ export const SupplyPositionDetails = ({ chainId, market, userAddress, blockchain
         </MetricGrid>
         <MetricGrid>
           <Metric
-            size="medium"
+            category={METRIC_CATEGORY}
             label={t`veCRV Boost`}
             value={q(userSupplyBoost)}
             valueOptions={{ unit: 'multiplier', ...(noGauge && { fallback: `No Gauge` }) }}

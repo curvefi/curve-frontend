@@ -4,6 +4,8 @@ import { getUnitOptions, type Unit } from './units'
 // Sometimes API returns overflowed USD values. Don't show them!
 const MAX_USD_VALUE = 100_000_000_000_000 // $ 100T 🤑
 
+export const [PLACEHOLDER, PLACEHOLDER_USD] = [0.00001, 0.001]
+
 /** Locale used for consistent number formatting across the application */
 const LOCALE = 'en-US'
 const DEFAULT_DECIMALS = 2
@@ -227,6 +229,7 @@ const NUMBER_FORMAT_CATEGORIES = {
     maximumSignificantDigits: undefined,
     fallback: '-',
   },
+  'pool.parameter': { unit: 'none', abbreviate: false, fallback: '-', decimals: 5 },
 } as const satisfies Record<string, NumberFormatOptions & { fallback: string }>
 
 export type NumberFormatCategory = keyof typeof NUMBER_FORMAT_CATEGORIES
@@ -351,11 +354,6 @@ export function formatNumber(value: Amount | MissingAmount, options: NumberForma
   const mainValue = isNegative ? decomposed.mainValue.slice(1) : decomposed.mainValue
   return [sign, decomposed.prefix, mainValue, decomposed.scaleSuffix, decomposed.suffix].filter(Boolean).join('')
 }
-
-export const formatNumberRange = (numbers: number[] | null | undefined) =>
-  !numbers || numbers?.some(n => n == null) || numbers.every(n => !n)
-    ? ''
-    : numbers.map(n => formatNumber(n, { abbreviate: false })).join(' - ')
 
 /**
  * Builds fraction digit options that preserve the precision already present in a source value.

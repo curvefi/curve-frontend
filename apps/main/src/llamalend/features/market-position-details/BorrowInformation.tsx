@@ -1,4 +1,4 @@
-import { formatCollateralNotional, isPositionLeveraged, type MarketTokens } from '@/llamalend/llama.utils'
+import { formatCollateralNotional, isPositionLeveraged, type MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import { useUserCurrentLeverage, useUserState } from '@/llamalend/queries/user'
 import { useRangeToLiquidation } from '@/llamalend/queries/user/user-prices.query'
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
@@ -16,16 +16,14 @@ import { LiquidationThresholdTooltipContent } from './'
 
 const dollarUnitOptions = {
   abbreviate: false,
-  unit: {
-    symbol: '$',
-    position: 'prefix' as const,
-    abbreviate: false,
-  },
+  unit: { symbol: '$', position: 'prefix' as const, abbreviate: false },
 }
+
+const METRIC_CATEGORY = 'llamalend.positionBorrowDetails'
 
 type BorrowInformationProps = {
   params: UserMarketParams
-  tokens: Partial<MarketTokens>
+  tokens: MarketTokensOrEmpty
 }
 
 export const BorrowInformation = ({ params, tokens: { collateralToken, borrowToken } }: BorrowInformationProps) => {
@@ -48,22 +46,20 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
         sx={{
           display: 'grid',
           gap: 3,
-          gridTemplateColumns: { mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)', desktop: 'repeat(5, 1fr)' },
+          gridTemplateColumns: { mobile: 'repeat(1, 1fr)', tablet: 'repeat(4, 1fr)', desktop: 'repeat(5, 1fr)' },
         }}
       >
         <Metric
-          size="small"
+          category={METRIC_CATEGORY}
           label={t`Collateral value`}
           value={collateralValue}
           valueOptions={{ unit: 'dollar' }}
-          notional={
-            collateral
-              ? formatCollateralNotional(
-                  { value: collateral, symbol: collateralToken?.symbol },
-                  { value: borrowed, symbol: borrowToken?.symbol },
-                )
-              : undefined
-          }
+          notional={mapQuery(userState, ({ collateral, stablecoin }) =>
+            formatCollateralNotional(
+              { value: collateral, symbol: collateralToken?.symbol },
+              { value: stablecoin, symbol: borrowToken?.symbol },
+            ),
+          )}
           valueTooltip={{
             title: t`Collateral value`,
             body: (
@@ -79,9 +75,9 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
           }}
         />
         <Metric
-          size="small"
+          category={METRIC_CATEGORY}
           label={t`Liquidation threshold`}
-          value={mapQuery(userPrices, ([, liquidationThreshold]) => liquidationThreshold)}
+          value={mapQuery(userPrices, p => p?.[1])}
           valueOptions={dollarUnitOptions}
           valueTooltip={{
             title: t`Liquidation Threshold (LT)`,
@@ -96,13 +92,12 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
             arrow: false,
             clickable: true,
           }}
-          notional={maybe(rangeToLiquidation.data, value => ({
-            value,
-            unit: { symbol: `% distance to LT`, position: 'suffix' },
-          }))}
+          notional={mapQuery(rangeToLiquidation, v =>
+            maybe(v, value => ({ value, unit: { symbol: `% distance to LT`, position: 'suffix' as const } })),
+          )}
         />
         <Metric
-          size="small"
+          category={METRIC_CATEGORY}
           label={t`Total debt`}
           value={mapQuery(userState, ({ debt }) => debt)}
           valueOptions={{ unit: { symbol: borrowToken?.symbol ?? '?', position: 'suffix' } }}
@@ -115,7 +110,12 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
           }}
         />
         {isPositionLeveraged(leverage.data) && (
-          <Metric size="small" label={t`Leverage`} value={q(leverage)} valueOptions={{ unit: 'multiplier' }} />
+          <Metric
+            category={METRIC_CATEGORY}
+            label={t`Leverage`}
+            value={q(leverage)}
+            valueOptions={{ unit: 'multiplier' }}
+          />
         )}
       </Stack>
     </Stack>

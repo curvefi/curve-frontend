@@ -6,11 +6,12 @@ import type { Chain } from '@curvefi/prices-api'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { scanAddressPath } from '@ui/utils'
-import { useManualPagination, getPageCount } from '@ui-kit/features/activity-table'
+import { useManualPagination } from '@ui-kit/features/activity-table'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
-import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
+import { mapQuery } from '@ui-kit/types/util'
+import { getPageCount } from '@ui-kit/utils'
 import { RECENT_REFUELS_PAGE_SIZE, useRecentRefuels } from '../../queries/recent-refuels.query'
 import { createRecentRefuelsColumns, type RecentRefuelRow } from './columns/columns.definitions'
 
@@ -26,31 +27,31 @@ export const RecentRefuels = ({
   const { data: networkConfig } = useNetworkByChain({ chainId })
   const { pagination, onPaginationChange, apiPage } = useManualPagination(RECENT_REFUELS_PAGE_SIZE)
 
-  const { data, isLoading, isFetching, error } = useRecentRefuels({
+  const recentRefuels = useRecentRefuels({
     blockchainId,
     poolAddress,
     page: apiPage,
     pageSize: RECENT_REFUELS_PAGE_SIZE,
   })
 
-  const rows = useMemo<RecentRefuelRow[]>(
-    () =>
-      data?.data.map(event => ({
+  const columns = useMemo(
+    () => createRecentRefuelsColumns(recentRefuels.data?.tokens ?? []),
+    [recentRefuels.data?.tokens],
+  )
+  const pageCount = getPageCount(recentRefuels.data?.count, RECENT_REFUELS_PAGE_SIZE)
+  const table = useTable({
+    columns,
+    query: mapQuery(recentRefuels, ({ data: events }) =>
+      events.map(event => ({
         ...event,
         donorUrl: event.donor ? scanAddressPath(networkConfig, event.donor) : undefined,
-      })) ?? [],
-    [data?.data, networkConfig],
-  )
-  const columns = useMemo(() => createRecentRefuelsColumns(data?.tokens ?? []), [data?.tokens])
-  const pageCount = getPageCount(data?.count, RECENT_REFUELS_PAGE_SIZE)
-  const table = useTable({
-    data: rows,
-    columns,
+      })),
+    ),
     state: { pagination },
     manualPagination: true,
     pageCount,
     onPaginationChange,
-    ...getTableOptions(rows),
+    ...getTableOptions<RecentRefuelRow>(recentRefuels.data?.data),
   })
 
   return (
@@ -58,12 +59,8 @@ export const RecentRefuels = ({
       <CardHeader title={t`Recent Refuels`} size="small" />
       <DataTable<RecentRefuelRow>
         table={table}
-        emptyState={
-          <EmptyStateRow table={table}>
-            {error ? t`Could not load recent refuels: ${error.message}` : t`No recent refuels found.`}
-          </EmptyStateRow>
-        }
-        isLoading={isLoading || isFetching}
+        emptyState={{ title: t`No recent refuels found` }}
+        errorState={{ title: t`Could not load recent refuels` }}
       />
     </Stack>
   )

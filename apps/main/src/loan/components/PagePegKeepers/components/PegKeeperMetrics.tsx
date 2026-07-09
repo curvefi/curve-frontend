@@ -7,6 +7,8 @@ import type { PegKeeperDetails } from '../types'
 
 const { Spacing } = SizesAndSpaces
 
+const DETAIL_METRIC_CATEGORY = 'loan.pegKeeperDetailAmounts'
+
 type Props = Pick<PegKeeperDetails, 'debt' | 'debtCeiling' | 'rate'> & {
   poolName: string
   testId?: string
@@ -15,6 +17,7 @@ type Props = Pick<PegKeeperDetails, 'debt' | 'debtCeiling' | 'rate'> & {
 export const PegKeeperMetrics = ({ rate, debt, debtCeiling, poolName, testId = 'pegkeeper' }: Props) => (
   <Stack sx={{ gap: Spacing.sm }}>
     <Metric
+      category="loan.pegKeeperOverview"
       label={`${poolName} rate`}
       value={rate}
       valueOptions={{ decimals: 5, unit: 'none' }}
@@ -23,8 +26,8 @@ export const PegKeeperMetrics = ({ rate, debt, debtCeiling, poolName, testId = '
 
     <Stack direction="row" sx={{ gap: Spacing.md }}>
       <Metric
+        category={DETAIL_METRIC_CATEGORY}
         label={t`Debt`}
-        size="small"
         value={debt}
         valueOptions={{ unit: CRVUSD_UNIT }}
         testId={`${testId}-metric-debt`}
@@ -32,8 +35,8 @@ export const PegKeeperMetrics = ({ rate, debt, debtCeiling, poolName, testId = '
       />
 
       <Metric
+        category={DETAIL_METRIC_CATEGORY}
         label={t`Debt ceiling`}
-        size="small"
         value={debtCeiling}
         valueOptions={{ unit: CRVUSD_UNIT, abbreviate: true }}
         testId={`${testId}-metric-ceiling`}

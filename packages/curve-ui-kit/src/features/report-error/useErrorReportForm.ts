@@ -1,3 +1,4 @@
+import { ReactNode } from 'react'
 import { useForm } from '@ui-kit/features/forms'
 import { captureError, captureString } from '@ui-kit/features/sentry'
 
@@ -5,8 +6,8 @@ export type ContactMethod = 'email' | 'telegram' | 'discord'
 
 export type ErrorContext = {
   error: Error | string | null | undefined
-  title: string
-  subtitle: string | null | undefined
+  title: ReactNode
+  subtitle: ReactNode | null | undefined
 }
 
 export type ErrorReportFormValues = {

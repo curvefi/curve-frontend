@@ -106,7 +106,7 @@ export const Violets = {
   '950': '#2f2862',
 } as const
 
-export const Transparent = '#ffffff00' as const
+export const TRANSPARENT = '#ffffff00' as const
 
 export const Spacing = {
   '0': '0rem',
@@ -170,14 +170,14 @@ export const Duration = {
     Actionable: REFRESH_INTERVAL['1m'],
     Informative: REFRESH_INTERVAL['5m'],
     DontShowAfter: REFRESH_INTERVAL['10m'],
-    SemiStatic: REFRESH_INTERVAL['1d'],
+    SemiStatic: REFRESH_INTERVAL['1h'],
   },
 }
 
-export const Transition = `ease-out`
-export const TransitionFunction = `${Transition} ${Duration.Transition}ms`
+export const TRANSITION = `ease-out`
+export const TRANSITION_FUNCTION = `${TRANSITION} ${Duration.Transition}ms`
 
 export const LoadingAnimation = {
-  animation: `${keyframes` 100% { transform: rotate(360deg); }`} ${Transition} ${Duration.LoadingAnimation}ms infinite`,
+  animation: `${keyframes` 100% { transform: rotate(360deg); }`} ${TRANSITION} ${Duration.LoadingAnimation}ms infinite`,
   transformOrigin: 'center',
 }

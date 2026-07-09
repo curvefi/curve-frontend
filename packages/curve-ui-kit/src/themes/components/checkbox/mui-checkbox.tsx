@@ -48,7 +48,7 @@ const buttonSize = ({ size }: { size: keyof typeof Sizing }) => ({
   '& .icon-wrapper svg': handleBreakpoints({ fontSize: Sizing[size] }),
 })
 
-const onHoverFocusOrLabelHover =
+const ON_HOVER_FOCUS_OR_LABEL_HOVER =
   '&:hover .icon-wrapper, .MuiFormControlLabel-root:hover &:not(.Mui-disabled) .icon-wrapper, &.Mui-focusVisible .icon-wrapper'
 
 /**
@@ -74,7 +74,7 @@ export const defineMuiCheckbox = (): Components['MuiCheckbox'] => ({
   styleOverrides: {
     root: {
       ...buttonSize({ size: 'sm' }),
-      [onHoverFocusOrLabelHover]: { outlineWidth: '2px' },
+      [ON_HOVER_FOCUS_OR_LABEL_HOVER]: { outlineWidth: '2px' },
     },
 
     sizeSmall: { ...buttonSize({ size: 'xs' }) },

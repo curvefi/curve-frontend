@@ -1,17 +1,17 @@
 import { useCallback, useMemo } from 'react'
 import { enforce, test } from 'vest'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
-import type { Address } from '@primitives/address.utils'
 import { toArray } from '@primitives/array.utils'
 import { fetchJson } from '@primitives/fetch.utils'
-import { assert, notFalsy, maybe } from '@primitives/objects.utils'
+import { assert, maybe, notFalsy, pick } from '@primitives/objects.utils'
 import { type RouteProvider, RouteProviders, type RouterRouteResponse } from '@primitives/router.utils'
-import { useQuery, type QueryKey, type UseQueryOptions } from '@tanstack/react-query'
+import { type QueryKey, useQuery, type UseQueryOptions } from '@tanstack/react-query'
 import { createHash } from '@ui-kit/entities/router-api/router-api.utils'
+import { use0xRouter } from '@ui-kit/hooks/useFeatureFlags'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { NoRetryError } from '@ui-kit/lib/model/query/factory'
-import { q } from '@ui-kit/types/util'
+import { q, useMappedQuery } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 import type { RouteQueries, RouteQuery, RouteResponse, RoutesParams, RoutesQuery } from './router-api.types'
 import { routerApiValidation } from './router-api.validation'
@@ -75,6 +75,7 @@ const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
     blacklist,
     router,
     userAddress,
+    zapAddress,
     slippage,
   }: RoutesParams) =>
     [
@@ -88,6 +89,7 @@ const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
       { blacklist },
       { router },
       { userAddress },
+      { zapAddress },
       { slippage },
     ] as const,
   queryFn: async ({
@@ -99,6 +101,7 @@ const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
     blacklist,
     router,
     userAddress,
+    zapAddress,
     slippage,
   }: RoutesQuery): Promise<RouteResponse[]> => {
     const query = new URLSearchParams(
@@ -109,6 +112,7 @@ const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
         amountIn && ['amountIn', `${amountIn}`],
         amountOut && ['amountOut', `${amountOut}`],
         userAddress && ['userAddress', userAddress],
+        zapAddress && ['zapAddress', zapAddress],
         slippage && ['slippage', `${slippage}`],
       ),
     )
@@ -127,6 +131,7 @@ const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
           toArray(blacklist),
           slippage,
           userAddress,
+          zapAddress,
           amountOut,
           tx?.data,
         ])}`
@@ -142,7 +147,7 @@ const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
 
 function useRouterQuery(params: Omit<RoutesParams, 'router'>, router: RouteProvider, enabled = true): RouteQuery {
   const { data, isLoading, error, isFetching } = useRouterApi({ ...params, router }, enabled)
-  const route = maybe(data, ([route = null]) => route)
+  const route = maybe(data, ([route]) => route) ?? null
   return useMemo(
     () => ({ ...q({ isLoading, data: route, error }), isFetching, enabled }),
     [isLoading, route, error, isFetching, enabled],
@@ -153,44 +158,52 @@ export type GetGasCallback<TData extends TGas | null = TGas, TKey extends QueryK
   routeId: string | undefined,
 ) => UseQueryOptions<TData, Error, TData, TKey>
 
-/**
- * Calls the route providers in parallel, returning the first route of each.
- */
-export const useRouterQueries = <TData extends TGas | null, TKey extends QueryKey>(
-  { zapAddress, ...params }: Omit<RoutesParams, 'router'> & { zapAddress: Address | undefined },
+/** manually add gas cost result to curve route via llamalend.js */
+function useCurveRouterQuery<TData extends TGas | null, TKey extends QueryKey>(
+  params: Omit<RoutesParams, 'router'>,
   getRouteGasOptions: GetGasCallback<TData, TKey>,
-  enabled?: boolean,
-): {
-  queries: RouteQueries
-  onRefresh: () => Promise<RouteResponse[][]>
-} => {
+  enabled: boolean | undefined,
+) {
   const curveRoutes = useRouterQuery(params, 'curve', enabled)
   const { data: gas } = useQuery({
     ...getRouteGasOptions(curveRoutes.data?.id),
     enabled: !!curveRoutes.data && enabled,
   })
   return {
-    queries: {
-      curve: useMemo(
-        (): RouteQuery =>
-          gas && curveRoutes.data
-            ? {
-                ...curveRoutes,
-                data: { ...curveRoutes.data, gas: decimal(toArray(gas)[0]) ?? null },
-              }
-            : curveRoutes,
-        [curveRoutes, gas],
+    ...pick(curveRoutes, 'isFetching', 'enabled'),
+    ...useMappedQuery(
+      curveRoutes,
+      useCallback(
+        (data: RouteResponse | null) =>
+          gas && data ? { ...data, gas: decimal(toArray(gas)[0]) ?? null } : (data ?? null),
+        [gas],
       ),
-      'curve-solver': useRouterQuery({ ...params, userAddress: zapAddress }, 'curve-solver', enabled),
-      enso: useRouterQuery({ ...params, userAddress: zapAddress }, 'enso', !!zapAddress && enabled),
-      odos: useRouterQuery({ ...params, userAddress: zapAddress }, 'odos', !!zapAddress && enabled),
-      '0x': useRouterQuery({ ...params, userAddress: zapAddress }, '0x', enabled),
-    },
-    onRefresh: useCallback(
-      () => Promise.all(RouteProviders.map(router => fetchApiRoutes({ ...params, router }))),
-      [params],
     ),
   }
 }
+
+/**
+ * Calls the route providers in parallel, returning the first route of each.
+ */
+export const useRouterQueries = <TData extends TGas | null, TKey extends QueryKey>(
+  params: Omit<RoutesParams, 'router'>,
+  getRouteGasOptions: GetGasCallback<TData, TKey>,
+  enabled?: boolean,
+): {
+  queries: RouteQueries
+  onRefresh: () => Promise<RouteResponse[][]>
+} => ({
+  queries: {
+    curve: useCurveRouterQuery(params, getRouteGasOptions, enabled),
+    'curve-solver': useRouterQuery(params, 'curve-solver', enabled),
+    enso: useRouterQuery(params, 'enso', !!params.zapAddress && enabled),
+    odos: useRouterQuery(params, 'odos', !!params.zapAddress && enabled),
+    '0x': useRouterQuery(params, '0x', use0xRouter() && enabled),
+  },
+  onRefresh: useCallback(
+    () => Promise.all(RouteProviders.map(router => fetchApiRoutes({ ...params, router }))),
+    [params],
+  ),
+})
 
 export { useRouterApi, fetchApiRoutes }

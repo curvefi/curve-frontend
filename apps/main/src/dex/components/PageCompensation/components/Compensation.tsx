@@ -1,8 +1,7 @@
-import { ReactNode, useCallback, useEffect, useState } from 'react'
-import { styled } from 'styled-components'
+import { ReactNode, useCallback, useEffect, useState, type ComponentProps } from 'react'
+import { css, styled, type IStyledComponent } from 'styled-components'
 import { AlertFormError } from '@/dex/components/AlertFormError'
 import type { EtherContract } from '@/dex/components/PageCompensation/types'
-import { StyledIconButton } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { curvejsApi } from '@/dex/lib/curvejs'
 import { ChainId, CurveApi, Provider } from '@/dex/types/main.types'
@@ -10,6 +9,7 @@ import { Hex } from '@primitives/address.utils'
 import { Box } from '@ui/Box'
 import { Button } from '@ui/Button'
 import { Icon } from '@ui/Icon'
+import { IconButton } from '@ui/IconButton'
 import { ExternalLink } from '@ui/Link/ExternalLink'
 import { TxInfoBar } from '@ui/TxInfoBar'
 import { scanAddressPath, scanTxPath } from '@ui/utils'
@@ -151,4 +151,23 @@ const StyledExternalLink = styled(ExternalLink)`
   svg {
     padding-top: 0.3125rem;
   }
+`
+
+const actionStyles = css`
+  align-items: center;
+  display: inline-flex;
+
+  color: inherit;
+  background-color: transparent;
+  border: 1px solid transparent;
+  opacity: 0.5;
+
+  &:hover {
+    color: var(--button_icon--hover--color);
+    background-color: var(--button_icon--hover--background-color);
+  }
+`
+
+const StyledIconButton: IStyledComponent<'web', ComponentProps<typeof IconButton>> = styled(IconButton)`
+  ${actionStyles}
 `

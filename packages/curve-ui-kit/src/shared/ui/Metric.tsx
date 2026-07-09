@@ -1,10 +1,9 @@
 import { type ReactNode, useCallback, useMemo } from 'react'
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import { type ButtonProps } from '@mui/material/Button'
-import Stack from '@mui/material/Stack'
+import Stack, { StackProps } from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
-import { toArray } from '@primitives/array.utils'
 import type { Amount } from '@primitives/decimal.utils'
+import { useBreakpoint } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorIconButton } from '@ui-kit/shared/ui/ErrorIconButton'
 import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
@@ -18,20 +17,26 @@ import {
   defaultNumberFormatter,
   formatNumber,
   type NumberFormatOptions,
+  PLACEHOLDER_USD,
   type SxProps,
 } from '@ui-kit/utils'
 import { showToast } from '@ui-kit/widgets/Toast/toast.util'
+import { LabelTooltipIcon } from './LabelTooltipIcon'
+import { METRIC_CATEGORIES, type MetricCategory, type MetricLayout } from './metric-categories'
 import { WithSkeleton } from './WithSkeleton'
+import { WithWrapper } from './WithWrapper'
 
-const { Spacing, IconSize } = SizesAndSpaces
+const {
+  Spacing,
+  Metric: { horizontal: metricHorizontalSizes },
+} = SizesAndSpaces
 
 // Correspond to flexbox align items values.
 // eslint-disable-next-line react-refresh/only-export-components
 export const ALIGNMENTS = ['start', 'center', 'end'] as const
 type Alignment = (typeof ALIGNMENTS)[number]
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const MetricSize = {
+const MetricSize = {
   small: 'highlightM',
   medium: 'highlightL',
   large: 'highlightXl',
@@ -59,49 +64,55 @@ const MetricButtonSize = {
   extraLarge: 'medium',
 } satisfies Record<keyof typeof MetricSize, ButtonProps['size']>
 
-// eslint-disable-next-line react-refresh/only-export-components -- Existing violation before enabling this rule.
-export const SIZES = Object.keys(MetricSize) as (keyof typeof MetricSize)[]
+const MetricMinHeight = {
+  small: metricHorizontalSizes.sm,
+  medium: metricHorizontalSizes.md,
+  large: metricHorizontalSizes.lg,
+  extraLarge: metricHorizontalSizes.xl,
+} satisfies Record<keyof typeof MetricSize, string>
+
+const ORIENTATION_STYLE = {
+  horizontal: {
+    direction: 'row',
+    alignItems: () => 'baseline',
+    labelVariant: 'bodyMRegular',
+    labelColor: 'textSecondary',
+  },
+  vertical: {
+    direction: 'column',
+    alignItems: (alignment: Alignment) => alignment,
+    labelVariant: 'bodyXsRegular',
+    labelColor: 'textTertiary',
+  },
+} as const satisfies Record<
+  MetricLayout['orientation'],
+  {
+    direction: StackProps['direction']
+    alignItems: (alignment: Alignment) => 'baseline' | Alignment
+    labelVariant: TypographyVariantKey
+    labelColor: TypographyProps['color']
+  }
+>
 
 type Notional = Omit<NumberFormatOptions, 'abbreviate'> & {
   value: Amount
   abbreviate?: boolean // Defaults to true
 }
-
-type MetricErrorTooltip = Omit<TooltipProps, 'children' | 'title' | 'body'> & {
-  title: ReactNode
-  body: ReactNode
-}
-
-/**
- * Converts notional values to a formatted string representation.
- * Handles single numbers, strings, single notional objects, or arrays of notional objects.
- *
- * @param notionals - The notional value(s) to format. Can be:
- *   - A string (returned as-is)
- *   - A number (converted to basic notional object)
- *   - A single Notional object with value, unit, decimals, and formatter
- *   - An array of Notional objects
- * @returns A string with formatted notional values joined by ' + '
- *
- * @example
- * notionalsToString("Custom text") // "Custom text"
- * notionalsToString(1000) // "1000"
- * notionalsToString({ value: 1000, unit: 'dollar' }) // "$1k"
- * notionalsToString([{ value: 1000, unit: 'dollar' }, { value: 50, unit: 'percentage' }]) // "$1k + 50%"
- */
-const notionalsToString = (notionals: MetricProps['notional']) =>
-  typeof notionals === 'string'
-    ? notionals
-    : toArray(typeof notionals === 'number' ? { value: notionals, abbreviate: true } : notionals)
-        .map(notional => formatNumber(notional.value, { ...notional, abbreviate: notional.abbreviate ?? true }))
-        .join(' + ')
+type NotionalValue = number | string | Notional | null
 
 /** At the moment of writing the default formatter already formats to 2 decimals, but I really want to make this explicit for potential future changes. */
 const formatChange = (value: number): string => defaultNumberFormatter(value, { decimals: 2 })
 
+/**
+ * MUI Typography resolves the `color` prop through registered theme color names.
+ * Hex values need to be applied as CSS to avoid being treated as unresolved theme colors.
+ */
+const getTypographyColorProps = (color: TypographyProps['color']) =>
+  typeof color === 'string' && color.startsWith('#') ? { sx: { color } } : { color }
+
 type MetricValueProps = Pick<MetricProps, 'valueOptions' | 'change' | 'testId'> & {
   value: Amount | null
-  size: NonNullable<MetricProps['size']>
+  size: MetricLayout['size']
   tooltip?: MetricProps['valueTooltip']
   copyValue?: () => void
 }
@@ -114,6 +125,7 @@ const MetricValue = ({ value, valueOptions = {}, change, size, copyValue, toolti
 
   const fontVariant = MetricSize[size]
   const fontVariantUnit = MetricUnitSize[size]
+  const valueColorProps = getTypographyColorProps(color)
 
   return (
     <Stack direction="row" sx={{ gap: Spacing.xxs, alignItems: 'baseline' }}>
@@ -134,12 +146,16 @@ const MetricValue = ({ value, valueOptions = {}, change, size, copyValue, toolti
             </Typography>
           )}
 
-          <Typography variant={fontVariant} color={color}>
+          <Typography variant={fontVariant} {...valueColorProps}>
             {mainValue ?? fallback}
           </Typography>
 
           {scaleSuffix && (
-            <Typography variant={fontVariant} color="textPrimary" sx={{ textTransform: 'capitalize' }}>
+            <Typography
+              variant={fontVariant}
+              {...valueColorProps}
+              sx={applySxProps(valueColorProps.sx, { textTransform: 'capitalize' })}
+            >
               {scaleSuffix}
             </Typography>
           )}
@@ -163,6 +179,21 @@ const MetricValue = ({ value, valueOptions = {}, change, size, copyValue, toolti
   )
 }
 
+const Notional = ({ data, error, isLoading }: QueryProp<NotionalValue>) => (
+  <WithSkeleton loading={isLoading}>
+    <Typography variant="highlightXsNotional" color="textTertiary">
+      {error && <ErrorIconButton size="extraExtraSmall" error={error} />}
+      {data == null
+        ? formatNumber(isLoading ? PLACEHOLDER_USD : null, 'usd.notional')
+        : typeof data === 'string'
+          ? data
+          : typeof data === 'number'
+            ? formatNumber(data, { abbreviate: true })
+            : formatNumber(data.value, { abbreviate: true, ...data })}
+    </Typography>
+  </WithSkeleton>
+)
+
 export type MetricProps = {
   /** The actual metric value to display */
   value: QueryProp<MetricValueProps['value']>
@@ -182,15 +213,13 @@ export type MetricProps = {
   copyText?: string
 
   /** Notional values give extra context to the metric, like underlying value */
-  notional?: number | string | Notional | Notional[]
+  notional?: QueryProp<NotionalValue>
 
-  /** Optional content to display to the right of the value */
-  rightAdornment?: ReactNode
-
-  /** Optional tooltip shown when hovering the error triangle icon. Must include both title and body. */
-  errorTooltip?: MetricErrorTooltip
+  /** Optional icon shown after the value in vertical orientation and before the label in the horizontal orientation. */
+  icon?: ReactNode
 
   size?: keyof typeof MetricSize
+  category: MetricCategory
   alignment?: Alignment
   testId?: string
   sx?: SxProps
@@ -208,15 +237,17 @@ export const Metric = ({
 
   notional,
 
-  rightAdornment,
-  errorTooltip,
+  icon,
 
-  size = 'medium',
+  category,
   alignment = 'start',
   testId = 'metric',
   sx,
 }: MetricProps) => {
-  const notionals = useMemo(() => notionalsToString(notional), [notional])
+  const breakpoint = useBreakpoint()
+  const { orientation, size } = METRIC_CATEGORIES[category][breakpoint]
+  const orientationStyle = ORIENTATION_STYLE[orientation]
+  const isHorizontal = orientation === 'horizontal'
   const copyValue = useCallback(() => {
     if (data || data === 0) {
       void copyToClipboard(data.toString())
@@ -225,25 +256,47 @@ export const Metric = ({
   }, [data, copyText])
 
   return (
-    <Stack data-testid={testId} sx={applySxProps({ alignItems: alignment }, sx)}>
-      <Typography variant="bodyXsRegular" color="textTertiary">
-        {label}
-        {labelTooltip && (
-          <Tooltip arrow placement="top" {...labelTooltip}>
-            <span>
-              {' '}
-              <InfoOutlinedIcon sx={{ width: IconSize.xs, height: IconSize.xs }} />
-            </span>
-          </Tooltip>
-        )}
-      </Typography>
+    <Stack
+      data-testid={testId}
+      direction={orientationStyle.direction}
+      sx={applySxProps(
+        { alignItems: orientationStyle.alignItems(alignment) },
+        isHorizontal && {
+          justifyContent: 'space-between',
+          alignSelf: 'stretch',
+          columnGap: Spacing.sm,
+          minHeight: MetricMinHeight[size],
+        },
+        sx,
+      )}
+    >
+      <WithWrapper
+        shouldWrap={isHorizontal}
+        Wrapper={Stack}
+        direction="row"
+        sx={{ alignItems: 'baseline', flexShrink: 0 }}
+      >
+        {isHorizontal && icon}
+        <Typography variant={orientationStyle.labelVariant} color={orientationStyle.labelColor}>
+          {label}
+          <LabelTooltipIcon tooltip={labelTooltip} />
+        </Typography>
+      </WithWrapper>
       <WithSkeleton loading={isLoading}>
-        <Stack direction="row" sx={{ alignItems: 'baseline' }}>
+        <Stack
+          direction="row"
+          sx={applySxProps(
+            { alignItems: 'baseline' },
+            isHorizontal && {
+              flexWrap: 'wrap',
+              gap: Spacing.xxs,
+              justifyContent: 'flex-end',
+            },
+          )}
+        >
           {/* Keep error state vertical rhythm aligned with regular metric values by inheriting metric typography sizing. */}
           {error ? (
-            <Tooltip arrow placement="bottom" title={errorTooltip?.title} body={errorTooltip?.body} {...errorTooltip}>
-              <ErrorIconButton size={MetricButtonSize[size]} error={error} />
-            </Tooltip>
+            <ErrorIconButton size={MetricButtonSize[size]} error={error} />
           ) : (
             <>
               <MetricValue
@@ -255,16 +308,13 @@ export const Metric = ({
                 tooltip={valueTooltip}
                 testId={testId}
               />
-              {rightAdornment}
+              {!isHorizontal && icon}
             </>
           )}
+          {isHorizontal && notional && <Notional {...notional} />}
         </Stack>
       </WithSkeleton>
-      {notionals && (
-        <Typography variant="highlightXsNotional" color="textTertiary">
-          {notionals}
-        </Typography>
-      )}
+      {!isHorizontal && notional && <Notional {...notional} />}
     </Stack>
   )
 }

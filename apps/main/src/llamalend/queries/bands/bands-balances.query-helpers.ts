@@ -1,55 +1,59 @@
-import { BigNumber } from 'bignumber.js'
-import lodash from 'lodash'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import type { FetchedBandsBalances, SortedBandBalance } from '@/llamalend/queries/bands/types'
 import { getPricesImplementation } from '@/llamalend/queries/market/market.query-helpers'
-import type { Decimal } from '@primitives/decimal.utils'
+import { sortBy } from '@primitives/array.utils'
+import { recordEntries } from '@primitives/objects.utils'
 import PromisePool from '@supercharge/promise-pool'
-import { decimal } from '@ui-kit/utils/decimal'
+import {
+  decimal,
+  decimalDiv,
+  decimalGreaterThan,
+  decimalMultiply,
+  decimalSqrt,
+  decimalSum,
+} from '@ui-kit/utils/decimal'
 
 type BandsBalances = Record<number, { borrowed: string; collateral: string }>
-type BandsBalancesArr = { borrowed: string; collateral: string; band: number }[]
-type FetchedBandsBalances = {
-  borrowed: Decimal
-  collateral: Decimal
-  collateralUsd: number
-  collateralBorrowedUsd: number
-  isLiquidationBand: boolean
-  n: number
-  p_up: number
-  p_down: number
-  pUpDownMedian: number
-}
 
-export const sortBands = (bandsBalances: BandsBalances) => ({
-  bandsBalancesArr: lodash.sortBy(Object.keys(bandsBalances), k => +k).map(k => ({ ...bandsBalances[+k], band: +k })),
-  bandsBalances,
-})
+export const sortBands = (bandsBalances: BandsBalances): SortedBandBalance[] =>
+  sortBy(
+    recordEntries(bandsBalances).map(([band, { borrowed, collateral }]) => ({
+      borrowed: decimal(borrowed)!,
+      collateral: decimal(collateral)!,
+      band: Number(band),
+    })),
+    ({ band }) => band,
+  )
 
 export async function fetchChartBandBalancesData(
-  { bandsBalancesArr }: { bandsBalances: BandsBalances; bandsBalancesArr: BandsBalancesArr },
+  bandsBalancesArr: SortedBandBalance[],
   liquidationBand: number | null,
   market: LlamaMarketTemplate,
   isMarket: boolean,
 ) {
-  const bands = isMarket ? bandsBalancesArr.filter(b => +b.borrowed > 0 || +b.collateral > 0) : bandsBalancesArr
+  const bands = isMarket
+    ? bandsBalancesArr.filter(b => decimalGreaterThan(b.borrowed, '0') || decimalGreaterThan(b.collateral, '0'))
+    : bandsBalancesArr
 
   const { results }: { results: FetchedBandsBalances[] } = await PromisePool.for(bands).process(async b => {
     const { collateral, borrowed, band: n } = b
-    const [p_up, p_down] = await getPricesImplementation(market).calcBandPrices(n)
-    const sqrt = new BigNumber(p_up).multipliedBy(p_down).squareRoot()
-    const pUpDownMedian = new BigNumber(p_up).plus(p_down).dividedBy(2).toFixed()
-    const collateralUsd = new BigNumber(collateral).multipliedBy(sqrt)
+    const [pUp, pDown] = await getPricesImplementation(market).calcBandPrices(n)
+    const p_up = decimal(pUp)!
+    const p_down = decimal(pDown)!
+    const sqrtPrice = decimalSqrt(decimalMultiply(p_up, p_down))
+    const pUpDownMedian = decimalDiv(decimalSum(p_up, p_down), '2')
+    const collateralValue = decimalMultiply(collateral, sqrtPrice)
 
     return {
-      borrowed: decimal(borrowed)!,
-      collateral: decimal(collateral)!,
-      collateralUsd: collateralUsd.toNumber(),
-      collateralBorrowedUsd: collateralUsd.plus(borrowed).toNumber(),
-      isLiquidationBand: liquidationBand === +n,
+      borrowed,
+      collateral,
+      collateralValue,
+      totalValue: decimalSum(collateralValue, borrowed),
+      isLiquidationBand: liquidationBand === n,
       n,
-      p_up: +p_up,
-      p_down: +p_down,
-      pUpDownMedian: +pUpDownMedian,
+      p_up,
+      p_down,
+      pUpDownMedian,
     }
   })
 

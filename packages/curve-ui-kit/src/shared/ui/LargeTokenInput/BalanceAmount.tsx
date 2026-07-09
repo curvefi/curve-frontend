@@ -25,7 +25,7 @@ export const BalanceAmount = <T extends Amount>({
     <Typography
       className="balance"
       variant="highlightXs"
-      data-testid={testId}
+      {...(children != null && { 'data-testid': testId })}
       data-value={children ?? ''}
       sx={{
         ...VERTICAL_CENTER_TEXT,
@@ -33,7 +33,7 @@ export const BalanceAmount = <T extends Amount>({
         ...sx,
       }}
     >
-      {loading ? '?????' : children == null ? '-' : formatNumber(children, 'token.compact')}
+      {loading ? '?????' : formatNumber(children, 'token.compact')}
     </Typography>
   </WithSkeleton>
 )

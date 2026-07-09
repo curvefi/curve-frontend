@@ -3,13 +3,16 @@ import { MarketInformationComposite } from '@/lend/components/MarketInformationC
 import { VaultTabs } from '@/lend/components/PageVault/VaultTabs'
 import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
 import { networks } from '@/lend/networks'
-import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
+import { type MarketUrlParams } from '@/lend/types/lend.types'
 import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/utilsRouter'
+import { MarketContextProvider } from '@/llamalend/features/market-context'
 import { SupplyPositionDetails } from '@/llamalend/features/market-position-details'
+import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
 import { useUserShares } from '@/llamalend/queries/user/user-balances.query'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header'
-import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
+import { useCurve } from '@ui-kit/features/connect-wallet'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
@@ -21,60 +24,53 @@ import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
 export const Page = () => {
   const params = useParams<MarketUrlParams>()
   const { rMarket, rChainId: chainId } = parseMarketParams(params)
-  const { llamaApi: api = null, provider, isHydrated } = useCurve()
-  const { data: market, isLoading: isMarketLoading, isSuccess } = useLendMarket(chainId, rMarket)
+  const { isInitialized } = useCurve()
+  const marketQuery = useLendMarket({ chainId, rMarket })
+  const { data: market, isLoading: isMarketLoading, error: marketError } = marketQuery
   const network = networks[chainId]
   const { address: userAddress } = useConnection()
 
   useLendPageTitle(market?.collateral_token?.symbol, t`Supply`)
 
-  const pageProps: PageContentProps = {
-    params,
-    rChainId: chainId,
-    marketId: market?.id ?? '',
-    userAddress,
-    api,
-    market,
-  }
-
+  const isLoading = !isInitialized || isMarketLoading
+  const apiMarket = useLlamaMarket(
+    {
+      rMarket,
+      network: params.network,
+      userAddress,
+      enableDeprecatedMarkets: useUserProfileStore(state => state.showDeprecatedMarkets),
+    },
+    !isLoading && !market, // only enable API data when wallet is disconnected
+  )
   const supplied = +(useUserShares({ marketId: market?.id, chainId, userAddress }).data?.value ?? 0)
 
-  return isSuccess && !market ? (
+  const error = marketError ?? apiMarket.error
+  return error ? (
     <ErrorPage
-      title="404"
-      subtitle={`${t`Market`} ${rMarket} ${t`Not Found`}`}
+      title={t`Error`}
+      subtitle={error.message}
+      error={error}
       continueUrl={getCollateralListPathname(params)}
     />
-  ) : provider ? (
-    <DetailPageLayout
-      formTabs={chainId && <VaultTabs {...pageProps} params={params} />}
-      header={
-        <MarketPageHeader
-          blockchainId={network.id}
-          chainId={chainId}
-          marketId={market?.id}
-          isLoading={!isHydrated || isMarketLoading}
-          market={market}
-          marketType={LlamaMarketType.Lend}
-        />
-      }
-    >
-      <MarketBanners
-        chainId={chainId}
-        market={market}
-        rewardsBanner={<CampaignRewardsBanner chainId={chainId} market={market} />}
-      />
-      {market && supplied > 0 && (
-        <SupplyPositionDetails
-          chainId={chainId}
-          market={market}
-          userAddress={userAddress}
-          blockchainId={networks[chainId].id}
-        />
-      )}
-      <MarketInformationComposite pageProps={pageProps} rateType={MarketRateType.Supply} />
-    </DetailPageLayout>
   ) : (
-    <ConnectWalletPrompt description={t`Connect your wallet to view market`} />
+    <MarketContextProvider
+      network={network}
+      marketQuery={marketQuery}
+      apiMarket={apiMarket}
+      marketType={LlamaMarketType.Lend}
+    >
+      <DetailPageLayout
+        formTabs={(market ?? apiMarket.data) && <VaultTabs />}
+        header={<MarketPageHeader isLoading={isLoading} />}
+      >
+        <MarketBanners
+          chainId={chainId}
+          market={market}
+          rewardsBanner={<CampaignRewardsBanner chainId={chainId} market={market} />}
+        />
+        {market && supplied > 0 && <SupplyPositionDetails />}
+        <MarketInformationComposite rateType={MarketRateType.Supply} />
+      </DetailPageLayout>
+    </MarketContextProvider>
   )
 }

@@ -1,4 +1,5 @@
 import { MarketTypeSuffix, NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
+import { tokenMetric } from '@/llamalend/llama.utils'
 import { BorrowAprMetric } from '@/llamalend/widgets/BorrowAprMetric'
 import { MarketSupplyRateTooltipContent, AvailableLiquidityTooltip, TooltipOptions } from '@/llamalend/widgets/tooltips'
 import Stack from '@mui/material/Stack'
@@ -14,18 +15,22 @@ import type { AvailableLiquidity, BorrowRate, SupplyRate } from './hooks/usePage
 
 const { Spacing } = SizesAndSpaces
 
+const METRIC_CATEGORY = 'llamalend.marketHeader'
+
 export const MetricsRow = ({
   borrowRate,
   supplyRate,
   availableLiquidity,
   marketType,
   collateral,
+  borrowToken,
 }: {
   borrowRate: QueryProp<BorrowRate>
   supplyRate?: QueryProp<SupplyRate>
   availableLiquidity: QueryProp<AvailableLiquidity>
   marketType: LlamaMarketType
   collateral: { symbol: string } | undefined
+  borrowToken: { symbol: string } | undefined
 }) => {
   const isMobile = useIsMobile()
   const metricAlignment = isMobile ? 'start' : 'end'
@@ -41,14 +46,18 @@ export const MetricsRow = ({
       />
       {supplyRate && (
         <Metric
+          category={METRIC_CATEGORY}
           alignment={metricAlignment}
+          testId="market-net-supply-apy"
           label={NET_SUPPLY_RATE_TITLE}
           value={mapQuery(supplyRate, supplyRate => supplyRate.totalMinBoost)}
           valueOptions={{ unit: 'percentage' }}
-          notional={maybe(supplyRate.data?.totalAverageMinBoost, data => ({
-            value: data,
-            unit: { symbol: `% ${supplyRatePeriod} Avg`, position: 'suffix' },
-          }))}
+          notional={mapQuery(supplyRate, ({ totalAverageMinBoost: data }) =>
+            maybe(data, value => ({
+              value,
+              unit: { symbol: `% ${supplyRatePeriod} Avg`, position: 'suffix' as const },
+            })),
+          )}
           valueTooltip={{
             title: NET_SUPPLY_RATE_TITLE,
             body: (
@@ -76,16 +85,20 @@ export const MetricsRow = ({
         />
       )}
       <Metric
+        category={METRIC_CATEGORY}
         alignment={metricAlignment}
+        testId="market-available-liquidity"
         label={t`Available liquidity`}
-        value={mapQuery(availableLiquidity, availableLiquidity => availableLiquidity.value)}
-        valueOptions={{ unit: 'none' }} // We could've shown the supply token symbol, but it's a bit ugly and it's implicit anyway
+        {...tokenMetric({
+          value: mapQuery(availableLiquidity, d => d.value),
+          symbol: borrowToken?.symbol,
+          usdRate: mapQuery(availableLiquidity, d => d.usdRate),
+        })}
         valueTooltip={{
           title: t`Available Liquidity ${MarketTypeSuffix[marketType]}`,
           body: <AvailableLiquidityTooltip marketType={marketType} />,
           ...TooltipOptions,
         }}
-        notional={maybe(availableLiquidity.data?.notional, x => ({ value: x, unit: 'dollar' }))}
       />
     </Stack>
   )

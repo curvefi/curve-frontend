@@ -4,35 +4,35 @@ import { RemoveCollateralForm } from '@/llamalend/features/manage-loan/component
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
 import { ClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePositionForm'
 import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealthForm'
-import { useLiquidationStatus } from '@/llamalend/features/market-position-details/hooks/useUserLiquidationStatus'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
-import type { LoanTabProps } from '@/loan/components/PageMintMarket/types'
 import { networks } from '@/loan/networks'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { useLoanImplementationKey } from '@ui-kit/hooks/useFeatureFlags'
+import type { Decimal } from '@primitives/decimal.utils'
+import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
-import type { QueryProp } from '@ui-kit/types/util'
+import type { QueryProp, Range } from '@ui-kit/types/util'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
 // casting the networks for the loan app so we don't need to make the whole form generic
 const softLiqNetworks = networks as unknown as NetworkDict<LlamaChainId>
-type MintManageLoanProps = LoanTabProps & { collateralEvents: QueryProp<UserCollateralEvents> }
+
+type MintManageLoanProps = {
+  onPricesUpdated: (prices: Range<Decimal> | undefined) => void
+  collateralEvents: QueryProp<UserCollateralEvents>
+  isSoftLiquidation: boolean
+}
 
 const MintManageMenu = [
   {
     value: 'borrow',
     label: t`Borrow`,
-    component: ({ rChainId, ...props }: MintManageLoanProps) => (
-      <BorrowMoreForm networks={networks} chainId={rChainId} {...props} />
-    ),
+    component: props => <BorrowMoreForm networks={networks} {...props} />,
   },
   {
     value: 'repay',
     label: t`Repay`,
-    component: ({ rChainId, ...props }: MintManageLoanProps) => (
-      <RepayForm networks={networks} chainId={rChainId} {...props} />
-    ),
+    component: props => <RepayForm networks={networks} {...props} />,
   },
   {
     value: 'collateral',
@@ -41,22 +41,18 @@ const MintManageMenu = [
       {
         value: 'add',
         label: t`Add`,
-        component: ({ rChainId, ...props }: MintManageLoanProps) => (
-          <AddCollateralForm networks={networks} chainId={rChainId} {...props} />
-        ),
+        component: props => <AddCollateralForm networks={networks} {...props} />,
       },
       {
         value: 'remove',
         label: t`Remove`,
-        component: ({ rChainId, ...props }: MintManageLoanProps) => (
-          <RemoveCollateralForm networks={networks} chainId={rChainId} {...props} />
-        ),
+        component: props => <RemoveCollateralForm networks={networks} {...props} />,
       },
     ],
   },
 ] satisfies FormTab<MintManageLoanProps>[]
 
-const MintManageSoftLiquidationMenu = [
+const SoftLiquidationMenu = [
   {
     value: 'soft-liquidation',
     label: t`Manage soft liquidation`,
@@ -64,29 +60,21 @@ const MintManageSoftLiquidationMenu = [
       {
         value: 'improve-health',
         label: t`Improve health`,
-        component: ({ rChainId, ...props }: MintManageLoanProps) => (
-          <ImproveHealthForm chainId={rChainId} networks={softLiqNetworks} {...props} isInSoftLiquidation />
-        ),
+        component: props => <ImproveHealthForm networks={softLiqNetworks} {...props} isInSoftLiquidation />,
       },
       {
         value: 'close-position',
         label: t`Close`,
-        component: ({ rChainId, market }: MintManageLoanProps) => (
-          <ClosePositionForm chainId={rChainId} market={market} networks={softLiqNetworks} />
-        ),
+        component: props => <ClosePositionForm networks={softLiqNetworks} {...props} />,
       },
     ],
   },
 ] satisfies FormTab<MintManageLoanProps>[]
 
-export const ManageLoanTabs = (params: MintManageLoanProps) => {
-  const { market, curve, rChainId } = params
-  const { data: status } = useLiquidationStatus({
-    chainId: rChainId,
-    marketId: market?.id,
-    userAddress: curve?.signerAddress,
-  })
-  const isSoftLiquidation = ['softLiquidation', 'hardLiquidation'].includes(status ?? '')
-  const menu = isSoftLiquidation ? MintManageSoftLiquidationMenu : MintManageMenu
-  return <FormTabs key={useLoanImplementationKey()} params={params} menu={menu} />
-}
+export const ManageLoanTabs = (params: MintManageLoanProps) => (
+  <FormTabs
+    key={useReleaseChannel()[0]} // remount tabs when zapv2 gets enabled
+    params={params}
+    menu={params.isSoftLiquidation ? SoftLiquidationMenu : MintManageMenu}
+  />
+)

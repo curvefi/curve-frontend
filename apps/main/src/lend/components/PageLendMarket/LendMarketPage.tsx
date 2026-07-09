@@ -7,16 +7,21 @@ import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
 import { networks } from '@/lend/networks'
 import { type MarketUrlParams } from '@/lend/types/lend.types'
 import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/utilsRouter'
+import { MarketContextProvider } from '@/llamalend/features/market-context'
 import { PositionDetailsComposite } from '@/llamalend/features/market-position-details'
+import { useIsInSoftLiquidation } from '@/llamalend/features/market-position-details/hooks/useUserLiquidationStatus'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
+import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
+import { getControllerAddress, getTokens, hasResetPosition } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header'
-import { isPricesApiChain } from '@curvefi/prices-api'
+import { getBlockchainId } from '@curvefi/prices-api'
 import type { Decimal } from '@primitives/decimal.utils'
-import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
+import { useCurve } from '@ui-kit/features/connect-wallet'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useParams } from '@ui-kit/hooks/router'
+import { useLlamaResetPosition } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
@@ -28,92 +33,79 @@ import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
 export const LendMarketPage = () => {
   const params = useParams<MarketUrlParams>()
   const { rMarket, rChainId: chainId } = parseMarketParams(params)
-  const { data: market, isLoading: isMarketLoading, isSuccess } = useLendMarket(chainId, rMarket)
-  const { isHydrated, llamaApi: api = null, provider } = useCurve()
-  const marketId = market?.id ?? '' // todo: use market?.id directly everywhere since we pass the market too!
+  const marketQuery = useLendMarket({ chainId, rMarket })
+  const { data: market, isLoading: isMarketLoading, error: marketError } = marketQuery
+  const { isInitialized } = useCurve()
   const { address: userAddress } = useConnection()
   useLendPageTitle(market?.collateral_token?.symbol ?? rMarket, t`Lend`)
 
   const network = networks[chainId]
-  const tokens = useMemo(() => (market ? getTokens(market) : {}), [market])
-  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists(
-    {
-      chainId,
-      marketId,
-      userAddress,
-    },
-    !!market, // enable query as soon as market is defined, the validation suite isn't able to detect it otherwise
-  )
+  const queryParams = { chainId, marketId: market?.id, userAddress }
+  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists(queryParams)
 
-  // eslint-disable-next-line @eslint-react/use-state -- Existing violation before enabling this rule.
-  const [previewPrices, onPricesUpdated] = useState<Range<Decimal> | undefined>(undefined)
-  const controllerAddress = getControllerAddress(market)
+  const [previewPrices, setPreviewPrices] = useState<Range<Decimal> | undefined>(undefined)
+  const isLoading = !isInitialized || isMarketLoading
+  const apiMarket = useLlamaMarket(
+    {
+      rMarket,
+      network: params.network,
+      userAddress,
+      enableDeprecatedMarkets: useUserProfileStore(state => state.showDeprecatedMarkets),
+    },
+    !isLoading && !market, // only enable API data when wallet is disconnected
+  )
+  const tokens = useMemo(() => getTokens(market, apiMarket.data) ?? {}, [apiMarket.data, market])
+  const controllerAddress = getControllerAddress(market, apiMarket.data)
   const collateralEvents = useUserCollateralEvents({
     app: LlamaMarketType.Lend,
-    chain: isPricesApiChain(network.id) ? network.id : undefined,
+    chain: getBlockchainId(network.id),
     controllerAddress,
     userAddress,
     tokens,
     network,
   })
+  const showReset = useLlamaResetPosition() && hasResetPosition(market)
+  const { data: isSoftLiquidation, isLoading: isSoftLiquidationLoading } = useIsInSoftLiquidation(
+    queryParams,
+    !!loanExists,
+  )
 
-  const pageProps = {
-    params,
-    rChainId: chainId,
-    marketId,
-    userAddress,
-    isLoaded: !!market,
-    api,
-    market,
-    onPricesUpdated,
-  }
-
-  return isSuccess && !market ? (
-    <ErrorPage
-      title="404"
-      subtitle={`${t`Market`} ${rMarket} ${t`Not Found`}`}
-      continueUrl={getCollateralListPathname(params)}
-    />
-  ) : provider ? (
-    <DetailPageLayout
-      formTabs={
-        market &&
-        !isLoanExistsLoading &&
-        (loanExists ? (
-          <ManageLoanTabs {...pageProps} collateralEvents={collateralEvents} />
-        ) : (
-          <CreateLoanTabs {...pageProps} params={params} />
-        ))
-      }
-      header={
-        <MarketPageHeader
-          blockchainId={network.id}
-          chainId={chainId}
-          marketId={marketId}
-          isLoading={!isHydrated || isMarketLoading}
-          market={market}
-          marketType={LlamaMarketType.Lend}
-        />
-      }
-    >
-      <MarketBanners
-        chainId={chainId}
-        market={market}
-        rewardsBanner={<CampaignRewardsBanner chainId={chainId} market={market} />}
-      />
-      <PositionDetailsComposite
-        hasPosition={loanExists}
-        events={collateralEvents}
-        tokens={tokens}
-        params={{ chainId, marketId, userAddress }}
-      />
-      <MarketInformationComposite
-        pageProps={pageProps}
-        rateType={MarketRateType.Borrow}
-        previewPrices={previewPrices}
-      />
-    </DetailPageLayout>
+  const error = marketError ?? apiMarket.error
+  return error ? (
+    <ErrorPage title={t`Error`} subtitle={error.message} continueUrl={getCollateralListPathname(params)} />
   ) : (
-    <ConnectWalletPrompt description={t`Connect your wallet to view market`} />
+    <MarketContextProvider
+      network={network}
+      marketQuery={marketQuery}
+      apiMarket={apiMarket}
+      marketType={LlamaMarketType.Lend}
+    >
+      <DetailPageLayout
+        formTabs={
+          !isLoading &&
+          !isLoanExistsLoading &&
+          !isSoftLiquidationLoading &&
+          (loanExists ? (
+            <ManageLoanTabs
+              onPricesUpdated={setPreviewPrices}
+              collateralEvents={collateralEvents}
+              showReset={showReset}
+              isSoftLiquidation={!!isSoftLiquidation}
+            />
+          ) : (
+            <CreateLoanTabs onPricesUpdated={setPreviewPrices} />
+          ))
+        }
+        header={<MarketPageHeader isLoading={isLoading} />}
+      >
+        <MarketBanners
+          chainId={chainId}
+          market={market}
+          rewardsBanner={<CampaignRewardsBanner chainId={chainId} market={market} />}
+        />
+        <PositionDetailsComposite hasPosition={loanExists} events={collateralEvents} />
+        <MarketInformationComposite rateType={MarketRateType.Borrow} previewPrices={previewPrices} />
+      </DetailPageLayout>
+    </MarketContextProvider>
   )
 }

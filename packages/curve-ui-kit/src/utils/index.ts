@@ -1,11 +1,11 @@
 import { getAddress, isAddress } from 'viem'
 
 export * from './address'
-export * from './bigNumber'
 export * from './env'
 export * from './web3'
 export * from './network'
 export * from './number'
+export * from './pagination'
 export * from './decimal'
 export * from './mui'
 export * from './errors'

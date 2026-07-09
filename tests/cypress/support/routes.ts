@@ -12,7 +12,7 @@ import {
   PAGE_LEGAL,
 } from '@ui-kit/shared/routes'
 
-const SDOLA_LEND_POOL = '0xaD444663c6C92B497225c6cE65feE2E7F78BFb86'
+const WBTC_LEND_POOL = '0xcaD85b7fe52B1939DCEebEe9bCf0b2a5Aa0cE617'
 const DEFAULT_NETWORK = 'ethereum'
 
 export const CRVUSD_PAGE_MARKETS_ROUTE = `crvusd/${DEFAULT_NETWORK}${CRVUSD_ROUTES.PAGE_MARKETS}/`
@@ -24,7 +24,7 @@ export const APP_ROUTES = {
       ...recordValues(LEND_ROUTES).map(r =>
         r == LEND_ROUTES.PAGE_MARKETS
           ? // use market detail page, the list page redirects to the llamalend app
-            `${LEND_ROUTES.PAGE_MARKETS}/${SDOLA_LEND_POOL}${oneValueOf(LEND_MARKET_ROUTES)}`
+            `${LEND_ROUTES.PAGE_MARKETS}/${WBTC_LEND_POOL}${oneValueOf(LEND_MARKET_ROUTES)}`
           : r,
       ),
     )}`,
@@ -89,10 +89,10 @@ const ROUTE_TEST_IDS = {
   crvusd: {
     [CRVUSD_ROUTES.PAGE_PSR]: 'pegkeepers',
     [CRVUSD_ROUTES.PAGE_CRVUSD_STAKING]: 'scrvusd-page',
-    [CRVUSD_ROUTES.PAGE_MARKETS]: 'btn-connect-prompt',
+    [CRVUSD_ROUTES.PAGE_MARKETS]: 'form-connect-wallet',
     ...COMMON_ROUTE_TEST_IDS,
   },
-  lend: { [LEND_ROUTES.PAGE_MARKETS]: 'btn-connect-prompt', ...COMMON_ROUTE_TEST_IDS },
+  lend: { [LEND_ROUTES.PAGE_MARKETS]: 'form-connect-wallet', ...COMMON_ROUTE_TEST_IDS },
   llamalend: { [LLAMALEND_ROUTES.PAGE_MARKETS]: 'data-table-head', ...COMMON_ROUTE_TEST_IDS },
 }
 

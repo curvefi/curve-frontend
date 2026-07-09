@@ -1,28 +1,47 @@
+import { useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import { Column, PaginatedTable } from '@/dao/components/PaginatedTable'
 import { TableRowWrapper, TableData, TableDataLink } from '@/dao/components/PaginatedTable/TableRow'
-import { TOP_HOLDERS } from '@/dao/constants'
-import { useStore } from '@/dao/store/useStore'
+import { useVeCrvHoldersQuery, type VeCrvHolder } from '@/dao/entities/vecrv-holders'
 import type { AllHoldersSortBy } from '@/dao/types/dao.types'
-import { getEthPath } from '@/dao/utils'
-import type { Locker } from '@curvefi/prices-api/dao'
+import { formatHolderName, getEthPath } from '@/dao/utils'
 import Stack from '@mui/material/Stack'
+import { sortBy } from '@primitives/array.utils'
+import { maybe } from '@primitives/objects.utils'
 import { formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
-import { shortenAddress, formatNumber } from '@ui-kit/utils'
+import { formatNumber } from '@ui-kit/utils'
+
+type HoldersSort = {
+  key: AllHoldersSortBy
+  order: 'asc' | 'desc'
+}
+
+const getSortableHolderValue = (holder: VeCrvHolder, key: AllHoldersSortBy) =>
+  key === 'unlockTime' ? (holder.unlockTime ?? 0) : Number(holder[key])
 
 export const TopHoldersTable = () => {
-  const veCrvHolders = useStore(state => state.analytics.veCrvHolders)
-  const allHoldersSortBy = useStore(state => state.analytics.allHoldersSortBy)
-  const setAllHoldersSortBy = useStore(state => state.analytics.setAllHoldersSortBy)
-  const getVeCrvHolders = useStore(state => state.analytics.getVeCrvHolders)
+  const {
+    data: veCrvHolders = [],
+    isLoading: holdersLoading,
+    isError: holdersError,
+    isSuccess: holdersSuccess,
+    refetch: refetchHolders,
+  } = useVeCrvHoldersQuery({})
+  const [allHoldersSortBy, setAllHoldersSortBy] = useState<HoldersSort>({
+    key: 'weightRatio',
+    order: 'desc',
+  })
 
   const tableMinWidth = 41.875
 
-  const holdersArray = Object.values(veCrvHolders.allHolders)
+  const holdersArray = useMemo(
+    () => sortBy(veCrvHolders, holder => getSortableHolderValue(holder, allHoldersSortBy.key), allHoldersSortBy.order),
+    [allHoldersSortBy, veCrvHolders],
+  )
 
-  const HOLDERS_LABELS: Column<Locker>[] = [
+  const HOLDERS_LABELS: Column<VeCrvHolder>[] = [
     { key: 'user', label: 'Holder', disabled: true },
     { key: 'weight', label: 'veCRV' },
     { key: 'locked', label: 'CRV Locked' },
@@ -35,40 +54,41 @@ export const TopHoldersTable = () => {
       <PaginatedTable
         data={holdersArray}
         minWidth={tableMinWidth}
-        isLoading={veCrvHolders.fetchStatus === 'LOADING'}
-        isError={veCrvHolders.fetchStatus === 'ERROR'}
-        isSuccess={veCrvHolders.fetchStatus === 'SUCCESS'}
+        isLoading={holdersLoading}
+        isError={holdersError}
+        isSuccess={holdersSuccess}
         columns={HOLDERS_LABELS}
         sortBy={allHoldersSortBy}
         errorMessage={t`An error occurred while veCRV holders data.`}
-        setSortBy={key => setAllHoldersSortBy(key as AllHoldersSortBy)}
-        getData={() => void getVeCrvHolders()}
+        setSortBy={key =>
+          setAllHoldersSortBy(current => ({
+            key: key as AllHoldersSortBy,
+            order: current.key === key && current.order === 'desc' ? 'asc' : 'desc',
+          }))
+        }
+        getData={() => void refetchHolders()}
         noDataMessage={t`No veCRV holders found.`}
         renderRow={(holder, index) => (
           <TableRowWrapper key={holder.user} columns={HOLDERS_LABELS.length}>
             <StyledTableDataLink className="align-left" href={getEthPath(`${DAO_ROUTES.PAGE_USER}/${holder.user}`)}>
               <span>{index + 1}.</span>
-              <span style={{ textDecoration: 'underline' }}>
-                {TOP_HOLDERS[holder.user.toLowerCase()]
-                  ? TOP_HOLDERS[holder.user.toLowerCase()].title
-                  : shortenAddress(holder.user)}
-              </span>
+              <span style={{ textDecoration: 'underline' }}>{formatHolderName(holder.user)}</span>
             </StyledTableDataLink>
             <TableData className={allHoldersSortBy.key === 'weight' ? 'sortby-active right-padding' : 'right-padding'}>
-              {formatNumber(holder.weight.fromWei(), { abbreviate: true })}
+              {formatNumber(holder.weight, 'token.compact')}
             </TableData>
             <TableData className={allHoldersSortBy.key === 'locked' ? 'sortby-active right-padding' : 'right-padding'}>
-              {formatNumber(holder.locked.fromWei(), { abbreviate: true })}
+              {formatNumber(holder.locked, 'token.compact')}
             </TableData>
             <TableData
               className={allHoldersSortBy.key === 'weightRatio' ? 'sortby-active right-padding' : 'right-padding'}
             >
-              {formatNumber(holder.weightRatio, { unit: 'percentage', abbreviate: true })}
+              {formatNumber(holder.weightRatio, 'percent.value')}
             </TableData>
             <TableData
               className={allHoldersSortBy.key === 'unlockTime' ? 'sortby-active right-padding' : 'right-padding'}
             >
-              {holder.unlockTime ? formatDate(holder.unlockTime) : 'N/A'}
+              {maybe(holder.unlockTime, formatDate) ?? 'N/A'}
             </TableData>
           </TableRowWrapper>
         )}

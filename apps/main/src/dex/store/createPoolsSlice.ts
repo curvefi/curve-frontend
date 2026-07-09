@@ -12,6 +12,7 @@ import {
   CurveApi,
   PoolData,
   PoolDataMapper,
+  PoolVolumes,
   RewardsApyMapper,
   TokensMapper,
 } from '@/dex/types/main.types'
@@ -24,6 +25,7 @@ import { fetchTokenUsdRate, getTokenUsdRateQueryData } from '@ui-kit/lib/model/e
 import { Chain as ChainEnum } from '@ui-kit/utils'
 import { fetchNetworks } from '../entities/networks'
 import { getPools } from '../lib/pools'
+import { refetchPoolVolumes } from '../queries/pool-volume.query'
 import { fetchPoolsBlacklist } from '../queries/pools-blacklist.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -40,13 +42,15 @@ type SliceState = {
   error: string
 }
 
-const sliceKey = 'pools'
+const SLICE_KEY = 'pools'
 
 export type PoolsSlice = {
-  [sliceKey]: SliceState & {
+  [SLICE_KEY]: SliceState & {
     fetchPools: (
       curve: CurveApi,
       poolIds: string[],
+      poolVolumes: PoolVolumes,
+      includeGaugeData: boolean,
     ) => Promise<{ poolsMapper: PoolDataMapper; poolDatas: PoolData[] } | undefined>
     fetchNewPool: (curve: CurveApi, poolId: string) => Promise<PoolData | undefined>
     fetchPoolsRewardsApy: (chainId: ChainId, poolDatas: PoolData[], useApi?: boolean) => Promise<void>
@@ -74,10 +78,10 @@ const DEFAULT_STATE: SliceState = {
 } as const
 
 export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): PoolsSlice => ({
-  [sliceKey]: {
+  [SLICE_KEY]: {
     ...DEFAULT_STATE,
 
-    fetchPools: async (curve, poolIds) => {
+    fetchPools: async (curve, poolIds, poolVolumes, includeGaugeData) => {
       const { pools, storeCache, tokens } = get()
       const { chainId } = curve
 
@@ -111,6 +115,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
           new Set(blacklist),
           networks[chainId],
           failedFetching24hOldVprice,
+          includeGaugeData,
         )
 
         const poolDatas = Object.entries(poolsMapper).map(([_, v]) => v)
@@ -137,7 +142,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         if (!partialPoolDatas.length) return { poolsMapper, poolDatas: partialPoolDatas }
 
         // fetch tokens
-        await tokens.setTokensMapper(curve, partialPoolDatas)
+        tokens.setTokensMapper(curve, partialPoolDatas, poolVolumes)
 
         return { poolsMapper, poolDatas: partialPoolDatas }
       } catch (error) {
@@ -158,11 +163,12 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         curve.tricryptoFactory.fetchNewPools(),
         curve.stableNgFactory.fetchNewPools(),
       ])
-      const resp = await get()[sliceKey].fetchPools(curve, [poolId])
+      const poolVolumes = await refetchPoolVolumes({ chainId: curve.chainId })
+      const resp = await get()[SLICE_KEY].fetchPools(curve, [poolId], poolVolumes, true)
       return resp?.poolsMapper?.[poolId]
     },
     fetchPoolCurrenciesReserves: async (curve, poolData) => {
-      const { ...sliceState } = get()[sliceKey]
+      const { ...sliceState } = get()[SLICE_KEY]
       const { chainId } = curve
       const { pool, isWrapped, tokens, tokenAddresses } = poolData
 
@@ -220,7 +226,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
     fetchPoolsRewardsApy: async (chainId, poolIds, useApi = true) => {
       log('fetchPoolsRewardsApy', chainId, poolIds.length)
       const state = get()
-      const { rewardsApyMapper: allRewardsApyMapper, setStateByActiveKey } = state[sliceKey]
+      const { rewardsApyMapper: allRewardsApyMapper, setStateByActiveKey } = state[SLICE_KEY]
       const networks = await fetchNetworks()
       const network = networks[chainId]
 
@@ -241,7 +247,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
     },
     // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
     fetchMissingPoolsRewardsApy: async (chainId, poolDatas) => {
-      const { rewardsApyMapper: allRewardsApyMapper, fetchPoolsRewardsApy } = get()[sliceKey]
+      const { rewardsApyMapper: allRewardsApyMapper, fetchPoolsRewardsApy } = get()[SLICE_KEY]
       const rewardsApyMapper = allRewardsApyMapper[chainId] ?? {}
       const missingRewardsPoolIds = poolDatas.filter(({ pool }) => typeof rewardsApyMapper[pool.id] === 'undefined')
 
@@ -317,20 +323,20 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
 
     // slice helpers
     setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => {
-      get().setAppStateByActiveKey(sliceKey, key, activeKey, value)
+      get().setAppStateByActiveKey(SLICE_KEY, key, activeKey, value)
     },
     setStateByKey: <T>(key: StateKey, value: T) => {
-      get().setAppStateByKey(sliceKey, key, value)
+      get().setAppStateByKey(SLICE_KEY, key, value)
     },
     setStateByKeys: (sliceState: Partial<SliceState>) => {
-      get().setAppStateByKeys(sliceKey, sliceState)
+      get().setAppStateByKeys(SLICE_KEY, sliceState)
     },
     resetState: () => {
-      get().resetAppState(sliceKey, {
+      get().resetAppState(SLICE_KEY, {
         ...DEFAULT_STATE,
-        poolsMapper: get()[sliceKey].poolsMapper,
-        currencyReserves: get()[sliceKey].currencyReserves,
-        rewardsApyMapper: get()[sliceKey].rewardsApyMapper,
+        poolsMapper: get()[SLICE_KEY].poolsMapper,
+        currencyReserves: get()[SLICE_KEY].currencyReserves,
+        rewardsApyMapper: get()[SLICE_KEY].rewardsApyMapper,
       })
     },
   },

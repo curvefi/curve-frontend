@@ -9,7 +9,7 @@ type UseHistoricalChartPaginationParams = {
   candlestickSeriesRef: RefObject<ISeriesApi<'Candlestick'> | null>
   chartRef: RefObject<IChartApi | null>
   fetchMoreChartData: () => Promise<unknown>
-  ohlcData: LpPriceOhlcDataFormatted[]
+  ohlcData: LpPriceOhlcDataFormatted[] | undefined
   oraclePriceData?: OraclePriceData[]
   oraclePriceSeriesRef: RefObject<ISeriesApi<'Line'> | null>
 }
@@ -19,8 +19,10 @@ const HISTORICAL_PAGE_THRESHOLD_BARS = 50
 const shouldFetchHistoricalPage = (barsInfo: { barsBefore: number } | null) =>
   !!barsInfo && barsInfo.barsBefore < HISTORICAL_PAGE_THRESHOLD_BARS
 
-const getHistoricalPaginationDataLength = (ohlcData: LpPriceOhlcDataFormatted[], oraclePriceData?: OraclePriceData[]) =>
-  ohlcData.length || (oraclePriceData?.length ?? 0)
+const getHistoricalPaginationDataLength = (
+  ohlcData: LpPriceOhlcDataFormatted[] | undefined,
+  oraclePriceData?: OraclePriceData[],
+) => (ohlcData?.length || oraclePriceData?.length) ?? 0
 
 export const useHistoricalChartPagination = ({
   candlestickSeriesRef,
@@ -77,7 +79,7 @@ export const useHistoricalChartPagination = ({
 
     const candlestickSeries = candlestickSeriesRef.current
     const oraclePriceSeries = oraclePriceSeriesRef.current
-    const hasCandlestickData = ohlcDataRef.current.length > 0
+    const hasCandlestickData = !!ohlcDataRef.current?.length
     const hasOraclePriceData = Boolean(oraclePriceDataRef.current?.length)
     const paginationSeries =
       hasCandlestickData && candlestickSeries

@@ -28,7 +28,7 @@
  *   userAddr: "0x47E2D28169738039755586743E2dfCF3bd643f86",
  * };
  */
-export type PathRequestV2 = {
+type PathRequestV2 = {
   /**
    * Deprecated
    *

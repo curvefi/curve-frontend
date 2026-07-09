@@ -1,17 +1,15 @@
 import { sortBy } from 'lodash'
 import { useMemo, useState } from 'react'
-import { Address } from 'viem'
-import { formatCollateralNotional, getTokens, getUtilizationPercent } from '@/llamalend/llama.utils'
+import { getUtilizationPercent, tokenMetric } from '@/llamalend/llama.utils'
 import { useMarketCapAndAvailable, useMarketTotalCollateral, useRateCurve } from '@/llamalend/queries/market'
 import { TooltipOptions, TotalCollateralTooltip, UtilizationTooltip } from '@/llamalend/widgets/tooltips'
 import { RateCurveTooltip } from '@/llamalend/widgets/tooltips/chart/RateCurveTooltip'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
-import type { Chain } from '@curvefi/prices-api'
 import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import { useTheme } from '@mui/material/styles'
-import { maybe, maybes, notFalsy } from '@primitives/objects.utils'
+import { Decimal } from '@primitives/decimal.utils'
+import { maybes, notFalsy } from '@primitives/objects.utils'
 import { combineQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
@@ -27,10 +25,13 @@ import {
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { fallbackQ, mapQuery, useMappedQuery } from '@ui-kit/types/util'
-import { decimal, decimalMax, decimalMinus, formatNumber } from '@ui-kit/utils'
+import { fallbackQ, mapQuery, q, useMappedQuery } from '@ui-kit/types/util'
+import { decimal, decimalMax, decimalMinus, decimalMultiply, decimalSum, formatNumber } from '@ui-kit/utils'
+import { useMarketContext } from '../features/market-context'
 
 const { Spacing, Height } = SizesAndSpaces
+
+const METRIC_CATEGORY = 'llamalend.marketCharts'
 
 export type RateCurveChartPoint = {
   utilization: number
@@ -48,20 +49,41 @@ const SERIES_CONFIG: { key: RateCurveSeriesKey; label: string; dash?: ChartLineD
 const transform = ({ rates = [] }: { rates: RateCurveChartPoint[] | undefined }): RateCurveChartPoint[] =>
   sortBy(rates, 'utilization')
 
-export const MarketRateCurveChart = ({
-  market,
-  blockchainId,
-  chainId,
-  marketId,
+/**
+ * Returns the total collateral expressed in collateral-token units.
+ * The borrowed-token portion can appear in collateral after soft liquidation, so it must be converted through USD rates
+ * before being added to the native collateral amount.
+ *
+ * Example: 10 WETH collateral + 4,000 crvUSD borrowed collateral, with WETH at $2,000 and crvUSD at $1,
+ * becomes 12 WETH: 10 + (4,000 * 1 / 2,000).
+ */
+const calculateCombinedCollateral = ({
+  collateral,
+  borrowed,
+  collateralUsdRate,
+  borrowUsdRate,
 }: {
-  market: LendMarketTemplate | undefined | null
-  blockchainId: Chain | undefined
-  chainId: number | undefined
-  marketId: string | undefined
-}) => {
+  collateral: Decimal | undefined
+  borrowed: Decimal | undefined
+  collateralUsdRate: number
+  borrowUsdRate: number
+}) =>
+  collateralUsdRate === 0
+    ? undefined
+    : maybes([collateral, borrowed], (collateral, borrowed) =>
+        decimalSum(collateral, decimalMultiply(borrowed, borrowUsdRate / collateralUsdRate)),
+      )
+
+export const MarketRateCurveChart = () => {
+  const {
+    chainId,
+    blockchainId,
+    marketId,
+    controllerAddress,
+    apiMarket,
+    tokens: { collateralToken, borrowToken },
+  } = useMarketContext()
   const [visibleSeries, setVisibleSeries] = useState<RateCurveSeriesKey[]>(SERIES_CONFIG.map(({ key }) => key))
-  const controllerAddress = market?.addresses.controller as Address | undefined
-  const { collateralToken, borrowToken } = market ? getTokens(market) : {}
   const {
     design: { Color },
   } = useTheme()
@@ -76,13 +98,7 @@ export const MarketRateCurveChart = ({
     mapQuery(rateCurve, ({ currentUtilization }) => currentUtilization),
   )
   const totalBorrowed = mapQuery(capAndAvailable, ({ available, totalAssets }) =>
-    maybes([available, totalAssets], ([available, totalAssets]) =>
-      decimalMax(decimalMinus(totalAssets, available), '0'),
-    ),
-  )
-  const totalBorrowedUsdValue = combineQueries(
-    [totalBorrowed, borrowedUsdRate],
-    (totalBorrowed, borrowedUsdRate) => Number(totalBorrowed) * borrowedUsdRate,
+    maybes([available, totalAssets], (available, totalAssets) => decimalMax(decimalMinus(totalAssets, available), '0')),
   )
   const utilizationBreakdown = combineQueries(
     [totalBorrowed, capAndAvailable],
@@ -94,6 +110,12 @@ export const MarketRateCurveChart = ({
 
   const collateralTotal = mapQuery(totalCollateral, totalCollateral => totalCollateral.collateral)
   const borrowedCollateralTotal = mapQuery(totalCollateral, totalCollateral => totalCollateral.borrowed)
+  const combinedCollateral = combineQueries(
+    [totalCollateral, collateralUsdRate, borrowedUsdRate],
+    ({ collateral, borrowed }, collateralUsdRate, borrowUsdRate) =>
+      calculateCombinedCollateral({ collateral, borrowed, collateralUsdRate, borrowUsdRate }),
+  )
+
   const collateralUsdValue = combineQueries([collateralTotal, collateralUsdRate], (total, usdRate) => +total * usdRate)
   const borrowedCollateralUsdValue = combineQueries(
     [borrowedCollateralTotal, borrowedUsdRate],
@@ -139,7 +161,7 @@ export const MarketRateCurveChart = ({
   )
 
   return (
-    <Card size="small">
+    <Card size="small" data-testid="interest-rate-utilization-chart">
       <CardHeader title={t`Interest Rate & Utilization`} />
       <CardContent component={Stack} sx={{ gap: Spacing.md }}>
         <Stack
@@ -150,11 +172,14 @@ export const MarketRateCurveChart = ({
           }}
         >
           <Metric
-            size="medium"
+            category={METRIC_CATEGORY}
             label={t`Utilization`}
-            value={currentUtilization}
+            value={fallbackQ(
+              currentUtilization,
+              mapQuery(apiMarket, m => m.utilizationPercent),
+            )}
             valueOptions={{ unit: 'percentage' }}
-            notional={utilizationBreakdown.data}
+            notional={utilizationBreakdown}
             valueTooltip={{
               title: t`Utilization`,
               body: <UtilizationTooltip marketType={LlamaMarketType.Lend} />,
@@ -162,26 +187,30 @@ export const MarketRateCurveChart = ({
             }}
           />
           <Metric
-            size="medium"
+            category={METRIC_CATEGORY}
             label={t`Total borrowed`}
-            value={totalBorrowed}
-            valueOptions={{
-              unit: borrowToken?.symbol ? { symbol: ` ${borrowToken.symbol}`, position: 'suffix' } : undefined,
-              abbreviate: true,
-            }}
-            notional={maybe(totalBorrowedUsdValue.data, val => formatNumber(val, 'usd.notional'))}
+            {...tokenMetric({
+              value: fallbackQ(
+                totalBorrowed,
+                mapQuery(apiMarket, m => m.assets.borrowed.balance),
+              ),
+              symbol: borrowToken?.symbol,
+              usdRate: q(borrowedUsdRate),
+            })}
           />
           <Metric
-            size="medium"
+            category={METRIC_CATEGORY}
             label={t`Total collateral`}
-            value={combinedCollateralUsdValue}
-            valueOptions={{ unit: 'dollar' }}
-            notional={maybe(totalCollateral.data, ({ collateral, borrowed }) =>
-              formatCollateralNotional(
-                { value: decimal(collateral), symbol: collateralToken?.symbol },
-                { value: decimal(borrowed), symbol: borrowToken?.symbol },
+            {...tokenMetric({
+              value: fallbackQ(
+                combinedCollateral,
+                combineQueries([apiMarket, collateralUsdRate], (market, collateralUsdRate) =>
+                  collateralUsdRate ? decimal(market.totalCollateralUsd / collateralUsdRate) : undefined,
+                ),
               ),
-            )}
+              symbol: collateralToken?.symbol,
+              usdRate: q(collateralUsdRate),
+            })}
             valueTooltip={{
               title: t`Total Collateral`,
               body: (

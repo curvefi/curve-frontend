@@ -35,6 +35,8 @@ import { useCrvUsdSupplyTotal } from '../queries/crv-usd-supply-total.query'
 
 const { Spacing, Height } = SizesAndSpaces
 
+const METRIC_CATEGORY = 'llamalend.marketCharts'
+
 export type CrvUsdPriceChartPoint = {
   timestamp: number
   price: number
@@ -118,7 +120,7 @@ export const CrvUsdPriceChart = () => {
   )
 
   return (
-    <Card size="small">
+    <Card size="small" data-testid="crvusd-price-chart">
       <CardHeader
         title={t`Historical crvUSD Peg`}
         action={
@@ -139,19 +141,19 @@ export const CrvUsdPriceChart = () => {
           }}
         >
           <Metric
-            size="medium"
+            category={METRIC_CATEGORY}
             label={t`Current price`}
             value={q(currentPrice)}
             valueOptions={{ unit: 'dollar', maximumSignificantDigits: 5 }}
           />
           <Metric
-            size="medium"
+            category={METRIC_CATEGORY}
             label={t`1W deviation`}
             value={oneWeekDeviation}
             valueOptions={{ unit: 'percentage' }}
           />
           <Metric
-            size="medium"
+            category={METRIC_CATEGORY}
             label={t`Total supply`}
             value={mapQuery(totalSupply, totalSupply => maybe(totalSupply, totalSupply => totalSupply))}
             valueOptions={{ unit: 'dollar' }}

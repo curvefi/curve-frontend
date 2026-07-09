@@ -1,53 +1,43 @@
-import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { StakeTokenLabel } from '@/llamalend/widgets/action-card/StakeTokenLabel'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import Button from '@mui/material/Button'
+import { FormButton } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
+import { useMarketContext } from '../../market-context'
 import { useUnstakeForm } from '../hooks/useUnstakeForm'
 import { AlertUnstakeOnly } from './alerts/AlertUnstakeOnly'
 import { UnstakeSupplyInfoList } from './UnstakeSupplyInfoList'
 
 type UnstakeFormProps<ChainId extends IChainId> = {
-  market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
-  chainId: ChainId
-  enabled?: boolean
 }
 
 const TEST_ID_PREFIX = 'supply-unstake'
 
-export const UnstakeForm = <ChainId extends IChainId>({
-  market,
-  networks,
-  chainId,
-  enabled,
-}: UnstakeFormProps<ChainId>) => {
+export const UnstakeForm = <ChainId extends IChainId>({ networks }: UnstakeFormProps<ChainId>) => {
+  const { chainId, marketId, controllerAddress, vaultToken } = useMarketContext<ChainId>()
   const network = networks[chainId]
   const blockchainId = network.id
 
-  const {
-    form,
-    params,
-    isPending,
-    onSubmit,
-    isDisabled,
-    vaultToken,
-    borrowToken,
-    collateralToken,
-    unstakeError,
-    formErrors,
-    max,
-  } = useUnstakeForm({ market, network, enabled })
+  const { form, params, isPending, onSubmit, isDisabled, borrowToken, collateralToken, unstakeError, formErrors, max } =
+    useUnstakeForm({ network })
 
   return (
     <Form
       {...form}
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
       onSubmit={onSubmit}
-      footer={<UnstakeSupplyInfoList form={form} params={params} networks={networks} tokens={{ borrowToken }} />}
+      footer={
+        <UnstakeSupplyInfoList
+          form={form}
+          params={params}
+          networks={networks}
+          borrowToken={borrowToken}
+          controllerAddress={controllerAddress}
+        />
+      }
     >
       <LoanFormTokenInput
         label={t`Amount to unstake`}
@@ -58,10 +48,7 @@ export const UnstakeForm = <ChainId extends IChainId>({
         max={max}
         testId={`${TEST_ID_PREFIX}-input`}
         network={network}
-        positionBalance={{
-          position: max,
-          tooltip: t`Staked vault shares`,
-        }}
+        positionBalance={{ position: max, tooltip: t`Staked vault shares` }}
         tokenSelector={
           <StakeTokenLabel
             blockchainId={blockchainId}
@@ -73,14 +60,13 @@ export const UnstakeForm = <ChainId extends IChainId>({
       />
       {Number(max.data) > 0 && <AlertUnstakeOnly />}
 
-      <Button
-        type="submit"
-        loading={isPending || !market}
+      <FormButton
+        pending={isPending}
+        loading={!marketId}
         disabled={isDisabled}
-        data-testid={`${TEST_ID_PREFIX}-submit-button`}
-      >
-        {isPending ? t`Processing...` : t`Unstake`}
-      </Button>
+        label={t`Unstake`}
+        testId={`${TEST_ID_PREFIX}-submit-button`}
+      />
 
       <FormAlerts error={unstakeError} formErrors={formErrors} handledErrors={['unstakeAmount']} />
     </Form>

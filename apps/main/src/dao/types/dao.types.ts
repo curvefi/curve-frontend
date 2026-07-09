@@ -11,7 +11,7 @@ export type ChainId = number
 export type NetworkEnum = INetworkName
 
 export type FormType = 'create' | 'adjust_crv' | 'adjust_date' | 'withdraw'
-export type NetworkUrlParams = { network: INetworkName }
+type NetworkUrlParams = { network: INetworkName }
 export type GaugeUrlParams = NetworkUrlParams & { gaugeAddress: Address }
 export type UserUrlParams = NetworkUrlParams & { userAddress: Address }
 export type ProposalUrlParams = NetworkUrlParams & { proposalId: string }
@@ -30,7 +30,7 @@ export type CurveJsProposalType = 'PARAMETER' | 'OWNERSHIP'
 export type GaugeVotesResponse = {
   votes: GaugeVoteData[]
 }
-export type GaugeVoteData = {
+type GaugeVoteData = {
   user: string
   weight: number
   block_number: number
@@ -100,15 +100,13 @@ export type FnStepResponse = {
   error: string
 }
 
-export type FetchingState = 'LOADING' | 'SUCCESS' | 'ERROR'
+type FetchingState = 'LOADING' | 'SUCCESS' | 'ERROR'
 export type TransactionState = '' | 'CONFIRMING' | 'LOADING' | 'SUCCESS' | 'ERROR'
 export type ProposalListFilter = 'all' | 'active' | 'passed' | 'denied' | 'executable'
 export type ProposalListFilterItem = { key: ProposalListFilter; label: string }
 export type SortByFilterProposals = 'timeCreated' | 'endingSoon'
 export type SortByFilterGaugesKeys =
-  | 'gauge_relative_weight'
-  | 'gauge_relative_weight_7d_delta'
-  | 'gauge_relative_weight_60d_delta'
+  'gauge_relative_weight' | 'gauge_relative_weight_7d_delta' | 'gauge_relative_weight_60d_delta'
 export type SortByFilterGauges = {
   key: SortByFilterGaugesKeys
   order: SortDirection

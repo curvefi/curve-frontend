@@ -1,16 +1,8 @@
 import { useMemo } from 'react'
-import { useConnection } from 'wagmi'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
-import {
-  getAmmAddress,
-  getControllerAddress,
-  getZapAddress,
-  getMarketType,
-  getTokens,
-  hasZapV2,
-} from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import { hasLeverage } from '@/llamalend/llama.utils'
+import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { getCreateLoanEstimateGasOptions } from '@/llamalend/queries/create-loan/create-loan-estimate-gas.query'
 import { useCreateLoanExpectedCollateral } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
 import { useCreateLoanPriceImpact } from '@/llamalend/queries/create-loan/create-loan-price-impact.query'
@@ -20,18 +12,18 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import type { Decimal } from '@primitives/decimal.utils'
 import { pick } from '@primitives/objects.utils'
 import type { RouteResponse } from '@ui-kit/entities/router-api'
-import { useForm, useCallbackSync } from '@ui-kit/features/forms'
+import { useCallbackSync, useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { q, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
-import { shouldBlockTransaction } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
-import { LoanPreset, PRESET_RANGES, LEVERAGE } from '../../../constants'
+import { LEVERAGE, LoanPreset, PRESET_RANGES } from '../../../constants'
 import { useCreateLoanMutation } from '../../../mutations/create-loan.mutation'
 import { useCreateLoanIsApproved } from '../../../queries/create-loan/create-loan-approved.query'
 import { invalidateCreateLoanRouteQueries } from '../../../queries/create-loan/create-loan-route-invalidation'
 import { createLoanQueryValidationSuite } from '../../../queries/validation/borrow.validation'
+import { useMarketContext } from '../../market-context'
 import { type CreateLoanForm } from '../types'
 import { useIsHighLiquidationRisk } from './useIsHighLiquidationRisk'
 import { useMaxTokenValues } from './useMaxTokenValues'
@@ -50,20 +42,26 @@ const validation = createLoanQueryValidationSuite({
 })
 
 export function useCreateLoanForm<ChainId extends LlamaChainId>({
-  market,
   networks,
-  chainId,
   preset,
   onPricesUpdated,
 }: {
-  market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
-  chainId: ChainId
   preset: LoanPreset
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) {
-  const { address: userAddress } = useConnection()
-  const marketAlert = useMarketAlert(chainId, getControllerAddress(market), getMarketType(market))
+  const {
+    chainId,
+    market,
+    marketId,
+    ammAddress,
+    zapAddress,
+    controllerAddress,
+    tokens: { borrowToken, collateralToken },
+    marketType,
+    userAddress,
+  } = useMarketContext<ChainId>()
+  const marketAlert = useMarketAlert(chainId, controllerAddress, marketType)
   const formOptions = {
     validation,
     defaultValues: {
@@ -82,7 +80,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     useMemo(
       () => ({
         chainId,
-        marketId: market?.id,
+        marketId,
         userAddress,
         debt: values.debt,
         maxDebt: values.maxDebt,
@@ -97,7 +95,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
       }),
       [
         chainId,
-        market?.id,
+        marketId,
         userAddress,
         values.debt,
         values.maxDebt,
@@ -118,7 +116,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     error: creationError,
   } = useCreateLoanMutation({
     network: networks[chainId],
-    marketId: market?.id,
+    marketId,
     onReset: () => form.reset(userDefaultValues),
     userAddress,
   })
@@ -131,7 +129,8 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     onClose,
     isOpen,
   } = useFormLowSolvency({
-    market,
+    controllerAddress,
+    marketType,
     chainId,
     onSubmit: onMutationSubmit,
     handleFormSubmit: form.handleSubmit,
@@ -140,13 +139,12 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   const disabledAlert = (marketAlert?.isBorrowDisabled ? marketAlert : undefined) ?? solvencyDisabledAlert
 
   const { formState } = form
-  const { borrowToken, collateralToken } = market ? getTokens(market) : {}
-  const maxTokenValues = useMaxTokenValues({ market, params, form })
+  const collateralTokenAddress = collateralToken?.address
+  const maxTokenValues = useMaxTokenValues({ market, marketId, collateralTokenAddress, params, form })
   const expectedCollateral = useCreateLoanExpectedCollateral(params, values.leverageEnabled)
 
   useCallbackSync(useCreateLoanPrices(params), onPricesUpdated)
 
-  const priceImpact = q(useCreateLoanPriceImpact(params, values.leverageEnabled))
   const isHighLiquidationRisk = q(useIsHighLiquidationRisk(params))
 
   const isPending = formState.isSubmitting || isCreating
@@ -156,9 +154,8 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     values,
     params,
     isPending,
-    isLoading: isPending || !market || isSolvencyLoading,
-    isDisabled:
-      !!disabledAlert || !formState.isValid || isPending || isDebouncing || shouldBlockTransaction(priceImpact, params),
+    isLoading: isPending || !marketId || isSolvencyLoading,
+    isDisabled: !!disabledAlert || !formState.isValid || isPending || isDebouncing,
     onSubmit,
     maxTokenValues,
     borrowToken,
@@ -170,30 +167,27 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
       ...combineQueryState(maxTokenValues.debt, expectedCollateral),
     },
     isApproved: useCreateLoanIsApproved(params),
-    priceImpact,
     isHighLiquidationRisk,
+    isLeverageSupported: !!market && hasLeverage(market),
     formErrors: formState.visibleErrors,
     disabledAlert,
-    solvencyModal: {
-      isOpen,
-      onClose,
-      onConfirm,
-    },
-    routes: useMarketRoutes({
+    solvencyModal: { isOpen, onClose, onConfirm },
+    priceImpact: q(useCreateLoanPriceImpact(params, !zapAddress)), // overridden by useMarketRoutes when zapv2 is enabled
+    ...useMarketRoutes({
       chainId,
-      marketAddress: getAmmAddress(market),
+      marketAddress: ammAddress,
       tokenIn: borrowToken,
       tokenOut: collateralToken,
       amountIn: decimalSum(params.debt, params.userBorrowed),
       ...pick(params, 'slippage'),
-      enabled: params.leverageEnabled && !!market && hasZapV2(market),
+      enabled: params.leverageEnabled && !!zapAddress,
       onChange: async (route: RouteResponse | undefined) => {
         form.update({ routeId: route?.id })
         await invalidateCreateLoanRouteQueries(route, params)
       },
       getRouteGasOptions: (routeId: string | undefined) => getCreateLoanEstimateGasOptions({ ...params, routeId }),
       networks,
-      zapAddress: market && getZapAddress(market),
+      zapAddress,
     }),
   }
 }

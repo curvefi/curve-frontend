@@ -1,16 +1,13 @@
-import createFastify from 'fastify'
+import { createApiServer } from '@curvefi/api-server'
 import { getRoutes } from './routes/routes'
-import { RoutesOpts, RoutesPath } from './routes/routes.schemas'
+import { RoutesOpts, ROUTES_PATH, type RoutesQuery } from './routes/routes.schemas'
 
-export const createRouterApiServer = ({ npm_package_version, NODE_ENV, SERVICE_NAME, LOG_LEVEL } = process.env) =>
-  createFastify({ logger: { level: LOG_LEVEL || (NODE_ENV === 'production' ? 'info' : 'debug') } })
-    // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
-    .get('/health', async () => ({
-      status: 'ok',
-      service: SERVICE_NAME || 'router-api',
-      environment: NODE_ENV || 'development',
-      version: npm_package_version || '0.0.1',
-      uptime: process.uptime(),
-      timestamp: new Date().toISOString(),
-    }))
-    .get(RoutesPath, RoutesOpts, getRoutes)
+export const createRouterApiServer = (env = process.env) =>
+  createApiServer({ serviceName: 'router-api', env }).get<{ Querystring: RoutesQuery }>(
+    ROUTES_PATH,
+    RoutesOpts,
+    async (request, reply) => {
+      const { status, data } = await getRoutes(request)
+      return reply.code(status).send(data)
+    },
+  )

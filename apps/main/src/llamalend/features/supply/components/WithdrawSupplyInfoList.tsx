@@ -5,7 +5,7 @@ import type { WithdrawForm, WithdrawParams } from '@/llamalend/queries/validatio
 import { useSupplyRates } from '@/llamalend/widgets/action-card/hooks/useSupplyRates'
 import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { type Token } from '@primitives/address.utils'
+import { type Address, type Token } from '@primitives/address.utils'
 import type { UseFormReturn } from '@ui-kit/features/forms'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { mapQuery, q } from '@ui-kit/types/util'
@@ -17,6 +17,7 @@ type WithdrawSupplyInfoListProps<ChainId extends IChainId> = {
   networks: NetworkDict<ChainId>
   tokens: { borrowToken: Token | undefined }
   form: UseFormReturn<WithdrawForm>
+  controllerAddress: Address | undefined
 }
 
 export function WithdrawSupplyInfoList<ChainId extends IChainId>({
@@ -24,12 +25,13 @@ export function WithdrawSupplyInfoList<ChainId extends IChainId>({
   networks,
   tokens,
   form,
+  controllerAddress,
 }: WithdrawSupplyInfoListProps<ChainId>) {
   const { chainId, marketId, userAddress, withdrawAmount, isFull } = params
   const isOpen = form.isTouched('withdrawAmount')
 
   const { prevRates, rates, prevNetSupplyApy, netSupplyApy } = useSupplyRates(
-    { params, reservesDelta: withdrawAmount && decimalMinus('0', withdrawAmount) },
+    { params, reservesDelta: withdrawAmount && decimalMinus('0', withdrawAmount), controllerAddress },
     isOpen,
   )
 

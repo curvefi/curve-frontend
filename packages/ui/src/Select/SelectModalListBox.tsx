@@ -33,5 +33,5 @@ const StyledListBox = styled.ul<{ minWidth?: string }>`
   font-size: var(--font-size-2);
   max-height: 80vh;
   overflow-x: auto;
-  ${({ minWidth }) => minWidth && `min-width: ${minWidth};`}//overflow: auto;
+  ${({ minWidth }) => minWidth && `min-width: ${minWidth};`}
 `

@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { BigNumber } from 'bignumber.js'
-import { parseUnits } from 'viem'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { checkCurrentDebt, checkDebt } from '@cy/support/helpers/llamalend/action-info.helpers'
-import { setControllerBorrowCap } from '@cy/support/helpers/llamalend/borrow-cap.helpers'
+import { setupLlv2BorrowingLiquidity } from '@cy/support/helpers/llamalend/borrow-cap.helpers'
 import {
   checkBorrowMoreDetailsLoaded,
   submitBorrowMoreForm,
@@ -38,7 +37,6 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { recordValues } from '@primitives/objects.utils'
 import { getLib } from '@ui-kit/features/connect-wallet'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { Chain } from '@ui-kit/utils'
 import { waitFor } from '@ui-kit/utils/time.utils'
 
 const testCases = recordValues(LlamaMarketType).map(marketType => oneLoanTestMarket(marketType))
@@ -73,10 +71,10 @@ testCases.forEach(
     repay,
     improveHealth,
     chainId,
-    hasLeverage,
-    hasLeverageManagement,
     label,
     marketType,
+    hasLeverage,
+    hasLeverageManagement,
   }) => {
     describe(label, () => {
       skipTestsAfterFailure()
@@ -107,22 +105,14 @@ testCases.forEach(
         const vnet = getVirtualNetwork()
         const { adminRpcUrl: nextAdminRpcUrl, publicRpcUrl } = getRpcUrls(vnet)
         adminRpcUrl = nextAdminRpcUrl
-        if (chainId === Chain.Optimism) {
-          const borrowCap = '10' as const
-          setControllerBorrowCap({
-            adminRpcUrl,
-            publicRpcUrl,
-            controllerAddress,
-            borrowCap,
-            borrowedDecimals,
-          })
-          fundErc20({
-            adminRpcUrl,
-            amountWei: `0x${parseUnits(borrowCap, borrowedDecimals).toString(16)}`,
-            tokenAddress: borrowedAddress,
-            recipientAddresses: [controllerAddress],
-          })
-        }
+        setupLlv2BorrowingLiquidity({
+          adminRpcUrl,
+          publicRpcUrl,
+          chainId,
+          controllerAddress,
+          borrowedAddress,
+          borrowedDecimals,
+        })
       })
 
       beforeEach(() => {

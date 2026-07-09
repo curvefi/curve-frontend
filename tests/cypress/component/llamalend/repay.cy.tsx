@@ -19,7 +19,7 @@ import {
 import { constQ } from '@ui-kit/types/util'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 
-const chainId = 1
+const CHAIN_ID = 1
 const testCases = [
   { approved: true, title: 'fills and submits (already approved)' },
   { approved: false, title: 'fills, approves, and submits' },
@@ -46,7 +46,7 @@ describe('RepayForm (mocked)', () => {
     it(title, () => {
       const { borrow, collateral, currentDebt, futureDebt, llamaApi, market, assertPreSubmit, assertSubmit } =
         createRepayScenario({
-          chainId,
+          chainId: CHAIN_ID,
           approved,
           leverage,
         })
@@ -61,15 +61,13 @@ describe('RepayForm (mocked)', () => {
           : { symbol: 'crvUSD', tokenAddress: CRVUSD_ADDRESS, optionIndex: 0 }
 
       setLlamaApi(llamaApi)
-      setGasInfo({ chainId, networks: llamaNetworks })
-      seedCrvUsdBalance({ chainId, addresses: [TEST_ADDRESS], min: borrow })
+      setGasInfo({ chainId: CHAIN_ID, networks: llamaNetworks })
+      seedCrvUsdBalance({ chainId: CHAIN_ID, addresses: [TEST_ADDRESS], min: borrow })
 
       cy.mount(
-        <MockLoanTestWrapper llamaApi={llamaApi}>
+        <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
           <RepayForm
-            market={market}
             networks={llamaNetworks}
-            chainId={chainId}
             onPricesUpdated={onPricesUpdated}
             collateralEvents={constQ(fakeCollateralEvents)}
           />

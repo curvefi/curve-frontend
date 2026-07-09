@@ -6,6 +6,7 @@ import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { mapQuery } from '@ui-kit/types/util'
 import { amount, formatNumber } from '@ui-kit/utils'
 import type { LiquidityDetailsData } from '../hooks/useLiquidityDetails'
 
@@ -21,22 +22,16 @@ export const MarketParticipationCard = ({
     <CardContent component={Stack} sx={{ gap: Spacing.xs, marginBlockStart: Spacing.xs }}>
       <ActionInfo
         label={t`Your share of pool`}
-        loading={userLpShare.isLoading}
-        error={userLpShare.error}
-        value={formatNumber(amount(userLpShare.data), 'percent.value')}
+        value={mapQuery(userLpShare, data => formatNumber(amount(data), 'percent.value'))}
       />
       <ActionInfo
         label={t`LP tokens staked`}
-        loading={stakedBalance.isLoading || stakedPercent.isLoading}
-        error={stakedBalance.error ?? stakedPercent.error}
-        value={formatNumber(amount(stakedBalance.data), 'token.balance')}
+        value={mapQuery(stakedBalance, balance => formatNumber(amount(balance), 'token.balance'))}
         valueRight={maybe(stakedPercent.data, value => `(${formatNumber(value, 'percent.value')})`)}
       />
       <ActionInfo
         label={t`LP tokens unstaked`}
-        loading={unstakedBalance.isLoading || unstakedPercent.isLoading}
-        error={unstakedBalance.error ?? unstakedPercent.error}
-        value={formatNumber(amount(unstakedBalance.data), 'token.balance')}
+        value={mapQuery(unstakedBalance, balance => formatNumber(amount(balance), 'token.balance'))}
         valueRight={maybe(unstakedPercent.data, value => `(${formatNumber(value, 'percent.value')})`)}
       />
     </CardContent>

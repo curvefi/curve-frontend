@@ -1,3 +1,4 @@
+import { mockMerklCampaigns } from '@cy/support/helpers/lending-mocks'
 import {
   APP_ROUTES,
   AppRoute,
@@ -19,18 +20,20 @@ import {
 import { TIME_FRAMES } from '@ui-kit/lib/model/time'
 import { LEND_ROUTES } from '@ui-kit/shared/routes'
 
-const border = 1
-const expectedMainNavHeight = 40
-const expectedSubNavHeight = expectedMainNavHeight
-const expectedMobileNavHeight = 56 + border
-const expectedConnectHeight = 40
+const BORDER = 1
+const EXPECTED_MAIN_NAV_HEIGHT = 40
+const EXPECTED_SUB_NAV_HEIGHT = EXPECTED_MAIN_NAV_HEIGHT
+const EXPECTED_MOBILE_NAV_HEIGHT = 56 + BORDER
+const EXPECTED_CONNECT_HEIGHT = 40
 
 const expectedFooterXMargin = { mobile: 32, tablet: 48, desktop: 48 }
-const expectedFooterMinWidth = 273
-const expectedFooterMaxWidth = 1536
+const EXPECTED_FOOTER_MIN_WIDTH = 273
+const EXPECTED_FOOTER_MAX_WIDTH = 1536
 
 describe('Header', () => {
   let width: number, height: number
+
+  beforeEach(() => mockMerklCampaigns())
 
   describe('Desktop', () => {
     let route: AppRoute
@@ -49,24 +52,24 @@ describe('Header', () => {
 
       const expectedHeaderHeight =
         // crvusd market page route has no subnav
-        (isCrvusdMarketRoute ? expectedMainNavHeight : expectedSubNavHeight + expectedMainNavHeight) + border
+        (isCrvusdMarketRoute ? EXPECTED_MAIN_NAV_HEIGHT : EXPECTED_SUB_NAV_HEIGHT + EXPECTED_MAIN_NAV_HEIGHT) + BORDER
 
-      cy.get("[data-testid='main-nav']").invoke('outerHeight').should('equal', expectedMainNavHeight)
+      cy.get("[data-testid='main-nav']").invoke('outerHeight').should('equal', EXPECTED_MAIN_NAV_HEIGHT)
 
       if (isCrvusdMarketRoute) {
         cy.get("[data-testid='subnav']").should('not.exist')
       } else {
-        cy.get("[data-testid='subnav']").invoke('outerHeight').should('equal', expectedSubNavHeight)
+        cy.get("[data-testid='subnav']").invoke('outerHeight').should('equal', EXPECTED_SUB_NAV_HEIGHT)
       }
 
       cy.get(`header`).invoke('outerHeight').should('equal', expectedHeaderHeight)
-      cy.get("[data-testid='navigation-connect-wallet']").invoke('outerHeight').should('equal', expectedConnectHeight)
+      cy.get("[data-testid='navigation-connect-wallet']").invoke('outerHeight').should('equal', EXPECTED_CONNECT_HEIGHT)
 
       cy.window().then(win => {
         // get scroll width dynamically, crvusd page with small header doesn't render a scrollbar
         const scrollWidth = win.innerWidth - win.document.documentElement.clientWidth
         const expectedFooterWidth = Math.min(
-          expectedFooterMaxWidth,
+          EXPECTED_FOOTER_MAX_WIDTH,
           width - expectedFooterXMargin.desktop - scrollWidth,
         )
 
@@ -124,9 +127,10 @@ describe('Header', () => {
 
     it(`should have the right size`, () => {
       const breakpoint = width < TABLET_BREAKPOINT ? 'mobile' : 'tablet'
-      const expectedHeaderHeight = expectedMobileNavHeight + (isLendMarketDetailRoute(route) ? expectedSubNavHeight : 0)
+      const expectedHeaderHeight =
+        EXPECTED_MOBILE_NAV_HEIGHT + (isLendMarketDetailRoute(route) ? EXPECTED_SUB_NAV_HEIGHT : 0)
       const expectedFooterWidth = Math.max(
-        expectedFooterMinWidth,
+        EXPECTED_FOOTER_MIN_WIDTH,
         width - SCROLL_WIDTH - expectedFooterXMargin[breakpoint],
       )
       cy.get(`header`).invoke('outerHeight').should('equal', expectedHeaderHeight, 'Header height')
@@ -138,7 +142,7 @@ describe('Header', () => {
       cy.get(`header`).invoke('outerHeight').should('equal', expectedHeaderHeight, 'Header height changed')
       cy.get("[data-testid='navigation-connect-wallet']")
         .invoke('outerHeight')
-        .should('equal', expectedConnectHeight, 'Connect height')
+        .should('equal', EXPECTED_CONNECT_HEIGHT, 'Connect height')
     })
 
     it('should show lend subnav only on lend market pages', () => {

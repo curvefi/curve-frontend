@@ -1,19 +1,19 @@
 // eslint-disable-next-line no-restricted-imports
 import MuiSelect, { type SelectProps as MuiSelectProps } from '@mui/material/Select'
 import type { Theme } from '@mui/material/styles'
-import { Transparent } from '@ui-kit/themes/design/0_primitives'
+import { TRANSPARENT } from '@ui-kit/themes/design/0_primitives'
 import { applySxProps } from '@ui-kit/utils'
 
 const ghostSx = {
-  '&.MuiInputBase-root': { backgroundColor: Transparent },
-  '& .MuiOutlinedInput-notchedOutline': { borderColor: Transparent, backgroundColor: Transparent },
+  '&.MuiInputBase-root': { backgroundColor: TRANSPARENT },
+  '& .MuiOutlinedInput-notchedOutline': { borderColor: TRANSPARENT, backgroundColor: TRANSPARENT },
   '&:hover:not(.Mui-focused):not(.Mui-error):not(.Mui-disabled)': {
-    backgroundColor: Transparent,
+    backgroundColor: TRANSPARENT,
     '& .MuiOutlinedInput-notchedOutline': {
       borderColor: (theme: Theme) => theme.design.InputSelect.Base.Default.Border.Hover,
     },
   },
-  '&.Mui-disabled .MuiOutlinedInput-notchedOutline': { borderColor: Transparent },
+  '&.Mui-disabled .MuiOutlinedInput-notchedOutline': { borderColor: TRANSPARENT },
 } as const
 
 export type SelectProps = Omit<MuiSelectProps, 'variant'> & {

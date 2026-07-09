@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import type { Chain } from '@curvefi/prices-api'
+import type { Address } from '@primitives/address.utils'
 import { notFalsy, maybe, maybes } from '@primitives/objects.utils'
 import {
   fetchMoreOhlcQueries,
@@ -27,11 +28,11 @@ type HistoricalSelection = {
 type UseLlammaOhlcChartDataParams = {
   anchorEnd: number
   chain: Chain | undefined
-  controller: string
+  controller: Address | undefined
   enabled?: boolean
   endpoint: Endpoint
   interval: number
-  llamma: string
+  llamma: Address | undefined
   oraclePrice: string | undefined
   timeOption: TimeOption
   units: OhlcTimeUnit
@@ -72,8 +73,8 @@ export const useLlammaOhlcChartData = ({
     selectData: selectOraclePoolChartData,
   })
   const oraclePoolIsSettled = oraclePoolQuery.isSuccess || oraclePoolQuery.isError
-  const oraclePoolsHaveOraclePriceData = oraclePoolsChartAdapter.data.oraclePriceData.length > 0
-  const oraclePoolsHaveChartData = oraclePoolsChartAdapter.data.ohlcData.length > 0 || oraclePoolsHaveOraclePriceData
+  const oraclePoolsHaveOraclePriceData = !!oraclePoolsChartAdapter.data.oraclePriceData?.length
+  const oraclePoolsHaveChartData = !!oraclePoolsChartAdapter.data.ohlcData?.length || oraclePoolsHaveOraclePriceData
   const shouldFetchLlammaQuery = enabled && !!llamma && oraclePoolIsSettled && !oraclePoolsHaveOraclePriceData
   const llammaQuery = useLlammaOhlcQuery({
     endpoint,
@@ -100,13 +101,10 @@ export const useLlammaOhlcChartData = ({
   )
   const oracleTokens = useMemo(
     () =>
-      maybes(
-        [oracleTokenPage?.collateralToken, oracleTokenPage?.borrowedToken],
-        ([collateralToken, borrowedToken]) => ({
-          collateralSymbol: collateralToken.symbol,
-          borrowedSymbol: borrowedToken.symbol,
-        }),
-      ),
+      maybes([oracleTokenPage?.collateralToken, oracleTokenPage?.borrowedToken], (collateralToken, borrowedToken) => ({
+        collateralSymbol: collateralToken.symbol,
+        borrowedSymbol: borrowedToken.symbol,
+      })),
     [oracleTokenPage],
   )
   const refetch = useCallback(

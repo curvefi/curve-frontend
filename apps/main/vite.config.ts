@@ -6,11 +6,14 @@ import vercel from 'vite-plugin-vercel'
 import { sentryVitePlugin } from '@sentry/vite-plugin'
 
 const {
-  API_PROXY_TARGET = 'http://localhost:3010',
+  API_PROXY_TARGET,
+  ROUTER_API_PROXY_TARGET = API_PROXY_TARGET || 'http://localhost:3010',
+  MERKL_API_PROXY_TARGET = 'http://localhost:3011',
   SENTRY_AUTH_TOKEN,
   SENTRY_ORG,
   SENTRY_PROJECT,
   GITHUB_SHA,
+  SENTRY_APPLICATION_KEY = 'curve-frontend',
 } = process.env
 const shouldUploadSourcemaps = !!SENTRY_PROJECT || !!GITHUB_SHA
 
@@ -20,7 +23,10 @@ export default defineConfig(({ command }) => ({
   server: {
     port: 3000,
     hmr: true,
-    proxy: { '/api': { target: API_PROXY_TARGET, changeOrigin: true } },
+    proxy: {
+      '/api/router': { target: ROUTER_API_PROXY_TARGET, changeOrigin: true },
+      '/api/merkl': { target: MERKL_API_PROXY_TARGET, changeOrigin: true },
+    },
     ignored: ['**/node_modules/**', '**/.git/**', '**/dist/**', '**/.yarn/**'],
   },
   build: {
@@ -39,17 +45,16 @@ export default defineConfig(({ command }) => ({
     react(),
     svgr(),
     vercel(),
-    ...(shouldUploadSourcemaps
-      ? [
-          sentryVitePlugin({
-            authToken: SENTRY_AUTH_TOKEN,
-            org: SENTRY_ORG!,
-            project: SENTRY_PROJECT!,
-            release: { name: GITHUB_SHA! },
-            sourcemaps: { assets: './dist/**' },
-            telemetry: false,
-          }),
-        ]
+    ...(SENTRY_PROJECT
+      ? sentryVitePlugin({
+          applicationKey: SENTRY_APPLICATION_KEY,
+          authToken: SENTRY_AUTH_TOKEN,
+          org: SENTRY_ORG,
+          project: SENTRY_PROJECT,
+          ...(GITHUB_SHA && { release: { name: GITHUB_SHA } }),
+          sourcemaps: { assets: './dist/**' },
+          telemetry: false,
+        })
       : []),
   ],
   optimizeDeps: { include: ['styled-components', '@mui/material', '@mui/icons-material'] },
@@ -70,7 +75,8 @@ export default defineConfig(({ command }) => ({
     buildCommand: 'yarn build',
     rewrites: [
       { source: '/favicon', destination: '/favicon.ico' },
-      { source: '/api/(.*)', destination: '/api/router' },
+      { source: '/api/router/(.*)', destination: '/api/router' },
+      { source: '/api/merkl/(.*)', destination: '/api/merkl' },
       { source: '/security.txt', destination: '/.well-known/security.txt', statusCode: 308 /* Permanent redirect */ },
       { source: '/(.*)', destination: '/index.html' },
     ],

@@ -31,8 +31,8 @@ describe('UnstakeForm (mocked)', () => {
     setGasInfo({ chainId, networks: llamaNetworks })
 
     cy.mount(
-      <MockLoanTestWrapper llamaApi={llamaApi}>
-        <UnstakeForm market={market} networks={llamaNetworks} chainId={chainId} enabled />
+      <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
+        <UnstakeForm networks={llamaNetworks} />
       </MockLoanTestWrapper>,
     )
 

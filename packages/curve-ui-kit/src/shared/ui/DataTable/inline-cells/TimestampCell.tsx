@@ -3,7 +3,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { formatDate, formatTime } from '@ui/utils'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
-import { TableSecondaryTextClass } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { TABLE_SECONDARY_TEXT_CLASS } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
@@ -29,7 +29,7 @@ export const TimestampCell = ({ timestamp, txUrl, align = 'start' }: TimestampCe
           window.open(txUrl, '_blank')
         },
       })}
-      sx={{ gap: Spacing.xxs }}
+      sx={{ gap: Spacing.xxs, whiteSpace: 'nowrap' }}
     >
       <Typography variant="tableCellMBold" sx={{ textAlign: align }}>
         {formatDate(timestamp, 'short', { omitYear: isMobile })}
@@ -42,10 +42,10 @@ export const TimestampCell = ({ timestamp, txUrl, align = 'start' }: TimestampCe
           gap: Spacing.xs,
         }}
       >
-        <Typography variant="tableCellSRegular" className={TableSecondaryTextClass}>
+        <Typography variant="tableCellSRegular" className={TABLE_SECONDARY_TEXT_CLASS}>
           {formatTime(timestamp, { precise: !isMobile })}
         </Typography>
-        {clickable && <ArrowOutwardIcon className={TableSecondaryTextClass} sx={{ fontSize: 20 }} />}
+        {clickable && <ArrowOutwardIcon className={TABLE_SECONDARY_TEXT_CLASS} sx={{ flexShrink: 0, fontSize: 20 }} />}
       </Stack>
     </InlineTableCell>
   )

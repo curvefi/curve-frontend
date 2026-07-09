@@ -6,6 +6,7 @@ import { type ReactNode } from 'react'
 declare global {
   interface Window {
     CypressNoTestConnector?: string
+    CypressTestConnectorChain?: number
   }
 
   namespace Cypress {

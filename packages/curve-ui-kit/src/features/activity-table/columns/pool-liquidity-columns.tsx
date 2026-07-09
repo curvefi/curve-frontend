@@ -1,3 +1,4 @@
+import type { Chain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import { type Token } from '@primitives/address.utils'
 import { createColumnHelper } from '@tanstack/react-table'
@@ -24,7 +25,7 @@ export const getTokenAmountColumnId = (tokenIndex: number): string => `tokenAmou
 const columnHelper = createColumnHelper<PoolLiquidityRow>()
 
 type CreatePoolLiquidityColumnsParams = {
-  blockchainId: string
+  blockchainId: Chain | undefined
   poolTokens: Token[]
 }
 

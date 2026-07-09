@@ -1,5 +1,6 @@
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
+import { setupLlv2BorrowingLiquidity } from '@cy/support/helpers/llamalend/borrow-cap.helpers'
 import {
   checkCurrentCollateral,
   getCollateralInput,
@@ -7,28 +8,30 @@ import {
   submitCollateralRemoveForm,
   touchCollateralForm,
 } from '@cy/support/helpers/llamalend/collateral.helpers'
-import { LOAN_TEST_MARKETS, oneLoanTestMarket } from '@cy/support/helpers/llamalend/create-loan.helpers'
+import { oneLoanTestMarket } from '@cy/support/helpers/llamalend/create-loan.helpers'
 import { LlammalendTestCase } from '@cy/support/helpers/llamalend/LlammalendTestCase'
 import { setupTenderlyLoan } from '@cy/support/helpers/llamalend/loan-setup.helpers'
 import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
+import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { skipTestsAfterFailure } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
-import { objectKeys } from '@primitives/objects.utils'
+import { recordValues } from '@primitives/objects.utils'
+import { LlamaMarketType } from '@ui-kit/types/market'
 import { formatNumber } from '@ui-kit/utils'
 
-const testCases = objectKeys(LOAN_TEST_MARKETS).map(type =>
-  oneLoanTestMarket(type, market => !market.hasLeverageManagement),
-)
+const testCases = recordValues(LlamaMarketType).map(type => oneLoanTestMarket(type))
 
 describe('Collateral forms', () => {
   testCases.forEach(
     ({
       borrow,
+      borrowedAddress,
+      borrowedDecimals,
       chainId,
       collateral,
       collateralAddress,
-      controllerAddress,
       collateralDecimals,
+      controllerAddress,
       id,
       label,
       marketType,
@@ -41,6 +44,7 @@ describe('Collateral forms', () => {
         const getVirtualNetwork = createVirtualTestnet(uuid => ({
           slug: `collateral-integration-${uuid}`,
           display_name: `CollateralIntegration (${uuid})`,
+          chain_id: chainId,
           fork_config: { block_number: 'latest' },
         }))
 
@@ -63,17 +67,31 @@ describe('Collateral forms', () => {
           />
         )
 
-        before(() =>
+        before(() => {
+          const vnet = getVirtualNetwork()
+          const { adminRpcUrl, publicRpcUrl } = getRpcUrls(vnet)
+
+          setupLlv2BorrowingLiquidity({
+            adminRpcUrl,
+            publicRpcUrl,
+            chainId,
+            controllerAddress,
+            borrowedAddress,
+            borrowedDecimals,
+          })
           setupTenderlyLoan({
-            vnet: getVirtualNetwork(),
+            vnet,
             userAddress: address,
             collateralAddress,
             controllerAddress,
             collateral,
             collateralDecimals,
             borrow,
-          }),
-        )
+            borrowedDecimals,
+            range: 10n,
+            collateralFundingMultiplier: 2n,
+          })
+        })
 
         beforeEach(() => {
           onPricesUpdated = cy.stub().as('onPricesUpdated')

@@ -10,8 +10,8 @@ export const RPC: Record<ChainId, string[]> = {
   ],
   [ChainId.Arbitrum]: ['https://arb1.arbitrum.io/rpc', 'https://1rpc.io/arb'],
   [ChainId.Avalanche]: ['https://api.avax.network/ext/bc/C/rpc'],
-  [ChainId.Base]: ['https://mainnet.base.org'],
-  [ChainId.Bsc]: ['https://56.rpc.thirdweb.com'],
+  [ChainId.Base]: ['https://base-rpc.publicnode.com'],
+  [ChainId.Bsc]: ['https://rpc.nodeflare.app/bnb/public'],
   [ChainId.Celo]: ['https://forno.celo.org'],
   [ChainId.Fantom]: ['https://250.rpc.thirdweb.com'],
   [ChainId.Fraxtal]: ['https://rpc.frax.com'],
@@ -37,4 +37,5 @@ export const RPC: Record<ChainId, string[]> = {
   [ChainId.ZkSync]: ['https://zksync.drpc.org', 'https://mainnet.era.zksync.io'],
   [ChainId.Monad]: [],
   [ChainId.Etherlink]: [],
+  [ChainId.Robinhood]: ['https://rpc.mainnet.chain.robinhood.com'],
 } as const

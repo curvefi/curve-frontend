@@ -1,15 +1,13 @@
-import { sumBy } from 'lodash'
 import { useClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/hooks/useClosePositionForm'
 import { ClosePositionInfoList } from '@/llamalend/features/manage-soft-liquidation/ui/ClosePositionInfoList'
-import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import { useMarketContext } from '@/llamalend/features/market-context'
+import type { NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import TableCell from '@mui/material/TableCell'
-import { joinButtonText } from '@primitives/string.utils'
+import { FormButton } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
-import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
@@ -21,17 +19,8 @@ import type { ClosePositionRow } from '../columns/columns.definitions'
 
 const { Spacing } = SizesAndSpaces
 
-export const ClosePositionForm = ({
-  market,
-  networks,
-  chainId,
-  enabled,
-}: {
-  market: LlamaMarketTemplate | undefined
-  networks: NetworkDict<LlamaChainId>
-  chainId: LlamaChainId
-  enabled?: boolean
-}) => {
+export const ClosePositionForm = ({ networks }: { networks: NetworkDict<LlamaChainId> }) => {
+  const { chainId, marketId, tokens } = useMarketContext<LlamaChainId>()
   const network = networks[chainId]
   const {
     form,
@@ -39,28 +28,25 @@ export const ClosePositionForm = ({
     table,
     debtTokenSymbol,
     collateralToRecover,
+    hasBadDebt,
     missing,
     borrowedBalance,
     isDisabled,
     isPending,
-    isLoading,
-    error,
     closeError,
     isApproved,
     onSubmit,
     formErrors,
-  } = useClosePositionForm({ market, network, enabled })
-
-  const collateralToRecoverUsd = sumBy(collateralToRecover, ({ usd }) => Number(usd) || 0)
+  } = useClosePositionForm({ network })
 
   return (
     <Form
       {...form}
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Existing violation before enabling this rule.
       onSubmit={onSubmit}
       footer={
         <ClosePositionInfoList
-          market={market}
+          marketId={marketId}
+          tokens={tokens}
           chainId={network.chainId}
           networks={networks}
           values={values}
@@ -69,17 +55,13 @@ export const ClosePositionForm = ({
       }
     >
       <DataTable<ClosePositionRow>
+        category="form"
         table={table}
-        emptyState={
-          <EmptyStateRow table={table}>
-            {error ? t`Could not load position data: ${error.message}` : t`Could not load position close data`}
-          </EmptyStateRow>
-        }
-        isLoading={isLoading}
+        emptyState={{ title: t`No close position data` }}
+        errorState={{ title: t`Could not load close position data` }}
         verticalAlign="top"
-        hideHeader
         footerRow={
-          !isLoading &&
+          !table.isLoading &&
           collateralToRecover != null && (
             <>
               <TableCell sx={{ padding: Spacing.md }}>
@@ -95,19 +77,26 @@ export const ClosePositionForm = ({
       {missing != null && borrowedBalance != null && +missing > 0 ? (
         <AlertAdditionalDebtToken debtTokenSymbol={debtTokenSymbol} missing={missing} balance={borrowedBalance} />
       ) : (
-        <AlertClosePosition badDebt={collateralToRecoverUsd <= 0} />
+        <AlertClosePosition hasBadDebt={hasBadDebt} />
       )}
       <Stack sx={{ gap: Spacing.xs }}>
-        <Button type="submit" loading={isPending} disabled={isDisabled} data-testid="close-position-submit-button">
-          {isPending
-            ? t`Processing...`
-            : joinButtonText(
-                isApproved?.data === false && t`Approve`,
-                ...(collateralToRecoverUsd <= 0 ? [t`Repay bad debt`] : [t`Repay debt`, t`Recover collateral`]),
-              )}
-        </Button>
+        <FormButton
+          pending={isPending}
+          disabled={isDisabled}
+          label={[
+            isApproved?.data === false && t`Approve`,
+            ...(hasBadDebt ? [t`Repay bad debt`] : [t`Repay debt`, t`Recover collateral`]),
+          ]}
+          testId="close-position-submit-button"
+        />
       </Stack>
-      <FormAlerts error={error ?? closeError ?? null} formErrors={formErrors} handledErrors={[]} />
+
+      <FormAlerts
+        // the table can keep rows visible on query errors, so surface the table error here too
+        error={closeError ?? table.error ?? null}
+        formErrors={formErrors}
+        handledErrors={[]}
+      />
     </Form>
   )
 }

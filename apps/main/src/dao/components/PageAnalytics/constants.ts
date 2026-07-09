@@ -1,4 +1,4 @@
-import { TopHoldersSortBy } from '@/dao/types/dao.types'
+import type { TopHoldersSortBy } from '@/dao/types/dao.types'
 
 export const TOP_HOLDERS_FILTERS: { key: TopHoldersSortBy; label: string }[] = [
   { key: 'weightRatio', label: '% veCRV' },

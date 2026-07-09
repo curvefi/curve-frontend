@@ -1,7 +1,7 @@
 import { forwardRef } from 'react'
 import IconButton from '@mui/material/IconButton'
 import SvgIcon from '@mui/material/SvgIcon'
-import { LoadingAnimation, TransitionFunction } from '@ui-kit/themes/design/0_primitives'
+import { LoadingAnimation, TRANSITION_FUNCTION } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { IconSize } = SizesAndSpaces
@@ -32,7 +32,7 @@ export const LegacyTableButton = forwardRef<
         /** The IconButton component is being used in the codebase as a Button component (with only the icon) or as a Chip component (like here)
          * These are represented by two different components in Figma, therefore we should properly handle both variants from mui-icon-button.ts.
          * TODO: refactor the IconButton's style from mui-icon-button.ts */
-        transition: `color ${TransitionFunction}`,
+        transition: `color ${TRANSITION_FUNCTION}`,
         border: `1px solid ${active ? t.design.Chips.Current.Outline : t.design.Chips.Default.Stroke}`,
         backgroundColor: active ? t.design.Chips.Current.Fill : t.design.Chips.Default.Fill,
         color: active ? t.design.Chips.Current.Label : t.design.Chips.Default.Label,

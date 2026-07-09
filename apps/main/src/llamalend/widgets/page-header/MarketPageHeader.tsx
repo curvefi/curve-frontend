@@ -1,9 +1,6 @@
 import { useConnection } from 'wagmi'
-import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
-import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import { useMarketContext } from '@/llamalend/features/market-context'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
-import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { type Chain } from '@curvefi/prices-api'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
@@ -15,31 +12,24 @@ import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { isDevelopment } from '@ui-kit/utils'
+import { IS_DEVELOPMENT } from '@ui-kit/utils'
 import { PageHeader } from '@ui-kit/widgets/PageHeader'
 import { usePageHeader } from './hooks/usePageHeader'
 import { MetricsRow } from './'
 
 const { Spacing } = SizesAndSpaces
 
-export const MarketPageHeader = ({
-  blockchainId,
-  chainId,
-  marketId,
-  isLoading,
-  market,
-  marketType,
-}: {
-  blockchainId: Chain
-  chainId: number
-  marketId: string | undefined
-  isLoading: boolean
-  market: LlamaMarketTemplate | undefined
-  marketType: LlamaMarketType
-}) => {
+export const MarketPageHeader = ({ isLoading }: { isLoading: boolean }) => {
   const { address: userAddress } = useConnection()
-  const { borrowRate, supplyRate, availableLiquidity } = usePageHeader({ chainId, marketId, market, blockchainId })
-  const { collateralToken, borrowToken } = (market && getTokens(market)) ?? {}
+  const {
+    chainId,
+    blockchainId,
+    marketId,
+    controllerAddress,
+    marketType,
+    tokens: { collateralToken, borrowToken },
+  } = useMarketContext()
+  const { borrowRate, supplyRate, availableLiquidity } = usePageHeader()
 
   const title =
     (collateralToken &&
@@ -79,16 +69,16 @@ export const MarketPageHeader = ({
             </Stack>
           </WithSkeleton>
 
-          {isDevelopment && market && userAddress && (
+          {IS_DEVELOPMENT && marketId && controllerAddress && userAddress && (
             <IconButton
               size="extraSmall"
               onClick={() =>
                 void invalidateAllUserMarketDetails({
-                  chainId: chainId as IChainId,
-                  marketId: market.id,
+                  chainId,
+                  marketId,
                   userAddress,
                   blockchainId,
-                  contractAddress: getControllerAddress(market),
+                  contractAddress: controllerAddress,
                 })
               }
             >
@@ -104,6 +94,7 @@ export const MarketPageHeader = ({
           availableLiquidity={availableLiquidity}
           marketType={marketType}
           collateral={collateralToken}
+          borrowToken={borrowToken}
         />
       }
     />

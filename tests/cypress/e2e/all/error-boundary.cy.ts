@@ -6,9 +6,11 @@ import { API_LOAD_TIMEOUT, e2eBaseUrl, LOAD_TIMEOUT } from '@cy/support/ui'
 import type { ErrorContext, ErrorReportFormValues } from '@ui-kit/features/report-error'
 import { SENTRY_DSN } from '@ui-kit/features/sentry'
 
-const invalidIconAddress = '0x0000000000000000000000000000000000000001' as const
+const INVALID_ICON_ADDRESS = '0x0000000000000000000000000000000000000001' as const
+const DOM_MUTATION_ERROR =
+  "Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node."
 
-const visitErrorBoundary = () => {
+const visitErrorBoundary = (errorFactory: (win: Cypress.AUTWindow) => Error) => {
   const { ethereum, ...otherChains } = createLendingVaultChainsResponse()
   setupLlamalendListMocks({
     ethereum: {
@@ -16,7 +18,7 @@ const visitErrorBoundary = () => {
       data: ethereum.data.map(market => ({
         ...market,
         // Keep the API response valid, then trigger the render error from the icon path below.
-        collateral_token: { ...market.collateral_token, address: invalidIconAddress },
+        collateral_token: { ...market.collateral_token, address: INVALID_ICON_ADDRESS },
       })),
     },
     ...otherChains,
@@ -24,12 +26,13 @@ const visitErrorBoundary = () => {
   const url = '/llamalend/ethereum/markets'
   cy.visit(url, {
     timeout: API_LOAD_TIMEOUT.timeout,
-    onBeforeLoad: ({ String, TypeError }) => {
+    onBeforeLoad: win => {
+      const { String } = win
       // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
       const originalToLowerCase = String.prototype.toLowerCase
       String.prototype.toLowerCase = function (this: string) {
-        if (this.toString() === invalidIconAddress) {
-          throw new TypeError('toLowerCase is not a function')
+        if (this.toString() === INVALID_ICON_ADDRESS) {
+          throw errorFactory(win)
         }
         return originalToLowerCase.call(this)
       }
@@ -71,12 +74,9 @@ type ErrorReportBody = {
 }
 
 describe('Error Boundary', () => {
-  let restoreRemoveChild: (() => void) | undefined
-  afterEach(() => cy.then(() => restoreRemoveChild?.()))
-
   // note: this must be the first in the file, as firefox might cache responses from other tests
   it('should show error page when it hits the error boundary', () => {
-    visitErrorBoundary()
+    visitErrorBoundary(({ TypeError }) => new TypeError('toLowerCase is not a function'))
     cy.get('[data-testid="error-title"]', LOAD_TIMEOUT).should('contain.text', 'Unexpected Error')
     cy.get('[data-testid="error-subtitle"]').should('contain.text', 'toLowerCase is not a function')
     cy.get('[data-testid="retry-error-button"]').click()
@@ -85,7 +85,9 @@ describe('Error Boundary', () => {
 
   const is500 = oneBool() // test either 404 or 500 error page
   it(`should submit ${is500 ? 500 : 404} error reports`, () => {
-    const url = is500 ? visitErrorBoundary() : visitNotFoundPage()
+    const url = is500
+      ? visitErrorBoundary(({ TypeError }) => new TypeError('toLowerCase is not a function'))
+      : visitNotFoundPage()
     const address = '0xabc123'
     const description = 'Got an error'
     const contact = 'test@curve.fi'
@@ -141,27 +143,7 @@ describe('Error Boundary', () => {
   })
 
   it('should show some guidance when a DOM mutation error occurs', () => {
-    let throwCount = 0
-    const url = '/llamalend/ethereum/markets'
-    cy.visit(url, {
-      timeout: API_LOAD_TIMEOUT.timeout,
-      onBeforeLoad: ({ DOMException, Node }) => {
-        // eslint-disable-next-line @typescript-eslint/unbound-method -- Existing violation before enabling this rule.
-        const originalRemoveChild = Node.prototype.removeChild
-        restoreRemoveChild = () => (Node.prototype.removeChild = originalRemoveChild)
-        Node.prototype.removeChild = function <T extends Node>(child: T): T {
-          // Throw twice to make this deterministic in concurrent mode: once is recovered, always causes an infinite loop
-          if (throwCount < 2) {
-            throwCount += 1
-            throw new DOMException(
-              "Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.",
-              'NotFoundError',
-            )
-          }
-          return originalRemoveChild.call(this, child) as T
-        }
-      },
-    })
+    visitErrorBoundary(({ DOMException }) => new DOMException(DOM_MUTATION_ERROR, 'NotFoundError'))
     cy.get('[data-testid="error-title"]', LOAD_TIMEOUT).should('contain.text', 'Unexpected Error')
     cy.get('[data-testid="error-subtitle"]').should('contain.text', 'Please refresh the page and try again.')
   })

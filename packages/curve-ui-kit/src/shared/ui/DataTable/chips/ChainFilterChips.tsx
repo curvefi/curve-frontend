@@ -24,7 +24,7 @@ type ChainFilterChipsProps = {
   toggleChain: (chain: string) => void
 }
 
-const ethereum = NETWORK_BASE_CONFIG[Chain.Ethereum].id
+const ETHEREUM = NETWORK_BASE_CONFIG[Chain.Ethereum].id
 const CHAIN_ICON_FROM_CHIP_SIZE: Record<NonNullable<SelectableChipProps['size']>, ChainIconProps['size']> = {
   extraSmall: 'xs',
   small: 'sm',
@@ -43,9 +43,8 @@ const TYPOGRAPHY_VARIANT_FROM_CHIP_SIZE: Record<
   extraLarge: 'bodyMRegular',
 }
 
-const SkeletonChips = ({ chipSize }: { chipSize: NonNullable<SelectableChipProps['size']> }) => {
-  const length = useIncreasingLength({ maxLength: 5 })
-  return Array.from({ length }).map((_, i) => (
+const SkeletonChips = ({ chipSize }: { chipSize: NonNullable<SelectableChipProps['size']> }) =>
+  Array.from({ length: useIncreasingLength('chips') }).map((_, i) => (
     <Skeleton
       // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
       key={`skeleton-chain-chip-${i}`}
@@ -56,7 +55,6 @@ const SkeletonChips = ({ chipSize }: { chipSize: NonNullable<SelectableChipProps
       }}
     />
   ))
-}
 
 /**
  * Returns the chains sorted with Ethereum first, then the rest alphabetically,
@@ -66,7 +64,7 @@ const useSortedChains = ({ chainsQuery: { data }, selectedChains = [], toggleCha
   useMemo(
     () =>
       data &&
-      [...notFalsy(data.find(c => c === ethereum)), ...data.filter(c => c !== ethereum)].map(chain => ({
+      [...notFalsy(data.find(c => c === ETHEREUM)), ...data.filter(c => c !== ETHEREUM)].map(chain => ({
         chain,
         label: capitalize(chain),
         onClick: () => toggleChain(chain),

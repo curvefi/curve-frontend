@@ -45,9 +45,7 @@ export const { invalidate: invalidateCreateLoanBands } = queryFactory({
     const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
     switch (type) {
       case 'zapV2':
-        return (
-          await impl.createLoanExpectedMetrics({ userCollateral, userBorrowed, debt, range, ...parseRoute(routeId) })
-        ).bands
+        return (await impl.createLoanExpectedMetrics({ userCollateral, debt, range, ...parseRoute(routeId) })).bands
       case 'V1':
       case 'V2':
         return impl.createLoanBands(userCollateral, userBorrowed, debt, range)

@@ -6,7 +6,7 @@ import type { ILlamma } from '@curvefi/llamalend-api/lib/interfaces'
 import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import type { Address } from '@primitives/address.utils'
 
-type MintMarketData = ILlamma & { id: string }
+export type MintMarketData = ILlamma & { id: string }
 
 /**
  * Extracts the necessary data from a MintMarketTemplate object so that the object can be recreated later on.

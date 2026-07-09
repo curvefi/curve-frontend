@@ -2,9 +2,8 @@ import { countBy } from 'lodash'
 import type { StoreApi } from 'zustand'
 import { updateHaveSameTokenNames } from '@/dex/store/createPoolsSlice'
 import type { State } from '@/dex/store/useStore'
-import { Token, TokensMapper, TokensNameMapper, PoolData, type CurveApi } from '@/dex/types/main.types'
+import { Token, TokensMapper, TokensNameMapper, PoolData, PoolVolumes, type CurveApi } from '@/dex/types/main.types'
 import { log } from '@ui-kit/lib/logging'
-import { fetchPoolVolumes } from '../queries/pool-volume.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -14,12 +13,12 @@ type SliceState = {
   loading: boolean
 }
 
-const sliceKey = 'tokens'
+const SLICE_KEY = 'tokens'
 
 // prettier-ignore
 export type TokensSlice = {
-  [sliceKey]: SliceState & {
-    setTokensMapper: (curve: CurveApi, poolDatas: PoolData[]) => Promise<string[]>
+  [SLICE_KEY]: SliceState & {
+    setTokensMapper: (curve: CurveApi, poolDatas: PoolData[], poolVolumes: PoolVolumes) => string[]
     setEmptyPoolListDefault: (curve: CurveApi) => void
 
     setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => void
@@ -47,11 +46,11 @@ export const createTokensSlice = (
   _set: StoreApi<State>['setState'],
   get: StoreApi<State>['getState'],
 ): TokensSlice => ({
-  [sliceKey]: {
+  [SLICE_KEY]: {
     ...DEFAULT_STATE,
 
-    setTokensMapper: async (curve, poolDatas) => {
-      const { tokensMapper, ...sliceState } = get()[sliceKey]
+    setTokensMapper: (curve, poolDatas, poolVolumes) => {
+      const { tokensMapper, ...sliceState } = get()[SLICE_KEY]
 
       sliceState.setStateByKey('loading', true)
 
@@ -60,10 +59,8 @@ export const createTokensSlice = (
       let cTokensMapper: TokensMapper = { ...(tokensMapper[chainId] ?? DEFAULT_TOKEN_MAPPER) }
       const partialTokensMapper: TokensMapper = {}
 
-      const volumes = await fetchPoolVolumes({ chainId })
-
       for (const { pool, tokenAddressesAll, tokensAll, tokenDecimalsAll } of poolDatas) {
-        const volume = +volumes[pool.id] || 0
+        const volume = +poolVolumes[pool.id] || 0
         const counted = countBy(tokensAll)
 
         for (const [idx, address] of tokenAddressesAll.entries()) {
@@ -107,7 +104,7 @@ export const createTokensSlice = (
     },
     // eslint-disable-next-line @typescript-eslint/no-misused-promises, @typescript-eslint/require-await -- Existing violation before enabling this rule.
     setEmptyPoolListDefault: async curve => {
-      const { [sliceKey]: sliceState } = get()
+      const { [SLICE_KEY]: sliceState } = get()
       const chainId = curve.chainId
       const nativeToken = curve.getNetworkConstants().NATIVE_TOKEN
 
@@ -138,16 +135,16 @@ export const createTokensSlice = (
 
     // slice helpers
     setStateByActiveKey: (key, activeKey, value) => {
-      get().setAppStateByActiveKey(sliceKey, key, activeKey, value)
+      get().setAppStateByActiveKey(SLICE_KEY, key, activeKey, value)
     },
     setStateByKey: (key, value) => {
-      get().setAppStateByKey(sliceKey, key, value)
+      get().setAppStateByKey(SLICE_KEY, key, value)
     },
     setStateByKeys: sliceState => {
-      get().setAppStateByKeys(sliceKey, sliceState)
+      get().setAppStateByKeys(SLICE_KEY, sliceState)
     },
     resetState: () => {
-      get().resetAppState(sliceKey, DEFAULT_STATE)
+      get().resetAppState(SLICE_KEY, DEFAULT_STATE)
     },
   },
 })

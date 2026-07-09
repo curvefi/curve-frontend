@@ -4,26 +4,27 @@ import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/ho
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { calculateReturnToWallet } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useRepayExpectedBorrowed } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
 import { useRepayFutureLeverage } from '@/llamalend/queries/repay/repay-future-leverage.query'
 import { useRepayEstimateGas } from '@/llamalend/queries/repay/repay-gas-estimate.query'
 import { getRepayHealthOptions } from '@/llamalend/queries/repay/repay-health.query'
 import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
-import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impact.query'
 import { useUserCurrentLeverage, useUserState } from '@/llamalend/queries/user'
 import type { RepayFormData, RepayParams } from '@/llamalend/queries/validation/repay.types'
 import { useBorrowRates } from '@/llamalend/widgets/action-card/hooks/useBorrowRates'
 import { usePrevLoanState } from '@/llamalend/widgets/action-card/hooks/usePrevLoanState'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { type Token } from '@primitives/address.utils'
+import { type Address, type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { UseFormReturn } from '@ui-kit/features/forms'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
+import type { LlamaMarketType } from '@ui-kit/types/market'
 import { constQ, mapQuery, q, type Query, type QueryProp, type Range } from '@ui-kit/types/util'
 import { decimal, decimalMinus, decimalNegate } from '@ui-kit/utils'
+import type { PriceImpact } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { getLeverageInfoFields } from '../../../widgets/action-card/hooks/getLeverageInfoFields'
 
 const remainingDebt = (debt: Decimal, repayAmount: Decimal) => {
@@ -38,7 +39,7 @@ function useRepayRemainingDebt(
     prevDebt,
   }: {
     params: RepayParams
-    showLeverage: boolean
+    showLeverage: boolean | undefined
     prevDebt: Query<Decimal | null>
   },
   { isFull, userBorrowed }: Pick<RepayFormData, 'userBorrowed' | 'isFull'>,
@@ -82,7 +83,8 @@ function useReturnToWallet(
 }
 
 export function RepayLoanInfoList<ChainId extends IChainId>({
-  market,
+  controllerAddress,
+  marketType,
   params,
   values: { slippage, stateCollateral, userCollateral, userBorrowed, isFull },
   tokens: { collateralToken, borrowToken },
@@ -93,18 +95,21 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   form,
   prices,
   prevPrices,
+  priceImpact,
 }: {
-  market: LlamaMarketTemplate | undefined
+  controllerAddress: Address | undefined
+  marketType: LlamaMarketType
   params: RepayParams
   values: RepayFormData
   tokens: { collateralToken: Token | undefined; borrowToken: Token | undefined }
   networks: NetworkDict<ChainId>
   onSlippageChange: (newSlippage: Decimal) => void
-  showLeverage: boolean
+  showLeverage: boolean | undefined
   routes: MarketRoutes | undefined
   form: UseFormReturn<RepayFormData>
   prices?: QueryProp<Range<Decimal> | null>
-  prevPrices?: QueryProp<Range<Decimal>>
+  prevPrices?: QueryProp<Range<Decimal> | null>
+  priceImpact: QueryProp<PriceImpact | Decimal | null>
 }) {
   const isOpen = form.isTouched('stateCollateral', 'userCollateral', 'userBorrowed')
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken, prevPrices }, isOpen)
@@ -161,10 +166,10 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
         // routeImage: useRepayRouteImage(params, isOpen),
         slippage,
         onSlippageChange,
-        priceImpact: useRepayPriceImpact(params, isOpen),
+        priceImpact,
         collateralDelta: userCollateral,
       })}
-      {...useBorrowRates({ params, market, debtDelta }, isOpen)}
+      {...useBorrowRates({ params, marketType, controllerAddress, debtDelta }, isOpen)}
       {...prevLoanState}
     />
   )

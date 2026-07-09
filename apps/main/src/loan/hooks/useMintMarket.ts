@@ -1,28 +1,28 @@
-import { useCallback } from 'react'
-import { useCurve } from '@ui-kit/features/connect-wallet'
+import { useCallback, useMemo } from 'react'
+import type { LlamaApi } from '@ui-kit/features/connect-wallet'
+import { useLlamaQuery } from '@ui-kit/features/connect-wallet/lib/CurveContext'
+import { useCombinedQueries } from '@ui-kit/lib'
+import { t } from '@ui-kit/lib/i18n'
 import { useMappedQuery } from '@ui-kit/types/util'
-import { useMintMarkets } from '../entities/mint-markets.query'
+import { type MintMarketData, useMintMarkets } from '../entities/mint-markets.query'
 import { ChainId } from '../types/loan.types'
 
-export function useMintMarketData(chainId: ChainId, rMarket: string, enabled?: boolean) {
+type MarketUrlParams = { chainId: ChainId; rMarket: string }
+
+function useMintMarketData({ chainId, rMarket }: MarketUrlParams, enabled?: boolean) {
   const mintMarkets = useMintMarkets({ chainId }, enabled)
-  return {
-    ...useMappedQuery(
-      mintMarkets,
-      useCallback(data => data?.[rMarket], [rMarket]),
-    ),
-    isSuccess: mintMarkets.isSuccess,
-  }
+  const mintMarket = useMappedQuery(
+    mintMarkets,
+    useCallback(data => data?.[rMarket], [rMarket]),
+  )
+  const error = useMemo(
+    () => mintMarkets.data && !mintMarket.data && new Error(`${t`Market`} ${rMarket} ${t`Not Found`}`),
+    [mintMarket.data, mintMarkets.data, rMarket],
+  )
+  return { ...mintMarket, ...(error && { error }) }
 }
 
-export const useMintMarket = (chainId: ChainId, rMarket: string, enabled?: boolean) => {
-  const { llamaApi: api } = useCurve()
-  const mintMarketData = useMintMarketData(chainId, rMarket, enabled)
-  return {
-    ...useMappedQuery(
-      mintMarketData,
-      useCallback(data => api && data && api.getMintMarketByData(data.id, data), [api]),
-    ),
-    isSuccess: mintMarketData.isSuccess && !!api,
-  }
-}
+const getMintMarketByData = (data: MintMarketData, api: LlamaApi) => api.getMintMarketByData(data.id, data)
+
+export const useMintMarket = ({ rMarket, chainId }: MarketUrlParams, enabled?: boolean) =>
+  useCombinedQueries([useMintMarketData({ chainId, rMarket }, enabled), useLlamaQuery()], getMintMarketByData)

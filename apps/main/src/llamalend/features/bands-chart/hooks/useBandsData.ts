@@ -4,21 +4,16 @@ import { useMarketBandsBalances, useUserBandsBalances } from '@/llamalend/querie
 import { useMarketLiquidationBand, useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useLoanExists } from '@/llamalend/queries/user'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { LlamaApi } from '@ui-kit/features/connect-wallet'
-import { useCurve } from '@ui-kit/features/connect-wallet'
 
 export const useBandsData = ({
   chainId,
   marketId,
-  api,
   enabled = true,
 }: {
   chainId: IChainId
-  marketId: string
-  api: LlamaApi | undefined | null
+  marketId: string | undefined
   enabled?: boolean
 }) => {
-  const { isHydrated } = useCurve()
   const { address: userAddress } = useConnection()
   const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists(
     { chainId, marketId, userAddress },
@@ -48,19 +43,11 @@ export const useBandsData = ({
   })
 
   const isLoading =
-    !isHydrated ||
-    !api ||
     isLiquidationBandLoading ||
     isMarketBandsBalancesLoading ||
     isMarketOraclePriceLoading ||
     isLoanExistsLoading ||
     isUserBandsBalancesLoading
 
-  return {
-    isLoading,
-    error: marketBandsBalancesError,
-    chartData: processedChartData,
-    userBandsBalances,
-    oraclePrice,
-  }
+  return { isLoading, error: marketBandsBalancesError, chartData: processedChartData, userBandsBalances, oraclePrice }
 }

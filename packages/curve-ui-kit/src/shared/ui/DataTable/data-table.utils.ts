@@ -17,19 +17,25 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import { RowData, type Table, TableOptions } from '@tanstack/table-core'
+import { IncreasingLengthCategory } from '@ui-kit/hooks/useIncreasingLength'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { QueryProp } from '@ui-kit/types/util'
 import { borderStyle } from '@ui-kit/utils'
+import { EmptyStateCardProps } from '../EmptyStateCard'
+import { EmptyStateRowSize } from './EmptyStateRow'
 
-const { Spacing, Sizing } = SizesAndSpaces
+const { Spacing, Sizing, Height } = SizesAndSpaces
+
+const EMPTY_ARRAY: never[] = []
 
 /** css class to hide elements on desktop unless the row is hovered */
-export const DesktopOnlyHoverClass = 'desktop-only-on-hover'
+export const DESKTOP_ONLY_HOVER_CLASS = 'desktop-only-on-hover'
 
 /** css class to make elements clickable in a row and ignore the row click */
-export const ClickableInRowClass = 'clickable-in-row'
+export const CLICKABLE_IN_ROW_CLASS = 'clickable-in-row'
 
 /** css class for secondary text inside data table rows */
-export const TableSecondaryTextClass = 'table-secondary-text'
+export const TABLE_SECONDARY_TEXT_CLASS = 'table-secondary-text'
 
 /**
  * We use `satisfies` when declaring columns, but when we want to receive that definition using ColumnDef<T, unknown>,
@@ -41,7 +47,7 @@ export type ColumnDefinition<T> = ColumnDef<T, any>
 /** Required fields for the data in the table. */
 export type TableItem = { url?: string | null }
 
-export type TanstackTable<T extends TableItem> = ReturnType<typeof useReactTable<T>>
+export type TanstackTable<T extends TableItem> = ReturnType<typeof useTable<T>>
 
 export type ColumnMeta = TanstackColumnMeta<TableItem, unknown>
 
@@ -50,7 +56,12 @@ export type ColumnMeta = TanstackColumnMeta<TableItem, unknown>
  * We ignore the lint rule for now as Tanstack table isn't supported with the React compiler yet.
  * Note we don't use the compiler due to this reason, we only use the lint rules.
  */
-export const useTable = <TData extends RowData>(options: TableOptions<TData>) => useReactTable<TData>(options)
+export const useTable = <TData extends RowData>(
+  options: Omit<TableOptions<TData>, 'data'> & { query: QueryProp<TData[]> },
+) => {
+  const table = useReactTable<TData>({ ...options, data: options.query.data ?? EMPTY_ARRAY })
+  return { ...table, isLoading: options.query.isLoading, error: options.query.error }
+}
 
 /** Define the alignment of the data or header cell based on the column type. */
 export const getAlignment = <T extends TableItem>({ columnDef }: Column<T>) =>
@@ -175,3 +186,46 @@ export const DataTableHeaderCellSortableAlign = {
   medium: 'end',
   large: 'end',
 }
+
+export type DataTableCategoryConfig = {
+  size?: DataTableSize
+  height?: `${number}rem` // also sets overflowY to 'auto'
+  defaultVisibleRows?: number // maximum number of visible rows
+  disableStickyHeader?: boolean // can also be disabled by limited rows or table width overflow.
+  hideHeader?: boolean
+  increasingLength?: IncreasingLengthCategory
+  emptyStateSize?: NonNullable<EmptyStateCardProps['size']>
+  emptyStateRowSize?: EmptyStateRowSize
+}
+
+export type DataTableCategory = keyof typeof DATA_TABLE_CATEGORIES
+
+export const DATA_TABLE_CATEGORIES = {
+  // default full-list table, e.g. LlamaMarketsTable or PoolListTable.
+  list: {
+    emptyStateRowSize: 'lg',
+  },
+  // preview table that starts with a few rows, e.g. UserPositionsMarketRateTable.
+  limited: {
+    defaultVisibleRows: 3,
+    increasingLength: 'limited',
+    emptyStateSize: 'sm',
+  },
+  // table with many rows constrained inside a scrollable viewport, e.g. ActivityTable or UserEventsTable.
+  scrollable: {
+    height: Height.table.events,
+    emptyStateRowSize: 'lg',
+  },
+  // compact detail table inside a secondary card or advanced-details section, e.g. PoolComposition or YieldBreakdown.
+  detail: {
+    disableStickyHeader: true,
+    increasingLength: 'disabled',
+  },
+  // compact form table without visible column headers, e.g. ClaimTab or ClosePositionForm.
+  form: {
+    disableStickyHeader: true,
+    hideHeader: true,
+    increasingLength: 'limited',
+    emptyStateSize: 'sm',
+  },
+} as const satisfies Record<string, DataTableCategoryConfig>

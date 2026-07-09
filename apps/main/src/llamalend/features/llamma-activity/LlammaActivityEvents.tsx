@@ -3,7 +3,6 @@ import { useLlammaActivityEventsConfig } from './hooks/useLlammaActivityEventsCo
 import { LlammaActivityProps } from './'
 
 export const LlammaActivityEvents = ({
-  isMarketAvailable,
   network,
   collateralToken,
   borrowToken,
@@ -11,8 +10,7 @@ export const LlammaActivityEvents = ({
   endpoint,
   networkConfig,
 }: LlammaActivityProps) => {
-  const { table, isLoading, isError, emptyMessage, errorMessage } = useLlammaActivityEventsConfig({
-    isMarketAvailable,
+  const { table, emptyState, errorState } = useLlammaActivityEventsConfig({
     network,
     collateralToken,
     borrowToken,
@@ -24,10 +22,8 @@ export const LlammaActivityEvents = ({
   return (
     <ActivityTable
       table={table}
-      isLoading={isLoading}
-      isError={isError}
-      emptyMessage={emptyMessage}
-      errorMessage={errorMessage}
+      emptyState={emptyState}
+      errorState={errorState}
       expandedPanel={LlammaEventsExpandedPanel}
     />
   )
