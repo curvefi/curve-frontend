@@ -29,6 +29,8 @@ export type TabOption<T> = Pick<TabProps, 'label' | 'disabled' | 'icon' | 'sx'> 
   /**  If true, the tab will always be in the kebab menu, even if there is enough space to show it.
    * The TabsSwitcher's overflow="kebab" mode is required for this to work. */
   alwaysInKebab?: boolean
+  /** Whether this tab renders a standard fixed form button in the mobile drawer */
+  withFormButton?: boolean
 }
 
 export type TabsSwitcherProps<T> = Pick<TabsProps, 'sx' | 'children'> & {

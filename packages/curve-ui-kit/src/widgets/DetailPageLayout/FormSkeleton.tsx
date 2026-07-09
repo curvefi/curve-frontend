@@ -2,6 +2,7 @@ import Button from '@mui/material/Button'
 import Skeleton from '@mui/material/Skeleton'
 import Typography from '@mui/material/Typography'
 import { noop } from '@tanstack/react-query'
+import { BUTTON_FORM_SIZE } from '@ui-kit/features/forms/constants'
 import { t } from '@ui-kit/lib/i18n'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { FormContent } from './FormContent'
@@ -22,7 +23,7 @@ export const FormSkeleton = () => (
             <Skeleton width="100%">
               <Typography variant="buttonM">{t`Loading form...`}</Typography>
             </Skeleton>
-            <Button loading disabled fullWidth />
+            <Button loading disabled fullWidth size={BUTTON_FORM_SIZE} />
           </FormContent>
         ),
       },

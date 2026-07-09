@@ -31,7 +31,7 @@ const OverviewTab = ({ availableBalance, userAddress }: DemoParams) => (
 const DepositTab = ({ availableBalance }: DemoParams) => (
   <Panel
     title="Deposit"
-    body={`Use this tab for simple flows. Balance shown in labels comes from props (${availableBalance.toLocaleString()} crvUSD).`}
+    body={`Use this tab for simple flows. Balance shown in content comes from props (${availableBalance.toLocaleString()} crvUSD).`}
   />
 )
 const WithdrawTab = ({ canWithdraw }: DemoParams) => (
@@ -71,13 +71,13 @@ const baseMenu: FormTab<DemoParams>[] = [
   },
   {
     value: 'manage',
-    label: ({ availableBalance }) => `Manage (${availableBalance.toLocaleString()} crvUSD)`,
+    label: 'Manage',
     visible: () => true,
     subTabs: [
       { value: 'deposit', label: 'Deposit', visible: () => true, component: DepositTab },
       {
         value: 'withdraw',
-        label: ({ canWithdraw }) => (canWithdraw ? 'Withdraw' : 'Withdraw (locked)'),
+        label: 'Withdraw',
         visible: () => true,
         disabled: ({ canWithdraw }) => !canWithdraw,
         component: WithdrawTab,
@@ -133,7 +133,7 @@ const meta: Meta<typeof FormTabsStory> = {
   argTypes: {
     availableBalance: {
       control: { type: 'number', min: 0 },
-      description: 'Value forwarded to labels and tab content.',
+      description: 'Value forwarded to tab content.',
     },
     canWithdraw: {
       control: 'boolean',
@@ -173,7 +173,7 @@ export const BasicTabs: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Default layout with nested Manage sub-tabs and dynamic labels.',
+        story: 'Default layout with nested Manage sub-tabs.',
       },
     },
   },

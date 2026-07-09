@@ -7,10 +7,11 @@ import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectW
 import { t } from '@ui-kit/lib/i18n'
 import { applySxProps } from '@ui-kit/utils'
 import { useIsMobileFormDrawer } from '@ui-kit/widgets/DetailPageLayout/form-context/FormPlacementContext'
+import { BUTTON_FORM_SIZE } from './constants'
 
 type FormButtonLabelPart = string | Exclude<Falsy, ''>
 
-export type FormButtonProps = Pick<ButtonProps, 'disabled' | 'fullWidth' | 'loading' | 'size' | 'sx'> & {
+export type FormButtonProps = Pick<ButtonProps, 'disabled' | 'fullWidth' | 'loading' | 'sx'> & {
   children?: ReactNode
   connectWalletTestId?: string
   label?: string | FormButtonLabelPart[]
@@ -28,7 +29,6 @@ export const FormButton = ({
   label,
   loading = false,
   pending = false,
-  size,
   sx,
   testId,
 }: FormButtonProps) => {
@@ -41,7 +41,7 @@ export const FormButton = ({
         disabled={disabled}
         fullWidth={isMobileDrawer || fullWidth}
         loading={loading ?? pending}
-        size={size}
+        size={BUTTON_FORM_SIZE}
         sx={applySxProps(sx, isMobileDrawer && fixedBottomSx)}
         data-testid={testId}
       >
@@ -50,7 +50,7 @@ export const FormButton = ({
     )
   ) : (
     <ConnectWalletButton
-      size={size}
+      size={BUTTON_FORM_SIZE}
       fullWidth={isMobileDrawer || fullWidth}
       sx={applySxProps(sx, isMobileDrawer && fixedBottomSx)}
       testId={connectWalletTestId}
