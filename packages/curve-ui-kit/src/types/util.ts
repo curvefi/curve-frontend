@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { maybe, objectKeys } from '@primitives/objects.utils'
+import { objectKeys } from '@primitives/objects.utils'
 import type { UseQueryResult } from '@tanstack/react-query'
 
 export type Range<T> = [T, T]
@@ -119,14 +119,9 @@ export const fakeLoadingQ = <T>(data: T | undefined) => q({ data, isLoading: dat
 /** Hook similar to mapQuery for queries that need memoization */
 export const useMappedQuery = <TSource, TResult>(
   { isLoading, error, data }: Query<TSource>,
-  transform: (data: TSource) => TResult,
+  selector: (data: TSource) => TResult,
 ): QueryProp<TResult> =>
-  q({
-    isLoading,
-    // eslint-disable-next-line local/use-maybe-pattern -- we want to ignore undefined, but not null in this case
-    data: useMemo(() => (data === undefined ? undefined : transform(data)), [data, transform]),
-    error,
-  })
+  useMemo(() => mapQuery({ isLoading, data, error }, selector), [data, selector, isLoading, error])
 
 /** a list of keys for query objects, i.e., data, isLoading, error */
 const queryObjectKeys = objectKeys(DISABLED_Q)

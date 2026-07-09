@@ -39,7 +39,7 @@ export const RoutesActionInfo = ({
         ),
       )}
     />
-    {!!routes.data?.length && (
+    {(routes.data?.length ?? 0) > 1 && (
       // the action info isn't able to wrap properly to take the whole line without changing it a lot.
       // here we follow the design and use multiple action infos
       <Stack direction="row" sx={{ width: '100%' }}>
@@ -52,7 +52,7 @@ export const RoutesActionInfo = ({
             }}
           ></Box>
           <Stack direction="column">
-            {routes.data.map((_, index) => (
+            {routes.data?.map((_, index) => (
               // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
               <Box key={index} sx={{ width: 16, height: 20 }}>
                 <IndicatorIcon sx={{ width: 12, height: 12, color: t => t.design.Color.Neutral[700] }} />
@@ -61,7 +61,7 @@ export const RoutesActionInfo = ({
           </Stack>
         </Stack>
         <Stack direction="column" sx={{ width: '100%' }}>
-          {routes.data.map(route => (
+          {routes.data?.map(route => (
             <DetailInfoTradeRouteRoute
               key={`${route.poolId}-${route.outputCoinAddress}`}
               params={params}

@@ -93,7 +93,7 @@ const BridgeForm = (props: BridgeFormContentParams) => {
           isLoading: false,
           error:
             amount && +amount > +walletBalance.balance
-              ? new Error(`The amount ${amount} exceeds you wallet balance ${walletBalance.balance}`)
+              ? new Error(`The amount ${amount} exceeds your wallet balance ${walletBalance.balance}`)
               : null,
         })}
         loading={loading}

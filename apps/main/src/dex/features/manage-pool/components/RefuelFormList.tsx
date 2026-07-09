@@ -15,9 +15,9 @@ const [WEEKLY, BIWEEKLY, MONTHLY] = [52, 26, 12]
 
 type RefuelFormListProps = {
   values: RefuelFormValues
-  tokenA: QueryProp<number | undefined>
-  tokenB: QueryProp<number | undefined>
-  poolTvl: QueryProp<number | undefined>
+  tokenA: QueryProp<number>
+  tokenB: QueryProp<number>
+  poolTvl: QueryProp<number>
 }
 
 const formatPercentage = (value: number | undefined) =>

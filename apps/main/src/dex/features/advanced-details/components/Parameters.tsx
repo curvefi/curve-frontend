@@ -16,7 +16,7 @@ import { dayjs } from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { constQ, mapQuery } from '@ui-kit/types/util'
+import { mapQuery } from '@ui-kit/types/util'
 import { amount, Chain, formatNumber } from '@ui-kit/utils'
 import { Section } from './Section'
 
@@ -68,12 +68,7 @@ export const Parameters = ({
           <ActionInfo
             label={t`AMM fee`}
             value={mapQuery(parameters, () =>
-              formatNumber(amount(fee ?? maybe(snapshotData?.fee, fee => fee / 10 ** 8)), {
-                maximumFractionDigits: 4,
-                unit: 'percentage',
-                abbreviate: false,
-                fallback: '-',
-              }),
+              formatNumber(amount(fee ?? maybe(snapshotData?.fee, fee => fee / 10 ** 8)), 'percent.value'),
             )}
           />
 
@@ -81,12 +76,7 @@ export const Parameters = ({
             label={t`DAO fee`}
             valueTooltip={t`The total fee on each trade is split in two parts: one part goes to the pool's Liquidity Providers, another part goes to the DAO (i.e. Curve veCRV holders)`}
             value={mapQuery(parameters, () =>
-              formatNumber(amount(isEywaPool ? +adminFee / 2 : adminFee), {
-                maximumFractionDigits: 4,
-                unit: 'percentage',
-                abbreviate: false,
-                fallback: '-',
-              }),
+              formatNumber(amount(isEywaPool ? +adminFee / 2 : adminFee), 'percent.value'),
             )}
           />
 
@@ -132,8 +122,8 @@ export const Parameters = ({
               <ActionInfo
                 label={t`Ramping ${rampADetails.isRampUp ? 'up' : 'down'} A`}
                 valueTooltip={t`Slowly changing ${rampADetails.isRampUp ? 'up' : 'down'} A so that it doesn't negatively change virtual price growth of shares`}
-                prevValue={constQ(formatADisplay(initial_A))}
-                value={constQ(formatADisplay(future_A))}
+                prevValue={formatADisplay(initial_A)}
+                value={formatADisplay(future_A)}
               />
               <ActionInfo label={t`Ramp ends`} value={future_A_time ? formatDate(future_A_time, 'short') : '-'} />
             </>

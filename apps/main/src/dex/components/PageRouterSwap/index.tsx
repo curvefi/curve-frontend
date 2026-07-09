@@ -149,7 +149,7 @@ export const QuickSwap = ({
   const fromToken = tokens.find(x => x.address.toLocaleLowerCase() == fromAddress)
   const toToken = tokens.find(x => x.address.toLocaleLowerCase() == toAddress)
 
-  const userFromBalanceQ = useTokenBalance(
+  const userFromBalance = useTokenBalance(
     {
       chainId,
       userAddress,
@@ -157,7 +157,7 @@ export const QuickSwap = ({
     },
     !!userAddress && !!fromAddress,
   )
-  const { isFetched: userFromBalanceFetched, refetch: refetchUserFromBalance } = userFromBalanceQ
+  const { isFetched: userFromBalanceFetched, refetch: refetchUserFromBalance } = userFromBalance
 
   const userToBalance = useTokenBalance(
     {
@@ -482,11 +482,11 @@ export const QuickSwap = ({
         name="fromAmount"
         inputBalanceUsd={decimal(formValues.fromAmount && fromUsdRate && fromUsdRate * +formValues.fromAmount)}
         walletBalance={{
-          balance: { ...mapQuery(userFromBalanceQ, decimal), isLoading: isMaxLoading || userFromBalanceQ.isLoading },
+          balance: { ...mapQuery(userFromBalance, decimal), isLoading: isMaxLoading || userFromBalance.isLoading },
           symbol: fromToken?.symbol,
           usdRate: fromUsdRate,
         }}
-        maxBalance={{ balance: mapQuery(userFromBalanceQ, decimal), chips: 'range' }}
+        maxBalance={{ balance: mapQuery(userFromBalance, decimal), chips: 'range' }}
         disabled={isDisable}
         testId="from-amount"
         tokenSelector={
@@ -513,7 +513,7 @@ export const QuickSwap = ({
           </TokenSelector>
         }
         message={maybes(
-          [userFromBalanceQ.data, formValues.fromError],
+          [userFromBalance.data, formValues.fromError],
           v => t`Amount > wallet balance ${formatNumber(v, { abbreviate: false })}`,
         )}
       />
