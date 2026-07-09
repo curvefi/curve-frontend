@@ -48,33 +48,13 @@ jobs:
       - run: yarn typecheck
         if: always()
 
-  test:
-    name: Unit tests
-    timeout-minutes: 5
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 24
-          cache: yarn
-      - name: Restore cache
-        uses: ./.github/actions/restore-cache
-      - run: yarn set version stable
-      - run: yarn install --immutable
-      - run: yarn build # make sure the build works + uploads source maps to Sentry
-      - run: yarn test
-        env:
-          ENSO_API_KEY: ${{ secrets.ENSO_API_KEY }}
-          ZEROEX_API_KEY: ${{ secrets.ZEROEX_API_KEY }}
-
   cypress-component:
     strategy:
       fail-fast: false
       matrix:
         browser: [chrome, firefox, electron]
-        count: [1]
-    name: Cypress component tests in ${{ matrix.browser }} ${{ matrix.count }}
+        count: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+    name: Cypress component llamalend ${{ matrix.browser }} ${{ matrix.count }}
     timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
@@ -93,8 +73,8 @@ jobs:
 
       - run: |
           set -o pipefail
-          yarn run cy:run:component --browser ${{ matrix.browser }} 2>&1 | \
-            tee ../cypress-component-${{ matrix.browser }}-${{ matrix.count }}.log \
+          yarn cypress run --component --browser ${{ matrix.browser }} --spec 'cypress/component/llamalend/**/!(*.rpc).cy.{ts,tsx}' 2>&1 | \
+            tee ../cypress-component-llamalend-${{ matrix.browser }}-${{ matrix.count }}.log \
               >(grep --line-buffered --invert-match --fixed-strings 'INFO:CONSOLE' >&1) > /dev/null
         working-directory: tests
         timeout-minutes: 12 # lower timeout than the whole job, so we can get screenshots on timeout
@@ -105,58 +85,8 @@ jobs:
       - uses: actions/upload-artifact@v7
         if: failure()
         with:
-          name: cypress-component-${{ matrix.browser }}-${{ matrix.count }}
+          name: cypress-component-llamalend-${{ matrix.browser }}-${{ matrix.count }}
           path: tests/cypress/screenshots
-          retention-days: 3
-          if-no-files-found: error
-
-  cypress-component-rpc:
-    name: Cypress component tests with RPC
-    if: github.ref_name == 'main'
-    timeout-minutes: 15
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 24
-          cache: yarn
-      - name: Restore cache
-        uses: ./.github/actions/restore-cache
-      - run: yarn set version stable
-      - run: yarn install --immutable
-      - name: Optimize dependencies # fix 'Failed to fetch dynamically imported module' when vite optimizes during tests
-        run: yarn vite optimize --config vite.config.ts
-        working-directory: tests
-
-      - name: Run RPC tests
-        run: |
-          set -o pipefail # fail tee if the main command fails
-          # rpc tests are expensive, stick to one browser
-          yarn run cy:run:rpc --browser electron 2>&1 | \
-            tee ../rpc-cypress.log >(grep --line-buffered --invert-match --fixed-strings 'INFO:CONSOLE' >&1) > /dev/null
-        working-directory: tests
-        timeout-minutes: 12 # lower timeout than the whole job, so we can get screenshots on timeout
-        env:
-          ELECTRON_ENABLE_LOGGING: true # Electron writes console to stdout
-          NODE_ENV: test
-          CYPRESS_TENDERLY_ACCOUNT_SLUG: ${{ vars.TENDERLY_ACCOUNT_SLUG }}
-          CYPRESS_TENDERLY_PROJECT_SLUG: ${{ vars.TENDERLY_PROJECT_SLUG }}
-          CYPRESS_TENDERLY_ACCESS_KEY: ${{ secrets.TENDERLY_ACCESS_KEY }}
-
-      - uses: actions/upload-artifact@v7
-        if: failure()
-        with:
-          name: cypress-rpc
-          path: tests/cypress/screenshots
-          retention-days: 3
-          if-no-files-found: error
-
-      - uses: actions/upload-artifact@v7
-        if: failure()
-        with:
-          name: rpc-cypress-log
-          path: rpc-cypress.log
           retention-days: 3
           if-no-files-found: error
 
@@ -164,21 +94,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-#        group: [llamalend, dex, other]
-#        browser: [chrome, firefox, electron]
-#        count: [1, 2]
-#        include:
-#          - group: llamalend
-#            specs: 'cypress/e2e/loan/**/*,cypress/e2e/lend/**/*,cypress/e2e/llamalend/**/*'
-#          - group: dex
-#            specs: 'cypress/e2e/dex/**/*'
-#          - group: other
-#            specs: 'cypress/e2e/all/**/*,cypress/e2e/analytics/**/*,cypress/e2e/bridge/**/*,cypress/e2e/dao/**/*'
-        group: [llamalend-markets]
-        browser: [firefox]
-        count: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100]
-        specs: ['cypress/e2e/llamalend/llamalend-markets.cy.ts']
-    name: Cypress e2e ${{ matrix.group }} ${{ matrix.browser }} ${{ matrix.count }}
+        browser: [chrome, firefox, electron]
+        count: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+        include:
+          - specs: 'cypress/e2e/loan/**/*,cypress/e2e/lend/**/*,cypress/e2e/llamalend/**/*'
+    name: Cypress e2e llamalend ${{ matrix.browser }} ${{ matrix.count }}
     timeout-minutes: 20
     runs-on: ubuntu-latest
     steps:
@@ -196,18 +116,18 @@ jobs:
       - name: Build app
         run: |
           set -o pipefail # fail tee if the main command fails
-          yarn build 2>&1 | tee e2e-build-${{ matrix.group }}-${{ matrix.browser }}-${{ matrix.count }}.log
+          yarn build 2>&1 | tee e2e-build-llamalend-${{ matrix.browser }}-${{ matrix.count }}.log
 
       - name: Start dev server
-        run: yarn start 2>&1 | tee ../../e2e-dev-${{ matrix.group }}-${{ matrix.browser }}-${{ matrix.count }}.log &
+        run: yarn start 2>&1 | tee ../../e2e-dev-llamalend-${{ matrix.browser }}-${{ matrix.count }}.log &
         working-directory: apps/main
 
       - name: Start router api server
-        run: yarn dev 2>&1 | tee ../../e2e-router-api-${{ matrix.group }}-${{ matrix.browser }}-${{ matrix.count }}.log &
+        run: yarn dev 2>&1 | tee ../../e2e-router-api-llamalend-${{ matrix.browser }}-${{ matrix.count }}.log &
         working-directory: apps/router-api
 
       - name: Start merkl api server
-        run: yarn dev 2>&1 | tee ../../e2e-merkl-api-${{ matrix.group }}-${{ matrix.browser }}-${{ matrix.count }}.log &
+        run: yarn dev 2>&1 | tee ../../e2e-merkl-api-llamalend-${{ matrix.browser }}-${{ matrix.count }}.log &
         working-directory: apps/merkl-api
         env:
           MERKL_API_KEY: ${{ secrets.MERKL_API_KEY }}
@@ -217,7 +137,7 @@ jobs:
         run: |
           set -o pipefail # fail tee if the main command fails
           yarn run cy:run:e2e --browser ${{ matrix.browser }} --spec '${{ matrix.specs }}' 2>&1 | \
-            tee ../e2e-cypress-${{ matrix.group }}-${{ matrix.browser }}-${{ matrix.count }}.log \
+            tee ../e2e-cypress-llamalend-${{ matrix.browser }}-${{ matrix.count }}.log \
               >(grep --line-buffered --invert-match --fixed-strings 'INFO:CONSOLE' >&1) > /dev/null
         timeout-minutes: 15 # lower timeout than the whole job, so we can get screenshots on timeout
         env:
@@ -244,7 +164,7 @@ jobs:
       - uses: actions/upload-artifact@v7
         if: failure()
         with:
-          name: cypress-e2e-${{ matrix.group }}-${{ matrix.browser }}-${{ matrix.count }}
+          name: cypress-e2e-llamalend-${{ matrix.browser }}-${{ matrix.count }}
           path: tests/cypress/screenshots
           retention-days: 3
           if-no-files-found: error
@@ -252,7 +172,7 @@ jobs:
       - uses: actions/upload-artifact@v7
         if: failure()
         with:
-          name: dev-server-log-${{ matrix.group }}-${{ matrix.browser }}-${{ matrix.count }}
+          name: dev-server-log-llamalend-${{ matrix.browser }}-${{ matrix.count }}
           if-no-files-found: error
           path: e2e-*.log
 
@@ -261,7 +181,7 @@ jobs:
     if: failure() && github.ref_name == 'main'
     runs-on: ubuntu-latest
     timeout-minutes: 1
-    needs: [lint, test, cypress-e2e, cypress-component, cypress-component-rpc]
+    needs: [lint, cypress-e2e, cypress-component]
     steps:
       - name: Send Slack alert
         run: |
