@@ -46,11 +46,7 @@ export const MetricsRow = ({
         justifyContent: 'start',
       }}
     >
-      <BorrowAprMetric
-        marketType={marketType}
-        borrowRate={borrowRate}
-        collateralSymbol={collateral?.symbol}
-      />
+      <BorrowAprMetric marketType={marketType} borrowRate={borrowRate} collateralSymbol={collateral?.symbol} />
       {supplyRate && (
         <Metric
           category={METRIC_CATEGORY}
