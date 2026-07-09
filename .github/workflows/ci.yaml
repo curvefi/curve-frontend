@@ -176,12 +176,95 @@ jobs:
           if-no-files-found: error
           path: e2e-*.log
 
+  cypress-e2e-header:
+    strategy:
+      fail-fast: false
+      matrix:
+        count: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+    name: Cypress e2e header ${{ matrix.count }}
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: yarn
+      - name: Restore cache
+        uses: ./.github/actions/restore-cache
+      - run: npm install -g wait-on &
+
+      - run: yarn set version stable
+      - run: yarn install --immutable
+      - name: Build app
+        run: |
+          set -o pipefail # fail tee if the main command fails
+          yarn build 2>&1 | tee e2e-build-header-${{ matrix.count }}.log
+
+      - name: Start dev server
+        run: yarn start 2>&1 | tee ../../e2e-dev-header-${{ matrix.count }}.log &
+        working-directory: apps/main
+
+      - name: Start router api server
+        run: yarn dev 2>&1 | tee ../../e2e-router-api-header-${{ matrix.count }}.log &
+        working-directory: apps/router-api
+
+      - name: Start merkl api server
+        run: yarn dev 2>&1 | tee ../../e2e-merkl-api-header-${{ matrix.count }}.log &
+        working-directory: apps/merkl-api
+        env:
+          MERKL_API_KEY: ${{ secrets.MERKL_API_KEY }}
+
+      - name: e2e header test
+        working-directory: tests
+        run: |
+          set -o pipefail # fail tee if the main command fails
+          yarn run cy:run:e2e --browser chrome --spec 'cypress/e2e/all/header.cy.ts' 2>&1 | \
+            tee ../e2e-cypress-header-${{ matrix.count }}.log \
+              >(grep --line-buffered --invert-match --fixed-strings 'INFO:CONSOLE' >&1) > /dev/null
+        timeout-minutes: 15 # lower timeout than the whole job, so we can get screenshots on timeout
+        env:
+          ELECTRON_ENABLE_LOGGING: true # send console logs to stdout in electron browser
+          NODE_ENV: test
+          CYPRESS_VIDEO: true
+
+      - name: Check runtime errors
+        if: always()
+        env:
+          RUNTIME_ERRORS: |-
+            update depth exceeded
+            many re-renders
+            unmounted component
+            non-unique keys
+            uncontrolled to controlled
+            properties of undefined
+            cannot destructure
+            was reexported through module
+            dependencies of each other
+        run: |
+          ! grep --ignore-case --extended-regexp "$(echo -n "$RUNTIME_ERRORS" | tr '\n' '|')" e2e-*.log
+
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: cypress-e2e-header-${{ matrix.count }}
+          path: tests/cypress/screenshots
+          retention-days: 3
+          if-no-files-found: error
+
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: dev-server-log-header-${{ matrix.count }}
+          if-no-files-found: error
+          path: e2e-*.log
+
   notify:
     name: Notify Slack
     if: failure() && github.ref_name == 'main'
     runs-on: ubuntu-latest
     timeout-minutes: 1
-    needs: [lint, cypress-e2e, cypress-component]
+    needs: [lint, cypress-e2e, cypress-e2e-header, cypress-component]
     steps:
       - name: Send Slack alert
         run: |
