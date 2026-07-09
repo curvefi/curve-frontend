@@ -28,6 +28,7 @@ import { LlamaMarketType, LlamaMarketVersion, MarketRateType } from '@ui-kit/typ
 const WST_ETH_MARKET = '0x100dAa78fC509Db39Ef7D04DE0c1ABD299f4C6CE' as const
 const SFRX_ETH_MARKET = '0x8472A9A7632b173c8Cf3a86D3afec50c35548e76' as const
 
+// Firefox can sometimes fail due to a race condition with the filters Popover transitions.
 const firefoxRetry = { retries: Cypress.isBrowser('firefox') ? 1 : 0 }
 
 const testCases = [oneViewport()] as const
@@ -224,7 +225,6 @@ testCases.forEach(([width, height, breakpoint]) => {
       cy.get(`[data-testid="table-empty-row"]`).should('exist')
     })
 
-    // Firefox can sometimes fail due to a race condition with the filters Popover transitions.
     it('should allow filtering by chain', firefoxRetry, () => {
       const chains = objectKeys(vaultData)
       const chain = oneOf(...chains)
@@ -237,7 +237,6 @@ testCases.forEach(([width, height, breakpoint]) => {
       checkChainSelection(chain, otherChain)
     })
 
-    // Firefox can sometimes fail due to a race condition with the filters Popover transitions.
     it(`should allow filtering by token`, firefoxRetry, () => {
       checkCoinSelection(breakpoint, vaultData, 'collateral')
       checkCoinSelection(breakpoint, vaultData, 'borrowed')
