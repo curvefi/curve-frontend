@@ -106,9 +106,7 @@ export type ProposalListFilter = 'all' | 'active' | 'passed' | 'denied' | 'execu
 export type ProposalListFilterItem = { key: ProposalListFilter; label: string }
 export type SortByFilterProposals = 'timeCreated' | 'endingSoon'
 export type SortByFilterGaugesKeys =
-  | 'gauge_relative_weight'
-  | 'gauge_relative_weight_7d_delta'
-  | 'gauge_relative_weight_60d_delta'
+  'gauge_relative_weight' | 'gauge_relative_weight_7d_delta' | 'gauge_relative_weight_60d_delta'
 export type SortByFilterGauges = {
   key: SortByFilterGaugesKeys
   order: SortDirection

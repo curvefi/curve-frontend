@@ -3,17 +3,7 @@ import type { INetworkName } from '@curvefi/api/lib/interfaces'
 import type { Decimal } from '@primitives/decimal.utils'
 
 export type LegacyPoolTag =
-  | 'btc'
-  | 'crypto'
-  | 'kava'
-  | 'eth'
-  | 'usd'
-  | 'others'
-  | 'user'
-  | 'crvusd'
-  | 'tricrypto'
-  | 'stableng'
-  | 'cross-chain'
+  'btc' | 'crypto' | 'kava' | 'eth' | 'usd' | 'others' | 'user' | 'crvusd' | 'tricrypto' | 'stableng' | 'cross-chain'
 
 export type LegacyPoolListItem = PoolData & {
   rewards: RewardsApy | undefined

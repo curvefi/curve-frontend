@@ -39,10 +39,7 @@ type PriceImpactLowExchangeRateType = {
 } & SharedProps
 
 export type HighSlippagePriceImpactProps =
-  | SlippageType
-  | LowExchangeRateType
-  | PriceImpactType
-  | PriceImpactLowExchangeRateType
+  SlippageType | LowExchangeRateType | PriceImpactType | PriceImpactLowExchangeRateType
 
 // TODO: refactor types
 export function WarningModal({

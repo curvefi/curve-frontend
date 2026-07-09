@@ -10,6 +10,7 @@ const CONTROLLER_V2_ABI = parseAbi([
   'function vault() view returns (address)',
   'function configure_lend(uint256 _borrow_cap, uint256 _admin_percentage)',
   'function on_borrowed_token_transfer_in(uint256 _amount)',
+  'function total_debt() view returns (uint256)',
 ])
 
 /** keccak("SKIP_CONFIG") sentinel for leaving admin_percentage unchanged when calling configure_lend. */
@@ -34,6 +35,11 @@ export const setControllerBorrowCap = ({
     const borrowCapWei = parseUnits(borrowCap, borrowedDecimals)
     const availableBalanceWei = parseUnits(availableBalance, borrowedDecimals)
     const client = createPublicClient({ transport: http(publicRpcUrl) })
+    const totalDebtWei = await client.readContract({
+      address: controllerAddress,
+      abi: CONTROLLER_V2_ABI,
+      functionName: 'total_debt',
+    })
     const configuratorAddress = await client.readContract({
       address: controllerAddress,
       abi: CONTROLLER_V2_ABI,
@@ -44,8 +50,18 @@ export const setControllerBorrowCap = ({
       abi: CONTROLLER_V2_ABI,
       functionName: 'vault',
     })
+    // On latest forks, markets can already have live debt. The configured borrow cap is a total cap,
+    // so make sure it leaves room for the liquidity we add in this setup.
+    const minimumBorrowCapWei = totalDebtWei + availableBalanceWei
+    const effectiveBorrowCapWei = borrowCapWei > minimumBorrowCapWei ? borrowCapWei : minimumBorrowCapWei
 
-    return { availableBalanceWei, borrowCapWei, client, configuratorAddress, vaultAddress }
+    return {
+      availableBalanceWei,
+      borrowCapWei: effectiveBorrowCapWei,
+      client,
+      configuratorAddress,
+      vaultAddress,
+    }
   }).then(({ availableBalanceWei, borrowCapWei, client, configuratorAddress, vaultAddress }) =>
     fundEth({
       adminRpcUrl,
@@ -88,6 +104,8 @@ export const setupLlv2BorrowingLiquidity = ({
   controllerAddress,
   borrowedAddress,
   borrowedDecimals,
+  borrowedLiquidity = '10',
+  borrowCap = '1000',
 }: {
   adminRpcUrl: string
   publicRpcUrl: string
@@ -95,24 +113,24 @@ export const setupLlv2BorrowingLiquidity = ({
   controllerAddress: Address
   borrowedAddress: Address
   borrowedDecimals: number
+  borrowedLiquidity?: Decimal
+  borrowCap?: Decimal
 }) => {
   if (chainId !== Chain.Optimism) return
 
-  const borrowedLiquidity = '10' as const
-  const borrowCap = '1000' as const
-
-  setControllerBorrowCap({
-    adminRpcUrl,
-    publicRpcUrl,
-    controllerAddress,
-    borrowCap,
-    availableBalance: borrowedLiquidity,
-    borrowedDecimals,
-  })
-  fundErc20({
+  return fundErc20({
     adminRpcUrl,
     amountWei: `0x${parseUnits(borrowedLiquidity, borrowedDecimals).toString(16)}`,
     tokenAddress: borrowedAddress,
     recipientAddresses: [controllerAddress],
-  })
+  }).then(() =>
+    setControllerBorrowCap({
+      adminRpcUrl,
+      publicRpcUrl,
+      controllerAddress,
+      borrowCap,
+      availableBalance: borrowedLiquidity,
+      borrowedDecimals,
+    }),
+  )
 }

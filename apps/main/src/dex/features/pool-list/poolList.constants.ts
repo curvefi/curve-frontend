@@ -21,10 +21,7 @@ export const POOL_LIST_POOL_TYPES = POOL_LIST_POOL_TYPE_FILTERS.map(
 export const POOL_LIST_CRYPTO_POOL_TYPE_ALIASES: ReadonlySet<string> = new Set(['factory_crypto', 'twocryptong'])
 
 export type PoolListSortableColumn =
-  | PoolListColumnId.PoolName
-  | PoolListColumnId.RewardsBase
-  | PoolListColumnId.Volume
-  | PoolListColumnId.Tvl
+  PoolListColumnId.PoolName | PoolListColumnId.RewardsBase | PoolListColumnId.Volume | PoolListColumnId.Tvl
 
 export const POOL_LIST_SORT_BY = {
   [PoolListColumnId.PoolName]: 'name',

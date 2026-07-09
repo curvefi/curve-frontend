@@ -5,9 +5,7 @@ import { TIME_OPTIONS } from './constants'
 export type TimeOption = (typeof TIME_OPTIONS)[number]
 
 export type ChartSelection =
-  | { type: 'lp-usd' }
-  | { type: 'lp-token'; symbol?: string }
-  | { type: 'pair'; mainToken: PoolCoin; refToken: PoolCoin }
+  { type: 'lp-usd' } | { type: 'lp-token'; symbol?: string } | { type: 'pair'; mainToken: PoolCoin; refToken: PoolCoin }
 
 export type LpPriceOhlcDataFormatted = {
   time: UTCTimestamp

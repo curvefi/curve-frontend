@@ -14,14 +14,12 @@ export type VeCrvHolder = Omit<Locker, 'locked' | 'weight' | 'weightRatio'> & {
 export const { useQuery: useVeCrvHoldersQuery } = queryFactory({
   queryKey: () => ['vecrv-holders'] as const,
   queryFn: async () =>
-    (await getLockers()).map(
-      ({ locked, weight, weightRatio, ...holder }): VeCrvHolder => ({
-        ...holder,
-        locked: fromWei(locked.toString(), DEFAULT_DECIMALS),
-        weight: fromWei(weight.toString(), DEFAULT_DECIMALS),
-        weightRatio: decimal(weightRatio)!,
-      }),
-    ),
+    (await getLockers()).map(({ locked, weight, weightRatio, ...holder }): VeCrvHolder => ({
+      ...holder,
+      locked: fromWei(locked.toString(), DEFAULT_DECIMALS),
+      weight: fromWei(weight.toString(), DEFAULT_DECIMALS),
+      weightRatio: decimal(weightRatio)!,
+    })),
   category: 'dao.stats',
   validationSuite: EmptyValidationSuite,
 })
