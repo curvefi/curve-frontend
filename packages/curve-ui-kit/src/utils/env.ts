@@ -1,3 +1,5 @@
+import { Chain } from '@primitives/network.utils'
+
 const { NODE_ENV } = typeof process === 'undefined' ? {} : process.env
 
 export enum ReleaseChannel {
@@ -6,6 +8,7 @@ export enum ReleaseChannel {
   Legacy = 'Legacy',
 }
 
+export const CYPRESS_CONNECTOR_CHAIN = window.CypressTestConnectorChain ?? Chain.Ethereum
 export const IS_CYPRESS = Boolean((window as { Cypress?: unknown }).Cypress)
 export const NO_CYPRESS_TEST_CONNECTOR = Boolean(
   (window as { CypressNoTestConnector?: unknown }).CypressNoTestConnector,

@@ -18,8 +18,7 @@ export const serializeRangeFilter = <T extends string | number>(range: Range<T |
 
 export const parseRangeFilter = (serialized: string | undefined) =>
   serialized?.split(RANGE_SEPARATOR).map(v => (v && !isNaN(+v) ? +v : null)) as
-    | [number | null, number | null]
-    | undefined
+    [number | null, number | null] | undefined
 
 export const getRangeFilterLabel = (
   [min, max]: Range<number | null>,

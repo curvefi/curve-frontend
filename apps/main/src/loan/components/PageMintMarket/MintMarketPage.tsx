@@ -50,7 +50,6 @@ export const MintMarketPage = () => {
       network: params.network,
       rMarket: rCollateralId,
       userAddress: address,
-      enableLLv2: useLLv2(),
       enableDeprecatedMarkets: useUserProfileStore(state => state.showDeprecatedMarkets),
     },
     !isLoading && !market,

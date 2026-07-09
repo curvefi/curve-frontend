@@ -9,9 +9,5 @@ export type NetworkDict<ChainId extends IChainId = IChainId> = Record<ChainId, L
 export type LlamaMarketTemplate = MintMarketTemplate | LendMarketTemplate
 
 export type UserPositionStatusKey =
-  | 'healthy'
-  | 'softLiquidation'
-  | 'hardLiquidation'
-  | 'fullyConverted'
-  | 'incompleteConversion'
+  'healthy' | 'softLiquidation' | 'hardLiquidation' | 'fullyConverted' | 'incompleteConversion'
 export type UserPositionStatus = UserPositionStatusKey | undefined

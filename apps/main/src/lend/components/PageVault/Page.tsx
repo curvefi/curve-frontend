@@ -40,7 +40,6 @@ export const Page = () => {
       rMarket,
       network: params.network,
       userAddress,
-      enableLLv2: useLLv2(),
       enableDeprecatedMarkets: useUserProfileStore(state => state.showDeprecatedMarkets),
     },
     !isLoading && !market, // only enable API data when wallet is disconnected

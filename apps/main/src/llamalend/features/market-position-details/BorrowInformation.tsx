@@ -16,11 +16,7 @@ import { LiquidationThresholdTooltipContent } from './'
 
 const dollarUnitOptions = {
   abbreviate: false,
-  unit: {
-    symbol: '$',
-    position: 'prefix' as const,
-    abbreviate: false,
-  },
+  unit: { symbol: '$', position: 'prefix' as const, abbreviate: false },
 }
 
 const METRIC_CATEGORY = 'llamalend.positionBorrowDetails'
@@ -58,14 +54,12 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
           label={t`Collateral value`}
           value={collateralValue}
           valueOptions={{ unit: 'dollar' }}
-          notional={
-            collateral
-              ? formatCollateralNotional(
-                  { value: collateral, symbol: collateralToken?.symbol },
-                  { value: borrowed, symbol: borrowToken?.symbol },
-                )
-              : undefined
-          }
+          notional={mapQuery(userState, ({ collateral, stablecoin }) =>
+            formatCollateralNotional(
+              { value: collateral, symbol: collateralToken?.symbol },
+              { value: stablecoin, symbol: borrowToken?.symbol },
+            ),
+          )}
           valueTooltip={{
             title: t`Collateral value`,
             body: (
@@ -98,10 +92,9 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
             arrow: false,
             clickable: true,
           }}
-          notional={maybe(rangeToLiquidation.data, value => ({
-            value,
-            unit: { symbol: `% distance to LT`, position: 'suffix' },
-          }))}
+          notional={mapQuery(rangeToLiquidation, v =>
+            maybe(v, value => ({ value, unit: { symbol: `% distance to LT`, position: 'suffix' as const } })),
+          )}
         />
         <Metric
           category={METRIC_CATEGORY}
