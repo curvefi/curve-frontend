@@ -1,5 +1,5 @@
 import { partition } from 'lodash'
-import { useId, useState } from 'react'
+import { type MouseEvent, useId, useState } from 'react'
 import Button, { type ButtonOwnProps } from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
@@ -19,7 +19,13 @@ const { MaxHeight, Spacing } = SizesAndSpaces
 // number of button rendered before hiding the rest in a kebab menu
 const VISIBLE_ACTION_COUNT = 2
 
-const ExpandedPanelActionButton = ({ action, inDrawer }: { action: ExpandedPanelAction; inDrawer?: boolean }) => {
+const ExpandedPanelActionButton = ({
+  action,
+  onDrawerActionClick,
+}: {
+  action: ExpandedPanelAction
+  onDrawerActionClick?: () => void
+}) => {
   const {
     id: _id,
     alwaysInKebabMenu: _alwaysInKebabMenu,
@@ -30,11 +36,19 @@ const ExpandedPanelActionButton = ({ action, inDrawer }: { action: ExpandedPanel
     type,
     color,
     size,
+    onClick,
     ...buttonProps
   } = action
+  const inDrawer = !!onDrawerActionClick
+
+  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
+    onClick?.(event)
+    onDrawerActionClick?.()
+  }
 
   const sharedProps = {
     ...buttonProps,
+    onClick: onDrawerActionClick ? handleClick : onClick,
     color: inDrawer ? ('ghost' as const) : color,
     size: inDrawer ? 'small' : size,
     sx: applySxProps({ flex: 1, minWidth: 0 }, sx),
@@ -90,7 +104,7 @@ export const ExpandedPanelActions = ({ actions }: { actions: readonly ExpandedPa
           <DrawerHeader title={t`More actions`} />
           <DrawerItems id={drawerId} data-testid="expanded-panel-actions-menu">
             {drawerActions.map(action => (
-              <ExpandedPanelActionButton key={action.id} action={action} inDrawer />
+              <ExpandedPanelActionButton key={action.id} action={action} onDrawerActionClick={() => setOpen(false)} />
             ))}
           </DrawerItems>
         </SwipeableDrawer>
