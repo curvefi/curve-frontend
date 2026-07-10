@@ -8,7 +8,6 @@ import { isVyperVulnerablePool } from './poolList.alerts'
 import type { PoolListCampaignsByAddress, PoolListItem } from './poolList.types'
 
 const POOL_YIELD_COMPOUND_WINDOW = AVERAGE_CATEGORIES['dex.poolYield.compoundRate'].window
-const EMPTY_CAMPAIGN_REWARDS: PoolListCampaignsByAddress[string] = []
 
 type PoolIdByAddressSource = Record<string, { pool: Pick<PoolData['pool'], 'address' | 'id'> }>
 
@@ -25,8 +24,8 @@ export const getCurvePoolIdByAddressEntries = (curve: CurveApi) =>
 
 export const getPoolYieldApy = (apr: number | null | undefined) => aprToApy(apr, POOL_YIELD_COMPOUND_WINDOW)
 
-export const getPoolListCampaigns = (campaignsByAddress: PoolListCampaignsByAddress | undefined, poolAddress: string) =>
-  campaignsByAddress?.[normalizeAddress(poolAddress)] ?? EMPTY_CAMPAIGN_REWARDS
+const getPoolListCampaigns = (campaignsByAddress: PoolListCampaignsByAddress | undefined, poolAddress: string) =>
+  campaignsByAddress?.[normalizeAddress(poolAddress)] ?? []
 
 export const getPoolListItem = (
   network: NetworkConfig,
