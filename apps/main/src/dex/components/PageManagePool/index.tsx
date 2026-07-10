@@ -56,7 +56,9 @@ export const ManagePool = () => {
             backHref={getInternalUrl('dex', blockchainId, `${DEX_ROUTES.PAGE_POOLS}/${poolAddress}`)}
           />
         }
-        formTabs={<RefuelFormTabs chainId={chainId} blockchainId={blockchainId} poolAddress={poolAddress} />}
+        formTabs={{
+          content: <RefuelFormTabs chainId={chainId} blockchainId={blockchainId} poolAddress={poolAddress} />,
+        }}
         testId="refuel-page"
       >
         <Grid container columnSpacing={Spacing.md}>

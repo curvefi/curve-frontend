@@ -20,6 +20,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useParams } from '@ui-kit/hooks/router'
+import { useLlamalendMobileFormDrawer } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { LlamaMarketType } from '@ui-kit/types/market'
@@ -34,6 +35,7 @@ export const MintMarketPage = () => {
   const chainId = getChainId(params)
   const { address } = useConnection()
   const [previewPrices, setPreviewPrices] = useState<Range<Decimal> | undefined>(undefined)
+  const isMobileFormDrawer = useLlamalendMobileFormDrawer()
 
   const marketQuery = useMintMarket({ chainId, rMarket: rCollateralId })
   const { data: market, isLoading: isMarketLoading, error: marketError } = marketQuery
@@ -84,20 +86,22 @@ export const MintMarketPage = () => {
       marketType={LlamaMarketType.Mint}
     >
       <DetailPageLayout
-        formTabs={
-          !isLoading &&
-          !isLoanExistsLoading &&
-          !isSoftLiquidationLoading &&
-          (loanExists ? (
-            <ManageLoanTabs
-              onPricesUpdated={setPreviewPrices}
-              collateralEvents={collateralEvents}
-              isSoftLiquidation={!!isSoftLiquidation}
-            />
-          ) : (
-            <CreateLoanTabs onPricesUpdated={setPreviewPrices} />
-          ))
-        }
+        formTabs={{
+          placement: isMobileFormDrawer ? 'mobile-drawer' : 'inline',
+          content:
+            !isLoading &&
+            !isLoanExistsLoading &&
+            !isSoftLiquidationLoading &&
+            (loanExists ? (
+              <ManageLoanTabs
+                onPricesUpdated={setPreviewPrices}
+                collateralEvents={collateralEvents}
+                isSoftLiquidation={!!isSoftLiquidation}
+              />
+            ) : (
+              <CreateLoanTabs onPricesUpdated={setPreviewPrices} />
+            )),
+        }}
         header={<MarketPageHeader isLoading={isLoading} />}
       >
         <MarketBanners chainId={chainId} market={market} />

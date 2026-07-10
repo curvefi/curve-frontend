@@ -67,7 +67,7 @@ export const DepositForm = <ChainId extends IChainId>({ networks }: DepositFormP
         disabled={isDisabled}
         label={[isApproved.data === false && t`Approve`, t`Deposit`]}
         testId={`${TEST_ID_PREFIX}-submit-button`}
-        connectWalletTestId="form-connect-wallet"
+        connectWalletTestId="form-market-page"
       >
         {disabledAlert && <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>}
       </FormButton>

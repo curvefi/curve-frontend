@@ -1,12 +1,17 @@
 import { mockMerklCampaigns } from '@cy/support/helpers/lending-mocks'
 import { shouldLoadMintBorrowDetails } from '@cy/support/helpers/llamalend/market-details.helpers'
 import { blockUnmockedApis } from '@cy/support/helpers/llamalend/market-list-mocks'
-import { LOAD_TIMEOUT } from '@cy/support/ui'
+import { LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
 
 const MINT_MARKET = 'WBTC'
 
+const [WIDTH, HEIGHT, BREAKPOINT] = oneViewport()
+
 describe('Mint app', () => {
-  beforeEach(() => mockMerklCampaigns())
+  beforeEach(() => {
+    mockMerklCampaigns()
+    cy.viewport(WIDTH, HEIGHT)
+  })
 
   it('should open', () => {
     cy.visit('/crvusd')
@@ -23,16 +28,16 @@ describe('Mint app', () => {
     const url = `/crvusd/ethereum/markets/${MINT_MARKET}`
     it('with a wallet', () => {
       cy.visit(url)
-      shouldLoadMintBorrowDetails({ hasWallet: true })
+      shouldLoadMintBorrowDetails({ breakpoint: BREAKPOINT, hasWallet: true })
     })
     it('without a wallet', () => {
       cy.visitWithoutTestConnector(url)
-      shouldLoadMintBorrowDetails({ hasWallet: false })
+      shouldLoadMintBorrowDetails({ breakpoint: BREAKPOINT, hasWallet: false })
     })
     it('when API is offline', () => {
       blockUnmockedApis()
       cy.visit(url)
-      shouldLoadMintBorrowDetails({ hasWallet: true, hasApi: false })
+      shouldLoadMintBorrowDetails({ breakpoint: BREAKPOINT, hasWallet: true, hasApi: false })
     })
   })
 })
