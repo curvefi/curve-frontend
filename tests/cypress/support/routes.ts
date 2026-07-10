@@ -89,10 +89,10 @@ const ROUTE_TEST_IDS = {
   crvusd: {
     [CRVUSD_ROUTES.PAGE_PSR]: 'pegkeepers',
     [CRVUSD_ROUTES.PAGE_CRVUSD_STAKING]: 'scrvusd-page',
-    [CRVUSD_ROUTES.PAGE_MARKETS]: 'form-connect-wallet',
+    [CRVUSD_ROUTES.PAGE_MARKETS]: 'form-market-page',
     ...COMMON_ROUTE_TEST_IDS,
   },
-  lend: { [LEND_ROUTES.PAGE_MARKETS]: 'form-connect-wallet', ...COMMON_ROUTE_TEST_IDS },
+  lend: { [LEND_ROUTES.PAGE_MARKETS]: 'form-market-page', ...COMMON_ROUTE_TEST_IDS },
   llamalend: { [LLAMALEND_ROUTES.PAGE_MARKETS]: 'data-table-head', ...COMMON_ROUTE_TEST_IDS },
 }
 

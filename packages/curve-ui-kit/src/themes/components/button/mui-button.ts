@@ -1,5 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference -- referring to a type definition file
 /// <reference path="./mui-button.d.ts" />
+import type { ButtonProps } from '@mui/material/Button'
 import type { Components } from '@mui/material/styles'
 import { recordEntries } from '@primitives/objects.utils'
 import { handleBreakpoints } from '../../basic-theme'
@@ -16,6 +17,14 @@ type ButtonSize = {
   fontWeight?: keyof DesignSystem['Text']['FontWeight']
   lineHeight: keyof typeof LineHeight
 }
+
+export const MUI_BUTTON_SIZE = {
+  extraSmall: { height: 'xs', fontSize: 'sm', lineHeight: 'md' },
+  small: { height: 'sm', fontSize: 'sm', lineHeight: 'md' },
+  medium: { height: 'md', fontSize: 'md', lineHeight: 'xl' },
+  large: { height: 'lg', fontSize: 'md', lineHeight: 'xl' },
+} as const satisfies Record<NonNullable<ButtonProps['size']>, ButtonSize>
+
 const buttonSize = (
   fontWeightTokens: DesignSystem['Text']['FontWeight'],
   { height, fontSize, fontWeight = 'Bold', lineHeight }: ButtonSize,
@@ -108,12 +117,12 @@ export const defineMuiButton = ({ Button, Text }: DesignSystem): Components['Mui
         transition: Transition,
       },
       sizeExtraSmall: {
-        ...buttonSize(Text.FontWeight, { height: 'xs', fontSize: 'sm', lineHeight: 'md' }),
+        ...buttonSize(Text.FontWeight, MUI_BUTTON_SIZE.extraSmall),
         textTransform: 'none',
       },
-      sizeSmall: buttonSize(Text.FontWeight, { height: 'sm', fontSize: 'sm', lineHeight: 'md' }),
-      sizeMedium: buttonSize(Text.FontWeight, { height: 'md', fontSize: 'md', lineHeight: 'xl' }),
-      sizeLarge: buttonSize(Text.FontWeight, { height: 'lg', fontSize: 'md', lineHeight: 'xl' }),
+      sizeSmall: buttonSize(Text.FontWeight, MUI_BUTTON_SIZE.small),
+      sizeMedium: buttonSize(Text.FontWeight, MUI_BUTTON_SIZE.medium),
+      sizeLarge: buttonSize(Text.FontWeight, MUI_BUTTON_SIZE.large),
       startIcon: handleBreakpoints({ marginInlineEnd: SizesAndSpaces.Spacing.xs }),
       endIcon: handleBreakpoints({ marginInlineStart: SizesAndSpaces.Spacing.xs }),
     },

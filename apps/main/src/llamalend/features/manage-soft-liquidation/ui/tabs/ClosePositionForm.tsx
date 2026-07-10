@@ -3,7 +3,6 @@ import { ClosePositionInfoList } from '@/llamalend/features/manage-soft-liquidat
 import { useMarketContext } from '@/llamalend/features/market-context'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import Stack from '@mui/material/Stack'
 import TableCell from '@mui/material/TableCell'
 import { FormButton } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
@@ -79,17 +78,15 @@ export const ClosePositionForm = ({ networks }: { networks: NetworkDict<LlamaCha
       ) : (
         <AlertClosePosition hasBadDebt={hasBadDebt} />
       )}
-      <Stack sx={{ gap: Spacing.xs }}>
-        <FormButton
-          pending={isPending}
-          disabled={isDisabled}
-          label={[
-            isApproved?.data === false && t`Approve`,
-            ...(hasBadDebt ? [t`Repay bad debt`] : [t`Repay debt`, t`Recover collateral`]),
-          ]}
-          testId="close-position-submit-button"
-        />
-      </Stack>
+      <FormButton
+        pending={isPending}
+        disabled={isDisabled}
+        label={[
+          isApproved?.data === false && t`Approve`,
+          ...(hasBadDebt ? [t`Repay bad debt`] : [t`Repay debt`, t`Recover collateral`]),
+        ]}
+        testId="close-position-submit-button"
+      />
 
       <FormAlerts
         // the table can keep rows visible on query errors, so surface the table error here too
