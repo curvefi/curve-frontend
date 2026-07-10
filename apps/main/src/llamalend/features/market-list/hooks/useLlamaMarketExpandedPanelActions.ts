@@ -17,6 +17,13 @@ export const useLlamaMarketExpandedPanelActions = (getPrimaryActions: ExpandedPa
       return notFalsy(
         ...getPrimaryActions(context),
         {
+          id: 'toggle-favorite-market',
+          label: isFavorite ? t`Remove from favorites` : t`Add to favorites`,
+          onClick: () => toggleFavoriteMarket(favoriteKey),
+          testId: isFavorite ? 'favorite-btn-active' : 'favorite-btn',
+          alwaysInKebabMenu: true,
+        },
+        {
           id: 'copy-market-address',
           label: t`Copy market address`,
           onClick: () =>
@@ -26,13 +33,6 @@ export const useLlamaMarketExpandedPanelActions = (getPrimaryActions: ExpandedPa
               failureText: t`Failed to copy market address`,
             }),
           testId: `copy-market-address-${controllerAddress}`,
-          alwaysInKebabMenu: true,
-        },
-        {
-          id: 'toggle-favorite-market',
-          label: isFavorite ? t`Remove from favorites` : t`Add to favorites`,
-          onClick: () => toggleFavoriteMarket(favoriteKey),
-          testId: isFavorite ? 'favorite-btn-active' : 'favorite-btn',
           alwaysInKebabMenu: true,
         },
       )
