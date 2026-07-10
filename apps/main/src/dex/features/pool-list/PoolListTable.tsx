@@ -30,7 +30,8 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
   const [filtersOpen, , , , setFiltersOpen] = useSwitch(false)
   const filterChipRef = useRef<HTMLDivElement>(null)
   const { onPaginationChange, pagination, updateQueryAndResetPage } = usePoolListPagination()
-  const { apiParams, filterProps, hasActiveFilters, onSearch, resetFilters, searchText } = usePoolListFilters()
+  const { globalFilter, columnFilters, apiParams, filterProps, onSearch, resetFilters, searchText } =
+    usePoolListFilters()
   const { onSortingChange, sortBy, sortDirection, sortField, sorting, sortOptions } = usePoolListSorting(
     network.isLite,
     updateQueryAndResetPage,
@@ -54,7 +55,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
   const table = useTable({
     columns: POOL_LIST_COLUMNS,
     query: tableQuery,
-    state: { expanded, sorting, pagination, columnVisibility },
+    state: { expanded, sorting, pagination, columnVisibility, columnFilters, globalFilter },
     onExpandedChange: setExpanded,
     onPaginationChange,
     onSortingChange,
@@ -66,6 +67,8 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
     pageCount,
     autoResetPageIndex: false,
   })
+
+  const hasActiveFilters = !!table.getState().columnFilters.length
 
   return (
     <Stack>

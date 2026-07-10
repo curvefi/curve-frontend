@@ -26,9 +26,6 @@ export type PoolListApiParams = Pick<
 export const parsePoolListRangeFilter = (value: string | undefined): PoolListNumberRange =>
   parseRangeFilter(value) ?? [null, null]
 
-const isActiveRangeFilter = ([min, max]: PoolListNumberRange, defaultMin: number | null) =>
-  max != null || (min != null && min !== defaultMin)
-
 export const getPoolListApiParams = (columnFiltersById: PoolListColumnFilters): PoolListApiParams => {
   const [minApy, maxApy] = parsePoolListRangeFilter(columnFiltersById[PoolListFilterId.Apy])
   const [minTvl, maxTvl] = parsePoolListRangeFilter(columnFiltersById[PoolListFilterId.Tvl])
@@ -44,12 +41,6 @@ export const getPoolListApiParams = (columnFiltersById: PoolListColumnFilters): 
     poolType: columnFiltersById[PoolListFilterId.PoolType] || undefined,
   }
 }
-
-export const hasPoolListActiveFilters = (columnFiltersById: PoolListColumnFilters) =>
-  Boolean(columnFiltersById[PoolListFilterId.PoolType]) ||
-  isActiveRangeFilter(parsePoolListRangeFilter(columnFiltersById[PoolListFilterId.Tvl]), POOL_LIST_DEFAULT_TVL_MIN) ||
-  isActiveRangeFilter(parsePoolListRangeFilter(columnFiltersById[PoolListFilterId.Volume]), 0) ||
-  isActiveRangeFilter(parsePoolListRangeFilter(columnFiltersById[PoolListFilterId.Apy]), null)
 
 export const getPoolListTvlLabelRange = ([min, max]: PoolListNumberRange): PoolListNumberRange => [
   min ?? maybe(max, () => POOL_LIST_DEFAULT_TVL_MIN) ?? null,

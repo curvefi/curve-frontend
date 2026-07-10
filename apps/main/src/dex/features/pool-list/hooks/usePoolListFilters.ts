@@ -2,12 +2,7 @@ import { useMemo } from 'react'
 import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { useFilters } from '@ui-kit/shared/ui/DataTable/hooks/useFilters'
 import { POOL_LIST_POOL_TYPE_FILTERS } from '../poolList.constants'
-import {
-  getPoolListApiParams,
-  hasPoolListActiveFilters,
-  PoolListFilterId,
-  POOL_LIST_SEARCH_QUERY_FIELD,
-} from '../poolListFilterQuery'
+import { getPoolListApiParams, PoolListFilterId, POOL_LIST_SEARCH_QUERY_FIELD } from '../poolListFilterQuery'
 
 export { POOL_LIST_DEFAULT_TVL_MIN } from '../poolListFilterQuery'
 export { PoolListFilterId }
@@ -22,11 +17,13 @@ export type PoolListFilterProps = FilterProps<PoolListFilterId> & {
  * serialized values into prices API params because filtering happens server-side.
  */
 export const usePoolListFilters = () => {
-  const { globalFilter, setGlobalFilter, columnFiltersById, setColumnFilter, resetFilters } = useFilters({
-    columns: PoolListFilterId,
-    resetPageOnChange: true,
-    searchKey: POOL_LIST_SEARCH_QUERY_FIELD,
-  })
+  const { globalFilter, setGlobalFilter, columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useFilters(
+    {
+      columns: PoolListFilterId,
+      resetPageOnChange: true,
+      searchKey: POOL_LIST_SEARCH_QUERY_FIELD,
+    },
+  )
 
   const filterProps: PoolListFilterProps = useMemo(
     () => ({
@@ -40,9 +37,10 @@ export const usePoolListFilters = () => {
   return {
     apiParams: getPoolListApiParams(columnFiltersById),
     filterProps,
-    hasActiveFilters: hasPoolListActiveFilters(columnFiltersById),
     onSearch: setGlobalFilter,
     resetFilters,
     searchText: globalFilter,
+    columnFilters,
+    globalFilter,
   }
 }
