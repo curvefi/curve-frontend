@@ -3,6 +3,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { TokenIcon, type Size } from './TokenIcon'
+import { applySxProps, SxProps } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -19,6 +20,7 @@ export type TokenInfoTokenIconProps = TokenInfoBaseProps & {
   showChainIcon?: boolean
   iconSize?: Size
   icon?: never
+  sx?: SxProps
 }
 
 type TokenInfoCustomIconProps = TokenInfoBaseProps & {
@@ -27,6 +29,7 @@ type TokenInfoCustomIconProps = TokenInfoBaseProps & {
   blockchainId?: never
   showChainIcon?: never
   iconSize?: never
+  sx?: SxProps
 }
 
 export type TokenInfoProps = TokenInfoTokenIconProps | TokenInfoCustomIconProps
@@ -46,7 +49,7 @@ export const TokenInfo = (props: TokenInfoProps) => {
     )
 
   return (
-    <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center' }}>
+    <Stack direction="row" sx={applySxProps({ gap: Spacing.xs, alignItems: 'center' }, props.sx)}>
       {iconPosition === 'left' && tokenIcon}
 
       <Stack sx={{ gap: Spacing.xxs, alignItems: iconPosition === 'right' ? 'end' : 'start' }}>

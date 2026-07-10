@@ -1,5 +1,6 @@
 import { type FunctionComponent, useMemo } from 'react'
 import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
+import { tokenMetric } from '@/llamalend/llama.utils'
 import { ArrowRight } from '@carbon/icons-react'
 import Button from '@mui/material/Button'
 import CardHeader from '@mui/material/CardHeader'
@@ -84,6 +85,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
     favoriteKey,
     assets,
     leverage,
+    liquidity,
     liquidityUsd,
     url,
     userHasPositions,
@@ -148,8 +150,11 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
           <Metric
             category={EXPANDED_DETAILS_METRIC_CATEGORY}
             label={t`Available Liquidity`}
-            value={constQ(liquidityUsd)}
-            valueOptions={{ unit: 'dollar' }}
+            {...tokenMetric({
+              value: constQ(liquidity),
+              symbol: assets.borrowed.symbol,
+              notional: constQ({ value: liquidityUsd, unit: 'dollar' as const }),
+            })}
           />
         </Grid>
         <Grid size={12}>
