@@ -20,7 +20,7 @@ export type MintMarket = MintMarketFromApi & {
   chain: Chain
 }
 
-export const { getQueryOptions: getMintMarketOptions, invalidate: invalidateMintMarkets } = queryFactory({
+export const { getQueryOptions: getMintMarketOptions, reset: resetMintMarkets } = queryFactory({
   queryKey: () => ['mint-markets', 'v4'] as const,
   queryFn: async (): Promise<MintMarket[]> =>
     recordEntries(await getAllMarkets()).flatMap(([chain, markets]) => markets.map(market => ({ ...market, chain }))),

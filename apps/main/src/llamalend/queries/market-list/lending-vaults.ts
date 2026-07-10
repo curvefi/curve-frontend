@@ -20,7 +20,7 @@ import { EmptyValidationSuite } from '@ui-kit/lib/validation'
 
 export type LendingVault = Market & { chain: ChainName }
 
-export const { getQueryOptions: getLendingVaultsOptions, invalidate: invalidateLendingVaults } = queryFactory({
+export const { getQueryOptions: getLendingVaultsOptions, reset: resetLendingVaults } = queryFactory({
   queryKey: () => ['lending-vaults', 'v4'] as const,
   queryFn: async (): Promise<LendingVault[]> =>
     Object.entries(await getAllMarkets()).flatMap(([chain, markets]) =>

@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useConnection } from 'wagmi'
-import { invalidateBadDebtMarkets } from '@/llamalend/queries/market'
+import { resetBadDebtMarkets } from '@/llamalend/queries/market'
 import type { Address } from '@primitives/address.utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { q } from '@ui-kit/types/util'
@@ -8,10 +8,10 @@ import { ListPageWrapper } from '@ui-kit/widgets/ListPageWrapper'
 import {
   invalidateUserLendingSupplies,
   invalidateAllUserLendingVaults,
-  invalidateLendingVaults,
+  resetLendingVaults,
 } from '../../queries/market-list/lending-vaults'
 import { useLlamaMarkets } from '../../queries/market-list/llama-markets'
-import { invalidateAllUserMintMarkets, invalidateMintMarkets } from '../../queries/market-list/mint-markets'
+import { invalidateAllUserMintMarkets, resetMintMarkets } from '../../queries/market-list/mint-markets'
 import { LendTableFooter } from './LendTableFooter'
 import { LlamaMarketsTable } from './LlamaMarketsTable'
 import { UserPositionsTables } from './UserPositionsTables'
@@ -26,9 +26,9 @@ const useTableLlamaMarkets = (address: Address | undefined) => {
 
   const onReload = useCallback(() => {
     void Promise.all([
-      invalidateLendingVaults({}),
-      invalidateMintMarkets({}),
-      invalidateBadDebtMarkets(),
+      resetLendingVaults({}),
+      resetMintMarkets({}),
+      resetBadDebtMarkets(),
       invalidateAllUserLendingVaults(address),
       invalidateUserLendingSupplies({ userAddress: address }),
       invalidateAllUserMintMarkets(address),
@@ -37,7 +37,7 @@ const useTableLlamaMarkets = (address: Address | undefined) => {
 
   return {
     onReload,
-    tableQuery: q({ ...query, isLoading: query.isFetching }),
+    tableQuery: q({ ...query, isLoading: query.isPending }),
   }
 }
 
