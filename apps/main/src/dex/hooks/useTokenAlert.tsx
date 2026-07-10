@@ -1,14 +1,8 @@
 import { useMemo } from 'react'
-import { styled } from 'styled-components'
 import type { PoolAlert } from '@/dex/types/main.types'
 import { notFalsy } from '@primitives/objects.utils'
-import { ExternalLink } from '@ui/Link/ExternalLink'
 import { t, Trans } from '@ui-kit/lib/i18n'
-
-const StyledExternalLink = styled(ExternalLink)`
-  color: inherit;
-  word-break: break-word;
-`
+import { InlineLink } from '@ui-kit/shared/ui/InlineLink'
 
 const MA_ALERT: PoolAlert = {
   alertType: 'info',
@@ -18,7 +12,7 @@ const MA_ALERT: PoolAlert = {
     <div>
       <Trans>
         Note: maDAI, maUSDC and maUSDT are LP tokens from the Morpho protocol, a third-party service not affiliated with
-        Curve. <StyledExternalLink href="https://vaults.morpho.xyz/">Learn more here</StyledExternalLink>.
+        Curve. <InlineLink to="https://vaults.morpho.xyz/">Learn more here</InlineLink>.
       </Trans>
     </div>
   ),
@@ -43,9 +37,9 @@ const TOKEN_ALERTS: Record<string, PoolAlert> = {
         <Trans>
           tBTC v1 is in sunset mode: Threshold Network is offering bonds to bring those deprecated v1 out of
           circulation. Lps in this pool can use those LP tokens to acquire our bonds in{' '}
-          <StyledExternalLink href="https://app.bondprotocol.finance/#/market/1/115">
+          <InlineLink to="https://app.bondprotocol.finance/#/market/1/115">
             https://app.bondprotocol.finance/#/market/1/115
-          </StyledExternalLink>
+          </InlineLink>
         </Trans>
       </div>
     ),
@@ -57,10 +51,7 @@ const TOKEN_ALERTS: Record<string, PoolAlert> = {
       <div>
         <Trans>
           The Liquity BOLD token has been redeployed. This pool contain the legacy BOLD token.{' '}
-          <StyledExternalLink href="https://www.liquity.org/blog/liquity-v2-redeployment">
-            Learn more here
-          </StyledExternalLink>
-          .
+          <InlineLink to="https://www.liquity.org/blog/liquity-v2-redeployment">Learn more here</InlineLink>.
         </Trans>
       </div>
     ),
@@ -72,10 +63,7 @@ const TOKEN_ALERTS: Record<string, PoolAlert> = {
       <div>
         <Trans>
           The Zunami protocol has been hacked — the collateral for zunUSD and zunETH has been stolen.{' '}
-          <StyledExternalLink href="https://x.com/ZunamiProtocol/status/1922993510925435267">
-            Learn more here
-          </StyledExternalLink>
-          .
+          <InlineLink to="https://x.com/ZunamiProtocol/status/1922993510925435267">Learn more here</InlineLink>.
         </Trans>
       </div>
     ),
@@ -87,10 +75,7 @@ const TOKEN_ALERTS: Record<string, PoolAlert> = {
       <div>
         <Trans>
           The Zunami protocol has been hacked — the collateral for zunUSD and zunETH has been stolen.{' '}
-          <StyledExternalLink href="https://x.com/ZunamiProtocol/status/1922993510925435267">
-            Learn more here
-          </StyledExternalLink>
-          .
+          <InlineLink to="https://x.com/ZunamiProtocol/status/1922993510925435267">Learn more here</InlineLink>.
         </Trans>
       </div>
     ),
@@ -102,10 +87,7 @@ const TOKEN_ALERTS: Record<string, PoolAlert> = {
       <div>
         <Trans>
           The Zunami protocol has been hacked — the collateral for zunUSD and zunETH has been stolen.{' '}
-          <StyledExternalLink href="https://x.com/ZunamiProtocol/status/1922993510925435267">
-            Learn more here
-          </StyledExternalLink>
-          .
+          <InlineLink to="https://x.com/ZunamiProtocol/status/1922993510925435267">Learn more here</InlineLink>.
         </Trans>
       </div>
     ),
@@ -117,10 +99,7 @@ const TOKEN_ALERTS: Record<string, PoolAlert> = {
       <div>
         <Trans>
           The Zunami protocol has been hacked — the collateral for zunUSD and zunETH has been stolen.{' '}
-          <StyledExternalLink href="https://x.com/ZunamiProtocol/status/1922993510925435267">
-            Learn more here
-          </StyledExternalLink>
-          .
+          <InlineLink to="https://x.com/ZunamiProtocol/status/1922993510925435267">Learn more here</InlineLink>.
         </Trans>
       </div>
     ),
@@ -134,9 +113,7 @@ const TOKEN_ALERTS: Record<string, PoolAlert> = {
         <Trans>
           Mountain Protocol is winding down USDM. Minting is disabled since May 12, 2025. Primary customers can redeem
           USDM via Mountain Protocol. Other holders can swap on supported exchanges.{' '}
-          <StyledExternalLink href="https://x.com/MountainUSDM/status/1921960086362108270">
-            Learn more here
-          </StyledExternalLink>
+          <InlineLink to="https://x.com/MountainUSDM/status/1921960086362108270">Learn more here</InlineLink>
         </Trans>
       </div>
     ),
@@ -149,9 +126,9 @@ const TOKEN_ALERTS: Record<string, PoolAlert> = {
         <Trans>
           A vulnerability in the CVXRewardDistributor contract was exploited allowing the hacker to mint 58m CVG
           intended for future emissions. CVG has been deprecated.{' '}
-          <StyledExternalLink href="https://medium.com/@cvg_wireshark/post-mortem-08-01-2024-e80a49d108a0">
+          <InlineLink to="https://medium.com/@cvg_wireshark/post-mortem-08-01-2024-e80a49d108a0">
             Learn more here
-          </StyledExternalLink>
+          </InlineLink>
         </Trans>
       </div>
     ),
@@ -172,9 +149,7 @@ const TOKEN_ALERTS: Record<string, PoolAlert> = {
       <div>
         <Trans>
           The Asymmetry USDaf token will be redeployed. Users advised to unwind USDaf positions.{' '}
-          <StyledExternalLink href="https://x.com/asymmetryfin/status/1936870408743223518">
-            Learn more here
-          </StyledExternalLink>
+          <InlineLink to="https://x.com/asymmetryfin/status/1936870408743223518">Learn more here</InlineLink>
         </Trans>
       </div>
     ),
@@ -186,9 +161,7 @@ const TOKEN_ALERTS: Record<string, PoolAlert> = {
       <div>
         <Trans>
           The Resolv protocol has experienced an exploit.{' '}
-          <StyledExternalLink href="https://x.com/ResolvLabs/status/2035581976514609437?s=20">
-            Learn more here
-          </StyledExternalLink>
+          <InlineLink to="https://x.com/ResolvLabs/status/2035581976514609437?s=20">Learn more here</InlineLink>
         </Trans>
       </div>
     ),
@@ -200,9 +173,7 @@ const TOKEN_ALERTS: Record<string, PoolAlert> = {
       <div>
         <Trans>
           The Resolv protocol has experienced an exploit.{' '}
-          <StyledExternalLink href="https://x.com/ResolvLabs/status/2035581976514609437?s=20">
-            Learn more here
-          </StyledExternalLink>
+          <InlineLink to="https://x.com/ResolvLabs/status/2035581976514609437?s=20">Learn more here</InlineLink>
         </Trans>
       </div>
     ),
@@ -214,9 +185,7 @@ const TOKEN_ALERTS: Record<string, PoolAlert> = {
       <div>
         <Trans>
           The Resolv protocol has experienced an exploit.{' '}
-          <StyledExternalLink href="https://x.com/ResolvLabs/status/2035581976514609437?s=20">
-            Learn more here
-          </StyledExternalLink>
+          <InlineLink to="https://x.com/ResolvLabs/status/2035581976514609437?s=20">Learn more here</InlineLink>
         </Trans>
       </div>
     ),
@@ -228,9 +197,7 @@ const TOKEN_ALERTS: Record<string, PoolAlert> = {
       <div>
         <Trans>
           The StablR has suffered an exploit.{' '}
-          <StyledExternalLink href="https://x.com/StablREuro/status/2058520949075386683?s=20">
-            Learn more here
-          </StyledExternalLink>
+          <InlineLink to="https://x.com/StablREuro/status/2058520949075386683?s=20">Learn more here</InlineLink>
         </Trans>
       </div>
     ),
