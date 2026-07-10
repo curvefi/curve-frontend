@@ -20,6 +20,19 @@ export function visitAndWait(
   cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('be.visible')
 }
 
+export function clickMarketAction(breakpoint: Breakpoint, selector: string) {
+  return cy
+    .get(
+      notFalsy(
+        breakpoint === 'mobile' && `[data-testid="expanded-panel-actions-menu"]`,
+        selector,
+      ).join(' '),
+    )
+    .first()
+    // On desktop, the action is not visible until hovered; Cypress does not support hovering.
+    .click({ force: breakpoint === 'desktop' })
+}
+
 export function enableGraphColumn() {
   cy.get(`[data-testid="line-graph-${MarketRateType.Borrow}"]`).should('not.exist')
   cy.get(`[data-testid="btn-visibility-settings"]`).click()

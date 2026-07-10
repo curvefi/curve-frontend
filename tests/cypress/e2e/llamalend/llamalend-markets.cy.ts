@@ -6,6 +6,7 @@ import {
   expandFirstRowOnMobile,
   getTableCellAssets,
   openDrawer,
+  withExpandedPanelDrawer,
   withFilters,
 } from '@cy/support/helpers/data-table.helpers'
 import { Chain, HIGH_TVL_ADDRESS, HIGH_UTILIZATION_ADDRESS } from '@cy/support/helpers/lending-mocks'
@@ -14,6 +15,7 @@ import {
   checkCoinSelection,
   checkLineGraphColor,
   checkTableFilterButtonGroupSelection,
+  clickMarketAction,
   enableGraphColumn,
   filterByMarketType,
   getOneColumnMedianValue,
@@ -22,7 +24,7 @@ import {
 } from '@cy/support/helpers/llamalend/llamalend-markets'
 import { setupLlamalendListMocks } from '@cy/support/helpers/llamalend/market-list-mocks'
 import { assertInViewport, assertNotInViewport, LOAD_TIMEOUT, oneDesktopViewport, oneViewport } from '@cy/support/ui'
-import { assert, notFalsy, objectKeys, recordValues, repeat } from '@primitives/objects.utils'
+import { assert, objectKeys, recordValues, repeat } from '@primitives/objects.utils'
 import { LlamaMarketType, LlamaMarketVersion, MarketRateType } from '@ui-kit/types/market'
 
 const WST_ETH_MARKET = '0x100dAa78fC509Db39Ef7D04DE0c1ABD299f4C6CE' as const
@@ -40,17 +42,8 @@ testCases.forEach(([width, height, breakpoint]) => {
       visitAndWait([width, height])
     })
 
-    itSkipOnMobile(`should copy the market address`, () => {
-      expandFirstRowOnMobile(breakpoint)
-      cy.get(
-        notFalsy(
-          breakpoint === 'mobile' && `[data-testid="data-table-expansion-row"]`,
-          `[data-testid^="copy-market-address"]`,
-        ).join(' '),
-      )
-        .first()
-        // on desktop, the copy button is not visible until hovered - but cypress doesn't support that so use force
-        .click({ force: breakpoint === 'desktop' })
+    it(`should copy the market address`, () => {
+      withExpandedPanelDrawer(breakpoint, () => clickMarketAction(breakpoint, `[data-testid^="copy-market-address"]`))
       cy.get(`[data-testid="copy-confirmation"]`).should('be.visible')
     })
 
@@ -209,16 +202,14 @@ testCases.forEach(([width, height, breakpoint]) => {
       getTableCellAssets().first().contains('wstETH')
     })
 
-    itSkipOnMobile('should allow filtering favorites', () => {
-      expandFirstRowOnMobile(breakpoint)
-      // on desktop, the favorite icon is not visible until hovered - but cypress doesn't support that so use force
-      cy.get(`[data-testid="favorite-btn"]`).first().click({ force: true })
+    it('should allow filtering favorites', () => {
+      withExpandedPanelDrawer(breakpoint, () => clickMarketAction(breakpoint, `[data-testid="favorite-btn"]`))
 
       cy.get(`[data-testid="chip-favorites"]`).click()
       cy.url().should('include', 'isFavorite=yes')
       cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
       cy.get(`[data-testid="favorite-btn"]`).should('not.exist')
-      cy.get(`[data-testid="favorite-btn-active"]`).click()
+      withExpandedPanelDrawer(breakpoint, () => clickMarketAction(breakpoint, `[data-testid="favorite-btn-active"]`))
       cy.get(`[data-testid="table-empty-row"]`).should('exist')
     })
 
