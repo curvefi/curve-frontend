@@ -2,7 +2,7 @@ import { AdvancedDetails, MarketInfoLayout } from '@/llamalend/features/market-a
 import { MarketFaq } from '@/llamalend/features/market-faq'
 import type { ChartAndActivityTab } from '@/llamalend/widgets/ChartAndActivityLayout'
 import { CrvUsdPriceChart } from '@/llamalend/widgets/CrvUsdPriceChart'
-import { MarketSection, type MarketSectionRef } from '@/llamalend/widgets/market-section-nav'
+import { MarketSection } from '@/llamalend/widgets/market-section-nav'
 import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
 import { ChartAndActivityComp } from '@/loan/components/ChartAndActivityComp'
 import type { ChainId } from '@/loan/types/loan.types'
@@ -20,38 +20,31 @@ import { networks } from '../networks'
 
 type MarketInformationCompProps = {
   previewPrices: Range<Decimal> | undefined
-  sectionRefs: {
-    chartAndActivity: MarketSectionRef
-    historicalRates: MarketSectionRef
-    advancedDetails: MarketSectionRef
-    faqs: MarketSectionRef
-  }
   chartAndActivityTab?: ChartAndActivityTab
   onChartAndActivityTabChange?: (tab: ChartAndActivityTab) => void
 }
 
 export const MarketInformationComposite = ({
   previewPrices,
-  sectionRefs,
   chartAndActivityTab,
   onChartAndActivityTabChange,
 }: MarketInformationCompProps) => {
   const { chainId } = useMarketContext<ChainId>()
   return (
     <Stack sx={{ gap: PAGE_SPACING }}>
-      <MarketSection id="price-chart" sectionRef={sectionRefs.chartAndActivity}>
+      <MarketSection id="price-chart" aliases={['market-activity']}>
         <ChartAndActivityComp
           previewPrices={previewPrices}
           tab={chartAndActivityTab}
           onTabChange={onChartAndActivityTabChange}
         />
       </MarketSection>
-      <MarketSection id="historical-rates" sectionRef={sectionRefs.historicalRates}>
+      <MarketSection id="historical-rates">
         <MarketHistoricalRatesChart rateMode={MarketRateType.Borrow} />
       </MarketSection>
       <CrvUsdPriceChart />
 
-      <MarketSection id="advanced-details" sectionRef={sectionRefs.advancedDetails}>
+      <MarketSection id="advanced-details">
         <Card size="small">
           <CardHeader title={t`Advanced Details`} />
           <CardContent component={Stack}>
@@ -61,7 +54,7 @@ export const MarketInformationComposite = ({
         </Card>
       </MarketSection>
 
-      <MarketSection id="faqs" sectionRef={sectionRefs.faqs}>
+      <MarketSection id="faqs">
         <MarketFaq />
       </MarketSection>
     </Stack>

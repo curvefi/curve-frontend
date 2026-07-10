@@ -7,7 +7,6 @@ import { defaultReleaseChannel, ReleaseChannel } from '@ui-kit/utils'
 import { useReleaseChannel } from './useLocalStorage'
 
 const useBetaChannel = () => useReleaseChannel()[0] === ReleaseChannel.Beta
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const useStableChannel = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy
 
 /**
@@ -24,6 +23,9 @@ export const useLlamaResetPosition = useStableChannel
 
 /** Split the LlamaLend (soon to be legacy) health into: Liquidation Buffer and Health */
 export const useNewLlamalendHealth = useBetaChannel
+
+/** LlamaLend market detail page section navigation */
+export const useLlamaMarketSectionNav = useBetaChannel
 
 /** New DEX pool list backed by Prices API v2 */
 export const useDexPoolListV2 = useBetaChannel

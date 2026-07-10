@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { MarketInformationComposite } from '@/lend/components/MarketInformationComposite'
 import { CreateLoanTabs } from '@/lend/components/PageLendMarket/CreateLoanTabs'
@@ -16,11 +16,7 @@ import { getControllerAddress, getTokens, hasResetPosition } from '@/llamalend/l
 import { useLoanExists } from '@/llamalend/queries/user'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import type { ChartAndActivityTab } from '@/llamalend/widgets/ChartAndActivityLayout'
-import {
-  MarketSection,
-  MarketSectionNav,
-  type MarketSectionOption,
-} from '@/llamalend/widgets/market-section-nav'
+import { getBorrowMarketSections, MarketSection, MarketSectionNav } from '@/llamalend/widgets/market-section-nav'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header'
 import { getBlockchainId } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
@@ -52,11 +48,6 @@ export const LendMarketPage = () => {
 
   const [previewPrices, setPreviewPrices] = useState<Range<Decimal> | undefined>(undefined)
   const [chartAndActivityTab, setChartAndActivityTab] = useState<ChartAndActivityTab>('chart')
-  const positionDetailsRef = useRef<HTMLElement | null>(null)
-  const chartAndActivityRef = useRef<HTMLElement | null>(null)
-  const historicalRatesRef = useRef<HTMLElement | null>(null)
-  const advancedDetailsRef = useRef<HTMLElement | null>(null)
-  const faqsRef = useRef<HTMLElement | null>(null)
   const isLoading = !isInitialized || isMarketLoading
   const apiMarket = useLlamaMarket(
     {
@@ -84,30 +75,7 @@ export const LendMarketPage = () => {
   )
 
   const error = marketError ?? apiMarket.error
-  const sectionRefs = {
-    chartAndActivity: chartAndActivityRef,
-    historicalRates: historicalRatesRef,
-    advancedDetails: advancedDetailsRef,
-    faqs: faqsRef,
-  }
-  const sections: MarketSectionOption[] = [
-    { value: 'position-details', label: t`Position Details`, ref: positionDetailsRef },
-    {
-      value: 'price-chart',
-      label: t`Price Chart`,
-      ref: chartAndActivityRef,
-      onClick: () => setChartAndActivityTab('chart'),
-    },
-    {
-      value: 'market-activity',
-      label: t`Market Activity`,
-      ref: chartAndActivityRef,
-      onClick: () => setChartAndActivityTab('events'),
-    },
-    { value: 'historical-rates', label: t`Historical Rates`, ref: historicalRatesRef },
-    { value: 'advanced-details', label: t`Advanced Details`, ref: advancedDetailsRef },
-    { value: 'faqs', label: t`FAQs`, ref: faqsRef },
-  ]
+  const sections = getBorrowMarketSections(setChartAndActivityTab)
 
   return error ? (
     <ErrorPage title={t`Error`} subtitle={error.message} continueUrl={getCollateralListPathname(params)} />
@@ -146,13 +114,12 @@ export const LendMarketPage = () => {
           market={market}
           rewardsBanner={<CampaignRewardsBanner chainId={chainId} market={market} />}
         />
-        <MarketSection id="position-details" sectionRef={positionDetailsRef}>
+        <MarketSection id="position-details">
           <PositionDetailsComposite hasPosition={loanExists} events={collateralEvents} />
         </MarketSection>
         <MarketInformationComposite
           rateType={MarketRateType.Borrow}
           previewPrices={previewPrices}
-          sectionRefs={sectionRefs}
           chartAndActivityTab={chartAndActivityTab}
           onChartAndActivityTabChange={setChartAndActivityTab}
         />

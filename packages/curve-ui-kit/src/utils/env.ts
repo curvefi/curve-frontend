@@ -12,6 +12,7 @@ export const NO_CYPRESS_TEST_CONNECTOR = Boolean(
 )
 
 export const IS_DEVELOPMENT = NODE_ENV === 'development' || !!window.localStorage?.getItem('developer')
+export const ENABLE_FORM_DEBUG = !!window.localStorage?.getItem('developer')
 export const IS_PREVIEW_HOST = window.location.hostname.includes('vercel.app')
 
 const IS_DEFAULT_BETA = IS_DEVELOPMENT || IS_PREVIEW_HOST || IS_CYPRESS

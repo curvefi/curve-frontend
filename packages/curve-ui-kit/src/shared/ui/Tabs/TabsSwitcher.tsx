@@ -34,7 +34,7 @@ export type TabsSwitcherProps<T> = Pick<TabsProps, 'sx' | 'children'> & {
   size?: keyof typeof TABS_SIZES_CLASSES
   variant?: TabSwitcherVariants
   /** The overflow behavior of the tabs. This is directly mapped to the MUI's variant prop. */
-  overflow?: Exclude<TabsProps['variant'], 'scrollable'> | 'kebab'
+  overflow?: TabsProps['variant'] | 'kebab'
   orientation?: TabsProps['orientation']
   value: T | undefined
   options: readonly TabOption<T>[]
@@ -49,6 +49,7 @@ const overflowToMuiVariant: Record<
   NonNullable<TabsProps['variant']>
 > = {
   standard: 'standard',
+  scrollable: 'scrollable',
   kebab: 'scrollable',
   /** native MUI's fullWidth doesn't behave as expected because all tabs have the same width.
    * Instead below we use flexGrow: 1 to make the tabs take all available width while having different tab's widths. */

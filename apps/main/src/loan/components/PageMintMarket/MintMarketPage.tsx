@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { MarketContextProvider } from '@/llamalend/features/market-context'
 import { PositionDetailsComposite } from '@/llamalend/features/market-position-details'
@@ -9,11 +9,7 @@ import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import type { ChartAndActivityTab } from '@/llamalend/widgets/ChartAndActivityLayout'
-import {
-  MarketSection,
-  MarketSectionNav,
-  type MarketSectionOption,
-} from '@/llamalend/widgets/market-section-nav'
+import { getBorrowMarketSections, MarketSection, MarketSectionNav } from '@/llamalend/widgets/market-section-nav'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header'
 import { MarketInformationComposite } from '@/loan/components/MarketInformationComposite'
 import { CreateLoanTabs } from '@/loan/components/PageMintMarket/CreateLoanTabs'
@@ -42,11 +38,6 @@ export const MintMarketPage = () => {
   const { address } = useConnection()
   const [previewPrices, setPreviewPrices] = useState<Range<Decimal> | undefined>(undefined)
   const [chartAndActivityTab, setChartAndActivityTab] = useState<ChartAndActivityTab>('chart')
-  const positionDetailsRef = useRef<HTMLElement | null>(null)
-  const chartAndActivityRef = useRef<HTMLElement | null>(null)
-  const historicalRatesRef = useRef<HTMLElement | null>(null)
-  const advancedDetailsRef = useRef<HTMLElement | null>(null)
-  const faqsRef = useRef<HTMLElement | null>(null)
 
   const marketQuery = useMintMarket({ chainId, rMarket: rCollateralId })
   const { data: market, isLoading: isMarketLoading, error: marketError } = marketQuery
@@ -82,30 +73,7 @@ export const MintMarketPage = () => {
   )
 
   const error = marketError ?? apiMarket.error
-  const sectionRefs = {
-    chartAndActivity: chartAndActivityRef,
-    historicalRates: historicalRatesRef,
-    advancedDetails: advancedDetailsRef,
-    faqs: faqsRef,
-  }
-  const sections: MarketSectionOption[] = [
-    { value: 'position-details', label: t`Position Details`, ref: positionDetailsRef },
-    {
-      value: 'price-chart',
-      label: t`Price Chart`,
-      ref: chartAndActivityRef,
-      onClick: () => setChartAndActivityTab('chart'),
-    },
-    {
-      value: 'market-activity',
-      label: t`Market Activity`,
-      ref: chartAndActivityRef,
-      onClick: () => setChartAndActivityTab('events'),
-    },
-    { value: 'historical-rates', label: t`Historical Rates`, ref: historicalRatesRef },
-    { value: 'advanced-details', label: t`Advanced Details`, ref: advancedDetailsRef },
-    { value: 'faqs', label: t`FAQs`, ref: faqsRef },
-  ]
+  const sections = getBorrowMarketSections(setChartAndActivityTab)
 
   return error ? (
     <ErrorPage
@@ -144,12 +112,11 @@ export const MintMarketPage = () => {
         }
       >
         <MarketBanners chainId={chainId} market={market} />
-        <MarketSection id="position-details" sectionRef={positionDetailsRef}>
+        <MarketSection id="position-details">
           <PositionDetailsComposite hasPosition={loanExists} events={collateralEvents} />
         </MarketSection>
         <MarketInformationComposite
           previewPrices={previewPrices}
-          sectionRefs={sectionRefs}
           chartAndActivityTab={chartAndActivityTab}
           onChartAndActivityTabChange={setChartAndActivityTab}
         />

@@ -1,4 +1,3 @@
-import { useRef } from 'react'
 import { useConnection } from 'wagmi'
 import { MarketInformationComposite } from '@/lend/components/MarketInformationComposite'
 import { VaultTabs } from '@/lend/components/PageVault/VaultTabs'
@@ -11,11 +10,7 @@ import { SupplyPositionDetails } from '@/llamalend/features/market-position-deta
 import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
 import { useUserShares } from '@/llamalend/queries/user/user-balances.query'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
-import {
-  MarketSection,
-  MarketSectionNav,
-  type MarketSectionOption,
-} from '@/llamalend/widgets/market-section-nav'
+import { MarketSection, MarketSectionNav, type MarketSectionOption } from '@/llamalend/widgets/market-section-nav'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header'
 import Stack from '@mui/material/Stack'
 import { useCurve } from '@ui-kit/features/connect-wallet'
@@ -36,10 +31,6 @@ export const Page = () => {
   const { data: market, isLoading: isMarketLoading, error: marketError } = marketQuery
   const network = networks[chainId]
   const { address: userAddress } = useConnection()
-  const positionDetailsRef = useRef<HTMLElement | null>(null)
-  const historicalRatesRef = useRef<HTMLElement | null>(null)
-  const advancedDetailsRef = useRef<HTMLElement | null>(null)
-  const faqsRef = useRef<HTMLElement | null>(null)
 
   useLendPageTitle(market?.collateral_token?.symbol, t`Supply`)
 
@@ -57,18 +48,11 @@ export const Page = () => {
 
   const error = marketError ?? apiMarket.error
   const hasSupplyPosition = !!market && supplied > 0
-  const sectionRefs = {
-    historicalRates: historicalRatesRef,
-    advancedDetails: advancedDetailsRef,
-    faqs: faqsRef,
-  }
   const sections: MarketSectionOption[] = [
-    ...(hasSupplyPosition
-      ? [{ value: 'position-details' as const, label: t`Position Details`, ref: positionDetailsRef }]
-      : []),
-    { value: 'historical-rates', label: t`Historical Rates`, ref: historicalRatesRef },
-    { value: 'advanced-details', label: t`Advanced Details`, ref: advancedDetailsRef },
-    { value: 'faqs', label: t`FAQs`, ref: faqsRef },
+    ...(hasSupplyPosition ? [{ value: 'position-details' as const, label: t`Position Details` }] : []),
+    { value: 'historical-rates', label: t`Historical Rates` },
+    { value: 'advanced-details', label: t`Advanced Details` },
+    { value: 'faqs', label: t`FAQs` },
   ]
 
   return error ? (
@@ -100,11 +84,11 @@ export const Page = () => {
           rewardsBanner={<CampaignRewardsBanner chainId={chainId} market={market} />}
         />
         {hasSupplyPosition && (
-          <MarketSection id="position-details" sectionRef={positionDetailsRef}>
+          <MarketSection id="position-details">
             <SupplyPositionDetails />
           </MarketSection>
         )}
-        <MarketInformationComposite rateType={MarketRateType.Supply} sectionRefs={sectionRefs} />
+        <MarketInformationComposite rateType={MarketRateType.Supply} />
       </DetailPageLayout>
     </MarketContextProvider>
   )

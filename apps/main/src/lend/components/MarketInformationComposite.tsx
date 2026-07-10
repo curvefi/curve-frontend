@@ -4,7 +4,7 @@ import { AdvancedDetails, MarketInfoLayout } from '@/llamalend/features/market-a
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { MarketFaq } from '@/llamalend/features/market-faq'
 import type { ChartAndActivityTab } from '@/llamalend/widgets/ChartAndActivityLayout'
-import { MarketSection, type MarketSectionRef } from '@/llamalend/widgets/market-section-nav'
+import { MarketSection } from '@/llamalend/widgets/market-section-nav'
 import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
 import { MarketRateCurveChart } from '@/llamalend/widgets/MarketRateCurveChart'
 import Card from '@mui/material/Card'
@@ -20,12 +20,6 @@ import { PAGE_SPACING } from '@ui-kit/widgets/DetailPageLayout/constants'
 type MarketInformationCompProps = {
   rateType: MarketRateType
   previewPrices?: Range<Decimal> | undefined
-  sectionRefs: {
-    chartAndActivity?: MarketSectionRef
-    historicalRates: MarketSectionRef
-    advancedDetails: MarketSectionRef
-    faqs: MarketSectionRef
-  }
   chartAndActivityTab?: ChartAndActivityTab
   onChartAndActivityTabChange?: (tab: ChartAndActivityTab) => void
 }
@@ -36,15 +30,14 @@ type MarketInformationCompProps = {
 export const MarketInformationComposite = ({
   rateType,
   previewPrices,
-  sectionRefs,
   chartAndActivityTab,
   onChartAndActivityTabChange,
 }: MarketInformationCompProps) => {
   const { chainId } = useMarketContext()
   return (
     <Stack sx={{ gap: PAGE_SPACING }}>
-      {rateType === MarketRateType.Borrow && sectionRefs.chartAndActivity && (
-        <MarketSection id="price-chart" sectionRef={sectionRefs.chartAndActivity}>
+      {rateType === MarketRateType.Borrow && (
+        <MarketSection id="price-chart" aliases={['market-activity']}>
           <ChartAndActivityComp
             previewPrices={previewPrices}
             tab={chartAndActivityTab}
@@ -52,14 +45,14 @@ export const MarketInformationComposite = ({
           />
         </MarketSection>
       )}
-      <MarketSection id="historical-rates" sectionRef={sectionRefs.historicalRates}>
+      <MarketSection id="historical-rates">
         <Stack sx={{ gap: PAGE_SPACING }}>
           {rateType === MarketRateType.Borrow && <MarketHistoricalRatesChart rateMode={MarketRateType.Borrow} />}
           <MarketHistoricalRatesChart rateMode={MarketRateType.Supply} />
         </Stack>
       </MarketSection>
       <MarketRateCurveChart />
-      <MarketSection id="advanced-details" sectionRef={sectionRefs.advancedDetails}>
+      <MarketSection id="advanced-details">
         <Card size="small">
           <CardHeader title={t`Advanced Details`} />
           <CardContent component={Stack}>
@@ -69,7 +62,7 @@ export const MarketInformationComposite = ({
         </Card>
       </MarketSection>
 
-      <MarketSection id="faqs" sectionRef={sectionRefs.faqs}>
+      <MarketSection id="faqs">
         <MarketFaq />
       </MarketSection>
     </Stack>

@@ -79,7 +79,14 @@ export const DetailPageLayout = ({
       container
       data-testid={testId ?? 'detail-page-layout'}
       spacing={PAGE_SPACING}
-      sx={{ ...PAGE_MARGIN, ...(!header && { marginBlockStart: Spacing.xl }) }}
+      sx={{
+        ...PAGE_MARGIN,
+        '--detail-page-scroll-margin-top': {
+          mobile: `${navHeight}px`,
+          tablet: `${navHeight + pageHeaderHeight}px`,
+        },
+        ...(!header && { marginBlockStart: Spacing.xl }),
+      }}
       direction="row-reverse" // direction is only used when size<12 (on mobile, form shows first, otherwise children first)
     >
       {isMobile && <Grid size={12}>{headerStack}</Grid>}
