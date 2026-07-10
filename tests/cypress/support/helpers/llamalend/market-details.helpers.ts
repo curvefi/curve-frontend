@@ -6,7 +6,7 @@ import {
 } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { API_LOAD_TIMEOUT, LOAD_TIMEOUT, type Breakpoint } from '@cy/support/ui'
 
-type WalletOptions = { breakpoint?: Breakpoint; hasWallet: boolean; hasApi?: boolean }
+type MarketDetailsOptions = { breakpoint?: Breakpoint; hasWallet: boolean; hasApi?: boolean }
 
 const ADDRESS_PATTERN = /^0x[a-fA-F0-9]{40}$/
 
@@ -93,7 +93,7 @@ const shouldLoadMarketDetails = ({ hasApi }: { hasApi: boolean }) => {
   cy.get('[data-testid="llamalend-market-faq"]').should('be.visible')
 }
 
-const shouldLoadBorrowDetails = ({ breakpoint, hasWallet, hasApi = false }: WalletOptions) => {
+const shouldLoadBorrowDetails = ({ breakpoint, hasWallet, hasApi = false }: MarketDetailsOptions) => {
   cy.get(`[data-testid="no-position-${hasWallet ? 'borrow' : 'disconnected'}"]`, LOAD_TIMEOUT).should('be.visible')
   withMarketFormDrawer(breakpoint, 'create', () => {
     cy.get('[data-testid="borrow-collateral-input"]').should('be.visible')
@@ -112,7 +112,7 @@ const shouldLoadBorrowDetails = ({ breakpoint, hasWallet, hasApi = false }: Wall
   shouldLoadMarketDetails({ hasApi })
 }
 
-export const shouldLoadLendBorrowDetails = ({ breakpoint, hasWallet, hasApi = true }: WalletOptions) => {
+export const shouldLoadLendBorrowDetails = ({ breakpoint, hasWallet, hasApi = true }: MarketDetailsOptions) => {
   shouldLoadBorrowDetails({ breakpoint, hasWallet, hasApi })
   getActionValue('market-total-liquidity').should('match', DECIMAL_REGEX)
   if (hasApi) {
@@ -123,7 +123,7 @@ export const shouldLoadLendBorrowDetails = ({ breakpoint, hasWallet, hasApi = tr
   shouldLoadMarketParameters({ hasOnChainParameters: hasWallet, hasOraclePrice: true, hasPricePerShare: false })
 }
 
-export const shouldLoadMintBorrowDetails = ({ breakpoint, hasWallet, hasApi = true }: WalletOptions) => {
+export const shouldLoadMintBorrowDetails = ({ breakpoint, hasWallet, hasApi = true }: MarketDetailsOptions) => {
   shouldLoadBorrowDetails({ breakpoint, hasWallet, hasApi })
   if (hasApi) {
     shouldShowCanvas('crvusd-price-chart')
@@ -133,7 +133,7 @@ export const shouldLoadMintBorrowDetails = ({ breakpoint, hasWallet, hasApi = tr
   shouldLoadMarketParameters({ hasOnChainParameters: hasWallet, hasOraclePrice: hasWallet, hasPricePerShare: false })
 }
 
-export const shouldLoadLendVaultDetails = ({ breakpoint, hasWallet, hasApi = true }: WalletOptions) => {
+export const shouldLoadLendVaultDetails = ({ breakpoint, hasWallet, hasApi = true }: MarketDetailsOptions) => {
   withMarketFormDrawer(breakpoint, 'supply', () => {
     cy.get('[data-testid="supply-deposit-input"]', LOAD_TIMEOUT).should('be.visible')
     cy.get('[data-testid="supply-deposit-submit-button"]').should(hasWallet ? 'be.visible' : 'not.exist')
