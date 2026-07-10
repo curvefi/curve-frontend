@@ -6,7 +6,7 @@ import {
 } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { API_LOAD_TIMEOUT, LOAD_TIMEOUT, type Breakpoint } from '@cy/support/ui'
 
-type MarketDetailsOptions = { breakpoint?: Breakpoint; hasWallet: boolean; hasApi?: boolean }
+type MarketDetailsOptions = { breakpoint: Breakpoint; hasWallet: boolean; hasApi?: boolean }
 
 const ADDRESS_PATTERN = /^0x[a-fA-F0-9]{40}$/
 
