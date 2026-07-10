@@ -27,6 +27,7 @@ import { getLlamaFacetedRowModel } from './filters/llamaFaceting'
 import { useLlamaGlobalFilterFn } from './filters/llamaGlobalFilter'
 import { LlamaTableFiltersCollapsible } from './filters/LlamaTableFiltersCollapsible'
 import { LlamaTableFiltersOverlay } from './filters/LlamaTableFiltersOverlay'
+import { useLlamaMarketExpandedPanelActions } from './hooks/useLlamaMarketExpandedPanelActions'
 import { getLlamaMarketsColumnVariant, useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
 
@@ -70,6 +71,9 @@ export const LlamaMarketsTable = ({
   )
   const [expanded, setExpanded] = useState<ExpandedState>({})
   const filterProps = { columnFiltersById, setColumnFilter }
+  const getExpandedPanelActions = useLlamaMarketExpandedPanelActions(getMarketExpandedPanelActions, {
+    withFavorite: true,
+  })
 
   const table = useTable({
     columns: LLAMA_MARKET_COLUMNS,
@@ -96,7 +100,7 @@ export const LlamaMarketsTable = ({
           button: { onClick: resetFilters, label: t`Show All Markets` },
         }}
         errorState={{ title: t`Could not load markets`, onReload }}
-        expandedPanel={{ Body: LlamaMarketExpandedPanel, getActions: getMarketExpandedPanelActions }}
+        expandedPanel={{ Body: LlamaMarketExpandedPanel, getActions: getExpandedPanelActions }}
         shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       >
         <TableFilters<LlamaMarketColumnId>

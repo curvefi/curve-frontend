@@ -1,3 +1,4 @@
+import { partition } from 'lodash'
 import { useId, useState } from 'react'
 import Button, { type ButtonOwnProps } from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
@@ -19,12 +20,23 @@ const { MaxHeight, Spacing } = SizesAndSpaces
 const VISIBLE_ACTION_COUNT = 2
 
 const ExpandedPanelActionButton = ({ action, inDrawer }: { action: ExpandedPanelAction; inDrawer?: boolean }) => {
-  const { id: _, label, href, testId, sx, type, color, size, ...buttonProps } = action
+  const {
+    id: _id,
+    alwaysInKebabMenu: _alwaysInKebabMenu,
+    label,
+    href,
+    testId,
+    sx,
+    type,
+    color,
+    size,
+    ...buttonProps
+  } = action
 
   const sharedProps = {
     ...buttonProps,
     color: inDrawer ? ('ghost' as const) : color,
-    size: inDrawer ? 'medium' : size,
+    size: inDrawer ? 'small' : size,
     sx: applySxProps({ flex: 1, minWidth: 0 }, sx),
     ...(testId && { 'data-testid': testId }),
   }
@@ -45,15 +57,17 @@ const ExpandedPanelActionButton = ({ action, inDrawer }: { action: ExpandedPanel
 export const ExpandedPanelActions = ({ actions }: { actions: readonly ExpandedPanelAction[] }) => {
   const [open, setOpen] = useState(false)
   const drawerId = useId()
-  const [primaryActions, overflowActions] = splitAt([...actions], VISIBLE_ACTION_COUNT)
-  const visibleButtonsSize = primaryActions[0].size ?? 'medium'
+  const [kebabOnlyActions, primaryActionCandidates] = partition(actions, action => action.alwaysInKebabMenu)
+  const [primaryActions, overflowActions] = splitAt(primaryActionCandidates, VISIBLE_ACTION_COUNT)
+  const drawerActions = [...overflowActions, ...kebabOnlyActions]
+  const visibleButtonsSize = primaryActions[0]?.size ?? 'medium'
 
   return (
     <Stack direction="row" sx={{ gap: Spacing.xs }}>
       {primaryActions.map(action => (
         <ExpandedPanelActionButton key={action.id} action={action} />
       ))}
-      {overflowActions.length > 0 && (
+      {drawerActions.length > 0 && (
         <SwipeableDrawer
           paperSx={{ maxHeight: MaxHeight.drawer }}
           button={
@@ -75,7 +89,7 @@ export const ExpandedPanelActions = ({ actions }: { actions: readonly ExpandedPa
         >
           <DrawerHeader title={t`More actions`} />
           <DrawerItems id={drawerId} data-testid="expanded-panel-actions-menu">
-            {overflowActions.map(action => (
+            {drawerActions.map(action => (
               <ExpandedPanelActionButton key={action.id} action={action} inDrawer />
             ))}
           </DrawerItems>

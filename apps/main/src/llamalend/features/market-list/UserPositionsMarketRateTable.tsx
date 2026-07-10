@@ -16,6 +16,7 @@ import { MarketRateType } from '@ui-kit/types/market'
 import { QueryProp } from '@ui-kit/types/util'
 import type { LlamaMarket } from '../../queries/market-list/llama-markets'
 import { DEFAULT_SORT_BORROW, DEFAULT_SORT_SUPPLY, LLAMA_MARKET_COLUMNS } from './columns'
+import { useLlamaMarketExpandedPanelActions } from './hooks/useLlamaMarketExpandedPanelActions'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
 
@@ -62,6 +63,7 @@ export const UserPositionsMarketRateTable = ({ tableQuery, marketRateType, onRel
   const [sorting, onSortingChange] = useSortFromQueryString(defaultSort, sortQueryField)
   const { columnVisibility } = useLlamaTableVisibility(storageKey, sorting, marketRateType)
   const [expanded, setExpanded] = useState<ExpandedState>({})
+  const getExpandedPanelActions = useLlamaMarketExpandedPanelActions(getUserPositionExpandedPanelActions)
 
   const table = useTable({
     columns: LLAMA_MARKET_COLUMNS,
@@ -80,7 +82,7 @@ export const UserPositionsMarketRateTable = ({ tableQuery, marketRateType, onRel
       table={table}
       viewAllLabel={t`View all ${rowCount} ${label} positions`}
       errorState={{ title: t`Could not load ${label} positions`, onReload }}
-      expandedPanel={{ Body: LlamaMarketExpandedPanel, getActions: getUserPositionExpandedPanelActions }}
+      expandedPanel={{ Body: LlamaMarketExpandedPanel, getActions: getExpandedPanelActions }}
       shouldStickFirstColumn={Boolean(useIsTablet() && rowCount)}
     >
       <Stack

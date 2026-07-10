@@ -60,6 +60,8 @@ export type ExpandedPanelAction = Omit<ButtonProps, 'children' | 'component' | '
   label: ReactNode
   href?: string
   testId?: string
+  /** Keep this action always in the more-actions drawer */
+  alwaysInKebabMenu?: boolean
 }
 
 export type ExpandedPanelActionResolver<T extends TableItem> = (
