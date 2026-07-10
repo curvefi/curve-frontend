@@ -18,10 +18,9 @@ export default defineConfig({
     },
   },
   component: {
-    devServer: {
-      framework: 'react',
-      bundler: 'vite',
-    },
+    viewportWidth: 600,
+    viewportHeight: 800,
+    devServer: { framework: 'react', bundler: 'vite' },
     indexHtmlFile: 'cypress/support/component-index.html',
     supportFile: 'cypress/support/component.ts',
   },

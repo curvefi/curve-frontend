@@ -45,8 +45,7 @@ export const HealthDetails = ({ params }: { params: UserMarketParams }) => {
           label={tooltip.shortTitle}
           value={value}
           valueOptions={{
-            unit: 'none',
-            // TODO: fix metric typography color only resolves registered variants and it's not applied to the entire value
+            unit: 'percentage',
             color: getMetricColor(state)(theme),
           }}
           valueTooltip={tooltip}
