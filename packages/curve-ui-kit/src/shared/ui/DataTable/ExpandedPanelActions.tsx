@@ -1,5 +1,5 @@
 import { useId, useState } from 'react'
-import Button, { type ButtonOwnProps, type ButtonProps } from '@mui/material/Button'
+import Button, { type ButtonOwnProps } from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import { splitAt } from '@primitives/array.utils'
