@@ -84,7 +84,7 @@ export const StakeForm = <ChainId extends IChainId>({ networks }: StakeFormProps
         tokenSymbol={borrowToken?.symbol}
       />
 
-      <FormAlerts error={error} formErrors={formErrors} handledErrors={['stakeAssets']} />
+      <FormAlerts error={error} formErrors={formErrors} handledErrors={['stakeAssets', 'stakeShares']} />
     </Form>
   )
 }

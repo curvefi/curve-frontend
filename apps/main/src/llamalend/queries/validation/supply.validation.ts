@@ -276,10 +276,13 @@ const validateStakeMaxAssets = (assets: Decimal | undefined | null, maxAssets: D
   })
 }
 
-export const stakeFormValidationSuite = createValidationSuite(({ stakeAssets = '0', maxStakeAssets }: StakeForm) => {
-  validateStakeAssets(stakeAssets)
-  validateStakeMaxAssets(stakeAssets, maxStakeAssets)
-})
+export const stakeFormValidationSuite = createValidationSuite(
+  ({ stakeAssets = '0', stakeShares, maxStakeAssets }: StakeForm) => {
+    validateStakeAssets(stakeAssets)
+    validateStakeMaxAssets(stakeAssets, maxStakeAssets)
+    validateStakeShares(stakeShares)
+  },
+)
 
 export const stakeValidationSuite = createValidationSuite((params: UserMarketParams & StakeMutation) => {
   userMarketValidationSuite(params)
@@ -323,9 +326,10 @@ const validateUnstakeMaxAssets = (assets: Decimal | undefined | null, maxAssets:
 }
 
 export const unstakeFormValidationSuite = createValidationSuite(
-  ({ unstakeAssets = '0', maxUnstakeAssets }: UnstakeForm) => {
+  ({ unstakeAssets = '0', unstakeShares, maxUnstakeAssets }: UnstakeForm) => {
     validateUnstakeAssets(unstakeAssets)
     validateUnstakeMaxAssets(unstakeAssets, maxUnstakeAssets)
+    validateUnstakeShares(unstakeShares)
   },
 )
 

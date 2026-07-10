@@ -1,4 +1,4 @@
-import type { Shares } from '@/llamalend/queries/user/user-balances.query'
+import type { UserBalances } from '@/llamalend/queries/user/user-balances.query'
 import { UNAVAILABLE_NOTATION } from '@/llamalend/widgets/tooltips/tooltip.utils'
 import {
   TooltipDescription,
@@ -28,13 +28,13 @@ const formatPercentageDisplay = (percentage: Decimal | null | undefined) =>
   maybe(percentage, p => formatNumber(decimalMultiply(p, '100'), 'percent.rate')) ?? UNAVAILABLE_NOTATION
 
 export const AmountSuppliedTooltipContent = ({
-  shares: { data: shares },
+  balances: { data: balances },
   supplyAsset: { data: supplyAsset },
 }: {
-  shares: QueryProp<Shares>
+  balances: QueryProp<UserBalances>
   supplyAsset: QueryProp<SupplyAsset>
 }) => {
-  const { value, staked } = shares ?? {}
+  const { totalShares: value, gauge: staked } = balances ?? {}
   const { symbol, depositedAmount } = supplyAsset ?? {}
 
   const unstaked = maybes([value, staked], (value, staked) => decimalMinus(value, staked))

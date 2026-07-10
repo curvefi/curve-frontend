@@ -8,7 +8,7 @@ import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/utils
 import { MarketContextProvider } from '@/llamalend/features/market-context'
 import { SupplyPositionDetails } from '@/llamalend/features/market-position-details'
 import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
-import { useUserShares } from '@/llamalend/queries/user/user-balances.query'
+import { useUserBalances } from '@/llamalend/queries/user/user-balances.query'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header'
 import { useCurve } from '@ui-kit/features/connect-wallet'
@@ -44,7 +44,7 @@ export const Page = () => {
     },
     !isLoading && !market, // only enable API data when wallet is disconnected
   )
-  const supplied = +(useUserShares({ marketId: market?.id, chainId, userAddress }).data?.value ?? 0)
+  const supplied = +(useUserBalances({ marketId: market?.id, chainId, userAddress }).data?.totalShares ?? 0)
 
   const error = marketError ?? apiMarket.error
   return error ? (

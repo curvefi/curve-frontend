@@ -60,7 +60,7 @@ export const UnstakeForm = <ChainId extends IChainId>({ networks }: UnstakeFormP
         testId={`${TEST_ID_PREFIX}-submit-button`}
       />
 
-      <FormAlerts error={unstakeError} formErrors={formErrors} handledErrors={['unstakeAssets']} />
+      <FormAlerts error={unstakeError} formErrors={formErrors} handledErrors={['unstakeAssets', 'unstakeShares']} />
     </Form>
   )
 }
