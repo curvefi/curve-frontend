@@ -21,16 +21,13 @@ export function visitAndWait(
 }
 
 export function clickMarketAction(breakpoint: Breakpoint, selector: string) {
-  return cy
-    .get(
-      notFalsy(
-        breakpoint === 'mobile' && `[data-testid="expanded-panel-actions-menu"]`,
-        selector,
-      ).join(' '),
-    )
-    .first()
-    // On desktop, the action is not visible until hovered; Cypress does not support hovering.
-    .click({ force: breakpoint === 'desktop' })
+  return (
+    cy
+      .get(notFalsy(breakpoint === 'mobile' && `[data-testid="expanded-panel-actions-menu"]`, selector).join(' '))
+      .first()
+      // On desktop, the action is not visible until hovered; Cypress does not support hovering.
+      .click({ force: breakpoint === 'desktop' })
+  )
 }
 
 export function enableGraphColumn() {
