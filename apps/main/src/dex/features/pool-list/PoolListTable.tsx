@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import type { NetworkConfig } from '@/dex/types/main.types'
 import Stack from '@mui/material/Stack'
-import { type ExpandedState, getCoreRowModel, getExpandedRowModel } from '@tanstack/react-table'
+import type { ExpandedState } from '@tanstack/react-table'
 import { CURVE_SOCIALS } from '@ui/utils'
 import { useIsMobile, useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
