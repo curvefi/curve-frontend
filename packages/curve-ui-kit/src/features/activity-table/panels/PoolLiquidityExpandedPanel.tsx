@@ -27,11 +27,7 @@ export const PoolLiquidityExpandedPanel: ExpandedPanel<PoolLiquidityRow> = ({
     <Stack>
       <Stack sx={{ paddingTop: Spacing.md, gap: Spacing.xs }}>
         {nonZeroAmounts.map(({ amount, token }, index) => (
-          <Stack
-            key={token?.address ?? index}
-            direction="row"
-            sx={{ justifyContent: 'space-between', alignItems: 'center' }}
-          >
+          <Stack key={token?.address} direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="bodyMRegular" color="textSecondary">
               {token?.symbol ?? `Token ${index}`}
             </Typography>
