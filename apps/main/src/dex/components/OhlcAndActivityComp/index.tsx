@@ -3,13 +3,7 @@ import { ChainId } from '@/dex/types/main.types'
 import type { Pool } from '@curvefi/prices-api/pools'
 import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
-import {
-  ActivityTable,
-  PoolTradesExpandedPanel,
-  PoolTradesExpandedPanelFooter,
-  PoolLiquidityExpandedPanel,
-  PoolLiquidityExpandedPanelFooter,
-} from '@ui-kit/features/activity-table'
+import { ActivityTable, PoolTradesExpandedPanel, PoolLiquidityExpandedPanel } from '@ui-kit/features/activity-table'
 import { ChartWrapper } from '@ui-kit/features/candle-chart/ChartWrapper'
 import { TIME_OPTIONS } from '@ui-kit/features/candle-chart/constants'
 import { t } from '@ui-kit/lib/i18n'
@@ -61,7 +55,7 @@ export const OhlcAndActivityComp = ({
             table={liquidityTable.table}
             emptyState={liquidityTable.emptyState}
             errorState={liquidityTable.errorState}
-            expandedPanel={{ Body: PoolLiquidityExpandedPanel, Footer: PoolLiquidityExpandedPanelFooter }}
+            expandedPanel={{ Body: PoolLiquidityExpandedPanel }}
           />
         )}
         {tab === 'trades' && (
@@ -69,7 +63,7 @@ export const OhlcAndActivityComp = ({
             table={tradesTable.table}
             emptyState={tradesTable.emptyState}
             errorState={tradesTable.errorState}
-            expandedPanel={{ Body: PoolTradesExpandedPanel, Footer: PoolTradesExpandedPanelFooter }}
+            expandedPanel={{ Body: PoolTradesExpandedPanel }}
           />
         )}
         {tab === 'chart' && (

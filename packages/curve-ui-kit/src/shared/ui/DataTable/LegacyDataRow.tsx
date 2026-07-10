@@ -14,7 +14,7 @@ import {
   type TableItem,
 } from './data-table.utils'
 import { DataCell } from './DataCell'
-import { ExpandedPanelConfig, ExpansionRow } from './ExpansionRow'
+import { type ExpandedPanelConfig, ExpansionRow } from './ExpansionRow'
 
 const onCellClick = (target: EventTarget, url: string, routerNavigate: (href: string) => void) => {
   // ignore clicks on elements that should be clickable inside the row

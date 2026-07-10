@@ -9,7 +9,17 @@ import { CLICKABLE_IN_ROW_CLASS, DESKTOP_ONLY_HOVER_CLASS } from '../shared/ui/D
 import { RouterLink } from '../shared/ui/RouterLink'
 import { responsiveTitleEllipsisSx } from '../shared/ui/titleTruncate'
 
-export function MarketTitle({ address, title, url }: { address: Address; title: ReactNode; url: string }) {
+export function MarketTitle({
+  address,
+  title,
+  url,
+  addressLabel = t`Market`,
+}: {
+  address: Address
+  title: ReactNode
+  url: string
+  addressLabel?: string
+}) {
   const isMobile = useIsMobile()
   return (
     <Typography
@@ -38,9 +48,9 @@ export function MarketTitle({ address, title, url }: { address: Address; title: 
       </RouterLink>
       <CopyIconButton
         className={`${DESKTOP_ONLY_HOVER_CLASS} ${CLICKABLE_IN_ROW_CLASS}`}
-        label={t`Copy market address`}
+        label={t`Copy ${addressLabel} address`}
         copyText={address}
-        confirmationText={t`Market address copied`}
+        confirmationText={t`${addressLabel} address copied`}
         data-testid={`copy-market-address-${address}`}
         sx={{ display: { mobile: 'none', tablet: 'flex' } }}
       />

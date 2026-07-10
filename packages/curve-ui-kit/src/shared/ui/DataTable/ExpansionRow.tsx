@@ -1,21 +1,21 @@
-import { FunctionComponent, useCallback, useEffect, useState } from 'react'
+import { type FunctionComponent, useCallback, useEffect, useState } from 'react'
 import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
-import { type Row, type Table } from '@tanstack/react-table'
+import type { Row } from '@tanstack/react-table'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { TableItem } from './data-table.utils'
+import type { ExpandedPanelActionResolver, ExpandedPanelContext, TableItem } from './data-table.utils'
 import type { DataRowProps } from './DataRow'
+import { ExpandedPanelActions } from './ExpandedPanelActions'
 
 const { Spacing } = SizesAndSpaces
 
-// Panel used when row is expanded on mobile
-export type ExpandedPanel<T extends TableItem> = FunctionComponent<{ row: Row<T>; table: Table<T> }>
+export type ExpandedPanel<T extends TableItem> = FunctionComponent<ExpandedPanelContext<T>>
 
 export type ExpandedPanelConfig<T extends TableItem> = {
   Body: ExpandedPanel<T>
-  Footer?: ExpandedPanel<T>
+  getActions?: ExpandedPanelActionResolver<T>
 }
 
 /**
@@ -31,7 +31,8 @@ export function ExpansionRow<T extends TableItem>({
   colSpan: number
 }) {
   const { render, onExited, expanded } = useRowExpansion(row)
-  const { Body: ExpandedPanelBody, Footer: ExpandedPanelFooter } = expandedPanel
+  const { Body: ExpandedPanelBody, getActions } = expandedPanel
+  const actions = getActions?.({ row, table }) ?? []
   return (
     render && (
       <TableRow data-testid="data-table-expansion-row">
@@ -41,11 +42,7 @@ export function ExpansionRow<T extends TableItem>({
               <Stack sx={{ gap: Spacing.md, paddingInline: Spacing.md }}>
                 <ExpandedPanelBody row={row} table={table} />
               </Stack>
-              {ExpandedPanelFooter && (
-                <Stack direction="row" sx={{ gap: Spacing.xs, '& > *': { flex: 1 } }}>
-                  <ExpandedPanelFooter row={row} table={table} />
-                </Stack>
-              )}
+              {actions.length > 0 && <ExpandedPanelActions actions={actions} />}
             </Stack>
           </Collapse>
         </TableCell>

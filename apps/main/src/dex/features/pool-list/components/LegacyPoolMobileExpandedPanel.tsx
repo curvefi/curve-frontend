@@ -1,11 +1,8 @@
 import { ReactNode } from 'react'
 import { CampaignRewardsRow } from '@/dex/components/CampaignRewardsRow'
 import { TableCellRewardsOthers } from '@/dex/components/TableCellRewardsOthers'
-import { ROUTE } from '@/dex/constants'
 import { useNetworkFromUrl } from '@/dex/hooks/useChainId'
-import { getPath } from '@/dex/utils/utilsRouter'
 import type { Chain } from '@curvefi/prices-api'
-import Button from '@mui/material/Button'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -15,7 +12,6 @@ import { t } from '@ui-kit/lib/i18n'
 import { isSortedBy } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import type { ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { Metric, MetricProps } from '@ui-kit/shared/ui/Metric'
-import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { constQ } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
@@ -132,25 +128,5 @@ export const LegacyPoolMobileExpandedPanel: ExpandedPanel<LegacyPoolListItem> = 
         </>
       )}
     </Grid>
-  )
-}
-
-export const LegacyPoolMobileExpandedPanelFooter: ExpandedPanel<LegacyPoolListItem> = ({ row }) => {
-  const {
-    pool: { id: poolId },
-    network,
-  } = row.original
-  const path = getPath({ network }, `${ROUTE.PAGE_POOLS}/${poolId}`)
-
-  return (
-    <>
-      <Button
-        data-testid="pool-link-deposit"
-        component={RouterLink}
-        href={path + ROUTE.PAGE_POOL_DEPOSIT}
-      >{t`Deposit`}</Button>
-      <Button component={RouterLink} href={path + ROUTE.PAGE_POOL_WITHDRAW}>{t`Withdraw`}</Button>
-      <Button component={RouterLink} href={path + ROUTE.PAGE_SWAP}>{t`Swap`}</Button>
-    </>
   )
 }

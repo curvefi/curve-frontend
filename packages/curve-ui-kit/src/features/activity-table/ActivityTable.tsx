@@ -1,12 +1,15 @@
 import type { TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable, DataTableProps } from '@ui-kit/shared/ui/DataTable/DataTable'
+import { getTransactionExpandedPanelActions } from './utils'
 
-type ActivityTableProps<TData extends TableItem> = Pick<
+type ActivityTableItem = TableItem & { txUrl?: string | null }
+
+type ActivityTableProps<TData extends ActivityTableItem> = Pick<
   DataTableProps<TData>,
   'table' | 'emptyState' | 'errorState' | 'expandedPanel'
 >
 
-export const ActivityTable = <TData extends TableItem>({
+export const ActivityTable = <TData extends ActivityTableItem>({
   table,
   emptyState,
   errorState,
@@ -17,6 +20,11 @@ export const ActivityTable = <TData extends TableItem>({
     table={table}
     emptyState={emptyState}
     errorState={errorState}
-    expandedPanel={expandedPanel}
+    expandedPanel={
+      expandedPanel && {
+        ...expandedPanel,
+        getActions: expandedPanel.getActions ?? getTransactionExpandedPanelActions,
+      }
+    }
   />
 )

@@ -3,7 +3,6 @@ import Typography from '@mui/material/Typography'
 import { shortenString } from '@primitives/string.utils'
 import { t } from '@ui-kit/lib/i18n'
 import type { ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
-import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
@@ -32,9 +31,3 @@ export const PoolTradesExpandedPanel: ExpandedPanel<PoolTradeRow> = ({
     </Stack>
   </Stack>
 )
-
-export const PoolTradesExpandedPanelFooter: ExpandedPanel<PoolTradeRow> = ({
-  row: {
-    original: { txUrl },
-  },
-}) => txUrl && <ExternalLink href={txUrl} label={t`View Transaction`} size="extraSmall" />

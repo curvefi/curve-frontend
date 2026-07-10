@@ -1,8 +1,7 @@
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
-import { type ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
-import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
+import type { ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { formatNumber } from '@ui-kit/utils'
 import type { ParsedUserCollateralEvent } from './hooks/useUserCollateralEvents'
 
@@ -42,6 +41,3 @@ export const RowExpandedPanel: ExpandedPanel<ParsedUserCollateralEvent> = ({ row
     </Stack>
   )
 }
-
-export const RowExpandedPanelFooter: ExpandedPanel<ParsedUserCollateralEvent> = ({ row: { original: event } }) =>
-  event.url && <ExternalLink href={event.url} label={t`View Transaction`} size="extraSmall" />
