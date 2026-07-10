@@ -154,51 +154,53 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
             backHref={getInternalUrl('dex', networkId, DEX_ROUTES.PAGE_POOLS)}
           />
         }
-        formTabs={
-          <FormMargins>
-            <TabsSwitcher
-              variant="contained"
-              value={rFormType || 'deposit'}
-              onChange={key => toggleForm(key as TransferFormType)}
-              options={tabs}
-              testIdPrefix="pool-form-tab"
-            />
-            {rFormType === 'swap' ? (
-              poolAlert?.isDisableSwap ? (
-                <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
-              ) : (
-                <Swap
+        formTabs={{
+          content: (
+            <FormMargins>
+              <TabsSwitcher
+                variant="contained"
+                value={rFormType || 'deposit'}
+                onChange={key => toggleForm(key as TransferFormType)}
+                options={tabs}
+                testIdPrefix="pool-form-tab"
+              />
+              {rFormType === 'swap' ? (
+                poolAlert?.isDisableSwap ? (
+                  <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
+                ) : (
+                  <Swap
+                    {...pageTransferProps}
+                    poolAlert={poolAlert}
+                    maxSlippage={maxSlippage}
+                    seed={seed}
+                    tokensMapper={tokensMapper}
+                  />
+                )
+              ) : rFormType === 'deposit' ? (
+                <Deposit
                   {...pageTransferProps}
+                  blockchainId={networkId}
+                  hasDepositAndStake={hasDepositAndStake}
                   poolAlert={poolAlert}
                   maxSlippage={maxSlippage}
                   seed={seed}
                   tokensMapper={tokensMapper}
                 />
-              )
-            ) : rFormType === 'deposit' ? (
-              <Deposit
-                {...pageTransferProps}
-                blockchainId={networkId}
-                hasDepositAndStake={hasDepositAndStake}
-                poolAlert={poolAlert}
-                maxSlippage={maxSlippage}
-                seed={seed}
-                tokensMapper={tokensMapper}
-              />
-            ) : rFormType === 'withdraw' ? (
-              <Withdraw
-                {...pageTransferProps}
-                blockchainId={networkId}
-                poolAlert={poolAlert}
-                maxSlippage={maxSlippage}
-                seed={seed}
-                tokensMapper={tokensMapper}
-              />
-            ) : (
-              rFormType === 'manage-gauge' && poolData && <ManageGauge poolId={poolData.pool.id} chainId={rChainId} />
-            )}
-          </FormMargins>
-        }
+              ) : rFormType === 'withdraw' ? (
+                <Withdraw
+                  {...pageTransferProps}
+                  blockchainId={networkId}
+                  poolAlert={poolAlert}
+                  maxSlippage={maxSlippage}
+                  seed={seed}
+                  tokensMapper={tokensMapper}
+                />
+              ) : (
+                rFormType === 'manage-gauge' && poolData && <ManageGauge poolId={poolData.pool.id} chainId={rChainId} />
+              )}
+            </FormMargins>
+          ),
+        }}
       >
         {poolAddress && <CampaignRewardsBanner chainId={rChainId} address={poolAddress} />}
         <UserPosition

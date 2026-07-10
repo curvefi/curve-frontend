@@ -6,6 +6,7 @@ import Tab, { type TabProps } from '@mui/material/Tab'
 import Tabs, { type TabsProps } from '@mui/material/Tabs'
 import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { applySxProps } from '@ui-kit/utils/mui'
 import { useTabsOverflow } from '../../../hooks/useTabsOverflow'
 import {
   TABS_SIZES_CLASSES,
@@ -28,6 +29,8 @@ export type TabOption<T> = Pick<TabProps, 'label' | 'disabled' | 'icon' | 'sx'> 
   /**  If true, the tab will always be in the kebab menu, even if there is enough space to show it.
    * The TabsSwitcher's overflow="kebab" mode is required for this to work. */
   alwaysInKebab?: boolean
+  /** Whether this tab renders a standard fixed form button in the mobile drawer */
+  withFormButton?: boolean
 }
 
 export type TabsSwitcherProps<T> = Pick<TabsProps, 'sx' | 'children'> & {
@@ -118,11 +121,11 @@ export const TabsSwitcher = <T extends string | number>({
           onChange={(_, newValue) => onChange?.(newValue as T)}
           scrollButtons={false}
           className={tabsClassName}
-          sx={{
-            ...sx,
-            ...(overflow === 'fullWidth' && { '& .MuiTab-root': { flexGrow: 1 } }),
-            ...(isKebabMode && { width: '100%' }),
-          }}
+          sx={applySxProps(
+            sx,
+            overflow === 'fullWidth' && { '& .MuiTab-root': { flexGrow: 1 } },
+            isKebabMode && { width: '100%' },
+          )}
           {...props}
         >
           {renderedOptions.map(
