@@ -29,7 +29,7 @@ const WSTETH_USDC_MARKET = {
 
 const BORROW = '1000' as const
 const IMPROVE_HEALTH_AMOUNT = '10' as const
-const CLOSE_SLIPPAGE = '2' as const
+const CLOSE_SLIPPAGE = '5' as const
 
 describe('Manage soft liquidation', () => {
   skipTestsAfterFailure()

@@ -18,7 +18,7 @@ export function setSlippageTolerance(value: Decimal) {
   cy.get('[data-testid="slippage-input"]', LOAD_TIMEOUT).clear()
   cy.get('[data-testid="slippage-input"]').type(value)
   cy.get('[data-testid="slippage-save-button"]').click()
-  getActionValue('borrow-slippage').should('equal', `${Number(value)}%`)
+  getActionValue('borrow-slippage').should('equal', `${value}%`)
 }
 
 export const getMetricValue = (name: string) =>
