@@ -6,7 +6,7 @@ import {
 } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { LOAD_TIMEOUT, type Breakpoint } from '@cy/support/ui'
 
-type WalletOptions = { breakpoint?: Breakpoint; hasWallet: boolean; hasApi: boolean }
+type WalletOptions = { breakpoint?: Breakpoint; hasWallet: boolean; hasApi?: boolean }
 
 const ADDRESS_PATTERN = /^0x[a-fA-F0-9]{40}$/
 
@@ -93,7 +93,7 @@ const shouldLoadMarketDetails = ({ hasApi }: { hasApi: boolean }) => {
   cy.get('[data-testid="llamalend-market-faq"]').should('be.visible')
 }
 
-const shouldLoadBorrowDetails = ({ breakpoint, hasWallet, hasApi }: WalletOptions) => {
+const shouldLoadBorrowDetails = ({ breakpoint, hasWallet, hasApi = false }: WalletOptions) => {
   cy.get(`[data-testid="no-position-${hasWallet ? 'borrow' : 'disconnected'}"]`, LOAD_TIMEOUT).should('be.visible')
   withMarketFormDrawer(breakpoint, 'create', () => {
     cy.get('[data-testid="borrow-collateral-input"]').should('be.visible')
