@@ -37,7 +37,7 @@ const useTableLlamaMarkets = (address: Address | undefined) => {
 
   return {
     onReload,
-    tableQuery: q({ ...query, isLoading: query.isPending }),
+    tableQuery: q({ ...query, isLoading: query.isPending }), // isPending so that the table shows a loading state on initial load and manual reload, but not on cache refetches
   }
 }
 
