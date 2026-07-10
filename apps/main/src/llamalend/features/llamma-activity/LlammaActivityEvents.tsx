@@ -1,8 +1,4 @@
-import {
-  ActivityTable,
-  LlammaEventsExpandedPanel,
-  LlammaEventsExpandedPanelFooter,
-} from '@ui-kit/features/activity-table'
+import { ActivityTable, LlammaEventsExpandedPanel } from '@ui-kit/features/activity-table'
 import { useLlammaActivityEventsConfig } from './hooks/useLlammaActivityEventsConfig'
 import { LlammaActivityProps } from './'
 
@@ -28,7 +24,7 @@ export const LlammaActivityEvents = ({
       table={table}
       emptyState={emptyState}
       errorState={errorState}
-      expandedPanel={{ Body: LlammaEventsExpandedPanel, Footer: LlammaEventsExpandedPanelFooter }}
+      expandedPanel={{ Body: LlammaEventsExpandedPanel }}
     />
   )
 }

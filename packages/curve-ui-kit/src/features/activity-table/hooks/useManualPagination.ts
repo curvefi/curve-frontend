@@ -1,6 +1,6 @@
 import { SetStateAction, useCallback, useMemo, useState } from 'react'
 import type { PaginationState } from '@tanstack/react-table'
-import { DEFAULT_PAGE_SIZE } from '../constants'
+import { DEFAULT_PAGE_SIZE } from '../utils'
 
 /**
  * Hook to manage manual pagination state for TanStack Table.

@@ -1,6 +1,8 @@
 import { useCallback, useState } from 'react'
+import { ROUTE } from '@/dex/constants'
 import { usePoolList } from '@/dex/queries/pool-list.query'
 import type { NetworkConfig } from '@/dex/types/main.types'
+import { getPath } from '@/dex/utils/utilsRouter'
 import type { SortDirection as PoolSortDirection, V2PoolSortField as PoolSortField } from '@curvefi/prices-api/pools'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
@@ -8,16 +10,13 @@ import { type ExpandedState, getCoreRowModel, getExpandedRowModel } from '@tanst
 import { CURVE_SOCIALS } from '@ui/utils'
 import { useIsMobile, useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
-import { useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { useTable, type ExpandedPanelActionResolver } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { useMappedQuery } from '@ui-kit/types/util'
 import { POOL_LIST_COLUMNS, PoolListColumnId } from './columns'
 import { PoolListFilterChips } from './components/PoolListFilterChips'
-import {
-  PoolListMobileExpandedPanel,
-  PoolListMobileExpandedPanelFooter,
-} from './components/PoolListMobileExpandedPanel'
+import { PoolListMobileExpandedPanel } from './components/PoolListMobileExpandedPanel'
 import { PoolListFilterDrawer } from './drawers/PoolListFilterDrawer'
 import { PoolListSortDrawer } from './drawers/PoolListSortDrawer'
 import { usePoolListFilters } from './hooks/usePoolListFilters'
@@ -26,9 +25,26 @@ import { usePoolListSorting } from './hooks/usePoolListSorting'
 import { usePoolListUserHasPosition } from './hooks/usePoolListUserHasPosition'
 import { usePoolListVisibilitySettings } from './hooks/usePoolListVisibilitySettings'
 import type { PoolListPoolType } from './poolList.constants'
+import type { PoolListItem } from './poolList.types'
 import { getPoolListItem } from './poolList.utils'
 
 const LOCAL_STORAGE_KEY = 'dex-pool-list'
+
+const getPoolListMobileExpandedPanelActions: ExpandedPanelActionResolver<PoolListItem> = ({ row }) => {
+  const pool = row.original
+  const path = getPath({ network: pool.network }, `${ROUTE.PAGE_POOLS}/${pool.address}`)
+
+  return [
+    {
+      id: 'deposit',
+      label: t`Deposit`,
+      href: path + ROUTE.PAGE_POOL_DEPOSIT,
+      testId: 'pool-link-deposit',
+    },
+    { id: 'withdraw', label: t`Withdraw`, href: path + ROUTE.PAGE_POOL_WITHDRAW },
+    { id: 'swap', label: t`Swap`, href: path + ROUTE.PAGE_SWAP },
+  ]
+}
 
 type PoolListTableParams = {
   network: NetworkConfig
@@ -122,7 +138,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
           secondaryButton: { label: t`Telegram`, href: CURVE_SOCIALS.telegram.en },
         }}
         errorState={{ title: t`Unable to retrieve pool list` }}
-        expandedPanel={{ Body: PoolListMobileExpandedPanel, Footer: PoolListMobileExpandedPanelFooter }}
+        expandedPanel={{ Body: PoolListMobileExpandedPanel, getActions: getPoolListMobileExpandedPanelActions }}
         shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       >
         <TableFilters<PoolListColumnId>

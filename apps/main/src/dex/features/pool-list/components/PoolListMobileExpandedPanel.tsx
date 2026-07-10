@@ -1,11 +1,7 @@
-import { ROUTE } from '@/dex/constants'
-import { getPath } from '@/dex/utils/utilsRouter'
-import Button from '@mui/material/Button'
 import Grid from '@mui/material/Grid'
 import { t } from '@ui-kit/lib/i18n'
 import type { ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { Metric, type MetricProps } from '@ui-kit/shared/ui/Metric'
-import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { constQ } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
@@ -63,20 +59,5 @@ export const PoolListMobileExpandedPanel: ExpandedPanel<PoolListItem> = ({ row, 
         <PoolListRewards pool={pool} mobile />
       </Grid>
     </Grid>
-  )
-}
-
-export const PoolListMobileExpandedPanelFooter: ExpandedPanel<PoolListItem> = ({ row }) => {
-  const pool = row.original
-  const path = getPath({ network: pool.network }, `${ROUTE.PAGE_POOLS}/${pool.address}`)
-
-  return (
-    <>
-      <Button component={RouterLink} href={path + ROUTE.PAGE_POOL_DEPOSIT} data-testid="pool-link-deposit">
-        {t`Deposit`}
-      </Button>
-      <Button component={RouterLink} href={path + ROUTE.PAGE_POOL_WITHDRAW}>{t`Withdraw`}</Button>
-      <Button component={RouterLink} href={path + ROUTE.PAGE_SWAP}>{t`Swap`}</Button>
-    </>
   )
 }

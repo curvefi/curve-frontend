@@ -13,13 +13,9 @@ import {
 } from './columns'
 import {
   LlammaEventsExpandedPanel,
-  LlammaEventsExpandedPanelFooter,
   LlammaTradesExpandedPanel,
-  LlammaTradesExpandedPanelFooter,
   PoolLiquidityExpandedPanel,
-  PoolLiquidityExpandedPanelFooter,
   PoolTradesExpandedPanel,
-  PoolTradesExpandedPanelFooter,
 } from './panels'
 import type { LlammaEventRow, LlammaTradeRow, PoolLiquidityRow, PoolTradeRow } from './types'
 
@@ -217,13 +213,13 @@ const DexPoolActivityComponent = () => {
         table={tradesTable}
         emptyState={{ title: 'No trades data found.' }}
         errorState={{ title: 'Could not load trades data.' }}
-        expandedPanel={{ Body: PoolTradesExpandedPanel, Footer: PoolTradesExpandedPanelFooter }}
+        expandedPanel={{ Body: PoolTradesExpandedPanel }}
       />
       <ActivityTable
         table={liquidityTable}
         emptyState={{ title: 'No liquidity data found.' }}
         errorState={{ title: 'Could not load liquidity data.' }}
-        expandedPanel={{ Body: PoolLiquidityExpandedPanel, Footer: PoolLiquidityExpandedPanelFooter }}
+        expandedPanel={{ Body: PoolLiquidityExpandedPanel }}
       />
     </>
   )
@@ -255,13 +251,13 @@ const LendMarketActivityComponent = () => {
         table={tradesTable}
         emptyState={{ title: 'No AMM trades found.' }}
         errorState={{ title: 'Could not load AMM trades.' }}
-        expandedPanel={{ Body: LlammaTradesExpandedPanel, Footer: LlammaTradesExpandedPanelFooter }}
+        expandedPanel={{ Body: LlammaTradesExpandedPanel }}
       />
       <ActivityTable
         table={eventsTable}
         emptyState={{ title: 'No controller events found.' }}
         errorState={{ title: 'Could not load controller events.' }}
-        expandedPanel={{ Body: LlammaEventsExpandedPanel, Footer: LlammaEventsExpandedPanelFooter }}
+        expandedPanel={{ Body: LlammaEventsExpandedPanel }}
       />
     </>
   )
