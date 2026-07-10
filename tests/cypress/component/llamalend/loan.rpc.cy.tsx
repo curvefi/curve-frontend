@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { BigNumber } from 'bignumber.js'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
+import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import { oneBool } from '@cy/support/generators'
 import { checkCurrentDebt, checkDebt } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { setupLlv2BorrowingLiquidity } from '@cy/support/helpers/llamalend/borrow-cap.helpers'
@@ -206,6 +207,46 @@ testCases.forEach(
         cy.mount(<LoanTestWrapper tab="close" />)
         checkClosePositionDetailsLoaded({ debt: debtAfterImproveHealth, hasErrors: true })
         checkDebt({ current: debtAfterImproveHealth, future: '0', symbol: borrowedSymbol })
+        let beforeApproved = false
+        let beforeTokens = ''
+        let beforeAllowance = ''
+        cy.then(async () => {
+          const loan = getLoanImplementation(id)
+          beforeApproved = await loan.selfLiquidateIsApproved()
+          beforeTokens = await loan.tokensToLiquidate()
+          beforeAllowance =
+            (await getLib('llamaApi')?.getAllowance([borrowedAddress], address, controllerAddress))?.[0] ?? ''
+        })
+        cy.get('[data-testid="close-position-submit-button"]').click(LOAD_TIMEOUT)
+        cy.get('[data-testid="toast-info"]', LOAD_TIMEOUT).contains('Closing position')
+        cy.wait(20_000)
+        cy.get('body').then(async $body => {
+          const loan = getLoanImplementation(id)
+          const afterApproved = await loan.selfLiquidateIsApproved()
+          const afterTokens = await loan.tokensToLiquidate()
+          const afterAllowance =
+            (await getLib('llamaApi')?.getAllowance([borrowedAddress], address, controllerAddress))?.[0] ?? ''
+          const successToast = $body.find('[data-testid="toast-success"]').text()
+          cy.get('[data-testid="close-position-submit-button"]').then($button => {
+            throw new Error(
+              [
+                'Close position diagnostic',
+                `beforeApproved=${beforeApproved}`,
+                `afterApproved=${afterApproved}`,
+                `beforeTokens=${beforeTokens}`,
+                `afterTokens=${afterTokens}`,
+                `beforeAllowance=${beforeAllowance}`,
+                `afterAllowance=${afterAllowance}`,
+                `approvedToast=${successToast.includes('Approved closing position')}`,
+                `successToast="${successToast}"`,
+                `button="${$button.text()}"`,
+                `pendingToast="${$body.find('[data-testid="toast-info"]').text()}"`,
+                `errorToast="${$body.find('[data-testid="toast-error"]').text()}"`,
+                `loanAlert="${$body.find('[data-testid="loan-alert-error"]').text()}"`,
+              ].join('\n'),
+            )
+          })
+        })
         submitClosePositionForm('error').then(() => {
           // unfortunately cannot cause soft liquidation in the tests yet
           cy.get('[data-testid="loan-alert-error"]', LOAD_TIMEOUT).contains('not in liquidation mode')

@@ -3,7 +3,11 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber, Chain } from '@ui-kit/utils'
-import { checkEstimatedTxCost as checkEstimatedTxCostValue, getActionValue } from '../action-info.helpers'
+import {
+  checkEstimatedTxCost as checkEstimatedTxCostValue,
+  DECIMAL_REGEX,
+  getActionValue,
+} from '../action-info.helpers'
 
 type SupplyRpcTestMarket = {
   id: string
@@ -181,8 +185,9 @@ export function checkCurrentStakedAmount({
   const expectedAmount = formatNumber(expectedAmountSupplied, { abbreviate: false })
 
   if (expectedVaultShares == null) {
-    getActionValue('supply-vault-shares').should('be.undefined')
-    getActionValue('supply-vault-shares', 'previous').should('be.undefined')
+    getActionValue('supply-vault-shares')
+      .should('match', DECIMAL_REGEX)
+      .then(vaultShares => getActionValue('supply-vault-shares', 'previous').should('equal', vaultShares))
   } else {
     const expectedShares = formatNumber(expectedVaultShares, { abbreviate: true })
     getActionValue('supply-vault-shares').should('equal', expectedShares)

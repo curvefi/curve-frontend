@@ -151,7 +151,7 @@ describe('DEX Pools', () => {
     cy.contains('[data-testid^="market-link-"]', filter, API_LOAD_TIMEOUT).should('be.visible')
     if (breakpoint === 'mobile') {
       cy.get('[data-testid^="data-table-row-"]').first().click()
-      cy.get(`[data-testid="pool-link-deposit"]`).click()
+      cy.get(`[data-testid="pool-link-deposit"]`).click({ waitForAnimations: false })
     } else {
       cy.contains('[data-testid^="market-link-"]', filter).click()
     }
