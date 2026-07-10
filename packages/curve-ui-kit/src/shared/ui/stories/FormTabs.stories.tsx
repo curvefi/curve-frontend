@@ -3,6 +3,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { FormPlacementProvider } from '../../../widgets/DetailPageLayout/form-context/FormPlacementProvider'
 import { FormTab, FormTabs } from '../../../widgets/DetailPageLayout/FormTabs'
 import { TabsSwitcherProps } from '../Tabs/TabsSwitcher'
 
@@ -30,7 +31,7 @@ const OverviewTab = ({ availableBalance, userAddress }: DemoParams) => (
 const DepositTab = ({ availableBalance }: DemoParams) => (
   <Panel
     title="Deposit"
-    body={`Use this tab for simple flows. Balance shown in labels comes from props (${availableBalance.toLocaleString()} crvUSD).`}
+    body={`Use this tab for simple flows. Balance shown in content comes from props (${availableBalance.toLocaleString()} crvUSD).`}
   />
 )
 const WithdrawTab = ({ canWithdraw }: DemoParams) => (
@@ -70,13 +71,13 @@ const baseMenu: FormTab<DemoParams>[] = [
   },
   {
     value: 'manage',
-    label: ({ availableBalance }) => `Manage (${availableBalance.toLocaleString()} crvUSD)`,
+    label: 'Manage',
     visible: () => true,
     subTabs: [
       { value: 'deposit', label: 'Deposit', visible: () => true, component: DepositTab },
       {
         value: 'withdraw',
-        label: ({ canWithdraw }) => (canWithdraw ? 'Withdraw' : 'Withdraw (locked)'),
+        label: 'Withdraw',
         visible: () => true,
         disabled: ({ canWithdraw }) => !canWithdraw,
         component: WithdrawTab,
@@ -111,7 +112,9 @@ type StoryArgs = DemoParams & {
 
 const FormTabsStory = ({ shouldWrap, overflow, menu, ...params }: StoryArgs) => (
   <Grid sx={{ maxWidth: { desktop: MaxWidth.actionCard } }}>
-    <FormTabs<DemoParams> params={params} shouldWrap={shouldWrap} overflow={overflow} menu={menu} />
+    <FormPlacementProvider placement="inline">
+      <FormTabs<DemoParams> params={params} shouldWrap={shouldWrap} overflow={overflow} menu={menu} />
+    </FormPlacementProvider>
   </Grid>
 )
 
@@ -130,7 +133,7 @@ const meta: Meta<typeof FormTabsStory> = {
   argTypes: {
     availableBalance: {
       control: { type: 'number', min: 0 },
-      description: 'Value forwarded to labels and tab content.',
+      description: 'Value forwarded to tab content.',
     },
     canWithdraw: {
       control: 'boolean',
@@ -170,7 +173,7 @@ export const BasicTabs: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Default layout with nested Manage sub-tabs and dynamic labels.',
+        story: 'Default layout with nested Manage sub-tabs.',
       },
     },
   },
@@ -229,7 +232,9 @@ export const KebabMenuAutoOverflow: Story = {
     <Stack sx={{ gap: 4 }}>
       {['40rem', '30rem', '20rem'].map(width => (
         <Grid key={width} sx={{ width }}>
-          <FormTabs<DemoParams> params={params} shouldWrap={shouldWrap} overflow={overflow} menu={menu} />
+          <FormPlacementProvider placement="inline">
+            <FormTabs<DemoParams> params={params} shouldWrap={shouldWrap} overflow={overflow} menu={menu} />
+          </FormPlacementProvider>
         </Grid>
       ))}
     </Stack>

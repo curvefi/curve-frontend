@@ -1,12 +1,16 @@
 import type { UrlObject } from 'url'
 import { type ComponentType, type ReactNode } from 'react'
+import CardHeader from '@mui/material/CardHeader'
 import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
 import { notFalsy } from '@primitives/objects.utils'
 import { findTab, useTabs } from '@ui-kit/hooks/useTabs'
 import { type TabOption, TabsSwitcher, TabsSwitcherProps } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
+import { applySxProps } from '@ui-kit/utils'
+import { useIsMobileFormDrawer } from './form-context/FormPlacementContext'
 import { FormContent } from './FormContent'
+import { MobileFormTabsDrawer } from './MobileFormTabsDrawer'
 
 type FnOrValue<Props extends object, Result> = ((props: Props) => Result | null | undefined) | Result
 
@@ -21,8 +25,8 @@ type FormSubTab<Props extends object> = Omit<FormTab<Props>, 'subTabs'>
 export type FormTab<Props extends object> = {
   /** Unique value of the tab, it might be used in the URL later */
   value: string
-  /** Label of the tab, can be a function that receives the form props */
-  label: FnOrValue<Props, ReactNode>
+  /** Label of the tab */
+  label: ReactNode
   /** Optional href for tabs that should link out instead of rendering content */
   href?: FnOrValue<Props, string | UrlObject>
   /** Optional sub-tabs of the tab */
@@ -33,6 +37,8 @@ export type FormTab<Props extends object> = {
   disabled?: FnOrValue<Props, boolean>
   /** Force the tab into the kebab menu */
   alwaysInKebab?: FnOrValue<Props, boolean>
+  /** Whether this tab renders a standard fixed form button in the mobile drawer */
+  withFormButton?: boolean
   /** Component to render when the tab is selected */
   component?: ComponentType<Props>
 }
@@ -43,12 +49,13 @@ const createOptions = <Props extends object>(
 ): TabOption<string>[] =>
   tabs
     ?.filter(({ visible }) => applyFnOrValue(visible, params) !== false)
-    .map(({ value, label, disabled, alwaysInKebab, href }) => ({
+    .map(({ value, label, disabled, alwaysInKebab, href, withFormButton = true }) => ({
       value,
-      label: applyFnOrValue(label, params),
+      label,
       disabled: applyFnOrValue(disabled, params),
       alwaysInKebab: applyFnOrValue(alwaysInKebab, params),
       href: applyFnOrValue(href, params),
+      withFormButton,
     })) ?? []
 
 type UseFormTabOptions<T extends object> = {
@@ -58,6 +65,7 @@ type UseFormTabOptions<T extends object> = {
 
 /** Hook to manage form tabs and sub-tabs. */
 function useFormTabs<T extends object>({ menu, params }: UseFormTabOptions<T>) {
+  const isMobileDrawer = useIsMobileFormDrawer()
   const tabs = createOptions(menu, params)
   const { tab: tabKey, onTabChange: onChangeTab } = useTabs(tabs)
 
@@ -74,10 +82,19 @@ function useFormTabs<T extends object>({ menu, params }: UseFormTabOptions<T>) {
 
   const Component = components[0] || Skeleton // skeleton just for mui Tab validation, won't be rendered due to href
   const content = <Component {...params} />
-  return { tab, tabs, subTabs, subTab, content, onChangeTab, onChangeSubTab }
+  return {
+    tab,
+    tabs,
+    subTabs,
+    subTab,
+    content,
+    onChangeTab,
+    onChangeSubTab,
+    isMobileDrawer,
+  }
 }
 
-const marginInline = { mobile: 'auto', desktop: 0 } as const
+const marginInline = { tablet: 'auto', desktop: 0 } as const
 
 /** @deprecated This is only necessary until all the forms migrate to using the `FormTabs` component. **/
 export const FormMargins = ({ children }: { children: ReactNode }) => <Stack sx={{ marginInline }}>{children}</Stack>
@@ -95,23 +112,41 @@ type FormTabsProps<T extends object> = UseFormTabOptions<T> & {
  * @param options - useFormTabs options
  */
 export function FormTabs<T extends object>({ shouldWrap, overflow = 'kebab', ...options }: FormTabsProps<T>) {
-  const { tab, tabs, subTabs, subTab, content, onChangeTab, onChangeSubTab } = useFormTabs(options)
+  const { tab, tabs, subTabs, subTab, content, onChangeTab, onChangeSubTab, isMobileDrawer } = useFormTabs(options)
   return (
-    <Stack sx={{ marginInline }}>
-      <TabsSwitcher variant="contained" value={tab.value} options={tabs} onChange={onChangeTab} overflow={overflow} />
-      {subTab && subTabs.length > 1 && (
-        <TabsSwitcher
-          variant="underlined"
-          value={subTab.value}
-          options={subTabs}
-          overflow="fullWidth"
-          sx={{ backgroundColor: t => t.design.Layer[1].Fill }}
-          onChange={onChangeSubTab}
-        />
-      )}
-      <WithWrapper shouldWrap={shouldWrap} Wrapper={FormContent}>
-        {content}
-      </WithWrapper>
-    </Stack>
+    <WithWrapper
+      shouldWrap={isMobileDrawer}
+      Wrapper={MobileFormTabsDrawer}
+      value={tab.value}
+      tabs={tabs}
+      onSelectTab={onChangeTab}
+    >
+      <Stack sx={{ marginInline }}>
+        {isMobileDrawer ? (
+          <CardHeader title={tab.label} size="small" data-testid="mobile-form-active-action" />
+        ) : (
+          <TabsSwitcher
+            variant="contained"
+            value={tab.value}
+            options={tabs}
+            onChange={onChangeTab}
+            overflow={overflow}
+          />
+        )}
+        {subTab && subTabs.length > 1 && (
+          <TabsSwitcher
+            variant="underlined"
+            value={subTab.value}
+            options={subTabs}
+            overflow="fullWidth"
+            sx={applySxProps(!isMobileDrawer && { backgroundColor: t => t.design.Layer[1].Fill })}
+            onChange={onChangeSubTab}
+          />
+        )}
+        <WithWrapper shouldWrap={shouldWrap} Wrapper={FormContent}>
+          {content}
+        </WithWrapper>
+      </Stack>
+    </WithWrapper>
   )
 }

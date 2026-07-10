@@ -16,7 +16,7 @@ export const PageBridge = () => {
   const { data: networks } = useNetworks()
 
   return (
-    <DetailPageLayout formTabs={<BridgeFormTabs chainId={chainId} networks={networks} />}>
+    <DetailPageLayout formTabs={{ content: <BridgeFormTabs chainId={chainId} networks={networks} /> }}>
       <Bridges />
     </DetailPageLayout>
   )

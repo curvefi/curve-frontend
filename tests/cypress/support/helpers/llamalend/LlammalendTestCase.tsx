@@ -30,6 +30,7 @@ import { CurveProvider } from '@ui-kit/features/connect-wallet/lib/CurveProvider
 import type { UserMarketQuery } from '@ui-kit/lib/model'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { constQ, type Range } from '@ui-kit/types/util'
+import { FormPlacementProvider } from '@ui-kit/widgets/DetailPageLayout/form-context/FormPlacementProvider'
 
 // todo: soft liquidation should be detected not forced by passing a tab. However, that detection is in the separate apps for now.
 const LoanComponentMap = {
@@ -109,7 +110,9 @@ export const LlammalendTestCase = ({ vnet, privateKey, chainId, marketType, ...p
   <ComponentTestWrapper config={createTenderlyWagmiConfigFromVNet({ vnet, privateKey })} autoConnect>
     <CurveProvider app="llamalend" network={llamaNetworks[chainId]} onChainUnavailable={console.error}>
       <Box sx={{ maxWidth: 520 }}>
-        <LlammalendTest {...props} chainId={chainId} marketType={marketType} />
+        <FormPlacementProvider placement="inline">
+          <LlammalendTest {...props} chainId={chainId} marketType={marketType} />
+        </FormPlacementProvider>
       </Box>
     </CurveProvider>
   </ComponentTestWrapper>
