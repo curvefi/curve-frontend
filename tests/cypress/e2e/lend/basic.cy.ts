@@ -40,12 +40,12 @@ describe('Lend app', () => {
     })
     it('without a wallet', () => {
       cy.visitWithoutTestConnector(url)
-      shouldLoadLendBorrowDetails({ hasWallet: false })
+      shouldLoadLendBorrowDetails({ breakpoint: BREAKPOINT, hasWallet: false })
     })
     it('when API is offline', () => {
       blockUnmockedApis()
       cy.visit(url)
-      shouldLoadLendBorrowDetails({ hasWallet: true, hasApi: false })
+      shouldLoadLendBorrowDetails({ breakpoint: BREAKPOINT, hasWallet: true, hasApi: false })
     })
   })
 

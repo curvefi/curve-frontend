@@ -37,7 +37,7 @@ describe('Mint app', () => {
     it('when API is offline', () => {
       blockUnmockedApis()
       cy.visit(url)
-      shouldLoadMintBorrowDetails({ hasWallet: true, hasApi: false })
+      shouldLoadMintBorrowDetails({ breakpoint: BREAKPOINT, hasWallet: true, hasApi: false })
     })
   })
 })

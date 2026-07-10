@@ -32,7 +32,7 @@ export const MobileFormTabsDrawer = ({ children, value, tabs, onSelectTab }: Mob
   return (
     <>
       <Stack
-        data-testid="mobile-form-action-bar"
+        data-testid="form-market-page"
         direction="row"
         sx={{
           position: 'sticky',

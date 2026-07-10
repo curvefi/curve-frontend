@@ -4,14 +4,14 @@ import {
   getActionValue,
   getMetricValue,
 } from '@cy/support/helpers/llamalend/action-info.helpers'
-import { LOAD_TIMEOUT, type Breakpoint } from '@cy/support/ui'
+import { API_LOAD_TIMEOUT, LOAD_TIMEOUT, type Breakpoint } from '@cy/support/ui'
 
-type MarketDetailsOptions = { breakpoint?: Breakpoint; hasWallet: boolean; hasApi?: boolean }
+type MarketDetailsOptions = { breakpoint: Breakpoint; hasWallet: boolean; hasApi?: boolean }
 
 const ADDRESS_PATTERN = /^0x[a-fA-F0-9]{40}$/
 
 const shouldShowCanvas = (testId: string) =>
-  cy.get(`[data-testid="${testId}"] canvas`, LOAD_TIMEOUT).should('be.visible')
+  cy.get(`[data-testid="${testId}"] canvas`, API_LOAD_TIMEOUT).should('be.visible')
 
 const withMarketFormDrawer = <T>(
   breakpoint: Breakpoint | undefined,
@@ -98,7 +98,7 @@ const shouldLoadBorrowDetails = ({ breakpoint, hasWallet, hasApi = false }: Mark
   withMarketFormDrawer(breakpoint, 'create', () => {
     cy.get('[data-testid="borrow-collateral-input"]').should('be.visible')
     cy.get('[data-testid="borrow-debt-input"]').should('be.visible')
-    cy.get(`[data-testid="${hasWallet ? 'create-loan-submit-button' : 'form-connect-wallet'}"]`).should('be.visible')
+    cy.get(`[data-testid="${hasWallet ? 'create-loan-submit-button' : 'form-market-page'}"]`).should('be.visible')
     return cy.wrap(null)
   })
   cy.get(`[data-testid='no-position-disconnected']`).should(hasWallet ? 'not.exist' : 'be.visible')

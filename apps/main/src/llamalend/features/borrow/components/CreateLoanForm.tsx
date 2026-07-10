@@ -159,7 +159,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
         disabled={isDisabled || shouldBlockTransaction(priceImpact, params)}
         label={[isApproved?.data === false && t`Approve`, t`Borrow`]}
         testId="create-loan-submit-button"
-        connectWalletTestId="form-connect-wallet"
+        connectWalletTestId="form-market-page"
       >
         {disabledAlert && <AlertDisableForm>{disabledAlert.message}</AlertDisableForm>}
       </FormButton>
