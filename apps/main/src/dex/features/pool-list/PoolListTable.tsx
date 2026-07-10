@@ -6,7 +6,7 @@ import { CURVE_SOCIALS } from '@ui/utils'
 import { useIsMobile, useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
-import { useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableFiltersChip } from '@ui-kit/shared/ui/DataTable/TableFiltersChip'
@@ -59,13 +59,11 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
     onExpandedChange: setExpanded,
     onPaginationChange,
     onSortingChange,
-    getCoreRowModel: getCoreRowModel(),
-    getExpandedRowModel: getExpandedRowModel(),
     manualPagination: true,
     manualSorting: true,
     manualFiltering: true,
     pageCount,
-    autoResetPageIndex: false,
+    ...getTableOptions(tableQuery ? tableQuery.data : undefined),
   })
 
   const hasActiveFilters = !!table.getState().columnFilters.length
