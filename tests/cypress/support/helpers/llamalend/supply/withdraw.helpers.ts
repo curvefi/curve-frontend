@@ -22,17 +22,17 @@ export function writeWithdrawForm({ amount }: { amount: Decimal }) {
  * The action info list is expected to be opened before calling this function.
  */
 export function checkWithdrawDetailsLoaded({
-  amountSupplied,
-  prevAmountSupplied,
+  suppliedAssets,
+  prevSuppliedAssets,
   expectedButtonText = 'Withdraw',
   symbol = 'crvUSD',
 }: {
-  amountSupplied: Decimal
-  prevAmountSupplied: Decimal
+  suppliedAssets: Decimal
+  prevSuppliedAssets: Decimal
   expectedButtonText?: string
   symbol?: string
 }) {
-  checkSupplyActionInfoValues({ amountSupplied, prevAmountSupplied, symbol })
+  checkSupplyActionInfoValues({ suppliedAssets, prevSuppliedAssets, symbol })
   checkSupplySubmitButtonText('withdraw', expectedButtonText)
 }
 

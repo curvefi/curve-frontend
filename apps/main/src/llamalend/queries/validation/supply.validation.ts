@@ -37,31 +37,41 @@ export type WithdrawQuery<ChainId = number> = UserMarketQuery<ChainId> & Withdra
 export type WithdrawParams<ChainId = number> = FieldsOf<WithdrawQuery<ChainId>>
 
 export type StakeMutation = {
-  stakeAmount: Decimal
+  stakeShares: Decimal
 }
 
 type CalculatedStakeValues = {
-  maxStakeAmount: Decimal | undefined
+  maxStakeAssets: Decimal | undefined
 }
-export type StakeForm = MakeOptional<StakeMutation, 'stakeAmount'> & CalculatedStakeValues
+export type StakeForm = MakeOptional<StakeMutation, 'stakeShares'> &
+  CalculatedStakeValues & {
+    stakeAssets?: Decimal
+  }
 
 export type StakeQuery<ChainId = number> = UserMarketQuery<ChainId> & StakeMutation
 export type StakeParams<ChainId = number> = FieldsOf<StakeQuery<ChainId>>
+export type StakeFormQuery<ChainId = number> = StakeQuery<ChainId> & Required<Pick<StakeForm, 'stakeAssets'>>
+export type StakeFormParams<ChainId = number> = FieldsOf<StakeFormQuery<ChainId>>
 
 export type UnstakeMutation = {
-  unstakeAmount: Decimal
+  unstakeShares: Decimal
 }
 
 type CalculatedUnstakeValues = {
-  maxUnstakeAmount: Decimal | undefined
+  maxUnstakeAssets: Decimal | undefined
 }
-export type UnstakeForm = MakeOptional<UnstakeMutation, 'unstakeAmount'> & CalculatedUnstakeValues
+export type UnstakeForm = MakeOptional<UnstakeMutation, 'unstakeShares'> &
+  CalculatedUnstakeValues & {
+    unstakeAssets?: Decimal
+  }
 
 export type UnstakeQuery<ChainId = number> = UserMarketQuery<ChainId> & UnstakeMutation
 export type UnstakeParams<ChainId = number> = FieldsOf<UnstakeQuery<ChainId>>
+export type UnstakeFormQuery<ChainId = number> = UnstakeQuery<ChainId> & Required<Pick<UnstakeForm, 'unstakeAssets'>>
+export type UnstakeFormParams<ChainId = number> = FieldsOf<UnstakeFormQuery<ChainId>>
 
-export type SharesToAssetsQuery<ChainId = number> = UserMarketQuery<ChainId> & { shares: Decimal }
-export type SharesToAssetsParams<ChainId = number> = FieldsOf<SharesToAssetsQuery<ChainId>>
+export type AssetsToSharesQuery<ChainId = number> = UserMarketQuery<ChainId> & { assets: Decimal }
+export type AssetsToSharesParams<ChainId = number> = FieldsOf<AssetsToSharesQuery<ChainId>>
 
 /**
  * Ensures the market has a vault and returns it.
@@ -122,13 +132,13 @@ const validateDepositMaxAmount = (amount: Decimal | undefined | null, maxAmount:
   })
 }
 
-const validateSharesToAssets = (shares: Decimal | undefined | null) => {
-  test('shares', 'Shares are required', () => {
-    enforce(shares).isNotEmpty()
+const validateAssetsToShares = (assets: Decimal | undefined | null) => {
+  test('assets', 'Assets are required', () => {
+    enforce(assets).isNotEmpty()
   })
-  skipWhen(!shares, () => {
-    test('shares', 'Shares must be a non-negative number', () => {
-      enforce(shares).isDecimal().gte(0)
+  skipWhen(!assets, () => {
+    test('assets', 'Assets must be a non-negative number', () => {
+      enforce(assets).isDecimal().gte(0)
     })
   })
 }
@@ -164,9 +174,9 @@ export const claimValidationSuite = createValidationSuite((params: UserMarketPar
   supplyUserValidationGroup(params)
 })
 
-export const userSupplyVaultSharesValidationSuite = createValidationSuite((params: SharesToAssetsParams) => {
+export const userSupplyVaultAssetsValidationSuite = createValidationSuite((params: AssetsToSharesParams) => {
   supplyUserValidationGroup(params)
-  validateSharesToAssets(params.shares)
+  validateAssetsToShares(params.assets)
 })
 
 const validateWithdrawAmount = (
@@ -231,85 +241,96 @@ export const withdrawValidationSuite = createValidationSuite((params: WithdrawPa
   validateUserVaultShares(params.userVaultShares, { sharesRequired: !!params.isFull })
 })
 
-const validateStakeAmount = (
-  amount: Decimal | undefined | null,
+const validateStakeAssets = (
+  assets: Decimal | undefined | null,
   { stakeRequired = false }: { stakeRequired?: boolean } = {},
 ) => {
   skipWhen(!stakeRequired, () => {
-    test('stakeAmount', 'Stake amount is required', () => {
-      enforce(amount).isNotEmpty()
+    test('stakeAssets', 'Stake amount is required', () => {
+      enforce(assets).isNotEmpty()
     })
   })
-  skipWhen(!amount, () => {
-    test('stakeAmount', 'Stake amount must be a positive number', () => {
-      enforce(amount).isDecimal().gt(0)
-    })
-  })
-}
-
-const validateStakeMaxAmount = (amount: Decimal | undefined | null, maxAmount: Decimal | undefined | null) => {
-  skipWhen(amount == null || maxAmount == null, () => {
-    test('stakeAmount', `Amount exceeds maximum of ${maxAmount}`, () => {
-      enforce(amount).lte(maxAmount)
+  skipWhen(!assets, () => {
+    test('stakeAssets', 'Stake amount must be a positive number', () => {
+      enforce(assets).isDecimal().gt(0)
     })
   })
 }
 
-export const stakeFormValidationSuite = createValidationSuite(({ stakeAmount = '0', maxStakeAmount }: StakeForm) => {
-  validateStakeAmount(stakeAmount)
-  validateStakeMaxAmount(stakeAmount, maxStakeAmount)
+const validateStakeShares = (shares: Decimal | undefined | null) => {
+  test('stakeShares', 'Stake shares are required', () => {
+    enforce(shares).isNotEmpty()
+  })
+  skipWhen(!shares, () => {
+    test('stakeShares', 'Stake shares must be a positive number', () => {
+      enforce(shares).isDecimal().gt(0)
+    })
+  })
+}
+
+const validateStakeMaxAssets = (assets: Decimal | undefined | null, maxAssets: Decimal | undefined | null) => {
+  skipWhen(assets == null || maxAssets == null, () => {
+    test('stakeAssets', `Amount exceeds maximum of ${maxAssets}`, () => {
+      enforce(assets).lte(maxAssets)
+    })
+  })
+}
+
+export const stakeFormValidationSuite = createValidationSuite(({ stakeAssets = '0', maxStakeAssets }: StakeForm) => {
+  validateStakeAssets(stakeAssets)
+  validateStakeMaxAssets(stakeAssets, maxStakeAssets)
 })
 
-const stakeValidationGroup = <IChainId extends number>({ marketId, stakeAmount = '0' }: StakeParams<IChainId>) => {
-  validateHasVault(marketId)
-  validateStakeAmount(stakeAmount, { stakeRequired: true })
-}
-
-export const stakeValidationSuite = createValidationSuite((params: StakeParams) => {
+export const stakeValidationSuite = createValidationSuite((params: UserMarketParams & StakeMutation) => {
   userMarketValidationSuite(params)
-  stakeValidationGroup(params)
+  validateHasVault(params.marketId)
+  validateStakeShares(params.stakeShares)
 })
 
-const validateUnstakeAmount = (
-  amount: Decimal | undefined | null,
+const validateUnstakeAssets = (
+  assets: Decimal | undefined | null,
   { unstakeRequired = false }: { unstakeRequired?: boolean } = {},
 ) => {
   skipWhen(!unstakeRequired, () => {
-    test('unstakeAmount', 'Unstake amount is required', () => {
-      enforce(amount).isNotEmpty()
+    test('unstakeAssets', 'Unstake amount is required', () => {
+      enforce(assets).isNotEmpty()
     })
   })
-  skipWhen(!amount, () => {
-    test('unstakeAmount', 'Unstake amount must be a positive number', () => {
-      enforce(amount).isDecimal().gt(0)
+  skipWhen(!assets, () => {
+    test('unstakeAssets', 'Unstake amount must be a positive number', () => {
+      enforce(assets).isDecimal().gt(0)
     })
   })
 }
 
-const validateUnstakeMaxAmount = (amount: Decimal | undefined | null, maxAmount: Decimal | undefined | null) => {
-  skipWhen(amount == null || maxAmount == null, () => {
-    test('unstakeAmount', `Amount exceeds maximum of ${maxAmount}`, () => {
-      enforce(amount).lte(maxAmount)
+const validateUnstakeShares = (shares: Decimal | undefined | null) => {
+  test('unstakeShares', 'Unstake shares are required', () => {
+    enforce(shares).isNotEmpty()
+  })
+  skipWhen(!shares, () => {
+    test('unstakeShares', 'Unstake shares must be a positive number', () => {
+      enforce(shares).isDecimal().gt(0)
+    })
+  })
+}
+
+const validateUnstakeMaxAssets = (assets: Decimal | undefined | null, maxAssets: Decimal | undefined | null) => {
+  skipWhen(assets == null || maxAssets == null, () => {
+    test('unstakeAssets', `Amount exceeds maximum of ${maxAssets}`, () => {
+      enforce(assets).lte(maxAssets)
     })
   })
 }
 
 export const unstakeFormValidationSuite = createValidationSuite(
-  ({ unstakeAmount = '0', maxUnstakeAmount }: UnstakeForm) => {
-    validateUnstakeAmount(unstakeAmount)
-    validateUnstakeMaxAmount(unstakeAmount, maxUnstakeAmount)
+  ({ unstakeAssets = '0', maxUnstakeAssets }: UnstakeForm) => {
+    validateUnstakeAssets(unstakeAssets)
+    validateUnstakeMaxAssets(unstakeAssets, maxUnstakeAssets)
   },
 )
 
-const unstakeValidationGroup = <IChainId extends number>({
-  marketId,
-  unstakeAmount = '0',
-}: UnstakeParams<IChainId>) => {
-  validateHasVault(marketId)
-  validateUnstakeAmount(unstakeAmount, { unstakeRequired: true })
-}
-
-export const unstakeValidationSuite = createValidationSuite((params: UnstakeParams) => {
+export const unstakeValidationSuite = createValidationSuite((params: UserMarketParams & UnstakeMutation) => {
   userMarketValidationSuite(params)
-  unstakeValidationGroup(params)
+  validateHasVault(params.marketId)
+  validateUnstakeShares(params.unstakeShares)
 })

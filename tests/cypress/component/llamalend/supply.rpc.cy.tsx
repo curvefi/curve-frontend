@@ -16,7 +16,7 @@ import {
 } from '@cy/support/helpers/llamalend/supply/deposit.helpers'
 import {
   checkStakeDetailsLoaded,
-  readStakeAvailableAmount,
+  readStakeAvailableAssets,
   submitStakeForm,
   touchStakeForm,
   writeStakeForm,
@@ -29,7 +29,7 @@ import {
 } from '@cy/support/helpers/llamalend/supply/supply.helpers'
 import {
   checkUnstakeDetailsLoaded,
-  readUnstakeAvailableAmount,
+  readUnstakeAvailableAssets,
   submitUnstakeForm,
   touchUnstakeForm,
   writeUnstakeForm,
@@ -74,7 +74,6 @@ testCases.forEach(
 
       const suppliedAfterDeposit = deposit
       const suppliedAfterPartialWithdraw = new BigNumber(deposit).minus(partialWithdraw).toFixed() as Decimal
-
       const SupplyTestWrapper = ({ tab }: Pick<LlammalendTestCaseProps, 'tab'>) => (
         <LlammalendTestCase
           type="supply"
@@ -101,7 +100,7 @@ testCases.forEach(
       it('deposits into the vault', () => {
         cy.mount(<SupplyTestWrapper tab="deposit" />)
         writeDepositForm({ amount: deposit })
-        checkDepositDetailsLoaded({ amountSupplied: deposit, prevAmountSupplied: '0' })
+        checkDepositDetailsLoaded({ suppliedAssets: deposit, prevSuppliedAssets: '0' })
         submitDepositForm({})
         touchDepositForm()
         checkCurrentSuppliedAmount(suppliedAfterDeposit)
@@ -111,8 +110,8 @@ testCases.forEach(
         cy.mount(<SupplyTestWrapper tab="withdraw" />)
         writeWithdrawForm({ amount: partialWithdraw })
         checkWithdrawDetailsLoaded({
-          amountSupplied: suppliedAfterPartialWithdraw,
-          prevAmountSupplied: suppliedAfterDeposit,
+          suppliedAssets: suppliedAfterPartialWithdraw,
+          prevSuppliedAssets: suppliedAfterDeposit,
         })
         submitWithdrawForm()
         touchWithdrawForm()
@@ -123,8 +122,8 @@ testCases.forEach(
         cy.mount(<SupplyTestWrapper tab="withdraw" />)
         selectMaxWithdraw()
         checkWithdrawDetailsLoaded({
-          amountSupplied: '0',
-          prevAmountSupplied: suppliedAfterPartialWithdraw,
+          suppliedAssets: '0',
+          prevSuppliedAssets: suppliedAfterPartialWithdraw,
           expectedButtonText: 'Withdraw All',
         })
         submitWithdrawForm()
@@ -135,7 +134,7 @@ testCases.forEach(
       it('deposits into the vault again', () => {
         cy.mount(<SupplyTestWrapper tab="deposit" />)
         writeDepositForm({ amount: deposit })
-        checkDepositDetailsLoaded({ amountSupplied: deposit, prevAmountSupplied: '0' })
+        checkDepositDetailsLoaded({ suppliedAssets: deposit, prevSuppliedAssets: '0' })
         submitDepositForm({})
         touchDepositForm()
         checkCurrentSuppliedAmount(suppliedAfterDeposit)
@@ -143,22 +142,18 @@ testCases.forEach(
 
       it('stakes into the gauge', () => {
         cy.mount(<SupplyTestWrapper tab="stake" />)
-        readStakeAvailableAmount().then(stakeAmount => {
-          writeStakeForm({ amount: stakeAmount })
+        readStakeAvailableAssets().then(stakeAssets => {
+          writeStakeForm({ assets: stakeAssets })
           checkStakeDetailsLoaded({
-            vaultShares: stakeAmount,
             prevVaultShares: '0',
-            amountSupplied: suppliedAfterDeposit,
-            prevAmountSupplied: '0',
+            suppliedAssets: suppliedAfterDeposit,
+            prevSuppliedAssets: '0',
             expectedButtonText: 'Approve & Stake',
             checkEstimatedTxCost: false,
           })
           submitStakeForm()
           touchStakeForm()
-          checkCurrentStakedAmount({
-            expectedVaultShares: stakeAmount,
-            expectedAmountSupplied: suppliedAfterDeposit,
-          })
+          checkCurrentStakedAmount({ expectedAmountSupplied: suppliedAfterDeposit })
         })
       })
 
@@ -182,21 +177,12 @@ testCases.forEach(
 
       it('unstakes from the gauge', () => {
         cy.mount(<SupplyTestWrapper tab="unstake" />)
-        readUnstakeAvailableAmount().then(unstakeAmount => {
-          writeUnstakeForm({ amount: unstakeAmount })
-          checkUnstakeDetailsLoaded({
-            vaultShares: '0',
-            prevVaultShares: unstakeAmount,
-            amountSupplied: '0',
-            prevAmountSupplied: suppliedAfterDeposit,
-            checkEstimatedTxCost: false,
-          })
+        readUnstakeAvailableAssets().then(unstakeAssets => {
+          writeUnstakeForm({ assets: unstakeAssets })
+          checkUnstakeDetailsLoaded({ prevSuppliedAssets: suppliedAfterDeposit, checkEstimatedTxCost: false })
           submitUnstakeForm()
           touchUnstakeForm()
-          checkCurrentStakedAmount({
-            expectedVaultShares: '0',
-            expectedAmountSupplied: '0',
-          })
+          checkCurrentStakedAmount({ expectedVaultShares: '0', expectedAmountSupplied: '0' })
         })
       })
     })

@@ -107,8 +107,8 @@ export const checkSupplyActionInfoValues = ({
   prevSupplyApy,
   vaultShares,
   prevVaultShares,
-  amountSupplied,
-  prevAmountSupplied,
+  suppliedAssets,
+  prevSuppliedAssets,
   symbol,
   checkEstimatedTxCost = true,
 }: {
@@ -116,8 +116,8 @@ export const checkSupplyActionInfoValues = ({
   prevSupplyApy?: string
   vaultShares?: string
   prevVaultShares?: string
-  amountSupplied?: string
-  prevAmountSupplied?: string
+  suppliedAssets?: string
+  prevSuppliedAssets?: string
   symbol?: string
   checkEstimatedTxCost?: boolean
 }) => {
@@ -138,13 +138,13 @@ export const checkSupplyActionInfoValues = ({
       formatNumber(prevVaultShares as Decimal, { abbreviate: true }),
     )
   }
-  if (amountSupplied != null) {
-    getActionValue('supply-amount').should('equal', formatNumber(amountSupplied as Decimal, { abbreviate: false }))
+  if (suppliedAssets != null) {
+    getActionValue('supply-amount').should('equal', formatNumber(suppliedAssets as Decimal, { abbreviate: false }))
   }
-  if (prevAmountSupplied != null) {
+  if (prevSuppliedAssets != null) {
     getActionValue('supply-amount', 'previous').should(
       'equal',
-      formatNumber(prevAmountSupplied as Decimal, { abbreviate: false }),
+      formatNumber(prevSuppliedAssets as Decimal, { abbreviate: false }),
     )
   }
   if (symbol) {
@@ -177,14 +177,19 @@ export function checkCurrentStakedAmount({
   expectedVaultShares,
   expectedAmountSupplied,
 }: {
-  expectedVaultShares: Decimal
+  expectedVaultShares?: Decimal
   expectedAmountSupplied: Decimal
 }) {
-  const expectedShares = formatNumber(expectedVaultShares, { abbreviate: true })
   const expectedAmount = formatNumber(expectedAmountSupplied, { abbreviate: false })
 
-  getActionValue('supply-vault-shares').should('equal', expectedShares)
-  getActionValue('supply-vault-shares', 'previous').should('equal', expectedShares)
+  if (expectedVaultShares == null) {
+    getActionValue('supply-vault-shares').should('be.undefined')
+    getActionValue('supply-vault-shares', 'previous').should('be.undefined')
+  } else {
+    const expectedShares = formatNumber(expectedVaultShares, { abbreviate: true })
+    getActionValue('supply-vault-shares').should('equal', expectedShares)
+    getActionValue('supply-vault-shares', 'previous').should('equal', expectedShares)
+  }
   getActionValue('supply-amount').should('equal', expectedAmount)
   getActionValue('supply-amount', 'previous').should('equal', expectedAmount)
 }

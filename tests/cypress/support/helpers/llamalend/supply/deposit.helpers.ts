@@ -64,15 +64,15 @@ export function checkDepositSubmit({
  * The action info list is expected to be opened before calling this function.
  */
 export function checkDepositDetailsLoaded({
-  amountSupplied,
-  prevAmountSupplied,
+  suppliedAssets,
+  prevSuppliedAssets,
   symbol = 'crvUSD',
 }: {
-  amountSupplied: Decimal
-  prevAmountSupplied: Decimal
+  suppliedAssets: Decimal
+  prevSuppliedAssets: Decimal
   symbol?: string
 }) {
-  checkSupplyActionInfoValues({ amountSupplied, prevAmountSupplied, symbol })
+  checkSupplyActionInfoValues({ suppliedAssets, prevSuppliedAssets, symbol })
 }
 
 /**

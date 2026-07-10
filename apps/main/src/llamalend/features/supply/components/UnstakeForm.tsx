@@ -1,6 +1,5 @@
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
-import { StakeTokenLabel } from '@/llamalend/widgets/action-card/StakeTokenLabel'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { FormButton } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
@@ -18,12 +17,13 @@ type UnstakeFormProps<ChainId extends IChainId> = {
 const TEST_ID_PREFIX = 'supply-unstake'
 
 export const UnstakeForm = <ChainId extends IChainId>({ networks }: UnstakeFormProps<ChainId>) => {
-  const { chainId, marketId, controllerAddress, vaultToken } = useMarketContext<ChainId>()
+  const { chainId, marketId, controllerAddress } = useMarketContext<ChainId>()
   const network = networks[chainId]
   const blockchainId = network.id
 
-  const { form, params, isPending, onSubmit, isDisabled, borrowToken, collateralToken, unstakeError, formErrors, max } =
-    useUnstakeForm({ network })
+  const { form, params, isPending, onSubmit, isDisabled, borrowToken, unstakeError, formErrors, max } = useUnstakeForm({
+    network,
+  })
 
   return (
     <Form
@@ -41,22 +41,14 @@ export const UnstakeForm = <ChainId extends IChainId>({ networks }: UnstakeFormP
     >
       <LoanFormTokenInput
         label={t`Amount to unstake`}
-        token={vaultToken}
+        token={borrowToken}
         blockchainId={blockchainId}
-        name="unstakeAmount"
+        name="unstakeAssets"
         form={form}
         max={max}
         testId={`${TEST_ID_PREFIX}-input`}
         network={network}
-        positionBalance={{ position: max, tooltip: t`Staked vault shares` }}
-        tokenSelector={
-          <StakeTokenLabel
-            blockchainId={blockchainId}
-            vaultTokenLabel={vaultToken?.symbol}
-            collateralTokenAddress={collateralToken?.address}
-            borrowTokenAddress={borrowToken?.address}
-          />
-        }
+        positionBalance={{ position: max, tooltip: t`Staked amount` }}
       />
       {Number(max.data) > 0 && <AlertUnstakeOnly />}
 
@@ -68,7 +60,7 @@ export const UnstakeForm = <ChainId extends IChainId>({ networks }: UnstakeFormP
         testId={`${TEST_ID_PREFIX}-submit-button`}
       />
 
-      <FormAlerts error={unstakeError} formErrors={formErrors} handledErrors={['unstakeAmount']} />
+      <FormAlerts error={unstakeError} formErrors={formErrors} handledErrors={['unstakeAssets']} />
     </Form>
   )
 }

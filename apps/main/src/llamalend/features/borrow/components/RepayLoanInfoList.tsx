@@ -19,6 +19,7 @@ import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionIn
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Address, type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { maybes } from '@primitives/objects.utils'
 import type { UseFormReturn } from '@ui-kit/features/forms'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import type { LlamaMarketType } from '@ui-kit/types/market'
@@ -55,7 +56,7 @@ function useRepayRemainingDebt(
           ...combineQueryState(prevDebt, expectedBorrowedQuery),
         }
       : mapQuery(prevDebt, () => prev && remainingDebt(prev, userBorrowed ?? '0'))
-  return { debt, debtDelta: debt.data && prev && decimalMinus(debt.data, prev) }
+  return { debt, debtDelta: maybes([debt.data, prev], decimalMinus) }
 }
 
 function useReturnToWallet(

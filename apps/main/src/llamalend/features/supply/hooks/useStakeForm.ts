@@ -4,21 +4,41 @@ import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarket
 import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useStakeMutation } from '@/llamalend/mutations/stake.mutation'
 import { useStakeIsApproved } from '@/llamalend/queries/supply/supply-stake-approved.query'
-import { type StakeForm, stakeFormValidationSuite, StakeParams } from '@/llamalend/queries/validation/supply.validation'
+import {
+  type AssetsToSharesParams,
+  type AssetsToSharesQuery,
+  requireVault,
+  type StakeForm,
+  type StakeFormParams,
+  stakeFormValidationSuite,
+  userSupplyVaultAssetsValidationSuite,
+} from '@/llamalend/queries/validation/supply.validation'
 import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { Decimal } from '@primitives/decimal.utils'
 import { useForm, useFormSync } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
+import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { mapQuery } from '@ui-kit/types/util'
+import { decimalEqual } from '@ui-kit/utils'
 import { useMarketContext } from '../../market-context'
 import { useVaultUserBalances } from './useVaultUserBalances'
 
-const userDefaultValues = { stakeAmount: undefined }
+const userDefaultValues = { stakeAssets: undefined, stakeShares: undefined }
 
 const emptyStakeForm = (): StakeForm => ({
   ...userDefaultValues,
-  maxStakeAmount: undefined,
+  maxStakeAssets: undefined,
+})
+
+const { useQuery: useStakeAssetsToShares } = queryFactory({
+  queryKey: ({ chainId, marketId, userAddress, assets }: AssetsToSharesParams) =>
+    [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'stake.assetsToShares', { assets }] as const,
+  queryFn: async ({ marketId, assets }: AssetsToSharesQuery) =>
+    (await requireVault(marketId).vault.convertToShares(assets)) as Decimal,
+  category: 'llamalend.supply',
+  validationSuite: userSupplyVaultAssetsValidationSuite,
 })
 
 export const useStakeForm = <ChainId extends LlamaChainId>({ network }: { network: LlamaNetwork<ChainId> }) => {
@@ -30,7 +50,11 @@ export const useStakeForm = <ChainId extends LlamaChainId>({ network }: { networ
   const { borrowToken, collateralToken } = tokens
 
   const userBalances = useVaultUserBalances({ chainId, marketId, userAddress })
-  const maxUserStake = { ...mapQuery(userBalances, d => d.depositedShares), fieldName: 'maxStakeAmount' as const }
+  const maxStakeAssets = {
+    ...mapQuery(userBalances, d => d.depositedSharesAmount),
+    fieldName: 'maxStakeAssets' as const,
+  }
+  const maxStakeShares = mapQuery(userBalances, d => d.depositedShares)
 
   const form = useForm<StakeForm>({
     validation: stakeFormValidationSuite,
@@ -38,16 +62,25 @@ export const useStakeForm = <ChainId extends LlamaChainId>({ network }: { networ
   })
 
   const values = form.watchValues()
+  const convertedStakeShares = useStakeAssetsToShares({ chainId, marketId, userAddress, assets: values.stakeAssets })
+  const isMaxStake = values.stakeAssets && maxStakeAssets.data && decimalEqual(values.stakeAssets, maxStakeAssets.data)
+  const stakeShares = isMaxStake ? maxStakeShares.data : convertedStakeShares.data
 
   const [params, isDebouncing] = useFormDebounce(
     useMemo(
-      (): StakeParams<ChainId> => ({ chainId, marketId, userAddress, stakeAmount: values.stakeAmount }),
-      [chainId, marketId, userAddress, values.stakeAmount],
+      (): StakeFormParams<ChainId> => ({
+        chainId,
+        marketId,
+        userAddress,
+        stakeAssets: values.stakeAssets,
+        stakeShares,
+      }),
+      [chainId, marketId, stakeShares, userAddress, values.stakeAssets],
     ),
   )
 
   const {
-    onSubmit: onMutationSubmit,
+    onSubmit: onStakeMutationSubmit,
     isPending: isStaking,
     error: stakeError,
   } = useStakeMutation({ marketId, network, onReset: () => form.reset(userDefaultValues), userAddress })
@@ -63,11 +96,12 @@ export const useStakeForm = <ChainId extends LlamaChainId>({ network }: { networ
     controllerAddress,
     marketType: LlamaMarketType.Lend,
     chainId,
-    onSubmit: onMutationSubmit,
+    onSubmit: onStakeMutationSubmit,
     handleFormSubmit: form.handleSubmit,
   })
 
-  useFormSync(form, { maxStakeAmount: maxUserStake.data })
+  useFormSync(form, { maxStakeAssets: maxStakeAssets.data })
+  useFormSync(form, { stakeShares })
 
   const disabledAlert = (marketAlert?.isDepositDisabled ? marketAlert : undefined) ?? solvencyDisabledAlert
   const { formState } = form
@@ -83,7 +117,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({ network }: { networ
     borrowToken,
     collateralToken,
     error: stakeError ?? solvencyError,
-    max: maxUserStake,
+    max: maxStakeAssets,
     isApproved: useStakeIsApproved(params),
     hasGauge: marketHasGauge,
     formErrors: formState.visibleErrors,

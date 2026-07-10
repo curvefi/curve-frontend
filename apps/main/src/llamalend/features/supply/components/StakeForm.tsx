@@ -1,7 +1,6 @@
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
-import { StakeTokenLabel } from '@/llamalend/widgets/action-card/StakeTokenLabel'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { FormButton } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
@@ -20,7 +19,7 @@ type StakeFormProps<ChainId extends IChainId> = {
 const TEST_ID_PREFIX = 'supply-stake'
 
 export const StakeForm = <ChainId extends IChainId>({ networks }: StakeFormProps<ChainId>) => {
-  const { chainId, controllerAddress, vaultToken } = useMarketContext<ChainId>()
+  const { chainId, controllerAddress } = useMarketContext<ChainId>()
   const network = networks[chainId]
   const blockchainId = network.id
 
@@ -32,7 +31,6 @@ export const StakeForm = <ChainId extends IChainId>({ networks }: StakeFormProps
     onSubmit,
     isDisabled,
     borrowToken,
-    collateralToken,
     error,
     formErrors,
     isApproved,
@@ -58,21 +56,14 @@ export const StakeForm = <ChainId extends IChainId>({ networks }: StakeFormProps
     >
       <LoanFormTokenInput
         label={t`Amount to stake`}
-        token={vaultToken}
+        token={borrowToken}
         blockchainId={blockchainId}
-        name="stakeAmount"
+        name="stakeAssets"
         form={form}
         max={max}
         testId={`${TEST_ID_PREFIX}-input`}
         network={network}
-        tokenSelector={
-          <StakeTokenLabel
-            blockchainId={blockchainId}
-            vaultTokenLabel={vaultToken?.symbol}
-            collateralTokenAddress={collateralToken?.address}
-            borrowTokenAddress={borrowToken?.address}
-          />
-        }
+        positionBalance={{ position: max, tooltip: t`Vault share value` }}
       />
 
       <FormButton
@@ -90,10 +81,10 @@ export const StakeForm = <ChainId extends IChainId>({ networks }: StakeFormProps
         open={isOpen}
         onClose={onClose}
         onConfirm={onConfirm}
-        tokenSymbol={vaultToken?.symbol}
+        tokenSymbol={borrowToken?.symbol}
       />
 
-      <FormAlerts error={error} formErrors={formErrors} handledErrors={['stakeAmount']} />
+      <FormAlerts error={error} formErrors={formErrors} handledErrors={['stakeAssets']} />
     </Form>
   )
 }

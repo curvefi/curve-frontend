@@ -11,7 +11,7 @@ import {
 
 export const submitUnstakeForm = () => submitSupplyForm('unstake', 'Unstake successful!')
 
-export const readUnstakeAvailableAmount = () =>
+export const readUnstakeAvailableAssets = () =>
   getSupplyInputBalanceValueAttr('unstake')
     .should(balanceValue => {
       expect(new BigNumber(balanceValue || '0').gt(0)).to.equal(true)
@@ -19,10 +19,10 @@ export const readUnstakeAvailableAmount = () =>
     .then(balanceValue => (balanceValue || '0') as Decimal)
 
 /**
- * Fill in the unstake form with the specified amount.
+ * Fill in the unstake form with the specified underlying asset value.
  */
-export function writeUnstakeForm({ amount }: { amount: Decimal }) {
-  writeSupplyInput({ type: 'unstake', amount })
+export function writeUnstakeForm({ assets }: { assets: Decimal }) {
+  writeSupplyInput({ type: 'unstake', amount: assets })
 }
 
 /**
@@ -32,16 +32,16 @@ export function writeUnstakeForm({ amount }: { amount: Decimal }) {
 export function checkUnstakeDetailsLoaded({
   vaultShares,
   prevVaultShares,
-  amountSupplied,
-  prevAmountSupplied,
+  suppliedAssets,
+  prevSuppliedAssets,
   expectedButtonText = 'Unstake',
   symbol = 'crvUSD',
   checkEstimatedTxCost = true,
 }: {
-  vaultShares: Decimal
-  prevVaultShares: Decimal
-  amountSupplied?: Decimal
-  prevAmountSupplied?: Decimal
+  vaultShares?: Decimal
+  prevVaultShares?: Decimal
+  suppliedAssets?: Decimal
+  prevSuppliedAssets?: Decimal
   expectedButtonText?: string
   symbol?: string
   checkEstimatedTxCost?: boolean
@@ -49,8 +49,8 @@ export function checkUnstakeDetailsLoaded({
   checkSupplyActionInfoValues({
     vaultShares,
     prevVaultShares,
-    amountSupplied,
-    prevAmountSupplied,
+    suppliedAssets,
+    prevSuppliedAssets,
     symbol,
     checkEstimatedTxCost,
   })
