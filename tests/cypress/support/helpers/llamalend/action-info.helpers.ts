@@ -1,4 +1,4 @@
-import { TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
+import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { formatNumber } from '@ui-kit/utils'
@@ -12,6 +12,14 @@ export const DECIMAL_RANGE_REGEX = new RegExp([DECIMAL_REGEX.source, DECIMAL_REG
 
 export const getActionValue = (name: string, field?: ActionInfoField) =>
   getActionInfo(name, field).invoke(TRANSACTION_LOAD_TIMEOUT, 'attr', 'data-value')
+
+export function setSlippageTolerance(value: Decimal) {
+  cy.get('[data-testid="slippage-settings-button"]', LOAD_TIMEOUT).click()
+  cy.get('[data-testid="slippage-input"]', LOAD_TIMEOUT).clear()
+  cy.get('[data-testid="slippage-input"]').type(value)
+  cy.get('[data-testid="slippage-save-button"]').click()
+  getActionValue('borrow-slippage').should('equal', `${Number(value)}%`)
+}
 
 export const getMetricValue = (name: string) =>
   cy

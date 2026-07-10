@@ -327,10 +327,10 @@ const runSoftLiquidationPriceMove = ({
     })
       .then(() => advanceVirtualNetworkClock({ vnet, seconds: CLOCK_STEP_SECONDS }))
       .then(async () => {
-        const { oracle, state } = await readSoftLiquidationSetup(readParams)
+        const oracle = await readOracleState({ client, ammAddress })
         assert(
-          oracle.price === targetPriceWei,
-          `Oracle price override did not reach target: ${stringifySetupDetails({ oracle, state, targetPrice })}`,
+          oracle.answer === targetPriceWei && oracle.storedPrice === targetPriceWei,
+          `Oracle storage override did not reach target: ${stringifySetupDetails({ oracle, targetPrice })}`,
         )
       })
       .then(() =>
