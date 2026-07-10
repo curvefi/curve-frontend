@@ -2,13 +2,15 @@ import type { CurveApi, NetworkConfig, PoolData } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import type { V2Pool } from '@curvefi/prices-api/pools'
 import { recordValues } from '@primitives/objects.utils'
+import type { CampaignRewards } from '@ui-kit/entities/campaigns'
 import { DEX_ROUTES } from '@ui-kit/shared/routes'
 import { AVERAGE_CATEGORIES, aprToApy } from '@ui-kit/utils'
 import { isVyperVulnerablePool } from './poolList.alerts'
-import type { PoolListCampaignsByAddress, PoolListItem } from './poolList.types'
+import type { PoolListItem } from './poolList.types'
 
 const POOL_YIELD_COMPOUND_WINDOW = AVERAGE_CATEGORIES['dex.poolYield.compoundRate'].window
 
+type PoolListCampaignsByAddress = Record<string, CampaignRewards[]>
 type PoolIdByAddressSource = Record<string, { pool: Pick<PoolData['pool'], 'address' | 'id'> }>
 
 /**
