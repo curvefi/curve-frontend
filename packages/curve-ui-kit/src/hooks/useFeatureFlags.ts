@@ -25,6 +25,9 @@ export const useLlamaResetPosition = useStableChannel
 /** Split the LlamaLend (soon to be legacy) health into: Liquidation Buffer and Health */
 export const useNewLlamalendHealth = useBetaChannel
 
+/** Mobile LlamaLend market forms open from a fixed action bar into a drawer */
+export const useLlamalendMobileFormDrawer = useBetaChannel
+
 /** New DEX pool list backed by Prices API v2 */
 export const useDexPoolListV2 = useBetaChannel
 

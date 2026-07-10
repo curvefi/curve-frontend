@@ -21,7 +21,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useParams } from '@ui-kit/hooks/router'
-import { useLlamaResetPosition } from '@ui-kit/hooks/useFeatureFlags'
+import { useLlamaResetPosition, useLlamalendMobileFormDrawer } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
@@ -38,6 +38,7 @@ export const LendMarketPage = () => {
   const { isInitialized } = useCurve()
   const { address: userAddress } = useConnection()
   useLendPageTitle(market?.collateral_token?.symbol ?? rMarket, t`Lend`)
+  const isMobileFormDrawer = useLlamalendMobileFormDrawer()
 
   const network = networks[chainId]
   const queryParams = { chainId, marketId: market?.id, userAddress }
@@ -81,21 +82,23 @@ export const LendMarketPage = () => {
       marketType={LlamaMarketType.Lend}
     >
       <DetailPageLayout
-        formTabs={
-          !isLoading &&
-          !isLoanExistsLoading &&
-          !isSoftLiquidationLoading &&
-          (loanExists ? (
-            <ManageLoanTabs
-              onPricesUpdated={setPreviewPrices}
-              collateralEvents={collateralEvents}
-              showReset={showReset}
-              isSoftLiquidation={!!isSoftLiquidation}
-            />
-          ) : (
-            <CreateLoanTabs onPricesUpdated={setPreviewPrices} />
-          ))
-        }
+        formTabs={{
+          placement: isMobileFormDrawer ? 'mobile-drawer' : 'inline',
+          content:
+            !isLoading &&
+            !isLoanExistsLoading &&
+            !isSoftLiquidationLoading &&
+            (loanExists ? (
+              <ManageLoanTabs
+                onPricesUpdated={setPreviewPrices}
+                collateralEvents={collateralEvents}
+                showReset={showReset}
+                isSoftLiquidation={!!isSoftLiquidation}
+              />
+            ) : (
+              <CreateLoanTabs onPricesUpdated={setPreviewPrices} />
+            )),
+        }}
         header={<MarketPageHeader isLoading={isLoading} />}
       >
         <MarketBanners

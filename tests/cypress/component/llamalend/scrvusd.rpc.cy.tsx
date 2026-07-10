@@ -30,6 +30,7 @@ import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { CurveProvider } from '@ui-kit/features/connect-wallet/lib/CurveProvider'
 import { Chain, decimalGreaterThan, decimalMultiply, decimalSum } from '@ui-kit/utils'
+import { FormPlacementProvider } from '@ui-kit/widgets/DetailPageLayout/form-context/FormPlacementProvider'
 
 type ScrvUsdForm = 'deposit' | 'withdraw'
 
@@ -63,10 +64,12 @@ describe('scrvUSD', () => {
     return (
       <ComponentTestWrapper config={createTenderlyWagmiConfigFromVNet({ vnet, privateKey })} autoConnect>
         <CurveProvider app="llamalend" network={networks[Chain.Ethereum]} onChainUnavailable={console.error}>
-          <Stack sx={{ maxWidth: 520, gap: 2 }}>
-            <UserPosition chainId={Chain.Ethereum} />
-            <FormComponent network={SCRVUSD_NETWORK} />
-          </Stack>
+          <FormPlacementProvider placement="inline">
+            <Stack sx={{ maxWidth: 520, gap: 2 }}>
+              <UserPosition chainId={Chain.Ethereum} />
+              <FormComponent network={SCRVUSD_NETWORK} />
+            </Stack>
+          </FormPlacementProvider>
         </CurveProvider>
       </ComponentTestWrapper>
     )
