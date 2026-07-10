@@ -1,7 +1,8 @@
 import { BigNumber } from 'bignumber.js'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
-import { oneOf } from '@cy/support/generators'
+import { oneBool, oneOf } from '@cy/support/generators'
 import { LlammalendTestCase, type LlammalendTestCaseProps } from '@cy/support/helpers/llamalend/LlammalendTestCase'
+import { blockUnmockedApis } from '@cy/support/helpers/llamalend/market-list-mocks'
 import {
   checkClaimDetailsLoaded,
   prepareClaimRewards,
@@ -63,6 +64,7 @@ testCases.forEach(
     describe(label, () => {
       skipTestsAfterFailure()
 
+      const hasApi = oneBool() // tests must work with or without api access
       const privateKey = generatePrivateKey()
       const { address } = privateKeyToAccount(privateKey)
       const getVirtualNetwork = createVirtualTestnet(uuid => ({
@@ -97,10 +99,14 @@ testCases.forEach(
         })
       })
 
+      beforeEach(() => {
+        if (!hasApi) blockUnmockedApis()
+      })
+
       it('deposits into the vault', () => {
         cy.mount(<SupplyTestWrapper tab="deposit" />)
         writeDepositForm({ amount: deposit })
-        checkDepositDetailsLoaded({ suppliedAssets: deposit, prevSuppliedAssets: '0' })
+        checkDepositDetailsLoaded({ suppliedAssets: deposit, prevSuppliedAssets: '0', hasApi })
         submitDepositForm({})
         touchDepositForm()
         checkCurrentSuppliedAmount(suppliedAfterDeposit)
@@ -112,6 +118,7 @@ testCases.forEach(
         checkWithdrawDetailsLoaded({
           suppliedAssets: suppliedAfterPartialWithdraw,
           prevSuppliedAssets: suppliedAfterDeposit,
+          hasApi,
         })
         submitWithdrawForm()
         touchWithdrawForm()
@@ -125,6 +132,7 @@ testCases.forEach(
           suppliedAssets: '0',
           prevSuppliedAssets: suppliedAfterPartialWithdraw,
           expectedButtonText: 'Withdraw All',
+          hasApi,
         })
         submitWithdrawForm()
         touchWithdrawForm()
@@ -134,7 +142,7 @@ testCases.forEach(
       it('deposits into the vault again', () => {
         cy.mount(<SupplyTestWrapper tab="deposit" />)
         writeDepositForm({ amount: deposit })
-        checkDepositDetailsLoaded({ suppliedAssets: deposit, prevSuppliedAssets: '0' })
+        checkDepositDetailsLoaded({ suppliedAssets: deposit, prevSuppliedAssets: '0', hasApi })
         submitDepositForm({})
         touchDepositForm()
         checkCurrentSuppliedAmount(suppliedAfterDeposit)
@@ -149,7 +157,7 @@ testCases.forEach(
             suppliedAssets: suppliedAfterDeposit,
             prevSuppliedAssets: '0',
             expectedButtonText: 'Approve & Stake',
-            checkEstimatedTxCost: false,
+            hasApi,
           })
           submitStakeForm()
           touchStakeForm()
@@ -170,7 +178,7 @@ testCases.forEach(
           return
         }
         // only claim CRV rewards, no markets with external rewards yet
-        checkClaimDetailsLoaded({ hasOtherRewards: false })
+        checkClaimDetailsLoaded({ hasOtherRewards: false, hasApi })
         submitClaimAndSettle('crv', { waitForEmptyState: true })
         validateClaimTabState()
       })
@@ -179,10 +187,13 @@ testCases.forEach(
         cy.mount(<SupplyTestWrapper tab="unstake" />)
         readUnstakeAvailableAssets().then(unstakeAssets => {
           writeUnstakeForm({ assets: unstakeAssets })
-          checkUnstakeDetailsLoaded({ prevSuppliedAssets: suppliedAfterDeposit, checkEstimatedTxCost: false })
+          checkUnstakeDetailsLoaded({ prevSuppliedAssets: suppliedAfterDeposit, hasApi })
           submitUnstakeForm()
           touchUnstakeForm()
-          checkCurrentStakedAmount({ expectedVaultShares: '0', expectedAmountSupplied: '0' })
+          checkCurrentStakedAmount({
+            expectedVaultShares: '0',
+            expectedAmountSupplied: '0',
+          })
         })
       })
     })

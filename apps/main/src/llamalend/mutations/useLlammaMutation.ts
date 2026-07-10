@@ -60,9 +60,9 @@ export function useLlammaMutation<TVariables extends object>({
     onSuccess: async (data, receipt, variables, context) => {
       const { market, wallet, userAddress } = context
       const tokenAddresses = mutationTokenAddresses?.(variables, context) ?? getDefaultAddresses(market)
-      updateUserEventsApi(wallet, { id: networkId }, market, receipt.transactionHash)
 
-      await Promise.all([
+      await Promise.allSettled([
+        updateUserEventsApi(wallet, { id: networkId }, market, receipt.transactionHash),
         invalidateAllUserMarketDetails({
           chainId,
           marketId: market.id,

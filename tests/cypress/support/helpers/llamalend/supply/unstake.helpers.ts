@@ -36,7 +36,7 @@ export function checkUnstakeDetailsLoaded({
   prevSuppliedAssets,
   expectedButtonText = 'Unstake',
   symbol = 'crvUSD',
-  checkEstimatedTxCost = true,
+  hasApi = true,
 }: {
   vaultShares?: Decimal
   prevVaultShares?: Decimal
@@ -44,7 +44,7 @@ export function checkUnstakeDetailsLoaded({
   prevSuppliedAssets?: Decimal
   expectedButtonText?: string
   symbol?: string
-  checkEstimatedTxCost?: boolean
+  hasApi?: boolean
 }) {
   checkSupplyActionInfoValues({
     vaultShares,
@@ -52,7 +52,7 @@ export function checkUnstakeDetailsLoaded({
     suppliedAssets,
     prevSuppliedAssets,
     symbol,
-    checkEstimatedTxCost,
+    hasApi,
   })
   checkSupplySubmitButtonText('unstake', expectedButtonText)
 }

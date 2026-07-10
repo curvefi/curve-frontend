@@ -67,12 +67,14 @@ export function checkDepositDetailsLoaded({
   suppliedAssets,
   prevSuppliedAssets,
   symbol = 'crvUSD',
+  hasApi = true,
 }: {
   suppliedAssets: Decimal
   prevSuppliedAssets: Decimal
   symbol?: string
+  hasApi?: boolean
 }) {
-  checkSupplyActionInfoValues({ suppliedAssets, prevSuppliedAssets, symbol })
+  checkSupplyActionInfoValues({ suppliedAssets, prevSuppliedAssets, symbol, hasApi })
 }
 
 /**

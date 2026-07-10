@@ -4,6 +4,7 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
+import { BUTTON_FORM_SIZE } from '@ui-kit/features/forms/constants'
 import { t } from '@ui-kit/lib/i18n'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -71,6 +72,7 @@ export const ClaimTab = <ChainId extends IChainId>({ networks }: ClaimTabProps<C
               disabled={isCrvDisabled}
               data-testid={`${TEST_ID_PREFIX}-crv-rewards-submit-button`}
               onClick={onSubmitCrv}
+              size={BUTTON_FORM_SIZE}
             >
               {isCrvPending ? t`Processing...` : t`Claim CRV rewards`}
             </Button>
@@ -82,6 +84,7 @@ export const ClaimTab = <ChainId extends IChainId>({ networks }: ClaimTabProps<C
               disabled={isRewardsDisabled}
               data-testid={`${TEST_ID_PREFIX}-other-rewards-submit-button`}
               onClick={onSubmitRewards}
+              size={BUTTON_FORM_SIZE}
             >
               {isRewardsPending ? t`Processing...` : t`Claim other rewards`}
             </Button>

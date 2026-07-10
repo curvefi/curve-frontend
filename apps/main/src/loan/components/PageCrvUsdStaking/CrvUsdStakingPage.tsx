@@ -48,7 +48,7 @@ export const CrvUsdStakingPage = () => {
           subtitle={t`Let your idle crvUSD do more for you.`}
         />
       }
-      formTabs={<DepositWithdraw params={params} />}
+      formTabs={{ content: <DepositWithdraw params={params} /> }}
       testId="scrvusd-page"
     >
       {showStatsBanner && (
