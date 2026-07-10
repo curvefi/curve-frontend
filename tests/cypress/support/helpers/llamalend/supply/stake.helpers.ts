@@ -52,7 +52,7 @@ export function checkStakeDetailsLoaded({
   prevAmountSupplied,
   expectedButtonText = 'Stake',
   symbol = 'crvUSD',
-  checkEstimatedTxCost = true,
+  hasApi = true,
 }: {
   vaultShares: Decimal
   prevVaultShares: Decimal
@@ -60,7 +60,7 @@ export function checkStakeDetailsLoaded({
   prevAmountSupplied?: Decimal
   expectedButtonText?: string
   symbol?: string
-  checkEstimatedTxCost?: boolean
+  hasApi?: boolean
 }) {
   checkSupplyActionInfoValues({
     vaultShares,
@@ -68,7 +68,7 @@ export function checkStakeDetailsLoaded({
     amountSupplied,
     prevAmountSupplied,
     symbol,
-    checkEstimatedTxCost,
+    hasApi,
   })
   checkSupplySubmitButtonText('stake', expectedButtonText)
 }

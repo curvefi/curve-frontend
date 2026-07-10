@@ -1,7 +1,12 @@
-import { DECIMAL_REGEX, getActionValue, getMetricValue } from '@cy/support/helpers/llamalend/action-info.helpers'
-import { type Breakpoint, LOAD_TIMEOUT } from '@cy/support/ui'
+import {
+  DECIMAL_REGEX,
+  getActionInfo,
+  getActionValue,
+  getMetricValue,
+} from '@cy/support/helpers/llamalend/action-info.helpers'
+import { LOAD_TIMEOUT, type Breakpoint } from '@cy/support/ui'
 
-type WalletOptions = { breakpoint?: Breakpoint; hasWallet: boolean }
+type WalletOptions = { breakpoint?: Breakpoint; hasWallet: boolean; hasApi: boolean }
 
 const ADDRESS_PATTERN = /^0x[a-fA-F0-9]{40}$/
 
@@ -76,16 +81,20 @@ const shouldLoadMarketParameters = ({
   getActionValue('market-id').should('not.equal', '-')
 }
 
-export const shouldLoadMarketDetails = () => {
+const shouldLoadMarketDetails = ({ hasApi }: { hasApi: boolean }) => {
   cy.get('[data-testid^="detail-page-layout"]', LOAD_TIMEOUT).should('be.visible')
   getActionValue('market-available-liquidity').should('match', DECIMAL_REGEX)
   cy.get('[data-testid="market-advanced-details"]', LOAD_TIMEOUT).should('be.visible')
-  getActionValue('market-total-borrowers').should('match', DECIMAL_REGEX)
+  if (hasApi) {
+    getActionValue('market-total-borrowers').should('match', DECIMAL_REGEX)
+  } else {
+    getActionInfo('market-total-borrowers').should('not.exist')
+  }
   cy.get('[data-testid="llamalend-market-faq"]').should('be.visible')
 }
 
-export const shouldLoadBorrowDetails = ({ breakpoint, hasWallet }: WalletOptions) => {
-  cy.get(`[data-testid="no-position-${hasWallet ? 'borrow' : 'disconnected'}"]`).should('be.visible')
+const shouldLoadBorrowDetails = ({ breakpoint, hasWallet, hasApi }: WalletOptions) => {
+  cy.get(`[data-testid="no-position-${hasWallet ? 'borrow' : 'disconnected'}"]`, LOAD_TIMEOUT).should('be.visible')
   withMarketFormDrawer(breakpoint, 'create', () => {
     cy.get('[data-testid="borrow-collateral-input"]').should('be.visible')
     cy.get('[data-testid="borrow-debt-input"]').should('be.visible')
@@ -93,39 +102,53 @@ export const shouldLoadBorrowDetails = ({ breakpoint, hasWallet }: WalletOptions
     return cy.wrap(null)
   })
   cy.get(`[data-testid='no-position-disconnected']`).should(hasWallet ? 'not.exist' : 'be.visible')
-  getActionValue('market-net-borrow-apr').should('match', DECIMAL_REGEX)
-  shouldShowCanvas('market-chart-and-activity')
-  shouldLoadHistoricalBorrowRateChart()
-  shouldLoadMarketDetails()
+  if (hasApi) {
+    getActionValue('market-net-borrow-apr').should('match', DECIMAL_REGEX)
+    shouldShowCanvas('market-chart-and-activity')
+    shouldLoadHistoricalBorrowRateChart()
+  } else {
+    getActionInfo('market-net-borrow-apr').should('not.exist')
+  }
+  shouldLoadMarketDetails({ hasApi })
 }
 
-export const shouldLoadLendBorrowDetails = ({ breakpoint, hasWallet }: WalletOptions) => {
-  shouldLoadBorrowDetails({ breakpoint, hasWallet })
-  shouldLoadHistoricalSupplyRateChart()
-  shouldShowCanvas('interest-rate-utilization-chart')
+export const shouldLoadLendBorrowDetails = ({ breakpoint, hasWallet, hasApi = true }: WalletOptions) => {
+  shouldLoadBorrowDetails({ breakpoint, hasWallet, hasApi })
+  getActionValue('market-total-liquidity').should('match', DECIMAL_REGEX)
+  if (hasApi) {
+    shouldLoadHistoricalSupplyRateChart()
+    shouldShowCanvas('interest-rate-utilization-chart')
+  }
   shouldLoadMarketContracts({ hasMonetaryPolicy: true, hasOracle: true, hasVault: true })
   shouldLoadMarketParameters({ hasOnChainParameters: hasWallet, hasOraclePrice: true, hasPricePerShare: false })
 }
 
-export const shouldLoadMintBorrowDetails = ({ breakpoint, hasWallet }: WalletOptions) => {
-  shouldLoadBorrowDetails({ breakpoint, hasWallet })
-  shouldShowCanvas('crvusd-price-chart')
-  getActionValue('market-total-collateral').should('match', DECIMAL_REGEX)
+export const shouldLoadMintBorrowDetails = ({ breakpoint, hasWallet, hasApi = true }: WalletOptions) => {
+  shouldLoadBorrowDetails({ breakpoint, hasWallet, hasApi })
+  if (hasApi) {
+    shouldShowCanvas('crvusd-price-chart')
+    getActionValue('market-total-collateral').should('match', DECIMAL_REGEX)
+  }
   shouldLoadMarketContracts({ hasMonetaryPolicy: hasWallet, hasOracle: hasWallet, hasVault: false })
   shouldLoadMarketParameters({ hasOnChainParameters: hasWallet, hasOraclePrice: hasWallet, hasPricePerShare: false })
 }
 
-export const shouldLoadLendVaultDetails = ({ breakpoint, hasWallet }: WalletOptions) => {
+export const shouldLoadLendVaultDetails = ({ breakpoint, hasWallet, hasApi = true }: WalletOptions) => {
   withMarketFormDrawer(breakpoint, 'supply', () => {
-    cy.get('[data-testid="supply-deposit-input"]').should('be.visible')
+    cy.get('[data-testid="supply-deposit-input"]', LOAD_TIMEOUT).should('be.visible')
     cy.get('[data-testid="supply-deposit-submit-button"]').should(hasWallet ? 'be.visible' : 'not.exist')
     return cy.wrap(null)
   })
-  cy.get(`[data-testid='no-position-disconnected']`).should('not.exist')
-  getActionValue('market-net-supply-apy').should('match', DECIMAL_REGEX)
-  shouldLoadHistoricalSupplyRateChart()
-  shouldShowCanvas('interest-rate-utilization-chart')
+  cy.get(`[data-testid^='no-position']`).should('not.exist')
+  getActionValue('market-total-liquidity').should('match', DECIMAL_REGEX)
+  if (hasApi) {
+    getActionValue('market-net-supply-apy').should('match', DECIMAL_REGEX)
+    shouldLoadHistoricalSupplyRateChart()
+    shouldShowCanvas('interest-rate-utilization-chart')
+  } else {
+    getActionInfo('market-net-supply-apy').should('not.exist')
+  }
   shouldLoadMarketContracts({ hasMonetaryPolicy: true, hasOracle: true, hasVault: true })
   shouldLoadMarketParameters({ hasOnChainParameters: hasWallet, hasOraclePrice: true, hasPricePerShare: hasWallet })
-  shouldLoadMarketDetails()
+  shouldLoadMarketDetails({ hasApi })
 }

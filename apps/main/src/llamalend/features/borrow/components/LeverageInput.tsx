@@ -21,7 +21,7 @@ export const LeverageInput = ({
   onToggle: (event: ChangeEvent<HTMLInputElement>) => void
   maxLeverage: Decimal | undefined
 }) => (
-  <WithSkeleton loading={checked == null} width="100%">
+  <WithSkeleton loading={isLeverageLoading} width="100%">
     <CheckboxField
       checked={!!checked}
       disabled={!maxLeverage}
