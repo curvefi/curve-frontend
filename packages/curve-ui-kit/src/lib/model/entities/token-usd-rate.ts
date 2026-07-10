@@ -97,8 +97,8 @@ const fetchUsdRate = async (chainId: number, tokenAddress: string) => {
     (await getTestTokenPrice(chainId, tokenAddress as Address)) ??
     (await fetchFromCurveLib('curveApi', chainId, tokenAddress)) ??
     (await fetchFromCurveLib('llamaApi', chainId, tokenAddress)) ??
-    (await fetchFromPricesApi(chainId, tokenAddress)) ??
-    (await fetchFallbackSreUsd(chainId, tokenAddress))
+    (await fetchFallbackSreUsd(chainId, tokenAddress)) ??
+    (await fetchFromPricesApi(chainId, tokenAddress))
 
   // Don't bother with retries if we've exchausted all options (and each option didn't unexpectedly fail)
   if (rate === null) {

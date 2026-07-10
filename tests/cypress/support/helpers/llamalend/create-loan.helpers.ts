@@ -7,7 +7,7 @@ import { LlamaMarketType } from '@ui-kit/types/market'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { Chain } from '@ui-kit/utils/network'
 import { DEFAULT_DECIMALS } from '@ui-kit/utils/units'
-import { DECIMAL_RANGE_REGEX, getActionValue } from './action-info.helpers'
+import { checkEstimatedTxCost, DECIMAL_RANGE_REGEX, getActionValue } from './action-info.helpers'
 
 const chainId = Chain.Ethereum
 
@@ -117,15 +117,18 @@ export const oneLoanTestMarket = (
 export function checkLoanDetailsLoaded({
   leverageEnabled,
   expectError,
+  hasApi = true,
 }: {
   leverageEnabled: boolean
   expectError?: string
+  hasApi?: boolean
 }) {
   getActionValue('borrow-price-range').should('match', DECIMAL_RANGE_REGEX)
   getActionValue('borrow-apr').should('include', '%')
   getActionValue('borrow-apr', 'previous').should('include', '%')
   getActionValue('borrow-ltv').should('include', '%')
   getActionValue('borrow-ltv', 'previous').should('include', '%')
+  checkEstimatedTxCost({ hasValue: hasApi && !expectError })
 
   if (leverageEnabled) {
     getActionValue('borrow-price-impact').should('include', '%')
@@ -138,7 +141,6 @@ export function checkLoanDetailsLoaded({
   if (expectError) {
     cy.get('[data-testid="helper-message-error"]').contains(expectError)
   } else {
-    getActionValue('estimated-tx-cost').should('include', '$')
     cy.get('[data-testid="loan-form-errors"]').should('not.exist')
   }
 }

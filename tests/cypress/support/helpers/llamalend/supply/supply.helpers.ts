@@ -3,7 +3,7 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber, Chain } from '@ui-kit/utils'
-import { getActionValue } from '../action-info.helpers'
+import { checkEstimatedTxCost as checkEstimatedTxCostValue, getActionValue } from '../action-info.helpers'
 
 type SupplyRpcTestMarket = {
   id: string
@@ -110,7 +110,7 @@ export const checkSupplyActionInfoValues = ({
   amountSupplied,
   prevAmountSupplied,
   symbol,
-  checkEstimatedTxCost = true,
+  hasApi = true,
 }: {
   supplyApy?: string
   prevSupplyApy?: string
@@ -119,7 +119,7 @@ export const checkSupplyActionInfoValues = ({
   amountSupplied?: string
   prevAmountSupplied?: string
   symbol?: string
-  checkEstimatedTxCost?: boolean
+  hasApi?: boolean
 }) => {
   cy.get('[data-testid="supply-action-info-list"]').should('be.visible')
 
@@ -151,9 +151,7 @@ export const checkSupplyActionInfoValues = ({
     getActionValue('supply-amount', 'right').should('contain', symbol)
   }
 
-  if (checkEstimatedTxCost) {
-    getActionValue('estimated-tx-cost').should('include', '$')
-  }
+  checkEstimatedTxCostValue({ hasValue: hasApi })
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
 }
 

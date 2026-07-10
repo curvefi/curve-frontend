@@ -57,8 +57,11 @@ export async function fetchJson<T>(
     },
     ...(body && { body: JSON.stringify(body) }),
     signal,
+  }).catch(error => {
+    const { message } = error as Error
+    if (message == 'Failed to fetch') throw new FetchError(0, `Cannot fetch ${url}`, message)
+    throw error
   })
-
   if (!resp.ok) {
     throw new FetchError(resp.status, `Fetch error ${resp.status} for URL: ${url}`, await resp.text())
   }
