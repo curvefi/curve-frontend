@@ -6,12 +6,12 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { q } from '@ui-kit/types/util'
 import { ListPageWrapper } from '@ui-kit/widgets/ListPageWrapper'
 import {
-  invalidateUserLendingSupplies,
-  invalidateAllUserLendingVaults,
+  resetUserLendingSupplies,
+  resetAllUserLendingVaults,
   resetLendingVaults,
 } from '../../queries/market-list/lending-vaults'
 import { useLlamaMarkets } from '../../queries/market-list/llama-markets'
-import { invalidateAllUserMintMarkets, resetMintMarkets } from '../../queries/market-list/mint-markets'
+import { resetAllUserMintMarkets, resetMintMarkets } from '../../queries/market-list/mint-markets'
 import { LendTableFooter } from './LendTableFooter'
 import { LlamaMarketsTable } from './LlamaMarketsTable'
 import { UserPositionsTables } from './UserPositionsTables'
@@ -29,9 +29,9 @@ const useTableLlamaMarkets = (address: Address | undefined) => {
       resetLendingVaults({}),
       resetMintMarkets({}),
       resetBadDebtMarkets(),
-      invalidateAllUserLendingVaults(address),
-      invalidateUserLendingSupplies({ userAddress: address }),
-      invalidateAllUserMintMarkets(address),
+      resetAllUserLendingVaults(address),
+      resetUserLendingSupplies({ userAddress: address }),
+      resetAllUserMintMarkets(address),
     ])
   }, [address])
 

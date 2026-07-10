@@ -32,6 +32,7 @@ const {
   getQueryOptions: getUserMintMarketsQueryOptions,
   getQueryData: getCurrentUserMintMarkets,
   invalidate: invalidateUserMintMarkets,
+  reset: resetUserMintMarkets,
 } = queryFactory({
   queryKey: ({ userAddress }: UserParams) => ['user-mint-markets', { userAddress }, 'v1'] as const,
   queryFn: async ({ userAddress }: UserQuery): Promise<Record<Chain, Address[]>> =>
@@ -46,6 +47,7 @@ const {
   getQueryOptions: getUserMintMarketStatsQueryOptions,
   useQuery: useUserMintMarketStatsQuery,
   invalidate: invalidateUserMintMarketStats,
+  reset: resetUserMintMarketStats,
 } = queryFactory({
   queryKey: ({ userAddress, blockchainId, contractAddress }: UserContractParams) =>
     ['user-mint-markets', 'stats', { blockchainId }, { contractAddress }, { userAddress }, 'v1'] as const,
@@ -69,6 +71,22 @@ export const invalidateAllUserMintMarkets = async (userAddress: Address | null |
       ),
   )
   await Promise.all(invalidateContracts)
+}
+
+export const resetAllUserMintMarkets = async (userAddress: Address | null | undefined) => {
+  await resetUserMintMarkets({ userAddress })
+
+  const resetContracts = recordEntries(getCurrentUserMintMarkets({ userAddress }) ?? {}).flatMap(
+    ([blockchainId, contracts]) =>
+      contracts.map(contractAddress =>
+        resetUserMintMarketStats({
+          userAddress,
+          blockchainId,
+          contractAddress,
+        }),
+      ),
+  )
+  await Promise.all(resetContracts)
 }
 
 export const useUserMintMarketStats = useUserMintMarketStatsQuery
