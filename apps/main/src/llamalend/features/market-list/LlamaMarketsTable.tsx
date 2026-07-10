@@ -71,9 +71,7 @@ export const LlamaMarketsTable = ({
   )
   const [expanded, setExpanded] = useState<ExpandedState>({})
   const filterProps = { columnFiltersById, setColumnFilter }
-  const getExpandedPanelActions = useLlamaMarketExpandedPanelActions(getMarketExpandedPanelActions, {
-    withFavorite: true,
-  })
+  const getExpandedPanelActions = useLlamaMarketExpandedPanelActions(getMarketExpandedPanelActions)
 
   const table = useTable({
     columns: LLAMA_MARKET_COLUMNS,

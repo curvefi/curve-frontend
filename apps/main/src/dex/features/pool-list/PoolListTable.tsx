@@ -9,6 +9,7 @@ import Stack from '@mui/material/Stack'
 import { type ExpandedState, getCoreRowModel, getExpandedRowModel } from '@tanstack/react-table'
 import { CURVE_SOCIALS } from '@ui/utils'
 import { useIsMobile, useIsTablet } from '@ui-kit/hooks/useBreakpoints'
+import { copyToClipboardWithToast } from '@ui-kit/hooks/useCopyToClipboard'
 import { t } from '@ui-kit/lib/i18n'
 import { useTable, type ExpandedPanelActionResolver } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
@@ -43,6 +44,18 @@ const getPoolListMobileExpandedPanelActions: ExpandedPanelActionResolver<PoolLis
     },
     { id: 'withdraw', label: t`Withdraw`, href: path + ROUTE.PAGE_POOL_WITHDRAW },
     { id: 'swap', label: t`Swap`, href: path + ROUTE.PAGE_SWAP },
+    {
+      id: 'copy-pool-address',
+      label: t`Copy pool address`,
+      onClick: () =>
+        void copyToClipboardWithToast({
+          copyText: pool.address,
+          confirmationText: t`Pool address copied`,
+          failureText: t`Failed to copy pool address`,
+        }),
+      testId: `copy-pool-address-${pool.address}`,
+      alwaysInKebabMenu: true,
+    },
   ]
 }
 

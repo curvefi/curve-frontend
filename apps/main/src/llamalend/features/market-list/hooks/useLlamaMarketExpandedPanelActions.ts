@@ -6,10 +6,7 @@ import { copyToClipboardWithToast } from '@ui-kit/hooks/useCopyToClipboard'
 import { t } from '@ui-kit/lib/i18n'
 import type { ExpandedPanelActionResolver } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 
-export const useLlamaMarketExpandedPanelActions = (
-  getPrimaryActions: ExpandedPanelActionResolver<LlamaMarket>,
-  { withFavorite = false }: { withFavorite?: boolean } = {},
-) => {
+export const useLlamaMarketExpandedPanelActions = (getPrimaryActions: ExpandedPanelActionResolver<LlamaMarket>) => {
   const [favoriteMarkets, toggleFavoriteMarket] = useFavoriteMarkets()
 
   return useCallback<ExpandedPanelActionResolver<LlamaMarket>>(
@@ -31,7 +28,7 @@ export const useLlamaMarketExpandedPanelActions = (
           testId: `copy-market-address-${controllerAddress}`,
           alwaysInKebabMenu: true,
         },
-        withFavorite && {
+        {
           id: 'toggle-favorite-market',
           label: isFavorite ? t`Remove from favorites` : t`Add to favorites`,
           onClick: () => toggleFavoriteMarket(favoriteKey),
@@ -40,6 +37,6 @@ export const useLlamaMarketExpandedPanelActions = (
         },
       )
     },
-    [favoriteMarkets, getPrimaryActions, toggleFavoriteMarket, withFavorite],
+    [favoriteMarkets, getPrimaryActions, toggleFavoriteMarket],
   )
 }
