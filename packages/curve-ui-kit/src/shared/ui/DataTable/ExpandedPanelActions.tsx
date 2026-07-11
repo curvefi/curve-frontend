@@ -51,7 +51,7 @@ const ExpandedPanelActionButton = ({
     onClick: onDrawerActionClick ? handleClick : onClick,
     color: inDrawer ? ('ghost' as const) : color,
     size: inDrawer ? 'small' : size,
-    sx: applySxProps({ flex: 1, minWidth: 0 }, sx),
+    sx: applySxProps({ flex: 1 }, sx),
     ...(testId && { 'data-testid': testId }),
   }
 

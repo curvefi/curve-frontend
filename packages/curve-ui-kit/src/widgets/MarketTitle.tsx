@@ -1,3 +1,4 @@
+import { capitalize } from 'lodash'
 import { MouseEvent, type ReactNode } from 'react'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -13,7 +14,7 @@ export function MarketTitle({
   address,
   title,
   url,
-  addressLabel = t`Market`,
+  addressLabel = t`market`,
 }: {
   address: Address
   title: ReactNode
@@ -48,9 +49,9 @@ export function MarketTitle({
       </RouterLink>
       <CopyIconButton
         className={`${DESKTOP_ONLY_HOVER_CLASS} ${CLICKABLE_IN_ROW_CLASS}`}
-        label={t`Copy ${addressLabel} address`}
+        label={t`Copy ${addressLabel.toLowerCase()} address`}
         copyText={address}
-        confirmationText={t`${addressLabel} address copied`}
+        confirmationText={t`${capitalize(addressLabel)} address copied`}
         data-testid={`copy-market-address-${address}`}
         sx={{ display: { mobile: 'none', tablet: 'flex' } }}
       />

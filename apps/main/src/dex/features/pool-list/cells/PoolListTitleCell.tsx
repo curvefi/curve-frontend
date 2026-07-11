@@ -36,7 +36,7 @@ export const PoolListTitleCell = ({
         <Stack direction="column">
           <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
             <PoolAlertIcons poolAlert={poolAlert} tokenAlert={tokenAlert} />
-            <MarketTitle url={pool.url} address={pool.address} title={pool.name} addressLabel={t`Pool`} />
+            <MarketTitle url={pool.url} address={pool.address} title={pool.name} addressLabel={t`pool`} />
           </Stack>
           <PoolTokens tokenList={tokenList} filterValue={getFilterValue() as string} />
         </Stack>
