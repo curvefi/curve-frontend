@@ -262,9 +262,8 @@ describe('Header', () => {
     })
   }
 
-  function waitIsLoaded(route: AppRoute) {
+  const waitIsLoaded = (route: AppRoute) =>
     cy.get(`[data-testid='${getRouteTestId(route)}']`, API_LOAD_TIMEOUT).should('be.visible')
-  }
 
   function switchEthToArbitrum() {
     cy.get(`[data-testid='chain-icon-ethereum']`, LOAD_TIMEOUT).should('be.visible')

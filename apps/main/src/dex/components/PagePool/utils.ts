@@ -12,9 +12,7 @@ export type Amount = {
   tokenAddress: string
 }
 
-export function parseAmountsForAPI(amounts: Amount[]) {
-  return amounts.map(a => (Number(a.value) > 0 ? a.value : '0'))
-}
+export const parseAmountsForAPI = (amounts: Amount[]) => amounts.map(a => (Number(a.value) > 0 ? a.value : '0'))
 
 export function getAmountsError(amounts: Amount[], balances: IDict<string>) {
   return [...amounts]

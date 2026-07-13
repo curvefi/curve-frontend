@@ -68,9 +68,8 @@ export function clickResetPositionMinimumWalletAmount() {
   ).click()
 }
 
-export function checkResetPositionWalletAmount({ amount }: { amount: Decimal }) {
+export const checkResetPositionWalletAmount = ({ amount }: { amount: Decimal }) =>
   getResetPositionWalletInput().should('have.value', amount)
-}
 
 export const submitResetPositionForm = ({ message }: { message: string }) =>
   submitLoanForm({ form: 'reset-position', message })
