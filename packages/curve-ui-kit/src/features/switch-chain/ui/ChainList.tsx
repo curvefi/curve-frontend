@@ -21,14 +21,12 @@ enum ChainType {
   test = 'test',
   main = 'main',
   lite = 'lite',
-  deprecated = 'deprecated',
 }
 
 const CHAIN_TYPE_NAMES: Record<ChainType, string> = {
-  [ChainType.main]: t`Active networks`,
-  [ChainType.test]: t`Test networks`,
-  [ChainType.lite]: t`Lite networks`,
-  [ChainType.deprecated]: t`Inactive networks`,
+  [ChainType.main]: t`Curve`,
+  [ChainType.lite]: t`Curve Lite`,
+  [ChainType.test]: t`Testnets`,
 }
 
 export function ChainList({
@@ -53,7 +51,7 @@ export function ChainList({
         o =>
           o.isTestnet
             ? ChainType.test
-            : o.isLite || (tvls && tvls[o.id] === undefined)
+            : o.isLite || (tvls && tvls[o.id] === undefined) // flag chains not supported by prices API as lite
               ? ChainType.lite
               : ChainType.main,
       ) as Record<ChainType, NetworkDef[]>,
