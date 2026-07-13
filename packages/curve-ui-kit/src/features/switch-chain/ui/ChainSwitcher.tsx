@@ -1,39 +1,59 @@
 import lodash from 'lodash'
-import { useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import IconButton from '@mui/material/IconButton'
+import { fromEntries } from '@primitives/objects.utils'
 import { NetworkMapping } from '@ui/utils'
+import { usePricesNetworks } from '@ui-kit/entities/prices-networks.query'
 import { usePathname } from '@ui-kit/hooks/router'
 import { useShowTestNets } from '@ui-kit/hooks/useLocalStorage'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
-import { getCurrentNetwork } from '@ui-kit/shared/routes'
+import { type AppMenuOption, getCurrentNetwork } from '@ui-kit/shared/routes'
 import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
 import { ModalSettingsButton } from '@ui-kit/shared/ui/ModalSettingsButton'
+import { useMappedQuery } from '@ui-kit/types/util'
 import { showToast } from '@ui-kit/widgets/Toast/toast.util'
 import { ChainList } from './ChainList'
 import { ChainSettings } from './ChainSettings'
 import { ChainSwitcherIcon } from './ChainSwitcherIcon'
 
 type ChainSwitcherProps = {
-  networks: NetworkMapping
+  supportedNetworks: NetworkMapping
+  currentMenu: AppMenuOption
 }
 
-export const ChainSwitcher = ({ networks }: ChainSwitcherProps) => {
+export const ChainSwitcher = ({ supportedNetworks, currentMenu }: ChainSwitcherProps) => {
   const networkId = getCurrentNetwork(usePathname())
+  const pricesNetworks = usePricesNetworks({})
   const [isOpen, , close, toggle] = useSwitch()
   const [isSettingsOpen, openSettings, closeSettings] = useSwitch()
   const [showTestnets, setShowTestnets] = useShowTestNets()
   useEffect(() => () => close(), [networkId, close]) // close on chain change
 
+  const tvls = useMappedQuery(
+    pricesNetworks,
+    useCallback(
+      pricesNetworks =>
+        fromEntries(
+          pricesNetworks?.map(network => [
+            network.name as string,
+            currentMenu === 'llamalend' ? network.lendingTvl : network.poolTvl,
+          ]) ?? [],
+        ),
+      [currentMenu],
+    ),
+  )
+
   const options = useMemo(
     () =>
-      lodash.sortBy(
-        Object.values(networks).filter(networkConfig => networkConfig.showInSelectNetwork),
-        n => n.name,
+      lodash.orderBy(
+        Object.values(supportedNetworks).filter(networkConfig => networkConfig.showInSelectNetwork),
+        [n => tvls.data?.[n.id] ?? 0, 'name'],
+        ['desc', 'asc'],
       ),
-    [networks],
+    [supportedNetworks, tvls.data],
   )
 
   const onClick =
@@ -68,7 +88,7 @@ export const ChainSwitcher = ({ networks }: ChainSwitcherProps) => {
           {isSettingsOpen ? (
             <ChainSettings showTestnets={showTestnets} setShowTestnets={setShowTestnets} />
           ) : (
-            <ChainList showTestnets={showTestnets} options={options} selectedNetworkId={networkId} />
+            <ChainList showTestnets={showTestnets} options={options} tvls={tvls} selectedNetworkId={networkId} />
           )}
         </ModalDialog>
       )}
