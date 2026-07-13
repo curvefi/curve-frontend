@@ -27,9 +27,9 @@ type ChainSwitcherProps = {
 const TVL_SOURCES: Record<AppMenuOption, TvlSource> = {
   dex: 'pool',
   llamalend: 'lending',
-  dao: 'pool',
-  bridge: 'lending',
-  analytics: 'pool',
+  dao: 'pool', // kind of irrelevant for tvl, since it only supports mainnet
+  bridge: 'pool', // only shows lending chains in the form but shows all networks in selector
+  analytics: 'pool', // only has crvUSD charts, but shows all networks in selector
 }
 
 export const ChainSwitcher = ({ supportedNetworks, currentMenu }: ChainSwitcherProps) => {
