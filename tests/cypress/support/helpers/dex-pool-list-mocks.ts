@@ -8,7 +8,7 @@ import type { PoolType, SortDirection, V2PoolSortField } from '@curvefi/prices-a
 import { oneAddress, oneFloat } from '@cy/support/generators'
 import { oneToken } from '@cy/support/helpers/tokens'
 import type { Address } from '@primitives/address.utils'
-import { maybe, range, recordValues } from '@primitives/objects.utils'
+import { range, recordValues } from '@primitives/objects.utils'
 import { Chain, requireBlockchainId } from '@ui-kit/utils/network'
 
 const MOCK_CHAIN_IDS = [Chain.Ethereum, Chain.Arbitrum] as const
@@ -27,7 +27,7 @@ const SearchPool = {
   address: '0xbebc44782c7db0a1a60cb6fe97d0b483032ff1c7' as Address,
 } as const
 
-export const DEX_POOL_LIST_NAVIGATION_POOL = {
+const DEX_POOL_LIST_NAVIGATION_POOL = {
   name: '2pool',
   address: '0x7f90122bf0700f9e7e1f688fe926940e8839f353' as Address,
   network: 'arbitrum',
@@ -170,7 +170,7 @@ const createMockPools = (chainId: MockChainId): MockPool[] => [
 
 const MOCK_POOLS = MOCK_CHAIN_IDS.flatMap(createMockPools)
 
-const parseNumberParam = (value: string | null, fallback: number) => maybe(value, Number) ?? fallback
+const parseNumberParam = (value: string | null, fallback: number) => Number(value ?? fallback)
 
 const isOneOf = <T extends string>(values: readonly T[], value: string | null): value is T =>
   value != null && (values as readonly string[]).includes(value)
@@ -225,7 +225,7 @@ const getPoolListResponse = (query: PoolListQuery) => {
   }
 }
 
-export const mockDexPoolChains = () =>
+const mockDexPoolChains = () =>
   cy.intercept(
     { method: 'GET', hostname: 'prices.curve.finance', pathname: '/v2/pools/chains/' },
     {
@@ -235,7 +235,7 @@ export const mockDexPoolChains = () =>
     },
   )
 
-export const mockDexPoolList = () =>
+const mockDexPoolList = () =>
   cy.intercept({ method: 'GET', hostname: 'prices.curve.finance', pathname: '/v2/pools/' }, req => {
     req.reply({ body: getPoolListResponse(parsePoolListQuery(new URL(req.url))) })
   })
