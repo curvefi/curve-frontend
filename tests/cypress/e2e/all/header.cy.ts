@@ -256,7 +256,7 @@ describe('Header', () => {
     })
   })
 
-  function dismissPhishingWarningBanner(date?: number) {
+  const dismissPhishingWarningBanner = (date?: number) => {
     cy.window().then(win => {
       win.localStorage.setItem('phishing-warning-dismissed', JSON.stringify(date ?? Date.now()))
     })

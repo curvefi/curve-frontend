@@ -1,23 +1,21 @@
-const isNamedFunction = node => node.type === 'FunctionDeclaration' || (node.type === 'FunctionExpression' && node.id)
-
-const hasSingleLineBody = node =>
-  node.body?.body.length === 1 && node.body.body[0].loc?.start.line === node.body.body[0].loc?.end.line
-
 /**
- * Forbids one-line named functions. Prefer one-line arrow functions.
- *
+ * Forbids named functions with a single statement. Prefer inlined arrow functions.
  * @type {eslint.Rule.Module}
  */
 export const noSingleLineNamedFunctionsRule = {
   meta: {
     type: 'suggestion',
-    docs: { description: 'Disallow single-line named functions when an arrow function is enough' },
-    messages: {
-      preferArrow: 'Prefer a one-line arrow function instead of a named function.',
-    },
+    docs: { description: 'Disallow named functions with a single statement when an inline arrow function is enough' },
+    messages: { preferArrow: 'Prefer inline arrow functions.' },
   },
   create: context => ({
-    ':function': node =>
-      isNamedFunction(node) && hasSingleLineBody(node) && context.report({ node, messageId: 'preferArrow' }),
+    'FunctionDeclaration, FunctionExpression': node =>
+      node.parent?.type !== 'MethodDefinition' && // ignore class methods
+      node.parent?.callee?.name !== 'forwardRef' && // React's forwardRef requires a named function
+      !node.parent?.body?.some(sibling => sibling.type === 'TSDeclareFunction' && sibling.id?.name === node.id?.name) && // ignore overloaded functions
+      node.body?.body.length === 1 && // only one statement
+      ['ExpressionStatement', 'ReturnStatement'].includes(node.body.body[0].type) && // not a block statement
+      !context.sourceCode.getTokens(node.body).some(({ value }) => value === 'this') && // cannot inline when using `this`
+      context.report({ node, messageId: 'preferArrow' }),
   }),
 }
