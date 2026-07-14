@@ -21,7 +21,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { MetricProps } from '@ui-kit/shared/ui/Metric'
 import { LlamaMarketType, LlamaMarketVersion } from '@ui-kit/types/market'
 import { QueryProp } from '@ui-kit/types/util'
-import { CRVUSD, decimal, decimalMinus, decimalMultiply, decimalSum, formatNumber } from '@ui-kit/utils'
+import { CRVUSD, decimal, decimalMinus, decimalMultiply, decimalSum, formatNumber, formatToken } from '@ui-kit/utils'
 import { SOLVENCY_THRESHOLDS } from './llama-markets.constants'
 
 /**
@@ -134,10 +134,8 @@ export const formatTokenAmounts = (
   { userBorrowed, userCollateral }: { userBorrowed?: Decimal; userCollateral?: Decimal },
 ) =>
   notFalsy(
-    userBorrowed && +userBorrowed && `${formatNumber(userBorrowed, { abbreviate: false })} ${getBorrowSymbol(market)}`,
-    userCollateral &&
-      +userCollateral &&
-      `${formatNumber(userCollateral, { abbreviate: false })} ${getCollateralSymbol(market)}`,
+    userBorrowed && +userBorrowed && `${formatToken(userBorrowed, getBorrowSymbol(market))}`,
+    userCollateral && +userCollateral && `${formatToken(userCollateral, getCollateralSymbol(market))}`,
   ).join(', ')
 
 export type MarketToken = Pick<AssetDetails, 'symbol' | 'address' | 'decimals'>

@@ -4,8 +4,7 @@ import Typography from '@mui/material/Typography'
 import type { Amount } from '@primitives/decimal.utils'
 import type { CellContext } from '@tanstack/react-table'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { formatNumber } from '@ui-kit/utils'
-import { formatTokens } from '../action-infos/util'
+import { formatToken, formatNumber } from '@ui-kit/utils'
 import type { ClosePositionRow } from '../columns/columns.definitions'
 
 const { Spacing } = SizesAndSpaces
@@ -46,7 +45,8 @@ export const ValueCellDisplay = ({
           {tokens.map((token, i) => (
             // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
             <span key={i} style={{ whiteSpace: 'nowrap', ...(i > 0 && { marginInlineStart: '0.25rem' }) }}>
-              {i === 0 ? formatTokens(token) : ` + ${formatTokens(token)}`}
+              {i && ' + '}
+              {formatToken(token.amount, token.symbol)}
             </span>
           ))}
         </Typography>
