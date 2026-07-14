@@ -6,9 +6,7 @@ import { LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
  * The complete test ID format is: pegkeeper-card-{contractAddress}-{suffix}
  * where contractAddress makes each pegkeeper's test IDs unique.
  */
-function getPegkeeperCards(suffix: string) {
-  return cy.get(`[data-testid^="pegkeeper-card"][data-testid$="-${suffix}"]`)
-}
+const getPegkeeperCards = (suffix: string) => cy.get(`[data-testid^="pegkeeper-card"][data-testid$="-${suffix}"]`)
 
 describe(`Peg Stability Reserves`, () => {
   let width: number, height: number

@@ -149,13 +149,16 @@ type GetSlippageImpactParams = {
  *   - isHighImpact: true if price impact exceeds max slippage
  *   - isExpectedToAmount: true if difference between desired and actual amount exceeds max slippage
  */
-export function getSlippageImpact({ maxSlippage, toAmount, priceImpact, fetchedToAmount }: GetSlippageImpactParams) {
-  return {
-    isHighImpact: priceImpact !== null && priceImpact > +maxSlippage,
-    // if input toAmount and fetchedToAmount differ is more than slippage, inform user they will get expected not desired
-    ...(fetchedToAmount ? { isExpectedToAmount: +toAmount - +(fetchedToAmount ?? 0) > +maxSlippage } : {}),
-  }
-}
+export const getSlippageImpact = ({
+  maxSlippage,
+  toAmount,
+  priceImpact,
+  fetchedToAmount,
+}: GetSlippageImpactParams) => ({
+  isHighImpact: priceImpact !== null && priceImpact > +maxSlippage,
+  // if input toAmount and fetchedToAmount differ is more than slippage, inform user they will get expected not desired
+  ...(fetchedToAmount ? { isExpectedToAmount: +toAmount - +(fetchedToAmount ?? 0) > +maxSlippage } : {}),
+})
 
 /**
  * Get the stored rate for the to token in the last route.

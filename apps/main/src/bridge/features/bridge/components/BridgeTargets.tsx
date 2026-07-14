@@ -5,6 +5,7 @@ import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { NetworkDef } from '@ui/utils'
+import { useNetworksTVL } from '@ui-kit/entities/prices-networks.query'
 import { ChainList } from '@ui-kit/features/switch-chain/ui/ChainList'
 import { ChainSwitcherIcon } from '@ui-kit/features/switch-chain/ui/ChainSwitcherIcon'
 import { usePathname } from '@ui-kit/hooks/router'
@@ -135,6 +136,7 @@ export const BridgeTargets = ({ networks, fromChainId, disabled, loading, onNetw
           showTestnets={false}
           options={networks}
           selectedNetworkId={getCurrentNetwork(usePathname())}
+          tvls={useNetworksTVL('lending')}
           onNetwork={useCallback(
             (network: NetworkDef) => {
               closeFrom()

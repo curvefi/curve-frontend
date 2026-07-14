@@ -47,7 +47,7 @@ export const DesktopHeader = ({
 
         <Box sx={{ display: 'flex', marginLeft: 2, justifyContent: 'flex-end', gap: 3, alignItems: 'center' }}>
           <UserProfile />
-          <ChainSwitcher networks={supportedNetworks} />
+          <ChainSwitcher supportedNetworks={supportedNetworks} currentMenu={currentMenu} />
           <ConnectWalletIndicator />
         </Box>
       </Container>
