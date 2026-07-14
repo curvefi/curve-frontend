@@ -118,7 +118,7 @@ export const createCreateLoanScenario = ({
       approved: [collateral] as const,
       estimateGasApprove: [collateral] as const,
       approve: [collateral] as const,
-      submit: [collateral, borrow, presetRange, DEFAULT_LEVERAGE_SLIPPAGE] as const,
+      submit: [collateral, borrow, presetRange] as const,
     },
     stubs,
   }
