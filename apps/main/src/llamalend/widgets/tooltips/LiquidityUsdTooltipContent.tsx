@@ -9,9 +9,7 @@ import Stack from '@mui/material/Stack'
 import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { formatNumber } from '@ui-kit/utils'
-
-const formatToken = (value: number | null, symbol: string) => `${formatNumber(value, 'token.compact')} ${symbol}`
+import { formatNumber, formatToken } from '@ui-kit/utils'
 
 const TITLE = { Lend: t`Total supplied`, Mint: t`Debt ceiling` }
 const TOOLTIP = {

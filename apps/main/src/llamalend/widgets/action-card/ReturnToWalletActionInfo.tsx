@@ -2,7 +2,7 @@ import { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { mapQuery, type QueryProp } from '@ui-kit/types/util'
-import { formatNumber } from '@ui-kit/utils'
+import { formatNumber, formatToken } from '@ui-kit/utils'
 
 export function ReturnToWalletActionInfo({
   returnToWallet,
@@ -14,7 +14,7 @@ export function ReturnToWalletActionInfo({
     <>
       <ActionInfo
         label={t`Return to wallet`}
-        valueTooltip={first && `${formatNumber(first.value, { abbreviate: false })} ${first.symbol}`}
+        valueTooltip={first && formatToken(first.value, first.symbol, 'amount')}
         value={mapQuery(returnToWallet, ([first]) => formatNumber(first?.value, { abbreviate: true, fallback: '-' }))}
         valueRight={first?.symbol}
         size="small"
@@ -23,7 +23,7 @@ export function ReturnToWalletActionInfo({
       {second && (
         <ActionInfo
           label=""
-          valueTooltip={`${formatNumber(second.value, { abbreviate: false })} ${second.symbol}`}
+          valueTooltip={formatToken(second.value, second.symbol, 'amount')}
           value={second ? formatNumber(second.value, { abbreviate: true }) : '-'}
           valueRight={second.symbol}
           size="small"
