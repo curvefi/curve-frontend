@@ -21,7 +21,18 @@ export const UnstakeForm = <ChainId extends IChainId>({ networks }: UnstakeFormP
   const network = networks[chainId]
   const blockchainId = network.id
 
-  const { form, params, isPending, onSubmit, isDisabled, borrowToken, unstakeError, formErrors, max } = useUnstakeForm({
+  const {
+    form,
+    form: { update: updateForm },
+    params,
+    isPending,
+    onSubmit,
+    isDisabled,
+    borrowToken,
+    unstakeError,
+    formErrors,
+    max,
+  } = useUnstakeForm({
     network,
   })
 
@@ -49,6 +60,7 @@ export const UnstakeForm = <ChainId extends IChainId>({ networks }: UnstakeFormP
         testId={`${TEST_ID_PREFIX}-input`}
         network={network}
         positionBalance={{ position: max, tooltip: t`Staked amount` }}
+        onValueChange={value => updateForm({ isFull: value === max.data })}
       />
       {Number(max.data) > 0 && <AlertUnstakeOnly />}
 

@@ -1,4 +1,3 @@
-import { LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import {
   checkSupplyActionInfoValues,
@@ -34,13 +33,6 @@ export function checkWithdrawDetailsLoaded({
 }) {
   checkSupplyActionInfoValues({ suppliedAssets, prevSuppliedAssets, symbol, hasApi })
   checkSupplySubmitButtonText('withdraw', expectedButtonText)
-}
-
-/**
- * Select full withdraw by clicking the 100% chip.
- */
-export const selectMaxWithdraw = () => {
-  cy.get('[data-testid="input-chip-100%"]', LOAD_TIMEOUT).click({ force: true })
 }
 
 /**

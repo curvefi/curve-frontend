@@ -17,25 +17,23 @@ import {
 } from '@cy/support/helpers/llamalend/supply/deposit.helpers'
 import {
   checkStakeDetailsLoaded,
-  selectMaxStake,
   submitStakeForm,
   touchStakeForm,
 } from '@cy/support/helpers/llamalend/supply/stake.helpers'
 import { fundUserForSupplySetup } from '@cy/support/helpers/llamalend/supply/supply-setup.helpers'
 import {
-  checkCurrentSuppliedAmount,
   checkCurrentStakedAmount,
+  checkCurrentSuppliedAmount,
+  selectMaxSupplyInput,
   SUPPLY_TEST_MARKETS,
 } from '@cy/support/helpers/llamalend/supply/supply.helpers'
 import {
   checkUnstakeDetailsLoaded,
-  selectMaxUnstake,
   submitUnstakeForm,
   touchUnstakeForm,
 } from '@cy/support/helpers/llamalend/supply/unstake.helpers'
 import {
   checkWithdrawDetailsLoaded,
-  selectMaxWithdraw,
   submitWithdrawForm,
   touchWithdrawForm,
   writeWithdrawForm,
@@ -125,7 +123,7 @@ testCases.forEach(
 
       it('redeems the remaining vault balance', () => {
         cy.mount(<SupplyTestWrapper tab="withdraw" />)
-        selectMaxWithdraw()
+        selectMaxSupplyInput('withdraw')
         checkWithdrawDetailsLoaded({
           suppliedAssets: '0',
           prevSuppliedAssets: suppliedAfterPartialWithdraw,
@@ -148,7 +146,7 @@ testCases.forEach(
 
       it('stakes into the gauge', () => {
         cy.mount(<SupplyTestWrapper tab="stake" />)
-        selectMaxStake()
+        selectMaxSupplyInput('stake')
         checkStakeDetailsLoaded({
           prevVaultShares: '0',
           suppliedAssets: suppliedAfterDeposit,
@@ -181,7 +179,7 @@ testCases.forEach(
 
       it('unstakes from the gauge', () => {
         cy.mount(<SupplyTestWrapper tab="unstake" />)
-        selectMaxUnstake()
+        selectMaxSupplyInput('unstake')
         checkUnstakeDetailsLoaded({ prevSuppliedAssets: suppliedAfterDeposit, hasApi })
         submitUnstakeForm()
         touchUnstakeForm()

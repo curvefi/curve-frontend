@@ -38,6 +38,7 @@ export type WithdrawParams<ChainId = number> = FieldsOf<WithdrawQuery<ChainId>>
 
 export type StakeMutation = {
   stakeShares: Decimal
+  isFull: boolean
 }
 
 type CalculatedStakeValues = {
@@ -55,6 +56,7 @@ export type StakeFormParams<ChainId = number> = FieldsOf<StakeFormQuery<ChainId>
 
 export type UnstakeMutation = {
   unstakeShares: Decimal
+  isFull: boolean
 }
 
 type CalculatedUnstakeValues = {

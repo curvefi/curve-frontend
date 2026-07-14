@@ -16,11 +16,10 @@ import { useFormSync, useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { mapQuery } from '@ui-kit/types/util'
-import { decimalEqual } from '@ui-kit/utils'
 import { useMarketContext } from '../../market-context'
 import { useVaultUserBalances } from './useVaultUserBalances'
 
-const userDefaultValues = { unstakeAssets: undefined, unstakeShares: undefined }
+const userDefaultValues = { unstakeAssets: undefined, unstakeShares: undefined, isFull: false }
 
 const emptyUnstakeForm = (): UnstakeForm => ({
   ...userDefaultValues,
@@ -61,9 +60,7 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({ network }: { netw
     userAddress,
     assets: values.unstakeAssets,
   })
-  const isMaxUnstake =
-    values.unstakeAssets && maxUnstakeAssets.data && decimalEqual(values.unstakeAssets, maxUnstakeAssets.data)
-  const unstakeShares = isMaxUnstake ? maxUnstakeShares.data : convertedUnstakeShares.data
+  const unstakeShares = values.isFull ? maxUnstakeShares.data : convertedUnstakeShares.data
 
   const [params, isDebouncing] = useFormDebounce(
     useMemo(
@@ -73,8 +70,9 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({ network }: { netw
         userAddress,
         unstakeAssets: values.unstakeAssets,
         unstakeShares,
+        isFull: values.isFull,
       }),
-      [chainId, marketId, unstakeShares, userAddress, values.unstakeAssets],
+      [chainId, marketId, unstakeShares, userAddress, values.isFull, values.unstakeAssets],
     ),
   )
 

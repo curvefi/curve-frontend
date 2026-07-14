@@ -25,6 +25,7 @@ export const StakeForm = <ChainId extends IChainId>({ networks }: StakeFormProps
 
   const {
     form,
+    form: { update: updateForm },
     params,
     isPending,
     isLoading,
@@ -64,6 +65,7 @@ export const StakeForm = <ChainId extends IChainId>({ networks }: StakeFormProps
         testId={`${TEST_ID_PREFIX}-input`}
         network={network}
         positionBalance={{ position: max, tooltip: t`Vault share value` }}
+        onValueChange={value => updateForm({ isFull: value === max.data })}
       />
 
       <FormButton

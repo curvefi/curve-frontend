@@ -21,11 +21,10 @@ import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { mapQuery } from '@ui-kit/types/util'
-import { decimalEqual } from '@ui-kit/utils'
 import { useMarketContext } from '../../market-context'
 import { useVaultUserBalances } from './useVaultUserBalances'
 
-const userDefaultValues = { stakeAssets: undefined, stakeShares: undefined }
+const userDefaultValues = { stakeAssets: undefined, stakeShares: undefined, isFull: false }
 
 const emptyStakeForm = (): StakeForm => ({
   ...userDefaultValues,
@@ -63,8 +62,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({ network }: { networ
 
   const values = form.watchValues()
   const convertedStakeShares = useStakeAssetsToShares({ chainId, marketId, userAddress, assets: values.stakeAssets })
-  const isMaxStake = values.stakeAssets && maxStakeAssets.data && decimalEqual(values.stakeAssets, maxStakeAssets.data)
-  const stakeShares = isMaxStake ? maxStakeShares.data : convertedStakeShares.data
+  const stakeShares = values.isFull ? maxStakeShares.data : convertedStakeShares.data
 
   const [params, isDebouncing] = useFormDebounce(
     useMemo(
@@ -74,13 +72,14 @@ export const useStakeForm = <ChainId extends LlamaChainId>({ network }: { networ
         userAddress,
         stakeAssets: values.stakeAssets,
         stakeShares,
+        isFull: values.isFull,
       }),
-      [chainId, marketId, stakeShares, userAddress, values.stakeAssets],
+      [chainId, marketId, stakeShares, userAddress, values.isFull, values.stakeAssets],
     ),
   )
 
   const {
-    onSubmit: onStakeMutationSubmit,
+    onSubmit: submitStake,
     isPending: isStaking,
     error: stakeError,
   } = useStakeMutation({ marketId, network, onReset: () => form.reset(userDefaultValues), userAddress })
@@ -96,7 +95,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({ network }: { networ
     controllerAddress,
     marketType: LlamaMarketType.Lend,
     chainId,
-    onSubmit: onStakeMutationSubmit,
+    onSubmit: submitStake,
     handleFormSubmit: form.handleSubmit,
   })
 

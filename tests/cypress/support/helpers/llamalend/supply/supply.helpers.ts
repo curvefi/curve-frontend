@@ -78,6 +78,16 @@ export const getSupplyInputBalanceValue = (type: SupplyFormType) =>
 export const getSupplyInputBalanceValueAttr = (type: SupplyFormType) =>
   getSupplyInputBalanceValue(type).invoke(LOAD_TIMEOUT, 'attr', 'data-value')
 
+export const selectMaxSupplyInput = (type: SupplyFormType) => {
+  getSupplyInputBalanceValue(type)
+    .should(value => expect(Number(value.attr('data-value'))).gt(0))
+    .click()
+  cy.get(`[data-testid="supply-${type}-input"] input[type="text"]`, LOAD_TIMEOUT)
+    .invoke(LOAD_TIMEOUT, 'attr', 'data-value')
+    .should(value => expect(Number(value)).gt(0))
+  cy.get('[data-testid="supply-action-info-list"]', LOAD_TIMEOUT).should('be.visible')
+}
+
 // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
 export const writeSupplyInput = ({ type, amount }: { type: SupplyFormType; amount: Decimal | string }) => {
   getSupplyInput(type).clear()

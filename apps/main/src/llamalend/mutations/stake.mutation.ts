@@ -21,11 +21,11 @@ type StakeOptions = {
   onReset: () => void
   userAddress: Address | undefined
 }
-const approveStake = async (market: LendMarketTemplate, { stakeShares = '0' }: StakeMutation): Promise<Hex[]> =>
-  +stakeShares ? ((await market.vault.stakeApprove(stakeShares)) as Hex[]) : []
+const getStakeShares = async (market: LendMarketTemplate, { isFull, stakeShares }: StakeMutation) =>
+  isFull ? (await market.wallet.balances()).vaultShares : stakeShares
 
-const stake = async (market: LendMarketTemplate, { stakeShares }: StakeMutation): Promise<Hex> =>
-  (await market.vault.stake(stakeShares)) as Hex
+const stake = async (market: LendMarketTemplate, variables: StakeMutation): Promise<Hex> =>
+  (await market.vault.stake(await getStakeShares(market, variables))) as Hex
 
 export const useStakeMutation = ({ network, network: { chainId }, marketId, userAddress, ...props }: StakeOptions) => {
   const config = useConfig()
@@ -39,7 +39,10 @@ export const useStakeMutation = ({ network, network: { chainId }, marketId, user
       await waitForApproval({
         isApproved: async () =>
           await fetchStakeIsApproved({ chainId, marketId, userAddress, ...variables }, { staleTime: 0 }),
-        onApprove: async () => await approveStake(lendMarket, variables),
+        onApprove: async () => {
+          const stakeShares = await getStakeShares(lendMarket, variables)
+          return (await lendMarket.vault.stakeApprove(stakeShares)) as Hex[]
+        },
         message: t`Approved stake`,
         config,
       })
@@ -53,7 +56,10 @@ export const useStakeMutation = ({ network, network: { chainId }, marketId, user
     ...props,
   })
 
-  const onSubmit = useCallback(({ stakeShares = '0' }: StakeForm) => mutate({ stakeShares }), [mutate])
+  const onSubmit = useCallback(
+    ({ isFull = false, stakeShares = '0' }: StakeForm) => mutate({ isFull, stakeShares }),
+    [mutate],
+  )
 
   return { onSubmit, mutate, error, isPending }
 }
