@@ -29,7 +29,8 @@ const oneLendingPool = (
   const liquidityUsd = Math.max(0, oneFloat(0, tvl)) // portion of TVL represented by (assets - debt)
   const totalAssetsUsd = liquidityUsd / (1 - utilization)
   const totalDebtUsd = totalAssetsUsd * utilization
-  const totalAssets = totalAssetsUsd / collateralPrice
+  // Vault assets and debt are both denominated in the borrowed token.
+  const totalAssets = totalAssetsUsd / borrowedPrice
   const totalDebt = totalDebtUsd / borrowedPrice
   const minBand = oneInt()
   const minted = onePrice()

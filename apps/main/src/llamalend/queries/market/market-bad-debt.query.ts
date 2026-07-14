@@ -13,7 +13,7 @@ const endpointFromMarketType: Record<LlamaMarketType, Endpoint> = {
   [LlamaMarketType.Mint]: 'crvusd',
 }
 
-const { getQueryOptions: getBadDebtMarketsOptionsQuery, invalidate: invalidateBadDebtMarketsQuery } = queryFactory({
+const { getQueryOptions: getBadDebtMarketsOptionsQuery, reset: resetBadDebtMarketsQuery } = queryFactory({
   queryKey: ({ type }: BadDebtParams) => ['getBadDebt', { type }, 'v1'] as const,
   queryFn: ({ type }: BadDebtParams) => getBadDebt({ endpoint: endpointFromMarketType[type] }),
   category: 'llamalend.market',
@@ -26,5 +26,5 @@ export const getBadDebtLendMarketsOptions = (enabled = true) =>
 export const getBadDebtMintMarketsOptions = (enabled = true) =>
   getBadDebtMarketsOptionsQuery({ type: LlamaMarketType.Mint }, enabled)
 
-export const invalidateBadDebtMarkets = async () =>
-  Promise.all(recordValues(LlamaMarketType).map(type => invalidateBadDebtMarketsQuery({ type })))
+export const resetBadDebtMarkets = async () =>
+  Promise.all(recordValues(LlamaMarketType).map(type => resetBadDebtMarketsQuery({ type })))
