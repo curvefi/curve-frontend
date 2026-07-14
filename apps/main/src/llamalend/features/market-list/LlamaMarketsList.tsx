@@ -17,14 +17,12 @@ import { LlamaMarketsTable } from './LlamaMarketsTable'
 import { UserPositionsTables } from './UserPositionsTables'
 
 /** Fetches Llama markets and normalizes loading so initial load and manual reload show a loading state. */
-const useTableLlamaMarkets = (address: Address | undefined) => {
-  const enableDeprecatedMarkets = useUserProfileStore(state => state.showDeprecatedMarkets)
-  const query = useLlamaMarkets({
+const useTableLlamaMarkets = (address: Address | undefined) => ({
+  tableQuery: useLlamaMarkets({
     userAddress: address,
-    enableDeprecatedMarkets,
-  })
-
-  const onReload = useCallback(() => {
+    enableDeprecatedMarkets: useUserProfileStore(state => state.showDeprecatedMarkets),
+  }),
+  onReload: useCallback(() => {
     void Promise.all([
       resetLendingVaults({}),
       resetMintMarkets({}),
@@ -33,13 +31,8 @@ const useTableLlamaMarkets = (address: Address | undefined) => {
       resetUserLendingSupplies({ userAddress: address }),
       resetAllUserMintMarkets(address),
     ])
-  }, [address])
-
-  return {
-    onReload,
-    tableQuery: q({ ...query, isLoading: query.isPending }), // isPending so that the table shows a loading state on initial load and manual reload, but not on cache refetches
-  }
-}
+  }, [address]),
+})
 
 /** Page for displaying the lending markets table. */
 export const LlamaMarketsList = () => {
@@ -49,8 +42,8 @@ export const LlamaMarketsList = () => {
 
   return (
     <ListPageWrapper footer={<LendTableFooter />}>
-      <UserPositionsTables onReload={onReload} tableQuery={tableQuery} />
-      <LlamaMarketsTable onReload={onReload} tableQuery={tableQuery} />
+      <UserPositionsTables onReload={onReload} tableQuery={q(tableQuery)} />
+      <LlamaMarketsTable onReload={onReload} tableQuery={q(tableQuery)} />
     </ListPageWrapper>
   )
 }
