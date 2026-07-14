@@ -1,7 +1,9 @@
 export type TestStubArg = string | number | boolean | bigint | symbol | null | undefined | object
 
 // define our own interface so we don't get errors from SinonStub
-export type TestStub<TArgs extends readonly TestStubArg[], TResult> = ((...args: TArgs) => Promise<TResult>) & {
+export type TestStub<TArgs extends readonly TestStubArg[], TResult> = ((
+  ...args: TArgs
+) => TResult | Promise<TResult>) & {
   calledWithExactly: (...args: TArgs) => boolean
   calledWithMatch: (...args: readonly TestStubArg[]) => boolean
   callCount: number

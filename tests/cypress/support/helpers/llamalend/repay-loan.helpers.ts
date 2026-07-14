@@ -17,12 +17,16 @@ export function selectRepayToken({
   hasLeverageManagement: boolean
   optionIndex?: number
 }) {
+  const tokenIconTestId = `token-icon-${tokenAddress.toLowerCase()}`
   if (!hasLeverageManagement) {
-    return cy.get(`[data-testid="token-icon-${tokenAddress.toLowerCase()}"]`, LOAD_TIMEOUT).should('be.visible')
+    return cy.get(`[data-testid="${tokenIconTestId}"]`, LOAD_TIMEOUT).should('be.visible')
   }
   cy.get('[data-testid^="repay-input-"] [aria-haspopup="listbox"]', LOAD_TIMEOUT).click()
-  cy.get(`[data-testid="token-option-${symbol}"]`, LOAD_TIMEOUT).eq(optionIndex).click()
-  cy.get(`[data-testid="token-icon-${tokenAddress}"]`, LOAD_TIMEOUT).should('be.visible')
+  cy.get(`[data-testid="token-option-${symbol}"]`, LOAD_TIMEOUT)
+    .filter(`:has([data-testid="${tokenIconTestId}"])`)
+    .eq(optionIndex)
+    .click()
+  cy.get(`[data-testid="${tokenIconTestId}"]`, LOAD_TIMEOUT).should('be.visible')
   cy.get('[data-testid^="repay-input-"]', LOAD_TIMEOUT).contains(symbol).should('be.visible')
 }
 

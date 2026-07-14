@@ -172,6 +172,8 @@ export const waitForRoutesLoaded = ({ submitButtonTestId }: { submitButtonTestId
   cy.get(`[data-testid="${submitButtonTestId}"]`, LOAD_TIMEOUT).should('be.enabled')
 }
 
+export const toggleLeverage = () => cy.get('[data-testid="leverage-checkbox"]', LOAD_TIMEOUT).click()
+
 /**
  * Fill in the create loan form. Assumes the form is already opened.
  */
@@ -199,7 +201,7 @@ export function writeCreateLoanForm({
   getBorrowInput().type(borrow)
   getBorrowInput().blur()
   getActionValue('borrow-health').should('not.equal', '∞')
-  if (leverageEnabled) cy.get('[data-testid="leverage-checkbox"]').click()
+  if (leverageEnabled) toggleLeverage()
   checkLeverageCheckbox({ leverageEnabled, hasLeverage })
   if (waitForRoutes) waitForRoutesLoaded({ submitButtonTestId: 'create-loan-submit-button' })
 }
