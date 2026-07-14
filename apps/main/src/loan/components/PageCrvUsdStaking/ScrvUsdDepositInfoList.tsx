@@ -9,7 +9,7 @@ import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate } from '@ui-kit/shared/ui/ActionInfo'
 import { mapQuery, q } from '@ui-kit/types/util'
-import { formatTokenAmount } from '@ui-kit/utils'
+import { formatToken } from '@ui-kit/utils'
 import { InfiniteAllowanceActionInfo } from './InfiniteAllowanceActionInfo'
 import { ScrvUsdExchangeRateActionInfo } from './ScrvUsdExchangeRateActionInfo'
 
@@ -39,7 +39,7 @@ export const ScrvUsdDepositInfoList = ({
         <ScrvUsdExchangeRateActionInfo chainId={chainId} enabled={isOpen} />
         <ActionInfo
           label={t`To Vault`}
-          value={mapQuery(expectedScrvUsd, data => formatTokenAmount(data, 'scrvUSD'))}
+          value={mapQuery(expectedScrvUsd, data => formatToken(data, 'scrvUSD', 'amount'))}
           size="small"
           testId="scrvusd-deposit-to-vault"
         />

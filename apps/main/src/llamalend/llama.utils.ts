@@ -21,16 +21,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { MetricProps } from '@ui-kit/shared/ui/Metric'
 import { LlamaMarketType, LlamaMarketVersion } from '@ui-kit/types/market'
 import { QueryProp } from '@ui-kit/types/util'
-import {
-  CRVUSD,
-  decimal,
-  decimalMinus,
-  decimalMultiply,
-  decimalSum,
-  formatNumber,
-  formatTokenCompact,
-  formatTokenAmount,
-} from '@ui-kit/utils'
+import { CRVUSD, decimal, decimalMinus, decimalMultiply, decimalSum, formatToken } from '@ui-kit/utils'
 import { SOLVENCY_THRESHOLDS } from './llama-markets.constants'
 
 /**
@@ -143,8 +134,8 @@ export const formatTokenAmounts = (
   { userBorrowed, userCollateral }: { userBorrowed?: Decimal; userCollateral?: Decimal },
 ) =>
   notFalsy(
-    userBorrowed && +userBorrowed && formatTokenAmount(userBorrowed, getBorrowSymbol(market)),
-    userCollateral && +userCollateral && formatTokenAmount(userCollateral, getCollateralSymbol(market)),
+    userBorrowed && +userBorrowed && formatToken(userBorrowed, getBorrowSymbol(market), 'amount'),
+    userCollateral && +userCollateral && formatToken(userCollateral, getCollateralSymbol(market), 'amount'),
   ).join(', ')
 
 export type MarketToken = Pick<AssetDetails, 'symbol' | 'address' | 'decimals'>
@@ -436,11 +427,8 @@ export const formatCollateralNotional = (
   borrow: { value: Decimal | null | undefined; symbol: string | undefined } | undefined,
 ): string | undefined =>
   notFalsy(
-    collateral.value &&
-      +collateral.value &&
-      collateral.symbol &&
-      formatTokenCompact(collateral.value, collateral.symbol),
-    borrow?.value && +borrow?.value && borrow.symbol && formatTokenCompact(borrow.value, borrow.symbol),
+    collateral.value && +collateral.value && collateral.symbol && formatToken(collateral.value, collateral.symbol),
+    borrow?.value && +borrow?.value && borrow.symbol && formatToken(borrow.value, borrow.symbol),
   ).join(' + ')
 
 /** Tooltip title for borrow APR. The title should be "Net borrow APR" if there are extra rewards or rebasing yield, otherwise "Borrow APR". */

@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { useConnection, useEnsName } from 'wagmi'
 import { useLockerVecrvUser } from '@/dao/entities/locker-vecrv-user'
-import { SnapshotVotingPower, ActiveProposal } from '@/dao/types/dao.types'
+import { ActiveProposal, SnapshotVotingPower } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
 import { Box } from '@ui/Box'
 import { InternalLink } from '@ui/Link/InternalLink'
@@ -10,7 +10,7 @@ import { Loader } from '@ui/Loader/Loader'
 import { TooltipIcon } from '@ui/Tooltip/TooltipIcon'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
-import { amount, Chain, formatTokenAmount, shortenAddress } from '@ui-kit/utils'
+import { amount, Chain, formatToken, shortenAddress } from '@ui-kit/utils'
 
 type Props = {
   noLink?: boolean
@@ -80,7 +80,7 @@ export const UserInformation = ({ noLink, snapshotVotingPower, activeProposal, v
             {!userVeCrv || !userAddress ? (
               <Loader isLightBg skeleton={[80, 16.5]} />
             ) : (
-              <h4>{formatTokenAmount(amount(userVeCrv.veCrv), 'veCRV')}</h4>
+              <h4>{formatToken(amount(userVeCrv.veCrv), 'veCRV', 'amount')}</h4>
             )}
           </Box>
         )}
@@ -92,7 +92,7 @@ export const UserInformation = ({ noLink, snapshotVotingPower, activeProposal, v
                 <p>{t`Voting power at snapshot block ${votingPower.blockNumber}`}</p>
               </TooltipIcon>
             </Box>
-            <h4>{formatTokenAmount(votingPower.value, 'veCRV')}</h4>
+            <h4>{formatToken(votingPower.value, 'veCRV', 'amount')}</h4>
           </Box>
         )}
         {decayedVeCrv.decaying && votingPower?.value !== 0 && (
@@ -103,7 +103,7 @@ export const UserInformation = ({ noLink, snapshotVotingPower, activeProposal, v
                 <p>{t`Halfway into a proposal vote (3.5 days after creation), voting power begins decaying linearly towards 0 at the end of the proposal vote.`}</p>
               </TooltipIcon>
             </Box>
-            <h4>{formatTokenAmount(decayedVeCrv.value, 'veCRV')}</h4>
+            <h4>{formatToken(decayedVeCrv.value, 'veCRV', 'amount')}</h4>
           </Box>
         )}
       </Box>

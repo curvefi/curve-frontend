@@ -7,7 +7,7 @@ import type { TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { TokenInfo, type TokenInfoTokenIconProps } from '@ui-kit/shared/ui/TokenInfo'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
-import { formatNumber, formatTokenCompact } from '@ui-kit/utils'
+import { formatNumber, formatToken } from '@ui-kit/utils'
 import { TokenCell } from '../../TokenCell'
 import { PoolCompositionColumnId } from './columns.enum'
 
@@ -78,7 +78,7 @@ export const POOL_COMPOSITION_COLUMNS = [
               value =>
                 // TokenInfo primary is ReactNode; we only want to show a tooltip if it's a pure string (which it should for all our cases)
                 typeof symbol === 'string' &&
-                `${formatTokenCompact(value, symbol)}${maybe(row.original.amountUsd, value => ` / ${value}`) ?? ''}`,
+                `${formatToken(value, symbol)}${maybe(row.original.amountUsd, value => ` / ${value}`) ?? ''}`,
             )}
             placement="top"
           >

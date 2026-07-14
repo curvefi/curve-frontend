@@ -7,10 +7,10 @@ import {
   TooltipWrapper,
 } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybes, maybe } from '@primitives/objects.utils'
+import { maybe, maybes } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import type { QueryProp } from '@ui-kit/types/util'
-import { decimalDiv, decimalMinus, decimalMultiply, formatNumber, formatTokenCompact } from '@ui-kit/utils'
+import { decimalDiv, decimalMinus, decimalMultiply, formatNumber, formatToken } from '@ui-kit/utils'
 import type { SupplyAsset } from '../SupplyPositionDetails'
 
 const formatAmount = (
@@ -19,7 +19,7 @@ const formatAmount = (
   symbol: string | null | undefined,
 ) =>
   maybes([percentage, depositedAmount, symbol], (percentage, depositedAmount, symbol) =>
-    formatTokenCompact(decimalMultiply(percentage, depositedAmount), symbol),
+    formatToken(decimalMultiply(percentage, depositedAmount), symbol),
   )
 
 const formatPercentageDisplay = (percentage: Decimal | null | undefined) =>
@@ -60,7 +60,7 @@ export const AmountSuppliedTooltipContent = ({
         </TooltipItem>
       </TooltipItems>
       <TooltipItem variant="primary" title={t`Total supplied`}>
-        {maybes([depositedAmount, symbol], (depositedAmount, symbol) => formatTokenCompact(depositedAmount, symbol)) ??
+        {maybes([depositedAmount, symbol], (depositedAmount, symbol) => formatToken(depositedAmount, symbol)) ??
           UNAVAILABLE_NOTATION}
       </TooltipItem>
     </TooltipWrapper>

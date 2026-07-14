@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography'
 import type { Decimal } from '@primitives/decimal.utils'
 import { t, Trans } from '@ui-kit/lib/i18n'
 import { InlineLink } from '@ui-kit/shared/ui/InlineLink'
-import { formatTokenCompact } from '@ui-kit/utils'
+import { formatToken } from '@ui-kit/utils'
 import { useCrvSwapUrl } from '../../hooks/useCrvSwapUrl'
 
 type Props = {
@@ -22,8 +22,8 @@ export const AlertAdditionalDebtToken = ({ missing, debtTokenSymbol: debtToken =
 
       <Typography variant="bodySRegular" color="textSecondary">
         <Trans>
-          You currently hold <strong>{formatTokenCompact(balance, debtToken)}</strong> and need an extra{' '}
-          <strong>{formatTokenCompact(missing, debtToken)}</strong> to close the position.{' '}
+          You currently hold <strong>{formatToken(balance, debtToken)}</strong> and need an extra{' '}
+          <strong>{formatToken(missing, debtToken)}</strong> to close the position.{' '}
           {debtToken === 'crvUSD' && <InlineLink to={crvSwapUrl} external hideIcon>{t`Get crvUSD here.`}</InlineLink>}
         </Trans>
       </Typography>

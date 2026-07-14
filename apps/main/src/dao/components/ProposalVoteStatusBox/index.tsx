@@ -6,7 +6,7 @@ import { TooltipButton as Tooltip } from '@ui/Tooltip/TooltipButton'
 import { TooltipIcon } from '@ui/Tooltip/TooltipIcon'
 import { breakpoints } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
-import { formatNumber, formatTokenCompact } from '@ui-kit/utils'
+import { formatNumber, formatToken } from '@ui-kit/utils'
 
 type ProposalVoteStatusBoxProps = {
   proposalData: ProposalData
@@ -68,7 +68,7 @@ export const ProposalVoteStatusBox = ({ proposalData, className }: ProposalVoteS
         <Box flex flexJustifyContent="space-between">
           <Box flex flexGap="var(--spacing-1)" flexAlignItems="flex-end">
             <HighlightedData className="for">{t`For`}</HighlightedData>{' '}
-            <Tooltip noWrap tooltip={formatTokenCompact(votesFor, 'veCRV')}>
+            <Tooltip noWrap tooltip={formatToken(votesFor, 'veCRV')}>
               <HighlightedData>
                 {formatNumber(currentSupport * 100, {
                   minimumFractionDigits: 2,
@@ -80,7 +80,7 @@ export const ProposalVoteStatusBox = ({ proposalData, className }: ProposalVoteS
             </Tooltip>
           </Box>
           <Box flex flexGap="var(--spacing-1)" flexAlignItems="flex-end">
-            <Tooltip noWrap tooltip={formatTokenCompact(votesAgainst, 'veCRV')}>
+            <Tooltip noWrap tooltip={formatToken(votesAgainst, 'veCRV')}>
               <HighlightedData>
                 {formatNumber(against * 100, {
                   minimumFractionDigits: 2,

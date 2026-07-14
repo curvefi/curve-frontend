@@ -10,7 +10,7 @@ import { ExternalLink, InternalLink } from '@ui/Link'
 import { scanTxPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
-import { formatNumber, formatTokenCompact, shortenAddress } from '@ui-kit/utils'
+import { formatNumber, formatToken, shortenAddress } from '@ui-kit/utils'
 
 type Props = {
   totalVotes: number
@@ -31,7 +31,7 @@ export const Voters = ({ totalVotes, voteId, proposalType, className }: Props) =
         <Box>
           <SubTitle>{t`Total Votes`}</SubTitle>
           <Box>
-            <Data>{formatTokenCompact(totalVotes, 'veCRV')}</Data>
+            <Data>{formatToken(totalVotes, 'veCRV')}</Data>
           </Box>
         </Box>
         <Box>

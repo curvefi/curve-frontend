@@ -5,7 +5,7 @@ import { requireLib } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
 import { useTransactionMutation } from '@ui-kit/lib/model/mutation/useTransactionMutation'
-import { formatTokenAmount } from '@ui-kit/utils'
+import { formatToken } from '@ui-kit/utils'
 import type { BridgeForm } from '../hooks/useBridgeForm'
 import { fetchBridgeCost } from '../queries/bridge-cost.query'
 import { bridgeFormValidationSuite } from '../validation/bridge.validation'
@@ -29,8 +29,8 @@ export const useBridgeMutation = ({ chainId, ...props }: BridgeOptions) => {
     },
     validationSuite: bridgeFormValidationSuite,
     validationParams: { chainId },
-    pendingMessage: mutation => t`Bridging... ${formatTokenAmount(mutation.amount, 'crvUSD')}`,
-    successMessage: mutation => t`Bridged! ${formatTokenAmount(mutation.amount, 'crvUSD')}`,
+    pendingMessage: mutation => t`Bridging... ${formatToken(mutation.amount, 'crvUSD', 'amount')}`,
+    successMessage: mutation => t`Bridged! ${formatToken(mutation.amount, 'crvUSD', 'amount')}`,
     ...props,
   })
 

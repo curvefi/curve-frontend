@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { DetailText, Info } from '@/dex/components/PageDashboard/components/TableRow'
-import type { WalletPoolData, SortId } from '@/dex/components/PageDashboard/types'
-import { amount, formatNumber, formatTokenAmount } from '@ui-kit/utils'
+import type { SortId, WalletPoolData } from '@/dex/components/PageDashboard/types'
+import { amount, formatNumber, formatToken } from '@ui-kit/utils'
 
 type Props = Pick<WalletPoolData, 'profitBase' | 'profitCrv' | 'profitOthers' | 'profitsTotalUsd'> & {
   sortBy: SortId
@@ -12,7 +12,7 @@ export const TableCellProfit = ({ profitBase, profitCrv, profitOthers, profitsTo
     () => formatNumber(amount(profitBase?.day), { abbreviate: false, fallback: '-' }),
     [profitBase?.day],
   )
-  const formattedCrvProfit = useMemo(() => formatTokenAmount(amount(profitCrv?.day), 'CRV'), [profitCrv?.day])
+  const formattedCrvProfit = useMemo(() => formatToken(amount(profitCrv?.day), 'CRV', 'amount'), [profitCrv?.day])
   const isHighLight = sortBy === 'profits'
 
   return (
@@ -26,7 +26,7 @@ export const TableCellProfit = ({ profitBase, profitCrv, profitOthers, profitsTo
       )}
 
       {profitOthers?.map(({ day, symbol }) => {
-        const formatted = formatTokenAmount(amount(day), symbol)
+        const formatted = formatToken(amount(day), symbol, 'amount')
         return Number(day) > 0 && <Info key={symbol}>{isHighLight ? <strong>{formatted}</strong> : formatted}</Info>
       })}
 
