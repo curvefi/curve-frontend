@@ -117,9 +117,7 @@ describe('DEX Pools', () => {
     }
   }
 
-  function assertSelectedFilterChip() {
-    cy.get('[data-testid="dex-pool-active-filter-type"]').should('be.visible')
-  }
+  const assertSelectedFilterChip = () => cy.get('[data-testid="dex-pool-active-filter-type"]').should('be.visible')
 
   function expectPageResetAfter(action: () => void, { waitForRequest = true }: { waitForRequest?: boolean } = {}) {
     visitAndWait(width, height, { query: { page: '5' } })
