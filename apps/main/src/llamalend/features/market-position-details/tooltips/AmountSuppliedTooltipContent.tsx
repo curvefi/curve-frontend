@@ -10,7 +10,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { maybes, maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import type { QueryProp } from '@ui-kit/types/util'
-import { decimalDiv, decimalMinus, decimalMultiply, formatNumber } from '@ui-kit/utils'
+import { decimalDiv, decimalMinus, decimalMultiply, formatNumber, formatTokenCompact } from '@ui-kit/utils'
 import type { SupplyAsset } from '../SupplyPositionDetails'
 
 const formatAmount = (
@@ -18,10 +18,8 @@ const formatAmount = (
   depositedAmount: Decimal | null | undefined,
   symbol: string | null | undefined,
 ) =>
-  maybes(
-    [percentage, depositedAmount, symbol],
-    (percentage, depositedAmount, symbol) =>
-      `${formatNumber(decimalMultiply(percentage, depositedAmount), { abbreviate: true })} ${symbol}`,
+  maybes([percentage, depositedAmount, symbol], (percentage, depositedAmount, symbol) =>
+    formatTokenCompact(decimalMultiply(percentage, depositedAmount), symbol),
   )
 
 const formatPercentageDisplay = (percentage: Decimal | null | undefined) =>
@@ -62,10 +60,8 @@ export const AmountSuppliedTooltipContent = ({
         </TooltipItem>
       </TooltipItems>
       <TooltipItem variant="primary" title={t`Total supplied`}>
-        {maybes(
-          [depositedAmount, symbol],
-          (depositedAmount, symbol) => `${formatNumber(depositedAmount, { abbreviate: true })} ${symbol}`,
-        ) ?? UNAVAILABLE_NOTATION}
+        {maybes([depositedAmount, symbol], (depositedAmount, symbol) => formatTokenCompact(depositedAmount, symbol)) ??
+          UNAVAILABLE_NOTATION}
       </TooltipItem>
     </TooltipWrapper>
   )

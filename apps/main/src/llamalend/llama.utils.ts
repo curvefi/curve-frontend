@@ -21,7 +21,16 @@ import { t } from '@ui-kit/lib/i18n'
 import { MetricProps } from '@ui-kit/shared/ui/Metric'
 import { LlamaMarketType, LlamaMarketVersion } from '@ui-kit/types/market'
 import { QueryProp } from '@ui-kit/types/util'
-import { CRVUSD, decimal, decimalMinus, decimalMultiply, decimalSum, formatNumber, formatToken } from '@ui-kit/utils'
+import {
+  CRVUSD,
+  decimal,
+  decimalMinus,
+  decimalMultiply,
+  decimalSum,
+  formatNumber,
+  formatTokenCompact,
+  formatTokenAmount,
+} from '@ui-kit/utils'
 import { SOLVENCY_THRESHOLDS } from './llama-markets.constants'
 
 /**
@@ -134,8 +143,8 @@ export const formatTokenAmounts = (
   { userBorrowed, userCollateral }: { userBorrowed?: Decimal; userCollateral?: Decimal },
 ) =>
   notFalsy(
-    userBorrowed && +userBorrowed && `${formatToken(userBorrowed, getBorrowSymbol(market))}`,
-    userCollateral && +userCollateral && `${formatToken(userCollateral, getCollateralSymbol(market))}`,
+    userBorrowed && +userBorrowed && formatTokenAmount(userBorrowed, getBorrowSymbol(market)),
+    userCollateral && +userCollateral && formatTokenAmount(userCollateral, getCollateralSymbol(market)),
   ).join(', ')
 
 export type MarketToken = Pick<AssetDetails, 'symbol' | 'address' | 'decimals'>
@@ -430,11 +439,8 @@ export const formatCollateralNotional = (
     collateral.value &&
       +collateral.value &&
       collateral.symbol &&
-      `${formatNumber(collateral.value, { abbreviate: true })} ${collateral.symbol}`,
-    borrow?.value &&
-      +borrow?.value &&
-      borrow.symbol &&
-      `${formatNumber(borrow.value, { abbreviate: true })} ${borrow.symbol}`,
+      formatTokenCompact(collateral.value, collateral.symbol),
+    borrow?.value && +borrow?.value && borrow.symbol && formatTokenCompact(borrow.value, borrow.symbol),
   ).join(' + ')
 
 /** Tooltip title for borrow APR. The title should be "Net borrow APR" if there are extra rewards or rebasing yield, otherwise "Borrow APR". */

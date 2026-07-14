@@ -6,7 +6,7 @@ import { requireLib } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
 import { type OnTransactionSuccess, useTransactionMutation } from '@ui-kit/lib/model/mutation/useTransactionMutation'
-import { formatNumber, waitForApproval } from '@ui-kit/utils'
+import { formatTokenAmount, waitForApproval } from '@ui-kit/utils'
 import { fetchScrvUsdDepositIsApproved } from './scrvusd-deposit-is-approved.query'
 import { invalidateScrvUsdMutationQueries } from './scrvusd-mutation.helpers'
 import type { ScrvUsdDepositForm, ScrvUsdDepositMutation } from './scrvusd.validation'
@@ -37,8 +37,8 @@ export const useScrvUsdDepositMutation = ({ chainId, userAddress, onSuccess, ...
     },
     validationSuite: scrvUsdDepositMaxValidationSuite,
     validationParams: { chainId, userAddress },
-    pendingMessage: ({ depositAmount }) => t`Depositing... ${formatNumber(depositAmount, 'token.amount')} crvUSD`,
-    successMessage: ({ depositAmount }) => t`Deposit successful! ${formatNumber(depositAmount, 'token.amount')} crvUSD`,
+    pendingMessage: ({ depositAmount }) => t`Depositing... ${formatTokenAmount(depositAmount, 'crvUSD')}`,
+    successMessage: ({ depositAmount }) => t`Deposit successful! ${formatTokenAmount(depositAmount, 'crvUSD')}`,
     onSuccess: async (data, receipt, variables, context) => {
       await invalidateScrvUsdMutationQueries({ chainId, config, userAddress })
       await onSuccess?.(data, receipt, variables, context)

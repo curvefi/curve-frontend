@@ -7,13 +7,12 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { createColumnHelper } from '@tanstack/react-table'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q } from '@ui-kit/types/util'
-import { formatNumber } from '@ui-kit/utils'
+import { formatNumber, formatTokenAmount } from '@ui-kit/utils'
 import { type ColumnDefinition, getTableOptions, type TableItem, useTable } from './data-table.utils'
 import { DataTable, DataTableProps } from './DataTable'
 
 const { Spacing } = SizesAndSpaces
 
-const formatTokenAmount = (value: number, symbol: string) => `${formatNumber(value, { abbreviate: false })} ${symbol}`
 const formatPercentage = (value: number) => formatNumber(value, 'percent.value')
 const formatUsdNotional = (value: number) => formatNumber(value, 'usd.notional')
 

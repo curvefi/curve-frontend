@@ -10,7 +10,7 @@ import { Spinner } from '@ui/Spinner'
 import { Stats } from '@ui/Stats'
 import { Chip } from '@ui/Typography/Chip'
 import { t } from '@ui-kit/lib/i18n'
-import { formatNumber, formatToken } from '@ui-kit/utils'
+import { formatNumber, formatTokenAmount } from '@ui-kit/utils'
 import { tooltipProps } from '../utils'
 
 type AllTotal = {
@@ -75,7 +75,7 @@ export const SummaryClaimable = ({ title }: Props) => {
             <StyledStats isOneLine isBorderBottom key={token} label={symbol}>
               <Chip
                 size="md"
-                tooltip={`${formatToken(1, symbol)} = ${formatNumber(price, 'usd.amount')}`}
+                tooltip={`${formatTokenAmount(1, symbol)} = ${formatNumber(price, 'usd.amount')}`}
                 tooltipProps={tooltipProps}
               >
                 {formatNumber(total, { abbreviate: false })}
