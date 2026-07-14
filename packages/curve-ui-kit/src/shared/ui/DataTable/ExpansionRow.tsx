@@ -5,17 +5,17 @@ import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 import type { Row } from '@tanstack/react-table'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { ExpandedPanelActionResolver, ExpandedPanelContext, TableItem } from './data-table.utils'
+import type { ExpandedPanelContext, TableItem } from './data-table.utils'
 import type { DataRowProps } from './DataRow'
-import { ExpandedPanelActions } from './ExpandedPanelActions'
 
 const { Spacing } = SizesAndSpaces
 
-export type ExpandedPanel<T extends TableItem> = FunctionComponent<ExpandedPanelContext<T>>
+/** A component that renders part of the expanded panel for a table row */
+export type ExpandedPanelComponent<T extends TableItem> = FunctionComponent<ExpandedPanelContext<T>>
 
 export type ExpandedPanelConfig<T extends TableItem> = {
-  Body: ExpandedPanel<T>
-  getActions?: ExpandedPanelActionResolver<T> // an array of actions that gets passed to `ExpandedPanelActions`.
+  Body: ExpandedPanelComponent<T>
+  Actions?: ExpandedPanelComponent<T>
 }
 
 /**
@@ -31,8 +31,7 @@ export function ExpansionRow<T extends TableItem>({
   colSpan: number
 }) {
   const { render, onExited, expanded } = useRowExpansion(row)
-  const { Body: ExpandedPanelBody, getActions } = expandedPanel
-  const actions = getActions?.({ row, table }) ?? []
+  const { Body, Actions } = expandedPanel
 
   const [testId, setTestId] = useState<string | null>(null)
 
@@ -48,9 +47,9 @@ export function ExpansionRow<T extends TableItem>({
           >
             <Stack direction="column" sx={{ gap: Spacing.md, paddingBlockStart: Spacing.md }}>
               <Stack sx={{ gap: Spacing.md, paddingInline: Spacing.md }}>
-                <ExpandedPanelBody row={row} table={table} />
+                <Body row={row} table={table} />
               </Stack>
-              {actions.length > 0 && <ExpandedPanelActions actions={actions} />}
+              {Actions && <Actions row={row} table={table} />}
             </Stack>
           </Collapse>
         </TableCell>

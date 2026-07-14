@@ -2,7 +2,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { shortenString } from '@primitives/string.utils'
 import { t } from '@ui-kit/lib/i18n'
-import type { ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
+import type { ExpandedPanelComponent } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
@@ -10,7 +10,7 @@ import type { LlammaTradeRow } from '../types'
 
 const { Spacing } = SizesAndSpaces
 
-export const LlammaTradesExpandedPanel: ExpandedPanel<LlammaTradeRow> = ({
+export const LlammaTradesExpandedPanel: ExpandedPanelComponent<LlammaTradeRow> = ({
   row: {
     original: { amountSold, tokenSold, buyer, network },
   },

@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useIsTiny } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
-import { type ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
+import { type ExpandedPanelComponent } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
@@ -85,7 +85,9 @@ const GridHeader = ({ ...props }: Omit<CardHeaderProps, 'sx'>) => (
   </Grid>
 )
 
-export const LlamaMarketExpandedPanel = ({ row: { original: market } }: Parameters<ExpandedPanel<LlamaMarket>>[0]) => {
+export const LlamaMarketExpandedPanel = ({
+  row: { original: market },
+}: Parameters<ExpandedPanelComponent<LlamaMarket>>[0]) => {
   const { assets, leverage, liquidity, liquidityUsd, lendingPosition, utilizationPercent } = market
   const graphSize = useMobileGraphSize()
 

@@ -10,7 +10,7 @@ import type { Address } from '@primitives/address.utils'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { isSortedBy } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import type { ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
+import type { ExpandedPanelComponent } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { Metric, MetricProps } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { constQ } from '@ui-kit/types/util'
@@ -34,7 +34,7 @@ const ListInfoItem = ({
 
 const highlight = { color: 'success' as const }
 
-export const LegacyPoolMobileExpandedPanel: ExpandedPanel<LegacyPoolListItem> = ({ row, table }) => {
+export const LegacyPoolMobileExpandedPanel: ExpandedPanelComponent<LegacyPoolListItem> = ({ row, table }) => {
   const { original: poolData } = row
   const {
     pool: { address },

@@ -1,16 +1,14 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { ExpandedState } from '@tanstack/react-table'
 import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
-import {
-  getTableOptions,
-  useTable,
-  type ExpandedPanelActionResolver,
-} from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
+import { ExpandedPanelActions } from '@ui-kit/shared/ui/DataTable/ExpandedPanelActions'
+import type { ExpandedPanelComponent } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
 import { QueryProp } from '@ui-kit/types/util'
@@ -47,23 +45,30 @@ type UserPositionsTableProps = {
 
 const pagination = { pageIndex: 0, pageSize: 50 }
 
-const getUserPositionExpandedPanelActions: ExpandedPanelActionResolver<LlamaMarket> = ({
-  row: { original: market },
-}) => [
-  {
-    id: 'manage-position',
-    label: t`Manage position`,
-    href: market.url, // the url is already built for borrow/supply in the UserPositionsMarketRateTable
-    testId: 'llama-market-go-to-position',
-  },
-]
+const UserPositionExpandedPanelActions: ExpandedPanelComponent<LlamaMarket> = ({ row: { original: market } }) => {
+  const extraPanels = useLlamaMarketExpandedPanelActions(market)
+
+  const actions = useMemo(
+    () => [
+      {
+        id: 'manage-position',
+        label: t`Manage position`,
+        href: market.url, // the url is already built for borrow/supply in the UserPositionsMarketRateTable
+        testId: 'llama-market-go-to-position',
+      },
+      ...extraPanels,
+    ],
+    [extraPanels, market.url],
+  )
+
+  return <ExpandedPanelActions actions={actions} />
+}
 
 export const UserPositionsMarketRateTable = ({ tableQuery, marketRateType, onReload }: UserPositionsTableProps) => {
   const { title, label, defaultSort, sortQueryField, storageKey } = TABLE_CONFIG[marketRateType]
   const [sorting, onSortingChange] = useSortFromQueryString(defaultSort, sortQueryField)
   const { columnVisibility } = useLlamaTableVisibility(storageKey, sorting, marketRateType)
   const [expanded, setExpanded] = useState<ExpandedState>({})
-  const getExpandedPanelActions = useLlamaMarketExpandedPanelActions(getUserPositionExpandedPanelActions)
 
   const table = useTable({
     columns: LLAMA_MARKET_COLUMNS,
@@ -82,7 +87,7 @@ export const UserPositionsMarketRateTable = ({ tableQuery, marketRateType, onRel
       table={table}
       viewAllLabel={t`View all ${rowCount} ${label} positions`}
       errorState={{ title: t`Could not load ${label} positions`, onReload }}
-      expandedPanel={{ Body: LlamaMarketExpandedPanel, getActions: getExpandedPanelActions }}
+      expandedPanel={{ Body: LlamaMarketExpandedPanel, Actions: UserPositionExpandedPanelActions }}
       shouldStickFirstColumn={Boolean(useIsTablet() && rowCount)}
     >
       <Stack

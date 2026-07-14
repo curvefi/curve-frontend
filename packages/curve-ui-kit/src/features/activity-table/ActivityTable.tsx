@@ -1,6 +1,7 @@
-import type { TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import type { ExpandedPanelContext, TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable, DataTableProps } from '@ui-kit/shared/ui/DataTable/DataTable'
-import { getTransactionExpandedPanelActions } from './utils'
+import { ExpandedPanelActions } from '@ui-kit/shared/ui/DataTable/ExpandedPanelActions'
+import { getTransactionActions } from './utils'
 
 type ActivityTableItem = TableItem & { txUrl?: string | null }
 
@@ -8,6 +9,12 @@ type ActivityTableProps<TData extends ActivityTableItem> = Pick<
   DataTableProps<TData>,
   'table' | 'emptyState' | 'errorState' | 'expandedPanel'
 >
+
+const DefaultExpandedPanelActions = <TData extends ActivityTableItem>({
+  row: {
+    original: { txUrl },
+  },
+}: ExpandedPanelContext<TData>) => <ExpandedPanelActions actions={getTransactionActions(txUrl)} />
 
 export const ActivityTable = <TData extends ActivityTableItem>({
   table,
@@ -23,7 +30,7 @@ export const ActivityTable = <TData extends ActivityTableItem>({
     expandedPanel={
       expandedPanel && {
         ...expandedPanel,
-        getActions: expandedPanel.getActions ?? getTransactionExpandedPanelActions,
+        Actions: expandedPanel.Actions ?? DefaultExpandedPanelActions,
       }
     }
   />

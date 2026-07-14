@@ -1,11 +1,11 @@
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
-import type { ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
+import type { ExpandedPanelComponent } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { formatNumber } from '@ui-kit/utils'
 import type { ParsedUserCollateralEvent } from './hooks/useUserCollateralEvents'
 
-export const RowExpandedPanel: ExpandedPanel<ParsedUserCollateralEvent> = ({ row: { original: event } }) => {
+export const RowExpandedPanel: ExpandedPanelComponent<ParsedUserCollateralEvent> = ({ row: { original: event } }) => {
   const { loanChange, borrowToken, collateralChange, collateralChangeUsd, collateralToken } = event
 
   return (

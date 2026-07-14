@@ -2,12 +2,10 @@ import { useState } from 'react'
 import { SortingState } from '@tanstack/react-table'
 import { getTransactionActions } from '@ui-kit/features/activity-table'
 import { t } from '@ui-kit/lib/i18n'
-import {
-  getTableOptions,
-  useTable,
-  type ExpandedPanelActionResolver,
-} from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
+import { ExpandedPanelActions } from '@ui-kit/shared/ui/DataTable/ExpandedPanelActions'
+import type { ExpandedPanelComponent } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import type { QueryProp } from '@ui-kit/types/util'
 import { DEFAULT_SORT, USER_POSITION_HISTORY_COLUMNS } from './columns'
 import { ParsedUserCollateralEvent } from './hooks/useUserCollateralEvents'
@@ -20,9 +18,9 @@ type UserEventsTableProps = {
 
 const pagination = { pageIndex: 0, pageSize: 50 }
 
-const getRowExpandedPanelActions: ExpandedPanelActionResolver<ParsedUserCollateralEvent> = ({
-  row: { original: event },
-}) => getTransactionActions(event.url)
+const RowExpandedPanelActions: ExpandedPanelComponent<ParsedUserCollateralEvent> = ({ row: { original: event } }) => (
+  <ExpandedPanelActions actions={getTransactionActions(event.url)} />
+)
 
 export const UserEventsTable = ({ eventsQuery }: UserEventsTableProps) => {
   const { columnVisibility } = useUserPositionHistoryVisibility()
@@ -43,7 +41,7 @@ export const UserEventsTable = ({ eventsQuery }: UserEventsTableProps) => {
       table={table}
       emptyState={{ title: t`No events found` }}
       errorState={{ title: t`Could not load events` }}
-      expandedPanel={{ Body: RowExpandedPanel, getActions: getRowExpandedPanelActions }}
+      expandedPanel={{ Body: RowExpandedPanel, Actions: RowExpandedPanelActions }}
     />
   )
 }

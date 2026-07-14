@@ -9,12 +9,10 @@ import { useIsMobile, useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { copyToClipboardWithToast } from '@ui-kit/hooks/useCopyToClipboard'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
-import {
-  getTableOptions,
-  useTable,
-  type ExpandedPanelActionResolver,
-} from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
+import { ExpandedPanelActions } from '@ui-kit/shared/ui/DataTable/ExpandedPanelActions'
+import type { ExpandedPanelComponent } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableFiltersChip } from '@ui-kit/shared/ui/DataTable/TableFiltersChip'
 import { TableFiltersOverlay } from '@ui-kit/shared/ui/DataTable/TableFiltersOverlay'
@@ -33,11 +31,11 @@ import type { PoolListItem } from './poolList.types'
 
 const LOCAL_STORAGE_KEY = 'dex-pool-list'
 
-const getPoolListMobileExpandedPanelActions: ExpandedPanelActionResolver<PoolListItem> = ({ row }) => {
+const PoolListMobileExpandedPanelActions: ExpandedPanelComponent<PoolListItem> = ({ row }) => {
   const pool = row.original
   const path = getPath({ network: pool.network }, `${ROUTE.PAGE_POOLS}/${pool.address}`)
 
-  return [
+  const actions = [
     {
       id: 'deposit',
       label: t`Deposit`,
@@ -59,6 +57,8 @@ const getPoolListMobileExpandedPanelActions: ExpandedPanelActionResolver<PoolLis
       alwaysInKebabMenu: true,
     },
   ]
+
+  return <ExpandedPanelActions actions={actions} />
 }
 
 export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
@@ -116,7 +116,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
           secondaryButton: { label: t`Telegram`, href: CURVE_SOCIALS.telegram.en },
         }}
         errorState={{ title: t`Unable to retrieve pool list`, onReload }}
-        expandedPanel={{ Body: PoolListMobileExpandedPanel, getActions: getPoolListMobileExpandedPanelActions }}
+        expandedPanel={{ Body: PoolListMobileExpandedPanel, Actions: PoolListMobileExpandedPanelActions }}
         shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       >
         <TableFilters<PoolListColumnId>

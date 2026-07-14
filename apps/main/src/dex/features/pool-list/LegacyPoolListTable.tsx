@@ -7,13 +7,10 @@ import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { usePageFromQueryString } from '@ui-kit/hooks/usePageFromQueryString'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
-import {
-  getHiddenCount,
-  getTableOptions,
-  useTable,
-  type ExpandedPanelActionResolver,
-} from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { getHiddenCount, getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
+import { ExpandedPanelActions } from '@ui-kit/shared/ui/DataTable/ExpandedPanelActions'
+import type { ExpandedPanelComponent } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { useFilters } from '@ui-kit/shared/ui/DataTable/hooks/useFilters'
 import { LegacyDataTable } from '@ui-kit/shared/ui/DataTable/LegacyDataTable'
 import { LegacyTableFilters } from '@ui-kit/shared/ui/DataTable/LegacyTableFilters'
@@ -32,14 +29,14 @@ const LOCAL_STORAGE_KEY = 'dex-pool-list'
 
 const PER_PAGE = 50
 
-const getLegacyPoolMobileExpandedPanelActions: ExpandedPanelActionResolver<LegacyPoolListItem> = ({ row }) => {
+const LegacyPoolMobileExpandedPanelActions: ExpandedPanelComponent<LegacyPoolListItem> = ({ row }) => {
   const {
     pool: { id: poolId },
     network,
   } = row.original
   const path = getPath({ network }, `${ROUTE.PAGE_POOLS}/${poolId}`)
 
-  return [
+  const actions = [
     {
       id: 'deposit',
       label: t`Deposit`,
@@ -49,6 +46,8 @@ const getLegacyPoolMobileExpandedPanelActions: ExpandedPanelActionResolver<Legac
     { id: 'withdraw', label: t`Withdraw`, href: path + ROUTE.PAGE_POOL_WITHDRAW },
     { id: 'swap', label: t`Swap`, href: path + ROUTE.PAGE_SWAP },
   ]
+
+  return <ExpandedPanelActions actions={actions} />
 }
 
 export const LegacyPoolListTable = ({ network }: { network: NetworkConfig }) => {
@@ -95,7 +94,7 @@ export const LegacyPoolListTable = ({ network }: { network: NetworkConfig }) => 
       }
       expandedPanel={{
         Body: LegacyPoolMobileExpandedPanel,
-        getActions: getLegacyPoolMobileExpandedPanelActions,
+        Actions: LegacyPoolMobileExpandedPanelActions,
       }}
       shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       loading={isLoading}

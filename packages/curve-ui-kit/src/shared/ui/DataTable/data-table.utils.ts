@@ -64,10 +64,6 @@ export type ExpandedPanelAction = Omit<ButtonProps, 'children' | 'component' | '
   alwaysInKebabMenu?: boolean
 }
 
-export type ExpandedPanelActionResolver<T extends TableItem> = (
-  context: ExpandedPanelContext<T>,
-) => readonly ExpandedPanelAction[]
-
 /**
  * Wrapper around useReactTable to create a table instance.
  * We ignore the lint rule for now as Tanstack table isn't supported with the React compiler yet.

@@ -1,6 +1,6 @@
 import Grid from '@mui/material/Grid'
 import { t } from '@ui-kit/lib/i18n'
-import type { ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
+import type { ExpandedPanelComponent } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { Metric, type MetricProps } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { constQ } from '@ui-kit/types/util'
@@ -23,7 +23,7 @@ const ListInfoItem = ({
 
 const highlight = { color: 'success' as const }
 
-export const PoolListMobileExpandedPanel: ExpandedPanel<PoolListItem> = ({ row, table }) => {
+export const PoolListMobileExpandedPanel: ExpandedPanelComponent<PoolListItem> = ({ row, table }) => {
   const pool = row.original
   const hasVolume = table.getColumn(PoolListColumnId.Volume)?.getIsVisible()
 

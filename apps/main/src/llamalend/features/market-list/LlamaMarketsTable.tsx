@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import type { LlamaMarket, LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import Stack from '@mui/material/Stack'
 import { notFalsy } from '@primitives/objects.utils'
@@ -8,12 +8,10 @@ import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { LEND_MARKET_ROUTES } from '@ui-kit/shared/routes'
-import {
-  getTableOptions,
-  useTable,
-  type ExpandedPanelActionResolver,
-} from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
+import { ExpandedPanelActions } from '@ui-kit/shared/ui/DataTable/ExpandedPanelActions'
+import type { ExpandedPanelComponent } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { useFilters } from '@ui-kit/shared/ui/DataTable/hooks/useFilters'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableFiltersChip } from '@ui-kit/shared/ui/DataTable/TableFiltersChip'
@@ -35,16 +33,26 @@ const LOCAL_STORAGE_KEY = 'Llamalend Markets'
 
 const pagination = { pageIndex: 0, pageSize: 200 }
 
-const getMarketExpandedPanelActions: ExpandedPanelActionResolver<LlamaMarket> = ({ row: { original: market } }) =>
-  notFalsy(
-    market.type === LlamaMarketType.Lend && {
-      id: 'earn',
-      label: t`Earn`,
-      href: market.url + LEND_MARKET_ROUTES.PAGE_VAULT,
-      testId: 'llama-market-go-to-vault',
-    },
-    { id: 'borrow', label: t`Borrow`, href: market.url, testId: 'llama-market-go-to-borrow' },
+const MarketExpandedPanelActions: ExpandedPanelComponent<LlamaMarket> = ({ row: { original: market } }) => {
+  const extraPanels = useLlamaMarketExpandedPanelActions(market)
+
+  const actions = useMemo(
+    () =>
+      notFalsy(
+        market.type === LlamaMarketType.Lend && {
+          id: 'earn',
+          label: t`Earn`,
+          href: market.url + LEND_MARKET_ROUTES.PAGE_VAULT,
+          testId: 'llama-market-go-to-vault',
+        },
+        { id: 'borrow', label: t`Borrow`, href: market.url, testId: 'llama-market-go-to-borrow' },
+        ...extraPanels,
+      ),
+    [extraPanels, market.type, market.url],
   )
+
+  return <ExpandedPanelActions actions={actions} />
+}
 
 export const LlamaMarketsTable = ({
   onReload,
@@ -71,7 +79,6 @@ export const LlamaMarketsTable = ({
   )
   const [expanded, setExpanded] = useState<ExpandedState>({})
   const filterProps = { columnFiltersById, setColumnFilter }
-  const getExpandedPanelActions = useLlamaMarketExpandedPanelActions(getMarketExpandedPanelActions)
 
   const table = useTable({
     columns: LLAMA_MARKET_COLUMNS,
@@ -98,7 +105,7 @@ export const LlamaMarketsTable = ({
           button: { onClick: resetFilters, label: t`Show All Markets` },
         }}
         errorState={{ title: t`Could not load markets`, onReload }}
-        expandedPanel={{ Body: LlamaMarketExpandedPanel, getActions: getExpandedPanelActions }}
+        expandedPanel={{ Body: LlamaMarketExpandedPanel, Actions: MarketExpandedPanelActions }}
         shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       >
         <TableFilters<LlamaMarketColumnId>
