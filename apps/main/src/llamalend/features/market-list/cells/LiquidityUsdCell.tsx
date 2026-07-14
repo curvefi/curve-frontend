@@ -1,5 +1,6 @@
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { LiquidityUsdTooltipContent } from '@/llamalend/widgets/tooltips/LiquidityUsdTooltipContent'
+import Box from '@mui/material/Box'
 import { CellContext } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { TokenInfo } from '@ui-kit/shared/ui/TokenInfo'
@@ -15,7 +16,7 @@ export const LiquidityUsdCell = ({ getValue, row }: CellContext<LlamaMarket, num
       body={<LiquidityUsdTooltipContent market={row.original} />}
       placement="top"
     >
-      <span>
+      <Box>
         <TokenInfo
           address={assets.borrowed.address}
           blockchainId={assets.borrowed.chain}
@@ -26,7 +27,7 @@ export const LiquidityUsdCell = ({ getValue, row }: CellContext<LlamaMarket, num
           boldPrimary
           sx={{ justifyContent: 'end' }}
         />
-      </span>
+      </Box>
     </Tooltip>
   )
 }

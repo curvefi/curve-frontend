@@ -49,7 +49,7 @@ export const TokenInfo = (props: TokenInfoProps) => {
     )
 
   return (
-    <Stack direction="row" sx={applySxProps({ gap: Spacing.xs, alignItems: 'center' }, props.sx)}>
+    <Stack direction="row" sx={applySxProps({ gap: Spacing.xs, alignItems: 'start' }, props.sx)}>
       {iconPosition === 'left' && tokenIcon}
 
       <Stack sx={{ gap: Spacing.xxs, alignItems: iconPosition === 'right' ? 'end' : 'start' }}>
