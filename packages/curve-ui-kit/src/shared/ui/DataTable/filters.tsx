@@ -23,14 +23,15 @@ export const parseRangeFilter = (serialized: string | undefined) =>
 export const getRangeFilterLabel = (
   [min, max]: Range<number | null>,
   unit?: Unit,
-  { defaultMin = 0 }: { defaultMin?: number } = {},
+  // APY can be negative, so it has no default lower bound; a selected `0` should still show as `>0%`.
+  { defaultMin = 0 }: { defaultMin?: number | null } = {},
 ) => {
-  const hasMin = min != null && min !== defaultMin
+  const shouldShowMin = min != null && min !== defaultMin
   const formatValue = (value: number) => formatNumber(value, { abbreviate: true, ...(unit && { unit }) })
 
-  if (!hasMin && max != null) return `<${formatValue(max)}`
-  if (hasMin && max == null) return `>${formatValue(min)}`
-  if (hasMin && max != null) return `${formatValue(min)} - ${formatValue(max)}`
+  if (!shouldShowMin && max != null) return `<${formatValue(max)}`
+  if (shouldShowMin && max == null) return `>${formatValue(min)}`
+  if (shouldShowMin && max != null) return `${formatValue(min)} - ${formatValue(max)}`
 
   return null
 }

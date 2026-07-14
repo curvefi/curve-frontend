@@ -27,7 +27,7 @@ import {
 } from '@/llamalend/rates.utils'
 import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
-import { maybes, notFalsyArray } from '@primitives/objects.utils'
+import { maybe, maybes, notFalsyArray } from '@primitives/objects.utils'
 import { type CampaignRewards, useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import type { CrvUsdSnapshot } from '@ui-kit/entities/crvusd-snapshots'
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
@@ -35,7 +35,7 @@ import { combineQueries } from '@ui-kit/lib'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 import { fakeLoadingQ, fallbackQ, mapQuery, q, Query, type QueryProp, type Range } from '@ui-kit/types/util'
-import { AVERAGE_CATEGORIES, type AverageCategory, decimalMultiply } from '@ui-kit/utils'
+import { AVERAGE_CATEGORIES, type AverageCategory, decimal, decimalMultiply } from '@ui-kit/utils'
 
 const RATE_CATEGORY: AverageCategory = 'llamalend.market.rate'
 
@@ -235,22 +235,26 @@ const useAvailableLiquidity = ({
   const borrowUsdRate = useTokenUsdRate({ chainId, tokenAddress: borrowTokenAddress })
   const marketQuery = fakeLoadingQ(market) // todo: use a proper query, see #2729
 
-  const onChainLiquidity = combineQueries(
-    [borrowUsdRate, capAndAvailable, marketQuery],
-    (borrowUsdRate, { available, totalAssets }) => ({
-      value: available,
-      total: totalAssets,
-      usdRate: borrowUsdRate,
-      notional: maybes([available, borrowUsdRate], (liq, rate) => decimalMultiply(liq, rate)),
-    }),
-  )
-  const apiLiquidity = combineQueries([apiMarket, borrowUsdRate], (d, rate) => ({
-    value: d.liquidityUsd / rate,
-    total: { Lend: d.assets.collateral.balance, Mint: d.debtCeiling }[d.type],
-    usdRate: rate,
-    notional: d.liquidityUsd,
+  const onChainLiquidity = combineQueries([capAndAvailable, marketQuery], ({ available, totalAssets }) => ({
+    value: available,
+    total: totalAssets,
   }))
-  return fallbackQ(onChainLiquidity, apiLiquidity)
+  const value = fallbackQ(
+    mapQuery(onChainLiquidity, d => d.value),
+    combineQueries([apiMarket, borrowUsdRate], (d, rate) => d.liquidityUsd / rate),
+  )
+  const total = fallbackQ(
+    mapQuery(onChainLiquidity, d => d.total),
+    mapQuery(apiMarket, d => ({ Lend: d.assets.collateral.balance, Mint: d.debtCeiling })[d.type]),
+  )
+  return {
+    value,
+    total,
+    usdRate: q(borrowUsdRate),
+    notional: combineQueries([value, borrowUsdRate], (value, rate) =>
+      maybe(decimal(value), value => decimalMultiply(value, rate)),
+    ),
+  }
 }
 
 function useCampaigns({
@@ -300,4 +304,4 @@ export const usePageHeader = () => {
 type UsePageHeaderResult = ReturnType<typeof usePageHeader>
 export type BorrowRate = NonNullable<UsePageHeaderResult['borrowRate']['data']>
 export type SupplyRate = ReturnType<typeof buildSupplyRate>
-export type AvailableLiquidity = UsePageHeaderResult['availableLiquidity']['data']
+export type AvailableLiquidity = UsePageHeaderResult['availableLiquidity']

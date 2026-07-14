@@ -22,9 +22,7 @@ export const readStakeAvailableAmount = () =>
 /**
  * Fill in the stake form with the specified amount.
  */
-export function writeStakeForm({ amount }: { amount: Decimal }) {
-  writeSupplyInput({ type: 'stake', amount })
-}
+export const writeStakeForm = ({ amount }: { amount: Decimal }) => writeSupplyInput({ type: 'stake', amount })
 
 /**
  * Check the stake submit state for enabled and disabled markets.

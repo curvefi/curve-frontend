@@ -406,13 +406,11 @@ export const createDashboardSlice = (
   },
 })
 
-function getActiveKey(chainId: ChainId | undefined, { walletAddress, sortBy, sortByOrder }: FormValues) {
-  return `${chainId ?? ''}-${walletAddress ? shortenAccount(walletAddress) : ''}${sortBy}${sortByOrder}`
-}
+const getActiveKey = (chainId: ChainId | undefined, { walletAddress, sortBy, sortByOrder }: FormValues) =>
+  `${chainId ?? ''}-${walletAddress ? shortenAccount(walletAddress) : ''}${sortBy}${sortByOrder}`
 
-export function getDashboardDataActiveKey(chainId: ChainId, walletAddress: string) {
-  return `${chainId ?? ''}${walletAddress ? shortenAccount(walletAddress) : ''}`
-}
+export const getDashboardDataActiveKey = (chainId: ChainId, walletAddress: string) =>
+  `${chainId ?? ''}${walletAddress ? shortenAccount(walletAddress) : ''}`
 
 function getPercentStaked({ gauge, lpToken }: { gauge: string; lpToken: string }) {
   if (+lpToken > 0) {
