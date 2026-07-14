@@ -256,15 +256,14 @@ describe('Header', () => {
     })
   })
 
-  function dismissPhishingWarningBanner(date?: number) {
+  const dismissPhishingWarningBanner = (date?: number) => {
     cy.window().then(win => {
       win.localStorage.setItem('phishing-warning-dismissed', JSON.stringify(date ?? Date.now()))
     })
   }
 
-  function waitIsLoaded(route: AppRoute) {
+  const waitIsLoaded = (route: AppRoute) =>
     cy.get(`[data-testid='${getRouteTestId(route)}']`, API_LOAD_TIMEOUT).should('be.visible')
-  }
 
   function switchEthToArbitrum() {
     cy.get(`[data-testid='chain-icon-ethereum']`, LOAD_TIMEOUT).should('be.visible')

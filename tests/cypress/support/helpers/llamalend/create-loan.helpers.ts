@@ -194,7 +194,7 @@ export function writeCreateLoanForm({
 /**
  * Test the loan range slider by selecting max ltv and max borrow presets, checking for errors, and clearing them.
  */
-export function checkLoanRangeSlider() {
+export const checkLoanRangeSlider = () => {
   getMaxBorrowBalance().then($el => {
     const safeMax = $el.attr('data-value')
     cy.get(`[data-testid="loan-preset-${LoanPreset.MaxLtv}"]`).click()

@@ -138,14 +138,13 @@ export const nowRange = (days = 7) => {
 
 export const getSupportedChainSeed = once(async () => {
   const supportedChains = await chains.getSupportedChains(requestOptions)
-  return requireSeed(
-    supportedChains.find(chain => chain === PREFERRED_CHAIN) ?? supportedChains[0],
-    'chains.getSupportedChains',
-  )
+  const chainNames = supportedChains.map(chain => chain.name)
+
+  return requireSeed(chainNames.find(chain => chain === PREFERRED_CHAIN) ?? chainNames[0], 'chains.getSupportedChains')
 })
 
 export const getPoolSeed = once(async (): Promise<PoolSeed> => {
-  const supportedChains = await chains.getSupportedChains(requestOptions)
+  const supportedChains = (await chains.getSupportedChains(requestOptions)).map(chain => chain.name)
 
   for (const chain of shuffled(supportedChains)) {
     const response = await pools.getPools(chain, requestOptions)

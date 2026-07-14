@@ -6,7 +6,7 @@ import { notFalsy } from '@primitives/objects.utils'
  * @param collateralSymbol - The symbol of the collateral token
  * @param prefix - The prefix part of the title (e.g., "Supply - ...")
  */
-export function useLendPageTitle(collateralSymbol: string | undefined, prefix?: string) {
+export const useLendPageTitle = (collateralSymbol: string | undefined, prefix?: string) => {
   useEffect(() => {
     document.title = notFalsy(prefix, collateralSymbol, `Curve Llamalend`).join(' - ')
   }, [collateralSymbol, prefix])

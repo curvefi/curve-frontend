@@ -63,7 +63,7 @@ export const PoolListMobileExpandedPanel: ExpandedPanel<PoolListItem> = ({ row, 
           }}
         />
         <Grid size={6}>
-          <PoolListRewards pool={pool} mobile />
+          <PoolListRewards pool={pool} isMobile />
         </Grid>
       </Grid>
       <Stack sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 3, marginBlock: 3 }}>

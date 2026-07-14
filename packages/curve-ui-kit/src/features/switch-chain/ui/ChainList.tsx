@@ -4,6 +4,7 @@ import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Box from '@mui/material/Box'
 import MenuList from '@mui/material/MenuList'
+import { recordEntries } from '@primitives/objects.utils'
 import type { NetworkDef } from '@ui/utils'
 import { wagmiChainsMap } from '@ui-kit/features/connect-wallet/lib/wagmi/chains'
 import { usePathname } from '@ui-kit/hooks/router'
@@ -13,11 +14,19 @@ import { MenuItem } from '@ui-kit/shared/ui/MenuItem'
 import { MenuSectionHeader } from '@ui-kit/shared/ui/MenuSectionHeader'
 import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
 import { SearchField } from '@ui-kit/shared/ui/SearchField'
+import type { QueryProp } from '@ui-kit/types/util'
 import { ChainSwitcherIcon } from './ChainSwitcherIcon'
 
 enum ChainType {
   test = 'test',
   main = 'main',
+  lite = 'lite',
+}
+
+const CHAIN_TYPE_NAMES: Record<ChainType, string> = {
+  [ChainType.main]: t`Curve`,
+  [ChainType.lite]: t`Curve Lite`,
+  [ChainType.test]: t`Testnets`,
 }
 
 export function ChainList({
@@ -25,11 +34,13 @@ export function ChainList({
   showTestnets,
   selectedNetworkId,
   onNetwork,
+  tvls: { data: tvls, isLoading: tvlsLoading },
 }: {
   options: NetworkDef[]
   showTestnets: boolean
   selectedNetworkId: string | undefined
   onNetwork?: (network: NetworkDef) => void
+  tvls: QueryProp<Record<string, number>>
 }) {
   const pathname = usePathname()
   const [searchValue, setSearchValue] = useState('')
@@ -37,17 +48,16 @@ export function ChainList({
     () =>
       lodash.groupBy(
         options.filter(o => o.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())),
-        o => (o.isTestnet ? ChainType.test : ChainType.main),
-      ),
-    [options, searchValue],
+        o =>
+          o.isTestnet
+            ? ChainType.test
+            : o.isLite || (tvls && tvls[o.id] === undefined) // flag chains not supported by prices API as lite
+              ? ChainType.lite
+              : ChainType.main,
+      ) as Record<ChainType, NetworkDef[]>,
+    [options, searchValue, tvls],
   )
 
-  const chainTypeNames = {
-    [ChainType.test]: t`Test networks`,
-    [ChainType.main]: t`Main networks`,
-  }
-
-  const entries = Object.entries(groupedOptions)
   const missingWagmiChains = options.filter(({ isTestnet, chainId }) => !isTestnet && !wagmiChainsMap[chainId])
 
   return (
@@ -66,15 +76,14 @@ export function ChainList({
         name="chainName"
       />
       <Box sx={{ overflowY: 'auto', flexGrow: '1' }}>
-        {entries.length ? (
-          entries
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Existing violation before enabling this rule.
-            .filter(([key]) => showTestnets || key !== ChainType.test)
-            .flatMap(([key, networks]) => (
+        {options.length ? (
+          recordEntries(CHAIN_TYPE_NAMES)
+            .filter(([key]) => (showTestnets || key !== ChainType.test) && groupedOptions[key]?.length)
+            .flatMap(([key, title]) => (
               <Fragment key={key}>
-                {showTestnets && <MenuSectionHeader>{chainTypeNames[key as ChainType]}</MenuSectionHeader>}
+                <MenuSectionHeader>{title}</MenuSectionHeader>
                 <MenuList>
-                  {networks.map(network => (
+                  {groupedOptions[key]?.map(network => (
                     <MenuItem<string, typeof Link>
                       data-testid={`menu-item-chain-${network.id}`}
                       key={network.id}
@@ -86,6 +95,7 @@ export function ChainList({
                       icon={<ChainSwitcherIcon networkId={network.id} size={36} />}
                       label={network.name}
                       onMouseDown={() => onNetwork?.(network)} // onClick somehow doesn't work ???
+                      isLoading={tvlsLoading && key != ChainType.lite /* lite doesn't have tvl */}
                     />
                   ))}
                 </MenuList>

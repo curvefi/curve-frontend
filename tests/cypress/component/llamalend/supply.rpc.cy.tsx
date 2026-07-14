@@ -17,10 +17,9 @@ import {
 } from '@cy/support/helpers/llamalend/supply/deposit.helpers'
 import {
   checkStakeDetailsLoaded,
-  readStakeAvailableAssets,
+  selectMaxStake,
   submitStakeForm,
   touchStakeForm,
-  writeStakeForm,
 } from '@cy/support/helpers/llamalend/supply/stake.helpers'
 import { fundUserForSupplySetup } from '@cy/support/helpers/llamalend/supply/supply-setup.helpers'
 import {
@@ -30,10 +29,9 @@ import {
 } from '@cy/support/helpers/llamalend/supply/supply.helpers'
 import {
   checkUnstakeDetailsLoaded,
-  readUnstakeAvailableAssets,
+  selectMaxUnstake,
   submitUnstakeForm,
   touchUnstakeForm,
-  writeUnstakeForm,
 } from '@cy/support/helpers/llamalend/supply/unstake.helpers'
 import {
   checkWithdrawDetailsLoaded,
@@ -150,19 +148,17 @@ testCases.forEach(
 
       it('stakes into the gauge', () => {
         cy.mount(<SupplyTestWrapper tab="stake" />)
-        readStakeAvailableAssets().then(stakeAssets => {
-          writeStakeForm({ assets: stakeAssets })
-          checkStakeDetailsLoaded({
-            prevVaultShares: '0',
-            suppliedAssets: suppliedAfterDeposit,
-            prevSuppliedAssets: '0',
-            expectedButtonText: 'Approve & Stake',
-            hasApi,
-          })
-          submitStakeForm()
-          touchStakeForm()
-          checkCurrentStakedAmount({ expectedAmountSupplied: suppliedAfterDeposit })
+        selectMaxStake()
+        checkStakeDetailsLoaded({
+          prevVaultShares: '0',
+          suppliedAssets: suppliedAfterDeposit,
+          prevSuppliedAssets: '0',
+          expectedButtonText: 'Approve & Stake',
+          hasApi,
         })
+        submitStakeForm()
+        touchStakeForm()
+        checkCurrentStakedAmount({ expectedAmountSupplied: suppliedAfterDeposit })
       })
 
       it('claims rewards', () => {
@@ -185,15 +181,12 @@ testCases.forEach(
 
       it('unstakes from the gauge', () => {
         cy.mount(<SupplyTestWrapper tab="unstake" />)
-        readUnstakeAvailableAssets().then(unstakeAssets => {
-          writeUnstakeForm({ assets: unstakeAssets })
-          checkUnstakeDetailsLoaded({ prevSuppliedAssets: suppliedAfterDeposit, hasApi })
-          submitUnstakeForm()
-          touchUnstakeForm()
-          checkCurrentStakedAmount({
-            expectedVaultShares: '0',
-            expectedAmountSupplied: '0',
-          })
+        selectMaxUnstake()
+        checkUnstakeDetailsLoaded({ prevSuppliedAssets: suppliedAfterDeposit, hasApi })
+        submitUnstakeForm()
+        touchUnstakeForm()
+        checkCurrentStakedAmount({
+          expectedAmountSupplied: '0',
         })
       })
     })

@@ -74,9 +74,7 @@ const createRenderer = () => {
   }
 
   const renderer: ICustomSeriesPaneRenderer = {
-    draw(target, priceConverter) {
-      drawSeries(payload, target, priceConverter)
-    },
+    draw: (target, priceConverter) => drawSeries(payload, target, priceConverter),
   }
 
   return {
@@ -256,9 +254,7 @@ const createLiquidationRangePaneView = (): ICustomSeriesPaneView<
 
   return {
     renderer: () => renderer,
-    update(data, options) {
-      setPayload(data, options)
-    },
+    update: (data, options) => setPayload(data, options),
     priceValueBuilder,
     isWhitespace: isWhitespacePoint,
     defaultOptions: () => ({ ...DEFAULT_OPTIONS }),

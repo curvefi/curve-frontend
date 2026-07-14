@@ -74,6 +74,7 @@ export type LlamaMarket = {
   oracleAddress?: Address
   parameters: { A: number | null; loanDiscount: Decimal; liquidationDiscount: Decimal }
   utilizationPercent: number
+  liquidity: number
   liquidityUsd: number
   tvl: number
   totalDebtUsd: number
@@ -216,6 +217,7 @@ const convertLendingVault = (
     solvencyPercent,
     badDebtUsd,
     debtCeiling: null, // debt ceiling is not applicable for lend markets
+    liquidity: totalAssets - totalDebt,
     liquidityUsd: totalAssetsUsd - totalDebtUsd,
     totalDebtUsd,
     totalCollateralUsd: collateralBalanceUsd + borrowedBalanceUsd,
@@ -352,7 +354,8 @@ const convertMintMarket = (
     solvencyPercent: null,
     badDebtUsd,
     debtCeiling,
-    liquidityUsd: borrowable,
+    liquidity: borrowable,
+    liquidityUsd: borrowable, // TODO: Use borrowableUsd instead of assuming crvUSD is worth $1.
     tvl,
     totalDebtUsd: borrowedUsd,
     totalCollateralUsd: tvl,
