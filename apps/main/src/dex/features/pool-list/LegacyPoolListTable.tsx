@@ -1,7 +1,5 @@
 import { useState } from 'react'
-import { ROUTE } from '@/dex/constants'
 import { type NetworkConfig } from '@/dex/types/main.types'
-import { getPath } from '@/dex/utils/utilsRouter'
 import { ExpandedState, getPaginationRowModel } from '@tanstack/react-table'
 import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { usePageFromQueryString } from '@ui-kit/hooks/usePageFromQueryString'
@@ -9,8 +7,6 @@ import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
 import { getHiddenCount, getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
-import { ExpandedPanelActions } from '@ui-kit/shared/ui/DataTable/ExpandedPanelActions'
-import type { ExpandedPanelComponent } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { useFilters } from '@ui-kit/shared/ui/DataTable/hooks/useFilters'
 import { LegacyDataTable } from '@ui-kit/shared/ui/DataTable/LegacyDataTable'
 import { LegacyTableFilters } from '@ui-kit/shared/ui/DataTable/LegacyTableFilters'
@@ -20,35 +16,14 @@ import { LegacyPoolListChips } from './chips/LegacyPoolListChips'
 import { LEGACY_POOL_LIST_COLUMNS, LegacyPoolColumnId, getLegacyDefaultSort } from './columns'
 import { LegacyPoolListEmptyState } from './components/LegacyPoolListEmptyState'
 import { LegacyPoolMobileExpandedPanel } from './components/LegacyPoolMobileExpandedPanel'
+import { LegacyPoolMobileExpandedPanelActions } from './components/LegacyPoolMobileExpandedPanelActions'
 import { useLegacyPoolListData } from './hooks/useLegacyPoolListData'
 import { useLegacyPoolListVisibilitySettings } from './hooks/useLegacyPoolListVisibilitySettings'
-import type { LegacyPoolListItem } from './legacyPoolList.types'
 import { useLegacyPoolsGlobalFilterFn } from './legacyPoolsGlobalFilter'
 
 const LOCAL_STORAGE_KEY = 'dex-pool-list'
 
 const PER_PAGE = 50
-
-const LegacyPoolMobileExpandedPanelActions: ExpandedPanelComponent<LegacyPoolListItem> = ({ row }) => {
-  const {
-    pool: { id: poolId },
-    network,
-  } = row.original
-  const path = getPath({ network }, `${ROUTE.PAGE_POOLS}/${poolId}`)
-
-  const actions = [
-    {
-      id: 'deposit',
-      label: t`Deposit`,
-      href: path + ROUTE.PAGE_POOL_DEPOSIT,
-      testId: 'pool-link-deposit',
-    },
-    { id: 'withdraw', label: t`Withdraw`, href: path + ROUTE.PAGE_POOL_WITHDRAW },
-    { id: 'swap', label: t`Swap`, href: path + ROUTE.PAGE_SWAP },
-  ]
-
-  return <ExpandedPanelActions actions={actions} />
-}
 
 export const LegacyPoolListTable = ({ network }: { network: NetworkConfig }) => {
   const { isLite, poolFilters } = network

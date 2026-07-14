@@ -1,18 +1,13 @@
 import { useRef, useState } from 'react'
-import { ROUTE } from '@/dex/constants'
 import type { NetworkConfig } from '@/dex/types/main.types'
-import { getPath } from '@/dex/utils/utilsRouter'
 import Stack from '@mui/material/Stack'
 import type { ExpandedState } from '@tanstack/react-table'
 import { CURVE_SOCIALS } from '@ui/utils'
 import { useIsMobile, useIsTablet } from '@ui-kit/hooks/useBreakpoints'
-import { copyToClipboardWithToast } from '@ui-kit/hooks/useCopyToClipboard'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
-import { ExpandedPanelActions } from '@ui-kit/shared/ui/DataTable/ExpandedPanelActions'
-import type { ExpandedPanelComponent } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableFiltersChip } from '@ui-kit/shared/ui/DataTable/TableFiltersChip'
 import { TableFiltersOverlay } from '@ui-kit/shared/ui/DataTable/TableFiltersOverlay'
@@ -20,6 +15,7 @@ import { TableHeader } from '@ui-kit/shared/ui/DataTable/TableHeader'
 import { TableSortDrawer } from '@ui-kit/shared/ui/DataTable/TableSortDrawer'
 import { POOL_LIST_COLUMNS, PoolListColumnId } from './columns'
 import { PoolListMobileExpandedPanel } from './components/PoolListMobileExpandedPanel'
+import { PoolListMobileExpandedPanelActions } from './components/PoolListMobileExpandedPanelActions'
 import { PoolListFilters } from './filters/PoolListFilters'
 import { PoolListFiltersCollapsible } from './filters/PoolListFiltersCollapsible'
 import { usePoolListFilters } from './hooks/usePoolListFilters'
@@ -27,39 +23,8 @@ import { usePoolListPagination } from './hooks/usePoolListPagination'
 import { usePoolListSorting } from './hooks/usePoolListSorting'
 import { usePoolListTable } from './hooks/usePoolListTable'
 import { usePoolListVisibilitySettings } from './hooks/usePoolListVisibilitySettings'
-import type { PoolListItem } from './poolList.types'
 
 const LOCAL_STORAGE_KEY = 'dex-pool-list'
-
-const PoolListMobileExpandedPanelActions: ExpandedPanelComponent<PoolListItem> = ({ row }) => {
-  const pool = row.original
-  const path = getPath({ network: pool.network }, `${ROUTE.PAGE_POOLS}/${pool.address}`)
-
-  const actions = [
-    {
-      id: 'deposit',
-      label: t`Deposit`,
-      href: path + ROUTE.PAGE_POOL_DEPOSIT,
-      testId: 'pool-link-deposit',
-    },
-    { id: 'withdraw', label: t`Withdraw`, href: path + ROUTE.PAGE_POOL_WITHDRAW },
-    { id: 'swap', label: t`Swap`, href: path + ROUTE.PAGE_SWAP },
-    {
-      id: 'copy-pool-address',
-      label: t`Copy pool address`,
-      onClick: () =>
-        void copyToClipboardWithToast({
-          copyText: pool.address,
-          confirmationText: t`Pool address copied`,
-          failureText: t`Failed to copy pool address`,
-        }),
-      testId: `copy-pool-address-${pool.address}`,
-      alwaysInKebabMenu: true,
-    },
-  ]
-
-  return <ExpandedPanelActions actions={actions} />
-}
 
 export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
   const isMobile = useIsMobile()

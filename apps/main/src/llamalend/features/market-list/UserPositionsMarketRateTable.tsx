@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { ExpandedState } from '@tanstack/react-table'
@@ -7,16 +7,14 @@ import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
-import { ExpandedPanelActions } from '@ui-kit/shared/ui/DataTable/ExpandedPanelActions'
-import type { ExpandedPanelComponent } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
 import { QueryProp } from '@ui-kit/types/util'
 import type { LlamaMarket } from '../../queries/market-list/llama-markets'
 import { DEFAULT_SORT_BORROW, DEFAULT_SORT_SUPPLY, LLAMA_MARKET_COLUMNS } from './columns'
-import { useLlamaMarketExpandedPanelActions } from './hooks/useLlamaMarketExpandedPanelActions'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
+import { UserPositionExpandedPanelActions } from './UserPositionExpandedPanelActions'
 
 const { Spacing, Sizing } = SizesAndSpaces
 
@@ -44,25 +42,6 @@ type UserPositionsTableProps = {
 }
 
 const pagination = { pageIndex: 0, pageSize: 50 }
-
-const UserPositionExpandedPanelActions: ExpandedPanelComponent<LlamaMarket> = ({ row: { original: market } }) => {
-  const extraPanels = useLlamaMarketExpandedPanelActions(market)
-
-  const actions = useMemo(
-    () => [
-      {
-        id: 'manage-position',
-        label: t`Manage position`,
-        href: market.url, // the url is already built for borrow/supply in the UserPositionsMarketRateTable
-        testId: 'llama-market-go-to-position',
-      },
-      ...extraPanels,
-    ],
-    [extraPanels, market.url],
-  )
-
-  return <ExpandedPanelActions actions={actions} />
-}
 
 export const UserPositionsMarketRateTable = ({ tableQuery, marketRateType, onReload }: UserPositionsTableProps) => {
   const { title, label, defaultSort, sortQueryField, storageKey } = TABLE_CONFIG[marketRateType]
