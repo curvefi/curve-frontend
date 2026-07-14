@@ -37,6 +37,7 @@ export const typeFilterInput = (testId: string, value: number) => {
   cy.get(`@filterInput`).click()
   cy.get(`@filterInput`).type('{selectAll}')
   cy.get(`@filterInput`).type(`${value}`)
+  return cy.get(`@filterInput`)
 }
 
 /** Returns the median value for a column. */
