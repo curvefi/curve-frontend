@@ -15,17 +15,15 @@ export const submitStakeForm = () => submitSupplyForm('stake', 'Stake successful
 
 export const readStakeAvailableAssets = () =>
   getSupplyInputBalanceValueAttr('stake')
-    .should(balanceValue => {
-      expect(new BigNumber(balanceValue || '0').gt(0)).to.equal(true)
-    })
-    .then(balanceValue => (balanceValue || '0') as Decimal)
+    .should(balanceValue => expect(new BigNumber(balanceValue || '0').gt(0)).to.equal(true))
+    .then(balanceValue => balanceValue as Decimal)
 
 export const selectMaxStake = () => {
   // Percentage chips are hidden until hover in desktop layouts.
   cy.get('[data-testid="supply-stake-input"] [data-testid="input-chip-100%"]', LOAD_TIMEOUT).click({ force: true })
   cy.get('[data-testid="supply-stake-input"] input[type="text"]', LOAD_TIMEOUT)
     .invoke(LOAD_TIMEOUT, 'attr', 'data-value')
-    .should(value => expect(new BigNumber(value || '0').gt(0)).to.equal(true))
+    .should(value => expect(Number(value)).gt(0))
   cy.get('[data-testid="supply-action-info-list"]', LOAD_TIMEOUT).should('be.visible')
 }
 

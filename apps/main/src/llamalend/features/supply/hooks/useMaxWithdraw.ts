@@ -7,8 +7,8 @@ import type { WithdrawForm, WithdrawParams } from '@/llamalend/queries/validatio
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, maybes } from '@primitives/objects.utils'
-import { useFormSync } from '@ui-kit/features/forms'
 import type { UseFormReturn } from '@ui-kit/features/forms'
+import { useFormSync } from '@ui-kit/features/forms'
 import { useCombinedQueries } from '@ui-kit/lib'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimalEqual } from '@ui-kit/utils'
@@ -47,17 +47,20 @@ export function useMaxWithdrawTokenValues<ChainId extends LlamaChainId>({
   const userBalances = useVaultUserBalances(params)
   const maxWithdrawAmount = useVaultMaxWithdrawAmount(params)
   const maxRedeemShares = useVaultMaxRedeemShares(params)
-  const getIsFull = useCallback(
-    ({ depositedShares }: VaultUserBalances, maxWithdrawAmount: Decimal, maxRedeemShares: Decimal) =>
-      getIsWithdrawFull({
-        withdrawAmount: params.withdrawAmount ?? undefined,
-        depositedShares,
-        maxRedeemShares,
-        maxWithdrawAmount,
-      }),
-    [params.withdrawAmount],
+
+  const isFull = useCombinedQueries(
+    [userBalances, maxWithdrawAmount, maxRedeemShares],
+    useCallback(
+      ({ depositedShares }: VaultUserBalances, maxWithdrawAmount: Decimal, maxRedeemShares: Decimal) =>
+        getIsWithdrawFull({
+          withdrawAmount: params.withdrawAmount ?? undefined,
+          depositedShares,
+          maxRedeemShares,
+          maxWithdrawAmount,
+        }),
+      [params.withdrawAmount],
+    ),
   )
-  const isFull = useCombinedQueries([userBalances, maxWithdrawAmount, maxRedeemShares], getIsFull)
 
   useFormSync(form, { maxWithdrawAmount: maxWithdrawAmount.data })
   useFormSync(form, { userVaultShares: userBalances.data?.depositedShares })

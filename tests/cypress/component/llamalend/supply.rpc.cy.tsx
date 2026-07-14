@@ -185,9 +185,7 @@ testCases.forEach(
         checkUnstakeDetailsLoaded({ prevSuppliedAssets: suppliedAfterDeposit, hasApi })
         submitUnstakeForm()
         touchUnstakeForm()
-        checkCurrentStakedAmount({
-          expectedAmountSupplied: '0',
-        })
+        checkCurrentStakedAmount({ expectedAmountSupplied: '0' })
       })
     })
   },
