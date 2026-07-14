@@ -8,9 +8,10 @@ import {
 import Stack from '@mui/material/Stack'
 import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
+import { LlamaMarketType } from '@ui-kit/types/market'
 import { formatNumber } from '@ui-kit/utils'
 
-const format = (value: number) => formatNumber(value, 'usd.notional')
+const formatToken = (value: number | null, symbol: string) => `${formatNumber(value, 'token.compact')} ${symbol}`
 
 const TITLE = { Lend: t`Total supplied`, Mint: t`Debt ceiling` }
 const TOOLTIP = {
@@ -20,10 +21,8 @@ const TOOLTIP = {
 
 export const LiquidityUsdTooltipContent = ({
   market: {
-    assets: {
-      collateral: { balanceUsd },
-    },
-    totalDebtUsd,
+    assets: { borrowed },
+    liquidity,
     liquidityUsd,
     debtCeiling,
     type,
@@ -35,14 +34,15 @@ export const LiquidityUsdTooltipContent = ({
     <TooltipDescription text={TOOLTIP[type]} />
     <Stack>
       <TooltipItems secondary>
-        {maybe({ Lend: balanceUsd, Mint: debtCeiling }[type], usd => (
-          <TooltipItem title={TITLE[type]}>{format(usd)}</TooltipItem>
+        {maybe(type === LlamaMarketType.Lend ? liquidity + (borrowed.balance ?? 0) : debtCeiling, total => (
+          <TooltipItem title={TITLE[type]}>{formatToken(total, borrowed.symbol)}</TooltipItem>
         ))}
-        <TooltipItem title={t`Total borrowed`}>-{format(totalDebtUsd)}</TooltipItem>
+        <TooltipItem title={t`Total borrowed`}>-{formatToken(borrowed.balance, borrowed.symbol)}</TooltipItem>
       </TooltipItems>
       <TooltipItems>
         <TooltipItem variant="primary" title={t`Available liquidity`}>
-          {format(liquidityUsd)}
+          {formatToken(liquidity, borrowed.symbol)}
+          {formatNumber(liquidityUsd, 'usd.notional')}
         </TooltipItem>
       </TooltipItems>
     </Stack>

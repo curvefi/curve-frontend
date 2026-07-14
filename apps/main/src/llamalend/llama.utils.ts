@@ -516,10 +516,12 @@ export const tokenMetric = ({
   value,
   symbol,
   usdRate,
+  notional,
 }: {
   value: MetricProps['value']
   symbol: string | null | undefined
-  usdRate: QueryProp<Amount>
+  usdRate?: QueryProp<Amount>
+  notional?: MetricProps['notional']
 }) =>
   ({
     value,
@@ -527,7 +529,10 @@ export const tokenMetric = ({
       abbreviate: true,
       unit: maybe(symbol, symbol => ({ symbol, position: 'suffix' as const })),
     },
-    notional: combineQueries([value, usdRate], (value, usdRate) =>
-      maybe(decimal(value), value => ({ value: decimalMultiply(value, usdRate), unit: 'dollar' as const })),
-    ),
+    notional:
+      notional ??
+      (usdRate &&
+        combineQueries([value, usdRate], (value, usdRate) =>
+          maybe(decimal(value), value => ({ value: decimalMultiply(value, usdRate), unit: 'dollar' as const })),
+        )),
   }) satisfies Pick<MetricProps, 'value' | 'valueOptions' | 'notional'>
