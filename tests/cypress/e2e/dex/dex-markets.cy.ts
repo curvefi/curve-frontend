@@ -315,6 +315,7 @@ describe('DEX Pools', () => {
       cy.get('[data-testid^="data-table-row-"]').first().click()
       if (breakpoint === 'mobile') {
         cy.get('[data-testid="collapse-icon"]').first().should('be.visible')
+        cy.get('[data-testid="data-table-expansion-row"]').should('be.visible')
         cy.get('[data-testid="pool-link-deposit"]').click()
       }
       cy.url(LOAD_TIMEOUT).should('match', /\/dex\/\w+\/pools\/0x[0-9a-fA-F]{40}\/(deposit|swap)\/?$/)
@@ -331,6 +332,7 @@ describe('DEX Pools', () => {
     cy.contains('[data-testid^="market-link-"]', filter, API_LOAD_TIMEOUT).should('be.visible')
     if (breakpoint === 'mobile') {
       cy.get('[data-testid^="data-table-row-"]').first().click()
+      cy.get('[data-testid="data-table-expansion-row"]').should('be.visible')
       cy.get(`[data-testid="pool-link-deposit"]`).click()
     } else {
       cy.contains('[data-testid^="market-link-"]', filter).click()
