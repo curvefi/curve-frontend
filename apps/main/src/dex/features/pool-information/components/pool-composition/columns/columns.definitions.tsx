@@ -70,7 +70,6 @@ export const POOL_COMPOSITION_COLUMNS = [
     header: headers[PoolCompositionColumnId.TokenAmount],
     cell: ({ getValue, row }) => {
       const symbol = row.original.source.primary
-
       return (
         <InlineTableCell sx={{ alignItems: 'end' }}>
           <Tooltip
@@ -79,7 +78,7 @@ export const POOL_COMPOSITION_COLUMNS = [
               value =>
                 // TokenInfo primary is ReactNode; we only want to show a tooltip if it's a pure string (which it should for all our cases)
                 typeof symbol === 'string' &&
-                `${formatTokenCompact(value, symbol)} ${maybe(row.original.amountUsd, value => ` / ${value}`) ?? ''}`,
+                `${formatTokenCompact(value, symbol)}${maybe(row.original.amountUsd, value => ` / ${value}`) ?? ''}`,
             )}
             placement="top"
           >
