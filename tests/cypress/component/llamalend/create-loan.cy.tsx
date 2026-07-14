@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
 import {
   checkLoanDetailsLoaded,
@@ -6,22 +5,42 @@ import {
   writeCreateLoanForm,
 } from '@cy/support/helpers/llamalend/create-loan.helpers'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
-import { llamaNetworks, setGasInfo, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
-import { createCreateLoanScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
+import { createCreateLoanScenario } from '@cy/support/helpers/llamalend/mocks/create-loan.mocks'
+import {
+  llamaNetworks,
+  resetLlamaTestContext,
+  setGasInfo,
+  setLlamaApi,
+} from '@cy/support/helpers/llamalend/test-context.helpers'
 
 const CHAIN_ID = 1
 const testCases = [
   { approved: false, title: 'fills, approves, and submits' },
   { approved: true, title: 'fills and submits' },
-]
+].flatMap(testCase => [
+  {
+    ...testCase,
+    hasLeverage: false,
+    leverageEnabled: false,
+  },
+  {
+    ...testCase,
+    title: `${testCase.title} with leverage`,
+    hasLeverage: true,
+    leverageEnabled: true,
+  },
+])
 
 describe('CreateLoanForm (mocked)', () => {
-  testCases.forEach(({ approved, title }: { approved: boolean; title: string }) => {
+  afterEach(() => resetLlamaTestContext())
+
+  testCases.forEach(({ approved, hasLeverage, leverageEnabled, title }) => {
     it(title, () => {
-      const { llamaApi, expected, market, borrow, stubs, collateral } = createCreateLoanScenario({
+      const { llamaApi, market, borrow, collateral, assertPreSubmit, assertSubmit } = createCreateLoanScenario({
         chainId: CHAIN_ID,
         presetRange: 50,
         approved,
+        leverage: hasLeverage,
       })
       const onPricesUpdated = cy.spy().as('onPricesUpdated')
 
@@ -34,31 +53,11 @@ describe('CreateLoanForm (mocked)', () => {
         </MockLoanTestWrapper>,
       )
 
-      writeCreateLoanForm({ collateral, borrow, leverageEnabled: false, hasLeverage: false })
-      checkLoanDetailsLoaded({ leverageEnabled: false })
+      writeCreateLoanForm({ collateral, borrow, leverageEnabled, hasLeverage, waitForRoutes: leverageEnabled })
+      checkLoanDetailsLoaded({ leverageEnabled })
 
-      cy.then(() => {
-        expect(stubs.createLoanHealth).to.have.been.calledWithExactly(...expected.query)
-        expect(stubs.createLoanPrices).to.have.been.calledWithExactly(...expected.query)
-        expect(stubs.createLoanMaxRecv).to.have.been.calledWithExactly(...expected.maxRecv)
-        expect(stubs.createLoanIsApproved).to.have.been.calledWithExactly(...expected.approved)
-        if (approved) {
-          expect(stubs.estimateGasCreateLoan).to.have.been.calledWithExactly(...expected.estimateGas)
-          expect(stubs.estimateGasCreateLoanApprove).to.not.have.been.called
-        } else {
-          expect(stubs.estimateGasCreateLoanApprove).to.have.been.calledWithExactly(...expected.estimateGasApprove)
-        }
-      })
-
-      submitCreateLoanForm().then(() => {
-        expect(stubs.estimateGasCreateLoan).to.have.been.calledWithExactly(...expected.query)
-        if (approved) {
-          expect(stubs.createLoanApprove).to.not.have.been.called
-        } else {
-          expect(stubs.createLoanApprove).to.have.been.calledWithExactly(...expected.approve)
-        }
-        expect(stubs.createLoan).to.have.been.calledWithExactly(...expected.submit)
-      })
+      cy.then(assertPreSubmit)
+      submitCreateLoanForm().then(assertSubmit)
     })
   })
 })

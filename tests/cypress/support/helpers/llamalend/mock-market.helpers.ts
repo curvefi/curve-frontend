@@ -142,6 +142,7 @@ export const createMockLendMarket = (overrides?: object) =>
       decimals: 18,
     },
     addresses: {
+      amm: oneAddress(),
       controller: oneAddress(),
       vault: oneAddress(),
       gauge: oneAddress(),
