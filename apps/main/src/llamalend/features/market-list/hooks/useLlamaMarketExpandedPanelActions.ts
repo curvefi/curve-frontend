@@ -7,12 +7,11 @@ import { t } from '@ui-kit/lib/i18n'
 import type { ExpandedPanelActionResolver } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 
 export const useLlamaMarketExpandedPanelActions = (getPrimaryActions: ExpandedPanelActionResolver<LlamaMarket>) => {
-  const [favoriteMarkets, toggleFavoriteMarket] = useFavoriteMarkets()
+  const [, toggleFavoriteMarket] = useFavoriteMarkets()
 
   return useCallback<ExpandedPanelActionResolver<LlamaMarket>>(
     context => {
-      const { controllerAddress, favoriteKey } = context.row.original
-      const isFavorite = favoriteMarkets.includes(favoriteKey)
+      const { controllerAddress, isFavorite, favoriteKey } = context.row.original
 
       return notFalsy(
         ...getPrimaryActions(context),
@@ -37,6 +36,6 @@ export const useLlamaMarketExpandedPanelActions = (getPrimaryActions: ExpandedPa
         },
       )
     },
-    [favoriteMarkets, getPrimaryActions, toggleFavoriteMarket],
+    [getPrimaryActions, toggleFavoriteMarket],
   )
 }
