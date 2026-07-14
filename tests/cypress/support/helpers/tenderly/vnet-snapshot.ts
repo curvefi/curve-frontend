@@ -1,3 +1,4 @@
+import { oneInt } from '@cy/support/generators'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
 import { assert } from '@primitives/objects.utils'
 import { getRpcUrls } from './vnet'
@@ -19,7 +20,7 @@ const requestVirtualNetworkState = ({
   vnet: VirtualNetwork
 }): Cypress.Chainable<unknown> => {
   const { adminRpcUrl } = getRpcUrls(vnet)
-  const body = { jsonrpc: '2.0', method, params, id: Date.now() }
+  const body = { jsonrpc: '2.0', method, params, id: oneInt() }
 
   return cy
     .request<JsonRpcResponse>({
@@ -54,16 +55,14 @@ export const revertVirtualNetwork = ({ snapshotId, vnet }: { snapshotId: string;
 
 export const createVirtualNetworkSnapshot = ({ vnet }: { vnet: VirtualNetwork }) => {
   let snapshotId: string | undefined
-
-  const capture = () =>
-    snapshotVirtualNetwork({ vnet }).then(id => {
-      snapshotId = id
-    })
-
-  const revert = () => {
-    const currentSnapshotId = assert(snapshotId, 'Tenderly evm_revert was requested before a snapshot was captured')
-    return revertVirtualNetwork({ vnet, snapshotId: currentSnapshotId }).then(capture)
+  return {
+    capture: () => snapshotVirtualNetwork({ vnet }).then(id => (snapshotId = id)),
+    revert: () =>
+      revertVirtualNetwork({
+        vnet,
+        snapshotId: assert(snapshotId, 'Tenderly evm_revert was requested before a snapshot was captured'),
+      }).then(() => snapshotVirtualNetwork({ vnet }).then(id => (snapshotId = id))),
   }
-
-  return { capture, revert }
 }
+
+export type VnetSnapshot = ReturnType<typeof createVirtualNetworkSnapshot>

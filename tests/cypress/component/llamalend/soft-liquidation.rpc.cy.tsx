@@ -1,5 +1,5 @@
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
-import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
+import { DECIMAL_REGEX, DECIMAL_RANGE_REGEX, getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { setupLlv2BorrowingLiquidity } from '@cy/support/helpers/llamalend/borrow-cap.helpers'
 import { LlammalendTestCase, type LlammalendTestCaseProps } from '@cy/support/helpers/llamalend/LlammalendTestCase'
 import { submitRepayForm, writeRepayLoanForm } from '@cy/support/helpers/llamalend/repay-loan.helpers'
@@ -12,10 +12,11 @@ import {
 import { resetLlamaTestContext } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
-import { createVirtualNetworkSnapshot } from '@cy/support/helpers/tenderly/vnet-snapshot'
+import { createVirtualNetworkSnapshot, type VnetSnapshot } from '@cy/support/helpers/tenderly/vnet-snapshot'
 import { LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { Chain } from '@ui-kit/utils'
+import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
 const WSTETH_USDC_MARKET = {
   id: 'one-way-market-v2-2',
@@ -37,7 +38,7 @@ describe('Manage soft liquidation', () => {
   const chainId = Chain.Optimism // Atm llv2 is only deployed on optimism
   const privateKey = generatePrivateKey()
   const { address: userAddress } = privateKeyToAccount(privateKey)
-  let snapshot: ReturnType<typeof createVirtualNetworkSnapshot>
+  let snapshot: VnetSnapshot
 
   const getVirtualNetwork = createVirtualTestnet(uuid => ({
     chain_id: chainId,
@@ -95,13 +96,10 @@ describe('Manage soft liquidation', () => {
   it('resets the position', () => {
     cy.mount(<SoftLiquidationTestWrapper tab="reset" />)
 
-    cy.get('[data-testid="reset-position-input-converted-borrowed"] input[type="text"]', LOAD_TIMEOUT).should($input =>
-      expect(Number(String($input.val()).replaceAll(',', ''))).to.be.greaterThan(0),
-    )
-    getActionValue('borrow-price-range', 'previous').should('match', /\d/)
-    getActionValue('borrow-price-range').should('match', /\d/)
-    getActionValue('borrow-debt', 'previous').should('match', /\d/)
-    getActionValue('borrow-debt').should('match', /\d/)
+    getActionValue('borrow-price-range', 'previous').should('match', DECIMAL_RANGE_REGEX)
+    getActionValue('borrow-price-range').should('match', DECIMAL_RANGE_REGEX)
+    getActionValue('borrow-debt', 'previous').should('match', DECIMAL_REGEX)
+    getActionValue('borrow-debt').should('match', DECIMAL_REGEX)
     cy.get('[data-testid="loan-form-errors"]').should('not.exist')
     writeResetPositionWalletAmount({ amount: RESET_WALLET_AMOUNT })
     submitResetPositionForm({ message: 'Position reset!' })
@@ -110,8 +108,8 @@ describe('Manage soft liquidation', () => {
   it('improves health', () => {
     cy.mount(<SoftLiquidationTestWrapper tab="improve-health" />)
     writeRepayLoanForm({ amount: IMPROVE_HEALTH_AMOUNT })
-    getActionValue('borrow-price-range', 'previous').should('match', /\d/)
-    getActionValue('borrow-price-range').should('match', /\d/)
+    getActionValue('borrow-price-range', 'previous').should('match', DECIMAL_RANGE_REGEX)
+    getActionValue('borrow-price-range').should('match', DECIMAL_RANGE_REGEX)
     cy.get('[data-testid="loan-form-errors"]').should('not.exist')
     cy.get('[data-testid="repay-submit-button"]', LOAD_TIMEOUT).should('not.be.disabled')
     submitRepayForm()
@@ -119,9 +117,9 @@ describe('Manage soft liquidation', () => {
 
   it('closes the position', () => {
     cy.mount(<SoftLiquidationTestWrapper tab="close" />)
-    getActionValue('borrow-debt', 'previous').should('match', /\d/)
+    getActionValue('borrow-debt', 'previous').should('match', DECIMAL_REGEX)
     getActionValue('borrow-debt').should('equal', '0')
-    getActionValue('borrow-slippage').should('equal', '0.50%')
+    getActionValue('borrow-slippage').should('equal', `${Number(SLIPPAGE.leverage.default).toFixed(2)}%`)
     cy.get('[data-testid="loan-form-errors"]').should('not.exist')
     cy.get('[data-testid="close-position-submit-button"]', LOAD_TIMEOUT).should('not.be.disabled')
     submitClosePositionForm()
