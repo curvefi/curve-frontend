@@ -1,7 +1,7 @@
 import { DetailText, Info } from '@/dex/components/PageDashboard/components/TableRow'
 import type { WalletPoolData } from '@/dex/components/PageDashboard/types'
 import { t } from '@ui-kit/lib/i18n'
-import { amount as toAmount, formatNumber } from '@ui-kit/utils'
+import { amount as toAmount, formatNumber, formatToken } from '@ui-kit/utils'
 
 type Props = Pick<WalletPoolData, 'claimableCrv' | 'claimableOthers' | 'claimablesTotalUsd'> & {
   isMobile?: boolean
@@ -17,12 +17,12 @@ export const TableCellClaimables = ({
 }: Props) => (
   <>
     {claimableCrv?.map(({ symbol, amount }, idx) => {
-      const formatted = `${formatNumber(toAmount(amount), { abbreviate: false, fallback: '-' })} CRV`
+      const formatted = formatToken(toAmount(amount), 'CRV', 'amount')
       // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
       return <Info key={`${symbol}${idx}`}>{isHighLight ? <strong>{formatted}</strong> : <>{formatted}</>}</Info>
     })}
     {claimableOthers?.map(({ symbol, amount }, idx) => {
-      const formatted = `${formatNumber(toAmount(amount), { abbreviate: false, fallback: '-' })} ${symbol}`
+      const formatted = formatToken(toAmount(amount), symbol, 'amount')
       // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
       return <Info key={`${symbol}${idx}`}>{isHighLight ? <strong>{formatted}</strong> : <>{formatted}</>}</Info>
     })}

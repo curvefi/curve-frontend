@@ -811,6 +811,4 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
   },
 })
 
-function cutSalt(address: string) {
-  return address.substring(0, 16)
-}
+const cutSalt = (address: string) => address.substring(0, 16)

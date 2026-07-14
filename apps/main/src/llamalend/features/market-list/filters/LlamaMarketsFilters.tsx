@@ -3,6 +3,7 @@ import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { TableFilterButtonGroup } from '@ui-kit/shared/ui/DataTable/TableFilterButtonGroup'
 import { TableFilterItem } from '@ui-kit/shared/ui/DataTable/TableFilterItem'
+import { TableRangeFilter } from '@ui-kit/shared/ui/DataTable/TableRangeFilter'
 import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -10,7 +11,6 @@ import { type AssetDetails } from '../../../queries/market-list/llama-markets'
 import { LlamaChainFilterChips } from '../chips/LlamaChainFilterChips'
 import { LLAMA_MARKET_TITLES, LlamaMarketColumnId } from '../columns'
 import { type LlamaMarketsFiltersProps, useLlamaMarketsFilters } from './hooks/useLlamaMarketsFilters'
-import { LlamaTableRangeFilter } from './LlamaTableRangeFilter'
 import { MultiSelectFilter } from './MultiSelectFilter'
 import { RangeSliderRowFilter } from './RangeSliderRowFilter'
 
@@ -82,7 +82,7 @@ export const LlamaMarketsFilters = (props: LlamaMarketsFiltersProps) => {
         />
       </TableFilterItem>
       <TableFilterItem title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.BorrowRate]}>
-        <LlamaTableRangeFilter
+        <TableRangeFilter
           id={LlamaMarketColumnId.BorrowRate}
           min={borrowRateRange.min}
           max={borrowRateRange.max}
@@ -92,7 +92,7 @@ export const LlamaMarketsFilters = (props: LlamaMarketsFiltersProps) => {
         />
       </TableFilterItem>
       <TableFilterItem title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.Tvl]}>
-        <LlamaTableRangeFilter
+        <TableRangeFilter
           id={LlamaMarketColumnId.Tvl}
           min={tvlRange.min}
           max={tvlRange.max}
@@ -102,7 +102,7 @@ export const LlamaMarketsFilters = (props: LlamaMarketsFiltersProps) => {
         />
       </TableFilterItem>
       <TableFilterItem title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.LiquidityUsd]}>
-        <LlamaTableRangeFilter
+        <TableRangeFilter
           id={LlamaMarketColumnId.LiquidityUsd}
           min={liquidityRange.min}
           max={liquidityRange.max}
@@ -112,7 +112,7 @@ export const LlamaMarketsFilters = (props: LlamaMarketsFiltersProps) => {
         />
       </TableFilterItem>
       <TableFilterItem title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.UtilizationPercent]}>
-        <LlamaTableRangeFilter
+        <TableRangeFilter
           id={LlamaMarketColumnId.UtilizationPercent}
           min={utilizationRange.min}
           max={utilizationRange.max}

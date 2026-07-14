@@ -365,6 +365,5 @@ export const createLockedCrvSlice = (
   },
 })
 
-function getActiveKey(formType: FormType | '', chainId: ChainId | undefined, walletAddress: string | undefined) {
-  return `${formType}-${chainId ?? ''}-${walletAddress ? shortenAccount(walletAddress) : ''}`
-}
+const getActiveKey = (formType: FormType | '', chainId: ChainId | undefined, walletAddress: string | undefined) =>
+  `${formType}-${chainId ?? ''}-${walletAddress ? shortenAccount(walletAddress) : ''}`

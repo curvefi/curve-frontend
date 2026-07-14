@@ -6,12 +6,10 @@ import type { ScrvUsdDepositParams } from '@/loan/entities/scrvusd.validation'
 import { networks } from '@/loan/networks'
 import type { ChainId } from '@/loan/types/loan.types'
 import Stack from '@mui/material/Stack'
-import type { Decimal } from '@primitives/decimal.utils'
-import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate } from '@ui-kit/shared/ui/ActionInfo'
 import { mapQuery, q } from '@ui-kit/types/util'
-import { formatNumber } from '@ui-kit/utils'
+import { formatToken } from '@ui-kit/utils'
 import { InfiniteAllowanceActionInfo } from './InfiniteAllowanceActionInfo'
 import { ScrvUsdExchangeRateActionInfo } from './ScrvUsdExchangeRateActionInfo'
 
@@ -23,9 +21,6 @@ type ScrvUsdDepositInfoListProps = {
   approveInfinite: boolean
   onApproveInfiniteToggle: () => void
 }
-
-const formatTokenAmount = (value: Decimal | undefined, symbol: string) =>
-  maybe(value, value => `${formatNumber(value, 'token.amount')} ${symbol}`)
 
 export const ScrvUsdDepositInfoList = ({
   chainId,
@@ -44,7 +39,7 @@ export const ScrvUsdDepositInfoList = ({
         <ScrvUsdExchangeRateActionInfo chainId={chainId} enabled={isOpen} />
         <ActionInfo
           label={t`To Vault`}
-          value={mapQuery(expectedScrvUsd, data => formatTokenAmount(data, 'scrvUSD'))}
+          value={mapQuery(expectedScrvUsd, data => formatToken(data, 'scrvUSD', 'amount'))}
           size="small"
           testId="scrvusd-deposit-to-vault"
         />

@@ -21,9 +21,7 @@ export const readUnstakeAvailableAmount = () =>
 /**
  * Fill in the unstake form with the specified amount.
  */
-export function writeUnstakeForm({ amount }: { amount: Decimal }) {
-  writeSupplyInput({ type: 'unstake', amount })
-}
+export const writeUnstakeForm = ({ amount }: { amount: Decimal }) => writeSupplyInput({ type: 'unstake', amount })
 
 /**
  * Check all unstake detail values are loaded and valid.

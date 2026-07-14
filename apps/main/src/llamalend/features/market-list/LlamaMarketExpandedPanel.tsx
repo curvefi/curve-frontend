@@ -1,5 +1,6 @@
 import { type FunctionComponent, ReactNode, useMemo } from 'react'
 import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
+import { tokenMetric } from '@/llamalend/llama.utils'
 import CardHeader, { CardHeaderProps } from '@mui/material/CardHeader'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
@@ -85,7 +86,7 @@ const GridHeader = ({ ...props }: Omit<CardHeaderProps, 'sx'>) => (
 )
 
 export const LlamaMarketExpandedPanel = ({ row: { original: market } }: Parameters<ExpandedPanel<LlamaMarket>>[0]) => {
-  const { assets, leverage, liquidityUsd, lendingPosition, utilizationPercent } = market
+  const { assets, leverage, liquidity, liquidityUsd, lendingPosition, utilizationPercent } = market
   const graphSize = useMobileGraphSize()
 
   return (
@@ -121,8 +122,11 @@ export const LlamaMarketExpandedPanel = ({ row: { original: market } }: Paramete
           <Metric
             category={EXPANDED_DETAILS_METRIC_CATEGORY}
             label={t`Available Liquidity`}
-            value={constQ(liquidityUsd)}
-            valueOptions={{ unit: 'dollar' }}
+            {...tokenMetric({
+              value: constQ(liquidity),
+              symbol: assets.borrowed.symbol,
+              notional: constQ({ value: liquidityUsd, unit: 'dollar' as const }),
+            })}
           />
         </Grid>
       </GridSection>

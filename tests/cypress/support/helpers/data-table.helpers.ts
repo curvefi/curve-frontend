@@ -13,9 +13,6 @@ export function withFilterChips<T>(breakpoint: Breakpoint, callback: () => Cypre
   })
 }
 
-export const getHiddenCount = (breakpoint: Breakpoint): Cypress.Chainable<string> =>
-  withFilterChips(breakpoint, () => cy.get('[data-testid="hidden-market-count"]').then(([{ innerText }]) => innerText))
-
 export function expandFirstRowOnMobile(breakpoint: Breakpoint) {
   if (breakpoint == 'mobile') {
     cy.get(`[data-testid="expand-icon"]`).first().click()
@@ -91,12 +88,6 @@ export const withMultiSelectFilter = <T>(
     cy.get(`[data-testid="menu-${id}"]`).should('not.exist') // wait for the menu to close
     return cy.wrap(result)
   })
-}
-
-export function closeSlider(breakpoint: Breakpoint) {
-  cy.get('body').click(0, 0, { waitForAnimations: true })
-  cy.get(`[data-testid^="slider-"]`).should('not.exist')
-  closeDrawer(breakpoint)
 }
 
 export const getTableCellAssets = () => cy.get('[data-testid="data-table-cell-assets"]')

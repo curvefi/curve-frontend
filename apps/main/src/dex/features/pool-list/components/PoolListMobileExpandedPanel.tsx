@@ -56,7 +56,7 @@ export const PoolListMobileExpandedPanel: ExpandedPanel<PoolListItem> = ({ row, 
         }}
       />
       <Grid size={6}>
-        <PoolListRewards pool={pool} mobile />
+        <PoolListRewards pool={pool} isMobile />
       </Grid>
     </Grid>
   )

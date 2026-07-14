@@ -10,7 +10,7 @@ import { Spinner } from '@ui/Spinner'
 import { Stats } from '@ui/Stats'
 import { Chip } from '@ui/Typography/Chip'
 import { t } from '@ui-kit/lib/i18n'
-import { formatNumber } from '@ui-kit/utils'
+import { formatNumber, formatToken } from '@ui-kit/utils'
 import { tooltipProps } from '../utils'
 
 type TotalOtherProfit = Record<string, { symbol: string; day: number; price: number }>
@@ -83,7 +83,7 @@ export const TotalRecurrence = ({ title }: Props) => {
                   {...(token === 'base'
                     ? {}
                     : {
-                        tooltip: `${formatNumber(1, { abbreviate: false })} ${symbol} = ${formatNumber(price, 'usd.amount')}`,
+                        tooltip: `${formatToken(1, symbol, 'amount')} = ${formatNumber(price, 'usd.amount')}`,
                         tooltipProps,
                       })}
                 >

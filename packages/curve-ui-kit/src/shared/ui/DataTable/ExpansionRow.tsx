@@ -33,11 +33,19 @@ export function ExpansionRow<T extends TableItem>({
   const { render, onExited, expanded } = useRowExpansion(row)
   const { Body: ExpandedPanelBody, getActions } = expandedPanel
   const actions = getActions?.({ row, table }) ?? []
+
+  const [testId, setTestId] = useState<string | null>(null)
+
   return (
     render && (
-      <TableRow data-testid="data-table-expansion-row">
+      <TableRow data-testid={testId}>
         <TableCell colSpan={colSpan} sx={{ padding: 0 }}>
-          <Collapse in={expanded} onExited={onExited}>
+          <Collapse
+            in={expanded}
+            onEntered={() => setTestId('data-table-expansion-row')}
+            onExit={() => setTestId(null)}
+            onExited={onExited}
+          >
             <Stack direction="column" sx={{ gap: Spacing.md, paddingBlockStart: Spacing.md }}>
               <Stack sx={{ gap: Spacing.md, paddingInline: Spacing.md }}>
                 <ExpandedPanelBody row={row} table={table} />
