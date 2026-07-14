@@ -122,9 +122,9 @@ export const {
 } = queryFactory({
   queryKey: (params: TokenParams) => [...rootKeys.token(params), 'usdRate' as const] as const,
   queryFn: async ({ chainId, tokenAddress }: TokenQuery) => await fetchUsdRate(chainId, tokenAddress),
-  validationSuite: createValidationSuite(({ chainId, tokenAddress }: TokenParams) => {
-    tokenValidationGroup({ chainId, tokenAddress })
-  }),
+  validationSuite: createValidationSuite(({ chainId, tokenAddress }: TokenParams) =>
+    tokenValidationGroup({ chainId, tokenAddress }),
+  ),
   disableLog: true, // too much noise in the logs
   category: 'global.tokenRate',
 })
