@@ -16,6 +16,7 @@ export const QUERY_CATEGORIES = {
   'global.integrations': staticData,
   'global.routerApi': urgent,
   'global.snapshots': table,
+  'global.networks': table, // not static, includes tvl
 
   // Bridge
   'bridge.capacity': marketDetail,
