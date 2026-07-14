@@ -1,9 +1,10 @@
 import { partition } from 'lodash'
-import { type MouseEvent, useId, useState } from 'react'
+import { type MouseEvent, useId } from 'react'
 import Button, { type ButtonOwnProps } from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import { splitAt } from '@primitives/array.utils'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { DotsVerticalIcon } from '@ui-kit/shared/icons/DotsVertical'
 import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
@@ -69,7 +70,7 @@ const ExpandedPanelActionButton = ({
 }
 
 export const ExpandedPanelActions = ({ actions }: { actions: readonly ExpandedPanelAction[] }) => {
-  const [open, setOpen] = useState(false)
+  const [isOpen, open, close, , setIsOpen] = useSwitch(false)
   const drawerId = useId()
   const [kebabOnlyActions, primaryActionCandidates] = partition(actions, action => action.alwaysInKebabMenu)
   const [primaryActions, overflowActions] = splitAt(primaryActionCandidates, VISIBLE_ACTION_COUNT)
@@ -87,24 +88,24 @@ export const ExpandedPanelActions = ({ actions }: { actions: readonly ExpandedPa
           button={
             <IconButton
               aria-controls={drawerId}
-              aria-expanded={open}
+              aria-expanded={isOpen}
               aria-haspopup="dialog"
               aria-label={t`More actions`}
               color="primary"
               data-testid="expanded-panel-actions-menu-button"
-              onClick={() => setOpen(true)}
+              onClick={open}
               size={visibleButtonsSize}
             >
               <DotsVerticalIcon />
             </IconButton>
           }
-          open={open}
-          setOpen={setOpen}
+          open={isOpen}
+          setOpen={setIsOpen}
         >
           <DrawerHeader title={t`More actions`} />
           <DrawerItems id={drawerId} data-testid="expanded-panel-actions-menu">
             {drawerActions.map(action => (
-              <ExpandedPanelActionButton key={action.id} action={action} onDrawerActionClick={() => setOpen(false)} />
+              <ExpandedPanelActionButton key={action.id} action={action} onDrawerActionClick={close} />
             ))}
           </DrawerItems>
         </SwipeableDrawer>
