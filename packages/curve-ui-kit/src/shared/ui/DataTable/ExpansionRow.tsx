@@ -15,7 +15,7 @@ export type ExpandedPanel<T extends TableItem> = FunctionComponent<ExpandedPanel
 
 export type ExpandedPanelConfig<T extends TableItem> = {
   Body: ExpandedPanel<T>
-  getActions?: ExpandedPanelActionResolver<T>
+  getActions?: ExpandedPanelActionResolver<T> // an array of actions that gets passed to `ExpandedPanelActions`.
 }
 
 /**
