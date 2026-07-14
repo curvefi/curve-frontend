@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+import { LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import {
   getSupplyInputBalanceValueAttr,
@@ -18,6 +19,15 @@ export const readStakeAvailableAssets = () =>
       expect(new BigNumber(balanceValue || '0').gt(0)).to.equal(true)
     })
     .then(balanceValue => (balanceValue || '0') as Decimal)
+
+export const selectMaxStake = () => {
+  // Percentage chips are hidden until hover in desktop layouts.
+  cy.get('[data-testid="supply-stake-input"] [data-testid="input-chip-100%"]', LOAD_TIMEOUT).click({ force: true })
+  cy.get('[data-testid="supply-stake-input"] input[type="text"]', LOAD_TIMEOUT)
+    .invoke(LOAD_TIMEOUT, 'attr', 'data-value')
+    .should(value => expect(new BigNumber(value || '0').gt(0)).to.equal(true))
+  cy.get('[data-testid="supply-action-info-list"]', LOAD_TIMEOUT).should('be.visible')
+}
 
 /**
  * Fill in the stake form with the specified underlying asset value.

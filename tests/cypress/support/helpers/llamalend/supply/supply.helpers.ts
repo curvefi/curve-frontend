@@ -3,7 +3,11 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber, Chain } from '@ui-kit/utils'
-import { checkEstimatedTxCost as checkEstimatedTxCostValue, getActionValue } from '../action-info.helpers'
+import {
+  checkEstimatedTxCost as checkEstimatedTxCostValue,
+  DECIMAL_REGEX,
+  getActionValue,
+} from '../action-info.helpers'
 
 type SupplyRpcTestMarket = {
   id: string
@@ -171,23 +175,16 @@ export function checkCurrentSuppliedAmount(expectedAmount: Decimal) {
 /**
  * Check the current staked vault shares and supplied amount after a stake/unstake action.
  */
-export function checkCurrentStakedAmount({
-  expectedVaultShares,
-  expectedAmountSupplied,
-}: {
-  expectedVaultShares?: Decimal
-  expectedAmountSupplied: Decimal
-}) {
-  const expectedAmount = formatNumber(expectedAmountSupplied, { abbreviate: false })
-
-  if (expectedVaultShares == null) {
-    getActionValue('supply-vault-shares').should('be.undefined')
-    getActionValue('supply-vault-shares', 'previous').should('be.undefined')
+export function checkCurrentStakedAmount({ expectedAmountSupplied }: { expectedAmountSupplied: Decimal }) {
+  if (+expectedAmountSupplied) {
+    getActionValue('supply-vault-shares').should('match', DECIMAL_REGEX)
+    getActionValue('supply-vault-shares', 'previous').should('match', DECIMAL_REGEX)
   } else {
-    const expectedShares = formatNumber(expectedVaultShares, { abbreviate: true })
-    getActionValue('supply-vault-shares').should('equal', expectedShares)
-    getActionValue('supply-vault-shares', 'previous').should('equal', expectedShares)
+    getActionValue('supply-vault-shares').should('equal', '0')
+    getActionValue('supply-vault-shares', 'previous').should('equal', '0')
   }
+
+  const expectedAmount = formatNumber(expectedAmountSupplied, { abbreviate: false })
   getActionValue('supply-amount').should('equal', expectedAmount)
   getActionValue('supply-amount', 'previous').should('equal', expectedAmount)
 }
