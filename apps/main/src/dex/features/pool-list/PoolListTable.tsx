@@ -9,8 +9,11 @@ import { useIsMobile, useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { copyToClipboardWithToast } from '@ui-kit/hooks/useCopyToClipboard'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
-import { type ExpandedPanelActionResolver } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import {
+  getTableOptions,
+  useTable,
+  type ExpandedPanelActionResolver,
+} from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableFiltersChip } from '@ui-kit/shared/ui/DataTable/TableFiltersChip'
