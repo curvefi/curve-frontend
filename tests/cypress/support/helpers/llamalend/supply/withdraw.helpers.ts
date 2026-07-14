@@ -13,9 +13,7 @@ export const submitWithdrawForm = () => submitSupplyForm('withdraw', 'Withdraw s
 /**
  * Fill in the withdraw form with the specified amount.
  */
-export function writeWithdrawForm({ amount }: { amount: Decimal }) {
-  writeSupplyInput({ type: 'withdraw', amount })
-}
+export const writeWithdrawForm = ({ amount }: { amount: Decimal }) => writeSupplyInput({ type: 'withdraw', amount })
 
 /**
  * Check all withdraw detail values are loaded and valid.

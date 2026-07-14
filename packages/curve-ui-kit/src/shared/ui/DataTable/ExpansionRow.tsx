@@ -29,15 +29,21 @@ export function ExpansionRow<T extends TableItem>({
   colSpan: number
 }) {
   const { render, onExited, expanded } = useRowExpansion(row)
+  const [testId, setTestId] = useState<string | null>(null)
   const { design } = useTheme()
   const boxShadow = useMemo(() => getShadow(design, 3), [design])
   const insetShadow = useMemo(() => getInsetShadow(design, 3), [design])
   return (
     // add a scale(1) so the box-shadow is applied correctly on top of the next table row
     render && (
-      <TableRow sx={{ boxShadow, transform: 'scale(1)' }} data-testid="data-table-expansion-row">
+      <TableRow sx={{ boxShadow, transform: 'scale(1)' }} data-testid={testId}>
         <TableCell colSpan={colSpan} sx={{ padding: 0, boxShadow: insetShadow }}>
-          <Collapse in={expanded} onExited={onExited}>
+          <Collapse
+            in={expanded}
+            onEntered={() => setTestId('data-table-expansion-row')}
+            onExit={() => setTestId(null)}
+            onExited={onExited}
+          >
             <Stack
               direction="column"
               sx={{

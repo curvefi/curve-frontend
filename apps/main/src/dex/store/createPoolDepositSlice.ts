@@ -655,11 +655,9 @@ function getActiveKey(
   return activeKey
 }
 
-function resetFormValues(formValues: FormValues): FormValues {
-  return {
-    ...cloneDeep(formValues),
-    isBalancedAmounts: false as const,
-    lpToken: '',
-    amounts: formValues.amounts.map(a => ({ ...a, value: '' })),
-  }
-}
+const resetFormValues = (formValues: FormValues): FormValues => ({
+  ...cloneDeep(formValues),
+  isBalancedAmounts: false as const,
+  lpToken: '',
+  amounts: formValues.amounts.map(a => ({ ...a, value: '' })),
+})

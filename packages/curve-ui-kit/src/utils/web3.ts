@@ -5,21 +5,13 @@ import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { waitFor } from '@ui-kit/utils/time.utils'
 import { type Config, waitForTransactionReceipt } from '@wagmi/core'
 
-export function gweiToEther(gwei: number) {
-  return gwei / 1e9
-}
+export const gweiToEther = (gwei: number) => gwei / 1e9
 
-export function gweiToWai(gwei: number) {
-  return Math.trunc(gwei * 1e9)
-}
+export const gweiToWai = (gwei: number) => Math.trunc(gwei * 1e9)
 
-export function weiToEther(wei: number) {
-  return wei / 1e18
-}
+export const weiToEther = (wei: number) => wei / 1e18
 
-export function weiToGwei(wai: number) {
-  return Math.trunc(wai) / 1e9
-}
+export const weiToGwei = (wai: number) => Math.trunc(wai) / 1e9
 
 /**
  * Waits for transaction execution by checking isSatisfied, and if not satisfied,

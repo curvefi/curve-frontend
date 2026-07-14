@@ -31,9 +31,8 @@ export const selectMaxUnstake = () => {
 /**
  * Fill in the unstake form with the specified underlying asset value.
  */
-export function writeUnstakeForm({ assets }: { assets: Decimal }) {
+export const writeUnstakeForm = ({ assets }: { assets: Decimal }) =>
   writeSupplyInput({ type: 'unstake', amount: assets })
-}
 
 /**
  * Check all unstake detail values are loaded and valid.

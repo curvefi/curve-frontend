@@ -28,9 +28,7 @@ export const confirmLowSolvencyDepositForm = () => {
 /**
  * Fill in the deposit form with the specified amount.
  */
-export function writeDepositForm({ amount }: { amount: Decimal }) {
-  writeSupplyInput({ type: 'deposit', amount })
-}
+export const writeDepositForm = ({ amount }: { amount: Decimal }) => writeSupplyInput({ type: 'deposit', amount })
 
 /**
  * Check the deposit submit state for enabled and disabled markets.
@@ -63,7 +61,7 @@ export function checkDepositSubmit({
  * Check all deposit detail values are loaded and valid.
  * The action info list is expected to be opened before calling this function.
  */
-export function checkDepositDetailsLoaded({
+export const checkDepositDetailsLoaded = ({
   suppliedAssets,
   prevSuppliedAssets,
   symbol = 'crvUSD',
@@ -73,7 +71,7 @@ export function checkDepositDetailsLoaded({
   prevSuppliedAssets: Decimal
   symbol?: string
   hasApi?: boolean
-}) {
+}) => {
   checkSupplyActionInfoValues({ suppliedAssets, prevSuppliedAssets, symbol, hasApi })
 }
 

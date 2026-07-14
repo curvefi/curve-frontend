@@ -32,9 +32,7 @@ export const selectMaxStake = () => {
 /**
  * Fill in the stake form with the specified underlying asset value.
  */
-export function writeStakeForm({ assets }: { assets: Decimal }) {
-  writeSupplyInput({ type: 'stake', amount: assets })
-}
+export const writeStakeForm = ({ assets }: { assets: Decimal }) => writeSupplyInput({ type: 'stake', amount: assets })
 
 /**
  * Check the stake submit state for enabled and disabled markets.
