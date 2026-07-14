@@ -9,7 +9,6 @@ import {
   requireVault,
 } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { type Address, type Hex } from '@primitives/address.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
@@ -21,11 +20,6 @@ type StakeOptions = {
   onReset: () => void
   userAddress: Address | undefined
 }
-const getStakeShares = async (market: LendMarketTemplate, { isFull, stakeShares }: StakeMutation) =>
-  isFull ? (await market.wallet.balances()).vaultShares : stakeShares
-
-const stake = async (market: LendMarketTemplate, variables: StakeMutation): Promise<Hex> =>
-  (await market.vault.stake(await getStakeShares(market, variables))) as Hex
 
 export const useStakeMutation = ({ network, network: { chainId }, marketId, userAddress, ...props }: StakeOptions) => {
   const config = useConfig()
@@ -34,20 +28,16 @@ export const useStakeMutation = ({ network, network: { chainId }, marketId, user
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'stake'] as const,
-    mutationFn: async (variables, { market }) => {
+    mutationFn: async ({ stakeShares, isFull }, { market }) => {
       const lendMarket = requireVault(market)
       await waitForApproval({
         isApproved: async () =>
-          await fetchStakeIsApproved({ chainId, marketId, userAddress, ...variables }, { staleTime: 0 }),
-        onApprove: async () => {
-          const stakeShares = await getStakeShares(lendMarket, variables)
-          return (await lendMarket.vault.stakeApprove(stakeShares)) as Hex[]
-        },
+          await fetchStakeIsApproved({ chainId, marketId, userAddress, stakeShares, isFull }, { staleTime: 0 }),
+        onApprove: async () => (await lendMarket.vault.stakeApprove(stakeShares)) as Hex[],
         message: t`Approved stake`,
         config,
       })
-
-      return { hash: await stake(lendMarket, variables) }
+      return { hash: (await lendMarket.vault.stake(stakeShares)) as Hex }
     },
     validationSuite: stakeValidationSuite,
     pendingMessage: ({ stakeShares }) => t`Staking... ${formatNumber(stakeShares, 'token.amount')} vault shares`,

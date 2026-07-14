@@ -32,8 +32,7 @@ export const useUnstakeMutation = ({
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'unstake'] as const,
     mutationFn: async (variables, { market }) => {
       const lendMarket = requireVault(market)
-      const unstakeShares = variables.isFull ? (await lendMarket.wallet.balances()).gauge : variables.unstakeShares
-      return { hash: (await lendMarket.vault.unstake(unstakeShares)) as Hex }
+      return { hash: (await lendMarket.vault.unstake(variables.unstakeShares)) as Hex }
     },
     validationSuite: unstakeValidationSuite,
     pendingMessage: ({ unstakeShares }) => t`Unstaking... ${formatNumber(unstakeShares, 'token.amount')} vault shares`,
