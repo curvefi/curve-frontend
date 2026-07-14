@@ -32,7 +32,7 @@ export const { useQuery: useLendingSnapshots } = queryFactory({
             : { start: Math.floor((now - TIME_OPTION_MS[timeOption]) / 1000), end: Math.floor(now / 1000) }),
         }),
     )
-    return response.reverse()
+    return response.toReversed()
   },
   validationSuite: contractValidationSuite,
   category: 'global.snapshots',

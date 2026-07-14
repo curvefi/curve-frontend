@@ -109,7 +109,7 @@ export const useUserCollateralEvents = ({
                 collateralToken,
                 ...pick(event, ...OriginalFields),
               }))
-              .reverse() || [],
+              .toReversed() || [],
         },
         isLoading,
         error,

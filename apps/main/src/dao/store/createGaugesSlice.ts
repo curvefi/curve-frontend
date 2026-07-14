@@ -165,12 +165,12 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
 
         set(
           produce((state: State) => {
-            state[SLICE_KEY].gaugeVotesMapper[address].votes = [...votes].reverse()
+            state[SLICE_KEY].gaugeVotesMapper[address].votes = votes.toReversed()
             state[SLICE_KEY].gaugeVotesSortBy.order = order
           }),
         )
       } else {
-        const sortedEntries = [...votes].sort((a, b) => b[sortBy] - a[sortBy])
+        const sortedEntries = votes.toSorted((a, b) => b[sortBy] - a[sortBy])
 
         set(
           produce((state: State) => {
@@ -358,5 +358,6 @@ const sortGauges = (gauges: GaugeMapper, sortBy: SortByFilterGauges): GaugeForma
     }
   }
 
+  // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
   return gaugeArray.sort(sortFn)
 }

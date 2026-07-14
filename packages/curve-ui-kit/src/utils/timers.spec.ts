@@ -45,6 +45,7 @@ describe('setTimeoutInterval', () => {
     'schedules the first run after delay and continues at the same delay',
     withFakeTimers(async () => {
       const calls: number[] = []
+      // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       const cancel = setTimeoutInterval(() => calls.push(Date.now()), 1000)
       expect(calls.length).toBe(0) // nothing happens immediately
 
@@ -66,8 +67,10 @@ describe('setTimeoutInterval', () => {
       const defer = createDeferred()
 
       const cancel = setTimeoutInterval(async () => {
+        // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
         steps.push('start')
         await defer.promise
+        // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
         steps.push('end')
       }, 500)
 

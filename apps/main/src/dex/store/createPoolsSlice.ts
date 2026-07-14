@@ -200,6 +200,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
           usdRate,
           percentShareInPool: '',
         }
+        // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
         crTokens.push(crToken)
       }
 

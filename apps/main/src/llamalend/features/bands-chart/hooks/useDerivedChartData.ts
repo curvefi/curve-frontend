@@ -27,15 +27,20 @@ export const useDerivedChartData = (chartData: ChartDataPoint[]): DerivedChartDa
 
     for (const d of chartData) {
       // Use median price for y-axis labels
+      // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       yAxisData.push(d.pUpDownMedian)
 
       const userCollateralValue = d.userBandCollateralValue
       const userBorrowedValue = d.userBandBorrowedAmount
       const totalBandValue = d.bandTotalValue ?? decimalSum(userCollateralValue, userBorrowedValue)
 
+      // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       userCollateralData.push(toNumber(userCollateralValue))
+      // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       userBorrowedData.push(toNumber(userBorrowedValue))
+      // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       bandTotalData.push(toNumber(totalBandValue))
+      // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       isLiquidation.push(d.isLiquidationBand)
     }
 

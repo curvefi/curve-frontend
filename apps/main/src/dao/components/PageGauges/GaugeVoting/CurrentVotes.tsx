@@ -25,7 +25,7 @@ import { Chain } from '@ui-kit/utils/network'
 import { USER_VOTES_TABLE_LABELS } from './constants'
 
 const sortGauges = (gauges: UserGaugeVoteWeight[], order: SortDirection, sortBy: UserGaugeVoteWeightSortBy) =>
-  [...gauges].sort((a, b) => (order === 'asc' ? a[sortBy] - b[sortBy] : b[sortBy] - a[sortBy]))
+  gauges.toSorted((a, b) => (order === 'asc' ? a[sortBy] - b[sortBy] : b[sortBy] - a[sortBy]))
 
 export const CurrentVotes = () => {
   const { address: userAddress } = useConnection()

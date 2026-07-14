@@ -363,6 +363,7 @@ export const CandleChart = ({
         lineStyle: LineStyle.Solid,
       })
       series.applyOptions(getSeriesAppearance('historical').seriesOptions)
+      // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       historicalRangeSeriesRef.current.push(series)
     })
 
