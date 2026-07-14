@@ -1,7 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
+import { getTokens } from '@/llamalend/llama.utils'
 import { fakeCollateralEvents, TEST_ADDRESS } from '@cy/support/helpers/llamalend/mock-loan-test-data'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
+import { createRepayScenario } from '@cy/support/helpers/llamalend/mocks/repay.mocks'
 import { seedCrvUsdBalance } from '@cy/support/helpers/llamalend/query-cache.helpers'
 import {
   checkRepayDetailsLoaded,
@@ -15,7 +16,6 @@ import {
   setGasInfo,
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
-import { createRepayScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
 import { constQ } from '@ui-kit/types/util'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 
@@ -23,23 +23,43 @@ const CHAIN_ID = 1
 const testCases = [
   { approved: true, title: 'fills and submits (already approved)' },
   { approved: false, title: 'fills, approves, and submits' },
-]
+].flatMap(testCase => [
+  {
+    ...testCase,
+    leverage: false,
+    repayToken: 'borrowed' as const,
+  },
+  {
+    ...testCase,
+    title: `${testCase.title} with leverage`,
+    leverage: true,
+    repayToken: 'collateral' as const,
+  },
+])
 
 describe('RepayForm (mocked)', () => {
   afterEach(() => {
     resetLlamaTestContext()
   })
 
-  testCases.forEach(({ approved, title }: { approved: boolean; title: string }) => {
+  testCases.forEach(({ approved, leverage, repayToken, title }) => {
     it(title, () => {
-      const { borrow, collateral, currentDebt, expected, futureDebt, llamaApi, market, stubs } = createRepayScenario({
-        chainId: CHAIN_ID,
-        approved,
-      })
+      const { borrow, collateral, currentDebt, futureDebt, llamaApi, market, assertPreSubmit, assertSubmit } =
+        createRepayScenario({
+          chainId: CHAIN_ID,
+          approved,
+          leverage,
+        })
 
       const onPricesUpdated = cy.spy().as('onPricesUpdated')
+      const amount = repayToken === 'collateral' ? collateral : borrow
+      const hasLeverageManagement = leverage
+      const { collateralToken } = getTokens(market)
+      const token =
+        repayToken === 'collateral'
+          ? { symbol: collateralToken.symbol, tokenAddress: collateralToken.address, optionIndex: 1 }
+          : { symbol: 'crvUSD', tokenAddress: CRVUSD_ADDRESS, optionIndex: 0 }
 
-      void collateral
       setLlamaApi(llamaApi)
       setGasInfo({ chainId: CHAIN_ID, networks: llamaNetworks })
       seedCrvUsdBalance({ chainId: CHAIN_ID, addresses: [TEST_ADDRESS], min: borrow })
@@ -54,35 +74,15 @@ describe('RepayForm (mocked)', () => {
         </MockLoanTestWrapper>,
       )
 
-      selectRepayToken({ symbol: 'crvUSD', tokenAddress: CRVUSD_ADDRESS, hasLeverageManagement: false })
-      writeRepayLoanForm({ amount: borrow })
+      selectRepayToken({ ...token, hasLeverageManagement })
+      writeRepayLoanForm({ amount, waitForRoutes: leverage })
       checkRepayDetailsLoaded({
         debt: { current: currentDebt, future: futureDebt, symbol: 'crvUSD' },
-        leverageEnabled: false,
+        leverageEnabled: leverage,
       })
 
-      cy.then(() => {
-        expect(stubs.parameters).to.have.been.calledWithExactly()
-        expect(stubs.repayHealth).to.have.been.calledWithExactly(...expected.health)
-        expect(stubs.repayPrices).to.have.been.calledWithExactly(...expected.prices)
-        expect(stubs.repayIsApproved).to.have.been.calledWithExactly(...expected.isApproved)
-        if (approved) {
-          expect(stubs.estimateGasRepay).to.have.been.calledWithExactly(...expected.estimateGas)
-          expect(stubs.estimateGasRepayApprove).to.not.have.been.called
-        } else {
-          expect(stubs.estimateGasRepayApprove).to.have.been.calledWithExactly(...expected.estimateGasApprove)
-        }
-      })
-
-      submitRepayForm().then(() => {
-        expect(stubs.estimateGasRepay).to.have.been.calledWithExactly(...expected.estimateGas)
-        expect(stubs.repay).to.have.been.calledWithExactly(...expected.submit)
-        if (approved) {
-          expect(stubs.repayApprove).to.not.have.been.called
-        } else {
-          expect(stubs.repayApprove).to.have.been.calledWithExactly(...expected.approve)
-        }
-      })
+      cy.then(assertPreSubmit)
+      submitRepayForm().then(assertSubmit)
     })
   })
 })

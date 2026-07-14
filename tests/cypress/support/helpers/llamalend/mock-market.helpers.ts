@@ -1,14 +1,11 @@
 import { zeroAddress } from 'viem'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
-import { oneAddress, oneDecimal, oneValueOf } from '@cy/support/generators'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { oneAddress, oneDecimal } from '@cy/support/generators'
 import { CRVUSD_ADDRESS, MAINNET_CRV_ADDRESS } from '@ui-kit/utils'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type MockMethod = (...args: any[]) => Promise<any>
-
-export const oneMarketType = () => oneValueOf(LlamaMarketType)
 
 // Borrow-side tests rely on the MintMarketTemplate prototype and mint-specific methods.
 export const createMockMintMarket = (overrides: object) =>
@@ -145,6 +142,7 @@ export const createMockLendMarket = (overrides?: object) =>
       decimals: 18,
     },
     addresses: {
+      amm: oneAddress(),
       controller: oneAddress(),
       vault: oneAddress(),
       gauge: oneAddress(),
