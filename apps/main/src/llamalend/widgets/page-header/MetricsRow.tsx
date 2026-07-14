@@ -26,7 +26,7 @@ export const MetricsRow = ({
 }: {
   borrowRate: QueryProp<BorrowRate>
   supplyRate?: QueryProp<SupplyRate>
-  availableLiquidity: QueryProp<AvailableLiquidity>
+  availableLiquidity: AvailableLiquidity
   marketType: LlamaMarketType
   collateral: { symbol: string } | undefined
   borrowToken: { symbol: string } | undefined
@@ -92,9 +92,9 @@ export const MetricsRow = ({
           testId="market-total-liquidity"
           label={t`Total liquidity`}
           {...tokenMetric({
-            value: mapQuery(availableLiquidity, d => d.total),
+            value: availableLiquidity.total,
             symbol: borrowToken?.symbol,
-            usdRate: mapQuery(availableLiquidity, d => d.usdRate),
+            usdRate: availableLiquidity.usdRate,
           })}
           valueTooltip={{
             title: t`Total liquidity`,
@@ -108,9 +108,9 @@ export const MetricsRow = ({
         testId="market-available-liquidity"
         label={t`Available liquidity`}
         {...tokenMetric({
-          value: mapQuery(availableLiquidity, d => d.value),
+          value: availableLiquidity.value,
           symbol: borrowToken?.symbol,
-          usdRate: mapQuery(availableLiquidity, d => d.usdRate),
+          usdRate: availableLiquidity.usdRate,
         })}
         valueTooltip={{
           title: t`Available Liquidity ${MarketTypeSuffix[marketType]}`,
