@@ -6,7 +6,7 @@ import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
 import { POOL_LIST_TITLES, PoolListColumnId, getDefaultSort } from '../columns'
 import { POOL_LIST_SORT_BY, type PoolListSortableColumn } from '../poolList.constants'
-import type { PoolListQueryUpdater } from './usePoolListPagination'
+import type { PoolListQueryUpdater } from '../poolListFilterQuery'
 
 const SORT_QUERY_FIELD = 'sort'
 const SORT_COLUMNS = {
