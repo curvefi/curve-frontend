@@ -71,7 +71,12 @@ export const MobileHeader = ({
     >
       <GlobalBanner networkId={networkId} chainId={chainId} backendMaintenance={backendMaintenance} />
       <Toolbar sx={t => ({ paddingBlock: PADDING_BLOCK, zIndex: t.zIndex.drawer + 1 })}>
-        <MobileTopBar networks={supportedNetworks} isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+        <MobileTopBar
+          supportedNetworks={supportedNetworks}
+          isSidebarOpen={isSidebarOpen}
+          toggleSidebar={toggleSidebar}
+          currentMenu={currentMenu}
+        />
 
         <Drawer
           anchor="left"

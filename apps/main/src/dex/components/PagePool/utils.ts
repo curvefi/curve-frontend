@@ -12,33 +12,28 @@ export type Amount = {
   tokenAddress: string
 }
 
-export function parseAmountsForAPI(amounts: Amount[]) {
-  return amounts.map(a => (Number(a.value) > 0 ? a.value : '0'))
-}
+export const parseAmountsForAPI = (amounts: Amount[]) => amounts.map(a => (Number(a.value) > 0 ? a.value : '0'))
 
-export function getAmountsError(amounts: Amount[], balances: IDict<string>) {
-  return [...amounts]
+export const getAmountsError = (amounts: Amount[], balances: IDict<string>) =>
+  [...amounts]
     .filter(a => {
       const userBalance = balances?.[a.tokenAddress]
       return +(a.value || '0') > +(userBalance || '0')
     })
     .map(a => shortenTokenName(a.token))
     .join(', ')
-}
 
-export function amountsDescription(amounts: Amount[]) {
-  return amounts
+export const amountsDescription = (amounts: Amount[]) =>
+  amounts
     .filter(a => !!Number(a.value))
     .map(a => `${a.value} ${a.token}`)
     .join(', ')
-}
 
-export function tokensDescription(amounts: Amount[]) {
-  return amounts
+export const tokensDescription = (amounts: Amount[]) =>
+  amounts
     .filter(a => !!Number(a.value))
     .map(a => `${a.token}`)
     .join(', ')
-}
 
 export const DEFAULT_SLIPPAGE: Slippage = {
   loading: false,
