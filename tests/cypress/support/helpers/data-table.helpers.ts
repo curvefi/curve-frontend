@@ -45,6 +45,7 @@ export function withFilters<T>(breakpoint: Breakpoint, callback: () => Cypress.C
       closeDrawer(breakpoint)
     } else {
       cy.get('[data-testid="btn-close-filters"]').click({ waitForAnimations: true })
+      cy.get('[data-testid="btn-close-filters"]').should('not.exist')
     }
     return cy.wrap(result)
   })

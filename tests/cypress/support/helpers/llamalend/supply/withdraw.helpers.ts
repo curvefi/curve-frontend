@@ -26,13 +26,15 @@ export function checkWithdrawDetailsLoaded({
   prevAmountSupplied,
   expectedButtonText = 'Withdraw',
   symbol = 'crvUSD',
+  hasApi = true,
 }: {
   amountSupplied: Decimal
   prevAmountSupplied: Decimal
   expectedButtonText?: string
   symbol?: string
+  hasApi?: boolean
 }) {
-  checkSupplyActionInfoValues({ amountSupplied, prevAmountSupplied, symbol })
+  checkSupplyActionInfoValues({ amountSupplied, prevAmountSupplied, symbol, hasApi })
   checkSupplySubmitButtonText('withdraw', expectedButtonText)
 }
 

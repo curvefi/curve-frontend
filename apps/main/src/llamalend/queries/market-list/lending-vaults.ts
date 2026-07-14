@@ -20,7 +20,7 @@ import { EmptyValidationSuite } from '@ui-kit/lib/validation'
 
 export type LendingVault = Market & { chain: ChainName }
 
-export const { getQueryOptions: getLendingVaultsOptions, invalidate: invalidateLendingVaults } = queryFactory({
+export const { getQueryOptions: getLendingVaultsOptions, reset: resetLendingVaults } = queryFactory({
   queryKey: () => ['lending-vaults', 'v4'] as const,
   queryFn: async (): Promise<LendingVault[]> =>
     Object.entries(await getAllMarkets()).flatMap(([chain, markets]) =>
@@ -34,6 +34,7 @@ const {
   getQueryOptions: getUserLendingVaultsOptions,
   getQueryData: getCurrentUserLendingVaults,
   invalidate: invalidateUserLendingVaults,
+  reset: resetUserLendingVaults,
 } = queryFactory({
   queryKey: ({ userAddress }: UserParams) => ['user-lending-vaults', { userAddress }, 'v2'] as const,
   queryFn: async ({ userAddress }: UserQuery) =>
@@ -51,6 +52,7 @@ const {
   getQueryOptions: getUserLendingVaultStatsOptions,
   useQuery: useUserLendingVaultStats,
   invalidate: invalidateUserLendingVaultStats,
+  reset: resetUserLendingVaultStats,
 } = queryFactory({
   queryKey: ({ userAddress, contractAddress, blockchainId }: UserContractParams) =>
     ['user-lending-vault', 'stats', { blockchainId }, { contractAddress }, { userAddress }, 'v1'] as const,
@@ -76,6 +78,22 @@ export async function invalidateAllUserLendingVaults(userAddress: Address | null
   await Promise.all(invalidateContracts)
 }
 
+export async function resetAllUserLendingVaults(userAddress: Address | null | undefined) {
+  await resetUserLendingVaults({ userAddress })
+
+  const resetContracts = recordEntries(getCurrentUserLendingVaults({ userAddress }) ?? {}).flatMap(
+    ([blockchainId, contracts]) =>
+      contracts.map(contractAddress =>
+        resetUserLendingVaultStats({
+          userAddress,
+          blockchainId,
+          contractAddress,
+        }),
+      ),
+  )
+  await Promise.all(resetContracts)
+}
+
 export type LendingPosition = {
   supplied: number
   earnings: number
@@ -85,7 +103,11 @@ export type LendingPosition = {
 /**
  * Fetches the user's lending supplies across all chains.
  */
-const { getQueryOptions: getUserLendingSuppliesOptions, invalidate: invalidateUserLendingSupplies } = queryFactory({
+const {
+  getQueryOptions: getUserLendingSuppliesOptions,
+  invalidate: invalidateUserLendingSupplies,
+  reset: resetUserLendingSupplies,
+} = queryFactory({
   queryKey: ({ userAddress }: UserParams) => ['user-lending-supplies', { userAddress }, 'v5'] as const,
   category: 'llamalend.user',
   queryFn: async ({ userAddress }: UserQuery): Promise<Record<ChainName, Record<Address, LendingPosition>>> => {
@@ -113,4 +135,5 @@ export {
   getUserLendingVaultStatsOptions,
   useUserLendingVaultStats,
   invalidateUserLendingSupplies,
+  resetUserLendingSupplies,
 }

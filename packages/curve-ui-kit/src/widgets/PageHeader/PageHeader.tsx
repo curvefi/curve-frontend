@@ -36,7 +36,7 @@ export const PageHeader = ({
   rightItems?: ReactNode
 }) => (
   <Stack
-    direction={{ mobile: 'column', tablet: 'row' }}
+    direction={{ mobile: 'column', desktop: 'row' }}
     sx={{ justifyContent: 'space-between', gap: Spacing.md, paddingBlock: Spacing.sm, flexWrap: 'wrap' }}
   >
     <Stack direction="row" sx={{ alignItems: 'center' }}>

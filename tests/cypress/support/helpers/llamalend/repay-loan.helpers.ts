@@ -2,7 +2,7 @@ import { submitLoanForm, waitForRoutesLoaded } from '@cy/support/helpers/llamale
 import { LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
-import { checkDebt, type DebtCheck, getActionValue, touchInput } from './action-info.helpers'
+import { checkDebt, checkEstimatedTxCost, type DebtCheck, getActionValue, touchInput } from './action-info.helpers'
 
 const getRepayInput = () => cy.get('[data-testid^="repay-input-"] input[type="text"]', LOAD_TIMEOUT).first()
 
@@ -39,10 +39,12 @@ export function checkRepayDetailsLoaded({
   leverageEnabled,
   debt,
   isPriceChanged = true,
+  hasApi = true,
 }: {
   debt: DebtCheck
   leverageEnabled?: boolean
   isPriceChanged?: boolean
+  hasApi?: boolean
 }) {
   cy.get('[data-testid="borrow-leverage-info-list"]', LOAD_TIMEOUT).should(leverageEnabled ? 'be.visible' : 'not.exist')
   getActionValue('borrow-price-range', ...notFalsy(!isPriceChanged && 'previous')).should(
@@ -50,7 +52,7 @@ export function checkRepayDetailsLoaded({
     /(\d(\.\d+)?) - (\d(\.\d+)?)/,
   )
   getActionValue('borrow-apr').should('include', '%')
-  getActionValue('estimated-tx-cost').should('include', '$')
+  checkEstimatedTxCost({ hasValue: hasApi })
   checkDebt(debt)
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
 }
