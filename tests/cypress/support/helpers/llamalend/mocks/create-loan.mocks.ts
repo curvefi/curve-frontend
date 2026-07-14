@@ -7,7 +7,6 @@ import { createMockMintMarket } from '../mock-market.helpers'
 import { createIsApprovedStub, createStub, createSyncStub } from '../test-stub.utils'
 import {
   DEFAULT_COLLATERAL_ADDRESS,
-  DEFAULT_LEVERAGE_SLIPPAGE,
   DEFAULT_USER_BORROWED,
   leverageMetrics,
   mockRouterRoutes,
@@ -138,7 +137,7 @@ export const createCreateLoanScenario = ({
     approved: [collateral] as const,
     estimateGasApprove: [collateral] as const,
     approve: [collateral] as const,
-    submit: [collateral, borrow, presetRange, DEFAULT_LEVERAGE_SLIPPAGE] as const,
+    submit: [collateral, borrow, presetRange] as const,
   } as const
 
   const market = leverage
