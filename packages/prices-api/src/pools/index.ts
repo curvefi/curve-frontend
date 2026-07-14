@@ -32,7 +32,15 @@ export type ListPoolsParams = {
   page?: number
   pagination?: number
   searchString?: string
-  poolType?: Schema.V2PoolFilterType
+  poolType?: string
+  minTvl?: number
+  maxTvl?: number
+  minVolume?: number
+  maxVolume?: number
+  minApy?: number
+  maxApy?: number
+  minCreationDate?: number
+  maxCreationDate?: number
   sortBy?: Schema.V2PoolSortField
   sortDirection?: Schema.SortDirection
 }
@@ -43,6 +51,14 @@ export async function listPools(
     pagination = 50,
     searchString,
     poolType,
+    minTvl,
+    maxTvl,
+    minVolume,
+    maxVolume,
+    minApy,
+    maxApy,
+    minCreationDate,
+    maxCreationDate,
     chainId,
     sortBy = 'tvl',
     sortDirection = 'desc',
@@ -55,6 +71,14 @@ export async function listPools(
     pagination,
     search_string: searchString,
     pool_type: poolType,
+    min_tvl: minTvl,
+    max_tvl: maxTvl,
+    min_volume: minVolume,
+    max_volume: maxVolume,
+    min_apy: minApy,
+    max_apy: maxApy,
+    min_creation_date: minCreationDate,
+    max_creation_date: maxCreationDate,
     chain_id: chainId,
     sort_by: sortBy,
     sort_direction: sortDirection,

@@ -4,14 +4,46 @@ import { queryFactory, rootKeys, type ChainQuery } from '@ui-kit/lib/model'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { getPageCount } from '@ui-kit/utils'
 
+type PoolListRequestParams = Pick<
+  ListPoolsParams,
+  | 'page'
+  | 'searchString'
+  | 'poolType'
+  | 'minTvl'
+  | 'maxTvl'
+  | 'minVolume'
+  | 'maxVolume'
+  | 'minApy'
+  | 'maxApy'
+  | 'minCreationDate'
+  | 'maxCreationDate'
+  | 'sortBy'
+  | 'sortDirection'
+>
 type PoolListQuery = ChainQuery &
-  Pick<ListPoolsParams, 'page' | 'searchString' | 'poolType' | 'sortBy' | 'sortDirection'> & {
+  PoolListRequestParams & {
     pageSize?: ListPoolsParams['pagination']
   }
 type PoolListParams = FieldsOf<PoolListQuery>
 
-export const { useQuery: usePoolList } = queryFactory({
-  queryKey: ({ chainId, page, pageSize, searchString, poolType, sortBy, sortDirection }: PoolListParams) =>
+export const { reset: resetPoolList, useQuery: usePoolList } = queryFactory({
+  queryKey: ({
+    chainId,
+    page,
+    pageSize,
+    searchString,
+    poolType,
+    minTvl,
+    maxTvl,
+    minVolume,
+    maxVolume,
+    minApy,
+    maxApy,
+    minCreationDate,
+    maxCreationDate,
+    sortBy,
+    sortDirection,
+  }: PoolListParams) =>
     [
       ...rootKeys.chain({ chainId }),
       'listPools',
@@ -19,19 +51,19 @@ export const { useQuery: usePoolList } = queryFactory({
       { pageSize },
       { searchString },
       { poolType },
+      { minTvl },
+      { maxTvl },
+      { minVolume },
+      { maxVolume },
+      { minApy },
+      { maxApy },
+      { minCreationDate },
+      { maxCreationDate },
       { sortBy },
       { sortDirection },
     ] as const,
-  queryFn: async ({ chainId, page, pageSize, searchString, poolType, sortBy, sortDirection }: PoolListQuery) => {
-    const poolList = await listPools({
-      chainId,
-      page,
-      pagination: pageSize,
-      searchString,
-      poolType,
-      sortBy,
-      sortDirection,
-    })
+  queryFn: async ({ pageSize, ...params }: PoolListQuery) => {
+    const poolList = await listPools({ ...params, pagination: pageSize })
 
     return { ...poolList, pageCount: getPageCount(poolList.count, poolList.pagination) }
   },

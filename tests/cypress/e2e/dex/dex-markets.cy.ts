@@ -1,9 +1,30 @@
 import { orderBy } from 'lodash'
-import { oneOf } from '@cy/support/generators'
+import { getPoolListTvlLabelRange, POOL_LIST_DEFAULT_TVL_MIN } from '@/dex/features/pool-list/poolListFilterQuery'
 import { DEX_POOL_LIST_SEARCH, setupDexPoolListMocks } from '@cy/support/helpers/dex-pool-list-mocks'
 import { mockMerklCampaigns } from '@cy/support/helpers/lending-mocks'
 import { API_LOAD_TIMEOUT, type Breakpoint, LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
 import { assert } from '@primitives/objects.utils'
+import { getRangeFilterLabel } from '@ui-kit/shared/ui/DataTable/filters'
+
+const DEFAULT_POOL_LIST_MIN_TVL_INPUT = '10k'
+const POOL_LIST_FILTER_POOL_TYPE = 'crypto'
+const POOL_LIST_FILTER_TVL_MIN = 480_000_000
+const POOL_LIST_FILTER_TVL_MAX = 500_000_000
+const POOL_LIST_FILTER_VOLUME_MAX = 500_000_000
+
+type PoolListResponseBody = { pools?: { name?: string }[] }
+
+const getPoolListResponseFirstPoolName = (body: unknown) =>
+  assert((body as PoolListResponseBody).pools?.[0]?.name, 'No pool in DEX pool list response')
+
+const waitForPoolListResponse = () =>
+  cy.wait('@dex-pools', API_LOAD_TIMEOUT).then(({ response }) => {
+    cy.contains(
+      '[data-testid^="market-link-"]',
+      getPoolListResponseFirstPoolName(response?.body),
+      API_LOAD_TIMEOUT,
+    ).should('be.visible')
+  })
 
 // Parse compact USD strings like "$1.2M", "$950K", "$0", "-"
 function parseCompactUsd(value: string): number {
@@ -29,8 +50,7 @@ function visitAndWait(
 ) {
   cy.viewport(width, height)
   cy.visitWithoutTestConnector(`dex/${network}/pools/${query ? `?${new URLSearchParams(query)}` : ''}`, options)
-  cy.wait('@dex-pools', API_LOAD_TIMEOUT)
-  cy.get('[data-testid^="data-table-row-"]', API_LOAD_TIMEOUT).should('have.length.greaterThan', 0)
+  waitForPoolListResponse()
   if (query?.page) {
     cy.get('[data-testid="table-pagination"]').should('be.visible')
   }
@@ -46,10 +66,29 @@ const expectOrder = (actual: UsdValue[], order: 'asc' | 'desc') =>
 const getUsdValues = (cells: HTMLElement[]) =>
   cells.map(({ innerText }): UsdValue => ({ text: innerText, parsed: parseCompactUsd(innerText) }))
 
+const getPoolListTvlRangeChip = (minTvl: number, maxTvl: number) =>
+  assert(
+    getRangeFilterLabel(getPoolListTvlLabelRange([minTvl, maxTvl]), 'dollar', {
+      defaultMin: null,
+    }),
+    'No TVL range filter chip label',
+  )
+
 const expectTopUsdValuesOrder = (columnId: 'volume' | 'tvl', order: 'asc' | 'desc') =>
   cy
     .get(`[data-testid^="data-table-row-"] [data-testid="data-table-cell-${columnId}"]`)
     .should($cells => expectOrder(getUsdValues(Array.from($cells)), order))
+
+const expectUrlQueryParam = (key: string, value: string) =>
+  cy.location('search').should(search => expect(new URLSearchParams(search).get(key)).to.equal(value))
+
+const expectLastPoolRequestParams = (assertParams: (params: URLSearchParams) => void) =>
+  cy.get('@dex-pools.all').should(interceptions => {
+    const requests = interceptions as unknown as { request: { url: string } }[]
+    const url = assert(requests[requests.length - 1]?.request.url, 'No DEX pool list request found')
+
+    assertParams(new URL(url).searchParams)
+  })
 
 describe('DEX Pools', () => {
   let breakpoint: Breakpoint
@@ -61,12 +100,34 @@ describe('DEX Pools', () => {
     ;[width, height, breakpoint] = oneViewport()
   })
 
-  function assertSelectedFilterChip(chip: string) {
+  const filtersButtonSelector = () => '[data-testid="btn-open-filters-dex-pools"]'
+  const filtersMenuSelector = () =>
+    breakpoint === 'mobile' ? '[data-testid="drawer-filter-menu-dex-pools"]' : '[data-testid="table-filters-popover"]'
+
+  function openPoolFilters() {
+    cy.get(filtersButtonSelector()).click({ waitForAnimations: true })
+    cy.get(filtersMenuSelector()).should('be.visible')
+  }
+
+  function closePoolFilters() {
     if (breakpoint === 'mobile') {
-      cy.get('[data-testid="btn-drawer-filter-dex-pools"]').click()
-      cy.get('[data-testid="drawer-filter-menu-dex-pools"]').should('be.visible')
+      cy.get('body').click(0, 0)
+    } else {
+      cy.get('[data-testid="btn-close-filters"]').click()
     }
-    cy.get(`[data-testid="filter-chip-${chip}"]`).contains(/\(\d+\)/)
+  }
+
+  function assertSelectedFilterChip() {
+    cy.get('[data-testid="dex-pool-active-filter-type"]').should('be.visible')
+  }
+
+  function expectPageResetAfter(action: () => void, { waitForRequest = true }: { waitForRequest?: boolean } = {}) {
+    visitAndWait(width, height, { query: { page: '5' } })
+    action()
+    if (waitForRequest) {
+      cy.wait('@dex-pools', API_LOAD_TIMEOUT)
+    }
+    cy.location('search').should('not.include', 'page=')
   }
 
   describe('First page', () => {
@@ -89,46 +150,167 @@ describe('DEX Pools', () => {
       }
     }
 
-    /**
-     * Clicks on the given filter chip, opening the drawer on mobile if needed.
-     * Not using `withFilterChips` because the drawer closes automatically in this case.
-     */
-    function clickFilterChip(chip: string, isMobile = breakpoint === 'mobile') {
-      if (isMobile) {
-        cy.get('[data-testid="btn-drawer-filter-dex-pools"]').click()
-        cy.get('[data-testid="drawer-filter-menu-dex-pools"]').should('be.visible')
-      }
-      cy.get(`[data-testid="filter-chip-${chip}"]`).click()
-      cy.get('[data-testid="drawer-filter-menu-dex-pools"]').should(isMobile ? 'not.be.visible' : 'not.exist')
+    function clickFilterChip(chip: string) {
+      openPoolFilters()
+      cy.get(`[data-testid="table-filter-btn-pool-filter-type-${chip}"]`).click()
+      closePoolFilters()
       cy.wait('@dex-pools', API_LOAD_TIMEOUT)
     }
 
-    it('sorts by volume', () => {
-      expectTopUsdValuesOrder('volume', 'desc') // initial is Volume desc
-      cy.url().should('not.include', 'volume') // initial sort not in URL
-      if (breakpoint === 'mobile') return // on mobile, we cannot sort ascending at the moment
-      sortBy('volume', 'asc')
-      expectTopUsdValuesOrder('volume', 'asc')
-      cy.url().should('include', 'sort=volume')
+    function setRangeFilter(id: string, bound: 'min' | 'max', value: number | string) {
+      openPoolFilters()
+      cy.get(`[data-testid="range-filter-${id}-${bound}"] input`).clear().type(`${value}`).blur()
+      closePoolFilters()
+      return waitForPoolListResponse()
+    }
+
+    it('applies the default TVL min without URL or active filter state', () => {
+      cy.location('search').should('not.include', 'tvl=')
+      expectLastPoolRequestParams(params => {
+        expect(params.get('min_tvl')).to.equal(`${POOL_LIST_DEFAULT_TVL_MIN}`)
+      })
+      cy.get('[data-testid="dex-pool-active-filter-tvl"]').should('not.exist')
+      openPoolFilters()
+      cy.get('[data-testid="range-filter-tvl-min"] input').should('have.value', DEFAULT_POOL_LIST_MIN_TVL_INPUT)
+      closePoolFilters()
     })
 
     it('sorts by TVL (desc/asc)', () => {
       cy.url().should('not.include', 'tvl') // initial sort not in URL
+      expectLastPoolRequestParams(params => {
+        expect(params.get('min_tvl')).to.equal(`${POOL_LIST_DEFAULT_TVL_MIN}`)
+        expect(params.get('sort_by')).to.equal('volume')
+        expect(params.get('sort_direction')).to.equal('desc')
+      })
+
       sortBy('tvl', 'desc')
       expectTopUsdValuesOrder('tvl', 'desc')
       cy.url().should('include', 'sort=-tvl')
+      expectLastPoolRequestParams(params => {
+        expect(params.get('sort_by')).to.equal('tvl')
+        expect(params.get('sort_direction')).to.equal('desc')
+      })
+
       if (breakpoint === 'mobile') return // on mobile, we cannot sort ascending at the moment
       sortBy('tvl', 'asc')
       expectTopUsdValuesOrder('tvl', 'asc')
       cy.url().should('include', 'sort=tvl')
+      expectLastPoolRequestParams(params => {
+        expect(params.get('sort_by')).to.equal('tvl')
+        expect(params.get('sort_direction')).to.equal('asc')
+      })
     })
 
-    it('filters by pool type chip', () => {
-      const poolType = oneOf('stableswapng', 'crypto')
+    it('filters by pool type, persists after reload, and clears from the active chip', () => {
+      const poolType = POOL_LIST_FILTER_POOL_TYPE
+
       clickFilterChip(poolType)
       cy.url().should('include', `filter=${poolType}`)
+      expectLastPoolRequestParams(params => {
+        expect(params.get('pool_type')).to.equal(poolType)
+      })
       cy.get('[data-testid^="data-table-row-"]', API_LOAD_TIMEOUT).should('have.length.greaterThan', 0)
-      assertSelectedFilterChip(poolType)
+      assertSelectedFilterChip()
+      cy.reload()
+      assertSelectedFilterChip()
+      cy.get('[data-testid^="data-table-row-"]', API_LOAD_TIMEOUT).should('have.length.greaterThan', 0)
+      cy.get('[data-testid="dex-pool-active-filter-type"]').click()
+      cy.url().should('not.include', '?')
+      cy.get('[data-testid="dex-pool-active-filter-type"]').should('not.exist')
+      cy.get('[data-testid^="data-table-row-"]', API_LOAD_TIMEOUT).should('have.length.greaterThan', 0)
+    })
+
+    it('resets page when search changes', () => {
+      expectPageResetAfter(() => {
+        cy.get('[data-testid="table-text-search-dex-pool-list"] input').type(DEX_POOL_LIST_SEARCH)
+      })
+      cy.location('search').should('include', `search=${DEX_POOL_LIST_SEARCH}`)
+    })
+
+    it('resets page when a filter changes', () => {
+      const poolType = POOL_LIST_FILTER_POOL_TYPE
+
+      expectPageResetAfter(() => clickFilterChip(poolType), { waitForRequest: false })
+      cy.location('search').should('include', `filter=${poolType}`)
+    })
+
+    it('filters by TVL range input', () => {
+      const minTvl = POOL_LIST_FILTER_TVL_MIN
+
+      setRangeFilter('tvl', 'min', minTvl)
+      expectLastPoolRequestParams(params => {
+        expect(params.get('min_tvl')).to.equal(`${minTvl}`)
+      })
+      expectUrlQueryParam('tvl', `${minTvl}~`)
+      cy.get('[data-testid="dex-pool-active-filter-tvl"]').should('be.visible')
+    })
+
+    it('filters by TVL max input with an explicit zero min in the URL and API request', () => {
+      const maxTvl = POOL_LIST_FILTER_TVL_MAX
+
+      setRangeFilter('tvl', 'min', 0)
+      expectUrlQueryParam('tvl', '0~')
+
+      setRangeFilter('tvl', 'max', maxTvl)
+      expectLastPoolRequestParams(params => {
+        expect(params.get('min_tvl')).to.equal('0')
+        expect(params.get('max_tvl')).to.equal(`${maxTvl}`)
+      })
+      // Direct range-input edits preserve the component's explicit zero lower bound.
+      expectUrlQueryParam('tvl', `0~${maxTvl}`)
+      cy.get('[data-testid="dex-pool-active-filter-tvl"]')
+        .should('be.visible')
+        .and('contain.text', getPoolListTvlRangeChip(0, maxTvl))
+    })
+
+    it('filters by Volume range input', () => {
+      const maxVolume = POOL_LIST_FILTER_VOLUME_MAX
+
+      setRangeFilter('volume', 'max', maxVolume)
+      expectLastPoolRequestParams(params => {
+        expect(params.get('max_volume')).to.equal(`${maxVolume}`)
+      })
+      expectUrlQueryParam('volume', `~${maxVolume}`)
+      cy.get('[data-testid="dex-pool-active-filter-volume"]').should('be.visible')
+    })
+
+    it('treats default TVL min as inactive', () => {
+      visitAndWait(width, height, { query: { tvl: `${POOL_LIST_DEFAULT_TVL_MIN}~` } })
+      expectLastPoolRequestParams(params => {
+        expect(params.get('min_tvl')).to.equal(`${POOL_LIST_DEFAULT_TVL_MIN}`)
+      })
+      cy.get('[data-testid="dex-pool-active-filter-tvl"]').should('not.exist')
+    })
+
+    it('uses the default TVL min for max-only filtering without rewriting the URL', () => {
+      const maxTvl = POOL_LIST_FILTER_TVL_MAX
+
+      visitAndWait(width, height, { query: { tvl: `~${maxTvl}` } })
+      expectLastPoolRequestParams(params => {
+        expect(params.get('min_tvl')).to.equal(`${POOL_LIST_DEFAULT_TVL_MIN}`)
+        expect(params.get('max_tvl')).to.equal(`${maxTvl}`)
+      })
+      cy.get('[data-testid="dex-pool-active-filter-tvl"]')
+        .should('be.visible')
+        .and('contain.text', getPoolListTvlRangeChip(POOL_LIST_DEFAULT_TVL_MIN, maxTvl))
+    })
+
+    it('keeps explicit zero TVL min as an active filter', () => {
+      visitAndWait(width, height, { query: { tvl: '0~' } })
+      expectLastPoolRequestParams(params => {
+        expect(params.get('min_tvl')).to.equal('0')
+      })
+      expectUrlQueryParam('tvl', '0~')
+      cy.get('[data-testid="dex-pool-active-filter-tvl"]').should('be.visible').and('contain.text', '>$0')
+    })
+
+    it('keeps zero Base vAPY min as an active filter', () => {
+      visitAndWait(width, height, { query: { apy: '0~' } })
+      expectLastPoolRequestParams(params => {
+        expect(params.get('min_apy')).to.equal('0')
+      })
+      expectUrlQueryParam('apy', '0~')
+      cy.get('[data-testid="dex-pool-active-filter-apy"]').should('be.visible')
     })
 
     it('navigates to pool deposit page by clicking a row', () => {
@@ -137,7 +319,7 @@ describe('DEX Pools', () => {
         cy.get('[data-testid="collapse-icon"]').first().should('be.visible')
         cy.get('[data-testid="pool-link-deposit"]').click()
       }
-      cy.url(LOAD_TIMEOUT).should('match', /\/dex\/arbitrum\/pools\/[^/]+\/(deposit|swap)\/?$/)
+      cy.url(LOAD_TIMEOUT).should('match', /\/dex\/\w+\/pools\/0x[0-9a-fA-F]{40}\/(deposit|swap)\/?$/)
       cy.title().should('match', /Curve - Pool - .* - Curve/)
     })
   })
@@ -160,13 +342,16 @@ describe('DEX Pools', () => {
     cy.url().should('include', `?search=${filter}`)
   })
 
-  it('persists pool type filter across reload', () => {
-    const filter = 'crypto'
-    visitAndWait(width, height, { query: { filter } })
-    cy.url().should('include', `filter=${filter}`)
-    assertSelectedFilterChip(filter)
-    cy.get(`[data-testid="filter-chip-${filter}"]`).click()
-    cy.url().should('not.include', '?')
+  it('keeps search-only state out of active filter chips and empty reset clears search', () => {
+    visitAndWait(width, height)
+    cy.get('[data-testid="table-text-search-dex-pool-list"] input').type('no-such-pool')
+    cy.wait('@dex-pools', API_LOAD_TIMEOUT)
+    cy.url().should('include', '?search=no-such-pool')
+    cy.get('[data-testid="table-empty-row"]').should('be.visible')
+    cy.get('[data-testid^="dex-pool-active-filter-"]').should('not.exist')
+    cy.get('[data-testid="dex-pool-empty-state-reset"]').click()
+    cy.url().should('not.include', 'search=')
+    cy.get('[data-testid^="data-table-row-"]', API_LOAD_TIMEOUT).should('have.length.greaterThan', 0)
   })
 
   it('paginates', () => {
