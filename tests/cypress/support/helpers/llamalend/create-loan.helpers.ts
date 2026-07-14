@@ -151,11 +151,23 @@ export const checkLeverageCheckbox = ({
 }: {
   leverageEnabled: boolean
   hasLeverage: boolean
-}) =>
-  cy
-    .get('[data-testid="leverage-checkbox"]')
-    .should(hasLeverage ? 'be.visible' : 'not.exist')
-    .and(leverageEnabled ? 'be.checked' : hasLeverage ? 'not.be.checked' : 'not.exist')
+}) => {
+  if (hasLeverage) {
+    cy.get('[data-testid="leverage-checkbox"]').should('be.visible')
+    cy.get('[data-testid="leverage-checkbox"] input').should(leverageEnabled ? 'be.checked' : 'not.be.checked')
+  } else {
+    cy.get('[data-testid="leverage-checkbox"]').should('not.exist')
+  }
+}
+
+export const waitForRoutesLoaded = ({ submitButtonTestId }: { submitButtonTestId: string }) => {
+  cy.get('[data-testid="route-provider-accordion"]').click()
+  cy.wait('@routerRoutes', LOAD_TIMEOUT)
+  cy.get('[data-testid="refresh-button"]').should('be.enabled')
+  cy.get(`[data-testid="${submitButtonTestId}"]`, LOAD_TIMEOUT).should('be.enabled')
+}
+
+export const toggleLeverage = () => cy.get('[data-testid="leverage-checkbox"]').click(LOAD_TIMEOUT)
 
 /**
  * Fill in the create loan form. Assumes the form is already opened.
@@ -165,11 +177,13 @@ export function writeCreateLoanForm({
   borrow,
   leverageEnabled,
   hasLeverage,
+  waitForRoutes,
 }: {
   collateral: Decimal
   borrow: Decimal
   leverageEnabled: boolean
   hasLeverage: boolean
+  waitForRoutes?: boolean
 }) {
   cy.get('[data-testid="borrow-debt-input"]', TRANSACTION_LOAD_TIMEOUT).should('be.visible')
   cy.get('[data-testid="borrow-collateral-input"] [data-testid="balance-value"]', TRANSACTION_LOAD_TIMEOUT).should(
@@ -182,8 +196,9 @@ export function writeCreateLoanForm({
   getBorrowInput().type(borrow)
   getBorrowInput().blur()
   getActionValue('borrow-health').should('not.equal', '∞')
-  if (leverageEnabled) cy.get('[data-testid="leverage-checkbox"]').click()
+  if (leverageEnabled) toggleLeverage()
   checkLeverageCheckbox({ leverageEnabled, hasLeverage })
+  if (waitForRoutes) waitForRoutesLoaded({ submitButtonTestId: 'create-loan-submit-button' })
 }
 
 /**

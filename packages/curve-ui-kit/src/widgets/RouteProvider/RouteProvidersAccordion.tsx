@@ -106,6 +106,7 @@ export const RouteProvidersAccordion = ({
                 onClick={() => void onRefresh()}
                 aria-label={t`Refresh routes`}
                 disabled={anyFetching}
+                data-testid="refresh-button"
               >
                 <ReloadIcon sx={{ ...(anyFetching && LoadingAnimation) }} />
               </IconButton>

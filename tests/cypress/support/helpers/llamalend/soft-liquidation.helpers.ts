@@ -4,10 +4,10 @@ import type { Decimal } from '@primitives/decimal.utils'
 import {
   checkDebt,
   checkEstimatedTxCost,
+  type DebtCheck,
   DECIMAL_RANGE_REGEX,
   DECIMAL_REGEX,
   getActionValue,
-  type DebtCheck,
 } from './action-info.helpers'
 
 const getResetPositionConvertedInput = () =>
