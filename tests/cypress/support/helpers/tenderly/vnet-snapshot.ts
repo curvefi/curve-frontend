@@ -1,4 +1,5 @@
 import { LOAD_TIMEOUT } from '@cy/support/ui'
+import { assert } from '@primitives/objects.utils'
 import { getRpcUrls } from './vnet'
 
 type VirtualNetwork = Parameters<typeof getRpcUrls>[0]
@@ -29,29 +30,26 @@ const requestVirtualNetworkState = ({
       ...LOAD_TIMEOUT,
     })
     .then(({ body: response, status, statusText }) => {
-      if (status < 200 || status >= 300 || response.error) {
-        throw new Error(`Tenderly ${method} failed (${status} ${statusText}): ${JSON.stringify(response)}`)
-      }
-
-      if (!('result' in response)) {
-        throw new Error(`Tenderly ${method} returned no result: ${JSON.stringify(response)}`)
-      }
-
+      assert(
+        status >= 200 && status < 300 && !response.error,
+        `Tenderly ${method} failed (${status} ${statusText}): ${JSON.stringify(response)}`,
+      )
+      assert('result' in response, `Tenderly ${method} returned no result: ${JSON.stringify(response)}`)
       return response.result
     })
 }
 
 export const snapshotVirtualNetwork = ({ vnet }: { vnet: VirtualNetwork }) =>
-  requestVirtualNetworkState({ method: 'evm_snapshot', vnet }).then(snapshotId => {
-    if (typeof snapshotId !== 'string' || !snapshotId) {
-      throw new Error(`Tenderly evm_snapshot returned an invalid snapshot id: ${JSON.stringify(snapshotId)}`)
-    }
-    return snapshotId
-  })
+  requestVirtualNetworkState({ method: 'evm_snapshot', vnet }).then(snapshotId =>
+    assert(
+      typeof snapshotId === 'string' && snapshotId,
+      `Tenderly evm_snapshot returned an invalid snapshot id: ${JSON.stringify(snapshotId)}`,
+    ),
+  )
 
 export const revertVirtualNetwork = ({ snapshotId, vnet }: { snapshotId: string; vnet: VirtualNetwork }) =>
   requestVirtualNetworkState({ method: 'evm_revert', params: [snapshotId], vnet }).then(reverted => {
-    if (!reverted) throw new Error(`Tenderly evm_revert rejected snapshot '${snapshotId}'`)
+    assert(reverted, `Tenderly evm_revert rejected snapshot '${snapshotId}'`)
   })
 
 export const createVirtualNetworkSnapshot = ({ vnet }: { vnet: VirtualNetwork }) => {
@@ -63,8 +61,8 @@ export const createVirtualNetworkSnapshot = ({ vnet }: { vnet: VirtualNetwork })
     })
 
   const revert = () => {
-    if (!snapshotId) throw new Error('Tenderly evm_revert was requested before a snapshot was captured')
-    return revertVirtualNetwork({ vnet, snapshotId }).then(capture)
+    const currentSnapshotId = assert(snapshotId, 'Tenderly evm_revert was requested before a snapshot was captured')
+    return revertVirtualNetwork({ vnet, snapshotId: currentSnapshotId }).then(capture)
   }
 
   return { capture, revert }

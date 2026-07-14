@@ -1,6 +1,5 @@
-import { parseUnits } from 'viem'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
-import { getActionValue, setSlippageTolerance } from '@cy/support/helpers/llamalend/action-info.helpers'
+import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { setupLlv2BorrowingLiquidity } from '@cy/support/helpers/llamalend/borrow-cap.helpers'
 import { LlammalendTestCase, type LlammalendTestCaseProps } from '@cy/support/helpers/llamalend/LlammalendTestCase'
 import { submitRepayForm, writeRepayLoanForm } from '@cy/support/helpers/llamalend/repay-loan.helpers'
@@ -8,10 +7,11 @@ import { setupTenderlySoftLiquidation } from '@cy/support/helpers/llamalend/soft
 import {
   submitClosePositionForm,
   submitResetPositionForm,
+  writeResetPositionWalletAmount,
 } from '@cy/support/helpers/llamalend/soft-liquidation.helpers'
+import { resetLlamaTestContext } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
-import { fundErc20 } from '@cy/support/helpers/tenderly/vnet-fund'
 import { createVirtualNetworkSnapshot } from '@cy/support/helpers/tenderly/vnet-snapshot'
 import { LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
 import { LlamaMarketType } from '@ui-kit/types/market'
@@ -27,9 +27,9 @@ const WSTETH_USDC_MARKET = {
   borrowedDecimals: 6,
 } as const
 
-const BORROW = '1000' as const
-const IMPROVE_HEALTH_AMOUNT = '10' as const
-const CLOSE_SLIPPAGE = '5' as const
+const BORROW = '800' as const
+const IMPROVE_HEALTH_AMOUNT = '100' as const
+const RESET_WALLET_AMOUNT = '25' as const
 
 describe('Manage soft liquidation', () => {
   skipTestsAfterFailure()
@@ -63,19 +63,11 @@ describe('Manage soft liquidation', () => {
       vnet,
       userAddress,
       collateral: '1',
-      targetPrice: '1500',
+      targetPrice: '1200',
       borrow: BORROW,
       range: 50n,
       collateralFundingMultiplier: 2n,
       ...WSTETH_USDC_MARKET,
-    })
-
-    // Give extra borrowed funds for reset, improve-health, and close wallet repayments.
-    fundErc20({
-      adminRpcUrl,
-      amountWei: `0x${parseUnits(BORROW, WSTETH_USDC_MARKET.borrowedDecimals).toString(16)}`,
-      tokenAddress: WSTETH_USDC_MARKET.borrowedAddress,
-      recipientAddresses: [userAddress],
     })
 
     snapshot = createVirtualNetworkSnapshot({ vnet })
@@ -96,6 +88,7 @@ describe('Manage soft liquidation', () => {
   )
 
   beforeEach(() => {
+    resetLlamaTestContext()
     snapshot.revert()
   })
 
@@ -110,6 +103,7 @@ describe('Manage soft liquidation', () => {
     getActionValue('borrow-debt', 'previous').should('match', /\d/)
     getActionValue('borrow-debt').should('match', /\d/)
     cy.get('[data-testid="loan-form-errors"]').should('not.exist')
+    writeResetPositionWalletAmount({ amount: RESET_WALLET_AMOUNT })
     submitResetPositionForm({ message: 'Position reset!' })
   })
 
@@ -128,7 +122,6 @@ describe('Manage soft liquidation', () => {
     getActionValue('borrow-debt', 'previous').should('match', /\d/)
     getActionValue('borrow-debt').should('equal', '0')
     getActionValue('borrow-slippage').should('equal', '0.50%')
-    setSlippageTolerance(CLOSE_SLIPPAGE)
     cy.get('[data-testid="loan-form-errors"]').should('not.exist')
     cy.get('[data-testid="close-position-submit-button"]', LOAD_TIMEOUT).should('not.be.disabled')
     submitClosePositionForm()

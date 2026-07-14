@@ -154,6 +154,37 @@ const readSoftLiquidationSetup = async (params: SoftLiquidationReadParams) => {
   return { oracle, state }
 }
 
+const prepareBorrowedForSoftLiquidationActions = ({
+  borrowedAddress,
+  borrowedAmountWei,
+  client,
+  controllerAddress,
+  userAddress,
+  vnet,
+}: Pick<SoftLiquidationReadParams, 'client' | 'controllerAddress' | 'userAddress'> & {
+  borrowedAddress: Address
+  borrowedAmountWei: bigint
+  vnet: CreateVirtualTestnetResponse
+}) => {
+  fundErc20({
+    adminRpcUrl: getRpcUrls(vnet).adminRpcUrl,
+    amountWei: `0x${borrowedAmountWei.toString(16)}`,
+    tokenAddress: borrowedAddress,
+    recipientAddresses: [userAddress],
+  })
+
+  return loadTenderlyAccount().then(LOAD_TIMEOUT, tenderlyAccount =>
+    approveErc20({
+      client,
+      spenderAddress: controllerAddress,
+      tenderly: { ...tenderlyAccount, vnetId: vnet.id },
+      tokenAddress: borrowedAddress,
+      tokenAmountWei: borrowedAmountWei,
+      userAddress,
+    }),
+  )
+}
+
 const findOracleStorageLayout = async ({ client, oracleState }: { client: PublicClient; oracleState: OracleState }) => {
   const slots = Array.from({ length: ORACLE_STORAGE_SCAN_SLOT_COUNT }, (_, index) => BigInt(index))
   const slotValues = await Promise.all(
@@ -220,6 +251,7 @@ const setOracleStoragePrice = ({
 const moveAmmToOraclePrice = ({
   ammAddress,
   borrowedAddress,
+  collateralAddress,
   client,
   targetPrice,
   userAddress,
@@ -227,64 +259,83 @@ const moveAmmToOraclePrice = ({
 }: {
   ammAddress: Address
   borrowedAddress: Address
+  collateralAddress: Address
   client: PublicClient
   targetPrice: bigint
   userAddress: Address
   vnet: CreateVirtualTestnetResponse
-}) =>
-  cy.then(LOAD_TIMEOUT, async () => {
-    const [amount, isPump] = await client.readContract({
-      address: ammAddress,
-      abi: AMM_ABI,
-      functionName: 'get_amount_for_price',
-      args: [targetPrice],
-    })
-    const [inputUsed, outputAmount] = await client.readContract({
-      address: ammAddress,
-      abi: AMM_ABI,
-      functionName: 'get_dxdy',
-      args: [0n, 1n, amount],
-    })
+}) => {
+  type Quote = {
+    amount: bigint
+    inputUsed: bigint
+    isPump: boolean
+    outputAmount: bigint
+  }
 
-    const quote = { amount, inputUsed, isPump, outputAmount }
-
-    if (!isPump || amount === 0n || inputUsed === 0n || outputAmount === 0n) {
-      return quote
-    }
-
-    fundErc20({
-      adminRpcUrl: getRpcUrls(vnet).adminRpcUrl,
-      amountWei: `0x${amount.toString(16)}`,
-      tokenAddress: borrowedAddress,
-      recipientAddresses: [userAddress],
-    })
-
-    loadTenderlyAccount().then(LOAD_TIMEOUT, async tenderlyAccount => {
-      const tenderly = { ...tenderlyAccount, vnetId: vnet.id }
-      await approveErc20({
-        client,
-        spenderAddress: ammAddress,
-        tenderly,
-        tokenAddress: borrowedAddress,
-        tokenAmountWei: amount,
-        userAddress,
+  return cy
+    .then<Quote>(LOAD_TIMEOUT, async () => {
+      const [amount, isPump] = await client.readContract({
+        address: ammAddress,
+        abi: AMM_ABI,
+        functionName: 'get_amount_for_price',
+        args: [targetPrice],
       })
-      await sendVnetTransactionAndWait({
-        client,
-        errorMessage: 'Tenderly AMM exchange borrowed for collateral transaction failed',
-        tenderly,
-        tx: {
-          from: userAddress,
-          to: ammAddress,
-          data: encodeFunctionData({ abi: AMM_ABI, functionName: 'exchange', args: [0n, 1n, amount, 0n] }),
-        },
+      // get_amount_for_price reports the swap direction needed to move AMM price to target:
+      // pump swaps borrowed -> collateral (coin 0 -> 1), otherwise collateral -> borrowed (coin 1 -> 0).
+      const [i, j] = isPump ? [0n, 1n] : [1n, 0n]
+      const [inputUsed, outputAmount] = await client.readContract({
+        address: ammAddress,
+        abi: AMM_ABI,
+        functionName: 'get_dxdy',
+        args: [i, j, amount],
       })
+
+      return { amount, inputUsed, isPump, outputAmount }
     })
-  })
+    .then(quote => {
+      if (quote.amount === 0n || quote.inputUsed === 0n || quote.outputAmount === 0n) return quote
+
+      // Same direction as quoted above; fund and approve the actual input token for AMM.exchange.
+      const [i, j] = quote.isPump ? [0n, 1n] : [1n, 0n]
+      const tokenAddress = quote.isPump ? borrowedAddress : collateralAddress
+
+      return fundErc20({
+        adminRpcUrl: getRpcUrls(vnet).adminRpcUrl,
+        amountWei: `0x${quote.amount.toString(16)}`,
+        tokenAddress,
+        recipientAddresses: [userAddress],
+      }).then(() =>
+        loadTenderlyAccount()
+          .then(LOAD_TIMEOUT, async tenderlyAccount => {
+            const tenderly = { ...tenderlyAccount, vnetId: vnet.id }
+            await approveErc20({
+              client,
+              spenderAddress: ammAddress,
+              tenderly,
+              tokenAddress,
+              tokenAmountWei: quote.amount,
+              userAddress,
+            })
+            await sendVnetTransactionAndWait({
+              client,
+              errorMessage: 'Tenderly AMM exchange transaction failed',
+              tenderly,
+              tx: {
+                from: userAddress,
+                to: ammAddress,
+                data: encodeFunctionData({ abi: AMM_ABI, functionName: 'exchange', args: [i, j, quote.amount, 0n] }),
+              },
+            })
+          })
+          .then(() => quote),
+      )
+    })
+}
 
 const runSoftLiquidationPriceMove = ({
   ammAddress,
   borrowedAddress,
+  collateralAddress,
   client,
   controllerAddress,
   range,
@@ -294,6 +345,7 @@ const runSoftLiquidationPriceMove = ({
 }: {
   ammAddress: Address
   borrowedAddress: Address
+  collateralAddress: Address
   client: PublicClient
   controllerAddress: Address
   range: bigint
@@ -334,7 +386,15 @@ const runSoftLiquidationPriceMove = ({
         )
       })
       .then(() =>
-        moveAmmToOraclePrice({ ammAddress, borrowedAddress, client, targetPrice: targetPriceWei, userAddress, vnet }),
+        moveAmmToOraclePrice({
+          ammAddress,
+          borrowedAddress,
+          collateralAddress,
+          client,
+          targetPrice: targetPriceWei,
+          userAddress,
+          vnet,
+        }),
       )
       .then(async quote => {
         const { oracle, state } = await readSoftLiquidationSetup(readParams)
@@ -342,7 +402,16 @@ const runSoftLiquidationPriceMove = ({
           isSoftLiquidationState(state) && state.health > 0n,
           `Failed to reach soft liquidation: ${stringifySetupDetails({ oracle, quote, state, targetPrice })}`,
         )
+        return state
       })
+      .then(state =>
+        fundErc20({
+          adminRpcUrl: getRpcUrls(vnet).adminRpcUrl,
+          amountWei: `0x${state.debt.toString(16)}`,
+          tokenAddress: borrowedAddress,
+          recipientAddresses: [userAddress],
+        }),
+      )
   })
 
 /**
@@ -366,15 +435,25 @@ export const setupTenderlySoftLiquidation = ({
   borrowedAddress: Address
   targetPrice: Decimal
 }) => {
-  const { vnet, borrowedAddress, controllerAddress, userAddress } = loanProps
+  const { vnet, borrowedAddress, collateralAddress, controllerAddress, userAddress } = loanProps
   const { publicRpcUrl } = getRpcUrls(vnet)
   const client = createPublicClient({ transport: http(publicRpcUrl) })
 
   setupTenderlyLoan(loanProps)
 
+  prepareBorrowedForSoftLiquidationActions({
+    borrowedAddress,
+    borrowedAmountWei: parseUnits(loanProps.borrow, loanProps.borrowedDecimals) * 2n,
+    client,
+    controllerAddress,
+    userAddress,
+    vnet,
+  })
+
   runSoftLiquidationPriceMove({
     ammAddress,
     borrowedAddress,
+    collateralAddress,
     client,
     controllerAddress,
     range: loanProps.range,
