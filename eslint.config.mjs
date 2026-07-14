@@ -16,6 +16,7 @@ import { noDoubleNegativeRule } from './.eslint/no-double-negative.rule.mjs'
 import { noJsxStringLiteralBracesRule } from './.eslint/no-jsx-string-literal-braces.rule.mjs'
 import { noQueryComponentPropsRule } from './.eslint/no-query-component-props.rule.mjs'
 import { noRedundantTernaryRule } from './.eslint/no-redundant-ternary.rule.mjs'
+import { noSingleLineNamedFunctionsRule } from './.eslint/no-single-line-named-functions.rule.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -59,6 +60,7 @@ const config = [
           'no-jsx-string-literal-braces': noJsxStringLiteralBracesRule,
           'no-query-component-props': noQueryComponentPropsRule,
           'no-redundant-ternary': noRedundantTernaryRule,
+          'no-single-line-named-functions': noSingleLineNamedFunctionsRule,
         },
       },
     },
@@ -85,6 +87,7 @@ const config = [
       'local/no-jsx-string-literal-braces': 'error',
       'local/no-query-component-props': 'error',
       'local/no-redundant-ternary': 'error',
+      'local/no-single-line-named-functions': 'error',
 
       'object-shorthand': 'warn',
       'arrow-body-style': ['error', 'as-needed'],

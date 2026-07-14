@@ -18,13 +18,10 @@ export function shortenTokenName(token: string) {
 
 export const isValidAddress = (address: string) => address?.length === 42 && address !== zeroAddress
 
-export function isHighSlippage(slippage: number, maxSlippage: string) {
-  return slippage < 0 && Math.abs(slippage) > Number(maxSlippage)
-}
+export const isHighSlippage = (slippage: number, maxSlippage: string) =>
+  slippage < 0 && Math.abs(slippage) > Number(maxSlippage)
 
-export function isBonus(slippage: number) {
-  return Number(slippage) > 0
-}
+export const isBonus = (slippage: number) => Number(slippage) > 0
 
 export function fulfilledValue<T>(result: PromiseSettledResult<T>) {
   if (result.status === 'fulfilled') {

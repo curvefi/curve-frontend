@@ -92,7 +92,6 @@ export const RefuelForm = ({ chainId, blockchainId, poolAddress }: RefuelFormPar
 
       <FormButton
         pending={isPending}
-        size="large"
         disabled={isDisabled}
         connectWalletTestId="refuel-connect-wallet-button"
         label={t`Refuel`}

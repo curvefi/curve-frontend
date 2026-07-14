@@ -15,9 +15,21 @@ const activity = z.object({
 const transactions = activity.extend({ transactions: z.number() })
 const users = activity.extend({ users: z.number() })
 
+const supportedChain = z
+  .object({
+    name: z.string(),
+    pool_tvl: z.number(),
+    lending_tvl: z.number(),
+  })
+  .transform(camelizeKeys)
+
 export const getSupportedChainsResponse = z
-  .object({ data: z.array(z.object({ name: z.string() })) })
-  .transform(({ data }) => data.map(item => item.name as Chain).filter(item => chains.includes(item)))
+  .object({ data: z.array(supportedChain) })
+  .transform(({ data }) =>
+    data.filter((item): item is { name: Chain; poolTvl: number; lendingTvl: number } =>
+      chains.includes(item.name as Chain),
+    ),
+  )
 
 export const getChainInfoResponse = z
   .object({

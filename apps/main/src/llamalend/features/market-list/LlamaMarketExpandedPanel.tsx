@@ -1,5 +1,6 @@
 import { type FunctionComponent, useMemo } from 'react'
 import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
+import { tokenMetric } from '@/llamalend/llama.utils'
 import { ArrowRight } from '@carbon/icons-react'
 import Button from '@mui/material/Button'
 import CardHeader from '@mui/material/CardHeader'
@@ -15,6 +16,7 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
+import { constQ } from '@ui-kit/types/util'
 import { AVERAGE_CATEGORIES, borderStyle } from '@ui-kit/utils'
 import type { LlamaMarket } from '../../queries/market-list/llama-markets'
 import { LineGraphCell, RateTooltipProps } from './cells'
@@ -83,6 +85,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
     favoriteKey,
     assets,
     leverage,
+    liquidity,
     liquidityUsd,
     url,
     userHasPositions,
@@ -147,8 +150,11 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
           <Metric
             category={EXPANDED_DETAILS_METRIC_CATEGORY}
             label={t`Available Liquidity`}
-            value={liquidityUsd}
-            valueOptions={{ unit: 'dollar' }}
+            {...tokenMetric({
+              value: liquidity,
+              symbol: assets.borrowed.symbol,
+              notional: constQ(liquidityUsd),
+            })}
           />
         </Grid>
         <Grid size={12}>

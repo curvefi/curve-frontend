@@ -8,13 +8,11 @@ export type ExternalLinkProps = {
 } & AnchorHTMLAttributes<HTMLAnchorElement> &
   LinkProps
 
-export function ExternalLink({ className, children, ...props }: ExternalLinkProps) {
-  return (
-    <StyledLink target="_blank" {...props} className={className} rel="noreferrer noopener">
-      {children}
-    </StyledLink>
-  )
-}
+export const ExternalLink = ({ className, children, ...props }: ExternalLinkProps) => (
+  <StyledLink target="_blank" {...props} className={className} rel="noreferrer noopener">
+    {children}
+  </StyledLink>
+)
 
 const StyledLink = styled.a`
   ${linkStyles}

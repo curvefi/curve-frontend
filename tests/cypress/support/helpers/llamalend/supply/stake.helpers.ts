@@ -22,9 +22,7 @@ export const readStakeAvailableAmount = () =>
 /**
  * Fill in the stake form with the specified amount.
  */
-export function writeStakeForm({ amount }: { amount: Decimal }) {
-  writeSupplyInput({ type: 'stake', amount })
-}
+export const writeStakeForm = ({ amount }: { amount: Decimal }) => writeSupplyInput({ type: 'stake', amount })
 
 /**
  * Check the stake submit state for enabled and disabled markets.
@@ -52,7 +50,7 @@ export function checkStakeDetailsLoaded({
   prevAmountSupplied,
   expectedButtonText = 'Stake',
   symbol = 'crvUSD',
-  checkEstimatedTxCost = true,
+  hasApi = true,
 }: {
   vaultShares: Decimal
   prevVaultShares: Decimal
@@ -60,7 +58,7 @@ export function checkStakeDetailsLoaded({
   prevAmountSupplied?: Decimal
   expectedButtonText?: string
   symbol?: string
-  checkEstimatedTxCost?: boolean
+  hasApi?: boolean
 }) {
   checkSupplyActionInfoValues({
     vaultShares,
@@ -68,7 +66,7 @@ export function checkStakeDetailsLoaded({
     amountSupplied,
     prevAmountSupplied,
     symbol,
-    checkEstimatedTxCost,
+    hasApi,
   })
   checkSupplySubmitButtonText('stake', expectedButtonText)
 }

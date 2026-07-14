@@ -32,7 +32,7 @@ const LIQUIDATION_BUFFER_THRESHOLDS: Record<
   /** Below this value the position is critical */
   critical: 2.5,
   /** Below this value the position is risky. Above it is light */
-  risky: 25,
+  risky: 100,
 } as const
 
 export const clampPercentage = (health: number | undefined | null): number => Math.max(0, Math.min(health ?? 0, 100))
@@ -62,13 +62,13 @@ export const getHealthColor = (state: HealthAndBufferState | undefined) => (them
 }
 
 export const getLiquidationBufferColor = (state: HealthAndBufferState | undefined) => (theme: Theme) => {
-  const { Layer } = theme.design
+  const { Color, Layer } = theme.design
   const colors = {
-    pristine: Layer.Feedback.Success,
-    good: Layer.Feedback.Success,
-    caution: Layer.Feedback.Success,
-    tight: Layer.Feedback.Success,
-    softLiquidation: Layer.Feedback.Success,
+    pristine: Color.Neutral[500],
+    good: Color.Neutral[500],
+    caution: Color.Neutral[500],
+    tight: Color.Neutral[500],
+    softLiquidation: Color.Neutral[500],
     light: Layer.Feedback.Caution,
     risky: Layer.Feedback.Warning,
     critical: Layer.Feedback.Error,
@@ -105,11 +105,11 @@ export const getLiquidationBufferPercent = (
     (+liquidationBuffer / recordValues(LIQUIDATION_BUFFER_THRESHOLDS).at(-1)!) * 100,
   )
   const percent = {
-    pristine: 100,
-    good: 100,
-    caution: 100,
-    tight: 100,
-    softLiquidation: 100,
+    pristine: liquidationBufferPercent,
+    good: liquidationBufferPercent,
+    caution: liquidationBufferPercent,
+    tight: liquidationBufferPercent,
+    softLiquidation: liquidationBufferPercent,
     light: 100,
     risky: liquidationBufferPercent,
     critical: liquidationBufferPercent,

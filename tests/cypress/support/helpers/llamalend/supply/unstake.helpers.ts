@@ -21,9 +21,7 @@ export const readUnstakeAvailableAmount = () =>
 /**
  * Fill in the unstake form with the specified amount.
  */
-export function writeUnstakeForm({ amount }: { amount: Decimal }) {
-  writeSupplyInput({ type: 'unstake', amount })
-}
+export const writeUnstakeForm = ({ amount }: { amount: Decimal }) => writeSupplyInput({ type: 'unstake', amount })
 
 /**
  * Check all unstake detail values are loaded and valid.
@@ -36,7 +34,7 @@ export function checkUnstakeDetailsLoaded({
   prevAmountSupplied,
   expectedButtonText = 'Unstake',
   symbol = 'crvUSD',
-  checkEstimatedTxCost = true,
+  hasApi = true,
 }: {
   vaultShares: Decimal
   prevVaultShares: Decimal
@@ -44,7 +42,7 @@ export function checkUnstakeDetailsLoaded({
   prevAmountSupplied?: Decimal
   expectedButtonText?: string
   symbol?: string
-  checkEstimatedTxCost?: boolean
+  hasApi?: boolean
 }) {
   checkSupplyActionInfoValues({
     vaultShares,
@@ -52,7 +50,7 @@ export function checkUnstakeDetailsLoaded({
     amountSupplied,
     prevAmountSupplied,
     symbol,
-    checkEstimatedTxCost,
+    hasApi,
   })
   checkSupplySubmitButtonText('unstake', expectedButtonText)
 }

@@ -12,7 +12,6 @@ import { isRepayLeveraged } from '@/llamalend/queries/repay/repay-query.helpers'
 import { useUserPrices } from '@/llamalend/queries/user'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { FormButton } from '@ui-kit/features/forms'
@@ -22,7 +21,6 @@ import { t } from '@ui-kit/lib/i18n'
 import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q, type QueryProp, type Range } from '@ui-kit/types/util'
 import { CRVUSD } from '@ui-kit/utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
@@ -32,8 +30,6 @@ import { useCrvSwapUrl } from '../../manage-soft-liquidation/hooks/useCrvSwapUrl
 import { useMarketContext } from '../../market-context'
 import { useRepayForm } from '../hooks/useRepayForm'
 import { useTokenAmountConversion } from '../hooks/useTokenAmountConversion'
-
-const { Spacing } = SizesAndSpaces
 
 function RepayTokenSelector<ChainId extends IChainId>({
   token,
@@ -193,30 +189,27 @@ export const RepayForm = <ChainId extends IChainId>({
       />
       <HighPriceImpactAlert priceImpact={priceImpact} values={values} max={q(max.expected)} slippageType={LEVERAGE} />
       {isInSoftLiquidation && <AlertRepayDebtToIncreaseHealth />}
-      <Stack sx={{ gap: Spacing.xs }}>
-        <FormButton
-          pending={isPending}
-          loading={isLoading}
-          disabled={
-            isDisabled ||
-            shouldBlockTransaction(priceImpact, {
-              ...values,
-              leverageEnabled: isRepayLeveraged(values),
-              slippageType: LEVERAGE,
-            })
-          }
-          label={[
-            isApproved.data === false && t`Approve`,
-            notFalsy(t`Repay`, fromPosition && t`from Position`).join(' '),
-            isFull.data ? t`Close Position` : isInSoftLiquidation && t`Increase Health`,
-          ]}
-          testId="repay-submit-button"
-        />
-
-        {isInSoftLiquidation && selectedToken?.symbol === CRVUSD.symbol && (
-          <ExternalLink href={crvSwapUrl} label={t`Get crvUSD`} />
-        )}
-      </Stack>
+      <FormButton
+        pending={isPending}
+        loading={isLoading}
+        disabled={
+          isDisabled ||
+          shouldBlockTransaction(priceImpact, {
+            ...values,
+            leverageEnabled: isRepayLeveraged(values),
+            slippageType: LEVERAGE,
+          })
+        }
+        label={[
+          isApproved.data === false && t`Approve`,
+          notFalsy(t`Repay`, fromPosition && t`from Position`).join(' '),
+          isFull.data ? t`Close Position` : isInSoftLiquidation && t`Increase Health`,
+        ]}
+        testId="repay-submit-button"
+      />
+      {isInSoftLiquidation && selectedToken?.symbol === CRVUSD.symbol && (
+        <ExternalLink href={crvSwapUrl} label={t`Get crvUSD`} />
+      )}
       <FormAlerts
         error={repayError}
         formErrors={formErrors}

@@ -320,7 +320,7 @@ export const calculateMintMarketTvlUsd = ({ collateralAmountUsd }: { collateralA
  * Note that the backend data will not be directly updated, but this will trigger a background refresh.
  * Therefore, we don't invalidate the `userLendCollateralEvents` query immediately after calling this function.
  */
-export const updateUserEventsApi = (
+export const updateUserEventsApi = async (
   wallet: Wallet,
   { id: networkId }: { id: LlamaNetworkId },
   market: LlamaMarketTemplate,
@@ -330,7 +330,7 @@ export const updateUserEventsApi = (
     market instanceof LendMarketTemplate
       ? [market.addresses.controller, getLendUserMarketCollateralEvents]
       : [market.controller, getMintUserMarketCollateralEvents]
-  void updateEvents(wallet.address, networkId, address as Address, txHash as Hex)
+  return await updateEvents(wallet.address, networkId, address as Address, txHash as Hex)
 }
 
 /**
@@ -516,10 +516,12 @@ export const tokenMetric = ({
   value,
   symbol,
   usdRate,
+  notional,
 }: {
   value: MetricProps['value']
   symbol: string | null | undefined
-  usdRate: QueryProp<Amount>
+  usdRate?: QueryProp<Amount>
+  notional?: MetricProps['notional']
 }) =>
   ({
     value,
@@ -527,7 +529,10 @@ export const tokenMetric = ({
       abbreviate: true,
       unit: maybe(symbol, symbol => ({ symbol, position: 'suffix' as const })),
     },
-    notional: combineQueries([toQuery(value), usdRate], (value, usdRate) =>
-      maybe(decimal(value), value => ({ value: decimalMultiply(value, usdRate), unit: 'dollar' as const })),
-    ),
+    notional:
+      notional ??
+      (usdRate &&
+        combineQueries([toQuery(value), usdRate], (value, usdRate) =>
+          maybe(decimal(value), value => ({ value: decimalMultiply(value, usdRate), unit: 'dollar' as const })),
+        )),
   }) satisfies Pick<MetricProps, 'value' | 'valueOptions' | 'notional'>

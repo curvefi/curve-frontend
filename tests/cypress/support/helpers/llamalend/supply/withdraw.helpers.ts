@@ -13,9 +13,7 @@ export const submitWithdrawForm = () => submitSupplyForm('withdraw', 'Withdraw s
 /**
  * Fill in the withdraw form with the specified amount.
  */
-export function writeWithdrawForm({ amount }: { amount: Decimal }) {
-  writeSupplyInput({ type: 'withdraw', amount })
-}
+export const writeWithdrawForm = ({ amount }: { amount: Decimal }) => writeSupplyInput({ type: 'withdraw', amount })
 
 /**
  * Check all withdraw detail values are loaded and valid.
@@ -26,13 +24,15 @@ export function checkWithdrawDetailsLoaded({
   prevAmountSupplied,
   expectedButtonText = 'Withdraw',
   symbol = 'crvUSD',
+  hasApi = true,
 }: {
   amountSupplied: Decimal
   prevAmountSupplied: Decimal
   expectedButtonText?: string
   symbol?: string
+  hasApi?: boolean
 }) {
-  checkSupplyActionInfoValues({ amountSupplied, prevAmountSupplied, symbol })
+  checkSupplyActionInfoValues({ amountSupplied, prevAmountSupplied, symbol, hasApi })
   checkSupplySubmitButtonText('withdraw', expectedButtonText)
 }
 

@@ -44,9 +44,9 @@ jobs:
       - run: yarn install --immutable
       - run: yarn lint
       - run: yarn format:check
-        if: always()
+        if: success() || failure()
       - run: yarn typecheck
-        if: always()
+        if: success() || failure()
 
   test:
     name: Unit tests
@@ -103,12 +103,12 @@ jobs:
           NODE_ENV: test
 
       - uses: actions/upload-artifact@v7
-        if: failure()
+        if: success() || failure()
         with:
           name: cypress-component-${{ matrix.browser }}-${{ matrix.count }}
           path: tests/cypress/screenshots
-          retention-days: 3
-          if-no-files-found: error
+          retention-days: ${{ job.status == 'success' && 1 || 3 }}
+          if-no-files-found: ${{ job.status == 'success' && 'ignore' || 'error' }}
 
   cypress-component-rpc:
     name: Cypress component tests with RPC
@@ -145,12 +145,12 @@ jobs:
           CYPRESS_TENDERLY_ACCESS_KEY: ${{ secrets.TENDERLY_ACCESS_KEY }}
 
       - uses: actions/upload-artifact@v7
-        if: failure()
+        if: success() || failure()
         with:
           name: cypress-rpc
           path: tests/cypress/screenshots
-          retention-days: 3
-          if-no-files-found: error
+          retention-days: ${{ job.status == 'success' && 1 || 3 }}
+          if-no-files-found: ${{ job.status == 'success' && 'ignore' || 'error' }}
 
       - uses: actions/upload-artifact@v7
         if: failure()
@@ -222,7 +222,7 @@ jobs:
           CYPRESS_VIDEO: ${{ matrix.browser == 'firefox' && 'false' || 'true' }} # Firefox doesn't support recording
 
       - name: Check runtime errors
-        if: always()
+        if: success() || failure()
         env:
           RUNTIME_ERRORS: |-
             update depth exceeded
@@ -238,12 +238,12 @@ jobs:
           ! grep --ignore-case --extended-regexp "$(echo -n "$RUNTIME_ERRORS" | tr '\n' '|')" e2e-*.log
 
       - uses: actions/upload-artifact@v7
-        if: failure()
+        if: success() || failure()
         with:
           name: cypress-e2e-${{ matrix.group }}-${{ matrix.browser }}-${{ matrix.count }}
           path: tests/cypress/screenshots
-          retention-days: 3
-          if-no-files-found: error
+          retention-days: ${{ job.status == 'success' && 1 || 3 }}
+          if-no-files-found: ${{ job.status == 'success' && 'ignore' || 'error' }}
 
       - uses: actions/upload-artifact@v7
         if: failure()
