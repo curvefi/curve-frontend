@@ -31,9 +31,7 @@ const SliderStory = (
     setValue(newValue)
   }
 
-  function valueLabelFormat(value: number) {
-    return formatNumber(value, { abbreviate: true })
-  }
+  const valueLabelFormat = (value: number) => formatNumber(value, { abbreviate: true })
 
   function calculateValue(value: number) {
     if (scaleType === 'power') {
