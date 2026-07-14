@@ -13,7 +13,7 @@ export const submitUnstakeForm = () => submitSupplyForm('unstake', 'Unstake succ
 
 export const readUnstakeAvailableAssets = () =>
   getSupplyInputBalanceValueAttr('unstake')
-    .should(value => expect(expect(Number(value)).gt(0)).to.equal(true))
+    .should(value => expect(Number(value)).gt(0))
     .then(value => value as Decimal)
 
 export const selectMaxUnstake = () => {
