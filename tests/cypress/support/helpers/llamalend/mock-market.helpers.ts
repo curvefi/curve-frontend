@@ -5,7 +5,7 @@ import { oneAddress, oneDecimal } from '@cy/support/generators'
 import { CRVUSD_ADDRESS, MAINNET_CRV_ADDRESS } from '@ui-kit/utils'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type MockMethod = (...args: any[]) => Promise<any>
+type MockMethod = (...args: any[]) => any
 
 // Borrow-side tests rely on the MintMarketTemplate prototype and mint-specific methods.
 export const createMockMintMarket = (overrides: object) =>
