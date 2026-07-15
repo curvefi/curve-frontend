@@ -1,4 +1,3 @@
-import { LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import {
   checkSupplyActionInfoValues,
@@ -20,27 +19,20 @@ export const writeWithdrawForm = ({ amount }: { amount: Decimal }) => writeSuppl
  * The action info list is expected to be opened before calling this function.
  */
 export function checkWithdrawDetailsLoaded({
-  amountSupplied,
-  prevAmountSupplied,
+  suppliedAssets,
+  prevSuppliedAssets,
   expectedButtonText = 'Withdraw',
   symbol = 'crvUSD',
   hasApi = true,
 }: {
-  amountSupplied: Decimal
-  prevAmountSupplied: Decimal
+  suppliedAssets: Decimal
+  prevSuppliedAssets: Decimal
   expectedButtonText?: string
   symbol?: string
   hasApi?: boolean
 }) {
-  checkSupplyActionInfoValues({ amountSupplied, prevAmountSupplied, symbol, hasApi })
+  checkSupplyActionInfoValues({ suppliedAssets, prevSuppliedAssets, symbol, hasApi })
   checkSupplySubmitButtonText('withdraw', expectedButtonText)
-}
-
-/**
- * Select full withdraw by clicking the 100% chip.
- */
-export const selectMaxWithdraw = () => {
-  cy.get('[data-testid="input-chip-100%"]', LOAD_TIMEOUT).click({ force: true })
 }
 
 /**

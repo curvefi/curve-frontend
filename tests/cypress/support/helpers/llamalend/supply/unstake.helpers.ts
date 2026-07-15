@@ -1,4 +1,3 @@
-import { BigNumber } from 'bignumber.js'
 import type { Decimal } from '@primitives/decimal.utils'
 import {
   getSupplyInputBalanceValueAttr,
@@ -11,17 +10,16 @@ import {
 
 export const submitUnstakeForm = () => submitSupplyForm('unstake', 'Unstake successful!')
 
-export const readUnstakeAvailableAmount = () =>
+export const readUnstakeAvailableAssets = () =>
   getSupplyInputBalanceValueAttr('unstake')
-    .should(balanceValue => {
-      expect(new BigNumber(balanceValue || '0').gt(0)).to.equal(true)
-    })
-    .then(balanceValue => (balanceValue || '0') as Decimal)
+    .should(value => expect(Number(value)).gt(0))
+    .then(value => value as Decimal)
 
 /**
- * Fill in the unstake form with the specified amount.
+ * Fill in the unstake form with the specified underlying asset value.
  */
-export const writeUnstakeForm = ({ amount }: { amount: Decimal }) => writeSupplyInput({ type: 'unstake', amount })
+export const writeUnstakeForm = ({ assets }: { assets: Decimal }) =>
+  writeSupplyInput({ type: 'unstake', amount: assets })
 
 /**
  * Check all unstake detail values are loaded and valid.
@@ -30,16 +28,16 @@ export const writeUnstakeForm = ({ amount }: { amount: Decimal }) => writeSupply
 export function checkUnstakeDetailsLoaded({
   vaultShares,
   prevVaultShares,
-  amountSupplied,
-  prevAmountSupplied,
+  suppliedAssets,
+  prevSuppliedAssets,
   expectedButtonText = 'Unstake',
   symbol = 'crvUSD',
   hasApi = true,
 }: {
-  vaultShares: Decimal
-  prevVaultShares: Decimal
-  amountSupplied?: Decimal
-  prevAmountSupplied?: Decimal
+  vaultShares?: Decimal
+  prevVaultShares?: Decimal
+  suppliedAssets?: Decimal
+  prevSuppliedAssets?: Decimal
   expectedButtonText?: string
   symbol?: string
   hasApi?: boolean
@@ -47,8 +45,8 @@ export function checkUnstakeDetailsLoaded({
   checkSupplyActionInfoValues({
     vaultShares,
     prevVaultShares,
-    amountSupplied,
-    prevAmountSupplied,
+    suppliedAssets,
+    prevSuppliedAssets,
     symbol,
     hasApi,
   })

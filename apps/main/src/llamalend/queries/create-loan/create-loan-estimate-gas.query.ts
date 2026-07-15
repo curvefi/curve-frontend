@@ -99,7 +99,7 @@ const {
       case 'V2':
         return await impl.estimateGas.createLoan(userCollateral, userBorrowed, debt, range, +slippage)
       case 'V0':
-        return await impl.estimateGas.createLoan(userCollateral, debt, range, +slippage)
+        return await impl.estimateGas.createLoan(userCollateral, debt, range)
       case 'unleveraged':
         return await impl.estimateGas.createLoan(userCollateral, debt, range)
     }

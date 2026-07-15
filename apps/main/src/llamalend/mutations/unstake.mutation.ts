@@ -10,7 +10,7 @@ import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@
 import { type Address, type Hex } from '@primitives/address.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
-import { formatTokenAmounts } from '../llama.utils'
+import { formatNumber } from '@ui-kit/utils'
 
 type UnstakeOptions = {
   marketId: string | undefined
@@ -32,19 +32,20 @@ export const useUnstakeMutation = ({
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'unstake'] as const,
     mutationFn: async (variables, { market }) => {
       const lendMarket = requireVault(market)
-      return { hash: (await lendMarket.vault.unstake(variables.unstakeAmount)) as Hex }
+      return { hash: (await lendMarket.vault.unstake(variables.unstakeShares)) as Hex }
     },
     validationSuite: unstakeValidationSuite,
-    pendingMessage: (mutation, { market }) =>
-      t`Unstaking... ${formatTokenAmounts(market, { userBorrowed: mutation.unstakeAmount })}`,
-    successMessage: (mutation, { market }) =>
-      t`Unstake successful! ${formatTokenAmounts(market, { userBorrowed: mutation.unstakeAmount })}`,
+    pendingMessage: ({ unstakeShares }) => t`Unstaking... ${formatNumber(unstakeShares, 'token.amount')} vault shares`,
+    successMessage: ({ unstakeShares }) =>
+      t`Unstake successful! ${formatNumber(unstakeShares, 'token.amount')} vault shares`,
     mutationTokenAddresses: (_variables, { market }) => [requireVault(market).addresses.vault] as Address[],
     ...props,
   })
 
-  // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
-  const onSubmit = useCallback(async (form: UnstakeForm) => mutate(form as UnstakeMutation), [mutate])
+  const onSubmit = useCallback(
+    ({ isFull = false, unstakeShares = '0' }: UnstakeForm) => mutate({ isFull, unstakeShares }),
+    [mutate],
+  )
 
   return { onSubmit, mutate, error, isPending }
 }

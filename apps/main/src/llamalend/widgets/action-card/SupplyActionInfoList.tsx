@@ -19,8 +19,8 @@ type SupplyActionInfoListProps = {
   /** Label for the shares ActionInfo */
   sharesLabel?: string
   /** Amount supplied in underlying asset with optional previous value */
-  amountSupplied?: QueryProp<Decimal | null>
-  prevAmountSupplied?: QueryProp<Decimal | null>
+  suppliedAssets?: QueryProp<Decimal | null>
+  prevSuppliedAssets?: QueryProp<Decimal | null>
   /** Label for the amount ActionInfo */
   amountLabel?: string
   /** Symbol of the supplied asset */
@@ -44,8 +44,8 @@ export const SupplyActionInfoList = ({
   isApproved,
   vaultShares,
   prevVaultShares,
-  amountSupplied,
-  prevAmountSupplied,
+  suppliedAssets,
+  prevSuppliedAssets,
   sharesLabel = t`Vault Shares`,
   amountLabel = t`Amount Supplied`,
   suppliedSymbol,
@@ -95,12 +95,12 @@ export const SupplyActionInfoList = ({
             size="small"
             testId="supply-vault-shares"
           />
-          {(amountSupplied ?? prevAmountSupplied) && (
+          {(suppliedAssets != null || prevSuppliedAssets != null) && (
             <ActionInfo
               label={amountLabel}
-              value={mapQuery(amountSupplied ?? DISABLED_Q, data => formatNumber(data, { abbreviate: false }))}
+              value={mapQuery(suppliedAssets ?? DISABLED_Q, data => formatNumber(data, { abbreviate: false }))}
               prevValue={
-                prevAmountSupplied && mapQuery(prevAmountSupplied, data => formatNumber(data, { abbreviate: false }))
+                prevSuppliedAssets && mapQuery(prevSuppliedAssets, data => formatNumber(data, { abbreviate: false }))
               }
               valueRight={suppliedSymbol}
               size="small"

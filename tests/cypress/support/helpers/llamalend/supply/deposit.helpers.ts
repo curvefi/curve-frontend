@@ -62,17 +62,17 @@ export function checkDepositSubmit({
  * The action info list is expected to be opened before calling this function.
  */
 export const checkDepositDetailsLoaded = ({
-  amountSupplied,
-  prevAmountSupplied,
+  suppliedAssets,
+  prevSuppliedAssets,
   symbol = 'crvUSD',
   hasApi = true,
 }: {
-  amountSupplied: Decimal
-  prevAmountSupplied: Decimal
+  suppliedAssets: Decimal
+  prevSuppliedAssets: Decimal
   symbol?: string
   hasApi?: boolean
 }) => {
-  checkSupplyActionInfoValues({ amountSupplied, prevAmountSupplied, symbol, hasApi })
+  checkSupplyActionInfoValues({ suppliedAssets, prevSuppliedAssets, symbol, hasApi })
 }
 
 /**

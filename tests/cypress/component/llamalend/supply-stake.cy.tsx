@@ -3,7 +3,7 @@ import { StakeForm } from '@/llamalend/features/supply/components/StakeForm'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import {
   checkStakeSubmit,
-  readStakeAvailableAmount,
+  readStakeAvailableAssets,
   submitStakeForm,
   writeStakeForm,
 } from '@cy/support/helpers/llamalend/supply/stake.helpers'
@@ -40,8 +40,8 @@ describe('StakeForm (mocked)', () => {
         </MockLoanTestWrapper>,
       )
 
-      readStakeAvailableAmount()
-      writeStakeForm({ amount: input.amount })
+      readStakeAvailableAssets()
+      writeStakeForm({ assets: input.amount })
       checkStakeSubmit({ buttonText, hasGauge })
       // stop test if no gauge because no gas estimation and submit disabled
       if (!hasGauge) return
@@ -50,6 +50,7 @@ describe('StakeForm (mocked)', () => {
       cy.then(() => {
         expect(stubs.walletBalances).to.have.been.calledWithExactly(...expected.walletBalances)
         expect(stubs.statsRates).to.have.been.calledWithExactly(...expected.marketRates)
+        expect(stubs.convertToShares).to.have.been.calledWithExactly(...expected.convertToShares)
         expect(stubs.stakeIsApproved).to.have.been.calledWithExactly(...expected.isApproved)
         if (approved) {
           expect(stubs.estimateGasStake).to.have.been.calledWithExactly(...expected.estimateGas)

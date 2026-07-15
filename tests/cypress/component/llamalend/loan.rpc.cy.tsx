@@ -171,7 +171,10 @@ testCases.forEach(
         })
         submitRepayForm().then(() => expect(onPricesUpdated).to.be.called)
         touchRepayLoanForm() // make sure the new debt is shown
-        checkDebt({ current: debtAfterRepay, future: debtAfterRepay, symbol: borrowedSymbol })
+        checkDebt(
+          { current: debtAfterRepay, future: debtAfterRepay, symbol: borrowedSymbol },
+          { checkLoanToValue: hasApi },
+        )
       })
     })
   },

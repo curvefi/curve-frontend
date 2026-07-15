@@ -1,11 +1,11 @@
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useUnstakeEstimateGas } from '@/llamalend/queries/supply/supply-unstake-estimate-gas.query'
-import { useSharesToAssetsAmount } from '@/llamalend/queries/supply/supply-user-vault-amounts.query'
-import type { UnstakeForm, UnstakeParams } from '@/llamalend/queries/validation/supply.validation'
+import type { UnstakeForm, UnstakeFormParams } from '@/llamalend/queries/validation/supply.validation'
 import { useSupplyRates } from '@/llamalend/widgets/action-card/hooks/useSupplyRates'
 import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Address, type Token } from '@primitives/address.utils'
+import { maybes } from '@primitives/objects.utils'
 import type { UseFormReturn } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
 import { mapQuery, q } from '@ui-kit/types/util'
@@ -13,7 +13,7 @@ import { decimalMinus } from '@ui-kit/utils'
 import { useVaultUserBalances } from '../hooks/useVaultUserBalances'
 
 type UnstakeSupplyInfoListProps<ChainId extends IChainId> = {
-  params: UnstakeParams<ChainId>
+  params: UnstakeFormParams<ChainId>
   networks: NetworkDict<ChainId>
   borrowToken: Token | undefined
   form: UseFormReturn<UnstakeForm>
@@ -27,13 +27,12 @@ export function UnstakeSupplyInfoList<ChainId extends IChainId>({
   form,
   controllerAddress,
 }: UnstakeSupplyInfoListProps<ChainId>) {
-  const { chainId, marketId, userAddress, unstakeAmount } = params
-  const isOpen = form.isTouched('unstakeAmount')
+  const { chainId, marketId, userAddress, unstakeAssets, unstakeShares } = params
+  const isOpen = form.isTouched('unstakeAssets')
 
   const { prevRates, prevNetSupplyApy } = useSupplyRates({ params, controllerAddress }, isOpen)
 
   const userBalances = useVaultUserBalances({ chainId, marketId, userAddress }, isOpen)
-  const amountUnstakedAssets = useSharesToAssetsAmount({ ...params, shares: unstakeAmount }, isOpen)
 
   return (
     <SupplyActionInfoList
@@ -42,18 +41,9 @@ export function UnstakeSupplyInfoList<ChainId extends IChainId>({
       isOpen={isOpen}
       suppliedSymbol={borrowToken?.symbol}
       prevVaultShares={mapQuery(userBalances, d => d.stakedShares)}
-      vaultShares={mapQuery(
-        userBalances,
-        d => d.stakedShares && unstakeAmount && decimalMinus(d.stakedShares, unstakeAmount),
-      )}
-      prevAmountSupplied={mapQuery(userBalances, d => d.stakedSharesAmount)}
-      amountSupplied={mapQuery(
-        userBalances,
-        d =>
-          d.stakedSharesAmount &&
-          amountUnstakedAssets.data &&
-          decimalMinus(d.stakedSharesAmount, amountUnstakedAssets.data),
-      )}
+      vaultShares={mapQuery(userBalances, d => maybes([d.stakedShares, unstakeShares], decimalMinus))}
+      prevSuppliedAssets={mapQuery(userBalances, d => d.stakedSharesAmount)}
+      suppliedAssets={mapQuery(userBalances, d => maybes([d.stakedSharesAmount, unstakeAssets], decimalMinus))}
       supplyApy={mapQuery(prevRates, d => d.lendApy)}
       netSupplyApy={prevNetSupplyApy}
       gas={q(useUnstakeEstimateGas(networks, params, isOpen))}
