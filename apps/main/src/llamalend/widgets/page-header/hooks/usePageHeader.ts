@@ -149,7 +149,7 @@ const useBorrowRate = ({
     extraRewards: borrowCampaigns,
   }))
 
-  return fallbackQ(onChainBorrowRate, apiBorrowRate)
+  return fallbackQ(onChainBorrowRate, apiBorrowRate, fakeLoadingQ(apiMarket.data ?? marketQuery.data))
 }
 
 const useSupplyRate = ({
@@ -218,7 +218,9 @@ const useSupplyRate = ({
       category: RATE_CATEGORY,
     }),
   )
-  return enabled ? fallbackQ(onChainSupplyRate, apiSupplyRate) : undefined
+  return enabled
+    ? fallbackQ(onChainSupplyRate, apiSupplyRate, fakeLoadingQ(apiMarket.data ?? marketQuery.data))
+    : undefined
 }
 
 const useAvailableLiquidity = ({
