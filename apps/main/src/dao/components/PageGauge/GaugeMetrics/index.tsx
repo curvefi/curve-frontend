@@ -69,7 +69,7 @@ export const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
           <MetricsComp
             loading={dataLoading}
             title={t`Emissions (CRV)`}
-            data={<StyledMetricsColumnData>{formatNumber(emissions, 'token.amount')}</StyledMetricsColumnData>}
+            data={<StyledMetricsColumnData>{formatNumber(emissions, 'token.compact')}</StyledMetricsColumnData>}
           />
         ) : (
           <MetricsComp
