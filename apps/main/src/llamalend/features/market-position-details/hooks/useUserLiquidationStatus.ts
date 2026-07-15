@@ -25,4 +25,6 @@ export const useLiquidationStatus = (params: UserMarketParams, enabled?: boolean
   )
 
 export const useIsInSoftLiquidation = (params: UserMarketParams, enabled?: boolean) =>
-  mapQuery(useLiquidationStatus(params, enabled), status => ['softLiquidation', 'hardLiquidation'].includes(status))
+  mapQuery(useLiquidationStatus(params, enabled), status =>
+    ['softLiquidation', 'hardLiquidation', 'fullyConverted'].includes(status),
+  )
