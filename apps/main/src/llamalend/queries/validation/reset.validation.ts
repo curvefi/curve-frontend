@@ -1,6 +1,6 @@
 import { enforce, skipWhen, test } from 'vest'
-import { hasResetPosition, tryGetLlamaMarket } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import { hasResetPosition, tryGetMarket } from '@/llamalend/llama.utils'
+import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import { getResetDebtReduction } from '@/llamalend/queries/reset/reset-query.helpers'
 import { validateMaxBorrowed } from '@/llamalend/queries/validation/borrow-fields.validation'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -35,8 +35,8 @@ export type ResetForm = MakeOptional<ResetInputs, 'convertedBorrowed' | 'userBor
 export type ResetQuery<ChainId = IChainId> = UserMarketQuery<ChainId> & ResetInputs & ResetCalculatedValues
 export type ResetParams<ChainId = IChainId> = FieldsOf<ResetQuery<ChainId>>
 
-const validateResetSupported = (marketId: LlamaMarketTemplate | string | null | undefined) => {
-  const market = maybe(marketId, id => tryGetLlamaMarket(id))
+const validateResetSupported = (marketId: MarketTemplate | string | null | undefined) => {
+  const market = maybe(marketId, id => tryGetMarket(id))
   skipWhen(!market, () => {
     test('marketId', 'Reset is only available for Llamalend v2 lend markets', () => {
       enforce(hasResetPosition(market)).isTruthy()
@@ -137,7 +137,7 @@ export const resetValidationSuite = createValidationSuite(
   },
 )
 
-export const resetFormValidationSuite = (market: LlamaMarketTemplate | undefined) =>
+export const resetFormValidationSuite = (market: MarketTemplate | undefined) =>
   createValidationSuite((params: ResetForm) => {
     validateResetSupported(market)
     resetValidationGroup(params, { requireLoadedAvailability: false })

@@ -28,7 +28,7 @@ import Box from '@mui/material/Box'
 import type { Decimal } from '@primitives/decimal.utils'
 import { CurveProvider } from '@ui-kit/features/connect-wallet/lib/CurveProvider'
 import type { UserMarketQuery } from '@ui-kit/lib/model'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { MarketType } from '@ui-kit/types/market'
 import { constQ, type Range } from '@ui-kit/types/util'
 import { FormPlacementProvider } from '@ui-kit/widgets/DetailPageLayout/form-context/FormPlacementProvider'
 
@@ -58,7 +58,7 @@ type LlammalendTestProps = UserMarketQuery<LlamaChainId> & {
   type: 'loan' | 'supply'
   tab?: LoanTab | SupplyTab
   onPricesUpdated?: (prices: Range<Decimal> | undefined) => void
-  marketType: LlamaMarketType
+  marketType: MarketType
 }
 
 function LlammalendTest({ tab, onPricesUpdated, type, marketType, ...props }: LlammalendTestProps) {
@@ -66,11 +66,11 @@ function LlammalendTest({ tab, onPricesUpdated, type, marketType, ...props }: Ll
   const { marketId, chainId } = props
   const { data: lendMarket, error: lendError } = useLendMarket(
     { chainId, rMarket: marketId },
-    marketType === LlamaMarketType.Lend,
+    marketType === MarketType.Lend,
   )
   const { data: mintMarket, error: mintError } = useMintMarket(
     { chainId: chainId as MintChain, rMarket: marketId },
-    marketType === LlamaMarketType.Mint,
+    marketType === MarketType.Mint,
   )
   const market = lendMarket ?? mintMarket
   const error = lendError ?? mintError

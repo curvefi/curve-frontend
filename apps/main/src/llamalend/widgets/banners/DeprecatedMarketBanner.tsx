@@ -1,4 +1,4 @@
-import { DeprecatedMarketAlert } from '@/llamalend/llama-markets.constants'
+import { DeprecatedMarketAlert } from '@/llamalend/markets.constants'
 import { t } from '@ui-kit/lib/i18n'
 import { Banner } from '@ui-kit/shared/ui/Banner'
 

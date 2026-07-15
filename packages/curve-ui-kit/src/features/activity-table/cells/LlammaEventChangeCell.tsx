@@ -6,7 +6,7 @@ import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/Inline
 import { TokenInfo } from '@ui-kit/shared/ui/TokenInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
-import type { LlammaEventRow } from '../types'
+import type { MarketEventRow } from '../types'
 
 const { Spacing } = SizesAndSpaces
 
@@ -37,7 +37,7 @@ export const LlammaEventChangeCell = ({
   borrowToken,
   chain,
 }: {
-  event: LlammaEventRow
+  event: MarketEventRow
   chain: Chain
   collateralToken: Token | undefined
   borrowToken: Token | undefined

@@ -3,10 +3,7 @@ import { rootRoute } from './root.routes'
 import { createSharedRoutes } from './shared.routes'
 import { redirectTo } from './util'
 
-const LlamaMarketsList = lazyRouteComponent(
-  () => import('@/llamalend/features/market-list/LlamaMarketsList'),
-  'LlamaMarketsList',
-)
+const MarketsList = lazyRouteComponent(() => import('@/llamalend/features/market-list'), 'MarketsList')
 
 const llamalendLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -24,8 +21,8 @@ export const llamalendRoutes = llamalendLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/markets',
-    component: LlamaMarketsList,
-    head: () => ({ meta: [{ title: 'Llamalend Markets - Curve' }] }),
+    component: MarketsList,
+    head: () => ({ meta: [{ title: 'Markets - Curve' }] }),
     ...layoutProps,
   }),
 ])

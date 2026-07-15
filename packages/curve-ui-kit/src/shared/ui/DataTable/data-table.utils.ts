@@ -214,7 +214,7 @@ export type DataTableCategoryConfig = {
 export type DataTableCategory = keyof typeof DATA_TABLE_CATEGORIES
 
 export const DATA_TABLE_CATEGORIES = {
-  // default full-list table, e.g. LlamaMarketsTable or PoolListTable.
+  // default full-list table, e.g. MarketsTable or PoolListTable.
   list: {
     emptyStateRowSize: 'lg',
   },

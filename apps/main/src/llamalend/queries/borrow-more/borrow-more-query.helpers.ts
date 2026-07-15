@@ -1,5 +1,5 @@
-import { getLlamaMarket, hasLeverage, hasV2Leverage, hasZapV2 } from '@/llamalend/llama.utils'
-import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import { getMarket, hasLeverage, hasV2Leverage, hasZapV2 } from '@/llamalend/llama.utils'
+import { MarketTemplate } from '@/llamalend/llamalend.types'
 import type { BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { parseMutationRoute } from '@ui-kit/entities/router-api'
@@ -10,10 +10,10 @@ import { parseMutationRoute } from '@ui-kit/entities/router-api'
  * Otherwise fallback to unleveraged borrow more.
  */
 export function getBorrowMoreImplementation(
-  marketId: string | LlamaMarketTemplate,
+  marketId: string | MarketTemplate,
   leverageEnabled: boolean | null | undefined,
 ) {
-  const market = getLlamaMarket(marketId)
+  const market = getMarket(marketId)
   leverageEnabled ??= false // we don't know if leverage is supported when the API is offline
   return market instanceof MintMarketTemplate
     ? leverageEnabled && hasV2Leverage(market)
@@ -32,7 +32,7 @@ export function getBorrowMoreImplementation(
  * For leveraged (V1/V2) markets, returns `[type, impl, [userCollateral, userBorrowed, debt]]`.
  */
 export function getBorrowMoreImplementationArgs(
-  marketId: string | LlamaMarketTemplate,
+  marketId: string | MarketTemplate,
   {
     userCollateral,
     userBorrowed,
@@ -44,7 +44,7 @@ export function getBorrowMoreImplementationArgs(
     leverageEnabled?: boolean | null
   },
 ) {
-  const market = getLlamaMarket(marketId)
+  const market = getMarket(marketId)
   const [type, impl] = getBorrowMoreImplementation(market, leverageEnabled)
   if (type === 'unleveraged') {
     return [type, impl, [userCollateral, debt]] as const
@@ -70,7 +70,7 @@ export function getBorrowMoreImplementationArgs(
  * This is used to determine if leverage queries should be enabled and whether to show that information in the UI.
  */
 export const isLeverageBorrowMore = (
-  marketId: string | LlamaMarketTemplate | null | undefined,
+  marketId: string | MarketTemplate | null | undefined,
   leverageEnabled: boolean | null | undefined,
 ) => !!marketId && ['V1', 'V2', 'zapV2'].includes(getBorrowMoreImplementation(marketId, leverageEnabled)[0])
 
@@ -78,5 +78,4 @@ export const isLeverageBorrowMore = (
  * Checks whether leverage may be enabled for a given market.
  * This is used to determine whether to show the leverage toggle in the UI.
  */
-export const isLeverageBorrowMoreSupported = (market?: LlamaMarketTemplate) =>
-  !!market && isLeverageBorrowMore(market, true)
+export const isLeverageBorrowMoreSupported = (market?: MarketTemplate) => !!market && isLeverageBorrowMore(market, true)

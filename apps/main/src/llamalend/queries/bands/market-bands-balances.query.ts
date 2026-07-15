@@ -1,4 +1,4 @@
-import { getLlamaMarket } from '@/llamalend/llama.utils'
+import { getMarket } from '@/llamalend/llama.utils'
 import { fetchChartBandBalancesData, sortBands } from '@/llamalend/queries/bands/bands-balances.query-helpers'
 import { normalizeBands } from '@/llamalend/queries/market/market.query-helpers'
 import { liquidationBandValidationGroup } from '@/llamalend/queries/validation/bands-validation'
@@ -24,7 +24,7 @@ export const { useQuery: useMarketBandsBalances } = queryFactory({
   queryKey: ({ chainId, marketId, liquidationBand }: MarketBandsBalancesParams) =>
     [...rootKeys.market({ chainId, marketId }), QUERY_KEY, { liquidationBand }] as const,
   queryFn: async ({ marketId, liquidationBand }: MarketBandsBalancesQuery) => {
-    const market = getLlamaMarket(marketId)
+    const market = getMarket(marketId)
     const normalizedLiquidationBand = liquidationBand ?? null
     return fetchChartBandBalancesData(
       sortBands(normalizeBands(await market.stats.bandsBalances())),

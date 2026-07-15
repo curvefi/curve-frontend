@@ -10,7 +10,7 @@ import { LinearProgress } from '@ui-kit/shared/ui/LinearProgress'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { MarketType } from '@ui-kit/types/market'
 import { CRVUSD, formatNumber } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
@@ -58,7 +58,7 @@ const UtilizationTooltipContent = ({
     <Stack>
       <TooltipItems secondary>
         <TooltipItem variant="primary" title={t`Utilization breakdown`} />
-        {type === LlamaMarketType.Lend && (
+        {type === MarketType.Lend && (
           <TooltipItem title={t`Total supplied`}>
             {/* The supplied token is the same as the token people borrow, even though we use the collateral balance in this case */}
             <Currency {...borrowed} balance={collateral.balance} />

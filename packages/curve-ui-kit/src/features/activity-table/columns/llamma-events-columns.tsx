@@ -1,7 +1,7 @@
 import { createColumnHelper } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { TimestampCell, AddressCell, LlammaEventActionCell, LlammaEventChangeCell } from '../cells'
-import type { LlammaEventRow } from '../types'
+import type { MarketEventRow } from '../types'
 
 export enum LlammaEventsColumnId {
   Action = 'action',
@@ -10,7 +10,7 @@ export enum LlammaEventsColumnId {
   Time = 'timestamp',
 }
 
-const columnHelper = createColumnHelper<LlammaEventRow>()
+const columnHelper = createColumnHelper<MarketEventRow>()
 
 export const LLAMMA_EVENTS_COLUMNS = [
   columnHelper.accessor('provider', {

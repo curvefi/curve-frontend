@@ -1,5 +1,5 @@
 import { enforce, group, test } from 'vest'
-import { getLlamaMarket } from '@/llamalend/llama.utils'
+import { getMarket } from '@/llamalend/llama.utils'
 import { USE_API } from '@/llamalend/queries/market/market.constants'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
@@ -21,7 +21,7 @@ const RESERVES = '0' // Used in borrow scenarios where only debt changes, reserv
 const DEBT = '0' // Used in supply scenarios where only reserves change, debt stays at 0
 
 const fetchFutureRates = async (marketId: string, reserves: Decimal, debtDelta: Decimal) => {
-  const market = getLlamaMarket(marketId)
+  const market = getMarket(marketId)
   return market instanceof LendMarketTemplate
     ? convertRates(await market.stats.futureRates(reserves, debtDelta, USE_API))
     : convertRates((await market.stats.parameters()).future_rates)

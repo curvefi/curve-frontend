@@ -1,7 +1,7 @@
 import { MarketContextProvider } from 'main/src/llamalend/features/market-context/MarketContextProvider'
 import { type ReactElement } from 'react'
 import { getMarketType } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Box from '@mui/material/Box'
 import { CurveContext } from '@ui-kit/features/connect-wallet/lib/CurveContext'
@@ -17,7 +17,7 @@ import { mockedWagmiConfig } from './test-wagmi.helpers'
 type MockLoanTestWrapperProps = {
   children: ReactElement
   llamaApi: ReturnType<typeof createMockLlamaApi>
-  market: LlamaMarketTemplate
+  market: MarketTemplate
 }
 
 /**

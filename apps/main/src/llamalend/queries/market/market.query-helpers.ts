@@ -1,28 +1,28 @@
-import { getLlamaMarket } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import { getMarket } from '@/llamalend/llama.utils'
+import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { fromEntries, recordEntries } from '@primitives/objects.utils'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 
 export const getLendVault = (marketId: string) => requireLib('llamaApi').getLendMarket(marketId).vault
 
-export const getPricesImplementation = (marketId: string | LlamaMarketTemplate) => {
-  const market = getLlamaMarket(marketId)
+export const getPricesImplementation = (marketId: string | MarketTemplate) => {
+  const market = getMarket(marketId)
   return market instanceof LendMarketTemplate ? market.prices : market
 }
 
-export const getStatsImplementation = (marketId: string | LlamaMarketTemplate) => {
-  const market = getLlamaMarket(marketId)
+export const getStatsImplementation = (marketId: string | MarketTemplate) => {
+  const market = getMarket(marketId)
   return market instanceof LendMarketTemplate ? market.stats : market
 }
 
-export const getUserPositionImplementation = (marketId: string | LlamaMarketTemplate) => {
-  const market = getLlamaMarket(marketId)
+export const getUserPositionImplementation = (marketId: string | MarketTemplate) => {
+  const market = getMarket(marketId)
   return market instanceof LendMarketTemplate ? market.userPosition : market
 }
 
-export const getLoanImplementation = (marketId: string | LlamaMarketTemplate) => {
-  const market = getLlamaMarket(marketId)
+export const getLoanImplementation = (marketId: string | MarketTemplate) => {
+  const market = getMarket(marketId)
   return market instanceof LendMarketTemplate ? market.loan : market
 }
 

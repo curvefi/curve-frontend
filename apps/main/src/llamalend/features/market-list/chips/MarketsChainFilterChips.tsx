@@ -5,30 +5,27 @@ import { type FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { parseListFilter, serializeListFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { useMappedQuery, type QueryProp } from '@ui-kit/types/util'
 import { getUniqueSortedStrings } from '@ui-kit/utils/sorting'
-import { LlamaMarketColumnId } from '../columns'
+import { MarketColumnId } from '../columns'
 
 const getChains = (data: LlamaMarket[]) =>
   getUniqueSortedStrings(
     data.filter(market => !market.deprecatedMessage || market.userHasPositions),
-    LlamaMarketColumnId.Chain,
+    MarketColumnId.Chain,
   )
 
-export const LlamaChainFilterChips = ({
+export const MarketsChainFilterChips = ({
   marketsQuery,
   columnFiltersById,
   setColumnFilter,
 }: {
   marketsQuery: QueryProp<LlamaMarket[]>
-} & FilterProps<LlamaMarketColumnId>) => {
-  const selectedChains = useMemo(
-    () => parseListFilter(columnFiltersById[LlamaMarketColumnId.Chain]),
-    [columnFiltersById],
-  )
+} & FilterProps<MarketColumnId>) => {
+  const selectedChains = useMemo(() => parseListFilter(columnFiltersById[MarketColumnId.Chain]), [columnFiltersById])
 
   const toggleChain = useCallback(
     (chain: string) =>
       setColumnFilter(
-        LlamaMarketColumnId.Chain,
+        MarketColumnId.Chain,
         serializeListFilter(
           selectedChains?.includes(chain)
             ? selectedChains.length === 1

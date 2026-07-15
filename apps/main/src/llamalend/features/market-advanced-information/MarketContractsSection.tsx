@@ -8,7 +8,7 @@ import {
   getVaultAddress,
   getMonetaryPolicy,
 } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import { useMarketOracleAddress } from '@/llamalend/queries/market'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -42,7 +42,7 @@ type AddressItem = {
 
 type MarketContractsProps = {
   chainId: IChainId
-  market: LlamaMarketTemplate | undefined
+  market: MarketTemplate | undefined
   apiMarket: QueryProp<LlamaMarket>
   network: BaseConfig | undefined
 }

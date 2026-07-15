@@ -7,9 +7,9 @@ import { assert } from '@primitives/objects.utils'
 import { CellContext } from '@tanstack/react-table'
 import { TooltipProps } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
+import { MarketType, MarketRateType } from '@ui-kit/types/market'
 import { formatNumber } from '@ui-kit/utils'
-import { LlamaMarketColumnId } from '../../columns'
+import { MarketColumnId } from '../../columns'
 import { BorrowRateTooltip } from './BorrowRateTooltip'
 import { RewardsIcons } from './RewardsIcons'
 import { SupplyRateLendTooltip } from './SupplyRateLendTooltip'
@@ -20,19 +20,19 @@ const { Spacing } = SizesAndSpaces
 export type RateTooltipProps = { market: LlamaMarket; children: TooltipProps['children'] }
 
 const RateTypes = {
-  [LlamaMarketColumnId.LendRate]: MarketRateType.Supply,
-  [LlamaMarketColumnId.BorrowRate]: MarketRateType.Borrow,
-  [LlamaMarketColumnId.NetBorrowRate]: MarketRateType.Borrow,
+  [MarketColumnId.LendRate]: MarketRateType.Supply,
+  [MarketColumnId.BorrowRate]: MarketRateType.Borrow,
+  [MarketColumnId.NetBorrowRate]: MarketRateType.Borrow,
 } as const
 
-const TooltipComponents: Record<MarketRateType, Record<LlamaMarketType, FunctionComponent<RateTooltipProps>>> = {
+const TooltipComponents: Record<MarketRateType, Record<MarketType, FunctionComponent<RateTooltipProps>>> = {
   [MarketRateType.Supply]: {
-    [LlamaMarketType.Lend]: SupplyRateLendTooltip,
-    [LlamaMarketType.Mint]: SupplyRateMintTooltip,
+    [MarketType.Lend]: SupplyRateLendTooltip,
+    [MarketType.Mint]: SupplyRateMintTooltip,
   },
   [MarketRateType.Borrow]: {
-    [LlamaMarketType.Lend]: BorrowRateTooltip,
-    [LlamaMarketType.Mint]: BorrowRateTooltip,
+    [MarketType.Lend]: BorrowRateTooltip,
+    [MarketType.Mint]: BorrowRateTooltip,
   },
 } as const
 

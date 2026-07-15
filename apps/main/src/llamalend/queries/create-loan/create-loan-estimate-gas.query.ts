@@ -1,4 +1,4 @@
-import { getLlamaMarket } from '@/llamalend/llama.utils'
+import { getMarket } from '@/llamalend/llama.utils'
 import { createLoanExpectedCollateralQueryKey } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import type { IChainId, TGas } from '@curvefi/llamalend-api/lib/interfaces'
@@ -85,7 +85,7 @@ const {
     slippage,
     routeId,
   }: CreateLoanEstimateGasQuery): Promise<TGas> => {
-    const market = getLlamaMarket(marketId)
+    const market = getMarket(marketId)
     const [type, impl] = getCreateLoanImplementation(market, leverageEnabled)
     switch (type) {
       case 'zapV2':

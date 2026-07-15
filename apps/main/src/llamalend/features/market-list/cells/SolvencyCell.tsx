@@ -1,4 +1,4 @@
-import { SOLVENCY_THRESHOLDS } from '@/llamalend/llama-markets.constants'
+import { SOLVENCY_THRESHOLDS } from '@/llamalend/markets.constants'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { SolvencyTooltip } from '@/llamalend/widgets/tooltips'
 import Typography, { TypographyProps } from '@mui/material/Typography'

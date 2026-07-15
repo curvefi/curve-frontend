@@ -8,7 +8,7 @@ import {
 } from '@/llamalend/rates.utils'
 import { CrvUsdSnapshot, useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
 import { LendingSnapshot, useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
-import { MarketRateType, LlamaMarketType } from '@ui-kit/types/market'
+import { MarketRateType, MarketType } from '@ui-kit/types/market'
 import { AVERAGE_CATEGORIES, type AverageCategory } from '@ui-kit/utils'
 
 type UseSnapshotsResult<T> = {
@@ -28,13 +28,13 @@ const RateKeys = {
   [MarketRateType.Supply]: 'lendApy',
 } as const satisfies Record<MarketRateType, 'borrowApr' | 'lendApy'>
 
-export function useSnapshots<T extends CrvUsdSnapshot | LendingSnapshot>(
+export function useMarketSnapshots<T extends CrvUsdSnapshot | LendingSnapshot>(
   market: LlamaMarket | undefined,
   { type, category }: { type: MarketRateType; category: AverageCategory },
   enabled: boolean,
 ): UseSnapshotsResult<T> {
   const { chain, controllerAddress, type: marketType, rates } = market ?? {}
-  const isLend = marketType == LlamaMarketType.Lend
+  const isLend = marketType == MarketType.Lend
   const showLendGraph = isLend && enabled
   const showMintGraph = !isLend && type === MarketRateType.Borrow && enabled
   const { window: rateWindow } = AVERAGE_CATEGORIES[category]

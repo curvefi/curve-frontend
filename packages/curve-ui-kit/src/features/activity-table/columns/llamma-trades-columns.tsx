@@ -4,7 +4,7 @@ import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/Inline
 import { TokenInfo } from '@ui-kit/shared/ui/TokenInfo'
 import { formatNumber } from '@ui-kit/utils'
 import { TimestampCell, AddressCell } from '../cells'
-import type { LlammaTradeRow } from '../types'
+import type { MarketTradeRow } from '../types'
 
 export enum LlammaTradesColumnId {
   User = 'buyer',
@@ -13,7 +13,7 @@ export enum LlammaTradesColumnId {
   Time = 'timestamp',
 }
 
-const columnHelper = createColumnHelper<LlammaTradeRow>()
+const columnHelper = createColumnHelper<MarketTradeRow>()
 
 export const LLAMMA_TRADES_COLUMNS = [
   columnHelper.accessor('buyer', {
