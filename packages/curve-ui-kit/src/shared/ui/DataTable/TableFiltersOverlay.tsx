@@ -1,10 +1,11 @@
-import { useState, type ReactNode, type RefObject } from 'react'
+import { type ReactNode, type RefObject } from 'react'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import Popover from '@mui/material/Popover'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { Cross2Icon } from '@ui-kit/shared/icons/Cross2Icon'
 import { DrawerHeader } from '@ui-kit/shared/ui/SwipeableDrawer/DrawerHeader'
@@ -26,6 +27,8 @@ type TableFiltersOverlayProps = {
   title: string
 }
 
+const testId = (testId: string, isReady: boolean | undefined) => isReady && ({ 'data-testid': testId } as const)
+
 /** Renders table filters in a mobile drawer or desktop popover. */
 export const TableFiltersOverlay = ({
   anchorRef,
@@ -38,7 +41,7 @@ export const TableFiltersOverlay = ({
   title,
 }: TableFiltersOverlayProps) => {
   const isMobile = useIsMobile()
-  const [testId, setTestId] = useState<string | null>(null)
+  const [isReady, setReady, resetReady] = useSwitch()
   const resetButton = (
     <Button
       color="ghost"
@@ -69,10 +72,10 @@ export const TableFiltersOverlay = ({
           sx: { backgroundColor: t => t.design.Layer[3].Fill, width: Width.modal.md },
         },
         // Set the test ID once transition is ready to avoid flaky tests clicking during transition.
-        transition: { onEntered: () => setTestId('table-filters-popover'), onExit: () => setTestId(null) },
+        transition: { onEntered: setReady, onExit: resetReady },
       }}
     >
-      <Stack sx={directChildrenAfterFirst({ borderTop: borderStyle })} data-testid={testId}>
+      <Stack sx={directChildrenAfterFirst({ borderTop: borderStyle })} {...testId('table-filters-popover', isReady)}>
         <Stack
           direction="row"
           sx={{
@@ -86,7 +89,7 @@ export const TableFiltersOverlay = ({
           <Typography variant="headingXsBold" color="textSecondary" sx={{ paddingBlockEnd: Spacing.xs }}>
             {title}
           </Typography>
-          <IconButton size="extraSmall" onClick={() => setOpen(false)} data-testid="btn-close-filters">
+          <IconButton size="extraSmall" onClick={() => setOpen(false)} {...testId('btn-close-filters', isReady)}>
             <Cross2Icon />
           </IconButton>
         </Stack>
