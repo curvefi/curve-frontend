@@ -36,6 +36,7 @@ function useToastItems() {
       if (!notification.keepAlive) {
         // eslint-disable-next-line @eslint-react/web-api-no-leaked-timeout -- Existing violation before enabling this rule.
         const timeout = window.setTimeout(() => dismiss(notification), getTotalDuration(notification))
+        // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
         timeouts.push(timeout)
       }
     }

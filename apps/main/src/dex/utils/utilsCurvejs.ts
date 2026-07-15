@@ -13,6 +13,7 @@ export function separateCrvReward<T extends { symbol: string; apy: number | stri
     const crvIdx = rewards.findIndex(r => r.symbol === 'CRV')
 
     if (crvIdx !== -1) {
+      // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       const crvReward = rewards.splice(crvIdx, 1)
       return [rewards, [crvReward[0].apy]]
     }
@@ -51,6 +52,7 @@ export function separateCrvProfit<T extends { symbol: string }>(tokensProfit: T[
     const crvIdx = tokensProfit.findIndex(r => r.symbol === 'CRV')
 
     if (crvIdx !== -1) {
+      // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       const crvProfit = tokensProfit.splice(crvIdx, 1)
       return { crvProfit: crvProfit[0], tokensProfit }
     }

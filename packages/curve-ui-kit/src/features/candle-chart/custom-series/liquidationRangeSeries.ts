@@ -137,6 +137,7 @@ const collectVisiblePoints = (
 
     if (upperCoord === null || lowerCoord === null) continue
 
+    // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
     points.push({
       x: bar.x,
       upper: upperCoord,

@@ -91,6 +91,7 @@ export const useLlamaMarketsFilters = ({ marketsQuery, table, ...filterProps }: 
     marketVersionOptions: recordEntries(MARKET_VERSION_LABELS)
       .map(([value, label]) => ({ value, label }))
       // numeric like object keys (e.g. "1") are returned first, so we sort `all` back to the front for the button group
+      // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       .sort(
         ({ value: left }, { value: right }) => Number(right === ALL_FILTER_VALUE) - Number(left === ALL_FILTER_VALUE),
       ),

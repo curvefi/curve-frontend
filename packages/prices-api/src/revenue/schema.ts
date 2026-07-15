@@ -130,6 +130,7 @@ const legacyGetTopPoolsResponse = z
 
 const currentGetTopPoolsResponse = z
   .object({ data: z.array(currentChainTopPoolRevenue) })
+  // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
   .transform(({ data }) => data.sort((a, b) => b.totalDailyFeesUSD - a.totalDailyFeesUSD))
 
 export const getTopPoolsResponse = z.union([legacyGetTopPoolsResponse, currentGetTopPoolsResponse])

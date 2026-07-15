@@ -41,6 +41,7 @@ export const mockEmptyLlamaMarketUserData = () =>
       void cy.intercept({ method: 'GET', pathname, query: { include_closed: 'false' } }, req =>
         req.reply({
           body: {
+            // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
             user: new URL(req.url).pathname.split('/').pop(),
             chains: fromEntries(LendingChains.map(chain => [chain, { count: 0, markets: [] }])),
           },

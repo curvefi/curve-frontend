@@ -125,6 +125,7 @@ const randomPage = (count: number, perPage: number, maxPages: number) => {
 const shuffled = <T>(items: readonly T[]) =>
   items
     .map((item, index) => ({ item, index, rank: random() }))
+    // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
     .sort((a, b) => a.rank - b.rank || a.index - b.index)
     .map(({ item }) => item)
 

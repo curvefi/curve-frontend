@@ -33,18 +33,23 @@ export const DeployMainnet = ({ chainId }: Props) => {
   const poolTypesList: PoolType[] = useMemo(() => {
     const list: PoolType[] = []
     if (network.stableswapFactory) {
+      // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       list.push(STABLESWAP)
     }
     if (network.twocryptoFactory) {
+      // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       list.push(TWOCOINCRYPTOSWAPNG)
     }
     if (network.tricryptoFactory) {
+      // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       list.push(THREECOINCRYPTOSWAP)
     }
     if (network.stableswapFactoryOld) {
+      // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       list.push(STABLESWAPOLD)
     }
     if (network.twocryptoFactoryOld) {
+      // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       list.push(TWOCOINCRYPTOSWAP)
     }
     return list
