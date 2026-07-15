@@ -3,9 +3,9 @@ import { maybe } from '@primitives/objects.utils'
 import type { CellContext } from '@tanstack/react-table'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { formatNumber } from '@ui-kit/utils'
-import type { PoolListItem } from '../pools.types'
+import type { PoolRow } from '../types'
 
-export const UsdCell = ({ getValue }: CellContext<PoolListItem, number | null | undefined>) => {
+export const UsdCell = ({ getValue }: CellContext<PoolRow, number | null | undefined>) => {
   const value = getValue()
 
   return (

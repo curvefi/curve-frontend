@@ -6,7 +6,7 @@ import {
 } from '@ui-kit/shared/ui/DataTable/TableActiveFilterGroups'
 import { TableActiveFiltersBar } from '@ui-kit/shared/ui/DataTable/TableActiveFiltersBar'
 import { POOL_DEFAULT_TVL_MIN, type PoolsFiltersProps } from '../hooks/usePoolsFilters'
-import { getPoolsTvlLabelRange, parsePoolsRangeFilter, PoolFilterId } from '../pools.filter'
+import { getPoolsTvlLabelRange, parsePoolsRangeFilter, PoolFilterId } from './utils'
 
 // Show the hidden default TVL min in active range chips once a max bound is active.
 const getTvlFilterLabel = (serializedRange: string | undefined) => {

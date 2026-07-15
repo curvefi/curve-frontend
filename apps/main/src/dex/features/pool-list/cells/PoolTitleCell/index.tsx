@@ -8,7 +8,7 @@ import { UserPositionIndicator } from '@ui-kit/shared/ui/DataTable/UserPositionI
 import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketTitle } from '@ui-kit/widgets/MarketTitle'
-import type { PoolListItem } from '../../pools.types'
+import type { PoolRow } from '../../types'
 import { PoolAlertBadge } from './PoolAlertBadge'
 import { PoolAlertIcons } from './PoolAlertIcons'
 import { PoolTokens } from './PoolTokens'
@@ -16,15 +16,13 @@ import { PoolTokens } from './PoolTokens'
 const { Spacing, Height } = SizesAndSpaces
 type PoolListTitleProps = {
   filterValue: string | undefined
-  pool: PoolListItem
+  pool: PoolRow
 }
 
 export const PoolTitleCell = ({
   row: { original: pool },
   column: { getFilterValue },
-}: CellContext<PoolListItem, string>) => (
-  <PoolListTitle pool={pool} filterValue={getFilterValue() as string | undefined} />
-)
+}: CellContext<PoolRow, string>) => <PoolListTitle pool={pool} filterValue={getFilterValue() as string | undefined} />
 
 // Title cells do alert lookup and token icon rendering. Memoization avoids repeating that work for unchanged rows.
 const PoolListTitle = memo(function PoolListTitle({ pool, filterValue }: PoolListTitleProps) {

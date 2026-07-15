@@ -6,14 +6,14 @@ import { BaseApyCell } from '../cells/BaseApyCell'
 import { PoolTitleCell } from '../cells/PoolTitleCell'
 import { RewardsCell } from '../cells/RewardsCell'
 import { UsdCell } from '../cells/UsdCell'
-import type { PoolListItem } from '../pools.types'
+import type { PoolRow } from '../types'
 import { PoolColumnId } from './columns.enum'
 
 type Tooltip = ColumnMeta<never, never>['tooltip']
-type PoolColumn = ColumnDefinition<PoolListItem>
+type PoolColumn = ColumnDefinition<PoolRow>
 type PoolColumnOptions = Omit<PoolColumn, 'id' | 'header'>
 
-const columnHelper = createColumnHelper<PoolListItem>()
+const columnHelper = createColumnHelper<PoolRow>()
 
 const createTooltip = (id: keyof typeof POOL_TITLES, body: ReactNode): Tooltip => ({
   title: POOL_TITLES[id],

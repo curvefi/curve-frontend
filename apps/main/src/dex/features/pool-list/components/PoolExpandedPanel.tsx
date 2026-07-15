@@ -4,13 +4,15 @@ import type { ExpandedPanelComponent } from '@ui-kit/shared/ui/DataTable/Expansi
 import { Metric, type MetricProps } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { constQ } from '@ui-kit/types/util'
-import { decimal } from '@ui-kit/utils'
+import { aprToApy, AVERAGE_CATEGORIES, decimal } from '@ui-kit/utils'
 import { RewardsCell } from '../cells/RewardsCell'
 import { PoolColumnId } from '../columns/columns.enum'
-import type { PoolListItem } from '../pools.types'
-import { getPoolYieldApy } from '../pools.utils'
+import type { PoolRow } from '../types'
 
 const { Spacing } = SizesAndSpaces
+
+const getPoolYieldApy = (apr: number | null | undefined) =>
+  aprToApy(apr, AVERAGE_CATEGORIES['dex.poolYield.compoundRate'].window)
 
 const ListInfoItem = ({
   value,
@@ -23,7 +25,7 @@ const ListInfoItem = ({
 
 const highlight = { color: 'success' as const }
 
-export const PoolExpandedPanel: ExpandedPanelComponent<PoolListItem> = ({ row, table }) => {
+export const PoolExpandedPanel: ExpandedPanelComponent<PoolRow> = ({ row, table }) => {
   const pool = row.original
   const hasVolume = table.getColumn(PoolColumnId.Volume)?.getIsVisible()
 

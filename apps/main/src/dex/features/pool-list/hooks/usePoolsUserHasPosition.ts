@@ -2,10 +2,19 @@ import { useCallback, useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { useUserPools } from '@/dex/queries/user-pools.query'
 import { useStore } from '@/dex/store/useStore'
-import type { ChainId } from '@/dex/types/main.types'
-import { fromEntries, notFalsy } from '@primitives/objects.utils'
+import type { ChainId, CurveApi, PoolData } from '@/dex/types/main.types'
+import { fromEntries, notFalsy, recordValues } from '@primitives/objects.utils'
 import { useCurve } from '@ui-kit/features/connect-wallet'
-import { getCurvePoolIdByAddressEntries, getPoolIdByAddressEntries, normalizeAddress } from '../pools.utils'
+
+type PoolIdByAddressSource = Record<string, { pool: Pick<PoolData['pool'], 'address' | 'id'> }>
+
+const normalizeAddress = (address: string) => address.toLowerCase()
+
+const getCurvePoolIdByAddressEntries = (curve: CurveApi) =>
+  curve.getPoolList().map(poolId => [normalizeAddress(curve.getPool(poolId).address), poolId] as const)
+
+const getPoolIdByAddressEntries = (poolMapper: PoolIdByAddressSource | undefined) =>
+  recordValues(poolMapper ?? {}).map(({ pool }) => [normalizeAddress(pool.address), pool.id] as const)
 
 export const usePoolsUserHasPosition = (chainId: ChainId) => {
   const { curveApi, isHydrated } = useCurve()

@@ -12,10 +12,10 @@ import { LegacyRewardsOtherCell } from '../cells/LegacyRewardsOtherCell'
 import { LegacyRewardsOtherHeader } from '../cells/LegacyRewardsOtherHeader'
 import { LegacyUsdCell } from '../cells/LegacyUsdCell'
 import { LegacyPoolTitleCell } from '../cells/PoolTitleCell/LegacyPoolTitleCell'
-import type { LegacyPoolListItem } from '../legacy-pools.types'
+import type { LegacyPoolRow } from '../types'
 import { LegacyPoolColumnId } from './legacy-columns.enum'
 
-const columnHelper = createColumnHelper<LegacyPoolListItem>()
+const columnHelper = createColumnHelper<LegacyPoolRow>()
 
 const headers = {
   [LegacyPoolColumnId.PoolName]: t`Pool`,
@@ -27,12 +27,11 @@ const headers = {
   [LegacyPoolColumnId.Tvl]: t`TVL`,
 }
 
-type LegacyPoolColumn = ColumnDefinition<LegacyPoolListItem>
+type LegacyPoolColumn = ColumnDefinition<LegacyPoolRow>
 
 /** Sorts pool rows by a numeric reward value, placing rows with no value last. */
 const sortByReward =
-  (getValue: (row: LegacyPoolListItem) => number | undefined) =>
-  (x: Row<LegacyPoolListItem>, y: Row<LegacyPoolListItem>) =>
+  (getValue: (row: LegacyPoolRow) => number | undefined) => (x: Row<LegacyPoolRow>, y: Row<LegacyPoolRow>) =>
     (getValue(x.original) ?? -Infinity) - (getValue(y.original) ?? -Infinity)
 
 /** Define a hidden column. */

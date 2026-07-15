@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { useSearchNavigate, useSearchParams } from '@ui-kit/hooks/router'
 import { usePageFromQueryString } from '@ui-kit/hooks/usePageFromQueryString'
-import type { PoolsQueryUpdater } from '../pools.filter'
+import type { PoolsQueryUpdater } from '../filters/utils'
 
 export const POOLS_PAGE_SIZE = 50
 

@@ -1,15 +1,41 @@
 import { useMemo } from 'react'
+import type { PartialRecord } from '@primitives/objects.utils'
 import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { useFilters } from '@ui-kit/shared/ui/DataTable/hooks/useFilters'
-import { POOL_TYPE_FILTERS } from '../pools.constants'
-import { getPoolsApiParams, PoolFilterId, POOL_LIST_SEARCH_QUERY_FIELD } from '../pools.filter'
+import {
+  PoolFilterId,
+  POOL_TYPE_FILTERS,
+  parsePoolsRangeFilter,
+  type PoolsApiParams,
+  POOL_DEFAULT_TVL_MIN,
+} from '../filters/utils'
 
-export { POOL_DEFAULT_TVL_MIN } from '../pools.filter'
+export { POOL_DEFAULT_TVL_MIN } from '../filters/utils'
 export { PoolFilterId }
-export type { PoolsApiParams } from '../pools.filter'
+export type { PoolsApiParams } from '../filters/utils'
+
+const POOL_LIST_SEARCH_QUERY_FIELD = 'search'
 
 export type PoolsFiltersProps = FilterProps<PoolFilterId> & {
   poolTypeFilters: typeof POOL_TYPE_FILTERS
+}
+
+type PoolsColumnFilters = PartialRecord<PoolFilterId, string>
+
+export const getPoolsApiParams = (columnFiltersById: PoolsColumnFilters): PoolsApiParams => {
+  const [minApy, maxApy] = parsePoolsRangeFilter(columnFiltersById[PoolFilterId.Apy])
+  const [minTvl, maxTvl] = parsePoolsRangeFilter(columnFiltersById[PoolFilterId.Tvl])
+  const [minVolume, maxVolume] = parsePoolsRangeFilter(columnFiltersById[PoolFilterId.Volume])
+
+  return {
+    maxApy: maxApy ?? undefined,
+    maxTvl: maxTvl ?? undefined,
+    maxVolume: maxVolume ?? undefined,
+    minApy: minApy ?? undefined,
+    minTvl: minTvl ?? POOL_DEFAULT_TVL_MIN,
+    minVolume: minVolume ?? undefined,
+    poolType: columnFiltersById[PoolFilterId.PoolType] || undefined,
+  }
 }
 
 /**

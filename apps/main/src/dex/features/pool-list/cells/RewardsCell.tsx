@@ -6,9 +6,9 @@ import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { formatNumber } from '@ui-kit/utils'
-import type { PoolListItem } from '../pools.types'
+import type { PoolRow } from '../types'
 
-type CrvRewards = Pick<PoolListItem, 'crvApr' | 'crvAprBoosted'>
+type CrvRewards = Pick<PoolRow, 'crvApr' | 'crvAprBoosted'>
 
 const MIN_VISIBLE_CRV_APR = 0.01
 const MAX_CRV_BOOST = '2.50'
@@ -39,13 +39,7 @@ const EmptyRewards = () => (
 )
 
 // Rewards can be expensive to render once campaigns are present. Keep unchanged rows out of sort/filter-only renders.
-export const RewardsCell = memo(function PoolListRewards({
-  pool,
-  isMobile,
-}: {
-  isMobile?: boolean
-  pool: PoolListItem
-}) {
+export const RewardsCell = memo(function PoolListRewards({ pool, isMobile }: { isMobile?: boolean; pool: PoolRow }) {
   const crvRewardsLabel = getCrvRewardsLabel(pool)
   const extraRewards = pool.extraRewardsApr.filter(({ apr }) => apr > 0)
   const hasCampaignRewards = pool.campaigns.length > 0

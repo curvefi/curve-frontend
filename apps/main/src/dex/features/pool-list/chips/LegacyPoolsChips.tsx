@@ -7,7 +7,9 @@ import { GridChip } from '@ui-kit/shared/ui/DataTable/chips/GridChip'
 import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LegacyPoolColumnId } from '../columns'
-import type { LegacyPoolTag } from '../legacy-pools.types'
+
+export type LegacyPoolTag =
+  'btc' | 'crypto' | 'kava' | 'eth' | 'usd' | 'others' | 'user' | 'crvusd' | 'tricrypto' | 'stableng' | 'cross-chain'
 
 const { Spacing } = SizesAndSpaces
 

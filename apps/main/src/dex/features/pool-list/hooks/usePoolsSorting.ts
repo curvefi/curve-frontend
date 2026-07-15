@@ -1,12 +1,24 @@
 import { useCallback, useMemo } from 'react'
-import type { SortDirection as PoolSortDirection, V2PoolSortField as PoolSortField } from '@curvefi/prices-api/pools'
+import type {
+  SortDirection as PoolSortDirection,
+  V2PoolSortField as PoolSortField,
+  V2PoolSortField,
+} from '@curvefi/prices-api/pools'
 import { recordEntries } from '@primitives/objects.utils'
 import type { OnChangeFn, SortingState } from '@tanstack/react-table'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
 import { POOL_TITLES, PoolColumnId, getDefaultPoolsSort } from '../columns'
-import { POOL_SORT_BY, type PoolSortableColumn } from '../pools.constants'
-import type { PoolsQueryUpdater } from '../pools.filter'
+import type { PoolsQueryUpdater } from '../filters/utils'
+
+type PoolSortableColumn = PoolColumnId.PoolName | PoolColumnId.RewardsBase | PoolColumnId.Volume | PoolColumnId.Tvl
+
+export const POOL_SORT_BY = {
+  [PoolColumnId.PoolName]: 'name',
+  [PoolColumnId.RewardsBase]: 'base_daily_apr',
+  [PoolColumnId.Volume]: 'volume',
+  [PoolColumnId.Tvl]: 'tvl',
+} as const satisfies Record<PoolSortableColumn, V2PoolSortField>
 
 const SORT_QUERY_FIELD = 'sort'
 const SORT_COLUMNS = {

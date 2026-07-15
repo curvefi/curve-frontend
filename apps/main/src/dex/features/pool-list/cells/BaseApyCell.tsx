@@ -7,13 +7,15 @@ import type { CellContext } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { formatNumber } from '@ui-kit/utils'
-import type { PoolListItem } from '../pools.types'
-import { getPoolYieldApy } from '../pools.utils'
+import { aprToApy, AVERAGE_CATEGORIES, formatNumber } from '@ui-kit/utils'
+import type { PoolRow } from '../types'
 
 const { Spacing } = SizesAndSpaces
 
-const BaseApyTooltip = ({ baseDailyApr, baseWeeklyApr }: Pick<PoolListItem, 'baseDailyApr' | 'baseWeeklyApr'>) => {
+const getPoolYieldApy = (apr: number | null | undefined) =>
+  aprToApy(apr, AVERAGE_CATEGORIES['dex.poolYield.compoundRate'].window)
+
+const BaseApyTooltip = ({ baseDailyApr, baseWeeklyApr }: Pick<PoolRow, 'baseDailyApr' | 'baseWeeklyApr'>) => {
   const baseDailyApy = getPoolYieldApy(baseDailyApr)
 
   return (
@@ -42,10 +44,7 @@ const BaseApyTooltip = ({ baseDailyApr, baseWeeklyApr }: Pick<PoolListItem, 'bas
   )
 }
 
-export const BaseApyCell = ({
-  row: { original: pool },
-  getValue,
-}: CellContext<PoolListItem, PoolListItem['baseDailyApr']>) =>
+export const BaseApyCell = ({ row: { original: pool }, getValue }: CellContext<PoolRow, PoolRow['baseDailyApr']>) =>
   maybe(getValue(), baseDailyApr => {
     const baseDailyApy = getPoolYieldApy(baseDailyApr)
 

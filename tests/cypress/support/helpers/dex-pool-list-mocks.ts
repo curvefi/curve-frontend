@@ -1,6 +1,7 @@
 import { orderBy } from 'lodash'
-import { CRYPTO_POOL_TYPE_ALIASES, POOL_TYPES, POOL_SORT_BY } from '@/dex/features/pool-list/pools.constants'
-import type { PoolType, SortDirection, V2PoolSortField } from '@curvefi/prices-api/pools'
+import { POOL_TYPE_FILTERS } from '@/dex/features/pool-list/filters/utils'
+import { POOL_SORT_BY } from '@/dex/features/pool-list/hooks/usePoolsSorting'
+import type { SortDirection, V2PoolSortField } from '@curvefi/prices-api/pools'
 import { oneAddress, oneFloat } from '@cy/support/generators'
 import { oneToken } from '@cy/support/helpers/tokens'
 import type { Address } from '@primitives/address.utils'
@@ -16,6 +17,13 @@ const MAX_GENERATED_POOL_VOLUME_USD = 1_000_000_000
 const POOL_USD_STEP = 1_000_000
 const onePriorityPoolUsdValue = () =>
   oneFloat(MAX_GENERATED_POOL_VOLUME_USD + POOL_USD_STEP, MAX_GENERATED_POOL_VOLUME_USD * 2)
+
+type PoolsFilter = (typeof POOL_TYPE_FILTERS)[number]
+type PoolType = PoolsFilter['key']
+const POOL_TYPES = POOL_TYPE_FILTERS.map(({ key }) => key) satisfies readonly PoolType[]
+
+// The API bundles factory_crypto and twocryptong pools under the "crypto" filter.
+const CRYPTO_POOL_TYPE_ALIASES: ReadonlySet<string> = new Set(['factory_crypto', 'twocryptong'])
 
 // Known Ethereum pool used by search assertions.
 const SearchPool = {
@@ -102,7 +110,7 @@ const createMockPools = (chainId: MockChainId): MockPool[] => [
             chainId,
             index: POOL_COUNT,
             name: SearchPool.name,
-            poolType: 'main',
+            poolType: 'stableswapng',
           }),
           coins: [
             {
@@ -138,7 +146,7 @@ const createMockPools = (chainId: MockChainId): MockPool[] => [
             chainId,
             index: POOL_COUNT + 1,
             name: DEX_POOL_LIST_NAVIGATION_POOL.name,
-            poolType: 'main',
+            poolType: 'stableswapng',
           }),
           tvl_usd: onePriorityPoolUsdValue(),
           trading_volume_24h: onePriorityPoolUsdValue(),
