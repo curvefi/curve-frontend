@@ -5,7 +5,7 @@ import { t } from '@ui-kit/lib/i18n'
 import type { ExpandedPanelComponent } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { formatNumber } from '@ui-kit/utils'
+import { formatToken } from '@ui-kit/utils'
 import type { MarketTradeRow } from '../types'
 
 const { Spacing } = SizesAndSpaces
@@ -20,7 +20,7 @@ export const MarketTradesExpandedPanel: ExpandedPanelComponent<MarketTradeRow> =
       <Typography variant="bodyMRegular" color="textSecondary">{t`Sold`}</Typography>
       <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
         <Typography variant="tableCellMBold" color="error">
-          {formatNumber(amountSold, { abbreviate: false })} {tokenSold.symbol}
+          {formatToken(amountSold, tokenSold.symbol, 'amount')}
         </Typography>
         <TokenIcon blockchainId={network} address={tokenSold.address} size="mui-sm" />
       </Stack>

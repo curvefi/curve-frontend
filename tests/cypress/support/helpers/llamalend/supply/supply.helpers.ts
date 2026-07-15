@@ -177,7 +177,7 @@ export const checkSupplyAlert = (testId: string) => {
  * Check the current supplied amount after a supply action.
  */
 export function checkCurrentSuppliedAmount(expectedAmount: Decimal) {
-  const expected = formatNumber(expectedAmount, { abbreviate: false })
+  const expected = formatNumber(expectedAmount, 'token.amount')
   getActionValue('supply-amount').should('equal', expected)
   getActionValue('supply-amount', 'previous').should('equal', expected)
 }
@@ -194,7 +194,7 @@ export function checkCurrentStakedAmount({ expectedAmountSupplied }: { expectedA
     getActionValue('supply-vault-shares', 'previous').should('equal', '0')
   }
 
-  const expectedAmount = formatNumber(expectedAmountSupplied, { abbreviate: false })
+  const expectedAmount = formatNumber(expectedAmountSupplied, 'token.amount')
   getActionValue('supply-amount').should('equal', expectedAmount)
   getActionValue('supply-amount', 'previous').should('equal', expectedAmount)
 }
