@@ -6,7 +6,7 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Address, type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { UseFormReturn } from '@ui-kit/features/forms'
-import type { LlamaMarketType } from '@ui-kit/types/market'
+import type { MarketType } from '@ui-kit/types/market'
 import { constQ, mapQuery, q, type QueryProp } from '@ui-kit/types/util'
 import type { PriceImpact } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { useCreateLoanEstimateGas } from '../../../queries/create-loan/create-loan-estimate-gas.query'
@@ -32,7 +32,7 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
   form,
   priceImpact,
 }: {
-  marketType: LlamaMarketType
+  marketType: MarketType
   controllerAddress: Address | undefined
   params: CreateLoanFormQueryParams<ChainId>
   values: CreateLoanForm

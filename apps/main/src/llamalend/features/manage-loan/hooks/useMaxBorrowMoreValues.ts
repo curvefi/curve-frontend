@@ -1,7 +1,7 @@
 import { PRESET_RANGES } from '@/llamalend/constants'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { isPositionLeveraged } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import { resetBorrowMoreExpectedCollateral } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
 import { useBorrowMoreMaxReceive } from '@/llamalend/queries/borrow-more/borrow-more-max-receive.query'
 import { useMarketMaxLeverage } from '@/llamalend/queries/market'
@@ -24,7 +24,7 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>({
 }: {
   params: BorrowMoreParams<ChainId>
   form: UseFormReturn<BorrowMoreForm>
-  market: LlamaMarketTemplate | undefined
+  market: MarketTemplate | undefined
   borrowTokenAddress: Address | undefined
   collateralTokenAddress: Address | undefined
   collateralEvents: QueryProp<UserCollateralEvents>

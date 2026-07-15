@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import {
   resetRepayExpectedBorrowed,
   useRepayExpectedBorrowed,
@@ -22,7 +22,7 @@ export function useMaxRepayTokenValues({
   params,
   form,
 }: {
-  market: LlamaMarketTemplate | undefined
+  market: MarketTemplate | undefined
   borrowTokenAddress: Address | undefined
   collateralTokenAddress: Address | undefined
   params: RepayParams

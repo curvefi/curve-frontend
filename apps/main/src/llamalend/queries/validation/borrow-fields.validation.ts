@@ -1,7 +1,7 @@
 import { enforce, skipWhen, test } from 'vest'
 import { PRESET_RANGES } from '@/llamalend/constants'
-import { getLlamaMarket, hasLeverage, hasLeverageValue, tryGetLlamaMarket } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import { getMarket, hasLeverage, hasLeverageValue, tryGetMarket } from '@/llamalend/llama.utils'
+import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import type { Decimal } from '@primitives/decimal.utils'
 
 export const validateUserBorrowed = (userBorrowed: Decimal | null | undefined) => {
@@ -74,23 +74,23 @@ export const validateLeverageEnabled = (
 }
 
 export const validateLeverageSupported = (
-  marketId: LlamaMarketTemplate | string | null | undefined,
+  marketId: MarketTemplate | string | null | undefined,
   { required }: { required: boolean },
 ) => {
-  const market = tryGetLlamaMarket(marketId)
+  const market = tryGetMarket(marketId)
   skipWhen(!required || !market, () => {
     test('marketId', 'Market does not support leverage', () => {
-      const market = getLlamaMarket(marketId!)
+      const market = getMarket(marketId!)
       enforce(hasLeverage(market)).isTruthy()
     })
   })
 }
 
 export const validateLeverageValuesSupported = (
-  marketId: LlamaMarketTemplate | string | null | undefined,
+  marketId: MarketTemplate | string | null | undefined,
   required = true,
 ) => {
-  const market = tryGetLlamaMarket(marketId)
+  const market = tryGetMarket(marketId)
   skipWhen(!market || !required, () => {
     test('marketId', 'Market does not support leverage values', () => {
       enforce(hasLeverageValue(market)).isTruthy()

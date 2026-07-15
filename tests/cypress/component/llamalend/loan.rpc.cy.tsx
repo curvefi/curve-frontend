@@ -33,18 +33,18 @@ import { LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { recordValues } from '@primitives/objects.utils'
 import { getLib } from '@ui-kit/features/connect-wallet'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { MarketType } from '@ui-kit/types/market'
 import { waitFor } from '@ui-kit/utils/time.utils'
 
-const testCases = recordValues(LlamaMarketType).map(marketType => oneLoanTestMarket(marketType))
+const testCases = recordValues(MarketType).map(marketType => oneLoanTestMarket(marketType))
 
 /**
  * The lend markets have a memoize() around the userState function that we cannot control from the outside.
  * This leads to the borrow more form detecting maxDebt=0 during the first render. It needs to be recalled once the user state is updated.
  * The proper fix is here: https://github.com/curvefi/curve-llamalend.js/pull/86
  */
-const waitUntilLendMarketUpdated = (id: string, expectedDebt: Decimal, marketType: LlamaMarketType) => {
-  if (marketType !== LlamaMarketType.Lend) return // mint markets don't have cache
+const waitUntilLendMarketUpdated = (id: string, expectedDebt: Decimal, marketType: MarketType) => {
+  if (marketType !== MarketType.Lend) return // mint markets don't have cache
   cy.then(LOAD_TIMEOUT, () =>
     waitFor(async () => {
       const state = await getLib('llamaApi')?.getLendMarket(id).userPosition.userState()

@@ -1,14 +1,14 @@
 import { useMemo } from 'react'
 import { getAddress } from 'viem'
-import { MARKETS_ALERTS } from '@/llamalend/llama-markets.constants'
+import { MARKETS_ALERTS } from '@/llamalend/markets.constants'
 import { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { Address } from '@primitives/address.utils'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { MarketType } from '@ui-kit/types/market'
 
 export const useMarketAlert = <ChainId extends IChainId>(
   rChainId: ChainId,
   controllerAddress: Address | undefined,
-  marketType: LlamaMarketType | undefined,
+  marketType: MarketType | undefined,
 ) =>
   useMemo(
     () => controllerAddress && marketType && MARKETS_ALERTS[marketType][rChainId]?.[getAddress(controllerAddress)],

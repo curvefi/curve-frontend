@@ -5,7 +5,7 @@ import {
   getControllerAddress,
   getTokens,
 } from '@/llamalend/llama.utils'
-import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import { MarketTemplate } from '@/llamalend/llamalend.types'
 import {
   useMarketCapAndAvailable,
   useMarketMaxLeverage,
@@ -18,14 +18,14 @@ import { maybe, maybes } from '@primitives/objects.utils'
 import { combineQueries } from '@ui-kit/lib'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import type { MarketParams } from '@ui-kit/lib/model/query/root-keys'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { MarketType } from '@ui-kit/types/market'
 import { fallbackQ, mapQuery, q, type QueryProp } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 import { requireBlockchainId } from '@ui-kit/utils/network'
 
-const endpointFromMarketType: Record<LlamaMarketType, Endpoint> = {
-  [LlamaMarketType.Lend]: 'lending',
-  [LlamaMarketType.Mint]: 'crvusd',
+const endpointFromMarketType: Record<MarketType, Endpoint> = {
+  [MarketType.Lend]: 'lending',
+  [MarketType.Mint]: 'crvusd',
 }
 
 export const useAdvancedDetailsData = ({
@@ -35,8 +35,8 @@ export const useAdvancedDetailsData = ({
   marketType,
   apiMarket,
 }: MarketParams & {
-  market: LlamaMarketTemplate | undefined
-  marketType: LlamaMarketType
+  market: MarketTemplate | undefined
+  marketType: MarketType
   apiMarket: QueryProp<LlamaMarket>
 }) => {
   const { collateralToken, borrowToken } = getTokens(market, apiMarket.data) ?? {}
@@ -70,7 +70,7 @@ export const useAdvancedDetailsData = ({
     contractAddress: controllerAddress,
   })
   const tvl = fallbackQ(
-    marketType === LlamaMarketType.Lend
+    marketType === MarketType.Lend
       ? combineQueries(
           [totalCollateral, capAndAvailable, collateralUsdRate, borrowedUsdRate],
           ({ borrowed, collateral }, { totalAssets, available }, collateralUsdRate, borrowedUsdRate) =>
@@ -151,7 +151,7 @@ export const useAdvancedDetailsData = ({
     ),
     borrowedUsdRate: q(borrowedUsdRate),
     tvl,
-    ...(marketType === LlamaMarketType.Lend && {
+    ...(marketType === MarketType.Lend && {
       solvency: mapQuery(solvency, ({ solvencyPercent, badDebtUsd }) => ({ value: solvencyPercent, badDebtUsd })),
     }),
   }

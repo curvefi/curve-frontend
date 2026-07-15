@@ -7,7 +7,7 @@ import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { MarketType } from '@ui-kit/types/market'
 import { mapQuery, type QueryProp } from '@ui-kit/types/util'
 import { AVERAGE_CATEGORIES } from '@ui-kit/utils'
 import type { AvailableLiquidity, BorrowRate, SupplyRate } from './hooks/usePageHeader'
@@ -27,7 +27,7 @@ export const MetricsRow = ({
   borrowRate: QueryProp<BorrowRate>
   supplyRate?: QueryProp<SupplyRate>
   availableLiquidity: AvailableLiquidity
-  marketType: LlamaMarketType
+  marketType: MarketType
   collateral: { symbol: string } | undefined
   borrowToken: { symbol: string } | undefined
 }) => {
@@ -86,7 +86,7 @@ export const MetricsRow = ({
           }}
         />
       )}
-      {marketType === LlamaMarketType.Lend && (
+      {marketType === MarketType.Lend && (
         <Metric
           category={METRIC_CATEGORY}
           testId="market-total-liquidity"

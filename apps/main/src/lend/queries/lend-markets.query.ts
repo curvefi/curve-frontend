@@ -5,9 +5,9 @@ import { USE_API } from '@/llamalend/queries/market/market.constants'
 import type { IOneWayMarket } from '@curvefi/llamalend-api/lib/interfaces'
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { Address } from '@primitives/address.utils'
-import { LlamaMarketVersion } from '@ui-kit/types/market'
+import { MarketVersion } from '@ui-kit/types/market'
 
-const { v1, v2 } = LlamaMarketVersion
+const { v1, v2 } = MarketVersion
 
 export type LendMarketData = IOneWayMarket & { id: string }
 

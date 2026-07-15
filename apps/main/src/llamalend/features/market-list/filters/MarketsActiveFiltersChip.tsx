@@ -17,13 +17,13 @@ import {
   type TableActiveFilterGroupChipsProps,
 } from '@ui-kit/shared/ui/DataTable/TableActiveFilterGroups'
 import { constQ } from '@ui-kit/types/util'
-import { LLAMA_MARKET_COLUMNS, LLAMA_MARKET_TITLES, LlamaMarketColumnId } from '../columns'
+import { MARKET_COLUMNS as MARKET_COLUMNS, MARKET_TITLES, MarketColumnId } from '../columns'
 
-const LLAMA_MARKET_COLUMN_ORDER = new Map(LLAMA_MARKET_COLUMNS.map((column, index) => [column.id, index]))
+const MARKET_COLUMN_ORDER = new Map(MARKET_COLUMNS.map((column, index) => [column.id, index]))
 
 // capitalize all labels except columns containing tokens symbols
-const formatLabel = (label: string, id: LlamaMarketColumnId) =>
-  [LlamaMarketColumnId.CollateralSymbol, LlamaMarketColumnId.BorrowedSymbol].includes(id) ? label : capitalize(label)
+const formatLabel = (label: string, id: MarketColumnId) =>
+  [MarketColumnId.CollateralSymbol, MarketColumnId.BorrowedSymbol].includes(id) ? label : capitalize(label)
 
 // Convert a serialized range filter (`min~max`) into a single chip label
 const getRangeLabel = (serializedRange: string | undefined, unit?: ColumnMeta['unit']) => {
@@ -35,22 +35,22 @@ const ChainActiveFilterChips = ({ labels, onRemove }: TableActiveFilterGroupChip
   <ChainFilterChips chainsQuery={constQ(labels)} selectedChains={labels} toggleChain={onRemove} />
 )
 
-export const LlamaTableActiveFiltersChip = <T extends TableItem>({
+export const MarketsActiveFiltersChip = <T extends TableItem>({
   table,
   setColumnFilter,
   testIdPrefix,
 }: {
   table: TanstackTable<T>
   testIdPrefix: string
-} & Pick<FilterProps<LlamaMarketColumnId>, 'setColumnFilter'>) => {
-  const filtersState = table.getState().columnFilters as { id: LlamaMarketColumnId; value: string }[]
+} & Pick<FilterProps<MarketColumnId>, 'setColumnFilter'>) => {
+  const filtersState = table.getState().columnFilters as { id: MarketColumnId; value: string }[]
   // Keep networks first than remaining filters in the same order as the market columns to avoid chips jumping when filters are removed.
   const sortedFiltersState = useMemo(
     () =>
       filtersState.toSorted((a, b) => {
-        if (a.id === LlamaMarketColumnId.Chain) return -1
-        if (b.id === LlamaMarketColumnId.Chain) return 1
-        return LLAMA_MARKET_COLUMN_ORDER.get(a.id)! - LLAMA_MARKET_COLUMN_ORDER.get(b.id)!
+        if (a.id === MarketColumnId.Chain) return -1
+        if (b.id === MarketColumnId.Chain) return 1
+        return MARKET_COLUMN_ORDER.get(a.id)! - MARKET_COLUMN_ORDER.get(b.id)!
       }),
     [filtersState],
   )
@@ -76,8 +76,8 @@ export const LlamaTableActiveFiltersChip = <T extends TableItem>({
           labels,
           onRemove: isRangeFilterFn ? () => setColumnFilter(id, null) : removeClickedValue,
           getChipLabel: label => formatLabel(label, id),
-          Chips: id === LlamaMarketColumnId.Chain ? ChainActiveFilterChips : undefined,
-          title: LLAMA_MARKET_TITLES[id],
+          Chips: id === MarketColumnId.Chain ? ChainActiveFilterChips : undefined,
+          title: MARKET_TITLES[id],
           testId: `${testIdPrefix}-active-filter-${id}`,
         }
       })}

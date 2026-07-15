@@ -22,7 +22,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
 import type { UseFormReturn } from '@ui-kit/features/forms'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
-import type { LlamaMarketType } from '@ui-kit/types/market'
+import type { MarketType } from '@ui-kit/types/market'
 import { constQ, mapQuery, q, type Query, type QueryProp, type Range } from '@ui-kit/types/util'
 import { decimal, decimalMinus, decimalNegate } from '@ui-kit/utils'
 import type { PriceImpact } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
@@ -99,7 +99,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   priceImpact,
 }: {
   controllerAddress: Address | undefined
-  marketType: LlamaMarketType
+  marketType: MarketType
   params: RepayParams
   values: RepayFormData
   tokens: { collateralToken: Token | undefined; borrowToken: Token | undefined }

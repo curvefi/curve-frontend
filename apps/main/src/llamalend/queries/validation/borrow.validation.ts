@@ -1,5 +1,5 @@
 import { enforce, group, skipWhen, test } from 'vest'
-import { isRouterRequired, tryGetLlamaMarket } from '@/llamalend/llama.utils'
+import { isRouterRequired, tryGetMarket } from '@/llamalend/llama.utils'
 import {
   validateDebt,
   validateLeverageEnabled,
@@ -55,7 +55,7 @@ const createLoanFormValidationGroup = (
 
 function validateCreateLoanFieldsForMarket(params: CreateLoanDebtParams, { debtRequired }: { debtRequired: boolean }) {
   const { marketId, leverageEnabled, routeId, userBorrowed } = params
-  const market = tryGetLlamaMarket(marketId)
+  const market = tryGetMarket(marketId)
   skipWhen(!market, () => {
     const [type] = market ? getCreateLoanImplementation(market, !!leverageEnabled) : []
     // if we don't need debt we cannot need a route, as we need a route to calculate max debt

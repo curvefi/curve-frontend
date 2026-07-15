@@ -13,7 +13,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { getTokenUsdRateQueryOptions } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { combineQueriesMeta } from '@ui-kit/lib/queries/combine'
 import { type QueryOptionsData } from '@ui-kit/lib/queries/types'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { MarketType } from '@ui-kit/types/market'
 import { mapQuery, q, type QueryProp } from '@ui-kit/types/util'
 import { requireChainId } from '@ui-kit/utils'
 
@@ -57,10 +57,10 @@ const isMintMarketStats = (stats: BorrowStatsData | undefined) => stats && 'stab
 
 /** Get the amount of borrowed tokens when in soft liquidation.
  * If mint market, return the .stablecoin, if lend market, return the .borrowed */
-const getSoftLiquidationBorrowedAmount = (marketType: LlamaMarketType, stats: BorrowStatsData | undefined) =>
-  marketType === LlamaMarketType.Mint && isMintMarketStats(stats)
+const getSoftLiquidationBorrowedAmount = (marketType: MarketType, stats: BorrowStatsData | undefined) =>
+  marketType === MarketType.Mint && isMintMarketStats(stats)
     ? ((stats as MintBorrowStatsData)?.stablecoin ?? MISSING_PRICE_RESULT)
-    : marketType === LlamaMarketType.Lend && !isMintMarketStats(stats)
+    : marketType === MarketType.Lend && !isMintMarketStats(stats)
       ? ((stats as LendBorrowStatsData)?.borrowed ?? MISSING_PRICE_RESULT)
       : MISSING_PRICE_RESULT
 

@@ -14,7 +14,7 @@ import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { createVirtualNetworkSnapshot, type VnetSnapshot } from '@cy/support/helpers/tenderly/vnet-snapshot'
 import { LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { MarketType } from '@ui-kit/types/market'
 import { Chain } from '@ui-kit/utils'
 import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
@@ -84,7 +84,7 @@ describe('Manage soft liquidation', () => {
       chainId={chainId}
       userAddress={userAddress}
       marketId={WSTETH_USDC_MARKET.id}
-      marketType={LlamaMarketType.Lend}
+      marketType={MarketType.Lend}
     />
   )
 

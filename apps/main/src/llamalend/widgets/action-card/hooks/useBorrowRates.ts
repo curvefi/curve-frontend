@@ -7,7 +7,7 @@ import { CrvUsdSnapshot } from '@ui-kit/entities/crvusd-snapshots'
 import { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
 import type { MarketParams } from '@ui-kit/lib/model'
 import { combineQueries } from '@ui-kit/lib/queries/combine'
-import type { LlamaMarketType } from '@ui-kit/types/market'
+import type { MarketType } from '@ui-kit/types/market'
 import { q, Query, type QueryProp } from '@ui-kit/types/util'
 import { BlockchainIds, decimal, decimalMinus } from '@ui-kit/utils'
 
@@ -35,7 +35,7 @@ export function useBorrowRates<ChainId extends IChainId>(
     controllerAddress,
   }: {
     params: MarketParams<ChainId>
-    marketType: LlamaMarketType
+    marketType: MarketType
     controllerAddress: Address | undefined
     debtDelta?: Decimal | null
   },

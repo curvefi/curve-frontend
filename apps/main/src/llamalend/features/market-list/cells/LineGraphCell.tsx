@@ -11,7 +11,7 @@ import { useIntersectionObserver } from '@ui-kit/hooks/useIntersectionObserver'
 import { t } from '@ui-kit/lib/i18n'
 import { DesignSystem } from '@ui-kit/themes/design'
 import type { MarketRateType } from '@ui-kit/types/market'
-import { useSnapshots } from '../hooks/useSnapshots'
+import { useMarketSnapshots } from '../hooks/useMarketSnapshots'
 
 const defaultGraphSize = { width: 100, height: 48 }
 
@@ -47,7 +47,7 @@ type RateCellProps = {
 export const LineGraphCell = ({ market, type, graphSize = defaultGraphSize }: RateCellProps) => {
   const ref = useRef<HTMLDivElement>(null)
   const { isIntersecting } = useIntersectionObserver(ref, { freezeOnceVisible: true })
-  const { snapshots, snapshotKey, isLoading, rate, error } = useSnapshots(
+  const { snapshots, snapshotKey, isLoading, rate, error } = useMarketSnapshots(
     market,
     { type, category: 'llamalend.marketList.rate' },
     isIntersecting,

@@ -1,15 +1,15 @@
 import { TooltipWrapper, TooltipDescription } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import { t } from '@ui-kit/lib/i18n'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { MarketType } from '@ui-kit/types/market'
 
-type SolvencyTooltipType = LlamaMarketType | 'overview'
+type SolvencyTooltipType = MarketType | 'overview'
 
 const descriptions: Record<SolvencyTooltipType, string[]> = {
-  [LlamaMarketType.Lend]: [
+  [MarketType.Lend]: [
     t`Solvency shows the share of total supplied liquidity that remains covered after accounting for bad debt.`,
     t`A lower solvency means a larger portion of suppliers' funds is no longer fully backed by healthy positions.`,
   ],
-  [LlamaMarketType.Mint]: [
+  [MarketType.Mint]: [
     t`Mint markets issue crvUSD directly through the protocol against deposited collateral.`,
     t`Because this debt is protocol-issued rather than borrowed from supplied liquidity, mint markets are always solvent.`,
   ],

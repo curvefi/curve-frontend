@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { useConfig } from 'wagmi'
 import { formatTokenAmounts } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import { fetchCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
@@ -29,7 +29,7 @@ export type CreateLoanOptions = {
 }
 
 const approve = async (
-  market: LlamaMarketTemplate,
+  market: MarketTemplate,
   { userCollateral, userBorrowed, leverageEnabled }: CreateLoanMutation,
 ) => {
   const [type, impl] = getCreateLoanImplementation(market.id, leverageEnabled)
@@ -46,7 +46,7 @@ const approve = async (
 }
 
 const create = async (
-  market: LlamaMarketTemplate,
+  market: MarketTemplate,
   { debt, userCollateral, userBorrowed, leverageEnabled, range, slippage, routeId }: CreateLoanMutation,
 ) => {
   const [type, impl] = getCreateLoanImplementation(market, leverageEnabled)

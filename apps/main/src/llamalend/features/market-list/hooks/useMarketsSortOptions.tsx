@@ -2,88 +2,86 @@ import type { ReactNode } from 'react'
 import { useConnection } from 'wagmi'
 import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { t } from '@ui-kit/lib/i18n'
-import { LlamaMarketColumnId } from '../columns'
+import { MarketColumnId } from '../columns'
 
 type Option<T = string> = { id: T; label: ReactNode }
 
-/**
- * Creates a list of select options for sorting the Llama Market table (used for mobile only)
- */
-export const useLlamaMarketSortOptions = () => {
+/** Creates a list of select options for sorting the Llama Market table (used for mobile only) */
+export const useMarketsSortOptions = () => {
   const { isConnected } = useConnection()
   return [
-    { id: LlamaMarketColumnId.Assets, label: t`Collateral` },
+    { id: MarketColumnId.Assets, label: t`Collateral` },
     ...(isConnected
       ? [
           {
-            id: LlamaMarketColumnId.UserHealth,
+            id: MarketColumnId.UserHealth,
             label: t`Health`,
           },
           {
-            id: LlamaMarketColumnId.UserBorrowed,
+            id: MarketColumnId.UserBorrowed,
             label: t`Borrow Amount`,
           },
           {
-            id: LlamaMarketColumnId.UserCollateral,
+            id: MarketColumnId.UserCollateral,
             label: t`Collateral Amount`,
           },
           {
-            id: LlamaMarketColumnId.UserLtv,
+            id: MarketColumnId.UserLtv,
             label: t`LTV`,
           },
           {
-            id: LlamaMarketColumnId.UserEarnings,
+            id: MarketColumnId.UserEarnings,
             label: t`My Earnings`,
           },
           {
-            id: LlamaMarketColumnId.UserDeposited,
+            id: MarketColumnId.UserDeposited,
             label: t`Supplied Amount`,
           },
           {
-            id: LlamaMarketColumnId.UserBoostMultiplier,
+            id: MarketColumnId.UserBoostMultiplier,
             label: t`Boost`,
           },
         ]
       : []),
     {
-      id: LlamaMarketColumnId.NetBorrowRate,
+      id: MarketColumnId.NetBorrowRate,
       label: t`Net borrow APR`,
     },
     {
-      id: LlamaMarketColumnId.BorrowRate,
+      id: MarketColumnId.BorrowRate,
       label: t`Borrow APR`,
     },
     {
-      id: LlamaMarketColumnId.LendRate,
+      id: MarketColumnId.LendRate,
       label: NET_SUPPLY_RATE_TITLE,
     },
     {
-      id: LlamaMarketColumnId.Tvl,
+      id: MarketColumnId.Tvl,
       label: t`Total Value Locked`,
     },
     {
-      id: LlamaMarketColumnId.MaxLtv,
+      id: MarketColumnId.MaxLtv,
       label: t`Max LTV`,
     },
     {
-      id: LlamaMarketColumnId.MaxLeverage,
+      id: MarketColumnId.MaxLeverage,
       label: t`Max leverage`,
     },
     {
-      id: LlamaMarketColumnId.UtilizationPercent,
+      id: MarketColumnId.UtilizationPercent,
       label: t`Utilization`,
     },
     {
-      id: LlamaMarketColumnId.LiquidityUsd,
+      id: MarketColumnId.LiquidityUsd,
       label: t`Available Liquidity`,
     },
     {
-      id: LlamaMarketColumnId.TotalCollateralUsd,
+      id: MarketColumnId.TotalCollateralUsd,
       label: t`Total Collateral`,
     },
     {
-      id: LlamaMarketColumnId.TotalDebt,
+      id: MarketColumnId.TotalDebt,
       label: t`Total Debt`,
     },
-  ] satisfies Option<LlamaMarketColumnId>[]
+  ] satisfies Option<MarketColumnId>[]
 }

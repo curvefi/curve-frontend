@@ -33,105 +33,105 @@ import {
   TvlHeaderTooltipContent,
   UtilizationHeaderTooltipContent,
 } from '../header-tooltips'
-import { LlamaMarketColumnId } from './columns.enum'
+import { MarketColumnId as MarketColumnId } from './columns.enum'
 
 type Tooltip = ColumnMeta<never, never>['tooltip']
-type LlamaColumn = ColumnDefinition<LlamaMarket>
-type LlamaColumnOptions = Omit<LlamaColumn, 'id' | 'header'>
-type LlamaAccessor = DeepKeys<LlamaMarket> | AccessorFn<LlamaMarket>
+type MarketColumn = ColumnDefinition<LlamaMarket>
+type MarketColumnOptions = Omit<MarketColumn, 'id' | 'header'>
+type MarketAccessor = DeepKeys<LlamaMarket> | AccessorFn<LlamaMarket>
 
-const createTooltip = (id: keyof typeof LLAMA_MARKET_TITLES, body: ReactNode): Tooltip => ({
-  title: LLAMA_MARKET_TITLES[id],
+const createTooltip = (id: keyof typeof MARKET_TITLES, body: ReactNode): Tooltip => ({
+  title: MARKET_TITLES[id],
   body,
 })
 
 /** Define a display column using its id as the title lookup key. */
-const display = (id: LlamaMarketColumnId, column: LlamaColumnOptions): LlamaColumn => ({
+const display = (id: MarketColumnId, column: MarketColumnOptions): MarketColumn => ({
   ...column,
   id,
-  header: LLAMA_MARKET_TITLES[id],
+  header: MARKET_TITLES[id],
 })
 
 /** Define an accessor column using separate data and table identifiers. */
-const accessor = (id: LlamaMarketColumnId, field: LlamaAccessor, column: LlamaColumnOptions): LlamaColumn =>
+const accessor = (id: MarketColumnId, field: MarketAccessor, column: MarketColumnOptions): MarketColumn =>
   createColumnHelper<LlamaMarket>().accessor(field, {
     ...column,
     id,
-    header: LLAMA_MARKET_TITLES[id],
+    header: MARKET_TITLES[id],
   })
 
 /** Define a hidden column. */
-const hidden = (id: LlamaMarketColumnId, field: DeepKeys<LlamaMarket>, filterFn: FilterFnOption<LlamaMarket>) =>
+const hidden = (id: MarketColumnId, field: DeepKeys<LlamaMarket>, filterFn: FilterFnOption<LlamaMarket>) =>
   accessor(id, field, {
     filterFn,
     meta: { hidden: true },
   })
 
 /** Titles for the lending markets table. */
-export const LLAMA_MARKET_TITLES: Record<LlamaMarketColumnId, string> = {
-  [LlamaMarketColumnId.BorrowedSymbol]: t`Debt`,
-  [LlamaMarketColumnId.CollateralSymbol]: t`Collateral`,
-  [LlamaMarketColumnId.DeprecatedMessage]: t`Deprecated Message`,
-  [LlamaMarketColumnId.Version]: t`Market Version`,
-  [LlamaMarketColumnId.Type]: t`Market Type`,
-  [LlamaMarketColumnId.Rewards]: t`Rewards`,
-  [LlamaMarketColumnId.IsFavorite]: t`Favorites`,
-  [LlamaMarketColumnId.Chain]: t`Network`,
-  [LlamaMarketColumnId.Assets]: t`Collateral • Borrow`,
-  [LlamaMarketColumnId.UserHealth]: t`Health`,
-  [LlamaMarketColumnId.UserBorrowed]: t`Borrow Amount`,
-  [LlamaMarketColumnId.UserCollateral]: t`Collateral Amount`,
-  [LlamaMarketColumnId.UserLtv]: t`LTV`,
-  [LlamaMarketColumnId.UserBoostMultiplier]: t`Boost`,
-  [LlamaMarketColumnId.UserEarnings]: t`My Earnings`,
-  [LlamaMarketColumnId.UserDeposited]: t`Supplied Amount`,
-  [LlamaMarketColumnId.BorrowRate]: t`Borrow APR`,
-  [LlamaMarketColumnId.NetBorrowRate]: t`Net Borrow APR`,
-  [LlamaMarketColumnId.LendRate]: NET_SUPPLY_RATE_TITLE,
-  [LlamaMarketColumnId.BorrowChart]: t`${AVERAGE_CATEGORIES['llamalend.marketList.rate'].period} Borrow APR`,
-  [LlamaMarketColumnId.MaxLtv]: t`Max LTV`,
-  [LlamaMarketColumnId.MaxLeverage]: t`Max Leverage`,
-  [LlamaMarketColumnId.UtilizationPercent]: t`Utilization`,
-  [LlamaMarketColumnId.SolvencyPercent]: t`Solvency`,
-  [LlamaMarketColumnId.LiquidityUsd]: t`Available Liquidity`,
-  [LlamaMarketColumnId.Tvl]: t`TVL`,
-  [LlamaMarketColumnId.TotalDebt]: t`Total Debt`,
-  [LlamaMarketColumnId.TotalCollateralUsd]: t`Total Collateral`,
+export const MARKET_TITLES: Record<MarketColumnId, string> = {
+  [MarketColumnId.BorrowedSymbol]: t`Debt`,
+  [MarketColumnId.CollateralSymbol]: t`Collateral`,
+  [MarketColumnId.DeprecatedMessage]: t`Deprecated Message`,
+  [MarketColumnId.Version]: t`Market Version`,
+  [MarketColumnId.Type]: t`Market Type`,
+  [MarketColumnId.Rewards]: t`Rewards`,
+  [MarketColumnId.IsFavorite]: t`Favorites`,
+  [MarketColumnId.Chain]: t`Network`,
+  [MarketColumnId.Assets]: t`Collateral • Borrow`,
+  [MarketColumnId.UserHealth]: t`Health`,
+  [MarketColumnId.UserBorrowed]: t`Borrow Amount`,
+  [MarketColumnId.UserCollateral]: t`Collateral Amount`,
+  [MarketColumnId.UserLtv]: t`LTV`,
+  [MarketColumnId.UserBoostMultiplier]: t`Boost`,
+  [MarketColumnId.UserEarnings]: t`My Earnings`,
+  [MarketColumnId.UserDeposited]: t`Supplied Amount`,
+  [MarketColumnId.BorrowRate]: t`Borrow APR`,
+  [MarketColumnId.NetBorrowRate]: t`Net Borrow APR`,
+  [MarketColumnId.LendRate]: NET_SUPPLY_RATE_TITLE,
+  [MarketColumnId.BorrowChart]: t`${AVERAGE_CATEGORIES['llamalend.marketList.rate'].period} Borrow APR`,
+  [MarketColumnId.MaxLtv]: t`Max LTV`,
+  [MarketColumnId.MaxLeverage]: t`Max Leverage`,
+  [MarketColumnId.UtilizationPercent]: t`Utilization`,
+  [MarketColumnId.SolvencyPercent]: t`Solvency`,
+  [MarketColumnId.LiquidityUsd]: t`Available Liquidity`,
+  [MarketColumnId.Tvl]: t`TVL`,
+  [MarketColumnId.TotalDebt]: t`Total Debt`,
+  [MarketColumnId.TotalCollateralUsd]: t`Total Collateral`,
 } as const
 
 /** Columns for the lending markets table. */
-export const LLAMA_MARKET_COLUMNS = [
-  accessor(LlamaMarketColumnId.Assets, LlamaMarketColumnId.Assets, {
+export const MARKET_COLUMNS = [
+  accessor(MarketColumnId.Assets, MarketColumnId.Assets, {
     cell: MarketTitleCell,
-    meta: { tooltip: createTooltip(LlamaMarketColumnId.Assets, <CollateralBorrowHeaderTooltipContent />) },
+    meta: { tooltip: createTooltip(MarketColumnId.Assets, <CollateralBorrowHeaderTooltipContent />) },
   }),
-  display(LlamaMarketColumnId.UserBorrowed, {
+  display(MarketColumnId.UserBorrowed, {
     cell: PriceCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
-  display(LlamaMarketColumnId.UserCollateral, {
+  display(MarketColumnId.UserCollateral, {
     cell: PriceCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
-  accessor(LlamaMarketColumnId.UserEarnings, 'lendingPosition.earnings', {
+  accessor(MarketColumnId.UserEarnings, 'lendingPosition.earnings', {
     cell: PriceCell,
     meta: { type: 'numeric', hidden: true }, // hidden until we have a backend
     sortUndefined: 'last',
   }),
-  accessor(LlamaMarketColumnId.UserDeposited, 'lendingPosition.supplied', {
+  accessor(MarketColumnId.UserDeposited, 'lendingPosition.supplied', {
     cell: PriceCell,
     meta: { type: 'numeric' },
     filterFn: boolFilterFn,
     sortUndefined: 'last',
   }),
-  accessor(LlamaMarketColumnId.UserBoostMultiplier, 'lendingPosition.boostMultiplier', {
+  accessor(MarketColumnId.UserBoostMultiplier, 'lendingPosition.boostMultiplier', {
     cell: BoostCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
-  accessor(LlamaMarketColumnId.BorrowRate, 'rates.borrowApr', {
+  accessor(MarketColumnId.BorrowRate, 'rates.borrowApr', {
     cell: RateCell,
     meta: {
       type: 'numeric',
@@ -140,53 +140,53 @@ export const LLAMA_MARKET_COLUMNS = [
     sortUndefined: 'last',
     filterFn: rangeFilterFn,
   }),
-  accessor(LlamaMarketColumnId.NetBorrowRate, 'rates.borrowTotalApr', {
+  accessor(MarketColumnId.NetBorrowRate, 'rates.borrowTotalApr', {
     cell: RateCell,
     meta: {
       type: 'numeric',
-      tooltip: createTooltip(LlamaMarketColumnId.NetBorrowRate, <NetBorrowAprHeaderTooltipContent />),
+      tooltip: createTooltip(MarketColumnId.NetBorrowRate, <NetBorrowAprHeaderTooltipContent />),
     },
     sortUndefined: 'last',
   }),
-  display(LlamaMarketColumnId.UserLtv, {
+  display(MarketColumnId.UserLtv, {
     cell: LtvCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
-  display(LlamaMarketColumnId.UserHealth, {
+  display(MarketColumnId.UserHealth, {
     cell: HealthCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
-  accessor(LlamaMarketColumnId.LendRate, 'rates.lendTotalApyMinBoosted', {
+  accessor(MarketColumnId.LendRate, 'rates.lendTotalApyMinBoosted', {
     cell: RateCell,
-    meta: { type: 'numeric', tooltip: createTooltip(LlamaMarketColumnId.LendRate, <LendRateHeaderTooltipContent />) },
+    meta: { type: 'numeric', tooltip: createTooltip(MarketColumnId.LendRate, <LendRateHeaderTooltipContent />) },
     sortUndefined: 'last',
   }),
-  accessor(LlamaMarketColumnId.BorrowChart, 'rates.borrowApr', {
+  accessor(MarketColumnId.BorrowChart, 'rates.borrowApr', {
     cell: c => <LineGraphCell market={c.row.original} type={MarketRateType.Borrow} />,
   }),
-  accessor(LlamaMarketColumnId.MaxLeverage, 'leverage', {
+  accessor(MarketColumnId.MaxLeverage, 'leverage', {
     cell: MaxLeverageCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
-  accessor(LlamaMarketColumnId.MaxLtv, LlamaMarketColumnId.MaxLtv, {
+  accessor(MarketColumnId.MaxLtv, MarketColumnId.MaxLtv, {
     cell: PercentCell,
     meta: { type: 'numeric', unit: 'percentage' },
     filterFn: rangeFilterFn,
   }),
-  accessor(LlamaMarketColumnId.UtilizationPercent, LlamaMarketColumnId.UtilizationPercent, {
+  accessor(MarketColumnId.UtilizationPercent, MarketColumnId.UtilizationPercent, {
     cell: UtilizationCell,
     meta: {
       type: 'numeric',
       unit: 'percentage',
-      tooltip: createTooltip(LlamaMarketColumnId.UtilizationPercent, <UtilizationHeaderTooltipContent />),
+      tooltip: createTooltip(MarketColumnId.UtilizationPercent, <UtilizationHeaderTooltipContent />),
     },
     filterFn: rangeFilterFn,
   }),
   accessor(
-    LlamaMarketColumnId.SolvencyPercent,
+    MarketColumnId.SolvencyPercent,
     // Normalize null to undefined so sortUndefined places missing solvency values last
     ({ solvencyPercent }) => solvencyPercent ?? undefined,
     {
@@ -194,47 +194,47 @@ export const LLAMA_MARKET_COLUMNS = [
       meta: {
         type: 'numeric',
         unit: 'percentage',
-        tooltip: createTooltip(LlamaMarketColumnId.SolvencyPercent, <SolvencyTooltip type="overview" />),
+        tooltip: createTooltip(MarketColumnId.SolvencyPercent, <SolvencyTooltip type="overview" />),
       },
       sortUndefined: 'last',
     },
   ),
-  accessor(LlamaMarketColumnId.LiquidityUsd, LlamaMarketColumnId.LiquidityUsd, {
+  accessor(MarketColumnId.LiquidityUsd, MarketColumnId.LiquidityUsd, {
     cell: LiquidityUsdCell,
     meta: {
       type: 'numeric',
       unit: 'dollar',
-      tooltip: createTooltip(LlamaMarketColumnId.LiquidityUsd, <LiquidityUsdHeaderTooltipContent />),
+      tooltip: createTooltip(MarketColumnId.LiquidityUsd, <LiquidityUsdHeaderTooltipContent />),
     },
     filterFn: rangeFilterFn,
   }),
-  accessor(LlamaMarketColumnId.TotalDebt, LlamaMarketColumnId.TotalDebt, {
+  accessor(MarketColumnId.TotalDebt, MarketColumnId.TotalDebt, {
     cell: CompactUsdCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
-  accessor(LlamaMarketColumnId.TotalCollateralUsd, LlamaMarketColumnId.TotalCollateralUsd, {
+  accessor(MarketColumnId.TotalCollateralUsd, MarketColumnId.TotalCollateralUsd, {
     cell: CompactUsdCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
-  accessor(LlamaMarketColumnId.Tvl, LlamaMarketColumnId.Tvl, {
+  accessor(MarketColumnId.Tvl, MarketColumnId.Tvl, {
     cell: TvlCell,
     meta: {
       type: 'numeric',
       unit: 'dollar',
-      tooltip: createTooltip(LlamaMarketColumnId.Tvl, <TvlHeaderTooltipContent />),
+      tooltip: createTooltip(MarketColumnId.Tvl, <TvlHeaderTooltipContent />),
     },
     sortUndefined: 'last',
     filterFn: rangeFilterFn,
   }),
   // Following columns are used in tanstack filter, but they are displayed together in MarketTitleCell
-  hidden(LlamaMarketColumnId.Chain, LlamaMarketColumnId.Chain, multiFilterFn),
-  hidden(LlamaMarketColumnId.CollateralSymbol, 'assets.collateral.symbol', multiFilterFn),
-  hidden(LlamaMarketColumnId.BorrowedSymbol, 'assets.borrowed.symbol', multiFilterFn),
-  hidden(LlamaMarketColumnId.IsFavorite, LlamaMarketColumnId.IsFavorite, boolFilterFn),
-  hidden(LlamaMarketColumnId.Rewards, LlamaMarketColumnId.Rewards, listNotEmptyFilterFn),
-  hidden(LlamaMarketColumnId.DeprecatedMessage, LlamaMarketColumnId.DeprecatedMessage, boolFilterFn),
-  hidden(LlamaMarketColumnId.Type, LlamaMarketColumnId.Type, multiFilterFn),
-  hidden(LlamaMarketColumnId.Version, LlamaMarketColumnId.Version, multiFilterFn),
-] satisfies LlamaColumn[]
+  hidden(MarketColumnId.Chain, MarketColumnId.Chain, multiFilterFn),
+  hidden(MarketColumnId.CollateralSymbol, 'assets.collateral.symbol', multiFilterFn),
+  hidden(MarketColumnId.BorrowedSymbol, 'assets.borrowed.symbol', multiFilterFn),
+  hidden(MarketColumnId.IsFavorite, MarketColumnId.IsFavorite, boolFilterFn),
+  hidden(MarketColumnId.Rewards, MarketColumnId.Rewards, listNotEmptyFilterFn),
+  hidden(MarketColumnId.DeprecatedMessage, MarketColumnId.DeprecatedMessage, boolFilterFn),
+  hidden(MarketColumnId.Type, MarketColumnId.Type, multiFilterFn),
+  hidden(MarketColumnId.Version, MarketColumnId.Version, multiFilterFn),
+] satisfies MarketColumn[]

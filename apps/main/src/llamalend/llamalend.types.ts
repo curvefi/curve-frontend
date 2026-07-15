@@ -6,7 +6,7 @@ import type { BaseConfig } from '@ui/utils'
 export type LlamaNetwork<ChainId extends IChainId = IChainId> = BaseConfig<INetworkName, ChainId>
 export type NetworkDict<ChainId extends IChainId = IChainId> = Record<ChainId, LlamaNetwork<ChainId>>
 
-export type LlamaMarketTemplate = MintMarketTemplate | LendMarketTemplate
+export type MarketTemplate = MintMarketTemplate | LendMarketTemplate
 
 export type UserPositionStatusKey =
   'healthy' | 'softLiquidation' | 'hardLiquidation' | 'fullyConverted' | 'incompleteConversion'

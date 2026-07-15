@@ -10,18 +10,18 @@ import {
   useTransactionMutation,
   type TransactionMutationOptions,
 } from '@ui-kit/lib/model/mutation/useTransactionMutation'
-import { getControllerAddress, getLlamaMarket, getTokens, updateUserEventsApi } from '../llama.utils'
-import type { LlamaMarketTemplate } from '../llamalend.types'
+import { getControllerAddress, getMarket, getTokens, updateUserEventsApi } from '../llama.utils'
+import type { MarketTemplate } from '../llamalend.types'
 
 /** Context created in onMutate, extends the base transaction context with llamma market and api */
 type LlammaContext = TransactionContext & {
   llamaApi: NonNullable<ReturnType<typeof useCurve>['llamaApi']>
-  market: LlamaMarketTemplate
+  market: MarketTemplate
   userAddress: Address
 }
 
 // Default market's collateral and borrow token addresses to invalidate after mutations.
-const getDefaultAddresses = (market: LlamaMarketTemplate) => {
+const getDefaultAddresses = (market: MarketTemplate) => {
   const { collateralToken, borrowToken } = getTokens(market)
   return [collateralToken.address, borrowToken.address]
 }
@@ -54,7 +54,7 @@ export function useLlammaMutation<TVariables extends object>({
     buildContext: (_variables, baseContext) => ({
       ...baseContext,
       llamaApi: assert(llamaApi, 'Missing llamalend api'),
-      market: getLlamaMarket(assert(marketId, 'Missing llama market ID')),
+      market: getMarket(assert(marketId, 'Missing llama market ID')),
       userAddress: assert(userAddress, 'Missing userAddress'),
     }),
     onSuccess: async (data, receipt, variables, context) => {

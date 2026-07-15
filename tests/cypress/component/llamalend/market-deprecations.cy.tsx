@@ -1,11 +1,11 @@
 import { zeroAddress, getAddress } from 'viem'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
-import { DEPRECATED_LLAMAS, MARKETS_ALERTS, NO_LEVERAGE_LEND } from '@/llamalend/llama-markets.constants'
+import { DEPRECATED_LLAMAS, MARKETS_ALERTS, NO_LEVERAGE_LEND } from '@/llamalend/markets.constants'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { oneOf, oneValueOf } from '@cy/support/generators'
 import type { Address } from '@primitives/address.utils'
 import { recordEntries, recordValues } from '@primitives/objects.utils'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { MarketType } from '@ui-kit/types/market'
 import { Chain } from '@ui-kit/utils'
 
 function MarketAlertHookTest({
@@ -15,7 +15,7 @@ function MarketAlertHookTest({
 }: {
   chainId: IChainId
   controllerAddress: Address | undefined
-  marketType: LlamaMarketType
+  marketType: MarketType
 }) {
   const marketAlert = useMarketAlert(chainId, controllerAddress, marketType)
 
@@ -29,7 +29,7 @@ const mountMarketAlert = ({
 }: {
   chainId: IChainId
   controllerAddress: Address | undefined
-  marketType: LlamaMarketType
+  marketType: MarketType
 }) => cy.mount(<MarketAlertHookTest chainId={chainId} controllerAddress={controllerAddress} marketType={marketType} />)
 
 const ALL_MARKET_ALERTS = recordValues(MARKETS_ALERTS)
@@ -92,7 +92,7 @@ describe('useMarketAlert', () => {
     mountMarketAlert({
       chainId: Chain.Avalanche as IChainId,
       controllerAddress: zeroAddress,
-      marketType: oneValueOf(LlamaMarketType),
+      marketType: oneValueOf(MarketType),
     })
 
     cy.get('[data-testid="market-alert-state"]').should('have.text', 'missing')

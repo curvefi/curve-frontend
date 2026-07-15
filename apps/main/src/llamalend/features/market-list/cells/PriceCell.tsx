@@ -16,7 +16,7 @@ import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { decimal, requireChainId, formatNumber } from '@ui-kit/utils'
-import { LlamaMarketColumnId } from '../columns'
+import { MarketColumnId } from '../columns'
 import { ErrorCell } from './ErrorCell'
 
 const { Spacing } = SizesAndSpaces
@@ -28,41 +28,37 @@ const { Spacing } = SizesAndSpaces
  * @param columnId - The column identifier to determine which assets to retrieve
  * @param assets - The market's assets containing collateral and borrowed token details
  */
-const getAssets = (columnId: LlamaMarketColumnId, assets: LlamaMarket['assets']) =>
+const getAssets = (columnId: MarketColumnId, assets: LlamaMarket['assets']) =>
   (
     ({
-      [LlamaMarketColumnId.UserCollateral]: [assets.collateral, assets.borrowed],
-      [LlamaMarketColumnId.UserBorrowed]: [assets.borrowed, undefined],
-      [LlamaMarketColumnId.UserEarnings]: [assets.borrowed, undefined],
-      [LlamaMarketColumnId.UserDeposited]: [assets.borrowed, undefined],
-    }) as Partial<Record<LlamaMarketColumnId, [AssetDetails, AssetDetails | undefined]>>
+      [MarketColumnId.UserCollateral]: [assets.collateral, assets.borrowed],
+      [MarketColumnId.UserBorrowed]: [assets.borrowed, undefined],
+      [MarketColumnId.UserEarnings]: [assets.borrowed, undefined],
+      [MarketColumnId.UserDeposited]: [assets.borrowed, undefined],
+    }) as Partial<Record<MarketColumnId, [AssetDetails, AssetDetails | undefined]>>
   )[columnId]
 
 /**
  * Maps a column ID to the corresponding values from user market stats.
  * Returns a tuple of [primary value, secondary value] where secondary may be undefined.
  */
-const getAssetValues = (
-  columnId: LlamaMarketColumnId,
-  stats: MarketStats,
-  lendingPosition: LendingPosition | undefined,
-) =>
+const getAssetValues = (columnId: MarketColumnId, stats: MarketStats, lendingPosition: LendingPosition | undefined) =>
   (
     ({
-      [LlamaMarketColumnId.UserCollateral]: [stats?.collateral?.amount, stats?.borrowToken?.amount],
-      [LlamaMarketColumnId.UserBorrowed]: [stats?.borrowed, undefined],
-      [LlamaMarketColumnId.UserEarnings]: [lendingPosition?.earnings, undefined],
-      [LlamaMarketColumnId.UserDeposited]: [lendingPosition?.supplied, undefined],
-    }) as Partial<Record<LlamaMarketColumnId, [number, number | undefined]>>
+      [MarketColumnId.UserCollateral]: [stats?.collateral?.amount, stats?.borrowToken?.amount],
+      [MarketColumnId.UserBorrowed]: [stats?.borrowed, undefined],
+      [MarketColumnId.UserEarnings]: [lendingPosition?.earnings, undefined],
+      [MarketColumnId.UserDeposited]: [lendingPosition?.supplied, undefined],
+    }) as Partial<Record<MarketColumnId, [number, number | undefined]>>
   )[columnId]
 
 /** Gets the tooltip title for a given column. */
-const getTooltipTitle = (columnId: LlamaMarketColumnId) =>
+const getTooltipTitle = (columnId: MarketColumnId) =>
   (
     ({
-      [LlamaMarketColumnId.UserBorrowed]: t`Borrowed`,
-      [LlamaMarketColumnId.UserCollateral]: t`Collateral`,
-    }) as Partial<Record<LlamaMarketColumnId, string>>
+      [MarketColumnId.UserBorrowed]: t`Borrowed`,
+      [MarketColumnId.UserCollateral]: t`Collateral`,
+    }) as Partial<Record<MarketColumnId, string>>
   )[columnId]
 
 /**
@@ -71,12 +67,12 @@ const getTooltipTitle = (columnId: LlamaMarketColumnId) =>
  * @param columnId - The column identifier
  * @param stats - The user's market statistics
  */
-const getTooltipBody = (columnId: LlamaMarketColumnId, stats: MarketStats): ReactNode | undefined => {
-  if (columnId === LlamaMarketColumnId.UserBorrowed) {
+const getTooltipBody = (columnId: MarketColumnId, stats: MarketStats): ReactNode | undefined => {
+  if (columnId === MarketColumnId.UserBorrowed) {
     return <TotalDebtTooltipContent />
   }
 
-  if (columnId === LlamaMarketColumnId.UserCollateral) {
+  if (columnId === MarketColumnId.UserCollateral) {
     return (
       <CollateralMetricTooltipContent
         {...{
@@ -161,7 +157,7 @@ const AssetUsdValue = ({
 export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, number>) => {
   const market = row.original
   const { assets, lendingPosition } = market
-  const columnId = column.id as LlamaMarketColumnId
+  const columnId = column.id as MarketColumnId
 
   const { data: stats, error: statsError, isLoading: isLoadingStats } = useUserMarketStats(market, columnId)
 

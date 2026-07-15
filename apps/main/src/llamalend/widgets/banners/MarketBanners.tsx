@@ -3,7 +3,7 @@ import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarket
 import { useDeprecatedMarket } from '@/llamalend/hooks/useDeprecatedMarket'
 import { useSolvencyMarket } from '@/llamalend/hooks/useSolvencyMarket'
 import { getControllerAddress, getMarketType } from '@/llamalend/llama.utils'
-import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import { MarketTemplate } from '@/llamalend/llamalend.types'
 import { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Stack from '@mui/material/Stack'
 import { AlertType } from '@ui/AlertBox/types'
@@ -26,7 +26,7 @@ export const MarketBanners = <ChainId extends IChainId>({
   rewardsBanner,
 }: {
   chainId: ChainId
-  market: LlamaMarketTemplate | undefined
+  market: MarketTemplate | undefined
   // additional banner not shared across all markets type and hidden if market alert has high severity
   rewardsBanner?: ReactNode
 }) => {

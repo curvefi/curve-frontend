@@ -1,6 +1,6 @@
 import { enforce, skipWhen, test } from 'vest'
-import { isRouterRequired, tryGetLlamaMarket } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import { isRouterRequired, tryGetMarket } from '@/llamalend/llama.utils'
+import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import { getRepayImplementationType } from '@/llamalend/queries/repay/repay-query.helpers'
 import {
   validateIsFull,
@@ -49,13 +49,13 @@ const validateRepayHasValue = (
 }
 
 const validateRepayFieldsForMarket = (
-  marketId: LlamaMarketTemplate | string | null | undefined,
+  marketId: MarketTemplate | string | null | undefined,
   stateCollateral: Decimal | null | undefined,
   userCollateral: Decimal | null | undefined,
   userBorrowed: Decimal | null | undefined,
   routeId: string | null | undefined,
 ) => {
-  const market = tryGetLlamaMarket(marketId)
+  const market = tryGetMarket(marketId)
   skipWhen(!market, () => {
     // Get the implementation to validate fields according to market capabilities. Default to 0 just like the queries
     const type =
@@ -77,7 +77,7 @@ const validateRepayFieldsForMarket = (
 }
 
 const repayValidationGroup = (
-  marketId: LlamaMarketTemplate | string | null | undefined,
+  marketId: MarketTemplate | string | null | undefined,
   {
     stateCollateral,
     userCollateral,
@@ -95,7 +95,7 @@ const repayValidationGroup = (
     maxRequired = validateMax,
   }: { leverageRequired: boolean; validateMax: boolean; maxRequired?: boolean },
 ) => {
-  const market = tryGetLlamaMarket(marketId)
+  const market = tryGetMarket(marketId)
   validateRepayCollateralField('userCollateral', userCollateral)
   validateRepayCollateralField('stateCollateral', stateCollateral)
   validateRepayBorrowedField(userBorrowed)
@@ -122,13 +122,13 @@ export const repayValidationSuite = ({
   requireLeverageValue?: boolean
 }) =>
   createValidationSuite(({ chainId, marketId, userAddress, ...params }: RepayParams) => {
-    const market = tryGetLlamaMarket(marketId)
+    const market = tryGetMarket(marketId)
     userMarketValidationSuite({ chainId, marketId, userAddress })
     repayValidationGroup(market, params, { leverageRequired, validateMax })
     validateLeverageValuesSupported(market, requireLeverageValue)
   })
 
-export const repayFormValidationSuite = (market: LlamaMarketTemplate | undefined) =>
+export const repayFormValidationSuite = (market: MarketTemplate | undefined) =>
   createValidationSuite((params: RepayFormData) =>
     repayValidationGroup(market, params, { validateMax: true, leverageRequired: false }),
   )

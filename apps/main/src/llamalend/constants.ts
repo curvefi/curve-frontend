@@ -1,5 +1,5 @@
 import { t } from '@ui-kit/lib/i18n'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { MarketType } from '@ui-kit/types/market'
 import type { SlippageType } from '@ui-kit/widgets/SlippageSettings'
 
 /**
@@ -18,9 +18,9 @@ export const PRESET_RANGES = {
   [LoanPreset.Custom]: 10,
 }
 
-export const MarketTypeSuffix: Record<LlamaMarketType, string> = {
-  [LlamaMarketType.Lend]: t`(Lending Markets)`,
-  [LlamaMarketType.Mint]: t`(Mint Markets)`,
+export const MarketTypeSuffix: Record<MarketType, string> = {
+  [MarketType.Lend]: t`(Lending Markets)`,
+  [MarketType.Mint]: t`(Mint Markets)`,
 }
 
 export const NET_SUPPLY_RATE_TITLE = t`Net supply APY`

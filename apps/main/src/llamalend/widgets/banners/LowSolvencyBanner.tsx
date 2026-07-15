@@ -1,4 +1,4 @@
-import { SOLVENCY_THRESHOLDS } from '@/llamalend/llama-markets.constants'
+import { SOLVENCY_THRESHOLDS } from '@/llamalend/markets.constants'
 import { t } from '@ui-kit/lib/i18n'
 import { Banner } from '@ui-kit/shared/ui/Banner'
 import { formatNumber } from '@ui-kit/utils'

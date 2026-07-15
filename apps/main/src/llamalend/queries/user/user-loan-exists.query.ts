@@ -1,6 +1,6 @@
 import { identity } from 'lodash'
-import { getLlamaMarket } from '@/llamalend/llama.utils'
-import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import { getMarket } from '@/llamalend/llama.utils'
+import { MarketTemplate } from '@/llamalend/llamalend.types'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { combineQueries } from '@ui-kit/lib'
 import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } from '@ui-kit/lib/model'
@@ -10,7 +10,7 @@ import { QueryProp } from '@ui-kit/types/util'
 export const { useQuery: useLoanExists } = queryFactory({
   queryKey: (params: UserMarketParams) => [...rootKeys.userMarket(params), 'loanExists'] as const,
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) => {
-    const market = getLlamaMarket(marketId)
+    const market = getMarket(marketId)
     return market instanceof MintMarketTemplate
       ? market.loanExists(userAddress)
       : market.userPosition.userLoanExists(userAddress)
@@ -25,7 +25,7 @@ export const useHasLoan = ({
   marketQuery,
   userAddress,
 }: UserMarketParams & {
-  marketQuery: QueryProp<LlamaMarketTemplate>
+  marketQuery: QueryProp<MarketTemplate>
 }) =>
   // todo: it's much simpler to add 'dependencies' to `useLoanExists` but that hook cannot access the loading code in the separate apps
   combineQueries(

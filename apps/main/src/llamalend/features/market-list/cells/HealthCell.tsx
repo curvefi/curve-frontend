@@ -9,14 +9,14 @@ import { t } from '@ui-kit/lib/i18n'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
-import { LlamaMarketColumnId } from '../columns'
+import { MarketColumnId } from '../columns'
 import { ErrorCell } from './ErrorCell'
 
 const { Spacing } = SizesAndSpaces
 
 export const HealthCell = ({ row }: CellContext<LlamaMarket, number>) => {
   const { assets } = row.original
-  const { data, error } = useUserMarketStats(row.original, LlamaMarketColumnId.UserHealth)
+  const { data, error } = useUserMarketStats(row.original, MarketColumnId.UserHealth)
   const { health, status } = data ?? {}
   const softLiquidation = status === 'softLiquidation'
   const content = status ? getPositionStatusContent(assets.collateral.symbol, assets.borrowed.symbol)[status] : null

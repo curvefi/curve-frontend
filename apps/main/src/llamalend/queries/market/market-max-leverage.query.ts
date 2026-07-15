@@ -1,5 +1,5 @@
 import { group } from 'vest'
-import { getLlamaMarket, hasLeverage } from '@/llamalend/llama.utils'
+import { getMarket, hasLeverage } from '@/llamalend/llama.utils'
 import { validateRange } from '@/llamalend/queries/validation/borrow-fields.validation'
 import type { IChainId } from '@curvefi/api/lib/interfaces'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
@@ -15,7 +15,7 @@ export const { useQuery: useMarketMaxLeverage } = queryFactory({
   queryKey: ({ chainId, marketId, range }: MaxLeverageParams) =>
     [...rootKeys.market({ chainId, marketId }), 'maxLeverage', { range }] as const,
   queryFn: async ({ marketId, range }: MaxLeverageQuery): Promise<Decimal> => {
-    const market = getLlamaMarket(marketId)
+    const market = getMarket(marketId)
     return hasLeverage(market)
       ? market instanceof MintMarketTemplate && market.leverageV2.hasLeverage()
         ? ((await market.leverageV2.maxLeverage(range)) as Decimal)

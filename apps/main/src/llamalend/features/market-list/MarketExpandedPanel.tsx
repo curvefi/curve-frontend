@@ -85,7 +85,7 @@ const GridHeader = ({ ...props }: Omit<CardHeaderProps, 'sx'>) => (
   </Grid>
 )
 
-export const LlamaMarketExpandedPanel = ({
+export const MarketExpandedPanel = ({
   row: { original: market },
 }: Parameters<ExpandedPanelComponent<LlamaMarket>>[0]) => {
   const { assets, leverage, liquidity, liquidityUsd, lendingPosition, utilizationPercent } = market

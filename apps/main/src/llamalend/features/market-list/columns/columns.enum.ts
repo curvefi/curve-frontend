@@ -1,4 +1,4 @@
-export enum LlamaMarketColumnId {
+export enum MarketColumnId {
   Assets = 'assets',
   UserHealth = 'userHealth',
   UserBorrowed = 'userBorrowed',

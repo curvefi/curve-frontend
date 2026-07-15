@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { useConfig } from 'wagmi'
 import { formatTokenAmounts } from '@/llamalend/llama.utils'
-import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import { MarketTemplate } from '@/llamalend/llamalend.types'
 import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import { fetchRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
@@ -33,7 +33,7 @@ type RepayOptions = {
 }
 
 const approveRepay = async (
-  market: LlamaMarketTemplate,
+  market: MarketTemplate,
   { stateCollateral = '0', userCollateral = '0', userBorrowed = '0', isFull, routeId, slippage }: RepayMutation,
 ) => {
   if (isFullRepayFromDebtToken(isFull, stateCollateral, userCollateral)) {
@@ -62,7 +62,7 @@ const approveRepay = async (
 }
 
 const repay = async (
-  market: LlamaMarketTemplate,
+  market: MarketTemplate,
   { stateCollateral = '0', userCollateral = '0', userBorrowed = '0', isFull, slippage, routeId }: RepayMutation,
 ): Promise<Hex> => {
   if (isFullRepayFromDebtToken(isFull, stateCollateral, userCollateral)) {
