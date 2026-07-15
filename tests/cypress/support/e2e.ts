@@ -15,7 +15,7 @@ Cypress.on(
  * However, in some cases we want to test functionality without a wallet connected.
  */
 Cypress.Commands.add('visitWithoutTestConnector', (route: AppRoute, options?: Partial<Cypress.VisitOptions>) =>
-  cy.visit(`/${route}`, {
+  cy.visit(`/${route.replace(/^\//, '')}`, {
     ...options,
     onBeforeLoad(win) {
       win.CypressNoTestConnector = 'true'

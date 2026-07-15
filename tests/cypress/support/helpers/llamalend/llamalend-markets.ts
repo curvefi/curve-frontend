@@ -1,7 +1,7 @@
 import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns/columns.enum'
 import { calculateLendMarketTvlUsd } from '@/llamalend/llama.utils'
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
-import { oneOf, type TokenType } from '@cy/support/generators'
+import { oneBool, oneOf, type TokenType } from '@cy/support/generators'
 import { getTableCellAssets, withFilters, withMultiSelectFilter } from '@cy/support/helpers/data-table.helpers'
 import { type Chain } from '@cy/support/helpers/lending-mocks'
 import { LOAD_TIMEOUT, Breakpoint } from '@cy/support/ui'
@@ -16,7 +16,11 @@ export function visitAndWait(
   options?: Partial<Cypress.VisitOptions>,
 ) {
   cy.viewport(width, height)
-  cy.visit(path, { ...LOAD_TIMEOUT, ...options })
+  if (oneBool()) {
+    cy.visit(path, { ...LOAD_TIMEOUT, ...options })
+  } else {
+    cy.visitWithoutTestConnector(path, { ...LOAD_TIMEOUT, ...options })
+  }
   cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('be.visible')
 }
 
@@ -35,8 +39,13 @@ export function enableGraphColumn() {
   cy.get('body').click(0, 0) // close popover
 }
 
-export const typeFilterInput = (testId: string, value: number) =>
-  cy.get(`[data-testid="${testId}"]`).find('input[type="text"]').click().type('{selectAll}').type(`${value}`)
+export const typeFilterInput = (testId: string, value: number) => {
+  cy.get(`[data-testid="${testId}"]`).find('input[type="text"]').as('filterInput')
+  cy.get(`@filterInput`).click()
+  cy.get(`@filterInput`).type('{selectAll}')
+  cy.get(`@filterInput`).type(`${value}`)
+  return cy.get(`@filterInput`)
+}
 
 /** Returns the median value for a column. */
 const getMedianValue = <T extends Partial<Record<string, number>>>(data: T[], key: string) =>
