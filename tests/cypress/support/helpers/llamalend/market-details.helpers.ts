@@ -14,8 +14,9 @@ const shouldShowCanvas = (testId: string) =>
   cy.get(`[data-testid="${testId}"] canvas`, API_LOAD_TIMEOUT).should('be.visible')
 
 const shouldBeVisibleAfterScroll = (testId: string) => {
-  cy.get(`[data-testid="${testId}"]`, LOAD_TIMEOUT).scrollIntoView()
-  cy.get(`[data-testid="${testId}"]`).should('be.visible')
+  const selector = `[data-testid="${testId}"]`
+  cy.get(selector, LOAD_TIMEOUT).filter(':visible').last().scrollIntoView()
+  cy.get(selector, LOAD_TIMEOUT).filter(':visible').last().should('be.visible')
 }
 
 const withMarketFormDrawer = <T>(
