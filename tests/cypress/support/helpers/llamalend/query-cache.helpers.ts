@@ -29,6 +29,15 @@ export const seedErc20BalanceQuery = ({
       { chainId, address: tokenAddress, abi: erc20Abi, functionName: 'decimals' },
     ] as const,
   })
+  // no refetching for mocked tests, otherwise real RPC calls to invalid token addresses run after expiration
+  queryClient.setQueryDefaults(queryKey, {
+    staleTime: Infinity,
+    gcTime: Infinity,
+    refetchInterval: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    refetchOnWindowFocus: false,
+  })
   queryClient.setQueryData(
     queryKey,
     [

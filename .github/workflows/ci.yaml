@@ -73,7 +73,7 @@ jobs:
       fail-fast: false
       matrix:
         browser: [chrome, firefox, electron]
-        count: [1]
+        count: [1, 2, 3]
     name: Cypress component tests in ${{ matrix.browser }} ${{ matrix.count }}
     timeout-minutes: 15
     runs-on: ubuntu-latest
@@ -166,7 +166,7 @@ jobs:
       matrix:
         group: [llamalend, dex, other]
         browser: [chrome, firefox, electron]
-        count: [1, 2]
+        count: [1, 2, 3, 4, 5]
         include:
           - group: llamalend
             specs: 'cypress/e2e/loan/**/*,cypress/e2e/lend/**/*,cypress/e2e/llamalend/**/*'
