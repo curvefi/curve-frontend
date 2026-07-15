@@ -15,6 +15,7 @@ import { TableHeader } from '@ui-kit/shared/ui/DataTable/TableHeader'
 import { TableSortDrawer } from '@ui-kit/shared/ui/DataTable/TableSortDrawer'
 import { POOL_LIST_COLUMNS, PoolListColumnId } from './columns'
 import { PoolListMobileExpandedPanel } from './components/PoolListMobileExpandedPanel'
+import { PoolListMobileExpandedPanelActions } from './components/PoolListMobileExpandedPanelActions'
 import { PoolListFilters } from './filters/PoolListFilters'
 import { PoolListFiltersCollapsible } from './filters/PoolListFiltersCollapsible'
 import { usePoolListFilters } from './hooks/usePoolListFilters'
@@ -80,7 +81,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
           secondaryButton: { label: t`Telegram`, href: CURVE_SOCIALS.telegram.en },
         }}
         errorState={{ title: t`Unable to retrieve pool list`, onReload }}
-        expandedPanel={PoolListMobileExpandedPanel}
+        expandedPanel={{ Body: PoolListMobileExpandedPanel, Actions: PoolListMobileExpandedPanelActions }}
         shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       >
         <TableFilters<PoolListColumnId>

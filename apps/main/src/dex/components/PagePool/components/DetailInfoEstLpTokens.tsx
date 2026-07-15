@@ -4,7 +4,7 @@ import { PoolDataCacheOrApi } from '@/dex/types/main.types'
 import { DetailInfo } from '@ui/DetailInfo'
 import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
 import { t } from '@ui-kit/lib/i18n'
-import { formatNumber, amount } from '@ui-kit/utils'
+import { amount, formatNumber, formatToken } from '@ui-kit/utils'
 
 export const DetailInfoEstLpTokens = ({
   formLpTokenExpected,
@@ -17,7 +17,7 @@ export const DetailInfoEstLpTokens = ({
 }) => {
   const { referenceAsset } = poolDataCacheOrApi.pool
   const showTooltip = referenceAsset !== 'CRYPTO'
-  const parsedVirtualPrice = `${formatNumber(amount(formLpTokenExpected.virtualPrice), { abbreviate: false, fallback: '-' })} ${referenceAsset}`
+  const parsedVirtualPrice = formatToken(amount(formLpTokenExpected.virtualPrice), referenceAsset, 'amount')
 
   // min lp tokens received including slippage
   const lpTokensExpectedWithSlippage = useMemo(() => {
@@ -38,7 +38,7 @@ export const DetailInfoEstLpTokens = ({
       tooltip={
         showTooltip ? (
           <IconTooltip placement="top-end" noWrap>
-            {formatNumber(1, { abbreviate: false })} LP token = {parsedVirtualPrice}
+            {formatToken(1, 'LP token', 'amount')} = {parsedVirtualPrice}
           </IconTooltip>
         ) : (
           ''

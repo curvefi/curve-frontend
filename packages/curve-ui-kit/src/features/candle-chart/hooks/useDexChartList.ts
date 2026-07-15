@@ -27,9 +27,12 @@ const combinations = <T>(collection: T[], n: number): T[][] => {
     const combinations: T[][] = []
     array = array.slice()
     while (array.length - n) {
+      // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       const value = array.shift()!
       recur(array, n).forEach(combination => {
+        // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
         combination.unshift(value)
+        // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
         combinations.push(combination)
       })
     }

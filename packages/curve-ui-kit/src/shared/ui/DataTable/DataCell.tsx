@@ -2,7 +2,7 @@ import { Stack } from '@mui/material'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { type Cell, flexRender } from '@tanstack/react-table'
-import { ChevronDownIcon } from '@ui-kit/shared/icons/ChevronDownIcon'
+import { TriangleDown } from '@ui-kit/shared/icons/TriangleDown'
 import { applySxProps } from '@ui-kit/utils'
 import { useCellSx, getCellVariant, type TableItem } from './data-table.utils'
 import { RotatableIcon } from './RotatableIcon'
@@ -31,10 +31,11 @@ export const DataCell = <T extends TableItem>({
         <Stack direction="row" sx={{ alignItems: 'center', width: '100%' }}>
           <Box sx={applySxProps({ flexGrow: 1 }, wrapperSx)}>{children}</Box>
           <RotatableIcon
-            icon={ChevronDownIcon}
+            icon={TriangleDown}
             rotated={row.getIsExpanded()}
             fontSize={28}
             testId={`${row.getIsExpanded() ? 'collapse' : 'expand'}-icon`}
+            sx={{ color: t => t.design.Button.Ghost.Default.Label }}
           />
         </Stack>
       ) : (

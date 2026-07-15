@@ -52,7 +52,7 @@ export function movingAverage(values: number[], timestamps: number[], windowMs: 
  * For even-length arrays, this returns the lower-middle value.
  */
 export const median = (values: number[]) => {
-  const sorted = [...values].sort((a, b) => a - b)
+  const sorted = values.toSorted((a, b) => a - b)
   const middle = Math.floor(sorted.length / 2)
   return sorted.length % 2 === 0 ? sorted[middle - 1] : sorted[middle]
 }

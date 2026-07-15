@@ -1,0 +1,115 @@
+import { partition } from 'lodash'
+import { type MouseEvent, useId } from 'react'
+import Button, { type ButtonOwnProps } from '@mui/material/Button'
+import IconButton from '@mui/material/IconButton'
+import Stack from '@mui/material/Stack'
+import { splitAt } from '@primitives/array.utils'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
+import { t } from '@ui-kit/lib/i18n'
+import { DotsVerticalIcon } from '@ui-kit/shared/icons/DotsVertical'
+import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
+import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
+import { DrawerHeader } from '@ui-kit/shared/ui/SwipeableDrawer/DrawerHeader'
+import { DrawerItems } from '@ui-kit/shared/ui/SwipeableDrawer/DrawerItems'
+import { SwipeableDrawer } from '@ui-kit/shared/ui/SwipeableDrawer/SwipeableDrawer'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { applySxProps } from '@ui-kit/utils'
+import type { ExpandedPanelAction } from './data-table.utils'
+
+const { MaxHeight, Spacing } = SizesAndSpaces
+// number of button rendered before hiding the rest in a kebab menu
+const VISIBLE_ACTION_COUNT = 2
+
+const ExpandedPanelActionButton = ({
+  action,
+  onDrawerActionClick,
+}: {
+  action: ExpandedPanelAction
+  onDrawerActionClick?: () => void
+}) => {
+  const {
+    id: _id,
+    alwaysInKebabMenu: _alwaysInKebabMenu,
+    label,
+    href,
+    testId,
+    sx,
+    type,
+    color,
+    size,
+    onClick,
+    ...buttonProps
+  } = action
+  const inDrawer = !!onDrawerActionClick
+
+  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
+    onClick?.(event)
+    onDrawerActionClick?.()
+  }
+
+  const sharedProps = {
+    ...buttonProps,
+    onClick: onDrawerActionClick ? handleClick : onClick,
+    color: inDrawer ? ('ghost' as const) : color,
+    size: inDrawer ? 'small' : size,
+    sx: applySxProps({ flex: 1 }, sx),
+    ...(testId && { 'data-testid': testId }),
+  }
+
+  return href?.startsWith('https') ? (
+    <ExternalLink {...sharedProps} href={href} label={label} />
+  ) : href ? (
+    <Button {...(sharedProps as ButtonOwnProps)} component={RouterLink} href={href}>
+      {label}
+    </Button>
+  ) : (
+    <Button {...sharedProps} type={type ?? 'button'}>
+      {label}
+    </Button>
+  )
+}
+
+export const ExpandedPanelActions = ({ actions }: { actions: readonly ExpandedPanelAction[] }) => {
+  const [isOpen, open, close, , setIsOpen] = useSwitch(false)
+  const drawerId = useId()
+  const [kebabOnlyActions, primaryActionCandidates] = partition(actions, action => action.alwaysInKebabMenu)
+  const [primaryActions, overflowActions] = splitAt(primaryActionCandidates, VISIBLE_ACTION_COUNT)
+  const drawerActions = [...overflowActions, ...kebabOnlyActions]
+  const visibleButtonsSize = primaryActions[0]?.size ?? 'medium'
+
+  return (
+    <Stack direction="row" sx={{ gap: Spacing.xs }}>
+      {primaryActions.map(action => (
+        <ExpandedPanelActionButton key={action.id} action={action} />
+      ))}
+      {drawerActions.length > 0 && (
+        <SwipeableDrawer
+          paperSx={{ maxHeight: MaxHeight.drawer }}
+          button={
+            <IconButton
+              aria-controls={drawerId}
+              aria-expanded={isOpen}
+              aria-haspopup="dialog"
+              aria-label={t`More actions`}
+              color="primary"
+              data-testid="expanded-panel-actions-menu-button"
+              onClick={open}
+              size={visibleButtonsSize}
+            >
+              <DotsVerticalIcon />
+            </IconButton>
+          }
+          open={isOpen}
+          setOpen={setIsOpen}
+        >
+          <DrawerHeader title={t`More actions`} />
+          <DrawerItems id={drawerId} data-testid="expanded-panel-actions-menu">
+            {drawerActions.map(action => (
+              <ExpandedPanelActionButton key={action.id} action={action} onDrawerActionClick={close} />
+            ))}
+          </DrawerItems>
+        </SwipeableDrawer>
+      )}
+    </Stack>
+  )
+}

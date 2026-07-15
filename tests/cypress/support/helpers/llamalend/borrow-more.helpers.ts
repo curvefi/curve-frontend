@@ -1,4 +1,9 @@
-import { checkLeverageCheckbox, submitLoanForm } from '@cy/support/helpers/llamalend/create-loan.helpers'
+import {
+  checkLeverageCheckbox,
+  submitLoanForm,
+  toggleLeverage,
+  waitForRoutesLoaded,
+} from '@cy/support/helpers/llamalend/create-loan.helpers'
 import type { Decimal } from '@primitives/decimal.utils'
 import { LOAD_TIMEOUT } from '../../ui'
 import { checkDebt, checkEstimatedTxCost, DECIMAL_REGEX, getActionValue, touchInput } from './action-info.helpers'
@@ -16,11 +21,13 @@ export function writeBorrowMoreForm({
   userCollateral,
   leverageEnabled,
   hasLeverageManagement,
+  waitForRoutes,
 }: {
   debt: Decimal
   userCollateral?: Decimal
   leverageEnabled: boolean
   hasLeverageManagement: boolean
+  waitForRoutes?: boolean
 }) {
   if (userCollateral) {
     getCollateralInput().clear()
@@ -29,8 +36,9 @@ export function writeBorrowMoreForm({
   getDebtInput().clear()
   getDebtInput().type(debt)
   getDebtInput().blur() // make sure field is touched to open the action info list
-  if (leverageEnabled) cy.get('[data-testid="leverage-checkbox"]').click()
+  if (leverageEnabled) toggleLeverage()
   checkLeverageCheckbox({ leverageEnabled, hasLeverage: hasLeverageManagement })
+  if (waitForRoutes) waitForRoutesLoaded({ submitButtonTestId: 'borrow-more-submit-button' })
 }
 
 export const touchBorrowMoreForm = () => touchInput(getDebtInput)
@@ -52,7 +60,10 @@ export function checkBorrowMoreDetailsLoaded({
   getActionValue('borrow-health').should('match', DECIMAL_REGEX)
   getActionValue('borrow-health', 'previous').should('match', DECIMAL_REGEX)
   checkEstimatedTxCost({ hasValue: hasApi })
-  checkDebt({ current: expectedCurrentDebt, future: expectedFutureDebt, symbol: borrowedSymbol })
+  checkDebt(
+    { current: expectedCurrentDebt, future: expectedFutureDebt, symbol: borrowedSymbol },
+    { checkLoanToValue: hasApi },
+  )
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
   if (leverageEnabled) {
     getActionValue('borrow-price-impact').should('include', '%')

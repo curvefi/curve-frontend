@@ -53,6 +53,7 @@ export const ComboBoxGauges = ({
             (gauge.effective_address?.toLowerCase() ?? gauge.address.toLowerCase()),
         ),
     )
+    // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
     .sort((a, b) => b.gauge_weight - a.gauge_weight)
 
   const [result, setResult] = useState<GaugeFormattedData[] | undefined>()

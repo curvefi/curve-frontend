@@ -22,6 +22,7 @@ import { LlamaTableFiltersCollapsible } from './filters/LlamaTableFiltersCollaps
 import { LlamaTableFiltersOverlay } from './filters/LlamaTableFiltersOverlay'
 import { getLlamaMarketsColumnVariant, useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
+import { LlamaMarketExpandedPanelActions } from './LlamaMarketExpandedPanelActions'
 
 const LOCAL_STORAGE_KEY = 'Llamalend Markets'
 
@@ -78,7 +79,7 @@ export const LlamaMarketsTable = ({
           button: { onClick: resetFilters, label: t`Show All Markets` },
         }}
         errorState={{ title: t`Could not load markets`, onReload }}
-        expandedPanel={LlamaMarketExpandedPanel}
+        expandedPanel={{ Body: LlamaMarketExpandedPanel, Actions: LlamaMarketExpandedPanelActions }}
         shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       >
         <TableFilters<LlamaMarketColumnId>

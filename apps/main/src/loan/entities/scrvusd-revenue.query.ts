@@ -12,7 +12,7 @@ export type ScrvUsdRevenue = { totalDistributed: string; epochs: Epoch[]; histor
  */
 const organizeDataIntoEpochs = (history: Revenue[]): Epoch[] => {
   // Sort history by date
-  const sortedHistory = [...history].sort((a, b) => a.timestamp - b.timestamp)
+  const sortedHistory = history.toSorted((a, b) => a.timestamp - b.timestamp)
 
   const epochs: Epoch[] = []
   let currentEpoch: Epoch | null = null
@@ -32,9 +32,11 @@ const organizeDataIntoEpochs = (history: Revenue[]): Epoch[] => {
       endDate.setDate(startDate.getDate() + 7)
 
       currentEpoch = { startDate, endDate, weeklyRevenue: 0, data: [] }
+      // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       epochs.push(currentEpoch)
     }
 
+    // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
     currentEpoch.data.push(item)
     // Add to weekly revenue (gain - loss)
     currentEpoch.weeklyRevenue += weiToEther(Number(item.gain) - Number(item.loss))

@@ -1,5 +1,5 @@
 export * from './ActivityTable'
-export * from './constants'
+export * from './utils'
 export * from './cells'
 export * from './types'
 export * from './columns'

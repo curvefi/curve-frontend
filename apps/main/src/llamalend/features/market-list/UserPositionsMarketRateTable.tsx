@@ -14,6 +14,7 @@ import type { LlamaMarket } from '../../queries/market-list/llama-markets'
 import { DEFAULT_SORT_BORROW, DEFAULT_SORT_SUPPLY, LLAMA_MARKET_COLUMNS } from './columns'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
+import { UserPositionExpandedPanelActions } from './UserPositionExpandedPanelActions'
 
 const { Spacing, Sizing } = SizesAndSpaces
 
@@ -65,7 +66,7 @@ export const UserPositionsMarketRateTable = ({ tableQuery, marketRateType, onRel
       table={table}
       viewAllLabel={t`View all ${rowCount} ${label} positions`}
       errorState={{ title: t`Could not load ${label} positions`, onReload }}
-      expandedPanel={LlamaMarketExpandedPanel}
+      expandedPanel={{ Body: LlamaMarketExpandedPanel, Actions: UserPositionExpandedPanelActions }}
       shouldStickFirstColumn={Boolean(useIsTablet() && rowCount)}
     >
       <Stack

@@ -7,7 +7,7 @@ import { type QueriesResults, useQueries } from '@tanstack/react-query'
 import { getLib } from '@ui-kit/features/connect-wallet'
 import type { LibKey } from '@ui-kit/features/connect-wallet/lib/types'
 import { getWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/wagmi-config'
-import { combineQueriesToObject, createValidationSuite } from '@ui-kit/lib'
+import { combineQueriesToObject, createValidationSuite, QueryData } from '@ui-kit/lib'
 import {
   type ChainParams,
   NoRetryError,
@@ -130,6 +130,7 @@ export const {
 })
 
 type UseTokenOptions = ReturnType<typeof getTokenUsdRateQueryOptions>
+export type TokenUsdRate = QueryData<typeof useTokenUsdRate>
 
 /** Hook to fetch USD rates for multiple tokens on a specific blockchain. */
 export const useTokenUsdRates = (

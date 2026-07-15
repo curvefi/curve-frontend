@@ -55,7 +55,7 @@ export const OhlcAndActivityComp = ({
             table={liquidityTable.table}
             emptyState={liquidityTable.emptyState}
             errorState={liquidityTable.errorState}
-            expandedPanel={PoolLiquidityExpandedPanel}
+            expandedPanel={{ Body: PoolLiquidityExpandedPanel }}
           />
         )}
         {tab === 'trades' && (
@@ -63,7 +63,7 @@ export const OhlcAndActivityComp = ({
             table={tradesTable.table}
             emptyState={tradesTable.emptyState}
             errorState={tradesTable.errorState}
-            expandedPanel={PoolTradesExpandedPanel}
+            expandedPanel={{ Body: PoolTradesExpandedPanel }}
           />
         )}
         {tab === 'chart' && (

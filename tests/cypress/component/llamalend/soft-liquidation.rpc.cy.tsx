@@ -29,7 +29,7 @@ const WSTETH_USDC_MARKET = {
 } as const
 
 const BORROW = '800' as const
-const IMPROVE_HEALTH_AMOUNT = '100' as const
+const IMPROVE_HEALTH_AMOUNT = '200' as const
 const RESET_WALLET_AMOUNT = '25' as const
 
 describe('Manage soft liquidation', () => {
@@ -64,7 +64,7 @@ describe('Manage soft liquidation', () => {
       vnet,
       userAddress,
       collateral: '1',
-      targetPrice: '1200',
+      targetPrice: '1100',
       borrow: BORROW,
       range: 50n,
       collateralFundingMultiplier: 2n,

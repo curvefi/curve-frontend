@@ -23,6 +23,7 @@ const _fetchUserGaugeWeightVotes = async ({ userAddress }: ChainQuery<ChainId> &
         nextVoteTime: null,
         canVote: true,
       }))
+      // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       .sort((a, b) => b.userPower - a.userPower),
   }
 }

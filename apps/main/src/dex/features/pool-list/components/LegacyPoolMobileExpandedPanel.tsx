@@ -1,11 +1,8 @@
 import { ReactNode } from 'react'
 import { CampaignRewardsRow } from '@/dex/components/CampaignRewardsRow'
 import { TableCellRewardsOthers } from '@/dex/components/TableCellRewardsOthers'
-import { ROUTE } from '@/dex/constants'
 import { useNetworkFromUrl } from '@/dex/hooks/useChainId'
-import { getPath } from '@/dex/utils/utilsRouter'
 import type { Chain } from '@curvefi/prices-api'
-import Button from '@mui/material/Button'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -13,9 +10,8 @@ import type { Address } from '@primitives/address.utils'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { isSortedBy } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import type { ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
+import type { ExpandedPanelComponent } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { Metric, MetricProps } from '@ui-kit/shared/ui/Metric'
-import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { constQ } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
@@ -38,10 +34,10 @@ const ListInfoItem = ({
 
 const highlight = { color: 'success' as const }
 
-export const LegacyPoolMobileExpandedPanel: ExpandedPanel<LegacyPoolListItem> = ({ row, table }) => {
+export const LegacyPoolMobileExpandedPanel: ExpandedPanelComponent<LegacyPoolListItem> = ({ row, table }) => {
   const { original: poolData } = row
   const {
-    pool: { id: poolId, address },
+    pool: { address },
     totalAPR,
     network,
   } = poolData
@@ -49,100 +45,88 @@ export const LegacyPoolMobileExpandedPanel: ExpandedPanel<LegacyPoolListItem> = 
     blockchainId: network as Chain,
     address: address as Address,
   })
-  const path = getPath({ network }, `${ROUTE.PAGE_POOLS}/${poolId}`)
   const { volume, tvl, rewards } = poolData
 
   const { isCrvRewardsEnabled } = useNetworkFromUrl() ?? {}
   const hasVolume = table.getColumn(LegacyPoolColumnId.Volume)?.getIsVisible()
   return (
-    <>
-      <Grid container spacing={Spacing.md}>
-        {hasVolume && (
-          <ListInfoItem
-            label={t`24h Volume`}
-            value={volume}
-            valueOptions={{ unit: 'dollar', ...(isSortedBy(table, LegacyPoolColumnId.Volume) && highlight) }}
-          />
-        )}
+    <Grid container spacing={Spacing.md}>
+      {hasVolume && (
         <ListInfoItem
-          label={t`TVL`}
-          value={tvl}
-          valueOptions={{ unit: 'dollar', ...(isSortedBy(table, LegacyPoolColumnId.Tvl) && highlight) }}
+          label={t`24h Volume`}
+          value={volume}
+          valueOptions={{ unit: 'dollar', ...(isSortedBy(table, LegacyPoolColumnId.Volume) && highlight) }}
         />
+      )}
+      <ListInfoItem
+        label={t`TVL`}
+        value={tvl}
+        valueOptions={{ unit: 'dollar', ...(isSortedBy(table, LegacyPoolColumnId.Tvl) && highlight) }}
+      />
 
-        <ListInfoItem
-          label={t`BASE vAPY`}
-          value={rewards?.base?.day}
-          valueOptions={{ unit: 'percentage', ...(isSortedBy(table, LegacyPoolColumnId.RewardsBase) && highlight) }}
-        />
+      <ListInfoItem
+        label={t`BASE vAPY`}
+        value={rewards?.base?.day}
+        valueOptions={{ unit: 'percentage', ...(isSortedBy(table, LegacyPoolColumnId.RewardsBase) && highlight) }}
+      />
 
-        {!poolData?.gauge.isKilled && (
-          <>
-            {isCrvRewardsEnabled ? (
-              <ListInfoItem
-                value={totalAPR}
-                valueOptions={{
-                  unit: 'percentage',
-                  ...(isSortedBy(table, LegacyPoolColumnId.RewardsCrv) ||
-                  isSortedBy(table, LegacyPoolColumnId.RewardsOther)
-                    ? highlight
-                    : {}),
-                }}
-                label={t`REWARDS tAPR`}
-                labelTooltip={{ title: t`(CRV tAPR + Other tAPR)` }}
-                valueTooltip={{
-                  title: t`Token APR based on current prices of tokens and reward rates`,
-                  body: (
-                    <PoolRewardsTooltipContent
-                      poolData={poolData}
-                      isHighlightBase={isSortedBy(table, LegacyPoolColumnId.RewardsBase)}
-                      isHighlightCrv={isSortedBy(table, LegacyPoolColumnId.RewardsCrv)}
-                      isHighlightOther={isSortedBy(table, LegacyPoolColumnId.RewardsOther)}
-                      rewardsApy={rewards}
-                    />
-                  ),
-                }}
-              ></ListInfoItem>
-            ) : (
-              <ListInfoItem
-                value={totalAPR}
-                valueOptions={{
-                  unit: 'percentage',
-                  ...(isSortedBy(table, LegacyPoolColumnId.RewardsOther) && highlight),
-                }}
-                valueTooltip={{
-                  title: (
-                    <TableCellRewardsOthers
-                      isHighlight={isSortedBy(table, LegacyPoolColumnId.RewardsOther)}
-                      rewardsApy={rewards}
-                    />
-                  ),
-                }}
-                label={t`REWARDS tAPR`}
-                labelTooltip={{ title: t`Token APR based on current prices of tokens and reward rates` }}
-              ></ListInfoItem>
-            )}
-            {campaigns.length > 0 && (
-              <Stack direction="column" sx={{ alignItems: 'center' }}>
-                <Typography variant="bodyXsRegular" color="textTertiary" sx={{ alignSelf: 'start' }}>
-                  {t`Additional external rewards`}
-                </Typography>
+      {!poolData?.gauge.isKilled && (
+        <>
+          {isCrvRewardsEnabled ? (
+            <ListInfoItem
+              value={totalAPR}
+              valueOptions={{
+                unit: 'percentage',
+                ...(isSortedBy(table, LegacyPoolColumnId.RewardsCrv) ||
+                isSortedBy(table, LegacyPoolColumnId.RewardsOther)
+                  ? highlight
+                  : {}),
+              }}
+              label={t`REWARDS tAPR`}
+              labelTooltip={{ title: t`(CRV tAPR + Other tAPR)` }}
+              valueTooltip={{
+                title: t`Token APR based on current prices of tokens and reward rates`,
+                body: (
+                  <PoolRewardsTooltipContent
+                    poolData={poolData}
+                    isHighlightBase={isSortedBy(table, LegacyPoolColumnId.RewardsBase)}
+                    isHighlightCrv={isSortedBy(table, LegacyPoolColumnId.RewardsCrv)}
+                    isHighlightOther={isSortedBy(table, LegacyPoolColumnId.RewardsOther)}
+                    rewardsApy={rewards}
+                  />
+                ),
+              }}
+            ></ListInfoItem>
+          ) : (
+            <ListInfoItem
+              value={totalAPR}
+              valueOptions={{
+                unit: 'percentage',
+                ...(isSortedBy(table, LegacyPoolColumnId.RewardsOther) && highlight),
+              }}
+              valueTooltip={{
+                title: (
+                  <TableCellRewardsOthers
+                    isHighlight={isSortedBy(table, LegacyPoolColumnId.RewardsOther)}
+                    rewardsApy={rewards}
+                  />
+                ),
+              }}
+              label={t`REWARDS tAPR`}
+              labelTooltip={{ title: t`Token APR based on current prices of tokens and reward rates` }}
+            ></ListInfoItem>
+          )}
+          {campaigns.length > 0 && (
+            <Stack direction="column" sx={{ alignItems: 'center' }}>
+              <Typography variant="bodyXsRegular" color="textTertiary" sx={{ alignSelf: 'start' }}>
+                {t`Additional external rewards`}
+              </Typography>
 
-                <CampaignRewardsRow rewardItems={campaigns} mobile />
-              </Stack>
-            )}
-          </>
-        )}
-      </Grid>
-      <Stack sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 3, marginBlock: 3 }}>
-        <Button
-          data-testid="pool-link-deposit"
-          component={RouterLink}
-          href={path + ROUTE.PAGE_POOL_DEPOSIT}
-        >{t`Deposit`}</Button>
-        <Button component={RouterLink} href={path + ROUTE.PAGE_POOL_WITHDRAW}>{t`Withdraw`}</Button>
-        <Button component={RouterLink} href={path + ROUTE.PAGE_SWAP}>{t`Swap`}</Button>
-      </Stack>
-    </>
+              <CampaignRewardsRow rewardItems={campaigns} mobile />
+            </Stack>
+          )}
+        </>
+      )}
+    </Grid>
   )
 }

@@ -13,6 +13,7 @@ const fetchInputUrl = (input: Parameters<typeof fetch>[0]) =>
 
 /** Patches global fetch once; AsyncLocalStorage keeps concurrent endpoint cases isolated. */
 globalThis.fetch = (input, init) => {
+  // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
   fetchTracker.getStore()?.urls.push(fetchInputUrl(input))
   return originalFetch(input, init)
 }

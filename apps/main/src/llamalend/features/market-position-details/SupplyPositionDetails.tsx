@@ -3,8 +3,7 @@ import { zeroAddress } from 'viem'
 import { USER_NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { useMarketRates, useMarketVaultOnChainRewards, useMarketVaultPricePerShare } from '@/llamalend/queries/market'
-import { useUserSupplyBoost } from '@/llamalend/queries/user'
-import { useUserShares } from '@/llamalend/queries/user/user-balances.query'
+import { useUserBalances, useUserSupplyBoost } from '@/llamalend/queries/user'
 import {
   aprToApy,
   formatSupplyExtraIncentives,
@@ -93,19 +92,19 @@ export const SupplyPositionDetails = () => {
       }),
   )
 
-  const shares = useUserShares(params)
+  const balances = useUserBalances(params)
   const supplyAsset = combineQueries(
     [
       useTokenUsdRate({ chainId, tokenAddress: market.addresses?.borrowed_token }),
       useMarketVaultPricePerShare(params),
-      shares,
+      balances,
     ],
-    (usdRate, perShare, { value }): SupplyAsset => ({
+    (usdRate, perShare, { totalShares: totalShares = '0' }): SupplyAsset => ({
       symbol: market.borrowed_token.symbol,
       address: market.borrowed_token.address as Address,
       usdRate,
-      depositedAmount: decimalMultiply(perShare, value),
-      depositedUsdValue: decimalMultiply(perShare, value, usdRate),
+      depositedAmount: decimalMultiply(perShare, totalShares),
+      depositedUsdValue: decimalMultiply(perShare, totalShares, usdRate),
     }),
   )
 
@@ -179,7 +178,7 @@ export const SupplyPositionDetails = () => {
             }))}
             valueTooltip={{
               title: t`Amount Supplied`,
-              body: <AmountSuppliedTooltipContent shares={shares} supplyAsset={supplyAsset} />,
+              body: <AmountSuppliedTooltipContent balances={q(balances)} supplyAsset={supplyAsset} />,
               placement: 'top',
               arrow: false,
               clickable: true,
@@ -190,10 +189,10 @@ export const SupplyPositionDetails = () => {
           <Metric
             category={METRIC_CATEGORY}
             label={t`Vault shares`}
-            value={mapQuery(shares, ({ value }) => value)}
+            value={mapQuery(balances, ({ totalShares }) => totalShares)}
             valueOptions={{}}
-            notional={mapQuery(shares, ({ percentage }) => ({
-              value: percentage,
+            notional={mapQuery(balances, ({ stakedPercentage = '0' }) => ({
+              value: stakedPercentage,
               unit: { symbol: t`% staked`, position: 'suffix' as const },
             }))}
             valueTooltip={{

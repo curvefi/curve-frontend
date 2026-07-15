@@ -6,10 +6,11 @@ import { useSupplyRates } from '@/llamalend/widgets/action-card/hooks/useSupplyR
 import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Address, type Token } from '@primitives/address.utils'
+import { maybes } from '@primitives/objects.utils'
 import type { UseFormReturn } from '@ui-kit/features/forms'
-import { combineQueryState } from '@ui-kit/lib/queries/combine'
+import { combineQueries } from '@ui-kit/lib/queries/combine'
 import { mapQuery, q } from '@ui-kit/types/util'
-import { decimalMinus } from '@ui-kit/utils'
+import { decimalMinus, decimalNegate } from '@ui-kit/utils'
 import { useVaultUserBalances } from '../hooks/useVaultUserBalances'
 
 type WithdrawSupplyInfoListProps<ChainId extends IChainId> = {
@@ -31,7 +32,7 @@ export function WithdrawSupplyInfoList<ChainId extends IChainId>({
   const isOpen = form.isTouched('withdrawAmount')
 
   const { prevRates, rates, prevNetSupplyApy, netSupplyApy } = useSupplyRates(
-    { params, reservesDelta: withdrawAmount && decimalMinus('0', withdrawAmount), controllerAddress },
+    { params, reservesDelta: decimalNegate(withdrawAmount), controllerAddress },
     isOpen,
   )
 
@@ -43,22 +44,13 @@ export function WithdrawSupplyInfoList<ChainId extends IChainId>({
       isOpen={isOpen}
       suppliedSymbol={tokens.borrowToken?.symbol}
       prevVaultShares={mapQuery(userBalances, d => d.totalShares)}
-      vaultShares={{
-        data:
-          userBalances.data.totalShares &&
-          removableVaultShares.data &&
-          userBalances.data.depositedShares &&
-          decimalMinus(
-            userBalances.data.totalShares,
-            isFull ? userBalances.data.depositedShares : removableVaultShares.data,
-          ),
-        ...combineQueryState(userBalances, removableVaultShares),
-      }}
-      prevAmountSupplied={mapQuery(userBalances, d => d.totalSharesAmount)}
-      amountSupplied={mapQuery(
-        userBalances,
-        d => d.totalSharesAmount && withdrawAmount && decimalMinus(d.totalSharesAmount, withdrawAmount),
+      vaultShares={combineQueries(
+        [userBalances, removableVaultShares],
+        ({ depositedShares, totalShares }, removableVaultShares) =>
+          maybes([totalShares, isFull ? depositedShares : removableVaultShares], decimalMinus),
       )}
+      prevSuppliedAssets={mapQuery(userBalances, d => d.totalSharesAmount)}
+      suppliedAssets={mapQuery(userBalances, d => maybes([d.totalSharesAmount, withdrawAmount], decimalMinus))}
       prevSupplyApy={mapQuery(prevRates, d => d.lendApy)}
       supplyApy={mapQuery(rates, d => d.lendApy)}
       prevNetSupplyApy={prevNetSupplyApy}

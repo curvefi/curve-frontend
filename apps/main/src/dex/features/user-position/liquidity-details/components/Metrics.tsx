@@ -4,7 +4,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { mapQuery } from '@ui-kit/types/util'
-import { amount, Chain, formatNumber } from '@ui-kit/utils'
+import { amount, Chain, formatToken } from '@ui-kit/utils'
 import type { LiquidityDetailsData } from '../hooks/useLiquidityDetails'
 
 const { Spacing } = SizesAndSpaces
@@ -26,7 +26,7 @@ export const Metrics = ({
         label={t`Position value`}
         value={positionValue}
         valueOptions={{ unit: 'dollar', abbreviate: false }}
-        notional={mapQuery(lpTokenTotal, value => `${formatNumber(amount(value), 'token.balance')} LP Tokens`)}
+        notional={mapQuery(lpTokenTotal, value => formatToken(amount(value), 'LP Tokens', 'balance'))}
       />
     </Grid>
 

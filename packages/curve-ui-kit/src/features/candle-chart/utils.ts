@@ -52,7 +52,7 @@ export const applyLatestOraclePrice = (data: OraclePriceData[], oraclePrice: num
 export const flattenOhlcPagesChronologically = <TPage, TItem>(
   pages: TPage[] | undefined,
   selectItems: (page: TPage) => TItem[],
-) => maybe(pages, pages => pages.reverse().flatMap(selectItems))
+) => maybe(pages, pages => pages.toReversed().flatMap(selectItems))
 
 const clampPercentile = (value: number, fallback: number) =>
   Number.isFinite(value) ? Math.max(0, Math.min(1, value)) : fallback

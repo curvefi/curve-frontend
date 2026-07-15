@@ -29,9 +29,11 @@ function getTokensText({ claimableCrv, claimableRewards }: FormValues, { isClaim
   const message = []
 
   if (isClaimCrv) {
+    // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
     message.push(`CRV ${claimableCrv}`)
   } else if (isClaimRewards) {
     claimableRewards.map(({ symbol, amount }) => {
+      // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       message.push(`${symbol} ${amount}`)
     })
   }

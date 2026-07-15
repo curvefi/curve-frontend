@@ -411,8 +411,11 @@ export const getChartOptions = (
         const userCollateralWidth = derived.userCollateralData[i] ?? 0
         const userBorrowedWidth = derived.userBorrowedData[i] ?? 0
         const totalWidth = derived.bandTotalData[i] ?? 0
+        // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
         marketSeriesData.push([median, 0, totalWidth, pDown, pUp, isLiq, totalWidth])
+        // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
         userCollateralSeriesData.push([median, 0, userCollateralWidth, pDown, pUp, isLiq, userCollateralWidth])
+        // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
         userBorrowedSeriesData.push([
           median,
           userCollateralWidth,
@@ -422,6 +425,7 @@ export const getChartOptions = (
           isLiq,
           userCollateralWidth + userBorrowedWidth,
         ])
+        // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
         outlineSeriesData.push([median, 0, totalWidth, pDown, pUp, isLiq, totalWidth])
       }
 

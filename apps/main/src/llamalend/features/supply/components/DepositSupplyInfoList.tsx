@@ -7,8 +7,9 @@ import { useSupplyRates } from '@/llamalend/widgets/action-card/hooks/useSupplyR
 import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Address, type Token } from '@primitives/address.utils'
+import { maybes } from '@primitives/objects.utils'
 import type { UseFormReturn } from '@ui-kit/features/forms'
-import { combineQueryState } from '@ui-kit/lib/queries/combine'
+import { combineQueries } from '@ui-kit/lib/queries/combine'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
 import { useVaultUserBalances } from '../hooks/useVaultUserBalances'
@@ -47,18 +48,11 @@ export function DepositSupplyInfoList<ChainId extends IChainId>({
       isApproved={isApproved}
       suppliedSymbol={tokens.borrowToken?.symbol}
       prevVaultShares={mapQuery(userBalances, d => d.totalShares)}
-      vaultShares={{
-        data:
-          userBalances.data.totalShares &&
-          additionalVaultShares.data &&
-          decimalSum(userBalances.data.totalShares, additionalVaultShares.data),
-        ...combineQueryState(userBalances, additionalVaultShares),
-      }}
-      prevAmountSupplied={mapQuery(userBalances, d => d.totalSharesAmount)}
-      amountSupplied={mapQuery(
-        userBalances,
-        d => depositAmount && d.totalSharesAmount && decimalSum(d.totalSharesAmount, depositAmount),
+      vaultShares={combineQueries([userBalances, additionalVaultShares], ({ totalShares }, additionalVaultShares) =>
+        maybes([totalShares, additionalVaultShares], decimalSum),
       )}
+      prevSuppliedAssets={mapQuery(userBalances, d => d.totalSharesAmount)}
+      suppliedAssets={mapQuery(userBalances, d => maybes([d.totalSharesAmount, depositAmount], decimalSum))}
       prevSupplyApy={mapQuery(prevRates, d => d.lendApy)}
       supplyApy={mapQuery(rates, d => d.lendApy)}
       prevNetSupplyApy={prevNetSupplyApy}
