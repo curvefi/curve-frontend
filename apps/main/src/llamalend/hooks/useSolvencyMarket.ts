@@ -7,7 +7,7 @@ import type { QueriesResults } from '@tanstack/react-query'
 import { useQueries } from '@tanstack/react-query'
 import { RESOLVED_QUERY_RESULT } from '@ui-kit/lib/queries'
 import { combineQueriesMeta } from '@ui-kit/lib/queries/combine'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { MarketType } from '@ui-kit/types/market'
 import { calculateMarketSolvency, createGetBadDebtMarket } from '../llama.utils'
 import { getBadDebtLendMarketsOptions } from '../queries/market/market-bad-debt.query'
 import { getLendingVaultsOptions } from '../queries/market-list/lending-vaults'
@@ -15,7 +15,7 @@ import { getLendingVaultsOptions } from '../queries/market-list/lending-vaults'
 type SolvencyMarketParams = {
   blockchainId: Chain | undefined
   controllerAddress: Address | undefined
-  marketType: LlamaMarketType | undefined
+  marketType: MarketType | undefined
 }
 
 type SolvencyMarketsQueries = [
@@ -31,7 +31,7 @@ export const useSolvencyMarket = (
   enabled = true,
 ) => {
   // solvency only computed for lend market, as mint market's solvency is not an user issue
-  const isEnabled = enabled && marketType === LlamaMarketType.Lend
+  const isEnabled = enabled && marketType === MarketType.Lend
 
   return useQueries({
     queries: useMemo<SolvencyMarketsQueries>(

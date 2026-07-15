@@ -1,4 +1,4 @@
-export { LlammaTradesExpandedPanel } from './LlammaTradesExpandedPanel'
-export { LlammaEventsExpandedPanel } from './LlammaEventsExpandedPanel'
+export { MarketTradesExpandedPanel } from './MarketTradesExpandedPanel'
+export { MarketEventsExpandedPanel } from './MarketEventsExpandedPanel'
 export { PoolTradesExpandedPanel } from './PoolTradesExpandedPanel'
 export { PoolLiquidityExpandedPanel } from './PoolLiquidityExpandedPanel'

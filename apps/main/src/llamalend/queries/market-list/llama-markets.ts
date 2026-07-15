@@ -28,9 +28,9 @@ import { getCampaignsMarketsMerklOptions } from '@ui-kit/entities/campaigns/camp
 import { useStateTimeout } from '@ui-kit/hooks/useStateTimeout'
 import { combineQueriesMeta, PartialQueryResult, RESOLVED_QUERY_RESULT } from '@ui-kit/lib'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
-import { type ExtraIncentive, LlamaMarketType, LlamaMarketVersion, MarketRateType } from '@ui-kit/types/market'
+import { type ExtraIncentive, MarketType, MarketVersion, MarketRateType } from '@ui-kit/types/market'
 import { decimal, decimalDiv } from '@ui-kit/utils'
-import { DEPRECATED_LLAMAS, NO_LEVERAGE_LEND } from '../../llama-markets.constants'
+import { DEPRECATED_LLAMAS, NO_LEVERAGE_LEND } from '../../markets.constants'
 import { getBadDebtLendMarketsOptions, getBadDebtMintMarketsOptions } from '../market/market-bad-debt.query'
 import { getFavoriteMarketOptions } from './favorite-markets'
 import {
@@ -64,7 +64,7 @@ export type LlamaMarket = {
   controllerAddress: Address
   vaultAddress: Address | null
   assets: Assets
-  version: LlamaMarketVersion
+  version: MarketVersion
   minBand?: number
   maxBand?: number
   maxLtv: number
@@ -96,7 +96,7 @@ export type LlamaMarket = {
     incentives: ExtraIncentive[]
   }
   lendingPosition?: LendingPosition
-  type: LlamaMarketType
+  type: MarketType
   url: string
   rewards: CampaignRewards[]
   isFavorite: boolean
@@ -109,15 +109,12 @@ export type LlamaMarket = {
 
 export type LlamaMarketsResult = {
   markets: LlamaMarket[]
-  userHasPositions: Record<LlamaMarketType, Record<MarketRateType, boolean>> | null
+  userHasPositions: Record<MarketType, Record<MarketRateType, boolean>> | null
   hasFavorites: boolean
 }
 
-const toMarketVersion = (version: number): LlamaMarketVersion =>
-  assert(
-    { 1: LlamaMarketVersion.v1, 2: LlamaMarketVersion.v2 }[version],
-    `Unsupported LlamaLend market version: ${version}`,
-  )
+const toMarketVersion = (version: number): MarketVersion =>
+  assert({ 1: MarketVersion.v1, 2: MarketVersion.v2 }[version], `Unsupported LlamaLend market version: ${version}`)
 
 /** Converts API 1e18-scaled discount fractions to UI percent units (div by 1e18*100). */
 const scaledFractionToPercent = (value: number): Decimal =>
@@ -163,7 +160,7 @@ const convertLendingVault = (
   lendingPosition: LendingPosition | undefined,
   badDebtUsd?: number,
 ): LlamaMarket => {
-  const marketType = LlamaMarketType.Lend
+  const marketType = MarketType.Lend
   const hasBorrowed = userBorrows.has(controller)
   const totalExtraRewardApy =
     // sumBy returns 0 for empty arrays
@@ -297,7 +294,7 @@ const convertMintMarket = (
   collateralIndex: number, // index in the list of markets with the same collateral token, used to create a unique name
   badDebtUsd?: number,
 ): LlamaMarket => {
-  const marketType = LlamaMarketType.Mint
+  const marketType = MarketType.Mint
   const hasBorrow = userMintMarkets.has(address)
   const [collateralSymbol, collateralAddress] = getCollateral(collateralToken)
   const name = collateralIndex > 1 ? `${collateralSymbol}${collateralIndex}` : collateralSymbol
@@ -313,8 +310,8 @@ const convertMintMarket = (
     vaultAddress: null, // mint markets dont have these
     // todo: the market's version should come from the backend directly like for the lend markets (not supported yet)
     version: [collateralSymbol, stablecoinToken.symbol].some(symbol => symbol.toLowerCase().includes('llv2'))
-      ? LlamaMarketVersion.v2
-      : LlamaMarketVersion.v1,
+      ? MarketVersion.v2
+      : MarketVersion.v1,
     assets: {
       borrowed: {
         symbol: stablecoinToken.symbol,
@@ -473,11 +470,11 @@ export const useLlamaMarkets = ({ userAddress, enableDeprecatedMarkets }: LlamaM
               userHasPositions:
                 userBorrows.size > 0 || userMints.size > 0 || hasSupplied
                   ? {
-                      [LlamaMarketType.Mint]: {
+                      [MarketType.Mint]: {
                         [MarketRateType.Borrow]: userMints.size > 0,
                         [MarketRateType.Supply]: false,
                       },
-                      [LlamaMarketType.Lend]: {
+                      [MarketType.Lend]: {
                         [MarketRateType.Borrow]: userBorrows.size > 0,
                         [MarketRateType.Supply]: hasSupplied,
                       },

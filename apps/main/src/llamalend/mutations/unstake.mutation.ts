@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
+import { useMarketMutation } from '@/llamalend/mutations/useMarketMutation'
 import {
   UnstakeForm,
   UnstakeMutation,
@@ -26,7 +26,7 @@ export const useUnstakeMutation = ({
   userAddress,
   ...props
 }: UnstakeOptions) => {
-  const { mutate, error, isPending } = useLlammaMutation<UnstakeMutation>({
+  const { mutate, error, isPending } = useMarketMutation<UnstakeMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'unstake'] as const,

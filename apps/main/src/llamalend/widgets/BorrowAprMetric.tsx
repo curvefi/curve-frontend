@@ -3,7 +3,7 @@ import { maybe } from '@primitives/objects.utils'
 import type { CampaignRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric, type MetricProps } from '@ui-kit/shared/ui/Metric'
-import type { LlamaMarketType } from '@ui-kit/types/market'
+import type { MarketType } from '@ui-kit/types/market'
 import { mapQuery, type QueryProp } from '@ui-kit/types/util'
 import { AVERAGE_CATEGORIES, type AverageCategory } from '@ui-kit/utils'
 import { getBorrowRateTooltipTitle } from '../llama.utils'
@@ -20,7 +20,7 @@ type BorrowRateMetric = {
 }
 
 type BorrowAprMetricProps = {
-  marketType: LlamaMarketType
+  marketType: MarketType
   borrowRate: QueryProp<BorrowRateMetric>
   collateralSymbol: string | null | undefined
   alignment?: MetricProps['alignment']

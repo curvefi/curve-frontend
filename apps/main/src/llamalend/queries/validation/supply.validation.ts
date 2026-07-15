@@ -1,6 +1,6 @@
 import { enforce, skipWhen, test } from 'vest'
-import { getLlamaMarket, hasGauge, hasVault, tryGetLlamaMarket } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import { getMarket, hasGauge, hasVault, tryGetMarket } from '@/llamalend/llama.utils'
+import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
@@ -77,11 +77,11 @@ export type AssetsToSharesParams<ChainId = number> = FieldsOf<AssetsToSharesQuer
 
 /**
  * Ensures the market has a vault and returns it.
- * Accepts either a market ID string or a LlamaMarketTemplate instance.
+ * Accepts either a market ID string or a MarketTemplate instance.
  * @throws Error if the market does not have a vault (only LendMarkets have vaults)
  */
-export function requireVault(marketId: string | LlamaMarketTemplate): LendMarketTemplate {
-  const market = getLlamaMarket(marketId)
+export function requireVault(marketId: string | MarketTemplate): LendMarketTemplate {
+  const market = getMarket(marketId)
   assert(hasVault(market), 'Market does not have a vault')
   return market as LendMarketTemplate
 }
@@ -93,7 +93,7 @@ export function requireGauge(marketId: string): LendMarketTemplate {
 }
 
 const validateHasVault = (marketId: string | null | undefined) => {
-  const market = tryGetLlamaMarket(marketId)
+  const market = tryGetMarket(marketId)
   skipWhen(!market, () => {
     test('marketId', 'Market does not have a vault', () => {
       enforce(market && hasVault(market)).isTruthy()
@@ -102,7 +102,7 @@ const validateHasVault = (marketId: string | null | undefined) => {
 }
 
 const validateHasGauge = (marketId: string | null | undefined) => {
-  const market = tryGetLlamaMarket(marketId)
+  const market = tryGetMarket(marketId)
   skipWhen(!market, () => {
     test('marketId', 'Market does not have a gauge', () => {
       enforce(market && hasGauge(market)).isTruthy()

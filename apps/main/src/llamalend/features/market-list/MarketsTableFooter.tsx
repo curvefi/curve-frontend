@@ -26,7 +26,7 @@ const GridItem = ({ children, title, icon: Icon }: { children: ReactNode; title:
   </Grid>
 )
 
-export const LendTableFooter = () => (
+export const MarketsTableFooter = () => (
   <Card>
     <CardContent>
       <Grid container spacing={Spacing.lg} sx={{ rowGap: Spacing.md }}>

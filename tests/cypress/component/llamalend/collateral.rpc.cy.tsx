@@ -18,9 +18,9 @@ import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { skipTestsAfterFailure } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { recordValues } from '@primitives/objects.utils'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { MarketType } from '@ui-kit/types/market'
 
-const testCases = recordValues(LlamaMarketType).map(type => oneLoanTestMarket(type))
+const testCases = recordValues(MarketType).map(type => oneLoanTestMarket(type))
 
 describe('Collateral forms', () => {
   testCases.forEach(

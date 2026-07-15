@@ -20,13 +20,13 @@ const useAlphaChannel = () => useBetaChannel() && defaultReleaseChannel === Rele
 export const use0xRouter = useBetaChannel
 
 /** Reset position form for LlamaLend soft liquidation */
-export const useLlamaResetPosition = useStableChannel
+export const useMarketResetPosition = useStableChannel
 
 /** Split the LlamaLend (soon to be legacy) health into: Liquidation Buffer and Health */
 export const useNewLlamalendHealth = useBetaChannel
 
 /** Mobile LlamaLend market forms open from a fixed action bar into a drawer */
-export const useLlamalendMobileFormDrawer = useBetaChannel
+export const useMarketMobileFormDrawer = useBetaChannel
 
 /** New DEX pool list backed by Prices API v2 */
 export const useDexPoolListV2 = useBetaChannel

@@ -5,7 +5,7 @@ import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarket
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { canLeverageUserBorrowed, isRouterRequired } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import type { MarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useBorrowMoreMutation } from '@/llamalend/mutations/borrow-more.mutation'
 import { useBorrowMoreLeverage } from '@/llamalend/queries/borrow-more/borrow-more-future-leverage.query'
 import { getBorrowMoreGasEstimateQueryOptions } from '@/llamalend/queries/borrow-more/borrow-more-gas-estimate.query'
@@ -87,7 +87,7 @@ const emptyBorrowMoreForm = (): BorrowMoreForm => ({
 })
 
 /** Checks if we need a route for borrowing more */
-const isRouteRequired = (market: LlamaMarketTemplate | undefined, leverageEnabled: boolean | undefined) => {
+const isRouteRequired = (market: MarketTemplate | undefined, leverageEnabled: boolean | undefined) => {
   const [implementation] = market ? getBorrowMoreImplementation(market, leverageEnabled) : []
   return !!implementation && isRouterRequired(implementation)
 }

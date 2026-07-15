@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
 import { isAddressEqual } from 'viem'
-import { DEPRECATED_LLAMAS } from '@/llamalend/llama-markets.constants'
+import { DEPRECATED_LLAMAS } from '@/llamalend/markets.constants'
 import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
 import { maybes, recordEntries } from '@primitives/objects.utils'
-import type { LlamaMarketType } from '@ui-kit/types/market'
+import type { MarketType } from '@ui-kit/types/market'
 
 export const useDeprecatedMarket = ({
   blockchainId,
@@ -13,7 +13,7 @@ export const useDeprecatedMarket = ({
 }: {
   blockchainId: Chain | undefined
   controllerAddress: Address | undefined
-  marketType: LlamaMarketType | undefined
+  marketType: MarketType | undefined
 }) =>
   useMemo(
     () =>

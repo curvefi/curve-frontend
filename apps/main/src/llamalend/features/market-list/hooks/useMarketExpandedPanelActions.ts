@@ -5,7 +5,7 @@ import { copyToClipboardWithToast } from '@ui-kit/hooks/useCopyToClipboard'
 import { t } from '@ui-kit/lib/i18n'
 import type { ExpandedPanelAction } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 
-export const useLlamaMarketExpandedPanelActions = (market: LlamaMarket) => {
+export const useMarketExpandedPanelActions = (market: LlamaMarket) => {
   const [, toggleFavoriteMarket] = useFavoriteMarkets()
   const { controllerAddress, isFavorite, favoriteKey } = market
 

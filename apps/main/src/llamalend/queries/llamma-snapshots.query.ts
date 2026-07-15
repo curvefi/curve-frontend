@@ -3,7 +3,7 @@ import type { Address } from '@primitives/address.utils'
 import { type CrvUsdSnapshot, useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
 import { type LendingSnapshot, useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
 import type { SnapshotRange } from '@ui-kit/lib/model/query/time-option-validation'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { MarketType } from '@ui-kit/types/market'
 import type { Query } from '@ui-kit/types/util'
 
 export function useLlamaSnapshot({
@@ -17,18 +17,18 @@ export function useLlamaSnapshot({
   enabled?: boolean
   range?: SnapshotRange
   controllerAddress: Address | undefined
-  marketType: LlamaMarketType
+  marketType: MarketType
 }): Query<LendingSnapshot[] | CrvUsdSnapshot[]> {
   const timeOption = range.kind === 'timeRange' ? range.timeOption : undefined
   const limit = range.kind === 'limit' ? range.limit : undefined
   return {
     Lend: useLendingSnapshots(
       { blockchainId, contractAddress: controllerAddress, timeOption, limit },
-      enabled && marketType === LlamaMarketType.Lend,
+      enabled && marketType === MarketType.Lend,
     ),
     Mint: useCrvUsdSnapshots(
       { blockchainId, contractAddress: controllerAddress, timeOption, limit },
-      enabled && marketType === LlamaMarketType.Mint,
+      enabled && marketType === MarketType.Mint,
     ),
   }[marketType]
 }

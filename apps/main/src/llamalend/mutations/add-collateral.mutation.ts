@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
 import { useConfig } from 'wagmi'
 import { formatTokenAmounts } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
+import type { MarketTemplate } from '@/llamalend/llamalend.types'
+import { useMarketMutation } from '@/llamalend/mutations/useMarketMutation'
 import { fetchAddCollateralIsApproved } from '@/llamalend/queries/add-collateral/add-collateral-approved.query'
 import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import { type CollateralForm, collateralValidationSuite } from '@/llamalend/queries/validation/manage-loan.validation'
@@ -22,10 +22,10 @@ type AddCollateralOptions = {
   userAddress: Address | undefined
 }
 
-const approve = async (market: LlamaMarketTemplate, { userCollateral }: AddCollateralMutation) =>
+const approve = async (market: MarketTemplate, { userCollateral }: AddCollateralMutation) =>
   (await getLoanImplementation(market).addCollateralApprove(userCollateral)) as Hex[]
 
-const addCollateral = async (market: LlamaMarketTemplate, { userCollateral }: AddCollateralMutation) =>
+const addCollateral = async (market: MarketTemplate, { userCollateral }: AddCollateralMutation) =>
   (await getLoanImplementation(market).addCollateral(userCollateral)) as Hex
 
 export const useAddCollateralMutation = ({
@@ -37,7 +37,7 @@ export const useAddCollateralMutation = ({
 }: AddCollateralOptions) => {
   const config = useConfig()
 
-  const { mutate, error, isPending } = useLlammaMutation<AddCollateralMutation>({
+  const { mutate, error, isPending } = useMarketMutation<AddCollateralMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'add-collateral'] as const,

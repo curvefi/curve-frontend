@@ -19,7 +19,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
 import type { UseFormReturn } from '@ui-kit/features/forms'
 import { combineQueries } from '@ui-kit/lib/queries/combine'
-import type { LlamaMarketType } from '@ui-kit/types/market'
+import type { MarketType } from '@ui-kit/types/market'
 import { mapQuery, q, type QueryProp } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
 import type { PriceImpact } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
@@ -43,7 +43,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   tokens: { collateralToken: Token | undefined; borrowToken: Token | undefined }
   networks: NetworkDict<ChainId>
   controllerAddress: Address | undefined
-  marketType: LlamaMarketType
+  marketType: MarketType
   onSlippageChange: (newSlippage: Decimal) => void
   leverageEnabled: boolean | undefined
   form: UseFormReturn<BorrowMoreForm>

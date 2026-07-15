@@ -1,7 +1,7 @@
 import type { IChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Address } from '@curvefi/primitives/address.utils'
 import type { LlamaApi } from '@ui-kit/features/connect-wallet'
-import type { LlamaMarketType } from '@ui-kit/types/market'
+import type { MarketType } from '@ui-kit/types/market'
 import type { QueryProp } from '@ui-kit/types/util'
 import {
   type BandRangeOrEmpty,
@@ -15,7 +15,7 @@ import {
   getZapAddress,
   type MarketTokensOrEmpty,
 } from '../../llama.utils'
-import type { LlamaMarketTemplate } from '../../llamalend.types'
+import type { MarketTemplate } from '../../llamalend.types'
 import type { LlamaMarket } from '../../queries/market-list/llama-markets'
 
 export const createMarketContextValue = <ChainId extends IChainId>({
@@ -31,9 +31,9 @@ export const createMarketContextValue = <ChainId extends IChainId>({
   blockchainId: LlamaNetworkId
   userAddress: Address | undefined
   api: LlamaApi | null
-  marketQuery: QueryProp<LlamaMarketTemplate>
+  marketQuery: QueryProp<MarketTemplate>
   apiMarket: QueryProp<LlamaMarket>
-  marketType: LlamaMarketType
+  marketType: MarketType
 }) => ({
   chainId,
   blockchainId,

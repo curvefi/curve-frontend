@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useConfig } from 'wagmi'
-import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
+import { useMarketMutation } from '@/llamalend/mutations/useMarketMutation'
 import { fetchDepositIsApproved } from '@/llamalend/queries/supply/supply-deposit-approved.query'
 import {
   DepositForm,
@@ -41,7 +41,7 @@ export const useDepositMutation = ({
 }: DepositOptions) => {
   const config = useConfig()
 
-  const { mutate, error, isPending } = useLlammaMutation<DepositMutation>({
+  const { mutate, error, isPending } = useMarketMutation<DepositMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'deposit'] as const,

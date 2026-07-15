@@ -7,7 +7,7 @@ import {
 } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { MarketType } from '@ui-kit/types/market'
 import { formatNumber } from '@ui-kit/utils'
 
 const format = (value: number) => formatNumber(value, 'usd.notional')
@@ -18,7 +18,7 @@ export const TvlTooltipContent = ({
   market: LlamaMarket
 }) => (
   <TooltipWrapper>
-    {type === LlamaMarketType.Lend ? (
+    {type === MarketType.Lend ? (
       <>
         <TooltipDescription text={t`Combined USD value of all assets in this lending market.`} />
         <TooltipDescription text={t`Calculated as collateral held in the AMM plus available vault liquidity.`} />

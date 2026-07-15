@@ -6,53 +6,53 @@ import type { FilterProps, TanstackTable } from '@ui-kit/shared/ui/DataTable/dat
 import { parseListFilter, serializeListFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { useFacetedMaxMinValue } from '@ui-kit/shared/ui/DataTable/hooks/useFacetedMaxMinValue'
 import { useFacetedSortedOptions } from '@ui-kit/shared/ui/DataTable/hooks/useFacetedSortedOptions'
-import { LlamaMarketType, LlamaMarketVersion } from '@ui-kit/types/market'
+import { MarketType, MarketVersion } from '@ui-kit/types/market'
 import { type QueryProp } from '@ui-kit/types/util'
 import { type AssetDetails, LlamaMarket } from '../../../../queries/market-list/llama-markets'
-import { LlamaMarketColumnId } from '../../columns'
+import { MarketColumnId } from '../../columns'
 
 const ALL_FILTER_VALUE = 'all' as const
 
 type AllFilterValue = typeof ALL_FILTER_VALUE
-type MarketTypeFilterValue = LlamaMarketType | AllFilterValue
-type MarketVersionFilterValue = LlamaMarketVersion | AllFilterValue
+type MarketTypeFilterValue = MarketType | AllFilterValue
+type MarketVersionFilterValue = MarketVersion | AllFilterValue
 
 const getSelectFilterValue = <T extends string>(filter: string[] | undefined) =>
   (filter?.length ? filter[0] : ALL_FILTER_VALUE) as T | AllFilterValue
 
 const setSelectFilterValue = <T extends string>(
-  setColumnFilter: FilterProps<LlamaMarketColumnId>['setColumnFilter'],
-  columnId: LlamaMarketColumnId,
+  setColumnFilter: FilterProps<MarketColumnId>['setColumnFilter'],
+  columnId: MarketColumnId,
   value: T | AllFilterValue | null,
 ) => value && setColumnFilter(columnId, value === ALL_FILTER_VALUE ? null : serializeListFilter([value]))
 
 const MARKET_TYPE_LABELS: Record<MarketTypeFilterValue, string> = {
   [ALL_FILTER_VALUE]: t`All`,
-  [LlamaMarketType.Mint]: t`Mint`,
-  [LlamaMarketType.Lend]: t`Lending`,
+  [MarketType.Mint]: t`Mint`,
+  [MarketType.Lend]: t`Lending`,
 }
 
 const MARKET_VERSION_LABELS: Record<MarketVersionFilterValue, string> = {
   [ALL_FILTER_VALUE]: t`All`,
-  [LlamaMarketVersion.v1]: 'v1',
-  [LlamaMarketVersion.v2]: 'v2',
+  [MarketVersion.v1]: 'v1',
+  [MarketVersion.v2]: 'v2',
 }
 
-export type LlamaMarketsFiltersProps = FilterProps<LlamaMarketColumnId> & {
+export type MarketsFiltersProps = FilterProps<MarketColumnId> & {
   marketsQuery: QueryProp<LlamaMarket[]>
   table: TanstackTable<LlamaMarket>
 }
 
-export const useLlamaMarketsFilters = ({ marketsQuery, table, ...filterProps }: LlamaMarketsFiltersProps) => {
-  const selectedMarketTypes = parseListFilter(filterProps.columnFiltersById[LlamaMarketColumnId.Type])
-  const selectedMarketVersions = parseListFilter(filterProps.columnFiltersById[LlamaMarketColumnId.Version])
-  const collateralTokenOptions = useFacetedSortedOptions({ table, columnId: LlamaMarketColumnId.CollateralSymbol })
-  const borrowedTokenOptions = useFacetedSortedOptions({ table, columnId: LlamaMarketColumnId.BorrowedSymbol })
-  const borrowRateRange = useFacetedMaxMinValue({ table, columnId: LlamaMarketColumnId.BorrowRate })
-  const tvlRange = useFacetedMaxMinValue({ table, columnId: LlamaMarketColumnId.Tvl })
-  const liquidityRange = useFacetedMaxMinValue({ table, columnId: LlamaMarketColumnId.LiquidityUsd })
-  const utilizationRange = useFacetedMaxMinValue({ table, columnId: LlamaMarketColumnId.UtilizationPercent })
-  const maxLtvRange = useFacetedMaxMinValue({ table, columnId: LlamaMarketColumnId.MaxLtv })
+export const useMarketsFilters = ({ marketsQuery, table, ...filterProps }: MarketsFiltersProps) => {
+  const selectedMarketTypes = parseListFilter(filterProps.columnFiltersById[MarketColumnId.Type])
+  const selectedMarketVersions = parseListFilter(filterProps.columnFiltersById[MarketColumnId.Version])
+  const collateralTokenOptions = useFacetedSortedOptions({ table, columnId: MarketColumnId.CollateralSymbol })
+  const borrowedTokenOptions = useFacetedSortedOptions({ table, columnId: MarketColumnId.BorrowedSymbol })
+  const borrowRateRange = useFacetedMaxMinValue({ table, columnId: MarketColumnId.BorrowRate })
+  const tvlRange = useFacetedMaxMinValue({ table, columnId: MarketColumnId.Tvl })
+  const liquidityRange = useFacetedMaxMinValue({ table, columnId: MarketColumnId.LiquidityUsd })
+  const utilizationRange = useFacetedMaxMinValue({ table, columnId: MarketColumnId.UtilizationPercent })
+  const maxLtvRange = useFacetedMaxMinValue({ table, columnId: MarketColumnId.MaxLtv })
 
   // Relies on data and not markets, because you might have a filter active for a token from a chain
   // before you filtered out that said chain. This would lead to token symbols not loading.
@@ -76,17 +76,17 @@ export const useLlamaMarketsFilters = ({ marketsQuery, table, ...filterProps }: 
     utilizationRange,
     maxLtvRange,
     marketTypeValue: useMemo<MarketTypeFilterValue>(
-      () => getSelectFilterValue<LlamaMarketType>(selectedMarketTypes),
+      () => getSelectFilterValue<MarketType>(selectedMarketTypes),
       [selectedMarketTypes],
     ),
     marketVersionValue: useMemo<MarketVersionFilterValue>(
-      () => getSelectFilterValue<LlamaMarketVersion>(selectedMarketVersions),
+      () => getSelectFilterValue<MarketVersion>(selectedMarketVersions),
       [selectedMarketVersions],
     ),
     onMarketTypeChange: (_: MouseEvent<HTMLElement>, value: MarketTypeFilterValue | null) =>
-      setSelectFilterValue(filterProps.setColumnFilter, LlamaMarketColumnId.Type, value),
+      setSelectFilterValue(filterProps.setColumnFilter, MarketColumnId.Type, value),
     onMarketVersionChange: (_: MouseEvent<HTMLElement>, value: MarketVersionFilterValue | null) =>
-      setSelectFilterValue(filterProps.setColumnFilter, LlamaMarketColumnId.Version, value),
+      setSelectFilterValue(filterProps.setColumnFilter, MarketColumnId.Version, value),
     marketTypeOptions: recordEntries(MARKET_TYPE_LABELS).map(([value, label]) => ({ value, label })),
     marketVersionOptions: recordEntries(MARKET_VERSION_LABELS)
       .map(([value, label]) => ({ value, label }))

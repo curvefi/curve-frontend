@@ -6,7 +6,7 @@ import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { MarketType } from '@ui-kit/types/market'
 import type { QueryProp } from '@ui-kit/types/util'
 import { MarketLoanParameters } from './MarketLoanParameters'
 import { MarketIdRow, MarketPricesRows } from './MarketParameterRows'
@@ -16,7 +16,7 @@ const { Spacing } = SizesAndSpaces
 type MarketParametersProps = {
   chainId: IChainId
   marketId: string | undefined
-  marketType: LlamaMarketType
+  marketType: MarketType
   apiMarket: QueryProp<LlamaMarket>
 }
 
@@ -28,7 +28,7 @@ export const MarketParametersSection = ({ chainId, marketId, marketType, apiMark
         <MarketPricesRows
           chainId={chainId}
           marketId={marketId}
-          enablePricePerShare={marketType === LlamaMarketType.Lend}
+          enablePricePerShare={marketType === MarketType.Lend}
           apiMarket={apiMarket}
         />
       </CardContent>

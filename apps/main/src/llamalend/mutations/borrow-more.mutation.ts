@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
 import { useConfig } from 'wagmi'
 import { formatTokenAmounts } from '@/llamalend/llama.utils'
-import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
+import { MarketTemplate } from '@/llamalend/llamalend.types'
+import { useMarketMutation } from '@/llamalend/mutations/useMarketMutation'
 import { fetchBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
 import {
   getBorrowMoreImplementation,
@@ -27,7 +27,7 @@ type BorrowMoreOptions = {
 }
 
 const approveBorrowMore = async (
-  market: LlamaMarketTemplate,
+  market: MarketTemplate,
   { userCollateral = '0', userBorrowed = '0', leverageEnabled }: BorrowMoreMutation,
 ): Promise<Hex[]> => {
   const [type, impl] = getBorrowMoreImplementation(market.id, leverageEnabled)
@@ -43,7 +43,7 @@ const approveBorrowMore = async (
 }
 
 const borrowMore = async (
-  market: LlamaMarketTemplate,
+  market: MarketTemplate,
   { userCollateral = '0', userBorrowed = '0', debt = '0', slippage, leverageEnabled, routeId }: BorrowMoreMutation,
 ): Promise<Hex> => {
   const [type, impl, args] = getBorrowMoreImplementationArgs(market.id, {
@@ -74,7 +74,7 @@ export const useBorrowMoreMutation = ({
   ...props
 }: BorrowMoreOptions) => {
   const config = useConfig()
-  const { mutate, error, isPending } = useLlammaMutation<BorrowMoreMutation>({
+  const { mutate, error, isPending } = useMarketMutation<BorrowMoreMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'borrowMore'] as const,

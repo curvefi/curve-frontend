@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useConfig } from 'wagmi'
-import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
+import { useMarketMutation } from '@/llamalend/mutations/useMarketMutation'
 import { fetchStakeIsApproved } from '@/llamalend/queries/supply/supply-stake-approved.query'
 import {
   StakeForm,
@@ -24,7 +24,7 @@ type StakeOptions = {
 export const useStakeMutation = ({ network, network: { chainId }, marketId, userAddress, ...props }: StakeOptions) => {
   const config = useConfig()
 
-  const { mutate, error, isPending } = useLlammaMutation<StakeMutation>({
+  const { mutate, error, isPending } = useMarketMutation<StakeMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'stake'] as const,

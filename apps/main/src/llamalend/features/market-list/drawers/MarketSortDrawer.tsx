@@ -1,15 +1,15 @@
 import { OnChangeFn, SortingState } from '@tanstack/react-table'
 import { TableSortDrawer } from '@ui-kit/shared/ui/DataTable/TableSortDrawer'
-import { LlamaMarketColumnId } from '../columns'
-import { useLlamaMarketSortOptions } from '../hooks/useLlamaMarketSortOptions'
+import { MarketColumnId } from '../columns'
+import { useMarketsSortOptions } from '../hooks/useMarketsSortOptions'
 
 type Props = {
   onSortingChange: OnChangeFn<SortingState>
-  sortField: LlamaMarketColumnId
+  sortField: MarketColumnId
 }
 
 export const MarketSortDrawer = ({ onSortingChange, sortField }: Props) => {
-  const sortOptions = useLlamaMarketSortOptions()
+  const sortOptions = useMarketsSortOptions()
 
   return (
     <TableSortDrawer
