@@ -38,7 +38,8 @@ export const TokenOption = ({
   const menuItemRef = useRef<HTMLLIElement>(null)
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Existing violation before enabling this rule.
   const [primary, secondary, tertiary] = disabled
-    ? Array(3).fill('textDisabled')
+    ? // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
+      Array(3).fill('textDisabled')
     : ['textPrimary', 'textSecondary', 'textTertiary']
   return (
     <InvertOnHover hoverRef={menuItemRef}>

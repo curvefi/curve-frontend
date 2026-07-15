@@ -1,4 +1,4 @@
-import type { Shares } from '@/llamalend/queries/user/user-balances.query'
+import type { UserBalances } from '@/llamalend/queries/user/user-balances.query'
 import { UNAVAILABLE_NOTATION } from '@/llamalend/widgets/tooltips/tooltip.utils'
 import {
   TooltipDescription,
@@ -7,10 +7,10 @@ import {
   TooltipWrapper,
 } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybes, maybe } from '@primitives/objects.utils'
+import { maybe, maybes } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import type { QueryProp } from '@ui-kit/types/util'
-import { decimalDiv, decimalMinus, decimalMultiply, formatNumber } from '@ui-kit/utils'
+import { decimalDiv, decimalMinus, decimalMultiply, formatNumber, formatToken } from '@ui-kit/utils'
 import type { SupplyAsset } from '../SupplyPositionDetails'
 
 const formatAmount = (
@@ -18,23 +18,21 @@ const formatAmount = (
   depositedAmount: Decimal | null | undefined,
   symbol: string | null | undefined,
 ) =>
-  maybes(
-    [percentage, depositedAmount, symbol],
-    (percentage, depositedAmount, symbol) =>
-      `${formatNumber(decimalMultiply(percentage, depositedAmount), { abbreviate: true })} ${symbol}`,
+  maybes([percentage, depositedAmount, symbol], (percentage, depositedAmount, symbol) =>
+    formatToken(decimalMultiply(percentage, depositedAmount), symbol),
   )
 
 const formatPercentageDisplay = (percentage: Decimal | null | undefined) =>
   maybe(percentage, p => formatNumber(decimalMultiply(p, '100'), 'percent.rate')) ?? UNAVAILABLE_NOTATION
 
 export const AmountSuppliedTooltipContent = ({
-  shares: { data: shares },
+  balances: { data: balances },
   supplyAsset: { data: supplyAsset },
 }: {
-  shares: QueryProp<Shares>
+  balances: QueryProp<UserBalances>
   supplyAsset: QueryProp<SupplyAsset>
 }) => {
-  const { value, staked } = shares ?? {}
+  const { totalShares: value, gauge: staked } = balances ?? {}
   const { symbol, depositedAmount } = supplyAsset ?? {}
 
   const unstaked = maybes([value, staked], (value, staked) => decimalMinus(value, staked))
@@ -62,10 +60,8 @@ export const AmountSuppliedTooltipContent = ({
         </TooltipItem>
       </TooltipItems>
       <TooltipItem variant="primary" title={t`Total supplied`}>
-        {maybes(
-          [depositedAmount, symbol],
-          (depositedAmount, symbol) => `${formatNumber(depositedAmount, { abbreviate: true })} ${symbol}`,
-        ) ?? UNAVAILABLE_NOTATION}
+        {maybes([depositedAmount, symbol], (depositedAmount, symbol) => formatToken(depositedAmount, symbol)) ??
+          UNAVAILABLE_NOTATION}
       </TooltipItem>
     </TooltipWrapper>
   )

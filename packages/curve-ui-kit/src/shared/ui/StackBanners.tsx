@@ -27,6 +27,7 @@ export const StackBanners = ({ children }: StackBannersProps) => {
     // eslint-disable-next-line @eslint-react/no-children-to-array -- Existing violation before enabling this rule.
     const banners = Children.toArray(children).filter(isValidElement) as ReactElement<BannerProps>[]
     const [removable, nonRemovable] = partition(banners, el => !!el.props.onClick)
+    // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
     return [...nonRemovable.sort(compareBanners), ...removable.sort(compareBanners)]
   }, [children])
 

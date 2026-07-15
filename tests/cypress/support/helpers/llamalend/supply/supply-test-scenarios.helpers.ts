@@ -2,7 +2,7 @@ import { zeroAddress } from 'viem'
 import type { Address } from 'viem'
 import { oneAddress } from '@cy/support/generators'
 import type { Decimal } from '@primitives/decimal.utils'
-import { CRVUSD_ADDRESS, decimalMinus, decimalSum } from '@ui-kit/utils'
+import { CRVUSD_ADDRESS, decimalDiv, decimalMinus, decimalMultiply, decimalSum } from '@ui-kit/utils'
 import { createMockLlamaApi, TEST_ADDRESS, TEST_TX_HASH } from '../mock-loan-test-data'
 import {
   createMockLendMarket,
@@ -11,7 +11,7 @@ import {
   type MockLendVault,
 } from '../mock-market.helpers'
 import { seedErc20BalanceForAddresses, seedLendMarketSolvencyQueries } from '../query-cache.helpers'
-import { createIsApprovedStub, createStub, type TestStub } from '../test-scenarios.helpers'
+import { createIsApprovedStub, createStub, type TestStub } from '../test-stub.utils'
 
 const seedSupplyMarketBalances = ({
   chainId,
@@ -56,6 +56,10 @@ const createIdentityConvertToAssetsStub = () =>
   // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
   cy.stub().callsFake(async (shares: Decimal) => shares) as TestStub<readonly [string], string>
 
+const createIdentityConvertToSharesStub = () =>
+  // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
+  cy.stub().callsFake(async (assets: Decimal) => assets) as TestStub<readonly [string], string>
+
 const createBaseSupplyMarket = ({
   chainId,
   walletBalances,
@@ -83,9 +87,12 @@ const createBaseSupplyMarket = ({
   const statsRates = createStub(createSupplyRates(currentApy))
   const statsFutureRates = createStub(createSupplyRates(futureApy))
   const walletBalancesStub = createStub(walletBalances)
-  const convertToAssets = createIdentityConvertToAssetsStub()
+  const defaultConvertToAssets = createIdentityConvertToAssetsStub()
+  const defaultConvertToShares = createIdentityConvertToSharesStub()
   const defaultVault = createMockLendVault()
   const { estimateGas: estimateGasOverrides, ...otherVaultOverrides } = vaultOverrides
+  const convertToAssets = otherVaultOverrides.convertToAssets ?? defaultConvertToAssets
+  const convertToShares = otherVaultOverrides.convertToShares ?? defaultConvertToShares
 
   seedSupplyMarketBalances({
     chainId,
@@ -118,6 +125,7 @@ const createBaseSupplyMarket = ({
       ...defaultVault,
       ...otherVaultOverrides,
       convertToAssets,
+      convertToShares,
       estimateGas: {
         ...defaultVault.estimateGas,
         ...estimateGasOverrides,
@@ -132,6 +140,7 @@ const createBaseSupplyMarket = ({
       statsFutureRates,
       walletBalances: walletBalancesStub,
       convertToAssets,
+      convertToShares,
     },
   }
 }
@@ -210,8 +219,8 @@ export const createDepositScenario = ({
         prevSupplyApy: currentApy,
         vaultShares: decimalSum(vaultShares, input.amount),
         prevVaultShares: vaultShares,
-        amountSupplied: decimalSum(vaultShares, input.amount),
-        prevAmountSupplied: vaultShares,
+        suppliedAssets: decimalSum(vaultShares, input.amount),
+        prevSuppliedAssets: vaultShares,
         symbol: 'crvUSD',
       },
     },
@@ -238,7 +247,8 @@ export const createStakeScenario = ({
   hasGauge?: boolean
 }) => {
   const input = { amount: '15' as const }
-  const amount = input.amount
+  const assets = input.amount
+  const stakeShares = decimalMultiply(assets, 2)
   const balances = {
     collateral: '0',
     borrowed: '0',
@@ -252,7 +262,14 @@ export const createStakeScenario = ({
   const estimateGasStake = createStub(`${132_000}`)
   const estimateGasStakeApprove = createStub(`${91_000}`)
   const stake = createStub(TEST_TX_HASH)
-  const vaultShares = decimalSum(balances.gauge, input.amount)
+  const convertToAssets = cy
+    .stub()
+    .callsFake((shares: Decimal) => Promise.resolve(decimalDiv(shares, '2'))) as TestStub<readonly [string], string>
+  const convertToShares = cy
+    .stub()
+    .callsFake((assets: Decimal) => Promise.resolve(decimalMultiply(assets, 2))) as TestStub<readonly [string], string>
+  const vaultShares = decimalSum(balances.gauge, stakeShares)
+  const stakedAssets = decimalDiv(balances.gauge, '2')
 
   const { market, sharedStubs } = createBaseSupplyMarket({
     chainId,
@@ -261,6 +278,8 @@ export const createStakeScenario = ({
     futureApy,
     hasGauge,
     vaultOverrides: {
+      convertToAssets,
+      convertToShares,
       stakeIsApproved,
       stakeApprove,
       stake,
@@ -278,22 +297,24 @@ export const createStakeScenario = ({
     expected: {
       walletBalances: [] as const,
       marketRates: [false, false] as const,
-      isApproved: [amount] as const,
-      estimateGas: [amount] as const,
-      estimateGasApprove: [amount] as const,
-      approve: [amount] as const,
-      submit: [amount] as const,
+      convertToShares: [assets] as const,
+      isApproved: [stakeShares] as const,
+      estimateGas: [stakeShares] as const,
+      estimateGasApprove: [stakeShares] as const,
+      approve: [stakeShares] as const,
+      submit: [stakeShares] as const,
       actionInfo: {
         supplyApy: currentApy,
         vaultShares,
         prevVaultShares: balances.gauge,
-        amountSupplied: vaultShares,
-        prevAmountSupplied: balances.gauge,
+        suppliedAssets: decimalSum(stakedAssets, assets),
+        prevSuppliedAssets: stakedAssets,
         symbol: 'crvUSD',
       },
     },
     stubs: {
       ...sharedStubs,
+      convertToShares,
       stakeIsApproved,
       stakeApprove,
       estimateGasStake,
@@ -373,8 +394,8 @@ export const createWithdrawScenario = ({
         prevSupplyApy: currentApy,
         vaultShares: decimalMinus(vaultShares, isFull ? depositedShares : input.amount),
         prevVaultShares: vaultShares,
-        amountSupplied: decimalMinus(vaultShares, input.amount),
-        prevAmountSupplied: vaultShares,
+        suppliedAssets: decimalMinus(vaultShares, input.amount),
+        prevSuppliedAssets: vaultShares,
         symbol: 'crvUSD',
       },
     },
@@ -393,7 +414,8 @@ export const createWithdrawScenario = ({
 
 export const createUnstakeScenario = ({ chainId }: { chainId: number }) => {
   const input = { amount: '12.5' as const }
-  const amount = input.amount
+  const assets = input.amount
+  const unstakeShares = decimalMultiply(assets, 2)
   const balances = {
     collateral: '0',
     borrowed: '0',
@@ -404,7 +426,14 @@ export const createUnstakeScenario = ({ chainId }: { chainId: number }) => {
   const futureApy = currentApy
   const estimateGasUnstake = createStub(`${121_000}`)
   const unstake = createStub(TEST_TX_HASH)
-  const vaultShares = decimalMinus(balances.gauge, input.amount)
+  const convertToAssets = cy
+    .stub()
+    .callsFake((shares: Decimal) => Promise.resolve(decimalDiv(shares, '2'))) as TestStub<readonly [string], string>
+  const convertToShares = cy
+    .stub()
+    .callsFake((assets: Decimal) => Promise.resolve(decimalMultiply(assets, 2))) as TestStub<readonly [string], string>
+  const vaultShares = decimalMinus(balances.gauge, unstakeShares)
+  const stakedAssets = decimalDiv(balances.gauge, '2')
 
   const { market, sharedStubs } = createBaseSupplyMarket({
     chainId,
@@ -412,6 +441,8 @@ export const createUnstakeScenario = ({ chainId }: { chainId: number }) => {
     currentApy,
     futureApy,
     vaultOverrides: {
+      convertToAssets,
+      convertToShares,
       unstake,
       estimateGas: {
         unstake: estimateGasUnstake,
@@ -426,20 +457,22 @@ export const createUnstakeScenario = ({ chainId }: { chainId: number }) => {
     expected: {
       walletBalances: [] as const,
       marketRates: [false, false] as const,
-      estimateGas: [amount] as const,
-      submit: [amount] as const,
+      estimateGas: [unstakeShares] as const,
+      submit: [unstakeShares] as const,
+      convertToShares: [assets] as const,
       actionInfo: {
         supplyApy: currentApy,
         vaultShares,
         prevVaultShares: balances.gauge,
-        amountSupplied: decimalMinus(balances.gauge, input.amount),
-        prevAmountSupplied: balances.gauge,
+        suppliedAssets: decimalMinus(stakedAssets, assets),
+        prevSuppliedAssets: stakedAssets,
         symbol: 'crvUSD',
       },
       alert: 'alert-unstake-only',
     },
     stubs: {
       ...sharedStubs,
+      convertToShares,
       estimateGasUnstake,
       unstake,
     },

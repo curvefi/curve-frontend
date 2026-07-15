@@ -1,4 +1,6 @@
 import { useMemo } from 'react'
+import type { ReactNode } from 'react'
+import type { ButtonProps } from '@mui/material/Button'
 import type { Theme } from '@mui/material/styles'
 import type { SxProps } from '@mui/system'
 import { maybe, type PartialRecord } from '@primitives/objects.utils'
@@ -15,6 +17,7 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
+  Row,
 } from '@tanstack/react-table'
 import { RowData, type Table, TableOptions } from '@tanstack/table-core'
 import { IncreasingLengthCategory } from '@ui-kit/hooks/useIncreasingLength'
@@ -50,6 +53,16 @@ export type TableItem = { url?: string | null }
 export type TanstackTable<T extends TableItem> = ReturnType<typeof useTable<T>>
 
 export type ColumnMeta = TanstackColumnMeta<TableItem, unknown>
+
+export type ExpandedPanelContext<T extends TableItem> = { row: Row<T>; table: Table<T> }
+export type ExpandedPanelAction = Omit<ButtonProps, 'children' | 'component' | 'href' | 'ref'> & {
+  id: string
+  label: ReactNode
+  href?: string
+  testId?: string
+  /** Keep this action always in the more-actions drawer */
+  alwaysInKebabMenu?: boolean
+}
 
 /**
  * Wrapper around useReactTable to create a table instance.

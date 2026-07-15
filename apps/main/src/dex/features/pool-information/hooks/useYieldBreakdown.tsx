@@ -58,6 +58,7 @@ export const useYieldBreakdown = ({
     const rows: YieldBreakdownRow[] = []
 
     if (rewardsApy?.crv?.some(Boolean)) {
+      // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       rows.push({
         source: {
           address: MAINNET_CRV_ADDRESS,
@@ -77,6 +78,7 @@ export const useYieldBreakdown = ({
     }
 
     rewardsApy?.other?.forEach(({ apy, symbol, tokenAddress, tokenPrice }) => {
+      // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       rows.push({
         source: {
           address: tokenAddress,
@@ -94,6 +96,7 @@ export const useYieldBreakdown = ({
     campaigns
       .filter(({ reward }) => reward?.type === 'apr')
       .forEach(({ address, reward, platform, platformImageId }) => {
+        // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
         rows.push({
           source: {
             icon: (
@@ -113,6 +116,7 @@ export const useYieldBreakdown = ({
         })
       })
 
+    // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
     rows.push({
       source: {
         icon: null,

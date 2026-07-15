@@ -18,19 +18,24 @@ export const getMetricValue = (name: string) =>
     .get(`[data-testid="${name}-value"]`, TRANSACTION_LOAD_TIMEOUT)
     .invoke(TRANSACTION_LOAD_TIMEOUT, 'attr', 'data-value')
 
-export const checkEstimatedTxCost = ({ hasValue, name = 'estimated-tx-cost' }: { hasValue: boolean; name?: string }) =>
+export const checkEstimatedTxCost = ({
+  hasValue = true,
+  name = 'estimated-tx-cost',
+}: { hasValue?: boolean; name?: string } = {}) =>
   hasValue ? getActionValue(name).should('include', '$') : getActionValue(name).should('be.undefined')
 
 export type DebtCheck = { current: Decimal; future: Decimal; symbol: string }
 /**
  * Checks the current and future debt values, and that the symbol is displayed correctly.
  */
-export const checkDebt = ({ current, future, symbol }: DebtCheck) => {
+export const checkDebt = ({ current, future, symbol }: DebtCheck, { checkLoanToValue = true } = {}) => {
   getActionValue('borrow-debt').should('equal', formatNumber(future, { abbreviate: false }))
   getActionValue('borrow-debt', 'right').should('contain', symbol)
   getActionValue('borrow-debt', 'previous').should('equal', formatNumber(current, { abbreviate: false }))
-  getActionValue('borrow-ltv').should('include', '%')
-  getActionValue('borrow-ltv', 'previous').should('include', '%')
+  if (checkLoanToValue) {
+    getActionValue('borrow-ltv').should('include', '%')
+    getActionValue('borrow-ltv', 'previous').should('include', '%')
+  }
 }
 
 /**

@@ -3,6 +3,7 @@ import { isPositionLeveraged } from '@/llamalend/llama.utils'
 import { calculateLeverageCollateral } from '@/llamalend/widgets/action-card/info-actions.helpers'
 import type { LoanActionInfoListProps } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { Decimal } from '@primitives/decimal.utils'
+import { maybes } from '@primitives/objects.utils'
 import { combineQueryState } from '@ui-kit/lib'
 import { mapQuery, q, type Query, type QueryProp } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
@@ -62,6 +63,6 @@ export const getLeverageInfoFields = ({
         }
       : {
           prevCollateral,
-          collateral: mapQuery(prevCollateral, prev => prev && collateralDelta && decimalSum(prev, collateralDelta)),
+          collateral: mapQuery(prevCollateral, prev => maybes([prev, collateralDelta], decimalSum)),
         }),
   }) satisfies Partial<LoanActionInfoListProps>

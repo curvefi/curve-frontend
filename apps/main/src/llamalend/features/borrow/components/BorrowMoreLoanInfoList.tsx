@@ -16,8 +16,9 @@ import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionIn
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Address, type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { maybes } from '@primitives/objects.utils'
 import type { UseFormReturn } from '@ui-kit/features/forms'
-import { combineQueryState } from '@ui-kit/lib/queries/combine'
+import { combineQueries } from '@ui-kit/lib/queries/combine'
 import type { LlamaMarketType } from '@ui-kit/types/market'
 import { mapQuery, q, type QueryProp } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
@@ -84,10 +85,10 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
         leverageValue: useBorrowMoreFutureLeverage(params, isOpen),
         prevLeverageValue: useUserCurrentLeverage(params, isOpen),
         prevCollateral,
-        leverageTotalCollateral: {
-          data: totalCollateral && prevCollateral.data && decimalSum(prevCollateral.data, totalCollateral),
-          ...combineQueryState(prevCollateral, expectedCollateralQuery),
-        },
+        leverageTotalCollateral: combineQueries(
+          [prevCollateral, expectedCollateralQuery],
+          (prevCollateral, { totalCollateral }) => maybes([totalCollateral, prevCollateral], decimalSum),
+        ),
         expected: expectedCollateralQuery,
         routes,
         slippage,

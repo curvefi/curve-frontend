@@ -74,9 +74,7 @@ const createRenderer = () => {
   }
 
   const renderer: ICustomSeriesPaneRenderer = {
-    draw(target, priceConverter) {
-      drawSeries(payload, target, priceConverter)
-    },
+    draw: (target, priceConverter) => drawSeries(payload, target, priceConverter),
   }
 
   return {
@@ -139,6 +137,7 @@ const collectVisiblePoints = (
 
     if (upperCoord === null || lowerCoord === null) continue
 
+    // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
     points.push({
       x: bar.x,
       upper: upperCoord,
@@ -256,9 +255,7 @@ const createLiquidationRangePaneView = (): ICustomSeriesPaneView<
 
   return {
     renderer: () => renderer,
-    update(data, options) {
-      setPayload(data, options)
-    },
+    update: (data, options) => setPayload(data, options),
     priceValueBuilder,
     isWhitespace: isWhitespacePoint,
     defaultOptions: () => ({ ...DEFAULT_OPTIONS }),

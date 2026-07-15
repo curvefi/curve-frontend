@@ -13,14 +13,36 @@ export function withFilterChips<T>(breakpoint: Breakpoint, callback: () => Cypre
   })
 }
 
-export const getHiddenCount = (breakpoint: Breakpoint): Cypress.Chainable<string> =>
-  withFilterChips(breakpoint, () => cy.get('[data-testid="hidden-market-count"]').then(([{ innerText }]) => innerText))
-
 export function expandFirstRowOnMobile(breakpoint: Breakpoint) {
   if (breakpoint == 'mobile') {
     cy.get(`[data-testid="expand-icon"]`).first().click()
     cy.get(`[data-testid="data-table-expansion-row"]`).should('be.visible')
   }
+}
+
+/**
+ * Makes expanded-panel drawer actions available during the given callback. On mobile, actions are inside a row
+ * expansion and the kebab drawer.
+ */
+export function withExpandedPanelDrawer<T>(breakpoint: Breakpoint, callback: () => Cypress.Chainable<T>) {
+  if (breakpoint === 'mobile') {
+    cy.get('body').then($body => {
+      if (!$body.find('[data-testid="data-table-expansion-row"]').length) {
+        expandFirstRowOnMobile(breakpoint)
+      }
+    })
+    cy.get('[data-testid="data-table-expansion-row"]').should('be.visible')
+    cy.get('[data-testid="expanded-panel-actions-menu-button"]').click()
+    cy.get('[data-testid="expanded-panel-actions-menu"]').should('be.visible')
+  }
+
+  return callback().then(result => {
+    if (breakpoint === 'mobile') {
+      // The drawer can be hidden or unmounted depending on the state of the expanded panel. This works for both cases
+      cy.get('[data-testid="expanded-panel-actions-menu"]:visible').should('not.exist')
+    }
+    return cy.wrap(result)
+  })
 }
 
 export function openDrawer(breakpoint: Breakpoint, type: 'filter' | 'sort') {
@@ -66,12 +88,6 @@ export const withMultiSelectFilter = <T>(
     cy.get(`[data-testid="menu-${id}"]`).should('not.exist') // wait for the menu to close
     return cy.wrap(result)
   })
-}
-
-export function closeSlider(breakpoint: Breakpoint) {
-  cy.get('body').click(0, 0, { waitForAnimations: true })
-  cy.get(`[data-testid^="slider-"]`).should('not.exist')
-  closeDrawer(breakpoint)
 }
 
 export const getTableCellAssets = () => cy.get('[data-testid="data-table-cell-assets"]')

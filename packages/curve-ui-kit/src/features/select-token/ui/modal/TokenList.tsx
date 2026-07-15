@@ -82,6 +82,7 @@ export const TokenList = ({
 
     if (!disableSorting) {
       // Sort tokens with balance by balance (USD then raw)
+      // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       balanceTokens.sort((a, b) => {
         const aBalance = +(balances?.[a.address] ?? 0)
         const bBalance = +(balances?.[b.address] ?? 0)
@@ -142,7 +143,8 @@ export const TokenList = ({
     ).flat()
     return disableSorting
       ? allTokensBase
-      : allTokensBase.sort((a, b) => (b.volume ?? 0) - (a.volume ?? 0) || a.symbol.localeCompare(b.symbol))
+      : // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
+        allTokensBase.sort((a, b) => (b.volume ?? 0) - (a.volume ?? 0) || a.symbol.localeCompare(b.symbol))
   }, [disableMyTokens, tokensSearched, showPreviewMy, myTokens, disableSorting, balances, previewMy])
 
   /**

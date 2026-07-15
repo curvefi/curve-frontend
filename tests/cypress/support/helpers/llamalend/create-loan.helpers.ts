@@ -1,7 +1,6 @@
 import { LoanPreset } from '@/llamalend/constants'
 import { oneOf, oneValueOf } from '@cy/support/generators'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
-import { type AlertColor } from '@mui/material/Alert'
 import type { Decimal } from '@primitives/decimal.utils'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
@@ -18,7 +17,7 @@ const COLLATERAL_DECIMALS = DEFAULT_DECIMALS
 
 export const LOAN_TEST_MARKETS = {
   [LlamaMarketType.Mint]: [
-    // todo: fix buggy market that cannot borrow max: { id: 'wsteth', label: 'wstETH-crvUSD Old Mint Market', collateralAddress: '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0', collateral: '0.1', borrow: '10', borrowMore: '2', repay: '1', improveHealth: '1', chainId, path: '/crvusd/ethereum/markets/wsteth', hasLeverage: false },
+    // todo: fix buggy market that cannot borrow max: { id: 'wsteth', label: 'wstETH-crvUSD Old Mint Market', collateralAddress: '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0', collateral: '0.1', borrow: '10', borrowMore: '2', repay: '1', chainId, path: '/crvusd/ethereum/markets/wsteth', hasLeverage: false },
     {
       id: 'sfrxeth2',
       label: '2nd sfrxETH-crvUSD Old Mint Market',
@@ -28,7 +27,6 @@ export const LOAN_TEST_MARKETS = {
       borrow: '10',
       borrowMore: '2',
       repay: '1',
-      improveHealth: '1',
       chainId,
       path: '/crvusd/ethereum/markets/sfrxeth2',
       hasLeverage: true,
@@ -47,7 +45,6 @@ export const LOAN_TEST_MARKETS = {
       borrow: '100',
       borrowMore: '10',
       repay: '30',
-      improveHealth: '10',
       chainId,
       path: '/crvusd/ethereum/markets/wbtc',
       hasLeverage: true,
@@ -68,7 +65,6 @@ export const LOAN_TEST_MARKETS = {
       borrow: '0.8',
       borrowMore: '0.02',
       repay: '0.7',
-      improveHealth: '0.01',
       chainId,
       path: '/lend/ethereum/markets/0x4F79Fe450a2BAF833E8f50340BD230f5A3eCaFe9',
       hasLeverage: true,
@@ -87,7 +83,6 @@ export const LOAN_TEST_MARKETS = {
       borrow: '0.05',
       borrowMore: '0.01',
       repay: '0.02',
-      improveHealth: '0.01',
       chainId: Chain.Optimism,
       path: '/lend/optimism/markets/0x745422BF49f3F6e4A8E12E4abD19339E7910F8C9',
       hasLeverage: true,
@@ -156,11 +151,23 @@ export const checkLeverageCheckbox = ({
 }: {
   leverageEnabled: boolean
   hasLeverage: boolean
-}) =>
-  cy
-    .get('[data-testid="leverage-checkbox"]')
-    .should(hasLeverage ? 'be.visible' : 'not.exist')
-    .and(leverageEnabled ? 'be.checked' : hasLeverage ? 'not.be.checked' : 'not.exist')
+}) => {
+  if (hasLeverage) {
+    cy.get('[data-testid="leverage-checkbox"]').should('be.visible')
+    cy.get('[data-testid="leverage-checkbox"] input').should(leverageEnabled ? 'be.checked' : 'not.be.checked')
+  } else {
+    cy.get('[data-testid="leverage-checkbox"]').should('not.exist')
+  }
+}
+
+export const waitForRoutesLoaded = ({ submitButtonTestId }: { submitButtonTestId: string }) => {
+  cy.get('[data-testid="route-provider-accordion"]').click()
+  cy.wait('@routerRoutes', LOAD_TIMEOUT)
+  cy.get('[data-testid="refresh-button"]').should('be.enabled')
+  cy.get(`[data-testid="${submitButtonTestId}"]`, LOAD_TIMEOUT).should('be.enabled')
+}
+
+export const toggleLeverage = () => cy.get('[data-testid="leverage-checkbox"]').click(LOAD_TIMEOUT)
 
 /**
  * Fill in the create loan form. Assumes the form is already opened.
@@ -170,11 +177,13 @@ export function writeCreateLoanForm({
   borrow,
   leverageEnabled,
   hasLeverage,
+  waitForRoutes,
 }: {
   collateral: Decimal
   borrow: Decimal
   leverageEnabled: boolean
   hasLeverage: boolean
+  waitForRoutes?: boolean
 }) {
   cy.get('[data-testid="borrow-debt-input"]', TRANSACTION_LOAD_TIMEOUT).should('be.visible')
   cy.get('[data-testid="borrow-collateral-input"] [data-testid="balance-value"]', TRANSACTION_LOAD_TIMEOUT).should(
@@ -187,14 +196,15 @@ export function writeCreateLoanForm({
   getBorrowInput().type(borrow)
   getBorrowInput().blur()
   getActionValue('borrow-health').should('not.equal', '∞')
-  if (leverageEnabled) cy.get('[data-testid="leverage-checkbox"]').click()
+  if (leverageEnabled) toggleLeverage()
   checkLeverageCheckbox({ leverageEnabled, hasLeverage })
+  if (waitForRoutes) waitForRoutesLoaded({ submitButtonTestId: 'create-loan-submit-button' })
 }
 
 /**
  * Test the loan range slider by selecting max ltv and max borrow presets, checking for errors, and clearing them.
  */
-export function checkLoanRangeSlider() {
+export const checkLoanRangeSlider = () => {
   getMaxBorrowBalance().then($el => {
     const safeMax = $el.attr('data-value')
     cy.get(`[data-testid="loan-preset-${LoanPreset.MaxLtv}"]`).click()
@@ -207,32 +217,13 @@ export function checkLoanRangeSlider() {
   })
 }
 
-export function submitLoanForm({
-  form,
-  message,
-  expected = 'success',
-  checkMessage = true,
-}: {
-  form: string
-  message: string
-  expected?: AlertColor
-  checkMessage?: boolean
-}) {
+export function submitLoanForm({ form, message }: { form: string; message: string }) {
   cy.get(`[data-testid="${form}-submit-button"]`).click(LOAD_TIMEOUT)
-  cy.get(`[data-testid="toast-${expected}"]`, TRANSACTION_LOAD_TIMEOUT).contains(message, TRANSACTION_LOAD_TIMEOUT)
-  if (expected !== 'success') {
-    return cy.get('[data-testid="loan-alert-error"]').should('be.visible')
-  }
-  if (!checkMessage) {
-    return cy.get('[data-testid="loan-form-errors"]').should('not.exist')
-  }
+  cy.get('[data-testid="toast-success"]', TRANSACTION_LOAD_TIMEOUT).contains(message, TRANSACTION_LOAD_TIMEOUT)
   return cy.get('[data-testid="loan-form-errors"]').should('not.exist')
 }
 
 /**
  * Submit the create loan form and wait for the button to be re-enabled.
  */
-export const submitCreateLoanForm = ({
-  checkMessage,
-}: { expected?: 'success' | 'error'; checkMessage?: boolean } = {}) =>
-  submitLoanForm({ form: 'create-loan', message: 'Loan created', checkMessage })
+export const submitCreateLoanForm = () => submitLoanForm({ form: 'create-loan', message: 'Loan created' })

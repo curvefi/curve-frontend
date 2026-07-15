@@ -117,9 +117,7 @@ describe('DEX Pools', () => {
     }
   }
 
-  function assertSelectedFilterChip() {
-    cy.get('[data-testid="dex-pool-active-filter-type"]').should('be.visible')
-  }
+  const assertSelectedFilterChip = () => cy.get('[data-testid="dex-pool-active-filter-type"]').should('be.visible')
 
   function expectPageResetAfter(action: () => void, { waitForRequest = true }: { waitForRequest?: boolean } = {}) {
     visitAndWait(width, height, { query: { page: '5' } })
@@ -335,7 +333,7 @@ describe('DEX Pools', () => {
     if (breakpoint === 'mobile') {
       cy.get('[data-testid^="data-table-row-"]').first().click()
       cy.get('[data-testid="data-table-expansion-row"]').should('be.visible')
-      cy.get(`[data-testid="pool-link-deposit"]`).click()
+      cy.get(`[data-testid="pool-link-deposit"]`).click({ waitForAnimations: false })
     } else {
       cy.contains('[data-testid^="market-link-"]', filter).click()
     }

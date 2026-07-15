@@ -95,6 +95,7 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
     if (haveSigner && Object.keys(tokensArray ?? {}).length > 0) {
       const volumeSortedTokensArray = tokensArray
         .filter(token => token.symbol !== '' && token.address !== '')
+        // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
         .sort((a, b) => Number(b.volume) - Number(a.volume))
 
       // adds userAddedTokens at the top of the list
@@ -102,6 +103,7 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
     }
     const balanceSortedTokensArray = tokensArray
       .filter(token => token.symbol !== '' && token.address !== '')
+      // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       .sort((a, b) => Number(b.volume) - Number(a.volume))
 
     return lodash.uniqBy([...userAddedTokens, ...balanceSortedTokensArray], o => o.address)
@@ -617,6 +619,7 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
     const pairs = []
     for (let i = 0; i < validTokens.length; i++) {
       for (let j = i + 1; j < validTokens.length; j++) {
+        // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
         pairs.push([validTokens[i], validTokens[j]])
       }
     }

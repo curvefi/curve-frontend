@@ -13,7 +13,13 @@ import { mockTokenPrices } from '../tokens'
  * To make sure our tests do not depend on real APIs, we just block them.
  */
 export const blockUnmockedApis = () => {
-  ;['prices.curve.finance', 'api.curve.finance', 'api.merkl.xyz', 'api-core.curve.finance'].forEach(
+  ;[
+    'prices.curve.finance',
+    'api.curve.finance',
+    'api.merkl.xyz',
+    'api-core.curve.finance',
+    'api.coingecko.com',
+  ].forEach(
     hostname =>
       void cy.intercept({ hostname }, req =>
         req.reply({ statusCode: 503, body: { error: `Unexpected API request in Cypress test: ${req.url}` } }),
@@ -35,6 +41,7 @@ export const mockEmptyLlamaMarketUserData = () =>
       void cy.intercept({ method: 'GET', pathname, query: { include_closed: 'false' } }, req =>
         req.reply({
           body: {
+            // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
             user: new URL(req.url).pathname.split('/').pop(),
             chains: fromEntries(LendingChains.map(chain => [chain, { count: 0, markets: [] }])),
           },

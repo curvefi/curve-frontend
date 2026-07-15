@@ -2,14 +2,14 @@ import { getLlamaMarket } from '@/llamalend/llama.utils'
 import type { IChainId } from '@curvefi/api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { Decimal } from '@primitives/decimal.utils'
-import { type FieldsOf } from '@ui-kit/lib'
+import { type FieldsOf, QueryData } from '@ui-kit/lib'
 import { type MarketQuery, queryFactory, rootKeys, type UserQuery } from '@ui-kit/lib/model'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
-import { mapQuery } from '@ui-kit/types/util'
 import { decimalPercent, decimalSum } from '@ui-kit/utils'
 
 type UserBalancesQuery = UserQuery & MarketQuery<IChainId>
 type UserBalancesParams = FieldsOf<UserBalancesQuery>
+type LendBalances = { collateral: Decimal; borrowed: Decimal; vaultShares: Decimal; gauge: Decimal }
 
 export const { useQuery: useUserBalances } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress }: UserBalancesParams) =>
@@ -17,14 +17,19 @@ export const { useQuery: useUserBalances } = queryFactory({
   queryFn: async ({ marketId }: UserBalancesQuery) => {
     const market = getLlamaMarket(marketId)
     if (market instanceof LendMarketTemplate) {
-      const { collateral, borrowed, vaultShares, gauge } = await market.wallet.balances()
-      const vaultSharesConverted = (+vaultShares > 0 ? await market.vault.convertToAssets(vaultShares) : '0') as Decimal
+      const { collateral, borrowed, vaultShares, gauge } = (await market.wallet.balances()) as LendBalances
+      const [vaultSharesConverted, gaugeConverted] = await Promise.all(
+        [vaultShares, gauge].map(async v => (+v === 0 ? v : await market.vault.convertToAssets(v)) as Decimal),
+      )
       return {
-        collateral: collateral as Decimal,
-        borrowed: borrowed as Decimal,
-        vaultShares: vaultShares as Decimal,
-        gauge: gauge as Decimal,
+        collateral,
+        borrowed,
+        vaultShares,
+        gauge,
         vaultSharesConverted,
+        gaugeConverted,
+        totalShares: decimalSum(vaultShares, gauge),
+        stakedPercentage: decimalPercent(gauge, decimalSum(vaultShares, gauge)),
       }
     } else {
       const { stablecoin, collateral } = await market.wallet.balances()
@@ -35,10 +40,4 @@ export const { useQuery: useUserBalances } = queryFactory({
   validationSuite: marketIdValidationSuite,
 })
 
-export type Shares = { value: Decimal; staked: Decimal; percentage: Decimal }
-export const useUserShares = (params: UserBalancesParams) =>
-  mapQuery(useUserBalances(params), ({ vaultShares, gauge }): Shares => {
-    if (!gauge) throw new Error(`useUserShares only supports lend markets`)
-    const value = decimalSum(vaultShares, gauge)
-    return { value, staked: gauge, percentage: decimalPercent(gauge, value) }
-  })
+export type UserBalances = QueryData<typeof useUserBalances>

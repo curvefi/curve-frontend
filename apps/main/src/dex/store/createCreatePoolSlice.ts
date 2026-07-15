@@ -556,6 +556,7 @@ export const createCreatePoolSlice = (
     updateUserAddedTokens: (address, symbol, haveSameTokenName, basePool) =>
       set(
         produce((state: State) => {
+          // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
           state.createPool.userAddedTokens.push({
             address: address.toLowerCase(),
             symbol,

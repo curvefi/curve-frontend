@@ -149,12 +149,11 @@ export const createTokensSlice = (
   },
 })
 
-export function getTokensMapperStr(tokensMapper: TokensMapper | undefined) {
-  return Object.keys(tokensMapper ?? {}).reduce((str, tokenAddress) => {
+export const getTokensMapperStr = (tokensMapper: TokensMapper | undefined) =>
+  Object.keys(tokensMapper ?? {}).reduce((str, tokenAddress) => {
     str += tokenAddress.charAt(5)
     return str
   }, '')
-}
 
 function _getDefaultTokenMapper(curve: CurveApi) {
   const { address, symbol, wrappedAddress, wrappedSymbol } = curve.getNetworkConstants().NATIVE_TOKEN

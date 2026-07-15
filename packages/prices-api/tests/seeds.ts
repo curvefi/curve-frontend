@@ -125,6 +125,7 @@ const randomPage = (count: number, perPage: number, maxPages: number) => {
 const shuffled = <T>(items: readonly T[]) =>
   items
     .map((item, index) => ({ item, index, rank: random() }))
+    // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
     .sort((a, b) => a.rank - b.rank || a.index - b.index)
     .map(({ item }) => item)
 
@@ -138,14 +139,13 @@ export const nowRange = (days = 7) => {
 
 export const getSupportedChainSeed = once(async () => {
   const supportedChains = await chains.getSupportedChains(requestOptions)
-  return requireSeed(
-    supportedChains.find(chain => chain === PREFERRED_CHAIN) ?? supportedChains[0],
-    'chains.getSupportedChains',
-  )
+  const chainNames = supportedChains.map(chain => chain.name)
+
+  return requireSeed(chainNames.find(chain => chain === PREFERRED_CHAIN) ?? chainNames[0], 'chains.getSupportedChains')
 })
 
 export const getPoolSeed = once(async (): Promise<PoolSeed> => {
-  const supportedChains = await chains.getSupportedChains(requestOptions)
+  const supportedChains = (await chains.getSupportedChains(requestOptions)).map(chain => chain.name)
 
   for (const chain of shuffled(supportedChains)) {
     const response = await pools.getPools(chain, requestOptions)

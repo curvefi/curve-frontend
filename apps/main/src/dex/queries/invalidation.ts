@@ -8,7 +8,7 @@ import { invalidateUserPoolShareQuery } from './user-pool-share.query'
 /**
  * Compatibility helper that invalidates all user-pool-info method queries.
  */
-export async function invalidateUserPoolInfo(params: UserPoolParams) {
+export const invalidateUserPoolInfo = async (params: UserPoolParams) => {
   await Promise.all([
     invalidateUserPoolBalancesQuery(params),
     invalidateUserPoolLiquidityUsdQuery(params),

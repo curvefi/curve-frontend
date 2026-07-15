@@ -69,6 +69,7 @@ export const getRoutes = async (request: FastifyRequest<{ Querystring: RoutesQue
     return handleFailures(failures, router)
   }
 
+  // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
   const result = successes.flatMap(p => p.value).sort(sortRoutes)
   request.log.info({ message: 'route calculated', query, result })
   return { status: 200, data: result }

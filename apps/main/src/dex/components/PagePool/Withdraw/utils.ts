@@ -23,17 +23,17 @@ export const DEFAULT_FORM_STATUS: FormStatus = {
   error: '',
 }
 
-export function resetFormAmounts(formValues: FormValues) {
-  return formValues.amounts.map(a => ({ ...a, value: '' }))
-}
+export const resetFormAmounts = (formValues: FormValues) => formValues.amounts.map(a => ({ ...a, value: '' }))
 
 function getTokensText({ claimableCrv, claimableRewards }: FormValues, { isClaimCrv, isClaimRewards }: FormStatus) {
   const message = []
 
   if (isClaimCrv) {
+    // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
     message.push(`CRV ${claimableCrv}`)
   } else if (isClaimRewards) {
     claimableRewards.map(({ symbol, amount }) => {
+      // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       message.push(`${symbol} ${amount}`)
     })
   }

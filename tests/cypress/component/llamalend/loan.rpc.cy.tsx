@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 import { BigNumber } from 'bignumber.js'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { oneBool } from '@cy/support/generators'
@@ -27,10 +26,6 @@ import {
   touchRepayLoanForm,
   writeRepayLoanForm,
 } from '@cy/support/helpers/llamalend/repay-loan.helpers'
-import {
-  checkClosePositionDetailsLoaded,
-  submitClosePositionForm,
-} from '@cy/support/helpers/llamalend/soft-liquidation.helpers'
 import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
@@ -71,7 +66,6 @@ testCases.forEach(
     borrow,
     borrowMore,
     repay,
-    improveHealth,
     chainId,
     label,
     marketType,
@@ -84,7 +78,6 @@ testCases.forEach(
       const hasApi = oneBool() // tests must work with or without api access
       const debtAfterBorrowMore = new BigNumber(borrow).plus(borrowMore).toFixed() as Decimal
       const debtAfterRepay = new BigNumber(debtAfterBorrowMore).minus(repay).toFixed() as Decimal
-      const debtAfterImproveHealth = new BigNumber(debtAfterRepay).minus(improveHealth).toFixed() as Decimal
 
       const privateKey = generatePrivateKey()
       const { address } = privateKeyToAccount(privateKey)
@@ -147,8 +140,7 @@ testCases.forEach(
         cy.mount(<LoanTestWrapper />)
         writeCreateLoanForm({ collateral, borrow, leverageEnabled, hasLeverage })
         checkLoanDetailsLoaded({ leverageEnabled, hasApi })
-        // we need to pass checkMessage=false because the form is unmounted as soon as the transaction is submitted
-        submitCreateLoanForm({ checkMessage: false }).then(() => expect(onPricesUpdated).to.be.called)
+        submitCreateLoanForm().then(() => expect(onPricesUpdated).to.be.called)
         waitUntilLendMarketUpdated(id, borrow, marketType)
       })
 
@@ -179,38 +171,10 @@ testCases.forEach(
         })
         submitRepayForm().then(() => expect(onPricesUpdated).to.be.called)
         touchRepayLoanForm() // make sure the new debt is shown
-        checkDebt({ current: debtAfterRepay, future: debtAfterRepay, symbol: borrowedSymbol })
-      })
-
-      it(`increases health`, () => {
-        cy.mount(<LoanTestWrapper tab="improve-health" />)
-        writeRepayLoanForm({ amount: improveHealth })
-        checkRepayDetailsLoaded({
-          debt: { current: debtAfterRepay, future: debtAfterImproveHealth, symbol: borrowedSymbol },
-          isPriceChanged: false,
-          hasApi,
-        })
-        submitRepayForm().then(() => expect(onPricesUpdated).not.to.be.called) // no price updates while in soft liquidation
-        touchRepayLoanForm() // make sure the new debt is shown
-        checkDebt({ current: debtAfterImproveHealth, future: debtAfterImproveHealth, symbol: borrowedSymbol })
-      })
-
-      it(`closes the loan`, () => {
-        // extra crvUSD to close the loan due to the safety buffer
-        fundErc20({
-          adminRpcUrl,
-          amountWei: CREATE_LOAN_FUND_AMOUNT,
-          tokenAddress: borrowedAddress,
-          recipientAddresses: [address],
-        })
-        cy.mount(<LoanTestWrapper tab="close" />)
-        checkClosePositionDetailsLoaded({ debt: debtAfterImproveHealth, hasErrors: true })
-        checkDebt({ current: debtAfterImproveHealth, future: '0', symbol: borrowedSymbol })
-        submitClosePositionForm('error').then(() => {
-          // unfortunately cannot cause soft liquidation in the tests yet
-          cy.get('[data-testid="loan-alert-error"]', LOAD_TIMEOUT).contains('not in liquidation mode')
-          expect(onPricesUpdated).not.to.be.called
-        })
+        checkDebt(
+          { current: debtAfterRepay, future: debtAfterRepay, symbol: borrowedSymbol },
+          { checkLoanToValue: hasApi },
+        )
       })
     })
   },

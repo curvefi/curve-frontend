@@ -47,7 +47,7 @@ export const LlamaTableActiveFiltersChip = <T extends TableItem>({
   // Keep networks first than remaining filters in the same order as the market columns to avoid chips jumping when filters are removed.
   const sortedFiltersState = useMemo(
     () =>
-      [...filtersState].sort((a, b) => {
+      filtersState.toSorted((a, b) => {
         if (a.id === LlamaMarketColumnId.Chain) return -1
         if (b.id === LlamaMarketColumnId.Chain) return 1
         return LLAMA_MARKET_COLUMN_ORDER.get(a.id)! - LLAMA_MARKET_COLUMN_ORDER.get(b.id)!

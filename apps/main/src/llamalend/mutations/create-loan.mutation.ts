@@ -63,7 +63,7 @@ const create = async (
       return (await impl.createLoan(userCollateral, userBorrowed, debt, range, +slippage)) as Address
     case 'V0':
     case 'unleveraged':
-      return (await impl.createLoan(userCollateral, debt, range, +slippage)) as Address
+      return (await impl.createLoan(userCollateral, debt, range)) as Address
   }
 }
 

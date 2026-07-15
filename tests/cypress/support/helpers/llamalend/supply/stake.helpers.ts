@@ -12,19 +12,15 @@ import {
 
 export const submitStakeForm = () => submitSupplyForm('stake', 'Stake successful!')
 
-export const readStakeAvailableAmount = () =>
+export const readStakeAvailableAssets = () =>
   getSupplyInputBalanceValueAttr('stake')
-    .should(balanceValue => {
-      expect(new BigNumber(balanceValue || '0').gt(0)).to.equal(true)
-    })
-    .then(balanceValue => (balanceValue || '0') as Decimal)
+    .should(balanceValue => expect(new BigNumber(balanceValue || '0').gt(0)).to.equal(true))
+    .then(balanceValue => balanceValue as Decimal)
 
 /**
- * Fill in the stake form with the specified amount.
+ * Fill in the stake form with the specified underlying asset value.
  */
-export function writeStakeForm({ amount }: { amount: Decimal }) {
-  writeSupplyInput({ type: 'stake', amount })
-}
+export const writeStakeForm = ({ assets }: { assets: Decimal }) => writeSupplyInput({ type: 'stake', amount: assets })
 
 /**
  * Check the stake submit state for enabled and disabled markets.
@@ -48,16 +44,16 @@ export function checkStakeSubmit({ buttonText, hasGauge = true }: { buttonText: 
 export function checkStakeDetailsLoaded({
   vaultShares,
   prevVaultShares,
-  amountSupplied,
-  prevAmountSupplied,
+  suppliedAssets,
+  prevSuppliedAssets,
   expectedButtonText = 'Stake',
   symbol = 'crvUSD',
   hasApi = true,
 }: {
-  vaultShares: Decimal
-  prevVaultShares: Decimal
-  amountSupplied?: Decimal
-  prevAmountSupplied?: Decimal
+  vaultShares?: Decimal
+  prevVaultShares?: Decimal
+  suppliedAssets?: Decimal
+  prevSuppliedAssets?: Decimal
   expectedButtonText?: string
   symbol?: string
   hasApi?: boolean
@@ -65,8 +61,8 @@ export function checkStakeDetailsLoaded({
   checkSupplyActionInfoValues({
     vaultShares,
     prevVaultShares,
-    amountSupplied,
-    prevAmountSupplied,
+    suppliedAssets,
+    prevSuppliedAssets,
     symbol,
     hasApi,
   })

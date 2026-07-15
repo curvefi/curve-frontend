@@ -25,9 +25,7 @@ const DEFAULT_DECIMALS = 2
  * log10Exp(123) // Returns 0 (less than 1000)
  * log10Exp(-1000000) // Returns 2 (uses absolute value)
  */
-export function log10Exp(value: number): number {
-  return Math.floor(Math.log10(Math.abs(value)) / 3)
-}
+export const log10Exp = (value: number): number => Math.floor(Math.log10(Math.abs(value)) / 3)
 
 /**
  * Returns the appropriate unit suffix for a given number value.
@@ -65,7 +63,7 @@ export function scaleSuffix(value: Amount): string {
  * abbreviateNumber(2500000000) // Returns 2.5 (goes with suffix "b")
  * abbreviateNumber(500) // Returns 500 (goes with suffix "")
  */
-export function abbreviateNumber<T extends Amount>(value: T): T | number {
+export const abbreviateNumber = <T extends Amount>(value: T): T | number => {
   const exp = log10Exp(+value) * 3
   // Only apply the scaling if exp is positive
   return exp > 0 ? +value / 10 ** exp : value

@@ -54,18 +54,23 @@ export const DeploySidechain = ({ chainId }: Props) => {
     const list: PoolType[] = []
 
     if (poolTypes.stableswap) {
+      // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       list.push(STABLESWAP)
     }
     if (poolTypes.twoCryptoNg) {
+      // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       list.push(TWOCOINCRYPTOSWAPNG)
     }
     if (poolTypes.threeCrypto) {
+      // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       list.push(THREECOINCRYPTOSWAP)
     }
     if (poolTypes.stableswapOld) {
+      // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       list.push(STABLESWAPOLD)
     }
     if (poolTypes.twoCrypto) {
+      // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       list.push(TWOCOINCRYPTOSWAP)
     }
     return list
@@ -79,6 +84,7 @@ export const DeploySidechain = ({ chainId }: Props) => {
           key => +key !== Chain.Ethereum && !curveNetworks[+key].isTestnet && curveNetworks[+key].isCrvRewardsEnabled,
         )
         .map(key => curveNetworks[+key].name)
+        // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
         .sort(),
     [curveNetworks],
   )
