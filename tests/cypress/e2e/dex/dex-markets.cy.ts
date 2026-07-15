@@ -129,8 +129,6 @@ describe('DEX Pools', () => {
   }
 
   describe('First page', () => {
-    beforeEach(() => visitAndWait(width, height))
-
     function sortBy(field: string, expectedOrder: 'asc' | 'desc' | false) {
       if (breakpoint === 'mobile') {
         cy.get('[data-testid="btn-drawer-sort-dex-pools"]').click()
@@ -163,6 +161,7 @@ describe('DEX Pools', () => {
     }
 
     it('applies the default TVL min without URL or active filter state', () => {
+      visitAndWait(width, height)
       cy.location('search').should('not.include', 'tvl=')
       expectLastPoolRequestParams(params => {
         expect(params.get('min_tvl')).to.equal(`${POOL_LIST_DEFAULT_TVL_MIN}`)
@@ -174,6 +173,7 @@ describe('DEX Pools', () => {
     })
 
     it('sorts by TVL (desc/asc)', () => {
+      visitAndWait(width, height)
       cy.url().should('not.include', 'tvl') // initial sort not in URL
       expectLastPoolRequestParams(params => {
         expect(params.get('min_tvl')).to.equal(`${POOL_LIST_DEFAULT_TVL_MIN}`)
@@ -200,6 +200,7 @@ describe('DEX Pools', () => {
     })
 
     it('filters by pool type, persists after reload, and clears from the active chip', () => {
+      visitAndWait(width, height)
       const poolType = POOL_LIST_FILTER_POOL_TYPE
 
       clickFilterChip(poolType)
@@ -233,6 +234,7 @@ describe('DEX Pools', () => {
     })
 
     it('filters by TVL range input', () => {
+      visitAndWait(width, height)
       const minTvl = POOL_LIST_FILTER_TVL_MIN
 
       setRangeFilter('tvl', 'min', minTvl)
@@ -244,6 +246,7 @@ describe('DEX Pools', () => {
     })
 
     it('filters by TVL max input with an explicit zero min in the URL and API request', () => {
+      visitAndWait(width, height)
       const maxTvl = POOL_LIST_FILTER_TVL_MAX
 
       setRangeFilter('tvl', 'min', 0)
@@ -262,6 +265,7 @@ describe('DEX Pools', () => {
     })
 
     it('filters by Volume range input', () => {
+      visitAndWait(width, height)
       const maxVolume = POOL_LIST_FILTER_VOLUME_MAX
 
       setRangeFilter('volume', 'max', maxVolume)
@@ -312,6 +316,7 @@ describe('DEX Pools', () => {
     })
 
     it('navigates to pool deposit page by clicking a row', () => {
+      visitAndWait(width, height)
       cy.get('[data-testid^="data-table-row-"]').first().click()
       if (breakpoint === 'mobile') {
         cy.get('[data-testid="collapse-icon"]').first().should('be.visible')
