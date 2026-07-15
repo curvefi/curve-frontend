@@ -16,7 +16,6 @@ import { setVirtualNetworkStorageAt } from '@cy/support/helpers/tenderly/vnet-st
 import { advanceVirtualNetworkClock } from '@cy/support/helpers/tenderly/vnet-time'
 import { sendVnetTransactionAndWait } from '@cy/support/helpers/tenderly/vnet-tx'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
-import type { Decimal } from '@primitives/decimal.utils'
 import { assert, maybe, notFalsy } from '@primitives/objects.utils'
 import { setupTenderlyLoan } from './loan-setup.helpers'
 
@@ -26,6 +25,8 @@ const AMM_ABI = parseAbi([
   'function get_amount_for_price(uint256 p) view returns (uint256 amount, bool is_pump)',
   'function get_dxdy(uint256 i, uint256 j, uint256 in_amount) view returns (uint256, uint256)',
   'function get_p() view returns (uint256)',
+  'function p_oracle_down(int256 n) view returns (uint256)',
+  'function p_oracle_up(int256 n) view returns (uint256)',
   'function price_oracle() view returns (uint256)',
   'function price_oracle_contract() view returns (address)',
   'function read_user_tick_numbers(address user) view returns (int256[2])',
@@ -87,6 +88,38 @@ const isSoftLiquidationState = ({ borrowed, debt }: SoftLiquidationState) => deb
 
 const stringifySetupDetails = (details: Record<string, unknown>) =>
   JSON.stringify(details, (_, value: unknown) => (typeof value === 'bigint' ? value.toString() : value), 2)
+
+const getBandMidPrice = async ({
+  ammAddress,
+  band,
+  client,
+}: Pick<SoftLiquidationReadParams, 'client' | 'ammAddress'> & { band: bigint }) => {
+  const [pUp, pDown] = await Promise.all([
+    client.readContract({ address: ammAddress, abi: AMM_ABI, functionName: 'p_oracle_up', args: [band] }),
+    client.readContract({ address: ammAddress, abi: AMM_ABI, functionName: 'p_oracle_down', args: [band] }),
+  ])
+  const [lower, upper] = pDown < pUp ? [pDown, pUp] : [pUp, pDown]
+
+  return lower + (upper - lower) / 2n
+}
+
+const getSoftLiquidationTargetPrice = async ({
+  ammAddress,
+  client,
+  state,
+}: Pick<SoftLiquidationReadParams, 'client' | 'ammAddress'> & { state: SoftLiquidationState }) => {
+  const targetBand = state.n1
+
+  assert(
+    targetBand <= state.n2,
+    `Unable to choose soft liquidation target band: ${stringifySetupDetails({ state, targetBand })}`,
+  )
+
+  return {
+    targetBand,
+    targetPrice: await getBandMidPrice({ ammAddress, band: targetBand, client }),
+  }
+}
 
 const readSoftLiquidationState = async ({
   client,
@@ -339,7 +372,6 @@ const runSoftLiquidationPriceMove = ({
   client,
   controllerAddress,
   range,
-  targetPrice,
   userAddress,
   vnet,
 }: {
@@ -349,7 +381,6 @@ const runSoftLiquidationPriceMove = ({
   client: PublicClient
   controllerAddress: Address
   range: bigint
-  targetPrice: Decimal
   userAddress: Address
   vnet: CreateVirtualTestnetResponse
 }) =>
@@ -362,7 +393,11 @@ const runSoftLiquidationPriceMove = ({
     assert(state.health > 0n, `Loan health is negative before soft liq price move: ${stringifySetupDetails({ state })}`)
     assert(!isSoftLiquidationState(state), `Loan is already in soft liquidation: ${stringifySetupDetails({ state })}`)
 
-    const targetPriceWei = parseUnits(targetPrice, 18)
+    const { targetBand, targetPrice } = await getSoftLiquidationTargetPrice({
+      ammAddress,
+      client,
+      state,
+    })
     const oracleBefore = await readOracleState({ client, ammAddress })
     const oracleStorageLayout = await findOracleStorageLayout({ client, oracleState: oracleBefore })
     const block = await client.getBlock()
@@ -374,15 +409,19 @@ const runSoftLiquidationPriceMove = ({
       vnet,
       oracleAddress: oracleBefore.oracleAddress,
       layout: oracleStorageLayout,
-      targetPrice: targetPriceWei,
+      targetPrice,
       timestamp: oracleObservationTimestamp,
     })
       .then(() => advanceVirtualNetworkClock({ vnet, seconds: CLOCK_STEP_SECONDS }))
       .then(async () => {
         const oracle = await readOracleState({ client, ammAddress })
         assert(
-          oracle.answer === targetPriceWei && oracle.storedPrice === targetPriceWei,
-          `Oracle storage override did not reach target: ${stringifySetupDetails({ oracle, targetPrice })}`,
+          oracle.answer === targetPrice && oracle.storedPrice === targetPrice,
+          `Oracle storage override did not reach target: ${stringifySetupDetails({
+            oracle,
+            targetBand,
+            targetPrice,
+          })}`,
         )
       })
       .then(() =>
@@ -391,7 +430,7 @@ const runSoftLiquidationPriceMove = ({
           borrowedAddress,
           collateralAddress,
           client,
-          targetPrice: targetPriceWei,
+          targetPrice,
           userAddress,
           vnet,
         }),
@@ -400,7 +439,13 @@ const runSoftLiquidationPriceMove = ({
         const { oracle, state } = await readSoftLiquidationSetup(readParams)
         assert(
           isSoftLiquidationState(state) && state.health > 0n,
-          `Failed to reach soft liquidation: ${stringifySetupDetails({ oracle, quote, state, targetPrice })}`,
+          `Failed to reach soft liquidation: ${stringifySetupDetails({
+            oracle,
+            quote,
+            state,
+            targetBand,
+            targetPrice,
+          })}`,
         )
         return state
       })
@@ -428,12 +473,10 @@ const runSoftLiquidationPriceMove = ({
  */
 export const setupTenderlySoftLiquidation = ({
   ammAddress,
-  targetPrice,
   ...loanProps
 }: Parameters<typeof setupTenderlyLoan>[0] & {
   ammAddress: Address
   borrowedAddress: Address
-  targetPrice: Decimal
 }) => {
   const { vnet, borrowedAddress, collateralAddress, controllerAddress, userAddress } = loanProps
   const { publicRpcUrl } = getRpcUrls(vnet)
@@ -457,7 +500,6 @@ export const setupTenderlySoftLiquidation = ({
     client,
     controllerAddress,
     range: loanProps.range,
-    targetPrice,
     userAddress,
     vnet,
   })

@@ -64,7 +64,6 @@ describe('Manage soft liquidation', () => {
       vnet,
       userAddress,
       collateral: '1',
-      targetPrice: '1100',
       borrow: BORROW,
       range: 50n,
       collateralFundingMultiplier: 2n,
