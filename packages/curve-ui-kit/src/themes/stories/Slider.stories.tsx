@@ -31,8 +31,6 @@ const SliderStory = (
     setValue(newValue)
   }
 
-  const valueLabelFormat = (value: number) => formatNumber(value, { abbreviate: true })
-
   function calculateValue(value: number) {
     if (scaleType === 'power') {
       return powerMap(value, POW_MIN_VALUE, MAX_VALUE, powerExponent)
@@ -54,7 +52,7 @@ const SliderStory = (
         value={value}
         scale={calculateValue}
         onChange={handleChange}
-        valueLabelFormat={valueLabelFormat}
+        valueLabelFormat={value => formatNumber(value, 'token.amount')}
         orientation={orientation}
         {...sliderProps}
       />

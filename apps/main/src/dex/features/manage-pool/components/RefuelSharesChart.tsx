@@ -44,7 +44,7 @@ const SHARE_SERIES = [
   { key: 'unlockedShares', label: UNLOCKED_SHARES_LABEL },
 ] as const
 
-const formatShares = (value: number | null | undefined) => formatNumber(value, { abbreviate: true, fallback: '-' })
+const formatShares = (value: number | null | undefined) => formatNumber(value, 'token.compact')
 
 export const RefuelSharesChart = ({
   chainId,

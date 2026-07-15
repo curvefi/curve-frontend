@@ -415,7 +415,7 @@ export const Swap = ({
           }
           {...(formValues.fromError && {
             isError: true,
-            message: t`Amount > wallet balance ${formatNumber(userFromBalance, { abbreviate: false, fallback: '-' })}`,
+            message: t`Amount > wallet balance ${formatNumber(userFromBalance, 'token.amount')}`,
           })}
           disabled={isDisabled}
           walletBalance={{

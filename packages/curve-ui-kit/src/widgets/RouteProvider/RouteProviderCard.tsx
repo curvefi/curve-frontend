@@ -4,7 +4,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybe, maybes } from '@primitives/objects.utils'
+import { maybes } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
 import type { BaseConfig } from '@ui/utils'
 import type { RouteQuery } from '@ui-kit/entities/router-api'
@@ -79,7 +79,7 @@ export const RouteProviderCard = ({
                     color="textPrimary"
                     data-testid="route-provider-amount"
                   >
-                    {isLoading ? PLACEHOLDER : (maybe(out, n => formatNumber(n, { abbreviate: false })) ?? '-')}
+                    {isLoading ? PLACEHOLDER : formatNumber(out, 'token.amount')}
                   </Typography>
                 </WithSkeleton>
                 {toTokenSymbol && (

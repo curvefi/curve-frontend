@@ -10,7 +10,7 @@ import type { Provider } from '@ui-kit/lib/ethers'
 import { type ChainQuery, queryFactory, rootKeys } from '@ui-kit/lib/model/query'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib/validation'
 import type { Query as QueryResult } from '@ui-kit/types/util'
-import { Chain, gweiToEther, gweiToWai, weiToGwei, formatNumber } from '@ui-kit/utils'
+import { Chain, gweiToEther, gweiToWai, weiToGwei, formatNumber, formatToken } from '@ui-kit/utils'
 import { chainValidationGroup } from '../query/chain-validation'
 import { useTokenUsdRate } from './token-usd-rate'
 
@@ -386,7 +386,7 @@ export function calculateGas(
 
   const estGasCost = gweiToEther(weiToGwei(gasCostInWei))
   const tooltip =
-    `${formatNumber(estGasCost, { abbreviate: false })} ${networkSymbol} at ` +
+    `${formatToken(estGasCost, networkSymbol, 'amount')} at ` +
     `${formatNumber(weiToGwei(basePlusPriority), { maximumFractionDigits: 2, abbreviate: false })} ${gasPricesUnit}`
   return { estGasCost, tooltip, ...(chainTokenUsdRate != null && { estGasCostUsd: estGasCost * chainTokenUsdRate }) }
 }
