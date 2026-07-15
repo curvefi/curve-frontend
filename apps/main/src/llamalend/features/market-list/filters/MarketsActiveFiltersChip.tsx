@@ -17,7 +17,7 @@ import {
   type TableActiveFilterGroupChipsProps,
 } from '@ui-kit/shared/ui/DataTable/TableActiveFilterGroups'
 import { constQ } from '@ui-kit/types/util'
-import { MARKET_COLUMNS as MARKET_COLUMNS, MARKET_TITLES, MarketColumnId } from '../columns'
+import { MARKET_COLUMNS, MARKET_TITLES, MarketColumnId } from '../columns'
 
 const MARKET_COLUMN_ORDER = new Map(MARKET_COLUMNS.map((column, index) => [column.id, index]))
 

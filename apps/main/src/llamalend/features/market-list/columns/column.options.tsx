@@ -6,15 +6,15 @@ import { MarketRateType } from '@ui-kit/types/market'
 import { MarketColumnId } from './columns.enum'
 
 /**
- * Create a map of column visibility for the Llama markets table on mobile devices.
+ * Create a map of column visibility for the markets table on mobile devices.
  * On mobile that is just the market title and the column that is currently sorted.
  */
 export const createMarketsMobileColumns = (sortBy: MarketColumnId) =>
   fromEntries(recordValues(MarketColumnId).map(key => [key, key === MarketColumnId.Assets || key === sortBy]))
 
 /**
- * Create a map of column visibility for the Llama markets table that can be customized by the user.
- * This is not used on mobile devices (see `createLlamaMarketsMobileColumns` above).
+ * Create a map of column visibility for the markets table that can be customized by the user.
+ * This is not used on mobile devices (see `createMarketsMobileColumns` above).
  * @param hasPositions Whether the user is connected and has positions. Undefined during loading.
  * @param onlyPositions If set, only show columns related to the given position type.
  *      Otherwise, show all columns related to general market info and both position types (optionally).

@@ -15,7 +15,7 @@ import {
   createMarketsMobileColumns,
 } from '../columns'
 
-type LlamaColumnVariant = keyof typeof MARKETS_COLUMN_OPTIONS
+type MarketColumnVariant = keyof typeof MARKETS_COLUMN_OPTIONS
 
 /** Preserve users' saved visibility choices while adding newly introduced column options from defaults. */
 const mergeVisibilityGroups = (
@@ -42,23 +42,23 @@ const mergeVisibilityGroups = (
 
 export const getMarketsColumnVariant = (
   userHasPositions: LlamaMarketsResult['userHasPositions'] | undefined,
-): LlamaColumnVariant =>
+): MarketColumnVariant =>
   userHasPositions == null // we treat undefined (loading),  and null (no positions at all) as the same variant
     ? 'noPositions'
     : 'hasPositions' // show the general market table, for users with positions
 
-const migration: MigrationOptions<Record<LlamaColumnVariant, VisibilityGroup<MarketColumnId>[]>> = {
+const migration: MigrationOptions<Record<MarketColumnVariant, VisibilityGroup<MarketColumnId>[]>> = {
   version: 6,
   migrate: (oldValue, initialValue) =>
     mapRecord(initialValue, (variant, initialGroups) => mergeVisibilityGroups(oldValue[variant], initialGroups)),
 }
 
 /**
- * Hook to manage the visibility of columns in the Llama Markets table.
+ * Hook to manage the visibility of columns in the markets table.
  * The visibility on mobile is based on the sort field.
  * On larger devices, it uses the visibility settings that may be customized by the user.
  */
-export const useMarketsVisibility = (title: string, sorting: SortingState, variant: LlamaColumnVariant) => {
+export const useMarketsVisibility = (title: string, sorting: SortingState, variant: MarketColumnVariant) => {
   const sortField = (sorting.length ? sorting : DEFAULT_SORT)[0].id as MarketColumnId
   const visibilitySettings = useVisibilitySettings(title, MARKETS_COLUMN_OPTIONS, variant, MARKET_COLUMNS, migration)
   const columnVisibility = useMemo(() => createMarketsMobileColumns(sortField), [sortField])

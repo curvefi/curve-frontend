@@ -33,7 +33,7 @@ import {
   TvlHeaderTooltipContent,
   UtilizationHeaderTooltipContent,
 } from '../header-tooltips'
-import { MarketColumnId as MarketColumnId } from './columns.enum'
+import { MarketColumnId } from './columns.enum'
 
 type Tooltip = ColumnMeta<never, never>['tooltip']
 type MarketColumn = ColumnDefinition<LlamaMarket>

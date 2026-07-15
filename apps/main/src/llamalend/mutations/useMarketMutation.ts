@@ -13,7 +13,7 @@ import {
 import { getControllerAddress, getMarket, getTokens, updateUserEventsApi } from '../llama.utils'
 import type { MarketTemplate } from '../llamalend.types'
 
-/** Context created in onMutate, extends the base transaction context with llamma market and api */
+/** Context created in onMutate, extends the base transaction context with market and api */
 type MarketContext = TransactionContext & {
   llamaApi: NonNullable<ReturnType<typeof useCurve>['llamaApi']>
   market: MarketTemplate
@@ -27,7 +27,7 @@ const getDefaultAddresses = (market: MarketTemplate) => {
 }
 /**
  * Custom hook for handling market-related mutations with automatic wallet and API validation.
- * Wraps `useTransactionMutation` and adds llamma market context, cache invalidation,
+ * Wraps `useTransactionMutation` and adds market context, cache invalidation,
  * and user event tracking.
  */
 export function useMarketMutation<TVariables extends object>({
@@ -37,7 +37,7 @@ export function useMarketMutation<TVariables extends object>({
   mutationTokenAddresses,
   ...options
 }: TransactionMutationOptions<TVariables, MarketContext> & {
-  /** The llamma market id */
+  /** The market id */
   marketId: string | null | undefined
   /** The current network config */
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
