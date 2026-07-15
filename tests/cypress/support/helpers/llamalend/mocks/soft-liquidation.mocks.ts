@@ -138,7 +138,7 @@ export const createResetPositionScenario = ({
       estimateGasApprove: [walletBorrowed] as const,
       approve: [walletBorrowed] as const,
       submit: [resetRepayParams] as const,
-      successMessage: `Position reset! ${formatToken(debtReduction, 'crvUSD', 'compact')}`,
+      successMessage: `Position reset! ${formatToken(debtReduction, 'crvUSD', 'amount')}`,
     }
   }
 
