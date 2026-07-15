@@ -14,6 +14,7 @@ export const CREATE_LOAN_FUND_AMOUNT = '0x3635c9adc5dea00000' // 1000 ETH=1e21 w
 const BORROWED_SYMBOL = 'crvUSD'
 const BORROWED_DECIMALS = DEFAULT_DECIMALS
 const COLLATERAL_DECIMALS = DEFAULT_DECIMALS
+const HEALTH_NOT_CALCULATED = '∞'
 
 export const LOAN_TEST_MARKETS = {
   [LlamaMarketType.Mint]: [
@@ -178,12 +179,14 @@ export function writeCreateLoanForm({
   leverageEnabled,
   hasLeverage,
   waitForRoutes,
+  assertHealthQueried,
 }: {
   collateral: Decimal
   borrow: Decimal
   leverageEnabled: boolean
   hasLeverage: boolean
   waitForRoutes?: boolean
+  assertHealthQueried?: () => void
 }) {
   cy.get('[data-testid="borrow-debt-input"]', TRANSACTION_LOAD_TIMEOUT).should('be.visible')
   cy.get('[data-testid="borrow-collateral-input"] [data-testid="balance-value"]', TRANSACTION_LOAD_TIMEOUT).should(
@@ -192,10 +195,24 @@ export function writeCreateLoanForm({
   getCollateralInput().type(collateral)
   getCollateralInput().blur()
   getMaxBorrowBalance().should('be.visible')
-  getActionValue('borrow-health').should('equal', '∞')
+  getActionValue('borrow-health').should('equal', HEALTH_NOT_CALCULATED)
   getBorrowInput().type(borrow)
   getBorrowInput().blur()
-  getActionValue('borrow-health').should('not.equal', '∞')
+  if (assertHealthQueried) cy.wrap(null, LOAD_TIMEOUT).should(assertHealthQueried)
+  getActionValue('borrow-health').should(health => {
+    expect(
+      health,
+      [
+        'Expected create-loan health to be calculated after entering debt.',
+        `Actual borrow-health data-value: ${String(health)}`,
+        `Collateral input: ${collateral}`,
+        `Borrow input: ${borrow}`,
+        `Leverage supported: ${hasLeverage}`,
+        `Leverage enabled: ${leverageEnabled}`,
+        `A remaining ${HEALTH_NOT_CALCULATED} means the health query has no usable data: it is disabled, unresolved, or returned a missing/invalid value.`,
+      ].join('\n'),
+    ).not.equal(HEALTH_NOT_CALCULATED)
+  })
   if (leverageEnabled) toggleLeverage()
   checkLeverageCheckbox({ leverageEnabled, hasLeverage })
   if (waitForRoutes) waitForRoutesLoaded({ submitButtonTestId: 'create-loan-submit-button' })

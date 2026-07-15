@@ -4,7 +4,7 @@ import {
   getActionValue,
   getMetricValue,
 } from '@cy/support/helpers/llamalend/action-info.helpers'
-import { API_LOAD_TIMEOUT, LOAD_TIMEOUT, type Breakpoint } from '@cy/support/ui'
+import { API_LOAD_TIMEOUT, type Breakpoint, LOAD_TIMEOUT } from '@cy/support/ui'
 
 type MarketDetailsOptions = { breakpoint: Breakpoint; hasWallet: boolean; hasApi?: boolean }
 
@@ -14,9 +14,9 @@ const shouldShowCanvas = (testId: string) =>
   cy.get(`[data-testid="${testId}"] canvas`, API_LOAD_TIMEOUT).should('be.visible')
 
 const shouldBeVisibleAfterScroll = (testId: string) => {
-  const selector = `[data-testid="${testId}"]`
-  cy.get(selector, LOAD_TIMEOUT).filter(':visible').last().scrollIntoView()
-  cy.get(selector, LOAD_TIMEOUT).filter(':visible').last().should('be.visible')
+  cy.get(`[data-testid="${testId}"]`, LOAD_TIMEOUT).filter(':visible').last().as('element')
+  cy.get('@element').scrollIntoView()
+  cy.get('@element').should('be.visible')
 }
 
 const withMarketFormDrawer = <T>(

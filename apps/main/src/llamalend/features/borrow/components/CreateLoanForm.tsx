@@ -2,19 +2,26 @@ import { type ChangeEvent, useCallback } from 'react'
 import { useConnection } from 'wagmi'
 import { LoanPreset, LEVERAGE } from '@/llamalend/constants'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
+import { createLoanExpectedCollateralQueryKey } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
+import { useCreateLoanHealth } from '@/llamalend/queries/create-loan/create-loan-health.query'
+import { createLoanMaxReceiveKey } from '@/llamalend/queries/create-loan/create-loan-max-receive.query'
+import { createLoanQueryValidationSuite } from '@/llamalend/queries/validation/borrow.validation'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
+import { notFalsy, pick } from '@primitives/objects.utils'
 import { FormButton } from '@ui-kit/features/forms'
 import { useCreateLoanPreset } from '@ui-kit/hooks/useLocalStorage'
+import { queryClient } from '@ui-kit/lib/api'
 import { t } from '@ui-kit/lib/i18n'
 import { AlertDisableForm } from '@ui-kit/shared/ui/AlertDisableForm'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q, type Range } from '@ui-kit/types/util'
+import { IS_CYPRESS } from '@ui-kit/utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { shouldBlockTransaction } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
@@ -76,7 +83,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     (event: ChangeEvent<HTMLInputElement>) => updateForm({ leverageEnabled: event.target.checked, routeId: undefined }),
     [updateForm],
   )
-
+  const health = useCreateLoanHealth(params, isOpen)
   return (
     <Form
       {...form}
@@ -99,6 +106,17 @@ export const CreateLoanForm = <ChainId extends IChainId>({
       data-testid="create-loan-form"
     >
       <Stack sx={{ gap: Spacing.xs }}>
+        {IS_CYPRESS && // todo: remove devbugging code
+          JSON.stringify({
+            ...pick(health, 'validation', 'isLoading', 'error', 'isFetching', 'enabled'),
+            values,
+            params,
+            revalidation: createLoanQueryValidationSuite({ debtRequired: true, ignoreMaxCollateral: true })(params),
+            dependencies: [
+              createLoanMaxReceiveKey(params),
+              ...notFalsy(params.leverageEnabled && createLoanExpectedCollateralQueryKey(params)),
+            ].map(key => queryClient.getQueryData(key)),
+          })}
         <LoanFormTokenInput
           label={t`Collateral`}
           token={collateralToken}

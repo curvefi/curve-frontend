@@ -36,12 +36,13 @@ describe('CreateLoanForm (mocked)', () => {
 
   testCases.forEach(({ approved, hasLeverage, leverageEnabled, title }) => {
     it(title, () => {
-      const { llamaApi, market, borrow, collateral, assertPreSubmit, assertSubmit } = createCreateLoanScenario({
-        chainId: CHAIN_ID,
-        presetRange: 50,
-        approved,
-        leverage: hasLeverage,
-      })
+      const { llamaApi, market, borrow, collateral, assertHealthQueried, assertPreSubmit, assertSubmit } =
+        createCreateLoanScenario({
+          chainId: CHAIN_ID,
+          presetRange: 50,
+          approved,
+          leverage: hasLeverage,
+        })
       const onPricesUpdated = cy.spy().as('onPricesUpdated')
 
       setLlamaApi(llamaApi)
@@ -53,7 +54,14 @@ describe('CreateLoanForm (mocked)', () => {
         </MockLoanTestWrapper>,
       )
 
-      writeCreateLoanForm({ collateral, borrow, leverageEnabled, hasLeverage, waitForRoutes: leverageEnabled })
+      writeCreateLoanForm({
+        collateral,
+        borrow,
+        leverageEnabled,
+        hasLeverage,
+        waitForRoutes: leverageEnabled,
+        assertHealthQueried,
+      })
       checkLoanDetailsLoaded({ leverageEnabled })
 
       cy.then(assertPreSubmit)
