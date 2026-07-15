@@ -5,13 +5,13 @@ import type { Chain } from '@curvefi/prices-api'
 import type { SortDirection as PoolSortDirection, V2PoolSortField as PoolSortField } from '@curvefi/prices-api/pools'
 import { useCampaigns } from '@ui-kit/entities/campaigns'
 import { useMappedQuery } from '@ui-kit/types/util'
-import { getPoolListItem } from '../poolList.utils'
-import type { PoolListApiParams } from '../poolListFilterQuery'
-import { POOL_LIST_PAGE_SIZE } from './usePoolListPagination'
-import { usePoolListUserHasPosition } from './usePoolListUserHasPosition'
+import type { PoolsApiParams } from '../pools.filter'
+import { getPoolListItem } from '../pools.utils'
+import { POOLS_PAGE_SIZE } from './usePoolsPagination'
+import { usePoolsUserHasPosition } from './usePoolsUserHasPosition'
 
-type PoolListTableParams = {
-  filters: PoolListApiParams
+type PoolsTableParams = {
+  filters: PoolsApiParams
   network: NetworkConfig
   page: number
   searchText: string
@@ -20,20 +20,13 @@ type PoolListTableParams = {
 }
 
 /** Fetches the current pool page and maps API rows into table rows. */
-export const usePoolListTable = ({
-  filters,
-  network,
-  page,
-  searchText,
-  sortBy,
-  sortDirection,
-}: PoolListTableParams) => {
-  const hasUserPoolPosition = usePoolListUserHasPosition(network.chainId)
+export const usePoolsTable = ({ filters, network, page, searchText, sortBy, sortDirection }: PoolsTableParams) => {
+  const hasUserPoolPosition = usePoolsUserHasPosition(network.chainId)
   const { data: campaignsByAddress } = useCampaigns({ blockchainId: network.networkId as Chain })
   const poolListParams = {
     chainId: network.chainId,
     page,
-    pageSize: POOL_LIST_PAGE_SIZE,
+    pageSize: POOLS_PAGE_SIZE,
     searchString: searchText || undefined,
     ...filters,
     sortBy,

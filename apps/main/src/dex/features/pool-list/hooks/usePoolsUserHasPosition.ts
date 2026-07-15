@@ -5,9 +5,9 @@ import { useStore } from '@/dex/store/useStore'
 import type { ChainId } from '@/dex/types/main.types'
 import { fromEntries, notFalsy } from '@primitives/objects.utils'
 import { useCurve } from '@ui-kit/features/connect-wallet'
-import { getCurvePoolIdByAddressEntries, getPoolIdByAddressEntries, normalizeAddress } from '../poolList.utils'
+import { getCurvePoolIdByAddressEntries, getPoolIdByAddressEntries, normalizeAddress } from '../pools.utils'
 
-export const usePoolListUserHasPosition = (chainId: ChainId) => {
+export const usePoolsUserHasPosition = (chainId: ChainId) => {
   const { curveApi, isHydrated } = useCurve()
   const { address: userAddress } = useConnection()
   const poolDataMapper = useStore(state => state.pools.poolsMapper[chainId])

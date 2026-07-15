@@ -2,10 +2,10 @@ import { useNetworkFromUrl } from '@/dex/hooks/useChainId'
 import { usePoolChains } from '@/dex/queries/pool-list.query'
 import { useDexPoolListV2 } from '@ui-kit/hooks/useFeatureFlags'
 import { ListPageWrapper } from '@ui-kit/widgets/ListPageWrapper'
-import { LegacyPoolListTable } from './LegacyPoolListTable'
-import { PoolListTable } from './PoolListTable'
+import { LegacyPoolsTable } from './LegacyPoolsTable'
+import { PoolsTable } from './PoolsTable'
 
-export const Page = () => {
+export const PoolsList = () => {
   const network = useNetworkFromUrl()
   const isBetaPoolListEnabled = useDexPoolListV2()
   const { data: supportedPoolChains, isLoading } = usePoolChains({}, isBetaPoolListEnabled)
@@ -20,9 +20,9 @@ export const Page = () => {
       {network &&
         (!isBetaPoolListEnabled || !isLoading) &&
         (isBetaPoolListEnabled && isSupported ? (
-          <PoolListTable network={network} />
+          <PoolsTable network={network} />
         ) : (
-          <LegacyPoolListTable network={network} />
+          <LegacyPoolsTable network={network} />
         ))}
     </ListPageWrapper>
   )

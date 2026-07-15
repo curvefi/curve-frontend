@@ -8,8 +8,8 @@ import { t } from '@ui-kit/lib/i18n'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
-import type { PoolListItem } from '../poolList.types'
-import { getPoolYieldApy } from '../poolList.utils'
+import type { PoolListItem } from '../pools.types'
+import { getPoolYieldApy } from '../pools.utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -42,7 +42,7 @@ const BaseApyTooltip = ({ baseDailyApr, baseWeeklyApr }: Pick<PoolListItem, 'bas
   )
 }
 
-export const PoolListBaseApyCell = ({
+export const BaseApyCell = ({
   row: { original: pool },
   getValue,
 }: CellContext<PoolListItem, PoolListItem['baseDailyApr']>) =>

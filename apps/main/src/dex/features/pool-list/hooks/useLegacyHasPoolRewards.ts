@@ -3,7 +3,7 @@ import type { RewardsApy } from '@/dex/types/main.types'
 import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
-import type { LegacyPoolListItem } from '../legacyPoolList.types'
+import type { LegacyPoolListItem } from '../legacy-pools.types'
 
 export const hasLegacyCrvRewards = (rewards: RewardsApy | undefined) => sum(rewards?.crv) > 0
 

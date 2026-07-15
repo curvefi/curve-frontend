@@ -6,12 +6,13 @@ import type { MigrationOptions } from '@ui-kit/hooks/useStoredState'
 import { useVisibilitySettings } from '@ui-kit/shared/ui/DataTable/hooks/useVisibilitySettings'
 import type { VisibilityGroup } from '@ui-kit/shared/ui/DataTable/visibility.types'
 import {
-  LEGACY_POOL_LIST_COLUMNS,
-  LEGACY_POOL_LIST_COLUMN_OPTIONS,
+  LEGACY_POOL_COLUMNS,
+  LEGACY_POOLS_COLUMN_OPTIONS,
   LegacyPoolColumnId,
-  LegacyPoolColumnVariant,
-  getLegacyDefaultSort,
+  getDefaultLegacyPoolsSort,
 } from '../columns'
+
+export type LegacyPoolColumnVariant = keyof typeof LEGACY_POOLS_COLUMN_OPTIONS
 
 const migration: MigrationOptions<Record<LegacyPoolColumnVariant, VisibilityGroup<LegacyPoolColumnId>[]>> = {
   version: 1,
@@ -24,7 +25,7 @@ const migration: MigrationOptions<Record<LegacyPoolColumnVariant, VisibilityGrou
 const createMobileColumns = (sortBy: LegacyPoolColumnId) =>
   fromEntries(recordValues(LegacyPoolColumnId).map(key => [key, key === LegacyPoolColumnId.PoolName || key === sortBy]))
 
-export function useLegacyPoolListVisibilitySettings(
+export function useLegacyPoolsVisibility(
   title: string,
   {
     isLite,
@@ -35,12 +36,12 @@ export function useLegacyPoolListVisibilitySettings(
   },
 ) {
   const variant: LegacyPoolColumnVariant = isLite ? 'lite' : 'full'
-  const sortField = (sorting.length ? sorting : getLegacyDefaultSort(isLite))[0].id as LegacyPoolColumnId
+  const sortField = (sorting.length ? sorting : getDefaultLegacyPoolsSort(isLite))[0].id as LegacyPoolColumnId
   const visibilitySettings = useVisibilitySettings(
     title,
-    LEGACY_POOL_LIST_COLUMN_OPTIONS,
+    LEGACY_POOLS_COLUMN_OPTIONS,
     variant,
-    LEGACY_POOL_LIST_COLUMNS,
+    LEGACY_POOL_COLUMNS,
     migration,
   )
   const columnVisibility = useMemo(() => createMobileColumns(sortField), [sortField])

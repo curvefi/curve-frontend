@@ -13,7 +13,7 @@ import { CURVE_SOCIALS, shortenAccount } from '@ui/utils'
 import { useParams } from '@ui-kit/hooks/router'
 import { Trans } from '@ui-kit/lib/i18n'
 import { LegacyPoolColumnId } from '../columns'
-import type { LegacyPoolTag } from '../legacyPoolList.types'
+import type { LegacyPoolTag } from '../legacy-pools.types'
 
 enum ERROR {
   api = 'api',
@@ -26,7 +26,7 @@ type Props = {
   resetFilters: () => void
 }
 
-export const LegacyPoolListEmptyState = ({ columnFiltersById, resetFilters }: Props) => {
+export const LegacyPoolsEmptyState = ({ columnFiltersById, resetFilters }: Props) => {
   const searchText = columnFiltersById[LegacyPoolColumnId.PoolName]
 
   const props = useParams<NetworkUrlParams>()

@@ -5,10 +5,10 @@ import { Metric, type MetricProps } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { constQ } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
-import { PoolListRewards } from '../cells/PoolListRewards'
-import { PoolListColumnId } from '../columns/column.enum'
-import type { PoolListItem } from '../poolList.types'
-import { getPoolYieldApy } from '../poolList.utils'
+import { RewardsCell } from '../cells/RewardsCell'
+import { PoolColumnId } from '../columns/columns.enum'
+import type { PoolListItem } from '../pools.types'
+import { getPoolYieldApy } from '../pools.utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -23,9 +23,9 @@ const ListInfoItem = ({
 
 const highlight = { color: 'success' as const }
 
-export const PoolListMobileExpandedPanel: ExpandedPanelComponent<PoolListItem> = ({ row, table }) => {
+export const PoolExpandedPanel: ExpandedPanelComponent<PoolListItem> = ({ row, table }) => {
   const pool = row.original
-  const hasVolume = table.getColumn(PoolListColumnId.Volume)?.getIsVisible()
+  const hasVolume = table.getColumn(PoolColumnId.Volume)?.getIsVisible()
 
   return (
     <Grid container spacing={Spacing.md}>
@@ -35,7 +35,7 @@ export const PoolListMobileExpandedPanel: ExpandedPanelComponent<PoolListItem> =
           value={pool.tradingVolume24h}
           valueOptions={{
             unit: 'dollar',
-            ...(table.getColumn(PoolListColumnId.Volume)?.getIsSorted() && highlight),
+            ...(table.getColumn(PoolColumnId.Volume)?.getIsSorted() && highlight),
           }}
         />
       )}
@@ -44,7 +44,7 @@ export const PoolListMobileExpandedPanel: ExpandedPanelComponent<PoolListItem> =
         value={pool.tvlUsd}
         valueOptions={{
           unit: 'dollar',
-          ...(table.getColumn(PoolListColumnId.Tvl)?.getIsSorted() && highlight),
+          ...(table.getColumn(PoolColumnId.Tvl)?.getIsSorted() && highlight),
         }}
       />
       <ListInfoItem
@@ -52,11 +52,11 @@ export const PoolListMobileExpandedPanel: ExpandedPanelComponent<PoolListItem> =
         value={getPoolYieldApy(pool.baseDailyApr)}
         valueOptions={{
           unit: 'percentage',
-          ...(table.getColumn(PoolListColumnId.RewardsBase)?.getIsSorted() && highlight),
+          ...(table.getColumn(PoolColumnId.RewardsBase)?.getIsSorted() && highlight),
         }}
       />
       <Grid size={6}>
-        <PoolListRewards pool={pool} isMobile />
+        <RewardsCell pool={pool} isMobile />
       </Grid>
     </Grid>
   )

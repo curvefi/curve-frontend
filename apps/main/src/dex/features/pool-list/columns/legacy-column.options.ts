@@ -1,10 +1,10 @@
 import { t } from '@ui-kit/lib/i18n'
 import type { VisibilityGroup } from '@ui-kit/shared/ui/DataTable/visibility.types'
-import { LegacyPoolColumnId } from './legacy-column.enum'
+import { LegacyPoolColumnId } from './legacy-columns.enum'
 
 const createVisibility = ({ isLite }: { isLite: boolean }): VisibilityGroup<LegacyPoolColumnId>[] => [
   {
-    label: t`Markets`,
+    label: t`Pools`,
     options: [
       {
         label: t`Pool`,
@@ -40,12 +40,10 @@ const createVisibility = ({ isLite }: { isLite: boolean }): VisibilityGroup<Lega
   },
 ]
 
-export const LEGACY_POOL_LIST_COLUMN_OPTIONS = {
+export const LEGACY_POOLS_COLUMN_OPTIONS = {
   full: createVisibility({ isLite: false }),
   lite: createVisibility({ isLite: true }),
 }
-export type LegacyPoolColumnVariant = keyof typeof LEGACY_POOL_LIST_COLUMN_OPTIONS
-
-export const getLegacyDefaultSort = (isLite: boolean) => [
+export const getDefaultLegacyPoolsSort = (isLite: boolean) => [
   { id: isLite ? LegacyPoolColumnId.Tvl : LegacyPoolColumnId.Volume, desc: true },
 ]

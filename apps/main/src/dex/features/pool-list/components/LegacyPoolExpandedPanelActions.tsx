@@ -3,9 +3,9 @@ import { getPath } from '@/dex/utils/utilsRouter'
 import { t } from '@ui-kit/lib/i18n'
 import { ExpandedPanelActions } from '@ui-kit/shared/ui/DataTable/ExpandedPanelActions'
 import type { ExpandedPanelComponent } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
-import type { LegacyPoolListItem } from '../legacyPoolList.types'
+import type { LegacyPoolListItem } from '../legacy-pools.types'
 
-export const LegacyPoolMobileExpandedPanelActions: ExpandedPanelComponent<LegacyPoolListItem> = ({ row }) => {
+export const LegacyPoolExpandedPanelActions: ExpandedPanelComponent<LegacyPoolListItem> = ({ row }) => {
   const {
     pool: { id: poolId },
     network,

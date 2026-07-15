@@ -7,7 +7,7 @@ import { GridChip } from '@ui-kit/shared/ui/DataTable/chips/GridChip'
 import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LegacyPoolColumnId } from '../columns'
-import type { LegacyPoolTag } from '../legacyPoolList.types'
+import type { LegacyPoolTag } from '../legacy-pools.types'
 
 const { Spacing } = SizesAndSpaces
 
@@ -27,17 +27,17 @@ const getFilterGroups = ({ isConnected }: { isConnected: boolean }) =>
     ...(isConnected ? [[{ key: 'user' as const, label: t`My Pools` }]] : []),
   ] satisfies { key: LegacyPoolTag | null; label: string }[][]
 
-export type LegacyPoolListFilterChipsProps = FilterProps<LegacyPoolColumnId> & {
+export type LegacyPoolsChipsProps = FilterProps<LegacyPoolColumnId> & {
   resultCount: number | undefined
   poolFilters: NetworkConfig['poolFilters']
 }
 
-export const LegacyPoolListFilterChips = ({
+export const LegacyPoolsChips = ({
   resultCount,
   poolFilters,
   setColumnFilter,
   columnFiltersById,
-}: LegacyPoolListFilterChipsProps) => {
+}: LegacyPoolsChipsProps) => {
   const filterKey = columnFiltersById[LegacyPoolColumnId.PoolTags] as LegacyPoolTag | undefined
   const { isConnected } = useConnection()
   return (

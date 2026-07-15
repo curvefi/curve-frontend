@@ -27,7 +27,7 @@ const DEX_POOL_SORT_OPTIONS = [
   { id: LegacyPoolColumnId.RewardsIncentives, label: t`Rewards Incentives` },
 ] as const
 
-export const LegacyPoolSortDrawer = ({ onSortingChange, sortField }: Props) => {
+export const LegacyPoolsSortDrawer = ({ onSortingChange, sortField }: Props) => {
   const [open, openDrawer, closeDrawer] = useSwitch(false)
 
   const menuRef = useRef<HTMLLIElement | null>(null)

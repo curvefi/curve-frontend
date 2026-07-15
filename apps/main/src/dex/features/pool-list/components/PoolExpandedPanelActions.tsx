@@ -4,9 +4,9 @@ import { copyToClipboardWithToast } from '@ui-kit/hooks/useCopyToClipboard'
 import { t } from '@ui-kit/lib/i18n'
 import { ExpandedPanelActions } from '@ui-kit/shared/ui/DataTable/ExpandedPanelActions'
 import type { ExpandedPanelComponent } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
-import type { PoolListItem } from '../poolList.types'
+import type { PoolListItem } from '../pools.types'
 
-export const PoolListMobileExpandedPanelActions: ExpandedPanelComponent<PoolListItem> = ({ row }) => {
+export const PoolExpandedPanelActions: ExpandedPanelComponent<PoolListItem> = ({ row }) => {
   const pool = row.original
   const path = getPath({ network: pool.network }, `${ROUTE.PAGE_POOLS}/${pool.address}`)
 

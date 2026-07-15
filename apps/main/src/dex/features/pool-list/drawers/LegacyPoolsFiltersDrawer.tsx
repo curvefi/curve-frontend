@@ -9,8 +9,8 @@ import { HiddenCountResetButton } from '@ui-kit/shared/ui/DataTable/HiddenCountR
 import { DrawerHeader } from '@ui-kit/shared/ui/SwipeableDrawer/DrawerHeader'
 import { SwipeableDrawer } from '@ui-kit/shared/ui/SwipeableDrawer/SwipeableDrawer'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { LegacyPoolsChips, LegacyPoolsChipsProps } from '../chips/LegacyPoolsChips'
 import type { LegacyPoolColumnId } from '../columns'
-import { LegacyPoolListFilterChips, LegacyPoolListFilterChipsProps } from '../components/LegacyPoolListFilterChips'
 
 const { Spacing } = SizesAndSpaces
 
@@ -19,9 +19,9 @@ type Props = {
   resetFilters: () => void
   searchText: string
   onSearch: (value: string) => void
-} & LegacyPoolListFilterChipsProps
+} & LegacyPoolsChipsProps
 
-export const LegacyPoolListFilterDrawer = ({
+export const LegacyPoolsFiltersDrawer = ({
   hiddenCount,
   resetFilters,
   searchText,
@@ -64,7 +64,7 @@ export const LegacyPoolListFilterDrawer = ({
       >
         <DrawerHeader title={t`Popular Filters`} />
         <Grid container spacing={Spacing.sm}>
-          <LegacyPoolListFilterChips {...filterProps} setColumnFilter={setFilterAndClose} />
+          <LegacyPoolsChips {...filterProps} setColumnFilter={setFilterAndClose} />
         </Grid>
       </Stack>
     </SwipeableDrawer>

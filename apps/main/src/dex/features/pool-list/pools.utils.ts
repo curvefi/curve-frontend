@@ -5,12 +5,12 @@ import { recordValues } from '@primitives/objects.utils'
 import type { CampaignRewards } from '@ui-kit/entities/campaigns'
 import { DEX_ROUTES } from '@ui-kit/shared/routes'
 import { AVERAGE_CATEGORIES, aprToApy } from '@ui-kit/utils'
-import { isVyperVulnerablePool } from './poolList.alerts'
-import type { PoolListItem } from './poolList.types'
+import { isVyperVulnerablePool } from './pools.alerts'
+import type { PoolListItem } from './pools.types'
 
 const POOL_YIELD_COMPOUND_WINDOW = AVERAGE_CATEGORIES['dex.poolYield.compoundRate'].window
 
-type PoolListCampaignsByAddress = Record<string, CampaignRewards[]>
+type PoolsCampaignsByAddress = Record<string, CampaignRewards[]>
 type PoolIdByAddressSource = Record<string, { pool: Pick<PoolData['pool'], 'address' | 'id'> }>
 
 /**
@@ -26,17 +26,17 @@ export const getCurvePoolIdByAddressEntries = (curve: CurveApi) =>
 
 export const getPoolYieldApy = (apr: number | null | undefined) => aprToApy(apr, POOL_YIELD_COMPOUND_WINDOW)
 
-const getPoolListCampaigns = (campaignsByAddress: PoolListCampaignsByAddress | undefined, poolAddress: string) =>
+const getPoolsCampaigns = (campaignsByAddress: PoolsCampaignsByAddress | undefined, poolAddress: string) =>
   campaignsByAddress?.[normalizeAddress(poolAddress)] ?? []
 
 export const getPoolListItem = (
   network: NetworkConfig,
   pool: V2Pool,
   hasPosition: PoolListItem['hasPosition'],
-  campaignsByAddress?: PoolListCampaignsByAddress,
+  campaignsByAddress?: PoolsCampaignsByAddress,
 ): PoolListItem => ({
   ...pool,
-  campaigns: getPoolListCampaigns(campaignsByAddress, pool.address),
+  campaigns: getPoolsCampaigns(campaignsByAddress, pool.address),
   hasPosition,
   hasVyperVulnerability: isVyperVulnerablePool(network.chainId, pool.address),
   network: network.id,

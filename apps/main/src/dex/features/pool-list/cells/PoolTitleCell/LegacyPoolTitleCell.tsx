@@ -10,7 +10,7 @@ import { UserPositionIndicator } from '@ui-kit/shared/ui/DataTable/UserPositionI
 import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketTitle } from '@ui-kit/widgets/MarketTitle'
-import type { LegacyPoolListItem } from '../../legacyPoolList.types'
+import type { LegacyPoolListItem } from '../../legacy-pools.types'
 import { PoolAlertBadge } from './PoolAlertBadge'
 import { PoolAlertIcons } from './PoolAlertIcons'
 import { PoolTokens } from './PoolTokens'

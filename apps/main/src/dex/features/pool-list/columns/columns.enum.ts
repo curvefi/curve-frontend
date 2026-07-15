@@ -1,4 +1,4 @@
-export enum PoolListColumnId {
+export enum PoolColumnId {
   PoolName = 'PoolName',
   RewardsBase = 'RewardsBase',
   RewardsOther = 'RewardsOther',

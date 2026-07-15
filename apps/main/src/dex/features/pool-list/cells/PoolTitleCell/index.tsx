@@ -8,10 +8,10 @@ import { UserPositionIndicator } from '@ui-kit/shared/ui/DataTable/UserPositionI
 import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketTitle } from '@ui-kit/widgets/MarketTitle'
-import type { PoolListItem } from '../poolList.types'
-import { PoolAlertBadge } from './PoolTitleCell/PoolAlertBadge'
-import { PoolAlertIcons } from './PoolTitleCell/PoolAlertIcons'
-import { PoolTokens } from './PoolTitleCell/PoolTokens'
+import type { PoolListItem } from '../../pools.types'
+import { PoolAlertBadge } from './PoolAlertBadge'
+import { PoolAlertIcons } from './PoolAlertIcons'
+import { PoolTokens } from './PoolTokens'
 
 const { Spacing, Height } = SizesAndSpaces
 type PoolListTitleProps = {
@@ -19,7 +19,7 @@ type PoolListTitleProps = {
   pool: PoolListItem
 }
 
-export const PoolListTitleCell = ({
+export const PoolTitleCell = ({
   row: { original: pool },
   column: { getFilterValue },
 }: CellContext<PoolListItem, string>) => (

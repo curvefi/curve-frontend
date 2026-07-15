@@ -5,72 +5,63 @@ import {
   type TableActiveFilterGroup,
 } from '@ui-kit/shared/ui/DataTable/TableActiveFilterGroups'
 import { TableActiveFiltersBar } from '@ui-kit/shared/ui/DataTable/TableActiveFiltersBar'
-import { POOL_LIST_DEFAULT_TVL_MIN, type PoolListFilterProps } from '../hooks/usePoolListFilters'
-import { getPoolListTvlLabelRange, parsePoolListRangeFilter, PoolListFilterId } from '../poolListFilterQuery'
+import { POOL_DEFAULT_TVL_MIN, type PoolsFiltersProps } from '../hooks/usePoolsFilters'
+import { getPoolsTvlLabelRange, parsePoolsRangeFilter, PoolFilterId } from '../pools.filter'
 
 // Show the hidden default TVL min in active range chips once a max bound is active.
 const getTvlFilterLabel = (serializedRange: string | undefined) => {
-  const range = parsePoolListRangeFilter(serializedRange)
+  const range = parsePoolsRangeFilter(serializedRange)
 
-  if (range[0] === POOL_LIST_DEFAULT_TVL_MIN && range[1] == null) return null
+  if (range[0] === POOL_DEFAULT_TVL_MIN && range[1] == null) return null
 
-  return getRangeFilterLabel(getPoolListTvlLabelRange(range), 'dollar', {
-    defaultMin: null,
-  })
+  return getRangeFilterLabel(getPoolsTvlLabelRange(range), 'dollar', { defaultMin: null })
 }
 
-type PoolListFiltersCollapsibleProps = {
+type PoolsFiltersCollapsibleProps = {
   hasActiveFilters: boolean
   resetFilters: () => void
-} & PoolListFilterProps
+} & PoolsFiltersProps
 
-export const PoolListFiltersCollapsible = ({
+export const PoolsFiltersCollapsible = ({
   columnFiltersById,
   hasActiveFilters,
   poolTypeFilters,
   resetFilters,
   setColumnFilter,
-}: PoolListFiltersCollapsibleProps) => {
-  const poolType = columnFiltersById[PoolListFilterId.PoolType]
+}: PoolsFiltersCollapsibleProps) => {
+  const poolType = columnFiltersById[PoolFilterId.PoolType]
   const poolTypeLabel = poolTypeFilters.find(({ key }) => key === poolType)?.label ?? poolType
-  const tvlLabel = getTvlFilterLabel(columnFiltersById[PoolListFilterId.Tvl])
-  const volumeLabel = getRangeFilterLabel(
-    parsePoolListRangeFilter(columnFiltersById[PoolListFilterId.Volume]),
-    'dollar',
-  )
-  const apyLabel = getRangeFilterLabel(
-    parsePoolListRangeFilter(columnFiltersById[PoolListFilterId.Apy]),
-    'percentage',
-    {
-      defaultMin: null,
-    },
-  )
+  const tvlLabel = getTvlFilterLabel(columnFiltersById[PoolFilterId.Tvl])
+  const volumeLabel = getRangeFilterLabel(parsePoolsRangeFilter(columnFiltersById[PoolFilterId.Volume]), 'dollar')
+  const apyLabel = getRangeFilterLabel(parsePoolsRangeFilter(columnFiltersById[PoolFilterId.Apy]), 'percentage', {
+    defaultMin: null,
+  })
   const activeFilterGroups: TableActiveFilterGroup[] = [
     {
       key: 'pool-type',
       labels: poolTypeLabel ? [poolTypeLabel] : null,
-      onRemove: () => setColumnFilter(PoolListFilterId.PoolType, null),
+      onRemove: () => setColumnFilter(PoolFilterId.PoolType, null),
       title: t`Type`,
       getChipTestId: () => 'dex-pool-active-filter-type',
     },
     {
       key: 'tvl',
       labels: tvlLabel ? [tvlLabel] : null,
-      onRemove: () => setColumnFilter(PoolListFilterId.Tvl, null),
+      onRemove: () => setColumnFilter(PoolFilterId.Tvl, null),
       title: t`TVL`,
       getChipTestId: () => 'dex-pool-active-filter-tvl',
     },
     {
       key: 'volume',
       labels: volumeLabel ? [volumeLabel] : null,
-      onRemove: () => setColumnFilter(PoolListFilterId.Volume, null),
+      onRemove: () => setColumnFilter(PoolFilterId.Volume, null),
       title: t`Volume`,
       getChipTestId: () => 'dex-pool-active-filter-volume',
     },
     {
       key: 'apy',
       labels: apyLabel ? [apyLabel] : null,
-      onRemove: () => setColumnFilter(PoolListFilterId.Apy, null),
+      onRemove: () => setColumnFilter(PoolFilterId.Apy, null),
       title: t`Base vAPY`,
       getChipTestId: () => 'dex-pool-active-filter-apy',
     },

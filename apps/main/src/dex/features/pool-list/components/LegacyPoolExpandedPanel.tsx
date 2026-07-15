@@ -17,7 +17,7 @@ import { constQ } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 import { PoolRewardsTooltipContent } from '../../../components/PoolRewardsTooltipContent'
 import { LegacyPoolColumnId } from '../columns'
-import type { LegacyPoolListItem } from '../legacyPoolList.types'
+import type { LegacyPoolListItem } from '../legacy-pools.types'
 
 const { Spacing } = SizesAndSpaces
 
@@ -34,7 +34,7 @@ const ListInfoItem = ({
 
 const highlight = { color: 'success' as const }
 
-export const LegacyPoolMobileExpandedPanel: ExpandedPanelComponent<LegacyPoolListItem> = ({ row, table }) => {
+export const LegacyPoolExpandedPanel: ExpandedPanelComponent<LegacyPoolListItem> = ({ row, table }) => {
   const { original: poolData } = row
   const {
     pool: { address },

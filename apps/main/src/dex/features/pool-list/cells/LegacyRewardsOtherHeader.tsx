@@ -7,7 +7,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Sortable } from '@ui-kit/shared/ui/DataTable/Sortable'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LegacyPoolColumnId } from '../columns'
-import type { LegacyPoolListItem } from '../legacyPoolList.types'
+import type { LegacyPoolListItem } from '../legacy-pools.types'
 
 const { Spacing } = SizesAndSpaces
 

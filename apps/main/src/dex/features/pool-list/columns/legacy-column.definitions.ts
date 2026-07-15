@@ -12,8 +12,8 @@ import { LegacyRewardsOtherCell } from '../cells/LegacyRewardsOtherCell'
 import { LegacyRewardsOtherHeader } from '../cells/LegacyRewardsOtherHeader'
 import { LegacyUsdCell } from '../cells/LegacyUsdCell'
 import { LegacyPoolTitleCell } from '../cells/PoolTitleCell/LegacyPoolTitleCell'
-import type { LegacyPoolListItem } from '../legacyPoolList.types'
-import { LegacyPoolColumnId } from './legacy-column.enum'
+import type { LegacyPoolListItem } from '../legacy-pools.types'
+import { LegacyPoolColumnId } from './legacy-columns.enum'
 
 const columnHelper = createColumnHelper<LegacyPoolListItem>()
 
@@ -46,7 +46,7 @@ const hidden = (
     sortUndefined: 'last',
   })
 
-export const LEGACY_POOL_LIST_COLUMNS = [
+export const LEGACY_POOL_COLUMNS = [
   columnHelper.accessor('pool.name', {
     id: LegacyPoolColumnId.PoolName,
     header: t`Pool`,

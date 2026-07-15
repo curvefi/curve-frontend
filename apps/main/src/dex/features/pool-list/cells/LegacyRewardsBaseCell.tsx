@@ -7,7 +7,7 @@ import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
 import { isSortedBy } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { formatNumber } from '@ui-kit/utils'
-import type { LegacyPoolListItem } from '../legacyPoolList.types'
+import type { LegacyPoolListItem } from '../legacy-pools.types'
 
 export const LegacyRewardsBaseCell = ({
   table,

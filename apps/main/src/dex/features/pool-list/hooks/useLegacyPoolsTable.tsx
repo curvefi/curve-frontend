@@ -16,7 +16,7 @@ import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { DEX_ROUTES } from '@ui-kit/shared/routes'
 import { decimal } from '@ui-kit/utils'
-import type { LegacyPoolListItem, LegacyPoolTag } from '../legacyPoolList.types'
+import type { LegacyPoolListItem, LegacyPoolTag } from '../legacy-pools.types'
 
 const POOL_TEXT_FIELDS = [
   'pool.wrappedCoins',
@@ -50,7 +50,7 @@ const getLegacyPoolTags = (hasPosition: boolean, { pool, pool: { address, id, na
     ['link', 'eur', 'xdai', 'other'].includes(referenceAsset.toLowerCase()) && 'others',
   )
 
-export function useLegacyPoolListData({ id: network, chainId, isLite }: NetworkConfig) {
+export function useLegacyPoolsTable({ id: network, chainId, isLite }: NetworkConfig) {
   const { curveApi } = useCurve()
   const poolDataMapper = useStore((state): PoolDataMapper | undefined => state.pools.poolsMapper[chainId])
   const rewardsApyMapper = useStore(state => state.pools.rewardsApyMapper[chainId])

@@ -2,59 +2,59 @@ import type { ReactNode } from 'react'
 import { type ColumnMeta, createColumnHelper } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import type { ColumnDefinition } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { PoolListBaseApyCell } from '../cells/PoolListBaseApyCell'
-import { PoolListRewards } from '../cells/PoolListRewards'
-import { PoolListTitleCell } from '../cells/PoolListTitleCell'
-import { PoolListUsdCell } from '../cells/PoolListUsdCell'
-import type { PoolListItem } from '../poolList.types'
-import { PoolListColumnId } from './column.enum'
+import { BaseApyCell } from '../cells/BaseApyCell'
+import { PoolTitleCell } from '../cells/PoolTitleCell'
+import { RewardsCell } from '../cells/RewardsCell'
+import { UsdCell } from '../cells/UsdCell'
+import type { PoolListItem } from '../pools.types'
+import { PoolColumnId } from './columns.enum'
 
 type Tooltip = ColumnMeta<never, never>['tooltip']
-type PoolListColumn = ColumnDefinition<PoolListItem>
-type PoolListColumnOptions = Omit<PoolListColumn, 'id' | 'header'>
+type PoolColumn = ColumnDefinition<PoolListItem>
+type PoolColumnOptions = Omit<PoolColumn, 'id' | 'header'>
 
 const columnHelper = createColumnHelper<PoolListItem>()
 
-const createTooltip = (id: keyof typeof POOL_LIST_TITLES, body: ReactNode): Tooltip => ({
-  title: POOL_LIST_TITLES[id],
+const createTooltip = (id: keyof typeof POOL_TITLES, body: ReactNode): Tooltip => ({
+  title: POOL_TITLES[id],
   body,
 })
 
-const display = (id: PoolListColumnId, column: PoolListColumnOptions): PoolListColumn => ({
+const display = (id: PoolColumnId, column: PoolColumnOptions): PoolColumn => ({
   ...column,
   id,
-  header: POOL_LIST_TITLES[id],
+  header: POOL_TITLES[id],
 })
 
 const accessor = (
-  id: PoolListColumnId,
+  id: PoolColumnId,
   accessorFn: Parameters<typeof columnHelper.accessor>[0],
-  column: PoolListColumnOptions,
-): PoolListColumn =>
+  column: PoolColumnOptions,
+): PoolColumn =>
   columnHelper.accessor(accessorFn, {
     ...column,
     id,
-    header: POOL_LIST_TITLES[id],
+    header: POOL_TITLES[id],
   })
 
-export const POOL_LIST_TITLES: Record<PoolListColumnId, string> = {
-  [PoolListColumnId.PoolName]: t`Pool`,
-  [PoolListColumnId.RewardsBase]: t`Base vAPY`,
-  [PoolListColumnId.RewardsOther]: t`Rewards tAPR`,
-  [PoolListColumnId.Volume]: t`Volume`,
-  [PoolListColumnId.Tvl]: t`TVL`,
+export const POOL_TITLES: Record<PoolColumnId, string> = {
+  [PoolColumnId.PoolName]: t`Pool`,
+  [PoolColumnId.RewardsBase]: t`Base vAPY`,
+  [PoolColumnId.RewardsOther]: t`Rewards tAPR`,
+  [PoolColumnId.Volume]: t`Volume`,
+  [PoolColumnId.Tvl]: t`TVL`,
 }
 
-export const POOL_LIST_COLUMNS = [
-  accessor(PoolListColumnId.PoolName, 'name', {
-    cell: PoolListTitleCell,
+export const POOL_COLUMNS = [
+  accessor(PoolColumnId.PoolName, 'name', {
+    cell: PoolTitleCell,
   }),
-  accessor(PoolListColumnId.RewardsBase, 'baseDailyApr', {
-    cell: PoolListBaseApyCell,
+  accessor(PoolColumnId.RewardsBase, 'baseDailyApr', {
+    cell: BaseApyCell,
     meta: {
       type: 'numeric',
       tooltip: createTooltip(
-        PoolListColumnId.RewardsBase,
+        PoolColumnId.RewardsBase,
         [
           t`Base variable APY (vAPY) is the annualized yield from trading fees based on the activity over the past 24h.`,
           t`If a pool holds a yield bearing asset, the intrinsic yield is added.`,
@@ -63,18 +63,18 @@ export const POOL_LIST_COLUMNS = [
     },
     sortUndefined: 'last',
   }),
-  display(PoolListColumnId.RewardsOther, {
-    cell: ({ row }) => <PoolListRewards pool={row.original} />,
+  display(PoolColumnId.RewardsOther, {
+    cell: ({ row }) => <RewardsCell pool={row.original} />,
     meta: { type: 'numeric', tooltip: { title: t`Token APR based on current prices of tokens and reward rates` } },
   }),
-  accessor(PoolListColumnId.Volume, 'tradingVolume24h', {
-    cell: PoolListUsdCell,
+  accessor(PoolColumnId.Volume, 'tradingVolume24h', {
+    cell: UsdCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
-  accessor(PoolListColumnId.Tvl, 'tvlUsd', {
-    cell: PoolListUsdCell,
+  accessor(PoolColumnId.Tvl, 'tvlUsd', {
+    cell: UsdCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
-] satisfies PoolListColumn[]
+] satisfies PoolColumn[]

@@ -13,38 +13,37 @@ import { TableFiltersChip } from '@ui-kit/shared/ui/DataTable/TableFiltersChip'
 import { TableFiltersOverlay } from '@ui-kit/shared/ui/DataTable/TableFiltersOverlay'
 import { TableHeader } from '@ui-kit/shared/ui/DataTable/TableHeader'
 import { TableSortDrawer } from '@ui-kit/shared/ui/DataTable/TableSortDrawer'
-import { POOL_LIST_COLUMNS, PoolListColumnId } from './columns'
-import { PoolListMobileExpandedPanel } from './components/PoolListMobileExpandedPanel'
-import { PoolListMobileExpandedPanelActions } from './components/PoolListMobileExpandedPanelActions'
-import { PoolListFilters } from './filters/PoolListFilters'
-import { PoolListFiltersCollapsible } from './filters/PoolListFiltersCollapsible'
-import { usePoolListFilters } from './hooks/usePoolListFilters'
-import { usePoolListPagination } from './hooks/usePoolListPagination'
-import { usePoolListSorting } from './hooks/usePoolListSorting'
-import { usePoolListTable } from './hooks/usePoolListTable'
-import { usePoolListVisibilitySettings } from './hooks/usePoolListVisibilitySettings'
+import { POOL_COLUMNS, PoolColumnId } from './columns'
+import { PoolExpandedPanel } from './components/PoolExpandedPanel'
+import { PoolExpandedPanelActions } from './components/PoolExpandedPanelActions'
+import { PoolsFilters } from './filters/PoolsFilters'
+import { PoolsFiltersCollapsible } from './filters/PoolsFiltersCollapsible'
+import { usePoolsFilters } from './hooks/usePoolsFilters'
+import { usePoolsPagination } from './hooks/usePoolsPagination'
+import { usePoolsSorting } from './hooks/usePoolsSorting'
+import { usePoolsTable } from './hooks/usePoolsTable'
+import { usePoolsVisibility } from './hooks/usePoolsVisibility'
 
 const LOCAL_STORAGE_KEY = 'dex-pool-list'
 
-export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
+export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
   const isMobile = useIsMobile()
   const [filtersOpen, , , , setFiltersOpen] = useSwitch(false)
   const filterChipRef = useRef<HTMLDivElement>(null)
-  const { onPaginationChange, pagination, updateQueryAndResetPage } = usePoolListPagination()
-  const { globalFilter, columnFilters, apiParams, filterProps, onSearch, resetFilters, searchText } =
-    usePoolListFilters()
-  const { onSortingChange, sortBy, sortDirection, sortField, sorting, sortOptions } = usePoolListSorting(
+  const { onPaginationChange, pagination, updateQueryAndResetPage } = usePoolsPagination()
+  const { globalFilter, columnFilters, apiParams, filterProps, onSearch, resetFilters, searchText } = usePoolsFilters()
+  const { onSortingChange, sortBy, sortDirection, sortField, sorting, sortOptions } = usePoolsSorting(
     network.isLite,
     updateQueryAndResetPage,
   )
 
   const [expanded, setExpanded] = useState<ExpandedState>({})
-  const { columnSettings, columnVisibility, toggleVisibility } = usePoolListVisibilitySettings(LOCAL_STORAGE_KEY, {
+  const { columnSettings, columnVisibility, toggleVisibility } = usePoolsVisibility(LOCAL_STORAGE_KEY, {
     isLite: network.isLite,
     sorting,
   })
 
-  const { isFetching, onReload, pageCount, userHasPositions, tableQuery } = usePoolListTable({
+  const { isFetching, onReload, pageCount, userHasPositions, tableQuery } = usePoolsTable({
     filters: apiParams,
     network,
     page: pagination.pageIndex + 1,
@@ -54,7 +53,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
   })
 
   const table = useTable({
-    columns: POOL_LIST_COLUMNS,
+    columns: POOL_COLUMNS,
     query: tableQuery,
     state: { expanded, sorting, pagination, columnVisibility, columnFilters, globalFilter },
     onExpandedChange: setExpanded,
@@ -81,10 +80,10 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
           secondaryButton: { label: t`Telegram`, href: CURVE_SOCIALS.telegram.en },
         }}
         errorState={{ title: t`Unable to retrieve pool list`, onReload }}
-        expandedPanel={{ Body: PoolListMobileExpandedPanel, Actions: PoolListMobileExpandedPanelActions }}
+        expandedPanel={{ Body: PoolExpandedPanel, Actions: PoolExpandedPanelActions }}
         shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       >
-        <TableFilters<PoolListColumnId>
+        <TableFilters<PoolColumnId>
           testIdPrefix={LOCAL_STORAGE_KEY}
           visibilityGroups={columnSettings}
           toggleVisibility={toggleVisibility}
@@ -92,7 +91,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
           onSearch={onSearch}
           collapsibleFilters={{
             collapsible: (
-              <PoolListFiltersCollapsible
+              <PoolsFiltersCollapsible
                 hasActiveFilters={hasActiveFilters}
                 resetFilters={resetFilters}
                 {...filterProps}
@@ -131,7 +130,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
         setOpen={setFiltersOpen}
         title={t`Filter pools`}
       >
-        <PoolListFilters {...filterProps} />
+        <PoolsFilters {...filterProps} />
       </TableFiltersOverlay>
     </Stack>
   )

@@ -4,7 +4,7 @@ import type { CellContext } from '@tanstack/react-table'
 import { isSortedBy } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { LegacyPoolColumnId } from '../columns'
 import { hasLegacyCrvRewards } from '../hooks/useLegacyHasPoolRewards'
-import type { LegacyPoolListItem } from '../legacyPoolList.types'
+import type { LegacyPoolListItem } from '../legacy-pools.types'
 import { Placeholder } from './Placeholder'
 
 type Prop = CellContext<LegacyPoolListItem, RewardsApy | undefined> & { placeholder?: boolean }
