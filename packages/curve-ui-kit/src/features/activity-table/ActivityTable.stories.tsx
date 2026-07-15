@@ -213,13 +213,13 @@ const DexPoolActivityComponent = () => {
         table={tradesTable}
         emptyState={{ title: 'No trades data found.' }}
         errorState={{ title: 'Could not load trades data.' }}
-        expandedPanel={PoolTradesExpandedPanel}
+        expandedPanel={{ Body: PoolTradesExpandedPanel }}
       />
       <ActivityTable
         table={liquidityTable}
         emptyState={{ title: 'No liquidity data found.' }}
         errorState={{ title: 'Could not load liquidity data.' }}
-        expandedPanel={PoolLiquidityExpandedPanel}
+        expandedPanel={{ Body: PoolLiquidityExpandedPanel }}
       />
     </>
   )
@@ -251,13 +251,13 @@ const LendMarketActivityComponent = () => {
         table={tradesTable}
         emptyState={{ title: 'No AMM trades found.' }}
         errorState={{ title: 'Could not load AMM trades.' }}
-        expandedPanel={LlammaTradesExpandedPanel}
+        expandedPanel={{ Body: LlammaTradesExpandedPanel }}
       />
       <ActivityTable
         table={eventsTable}
         emptyState={{ title: 'No controller events found.' }}
         errorState={{ title: 'Could not load controller events.' }}
-        expandedPanel={LlammaEventsExpandedPanel}
+        expandedPanel={{ Body: LlammaEventsExpandedPanel }}
       />
     </>
   )

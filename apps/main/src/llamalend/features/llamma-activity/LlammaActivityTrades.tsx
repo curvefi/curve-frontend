@@ -17,7 +17,7 @@ export const LlammaActivityTrades = ({ network, ammAddress, endpoint, networkCon
       table={table}
       emptyState={emptyState}
       errorState={errorState}
-      expandedPanel={LlammaTradesExpandedPanel}
+      expandedPanel={{ Body: LlammaTradesExpandedPanel }}
     />
   )
 }
