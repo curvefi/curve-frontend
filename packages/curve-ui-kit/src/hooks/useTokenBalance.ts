@@ -3,10 +3,11 @@ import { useCallback, useMemo } from 'react'
 import { type Address, erc20Abi, ethAddress, formatUnits, isAddressEqual } from 'viem'
 import { useBalance, useConfig, useReadContracts } from 'wagmi'
 import type { Decimal } from '@primitives/decimal.utils'
-import { type QueryObserverOptions, useQueries, type UseQueryResult } from '@tanstack/react-query'
+import { useQueries, type UseQueryResult } from '@tanstack/react-query'
 import { combineQueriesToObject, type FieldsOf } from '@ui-kit/lib'
 import { queryClient } from '@ui-kit/lib/api'
-import { type ChainQuery, REFRESH_INTERVAL, type UserQuery } from '@ui-kit/lib/model'
+import { type ChainQuery, type UserQuery } from '@ui-kit/lib/model'
+import { QUERY_CATEGORIES } from '@ui-kit/lib/model/query/query-categories'
 import { uniqAddresses } from '@ui-kit/utils'
 import { DEFAULT_DECIMALS } from '@ui-kit/utils/units'
 import type { Config, GetBalanceReturnType, ReadContractsReturnType } from '@wagmi/core'
@@ -89,36 +90,6 @@ export const invalidateTokenBalances = async (
   )
 
 /**
- * Query freshness configuration for singular token balance queries.
- *
- * Wagmi defaults:
- * - `staleTime: 0` - data is immediately stale, refetches on every mount/focus
- * - `refetchInterval: false` - no automatic background refetching
- *
- * We configure these with low intervals, so we both have a bit of auto refreshing
- * and caching (as it's used in many places and won't cause refetches in quick succession)
- */
-const QUERY_FRESHNESS_OPTIONS = {
-  staleTime: REFRESH_INTERVAL['10s'],
-  refetchInterval: REFRESH_INTERVAL['1m'],
-} satisfies Pick<QueryObserverOptions, 'staleTime' | 'refetchInterval'>
-
-/**
- * Query freshness configuration for batch token balance queries via `useQueries`.
- *
- * @remarks
- * Unlike {@link QUERY_FRESHNESS_OPTIONS}, this omits `refetchInterval` to prevent performance
- * issues when querying large token lists (e.g., token selector modal with 1000+ tokens).
- *
- * For the same performance reasons it also has a higher staleTime. We're okay if
- * balances are not super up to date. Once the user decides to further use a token it'll
- * get refetched anyway either thanks to {@link useTokenBalance} or {@link fetchTokenBalance}
- */
-const QUERIES_FRESHNESS_OPTIONS = {
-  staleTime: REFRESH_INTERVAL['15m'],
-} satisfies Pick<QueryObserverOptions, 'staleTime'>
-
-/**
  * Fetch the balance of a single token (native or ERC-20).
  *
  * @remarks Uses `allowFailure: true` for ERC-20 to handle tokens without `decimals()` (e.g., old MKR, gauge tokens).
@@ -135,14 +106,14 @@ export function useTokenBalance(
 
   const nativeBalance = useBalance({
     ...(isEnabled ? { chainId, address: userAddress } : {}),
-    query: { enabled: isEnabled && isNativeToken, ...QUERY_FRESHNESS_OPTIONS },
+    query: { enabled: isEnabled && isNativeToken, ...QUERY_CATEGORIES['global.tokenBalance'] },
   })
 
   // Spreading with ...readContractsQueryOptions() breaks Typescript's type inference, so we have to settle with the
   // least common denominator that does *not* cause type  inference issues, which is getERC20QueryContracts.
   const erc20Balance = useReadContracts({
     contracts: isEnabled ? getERC20QueryContracts({ chainId, userAddress, tokenAddress }) : undefined,
-    query: { enabled: isEnabled && !isNativeToken, ...QUERY_FRESHNESS_OPTIONS },
+    query: { enabled: isEnabled && !isNativeToken, ...QUERY_CATEGORIES['global.tokenBalance'] },
   })
 
   if (isNativeToken) {
@@ -202,7 +173,7 @@ export function useTokenBalances(
       () =>
         uniqueAddresses.map(tokenAddress => ({
           ...getTokenBalanceQueryOptions(config, { chainId: chainId!, userAddress: userAddress!, tokenAddress }),
-          ...QUERIES_FRESHNESS_OPTIONS,
+          ...QUERY_CATEGORIES['global.tokenBalances'],
           enabled: isEnabled,
           /**
            * Only re-render when data or error changes, not on metadata updates (e.g., fetchStatus, dataUpdatedAt).
@@ -246,7 +217,7 @@ export const prefetchTokenBalances = async (
     const query = { chainId, userAddress, tokenAddress: nativeToken }
     await queryClient.prefetchQuery({
       ...getNativeBalanceQueryOptions(config, query),
-      ...QUERIES_FRESHNESS_OPTIONS,
+      ...QUERY_CATEGORIES['global.tokenBalances'],
     })
   }
 

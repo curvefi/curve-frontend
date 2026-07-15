@@ -12,6 +12,8 @@ export const QUERY_CATEGORIES = {
   // Global / shared queries
   'global.gasInfo': marketDetail,
   'global.tokenRate': marketDetail,
+  'global.tokenBalance': user, // for selected tokens, update balances quite often
+  'global.tokenBalances': { ...marketDetail, refetchInterval: undefined }, // disable refetch for performance in large lists
   'global.campaigns': table,
   'global.integrations': staticData,
   'global.routerApi': urgent,
