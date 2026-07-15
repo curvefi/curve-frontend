@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { useConfig } from 'wagmi'
 import { formatTokenAmounts } from '@/llamalend/llama.utils'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
-import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
+import { useMarketMutation } from '@/llamalend/mutations/useMarketMutation'
 import { fetchCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import { createLoanQueryValidationSuite } from '@/llamalend/queries/validation/borrow.validation'
@@ -76,7 +76,7 @@ export const useCreateLoanMutation = ({
 }: CreateLoanOptions) => {
   const config = useConfig()
 
-  const { mutate, error, isPending } = useLlammaMutation<CreateLoanMutation>({
+  const { mutate, error, isPending } = useMarketMutation<CreateLoanMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'createLoan'] as const,

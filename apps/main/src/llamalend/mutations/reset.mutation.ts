@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { useConfig } from 'wagmi'
 import { formatTokenAmounts } from '@/llamalend/llama.utils'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
-import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
+import { useMarketMutation } from '@/llamalend/mutations/useMarketMutation'
 import { fetchResetIsApproved } from '@/llamalend/queries/reset/reset-is-approved.query'
 import { getResetDebtReduction, getResetImplementation } from '@/llamalend/queries/reset/reset-query.helpers'
 import { type ResetForm, resetValidationSuite } from '@/llamalend/queries/validation/reset.validation'
@@ -27,7 +27,7 @@ type ResetOptions = {
 
 export const useResetMutation = ({ network, network: { chainId }, marketId, userAddress, ...props }: ResetOptions) => {
   const config = useConfig()
-  const { mutate, error, isPending } = useLlammaMutation<ResetMutation>({
+  const { mutate, error, isPending } = useMarketMutation<ResetMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'reset'] as const,

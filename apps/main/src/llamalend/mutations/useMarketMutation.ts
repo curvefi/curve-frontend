@@ -14,7 +14,7 @@ import { getControllerAddress, getMarket, getTokens, updateUserEventsApi } from 
 import type { MarketTemplate } from '../llamalend.types'
 
 /** Context created in onMutate, extends the base transaction context with llamma market and api */
-type LlammaContext = TransactionContext & {
+type MarketContext = TransactionContext & {
   llamaApi: NonNullable<ReturnType<typeof useCurve>['llamaApi']>
   market: MarketTemplate
   userAddress: Address
@@ -26,29 +26,29 @@ const getDefaultAddresses = (market: MarketTemplate) => {
   return [collateralToken.address, borrowToken.address]
 }
 /**
- * Custom hook for handling llamma-related mutations with automatic wallet and API validation.
+ * Custom hook for handling market-related mutations with automatic wallet and API validation.
  * Wraps `useTransactionMutation` and adds llamma market context, cache invalidation,
  * and user event tracking.
  */
-export function useLlammaMutation<TVariables extends object>({
+export function useMarketMutation<TVariables extends object>({
   network: { chainId, id: networkId },
   marketId,
   onSuccess,
   mutationTokenAddresses,
   ...options
-}: TransactionMutationOptions<TVariables, LlammaContext> & {
+}: TransactionMutationOptions<TVariables, MarketContext> & {
   /** The llamma market id */
   marketId: string | null | undefined
   /** The current network config */
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
   /** Token balances affected by the mutation that should be refetched after success. Defaults to market collateral + borrow tokens. */
-  mutationTokenAddresses?: (variables: TVariables, context: LlammaContext) => Address[] | undefined
+  mutationTokenAddresses?: (variables: TVariables, context: MarketContext) => Address[] | undefined
 }) {
   const { llamaApi } = useCurve()
   const { address: userAddress } = useConnection()
   const config = useConfig()
 
-  return useTransactionMutation<TVariables, LlammaContext>({
+  return useTransactionMutation<TVariables, MarketContext>({
     ...options,
     validationParams: { chainId, marketId, userAddress },
     buildContext: (_variables, baseContext) => ({

@@ -1,7 +1,7 @@
 import { noop } from 'lodash'
 import { useCallback } from 'react'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
-import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
+import { useMarketMutation } from '@/llamalend/mutations/useMarketMutation'
 import {
   claimValidationSuite,
   claimableRewardsValidationSuite,
@@ -47,7 +47,7 @@ export const useClaimCrvMutation = ({
 }: ClaimOptions & {
   crvTokenAddress: Address | undefined
 }) => {
-  const { mutate, error, isPending } = useLlammaMutation<ClaimMutation>({
+  const { mutate, error, isPending } = useMarketMutation<ClaimMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'claimCrv'] as const,
@@ -71,7 +71,7 @@ export const useClaimRewardsMutation = ({
   userAddress,
   rewardTokenAddresses,
 }: ClaimOptions & { rewardTokenAddresses: Address[] }) => {
-  const { mutate, error, isPending } = useLlammaMutation<ClaimMutation>({
+  const { mutate, error, isPending } = useMarketMutation<ClaimMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'claimRewards'] as const,
