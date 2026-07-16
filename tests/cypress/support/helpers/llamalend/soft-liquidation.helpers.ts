@@ -20,8 +20,10 @@ export function checkClosePositionDetailsLoaded({ debt }: { debt: Decimal }) {
   cy.get('[data-testid="outstanding-debt"]').invoke('text').should('match', DECIMAL_REGEX) // first check the number is displayed before converting to number
   cy.get('[data-testid="outstanding-debt"]')
     .invoke('text')
-    .then(val => Number(/[\d.]+/.exec(val)?.[0])) // parse the first number
-    .should('be.closeTo', Number(debt), Number(debt) * 0.01)
+    .should(val => {
+      const actualDebt = Number(/[\d.]+/.exec(val)?.[0]) // parse the first number
+      expect(actualDebt).to.be.closeTo(Number(debt), Number(debt) * 0.01)
+    })
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
   cy.get('[data-testid="you-recover"]').invoke('text').should('match', DECIMAL_REGEX)
   checkEstimatedTxCost()
@@ -58,6 +60,7 @@ export function writeResetPositionWalletAmount({ amount }: { amount: Decimal }) 
   getResetPositionWalletInput().clear()
   getResetPositionWalletInput().type(amount)
   getResetPositionWalletInput().blur()
+  getResetPositionWalletInput().should('have.value', amount)
 }
 
 export const clickResetPositionMinimumWalletAmount = () => {
