@@ -22,7 +22,7 @@ import { Chain } from '@ui-kit/utils'
 const chainId = Chain.Ethereum
 
 describe('UnstakeForm (mocked)', () => {
-  afterEach(() => resetLlamaTestContext())
+  beforeEach(resetLlamaTestContext)
 
   it('fills and submits', () => {
     const { input, market, llamaApi, expected, stubs } = createUnstakeScenario({ chainId })

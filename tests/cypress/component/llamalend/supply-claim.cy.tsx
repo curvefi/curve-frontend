@@ -35,7 +35,7 @@ const testCases: {
 ]
 
 describe('ClaimTab (mocked)', () => {
-  afterEach(() => resetLlamaTestContext())
+  beforeEach(resetLlamaTestContext)
 
   testCases.forEach(({ title, claimableCrv, claimableRewards }) => {
     it(`shows ${title} state`, () => {

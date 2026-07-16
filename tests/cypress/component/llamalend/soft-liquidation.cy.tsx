@@ -55,9 +55,7 @@ const mountResetPositionForm = ({
 }
 
 describe('Soft Liquidation Forms (mocked)', () => {
-  afterEach(() => {
-    resetLlamaTestContext()
-  })
+  beforeEach(resetLlamaTestContext)
 
   describe('ImproveHealthForm', () => {
     testCases.forEach(({ approved, title }: { approved: boolean; title: string }) => {
