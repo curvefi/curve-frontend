@@ -5,7 +5,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import IconButton from '@mui/material/IconButton'
 import { maybes } from '@primitives/objects.utils'
-import { NetworkMapping } from '@ui/utils'
+import { type NetworkDef, NetworkMapping } from '@ui/utils'
 import { type TvlSource, useNetworksTVL } from '@ui-kit/entities/prices-networks.query'
 import { usePathname } from '@ui-kit/hooks/router'
 import { useShowTestNets } from '@ui-kit/hooks/useLocalStorage'
@@ -32,6 +32,13 @@ const TVL_SOURCES: Record<AppMenuOption, TvlSource> = {
   analytics: 'pool', // only has crvUSD charts, but shows all networks in selector
 }
 
+const getTvl =
+  (tvls: Record<string, number> | undefined) =>
+  ({ id, isLite, isTestnet }: NetworkDef) =>
+    isTestnet || isLite
+      ? 0 // ignore lite chains tvl, it's only available for downgraded chains and messes with sorting
+      : (maybes([getBlockchainId(id), tvls], (id, tvls) => tvls[id]) ?? 0)
+
 export const ChainSwitcher = ({ supportedNetworks, currentMenu }: ChainSwitcherProps) => {
   const networkId = getCurrentNetwork(usePathname())
 
@@ -45,7 +52,7 @@ export const ChainSwitcher = ({ supportedNetworks, currentMenu }: ChainSwitcherP
     () =>
       lodash.orderBy(
         Object.values(supportedNetworks).filter(networkConfig => networkConfig.showInSelectNetwork),
-        [n => maybes([getBlockchainId(n.id), tvls.data], (id, tvls) => tvls[id]) ?? 0, 'name'],
+        [getTvl(tvls.data), 'name'],
         ['desc', 'asc'],
       ),
     [supportedNetworks, tvls.data],
