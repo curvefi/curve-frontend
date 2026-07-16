@@ -1,4 +1,4 @@
-import { SOLVENCY_THRESHOLDS } from '@/llamalend/llama-markets.constants'
+import { SOLVENCY_THRESHOLDS } from '@/llamalend/markets.constants'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import {

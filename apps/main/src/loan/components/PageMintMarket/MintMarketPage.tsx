@@ -20,10 +20,10 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useParams } from '@ui-kit/hooks/router'
-import { useLlamalendMobileFormDrawer } from '@ui-kit/hooks/useFeatureFlags'
+import { useMarketMobileFormDrawer } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { MarketType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 import { useMintMarket } from '../../hooks/useMintMarket'
@@ -35,7 +35,7 @@ export const MintMarketPage = () => {
   const chainId = getChainId(params)
   const { address } = useConnection()
   const [previewPrices, setPreviewPrices] = useState<Range<Decimal> | undefined>(undefined)
-  const isMobileFormDrawer = useLlamalendMobileFormDrawer()
+  const isMobileFormDrawer = useMarketMobileFormDrawer()
 
   const marketQuery = useMintMarket({ chainId, rMarket: rCollateralId })
   const { data: market, isLoading: isMarketLoading, error: marketError } = marketQuery
@@ -58,7 +58,7 @@ export const MintMarketPage = () => {
   const controllerAddress = getControllerAddress(market, apiMarket.data)
 
   const collateralEvents = useUserCollateralEvents({
-    app: LlamaMarketType.Mint,
+    app: MarketType.Mint,
     chain: getBlockchainId(network.id),
     controllerAddress,
     userAddress: address,
@@ -83,7 +83,7 @@ export const MintMarketPage = () => {
       network={network}
       marketQuery={marketQuery}
       apiMarket={apiMarket}
-      marketType={LlamaMarketType.Mint}
+      marketType={MarketType.Mint}
     >
       <DetailPageLayout
         formTabs={{

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import type { Address } from 'viem'
 import { DepositForm } from '@/llamalend/features/supply/components/DepositForm'
-import { SOLVENCY_THRESHOLDS } from '@/llamalend/llama-markets.constants'
+import { SOLVENCY_THRESHOLDS } from '@/llamalend/markets.constants'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import {
   checkDepositSubmit,

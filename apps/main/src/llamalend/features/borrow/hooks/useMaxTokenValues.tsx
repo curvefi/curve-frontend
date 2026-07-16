@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { useCallback, useEffect, useRef } from 'react'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import { resetCreateLoanExpectedCollateral } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
 import { useMarketMaxLeverage } from '@/llamalend/queries/market'
 import type { Address } from '@primitives/address.utils'
@@ -24,7 +24,7 @@ export function useMaxTokenValues({
   params,
   form,
 }: {
-  market: LlamaMarketTemplate | undefined
+  market: MarketTemplate | undefined
   marketId: string | undefined
   collateralTokenAddress: Address | undefined
   params: CreateLoanFormQueryParams & { userAddress?: Address }

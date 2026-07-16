@@ -13,22 +13,22 @@ import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableFiltersChip } from '@ui-kit/shared/ui/DataTable/TableFiltersChip'
 import { TableHeader } from '@ui-kit/shared/ui/DataTable/TableHeader'
 import { mapQuery, type QueryProp } from '@ui-kit/types/util'
-import { LlamaListChips } from './chips/LlamaListChips'
-import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS, LlamaMarketColumnId } from './columns'
+import { MarketsChips } from './chips/MarketsChips'
+import { DEFAULT_SORT, MARKET_COLUMNS, MarketColumnId } from './columns'
 import { MarketSortDrawer } from './drawers/MarketSortDrawer'
-import { getLlamaFacetedRowModel } from './filters/llamaFaceting'
-import { useLlamaGlobalFilterFn } from './filters/llamaGlobalFilter'
-import { LlamaTableFiltersCollapsible } from './filters/LlamaTableFiltersCollapsible'
-import { LlamaTableFiltersOverlay } from './filters/LlamaTableFiltersOverlay'
-import { getLlamaMarketsColumnVariant, useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
-import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
-import { LlamaMarketExpandedPanelActions } from './LlamaMarketExpandedPanelActions'
+import { useMarketsGlobalFilterFn } from './filters/hooks/useMarketsGlobalFilter'
+import { getMarketFacetedRowModel } from './filters/marketFaceting'
+import { MarketsFiltersCollapsible } from './filters/MarketsFiltersCollapsible'
+import { MarketsFiltersOverlay } from './filters/MarketsFiltersOverlay'
+import { getMarketsColumnVariant, useMarketsVisibility } from './hooks/useMarketsVisibility'
+import { MarketExpandedPanel } from './MarketExpandedPanel'
+import { MarketExpandedPanelActions } from './MarketExpandedPanelActions'
 
 const LOCAL_STORAGE_KEY = 'Llamalend Markets'
 
 const pagination = { pageIndex: 0, pageSize: 200 }
 
-export const LlamaMarketsTable = ({
+export const MarketsTable = ({
   onReload,
   tableQuery,
   tableQuery: { data: queryData, isLoading },
@@ -42,20 +42,20 @@ export const LlamaMarketsTable = ({
   const isMobile = useIsMobile()
 
   const { globalFilter, setGlobalFilter, columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useFilters(
-    { columns: LlamaMarketColumnId },
+    { columns: MarketColumnId },
   )
-  const globalFilterFn = useLlamaGlobalFilterFn(data, globalFilter)
+  const globalFilterFn = useMarketsGlobalFilterFn(data, globalFilter)
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
-  const { columnSettings, columnVisibility, toggleVisibility, sortField } = useLlamaTableVisibility(
+  const { columnSettings, columnVisibility, toggleVisibility, sortField } = useMarketsVisibility(
     LOCAL_STORAGE_KEY,
     sorting,
-    getLlamaMarketsColumnVariant(userHasPositions),
+    getMarketsColumnVariant(userHasPositions),
   )
   const [expanded, setExpanded] = useState<ExpandedState>({})
   const filterProps = { columnFiltersById, setColumnFilter }
 
   const table = useTable({
-    columns: LLAMA_MARKET_COLUMNS,
+    columns: MARKET_COLUMNS,
     query: mapQuery(tableQuery, d => d.markets),
     state: { expanded, sorting, columnVisibility, columnFilters, globalFilter },
     initialState: { pagination },
@@ -63,7 +63,7 @@ export const LlamaMarketsTable = ({
     onExpandedChange: setExpanded,
     globalFilterFn,
     ...getTableOptions(queryData ? data : undefined),
-    getFacetedRowModel: getLlamaFacetedRowModel,
+    getFacetedRowModel: getMarketFacetedRowModel,
   })
 
   const hasActiveFilters = !!table.getState().columnFilters.length
@@ -79,10 +79,10 @@ export const LlamaMarketsTable = ({
           button: { onClick: resetFilters, label: t`Show All Markets` },
         }}
         errorState={{ title: t`Could not load markets`, onReload }}
-        expandedPanel={{ Body: LlamaMarketExpandedPanel, Actions: LlamaMarketExpandedPanelActions }}
+        expandedPanel={{ Body: MarketExpandedPanel, Actions: MarketExpandedPanelActions }}
         shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       >
-        <TableFilters<LlamaMarketColumnId>
+        <TableFilters<MarketColumnId>
           testIdPrefix={LOCAL_STORAGE_KEY}
           visibilityGroups={columnSettings}
           toggleVisibility={toggleVisibility}
@@ -91,7 +91,7 @@ export const LlamaMarketsTable = ({
           onSearch={setGlobalFilter}
           collapsibleFilters={{
             collapsible: (
-              <LlamaTableFiltersCollapsible
+              <MarketsFiltersCollapsible
                 table={table}
                 resetFilters={resetFilters}
                 hasActiveFilters={hasActiveFilters}
@@ -110,11 +110,11 @@ export const LlamaMarketsTable = ({
             />
           }
           sortChip={isMobile && <MarketSortDrawer onSortingChange={onSortingChange} sortField={sortField} />}
-          chips={<LlamaListChips hasFavorites={hasFavorites} {...filterProps} />}
+          chips={<MarketsChips hasFavorites={hasFavorites} {...filterProps} />}
         />
       </DataTable>
       {/* Keep the overlay outside DataTable children because DataTable remounts them when switching sticky header layout. */}
-      <LlamaTableFiltersOverlay
+      <MarketsFiltersOverlay
         table={table}
         hasActiveFilters={hasActiveFilters}
         open={filtersOpen}

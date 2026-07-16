@@ -14,7 +14,7 @@ import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionIn
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Address, Token } from '@primitives/address.utils'
 import { maybes } from '@primitives/objects.utils'
-import type { LlamaMarketType } from '@ui-kit/types/market'
+import type { MarketType } from '@ui-kit/types/market'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimalMax, decimalMinus } from '@ui-kit/utils'
 
@@ -30,7 +30,7 @@ export function ResetPositionInfoList<ChainId extends IChainId>({
   values: ResetForm
   tokens: { collateralToken: Token | undefined; borrowToken: Token | undefined }
   controllerAddress: Address | undefined
-  marketType: LlamaMarketType
+  marketType: MarketType
   networks: NetworkDict<ChainId>
 }) {
   const debtReduction = getResetDebtReduction(values)

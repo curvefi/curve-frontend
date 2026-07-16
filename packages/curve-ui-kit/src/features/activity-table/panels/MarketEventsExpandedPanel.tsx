@@ -6,11 +6,11 @@ import type { ExpandedPanelComponent } from '@ui-kit/shared/ui/DataTable/Expansi
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
-import type { LlammaEventRow } from '../types'
+import type { MarketEventRow } from '../types'
 
 const { Spacing } = SizesAndSpaces
 
-export const LlammaEventsExpandedPanel: ExpandedPanelComponent<LlammaEventRow> = ({
+export const MarketEventsExpandedPanel: ExpandedPanelComponent<MarketEventRow> = ({
   row: {
     original: { deposit, withdrawal, provider, network, collateralToken, borrowToken },
   },

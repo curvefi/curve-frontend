@@ -2,7 +2,7 @@ import { useLlammaTrades } from '@/llamalend/queries/llamma-trades.query'
 import type { LlammaTrade } from '@curvefi/prices-api/llamma'
 import { scanAddressPath, scanTxPath } from '@ui/utils'
 import {
-  type LlammaTradeRow,
+  type MarketTradeRow,
   LLAMMA_TRADES_COLUMNS,
   useLlammaActivityVisibility,
   useManualPagination,
@@ -57,7 +57,7 @@ export const useLlammaActivityTradesConfig = ({
     manualPagination: true,
     pageCount,
     onPaginationChange,
-    ...getTableOptions<LlammaTradeRow>(tradesWithUrlsQuery.data),
+    ...getTableOptions<MarketTradeRow>(tradesWithUrlsQuery.data),
   })
 
   return {

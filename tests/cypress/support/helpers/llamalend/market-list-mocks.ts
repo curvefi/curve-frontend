@@ -31,7 +31,7 @@ export const blockUnmockedApis = () => {
 }
 
 /** The cypress-wagmi-test-connector generates a fresh address at runtime, so we have to mock by pattern. */
-export const mockEmptyLlamaMarketUserData = () =>
+export const mockEmptyMarketUserData = () =>
   [
     /\/v1\/lending\/users\/all\/0x[a-fA-F0-9]{40}$/,
     /\/v1\/crvusd\/users\/all\/0x[a-fA-F0-9]{40}$/,
@@ -50,7 +50,7 @@ export const mockEmptyLlamaMarketUserData = () =>
   )
 
 /** Mocks the empty response for the bad debt endpoints. */
-export const mockEmptyLlamaMarketBadDebt = () =>
+export const mockEmptyMarketBadDebt = () =>
   ['/v1/crvusd/liquidations/bad_debt', '/v1/lending/liquidations/bad_debt'].map(pathname =>
     cy.intercept({ method: 'GET', pathname, query: { fetch_on_chain: 'true' } }, { body: { data: [] } }),
   )
@@ -63,8 +63,8 @@ const mockEmptyCrvUsdAmms = () =>
 
 export function setupLlamalendListMocks(vaultData = createLendingVaultChainsResponse()) {
   blockUnmockedApis()
-  mockEmptyLlamaMarketUserData()
-  mockEmptyLlamaMarketBadDebt()
+  mockEmptyMarketUserData()
+  mockEmptyMarketBadDebt()
   mockEmptyCrvUsdAmms()
   mockTokenPrices()
   const lendingVaults = mockLendingVaults(vaultData)

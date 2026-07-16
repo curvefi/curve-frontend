@@ -1,4 +1,4 @@
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import type { FetchedBandsBalances, SortedBandBalance } from '@/llamalend/queries/bands/types'
 import { getPricesImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import { sortBy } from '@primitives/array.utils'
@@ -28,7 +28,7 @@ export const sortBands = (bandsBalances: BandsBalances): SortedBandBalance[] =>
 export async function fetchChartBandBalancesData(
   bandsBalancesArr: SortedBandBalance[],
   liquidationBand: number | null,
-  market: LlamaMarketTemplate,
+  market: MarketTemplate,
   isMarket: boolean,
 ) {
   const bands = isMarket

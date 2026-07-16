@@ -1,9 +1,9 @@
-export enum LlamaMarketType {
+export enum MarketType {
   Mint = 'Mint',
   Lend = 'Lend',
 }
 
-export enum LlamaMarketVersion {
+export enum MarketVersion {
   v1 = 'v1',
   v2 = 'v2',
 }

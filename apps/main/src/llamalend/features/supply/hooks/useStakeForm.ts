@@ -19,7 +19,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { useForm, useFormSync } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { MarketType } from '@ui-kit/types/market'
 import { mapQuery } from '@ui-kit/types/util'
 import { useMarketContext } from '../../market-context'
 import { useVaultUserBalances } from './useVaultUserBalances'
@@ -44,7 +44,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({ network }: { networ
   const { marketId, controllerAddress, tokens, gaugeAddress, userAddress } = useMarketContext<ChainId>()
   const { chainId } = network
   const marketHasGauge = !!gaugeAddress && gaugeAddress !== zeroAddress
-  const marketAlert = useMarketAlert(chainId, controllerAddress, LlamaMarketType.Lend)
+  const marketAlert = useMarketAlert(chainId, controllerAddress, MarketType.Lend)
 
   const { borrowToken, collateralToken } = tokens
 
@@ -93,7 +93,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({ network }: { networ
     isOpen,
   } = useFormLowSolvency({
     controllerAddress,
-    marketType: LlamaMarketType.Lend,
+    marketType: MarketType.Lend,
     chainId,
     onSubmit: submitStake,
     handleFormSubmit: form.handleSubmit,

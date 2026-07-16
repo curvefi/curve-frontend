@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
 import { useConfig } from 'wagmi'
 import { formatTokenAmounts } from '@/llamalend/llama.utils'
-import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
+import { MarketTemplate } from '@/llamalend/llamalend.types'
+import { useMarketMutation } from '@/llamalend/mutations/useMarketMutation'
 import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import { fetchRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import { getRepayImplementation, isFullRepayFromDebtToken } from '@/llamalend/queries/repay/repay-query.helpers'
@@ -33,7 +33,7 @@ type RepayOptions = {
 }
 
 const approveRepay = async (
-  market: LlamaMarketTemplate,
+  market: MarketTemplate,
   { stateCollateral = '0', userCollateral = '0', userBorrowed = '0', isFull, routeId, slippage }: RepayMutation,
 ) => {
   if (isFullRepayFromDebtToken(isFull, stateCollateral, userCollateral)) {
@@ -62,7 +62,7 @@ const approveRepay = async (
 }
 
 const repay = async (
-  market: LlamaMarketTemplate,
+  market: MarketTemplate,
   { stateCollateral = '0', userCollateral = '0', userBorrowed = '0', isFull, slippage, routeId }: RepayMutation,
 ): Promise<Hex> => {
   if (isFullRepayFromDebtToken(isFull, stateCollateral, userCollateral)) {
@@ -97,7 +97,7 @@ const repay = async (
 
 export const useRepayMutation = ({ network, network: { chainId }, marketId, userAddress, ...props }: RepayOptions) => {
   const config = useConfig()
-  const { mutate, error, isPending } = useLlammaMutation<RepayMutation>({
+  const { mutate, error, isPending } = useMarketMutation<RepayMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'repay'] as const,

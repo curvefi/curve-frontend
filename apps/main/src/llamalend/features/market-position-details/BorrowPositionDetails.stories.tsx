@@ -1,6 +1,6 @@
 import { zeroAddress } from 'viem'
 import { MarketContext, createMarketContextValue } from '@/llamalend/features/market-context'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import {
   getMarketLiquidationBandKey,
   getMarketOraclePriceBandKey,
@@ -19,7 +19,7 @@ import { DEFAULT_DECIMALS } from '@primitives/objects.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { getTokenUsdRateKey } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { TestQueryProvider } from '@ui-kit/lib/queries/test-query.provider.test'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { MarketType } from '@ui-kit/types/market'
 import { constQ, type Range } from '@ui-kit/types/util'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { BorrowPositionDetails } from './'
@@ -68,9 +68,9 @@ const BorrowPositionDetailsStory = ({
       ...createMarketContextValue({
         chainId: params.chainId as IChainId,
         blockchainId: 'ethereum',
-        marketQuery: constQ<LlamaMarketTemplate | undefined>(undefined),
+        marketQuery: constQ<MarketTemplate | undefined>(undefined),
         apiMarket: constQ<LlamaMarket | undefined>(undefined),
-        marketType: LlamaMarketType.Mint,
+        marketType: MarketType.Mint,
         userAddress: params.userAddress,
         api: null,
       }),

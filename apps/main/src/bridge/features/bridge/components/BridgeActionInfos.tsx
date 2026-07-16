@@ -2,7 +2,7 @@ import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate, type EstimatedTxCostProps } from '@ui-kit/shared/ui/ActionInfo'
 import { mapQuery, type QueryProp } from '@ui-kit/types/util'
-import { formatNumber } from '@ui-kit/utils'
+import { formatToken } from '@ui-kit/utils'
 
 type BridgeActionInfosProps = EstimatedTxCostProps & {
   /** Query returning the estimated bridge cost in the chain's native token. */
@@ -14,15 +14,7 @@ export const BridgeActionInfos = ({ bridgeCost, gas, isApproved, nativeTokenSymb
   <Stack>
     <ActionInfo
       label={t`Estimated bridge cost`}
-      value={mapQuery(bridgeCost, data =>
-        formatNumber(data, {
-          unit: {
-            symbol: ` ${nativeTokenSymbol}`,
-            position: 'suffix',
-          },
-          abbreviate: false,
-        }),
-      )}
+      value={mapQuery(bridgeCost, data => formatToken(data, nativeTokenSymbol, 'amount'))}
       size="small"
     />
 

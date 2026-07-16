@@ -2,7 +2,7 @@ import { useLlammaEvents } from '@/llamalend/queries/llamma-events.query'
 import type { LlammaEvent } from '@curvefi/prices-api/llamma'
 import { scanAddressPath, scanTxPath } from '@ui/utils'
 import {
-  type LlammaEventRow,
+  type MarketEventRow,
   LLAMMA_EVENTS_COLUMNS,
   useLlammaActivityVisibility,
   useManualPagination,
@@ -51,7 +51,7 @@ export const useLlammaActivityEventsConfig = ({
       manualPagination: true,
       pageCount: getPageCount(eventsQuery.data?.count, DEFAULT_PAGE_SIZE),
       onPaginationChange,
-      ...getTableOptions<LlammaEventRow>(query.data),
+      ...getTableOptions<MarketEventRow>(query.data),
     }),
     emptyState: { title: t`No activity data found.` },
     errorState: { title: t`Could not load activity data.` },

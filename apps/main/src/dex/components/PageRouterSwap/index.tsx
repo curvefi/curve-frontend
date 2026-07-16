@@ -523,7 +523,7 @@ export const QuickSwap = ({
         message={
           formValues.fromError &&
           userFromBalance != null &&
-          t`Amount > wallet balance ${formatNumber(userFromBalance, { abbreviate: false })}`
+          t`Amount > wallet balance ${formatNumber(userFromBalance, 'token.amount')}`
         }
       />
       {/* SWAP ICON */}

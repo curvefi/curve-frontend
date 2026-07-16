@@ -24,7 +24,7 @@ import {
 } from '@ui-kit/shared/ui/Chart'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { MarketType } from '@ui-kit/types/market'
 import { fallbackQ, mapQuery, q, useMappedQuery } from '@ui-kit/types/util'
 import { decimal, decimalMax, decimalMinus, decimalMultiply, decimalSum, formatNumber } from '@ui-kit/utils'
 import { useMarketContext } from '../features/market-context'
@@ -182,7 +182,7 @@ export const MarketRateCurveChart = () => {
             notional={utilizationBreakdown}
             valueTooltip={{
               title: t`Utilization`,
-              body: <UtilizationTooltip marketType={LlamaMarketType.Lend} />,
+              body: <UtilizationTooltip marketType={MarketType.Lend} />,
               ...TooltipOptions,
             }}
           />

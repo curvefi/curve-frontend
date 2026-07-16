@@ -8,9 +8,9 @@ import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { type AssetDetails } from '../../../queries/market-list/llama-markets'
-import { LlamaChainFilterChips } from '../chips/LlamaChainFilterChips'
-import { LLAMA_MARKET_TITLES, LlamaMarketColumnId } from '../columns'
-import { type LlamaMarketsFiltersProps, useLlamaMarketsFilters } from './hooks/useLlamaMarketsFilters'
+import { MarketsChainFilterChips } from '../chips/MarketsChainFilterChips'
+import { MARKET_TITLES, MarketColumnId } from '../columns'
+import { type MarketsFiltersProps, useMarketsFilters } from './hooks/useMarketsFilters'
 import { MultiSelectFilter } from './MultiSelectFilter'
 import { RangeSliderRowFilter } from './RangeSliderRowFilter'
 
@@ -34,10 +34,8 @@ const SelectedToken = ({ symbol }: { symbol: string }) => (
   <SelectableChip label={symbol} selected toggle={noop} sx={{ pointerEvents: 'none' }} />
 )
 
-/**
- * Filters for the LlamaLend markets table, including chain, token, APR, and range-based filters.
- */
-export const LlamaMarketsFilters = (props: LlamaMarketsFiltersProps) => {
+/** Filters for the LlamaLend markets table, including chain, token, APR, and range-based filters. */
+export const MarketsFilters = (props: MarketsFiltersProps) => {
   const {
     filterProps,
     tokens,
@@ -54,16 +52,16 @@ export const LlamaMarketsFilters = (props: LlamaMarketsFiltersProps) => {
     onMarketVersionChange,
     marketTypeOptions,
     marketVersionOptions,
-  } = useLlamaMarketsFilters(props)
+  } = useMarketsFilters(props)
 
   return (
     <Stack spacing={Spacing.sm} sx={{ padding: Spacing.sm }}>
-      <TableFilterItem title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.Chain]}>
-        <LlamaChainFilterChips marketsQuery={props.marketsQuery} {...filterProps} />
+      <TableFilterItem title={MARKET_TITLES[MarketColumnId.Chain]}>
+        <MarketsChainFilterChips marketsQuery={props.marketsQuery} {...filterProps} />
       </TableFilterItem>
-      <TableFilterItem title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.CollateralSymbol]}>
+      <TableFilterItem title={MARKET_TITLES[MarketColumnId.CollateralSymbol]}>
         <MultiSelectFilter
-          id={LlamaMarketColumnId.CollateralSymbol}
+          id={MarketColumnId.CollateralSymbol}
           options={collateralTokenOptions}
           renderItem={symbol => <Token symbol={symbol} tokens={tokens} />}
           selectedItemRender={symbol => <SelectedToken symbol={symbol} />}
@@ -71,9 +69,9 @@ export const LlamaMarketsFilters = (props: LlamaMarketsFiltersProps) => {
           {...filterProps}
         />
       </TableFilterItem>
-      <TableFilterItem title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.BorrowedSymbol]}>
+      <TableFilterItem title={MARKET_TITLES[MarketColumnId.BorrowedSymbol]}>
         <MultiSelectFilter
-          id={LlamaMarketColumnId.BorrowedSymbol}
+          id={MarketColumnId.BorrowedSymbol}
           options={borrowedTokenOptions}
           renderItem={symbol => <Token symbol={symbol} tokens={tokens} />}
           selectedItemRender={symbol => <SelectedToken symbol={symbol} />}
@@ -81,9 +79,9 @@ export const LlamaMarketsFilters = (props: LlamaMarketsFiltersProps) => {
           {...filterProps}
         />
       </TableFilterItem>
-      <TableFilterItem title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.BorrowRate]}>
+      <TableFilterItem title={MARKET_TITLES[MarketColumnId.BorrowRate]}>
         <TableRangeFilter
-          id={LlamaMarketColumnId.BorrowRate}
+          id={MarketColumnId.BorrowRate}
           min={borrowRateRange.min}
           max={borrowRateRange.max}
           isLoading={props.marketsQuery.isLoading}
@@ -91,9 +89,9 @@ export const LlamaMarketsFilters = (props: LlamaMarketsFiltersProps) => {
           {...filterProps}
         />
       </TableFilterItem>
-      <TableFilterItem title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.Tvl]}>
+      <TableFilterItem title={MARKET_TITLES[MarketColumnId.Tvl]}>
         <TableRangeFilter
-          id={LlamaMarketColumnId.Tvl}
+          id={MarketColumnId.Tvl}
           min={tvlRange.min}
           max={tvlRange.max}
           isLoading={props.marketsQuery.isLoading}
@@ -101,9 +99,9 @@ export const LlamaMarketsFilters = (props: LlamaMarketsFiltersProps) => {
           {...filterProps}
         />
       </TableFilterItem>
-      <TableFilterItem title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.LiquidityUsd]}>
+      <TableFilterItem title={MARKET_TITLES[MarketColumnId.LiquidityUsd]}>
         <TableRangeFilter
-          id={LlamaMarketColumnId.LiquidityUsd}
+          id={MarketColumnId.LiquidityUsd}
           min={liquidityRange.min}
           max={liquidityRange.max}
           isLoading={props.marketsQuery.isLoading}
@@ -111,9 +109,9 @@ export const LlamaMarketsFilters = (props: LlamaMarketsFiltersProps) => {
           {...filterProps}
         />
       </TableFilterItem>
-      <TableFilterItem title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.UtilizationPercent]}>
+      <TableFilterItem title={MARKET_TITLES[MarketColumnId.UtilizationPercent]}>
         <TableRangeFilter
-          id={LlamaMarketColumnId.UtilizationPercent}
+          id={MarketColumnId.UtilizationPercent}
           min={utilizationRange.min}
           max={utilizationRange.max}
           isLoading={props.marketsQuery.isLoading}
@@ -121,9 +119,9 @@ export const LlamaMarketsFilters = (props: LlamaMarketsFiltersProps) => {
           {...filterProps}
         />
       </TableFilterItem>
-      <TableFilterItem title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.MaxLtv]}>
+      <TableFilterItem title={MARKET_TITLES[MarketColumnId.MaxLtv]}>
         <RangeSliderRowFilter
-          id={LlamaMarketColumnId.MaxLtv}
+          id={MarketColumnId.MaxLtv}
           min={maxLtvRange.min}
           max={maxLtvRange.max}
           step={maxLtvRange.step}
@@ -132,7 +130,7 @@ export const LlamaMarketsFilters = (props: LlamaMarketsFiltersProps) => {
         />
       </TableFilterItem>
       <TableFilterButtonGroup
-        title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.Type]}
+        title={MARKET_TITLES[MarketColumnId.Type]}
         value={marketTypeValue}
         onChange={onMarketTypeChange}
         ariaLabel={t`Market type filter`}
@@ -140,7 +138,7 @@ export const LlamaMarketsFilters = (props: LlamaMarketsFiltersProps) => {
         testIdSuffix="market-type"
       />
       <TableFilterButtonGroup
-        title={LLAMA_MARKET_TITLES[LlamaMarketColumnId.Version]}
+        title={MARKET_TITLES[MarketColumnId.Version]}
         value={marketVersionValue}
         onChange={onMarketVersionChange}
         ariaLabel={t`Market version filter`}
