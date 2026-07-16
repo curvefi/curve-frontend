@@ -7,12 +7,12 @@ import {
 import Stack from '@mui/material/Stack'
 import type { CampaignRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { MarketType } from '@ui-kit/types/market'
 import { formatNumber } from '@ui-kit/utils'
 import { RewardsTooltipItems } from './RewardTooltipItems'
 
 export type MarketNetBorrowAprTooltipContentProps = {
-  marketType: LlamaMarketType
+  marketType: MarketType
   borrowApr: number | null | undefined
   averageApr: number | null | undefined
   totalBorrowApr: number | null | undefined
@@ -24,9 +24,9 @@ export type MarketNetBorrowAprTooltipContentProps = {
   isLoading?: boolean
 }
 
-const messages: Record<LlamaMarketType, string> = {
-  [LlamaMarketType.Lend]: t`The borrow rate is the cost related to your borrow and varies according to the monetary policy of the market.`,
-  [LlamaMarketType.Mint]: t`The borrow rate is the cost related to your borrow and varies according to the market, borrow incentives and crvUSD's peg.`,
+const messages: Record<MarketType, string> = {
+  [MarketType.Lend]: t`The borrow rate is the cost related to your borrow and varies according to the monetary policy of the market.`,
+  [MarketType.Mint]: t`The borrow rate is the cost related to your borrow and varies according to the market, borrow incentives and crvUSD's peg.`,
 }
 
 export const MarketNetBorrowAprTooltipContent = ({

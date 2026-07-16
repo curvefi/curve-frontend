@@ -24,8 +24,8 @@ export const checkCollateralDetailsLoaded = ({
   future: Decimal
   hasApi?: boolean
 }) => {
-  const formattedCurrent = formatNumber(current, { abbreviate: false })
-  const formattedFuture = formatNumber(future, { abbreviate: false })
+  const formattedCurrent = formatNumber(current, 'token.amount')
+  const formattedFuture = formatNumber(future, 'token.amount')
 
   getActionValue('borrow-collateral', 'previous').should('equal', formattedCurrent)
   getActionValue('borrow-collateral').should('equal', formattedFuture)
@@ -34,7 +34,7 @@ export const checkCollateralDetailsLoaded = ({
 }
 
 export const checkCurrentCollateral = (expected: Decimal) => {
-  const formatted = formatNumber(expected, { abbreviate: false })
+  const formatted = formatNumber(expected, 'token.amount')
   getActionValue('borrow-collateral').should('equal', formatted)
   getActionValue('borrow-collateral', 'previous').should('equal', formatted)
 }

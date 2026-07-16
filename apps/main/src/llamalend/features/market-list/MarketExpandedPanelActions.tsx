@@ -5,16 +5,16 @@ import { t } from '@ui-kit/lib/i18n'
 import { LEND_MARKET_ROUTES } from '@ui-kit/shared/routes'
 import { ExpandedPanelActions } from '@ui-kit/shared/ui/DataTable/ExpandedPanelActions'
 import type { ExpandedPanelComponent } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
-import { LlamaMarketType } from '@ui-kit/types/market'
-import { useLlamaMarketExpandedPanelActions } from './hooks/useLlamaMarketExpandedPanelActions'
+import { MarketType } from '@ui-kit/types/market'
+import { useMarketExpandedPanelActions } from './hooks/useMarketExpandedPanelActions'
 
-export const LlamaMarketExpandedPanelActions: ExpandedPanelComponent<LlamaMarket> = ({ row: { original: market } }) => {
-  const extraPanels = useLlamaMarketExpandedPanelActions(market)
+export const MarketExpandedPanelActions: ExpandedPanelComponent<LlamaMarket> = ({ row: { original: market } }) => {
+  const extraPanels = useMarketExpandedPanelActions(market)
 
   const actions = useMemo(
     () =>
       notFalsy(
-        market.type === LlamaMarketType.Lend && {
+        market.type === MarketType.Lend && {
           id: 'earn',
           label: t`Earn`,
           href: market.url + LEND_MARKET_ROUTES.PAGE_VAULT,

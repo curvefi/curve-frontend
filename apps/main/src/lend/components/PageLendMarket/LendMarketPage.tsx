@@ -21,10 +21,10 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useParams } from '@ui-kit/hooks/router'
-import { useLlamaResetPosition, useLlamalendMobileFormDrawer } from '@ui-kit/hooks/useFeatureFlags'
+import { useMarketResetPosition, useMarketMobileFormDrawer } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
-import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
+import { MarketType, MarketRateType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 import { useLendMarket } from '../../hooks/useLendMarket'
@@ -38,7 +38,7 @@ export const LendMarketPage = () => {
   const { isInitialized } = useCurve()
   const { address: userAddress } = useConnection()
   useLendPageTitle(market?.collateral_token?.symbol ?? rMarket, t`Lend`)
-  const isMobileFormDrawer = useLlamalendMobileFormDrawer()
+  const isMobileFormDrawer = useMarketMobileFormDrawer()
 
   const network = networks[chainId]
   const queryParams = { chainId, marketId: market?.id, userAddress }
@@ -58,14 +58,14 @@ export const LendMarketPage = () => {
   const tokens = useMemo(() => getTokens(market, apiMarket.data) ?? {}, [apiMarket.data, market])
   const controllerAddress = getControllerAddress(market, apiMarket.data)
   const collateralEvents = useUserCollateralEvents({
-    app: LlamaMarketType.Lend,
+    app: MarketType.Lend,
     chain: getBlockchainId(network.id),
     controllerAddress,
     userAddress,
     tokens,
     network,
   })
-  const showReset = useLlamaResetPosition() && hasResetPosition(market)
+  const showReset = useMarketResetPosition() && hasResetPosition(market)
   const { data: isSoftLiquidation, isLoading: isSoftLiquidationLoading } = useIsInSoftLiquidation(
     queryParams,
     !!loanExists,
@@ -79,7 +79,7 @@ export const LendMarketPage = () => {
       network={network}
       marketQuery={marketQuery}
       apiMarket={apiMarket}
-      marketType={LlamaMarketType.Lend}
+      marketType={MarketType.Lend}
     >
       <DetailPageLayout
         formTabs={{

@@ -2,15 +2,15 @@ import { type Endpoint, getBadDebt } from '@curvefi/prices-api/liquidations'
 import { recordValues } from '@primitives/objects.utils'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { EmptyValidationSuite } from '@ui-kit/lib/validation'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { MarketType } from '@ui-kit/types/market'
 
 type BadDebtParams = {
-  type: LlamaMarketType
+  type: MarketType
 }
 
-const endpointFromMarketType: Record<LlamaMarketType, Endpoint> = {
-  [LlamaMarketType.Lend]: 'lending',
-  [LlamaMarketType.Mint]: 'crvusd',
+const endpointFromMarketType: Record<MarketType, Endpoint> = {
+  [MarketType.Lend]: 'lending',
+  [MarketType.Mint]: 'crvusd',
 }
 
 const { getQueryOptions: getBadDebtMarketsOptionsQuery, reset: resetBadDebtMarketsQuery } = queryFactory({
@@ -21,10 +21,10 @@ const { getQueryOptions: getBadDebtMarketsOptionsQuery, reset: resetBadDebtMarke
 })
 
 export const getBadDebtLendMarketsOptions = (enabled = true) =>
-  getBadDebtMarketsOptionsQuery({ type: LlamaMarketType.Lend }, enabled)
+  getBadDebtMarketsOptionsQuery({ type: MarketType.Lend }, enabled)
 
 export const getBadDebtMintMarketsOptions = (enabled = true) =>
-  getBadDebtMarketsOptionsQuery({ type: LlamaMarketType.Mint }, enabled)
+  getBadDebtMarketsOptionsQuery({ type: MarketType.Mint }, enabled)
 
 export const resetBadDebtMarkets = async () =>
-  Promise.all(recordValues(LlamaMarketType).map(type => resetBadDebtMarketsQuery({ type })))
+  Promise.all(recordValues(MarketType).map(type => resetBadDebtMarketsQuery({ type })))

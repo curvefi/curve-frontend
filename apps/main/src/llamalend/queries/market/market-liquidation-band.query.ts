@@ -1,4 +1,4 @@
-import { getLlamaMarket } from '@/llamalend/llama.utils'
+import { getMarket } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { type MarketQuery, queryFactory, rootKeys, MarketParams } from '@ui-kit/lib/model'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
@@ -6,7 +6,7 @@ import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-valid
 export const { useQuery: useMarketLiquidationBand, queryKey: getMarketLiquidationBandKey } = queryFactory({
   queryKey: (params: MarketParams) => [...rootKeys.market(params), 'liquidationBand'] as const,
   queryFn: async ({ marketId }: MarketQuery): Promise<number | null> => {
-    const market = getLlamaMarket(marketId)
+    const market = getMarket(marketId)
     return market instanceof LendMarketTemplate
       ? (await market.stats.bandsInfo()).liquidationBand
       : await market.stats.liquidatingBand()

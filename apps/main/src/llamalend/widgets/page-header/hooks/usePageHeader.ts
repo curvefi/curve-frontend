@@ -1,8 +1,8 @@
 import { useMarketContext } from '@/llamalend/features/market-context'
-import { useSnapshots } from '@/llamalend/features/market-list/hooks/useSnapshots'
+import { useMarketSnapshots } from '@/llamalend/features/market-list/hooks/useMarketSnapshots'
 import { useFilteredRewards } from '@/llamalend/hooks/useFilteredRewards'
 import { getControllerAddress, getTokens, getVaultAddress } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import { useLlamaSnapshot } from '@/llamalend/queries/llamma-snapshots.query'
 import {
   type MarketRates,
@@ -33,7 +33,7 @@ import type { CrvUsdSnapshot } from '@ui-kit/entities/crvusd-snapshots'
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
 import { combineQueries } from '@ui-kit/lib'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
-import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
+import { MarketType, MarketRateType } from '@ui-kit/types/market'
 import { fakeLoadingQ, fallbackQ, mapQuery, q, Query, type QueryProp, type Range } from '@ui-kit/types/util'
 import { AVERAGE_CATEGORIES, type AverageCategory, decimal, decimalMultiply } from '@ui-kit/utils'
 
@@ -105,8 +105,8 @@ const useBorrowRate = ({
 }: {
   apiMarket: QueryProp<LlamaMarket>
   marketRates: QueryProp<MarketRates>
-  marketType: LlamaMarketType
-  marketQuery: QueryProp<LlamaMarketTemplate>
+  marketType: MarketType
+  marketQuery: QueryProp<MarketTemplate>
   snapshot: QueryProp<LendingSnapshot[] | CrvUsdSnapshot[]>
   campaigns: CampaignRewards[]
 }) => {
@@ -134,7 +134,7 @@ const useBorrowRate = ({
   })
 
   const useApiMarket = !!apiMarket.data && !marketQuery.data
-  const { averageRate: averageApr, averageTotalBorrowRate: totalAverageBorrowApr } = useSnapshots(
+  const { averageRate: averageApr, averageTotalBorrowRate: totalAverageBorrowApr } = useMarketSnapshots(
     apiMarket.data,
     { type: MarketRateType.Borrow, category: RATE_CATEGORY },
     useApiMarket,
@@ -167,15 +167,15 @@ const useSupplyRate = ({
   useApiMarket: boolean
   marketRates: QueryProp<MarketRates>
   snapshot: QueryProp<LendingSnapshot[] | CrvUsdSnapshot[]>
-  marketQuery: QueryProp<LlamaMarketTemplate>
+  marketQuery: QueryProp<MarketTemplate>
   blockchainId: Chain | undefined
   apiMarket: QueryProp<LlamaMarket>
-  marketType: LlamaMarketType
+  marketType: MarketType
   campaigns: CampaignRewards[]
 }) => {
   const marketId = marketQuery.data?.id
-  const enabled = marketType === LlamaMarketType.Lend
-  const apiSupplySnapshots = useSnapshots<LendingSnapshot>(
+  const enabled = marketType === MarketType.Lend
+  const apiSupplySnapshots = useMarketSnapshots<LendingSnapshot>(
     apiMarket.data,
     { type: MarketRateType.Supply, category: RATE_CATEGORY },
     useApiMarket && enabled,
@@ -229,7 +229,7 @@ const useAvailableLiquidity = ({
   apiMarket,
 }: {
   chainId: number
-  marketQuery: QueryProp<LlamaMarketTemplate>
+  marketQuery: QueryProp<MarketTemplate>
   apiMarket: QueryProp<LlamaMarket>
 }) => {
   const borrowTokenAddress = getTokens(market, apiMarket.data)?.borrowToken.address
@@ -268,11 +268,11 @@ function useCampaigns({
   blockchainId: Chain | undefined
   controllerAddress: Address | undefined
   vaultAddress: Address | null | undefined
-  marketType: LlamaMarketType
+  marketType: MarketType
 }) {
   const { data: controllerCampaigns } = useCampaignsByAddress({ blockchainId, address: controllerAddress })
   const { data: vaultCampaigns } = useCampaignsByAddress({ blockchainId, address: vaultAddress })
-  return marketType === LlamaMarketType.Lend ? [...vaultCampaigns, ...controllerCampaigns] : controllerCampaigns
+  return marketType === MarketType.Lend ? [...vaultCampaigns, ...controllerCampaigns] : controllerCampaigns
 }
 
 export const usePageHeader = () => {

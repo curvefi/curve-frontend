@@ -1,4 +1,4 @@
-import { getLlamaMarket } from '@/llamalend/llama.utils'
+import { getMarket } from '@/llamalend/llama.utils'
 import { type NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
@@ -20,7 +20,7 @@ const { useQuery: useRemoveCollateralGasEstimate } = queryFactory({
       { userCollateral },
     ] as const,
   queryFn: async ({ marketId, userCollateral }: RemoveCollateralGasQuery) => {
-    const market = getLlamaMarket(marketId)
+    const market = getMarket(marketId)
     return market instanceof LendMarketTemplate
       ? market.loan.estimateGas.removeCollateral(userCollateral)
       : market.removeCollateralEstimateGas(userCollateral)

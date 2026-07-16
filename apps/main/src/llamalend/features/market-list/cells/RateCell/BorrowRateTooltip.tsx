@@ -1,4 +1,4 @@
-import { useSnapshots } from '@/llamalend/features/market-list/hooks/useSnapshots'
+import { useMarketSnapshots } from '@/llamalend/features/market-list/hooks/useMarketSnapshots'
 import { useFilteredRewards } from '@/llamalend/hooks/useFilteredRewards'
 import { getBorrowRateTooltipTitle } from '@/llamalend/llama.utils'
 import { MarketNetBorrowAprTooltipContent } from '@/llamalend/widgets/tooltips/MarketNetBorrowAprTooltipContent'
@@ -17,7 +17,7 @@ export const BorrowRateTooltip = ({ market, children }: RateTooltipProps) => {
     averageRate: averageApr,
     averageTotalBorrowRate: totalAverageBorrowApr,
     isLoading,
-  } = useSnapshots(market, { type: MarketRateType.Borrow, category: RATE_CATEGORY }, open) // todo: `error` is ignored
+  } = useMarketSnapshots(market, { type: MarketRateType.Borrow, category: RATE_CATEGORY }, open) // todo: `error` is ignored
   const {
     rewards,
     type: marketType,

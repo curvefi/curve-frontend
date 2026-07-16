@@ -7,7 +7,7 @@ import {
   type MarketToken,
   type MarketTokensOrEmpty,
 } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import { notFalsy } from '@primitives/objects.utils'
 import type { TokenOption } from '@ui-kit/features/select-token'
 import type { QueryProp } from '@ui-kit/types/util'
@@ -27,7 +27,7 @@ const getRepayTokenOptions = ({
   borrowToken: MarketToken | undefined
   collateralToken: MarketToken | undefined
   networkId: string
-  market: LlamaMarketTemplate | undefined
+  market: MarketTemplate | undefined
 }) =>
   notFalsy<RepayTokenOption>(
     borrowToken && {

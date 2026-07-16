@@ -56,8 +56,8 @@ export const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }
             <StatTitle>{t`veCRV used`}</StatTitle>
             <Box flex flexAlignItems="center">
               <StatData>
-                {formatNumber(userVeCrv, { abbreviate: false, fallback: '-' })}
-                {hasFutureVeCrv && ` → ${formatNumber(userFutureVeCrv, { abbreviate: false })}`}
+                {formatNumber(userVeCrv, 'token.amount')}
+                {hasFutureVeCrv && ` → ${formatNumber(userFutureVeCrv, 'token.amount')}`}
               </StatData>
             </Box>
           </StatsRow>

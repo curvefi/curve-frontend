@@ -1,7 +1,7 @@
 import { noop } from 'lodash'
 import { useCallback } from 'react'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
+import type { MarketTemplate } from '@/llamalend/llamalend.types'
+import { useMarketMutation } from '@/llamalend/mutations/useMarketMutation'
 import {
   claimValidationSuite,
   claimableRewardsValidationSuite,
@@ -26,13 +26,13 @@ type ClaimOptions = {
 
 const noFormFieldOptions = { onReset: noop }
 
-const claimCrv = async (market: LlamaMarketTemplate, userAddress: Address | undefined) => {
+const claimCrv = async (market: MarketTemplate, userAddress: Address | undefined) => {
   const claimableCrv = await fetchClaimableCrv({ marketId: market.id, userAddress }, { staleTime: 0 })
   assert(Number(claimableCrv) > 0, 'No claimable CRV rewards found')
   return (await requireVault(market).vault.claimCrv()) as Hex
 }
 
-const claimRewards = async (market: LlamaMarketTemplate, userAddress: Address | undefined) => {
+const claimRewards = async (market: MarketTemplate, userAddress: Address | undefined) => {
   const claimableRewards = await fetchClaimableRewards({ marketId: market.id, userAddress }, { staleTime: 0 })
   assert(hasClaimableRewards(claimableRewards), 'No claimable rewards found')
   return (await requireGauge(market.id).vault.claimRewards()) as Hex
@@ -47,7 +47,7 @@ export const useClaimCrvMutation = ({
 }: ClaimOptions & {
   crvTokenAddress: Address | undefined
 }) => {
-  const { mutate, error, isPending } = useLlammaMutation<ClaimMutation>({
+  const { mutate, error, isPending } = useMarketMutation<ClaimMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'claimCrv'] as const,
@@ -71,7 +71,7 @@ export const useClaimRewardsMutation = ({
   userAddress,
   rewardTokenAddresses,
 }: ClaimOptions & { rewardTokenAddresses: Address[] }) => {
-  const { mutate, error, isPending } = useLlammaMutation<ClaimMutation>({
+  const { mutate, error, isPending } = useMarketMutation<ClaimMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'claimRewards'] as const,

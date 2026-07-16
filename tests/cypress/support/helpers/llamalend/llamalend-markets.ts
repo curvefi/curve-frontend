@@ -1,4 +1,4 @@
-import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns/columns.enum'
+import { MarketColumnId } from '@/llamalend/features/market-list/columns/columns.enum'
 import { calculateLendMarketTvlUsd } from '@/llamalend/llama.utils'
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
 import { oneBool, oneOf, type TokenType } from '@cy/support/generators'
@@ -8,7 +8,7 @@ import { LOAD_TIMEOUT, Breakpoint } from '@cy/support/ui'
 import { median } from '@primitives/array.utils'
 import { fromEntries, notFalsy, recordEntries, recordValues } from '@primitives/objects.utils'
 import { serializeListFilter } from '@ui-kit/shared/ui/DataTable/filters'
-import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
+import { MarketType, MarketRateType } from '@ui-kit/types/market'
 
 export function visitAndWait(
   [width, height]: [number, number],
@@ -54,21 +54,21 @@ const getMedianValue = <T extends Partial<Record<string, number>>>(data: T[], ke
 /** Returns one random column paired with its median value. */
 export const getOneColumnMedianValue = (
   vaultData: Record<Chain, GetMarketsResponse>,
-  columns: readonly LlamaMarketColumnId[],
+  columns: readonly MarketColumnId[],
 ) => {
   const data = recordValues(vaultData).flatMap(({ data }) =>
     data.map(
       ({ borrowed_balance_usd, collateral_balance_usd, total_assets_usd, total_debt_usd, borrow_apr, max_ltv }) => ({
-        [LlamaMarketColumnId.LiquidityUsd]: total_assets_usd - total_debt_usd,
-        [LlamaMarketColumnId.Tvl]: calculateLendMarketTvlUsd({
+        [MarketColumnId.LiquidityUsd]: total_assets_usd - total_debt_usd,
+        [MarketColumnId.Tvl]: calculateLendMarketTvlUsd({
           borrowedBalanceUsd: borrowed_balance_usd,
           collateralBalanceUsd: collateral_balance_usd,
           totalAssetsUsd: total_assets_usd,
           totalDebtUsd: total_debt_usd,
         }),
-        [LlamaMarketColumnId.BorrowRate]: borrow_apr,
-        [LlamaMarketColumnId.UtilizationPercent]: total_assets_usd ? (100 * total_debt_usd) / total_assets_usd : 0,
-        [LlamaMarketColumnId.MaxLtv]: max_ltv,
+        [MarketColumnId.BorrowRate]: borrow_apr,
+        [MarketColumnId.UtilizationPercent]: total_assets_usd ? (100 * total_debt_usd) / total_assets_usd : 0,
+        [MarketColumnId.MaxLtv]: max_ltv,
       }),
     ),
   )
@@ -76,8 +76,8 @@ export const getOneColumnMedianValue = (
   return oneOf(...recordEntries(medianValues))
 }
 
-export const filterByMarketType = (size: [number, number], marketType: LlamaMarketType = LlamaMarketType.Lend) => {
-  const otherMarketType = oneOf(...recordValues(LlamaMarketType).filter(m => m !== marketType))
+export const filterByMarketType = (size: [number, number], marketType: MarketType = MarketType.Lend) => {
+  const otherMarketType = oneOf(...recordValues(MarketType).filter(m => m !== marketType))
   visitAndWait(size, `/llamalend/ethereum/markets?type=${marketType}`)
   cy.url().should('include', `type=${marketType}`)
   cy.get(`[data-testid="badge-market-type-${otherMarketType}"]`).should('not.exist')

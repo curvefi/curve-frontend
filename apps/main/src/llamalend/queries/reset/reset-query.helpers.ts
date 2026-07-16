@@ -1,10 +1,10 @@
-import { getLlamaMarket, hasResetPosition } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import { getMarket, hasResetPosition } from '@/llamalend/llama.utils'
+import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import type { Decimal } from '@primitives/decimal.utils'
 import { decimalSum } from '@ui-kit/utils'
 
-export const getResetImplementation = (marketId: string | LlamaMarketTemplate) => {
-  const market = getLlamaMarket(marketId)
+export const getResetImplementation = (marketId: string | MarketTemplate) => {
+  const market = getMarket(marketId)
   if (!hasResetPosition(market)) throw new Error('Reset position is only available for Llamalend v2 lend markets')
   return market.loan
 }

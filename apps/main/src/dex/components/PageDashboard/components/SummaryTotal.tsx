@@ -29,10 +29,7 @@ export const SummaryTotal = () => {
             <Spinner />
           </SummarySpinnerWrapper>
         )}
-        <TotalBalancesValue
-          tooltip={formatNumber(total, { abbreviate: false, fallback: '-' })}
-          tooltipProps={{ noWrap: true }}
-        >
+        <TotalBalancesValue tooltip={formatNumber(total, 'token.amount')} tooltipProps={{ noWrap: true }}>
           {total === null ? '?' : formatNumber(total, 'usd.notional')}
         </TotalBalancesValue>
       </SummaryInnerContent>

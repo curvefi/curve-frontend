@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useConfig } from 'wagmi'
-import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
+import { useMarketMutation } from '@/llamalend/mutations/useMarketMutation'
 import { fetchCloseIsApproved } from '@/llamalend/queries/close-loan/close-loan-is-approved.query'
 import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import type { CloseLoanParams } from '@/llamalend/queries/validation/manage-loan.types'
@@ -36,7 +36,7 @@ export const useClosePositionMutation = ({
   ...props
 }: ClosePositionOptions) => {
   const config = useConfig()
-  const { mutate, error, isPending } = useLlammaMutation<CloseLoanMutation>({
+  const { mutate, error, isPending } = useMarketMutation<CloseLoanMutation>({
     network,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'close-position'] as const,
     marketId,

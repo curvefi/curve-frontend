@@ -45,7 +45,7 @@ export const ValueCellDisplay = ({
           {tokens.map((token, i) => (
             // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
             <span key={i} style={{ whiteSpace: 'nowrap', ...(i > 0 && { marginInlineStart: '0.25rem' }) }}>
-              {i && ' + '}
+              {i > 0 && ' + '}
               {formatToken(token.amount, token.symbol)}
             </span>
           ))}

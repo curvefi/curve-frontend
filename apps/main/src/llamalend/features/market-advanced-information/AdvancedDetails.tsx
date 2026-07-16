@@ -9,7 +9,7 @@ import Box from '@mui/material/Box'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { MarketType } from '@ui-kit/types/market'
 import { mapQuery } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 import { useMarketContext } from '../market-context'
@@ -29,7 +29,7 @@ export const AdvancedDetails = () => {
       marketType,
       apiMarket,
     })
-  const isLendMarket = marketType === LlamaMarketType.Lend
+  const isLendMarket = marketType === MarketType.Lend
 
   return (
     <Box

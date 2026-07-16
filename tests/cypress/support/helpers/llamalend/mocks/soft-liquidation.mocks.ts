@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { oneDecimal, oneInt } from '@cy/support/generators'
 import type { Decimal } from '@primitives/decimal.utils'
-import { decimal, decimalMinus, decimalSum, formatNumber } from '@ui-kit/utils'
+import { decimal, decimalMinus, decimalSum, formatToken } from '@ui-kit/utils'
 import { createMockLlamaApi, TEST_ADDRESS, TEST_TX_HASH } from '../mock-loan-test-data'
 import { createMockLendMarket, createMockMintMarket } from '../mock-market.helpers'
 import { createIsApprovedStub, createStub } from '../test-stub.utils'
@@ -138,7 +138,7 @@ export const createResetPositionScenario = ({
       estimateGasApprove: [walletBorrowed] as const,
       approve: [walletBorrowed] as const,
       submit: [resetRepayParams] as const,
-      successMessage: `Position reset! ${formatNumber(debtReduction, { abbreviate: false })} crvUSD`,
+      successMessage: `Position reset! ${formatToken(debtReduction, 'crvUSD', 'amount')}`,
     }
   }
 
