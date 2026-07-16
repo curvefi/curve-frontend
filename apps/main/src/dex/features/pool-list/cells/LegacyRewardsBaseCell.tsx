@@ -7,14 +7,9 @@ import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
 import { isSortedBy } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { formatNumber } from '@ui-kit/utils'
-import type { LegacyPoolListItem } from '../legacyPoolList.types'
+import type { LegacyPoolRow } from '../types'
 
-export const LegacyRewardsBaseCell = ({
-  table,
-  row,
-  getValue,
-  column,
-}: CellContext<LegacyPoolListItem, number | null>) => {
+export const LegacyRewardsBaseCell = ({ table, row, getValue, column }: CellContext<LegacyPoolRow, number | null>) => {
   const { original: poolData } = row
   const { failedFetching24hOldVprice: failed, rewards } = poolData
 

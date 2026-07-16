@@ -7,10 +7,10 @@ import { isSortedBy } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { formatNumber } from '@ui-kit/utils'
 import { LegacyPoolColumnId } from '../columns'
 import { useLegacyHasPoolRewards } from '../hooks/useLegacyHasPoolRewards'
-import type { LegacyPoolListItem } from '../legacyPoolList.types'
+import type { LegacyPoolRow } from '../types'
 import { Placeholder } from './Placeholder'
 
-type Prop = CellContext<LegacyPoolListItem, RewardsApy | undefined> & { placeholder?: boolean }
+type Prop = CellContext<LegacyPoolRow, RewardsApy | undefined> & { placeholder?: boolean }
 
 export const LegacyRewardsIncentivesCell = ({
   getValue,

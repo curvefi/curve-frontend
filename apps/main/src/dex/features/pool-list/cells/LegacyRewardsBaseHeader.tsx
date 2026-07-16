@@ -1,7 +1,7 @@
 import { type HeaderContext } from '@tanstack/table-core'
 import { t } from '@ui-kit/lib/i18n'
 import { LegacyPoolColumnId } from '../columns'
-import type { LegacyPoolListItem } from '../legacyPoolList.types'
+import type { LegacyPoolRow } from '../types'
 
-export const LegacyRewardsBaseHeader = ({ table }: HeaderContext<LegacyPoolListItem, number | null>) =>
+export const LegacyRewardsBaseHeader = ({ table }: HeaderContext<LegacyPoolRow, number | null>) =>
   table.getColumn(LegacyPoolColumnId.RewardsOther)?.getIsVisible() ? t`Base vAPY` : t`Rewards tAPR`

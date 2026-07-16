@@ -1,10 +1,7 @@
 import { orderBy } from 'lodash'
-import {
-  POOL_LIST_CRYPTO_POOL_TYPE_ALIASES,
-  POOL_LIST_POOL_TYPES,
-  POOL_LIST_SORT_BY,
-} from '@/dex/features/pool-list/poolList.constants'
-import type { PoolType, SortDirection, V2PoolSortField } from '@curvefi/prices-api/pools'
+import { POOL_TYPE_FILTERS } from '@/dex/features/pool-list/filters/utils'
+import { POOL_SORT_BY } from '@/dex/features/pool-list/hooks/usePoolsSorting'
+import type { SortDirection, V2PoolSortField, PoolType } from '@curvefi/prices-api/pools'
 import { oneAddress, oneFloat } from '@cy/support/generators'
 import { oneToken } from '@cy/support/helpers/tokens'
 import type { Address } from '@primitives/address.utils'
@@ -20,6 +17,11 @@ const MAX_GENERATED_POOL_VOLUME_USD = 1_000_000_000
 const POOL_USD_STEP = 1_000_000
 const onePriorityPoolUsdValue = () =>
   oneFloat(MAX_GENERATED_POOL_VOLUME_USD + POOL_USD_STEP, MAX_GENERATED_POOL_VOLUME_USD * 2)
+
+const POOL_TYPES = POOL_TYPE_FILTERS.map(({ key }) => key) satisfies readonly PoolType[]
+
+// The API bundles factory_crypto and twocryptong pools under the "crypto" filter.
+const CRYPTO_POOL_TYPE_ALIASES: ReadonlySet<string> = new Set(['factory_crypto', 'twocryptong'])
 
 // Known Ethereum pool used by search assertions.
 const SearchPool = {
@@ -75,7 +77,7 @@ const createPool = ({
   chain_id: Number(chainId),
   name: name ?? `Mock Pool ${chainId}-${index.toString().padStart(3, '0')}`,
   address: address ?? oneAddress(),
-  pool_type: poolType ?? POOL_LIST_POOL_TYPES[index % POOL_LIST_POOL_TYPES.length],
+  pool_type: poolType ?? POOL_TYPES[index % POOL_TYPES.length],
   is_metapool: false,
   base_pool: null,
   tvl_usd: POOL_USD_STEP + index * POOL_USD_STEP,
@@ -175,8 +177,8 @@ const parseNumberParam = (value: string | null, fallback: number) => Number(valu
 const isOneOf = <T extends string>(values: readonly T[], value: string | null): value is T =>
   value != null && (values as readonly string[]).includes(value)
 
-const POOL_LIST_SORT_FIELDS = recordValues(POOL_LIST_SORT_BY)
-const parseSortBy = (value: string | null): V2PoolSortField => (isOneOf(POOL_LIST_SORT_FIELDS, value) ? value : 'tvl')
+const POOL_SORT_FIELDS = recordValues(POOL_SORT_BY)
+const parseSortBy = (value: string | null): V2PoolSortField => (isOneOf(POOL_SORT_FIELDS, value) ? value : 'tvl')
 
 const parsePoolListQuery = (url: URL): PoolListQuery => ({
   chainId: Number(url.searchParams.get('chain_id')),
@@ -197,9 +199,7 @@ const getSortValue = (pool: MockPool, sortBy: V2PoolSortField) =>
   })[sortBy]
 
 const matchesPoolType = (pool: MockPool, poolType: string | null) =>
-  !poolType ||
-  pool.pool_type === poolType ||
-  (poolType === 'crypto' && POOL_LIST_CRYPTO_POOL_TYPE_ALIASES.has(pool.pool_type))
+  !poolType || pool.pool_type === poolType || (poolType === 'crypto' && CRYPTO_POOL_TYPE_ALIASES.has(pool.pool_type))
 
 const matchesSearch = (pool: MockPool, search: string) =>
   !search ||
