@@ -111,7 +111,9 @@ export const CreateLoanForm = <ChainId extends IChainId>({
             ...pick(health, 'validation', 'isLoading', 'error', 'isFetching', 'enabled'),
             values,
             params,
-            revalidation: createLoanQueryValidationSuite({ debtRequired: true, ignoreMaxCollateral: true })(params),
+            revalidation: createLoanQueryValidationSuite({ debtRequired: true, ignoreMaxCollateral: true })(
+              params,
+            ).getErrors(),
             dependencies: [
               createLoanMaxReceiveKey(params),
               ...notFalsy(params.leverageEnabled && createLoanExpectedCollateralQueryKey(params)),
