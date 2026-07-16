@@ -4,7 +4,7 @@ import {
   getActionValue,
   getMetricValue,
 } from '@cy/support/helpers/llamalend/action-info.helpers'
-import { API_LOAD_TIMEOUT, type Breakpoint, LOAD_TIMEOUT } from '@cy/support/ui'
+import { API_LOAD_TIMEOUT, LOAD_TIMEOUT, type Breakpoint } from '@cy/support/ui'
 
 type MarketDetailsOptions = { breakpoint: Breakpoint; hasWallet: boolean; hasApi?: boolean }
 

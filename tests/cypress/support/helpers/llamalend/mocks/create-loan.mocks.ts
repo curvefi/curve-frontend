@@ -179,18 +179,6 @@ export const createCreateLoanScenario = ({
     borrow,
     market,
     llamaApi: createMockLlamaApi(chainId, market),
-    assertHealthQueried: () => {
-      const wasCalled = normalStubs.createLoanHealth.calledWithExactly(...normalExpected.query)
-      expect(
-        wasCalled,
-        [
-          'Expected createLoanHealth to be called before health UI readiness.',
-          `Expected args: ${JSON.stringify(normalExpected.query)}`,
-          `Actual call count: ${normalStubs.createLoanHealth.callCount}`,
-          'If call count is 0, the create-loan health query is disabled or routed to a different implementation.',
-        ].join('\n'),
-      ).to.equal(true)
-    },
     assertPreSubmit: leverage
       ? () => {
           expect(leverageStubs.createLoanExpectedMetrics).to.have.been.calledWithMatch(leverageExpected.expectedMetrics)

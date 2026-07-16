@@ -1,8 +1,7 @@
 import { type ChangeEvent, useCallback } from 'react'
 import { useConnection } from 'wagmi'
-import { LoanPreset, LEVERAGE } from '@/llamalend/constants'
+import { LEVERAGE, LoanPreset } from '@/llamalend/constants'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
-import { useCreateLoanHealth } from '@/llamalend/queries/create-loan/create-loan-health.query'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -77,7 +76,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     (event: ChangeEvent<HTMLInputElement>) => updateForm({ leverageEnabled: event.target.checked, routeId: undefined }),
     [updateForm],
   )
-  const health = useCreateLoanHealth(params, isOpen)
+
   return (
     <Form
       {...form}
