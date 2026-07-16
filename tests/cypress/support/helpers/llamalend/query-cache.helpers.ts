@@ -4,6 +4,7 @@ import { getLendingVaultsOptions, type LendingVault } from '@/llamalend/queries/
 import { oneAddress, oneInt } from '@cy/support/generators'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryClient } from '@ui-kit/lib/api'
+import { QUERY_TYPES } from '@ui-kit/lib/model/query/query-types'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { BlockchainIds } from '@ui-kit/utils/network'
 import { readContractsQueryOptions } from '@wagmi/core/query'
@@ -23,6 +24,13 @@ export const seedErc20BalanceQuery = ({
   rawBalance: bigint
   decimals?: number
 }) => {
+  Object.assign(QUERY_TYPES.user, {
+    staleTime: Infinity,
+    gcTime: Infinity,
+    // no refetching for mocked tests, otherwise real RPC calls to invalid token addresses run after expiration
+    refetchInterval: undefined,
+  })
+
   const { queryKey } = readContractsQueryOptions(mockedWagmiConfig, {
     contracts: [
       { chainId, address: tokenAddress, abi: erc20Abi, functionName: 'balanceOf', args: [userAddress] },

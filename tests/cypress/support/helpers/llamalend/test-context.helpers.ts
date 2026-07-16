@@ -25,7 +25,8 @@ export const setGasInfo = (
     max: [220000000, 210000000, 200000000, 180000000],
     basePlusPriority: [156794470, 147794470, 137794470, 117794470],
   },
+  ethPrice = 1,
 ) => {
-  queryClient.setQueryData(getTokenUsdRateKey({ chainId: params.chainId, tokenAddress: ethAddress }), 1)
+  queryClient.setQueryData(getTokenUsdRateKey({ chainId: params.chainId, tokenAddress: ethAddress }), ethPrice)
   return setGasInfoAndUpdateLib(params, info)
 }

@@ -22,7 +22,7 @@ const testCases = [
 ]
 
 describe('WithdrawForm (mocked)', () => {
-  afterEach(() => resetLlamaTestContext())
+  beforeEach(resetLlamaTestContext)
 
   testCases.forEach(({ isFull, title, buttonText }) => {
     it(title, () => {

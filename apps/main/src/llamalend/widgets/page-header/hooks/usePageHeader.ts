@@ -34,7 +34,7 @@ import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
 import { combineQueries } from '@ui-kit/lib'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { MarketType, MarketRateType } from '@ui-kit/types/market'
-import { fakeLoadingQ, fallbackQ, mapQuery, q, Query, type QueryProp, type Range } from '@ui-kit/types/util'
+import { fallbackQ, mapQuery, q, Query, type QueryProp, type Range } from '@ui-kit/types/util'
 import { AVERAGE_CATEGORIES, type AverageCategory, decimal, decimalMultiply } from '@ui-kit/utils'
 
 const RATE_CATEGORY: AverageCategory = 'llamalend.market.rate'
@@ -223,17 +223,17 @@ const useSupplyRate = ({
 
 const useAvailableLiquidity = ({
   chainId,
-  marketQuery: { data: market },
+  marketQuery,
   apiMarket,
 }: {
   chainId: number
   marketQuery: QueryProp<MarketTemplate>
   apiMarket: QueryProp<LlamaMarket>
 }) => {
+  const { data: market } = marketQuery
   const borrowTokenAddress = getTokens(market, apiMarket.data)?.borrowToken.address
   const capAndAvailable = useMarketCapAndAvailable({ chainId, marketId: market?.id })
   const borrowUsdRate = useTokenUsdRate({ chainId, tokenAddress: borrowTokenAddress })
-  const marketQuery = fakeLoadingQ(market) // todo: use a proper query, see #2729
 
   const onChainLiquidity = combineQueries([capAndAvailable, marketQuery], ({ available, totalAssets }) => ({
     value: available,

@@ -55,9 +55,7 @@ const mountResetPositionForm = ({
 }
 
 describe('Soft Liquidation Forms (mocked)', () => {
-  afterEach(() => {
-    resetLlamaTestContext()
-  })
+  beforeEach(resetLlamaTestContext)
 
   describe('ImproveHealthForm', () => {
     testCases.forEach(({ approved, title }: { approved: boolean; title: string }) => {
@@ -84,6 +82,7 @@ describe('Soft Liquidation Forms (mocked)', () => {
         })
         cy.get('[data-testid="repay-submit-button"]').should('not.be.disabled')
 
+        cy.wrap(stubs.repayHealth).should('have.been.calledWithExactly', ...expected.improveHealth.health)
         cy.then(() => {
           expect(stubs.parameters).to.have.been.calledWithExactly()
           expect(stubs.repayHealth).to.have.been.calledWithExactly(...expected.improveHealth.health)
@@ -166,9 +165,15 @@ describe('Soft Liquidation Forms (mocked)', () => {
 
         clickResetPositionMinimumWalletAmount()
         checkResetPositionWalletAmount({ amount: userBorrowed })
+        if (approved) {
+          cy.wrap(stubs.estimateGasRepay).should('have.been.calledWithExactly', ...expected.estimateGas)
+        } else {
+          cy.wrap(stubs.estimateGasRepayApprove).should('have.been.calledWithExactly', ...expected.estimateGasApprove)
+        }
         checkResetPositionDetailsLoaded({ debt: { current: debt, future: futureDebt, symbol: 'crvUSD' } })
         cy.get('[data-testid="reset-position-submit-button"]', LOAD_TIMEOUT).should('not.be.disabled')
 
+        cy.wrap(stubs.repayHealth).should('have.been.calledWithExactly', ...expected.health)
         cy.then(() => {
           expect(stubs.isRepayWithShrinkAvailable).to.have.been.calledWithExactly(...expected.isAvailable)
           expect(stubs.rates).to.have.been.calledWithExactly(...expected.rates)
@@ -217,7 +222,7 @@ describe('Soft Liquidation Forms (mocked)', () => {
 
       cy.then(() => {
         expect(stubs.isRepayWithShrinkAvailable).to.have.been.calledWithExactly(...expected.isAvailable)
-        expect(stubs.tokensToShrink).to.not.have.been.called
+        expect(stubs.tokensToShrink).to.have.been.calledWithExactly(...expected.tokensToShrink)
         expect(stubs.repayHealth).to.not.have.been.called
         expect(stubs.repayPrices).to.not.have.been.called
         expect(stubs.repayIsApproved).to.not.have.been.called
@@ -236,6 +241,7 @@ describe('Soft Liquidation Forms (mocked)', () => {
       mountResetPositionForm({ llamaApi, market })
 
       checkResetPositionInputsLoaded({ convertedBorrowed })
+      cy.wrap(stubs.estimateGasRepay).should('have.been.calledWithExactly', ...expected.estimateGas)
       checkResetPositionDetailsLoaded({
         debt: { current: debt, future: getFutureDebt('0'), symbol: 'crvUSD' },
       })
@@ -244,6 +250,7 @@ describe('Soft Liquidation Forms (mocked)', () => {
         .and('contain.text', 'Reset position')
         .and('not.contain.text', 'Approve')
 
+      cy.wrap(stubs.repayHealth).should('have.been.calledWithExactly', ...expected.health)
       cy.then(() => {
         expect(stubs.futureRates).to.have.been.calledWithExactly(...expected.futureRates)
         expect(stubs.tokensToShrink).to.have.been.calledWithExactly(...expected.tokensToShrink)
@@ -275,7 +282,6 @@ describe('Soft Liquidation Forms (mocked)', () => {
       checkResetPositionMinimumWalletMessage()
       writeResetPositionWalletAmount({ amount: belowMinBorrowed })
 
-      void minBorrowed
       cy.get('[data-testid="reset-position-input-user-borrowed"]')
         .should('contain.text', 'Add at least')
         .and('contain.text', 'from wallet to reset this position')
@@ -292,11 +298,13 @@ describe('Soft Liquidation Forms (mocked)', () => {
 
       checkResetPositionInputsLoaded({ convertedBorrowed })
       writeResetPositionWalletAmount({ amount: moreUserBorrowed })
+      cy.wrap(stubs.estimateGasRepay).should('have.been.calledWithExactly', ...expected.estimateGas)
       checkResetPositionDetailsLoaded({
         debt: { current: debt, future: getFutureDebt(moreUserBorrowed), symbol: 'crvUSD' },
       })
       cy.get('[data-testid="reset-position-submit-button"]', LOAD_TIMEOUT).should('not.be.disabled')
 
+      cy.wrap(stubs.repayHealth).should('have.been.calledWithExactly', ...expected.health)
       cy.then(() => {
         expect(stubs.futureRates).to.have.been.calledWithExactly(...expected.futureRates)
         expect(stubs.repayHealth).to.have.been.calledWithExactly(...expected.health)

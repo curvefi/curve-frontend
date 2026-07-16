@@ -25,7 +25,7 @@ const testCases: { approved: boolean; title: string; buttonText: string; hasGaug
 ]
 
 describe('StakeForm (mocked)', () => {
-  afterEach(() => resetLlamaTestContext())
+  beforeEach(resetLlamaTestContext)
 
   testCases.forEach(({ approved, title, buttonText, hasGauge }) => {
     it(title, () => {

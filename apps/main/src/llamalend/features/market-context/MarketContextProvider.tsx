@@ -33,8 +33,16 @@ export const MarketContextProvider = <ChainId extends LlamaChainId>({
           createMarketContextValue({
             chainId: network.chainId,
             blockchainId: network.id,
-            marketQuery: q({ data: market, isLoading: isMarketLoading, error: marketError }),
-            apiMarket: q({ data: apiMarketData, isLoading: isApiMarketLoading, error: apiMarketError }),
+            marketQuery: q({
+              data: market,
+              isLoading: isMarketLoading || (!market && !marketError && !!userAddress),
+              error: marketError,
+            }),
+            apiMarket: q({
+              data: apiMarketData,
+              isLoading: isApiMarketLoading || (!apiMarketData && !apiMarketError && !userAddress),
+              error: apiMarketError,
+            }),
             marketType,
             userAddress,
             api,
