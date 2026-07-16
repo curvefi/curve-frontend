@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useConfig } from 'wagmi'
-import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
+import { useMarketMutation } from '@/llamalend/mutations/useMarketMutation'
 import { fetchStakeIsApproved } from '@/llamalend/queries/supply/supply-stake-approved.query'
 import {
   StakeForm,
@@ -9,12 +9,10 @@ import {
   requireVault,
 } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { type Address, type Hex } from '@primitives/address.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
-import { waitForApproval } from '@ui-kit/utils'
-import { formatTokenAmounts } from '../llama.utils'
+import { formatNumber, waitForApproval } from '@ui-kit/utils'
 
 type StakeOptions = {
   marketId: string | undefined
@@ -22,41 +20,36 @@ type StakeOptions = {
   onReset: () => void
   userAddress: Address | undefined
 }
-const approveStake = async (market: LendMarketTemplate, { stakeAmount = '0' }: StakeMutation): Promise<Hex[]> =>
-  +stakeAmount ? ((await market.vault.stakeApprove(stakeAmount)) as Hex[]) : []
-
-const stake = async (market: LendMarketTemplate, { stakeAmount }: StakeMutation): Promise<Hex> =>
-  (await market.vault.stake(stakeAmount)) as Hex
 
 export const useStakeMutation = ({ network, network: { chainId }, marketId, userAddress, ...props }: StakeOptions) => {
   const config = useConfig()
 
-  const { mutate, error, isPending } = useLlammaMutation<StakeMutation>({
+  const { mutate, error, isPending } = useMarketMutation<StakeMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'stake'] as const,
-    mutationFn: async (variables, { market }) => {
+    mutationFn: async ({ stakeShares, isFull }, { market }) => {
       const lendMarket = requireVault(market)
       await waitForApproval({
         isApproved: async () =>
-          await fetchStakeIsApproved({ chainId, marketId, userAddress, ...variables }, { staleTime: 0 }),
-        onApprove: async () => await approveStake(lendMarket, variables),
+          await fetchStakeIsApproved({ chainId, marketId, userAddress, stakeShares, isFull }, { staleTime: 0 }),
+        onApprove: async () => (await lendMarket.vault.stakeApprove(stakeShares)) as Hex[],
         message: t`Approved stake`,
         config,
       })
-
-      return { hash: await stake(lendMarket, variables) }
+      return { hash: (await lendMarket.vault.stake(stakeShares)) as Hex }
     },
     validationSuite: stakeValidationSuite,
-    pendingMessage: (mutation, { market }) =>
-      t`Staking... ${formatTokenAmounts(market, { userBorrowed: mutation.stakeAmount })}`,
-    successMessage: (mutation, { market }) =>
-      t`Stake successful! ${formatTokenAmounts(market, { userBorrowed: mutation.stakeAmount })}`,
+    pendingMessage: ({ stakeShares }) => t`Staking... ${formatNumber(stakeShares, 'token.amount')} vault shares`,
+    successMessage: ({ stakeShares }) => t`Stake successful! ${formatNumber(stakeShares, 'token.amount')} vault shares`,
     mutationTokenAddresses: (_variables, { market }) => [requireVault(market).addresses.vault] as Address[],
     ...props,
   })
 
-  const onSubmit = useCallback((form: StakeForm) => mutate(form as StakeMutation), [mutate])
+  const onSubmit = useCallback(
+    ({ isFull = false, stakeShares = '0' }: StakeForm) => mutate({ isFull, stakeShares }),
+    [mutate],
+  )
 
   return { onSubmit, mutate, error, isPending }
 }

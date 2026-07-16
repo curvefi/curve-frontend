@@ -44,7 +44,7 @@ Examples of deprecation reasons include protocol exploits, vulnerabilities, misc
 
 ### Market Deprecations
 
-**Location:** [`apps/main/src/llamalend/llama-markets.constants.ts`](apps/main/src/llamalend/llama-markets.constants.ts), [`apps/main/src/llamalend/queries/market-list/llama-markets.ts`](apps/main/src/llamalend/queries/market-list/llama-markets.ts)
+**Location:** [`apps/main/src/llamalend/markets.constants.ts`](apps/main/src/llamalend/markets.constants.ts), [`apps/main/src/llamalend/queries/market-list/llama-markets.ts`](apps/main/src/llamalend/queries/market-list/llama-markets.ts)
 
 LlamaLend market deprecations can be either:
 
@@ -61,7 +61,7 @@ Markets with a deprecation message are hidden from the market list for new users
 
 ### Market Alerts
 
-**Location:** [`apps/main/src/llamalend/llama-markets.constants.ts`](apps/main/src/llamalend/llama-markets.constants.ts)
+**Location:** [`apps/main/src/llamalend/markets.constants.ts`](apps/main/src/llamalend/markets.constants.ts)
 
 LlamaLend also has a separate market alert mechanism for cases where a market should stay visible but new actions should be discouraged or blocked.
 
@@ -69,19 +69,19 @@ These alerts are distinct from `DEPRECATED_LLAMAS`. They can show a banner on th
 
 ### Automatic Low-Solvency Protections
 
-**Location:** [`apps/main/src/llamalend/llama-markets.constants.ts`](apps/main/src/llamalend/llama-markets.constants.ts), [`apps/main/src/llamalend/widgets/banners/LowSolvencyBanner.tsx`](apps/main/src/llamalend/widgets/banners/LowSolvencyBanner.tsx), [`apps/main/src/llamalend/widgets/action-card/hooks/useFormLowSolvency.ts`](apps/main/src/llamalend/widgets/action-card/hooks/useFormLowSolvency.ts)
+**Location:** [`apps/main/src/llamalend/markets.constants.ts`](apps/main/src/llamalend/markets.constants.ts), [`apps/main/src/llamalend/widgets/banners/LowSolvencyBanner.tsx`](apps/main/src/llamalend/widgets/banners/LowSolvencyBanner.tsx), [`apps/main/src/llamalend/widgets/action-card/hooks/useFormLowSolvency.ts`](apps/main/src/llamalend/widgets/action-card/hooks/useFormLowSolvency.ts)
 
-LlamaLend lend markets now also apply automatic protections based on solvency thresholds defined in [`SOLVENCY_THRESHOLDS`](apps/main/src/llamalend/llama-markets.constants.ts)
+LlamaLend lend markets now also apply automatic protections based on solvency thresholds defined in [`SOLVENCY_THRESHOLDS`](apps/main/src/llamalend/markets.constants.ts)
 
 These automatic protections only apply to **lend markets**. Mint markets keep using the existing static alert/deprecation mechanisms.
 
 ## Summary
 
-| Mechanism   | Scope         | Effect                                                                                     | Location                                                                           |
-| ----------- | ------------- | ------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
-| Blacklist   | Pools         | Hidden from front-end                                                                      | [`pools-blacklist.query.ts`](apps/main/src/dex/queries/pools-blacklist.query.ts)   |
-| Blacklist   | Tokens        | Shown as disabled in token selector                                                        | [`blacklist.ts`](packages/curve-ui-kit/src/features/select-token/blacklist.ts)     |
-| Deprecation | Pools         | Warning shown, actions may be disabled                                                     | [`usePoolAlert.tsx`](apps/main/src/dex/hooks/usePoolAlert.tsx)                     |
-| Deprecation | Markets       | Hidden for new users when deprecated; existing users still retain access                   | [`llama-markets.constants.ts`](apps/main/src/llamalend/llama-markets.constants.ts) |
-| Deprecation | Market alerts | Warning shown, borrow/deposit may be disabled                                              | [`llama-markets.constants.ts`](apps/main/src/llamalend/llama-markets.constants.ts) |
-| Deprecation | Low solvency  | Banner below `99.9%`; confirmation modal from `90%` to `99.9%`; hidden/blocked below `90%` | [`llama-markets.constants.ts`](apps/main/src/llamalend/llama-markets.constants.ts) |
+| Mechanism   | Scope         | Effect                                                                                     | Location                                                                         |
+| ----------- | ------------- | ------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
+| Blacklist   | Pools         | Hidden from front-end                                                                      | [`pools-blacklist.query.ts`](apps/main/src/dex/queries/pools-blacklist.query.ts) |
+| Blacklist   | Tokens        | Shown as disabled in token selector                                                        | [`blacklist.ts`](packages/curve-ui-kit/src/features/select-token/blacklist.ts)   |
+| Deprecation | Pools         | Warning shown, actions may be disabled                                                     | [`usePoolAlert.tsx`](apps/main/src/dex/hooks/usePoolAlert.tsx)                   |
+| Deprecation | Markets       | Hidden for new users when deprecated; existing users still retain access                   | [`markets.constants.ts`](apps/main/src/llamalend/markets.constants.ts)           |
+| Deprecation | Market alerts | Warning shown, borrow/deposit may be disabled                                              | [`markets.constants.ts`](apps/main/src/llamalend/markets.constants.ts)           |
+| Deprecation | Low solvency  | Banner below `99.9%`; confirmation modal from `90%` to `99.9%`; hidden/blocked below `90%` | [`markets.constants.ts`](apps/main/src/llamalend/markets.constants.ts)           |

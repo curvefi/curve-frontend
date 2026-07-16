@@ -93,7 +93,7 @@ type TransactionMutationOptionsBase<
 
 /**
  * Consumer-facing subset of `TransactionMutationOptionsBase` — omits fields handled by wrapper hooks.
- * Useful if you want to extend `useTransactionMutation`, like `useLlammaMutation` for example.
+ * Useful if you want to extend `useTransactionMutation`, like `useMarketMutation` for example.
  */
 export type TransactionMutationOptions<
   TVariables extends object,
@@ -112,7 +112,7 @@ export type OnTransactionSuccess<
  * Generic hook for blockchain transaction mutations with automatic wallet validation,
  * toast notifications, transaction receipt waiting, and error handling.
  *
- * For llamma-specific mutations, use `useLlammaMutation` which wraps this hook
+ * For market-specific mutations, use `useMarketMutation` which wraps this hook
  * and adds market context.
  */
 export function useTransactionMutation<

@@ -28,12 +28,14 @@ export type DebtCheck = { current: Decimal; future: Decimal; symbol: string }
 /**
  * Checks the current and future debt values, and that the symbol is displayed correctly.
  */
-export const checkDebt = ({ current, future, symbol }: DebtCheck) => {
-  getActionValue('borrow-debt').should('equal', formatNumber(future, { abbreviate: false }))
+export const checkDebt = ({ current, future, symbol }: DebtCheck, { checkLoanToValue = true } = {}) => {
+  getActionValue('borrow-debt').should('equal', formatNumber(future, 'token.amount'))
   getActionValue('borrow-debt', 'right').should('contain', symbol)
-  getActionValue('borrow-debt', 'previous').should('equal', formatNumber(current, { abbreviate: false }))
-  getActionValue('borrow-ltv').should('include', '%')
-  getActionValue('borrow-ltv', 'previous').should('include', '%')
+  getActionValue('borrow-debt', 'previous').should('equal', formatNumber(current, 'token.amount'))
+  if (checkLoanToValue) {
+    getActionValue('borrow-ltv').should('include', '%')
+    getActionValue('borrow-ltv', 'previous').should('include', '%')
+  }
 }
 
 /**
@@ -41,7 +43,7 @@ export const checkDebt = ({ current, future, symbol }: DebtCheck) => {
  */
 export const checkCurrentDebt = (expectedCurrentDebt: Decimal) => {
   getActionInfo('borrow-debt').should('be.visible')
-  const expected = formatNumber(expectedCurrentDebt, { abbreviate: false })
+  const expected = formatNumber(expectedCurrentDebt, 'token.amount')
   getActionValue('borrow-debt').should('equal', expected)
   getActionValue('borrow-debt', 'previous').should('equal', expected)
 }

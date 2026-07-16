@@ -1,5 +1,5 @@
-import { getLlamaMarket, hasDeleverage, hasV1Leverage, hasV2Leverage, hasZapV2 } from '@/llamalend/llama.utils'
-import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import { getMarket, hasDeleverage, hasV1Leverage, hasV2Leverage, hasZapV2 } from '@/llamalend/llama.utils'
+import { MarketTemplate } from '@/llamalend/llamalend.types'
 import type { RepayQuery } from '@/llamalend/queries/validation/repay.types'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { Decimal } from '@primitives/decimal.utils'
@@ -26,11 +26,11 @@ export const isFullRepayFromDebtToken = (
  * - fallback to unleveraged repay from borrowed token
  */
 export function getRepayImplementation(
-  marketId: string | LlamaMarketTemplate,
+  marketId: string | MarketTemplate,
   { stateCollateral, userCollateral, userBorrowed, routeId, slippage }: RepayFields,
   routeMeta?: Partial<RouteMutationMeta>,
 ) {
-  const market = getLlamaMarket(marketId)
+  const market = getMarket(marketId)
   const [hasUserBorrowed, hasUserCollateral, hasStateCollateral] = [userBorrowed, userCollateral, stateCollateral].map(
     v => !!+v,
   )
@@ -60,7 +60,7 @@ export function getRepayImplementation(
 }
 
 export function getRepayImplementationType(
-  marketId: string | LlamaMarketTemplate,
+  marketId: string | MarketTemplate,
   { userCollateral, stateCollateral, userBorrowed }: FieldsOf<RepayFormFields>,
 ) {
   const routeMeta = {} // we are ignoring the args in this helper anyway

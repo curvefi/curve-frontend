@@ -1,6 +1,6 @@
 import { getRefuelTimeseries } from '@curvefi/prices-api/refuel'
 import type { Address } from '@primitives/address.utils'
-import { DEFAULT_PAGE_START_INDEX } from '@ui-kit/features/activity-table/constants'
+import { DEFAULT_PAGE_START_INDEX } from '@ui-kit/features/activity-table/utils'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys, type ChainNameQuery } from '@ui-kit/lib/model'
 import { contractValidationGroup } from '@ui-kit/lib/model/query/contract-validation'

@@ -6,9 +6,9 @@ import {
   writeCreateLoanForm,
 } from '@cy/support/helpers/llamalend/create-loan.helpers'
 import { recordValues } from '@primitives/objects.utils'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { MarketType } from '@ui-kit/types/market'
 
-const testCases = recordValues(LlamaMarketType).map(marketType => oneLoanTestMarket(marketType))
+const testCases = recordValues(MarketType).map(marketType => oneLoanTestMarket(marketType))
 
 describe('Create loan', () => {
   beforeEach(() => mockMerklCampaigns())

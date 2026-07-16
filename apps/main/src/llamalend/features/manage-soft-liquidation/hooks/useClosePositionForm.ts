@@ -4,14 +4,14 @@ import { useCallback } from 'react'
 import { LEVERAGE } from '@/llamalend/constants'
 import { type CloseLoanMutation, useClosePositionMutation } from '@/llamalend/mutations/close-position.mutation'
 import { useCloseLoanIsApproved } from '@/llamalend/queries/close-loan/close-loan-is-approved.query'
-import { useUserBalances, useUserState } from '@/llamalend/queries/user'
+import { type UserState, useUserBalances, useUserState } from '@/llamalend/queries/user'
+import type { UserBalances } from '@/llamalend/queries/user/user-balances.query'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { maybe, maybes, notFalsy } from '@primitives/objects.utils'
 import { useForm } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
-import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { type TokenUsdRate, useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { useCombinedQueries } from '@ui-kit/lib/queries/combine'
-import { QueryData } from '@ui-kit/lib/queries/types'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { mapQuery } from '@ui-kit/types/util'
 import { decimal, decimalNegate } from '@ui-kit/utils'
@@ -26,9 +26,6 @@ const formOptions = {
   defaultValues: { ...userDefaultValues, slippage: SLIPPAGE[LEVERAGE].default },
 } as const
 
-type UserStateData = QueryData<typeof useUserState>
-type UserBalancesData = QueryData<typeof useUserBalances>
-type TokenUsdRate = QueryData<typeof useTokenUsdRate>
 /** Hook to build state for the close-position form */
 export function useClosePositionForm({
   network,
@@ -69,8 +66,8 @@ export function useClosePositionForm({
 
   const selectTableData = useCallback(
     (
-      { collateral, debt, stablecoin }: UserStateData,
-      { borrowed }: UserBalancesData,
+      { collateral, debt, stablecoin }: UserState,
+      { borrowed }: UserBalances,
       borrowTokenUsdRate: TokenUsdRate,
       collateralTokenUsdRate: TokenUsdRate,
     ) => {

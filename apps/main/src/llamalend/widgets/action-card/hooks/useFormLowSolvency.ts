@@ -1,16 +1,16 @@
 import { useSolvencyMarket } from '@/llamalend/hooks/useSolvencyMarket'
-import { DEFAULT_ALERT, SOLVENCY_THRESHOLDS } from '@/llamalend/llama-markets.constants'
+import { DEFAULT_ALERT, SOLVENCY_THRESHOLDS } from '@/llamalend/markets.constants'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Address } from '@primitives/address.utils'
 import { FieldValues, UseFormHandleSubmit } from '@ui-kit/features/forms'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { MarketType } from '@ui-kit/types/market'
 import { q } from '@ui-kit/types/util'
 import { BlockchainIds } from '@ui-kit/utils/network'
 
 type Props<T extends FieldValues, ChainId extends IChainId> = {
   controllerAddress: Address | undefined
-  marketType: LlamaMarketType
+  marketType: MarketType
   chainId: ChainId
   onSubmit: (form: T) => void
   handleFormSubmit: UseFormHandleSubmit<T>

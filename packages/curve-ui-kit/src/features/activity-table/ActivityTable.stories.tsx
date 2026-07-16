@@ -12,12 +12,12 @@ import {
   POOL_TRADES_COLUMNS,
 } from './columns'
 import {
-  LlammaEventsExpandedPanel,
-  LlammaTradesExpandedPanel,
+  MarketEventsExpandedPanel,
+  MarketTradesExpandedPanel,
   PoolLiquidityExpandedPanel,
   PoolTradesExpandedPanel,
 } from './panels'
-import type { LlammaEventRow, LlammaTradeRow, PoolLiquidityRow, PoolTradeRow } from './types'
+import type { MarketEventRow, MarketTradeRow, PoolLiquidityRow, PoolTradeRow } from './types'
 
 const generateAddress = (seed: number): Address => `0x${seed.toString(16).padStart(40, '0')}`
 
@@ -122,7 +122,7 @@ const generatePoolLiquidity = (count: number): PoolLiquidityRow[] => {
 }
 
 // Llamma Trades Mock Data Generator
-const generateLlammaTrades = (count: number, collateralToken: Token, borrowToken: Token): LlammaTradeRow[] => {
+const generateLlammaTrades = (count: number, collateralToken: Token, borrowToken: Token): MarketTradeRow[] => {
   const now = Date.now()
 
   return Array.from({ length: count }, (_, i) => {
@@ -151,7 +151,7 @@ const generateLlammaTrades = (count: number, collateralToken: Token, borrowToken
 }
 
 // Llamma Events Mock Data Generator
-const generateLlammaEvents = (count: number, collateralToken: Token, borrowToken: Token): LlammaEventRow[] => {
+const generateLlammaEvents = (count: number, collateralToken: Token, borrowToken: Token): MarketEventRow[] => {
   const now = Date.now()
 
   return Array.from({ length: count }, (_, i) => {
@@ -213,13 +213,13 @@ const DexPoolActivityComponent = () => {
         table={tradesTable}
         emptyState={{ title: 'No trades data found.' }}
         errorState={{ title: 'Could not load trades data.' }}
-        expandedPanel={PoolTradesExpandedPanel}
+        expandedPanel={{ Body: PoolTradesExpandedPanel }}
       />
       <ActivityTable
         table={liquidityTable}
         emptyState={{ title: 'No liquidity data found.' }}
         errorState={{ title: 'Could not load liquidity data.' }}
-        expandedPanel={PoolLiquidityExpandedPanel}
+        expandedPanel={{ Body: PoolLiquidityExpandedPanel }}
       />
     </>
   )
@@ -251,13 +251,13 @@ const LendMarketActivityComponent = () => {
         table={tradesTable}
         emptyState={{ title: 'No AMM trades found.' }}
         errorState={{ title: 'Could not load AMM trades.' }}
-        expandedPanel={LlammaTradesExpandedPanel}
+        expandedPanel={{ Body: MarketTradesExpandedPanel }}
       />
       <ActivityTable
         table={eventsTable}
         emptyState={{ title: 'No controller events found.' }}
         errorState={{ title: 'Could not load controller events.' }}
-        expandedPanel={LlammaEventsExpandedPanel}
+        expandedPanel={{ Body: MarketEventsExpandedPanel }}
       />
     </>
   )

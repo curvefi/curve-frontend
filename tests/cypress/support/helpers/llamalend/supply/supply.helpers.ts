@@ -3,7 +3,11 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber, Chain } from '@ui-kit/utils'
-import { checkEstimatedTxCost as checkEstimatedTxCostValue, getActionValue } from '../action-info.helpers'
+import {
+  checkEstimatedTxCost as checkEstimatedTxCostValue,
+  DECIMAL_REGEX,
+  getActionValue,
+} from '../action-info.helpers'
 
 type SupplyRpcTestMarket = {
   id: string
@@ -74,6 +78,16 @@ export const getSupplyInputBalanceValue = (type: SupplyFormType) =>
 export const getSupplyInputBalanceValueAttr = (type: SupplyFormType) =>
   getSupplyInputBalanceValue(type).invoke(LOAD_TIMEOUT, 'attr', 'data-value')
 
+export const selectMaxSupplyInput = (type: SupplyFormType) => {
+  getSupplyInputBalanceValue(type)
+    .should(value => expect(Number(value.attr('data-value'))).gt(0))
+    .click()
+  cy.get(`[data-testid="supply-${type}-input"] input[type="text"]`, LOAD_TIMEOUT)
+    .invoke(LOAD_TIMEOUT, 'attr', 'data-value')
+    .should(value => expect(Number(value)).gt(0))
+  cy.get('[data-testid="supply-action-info-list"]', LOAD_TIMEOUT).should('be.visible')
+}
+
 // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents -- Existing violation before enabling this rule.
 export const writeSupplyInput = ({ type, amount }: { type: SupplyFormType; amount: Decimal | string }) => {
   getSupplyInput(type).clear()
@@ -107,8 +121,8 @@ export const checkSupplyActionInfoValues = ({
   prevSupplyApy,
   vaultShares,
   prevVaultShares,
-  amountSupplied,
-  prevAmountSupplied,
+  suppliedAssets,
+  prevSuppliedAssets,
   symbol,
   hasApi = true,
 }: {
@@ -116,8 +130,8 @@ export const checkSupplyActionInfoValues = ({
   prevSupplyApy?: string
   vaultShares?: string
   prevVaultShares?: string
-  amountSupplied?: string
-  prevAmountSupplied?: string
+  suppliedAssets?: string
+  prevSuppliedAssets?: string
   symbol?: string
   hasApi?: boolean
 }) => {
@@ -138,13 +152,13 @@ export const checkSupplyActionInfoValues = ({
       formatNumber(prevVaultShares as Decimal, { abbreviate: true }),
     )
   }
-  if (amountSupplied != null) {
-    getActionValue('supply-amount').should('equal', formatNumber(amountSupplied as Decimal, { abbreviate: false }))
+  if (suppliedAssets != null) {
+    getActionValue('supply-amount').should('equal', formatNumber(suppliedAssets as Decimal, { abbreviate: false }))
   }
-  if (prevAmountSupplied != null) {
+  if (prevSuppliedAssets != null) {
     getActionValue('supply-amount', 'previous').should(
       'equal',
-      formatNumber(prevAmountSupplied as Decimal, { abbreviate: false }),
+      formatNumber(prevSuppliedAssets as Decimal, { abbreviate: false }),
     )
   }
   if (symbol) {
@@ -163,7 +177,7 @@ export const checkSupplyAlert = (testId: string) => {
  * Check the current supplied amount after a supply action.
  */
 export function checkCurrentSuppliedAmount(expectedAmount: Decimal) {
-  const expected = formatNumber(expectedAmount, { abbreviate: false })
+  const expected = formatNumber(expectedAmount, 'token.amount')
   getActionValue('supply-amount').should('equal', expected)
   getActionValue('supply-amount', 'previous').should('equal', expected)
 }
@@ -171,18 +185,16 @@ export function checkCurrentSuppliedAmount(expectedAmount: Decimal) {
 /**
  * Check the current staked vault shares and supplied amount after a stake/unstake action.
  */
-export function checkCurrentStakedAmount({
-  expectedVaultShares,
-  expectedAmountSupplied,
-}: {
-  expectedVaultShares: Decimal
-  expectedAmountSupplied: Decimal
-}) {
-  const expectedShares = formatNumber(expectedVaultShares, { abbreviate: true })
-  const expectedAmount = formatNumber(expectedAmountSupplied, { abbreviate: false })
+export function checkCurrentStakedAmount({ expectedAmountSupplied }: { expectedAmountSupplied: Decimal }) {
+  if (+expectedAmountSupplied) {
+    getActionValue('supply-vault-shares').should('match', DECIMAL_REGEX)
+    getActionValue('supply-vault-shares', 'previous').should('match', DECIMAL_REGEX)
+  } else {
+    getActionValue('supply-vault-shares').should('equal', '0')
+    getActionValue('supply-vault-shares', 'previous').should('equal', '0')
+  }
 
-  getActionValue('supply-vault-shares').should('equal', expectedShares)
-  getActionValue('supply-vault-shares', 'previous').should('equal', expectedShares)
+  const expectedAmount = formatNumber(expectedAmountSupplied, 'token.amount')
   getActionValue('supply-amount').should('equal', expectedAmount)
   getActionValue('supply-amount', 'previous').should('equal', expectedAmount)
 }

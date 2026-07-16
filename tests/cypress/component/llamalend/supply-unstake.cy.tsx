@@ -7,7 +7,7 @@ import {
   checkSupplySubmitButtonText,
 } from '@cy/support/helpers/llamalend/supply/supply.helpers'
 import {
-  readUnstakeAvailableAmount,
+  readUnstakeAvailableAssets,
   submitUnstakeForm,
   writeUnstakeForm,
 } from '@cy/support/helpers/llamalend/supply/unstake.helpers'
@@ -37,14 +37,15 @@ describe('UnstakeForm (mocked)', () => {
     )
 
     checkSupplyAlert(expected.alert)
-    readUnstakeAvailableAmount()
-    writeUnstakeForm({ amount: input.amount })
+    readUnstakeAvailableAssets()
+    writeUnstakeForm({ assets: input.amount })
     checkSupplyActionInfoValues(expected.actionInfo)
     checkSupplySubmitButtonText('unstake', 'Unstake')
 
     cy.then(() => {
       expect(stubs.walletBalances).to.have.been.calledWithExactly(...expected.walletBalances)
       expect(stubs.statsRates).to.have.been.calledWithExactly(...expected.marketRates)
+      expect(stubs.convertToShares).to.have.been.calledWithExactly(...expected.convertToShares)
       expect(stubs.estimateGasUnstake).to.have.been.calledWithExactly(...expected.estimateGas)
     })
 

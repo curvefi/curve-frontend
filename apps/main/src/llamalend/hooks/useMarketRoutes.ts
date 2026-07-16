@@ -93,6 +93,7 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
         : recordValues(queries)
             .map(q => q.data)
             .filter((q): q is RouteResponse => !!q)
+            // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
             .sort(sortRoutes)[0],
     // eslint-disable-next-line @eslint-react/exhaustive-deps
     [chosenRouter, ...recordValues(queries)],

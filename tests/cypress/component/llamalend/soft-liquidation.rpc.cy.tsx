@@ -14,7 +14,7 @@ import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { createVirtualNetworkSnapshot, type VnetSnapshot } from '@cy/support/helpers/tenderly/vnet-snapshot'
 import { LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { MarketType } from '@ui-kit/types/market'
 import { Chain } from '@ui-kit/utils'
 import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
@@ -29,7 +29,7 @@ const WSTETH_USDC_MARKET = {
 } as const
 
 const BORROW = '800' as const
-const IMPROVE_HEALTH_AMOUNT = '100' as const
+const IMPROVE_HEALTH_AMOUNT = '200' as const
 const RESET_WALLET_AMOUNT = '25' as const
 
 describe('Manage soft liquidation', () => {
@@ -64,7 +64,7 @@ describe('Manage soft liquidation', () => {
       vnet,
       userAddress,
       collateral: '1',
-      targetPrice: '1200',
+      targetPrice: '1100',
       borrow: BORROW,
       range: 50n,
       collateralFundingMultiplier: 2n,
@@ -84,7 +84,7 @@ describe('Manage soft liquidation', () => {
       chainId={chainId}
       userAddress={userAddress}
       marketId={WSTETH_USDC_MARKET.id}
-      marketType={LlamaMarketType.Lend}
+      marketType={MarketType.Lend}
     />
   )
 

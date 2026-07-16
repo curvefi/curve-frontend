@@ -87,9 +87,11 @@ export function log(key: LogKey, status?: LogStatus | unknown, ...args: unknown[
     keyArray.forEach((part, index) => {
       if (index > 0) {
         formattedString += '%c → '
+        // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
         styles.push('color: #666; font-size: 0.75em;')
       }
       formattedString += `%c${typeof part === 'string' ? part : stringify(part)}`
+      // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       styles.push('color: #4CAF50; font-weight: bold;')
     })
 

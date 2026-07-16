@@ -1,17 +1,14 @@
-import type { Amount } from '@primitives/decimal.utils'
+import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { createColumnHelper } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import type { TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import type { TokenAmount } from '../action-infos/types'
 import { LabelCell } from '../cells/LabelCell'
 import { ValueCell } from '../cells/ValueCell'
 import { ClosePositionRowColumnId } from './columns.enum'
 
-type ClosePositionToken = TokenAmount & { usd?: Amount }
-
 export type ClosePositionRow = TableItem & {
   label: string // row description, like "Collateral"
-  value: ClosePositionToken[]
+  value: { symbol: string; amount: Decimal; usd?: Amount }[]
   testId?: string // used for testing, added to the ValueCell when present
 }
 

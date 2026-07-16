@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
+import { useMarketMutation } from '@/llamalend/mutations/useMarketMutation'
 import {
   type WithdrawForm,
   WithdrawMutation,
@@ -26,7 +26,7 @@ export const useWithdrawMutation = ({
   userAddress,
   ...props
 }: WithdrawOptions) => {
-  const { mutate, error, isPending } = useLlammaMutation<WithdrawMutation>({
+  const { mutate, error, isPending } = useMarketMutation<WithdrawMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'withdraw'] as const,

@@ -13,7 +13,8 @@ import { usePrevLoanState } from '@/llamalend/widgets/action-card/hooks/usePrevL
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Address, Token } from '@primitives/address.utils'
-import type { LlamaMarketType } from '@ui-kit/types/market'
+import { maybes } from '@primitives/objects.utils'
+import type { MarketType } from '@ui-kit/types/market'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimalMax, decimalMinus } from '@ui-kit/utils'
 
@@ -29,7 +30,7 @@ export function ResetPositionInfoList<ChainId extends IChainId>({
   values: ResetForm
   tokens: { collateralToken: Token | undefined; borrowToken: Token | undefined }
   controllerAddress: Address | undefined
-  marketType: LlamaMarketType
+  marketType: MarketType
   networks: NetworkDict<ChainId>
 }) {
   const debtReduction = getResetDebtReduction(values)
@@ -37,7 +38,6 @@ export function ResetPositionInfoList<ChainId extends IChainId>({
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken }, isOpen)
   const { prevDebt, prevCollateral } = prevLoanState
   const debt = mapQuery(prevDebt, prev => prev && decimalMax('0', decimalMinus(prev, debtReduction)))
-  const debtDelta = debt.data && prevDebt.data && decimalMinus(debt.data, prevDebt.data)
 
   return (
     <LoanActionInfoList
@@ -62,7 +62,10 @@ export function ResetPositionInfoList<ChainId extends IChainId>({
       )}
       debt={debt}
       collateral={prevCollateral}
-      {...useBorrowRates({ params, marketType, controllerAddress, debtDelta }, isOpen)}
+      {...useBorrowRates(
+        { params, marketType, controllerAddress, debtDelta: maybes([debt.data, prevDebt.data], decimalMinus) },
+        isOpen,
+      )}
       {...prevLoanState}
     />
   )

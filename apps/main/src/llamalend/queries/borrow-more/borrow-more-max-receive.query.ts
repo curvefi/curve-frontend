@@ -1,4 +1,4 @@
-import { getLlamaMarket, getZapAddress } from '@/llamalend/llama.utils'
+import { getMarket, getZapAddress } from '@/llamalend/llama.utils'
 import { getBorrowMoreImplementation } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreValidationGroup } from '@/llamalend/queries/validation/borrow-more.validation'
@@ -73,7 +73,7 @@ export const { useQuery: useBorrowMoreMaxReceive, invalidate: invalidateBorrowMo
     userAddress,
     slippage,
   }: BorrowMoreQuery): Promise<BorrowMoreMaxReceiveResult> => {
-    const market = getLlamaMarket(marketId)
+    const market = getMarket(marketId)
     const [type, impl] = getBorrowMoreImplementation(market, leverageEnabled)
     switch (type) {
       case 'zapV2': {

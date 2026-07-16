@@ -9,7 +9,7 @@ import { pick } from '@primitives/objects.utils'
 import { scanTxPath, type BaseConfig } from '@ui/utils'
 import type { UserContractQuery } from '@ui-kit/lib/model'
 import type { TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { MarketType } from '@ui-kit/types/market'
 import { q, type QueryProp } from '@ui-kit/types/util'
 import { decimalDiv } from '@ui-kit/utils'
 import {
@@ -72,7 +72,7 @@ const parseEventType = (
 }
 
 export type UserCollateralEventsProps = {
-  app: LlamaMarketType
+  app: MarketType
   userAddress: Address | undefined
   controllerAddress: Address | undefined
   chain: Chain | undefined
@@ -90,8 +90,8 @@ export const useUserCollateralEvents = ({
 }: UserCollateralEventsProps): QueryProp<UserCollateralEvents> => {
   const params = { blockchainId: chain, contractAddress: controllerAddress, userAddress }
   const { data, isLoading, error } = {
-    [LlamaMarketType.Lend]: useUserLendCollateralEventsQuery(params, app === LlamaMarketType.Lend),
-    [LlamaMarketType.Mint]: useUserCrvUsdCollateralEventsQuery(params, app === LlamaMarketType.Mint),
+    [MarketType.Lend]: useUserLendCollateralEventsQuery(params, app === MarketType.Lend),
+    [MarketType.Mint]: useUserCrvUsdCollateralEventsQuery(params, app === MarketType.Mint),
   }[app]
   return useMemo(
     () =>
@@ -109,7 +109,7 @@ export const useUserCollateralEvents = ({
                 collateralToken,
                 ...pick(event, ...OriginalFields),
               }))
-              .reverse() || [],
+              .toReversed() || [],
         },
         isLoading,
         error,

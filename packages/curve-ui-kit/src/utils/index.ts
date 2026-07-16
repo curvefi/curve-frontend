@@ -11,6 +11,7 @@ export * from './mui'
 export * from './errors'
 export * from './average-categories'
 export * from './rates'
+export * from './tokens'
 
 /**
  * Copies text to clipboard with Ethereum address checksumming

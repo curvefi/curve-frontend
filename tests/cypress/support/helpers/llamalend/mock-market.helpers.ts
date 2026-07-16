@@ -5,7 +5,7 @@ import { oneAddress, oneDecimal } from '@cy/support/generators'
 import { CRVUSD_ADDRESS, MAINNET_CRV_ADDRESS } from '@ui-kit/utils'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type MockMethod = (...args: any[]) => Promise<any>
+type MockMethod = (...args: any[]) => any
 
 // Borrow-side tests rely on the MintMarketTemplate prototype and mint-specific methods.
 export const createMockMintMarket = (overrides: object) =>
@@ -79,6 +79,7 @@ export type MockLendVault = {
   maxWithdraw: MockMethod
   maxRedeem: MockMethod
   convertToAssets: MockMethod
+  convertToShares: MockMethod
   previewDeposit: MockMethod
   previewWithdraw: MockMethod
   depositIsApproved: MockMethod
@@ -101,8 +102,10 @@ export const createMockLendVault = (): MockLendVault => ({
   maxDeposit: cy.stub().resolves('0'),
   maxWithdraw: cy.stub().resolves('0'),
   maxRedeem: cy.stub().resolves('0'),
-  // eslint-disable-next-line @typescript-eslint/require-await -- Existing violation before enabling this rule.
+  // eslint-disable-next-line @typescript-eslint/require-await
   convertToAssets: cy.stub().callsFake(async (shares: string) => shares),
+  // eslint-disable-next-line @typescript-eslint/require-await
+  convertToShares: cy.stub().callsFake(async (assets: string) => assets),
   previewDeposit: cy.stub().resolves('0'),
   previewWithdraw: cy.stub().resolves('0'),
   depositIsApproved: cy.stub().resolves(true),

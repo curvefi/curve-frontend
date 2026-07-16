@@ -514,7 +514,7 @@ export const QuickSwap = ({
         }
         message={maybes(
           [userFromBalance.data, formValues.fromError],
-          v => t`Amount > wallet balance ${formatNumber(v, { abbreviate: false })}`,
+          v => t`Amount > wallet balance ${formatNumber(v, 'token.amount')}`,
         )}
       />
       {/* SWAP ICON */}

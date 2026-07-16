@@ -2,7 +2,7 @@ import { LoanPreset } from '@/llamalend/constants'
 import { oneOf, oneValueOf } from '@cy/support/generators'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { MarketType } from '@ui-kit/types/market'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { Chain } from '@ui-kit/utils/network'
 import { DEFAULT_DECIMALS } from '@ui-kit/utils/units'
@@ -16,7 +16,7 @@ const BORROWED_DECIMALS = DEFAULT_DECIMALS
 const COLLATERAL_DECIMALS = DEFAULT_DECIMALS
 
 export const LOAN_TEST_MARKETS = {
-  [LlamaMarketType.Mint]: [
+  [MarketType.Mint]: [
     // todo: fix buggy market that cannot borrow max: { id: 'wsteth', label: 'wstETH-crvUSD Old Mint Market', collateralAddress: '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0', collateral: '0.1', borrow: '10', borrowMore: '2', repay: '1', chainId, path: '/crvusd/ethereum/markets/wsteth', hasLeverage: false },
     {
       id: 'sfrxeth2',
@@ -55,7 +55,7 @@ export const LOAN_TEST_MARKETS = {
       borrowedSymbol: BORROWED_SYMBOL,
     },
   ],
-  [LlamaMarketType.Lend]: [
+  [MarketType.Lend]: [
     {
       id: 'one-way-market-41',
       label: 'sreUSD-crvUSD v1 Lend Market',
@@ -95,11 +95,11 @@ export const LOAN_TEST_MARKETS = {
   ],
 } as const
 
-type TestLlamaMarket = (typeof LOAN_TEST_MARKETS)[LlamaMarketType][number]
+type TestMarket = (typeof LOAN_TEST_MARKETS)[MarketType][number]
 
 export const oneLoanTestMarket = (
-  marketType: LlamaMarketType = oneValueOf(LlamaMarketType),
-  filter?: (market: TestLlamaMarket) => boolean,
+  marketType: MarketType = oneValueOf(MarketType),
+  filter?: (market: TestMarket) => boolean,
 ) => ({
   marketType,
   ...oneOf(...(filter ? LOAN_TEST_MARKETS[marketType].filter(filter) : LOAN_TEST_MARKETS[marketType])),

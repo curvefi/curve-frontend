@@ -10,51 +10,51 @@ import {
   useTransactionMutation,
   type TransactionMutationOptions,
 } from '@ui-kit/lib/model/mutation/useTransactionMutation'
-import { getControllerAddress, getLlamaMarket, getTokens, updateUserEventsApi } from '../llama.utils'
-import type { LlamaMarketTemplate } from '../llamalend.types'
+import { getControllerAddress, getMarket, getTokens, updateUserEventsApi } from '../llama.utils'
+import type { MarketTemplate } from '../llamalend.types'
 
-/** Context created in onMutate, extends the base transaction context with llamma market and api */
-type LlammaContext = TransactionContext & {
+/** Context created in onMutate, extends the base transaction context with market and api */
+type MarketContext = TransactionContext & {
   llamaApi: NonNullable<ReturnType<typeof useCurve>['llamaApi']>
-  market: LlamaMarketTemplate
+  market: MarketTemplate
   userAddress: Address
 }
 
 // Default market's collateral and borrow token addresses to invalidate after mutations.
-const getDefaultAddresses = (market: LlamaMarketTemplate) => {
+const getDefaultAddresses = (market: MarketTemplate) => {
   const { collateralToken, borrowToken } = getTokens(market)
   return [collateralToken.address, borrowToken.address]
 }
 /**
- * Custom hook for handling llamma-related mutations with automatic wallet and API validation.
- * Wraps `useTransactionMutation` and adds llamma market context, cache invalidation,
+ * Custom hook for handling market-related mutations with automatic wallet and API validation.
+ * Wraps `useTransactionMutation` and adds market context, cache invalidation,
  * and user event tracking.
  */
-export function useLlammaMutation<TVariables extends object>({
+export function useMarketMutation<TVariables extends object>({
   network: { chainId, id: networkId },
   marketId,
   onSuccess,
   mutationTokenAddresses,
   ...options
-}: TransactionMutationOptions<TVariables, LlammaContext> & {
-  /** The llamma market id */
+}: TransactionMutationOptions<TVariables, MarketContext> & {
+  /** The market id */
   marketId: string | null | undefined
   /** The current network config */
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
   /** Token balances affected by the mutation that should be refetched after success. Defaults to market collateral + borrow tokens. */
-  mutationTokenAddresses?: (variables: TVariables, context: LlammaContext) => Address[] | undefined
+  mutationTokenAddresses?: (variables: TVariables, context: MarketContext) => Address[] | undefined
 }) {
   const { llamaApi } = useCurve()
   const { address: userAddress } = useConnection()
   const config = useConfig()
 
-  return useTransactionMutation<TVariables, LlammaContext>({
+  return useTransactionMutation<TVariables, MarketContext>({
     ...options,
     validationParams: { chainId, marketId, userAddress },
     buildContext: (_variables, baseContext) => ({
       ...baseContext,
       llamaApi: assert(llamaApi, 'Missing llamalend api'),
-      market: getLlamaMarket(assert(marketId, 'Missing llama market ID')),
+      market: getMarket(assert(marketId, 'Missing llama market ID')),
       userAddress: assert(userAddress, 'Missing userAddress'),
     }),
     onSuccess: async (data, receipt, variables, context) => {

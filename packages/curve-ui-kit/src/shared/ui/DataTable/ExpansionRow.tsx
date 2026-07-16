@@ -1,18 +1,22 @@
-import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
+import { type FunctionComponent, useCallback, useEffect, useState } from 'react'
 import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
-import { useTheme } from '@mui/material/styles'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
-import { type Row, type Table } from '@tanstack/react-table'
-import { getInsetShadow, getShadow } from '@ui-kit/themes/basic-theme/shadows'
+import type { Row } from '@tanstack/react-table'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { TableItem } from './data-table.utils'
+import type { ExpandedPanelContext, TableItem } from './data-table.utils'
+import type { DataRowProps } from './DataRow'
 
 const { Spacing } = SizesAndSpaces
 
-// Panel used when row is expanded on mobile
-export type ExpandedPanel<T extends TableItem> = (props: { row: Row<T>; table: Table<T> }) => ReactNode
+/** A component that renders part of the expanded panel for a table row */
+export type ExpandedPanelComponent<T extends TableItem> = FunctionComponent<ExpandedPanelContext<T>>
+
+export type ExpandedPanelConfig<T extends TableItem> = {
+  Body: ExpandedPanelComponent<T>
+  Actions?: ExpandedPanelComponent<T>
+}
 
 /**
  * Expansion bar with that shows a details panel when the row is expanded on mobile.
@@ -20,40 +24,32 @@ export type ExpandedPanel<T extends TableItem> = (props: { row: Row<T>; table: T
 export function ExpansionRow<T extends TableItem>({
   row,
   table,
-  expandedPanel: ExpandedPanel,
+  expandedPanel,
   colSpan,
-}: {
-  row: Row<T>
-  table: Table<T>
-  expandedPanel: ExpandedPanel<T>
+}: Pick<DataRowProps<T>, 'table' | 'row'> & {
+  expandedPanel: NonNullable<DataRowProps<T>['expandedPanel']>
   colSpan: number
 }) {
   const { render, onExited, expanded } = useRowExpansion(row)
+  const { Body, Actions } = expandedPanel
+
   const [testId, setTestId] = useState<string | null>(null)
-  const { design } = useTheme()
-  const boxShadow = useMemo(() => getShadow(design, 3), [design])
-  const insetShadow = useMemo(() => getInsetShadow(design, 3), [design])
+
   return (
-    // add a scale(1) so the box-shadow is applied correctly on top of the next table row
     render && (
-      <TableRow sx={{ boxShadow, transform: 'scale(1)' }} data-testid={testId}>
-        <TableCell colSpan={colSpan} sx={{ padding: 0, boxShadow: insetShadow }}>
+      <TableRow data-testid={testId}>
+        <TableCell colSpan={colSpan} sx={{ padding: 0 }}>
           <Collapse
             in={expanded}
             onEntered={() => setTestId('data-table-expansion-row')}
             onExit={() => setTestId(null)}
             onExited={onExited}
           >
-            <Stack
-              direction="column"
-              sx={{
-                gap: Spacing.lg,
-                paddingInline: Spacing.md,
-                paddingBlockStart: Spacing.md,
-                paddingBlockEnd: 0,
-              }}
-            >
-              <ExpandedPanel row={row} table={table} />
+            <Stack direction="column" sx={{ gap: Spacing.md, paddingBlockStart: Spacing.md }}>
+              <Stack sx={{ gap: Spacing.md, paddingInline: Spacing.md }}>
+                <Body row={row} table={table} />
+              </Stack>
+              {Actions && <Actions row={row} table={table} />}
             </Stack>
           </Collapse>
         </TableCell>

@@ -5,12 +5,12 @@ import { DownloadIcon } from '@ui-kit/shared/icons/DownloadIcon'
 import { UploadIcon } from '@ui-kit/shared/icons/UploadIcon'
 import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { LlammaEventRow } from '../types'
+import type { MarketEventRow } from '../types'
 
 const { Spacing } = SizesAndSpaces
 
 type LlammaEventActionCellProps = {
-  event: LlammaEventRow
+  event: MarketEventRow
 }
 
 export const LlammaEventActionCell = ({ event }: LlammaEventActionCellProps) => {

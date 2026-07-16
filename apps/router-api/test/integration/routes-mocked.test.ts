@@ -34,6 +34,7 @@ describe('GET routes mocked unit tests', () => {
   ])('$label', async ({ router, fetchStatuses, expectedStatus, expectedBody }) => {
     vi.stubGlobal(
       'fetch',
+      // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       vi.fn<typeof fetch>(() => Promise.resolve(new Response('Upstream response', { status: fetchStatuses.shift() }))),
     )
 

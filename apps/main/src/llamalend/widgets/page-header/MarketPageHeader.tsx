@@ -11,7 +11,7 @@ import { Badge } from '@ui-kit/shared/ui/Badge'
 import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { MarketType } from '@ui-kit/types/market'
 import { IS_DEVELOPMENT } from '@ui-kit/utils'
 import { PageHeader } from '@ui-kit/widgets/PageHeader'
 import { usePageHeader } from './hooks/usePageHeader'
@@ -40,7 +40,7 @@ export const MarketPageHeader = ({ isLoading }: { isLoading: boolean }) => {
   const subtitle =
     collateralToken &&
     borrowToken &&
-    t`Use ${collateralToken.symbol} to borrow ${marketType === LlamaMarketType.Mint ? t`and mint ` : ''}${borrowToken.symbol}`
+    t`Use ${collateralToken.symbol} to borrow ${marketType === MarketType.Mint ? t`and mint ` : ''}${borrowToken.symbol}`
 
   return (
     <PageHeader

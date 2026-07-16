@@ -6,7 +6,7 @@ import { requireLib } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
 import { type OnTransactionSuccess, useTransactionMutation } from '@ui-kit/lib/model/mutation/useTransactionMutation'
-import { formatNumber } from '@ui-kit/utils'
+import { formatToken } from '@ui-kit/utils'
 import { invalidateScrvUsdMutationQueries } from './scrvusd-mutation.helpers'
 import type { ScrvUsdWithdrawForm, ScrvUsdWithdrawMutation } from './scrvusd.validation'
 import { scrvUsdWithdrawMaxValidationSuite } from './scrvusd.validation'
@@ -29,9 +29,8 @@ export const useScrvUsdWithdrawMutation = ({ chainId, userAddress, onSuccess, ..
     },
     validationSuite: scrvUsdWithdrawMaxValidationSuite,
     validationParams: { chainId, userAddress },
-    pendingMessage: ({ withdrawAmount }) => t`Withdrawing... ${formatNumber(withdrawAmount, 'token.amount')} scrvUSD`,
-    successMessage: ({ withdrawAmount }) =>
-      t`Withdraw successful! ${formatNumber(withdrawAmount, 'token.amount')} scrvUSD`,
+    pendingMessage: ({ withdrawAmount }) => t`Withdrawing... ${formatToken(withdrawAmount, 'scrvUSD', 'amount')}`,
+    successMessage: ({ withdrawAmount }) => t`Withdraw successful! ${formatToken(withdrawAmount, 'scrvUSD', 'amount')}`,
     onSuccess: async (data, receipt, variables, context) => {
       await invalidateScrvUsdMutationQueries({ chainId, config, userAddress })
       await onSuccess?.(data, receipt, variables, context)

@@ -1,4 +1,4 @@
-import { getLlamaMarket, getZapAddress } from '@/llamalend/llama.utils'
+import { getMarket, getZapAddress } from '@/llamalend/llama.utils'
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -78,7 +78,7 @@ export const {
     leverageEnabled,
     slippage,
   }: CreateLoanMaxReceiveQuery): Promise<CreateLoanMaxReceiveResult> => {
-    const market = getLlamaMarket(marketId)
+    const market = getMarket(marketId)
     const [type, impl] = getCreateLoanImplementation(market, leverageEnabled)
     switch (type) {
       case 'zapV2':

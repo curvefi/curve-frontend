@@ -15,6 +15,7 @@ import { stableHookCallbacksRule } from './.eslint/stable-hook-callbacks.rule.mj
 import { noDoubleNegativeRule } from './.eslint/no-double-negative.rule.mjs'
 import { noJsxStringLiteralBracesRule } from './.eslint/no-jsx-string-literal-braces.rule.mjs'
 import { noQueryComponentPropsRule } from './.eslint/no-query-component-props.rule.mjs'
+import { noMutableArrayMethodsRule } from './.eslint/no-mutable-array-methods.rule.mjs'
 import { noRedundantTernaryRule } from './.eslint/no-redundant-ternary.rule.mjs'
 import { noSingleLineNamedFunctionsRule } from './.eslint/no-single-line-named-functions.rule.mjs'
 
@@ -59,6 +60,7 @@ const config = [
           'no-double-negative': noDoubleNegativeRule,
           'no-jsx-string-literal-braces': noJsxStringLiteralBracesRule,
           'no-query-component-props': noQueryComponentPropsRule,
+          'no-mutable-array-methods': noMutableArrayMethodsRule,
           'no-redundant-ternary': noRedundantTernaryRule,
           'no-single-line-named-functions': noSingleLineNamedFunctionsRule,
         },
@@ -86,6 +88,7 @@ const config = [
       'local/no-double-negative': 'error',
       'local/no-jsx-string-literal-braces': 'error',
       'local/no-query-component-props': 'error',
+      'local/no-mutable-array-methods': 'error',
       'local/no-redundant-ternary': 'error',
       'local/no-single-line-named-functions': 'error',
 

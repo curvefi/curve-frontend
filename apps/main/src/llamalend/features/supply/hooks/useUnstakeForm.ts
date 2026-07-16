@@ -2,22 +2,37 @@ import { useMemo } from 'react'
 import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import { useUnstakeMutation } from '@/llamalend/mutations/unstake.mutation'
 import {
+  type AssetsToSharesParams,
+  type AssetsToSharesQuery,
+  requireVault,
   type UnstakeForm,
+  type UnstakeFormParams,
   unstakeFormValidationSuite,
-  UnstakeParams,
+  userSupplyVaultAssetsValidationSuite,
 } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { Decimal } from '@primitives/decimal.utils'
 import { useFormSync, useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
+import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { mapQuery } from '@ui-kit/types/util'
 import { useMarketContext } from '../../market-context'
 import { useVaultUserBalances } from './useVaultUserBalances'
 
-const userDefaultValues = { unstakeAmount: undefined }
+const userDefaultValues = { unstakeAssets: undefined, unstakeShares: undefined, isFull: false }
 
 const emptyUnstakeForm = (): UnstakeForm => ({
   ...userDefaultValues,
-  maxUnstakeAmount: undefined,
+  maxUnstakeAssets: undefined,
+})
+
+const { useQuery: useUnstakeAssetsToShares } = queryFactory({
+  queryKey: ({ chainId, marketId, userAddress, assets }: AssetsToSharesParams) =>
+    [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'unstake.assetsToShares', { assets }] as const,
+  queryFn: async ({ marketId, assets }: AssetsToSharesQuery) =>
+    (await requireVault(marketId).vault.convertToShares(assets)) as Decimal,
+  category: 'llamalend.supply',
+  validationSuite: userSupplyVaultAssetsValidationSuite,
 })
 
 export const useUnstakeForm = <ChainId extends LlamaChainId>({ network }: { network: LlamaNetwork<ChainId> }) => {
@@ -27,7 +42,11 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({ network }: { netw
   const { borrowToken, collateralToken } = tokens
 
   const userBalances = useVaultUserBalances({ chainId, marketId, userAddress })
-  const maxUserUnstake = { ...mapQuery(userBalances, d => d.stakedShares), fieldName: 'maxUnstakeAmount' as const }
+  const maxUnstakeAssets = {
+    ...mapQuery(userBalances, d => d.stakedSharesAmount),
+    fieldName: 'maxUnstakeAssets' as const,
+  }
+  const maxUnstakeShares = mapQuery(userBalances, d => d.stakedShares)
 
   const form = useForm<UnstakeForm>({
     validation: unstakeFormValidationSuite,
@@ -35,11 +54,25 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({ network }: { netw
   })
 
   const values = form.watchValues()
+  const convertedUnstakeShares = useUnstakeAssetsToShares({
+    chainId,
+    marketId,
+    userAddress,
+    assets: values.unstakeAssets,
+  })
+  const unstakeShares = values.isFull ? maxUnstakeShares.data : convertedUnstakeShares.data
 
   const [params, isDebouncing] = useFormDebounce(
     useMemo(
-      (): UnstakeParams<ChainId> => ({ chainId, marketId, userAddress, unstakeAmount: values.unstakeAmount }),
-      [chainId, marketId, userAddress, values.unstakeAmount],
+      (): UnstakeFormParams<ChainId> => ({
+        chainId,
+        marketId,
+        userAddress,
+        unstakeAssets: values.unstakeAssets,
+        unstakeShares,
+        isFull: values.isFull,
+      }),
+      [chainId, marketId, unstakeShares, userAddress, values.isFull, values.unstakeAssets],
     ),
   )
 
@@ -56,7 +89,8 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({ network }: { netw
 
   const { formState } = form
 
-  useFormSync(form, { maxUnstakeAmount: maxUserUnstake.data })
+  useFormSync(form, { maxUnstakeAssets: maxUnstakeAssets.data })
+  useFormSync(form, { unstakeShares })
 
   const isPending = formState.isSubmitting || isUnstaking
   return {
@@ -69,7 +103,7 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({ network }: { netw
     borrowToken,
     collateralToken,
     unstakeError,
-    max: maxUserUnstake,
+    max: maxUnstakeAssets,
     formErrors: formState.visibleErrors,
   }
 }

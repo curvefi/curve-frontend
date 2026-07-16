@@ -15,6 +15,7 @@ export const useFacetedSortedOptions = <TData extends TableItem>({
   const facetedUniqueValues = table.getColumn(columnId)?.getFacetedUniqueValues()
 
   return useMemo(
+    // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
     () => notFalsyArray<string>(Array.from(facetedUniqueValues?.keys() ?? [])).sort(),
     [facetedUniqueValues],
   )

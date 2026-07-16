@@ -58,6 +58,7 @@ export const oneToken = (chain?: string) => (chain ? oneOf(...TOKENS.filter(t =>
 
 export const mockTokenPrices = () =>
   cy.intercept('https://prices.curve.finance/v1/usd_price/*/*', req => {
+    // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
     const address = new URL(req.url).pathname.split('/').pop()
     const token = TOKENS.find(t => t.address === address)
     if (!token) {

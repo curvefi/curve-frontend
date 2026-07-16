@@ -124,7 +124,7 @@ class LlamaArray<T> {
     const ordersArray = toArray(orders)
 
     return new LlamaArray(
-      [...this._value].sort((a, b) => {
+      this._value.toSorted((a, b) => {
         for (let i = 0; i < iterateesArray.length; i++) {
           const iteratee = iterateesArray[i]
           const order = Array.isArray(orders) ? ordersArray[i] || 'asc' : orders

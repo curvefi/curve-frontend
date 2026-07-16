@@ -1,4 +1,4 @@
-import { SOLVENCY_THRESHOLDS } from '@/llamalend/llama-markets.constants'
+import { SOLVENCY_THRESHOLDS } from '@/llamalend/markets.constants'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
 import {
@@ -62,17 +62,17 @@ export function checkDepositSubmit({
  * The action info list is expected to be opened before calling this function.
  */
 export const checkDepositDetailsLoaded = ({
-  amountSupplied,
-  prevAmountSupplied,
+  suppliedAssets,
+  prevSuppliedAssets,
   symbol = 'crvUSD',
   hasApi = true,
 }: {
-  amountSupplied: Decimal
-  prevAmountSupplied: Decimal
+  suppliedAssets: Decimal
+  prevSuppliedAssets: Decimal
   symbol?: string
   hasApi?: boolean
 }) => {
-  checkSupplyActionInfoValues({ amountSupplied, prevAmountSupplied, symbol, hasApi })
+  checkSupplyActionInfoValues({ suppliedAssets, prevSuppliedAssets, symbol, hasApi })
 }
 
 /**

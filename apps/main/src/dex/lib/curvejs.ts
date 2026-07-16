@@ -151,9 +151,11 @@ const pool = {
       for (const other of others) {
         if (chainId === 8453) {
           if (other.symbol !== 'CRV' && +other.apy > 0) {
+            // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
             resp.other.push(other)
           }
         } else if (+other.apy > 0) {
+          // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
           resp.other.push(other)
         }
       }

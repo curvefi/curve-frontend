@@ -57,7 +57,7 @@ export function checkRepayDetailsLoaded({
   )
   getActionValue('borrow-apr').should('include', '%')
   checkEstimatedTxCost({ hasValue: hasApi })
-  checkDebt(debt)
+  checkDebt(debt, { checkLoanToValue: hasApi })
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
 }
 

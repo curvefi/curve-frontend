@@ -1,4 +1,4 @@
-import { getLlamaMarket } from '@/llamalend/llama.utils'
+import { getMarket } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { type MarketQuery, queryFactory, rootKeys, MarketParams } from '@ui-kit/lib/model'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
@@ -8,7 +8,7 @@ import { IS_GETTER, USE_API } from './market.constants'
 export const { useQuery: useMarketRates } = queryFactory({
   queryKey: ({ chainId, marketId }: MarketParams) => [...rootKeys.market({ chainId, marketId }), 'rates'] as const,
   queryFn: async ({ marketId }: MarketQuery) => {
-    const market = getLlamaMarket(marketId)
+    const market = getMarket(marketId)
     return convertRates(
       market instanceof LendMarketTemplate
         ? await market.stats.rates(IS_GETTER, USE_API)

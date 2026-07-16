@@ -1,35 +1,18 @@
-import { useSharesToAssetsAmount } from '@/llamalend/queries/supply/supply-user-vault-amounts.query'
 import { useUserBalances } from '@/llamalend/queries/user/user-balances.query'
-import { combineQueryState } from '@ui-kit/lib'
+import { maybes } from '@primitives/objects.utils'
 import { UserMarketQuery } from '@ui-kit/lib/model'
 import { FieldsOf } from '@ui-kit/lib/validation/types'
+import { mapQuery } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils/decimal'
 
-export const useVaultUserBalances = (query: FieldsOf<UserMarketQuery>, enabled?: boolean) => {
-  const userBalances = useUserBalances(query, enabled)
-  const stakedSharesAmount = useSharesToAssetsAmount({ ...query, shares: userBalances?.data?.gauge }, enabled)
-
-  // deposited + staked shares
-  const totalShares =
-    userBalances.data?.vaultShares &&
-    userBalances.data.gauge &&
-    decimalSum(userBalances.data.vaultShares, userBalances.data.gauge)
-
-  // deposited + staked shares amount
-  const totalSharesAmount =
-    userBalances.data?.vaultSharesConverted &&
-    stakedSharesAmount.data &&
-    decimalSum(stakedSharesAmount.data, userBalances.data.vaultSharesConverted)
-
-  return {
-    data: {
-      depositedShares: userBalances.data?.vaultShares,
-      stakedShares: userBalances.data?.gauge,
-      totalShares,
-      depositedSharesAmount: userBalances.data?.vaultSharesConverted,
-      stakedSharesAmount: stakedSharesAmount.data,
-      totalSharesAmount,
-    },
-    ...combineQueryState(userBalances, stakedSharesAmount),
-  }
-}
+export const useVaultUserBalances = (query: FieldsOf<UserMarketQuery>, enabled?: boolean) =>
+  mapQuery(useUserBalances(query, enabled), ({ gauge, gaugeConverted, vaultShares, vaultSharesConverted }) => ({
+    depositedShares: vaultShares,
+    stakedShares: gauge,
+    // deposited + staked shares
+    totalShares: maybes([vaultShares, gauge], decimalSum),
+    depositedSharesAmount: vaultSharesConverted,
+    stakedSharesAmount: gaugeConverted,
+    // deposited + staked shares amount
+    totalSharesAmount: maybes([vaultSharesConverted, gaugeConverted], decimalSum),
+  }))

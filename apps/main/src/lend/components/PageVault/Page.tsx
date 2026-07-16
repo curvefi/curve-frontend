@@ -8,16 +8,16 @@ import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/utils
 import { MarketContextProvider } from '@/llamalend/features/market-context'
 import { SupplyPositionDetails } from '@/llamalend/features/market-position-details'
 import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
-import { useUserShares } from '@/llamalend/queries/user/user-balances.query'
+import { useUserBalances } from '@/llamalend/queries/user/user-balances.query'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useParams } from '@ui-kit/hooks/router'
-import { useLlamalendMobileFormDrawer } from '@ui-kit/hooks/useFeatureFlags'
+import { useMarketMobileFormDrawer } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
-import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
+import { MarketType, MarketRateType } from '@ui-kit/types/market'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 import { useLendMarket } from '../../hooks/useLendMarket'
 import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
@@ -30,7 +30,7 @@ export const Page = () => {
   const { data: market, isLoading: isMarketLoading, error: marketError } = marketQuery
   const network = networks[chainId]
   const { address: userAddress } = useConnection()
-  const isMobileFormDrawer = useLlamalendMobileFormDrawer()
+  const isMobileFormDrawer = useMarketMobileFormDrawer()
 
   useLendPageTitle(market?.collateral_token?.symbol, t`Supply`)
 
@@ -44,7 +44,7 @@ export const Page = () => {
     },
     !isLoading && !market, // only enable API data when wallet is disconnected
   )
-  const supplied = +(useUserShares({ marketId: market?.id, chainId, userAddress }).data?.value ?? 0)
+  const supplied = +(useUserBalances({ marketId: market?.id, chainId, userAddress }).data?.totalShares ?? 0)
 
   const error = marketError ?? apiMarket.error
   return error ? (
@@ -59,7 +59,7 @@ export const Page = () => {
       network={network}
       marketQuery={marketQuery}
       apiMarket={apiMarket}
-      marketType={LlamaMarketType.Lend}
+      marketType={MarketType.Lend}
     >
       <DetailPageLayout
         formTabs={{

@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import {
   useVaultMaxRedeemShares,
   useVaultMaxWithdrawAmount,
@@ -6,13 +6,15 @@ import {
 import type { WithdrawForm, WithdrawParams } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybe } from '@primitives/objects.utils'
-import { useFormSync } from '@ui-kit/features/forms'
+import { maybe, maybes } from '@primitives/objects.utils'
 import type { UseFormReturn } from '@ui-kit/features/forms'
-import { combineQueryState } from '@ui-kit/lib'
+import { useFormSync } from '@ui-kit/features/forms'
+import { useCombinedQueries } from '@ui-kit/lib'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimalEqual } from '@ui-kit/utils'
 import { useVaultUserBalances } from './useVaultUserBalances'
+
+type VaultUserBalances = NonNullable<ReturnType<typeof useVaultUserBalances>['data']>
 
 const getIsWithdrawFull = ({
   withdrawAmount,
@@ -25,14 +27,14 @@ const getIsWithdrawFull = ({
   maxRedeemShares: Decimal | undefined
   maxWithdrawAmount: Decimal | undefined
 }) =>
-  withdrawAmount &&
-  maxWithdrawAmount &&
-  depositedShares &&
-  maxRedeemShares &&
-  // Only use redeem when the vault says the full deposited share balance is redeemable.
-  decimalEqual(maxRedeemShares, depositedShares) &&
-  // Flip to full mode once the entered amount reaches the current max withdrawable assets.
-  decimalEqual(withdrawAmount, maxWithdrawAmount)
+  maybes(
+    [withdrawAmount, maxWithdrawAmount, depositedShares, maxRedeemShares],
+    (withdrawAmount, maxWithdrawAmount, depositedShares, maxRedeemShares) =>
+      // Only use redeem when the vault says the full deposited share balance is redeemable.
+      decimalEqual(maxRedeemShares, depositedShares) &&
+      // Flip to full mode once the entered amount reaches the current max withdrawable assets.
+      decimalEqual(withdrawAmount, maxWithdrawAmount),
+  )
 
 export function useMaxWithdrawTokenValues<ChainId extends LlamaChainId>({
   params,
@@ -45,18 +47,23 @@ export function useMaxWithdrawTokenValues<ChainId extends LlamaChainId>({
   const userBalances = useVaultUserBalances(params)
   const maxWithdrawAmount = useVaultMaxWithdrawAmount(params)
   const maxRedeemShares = useVaultMaxRedeemShares(params)
-  const isFull = {
-    data: getIsWithdrawFull({
-      withdrawAmount: params.withdrawAmount ?? undefined,
-      depositedShares: userBalances.data.depositedShares,
-      maxRedeemShares: maxRedeemShares.data,
-      maxWithdrawAmount: maxWithdrawAmount.data,
-    }),
-    ...combineQueryState(userBalances, maxWithdrawAmount, maxRedeemShares),
-  }
+
+  const isFull = useCombinedQueries(
+    [userBalances, maxWithdrawAmount, maxRedeemShares],
+    useCallback(
+      ({ depositedShares }: VaultUserBalances, maxWithdrawAmount: Decimal, maxRedeemShares: Decimal) =>
+        getIsWithdrawFull({
+          withdrawAmount: params.withdrawAmount ?? undefined,
+          depositedShares,
+          maxRedeemShares,
+          maxWithdrawAmount,
+        }),
+      [params.withdrawAmount],
+    ),
+  )
 
   useFormSync(form, { maxWithdrawAmount: maxWithdrawAmount.data })
-  useFormSync(form, { userVaultShares: userBalances.data.depositedShares })
+  useFormSync(form, { userVaultShares: userBalances.data?.depositedShares })
   useEffect(
     () => maybe(isFull.data, data => updateForm({ isFull: data }, { automated: true })),
     [isFull.data, updateForm],

@@ -60,7 +60,10 @@ export function checkBorrowMoreDetailsLoaded({
   getActionValue('borrow-health').should('match', DECIMAL_REGEX)
   getActionValue('borrow-health', 'previous').should('match', DECIMAL_REGEX)
   checkEstimatedTxCost({ hasValue: hasApi })
-  checkDebt({ current: expectedCurrentDebt, future: expectedFutureDebt, symbol: borrowedSymbol })
+  checkDebt(
+    { current: expectedCurrentDebt, future: expectedFutureDebt, symbol: borrowedSymbol },
+    { checkLoanToValue: hasApi },
+  )
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
   if (leverageEnabled) {
     getActionValue('borrow-price-impact').should('include', '%')

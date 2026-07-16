@@ -119,7 +119,13 @@ type MetricValueProps = Pick<MetricProps, 'valueOptions' | 'change' | 'testId'> 
 
 const MetricValue = ({ value, valueOptions = {}, change, size, copyValue, tooltip, testId }: MetricValueProps) => {
   const numberValue = useMemo(() => ((value || value === 0) && isFinite(Number(value)) ? Number(value) : null), [value])
-  const { color = 'textPrimary', abbreviate = true, fallback = t`N/A`, ...formattingOptions } = valueOptions
+  const {
+    color = 'textPrimary',
+    abbreviate = true,
+    fallback = t`N/A`,
+    disableTooltip = false,
+    ...formattingOptions
+  } = valueOptions
   const { prefix, mainValue, scaleSuffix, suffix } =
     numberValue === null ? {} : decomposeNumber(numberValue, { ...formattingOptions, abbreviate })
 
@@ -129,17 +135,21 @@ const MetricValue = ({ value, valueOptions = {}, change, size, copyValue, toolti
 
   return (
     <Stack direction="row" sx={{ gap: Spacing.xxs, alignItems: 'baseline' }}>
-      <Tooltip
+      <WithWrapper
+        shouldWrap={!disableTooltip}
+        Wrapper={Tooltip}
         arrow
         placement="bottom"
-        onClick={copyValue}
-        sx={copyValue && { cursor: 'pointer' }}
         {...tooltip}
         title={tooltip?.title ?? (numberValue == null ? fallback : numberValue.toLocaleString())}
-        data-testid={`${testId}-value`}
-        data-value={value}
       >
-        <Stack direction="row" sx={{ alignItems: 'baseline' }}>
+        <Stack
+          direction="row"
+          sx={applySxProps({ alignItems: 'baseline' }, copyValue && { cursor: 'pointer' })}
+          onClick={copyValue}
+          data-testid={`${testId}-value`}
+          data-value={value}
+        >
           {prefix && (
             <Typography variant={fontVariantUnit} color="textSecondary">
               {prefix}
@@ -166,7 +176,7 @@ const MetricValue = ({ value, valueOptions = {}, change, size, copyValue, toolti
             </Typography>
           )}
         </Stack>
-      </Tooltip>
+      </WithWrapper>
       {(change || change === 0) && (
         <Typography
           variant={MetricChangeSize[size]}
@@ -199,6 +209,7 @@ export type MetricProps = {
   value: QueryOrValue<MetricValueProps['value']>
   valueOptions?: MakeOptional<NumberFormatOptions, 'abbreviate'> /* defaults to true */ & {
     color?: TypographyProps['color']
+    disableTooltip?: boolean
   }
 
   /** Optional value that denotes a change in metric value since 'last' time */

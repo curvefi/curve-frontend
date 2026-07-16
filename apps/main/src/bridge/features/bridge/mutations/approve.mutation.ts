@@ -4,8 +4,8 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
-import { useTransactionMutation, type OnTransactionSuccess } from '@ui-kit/lib/model/mutation/useTransactionMutation'
-import { formatNumber } from '@ui-kit/utils'
+import { type OnTransactionSuccess, useTransactionMutation } from '@ui-kit/lib/model/mutation/useTransactionMutation'
+import { formatToken } from '@ui-kit/utils'
 import type { BridgeForm } from '../hooks/useBridgeForm'
 import { bridgeFormValidationSuite } from '../validation/bridge.validation'
 
@@ -28,8 +28,8 @@ export const useBridgeApproveMutation = ({ chainId, onApproved, ...props }: Brid
         .then(([hash]) => ({ hash: hash as Hex })),
     validationSuite: bridgeFormValidationSuite,
     validationParams: { chainId },
-    pendingMessage: mutation => t`Approving... ${formatNumber(mutation.amount, { abbreviate: false })} crvUSD`,
-    successMessage: mutation => t`Approved! ${formatNumber(mutation.amount, { abbreviate: false })} crvUSD`,
+    pendingMessage: mutation => t`Approving... ${formatToken(mutation.amount, 'crvUSD', 'amount')}`,
+    successMessage: mutation => t`Approved! ${formatToken(mutation.amount, 'crvUSD', 'amount')}`,
     onSuccess: onApproved,
     ...props,
   })

@@ -2,7 +2,7 @@ import { execFileSync, type ExecFileSyncOptionsWithStringEncoding, spawnSync } f
 import { mkdir, readdir, rmdir, unlink } from 'fs/promises'
 import { dirname, join } from 'path'
 
-const { BRANCH, WORKFLOW, REPOSITORY = 'curvefi/curve-frontend' } = process.env
+const { BRANCH, WORKFLOW, RUN_ID, REPOSITORY = 'curvefi/curve-frontend' } = process.env
 const DEST_DIR = 'artifacts'
 
 /**
@@ -39,7 +39,7 @@ const findLatestRunId = (branch: string, workflow: string): string =>
     '--branch',
     branch,
     '--workflow',
-    workflow,
+    `${workflow}.yaml`,
     '--limit',
     '1',
     '--json',
@@ -117,21 +117,20 @@ async function downloadLatestArtifacts({ cleanup }: { cleanup: boolean }): Promi
   process.chdir(repoRoot)
 
   const branch = BRANCH?.trim() || run('git', ['rev-parse', '--abbrev-ref', 'HEAD'])
-  const workflow = WORKFLOW?.trim() || 'ci.yaml'
-  const runId = findLatestRunId(branch, workflow)
+  const workflow = WORKFLOW?.trim() || 'ci'
+  const runId = RUN_ID || findLatestRunId(branch, workflow)
   if (!runId) throw new Error(`No ${workflow} runs for branch '${branch}'`)
 
-  const safeBranch = branch.replace(/\//g, '-')
-  const path = join(DEST_DIR, safeBranch, runId)
-  const dest = join(repoRoot, path)
-  await mkdir(dest, { recursive: true })
+  const path = join(DEST_DIR, branch.replace(/\//g, '-') || 'current', runId)
+  const destination = join(repoRoot, path)
+  await mkdir(destination, { recursive: true })
 
   console.info(`Downloading artifacts for branch '${branch}' (workflow: ${workflow}, run: ${runId}) into '${path}'...`)
-  downloadArtifacts(runId, dest)
+  downloadArtifacts(runId, destination)
 
   if (cleanup) {
     console.info('Cleaning up videos from successful tests...')
-    await cleanupSuccessfulTestVideos(dest)
+    await cleanupSuccessfulTestVideos(destination)
     console.info('Cleanup complete.')
   }
 }

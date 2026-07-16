@@ -1,26 +1,37 @@
-import type { Row, Table } from '@tanstack/react-table'
-import type { TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import type { ExpandedPanelContext, TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable, DataTableProps } from '@ui-kit/shared/ui/DataTable/DataTable'
+import { ExpandedPanelActions } from '@ui-kit/shared/ui/DataTable/ExpandedPanelActions'
+import { getTransactionActions } from './utils'
 
-/** Default expanded panel that renders nothing (for tables without mobile expansion) */
-const DefaultExpandedPanel = <T extends TableItem>(_props: { row: Row<T>; table: Table<T> }) => null
+type ActivityTableItem = TableItem & { txUrl?: string | null }
 
-type ActivityTableProps<TData extends TableItem> = Pick<
+type ActivityTableProps<TData extends ActivityTableItem> = Pick<
   DataTableProps<TData>,
   'table' | 'emptyState' | 'errorState' | 'expandedPanel'
 >
 
-export const ActivityTable = <TData extends TableItem>({
+const DefaultExpandedPanelActions = <TData extends ActivityTableItem>({
+  row: {
+    original: { txUrl },
+  },
+}: ExpandedPanelContext<TData>) => <ExpandedPanelActions actions={getTransactionActions(txUrl)} />
+
+export const ActivityTable = <TData extends ActivityTableItem>({
   table,
   emptyState,
   errorState,
-  expandedPanel = DefaultExpandedPanel,
+  expandedPanel,
 }: ActivityTableProps<TData>) => (
   <DataTable
     category="scrollable"
     table={table}
     emptyState={emptyState}
     errorState={errorState}
-    expandedPanel={expandedPanel}
+    expandedPanel={
+      expandedPanel && {
+        ...expandedPanel,
+        Actions: expandedPanel.Actions ?? DefaultExpandedPanelActions,
+      }
+    }
   />
 )

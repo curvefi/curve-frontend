@@ -17,27 +17,23 @@ import {
 } from '@cy/support/helpers/llamalend/supply/deposit.helpers'
 import {
   checkStakeDetailsLoaded,
-  readStakeAvailableAmount,
   submitStakeForm,
   touchStakeForm,
-  writeStakeForm,
 } from '@cy/support/helpers/llamalend/supply/stake.helpers'
 import { fundUserForSupplySetup } from '@cy/support/helpers/llamalend/supply/supply-setup.helpers'
 import {
-  checkCurrentSuppliedAmount,
   checkCurrentStakedAmount,
+  checkCurrentSuppliedAmount,
+  selectMaxSupplyInput,
   SUPPLY_TEST_MARKETS,
 } from '@cy/support/helpers/llamalend/supply/supply.helpers'
 import {
   checkUnstakeDetailsLoaded,
-  readUnstakeAvailableAmount,
   submitUnstakeForm,
   touchUnstakeForm,
-  writeUnstakeForm,
 } from '@cy/support/helpers/llamalend/supply/unstake.helpers'
 import {
   checkWithdrawDetailsLoaded,
-  selectMaxWithdraw,
   submitWithdrawForm,
   touchWithdrawForm,
   writeWithdrawForm,
@@ -45,7 +41,7 @@ import {
 import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { skipTestsAfterFailure } from '@cy/support/ui'
 import type { Decimal } from '@primitives/decimal.utils'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { MarketType } from '@ui-kit/types/market'
 
 const testCases = [oneOf(...SUPPLY_TEST_MARKETS)]
 
@@ -76,7 +72,6 @@ testCases.forEach(
 
       const suppliedAfterDeposit = deposit
       const suppliedAfterPartialWithdraw = new BigNumber(deposit).minus(partialWithdraw).toFixed() as Decimal
-
       const SupplyTestWrapper = ({ tab }: Pick<LlammalendTestCaseProps, 'tab'>) => (
         <LlammalendTestCase
           type="supply"
@@ -86,7 +81,7 @@ testCases.forEach(
           chainId={chainId}
           marketId={id}
           userAddress={address}
-          marketType={LlamaMarketType.Lend}
+          marketType={MarketType.Lend}
         />
       )
 
@@ -107,7 +102,7 @@ testCases.forEach(
       it('deposits into the vault', () => {
         cy.mount(<SupplyTestWrapper tab="deposit" />)
         writeDepositForm({ amount: deposit })
-        checkDepositDetailsLoaded({ amountSupplied: deposit, prevAmountSupplied: '0', hasApi })
+        checkDepositDetailsLoaded({ suppliedAssets: deposit, prevSuppliedAssets: '0', hasApi })
         submitDepositForm({})
         touchDepositForm()
         checkCurrentSuppliedAmount(suppliedAfterDeposit)
@@ -117,8 +112,8 @@ testCases.forEach(
         cy.mount(<SupplyTestWrapper tab="withdraw" />)
         writeWithdrawForm({ amount: partialWithdraw })
         checkWithdrawDetailsLoaded({
-          amountSupplied: suppliedAfterPartialWithdraw,
-          prevAmountSupplied: suppliedAfterDeposit,
+          suppliedAssets: suppliedAfterPartialWithdraw,
+          prevSuppliedAssets: suppliedAfterDeposit,
           hasApi,
         })
         submitWithdrawForm()
@@ -128,10 +123,10 @@ testCases.forEach(
 
       it('redeems the remaining vault balance', () => {
         cy.mount(<SupplyTestWrapper tab="withdraw" />)
-        selectMaxWithdraw()
+        selectMaxSupplyInput('withdraw')
         checkWithdrawDetailsLoaded({
-          amountSupplied: '0',
-          prevAmountSupplied: suppliedAfterPartialWithdraw,
+          suppliedAssets: '0',
+          prevSuppliedAssets: suppliedAfterPartialWithdraw,
           expectedButtonText: 'Withdraw All',
           hasApi,
         })
@@ -143,7 +138,7 @@ testCases.forEach(
       it('deposits into the vault again', () => {
         cy.mount(<SupplyTestWrapper tab="deposit" />)
         writeDepositForm({ amount: deposit })
-        checkDepositDetailsLoaded({ amountSupplied: deposit, prevAmountSupplied: '0', hasApi })
+        checkDepositDetailsLoaded({ suppliedAssets: deposit, prevSuppliedAssets: '0', hasApi })
         submitDepositForm({})
         touchDepositForm()
         checkCurrentSuppliedAmount(suppliedAfterDeposit)
@@ -151,23 +146,17 @@ testCases.forEach(
 
       it('stakes into the gauge', () => {
         cy.mount(<SupplyTestWrapper tab="stake" />)
-        readStakeAvailableAmount().then(stakeAmount => {
-          writeStakeForm({ amount: stakeAmount })
-          checkStakeDetailsLoaded({
-            vaultShares: stakeAmount,
-            prevVaultShares: '0',
-            amountSupplied: suppliedAfterDeposit,
-            prevAmountSupplied: '0',
-            expectedButtonText: 'Approve & Stake',
-            hasApi,
-          })
-          submitStakeForm()
-          touchStakeForm()
-          checkCurrentStakedAmount({
-            expectedVaultShares: stakeAmount,
-            expectedAmountSupplied: suppliedAfterDeposit,
-          })
+        selectMaxSupplyInput('stake')
+        checkStakeDetailsLoaded({
+          prevVaultShares: '0',
+          suppliedAssets: suppliedAfterDeposit,
+          prevSuppliedAssets: '0',
+          expectedButtonText: 'Approve & Stake',
+          hasApi,
         })
+        submitStakeForm()
+        touchStakeForm()
+        checkCurrentStakedAmount({ expectedAmountSupplied: suppliedAfterDeposit })
       })
 
       it('claims rewards', () => {
@@ -190,22 +179,11 @@ testCases.forEach(
 
       it('unstakes from the gauge', () => {
         cy.mount(<SupplyTestWrapper tab="unstake" />)
-        readUnstakeAvailableAmount().then(unstakeAmount => {
-          writeUnstakeForm({ amount: unstakeAmount })
-          checkUnstakeDetailsLoaded({
-            vaultShares: '0',
-            prevVaultShares: unstakeAmount,
-            amountSupplied: '0',
-            prevAmountSupplied: suppliedAfterDeposit,
-            hasApi,
-          })
-          submitUnstakeForm()
-          touchUnstakeForm()
-          checkCurrentStakedAmount({
-            expectedVaultShares: '0',
-            expectedAmountSupplied: '0',
-          })
-        })
+        selectMaxSupplyInput('unstake')
+        checkUnstakeDetailsLoaded({ prevSuppliedAssets: suppliedAfterDeposit, hasApi })
+        submitUnstakeForm()
+        touchUnstakeForm()
+        checkCurrentStakedAmount({ expectedAmountSupplied: '0' })
       })
     })
   },

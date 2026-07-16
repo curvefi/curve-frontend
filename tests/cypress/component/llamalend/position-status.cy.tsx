@@ -2,7 +2,7 @@ import { zeroAddress } from 'viem'
 import { MarketContext, createMarketContextValue } from '@/llamalend/features/market-context'
 import { BorrowPositionDetails } from '@/llamalend/features/market-position-details'
 import { getLiquidationStatus } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate, UserPositionStatusKey } from '@/llamalend/llamalend.types'
+import type { MarketTemplate, UserPositionStatusKey } from '@/llamalend/llamalend.types'
 import { getPositionStatusContent } from '@/llamalend/position-status-content'
 import {
   getMarketLiquidationBandKey,
@@ -22,7 +22,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, DEFAULT_DECIMALS } from '@primitives/objects.utils'
 import { getTokenUsdRateKey } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { TestQueryProvider } from '@ui-kit/lib/queries/test-query.provider.test'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { MarketType } from '@ui-kit/types/market'
 import { constQ, type Range } from '@ui-kit/types/util'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 
@@ -73,9 +73,9 @@ const PositionDetailsTest = ({
         ...createMarketContextValue({
           chainId: params.chainId as IChainId,
           blockchainId: 'ethereum',
-          marketQuery: constQ(undefined as LlamaMarketTemplate | undefined),
+          marketQuery: constQ(undefined as MarketTemplate | undefined),
           apiMarket: constQ(undefined as LlamaMarket | undefined),
-          marketType: LlamaMarketType.Mint,
+          marketType: MarketType.Mint,
           userAddress: params.userAddress,
           api: null,
         }),

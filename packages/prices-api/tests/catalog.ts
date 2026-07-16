@@ -72,6 +72,7 @@ export const getEndpointCatalogSkipReason = (() => {
 })()
 
 const sortedDifference = (sourceIds: Iterable<EndpointId>, targetIds: ReadonlySet<EndpointId>) =>
+  // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
   [...sourceIds].filter(id => !targetIds.has(id)).sort()
 
 const getExportedAsyncEndpointIds = () =>

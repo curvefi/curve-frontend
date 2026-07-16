@@ -1,5 +1,5 @@
 import { getAllPoolTrades, type GetAllPoolTradesParams } from '@curvefi/prices-api/pools'
-import { DEFAULT_PAGE_SIZE, DEFAULT_PAGE_START_INDEX } from '@ui-kit/features/activity-table/constants'
+import { DEFAULT_PAGE_SIZE, DEFAULT_PAGE_START_INDEX } from '@ui-kit/features/activity-table/utils'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { contractValidationGroup } from '@ui-kit/lib/model/query/contract-validation'

@@ -24,6 +24,7 @@ const _fetchProposalPricesApi = async ({
         stake: +vote.votingPower,
         relativePower: (+vote.votingPower / +proposal.totalSupply) * 100,
       }))
+      // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       .sort((a, b) => b.stake - a.stake),
   }
 

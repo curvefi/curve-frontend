@@ -1,12 +1,7 @@
-import { ROUTE } from '@/dex/constants'
-import { getPath } from '@/dex/utils/utilsRouter'
-import Button from '@mui/material/Button'
 import Grid from '@mui/material/Grid'
-import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
-import type { ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
+import type { ExpandedPanelComponent } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { Metric, type MetricProps } from '@ui-kit/shared/ui/Metric'
-import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { decimal } from '@ui-kit/utils'
 import { PoolListRewards } from '../cells/PoolListRewards'
@@ -27,55 +22,41 @@ const ListInfoItem = ({
 
 const highlight = { color: 'success' as const }
 
-export const PoolListMobileExpandedPanel: ExpandedPanel<PoolListItem> = ({ row, table }) => {
+export const PoolListMobileExpandedPanel: ExpandedPanelComponent<PoolListItem> = ({ row, table }) => {
   const pool = row.original
-  const path = getPath({ network: pool.network }, `${ROUTE.PAGE_POOLS}/${pool.address}`)
   const hasVolume = table.getColumn(PoolListColumnId.Volume)?.getIsVisible()
 
   return (
-    <>
-      <Grid container spacing={Spacing.md}>
-        {hasVolume && (
-          <ListInfoItem
-            label={t`24h Volume`}
-            value={pool.tradingVolume24h}
-            valueOptions={{
-              unit: 'dollar',
-              ...(table.getColumn(PoolListColumnId.Volume)?.getIsSorted() && highlight),
-            }}
-          />
-        )}
+    <Grid container spacing={Spacing.md}>
+      {hasVolume && (
         <ListInfoItem
-          label={t`TVL`}
-          value={pool.tvlUsd}
+          label={t`24h Volume`}
+          value={pool.tradingVolume24h}
           valueOptions={{
             unit: 'dollar',
-            ...(table.getColumn(PoolListColumnId.Tvl)?.getIsSorted() && highlight),
+            ...(table.getColumn(PoolListColumnId.Volume)?.getIsSorted() && highlight),
           }}
         />
-        <ListInfoItem
-          label={t`BASE vAPY`}
-          value={getPoolYieldApy(pool.baseDailyApr)}
-          valueOptions={{
-            unit: 'percentage',
-            ...(table.getColumn(PoolListColumnId.RewardsBase)?.getIsSorted() && highlight),
-          }}
-        />
-        <Grid size={6}>
-          <PoolListRewards pool={pool} isMobile />
-        </Grid>
+      )}
+      <ListInfoItem
+        label={t`TVL`}
+        value={pool.tvlUsd}
+        valueOptions={{
+          unit: 'dollar',
+          ...(table.getColumn(PoolListColumnId.Tvl)?.getIsSorted() && highlight),
+        }}
+      />
+      <ListInfoItem
+        label={t`BASE vAPY`}
+        value={getPoolYieldApy(pool.baseDailyApr)}
+        valueOptions={{
+          unit: 'percentage',
+          ...(table.getColumn(PoolListColumnId.RewardsBase)?.getIsSorted() && highlight),
+        }}
+      />
+      <Grid size={6}>
+        <PoolListRewards pool={pool} isMobile />
       </Grid>
-      <Stack sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 3, marginBlock: 3 }}>
-        <Button data-testid="pool-link-deposit" component={RouterLink} href={path + ROUTE.PAGE_POOL_DEPOSIT}>
-          {t`Deposit`}
-        </Button>
-        <Button component={RouterLink} href={path + ROUTE.PAGE_POOL_WITHDRAW}>
-          {t`Withdraw`}
-        </Button>
-        <Button component={RouterLink} href={path + ROUTE.PAGE_SWAP}>
-          {t`Swap`}
-        </Button>
-      </Stack>
-    </>
+    </Grid>
   )
 }

@@ -3,7 +3,7 @@ import { LEVERAGE } from '@/llamalend/constants'
 import { useMaxRepayTokenValues } from '@/llamalend/features/manage-loan/hooks/useMaxRepayTokenValues'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { isRouterRequired } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import type { MarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useRepayMutation } from '@/llamalend/mutations/repay.mutation'
 import { getRepayLoanEstimateGasOptions } from '@/llamalend/queries/repay/repay-gas-estimate.query'
 import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
@@ -95,7 +95,7 @@ const formOptions = {
 } as const
 
 const isRepayRouteRequired = (
-  market: LlamaMarketTemplate | undefined,
+  market: MarketTemplate | undefined,
   { stateCollateral = '0', userBorrowed = '0', userCollateral = '0' }: AllowUndefined<RepayFormFields>,
 ) => !!market && isRouterRequired(getRepayImplementationType(market, { stateCollateral, userCollateral, userBorrowed }))
 

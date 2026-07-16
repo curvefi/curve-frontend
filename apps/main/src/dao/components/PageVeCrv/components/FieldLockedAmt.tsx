@@ -55,7 +55,7 @@ export const FieldLockedAmt = ({
       message={
         !!crv && lockedAmtError ? (
           <>
-            Amount is greater than balance ({formatNumber(amount(crv), { abbreviate: false, fallback: '-' })}
+            Amount is greater than balance ({formatNumber(amount(crv), 'token.amount')}
             ). Get more{' '}
             <RouterLink
               sx={{ color: t => t.design.Text.TextColors.FilledFeedback.Warning.Primary }}
@@ -66,7 +66,7 @@ export const FieldLockedAmt = ({
             .
           </>
         ) : (
-          isAdjustCrv && t`CRV Locked: ${formatNumber(amount(lockedAmount), { abbreviate: false, fallback: '-' })}`
+          isAdjustCrv && t`CRV Locked: ${formatNumber(amount(lockedAmount), 'token.amount')}`
         )
       }
       onBalance={onBalance}
@@ -82,7 +82,7 @@ export const FieldLockedAmt = ({
     >
       {isAdjustCrv && lockedAmt && Number(lockedAmt) != 0 && futureVeCrv != null && (
         <HelperMessage
-          message={`${t`Future veCRV:`} ${formatNumber(amount(vecrvInfo.veCrv), { abbreviate: false, fallback: '-' })} → ${formatNumber(futureVeCrv, { abbreviate: false })}`}
+          message={`${t`Future veCRV:`} ${formatNumber(amount(vecrvInfo.veCrv), 'token.amount')} → ${formatNumber(futureVeCrv, 'token.amount')}`}
         />
       )}
     </LargeTokenInput>

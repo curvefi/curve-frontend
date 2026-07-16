@@ -11,9 +11,10 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
 import { QueryProp } from '@ui-kit/types/util'
 import type { LlamaMarket } from '../../queries/market-list/llama-markets'
-import { DEFAULT_SORT_BORROW, DEFAULT_SORT_SUPPLY, LLAMA_MARKET_COLUMNS } from './columns'
-import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
-import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
+import { DEFAULT_SORT_BORROW, DEFAULT_SORT_SUPPLY, MARKET_COLUMNS } from './columns'
+import { useMarketsVisibility } from './hooks/useMarketsVisibility'
+import { MarketExpandedPanel } from './MarketExpandedPanel'
+import { UserPositionExpandedPanelActions } from './UserPositionExpandedPanelActions'
 
 const { Spacing, Sizing } = SizesAndSpaces
 
@@ -45,11 +46,11 @@ const pagination = { pageIndex: 0, pageSize: 50 }
 export const UserPositionsMarketRateTable = ({ tableQuery, marketRateType, onReload }: UserPositionsTableProps) => {
   const { title, label, defaultSort, sortQueryField, storageKey } = TABLE_CONFIG[marketRateType]
   const [sorting, onSortingChange] = useSortFromQueryString(defaultSort, sortQueryField)
-  const { columnVisibility } = useLlamaTableVisibility(storageKey, sorting, marketRateType)
+  const { columnVisibility } = useMarketsVisibility(storageKey, sorting, marketRateType)
   const [expanded, setExpanded] = useState<ExpandedState>({})
 
   const table = useTable({
-    columns: LLAMA_MARKET_COLUMNS,
+    columns: MARKET_COLUMNS,
     query: tableQuery,
     state: { expanded, sorting, columnVisibility },
     initialState: { pagination },
@@ -65,7 +66,7 @@ export const UserPositionsMarketRateTable = ({ tableQuery, marketRateType, onRel
       table={table}
       viewAllLabel={t`View all ${rowCount} ${label} positions`}
       errorState={{ title: t`Could not load ${label} positions`, onReload }}
-      expandedPanel={LlamaMarketExpandedPanel}
+      expandedPanel={{ Body: MarketExpandedPanel, Actions: UserPositionExpandedPanelActions }}
       shouldStickFirstColumn={Boolean(useIsTablet() && rowCount)}
     >
       <Stack

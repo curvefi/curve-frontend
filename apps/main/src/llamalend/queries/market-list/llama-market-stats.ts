@@ -1,19 +1,19 @@
 import { useConnection } from 'wagmi'
-import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns'
+import { MarketColumnId } from '@/llamalend/features/market-list/columns'
 import { calculateLtv, getDisplayHealth, getLiquidationStatus, isBelowRange } from '@/llamalend/llama.utils'
 import { useUserLendingVaultStats } from '@/llamalend/queries/market-list/lending-vaults'
 import { type LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { useUserMintMarketStats } from '@/llamalend/queries/market-list/mint-markets'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { MarketType } from '@ui-kit/types/market'
 import { requireChainId } from '@ui-kit/utils'
 import { decimal } from '@ui-kit/utils/decimal'
 
 const statsColumns = [
-  LlamaMarketColumnId.UserHealth,
-  LlamaMarketColumnId.UserBorrowed,
-  LlamaMarketColumnId.UserCollateral,
-  LlamaMarketColumnId.UserLtv,
+  MarketColumnId.UserHealth,
+  MarketColumnId.UserBorrowed,
+  MarketColumnId.UserCollateral,
+  MarketColumnId.UserLtv,
 ]
 
 /**
@@ -24,7 +24,7 @@ const statsColumns = [
  */
 export function useUserMarketStats(
   { assets, type, userHasPositions, controllerAddress, chain }: LlamaMarket,
-  column?: LlamaMarketColumnId,
+  column?: MarketColumnId,
 ) {
   const { address: userAddress } = useConnection()
   const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
@@ -37,8 +37,8 @@ export function useUserMarketStats(
   })
 
   const enableStats = !!userHasPositions?.Borrow && (!column || statsColumns.includes(column))
-  const enableLendingStats = enableStats && type === LlamaMarketType.Lend
-  const enableMintStats = enableStats && type === LlamaMarketType.Mint
+  const enableLendingStats = enableStats && type === MarketType.Lend
+  const enableMintStats = enableStats && type === MarketType.Mint
 
   const params = { userAddress, contractAddress: controllerAddress, blockchainId: chain }
 

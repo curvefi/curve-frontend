@@ -6,7 +6,7 @@ import { AlertType } from '@ui/AlertBox/types'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import { t } from '@ui-kit/lib/i18n'
 import type { BannerProps } from '@ui-kit/shared/ui/Banner'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { MarketType } from '@ui-kit/types/market'
 import { Chain } from '@ui-kit/utils'
 
 type MarketAlert = TooltipProps & {
@@ -31,7 +31,7 @@ export const DEFAULT_ALERT: MarketAlert = {
  * Market alerts keep markets visible while surfacing warnings or disabling new borrow/deposit actions.
  * Addresses must be checksummed. Tests have been added to enforce this.
  */
-export const MARKETS_ALERTS: Record<LlamaMarketType, Record<number, Record<Address, MarketAlert>>> = {
+export const MARKETS_ALERTS: Record<MarketType, Record<number, Record<Address, MarketAlert>>> = {
   /** LEND MARKET ALERTS */
   Lend: {
     [Chain.Ethereum]: {
@@ -165,10 +165,7 @@ export const MARKETS_ALERTS: Record<LlamaMarketType, Record<number, Record<Addre
 export type DeprecatedMarketAlert = { message: string; url?: string }
 
 // Deprecated markets are hidden from market list for new users but remain accessible to users with existing positions.
-export const DEPRECATED_LLAMAS: Record<
-  LlamaMarketType,
-  PartialRecord<ApiChain, Record<Address, DeprecatedMarketAlert>>
-> = {
+export const DEPRECATED_LLAMAS: Record<MarketType, PartialRecord<ApiChain, Record<Address, DeprecatedMarketAlert>>> = {
   /** DEPRECATED LEND MARKET */
   Lend: {
     ethereum: {
