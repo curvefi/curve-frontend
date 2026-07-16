@@ -217,7 +217,7 @@ describe('Soft Liquidation Forms (mocked)', () => {
 
       cy.then(() => {
         expect(stubs.isRepayWithShrinkAvailable).to.have.been.calledWithExactly(...expected.isAvailable)
-        expect(stubs.tokensToShrink).to.not.have.been.called
+        expect(stubs.tokensToShrink).to.have.been.calledWithExactly(...expected.tokensToShrink)
         expect(stubs.repayHealth).to.not.have.been.called
         expect(stubs.repayPrices).to.not.have.been.called
         expect(stubs.repayIsApproved).to.not.have.been.called
@@ -275,7 +275,6 @@ describe('Soft Liquidation Forms (mocked)', () => {
       checkResetPositionMinimumWalletMessage()
       writeResetPositionWalletAmount({ amount: belowMinBorrowed })
 
-      void minBorrowed
       cy.get('[data-testid="reset-position-input-user-borrowed"]')
         .should('contain.text', 'Add at least')
         .and('contain.text', 'from wallet to reset this position')
