@@ -1,5 +1,5 @@
-import { useClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/hooks/useClosePositionForm'
-import { ClosePositionInfoList } from '@/llamalend/features/manage-soft-liquidation/ui/ClosePositionInfoList'
+import { useClosePositionForm } from '@/llamalend/features/manage-liquidation/hooks/useClosePositionForm'
+import { ClosePositionInfoList } from '@/llamalend/features/manage-liquidation/ui/ClosePositionInfoList'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'

@@ -1,5 +1,5 @@
-import { useResetPositionForm } from '@/llamalend/features/manage-soft-liquidation/hooks/useResetPositionForm'
-import { ResetPositionInfoList } from '@/llamalend/features/manage-soft-liquidation/ui/ResetPositionInfoList'
+import { useResetPositionForm } from '@/llamalend/features/manage-liquidation/hooks/useResetPositionForm'
+import { ResetPositionInfoList } from '@/llamalend/features/manage-liquidation/ui/ResetPositionInfoList'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'

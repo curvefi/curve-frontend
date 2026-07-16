@@ -1,9 +1,9 @@
+import { ClosePositionForm } from '@/llamalend/features/manage-liquidation/ui/tabs/ClosePositionForm'
+import { ImproveHealthForm } from '@/llamalend/features/manage-liquidation/ui/tabs/ImproveHealthForm'
 import { AddCollateralForm } from '@/llamalend/features/manage-loan/components/AddCollateralForm'
 import { BorrowMoreForm } from '@/llamalend/features/manage-loan/components/BorrowMoreForm'
 import { RemoveCollateralForm } from '@/llamalend/features/manage-loan/components/RemoveCollateralForm'
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
-import { ClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePositionForm'
-import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealthForm'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { networks } from '@/loan/networks'
@@ -20,7 +20,7 @@ const softLiqNetworks = networks as unknown as NetworkDict<LlamaChainId>
 type MintManageLoanProps = {
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
   collateralEvents: QueryProp<UserCollateralEvents>
-  isSoftLiquidation: boolean
+  isLiquidation: boolean
 }
 
 const MintManageMenu = [
@@ -52,10 +52,10 @@ const MintManageMenu = [
   },
 ] satisfies FormTab<MintManageLoanProps>[]
 
-const SoftLiquidationMenu = [
+const LiquidationMenu = [
   {
-    value: 'soft-liquidation',
-    label: t`Manage soft liquidation`,
+    value: 'liquidation',
+    label: t`Manage liquidation`,
     subTabs: [
       {
         value: 'improve-health',
@@ -75,6 +75,6 @@ export const ManageLoanTabs = (params: MintManageLoanProps) => (
   <FormTabs
     key={useReleaseChannel()[0]} // remount tabs when zapv2 gets enabled
     params={params}
-    menu={params.isSoftLiquidation ? SoftLiquidationMenu : MintManageMenu}
+    menu={params.isLiquidation ? LiquidationMenu : MintManageMenu}
   />
 )
