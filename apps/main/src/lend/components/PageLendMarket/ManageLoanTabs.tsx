@@ -1,11 +1,11 @@
 import { networks } from '@/lend/networks'
+import { ClosePositionForm } from '@/llamalend/features/manage-liquidation/ui/tabs/ClosePositionForm'
+import { ImproveHealthForm } from '@/llamalend/features/manage-liquidation/ui/tabs/ImproveHealthForm'
+import { ResetPositionForm } from '@/llamalend/features/manage-liquidation/ui/tabs/ResetPositionForm'
 import { AddCollateralForm } from '@/llamalend/features/manage-loan/components/AddCollateralForm'
 import { BorrowMoreForm } from '@/llamalend/features/manage-loan/components/BorrowMoreForm'
 import { RemoveCollateralForm } from '@/llamalend/features/manage-loan/components/RemoveCollateralForm'
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
-import { ClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePositionForm'
-import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealthForm'
-import { ResetPositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ResetPositionForm'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { Decimal } from '@primitives/decimal.utils'
 import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
@@ -17,7 +17,7 @@ type LendManageLoanProps = {
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
   collateralEvents: QueryProp<UserCollateralEvents>
   showReset: boolean
-  isSoftLiquidation: boolean
+  isLiquidation: boolean
 }
 
 type LendManageLoanTab = FormTab<LendManageLoanProps>
@@ -40,10 +40,10 @@ const LendManageMenu = [
   },
 ] satisfies LendManageLoanTab[]
 
-const SoftLiquidationMenu = [
+const LiquidationMenu = [
   {
-    value: 'soft-liquidation',
-    label: t`Manage soft liquidation`,
+    value: 'liquidation',
+    label: t`Manage liquidation`,
     subTabs: [
       {
         value: 'reset',
@@ -69,6 +69,6 @@ export const ManageLoanTabs = (params: LendManageLoanProps) => (
   <FormTabs
     key={useReleaseChannel()[0]} // remount tabs when zapv2 gets enabled
     params={params}
-    menu={params.isSoftLiquidation ? SoftLiquidationMenu : LendManageMenu}
+    menu={params.isLiquidation ? LiquidationMenu : LendManageMenu}
   />
 )

@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { MarketContextProvider } from '@/llamalend/features/market-context'
 import { PositionDetailsComposite } from '@/llamalend/features/market-position-details'
-import { useIsInSoftLiquidation } from '@/llamalend/features/market-position-details/hooks/useUserLiquidationStatus'
+import { useIsInLiquidation } from '@/llamalend/features/market-position-details/hooks/useUserLiquidationStatus'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
 import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
@@ -65,10 +65,7 @@ export const MintMarketPage = () => {
     network,
     tokens,
   })
-  const { data: isSoftLiquidation, isLoading: isSoftLiquidationLoading } = useIsInSoftLiquidation(
-    queryParams,
-    !!loanExists,
-  )
+  const { data: isLiquidation, isLoading: isLiquidationLoading } = useIsInLiquidation(queryParams, !!loanExists)
 
   const error = marketError ?? apiMarket.error
   return error ? (
@@ -91,12 +88,12 @@ export const MintMarketPage = () => {
           content:
             !isLoading &&
             !isLoanExistsLoading &&
-            !isSoftLiquidationLoading &&
+            !isLiquidationLoading &&
             (loanExists ? (
               <ManageLoanTabs
                 onPricesUpdated={setPreviewPrices}
                 collateralEvents={collateralEvents}
-                isSoftLiquidation={!!isSoftLiquidation}
+                isLiquidation={!!isLiquidation}
               />
             ) : (
               <CreateLoanTabs onPricesUpdated={setPreviewPrices} />

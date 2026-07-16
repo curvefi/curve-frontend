@@ -32,7 +32,7 @@ const BORROW = '800' as const
 const IMPROVE_HEALTH_AMOUNT = '200' as const
 const RESET_WALLET_AMOUNT = '25' as const
 
-describe('Manage soft liquidation', () => {
+describe('Manage liquidation', () => {
   skipTestsAfterFailure()
 
   const chainId = Chain.Optimism // Atm llv2 is only deployed on optimism
