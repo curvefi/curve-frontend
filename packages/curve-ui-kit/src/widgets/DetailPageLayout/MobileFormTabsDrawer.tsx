@@ -54,7 +54,7 @@ export const MobileFormTabsDrawer = ({ children, value, tabs, onSelectTab }: Mob
           </Button>
         ))}
       </Stack>
-      <SwipeableDrawer keepMounted open={!!open} setOpen={setOpen}>
+      <SwipeableDrawer keepMounted open={open} setOpen={setOpen}>
         <Stack
           data-testid="mobile-form-drawer"
           sx={applySxProps(

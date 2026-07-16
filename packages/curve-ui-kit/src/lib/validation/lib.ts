@@ -16,15 +16,17 @@ export const validate = <D extends object, S extends ValidationSuite>(
   suite: S,
   data: FieldsOf<D>,
   fields?: FieldName<D>[],
-) => suite(data, fields).getErrors()
+) => {
+  suite.reset() // reset the validation state so all fields get revalidated even if they didn't change
+  return suite(data, fields).getErrors()
+}
 
 export function assertValidity<D extends object, S extends ValidationSuite>(
   suite: S,
   data: FieldsOf<D>,
   fields?: FieldName<D>[],
 ): D {
-  const result = suite(data, fields)
-  const entries = Object.entries(result.getErrors())
+  const entries = Object.entries(validate(suite, data, fields))
   if (entries.length > 0) {
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions -- Existing violation before enabling this rule.
     throw new Error(`Validation failed: ${entries.map(([field, error]) => `${field}: ${error}`).join(', ')}`)

@@ -73,7 +73,7 @@ jobs:
       fail-fast: false
       matrix:
         browser: [chrome, firefox, electron]
-        count: [1]
+        count: [1, 2]
     name: Cypress component tests in ${{ matrix.browser }} ${{ matrix.count }}
     timeout-minutes: 15
     runs-on: ubuntu-latest
@@ -103,7 +103,7 @@ jobs:
           NODE_ENV: test
 
       - uses: actions/upload-artifact@v7
-        if: success() || failure()
+        if: failure()
         with:
           name: cypress-component-${{ matrix.browser }}-${{ matrix.count }}
           path: tests/cypress/screenshots
@@ -145,7 +145,7 @@ jobs:
           CYPRESS_TENDERLY_ACCESS_KEY: ${{ secrets.TENDERLY_ACCESS_KEY }}
 
       - uses: actions/upload-artifact@v7
-        if: success() || failure()
+        if: failure()
         with:
           name: cypress-rpc
           path: tests/cypress/screenshots
@@ -238,7 +238,7 @@ jobs:
           ! grep --ignore-case --extended-regexp "$(echo -n "$RUNTIME_ERRORS" | tr '\n' '|')" e2e-*.log
 
       - uses: actions/upload-artifact@v7
-        if: success() || failure()
+        if: failure()
         with:
           name: cypress-e2e-${{ matrix.group }}-${{ matrix.browser }}-${{ matrix.count }}
           path: tests/cypress/screenshots

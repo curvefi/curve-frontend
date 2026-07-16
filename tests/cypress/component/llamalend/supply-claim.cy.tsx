@@ -35,7 +35,7 @@ const testCases: {
 ]
 
 describe('ClaimTab (mocked)', () => {
-  afterEach(() => resetLlamaTestContext())
+  beforeEach(resetLlamaTestContext)
 
   testCases.forEach(({ title, claimableCrv, claimableRewards }) => {
     it(`shows ${title} state`, () => {
@@ -54,16 +54,17 @@ describe('ClaimTab (mocked)', () => {
         </MockLoanTestWrapper>,
       )
 
-      validateClaimTabState({
-        crvButtonDisabled: expected.crvButtonDisabled,
-        otherRewardsButtonDisabled: expected.otherRewardsButtonDisabled,
-      })
-
       checkClaimTableState({
         rows: expected.table.rows,
         totalNotional: expected.table.totalNotional,
       })
 
+      validateClaimTabState({
+        crvButtonDisabled: expected.crvButtonDisabled,
+        otherRewardsButtonDisabled: expected.otherRewardsButtonDisabled,
+      })
+
+      cy.wrap(stubs.claimableCrv).should('have.been.calledWithExactly', ...expected.claimableCrv)
       cy.then(() => {
         expect(stubs.claimableCrv).to.have.been.calledWithExactly(...expected.claimableCrv)
         expect(stubs.claimableRewards).to.have.been.calledWithExactly(...expected.claimableRewards)

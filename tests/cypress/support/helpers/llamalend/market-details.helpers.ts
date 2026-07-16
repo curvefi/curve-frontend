@@ -96,9 +96,9 @@ const shouldLoadMarketDetails = ({ hasApi }: { hasApi: boolean }) => {
 const shouldLoadBorrowDetails = ({ breakpoint, hasWallet, hasApi = false }: MarketDetailsOptions) => {
   cy.get(`[data-testid="no-position-${hasWallet ? 'borrow' : 'disconnected'}"]`, LOAD_TIMEOUT).should('be.visible')
   withMarketFormDrawer(breakpoint, 'create', () => {
-    cy.get('[data-testid="borrow-collateral-input"]').should('be.visible')
-    cy.get('[data-testid="borrow-debt-input"]').should('be.visible')
-    cy.get(`[data-testid="${hasWallet ? 'create-loan-submit-button' : 'form-market-page'}"]`).should('be.visible')
+    cy.get(`[data-testid="borrow-collateral-input"]`, LOAD_TIMEOUT).should('be.visible')
+    cy.get(`[data-testid="borrow-debt-input"]`).should('be.visible')
+    cy.get(`[data-testid="${hasWallet ? 'create-loan-submit-button' : 'form-market-page'}"]`)
     return cy.wrap(null)
   })
   cy.get(`[data-testid='no-position-disconnected']`).should(hasWallet ? 'not.exist' : 'be.visible')
@@ -136,7 +136,7 @@ export const shouldLoadMintBorrowDetails = ({ breakpoint, hasWallet, hasApi = tr
 export const shouldLoadLendVaultDetails = ({ breakpoint, hasWallet, hasApi = true }: MarketDetailsOptions) => {
   withMarketFormDrawer(breakpoint, 'supply', () => {
     cy.get('[data-testid="supply-deposit-input"]', LOAD_TIMEOUT).should('be.visible')
-    cy.get('[data-testid="supply-deposit-submit-button"]').should(hasWallet ? 'be.visible' : 'not.exist')
+    cy.get(`[data-testid="supply-deposit-submit-button"]`).should(hasWallet ? 'be.visible' : 'not.exist')
     return cy.wrap(null)
   })
   cy.get(`[data-testid^='no-position']`).should('not.exist')

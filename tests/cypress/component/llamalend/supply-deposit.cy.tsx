@@ -43,7 +43,7 @@ const testCases: {
 ]
 
 describe('DepositForm (mocked)', () => {
-  afterEach(() => resetLlamaTestContext())
+  beforeEach(resetLlamaTestContext)
 
   testCases.forEach(
     ({

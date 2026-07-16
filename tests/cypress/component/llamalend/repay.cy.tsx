@@ -38,9 +38,7 @@ const testCases = [
 ])
 
 describe('RepayForm (mocked)', () => {
-  afterEach(() => {
-    resetLlamaTestContext()
-  })
+  beforeEach(resetLlamaTestContext)
 
   testCases.forEach(({ approved, leverage, repayToken, title }) => {
     it(title, () => {

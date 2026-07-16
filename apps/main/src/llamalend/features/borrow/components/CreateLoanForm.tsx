@@ -1,6 +1,6 @@
 import { type ChangeEvent, useCallback } from 'react'
 import { useConnection } from 'wagmi'
-import { LoanPreset, LEVERAGE } from '@/llamalend/constants'
+import { LEVERAGE, LoanPreset } from '@/llamalend/constants'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'

@@ -32,7 +32,7 @@ const testCases = [
 ])
 
 describe('CreateLoanForm (mocked)', () => {
-  afterEach(() => resetLlamaTestContext())
+  beforeEach(resetLlamaTestContext)
 
   testCases.forEach(({ approved, hasLeverage, leverageEnabled, title }) => {
     it(title, () => {
