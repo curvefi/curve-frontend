@@ -1,6 +1,6 @@
 import { resetIsAvailableQueryKey } from '@/llamalend/queries/reset/reset-is-available.query'
 import { getResetImplementation } from '@/llamalend/queries/reset/reset-query.helpers'
-import { resetSupportedValidationSuite } from '@/llamalend/queries/validation/reset.validation'
+import { resetValidationSuite } from '@/llamalend/queries/validation/reset.validation'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } from '@ui-kit/lib/model'
@@ -13,6 +13,6 @@ export const { useQuery: useTokensToShrink } = queryFactory({
     // First parameter of tokensToShrink called dCollateral is for leverage, but we don't support that yet so we set it to zero for now.
     (await getResetImplementation(marketId).tokensToShrink('0', userAddress)) as Decimal,
   category: 'llamalend.repay',
-  validationSuite: resetSupportedValidationSuite,
+  validationSuite: resetValidationSuite,
   dependencies: params => [resetIsAvailableQueryKey(params)],
 })
