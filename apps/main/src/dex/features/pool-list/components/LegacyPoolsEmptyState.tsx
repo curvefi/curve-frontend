@@ -12,8 +12,8 @@ import { ExternalLink } from '@ui/Link/ExternalLink'
 import { CURVE_SOCIALS, shortenAccount } from '@ui/utils'
 import { useParams } from '@ui-kit/hooks/router'
 import { Trans } from '@ui-kit/lib/i18n'
-import type { LegacyPoolTag } from '../chips/LegacyPoolsChips'
 import { LegacyPoolColumnId } from '../columns'
+import type { LegacyPoolTag } from '../types'
 
 enum ERROR {
   api = 'api',

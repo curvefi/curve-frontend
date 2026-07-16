@@ -16,8 +16,7 @@ import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { DEX_ROUTES } from '@ui-kit/shared/routes'
 import { decimal } from '@ui-kit/utils'
-import type { LegacyPoolTag } from '../chips/LegacyPoolsChips'
-import type { LegacyPoolRow } from '../types'
+import type { LegacyPoolRow, LegacyPoolTag } from '../types'
 
 const POOL_TEXT_FIELDS = [
   'pool.wrappedCoins',
