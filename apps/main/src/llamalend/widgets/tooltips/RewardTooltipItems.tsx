@@ -3,12 +3,13 @@ import { Stack } from '@mui/material'
 import Link from '@mui/material/Link'
 import { CampaignRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
+import { RewardIcon } from '@ui-kit/shared/ui/RewardIcon'
+import { TooltipItem } from '@ui-kit/shared/ui/TooltipComponents'
 import { TRANSITION_FUNCTION } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { ExtraIncentive } from '@ui-kit/types/market'
 import { aprToApy, formatNumber } from '@ui-kit/utils'
 import type { RewardsAction } from '@external-rewards'
-import { TooltipItem } from './TooltipComponents'
 
 const { Spacing } = SizesAndSpaces
 
@@ -51,7 +52,7 @@ export const RewardsTooltipItems = ({
               // eslint-disable-next-line @eslint-react/no-array-index-key -- Existing violation before enabling this rule.
               key={i}
               title={r.reward?.type === 'apr' ? r.symbol || '' : t`Points`}
-              imageId={r.platformImageId}
+              titleAdornment={<RewardIcon size="md" src={r.platformImageId} alt={r.platform} />}
             >
               <Stack
                 component={Link}

@@ -1,7 +1,10 @@
 export enum PoolColumnId {
   PoolName = 'PoolName',
-  RewardsBase = 'RewardsBase',
-  RewardsOther = 'RewardsOther',
-  Volume = 'volume',
-  Tvl = 'tvl',
+  NetApy = 'NetApy',
+  BaseApy = 'BaseApy',
+  RewardsApy = 'RewardsApy',
+  BoostApy = 'BoostApy',
+  Points = 'Points',
+  Volume = 'Volume',
+  Tvl = 'Tvl',
 }
