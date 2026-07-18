@@ -10,9 +10,7 @@ export const UsdCell = ({ getValue }: CellContext<PoolRow, number | null | undef
 
   return (
     <Tooltip title={maybe(value, value => formatNumber(value, 'usd.amount'))}>
-      <Typography component="span" variant="tableCellMBold">
-        {formatNumber(value, 'usd.notional')}
-      </Typography>
+      <Typography variant="tableCellMBold">{formatNumber(value, 'usd.notional')}</Typography>
     </Tooltip>
   )
 }

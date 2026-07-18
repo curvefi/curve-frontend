@@ -7,14 +7,32 @@ const createVisibility = ({ isLite }: { isLite: boolean }): VisibilityGroup<Pool
     label: t`Pools`,
     options: [
       {
-        label: t`Rewards Base`,
-        columns: [PoolColumnId.RewardsBase],
+        label: t`Net APY`,
+        columns: [PoolColumnId.NetApy],
         active: !isLite,
+        enabled: !isLite,
+      },
+      {
+        label: t`Base APY`,
+        columns: [PoolColumnId.BaseApy],
+        active: !isLite,
+        enabled: !isLite,
+      },
+      {
+        label: t`Rewards APY`,
+        columns: [PoolColumnId.RewardsApy],
+        active: true,
         enabled: true,
       },
       {
-        label: t`Rewards Other`,
-        columns: [PoolColumnId.RewardsOther],
+        label: t`Boost APY`,
+        columns: [PoolColumnId.BoostApy],
+        active: !isLite,
+        enabled: !isLite,
+      },
+      {
+        label: t`Points`,
+        columns: [PoolColumnId.Points],
         active: true,
         enabled: true,
       },

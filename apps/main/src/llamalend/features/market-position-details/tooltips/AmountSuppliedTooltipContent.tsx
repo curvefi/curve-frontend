@@ -1,14 +1,9 @@
 import type { UserBalances } from '@/llamalend/queries/user/user-balances.query'
 import { UNAVAILABLE_NOTATION } from '@/llamalend/widgets/tooltips/tooltip.utils'
-import {
-  TooltipDescription,
-  TooltipItem,
-  TooltipItems,
-  TooltipWrapper,
-} from '@/llamalend/widgets/tooltips/TooltipComponents'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, maybes } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
+import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui-kit/shared/ui/TooltipComponents'
 import type { QueryProp } from '@ui-kit/types/util'
 import { decimalDiv, decimalMinus, decimalMultiply, formatNumber, formatToken } from '@ui-kit/utils'
 import type { SupplyAsset } from '../SupplyPositionDetails'

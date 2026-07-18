@@ -50,7 +50,7 @@ export const RateCell = ({
       <Tooltip market={market}>
         <Stack sx={{ gap: Spacing.xs, alignItems: 'end' }}>
           <Typography variant="tableCellMBold" color="textPrimary">
-            {rate == null ? '—' : formatNumber(rate, 'percent.rate')}
+            {formatNumber(rate, 'percent.rate')}
           </Typography>
 
           <RewardsIcons market={market} rateType={rateType} />

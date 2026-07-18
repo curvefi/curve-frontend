@@ -8,6 +8,7 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
+import type { ExpandedPanelComponent } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableFiltersChip } from '@ui-kit/shared/ui/DataTable/TableFiltersChip'
 import { TableFiltersOverlay } from '@ui-kit/shared/ui/DataTable/TableFiltersOverlay'
@@ -22,9 +23,16 @@ import { usePoolsFilters } from './hooks/usePoolsFilters'
 import { usePoolsPagination } from './hooks/usePoolsPagination'
 import { usePoolsSorting } from './hooks/usePoolsSorting'
 import { usePoolsTable } from './hooks/usePoolsTable'
-import { usePoolsVisibility } from './hooks/usePoolsVisibility'
+import { type PoolColumnVariant, usePoolsVisibility } from './hooks/usePoolsVisibility'
+import type { PoolRow } from './types'
 
 const LOCAL_STORAGE_KEY = 'dex-pool-list'
+const FullPoolExpandedPanel: ExpandedPanelComponent<PoolRow> = props => <PoolExpandedPanel {...props} variant="full" />
+const LitePoolExpandedPanel: ExpandedPanelComponent<PoolRow> = props => <PoolExpandedPanel {...props} variant="lite" />
+const POOL_EXPANDED_PANEL_BODIES = {
+  full: FullPoolExpandedPanel,
+  lite: LitePoolExpandedPanel,
+} satisfies Record<PoolColumnVariant, ExpandedPanelComponent<PoolRow>>
 
 export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
   const isMobile = useIsMobile()
@@ -38,7 +46,7 @@ export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
   )
 
   const [expanded, setExpanded] = useState<ExpandedState>({})
-  const { columnSettings, columnVisibility, toggleVisibility } = usePoolsVisibility(LOCAL_STORAGE_KEY, {
+  const { columnSettings, columnVisibility, toggleVisibility, variant } = usePoolsVisibility(LOCAL_STORAGE_KEY, {
     isLite: network.isLite,
     sorting,
   })
@@ -80,7 +88,7 @@ export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
           secondaryButton: { label: t`Telegram`, href: CURVE_SOCIALS.telegram.en },
         }}
         errorState={{ title: t`Unable to retrieve pool list`, onReload }}
-        expandedPanel={{ Body: PoolExpandedPanel, Actions: PoolExpandedPanelActions }}
+        expandedPanel={{ Body: POOL_EXPANDED_PANEL_BODIES[variant], Actions: PoolExpandedPanelActions }}
         shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       >
         <TableFilters<PoolColumnId>

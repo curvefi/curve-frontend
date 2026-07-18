@@ -1,51 +1,81 @@
-import { Children, ReactNode } from 'react'
-import { RewardIcon } from '@/llamalend/widgets/tooltips/RewardIcon'
+import { Children, type ReactNode } from 'react'
 import Stack from '@mui/material/Stack'
-import { SxProps } from '@mui/material/styles'
-import Typography, { TypographyProps } from '@mui/material/Typography'
+import type { SxProps } from '@mui/material/styles'
+import Typography, { type TypographyProps } from '@mui/material/Typography'
 import { TokenIcon, type Size } from '@ui-kit/shared/ui/TokenIcon'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { TypographyVariantKey } from '@ui-kit/themes/typography'
+import type { TypographyVariantKey } from '@ui-kit/themes/typography'
 import { applySxProps } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
-/**
- * The variant of the item.
- * - default: default variant
- * - primary: used for the sum rows, displayed in primary color
- * - subItem: adds some extra padding and non-bold font weight
- * - independent: used for smaller compositions of rows
- */
-type ItemVariant = 'default' | 'primary' | 'subItem' | 'independent'
+export type TooltipWrapperProps = {
+  children: ReactNode
+}
 
-const titleTypographyVariant: Record<ItemVariant, TypographyVariantKey> = {
+export const TooltipWrapper = ({ children }: TooltipWrapperProps) => (
+  <Stack sx={{ gap: Spacing.sm, maxWidth: '20rem' }}>{children}</Stack>
+)
+
+export type TooltipDescriptionProps = {
+  text: ReactNode | string
+}
+
+export const TooltipDescription = ({ text }: TooltipDescriptionProps) => (
+  <Typography variant="bodySRegular" component="span">
+    {text}
+  </Typography>
+)
+
+/**
+ * The visual treatment of a tooltip item.
+ * - default: standard bold item
+ * - primary: sum row displayed in the primary color
+ * - subItem: indented detail row with regular typography
+ * - independent: compact row used outside a grouped breakdown
+ */
+export type TooltipItemVariant = 'default' | 'primary' | 'subItem' | 'independent'
+
+const titleTypographyVariant: Record<TooltipItemVariant, TypographyVariantKey> = {
   default: 'bodySBold',
   primary: 'bodySBold',
   subItem: 'bodySRegular',
   independent: 'bodySRegular',
 }
 
-const valueTypographyVariant: Record<ItemVariant, TypographyVariantKey> = {
+const valueTypographyVariant: Record<TooltipItemVariant, TypographyVariantKey> = {
   default: 'bodySBold',
   primary: 'bodySBold',
   subItem: 'bodySRegular',
   independent: 'bodySBold',
 }
 
-const titleTypographyColor: Record<ItemVariant, TypographyProps['color']> = {
+const titleTypographyColor: Record<TooltipItemVariant, TypographyProps['color']> = {
   default: 'textSecondary',
   primary: 'textPrimary',
   subItem: 'textSecondary',
   independent: 'textSecondary',
 }
 
-const valueTypographyColor: Record<ItemVariant, TypographyProps['color']> = {
+const valueTypographyColor: Record<TooltipItemVariant, TypographyProps['color']> = {
   default: 'textPrimary',
   primary: 'primary',
   subItem: 'textPrimary',
   independent: 'textPrimary',
+}
+
+export type TooltipItemProps = {
+  title: ReactNode
+  children?: ReactNode
+  /** Shows a skeleton in place of the value. */
+  loading?: boolean
+  variant?: TooltipItemVariant
+  /** Token metadata used to render a token icon before the title. */
+  titleIcon?: { blockchainId: string; address: string; size: Size }
+  /** Custom content rendered before the title. */
+  titleAdornment?: ReactNode
+  sx?: SxProps
 }
 
 export const TooltipItem = ({
@@ -53,20 +83,10 @@ export const TooltipItem = ({
   children,
   loading = false,
   variant = 'default',
-  titleIcon, // used for token icons
-  titleAdornment, // optional custom element rendered before the title
-  imageId, // used for campaign reward icons
+  titleIcon,
+  titleAdornment,
   sx,
-}: {
-  title: ReactNode
-  children?: ReactNode
-  loading?: boolean // shows skeleton instead of children
-  variant?: ItemVariant
-  titleIcon?: { blockchainId: string; address: string; size: Size }
-  titleAdornment?: ReactNode
-  imageId?: string
-  sx?: SxProps
-}) => (
+}: TooltipItemProps) => (
   <Stack direction="row" sx={applySxProps({ gap: Spacing.sm, justifyContent: 'space-between' }, sx)}>
     <Stack direction="row" sx={{ gap: Spacing.xxs, alignItems: 'center' }}>
       {titleAdornment && <Stack sx={{ alignItems: 'center', marginLeft: Spacing.md }}>{titleAdornment}</Stack>}
@@ -78,15 +98,13 @@ export const TooltipItem = ({
           sx={{ marginLeft: Spacing.md }}
         />
       )}
-      {imageId && <RewardIcon size="md" imageId={imageId} sx={{ marginLeft: Spacing.md }} />}
       <Typography
         color={titleTypographyColor[variant]}
         variant={titleTypographyVariant[variant]}
         component="span"
         {...(variant === 'subItem' &&
           titleIcon == null &&
-          titleAdornment == null &&
-          imageId == null && {
+          titleAdornment == null && {
             sx: {
               marginLeft: Spacing.md,
             },
@@ -119,17 +137,14 @@ export const TooltipItem = ({
   </Stack>
 )
 
-export const TooltipItems = ({
-  children,
-  secondary,
-  borderTop = false,
-  extraMargin = false,
-}: {
+export type TooltipItemsProps = {
   children: ReactNode
   secondary?: boolean
   borderTop?: boolean
   extraMargin?: boolean
-}) => (
+}
+
+export const TooltipItems = ({ children, secondary, borderTop = false, extraMargin = false }: TooltipItemsProps) => (
   <Stack
     sx={{
       ...(borderTop && { borderTop: t => `1px solid ${t.design.Layer[3].Outline}` }),
@@ -143,17 +158,11 @@ export const TooltipItems = ({
   </Stack>
 )
 
-export const TooltipWrapper = ({ children }: { children: ReactNode }) => (
-  <Stack sx={{ gap: Spacing.sm, maxWidth: '20rem' }}>{children}</Stack>
-)
+export type TooltipFooterProps = {
+  children: ReactNode
+}
 
-export const TooltipDescription = ({ text }: { text: ReactNode | string }) => (
-  <Typography variant="bodySRegular" component="span">
-    {text}
-  </Typography>
-)
-
-export const TooltipFooter = ({ children }: { children: ReactNode }) => (
+export const TooltipFooter = ({ children }: TooltipFooterProps) => (
   <Typography variant="bodyXsRegular" component="span" sx={{ fontStyle: 'italic' }}>
     {children}
   </Typography>

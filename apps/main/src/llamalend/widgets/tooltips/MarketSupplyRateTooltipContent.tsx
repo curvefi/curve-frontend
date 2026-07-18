@@ -1,13 +1,13 @@
+import Stack from '@mui/material/Stack'
+import type { CampaignRewards } from '@ui-kit/entities/campaigns'
+import { t } from '@ui-kit/lib/i18n'
 import {
   TooltipDescription,
   TooltipFooter,
   TooltipItem,
   TooltipItems,
   TooltipWrapper,
-} from '@/llamalend/widgets/tooltips/TooltipComponents'
-import Stack from '@mui/material/Stack'
-import type { CampaignRewards } from '@ui-kit/entities/campaigns'
-import { t } from '@ui-kit/lib/i18n'
+} from '@ui-kit/shared/ui/TooltipComponents'
 import type { ExtraIncentive } from '@ui-kit/types/market'
 import { AVERAGE_CATEGORIES, formatNumber } from '@ui-kit/utils'
 import { RewardsTooltipItems } from './RewardTooltipItems'

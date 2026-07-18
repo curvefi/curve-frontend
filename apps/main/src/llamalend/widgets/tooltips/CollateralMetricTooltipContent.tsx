@@ -1,13 +1,8 @@
 import { formatMetricValue, formatPercentage, UNAVAILABLE_NOTATION } from '@/llamalend/widgets/tooltips/tooltip.utils'
-import {
-  TooltipDescription,
-  TooltipItem,
-  TooltipItems,
-  TooltipWrapper,
-} from '@/llamalend/widgets/tooltips/TooltipComponents'
 import { Stack } from '@mui/material'
 import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
+import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui-kit/shared/ui/TooltipComponents'
 import { formatNumber } from '@ui-kit/utils'
 
 type TokenValues = {

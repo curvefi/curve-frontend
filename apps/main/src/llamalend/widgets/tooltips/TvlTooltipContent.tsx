@@ -1,12 +1,7 @@
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
-import {
-  TooltipDescription,
-  TooltipItem,
-  TooltipItems,
-  TooltipWrapper,
-} from '@/llamalend/widgets/tooltips/TooltipComponents'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
+import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui-kit/shared/ui/TooltipComponents'
 import { MarketType } from '@ui-kit/types/market'
 import { formatNumber } from '@ui-kit/utils'
 

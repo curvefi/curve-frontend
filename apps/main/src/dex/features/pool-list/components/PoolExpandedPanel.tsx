@@ -1,18 +1,24 @@
+import type { ReactNode } from 'react'
 import Grid from '@mui/material/Grid'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import type { ExpandedPanelComponent } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { Metric, type MetricProps } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { constQ } from '@ui-kit/types/util'
-import { aprToApy, AVERAGE_CATEGORIES, decimal } from '@ui-kit/utils'
-import { RewardsCell } from '../cells/RewardsCell'
-import { PoolColumnId } from '../columns/columns.enum'
+import { decimal } from '@ui-kit/utils'
+import { BaseApyValue } from '../cells/BaseApyCell'
+import { BoostApyValue } from '../cells/BoostApyCell'
+import { NetApyValue } from '../cells/NetApyCell'
+import { PointsValue } from '../cells/PointsCell'
+import { RewardsApyValue } from '../cells/RewardsApyCell'
+import { POOLS_COLUMN_OPTIONS, POOL_TITLES, PoolColumnId } from '../columns'
+import type { PoolColumnVariant } from '../hooks/usePoolsVisibility'
 import type { PoolRow } from '../types'
 
 const { Spacing } = SizesAndSpaces
-
-const getPoolYieldApy = (apr: number | null | undefined) =>
-  aprToApy(apr, AVERAGE_CATEGORIES['dex.poolYield.compoundRate'].window)
+const EXPANDED_VALUE_VARIANT = 'highlightL' as const
 
 const ListInfoItem = ({
   value,
@@ -23,9 +29,27 @@ const ListInfoItem = ({
   </Grid>
 )
 
+const RewardInfoItem = ({ label, children }: { label: string; children: ReactNode }) => (
+  <Grid size={6}>
+    <Stack sx={{ alignItems: 'start' }}>
+      <Typography variant="bodyXsRegular" color="textTertiary">
+        {label}
+      </Typography>
+      {children}
+    </Stack>
+  </Grid>
+)
+
 const highlight = { color: 'success' as const }
 
-export const PoolExpandedPanel: ExpandedPanelComponent<PoolRow> = ({ row, table }) => {
+const isColumnEnabled = (variant: PoolColumnVariant, columnId: PoolColumnId) =>
+  POOLS_COLUMN_OPTIONS[variant].some(({ options }) =>
+    options.some(({ columns, enabled }) => enabled && columns.includes(columnId)),
+  )
+
+type PoolExpandedPanelProps = Parameters<ExpandedPanelComponent<PoolRow>>[0] & { variant: PoolColumnVariant }
+
+export const PoolExpandedPanel = ({ row, table, variant }: PoolExpandedPanelProps) => {
   const pool = row.original
   const hasVolume = table.getColumn(PoolColumnId.Volume)?.getIsVisible()
 
@@ -49,17 +73,51 @@ export const PoolExpandedPanel: ExpandedPanelComponent<PoolRow> = ({ row, table 
           ...(table.getColumn(PoolColumnId.Tvl)?.getIsSorted() && highlight),
         }}
       />
-      <ListInfoItem
-        label={t`BASE vAPY`}
-        value={getPoolYieldApy(pool.baseDailyApr)}
-        valueOptions={{
-          unit: 'percentage',
-          ...(table.getColumn(PoolColumnId.RewardsBase)?.getIsSorted() && highlight),
-        }}
-      />
-      <Grid size={6}>
-        <RewardsCell pool={pool} isMobile />
-      </Grid>
+      {isColumnEnabled(variant, PoolColumnId.NetApy) && (
+        <RewardInfoItem label={POOL_TITLES[PoolColumnId.NetApy]}>
+          <NetApyValue pool={pool} textAlign="start" typographyVariant={EXPANDED_VALUE_VARIANT} />
+        </RewardInfoItem>
+      )}
+      {isColumnEnabled(variant, PoolColumnId.BaseApy) && (
+        <RewardInfoItem label={POOL_TITLES[PoolColumnId.BaseApy]}>
+          <BaseApyValue
+            pool={pool}
+            textAlign="start"
+            tooltipPlacement="top"
+            typographyVariant={EXPANDED_VALUE_VARIANT}
+          />
+        </RewardInfoItem>
+      )}
+      {isColumnEnabled(variant, PoolColumnId.RewardsApy) && (
+        <RewardInfoItem label={POOL_TITLES[PoolColumnId.RewardsApy]}>
+          <RewardsApyValue
+            pool={pool}
+            textAlign="start"
+            tooltipPlacement="top"
+            typographyVariant={EXPANDED_VALUE_VARIANT}
+          />
+        </RewardInfoItem>
+      )}
+      {isColumnEnabled(variant, PoolColumnId.BoostApy) && (
+        <RewardInfoItem label={POOL_TITLES[PoolColumnId.BoostApy]}>
+          <BoostApyValue
+            pool={pool}
+            textAlign="start"
+            tooltipPlacement="top"
+            typographyVariant={EXPANDED_VALUE_VARIANT}
+          />
+        </RewardInfoItem>
+      )}
+      {isColumnEnabled(variant, PoolColumnId.Points) && (
+        <RewardInfoItem label={POOL_TITLES[PoolColumnId.Points]}>
+          <PointsValue
+            pool={pool}
+            textAlign="start"
+            tooltipPlacement="top"
+            typographyVariant={EXPANDED_VALUE_VARIANT}
+          />
+        </RewardInfoItem>
+      )}
     </Grid>
   )
 }

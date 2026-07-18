@@ -1,8 +1,8 @@
 import lodash from 'lodash'
 import { useFilteredRewards } from '@/llamalend/hooks/useFilteredRewards'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
-import { RewardIcon } from '@/llamalend/widgets/tooltips/RewardIcon'
 import Stack from '@mui/material/Stack'
+import { RewardIcon } from '@ui-kit/shared/ui/RewardIcon'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { MarketRateType } from '@ui-kit/types/market'
@@ -32,8 +32,8 @@ export const RewardsIcons = ({
         {extraIncentives.map(({ title, address, blockchainId }) => (
           <TokenIcon key={title} blockchainId={blockchainId} address={address} size="mui-sm" />
         ))}
-        {lodash.uniq(filteredRewards.map(r => r.platformImageId)).map(img => (
-          <RewardIcon size="sm" key={img} imageId={img} />
+        {lodash.uniqBy(filteredRewards, 'platformImageId').map(({ platformImageId, platform }) => (
+          <RewardIcon size="sm" key={platformImageId} src={platformImageId} alt={platform} />
         ))}
       </Stack>
     )

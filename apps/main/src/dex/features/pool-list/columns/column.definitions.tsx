@@ -3,9 +3,22 @@ import { type ColumnMeta, createColumnHelper } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import type { ColumnDefinition } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { BaseApyCell } from '../cells/BaseApyCell'
+import { BoostApyCell } from '../cells/BoostApyCell'
+import { NetApyCell } from '../cells/NetApyCell'
+import { PointsCell } from '../cells/PointsCell'
 import { PoolTitleCell } from '../cells/PoolTitleCell'
-import { RewardsCell } from '../cells/RewardsCell'
+import { RewardsApyCell } from '../cells/RewardsApyCell'
 import { UsdCell } from '../cells/UsdCell'
+import {
+  BaseApyHeaderTooltipContent,
+  BoostApyHeaderTooltipContent,
+  NetApyHeaderTooltipContent,
+  PointsHeaderTooltipContent,
+  PoolHeaderTooltipContent,
+  RewardsApyHeaderTooltipContent,
+  TvlHeaderTooltipContent,
+  VolumeHeaderTooltipContent,
+} from '../header-tooltips'
 import type { PoolRow } from '../types'
 import { PoolColumnId } from './columns.enum'
 
@@ -39,8 +52,11 @@ const accessor = (
 
 export const POOL_TITLES: Record<PoolColumnId, string> = {
   [PoolColumnId.PoolName]: t`Pool`,
-  [PoolColumnId.RewardsBase]: t`Base vAPY`,
-  [PoolColumnId.RewardsOther]: t`Rewards tAPR`,
+  [PoolColumnId.NetApy]: t`Net APY`,
+  [PoolColumnId.BaseApy]: t`Base APY`,
+  [PoolColumnId.RewardsApy]: t`Rewards APY`,
+  [PoolColumnId.BoostApy]: t`Boost APY`,
+  [PoolColumnId.Points]: t`Points`,
   [PoolColumnId.Volume]: t`Volume`,
   [PoolColumnId.Tvl]: t`TVL`,
 }
@@ -48,33 +64,63 @@ export const POOL_TITLES: Record<PoolColumnId, string> = {
 export const POOL_COLUMNS = [
   accessor(PoolColumnId.PoolName, 'name', {
     cell: PoolTitleCell,
+    meta: { tooltip: createTooltip(PoolColumnId.PoolName, <PoolHeaderTooltipContent />) },
   }),
-  accessor(PoolColumnId.RewardsBase, 'baseDailyApr', {
-    cell: BaseApyCell,
+  display(PoolColumnId.NetApy, {
+    cell: ({ row }) => <NetApyCell pool={row.original} />,
+    enableSorting: false,
     meta: {
       type: 'numeric',
-      tooltip: createTooltip(
-        PoolColumnId.RewardsBase,
-        [
-          t`Base variable APY (vAPY) is the annualized yield from trading fees based on the activity over the past 24h.`,
-          t`If a pool holds a yield bearing asset, the intrinsic yield is added.`,
-        ].join(' '),
-      ),
+      tooltip: createTooltip(PoolColumnId.NetApy, <NetApyHeaderTooltipContent />),
+    },
+  }),
+  accessor(PoolColumnId.BaseApy, 'baseDailyApr', {
+    cell: BaseApyCell,
+    enableSorting: false,
+    meta: {
+      type: 'numeric',
+      tooltip: createTooltip(PoolColumnId.BaseApy, <BaseApyHeaderTooltipContent />),
     },
     sortUndefined: 'last',
   }),
-  display(PoolColumnId.RewardsOther, {
-    cell: ({ row }) => <RewardsCell pool={row.original} />,
-    meta: { type: 'numeric', tooltip: { title: t`Token APR based on current prices of tokens and reward rates` } },
+  display(PoolColumnId.RewardsApy, {
+    cell: ({ row }) => <RewardsApyCell pool={row.original} />,
+    enableSorting: false,
+    meta: {
+      type: 'numeric',
+      tooltip: createTooltip(PoolColumnId.RewardsApy, <RewardsApyHeaderTooltipContent />),
+    },
+  }),
+  display(PoolColumnId.BoostApy, {
+    cell: ({ row }) => <BoostApyCell pool={row.original} />,
+    enableSorting: false,
+    meta: {
+      type: 'numeric',
+      tooltip: createTooltip(PoolColumnId.BoostApy, <BoostApyHeaderTooltipContent />),
+    },
+  }),
+  display(PoolColumnId.Points, {
+    cell: ({ row }) => <PointsCell pool={row.original} />,
+    enableSorting: false,
+    meta: {
+      type: 'numeric',
+      tooltip: createTooltip(PoolColumnId.Points, <PointsHeaderTooltipContent />),
+    },
   }),
   accessor(PoolColumnId.Volume, 'tradingVolume24h', {
     cell: UsdCell,
-    meta: { type: 'numeric' },
+    meta: {
+      type: 'numeric',
+      tooltip: createTooltip(PoolColumnId.Volume, <VolumeHeaderTooltipContent />),
+    },
     sortUndefined: 'last',
   }),
   accessor(PoolColumnId.Tvl, 'tvlUsd', {
     cell: UsdCell,
-    meta: { type: 'numeric' },
+    meta: {
+      type: 'numeric',
+      tooltip: createTooltip(PoolColumnId.Tvl, <TvlHeaderTooltipContent />),
+    },
     sortUndefined: 'last',
   }),
 ] satisfies PoolColumn[]
