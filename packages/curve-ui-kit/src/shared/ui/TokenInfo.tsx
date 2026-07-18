@@ -9,6 +9,7 @@ const { Spacing } = SizesAndSpaces
 
 type TokenInfoBaseProps = {
   iconPosition: 'left' | 'right'
+  iconAlignment?: 'start' | 'center' | 'end'
   primary: ReactNode
   secondary?: ReactNode
   boldPrimary?: boolean
@@ -35,7 +36,7 @@ type TokenInfoCustomIconProps = TokenInfoBaseProps & {
 export type TokenInfoProps = TokenInfoTokenIconProps | TokenInfoCustomIconProps
 
 export const TokenInfo = (props: TokenInfoProps) => {
-  const { iconPosition, primary, secondary, boldPrimary } = props
+  const { iconPosition, iconAlignment = 'center', primary, secondary, boldPrimary } = props
   const tokenIcon =
     'address' in props ? (
       <TokenIcon
@@ -49,7 +50,7 @@ export const TokenInfo = (props: TokenInfoProps) => {
     )
 
   return (
-    <Stack direction="row" sx={applySxProps({ gap: Spacing.xs, alignItems: 'start' }, props.sx)}>
+    <Stack direction="row" sx={applySxProps({ gap: Spacing.xs, alignItems: iconAlignment }, props.sx)}>
       {iconPosition === 'left' && tokenIcon}
 
       <Stack sx={{ gap: Spacing.xxs, alignItems: iconPosition === 'right' ? 'end' : 'start' }}>

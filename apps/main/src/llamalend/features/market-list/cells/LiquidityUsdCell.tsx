@@ -22,6 +22,7 @@ export const LiquidityUsdCell = ({ getValue, row }: CellContext<LlamaMarket, num
           blockchainId={assets.borrowed.chain}
           iconSize="mui-sm"
           iconPosition="right"
+          iconAlignment="start"
           primary={formatNumber(liquidity, 'token.compact')}
           secondary={formatNumber(getValue(), 'usd.notional')}
           boldPrimary
