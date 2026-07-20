@@ -1,4 +1,9 @@
-import { formatCollateralNotional, isPositionLeveraged, tokenMetric, type MarketTokensOrEmpty } from '@/llamalend/llama.utils'
+import {
+  formatCollateralNotional,
+  isPositionLeveraged,
+  tokenMetric,
+  type MarketTokensOrEmpty,
+} from '@/llamalend/llama.utils'
 import { useUserCurrentLeverage, useUserState } from '@/llamalend/queries/user'
 import { useRangeToLiquidation } from '@/llamalend/queries/user/user-prices.query'
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
