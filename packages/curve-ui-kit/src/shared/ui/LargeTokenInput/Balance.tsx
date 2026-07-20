@@ -20,7 +20,7 @@ const { Spacing, LargeTokenInput } = SizesAndSpaces
 export type Props<T> = {
   /** The token symbol to display */
   symbol: string | undefined
-  /** The token balance amount (optional, in case of loading) */
+  /** The token balance amount */
   balance?: QueryOrValue<T>
   /** The USD price of the token (optional, only used when notionalValueUsd is omitted) */
   usdRate?: QueryOrValue<number>
