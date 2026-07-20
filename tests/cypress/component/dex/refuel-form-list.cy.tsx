@@ -7,8 +7,8 @@ type RefuelFormListProps = Parameters<typeof RefuelFormList>[0]
 
 const baseProps = {
   values: { tokenAAmount: undefined, tokenBAmount: undefined },
-  tokenA: constQ(1),
-  tokenB: constQ(2),
+  tokenARate: constQ(1),
+  tokenBRate: constQ(2),
   poolTvl: constQ(1_000),
 } satisfies RefuelFormListProps
 
@@ -46,7 +46,7 @@ describe('RefuelFormList', () => {
     mountRefuelFormList({
       ...baseProps,
       values: { tokenAAmount: '10', tokenBAmount: undefined },
-      tokenB: constQ(undefined),
+      tokenBRate: constQ(undefined),
     })
 
     getActionValue('refuel-size-action-info').should('be.undefined')
