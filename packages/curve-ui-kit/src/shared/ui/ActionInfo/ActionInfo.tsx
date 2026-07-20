@@ -30,7 +30,7 @@ type ActionInfoBaseProps = {
   labelTooltip?: Omit<TooltipProps, 'children'>
   /** Custom color for the label text */
   labelColor?: TypographyProps['color']
-  /** Custom color for the value text */
+  /** Custom color for the primary displayed value text */
   valueColor?: TypographyProps['color']
   /** Optional content to display to the left of the value */
   valueLeft?: ReactNode
@@ -38,7 +38,7 @@ type ActionInfoBaseProps = {
   valueRight?: ReactNode
   /** Tooltip text to display when hovering over the value */
   valueTooltip?: ReactNode
-  /** Value to be copied from the value text when clicked. */
+  /** Value to copy from the primary displayed value when clicked. */
   copyValue?: string
   /** Message displayed in the snackbar title when the value is copied */
   copiedTitle?: string
@@ -53,6 +53,8 @@ type ActionInfoBaseProps = {
 type ActionInfoLegacyProps = {
   /** Primary value to display and copy */
   value: ReactNode
+  futureValue?: never
+  currentValueColor?: never
   /** Whether the component is in a loading state. Can be one of:
    * - boolean
    * - string (value is used for skeleton width inference)
@@ -64,14 +66,14 @@ type ActionInfoLegacyProps = {
 }
 
 type ActionInfoQueryProps = {
-  /** Query whose data is the primary value to display and copy. */
+  /** Query whose data is the current value. */
   value: QueryProp<ReactNode>
   loading?: never
   error?: never
-  /** Previous value (if needed for comparison) */
-  prevValue?: QueryProp<ReactNode>
-  /** Custom color for the previous value text */
-  prevValueColor?: TypographyProps['color']
+  /** Query whose data is the expected value after the action. */
+  futureValue?: QueryProp<ReactNode>
+  /** Custom color for the current value text. */
+  currentValueColor?: TypographyProps['color']
 }
 
 export type ActionInfoProps = ActionInfoBaseProps & (ActionInfoLegacyProps | ActionInfoQueryProps)
@@ -83,7 +85,7 @@ const labelSize = {
   medium: 'bodyMRegular',
 } as const satisfies Record<ActionInfoSize, TypographyVariantKey>
 
-const prevValueSize = labelSize
+const currentValueSize = labelSize
 
 const valueSize = {
   small: 'bodyXsBold',
@@ -144,8 +146,8 @@ export const ActionInfo = (props: ActionInfoProps) => {
     label,
     labelTooltip,
     labelColor,
-    prevValue: givenPrevValue,
-    prevValueColor,
+    futureValue: givenFutureValue,
+    currentValueColor,
     value: propValue,
     valueColor,
     valueLeft,
@@ -156,19 +158,19 @@ export const ActionInfo = (props: ActionInfoProps) => {
     copiedTitle,
     testId = 'action-info',
     sx,
-  } = props as ActionInfoProps & ActionInfoQueryProps
+  } = props
   const {
-    data: givenValue,
+    data: givenCurrentValue,
     isLoading: valueLoading,
     error: valueError,
   } = isQuery(propValue) ? propValue : { data: propValue, isLoading: props.loading ?? false, error: props.error }
   const buttonSize = iconButtonSize[size]
   const iconSize = IconButtonIconSize[buttonSize]
 
-  const error = valueError ?? givenPrevValue?.error
-  const loading = valueLoading || givenPrevValue?.isLoading
-  const value = givenValue ?? givenPrevValue?.data
-  const prevValue = value === givenPrevValue?.data ? null : givenPrevValue?.data
+  const error = givenFutureValue?.error ?? valueError
+  const loading = valueLoading || givenFutureValue?.isLoading
+  const futureValue = givenFutureValue?.data ?? givenCurrentValue
+  const value = futureValue === givenCurrentValue ? null : givenCurrentValue
 
   const copyToClipboard = useCopyToClipboard({
     copyText: copyValue ?? '',
@@ -194,16 +196,16 @@ export const ActionInfo = (props: ActionInfoProps) => {
         <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs, flexWrap: 'wrap', justifyContent: 'end' }}>
           <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
             <Typography
-              variant={prevValueSize[size]}
-              color={prevValueColor ?? 'textTertiary'}
+              variant={currentValueSize[size]}
+              color={currentValueColor ?? 'textTertiary'}
               data-testid={`${testId}-previous`}
               // eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions -- Existing violation before enabling this rule.
-              data-value={`${givenPrevValue?.data}`}
+              data-value={givenFutureValue ? `${givenCurrentValue}` : undefined}
               sx={{ whiteSpace: 'nowrap' }}
             >
-              {prevValue}
+              {value}
             </Typography>
-            {prevValue != null && (
+            {value != null && (
               <ArrowForwardIcon
                 sx={{ color: t => t.palette.text.tertiary, width: IconSize[iconSize], height: IconSize[iconSize] }}
               />
@@ -236,10 +238,10 @@ export const ActionInfo = (props: ActionInfoProps) => {
                     error={error}
                     valueColor={valueColor}
                     testId={`${testId}-value`}
-                    value={copyValue ?? value}
+                    value={copyValue ?? futureValue}
                     onClick={copyValue && !loading && !error ? copyToClipboard : undefined}
                   >
-                    {typeof loading === 'string' ? loading : error ? '' : (value ?? '-')}
+                    {typeof loading === 'string' ? loading : error ? '' : (futureValue ?? '-')}
                   </ValueTypography>
                 </WithSkeleton>
               </Stack>
