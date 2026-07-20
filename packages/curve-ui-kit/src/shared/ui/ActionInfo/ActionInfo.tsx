@@ -113,7 +113,7 @@ const ValueTypography = ({
 
 /** Renders a value as a typography (same variant and color as the main value) if it's a string, otherwise renders the value directly */
 const ValueDecorator = (props: ValueDecoratorProps) => (
-  <WithWrapper shouldWrap={typeof toQuery(props.value).data === 'string'} Wrapper={ValueTypography} {...props}>
+  <WithWrapper shouldWrap={typeof toValue(props.value) === 'string'} Wrapper={ValueTypography} {...props}>
     {toValue(props.value)}
   </WithWrapper>
 )
