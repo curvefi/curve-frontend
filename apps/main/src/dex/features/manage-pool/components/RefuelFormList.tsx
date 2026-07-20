@@ -15,8 +15,8 @@ const [WEEKLY, BIWEEKLY, MONTHLY] = [52, 26, 12]
 
 type RefuelFormListProps = {
   values: RefuelFormValues
-  tokenA: QueryProp<number>
-  tokenB: QueryProp<number>
+  tokenARate: QueryProp<number>
+  tokenBRate: QueryProp<number>
   poolTvl: QueryProp<number>
 }
 
@@ -26,9 +26,9 @@ const formatPercentage = (value: number | undefined) =>
 const extrapolateYearly = (value: number | null, donationsPerYear: number) =>
   maybe(value, value => value * donationsPerYear)
 
-export const RefuelFormList = ({ values, tokenA, tokenB, poolTvl }: RefuelFormListProps) => {
+export const RefuelFormList = ({ values, tokenARate, tokenBRate, poolTvl }: RefuelFormListProps) => {
   const refuelTvlPercentage = useCombinedQueries(
-    [tokenA, tokenB, poolTvl],
+    [tokenARate, tokenBRate, poolTvl],
     useCallback(
       (tokenAUsdRate, tokenBUsdRate, poolUsd) =>
         poolUsd === 0 || (values.tokenAAmount == null && values.tokenBAmount == null)
