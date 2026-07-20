@@ -141,7 +141,6 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
             >
               <ChartWrapper
                 {...chart.ohlcChartProps}
-                betaBackgroundColor={theme.design.Layer[1].Fill}
                 onVisiblePriceRangeChange={showBands ? handleVisiblePriceRangeChange : undefined}
               />
               {showBands && (
