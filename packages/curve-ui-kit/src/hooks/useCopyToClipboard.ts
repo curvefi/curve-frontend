@@ -1,11 +1,11 @@
 import { useCallback } from 'react'
-import { ADDRESS_REGEX } from '@primitives/address.utils'
+import { isAddress } from 'viem'
 import { t } from '@ui-kit/lib/i18n'
 import { copyToClipboard } from '@ui-kit/utils'
 import { showToast } from '@ui-kit/widgets/Toast/toast.util'
 
 const getTitle = (copyText: string, title: string | undefined) =>
-  title ?? t`${ADDRESS_REGEX.test(copyText) ? `Address` : `Value`} has been copied to clipboard`
+  title ?? t`${isAddress(copyText, { strict: false }) ? `Address` : `Value`} has been copied to clipboard`
 
 type CopyToClipboardWithToastOptions = {
   copyText: string | undefined

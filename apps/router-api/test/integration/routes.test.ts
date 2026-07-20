@@ -1,13 +1,14 @@
 import type { FastifyInstance } from 'fastify'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { ADDRESS_HEX_PATTERN, ADDRESS_REGEX } from '@primitives/address.utils'
 import { assert, type PartialRecord } from '@primitives/objects.utils'
 import type { RouteProvider, RouterRouteResponse } from '@primitives/router.utils'
 import { toWei } from '../../src/router.utils'
-import { type RoutesQuery } from '../../src/routes/routes.schemas'
+import { ADDRESS_HEX_PATTERN, type RoutesQuery } from '../../src/routes/routes.schemas'
 import { createRouterApiServer } from '../../src/server'
 
 process.loadEnvFile()
+
+const ADDRESS_REGEX = new RegExp(ADDRESS_HEX_PATTERN)
 
 const CHAIN_ID_ETHEREUM = '1'
 const CHAIN_ID_OPTIMISM = '10'
