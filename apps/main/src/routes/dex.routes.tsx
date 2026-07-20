@@ -9,7 +9,7 @@ const PageCompensation = lazyRouteComponent(() => import('@/dex/components/PageC
 const PageCreatePool = lazyRouteComponent(() => import('@/dex/components/PageCreatePool/Page'), 'PageCreatePool')
 const PageDashboard = lazyRouteComponent(() => import('@/dex/components/PageDashboard/Page'), 'PageDashboard')
 const PageDeployGauge = lazyRouteComponent(() => import('@/dex/components/PageDeployGauge/Page'), 'PageDeployGauge')
-const PagePoolList = lazyRouteComponent(() => import('@/dex/features/pool-list/Page'), 'Page')
+const PagePoolList = lazyRouteComponent(() => import('@/dex/features/pool-list'), 'PoolsList')
 const PagePool = lazyRouteComponent(() => import('@/dex/components/PagePool/Page'), 'PagePool')
 const PageManagePool = lazyRouteComponent(() => import('@/dex/components/PageManagePool'), 'ManagePool')
 const PageRouterSwap = lazyRouteComponent(() => import('@/dex/components/PageRouterSwap/Page'), 'PageRouterSwap')
