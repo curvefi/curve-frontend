@@ -19,7 +19,7 @@ const { Spacing, ButtonSize, IconSize } = SizesAndSpaces
 
 export type ActionInfoSize = 'small' | 'medium'
 
-export type ActionInfoQueryProps = {
+export type ActionInfoProps = {
   /** Label displayed on the left side */
   label: QueryOrValue<ReactNode>
   /** Optional tooltip content shown next to the label with an info icon */
@@ -52,8 +52,6 @@ export type ActionInfoQueryProps = {
   /** Skeleton dimensions or fallback value */
   skeleton?: [number, number] | string
 }
-
-export type ActionInfoProps = ActionInfoQueryProps
 
 const DEFAULT_SIZE: ActionInfoSize = 'medium'
 
