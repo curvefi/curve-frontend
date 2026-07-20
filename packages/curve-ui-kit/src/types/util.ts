@@ -120,8 +120,7 @@ export const fakeLoadingQ = <T>(data: T | undefined) => q({ data, isLoading: dat
 export const useMappedQuery = <TSource, TResult>(
   { isLoading, error, data }: Query<TSource>,
   selector: (data: TSource) => TResult,
-): QueryProp<TResult> =>
-  useMemo(() => mapQuery({ isLoading, data, error }, selector), [data, selector, isLoading, error])
+) => useMemo(() => mapQuery({ isLoading, data, error }, selector), [data, selector, isLoading, error])
 
 /** a list of keys for query objects, i.e., data, isLoading, error */
 const queryObjectKeys = objectKeys(DISABLED_Q)
@@ -133,6 +132,6 @@ export const isQuery = <T>(value: unknown): value is QueryProp<T> =>
 export const toQuery = <T>(
   value: QueryOrValue<T>,
   { isLoading = false, error = null }: { isLoading?: boolean; error?: Error | null } = {},
-): QueryProp<T> => (isQuery(value) ? value : q({ data: value, isLoading, error }))
+) => (isQuery(value) ? value : q({ data: value, isLoading, error }))
 
-export const toValue = <T>(value: QueryOrValue<T>): T | undefined => (isQuery(value) ? value.data : value)
+export const toValue = <T>(value: QueryOrValue<T>) => (isQuery(value) ? value.data : value)
