@@ -8,7 +8,7 @@ import { ErrorIconButton } from '@ui-kit/shared/ui/ErrorIconButton'
 import { IconButtonIconSize } from '@ui-kit/themes/components/button'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
-import { q, type QueryOrValue, toQuery, toValue } from '@ui-kit/types/util'
+import { type QueryOrValue, toQuery, toValue } from '@ui-kit/types/util'
 import { applySxProps } from '@ui-kit/utils'
 import { LabelTooltipIcon } from '../LabelTooltipIcon'
 import { Tooltip, type TooltipProps } from '../Tooltip'
@@ -26,7 +26,7 @@ export type ActionInfoProps = {
   labelTooltip?: Omit<TooltipProps, 'children'>
   /** Custom color for the label text */
   labelColor?: TypographyProps['color']
-  /** Custom color for the value text */
+  /** Custom color for the primary displayed value text */
   valueColor?: TypographyProps['color']
   /** Optional content to display to the left of the value */
   valueLeft?: QueryOrValue<ReactNode>
@@ -34,7 +34,7 @@ export type ActionInfoProps = {
   valueRight?: QueryOrValue<ReactNode>
   /** Tooltip text to display when hovering over the value */
   valueTooltip?: QueryOrValue<ReactNode>
-  /** Value to be copied from the value text when clicked. */
+  /** Value to copy from the primary displayed value when clicked. */
   copyValue?: string
   /** Size of the component */
   size?: ActionInfoSize
@@ -43,12 +43,12 @@ export type ActionInfoProps = {
   /** Additional styles */
   sx?: StackProps['sx']
 
-  /** Query whose data is the primary value to display and copy. */
+  /** Current Query whose data is the primary value to display and copy. */
   value: QueryOrValue<ReactNode>
-  /** Previous value (if needed for comparison) */
-  prevValue?: QueryOrValue<ReactNode>
-  /** Custom color for the previous value text */
-  prevValueColor?: TypographyProps['color']
+  /** Query whose data is the expected value after the action. */
+  futureValue?: QueryOrValue<ReactNode>
+  /** Custom color for the current value text. */
+  currentValueColor?: TypographyProps['color']
   /** Skeleton dimensions or fallback value */
   skeleton?: [number, number] | string
 }
@@ -60,7 +60,7 @@ const labelSize = {
   medium: 'bodyMRegular',
 } as const satisfies Record<ActionInfoSize, TypographyVariantKey>
 
-const prevValueSize = labelSize
+const currentValueSize = labelSize
 
 const valueSize = {
   small: 'bodyXsBold',
@@ -123,8 +123,8 @@ export const ActionInfo = (props: ActionInfoProps) => {
     label,
     labelTooltip,
     labelColor,
-    prevValue: prevValueProp,
-    prevValueColor,
+    futureValue: propFutureValue,
+    currentValueColor,
     value: propValue,
     valueColor,
     valueLeft,
@@ -136,16 +136,17 @@ export const ActionInfo = (props: ActionInfoProps) => {
     sx,
     skeleton,
   } = props
-  const { data: givenValue, isLoading: valueLoading, error: valueError } = toQuery(propValue)
-  const { data: givenPrevValue, isLoading: prevLoading, error: prevError } = toQuery(prevValueProp)
-  const tooltip = toValue(valueTooltip)
+  const { data: givenCurrentValue, isLoading: valueLoading, error: valueError } = toQuery(propValue)
+  const givenFutureValue = toQuery(propFutureValue)
+
   const buttonSize = iconButtonSize[size]
   const iconSize = IconButtonIconSize[buttonSize]
+  const tooltip = toValue(valueTooltip)
 
-  const error = valueError ?? prevError
-  const isLoading = valueLoading || prevLoading
-  const value = givenValue ?? givenPrevValue
-  const prevValue = value === givenPrevValue ? null : givenPrevValue
+  const error = givenFutureValue?.error ?? valueError
+  const isLoading = valueLoading || givenFutureValue?.isLoading
+  const futureValue = givenFutureValue?.data ?? givenCurrentValue
+  const value = futureValue === givenCurrentValue ? null : givenCurrentValue
 
   const copyToClipboard = useCopyToClipboard({ copyText: copyValue })
 
@@ -168,15 +169,21 @@ export const ActionInfo = (props: ActionInfoProps) => {
         <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs, flexWrap: 'wrap', justifyContent: 'end' }}>
           <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
             <Typography
-              variant={prevValueSize[size]}
-              color={prevValueColor ?? 'textTertiary'}
+              variant={currentValueSize[size]}
+              color={currentValueColor ?? 'textTertiary'}
               data-testid={`${testId}-previous`}
-              data-value={givenPrevValue && typeof givenPrevValue == 'object' ? 'Object' : `${givenPrevValue}`}
+              data-value={
+                givenFutureValue
+                  ? typeof givenCurrentValue == 'object'
+                    ? 'Object'
+                    : `${givenCurrentValue}`
+                  : undefined
+              }
               sx={{ whiteSpace: 'nowrap' }}
             >
-              {prevValue}
+              {value}
             </Typography>
-            {prevValue != null && (
+            {value != null && (
               <ArrowForwardIcon
                 sx={{ color: t => t.palette.text.tertiary, width: IconSize[iconSize], height: IconSize[iconSize] }}
               />
@@ -202,10 +209,10 @@ export const ActionInfo = (props: ActionInfoProps) => {
                     size={size}
                     valueColor={valueColor}
                     testId={`${testId}-value`}
-                    value={q({ data: copyValue ?? value, error, isLoading })}
+                    value={copyValue ?? futureValue}
                     onClick={copyValue && !isLoading && !error ? copyToClipboard : undefined}
                   >
-                    {typeof skeleton === 'string' ? skeleton : error ? '' : (value ?? '-')}
+                    {typeof isLoading === 'string' ? isLoading : error ? '' : (futureValue ?? '-')}
                   </ValueTypography>
                 </WithSkeleton>
               </Stack>

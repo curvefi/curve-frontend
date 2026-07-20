@@ -62,8 +62,8 @@ export const DetailInfoTradeRouteRoute = ({
           route?.name
         )
       }
-      value={outputToken}
-      prevValue={inputToken}
+      value={inputToken}
+      futureValue={outputToken}
     />
   )
 }

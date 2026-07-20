@@ -71,8 +71,8 @@ export const SupplyActionInfoList = ({
           {(supplyApy ?? prevSupplyApy) && (
             <ActionInfo
               label={t`Supply APY`}
-              value={mapQuery(supplyApy ?? DISABLED_Q, data => formatNumber(data, 'percent.rate'))}
-              prevValue={prevSupplyApy && mapQuery(prevSupplyApy, data => formatNumber(data, 'percent.rate'))}
+              value={mapQuery(prevSupplyApy ?? DISABLED_Q, data => formatNumber(data, 'percent.rate'))}
+              futureValue={mapQuery(supplyApy ?? DISABLED_Q, data => formatNumber(data, 'percent.rate'))}
               size="small"
               testId="supply-apy"
             />
@@ -80,8 +80,8 @@ export const SupplyActionInfoList = ({
           {shouldShowNetSupplyApy && (
             <ActionInfo
               label={NET_SUPPLY_RATE_TITLE}
-              value={mapQuery(netSupplyApy ?? DISABLED_Q, data => formatNumber(data, 'percent.rate'))}
-              prevValue={prevNetSupplyApy && mapQuery(prevNetSupplyApy, data => formatNumber(data, 'percent.rate'))}
+              value={mapQuery(prevNetSupplyApy ?? DISABLED_Q, data => formatNumber(data, 'percent.rate'))}
+              futureValue={mapQuery(netSupplyApy ?? DISABLED_Q, data => formatNumber(data, 'percent.rate'))}
               size="small"
               testId="supply-net-apy"
             />
@@ -90,18 +90,16 @@ export const SupplyActionInfoList = ({
         <Stack>
           <ActionInfo
             label={sharesLabel}
-            value={mapQuery(vaultShares, data => formatAmount(data))}
-            prevValue={prevVaultShares && mapQuery(prevVaultShares, data => formatAmount(data))}
+            value={mapQuery(prevVaultShares ?? DISABLED_Q, data => formatAmount(data))}
+            futureValue={mapQuery(vaultShares, data => formatAmount(data))}
             size="small"
             testId="supply-vault-shares"
           />
           {(suppliedAssets != null || prevSuppliedAssets != null) && (
             <ActionInfo
               label={amountLabel}
-              value={mapQuery(suppliedAssets ?? DISABLED_Q, data => formatNumber(data, { abbreviate: false }))}
-              prevValue={
-                prevSuppliedAssets && mapQuery(prevSuppliedAssets, data => formatNumber(data, { abbreviate: false }))
-              }
+              value={mapQuery(prevSuppliedAssets ?? DISABLED_Q, data => formatNumber(data, { abbreviate: false }))}
+              futureValue={mapQuery(suppliedAssets ?? DISABLED_Q, data => formatNumber(data, { abbreviate: false }))}
               valueRight={suppliedSymbol}
               size="small"
               testId="supply-amount"

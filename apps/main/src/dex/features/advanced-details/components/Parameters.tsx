@@ -122,8 +122,8 @@ export const Parameters = ({
               <ActionInfo
                 label={t`Ramping ${rampADetails.isRampUp ? 'up' : 'down'} A`}
                 valueTooltip={t`Slowly changing ${rampADetails.isRampUp ? 'up' : 'down'} A so that it doesn't negatively change virtual price growth of shares`}
-                prevValue={formatADisplay(initial_A)}
-                value={formatADisplay(future_A)}
+                value={formatADisplay(initial_A)}
+                futureValue={formatADisplay(future_A)}
               />
               <ActionInfo label={t`Ramp ends`} value={future_A_time ? formatDate(future_A_time, 'short') : '-'} />
             </>

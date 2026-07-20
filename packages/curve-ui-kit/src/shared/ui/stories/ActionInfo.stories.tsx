@@ -59,13 +59,13 @@ const meta: Meta<typeof ActionInfoStory> = {
       control: 'text',
       description: 'Tooltip text to display when hovering over the value',
     },
-    prevValue: {
-      control: 'text',
-      description: 'Previous value (if needed for comparison)',
+    futureValue: {
+      control: 'object',
+      description: 'Expected value after the action',
     },
-    prevValueColor: {
+    currentValueColor: {
       control: 'color',
-      description: 'Custom color for the previous value text',
+      description: 'Custom color for the current value text',
     },
     copyValue: {
       control: 'text',
@@ -121,8 +121,8 @@ export const Default: Story = {
 export const AllSizes: Story = {
   args: {
     label: 'Collateral',
-    value: '1,234.56',
-    prevValue: '234.56',
+    value: '234.56',
+    futureValue: '1,234.56',
     copyValue: '1,234.56',
     valueRight: 'crvUSD',
     size: 'small',
@@ -148,16 +148,16 @@ export const AllSizes: Story = {
   },
 }
 
-export const WithPreviousValue: Story = {
+export const WithCurrentAndFutureValue: Story = {
   args: {
-    value: shortenAddress('0x0655977feb2f289a4ab78af67bab0d17aab84367'),
-    prevValue: shortenAddress('0x1234567890123456789012345678901234567890'),
+    value: shortenAddress('0x1234567890123456789012345678901234567890'),
+    futureValue: shortenAddress('0x0655977feb2f289a4ab78af67bab0d17aab84367'),
     size: 'medium',
   },
   parameters: {
     docs: {
       description: {
-        story: 'Shows comparison between previous and current values',
+        story: 'Shows comparison between current and expected values',
       },
     },
   },
@@ -165,16 +165,16 @@ export const WithPreviousValue: Story = {
 
 export const CustomColors: Story = {
   args: {
-    value: shortenAddress('0x0655977feb2f289a4ab78af67bab0d17aab84367'),
+    value: shortenAddress('0x1234567890123456789012345678901234567890'),
+    currentValueColor: 'error.main',
+    futureValue: shortenAddress('0x0655977feb2f289a4ab78af67bab0d17aab84367'),
     valueColor: 'success.main',
-    prevValue: shortenAddress('0x1234567890123456789012345678901234567890'),
-    prevValueColor: 'error.main',
     size: 'medium',
   },
   parameters: {
     docs: {
       description: {
-        story: 'Shows custom colors for both current and previous values',
+        story: 'Shows custom colors for both current and expected values',
       },
     },
   },
