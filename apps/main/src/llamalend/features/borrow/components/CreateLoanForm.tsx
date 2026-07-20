@@ -1,5 +1,4 @@
 import { type ChangeEvent, useCallback } from 'react'
-import { useConnection } from 'wagmi'
 import { LEVERAGE, LoanPreset } from '@/llamalend/constants'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
@@ -41,7 +40,6 @@ export const CreateLoanForm = <ChainId extends IChainId>({
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
   const { chainId, controllerAddress, bands, marketType } = useMarketContext<ChainId>()
-  const { isConnected } = useConnection()
   const network = networks[chainId]
   const [preset, setPreset] = useCreateLoanPreset<LoanPreset>(LoanPreset.Safe)
   const {
@@ -125,7 +123,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
               prefix={t`Max borrow:`}
               tooltip={t`Max borrow`}
               symbol={borrowToken?.symbol}
-              balance={isConnected || maxDebt.data ? q(maxDebt) : undefined}
+              balance={q(maxDebt)}
               onClick={useCallback(() => updateForm({ debt: values.maxDebt }), [updateForm, values.maxDebt])}
               buttonTestId="borrow-set-debt-to-max"
             />
