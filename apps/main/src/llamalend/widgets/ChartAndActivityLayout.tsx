@@ -9,7 +9,6 @@ import {
   LlammaActivityTrades,
 } from '@/llamalend/features/llamma-activity'
 import Stack from '@mui/material/Stack'
-import { useTheme } from '@mui/material/styles'
 import { type Token } from '@primitives/address.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import { ChartWrapper, type OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
@@ -64,7 +63,6 @@ type ChartAndActivityLayoutProps = {
 
 export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActivityLayoutProps) => {
   const { isConnected } = useConnection()
-  const theme = useTheme()
   const [isBandsVisible, setIsBandsVisible] = useBandsChartVisible()
   const toggleBandsVisible = useCallback(() => setIsBandsVisible(prev => !prev), [setIsBandsVisible])
   const bandsPalette = useBandsChartPalette()
@@ -141,7 +139,6 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
             >
               <ChartWrapper
                 {...chart.ohlcChartProps}
-                betaBackgroundColor={theme.design.Layer[1].Fill}
                 onVisiblePriceRangeChange={showBands ? handleVisiblePriceRangeChange : undefined}
               />
               {showBands && (
