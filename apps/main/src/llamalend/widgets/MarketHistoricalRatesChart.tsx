@@ -6,7 +6,6 @@ import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { HistoricalRatesTooltip } from '@/llamalend/widgets/tooltips/chart/HistoricalRatesTooltip'
 import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
-import CardHeader from '@mui/material/CardHeader'
 import { useTheme } from '@mui/material/styles'
 import type { Amount } from '@primitives/decimal.utils'
 import { maybe, notFalsy } from '@primitives/objects.utils'
@@ -33,6 +32,7 @@ import { fallbackQ, mapQuery, q, useMappedQuery } from '@ui-kit/types/util'
 import { formatNumber } from '@ui-kit/utils'
 import { calculateAverageRates } from '@ui-kit/utils/averageRates'
 import { useMarketContext } from '../features/market-context'
+import { MarketCardHeader } from './MarketCardHeader'
 
 const { Spacing, Height } = SizesAndSpaces
 
@@ -180,7 +180,7 @@ export const MarketHistoricalRatesChart = ({ rateMode }: MarketHistoricalRatesCh
 
   return (
     <Card size="small" data-testid={`historical-${rateMode.toLowerCase()}-rate-chart`}>
-      <CardHeader
+      <MarketCardHeader
         title={modeConfig.chartTitle}
         action={
           <SelectTimeOption

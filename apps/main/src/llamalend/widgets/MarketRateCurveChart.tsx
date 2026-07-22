@@ -6,7 +6,6 @@ import { TooltipOptions, TotalCollateralTooltip, UtilizationTooltip } from '@/ll
 import { RateCurveTooltip } from '@/llamalend/widgets/tooltips/chart/RateCurveTooltip'
 import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
-import CardHeader from '@mui/material/CardHeader'
 import { useTheme } from '@mui/material/styles'
 import { Decimal } from '@primitives/decimal.utils'
 import { maybes, notFalsy } from '@primitives/objects.utils'
@@ -28,6 +27,7 @@ import { MarketType } from '@ui-kit/types/market'
 import { fallbackQ, mapQuery, q, useMappedQuery } from '@ui-kit/types/util'
 import { decimal, decimalMax, decimalMinus, decimalMultiply, decimalSum, formatNumber } from '@ui-kit/utils'
 import { useMarketContext } from '../features/market-context'
+import { MarketCardHeader } from './MarketCardHeader'
 
 const { Spacing, Height } = SizesAndSpaces
 
@@ -162,7 +162,7 @@ export const MarketRateCurveChart = () => {
 
   return (
     <Card size="small" data-testid="interest-rate-utilization-chart">
-      <CardHeader title={t`Interest Rate & Utilization`} />
+      <MarketCardHeader title={t`Interest Rate & Utilization`} />
       <CardContent component={Stack} sx={{ gap: Spacing.md }}>
         <Stack
           sx={{

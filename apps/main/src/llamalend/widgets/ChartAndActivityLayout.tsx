@@ -23,13 +23,11 @@ import { ToggleBandsChartButton } from '@ui-kit/shared/ui/Chart/ToggleBandsChart
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-const { Spacing } = SizesAndSpaces
+const { Height, Spacing } = SizesAndSpaces
 
 type ChartAndActivityTab = 'chart' | 'trades' | 'events'
-const DEFAULT_TAB: ChartAndActivityTab = 'chart'
 
-type MarketActivityTab = Exclude<ChartAndActivityTab, 'chart'>
-const MARKET_ACTIVITY_TABS: TabOption<MarketActivityTab>[] = [
+const MARKET_ACTIVITY_TABS: TabOption<ChartAndActivityTab>[] = [
   { value: 'trades', label: t`Swaps` },
   { value: 'events', label: t`Activity` },
 ]
@@ -43,7 +41,7 @@ const hasVisiblePriceRangeChanged = (previous: { min: number; max: number }, nex
   Math.max(Math.abs(previous.min - next.min), Math.abs(previous.max - next.max)) >= VISIBLE_PRICE_RANGE_CHANGE_TOLERANCE
 
 type ChartAndActivityLayoutProps = {
-  chart: {
+  chart?: {
     isLoading: boolean
     selectedChartKey: string | undefined
     setTimeOption: (option: TimeOption) => void
@@ -63,34 +61,44 @@ type ChartAndActivityLayoutProps = {
 }
 
 export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActivityLayoutProps) => {
-  const [activeTab, setActiveTab] = useState<ChartAndActivityTab>(DEFAULT_TAB)
+  const [activeTab, setActiveTab] = useState<ChartAndActivityTab>(chart ? 'chart' : 'trades')
 
   return (
-    <Stack data-testid="market-chart-and-activity">
-      <TabsSwitcher variant="contained" value={activeTab} onChange={setActiveTab} options={TABS} />
-      <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
+    <Stack
+      data-testid={chart ? 'market-chart-and-activity' : 'market-activity'}
+      sx={chart ? undefined : { height: Height.chart }}
+    >
+      <TabsSwitcher
+        variant="contained"
+        value={activeTab}
+        onChange={setActiveTab}
+        options={chart ? TABS : MARKET_ACTIVITY_TABS}
+      />
+      <Stack
+        sx={{
+          backgroundColor: t => t.design.Layer[1].Fill,
+          ...(!chart && {
+            flexGrow: 1,
+            minHeight: 0,
+            '& > .MuiBox-root': { height: '100%' },
+          }),
+        }}
+      >
         {activeTab === 'events' && <LlammaActivityEvents {...activity} />}
         {activeTab === 'trades' && <LlammaActivityTrades {...activity} />}
-        {activeTab === 'chart' && <MarketPriceChartLayout chart={chart} bands={bands} />}
+        {activeTab === 'chart' && chart && <MarketPriceChartLayout chart={chart} bands={bands} />}
       </Stack>
     </Stack>
   )
 }
 
-export const MarketActivityLayout = ({ activity }: { activity: LlammaActivityProps }) => {
-  const [activeTab, setActiveTab] = useState<MarketActivityTab>('trades')
-
-  return (
-    <Stack data-testid="market-activity">
-      <TabsSwitcher variant="contained" value={activeTab} onChange={setActiveTab} options={MARKET_ACTIVITY_TABS} />
-      <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
-        {activeTab === 'events' ? <LlammaActivityEvents {...activity} /> : <LlammaActivityTrades {...activity} />}
-      </Stack>
-    </Stack>
-  )
-}
-
-export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLayoutProps, 'chart' | 'bands'>) => {
+export const MarketPriceChartLayout = ({
+  chart,
+  bands,
+}: {
+  chart: NonNullable<ChartAndActivityLayoutProps['chart']>
+  bands?: ChartAndActivityLayoutProps['bands']
+}) => {
   const { isConnected } = useConnection()
   const [isBandsVisible, setIsBandsVisible] = useBandsChartVisible()
   const toggleBandsVisible = useCallback(() => setIsBandsVisible(prev => !prev), [setIsBandsVisible])
