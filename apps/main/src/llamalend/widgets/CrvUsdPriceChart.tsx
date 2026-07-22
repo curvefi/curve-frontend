@@ -4,7 +4,6 @@ import { CrvUsdPriceTooltip } from '@/llamalend/widgets/tooltips/chart/CrvUsdPri
 import type { Timestamp } from '@curvefi/prices-api/timestamp'
 import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
-import CardHeader from '@mui/material/CardHeader'
 import { useTheme } from '@mui/material/styles'
 import { maybe, notFalsyArray } from '@primitives/objects.utils'
 import { formatDate } from '@ui/utils'
@@ -32,6 +31,7 @@ import { mapQuery, q } from '@ui-kit/types/util'
 import { Chain, CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { calculateAverageRates } from '@ui-kit/utils/averageRates'
 import { useCrvUsdSupplyTotal } from '../queries/crv-usd-supply-total.query'
+import { MarketCardHeader } from './MarketCardHeader'
 
 const { Spacing, Height } = SizesAndSpaces
 
@@ -121,7 +121,7 @@ export const CrvUsdPriceChart = () => {
 
   return (
     <Card size="small" data-testid="crvusd-price-chart">
-      <CardHeader
+      <MarketCardHeader
         title={t`Historical crvUSD Peg`}
         action={
           <SelectTimeOption
