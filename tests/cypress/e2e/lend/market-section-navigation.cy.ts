@@ -22,6 +22,8 @@ describe('LlamaLend market section navigation', () => {
       expect($section[0].getBoundingClientRect().top).to.be.greaterThan(0).and.lessThan(300)
     })
     cy.get('[data-testid="market-section-nav-faqs"]').should('have.class', 'Mui-selected')
+    cy.get('[data-testid="llamalend-market-faq"] h2').should('have.text', 'FAQs')
+    cy.get('[data-testid="llamalend-market-faq"] h3').should('have.length.greaterThan', 0)
   })
 
   it('updates the hash and scroll position when a section tab is clicked', () => {
@@ -64,5 +66,7 @@ describe('LlamaLend market section navigation', () => {
     cy.get('[data-testid="market-section-nav"]', LOAD_TIMEOUT).should('not.exist')
     cy.get('[data-testid="market-chart-and-activity"]').should('be.visible')
     cy.get('[data-testid="market-advanced-details"]').should('be.visible')
+    cy.get('[data-testid="llamalend-market-faq"] h2').should('have.text', 'Frequently Asked Questions')
+    cy.get('[data-testid="llamalend-market-faq"] h3').should('have.length.greaterThan', 0)
   })
 })

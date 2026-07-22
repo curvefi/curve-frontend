@@ -3,7 +3,7 @@ import {
   MarketInfoLayout,
   MarketParametersCard,
 } from '@/llamalend/features/market-advanced-information'
-import { MarketFaq } from '@/llamalend/features/market-faq'
+import { MarketFaq, MarketFaqCard } from '@/llamalend/features/market-faq'
 import { CrvUsdPriceChart } from '@/llamalend/widgets/CrvUsdPriceChart'
 import { MarketSection } from '@/llamalend/widgets/market-section-nav'
 import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
@@ -65,7 +65,7 @@ export const MarketInformationComposite = ({ previewPrices, isMarketDetailPageV2
         <MarketParametersCard network={networks[chainId]} />
       </MarketSection>
       <MarketSection id="faqs" ariaLabel={t`Frequently asked questions`}>
-        <MarketFaq />
+        <MarketFaqCard />
       </MarketSection>
     </Stack>
   )

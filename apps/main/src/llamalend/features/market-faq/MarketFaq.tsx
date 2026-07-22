@@ -1,3 +1,6 @@
+import { MarketCardHeader } from '@/llamalend/widgets/MarketCardHeader'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { EXTERNAL_LINKS } from '@ui/utils'
@@ -10,18 +13,13 @@ import { FAQ_GROUPS } from './faq-groups'
 
 const { Spacing } = SizesAndSpaces
 
-export const MarketFaq = () => (
-  <Stack component="section" data-testid="llamalend-market-faq">
-    <Stack sx={{ paddingBlockStart: Spacing.lg, paddingBlockEnd: Spacing.xs }}>
-      <Typography color="textSecondary" variant="headingSBold">
-        {t`Frequently Asked Questions`}
-      </Typography>
-    </Stack>
-
+const FaqContent = () => (
+  <>
     <Stack>
       {FAQ_GROUPS.map(group => (
         <Stack key={group.title} sx={{ gap: Spacing.xs }}>
           <Typography
+            component="h3"
             color="textSecondary"
             variant="bodyMBold"
             sx={{ borderBottom: borderStyle, paddingBlockStart: Spacing.md, paddingBlockEnd: Spacing.xs }}
@@ -58,5 +56,25 @@ export const MarketFaq = () => (
         color="secondary"
       />
     </Stack>
+  </>
+)
+
+export const MarketFaq = () => (
+  <Stack component="section" data-testid="llamalend-market-faq">
+    <Stack sx={{ paddingBlockStart: Spacing.lg, paddingBlockEnd: Spacing.xs }}>
+      <Typography component="h2" color="textSecondary" variant="headingSBold">
+        {t`Frequently Asked Questions`}
+      </Typography>
+    </Stack>
+    <FaqContent />
   </Stack>
+)
+
+export const MarketFaqCard = () => (
+  <Card data-testid="llamalend-market-faq">
+    <MarketCardHeader title={t`FAQs`} />
+    <CardContent component={Stack} sx={{ backgroundColor: theme => theme.design.Layer[1].Fill }}>
+      <FaqContent />
+    </CardContent>
+  </Card>
 )
