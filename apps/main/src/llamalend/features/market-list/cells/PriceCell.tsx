@@ -7,7 +7,7 @@ import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtT
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { notFalsyArray } from '@primitives/objects.utils'
+import { maybe, notFalsyArray } from '@primitives/objects.utils'
 import type { CellContext } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
@@ -67,7 +67,7 @@ const getTooltipTitle = (columnId: MarketColumnId) =>
  * @param columnId - The column identifier
  * @param stats - The user's market statistics
  */
-const getTooltipBody = (columnId: MarketColumnId, stats: MarketStats): ReactNode | undefined => {
+const getTooltipBody = (columnId: MarketColumnId, stats: MarketStats, oraclePrice?: number): ReactNode | undefined => {
   if (columnId === MarketColumnId.UserBorrowed) {
     return <TotalDebtTooltipContent />
   }
@@ -78,18 +78,16 @@ const getTooltipBody = (columnId: MarketColumnId, stats: MarketStats): ReactNode
         {...{
           collateral: {
             value: decimal(stats?.collateral?.amount),
-            usdRate: stats?.collateral?.usdRate,
+            conversionRate: oraclePrice,
             symbol: stats?.collateral?.symbol,
           },
           borrow: {
             value: decimal(stats?.borrowToken?.amount),
-            usdRate: stats?.borrowToken?.usdRate,
             symbol: stats?.borrowToken?.symbol,
           },
-          totalValue: `${
-            (stats?.collateral?.amount ?? 0) * (stats?.collateral?.usdRate ?? 0) +
-            (stats?.borrowToken?.amount ?? 0) * (stats?.borrowToken?.usdRate ?? 0)
-          }`,
+          totalValue: maybe(oraclePrice, op =>
+            decimal((stats?.collateral?.amount ?? 0) * op + (stats?.borrowToken?.amount ?? 0)),
+          ),
         }}
       />
     )
@@ -184,7 +182,7 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
   const tooltipTitle =
     getTooltipTitle(columnId) ??
     `${formatNumber(primaryValue, { decimals: 5, abbreviate: false })} ${primaryAsset.symbol}`
-  const tooltipBody = getTooltipBody(columnId, stats)
+  const tooltipBody = getTooltipBody(columnId, stats, market.oraclePrice)
 
   const primaryUsdValue = primaryPrice && primaryValue * primaryPrice
   const secondaryUsdValue = secondaryPrice && secondaryValue && secondaryValue * secondaryPrice

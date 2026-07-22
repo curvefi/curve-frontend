@@ -1,4 +1,9 @@
-import { formatMetricValue, formatPercentage, UNAVAILABLE_NOTATION } from '@/llamalend/widgets/tooltips/tooltip.utils'
+import {
+  formatMetricValue,
+  formatPercentage,
+  UNAVAILABLE_NOTATION,
+  UNAVAILABLE_TOKEN_SYMBOL,
+} from '@/llamalend/widgets/tooltips/tooltip.utils'
 import {
   TooltipDescription,
   TooltipItem,
@@ -12,8 +17,8 @@ import { formatNumber } from '@ui-kit/utils'
 
 type TokenValues = {
   value: Decimal | undefined | null
-  usdRate: number | undefined | null
   symbol: string | undefined
+  conversionRate?: Decimal | number | null
 }
 
 type CollateralMetricTooltipContentProps = {
@@ -27,8 +32,8 @@ export const CollateralMetricTooltipContent = ({
   borrow,
   totalValue,
 }: CollateralMetricTooltipContentProps) => {
-  const collateralPercentage = formatPercentage(collateral?.value, totalValue, collateral?.usdRate)
-  const borrowPercentage = formatPercentage(borrow?.value, totalValue, borrow?.usdRate)
+  const collateralPercentage = formatPercentage(collateral?.value, totalValue, collateral?.conversionRate ?? 1)
+  const borrowPercentage = formatPercentage(borrow?.value, totalValue, borrow?.conversionRate ?? 1)
   return (
     <TooltipWrapper>
       <TooltipDescription
@@ -41,18 +46,20 @@ export const CollateralMetricTooltipContent = ({
       <Stack>
         <TooltipItems secondary>
           <TooltipItem title={t`Deposit token`} variant="independent">
-            {`${formatMetricValue(collateral?.value)} ${collateral?.symbol ?? '?'}`}
+            {`${formatMetricValue(collateral?.value)} ${collateral?.symbol ?? UNAVAILABLE_TOKEN_SYMBOL}`}
             {collateralPercentage && ` (${collateralPercentage})`}
           </TooltipItem>
           <TooltipItem title={t`Borrow token`} variant="independent">
-            {`${formatMetricValue(borrow?.value)} ${borrow?.symbol ?? '?'}`}
+            {`${formatMetricValue(borrow?.value)} ${borrow?.symbol ?? UNAVAILABLE_TOKEN_SYMBOL}`}
             {borrowPercentage && ` (${borrowPercentage})`}
           </TooltipItem>
         </TooltipItems>
       </Stack>
 
       <TooltipItem title={t`Total collateral value`} variant="independent">
-        {totalValue == null ? UNAVAILABLE_NOTATION : formatNumber(totalValue, 'usd.amount')}
+        {totalValue == null
+          ? UNAVAILABLE_NOTATION
+          : `${formatNumber(totalValue, 'token.amount')} ${borrow.symbol ?? UNAVAILABLE_TOKEN_SYMBOL}`}
       </TooltipItem>
     </TooltipWrapper>
   )

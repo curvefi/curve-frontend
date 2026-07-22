@@ -1,23 +1,19 @@
 import { formatCollateralNotional, isPositionLeveraged, type MarketTokensOrEmpty } from '@/llamalend/llama.utils'
+import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useUserCurrentLeverage, useUserState } from '@/llamalend/queries/user'
 import { useRangeToLiquidation } from '@/llamalend/queries/user/user-prices.query'
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
+import { UNAVAILABLE_TOKEN_SYMBOL } from '@/llamalend/widgets/tooltips/tooltip.utils'
 import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'
 import { Stack } from '@mui/material'
 import { maybe } from '@primitives/objects.utils'
 import { combineQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import type { UserMarketParams } from '@ui-kit/lib/model'
-import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimalMultiply, decimalSum } from '@ui-kit/utils'
 import { LiquidationThresholdTooltipContent } from './'
-
-const dollarUnitOptions = {
-  abbreviate: false,
-  unit: { symbol: '$', position: 'prefix' as const, abbreviate: false },
-}
 
 const METRIC_CATEGORY = 'llamalend.positionBorrowDetails'
 
@@ -30,15 +26,15 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
   const userState = useUserState(params)
   const { data: userStateValue } = userState
   const leverage = useUserCurrentLeverage(params)
-
-  const collateralUsdRate = useTokenUsdRate({ chainId: params.chainId, tokenAddress: collateralToken?.address })
-  const borrowedUsdRate = useTokenUsdRate({ chainId: params.chainId, tokenAddress: borrowToken?.address })
+  const oraclePrice = useMarketOraclePrice(params)
 
   const { collateral, stablecoin: borrowed } = userStateValue ?? {}
-  const collateralValue = combineQueries([collateralUsdRate, userState], (collateralUsdRate, userState) =>
-    decimalSum(decimalMultiply(userState.collateral, `${collateralUsdRate}`), userState.stablecoin),
+  const collateralValue = combineQueries([oraclePrice, userState], (oraclePrice, userState) =>
+    decimalSum(decimalMultiply(userState.collateral, oraclePrice), userState.stablecoin),
   )
   const { rangeToLiquidation, userPrices } = useRangeToLiquidation({ params })
+  const borrowSymbol = borrowToken?.symbol ?? UNAVAILABLE_TOKEN_SYMBOL
+  const priceUnit = `${collateralToken?.symbol ?? UNAVAILABLE_TOKEN_SYMBOL}/${borrowSymbol}`
 
   return (
     <Stack>
@@ -53,7 +49,7 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
           category={METRIC_CATEGORY}
           label={t`Collateral value`}
           value={collateralValue}
-          valueOptions={{ unit: 'dollar' }}
+          valueOptions={{ unit: { symbol: borrowSymbol, position: 'suffix' } }}
           notional={mapQuery(userState, ({ collateral, stablecoin }) =>
             formatCollateralNotional(
               { value: collateral, symbol: collateralToken?.symbol },
@@ -64,8 +60,8 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
             title: t`Collateral value`,
             body: (
               <CollateralMetricTooltipContent
-                borrow={{ value: borrowed, usdRate: borrowedUsdRate.data, symbol: borrowToken?.symbol }}
-                collateral={{ value: collateral, usdRate: collateralUsdRate.data, symbol: collateralToken?.symbol }}
+                borrow={{ value: borrowed, symbol: borrowToken?.symbol }}
+                collateral={{ value: collateral, conversionRate: oraclePrice.data, symbol: collateralToken?.symbol }}
                 totalValue={collateralValue.data}
               />
             ),
@@ -76,9 +72,22 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
         />
         <Metric
           category={METRIC_CATEGORY}
+          label={t`Total debt`}
+          value={mapQuery(userState, ({ debt }) => debt)}
+          valueOptions={{ unit: { symbol: borrowSymbol, position: 'suffix' } }}
+          valueTooltip={{
+            title: t`Total Debt`,
+            body: <TotalDebtTooltipContent />,
+            placement: 'top',
+            arrow: false,
+            clickable: true,
+          }}
+        />
+        <Metric
+          category={METRIC_CATEGORY}
           label={t`Liquidation threshold`}
           value={mapQuery(userPrices, p => p?.[1])}
-          valueOptions={dollarUnitOptions}
+          valueOptions={{ abbreviate: false, unit: { symbol: priceUnit, position: 'suffix' } }}
           valueTooltip={{
             title: t`Liquidation Threshold (LT)`,
             body: (
@@ -86,6 +95,7 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
                 userPrices={q(userPrices)}
                 rangeToLiquidation={rangeToLiquidation}
                 params={params}
+                priceUnit={priceUnit}
               />
             ),
             placement: 'top',
@@ -95,19 +105,6 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
           notional={mapQuery(rangeToLiquidation, v =>
             maybe(v, value => ({ value, unit: { symbol: `% distance to LT`, position: 'suffix' as const } })),
           )}
-        />
-        <Metric
-          category={METRIC_CATEGORY}
-          label={t`Total debt`}
-          value={mapQuery(userState, ({ debt }) => debt)}
-          valueOptions={{ unit: { symbol: borrowToken?.symbol ?? '?', position: 'suffix' } }}
-          valueTooltip={{
-            title: t`Total Debt`,
-            body: <TotalDebtTooltipContent />,
-            placement: 'top',
-            arrow: false,
-            clickable: true,
-          }}
         />
         {isPositionLeveraged(leverage.data) && (
           <Metric
