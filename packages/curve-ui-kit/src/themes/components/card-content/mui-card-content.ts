@@ -5,18 +5,11 @@ import { TRANSPARENT } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { handleBreakpoints } from '../../basic-theme'
 
-const { Spacing } = SizesAndSpaces
-
-const Padding = {
-  xs: Spacing.xs,
-  sm: Spacing.sm,
-  md: Spacing.md,
-  lg: Spacing.lg,
-}
+const { Padding } = SizesAndSpaces
 
 export const cardContentSmallStyles = {
-  ...handleBreakpoints({ padding: Padding.sm }),
-  '&:last-child': handleBreakpoints({ paddingBlockEnd: Padding.sm }),
+  padding: Padding.Card.sm,
+  '&:last-child': { paddingBlockEnd: Padding.Card.sm },
 }
 
 export const cardContentInlineStyles = {
@@ -31,8 +24,8 @@ export const defineMuiCardContent = (design: DesignSystem): Components['MuiCardC
   styleOverrides: {
     root: {
       backgroundColor: design.Layer[1].Fill,
-      ...handleBreakpoints({ padding: Padding.md }),
-      '&:last-child': handleBreakpoints({ paddingBlockEnd: Padding.md }),
+      padding: Padding.Card.md,
+      '&:last-child': { paddingBlockEnd: Padding.Card.md },
     },
   },
   variants: [
