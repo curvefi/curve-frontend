@@ -189,8 +189,8 @@ export const PointsRewardIcon = ({
       title={<CampaignTooltip campaign={campaign} showApy={false} />}
     >
       <Stack component="span" direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
-        <CampaignIcon campaign={campaign} />
         <Typography variant={typographyVariant}>{label}</Typography>
+        <CampaignIcon campaign={campaign} />
       </Stack>
     </RewardIconTooltip>
   )
