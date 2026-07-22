@@ -6,6 +6,7 @@ import type { PoolRow } from '../types'
 
 const COMPOUND_WINDOW = AVERAGE_CATEGORIES['dex.poolYield.compoundRate'].window
 const MAX_CRV_BOOST = '2.50'
+const MAX_POINTS_CAMPAIGNS = 4
 
 export const aprToPoolApy = (apr: Parameters<typeof aprToApy>[0]) => aprToApy(apr, COMPOUND_WINDOW)
 export const getGaugeApyDescription = () =>
@@ -19,7 +20,8 @@ export const getGaugeApyRange = ({ crvApr, crvAprBoosted }: PoolRow) => {
 }
 
 export const isPointsCampaign = ({ reward, tags }: CampaignRewards) => reward?.type !== 'apr' || tags.includes('points')
-export const getPointsCampaigns = ({ campaigns }: PoolRow) => campaigns.filter(isPointsCampaign)
+export const getPointsCampaigns = ({ campaigns }: PoolRow) =>
+  campaigns.filter(isPointsCampaign).slice(0, MAX_POINTS_CAMPAIGNS)
 export const getAprCampaigns = ({ campaigns }: PoolRow) => campaigns.filter(campaign => !isPointsCampaign(campaign))
 
 export const getExtraRewards = ({ extraRewardsApr }: PoolRow) => extraRewardsApr.filter(({ apr }) => apr > 0)

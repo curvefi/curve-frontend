@@ -127,7 +127,7 @@ const NetApyCellContent = ({ pool }: { pool: PoolRow }) => {
       ) : (
         value
       )}
-      <RewardIcons pool={pool} includeCrv />
+      <RewardIcons pool={pool} includeCrv includePoints />
     </Stack>
   )
 }

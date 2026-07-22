@@ -12,7 +12,14 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber, MAINNET_CRV } from '@ui-kit/utils'
 import type { PoolRow } from '../types'
 import { GaugeApyRange } from './GaugeApyCell'
-import { aprToPoolApy, getGaugeApyDescription, getGaugeApyRange, getExtraRewards, getAprCampaigns } from './utils'
+import {
+  aprToPoolApy,
+  getGaugeApyDescription,
+  getGaugeApyRange,
+  getExtraRewards,
+  getAprCampaigns,
+  getPointsCampaigns,
+} from './utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -128,23 +135,66 @@ const CrvRewardIcon = ({
   </RewardIconTooltip>
 )
 
+export const PointsRewardIcon = ({
+  campaign,
+  placement,
+  showLabel = true,
+  typographyVariant = 'tableCellMBold',
+}: {
+  campaign: CampaignRewards
+  placement?: TooltipProps['placement']
+  showLabel?: boolean
+  typographyVariant?: TypographyProps['variant']
+}) => {
+  const label =
+    campaign.reward?.type === 'points'
+      ? formatNumber(campaign.reward.value, 'multiplier')
+      : (campaign.symbol ?? t`Points`)
+
+  return (
+    <RewardIconTooltip
+      clickable
+      placement={placement}
+      testId="pool-points-badge"
+      title={<CampaignTooltip campaign={campaign} showApy={false} />}
+    >
+      <Stack component="span" direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
+        {showLabel && <Typography variant={typographyVariant}>{label}</Typography>}
+        <CampaignIcon campaign={campaign} />
+      </Stack>
+    </RewardIconTooltip>
+  )
+}
+
 export const RewardIcons = ({
   includeCrv = false,
+  includePoints = false,
   pool,
   tooltipPlacement,
 }: {
   includeCrv?: boolean
+  includePoints?: boolean
   pool: PoolRow
   tooltipPlacement?: TooltipProps['placement']
 }) => {
+  const pointsCampaigns = includePoints ? getPointsCampaigns(pool) : []
   const extraRewards = getExtraRewards(pool)
   const campaigns = getAprCampaigns(pool)
   const gaugeApyRange = includeCrv && !pool.gauge?.isKilled ? getGaugeApyRange(pool) : null
 
-  if (!extraRewards.length && !campaigns.length && !gaugeApyRange) return null
+  if (!pointsCampaigns.length && !extraRewards.length && !campaigns.length && !gaugeApyRange) return null
 
   return (
     <IconStack iconSize="sm">
+      {pointsCampaigns.map((campaign, index) => (
+        <PointsRewardIcon
+          // eslint-disable-next-line @eslint-react/no-array-index-key -- Campaigns may describe distinct point rewards with the same platform metadata.
+          key={`${campaign.platform}-${campaign.description}-${index}`}
+          campaign={campaign}
+          placement={tooltipPlacement}
+          showLabel={false}
+        />
+      ))}
       {extraRewards.map((reward, index) => (
         <ExtraRewardIcon
           // eslint-disable-next-line @eslint-react/no-array-index-key -- API reward rows do not provide a stable unique id and duplicates must remain visible.
@@ -164,34 +214,5 @@ export const RewardIcons = ({
       ))}
       {gaugeApyRange && <CrvRewardIcon placement={tooltipPlacement} range={gaugeApyRange} />}
     </IconStack>
-  )
-}
-
-export const PointsRewardIcon = ({
-  campaign,
-  placement,
-  typographyVariant = 'tableCellMBold',
-}: {
-  campaign: CampaignRewards
-  placement?: TooltipProps['placement']
-  typographyVariant?: TypographyProps['variant']
-}) => {
-  const label =
-    campaign.reward?.type === 'points'
-      ? formatNumber(campaign.reward.value, 'multiplier')
-      : (campaign.symbol ?? t`Points`)
-
-  return (
-    <RewardIconTooltip
-      clickable
-      placement={placement}
-      testId="pool-points-badge"
-      title={<CampaignTooltip campaign={campaign} showApy={false} />}
-    >
-      <Stack component="span" direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
-        <Typography variant={typographyVariant}>{label}</Typography>
-        <CampaignIcon campaign={campaign} />
-      </Stack>
-    </RewardIconTooltip>
   )
 }
