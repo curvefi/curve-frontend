@@ -83,7 +83,7 @@ const createMarketsColumnOptions = ({
     label: t`Borrow`,
     options: [
       {
-        label: t`Net borrow APR`,
+        label: t`Net Borrow APR`,
         columns: [MarketColumnId.NetBorrowRate],
         active: onlyPositions != MarketRateType.Supply,
         enabled: true,
