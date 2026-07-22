@@ -16,7 +16,6 @@ export type OhlcChartProps = {
   isEmpty?: boolean
   emptyMessage?: string
   error: Error | null
-  betaBackgroundColor?: string // Used during the beta phase of the new theme migration to pass theme bg color
   ohlcData: LpPriceOhlcDataFormatted[] | undefined
   oraclePriceData?: OraclePriceData[]
   liquidationRange?: LiquidationRanges
@@ -39,7 +38,6 @@ export const ChartWrapper = ({
   isEmpty,
   emptyMessage,
   error,
-  betaBackgroundColor,
   ohlcData,
   oraclePriceData,
   liquidationRange,
@@ -54,7 +52,7 @@ export const ChartWrapper = ({
   latestOraclePrice,
   onVisiblePriceRangeChange,
 }: OhlcChartProps) => {
-  const colors = useChartPalette({ backgroundOverride: betaBackgroundColor })
+  const colors = useChartPalette()
 
   const selectedChartLabel = selectChartList.find(c => c.key === selectedChartKey)?.label
   const errorMessage = selectedChartLabel

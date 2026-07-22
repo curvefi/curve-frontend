@@ -98,9 +98,8 @@ const getBandMidPrice = async ({
     client.readContract({ address: ammAddress, abi: AMM_ABI, functionName: 'p_oracle_up', args: [band] }),
     client.readContract({ address: ammAddress, abi: AMM_ABI, functionName: 'p_oracle_down', args: [band] }),
   ])
-  const [lower, upper] = pDown < pUp ? [pDown, pUp] : [pUp, pDown]
 
-  return lower + (upper - lower) / 2n
+  return (pUp + pDown) / 2n
 }
 
 const getSoftLiquidationTargetPrice = async ({
