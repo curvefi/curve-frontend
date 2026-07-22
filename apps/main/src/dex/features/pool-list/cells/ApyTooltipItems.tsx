@@ -76,7 +76,9 @@ const PointsTooltipItems = ({ campaigns }: { campaigns: Campaign[] }) =>
           '&:hover svg': { fontSize: 20 },
         }}
       >
-        {formatNumber(campaign.reward?.type === 'points' ? campaign.reward.value : null, 'multiplier')}
+        {campaign.reward?.type === 'points'
+          ? formatNumber(campaign.reward.value, 'multiplier')
+          : (campaign?.symbol ?? '-')}
         <ArrowOutwardIcon />
       </Stack>
     </TooltipItem>
