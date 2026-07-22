@@ -2,9 +2,10 @@ import { ChipInactive } from '@/dex/components/ChipInactive'
 import Box from '@mui/material/Box'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
+import { TokenInfo } from '@ui-kit/shared/ui/TokenInfo'
 import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
 import { TooltipDescription, TooltipWrapper } from '@ui-kit/shared/ui/TooltipComponents'
-import { formatNumber } from '@ui-kit/utils'
+import { formatNumber, MAINNET_CRV } from '@ui-kit/utils'
 import type { PoolRow } from '../types'
 import { GaugeApyTooltipItems } from './ApyTooltipItems'
 import { getGaugeApyDescription, getGaugeApyRange } from './utils'
@@ -84,15 +85,27 @@ export const GaugeApyCell = ({ pool }: { pool: PoolRow }) => {
   }
 
   const range = getGaugeApyRange(pool)
-  const content = <GaugeApyAmount range={range} typographyVariant="tableCellMBold" />
+  const content = range ? (
+    <TokenInfo
+      address={MAINNET_CRV.address}
+      blockchainId={MAINNET_CRV.chain}
+      iconSize="mui-sm"
+      iconPosition="right"
+      iconAlignment="start"
+      primary={<span data-testid="pool-gauge-apy-unboosted">{formatNumber(range.unboostedApy, 'percent.rate')}</span>}
+      secondary={<span data-testid="pool-gauge-apy-boosted">{formatNumber(range.boostedApy, 'percent.rate')}</span>}
+      boldPrimary
+      sx={{ justifyContent: 'end' }}
+    />
+  ) : (
+    <GaugeApyAmount range={range} typographyVariant="tableCellMBold" />
+  )
 
   return (
     <Box data-testid="pool-gauge-apy" sx={{ display: 'flex', justifyContent: 'end' }}>
       {range ? (
         <Tooltip clickable title={t`Gauge APY`} body={<GaugeApyTooltipContent range={range} />} placement="top">
-          <Box component="span" data-testid="pool-gauge-apy-tooltip-trigger" sx={{ display: 'inline-flex' }}>
-            {content}
-          </Box>
+          <Box data-testid="pool-gauge-apy-tooltip-trigger">{content}</Box>
         </Tooltip>
       ) : (
         content
