@@ -7,9 +7,9 @@ import { TooltipDescription, TooltipWrapper } from '@ui-kit/shared/ui/TooltipCom
 import { formatNumber } from '@ui-kit/utils'
 import type { PoolRow } from '../types'
 import { GaugeApyTooltipItems } from './ApyTooltipItems'
-import { getBoostApyDescription, getBoostApyRange } from './utils'
+import { getGaugeApyDescription, getGaugeApyRange } from './utils'
 
-export const BoostApyRange = ({ boostedApy, unboostedApy }: NonNullable<ReturnType<typeof getBoostApyRange>>) => (
+export const GaugeApyRange = ({ boostedApy, unboostedApy }: NonNullable<ReturnType<typeof getGaugeApyRange>>) => (
   <>
     {formatNumber(unboostedApy || null, 'percent.rate')}
     {' → '}
@@ -17,20 +17,20 @@ export const BoostApyRange = ({ boostedApy, unboostedApy }: NonNullable<ReturnTy
   </>
 )
 
-const BoostApyAmount = ({
+const GaugeApyAmount = ({
   range,
   typographyVariant,
 }: {
-  range: ReturnType<typeof getBoostApyRange>
+  range: ReturnType<typeof getGaugeApyRange>
   typographyVariant: TypographyProps['variant']
 }) => (
   <Typography component="span" variant={typographyVariant}>
-    {range ? <BoostApyRange {...range} /> : formatNumber(null, 'percent.rate')}
+    {range ? <GaugeApyRange {...range} /> : formatNumber(null, 'percent.rate')}
   </Typography>
 )
 
-const BoostApyTooltipContent = ({ range }: { range: NonNullable<ReturnType<typeof getBoostApyRange>> }) => (
-  <Box data-testid="pool-boost-apy-tooltip-content">
+const GaugeApyTooltipContent = ({ range }: { range: NonNullable<ReturnType<typeof getGaugeApyRange>> }) => (
+  <Box data-testid="pool-gauge-apy-tooltip-content">
     <TooltipWrapper>
       <TooltipDescription text={t`CRV gauge reward APY ranges from the unboosted rate to the maximum boosted rate.`} />
       <TooltipDescription text={t`The maximum rate assumes the full 2.5x gauge boost.`} />
@@ -39,7 +39,7 @@ const BoostApyTooltipContent = ({ range }: { range: NonNullable<ReturnType<typeo
   </Box>
 )
 
-export const BoostApyValue = ({
+export const GaugeApyValue = ({
   pool,
   textAlign = 'end',
   tooltipPlacement = 'bottom-end',
@@ -52,19 +52,19 @@ export const BoostApyValue = ({
 }) => {
   if (pool.gauge?.isKilled) {
     return (
-      <Box data-testid="pool-boost-apy" sx={{ display: 'flex', justifyContent: textAlign }}>
+      <Box data-testid="pool-gauge-apy" sx={{ display: 'flex', justifyContent: textAlign }}>
         <ChipInactive>{t`Inactive gauge`}</ChipInactive>
       </Box>
     )
   }
 
-  const range = getBoostApyRange(pool)
-  const content = <BoostApyAmount range={range} typographyVariant={typographyVariant} />
+  const range = getGaugeApyRange(pool)
+  const content = <GaugeApyAmount range={range} typographyVariant={typographyVariant} />
 
   return (
-    <Box data-testid="pool-boost-apy" sx={{ display: 'flex', justifyContent: textAlign }}>
+    <Box data-testid="pool-gauge-apy" sx={{ display: 'flex', justifyContent: textAlign }}>
       {range ? (
-        <Tooltip title={getBoostApyDescription()} placement={tooltipPlacement}>
+        <Tooltip title={getGaugeApyDescription()} placement={tooltipPlacement}>
           {content}
         </Tooltip>
       ) : (
@@ -74,23 +74,23 @@ export const BoostApyValue = ({
   )
 }
 
-export const BoostApyCell = ({ pool }: { pool: PoolRow }) => {
+export const GaugeApyCell = ({ pool }: { pool: PoolRow }) => {
   if (pool.gauge?.isKilled) {
     return (
-      <Box data-testid="pool-boost-apy" sx={{ display: 'flex', justifyContent: 'end' }}>
+      <Box data-testid="pool-gauge-apy" sx={{ display: 'flex', justifyContent: 'end' }}>
         <ChipInactive>{t`Inactive gauge`}</ChipInactive>
       </Box>
     )
   }
 
-  const range = getBoostApyRange(pool)
-  const content = <BoostApyAmount range={range} typographyVariant="tableCellMBold" />
+  const range = getGaugeApyRange(pool)
+  const content = <GaugeApyAmount range={range} typographyVariant="tableCellMBold" />
 
   return (
-    <Box data-testid="pool-boost-apy" sx={{ display: 'flex', justifyContent: 'end' }}>
+    <Box data-testid="pool-gauge-apy" sx={{ display: 'flex', justifyContent: 'end' }}>
       {range ? (
-        <Tooltip clickable title={t`Boost APY`} body={<BoostApyTooltipContent range={range} />} placement="top">
-          <Box component="span" data-testid="pool-boost-apy-tooltip-trigger" sx={{ display: 'inline-flex' }}>
+        <Tooltip clickable title={t`Gauge APY`} body={<GaugeApyTooltipContent range={range} />} placement="top">
+          <Box component="span" data-testid="pool-gauge-apy-tooltip-trigger" sx={{ display: 'inline-flex' }}>
             {content}
           </Box>
         </Tooltip>

@@ -1,5 +1,5 @@
 import { BaseApyCell } from '@/dex/features/pool-list/cells/BaseApyCell'
-import { BoostApyCell } from '@/dex/features/pool-list/cells/BoostApyCell'
+import { GaugeApyCell } from '@/dex/features/pool-list/cells/GaugeApyCell'
 import { NetApyCell } from '@/dex/features/pool-list/cells/NetApyCell'
 import { PointsCell } from '@/dex/features/pool-list/cells/PointsCell'
 import { RewardsApyCell } from '@/dex/features/pool-list/cells/RewardsApyCell'
@@ -23,7 +23,7 @@ const REWARDS_APY = '[data-testid="pool-rewards-apy"]'
 const NET_APY_TOOLTIP_TRIGGER = '[data-testid="pool-net-apy-tooltip-trigger"]'
 const BASE_APY_TOOLTIP_TRIGGER = '[data-testid="pool-base-apy-tooltip-trigger"]'
 const REWARDS_APY_TOOLTIP_TRIGGER = '[data-testid="pool-rewards-apy-tooltip-trigger"]'
-const BOOST_APY_TOOLTIP_TRIGGER = '[data-testid="pool-boost-apy-tooltip-trigger"]'
+const GAUGE_APY_TOOLTIP_TRIGGER = '[data-testid="pool-gauge-apy-tooltip-trigger"]'
 const NET_APY_ICON_CONTEXTS = [NET_APY, REWARDS_APY] as const
 const REWARD_BADGES = '[data-testid="pool-extra-reward-badge"], [data-testid="pool-campaign-reward-badge"]'
 const NET_APY_BADGES = `${REWARD_BADGES}, [data-testid="pool-crv-reward-badge"]`
@@ -135,7 +135,7 @@ const RewardCells = ({ pool }: { pool: PoolRow }) => (
     <NetApyCell pool={pool} />
     <BaseApyHarness pool={pool} />
     <RewardsApyCell pool={pool} />
-    <BoostApyCell pool={pool} />
+    <GaugeApyCell pool={pool} />
     <PointsCell pool={pool} />
   </div>
 )
@@ -177,7 +177,7 @@ describe('v2 pool-list reward columns', () => {
     cy.get('[data-testid="pool-net-apy"]').should('have.text', '20.70%')
     cy.get('[data-testid="pool-base-apy"]').should('have.text', '10.51%').find('img').should('not.exist')
     cy.get('[data-testid="pool-rewards-apy"]').should('contain.text', '5.06%')
-    cy.get('[data-testid="pool-boost-apy"]')
+    cy.get('[data-testid="pool-gauge-apy"]')
       .should('contain.text', '5.12%')
       .and('contain.text', '13.30%')
       .find('img')
@@ -196,7 +196,7 @@ describe('v2 pool-list reward columns', () => {
     })
   })
 
-  it('shows detailed Net APY, Rewards APY, and Boost APY breakdowns from their desktop values', () => {
+  it('shows detailed Net APY, Rewards APY, and Gauge APY breakdowns from their desktop values', () => {
     mountRewardCells(createPool())
 
     cy.get(NET_APY_TOOLTIP_TRIGGER).trigger('mouseover')
@@ -246,7 +246,7 @@ describe('v2 pool-list reward columns', () => {
     cy.get(REWARDS_APY_TOOLTIP_TRIGGER).trigger('mouseout')
     cy.get('[role="tooltip"]').should('not.exist')
 
-    cy.get(BOOST_APY_TOOLTIP_TRIGGER).trigger('mouseover')
+    cy.get(GAUGE_APY_TOOLTIP_TRIGGER).trigger('mouseover')
     cy.get('[role="tooltip"]')
       .should('be.visible')
       .and('contain.text', 'Gauge APY')
@@ -254,7 +254,7 @@ describe('v2 pool-list reward columns', () => {
       .and('contain.text', '5.12%')
       .and('contain.text', 'Maximum')
       .and('contain.text', '13.30%')
-      .and('contain.text', 'Boost APY')
+      .and('contain.text', 'Gauge APY')
       .and('contain.text', 'The maximum rate assumes the full 2.5x gauge boost.')
       .find('img')
       .should('have.length', 2)
@@ -403,7 +403,7 @@ describe('v2 pool-list reward columns', () => {
     )
 
     cy.get('[data-testid="pool-net-apy"]').should('have.text', '15.57%')
-    cy.get('[data-testid="pool-boost-apy"]').should('contain.text', 'Inactive gauge')
+    cy.get('[data-testid="pool-gauge-apy"]').should('contain.text', 'Inactive gauge')
     cy.get('[data-testid="pool-rewards-apy"]').should('contain.text', '5.06%')
     cy.get('[data-testid="pool-points-badge"]').should('have.length', 3)
     cy.get('[data-testid="pool-net-apy-cell"] [data-testid="pool-crv-reward-badge"]').should('not.exist')
@@ -411,7 +411,7 @@ describe('v2 pool-list reward columns', () => {
       .find('[data-testid="pool-extra-reward-badge"], [data-testid="pool-campaign-reward-badge"]')
       .should('have.length', 2)
 
-    cy.get('[data-testid="pool-boost-apy"]').trigger('mouseover')
+    cy.get('[data-testid="pool-gauge-apy"]').trigger('mouseover')
     cy.get('[role="tooltip"]').should('not.exist')
 
     cy.get(NET_APY_TOOLTIP_TRIGGER).trigger('mouseover')
@@ -447,14 +447,14 @@ describe('v2 pool-list reward columns', () => {
     cy.get('[data-testid="pool-net-apy"]').should('have.text', '-')
     cy.get('[data-testid="pool-base-apy"]').should('have.text', '-')
     cy.get('[data-testid="pool-rewards-apy"]').should('have.text', '-')
-    cy.get('[data-testid="pool-boost-apy"]').should('have.text', '-')
+    cy.get('[data-testid="pool-gauge-apy"]').should('have.text', '-')
     cy.get('[data-testid="pool-points"]').should('have.text', '-')
     cy.get('[data-testid="pool-net-apy-cell"] [data-testid$="-reward-badge"]').should('not.exist')
     cy.get(NET_APY_TOOLTIP_TRIGGER).should('not.exist')
     cy.get(REWARDS_APY_TOOLTIP_TRIGGER).should('not.exist')
-    cy.get(BOOST_APY_TOOLTIP_TRIGGER).should('not.exist')
+    cy.get(GAUGE_APY_TOOLTIP_TRIGGER).should('not.exist')
 
-    cy.get('[data-testid="pool-boost-apy"]').trigger('mouseover')
+    cy.get('[data-testid="pool-gauge-apy"]').trigger('mouseover')
     cy.get('[role="tooltip"]').should('not.exist')
   })
 
@@ -476,13 +476,13 @@ describe('v2 pool-list reward columns', () => {
     cy.get('[data-testid="pool-net-apy-cell"] [data-testid="pool-campaign-reward-badge"]').should('have.length', 1)
     cy.get('[data-testid="pool-rewards-apy"] [data-testid="pool-campaign-reward-badge"]').should('have.length', 1)
     cy.get('[data-testid="pool-crv-reward-badge"]').should('not.exist')
-    cy.get('[data-testid="pool-boost-apy"]').should('contain.text', '-')
+    cy.get('[data-testid="pool-gauge-apy"]').should('contain.text', '-')
     cy.get('[data-testid="pool-points"]').should('have.text', '-')
     cy.get(NET_APY_TOOLTIP_TRIGGER).should('not.exist')
     cy.get(REWARDS_APY_TOOLTIP_TRIGGER).should('not.exist')
-    cy.get(BOOST_APY_TOOLTIP_TRIGGER).should('not.exist')
+    cy.get(GAUGE_APY_TOOLTIP_TRIGGER).should('not.exist')
 
-    cy.get('[data-testid="pool-boost-apy"]').trigger('mouseover')
+    cy.get('[data-testid="pool-gauge-apy"]').trigger('mouseover')
     cy.get('[role="tooltip"]').should('not.exist')
   })
 
@@ -566,7 +566,7 @@ describe('v2 pool-list reward columns', () => {
     cy.get('[data-testid="pool-base-apy"]').should('not.contain.text', '5,000+%')
   })
 
-  it('only displays Boost APY when both endpoints are non-zero', () => {
+  it('only displays Gauge APY when both endpoints are non-zero', () => {
     const partialRanges = [
       { range: { crvApr: 0, crvAprBoosted: 12.5 }, showsGaugeInNetApy: false },
       { range: { crvApr: null, crvAprBoosted: 12.5 }, showsGaugeInNetApy: false },
@@ -576,9 +576,9 @@ describe('v2 pool-list reward columns', () => {
     partialRanges.forEach(({ range, showsGaugeInNetApy }) => {
       mountRewardCells(createPool(range))
 
-      cy.get('[data-testid="pool-boost-apy"]').should('have.text', '-')
+      cy.get('[data-testid="pool-gauge-apy"]').should('have.text', '-')
       cy.get('[data-testid="pool-net-apy-cell"] [data-testid="pool-crv-reward-badge"]').should('not.exist')
-      cy.get('[data-testid="pool-boost-apy"]').trigger('mouseover')
+      cy.get('[data-testid="pool-gauge-apy"]').trigger('mouseover')
       cy.get('[role="tooltip"]').should('not.exist')
 
       cy.get(NET_APY_TOOLTIP_TRIGGER).trigger('mouseover')
@@ -623,11 +623,11 @@ describe('v2 pool-list reward columns', () => {
         'have.length',
         2,
       )
-      cy.get('[data-testid="pool-boost-apy"]').should('contain.text', '5.12%').and('contain.text', '13.30%')
+      cy.get('[data-testid="pool-gauge-apy"]').should('contain.text', '5.12%').and('contain.text', '13.30%')
       cy.get('[data-testid="pool-points-badge"]').should('have.length', 3)
       cy.get(NET_APY_TOOLTIP_TRIGGER).should('not.exist')
       cy.get(REWARDS_APY_TOOLTIP_TRIGGER).should('not.exist')
-      cy.get(BOOST_APY_TOOLTIP_TRIGGER).should('not.exist')
+      cy.get(GAUGE_APY_TOOLTIP_TRIGGER).should('not.exist')
     })
     cy.get('[data-testid="lite-expanded-panel"]').within(() => {
       cy.get('[data-testid="pool-net-apy"]').should('not.exist')
@@ -638,11 +638,11 @@ describe('v2 pool-list reward columns', () => {
         2,
       )
       cy.get('[data-testid="pool-crv-reward-badge"]').should('not.exist')
-      cy.get('[data-testid="pool-boost-apy"]').should('not.exist')
+      cy.get('[data-testid="pool-gauge-apy"]').should('not.exist')
       cy.get('[data-testid="pool-points-badge"]').should('have.length', 3)
       cy.get(NET_APY_TOOLTIP_TRIGGER).should('not.exist')
       cy.get(REWARDS_APY_TOOLTIP_TRIGGER).should('not.exist')
-      cy.get(BOOST_APY_TOOLTIP_TRIGGER).should('not.exist')
+      cy.get(GAUGE_APY_TOOLTIP_TRIGGER).should('not.exist')
     })
 
     cy.get('[data-testid="full-expanded-panel"] [data-testid="pool-net-apy"]').trigger('mouseover')
@@ -651,12 +651,12 @@ describe('v2 pool-list reward columns', () => {
     cy.get('[data-testid="full-expanded-panel"] [data-testid="pool-rewards-apy"]').trigger('mouseover')
     cy.get('[role="tooltip"]').should('not.exist')
 
-    cy.get('[data-testid="full-expanded-panel"] [data-testid="pool-boost-apy"] > span').trigger('mouseover')
+    cy.get('[data-testid="full-expanded-panel"] [data-testid="pool-gauge-apy"] > span').trigger('mouseover')
     cy.get('[role="tooltip"]')
       .should('be.visible')
       .and('contain.text', 'max boost of 2.50')
       .and('not.contain.text', 'Gauge APY')
-    cy.get('[data-testid="full-expanded-panel"] [data-testid="pool-boost-apy"] > span').trigger('mouseout')
+    cy.get('[data-testid="full-expanded-panel"] [data-testid="pool-gauge-apy"] > span').trigger('mouseout')
     cy.get('[role="tooltip"]').should('not.exist')
 
     cy.get('[data-testid="full-expanded-panel"] [data-testid="pool-base-apy-value"] > span').trigger('mouseover')
@@ -668,7 +668,7 @@ describe('v2 pool-list reward columns', () => {
       PoolColumnId.NetApy,
       PoolColumnId.BaseApy,
       PoolColumnId.RewardsApy,
-      PoolColumnId.BoostApy,
+      PoolColumnId.GaugeApy,
       PoolColumnId.Points,
     ]
 
@@ -680,6 +680,6 @@ describe('v2 pool-list reward columns', () => {
     expect(getVisibilityOption('lite', PoolColumnId.Points)).to.include({ active: true, enabled: true })
     expect(getVisibilityOption('lite', PoolColumnId.NetApy)).to.include({ active: false, enabled: false })
     expect(getVisibilityOption('lite', PoolColumnId.BaseApy)).to.include({ active: false, enabled: false })
-    expect(getVisibilityOption('lite', PoolColumnId.BoostApy)).to.include({ active: false, enabled: false })
+    expect(getVisibilityOption('lite', PoolColumnId.GaugeApy)).to.include({ active: false, enabled: false })
   })
 })

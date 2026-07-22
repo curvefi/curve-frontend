@@ -1,5 +1,5 @@
 export { BaseApyHeaderTooltipContent } from './BaseApyHeaderTooltipContent'
-export { BoostApyHeaderTooltipContent } from './BoostApyHeaderTooltipContent'
+export { GaugeApyHeaderTooltipContent } from './GaugeApyHeaderTooltipContent'
 export { NetApyHeaderTooltipContent } from './NetApyHeaderTooltipContent'
 export { PointsHeaderTooltipContent } from './PointsHeaderTooltipContent'
 export { PoolHeaderTooltipContent } from './PoolHeaderTooltipContent'

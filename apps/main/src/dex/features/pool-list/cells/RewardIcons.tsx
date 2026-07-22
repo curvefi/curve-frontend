@@ -11,8 +11,8 @@ import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber, MAINNET_CRV } from '@ui-kit/utils'
 import type { PoolRow } from '../types'
-import { BoostApyRange } from './BoostApyCell'
-import { aprToPoolApy, getBoostApyDescription, getBoostApyRange, getExtraRewards, getAprCampaigns } from './utils'
+import { GaugeApyRange } from './GaugeApyCell'
+import { aprToPoolApy, getGaugeApyDescription, getGaugeApyRange, getExtraRewards, getAprCampaigns } from './utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -109,15 +109,15 @@ const CrvRewardIcon = ({
   range,
 }: {
   placement?: TooltipProps['placement']
-  range: NonNullable<ReturnType<typeof getBoostApyRange>>
+  range: NonNullable<ReturnType<typeof getGaugeApyRange>>
 }) => (
   <RewardIconTooltip
     body={
       <Stack sx={{ gap: Spacing.xs, textAlign: 'start' }}>
         <Typography variant="bodySRegular">
-          {t`APY`}: <BoostApyRange {...range} />
+          {t`APY`}: <GaugeApyRange {...range} />
         </Typography>
-        <Typography variant="bodySRegular">{getBoostApyDescription()}</Typography>
+        <Typography variant="bodySRegular">{getGaugeApyDescription()}</Typography>
       </Stack>
     }
     placement={placement}
@@ -139,9 +139,9 @@ export const RewardIcons = ({
 }) => {
   const extraRewards = getExtraRewards(pool)
   const campaigns = getAprCampaigns(pool)
-  const boostApyRange = includeCrv && !pool.gauge?.isKilled ? getBoostApyRange(pool) : null
+  const gaugeApyRange = includeCrv && !pool.gauge?.isKilled ? getGaugeApyRange(pool) : null
 
-  if (!extraRewards.length && !campaigns.length && !boostApyRange) return null
+  if (!extraRewards.length && !campaigns.length && !gaugeApyRange) return null
 
   return (
     <IconStack iconSize="sm">
@@ -162,7 +162,7 @@ export const RewardIcons = ({
           placement={tooltipPlacement}
         />
       ))}
-      {boostApyRange && <CrvRewardIcon placement={tooltipPlacement} range={boostApyRange} />}
+      {gaugeApyRange && <CrvRewardIcon placement={tooltipPlacement} range={gaugeApyRange} />}
     </IconStack>
   )
 }
