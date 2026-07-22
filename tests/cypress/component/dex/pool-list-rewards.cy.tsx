@@ -13,6 +13,7 @@ import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import type { Address } from '@primitives/address.utils'
 import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
 import type { CampaignRewards } from '@ui-kit/entities/campaigns'
+import { MAINNET_CRV_ADDRESS } from '@ui-kit/utils'
 
 const POOL_ADDRESS = '0x1111111111111111111111111111111111111111' as Address
 const GAUGE_ADDRESS = '0x2222222222222222222222222222222222222222' as Address
@@ -24,6 +25,10 @@ const NET_APY_TOOLTIP_TRIGGER = '[data-testid="pool-net-apy-tooltip-trigger"]'
 const BASE_APY_TOOLTIP_TRIGGER = '[data-testid="pool-base-apy-tooltip-trigger"]'
 const REWARDS_APY_TOOLTIP_TRIGGER = '[data-testid="pool-rewards-apy-tooltip-trigger"]'
 const GAUGE_APY_TOOLTIP_TRIGGER = '[data-testid="pool-gauge-apy-tooltip-trigger"]'
+const GAUGE_APY = '[data-testid="pool-gauge-apy"]'
+const GAUGE_APY_UNBOOSTED = '[data-testid="pool-gauge-apy-unboosted"]'
+const GAUGE_APY_BOOSTED = '[data-testid="pool-gauge-apy-boosted"]'
+const GAUGE_APY_CRV_ICON = `[data-testid="token-icon-${MAINNET_CRV_ADDRESS}"]`
 const NET_APY_ICON_CONTEXTS = [NET_APY, REWARDS_APY] as const
 const REWARD_BADGES = '[data-testid="pool-extra-reward-badge"], [data-testid="pool-campaign-reward-badge"]'
 const NET_APY_BADGES = `${REWARD_BADGES}, [data-testid="pool-crv-reward-badge"]`
@@ -177,11 +182,20 @@ describe('v2 pool-list reward columns', () => {
     cy.get('[data-testid="pool-net-apy"]').should('have.text', '20.70%')
     cy.get('[data-testid="pool-base-apy"]').should('have.text', '10.51%').find('img').should('not.exist')
     cy.get('[data-testid="pool-rewards-apy"]').should('contain.text', '5.06%')
-    cy.get('[data-testid="pool-gauge-apy"]')
-      .should('contain.text', '5.12%')
-      .and('contain.text', '13.30%')
-      .find('img')
-      .should('not.exist')
+    cy.get(GAUGE_APY)
+      .should('have.text', '5.12%13.30%')
+      .within(() => {
+        cy.get(`${GAUGE_APY_UNBOOSTED}, ${GAUGE_APY_BOOSTED}`)
+          .should('have.length', 2)
+          .eq(0)
+          .should('have.attr', 'data-testid', 'pool-gauge-apy-unboosted')
+        cy.get(`${GAUGE_APY_UNBOOSTED}, ${GAUGE_APY_BOOSTED}`)
+          .eq(1)
+          .should('have.attr', 'data-testid', 'pool-gauge-apy-boosted')
+        cy.get(GAUGE_APY_UNBOOSTED).should('have.text', '5.12%')
+        cy.get(GAUGE_APY_BOOSTED).should('have.text', '13.30%')
+        cy.get(GAUGE_APY_CRV_ICON).should('have.length', 1)
+      })
 
     cy.get(NET_APY).within(() => {
       cy.get(NET_APY_BADGES).should('have.length', 3)
@@ -403,7 +417,12 @@ describe('v2 pool-list reward columns', () => {
     )
 
     cy.get('[data-testid="pool-net-apy"]').should('have.text', '15.57%')
-    cy.get('[data-testid="pool-gauge-apy"]').should('contain.text', 'Inactive gauge')
+    cy.get(GAUGE_APY)
+      .should('have.text', 'Inactive gauge')
+      .within(() => {
+        cy.get(GAUGE_APY_BOOSTED).should('not.exist')
+        cy.get(GAUGE_APY_CRV_ICON).should('not.exist')
+      })
     cy.get('[data-testid="pool-rewards-apy"]').should('contain.text', '5.06%')
     cy.get('[data-testid="pool-points-badge"]').should('have.length', 3)
     cy.get('[data-testid="pool-net-apy-cell"] [data-testid="pool-crv-reward-badge"]').should('not.exist')
@@ -411,7 +430,7 @@ describe('v2 pool-list reward columns', () => {
       .find('[data-testid="pool-extra-reward-badge"], [data-testid="pool-campaign-reward-badge"]')
       .should('have.length', 2)
 
-    cy.get('[data-testid="pool-gauge-apy"]').trigger('mouseover')
+    cy.get(GAUGE_APY).trigger('mouseover')
     cy.get('[role="tooltip"]').should('not.exist')
 
     cy.get(NET_APY_TOOLTIP_TRIGGER).trigger('mouseover')
@@ -447,14 +466,19 @@ describe('v2 pool-list reward columns', () => {
     cy.get('[data-testid="pool-net-apy"]').should('have.text', '-')
     cy.get('[data-testid="pool-base-apy"]').should('have.text', '-')
     cy.get('[data-testid="pool-rewards-apy"]').should('have.text', '-')
-    cy.get('[data-testid="pool-gauge-apy"]').should('have.text', '-')
+    cy.get(GAUGE_APY)
+      .should('have.text', '-')
+      .within(() => {
+        cy.get(GAUGE_APY_BOOSTED).should('not.exist')
+        cy.get(GAUGE_APY_CRV_ICON).should('not.exist')
+      })
     cy.get('[data-testid="pool-points"]').should('have.text', '-')
     cy.get('[data-testid="pool-net-apy-cell"] [data-testid$="-reward-badge"]').should('not.exist')
     cy.get(NET_APY_TOOLTIP_TRIGGER).should('not.exist')
     cy.get(REWARDS_APY_TOOLTIP_TRIGGER).should('not.exist')
     cy.get(GAUGE_APY_TOOLTIP_TRIGGER).should('not.exist')
 
-    cy.get('[data-testid="pool-gauge-apy"]').trigger('mouseover')
+    cy.get(GAUGE_APY).trigger('mouseover')
     cy.get('[role="tooltip"]').should('not.exist')
   })
 
@@ -476,13 +500,18 @@ describe('v2 pool-list reward columns', () => {
     cy.get('[data-testid="pool-net-apy-cell"] [data-testid="pool-campaign-reward-badge"]').should('have.length', 1)
     cy.get('[data-testid="pool-rewards-apy"] [data-testid="pool-campaign-reward-badge"]').should('have.length', 1)
     cy.get('[data-testid="pool-crv-reward-badge"]').should('not.exist')
-    cy.get('[data-testid="pool-gauge-apy"]').should('contain.text', '-')
+    cy.get(GAUGE_APY)
+      .should('have.text', '-')
+      .within(() => {
+        cy.get(GAUGE_APY_BOOSTED).should('not.exist')
+        cy.get(GAUGE_APY_CRV_ICON).should('not.exist')
+      })
     cy.get('[data-testid="pool-points"]').should('have.text', '-')
     cy.get(NET_APY_TOOLTIP_TRIGGER).should('not.exist')
     cy.get(REWARDS_APY_TOOLTIP_TRIGGER).should('not.exist')
     cy.get(GAUGE_APY_TOOLTIP_TRIGGER).should('not.exist')
 
-    cy.get('[data-testid="pool-gauge-apy"]').trigger('mouseover')
+    cy.get(GAUGE_APY).trigger('mouseover')
     cy.get('[role="tooltip"]').should('not.exist')
   })
 
@@ -576,9 +605,14 @@ describe('v2 pool-list reward columns', () => {
     partialRanges.forEach(({ range, showsGaugeInNetApy }) => {
       mountRewardCells(createPool(range))
 
-      cy.get('[data-testid="pool-gauge-apy"]').should('have.text', '-')
+      cy.get(GAUGE_APY)
+        .should('have.text', '-')
+        .within(() => {
+          cy.get(GAUGE_APY_BOOSTED).should('not.exist')
+          cy.get(GAUGE_APY_CRV_ICON).should('not.exist')
+        })
       cy.get('[data-testid="pool-net-apy-cell"] [data-testid="pool-crv-reward-badge"]').should('not.exist')
-      cy.get('[data-testid="pool-gauge-apy"]').trigger('mouseover')
+      cy.get(GAUGE_APY).trigger('mouseover')
       cy.get('[role="tooltip"]').should('not.exist')
 
       cy.get(NET_APY_TOOLTIP_TRIGGER).trigger('mouseover')
@@ -623,7 +657,7 @@ describe('v2 pool-list reward columns', () => {
         'have.length',
         2,
       )
-      cy.get('[data-testid="pool-gauge-apy"]').should('contain.text', '5.12%').and('contain.text', '13.30%')
+      cy.get(GAUGE_APY).should('have.text', '5.12% \u2192 13.30%').find('img').should('not.exist')
       cy.get('[data-testid="pool-points-badge"]').should('have.length', 3)
       cy.get(NET_APY_TOOLTIP_TRIGGER).should('not.exist')
       cy.get(REWARDS_APY_TOOLTIP_TRIGGER).should('not.exist')
