@@ -11,7 +11,7 @@ import { LegacyHealthDetails } from './health/LegacyHealthDetails'
 
 const { Spacing } = SizesAndSpaces
 
-export const BorrowPositionDetails = () => {
+export const BorrowPositionDetails = ({ compact }: { compact: boolean }) => {
   const { chainId, marketId, tokens, userAddress } = useMarketContext()
   const { collateralToken, borrowToken } = tokens
   const params = { chainId, marketId, userAddress }
@@ -37,7 +37,7 @@ export const BorrowPositionDetails = () => {
         ) : (
           <LegacyHealthDetails params={params} softLiquidation={softLiquidation} />
         )}
-        <BorrowInformation params={params} tokens={tokens} />
+        <BorrowInformation params={params} tokens={tokens} compact={compact} />
       </Stack>
     </Stack>
   )

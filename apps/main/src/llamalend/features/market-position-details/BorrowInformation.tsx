@@ -1,9 +1,9 @@
 import { formatCollateralNotional, isPositionLeveraged, type MarketTokensOrEmpty } from '@/llamalend/llama.utils'
 import { useUserCurrentLeverage, useUserState } from '@/llamalend/queries/user'
 import { useRangeToLiquidation } from '@/llamalend/queries/user/user-prices.query'
+import { MarketMetricGrid } from '@/llamalend/widgets/MarketMetricGrid'
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
 import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'
-import { Stack } from '@mui/material'
 import { maybe } from '@primitives/objects.utils'
 import { combineQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
@@ -24,9 +24,14 @@ const METRIC_CATEGORY = 'llamalend.positionBorrowDetails'
 type BorrowInformationProps = {
   params: UserMarketParams
   tokens: MarketTokensOrEmpty
+  compact: boolean
 }
 
-export const BorrowInformation = ({ params, tokens: { collateralToken, borrowToken } }: BorrowInformationProps) => {
+export const BorrowInformation = ({
+  params,
+  tokens: { collateralToken, borrowToken },
+  compact,
+}: BorrowInformationProps) => {
   const userState = useUserState(params)
   const { data: userStateValue } = userState
   const leverage = useUserCurrentLeverage(params)
@@ -41,83 +46,87 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
   const { rangeToLiquidation, userPrices } = useRangeToLiquidation({ params })
 
   return (
-    <Stack>
-      <Stack
-        sx={{
-          display: 'grid',
-          gap: 3,
-          gridTemplateColumns: { mobile: 'repeat(1, 1fr)', tablet: 'repeat(4, 1fr)', desktop: 'repeat(5, 1fr)' },
-        }}
-      >
-        <Metric
-          category={METRIC_CATEGORY}
-          label={t`Collateral value`}
-          value={collateralValue}
-          valueOptions={{ unit: 'dollar' }}
-          notional={mapQuery(userState, ({ collateral, stablecoin }) =>
-            formatCollateralNotional(
-              { value: collateral, symbol: collateralToken?.symbol },
-              { value: stablecoin, symbol: borrowToken?.symbol },
-            ),
-          )}
-          valueTooltip={{
-            title: t`Collateral value`,
-            body: (
-              <CollateralMetricTooltipContent
-                borrow={{ value: borrowed, usdRate: borrowedUsdRate.data, symbol: borrowToken?.symbol }}
-                collateral={{ value: collateral, usdRate: collateralUsdRate.data, symbol: collateralToken?.symbol }}
-                totalValue={collateralValue.data}
-              />
-            ),
-            placement: 'top',
-            arrow: false,
-            clickable: true,
-          }}
-        />
-        <Metric
-          category={METRIC_CATEGORY}
-          label={t`Liquidation threshold`}
-          value={mapQuery(userPrices, p => p?.[1])}
-          valueOptions={dollarUnitOptions}
-          valueTooltip={{
-            title: t`Liquidation Threshold (LT)`,
-            body: (
-              <LiquidationThresholdTooltipContent
-                userPrices={q(userPrices)}
-                rangeToLiquidation={rangeToLiquidation}
-                params={params}
-              />
-            ),
-            placement: 'top',
-            arrow: false,
-            clickable: true,
-          }}
-          notional={mapQuery(rangeToLiquidation, v =>
-            maybe(v, value => ({ value, unit: { symbol: `% distance to LT`, position: 'suffix' as const } })),
-          )}
-        />
-        <Metric
-          category={METRIC_CATEGORY}
-          label={t`Total debt`}
-          value={mapQuery(userState, ({ debt }) => debt)}
-          valueOptions={{ unit: { symbol: borrowToken?.symbol ?? '?', position: 'suffix' } }}
-          valueTooltip={{
-            title: t`Total Debt`,
-            body: <TotalDebtTooltipContent />,
-            placement: 'top',
-            arrow: false,
-            clickable: true,
-          }}
-        />
-        {isPositionLeveraged(leverage.data) && (
-          <Metric
-            category={METRIC_CATEGORY}
-            label={t`Leverage`}
-            value={q(leverage)}
-            valueOptions={{ unit: 'multiplier' }}
-          />
+    <MarketMetricGrid
+      sx={
+        compact
+          ? undefined
+          : {
+              gridTemplateColumns: {
+                mobile: 'repeat(1, minmax(0, 1fr))',
+                tablet: 'repeat(4, minmax(0, 1fr))',
+                desktop: 'repeat(5, minmax(0, 1fr))',
+              },
+            }
+      }
+    >
+      <Metric
+        category={METRIC_CATEGORY}
+        label={t`Collateral value`}
+        value={collateralValue}
+        valueOptions={{ unit: 'dollar' }}
+        notional={mapQuery(userState, ({ collateral, stablecoin }) =>
+          formatCollateralNotional(
+            { value: collateral, symbol: collateralToken?.symbol },
+            { value: stablecoin, symbol: borrowToken?.symbol },
+          ),
         )}
-      </Stack>
-    </Stack>
+        valueTooltip={{
+          title: t`Collateral value`,
+          body: (
+            <CollateralMetricTooltipContent
+              borrow={{ value: borrowed, usdRate: borrowedUsdRate.data, symbol: borrowToken?.symbol }}
+              collateral={{ value: collateral, usdRate: collateralUsdRate.data, symbol: collateralToken?.symbol }}
+              totalValue={collateralValue.data}
+            />
+          ),
+          placement: 'top',
+          arrow: false,
+          clickable: true,
+        }}
+      />
+      <Metric
+        category={METRIC_CATEGORY}
+        label={t`Liquidation threshold`}
+        value={mapQuery(userPrices, p => p?.[1])}
+        valueOptions={dollarUnitOptions}
+        valueTooltip={{
+          title: t`Liquidation Threshold (LT)`,
+          body: (
+            <LiquidationThresholdTooltipContent
+              userPrices={q(userPrices)}
+              rangeToLiquidation={rangeToLiquidation}
+              params={params}
+            />
+          ),
+          placement: 'top',
+          arrow: false,
+          clickable: true,
+        }}
+        notional={mapQuery(rangeToLiquidation, v =>
+          maybe(v, value => ({ value, unit: { symbol: `% distance to LT`, position: 'suffix' as const } })),
+        )}
+      />
+      <Metric
+        category={METRIC_CATEGORY}
+        label={t`Total debt`}
+        value={mapQuery(userState, ({ debt }) => debt)}
+        valueOptions={{ unit: { symbol: borrowToken?.symbol ?? '?', position: 'suffix' } }}
+        valueTooltip={{
+          title: t`Total Debt`,
+          body: <TotalDebtTooltipContent />,
+          placement: 'top',
+          arrow: false,
+          clickable: true,
+        }}
+      />
+      {isPositionLeveraged(leverage.data) && (
+        <Metric
+          category={METRIC_CATEGORY}
+          label={t`Leverage`}
+          value={q(leverage)}
+          valueOptions={{ unit: 'multiplier' }}
+        />
+      )}
+    </MarketMetricGrid>
   )
 }

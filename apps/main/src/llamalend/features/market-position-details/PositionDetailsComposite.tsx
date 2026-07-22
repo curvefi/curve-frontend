@@ -9,13 +9,19 @@ import { usePositionDetailsTabs } from './hooks/usePositionDetailsTabs'
 export const PositionDetailsComposite = ({
   hasPosition,
   events,
+  positionLabel,
+  compact,
 }: {
   hasPosition: boolean | undefined
   events: QueryProp<UserCollateralEvents>
+  positionLabel: string
+  compact: boolean
 }) => {
   const { tab, onTabChange, tabOptions } = usePositionDetailsTabs({
     events: mapQuery(events, e => e.events),
     hasPosition,
+    positionLabel,
+    compact,
   })
 
   const activeTab = findTab(tabOptions, tab)

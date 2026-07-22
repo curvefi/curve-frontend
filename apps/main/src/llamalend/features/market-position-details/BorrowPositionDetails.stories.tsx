@@ -96,7 +96,7 @@ const BorrowPositionDetailsStory = ({
         [getUserStateKey(params), { collateral: `${collateral}`, stablecoin: `${borrow}`, debt: `${totalDebt}` }],
       ]}
     >
-      <BorrowPositionDetails />
+      <BorrowPositionDetails compact={false} />
     </TestQueryProvider>
   </MarketContext>
 )

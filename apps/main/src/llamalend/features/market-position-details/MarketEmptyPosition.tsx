@@ -9,6 +9,7 @@ const { Spacing } = SizesAndSpaces
 
 type NoPositionProps = {
   type: MarketRateType
+  compact: boolean
 }
 
 type EmptyMarketType = MarketRateType | 'disconnected'
@@ -28,12 +29,16 @@ const EMPTY_MARKET_CONFIG: Record<EmptyMarketType, { title: string; description:
   },
 }
 
-export const MarketEmptyPosition = ({ type }: NoPositionProps) => {
+export const MarketEmptyPosition = ({ type, compact }: NoPositionProps) => {
   const emptyType = useConnection().address ? type : 'disconnected'
   const { title, description } = EMPTY_MARKET_CONFIG[emptyType]
   return (
-    <Stack sx={{ alignItems: 'center', padding: Spacing.md }} data-testid={`no-position-${emptyType.toLowerCase()}`}>
+    <Stack
+      sx={{ alignItems: 'center', padding: compact ? Spacing.sm : Spacing.md }}
+      data-testid={`no-position-${emptyType.toLowerCase()}`}
+    >
       <EmptyStateCard
+        size={compact ? 'sm' : 'md'}
         title={title}
         description={description}
         {...(emptyType === 'disconnected' && {

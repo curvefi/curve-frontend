@@ -19,18 +19,26 @@ const DEFAULT_TAB: PositionDetailsTab = 'borrowDetails'
 export const usePositionDetailsTabs = ({
   events,
   hasPosition,
+  positionLabel,
+  compact,
 }: {
   events: QueryProp<ParsedUserCollateralEvent[]>
   hasPosition: boolean | undefined
+  positionLabel: string
+  compact: boolean
 }) => {
   const tabOptions = useMemo<PositionDetailsTabOption[]>(
     () =>
       notFalsy(
         {
           value: DEFAULT_TAB,
-          label: t`Borrow Details`,
+          label: positionLabel,
           render: () =>
-            hasPosition ? <BorrowPositionDetails /> : <MarketEmptyPosition type={MarketRateType.Borrow} />,
+            hasPosition ? (
+              <BorrowPositionDetails compact={compact} />
+            ) : (
+              <MarketEmptyPosition type={MarketRateType.Borrow} compact={compact} />
+            ),
         },
         events.data?.length && {
           value: 'activity' as const,
@@ -42,7 +50,7 @@ export const usePositionDetailsTabs = ({
           ),
         },
       ),
-    [events, hasPosition],
+    [compact, events, hasPosition, positionLabel],
   )
 
   const { tab = DEFAULT_TAB, onTabChange } = useTabs(tabOptions, DEFAULT_TAB)

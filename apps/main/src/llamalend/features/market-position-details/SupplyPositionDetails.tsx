@@ -51,7 +51,7 @@ const METRIC_CATEGORY = 'llamalend.positionSupplyDetails'
 
 const MetricGrid = ({ children }: { children: ReactNode }) => <Grid size={{ mobile: 12, tablet: 3 }}>{children}</Grid>
 
-export const SupplyPositionDetails = () => {
+export const SupplyPositionDetails = ({ positionLabel }: { positionLabel: string }) => {
   const {
     chainId,
     blockchainId,
@@ -128,7 +128,7 @@ export const SupplyPositionDetails = () => {
       <TabsSwitcher
         variant="contained"
         value={SUPPLY_POSITION_TAB}
-        options={[{ value: SUPPLY_POSITION_TAB, label: t`Supply Details` }]}
+        options={[{ value: SUPPLY_POSITION_TAB, label: positionLabel }]}
       />
       <Grid container spacing={Spacing.md} sx={{ padding: Spacing.sm, backgroundColor: t => t.design.Layer[1].Fill }}>
         <MetricGrid>
