@@ -23,14 +23,6 @@ export const BorrowPositionDetails = () => {
   const useNewHealth = useNewLlamalendHealth()
   return (
     <Stack sx={{ padding: Spacing.sm, gap: Spacing.xs }}>
-      {statusContent?.hasMarketAlert && (
-        <Alert data-testid="borrow-position-status-alert" variant="outlined" severity={statusContent.severity}>
-          <AlertTitle>{statusContent.title}</AlertTitle>
-          <Stack>
-            <Typography variant="bodyXsRegular">{statusContent.description}</Typography>
-          </Stack>
-        </Alert>
-      )}
       <Stack sx={{ gap: Spacing.sm }}>
         {useNewHealth ? (
           <HealthDetails params={params} />
@@ -39,6 +31,14 @@ export const BorrowPositionDetails = () => {
         )}
         <BorrowInformation params={params} tokens={tokens} />
       </Stack>
+      {statusContent?.hasMarketAlert && (
+        <Alert data-testid="borrow-position-status-alert" variant="outlined" severity={statusContent.severity}>
+          <AlertTitle>{statusContent.title}</AlertTitle>
+          <Stack>
+            <Typography variant="bodyXsRegular">{statusContent.description}</Typography>
+          </Stack>
+        </Alert>
+      )}
     </Stack>
   )
 }

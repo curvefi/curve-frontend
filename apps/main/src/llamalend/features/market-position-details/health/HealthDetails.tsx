@@ -1,4 +1,4 @@
-import { useUserHealthValue } from '@/llamalend/queries/user/user-health.query'
+import { useUserHealthValues } from '@/llamalend/queries/user/user-health.query'
 import { Stack, Theme, useTheme } from '@mui/material'
 import type { UserMarketParams } from '@ui-kit/lib/model'
 import { Metric, type MetricProps } from '@ui-kit/shared/ui/Metric'
@@ -24,7 +24,7 @@ type HealthMetricConfig = {
 
 export const HealthDetails = ({ params }: { params: UserMarketParams }) => {
   const theme = useTheme()
-  const healthQuery = useUserHealthValue(params)
+  const healthQuery = useUserHealthValues(params)
   const { state, type } = getHealthDetailsState(healthQuery.data)
   const { tooltip, value, getMetricColor } = (
     {

@@ -1,4 +1,4 @@
-import type { useUserHealthValue } from '@/llamalend/queries/user/user-health.query'
+import type { useUserHealthValues } from '@/llamalend/queries/user/user-health.query'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
@@ -18,7 +18,7 @@ type HealthAndBufferBarStoryProps = {
 }
 
 const getHealthQuery = ({ health, liquidationBuffer, isLoading }: HealthAndBufferBarStoryProps) =>
-  q<QueryData<typeof useUserHealthValue>>({
+  q<QueryData<typeof useUserHealthValues>>({
     data: maybes([health, liquidationBuffer], (h, lb) => ({ legacyHealth: ZERO, health: h, liquidationBuffer: lb })),
     isLoading: isLoading ?? false,
     error: null,
@@ -35,7 +35,7 @@ const meta: Meta<typeof HealthAndBufferBarStory> = {
     layout: 'padded',
     docs: {
       description: {
-        component: 'Focused story for the beta Health and Liquidation Buffer metric row.',
+        component: 'Focused story for the stacked beta Health and Liquidation Buffer bars.',
       },
     },
   },
@@ -50,7 +50,7 @@ export default meta
 type Story = StoryObj<typeof HealthAndBufferBarStory>
 
 export const Pristine: Story = {
-  args: { health: '426.9', liquidationBuffer: '24.1' },
+  args: { health: '426.9', liquidationBuffer: '108' },
 }
 
 export const Loading: Story = {
@@ -63,10 +63,12 @@ const allStates = [
   { name: 'Good', args: { health: '24.1', liquidationBuffer: '12' } },
   { name: 'Caution', args: { health: '7.9', liquidationBuffer: '8' } },
   { name: 'Tight', args: { health: '4.9', liquidationBuffer: '8' } },
-  { name: 'Light', args: { health: '0', liquidationBuffer: '77.5' } },
+  { name: 'Light', args: { health: '0', liquidationBuffer: '104' } },
   { name: 'AtRisk', args: { health: '0', liquidationBuffer: '22.5' } },
   { name: 'Critical', args: { health: '0', liquidationBuffer: '2.4' } },
   { name: 'HardLiquidation', args: { health: '0', liquidationBuffer: '0' } },
+  { name: 'BeyondLiquidation', args: { health: '0', liquidationBuffer: '-20' } },
+  { name: 'Overfunded', args: { health: '20', liquidationBuffer: '140' } },
 ] as const
 
 export const AllStates: Story = {
