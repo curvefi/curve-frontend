@@ -8,6 +8,7 @@ import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
 import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
+import { getMarketSections, MarketSection, MarketSectionNav } from '@/llamalend/widgets/market-section-nav'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header'
 import { MarketInformationComposite } from '@/loan/components/MarketInformationComposite'
 import { CreateLoanTabs } from '@/loan/components/PageMintMarket/CreateLoanTabs'
@@ -27,6 +28,8 @@ import { MarketType, MarketRateType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 import { useMintMarket } from '../../hooks/useMintMarket'
+
+const MARKET_SECTIONS = getMarketSections({ rateType: MarketRateType.Borrow, showOverview: false })
 
 export const MintMarketPage = () => {
   const params = useParams<CollateralUrlParams>()
@@ -107,9 +110,16 @@ export const MintMarketPage = () => {
             metricsBelowTitle={isMarketDetailPageV2}
           />
         }
+        pageNavigation={isMarketDetailPageV2 ? <MarketSectionNav sections={MARKET_SECTIONS} /> : undefined}
       >
         <MarketBanners chainId={chainId} market={market} />
-        <PositionDetailsComposite hasPosition={loanExists} events={collateralEvents} />
+        {isMarketDetailPageV2 ? (
+          <MarketSection id="position-details" ariaLabel={t`Position details`}>
+            <PositionDetailsComposite hasPosition={loanExists} events={collateralEvents} />
+          </MarketSection>
+        ) : (
+          <PositionDetailsComposite hasPosition={loanExists} events={collateralEvents} />
+        )}
         <MarketInformationComposite previewPrices={previewPrices} isMarketDetailPageV2={isMarketDetailPageV2} />
       </DetailPageLayout>
     </MarketContextProvider>

@@ -11,6 +11,7 @@ import { SupplyPositionDetails } from '@/llamalend/features/market-position-deta
 import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
 import { useUserBalances } from '@/llamalend/queries/user/user-balances.query'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
+import { getMarketSections, MarketSection, MarketSectionNav } from '@/llamalend/widgets/market-section-nav'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
@@ -22,6 +23,11 @@ import { MarketType, MarketRateType } from '@ui-kit/types/market'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 import { useLendMarket } from '../../hooks/useLendMarket'
 import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
+
+const MARKET_SECTIONS = {
+  withPosition: getMarketSections({ rateType: MarketRateType.Supply }),
+  withoutPosition: getMarketSections({ rateType: MarketRateType.Supply, hasPosition: false }),
+}
 
 export const Page = () => {
   const params = useParams<MarketUrlParams>()
@@ -47,6 +53,8 @@ export const Page = () => {
     !isLoading && !market, // only enable API data when wallet is disconnected
   )
   const supplied = +(useUserBalances({ marketId: market?.id, chainId, userAddress }).data?.totalShares ?? 0)
+  const hasPosition = !!market && supplied > 0
+  const sections = hasPosition ? MARKET_SECTIONS.withPosition : MARKET_SECTIONS.withoutPosition
 
   const error = marketError ?? apiMarket.error
   return error ? (
@@ -75,14 +83,27 @@ export const Page = () => {
             metricsBelowTitle={isMarketDetailPageV2}
           />
         }
+        pageNavigation={isMarketDetailPageV2 ? <MarketSectionNav sections={sections} /> : undefined}
       >
         <MarketBanners
           chainId={chainId}
           market={market}
           rewardsBanner={<CampaignRewardsBanner chainId={chainId} market={market} />}
         />
-        {market && supplied > 0 && <SupplyPositionDetails />}
-        {isMarketDetailPageV2 && <MarketOverviewCard />}
+        {isMarketDetailPageV2 ? (
+          <>
+            {hasPosition && (
+              <MarketSection id="position-details" ariaLabel={t`Position details`}>
+                <SupplyPositionDetails />
+              </MarketSection>
+            )}
+            <MarketSection id="market-overview" ariaLabel={t`Overview`}>
+              <MarketOverviewCard />
+            </MarketSection>
+          </>
+        ) : (
+          hasPosition && <SupplyPositionDetails />
+        )}
         <MarketInformationComposite rateType={MarketRateType.Supply} isMarketDetailPageV2={isMarketDetailPageV2} />
       </DetailPageLayout>
     </MarketContextProvider>
