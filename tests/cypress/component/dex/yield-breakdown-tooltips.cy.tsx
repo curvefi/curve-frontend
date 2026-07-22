@@ -1,9 +1,13 @@
 import { YIELD_BREAKDOWN_COLUMNS } from '@/dex/features/pool-information/components/yield-breakdown/columns/columns.definitions'
+import { FooterRow } from '@/dex/features/pool-information/components/yield-breakdown/FooterRow'
 import { useYieldBreakdown } from '@/dex/features/pool-information/hooks/useYieldBreakdown'
 import { defaultNetworks } from '@/dex/lib/networks'
 import { useStore } from '@/dex/store/useStore'
 import type { PoolDataCacheOrApi, RewardsApyMapper } from '@/dex/types/main.types'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
+import Table from '@mui/material/Table'
+import TableFooter from '@mui/material/TableFooter'
+import TableRow from '@mui/material/TableRow'
 import type { Address } from '@primitives/address.utils'
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
 import { queryClient } from '@ui-kit/lib/api'
@@ -12,7 +16,6 @@ import { Chain, MAINNET_CRV_ADDRESS } from '@ui-kit/utils'
 
 const POOL_ID = 'yield-breakdown-test'
 const POOL_ADDRESS = '0x1111111111111111111111111111111111111111' as Address
-const CRV_TOOLTIP = 'Max CRV APY can be reached with max boost for this pool.'
 const NETWORKS_QUERY_KEY = ['networks'] as const
 const CAMPAIGNS_QUERY_KEYS = [['campaigns-external'], ['campaigns-pools-merkl'], ['campaigns-markets-merkl']] as const
 const CRV_PRICE_QUERY_KEY = getTokenUsdRateKey({ chainId: Chain.Ethereum, tokenAddress: MAINNET_CRV_ADDRESS })
@@ -22,22 +25,65 @@ const POOL_DATA = {
   gauge: { isKilled: false },
 } as PoolDataCacheOrApi
 
-const YieldBreakdownApyHarness = () => {
-  const { rows } = useYieldBreakdown({ chainId: Chain.Ethereum, poolDataCacheOrApi: POOL_DATA, poolId: POOL_ID })
+const YieldBreakdownApyHarness = ({ poolDataCacheOrApi = POOL_DATA }: { poolDataCacheOrApi?: PoolDataCacheOrApi }) => {
+  const { maxBoostTotal, rows, total } = useYieldBreakdown({
+    chainId: Chain.Ethereum,
+    poolDataCacheOrApi,
+    poolId: POOL_ID,
+  })
   const table = useReactTable({ data: rows, columns: YIELD_BREAKDOWN_COLUMNS, getCoreRowModel: getCoreRowModel() })
 
-  return table.getRowModel().rows.map(row => {
-    const cell = row.getVisibleCells().find(({ column }) => column.id === 'apy')
-    const source = row.original.source.primary
-    const testId =
-      source === 'Base APY' ? 'yield-breakdown-base-apy' : source === 'CRV' ? 'yield-breakdown-crv' : undefined
+  return (
+    <>
+      {table.getRowModel().rows.map(row => {
+        const cell = row.getVisibleCells().find(({ column }) => column.id === 'apy')
+        const source = row.original.source.primary
+        const testId =
+          source === 'Base APY' ? 'yield-breakdown-base-apy' : source === 'CRV' ? 'yield-breakdown-crv' : undefined
 
-    return (
-      <div key={row.id} data-testid={testId}>
-        {cell && flexRender(cell.column.columnDef.cell, cell.getContext())}
-      </div>
-    )
+        return (
+          <div key={row.id} data-testid={testId}>
+            {cell && flexRender(cell.column.columnDef.cell, cell.getContext())}
+          </div>
+        )
+      })}
+      {rows.length > 1 && (
+        <Table>
+          <TableFooter>
+            <TableRow data-testid="yield-breakdown-footer">
+              <FooterRow visibleColumns={table.getVisibleLeafColumns()} maxBoostTotal={maxBoostTotal} total={total} />
+            </TableRow>
+          </TableFooter>
+        </Table>
+      )}
+    </>
+  )
+}
+
+const setCrvRewards = (crv: number[]) =>
+  useStore.getState().pools.setStateByKeys({
+    rewardsApyMapper: {
+      [Chain.Ethereum]: {
+        [POOL_ID]: {
+          poolId: POOL_ID,
+          base: { day: '10', week: '20' },
+          other: [],
+          crv,
+          error: {},
+        },
+      },
+    },
   })
+
+const mountYieldBreakdown = (crv: number[], isKilled = false) => {
+  cy.then(() => setCrvRewards(crv))
+  cy.mount(
+    <ComponentTestWrapper>
+      <YieldBreakdownApyHarness
+        poolDataCacheOrApi={{ pool: { address: POOL_ADDRESS }, gauge: { isKilled } } as PoolDataCacheOrApi}
+      />
+    </ComponentTestWrapper>,
+  )
 }
 
 describe('yield-breakdown APY tooltips', () => {
@@ -75,12 +121,8 @@ describe('yield-breakdown APY tooltips', () => {
     })
   })
 
-  it('renders the hook-produced Base APY breakdown without recompounding and preserves the CRV tooltip', () => {
-    cy.mount(
-      <ComponentTestWrapper>
-        <YieldBreakdownApyHarness />
-      </ComponentTestWrapper>,
-    )
+  it('renders the shared Base and Gauge APY breakdowns with unboosted values first', () => {
+    mountYieldBreakdown([5, 12.5])
 
     cy.get('[data-testid="yield-breakdown-base-apy"]').should('contain.text', '10.00%').trigger('mouseover')
     cy.get('[role="tooltip"]').should('be.visible').find('.MuiTypography-bodyMBold').should('have.text', 'Base APY')
@@ -92,11 +134,53 @@ describe('yield-breakdown APY tooltips', () => {
     cy.get('[data-testid="yield-breakdown-base-apy"]').trigger('mouseout')
     cy.get('[role="tooltip"]').should('not.exist')
 
+    cy.get('[data-testid="yield-breakdown-crv"] .MuiTypography-root').then($values => {
+      expect($values.eq(0)).to.have.text('5.12%')
+      expect($values.eq(1)).to.have.text('Max boost 13.30%')
+    })
     cy.get('[data-testid="yield-breakdown-crv"]').trigger('mouseover')
     cy.get('[role="tooltip"]')
       .should('be.visible')
-      .and('have.text', CRV_TOOLTIP)
-      .find('[data-testid="pool-base-apy-tooltip-content"]')
-      .should('not.exist')
+      .and('contain.text', 'Gauge APY')
+      .and('contain.text', 'Unboosted5.12%')
+      .and('contain.text', 'Maximum13.30%')
+    cy.get('[data-testid="pool-gauge-apy-tooltip-content"] img').should('have.length', 2)
+    cy.get('[data-testid="yield-breakdown-crv"]').trigger('mouseout')
+    cy.get('[role="tooltip"]').should('not.exist')
+
+    cy.get('[data-testid="yield-breakdown-footer"]')
+      .should('contain.text', 'Total APY')
+      .and('contain.text', '15.12%')
+      .and('contain.text', 'Max boost 23.30%')
+      .trigger('mouseover')
+    cy.get('[role="tooltip"]').should('not.exist')
+  })
+
+  it('omits rich and maximum scenarios for partial, zero, missing, and killed gauges', () => {
+    const assertNoGaugeTooltip = () => {
+      cy.get('[data-testid="yield-breakdown-crv"]').trigger('mouseover')
+      cy.get('[role="tooltip"]').should('not.exist')
+      cy.get('[data-testid="yield-breakdown-footer"]').should('not.contain.text', 'Max boost')
+    }
+
+    mountYieldBreakdown([5])
+    cy.get('[data-testid="yield-breakdown-crv"]').should('contain.text', '5.12%').and('not.contain.text', 'Max boost')
+    cy.get('[data-testid="yield-breakdown-footer"]').should('contain.text', '15.12%')
+    assertNoGaugeTooltip()
+
+    mountYieldBreakdown([0, 0])
+    cy.get('[data-testid="yield-breakdown-crv"]').should('not.exist')
+    cy.get('[data-testid="yield-breakdown-footer"]').should('not.exist')
+
+    mountYieldBreakdown([])
+    cy.get('[data-testid="yield-breakdown-crv"]').should('not.exist')
+    cy.get('[data-testid="yield-breakdown-footer"]').should('not.exist')
+
+    mountYieldBreakdown([5, 12.5], true)
+    cy.get('[data-testid="yield-breakdown-crv"]').should('contain.text', '-').trigger('mouseover')
+    cy.get('[role="tooltip"]').should('not.exist')
+    cy.get('[data-testid="yield-breakdown-footer"]')
+      .should('contain.text', '10.00%')
+      .and('not.contain.text', 'Max boost')
   })
 })

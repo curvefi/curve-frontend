@@ -145,33 +145,3 @@ export const NetApyIncentivesTooltipItems = ({
     </TooltipItems>
   )
 }
-
-export const GaugeApyTooltipItems = ({
-  maximumApy,
-  showMaximum = true,
-  unboostedApy,
-}: {
-  maximumApy?: number | null
-  showMaximum?: boolean
-  unboostedApy: number | null | undefined
-}) => (
-  <TooltipItems secondary>
-    <TooltipItem title={t`Gauge APY`} />
-    <TooltipItem
-      variant="subItem"
-      title={t`Unboosted`}
-      titleIcon={{ blockchainId: MAINNET_CRV.chain, address: MAINNET_CRV.address, size: 'mui-sm' }}
-    >
-      {formatApy(unboostedApy)}
-    </TooltipItem>
-    {showMaximum && (
-      <TooltipItem
-        variant="subItem"
-        title={t`Maximum`}
-        titleIcon={{ blockchainId: MAINNET_CRV.chain, address: MAINNET_CRV.address, size: 'mui-sm' }}
-      >
-        {formatApy(maximumApy)}
-      </TooltipItem>
-    )}
-  </TooltipItems>
-)

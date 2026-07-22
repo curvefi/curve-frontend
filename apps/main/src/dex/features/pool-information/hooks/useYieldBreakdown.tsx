@@ -2,6 +2,7 @@ import { sum } from 'lodash'
 import { useMemo } from 'react'
 import { type Address } from 'viem'
 import { BaseApyTooltipContent } from '@/dex/components/BaseApyTooltipContent'
+import { GaugeApyTooltipContent } from '@/dex/components/GaugeApyTooltipContent'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { defaultNetworks } from '@/dex/lib/networks'
 import { useStore } from '@/dex/store/useStore'
@@ -53,6 +54,12 @@ export const useYieldBreakdown = ({
   )
 
   const { data: crvPrice } = useTokenUsdRate({ chainId: Chain.Ethereum, tokenAddress: MAINNET_CRV_ADDRESS })
+  const unboostedCrvApy = gaugeIsKilled ? null : aprToApy(rewardsApy?.crv?.[0], COMPOUND_WINDOW)
+  const maxBoostCrvApy = gaugeIsKilled ? null : aprToApy(rewardsApy?.crv?.[1], COMPOUND_WINDOW)
+  const gaugeApyRange = useMemo(
+    () => (unboostedCrvApy && maxBoostCrvApy ? { unboostedApy: unboostedCrvApy, maximumApy: maxBoostCrvApy } : null),
+    [maxBoostCrvApy, unboostedCrvApy],
+  )
 
   // Construct all yield rows imperatively rather than functional to improve readability
   const rows: YieldBreakdownRow[] = useMemo(() => {
@@ -71,9 +78,15 @@ export const useYieldBreakdown = ({
         explorerUrl: scanTokenPath(defaultNetworks[Chain.Ethereum], MAINNET_CRV_ADDRESS),
         price: crvPrice,
         ...(!gaugeIsKilled && {
-          apy: aprToApy(rewardsApy?.crv?.[1] ?? rewardsApy?.crv?.[0], COMPOUND_WINDOW) ?? undefined,
-          apySecondary: aprToApy(rewardsApy?.crv?.[0], COMPOUND_WINDOW) ?? undefined,
-          apyTooltip: { title: t`Max CRV APY can be reached with max boost for this pool.` },
+          apy: unboostedCrvApy ?? undefined,
+          maxBoostApy: maxBoostCrvApy ?? undefined,
+          ...(gaugeApyRange && {
+            apyTooltip: {
+              title: t`Gauge APY`,
+              body: <GaugeApyTooltipContent {...gaugeApyRange} />,
+              clickable: true,
+            },
+          }),
         }),
       })
     }
@@ -136,11 +149,23 @@ export const useYieldBreakdown = ({
     })
 
     return rows
-  }, [campaigns, crvPrice, fallbackTokenRates, gaugeIsKilled, network, rewardsApy])
+  }, [
+    campaigns,
+    crvPrice,
+    fallbackTokenRates,
+    gaugeApyRange,
+    gaugeIsKilled,
+    maxBoostCrvApy,
+    network,
+    rewardsApy,
+    unboostedCrvApy,
+  ])
+
+  const total = useMemo(() => sum(rows.map(row => row.apy)), [rows])
 
   return {
-    baseTotal: useMemo(() => sum(rows.map(row => row.apySecondary ?? row.apy)), [rows]),
-    total: useMemo(() => sum(rows.map(row => row.apy)), [rows]),
+    maxBoostTotal: gaugeApyRange ? total - gaugeApyRange.unboostedApy + gaugeApyRange.maximumApy : null,
+    total,
     rows,
   }
 }
