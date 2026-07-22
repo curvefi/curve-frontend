@@ -17,9 +17,9 @@ import {
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
 import type { PoolRow } from '../types'
-import { GaugeApyTooltipItems, RewardsApyTooltipItems } from './ApyTooltipItems'
+import { NetApyIncentivesTooltipItems } from './ApyTooltipItems'
 import { RewardIcons } from './RewardIcons'
-import { aprToPoolApy, getNetApy } from './utils'
+import { aprToPoolApy, getGaugeApyRange, getNetApy } from './utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -38,8 +38,9 @@ const isVolatileBaseApy = (pool: PoolRow) => {
 const NetApyTooltipContent = ({ pool, volatile }: { pool: PoolRow; volatile: boolean }) => {
   const baseApy = aprToPoolApy(pool.baseDailyApr)
   const unboostedGaugeApy = pool.gauge?.isKilled ? null : aprToPoolApy(pool.crvApr)
-  const hasUnboostedGaugeApy = unboostedGaugeApy != null && unboostedGaugeApy !== 0
   const netApy = getNetApy(pool)
+  const gaugeApyRange = pool.gauge && !pool.gauge.isKilled ? getGaugeApyRange(pool) : null
+  const maxNetApy = gaugeApyRange ? netApy - gaugeApyRange.unboostedApy + gaugeApyRange.boostedApy : null
 
   return (
     <Box data-testid="pool-net-apy-tooltip-content">
@@ -51,16 +52,29 @@ const NetApyTooltipContent = ({ pool, volatile }: { pool: PoolRow; volatile: boo
           <TooltipItems secondary>
             <TooltipItem title={t`Base APY`}>{formatApy(baseApy)}</TooltipItem>
           </TooltipItems>
-          <RewardsApyTooltipItems pool={pool} showTotal={false} />
-          {hasUnboostedGaugeApy && <GaugeApyTooltipItems unboostedApy={unboostedGaugeApy} showMaximum={false} />}
+          <NetApyIncentivesTooltipItems pool={pool} unboostedGaugeApy={unboostedGaugeApy} />
           <TooltipItems borderTop>
-            <TooltipItem variant="primary" title={t`Net APY`}>
+            <TooltipItem variant="primary" title={t`Total APY`}>
               {formatApy(netApy)}
             </TooltipItem>
           </TooltipItems>
+          {gaugeApyRange && (
+            <>
+              <TooltipItems secondary extraMargin>
+                <TooltipItem title={t`Max veCRV Boost (2.5x)`}>{formatApy(gaugeApyRange.boostedApy)}</TooltipItem>
+              </TooltipItems>
+              <TooltipItems borderTop>
+                <TooltipItem variant="primary" title={t`Total max veCRV APY`}>
+                  {formatApy(maxNetApy)}
+                </TooltipItem>
+              </TooltipItems>
+            </>
+          )}
         </Stack>
         {volatile && <TooltipDescription text={t`This net APY is volatile and is unlikely to persist.`} />}
-        <TooltipFooter>{t`Points are not included in Net APY.`}</TooltipFooter>
+        <TooltipFooter>
+          {t`Points are shown for reference and are excluded from both totals. Maximum boost is included only in Total max veCRV APY.`}
+        </TooltipFooter>
       </TooltipWrapper>
     </Box>
   )

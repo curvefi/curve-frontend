@@ -22,6 +22,7 @@ const CAMPAIGN_ICON = '/images/default-crypto.png'
 const NET_APY = '[data-testid="pool-net-apy-cell"]'
 const REWARDS_APY = '[data-testid="pool-rewards-apy"]'
 const NET_APY_TOOLTIP_TRIGGER = '[data-testid="pool-net-apy-tooltip-trigger"]'
+const NET_APY_TOOLTIP_CONTENT = '[data-testid="pool-net-apy-tooltip-content"]'
 const BASE_APY_TOOLTIP_TRIGGER = '[data-testid="pool-base-apy-tooltip-trigger"]'
 const WEEKLY_BASE_APY_TOOLTIP_TRIGGER = '[data-testid="pool-weekly-base-apy-tooltip-trigger"]'
 const REWARDS_APY_TOOLTIP_TRIGGER = '[data-testid="pool-rewards-apy-tooltip-trigger"]'
@@ -243,38 +244,67 @@ describe('v2 pool-list reward columns', () => {
       .should('be.visible')
       .and('contain.text', 'Base APY')
       .and('contain.text', '10.51%')
-      .and('contain.text', 'Direct incentives APY')
-      .and('contain.text', '2.02%')
-      .and('contain.text', 'Campaign rewards APY')
-      .and('contain.text', '3.04%')
-      .and('contain.text', 'BONUS')
-      .and('contain.text', 'Gauge APY')
-      .and('contain.text', 'Unboosted')
-      .and('contain.text', '5.12%')
-      .and('contain.text', 'Net APY')
+      .and('contain.text', 'Incentives')
+      .and('contain.text', '10.19%')
+      .and('contain.text', 'Total APY')
       .and('contain.text', '20.70%')
-      .and('not.contain.text', '5.06%')
-      .and('not.contain.text', 'Maximum')
-      .and('not.contain.text', '13.30%')
-      .and('contain.text', 'Points are not included in Net APY.')
-      .find('img')
-      .should('have.length', 3)
-    cy.get('[data-testid="pool-net-apy-tooltip-content"] span').then($spans => {
+      .and('contain.text', 'Max veCRV Boost (2.5x)')
+      .and('contain.text', '13.30%')
+      .and('contain.text', 'Total max veCRV APY')
+      .and('contain.text', '28.87%')
+    cy.get(`${NET_APY_TOOLTIP_CONTENT} > .MuiStack-root > .MuiStack-root`)
+      .children()
+      .should('have.length', 5)
+      .then($groups => {
+        expect($groups.eq(0)).to.have.text('Base APY10.51%')
+        expect($groups.eq(2)).to.have.text('Total APY20.70%')
+        expect($groups.eq(3)).to.have.text('Max veCRV Boost (2.5x)13.30%')
+        expect($groups.eq(4)).to.have.text('Total max veCRV APY28.87%')
+      })
+    cy.get(`${NET_APY_TOOLTIP_CONTENT} > .MuiStack-root > .MuiStack-root`)
+      .children()
+      .eq(1)
+      .within(() => {
+        cy.root()
+          .children()
+          .should('have.length', 7)
+          .then($items => {
+            expect($items.eq(0)).to.have.text('Incentives10.19%')
+            expect($items.eq(1)).to.have.text('CRV5.12%')
+            expect($items.eq(2)).to.have.text('BONUS2.02%')
+            expect($items.eq(3)).to.have.text('BONUS3.04%')
+            expect($items.eq(4)).to.have.text('Points2x')
+            expect($items.eq(5)).to.have.text('Points-')
+            expect($items.eq(6)).to.have.text('Points-')
+          })
+        cy.get('img').should('have.length', 6)
+        cy.get('a[href="https://example.com/campaign"]')
+          .should('have.length', 3)
+          .each($link => {
+            cy.wrap($link).should('have.attr', 'target', '_blank')
+          })
+      })
+    cy.get(`${NET_APY_TOOLTIP_CONTENT} span`).then($spans => {
+      expect($spans.filter((_, element) => element.textContent === 'Gauge APY')).to.have.length(0)
+      expect($spans.filter((_, element) => element.textContent === 'Unboosted')).to.have.length(0)
       expect($spans.filter((_, element) => element.textContent === 'Rewards APY')).to.have.length(0)
     })
-    cy.get('[data-testid="pool-net-apy-tooltip-content"] > .MuiStack-root')
+    cy.get(`${NET_APY_TOOLTIP_CONTENT} > .MuiStack-root`)
       .children()
       .last()
-      .should('have.text', 'Points are not included in Net APY.')
+      .should(
+        'have.text',
+        'Points are shown for reference and are excluded from both totals. Maximum boost is included only in Total max veCRV APY.',
+      )
     cy.get(NET_APY_TOOLTIP_TRIGGER).trigger('mouseout')
     cy.get('[role="tooltip"]').should('not.exist')
 
     cy.get(REWARDS_APY_TOOLTIP_TRIGGER).trigger('mouseover')
     cy.get('[role="tooltip"]')
       .should('be.visible')
-      .and('contain.text', 'Direct incentives APY')
+      .and('contain.text', 'Incentives')
       .and('contain.text', '2.02%')
-      .and('contain.text', 'Campaign rewards APY')
+      .and('contain.text', 'Campaign rewards')
       .and('contain.text', '3.04%')
       .and('contain.text', 'BONUS')
       .and('contain.text', 'Rewards APY')
@@ -282,6 +312,11 @@ describe('v2 pool-list reward columns', () => {
       .and('contain.text', 'Points are not included.')
       .find('img')
       .should('have.length', 2)
+    cy.get('[data-testid="pool-rewards-apy-tooltip-content"] span').then($spans => {
+      expect($spans.filter((_, element) => element.textContent === 'Direct incentives APY')).to.have.length(0)
+      expect($spans.filter((_, element) => element.textContent === 'Campaign rewards APY')).to.have.length(0)
+      expect($spans.filter((_, element) => element.textContent === 'Rewards APY')).to.have.length(1)
+    })
     cy.get(REWARDS_APY_TOOLTIP_TRIGGER).trigger('mouseout')
     cy.get('[role="tooltip"]').should('not.exist')
 
@@ -416,8 +451,8 @@ describe('v2 pool-list reward columns', () => {
 
     cy.get(REWARDS_APY_TOOLTIP_TRIGGER).trigger('mouseover')
     cy.get('[role="tooltip"]').within(() => {
-      cy.contains('Direct incentives APY').should('exist')
-      cy.contains('Campaign rewards APY').should('exist')
+      cy.contains('Incentives').should('exist')
+      cy.contains('Campaign rewards').should('exist')
       cy.get('span').then($spans => {
         expect($spans.filter((_, element) => element.textContent === 'BONUS')).to.have.length(4)
       })
@@ -458,11 +493,7 @@ describe('v2 pool-list reward columns', () => {
         cy.root().should('not.contain.text', 'FIVE')
       })
     cy.get(NET_APY).within(() => {
-      cy.get(POINTS_BADGE)
-        .should('have.length', 4)
-        .and('have.text', '')
-        .find('img')
-        .should('have.length', 4)
+      cy.get(POINTS_BADGE).should('have.length', 4).and('have.text', '').find('img').should('have.length', 4)
       cy.get(NET_APY_BADGES).should('have.length', 7)
       cy.get(NET_APY_BADGES).eq(4).should('have.attr', 'data-testid', 'pool-extra-reward-badge')
       cy.get(NET_APY_BADGES).eq(5).should('have.attr', 'data-testid', 'pool-campaign-reward-badge')
@@ -474,6 +505,38 @@ describe('v2 pool-list reward columns', () => {
       .find(POINTS_BADGE)
       .should('not.exist')
     cy.get('[data-testid="pool-net-apy"]').should('have.text', '20.70%')
+
+    cy.get(NET_APY_TOOLTIP_TRIGGER).trigger('mouseover')
+    cy.get(`${NET_APY_TOOLTIP_CONTENT} > .MuiStack-root > .MuiStack-root`)
+      .children()
+      .then($groups => {
+        expect($groups.eq(1)).to.contain.text('Incentives10.19%')
+        expect($groups.eq(2)).to.have.text('Total APY20.70%')
+        expect($groups.eq(4)).to.have.text('Total max veCRV APY28.87%')
+      })
+    cy.get(`${NET_APY_TOOLTIP_CONTENT} > .MuiStack-root > .MuiStack-root`)
+      .children()
+      .eq(1)
+      .within(() => {
+        cy.root()
+          .children()
+          .then($items => {
+            const pointItems = $items.slice(4)
+
+            expect(pointItems).to.have.length(5)
+            pointItems.each((index, item) => {
+              const $item = Cypress.$(item)
+
+              expect($item.find('img')).to.have.length(1)
+              expect($item).to.have.text(index === 0 ? 'Points2x' : 'Points-')
+            })
+          })
+        cy.get('a[href="https://example.com/campaign"]')
+          .should('have.length', 5)
+          .each($link => {
+            cy.wrap($link).should('have.attr', 'target', '_blank')
+          })
+      })
   })
 
   it('excludes a killed gauge from Net APY without hiding rewards or points', () => {
@@ -505,17 +568,56 @@ describe('v2 pool-list reward columns', () => {
     cy.get(NET_APY_TOOLTIP_TRIGGER).trigger('mouseover')
     cy.get('[role="tooltip"]')
       .should('be.visible')
-      .and('contain.text', 'Net APY')
+      .and('contain.text', 'Incentives')
+      .and('contain.text', '5.06%')
+      .and('contain.text', 'Total APY')
       .and('contain.text', '15.57%')
       .and('not.contain.text', 'Gauge APY')
       .and('not.contain.text', 'Inactive gauge')
       .and('not.contain.text', 'Unboosted')
-      .and('not.contain.text', 'Maximum')
-      .and('contain.text', 'Points are not included in Net APY.')
-    cy.get('[data-testid="pool-net-apy-tooltip-content"] > .MuiStack-root')
+      .and(
+        'contain.text',
+        'Points are shown for reference and are excluded from both totals. Maximum boost is included only in Total max veCRV APY.',
+      )
+    cy.get(`${NET_APY_TOOLTIP_CONTENT} > .MuiStack-root > .MuiStack-root`)
+      .children()
+      .should('have.length', 3)
+      .then($groups => {
+        expect($groups.eq(0)).to.have.text('Base APY10.51%')
+        expect($groups.eq(1)).to.contain.text('Incentives5.06%')
+        expect($groups.eq(2)).to.have.text('Total APY15.57%')
+      })
+    cy.get(`${NET_APY_TOOLTIP_CONTENT} > .MuiStack-root > .MuiStack-root span`).then($spans => {
+      expect($spans.filter((_, element) => element.textContent === 'CRV')).to.have.length(0)
+      expect($spans.filter((_, element) => element.textContent === 'Max veCRV Boost (2.5x)')).to.have.length(0)
+      expect($spans.filter((_, element) => element.textContent === 'Total max veCRV APY')).to.have.length(0)
+    })
+    cy.get(`${NET_APY_TOOLTIP_CONTENT} > .MuiStack-root`)
       .children()
       .last()
-      .should('have.text', 'Points are not included in Net APY.')
+      .should(
+        'have.text',
+        'Points are shown for reference and are excluded from both totals. Maximum boost is included only in Total max veCRV APY.',
+      )
+  })
+
+  it('omits the maximum scenario when gauge metadata is unavailable', () => {
+    mountRewardCells(createPool({ gauge: undefined, gauges: [] }))
+
+    cy.get('[data-testid="pool-net-apy"]').should('have.text', '20.70%')
+    cy.get(NET_APY_TOOLTIP_TRIGGER).trigger('mouseover')
+    cy.get(`${NET_APY_TOOLTIP_CONTENT} > .MuiStack-root > .MuiStack-root`)
+      .children()
+      .should('have.length', 3)
+      .then($groups => {
+        expect($groups.eq(1)).to.contain.text('Incentives10.19%')
+        expect($groups.eq(2)).to.have.text('Total APY20.70%')
+      })
+    cy.get(`${NET_APY_TOOLTIP_CONTENT} > .MuiStack-root > .MuiStack-root span`).then($spans => {
+      expect($spans.filter((_, element) => element.textContent === 'CRV')).to.have.length(1)
+      expect($spans.filter((_, element) => element.textContent === 'Max veCRV Boost (2.5x)')).to.have.length(0)
+      expect($spans.filter((_, element) => element.textContent === 'Total max veCRV APY')).to.have.length(0)
+    })
   })
 
   it('uses formatter fallbacks for missing APY values', () => {
@@ -685,12 +787,12 @@ describe('v2 pool-list reward columns', () => {
 
   it('only displays Gauge APY when both endpoints are non-zero', () => {
     const partialRanges = [
-      { range: { crvApr: 0, crvAprBoosted: 12.5 }, showsGaugeInNetApy: false },
-      { range: { crvApr: null, crvAprBoosted: 12.5 }, showsGaugeInNetApy: false },
-      { range: { crvApr: 5, crvAprBoosted: null }, showsGaugeInNetApy: true },
+      { range: { crvApr: 0, crvAprBoosted: 12.5 }, includesCrvInNetApy: false },
+      { range: { crvApr: null, crvAprBoosted: 12.5 }, includesCrvInNetApy: false },
+      { range: { crvApr: 5, crvAprBoosted: null }, includesCrvInNetApy: true },
     ]
 
-    partialRanges.forEach(({ range, showsGaugeInNetApy }) => {
+    partialRanges.forEach(({ range, includesCrvInNetApy }) => {
       mountRewardCells(createPool(range))
 
       cy.get(GAUGE_APY)
@@ -704,14 +806,36 @@ describe('v2 pool-list reward columns', () => {
       cy.get('[role="tooltip"]').should('not.exist')
 
       cy.get(NET_APY_TOOLTIP_TRIGGER).trigger('mouseover')
-      cy.get('[role="tooltip"]')
-        .should('be.visible')
-        .and(showsGaugeInNetApy ? 'contain.text' : 'not.contain.text', 'Gauge APY')
-        .and(showsGaugeInNetApy ? 'contain.text' : 'not.contain.text', 'Unboosted')
-        .and(showsGaugeInNetApy ? 'contain.text' : 'not.contain.text', '5.12%')
-        .and('not.contain.text', 'Maximum')
-        .and('not.contain.text', '13.30%')
-        .and('contain.text', 'Points are not included in Net APY.')
+      cy.get('[role="tooltip"]').should('be.visible')
+      cy.get(`${NET_APY_TOOLTIP_CONTENT} > .MuiStack-root > .MuiStack-root`)
+        .children()
+        .should('have.length', 3)
+        .then($groups => {
+          expect($groups.eq(1)).to.contain.text(`Incentives${includesCrvInNetApy ? '10.19%' : '5.06%'}`)
+          expect($groups.eq(2)).to.have.text(`Total APY${includesCrvInNetApy ? '20.70%' : '15.57%'}`)
+        })
+      cy.get(`${NET_APY_TOOLTIP_CONTENT} > .MuiStack-root > .MuiStack-root`)
+        .children()
+        .eq(1)
+        .find('span')
+        .then($spans => {
+          expect($spans.filter((_, element) => element.textContent === 'CRV')).to.have.length(
+            includesCrvInNetApy ? 1 : 0,
+          )
+        })
+      cy.get(`${NET_APY_TOOLTIP_CONTENT} > .MuiStack-root > .MuiStack-root span`).then($spans => {
+        expect($spans.filter((_, element) => element.textContent === 'Gauge APY')).to.have.length(0)
+        expect($spans.filter((_, element) => element.textContent === 'Unboosted')).to.have.length(0)
+        expect($spans.filter((_, element) => element.textContent === 'Max veCRV Boost (2.5x)')).to.have.length(0)
+        expect($spans.filter((_, element) => element.textContent === 'Total max veCRV APY')).to.have.length(0)
+      })
+      cy.get(`${NET_APY_TOOLTIP_CONTENT} > .MuiStack-root`)
+        .children()
+        .last()
+        .should(
+          'have.text',
+          'Points are shown for reference and are excluded from both totals. Maximum boost is included only in Total max veCRV APY.',
+        )
       cy.get(NET_APY_TOOLTIP_TRIGGER).trigger('mouseout')
       cy.get('[role="tooltip"]').should('not.exist')
     })
