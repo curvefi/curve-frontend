@@ -8,7 +8,7 @@ import { Metric, type MetricProps } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { constQ } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
-import { BaseApyValue } from '../cells/BaseApyCell'
+import { BaseApyValue, WeeklyBaseApyValue } from '../cells/BaseApyCell'
 import { GaugeApyValue } from '../cells/GaugeApyCell'
 import { NetApyValue } from '../cells/NetApyCell'
 import { PointsValue } from '../cells/PointsCell'
@@ -78,6 +78,16 @@ export const PoolExpandedPanel = ({ row, table, variant }: PoolExpandedPanelProp
           <NetApyValue pool={pool} textAlign="start" typographyVariant={EXPANDED_VALUE_VARIANT} />
         </RewardInfoItem>
       )}
+      {isColumnEnabled(variant, PoolColumnId.RewardsApy) && (
+        <RewardInfoItem label={POOL_TITLES[PoolColumnId.RewardsApy]}>
+          <RewardsApyValue
+            pool={pool}
+            textAlign="start"
+            tooltipPlacement="top"
+            typographyVariant={EXPANDED_VALUE_VARIANT}
+          />
+        </RewardInfoItem>
+      )}
       {isColumnEnabled(variant, PoolColumnId.BaseApy) && (
         <RewardInfoItem label={POOL_TITLES[PoolColumnId.BaseApy]}>
           <BaseApyValue
@@ -88,9 +98,9 @@ export const PoolExpandedPanel = ({ row, table, variant }: PoolExpandedPanelProp
           />
         </RewardInfoItem>
       )}
-      {isColumnEnabled(variant, PoolColumnId.RewardsApy) && (
-        <RewardInfoItem label={POOL_TITLES[PoolColumnId.RewardsApy]}>
-          <RewardsApyValue
+      {isColumnEnabled(variant, PoolColumnId.WeeklyBaseApy) && (
+        <RewardInfoItem label={POOL_TITLES[PoolColumnId.WeeklyBaseApy]}>
+          <WeeklyBaseApyValue
             pool={pool}
             textAlign="start"
             tooltipPlacement="top"
