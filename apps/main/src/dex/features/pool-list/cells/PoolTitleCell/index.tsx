@@ -11,21 +11,16 @@ import { MarketTitle } from '@ui-kit/widgets/MarketTitle'
 import type { PoolRow } from '../../types'
 import { PoolAlertBadge } from './PoolAlertBadge'
 import { PoolAlertIcons } from './PoolAlertIcons'
-import { PoolTokens } from './PoolTokens'
+import { PoolBadges } from './PoolBadges'
 
 const { Spacing, Height } = SizesAndSpaces
-type PoolListTitleProps = {
-  filterValue: string | undefined
-  pool: PoolRow
-}
 
-export const PoolTitleCell = ({
-  row: { original: pool },
-  column: { getFilterValue },
-}: CellContext<PoolRow, string>) => <PoolListTitle pool={pool} filterValue={getFilterValue() as string | undefined} />
+export const PoolTitleCell = ({ row: { original: pool } }: CellContext<PoolRow, string>) => (
+  <PoolListTitle pool={pool} />
+)
 
 // Title cells do alert lookup and token icon rendering. Memoization avoids repeating that work for unchanged rows.
-const PoolListTitle = memo(function PoolListTitle({ pool, filterValue }: PoolListTitleProps) {
+const PoolListTitle = memo(function PoolListTitle({ pool }: { pool: PoolRow }) {
   const tokenList = pool.coins
   const tokenAddresses = useMemo(() => tokenList.map(({ address }) => address), [tokenList])
   const poolAlert = usePoolAlert({
@@ -40,12 +35,12 @@ const PoolListTitle = memo(function PoolListTitle({ pool, filterValue }: PoolLis
       {pool.hasPosition && <UserPositionIndicator tooltipTitle={t`You have a balance in this pool`} />}
       <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.sm }}>
         <TokenIcons blockchainId={pool.network} tokens={tokenList} />
-        <Stack direction="column">
+        <Stack direction="column" sx={{ justifyContent: 'center', gap: Spacing.xxs }}>
           <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
             <PoolAlertIcons poolAlert={poolAlert} tokenAlert={tokenAlert} />
             <MarketTitle url={pool.url} address={pool.address} title={pool.name} addressLabel={t`pool`} />
           </Stack>
-          <PoolTokens tokenList={tokenList} filterValue={filterValue} />
+          <PoolBadges pool={pool} />
         </Stack>
       </Stack>
       {poolAlert && <PoolAlertBadge alert={poolAlert} />}
