@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { type ColumnMeta, createColumnHelper } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import type { ColumnDefinition } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { BaseApyCell } from '../cells/BaseApyCell'
+import { BaseApyCell, WeeklyBaseApyCell } from '../cells/BaseApyCell'
 import { GaugeApyCell } from '../cells/GaugeApyCell'
 import { NetApyCell } from '../cells/NetApyCell'
 import { PointsCell } from '../cells/PointsCell'
@@ -54,6 +54,7 @@ export const POOL_TITLES: Record<PoolColumnId, string> = {
   [PoolColumnId.PoolName]: t`Pool`,
   [PoolColumnId.NetApy]: t`Net APY`,
   [PoolColumnId.BaseApy]: t`Base APY`,
+  [PoolColumnId.WeeklyBaseApy]: t`Weekly Base APY`,
   [PoolColumnId.RewardsApy]: t`Rewards APY`,
   [PoolColumnId.GaugeApy]: t`Gauge APY`,
   [PoolColumnId.Points]: t`Points`,
@@ -80,6 +81,15 @@ export const POOL_COLUMNS = [
     meta: {
       type: 'numeric',
       tooltip: createTooltip(PoolColumnId.BaseApy, <BaseApyHeaderTooltipContent />),
+    },
+    sortUndefined: 'last',
+  }),
+  accessor(PoolColumnId.WeeklyBaseApy, 'baseWeeklyApr', {
+    cell: WeeklyBaseApyCell,
+    enableSorting: false,
+    meta: {
+      type: 'numeric',
+      tooltip: createTooltip(PoolColumnId.WeeklyBaseApy, <BaseApyHeaderTooltipContent weekly />),
     },
     sortUndefined: 'last',
   }),

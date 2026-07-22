@@ -19,6 +19,12 @@ const createVisibility = ({ isLite }: { isLite: boolean }): VisibilityGroup<Pool
         enabled: !isLite,
       },
       {
+        label: t`Weekly Base APY`,
+        columns: [PoolColumnId.WeeklyBaseApy],
+        active: false,
+        enabled: !isLite,
+      },
+      {
         label: t`Rewards APY`,
         columns: [PoolColumnId.RewardsApy],
         active: true,

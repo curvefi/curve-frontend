@@ -13,6 +13,7 @@ const MIGRATION_COLUMN_IDS: Record<PoolColumnId, readonly string[]> = {
   [PoolColumnId.PoolName]: [PoolColumnId.PoolName],
   [PoolColumnId.NetApy]: [PoolColumnId.NetApy, 'RewardsOther'],
   [PoolColumnId.BaseApy]: [PoolColumnId.BaseApy, 'RewardsBase'],
+  [PoolColumnId.WeeklyBaseApy]: [PoolColumnId.WeeklyBaseApy],
   [PoolColumnId.RewardsApy]: [PoolColumnId.RewardsApy, 'IncentivesApy', 'RewardsOther'],
   [PoolColumnId.GaugeApy]: [PoolColumnId.GaugeApy, 'RewardsOther'],
   [PoolColumnId.Points]: [PoolColumnId.Points, 'RewardsOther'],
