@@ -8,6 +8,7 @@ import { Metric, type MetricProps } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { decimal } from '@ui-kit/utils'
 import { BaseApyValue, WeeklyBaseApyValue } from '../cells/BaseApyCell'
+import { CreationDateValue } from '../cells/CreationDateCell'
 import { GaugeApyValue } from '../cells/GaugeApyCell'
 import { NetApyValue } from '../cells/NetApyCell'
 import { PointsValue } from '../cells/PointsCell'
@@ -72,6 +73,15 @@ export const PoolExpandedPanel = ({ row, table, variant }: PoolExpandedPanelProp
           ...(table.getColumn(PoolColumnId.Tvl)?.getIsSorted() && highlight),
         }}
       />
+      {isColumnEnabled(variant, PoolColumnId.CreationDate) && (
+        <RewardInfoItem label={POOL_TITLES[PoolColumnId.CreationDate]}>
+          <CreationDateValue
+            creationDate={pool.creationDate}
+            textAlign="start"
+            typographyVariant={EXPANDED_VALUE_VARIANT}
+          />
+        </RewardInfoItem>
+      )}
       {isColumnEnabled(variant, PoolColumnId.NetApy) && (
         <RewardInfoItem label={POOL_TITLES[PoolColumnId.NetApy]}>
           <NetApyValue pool={pool} textAlign="start" typographyVariant={EXPANDED_VALUE_VARIANT} />

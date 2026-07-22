@@ -54,6 +54,12 @@ const createVisibility = ({ isLite }: { isLite: boolean }): VisibilityGroup<Pool
         active: true,
         enabled: true,
       },
+      {
+        label: t`Creation Date`,
+        columns: [PoolColumnId.CreationDate],
+        active: false,
+        enabled: true,
+      },
     ],
   },
 ]

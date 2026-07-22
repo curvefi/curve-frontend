@@ -276,6 +276,7 @@ const v2Pool = z
     chain_id: z.number(),
     name: z.string(),
     address,
+    creation_date: timestamp.nullable(),
     pool_type: poolType.nullable().optional(),
     is_metapool: z.boolean().nullable().optional(),
     base_pool: address.nullable().optional(),
