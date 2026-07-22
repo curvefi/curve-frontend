@@ -3,7 +3,7 @@ import { type ColumnMeta, createColumnHelper } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import type { ColumnDefinition } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { BaseApyCell } from '../cells/BaseApyCell'
-import { BoostApyCell } from '../cells/BoostApyCell'
+import { GaugeApyCell } from '../cells/GaugeApyCell'
 import { NetApyCell } from '../cells/NetApyCell'
 import { PointsCell } from '../cells/PointsCell'
 import { PoolTitleCell } from '../cells/PoolTitleCell'
@@ -11,7 +11,7 @@ import { RewardsApyCell } from '../cells/RewardsApyCell'
 import { UsdCell } from '../cells/UsdCell'
 import {
   BaseApyHeaderTooltipContent,
-  BoostApyHeaderTooltipContent,
+  GaugeApyHeaderTooltipContent,
   NetApyHeaderTooltipContent,
   PointsHeaderTooltipContent,
   PoolHeaderTooltipContent,
@@ -55,7 +55,7 @@ export const POOL_TITLES: Record<PoolColumnId, string> = {
   [PoolColumnId.NetApy]: t`Net APY`,
   [PoolColumnId.BaseApy]: t`Base APY`,
   [PoolColumnId.RewardsApy]: t`Rewards APY`,
-  [PoolColumnId.BoostApy]: t`Boost APY`,
+  [PoolColumnId.GaugeApy]: t`Gauge APY`,
   [PoolColumnId.Points]: t`Points`,
   [PoolColumnId.Volume]: t`Volume`,
   [PoolColumnId.Tvl]: t`TVL`,
@@ -91,12 +91,12 @@ export const POOL_COLUMNS = [
       tooltip: createTooltip(PoolColumnId.RewardsApy, <RewardsApyHeaderTooltipContent />),
     },
   }),
-  display(PoolColumnId.BoostApy, {
-    cell: ({ row }) => <BoostApyCell pool={row.original} />,
+  display(PoolColumnId.GaugeApy, {
+    cell: ({ row }) => <GaugeApyCell pool={row.original} />,
     enableSorting: false,
     meta: {
       type: 'numeric',
-      tooltip: createTooltip(PoolColumnId.BoostApy, <BoostApyHeaderTooltipContent />),
+      tooltip: createTooltip(PoolColumnId.GaugeApy, <GaugeApyHeaderTooltipContent />),
     },
   }),
   display(PoolColumnId.Points, {

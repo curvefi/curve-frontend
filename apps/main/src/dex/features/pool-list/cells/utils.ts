@@ -8,10 +8,10 @@ const COMPOUND_WINDOW = AVERAGE_CATEGORIES['dex.poolYield.compoundRate'].window
 const MAX_CRV_BOOST = '2.50'
 
 export const aprToPoolApy = (apr: Parameters<typeof aprToApy>[0]) => aprToApy(apr, COMPOUND_WINDOW)
-export const getBoostApyDescription = () =>
+export const getGaugeApyDescription = () =>
   t`CRV LP reward APY (max APY can be reached with max boost of ${MAX_CRV_BOOST})`
 
-export const getBoostApyRange = ({ crvApr, crvAprBoosted }: PoolRow) => {
+export const getGaugeApyRange = ({ crvApr, crvAprBoosted }: PoolRow) => {
   const unboostedApy = aprToPoolApy(crvApr)
   const boostedApy = aprToPoolApy(crvAprBoosted)
 
