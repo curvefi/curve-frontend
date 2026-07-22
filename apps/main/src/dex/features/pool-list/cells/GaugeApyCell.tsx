@@ -1,13 +1,12 @@
 import { ChipInactive } from '@/dex/components/ChipInactive'
+import { GaugeApyTooltipContent } from '@/dex/components/GaugeApyTooltipContent'
 import Box from '@mui/material/Box'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { TokenInfo } from '@ui-kit/shared/ui/TokenInfo'
 import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
-import { TooltipDescription, TooltipWrapper } from '@ui-kit/shared/ui/TooltipComponents'
 import { formatNumber, MAINNET_CRV } from '@ui-kit/utils'
 import type { PoolRow } from '../types'
-import { GaugeApyTooltipItems } from './ApyTooltipItems'
 import { getGaugeApyDescription, getGaugeApyRange } from './utils'
 
 export const GaugeApyRange = ({ boostedApy, unboostedApy }: NonNullable<ReturnType<typeof getGaugeApyRange>>) => (
@@ -28,16 +27,6 @@ const GaugeApyAmount = ({
   <Typography component="span" variant={typographyVariant}>
     {range ? <GaugeApyRange {...range} /> : formatNumber(null, 'percent.rate')}
   </Typography>
-)
-
-const GaugeApyTooltipContent = ({ range }: { range: NonNullable<ReturnType<typeof getGaugeApyRange>> }) => (
-  <Box data-testid="pool-gauge-apy-tooltip-content">
-    <TooltipWrapper>
-      <TooltipDescription text={t`CRV gauge reward APY ranges from the unboosted rate to the maximum boosted rate.`} />
-      <TooltipDescription text={t`The maximum rate assumes the full 2.5x gauge boost.`} />
-      <GaugeApyTooltipItems unboostedApy={range.unboostedApy} maximumApy={range.boostedApy} />
-    </TooltipWrapper>
-  </Box>
 )
 
 export const GaugeApyValue = ({
@@ -104,7 +93,12 @@ export const GaugeApyCell = ({ pool }: { pool: PoolRow }) => {
   return (
     <Box data-testid="pool-gauge-apy" sx={{ display: 'flex', justifyContent: 'end' }}>
       {range ? (
-        <Tooltip clickable title={t`Gauge APY`} body={<GaugeApyTooltipContent range={range} />} placement="top">
+        <Tooltip
+          clickable
+          title={t`Gauge APY`}
+          body={<GaugeApyTooltipContent unboostedApy={range.unboostedApy} maximumApy={range.boostedApy} />}
+          placement="top"
+        >
           <Box data-testid="pool-gauge-apy-tooltip-trigger">{content}</Box>
         </Tooltip>
       ) : (

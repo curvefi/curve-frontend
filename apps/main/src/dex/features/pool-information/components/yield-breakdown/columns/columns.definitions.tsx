@@ -17,7 +17,7 @@ export type YieldBreakdownRow = TableItem & {
   explorerUrl?: string
   price?: number
   apy?: number
-  apySecondary?: number
+  maxBoostApy?: number
   apyTooltip?: Pick<TooltipProps, 'title' | 'body' | 'clickable'>
 }
 
@@ -67,7 +67,7 @@ export const YIELD_BREAKDOWN_COLUMNS = [
               icon={null}
               iconPosition="right"
               primary={formatNumber(getValue(), 'percent.rate')}
-              secondary={maybe(row.original.apySecondary, value => t`Unboosted ${formatNumber(value, 'percent.rate')}`)}
+              secondary={maybe(row.original.maxBoostApy, value => t`Max boost ${formatNumber(value, 'percent.rate')}`)}
             />
           </Box>
         </Tooltip>

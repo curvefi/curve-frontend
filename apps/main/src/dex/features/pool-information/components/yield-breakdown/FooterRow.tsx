@@ -13,7 +13,7 @@ const { Spacing } = SizesAndSpaces
 
 type FooterRowProps = {
   visibleColumns: Column<YieldBreakdownRow, unknown>[]
-  baseTotal: number
+  maxBoostTotal: number | null
   total: number
 }
 
@@ -26,12 +26,12 @@ const footerCellByColumnId: Record<YieldBreakdownColumnId, (props: FooterCellPro
     </TableCell>
   ),
   [YieldBreakdownColumnId.Price]: ({ columnId }: FooterCellProps) => <TableCell key={columnId} />,
-  [YieldBreakdownColumnId.Apy]: ({ columnId, baseTotal, total }: FooterCellProps) => (
+  [YieldBreakdownColumnId.Apy]: ({ columnId, maxBoostTotal, total }: FooterCellProps) => (
     <TableCell key={columnId} sx={{ paddingInline: Spacing.md, paddingBlock: Spacing.sm, textAlign: 'right' }}>
       <Typography variant="tableCellMBold">{formatNumber(total, 'percent.rate')}</Typography>
-      {maybe(baseTotal, x => (
+      {maybe(maxBoostTotal, x => (
         <Typography variant="tableCellSRegular" color="textSecondary">
-          {t`Unboosted ${formatNumber(x, 'percent.rate')}`}
+          {t`Max boost ${formatNumber(x, 'percent.rate')}`}
         </Typography>
       ))}
     </TableCell>
