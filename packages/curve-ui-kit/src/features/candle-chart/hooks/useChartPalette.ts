@@ -21,7 +21,7 @@ export type ChartColors = {
   rangeLineFutureBottom: string
 }
 
-export function useChartPalette({ backgroundOverride }: { backgroundOverride?: string } = {}): ChartColors {
+export function useChartPalette(): ChartColors {
   const theme = useTheme()
   return useMemo(() => {
     const {
@@ -32,21 +32,16 @@ export function useChartPalette({ backgroundOverride }: { backgroundOverride?: s
           LiquidationZone: { Current, CurrentBottomLine, CurrentTopLine, Future, FutureLine },
           Lines,
         },
+        Layer: Layer,
       },
       palette: {
-        background: { paper },
         primary: { main: primary },
         text: { highlight, tertiary },
       },
     } = theme
 
     return {
-      backgroundColor:
-        backgroundOverride ??
-        getComputedStyle(document.body ?? document.documentElement)
-          .getPropertyValue('--box--secondary--background-color')
-          .trim() ??
-        paper,
+      backgroundColor: Layer[1].Fill,
       lineColor: primary,
       textColor: tertiary,
       gridLine: Neutral[300],
@@ -64,5 +59,5 @@ export function useChartPalette({ backgroundOverride }: { backgroundOverride?: s
       rangeLineFutureTop: FutureLine,
       rangeLineFutureBottom: FutureLine,
     }
-  }, [backgroundOverride, theme])
+  }, [theme])
 }
