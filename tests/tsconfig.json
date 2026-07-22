@@ -17,6 +17,7 @@
   "include": [
     "cypress",
     "scripts",
+    "unit",
     "cypress.config.ts",
     "../packages/ui/src/globals.d.ts",
     "../packages/curve-ui-kit/src/**/*.d.ts"

@@ -7,6 +7,7 @@ import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
 import { networks } from '@/lend/networks'
 import { type MarketUrlParams } from '@/lend/types/lend.types'
 import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/utilsRouter'
+import { MarketOverviewCard } from '@/llamalend/features/market-advanced-information'
 import { MarketContextProvider } from '@/llamalend/features/market-context'
 import { PositionDetailsComposite } from '@/llamalend/features/market-position-details'
 import { useIsInLiquidation } from '@/llamalend/features/market-position-details/hooks/useUserLiquidationStatus'
@@ -21,7 +22,11 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useParams } from '@ui-kit/hooks/router'
-import { useMarketResetPosition, useMarketMobileFormDrawer } from '@ui-kit/hooks/useFeatureFlags'
+import {
+  useLlamaMarketDetailPageV2,
+  useMarketResetPosition,
+  useMarketMobileFormDrawer,
+} from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { MarketType, MarketRateType } from '@ui-kit/types/market'
@@ -39,6 +44,7 @@ export const LendMarketPage = () => {
   const { address: userAddress } = useConnection()
   useLendPageTitle(market?.collateral_token?.symbol ?? rMarket, t`Lend`)
   const isMobileFormDrawer = useMarketMobileFormDrawer()
+  const isMarketDetailPageV2 = useLlamaMarketDetailPageV2()
 
   const network = networks[chainId]
   const queryParams = { chainId, marketId: market?.id, userAddress }
@@ -96,7 +102,13 @@ export const LendMarketPage = () => {
               <CreateLoanTabs onPricesUpdated={setPreviewPrices} />
             )),
         }}
-        header={<MarketPageHeader isLoading={isLoading} />}
+        header={
+          <MarketPageHeader
+            isLoading={isLoading}
+            primaryRateType={MarketRateType.Borrow}
+            metricsBelowTitle={isMarketDetailPageV2}
+          />
+        }
       >
         <MarketBanners
           chainId={chainId}
@@ -104,7 +116,12 @@ export const LendMarketPage = () => {
           rewardsBanner={<CampaignRewardsBanner chainId={chainId} market={market} />}
         />
         <PositionDetailsComposite hasPosition={loanExists} events={collateralEvents} />
-        <MarketInformationComposite rateType={MarketRateType.Borrow} previewPrices={previewPrices} />
+        {isMarketDetailPageV2 && <MarketOverviewCard />}
+        <MarketInformationComposite
+          rateType={MarketRateType.Borrow}
+          previewPrices={previewPrices}
+          isMarketDetailPageV2={isMarketDetailPageV2}
+        />
       </DetailPageLayout>
     </MarketContextProvider>
   )

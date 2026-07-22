@@ -47,6 +47,13 @@ describe('Lend app', () => {
       cy.visit(url)
       shouldLoadLendBorrowDetails({ breakpoint: BREAKPOINT, hasWallet: true, hasApi: false })
     })
+    it('keeps the stable layout unchanged', () => {
+      cy.visit(url, {
+        onBeforeLoad: window => window.localStorage.setItem('release-channel-v1', JSON.stringify('Stable')),
+      })
+      cy.get('[data-testid="market-overview-card"]').should('not.exist')
+      cy.get('[data-testid="market-advanced-details"]', LOAD_TIMEOUT).should('be.visible')
+    })
   })
 
   describe('vault market details', () => {

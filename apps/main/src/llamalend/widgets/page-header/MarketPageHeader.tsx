@@ -11,7 +11,7 @@ import { Badge } from '@ui-kit/shared/ui/Badge'
 import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { MarketType } from '@ui-kit/types/market'
+import { MarketType, MarketRateType } from '@ui-kit/types/market'
 import { IS_DEVELOPMENT } from '@ui-kit/utils'
 import { PageHeader } from '@ui-kit/widgets/PageHeader'
 import { usePageHeader } from './hooks/usePageHeader'
@@ -19,7 +19,15 @@ import { MetricsRow } from './'
 
 const { Spacing } = SizesAndSpaces
 
-export const MarketPageHeader = ({ isLoading }: { isLoading: boolean }) => {
+export const MarketPageHeader = ({
+  isLoading,
+  primaryRateType,
+  metricsBelowTitle = false,
+}: {
+  isLoading: boolean
+  primaryRateType: MarketRateType
+  metricsBelowTitle?: boolean
+}) => {
   const { address: userAddress } = useConnection()
   const {
     chainId,
@@ -31,24 +39,34 @@ export const MarketPageHeader = ({ isLoading }: { isLoading: boolean }) => {
   } = useMarketContext()
   const { borrowRate, supplyRate, availableLiquidity } = usePageHeader()
 
-  const title =
-    (collateralToken &&
-      borrowToken &&
-      `${collateralToken.symbol.toUpperCase()} • ${borrowToken.symbol.toUpperCase()}`) ??
-    t`Market`
+  const marketPair = collateralToken && borrowToken && `${collateralToken.symbol} • ${borrowToken.symbol}`
+  const title = (metricsBelowTitle ? marketPair : marketPair?.toUpperCase()) ?? t`Market`
 
   const subtitle =
     collateralToken &&
     borrowToken &&
     t`Use ${collateralToken.symbol} to borrow ${marketType === MarketType.Mint ? t`and mint ` : ''}${borrowToken.symbol}`
 
-  return (
+  const metrics = (
+    <MetricsRow
+      borrowRate={borrowRate}
+      supplyRate={supplyRate}
+      availableLiquidity={availableLiquidity}
+      marketType={marketType}
+      collateral={collateralToken}
+      borrowToken={borrowToken}
+      compact={metricsBelowTitle}
+      primaryRateType={primaryRateType}
+    />
+  )
+  const pageHeader = (
     <PageHeader
       backHref={getInternalUrl('llamalend', blockchainId, LLAMALEND_ROUTES.PAGE_MARKETS)}
       title={title}
       subtitle={subtitle}
       titleLoading={isLoading}
       subtitleLoading={isLoading}
+      titleComponent={metricsBelowTitle ? 'h1' : undefined}
       icon={
         <WithSkeleton loading={isLoading} variant="rectangular" width={35} height={35}>
           {collateralToken && borrowToken && (
@@ -87,16 +105,16 @@ export const MarketPageHeader = ({ isLoading }: { isLoading: boolean }) => {
           )}
         </>
       }
-      rightItems={
-        <MetricsRow
-          borrowRate={borrowRate}
-          supplyRate={supplyRate}
-          availableLiquidity={availableLiquidity}
-          marketType={marketType}
-          collateral={collateralToken}
-          borrowToken={borrowToken}
-        />
-      }
+      rightItems={metricsBelowTitle ? undefined : metrics}
     />
+  )
+
+  return metricsBelowTitle ? (
+    <Stack sx={{ gap: Spacing.sm }}>
+      {pageHeader}
+      {metrics}
+    </Stack>
+  ) : (
+    pageHeader
   )
 }

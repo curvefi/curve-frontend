@@ -20,10 +20,10 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useParams } from '@ui-kit/hooks/router'
-import { useMarketMobileFormDrawer } from '@ui-kit/hooks/useFeatureFlags'
+import { useLlamaMarketDetailPageV2, useMarketMobileFormDrawer } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
-import { MarketType } from '@ui-kit/types/market'
+import { MarketType, MarketRateType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 import { useMintMarket } from '../../hooks/useMintMarket'
@@ -36,6 +36,7 @@ export const MintMarketPage = () => {
   const { address } = useConnection()
   const [previewPrices, setPreviewPrices] = useState<Range<Decimal> | undefined>(undefined)
   const isMobileFormDrawer = useMarketMobileFormDrawer()
+  const isMarketDetailPageV2 = useLlamaMarketDetailPageV2()
 
   const marketQuery = useMintMarket({ chainId, rMarket: rCollateralId })
   const { data: market, isLoading: isMarketLoading, error: marketError } = marketQuery
@@ -99,11 +100,17 @@ export const MintMarketPage = () => {
               <CreateLoanTabs onPricesUpdated={setPreviewPrices} />
             )),
         }}
-        header={<MarketPageHeader isLoading={isLoading} />}
+        header={
+          <MarketPageHeader
+            isLoading={isLoading}
+            primaryRateType={MarketRateType.Borrow}
+            metricsBelowTitle={isMarketDetailPageV2}
+          />
+        }
       >
         <MarketBanners chainId={chainId} market={market} />
         <PositionDetailsComposite hasPosition={loanExists} events={collateralEvents} />
-        <MarketInformationComposite previewPrices={previewPrices} />
+        <MarketInformationComposite previewPrices={previewPrices} isMarketDetailPageV2={isMarketDetailPageV2} />
       </DetailPageLayout>
     </MarketContextProvider>
   )
