@@ -1,4 +1,5 @@
 import { BaseApyCell, WeeklyBaseApyCell } from '@/dex/features/pool-list/cells/BaseApyCell'
+import { CreationDateCell } from '@/dex/features/pool-list/cells/CreationDateCell'
 import { GaugeApyCell } from '@/dex/features/pool-list/cells/GaugeApyCell'
 import { NetApyCell } from '@/dex/features/pool-list/cells/NetApyCell'
 import { PointsCell } from '@/dex/features/pool-list/cells/PointsCell'
@@ -9,9 +10,11 @@ import { PoolColumnId } from '@/dex/features/pool-list/columns/columns.enum'
 import { PoolExpandedPanel } from '@/dex/features/pool-list/components/PoolExpandedPanel'
 import type { PoolColumnVariant } from '@/dex/features/pool-list/hooks/usePoolsVisibility'
 import type { PoolRow } from '@/dex/features/pool-list/types'
+import { fromDate } from '@curvefi/prices-api/timestamp'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import type { Address } from '@primitives/address.utils'
 import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
+import { formatDate } from '@ui/utils'
 import type { CampaignRewards } from '@ui-kit/entities/campaigns'
 import { MAINNET_CRV_ADDRESS } from '@ui-kit/utils'
 
@@ -19,6 +22,7 @@ const POOL_ADDRESS = '0x1111111111111111111111111111111111111111' as Address
 const GAUGE_ADDRESS = '0x2222222222222222222222222222222222222222' as Address
 const REWARD_ADDRESS = '0x3333333333333333333333333333333333333333' as Address
 const CAMPAIGN_ICON = '/images/default-crypto.png'
+const CREATION_DATE = fromDate(new Date('2024-01-15T12:00:00.000Z'))
 const NET_APY = '[data-testid="pool-net-apy-cell"]'
 const REWARDS_APY = '[data-testid="pool-rewards-apy"]'
 const NET_APY_TOOLTIP_TRIGGER = '[data-testid="pool-net-apy-tooltip-trigger"]'
@@ -115,6 +119,7 @@ const createPool = (overrides: Partial<PoolRow> = {}): PoolRow => ({
   vyperVersion: null,
   gauge: { address: GAUGE_ADDRESS, isKilled: false },
   gauges: [{ address: GAUGE_ADDRESS, isKilled: false }],
+  creationDate: CREATION_DATE,
   campaigns: [APR_CAMPAIGN, ...POINTS_CAMPAIGNS],
   hasPosition: false,
   hasVyperVulnerability: false,
@@ -128,6 +133,7 @@ const BASE_APY_COLUMNS = [
   columnHelper.accessor('baseDailyApr', { cell: BaseApyCell }),
   columnHelper.accessor('baseWeeklyApr', { cell: WeeklyBaseApyCell }),
 ]
+const CREATION_DATE_COLUMNS = [columnHelper.accessor('creationDate', { cell: CreationDateCell })]
 
 const BaseApyHarness = ({ pool }: { pool: PoolRow }) => {
   const table = useReactTable({
@@ -148,6 +154,18 @@ const BaseApyHarness = ({ pool }: { pool: PoolRow }) => {
       </div>
     </>
   )
+}
+
+const CreationDateHarness = ({ pool }: { pool: PoolRow }) => {
+  const table = useReactTable({
+    data: [pool],
+    columns: CREATION_DATE_COLUMNS,
+    getCoreRowModel: getCoreRowModel(),
+  })
+  const [row] = table.getRowModel().rows
+  const [cell] = row?.getVisibleCells() ?? []
+
+  return cell ? flexRender(cell.column.columnDef.cell, cell.getContext()) : null
 }
 
 const RewardCells = ({ pool }: { pool: PoolRow }) => (
@@ -180,6 +198,15 @@ const mountRewardCells = (pool: PoolRow) => {
   )
 }
 
+const mountCreationDate = (pool: PoolRow) => {
+  cy.viewport(1200, 800)
+  cy.mount(
+    <ComponentTestWrapper>
+      <CreationDateHarness pool={pool} />
+    </ComponentTestWrapper>,
+  )
+}
+
 const getVisibilityOption = (variant: keyof typeof POOLS_COLUMN_OPTIONS, column: PoolColumnId) => {
   const option = POOLS_COLUMN_OPTIONS[variant]
     .flatMap(({ options }) => options)
@@ -191,6 +218,14 @@ const getVisibilityOption = (variant: keyof typeof POOLS_COLUMN_OPTIONS, column:
 }
 
 describe('v2 pool-list reward columns', () => {
+  it('formats Creation Date and falls back for a missing date', () => {
+    mountCreationDate(createPool())
+    cy.get('[data-testid="pool-creation-date"]').should('have.text', formatDate(CREATION_DATE))
+
+    mountCreationDate(createPool({ creationDate: null }))
+    cy.get('[data-testid="pool-creation-date"]').should('have.text', '-')
+  })
+
   it('converts each APR independently and renders the split APY columns', () => {
     mountRewardCells(createPool({ baseWeeklyApr: 20 }))
 
@@ -859,6 +894,8 @@ describe('v2 pool-list reward columns', () => {
     )
 
     cy.get('[data-testid="full-expanded-panel"]').within(() => {
+      cy.contains(/^Creation Date$/).should('exist')
+      cy.get('[data-testid="pool-creation-date"]').should('have.text', formatDate(CREATION_DATE))
       cy.get('[data-testid="pool-net-apy"]').should('have.text', '20.70%').find('img').should('not.exist')
       cy.get('[data-testid="pool-net-apy-cell"]').should('not.exist')
       cy.get('[data-testid="pool-crv-reward-badge"]').should('not.exist')
@@ -879,6 +916,8 @@ describe('v2 pool-list reward columns', () => {
       cy.get(GAUGE_APY_TOOLTIP_TRIGGER).should('not.exist')
     })
     cy.get('[data-testid="lite-expanded-panel"]').within(() => {
+      cy.contains(/^Creation Date$/).should('exist')
+      cy.get('[data-testid="pool-creation-date"]').should('have.text', formatDate(CREATION_DATE))
       cy.get('[data-testid="pool-net-apy"]').should('not.exist')
       cy.contains(/^Base APY$/).should('not.exist')
       cy.contains(/^Weekly Base APY$/).should('not.exist')
@@ -924,7 +963,7 @@ describe('v2 pool-list reward columns', () => {
       .and('contain.text', 'Weekly: 22.09%')
   })
 
-  it('supports every reward column on full networks and only rewards and points on lite networks', () => {
+  it('supports the expected full and lite columns', () => {
     const fullColumns = [
       PoolColumnId.NetApy,
       PoolColumnId.BaseApy,
@@ -945,9 +984,17 @@ describe('v2 pool-list reward columns', () => {
     expect(getVisibilityOption('lite', PoolColumnId.BaseApy)).to.include({ active: false, enabled: false })
     expect(getVisibilityOption('lite', PoolColumnId.WeeklyBaseApy)).to.include({ active: false, enabled: false })
     expect(getVisibilityOption('lite', PoolColumnId.GaugeApy)).to.include({ active: false, enabled: false })
+    expect(getVisibilityOption('full', PoolColumnId.CreationDate)).to.include({ active: false, enabled: true })
+    expect(getVisibilityOption('lite', PoolColumnId.CreationDate)).to.include({ active: false, enabled: true })
 
     const baseApyIndex = POOL_COLUMNS.findIndex(({ id }) => id === PoolColumnId.BaseApy)
     expect(POOL_COLUMNS[baseApyIndex + 1]?.id).to.equal(PoolColumnId.WeeklyBaseApy)
     expect(POOL_COLUMNS[baseApyIndex + 2]?.id).to.equal(PoolColumnId.RewardsApy)
+
+    const tvlIndex = POOL_COLUMNS.findIndex(({ id }) => id === PoolColumnId.Tvl)
+    expect(POOL_COLUMNS[tvlIndex + 1]).to.include({
+      id: PoolColumnId.CreationDate,
+      enableSorting: false,
+    })
   })
 })

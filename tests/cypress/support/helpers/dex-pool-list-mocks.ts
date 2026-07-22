@@ -15,6 +15,7 @@ type MockChainId = (typeof MOCK_CHAIN_IDS)[number]
 const POOL_COUNT = 500
 const MAX_GENERATED_POOL_VOLUME_USD = 1_000_000_000
 const POOL_USD_STEP = 1_000_000
+const POOL_CREATION_TIMESTAMP = 1_700_000_000
 const onePriorityPoolUsdValue = () =>
   oneFloat(MAX_GENERATED_POOL_VOLUME_USD + POOL_USD_STEP, MAX_GENERATED_POOL_VOLUME_USD * 2)
 
@@ -77,6 +78,7 @@ const createPool = ({
   chain_id: Number(chainId),
   name: name ?? `Mock Pool ${chainId}-${index.toString().padStart(3, '0')}`,
   address: address ?? oneAddress(),
+  creation_date: POOL_CREATION_TIMESTAMP + index,
   pool_type: poolType ?? POOL_TYPES[index % POOL_TYPES.length],
   is_metapool: false,
   base_pool: null,

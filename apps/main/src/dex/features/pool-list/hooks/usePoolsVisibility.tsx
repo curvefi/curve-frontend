@@ -19,6 +19,7 @@ const MIGRATION_COLUMN_IDS: Record<PoolColumnId, readonly string[]> = {
   [PoolColumnId.Points]: [PoolColumnId.Points, 'RewardsOther'],
   [PoolColumnId.Volume]: [PoolColumnId.Volume],
   [PoolColumnId.Tvl]: [PoolColumnId.Tvl],
+  [PoolColumnId.CreationDate]: [PoolColumnId.CreationDate],
 }
 
 const isUnknownRecord = (value: unknown): value is Record<string, unknown> => typeof value == 'object' && value != null
