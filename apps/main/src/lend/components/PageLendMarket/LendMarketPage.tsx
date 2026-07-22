@@ -122,14 +122,24 @@ export const LendMarketPage = () => {
         {isMarketDetailPageV2 ? (
           <>
             <MarketSection id="position-details" ariaLabel={t`Position details`}>
-              <PositionDetailsComposite hasPosition={loanExists} events={collateralEvents} />
+              <PositionDetailsComposite
+                hasPosition={loanExists}
+                events={collateralEvents}
+                positionLabel={t`Your position`}
+                compact
+              />
             </MarketSection>
             <MarketSection id="market-overview" ariaLabel={t`Overview`}>
               <MarketOverviewCard />
             </MarketSection>
           </>
         ) : (
-          <PositionDetailsComposite hasPosition={loanExists} events={collateralEvents} />
+          <PositionDetailsComposite
+            hasPosition={loanExists}
+            events={collateralEvents}
+            positionLabel={t`Borrow Details`}
+            compact={false}
+          />
         )}
         <MarketInformationComposite
           rateType={MarketRateType.Borrow}

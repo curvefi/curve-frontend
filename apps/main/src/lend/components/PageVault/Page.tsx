@@ -94,7 +94,7 @@ export const Page = () => {
           <>
             {hasPosition && (
               <MarketSection id="position-details" ariaLabel={t`Position details`}>
-                <SupplyPositionDetails />
+                <SupplyPositionDetails positionLabel={t`Your position`} />
               </MarketSection>
             )}
             <MarketSection id="market-overview" ariaLabel={t`Overview`}>
@@ -102,7 +102,7 @@ export const Page = () => {
             </MarketSection>
           </>
         ) : (
-          hasPosition && <SupplyPositionDetails />
+          hasPosition && <SupplyPositionDetails positionLabel={t`Supply Details`} />
         )}
         <MarketInformationComposite rateType={MarketRateType.Supply} isMarketDetailPageV2={isMarketDetailPageV2} />
       </DetailPageLayout>
