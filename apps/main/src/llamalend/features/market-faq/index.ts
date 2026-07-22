@@ -1,1 +1,1 @@
-export { MarketFaq } from './MarketFaq'
+export { MarketFaq, MarketFaqCard } from './MarketFaq'

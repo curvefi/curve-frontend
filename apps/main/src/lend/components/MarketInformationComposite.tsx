@@ -6,7 +6,7 @@ import {
   MarketParametersCard,
 } from '@/llamalend/features/market-advanced-information'
 import { useMarketContext } from '@/llamalend/features/market-context'
-import { MarketFaq } from '@/llamalend/features/market-faq'
+import { MarketFaq, MarketFaqCard } from '@/llamalend/features/market-faq'
 import { MarketSection } from '@/llamalend/widgets/market-section-nav'
 import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
 import { MarketRateCurveChart } from '@/llamalend/widgets/MarketRateCurveChart'
@@ -82,7 +82,7 @@ export const MarketInformationComposite = ({
         <MarketParametersCard network={networks[chainId]} />
       </MarketSection>
       <MarketSection id="faqs" ariaLabel={t`Frequently asked questions`}>
-        <MarketFaq />
+        <MarketFaqCard />
       </MarketSection>
     </Stack>
   )
