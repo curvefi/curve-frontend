@@ -145,26 +145,23 @@ export const PointsRewardIcon = ({
   placement?: TooltipProps['placement']
   showLabel?: boolean
   typographyVariant?: TypographyProps['variant']
-}) => {
-  const label =
-    campaign.reward?.type === 'points'
-      ? formatNumber(campaign.reward.value, 'multiplier')
-      : (campaign.symbol ?? t`Points`)
-
-  return (
-    <RewardIconTooltip
-      clickable
-      placement={placement}
-      testId="pool-points-badge"
-      title={<CampaignTooltip campaign={campaign} showApy={false} />}
-    >
-      <Stack component="span" direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
-        {showLabel && <Typography variant={typographyVariant}>{label}</Typography>}
-        <CampaignIcon campaign={campaign} />
-      </Stack>
-    </RewardIconTooltip>
-  )
-}
+}) => (
+  <RewardIconTooltip
+    clickable
+    placement={placement}
+    testId="pool-points-badge"
+    title={<CampaignTooltip campaign={campaign} showApy={false} />}
+  >
+    <Stack component="span" direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
+      {showLabel && (
+        <Typography variant={typographyVariant}>
+          {campaign.reward?.type === 'points' ? formatNumber(campaign.reward.value, 'multiplier') : campaign.symbol}
+        </Typography>
+      )}
+      <CampaignIcon campaign={campaign} />
+    </Stack>
+  </RewardIconTooltip>
+)
 
 export const RewardIcons = ({
   includeCrv = false,
