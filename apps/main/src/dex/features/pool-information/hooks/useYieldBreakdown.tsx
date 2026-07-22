@@ -1,6 +1,7 @@
 import { sum } from 'lodash'
 import { useMemo } from 'react'
 import { type Address } from 'viem'
+import { BaseApyTooltipContent } from '@/dex/components/BaseApyTooltipContent'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { defaultNetworks } from '@/dex/lib/networks'
 import { useStore } from '@/dex/store/useStore'
@@ -72,7 +73,7 @@ export const useYieldBreakdown = ({
         ...(!gaugeIsKilled && {
           apy: aprToApy(rewardsApy?.crv?.[1] ?? rewardsApy?.crv?.[0], COMPOUND_WINDOW) ?? undefined,
           apySecondary: aprToApy(rewardsApy?.crv?.[0], COMPOUND_WINDOW) ?? undefined,
-          apyTooltip: t`Max CRV APY can be reached with max boost for this pool.`,
+          apyTooltip: { title: t`Max CRV APY can be reached with max boost for this pool.` },
         }),
       })
     }
@@ -116,6 +117,9 @@ export const useYieldBreakdown = ({
         })
       })
 
+    const baseDailyApy = maybe(rewardsApy?.base?.day, Number)
+    const baseWeeklyApy = maybe(rewardsApy?.base?.week, Number)
+
     // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
     rows.push({
       source: {
@@ -123,8 +127,12 @@ export const useYieldBreakdown = ({
         iconPosition: 'left',
         primary: t`Base APY`,
       },
-      apy: maybe(rewardsApy?.base?.day, x => +x), // already APY, no need to calculate
-      apyTooltip: t`Base variable APY (vAPY) is the annualized yield from trading fees based on the activity over the past 24h. If a pool holds a yield bearing asset, the intrinsic yield is added.`,
+      apy: baseDailyApy,
+      apyTooltip: {
+        title: t`Base APY`,
+        body: <BaseApyTooltipContent dailyApy={baseDailyApy} weeklyApy={baseWeeklyApy} />,
+        clickable: true,
+      },
     })
 
     return rows
