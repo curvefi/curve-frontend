@@ -30,9 +30,12 @@ const GAUGE_APY = '[data-testid="pool-gauge-apy"]'
 const GAUGE_APY_UNBOOSTED = '[data-testid="pool-gauge-apy-unboosted"]'
 const GAUGE_APY_BOOSTED = '[data-testid="pool-gauge-apy-boosted"]'
 const GAUGE_APY_CRV_ICON = `[data-testid="token-icon-${MAINNET_CRV_ADDRESS}"]`
-const NET_APY_ICON_CONTEXTS = [NET_APY, REWARDS_APY] as const
+const POINTS = '[data-testid="pool-points"]'
+const POINTS_BADGE = '[data-testid="pool-points-badge"]'
+const POINTS_ICON_CONTEXTS = [NET_APY, POINTS] as const
+const REWARD_ICON_CONTEXTS = [NET_APY, REWARDS_APY] as const
 const REWARD_BADGES = '[data-testid="pool-extra-reward-badge"], [data-testid="pool-campaign-reward-badge"]'
-const NET_APY_BADGES = `${REWARD_BADGES}, [data-testid="pool-crv-reward-badge"]`
+const NET_APY_BADGES = `${POINTS_BADGE}, ${REWARD_BADGES}, [data-testid="pool-crv-reward-badge"]`
 
 const createCampaign = (overrides: Partial<CampaignRewards> = {}): CampaignRewards => ({
   campaignName: 'Bonus campaign',
@@ -210,12 +213,22 @@ describe('v2 pool-list reward columns', () => {
       })
 
     cy.get(NET_APY).within(() => {
-      cy.get(NET_APY_BADGES).should('have.length', 3)
-      cy.get(NET_APY_BADGES).eq(0).should('have.attr', 'data-testid', 'pool-extra-reward-badge')
-      cy.get(NET_APY_BADGES).eq(1).should('have.attr', 'data-testid', 'pool-campaign-reward-badge')
-      cy.get(NET_APY_BADGES).eq(2).should('have.attr', 'data-testid', 'pool-crv-reward-badge')
+      cy.get(NET_APY_BADGES)
+        .should('have.length', 6)
+        .then($badges => {
+          expect($badges.toArray().map(({ dataset }) => dataset.testid)).to.deep.equal([
+            'pool-points-badge',
+            'pool-points-badge',
+            'pool-points-badge',
+            'pool-extra-reward-badge',
+            'pool-campaign-reward-badge',
+            'pool-crv-reward-badge',
+          ])
+        })
+      cy.get(POINTS_BADGE).should('have.text', '').find('img').should('have.length', 3)
     })
     cy.get(REWARDS_APY).within(() => {
+      cy.get(POINTS_BADGE).should('not.exist')
       cy.get('[data-testid="pool-extra-reward-badge"]').should('have.length', 1)
       cy.get('[data-testid="pool-campaign-reward-badge"]').should('have.length', 1)
       cy.get('[data-testid="pool-crv-reward-badge"]').should('not.exist')
@@ -333,7 +346,19 @@ describe('v2 pool-list reward columns', () => {
   it('shows the individual APY and source details in reward tooltips', () => {
     mountRewardCells(createPool())
 
-    NET_APY_ICON_CONTEXTS.forEach(context => {
+    POINTS_ICON_CONTEXTS.forEach(context => {
+      cy.get(`${context} ${POINTS_BADGE}`).first().trigger('mouseover')
+      cy.get('[role="tooltip"]')
+        .should('be.visible')
+        .and('contain.text', 'Numeric points')
+        .and('contain.text', 'Earn BONUS by providing liquidity.')
+        .and('contain.text', 'Deposit liquidity')
+        .and('contain.text', 'Go to issuer')
+      cy.get(`${context} ${POINTS_BADGE}`).first().trigger('mouseout')
+      cy.get('[role="tooltip"]').should('not.exist')
+    })
+
+    REWARD_ICON_CONTEXTS.forEach(context => {
       cy.get(`${context} [data-testid="pool-extra-reward-badge"]`).trigger('mouseover')
       cy.get('[role="tooltip"]')
         .should('be.visible')
@@ -377,11 +402,13 @@ describe('v2 pool-list reward columns', () => {
     )
 
     cy.get(NET_APY).within(() => {
+      cy.get(POINTS_BADGE).should('have.length', 3)
       cy.get('[data-testid="pool-extra-reward-badge"]').should('have.length', 2)
       cy.get('[data-testid="pool-campaign-reward-badge"]').should('have.length', 2)
-      cy.get(NET_APY_BADGES).should('have.length', 5).last().should('have.attr', 'data-testid', 'pool-crv-reward-badge')
+      cy.get(NET_APY_BADGES).should('have.length', 8).last().should('have.attr', 'data-testid', 'pool-crv-reward-badge')
     })
     cy.get(REWARDS_APY).within(() => {
+      cy.get(POINTS_BADGE).should('not.exist')
       cy.get('[data-testid="pool-extra-reward-badge"]').should('have.length', 2)
       cy.get('[data-testid="pool-campaign-reward-badge"]').should('have.length', 2)
       cy.get('[data-testid="pool-crv-reward-badge"]').should('not.exist')
@@ -420,21 +447,32 @@ describe('v2 pool-list reward columns', () => {
       }),
     )
 
-    cy.get('[data-testid="pool-points"]').should('have.css', 'grid-auto-flow', 'column')
-    cy.get('[data-testid="pool-points-badge"]').should('have.length', 4)
-    cy.get('[data-testid="pool-points-badge"]')
-      .eq(0)
-      .children()
-      .children()
-      .first()
-      .should('have.text', '2x')
-      .next()
-      .should('match', 'img')
-    cy.get('[data-testid="pool-points-badge"]').eq(1).should('contain.text', 'XP')
-    cy.get('[data-testid="pool-points-badge"]').eq(2).should('contain.text', 'Points')
-    cy.get('[data-testid="pool-points-badge"]').eq(3).should('contain.text', 'FOUR')
-    cy.get('[data-testid="pool-points"]').should('not.contain.text', 'FIVE')
-    cy.get('[data-testid="pool-rewards-apy"]').should('contain.text', '5.06%').and('not.contain.text', '2x')
+    cy.get(POINTS)
+      .should('have.css', 'grid-auto-flow', 'column')
+      .within(() => {
+        cy.get(POINTS_BADGE).should('have.length', 4)
+        cy.get(POINTS_BADGE).eq(0).should('contain.text', '2x').find('img').should('have.length', 1)
+        cy.get(POINTS_BADGE).eq(1).should('contain.text', 'XP')
+        cy.get(POINTS_BADGE).eq(2).should('contain.text', 'Points')
+        cy.get(POINTS_BADGE).eq(3).should('contain.text', 'FOUR')
+        cy.root().should('not.contain.text', 'FIVE')
+      })
+    cy.get(NET_APY).within(() => {
+      cy.get(POINTS_BADGE)
+        .should('have.length', 4)
+        .and('have.text', '')
+        .find('img')
+        .should('have.length', 4)
+      cy.get(NET_APY_BADGES).should('have.length', 7)
+      cy.get(NET_APY_BADGES).eq(4).should('have.attr', 'data-testid', 'pool-extra-reward-badge')
+      cy.get(NET_APY_BADGES).eq(5).should('have.attr', 'data-testid', 'pool-campaign-reward-badge')
+      cy.get(NET_APY_BADGES).eq(6).should('have.attr', 'data-testid', 'pool-crv-reward-badge')
+    })
+    cy.get(REWARDS_APY)
+      .should('contain.text', '5.06%')
+      .and('not.contain.text', '2x')
+      .find(POINTS_BADGE)
+      .should('not.exist')
     cy.get('[data-testid="pool-net-apy"]').should('have.text', '20.70%')
   })
 
@@ -454,11 +492,12 @@ describe('v2 pool-list reward columns', () => {
         cy.get(GAUGE_APY_CRV_ICON).should('not.exist')
       })
     cy.get('[data-testid="pool-rewards-apy"]').should('contain.text', '5.06%')
-    cy.get('[data-testid="pool-points-badge"]').should('have.length', 3)
-    cy.get('[data-testid="pool-net-apy-cell"] [data-testid="pool-crv-reward-badge"]').should('not.exist')
-    cy.get('[data-testid="pool-net-apy-cell"]')
-      .find('[data-testid="pool-extra-reward-badge"], [data-testid="pool-campaign-reward-badge"]')
-      .should('have.length', 2)
+    cy.get(POINTS).find(POINTS_BADGE).should('have.length', 3)
+    cy.get(NET_APY).within(() => {
+      cy.get(POINTS_BADGE).should('have.length', 3)
+      cy.get('[data-testid="pool-crv-reward-badge"]').should('not.exist')
+      cy.get(REWARD_BADGES).should('have.length', 2)
+    })
 
     cy.get(GAUGE_APY).trigger('mouseover')
     cy.get('[role="tooltip"]').should('not.exist')
@@ -489,7 +528,7 @@ describe('v2 pool-list reward columns', () => {
         extraRewardsApr: [],
         gauge: undefined,
         gauges: [],
-        campaigns: [],
+        campaigns: POINTS_CAMPAIGNS,
       }),
     )
 
@@ -503,7 +542,11 @@ describe('v2 pool-list reward columns', () => {
         cy.get(GAUGE_APY_BOOSTED).should('not.exist')
         cy.get(GAUGE_APY_CRV_ICON).should('not.exist')
       })
-    cy.get('[data-testid="pool-points"]').should('have.text', '-')
+    cy.get(POINTS).find(POINTS_BADGE).should('have.length', 3)
+    cy.get(NET_APY).within(() => {
+      cy.get(POINTS_BADGE).should('have.length', 3).and('have.text', '')
+      cy.get(REWARD_BADGES).should('not.exist')
+    })
     cy.get('[data-testid="pool-net-apy-cell"] [data-testid$="-reward-badge"]').should('not.exist')
     cy.get(NET_APY_TOOLTIP_TRIGGER).should('not.exist')
     cy.get(BASE_APY_TOOLTIP_TRIGGER).should('not.exist')
@@ -699,13 +742,14 @@ describe('v2 pool-list reward columns', () => {
       cy.get('[data-testid="pool-base-apy-value"]').should('have.text', '10.51%')
       cy.contains(/^Weekly Base APY$/).should('exist')
       cy.get('[data-testid="pool-weekly-base-apy-value"]').should('have.text', '22.09%')
-      cy.get('[data-testid="pool-rewards-apy"]').should('contain.text', '5.06%')
-      cy.get('[data-testid="pool-extra-reward-badge"], [data-testid="pool-campaign-reward-badge"]').should(
-        'have.length',
-        2,
-      )
+      cy.get(REWARDS_APY)
+        .should('contain.text', '5.06%')
+        .within(() => {
+          cy.get(REWARD_BADGES).should('have.length', 2)
+          cy.get(POINTS_BADGE).should('not.exist')
+        })
       cy.get(GAUGE_APY).should('have.text', '5.12% \u2192 13.30%').find('img').should('not.exist')
-      cy.get('[data-testid="pool-points-badge"]').should('have.length', 3)
+      cy.get(POINTS).find(POINTS_BADGE).should('have.length', 3)
       cy.get(NET_APY_TOOLTIP_TRIGGER).should('not.exist')
       cy.get(REWARDS_APY_TOOLTIP_TRIGGER).should('not.exist')
       cy.get(GAUGE_APY_TOOLTIP_TRIGGER).should('not.exist')
@@ -715,14 +759,15 @@ describe('v2 pool-list reward columns', () => {
       cy.contains(/^Base APY$/).should('not.exist')
       cy.contains(/^Weekly Base APY$/).should('not.exist')
       cy.get('[data-testid="pool-weekly-base-apy-value"]').should('not.exist')
-      cy.get('[data-testid="pool-rewards-apy"]').should('contain.text', '5.06%')
-      cy.get('[data-testid="pool-extra-reward-badge"], [data-testid="pool-campaign-reward-badge"]').should(
-        'have.length',
-        2,
-      )
+      cy.get(REWARDS_APY)
+        .should('contain.text', '5.06%')
+        .within(() => {
+          cy.get(REWARD_BADGES).should('have.length', 2)
+          cy.get(POINTS_BADGE).should('not.exist')
+        })
       cy.get('[data-testid="pool-crv-reward-badge"]').should('not.exist')
       cy.get('[data-testid="pool-gauge-apy"]').should('not.exist')
-      cy.get('[data-testid="pool-points-badge"]').should('have.length', 3)
+      cy.get(POINTS).find(POINTS_BADGE).should('have.length', 3)
       cy.get(NET_APY_TOOLTIP_TRIGGER).should('not.exist')
       cy.get(REWARDS_APY_TOOLTIP_TRIGGER).should('not.exist')
       cy.get(GAUGE_APY_TOOLTIP_TRIGGER).should('not.exist')

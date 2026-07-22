@@ -7,7 +7,6 @@ import { PointsRewardIcon } from './RewardIcons'
 import { getPointsCampaigns } from './utils'
 
 const { Spacing } = SizesAndSpaces
-const MAX_POINTS_CAMPAIGNS = 4
 
 export const PointsValue = ({
   pool,
@@ -20,7 +19,7 @@ export const PointsValue = ({
   tooltipPlacement?: TooltipProps['placement']
   typographyVariant?: TypographyProps['variant']
 }) => {
-  const campaigns = getPointsCampaigns(pool).slice(0, MAX_POINTS_CAMPAIGNS)
+  const campaigns = getPointsCampaigns(pool)
   const alignment = textAlign === 'start' ? 'flex-start' : 'flex-end'
 
   if (!campaigns.length) {
