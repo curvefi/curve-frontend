@@ -26,8 +26,7 @@ type TabSizeStyleOptions = {
 type TabPadding = {
   blockStart?: SpacingKey
   blockEnd?: SpacingKey
-  inlineStart?: SpacingKey
-  inlineEnd?: SpacingKey
+  inline?: SpacingKey
 }
 
 export type TabSwitcherVariants = keyof typeof TABS_VARIANT_CLASSES
@@ -71,28 +70,28 @@ const BORDER_SIZE_INACTIVE = '1px' as const
 const BORDER_SIZE_LARGE = '4px' as const
 export const CONTAINED_TABS_MARGIN_RIGHT = 1
 
-const DEFAULT_TAB_PADDING: TabPadding = { inlineStart: 0, inlineEnd: 0, blockStart: 0, blockEnd: 0 }
+const DEFAULT_TAB_PADDING: TabPadding = { blockStart: 0, blockEnd: 0, inline: 0 }
 
 const DEFAULT_TAB_STYLES_BY_SIZE: Record<keyof typeof TABS_SIZES_CLASSES, TabSizeConfig> = {
   extraSmall: {
     className: EXTRA_SMALL,
     height: TAB_HEIGHT.extraSmall,
-    padding: { ...DEFAULT_TAB_PADDING, inlineStart: Tab.Padding.extraSmall.x, inlineEnd: Tab.Padding.extraSmall.x },
+    padding: { ...DEFAULT_TAB_PADDING, ...Tab.Padding.extraSmall },
   },
   small: {
     className: SMALL,
     height: TAB_HEIGHT.small,
-    padding: { ...DEFAULT_TAB_PADDING, inlineStart: 'sm', inlineEnd: 'sm' },
+    padding: { ...DEFAULT_TAB_PADDING, ...Tab.Padding.small },
   },
   medium: {
     className: MEDIUM,
     height: TAB_HEIGHT.medium,
-    padding: { ...DEFAULT_TAB_PADDING, inlineStart: 'sm', inlineEnd: 'sm' },
+    padding: { ...DEFAULT_TAB_PADDING, ...Tab.Padding.medium },
   },
   extraExtraLarge: {
     className: EXTRA_EXTRA_LARGE,
     height: TAB_HEIGHT.extraExtraLarge,
-    padding: { ...DEFAULT_TAB_PADDING, inlineStart: 'md', inlineEnd: 'md' },
+    padding: { ...DEFAULT_TAB_PADDING, ...Tab.Padding.extraExtraLarge },
   },
 }
 
@@ -167,12 +166,11 @@ const buildTabStateStylesByVariant = ({ Current, Default, Hover, Inset }: TabVar
 })
 
 /** Build breakpoint-aware padding styles for a tab. */
-const tabPaddingStyles = ({ blockStart, blockEnd, inlineStart, inlineEnd }: TabPadding) => ({
+const tabPaddingStyles = ({ blockStart, blockEnd, inline }: TabPadding) => ({
   ...handleBreakpoints({
     paddingBlockStart: Spacing[blockStart as keyof typeof Spacing] ?? blockStart,
     paddingBlockEnd: Spacing[blockEnd as keyof typeof Spacing] ?? blockEnd,
-    paddingInlineStart: Spacing[inlineStart as keyof typeof Spacing] ?? inlineStart,
-    paddingInlineEnd: Spacing[inlineEnd as keyof typeof Spacing] ?? inlineEnd,
+    paddingInline: Spacing[inline as keyof typeof Spacing] ?? inline,
   }),
 })
 
