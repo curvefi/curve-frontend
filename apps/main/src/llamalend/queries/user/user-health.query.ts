@@ -49,11 +49,21 @@ export const useUserHealthValues = (params: UserMarketParams) => {
       [healthFull.data, healthNotFull.data, discounts.data],
       (full, notFull, { loanDiscount, liquidationDiscount }) => {
         const discountGap = decimalMinus(loanDiscount, liquidationDiscount)
+        const healthDelta = decimalMinus(full, notFull)
         return {
           /** Distance from entering liquidation protection: the above-band cushion, clamped at zero. */
-          health: decimalMax(decimalMinus(full, notFull), ZERO) ?? ZERO,
+          health: decimalMax(healthDelta, ZERO) ?? ZERO,
           /** Distance from liquidation as a percentage of the liquidation-discount gap. */
           liquidationBuffer: decimalGreaterThan(discountGap, ZERO) ? decimalPercent(notFull, discountGap) : undefined,
+          /** Inputs and intermediate values exposed for developer diagnostics. */
+          debug: {
+            healthFull: full,
+            healthNotFull: notFull,
+            healthDelta,
+            loanDiscount,
+            liquidationDiscount,
+            discountGap,
+          },
         }
       },
     ),
