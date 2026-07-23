@@ -43,40 +43,38 @@ const NetApyTooltipContent = ({ pool, volatile }: { pool: PoolRow; volatile: boo
   const maxNetApy = gaugeApyRange ? netApy - gaugeApyRange.unboostedApy + gaugeApyRange.boostedApy : null
 
   return (
-    <Box data-testid="pool-net-apy-tooltip-content">
-      <TooltipWrapper>
-        <TooltipDescription
-          text={t`Estimated net annualized yield from Base APY, unboosted CRV gauge APY, and Rewards APY.`}
-        />
-        <Stack>
-          <TooltipItems secondary>
-            <TooltipItem title={t`Base APY`}>{formatApy(baseApy)}</TooltipItem>
-          </TooltipItems>
-          <NetApyIncentivesTooltipItems pool={pool} unboostedGaugeApy={unboostedGaugeApy} />
-          <TooltipItems borderTop>
-            <TooltipItem variant="primary" title={t`Total APY`}>
-              {formatApy(netApy)}
-            </TooltipItem>
-          </TooltipItems>
-          {gaugeApyRange && (
-            <>
-              <TooltipItems secondary extraMargin>
-                <TooltipItem title={t`Max veCRV Boost (2.5x)`}>{formatApy(gaugeApyRange.boostedApy)}</TooltipItem>
-              </TooltipItems>
-              <TooltipItems borderTop>
-                <TooltipItem variant="primary" title={t`Total max veCRV APY`}>
-                  {formatApy(maxNetApy)}
-                </TooltipItem>
-              </TooltipItems>
-            </>
-          )}
-        </Stack>
-        {volatile && <TooltipDescription text={t`This net APY is volatile and is unlikely to persist.`} />}
-        <TooltipFooter>
-          {t`Points are shown for reference and are excluded from both totals. Maximum boost is included only in Total max veCRV APY.`}
-        </TooltipFooter>
-      </TooltipWrapper>
-    </Box>
+    <TooltipWrapper>
+      <TooltipDescription
+        text={t`Estimated net annualized yield from Base APY, unboosted CRV gauge APY, and Rewards APY.`}
+      />
+      <Stack>
+        <TooltipItems secondary>
+          <TooltipItem title={t`Base APY`}>{formatApy(baseApy)}</TooltipItem>
+        </TooltipItems>
+        <NetApyIncentivesTooltipItems pool={pool} unboostedGaugeApy={unboostedGaugeApy} />
+        <TooltipItems borderTop>
+          <TooltipItem variant="primary" title={t`Total APY`}>
+            {formatApy(netApy)}
+          </TooltipItem>
+        </TooltipItems>
+        {gaugeApyRange && (
+          <>
+            <TooltipItems secondary extraMargin>
+              <TooltipItem title={t`Max veCRV Boost (2.5x)`}>{formatApy(gaugeApyRange.boostedApy)}</TooltipItem>
+            </TooltipItems>
+            <TooltipItems borderTop>
+              <TooltipItem variant="primary" title={t`Total max veCRV APY`}>
+                {formatApy(maxNetApy)}
+              </TooltipItem>
+            </TooltipItems>
+          </>
+        )}
+      </Stack>
+      {volatile && <TooltipDescription text={t`This net APY is volatile and is unlikely to persist.`} />}
+      <TooltipFooter>
+        {t`Points are shown for reference and are excluded from both totals. Maximum boost is included only in Total max veCRV APY.`}
+      </TooltipFooter>
+    </TooltipWrapper>
   )
 }
 
@@ -126,7 +124,7 @@ const NetApyCellContent = ({ pool }: { pool: PoolRow }) => {
   )
 
   return (
-    <Stack data-testid="pool-net-apy-cell" sx={{ alignItems: 'flex-end', gap: Spacing.xs }}>
+    <Stack sx={{ alignItems: 'flex-end', gap: Spacing.xs }}>
       {netApy ? (
         <Tooltip
           clickable

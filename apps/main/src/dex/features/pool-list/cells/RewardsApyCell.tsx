@@ -28,16 +28,14 @@ const RewardsApyAmount = ({
 )
 
 const RewardsApyTooltipContent = ({ pool }: { pool: PoolRow }) => (
-  <Box data-testid="pool-rewards-apy-tooltip-content">
-    <TooltipWrapper>
-      <TooltipDescription
-        text={t`Annualized yield from extra token rewards and APR campaigns. Points are not included.`}
-      />
-      <Stack>
-        <RewardsApyTooltipItems pool={pool} />
-      </Stack>
-    </TooltipWrapper>
-  </Box>
+  <TooltipWrapper>
+    <TooltipDescription
+      text={t`Annualized yield from extra token rewards and APR campaigns. Points are not included.`}
+    />
+    <Stack>
+      <RewardsApyTooltipItems pool={pool} />
+    </Stack>
+  </TooltipWrapper>
 )
 
 export const RewardsApyValue = ({

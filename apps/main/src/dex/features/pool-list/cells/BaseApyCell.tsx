@@ -21,7 +21,7 @@ const BaseApyAmount = ({
   typographyVariant: TypographyProps['variant']
 }) => (
   <Typography component="span" variant={typographyVariant}>
-    {formatNumber(aprToPoolApy(apr), 'percent.rate')}
+    {formatNumber(aprToPoolApy(apr) || null, 'percent.rate')}
   </Typography>
 )
 
@@ -123,7 +123,7 @@ const BaseApyTableCell = ({ pool, weekly = false }: { pool: PoolRow; weekly?: bo
       >
         <Box
           component="span"
-          data-testid={weekly ? 'pool-weekly-base-apy-tooltip-trigger' : 'pool-base-apy-tooltip-trigger'}
+          data-testid={weekly ? undefined : 'pool-base-apy-tooltip-trigger'}
           sx={{ display: 'inline-flex' }}
         >
           <BaseApyAmount apr={apr} typographyVariant="tableCellMBold" />

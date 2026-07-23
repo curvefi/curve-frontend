@@ -155,7 +155,9 @@ export const PointsRewardIcon = ({
     <Stack component="span" direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
       {showLabel && (
         <Typography variant={typographyVariant}>
-          {campaign.reward?.type === 'points' ? formatNumber(campaign.reward.value, 'multiplier') : campaign.symbol}
+          {campaign.reward?.type === 'points'
+            ? formatNumber(campaign.reward.value, 'multiplier')
+            : campaign.symbol || t`Points`}
         </Typography>
       )}
       <CampaignIcon campaign={campaign} />
