@@ -61,21 +61,16 @@ export const getHealthColor = (state: HealthAndBufferState | undefined) => (them
   return maybe(state, s => colors[s])
 }
 
-export const getLiquidationBufferColor = (state: HealthAndBufferState | undefined) => (theme: Theme) => {
-  const { Color, Layer } = theme.design
+export const getLiquidationBufferColor = (liquidationBuffer: Decimal | null | undefined) => (theme: Theme) => {
+  const { Layer } = theme.design
   const colors = {
-    pristine: Color.Neutral[500],
-    good: Color.Neutral[500],
-    caution: Color.Neutral[500],
-    tight: Color.Neutral[500],
-    softLiquidation: Color.Neutral[500],
     light: Layer.Feedback.Success,
     risky: Layer.Feedback.Warning,
     critical: Layer.Feedback.Error,
     hardLiquidation: Layer.Feedback.Error,
-  } satisfies Record<HealthAndBufferState, string | undefined>
+  } satisfies Record<LiquidationBufferState, string | undefined>
 
-  return maybe(state, s => colors[s])
+  return maybe(liquidationBuffer, value => colors[getLiquidationBufferState(+value)])
 }
 
 export const getHealthPercent = (state: HealthAndBufferState | undefined, health: Decimal | null | undefined) => {

@@ -7,6 +7,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { QueryData } from '@ui-kit/lib/queries/types'
+import { Badge } from '@ui-kit/shared/ui/Badge'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -47,15 +48,18 @@ const SEGMENT_CONFIG: Record<
     title: string
     tooltip: typeof HEALTH_TOOLTIP | typeof LIQUIDATION_BUFFER_TOOLTIP
     getValue: (data: QueryData<typeof useUserHealthValues>) => Decimal | null | undefined
-    getColor: (state: HealthAndBufferState | undefined) => (theme: Theme) => string | undefined
+    getColor: (
+      state: HealthAndBufferState | undefined,
+      value: Decimal | null | undefined,
+    ) => (theme: Theme) => string | undefined
     getPercentage: (state: HealthAndBufferState | undefined, liquidationBuffer: Decimal | null | undefined) => number
   }
 > = {
   liquidationBuffer: {
-    title: t`Liquidation buffer`,
+    title: t`Buffer`,
     tooltip: LIQUIDATION_BUFFER_TOOLTIP,
     getValue: data => data.liquidationBuffer,
-    getColor: getLiquidationBufferColor,
+    getColor: (_, value) => getLiquidationBufferColor(value),
     getPercentage: getLiquidationBufferPercent,
   },
   health: {
@@ -88,39 +92,36 @@ const Bar = ({
   return (
     <Stack>
       <Tooltip title={tooltip.title} body={tooltip.body}>
-        <Grid container>
-          <Grid size={2}>
+        <Grid container sx={{ alignItems: 'center' }}>
+          <Grid size={{ mobile: 2, desktop: 1 }}>
             <Typography variant="bodyXsRegular" color="textTertiary">
               {title}
             </Typography>
           </Grid>
-          <Grid size={10}>
+          {label && (
+            <Grid
+              size={{ mobile: 3, desktop: 2 }}
+              // Flex prevents the inline Badge line box from increasing the Grid row height.
+              sx={{ display: 'flex' }}
+            >
+              <Badge size="extraSmall" label={label} />
+            </Grid>
+          )}
+          <Grid size="grow">
             <WithSkeleton loading={isLoading} variant="rectangular" width="100%" height={Height.healthBar.new}>
               <Stack
                 sx={{
-                  position: 'relative',
-                  justifyContent: 'center',
                   height: Height.healthBar.new,
                   backgroundColor: theme => theme.design.Color.Neutral[300],
                   overflow: 'hidden',
                 }}
               >
-                {label && (
-                  <Box
-                    sx={{
-                      position: 'absolute',
-                      height: Height.healthBar.label,
-                      left: Spacing.xxs,
-                      paddingInline: Spacing.xxs,
-                      backgroundColor: theme => theme.design.Layer[3].Fill,
-                      border: theme => `1px solid ${theme.design.Layer[3].Outline}`,
-                    }}
-                  >
-                    <Typography variant="bodyXsRegular">{label}</Typography>
-                  </Box>
-                )}
                 <Box
-                  sx={{ height: '100%', width: `${getPercentage(state, data)}%`, backgroundColor: getColor(state) }}
+                  sx={{
+                    height: '100%',
+                    width: `${getPercentage(state, data)}%`,
+                    backgroundColor: getColor(state, data),
+                  }}
                 />
               </Stack>
             </WithSkeleton>
@@ -135,7 +136,7 @@ export const HealthAndBufferBar = ({ healthQuery }: { healthQuery: HealthQuery }
   const { state } = getHealthDetailsState(healthQuery.data)
 
   return (
-    <Stack>
+    <Stack spacing={Spacing['3xs']}>
       <Bar state={state} type="health" query={healthQuery} />
       <Bar state={state} type="liquidationBuffer" query={healthQuery} />
     </Stack>

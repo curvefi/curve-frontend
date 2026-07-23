@@ -60,15 +60,14 @@ export const Loading: Story = {
 const allStates = [
   { name: 'Undefined', args: { health: undefined, liquidationBuffer: undefined } },
   { name: 'Pristine', args: Pristine.args },
-  { name: 'Good', args: { health: '24.1', liquidationBuffer: '12' } },
-  { name: 'Caution', args: { health: '7.9', liquidationBuffer: '8' } },
-  { name: 'Tight', args: { health: '4.9', liquidationBuffer: '8' } },
-  { name: 'Light', args: { health: '0', liquidationBuffer: '104' } },
+  { name: 'Good', args: { health: '24.1', liquidationBuffer: '110' } },
+  { name: 'Caution', args: { health: '7.9', liquidationBuffer: '110' } },
+  { name: 'Tight', args: { health: '4.9', liquidationBuffer: '110' } },
+  { name: 'Light', args: { health: '0', liquidationBuffer: '90' } },
   { name: 'AtRisk', args: { health: '0', liquidationBuffer: '22.5' } },
   { name: 'Critical', args: { health: '0', liquidationBuffer: '2.4' } },
   { name: 'HardLiquidation', args: { health: '0', liquidationBuffer: '0' } },
   { name: 'BeyondLiquidation', args: { health: '0', liquidationBuffer: '-20' } },
-  { name: 'Overfunded', args: { health: '20', liquidationBuffer: '140' } },
 ] as const
 
 export const AllStates: Story = {
