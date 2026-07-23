@@ -11,7 +11,7 @@ export const formatPercentage = (
   value: Amount | undefined | null,
   totalValue: Amount | undefined | null,
   // Converts value into the same denomination as totalValue.
-  conversionRate?: Amount | undefined | null,
+  conversionRate?: Amount | null,
 ) =>
   totalValue && value != null
     ? formatNumber(((+value * +(conversionRate ?? '1')) / +totalValue) * 100, 'percent.rate')
