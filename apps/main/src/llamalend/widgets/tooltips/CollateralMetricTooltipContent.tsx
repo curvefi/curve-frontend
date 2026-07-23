@@ -31,33 +31,33 @@ export const CollateralMetricTooltipContent = ({
   totalValue,
   totalValueUsd: { data: totalValueUsd, isLoading: isTotalValueUsdLoading },
 }: CollateralMetricTooltipContentProps) => (
-    <TooltipWrapper>
-      <TooltipDescription
-        text={[
-          t`Collateral value is taken by multiplying tokens in collateral by the oracle price.`,
-          t`In soft liquidation, it may include ${borrow?.symbol ?? 'borrow tokens'} due to liquidation protection.`,
-        ].join(' ')}
-      />
+  <TooltipWrapper>
+    <TooltipDescription
+      text={[
+        t`Collateral value is taken by multiplying tokens in collateral by the oracle price.`,
+        t`In soft liquidation, it may include ${borrow?.symbol ?? 'borrow tokens'} due to liquidation protection.`,
+      ].join(' ')}
+    />
 
-      <Stack>
-        <TooltipItems secondary>
-          <TooltipItem title={t`Deposit token`} variant="independent">
-            {formatToken(collateral?.value, collateral?.symbol)}
-            {formatPercentage(collateral?.value, totalValue, collateral?.conversionRate)}
-          </TooltipItem>
-          <TooltipItem title={t`Borrow token`} variant="independent">
-            {formatToken(borrow?.value, borrow?.symbol)}
-            {formatPercentage(borrow?.value, totalValue, borrow?.conversionRate)}
-          </TooltipItem>
-        </TooltipItems>
-      </Stack>
-      <Stack>
-        <TooltipItem title={t`Total collateral value`} variant="independent">
-          {formatToken(totalValue, borrow.symbol, 'amount')}
-          <WithSkeleton loading={isTotalValueUsdLoading} width="3rem">
-            {formatNumber(totalValueUsd, 'usd.amount')}
-          </WithSkeleton>
+    <Stack>
+      <TooltipItems secondary>
+        <TooltipItem title={t`Deposit token`} variant="independent">
+          {formatToken(collateral?.value, collateral?.symbol)}
+          {formatPercentage(collateral?.value, totalValue, collateral?.conversionRate)}
         </TooltipItem>
-      </Stack>
-    </TooltipWrapper>
-  )
+        <TooltipItem title={t`Borrow token`} variant="independent">
+          {formatToken(borrow?.value, borrow?.symbol)}
+          {formatPercentage(borrow?.value, totalValue, borrow?.conversionRate)}
+        </TooltipItem>
+      </TooltipItems>
+    </Stack>
+    <Stack>
+      <TooltipItem title={t`Total collateral value`} variant="independent">
+        {formatToken(totalValue, borrow.symbol, 'amount')}
+        <WithSkeleton loading={isTotalValueUsdLoading} width="3rem">
+          {formatNumber(totalValueUsd, 'usd.amount')}
+        </WithSkeleton>
+      </TooltipItem>
+    </Stack>
+  </TooltipWrapper>
+)
