@@ -268,6 +268,9 @@ export const defineMuiTabs = ({
         ...muiTabStylesBySize({
           root: { padding: { blockEnd: 'xs' } },
         }),
+        [`&.${EXTRA_SMALL}:not(.MuiTabs-vertical) .MuiTab-root`]: {
+          ...handleBreakpoints({ paddingBlockEnd: Spacing.xxs }),
+        },
       },
 
       // Inactive tabs have a smaller border size
