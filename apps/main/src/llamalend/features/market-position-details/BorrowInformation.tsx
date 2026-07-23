@@ -35,7 +35,10 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
   )
   const { rangeToLiquidation, userPrices } = useRangeToLiquidation({ params })
   const borrowSymbol = borrowToken?.symbol ?? UNAVAILABLE_TOKEN_SYMBOL
-  const priceUnit = `${collateralToken?.symbol ?? UNAVAILABLE_TOKEN_SYMBOL}/${borrowSymbol}`
+  const priceUnit =
+    collateralToken?.symbol && borrowToken.symbol
+      ? `${collateralToken?.symbol}/${borrowToken.symbol}`
+      : UNAVAILABLE_TOKEN_SYMBOL
 
   return (
     <Stack>

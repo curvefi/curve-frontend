@@ -8,6 +8,7 @@ import {
 import { Stack } from '@mui/material'
 import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
+import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import type { QueryProp } from '@ui-kit/types/util'
 import { formatNumber, formatToken } from '@ui-kit/utils'
 
@@ -29,10 +30,7 @@ export const CollateralMetricTooltipContent = ({
   borrow,
   totalValue,
   totalValueUsd: { data: totalValueUsd, isLoading: isTotalValueUsdLoading },
-}: CollateralMetricTooltipContentProps) => {
-  const collateralPercentage = formatPercentage(collateral?.value, totalValue, collateral?.conversionRate)
-  const borrowPercentage = formatPercentage(borrow?.value, totalValue, borrow?.conversionRate)
-  return (
+}: CollateralMetricTooltipContentProps) => (
     <TooltipWrapper>
       <TooltipDescription
         text={[
@@ -45,22 +43,21 @@ export const CollateralMetricTooltipContent = ({
         <TooltipItems secondary>
           <TooltipItem title={t`Deposit token`} variant="independent">
             {formatToken(collateral?.value, collateral?.symbol)}
-            {collateralPercentage && ` (${collateralPercentage})`}
+            {formatPercentage(collateral?.value, totalValue, collateral?.conversionRate)}
           </TooltipItem>
           <TooltipItem title={t`Borrow token`} variant="independent">
             {formatToken(borrow?.value, borrow?.symbol)}
-            {borrowPercentage && ` (${borrowPercentage})`}
+            {formatPercentage(borrow?.value, totalValue, borrow?.conversionRate)}
           </TooltipItem>
         </TooltipItems>
       </Stack>
       <Stack>
         <TooltipItem title={t`Total collateral value`} variant="independent">
           {formatToken(totalValue, borrow.symbol, 'amount')}
-        </TooltipItem>
-        <TooltipItem title={t`Total collateral USD value`} loading={isTotalValueUsdLoading} variant="independent">
-          {formatNumber(totalValueUsd, 'usd.amount')}
+          <WithSkeleton loading={isTotalValueUsdLoading} width="3rem">
+            {formatNumber(totalValueUsd, 'usd.amount')}
+          </WithSkeleton>
         </TooltipItem>
       </Stack>
     </TooltipWrapper>
   )
-}
