@@ -1,9 +1,4 @@
-import {
-  formatMetricValue,
-  formatPercentage,
-  UNAVAILABLE_NOTATION,
-  UNAVAILABLE_TOKEN_SYMBOL,
-} from '@/llamalend/widgets/tooltips/tooltip.utils'
+import { formatPercentage } from '@/llamalend/widgets/tooltips/tooltip.utils'
 import {
   TooltipDescription,
   TooltipItem,
@@ -13,7 +8,8 @@ import {
 import { Stack } from '@mui/material'
 import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
-import { formatNumber } from '@ui-kit/utils'
+import type { QueryProp } from '@ui-kit/types/util'
+import { formatNumber, formatToken } from '@ui-kit/utils'
 
 type TokenValues = {
   value: Decimal | undefined | null
@@ -23,6 +19,7 @@ type TokenValues = {
 
 type CollateralMetricTooltipContentProps = {
   totalValue: Decimal | undefined | null
+  totalValueUsd: QueryProp<Decimal>
   collateral: TokenValues
   borrow: TokenValues
 }
@@ -31,9 +28,10 @@ export const CollateralMetricTooltipContent = ({
   collateral,
   borrow,
   totalValue,
+  totalValueUsd: { data: totalValueUsd, isLoading: isTotalValueUsdLoading },
 }: CollateralMetricTooltipContentProps) => {
-  const collateralPercentage = formatPercentage(collateral?.value, totalValue, collateral?.conversionRate ?? 1)
-  const borrowPercentage = formatPercentage(borrow?.value, totalValue, borrow?.conversionRate ?? 1)
+  const collateralPercentage = formatPercentage(collateral?.value, totalValue, collateral?.conversionRate)
+  const borrowPercentage = formatPercentage(borrow?.value, totalValue, borrow?.conversionRate)
   return (
     <TooltipWrapper>
       <TooltipDescription
@@ -46,21 +44,23 @@ export const CollateralMetricTooltipContent = ({
       <Stack>
         <TooltipItems secondary>
           <TooltipItem title={t`Deposit token`} variant="independent">
-            {`${formatMetricValue(collateral?.value)} ${collateral?.symbol ?? UNAVAILABLE_TOKEN_SYMBOL}`}
+            {formatToken(collateral?.value, collateral?.symbol)}
             {collateralPercentage && ` (${collateralPercentage})`}
           </TooltipItem>
           <TooltipItem title={t`Borrow token`} variant="independent">
-            {`${formatMetricValue(borrow?.value)} ${borrow?.symbol ?? UNAVAILABLE_TOKEN_SYMBOL}`}
+            {formatToken(borrow?.value, borrow?.symbol)}
             {borrowPercentage && ` (${borrowPercentage})`}
           </TooltipItem>
         </TooltipItems>
       </Stack>
-
-      <TooltipItem title={t`Total collateral value`} variant="independent">
-        {totalValue == null
-          ? UNAVAILABLE_NOTATION
-          : `${formatNumber(totalValue, 'token.amount')} ${borrow.symbol ?? UNAVAILABLE_TOKEN_SYMBOL}`}
-      </TooltipItem>
+      <Stack>
+        <TooltipItem title={t`Total collateral value`} variant="independent">
+          {formatToken(totalValue, borrow.symbol, 'amount')}
+        </TooltipItem>
+        <TooltipItem title={t`Total collateral USD value`} loading={isTotalValueUsdLoading} variant="independent">
+          {formatNumber(totalValueUsd, 'usd.amount')}
+        </TooltipItem>
+      </Stack>
     </TooltipWrapper>
   )
 }

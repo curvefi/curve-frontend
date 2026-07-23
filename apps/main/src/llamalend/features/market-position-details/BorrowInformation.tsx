@@ -3,16 +3,16 @@ import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useUserCurrentLeverage, useUserState } from '@/llamalend/queries/user'
 import { useRangeToLiquidation } from '@/llamalend/queries/user/user-prices.query'
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
-import { UNAVAILABLE_TOKEN_SYMBOL } from '@/llamalend/widgets/tooltips/tooltip.utils'
 import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'
 import { Stack } from '@mui/material'
 import { maybe } from '@primitives/objects.utils'
 import { combineQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import type { UserMarketParams } from '@ui-kit/lib/model'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { mapQuery, q } from '@ui-kit/types/util'
-import { decimalMultiply, decimalSum } from '@ui-kit/utils'
+import { decimalMultiply, decimalSum, UNAVAILABLE_TOKEN_SYMBOL } from '@ui-kit/utils'
 import { LiquidationThresholdTooltipContent } from './'
 
 const METRIC_CATEGORY = 'llamalend.positionBorrowDetails'
@@ -27,6 +27,7 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
   const { data: userStateValue } = userState
   const leverage = useUserCurrentLeverage(params)
   const oraclePrice = useMarketOraclePrice(params)
+  const borrowUsdRate = useTokenUsdRate({ chainId: params.chainId, tokenAddress: borrowToken?.address })
 
   const { collateral, stablecoin: borrowed } = userStateValue ?? {}
   const collateralValue = combineQueries([oraclePrice, userState], (oraclePrice, userState) =>
@@ -63,6 +64,9 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
                 borrow={{ value: borrowed, symbol: borrowToken?.symbol }}
                 collateral={{ value: collateral, conversionRate: oraclePrice.data, symbol: collateralToken?.symbol }}
                 totalValue={collateralValue.data}
+                totalValueUsd={combineQueries([collateralValue, borrowUsdRate], (totalValue, borrowUsdRate) =>
+                  decimalMultiply(totalValue, borrowUsdRate),
+                )}
               />
             ),
             placement: 'top',
