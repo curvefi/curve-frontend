@@ -41,7 +41,7 @@ export const NETWORK_BASE_CONFIG = {
   [Chain.Moonbeam]: {
     id: 'moonbeam',
     chainId: Chain.Moonbeam,
-    rpcUrl: 'https://moonbeam.public.blastapi.io',
+    rpcUrl: 'https://moonbeam.drpc.org',
     nativeCurrencySymbol: 'GLMR',
     explorerUrl: 'https://moonscan.io/',
     orgUIPath: 'https://moonbeam.curve.finance',
