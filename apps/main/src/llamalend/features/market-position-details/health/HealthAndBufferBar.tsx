@@ -1,5 +1,6 @@
 import { useUserHealthValues } from '@/llamalend/queries/user/user-health.query'
 import { Stack, Typography } from '@mui/material'
+import AccordionDetails from '@mui/material/AccordionDetails'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import type { Theme } from '@mui/material/styles'
@@ -7,12 +8,13 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { QueryData } from '@ui-kit/lib/queries/types'
+import { Accordion } from '@ui-kit/shared/ui/Accordion'
 import { Badge } from '@ui-kit/shared/ui/Badge'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { mapQuery, QueryProp } from '@ui-kit/types/util'
-import { formatNumber } from '@ui-kit/utils'
+import { formatNumber, IS_DEVELOPMENT } from '@ui-kit/utils'
 import { HEALTH_TOOLTIP, LIQUIDATION_BUFFER_TOOLTIP } from '../tooltips'
 import {
   getLiquidationBufferColor,
@@ -133,12 +135,36 @@ const Bar = ({
 }
 
 export const HealthAndBufferBar = ({ healthQuery }: { healthQuery: HealthQuery }) => {
-  const { state } = getHealthDetailsState(healthQuery.data)
+  const { state, type } = getHealthDetailsState(healthQuery.data)
+  const { health, liquidationBuffer, debug } = healthQuery.data ?? {}
 
   return (
     <Stack spacing={Spacing['3xs']}>
       <Bar state={state} type="health" query={healthQuery} />
       <Bar state={state} type="liquidationBuffer" query={healthQuery} />
+      {IS_DEVELOPMENT && (
+        <Accordion title={t`Health and buffer state`} ghost size="extraSmall">
+          <AccordionDetails>
+            <pre style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>
+              {JSON.stringify(
+                {
+                  values: { ...debug, health, liquidationBuffer },
+                  display: {
+                    type,
+                    state,
+                    healthPercent: getHealthPercent(state, health),
+                    liquidationBufferPercent: getLiquidationBufferPercent(state, liquidationBuffer),
+                  },
+                  isLoading: healthQuery.isLoading,
+                  error: healthQuery.error?.message,
+                },
+                null,
+                2,
+              ).slice(2, -2)}
+            </pre>
+          </AccordionDetails>
+        </Accordion>
+      )}
     </Stack>
   )
 }
