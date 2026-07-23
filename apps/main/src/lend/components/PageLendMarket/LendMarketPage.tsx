@@ -16,6 +16,7 @@ import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
 import { getControllerAddress, getTokens, hasResetPosition } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
+import { getMarketSections, MarketSection, MarketSectionNav } from '@/llamalend/widgets/market-section-nav'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header'
 import { getBlockchainId } from '@curvefi/prices-api'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -34,6 +35,8 @@ import type { Range } from '@ui-kit/types/util'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 import { useLendMarket } from '../../hooks/useLendMarket'
 import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
+
+const MARKET_SECTIONS = getMarketSections({ rateType: MarketRateType.Borrow })
 
 export const LendMarketPage = () => {
   const params = useParams<MarketUrlParams>()
@@ -109,14 +112,25 @@ export const LendMarketPage = () => {
             metricsBelowTitle={isMarketDetailPageV2}
           />
         }
+        pageNavigation={isMarketDetailPageV2 ? <MarketSectionNav sections={MARKET_SECTIONS} /> : undefined}
       >
         <MarketBanners
           chainId={chainId}
           market={market}
           rewardsBanner={<CampaignRewardsBanner chainId={chainId} market={market} />}
         />
-        <PositionDetailsComposite hasPosition={loanExists} events={collateralEvents} />
-        {isMarketDetailPageV2 && <MarketOverviewCard />}
+        {isMarketDetailPageV2 ? (
+          <>
+            <MarketSection id="position-details" ariaLabel={t`Position details`}>
+              <PositionDetailsComposite hasPosition={loanExists} events={collateralEvents} />
+            </MarketSection>
+            <MarketSection id="market-overview" ariaLabel={t`Overview`}>
+              <MarketOverviewCard />
+            </MarketSection>
+          </>
+        ) : (
+          <PositionDetailsComposite hasPosition={loanExists} events={collateralEvents} />
+        )}
         <MarketInformationComposite
           rateType={MarketRateType.Borrow}
           previewPrices={previewPrices}

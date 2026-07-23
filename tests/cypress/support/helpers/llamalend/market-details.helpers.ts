@@ -109,7 +109,7 @@ const shouldLoadBorrowDetails = ({ breakpoint, hasWallet, hasApi = false }: Mark
   cy.get(`[data-testid='no-position-disconnected']`).should(hasWallet ? 'not.exist' : 'be.visible')
   if (hasApi) {
     getActionValue('market-net-borrow-apr').should('match', DECIMAL_REGEX)
-    shouldShowCanvas('market-chart-and-activity')
+    shouldShowCanvas('market-price-chart')
     shouldLoadHistoricalBorrowRateChart()
   } else {
     getActionInfo('market-net-borrow-apr').should('not.exist')

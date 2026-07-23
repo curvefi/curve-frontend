@@ -14,7 +14,7 @@ import { FormPlacementProvider } from './form-context/FormPlacementProvider'
 import { FormSkeleton } from './FormSkeleton'
 import type { DetailPageLayoutFormTabs } from './types'
 
-const { MaxWidth, Spacing } = SizesAndSpaces
+const { ButtonSize, MaxWidth, Spacing } = SizesAndSpaces
 
 const PAGE_MARGIN = { marginInline: Spacing.md, marginBlockStart: Spacing.md, marginBlockEnd: Spacing.xxl }
 
@@ -64,12 +64,14 @@ const stickyFormTabsSx = (navHeight: number, pageHeaderHeight: number) => ({
 export const DetailPageLayout = ({
   formTabs,
   header,
+  pageNavigation,
   children,
   footer,
   testId,
 }: {
   formTabs: DetailPageLayoutFormTabs | null
   header?: ReactNode
+  pageNavigation?: ReactNode
   children?: ReactNode
   footer?: ReactNode
   testId?: string
@@ -78,27 +80,55 @@ export const DetailPageLayout = ({
   const isMobile = useIsMobile()
   // header ref needed to compute the top position of the sticky forms
   const headerRef = useRef<HTMLDivElement>(null)
+  const pageNavigationRef = useRef<HTMLDivElement>(null)
   // page header metrics's notionals lazy rendering make the height change by 9px so we need a smaller threshold
   const [, pageHeaderHeight = 0] = useResizeObserver(headerRef, { threshold: 5 })
+  const [, pageNavigationHeight] = useResizeObserver(pageNavigationRef, { enabled: !!pageNavigation })
+  const pageNavigationOffset = pageNavigationHeight ? `${pageNavigationHeight}px` : ButtonSize.md
   const placement = formTabs?.placement ?? 'inline'
   const showMobileDrawer = getIsMobileFormDrawer(placement, isMobile)
 
   const headerStack = header && (
-    <Stack ref={headerRef} sx={stickyHeaderSx(navHeight)}>
+    <Stack ref={headerRef} sx={pageNavigation ? undefined : stickyHeaderSx(navHeight)}>
       {header}
     </Stack>
   )
-
+  const pageNavigationStack = pageNavigation && (
+    <Stack
+      ref={pageNavigationRef}
+      sx={{
+        backgroundColor: theme => theme.palette.background.default,
+        position: { tablet: 'sticky' },
+        top: { tablet: `${navHeight}px` },
+        zIndex: theme => theme.zIndex.appBar - 1,
+      }}
+    >
+      {pageNavigation}
+    </Stack>
+  )
   return (
     <WithWrapper shouldWrap={showMobileDrawer} Wrapper={MobileDrawerBoundary}>
       <Grid
         container
         data-testid={testId ?? 'detail-page-layout'}
         spacing={PAGE_SPACING}
-        sx={{ ...PAGE_MARGIN, ...(!header && { marginBlockStart: Spacing.xl }) }}
+        sx={{
+          ...PAGE_MARGIN,
+          ...(pageNavigation && {
+            '--detail-page-scroll-margin-top': `calc(${navHeight}px + ${pageNavigationOffset})`,
+          }),
+          ...(!header && { marginBlockStart: Spacing.xl }),
+        }}
         direction="row-reverse" // direction is only used when size<12 (on mobile, form shows first, otherwise children first)
       >
-        {isMobile && <Grid size={12}>{headerStack}</Grid>}
+        {isMobile && (
+          <Grid size={12}>
+            <Stack>
+              {headerStack}
+              {pageNavigationStack}
+            </Stack>
+          </Grid>
+        )}
         {/* In Figma, columns are 12/4/3, but too small around breakpoints. I've added one extra column.
             Ultrawide isn't a breakpoint yet, use maxWidth so it's not too large. */}
         {formTabs !== null && !showMobileDrawer && (
@@ -116,6 +146,7 @@ export const DetailPageLayout = ({
           {/* Additional Stack because no gap between the page header and the children */}
           <Stack>
             {!isMobile && headerStack}
+            {!isMobile && pageNavigationStack}
             <Stack sx={{ flexGrow: 1, gap: PAGE_SPACING }}>{children}</Stack>
           </Stack>
         </Grid>
