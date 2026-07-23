@@ -39,7 +39,7 @@ const HEALTH_LABEL: Record<HealthAndBufferState, string> = {
   light: SOFT_LIQUIDATION_LABEL,
   risky: SOFT_LIQUIDATION_LABEL,
   critical: SOFT_LIQUIDATION_LABEL,
-  hardLiquidation: SOFT_LIQUIDATION_LABEL,
+  hardLiquidation: t`Hard Liquidation`,
 }
 
 const SEGMENT_CONFIG: Record<
@@ -104,7 +104,7 @@ const Bar = ({
               // Flex prevents the inline Badge line box from increasing the Grid row height.
               sx={{ display: 'flex' }}
             >
-              <Badge size="extraSmall" label={label} />
+              <Badge size="extraSmall" color={state === 'hardLiquidation' ? 'alert' : 'default'} label={label} />
             </Grid>
           )}
           <Grid size="grow">
