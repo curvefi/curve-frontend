@@ -1,4 +1,4 @@
-import { useUserHealthValue } from '@/llamalend/queries/user/user-health.query'
+import { useUserHealthValues } from '@/llamalend/queries/user/user-health.query'
 import type { Theme } from '@mui/material/styles'
 import { Decimal } from '@primitives/decimal.utils'
 import { maybe, maybes, recordEntries, recordValues } from '@primitives/objects.utils'
@@ -30,7 +30,7 @@ const LIQUIDATION_BUFFER_THRESHOLDS: Record<
   /** Below this value the position is hard liquidated */
   hardLiquidation: 0,
   /** Below this value the position is critical */
-  critical: 2.5,
+  critical: 10,
   /** Below this value the position is risky. Above it is light */
   risky: 100,
 } as const
@@ -51,31 +51,26 @@ export const getHealthColor = (state: HealthAndBufferState | undefined) => (them
     good: Layer.Feedback.Success,
     caution: Layer.Feedback.Caution,
     tight: Layer.Feedback.Warning,
-    softLiquidation: undefined,
-    light: undefined,
-    risky: undefined,
-    critical: undefined,
+    softLiquidation: Layer.Feedback.Error,
+    light: Layer.Feedback.Error,
+    risky: Layer.Feedback.Error,
+    critical: Layer.Feedback.Error,
     hardLiquidation: Layer.Feedback.Error,
   } satisfies Record<HealthAndBufferState, string | undefined>
 
   return maybe(state, s => colors[s])
 }
 
-export const getLiquidationBufferColor = (state: HealthAndBufferState | undefined) => (theme: Theme) => {
-  const { Color, Layer } = theme.design
+export const getLiquidationBufferColor = (liquidationBuffer: Decimal | null | undefined) => (theme: Theme) => {
+  const { Layer } = theme.design
   const colors = {
-    pristine: Color.Neutral[500],
-    good: Color.Neutral[500],
-    caution: Color.Neutral[500],
-    tight: Color.Neutral[500],
-    softLiquidation: Color.Neutral[500],
-    light: Layer.Feedback.Caution,
+    light: Layer.Feedback.Success,
     risky: Layer.Feedback.Warning,
     critical: Layer.Feedback.Error,
     hardLiquidation: Layer.Feedback.Error,
-  } satisfies Record<HealthAndBufferState, string | undefined>
+  } satisfies Record<LiquidationBufferState, string | undefined>
 
-  return maybe(state, s => colors[s])
+  return maybe(liquidationBuffer, value => colors[getLiquidationBufferState(+value)])
 }
 
 export const getHealthPercent = (state: HealthAndBufferState | undefined, health: Decimal | null | undefined) => {
@@ -86,10 +81,10 @@ export const getHealthPercent = (state: HealthAndBufferState | undefined, health
     good: healthPercent,
     caution: healthPercent,
     tight: healthPercent,
-    softLiquidation: 0,
-    light: 0,
-    risky: 0,
-    critical: 0,
+    softLiquidation: 100,
+    light: 100,
+    risky: 100,
+    critical: 100,
     hardLiquidation: 100,
   } satisfies Record<HealthAndBufferState, number>
 
@@ -119,7 +114,7 @@ export const getLiquidationBufferPercent = (
   return percent[state]
 }
 
-export const getHealthDetailsState = (healthData: QueryData<typeof useUserHealthValue> | undefined) => {
+export const getHealthDetailsState = (healthData: QueryData<typeof useUserHealthValues> | undefined) => {
   const { health, liquidationBuffer } = healthData ?? {}
   // it returns the current type of the position, to either show the "health" or the "liquidationBuffer"
   const type: HealthType =
