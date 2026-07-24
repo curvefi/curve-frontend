@@ -54,7 +54,7 @@ const SEGMENT_CONFIG: Record<
       state: HealthAndBufferState | undefined,
       value: Decimal | null | undefined,
     ) => (theme: Theme) => string | undefined
-    getPercentage: (state: HealthAndBufferState | undefined, liquidationBuffer: Decimal | null | undefined) => number
+    getPercentage: (value: Decimal | null | undefined) => number
   }
 > = {
   liquidationBuffer: {
@@ -84,7 +84,7 @@ const Bar = ({
 }) => {
   const { title, tooltip, getValue, getColor, getPercentage } = SEGMENT_CONFIG[type]
   const { data, isLoading } = mapQuery(query, getValue)
-  const percentage = getPercentage(state, data)
+  const percentage = getPercentage(data)
   const label = (
     {
       health: maybe(state, s => HEALTH_LABEL[s]),
@@ -170,8 +170,8 @@ const HealthAndBufferDebug = ({
                 display: {
                   type,
                   state,
-                  healthPercent: getHealthPercent(state, health),
-                  liquidationBufferPercent: getLiquidationBufferPercent(state, liquidationBuffer),
+                  healthPercent: getHealthPercent(health),
+                  liquidationBufferPercent: getLiquidationBufferPercent(liquidationBuffer),
                 },
                 isLoading: healthQuery.isLoading,
                 error: healthQuery.error?.message,
