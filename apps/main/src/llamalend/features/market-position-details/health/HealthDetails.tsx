@@ -1,15 +1,21 @@
 import { useUserHealthValues } from '@/llamalend/queries/user/user-health.query'
 import { Stack, useTheme } from '@mui/material'
+import { t } from '@ui-kit/lib/i18n'
 import type { UserMarketParams } from '@ui-kit/lib/model'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { formatNumber } from '@ui-kit/utils'
 import { HealthAndBufferBar } from '..'
-import { HEALTH_TOOLTIP } from '../tooltips'
+import { HEALTH_TOOLTIP, HealthTooltipContent } from '../tooltips'
 import { getHealthDetailsState, getHealthColor } from './utils'
 
 const { Spacing } = SizesAndSpaces
+
+const HEALTH_FACTOR_TOOLTIP = {
+  title: t`Health factor`,
+  body: <HealthTooltipContent variant="metric" />,
+}
 
 export const HealthDetails = ({ params }: { params: UserMarketParams }) => {
   const theme = useTheme()
@@ -28,7 +34,7 @@ export const HealthDetails = ({ params }: { params: UserMarketParams }) => {
             color: getHealthColor(state)(theme),
             formatter: value => formatNumber(value, 'health'),
           }}
-          valueTooltip={HEALTH_TOOLTIP}
+          valueTooltip={HEALTH_FACTOR_TOOLTIP}
         />
         <Stack sx={{ flex: 1 }}>
           <HealthAndBufferBar healthQuery={q(healthQuery)} />
