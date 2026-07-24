@@ -15,7 +15,7 @@ const createVisibility = ({ isLite }: { isLite: boolean }): VisibilityGroup<Pool
       {
         label: t`Base APY`,
         columns: [PoolColumnId.BaseApy],
-        active: !isLite,
+        active: false,
         enabled: !isLite,
       },
       {
@@ -27,25 +27,25 @@ const createVisibility = ({ isLite }: { isLite: boolean }): VisibilityGroup<Pool
       {
         label: t`Rewards APY`,
         columns: [PoolColumnId.RewardsApy],
-        active: true,
+        active: false,
         enabled: true,
       },
       {
         label: t`Gauge APY`,
         columns: [PoolColumnId.GaugeApy],
-        active: !isLite,
+        active: false,
         enabled: !isLite,
       },
       {
         label: t`Points`,
         columns: [PoolColumnId.Points],
-        active: true,
+        active: false,
         enabled: true,
       },
       {
         label: t`Volume`,
         columns: [PoolColumnId.Volume],
-        active: !isLite,
+        active: true,
         enabled: true,
       },
       {

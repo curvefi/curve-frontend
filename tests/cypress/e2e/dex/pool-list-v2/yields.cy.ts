@@ -10,9 +10,17 @@ const CRV_REWARD_BADGE = '[data-testid="pool-crv-reward-badge"]'
 const REWARD_BADGES = [POINTS_BADGE, EXTRA_REWARD_BADGE, CAMPAIGN_REWARD_BADGE, CRV_REWARD_BADGE].join(',')
 const TOOLTIP = '[role="tooltip"]'
 
-const showWeeklyBaseApy = () => {
+const showYieldColumns = () => {
   cy.get('[data-testid="btn-visibility-settings"]').click()
-  cy.get(`[data-testid="visibility-toggle-${PoolColumnId.WeeklyBaseApy}"]`).click()
+  for (const columnId of [
+    PoolColumnId.BaseApy,
+    PoolColumnId.WeeklyBaseApy,
+    PoolColumnId.RewardsApy,
+    PoolColumnId.GaugeApy,
+    PoolColumnId.Points,
+  ]) {
+    cy.get(`[data-testid="visibility-toggle-${columnId}"]`).click()
+  }
   cy.get('body').click(0, 0)
 }
 
@@ -25,7 +33,7 @@ describe('V2 pool-list yields', () => {
   it('combines the yield sources and exposes their detailed tooltips', () => {
     const { address } = V2_POOL_FIXTURES.showcase
 
-    showWeeklyBaseApy()
+    showYieldColumns()
     getV2PoolCell(address, PoolColumnId.NetApy).find('[data-testid="pool-net-apy"]').should('have.text', '20.70%')
     getV2PoolCell(address, PoolColumnId.BaseApy).should('contain.text', '10.51%')
     getV2PoolCell(address, PoolColumnId.WeeklyBaseApy).should('contain.text', '22.09%')
@@ -173,7 +181,7 @@ describe('V2 pool-list yields', () => {
   })
 
   it('handles inactive, incomplete, empty, and volatile yield data', () => {
-    showWeeklyBaseApy()
+    showYieldColumns()
 
     const killed = V2_POOL_FIXTURES.killed.address
     getV2PoolCell(killed, PoolColumnId.NetApy).should('contain.text', '6.07%')

@@ -14,29 +14,32 @@ const expectHeaderOrder = (expected: PoolColumnId[]) =>
     expect(actual).to.deep.equal(expected)
   })
 
+const DEFAULT_FULL_COLUMNS = [PoolColumnId.PoolName, PoolColumnId.NetApy, PoolColumnId.Volume, PoolColumnId.Tvl]
+
+const OPTIONAL_FULL_COLUMNS = [
+  PoolColumnId.BaseApy,
+  PoolColumnId.WeeklyBaseApy,
+  PoolColumnId.RewardsApy,
+  PoolColumnId.GaugeApy,
+  PoolColumnId.Points,
+  PoolColumnId.CreationDate,
+]
+
 describe('V2 pool-list columns', () => {
-  beforeEach(() => {
-    setupDexPoolListV2Mocks()
-    visitV2PoolList({ viewport: DESKTOP_VIEWPORT })
-  })
+  beforeEach(() => setupDexPoolListV2Mocks())
 
   it('shows the default columns and reveals optional columns in their defined order', () => {
-    expectHeaderOrder([
-      PoolColumnId.PoolName,
-      PoolColumnId.NetApy,
-      PoolColumnId.BaseApy,
-      PoolColumnId.RewardsApy,
-      PoolColumnId.GaugeApy,
-      PoolColumnId.Points,
-      PoolColumnId.Volume,
-      PoolColumnId.Tvl,
-    ])
-    cy.get(`[data-testid="data-table-header-${PoolColumnId.WeeklyBaseApy}"]`).should('not.exist')
-    cy.get(`[data-testid="data-table-header-${PoolColumnId.CreationDate}"]`).should('not.exist')
+    visitV2PoolList({ viewport: DESKTOP_VIEWPORT })
+
+    expectHeaderOrder(DEFAULT_FULL_COLUMNS)
+    for (const columnId of OPTIONAL_FULL_COLUMNS) {
+      cy.get(`[data-testid="data-table-header-${columnId}"]`).should('not.exist')
+    }
 
     cy.get('[data-testid="btn-visibility-settings"]').click()
-    cy.get(`[data-testid="visibility-toggle-${PoolColumnId.WeeklyBaseApy}"]`).should('exist').click()
-    cy.get(`[data-testid="visibility-toggle-${PoolColumnId.CreationDate}"]`).should('exist').click()
+    for (const columnId of OPTIONAL_FULL_COLUMNS) {
+      cy.get(`[data-testid="visibility-toggle-${columnId}"]`).should('exist').click()
+    }
     cy.get('body').click(0, 0)
 
     expectHeaderOrder([
@@ -65,7 +68,15 @@ describe('V2 pool-list columns', () => {
       .should('have.text', '-')
   })
 
+  it('shows only the supported default columns on a Lite network', () => {
+    visitV2PoolList({ network: 'taiko', viewport: DESKTOP_VIEWPORT })
+
+    expectHeaderOrder([PoolColumnId.PoolName, PoolColumnId.Volume, PoolColumnId.Tvl])
+  })
+
   it('classifies representative pool types and adds the Metapool badge', () => {
+    visitV2PoolList({ viewport: DESKTOP_VIEWPORT })
+
     getV2PoolRow(V2_POOL_FIXTURES.showcase.address)
       .find('[data-testid="pool-badges"] [data-testid^="badge-pool-"]')
       .should($badges => {
