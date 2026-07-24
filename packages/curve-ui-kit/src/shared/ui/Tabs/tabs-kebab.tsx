@@ -37,6 +37,7 @@ const { Spacing, IconSize } = SizesAndSpaces
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const SIZE_TO_ICON_SIZE = {
+  extraSmall: IconSize.xxs,
   small: IconSize.sm,
   medium: IconSize.md,
   extraExtraLarge: IconSize.lg,

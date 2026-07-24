@@ -65,6 +65,13 @@ const MappedCardPadding = {
   sm: Spacing[400],
   md: Spacing[500],
   lg: Spacing[600],
+}
+
+const MappedTabPadding = {
+  extraSmall: { inline: Spacing[300] },
+  small: { inline: 'sm' },
+  medium: { inline: 'sm' },
+  extraExtraLarge: { inline: 'md' },
 } as const
 
 const MappedHorizontalMetricSize = {
@@ -253,6 +260,7 @@ export const SizesAndSpaces = {
   ButtonSize: MappedButtonSize,
   BorderWidth: MappedBorderWidth,
   Padding: { Card: MappedCardPadding },
+  Tab: { Padding: MappedTabPadding },
   InputSize: MappedInputSize,
   InputSpacing: MappedInputSpacing,
   SelectSize: MappedSelectSize,
