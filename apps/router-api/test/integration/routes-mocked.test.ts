@@ -12,21 +12,21 @@ describe('GET routes mocked unit tests', () => {
   it.each([
     {
       label: 'preserves upstream 4xx statuses',
-      router: ['odos'],
+      router: ['enso'],
       fetchStatuses: [429],
       expectedStatus: 429,
       expectedBody: 'Upstream response',
     },
     {
       label: 'maps upstream 5xx statuses to 502',
-      router: ['odos'],
+      router: ['enso'],
       fetchStatuses: [503],
       expectedStatus: 502,
       expectedBody: 'Upstream failed with status 503',
     },
     {
       label: 'returns the lowest mapped status when all requested routers fail',
-      router: ['odos', 'curve-solver'],
+      router: ['enso', 'curve-solver'],
       fetchStatuses: [429, 503],
       expectedStatus: 429,
       expectedBody: 'Upstream response',
