@@ -68,7 +68,12 @@ export const Parameters = ({
           <ActionInfo
             label={t`AMM fee`}
             value={mapQuery(parameters, () =>
-              formatNumber(amount(fee ?? maybe(snapshotData?.fee, fee => fee / 10 ** 8)), 'percent.value'),
+              formatNumber(amount(fee ?? maybe(snapshotData?.fee, fee => fee / 10 ** 8)), {
+                maximumFractionDigits: 4,
+                unit: 'percentage',
+                abbreviate: false,
+                fallback: '-',
+              }),
             )}
           />
 
@@ -76,7 +81,12 @@ export const Parameters = ({
             label={t`DAO fee`}
             valueTooltip={t`The total fee on each trade is split in two parts: one part goes to the pool's Liquidity Providers, another part goes to the DAO (i.e. Curve veCRV holders)`}
             value={mapQuery(parameters, () =>
-              formatNumber(amount(isEywaPool ? +adminFee / 2 : adminFee), 'percent.value'),
+              formatNumber(amount(isEywaPool ? +adminFee / 2 : adminFee), {
+                maximumFractionDigits: 4,
+                unit: 'percentage',
+                abbreviate: false,
+                fallback: '-',
+              }),
             )}
           />
 
