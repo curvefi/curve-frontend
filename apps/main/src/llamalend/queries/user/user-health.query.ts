@@ -5,12 +5,18 @@ import { combineQueries, combineQueryState } from '@ui-kit/lib'
 import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } from '@ui-kit/lib/model'
 import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-validation'
 import { createValidationSuite } from '@ui-kit/lib/validation'
-import { decimalGreaterThan, decimalMax, decimalMinus, decimalPercent, ZERO } from '@ui-kit/utils'
+import { decimalDiv, decimalGreaterThan, decimalMinus, decimalPercent, decimalSum, ZERO } from '@ui-kit/utils'
 import { validateIsFull } from '../validation/borrow-fields.validation'
 import { useUserDiscounts } from './user-discounts.query'
 
 type UserHealthParams = UserMarketParams & { isFull: boolean }
 type UserHealthQuery = UserMarketQuery & { isFull: boolean }
+
+/**
+ * Full and non-full health may be read from different blocks.
+ * Treat tiny subtraction differences as zero when the position is at or below the upper band.
+ */
+const HEALTH_DUST_THRESHOLD: Decimal = '0.0001'
 
 /**
  * Query to get the user's health in a market.
@@ -50,9 +56,16 @@ export const useUserHealthValues = (params: UserMarketParams) => {
       (full, notFull, { loanDiscount, liquidationDiscount }) => {
         const discountGap = decimalMinus(loanDiscount, liquidationDiscount)
         const healthDelta = decimalMinus(full, notFull)
+        const health = decimalGreaterThan(healthDelta, HEALTH_DUST_THRESHOLD) ? healthDelta : ZERO
         return {
-          /** Distance from entering liquidation protection: the above-band cushion, clamped at zero. */
-          health: decimalMax(healthDelta, ZERO) ?? ZERO,
+          /** Percentage distance from entering liquidation protection: the above-band cushion, clamped at zero. */
+          health,
+          /**
+           * Ratio of the above-band cushion plus debt to the debt amount.
+           * A health factor of 1 marks the entry into liquidation protection (soft liquidation).
+           * The +1 is equivalent to adding debt / debt, similar to how other lending platforms display health.
+           */
+          healthFactor: decimalSum('1', decimalDiv(health, '100')),
           /** Distance from liquidation as a percentage of the liquidation-discount gap. */
           liquidationBuffer: decimalGreaterThan(discountGap, ZERO) ? decimalPercent(notFull, discountGap) : undefined,
           /** Inputs and intermediate values exposed for developer diagnostics. */

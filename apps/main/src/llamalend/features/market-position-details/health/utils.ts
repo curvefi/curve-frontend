@@ -73,46 +73,13 @@ export const getLiquidationBufferColor = (liquidationBuffer: Decimal | null | un
   return maybe(liquidationBuffer, value => colors[getLiquidationBufferState(+value)])
 }
 
-export const getHealthPercent = (state: HealthAndBufferState | undefined, health: Decimal | null | undefined) => {
-  if (health == null || state == null) return 0
-  const healthPercent = clampPercentage((+health / recordValues(HEALTH_THRESHOLDS).at(-1)!) * 100)
-  const percent = {
-    pristine: 100,
-    good: healthPercent,
-    caution: healthPercent,
-    tight: healthPercent,
-    softLiquidation: 100,
-    light: 100,
-    risky: 100,
-    critical: 100,
-    hardLiquidation: 100,
-  } satisfies Record<HealthAndBufferState, number>
+export const getHealthPercent = (health: Decimal | null | undefined) =>
+  health == null ? 0 : clampPercentage((+health / recordValues(HEALTH_THRESHOLDS).at(-1)!) * 100)
 
-  return percent[state]
-}
-
-export const getLiquidationBufferPercent = (
-  state: HealthAndBufferState | undefined,
-  liquidationBuffer: Decimal | null | undefined,
-) => {
-  if (liquidationBuffer == null || state == null) return 0
-  const liquidationBufferPercent = clampPercentage(
-    (+liquidationBuffer / recordValues(LIQUIDATION_BUFFER_THRESHOLDS).at(-1)!) * 100,
-  )
-  const percent = {
-    pristine: liquidationBufferPercent,
-    good: liquidationBufferPercent,
-    caution: liquidationBufferPercent,
-    tight: liquidationBufferPercent,
-    softLiquidation: liquidationBufferPercent,
-    light: 100,
-    risky: liquidationBufferPercent,
-    critical: liquidationBufferPercent,
-    hardLiquidation: 100,
-  } satisfies Record<HealthAndBufferState, number>
-
-  return percent[state]
-}
+export const getLiquidationBufferPercent = (liquidationBuffer: Decimal | null | undefined) =>
+  liquidationBuffer == null
+    ? 0
+    : clampPercentage((+liquidationBuffer / recordValues(LIQUIDATION_BUFFER_THRESHOLDS).at(-1)!) * 100)
 
 export const getHealthDetailsState = (healthData: QueryData<typeof useUserHealthValues> | undefined) => {
   const { health, liquidationBuffer } = healthData ?? {}
