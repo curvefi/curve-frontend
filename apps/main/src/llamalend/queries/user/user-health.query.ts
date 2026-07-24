@@ -16,7 +16,7 @@ type UserHealthQuery = UserMarketQuery & { isFull: boolean }
  * Full and non-full health may be read from different blocks.
  * Treat tiny subtraction differences as zero when the position is at or below the upper band.
  */
-const HEALTH_DUST_THRESHOLD: Decimal = '0.01'
+const HEALTH_DUST_THRESHOLD: Decimal = '0.0001'
 
 /**
  * Query to get the user's health in a market.
