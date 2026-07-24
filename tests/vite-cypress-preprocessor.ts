@@ -1,7 +1,8 @@
+import { type StatsListener, unwatchFile, watchFile } from 'node:fs'
 import path from 'node:path'
-import { build } from 'vite'
+import { build, type InlineConfig } from 'vite'
 
-const cache = new Map<string, string>()
+const watchers = new Map<string, StatsListener>()
 
 /**
  * Custom Vite-based preprocessor for Cypress e2e. We use Vite instead of webpack to:
@@ -11,66 +12,44 @@ const cache = new Map<string, string>()
  */
 export const vitePreprocessor = () => async (file: Cypress.FileObject) => {
   const { filePath, outputPath, shouldWatch } = file
-  if (cache.has(filePath)) return cache.get(filePath)!
 
-  const filename = path.basename(outputPath)
-  const filenameBase = path.basename(outputPath, path.extname(outputPath))
-  const isHtml = filename.endsWith('.html')
+  if (shouldWatch && !watchers.has(filePath)) {
+    const listener: StatsListener = () => file.emit('rerun')
+    watchers.set(filePath, listener)
+    watchFile(filePath, { interval: 250, persistent: false }, listener)
 
+    file.on('close', () => {
+      if (watchers.get(filePath) !== listener) return
+      unwatchFile(filePath, listener)
+      watchers.delete(filePath)
+    })
+  }
+
+  const fileName = path.basename(outputPath)
   const viteConfig = {
-    logLevel: 'error' as const,
-    resolve: {
-      alias: [{ find: '@primitives', replacement: path.resolve(__dirname, '../packages/primitives/src') }],
-    },
+    configFile: path.resolve(__dirname, 'vite.config.ts'),
+    logLevel: 'error',
     define: {
-      // Shim process for browser-only bundles; some deps expect it to exist.
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
       'process.env': {},
       process: { env: {} },
     },
     build: {
-      emptyOutDir: false, // do not clear between specs
-      minify: false, // keep readable output for debugging
+      emptyOutDir: false,
+      minify: false,
       outDir: path.dirname(outputPath),
       sourcemap: true,
-      write: true, // emit to disk for Cypress to load
-      watch: shouldWatch ? {} : null, // enable watch when interactive runner is used
-      ...(isHtml
-        ? {
-            rollupOptions: {
-              input: {
-                [filenameBase]: filePath,
-              },
-            },
-          }
-        : {
-            rollupOptions: {
-              input: filePath,
-              output: {
-                format: 'iife', // avoid top-level imports in the runner
-                inlineDynamicImports: true, // force a single bundle per spec
-                entryFileNames: filename, // keep original name for Cypress loader
-                manualChunks: undefined,
-              },
-            },
-            lib: undefined,
-          }),
+      watch: null,
+      write: true,
+      lib: {
+        entry: filePath,
+        fileName: () => fileName,
+        formats: ['umd'],
+        name: path.basename(outputPath, path.extname(outputPath)),
+      },
     },
-  }
+  } satisfies InlineConfig
 
-  const watcher = await build(viteConfig as Record<string, unknown>)
-
-  if (shouldWatch && 'on' in watcher) {
-    watcher.on('event', (event: { code: string }) => {
-      if (event.code === 'END') file.emit('rerun')
-    })
-    file.on('close', () => {
-      cache.delete(filePath)
-      watcher.close?.().catch(e => {
-        console.error('Error closing Vite watcher for Cypress spec:', e)
-      })
-    })
-  }
-
-  cache.set(filePath, outputPath)
+  await build(viteConfig)
   return outputPath
 }
