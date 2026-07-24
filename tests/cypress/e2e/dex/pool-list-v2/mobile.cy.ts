@@ -1,10 +1,17 @@
-import { setupDexPoolListV2Mocks, V2_POOL_FIXTURES } from '@cy/support/helpers/dex-pool-list-v2-mocks'
+import {
+  setupDexPoolListV2Mocks,
+  V2_POOL_FIXTURE_NOW,
+  V2_POOL_FIXTURES,
+} from '@cy/support/helpers/dex-pool-list-v2-mocks'
 import { MOBILE_VIEWPORT, getV2PoolRow, visitV2PoolList } from '@cy/support/helpers/dex-pools-list-v2.helpers'
 
 const EXPANDED_PANEL = '[data-testid="data-table-expansion-row"]'
 
 describe('V2 pool-list mobile panels', () => {
-  beforeEach(() => setupDexPoolListV2Mocks())
+  beforeEach(() => {
+    setupDexPoolListV2Mocks()
+    cy.clock(V2_POOL_FIXTURE_NOW, ['Date'])
+  })
 
   it('shows the full-network metrics with the mobile-specific APY presentation', () => {
     visitV2PoolList({ viewport: MOBILE_VIEWPORT })
@@ -22,7 +29,7 @@ describe('V2 pool-list mobile panels', () => {
           'Points',
           '24h Volume',
           'TVL',
-          'Creation Date',
+          'Age',
         ]) {
           cy.contains(new RegExp(`^${label}$`)).should('be.visible')
         }
@@ -38,7 +45,7 @@ describe('V2 pool-list mobile panels', () => {
         cy.get('[data-testid="pool-weekly-base-apy-value"]').should('contain.text', '22.09%')
         cy.get('[data-testid="pool-rewards-apy"]').should('contain.text', '5.06%')
         cy.get('[data-testid="pool-points"]').should('not.have.text', '-')
-        cy.get('[data-testid="pool-creation-date"]').should('not.have.text', '-')
+        cy.get('[data-testid="pool-age"]').should('not.have.text', '-')
       })
   })
 
@@ -49,7 +56,7 @@ describe('V2 pool-list mobile panels', () => {
     cy.get(EXPANDED_PANEL)
       .should('be.visible')
       .within(() => {
-        for (const label of ['Rewards APY', 'Points', 'TVL', 'Creation Date']) {
+        for (const label of ['Rewards APY', 'Points', 'TVL', 'Age']) {
           cy.contains(new RegExp(`^${label}$`)).should('be.visible')
         }
         for (const label of ['Net APY', 'Base APY', 'Weekly Base APY', 'Gauge APY']) {
@@ -58,7 +65,7 @@ describe('V2 pool-list mobile panels', () => {
 
         cy.get('[data-testid="pool-rewards-apy"]').should('contain.text', '%')
         cy.get('[data-testid="pool-points"]').should('not.have.text', '-')
-        cy.get('[data-testid="pool-creation-date"]').should('not.have.text', '-')
+        cy.get('[data-testid="pool-age"]').should('not.have.text', '-')
       })
   })
 })

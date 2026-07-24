@@ -45,6 +45,12 @@ type V2PoolFixture = RawV2Pool & { network: V2PoolNetwork }
 const address = (suffix: string): Address => `0x${suffix.padStart(40, '0')}`
 const EXTRA_REWARD_ADDRESS = address('3001')
 const MOCK_ICON = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22/%3E'
+const MINUTE_SECONDS = 60
+const DAY_SECONDS = 24 * 60 * 60
+const YEAR_SECONDS = 365 * DAY_SECONDS
+
+export const V2_POOL_FIXTURE_NOW = Date.UTC(2026, 0, 16, 12)
+const V2_POOL_FIXTURE_NOW_SECONDS = V2_POOL_FIXTURE_NOW / 1000
 
 const createCoins = (network: V2PoolNetwork): RawV2Pool['coins'] => [
   {
@@ -81,7 +87,7 @@ const createPoolFixture = ({
   chain_id: network === 'ethereum' ? Chain.Ethereum : Chain.Taiko,
   name,
   address: poolAddress,
-  creation_date: 1_705_406_400,
+  creation_date: V2_POOL_FIXTURE_NOW_SECONDS - 4 * MINUTE_SECONDS,
   pool_type: 'main',
   is_metapool: false,
   base_pool: null,
@@ -106,7 +112,7 @@ export const V2_POOL_FIXTURES = {
   showcase: createPoolFixture({
     address: '0x6c5ff8dce52be77b4ece6b51996018f0c1713ba9',
     name: 'V2 Rewards Showcase',
-    creation_date: 1_705_320_000,
+    creation_date: V2_POOL_FIXTURE_NOW_SECONDS - 5 * DAY_SECONDS,
     pool_type: 'main',
     is_metapool: true,
     base_daily_apr: 10,
@@ -143,6 +149,7 @@ export const V2_POOL_FIXTURES = {
     crv_apr: 0,
     crv_apr_boosted: null,
     extra_rewards_apr: [extraReward(0, 'ZERO')],
+    creation_date: V2_POOL_FIXTURE_NOW_SECONDS - 5 * MINUTE_SECONDS,
     trading_volume_24h: 3_000_000,
   }),
   volatile: createPoolFixture({
@@ -151,12 +158,14 @@ export const V2_POOL_FIXTURES = {
     pool_type: 'crypto',
     base_daily_apr: 500,
     base_weekly_apr: -10,
+    creation_date: V2_POOL_FIXTURE_NOW_SECONDS - 7 * DAY_SECONDS,
     trading_volume_24h: 2_000_000,
   }),
   highRewards: createPoolFixture({
     address: address('1006'),
     name: 'V2 High Rewards',
     extra_rewards_apr: [extraReward(500, 'HIGH')],
+    creation_date: V2_POOL_FIXTURE_NOW_SECONDS - 2 * YEAR_SECONDS,
     trading_volume_24h: 1_000_000,
   }),
   lite: createPoolFixture({

@@ -8,5 +8,5 @@ export enum PoolColumnId {
   Points = 'Points',
   Volume = 'Volume',
   Tvl = 'Tvl',
-  CreationDate = 'CreationDate',
+  Age = 'Age',
 }

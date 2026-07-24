@@ -1,5 +1,5 @@
+export { AgeHeaderTooltipContent } from './AgeHeaderTooltipContent'
 export { BaseApyHeaderTooltipContent } from './BaseApyHeaderTooltipContent'
-export { CreationDateHeaderTooltipContent } from './CreationDateHeaderTooltipContent'
 export { GaugeApyHeaderTooltipContent } from './GaugeApyHeaderTooltipContent'
 export { NetApyHeaderTooltipContent } from './NetApyHeaderTooltipContent'
 export { PointsHeaderTooltipContent } from './PointsHeaderTooltipContent'

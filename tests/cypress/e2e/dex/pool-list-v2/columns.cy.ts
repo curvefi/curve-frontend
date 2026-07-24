@@ -1,5 +1,9 @@
 import { PoolColumnId } from '@/dex/features/pool-list/columns'
-import { setupDexPoolListV2Mocks, V2_POOL_FIXTURES } from '@cy/support/helpers/dex-pool-list-v2-mocks'
+import {
+  setupDexPoolListV2Mocks,
+  V2_POOL_FIXTURE_NOW,
+  V2_POOL_FIXTURES,
+} from '@cy/support/helpers/dex-pool-list-v2-mocks'
 import {
   DESKTOP_VIEWPORT,
   getV2PoolCell,
@@ -22,13 +26,14 @@ const OPTIONAL_FULL_COLUMNS = [
   PoolColumnId.RewardsApy,
   PoolColumnId.GaugeApy,
   PoolColumnId.Points,
-  PoolColumnId.CreationDate,
+  PoolColumnId.Age,
 ]
 
 describe('V2 pool-list columns', () => {
   beforeEach(() => setupDexPoolListV2Mocks())
 
   it('shows the default columns and reveals optional columns in their defined order', () => {
+    cy.clock(V2_POOL_FIXTURE_NOW, ['Date'])
     visitV2PoolList({ viewport: DESKTOP_VIEWPORT })
 
     expectHeaderOrder(DEFAULT_FULL_COLUMNS)
@@ -52,20 +57,44 @@ describe('V2 pool-list columns', () => {
       PoolColumnId.Points,
       PoolColumnId.Volume,
       PoolColumnId.Tvl,
-      PoolColumnId.CreationDate,
+      PoolColumnId.Age,
     ])
     getV2PoolCell(V2_POOL_FIXTURES.showcase.address, PoolColumnId.WeeklyBaseApy).should('contain.text', '22.09%')
-    const expectedCreationDate = new Intl.DateTimeFormat(undefined, {
-      day: '2-digit',
+    getV2PoolCell(V2_POOL_FIXTURES.partial.address, PoolColumnId.Age)
+      .find('[data-testid="pool-age"]')
+      .should('have.text', 'just now')
+    getV2PoolCell(V2_POOL_FIXTURES.empty.address, PoolColumnId.Age)
+      .find('[data-testid="pool-age"]')
+      .should('have.text', '5 minutes')
+    getV2PoolCell(V2_POOL_FIXTURES.showcase.address, PoolColumnId.Age)
+      .find('[data-testid="pool-age"]')
+      .should('have.text', '5 days')
+      .trigger('mouseover')
+    const expectedExactDate = new Intl.DateTimeFormat(undefined, {
       month: 'short',
+      day: 'numeric',
       year: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
     }).format(new Date(V2_POOL_FIXTURES.showcase.creation_date! * 1000))
-    getV2PoolCell(V2_POOL_FIXTURES.showcase.address, PoolColumnId.CreationDate)
-      .find('[data-testid="pool-creation-date"]')
-      .should('have.text', expectedCreationDate)
-    getV2PoolCell(V2_POOL_FIXTURES.killed.address, PoolColumnId.CreationDate)
-      .find('[data-testid="pool-creation-date"]')
+    cy.get('[role="tooltip"]').should('contain.text', expectedExactDate)
+    getV2PoolCell(V2_POOL_FIXTURES.showcase.address, PoolColumnId.Age)
+      .find('[data-testid="pool-age"]')
+      .trigger('mouseout')
+    cy.get('[role="tooltip"]').should('not.exist')
+    getV2PoolCell(V2_POOL_FIXTURES.volatile.address, PoolColumnId.Age)
+      .find('[data-testid="pool-age"]')
+      .should('have.text', '1 week')
+    getV2PoolCell(V2_POOL_FIXTURES.highRewards.address, PoolColumnId.Age)
+      .find('[data-testid="pool-age"]')
+      .should('have.text', '2 years')
+    cy.get(`[data-testid="data-table-header-${PoolColumnId.Age}"]`).should('contain.text', 'Age')
+    getV2PoolCell(V2_POOL_FIXTURES.killed.address, PoolColumnId.Age)
+      .find('[data-testid="pool-age"]')
       .should('have.text', '-')
+      .trigger('mouseover')
+    cy.get('[role="tooltip"]').should('not.exist')
   })
 
   it('shows only the supported default columns on a Lite network', () => {

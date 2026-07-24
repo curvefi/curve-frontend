@@ -2,8 +2,8 @@ import type { ReactNode } from 'react'
 import { type ColumnMeta, createColumnHelper } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import type { ColumnDefinition } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { AgeCell } from '../cells/AgeCell'
 import { BaseApyCell, WeeklyBaseApyCell } from '../cells/BaseApyCell'
-import { CreationDateCell } from '../cells/CreationDateCell'
 import { GaugeApyCell } from '../cells/GaugeApyCell'
 import { NetApyCell } from '../cells/NetApyCell'
 import { PointsCell } from '../cells/PointsCell'
@@ -11,8 +11,8 @@ import { PoolTitleCell } from '../cells/PoolTitleCell'
 import { RewardsApyCell } from '../cells/RewardsApyCell'
 import { UsdCell } from '../cells/UsdCell'
 import {
+  AgeHeaderTooltipContent,
   BaseApyHeaderTooltipContent,
-  CreationDateHeaderTooltipContent,
   GaugeApyHeaderTooltipContent,
   NetApyHeaderTooltipContent,
   PointsHeaderTooltipContent,
@@ -62,7 +62,7 @@ export const POOL_TITLES: Record<PoolColumnId, string> = {
   [PoolColumnId.Points]: t`Points`,
   [PoolColumnId.Volume]: t`Volume`,
   [PoolColumnId.Tvl]: t`TVL`,
-  [PoolColumnId.CreationDate]: t`Creation Date`,
+  [PoolColumnId.Age]: t`Age`,
 }
 
 export const POOL_COLUMNS = [
@@ -136,12 +136,12 @@ export const POOL_COLUMNS = [
     },
     sortUndefined: 'last',
   }),
-  accessor(PoolColumnId.CreationDate, 'creationDate', {
-    cell: CreationDateCell,
+  accessor(PoolColumnId.Age, 'creationDate', {
+    cell: AgeCell,
     enableSorting: false,
     meta: {
       type: 'numeric',
-      tooltip: createTooltip(PoolColumnId.CreationDate, <CreationDateHeaderTooltipContent />),
+      tooltip: createTooltip(PoolColumnId.Age, <AgeHeaderTooltipContent />),
     },
   }),
 ] satisfies PoolColumn[]
