@@ -6,10 +6,11 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { QueryData } from '@ui-kit/lib/queries/types'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q } from '@ui-kit/types/util'
-import { ZERO } from '@ui-kit/utils'
+import { decimalDiv, decimalSum, ZERO } from '@ui-kit/utils'
 import { HealthAndBufferBar } from './HealthAndBufferBar'
 
 const { Spacing } = SizesAndSpaces
+const DISCOUNT_GAP: Decimal = '3'
 
 type HealthAndBufferBarStoryProps = {
   health?: Decimal | null
@@ -19,7 +20,19 @@ type HealthAndBufferBarStoryProps = {
 
 const getHealthQuery = ({ health, liquidationBuffer, isLoading }: HealthAndBufferBarStoryProps) =>
   q<QueryData<typeof useUserHealthValues>>({
-    data: maybes([health, liquidationBuffer], (h, lb) => ({ legacyHealth: ZERO, health: h, liquidationBuffer: lb })),
+    data: maybes([health, liquidationBuffer], (h, lb) => ({
+      health: h,
+      healthFactor: decimalSum('1', decimalDiv(h, '100')),
+      liquidationBuffer: lb,
+      debug: {
+        healthFull: decimalSum(h, lb),
+        healthNotFull: lb,
+        loanDiscount: DISCOUNT_GAP,
+        liquidationDiscount: ZERO,
+        discountGap: DISCOUNT_GAP,
+        healthDelta: h,
+      },
+    })),
     isLoading: isLoading ?? false,
     error: null,
   })

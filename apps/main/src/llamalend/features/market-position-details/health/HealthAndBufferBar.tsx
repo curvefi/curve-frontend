@@ -1,5 +1,6 @@
 import { useUserHealthValues } from '@/llamalend/queries/user/user-health.query'
 import { Stack, Typography } from '@mui/material'
+import AccordionDetails from '@mui/material/AccordionDetails'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import type { Theme } from '@mui/material/styles'
@@ -7,12 +8,13 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { QueryData } from '@ui-kit/lib/queries/types'
+import { Accordion } from '@ui-kit/shared/ui/Accordion'
 import { Badge } from '@ui-kit/shared/ui/Badge'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { mapQuery, QueryProp } from '@ui-kit/types/util'
-import { formatNumber } from '@ui-kit/utils'
+import { formatNumber, IS_DEVELOPMENT } from '@ui-kit/utils'
 import { HEALTH_TOOLTIP, LIQUIDATION_BUFFER_TOOLTIP } from '../tooltips'
 import {
   getLiquidationBufferColor,
@@ -24,7 +26,7 @@ import {
   getHealthDetailsState,
 } from './utils'
 
-const { Spacing, Height } = SizesAndSpaces
+const { Spacing, Height, MinWidth } = SizesAndSpaces
 
 type HealthQuery = QueryProp<QueryData<typeof useUserHealthValues>>
 
@@ -52,7 +54,7 @@ const SEGMENT_CONFIG: Record<
       state: HealthAndBufferState | undefined,
       value: Decimal | null | undefined,
     ) => (theme: Theme) => string | undefined
-    getPercentage: (state: HealthAndBufferState | undefined, liquidationBuffer: Decimal | null | undefined) => number
+    getPercentage: (value: Decimal | null | undefined) => number
   }
 > = {
   liquidationBuffer: {
@@ -82,6 +84,7 @@ const Bar = ({
 }) => {
   const { title, tooltip, getValue, getColor, getPercentage } = SEGMENT_CONFIG[type]
   const { data, isLoading } = mapQuery(query, getValue)
+  const percentage = getPercentage(data)
   const label = (
     {
       health: maybe(state, s => HEALTH_LABEL[s]),
@@ -119,7 +122,8 @@ const Bar = ({
                 <Box
                   sx={{
                     height: '100%',
-                    width: `${getPercentage(state, data)}%`,
+                    width: `${percentage}%`,
+                    minWidth: percentage > 0 ? MinWidth.healthBar : 'auto',
                     backgroundColor: getColor(state, data),
                   }}
                 />
@@ -133,12 +137,51 @@ const Bar = ({
 }
 
 export const HealthAndBufferBar = ({ healthQuery }: { healthQuery: HealthQuery }) => {
-  const { state } = getHealthDetailsState(healthQuery.data)
+  const { state, type } = getHealthDetailsState(healthQuery.data)
 
   return (
     <Stack spacing={Spacing['3xs']}>
+      <HealthAndBufferDebug healthQuery={healthQuery} state={state} type={type} />
       <Bar state={state} type="health" query={healthQuery} />
       <Bar state={state} type="liquidationBuffer" query={healthQuery} />
     </Stack>
+  )
+}
+
+/** Development-only diagnostics for health related values and derived state. */
+const HealthAndBufferDebug = ({
+  healthQuery,
+  state,
+  type,
+}: {
+  healthQuery: HealthQuery
+  state: HealthAndBufferState | undefined
+  type: HealthType
+}) => {
+  const { health, healthFactor, liquidationBuffer, debug } = healthQuery.data ?? {}
+  return (
+    IS_DEVELOPMENT && (
+      <Accordion title={t`Health and buffer state`} ghost size="extraSmall">
+        <AccordionDetails>
+          <pre style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>
+            {JSON.stringify(
+              {
+                values: { ...debug, health, healthFactor, liquidationBuffer },
+                display: {
+                  type,
+                  state,
+                  healthPercent: getHealthPercent(health),
+                  liquidationBufferPercent: getLiquidationBufferPercent(liquidationBuffer),
+                },
+                isLoading: healthQuery.isLoading,
+                error: healthQuery.error?.message,
+              },
+              null,
+              2,
+            ).slice(2, -2)}
+          </pre>
+        </AccordionDetails>
+      </Accordion>
+    )
   )
 }
