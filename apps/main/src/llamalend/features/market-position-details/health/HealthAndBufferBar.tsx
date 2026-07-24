@@ -1,4 +1,4 @@
-import { useUserHealthValues } from '@/llamalend/queries/user/user-health.query'
+import { type HealthQuery, useUserHealthValues } from '@/llamalend/queries/user/user-health.query'
 import { Stack, Typography } from '@mui/material'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import Box from '@mui/material/Box'
@@ -13,7 +13,7 @@ import { Badge } from '@ui-kit/shared/ui/Badge'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { mapQuery, QueryProp } from '@ui-kit/types/util'
+import { mapQuery } from '@ui-kit/types/util'
 import { formatNumber, IS_DEVELOPMENT } from '@ui-kit/utils'
 import { HEALTH_TOOLTIP, LIQUIDATION_BUFFER_TOOLTIP } from '../tooltips'
 import {
@@ -27,8 +27,6 @@ import {
 } from './utils'
 
 const { Spacing, Height, MinWidth } = SizesAndSpaces
-
-type HealthQuery = QueryProp<QueryData<typeof useUserHealthValues>>
 
 const SOFT_LIQUIDATION_LABEL = t`Soft Liquidation`
 
@@ -101,20 +99,22 @@ const Bar = ({
               {title}
             </Typography>
           </Grid>
-          {label && (
+          {(label || isLoading) && (
             <Grid
               size={{ mobile: 3, desktop: 2 }}
               // Flex prevents the inline Badge line box from increasing the Grid row height.
               sx={{ display: 'flex' }}
             >
-              <Badge size="extraSmall" color={state === 'hardLiquidation' ? 'alert' : 'default'} label={label} />
+              <WithSkeleton loading={isLoading} variant="rectangular" width="5rem" height={Height.healthDetails.label}>
+                <Badge size="extraSmall" color={state === 'hardLiquidation' ? 'alert' : 'default'} label={label} />
+              </WithSkeleton>
             </Grid>
           )}
           <Grid size="grow">
-            <WithSkeleton loading={isLoading} variant="rectangular" width="100%" height={Height.healthBar.new}>
+            <WithSkeleton loading={isLoading} variant="rectangular" width="100%" height={Height.healthDetails.bar}>
               <Stack
                 sx={{
-                  height: Height.healthBar.new,
+                  height: Height.healthDetails.bar,
                   backgroundColor: theme => theme.design.Color.Neutral[300],
                   overflow: 'hidden',
                 }}

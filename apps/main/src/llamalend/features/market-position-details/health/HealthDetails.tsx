@@ -1,44 +1,34 @@
-import { useUserHealthValues } from '@/llamalend/queries/user/user-health.query'
+import type { HealthQuery } from '@/llamalend/queries/user/user-health.query'
 import { Stack, useTheme } from '@mui/material'
-import { t } from '@ui-kit/lib/i18n'
-import type { UserMarketParams } from '@ui-kit/lib/model'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { mapQuery, q } from '@ui-kit/types/util'
+import { mapQuery } from '@ui-kit/types/util'
 import { formatNumber } from '@ui-kit/utils'
-import { HealthAndBufferBar } from '..'
-import { HEALTH_TOOLTIP, HealthTooltipContent } from '../tooltips'
+import { HEALTH_FACTOR_TOOLTIP, HEALTH_TOOLTIP } from '../tooltips'
+import { HealthAndBufferBar } from './HealthAndBufferBar'
 import { getHealthDetailsState, getHealthColor } from './utils'
 
 const { Spacing } = SizesAndSpaces
 
-const HEALTH_FACTOR_TOOLTIP = {
-  title: t`Health factor`,
-  body: <HealthTooltipContent variant="metric" />,
-}
-
-export const HealthDetails = ({ params }: { params: UserMarketParams }) => {
+export const HealthDetails = ({ healthQuery }: { healthQuery: HealthQuery }) => {
   const theme = useTheme()
-  const healthQuery = useUserHealthValues(params)
   const { state } = getHealthDetailsState(healthQuery.data)
 
   return (
-    <Stack sx={{ gap: Spacing.xs }}>
-      <Stack direction="row" sx={{ alignItems: 'flex-end', gap: Spacing.md }}>
-        <Metric
-          category="llamalend.positionHealth"
-          label={HEALTH_TOOLTIP.shortTitle}
-          value={mapQuery(healthQuery, data => data.healthFactor)}
-          valueOptions={{
-            abbreviate: false,
-            color: getHealthColor(state)(theme),
-            formatter: value => formatNumber(value, 'health'),
-          }}
-          valueTooltip={HEALTH_FACTOR_TOOLTIP}
-        />
-        <Stack sx={{ flex: 1 }}>
-          <HealthAndBufferBar healthQuery={q(healthQuery)} />
-        </Stack>
+    <Stack direction="row" sx={{ alignItems: 'flex-end', gap: Spacing.md }}>
+      <Metric
+        category="llamalend.positionHealth"
+        label={HEALTH_TOOLTIP.shortTitle}
+        value={mapQuery(healthQuery, data => data.healthFactor)}
+        valueOptions={{
+          abbreviate: false,
+          color: getHealthColor(state)(theme),
+          formatter: value => formatNumber(value, 'health'),
+        }}
+        valueTooltip={HEALTH_FACTOR_TOOLTIP}
+      />
+      <Stack sx={{ flex: 1 }}>
+        <HealthAndBufferBar healthQuery={healthQuery} />
       </Stack>
     </Stack>
   )
