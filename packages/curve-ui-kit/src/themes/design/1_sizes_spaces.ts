@@ -57,6 +57,13 @@ const MappedButtonSize = {
   lg: Sizing[650], // 56px
 }
 
+const MappedTabPadding = {
+  extraSmall: { inline: Spacing[300] },
+  small: { inline: 'sm' },
+  medium: { inline: 'sm' },
+  extraExtraLarge: { inline: 'md' },
+} as const
+
 const MappedHorizontalMetricSize = {
   xs: Sizing[250], // 20px
   sm: Sizing[300], // 24px
@@ -241,6 +248,7 @@ export const SizesAndSpaces = {
   Sizing: MappedSizing,
   IconSize: MappedIconSize,
   ButtonSize: MappedButtonSize,
+  Tab: { Padding: MappedTabPadding },
   InputSize: MappedInputSize,
   InputSpacing: MappedInputSpacing,
   SelectSize: MappedSelectSize,
