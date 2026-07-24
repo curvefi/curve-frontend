@@ -84,11 +84,16 @@ const shouldLoadMarketParameters = ({
 const shouldLoadMarketDetails = ({ hasApi }: { hasApi: boolean }) => {
   cy.get('[data-testid^="detail-page-layout"]', LOAD_TIMEOUT).should('be.visible')
   getActionValue('market-available-liquidity').should('match', DECIMAL_REGEX)
+  cy.get('[data-testid="market-overview-card"]', LOAD_TIMEOUT).within(() => {
+    cy.get('h2').should('contain.text', 'Overview')
+    cy.get('[data-testid="market-overview-summary"]').children().should('have.length', 4)
+    cy.get('[data-testid="market-overview-details"]').children().should('have.length', 2)
+    cy.get('[data-testid="market-overview-collateral"]').should('be.visible')
+    cy.get('[data-testid="market-overview-borrowed"]').should('be.visible')
+  })
   cy.get('[data-testid="market-advanced-details"]', LOAD_TIMEOUT).should('be.visible')
   if (hasApi) {
-    getActionValue('market-total-borrowers').should('match', DECIMAL_REGEX)
-  } else {
-    getActionInfo('market-total-borrowers').should('not.exist')
+    getMetricValue('market-total-borrowers').should('match', DECIMAL_REGEX)
   }
   cy.get('[data-testid="llamalend-market-faq"]').should('be.visible')
 }

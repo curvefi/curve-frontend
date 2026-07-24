@@ -25,6 +25,9 @@ export const useMarketResetPosition = useStableChannel
 /** Split the LlamaLend (soon to be legacy) health into: Liquidation Buffer and Health */
 export const useNewLlamalendHealth = useBetaChannel
 
+/** LlamaLend market detail page layout preview */
+export const useLlamaMarketDetailPageV2 = useBetaChannel
+
 /** Mobile LlamaLend market forms open from a fixed action bar into a drawer */
 export const useMarketMobileFormDrawer = useBetaChannel
 

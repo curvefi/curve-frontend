@@ -1,6 +1,10 @@
 import { ChartAndActivityComp } from '@/lend/components/ChartAndActivityComp'
 import { networks } from '@/lend/networks'
-import { AdvancedDetails, MarketInfoLayout } from '@/llamalend/features/market-advanced-information'
+import {
+  AdvancedDetails,
+  MarketInfoLayout,
+  MarketParametersCard,
+} from '@/llamalend/features/market-advanced-information'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { MarketFaq } from '@/llamalend/features/market-faq'
 import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
@@ -18,12 +22,17 @@ import { PAGE_SPACING } from '@ui-kit/widgets/DetailPageLayout/constants'
 type MarketInformationCompProps = {
   rateType: MarketRateType
   previewPrices?: Range<Decimal> | undefined
+  isMarketDetailPageV2: boolean
 }
 
 /**
  * Reusable component for OHLC charts, Bands (if applicable), and market parameters, used in market and vault pages.
  */
-export const MarketInformationComposite = ({ rateType, previewPrices }: MarketInformationCompProps) => {
+export const MarketInformationComposite = ({
+  rateType,
+  previewPrices,
+  isMarketDetailPageV2,
+}: MarketInformationCompProps) => {
   const { chainId } = useMarketContext()
   return (
     <Stack sx={{ gap: PAGE_SPACING }}>
@@ -35,13 +44,17 @@ export const MarketInformationComposite = ({ rateType, previewPrices }: MarketIn
       )}
       <MarketHistoricalRatesChart rateMode={MarketRateType.Supply} />
       <MarketRateCurveChart />
-      <Card size="small">
-        <CardHeader title={t`Advanced Details`} />
-        <CardContent component={Stack}>
-          <AdvancedDetails />
-          <MarketInfoLayout network={networks[chainId]} />
-        </CardContent>
-      </Card>
+      {isMarketDetailPageV2 ? (
+        <MarketParametersCard network={networks[chainId]} />
+      ) : (
+        <Card size="small">
+          <CardHeader title={t`Advanced Details`} />
+          <CardContent component={Stack}>
+            <AdvancedDetails />
+            <MarketInfoLayout network={networks[chainId]} />
+          </CardContent>
+        </Card>
+      )}
 
       <MarketFaq />
     </Stack>

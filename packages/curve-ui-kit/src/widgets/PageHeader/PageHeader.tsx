@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import type { ElementType, ReactNode } from 'react'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -21,6 +21,7 @@ export const PageHeader = ({
   subtitle,
   titleLoading = false,
   subtitleLoading = false,
+  titleComponent,
   icon,
   titleItems,
   rightItems,
@@ -30,6 +31,7 @@ export const PageHeader = ({
   subtitle?: string
   titleLoading?: boolean
   subtitleLoading?: boolean
+  titleComponent?: ElementType
   backHref?: string
   icon?: ReactNode
   titleItems?: ReactNode
@@ -48,7 +50,11 @@ export const PageHeader = ({
         <Stack>
           <Stack direction="row" sx={{ alignItems: 'center', flexWrap: 'wrap', gap: Spacing.xs }}>
             <WithSkeleton loading={titleLoading}>
-              <Typography variant="headingSBold" sx={{ overflowWrap: 'anywhere' }}>
+              <Typography
+                {...(titleComponent ? { component: titleComponent } : {})}
+                variant="headingSBold"
+                sx={{ overflowWrap: 'anywhere' }}
+              >
                 {title ?? 'Page header' /** For skeleton width inference */}
               </Typography>
             </WithSkeleton>

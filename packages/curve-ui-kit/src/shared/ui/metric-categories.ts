@@ -93,6 +93,7 @@ export const METRIC_CATEGORIES = {
   // LlamaLend
   'llamalend.marketHeader': METRIC_TYPES.primaryStat,
   'llamalend.marketCharts': METRIC_TYPES.primaryStat,
+  'llamalend.marketOverview': METRIC_TYPES.secondaryStat,
   'llamalend.marketAdvancedDetails': METRIC_TYPES.responsiveDetail,
   'llamalend.marketListRates': METRIC_TYPES.primaryStat,
   'llamalend.marketListExpandedDetails': METRIC_TYPES.responsiveDetail,
