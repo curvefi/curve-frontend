@@ -1,6 +1,8 @@
+import type { Address } from 'viem'
 import type { Campaign, CampaignPool } from '@external-rewards'
 
-type CampaignReward = { type: 'apr'; value: number } | { type: 'points'; value: number }
+type CampaignReward =
+  { type: 'apr'; value: number; address: Address; price?: number } | { type: 'points'; value: number }
 
 export type CampaignRewards = Pick<Campaign, 'campaignName' | 'platform' | 'platformImageId' | 'dashboardLink'> &
   Pick<CampaignPool, 'action' | 'tags' | 'address' | 'network'> & {
