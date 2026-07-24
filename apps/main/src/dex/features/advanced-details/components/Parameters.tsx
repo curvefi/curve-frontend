@@ -16,7 +16,7 @@ import { dayjs } from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { mapQuery } from '@ui-kit/types/util'
+import { fallbackQ, mapQuery } from '@ui-kit/types/util'
 import { amount, Chain, formatNumber } from '@ui-kit/utils'
 import { Section } from './Section'
 
@@ -37,19 +37,10 @@ export const Parameters = ({
   const metadata = usePoolMetadata({ chain, poolAddress })
   const parameters = usePoolParameters({ chainId, poolId })
   const snapshots = usePoolSnapshots({ chain, poolAddress })
-  const snapshotData = snapshots.data?.[0] // todo: use fallbackQ
+  const snapshotData = snapshots.data?.[0]
   const isFxSwap = metadata.data?.hasDonations ?? false
-  const {
-    A,
-    initial_A,
-    initial_A_time,
-    virtualPrice,
-    future_A,
-    future_A_time,
-    gamma,
-    adminFee = '',
-    fee,
-  } = parameters.data ?? {}
+  const { A, initial_A, initial_A_time, future_A, future_A_time, gamma, adminFee = '' } = parameters.data ?? {}
+
   const formatADisplay = (a: number | string | undefined) =>
     formatNumber(amount(!isFxSwap || a == null ? a : formatCryptoA(a, FXSWAP)), { abbreviate: false, fallback: '-' })
   // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
@@ -67,13 +58,18 @@ export const Parameters = ({
         <Section>
           <ActionInfo
             label={t`AMM fee`}
-            value={mapQuery(snapshots, () =>
-              formatNumber(amount(fee ?? maybe(snapshotData?.fee, fee => fee / 10 ** 8)), {
-                maximumFractionDigits: 4,
-                unit: 'percentage',
-                abbreviate: false,
-                fallback: '-',
-              }),
+            value={mapQuery(
+              fallbackQ(
+                mapQuery(parameters, ({ fee }) => fee),
+                mapQuery(snapshots, ([snapshot]) => maybe(snapshot?.fee, fee => fee / 10 ** 8)),
+              ),
+              fee =>
+                formatNumber(amount(fee), {
+                  maximumFractionDigits: 4,
+                  unit: 'percentage',
+                  abbreviate: false,
+                  fallback: '-',
+                }),
             )}
           />
 
@@ -94,12 +90,17 @@ export const Parameters = ({
 
           <ActionInfo
             label={t`Virtual price`}
-            value={mapQuery(snapshots, () =>
-              formatNumber(amount(virtualPrice ?? maybe(snapshotData?.virtualPrice, x => x / 10 ** 18)), {
-                maximumFractionDigits: 8,
-                abbreviate: false,
-                fallback: '-',
-              }),
+            value={mapQuery(
+              fallbackQ(
+                mapQuery(parameters, ({ virtualPrice }) => virtualPrice),
+                mapQuery(snapshots, ([snapshot]) => maybe(snapshot?.virtualPrice, value => value / 10 ** 18)),
+              ),
+              value =>
+                formatNumber(amount(value), {
+                  maximumFractionDigits: 8,
+                  abbreviate: false,
+                  fallback: '-',
+                }),
             )}
             valueTooltip={t`Measures pool growth; this is not a dollar value`}
           />
