@@ -1,5 +1,5 @@
-import { type Address } from '@primitives/address.utils'
-import { type Decimal } from '@primitives/decimal.utils'
+import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { RouteProviders, type RouteProvider } from '@primitives/router.utils'
 
 export const ADDRESS_HEX_PATTERN = '^0x[a-fA-F0-9]{40}$'

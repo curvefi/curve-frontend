@@ -20,6 +20,7 @@ import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { chipSizeClickable } from '@ui-kit/themes/components/chip'
 import { TRANSITION_FUNCTION } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { type QueryOrValue, toQuery, toValue } from '@ui-kit/types/util'
 import { decimal, formatNumber } from '@ui-kit/utils'
 import { SelectableChip } from '../SelectableChip'
 import { SliderInput, SliderInputProps } from '../SliderInput'
@@ -56,7 +57,7 @@ export type LargeTokenInputProps = {
    * The current balance value of the input.
    * If undefined, the input is considered uncontrolled.
    */
-  balance?: Decimal
+  balance?: QueryOrValue<Decimal>
 
   /**
    * The token selector UI element to be rendered.
@@ -82,8 +83,7 @@ export type LargeTokenInputProps = {
 
   /** Optional configuration for max balance behavior, which for now are the slider and chips. */
   maxBalance?: {
-    isLoading?: boolean
-    balance?: Decimal
+    balance?: QueryOrValue<Decimal>
     /** Whether to display the percentage slider. */
     showSlider?: boolean
     /** Custom or preset chips to show. */
@@ -108,12 +108,6 @@ export type LargeTokenInputProps = {
 
   /** Optional test ID for testing purposes. */
   testId?: string
-
-  /**
-   * Whether the input is in an error state.
-   * @default false
-   */
-  isError?: boolean
 
   /**
    * Whether the input is disabled.
@@ -183,16 +177,16 @@ export const LargeTokenInput = ({
   message,
   label,
   name,
-  isError = false,
   disabled,
   onBalance,
-  balance: externalBalance,
+  balance: balanceProp,
   inputBalanceUsd,
   testId,
   sliderProps,
   children,
 }: LargeTokenInputProps) => {
   const [percentage, setPercentage] = useState<Decimal | undefined>(undefined)
+  const { data: externalBalance, error } = toQuery(balanceProp)
   const [balance, setBalance, cancelSetBalance] = useUniqueDebounce({
     defaultValue: externalBalance,
     callback: onBalance,
@@ -200,13 +194,13 @@ export const LargeTokenInput = ({
     equals: bigNumEquals,
   })
 
-  const showSlider = !!maxBalance?.showSlider && !!maxBalance?.balance
   const chips = typeof maxBalance?.chips === 'string' ? CHIPS_PRESETS[maxBalance.chips] : maxBalance?.chips
   const showChips = !!chips?.length
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-  const chipDisabled = disabled || maxBalance?.isLoading
+  const { data: maxBalanceValue, isLoading: maxBalanceLoading, error: maxBalanceError } = toQuery(maxBalance?.balance)
+  const showSlider = !!maxBalance?.showSlider && maxBalanceValue != null
+  const chipDisabled = !!disabled || maxBalanceLoading
+  const isError = !!maxBalanceError || !!error
 
-  const maxBalanceValue = maxBalance?.balance
   const handlePercentageChange = useCallback(
     (newPercentage: Decimal | undefined) => {
       setPercentage(newPercentage)
@@ -257,9 +251,8 @@ export const LargeTokenInput = ({
   // Expose reset balance function for parent user to reset both balance and percentage, without lifting up state.
   useImperativeHandle(ref, () => ({ resetBalance }), [resetBalance])
 
-  const onWalletBalance = useCallback(() => {
-    handleBalanceChange(walletBalance?.balance)
-  }, [handleBalanceChange, walletBalance?.balance])
+  const walletValue = toValue(walletBalance?.balance)
+  const onWalletBalance = useCallback(() => handleBalanceChange(walletValue), [handleBalanceChange, walletValue])
 
   const componentId = useId()
 
@@ -327,14 +320,14 @@ export const LargeTokenInput = ({
                     <SelectableChip
                       key={`input-chip-${chip.label}`}
                       label={
-                        <WithSkeleton loading={!!maxBalance?.isLoading}>
+                        <WithSkeleton loading={maxBalanceLoading}>
                           <span>{chip.label}</span>
                         </WithSkeleton>
                       }
                       data-testid={!chipDisabled && `input-chip-${chip.label}`}
                       disabled={chipDisabled}
                       toggle={() => {
-                        const newBalance = chip.newBalance(maxBalance?.balance)
+                        const newBalance = chip.newBalance(maxBalanceValue)
                         if (newBalance !== undefined) {
                           handleBalanceChange(newBalance)
                         }

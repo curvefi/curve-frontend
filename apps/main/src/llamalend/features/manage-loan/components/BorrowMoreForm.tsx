@@ -129,8 +129,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
               prefix={t`Max borrow amount:`}
               tooltip={t`Max available to borrow`}
               symbol={borrowToken?.symbol}
-              balance={max.debt.data}
-              loading={max.debt.isLoading}
+              balance={max.debt}
               onClick={() => updateForm({ debt: max.debt.data })}
             />
           }

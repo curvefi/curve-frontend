@@ -3,7 +3,6 @@ import { t } from '@ui-kit/lib/i18n'
 import type { ExpandedPanelComponent } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { Metric, type MetricProps } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { constQ } from '@ui-kit/types/util'
 import { aprToApy, AVERAGE_CATEGORIES, decimal } from '@ui-kit/utils'
 import { RewardsCell } from '../cells/RewardsCell'
 import { PoolColumnId } from '../columns/columns.enum'
@@ -19,7 +18,7 @@ const ListInfoItem = ({
   ...props
 }: Omit<MetricProps, 'value' | 'category'> & { value: number | string | undefined | null }) => (
   <Grid size={6}>
-    <Metric category="dex.poolListMobileExpanded" value={constQ(decimal(value) ?? null)} {...props} />
+    <Metric category="dex.poolListMobileExpanded" value={decimal(value) ?? null} {...props} />
   </Grid>
 )
 

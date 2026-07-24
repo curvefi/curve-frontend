@@ -1,11 +1,13 @@
 import type { Address } from 'viem'
 import type { Chain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
+import { maybe } from '@primitives/objects.utils'
 import { FormButton } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
 import { HelperMessage, LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { q } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
@@ -32,16 +34,19 @@ export const RefuelForm = ({ chainId, blockchainId, poolAddress }: RefuelFormPar
     <Form
       {...form}
       onSubmit={onSubmit}
-      footer={<RefuelFormList values={values} tokenA={tokenA} tokenB={tokenB} poolTvl={poolTvl} />}
+      footer={
+        <RefuelFormList values={values} tokenARate={tokenA.usdRate} tokenBRate={tokenB.usdRate} poolTvl={poolTvl} />
+      }
     >
       <Stack sx={{ gap: Spacing.sm }}>
         <LargeTokenInput
           name="tokenAAmount"
-          balance={values.tokenAAmount}
+          balance={q({ data: values.tokenAAmount, isLoading: false, error: maybe(tokenA.amountError, Error) ?? null })}
           onBalance={tokenAAmount => form.update({ tokenAAmount })}
-          isError={!!tokenA.amountError}
           walletBalance={tokenA}
-          inputBalanceUsd={decimal(values.tokenAAmount && tokenA.usdRate && tokenA.usdRate * +values.tokenAAmount)}
+          inputBalanceUsd={decimal(
+            values.tokenAAmount && tokenA.usdRate.data && tokenA.usdRate.data * +values.tokenAAmount,
+          )}
           tokenSelector={
             <TokenLabel
               blockchainId={blockchainId}
@@ -62,11 +67,12 @@ export const RefuelForm = ({ chainId, blockchainId, poolAddress }: RefuelFormPar
 
         <LargeTokenInput
           name="tokenBAmount"
-          balance={values.tokenBAmount}
+          balance={q({ data: values.tokenBAmount, isLoading: false, error: maybe(tokenB.amountError, Error) ?? null })}
           onBalance={tokenBAmount => form.update({ tokenBAmount })}
-          isError={!!tokenB.amountError}
           walletBalance={tokenB}
-          inputBalanceUsd={decimal(values.tokenBAmount && tokenB.usdRate && tokenB.usdRate * +values.tokenBAmount)}
+          inputBalanceUsd={decimal(
+            values.tokenBAmount && tokenB.usdRate.data && tokenB.usdRate.data * +values.tokenBAmount,
+          )}
           tokenSelector={
             <TokenLabel
               blockchainId={blockchainId}

@@ -1,6 +1,7 @@
 import { orderBy } from 'lodash'
 import { getPoolsTvlLabelRange, POOL_DEFAULT_TVL_MIN } from '@/dex/features/pool-list/filters/utils'
 import { DEX_POOL_LIST_SEARCH, setupDexPoolListMocks } from '@cy/support/helpers/dex-pool-list-mocks'
+import { expandFirstRowOnMobile } from '@cy/support/helpers/data-table.helpers'
 import { mockMerklCampaigns } from '@cy/support/helpers/lending-mocks'
 import { API_LOAD_TIMEOUT, type Breakpoint, LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
 import { assert } from '@primitives/objects.utils'
@@ -336,8 +337,7 @@ describe('DEX Pools', () => {
     cy.wait('@dex-pools', API_LOAD_TIMEOUT)
     cy.contains('[data-testid^="market-link-"]', filter, API_LOAD_TIMEOUT).should('be.visible')
     if (breakpoint === 'mobile') {
-      cy.get('[data-testid^="data-table-row-"]').first().click()
-      cy.get('[data-testid="data-table-expansion-row"]').should('be.visible')
+      expandFirstRowOnMobile(breakpoint)
       cy.get(`[data-testid="pool-link-deposit"]`).click({ waitForAnimations: false })
     } else {
       cy.contains('[data-testid^="market-link-"]', filter).click()

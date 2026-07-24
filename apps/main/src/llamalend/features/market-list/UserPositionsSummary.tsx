@@ -19,14 +19,7 @@ const UserPositionStatisticItem = ({
   itemSize,
 }: UserPositionSummaryMetric & { itemSize: GridProps['size'] }) => (
   <Grid size={itemSize}>
-    <Metric
-      value={metric}
-      category="llamalend.marketListSummary"
-      valueOptions={{
-        unit: 'dollar',
-      }}
-      label={label}
-    />
+    <Metric value={metric} category="llamalend.marketListSummary" valueOptions={{ unit: 'dollar' }} label={label} />
   </Grid>
 )
 

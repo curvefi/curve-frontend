@@ -18,13 +18,9 @@ export type UseLiquidityDetailsParams = {
 
 export const useLiquidityDetails = ({ chainId, poolDataCacheOrApi, poolId }: UseLiquidityDetailsParams) => {
   const { address: userAddress } = useConnection()
-  const {
-    lpTokenBalance,
-    gaugeTokenBalance,
-    isLoading: isLoadingTokenBalances,
-  } = usePoolTokenDepositBalances({ chainId, poolId, userAddress })
+  const { lpTokenBalance, gaugeTokenBalance } = usePoolTokenDepositBalances({ chainId, poolId, userAddress })
 
-  const hasPosition = Number(lpTokenBalance) > 0 || Number(gaugeTokenBalance) > 0
+  const hasPosition = Number(lpTokenBalance.data) > 0 || Number(gaugeTokenBalance.data) > 0
   const queryParams = { chainId, poolId, userAddress }
 
   const userBalances = useUserPoolBalancesQuery(queryParams, hasPosition)
@@ -32,12 +28,9 @@ export const useLiquidityDetails = ({ chainId, poolDataCacheOrApi, poolId }: Use
   const userShare = useUserPoolShareQuery(queryParams, hasPosition)
   const userBoost = useUserPoolBoostQuery(queryParams, hasPosition)
 
-  const tokenBalanceQueryState = { isLoading: isLoadingTokenBalances, error: null } // usePoolTokenDepositBalances has no proper error yet
-  const stakedBalance = q({ data: gaugeTokenBalance, ...tokenBalanceQueryState })
-  const unstakedBalance = q({ data: lpTokenBalance, ...tokenBalanceQueryState })
-  const lpTokenTotal = combineQueries([unstakedBalance, stakedBalance], decimalSum)
-  const stakedPercent = combineQueries([stakedBalance, lpTokenTotal], decimalPercent)
-  const unstakedPercent = combineQueries([unstakedBalance, lpTokenTotal], decimalPercent)
+  const lpTokenTotal = combineQueries([lpTokenBalance, gaugeTokenBalance], decimalSum)
+  const stakedPercent = combineQueries([gaugeTokenBalance, lpTokenTotal], decimalPercent)
+  const unstakedPercent = combineQueries([lpTokenBalance, lpTokenTotal], decimalPercent)
 
   const withdrawRows = useMemo(
     () =>
@@ -52,9 +45,9 @@ export const useLiquidityDetails = ({ chainId, poolDataCacheOrApi, poolId }: Use
   return {
     hasPosition,
     marketParticipation: {
-      stakedBalance,
+      stakedBalance: gaugeTokenBalance,
       stakedPercent,
-      unstakedBalance,
+      unstakedBalance: lpTokenBalance,
       unstakedPercent,
       userLpShare: mapQuery(userShare, ({ lpShare }) => lpShare),
     },

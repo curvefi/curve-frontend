@@ -2,11 +2,13 @@ import { useCallback, useMemo } from 'react'
 import type { FormType, VecrvInfo } from '@/dao/components/PageVeCrv/types'
 import { CurveApi } from '@/dao/types/dao.types'
 import type { Decimal } from '@primitives/decimal.utils'
+import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 import { HelperMessage, LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
+import { q } from '@ui-kit/types/util'
 import { MAINNET_CRV_ADDRESS, decimal, formatNumber, amount } from '@ui-kit/utils'
 
 export const FieldLockedAmt = ({
@@ -49,8 +51,7 @@ export const FieldLockedAmt = ({
     <LargeTokenInput
       name="lockedAmt"
       disabled={disabled}
-      balance={decimal(lockedAmt)}
-      isError={!!lockedAmtError}
+      balance={q({ data: decimal(lockedAmt), isLoading: false, error: maybe(lockedAmtError, Error) })}
       message={
         !!crv && lockedAmtError ? (
           <>
@@ -70,8 +71,11 @@ export const FieldLockedAmt = ({
       }
       onBalance={onBalance}
       walletBalance={{
-        balance: decimal(crv),
-        loading: haveSigner && typeof crv === 'string' && String(crv).length === 0,
+        balance: q({
+          data: decimal(crv),
+          isLoading: haveSigner && typeof crv === 'string' && String(crv).length === 0,
+          error: null,
+        }),
         symbol: 'CRV',
       }}
       tokenSelector={<TokenLabel blockchainId="ethereum" address={MAINNET_CRV_ADDRESS} label="CRV" />}

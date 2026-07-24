@@ -4,15 +4,15 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
+import { q, type QueryProp } from '@ui-kit/types/util'
 import { decimal, shortenAddress } from '@ui-kit/utils'
 
 type Props = {
   idx: number
   amount: string
-  balance: string | undefined
-  balanceLoading: boolean
+  balance: QueryProp<Decimal | undefined>
   disabled: boolean
-  hasError: boolean
+  isNotEnough: boolean
   haveSameTokenName?: boolean
   haveSigner: boolean
   hideMaxButton?: boolean
@@ -29,11 +29,10 @@ export const FieldToken = ({
   idx,
   amount,
   balance,
-  balanceLoading,
   disabled,
   haveSameTokenName,
   hideMaxButton = false,
-  hasError,
+  isNotEnough,
   haveSigner,
   blockchainId,
   isWithdraw = false,
@@ -48,28 +47,18 @@ export const FieldToken = ({
 
   const isNetworkToken = !isWithdraw && tokenAddress.toLowerCase() === ethAddress
   const onMax = useCallback(() => {
-    handleAmountChange(balance!, idx)
+    handleAmountChange(balance.data!, idx)
     afterMaxClick?.(idx)
-  }, [idx, afterMaxClick, handleAmountChange, balance])
+  }, [idx, afterMaxClick, handleAmountChange, balance.data])
 
   return (
     <LargeTokenInput
       name={token}
       disabled={disabled}
-      isError={hasError}
       {...(showAvailableBalance && {
-        walletBalance: {
-          balance: decimal(balance),
-          symbol: token,
-          loading: balanceLoading || isMaxLoading,
-        },
+        walletBalance: { balance: q({ ...balance, isLoading: balance.isLoading || !!isMaxLoading }), symbol: token },
       })}
-      {...(showAvailableBalance &&
-        !hideMaxButton && {
-          maxBalance: {
-            chips: [{ label: t`Max`, newBalance: onMax }],
-          },
-        })}
+      {...(showAvailableBalance && !hideMaxButton && { maxBalance: { chips: [{ label: t`Max`, newBalance: onMax }] } })}
       tokenSelector={
         <TokenLabel
           blockchainId={blockchainId}
@@ -79,7 +68,11 @@ export const FieldToken = ({
         />
       }
       {...(haveSameTokenName && { label: `${token} ${shortenAddress(tokenAddress)}` })}
-      balance={decimal(amount)}
+      balance={q({
+        data: decimal(amount),
+        error: isNotEnough ? new Error(t`Not enough tokens`) : null,
+        isLoading: false,
+      })}
       onBalance={onBalance}
     />
   )

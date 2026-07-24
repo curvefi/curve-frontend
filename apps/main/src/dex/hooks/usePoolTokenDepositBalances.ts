@@ -1,10 +1,11 @@
 import { useMemo } from 'react'
 import { type Address, isAddressEqual, zeroAddress } from 'viem'
 import type { Config } from 'wagmi'
-import { useCurve, type CurveApi } from '@ui-kit/features/connect-wallet'
+import { type CurveApi, useCurve } from '@ui-kit/features/connect-wallet'
 import { fetchTokenBalance, useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import type { FieldsOf } from '@ui-kit/lib'
 import type { ChainQuery, PoolQuery, UserQuery } from '@ui-kit/lib/model'
+import { q } from '@ui-kit/types/util'
 
 type Query = ChainQuery & UserQuery & PoolQuery
 type Params = FieldsOf<Query>
@@ -17,30 +18,15 @@ export function usePoolTokenDepositBalances({ chainId, userAddress, poolId }: Pa
     [curveApi, isHydrated, poolId],
   )
 
-  const { data: lpTokenBalance, isLoading: lpTokenLoading } = useTokenBalance(
-    {
-      chainId,
-      userAddress,
-      tokenAddress: pool?.lpToken as Address,
-    },
-    enabled && isHydrated,
-  )
-
   const hasGauge = pool?.gauge.address != null && !isAddressEqual(pool.gauge.address as Address, zeroAddress)
-  const { data: gaugeTokenBalance, isLoading: gaugeTokenLoading } = useTokenBalance(
-    {
-      chainId,
-      userAddress,
-      tokenAddress: pool?.gauge.address as Address,
-    },
-    enabled && hasGauge,
-  )
-
   return {
-    lpTokenBalance,
     hasGauge,
-    gaugeTokenBalance,
-    isLoading: lpTokenLoading || gaugeTokenLoading,
+    lpTokenBalance: q(
+      useTokenBalance({ chainId, userAddress, tokenAddress: pool?.lpToken as Address }, enabled && isHydrated),
+    ),
+    gaugeTokenBalance: q(
+      useTokenBalance({ chainId, userAddress, tokenAddress: pool?.gauge.address as Address }, enabled && hasGauge),
+    ),
   }
 }
 

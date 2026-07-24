@@ -1,13 +1,15 @@
 import { RefuelFormList } from '@/dex/features/manage-pool/components/RefuelFormList'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
+import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
+import { constQ } from '@ui-kit/types/util'
 
 type RefuelFormListProps = Parameters<typeof RefuelFormList>[0]
 
 const baseProps = {
   values: { tokenAAmount: undefined, tokenBAmount: undefined },
-  tokenA: { usdRate: 1, isLoading: false },
-  tokenB: { usdRate: 2, isLoading: false },
-  poolTvl: { usd: 1_000, isLoading: false },
+  tokenARate: constQ(1),
+  tokenBRate: constQ(2),
+  poolTvl: constQ(1_000),
 } satisfies RefuelFormListProps
 
 const mountRefuelFormList = (props: RefuelFormListProps) => {
@@ -18,22 +20,14 @@ const mountRefuelFormList = (props: RefuelFormListProps) => {
   )
 }
 
-const expectActionValue = (testId: string, value: string) => {
-  cy.get(`[data-testid="${testId}-value"]`).should('have.attr', 'data-value', value).and('have.text', value)
-}
-
-const expectEmptyProjections = () => {
-  expectActionValue('refuel-size-action-info', '-')
-  expectActionValue('refuel-weekly-action-info', '-')
-  expectActionValue('refuel-bi-weekly-action-info', '-')
-  expectActionValue('refuel-monthly-action-info', '-')
-}
-
 describe('RefuelFormList', () => {
   it('shows empty projections until an amount is entered', () => {
     mountRefuelFormList(baseProps)
 
-    expectEmptyProjections()
+    getActionValue('refuel-size-action-info').should('equal', '-')
+    getActionValue('refuel-weekly-action-info').should('equal', '-')
+    getActionValue('refuel-bi-weekly-action-info').should('equal', '-')
+    getActionValue('refuel-monthly-action-info').should('equal', '-')
   })
 
   it('calculates the pool share and yearly projections from token amounts', () => {
@@ -42,19 +36,22 @@ describe('RefuelFormList', () => {
       values: { tokenAAmount: '2', tokenBAmount: '3' },
     })
 
-    expectActionValue('refuel-size-action-info', '0.80%')
-    expectActionValue('refuel-weekly-action-info', '41.60%')
-    expectActionValue('refuel-bi-weekly-action-info', '20.80%')
-    expectActionValue('refuel-monthly-action-info', '9.60%')
+    getActionValue('refuel-size-action-info').should('equal', '0.80%')
+    getActionValue('refuel-weekly-action-info').should('equal', '41.60%')
+    getActionValue('refuel-bi-weekly-action-info').should('equal', '20.80%')
+    getActionValue('refuel-monthly-action-info').should('equal', '9.60%')
   })
 
   it('falls back when pricing or TVL data is unavailable', () => {
     mountRefuelFormList({
       ...baseProps,
       values: { tokenAAmount: '10', tokenBAmount: undefined },
-      tokenB: { usdRate: undefined, isLoading: false },
+      tokenBRate: constQ(undefined),
     })
 
-    expectEmptyProjections()
+    getActionValue('refuel-size-action-info').should('be.undefined')
+    getActionValue('refuel-weekly-action-info').should('be.undefined')
+    getActionValue('refuel-bi-weekly-action-info').should('be.undefined')
+    getActionValue('refuel-monthly-action-info').should('be.undefined')
   })
 })

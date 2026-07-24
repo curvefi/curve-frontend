@@ -66,14 +66,14 @@ export const DexPool: Story = {
         <Metric
           category={METRIC_CATEGORY}
           label="TVL"
-          value={constQ(246_800_000)}
+          value={246_800_000}
           valueOptions={{ unit: 'dollar' }}
           alignment="end"
         />
         <Metric
           category={METRIC_CATEGORY}
           label="24h volume"
-          value={constQ(48_200_000)}
+          value={48_200_000}
           valueOptions={{ unit: 'dollar' }}
           alignment="end"
         />
@@ -95,7 +95,7 @@ export const LlamalendLendMarket: Story = {
           category={METRIC_CATEGORY}
           alignment="end"
           label="Borrow APR"
-          value={constQ(2.082)}
+          value={2.082}
           valueOptions={{ unit: 'percentage' }}
           notional={constQ({ value: 2.075, unit: { symbol: '% 7d Avg', position: 'suffix' } })}
         />
@@ -103,7 +103,7 @@ export const LlamalendLendMarket: Story = {
           category={METRIC_CATEGORY}
           alignment="end"
           label="Net supply APY"
-          value={constQ(4.037)}
+          value={4.037}
           valueOptions={{ unit: 'percentage' }}
           notional={constQ({ value: 4.034, unit: { symbol: '% 7d Avg', position: 'suffix' } })}
         />
@@ -111,7 +111,7 @@ export const LlamalendLendMarket: Story = {
           category={METRIC_CATEGORY}
           alignment="end"
           label="Available liquidity"
-          value={constQ(12_500_000)}
+          value={12_500_000}
           valueOptions={{ unit: 'none' }}
           notional={constQ({ value: 12_750_000, unit: 'dollar' })}
         />

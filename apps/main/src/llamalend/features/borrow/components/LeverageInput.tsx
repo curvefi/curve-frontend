@@ -4,7 +4,7 @@ import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
-import type { QueryProp } from '@ui-kit/types/util'
+import { mapQuery, type QueryProp } from '@ui-kit/types/util'
 import { formatNumber } from '@ui-kit/utils'
 import { CheckboxField } from '@ui-kit/widgets/DetailPageLayout/CheckboxField'
 
@@ -12,7 +12,7 @@ const TEST_ID_PREFIX = 'leverage'
 
 export const LeverageInput = ({
   checked,
-  leverage: { data: leverage, error: leverageError, isLoading: isLeverageLoading },
+  leverage,
   onToggle,
   maxLeverage,
 }: {
@@ -21,7 +21,7 @@ export const LeverageInput = ({
   onToggle: (event: ChangeEvent<HTMLInputElement>) => void
   maxLeverage: Decimal | undefined
 }) => (
-  <WithSkeleton loading={isLeverageLoading} width="100%">
+  <WithSkeleton loading={leverage.isLoading} width="100%">
     <CheckboxField
       checked={!!checked}
       disabled={!maxLeverage}
@@ -31,10 +31,7 @@ export const LeverageInput = ({
       endContent={
         <ActionInfo
           label={t`Leverage`}
-          value={formatNumber(maybe(leverage, Number) && leverage, 'multiplier')}
-          valueColor={leverageError ? 'error' : undefined}
-          loading={isLeverageLoading}
-          error={leverageError}
+          value={mapQuery(leverage, v => formatNumber(maybe(v, Number) && v, 'multiplier'))}
           size="medium"
           data-testid={`${TEST_ID_PREFIX}-value`}
         />
