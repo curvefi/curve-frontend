@@ -78,7 +78,7 @@ const meta: Meta<typeof ActionInfoStory> = {
     },
     skeleton: {
       control: 'text',
-      description: 'Skeleton dimensions or fallback value shown while loading',
+      description: 'Skeleton dimensions or representative value used to infer its dimensions',
     },
     loading: {
       control: 'boolean',

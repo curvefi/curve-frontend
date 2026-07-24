@@ -49,7 +49,7 @@ export type ActionInfoProps = {
   futureValue?: QueryOrValue<ReactNode>
   /** Custom color for the current value text. */
   currentValueColor?: TypographyProps['color']
-  /** Skeleton dimensions or fallback value */
+  /** Skeleton dimensions or a representative value used to infer its dimensions */
   skeleton?: [number, number] | string
 }
 
@@ -147,6 +147,12 @@ export const ActionInfo = (props: ActionInfoProps) => {
   const isLoading = valueLoading || givenFutureValue?.isLoading
   const futureValue = givenFutureValue?.data ?? givenCurrentValue
   const value = futureValue === givenCurrentValue ? null : givenCurrentValue
+  const skeletonDimensions = Array.isArray(skeleton)
+    ? { width: skeleton[0], height: skeleton[1] }
+    : typeof skeleton === 'string'
+      ? {}
+      : { width: '2ch', height: '1rem' }
+  const displayedValue = isLoading && typeof skeleton === 'string' ? skeleton : error ? '' : (futureValue ?? '-')
 
   const copyToClipboard = useCopyToClipboard({ copyText: copyValue })
 
@@ -198,13 +204,7 @@ export const ActionInfo = (props: ActionInfoProps) => {
               >
                 <ValueDecorator value={valueLeft} size={size} valueColor={valueColor} testId={`${testId}-left`} />
 
-                <WithSkeleton
-                  component="div"
-                  loading={isLoading}
-                  {...(Array.isArray(skeleton)
-                    ? { width: skeleton[0], height: skeleton[1] }
-                    : { width: '2ch', height: '1rem' })}
-                >
+                <WithSkeleton component="div" loading={isLoading} {...skeletonDimensions}>
                   <ValueTypography
                     size={size}
                     valueColor={valueColor}
@@ -212,7 +212,7 @@ export const ActionInfo = (props: ActionInfoProps) => {
                     value={copyValue ?? futureValue}
                     onClick={copyValue && !isLoading && !error ? copyToClipboard : undefined}
                   >
-                    {typeof isLoading === 'string' ? isLoading : error ? '' : (futureValue ?? '-')}
+                    {displayedValue}
                   </ValueTypography>
                 </WithSkeleton>
               </Stack>
