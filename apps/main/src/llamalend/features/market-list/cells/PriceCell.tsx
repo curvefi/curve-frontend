@@ -7,7 +7,8 @@ import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtT
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { notFalsyArray } from '@primitives/objects.utils'
+import type { Decimal } from '@primitives/decimal.utils'
+import { maybe, maybes, notFalsyArray } from '@primitives/objects.utils'
 import type { CellContext } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
@@ -15,7 +16,8 @@ import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { decimal, requireChainId, formatNumber } from '@ui-kit/utils'
+import { type QueryProp, fakeLoadingQ } from '@ui-kit/types/util'
+import { decimal, decimalMultiply, requireChainId, formatNumber } from '@ui-kit/utils'
 import { MarketColumnId } from '../columns'
 import { ErrorCell } from './ErrorCell'
 
@@ -67,7 +69,13 @@ const getTooltipTitle = (columnId: MarketColumnId) =>
  * @param columnId - The column identifier
  * @param stats - The user's market statistics
  */
-const getTooltipBody = (columnId: MarketColumnId, stats: MarketStats): ReactNode | undefined => {
+const getTooltipBody = (
+  columnId: MarketColumnId,
+  stats: MarketStats,
+  oraclePrice: number | undefined,
+  totalValue: Decimal | undefined,
+  totalValueUsd: QueryProp<Decimal>,
+): ReactNode | undefined => {
   if (columnId === MarketColumnId.UserBorrowed) {
     return <TotalDebtTooltipContent />
   }
@@ -78,18 +86,15 @@ const getTooltipBody = (columnId: MarketColumnId, stats: MarketStats): ReactNode
         {...{
           collateral: {
             value: decimal(stats?.collateral?.amount),
-            usdRate: stats?.collateral?.usdRate,
+            conversionRate: oraclePrice,
             symbol: stats?.collateral?.symbol,
           },
           borrow: {
             value: decimal(stats?.borrowToken?.amount),
-            usdRate: stats?.borrowToken?.usdRate,
             symbol: stats?.borrowToken?.symbol,
           },
-          totalValue: `${
-            (stats?.collateral?.amount ?? 0) * (stats?.collateral?.usdRate ?? 0) +
-            (stats?.borrowToken?.amount ?? 0) * (stats?.borrowToken?.usdRate ?? 0)
-          }`,
+          totalValue,
+          totalValueUsd,
         }}
       />
     )
@@ -184,7 +189,15 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
   const tooltipTitle =
     getTooltipTitle(columnId) ??
     `${formatNumber(primaryValue, { decimals: 5, abbreviate: false })} ${primaryAsset.symbol}`
-  const tooltipBody = getTooltipBody(columnId, stats)
+  const totalValue = maybe(market.oraclePrice, oraclePrice =>
+    decimal((stats?.collateral?.amount ?? 0) * oraclePrice + (stats?.borrowToken?.amount ?? 0)),
+  )
+  const totalValueUsd = fakeLoadingQ(
+    maybes([totalValue, stats?.borrowToken?.usdRate], (totalValue, borrowUsdRate) =>
+      decimalMultiply(totalValue, borrowUsdRate),
+    ),
+  )
+  const tooltipBody = getTooltipBody(columnId, stats, market.oraclePrice, totalValue, totalValueUsd)
 
   const primaryUsdValue = primaryPrice && primaryValue * primaryPrice
   const secondaryUsdValue = secondaryPrice && secondaryValue && secondaryValue * secondaryPrice

@@ -16,12 +16,14 @@ type LiquidationThresholdTooltipContentProps = {
   userPrices: QueryProp<Range<Decimal> | null>
   rangeToLiquidation: QueryProp<Decimal | null>
   params: UserMarketParams
+  priceUnit: string
 }
 
 export const LiquidationThresholdTooltipContent = ({
   userPrices: { data: liquidationRange },
   rangeToLiquidation: { data: rangeToLiquidation },
   params,
+  priceUnit,
 }: LiquidationThresholdTooltipContentProps) => {
   const { data: bandRange } = useUserBands(params)
   return (
@@ -37,12 +39,12 @@ export const LiquidationThresholdTooltipContent = ({
           {rangeToLiquidation != null ? formatNumber(rangeToLiquidation, 'percent.value') : UNAVAILABLE_NOTATION}
         </TooltipItem>
         <TooltipItem title={t`Liquidation range`} variant="independent">
-          {liquidationRange?.map(price => formatNumber(price, 'usd.amount')).join(' to ') ?? UNAVAILABLE_NOTATION}
+          {liquidationRange
+            ? `${liquidationRange.map(price => formatNumber(price, 'token.amount')).join(' to ')} ${priceUnit}`
+            : UNAVAILABLE_NOTATION}
         </TooltipItem>
         <TooltipItem title={t`Amount of bands`} variant="independent">
-          {bandRange
-            ? formatNumber(Math.abs(bandRange[0] - bandRange[1]), { abbreviate: false })
-            : UNAVAILABLE_NOTATION}
+          {bandRange ? formatNumber(Math.abs(bandRange[0] - bandRange[1]), 'token.amount') : UNAVAILABLE_NOTATION}
         </TooltipItem>
         <TooltipItem title={t`Band range`} variant="independent">
           {bandRange ? `${bandRange[0]} to ${bandRange[1]}` : UNAVAILABLE_NOTATION}

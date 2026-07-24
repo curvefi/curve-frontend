@@ -1,4 +1,4 @@
-import { formatMetricValue, formatPercentage, UNAVAILABLE_NOTATION } from '@/llamalend/widgets/tooltips/tooltip.utils'
+import { formatPercentage } from '@/llamalend/widgets/tooltips/tooltip.utils'
 import {
   TooltipDescription,
   TooltipItem,
@@ -8,16 +8,19 @@ import {
 import { Stack } from '@mui/material'
 import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
-import { formatNumber } from '@ui-kit/utils'
+import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
+import type { QueryProp } from '@ui-kit/types/util'
+import { formatNumber, formatToken } from '@ui-kit/utils'
 
 type TokenValues = {
   value: Decimal | undefined | null
-  usdRate: number | undefined | null
   symbol: string | undefined
+  conversionRate?: Decimal | number | null
 }
 
 type CollateralMetricTooltipContentProps = {
   totalValue: Decimal | undefined | null
+  totalValueUsd: QueryProp<Decimal>
   collateral: TokenValues
   borrow: TokenValues
 }
@@ -26,34 +29,35 @@ export const CollateralMetricTooltipContent = ({
   collateral,
   borrow,
   totalValue,
-}: CollateralMetricTooltipContentProps) => {
-  const collateralPercentage = formatPercentage(collateral?.value, totalValue, collateral?.usdRate)
-  const borrowPercentage = formatPercentage(borrow?.value, totalValue, borrow?.usdRate)
-  return (
-    <TooltipWrapper>
-      <TooltipDescription
-        text={[
-          t`Collateral value is taken by multiplying tokens in collateral by the oracle price.`,
-          t`In soft liquidation, it may include ${borrow?.symbol ?? 'borrow tokens'} due to liquidation protection.`,
-        ].join(' ')}
-      />
+  totalValueUsd: { data: totalValueUsd, isLoading: isTotalValueUsdLoading },
+}: CollateralMetricTooltipContentProps) => (
+  <TooltipWrapper>
+    <TooltipDescription
+      text={[
+        t`Collateral value is taken by multiplying tokens in collateral by the oracle price.`,
+        t`In soft liquidation, it may include ${borrow?.symbol ?? 'borrow tokens'} due to liquidation protection.`,
+      ].join(' ')}
+    />
 
-      <Stack>
-        <TooltipItems secondary>
-          <TooltipItem title={t`Deposit token`} variant="independent">
-            {`${formatMetricValue(collateral?.value)} ${collateral?.symbol ?? '?'}`}
-            {collateralPercentage && ` (${collateralPercentage})`}
-          </TooltipItem>
-          <TooltipItem title={t`Borrow token`} variant="independent">
-            {`${formatMetricValue(borrow?.value)} ${borrow?.symbol ?? '?'}`}
-            {borrowPercentage && ` (${borrowPercentage})`}
-          </TooltipItem>
-        </TooltipItems>
-      </Stack>
-
+    <Stack>
+      <TooltipItems secondary>
+        <TooltipItem title={t`Deposit token`} variant="independent">
+          {formatToken(collateral?.value, collateral?.symbol)}
+          {formatPercentage(collateral?.value, totalValue, collateral?.conversionRate)}
+        </TooltipItem>
+        <TooltipItem title={t`Borrow token`} variant="independent">
+          {formatToken(borrow?.value, borrow?.symbol)}
+          {formatPercentage(borrow?.value, totalValue, borrow?.conversionRate)}
+        </TooltipItem>
+      </TooltipItems>
+    </Stack>
+    <Stack>
       <TooltipItem title={t`Total collateral value`} variant="independent">
-        {totalValue == null ? UNAVAILABLE_NOTATION : formatNumber(totalValue, 'usd.amount')}
+        {formatToken(totalValue, borrow.symbol, 'amount')}
+        <WithSkeleton loading={isTotalValueUsdLoading} width="3rem">
+          {formatNumber(totalValueUsd, 'usd.amount')}
+        </WithSkeleton>
       </TooltipItem>
-    </TooltipWrapper>
-  )
-}
+    </Stack>
+  </TooltipWrapper>
+)
