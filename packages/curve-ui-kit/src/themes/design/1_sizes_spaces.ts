@@ -257,6 +257,7 @@ export const SizesAndSpaces = {
   Slider: { Height: SliderHeight, ThumbWidth: SliderThumbWidth },
   Width: { modal: MappedModalWidth, column: MappedColumnWidth },
   MinWidth: {
+    healthBar: '0.0625rem', // 1px
     tableHeader: '50rem', // 800px
     select: '5rem', // 80px
     twoCardLayout: 961, // matches old action card breakpoint (in px)

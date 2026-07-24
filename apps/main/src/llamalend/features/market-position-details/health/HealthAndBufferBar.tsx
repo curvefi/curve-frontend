@@ -26,7 +26,7 @@ import {
   getHealthDetailsState,
 } from './utils'
 
-const { Spacing, Height } = SizesAndSpaces
+const { Spacing, Height, MinWidth } = SizesAndSpaces
 
 type HealthQuery = QueryProp<QueryData<typeof useUserHealthValues>>
 
@@ -84,6 +84,7 @@ const Bar = ({
 }) => {
   const { title, tooltip, getValue, getColor, getPercentage } = SEGMENT_CONFIG[type]
   const { data, isLoading } = mapQuery(query, getValue)
+  const percentage = getPercentage(state, data)
   const label = (
     {
       health: maybe(state, s => HEALTH_LABEL[s]),
@@ -121,7 +122,8 @@ const Bar = ({
                 <Box
                   sx={{
                     height: '100%',
-                    width: `${getPercentage(state, data)}%`,
+                    width: `${percentage}%`,
+                    minWidth: percentage > 0 ? MinWidth.healthBar : 'auto',
                     backgroundColor: getColor(state, data),
                   }}
                 />
