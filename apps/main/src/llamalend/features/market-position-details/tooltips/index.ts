@@ -22,6 +22,11 @@ export const HEALTH_TOOLTIP = {
   body: createElement(HealthTooltipContent),
 } as const
 
+export const HEALTH_FACTOR_TOOLTIP = {
+  title: t`Health factor`,
+  body: createElement(HealthTooltipContent, { variant: 'metric' }),
+} as const
+
 export const LIQUIDATION_BUFFER_TOOLTIP = {
   title: t`Liquidation buffer`,
   shortTitle: t`Liq. buffer`,

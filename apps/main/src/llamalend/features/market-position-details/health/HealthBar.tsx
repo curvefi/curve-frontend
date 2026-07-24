@@ -53,7 +53,7 @@ export const HealthBar = ({ health, softLiquidation, small, sx }: HealthBarProps
         sx={{
           position: 'relative',
           width: '100%',
-          height: Height.healthBar.legacy,
+          height: Height.healthDetails.legacyBar,
           backgroundColor: t => t.design.Color.Neutral[300],
           transition: `background-color ${TRANSITION_FUNCTION}`,
         }}

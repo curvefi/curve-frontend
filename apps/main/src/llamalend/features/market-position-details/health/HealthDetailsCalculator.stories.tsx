@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { QueryData } from '@ui-kit/lib/queries/types'
 import { q } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
-import { HealthAndBufferBar } from './HealthAndBufferBar'
+import { HealthDetails } from './HealthDetails'
 
 type PositionInputs = {
   userBandsCollateralValue: number
@@ -47,6 +47,7 @@ const calculateHealthData = ({
 
   return {
     health: decimal(health)!,
+    healthFactor: decimal(health.dividedBy(100).plus(1))!,
     liquidationBuffer: discountGap.isGreaterThan(0)
       ? decimal(healthNotFull.dividedBy(discountGap).multipliedBy(100))
       : undefined,
@@ -62,7 +63,7 @@ const calculateHealthData = ({
 }
 
 const PositionCalculator = (inputs: PositionInputs) => (
-  <HealthAndBufferBar
+  <HealthDetails
     healthQuery={q({
       data: calculateHealthData(inputs),
       isLoading: false,
@@ -72,7 +73,7 @@ const PositionCalculator = (inputs: PositionInputs) => (
 )
 
 const meta: Meta<typeof PositionCalculator> = {
-  title: 'Llamalend/HealthAndBufferBar/Position Calculator',
+  title: 'Llamalend/HealthDetails/Position Calculator',
   component: PositionCalculator,
   parameters: {
     layout: 'padded',
@@ -88,8 +89,8 @@ const meta: Meta<typeof PositionCalculator> = {
     aboveBandsCollateralValue: { control: { type: 'number', min: 0, step: 1 } },
     debt: { control: { type: 'number', min: 0, step: 1 } },
     loanDiscount: { control: { type: 'number', min: 0, max: 100, step: 0.1 } },
-    extraHealth: { control: { type: 'number', min: 0, max: 100, step: 0.1 } },
     liquidationDiscount: { control: { type: 'number', min: 0, max: 100, step: 0.1 } },
+    extraHealth: { control: { type: 'number', min: 0, max: 100, step: 0.1 } },
   },
 }
 
@@ -102,7 +103,7 @@ export const Playground: Story = {
     aboveBandsCollateralValue: 20,
     debt: 100,
     loanDiscount: 9,
-    extraHealth: 0,
     liquidationDiscount: 6,
+    extraHealth: 0,
   },
 }

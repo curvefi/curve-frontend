@@ -4,7 +4,9 @@ import { maybes } from '@primitives/objects.utils'
 import { combineQueries, combineQueryState } from '@ui-kit/lib'
 import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } from '@ui-kit/lib/model'
 import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-validation'
+import type { QueryData } from '@ui-kit/lib/queries/types'
 import { createValidationSuite } from '@ui-kit/lib/validation'
+import type { QueryProp } from '@ui-kit/types/util'
 import { decimalDiv, decimalGreaterThan, decimalMinus, decimalPercent, decimalSum, ZERO } from '@ui-kit/utils'
 import { validateIsFull } from '../validation/borrow-fields.validation'
 import { useUserDiscounts } from './user-discounts.query'
@@ -83,3 +85,5 @@ export const useUserHealthValues = (params: UserMarketParams) => {
     ...combineQueryState(healthFull, healthNotFull, discounts),
   }
 }
+
+export type HealthQuery = QueryProp<QueryData<typeof useUserHealthValues>>
