@@ -67,7 +67,7 @@ export const Parameters = ({
         <Section>
           <ActionInfo
             label={t`AMM fee`}
-            value={mapQuery(parameters, () =>
+            value={mapQuery(snapshots, () =>
               formatNumber(amount(fee ?? maybe(snapshotData?.fee, fee => fee / 10 ** 8)), {
                 maximumFractionDigits: 4,
                 unit: 'percentage',
@@ -94,7 +94,7 @@ export const Parameters = ({
 
           <ActionInfo
             label={t`Virtual price`}
-            value={mapQuery(parameters, () =>
+            value={mapQuery(snapshots, () =>
               formatNumber(amount(virtualPrice ?? maybe(snapshotData?.virtualPrice, x => x / 10 ** 18)), {
                 maximumFractionDigits: 8,
                 abbreviate: false,
