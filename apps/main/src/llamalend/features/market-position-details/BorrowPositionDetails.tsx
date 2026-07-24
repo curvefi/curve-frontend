@@ -34,9 +34,7 @@ export const BorrowPositionDetails = () => {
       {statusContent?.hasMarketAlert && (
         <Alert data-testid="borrow-position-status-alert" variant="outlined" severity={statusContent.severity}>
           <AlertTitle>{statusContent.title}</AlertTitle>
-          <Stack>
-            <Typography variant="bodyXsRegular">{statusContent.description}</Typography>
-          </Stack>
+          <Typography variant="bodyXsRegular">{statusContent.description}</Typography>
         </Alert>
       )}
     </Stack>
