@@ -1,4 +1,9 @@
-import { formatCollateralNotional, isPositionLeveraged, type MarketTokensOrEmpty } from '@/llamalend/llama.utils'
+import {
+  formatCollateralNotional,
+  isPositionLeveraged,
+  tokenMetric,
+  type MarketTokensOrEmpty,
+} from '@/llamalend/llama.utils'
 import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useUserCurrentLeverage, useUserState } from '@/llamalend/queries/user'
 import { useRangeToLiquidation } from '@/llamalend/queries/user/user-prices.query'
@@ -80,8 +85,11 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
         <Metric
           category={METRIC_CATEGORY}
           label={t`Total debt`}
-          value={mapQuery(userState, ({ debt }) => debt)}
-          valueOptions={{ unit: { symbol: borrowSymbol, position: 'suffix' } }}
+          {...tokenMetric({
+            value: mapQuery(userState, ({ debt }) => debt),
+            symbol: borrowToken?.symbol,
+            usdRate: q(borrowUsdRate),
+          })}
           valueTooltip={{
             title: t`Total Debt`,
             body: <TotalDebtTooltipContent />,
