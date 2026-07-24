@@ -184,6 +184,13 @@ export type NumberFormatOptions = {
 const TOKEN_BALANCE_SIGNIFICANT_DIGITS = 5
 
 const NUMBER_FORMAT_CATEGORIES = {
+  health: {
+    abbreviate: false,
+    fallback: '-',
+    minimumSignificantDigits: 3,
+    maximumSignificantDigits: 3,
+    trailingZeroDisplay: 'auto',
+  },
   multiplier: {
     abbreviate: false,
     fallback: '-',
