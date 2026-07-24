@@ -110,7 +110,7 @@ export const UserPosition = ({ chainId }: UserPositionProps) => {
                 title: [
                   t`Annual percentage yield (APY) refers to how much interest is distributed on savings and takes compounded interest into account.`,
                   t`This value is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`,
-                ].join(),
+                ].join(' '),
               }}
               testId="scrvusd-position-apy"
             />
