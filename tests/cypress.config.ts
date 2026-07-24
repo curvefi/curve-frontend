@@ -11,7 +11,6 @@ export default defineConfig({
   pageLoadTimeout: 20000,
   video: true,
   videosFolder: 'cypress/screenshots',
-  watchForFileChanges: false,
   e2e: {
     baseUrl: 'http://localhost:3000',
     supportFile: 'cypress/support/e2e.ts',
