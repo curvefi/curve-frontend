@@ -100,13 +100,7 @@ export const MintMarketPage = () => {
               <CreateLoanTabs onPricesUpdated={setPreviewPrices} />
             )),
         }}
-        header={
-          <MarketPageHeader
-            isLoading={isLoading}
-            primaryRateType={MarketRateType.Borrow}
-            metricsBelowTitle={isMarketDetailPageV2}
-          />
-        }
+        header={<MarketPageHeader isLoading={isLoading} rateType={MarketRateType.Borrow} />}
       >
         <MarketBanners chainId={chainId} market={market} />
         <PositionDetailsComposite hasPosition={loanExists} events={collateralEvents} />

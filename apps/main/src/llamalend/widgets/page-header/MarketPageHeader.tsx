@@ -3,6 +3,7 @@ import { useMarketContext } from '@/llamalend/features/market-context'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
+import { useLlamaMarketDetailPageV2 } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
@@ -19,15 +20,7 @@ import { MetricsRow } from './'
 
 const { Spacing } = SizesAndSpaces
 
-export const MarketPageHeader = ({
-  isLoading,
-  primaryRateType,
-  metricsBelowTitle = false,
-}: {
-  isLoading: boolean
-  primaryRateType: MarketRateType
-  metricsBelowTitle?: boolean
-}) => {
+export const MarketPageHeader = ({ isLoading, rateType }: { isLoading: boolean; rateType: MarketRateType }) => {
   const { address: userAddress } = useConnection()
   const {
     chainId,
@@ -38,9 +31,10 @@ export const MarketPageHeader = ({
     tokens: { collateralToken, borrowToken },
   } = useMarketContext()
   const { borrowRate, supplyRate, availableLiquidity } = usePageHeader()
+  const isMarketDetailPageV2 = useLlamaMarketDetailPageV2()
 
   const marketPair = collateralToken && borrowToken && `${collateralToken.symbol} • ${borrowToken.symbol}`
-  const title = (metricsBelowTitle ? marketPair : marketPair?.toUpperCase()) ?? t`Market`
+  const title = (isMarketDetailPageV2 ? marketPair : marketPair?.toUpperCase()) ?? t`Market`
 
   const subtitle =
     collateralToken &&
@@ -55,8 +49,8 @@ export const MarketPageHeader = ({
       marketType={marketType}
       collateral={collateralToken}
       borrowToken={borrowToken}
-      compact={metricsBelowTitle}
-      primaryRateType={primaryRateType}
+      compact={isMarketDetailPageV2}
+      rateType={rateType}
     />
   )
   const pageHeader = (
@@ -66,7 +60,6 @@ export const MarketPageHeader = ({
       subtitle={subtitle}
       titleLoading={isLoading}
       subtitleLoading={isLoading}
-      titleComponent={metricsBelowTitle ? 'h1' : undefined}
       icon={
         <WithSkeleton loading={isLoading} variant="rectangular" width={35} height={35}>
           {collateralToken && borrowToken && (
@@ -105,11 +98,11 @@ export const MarketPageHeader = ({
           )}
         </>
       }
-      rightItems={metricsBelowTitle ? undefined : metrics}
+      {...(isMarketDetailPageV2 ? { titleComponent: 'h1' } : { rightItems: metrics })}
     />
   )
 
-  return metricsBelowTitle ? (
+  return isMarketDetailPageV2 ? (
     <Stack sx={{ gap: Spacing.sm }}>
       {pageHeader}
       {metrics}

@@ -24,7 +24,7 @@ export const MetricsRow = ({
   collateral,
   borrowToken,
   compact,
-  primaryRateType,
+  rateType,
 }: {
   borrowRate: QueryProp<BorrowRate>
   supplyRate?: QueryProp<SupplyRate>
@@ -33,7 +33,7 @@ export const MetricsRow = ({
   collateral: { symbol: string } | undefined
   borrowToken: { symbol: string } | undefined
   compact: boolean
-  primaryRateType: MarketRateType
+  rateType: MarketRateType
 }) => {
   const supplyRatePeriod = supplyRate?.data ? AVERAGE_CATEGORIES[supplyRate.data.averageCategory].period : null
   const borrowRateMetric = (
@@ -114,7 +114,7 @@ export const MetricsRow = ({
     </>
   )
   const rateMetrics =
-    primaryRateType === MarketRateType.Supply ? (
+    rateType === MarketRateType.Supply ? (
       <>
         {supplyRateMetric}
         {borrowRateMetric}

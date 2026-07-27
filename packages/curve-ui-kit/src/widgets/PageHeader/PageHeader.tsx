@@ -51,7 +51,7 @@ export const PageHeader = ({
           <Stack direction="row" sx={{ alignItems: 'center', flexWrap: 'wrap', gap: Spacing.xs }}>
             <WithSkeleton loading={titleLoading}>
               <Typography
-                {...(titleComponent ? { component: titleComponent } : {})}
+                {...(titleComponent && { component: titleComponent })}
                 variant="headingSBold"
                 sx={{ overflowWrap: 'anywhere' }}
               >

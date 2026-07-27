@@ -68,13 +68,7 @@ export const Page = () => {
           content: (market ?? apiMarket.data) && <VaultTabs />,
           placement: isMobileFormDrawer ? 'mobile-drawer' : 'inline',
         }}
-        header={
-          <MarketPageHeader
-            isLoading={isLoading}
-            primaryRateType={MarketRateType.Supply}
-            metricsBelowTitle={isMarketDetailPageV2}
-          />
-        }
+        header={<MarketPageHeader isLoading={isLoading} rateType={MarketRateType.Supply} />}
       >
         <MarketBanners
           chainId={chainId}

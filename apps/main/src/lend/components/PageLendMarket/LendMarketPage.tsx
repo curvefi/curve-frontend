@@ -102,13 +102,7 @@ export const LendMarketPage = () => {
               <CreateLoanTabs onPricesUpdated={setPreviewPrices} />
             )),
         }}
-        header={
-          <MarketPageHeader
-            isLoading={isLoading}
-            primaryRateType={MarketRateType.Borrow}
-            metricsBelowTitle={isMarketDetailPageV2}
-          />
-        }
+        header={<MarketPageHeader isLoading={isLoading} rateType={MarketRateType.Borrow} />}
       >
         <MarketBanners
           chainId={chainId}
