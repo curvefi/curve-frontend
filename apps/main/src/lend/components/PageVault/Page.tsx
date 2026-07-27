@@ -77,7 +77,7 @@ export const Page = () => {
           placement: isMobileFormDrawer ? 'mobile-drawer' : 'inline',
         }}
         header={<MarketPageHeader isLoading={isLoading} rateType={MarketRateType.Supply} />}
-        pageNavigation={isMarketDetailPageV2 ? <MarketSectionNav sections={sections} /> : undefined}
+        pageNavigation={isNewLlamaMarketDetailPage ? <MarketSectionNav sections={sections} /> : undefined}
       >
         <MarketBanners
           chainId={chainId}
@@ -98,7 +98,7 @@ export const Page = () => {
         ) : (
           hasPosition && <SupplyPositionDetails />
         )}
-        <MarketInformationComposite rateType={MarketRateType.Supply} isMarketDetailPageV2={isMarketDetailPageV2} />
+        <MarketInformationComposite rateType={MarketRateType.Supply} />
       </DetailPageLayout>
     </MarketContextProvider>
   )

@@ -106,7 +106,7 @@ export const LendMarketPage = () => {
             )),
         }}
         header={<MarketPageHeader isLoading={isLoading} rateType={MarketRateType.Borrow} />}
-        pageNavigation={isMarketDetailPageV2 ? <MarketSectionNav sections={MARKET_SECTIONS} /> : undefined}
+        pageNavigation={isNewLlamaMarketDetailPage ? <MarketSectionNav sections={MARKET_SECTIONS} /> : undefined}
       >
         <MarketBanners
           chainId={chainId}
@@ -125,11 +125,7 @@ export const LendMarketPage = () => {
         ) : (
           <PositionDetailsComposite hasPosition={loanExists} events={collateralEvents} />
         )}
-        <MarketInformationComposite
-          rateType={MarketRateType.Borrow}
-          previewPrices={previewPrices}
-          isMarketDetailPageV2={isMarketDetailPageV2}
-        />
+        <MarketInformationComposite rateType={MarketRateType.Borrow} previewPrices={previewPrices} />
       </DetailPageLayout>
     </MarketContextProvider>
   )

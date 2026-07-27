@@ -74,10 +74,6 @@ const MappedTabPadding = {
   extraExtraLarge: { inline: 'md' },
 } as const
 
-const MappedTabPadding = {
-  extraSmall: { x: Spacing[300] },
-} as const
-
 const MappedHorizontalMetricSize = {
   xs: Sizing[250], // 20px
   sm: Sizing[300], // 24px
