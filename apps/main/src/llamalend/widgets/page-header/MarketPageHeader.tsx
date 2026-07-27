@@ -17,7 +17,8 @@ import { MarketType, MarketRateType } from '@ui-kit/types/market'
 import { IS_DEVELOPMENT } from '@ui-kit/utils'
 import { PageHeader } from '@ui-kit/widgets/PageHeader'
 import { usePageHeader } from './hooks/usePageHeader'
-import { MetricsRow } from './'
+import { LegacyMetricsRow } from './LegacyMetricsRow'
+import { MetricsRow } from './MetricsRow'
 
 const { Spacing } = SizesAndSpaces
 
@@ -42,28 +43,33 @@ export const MarketPageHeader = ({ isLoading, rateType }: { isLoading: boolean; 
     borrowToken &&
     t`Use ${collateralToken.symbol} to borrow ${marketType === MarketType.Mint ? t`and mint ` : ''}${borrowToken.symbol}`
 
+  const MetricComponent = isMarketDetailPageV2 ? MetricsRow : LegacyMetricsRow
   const metrics = (
-    <MetricsRow
+    <MetricComponent
       borrowRate={borrowRate}
       supplyRate={supplyRate}
       availableLiquidity={availableLiquidity}
       marketType={marketType}
       collateral={collateralToken}
       borrowToken={borrowToken}
-      compact={isMarketDetailPageV2}
       rateType={rateType}
     />
   )
+
   return (
-    <WithWrapper shouldWrap={isMarketDetailPageV2} Wrapper={Stack} sx={{ gap: Spacing.sm }}>
+    <WithWrapper
+      shouldWrap={isMarketDetailPageV2}
+      Wrapper={Stack}
+      sx={{ gap: Spacing.sm, paddingBlockEnd: Spacing.md }}
+    >
       <PageHeader
         backHref={getInternalUrl('llamalend', blockchainId, LLAMALEND_ROUTES.PAGE_MARKETS)}
         title={title}
-          subtitle={subtitle}
-          titleLoading={isLoading}
-          subtitleLoading={isLoading}
-          {...(isMarketDetailPageV2 && { titleSx: { textTransform: 'none' } })}
-          icon={
+        subtitle={subtitle}
+        titleLoading={isLoading}
+        subtitleLoading={isLoading}
+        {...(isMarketDetailPageV2 && { titleSx: { textTransform: 'none' } })}
+        icon={
           <WithSkeleton loading={isLoading} variant="rectangular" width={35} height={35}>
             {collateralToken && borrowToken && (
               <TokenPair
