@@ -59,10 +59,11 @@ export const MarketPageHeader = ({ isLoading, rateType }: { isLoading: boolean; 
       <PageHeader
         backHref={getInternalUrl('llamalend', blockchainId, LLAMALEND_ROUTES.PAGE_MARKETS)}
         title={title}
-        subtitle={subtitle}
-        titleLoading={isLoading}
-        subtitleLoading={isLoading}
-        icon={
+          subtitle={subtitle}
+          titleLoading={isLoading}
+          subtitleLoading={isLoading}
+          {...(isMarketDetailPageV2 && { titleSx: { textTransform: 'none' } })}
+          icon={
           <WithSkeleton loading={isLoading} variant="rectangular" width={35} height={35}>
             {collateralToken && borrowToken && (
               <TokenPair
