@@ -14,7 +14,7 @@ import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
-import { useLlamaMarketDetailPageV2 } from '@ui-kit/hooks/useFeatureFlags'
+import { useNewLlamaMarketDetailPage } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { MarketRateType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
@@ -30,7 +30,7 @@ type MarketInformationCompProps = {
  */
 export const MarketInformationComposite = ({ rateType, previewPrices }: MarketInformationCompProps) => {
   const { chainId } = useMarketContext()
-  const isMarketDetailPageV2 = useLlamaMarketDetailPageV2()
+  const isNewLlamaMarketDetailPage = useNewLlamaMarketDetailPage()
   return (
     <Stack sx={{ gap: PAGE_SPACING }}>
       {rateType === MarketRateType.Borrow && (
@@ -41,7 +41,7 @@ export const MarketInformationComposite = ({ rateType, previewPrices }: MarketIn
       )}
       <MarketHistoricalRatesChart rateMode={MarketRateType.Supply} />
       <MarketRateCurveChart />
-      {isMarketDetailPageV2 ? (
+      {isNewLlamaMarketDetailPage ? (
         <MarketAdvancedDetailsCard network={networks[chainId]} />
       ) : (
         <Card size="small">

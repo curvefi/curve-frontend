@@ -15,7 +15,7 @@ import { MarketPageHeader } from '@/llamalend/widgets/page-header'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useParams } from '@ui-kit/hooks/router'
-import { useLlamaMarketDetailPageV2, useMarketMobileFormDrawer } from '@ui-kit/hooks/useFeatureFlags'
+import { useMarketMobileFormDrawer, useNewLlamaMarketDetailPage } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { MarketType, MarketRateType } from '@ui-kit/types/market'
@@ -32,7 +32,7 @@ export const Page = () => {
   const network = networks[chainId]
   const { address: userAddress } = useConnection()
   const isMobileFormDrawer = useMarketMobileFormDrawer()
-  const isMarketDetailPageV2 = useLlamaMarketDetailPageV2()
+  const isNewLlamaMarketDetailPage = useNewLlamaMarketDetailPage()
 
   useLendPageTitle(market?.collateral_token?.symbol, t`Supply`)
 
@@ -76,7 +76,7 @@ export const Page = () => {
           rewardsBanner={<CampaignRewardsBanner chainId={chainId} market={market} />}
         />
         {market && supplied > 0 && <SupplyPositionDetails />}
-        {isMarketDetailPageV2 && <MarketOverviewCard />}
+        {isNewLlamaMarketDetailPage && <MarketOverviewCard />}
         <MarketInformationComposite rateType={MarketRateType.Supply} />
       </DetailPageLayout>
     </MarketContextProvider>

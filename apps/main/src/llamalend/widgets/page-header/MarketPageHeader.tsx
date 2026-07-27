@@ -3,7 +3,7 @@ import { useMarketContext } from '@/llamalend/features/market-context'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
-import { useLlamaMarketDetailPageV2 } from '@ui-kit/hooks/useFeatureFlags'
+import { useNewLlamaMarketDetailPage } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
@@ -33,17 +33,16 @@ export const MarketPageHeader = ({ isLoading, rateType }: { isLoading: boolean; 
     tokens: { collateralToken, borrowToken },
   } = useMarketContext()
   const { borrowRate, supplyRate, availableLiquidity } = usePageHeader()
-  const isMarketDetailPageV2 = useLlamaMarketDetailPageV2()
+  const isNewLlamaMarketDetailPage = useNewLlamaMarketDetailPage()
 
-  const marketPair = collateralToken && borrowToken && `${collateralToken.symbol} • ${borrowToken.symbol}`
-  const title = (isMarketDetailPageV2 ? marketPair : marketPair?.toUpperCase()) ?? t`Market`
+  const title = (collateralToken && borrowToken && `${collateralToken.symbol} • ${borrowToken.symbol}`) ?? t`Market`
 
   const subtitle =
     collateralToken &&
     borrowToken &&
     t`Use ${collateralToken.symbol} to borrow ${marketType === MarketType.Mint ? t`and mint ` : ''}${borrowToken.symbol}`
 
-  const MetricComponent = isMarketDetailPageV2 ? MetricsRow : LegacyMetricsRow
+  const MetricComponent = isNewLlamaMarketDetailPage ? MetricsRow : LegacyMetricsRow
   const metrics = (
     <MetricComponent
       borrowRate={borrowRate}
@@ -58,7 +57,7 @@ export const MarketPageHeader = ({ isLoading, rateType }: { isLoading: boolean; 
 
   return (
     <WithWrapper
-      shouldWrap={isMarketDetailPageV2}
+      shouldWrap={isNewLlamaMarketDetailPage}
       Wrapper={Stack}
       sx={{ gap: Spacing.sm, paddingBlockEnd: Spacing.md }}
     >
@@ -68,7 +67,7 @@ export const MarketPageHeader = ({ isLoading, rateType }: { isLoading: boolean; 
         subtitle={subtitle}
         titleLoading={isLoading}
         subtitleLoading={isLoading}
-        {...(isMarketDetailPageV2 && { titleSx: { textTransform: 'none' } })}
+        titleSx={{ textTransform: 'none' }}
         icon={
           <WithSkeleton loading={isLoading} variant="rectangular" width={35} height={35}>
             {collateralToken && borrowToken && (
@@ -107,9 +106,10 @@ export const MarketPageHeader = ({ isLoading, rateType }: { isLoading: boolean; 
             )}
           </>
         }
-        {...(isMarketDetailPageV2 ? { titleComponent: 'h1' } : { rightItems: metrics })}
+        titleComponent="h1"
+        {...(!isNewLlamaMarketDetailPage && { rightItems: metrics })}
       />
-      {isMarketDetailPageV2 && metrics}
+      {isNewLlamaMarketDetailPage && metrics}
     </WithWrapper>
   )
 }

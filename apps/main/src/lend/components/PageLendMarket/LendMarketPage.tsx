@@ -23,9 +23,9 @@ import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useParams } from '@ui-kit/hooks/router'
 import {
-  useLlamaMarketDetailPageV2,
   useMarketResetPosition,
   useMarketMobileFormDrawer,
+  useNewLlamaMarketDetailPage,
 } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
@@ -44,7 +44,7 @@ export const LendMarketPage = () => {
   const { address: userAddress } = useConnection()
   useLendPageTitle(market?.collateral_token?.symbol ?? rMarket, t`Lend`)
   const isMobileFormDrawer = useMarketMobileFormDrawer()
-  const isMarketDetailPageV2 = useLlamaMarketDetailPageV2()
+  const isNewLlamaMarketDetailPage = useNewLlamaMarketDetailPage()
 
   const network = networks[chainId]
   const queryParams = { chainId, marketId: market?.id, userAddress }
@@ -110,7 +110,7 @@ export const LendMarketPage = () => {
           rewardsBanner={<CampaignRewardsBanner chainId={chainId} market={market} />}
         />
         <PositionDetailsComposite hasPosition={loanExists} events={collateralEvents} />
-        {isMarketDetailPageV2 && <MarketOverviewCard />}
+        {isNewLlamaMarketDetailPage && <MarketOverviewCard />}
         <MarketInformationComposite rateType={MarketRateType.Borrow} previewPrices={previewPrices} />
       </DetailPageLayout>
     </MarketContextProvider>
