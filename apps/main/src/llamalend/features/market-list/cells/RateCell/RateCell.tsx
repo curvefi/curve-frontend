@@ -8,7 +8,7 @@ import { CellContext } from '@tanstack/react-table'
 import { TooltipProps } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketType, MarketRateType } from '@ui-kit/types/market'
-import { formatNumber } from '@ui-kit/utils'
+import { formatCappedRatePercent } from '@ui-kit/utils'
 import { MarketColumnId } from '../../columns'
 import { BorrowRateTooltip } from './BorrowRateTooltip'
 import { RewardsIcons } from './RewardsIcons'
@@ -50,7 +50,7 @@ export const RateCell = ({
       <Tooltip market={market}>
         <Stack sx={{ gap: Spacing.xs, alignItems: 'end' }}>
           <Typography variant="tableCellMBold" color="textPrimary">
-            {rate == null ? '—' : formatNumber(rate, 'percent.rate')}
+            {rate == null ? '—' : formatCappedRatePercent(rate)}
           </Typography>
 
           <RewardsIcons market={market} rateType={rateType} />

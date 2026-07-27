@@ -13,7 +13,7 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
 import { constQ } from '@ui-kit/types/util'
-import { AVERAGE_CATEGORIES, borderStyle } from '@ui-kit/utils'
+import { AVERAGE_CATEGORIES, borderStyle, formatCappedRateValue } from '@ui-kit/utils'
 import type { LlamaMarket } from '../../queries/market-list/llama-markets'
 import { LineGraphCell, RateTooltipProps } from './cells'
 import { BorrowRateTooltip } from './cells/RateCell/BorrowRateTooltip'
@@ -63,7 +63,12 @@ const RateItem = ({ market, type }: { market: LlamaMarket; type: MarketRateType 
               category="llamalend.marketListRates"
               label={title}
               value={constQ(rateValue)}
-              valueOptions={{ unit: 'percentage', disableTooltip: true }}
+              valueOptions={{
+                unit: 'percentage',
+                abbreviate: false,
+                formatter: formatCappedRateValue,
+                disableTooltip: true,
+              }}
               icon={<RewardsIcons market={market} rateType={type} />}
             />
           </Stack>
