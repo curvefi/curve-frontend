@@ -3,7 +3,7 @@ import { networks } from '@/lend/networks'
 import {
   AdvancedDetailsMetrics,
   MarketInfoLayout,
-  MarketParametersCard,
+  MarketAdvancedDetailsCard,
 } from '@/llamalend/features/market-advanced-information'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { MarketFaq } from '@/llamalend/features/market-faq'
@@ -42,7 +42,7 @@ export const MarketInformationComposite = ({ rateType, previewPrices }: MarketIn
       <MarketHistoricalRatesChart rateMode={MarketRateType.Supply} />
       <MarketRateCurveChart />
       {isMarketDetailPageV2 ? (
-        <MarketParametersCard network={networks[chainId]} />
+        <MarketAdvancedDetailsCard network={networks[chainId]} />
       ) : (
         <Card size="small">
           <CardHeader title={t`Advanced Details`} />

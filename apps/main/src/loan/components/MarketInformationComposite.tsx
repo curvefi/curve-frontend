@@ -1,7 +1,7 @@
 import {
   AdvancedDetailsMetrics,
   MarketInfoLayout,
-  MarketParametersCard,
+  MarketAdvancedDetailsCard,
 } from '@/llamalend/features/market-advanced-information'
 import { MarketFaq } from '@/llamalend/features/market-faq'
 import { CrvUsdPriceChart } from '@/llamalend/widgets/CrvUsdPriceChart'
@@ -35,7 +35,7 @@ export const MarketInformationComposite = ({ previewPrices }: MarketInformationC
       <CrvUsdPriceChart />
 
       {isMarketDetailPageV2 ? (
-        <MarketParametersCard network={networks[chainId]} />
+        <MarketAdvancedDetailsCard network={networks[chainId]} />
       ) : (
         <Card size="small">
           <CardHeader title={t`Advanced Details`} />

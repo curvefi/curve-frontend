@@ -1,5 +1,10 @@
 import { formatCollateralNotional, tokenMetric } from '@/llamalend/llama.utils'
-import { MaxLeverageTooltip, SolvencyTooltip, TotalCollateralTooltip, TooltipOptions } from '@/llamalend/widgets/tooltips'
+import {
+  MaxLeverageTooltip,
+  SolvencyTooltip,
+  TotalCollateralTooltip,
+  TooltipOptions,
+} from '@/llamalend/widgets/tooltips'
 import Box from '@mui/material/Box'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'

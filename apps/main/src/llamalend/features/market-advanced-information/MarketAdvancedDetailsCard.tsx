@@ -6,7 +6,7 @@ import { type BaseConfig } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { MarketInfoLayout } from './MarketInfoLayout'
 
-export const MarketParametersCard = ({ network }: { network: BaseConfig | undefined }) => (
+export const MarketAdvancedDetailsCard = ({ network }: { network: BaseConfig | undefined }) => (
   <Card size="small" data-testid="market-parameters-card">
     <MarketCardHeader title={t`Advanced details`} />
     <CardContent
