@@ -107,13 +107,10 @@ export const MintMarketPage = () => {
         pageNavigation={isNewLlamaMarketDetailPage ? <MarketSectionNav sections={MARKET_SECTIONS} /> : undefined}
       >
         <MarketBanners chainId={chainId} market={market} />
-        {isNewLlamaMarketDetailPage ? (
-          <MarketSection id="position-details" ariaLabel={t`Position details`}>
-            <PositionDetailsComposite hasPosition={loanExists} events={collateralEvents} />
-          </MarketSection>
-        ) : (
+        <MarketSection id="position-details" ariaLabel={t`Position details`}>
           <PositionDetailsComposite hasPosition={loanExists} events={collateralEvents} />
-        )}
+        </MarketSection>
+
         <MarketInformationComposite previewPrices={previewPrices} />
       </DetailPageLayout>
     </MarketContextProvider>

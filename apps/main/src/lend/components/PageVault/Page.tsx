@@ -84,19 +84,15 @@ export const Page = () => {
           market={market}
           rewardsBanner={<CampaignRewardsBanner chainId={chainId} market={market} />}
         />
-        {isNewLlamaMarketDetailPage ? (
-          <>
-            {hasPosition && (
-              <MarketSection id="position-details" ariaLabel={t`Position details`}>
-                <SupplyPositionDetails />
-              </MarketSection>
-            )}
-            <MarketSection id="market-overview" ariaLabel={t`Overview`}>
-              <MarketOverviewCard />
-            </MarketSection>
-          </>
-        ) : (
-          hasPosition && <SupplyPositionDetails />
+        {hasPosition && (
+          <MarketSection id="position-details" ariaLabel={t`Position details`}>
+            <SupplyPositionDetails />
+          </MarketSection>
+        )}
+        {isNewLlamaMarketDetailPage && (
+          <MarketSection id="market-overview" ariaLabel={t`Overview`}>
+            <MarketOverviewCard />
+          </MarketSection>
         )}
         <MarketInformationComposite rateType={MarketRateType.Supply} />
       </DetailPageLayout>

@@ -5,8 +5,9 @@ import {
 } from '@/llamalend/features/market-advanced-information'
 import { MarketFaq } from '@/llamalend/features/market-faq'
 import { CrvUsdPriceChart } from '@/llamalend/widgets/CrvUsdPriceChart'
+import { MarketSection } from '@/llamalend/widgets/market-section-nav'
 import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
-import { ChartAndActivityComp } from '@/loan/components/ChartAndActivityComp'
+import { ChartAndActivityComp, MarketActivityComp } from '@/loan/components/ChartAndActivityComp'
 import type { ChainId } from '@/loan/types/loan.types'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
@@ -30,22 +31,34 @@ export const MarketInformationComposite = ({ previewPrices }: MarketInformationC
   const isNewLlamaMarketDetailPage = useNewLlamaMarketDetailPage()
   return (
     <Stack sx={{ gap: PAGE_SPACING }}>
-      <ChartAndActivityComp previewPrices={previewPrices} />
-      <MarketHistoricalRatesChart rateMode={MarketRateType.Borrow} />
-      <CrvUsdPriceChart />
-
-      {isNewLlamaMarketDetailPage ? (
-        <MarketAdvancedDetailsCard network={networks[chainId]} />
-      ) : (
-        <Card size="small">
-          <CardHeader title={t`Advanced Details`} />
-          <CardContent component={Stack}>
-            <AdvancedDetailsMetrics />
-            <MarketInfoLayout network={networks[chainId]} />
-          </CardContent>
-        </Card>
-      )}
-      <MarketFaq />
+      <MarketSection id="price-chart" ariaLabel={t`Risk and liquidation`}>
+        <Stack sx={{ gap: PAGE_SPACING }}>
+          <ChartAndActivityComp previewPrices={previewPrices} chartOnly />
+          <CrvUsdPriceChart />
+        </Stack>
+      </MarketSection>
+      <MarketSection id="historical-rates" ariaLabel={t`Rates`}>
+        <MarketHistoricalRatesChart rateMode={MarketRateType.Borrow} />
+      </MarketSection>
+      <MarketSection id="market-activity" ariaLabel={t`Market activity`}>
+        <MarketActivityComp />
+      </MarketSection>
+      <MarketSection id="market-parameters" ariaLabel={t`Advanced details`}>
+        {isNewLlamaMarketDetailPage ? (
+          <MarketAdvancedDetailsCard network={networks[chainId]} />
+        ) : (
+          <Card size="small">
+            <CardHeader title={t`Advanced Details`} />
+            <CardContent component={Stack}>
+              <AdvancedDetailsMetrics />
+              <MarketInfoLayout network={networks[chainId]} />
+            </CardContent>
+          </Card>
+        )}
+      </MarketSection>
+      <MarketSection id="faqs" ariaLabel={t`Frequently asked questions`}>
+        <MarketFaq />
+      </MarketSection>
     </Stack>
   )
 }

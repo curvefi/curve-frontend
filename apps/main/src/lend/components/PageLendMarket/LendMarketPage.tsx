@@ -113,17 +113,13 @@ export const LendMarketPage = () => {
           market={market}
           rewardsBanner={<CampaignRewardsBanner chainId={chainId} market={market} />}
         />
-        {isNewLlamaMarketDetailPage ? (
-          <>
-            <MarketSection id="position-details" ariaLabel={t`Position details`}>
-              <PositionDetailsComposite hasPosition={loanExists} events={collateralEvents} />
-            </MarketSection>
-            <MarketSection id="market-overview" ariaLabel={t`Overview`}>
-              <MarketOverviewCard />
-            </MarketSection>
-          </>
-        ) : (
+        <MarketSection id="position-details" ariaLabel={t`Position details`}>
           <PositionDetailsComposite hasPosition={loanExists} events={collateralEvents} />
+        </MarketSection>
+        {isNewLlamaMarketDetailPage && (
+          <MarketSection id="market-overview" ariaLabel={t`Overview`}>
+            <MarketOverviewCard />
+          </MarketSection>
         )}
         <MarketInformationComposite rateType={MarketRateType.Borrow} previewPrices={previewPrices} />
       </DetailPageLayout>
