@@ -18,6 +18,8 @@ type MerklReward = {
     symbol: string
     /** Full URL to the icon. We should use this one because curve-assets repo might be missing some; these are guaranteed to be available */
     icon: string
+    /** The token price of the reward as calculated by Merkl */
+    price: number
   }
   /** Probably the USD value. Either way, only used to filter 'empty' campaigns, which are a thing apparantly. */
   value: 0
@@ -81,7 +83,9 @@ const opportunityToCampaignRewards = (opp: MerklOpportunity) => {
         lock: false, // Merkl doesn't offer 'locked' rewards.
 
         // Merkl campaigns might be a points campaign or just a token, but those campaigns report an APR of 0 as their only distinction
-        reward: opp.apr ? { type: 'apr', value: Math.min(opp.apr, MAX_APR) } : undefined,
+        reward: opp.apr
+          ? { type: 'apr', value: Math.min(opp.apr, MAX_APR), address: token.address, price: token.price }
+          : undefined,
         symbol: token.symbol,
 
         tags: ['tokens'], // Merkl rewards are tokens only as far as I know; no points.

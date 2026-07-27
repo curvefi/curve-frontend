@@ -183,6 +183,26 @@ export type NumberFormatOptions = {
 
 const TOKEN_BALANCE_SIGNIFICANT_DIGITS = 5
 
+const preciseFormatter = (value: Amount) => {
+  const absValue = Math.abs(Number(value))
+  return defaultNumberFormatter(
+    value,
+    // For values between 0 and 1, we want to round up to 5 significant digits,
+    // For values >= 1, we want to show up to 5 significant digits after the decimal point, depending on the magnitude of the number.
+    // For super big values that have more than 5 digits we don't want a max of 5 significant digits, as that will incorrectly round.
+    absValue && absValue < 1
+      ? { maximumSignificantDigits: TOKEN_BALANCE_SIGNIFICANT_DIGITS, trailingZeroDisplay: 'auto' }
+      : Number.isFinite(absValue)
+        ? {
+            maximumFractionDigits: Math.max(
+              DEFAULT_DECIMALS,
+              TOKEN_BALANCE_SIGNIFICANT_DIGITS - Math.floor(Math.log10(absValue)) - 1,
+            ),
+          }
+        : undefined,
+  )
+}
+
 const NUMBER_FORMAT_CATEGORIES = {
   multiplier: {
     abbreviate: false,
@@ -195,28 +215,11 @@ const NUMBER_FORMAT_CATEGORIES = {
   'token.compact': { abbreviate: true, fallback: '-' },
   'token.balance': {
     abbreviate: false,
-    formatter: (value: Amount) => {
-      const absValue = Math.abs(Number(value))
-      return defaultNumberFormatter(
-        value,
-        // For values between 0 and 1, we want to round up to 5 significant digits,
-        // For values >= 1, we want to show up to 5 significant digits after the decimal point, depending on the magnitude of the number.
-        // For super big values that have more than 5 digits we don't want a max of 5 significant digits, as that will incorrectly round.
-        absValue && absValue < 1
-          ? { maximumSignificantDigits: TOKEN_BALANCE_SIGNIFICANT_DIGITS, trailingZeroDisplay: 'auto' }
-          : Number.isFinite(absValue)
-            ? {
-                maximumFractionDigits: Math.max(
-                  DEFAULT_DECIMALS,
-                  TOKEN_BALANCE_SIGNIFICANT_DIGITS - Math.floor(Math.log10(absValue)) - 1,
-                ),
-              }
-            : undefined,
-      )
-    },
     fallback: '-',
+    formatter: preciseFormatter,
   },
   'usd.amount': { unit: 'dollar', abbreviate: false, fallback: '-' },
+  'usd.precise': { unit: 'dollar', abbreviate: false, fallback: '-', formatter: preciseFormatter },
   'usd.notional': { unit: 'dollar', abbreviate: true, fallback: '-' },
   'percent.value': { unit: 'percentage', abbreviate: false, fallback: '-' },
   'percent.rate': {
