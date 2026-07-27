@@ -125,7 +125,7 @@ export const shouldLoadMintBorrowDetails = ({ breakpoint, hasWallet, hasApi = tr
   shouldLoadBorrowDetails({ breakpoint, hasWallet, hasApi })
   if (hasApi) {
     shouldShowCanvas('crvusd-price-chart')
-    getActionValue('market-total-collateral').should('match', DECIMAL_REGEX)
+    // TODO: add back market total collateral metric
   }
   shouldLoadMarketContracts({ hasMonetaryPolicy: hasWallet, hasOracle: hasWallet, hasVault: false })
   shouldLoadMarketParameters({ hasOnChainParameters: hasWallet, hasOraclePrice: hasWallet, hasPricePerShare: false })
