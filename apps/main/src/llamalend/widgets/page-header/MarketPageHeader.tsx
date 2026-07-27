@@ -11,6 +11,7 @@ import { getInternalUrl, LLAMALEND_ROUTES } from '@ui-kit/shared/routes'
 import { Badge } from '@ui-kit/shared/ui/Badge'
 import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
+import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketType, MarketRateType } from '@ui-kit/types/market'
 import { IS_DEVELOPMENT } from '@ui-kit/utils'
@@ -53,61 +54,55 @@ export const MarketPageHeader = ({ isLoading, rateType }: { isLoading: boolean; 
       rateType={rateType}
     />
   )
-  const pageHeader = (
-    <PageHeader
-      backHref={getInternalUrl('llamalend', blockchainId, LLAMALEND_ROUTES.PAGE_MARKETS)}
-      title={title}
-      subtitle={subtitle}
-      titleLoading={isLoading}
-      subtitleLoading={isLoading}
-      icon={
-        <WithSkeleton loading={isLoading} variant="rectangular" width={35} height={35}>
-          {collateralToken && borrowToken && (
-            <TokenPair
-              chain={blockchainId}
-              assets={{ primary: collateralToken, secondary: borrowToken }}
-              hideChainIcon
-            />
-          )}
-        </WithSkeleton>
-      }
-      titleItems={
-        <>
-          <WithSkeleton loading={isLoading} width={24}>
-            <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center' }}>
-              <ChainIcon blockchainId={blockchainId} />
-              <Badge size="extraSmall" label={t`${marketType}`} />
-            </Stack>
+  return (
+    <WithWrapper shouldWrap={isMarketDetailPageV2} Wrapper={Stack} sx={{ gap: Spacing.sm }}>
+      <PageHeader
+        backHref={getInternalUrl('llamalend', blockchainId, LLAMALEND_ROUTES.PAGE_MARKETS)}
+        title={title}
+        subtitle={subtitle}
+        titleLoading={isLoading}
+        subtitleLoading={isLoading}
+        icon={
+          <WithSkeleton loading={isLoading} variant="rectangular" width={35} height={35}>
+            {collateralToken && borrowToken && (
+              <TokenPair
+                chain={blockchainId}
+                assets={{ primary: collateralToken, secondary: borrowToken }}
+                hideChainIcon
+              />
+            )}
           </WithSkeleton>
+        }
+        titleItems={
+          <>
+            <WithSkeleton loading={isLoading} width={24}>
+              <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center' }}>
+                <ChainIcon blockchainId={blockchainId} />
+                <Badge size="extraSmall" label={t`${marketType}`} />
+              </Stack>
+            </WithSkeleton>
 
-          {IS_DEVELOPMENT && marketId && controllerAddress && userAddress && (
-            <IconButton
-              size="extraSmall"
-              onClick={() =>
-                void invalidateAllUserMarketDetails({
-                  chainId,
-                  marketId,
-                  userAddress,
-                  blockchainId,
-                  contractAddress: controllerAddress,
-                })
-              }
-            >
-              <ReloadIcon />
-            </IconButton>
-          )}
-        </>
-      }
-      {...(isMarketDetailPageV2 ? { titleComponent: 'h1' } : { rightItems: metrics })}
-    />
-  )
-
-  return isMarketDetailPageV2 ? (
-    <Stack sx={{ gap: Spacing.sm }}>
-      {pageHeader}
-      {metrics}
-    </Stack>
-  ) : (
-    pageHeader
+            {IS_DEVELOPMENT && marketId && controllerAddress && userAddress && (
+              <IconButton
+                size="extraSmall"
+                onClick={() =>
+                  void invalidateAllUserMarketDetails({
+                    chainId,
+                    marketId,
+                    userAddress,
+                    blockchainId,
+                    contractAddress: controllerAddress,
+                  })
+                }
+              >
+                <ReloadIcon />
+              </IconButton>
+            )}
+          </>
+        }
+        {...(isMarketDetailPageV2 ? { titleComponent: 'h1' } : { rightItems: metrics })}
+      />
+      {isMarketDetailPageV2 && metrics}
+    </WithWrapper>
   )
 }
