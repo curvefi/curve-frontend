@@ -1,4 +1,4 @@
-import type { ElementType, ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -7,6 +7,7 @@ import { ArrowLeft } from '@ui-kit/shared/icons/ArrowLeft'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { SxProps } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -21,7 +22,7 @@ export const PageHeader = ({
   subtitle,
   titleLoading = false,
   subtitleLoading = false,
-  titleComponent,
+  titleSx,
   icon,
   titleItems,
   rightItems,
@@ -31,7 +32,7 @@ export const PageHeader = ({
   subtitle?: string
   titleLoading?: boolean
   subtitleLoading?: boolean
-  titleComponent?: ElementType
+  titleSx?: SxProps
   backHref?: string
   icon?: ReactNode
   titleItems?: ReactNode
@@ -50,11 +51,8 @@ export const PageHeader = ({
         <Stack>
           <Stack direction="row" sx={{ alignItems: 'center', flexWrap: 'wrap', gap: Spacing.xs }}>
             <WithSkeleton loading={titleLoading}>
-              <Typography
-                {...(titleComponent ? { component: titleComponent } : {})}
-                variant="headingSBold"
-                sx={{ overflowWrap: 'anywhere' }}
-              >
+              {/* headingSBold uppercases text by default but some titles must preserve token symbol casing. */}
+              <Typography component="h1" variant="headingSBold" sx={{ overflowWrap: 'anywhere', ...titleSx }}>
                 {title ?? 'Page header' /** For skeleton width inference */}
               </Typography>
             </WithSkeleton>

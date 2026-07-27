@@ -65,6 +65,13 @@ const MappedCardPadding = {
   sm: Spacing[400],
   md: Spacing[500],
   lg: Spacing[600],
+}
+
+const MappedTabPadding = {
+  extraSmall: { inline: Spacing[300] },
+  small: { inline: 'sm' },
+  medium: { inline: 'sm' },
+  extraExtraLarge: { inline: 'md' },
 } as const
 
 const MappedTabPadding = {

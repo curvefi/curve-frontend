@@ -1,4 +1,4 @@
-import { formatMetricValue, formatPercentage, UNAVAILABLE_NOTATION } from '@/llamalend/widgets/tooltips/tooltip.utils'
+import { formatPercentage } from '@/llamalend/widgets/tooltips/tooltip.utils'
 import {
   TooltipDescription,
   TooltipItem,
@@ -7,9 +7,8 @@ import {
 } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import { Stack } from '@mui/material'
 import type { Decimal } from '@primitives/decimal.utils'
-import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
-import { formatNumber } from '@ui-kit/utils'
+import { formatNumber, formatToken } from '@ui-kit/utils'
 
 type TotalCollateralTooltipProps = Partial<{
   collateralSymbol: string | null
@@ -30,10 +29,7 @@ export const TotalCollateralTooltip = ({
   collateralUsdRate,
   borrowedUsdRate,
 }: TotalCollateralTooltipProps) => {
-  const collateralValueFormatted = formatMetricValue(totalCollateral)
   const collateralPercentage = formatPercentage(totalCollateral, combinedCollateralUsdValue, collateralUsdRate)
-
-  const borrowValueFormatted = formatMetricValue(totalBorrowed)
   const borrowPercentage = formatPercentage(totalBorrowed, combinedCollateralUsdValue, borrowedUsdRate)
 
   return (
@@ -49,18 +45,18 @@ export const TotalCollateralTooltip = ({
       <Stack>
         <TooltipItems secondary>
           <TooltipItem title={t`Deposit token`} variant="independent">
-            {`${collateralValueFormatted} ${collateralSymbol ?? '?'}`}
+            {formatToken(totalCollateral, collateralSymbol)}
             {collateralPercentage && ` (${collateralPercentage})`}
           </TooltipItem>
           <TooltipItem title={t`Borrow token`} variant="independent">
-            {`${borrowValueFormatted} ${borrowedSymbol ?? '?'}`}
+            {formatToken(totalBorrowed, borrowedSymbol)}
             {borrowPercentage && ` (${borrowPercentage})`}
           </TooltipItem>
         </TooltipItems>
       </Stack>
 
       <TooltipItem title={t`Total collateral value`} variant="independent">
-        {maybe(combinedCollateralUsdValue, usd => formatNumber(usd, 'usd.amount')) ?? UNAVAILABLE_NOTATION}
+        {formatNumber(combinedCollateralUsdValue, 'usd.amount')}
       </TooltipItem>
     </TooltipWrapper>
   )

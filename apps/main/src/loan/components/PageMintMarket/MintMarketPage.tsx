@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useConnection } from 'wagmi'
+import { MarketOverviewCard } from '@/llamalend/features/market-advanced-information/MarketOverviewCard'
 import { MarketContextProvider } from '@/llamalend/features/market-context'
 import { PositionDetailsComposite } from '@/llamalend/features/market-position-details'
 import { useIsInLiquidation } from '@/llamalend/features/market-position-details/hooks/useUserLiquidationStatus'
@@ -21,7 +22,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useParams } from '@ui-kit/hooks/router'
-import { useLlamaMarketDetailPageV2, useMarketMobileFormDrawer } from '@ui-kit/hooks/useFeatureFlags'
+import { useMarketMobileFormDrawer, useNewLlamaMarketDetailPage } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { MarketType, MarketRateType } from '@ui-kit/types/market'
@@ -39,7 +40,7 @@ export const MintMarketPage = () => {
   const { address } = useConnection()
   const [previewPrices, setPreviewPrices] = useState<Range<Decimal> | undefined>(undefined)
   const isMobileFormDrawer = useMarketMobileFormDrawer()
-  const isMarketDetailPageV2 = useLlamaMarketDetailPageV2()
+  const isNewLlamaMarketDetailPage = useNewLlamaMarketDetailPage()
 
   const marketQuery = useMintMarket({ chainId, rMarket: rCollateralId })
   const { data: market, isLoading: isMarketLoading, error: marketError } = marketQuery
@@ -103,17 +104,11 @@ export const MintMarketPage = () => {
               <CreateLoanTabs onPricesUpdated={setPreviewPrices} />
             )),
         }}
-        header={
-          <MarketPageHeader
-            isLoading={isLoading}
-            primaryRateType={MarketRateType.Borrow}
-            metricsBelowTitle={isMarketDetailPageV2}
-          />
-        }
+        header={<MarketPageHeader isLoading={isLoading} rateType={MarketRateType.Borrow} />}
         pageNavigation={isMarketDetailPageV2 ? <MarketSectionNav sections={MARKET_SECTIONS} /> : undefined}
       >
         <MarketBanners chainId={chainId} market={market} />
-        {isMarketDetailPageV2 ? (
+        {isNewLlamaMarketDetailPage ? (
           <MarketSection id="position-details" ariaLabel={t`Position details`}>
             <PositionDetailsComposite hasPosition={loanExists} events={collateralEvents} />
           </MarketSection>
