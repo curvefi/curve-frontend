@@ -106,7 +106,6 @@ export const MarketPageHeader = ({ isLoading, rateType }: { isLoading: boolean; 
             )}
           </>
         }
-        titleComponent="h1"
         {...(!isNewLlamaMarketDetailPage && { rightItems: metrics })}
       />
       {isNewLlamaMarketDetailPage && metrics}

@@ -1,4 +1,4 @@
-import type { ElementType, ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -22,7 +22,6 @@ export const PageHeader = ({
   subtitle,
   titleLoading = false,
   subtitleLoading = false,
-  titleComponent,
   titleSx,
   icon,
   titleItems,
@@ -33,7 +32,6 @@ export const PageHeader = ({
   subtitle?: string
   titleLoading?: boolean
   subtitleLoading?: boolean
-  titleComponent?: ElementType
   titleSx?: SxProps
   backHref?: string
   icon?: ReactNode
@@ -55,7 +53,7 @@ export const PageHeader = ({
             <WithSkeleton loading={titleLoading}>
               {/* headingSBold uppercases text by default but some titles must preserve token symbol casing. */}
               <Typography
-                {...(titleComponent && { component: titleComponent })}
+                component="h1"
                 variant="headingSBold"
                 sx={{ overflowWrap: 'anywhere', ...titleSx }}
               >
