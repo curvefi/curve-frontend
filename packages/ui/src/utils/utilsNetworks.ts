@@ -62,7 +62,7 @@ export const NETWORK_BASE_CONFIG = {
     gasPricesUnit: 'UKAVA',
     rpcUrl: 'https://evm.kava.io',
     nativeCurrencySymbol: 'KAVA',
-    explorerUrl: 'https://explorer.kava.io/',
+    explorerUrl: 'https://kavascan.io/',
     orgUIPath: 'https://kava.curve.finance',
   },
   [Chain.Fantom]: {
