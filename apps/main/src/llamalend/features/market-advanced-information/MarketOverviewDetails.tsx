@@ -1,12 +1,6 @@
-import { formatCollateralNotional, tokenMetric } from '@/llamalend/llama.utils'
 import { useMarketOraclePrice, useMarketParameters } from '@/llamalend/queries/market'
 import { MarketMetricGrid } from '@/llamalend/widgets/MarketMetricGrid'
-import {
-  MaxLeverageTooltip,
-  SolvencyTooltip,
-  TotalCollateralTooltip,
-  TooltipOptions,
-} from '@/llamalend/widgets/tooltips'
+import { MaxLeverageTooltip, SolvencyTooltip, TooltipOptions } from '@/llamalend/widgets/tooltips'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
@@ -24,110 +18,7 @@ import { getMaxLtv } from './market-risk-values'
 
 const { Grid, Spacing } = SizesAndSpaces
 
-const METRIC_CATEGORY = 'llamalend.marketAdvancedDetails'
 const OVERVIEW_METRIC_CATEGORY = 'llamalend.marketOverview'
-
-export const AdvancedDetails = () => {
-  const { chainId, marketId, market, marketType, apiMarket } = useMarketContext()
-  const { borrowedUsdRate, collateral, availableLiquidity, tvl, maxLeverage, solvency, totalBorrowers } =
-    useAdvancedDetailsData({
-      chainId,
-      market,
-      marketId,
-      marketType,
-      apiMarket,
-    })
-  const isLendMarket = marketType === MarketType.Lend
-
-  return (
-    <Box
-      data-testid="market-advanced-details"
-      sx={{
-        display: 'grid',
-        gap: { ...Spacing.lg, mobile: 0 },
-        gridTemplateColumns: {
-          mobile: 'repeat(1, minmax(0, 1fr))',
-          tablet: 'repeat(4, minmax(0, 1fr))',
-          desktop: 'repeat(6, minmax(0, 1fr))',
-        },
-      }}
-    >
-      <Metric
-        category={METRIC_CATEGORY}
-        testId="market-tvl"
-        label={t`TVL`}
-        value={mapQuery(tvl, ({ value }) => value)}
-        valueOptions={{ unit: 'dollar' }}
-      />
-      {availableLiquidity.data?.borrowCap && (
-        <Metric
-          category={METRIC_CATEGORY}
-          label={t`Borrow cap`}
-          labelTooltip={{ title: t`The maximum total amount that can be borrowed from this market.` }}
-          {...tokenMetric({
-            value: mapQuery(availableLiquidity, d => d.borrowCap),
-            symbol: availableLiquidity.data?.borrowSymbol,
-            usdRate: borrowedUsdRate,
-          })}
-        />
-      )}
-      <Metric
-        category={METRIC_CATEGORY}
-        testId="market-total-borrowers"
-        label={t`Total borrowers`}
-        value={mapQuery(totalBorrowers, ({ value }) => value)}
-        valueOptions={{ abbreviate: true }}
-      />
-      {/* we show total collateral in the rate curve card for lend markets */}
-      {!isLendMarket && (
-        <Metric
-          category={METRIC_CATEGORY}
-          testId="market-total-collateral"
-          label={t`Total collateral`}
-          value={mapQuery(collateral, ({ combinedCollateralUsdValue }) => combinedCollateralUsdValue)}
-          valueOptions={{ unit: 'dollar' }}
-          notional={mapQuery(collateral, ({ borrowedSymbol, collateralSymbol, totalBorrowed, totalCollateral }) =>
-            formatCollateralNotional(
-              { value: decimal(totalCollateral), symbol: collateralSymbol },
-              { value: decimal(totalBorrowed), symbol: borrowedSymbol },
-            ),
-          )}
-          valueTooltip={{
-            title: t`Total Collateral`,
-            body: <TotalCollateralTooltip {...collateral.data} />,
-            ...TooltipOptions,
-          }}
-        />
-      )}
-      {solvency && (
-        <Metric
-          category={METRIC_CATEGORY}
-          label={t`Solvency`}
-          value={mapQuery(solvency, ({ value }) => value)}
-          valueOptions={{ unit: 'percentage' }}
-          valueTooltip={{
-            title: t`Solvency`,
-            body: <SolvencyTooltip type={marketType} />,
-            ...TooltipOptions,
-          }}
-        />
-      )}
-      {maxLeverage && (
-        <Metric
-          category={METRIC_CATEGORY}
-          label={t`Max leverage`}
-          value={mapQuery(maxLeverage, ({ value }) => value)}
-          valueOptions={{ unit: 'multiplier' }}
-          valueTooltip={{
-            title: t`Maximum Leverage`,
-            body: <MaxLeverageTooltip />,
-            ...TooltipOptions,
-          }}
-        />
-      )}
-    </Box>
-  )
-}
 
 export const MarketOverviewDetails = () => {
   const { apiMarket, blockchainId, chainId, market, marketId, marketType, tokens } = useMarketContext()

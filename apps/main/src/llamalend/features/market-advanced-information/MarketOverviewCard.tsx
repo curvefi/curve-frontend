@@ -4,7 +4,7 @@ import CardContent from '@mui/material/CardContent'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { MarketOverviewDetails } from './AdvancedDetails'
+import { MarketOverviewDetails } from './MarketOverviewDetails'
 
 const { Padding } = SizesAndSpaces
 

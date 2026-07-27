@@ -1,5 +1,5 @@
 import {
-  AdvancedDetails,
+  AdvancedDetailsMetrics,
   MarketInfoLayout,
   MarketParametersCard,
 } from '@/llamalend/features/market-advanced-information'
@@ -40,7 +40,7 @@ export const MarketInformationComposite = ({ previewPrices }: MarketInformationC
         <Card size="small">
           <CardHeader title={t`Advanced Details`} />
           <CardContent component={Stack}>
-            <AdvancedDetails />
+            <AdvancedDetailsMetrics />
             <MarketInfoLayout network={networks[chainId]} />
           </CardContent>
         </Card>
