@@ -14,6 +14,7 @@ import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
+import { useLlamaMarketDetailPageV2 } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { MarketRateType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
@@ -22,18 +23,14 @@ import { PAGE_SPACING } from '@ui-kit/widgets/DetailPageLayout/constants'
 type MarketInformationCompProps = {
   rateType: MarketRateType
   previewPrices?: Range<Decimal> | undefined
-  isMarketDetailPageV2: boolean
 }
 
 /**
  * Reusable component for OHLC charts, Bands (if applicable), and market parameters, used in market and vault pages.
  */
-export const MarketInformationComposite = ({
-  rateType,
-  previewPrices,
-  isMarketDetailPageV2,
-}: MarketInformationCompProps) => {
+export const MarketInformationComposite = ({ rateType, previewPrices }: MarketInformationCompProps) => {
   const { chainId } = useMarketContext()
+  const isMarketDetailPageV2 = useLlamaMarketDetailPageV2()
   return (
     <Stack sx={{ gap: PAGE_SPACING }}>
       {rateType === MarketRateType.Borrow && (
