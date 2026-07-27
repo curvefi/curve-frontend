@@ -9,7 +9,6 @@ export default defineConfig({
   },
   resolve: {
     alias: [
-      { find: '@', replacement: resolve(__dirname, '../apps/main/src') },
       { find: '@primitives', replacement: resolve(__dirname, '../packages/primitives/src') },
       { find: '@ui-kit', replacement: resolve(__dirname, '../packages/curve-ui-kit/src') },
     ],

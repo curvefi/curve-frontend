@@ -14,19 +14,14 @@ export const MarketCardHeader = ({ title, action }: { title: string; action?: Re
       alignItems: 'end',
       '&&': { minHeight: ButtonSize.sm, padding: 0 },
       '& .MuiCardHeader-content': {
-        alignSelf: 'end',
         backgroundColor: theme.design.Layer[1].Fill,
         display: 'flex',
         flex: '0 1 auto',
         flexDirection: 'column',
         justifyContent: 'center',
-        maxWidth: '100%',
         minHeight: ButtonSize.sm,
-        minWidth: 0,
         paddingInline: Padding.Card.sm,
-        width: 'fit-content',
       },
-      '& .MuiCardHeader-title': theme.typography.headingXsBold,
       '& .MuiCardHeader-action': { alignSelf: 'end', margin: 0, marginInlineStart: 'auto' },
     })}
   />
