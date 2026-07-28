@@ -4,6 +4,7 @@ import { ContractQuery, NoRetryError, queryFactory, rootKeys } from '@ui-kit/lib
 import { contractValidationSuite } from '@ui-kit/lib/model/query/contract-validation'
 import type { TimeOption } from '@ui-kit/lib/model/query/time-option-validation'
 import { TIME_OPTION_MS } from '@ui-kit/lib/model/time'
+import { fetchDailySnapshotHistory } from './snapshot-history'
 
 export type CrvUsdSnapshot = Snapshot
 type Query = ContractQuery & { timeOption?: TimeOption; limit?: number }
@@ -15,22 +16,28 @@ export const { useQuery: useCrvUsdSnapshots } = queryFactory({
       ...rootKeys.contract({ contractAddress, blockchainId }),
       'crvUsd',
       'snapshots',
-      'v2',
+      'v3',
       { timeOption },
       { limit },
     ] as const,
   queryFn: ({ blockchainId, contractAddress, timeOption = '1M', limit }: Query): Promise<CrvUsdSnapshot[]> => {
     const now = Date.now()
     return NoRetryError.catch404(async () =>
-      getSnapshots(blockchainId, contractAddress, {
-        agg: 'day',
-        fetch_on_chain: true,
-        // Use limit for fixed row counts (e.g. 7-day averages), otherwise compute a date range
-        // from timeOption to avoid backend timeouts from unbounded queries
-        ...(limit
-          ? { limit }
-          : { start: Math.floor((now - TIME_OPTION_MS[timeOption]) / 1000), end: Math.floor(now / 1000) }),
-      }),
+      limit
+        ? getSnapshots(blockchainId, contractAddress, { agg: 'day', fetch_on_chain: true, limit })
+        : fetchDailySnapshotHistory({
+            range: {
+              start: Math.floor((now - TIME_OPTION_MS[timeOption]) / 1000),
+              end: Math.floor(now / 1000),
+            },
+            fetchOnChain: true,
+            fetchSnapshots: (range, fetchOnChain) =>
+              getSnapshots(blockchainId, contractAddress, {
+                agg: 'day',
+                fetch_on_chain: fetchOnChain,
+                ...range,
+              }),
+          }),
     )
   },
   validationSuite: contractValidationSuite,
