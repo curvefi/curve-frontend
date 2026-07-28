@@ -8,6 +8,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q } from '@ui-kit/types/util'
 import { decimalDiv, decimalSum, ZERO } from '@ui-kit/utils'
 import { HealthAndBufferBar } from './HealthAndBufferBar'
+import { getHealthDetailsState } from './utils'
 
 const { Spacing } = SizesAndSpaces
 const DISCOUNT_GAP: Decimal = '3'
@@ -37,9 +38,17 @@ const getHealthQuery = ({ health, liquidationBuffer, isLoading }: HealthAndBuffe
     error: null,
   })
 
-const HealthAndBufferBarStory = (props: HealthAndBufferBarStoryProps) => (
-  <HealthAndBufferBar healthQuery={getHealthQuery(props)} />
-)
+const HealthAndBufferBarStory = (props: HealthAndBufferBarStoryProps) => {
+  const query = getHealthQuery(props)
+  const { state } = getHealthDetailsState(query.data)
+
+  return (
+    <Stack sx={{ gap: Spacing['3xs'] }}>
+      <HealthAndBufferBar query={query} state={state} type="health" />
+      <HealthAndBufferBar query={query} state={state} type="liquidationBuffer" />
+    </Stack>
+  )
+}
 
 const meta: Meta<typeof HealthAndBufferBarStory> = {
   title: 'Llamalend/HealthAndBufferBar',
@@ -87,7 +96,7 @@ export const AllStates: Story = {
   render: () => (
     <Stack sx={{ gap: Spacing.sm }}>
       {allStates.map(({ name, args }) => (
-        <HealthAndBufferBar key={name} healthQuery={getHealthQuery(args ?? {})} />
+        <HealthAndBufferBarStory key={name} {...args} />
       ))}
     </Stack>
   ),

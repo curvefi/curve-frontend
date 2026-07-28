@@ -296,6 +296,8 @@ export const SizesAndSpaces = {
     healthBar: {
       legacy: '2rem', // 36px
       new: '1.125rem', // 18px
+      lg: '2.625rem', // 42px
+      sm: '1rem', // 16px
       label: '0.875rem', // 14px
     },
   },

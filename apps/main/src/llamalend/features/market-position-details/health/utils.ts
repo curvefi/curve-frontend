@@ -7,8 +7,8 @@ import { QueryData } from '@ui-kit/lib'
 const HEALTH_UPPER_BOUND_STATE = 'pristine' as const
 const LIQ_BUFFER_UPPER_BOUND_STATE = 'light' as const
 
-type HealthState = typeof HEALTH_UPPER_BOUND_STATE | 'good' | 'caution' | 'tight' | 'softLiquidation'
-type LiquidationBufferState = typeof LIQ_BUFFER_UPPER_BOUND_STATE | 'risky' | 'critical' | 'hardLiquidation'
+export type HealthState = typeof HEALTH_UPPER_BOUND_STATE | 'good' | 'caution' | 'tight' | 'softLiquidation'
+export type LiquidationBufferState = typeof LIQ_BUFFER_UPPER_BOUND_STATE | 'risky' | 'critical' | 'hardLiquidation'
 export type HealthAndBufferState = HealthState | LiquidationBufferState
 export type HealthType = 'liquidationBuffer' | 'health'
 
@@ -37,40 +37,36 @@ const LIQUIDATION_BUFFER_THRESHOLDS: Record<
 
 export const clampPercentage = (health: number | undefined | null): number => Math.max(0, Math.min(health ?? 0, 100))
 
-const getHealthState = (health: number): HealthState =>
+export const getHealthState = (health: number): HealthState =>
   recordEntries(HEALTH_THRESHOLDS).find(([, threshold]) => health <= threshold)?.[0] ?? HEALTH_UPPER_BOUND_STATE
 
-const getLiquidationBufferState = (liquidationBuffer: number): LiquidationBufferState =>
+export const getLiquidationBufferState = (liquidationBuffer: number): LiquidationBufferState =>
   recordEntries(LIQUIDATION_BUFFER_THRESHOLDS).find(([, threshold]) => liquidationBuffer <= threshold)?.[0] ??
   LIQ_BUFFER_UPPER_BOUND_STATE
 
-export const getHealthColor = (state: HealthAndBufferState | undefined) => (theme: Theme) => {
+export const getHealthColor = (state: HealthState | undefined) => (theme: Theme) => {
   const { Layer } = theme.design
   const colors = {
-    pristine: Layer.Feedback.Success,
+    pristine: Layer.Feedback.Info,
     good: Layer.Feedback.Success,
     caution: Layer.Feedback.Caution,
-    tight: Layer.Feedback.Warning,
+    tight: Layer.Feedback.Error,
     softLiquidation: Layer.Feedback.Error,
-    light: Layer.Feedback.Error,
-    risky: Layer.Feedback.Error,
-    critical: Layer.Feedback.Error,
-    hardLiquidation: Layer.Feedback.Error,
-  } satisfies Record<HealthAndBufferState, string | undefined>
+  } satisfies Record<HealthState, string | undefined>
 
   return maybe(state, s => colors[s])
 }
 
-export const getLiquidationBufferColor = (liquidationBuffer: Decimal | null | undefined) => (theme: Theme) => {
+export const getLiquidationBufferColor = (state: LiquidationBufferState | undefined) => (theme: Theme) => {
   const { Layer } = theme.design
   const colors = {
-    light: Layer.Feedback.Success,
+    light: Layer.Feedback.Info,
     risky: Layer.Feedback.Warning,
     critical: Layer.Feedback.Error,
     hardLiquidation: Layer.Feedback.Error,
   } satisfies Record<LiquidationBufferState, string | undefined>
 
-  return maybe(liquidationBuffer, value => colors[getLiquidationBufferState(+value)])
+  return maybe(state, s => colors[s])
 }
 
 export const getHealthPercent = (health: Decimal | null | undefined) =>
@@ -91,14 +87,19 @@ export const getHealthDetailsState = (healthData: QueryData<typeof useUserHealth
         : 'health',
     ) ?? 'health'
 
-  const state = maybes([health, liquidationBuffer], (health, liquidationBuffer) => {
-    const stateByType = {
-      health: getHealthState(+health),
-      liquidationBuffer: getLiquidationBufferState(+liquidationBuffer),
-    } satisfies Record<HealthType, HealthAndBufferState>
+  const states = maybes(
+    [health, liquidationBuffer],
+    (health, liquidationBuffer) =>
+      ({
+        health: getHealthState(+health),
+        liquidationBuffer: getLiquidationBufferState(+liquidationBuffer),
+      }) satisfies Record<HealthType, HealthAndBufferState>,
+  )
 
-    return stateByType[type]
-  })
-
-  return { state, type }
+  return {
+    state: states?.[type],
+    healthState: states?.health,
+    liquidationBufferState: states?.liquidationBuffer,
+    type,
+  }
 }

@@ -21,6 +21,7 @@ const breakpointValues = <Value>(value: Value): Record<Breakpoint, Value> => ({
  * - responsive: metrics that need less emphasis on mobile.
  */
 const METRIC_EMPHASIS = {
+  prominent: breakpointValues('large'),
   primary: breakpointValues('medium'),
   secondary: breakpointValues('small'),
   responsive: {
@@ -59,6 +60,7 @@ const metricLayout = (
  * Reusable metric layout types composed from emphasis and presentation design choices.
  */
 const METRIC_TYPES = {
+  prominentStat: metricLayout('prominent', 'stack'),
   primaryStat: metricLayout('primary', 'stack'),
   secondaryStat: metricLayout('secondary', 'stack'),
   responsiveStat: metricLayout('responsive', 'stack'),
@@ -66,6 +68,7 @@ const METRIC_TYPES = {
   primaryDetail: metricLayout('primary', 'detail'),
   secondaryDetail: metricLayout('secondary', 'detail'),
   primaryInline: metricLayout('primary', 'inline'),
+  secondaryInline: metricLayout('secondary', 'inline'),
 } as const satisfies Record<string, MetricViewportLayout>
 
 /**
@@ -100,7 +103,8 @@ export const METRIC_CATEGORIES = {
   'llamalend.marketListSummary': METRIC_TYPES.primaryDetail,
   'llamalend.positionBorrowDetails': METRIC_TYPES.secondaryDetail,
   'llamalend.positionSupplyDetails': METRIC_TYPES.secondaryDetail,
-  'llamalend.positionHealth': METRIC_TYPES.primaryStat,
+  'llamalend.positionHealth': METRIC_TYPES.prominentStat,
+  'llamalend.positionLiquidationBuffer': METRIC_TYPES.secondaryInline,
 
   // crvUSD / loan
   'loan.scrvusdBanner': METRIC_TYPES.primaryStat,
