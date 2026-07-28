@@ -86,8 +86,8 @@ export const HealthAndBufferBar = ({
   const label = type === 'health' ? maybe(state, state => HEALTH_LABEL[state]) : undefined
 
   return (
-    <Tooltip title={tooltip.title} body={tooltip.body}>
-      <WithSkeleton loading={isLoading} variant="rectangular" width="100%" height={Height.healthBar[size]}>
+    <WithSkeleton loading={isLoading} variant="rectangular" width="100%" height={Height.healthBar[size]}>
+      <Tooltip title={tooltip.title} body={tooltip.body}>
         <Stack
           sx={{
             height: Height.healthBar[size],
@@ -113,8 +113,8 @@ export const HealthAndBufferBar = ({
             />
           )}
         </Stack>
-      </WithSkeleton>
-    </Tooltip>
+      </Tooltip>
+    </WithSkeleton>
   )
 }
 
