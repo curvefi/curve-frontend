@@ -127,7 +127,7 @@ export const MarketExpandedPanel = ({
             {...tokenMetric({
               value: liquidity,
               symbol: assets.borrowed.symbol,
-              notional: constQ(liquidityUsd),
+              notional: constQ({ value: liquidityUsd, unit: 'dollar' as const }),
             })}
           />
         </Grid>
