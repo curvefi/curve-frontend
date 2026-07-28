@@ -2,7 +2,7 @@ import { Breakpoint } from '@mui/material'
 import { mapRecord } from '@primitives/objects.utils'
 
 export type MetricLayout = {
-  size: 'small' | 'medium' | 'large' | 'extraLarge'
+  size: 'extraSmall' | 'small' | 'medium' | 'large' | 'extraLarge'
   orientation: 'vertical' | 'horizontal'
 }
 
@@ -18,12 +18,14 @@ const breakpointValues = <Value>(value: Value): Record<Breakpoint, Value> => ({
  * Metric emphasis defines the visual hierarchy of a metric across breakpoints.
  * - primary: dominant page metrics.
  * - secondary: dense supporting metrics.
+ * - tertiary: most compact supporting metrics.
  * - responsive: metrics that need less emphasis on mobile.
  */
 const METRIC_EMPHASIS = {
   prominent: breakpointValues('large'),
   primary: breakpointValues('medium'),
   secondary: breakpointValues('small'),
+  tertiary: breakpointValues('extraSmall'),
   responsive: {
     mobile: 'small',
     tablet: 'medium',
@@ -63,12 +65,14 @@ const METRIC_TYPES = {
   prominentStat: metricLayout('prominent', 'stack'),
   primaryStat: metricLayout('primary', 'stack'),
   secondaryStat: metricLayout('secondary', 'stack'),
+  tertiaryStat: metricLayout('tertiary', 'stack'),
   responsiveStat: metricLayout('responsive', 'stack'),
   responsiveDetail: metricLayout('responsive', 'detail'),
   primaryDetail: metricLayout('primary', 'detail'),
   secondaryDetail: metricLayout('secondary', 'detail'),
   primaryInline: metricLayout('primary', 'inline'),
   secondaryInline: metricLayout('secondary', 'inline'),
+  tertiaryInline: metricLayout('tertiary', 'inline'),
 } as const satisfies Record<string, MetricViewportLayout>
 
 /**
@@ -104,7 +108,7 @@ export const METRIC_CATEGORIES = {
   'llamalend.positionBorrowDetails': METRIC_TYPES.secondaryDetail,
   'llamalend.positionSupplyDetails': METRIC_TYPES.secondaryDetail,
   'llamalend.positionHealth': METRIC_TYPES.prominentStat,
-  'llamalend.positionLiquidationBuffer': METRIC_TYPES.secondaryInline,
+  'llamalend.positionLiquidationBuffer': METRIC_TYPES.tertiaryInline,
 
   // crvUSD / loan
   'loan.scrvusdBanner': METRIC_TYPES.primaryStat,
