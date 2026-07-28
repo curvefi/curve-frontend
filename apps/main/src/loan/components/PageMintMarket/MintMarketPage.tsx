@@ -29,7 +29,7 @@ import type { Range } from '@ui-kit/types/util'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 import { useMintMarket } from '../../hooks/useMintMarket'
 
-const MARKET_SECTIONS = getMarketSections({ rateType: MarketRateType.Borrow, showOverview: false })
+const MARKET_SECTIONS = getMarketSections({ rateType: MarketRateType.Borrow })
 
 export const MintMarketPage = () => {
   const params = useParams<CollateralUrlParams>()

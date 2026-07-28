@@ -62,13 +62,13 @@ export const MarketSectionNav = ({ sections }: { sections: readonly MarketSectio
         value={activeSection ?? false}
         variant="scrollable"
       >
-        {sections.map(({ value, label, mobileLabel }) => (
+        {sections.map(({ value, label }) => (
           <Tab
             component="a"
             data-testid={`market-section-nav-${value}`}
             href={`#${value}`}
             key={value}
-            label={<TabLabel size="extraSmall" label={isMobile ? (mobileLabel ?? label) : label} />}
+            label={<TabLabel size="extraSmall" label={isMobile ? (label.short ?? label.default) : label.default} />}
             value={value}
           />
         ))}
