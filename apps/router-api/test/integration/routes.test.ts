@@ -8,6 +8,8 @@ import { createRouterApiServer } from '../../src/server'
 
 process.loadEnvFile()
 
+const ADDRESS_REGEX = new RegExp(ADDRESS_HEX_PATTERN)
+
 const CHAIN_ID_ETHEREUM = '1'
 const CHAIN_ID_OPTIMISM = '10'
 const ETHEREUM_USDC = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'
@@ -184,8 +186,6 @@ const successCasesByProvider: PartialRecord<RouteProvider, Record<string, Succes
     },
   },
 }
-
-const ADDRESS_REGEX = new RegExp(ADDRESS_HEX_PATTERN)
 
 const requiredError = (property: string) => "querystring must have required property '" + property + "'"
 

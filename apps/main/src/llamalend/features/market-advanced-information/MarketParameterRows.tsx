@@ -3,7 +3,7 @@ import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
-import { fallbackQ, mapQuery, q, type QueryProp } from '@ui-kit/types/util'
+import { fakeLoadingQ, fallbackQ, mapQuery, q, type QueryProp } from '@ui-kit/types/util'
 import { formatNumber, decimal } from '@ui-kit/utils'
 
 type MarketPricesRowsProps = {
@@ -43,5 +43,5 @@ export const MarketPricesRows = ({ chainId, marketId, enablePricePerShare, apiMa
 }
 
 export const MarketIdRow = ({ marketId }: { marketId: string | undefined }) => (
-  <ActionInfo testId="market-id" label={t`ID`} value={marketId} loading={!marketId} />
+  <ActionInfo testId="market-id" label={t`ID`} value={fakeLoadingQ(marketId)} />
 )
