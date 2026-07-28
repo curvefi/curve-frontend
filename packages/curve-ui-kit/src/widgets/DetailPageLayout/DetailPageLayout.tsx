@@ -124,7 +124,8 @@ export const DetailPageLayout = ({
           }),
           ...(!header && { marginBlockStart: Spacing.xl }),
         }}
-        direction="row-reverse" // direction is only used when size<12 (on mobile, form shows first, otherwise children first)
+        // direction is only used when size<12 (on mobile, form shows first, otherwise children first)
+        {...(!showMobileDrawer && { direction: 'row-reverse' })}
       >
         {isMobile && (
           <Grid size={12}>

@@ -33,16 +33,18 @@ export const MarketInformationComposite = ({ previewPrices }: MarketInformationC
     <Stack sx={{ gap: PAGE_SPACING }}>
       <MarketSection id="price-chart" ariaLabel={t`Risk and liquidation`}>
         <Stack sx={{ gap: PAGE_SPACING }}>
-          <ChartAndActivityComp previewPrices={previewPrices} chartOnly />
+          <ChartAndActivityComp previewPrices={previewPrices} />
           <CrvUsdPriceChart />
         </Stack>
       </MarketSection>
       <MarketSection id="historical-rates" ariaLabel={t`Rates`}>
         <MarketHistoricalRatesChart rateMode={MarketRateType.Borrow} />
       </MarketSection>
-      <MarketSection id="market-activity" ariaLabel={t`Market activity`}>
-        <MarketActivityComp />
-      </MarketSection>
+      {isNewLlamaMarketDetailPage && (
+        <MarketSection id="market-activity" ariaLabel={t`Market activity`}>
+          <MarketActivityComp />
+        </MarketSection>
+      )}
       <MarketSection id="market-parameters" ariaLabel={t`Advanced details`}>
         {isNewLlamaMarketDetailPage ? (
           <MarketAdvancedDetailsCard network={networks[chainId]} />

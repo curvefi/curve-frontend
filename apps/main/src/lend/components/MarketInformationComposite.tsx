@@ -37,7 +37,7 @@ export const MarketInformationComposite = ({ rateType, previewPrices }: MarketIn
     <Stack sx={{ gap: PAGE_SPACING }}>
       {isBorrow && (
         <MarketSection id="price-chart" ariaLabel={t`Risk and liquidation`}>
-          <ChartAndActivityComp previewPrices={previewPrices} chartOnly />
+          <ChartAndActivityComp previewPrices={previewPrices} />
         </MarketSection>
       )}
       <MarketSection id="historical-rates" ariaLabel={t`Rates`}>
@@ -47,7 +47,7 @@ export const MarketInformationComposite = ({ rateType, previewPrices }: MarketIn
           <MarketRateCurveChart />
         </Stack>
       </MarketSection>
-      {isBorrow && (
+      {isBorrow && isNewLlamaMarketDetailPage && (
         <MarketSection id="market-activity" ariaLabel={t`Market activity`}>
           <MarketActivityComp />
         </MarketSection>

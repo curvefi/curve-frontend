@@ -104,7 +104,7 @@ export const MintMarketPage = () => {
             )),
         }}
         header={<MarketPageHeader isLoading={isLoading} rateType={MarketRateType.Borrow} />}
-        pageNavigation={isNewLlamaMarketDetailPage ? <MarketSectionNav sections={MARKET_SECTIONS} /> : undefined}
+        pageNavigation={isNewLlamaMarketDetailPage && <MarketSectionNav sections={MARKET_SECTIONS} />}
       >
         <MarketBanners chainId={chainId} market={market} />
         <MarketSection id="position-details" ariaLabel={t`Position details`}>
