@@ -293,10 +293,10 @@ export const SizesAndSpaces = {
     row: Sizing[700],
     chart: 420, // lightweight charts require height in number format
     shortChart: 210,
-    healthDetails: {
-      legacyBar: '2rem', // 36px
-      bar: '1.125rem', // 18px
-      label: '0.875rem', // 14px
+    healthBar: {
+      legacy: '2rem', // 36px
+      lg: '2.875rem', // 46px
+      sm: '1.25rem', // 20px
     },
   },
   MinHeight: {

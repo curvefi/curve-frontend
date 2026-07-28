@@ -61,7 +61,7 @@ export default meta
 type Story = StoryObj<typeof HealthDetailsStory>
 
 export const Pristine: Story = {
-  args: { health: '20', liquidationBuffer: '108' },
+  args: { health: '426.9', liquidationBuffer: '108' },
 }
 
 export const Loading: Story = {
