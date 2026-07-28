@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 import Divider from '@mui/material/Divider'
 import { ActionInfoProps, ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { q } from '@ui-kit/types/util'
 
 const { Spacing } = SizesAndSpaces
 
@@ -41,11 +42,10 @@ export const DetailInfo = ({
   <>
     {isDivider && <Divider sx={{ marginBlock: Spacing.sm }} />}
     <ActionInfo
-      value={children || '-'}
+      value={q({ data: children || '-', error: null, isLoading: !!loading })}
       valueColor={VariantToColorMap[variant || '']}
       valueTooltip={tooltip}
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- Existing violation before enabling this rule.
-      loading={loading && (loadingSkeleton || true)}
+      skeleton={loadingSkeleton}
       {...props}
       {...(isBold && { sx: { '& .MuiTypography-root': { '&': { fontWeight: 'bold' } } } })}
     />

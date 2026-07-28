@@ -12,14 +12,12 @@ export type BridgeFormContentParams = Omit<
   Pick<BridgeAmountProps, 'amount' | 'onAmount' | 'walletBalance' | 'inputBalanceUsd'> & {
     bridgeDisabledAlert?: Pick<BridgeAlert, 'alertType' | 'message'>
     loading: boolean
-    amountError: BridgeAmountProps['error']
   }
 
 export const BridgeFormContent = ({
   networks,
   fromChainId,
   amount,
-  amountError,
   walletBalance,
   inputBalanceUsd,
   bridgeDisabledAlert,
@@ -47,7 +45,6 @@ export const BridgeFormContent = ({
       amount={amount}
       walletBalance={walletBalance}
       inputBalanceUsd={inputBalanceUsd}
-      error={amountError}
       onAmount={onAmount}
     />
 
@@ -56,7 +53,7 @@ export const BridgeFormContent = ({
     ) : (
       <BridgeButton
         disableChangeNetwork={loading}
-        disableBridge={!!amountError || !amount || loading || isApproved == null}
+        disableBridge={!!amount.error || !amount.data || loading || isApproved == null}
         isPending={isPending}
         isApproved={isApproved}
         isConnected={isConnected}
