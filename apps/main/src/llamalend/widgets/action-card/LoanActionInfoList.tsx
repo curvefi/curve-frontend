@@ -12,7 +12,7 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate, type TxGasInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
-import { constQ, mapQuery, type QueryProp, type Range, DISABLED_Q } from '@ui-kit/types/util'
+import { mapQuery, type QueryProp, type Range, DISABLED_Q } from '@ui-kit/types/util'
 import { decimal, formatCappedRatePercent, formatNumber } from '@ui-kit/utils'
 import {
   getPriceImpactDisplay,
@@ -168,7 +168,7 @@ export const LoanActionInfoList = ({
             futureValue={
               // todo: do not ignore loading state for health - some forms/tests expect ∞ when the query is disabled
               isFullRepay || health?.data === undefined
-                ? constQ('∞')
+                ? '∞'
                 : mapQuery(health, data => formatNumber(data, { abbreviate: true, fallback: '∞' }))
             }
             valueColor={getHealthValueColor({
@@ -300,10 +300,12 @@ export const LoanActionInfoList = ({
         {exchangeRate && collateralSymbol && borrowSymbol && (
           <ActionInfo
             label={t`Exchange rate`}
-            value={mapQuery(
-              exchangeRate,
-              data =>
-                `1 ${collateralSymbol} = ${formatNumber(decimal(data), { abbreviate: false, highPrecision: true })} ${borrowSymbol}`,
+            value={mapQuery(exchangeRate, er =>
+              maybe(
+                decimal(er),
+                er =>
+                  `1 ${collateralSymbol} = ${formatNumber(er, { abbreviate: false, highPrecision: true })} ${borrowSymbol}`,
+              ),
             )}
             size="small"
             testId="borrow-exchange-rate"
