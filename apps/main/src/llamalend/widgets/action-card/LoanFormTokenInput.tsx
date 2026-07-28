@@ -142,7 +142,7 @@ export const LoanFormTokenInput = <
           />
         )
       }
-      balance={q({ data: value, isLoading: false, error: error ?? null })}
+      balance={q({ data: value, isLoading: value == null, error: error ?? null })}
       onBalance={onBalance}
       {...(!hideBalance && { walletBalance })}
       maxBalance={max && { chips: 'range', balance: max }}
