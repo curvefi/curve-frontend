@@ -1,8 +1,9 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, type ComponentProps } from 'react'
 import { fn } from 'storybook/test'
 import { Select, MenuItem, Typography, Stack } from '@mui/material'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { q } from '@ui-kit/types/util'
 import { LargeTokenInput, type LargeTokenInputRef, type LargeTokenInputProps } from '../LargeTokenInput'
 
 // Test options for token selector with corresponding pre-seeded wallet balances
@@ -50,13 +51,19 @@ const TokenSelector = ({
   )
 }
 
-const LargeTokenInputWithTokenSelector = (props: LargeTokenInputProps) => {
+type LargeTokenInputStoryArgs = Omit<ComponentProps<typeof LargeTokenInput>, 'balance'> & {
+  balance?: Decimal
+  isError?: boolean
+}
+
+const LargeTokenInputWithTokenSelector = ({ balance, isError, ...props }: LargeTokenInputStoryArgs) => {
   const inputRef = useRef<LargeTokenInputRef>(null)
   const [walletBalance, setWalletBalance] = useState(props.walletBalance)
 
   return (
     <LargeTokenInput
       {...props}
+      balance={isError ? q({ data: balance, isLoading: false, error: new Error('Invalid amount') }) : balance}
       walletBalance={walletBalance}
       tokenSelector={
         <TokenSelector
@@ -71,9 +78,9 @@ const LargeTokenInputWithTokenSelector = (props: LargeTokenInputProps) => {
   )
 }
 
-const meta: Meta<typeof LargeTokenInput> = {
+const meta: Meta<typeof LargeTokenInputWithTokenSelector> = {
   title: 'UI Kit/Widgets/LargeTokenInput',
-  component: LargeTokenInput,
+  component: LargeTokenInputWithTokenSelector,
   argTypes: {
     walletBalance: {
       control: 'object',
@@ -119,7 +126,7 @@ const meta: Meta<typeof LargeTokenInput> = {
   },
 }
 
-type Story = StoryObj<typeof LargeTokenInput>
+type Story = StoryObj<typeof LargeTokenInputWithTokenSelector>
 
 export const Default: Story = {
   render: args => <LargeTokenInputWithTokenSelector {...args} />,

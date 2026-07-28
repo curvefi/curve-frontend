@@ -93,28 +93,29 @@ export const useYieldBreakdown = ({
       })
     })
 
-    campaigns
-      .filter(({ reward }) => reward?.type === 'apr')
-      .forEach(({ address, reward, platform, platformImageId }) => {
-        // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
-        rows.push({
-          source: {
-            icon: (
-              <Box
-                component="img"
-                src={platformImageId}
-                alt={platform}
-                sx={{ borderRadius: '50%', width: IconSize.lg, height: IconSize.lg }}
-              />
-            ),
-            iconPosition: 'left',
-            primary: platform,
-          },
-          address,
-          explorerUrl: scanAddressPath(network, address),
-          apy: aprToApy(reward?.value, COMPOUND_WINDOW) ?? undefined,
-        })
+    campaigns.forEach(({ reward, symbol, platform, platformImageId }) => {
+      if (reward?.type !== 'apr') return
+
+      // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
+      rows.push({
+        source: {
+          icon: (
+            <Box
+              component="img"
+              src={platformImageId}
+              alt={platform}
+              sx={{ borderRadius: '50%', width: IconSize.lg, height: IconSize.lg }}
+            />
+          ),
+          iconPosition: 'left',
+          primary: symbol,
+        },
+        address: reward.address,
+        explorerUrl: scanAddressPath(network, reward.address),
+        price: reward.price,
+        apy: aprToApy(reward.value, COMPOUND_WINDOW) ?? undefined,
       })
+    })
 
     // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
     rows.push({

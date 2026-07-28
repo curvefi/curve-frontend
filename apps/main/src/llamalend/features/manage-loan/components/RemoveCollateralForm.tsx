@@ -72,8 +72,7 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
               prefix={t`Max removable:`}
               tooltip={t`Max removable collateral`}
               symbol={collateralToken?.symbol}
-              balance={maxRemovable.data}
-              loading={maxRemovable.isLoading}
+              balance={q(maxRemovable)}
               onClick={() => form.update({ userCollateral: maxRemovable.data })}
             />
           }

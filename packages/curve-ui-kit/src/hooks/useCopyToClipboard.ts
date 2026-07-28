@@ -1,13 +1,15 @@
 import { useCallback } from 'react'
+import { isAddress } from 'viem'
 import { t } from '@ui-kit/lib/i18n'
 import { copyToClipboard } from '@ui-kit/utils'
 import { showToast } from '@ui-kit/widgets/Toast/toast.util'
 
-const DEFAULT_TEST_ID = 'copy-confirmation' as const
+const getTitle = (copyText: string, title: string | undefined) =>
+  title ?? t`${isAddress(copyText, { strict: false }) ? `Address` : `Value`} has been copied to clipboard`
 
 type CopyToClipboardWithToastOptions = {
-  copyText: string
-  confirmationText: string
+  copyText: string | undefined
+  confirmationText?: string
   failureText?: string
   testId?: string
 }
@@ -16,12 +18,14 @@ export const copyToClipboardWithToast = async ({
   copyText,
   confirmationText,
   failureText = t`Failed to copy to clipboard`,
-  testId = DEFAULT_TEST_ID,
+  testId = 'copy-confirmation',
 }: CopyToClipboardWithToastOptions) => {
+  if (!copyText) return showToast({ title: t`Nothing to copy`, severity: 'warning', testId })
+
   const copied = await copyToClipboard(copyText)
   showToast(
     copied
-      ? { message: copyText, severity: 'info', title: confirmationText, testId }
+      ? { message: copyText, severity: 'info', title: getTitle(copyText, confirmationText), testId }
       : { severity: 'error', title: failureText, testId },
   )
 }
@@ -29,10 +33,10 @@ export const copyToClipboardWithToast = async ({
 export const useCopyToClipboard = ({
   copyText,
   confirmationText,
-  testId = DEFAULT_TEST_ID,
+  testId,
 }: {
-  copyText: string
-  confirmationText: string
+  copyText: string | undefined
+  confirmationText?: string
   testId?: string
 }) =>
   useCallback(() => {

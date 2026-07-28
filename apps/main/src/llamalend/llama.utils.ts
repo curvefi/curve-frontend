@@ -20,7 +20,7 @@ import { combineQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { MetricProps } from '@ui-kit/shared/ui/Metric'
 import { MarketType, MarketVersion } from '@ui-kit/types/market'
-import { QueryProp } from '@ui-kit/types/util'
+import { QueryProp, toQuery } from '@ui-kit/types/util'
 import { CRVUSD, decimal, decimalMinus, decimalMultiply, decimalSum, formatToken } from '@ui-kit/utils'
 import { SOLVENCY_THRESHOLDS } from './markets.constants'
 
@@ -524,7 +524,7 @@ export const tokenMetric = ({
     notional:
       notional ??
       (usdRate &&
-        combineQueries([value, usdRate], (value, usdRate) =>
+        combineQueries([toQuery(value), usdRate], (value, usdRate) =>
           maybe(decimal(value), value => ({ value: decimalMultiply(value, usdRate), unit: 'dollar' as const })),
         )),
   }) satisfies Pick<MetricProps, 'value' | 'valueOptions' | 'notional'>
