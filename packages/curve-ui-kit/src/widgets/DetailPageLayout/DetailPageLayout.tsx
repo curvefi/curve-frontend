@@ -88,23 +88,28 @@ export const DetailPageLayout = ({
   const placement = formTabs?.placement ?? 'inline'
   const showMobileDrawer = getIsMobileFormDrawer(placement, isMobile)
 
-  const headerStack = header && (
-    <Stack ref={headerRef} sx={pageNavigation ? undefined : stickyHeaderSx(navHeight)}>
-      {header}
-    </Stack>
-  )
-  const pageNavigationStack = pageNavigation && (
-    <Stack
-      ref={pageNavigationRef}
-      sx={{
-        backgroundColor: theme => theme.palette.background.default,
-        position: { tablet: 'sticky' },
-        top: { tablet: `${navHeight}px` },
-        zIndex: theme => theme.zIndex.appBar - 1,
-      }}
-    >
-      {pageNavigation}
-    </Stack>
+  const headerStack = (
+    <>
+      {header && (
+        <Stack ref={headerRef} sx={pageNavigation ? undefined : stickyHeaderSx(navHeight)}>
+          {header}
+        </Stack>
+      )}
+      {!isMobile && pageNavigation && (
+        <Stack
+          ref={pageNavigationRef}
+          sx={{
+            backgroundColor: theme => theme.palette.background.default,
+            position: { tablet: 'sticky' },
+            // -1 to hide the top border behind the page headers and not have two borders when sticky
+            top: { tablet: `${navHeight - 1}px` },
+            zIndex: theme => theme.zIndex.appBar - 1,
+          }}
+        >
+          {pageNavigation}
+        </Stack>
+      )}
+    </>
   )
   return (
     <WithWrapper shouldWrap={showMobileDrawer} Wrapper={MobileDrawerBoundary}>
@@ -123,10 +128,7 @@ export const DetailPageLayout = ({
       >
         {isMobile && (
           <Grid size={12}>
-            <Stack>
-              {headerStack}
-              {pageNavigationStack}
-            </Stack>
+            <Stack sx={{ gap: PAGE_SPACING }}>{headerStack}</Stack>
           </Grid>
         )}
         {/* In Figma, columns are 12/4/3, but too small around breakpoints. I've added one extra column.
@@ -143,10 +145,8 @@ export const DetailPageLayout = ({
           </Grid>
         )}
         <Grid size="grow">
-          {/* Additional Stack because no gap between the page header and the children */}
-          <Stack>
+          <Stack sx={{ gap: PAGE_SPACING }}>
             {!isMobile && headerStack}
-            {!isMobile && pageNavigationStack}
             <Stack sx={{ flexGrow: 1, gap: PAGE_SPACING }}>{children}</Stack>
           </Stack>
         </Grid>

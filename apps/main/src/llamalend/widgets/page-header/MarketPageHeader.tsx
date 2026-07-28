@@ -56,11 +56,7 @@ export const MarketPageHeader = ({ isLoading, rateType }: { isLoading: boolean; 
   )
 
   return (
-    <WithWrapper
-      shouldWrap={isNewLlamaMarketDetailPage}
-      Wrapper={Stack}
-      sx={{ gap: Spacing.sm, paddingBlockEnd: Spacing.md }}
-    >
+    <WithWrapper shouldWrap={isNewLlamaMarketDetailPage} Wrapper={Stack} sx={{ gap: Spacing.sm }}>
       <PageHeader
         backHref={getInternalUrl('llamalend', blockchainId, LLAMALEND_ROUTES.PAGE_MARKETS)}
         title={title}
