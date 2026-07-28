@@ -2,7 +2,7 @@
   "campaignName": "Cores",
   "platform": "Tori Finance",
   "description": "Points for providing liquidity.",
-  "platformImageId": "cores.png",
+  "platformImageId": "tori.png",
   "dashboardLink": "https://app.tori.finance/opportunities/",
   "pools": [
     {
