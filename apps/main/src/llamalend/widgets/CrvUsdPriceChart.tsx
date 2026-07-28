@@ -1,12 +1,11 @@
 import { sortBy, uniqBy } from 'lodash'
 import { useMemo, useState } from 'react'
 import { CrvUsdPriceTooltip } from '@/llamalend/widgets/tooltips/chart/CrvUsdPriceTooltip'
-import type { Timestamp } from '@curvefi/prices-api/timestamp'
 import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import { useTheme } from '@mui/material/styles'
-import { maybe, notFalsyArray } from '@primitives/objects.utils'
+import { notFalsyArray } from '@primitives/objects.utils'
 import { formatDate } from '@ui/utils'
 import { useCrvUsdPriceHistory } from '@ui-kit/entities/crvusd-price.query'
 import { useCombinedQueries } from '@ui-kit/lib'
@@ -30,12 +29,16 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { Chain, CRVUSD_ADDRESS } from '@ui-kit/utils'
-import { calculateAverageRates } from '@ui-kit/utils/averageRates'
-import { useCrvUsdSupplyTotal } from '../queries/crv-usd-supply-total.query'
+import { calculateAverageRates, hasFullTimeWindow } from '@ui-kit/utils/averageRates'
 
 const { Spacing, Height } = SizesAndSpaces
 
 const METRIC_CATEGORY = 'llamalend.marketCharts'
+const AVERAGE_DAYS = {
+  week: TIME_OPTION_MS['7d'] / TIME_FRAMES.DAY_MS,
+  month: TIME_OPTION_MS['1M'] / TIME_FRAMES.DAY_MS,
+  year: TIME_OPTION_MS['1Y'] / TIME_FRAMES.DAY_MS,
+} as const
 
 export type CrvUsdPriceChartPoint = {
   timestamp: number
@@ -45,6 +48,7 @@ export type CrvUsdPriceChartPoint = {
 }
 
 type PriceSeriesKey = 'price' | 'movingAverage' | 'totalAverage'
+type PricePoint = { timestamp: number; price: number }
 
 const SERIES_CONFIG: { key: PriceSeriesKey; label: string; dash?: ChartLineDashPattern }[] = [
   { key: 'price', label: t`crvUSD Price` },
@@ -52,14 +56,21 @@ const SERIES_CONFIG: { key: PriceSeriesKey; label: string; dash?: ChartLineDashP
   { key: 'totalAverage', label: t`Average Price`, dash: CHART_LINE_DASH_PATTERNS.regular },
 ]
 
-const getOneWeekDeviation = (
-  priceHistory: { timestamp: Timestamp; price: number }[],
-  price: number,
-  timestamp = Date.now(),
-) =>
-  calculateAverageRates(notFalsyArray(priceHistory, [{ timestamp, price }]), 7, {
+const averageDeviation = (priceHistory: PricePoint[], days: number) =>
+  calculateAverageRates(priceHistory, days, {
     deviation: ({ price }) => Math.abs(price - 1) * 100,
   })?.deviation
+
+const getDeviations = (priceHistory: PricePoint[], price: number, timestamp = Date.now()) => {
+  const pricePoints = notFalsyArray(priceHistory, [{ timestamp, price }])
+
+  return {
+    week: averageDeviation(pricePoints, AVERAGE_DAYS.week),
+    month: averageDeviation(pricePoints, AVERAGE_DAYS.month),
+    year: averageDeviation(pricePoints, AVERAGE_DAYS.year),
+    hasFullYear: hasFullTimeWindow(pricePoints, AVERAGE_DAYS.year, timestamp),
+  }
+}
 
 export const CrvUsdPriceChart = () => {
   const [timeOption, setTimeOption] = useState<TimeOption>('1M')
@@ -68,35 +79,36 @@ export const CrvUsdPriceChart = () => {
     design: { Color },
   } = useTheme()
 
-  const days = Math.round(TIME_OPTION_MS[timeOption] / TIME_FRAMES.DAY_MS)
-
-  const priceHistory = useCrvUsdPriceHistory({ days })
+  const priceHistory = useCrvUsdPriceHistory({ days: AVERAGE_DAYS.year })
   const currentPrice = useTokenUsdRate({
     chainId: Chain.Ethereum,
     tokenAddress: CRVUSD_ADDRESS,
   })
-  const totalSupply = useCrvUsdSupplyTotal({})
-  // keepPreviousData is enabled on this query for analytics, so isLoading stays false when switching time options.
-  // Check isPlaceholderData to show the loader while fresh data is being fetched.
   const showLoading = priceHistory.isLoading || priceHistory.isPlaceholderData
 
-  const chartData = useMemo<CrvUsdPriceChartPoint[]>(() => {
-    const sorted = sortBy(
-      uniqBy(
-        (priceHistory.data ?? []).map(item => ({ timestamp: new Date(item.timestamp).getTime(), price: item.price })),
-        'timestamp',
+  const pricePoints = useMemo(
+    () =>
+      sortBy(
+        uniqBy(
+          (priceHistory.data ?? []).map(item => ({ timestamp: new Date(item.timestamp).getTime(), price: item.price })),
+          'timestamp',
+        ),
+        item => item.timestamp,
       ),
-      item => item.timestamp,
-    )
+    [priceHistory.data],
+  )
 
+  const chartData = useMemo<CrvUsdPriceChartPoint[]>(() => {
+    const cutoff = Date.now() - TIME_OPTION_MS[timeOption]
     return addMovingAverages(
-      sorted,
+      pricePoints.filter(({ timestamp }) => timestamp >= cutoff),
       d => d.price,
       d => d.timestamp,
     )
-  }, [priceHistory.data])
+  }, [pricePoints, timeOption])
 
-  const oneWeekDeviation = useCombinedQueries([priceHistory, currentPrice], getOneWeekDeviation)
+  const deviations = useCombinedQueries([priceHistory, currentPrice], getDeviations)
+  const showOneYearDeviation = deviations.isLoading || deviations.data?.hasFullYear
 
   const seriesColors: Record<PriceSeriesKey, string> = useMemo(
     () => ({ price: Color.Primary[500], movingAverage: Color.Secondary[500], totalAverage: Color.Tertiary[400] }),
@@ -137,7 +149,7 @@ export const CrvUsdPriceChart = () => {
           sx={{
             display: 'grid',
             gap: Spacing.xl,
-            gridTemplateColumns: { mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)' },
+            gridTemplateColumns: { mobile: 'repeat(2, 1fr)', tablet: 'repeat(5, 1fr)' },
           }}
         >
           <Metric
@@ -149,15 +161,23 @@ export const CrvUsdPriceChart = () => {
           <Metric
             category={METRIC_CATEGORY}
             label={t`1W deviation`}
-            value={oneWeekDeviation}
+            value={mapQuery(deviations, ({ week }) => week)}
             valueOptions={{ unit: 'percentage' }}
           />
           <Metric
             category={METRIC_CATEGORY}
-            label={t`Total supply`}
-            value={mapQuery(totalSupply, totalSupply => maybe(totalSupply, totalSupply => totalSupply))}
-            valueOptions={{ unit: 'dollar' }}
+            label={t`1M deviation`}
+            value={mapQuery(deviations, ({ month }) => month)}
+            valueOptions={{ unit: 'percentage' }}
           />
+          {showOneYearDeviation && (
+            <Metric
+              category={METRIC_CATEGORY}
+              label={t`1Y deviation`}
+              value={mapQuery(deviations, ({ year }) => year)}
+              valueOptions={{ unit: 'percentage' }}
+            />
+          )}
         </Stack>
         <ChartStateWrapper
           height={Height.shortChart}
