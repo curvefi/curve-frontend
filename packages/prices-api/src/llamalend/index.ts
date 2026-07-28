@@ -6,6 +6,14 @@ export { tvl } from './util'
 
 export type * from './schema'
 
+type SnapshotParams = {
+  agg?: string
+  fetch_on_chain?: boolean
+  limit?: number
+  start?: number
+  end?: number
+}
+
 export async function getChains(options?: Options): Promise<Chain[]> {
   const host = getHost(options)
 
@@ -42,11 +50,7 @@ export async function getMarkets(
 export async function getSnapshots(
   chain: Chain,
   marketController: string,
-  params: {
-    agg?: string
-    fetch_on_chain?: boolean
-    limit?: number
-  } = { fetch_on_chain: true, agg: 'day', limit: 100 },
+  params: SnapshotParams = { fetch_on_chain: true, agg: 'day', limit: 100 },
   options?: Options,
 ) {
   const host = getHost(options)

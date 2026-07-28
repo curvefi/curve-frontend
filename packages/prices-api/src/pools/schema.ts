@@ -1,5 +1,5 @@
 import { z } from 'zod/v4'
-import { address, camelizeKeys, chain, sortDirection, timestamp } from '../schemas'
+import { address, camelizeKeys, chain, timestamp } from '../schemas'
 
 const rawCoin = z.object({
   pool_index: z.number(),
@@ -316,7 +316,7 @@ const v2PoolRegistry = z
 export const v2PoolSortField = z.enum(['name', 'base_daily_apr', 'volume', 'tvl'])
 export type V2PoolSortField = z.infer<typeof v2PoolSortField>
 
-export type SortDirection = z.infer<typeof sortDirection>
+export type { SortDirection } from '../schemas'
 
 const v2PoolChain = z
   .object({

@@ -2,13 +2,15 @@ import { z } from 'zod/v4'
 import type { Address, Hex } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { parseTimestamp, type TimestampResponse } from './timestamp'
-import { chains } from './index'
+import { chains, sortDirections } from './index'
+
+export type { SortDirection } from './index'
 
 export const address = z.string().transform(value => value as Address)
 export const chain = z.enum(chains)
 export const decimal = z.string().transform(value => value as Decimal)
 export const hex = z.string().transform(value => value as Hex)
-export const sortDirection = z.enum(['asc', 'desc'])
+export const sortDirection = z.enum(sortDirections)
 export const timestamp = z
   .union([z.number(), z.string()])
   .transform(value => parseTimestamp(value as TimestampResponse))

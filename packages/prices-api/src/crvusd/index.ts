@@ -6,6 +6,14 @@ import * as Schema from './schema'
 
 export type * from './schema'
 
+type SnapshotParams = {
+  agg?: string
+  fetch_on_chain?: boolean
+  limit?: number
+  start?: number
+  end?: number
+}
+
 /** Retrieve all markets for a specific chain, sorted by date of creation. */
 export async function getMarkets(
   chain: Chain,
@@ -38,11 +46,7 @@ export async function getAllMarkets(
 export async function getSnapshots(
   chain: Chain,
   marketAddr: string,
-  params: {
-    agg?: string
-    fetch_on_chain?: boolean
-    limit?: number
-  } = { fetch_on_chain: true, agg: 'day', limit: 100 },
+  params: SnapshotParams = { fetch_on_chain: true, agg: 'day', limit: 100 },
   options?: Options,
 ) {
   const host = getHost(options)
