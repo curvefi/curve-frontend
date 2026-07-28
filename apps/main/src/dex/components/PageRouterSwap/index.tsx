@@ -475,7 +475,7 @@ export const QuickSwap = ({
         label={t`Sell`}
         balance={q({
           data: decimal(formValues.fromAmount),
-          error: maybe(formValues.fromError, Error) ?? null,
+          error: maybe(formValues.fromError, err => (err != '' ? new Error(err) : null)) ?? null,
           isLoading: false,
         })}
         onBalance={setFromAmount}
@@ -514,7 +514,7 @@ export const QuickSwap = ({
         }
         message={maybes(
           [userFromBalance.data, formValues.fromError],
-          v => t`Amount > wallet balance ${formatNumber(v, 'token.amount')}`,
+          (v, err) => err !== '' && t`Amount > wallet balance ${formatNumber(v, 'token.amount')}`,
         )}
       />
       {/* SWAP ICON */}
