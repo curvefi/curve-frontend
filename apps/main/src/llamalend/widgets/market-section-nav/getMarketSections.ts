@@ -1,8 +1,11 @@
-import { notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { MarketRateType } from '@ui-kit/types/market'
 import type { MarketSectionOption } from './types'
 
+const POSITION_SECTION = {
+  value: 'position-details',
+  label: { default: t`Position details`, short: t`Position` },
+} as const
 const RATES_SECTION = { value: 'historical-rates', label: { default: t`Rates` } } as const
 const PARAMETERS_SECTION = {
   value: 'market-parameters',
@@ -11,24 +14,11 @@ const PARAMETERS_SECTION = {
 const FAQ_SECTION = { value: 'faqs', label: { default: t`FAQs` } } as const
 const OVERVIEW_SECTION = { value: 'market-overview', label: { default: t`Overview` } } as const
 
-export const getMarketSections = ({
-  rateType,
-  hasPosition = true,
-}: {
-  rateType: MarketRateType
-  hasPosition?: boolean
-}): readonly MarketSectionOption[] => {
-  const leadingSections = notFalsy<MarketSectionOption>(
-    hasPosition && {
-      value: 'position-details',
-      label: { default: t`Position details`, short: t`Position` },
-    },
-  )
-
+export const getMarketSections = ({ rateType }: { rateType: MarketRateType }): readonly MarketSectionOption[] => {
   const sections = {
-    [MarketRateType.Supply]: [...leadingSections, OVERVIEW_SECTION, RATES_SECTION, PARAMETERS_SECTION, FAQ_SECTION],
+    [MarketRateType.Supply]: [POSITION_SECTION, OVERVIEW_SECTION, RATES_SECTION, PARAMETERS_SECTION, FAQ_SECTION],
     [MarketRateType.Borrow]: [
-      ...leadingSections,
+      POSITION_SECTION,
       OVERVIEW_SECTION,
       { value: 'price-chart', label: { default: t`Risk & Liquidation`, short: t`Risk` } },
       RATES_SECTION,

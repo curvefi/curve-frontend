@@ -92,7 +92,7 @@ export const DetailPageLayout = ({
           {header}
         </Stack>
       )}
-      {!isMobile && pageNavigation && (
+      {pageNavigation && (
         <Stack
           sx={{
             backgroundColor: theme => theme.palette.background.default,
@@ -116,8 +116,12 @@ export const DetailPageLayout = ({
         sx={{
           ...PAGE_MARGIN,
           ...(pageNavigation && {
-            // instead of tracking the navigation height bar with a ref, let's approximate with ButtonSize
-            '--detail-page-scroll-margin-top': `calc(${navHeight}px + ${ButtonSize.sm})`,
+            // The section navigation is sticky from tablet up
+            '--detail-page-scroll-margin-top': {
+              mobile: `${navHeight}px`,
+              // instead of tracking the navigation height bar with a ref, let's approximate with ButtonSize
+              tablet: `calc(${navHeight}px + ${ButtonSize.sm})`,
+            },
           }),
           ...(!header && { marginBlockStart: Spacing.xl }),
         }}

@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { MarketInformationComposite } from '@/lend/components/MarketInformationComposite'
 import { VaultTabs } from '@/lend/components/PageVault/VaultTabs'
@@ -25,6 +24,8 @@ import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLay
 import { useLendMarket } from '../../hooks/useLendMarket'
 import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
 
+const MARKET_SECTIONS = getMarketSections({ rateType: MarketRateType.Supply })
+
 export const Page = () => {
   const params = useParams<MarketUrlParams>()
   const { rMarket, rChainId: chainId } = parseMarketParams(params)
@@ -50,7 +51,6 @@ export const Page = () => {
   )
   const supplied = +(useUserBalances({ marketId: market?.id, chainId, userAddress }).data?.totalShares ?? 0)
   const hasPosition = !!market && supplied > 0
-  const sections = useMemo(() => getMarketSections({ rateType: MarketRateType.Supply, hasPosition }), [hasPosition])
 
   const error = marketError ?? apiMarket.error
   return error ? (
@@ -73,7 +73,7 @@ export const Page = () => {
           placement: isMobileFormDrawer ? 'mobile-drawer' : 'inline',
         }}
         header={<MarketPageHeader isLoading={isLoading} rateType={MarketRateType.Supply} />}
-        pageNavigation={isNewLlamaMarketDetailPage && <MarketSectionNav sections={sections} />}
+        pageNavigation={isNewLlamaMarketDetailPage && <MarketSectionNav sections={MARKET_SECTIONS} />}
       >
         <MarketBanners
           chainId={chainId}

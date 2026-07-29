@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useConnection } from 'wagmi'
+import { MarketOverviewCard } from '@/llamalend/features/market-advanced-information/MarketOverviewCard'
 import { MarketContextProvider } from '@/llamalend/features/market-context'
 import { PositionDetailsComposite } from '@/llamalend/features/market-position-details'
 import { useIsInLiquidation } from '@/llamalend/features/market-position-details/hooks/useUserLiquidationStatus'
@@ -110,7 +111,11 @@ export const MintMarketPage = () => {
         <MarketSection id="position-details" ariaLabel={t`Position details`}>
           <PositionDetailsComposite hasPosition={loanExists} events={collateralEvents} />
         </MarketSection>
-
+        {isNewLlamaMarketDetailPage && (
+          <MarketSection id="market-overview" ariaLabel={t`Overview`}>
+            <MarketOverviewCard />
+          </MarketSection>
+        )}
         <MarketInformationComposite previewPrices={previewPrices} />
       </DetailPageLayout>
     </MarketContextProvider>
