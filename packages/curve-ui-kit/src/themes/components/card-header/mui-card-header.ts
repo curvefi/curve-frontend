@@ -4,7 +4,7 @@ import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 import { DesignSystem } from '@ui-kit/themes/design'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-const { Spacing, Sizing } = SizesAndSpaces
+const { BorderWidth, Spacing, Sizing } = SizesAndSpaces
 
 export const cardHeaderSmallStyles = (typography: TypographyVariantsOptions) => ({
   '& .MuiCardHeader-title': typography.headingXsBold,
@@ -13,7 +13,7 @@ export const cardHeaderSmallStyles = (typography: TypographyVariantsOptions) => 
 
 export const cardHeaderInlineStyles = (design: DesignSystem, typography: TypographyVariantsOptions) => ({
   ...cardHeaderSmallStyles(typography),
-  borderBottom: `1px solid ${design.Layer[3].Outline}`,
+  borderBottom: `${BorderWidth.thin} solid ${design.Layer[3].Outline}`,
   ...handleBreakpoints({
     minHeight: Sizing.md,
     paddingInline: 0,
