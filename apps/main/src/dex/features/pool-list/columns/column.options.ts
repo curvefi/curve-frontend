@@ -43,7 +43,7 @@ const createVisibility = ({ isLite }: { isLite: boolean }): VisibilityGroup<Pool
         enabled: true,
       },
       {
-        label: t`Volume`,
+        label: t`1D vol`,
         columns: [PoolColumnId.Volume],
         active: true,
         enabled: true,

@@ -60,7 +60,7 @@ export const POOL_TITLES: Record<PoolColumnId, string> = {
   [PoolColumnId.RewardsApy]: t`Rewards APY`,
   [PoolColumnId.GaugeApy]: t`Gauge APY`,
   [PoolColumnId.Points]: t`Points`,
-  [PoolColumnId.Volume]: t`Volume`,
+  [PoolColumnId.Volume]: t`1D vol`,
   [PoolColumnId.Tvl]: t`TVL`,
   [PoolColumnId.Age]: t`Age`,
 }
