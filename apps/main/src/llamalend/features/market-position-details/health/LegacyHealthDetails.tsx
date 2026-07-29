@@ -31,10 +31,7 @@ export const LegacyHealthDetails = ({
             category="llamalend.positionHealth"
             label={title}
             value={mapQuery(healthQuery, d => d.legacyHealth)}
-            valueOptions={{
-              unit: 'none',
-              color: getHealthValueColor({ health: decimal(legacyHealth), theme }),
-            }}
+            valueOptions={{ unit: 'none', color: getHealthValueColor({ health: decimal(legacyHealth), theme }) }}
             valueTooltip={LEGACY_HEALTH_TOOLTIP}
           />
           <Tooltip title={title} body={body}>

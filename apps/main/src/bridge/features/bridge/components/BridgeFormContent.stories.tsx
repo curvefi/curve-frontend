@@ -6,7 +6,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { NetworkDef } from '@ui/utils'
 import { createTestWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/wagmi-test-config'
 import { TestQueryProvider } from '@ui-kit/lib/queries/test-query.provider.test'
-import { constQ } from '@ui-kit/types/util'
+import { constQ, q } from '@ui-kit/types/util'
 import { Chain, decimal } from '@ui-kit/utils'
 import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 import { BridgeActionInfos } from './BridgeActionInfos'
@@ -88,15 +88,17 @@ const BridgeForm = (props: BridgeFormContentParams) => {
         {...props}
         networks={BridgeNetworks}
         fromChainId={fromChainId}
-        amount={amount}
+        amount={q({
+          data: amount,
+          isLoading: false,
+          error:
+            amount && +amount > +walletBalance.balance
+              ? new Error(`The amount ${amount} exceeds your wallet balance ${walletBalance.balance}`)
+              : null,
+        })}
         loading={loading}
         walletBalance={walletBalance}
         inputBalanceUsd={amount && decimal(1.02 * +amount)} // Faking 1 crvUSD = $1.02
-        amountError={
-          amount && +amount > +walletBalance.balance
-            ? `The amount ${amount} exceeds you wallet balance ${walletBalance.balance}`
-            : undefined
-        }
         isPending={isPending}
         isApproved={isApproved}
         isConnected={props.isConnected}

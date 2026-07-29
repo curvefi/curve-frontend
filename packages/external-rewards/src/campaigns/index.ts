@@ -20,6 +20,7 @@ import Re from './Re.json'
 import Symbiotic from './Symbiotic.json'
 import Tangent from './Tangent.json'
 import TermMax from './TermMax.json'
+import Tori from './Tori.json'
 import YieldFi from './YieldFi.json'
 import Yld from './Yld.json'
 import Yuzu from './Yuzu.json'
@@ -50,4 +51,5 @@ export {
   Tangent,
   Apyx,
   Jane,
+  Tori,
 }
