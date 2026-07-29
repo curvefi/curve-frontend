@@ -10,7 +10,6 @@ type GaugeApyTooltipContentProps = {
 export const GaugeApyTooltipContent = ({ maximumApy, unboostedApy }: GaugeApyTooltipContentProps) => (
   <TooltipWrapper>
     <TooltipDescription text={t`CRV gauge reward APY ranges from the unboosted rate to the maximum boosted rate.`} />
-    <TooltipDescription text={t`The maximum rate assumes the full 2.5x gauge boost.`} />
     <TooltipItems secondary>
       <TooltipItem title={t`Gauge APY`} />
       <TooltipItem
@@ -22,7 +21,7 @@ export const GaugeApyTooltipContent = ({ maximumApy, unboostedApy }: GaugeApyToo
       </TooltipItem>
       <TooltipItem
         variant="subItem"
-        title={t`Max boost`}
+        title={t`Max veCRV boost (2.5x)`}
         titleIcon={{ blockchainId: MAINNET_CRV.chain, address: MAINNET_CRV.address, size: 'mui-sm' }}
       >
         {formatNumber(maximumApy || null, 'percent.rate')}

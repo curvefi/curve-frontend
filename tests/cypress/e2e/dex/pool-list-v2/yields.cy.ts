@@ -139,7 +139,7 @@ describe('V2 pool-list yields', () => {
       .should('contain.text', 'Gauge APY')
       .and('contain.text', 'Unboosted')
       .and('contain.text', '5.12%')
-      .and('contain.text', 'Max boost')
+      .and('contain.text', 'Max veCRV boost (2.5x)')
       .and('contain.text', '13.30%')
       .and('contain.text', 'The maximum rate assumes the full 2.5x gauge boost.')
     cy.get(`${TOOLTIP} [data-testid="token-icon-${MAINNET_CRV_ADDRESS}"]`).should('have.length', 2)
@@ -177,7 +177,7 @@ describe('V2 pool-list yields', () => {
       .should('contain.text', 'CRV gauge reward')
       .and('contain.text', '5.12%')
       .and('contain.text', '13.30%')
-      .and('contain.text', 'max boost of 2.50')
+      .and('contain.text', 'Max boost of 2.5x')
   })
 
   it('handles inactive, incomplete, empty, and volatile yield data', () => {
