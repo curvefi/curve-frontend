@@ -1,13 +1,11 @@
-import { getMarket, hasLeverage, hasV2Leverage, hasZapV2 } from '@/llamalend/llama.utils'
+import { getMarket, hasLegacyMintLeverage, hasV2Leverage, hasZapV2 } from '@/llamalend/llama.utils'
 import { MarketTemplate } from '@/llamalend/llamalend.types'
 import type { BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { parseMutationRoute } from '@ui-kit/entities/router-api'
 
 /**
- * Determines the appropriate borrow more implementation based on market type.
- * We use ZapV2 if available, then V2 leverage, then leverage V1 (lend markets only).
- * Otherwise fallback to unleveraged borrow more.
+ * Determines the appropriate borrow more implementation based on market capabilities.
  */
 export function getBorrowMoreImplementation(
   marketId: string | MarketTemplate,
@@ -15,18 +13,23 @@ export function getBorrowMoreImplementation(
 ) {
   const market = getMarket(marketId)
   leverageEnabled ??= false // we don't know if leverage is supported when the API is offline
+  const unsupported = (): never => {
+    throw new Error(`Leveraged borrow more is not supported for market ${market.id}`)
+  }
   return market instanceof MintMarketTemplate
     ? leverageEnabled
       ? hasZapV2(market)
         ? (['zapV2', market.leverageZapV2] as const)
         : hasV2Leverage(market)
           ? (['V2', market.leverageV2] as const)
-          : (['unleveraged', market] as const)
+          : unsupported()
       : (['unleveraged', market] as const)
-    : leverageEnabled && hasLeverage(market)
+    : leverageEnabled
       ? hasZapV2(market)
         ? (['zapV2', market.leverageZapV2] as const)
-        : (['V1', market.leverage] as const)
+        : hasLegacyMintLeverage(market)
+          ? (['V1', market.leverage] as const)
+          : unsupported()
       : (['unleveraged', market.loan] as const)
 }
 
@@ -82,4 +85,4 @@ export const isLeverageBorrowMore = (
  * Checks whether leverage may be enabled for a given market.
  * This is used to determine whether to show the leverage toggle in the UI.
  */
-export const isLeverageBorrowMoreSupported = (market?: MarketTemplate) => !!market && isLeverageBorrowMore(market, true)
+export const isLeverageBorrowMoreSupported = (market?: MarketTemplate) => !!market && hasZapV2(market)
