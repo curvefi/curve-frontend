@@ -24,10 +24,10 @@ const poolTypeLabels = {
 } as const
 
 /** Displays the classifications supplied by the prices API for a pool. */
-export const PoolBadges = ({ pool }: { pool: Pick<PoolRow, 'poolType' | 'isMetapool'> }) => {
+export const PoolBadges = ({ pool }: { pool: PoolRow }) => {
   const classification = pool.poolType && poolTypeClassifications[pool.poolType]
 
-  if (!classification && !pool.isMetapool) return null
+  if (!classification && !pool.isMetapool && !pool.gauge?.isKilled) return null
 
   return (
     <Stack direction="row" data-testid="pool-badges" sx={{ alignItems: 'center', gap: Spacing.xs }}>
@@ -39,6 +39,9 @@ export const PoolBadges = ({ pool }: { pool: Pick<PoolRow, 'poolType' | 'isMetap
         />
       )}
       {pool.isMetapool && <Badge size="extraSmall" label={t`Metapool`} data-testid="badge-pool-metapool" />}
+      {pool.gauge?.isKilled && (
+        <Badge size="extraSmall" color="warning" label={t`Inactive gauge`} data-testid="badge-pool-inactive-gauge" />
+      )}
     </Stack>
   )
 }

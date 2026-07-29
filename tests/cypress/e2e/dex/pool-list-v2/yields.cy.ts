@@ -187,8 +187,11 @@ describe('V2 pool-list yields', () => {
     getV2PoolCell(killed, PoolColumnId.NetApy).should('contain.text', '6.07%')
     getV2PoolCell(killed, PoolColumnId.RewardsApy).should('contain.text', '5.06%')
     getV2PoolCell(killed, PoolColumnId.GaugeApy)
-      .should('contain.text', 'Inactive gauge')
+      .should('have.text', '-')
       .find(`[data-testid="token-icon-${MAINNET_CRV_ADDRESS}"]`)
+      .should('not.exist')
+    getV2PoolCell(killed, PoolColumnId.GaugeApy)
+      .find('[data-testid="pool-gauge-apy-tooltip-trigger"]')
       .should('not.exist')
     getV2PoolCell(killed, PoolColumnId.NetApy).within(() => {
       cy.get(POINTS_BADGE).should('exist')

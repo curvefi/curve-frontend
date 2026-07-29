@@ -1,4 +1,3 @@
-import { ChipInactive } from '@/dex/components/ChipInactive'
 import { GaugeApyTooltipContent } from '@/dex/components/GaugeApyTooltipContent'
 import Box from '@mui/material/Box'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
@@ -44,15 +43,7 @@ export const GaugeApyValue = ({
   tooltipPlacement?: TooltipProps['placement']
   typographyVariant?: TypographyProps['variant']
 }) => {
-  if (pool.gauge?.isKilled) {
-    return (
-      <Box data-testid="pool-gauge-apy" sx={{ display: 'flex', justifyContent: textAlign }}>
-        <ChipInactive>{t`Inactive gauge`}</ChipInactive>
-      </Box>
-    )
-  }
-
-  const range = getGaugeApyRange(pool)
+  const range = pool.gauge?.isKilled ? null : getGaugeApyRange(pool)
   const content = <GaugeApyAmount range={range} typographyVariant={typographyVariant} />
 
   return (
@@ -73,15 +64,7 @@ export const GaugeApyValue = ({
 }
 
 export const GaugeApyCell = ({ pool }: { pool: PoolRow }) => {
-  if (pool.gauge?.isKilled) {
-    return (
-      <Box data-testid="pool-gauge-apy" sx={{ display: 'flex', justifyContent: 'end' }}>
-        <ChipInactive>{t`Inactive gauge`}</ChipInactive>
-      </Box>
-    )
-  }
-
-  const range = getGaugeApyRange(pool)
+  const range = pool.gauge?.isKilled ? null : getGaugeApyRange(pool)
   const content = range ? (
     <TokenInfo
       address={MAINNET_CRV.address}
@@ -92,9 +75,7 @@ export const GaugeApyCell = ({ pool }: { pool: PoolRow }) => {
       primary={
         <span data-testid="pool-gauge-apy-unboosted">{formatCellValue(range.unboostedApy, 'percent.rate')}</span>
       }
-      secondary={
-        <span data-testid="pool-gauge-apy-boosted">{formatCellValue(range.boostedApy, 'percent.rate')}</span>
-      }
+      secondary={<span data-testid="pool-gauge-apy-boosted">{formatCellValue(range.boostedApy, 'percent.rate')}</span>}
       boldPrimary
       sx={{ justifyContent: 'end' }}
     />

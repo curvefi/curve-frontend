@@ -114,7 +114,7 @@ describe('V2 pool-list columns', () => {
     expectHeaderOrder([PoolColumnId.PoolName, PoolColumnId.Volume, PoolColumnId.Tvl])
   })
 
-  it('classifies representative pool types and adds the Metapool badge', () => {
+  it('classifies representative pool types and adds status badges', () => {
     visitV2PoolList({ viewport: DESKTOP_VIEWPORT })
 
     getV2PoolRow(V2_POOL_FIXTURES.showcase.address)
@@ -129,5 +129,17 @@ describe('V2 pool-list columns', () => {
     getV2PoolRow(V2_POOL_FIXTURES.volatile.address)
       .find('[data-testid="badge-pool-type-volatile"]')
       .should('have.text', 'Volatile')
+
+    getV2PoolRow(V2_POOL_FIXTURES.killed.address)
+      .find('[data-testid="pool-badges"] [data-testid^="badge-pool-"]')
+      .should($badges => {
+        expect([...$badges].map(badge => badge.dataset.testid)).to.deep.equal([
+          'badge-pool-type-stable',
+          'badge-pool-inactive-gauge',
+        ])
+      })
+    getV2PoolRow(V2_POOL_FIXTURES.killed.address)
+      .find('[data-testid="badge-pool-inactive-gauge"]')
+      .should('have.text', 'Inactive gauge')
   })
 })
