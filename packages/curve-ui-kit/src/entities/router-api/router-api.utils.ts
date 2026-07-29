@@ -1,6 +1,6 @@
 import { formatUnits } from 'ethers'
 import type { GetExpectedFn } from '@curvefi/llamalend-api/lib/interfaces'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import type { Address } from '@primitives/address.utils'
 import { toArray } from '@primitives/array.utils'
@@ -34,9 +34,8 @@ export const parseMutationRoute = (
   { routeId, slippage, isRepay }: { routeId: string | undefined; slippage: Decimal; isRepay: boolean },
 ): RouteMutationMeta => {
   const route = parseRoute(routeId)
-  const lendMarket = market as LendMarketTemplate
-  const zapV2 = assert(lendMarket.leverageZapV2, `Invalid market template ${market.id}`)
-  const decimals = lendMarket.coinDecimals[isRepay ? 0 : 1] // outCoin is borrow for repay, collateral otherwise
+  const zapV2 = assert(market.leverageZapV2, `Invalid market template ${market.id}`)
+  const decimals = market.coinDecimals[isRepay ? 0 : 1] // outCoin is borrow for repay, collateral otherwise
   const expected = formatUnits(BigInt(route.quote.outAmount), decimals)
   return { ...route, minRecv: zapV2.calcMinRecv(expected, Number(slippage)) }
 }
