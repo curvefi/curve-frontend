@@ -61,7 +61,7 @@ export const PointsTooltipItems = ({ campaigns }: { campaigns: Campaign[] }) =>
           textDecoration: 'none',
           color: theme => theme.design.Text.TextColors.Secondary,
           svg: { fontSize: 0, transition: `font-size ${TRANSITION_FUNCTION}` },
-          '&:hover svg': { fontSize: 20 },
+          '&:hover svg': { fontSize: 16 },
         }}
       >
         {campaign.reward?.type === 'points'

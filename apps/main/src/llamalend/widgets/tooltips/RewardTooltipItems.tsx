@@ -65,7 +65,7 @@ export const RewardsTooltipItems = ({
                   textDecoration: 'none',
                   color: t => t.design.Text.TextColors.Secondary,
                   svg: { fontSize: 0, transition: `font-size ${TRANSITION_FUNCTION}` },
-                  '&:hover svg': { fontSize: 20 },
+                  '&:hover svg': { fontSize: 16 },
                 }}
               >
                 {r.reward?.type === 'apr'
