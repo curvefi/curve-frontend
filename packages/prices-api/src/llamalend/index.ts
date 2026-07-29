@@ -1,18 +1,10 @@
 import { addQueryString, fetchJson as fetch } from '@primitives/fetch.utils'
-import { getHost, type Chain, type Options } from '..'
+import { getHost, type Chain, type Options, type SnapshotQueryParams } from '..'
 import { type Endpoint } from '../llamma'
 import * as Schema from './schema'
 export { tvl } from './util'
 
 export type * from './schema'
-
-type SnapshotParams = {
-  agg?: string
-  fetch_on_chain?: boolean
-  limit?: number
-  start?: number
-  end?: number
-}
 
 export async function getChains(options?: Options): Promise<Chain[]> {
   const host = getHost(options)
@@ -50,7 +42,7 @@ export async function getMarkets(
 export async function getSnapshots(
   chain: Chain,
   marketController: string,
-  params: SnapshotParams = { fetch_on_chain: true, agg: 'day', limit: 100 },
+  params: SnapshotQueryParams = { fetch_on_chain: true, agg: 'day', limit: 100 },
   options?: Options,
 ) {
   const host = getHost(options)

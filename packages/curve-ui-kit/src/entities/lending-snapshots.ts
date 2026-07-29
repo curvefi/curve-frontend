@@ -22,6 +22,7 @@ export const { useQuery: useLendingSnapshots } = queryFactory({
   queryFn: async ({ blockchainId, contractAddress, timeOption = '1M', limit }: Query): Promise<LendingSnapshot[]> => {
     const now = Date.now()
     const response = await NoRetryError.catch404(async () =>
+      // A limit requests the latest snapshots directly; otherwise fetch the full selected range in chunks.
       limit
         ? getSnapshots(blockchainId, contractAddress, { agg: 'day', fetch_on_chain: true, limit })
         : fetchDailySnapshotHistory({

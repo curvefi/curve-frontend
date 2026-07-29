@@ -23,6 +23,7 @@ export const { useQuery: useCrvUsdSnapshots } = queryFactory({
   queryFn: ({ blockchainId, contractAddress, timeOption = '1M', limit }: Query): Promise<CrvUsdSnapshot[]> => {
     const now = Date.now()
     return NoRetryError.catch404(async () =>
+      // A limit requests the latest snapshots directly; otherwise fetch the full selected range in chunks.
       limit
         ? getSnapshots(blockchainId, contractAddress, { agg: 'day', fetch_on_chain: true, limit })
         : fetchDailySnapshotHistory({

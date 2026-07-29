@@ -56,3 +56,11 @@ export type PaginationMeta = {
   /** total number of items/events available on endpoint */
   count: number
 }
+
+export type SnapshotQueryParams = {
+  agg?: string
+  fetch_on_chain?: boolean
+  limit?: number
+  start?: number
+  end?: number
+}
