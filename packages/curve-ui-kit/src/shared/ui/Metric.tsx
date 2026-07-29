@@ -1,10 +1,12 @@
 import { type ReactNode, useCallback, useMemo } from 'react'
-import { type ButtonProps } from '@mui/material/Button'
+import Button, { type ButtonProps } from '@mui/material/Button'
 import Stack, { StackProps } from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
 import type { Amount } from '@primitives/decimal.utils'
-import { useBreakpoint } from '@ui-kit/hooks/useBreakpoints'
+import { useBreakpoint, useIsMobile } from '@ui-kit/hooks/useBreakpoints'
+import { useMobileTooltipDrawer } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
+import { CopyIcon } from '@ui-kit/shared/icons/CopyIcon'
 import { ErrorIconButton } from '@ui-kit/shared/ui/ErrorIconButton'
 import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -118,6 +120,8 @@ type MetricValueProps = Pick<MetricProps, 'valueOptions' | 'change' | 'testId'> 
 }
 
 const MetricValue = ({ value, valueOptions = {}, change, size, copyValue, tooltip, testId }: MetricValueProps) => {
+  const isMobile = useIsMobile()
+  const isMobileDrawerEnabled = useMobileTooltipDrawer() && isMobile
   const numberValue = useMemo(() => ((value || value === 0) && isFinite(Number(value)) ? Number(value) : null), [value])
   const {
     color = 'textPrimary',
@@ -132,6 +136,17 @@ const MetricValue = ({ value, valueOptions = {}, change, size, copyValue, toolti
   const fontVariant = MetricSize[size]
   const fontVariantUnit = MetricUnitSize[size]
   const valueColorProps = getTypographyColorProps(color)
+  const copyOnClick = isMobileDrawerEnabled ? undefined : copyValue
+  const mobileCopyButton = isMobileDrawerEnabled && !disableTooltip && copyValue && (
+    <Button
+      fullWidth
+      startIcon={<CopyIcon />}
+      onClick={copyValue}
+      sx={{ marginBlockStart: tooltip?.body ? Spacing.md : undefined }}
+    >
+      {t`Copy value`}
+    </Button>
+  )
 
   return (
     <Stack direction="row" sx={{ gap: Spacing.xxs, alignItems: 'baseline' }}>
@@ -141,12 +156,22 @@ const MetricValue = ({ value, valueOptions = {}, change, size, copyValue, toolti
         arrow
         placement="bottom"
         {...tooltip}
+        body={
+          mobileCopyButton ? (
+            <>
+              {tooltip?.body}
+              {mobileCopyButton}
+            </>
+          ) : (
+            tooltip?.body
+          )
+        }
         title={tooltip?.title ?? (numberValue == null ? fallback : numberValue.toLocaleString())}
       >
         <Stack
           direction="row"
-          sx={applySxProps({ alignItems: 'baseline' }, copyValue && { cursor: 'pointer' })}
-          onClick={copyValue}
+          sx={applySxProps({ alignItems: 'baseline' }, copyOnClick && { cursor: 'pointer' })}
+          onClick={copyOnClick}
           data-testid={`${testId}-value`}
           data-value={value}
         >
