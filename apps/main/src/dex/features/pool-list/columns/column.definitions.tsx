@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react'
 import { type ColumnMeta, createColumnHelper } from '@tanstack/react-table'
-import { t } from '@ui-kit/lib/i18n'
 import type { ColumnDefinition } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { AgeCell } from '../cells/AgeCell'
 import { BaseApyCell, WeeklyBaseApyCell } from '../cells/BaseApyCell'
@@ -22,6 +21,7 @@ import {
   VolumeHeaderTooltipContent,
 } from '../header-tooltips'
 import type { PoolRow } from '../types'
+import { POOL_TITLES } from './column.titles'
 import { PoolColumnId } from './columns.enum'
 
 type Tooltip = ColumnMeta<never, never>['tooltip']
@@ -51,19 +51,6 @@ const accessor = (
     id,
     header: POOL_TITLES[id],
   })
-
-export const POOL_TITLES: Record<PoolColumnId, string> = {
-  [PoolColumnId.PoolName]: t`Pool`,
-  [PoolColumnId.NetApy]: t`Net APY`,
-  [PoolColumnId.BaseApy]: t`Base APY`,
-  [PoolColumnId.WeeklyBaseApy]: t`Weekly Base APY`,
-  [PoolColumnId.RewardsApy]: t`Rewards APY`,
-  [PoolColumnId.GaugeApy]: t`Gauge APY`,
-  [PoolColumnId.Points]: t`Points`,
-  [PoolColumnId.Volume]: t`1D vol`,
-  [PoolColumnId.Tvl]: t`TVL`,
-  [PoolColumnId.Age]: t`Age`,
-}
 
 export const POOL_COLUMNS = [
   accessor(PoolColumnId.PoolName, 'name', {

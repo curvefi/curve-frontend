@@ -1,5 +1,6 @@
 import { t } from '@ui-kit/lib/i18n'
 import type { VisibilityGroup } from '@ui-kit/shared/ui/DataTable/visibility.types'
+import { POOL_TITLES } from './column.titles'
 import { PoolColumnId } from './columns.enum'
 
 const createVisibility = ({ isLite }: { isLite: boolean }): VisibilityGroup<PoolColumnId>[] => [
@@ -7,55 +8,55 @@ const createVisibility = ({ isLite }: { isLite: boolean }): VisibilityGroup<Pool
     label: t`Pools`,
     options: [
       {
-        label: t`Net APY`,
+        label: POOL_TITLES[PoolColumnId.NetApy],
         columns: [PoolColumnId.NetApy],
         active: !isLite,
         enabled: !isLite,
       },
       {
-        label: t`Base APY`,
+        label: POOL_TITLES[PoolColumnId.BaseApy],
         columns: [PoolColumnId.BaseApy],
         active: false,
         enabled: !isLite,
       },
       {
-        label: t`Weekly Base APY`,
+        label: POOL_TITLES[PoolColumnId.WeeklyBaseApy],
         columns: [PoolColumnId.WeeklyBaseApy],
         active: false,
         enabled: !isLite,
       },
       {
-        label: t`Rewards APY`,
+        label: POOL_TITLES[PoolColumnId.RewardsApy],
         columns: [PoolColumnId.RewardsApy],
         active: false,
         enabled: true,
       },
       {
-        label: t`Gauge APY`,
+        label: POOL_TITLES[PoolColumnId.GaugeApy],
         columns: [PoolColumnId.GaugeApy],
         active: false,
         enabled: !isLite,
       },
       {
-        label: t`Points`,
+        label: POOL_TITLES[PoolColumnId.Points],
         columns: [PoolColumnId.Points],
         active: false,
         enabled: true,
       },
       {
-        label: t`1D vol`,
+        label: POOL_TITLES[PoolColumnId.Volume],
         columns: [PoolColumnId.Volume],
         active: true,
         enabled: true,
       },
       {
-        label: t`TVL`,
+        label: POOL_TITLES[PoolColumnId.Tvl],
         columns: [PoolColumnId.Tvl],
         active: true,
         enabled: true,
       },
       {
-        label: t`Age`,
+        label: POOL_TITLES[PoolColumnId.Age],
         columns: [PoolColumnId.Age],
         active: false,
         enabled: true,

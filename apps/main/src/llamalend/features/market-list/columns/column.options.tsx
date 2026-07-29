@@ -1,8 +1,8 @@
-import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { fromEntries, recordValues } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import type { VisibilityGroup } from '@ui-kit/shared/ui/DataTable/visibility.types'
 import { MarketRateType } from '@ui-kit/types/market'
+import { MARKET_TITLES } from './column.titles'
 import { MarketColumnId } from './columns.enum'
 
 /**
@@ -30,49 +30,49 @@ const createMarketsColumnOptions = ({
     label: t`Markets`,
     options: [
       {
-        label: t`Max leverage`,
+        label: MARKET_TITLES[MarketColumnId.MaxLeverage],
         columns: [MarketColumnId.MaxLeverage],
         active: !onlyPositions,
         enabled: true,
       },
       {
-        label: t`Available Liquidity`,
+        label: MARKET_TITLES[MarketColumnId.LiquidityUsd],
         columns: [MarketColumnId.LiquidityUsd],
         active: !onlyPositions,
         enabled: true,
       },
       {
-        label: t`Max LTV`,
+        label: MARKET_TITLES[MarketColumnId.MaxLtv],
         columns: [MarketColumnId.MaxLtv],
         active: false,
         enabled: true,
       },
       {
-        label: t`Utilization`,
+        label: MARKET_TITLES[MarketColumnId.UtilizationPercent],
         columns: [MarketColumnId.UtilizationPercent],
         active: !onlyPositions,
         enabled: true,
       },
       {
-        label: t`Solvency`,
+        label: MARKET_TITLES[MarketColumnId.SolvencyPercent],
         columns: [MarketColumnId.SolvencyPercent],
         active: false,
         enabled: true,
       },
       {
-        label: t`Total Debt`,
+        label: MARKET_TITLES[MarketColumnId.TotalDebt],
         columns: [MarketColumnId.TotalDebt],
         active: false,
         enabled: true,
       },
       {
-        label: t`Total Collateral`,
+        label: MARKET_TITLES[MarketColumnId.TotalCollateralUsd],
         columns: [MarketColumnId.TotalCollateralUsd],
         active: false,
         enabled: true,
       },
       {
-        label: t`TVL`,
+        label: MARKET_TITLES[MarketColumnId.Tvl],
         columns: [MarketColumnId.Tvl],
         active: !onlyPositions,
         enabled: true,
@@ -83,13 +83,13 @@ const createMarketsColumnOptions = ({
     label: t`Borrow`,
     options: [
       {
-        label: t`Net Borrow APR`,
+        label: MARKET_TITLES[MarketColumnId.NetBorrowRate],
         columns: [MarketColumnId.NetBorrowRate],
         active: onlyPositions != MarketRateType.Supply,
         enabled: true,
       },
       {
-        label: t`Borrow APR`,
+        label: MARKET_TITLES[MarketColumnId.BorrowRate],
         columns: [MarketColumnId.BorrowRate],
         active: false,
         enabled: true,
@@ -117,7 +117,7 @@ const createMarketsColumnOptions = ({
     label: t`Lend`,
     options: [
       {
-        label: NET_SUPPLY_RATE_TITLE,
+        label: MARKET_TITLES[MarketColumnId.LendRate],
         columns: [MarketColumnId.LendRate],
         active: onlyPositions != MarketRateType.Borrow,
         enabled: true,

@@ -1,13 +1,10 @@
 import { ReactNode } from 'react'
-import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { SolvencyTooltip } from '@/llamalend/widgets/tooltips'
 import { type ColumnMeta, createColumnHelper, FilterFnOption } from '@tanstack/react-table'
 import { type AccessorFn, type DeepKeys } from '@tanstack/table-core'
-import { t } from '@ui-kit/lib/i18n'
 import type { ColumnDefinition } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { boolFilterFn, listNotEmptyFilterFn, multiFilterFn, rangeFilterFn } from '@ui-kit/shared/ui/DataTable/filters'
 import { MarketRateType } from '@ui-kit/types/market'
-import { AVERAGE_CATEGORIES } from '@ui-kit/utils'
 import { LlamaMarket } from '../../../queries/market-list/llama-markets'
 import {
   BoostCell,
@@ -33,6 +30,7 @@ import {
   TvlHeaderTooltipContent,
   UtilizationHeaderTooltipContent,
 } from '../header-tooltips'
+import { MARKET_TITLES } from './column.titles'
 import { MarketColumnId } from './columns.enum'
 
 type Tooltip = ColumnMeta<never, never>['tooltip']
@@ -66,38 +64,6 @@ const hidden = (id: MarketColumnId, field: DeepKeys<LlamaMarket>, filterFn: Filt
     filterFn,
     meta: { hidden: true },
   })
-
-/** Titles for the lending markets table. */
-export const MARKET_TITLES: Record<MarketColumnId, string> = {
-  [MarketColumnId.BorrowedSymbol]: t`Debt`,
-  [MarketColumnId.CollateralSymbol]: t`Collateral`,
-  [MarketColumnId.DeprecatedMessage]: t`Deprecated Message`,
-  [MarketColumnId.Version]: t`Market Version`,
-  [MarketColumnId.Type]: t`Market Type`,
-  [MarketColumnId.Rewards]: t`Rewards`,
-  [MarketColumnId.IsFavorite]: t`Favorites`,
-  [MarketColumnId.Chain]: t`Network`,
-  [MarketColumnId.Assets]: t`Collateral • Borrow`,
-  [MarketColumnId.UserHealth]: t`Health`,
-  [MarketColumnId.UserBorrowed]: t`Borrow Amount`,
-  [MarketColumnId.UserCollateral]: t`Collateral Amount`,
-  [MarketColumnId.UserLtv]: t`LTV`,
-  [MarketColumnId.UserBoostMultiplier]: t`Boost`,
-  [MarketColumnId.UserEarnings]: t`My Earnings`,
-  [MarketColumnId.UserDeposited]: t`Supplied Amount`,
-  [MarketColumnId.BorrowRate]: t`Borrow APR`,
-  [MarketColumnId.NetBorrowRate]: t`Net Borrow APR`,
-  [MarketColumnId.LendRate]: NET_SUPPLY_RATE_TITLE,
-  [MarketColumnId.BorrowChart]: t`${AVERAGE_CATEGORIES['llamalend.marketList.rate'].period} Borrow APR`,
-  [MarketColumnId.MaxLtv]: t`Max LTV`,
-  [MarketColumnId.MaxLeverage]: t`Max Leverage`,
-  [MarketColumnId.UtilizationPercent]: t`Utilization`,
-  [MarketColumnId.SolvencyPercent]: t`Solvency`,
-  [MarketColumnId.LiquidityUsd]: t`Available Liquidity`,
-  [MarketColumnId.Tvl]: t`TVL`,
-  [MarketColumnId.TotalDebt]: t`Total Debt`,
-  [MarketColumnId.TotalCollateralUsd]: t`Total Collateral`,
-} as const
 
 /** Columns for the lending markets table. */
 export const MARKET_COLUMNS = [
