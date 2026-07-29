@@ -7,8 +7,8 @@ import { QueryData } from '@ui-kit/lib'
 const HEALTH_UPPER_BOUND_STATE = 'pristine' as const
 const LIQ_BUFFER_UPPER_BOUND_STATE = 'light' as const
 
-export type HealthState = typeof HEALTH_UPPER_BOUND_STATE | 'good' | 'caution' | 'tight' | 'softLiquidation'
-export type LiquidationBufferState = typeof LIQ_BUFFER_UPPER_BOUND_STATE | 'risky' | 'critical' | 'hardLiquidation'
+type HealthState = typeof HEALTH_UPPER_BOUND_STATE | 'good' | 'caution' | 'tight' | 'softLiquidation'
+type LiquidationBufferState = typeof LIQ_BUFFER_UPPER_BOUND_STATE | 'risky' | 'critical' | 'hardLiquidation'
 export type HealthAndBufferState = HealthState | LiquidationBufferState
 export type HealthType = 'liquidationBuffer' | 'health'
 
