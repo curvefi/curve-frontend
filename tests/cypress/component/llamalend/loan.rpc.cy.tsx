@@ -90,6 +90,7 @@ testCases.forEach(
 
       /**
        * Leverage disabled in the tests for now because it depends on Odos routes.
+       * NOTE: (Odos has been discontinued and is dead)
        * It will soon be migrated to our own router API, so it will be easier to mock.
        */
       const leverageEnabled = hasLeverage && false
