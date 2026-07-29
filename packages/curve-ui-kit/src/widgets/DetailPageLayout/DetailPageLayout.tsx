@@ -80,11 +80,8 @@ export const DetailPageLayout = ({
   const isMobile = useIsMobile()
   // header ref needed to compute the top position of the sticky forms
   const headerRef = useRef<HTMLDivElement>(null)
-  const pageNavigationRef = useRef<HTMLDivElement>(null)
   // page header metrics's notionals lazy rendering make the height change by 9px so we need a smaller threshold
   const [, pageHeaderHeight = 0] = useResizeObserver(headerRef, { threshold: 5 })
-  const [, pageNavigationHeight] = useResizeObserver(pageNavigationRef, { enabled: !!pageNavigation })
-  const pageNavigationOffset = pageNavigationHeight ? `${pageNavigationHeight}px` : ButtonSize.md
   const placement = formTabs?.placement ?? 'inline'
   const showMobileDrawer = getIsMobileFormDrawer(placement, isMobile)
 
@@ -97,7 +94,6 @@ export const DetailPageLayout = ({
       )}
       {!isMobile && pageNavigation && (
         <Stack
-          ref={pageNavigationRef}
           sx={{
             backgroundColor: theme => theme.palette.background.default,
             position: { tablet: 'sticky' },
@@ -120,7 +116,8 @@ export const DetailPageLayout = ({
         sx={{
           ...PAGE_MARGIN,
           ...(pageNavigation && {
-            '--detail-page-scroll-margin-top': `calc(${navHeight}px + ${pageNavigationOffset})`,
+            // instead of tracking the navigation height bar with a ref, let's approximate with ButtonSize
+            '--detail-page-scroll-margin-top': `calc(${navHeight}px + ${ButtonSize.sm})`,
           }),
           ...(!header && { marginBlockStart: Spacing.xl }),
         }}
