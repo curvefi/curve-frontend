@@ -28,7 +28,9 @@ export const RewardsApyTooltipItems = ({ pool }: { pool: PoolRow }) => {
     <>
       {extraRewards.length > 0 && (
         <TooltipItems secondary>
-          <TooltipItem title={t`Incentives`}>{formatNumber(getExtraRewardsApy(pool), 'percent.rate')}</TooltipItem>
+          <TooltipItem title={t`Liquidity incentives`}>
+            {formatNumber(getExtraRewardsApy(pool), 'percent.rate')}
+          </TooltipItem>
           <ExtraRewardTooltipItems network={pool.network} rewards={extraRewards} />
         </TooltipItems>
       )}

@@ -69,7 +69,7 @@ export const NetApyIncentivesTooltipItems = ({
   network: string
 }) => (
   <TooltipItems secondary>
-    <TooltipItem title={t`Incentives`}>{formatNumber(incentivesApy, 'percent.rate')}</TooltipItem>
+    <TooltipItem title={t`Liquidty incentives`}>{formatNumber(incentivesApy, 'percent.rate')}</TooltipItem>
     {!!unboostedGaugeApy && (
       <TooltipItem
         variant="subItem"
