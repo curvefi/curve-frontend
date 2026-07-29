@@ -3,17 +3,44 @@ import Stack from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
-import { TooltipDescription, TooltipWrapper } from '@ui-kit/shared/ui/TooltipComponents'
+import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui-kit/shared/ui/TooltipComponents'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
 import type { PoolRow } from '../types'
-import { RewardsApyTooltipItems } from './ApyTooltipItems'
+import { CampaignRewardTooltipItems, ExtraRewardTooltipItems } from './ApyTooltipItems'
 import { RewardIcons } from './RewardIcons'
-import { getRewardsApy } from './utils'
+import { getAprCampaigns, getCampaignRewardsApy, getExtraRewards, getExtraRewardsApy, getRewardsApy } from './utils'
 
 const { Spacing } = SizesAndSpaces
 
 const formatApy = (apy: number | null | undefined) => formatNumber(apy || null, 'percent.rate')
+
+export const RewardsApyTooltipItems = ({ pool }: { pool: PoolRow }) => {
+  const extraRewards = getExtraRewards(pool)
+  const campaigns = getAprCampaigns(pool)
+
+  return (
+    <>
+      {extraRewards.length > 0 && (
+        <TooltipItems secondary>
+          <TooltipItem title={t`Incentives`}>{formatApy(getExtraRewardsApy(pool))}</TooltipItem>
+          <ExtraRewardTooltipItems network={pool.network} rewards={extraRewards} />
+        </TooltipItems>
+      )}
+      {campaigns.length > 0 && (
+        <TooltipItems secondary>
+          <TooltipItem title={t`Campaign rewards`}>{formatApy(getCampaignRewardsApy(pool))}</TooltipItem>
+          <CampaignRewardTooltipItems campaigns={campaigns} />
+        </TooltipItems>
+      )}
+      <TooltipItems borderTop>
+        <TooltipItem variant="primary" title={t`Rewards APY`}>
+          {formatApy(getRewardsApy(pool))}
+        </TooltipItem>
+      </TooltipItems>
+    </>
+  )
+}
 
 const RewardsApyAmount = ({
   pool,

@@ -15,11 +15,19 @@ import {
   TooltipWrapper,
 } from '@ui-kit/shared/ui/TooltipComponents'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { formatNumber } from '@ui-kit/utils'
+import { AVERAGE_CATEGORIES, formatNumber, MAINNET_CRV } from '@ui-kit/utils'
 import type { PoolRow } from '../types'
-import { NetApyIncentivesTooltipItems } from './ApyTooltipItems'
+import { CampaignRewardTooltipItems, ExtraRewardTooltipItems, PointsTooltipItems } from './ApyTooltipItems'
 import { RewardIcons } from './RewardIcons'
-import { aprToPoolApy, getGaugeApyRange, getNetApy } from './utils'
+import {
+  aprToPoolApy,
+  getAprCampaigns,
+  getExtraRewards,
+  getGaugeApyRange,
+  getNetApy,
+  getRewardsApy,
+  isPointsCampaign,
+} from './utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -35,23 +43,65 @@ const isVolatileBaseApy = (pool: PoolRow) => {
   return baseApy != null && baseApy > LARGE_APY
 }
 
+const getIncentivesItems = (pool: PoolRow) => {
+  const extraRewards = getExtraRewards(pool)
+  const campaigns = getAprCampaigns(pool)
+  const pointsCampaigns = pool.campaigns.filter(isPointsCampaign)
+  const unboostedGaugeApy = pool.gauge?.isKilled ? null : aprToPoolApy(pool.crvApr)
+  const hasGaugeApy = unboostedGaugeApy != null && unboostedGaugeApy !== 0
+
+  if (!hasGaugeApy && !extraRewards.length && !campaigns.length && !pointsCampaigns.length) return null
+  else
+    return {
+      incentivesApy: getRewardsApy(pool) + (hasGaugeApy ? unboostedGaugeApy : 0),
+      extraRewards,
+      campaigns,
+      pointsCampaigns,
+      unboostedGaugeApy,
+    }
+}
+
+export const NetApyIncentivesTooltipItems = ({
+  items: { incentivesApy, extraRewards, campaigns, pointsCampaigns, unboostedGaugeApy },
+  network,
+}: {
+  items: NonNullable<ReturnType<typeof getIncentivesItems>>
+  network: string
+}) => (
+  <TooltipItems secondary>
+    <TooltipItem title={t`Incentives`}>{formatApy(incentivesApy)}</TooltipItem>
+    {!!unboostedGaugeApy && (
+      <TooltipItem
+        variant="subItem"
+        title="CRV"
+        titleIcon={{ blockchainId: MAINNET_CRV.chain, address: MAINNET_CRV.address, size: 'mui-sm' }}
+      >
+        {formatApy(unboostedGaugeApy)}
+      </TooltipItem>
+    )}
+    <ExtraRewardTooltipItems network={network} rewards={extraRewards} />
+    <CampaignRewardTooltipItems campaigns={campaigns} />
+    <PointsTooltipItems campaigns={pointsCampaigns} />
+  </TooltipItems>
+)
+
 const NetApyTooltipContent = ({ pool, volatile }: { pool: PoolRow; volatile: boolean }) => {
   const baseApy = aprToPoolApy(pool.baseDailyApr)
-  const unboostedGaugeApy = pool.gauge?.isKilled ? null : aprToPoolApy(pool.crvApr)
   const netApy = getNetApy(pool)
   const gaugeApyRange = pool.gauge && !pool.gauge.isKilled ? getGaugeApyRange(pool) : null
   const maxNetApy = gaugeApyRange ? netApy - gaugeApyRange.unboostedApy + gaugeApyRange.boostedApy : null
+  const incentiveItems = getIncentivesItems(pool)
 
   return (
     <TooltipWrapper>
       <TooltipDescription
-        text={t`Estimated net annualized yield from Base APY, unboosted CRV gauge APY, and Rewards APY.`}
+        text={t`Estimated net annualized yield from Base APY, unboosted CRV gauge APY, and various reward APYs.`}
       />
       <Stack>
         <TooltipItems secondary>
           <TooltipItem title={t`Base APY`}>{formatApy(baseApy)}</TooltipItem>
         </TooltipItems>
-        <NetApyIncentivesTooltipItems pool={pool} unboostedGaugeApy={unboostedGaugeApy} />
+        {incentiveItems && <NetApyIncentivesTooltipItems items={incentiveItems} network={pool.network} />}
         <TooltipItems borderTop>
           <TooltipItem variant="primary" title={t`Total APY`}>
             {formatApy(netApy)}
@@ -71,9 +121,11 @@ const NetApyTooltipContent = ({ pool, volatile }: { pool: PoolRow; volatile: boo
         )}
       </Stack>
       {volatile && <TooltipDescription text={t`This net APY is volatile and is unlikely to persist.`} />}
-      <TooltipFooter>
-        {t`Points are shown for reference and are excluded from both totals. Maximum boost is included only in Total max veCRV APY.`}
-      </TooltipFooter>
+      {incentiveItems && (
+        <TooltipFooter>
+          {t`*Token incentive and yield bearing APY assume a ${AVERAGE_CATEGORIES['dex.poolYield.compoundRate'].adjective} compounding rate.`}
+        </TooltipFooter>
+      )}
     </TooltipWrapper>
   )
 }
