@@ -33,7 +33,7 @@ export const AdvancedDetailsMetrics = () => {
 
   return (
     <Box
-      data-testid="market-advanced-details"
+      data-testid="market-advanced-details-metrics"
       sx={{
         display: 'grid',
         gap: { ...Spacing.lg, mobile: 0 },

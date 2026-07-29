@@ -40,7 +40,7 @@ export const MarketOverviewCard = () => {
     <Card size="small" data-testid="market-overview-card">
       <MarketCardHeader title={t`Overview`} />
       <CardContent component={Stack}>
-        <Stack data-testid="market-advanced-details" sx={{ gap: Spacing.md }}>
+        <Stack sx={{ gap: Spacing.md }}>
           <MarketMetricGrid data-testid="market-overview-summary">
             {solvency && (
               <Metric
