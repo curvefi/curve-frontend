@@ -12,20 +12,17 @@ export function getBorrowMoreImplementation(
   leverageEnabled: boolean | null | undefined,
 ) {
   const market = getMarket(marketId)
-  leverageEnabled ??= false // we don't know if leverage is supported when the API is offline
-  const unsupported = (): never => {
-    throw new Error(`Leveraged borrow more is not supported for market ${market.id}`)
-  }
+  /**
+   * leverageEnabled reflects the position's history, so it can be true for soft-liquidated positions in legacy markets
+   * without Zap v2. Keep direct borrow more available unless the market actually supports Zap v2.
+   */
+  const useZapV2 = !!leverageEnabled && hasZapV2(market)
   return market instanceof MintMarketTemplate
-    ? leverageEnabled
-      ? hasZapV2(market)
-        ? (['zapV2', market.leverageZapV2] as const)
-        : unsupported()
+    ? useZapV2
+      ? (['zapV2', market.leverageZapV2] as const)
       : (['unleveraged', market] as const)
-    : leverageEnabled
-      ? hasZapV2(market)
-        ? (['zapV2', market.leverageZapV2] as const)
-        : unsupported()
+    : useZapV2
+      ? (['zapV2', market.leverageZapV2] as const)
       : (['unleveraged', market.loan] as const)
 }
 
