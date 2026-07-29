@@ -39,23 +39,22 @@ export const MarketOverviewCard = () => {
   return (
     <Card size="small" data-testid="market-overview-card">
       <MarketCardHeader title={t`Overview`} />
-      <CardContent component={Stack}>
-        <Stack data-testid="market-advanced-details" sx={{ gap: Spacing.md }}>
-          <MarketMetricGrid data-testid="market-overview-summary">
-            {solvency && (
-              <Metric
-                category={OVERVIEW_METRIC_CATEGORY}
-                testId="market-solvency"
-                label={t`Solvency`}
-                value={mapQuery(solvency, ({ value }) => value)}
-                valueOptions={{ unit: 'percentage' }}
-                valueTooltip={{
-                  title: t`Solvency`,
-                  body: <SolvencyTooltip type={MarketType.Lend} />,
-                }}
-              />
-            )}
-            {/*
+      <CardContent component={Stack} data-testid="market-advanced-details" sx={{ gap: Spacing.md }}>
+        <MarketMetricGrid data-testid="market-overview-summary">
+          {solvency && (
+            <Metric
+              category={OVERVIEW_METRIC_CATEGORY}
+              testId="market-solvency"
+              label={t`Solvency`}
+              value={mapQuery(solvency, ({ value }) => value)}
+              valueOptions={{ unit: 'percentage' }}
+              valueTooltip={{
+                title: t`Solvency`,
+                body: <SolvencyTooltip type={MarketType.Lend} />,
+              }}
+            />
+          )}
+          {/*
             TODO: get total suppliers
              <Metric
               category={OVERVIEW_METRIC_CATEGORY}
@@ -63,75 +62,74 @@ export const MarketOverviewCard = () => {
               label={t`Total suppliers`}
               value={}
             /> */}
-            <Metric
-              category={OVERVIEW_METRIC_CATEGORY}
-              testId="market-total-borrowers"
-              label={t`Total borrowers`}
-              value={mapQuery(totalBorrowers, ({ value }) => value)}
-              valueOptions={{ abbreviate: true }}
+          <Metric
+            category={OVERVIEW_METRIC_CATEGORY}
+            testId="market-total-borrowers"
+            label={t`Total borrowers`}
+            value={mapQuery(totalBorrowers, ({ value }) => value)}
+            valueOptions={{ abbreviate: true }}
+          />
+          <Metric
+            category={OVERVIEW_METRIC_CATEGORY}
+            testId="market-deployed-since"
+            label={t`Deployed since`}
+            value={deployedDays}
+            valueOptions={{ abbreviate: false, decimals: 0, unit: { symbol: t`Days`, position: 'suffix' } }}
+          />
+        </MarketMetricGrid>
+        <Box
+          data-testid="market-overview-details"
+          sx={{
+            display: 'grid',
+            columnGap: Grid.Column_Spacing,
+            rowGap: Spacing.md,
+            gridTemplateColumns: { mobile: 'minmax(0, 1fr)', tablet: 'repeat(2, minmax(0, 1fr))' },
+          }}
+        >
+          <Stack>
+            <ActionInfo
+              testId="market-overview-collateral"
+              label={t`Collateral`}
+              value={tokens.collateralToken?.symbol}
+              valueLeft={
+                <TokenIcon
+                  blockchainId={blockchainId}
+                  address={tokens.collateralToken?.address}
+                  tooltip={tokens.collateralToken?.symbol ?? t`Collateral`}
+                  size="mui-md"
+                />
+              }
             />
-            <Metric
-              category={OVERVIEW_METRIC_CATEGORY}
-              testId="market-deployed-since"
-              label={t`Deployed since`}
-              value={deployedDays}
-              valueOptions={{ abbreviate: false, decimals: 0, unit: { symbol: t`Days`, position: 'suffix' } }}
+            <ActionInfo
+              testId="market-overview-borrowed"
+              label={t`Borrowed`}
+              value={tokens.borrowToken?.symbol}
+              valueLeft={
+                <TokenIcon
+                  blockchainId={blockchainId}
+                  address={tokens.borrowToken?.address}
+                  tooltip={tokens.borrowToken?.symbol ?? t`Borrowed`}
+                  size="mui-md"
+                />
+              }
             />
-          </MarketMetricGrid>
-          <Box
-            data-testid="market-overview-details"
-            sx={{
-              display: 'grid',
-              columnGap: Grid.Column_Spacing,
-              rowGap: Spacing.md,
-              gridTemplateColumns: { mobile: 'minmax(0, 1fr)', tablet: 'repeat(2, minmax(0, 1fr))' },
-            }}
-          >
-            <Stack>
-              <ActionInfo
-                testId="market-overview-collateral"
-                label={t`Collateral`}
-                value={tokens.collateralToken?.symbol}
-                valueLeft={
-                  <TokenIcon
-                    blockchainId={blockchainId}
-                    address={tokens.collateralToken?.address}
-                    tooltip={tokens.collateralToken?.symbol ?? t`Collateral`}
-                    size="mui-md"
-                  />
-                }
-              />
-              <ActionInfo
-                testId="market-overview-borrowed"
-                label={t`Borrowed`}
-                value={tokens.borrowToken?.symbol}
-                valueLeft={
-                  <TokenIcon
-                    blockchainId={blockchainId}
-                    address={tokens.borrowToken?.address}
-                    tooltip={tokens.borrowToken?.symbol ?? t`Borrowed`}
-                    size="mui-md"
-                  />
-                }
-              />
-              <MarketMaxLtvRow chainId={chainId} marketId={marketId} apiMarket={apiMarket} />
-            </Stack>
-            <Stack>
-              <MarketPricesRows
-                chainId={chainId}
-                marketId={marketId}
-                enablePricePerShare={marketType === MarketType.Lend}
-                apiMarket={apiMarket}
-              />
-              <ActionInfo
-                testId="market-overview-max-leverage"
-                label={t`Max leverage`}
-                labelTooltip={{ title: t`Maximum Leverage`, body: <MaxLeverageTooltip /> }}
-                value={mapQuery(maxLeverage, ({ value }) => formatNumber(value, 'multiplier'))}
-              />
-            </Stack>
-          </Box>
-        </Stack>
+            <MarketMaxLtvRow chainId={chainId} marketId={marketId} apiMarket={apiMarket} />
+          </Stack>
+          <Stack>
+            <MarketPricesRows
+              chainId={chainId}
+              marketId={marketId}
+              enablePricePerShare={marketType === MarketType.Lend}
+              apiMarket={apiMarket}
+            />
+            <ActionInfo
+              testId="market-overview-max-leverage"
+              label={t`Max leverage`}
+              labelTooltip={{ title: t`Maximum Leverage`, body: <MaxLeverageTooltip /> }}
+              value={mapQuery(maxLeverage, ({ value }) => formatNumber(value, 'multiplier'))}
+            />
+          </Stack>
+        </Box>
       </CardContent>
     </Card>
   )
