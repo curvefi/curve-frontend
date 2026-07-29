@@ -24,7 +24,7 @@ import {
   getAprCampaigns,
   getExtraRewards,
   formatCellValue,
-  getGaugeApyRange,
+  getCrvApyRange,
   getNetApy,
   getRewardsApy,
   isPointsCampaign,
@@ -47,22 +47,22 @@ const getIncentivesItems = (pool: PoolRow) => {
   const extraRewards = getExtraRewards(pool)
   const campaigns = getAprCampaigns(pool)
   const pointsCampaigns = pool.campaigns.filter(isPointsCampaign)
-  const unboostedGaugeApy = pool.gauge?.isKilled ? null : aprToPoolApy(pool.crvApr)
-  const hasGaugeApy = unboostedGaugeApy != null && unboostedGaugeApy !== 0
+  const unboostedCrvApy = pool.gauge?.isKilled ? null : aprToPoolApy(pool.crvApr)
+  const hasCrvApy = unboostedCrvApy != null && unboostedCrvApy !== 0
 
-  if (!hasGaugeApy && !extraRewards.length && !campaigns.length && !pointsCampaigns.length) return null
+  if (!hasCrvApy && !extraRewards.length && !campaigns.length && !pointsCampaigns.length) return null
   else
     return {
-      incentivesApy: getRewardsApy(pool) + (hasGaugeApy ? unboostedGaugeApy : 0),
+      incentivesApy: getRewardsApy(pool) + (hasCrvApy ? unboostedCrvApy : 0),
       extraRewards,
       campaigns,
       pointsCampaigns,
-      unboostedGaugeApy,
+      unboostedCrvApy,
     }
 }
 
 export const NetApyIncentivesTooltipItems = ({
-  items: { incentivesApy, extraRewards, campaigns, pointsCampaigns, unboostedGaugeApy },
+  items: { incentivesApy, extraRewards, campaigns, pointsCampaigns, unboostedCrvApy },
   network,
 }: {
   items: NonNullable<ReturnType<typeof getIncentivesItems>>
@@ -70,13 +70,13 @@ export const NetApyIncentivesTooltipItems = ({
 }) => (
   <TooltipItems secondary>
     <TooltipItem title={t`Liquidty incentives`}>{formatNumber(incentivesApy, 'percent.rate')}</TooltipItem>
-    {!!unboostedGaugeApy && (
+    {!!unboostedCrvApy && (
       <TooltipItem
         variant="subItem"
         title="CRV"
         titleIcon={{ blockchainId: MAINNET_CRV.chain, address: MAINNET_CRV.address, size: 'mui-sm' }}
       >
-        {formatNumber(unboostedGaugeApy, 'percent.rate')}
+        {formatNumber(unboostedCrvApy, 'percent.rate')}
       </TooltipItem>
     )}
     <ExtraRewardTooltipItems network={network} rewards={extraRewards} />
@@ -88,8 +88,8 @@ export const NetApyIncentivesTooltipItems = ({
 const NetApyTooltipContent = ({ pool, volatile }: { pool: PoolRow; volatile: boolean }) => {
   const baseApy = aprToPoolApy(pool.baseDailyApr)
   const netApy = getNetApy(pool)
-  const gaugeApyRange = pool.gauge && !pool.gauge.isKilled ? getGaugeApyRange(pool) : null
-  const maxNetApy = gaugeApyRange ? netApy - gaugeApyRange.unboostedApy + gaugeApyRange.boostedApy : null
+  const crvApyRange = pool.gauge && !pool.gauge.isKilled ? getCrvApyRange(pool) : null
+  const maxNetApy = crvApyRange ? netApy - crvApyRange.unboostedApy + crvApyRange.boostedApy : null
   const incentiveItems = getIncentivesItems(pool)
 
   return (
@@ -107,11 +107,11 @@ const NetApyTooltipContent = ({ pool, volatile }: { pool: PoolRow; volatile: boo
             {formatNumber(netApy, 'percent.rate')}
           </TooltipItem>
         </TooltipItems>
-        {gaugeApyRange && (
+        {crvApyRange && (
           <>
             <TooltipItems secondary extraMargin>
               <TooltipItem title={t`Max veCRV Boost (2.5x)`}>
-                {formatNumber(gaugeApyRange.boostedApy, 'percent.rate')}
+                {formatNumber(crvApyRange.boostedApy, 'percent.rate')}
               </TooltipItem>
             </TooltipItems>
             <TooltipItems borderTop>

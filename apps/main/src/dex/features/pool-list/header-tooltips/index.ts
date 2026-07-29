@@ -1,6 +1,6 @@
 export { AgeHeaderTooltipContent } from './AgeHeaderTooltipContent'
 export { BaseApyHeaderTooltipContent } from './BaseApyHeaderTooltipContent'
-export { GaugeApyHeaderTooltipContent } from './GaugeApyHeaderTooltipContent'
+export { CrvApyHeaderTooltipContent } from './CrvApyHeaderTooltipContent'
 export { NetApyHeaderTooltipContent } from './NetApyHeaderTooltipContent'
 export { PointsHeaderTooltipContent } from './PointsHeaderTooltipContent'
 export { PoolHeaderTooltipContent } from './PoolHeaderTooltipContent'

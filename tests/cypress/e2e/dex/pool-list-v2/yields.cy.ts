@@ -16,7 +16,7 @@ const showYieldColumns = () => {
     PoolColumnId.BaseApy,
     PoolColumnId.WeeklyBaseApy,
     PoolColumnId.RewardsApy,
-    PoolColumnId.GaugeApy,
+    PoolColumnId.CrvApy,
     PoolColumnId.Points,
   ]) {
     cy.get(`[data-testid="visibility-toggle-${columnId}"]`).click()
@@ -38,9 +38,9 @@ describe('V2 pool-list yields', () => {
     getV2PoolCell(address, PoolColumnId.BaseApy).should('contain.text', '10.51%')
     getV2PoolCell(address, PoolColumnId.WeeklyBaseApy).should('contain.text', '22.09%')
     getV2PoolCell(address, PoolColumnId.RewardsApy).should('contain.text', '5.06%')
-    getV2PoolCell(address, PoolColumnId.GaugeApy).within(() => {
-      cy.get('[data-testid="pool-gauge-apy-unboosted"]').should('have.text', '5.12%')
-      cy.get('[data-testid="pool-gauge-apy-boosted"]').should('have.text', '13.30%')
+    getV2PoolCell(address, PoolColumnId.CrvApy).within(() => {
+      cy.get('[data-testid="pool-crv-apy-unboosted"]').should('have.text', '5.12%')
+      cy.get('[data-testid="pool-crv-apy-boosted"]').should('have.text', '13.30%')
       cy.get(`[data-testid="token-icon-${MAINNET_CRV_ADDRESS}"]`).should('have.length', 1)
     })
 
@@ -132,20 +132,18 @@ describe('V2 pool-list yields', () => {
       .trigger('mouseout')
     cy.get(TOOLTIP).should('not.exist')
 
-    getV2PoolCell(address, PoolColumnId.GaugeApy)
-      .find('[data-testid="pool-gauge-apy-tooltip-trigger"]')
+    getV2PoolCell(address, PoolColumnId.CrvApy)
+      .find('[data-testid="pool-crv-apy-tooltip-trigger"]')
       .trigger('mouseover')
     cy.get(TOOLTIP)
-      .should('contain.text', 'Gauge APY')
+      .should('contain.text', 'CRV APY')
       .and('contain.text', 'Unboosted')
       .and('contain.text', '5.12%')
       .and('contain.text', 'Max veCRV boost (2.5x)')
       .and('contain.text', '13.30%')
       .and('contain.text', 'The maximum rate assumes the full 2.5x gauge boost.')
     cy.get(`${TOOLTIP} [data-testid="token-icon-${MAINNET_CRV_ADDRESS}"]`).should('have.length', 2)
-    getV2PoolCell(address, PoolColumnId.GaugeApy)
-      .find('[data-testid="pool-gauge-apy-tooltip-trigger"]')
-      .trigger('mouseout')
+    getV2PoolCell(address, PoolColumnId.CrvApy).find('[data-testid="pool-crv-apy-tooltip-trigger"]').trigger('mouseout')
     cy.get(TOOLTIP).should('not.exist')
 
     getV2PoolCell(address, PoolColumnId.NetApy).find(POINTS_BADGE).first().trigger('mouseover')
@@ -186,13 +184,11 @@ describe('V2 pool-list yields', () => {
     const killed = V2_POOL_FIXTURES.killed.address
     getV2PoolCell(killed, PoolColumnId.NetApy).should('contain.text', '6.07%')
     getV2PoolCell(killed, PoolColumnId.RewardsApy).should('contain.text', '5.06%')
-    getV2PoolCell(killed, PoolColumnId.GaugeApy)
+    getV2PoolCell(killed, PoolColumnId.CrvApy)
       .should('have.text', '-')
       .find(`[data-testid="token-icon-${MAINNET_CRV_ADDRESS}"]`)
       .should('not.exist')
-    getV2PoolCell(killed, PoolColumnId.GaugeApy)
-      .find('[data-testid="pool-gauge-apy-tooltip-trigger"]')
-      .should('not.exist')
+    getV2PoolCell(killed, PoolColumnId.CrvApy).find('[data-testid="pool-crv-apy-tooltip-trigger"]').should('not.exist')
     getV2PoolCell(killed, PoolColumnId.NetApy).within(() => {
       cy.get(POINTS_BADGE).should('exist')
       cy.get(EXTRA_REWARD_BADGE).should('exist')
@@ -212,9 +208,9 @@ describe('V2 pool-list yields', () => {
 
     const partial = V2_POOL_FIXTURES.partial.address
     getV2PoolCell(partial, PoolColumnId.NetApy).should('contain.text', '6.13%')
-    getV2PoolCell(partial, PoolColumnId.GaugeApy)
+    getV2PoolCell(partial, PoolColumnId.CrvApy)
       .should('have.text', '-')
-      .find('[data-testid="pool-gauge-apy-tooltip-trigger"]')
+      .find('[data-testid="pool-crv-apy-tooltip-trigger"]')
       .should('not.exist')
     getV2PoolCell(partial, PoolColumnId.NetApy).find(CRV_REWARD_BADGE).should('not.exist')
     getV2PoolCell(partial, PoolColumnId.NetApy)
@@ -235,7 +231,7 @@ describe('V2 pool-list yields', () => {
       PoolColumnId.BaseApy,
       PoolColumnId.WeeklyBaseApy,
       PoolColumnId.RewardsApy,
-      PoolColumnId.GaugeApy,
+      PoolColumnId.CrvApy,
       PoolColumnId.Points,
     ]) {
       getV2PoolCell(empty, column).should('have.text', '-').and('not.contain.text', '0%')
@@ -244,9 +240,7 @@ describe('V2 pool-list yields', () => {
     getV2PoolCell(empty, PoolColumnId.RewardsApy)
       .find('[data-testid="pool-rewards-apy-tooltip-trigger"]')
       .should('not.exist')
-    getV2PoolCell(empty, PoolColumnId.GaugeApy)
-      .find('[data-testid="pool-gauge-apy-tooltip-trigger"]')
-      .should('not.exist')
+    getV2PoolCell(empty, PoolColumnId.CrvApy).find('[data-testid="pool-crv-apy-tooltip-trigger"]').should('not.exist')
     getV2PoolCell(empty, PoolColumnId.BaseApy)
       .find('[data-testid="pool-base-apy-tooltip-trigger"]')
       .trigger('mouseover')

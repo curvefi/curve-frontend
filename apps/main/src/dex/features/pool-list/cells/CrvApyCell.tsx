@@ -1,4 +1,4 @@
-import { GaugeApyTooltipContent } from '@/dex/components/GaugeApyTooltipContent'
+import { CrvApyTooltipContent } from '@/dex/components/CrvApyTooltipContent'
 import Box from '@mui/material/Box'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
@@ -7,11 +7,11 @@ import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { formatNumber, MAINNET_CRV } from '@ui-kit/utils'
 import type { PoolRow } from '../types'
-import { formatCellValue, getGaugeApyRange } from './utils'
+import { formatCellValue, getCrvApyRange } from './utils'
 
-type GaugeApyRangeProps = NonNullable<ReturnType<typeof getGaugeApyRange>> & { cellValue?: boolean }
+type CrvApyRangeProps = NonNullable<ReturnType<typeof getCrvApyRange>> & { cellValue?: boolean }
 
-export const GaugeApyRange = ({ boostedApy, unboostedApy, cellValue = false }: GaugeApyRangeProps) => (
+export const CrvApyRange = ({ boostedApy, unboostedApy, cellValue = false }: CrvApyRangeProps) => (
   <>
     {cellValue ? formatCellValue(unboostedApy, 'percent.rate') : formatNumber(unboostedApy, 'percent.rate')}
     {' → '}
@@ -21,19 +21,19 @@ export const GaugeApyRange = ({ boostedApy, unboostedApy, cellValue = false }: G
   </>
 )
 
-const GaugeApyAmount = ({
+const CrvApyAmount = ({
   range,
   typographyVariant,
 }: {
-  range: ReturnType<typeof getGaugeApyRange>
+  range: ReturnType<typeof getCrvApyRange>
   typographyVariant: TypographyProps['variant']
 }) => (
   <Typography component="span" variant={typographyVariant}>
-    {range ? <GaugeApyRange {...range} cellValue /> : formatCellValue(null, 'percent.rate')}
+    {range ? <CrvApyRange {...range} cellValue /> : formatCellValue(null, 'percent.rate')}
   </Typography>
 )
 
-export const GaugeApyValue = ({
+export const CrvApyValue = ({
   pool,
   textAlign = 'end',
   tooltipPlacement = 'bottom-end',
@@ -44,16 +44,16 @@ export const GaugeApyValue = ({
   tooltipPlacement?: TooltipProps['placement']
   typographyVariant?: TypographyProps['variant']
 }) => {
-  const range = pool.gauge?.isKilled ? null : getGaugeApyRange(pool)
-  const content = <GaugeApyAmount range={range} typographyVariant={typographyVariant} />
+  const range = pool.gauge?.isKilled ? null : getCrvApyRange(pool)
+  const content = <CrvApyAmount range={range} typographyVariant={typographyVariant} />
 
   return (
-    <Box data-testid="pool-gauge-apy" sx={{ display: 'flex', justifyContent: textAlign }}>
+    <Box data-testid="pool-crv-apy" sx={{ display: 'flex', justifyContent: textAlign }}>
       <WithWrapper
         shouldWrap={range}
         Wrapper={Tooltip}
-        title={t`Gauge APY`}
-        body={range && <GaugeApyTooltipContent unboostedApy={range.unboostedApy} maximumApy={range.boostedApy} />}
+        title={t`CRV APY`}
+        body={range && <CrvApyTooltipContent unboostedApy={range.unboostedApy} maximumApy={range.boostedApy} />}
         placement={tooltipPlacement}
       >
         {content}
@@ -62,8 +62,8 @@ export const GaugeApyValue = ({
   )
 }
 
-export const GaugeApyCell = ({ pool }: { pool: PoolRow }) => {
-  const range = pool.gauge?.isKilled ? null : getGaugeApyRange(pool)
+export const CrvApyCell = ({ pool }: { pool: PoolRow }) => {
+  const range = pool.gauge?.isKilled ? null : getCrvApyRange(pool)
   const content = range ? (
     <TokenInfo
       address={MAINNET_CRV.address}
@@ -72,27 +72,27 @@ export const GaugeApyCell = ({ pool }: { pool: PoolRow }) => {
       iconPosition="right"
       iconAlignment="start"
       primary={
-        <span data-testid="pool-gauge-apy-unboosted">{formatCellValue(range.unboostedApy, 'percent.rate')}</span>
+        <span data-testid="pool-crv-apy-unboosted">{formatCellValue(range.unboostedApy, 'percent.rate')}</span>
       }
-      secondary={<span data-testid="pool-gauge-apy-boosted">{formatCellValue(range.boostedApy, 'percent.rate')}</span>}
+      secondary={<span data-testid="pool-crv-apy-boosted">{formatCellValue(range.boostedApy, 'percent.rate')}</span>}
       boldPrimary
       sx={{ justifyContent: 'end' }}
     />
   ) : (
-    <GaugeApyAmount range={range} typographyVariant="tableCellMBold" />
+    <CrvApyAmount range={range} typographyVariant="tableCellMBold" />
   )
 
   return (
-    <Box data-testid="pool-gauge-apy" sx={{ display: 'flex', justifyContent: 'end' }}>
+    <Box data-testid="pool-crv-apy" sx={{ display: 'flex', justifyContent: 'end' }}>
       <WithWrapper
         shouldWrap={range}
         Wrapper={Tooltip}
         clickable
-        title={t`Gauge APY`}
-        body={range && <GaugeApyTooltipContent unboostedApy={range.unboostedApy} maximumApy={range.boostedApy} />}
+        title={t`CRV APY`}
+        body={range && <CrvApyTooltipContent unboostedApy={range.unboostedApy} maximumApy={range.boostedApy} />}
         placement="top"
       >
-        <Box data-testid={range && 'pool-gauge-apy-tooltip-trigger'}>{content}</Box>
+        <Box data-testid={range && 'pool-crv-apy-tooltip-trigger'}>{content}</Box>
       </WithWrapper>
     </Box>
   )

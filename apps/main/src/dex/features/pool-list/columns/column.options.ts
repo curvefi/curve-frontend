@@ -32,8 +32,8 @@ const createVisibility = ({ isLite }: { isLite: boolean }): VisibilityGroup<Pool
         enabled: true,
       },
       {
-        label: POOL_TITLES[PoolColumnId.GaugeApy],
-        columns: [PoolColumnId.GaugeApy],
+        label: POOL_TITLES[PoolColumnId.CrvApy],
+        columns: [PoolColumnId.CrvApy],
         active: false,
         enabled: !isLite,
       },

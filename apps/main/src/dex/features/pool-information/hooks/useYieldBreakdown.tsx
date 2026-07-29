@@ -2,7 +2,7 @@ import { sum } from 'lodash'
 import { useMemo } from 'react'
 import { type Address } from 'viem'
 import { BaseApyTooltipContent } from '@/dex/components/BaseApyTooltipContent'
-import { GaugeApyTooltipContent } from '@/dex/components/GaugeApyTooltipContent'
+import { CrvApyTooltipContent } from '@/dex/components/CrvApyTooltipContent'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { defaultNetworks } from '@/dex/lib/networks'
 import { useStore } from '@/dex/store/useStore'
@@ -56,7 +56,7 @@ export const useYieldBreakdown = ({
   const { data: crvPrice } = useTokenUsdRate({ chainId: Chain.Ethereum, tokenAddress: MAINNET_CRV_ADDRESS })
   const unboostedCrvApy = gaugeIsKilled ? null : aprToApy(rewardsApy?.crv?.[0], COMPOUND_WINDOW)
   const maxBoostCrvApy = gaugeIsKilled ? null : aprToApy(rewardsApy?.crv?.[1], COMPOUND_WINDOW)
-  const gaugeApyRange = useMemo(
+  const crvApyRange = useMemo(
     () => (unboostedCrvApy && maxBoostCrvApy ? { unboostedApy: unboostedCrvApy, maximumApy: maxBoostCrvApy } : null),
     [maxBoostCrvApy, unboostedCrvApy],
   )
@@ -80,10 +80,10 @@ export const useYieldBreakdown = ({
         ...(!gaugeIsKilled && {
           apy: unboostedCrvApy ?? undefined,
           maxBoostApy: maxBoostCrvApy ?? undefined,
-          ...(gaugeApyRange && {
+          ...(crvApyRange && {
             apyTooltip: {
               title: t`Gauge APY`,
-              body: <GaugeApyTooltipContent {...gaugeApyRange} />,
+              body: <CrvApyTooltipContent {...crvApyRange} />,
               clickable: true,
             },
           }),
@@ -154,7 +154,7 @@ export const useYieldBreakdown = ({
     campaigns,
     crvPrice,
     fallbackTokenRates,
-    gaugeApyRange,
+    crvApyRange,
     gaugeIsKilled,
     maxBoostCrvApy,
     network,
@@ -165,7 +165,7 @@ export const useYieldBreakdown = ({
   const total = useMemo(() => sum(rows.map(row => row.apy)), [rows])
 
   return {
-    maxBoostTotal: gaugeApyRange ? total - gaugeApyRange.unboostedApy + gaugeApyRange.maximumApy : null,
+    maxBoostTotal: crvApyRange ? total - crvApyRange.unboostedApy + crvApyRange.maximumApy : null,
     total,
     rows,
   }

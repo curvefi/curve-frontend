@@ -3,7 +3,7 @@ import { type ColumnMeta, createColumnHelper } from '@tanstack/react-table'
 import type { ColumnDefinition } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { AgeCell } from '../cells/AgeCell'
 import { BaseApyCell, WeeklyBaseApyCell } from '../cells/BaseApyCell'
-import { GaugeApyCell } from '../cells/GaugeApyCell'
+import { CrvApyCell } from '../cells/CrvApyCell'
 import { NetApyCell } from '../cells/NetApyCell'
 import { PointsCell } from '../cells/PointsCell'
 import { PoolTitleCell } from '../cells/PoolTitleCell'
@@ -12,7 +12,7 @@ import { UsdCell } from '../cells/UsdCell'
 import {
   AgeHeaderTooltipContent,
   BaseApyHeaderTooltipContent,
-  GaugeApyHeaderTooltipContent,
+  CrvApyHeaderTooltipContent,
   NetApyHeaderTooltipContent,
   PointsHeaderTooltipContent,
   PoolHeaderTooltipContent,
@@ -91,12 +91,12 @@ export const POOL_COLUMNS = [
       tooltip: createTooltip(PoolColumnId.RewardsApy, <RewardsApyHeaderTooltipContent />),
     },
   }),
-  display(PoolColumnId.GaugeApy, {
-    cell: ({ row }) => <GaugeApyCell pool={row.original} />,
+  display(PoolColumnId.CrvApy, {
+    cell: ({ row }) => <CrvApyCell pool={row.original} />,
     enableSorting: false,
     meta: {
       type: 'numeric',
-      tooltip: createTooltip(PoolColumnId.GaugeApy, <GaugeApyHeaderTooltipContent />),
+      tooltip: createTooltip(PoolColumnId.CrvApy, <CrvApyHeaderTooltipContent />),
     },
   }),
   display(PoolColumnId.Points, {

@@ -2,12 +2,12 @@ import { t } from '@ui-kit/lib/i18n'
 import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui-kit/shared/ui/TooltipComponents'
 import { formatNumber, MAINNET_CRV } from '@ui-kit/utils'
 
-type GaugeApyTooltipContentProps = {
+type CrvApyTooltipContentProps = {
   maximumApy: number | null | undefined
   unboostedApy: number | null | undefined
 }
 
-export const GaugeApyTooltipContent = ({ maximumApy, unboostedApy }: GaugeApyTooltipContentProps) => (
+export const CrvApyTooltipContent = ({ maximumApy, unboostedApy }: CrvApyTooltipContentProps) => (
   <TooltipWrapper>
     <TooltipDescription text={t`CRV gauge reward APY ranges from the unboosted rate to the maximum boosted rate.`} />
     <TooltipDescription text={t`The maximum rate assumes the full 2.5x gauge boost.`} />

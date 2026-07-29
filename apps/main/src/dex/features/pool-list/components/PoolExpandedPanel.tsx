@@ -9,7 +9,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { decimal } from '@ui-kit/utils'
 import { AgeValue } from '../cells/AgeCell'
 import { BaseApyValue, WeeklyBaseApyValue } from '../cells/BaseApyCell'
-import { GaugeApyValue } from '../cells/GaugeApyCell'
+import { CrvApyValue } from '../cells/CrvApyCell'
 import { NetApyValue } from '../cells/NetApyCell'
 import { PointsValue } from '../cells/PointsCell'
 import { RewardsApyValue } from '../cells/RewardsApyCell'
@@ -113,9 +113,9 @@ export const PoolExpandedPanel = ({ row, table, variant }: PoolExpandedPanelProp
           />
         </RewardInfoItem>
       )}
-      {isColumnEnabled(variant, PoolColumnId.GaugeApy) && (
-        <RewardInfoItem label={POOL_TITLES[PoolColumnId.GaugeApy]}>
-          <GaugeApyValue
+      {isColumnEnabled(variant, PoolColumnId.CrvApy) && (
+        <RewardInfoItem label={POOL_TITLES[PoolColumnId.CrvApy]}>
+          <CrvApyValue
             pool={pool}
             textAlign="start"
             tooltipPlacement="top"

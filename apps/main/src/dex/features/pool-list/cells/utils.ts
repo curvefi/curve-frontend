@@ -18,10 +18,10 @@ export const formatCellValue = (value: Amount | MissingAmount, category: NumberF
   formatNumber(value != null && value !== '' && Number(value) === 0 ? null : value, category)
 
 export const aprToPoolApy = (apr: Parameters<typeof aprToApy>[0]) => aprToApy(apr, COMPOUND_WINDOW)
-export const getGaugeApyDescription = () =>
+export const getCrvApyDescription = () =>
   t`CRV LP reward APY (max APY can be reached with max boost of ${MAX_CRV_BOOST})`
 
-export const getGaugeApyRange = ({ crvApr, crvAprBoosted }: PoolRow) => {
+export const getCrvApyRange = ({ crvApr, crvAprBoosted }: PoolRow) => {
   const unboostedApy = aprToPoolApy(crvApr)
   const boostedApy = aprToPoolApy(crvAprBoosted)
 

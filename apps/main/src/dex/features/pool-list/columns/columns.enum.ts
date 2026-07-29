@@ -4,7 +4,7 @@ export enum PoolColumnId {
   BaseApy = 'BaseApy',
   WeeklyBaseApy = 'WeeklyBaseApy',
   RewardsApy = 'RewardsApy',
-  GaugeApy = 'GaugeApy',
+  CrvApy = 'CrvApy',
   Points = 'Points',
   Volume = 'Volume',
   Tvl = 'Tvl',

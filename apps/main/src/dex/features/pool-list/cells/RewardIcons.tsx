@@ -11,11 +11,11 @@ import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber, MAINNET_CRV } from '@ui-kit/utils'
 import type { PoolRow } from '../types'
-import { GaugeApyRange } from './GaugeApyCell'
+import { CrvApyRange } from './CrvApyCell'
 import {
   aprToPoolApy,
-  getGaugeApyDescription,
-  getGaugeApyRange,
+  getCrvApyDescription,
+  getCrvApyRange,
   getExtraRewards,
   getAprCampaigns,
   getPointsCampaigns,
@@ -116,15 +116,15 @@ const CrvRewardIcon = ({
   range,
 }: {
   placement?: TooltipProps['placement']
-  range: NonNullable<ReturnType<typeof getGaugeApyRange>>
+  range: NonNullable<ReturnType<typeof getCrvApyRange>>
 }) => (
   <RewardIconTooltip
     body={
       <Stack sx={{ gap: Spacing.xs, textAlign: 'start' }}>
         <Typography variant="bodySRegular">
-          {t`APY`}: <GaugeApyRange {...range} />
+          {t`APY`}: <CrvApyRange {...range} />
         </Typography>
-        <Typography variant="bodySRegular">{getGaugeApyDescription()}</Typography>
+        <Typography variant="bodySRegular">{getCrvApyDescription()}</Typography>
       </Stack>
     }
     placement={placement}
@@ -179,9 +179,9 @@ export const RewardIcons = ({
   const pointsCampaigns = includePoints ? getPointsCampaigns(pool) : []
   const extraRewards = getExtraRewards(pool)
   const campaigns = getAprCampaigns(pool)
-  const gaugeApyRange = includeCrv && !pool.gauge?.isKilled ? getGaugeApyRange(pool) : null
+  const crvApyRange = includeCrv && !pool.gauge?.isKilled ? getCrvApyRange(pool) : null
 
-  if (!pointsCampaigns.length && !extraRewards.length && !campaigns.length && !gaugeApyRange) return null
+  if (!pointsCampaigns.length && !extraRewards.length && !campaigns.length && !crvApyRange) return null
 
   return (
     <IconStack iconSize="sm">
@@ -211,7 +211,7 @@ export const RewardIcons = ({
           placement={tooltipPlacement}
         />
       ))}
-      {gaugeApyRange && <CrvRewardIcon placement={tooltipPlacement} range={gaugeApyRange} />}
+      {crvApyRange && <CrvRewardIcon placement={tooltipPlacement} range={crvApyRange} />}
     </IconStack>
   )
 }

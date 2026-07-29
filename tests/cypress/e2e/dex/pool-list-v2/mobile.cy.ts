@@ -26,7 +26,7 @@ describe('V2 pool-list mobile panels', () => {
           'Base APY',
           'Weekly Base APY',
           'Rewards APY',
-          'Gauge APY',
+          'CRV APY',
           'Points',
           '24h Volume',
           'TVL',
@@ -36,7 +36,7 @@ describe('V2 pool-list mobile panels', () => {
         }
 
         cy.get('[data-testid="pool-net-apy"]').should('contain.text', '20.70%').find('img').should('not.exist')
-        cy.get('[data-testid="pool-gauge-apy"]')
+        cy.get('[data-testid="pool-crv-apy"]')
           .should('contain.text', '5.12%')
           .and('contain.text', '\u2192')
           .and('contain.text', '13.30%')
@@ -87,20 +87,20 @@ describe('V2 pool-list mobile panels', () => {
     cy.get(TOOLTIP).should('not.exist')
 
     cy.get(EXPANDED_PANEL)
-      .find('[data-testid="pool-gauge-apy"]')
+      .find('[data-testid="pool-crv-apy"]')
       .children('span')
       .first()
-      .as('gaugeApyValue')
+      .as('crvApyValue')
       .trigger('mouseover')
     cy.get(TOOLTIP)
-      .should('contain.text', 'Gauge APY')
+      .should('contain.text', 'CRV APY')
       .and('contain.text', 'CRV gauge reward APY ranges from the unboosted rate to the maximum boosted rate')
       .and('contain.text', 'The maximum rate assumes the full 2.5x gauge boost')
       .and('contain.text', 'Unboosted')
       .and('contain.text', '5.12%')
       .and('contain.text', 'Max boost')
       .and('contain.text', '13.30%')
-    cy.get('@gaugeApyValue').trigger('mouseout')
+    cy.get('@crvApyValue').trigger('mouseout')
     cy.get(TOOLTIP).should('not.exist')
   })
 
@@ -114,7 +114,7 @@ describe('V2 pool-list mobile panels', () => {
         for (const label of ['Rewards APY', 'Points', 'TVL', 'Age']) {
           cy.contains(new RegExp(`^${label}$`)).should('be.visible')
         }
-        for (const label of ['Net APY', 'Base APY', 'Weekly Base APY', 'Gauge APY']) {
+        for (const label of ['Net APY', 'Base APY', 'Weekly Base APY', 'CRV APY']) {
           cy.contains(new RegExp(`^${label}$`)).should('not.exist')
         }
 
