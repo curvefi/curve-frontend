@@ -52,7 +52,7 @@ export const PageHeader = ({
           <Stack direction="row" sx={{ alignItems: 'center', flexWrap: 'wrap', gap: Spacing.xs }}>
             <WithSkeleton loading={titleLoading}>
               {/* headingSBold uppercases text by default but some titles must preserve token symbol casing. */}
-              <Typography component="h1" variant="headingSBold" sx={{ overflowWrap: 'anywhere', ...titleSx }}>
+              <Typography variant="headingSBold" sx={{ overflowWrap: 'anywhere', ...titleSx }}>
                 {title ?? 'Page header' /** For skeleton width inference */}
               </Typography>
             </WithSkeleton>
