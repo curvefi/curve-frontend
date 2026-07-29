@@ -35,9 +35,7 @@ export const CampaignRewardTooltipItems = ({ campaigns }: { campaigns: Campaign[
       key={`${campaign.platform}-${campaign.description}-${index}`}
       variant="subItem"
       title={campaign.symbol || campaign.campaignName || campaign.platform || t`Campaign reward`}
-      titleAdornment={
-        <RewardIcon src={campaign.platformImageId} alt={campaign.platform} size="sm" sx={{ borderRadius: '50%' }} />
-      }
+      titleAdornment={<RewardIcon src={campaign.platformImageId} alt={campaign.platform} size="sm" />}
     >
       {formatNumber(campaign.reward?.type === 'apr' ? aprToPoolApy(campaign.reward.value) : null, 'percent.rate')}
     </TooltipItem>

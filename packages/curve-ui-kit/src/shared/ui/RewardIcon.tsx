@@ -4,7 +4,7 @@ import { applySxProps, type SxProps } from '@ui-kit/utils'
 
 const { IconSize } = SizesAndSpaces
 
-const RewardImage = styled('img')({})
+const RewardImage = styled('img')({ borderRadius: '50%' })
 
 export type RewardIconSize = keyof typeof IconSize
 

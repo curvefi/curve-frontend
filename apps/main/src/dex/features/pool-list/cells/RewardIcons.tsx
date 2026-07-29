@@ -47,7 +47,7 @@ const CampaignTooltip = ({ campaign, showApy }: { campaign: CampaignRewards; sho
 )
 
 const CampaignIcon = ({ campaign }: { campaign: CampaignRewards }) => (
-  <RewardIcon src={campaign.platformImageId} alt={campaign.platform} size="sm" sx={{ borderRadius: '50%' }} />
+  <RewardIcon src={campaign.platformImageId} alt={campaign.platform} size="sm" />
 )
 
 type RewardIconTooltipProps = Pick<TooltipProps, 'body' | 'children' | 'clickable' | 'placement' | 'title'> & {
