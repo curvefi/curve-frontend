@@ -13,7 +13,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate, type TxGasInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { mapQuery, type QueryProp, type Range, DISABLED_Q } from '@ui-kit/types/util'
-import { decimal, formatNumber } from '@ui-kit/utils'
+import { decimal, formatCappedRatePercent, formatNumber } from '@ui-kit/utils'
 import {
   getPriceImpactDisplay,
   getPriceImpactPercent,
@@ -141,14 +141,8 @@ export const LoanActionInfoList = ({
           {(rates ?? prevRates) && (
             <ActionInfo
               label={t`Borrow APR`}
-              value={mapQuery(
-                prevRates ?? DISABLED_Q,
-                data => data?.borrowApr && formatNumber(data.borrowApr, 'percent.rate'),
-              )}
-              futureValue={mapQuery(
-                rates ?? DISABLED_Q,
-                data => data?.borrowApr && formatNumber(data.borrowApr, 'percent.rate'),
-              )}
+              value={mapQuery(prevRates ?? DISABLED_Q, data => maybe(data?.borrowApr, formatCappedRatePercent))}
+              futureValue={mapQuery(rates ?? DISABLED_Q, data => maybe(data?.borrowApr, formatCappedRatePercent))}
               size="small"
               testId="borrow-apr"
             />
@@ -156,8 +150,8 @@ export const LoanActionInfoList = ({
           {shouldShowNetBorrowApr && (
             <ActionInfo
               label={t`Net borrow APR`}
-              value={mapQuery(prevNetBorrowApr ?? DISABLED_Q, data => formatNumber(data, 'percent.rate'))}
-              futureValue={mapQuery(netBorrowApr ?? DISABLED_Q, data => formatNumber(data, 'percent.rate'))}
+              value={mapQuery(prevNetBorrowApr ?? DISABLED_Q, data => formatCappedRatePercent(data))}
+              futureValue={mapQuery(netBorrowApr ?? DISABLED_Q, data => formatCappedRatePercent(data))}
               size="small"
               testId="borrow-net-apr"
             />

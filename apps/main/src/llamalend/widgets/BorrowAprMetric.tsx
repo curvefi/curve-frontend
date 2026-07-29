@@ -5,7 +5,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Metric, type MetricProps } from '@ui-kit/shared/ui/Metric'
 import type { MarketType } from '@ui-kit/types/market'
 import { mapQuery, type QueryProp } from '@ui-kit/types/util'
-import { AVERAGE_CATEGORIES, type AverageCategory } from '@ui-kit/utils'
+import { AVERAGE_CATEGORIES, type AverageCategory, formatCappedRateValue } from '@ui-kit/utils'
 import { getBorrowRateTooltipTitle } from '../llama.utils'
 import { TooltipOptions as defaultTooltipOptions } from './tooltips'
 
@@ -39,11 +39,13 @@ export const BorrowAprMetric = ({ marketType, borrowRate, collateralSymbol, alig
       alignment={alignment}
       testId="market-net-borrow-apr"
       label={t`Net Borrow APR`}
-      value={mapQuery(borrowRate, borrowRate => borrowRate.totalBorrowRate)}
-      valueOptions={{ unit: 'percentage' }}
+      value={mapQuery(borrowRate, ({ totalBorrowRate }) => totalBorrowRate)}
+      valueOptions={{ unit: 'percentage', abbreviate: false, formatter: formatCappedRateValue }}
       notional={mapQuery(borrowRate, ({ totalAverageBorrowRate: data }) =>
         maybe(data, value => ({
           value,
+          abbreviate: false,
+          formatter: formatCappedRateValue,
           unit: { symbol: `% ${averageRatePeriod} Avg`, position: 'suffix' as const },
         })),
       )}
