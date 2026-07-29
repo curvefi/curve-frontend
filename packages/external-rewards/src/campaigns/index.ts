@@ -1,7 +1,6 @@
 import Aegis from './Aegis.json'
 import Apyx from './Apyx.json'
 import DTrinity from './DTrinity.json'
-import Ebisu from './Ebisu.json'
 import Ethena from './Ethena.json'
 import Etherfi from './Etherfi.json'
 import Falcon from './Falcon.json'
@@ -41,7 +40,6 @@ export {
   Loop,
   Noon,
   Aegis,
-  Ebisu,
   Liquity,
   Yuzu,
   TermMax,
