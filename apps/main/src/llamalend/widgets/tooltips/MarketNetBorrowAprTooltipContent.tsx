@@ -8,7 +8,7 @@ import Stack from '@mui/material/Stack'
 import type { CampaignRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { MarketType } from '@ui-kit/types/market'
-import { formatNumber } from '@ui-kit/utils'
+import { formatCappedRatePercent } from '@ui-kit/utils'
 import { RewardsTooltipItems } from './RewardTooltipItems'
 
 export type MarketNetBorrowAprTooltipContentProps = {
@@ -52,9 +52,9 @@ export const MarketNetBorrowAprTooltipContent = ({
 
     <Stack>
       <TooltipItems secondary>
-        <TooltipItem title={t`Borrow APR`}>{formatNumber(borrowApr ?? 0, 'percent.rate')}</TooltipItem>
+        <TooltipItem title={t`Borrow APR`}>{formatCappedRatePercent(borrowApr ?? 0)}</TooltipItem>
         <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
-          {averageApr == null ? 'N/A' : formatNumber(averageApr, 'percent.rate')}
+          {averageApr == null ? 'N/A' : formatCappedRatePercent(averageApr)}
         </TooltipItem>
       </TooltipItems>
 
@@ -71,10 +71,10 @@ export const MarketNetBorrowAprTooltipContent = ({
 
       {rebasingYieldApr != null && (
         <TooltipItems secondary>
-          <TooltipItem title={t`Yield bearing tokens`}>{formatNumber(-rebasingYieldApr, 'percent.rate')}</TooltipItem>
+          <TooltipItem title={t`Yield bearing tokens`}>{formatCappedRatePercent(-rebasingYieldApr)}</TooltipItem>
           {!!collateralSymbol && (
             <TooltipItem variant="subItem" title={collateralSymbol}>
-              {formatNumber(-rebasingYieldApr, 'percent.rate')}
+              {formatCappedRatePercent(-rebasingYieldApr)}
             </TooltipItem>
           )}
         </TooltipItems>
@@ -83,10 +83,10 @@ export const MarketNetBorrowAprTooltipContent = ({
       {totalBorrowApr != null && (extraRewards.length || rebasingYieldApr != null) && (
         <TooltipItems>
           <TooltipItem variant="primary" title={t`Net borrow APR`}>
-            {formatNumber(totalBorrowApr, 'percent.rate')}
+            {formatCappedRatePercent(totalBorrowApr)}
           </TooltipItem>
           <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
-            {totalAverageBorrowApr == null ? 'N/A' : formatNumber(totalAverageBorrowApr, 'percent.rate')}
+            {totalAverageBorrowApr == null ? 'N/A' : formatCappedRatePercent(totalAverageBorrowApr)}
           </TooltipItem>
         </TooltipItems>
       )}

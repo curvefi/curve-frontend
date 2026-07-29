@@ -5,7 +5,7 @@ import { useShowNetRate } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate, type TxGasInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { mapQuery, DISABLED_Q, type QueryProp } from '@ui-kit/types/util'
-import { formatNumber } from '@ui-kit/utils'
+import { formatCappedRatePercent, formatNumber } from '@ui-kit/utils'
 import { ActionInfoCollapse } from './ActionInfoCollapse'
 import { useShouldShowNetRate } from './hooks/useShouldShowNetRate'
 import { formatAmount, ACTION_INFO_GROUP_SX } from './info-actions.helpers'
@@ -71,8 +71,8 @@ export const SupplyActionInfoList = ({
           {(supplyApy ?? prevSupplyApy) && (
             <ActionInfo
               label={t`Supply APY`}
-              value={mapQuery(prevSupplyApy ?? DISABLED_Q, data => formatNumber(data, 'percent.rate'))}
-              futureValue={mapQuery(supplyApy ?? DISABLED_Q, data => formatNumber(data, 'percent.rate'))}
+              value={mapQuery(prevSupplyApy ?? DISABLED_Q, data => formatCappedRatePercent(data))}
+              futureValue={mapQuery(supplyApy ?? DISABLED_Q, data => formatCappedRatePercent(data))}
               size="small"
               testId="supply-apy"
             />
@@ -80,8 +80,8 @@ export const SupplyActionInfoList = ({
           {shouldShowNetSupplyApy && (
             <ActionInfo
               label={NET_SUPPLY_RATE_TITLE}
-              value={mapQuery(prevNetSupplyApy ?? DISABLED_Q, data => formatNumber(data, 'percent.rate'))}
-              futureValue={mapQuery(netSupplyApy ?? DISABLED_Q, data => formatNumber(data, 'percent.rate'))}
+              value={mapQuery(prevNetSupplyApy ?? DISABLED_Q, data => formatCappedRatePercent(data))}
+              futureValue={mapQuery(netSupplyApy ?? DISABLED_Q, data => formatCappedRatePercent(data))}
               size="small"
               testId="supply-net-apy"
             />
