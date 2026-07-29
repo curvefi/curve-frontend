@@ -5,7 +5,7 @@ export const POOL_TITLES: Record<PoolColumnId, string> = {
   [PoolColumnId.PoolName]: t`Pool`,
   [PoolColumnId.NetApy]: t`Net APY`,
   [PoolColumnId.BaseApy]: t`Base APY`,
-  [PoolColumnId.WeeklyBaseApy]: t`Weekly Base APY`,
+  [PoolColumnId.WeeklyBaseApy]: t`7D base APY`,
   [PoolColumnId.RewardsApy]: t`Rewards APY`,
   [PoolColumnId.GaugeApy]: t`Gauge APY`,
   [PoolColumnId.Points]: t`Points`,
