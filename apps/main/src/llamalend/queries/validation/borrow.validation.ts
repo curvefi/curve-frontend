@@ -60,7 +60,7 @@ function validateCreateLoanFieldsForMarket(params: CreateLoanDebtParams, { debtR
     const [type] = market ? getCreateLoanImplementation(market, !!leverageEnabled) : []
     // if we don't need debt we cannot need a route, as we need a route to calculate max debt
     validateRoute(routeId, !!(type && debtRequired && leverageEnabled && isRouterRequired(type)))
-    skipWhen(type === 'V1' || type === 'V2' || type == null, () => {
+    skipWhen(type == null, () => {
       test('userBorrowed', `Borrow amount is not supported for creating loan ${type}`, () => {
         enforce(+(userBorrowed ?? '0')).equals(0)
       })

@@ -1,4 +1,4 @@
-import { getMarket, hasLegacyMintLeverage, hasV2Leverage, hasZapV2 } from '@/llamalend/llama.utils'
+import { getMarket, hasZapV2 } from '@/llamalend/llama.utils'
 import { MarketTemplate } from '@/llamalend/llamalend.types'
 import type { BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
@@ -20,23 +20,19 @@ export function getBorrowMoreImplementation(
     ? leverageEnabled
       ? hasZapV2(market)
         ? (['zapV2', market.leverageZapV2] as const)
-        : hasV2Leverage(market)
-          ? (['V2', market.leverageV2] as const)
-          : unsupported()
+        : unsupported()
       : (['unleveraged', market] as const)
     : leverageEnabled
       ? hasZapV2(market)
         ? (['zapV2', market.leverageZapV2] as const)
-        : hasLegacyMintLeverage(market)
-          ? (['V1', market.leverage] as const)
-          : unsupported()
+        : unsupported()
       : (['unleveraged', market.loan] as const)
 }
 
 /**
  * Determines the borrow more implementation and constructs its argument tuple.
  * For unleveraged markets, returns `[type, impl, [userCollateral, debt]]`.
- * For leveraged (V1/V2) markets, returns `[type, impl, [userCollateral, userBorrowed, debt]]`.
+ * For leveraged markets, returns `[type, impl, [{ userCollateral, userBorrowed, debt, ...route }]]`.
  */
 export function getBorrowMoreImplementationArgs(
   marketId: string | MarketTemplate,
@@ -66,9 +62,7 @@ export function getBorrowMoreImplementationArgs(
     }
     return [type, impl, [routerArgs]] as const
   }
-  const args = [userCollateral, userBorrowed, debt] as const
-  if (type == 'V1') return [type, impl, args] as const
-  return [type, impl, args] as const
+  throw new Error('Unknown borrow more implementation')
 }
 
 /**
@@ -79,7 +73,7 @@ export function getBorrowMoreImplementationArgs(
 export const isLeverageBorrowMore = (
   marketId: string | MarketTemplate | null | undefined,
   leverageEnabled: boolean | null | undefined,
-) => !!marketId && ['V1', 'V2', 'zapV2'].includes(getBorrowMoreImplementation(marketId, leverageEnabled)[0])
+) => !!marketId && getBorrowMoreImplementation(marketId, leverageEnabled)[0] === 'zapV2'
 
 /**
  * Checks whether leverage may be enabled for a given market.

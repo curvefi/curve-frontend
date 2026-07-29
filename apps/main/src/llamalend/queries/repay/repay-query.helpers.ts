@@ -1,4 +1,4 @@
-import { getMarket, hasDeleverage, hasLegacyMintLeverage, hasV2Leverage, hasZapV2 } from '@/llamalend/llama.utils'
+import { getMarket, hasDeleverage, hasZapV2 } from '@/llamalend/llama.utils'
 import { MarketTemplate } from '@/llamalend/llamalend.types'
 import type { RepayQuery } from '@/llamalend/queries/validation/repay.types'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
@@ -40,8 +40,6 @@ export function getRepayImplementation(
       const route = (routeMeta as RouteMutationMeta) ?? parseMutationRoute(market, { routeId, slippage, isRepay: true })
       return ['zapV2', market.leverageZapV2, [{ stateCollateral, userCollateral, ...route }]] as const
     }
-    if (hasV2Leverage(market))
-      return ['V2', market.leverageV2, [stateCollateral, userCollateral, userBorrowed]] as const
     if (hasStateCollateral && !hasUserBorrowed && !hasUserCollateral && hasDeleverage(market))
       return ['deleverage', market.deleverage, [stateCollateral]] as const
   } else {
@@ -51,8 +49,6 @@ export function getRepayImplementation(
       const route = (routeMeta as RouteMutationMeta) ?? parseMutationRoute(market, { routeId, slippage, isRepay: true })
       return ['zapV2', market.leverageZapV2, [{ stateCollateral, userCollateral, ...route }]] as const
     }
-    if (hasLegacyMintLeverage(market))
-      return ['V1', market.leverage, [stateCollateral, userCollateral, userBorrowed]] as const
   }
   throw new Error(
     // eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions -- Existing violation before enabling this rule.
@@ -84,7 +80,7 @@ export function getRepayImplementationType(
 }
 
 export const isRepayLeveraged = ({ marketId, ...fields }: FieldsOf<RepayFormFields & { marketId: string }>) =>
-  !!marketId && ['V1', 'V2', 'zapV2'].includes(getRepayImplementationType(marketId, fields))
+  !!marketId && getRepayImplementationType(marketId, fields) === 'zapV2'
 
 /**
  * This helper gets the user's debt from the user state query cache and converts it to a number. It is only safe to use

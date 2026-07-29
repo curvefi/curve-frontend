@@ -60,8 +60,6 @@ export const hasLeverageValue = <T extends MarketTemplate | null | undefined>(ma
 export const hasLegacyMintLeverage = (market: MarketTemplate) =>
   market instanceof MintMarketTemplate && market.index == null && market.leverageZap !== zeroAddress
 
-export const hasV2Leverage = (_market: MintMarketTemplate) => false // market?.leverageV2.hasLeverage()
-
 const hasV1Deleverage = (market: MarketTemplate) =>
   market instanceof MintMarketTemplate && market.index == null && market.deleverageZap !== zeroAddress
 
@@ -94,7 +92,7 @@ export const hasVault = (market: MarketTemplate) => market instanceof LendMarket
 export const hasZapV2 = (market: MarketTemplate) => market.leverageZapV2.hasLeverage()
 
 export const isRouterRequired = (
-  type: 'zapV2' | 'V0' | 'V1' | 'V2' | 'deleverage' | 'unleveragedMint' | 'unleveragedLend' | 'unleveraged',
+  type: 'zapV2' | 'V0' | 'deleverage' | 'unleveragedMint' | 'unleveragedLend' | 'unleveraged',
 ) => type == 'zapV2'
 
 export const hasGauge = (market: MarketTemplate) =>
