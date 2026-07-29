@@ -48,10 +48,7 @@ export const MarketOverviewCard = () => {
               label={t`Solvency`}
               value={mapQuery(solvency, ({ value }) => value)}
               valueOptions={{ unit: 'percentage' }}
-              valueTooltip={{
-                title: t`Solvency`,
-                body: <SolvencyTooltip type={MarketType.Lend} />,
-              }}
+              valueTooltip={{ title: t`Solvency`, body: <SolvencyTooltip type={MarketType.Lend} /> }}
             />
           )}
           {/*
