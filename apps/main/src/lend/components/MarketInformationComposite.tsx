@@ -1,7 +1,7 @@
 import { ChartAndActivityComp } from '@/lend/components/ChartAndActivityComp'
 import { networks } from '@/lend/networks'
 import {
-  AdvancedDetailsMetrics,
+  MarketAdvancedDetails,
   MarketInfoLayout,
   MarketAdvancedDetailsCard,
 } from '@/llamalend/features/market-advanced-information'
@@ -47,7 +47,7 @@ export const MarketInformationComposite = ({ rateType, previewPrices }: MarketIn
         <Card size="small">
           <CardHeader title={t`Advanced Details`} />
           <CardContent component={Stack}>
-            <AdvancedDetailsMetrics />
+            <MarketAdvancedDetails />
             <MarketInfoLayout network={networks[chainId]} />
           </CardContent>
         </Card>
