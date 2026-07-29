@@ -88,7 +88,7 @@ export const MarketOverviewCard = () => {
               testId="market-overview-collateral"
               label={t`Collateral`}
               value={tokens.collateralToken?.symbol}
-              valueLeft={
+              valueRight={
                 <TokenIcon
                   blockchainId={blockchainId}
                   address={tokens.collateralToken?.address}
@@ -101,7 +101,7 @@ export const MarketOverviewCard = () => {
               testId="market-overview-borrowed"
               label={t`Borrowed`}
               value={tokens.borrowToken?.symbol}
-              valueLeft={
+              valueRight={
                 <TokenIcon
                   blockchainId={blockchainId}
                   address={tokens.borrowToken?.address}
