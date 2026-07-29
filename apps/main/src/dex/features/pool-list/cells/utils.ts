@@ -1,4 +1,5 @@
 import { sum } from 'lodash'
+import { LARGE_APY } from '@/dex/constants'
 import type { Amount } from '@primitives/decimal.utils'
 import type { CampaignRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
@@ -18,6 +19,9 @@ export const formatCellValue = (value: Amount | MissingAmount, category: NumberF
   formatNumber(value != null && value !== '' && Number(value) === 0 ? null : value, category)
 
 export const aprToPoolApy = (apr: Parameters<typeof aprToApy>[0]) => aprToApy(apr, COMPOUND_WINDOW)
+export const getBaseApy = (pool: PoolRow, period: 'daily' | 'weekly') =>
+  aprToPoolApy(period === 'daily' ? pool.baseDailyApr : pool.baseWeeklyApr)
+export const isVolatileApy = (apy: ReturnType<typeof aprToPoolApy>) => apy != null && apy > LARGE_APY
 export const getCrvApyDescription = () =>
   t`CRV LP reward APY (max APY can be reached with max boost of ${MAX_CRV_BOOST})`
 
@@ -28,9 +32,14 @@ export const getCrvApyRange = ({ crvApr, crvAprBoosted }: PoolRow) => {
   return unboostedApy && boostedApy ? { unboostedApy, boostedApy } : null
 }
 
+export const formatCrvApyRange = (range: ReturnType<typeof getCrvApyRange>) =>
+  range
+    ? `${formatNumber(range.unboostedApy, 'percent.rate')} → ${formatNumber(range.boostedApy, 'percent.rate')}`
+    : formatNumber(null, 'percent.rate')
+
 export const isPointsCampaign = ({ reward, tags }: CampaignRewards) => reward?.type !== 'apr' || tags.includes('points')
-export const getPointsCampaigns = ({ campaigns }: PoolRow) =>
-  campaigns.filter(isPointsCampaign).slice(0, MAX_POINTS_CAMPAIGNS)
+export const getPointsCampaigns = ({ campaigns }: PoolRow) => campaigns.filter(isPointsCampaign)
+export const getCompactPointsCampaigns = (pool: PoolRow) => getPointsCampaigns(pool).slice(0, MAX_POINTS_CAMPAIGNS)
 export const getAprCampaigns = ({ campaigns }: PoolRow) => campaigns.filter(campaign => !isPointsCampaign(campaign))
 
 export const getExtraRewards = ({ extraRewardsApr }: PoolRow) => extraRewardsApr.filter(({ apr }) => apr > 0)

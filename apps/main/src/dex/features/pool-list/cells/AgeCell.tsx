@@ -1,4 +1,4 @@
-import Typography, { type TypographyProps } from '@mui/material/Typography'
+import Typography from '@mui/material/Typography'
 import { maybe } from '@primitives/objects.utils'
 import type { CellContext } from '@tanstack/react-table'
 import { formatDate } from '@ui/utils'
@@ -8,13 +8,8 @@ import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { relativeTime } from '@ui-kit/utils/time.utils'
 import type { PoolRow } from '../types'
 
-type AgeValueProps = {
-  creationDate: PoolRow['creationDate']
-  textAlign?: 'start' | 'end'
-  typographyVariant?: TypographyProps['variant']
-}
-
-export const AgeValue = ({ creationDate, textAlign = 'end', typographyVariant = 'tableCellMBold' }: AgeValueProps) => {
+export const AgeCell = ({ getValue }: CellContext<PoolRow, PoolRow['creationDate']>) => {
+  const creationDate = getValue()
   const currentDate = useCurrentDate()
 
   return (
@@ -24,13 +19,9 @@ export const AgeValue = ({ creationDate, textAlign = 'end', typographyVariant = 
       title={maybe(creationDate, date => formatDate(date, 'long'))}
       placement="top"
     >
-      <Typography data-testid="pool-age" variant={typographyVariant} sx={{ textAlign }}>
+      <Typography data-testid="pool-age" variant="tableCellMBold" sx={{ textAlign: 'end' }}>
         {creationDate == null ? '-' : relativeTime(currentDate.getTime(), creationDate)}
       </Typography>
     </WithWrapper>
   )
 }
-
-export const AgeCell = ({ getValue }: CellContext<PoolRow, PoolRow['creationDate']>) => (
-  <AgeValue creationDate={getValue()} />
-)

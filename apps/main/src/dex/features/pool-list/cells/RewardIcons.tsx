@@ -11,14 +11,14 @@ import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber, MAINNET_CRV } from '@ui-kit/utils'
 import type { PoolRow } from '../types'
-import { CrvApyRange } from './CrvApyCell'
 import {
   aprToPoolApy,
+  formatCrvApyRange,
+  getCompactPointsCampaigns,
   getCrvApyDescription,
   getCrvApyRange,
   getExtraRewards,
   getAprCampaigns,
-  getPointsCampaigns,
 } from './utils'
 
 const { Spacing } = SizesAndSpaces
@@ -122,7 +122,7 @@ const CrvRewardIcon = ({
     body={
       <Stack sx={{ gap: Spacing.xs, textAlign: 'start' }}>
         <Typography variant="bodySRegular">
-          {t`APY`}: <CrvApyRange {...range} />
+          {t`APY`}: {formatCrvApyRange(range)}
         </Typography>
         <Typography variant="bodySRegular">{getCrvApyDescription()}</Typography>
       </Stack>
@@ -176,7 +176,7 @@ export const RewardIcons = ({
   pool: PoolRow
   tooltipPlacement?: TooltipProps['placement']
 }) => {
-  const pointsCampaigns = includePoints ? getPointsCampaigns(pool) : []
+  const pointsCampaigns = includePoints ? getCompactPointsCampaigns(pool) : []
   const extraRewards = getExtraRewards(pool)
   const campaigns = getAprCampaigns(pool)
   const crvApyRange = includeCrv && !pool.gauge?.isKilled ? getCrvApyRange(pool) : null

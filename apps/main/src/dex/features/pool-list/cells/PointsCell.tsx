@@ -1,30 +1,18 @@
 import Box from '@mui/material/Box'
-import Typography, { type TypographyProps } from '@mui/material/Typography'
-import type { TooltipProps } from '@ui-kit/shared/ui/Tooltip'
+import Typography from '@mui/material/Typography'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { PoolRow } from '../types'
 import { PointsRewardIcon } from './RewardIcons'
-import { getPointsCampaigns } from './utils'
+import { getCompactPointsCampaigns } from './utils'
 
 const { Spacing } = SizesAndSpaces
 
-export const PointsValue = ({
-  pool,
-  textAlign = 'end',
-  tooltipPlacement,
-  typographyVariant = 'tableCellMBold',
-}: {
-  pool: PoolRow
-  textAlign?: 'start' | 'end'
-  tooltipPlacement?: TooltipProps['placement']
-  typographyVariant?: TypographyProps['variant']
-}) => {
-  const campaigns = getPointsCampaigns(pool)
-  const alignment = textAlign === 'start' ? 'flex-start' : 'flex-end'
+const PointsValue = ({ pool }: { pool: PoolRow }) => {
+  const campaigns = getCompactPointsCampaigns(pool)
 
   if (!campaigns.length) {
     return (
-      <Typography data-testid="pool-points" variant={typographyVariant} sx={{ textAlign }}>
+      <Typography data-testid="pool-points" variant="tableCellMBold" sx={{ textAlign: 'end' }}>
         -
       </Typography>
     )
@@ -39,7 +27,7 @@ export const PointsValue = ({
         gridTemplateRows: campaigns.length > 1 ? 'repeat(2, auto)' : undefined,
         columnGap: Spacing.sm,
         rowGap: Spacing.xs,
-        justifyContent: alignment,
+        justifyContent: 'flex-end',
         maxWidth: '12rem',
       }}
     >
@@ -48,8 +36,6 @@ export const PointsValue = ({
           // eslint-disable-next-line @eslint-react/no-array-index-key -- Campaigns may describe distinct point rewards with the same platform metadata.
           key={`${campaign.platform}-${campaign.description}-${index}`}
           campaign={campaign}
-          placement={tooltipPlacement}
-          typographyVariant={typographyVariant}
         />
       ))}
     </Box>
