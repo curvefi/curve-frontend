@@ -103,7 +103,7 @@ const NetApyTooltipContent = ({ pool, volatile }: { pool: PoolRow; volatile: boo
         </TooltipItems>
         {incentiveItems && <NetApyIncentivesTooltipItems items={incentiveItems} network={pool.network} />}
         <TooltipItems borderTop>
-          <TooltipItem variant="primary" title={t`Total APY`}>
+          <TooltipItem variant="primary" title={t`Net total APY`}>
             {formatNumber(netApy, 'percent.rate')}
           </TooltipItem>
         </TooltipItems>
