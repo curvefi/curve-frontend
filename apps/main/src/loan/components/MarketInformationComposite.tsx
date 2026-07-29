@@ -1,10 +1,7 @@
-import {
-  MarketAdvancedDetails,
-  MarketInfoLayout,
-  MarketAdvancedDetailsCard,
-} from '@/llamalend/features/market-advanced-information'
+import { MarketAdvancedDetails, MarketInfoLayout } from '@/llamalend/features/market-advanced-information'
 import { MarketFaq } from '@/llamalend/features/market-faq'
 import { CrvUsdPriceChart } from '@/llamalend/widgets/CrvUsdPriceChart'
+import { MarketCardHeader } from '@/llamalend/widgets/MarketCardHeader'
 import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
 import { ChartAndActivityComp } from '@/loan/components/ChartAndActivityComp'
 import type { ChainId } from '@/loan/types/loan.types'
@@ -28,24 +25,20 @@ type MarketInformationCompProps = {
 export const MarketInformationComposite = ({ previewPrices }: MarketInformationCompProps) => {
   const { chainId } = useMarketContext<ChainId>()
   const isNewLlamaMarketDetailPage = useNewLlamaMarketDetailPage()
+  const Header = isNewLlamaMarketDetailPage ? MarketCardHeader : CardHeader
+
   return (
     <Stack sx={{ gap: PAGE_SPACING }}>
       <ChartAndActivityComp previewPrices={previewPrices} />
       <MarketHistoricalRatesChart rateMode={MarketRateType.Borrow} />
       <CrvUsdPriceChart />
-
-      {isNewLlamaMarketDetailPage ? (
-        <MarketAdvancedDetailsCard network={networks[chainId]} />
-      ) : (
-        <Card size="small">
-          <CardHeader title={t`Advanced Details`} />
-          <CardContent component={Stack}>
-            <MarketAdvancedDetails />
-            <MarketInfoLayout network={networks[chainId]} />
-          </CardContent>
-        </Card>
-      )}
-
+      <Card size="small" data-testid="market-parameters-card">
+        <Header title={t`Advanced Details`} />
+        <CardContent component={Stack}>
+          {!isNewLlamaMarketDetailPage && <MarketAdvancedDetails />}
+          <MarketInfoLayout network={networks[chainId]} />
+        </CardContent>
+      </Card>
       <MarketFaq />
     </Stack>
   )
