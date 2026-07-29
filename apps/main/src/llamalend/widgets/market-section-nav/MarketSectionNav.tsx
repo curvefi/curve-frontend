@@ -48,28 +48,28 @@ export const MarketSectionNav = ({ sections }: { sections: readonly MarketSectio
     return () => observer.disconnect()
   }, [sections])
 
-  if (!sections.length) return null
-
   return (
-    <Box
-      component="nav"
-      aria-label={t`Market sections`}
-      data-testid="market-section-nav"
-      sx={{ borderBlock: borderStyle, paddingBlockStart: Spacing.sm }}
-    >
-      <TabsSwitcher
+    !!sections.length && (
+      <Box
+        component="nav"
         aria-label={t`Market sections`}
-        hideInactiveBorders
-        options={sections.map(({ value, label }) => ({
-          value,
-          label: isMobile ? (label.short ?? label.default) : label.default,
-          href: `#${value}`,
-        }))}
-        size="extraSmall"
-        testIdPrefix="market-section-nav"
-        value={activeSection}
-        variant="underlined"
-      />
-    </Box>
+        data-testid="market-section-nav"
+        sx={{ borderBlock: borderStyle, paddingBlockStart: Spacing.sm }}
+      >
+        <TabsSwitcher
+          aria-label={t`Market sections`}
+          hideInactiveBorders
+          options={sections.map(({ value, label }) => ({
+            value,
+            label: isMobile ? (label.short ?? label.default) : label.default,
+            href: `#${value}`,
+          }))}
+          size="extraSmall"
+          testIdPrefix="market-section-nav"
+          value={activeSection}
+          variant="underlined"
+        />
+      </Box>
+    )
   )
 }
