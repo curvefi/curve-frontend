@@ -12,8 +12,6 @@ import { aprToPoolApy } from './utils'
 
 const { Spacing } = SizesAndSpaces
 
-const formatApy = (apy: number | null | undefined) => formatNumber(apy || null, 'percent.rate')
-
 type ExtraReward = PoolRow['extraRewardsApr'][number]
 type Campaign = PoolRow['campaigns'][number]
 
@@ -26,7 +24,7 @@ export const ExtraRewardTooltipItems = ({ network, rewards }: { network: string;
       title={reward.symbol || reward.name || t`Extra reward`}
       titleIcon={reward.address ? { blockchainId: network, address: reward.address, size: 'mui-sm' } : undefined}
     >
-      {formatApy(aprToPoolApy(reward.apr))}
+      {formatNumber(aprToPoolApy(reward.apr), 'percent.rate')}
     </TooltipItem>
   ))
 
@@ -41,7 +39,7 @@ export const CampaignRewardTooltipItems = ({ campaigns }: { campaigns: Campaign[
         <RewardIcon src={campaign.platformImageId} alt={campaign.platform} size="sm" sx={{ borderRadius: '50%' }} />
       }
     >
-      {formatApy(campaign.reward?.type === 'apr' ? aprToPoolApy(campaign.reward.value) : null)}
+      {formatNumber(campaign.reward?.type === 'apr' ? aprToPoolApy(campaign.reward.value) : null, 'percent.rate')}
     </TooltipItem>
   ))
 

@@ -23,6 +23,7 @@ import {
   aprToPoolApy,
   getAprCampaigns,
   getExtraRewards,
+  formatCellValue,
   getGaugeApyRange,
   getNetApy,
   getRewardsApy,
@@ -35,7 +36,6 @@ const TooltipFreeVolatileNetApyChip = styled(Chip)`
   color: var(--danger-400);
 `
 
-const formatApy = (apy: number | null | undefined) => formatNumber(apy || null, 'percent.rate')
 const VOLATILE_NET_APY_LABEL = `${formatNumber(5000, { abbreviate: false })}+%`
 
 const isVolatileBaseApy = (pool: PoolRow) => {
@@ -69,14 +69,14 @@ export const NetApyIncentivesTooltipItems = ({
   network: string
 }) => (
   <TooltipItems secondary>
-    <TooltipItem title={t`Incentives`}>{formatApy(incentivesApy)}</TooltipItem>
+    <TooltipItem title={t`Incentives`}>{formatNumber(incentivesApy, 'percent.rate')}</TooltipItem>
     {!!unboostedGaugeApy && (
       <TooltipItem
         variant="subItem"
         title="CRV"
         titleIcon={{ blockchainId: MAINNET_CRV.chain, address: MAINNET_CRV.address, size: 'mui-sm' }}
       >
-        {formatApy(unboostedGaugeApy)}
+        {formatNumber(unboostedGaugeApy, 'percent.rate')}
       </TooltipItem>
     )}
     <ExtraRewardTooltipItems network={network} rewards={extraRewards} />
@@ -99,22 +99,24 @@ const NetApyTooltipContent = ({ pool, volatile }: { pool: PoolRow; volatile: boo
       />
       <Stack>
         <TooltipItems secondary>
-          <TooltipItem title={t`Base APY`}>{formatApy(baseApy)}</TooltipItem>
+          <TooltipItem title={t`Base APY`}>{formatNumber(baseApy, 'percent.rate')}</TooltipItem>
         </TooltipItems>
         {incentiveItems && <NetApyIncentivesTooltipItems items={incentiveItems} network={pool.network} />}
         <TooltipItems borderTop>
           <TooltipItem variant="primary" title={t`Total APY`}>
-            {formatApy(netApy)}
+            {formatNumber(netApy, 'percent.rate')}
           </TooltipItem>
         </TooltipItems>
         {gaugeApyRange && (
           <>
             <TooltipItems secondary extraMargin>
-              <TooltipItem title={t`Max veCRV Boost (2.5x)`}>{formatApy(gaugeApyRange.boostedApy)}</TooltipItem>
+              <TooltipItem title={t`Max veCRV Boost (2.5x)`}>
+                {formatNumber(gaugeApyRange.boostedApy, 'percent.rate')}
+              </TooltipItem>
             </TooltipItems>
             <TooltipItems borderTop>
               <TooltipItem variant="primary" title={t`Total max veCRV APY`}>
-                {formatApy(maxNetApy)}
+                {formatNumber(maxNetApy, 'percent.rate')}
               </TooltipItem>
             </TooltipItems>
           </>
@@ -148,7 +150,7 @@ export const NetApyValue = ({
     </Box>
   ) : (
     <Typography data-testid="pool-net-apy" variant={typographyVariant} sx={{ display: 'block', textAlign }}>
-      {formatNumber(netApy === 0 ? null : netApy, 'percent.rate')}
+      {formatCellValue(netApy, 'percent.rate')}
     </Typography>
   )
 }
@@ -171,7 +173,7 @@ const NetApyCellContent = ({ pool }: { pool: PoolRow }) => {
       variant="tableCellMBold"
       sx={{ display: 'block', textAlign: 'end' }}
     >
-      {formatApy(netApy)}
+      {formatCellValue(netApy, 'percent.rate')}
     </Typography>
   )
 

@@ -7,13 +7,17 @@ import { TokenInfo } from '@ui-kit/shared/ui/TokenInfo'
 import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
 import { formatNumber, MAINNET_CRV } from '@ui-kit/utils'
 import type { PoolRow } from '../types'
-import { getGaugeApyRange } from './utils'
+import { formatCellValue, getGaugeApyRange } from './utils'
 
-export const GaugeApyRange = ({ boostedApy, unboostedApy }: NonNullable<ReturnType<typeof getGaugeApyRange>>) => (
+type GaugeApyRangeProps = NonNullable<ReturnType<typeof getGaugeApyRange>> & { cellValue?: boolean }
+
+export const GaugeApyRange = ({ boostedApy, unboostedApy, cellValue = false }: GaugeApyRangeProps) => (
   <>
-    {formatNumber(unboostedApy || null, 'percent.rate')}
+    {cellValue ? formatCellValue(unboostedApy, 'percent.rate') : formatNumber(unboostedApy, 'percent.rate')}
     {' → '}
-    <span style={{ whiteSpace: 'nowrap' }}>{formatNumber(boostedApy || null, 'percent.rate')}</span>
+    <span style={{ whiteSpace: 'nowrap' }}>
+      {cellValue ? formatCellValue(boostedApy, 'percent.rate') : formatNumber(boostedApy, 'percent.rate')}
+    </span>
   </>
 )
 
@@ -25,7 +29,7 @@ const GaugeApyAmount = ({
   typographyVariant: TypographyProps['variant']
 }) => (
   <Typography component="span" variant={typographyVariant}>
-    {range ? <GaugeApyRange {...range} /> : formatNumber(null, 'percent.rate')}
+    {range ? <GaugeApyRange {...range} cellValue /> : formatCellValue(null, 'percent.rate')}
   </Typography>
 )
 
@@ -85,8 +89,12 @@ export const GaugeApyCell = ({ pool }: { pool: PoolRow }) => {
       iconSize="mui-sm"
       iconPosition="right"
       iconAlignment="start"
-      primary={<span data-testid="pool-gauge-apy-unboosted">{formatNumber(range.unboostedApy, 'percent.rate')}</span>}
-      secondary={<span data-testid="pool-gauge-apy-boosted">{formatNumber(range.boostedApy, 'percent.rate')}</span>}
+      primary={
+        <span data-testid="pool-gauge-apy-unboosted">{formatCellValue(range.unboostedApy, 'percent.rate')}</span>
+      }
+      secondary={
+        <span data-testid="pool-gauge-apy-boosted">{formatCellValue(range.boostedApy, 'percent.rate')}</span>
+      }
       boldPrimary
       sx={{ justifyContent: 'end' }}
     />

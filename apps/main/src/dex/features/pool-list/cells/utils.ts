@@ -1,12 +1,21 @@
 import { sum } from 'lodash'
+import type { Amount } from '@primitives/decimal.utils'
 import type { CampaignRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
-import { aprToApy, AVERAGE_CATEGORIES } from '@ui-kit/utils'
+import { aprToApy, AVERAGE_CATEGORIES, formatNumber, type NumberFormatCategory } from '@ui-kit/utils'
 import type { PoolRow } from '../types'
 
 const COMPOUND_WINDOW = AVERAGE_CATEGORIES['dex.poolYield.compoundRate'].window
 const MAX_CRV_BOOST = '2.50'
 const MAX_POINTS_CAMPAIGNS = 4
+type MissingAmount = null | undefined | ''
+
+/**
+ * Formats a V2 pool-list value like `formatNumber`, but uses the configured fallback for zero.
+ * Use `formatNumber` directly for tooltip details, where displaying zero is meaningful.
+ */
+export const formatCellValue = (value: Amount | MissingAmount, category: NumberFormatCategory) =>
+  formatNumber(value != null && value !== '' && Number(value) === 0 ? null : value, category)
 
 export const aprToPoolApy = (apr: Parameters<typeof aprToApy>[0]) => aprToApy(apr, COMPOUND_WINDOW)
 export const getGaugeApyDescription = () =>

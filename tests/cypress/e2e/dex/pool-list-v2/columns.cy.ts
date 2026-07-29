@@ -37,6 +37,17 @@ describe('V2 pool-list columns', () => {
     visitV2PoolList({ viewport: DESKTOP_VIEWPORT })
 
     expectHeaderOrder(DEFAULT_FULL_COLUMNS)
+    for (const columnId of [PoolColumnId.Volume, PoolColumnId.Tvl]) {
+      getV2PoolCell(V2_POOL_FIXTURES.highRewards.address, columnId)
+        .find('[data-testid="pool-usd-value"]')
+        .should('have.text', '-')
+        .trigger('mouseover')
+      cy.get('[role="tooltip"]').should('contain.text', '$0.00')
+      getV2PoolCell(V2_POOL_FIXTURES.highRewards.address, columnId)
+        .find('[data-testid="pool-usd-value"]')
+        .trigger('mouseout')
+      cy.get('[role="tooltip"]').should('not.exist')
+    }
     for (const columnId of OPTIONAL_FULL_COLUMNS) {
       cy.get(`[data-testid="data-table-header-${columnId}"]`).should('not.exist')
     }

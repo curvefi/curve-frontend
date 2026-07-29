@@ -16,13 +16,13 @@ export const GaugeApyTooltipContent = ({ maximumApy, unboostedApy }: GaugeApyToo
         title={t`Unboosted`}
         titleIcon={{ blockchainId: MAINNET_CRV.chain, address: MAINNET_CRV.address, size: 'mui-sm' }}
       >
-        {formatNumber(unboostedApy || null, 'percent.rate')}
+        {formatNumber(unboostedApy, 'percent.rate')}
       </TooltipItem>
       <TooltipItem
         title={t`Max boost`}
         titleIcon={{ blockchainId: MAINNET_CRV.chain, address: MAINNET_CRV.address, size: 'mui-sm' }}
       >
-        {formatNumber(maximumApy || null, 'percent.rate')}
+        {formatNumber(maximumApy, 'percent.rate')}
       </TooltipItem>
     </TooltipItems>
   </TooltipWrapper>

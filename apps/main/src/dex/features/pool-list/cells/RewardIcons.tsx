@@ -39,7 +39,7 @@ const CampaignTooltip = ({ campaign, showApy }: { campaign: CampaignRewards; sho
   <Stack sx={{ gap: Spacing.sm }}>
     {showApy && campaign.reward?.type === 'apr' && (
       <Typography variant="bodySRegular" sx={{ textAlign: 'start' }}>
-        {t`APY`}: {formatNumber(aprToPoolApy(campaign.reward.value) || null, 'percent.rate')}
+        {t`APY`}: {formatNumber(aprToPoolApy(campaign.reward.value), 'percent.rate')}
       </Typography>
     )}
     <TooltipMessage rewardsPool={campaign} />

@@ -9,11 +9,16 @@ import { formatNumber } from '@ui-kit/utils'
 import type { PoolRow } from '../types'
 import { CampaignRewardTooltipItems, ExtraRewardTooltipItems } from './ApyTooltipItems'
 import { RewardIcons } from './RewardIcons'
-import { getAprCampaigns, getCampaignRewardsApy, getExtraRewards, getExtraRewardsApy, getRewardsApy } from './utils'
+import {
+  formatCellValue,
+  getAprCampaigns,
+  getCampaignRewardsApy,
+  getExtraRewards,
+  getExtraRewardsApy,
+  getRewardsApy,
+} from './utils'
 
 const { Spacing } = SizesAndSpaces
-
-const formatApy = (apy: number | null | undefined) => formatNumber(apy || null, 'percent.rate')
 
 export const RewardsApyTooltipItems = ({ pool }: { pool: PoolRow }) => {
   const extraRewards = getExtraRewards(pool)
@@ -23,19 +28,21 @@ export const RewardsApyTooltipItems = ({ pool }: { pool: PoolRow }) => {
     <>
       {extraRewards.length > 0 && (
         <TooltipItems secondary>
-          <TooltipItem title={t`Incentives`}>{formatApy(getExtraRewardsApy(pool))}</TooltipItem>
+          <TooltipItem title={t`Incentives`}>{formatNumber(getExtraRewardsApy(pool), 'percent.rate')}</TooltipItem>
           <ExtraRewardTooltipItems network={pool.network} rewards={extraRewards} />
         </TooltipItems>
       )}
       {campaigns.length > 0 && (
         <TooltipItems secondary>
-          <TooltipItem title={t`Campaign rewards`}>{formatApy(getCampaignRewardsApy(pool))}</TooltipItem>
+          <TooltipItem title={t`Campaign rewards`}>
+            {formatNumber(getCampaignRewardsApy(pool), 'percent.rate')}
+          </TooltipItem>
           <CampaignRewardTooltipItems campaigns={campaigns} />
         </TooltipItems>
       )}
       <TooltipItems borderTop>
         <TooltipItem variant="primary" title={t`Rewards APY`}>
-          {formatApy(getRewardsApy(pool))}
+          {formatNumber(getRewardsApy(pool), 'percent.rate')}
         </TooltipItem>
       </TooltipItems>
     </>
@@ -50,7 +57,7 @@ const RewardsApyAmount = ({
   typographyVariant: TypographyProps['variant']
 }) => (
   <Typography component="span" variant={typographyVariant}>
-    {formatApy(getRewardsApy(pool))}
+    {formatCellValue(getRewardsApy(pool), 'percent.rate')}
   </Typography>
 )
 

@@ -244,6 +244,14 @@ describe('V2 pool-list yields', () => {
     getV2PoolCell(empty, PoolColumnId.GaugeApy)
       .find('[data-testid="pool-gauge-apy-tooltip-trigger"]')
       .should('not.exist')
+    getV2PoolCell(empty, PoolColumnId.BaseApy)
+      .find('[data-testid="pool-base-apy-tooltip-trigger"]')
+      .trigger('mouseover')
+    cy.get(TOOLTIP).should('be.visible')
+    cy.get(TOOLTIP).contains('span', 'Daily').parent().parent().should('contain.text', '0.00%')
+    cy.get(TOOLTIP).contains('span', 'Weekly').parent().parent().should('contain.text', '-')
+    getV2PoolCell(empty, PoolColumnId.BaseApy).find('[data-testid="pool-base-apy-tooltip-trigger"]').trigger('mouseout')
+    cy.get(TOOLTIP).should('not.exist')
 
     const volatile = V2_POOL_FIXTURES.volatile.address
     getV2PoolCell(volatile, PoolColumnId.NetApy).should('contain.text', '5,000+%')

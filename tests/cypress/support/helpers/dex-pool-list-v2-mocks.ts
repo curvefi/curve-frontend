@@ -166,7 +166,8 @@ export const V2_POOL_FIXTURES = {
     name: 'V2 High Rewards',
     extra_rewards_apr: [extraReward(500, 'HIGH')],
     creation_date: V2_POOL_FIXTURE_NOW_SECONDS - 2 * YEAR_SECONDS,
-    trading_volume_24h: 1_000_000,
+    trading_volume_24h: 0,
+    tvl_usd: 0,
   }),
   lite: createPoolFixture({
     address: address('1007'),

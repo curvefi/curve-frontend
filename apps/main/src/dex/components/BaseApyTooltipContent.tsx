@@ -20,10 +20,10 @@ export const BaseApyTooltipContent = ({ dailyApy, weeklyApy, weekly = false }: B
     />
     <TooltipItems secondary>
       <TooltipItem variant="independent" title={t`Daily`}>
-        {formatNumber(dailyApy || null, 'percent.rate')}
+        {formatNumber(dailyApy, 'percent.rate')}
       </TooltipItem>
       <TooltipItem variant="independent" title={t`Weekly`}>
-        {formatNumber(weeklyApy || null, 'percent.rate')}
+        {formatNumber(weeklyApy, 'percent.rate')}
       </TooltipItem>
     </TooltipItems>
     {[dailyApy, weeklyApy].some(apy => apy != null && apy < 0) && (

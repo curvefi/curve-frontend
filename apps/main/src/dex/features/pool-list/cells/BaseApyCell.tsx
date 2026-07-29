@@ -6,9 +6,8 @@ import Typography, { type TypographyProps } from '@mui/material/Typography'
 import type { CellContext } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
-import { formatNumber } from '@ui-kit/utils'
 import type { PoolRow } from '../types'
-import { aprToPoolApy } from './utils'
+import { aprToPoolApy, formatCellValue } from './utils'
 
 const BaseApyAmount = ({
   apr,
@@ -18,7 +17,7 @@ const BaseApyAmount = ({
   typographyVariant: TypographyProps['variant']
 }) => (
   <Typography component="span" variant={typographyVariant}>
-    {formatNumber(aprToPoolApy(apr) || null, 'percent.rate')}
+    {formatCellValue(aprToPoolApy(apr), 'percent.rate')}
   </Typography>
 )
 
