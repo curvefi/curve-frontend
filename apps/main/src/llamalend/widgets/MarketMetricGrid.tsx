@@ -4,6 +4,7 @@ import { applySxProps } from '@ui-kit/utils'
 
 const { Grid } = SizesAndSpaces
 
+/** TODO: there's a notion ticket to create a proper metrics grid component */
 export const MarketMetricGrid = ({ sx, ...props }: BoxProps) => (
   <Box
     {...props}
