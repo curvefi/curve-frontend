@@ -27,10 +27,12 @@ const poolTypeLabels = {
 export const PoolBadges = ({ pool }: { pool: PoolRow }) => {
   const classification = pool.poolType && poolTypeClassifications[pool.poolType]
 
-  if (!classification && !pool.isMetapool && !pool.gauge?.isKilled) return null
-
   return (
-    <Stack direction="row" data-testid="pool-badges" sx={{ alignItems: 'center', gap: Spacing.xs }}>
+    <Stack
+      direction="row"
+      data-testid="pool-badges"
+      sx={{ alignItems: 'center', gap: Spacing.xs, '&:empty': { display: 'none' } }}
+    >
       {classification && (
         <Badge
           size="extraSmall"
