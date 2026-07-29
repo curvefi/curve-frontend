@@ -4,6 +4,7 @@ import Typography, { type TypographyProps } from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { TokenInfo } from '@ui-kit/shared/ui/TokenInfo'
 import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
+import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { formatNumber, MAINNET_CRV } from '@ui-kit/utils'
 import type { PoolRow } from '../types'
 import { formatCellValue, getGaugeApyRange } from './utils'
@@ -48,17 +49,15 @@ export const GaugeApyValue = ({
 
   return (
     <Box data-testid="pool-gauge-apy" sx={{ display: 'flex', justifyContent: textAlign }}>
-      {range ? (
-        <Tooltip
-          title={t`Gauge APY`}
-          body={<GaugeApyTooltipContent unboostedApy={range.unboostedApy} maximumApy={range.boostedApy} />}
-          placement={tooltipPlacement}
-        >
-          {content}
-        </Tooltip>
-      ) : (
-        content
-      )}
+      <WithWrapper
+        shouldWrap={range}
+        Wrapper={Tooltip}
+        title={t`Gauge APY`}
+        body={range && <GaugeApyTooltipContent unboostedApy={range.unboostedApy} maximumApy={range.boostedApy} />}
+        placement={tooltipPlacement}
+      >
+        {content}
+      </WithWrapper>
     </Box>
   )
 }
@@ -85,18 +84,16 @@ export const GaugeApyCell = ({ pool }: { pool: PoolRow }) => {
 
   return (
     <Box data-testid="pool-gauge-apy" sx={{ display: 'flex', justifyContent: 'end' }}>
-      {range ? (
-        <Tooltip
-          clickable
-          title={t`Gauge APY`}
-          body={<GaugeApyTooltipContent unboostedApy={range.unboostedApy} maximumApy={range.boostedApy} />}
-          placement="top"
-        >
-          <Box data-testid="pool-gauge-apy-tooltip-trigger">{content}</Box>
-        </Tooltip>
-      ) : (
-        content
-      )}
+      <WithWrapper
+        shouldWrap={range}
+        Wrapper={Tooltip}
+        clickable
+        title={t`Gauge APY`}
+        body={range && <GaugeApyTooltipContent unboostedApy={range.unboostedApy} maximumApy={range.boostedApy} />}
+        placement="top"
+      >
+        <Box data-testid={range && 'pool-gauge-apy-tooltip-trigger'}>{content}</Box>
+      </WithWrapper>
     </Box>
   )
 }
