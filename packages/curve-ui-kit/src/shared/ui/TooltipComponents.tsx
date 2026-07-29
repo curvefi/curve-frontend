@@ -95,7 +95,7 @@ export const TooltipItem = ({
           blockchainId={titleIcon.blockchainId}
           address={titleIcon.address}
           size={titleIcon.size}
-          sx={{ marginLeft: Spacing.md }}
+          sx={{ ...(variant !== 'default' && { marginLeft: Spacing.md }) }}
         />
       )}
       <Typography
