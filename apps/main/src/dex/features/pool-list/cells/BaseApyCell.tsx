@@ -6,12 +6,9 @@ import Typography, { type TypographyProps } from '@mui/material/Typography'
 import type { CellContext } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
 import type { PoolRow } from '../types'
 import { aprToPoolApy } from './utils'
-
-const { Spacing } = SizesAndSpaces
 
 const BaseApyAmount = ({
   apr,
@@ -24,34 +21,6 @@ const BaseApyAmount = ({
     {formatNumber(aprToPoolApy(apr) || null, 'percent.rate')}
   </Typography>
 )
-
-const BaseApyTooltipBody = ({ baseDailyApr, baseWeeklyApr }: Pick<PoolRow, 'baseDailyApr' | 'baseWeeklyApr'>) => {
-  const baseDailyApy = aprToPoolApy(baseDailyApr)
-  const baseWeeklyApy = aprToPoolApy(baseWeeklyApr)
-  const hasNegativeApy = [baseDailyApy, baseWeeklyApy].some(apy => apy != null && apy < 0)
-
-  return (
-    <Box>
-      <Typography variant="bodyXsRegular" color="textTertiary" sx={{ marginBottom: Spacing.xs }}>
-        {t`(annualized)`}
-      </Typography>
-      <Box component="ul" sx={{ margin: 0, paddingInlineStart: Spacing.md }}>
-        <Typography component="li" variant="bodySRegular">
-          {t`Daily`}: {formatNumber(baseDailyApy === 0 ? null : baseDailyApy, 'percent.value')}
-        </Typography>
-        <Typography component="li" variant="bodySRegular">
-          {t`Weekly`}: {formatNumber(baseWeeklyApy === 0 ? null : baseWeeklyApy, 'percent.value')}
-        </Typography>
-      </Box>
-
-      {hasNegativeApy && (
-        <Typography variant="bodySRegular" color="warning" sx={{ marginTop: Spacing.sm }}>
-          {t`Base APY can temporarily be negative when A parameter is ramped down, or crypto pools spend profit to rebalance.`}
-        </Typography>
-      )}
-    </Box>
-  )
-}
 
 type BaseApyValueProps = {
   pool: PoolRow
@@ -84,7 +53,13 @@ export const BaseApyValue = ({
       ) : (
         <Tooltip
           title={weekly ? t`Weekly Base APY` : t`Base APY`}
-          body={<BaseApyTooltipBody baseDailyApr={pool.baseDailyApr} baseWeeklyApr={pool.baseWeeklyApr} />}
+          body={
+            <BaseApyTooltipContent
+              dailyApy={aprToPoolApy(pool.baseDailyApr)}
+              weeklyApy={aprToPoolApy(pool.baseWeeklyApr)}
+              weekly={weekly}
+            />
+          }
           placement={tooltipPlacement}
         >
           {content}

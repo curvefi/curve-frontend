@@ -7,7 +7,7 @@ import { TokenInfo } from '@ui-kit/shared/ui/TokenInfo'
 import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
 import { formatNumber, MAINNET_CRV } from '@ui-kit/utils'
 import type { PoolRow } from '../types'
-import { getGaugeApyDescription, getGaugeApyRange } from './utils'
+import { getGaugeApyRange } from './utils'
 
 export const GaugeApyRange = ({ boostedApy, unboostedApy }: NonNullable<ReturnType<typeof getGaugeApyRange>>) => (
   <>
@@ -54,7 +54,11 @@ export const GaugeApyValue = ({
   return (
     <Box data-testid="pool-gauge-apy" sx={{ display: 'flex', justifyContent: textAlign }}>
       {range ? (
-        <Tooltip title={getGaugeApyDescription()} placement={tooltipPlacement}>
+        <Tooltip
+          title={t`Gauge APY`}
+          body={<GaugeApyTooltipContent unboostedApy={range.unboostedApy} maximumApy={range.boostedApy} />}
+          placement={tooltipPlacement}
+        >
           {content}
         </Tooltip>
       ) : (
