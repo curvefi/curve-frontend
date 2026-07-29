@@ -6,8 +6,6 @@ import Etherfi from './Etherfi.json'
 import Falcon from './Falcon.json'
 import Fraxtal from './Fraxtal.json'
 import Fx from './Fx.json'
-import GoNuts from './GoNuts.json'
-import Hyperwave from './Hyperwave.json'
 import Infinifi from './Infinifi.json'
 import Jane from './Jane.json'
 import Liquity from './Liquity.json'
@@ -34,9 +32,7 @@ export {
   YieldFi,
   Fx,
   Infinifi,
-  GoNuts,
   Falcon,
-  Hyperwave,
   Loop,
   Noon,
   Aegis,
