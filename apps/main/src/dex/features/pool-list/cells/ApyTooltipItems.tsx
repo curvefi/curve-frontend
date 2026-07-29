@@ -50,7 +50,7 @@ export const PointsTooltipItems = ({ campaigns }: { campaigns: Campaign[] }) =>
       key={`${campaign.platform}-${campaign.description}-${index}`}
       variant="subItem"
       title={t`Points`}
-      titleAdornment={<RewardIcon src={campaign.platformImageId} alt={campaign.platform} size="md" />}
+      titleAdornment={<RewardIcon src={campaign.platformImageId} alt={campaign.platform} size="sm" />}
     >
       <Stack
         component={Link}
