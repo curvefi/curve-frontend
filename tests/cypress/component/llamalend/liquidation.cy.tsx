@@ -178,7 +178,7 @@ describe('Soft Liquidation Forms (mocked)', () => {
         mountResetPositionForm({ llamaApi, market })
 
         checkResetPositionInputsLoaded({ convertedBorrowed })
-        cy.get('[data-testid="reset-position-submit-button"]').should('be.disabled')
+        cy.get('[data-testid="reset-position-submit-button"]', LOAD_TIMEOUT).should('be.disabled')
 
         clickResetPositionMinimumWalletAmount()
         checkResetPositionWalletAmount({ amount: userBorrowed })
@@ -234,7 +234,7 @@ describe('Soft Liquidation Forms (mocked)', () => {
         )
         .and('not.contain.text', 'Reset availability must be loaded')
         .and('not.contain.text', 'Minimum reset amount must be loaded')
-      cy.get('[data-testid="reset-position-submit-button"]').should('be.disabled')
+      cy.get('[data-testid="reset-position-submit-button"]', LOAD_TIMEOUT).should('be.disabled')
 
       cy.wrap(stubs.isRepayWithShrinkAvailable).should('have.been.calledWithExactly', ...expected.isAvailable)
       cy.wrap(stubs.tokensToShrink).should('have.been.calledWithExactly', ...expected.tokensToShrink)
@@ -284,22 +284,28 @@ describe('Soft Liquidation Forms (mocked)', () => {
     })
 
     it('requires the minimum wallet amount', () => {
-      const { belowMinBorrowed, convertedBorrowed, llamaApi, market, minBorrowed } = createResetPositionScenario({
-        chainId: CHAIN_ID,
-        approved: true,
-      })
+      const { belowMinBorrowed, convertedBorrowed, expected, llamaApi, market, minBorrowed, stubs } =
+        createResetPositionScenario({
+          chainId: CHAIN_ID,
+          approved: true,
+        })
 
       seedCrvUsdBalance({ chainId: CHAIN_ID, addresses: [TEST_ADDRESS], min: minBorrowed })
       mountResetPositionForm({ llamaApi, market })
 
       checkResetPositionInputsLoaded({ convertedBorrowed })
+      cy.wrap(stubs.isRepayWithShrinkAvailable, LOAD_TIMEOUT).should(
+        'have.been.calledWithExactly',
+        ...expected.isAvailable,
+      )
+      cy.wrap(stubs.tokensToShrink, LOAD_TIMEOUT).should('have.been.calledWithExactly', ...expected.tokensToShrink)
       checkResetPositionMinimumWalletMessage()
       writeResetPositionWalletAmount({ amount: belowMinBorrowed })
 
-      cy.get('[data-testid="reset-position-input-user-borrowed"]')
+      cy.get('[data-testid="reset-position-input-user-borrowed"]', LOAD_TIMEOUT)
         .should('contain.text', 'Add at least')
         .and('contain.text', 'from wallet to reset this position')
-      cy.get('[data-testid="reset-position-submit-button"]').should('be.disabled')
+      cy.get('[data-testid="reset-position-submit-button"]', LOAD_TIMEOUT).should('be.disabled')
     })
 
     it('allows more than the minimum wallet amount', () => {
@@ -340,10 +346,10 @@ describe('Soft Liquidation Forms (mocked)', () => {
       checkResetPositionInputsLoaded({ convertedBorrowed })
       writeResetPositionWalletAmount({ amount: moreUserBorrowed })
 
-      cy.get('[data-testid="reset-position-input-user-borrowed"]')
+      cy.get('[data-testid="reset-position-input-user-borrowed"]', LOAD_TIMEOUT)
         .should('contain.text', 'The maximum reset amount is')
         .and('contain.text', '1k')
-      cy.get('[data-testid="reset-position-submit-button"]').should('be.disabled')
+      cy.get('[data-testid="reset-position-submit-button"]', LOAD_TIMEOUT).should('be.disabled')
     })
 
     it('blocks full repay through reset', () => {
@@ -358,11 +364,11 @@ describe('Soft Liquidation Forms (mocked)', () => {
       checkResetPositionInputsLoaded({ convertedBorrowed })
       writeResetPositionWalletAmount({ amount: fullRepayUserBorrowed })
 
-      cy.get('[data-testid="reset-position-input-user-borrowed"]').should(
+      cy.get('[data-testid="reset-position-input-user-borrowed"]', LOAD_TIMEOUT).should(
         'contain.text',
         'Use the close tab to fully repay and close this position',
       )
-      cy.get('[data-testid="reset-position-submit-button"]').should('be.disabled')
+      cy.get('[data-testid="reset-position-submit-button"]', LOAD_TIMEOUT).should('be.disabled')
     })
   })
 })

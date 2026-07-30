@@ -153,21 +153,24 @@ export const checkLeverageCheckbox = ({
   hasLeverage: boolean
 }) => {
   if (hasLeverage) {
-    cy.get('[data-testid="leverage-checkbox"]').should('be.visible')
-    cy.get('[data-testid="leverage-checkbox"] input').should(leverageEnabled ? 'be.checked' : 'not.be.checked')
+    cy.get('[data-testid="leverage-checkbox"]', LOAD_TIMEOUT).should('be.visible')
+    cy.get('[data-testid="leverage-checkbox"] input', LOAD_TIMEOUT).should(
+      leverageEnabled ? 'be.checked' : 'not.be.checked',
+    )
   } else {
-    cy.get('[data-testid="leverage-checkbox"]').should('not.exist')
+    cy.get('[data-testid="leverage-checkbox"]', LOAD_TIMEOUT).should('not.exist')
   }
 }
 
 export const waitForRoutesLoaded = ({ submitButtonTestId }: { submitButtonTestId: string }) => {
-  cy.get('[data-testid="route-provider-accordion"]').click()
+  cy.get('[data-testid="route-provider-accordion"]', LOAD_TIMEOUT).click(LOAD_TIMEOUT)
   cy.wait('@routerRoutes', LOAD_TIMEOUT)
-  cy.get('[data-testid="refresh-button"]').should('be.enabled')
+  cy.get('[data-testid="refresh-button"]', LOAD_TIMEOUT).should('be.enabled')
   cy.get(`[data-testid="${submitButtonTestId}"]`, LOAD_TIMEOUT).should('be.enabled')
 }
 
-export const toggleLeverage = () => cy.get('[data-testid="leverage-checkbox"]').click(LOAD_TIMEOUT)
+export const toggleLeverage = () =>
+  cy.get('[data-testid="leverage-checkbox"]', LOAD_TIMEOUT).click(LOAD_TIMEOUT)
 
 /**
  * Fill in the create loan form. Assumes the form is already opened.

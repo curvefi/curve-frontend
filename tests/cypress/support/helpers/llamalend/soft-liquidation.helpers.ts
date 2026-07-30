@@ -43,7 +43,7 @@ export function checkResetPositionInputsLoaded({ convertedBorrowed }: { converte
 }
 
 export const checkResetPositionMinimumWalletMessage = () => {
-  cy.get('[data-testid="reset-position-input-user-borrowed"]')
+  cy.get('[data-testid="reset-position-input-user-borrowed"]', LOAD_TIMEOUT)
     .should('contain.text', 'Increase amount to push future liquidation threshold lower')
     .and('contain.text', 'Minimum from wallet:')
 }
@@ -67,7 +67,7 @@ export const clickResetPositionMinimumWalletAmount = () => {
   cy.get(
     '[data-testid="reset-position-input-user-borrowed"] [data-testid="helper-message-number-0"]',
     LOAD_TIMEOUT,
-  ).click()
+  ).click(LOAD_TIMEOUT)
 }
 
 export const checkResetPositionWalletAmount = ({ amount }: { amount: Decimal }) =>
