@@ -1,6 +1,6 @@
 name: RPC Tests
 on:
-  workflow_dispatch:  # triggered manually
+  workflow_dispatch: # triggered manually
 env:
   DO_NOT_TRACK: 1
   IBM_TELEMETRY_DISABLED: true
@@ -33,6 +33,7 @@ jobs:
         env:
           ELECTRON_ENABLE_LOGGING: true # Electron writes console to stdout
           NODE_ENV: test
+          TEST_SEED: ${{ github.run_id }}-rpc
           CYPRESS_TENDERLY_ACCOUNT_SLUG: ${{ vars.TENDERLY_ACCOUNT_SLUG }}
           CYPRESS_TENDERLY_PROJECT_SLUG: ${{ vars.TENDERLY_PROJECT_SLUG }}
           CYPRESS_TENDERLY_ACCESS_KEY: ${{ secrets.TENDERLY_ACCESS_KEY }}

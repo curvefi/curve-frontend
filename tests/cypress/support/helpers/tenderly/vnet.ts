@@ -86,6 +86,9 @@ export function withVirtualTestnet(opts: () => GetVirtualTestnetOptions) {
   return () => vnet
 }
 
+// Resource identities must stay unique when a failed VNet is retained for debugging.
+const oneVnetId = () => Cypress._.random(0, Number.MAX_SAFE_INTEGER)
+
 /**
  * Creates a Cypress test helper that creates and manages a Tenderly virtual testnet lifecycle
  *
@@ -111,7 +114,7 @@ export function createVirtualTestnet(
   let shouldDeleteVnet = true
 
   before(() => {
-    const uuid = Cypress._.random(0, 1e6)
+    const uuid = oneVnetId()
     const { chain_id = 1, ...givenOptions } = opts(uuid)
 
     const defaultOptions: CreateVirtualTestnetOptions = {
@@ -167,7 +170,7 @@ export function forkVirtualTestnet(
   let vnet: ForkVirtualTestnetResponse
 
   before(() => {
-    const uuid = Cypress._.random(0, 1e6)
+    const uuid = oneVnetId()
     const defaultOpts = { wait: true }
     loadTenderlyAccount().then(tenderlyAccount => {
       const finalOpts = Cypress._.merge(tenderlyAccount, defaultOpts, opts(uuid))
