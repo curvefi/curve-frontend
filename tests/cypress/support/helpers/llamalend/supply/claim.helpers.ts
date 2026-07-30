@@ -187,9 +187,10 @@ export function checkClaimTableState({
   rows.forEach(({ amount, symbol, notional }, index) => {
     cy.get('[data-testid="data-table-cell-token"]')
       .eq(index)
-      .within(() => {
-        cy.contains(formatNumber(amount as Decimal, { abbreviate: false })).should('be.visible')
-        cy.contains(symbol).should('be.visible')
+      .should($cell => {
+        const text = $cell.text()
+        expect(text).to.contain(formatNumber(amount as Decimal, { abbreviate: false }))
+        expect(text).to.contain(symbol)
       })
 
     cy.get('[data-testid="data-table-cell-notional"]')

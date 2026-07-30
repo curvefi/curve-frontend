@@ -178,28 +178,51 @@ export const createBorrowMoreScenario = ({
     llamaApi: createMockLlamaApi(chainId, market),
     assertPreSubmit: () => {
       if (useZapV2) {
-        expect(zapV2Stubs.maxLeverage).to.have.been.called
-        expect(zapV2Stubs.borrowMoreExpectedMetrics).to.have.been.calledWithMatch(zapV2Expected.metrics)
-        expect(zapV2Stubs.borrowMoreMaxRecv).to.have.been.calledWithMatch(zapV2Expected.maxRecv)
-        expect(zapV2Stubs.borrowMoreIsApproved).to.have.been.calledWithMatch(zapV2Expected.isApproved)
-        expect(zapV2Stubs.borrowMoreExpectedCollateral).to.have.been.calledWithMatch(zapV2Expected.expectedCollateral)
-        expect(zapV2Stubs.borrowMoreFutureLeverage).to.have.been.calledWithMatch(zapV2Expected.futureLeverage)
+        cy.wrap(zapV2Stubs.maxLeverage).should('have.been.called')
+        cy.wrap(zapV2Stubs.borrowMoreExpectedMetrics).should('have.been.calledWithMatch', zapV2Expected.metrics)
+        cy.wrap(zapV2Stubs.borrowMoreMaxRecv).should('have.been.calledWithMatch', zapV2Expected.maxRecv)
+        cy.wrap(zapV2Stubs.borrowMoreIsApproved).should('have.been.calledWithMatch', zapV2Expected.isApproved)
+        cy.wrap(zapV2Stubs.borrowMoreExpectedCollateral).should(
+          'have.been.calledWithMatch',
+          zapV2Expected.expectedCollateral,
+        )
+        cy.wrap(zapV2Stubs.borrowMoreFutureLeverage).should(
+          'have.been.calledWithMatch',
+          zapV2Expected.futureLeverage,
+        )
         if (approved) {
-          expect(zapV2Stubs.estimateGasBorrowMore).to.have.been.calledWithMatch(zapV2Expected.estimateGas)
-          expect(zapV2Stubs.estimateGasBorrowMoreApprove).to.not.have.been.called
+          cy.wrap(zapV2Stubs.estimateGasBorrowMore).should(
+            'have.been.calledWithMatch',
+            zapV2Expected.estimateGas,
+          )
+          cy.then(() => {
+            expect(zapV2Stubs.estimateGasBorrowMoreApprove).to.not.have.been.called
+          })
         } else {
-          expect(zapV2Stubs.estimateGasBorrowMoreApprove).to.have.been.calledWithMatch(zapV2Expected.estimateGasApprove)
+          cy.wrap(zapV2Stubs.estimateGasBorrowMoreApprove).should(
+            'have.been.calledWithMatch',
+            zapV2Expected.estimateGasApprove,
+          )
         }
       } else {
-        expect(normalStubs.parameters).to.have.been.calledWithExactly()
-        expect(normalStubs.borrowMoreHealth).to.have.been.calledWithExactly(...normalExpected.health)
-        expect(normalStubs.borrowMoreMaxRecv).to.have.been.calledWithExactly(...normalExpected.maxRecv)
-        expect(normalStubs.borrowMoreIsApproved).to.have.been.calledWithExactly(...normalExpected.isApproved)
+        cy.wrap(normalStubs.parameters).should('have.been.calledWithExactly')
+        cy.wrap(normalStubs.borrowMoreHealth).should('have.been.calledWithExactly', ...normalExpected.health)
+        cy.wrap(normalStubs.borrowMoreMaxRecv).should('have.been.calledWithExactly', ...normalExpected.maxRecv)
+        cy.wrap(normalStubs.borrowMoreIsApproved).should(
+          'have.been.calledWithExactly',
+          ...normalExpected.isApproved,
+        )
         if (approved) {
-          expect(normalStubs.estimateGasBorrowMore).to.have.been.calledWithExactly(...normalExpected.estimateGas)
-          expect(normalStubs.estimateGasBorrowMoreApprove).to.not.have.been.called
+          cy.wrap(normalStubs.estimateGasBorrowMore).should(
+            'have.been.calledWithExactly',
+            ...normalExpected.estimateGas,
+          )
+          cy.then(() => {
+            expect(normalStubs.estimateGasBorrowMoreApprove).to.not.have.been.called
+          })
         } else {
-          expect(normalStubs.estimateGasBorrowMoreApprove).to.have.been.calledWithExactly(
+          cy.wrap(normalStubs.estimateGasBorrowMoreApprove).should(
+            'have.been.calledWithExactly',
             ...normalExpected.estimateGasApprove,
           )
         }
@@ -207,20 +230,29 @@ export const createBorrowMoreScenario = ({
     },
     assertSubmit: () => {
       if (useZapV2) {
-        expect(zapV2Stubs.borrowMore).to.have.been.calledWithMatch(zapV2Expected.submit)
+        cy.wrap(zapV2Stubs.borrowMore).should('have.been.calledWithMatch', zapV2Expected.submit)
+        if (!approved) {
+          cy.wrap(zapV2Stubs.borrowMoreApprove).should('have.been.calledWithMatch', zapV2Expected.approve)
+        }
+        cy.wrap(zapV2Stubs.estimateGasBorrowMore).should('have.been.calledWithMatch', zapV2Expected.estimateGas)
         if (approved) {
-          expect(zapV2Stubs.estimateGasBorrowMore).to.have.been.calledWithMatch(zapV2Expected.estimateGas)
-          expect(zapV2Stubs.borrowMoreApprove).to.not.have.been.called
-        } else {
-          expect(zapV2Stubs.borrowMoreApprove).to.have.been.calledWithMatch(zapV2Expected.approve)
+          cy.then(() => {
+            expect(zapV2Stubs.borrowMoreApprove).to.not.have.been.called
+          })
         }
       } else {
-        expect(normalStubs.borrowMore).to.have.been.calledWithExactly(...normalExpected.submit)
+        cy.wrap(normalStubs.borrowMore).should('have.been.calledWithExactly', ...normalExpected.submit)
+        if (!approved) {
+          cy.wrap(normalStubs.borrowMoreApprove).should('have.been.calledWithExactly', ...normalExpected.approve)
+        }
+        cy.wrap(normalStubs.estimateGasBorrowMore).should(
+          'have.been.calledWithExactly',
+          ...normalExpected.estimateGas,
+        )
         if (approved) {
-          expect(normalStubs.estimateGasBorrowMore).to.have.been.calledWithExactly(...normalExpected.estimateGas)
-          expect(normalStubs.borrowMoreApprove).to.not.have.been.called
-        } else {
-          expect(normalStubs.borrowMoreApprove).to.have.been.calledWithExactly(...normalExpected.approve)
+          cy.then(() => {
+            expect(normalStubs.borrowMoreApprove).to.not.have.been.called
+          })
         }
       }
     },

@@ -173,50 +173,71 @@ export const createRepayScenario = ({
     llamaApi: createMockLlamaApi(chainId, market),
     assertPreSubmit: leverage
       ? () => {
-          expect(leverageStubs.repayExpectedMetrics).to.have.been.calledWithMatch(leverageExpected.metrics)
-          expect(leverageStubs.repayIsApproved).to.have.been.calledWithMatch(leverageExpected.isApproved)
-          expect(leverageStubs.repayExpectedBorrowed).to.have.been.calledWithMatch(leverageExpected.expectedBorrowed)
-          expect(leverageStubs.repayFutureLeverage).to.have.been.calledWithMatch(leverageExpected.futureLeverage)
+          cy.wrap(leverageStubs.repayExpectedMetrics).should('have.been.calledWithMatch', leverageExpected.metrics)
+          cy.wrap(leverageStubs.repayIsApproved).should('have.been.calledWithMatch', leverageExpected.isApproved)
+          cy.wrap(leverageStubs.repayExpectedBorrowed).should(
+            'have.been.calledWithMatch',
+            leverageExpected.expectedBorrowed,
+          )
+          cy.wrap(leverageStubs.repayFutureLeverage).should(
+            'have.been.calledWithMatch',
+            leverageExpected.futureLeverage,
+          )
           if (approved) {
-            expect(leverageStubs.estimateGasRepay).to.have.been.calledWithMatch(leverageExpected.estimateGas)
-            expect(leverageStubs.estimateGasRepayApprove).to.not.have.been.called
+            cy.wrap(leverageStubs.estimateGasRepay).should('have.been.calledWithMatch', leverageExpected.estimateGas)
+            cy.then(() => {
+              expect(leverageStubs.estimateGasRepayApprove).to.not.have.been.called
+            })
           } else {
-            expect(leverageStubs.estimateGasRepayApprove).to.have.been.calledWithMatch(
+            cy.wrap(leverageStubs.estimateGasRepayApprove).should(
+              'have.been.calledWithMatch',
               leverageExpected.estimateGasApprove,
             )
           }
         }
       : () => {
-          expect(normalStubs.parameters).to.have.been.calledWithExactly()
-          expect(normalStubs.repayHealth).to.have.been.calledWithExactly(...normalExpected.health)
-          expect(normalStubs.repayPrices).to.have.been.calledWithExactly(...normalExpected.prices)
-          expect(normalStubs.repayIsApproved).to.have.been.calledWithExactly(...normalExpected.isApproved)
+          cy.wrap(normalStubs.parameters).should('have.been.calledWithExactly')
+          cy.wrap(normalStubs.repayHealth).should('have.been.calledWithExactly', ...normalExpected.health)
+          cy.wrap(normalStubs.repayPrices).should('have.been.calledWithExactly', ...normalExpected.prices)
+          cy.wrap(normalStubs.repayIsApproved).should('have.been.calledWithExactly', ...normalExpected.isApproved)
           if (approved) {
-            expect(normalStubs.estimateGasRepay).to.have.been.calledWithExactly(...normalExpected.estimateGas)
-            expect(normalStubs.estimateGasRepayApprove).to.not.have.been.called
+            cy.wrap(normalStubs.estimateGasRepay).should(
+              'have.been.calledWithExactly',
+              ...normalExpected.estimateGas,
+            )
+            cy.then(() => {
+              expect(normalStubs.estimateGasRepayApprove).to.not.have.been.called
+            })
           } else {
-            expect(normalStubs.estimateGasRepayApprove).to.have.been.calledWithExactly(
+            cy.wrap(normalStubs.estimateGasRepayApprove).should(
+              'have.been.calledWithExactly',
               ...normalExpected.estimateGasApprove,
             )
           }
         },
     assertSubmit: leverage
       ? () => {
-          expect(leverageStubs.estimateGasRepay).to.have.been.calledWithMatch(leverageExpected.estimateGas)
-          expect(leverageStubs.repay).to.have.been.calledWithMatch(leverageExpected.submit)
+          cy.wrap(leverageStubs.estimateGasRepay).should('have.been.calledWithMatch', leverageExpected.estimateGas)
+          if (!approved) {
+            cy.wrap(leverageStubs.repayApprove).should('have.been.calledWithMatch', leverageExpected.approve)
+          }
+          cy.wrap(leverageStubs.repay).should('have.been.calledWithMatch', leverageExpected.submit)
           if (approved) {
-            expect(leverageStubs.repayApprove).to.not.have.been.called
-          } else {
-            expect(leverageStubs.repayApprove).to.have.been.calledWithMatch(leverageExpected.approve)
+            cy.then(() => {
+              expect(leverageStubs.repayApprove).to.not.have.been.called
+            })
           }
         }
       : () => {
-          expect(normalStubs.estimateGasRepay).to.have.been.calledWithExactly(...normalExpected.estimateGas)
-          expect(normalStubs.repay).to.have.been.calledWithExactly(...normalExpected.submit)
+          cy.wrap(normalStubs.estimateGasRepay).should('have.been.calledWithExactly', ...normalExpected.estimateGas)
+          if (!approved) {
+            cy.wrap(normalStubs.repayApprove).should('have.been.calledWithExactly', ...normalExpected.approve)
+          }
+          cy.wrap(normalStubs.repay).should('have.been.calledWithExactly', ...normalExpected.submit)
           if (approved) {
-            expect(normalStubs.repayApprove).to.not.have.been.called
-          } else {
-            expect(normalStubs.repayApprove).to.have.been.calledWithExactly(...normalExpected.approve)
+            cy.then(() => {
+              expect(normalStubs.repayApprove).to.not.have.been.called
+            })
           }
         },
   }

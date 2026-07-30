@@ -42,15 +42,12 @@ describe('UnstakeForm (mocked)', () => {
     checkSupplyActionInfoValues(expected.actionInfo)
     checkSupplySubmitButtonText('unstake', 'Unstake')
 
-    cy.then(() => {
-      expect(stubs.walletBalances).to.have.been.calledWithExactly(...expected.walletBalances)
-      expect(stubs.statsRates).to.have.been.calledWithExactly(...expected.marketRates)
-      expect(stubs.convertToShares).to.have.been.calledWithExactly(...expected.convertToShares)
-      expect(stubs.estimateGasUnstake).to.have.been.calledWithExactly(...expected.estimateGas)
-    })
+    cy.wrap(stubs.walletBalances).should('have.been.calledWithExactly', ...expected.walletBalances)
+    cy.wrap(stubs.statsRates).should('have.been.calledWithExactly', ...expected.marketRates)
+    cy.wrap(stubs.convertToShares).should('have.been.calledWithExactly', ...expected.convertToShares)
+    cy.wrap(stubs.estimateGasUnstake).should('have.been.calledWithExactly', ...expected.estimateGas)
 
-    submitUnstakeForm().then(() => {
-      expect(stubs.unstake).to.have.been.calledWithExactly(...expected.submit)
-    })
+    submitUnstakeForm()
+    cy.wrap(stubs.unstake).should('have.been.calledWithExactly', ...expected.submit)
   })
 })

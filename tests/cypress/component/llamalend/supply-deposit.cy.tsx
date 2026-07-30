@@ -80,31 +80,35 @@ describe('DepositForm (mocked)', () => {
         if (maxDeposit) return
         checkSupplyActionInfoValues(expected.actionInfo)
 
-        cy.then(() => {
-          expect(stubs.walletBalances).to.have.been.calledWithExactly(...expected.walletBalances)
-          expect(stubs.statsRates).to.have.been.calledWithExactly(...expected.marketRates)
-          expect(stubs.statsFutureRates).to.have.been.calledWithExactly(...expected.futureRates)
-          expect(stubs.previewDeposit).to.have.been.calledWithExactly(...expected.previewDeposit)
-          expect(stubs.depositIsApproved).to.have.been.calledWithExactly(...expected.isApproved)
-          if (approved) {
-            expect(stubs.estimateGasDeposit).to.have.been.calledWithExactly(...expected.estimateGas)
+        cy.wrap(stubs.walletBalances).should('have.been.calledWithExactly', ...expected.walletBalances)
+        cy.wrap(stubs.statsRates).should('have.been.calledWithExactly', ...expected.marketRates)
+        cy.wrap(stubs.statsFutureRates).should('have.been.calledWithExactly', ...expected.futureRates)
+        cy.wrap(stubs.previewDeposit).should('have.been.calledWithExactly', ...expected.previewDeposit)
+        cy.wrap(stubs.depositIsApproved).should('have.been.calledWithExactly', ...expected.isApproved)
+        if (approved) {
+          cy.wrap(stubs.estimateGasDeposit).should('have.been.calledWithExactly', ...expected.estimateGas)
+          cy.then(() => {
             expect(stubs.estimateGasDepositApprove).to.not.have.been.called
-          } else {
-            expect(stubs.estimateGasDepositApprove).to.have.been.calledWithExactly(...expected.estimateGasApprove)
-          }
-        })
+          })
+        } else {
+          cy.wrap(stubs.estimateGasDepositApprove).should(
+            'have.been.calledWithExactly',
+            ...expected.estimateGasApprove,
+          )
+        }
 
         // A market alert or very low solvency blocks submission, so the test stops after validating the disabled state and action infos.
         if (disabledMarketController || solvencyPercent < SOLVENCY_THRESHOLDS.low) return
 
-        submitDepositForm({ solvencyPercent }).then(() => {
-          expect(stubs.deposit).to.have.been.calledWithExactly(...expected.submit)
-          if (approved) {
+        submitDepositForm({ solvencyPercent })
+        cy.wrap(stubs.deposit).should('have.been.calledWithExactly', ...expected.submit)
+        if (approved) {
+          cy.then(() => {
             expect(stubs.depositApprove).to.not.have.been.called
-          } else {
-            expect(stubs.depositApprove).to.have.been.calledWithExactly(...expected.approve)
-          }
-        })
+          })
+        } else {
+          cy.wrap(stubs.depositApprove).should('have.been.calledWithExactly', ...expected.approve)
+        }
       })
     },
   )

@@ -79,8 +79,9 @@ describe('RepayForm (mocked)', () => {
         leverageEnabled: leverage,
       })
 
-      cy.then(assertPreSubmit)
-      submitRepayForm().then(assertSubmit)
+      assertPreSubmit()
+      submitRepayForm()
+      assertSubmit()
     })
   })
 })

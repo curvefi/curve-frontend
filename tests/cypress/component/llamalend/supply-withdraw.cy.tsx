@@ -41,25 +41,26 @@ describe('WithdrawForm (mocked)', () => {
       checkSupplyActionInfoValues(expected.actionInfo)
       checkSupplySubmitButtonText('withdraw', buttonText)
 
-      cy.then(() => {
-        expect(stubs.walletBalances).to.have.been.calledWithExactly(...expected.walletBalances)
-        expect(stubs.statsRates).to.have.been.calledWithExactly(...expected.marketRates)
-        expect(stubs.statsFutureRates).to.have.been.calledWithExactly(...expected.futureRates)
-        expect(stubs.previewWithdraw).to.have.been.calledWithExactly(...expected.previewWithdraw)
-      })
+      cy.wrap(stubs.walletBalances).should('have.been.calledWithExactly', ...expected.walletBalances)
+      cy.wrap(stubs.statsRates).should('have.been.calledWithExactly', ...expected.marketRates)
+      cy.wrap(stubs.statsFutureRates).should('have.been.calledWithExactly', ...expected.futureRates)
+      cy.wrap(stubs.previewWithdraw).should('have.been.calledWithExactly', ...expected.previewWithdraw)
 
-      submitWithdrawForm().then(() => {
-        if (isFull) {
-          expect(stubs.estimateGasRedeem).to.have.been.calledWithExactly(...expected.estimateGas)
-          expect(stubs.redeem).to.have.been.calledWithExactly(...expected.submit)
+      submitWithdrawForm()
+      if (isFull) {
+        cy.wrap(stubs.estimateGasRedeem).should('have.been.calledWithExactly', ...expected.estimateGas)
+        cy.wrap(stubs.redeem).should('have.been.calledWithExactly', ...expected.submit)
+        cy.then(() => {
           expect(stubs.withdraw).to.not.have.been.called
-        } else {
-          expect(stubs.estimateGasWithdraw).to.have.been.calledWithExactly(...expected.estimateGas)
+        })
+      } else {
+        cy.wrap(stubs.estimateGasWithdraw).should('have.been.calledWithExactly', ...expected.estimateGas)
+        cy.wrap(stubs.withdraw).should('have.been.calledWithExactly', ...expected.submit)
+        cy.then(() => {
           expect(stubs.estimateGasRedeem).to.not.have.been.called
-          expect(stubs.withdraw).to.have.been.calledWithExactly(...expected.submit)
           expect(stubs.redeem).to.not.have.been.called
-        }
-      })
+        })
+      }
     })
   })
 })

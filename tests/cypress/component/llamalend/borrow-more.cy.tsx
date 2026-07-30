@@ -115,8 +115,9 @@ describe('BorrowMoreForm (mocked)', () => {
         })
         cy.get('[data-testid="borrow-more-submit-button"]').should('have.text', buttonText)
 
-        cy.then(assertPreSubmit)
-        submitBorrowMoreForm().then(assertSubmit)
+        assertPreSubmit()
+        submitBorrowMoreForm()
+        assertSubmit()
       })
     },
   )

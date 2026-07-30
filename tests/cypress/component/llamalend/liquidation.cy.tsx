@@ -82,33 +82,41 @@ describe('Soft Liquidation Forms (mocked)', () => {
         })
         cy.get('[data-testid="repay-submit-button"]').should('not.be.disabled')
 
+        cy.wrap(stubs.parameters).should('have.been.calledWithExactly')
         cy.wrap(stubs.repayHealth).should('have.been.calledWithExactly', ...expected.improveHealth.health)
-        cy.then(() => {
-          expect(stubs.parameters).to.have.been.calledWithExactly()
-          expect(stubs.repayHealth).to.have.been.calledWithExactly(...expected.improveHealth.health)
-          expect(stubs.repayPrices).to.have.been.calledWithExactly(...expected.improveHealth.prices)
-          expect(stubs.repayIsApproved).to.have.been.calledWithExactly(...expected.improveHealth.isApproved)
-          if (approved) {
+        cy.wrap(stubs.repayPrices).should('have.been.calledWithExactly', ...expected.improveHealth.prices)
+        cy.wrap(stubs.repayIsApproved).should('have.been.calledWithExactly', ...expected.improveHealth.isApproved)
+        if (approved) {
+          cy.wrap(stubs.estimateGasRepay).should(
+            'have.been.calledWithExactly',
+            ...expected.improveHealth.estimateGas,
+          )
+          cy.then(() => {
             expect(stubs.estimateGasRepayApprove).to.not.have.been.called
-            expect(stubs.estimateGasRepay).to.have.been.calledWithExactly(...expected.improveHealth.estimateGas)
-          } else {
-            expect(stubs.estimateGasRepayApprove).to.have.been.calledWithExactly(
-              ...expected.improveHealth.estimateGasApprove,
-            )
-          }
-        })
+          })
+        } else {
+          cy.wrap(stubs.estimateGasRepayApprove).should(
+            'have.been.calledWithExactly',
+            ...expected.improveHealth.estimateGasApprove,
+          )
+        }
 
-        submitRepayForm().then(() => {
-          expect(stubs.estimateGasRepay).to.have.been.calledWithExactly(...expected.improveHealth.estimateGas)
-          if (approved) {
+        submitRepayForm()
+        cy.wrap(stubs.estimateGasRepay).should('have.been.calledWithExactly', ...expected.improveHealth.estimateGas)
+        if (!approved) {
+          cy.wrap(stubs.estimateGasRepayApprove).should(
+            'have.been.calledWithExactly',
+            ...expected.improveHealth.approve,
+          )
+          cy.wrap(stubs.repayApprove).should('have.been.calledWithExactly', ...expected.improveHealth.approve)
+        }
+        cy.wrap(stubs.repay).should('have.been.calledWithExactly', ...expected.improveHealth.submit)
+        if (approved) {
+          cy.then(() => {
             expect(stubs.estimateGasRepayApprove).to.not.have.been.called
             expect(stubs.repayApprove).to.not.have.been.called
-          } else {
-            expect(stubs.estimateGasRepayApprove).to.have.been.calledWithExactly(...expected.improveHealth.approve)
-            expect(stubs.repayApprove).to.have.been.calledWithExactly(...expected.improveHealth.approve)
-          }
-          expect(stubs.repay).to.have.been.calledWithExactly(...expected.improveHealth.submit)
-        })
+          })
+        }
       })
     })
   })
@@ -133,20 +141,29 @@ describe('Soft Liquidation Forms (mocked)', () => {
 
         checkClosePositionDetailsLoaded({ debt })
 
-        cy.then(() => {
-          expect(stubs.selfLiquidateIsApproved).to.have.been.calledWithExactly(...expected.closePosition.isApproved)
-        })
+        cy.wrap(stubs.selfLiquidateIsApproved).should(
+          'have.been.calledWithExactly',
+          ...expected.closePosition.isApproved,
+        )
 
-        submitClosePositionForm().then(() => {
-          if (approved) {
+        submitClosePositionForm()
+        if (!approved) {
+          cy.wrap(stubs.estimateGasSelfLiquidate).should(
+            'have.been.calledWithExactly',
+            ...expected.closePosition.estimateGas,
+          )
+          cy.wrap(stubs.selfLiquidateApprove).should(
+            'have.been.calledWithExactly',
+            ...expected.closePosition.approve,
+          )
+        }
+        cy.wrap(stubs.selfLiquidate).should('have.been.calledWithExactly', ...expected.closePosition.submit)
+        if (approved) {
+          cy.then(() => {
             expect(stubs.estimateGasSelfLiquidateApprove).to.not.have.been.called
             expect(stubs.selfLiquidateApprove).to.not.have.been.called
-          } else {
-            expect(stubs.estimateGasSelfLiquidate).to.have.been.calledWithExactly(...expected.closePosition.estimateGas)
-            expect(stubs.selfLiquidateApprove).to.have.been.calledWithExactly(...expected.closePosition.approve)
-          }
-          expect(stubs.selfLiquidate).to.have.been.calledWithExactly(...expected.closePosition.submit)
-        })
+          })
+        }
       })
     })
   })
@@ -173,28 +190,27 @@ describe('Soft Liquidation Forms (mocked)', () => {
         checkResetPositionDetailsLoaded({ debt: { current: debt, future: futureDebt, symbol: 'crvUSD' } })
         cy.get('[data-testid="reset-position-submit-button"]', LOAD_TIMEOUT).should('not.be.disabled')
 
+        cy.wrap(stubs.isRepayWithShrinkAvailable).should('have.been.calledWithExactly', ...expected.isAvailable)
+        cy.wrap(stubs.rates).should('have.been.calledWithExactly', ...expected.rates)
+        cy.wrap(stubs.futureRates).should('have.been.calledWithExactly', ...expected.futureRates)
+        cy.wrap(stubs.tokensToShrink).should('have.been.calledWithExactly', ...expected.tokensToShrink)
         cy.wrap(stubs.repayHealth).should('have.been.calledWithExactly', ...expected.health)
-        cy.then(() => {
-          expect(stubs.isRepayWithShrinkAvailable).to.have.been.calledWithExactly(...expected.isAvailable)
-          expect(stubs.rates).to.have.been.calledWithExactly(...expected.rates)
-          expect(stubs.futureRates).to.have.been.calledWithExactly(...expected.futureRates)
-          expect(stubs.tokensToShrink).to.have.been.calledWithExactly(...expected.tokensToShrink)
-          expect(stubs.repayHealth).to.have.been.calledWithExactly(...expected.health)
-          expect(stubs.repayPrices).to.have.been.calledWithExactly(...expected.prices)
-          expect(stubs.repayIsApproved).to.have.been.calledWithExactly(...expected.isApproved)
-        })
+        cy.wrap(stubs.repayPrices).should('have.been.calledWithExactly', ...expected.prices)
+        cy.wrap(stubs.repayIsApproved).should('have.been.calledWithExactly', ...expected.isApproved)
 
-        submitResetPositionForm({ message: expected.successMessage }).then(() => {
-          expect(stubs.estimateGasRepay).to.have.been.calledWithExactly(...expected.estimateGas)
-          if (approved) {
+        submitResetPositionForm({ message: expected.successMessage })
+        cy.wrap(stubs.estimateGasRepay).should('have.been.calledWithExactly', ...expected.estimateGas)
+        if (!approved) {
+          cy.wrap(stubs.estimateGasRepayApprove).should('have.been.calledWithExactly', ...expected.approve)
+          cy.wrap(stubs.repayApprove).should('have.been.calledWithExactly', ...expected.approve)
+        }
+        cy.wrap(stubs.repay).should('have.been.calledWithExactly', ...expected.submit)
+        if (approved) {
+          cy.then(() => {
             expect(stubs.estimateGasRepayApprove).to.not.have.been.called
             expect(stubs.repayApprove).to.not.have.been.called
-          } else {
-            expect(stubs.estimateGasRepayApprove).to.have.been.calledWithExactly(...expected.approve)
-            expect(stubs.repayApprove).to.have.been.calledWithExactly(...expected.approve)
-          }
-          expect(stubs.repay).to.have.been.calledWithExactly(...expected.submit)
-        })
+          })
+        }
       })
     })
 
@@ -220,9 +236,9 @@ describe('Soft Liquidation Forms (mocked)', () => {
         .and('not.contain.text', 'Minimum reset amount must be loaded')
       cy.get('[data-testid="reset-position-submit-button"]').should('be.disabled')
 
+      cy.wrap(stubs.isRepayWithShrinkAvailable).should('have.been.calledWithExactly', ...expected.isAvailable)
+      cy.wrap(stubs.tokensToShrink).should('have.been.calledWithExactly', ...expected.tokensToShrink)
       cy.then(() => {
-        expect(stubs.isRepayWithShrinkAvailable).to.have.been.calledWithExactly(...expected.isAvailable)
-        expect(stubs.tokensToShrink).to.have.been.calledWithExactly(...expected.tokensToShrink)
         expect(stubs.repayHealth).to.not.have.been.called
         expect(stubs.repayPrices).to.not.have.been.called
         expect(stubs.repayIsApproved).to.not.have.been.called
@@ -250,22 +266,20 @@ describe('Soft Liquidation Forms (mocked)', () => {
         .and('contain.text', 'Reset position')
         .and('not.contain.text', 'Approve')
 
+      cy.wrap(stubs.futureRates).should('have.been.calledWithExactly', ...expected.futureRates)
+      cy.wrap(stubs.tokensToShrink).should('have.been.calledWithExactly', ...expected.tokensToShrink)
       cy.wrap(stubs.repayHealth).should('have.been.calledWithExactly', ...expected.health)
+      cy.wrap(stubs.repayPrices).should('have.been.calledWithExactly', ...expected.prices)
+      cy.wrap(stubs.repayIsApproved).should('have.been.calledWithExactly', ...expected.isApproved)
       cy.then(() => {
-        expect(stubs.futureRates).to.have.been.calledWithExactly(...expected.futureRates)
-        expect(stubs.tokensToShrink).to.have.been.calledWithExactly(...expected.tokensToShrink)
-        expect(stubs.repayHealth).to.have.been.calledWithExactly(...expected.health)
-        expect(stubs.repayPrices).to.have.been.calledWithExactly(...expected.prices)
-        expect(stubs.repayIsApproved).to.have.been.calledWithExactly(...expected.isApproved)
         expect(stubs.estimateGasRepayApprove).to.not.have.been.called
-        expect(stubs.estimateGasRepay).to.have.been.calledWithExactly(...expected.estimateGas)
       })
 
-      submitResetPositionForm({ message: expected.successMessage }).then(() => {
-        expect(stubs.repayIsApproved).to.have.been.calledWithExactly(...expected.isApproved)
+      submitResetPositionForm({ message: expected.successMessage })
+      cy.wrap(stubs.repay).should('have.been.calledWithExactly', ...expected.submit)
+      cy.then(() => {
         expect(stubs.estimateGasRepayApprove).to.not.have.been.called
         expect(stubs.repayApprove).to.not.have.been.called
-        expect(stubs.repay).to.have.been.calledWithExactly(...expected.submit)
       })
     })
 
@@ -304,18 +318,14 @@ describe('Soft Liquidation Forms (mocked)', () => {
       })
       cy.get('[data-testid="reset-position-submit-button"]', LOAD_TIMEOUT).should('not.be.disabled')
 
+      cy.wrap(stubs.futureRates).should('have.been.calledWithExactly', ...expected.futureRates)
       cy.wrap(stubs.repayHealth).should('have.been.calledWithExactly', ...expected.health)
-      cy.then(() => {
-        expect(stubs.futureRates).to.have.been.calledWithExactly(...expected.futureRates)
-        expect(stubs.repayHealth).to.have.been.calledWithExactly(...expected.health)
-        expect(stubs.repayPrices).to.have.been.calledWithExactly(...expected.prices)
-        expect(stubs.repayIsApproved).to.have.been.calledWithExactly(...expected.isApproved)
-      })
+      cy.wrap(stubs.repayPrices).should('have.been.calledWithExactly', ...expected.prices)
+      cy.wrap(stubs.repayIsApproved).should('have.been.calledWithExactly', ...expected.isApproved)
 
-      submitResetPositionForm({ message: expected.successMessage }).then(() => {
-        expect(stubs.estimateGasRepay).to.have.been.calledWithExactly(...expected.estimateGas)
-        expect(stubs.repay).to.have.been.calledWithExactly(...expected.submit)
-      })
+      submitResetPositionForm({ message: expected.successMessage })
+      cy.wrap(stubs.estimateGasRepay).should('have.been.calledWithExactly', ...expected.estimateGas)
+      cy.wrap(stubs.repay).should('have.been.calledWithExactly', ...expected.submit)
     })
 
     it('requires the wallet amount to be within the user balance', () => {

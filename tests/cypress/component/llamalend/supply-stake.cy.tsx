@@ -47,26 +47,25 @@ describe('StakeForm (mocked)', () => {
       if (!hasGauge) return
       checkSupplyActionInfoValues(expected.actionInfo)
 
-      cy.then(() => {
-        expect(stubs.walletBalances).to.have.been.calledWithExactly(...expected.walletBalances)
-        expect(stubs.statsRates).to.have.been.calledWithExactly(...expected.marketRates)
-        expect(stubs.convertToShares).to.have.been.calledWithExactly(...expected.convertToShares)
-        expect(stubs.stakeIsApproved).to.have.been.calledWithExactly(...expected.isApproved)
-        if (approved) {
-          expect(stubs.estimateGasStake).to.have.been.calledWithExactly(...expected.estimateGas)
-        } else {
-          expect(stubs.estimateGasStakeApprove).to.have.been.calledWithExactly(...expected.estimateGasApprove)
-        }
-      })
+      cy.wrap(stubs.walletBalances).should('have.been.calledWithExactly', ...expected.walletBalances)
+      cy.wrap(stubs.statsRates).should('have.been.calledWithExactly', ...expected.marketRates)
+      cy.wrap(stubs.convertToShares).should('have.been.calledWithExactly', ...expected.convertToShares)
+      cy.wrap(stubs.stakeIsApproved).should('have.been.calledWithExactly', ...expected.isApproved)
+      if (approved) {
+        cy.wrap(stubs.estimateGasStake).should('have.been.calledWithExactly', ...expected.estimateGas)
+      } else {
+        cy.wrap(stubs.estimateGasStakeApprove).should('have.been.calledWithExactly', ...expected.estimateGasApprove)
+      }
 
-      submitStakeForm().then(() => {
-        expect(stubs.stake).to.have.been.calledWithExactly(...expected.submit)
-        if (approved) {
+      submitStakeForm()
+      cy.wrap(stubs.stake).should('have.been.calledWithExactly', ...expected.submit)
+      if (approved) {
+        cy.then(() => {
           expect(stubs.stakeApprove).to.not.have.been.called
-        } else {
-          expect(stubs.stakeApprove).to.have.been.calledWithExactly(...expected.approve)
-        }
-      })
+        })
+      } else {
+        cy.wrap(stubs.stakeApprove).should('have.been.calledWithExactly', ...expected.approve)
+      }
     })
   })
 })

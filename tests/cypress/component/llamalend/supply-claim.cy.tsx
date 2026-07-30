@@ -54,6 +54,9 @@ describe('ClaimTab (mocked)', () => {
         </MockLoanTestWrapper>,
       )
 
+      cy.wrap(stubs.claimableCrv).should('have.been.calledWithExactly', ...expected.claimableCrv)
+      cy.wrap(stubs.claimableRewards).should('have.been.calledWithExactly', ...expected.claimableRewards)
+
       checkClaimTableState({
         rows: expected.table.rows,
         totalNotional: expected.table.totalNotional,
@@ -64,18 +67,18 @@ describe('ClaimTab (mocked)', () => {
         otherRewardsButtonDisabled: expected.otherRewardsButtonDisabled,
       })
 
-      cy.wrap(stubs.claimableCrv).should('have.been.calledWithExactly', ...expected.claimableCrv)
+      if (expected.shouldClaimCrv) {
+        cy.wrap(stubs.estimateGasClaimCrv).should('have.been.calledWithExactly')
+      }
+      if (expected.shouldClaimRewards) {
+        cy.wrap(stubs.estimateGasClaimRewards).should('have.been.calledWithExactly')
+      }
+
       cy.then(() => {
-        expect(stubs.claimableCrv).to.have.been.calledWithExactly(...expected.claimableCrv)
-        expect(stubs.claimableRewards).to.have.been.calledWithExactly(...expected.claimableRewards)
-        if (expected.shouldClaimCrv) {
-          expect(stubs.estimateGasClaimCrv).to.have.been.calledWithExactly()
-        } else {
+        if (!expected.shouldClaimCrv) {
           expect(stubs.estimateGasClaimCrv).to.not.have.been.called
         }
-        if (expected.shouldClaimRewards) {
-          expect(stubs.estimateGasClaimRewards).to.have.been.calledWithExactly()
-        } else {
+        if (!expected.shouldClaimRewards) {
           expect(stubs.estimateGasClaimRewards).to.not.have.been.called
         }
       })
@@ -95,15 +98,18 @@ describe('ClaimTab (mocked)', () => {
       if (expected.shouldClaimCrv) submitClaimAndSettle('crv')
       if (expected.shouldClaimRewards) submitClaimAndSettle('other')
 
+      if (expected.shouldClaimCrv) {
+        cy.wrap(stubs.claimCrv).should('have.been.calledWithExactly')
+      }
+      if (expected.shouldClaimRewards) {
+        cy.wrap(stubs.claimRewards).should('have.been.calledWithExactly')
+      }
+
       cy.then(() => {
-        if (expected.shouldClaimCrv) {
-          expect(stubs.claimCrv).to.have.been.calledWithExactly()
-        } else {
+        if (!expected.shouldClaimCrv) {
           expect(stubs.claimCrv).to.not.have.been.called
         }
-        if (expected.shouldClaimRewards) {
-          expect(stubs.claimRewards).to.have.been.calledWithExactly()
-        } else {
+        if (!expected.shouldClaimRewards) {
           expect(stubs.claimRewards).to.not.have.been.called
         }
       })
