@@ -41,7 +41,11 @@ jobs:
         if: failure()
         with:
           name: cypress-rpc
-          path: tests/cypress/screenshots
+          path: |
+            tests/cypress/screenshots
+            tests/cypress/videos
+          retention-days: 3
+          if-no-files-found: ignore
 
       - uses: actions/upload-artifact@v7
         if: failure()
@@ -49,4 +53,4 @@ jobs:
           name: rpc-cypress-log
           path: rpc-cypress.log
           retention-days: 3
-          if-no-files-found: error
+          if-no-files-found: ignore
