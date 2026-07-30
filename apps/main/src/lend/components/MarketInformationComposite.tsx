@@ -1,8 +1,9 @@
 import { ChartAndActivityComp } from '@/lend/components/ChartAndActivityComp'
 import { networks } from '@/lend/networks'
-import { AdvancedDetails, MarketInfoLayout } from '@/llamalend/features/market-advanced-information'
+import { MarketAdvancedDetails, MarketInfoLayout } from '@/llamalend/features/market-advanced-information'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { MarketFaq } from '@/llamalend/features/market-faq'
+import { MarketCardHeader } from '@/llamalend/widgets/MarketCardHeader'
 import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
 import { MarketRateCurveChart } from '@/llamalend/widgets/MarketRateCurveChart'
 import Card from '@mui/material/Card'
@@ -10,6 +11,7 @@ import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
+import { useNewLlamaMarketDetailPage } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { MarketRateType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
@@ -25,6 +27,9 @@ type MarketInformationCompProps = {
  */
 export const MarketInformationComposite = ({ rateType, previewPrices }: MarketInformationCompProps) => {
   const { chainId } = useMarketContext()
+  const isNewLlamaMarketDetailPage = useNewLlamaMarketDetailPage()
+  const Header = isNewLlamaMarketDetailPage ? MarketCardHeader : CardHeader
+
   return (
     <Stack sx={{ gap: PAGE_SPACING }}>
       {rateType === MarketRateType.Borrow && (
@@ -35,10 +40,10 @@ export const MarketInformationComposite = ({ rateType, previewPrices }: MarketIn
       )}
       <MarketHistoricalRatesChart rateMode={MarketRateType.Supply} />
       <MarketRateCurveChart />
-      <Card size="small">
-        <CardHeader title={t`Advanced Details`} />
+      <Card size="small" data-testid="market-parameters-card">
+        <Header title={t`Advanced Details`} />
         <CardContent component={Stack}>
-          <AdvancedDetails />
+          {!isNewLlamaMarketDetailPage && <MarketAdvancedDetails />}
           <MarketInfoLayout network={networks[chainId]} />
         </CardContent>
       </Card>

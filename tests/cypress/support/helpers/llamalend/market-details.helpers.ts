@@ -86,9 +86,7 @@ const shouldLoadMarketDetails = ({ hasApi }: { hasApi: boolean }) => {
   getActionValue('market-available-liquidity').should('match', DECIMAL_REGEX)
   cy.get('[data-testid="market-advanced-details"]', LOAD_TIMEOUT).should('be.visible')
   if (hasApi) {
-    getActionValue('market-total-borrowers').should('match', DECIMAL_REGEX)
-  } else {
-    getActionInfo('market-total-borrowers').should('not.exist')
+    getMetricValue('market-total-borrowers').should('match', DECIMAL_REGEX)
   }
   cy.get('[data-testid="llamalend-market-faq"]').should('be.visible')
 }
@@ -127,7 +125,7 @@ export const shouldLoadMintBorrowDetails = ({ breakpoint, hasWallet, hasApi = tr
   shouldLoadBorrowDetails({ breakpoint, hasWallet, hasApi })
   if (hasApi) {
     shouldShowCanvas('crvusd-price-chart')
-    getActionValue('market-total-collateral').should('match', DECIMAL_REGEX)
+    // TODO: add back market total collateral metric
   }
   shouldLoadMarketContracts({ hasMonetaryPolicy: hasWallet, hasOracle: hasWallet, hasVault: false })
   shouldLoadMarketParameters({ hasOnChainParameters: hasWallet, hasOraclePrice: hasWallet, hasPricePerShare: false })

@@ -5,6 +5,7 @@ import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
 import { networks } from '@/lend/networks'
 import { type MarketUrlParams } from '@/lend/types/lend.types'
 import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/utilsRouter'
+import { MarketOverviewCard } from '@/llamalend/features/market-advanced-information/MarketOverviewCard'
 import { MarketContextProvider } from '@/llamalend/features/market-context'
 import { SupplyPositionDetails } from '@/llamalend/features/market-position-details'
 import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
@@ -14,7 +15,7 @@ import { MarketPageHeader } from '@/llamalend/widgets/page-header'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useParams } from '@ui-kit/hooks/router'
-import { useMarketMobileFormDrawer } from '@ui-kit/hooks/useFeatureFlags'
+import { useMarketMobileFormDrawer, useNewLlamaMarketDetailPage } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { MarketType, MarketRateType } from '@ui-kit/types/market'
@@ -31,6 +32,7 @@ export const Page = () => {
   const network = networks[chainId]
   const { address: userAddress } = useConnection()
   const isMobileFormDrawer = useMarketMobileFormDrawer()
+  const isNewLlamaMarketDetailPage = useNewLlamaMarketDetailPage()
 
   useLendPageTitle(market?.collateral_token?.symbol, t`Supply`)
 
@@ -66,7 +68,7 @@ export const Page = () => {
           content: (market ?? apiMarket.data) && <VaultTabs />,
           placement: isMobileFormDrawer ? 'mobile-drawer' : 'inline',
         }}
-        header={<MarketPageHeader isLoading={isLoading} />}
+        header={<MarketPageHeader isLoading={isLoading} rateType={MarketRateType.Supply} />}
       >
         <MarketBanners
           chainId={chainId}
@@ -74,6 +76,7 @@ export const Page = () => {
           rewardsBanner={<CampaignRewardsBanner chainId={chainId} market={market} />}
         />
         {market && supplied > 0 && <SupplyPositionDetails />}
+        {isNewLlamaMarketDetailPage && <MarketOverviewCard />}
         <MarketInformationComposite rateType={MarketRateType.Supply} />
       </DetailPageLayout>
     </MarketContextProvider>

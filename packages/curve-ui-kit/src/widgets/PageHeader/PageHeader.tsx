@@ -21,6 +21,7 @@ export const PageHeader = ({
   subtitle,
   titleLoading = false,
   subtitleLoading = false,
+  disableUpperCase = false,
   icon,
   titleItems,
   rightItems,
@@ -30,6 +31,7 @@ export const PageHeader = ({
   subtitle?: string
   titleLoading?: boolean
   subtitleLoading?: boolean
+  disableUpperCase?: boolean
   backHref?: string
   icon?: ReactNode
   titleItems?: ReactNode
@@ -48,7 +50,11 @@ export const PageHeader = ({
         <Stack>
           <Stack direction="row" sx={{ alignItems: 'center', flexWrap: 'wrap', gap: Spacing.xs }}>
             <WithSkeleton loading={titleLoading}>
-              <Typography variant="headingSBold" sx={{ overflowWrap: 'anywhere' }}>
+              {/* headingSBold uppercases text by default but some titles must preserve token symbol casing. */}
+              <Typography
+                variant="headingSBold"
+                sx={{ overflowWrap: 'anywhere', ...(disableUpperCase && { textTransform: 'none' }) }}
+              >
                 {title ?? 'Page header' /** For skeleton width inference */}
               </Typography>
             </WithSkeleton>
