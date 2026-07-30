@@ -15,7 +15,7 @@ import type { CrvUsdSnapshot } from '@ui-kit/entities/crvusd-snapshots'
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
 import { t } from '@ui-kit/lib/i18n'
 import { type TimeOption, timeOptions } from '@ui-kit/lib/model/query/time-option-validation'
-import { TIME_FRAMES, TIME_OPTION_MS } from '@ui-kit/lib/model/time'
+import { TIME_OPTION_MS } from '@ui-kit/lib/model/time'
 import {
   addMovingAverages,
   CHART_LINE_DASH_PATTERNS,
@@ -32,17 +32,12 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
 import { fallbackQ, mapQuery, q, useMappedQuery } from '@ui-kit/types/util'
 import { formatNumber } from '@ui-kit/utils'
-import { calculateAverageRates, hasFullTimeWindow } from '@ui-kit/utils/averageRates'
+import { AVERAGE_WINDOW_DAYS, calculateAverageRates, hasFullTimeWindow } from '@ui-kit/utils/averageRates'
 import { useMarketContext } from '../features/market-context'
 
 const { Spacing, Height } = SizesAndSpaces
 
 const METRIC_CATEGORY = 'llamalend.marketCharts'
-const AVERAGE_DAYS = {
-  week: TIME_OPTION_MS['7d'] / TIME_FRAMES.DAY_MS,
-  month: TIME_OPTION_MS['1M'] / TIME_FRAMES.DAY_MS,
-  year: TIME_OPTION_MS['1Y'] / TIME_FRAMES.DAY_MS,
-} as const
 
 export type RateChartPoint = {
   timestamp: number
@@ -130,10 +125,10 @@ const averageRate = (ratePoints: { rate: number; timestamp: number }[], days: nu
   calculateAverageRates(ratePoints, days, { rate: ({ rate }) => rate })?.rate
 
 const getAverageRates = (ratePoints: { rate: number; timestamp: number }[]) => ({
-  week: averageRate(ratePoints, AVERAGE_DAYS.week),
-  month: averageRate(ratePoints, AVERAGE_DAYS.month),
-  year: averageRate(ratePoints, AVERAGE_DAYS.year),
-  hasFullYear: hasFullTimeWindow(ratePoints, AVERAGE_DAYS.year),
+  week: averageRate(ratePoints, AVERAGE_WINDOW_DAYS.week),
+  month: averageRate(ratePoints, AVERAGE_WINDOW_DAYS.month),
+  year: averageRate(ratePoints, AVERAGE_WINDOW_DAYS.year),
+  hasFullYear: hasFullTimeWindow(ratePoints, AVERAGE_WINDOW_DAYS.year),
 })
 
 export const MarketHistoricalRatesChart = ({ rateMode }: MarketHistoricalRatesChartProps) => {

@@ -7,6 +7,12 @@ const { Weekly: WEEKLY, Monthly: MONTHLY } = Duration.AverageRates
 /** A timestamped snapshot record */
 export type WithTimestamp = { timestamp: string | number | Date }
 
+export const AVERAGE_WINDOW_DAYS = {
+  week: WEEKLY,
+  month: MONTHLY,
+  year: TIME_FRAMES.YEAR_MS / TIME_FRAMES.DAY_MS,
+} as const
+
 /**
  * Checks that timestamped data covers an entire trailing window.
  * A tolerance keeps daily aggregates eligible when their bucket timestamp is slightly inside the exact cutoff.

@@ -12,7 +12,7 @@ import { useCombinedQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { timeOptions, type TimeOption } from '@ui-kit/lib/model/query/time-option-validation'
-import { TIME_FRAMES, TIME_OPTION_MS } from '@ui-kit/lib/model/time'
+import { TIME_OPTION_MS } from '@ui-kit/lib/model/time'
 import {
   ChartStateWrapper,
   ChartFooter,
@@ -29,16 +29,11 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { Chain, CRVUSD_ADDRESS } from '@ui-kit/utils'
-import { calculateAverageRates, hasFullTimeWindow } from '@ui-kit/utils/averageRates'
+import { AVERAGE_WINDOW_DAYS, calculateAverageRates, hasFullTimeWindow } from '@ui-kit/utils/averageRates'
 
 const { Spacing, Height } = SizesAndSpaces
 
 const METRIC_CATEGORY = 'llamalend.marketCharts'
-const AVERAGE_DAYS = {
-  week: TIME_OPTION_MS['7d'] / TIME_FRAMES.DAY_MS,
-  month: TIME_OPTION_MS['1M'] / TIME_FRAMES.DAY_MS,
-  year: TIME_OPTION_MS['1Y'] / TIME_FRAMES.DAY_MS,
-} as const
 
 export type CrvUsdPriceChartPoint = {
   timestamp: number
@@ -65,10 +60,10 @@ const getDeviations = (priceHistory: PricePoint[], price: number, timestamp = Da
   const pricePoints = notFalsyArray(priceHistory, [{ timestamp, price }])
 
   return {
-    week: averageDeviation(pricePoints, AVERAGE_DAYS.week),
-    month: averageDeviation(pricePoints, AVERAGE_DAYS.month),
-    year: averageDeviation(pricePoints, AVERAGE_DAYS.year),
-    hasFullYear: hasFullTimeWindow(pricePoints, AVERAGE_DAYS.year, timestamp),
+    week: averageDeviation(pricePoints, AVERAGE_WINDOW_DAYS.week),
+    month: averageDeviation(pricePoints, AVERAGE_WINDOW_DAYS.month),
+    year: averageDeviation(pricePoints, AVERAGE_WINDOW_DAYS.year),
+    hasFullYear: hasFullTimeWindow(pricePoints, AVERAGE_WINDOW_DAYS.year, timestamp),
   }
 }
 
@@ -79,7 +74,7 @@ export const CrvUsdPriceChart = () => {
     design: { Color },
   } = useTheme()
 
-  const priceHistory = useCrvUsdPriceHistory({ days: AVERAGE_DAYS.year })
+  const priceHistory = useCrvUsdPriceHistory({ days: AVERAGE_WINDOW_DAYS.year })
   const currentPrice = useTokenUsdRate({
     chainId: Chain.Ethereum,
     tokenAddress: CRVUSD_ADDRESS,
