@@ -63,7 +63,7 @@ export const MarketPageHeader = ({ isLoading, rateType }: { isLoading: boolean; 
         subtitle={subtitle}
         titleLoading={isLoading}
         subtitleLoading={isLoading}
-        titleSx={{ textTransform: 'none' }}
+        disableUpperCase
         icon={
           <WithSkeleton loading={isLoading} variant="rectangular" width={35} height={35}>
             {collateralToken && borrowToken && (

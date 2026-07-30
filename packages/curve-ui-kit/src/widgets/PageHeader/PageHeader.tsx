@@ -7,7 +7,6 @@ import { ArrowLeft } from '@ui-kit/shared/icons/ArrowLeft'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { SxProps } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -22,7 +21,7 @@ export const PageHeader = ({
   subtitle,
   titleLoading = false,
   subtitleLoading = false,
-  titleSx,
+  disableUpperCase = false,
   icon,
   titleItems,
   rightItems,
@@ -32,7 +31,7 @@ export const PageHeader = ({
   subtitle?: string
   titleLoading?: boolean
   subtitleLoading?: boolean
-  titleSx?: SxProps
+  disableUpperCase?: boolean
   backHref?: string
   icon?: ReactNode
   titleItems?: ReactNode
@@ -52,7 +51,10 @@ export const PageHeader = ({
           <Stack direction="row" sx={{ alignItems: 'center', flexWrap: 'wrap', gap: Spacing.xs }}>
             <WithSkeleton loading={titleLoading}>
               {/* headingSBold uppercases text by default but some titles must preserve token symbol casing. */}
-              <Typography component="h1" variant="headingSBold" sx={{ overflowWrap: 'anywhere', ...titleSx }}>
+              <Typography
+                variant="headingSBold"
+                sx={{ overflowWrap: 'anywhere', ...(disableUpperCase && { textTransform: 'none' }) }}
+              >
                 {title ?? 'Page header' /** For skeleton width inference */}
               </Typography>
             </WithSkeleton>

@@ -1,11 +1,8 @@
-import {
-  AdvancedDetailsMetrics,
-  MarketInfoLayout,
-  MarketAdvancedDetailsCard,
-} from '@/llamalend/features/market-advanced-information'
+import { MarketAdvancedDetails, MarketInfoLayout } from '@/llamalend/features/market-advanced-information'
 import { MarketFaq } from '@/llamalend/features/market-faq'
 import { CrvUsdPriceChart } from '@/llamalend/widgets/CrvUsdPriceChart'
 import { MarketSection } from '@/llamalend/widgets/market-section-nav'
+import { MarketCardHeader } from '@/llamalend/widgets/MarketCardHeader'
 import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
 import { ChartAndActivityComp, MarketActivityComp } from '@/loan/components/ChartAndActivityComp'
 import type { ChainId } from '@/loan/types/loan.types'
@@ -29,6 +26,8 @@ type MarketInformationCompProps = {
 export const MarketInformationComposite = ({ previewPrices }: MarketInformationCompProps) => {
   const { chainId } = useMarketContext<ChainId>()
   const isNewLlamaMarketDetailPage = useNewLlamaMarketDetailPage()
+  const Header = isNewLlamaMarketDetailPage ? MarketCardHeader : CardHeader
+
   return (
     <Stack sx={{ gap: PAGE_SPACING }}>
       <MarketSection id="price-chart" ariaLabel={t`Risk and liquidation`}>
@@ -46,17 +45,13 @@ export const MarketInformationComposite = ({ previewPrices }: MarketInformationC
         </MarketSection>
       )}
       <MarketSection id="market-parameters" ariaLabel={t`Advanced details`}>
-        {isNewLlamaMarketDetailPage ? (
-          <MarketAdvancedDetailsCard network={networks[chainId]} />
-        ) : (
-          <Card size="small">
-            <CardHeader title={t`Advanced Details`} />
-            <CardContent component={Stack}>
-              <AdvancedDetailsMetrics />
-              <MarketInfoLayout network={networks[chainId]} />
-            </CardContent>
-          </Card>
-        )}
+        <Card size="small" data-testid="market-parameters-card">
+          <Header title={t`Advanced Details`} />
+          <CardContent component={Stack}>
+            {!isNewLlamaMarketDetailPage && <MarketAdvancedDetails />}
+            <MarketInfoLayout network={networks[chainId]} />
+          </CardContent>
+        </Card>
       </MarketSection>
       <MarketSection id="faqs" ariaLabel={t`Frequently asked questions`}>
         <MarketFaq />
