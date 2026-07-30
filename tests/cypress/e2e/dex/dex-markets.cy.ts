@@ -1,5 +1,6 @@
 import { orderBy } from 'lodash'
 import { getPoolsTvlLabelRange, POOL_DEFAULT_TVL_MIN } from '@/dex/features/pool-list/filters/utils'
+import { waitForOverlayToClose } from '@cy/support/helpers/data-table.helpers'
 import { DEX_POOL_LIST_SEARCH, setupDexPoolListMocks } from '@cy/support/helpers/dex-pool-list-mocks'
 import { mockMerklCampaigns } from '@cy/support/helpers/lending-mocks'
 import { API_LOAD_TIMEOUT, type Breakpoint, LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
@@ -119,7 +120,7 @@ describe('DEX Pools', () => {
     } else {
       cy.get('[data-testid="btn-close-filters"]', LOAD_TIMEOUT).click({ ...LOAD_TIMEOUT, waitForAnimations: true })
     }
-    cy.get(filtersRootSelector(), LOAD_TIMEOUT).should('not.exist')
+    waitForOverlayToClose(filtersRootSelector())
   }
 
   const assertSelectedFilterChip = () => cy.get('[data-testid="dex-pool-active-filter-type"]').should('be.visible')

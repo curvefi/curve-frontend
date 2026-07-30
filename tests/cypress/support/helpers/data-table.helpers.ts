@@ -2,6 +2,15 @@ import { Breakpoint, LOAD_TIMEOUT } from '@cy/support/ui'
 
 const LLAMALEND_FILTER_DRAWER = '[data-testid="drawer-filter-menu-lamalend-markets"]'
 
+export const waitForOverlayToClose = (selector: string) =>
+  cy.get('body', LOAD_TIMEOUT).should($body => {
+    const $overlay = $body.find(selector)
+    expect(
+      $overlay.length === 0 || Cypress.dom.isHidden($overlay),
+      'filter overlay to be hidden or unmounted',
+    ).to.equal(true)
+  })
+
 /**
  * Makes sure that the filter chips are visible during the given callback.
  * On mobile, the filters are hidden behind a drawer and need to be expanded for some actions.
@@ -76,7 +85,7 @@ export function withFilters<T>(breakpoint: Breakpoint, callback: () => Cypress.C
     } else {
       cy.get('[data-testid="btn-close-filters"]', LOAD_TIMEOUT).click({ ...LOAD_TIMEOUT, waitForAnimations: true })
     }
-    cy.get(mountedSelector, LOAD_TIMEOUT).should('not.exist')
+    waitForOverlayToClose(mountedSelector)
     return cy.wrap(result)
   })
 }
