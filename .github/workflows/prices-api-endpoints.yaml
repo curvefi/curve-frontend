@@ -1,4 +1,4 @@
-name: Prices API endpoint validation
+name: Live endpoint validation
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ permissions:
 
 jobs:
   test-endpoints:
-    name: Live endpoint validation
+    name: Prices API live endpoint validation
     timeout-minutes: 20
     runs-on: ubuntu-latest
     steps:
@@ -22,3 +22,22 @@ jobs:
       - run: yarn set version stable
       - run: yarn install --immutable
       - run: yarn workspace @curvefi/prices-api test:endpoints
+
+  test-router-endpoints:
+    name: Router API live endpoint validation
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: yarn
+      - name: Restore cache
+        uses: ./.github/actions/restore-cache
+      - run: yarn set version stable
+      - run: yarn install --immutable
+      - run: yarn workspace router-api test:live
+        env:
+          ENSO_API_KEY: ${{ secrets.ENSO_API_KEY }}
+          ZEROEX_API_KEY: ${{ secrets.ZEROEX_API_KEY }}

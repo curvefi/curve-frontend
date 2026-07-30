@@ -12,6 +12,7 @@
     "lint:fix": "eslint --cache --cache-location ../../.cache/eslint/router-api --cache-strategy content . --fix",
     "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/apps-router-api.tsbuildinfo",
     "test": "vitest run",
+    "test:live": "vitest run --mode live test/integration/routes.test.ts",
     "test:watch": "vitest"
   },
   "dependencies": {

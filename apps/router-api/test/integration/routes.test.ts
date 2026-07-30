@@ -1,13 +1,15 @@
 import type { FastifyInstance } from 'fastify'
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { zeroAddress } from 'viem'
+import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 import { assert, type PartialRecord } from '@primitives/objects.utils'
 import type { RouteProvider, RouterRouteResponse } from '@primitives/router.utils'
+import type { CurveJS } from '../../src/curve-router/curvejs'
 import { toWei } from '../../src/router.utils'
 import { ADDRESS_HEX_PATTERN, type RoutesQuery } from '../../src/routes/routes.schemas'
-import { createRouterApiServer } from '../../src/server'
 
 process.loadEnvFile()
 
+const LIVE_MODE = (import.meta as ImportMeta & { env: { MODE: string } }).env.MODE === 'live'
 const ADDRESS_REGEX = new RegExp(ADDRESS_HEX_PATTERN)
 
 const CHAIN_ID_ETHEREUM = '1'
@@ -33,6 +35,132 @@ type QueryString = { [P in keyof RoutesQuery]?: string | string[] }
 type SuccessCase = { query: QueryString; expectedRoutes?: number }
 type ErrorResponse = { statusCode: number; code: string; error: string; message: string }
 type FailureCase = { query: Partial<QueryString>; expectedResponse: ErrorResponse }
+
+const first = (value: string | string[] | undefined) => (Array.isArray(value) ? value[0] : value)
+
+const jsonResponse = (body: unknown) =>
+  Promise.resolve(
+    new Response(JSON.stringify(body), { status: 200, headers: { 'content-type': 'application/json' } }),
+  )
+
+const createCurveMock = (query: QueryString): CurveJS => {
+  const tokenIn = first(query.tokenIn)!
+  const tokenOut = first(query.tokenOut)!
+  const route = [
+    {
+      poolId: 'mock-pool',
+      poolAddress: zeroAddress,
+      inputCoinAddress: tokenIn,
+      outputCoinAddress: tokenOut,
+      swapAddress: zeroAddress,
+      swapParams: [0, 1, 1, 1, 1],
+    },
+  ]
+
+  return {
+    getNetworkConstants: () => ({
+      DECIMALS: { [tokenIn]: USD_DECIMALS, [tokenOut]: USD_DECIMALS },
+    }),
+    getPool: () => ({ id: 'mock-pool', name: 'Mock pool', isCrypto: false }),
+    router: {
+      required: vi.fn().mockResolvedValue('1001'),
+      getBestRouteAndOutput: vi.fn().mockResolvedValue({ route, output: '999' }),
+      priceImpact: vi.fn().mockResolvedValue(0.01),
+      populateSwap: vi.fn().mockResolvedValue({
+        data: '0x1234',
+        to: zeroAddress,
+        from: zeroAddress,
+        value: '0',
+      }),
+    },
+  } as unknown as CurveJS
+}
+
+const mockProviderResponse = (
+  router: RouteProvider,
+  query: QueryString,
+  curvejs: typeof import('../../src/curve-router/curvejs'),
+) => {
+  const tokenIn = first(query.tokenIn)!
+  const tokenOut = first(query.tokenOut)!
+  const amountIn = first(query.amountIn)
+  const chainId = Number(first(query.chainId))
+  const userAddress = first(query.userAddress)
+  const zapAddress = first(query.zapAddress)
+
+  if (router === 'curve') {
+    vi.spyOn(curvejs, 'loadCurve').mockResolvedValue(createCurveMock(query))
+    return
+  }
+
+  const response =
+    router === 'enso'
+      ? {
+          gas: '100000',
+          amountOut: '999000000',
+          priceImpact: 0.01,
+          feeAmount: [],
+          minAmountOut: '990000000',
+          createdAt: 1,
+          tx: { data: '0x1234', to: tokenOut, from: zapAddress, value: '0' },
+          route: [
+            {
+              tokenIn: [tokenIn],
+              tokenOut: [tokenOut],
+              protocol: 'enso',
+              action: 'swap',
+              primary: 'enso',
+              args: {},
+              chainId,
+            },
+          ],
+          ensoFeeAmount: [],
+        }
+      : router === '0x'
+        ? {
+            buyAmount: '999000000',
+            buyToken: tokenOut,
+            sellAmount: amountIn,
+            sellToken: tokenIn,
+            liquidityAvailable: true,
+            minBuyAmount: '990000000',
+            totalNetworkFee: '1',
+            transaction: { to: tokenOut, data: '0x1234', gas: '100000', gasPrice: '1', value: '0' },
+            route: {
+              fills: [{ from: tokenIn, to: tokenOut, source: 'Mock liquidity', proportionBps: '10000' }],
+              tokens: [],
+            },
+            fees: { integratorFee: null, zeroExFee: null, gasFee: null },
+            issues: { simulationIncomplete: false, invalidSourcesPassed: [] },
+            zid: 'mock-quote',
+          }
+        : {
+            expected_out: '999000000',
+            gas_estimate: 100000,
+            legs: 1,
+            ops: 1,
+            final_slots: [],
+            final_token: tokenOut,
+            snapshot_block: 1,
+            gas_price_gwei: 1,
+            router_address: userAddress,
+            calldata: '0x1234',
+            debug: {
+              routes: [
+                {
+                  selected: true,
+                  coins: [[tokenIn, tokenOut]],
+                  pools: ['Mock pool'],
+                  pool_addresses: [zeroAddress],
+                  swap_addresses: [zeroAddress],
+                  swap_params: [[0, 1, 1, 1, 1]],
+                },
+              ],
+            },
+          }
+
+  vi.stubGlobal('fetch', vi.fn<typeof fetch>(() => jsonResponse(response)))
+}
 
 /**
  * Success cases per provider. Curve supports amountIn and amountOut; Enso require amountIn.
@@ -234,44 +362,75 @@ const failureCases: Record<string, FailureCase> = {
 
 describe('GET routes integration', () => {
   let server: FastifyInstance
-  beforeAll(() => (server = createRouterApiServer()))
-  afterAll(() => server.close())
+  let curvejs: typeof import('../../src/curve-router/curvejs')
 
-  Object.entries(successCasesByProvider).forEach(([router, cases]) => {
-    Object.entries(cases).forEach(([label, { query, expectedRoutes = 1 }]) => {
-      it(`returns a valid route for ${router} - ${label}`, async () => {
-        const { json, body, statusCode } = await server.inject({
-          url: '/api/router/v1/routes',
-          query: { ...query, router },
-        })
-        expect(statusCode, `${router} - ${label} failed with response: ${body}`).toBe(200)
+  beforeAll(async () => {
+    if (!LIVE_MODE) vi.stubEnv('ZEROEX_API_KEY', 'test-api-key')
+    const [{ createRouterApiServer }, curveModule] = await Promise.all([
+      import('../../src/server'),
+      import('../../src/curve-router/curvejs'),
+    ])
+    curvejs = curveModule
+    server = createRouterApiServer()
+  })
+  afterEach(() => {
+    vi.restoreAllMocks()
+    vi.unstubAllGlobals()
+  })
+  afterAll(async () => {
+    vi.unstubAllEnvs()
+    await server.close()
+  })
 
-        const payload = json<RouterRouteResponse[]>()
-        expect(payload).toHaveLength(expectedRoutes)
-        payload.forEach(route => {
-          expect(route.router).toBe(router)
-          expect(route.amountOut[0]).toMatch(/^[0-9]+\.?[0-9]*$/)
-          expect(route.priceImpact).toBeTypeOf(route.priceImpact == null ? typeof null : 'number')
-          expect(route.createdAt).toBeTypeOf('number')
-          const steps = assert(route.route, `No route steps for ${router} - ${label}`)
-          expect(steps).toBeDefined()
-          expect(steps.length).toBeGreaterThan(0)
+  const defineSuccessTests = ({ mocked }: { mocked: boolean }) => {
+    const successCases = Object.entries(successCasesByProvider) as [RouteProvider, Record<string, SuccessCase>][]
+    successCases.forEach(([router, cases]) => {
+      Object.entries(cases).forEach(([label, { query, expectedRoutes = 1 }]) => {
+        it(`returns a valid route for ${router} - ${label}`, async () => {
+          if (mocked && expectedRoutes) mockProviderResponse(router, query, curvejs)
 
-          steps.forEach(step => {
-            if (router.startsWith('curve')) expect(step.protocol).toBe(router)
-            expect(step.tokenIn.join(',')).toMatch(ADDRESS_REGEX)
-            expect(step.tokenOut.join(',')).toMatch(ADDRESS_REGEX)
+          const { json, body, statusCode } = await server.inject({
+            url: '/api/router/v1/routes',
+            query: { ...query, router },
           })
+          expect(statusCode, `${router} - ${label} failed with response: ${body}`).toBe(200)
 
-          const [expectedTokenIn] = query.tokenIn ?? []
-          const [expectedTokenOut] = query.tokenOut ?? []
-          const lastStep = steps[steps.length - 1]
-          expect(steps[0].tokenIn.join(',').toLowerCase()).toBe(expectedTokenIn.toLowerCase())
-          expect(lastStep.tokenOut.join(',').toLowerCase()).toBe(expectedTokenOut.toLowerCase())
+          const payload = json<RouterRouteResponse[]>()
+          expect(payload).toHaveLength(expectedRoutes)
+          payload.forEach(route => {
+            expect(route.router).toBe(router)
+            expect(route.amountIn[0]).toMatch(/^[0-9]+\.?[0-9]*$/)
+            expect(route.amountOut[0]).toMatch(/^[0-9]+\.?[0-9]*$/)
+            expect(route.priceImpact).toBeTypeOf(route.priceImpact == null ? typeof null : 'number')
+            expect(route.createdAt).toBeTypeOf('number')
+            const steps = assert(route.route, `No route steps for ${router} - ${label}`)
+            expect(steps.length).toBeGreaterThan(0)
+
+            steps.forEach(step => {
+              if (router.startsWith('curve')) expect(step.protocol).toBe(router)
+              expect(step.tokenIn.join(',')).toMatch(ADDRESS_REGEX)
+              expect(step.tokenOut.join(',')).toMatch(ADDRESS_REGEX)
+            })
+
+            const [expectedTokenIn] = query.tokenIn ?? []
+            const [expectedTokenOut] = query.tokenOut ?? []
+            const lastStep = steps[steps.length - 1]
+            expect(steps[0].tokenIn.join(',').toLowerCase()).toBe(expectedTokenIn.toLowerCase())
+            expect(lastStep.tokenOut.join(',').toLowerCase()).toBe(expectedTokenOut.toLowerCase())
+
+            if (route.tx) {
+              expect(route.tx.to).toMatch(ADDRESS_REGEX)
+              expect(route.tx.from).toMatch(ADDRESS_REGEX)
+              expect(route.tx.data).toMatch(/^0x/)
+            }
+          })
         })
       })
     })
-  })
+  }
+
+  describe.skipIf(LIVE_MODE)('provider response contracts', () => defineSuccessTests({ mocked: true }))
+  describe.runIf(LIVE_MODE)('live provider availability', () => defineSuccessTests({ mocked: false }))
 
   Object.entries(failureCases).forEach(([label, { query, expectedResponse }]) => {
     it(`returns validation error for ${label}`, async () => {
