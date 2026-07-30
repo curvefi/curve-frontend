@@ -9,7 +9,7 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketType } from '@ui-kit/types/market'
 import { mapQuery, type QueryProp } from '@ui-kit/types/util'
-import { AVERAGE_CATEGORIES } from '@ui-kit/utils'
+import { AVERAGE_CATEGORIES, formatCappedRateValue } from '@ui-kit/utils'
 import type { AvailableLiquidity, BorrowRate, SupplyRate } from './hooks/usePageHeader'
 
 const { Spacing } = SizesAndSpaces
@@ -52,11 +52,13 @@ export const MetricsRow = ({
           category={METRIC_CATEGORY}
           testId="market-net-supply-apy"
           label={NET_SUPPLY_RATE_TITLE}
-          value={mapQuery(supplyRate, supplyRate => supplyRate.totalMinBoost)}
-          valueOptions={{ unit: 'percentage' }}
+          value={mapQuery(supplyRate, ({ totalMinBoost }) => totalMinBoost)}
+          valueOptions={{ unit: 'percentage', abbreviate: false, formatter: formatCappedRateValue }}
           notional={mapQuery(supplyRate, ({ totalAverageMinBoost: data }) =>
             maybe(data, value => ({
               value,
+              abbreviate: false,
+              formatter: formatCappedRateValue,
               unit: { symbol: `% ${supplyRatePeriod} Avg`, position: 'suffix' as const },
             })),
           )}
