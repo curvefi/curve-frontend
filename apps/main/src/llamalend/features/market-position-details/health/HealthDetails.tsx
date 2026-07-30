@@ -1,6 +1,7 @@
 import { useUserHealthValues } from '@/llamalend/queries/user/user-health.query'
 import Grid from '@mui/material/Grid'
 import { useTheme } from '@mui/material/styles'
+import { mapRecord } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import type { UserMarketParams } from '@ui-kit/lib/model'
 import { Metric } from '@ui-kit/shared/ui/Metric'
@@ -18,6 +19,9 @@ const HEALTH_FACTOR_TOOLTIP = {
   body: <HealthTooltipContent variant="metric" />,
 }
 
+const HEALTH_DETAILS_COLUMNS = { mobile: 4, tablet: 6, desktop: 10 } as const
+const PRIMARY_METRIC_SIZE = 2
+
 export const HealthDetails = ({ params }: { params: UserMarketParams }) => {
   const theme = useTheme()
   const healthQuery = useUserHealthValues(params)
@@ -26,8 +30,8 @@ export const HealthDetails = ({ params }: { params: UserMarketParams }) => {
   return (
     <>
       <HealthAndBufferDebug healthQuery={q(healthQuery)} state={state} type={type} />
-      <Grid container columns={5} columnSpacing={Spacing.xs} rowSpacing={Spacing.xxs} sx={{ alignItems: 'end' }}>
-        <Grid size={1}>
+      <Grid container columns={HEALTH_DETAILS_COLUMNS} columnSpacing={Spacing.xs} sx={{ alignItems: 'center' }}>
+        <Grid size={PRIMARY_METRIC_SIZE}>
           <Metric
             category="llamalend.positionHealth"
             label={HEALTH_TOOLTIP.shortTitle}
@@ -40,10 +44,10 @@ export const HealthDetails = ({ params }: { params: UserMarketParams }) => {
             valueTooltip={HEALTH_FACTOR_TOOLTIP}
           />
         </Grid>
-        <Grid size={4}>
+        <Grid size={mapRecord(HEALTH_DETAILS_COLUMNS, (_, size) => size - PRIMARY_METRIC_SIZE)}>
           <HealthAndBufferBar query={q(healthQuery)} state={state} type="health" />
         </Grid>
-        <Grid size={1}>
+        <Grid size={PRIMARY_METRIC_SIZE}>
           <Metric
             category="llamalend.positionLiquidationBuffer"
             label={LIQUIDATION_BUFFER_TOOLTIP.shortTitle}
@@ -55,7 +59,10 @@ export const HealthDetails = ({ params }: { params: UserMarketParams }) => {
             valueTooltip={LIQUIDATION_BUFFER_TOOLTIP}
           />
         </Grid>
-        <Grid size={2}>
+        <Grid
+          // Liquidation buffer size is the half of the health bar
+          size={mapRecord(HEALTH_DETAILS_COLUMNS, (_, size) => (size - PRIMARY_METRIC_SIZE) / 2)}
+        >
           <HealthAndBufferBar query={q(healthQuery)} state={state} type="liquidationBuffer" />
         </Grid>
       </Grid>

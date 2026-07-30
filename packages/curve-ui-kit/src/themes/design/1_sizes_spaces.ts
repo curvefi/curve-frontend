@@ -314,9 +314,9 @@ export const SizesAndSpaces = {
     chart: 420, // lightweight charts require height in number format
     shortChart: 210,
     healthBar: {
-      legacy: '2rem', // 36px
-      lg: '2.875rem', // 46px
-      sm: '1.25rem', // 20px
+      legacy: '2rem', // 32px
+      lg: '1.875rem', // 30px
+      sm: '0.75rem', // 12px
     },
   },
   MinHeight: {

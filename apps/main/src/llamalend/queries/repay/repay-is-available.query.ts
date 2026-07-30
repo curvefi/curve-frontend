@@ -43,9 +43,6 @@ export const { useQuery: useRepayIsAvailable, invalidate: invalidateRepayIsAvail
     switch (type) {
       case 'zapV2':
         return await impl.repayIsAvailable(...args)
-      case 'V1':
-      case 'V2':
-        return await impl.repayIsAvailable(...args, userAddress)
       case 'deleverage':
         return await impl.isAvailable(...args, userAddress)
       case 'unleveragedMint':

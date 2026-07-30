@@ -25,19 +25,11 @@ const { useQuery: useCreateLoanApproveEstimateGas, invalidate: invalidateCreateL
         { userCollateral },
         { leverageEnabled },
       ] as const,
-    queryFn: async ({
-      marketId,
-      userBorrowed = '0',
-      userCollateral = '0',
-      leverageEnabled,
-    }: CreateLoanEstimateGasQuery) => {
+    queryFn: async ({ marketId, userCollateral = '0', leverageEnabled }: CreateLoanEstimateGasQuery) => {
       const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
       switch (type) {
         case 'zapV2':
           return await impl.estimateGas.createLoanApprove({ userCollateral })
-        case 'V1':
-        case 'V2':
-          return await impl.estimateGas.createLoanApprove(userCollateral, userBorrowed)
         case 'V0':
         case 'unleveraged':
           return await impl.estimateGas.createLoanApprove(userCollateral)
@@ -77,7 +69,6 @@ const {
     ] as const,
   queryFn: async ({
     marketId,
-    userBorrowed = '0',
     userCollateral = '0',
     debt = '0',
     leverageEnabled,
@@ -95,9 +86,6 @@ const {
           range,
           ...parseMutationRoute(market, { routeId, slippage, isRepay: false }),
         })
-      case 'V1':
-      case 'V2':
-        return await impl.estimateGas.createLoan(userCollateral, userBorrowed, debt, range, +slippage)
       case 'V0':
         return await impl.estimateGas.createLoan(userCollateral, debt, range)
       case 'unleveraged':

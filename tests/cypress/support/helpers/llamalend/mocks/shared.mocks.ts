@@ -190,7 +190,6 @@ export const createLoanPositionStubs = ({ collateral, debt }: { collateral: Deci
 export const createBorrowMoreMintMarket = ({
   normalStubs,
   expectedCurrentDebt,
-  leverageV2,
 }: {
   normalStubs: {
     parameters: object
@@ -206,11 +205,9 @@ export const createBorrowMoreMintMarket = ({
     userPrices: object
   }
   expectedCurrentDebt: Decimal
-  leverageV2?: object
 }) =>
   createMockMintMarket({
     collateral: DEFAULT_COLLATERAL_ADDRESS,
-    ...(leverageV2 && { leverageV2 }),
     stats: { parameters: normalStubs.parameters },
     estimateGas: {
       borrowMore: normalStubs.estimateGasBorrowMore,

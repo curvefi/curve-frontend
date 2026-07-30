@@ -30,19 +30,11 @@ const { useQuery: useBorrowMoreApproveGasEstimate, invalidate: invalidateBorrowM
         { leverageEnabled },
         { routeId },
       ] as const,
-    queryFn: async ({
-      marketId,
-      userCollateral = '0',
-      userBorrowed = '0',
-      leverageEnabled,
-    }: BorrowMoreQuery): Promise<TGas | null> => {
+    queryFn: async ({ marketId, userCollateral = '0', leverageEnabled }: BorrowMoreQuery): Promise<TGas | null> => {
       const [type, impl] = getBorrowMoreImplementation(marketId, leverageEnabled)
       switch (type) {
         case 'zapV2':
           return await impl.estimateGas.borrowMoreApprove({ userCollateral })
-        case 'V1':
-        case 'V2':
-          return await impl.estimateGas.borrowMoreApprove(userCollateral, userBorrowed)
         case 'unleveraged':
           return await impl.estimateGas.borrowMoreApprove(userCollateral)
       }
@@ -98,10 +90,6 @@ const {
     switch (type) {
       case 'zapV2':
         return await impl.estimateGas.borrowMore(...args)
-      case 'V1':
-      case 'V2':
-        await impl.borrowMoreExpectedCollateral(userCollateral, userBorrowed, debt, +slippage)
-        return await impl.estimateGas.borrowMore(...args, +slippage)
       case 'unleveraged':
         return await impl.estimateGas.borrowMore(...args)
     }
