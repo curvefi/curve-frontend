@@ -105,6 +105,8 @@ export const useDismissAaveBanner = () => useDismissBanner('aave-v2-frozen-avala
 
 export const useDismissFantomRetirementBanner = () => useDismissBanner('fantom-chain-retirement', 'Daily')
 
+export const useDismissMoonbeamMigrationBanner = () => useDismissBanner('moonbeam-glmr-migration', 'Daily')
+
 export const useDismissCurveLiteBanner = (chainId: number) => useDismissBanner(`curve-lite-${chainId}`)
 
 export const useDismissPhishingWarn = () => useDismissBanner('phishing-warning-dismissed')

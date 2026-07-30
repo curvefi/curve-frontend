@@ -1,9 +1,9 @@
 {
-  "campaignName": "Wave Points",
-  "platform": "Hyperwave",
+  "campaignName": "Cores",
+  "platform": "Tori Finance",
   "description": "Points for providing liquidity.",
-  "platformImageId": "wavepoints.png",
-  "dashboardLink": "https://app.hyperwavefi.xyz/portfolio",
+  "platformImageId": "tori.png",
+  "dashboardLink": "https://app.tori.finance/opportunities/",
   "pools": [
     {
       "id": "null",
@@ -11,9 +11,9 @@
       "description": "null",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
-      "address": "0x69F3ac26f615A3517C8193D7D3faF18BB9F22775",
-      "network": "hyperliquid",
-      "multiplier": "2x",
+      "address": "0xb723a224c9ACF3891B20437B4d55dd45600F5FA3",
+      "network": "ethereum",
+      "multiplier": "30x",
       "tags": ["points"],
       "lock": "false"
     },
@@ -23,9 +23,9 @@
       "description": "null",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
-      "address": "0x9C90921aD69069f386488321B95E25bF7f0310A7",
-      "network": "hyperliquid",
-      "multiplier": "2x",
+      "address": "0x25a637C80AD90177d0B3fF28aa2D3F74F7165ccb",
+      "network": "ethereum",
+      "multiplier": "15x",
       "tags": ["points"],
       "lock": "false"
     },
@@ -35,9 +35,9 @@
       "description": "null",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
-      "address": "0x0A591a85cbB6d8c1C07DEAf2E3ff241b9ea698f7",
-      "network": "hyperliquid",
-      "multiplier": "1x",
+      "address": "0xd1D954BC94c843815EC7b8119f2de00AF27Fa6Ff",
+      "network": "ethereum",
+      "multiplier": "30x",
       "tags": ["points"],
       "lock": "false"
     }

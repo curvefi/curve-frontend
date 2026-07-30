@@ -31,7 +31,13 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { mapQuery, q } from '@ui-kit/types/util'
-import { AVERAGE_CATEGORIES, type AverageCategory, decimalMultiply, formatNumber } from '@ui-kit/utils'
+import {
+  AVERAGE_CATEGORIES,
+  type AverageCategory,
+  decimalMultiply,
+  formatCappedRateValue,
+  formatNumber,
+} from '@ui-kit/utils'
 import { AmountSuppliedTooltipContent, VaultSharesTooltipContent } from './'
 
 const { Spacing } = SizesAndSpaces
@@ -136,7 +142,12 @@ export const SupplyPositionDetails = () => {
             category={METRIC_CATEGORY}
             label={USER_NET_SUPPLY_RATE_TITLE}
             value={mapQuery(supplyMetrics, ({ totalUserBoost }) => totalUserBoost)}
-            valueOptions={{ unit: 'percentage', ...(noGauge && { fallback: `No Gauge` }) }}
+            valueOptions={{
+              unit: 'percentage',
+              abbreviate: false,
+              formatter: formatCappedRateValue,
+              ...(noGauge && { fallback: `No Gauge` }),
+            }}
             notional={mapQuery(userSupplyBoost, data => t`your boost ${formatNumber(data, 'multiplier')}`)}
             valueTooltip={{
               title: USER_NET_SUPPLY_RATE_TITLE,

@@ -5,16 +5,16 @@ import { networks } from '@/loan/networks'
 import type { ChainId } from '@/loan/types/loan.types'
 import { getBlockchainId } from '@curvefi/prices-api'
 import type { Decimal } from '@primitives/decimal.utils'
+import { useNewLlamaMarketDetailPage } from '@ui-kit/hooks/useFeatureFlags'
 import { useBandsChartVisible } from '@ui-kit/hooks/useLocalStorage'
 import type { Range } from '@ui-kit/types/util'
 import { useMarketContext } from '../../llamalend/features/market-context'
 
 type ChartAndActivityCompProps = {
   previewPrices: Range<Decimal> | undefined
-  chartOnly?: boolean
 }
 
-export const ChartAndActivityComp = ({ previewPrices, chartOnly }: ChartAndActivityCompProps) => {
+export const ChartAndActivityComp = ({ previewPrices }: ChartAndActivityCompProps) => {
   const {
     chainId,
     marketId,
@@ -67,7 +67,7 @@ export const ChartAndActivityComp = ({ previewPrices, chartOnly }: ChartAndActiv
     borrowToken,
   }
 
-  return chartOnly ? (
+  return useNewLlamaMarketDetailPage() ? (
     <MarketPriceChartLayout chart={chart} bands={bands} />
   ) : (
     <ChartAndActivityLayout

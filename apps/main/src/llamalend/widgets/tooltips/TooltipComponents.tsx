@@ -96,7 +96,7 @@ export const TooltipItem = ({
       </Typography>
     </Stack>
     <WithSkeleton loading={loading}>
-      <Stack direction="row" spacing={1} sx={{ alignItems: 'baseline' }}>
+      <Stack direction="row" spacing={1} sx={{ alignItems: 'baseline', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
         {/* eslint-disable-next-line @eslint-react/no-children-map -- Existing violation before enabling this rule. */}
         {Children.map(children, (child, index) => {
           const isFirstChild = index === 0
@@ -108,7 +108,7 @@ export const TooltipItem = ({
               variant={typographyVariant}
               color={typographyColor}
               component="span"
-              sx={{ textAlign: 'right' }}
+              sx={{ textAlign: 'right', whiteSpace: 'nowrap' }}
             >
               {child}
             </Typography>

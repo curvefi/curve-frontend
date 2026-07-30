@@ -11,6 +11,7 @@ import { maybe, notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { AddressActionInfo } from '@ui-kit/shared/ui/AddressActionInfo'
+import { fakeLoadingQ } from '@ui-kit/types/util'
 import { Section } from './Section'
 
 const getPoolType = ({
@@ -79,7 +80,7 @@ export const Info = ({
         {maybe(metadata?.registry, x => (
           <AddressActionInfo network={network} title={t`Registry`} address={x} />
         ))}
-        <ActionInfo label={t`ID`} value={poolId} loading={!poolId} />
+        <ActionInfo label={t`ID`} value={fakeLoadingQ(poolId)} />
       </CardContent>
     </Card>
   )

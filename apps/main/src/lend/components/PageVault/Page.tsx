@@ -5,7 +5,7 @@ import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
 import { networks } from '@/lend/networks'
 import { type MarketUrlParams } from '@/lend/types/lend.types'
 import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/utilsRouter'
-import { MarketOverviewCard } from '@/llamalend/features/market-advanced-information'
+import { MarketOverviewCard } from '@/llamalend/features/market-advanced-information/MarketOverviewCard'
 import { MarketContextProvider } from '@/llamalend/features/market-context'
 import { SupplyPositionDetails } from '@/llamalend/features/market-position-details'
 import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
@@ -16,7 +16,7 @@ import { MarketPageHeader } from '@/llamalend/widgets/page-header'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useParams } from '@ui-kit/hooks/router'
-import { useLlamaMarketDetailPageV2, useMarketMobileFormDrawer } from '@ui-kit/hooks/useFeatureFlags'
+import { useMarketMobileFormDrawer, useNewLlamaMarketDetailPage } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { MarketType, MarketRateType } from '@ui-kit/types/market'
@@ -24,10 +24,7 @@ import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLay
 import { useLendMarket } from '../../hooks/useLendMarket'
 import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
 
-const MARKET_SECTIONS = {
-  withPosition: getMarketSections({ rateType: MarketRateType.Supply }),
-  withoutPosition: getMarketSections({ rateType: MarketRateType.Supply, hasPosition: false }),
-}
+const MARKET_SECTIONS = getMarketSections({ rateType: MarketRateType.Supply })
 
 export const Page = () => {
   const params = useParams<MarketUrlParams>()
@@ -38,7 +35,7 @@ export const Page = () => {
   const network = networks[chainId]
   const { address: userAddress } = useConnection()
   const isMobileFormDrawer = useMarketMobileFormDrawer()
-  const isMarketDetailPageV2 = useLlamaMarketDetailPageV2()
+  const isNewLlamaMarketDetailPage = useNewLlamaMarketDetailPage()
 
   useLendPageTitle(market?.collateral_token?.symbol, t`Supply`)
 
@@ -54,7 +51,6 @@ export const Page = () => {
   )
   const supplied = +(useUserBalances({ marketId: market?.id, chainId, userAddress }).data?.totalShares ?? 0)
   const hasPosition = !!market && supplied > 0
-  const sections = hasPosition ? MARKET_SECTIONS.withPosition : MARKET_SECTIONS.withoutPosition
 
   const error = marketError ?? apiMarket.error
   return error ? (
@@ -76,35 +72,25 @@ export const Page = () => {
           content: (market ?? apiMarket.data) && <VaultTabs />,
           placement: isMobileFormDrawer ? 'mobile-drawer' : 'inline',
         }}
-        header={
-          <MarketPageHeader
-            isLoading={isLoading}
-            primaryRateType={MarketRateType.Supply}
-            metricsBelowTitle={isMarketDetailPageV2}
-          />
-        }
-        pageNavigation={isMarketDetailPageV2 ? <MarketSectionNav sections={sections} /> : undefined}
+        header={<MarketPageHeader isLoading={isLoading} rateType={MarketRateType.Supply} />}
+        pageNavigation={isNewLlamaMarketDetailPage && <MarketSectionNav sections={MARKET_SECTIONS} />}
       >
         <MarketBanners
           chainId={chainId}
           market={market}
           rewardsBanner={<CampaignRewardsBanner chainId={chainId} market={market} />}
         />
-        {isMarketDetailPageV2 ? (
-          <>
-            {hasPosition && (
-              <MarketSection id="position-details" ariaLabel={t`Position details`}>
-                <SupplyPositionDetails />
-              </MarketSection>
-            )}
-            <MarketSection id="market-overview" ariaLabel={t`Overview`}>
-              <MarketOverviewCard />
-            </MarketSection>
-          </>
-        ) : (
-          hasPosition && <SupplyPositionDetails />
+        {hasPosition && (
+          <MarketSection id="position-details" ariaLabel={t`Position details`}>
+            <SupplyPositionDetails />
+          </MarketSection>
         )}
-        <MarketInformationComposite rateType={MarketRateType.Supply} isMarketDetailPageV2={isMarketDetailPageV2} />
+        {isNewLlamaMarketDetailPage && (
+          <MarketSection id="market-overview" ariaLabel={t`Overview`}>
+            <MarketOverviewCard />
+          </MarketSection>
+        )}
+        <MarketInformationComposite rateType={MarketRateType.Supply} />
       </DetailPageLayout>
     </MarketContextProvider>
   )

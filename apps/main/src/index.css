@@ -41,6 +41,7 @@ body {
 
   color: var(--page--text-color);
   background-color: var(--page--background-color);
+  scroll-behavior: smooth;
 }
 
 * {

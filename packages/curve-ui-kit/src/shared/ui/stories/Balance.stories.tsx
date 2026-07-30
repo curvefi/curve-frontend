@@ -1,11 +1,23 @@
+import type { ComponentProps } from 'react'
 import { fn } from 'storybook/test'
+import type { Amount } from '@primitives/decimal.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { FireIcon } from '@ui-kit/shared/icons/FireIcon'
+import { q } from '@ui-kit/types/util'
 import { Balance } from '../LargeTokenInput/Balance'
 
-const meta: Meta<typeof Balance> = {
+type BalanceStoryArgs = Omit<ComponentProps<typeof Balance>, 'balance'> & {
+  balance?: Amount
+  loading?: boolean
+}
+
+const BalanceStory = ({ balance, loading, ...args }: BalanceStoryArgs) => (
+  <Balance {...args} balance={loading ? q({ data: balance, isLoading: true, error: null }) : balance} />
+)
+
+const meta: Meta<typeof BalanceStory> = {
   title: 'UI Kit/Widgets/Balance',
-  component: Balance,
+  component: BalanceStory,
   argTypes: {
     symbol: {
       control: 'text',
@@ -52,7 +64,7 @@ const meta: Meta<typeof Balance> = {
   },
 }
 
-type Story = StoryObj<typeof Balance>
+type Story = StoryObj<typeof BalanceStory>
 
 export const Default: Story = {
   parameters: {

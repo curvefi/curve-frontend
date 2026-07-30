@@ -1,4 +1,7 @@
 import type { SxProps as MuiSx, Theme } from '@mui/material/styles'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+
+const { BorderWidth } = SizesAndSpaces
 
 export type SxProps = MuiSx<Theme>
 type SxStyleObject = Exclude<SxProps, ((theme: Theme) => unknown) | readonly unknown[]>
@@ -19,4 +22,4 @@ export const directChildrenAfterFirst = (css: SxStyleObject): SxProps => ({
   '& > * + *': css,
 })
 /** Consistent border style for MUI components */
-export const borderStyle = (t: Theme) => `1px solid ${t.design.Layer[1].Outline}`
+export const borderStyle = (t: Theme) => `${BorderWidth.thin} solid ${t.design.Layer[1].Outline}`

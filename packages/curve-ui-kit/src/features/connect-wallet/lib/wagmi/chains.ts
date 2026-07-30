@@ -81,7 +81,6 @@ const deprecateDate = new Date('2026-07-01')
 export const DEPRECATED_CHAINS: Record<number, Date> = {
   [aurora.id]: deprecateDate,
   [kava.id]: deprecateDate,
-  [moonbeam.id]: deprecateDate,
 }
 export const DOWNGRADED_CHAINS = new Set<number>([avalanche, xLayer, sonic, fantom].map(c => c.id))
 
