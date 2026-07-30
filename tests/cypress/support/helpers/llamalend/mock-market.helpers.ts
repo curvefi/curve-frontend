@@ -7,22 +7,30 @@ import { CRVUSD_ADDRESS, MAINNET_CRV_ADDRESS } from '@ui-kit/utils'
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type MockMethod = (...args: any[]) => any
 
+let mockMarketSequence = 0
+const withUniqueMarketId = <Market extends { id: string }>(market: Market) => {
+  market.id = `${market.id}-scenario-${++mockMarketSequence}`
+  return market
+}
+
 // Borrow-side tests rely on the MintMarketTemplate prototype and mint-specific methods.
 export const createMockMintMarket = (overrides: object) =>
-  Object.assign(Object.create(MintMarketTemplate.prototype), {
-    id: 'wsteth',
-    collateralSymbol: 'wstETH',
-    collateral: '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0',
-    collateralDecimals: 18,
-    controller: '0x1234567890123456789012345678901234567890',
-    llamalend: { constants: { ALIASES: { crv: MAINNET_CRV_ADDRESS } } },
-    leverageZap: zeroAddress,
-    deleverageZap: zeroAddress,
-    leverageZapV2: { hasLeverage: () => false },
-    oraclePrice: cy.stub().resolves(oneDecimal(1, 1.2, 3)),
-    oraclePriceBand: cy.stub().resolves(oneDecimal(10, 20, 30)),
-    ...overrides,
-  }) as MintMarketTemplate
+  withUniqueMarketId(
+    Object.assign(Object.create(MintMarketTemplate.prototype), {
+      id: 'wsteth',
+      collateralSymbol: 'wstETH',
+      collateral: '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0',
+      collateralDecimals: 18,
+      controller: '0x1234567890123456789012345678901234567890',
+      llamalend: { constants: { ALIASES: { crv: MAINNET_CRV_ADDRESS } } },
+      leverageZap: zeroAddress,
+      deleverageZap: zeroAddress,
+      leverageZapV2: { hasLeverage: () => false },
+      oraclePrice: cy.stub().resolves(oneDecimal(1, 1.2, 3)),
+      oraclePriceBand: cy.stub().resolves(oneDecimal(10, 20, 30)),
+      ...overrides,
+    }) as MintMarketTemplate,
+  )
 
 const createMockLendRates = () => ({ borrowApr: '0.1', borrowApy: '0.1', lendApr: '0.04', lendApy: '0.04' })
 
@@ -125,35 +133,37 @@ export const createMockLendVault = (): MockLendVault => ({
 
 // Supply-side tests rely on the LendMarketTemplate prototype plus vault/gauge APIs.
 export const createMockLendMarket = (overrides?: object) =>
-  Object.assign(Object.create(LendMarketTemplate.prototype), {
-    id: 'one-way-market-7',
-    llamalend: {
-      constants: {
-        ALIASES: {
-          crv: MAINNET_CRV_ADDRESS,
+  withUniqueMarketId(
+    Object.assign(Object.create(LendMarketTemplate.prototype), {
+      id: 'one-way-market-7',
+      llamalend: {
+        constants: {
+          ALIASES: {
+            crv: MAINNET_CRV_ADDRESS,
+          },
         },
       },
-    },
-    collateral_token: {
-      symbol: 'wstETH',
-      address: oneAddress(),
-      decimals: 18,
-    },
-    borrowed_token: {
-      symbol: 'crvUSD',
-      address: CRVUSD_ADDRESS,
-      decimals: 18,
-    },
-    addresses: {
-      amm: oneAddress(),
-      controller: oneAddress(),
-      vault: oneAddress(),
-      gauge: oneAddress(),
-    },
-    leverage: { hasLeverage: () => false },
-    leverageZapV2: { hasLeverage: () => false },
-    stats: createMockLendStats(),
-    wallet: createMockLendWallet(),
-    vault: createMockLendVault(),
-    ...overrides,
-  }) as LendMarketTemplate
+      collateral_token: {
+        symbol: 'wstETH',
+        address: oneAddress(),
+        decimals: 18,
+      },
+      borrowed_token: {
+        symbol: 'crvUSD',
+        address: CRVUSD_ADDRESS,
+        decimals: 18,
+      },
+      addresses: {
+        amm: oneAddress(),
+        controller: oneAddress(),
+        vault: oneAddress(),
+        gauge: oneAddress(),
+      },
+      leverage: { hasLeverage: () => false },
+      leverageZapV2: { hasLeverage: () => false },
+      stats: createMockLendStats(),
+      wallet: createMockLendWallet(),
+      vault: createMockLendVault(),
+      ...overrides,
+    }) as LendMarketTemplate,
+  )

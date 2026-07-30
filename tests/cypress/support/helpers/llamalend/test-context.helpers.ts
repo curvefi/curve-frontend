@@ -11,11 +11,14 @@ export const llamaNetworks = loanNetworks as unknown as NetworkDict<LlamaChainId
 
 export const setLlamaApi = (llamaApi: unknown) => (globalLibs.current.llamaApi = llamaApi as never)
 
-export const resetLlamaTestContext = () => {
-  queryClient.clear()
-  globalLibs.current = {}
-  globalLibs.hydrated = {}
-}
+export const resetLlamaTestContext = () =>
+  cy
+    .then(() => queryClient.cancelQueries())
+    .then(() => {
+      queryClient.clear()
+      globalLibs.current = {}
+      globalLibs.hydrated = {}
+    })
 
 export const setGasInfo = (
   params: GasInfoQueryOptions,
