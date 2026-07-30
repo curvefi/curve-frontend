@@ -201,7 +201,7 @@ jobs:
             was reexported through module
             dependencies of each other
         run: |
-          ! grep --ignore-case --extended-regexp "$(echo -n "$RUNTIME_ERRORS" | tr '\n' '|')" e2e-*.log
+          ! grep --ignore-case --extended-regexp "$(echo -n "$RUNTIME_ERRORS" | tr '\n' '|')" e2e-*.log cypress-flake-*.log
 
       - name: Upload failure evidence
         if: failure()
