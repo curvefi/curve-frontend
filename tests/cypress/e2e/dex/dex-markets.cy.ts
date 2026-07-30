@@ -104,18 +104,23 @@ describe('DEX Pools', () => {
   const filtersButtonSelector = () => '[data-testid="btn-open-filters-dex-pools"]'
   const filtersMenuSelector = () =>
     breakpoint === 'mobile' ? '[data-testid="drawer-filter-menu-dex-pools"]' : '[data-testid="table-filters-popover"]'
+  const filtersRootSelector = () =>
+    breakpoint === 'mobile'
+      ? '[data-testid="drawer-filter-menu-dex-pools"]'
+      : '[data-testid="table-filters-popover-root"]'
 
   function openPoolFilters() {
-    cy.get(filtersButtonSelector()).click({ waitForAnimations: true })
-    cy.get(filtersMenuSelector()).should('be.visible')
+    cy.get(filtersButtonSelector(), LOAD_TIMEOUT).click({ ...LOAD_TIMEOUT, waitForAnimations: true })
+    cy.get(filtersMenuSelector(), LOAD_TIMEOUT).should('be.visible')
   }
 
   function closePoolFilters() {
     if (breakpoint === 'mobile') {
       cy.get('body').click(0, 0)
     } else {
-      cy.get('[data-testid="btn-close-filters"]').click()
+      cy.get('[data-testid="btn-close-filters"]', LOAD_TIMEOUT).click({ ...LOAD_TIMEOUT, waitForAnimations: true })
     }
+    cy.get(filtersRootSelector(), LOAD_TIMEOUT).should('not.exist')
   }
 
   const assertSelectedFilterChip = () => cy.get('[data-testid="dex-pool-active-filter-type"]').should('be.visible')

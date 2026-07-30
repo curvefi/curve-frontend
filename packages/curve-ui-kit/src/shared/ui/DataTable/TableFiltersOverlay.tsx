@@ -69,6 +69,7 @@ export const TableFiltersOverlay = ({
       anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
       slotProps={{
         paper: {
+          ...{ 'data-testid': 'table-filters-popover-root' },
           sx: { backgroundColor: t => t.design.Layer[3].Fill, width: Width.modal.md },
         },
         // Set the test ID once transition is ready to avoid flaky tests clicking during transition.

@@ -1,4 +1,6 @@
-import { Breakpoint } from '@cy/support/ui'
+import { Breakpoint, LOAD_TIMEOUT } from '@cy/support/ui'
+
+const LLAMALEND_FILTER_DRAWER = '[data-testid="drawer-filter-menu-lamalend-markets"]'
 
 /**
  * Makes sure that the filter chips are visible during the given callback.
@@ -58,17 +60,20 @@ export function closeDrawer(breakpoint: Breakpoint) {
 }
 
 export function withFilters<T>(breakpoint: Breakpoint, callback: () => Cypress.Chainable<T>) {
-  cy.get(`[data-testid="btn-open-filters"]`).click({ waitForAnimations: true })
-  if (breakpoint !== 'mobile') {
-    cy.get('[data-testid="table-filters-popover"]').should('be.visible')
-  }
+  const readySelector = breakpoint === 'mobile' ? LLAMALEND_FILTER_DRAWER : '[data-testid="table-filters-popover"]'
+  const mountedSelector =
+    breakpoint === 'mobile' ? LLAMALEND_FILTER_DRAWER : '[data-testid="table-filters-popover-root"]'
+
+  cy.get('[data-testid="btn-open-filters"]', LOAD_TIMEOUT).click({ ...LOAD_TIMEOUT, waitForAnimations: true })
+  cy.get(readySelector, LOAD_TIMEOUT).should('be.visible')
+
   return callback().then(result => {
     if (breakpoint === 'mobile') {
       closeDrawer(breakpoint)
     } else {
-      cy.get('[data-testid="btn-close-filters"]').click({ waitForAnimations: true })
-      cy.get('[data-testid="btn-close-filters"]').should('not.exist')
+      cy.get('[data-testid="btn-close-filters"]', LOAD_TIMEOUT).click({ ...LOAD_TIMEOUT, waitForAnimations: true })
     }
+    cy.get(mountedSelector, LOAD_TIMEOUT).should('not.exist')
     return cy.wrap(result)
   })
 }
