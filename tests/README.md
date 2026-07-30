@@ -59,7 +59,7 @@ gh workflow run cypress-flake-detection.yaml --ref <branch> \
   -f repetitions=10
 ```
 
-Use the optional `specs`, `seed_prefix`, and `start_iteration` inputs to target a spec or replay known seeds. RPC specs and video recording are intentionally excluded.
+Use the optional `specs`, `seed_prefix`, and `start_iteration` inputs to target a spec or replay known seeds. RPC specs are intentionally excluded. Videos are recorded in Chrome and Electron; Firefox does not support recording.
 
 Download uploaded artifacts and the failed step log from every failed job:
 

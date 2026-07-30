@@ -142,17 +142,19 @@ jobs:
         timeout-minutes: 20
         env:
           BROWSER: ${{ matrix.browser }}
-          CYPRESS_VIDEO: false
+          CYPRESS_VIDEO: ${{ matrix.browser == 'firefox' && 'false' || 'true' }} # Firefox doesn't support recording
           ELECTRON_ENABLE_LOGGING: true
           NODE_ENV: test
           SPEC_OVERRIDE: ${{ inputs.specs }}
           SUITE: ${{ inputs.suite }}
           TEST_SEED: ${{ inputs.seed_prefix || github.run_id }}-${{ matrix.iteration }}
         run: |
+          cypress_config=()
           case "$SUITE" in
             component)
               testing_type=component
               specs='cypress/component/**/!(*.rpc).cy.{ts,tsx}'
+              cypress_config=(--config 'excludeSpecPattern=**/*.rpc.cy.*')
               ;;
             e2e-llamalend)
               testing_type=e2e
@@ -181,7 +183,7 @@ jobs:
           fi
 
           set -o pipefail
-          yarn cypress run --"$testing_type" --browser "$BROWSER" --spec "$specs" 2>&1 | \
+          yarn cypress run --"$testing_type" --browser "$BROWSER" --spec "$specs" "${cypress_config[@]}" 2>&1 | \
             tee "../cypress-flake-$SUITE-$BROWSER-${{ matrix.iteration }}.log" \
               >(grep --line-buffered --invert-match --fixed-strings 'INFO:CONSOLE' >&1) > /dev/null
 
