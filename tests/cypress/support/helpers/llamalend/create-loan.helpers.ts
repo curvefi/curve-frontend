@@ -121,7 +121,7 @@ export function checkLoanDetailsLoaded({
   getActionValue('borrow-price-range').should('match', DECIMAL_RANGE_REGEX)
   getActionValue('borrow-apr').should('include', '%')
   getActionValue('borrow-apr', 'previous').should('include', '%')
-  getActionValue('borrow-ltv').should('include', '%')
+  getActionValue('borrow-ltv').should(hasApi ? 'include' : 'equal', hasApi ? '%' : '-')
   getActionValue('borrow-ltv', 'previous').should('include', '%')
   checkEstimatedTxCost({ hasValue: hasApi && !expectError })
 

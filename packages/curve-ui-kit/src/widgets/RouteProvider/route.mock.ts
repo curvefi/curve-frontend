@@ -51,7 +51,6 @@ export const mockRoutes: RouteResponse[] = [
     ],
     tx: { to: '0x0000000000000000000000000000000000000004', data: '0x', from: zeroAddress, value: '0' },
   },
-
   {
     id: '0x',
     router: '0x',
