@@ -252,12 +252,6 @@ testCases.forEach(([width, height, breakpoint]) => {
     })
 
     it(`should allow filtering by using a slider and input`, () => {
-      // Keep the viewport stable for slider width.
-      if (breakpoint === 'mobile') {
-        cy.viewport(500, 800)
-      } else {
-        cy.viewport(1200, 800)
-      }
       const [columnId, medianValue] = getOneColumnMedianValue(vaultData, [MarketColumnId.MaxLtv])
       const bound = oneOf('min', 'max')
 
@@ -274,13 +268,19 @@ testCases.forEach(([width, height, breakpoint]) => {
         // test the slider
         withFilters(breakpoint, () =>
           cy
-            .get(`[data-testid="slider-${columnId}"]`)
-            .as('slider')
-            .then($el => {
-              const sliderWidth = assert($el.width(), "The slider's width was not found")
-              const sliderHeight = assert($el.height(), "The slider's height was not found")
+            .get(`[data-testid="slider-${columnId}"]`, LOAD_TIMEOUT)
+            .should('be.visible')
+            .should($slider => {
+              const { width, height } = $slider[0].getBoundingClientRect()
+              expect(width, 'slider width').to.be.greaterThan(0)
+              expect(height, 'slider height').to.be.greaterThan(0)
+            })
+            .then($slider => {
+              const { width, height } = $slider[0].getBoundingClientRect()
               // we click ~75% percent of the slider range (from the left) and vertically centered
-              return cy.get(`@slider`).click(sliderWidth * (3 / 4), sliderHeight / 2, { waitForAnimations: true })
+              return cy
+                .wrap($slider)
+                .click(width * (3 / 4), height / 2, { ...LOAD_TIMEOUT, waitForAnimations: false })
             }),
         )
         cy.get(`[data-testid^="data-table-row"]`).should('have.length.below', length)
