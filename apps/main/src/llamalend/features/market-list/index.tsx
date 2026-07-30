@@ -1,5 +1,4 @@
 import { useConnection } from 'wagmi'
-import { q } from '@ui-kit/types/util'
 import { ListPageWrapper } from '@ui-kit/widgets/ListPageWrapper'
 import { useMarketsTable } from './hooks/useMarketsTable'
 import { MarketsTable } from './MarketsTable'
@@ -13,8 +12,8 @@ export const MarketsList = () => {
 
   return (
     <ListPageWrapper footer={<MarketsTableFooter />}>
-      <UserPositionsTables onReload={onReload} tableQuery={q(tableQuery)} />
-      <MarketsTable onReload={onReload} tableQuery={q(tableQuery)} />
+      <UserPositionsTables onReload={onReload} tableQuery={tableQuery} />
+      <MarketsTable onReload={onReload} tableQuery={tableQuery} />
     </ListPageWrapper>
   )
 }
