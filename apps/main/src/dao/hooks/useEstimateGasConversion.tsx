@@ -1,19 +1,20 @@
-import { useMemo } from 'react'
+import { useCallback } from 'react'
 import { ethAddress } from 'viem'
 import { useChainId } from 'wagmi'
 import { networks } from '@/dao/networks'
+import { useCombinedQueries } from '@ui-kit/lib'
 import { calculateGas, useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { type Query } from '@ui-kit/types/util'
 
-export const useEstimateGasConversion = (gas: number | null | undefined) => {
+export const useEstimateGasConversion = (gas: Query<number | null>) => {
   const chainId = useChainId()
-  const { data: chainTokenUsdRate } = useTokenUsdRate({ chainId, tokenAddress: ethAddress })
-
+  const chainTokenUsdRate = useTokenUsdRate({ chainId, tokenAddress: ethAddress })
   const network = networks[chainId]
-  const { data: gasInfo } = useGasInfoAndUpdateLib({ chainId, networks })
+  const gasInfo = useGasInfoAndUpdateLib({ chainId, networks })
 
-  return useMemo(
-    () => calculateGas(gas, gasInfo, chainTokenUsdRate, network),
-    [gas, network, gasInfo, chainTokenUsdRate],
+  return useCombinedQueries(
+    [gas, chainTokenUsdRate, gasInfo],
+    useCallback((gas, chainTokenUsdRate, gasInfo) => calculateGas(gas, gasInfo, chainTokenUsdRate, network), [network]),
   )
 }

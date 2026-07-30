@@ -41,7 +41,7 @@ export const NETWORK_BASE_CONFIG = {
   [Chain.Moonbeam]: {
     id: 'moonbeam',
     chainId: Chain.Moonbeam,
-    rpcUrl: 'https://moonbeam.public.blastapi.io',
+    rpcUrl: 'https://moonbeam.drpc.org',
     nativeCurrencySymbol: 'GLMR',
     explorerUrl: 'https://moonscan.io/',
     orgUIPath: 'https://moonbeam.curve.finance',
@@ -62,7 +62,7 @@ export const NETWORK_BASE_CONFIG = {
     gasPricesUnit: 'UKAVA',
     rpcUrl: 'https://evm.kava.io',
     nativeCurrencySymbol: 'KAVA',
-    explorerUrl: 'https://explorer.kava.io/',
+    explorerUrl: 'https://kavascan.io/',
     orgUIPath: 'https://kava.curve.finance',
   },
   [Chain.Fantom]: {

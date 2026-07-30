@@ -1,5 +1,5 @@
 import { type ReactNode, useCallback, useMemo } from 'react'
-import { type ButtonProps } from '@mui/material/Button'
+import { type IconButtonProps } from '@mui/material/IconButton'
 import Stack, { StackProps } from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
 import type { Amount } from '@primitives/decimal.utils'
@@ -9,7 +9,7 @@ import { ErrorIconButton } from '@ui-kit/shared/ui/ErrorIconButton'
 import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
-import type { MakeOptional, QueryProp } from '@ui-kit/types/util'
+import { type MakeOptional, type QueryOrValue, type QueryProp, toQuery } from '@ui-kit/types/util'
 import {
   applySxProps,
   copyToClipboard,
@@ -37,6 +37,7 @@ export const ALIGNMENTS = ['start', 'center', 'end'] as const
 type Alignment = (typeof ALIGNMENTS)[number]
 
 const MetricSize = {
+  extraSmall: 'highlightS',
   small: 'highlightM',
   medium: 'highlightL',
   large: 'highlightXl',
@@ -44,6 +45,7 @@ const MetricSize = {
 } as const satisfies Record<string, TypographyVariantKey>
 
 const MetricUnitSize = {
+  extraSmall: 'highlightXs',
   small: 'highlightXs',
   medium: 'highlightS',
   large: 'highlightM',
@@ -51,6 +53,7 @@ const MetricUnitSize = {
 } as const satisfies Record<string, TypographyVariantKey>
 
 const MetricChangeSize = {
+  extraSmall: 'highlightXs',
   small: 'highlightXs',
   medium: 'highlightM',
   large: 'highlightM',
@@ -58,13 +61,15 @@ const MetricChangeSize = {
 } as const satisfies Record<string, TypographyVariantKey>
 
 const MetricButtonSize = {
+  extraSmall: 'extraExtraSmall',
   small: 'extraSmall',
   medium: 'extraSmall',
   large: 'small',
   extraLarge: 'medium',
-} satisfies Record<keyof typeof MetricSize, ButtonProps['size']>
+} satisfies Record<keyof typeof MetricSize, IconButtonProps['size']>
 
 const MetricMinHeight = {
+  extraSmall: metricHorizontalSizes.xs,
   small: metricHorizontalSizes.sm,
   medium: metricHorizontalSizes.md,
   large: metricHorizontalSizes.lg,
@@ -74,14 +79,14 @@ const MetricMinHeight = {
 const ORIENTATION_STYLE = {
   horizontal: {
     direction: 'row',
-    alignItems: () => 'baseline',
-    labelVariant: 'bodyMRegular',
+    alignItems: () => 'center',
+    labelVariant: (size: MetricLayout['size']) => (size === 'extraSmall' ? 'bodyXsRegular' : 'bodyMRegular'),
     labelColor: 'textSecondary',
   },
   vertical: {
     direction: 'column',
     alignItems: (alignment: Alignment) => alignment,
-    labelVariant: 'bodyXsRegular',
+    labelVariant: () => 'bodyXsRegular',
     labelColor: 'textTertiary',
   },
 } as const satisfies Record<
@@ -89,7 +94,7 @@ const ORIENTATION_STYLE = {
   {
     direction: StackProps['direction']
     alignItems: (alignment: Alignment) => 'baseline' | Alignment
-    labelVariant: TypographyVariantKey
+    labelVariant: (size: MetricLayout['size']) => TypographyVariantKey
     labelColor: TypographyProps['color']
   }
 >
@@ -100,7 +105,7 @@ type Notional = Omit<NumberFormatOptions, 'abbreviate'> & {
 }
 type NotionalValue = number | string | Notional | null
 
-/** At the moment of writing the default formatter already formats to 2 decimals, but I really want to make this explicit for potential future changes. */
+/** At the moment of writing, the default formatter already formats to 2 decimals, but I really want to make this explicit for potential future changes. */
 const formatChange = (value: number): string => defaultNumberFormatter(value, { decimals: 2 })
 
 /**
@@ -111,7 +116,7 @@ const getTypographyColorProps = (color: TypographyProps['color']) =>
   typeof color === 'string' && color.startsWith('#') ? { sx: { color } } : { color }
 
 type MetricValueProps = Pick<MetricProps, 'valueOptions' | 'change' | 'testId'> & {
-  value: Amount | null
+  value: Amount | null | undefined
   size: MetricLayout['size']
   tooltip?: MetricProps['valueTooltip']
   copyValue?: () => void
@@ -206,7 +211,7 @@ const Notional = ({ data, error, isLoading }: QueryProp<NotionalValue>) => (
 
 export type MetricProps = {
   /** The actual metric value to display */
-  value: QueryProp<MetricValueProps['value']>
+  value: QueryOrValue<MetricValueProps['value']>
   valueOptions?: MakeOptional<NumberFormatOptions, 'abbreviate'> /* defaults to true */ & {
     color?: TypographyProps['color']
     disableTooltip?: boolean
@@ -237,7 +242,7 @@ export type MetricProps = {
 }
 
 export const Metric = ({
-  value: { error, data, isLoading },
+  value,
   valueOptions = {},
   change,
 
@@ -255,6 +260,7 @@ export const Metric = ({
   testId = 'metric',
   sx,
 }: MetricProps) => {
+  const { error, data, isLoading } = toQuery(value)
   const breakpoint = useBreakpoint()
   const { orientation, size } = METRIC_CATEGORIES[category][breakpoint]
   const orientationStyle = ORIENTATION_STYLE[orientation]
@@ -288,7 +294,7 @@ export const Metric = ({
         sx={{ alignItems: 'baseline', flexShrink: 0 }}
       >
         {isHorizontal && icon}
-        <Typography variant={orientationStyle.labelVariant} color={orientationStyle.labelColor}>
+        <Typography variant={orientationStyle.labelVariant(size)} color={orientationStyle.labelColor}>
           {label}
           <LabelTooltipIcon tooltip={labelTooltip} />
         </Typography>

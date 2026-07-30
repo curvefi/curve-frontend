@@ -80,31 +80,32 @@ export const DetailPageLayout = ({
   const isMobile = useIsMobile()
   // header ref needed to compute the top position of the sticky forms
   const headerRef = useRef<HTMLDivElement>(null)
-  const pageNavigationRef = useRef<HTMLDivElement>(null)
   // page header metrics's notionals lazy rendering make the height change by 9px so we need a smaller threshold
   const [, pageHeaderHeight = 0] = useResizeObserver(headerRef, { threshold: 5 })
-  const [, pageNavigationHeight] = useResizeObserver(pageNavigationRef, { enabled: !!pageNavigation })
-  const pageNavigationOffset = pageNavigationHeight ? `${pageNavigationHeight}px` : ButtonSize.md
   const placement = formTabs?.placement ?? 'inline'
   const showMobileDrawer = getIsMobileFormDrawer(placement, isMobile)
 
-  const headerStack = header && (
-    <Stack ref={headerRef} sx={pageNavigation ? undefined : stickyHeaderSx(navHeight)}>
-      {header}
-    </Stack>
-  )
-  const pageNavigationStack = pageNavigation && (
-    <Stack
-      ref={pageNavigationRef}
-      sx={{
-        backgroundColor: theme => theme.palette.background.default,
-        position: { tablet: 'sticky' },
-        top: { tablet: `${navHeight}px` },
-        zIndex: theme => theme.zIndex.appBar - 1,
-      }}
-    >
-      {pageNavigation}
-    </Stack>
+  const headerStack = (
+    <>
+      {header && (
+        <Stack ref={headerRef} sx={pageNavigation ? undefined : stickyHeaderSx(navHeight)}>
+          {header}
+        </Stack>
+      )}
+      {pageNavigation && (
+        <Stack
+          sx={{
+            backgroundColor: theme => theme.palette.background.default,
+            position: { tablet: 'sticky' },
+            // -1 to hide the top border behind the page headers and not have two borders when sticky
+            top: { tablet: `${navHeight - 1}px` },
+            zIndex: theme => theme.zIndex.appBar - 1,
+          }}
+        >
+          {pageNavigation}
+        </Stack>
+      )}
+    </>
   )
   return (
     <WithWrapper shouldWrap={showMobileDrawer} Wrapper={MobileDrawerBoundary}>
@@ -115,18 +116,21 @@ export const DetailPageLayout = ({
         sx={{
           ...PAGE_MARGIN,
           ...(pageNavigation && {
-            '--detail-page-scroll-margin-top': `calc(${navHeight}px + ${pageNavigationOffset})`,
+            // The section navigation is sticky from tablet up
+            '--detail-page-scroll-margin-top': {
+              mobile: `${navHeight}px`,
+              // instead of tracking the navigation height bar with a ref, let's approximate with ButtonSize
+              tablet: `calc(${navHeight}px + ${ButtonSize.sm})`,
+            },
           }),
           ...(!header && { marginBlockStart: Spacing.xl }),
         }}
-        direction="row-reverse" // direction is only used when size<12 (on mobile, form shows first, otherwise children first)
+        // direction is only used when size<12 (on mobile, form shows first, otherwise children first)
+        {...(!showMobileDrawer && { direction: 'row-reverse' })}
       >
         {isMobile && (
           <Grid size={12}>
-            <Stack>
-              {headerStack}
-              {pageNavigationStack}
-            </Stack>
+            <Stack sx={{ gap: PAGE_SPACING }}>{headerStack}</Stack>
           </Grid>
         )}
         {/* In Figma, columns are 12/4/3, but too small around breakpoints. I've added one extra column.
@@ -143,10 +147,8 @@ export const DetailPageLayout = ({
           </Grid>
         )}
         <Grid size="grow">
-          {/* Additional Stack because no gap between the page header and the children */}
-          <Stack>
+          <Stack sx={{ gap: PAGE_SPACING }}>
             {!isMobile && headerStack}
-            {!isMobile && pageNavigationStack}
             <Stack sx={{ flexGrow: 1, gap: PAGE_SPACING }}>{children}</Stack>
           </Stack>
         </Grid>

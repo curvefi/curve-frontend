@@ -16,7 +16,7 @@ import { dayjs } from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { constQ } from '@ui-kit/types/util'
+import { fallbackQ, mapQuery } from '@ui-kit/types/util'
 import { amount, Chain, formatNumber } from '@ui-kit/utils'
 import { Section } from './Section'
 
@@ -34,22 +34,13 @@ export const Parameters = ({
   const poolAddress = poolDataCacheOrApi.pool.address as Address
   const { data: network } = useNetworkByChain({ chainId })
   const chain = network.networkId as BlockchainId
-  const { data: metadata } = usePoolMetadata({ chain, poolAddress })
-  const { data: parameters, isLoading: isLoadingParameters } = usePoolParameters({ chainId, poolId })
-  const { data: snapshots } = usePoolSnapshots({ chain, poolAddress })
-  const snapshotData = snapshots?.[0]
-  const isFxSwap = metadata?.hasDonations ?? false
-  const {
-    A,
-    initial_A,
-    initial_A_time,
-    virtualPrice,
-    future_A,
-    future_A_time,
-    gamma,
-    adminFee = '',
-    fee,
-  } = parameters ?? {}
+  const metadata = usePoolMetadata({ chain, poolAddress })
+  const parameters = usePoolParameters({ chainId, poolId })
+  const snapshots = usePoolSnapshots({ chain, poolAddress })
+  const snapshotData = snapshots.data?.[0]
+  const isFxSwap = metadata.data?.hasDonations ?? false
+  const { A, initial_A, initial_A_time, future_A, future_A_time, gamma, adminFee = '' } = parameters.data ?? {}
+
   const formatADisplay = (a: number | string | undefined) =>
     formatNumber(amount(!isFxSwap || a == null ? a : formatCryptoA(a, FXSWAP)), { abbreviate: false, fallback: '-' })
   // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
@@ -67,37 +58,50 @@ export const Parameters = ({
         <Section>
           <ActionInfo
             label={t`AMM fee`}
-            loading={isLoadingParameters}
-            value={formatNumber(amount(fee ?? maybe(snapshotData?.fee, fee => fee / 10 ** 8)), {
-              maximumFractionDigits: 4,
-              unit: 'percentage',
-              abbreviate: false,
-              fallback: '-',
-            })}
+            value={mapQuery(
+              fallbackQ(
+                mapQuery(parameters, ({ fee }) => fee),
+                mapQuery(snapshots, ([snapshot]) => maybe(snapshot?.fee, fee => fee / 10 ** 8)),
+              ),
+              fee =>
+                formatNumber(amount(fee), {
+                  maximumFractionDigits: 4,
+                  unit: 'percentage',
+                  abbreviate: false,
+                  fallback: '-',
+                }),
+            )}
           />
 
           <ActionInfo
             label={t`DAO fee`}
-            loading={isLoadingParameters}
             valueTooltip={t`The total fee on each trade is split in two parts: one part goes to the pool's Liquidity Providers, another part goes to the DAO (i.e. Curve veCRV holders)`}
-            value={formatNumber(amount(isEywaPool ? +adminFee / 2 : adminFee), {
-              maximumFractionDigits: 4,
-              unit: 'percentage',
-              abbreviate: false,
-              fallback: '-',
-            })}
+            value={mapQuery(parameters, () =>
+              formatNumber(amount(isEywaPool ? +adminFee / 2 : adminFee), {
+                maximumFractionDigits: 4,
+                unit: 'percentage',
+                abbreviate: false,
+                fallback: '-',
+              }),
+            )}
           />
 
-          {isEywaPool && <ActionInfo label={t`EYWA fee`} loading={isLoadingParameters} value={+adminFee / 2} />}
+          {isEywaPool && <ActionInfo label={t`EYWA fee`} value={mapQuery(parameters, () => +adminFee / 2)} />}
 
           <ActionInfo
             label={t`Virtual price`}
-            loading={isLoadingParameters}
-            value={formatNumber(amount(virtualPrice ?? maybe(snapshotData?.virtualPrice, x => x / 10 ** 18)), {
-              maximumFractionDigits: 8,
-              abbreviate: false,
-              fallback: '-',
-            })}
+            value={mapQuery(
+              fallbackQ(
+                mapQuery(parameters, ({ virtualPrice }) => virtualPrice),
+                mapQuery(snapshots, ([snapshot]) => maybe(snapshot?.virtualPrice, value => value / 10 ** 18)),
+              ),
+              value =>
+                formatNumber(amount(value), {
+                  maximumFractionDigits: 8,
+                  abbreviate: false,
+                  fallback: '-',
+                }),
+            )}
             valueTooltip={t`Measures pool growth; this is not a dollar value`}
           />
         </Section>
@@ -129,8 +133,8 @@ export const Parameters = ({
               <ActionInfo
                 label={t`Ramping ${rampADetails.isRampUp ? 'up' : 'down'} A`}
                 valueTooltip={t`Slowly changing ${rampADetails.isRampUp ? 'up' : 'down'} A so that it doesn't negatively change virtual price growth of shares`}
-                value={constQ(formatADisplay(initial_A))}
-                futureValue={constQ(formatADisplay(future_A))}
+                value={formatADisplay(initial_A)}
+                futureValue={formatADisplay(future_A)}
               />
               <ActionInfo label={t`Ramp ends`} value={future_A_time ? formatDate(future_A_time, 'short') : '-'} />
             </>

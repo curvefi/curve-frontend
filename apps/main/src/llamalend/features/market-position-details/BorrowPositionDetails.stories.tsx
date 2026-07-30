@@ -9,6 +9,7 @@ import {
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { getUserBandsKey } from '@/llamalend/queries/user/user-bands.query'
 import { getUserCurrentLeverageKey } from '@/llamalend/queries/user/user-current-leverage.query'
+import { getUserDiscountsKey } from '@/llamalend/queries/user/user-discounts.query'
 import { getUserHealthKey } from '@/llamalend/queries/user/user-health.query'
 import { getUserPricesKey } from '@/llamalend/queries/user/user-prices.query'
 import { getUserStateKey } from '@/llamalend/queries/user/user-state.query'
@@ -28,6 +29,8 @@ const baseProps = {
   params: { chainId: 1, marketId: 'one-way-market-7', userAddress: zeroAddress },
   healthNotFull: 1.56,
   healthFull: 96,
+  loanDiscount: 9,
+  liquidationDiscount: 6,
   userPrices: [`0.47`, `0.69`] as Range<Decimal>,
   leverage: 1,
   totalDebt: 1,
@@ -47,6 +50,8 @@ const baseProps = {
 const BorrowPositionDetailsStory = ({
   healthNotFull,
   healthFull,
+  loanDiscount,
+  liquidationDiscount,
   collateral,
   collateralSymbol,
   collateralAddress,
@@ -89,6 +94,10 @@ const BorrowPositionDetailsStory = ({
         [getUserPricesKey(params), userPrices],
         [getUserHealthKey({ ...params, isFull: true }), `${healthFull}`],
         [getUserHealthKey({ ...params, isFull: false }), `${healthNotFull}`],
+        [
+          getUserDiscountsKey(params),
+          { loanDiscount: `${loanDiscount}`, liquidationDiscount: `${liquidationDiscount}` },
+        ],
         [getMarketOraclePriceKey(params), `${oraclePrice}`],
         [getMarketLiquidationBandKey(params), marketLiquidationBand],
         [getTokenUsdRateKey({ ...params, tokenAddress: collateralAddress }), collateralUsdPrice],

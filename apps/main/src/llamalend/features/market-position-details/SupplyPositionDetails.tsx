@@ -24,6 +24,7 @@ import { assert } from '@primitives/objects.utils'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
 import { LlamaChainId } from '@ui-kit/features/connect-wallet/lib/types'
+import { useNewLlamaMarketDetailPage } from '@ui-kit/hooks/useFeatureFlags'
 import { combineQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
@@ -31,7 +32,13 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { mapQuery, q } from '@ui-kit/types/util'
-import { AVERAGE_CATEGORIES, type AverageCategory, decimalMultiply, formatNumber } from '@ui-kit/utils'
+import {
+  AVERAGE_CATEGORIES,
+  type AverageCategory,
+  decimalMultiply,
+  formatCappedRateValue,
+  formatNumber,
+} from '@ui-kit/utils'
 import { AmountSuppliedTooltipContent, VaultSharesTooltipContent } from './'
 
 const { Spacing } = SizesAndSpaces
@@ -51,7 +58,8 @@ const METRIC_CATEGORY = 'llamalend.positionSupplyDetails'
 
 const MetricGrid = ({ children }: { children: ReactNode }) => <Grid size={{ mobile: 12, tablet: 3 }}>{children}</Grid>
 
-export const SupplyPositionDetails = ({ positionLabel }: { positionLabel: string }) => {
+export const SupplyPositionDetails = () => {
+  const isNewLlamaMarketDetailPage = useNewLlamaMarketDetailPage()
   const {
     chainId,
     blockchainId,
@@ -128,7 +136,12 @@ export const SupplyPositionDetails = ({ positionLabel }: { positionLabel: string
       <TabsSwitcher
         variant="contained"
         value={SUPPLY_POSITION_TAB}
-        options={[{ value: SUPPLY_POSITION_TAB, label: positionLabel }]}
+        options={[
+          {
+            value: SUPPLY_POSITION_TAB,
+            label: isNewLlamaMarketDetailPage ? t`Your position` : t`Supply Details`,
+          },
+        ]}
       />
       <Grid container spacing={Spacing.md} sx={{ padding: Spacing.sm, backgroundColor: t => t.design.Layer[1].Fill }}>
         <MetricGrid>
@@ -136,7 +149,12 @@ export const SupplyPositionDetails = ({ positionLabel }: { positionLabel: string
             category={METRIC_CATEGORY}
             label={USER_NET_SUPPLY_RATE_TITLE}
             value={mapQuery(supplyMetrics, ({ totalUserBoost }) => totalUserBoost)}
-            valueOptions={{ unit: 'percentage', ...(noGauge && { fallback: `No Gauge` }) }}
+            valueOptions={{
+              unit: 'percentage',
+              abbreviate: false,
+              formatter: formatCappedRateValue,
+              ...(noGauge && { fallback: `No Gauge` }),
+            }}
             notional={mapQuery(userSupplyBoost, data => t`your boost ${formatNumber(data, 'multiplier')}`)}
             valueTooltip={{
               title: USER_NET_SUPPLY_RATE_TITLE,
