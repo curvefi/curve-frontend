@@ -72,7 +72,6 @@ export const {
     userBorrowed = '0',
     userCollateral = '0',
     debt,
-    slippage,
     leverageEnabled,
     routeId,
   }: CreateLoanDebtQuery): Promise<CreateLoanExpectedCollateralResult> => {
@@ -80,9 +79,6 @@ export const {
     switch (type) {
       case 'zapV2':
         return convertNumbers(await impl.createLoanExpectedCollateral({ userCollateral, debt, ...parseRoute(routeId) }))
-      case 'V1':
-      case 'V2':
-        return convertNumbers(await impl.createLoanExpectedCollateral(userCollateral, userBorrowed, debt, +slippage))
       case 'V0': {
         assert(!+userBorrowed, `userBorrowed must be 0 for non-leverage mint markets`)
         const { collateral, leverage } = await impl.createLoanCollateral(userCollateral, debt)

@@ -48,9 +48,6 @@ export const { useQuery: useRepayFutureLeverage, invalidate: invalidateRepayFutu
     switch (type) {
       case 'zapV2':
         return decimal(await impl.repayFutureLeverage(...args)) ?? null
-      case 'V1':
-      case 'V2':
-        return decimal(await impl.repayFutureLeverage(...args, userAddress)) ?? null
       case 'unleveragedMint':
         return decimal(await impl.repayFutureLeverage(...args, userAddress)) ?? null
       case 'unleveragedLend':

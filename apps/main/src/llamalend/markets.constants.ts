@@ -357,7 +357,7 @@ export const DEPRECATED_LLAMAS: Record<MarketType, PartialRecord<ApiChain, Recor
  * to filter out those markets:
  *
  * ```typescript
- * private hasLeverage = (): boolean => {     return this.llamalend.constants.ALIASES.leverage_zap !== this.llamalend.constants.ZERO_ADDRESS &&
+ * private hasLeverage = (): boolean => {     return this.llamalend.constants.ALIASES.leverage_zap_v2 !== this.llamalend.constants.ZERO_ADDRESS &&
        this._getMarketId() >= Number(this.llamalend.constants.ALIASES["leverage_markets_start_id"]);
  * }
  * ```
@@ -370,7 +370,7 @@ export const DEPRECATED_LLAMAS: Record<MarketType, PartialRecord<ApiChain, Recor
  * const marketsWithoutLeverage = api.lendMarkets
  *   .getMarketList()
  *   .map((marketId) => api.getLendMarket(marketId))
- *   .filter((market) => !market.leverage.hasLeverage())
+ *   .filter((market) => !market.leverageZapV2.hasLeverage())
  *   .map((market) => [market.id, market.addresses.controller])
  * ```
  */
