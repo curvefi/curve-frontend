@@ -108,9 +108,7 @@ export const touchSupplyInput = (type: SupplyFormType) => {
 
 export const submitSupplyForm = (type: SupplyActionType, successMessage: string) => {
   cy.get(`[data-testid="supply-${type}-submit-button"]`).click(LOAD_TIMEOUT)
-  return cy
-    .get('[data-testid="toast-success"]', TRANSACTION_LOAD_TIMEOUT)
-    .contains(successMessage, TRANSACTION_LOAD_TIMEOUT)
+  return cy.contains('[data-testid="toast-success"]', successMessage, TRANSACTION_LOAD_TIMEOUT)
 }
 
 export const checkSupplySubmitButtonText = (type: SupplyFormType, buttonText: string) =>

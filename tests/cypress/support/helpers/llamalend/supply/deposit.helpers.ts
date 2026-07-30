@@ -20,9 +20,7 @@ export const confirmLowSolvencyDepositForm = () => {
   cy.get('[data-testid="supply-deposit-submit-button"]').click(LOAD_TIMEOUT)
   cy.get('[data-testid="low-solvency-action-checkbox"]').click()
   cy.get('[data-testid="low-solvency-action-submit-button"]').click()
-  return cy
-    .get('[data-testid="toast-success"]', TRANSACTION_LOAD_TIMEOUT)
-    .contains('Deposit successful!', TRANSACTION_LOAD_TIMEOUT)
+  return cy.contains('[data-testid="toast-success"]', 'Deposit successful!', TRANSACTION_LOAD_TIMEOUT)
 }
 
 /**

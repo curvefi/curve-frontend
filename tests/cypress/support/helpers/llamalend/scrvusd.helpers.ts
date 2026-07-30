@@ -152,17 +152,13 @@ export const submitScrvUsdDepositForm = () => {
     expect(button.text()).to.be.oneOf(['Approve & Deposit', 'Deposit']),
   )
   cy.get('[data-testid="scrvusd-deposit-submit-button"]', LOAD_TIMEOUT).click()
-  return cy
-    .get('[data-testid="toast-success"]', TRANSACTION_LOAD_TIMEOUT)
-    .contains('Deposit successful!', TRANSACTION_LOAD_TIMEOUT)
+  return cy.contains('[data-testid="toast-success"]', 'Deposit successful!', TRANSACTION_LOAD_TIMEOUT)
 }
 
 export const submitScrvUsdWithdrawForm = (expectedButtonText: 'Withdraw' | 'Redeem') => {
   cy.get('[data-testid="scrvusd-withdraw-submit-button"]', LOAD_TIMEOUT).should('have.text', expectedButtonText)
   cy.get('[data-testid="scrvusd-withdraw-submit-button"]', LOAD_TIMEOUT).click()
-  return cy
-    .get('[data-testid="toast-success"]', TRANSACTION_LOAD_TIMEOUT)
-    .contains('Withdraw successful!', TRANSACTION_LOAD_TIMEOUT)
+  return cy.contains('[data-testid="toast-success"]', 'Withdraw successful!', TRANSACTION_LOAD_TIMEOUT)
 }
 
 export const selectMaxScrvUsdWithdraw = () =>
