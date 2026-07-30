@@ -52,9 +52,6 @@ export const { useQuery: useBorrowMoreHealth, invalidate: invalidateBorrowMoreHe
     switch (type) {
       case 'zapV2':
         return (await impl.borrowMoreExpectedMetrics(...args)).health as Decimal
-      case 'V1':
-      case 'V2':
-        return (await impl.borrowMoreHealth(...args)) as Decimal
       case 'unleveraged':
         return (await impl.borrowMoreHealth(...args)) as Decimal
     }

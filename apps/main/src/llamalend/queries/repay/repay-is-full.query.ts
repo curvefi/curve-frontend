@@ -45,9 +45,6 @@ export const { useQuery: useRepayIsFull, invalidate: invalidateRepayIsFull } = q
     switch (type) {
       case 'zapV2':
         return await impl.repayIsFull(...args)
-      case 'V1':
-      case 'V2':
-        return await impl.repayIsFull(...args, userAddress)
       case 'deleverage':
         return await impl.isFullRepayment(...args, userAddress)
       case 'unleveragedLend':

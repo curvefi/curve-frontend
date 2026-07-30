@@ -23,8 +23,8 @@ export const { invalidate: invalidateRepayRouteImage } = queryFactory({
       { slippage },
       { routeId },
     ] as const,
-  queryFn: async ({ marketId, stateCollateral, userCollateral, userBorrowed, slippage, routeId }: RepayQuery) => {
-    const [type, impl] = getRepayImplementation(marketId, {
+  queryFn: ({ marketId, stateCollateral, userCollateral, userBorrowed, slippage, routeId }: RepayQuery) => {
+    const [type] = getRepayImplementation(marketId, {
       userCollateral,
       stateCollateral,
       userBorrowed,
@@ -32,11 +32,8 @@ export const { invalidate: invalidateRepayRouteImage } = queryFactory({
       routeId,
     })
     switch (type) {
-      case 'V1':
-      case 'V2':
-        return await impl.repayRouteImage(stateCollateral, userCollateral)
       case 'zapV2':
-        return null // todo: get image from api
+        return Promise.resolve(null) // todo: get image from api
       case 'deleverage':
       case 'unleveragedLend':
       case 'unleveragedMint':

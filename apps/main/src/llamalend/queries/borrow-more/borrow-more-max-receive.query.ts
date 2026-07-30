@@ -66,7 +66,6 @@ export const { useQuery: useBorrowMoreMaxReceive, invalidate: invalidateBorrowMo
   queryFn: async ({
     marketId,
     userCollateral = '0',
-    userBorrowed = '0',
     leverageEnabled,
     chainId,
     routeId,
@@ -91,9 +90,6 @@ export const { useQuery: useBorrowMoreMaxReceive, invalidate: invalidateBorrowMo
           }),
         )
       }
-      case 'V1':
-      case 'V2':
-        return castFieldsToDecimal(await impl.borrowMoreMaxRecv(userCollateral, userBorrowed))
       case 'unleveraged':
         return { maxDebt: (await impl.borrowMoreMaxRecv(userCollateral)) as Decimal }
     }

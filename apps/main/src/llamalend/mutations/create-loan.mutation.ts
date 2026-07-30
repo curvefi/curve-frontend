@@ -28,17 +28,11 @@ export type CreateLoanOptions = {
   userAddress: Address | undefined
 }
 
-const approve = async (
-  market: MarketTemplate,
-  { userCollateral, userBorrowed, leverageEnabled }: CreateLoanMutation,
-) => {
+const approve = async (market: MarketTemplate, { userCollateral, leverageEnabled }: CreateLoanMutation) => {
   const [type, impl] = getCreateLoanImplementation(market.id, leverageEnabled)
   switch (type) {
     case 'zapV2':
       return (await impl.createLoanApprove({ userCollateral })) as Address[]
-    case 'V2':
-    case 'V1':
-      return (await impl.createLoanApprove(userCollateral, userBorrowed)) as Address[]
     case 'V0':
     case 'unleveraged':
       return (await impl.createLoanApprove(userCollateral)) as Address[]
@@ -47,7 +41,7 @@ const approve = async (
 
 const create = async (
   market: MarketTemplate,
-  { debt, userCollateral, userBorrowed, leverageEnabled, range, slippage, routeId }: CreateLoanMutation,
+  { debt, userCollateral, leverageEnabled, range, slippage, routeId }: CreateLoanMutation,
 ) => {
   const [type, impl] = getCreateLoanImplementation(market, leverageEnabled)
   switch (type) {
@@ -58,9 +52,6 @@ const create = async (
         range,
         ...parseMutationRoute(market, { routeId, slippage, isRepay: false }),
       })) as Address
-    case 'V2':
-    case 'V1':
-      return (await impl.createLoan(userCollateral, userBorrowed, debt, range, +slippage)) as Address
     case 'V0':
     case 'unleveraged':
       return (await impl.createLoan(userCollateral, debt, range)) as Address
