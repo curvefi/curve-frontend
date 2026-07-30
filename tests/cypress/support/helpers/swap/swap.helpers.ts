@@ -1,7 +1,67 @@
 import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
+import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
+import type { RouteProvider, RouterRouteResponse } from '@primitives/router.utils'
 
 export const ExpectedExchangeRate = /1 ETH = \d+(?:\.\d{2,4})?k USDT/
+
+export const ROUTER_QUOTE_ALIASES = {
+  amountIn: 'routerAmountIn',
+  amountOut: 'routerAmountOut',
+} as const
+
+const USDT_PER_ETH = 2000n
+const DECIMAL_SCALE = 10n ** 12n
+
+const firstQueryValue = (value: string | string[] | undefined) => (Array.isArray(value) ? value[0] : value)
+
+/**
+ * Fixtures disconnected swap quotes in both exact-input and exact-output directions.
+ */
+export const mockDisconnectedSwapQuotes = () => {
+  cy.intercept('GET', '**/api/router/v1/routes*', req => {
+    const query = req.query as Record<string, string | string[] | undefined>
+    const requestedAmountIn = firstQueryValue(query.amountIn)
+    const requestedAmountOut = firstQueryValue(query.amountOut)
+
+    if (!requestedAmountIn && !requestedAmountOut) return req.reply([])
+
+    const tokenIn = firstQueryValue(query.tokenIn) as Address
+    const tokenOut = firstQueryValue(query.tokenOut) as Address
+    const router = firstQueryValue(query.router) as RouteProvider
+    const chainId = Number(firstQueryValue(query.chainId))
+    const amountIn = (requestedAmountIn ??
+      ((BigInt(requestedAmountOut!) * USDT_PER_ETH) / DECIMAL_SCALE).toString()) as Decimal
+    const amountOut = (requestedAmountOut ??
+      ((BigInt(requestedAmountIn!) * DECIMAL_SCALE) / USDT_PER_ETH).toString()) as Decimal
+
+    req.alias = requestedAmountIn ? ROUTER_QUOTE_ALIASES.amountIn : ROUTER_QUOTE_ALIASES.amountOut
+    req.reply([
+      {
+        router,
+        amountIn: [amountIn],
+        amountOut: [amountOut],
+        gas: null,
+        priceImpact: 0.01,
+        createdAt: Date.now(),
+        warnings: [],
+        isStableswapRoute: false,
+        route: [
+          {
+            name: 'Fixture pool',
+            tokenIn: [tokenIn],
+            tokenOut: [tokenOut],
+            protocol: router,
+            action: 'swap',
+            chainId,
+            args: {},
+          },
+        ],
+      } satisfies RouterRouteResponse,
+    ])
+  })
+}
 
 const getFromAmountInput = (options = {}) => cy.get('[data-testid="from-amount"] [name="fromAmount"]', options)
 const getToAmountInput = (options = {}) => cy.get('[data-testid="to-amount"] [name="toAmount"]', options)
