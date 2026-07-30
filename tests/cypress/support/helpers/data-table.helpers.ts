@@ -17,8 +17,11 @@ export function withFilterChips<T>(breakpoint: Breakpoint, callback: () => Cypre
 
 export function expandFirstRowOnMobile(breakpoint: Breakpoint) {
   if (breakpoint == 'mobile') {
-    cy.get(`[data-testid="expand-icon"]`).first().click()
-    cy.get(`[data-testid="data-table-expansion-row"]`).should('be.visible')
+    cy.get('[data-testid^="data-table-row-"]', LOAD_TIMEOUT).first().find('[data-testid="expand-icon"]').click()
+    cy.get('[data-testid^="data-table-row-"]', LOAD_TIMEOUT)
+      .first()
+      .find('[data-testid="collapse-icon"]')
+      .should('be.visible')
   }
 }
 
@@ -29,13 +32,13 @@ export function expandFirstRowOnMobile(breakpoint: Breakpoint) {
 export function withExpandedPanelDrawer<T>(breakpoint: Breakpoint, callback: () => Cypress.Chainable<T>) {
   if (breakpoint === 'mobile') {
     cy.get('body').then($body => {
-      if (!$body.find('[data-testid="data-table-expansion-row"]').length) {
+      if (!$body.find('[data-testid="collapse-icon"]').length) {
         expandFirstRowOnMobile(breakpoint)
       }
     })
-    cy.get('[data-testid="data-table-expansion-row"]').should('be.visible')
-    cy.get('[data-testid="expanded-panel-actions-menu-button"]').click()
-    cy.get('[data-testid="expanded-panel-actions-menu"]').should('be.visible')
+    cy.get('[data-testid="collapse-icon"]', LOAD_TIMEOUT).first().should('be.visible')
+    cy.get('[data-testid="expanded-panel-actions-menu-button"]', LOAD_TIMEOUT).should('be.visible').click()
+    cy.get('[data-testid="expanded-panel-actions-menu"]', LOAD_TIMEOUT).should('be.visible')
   }
 
   return callback().then(result => {

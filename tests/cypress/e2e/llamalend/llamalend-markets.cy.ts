@@ -114,8 +114,11 @@ testCases.forEach(([width, height, breakpoint]) => {
       if (breakpoint === 'mobile') {
         // On mobile, expand the first row and check the metric is visible in the expanded panel
         expandFirstRowOnMobile(breakpoint)
-        cy.get('[data-testid="data-table-expansion-row"]').contains('Borrow APR').should('be.visible')
-        cy.get('[data-testid="data-table-expansion-row"]').contains('%').should('be.visible')
+        cy.get('[data-testid^="data-table-row-"]', LOAD_TIMEOUT)
+          .first()
+          .next()
+          .should('contain.text', 'Borrow APR')
+          .and('contain.text', '%')
       } else {
         // On tablet/desktop, the column header and cell should be visible by default
         cy.get(`[data-testid="data-table-header-${borrowColumnId}"]`).should('be.visible')

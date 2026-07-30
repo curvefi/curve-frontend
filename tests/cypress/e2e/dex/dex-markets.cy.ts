@@ -1,6 +1,5 @@
 import { orderBy } from 'lodash'
 import { getPoolsTvlLabelRange, POOL_DEFAULT_TVL_MIN } from '@/dex/features/pool-list/filters/utils'
-import { expandFirstRowOnMobile } from '@cy/support/helpers/data-table.helpers'
 import { DEX_POOL_LIST_SEARCH, setupDexPoolListMocks } from '@cy/support/helpers/dex-pool-list-mocks'
 import { mockMerklCampaigns } from '@cy/support/helpers/lending-mocks'
 import { API_LOAD_TIMEOUT, type Breakpoint, LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
@@ -323,11 +322,12 @@ describe('DEX Pools', () => {
 
     it('navigates to pool deposit page by clicking a row', () => {
       visitAndWait(width, height)
-      cy.get('[data-testid^="data-table-row-"]').first().click()
+      const getPoolRow = () => cy.get('[data-testid^="data-table-row-"]', LOAD_TIMEOUT).first()
+
+      getPoolRow().click()
       if (breakpoint === 'mobile') {
-        cy.get('[data-testid="collapse-icon"]').first().should('be.visible')
-        cy.get('[data-testid="data-table-expansion-row"]').should('be.visible')
-        cy.get('[data-testid="pool-link-deposit"]').click()
+        getPoolRow().find('[data-testid="collapse-icon"]').should('be.visible')
+        getPoolRow().next().find('[data-testid="pool-link-deposit"]').should('be.visible').click()
       }
       cy.url(LOAD_TIMEOUT).should('match', /\/dex\/\w+\/pools\/0x[0-9a-fA-F]{40}\/(deposit|swap)\/?$/)
       cy.title().should('match', /Curve - Pool - .* - Curve/)
@@ -340,10 +340,14 @@ describe('DEX Pools', () => {
     cy.get('[data-testid="table-text-search-dex-pool-list"] input').type(filter)
     cy.url().should('include', `?search=${filter}`)
     cy.wait('@dex-pools', API_LOAD_TIMEOUT)
-    cy.contains('[data-testid^="market-link-"]', filter, API_LOAD_TIMEOUT).should('be.visible')
+    const getMatchedPoolRow = () =>
+      cy.contains('[data-testid^="data-table-row-"]', filter, API_LOAD_TIMEOUT).should('be.visible')
+
+    getMatchedPoolRow()
     if (breakpoint === 'mobile') {
-      expandFirstRowOnMobile(breakpoint)
-      cy.get(`[data-testid="pool-link-deposit"]`).click({ waitForAnimations: false })
+      getMatchedPoolRow().find('[data-testid="expand-icon"]').click()
+      getMatchedPoolRow().find('[data-testid="collapse-icon"]').should('be.visible')
+      getMatchedPoolRow().next().find('[data-testid="pool-link-deposit"]').should('be.visible').click()
     } else {
       cy.contains('[data-testid^="market-link-"]', filter).click()
     }
