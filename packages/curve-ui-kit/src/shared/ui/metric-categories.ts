@@ -22,7 +22,6 @@ const breakpointValues = <Value>(value: Value): Record<Breakpoint, Value> => ({
  * - responsive: metrics that need less emphasis on mobile.
  */
 const METRIC_EMPHASIS = {
-  prominent: breakpointValues('large'),
   primary: breakpointValues('medium'),
   secondary: breakpointValues('small'),
   tertiary: breakpointValues('extraSmall'),
@@ -62,7 +61,6 @@ const metricLayout = (
  * Reusable metric layout types composed from emphasis and presentation design choices.
  */
 const METRIC_TYPES = {
-  prominentStat: metricLayout('prominent', 'stack'),
   primaryStat: metricLayout('primary', 'stack'),
   secondaryStat: metricLayout('secondary', 'stack'),
   tertiaryStat: metricLayout('tertiary', 'stack'),
@@ -107,7 +105,8 @@ export const METRIC_CATEGORIES = {
   'llamalend.marketListSummary': METRIC_TYPES.primaryDetail,
   'llamalend.positionBorrowDetails': METRIC_TYPES.secondaryDetail,
   'llamalend.positionSupplyDetails': METRIC_TYPES.secondaryDetail,
-  'llamalend.positionHealth': METRIC_TYPES.prominentStat,
+  'llamalend.positionHealth': METRIC_TYPES.primaryInline,
+  'llamalend.legacyPositionHealth': METRIC_TYPES.primaryStat,
   'llamalend.positionLiquidationBuffer': METRIC_TYPES.tertiaryInline,
 
   // crvUSD / loan

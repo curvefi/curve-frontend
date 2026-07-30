@@ -26,7 +26,7 @@ import {
   HealthType,
 } from './utils'
 
-const { Height, MinWidth } = SizesAndSpaces
+const { Height, MinWidth, Spacing } = SizesAndSpaces
 
 type HealthQuery = QueryProp<QueryData<typeof useUserHealthValues>>
 
@@ -94,6 +94,7 @@ export const HealthAndBufferBar = ({
             backgroundColor: theme => theme.design.Color.Neutral[300],
             overflow: 'hidden',
             position: 'relative',
+            justifyContent: 'center',
           }}
         >
           <Box
@@ -109,7 +110,7 @@ export const HealthAndBufferBar = ({
               size={BADGE_SIZE_BY_BAR_SIZE[size]}
               color={state === 'hardLiquidation' ? 'alert' : 'warning'}
               label={label}
-              sx={{ position: 'absolute', bottom: 0, left: 0 }}
+              sx={{ position: 'absolute', left: Spacing['3xs'] }}
             />
           )}
         </Stack>
