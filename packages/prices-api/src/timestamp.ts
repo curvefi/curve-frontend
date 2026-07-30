@@ -1,5 +1,3 @@
-import type { SortDirection } from './index'
-
 declare const TimestampBrand: unique symbol
 
 /** ISO 8601 date string shape (e.g. `"2024-01-01T00:00:00.000Z"`), always including timezone info. */
@@ -73,47 +71,4 @@ export function getTimeRange({ end, start, daysRange = 10 }: TimeRangeParams = {
     end,
     start,
   }
-}
-
-export type TimeRange = ReturnType<typeof getTimeRange>
-
-/**
- * Splits an inclusive unix timestamp range into contiguous ranges that stay below an endpoint's daily row cap.
- */
-export function getTimeRangeChunks({ start, end }: TimeRange, maxDays: number): TimeRange[] {
-  if (end < start) throw new Error('Time range end must be greater than or equal to its start')
-  if (maxDays <= 0) throw new Error('Time range chunk size must be greater than zero')
-
-  const chunkSize = maxDays * ONE_DAY_IN_SECONDS
-  const chunkCount = Math.max(1, Math.ceil((end - start) / chunkSize))
-
-  return Array.from({ length: chunkCount }, (_, index) => {
-    const chunkStart = start + index * chunkSize
-    return {
-      start: chunkStart,
-      end: index === chunkCount - 1 ? end : chunkStart + chunkSize - 1,
-    }
-  })
-}
-
-/**
- * Fetches all chunks atomically and returns one timestamp-deduplicated series in the requested order.
- */
-export async function fetchChunkedTimeSeries<T extends { timestamp: number }>({
-  range,
-  maxDays,
-  order,
-  fetchChunk,
-}: {
-  range: TimeRange
-  maxDays: number
-  order: SortDirection
-  fetchChunk: (range: TimeRange, isLatest: boolean) => Promise<T[]>
-}) {
-  const ranges = getTimeRangeChunks(range, maxDays)
-  const chunks = await Promise.all(ranges.map((range, index) => fetchChunk(range, index === ranges.length - 1)))
-  const deduplicated = new Map(chunks.flat().map(item => [item.timestamp, item])).values()
-  const direction = order === 'asc' ? 1 : -1
-
-  return Array.from(deduplicated).toSorted((a, b) => direction * (a.timestamp - b.timestamp))
 }

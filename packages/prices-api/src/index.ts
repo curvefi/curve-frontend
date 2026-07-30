@@ -42,9 +42,6 @@ export const chains = [
 
 export type Chain = (typeof chains)[number]
 
-export const sortDirections = ['asc', 'desc'] as const
-export type SortDirection = (typeof sortDirections)[number]
-
 export const isPricesApiChain = (chain: string): chain is Chain => chains.includes(chain as Chain)
 export const getBlockchainId = (networkId: string): Chain | undefined =>
   isPricesApiChain(networkId) ? networkId : undefined
@@ -55,12 +52,4 @@ export type PaginationMeta = {
   per_page: number
   /** total number of items/events available on endpoint */
   count: number
-}
-
-export type SnapshotQueryParams = {
-  agg?: string
-  fetch_on_chain?: boolean
-  limit?: number
-  start?: number
-  end?: number
 }

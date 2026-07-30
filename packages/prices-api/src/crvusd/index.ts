@@ -1,6 +1,6 @@
 import type { Address } from '@primitives/address.utils'
 import { addQueryString, fetchJson as fetch } from '@primitives/fetch.utils'
-import { getHost, type Chain, type Options, type SnapshotQueryParams } from '..'
+import { getHost, type Chain, type Options } from '..'
 import { getTimeRange } from '../timestamp'
 import * as Schema from './schema'
 
@@ -38,7 +38,13 @@ export async function getAllMarkets(
 export async function getSnapshots(
   chain: Chain,
   marketAddr: string,
-  params: SnapshotQueryParams = { fetch_on_chain: true, agg: 'day', limit: 100 },
+  params: {
+    agg?: string
+    fetch_on_chain?: boolean
+    limit?: number
+    start?: number
+    end?: number
+  } = { fetch_on_chain: true, agg: 'day', limit: 100 },
   options?: Options,
 ) {
   const host = getHost(options)

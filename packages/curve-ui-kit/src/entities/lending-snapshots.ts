@@ -4,7 +4,7 @@ import { ContractQuery, NoRetryError, queryFactory, rootKeys } from '@ui-kit/lib
 import { contractValidationSuite } from '@ui-kit/lib/model/query/contract-validation'
 import type { TimeOption } from '@ui-kit/lib/model/query/time-option-validation'
 import { TIME_OPTION_MS } from '@ui-kit/lib/model/time'
-import { fetchDailySnapshotHistory } from './snapshot-history'
+import { fetchDailySnapshotHistory } from './time-series-history'
 
 export type LendingSnapshot = Snapshot
 type Query = ContractQuery & { timeOption?: TimeOption; limit?: number }
@@ -30,7 +30,6 @@ export const { useQuery: useLendingSnapshots } = queryFactory({
               start: Math.floor((now - TIME_OPTION_MS[timeOption]) / 1000),
               end: Math.floor(now / 1000),
             },
-            fetchOnChain: true,
             fetchSnapshots: (range, fetchOnChain) =>
               getSnapshots(blockchainId, contractAddress, {
                 agg: 'day',
