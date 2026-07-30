@@ -39,6 +39,15 @@ yarn cy run --e2e --spec cypress/e2e/<path>/<test>.cy.ts
 yarn cy run --component --spec cypress/component/<path>/<test>.cy.tsx
 ```
 
+Each Cypress run prints the seed used to generate random test data. Runs without `TEST_SEED` use a new seed, while reusing a seed replays the same random sequence for each spec:
+
+```sh
+TEST_SEED=18273645-1 yarn cy:run:e2e --browser firefox --spec cypress/e2e/llamalend/llamalend-markets.cy.ts
+TEST_SEED=18273645-1 yarn cy:run:component --browser firefox --spec cypress/component/<path>/<test>.cy.tsx
+```
+
+GitHub Actions uses the run ID and test iteration as its seed. The same iteration uses the same seed across browsers, and rerunning a GitHub workflow run reuses its seeds.
+
 ### Folder Structure
 
 Tests for each DApp are created in the corresponding directory:

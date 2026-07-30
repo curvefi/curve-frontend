@@ -1,4 +1,5 @@
 import { generatePrivateKey } from 'viem/accounts'
+import { oneInt } from '@cy/support/generators'
 import type { Hex } from '@primitives/address.utils'
 import { resetWagmiConfigForTests } from '@ui-kit/features/connect-wallet/lib/wagmi/wagmi-config'
 import { DeepPartial } from '@ui-kit/types/util'
@@ -111,7 +112,7 @@ export function createVirtualTestnet(
   let shouldDeleteVnet = true
 
   before(() => {
-    const uuid = Cypress._.random(0, 1e6)
+    const uuid = oneInt(0, 1e6 + 1)
     const { chain_id = 1, ...givenOptions } = opts(uuid)
 
     const defaultOptions: CreateVirtualTestnetOptions = {
@@ -167,7 +168,7 @@ export function forkVirtualTestnet(
   let vnet: ForkVirtualTestnetResponse
 
   before(() => {
-    const uuid = Cypress._.random(0, 1e6)
+    const uuid = oneInt(0, 1e6 + 1)
     const defaultOpts = { wait: true }
     loadTenderlyAccount().then(tenderlyAccount => {
       const finalOpts = Cypress._.merge(tenderlyAccount, defaultOpts, opts(uuid))
