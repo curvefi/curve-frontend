@@ -91,10 +91,7 @@ describe('DepositForm (mocked)', () => {
             expect(stubs.estimateGasDepositApprove).to.not.have.been.called
           })
         } else {
-          cy.wrap(stubs.estimateGasDepositApprove).should(
-            'have.been.calledWithExactly',
-            ...expected.estimateGasApprove,
-          )
+          cy.wrap(stubs.estimateGasDepositApprove).should('have.been.calledWithExactly', ...expected.estimateGasApprove)
         }
 
         // A market alert or very low solvency blocks submission, so the test stops after validating the disabled state and action infos.

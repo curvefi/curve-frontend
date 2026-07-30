@@ -201,10 +201,7 @@ export const createRepayScenario = ({
           cy.wrap(normalStubs.repayPrices).should('have.been.calledWithExactly', ...normalExpected.prices)
           cy.wrap(normalStubs.repayIsApproved).should('have.been.calledWithExactly', ...normalExpected.isApproved)
           if (approved) {
-            cy.wrap(normalStubs.estimateGasRepay).should(
-              'have.been.calledWithExactly',
-              ...normalExpected.estimateGas,
-            )
+            cy.wrap(normalStubs.estimateGasRepay).should('have.been.calledWithExactly', ...normalExpected.estimateGas)
             cy.then(() => {
               expect(normalStubs.estimateGasRepayApprove).to.not.have.been.called
             })

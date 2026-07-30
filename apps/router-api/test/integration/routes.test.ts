@@ -39,9 +39,7 @@ type FailureCase = { query: Partial<QueryString>; expectedResponse: ErrorRespons
 const first = (value: string | string[] | undefined) => (Array.isArray(value) ? value[0] : value)
 
 const jsonResponse = (body: unknown) =>
-  Promise.resolve(
-    new Response(JSON.stringify(body), { status: 200, headers: { 'content-type': 'application/json' } }),
-  )
+  Promise.resolve(new Response(JSON.stringify(body), { status: 200, headers: { 'content-type': 'application/json' } }))
 
 const createCurveMock = (query: QueryString): CurveJS => {
   const tokenIn = first(query.tokenIn)!
@@ -159,7 +157,10 @@ const mockProviderResponse = (
             },
           }
 
-  vi.stubGlobal('fetch', vi.fn<typeof fetch>(() => jsonResponse(response)))
+  vi.stubGlobal(
+    'fetch',
+    vi.fn<typeof fetch>(() => jsonResponse(response)),
+  )
 }
 
 /**

@@ -228,10 +228,7 @@ export const createCreateLoanScenario = ({
         },
     assertSubmit: leverage
       ? () => {
-          cy.wrap(leverageStubs.estimateGasCreateLoan).should(
-            'have.been.calledWithMatch',
-            leverageExpected.estimateGas,
-          )
+          cy.wrap(leverageStubs.estimateGasCreateLoan).should('have.been.calledWithMatch', leverageExpected.estimateGas)
           if (!approved) {
             cy.wrap(leverageStubs.createLoanApprove).should('have.been.calledWithMatch', {
               userCollateral: collateral,

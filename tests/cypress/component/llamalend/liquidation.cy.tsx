@@ -87,10 +87,7 @@ describe('Soft Liquidation Forms (mocked)', () => {
         cy.wrap(stubs.repayPrices).should('have.been.calledWithExactly', ...expected.improveHealth.prices)
         cy.wrap(stubs.repayIsApproved).should('have.been.calledWithExactly', ...expected.improveHealth.isApproved)
         if (approved) {
-          cy.wrap(stubs.estimateGasRepay).should(
-            'have.been.calledWithExactly',
-            ...expected.improveHealth.estimateGas,
-          )
+          cy.wrap(stubs.estimateGasRepay).should('have.been.calledWithExactly', ...expected.improveHealth.estimateGas)
           cy.then(() => {
             expect(stubs.estimateGasRepayApprove).to.not.have.been.called
           })
@@ -152,10 +149,7 @@ describe('Soft Liquidation Forms (mocked)', () => {
             'have.been.calledWithExactly',
             ...expected.closePosition.estimateGas,
           )
-          cy.wrap(stubs.selfLiquidateApprove).should(
-            'have.been.calledWithExactly',
-            ...expected.closePosition.approve,
-          )
+          cy.wrap(stubs.selfLiquidateApprove).should('have.been.calledWithExactly', ...expected.closePosition.approve)
         }
         cy.wrap(stubs.selfLiquidate).should('have.been.calledWithExactly', ...expected.closePosition.submit)
         if (approved) {

@@ -186,15 +186,9 @@ export const createBorrowMoreScenario = ({
           'have.been.calledWithMatch',
           zapV2Expected.expectedCollateral,
         )
-        cy.wrap(zapV2Stubs.borrowMoreFutureLeverage).should(
-          'have.been.calledWithMatch',
-          zapV2Expected.futureLeverage,
-        )
+        cy.wrap(zapV2Stubs.borrowMoreFutureLeverage).should('have.been.calledWithMatch', zapV2Expected.futureLeverage)
         if (approved) {
-          cy.wrap(zapV2Stubs.estimateGasBorrowMore).should(
-            'have.been.calledWithMatch',
-            zapV2Expected.estimateGas,
-          )
+          cy.wrap(zapV2Stubs.estimateGasBorrowMore).should('have.been.calledWithMatch', zapV2Expected.estimateGas)
           cy.then(() => {
             expect(zapV2Stubs.estimateGasBorrowMoreApprove).to.not.have.been.called
           })
@@ -208,10 +202,7 @@ export const createBorrowMoreScenario = ({
         cy.wrap(normalStubs.parameters).should('have.been.calledWithExactly')
         cy.wrap(normalStubs.borrowMoreHealth).should('have.been.calledWithExactly', ...normalExpected.health)
         cy.wrap(normalStubs.borrowMoreMaxRecv).should('have.been.calledWithExactly', ...normalExpected.maxRecv)
-        cy.wrap(normalStubs.borrowMoreIsApproved).should(
-          'have.been.calledWithExactly',
-          ...normalExpected.isApproved,
-        )
+        cy.wrap(normalStubs.borrowMoreIsApproved).should('have.been.calledWithExactly', ...normalExpected.isApproved)
         if (approved) {
           cy.wrap(normalStubs.estimateGasBorrowMore).should(
             'have.been.calledWithExactly',
@@ -245,10 +236,7 @@ export const createBorrowMoreScenario = ({
         if (!approved) {
           cy.wrap(normalStubs.borrowMoreApprove).should('have.been.calledWithExactly', ...normalExpected.approve)
         }
-        cy.wrap(normalStubs.estimateGasBorrowMore).should(
-          'have.been.calledWithExactly',
-          ...normalExpected.estimateGas,
-        )
+        cy.wrap(normalStubs.estimateGasBorrowMore).should('have.been.calledWithExactly', ...normalExpected.estimateGas)
         if (approved) {
           cy.then(() => {
             expect(normalStubs.borrowMoreApprove).to.not.have.been.called

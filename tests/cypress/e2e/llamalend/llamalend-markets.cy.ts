@@ -278,9 +278,7 @@ testCases.forEach(([width, height, breakpoint]) => {
             .then($slider => {
               const { width, height } = $slider[0].getBoundingClientRect()
               // we click ~75% percent of the slider range (from the left) and vertically centered
-              return cy
-                .wrap($slider)
-                .click(width * (3 / 4), height / 2, { ...LOAD_TIMEOUT, waitForAnimations: false })
+              return cy.wrap($slider).click(width * (3 / 4), height / 2, { ...LOAD_TIMEOUT, waitForAnimations: false })
             }),
         )
         cy.get(`[data-testid^="data-table-row"]`).should('have.length.below', length)

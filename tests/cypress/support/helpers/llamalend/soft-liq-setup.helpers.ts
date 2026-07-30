@@ -390,7 +390,10 @@ const executePreparedAmmPriceMove = ({
   let quote: AmmPriceMoveQuote
 
   return cy
-    .then<AmmPriceMoveQuote>(LOAD_TIMEOUT, async () => (quote = await quoteAmmPriceMove({ ammAddress, client, targetPrice })))
+    .then<AmmPriceMoveQuote>(
+      LOAD_TIMEOUT,
+      async () => (quote = await quoteAmmPriceMove({ ammAddress, client, targetPrice })),
+    )
     .then(LOAD_TIMEOUT, () => {
       // `amount` is the input requested by get_amount_for_price; inputUsed only validates get_dxdy produced a real quote.
       const tokenAddress = quote.isPump ? borrowedAddress : collateralAddress
@@ -498,9 +501,7 @@ const runSoftLiquidationPriceMove = ({
         return { ...context, clockAdvanceSeconds, observationTimestamp }
       }),
     )
-    .then(context =>
-      advanceVirtualNetworkClock({ vnet, seconds: context.clockAdvanceSeconds }).then(() => context),
-    )
+    .then(context => advanceVirtualNetworkClock({ vnet, seconds: context.clockAdvanceSeconds }).then(() => context))
     .then(context =>
       cy.then(LOAD_TIMEOUT, async () => {
         const block = await client.getBlock()

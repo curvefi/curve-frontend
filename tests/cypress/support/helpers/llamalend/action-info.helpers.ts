@@ -22,9 +22,7 @@ export const checkEstimatedTxCost = ({
   hasValue = true,
   name = 'estimated-tx-cost',
 }: { hasValue?: boolean; name?: string } = {}) =>
-  hasValue
-    ? getActionValue(name).should('include', '$')
-    : getActionInfo(name).should('not.have.attr', 'data-value')
+  hasValue ? getActionValue(name).should('include', '$') : getActionInfo(name).should('not.have.attr', 'data-value')
 
 export type DebtCheck = { current: Decimal; future: Decimal; symbol: string }
 /**

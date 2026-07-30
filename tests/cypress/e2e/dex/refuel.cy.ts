@@ -1,8 +1,4 @@
-import {
-  REFUEL_API_ALIASES,
-  REFUEL_POOL_ADDRESS,
-  setupRefuelMocks,
-} from '@cy/support/helpers/refuel-mocks'
+import { REFUEL_API_ALIASES, REFUEL_POOL_ADDRESS, setupRefuelMocks } from '@cy/support/helpers/refuel-mocks'
 import type { AppRoute } from '@cy/support/routes'
 import { API_LOAD_TIMEOUT, LOAD_TIMEOUT } from '@cy/support/ui'
 
