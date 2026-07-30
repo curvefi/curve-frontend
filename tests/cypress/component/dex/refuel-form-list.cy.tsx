@@ -1,6 +1,6 @@
 import { RefuelFormList } from '@/dex/features/manage-pool/components/RefuelFormList'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
-import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
+import { getActionInfo, getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
 import { constQ } from '@ui-kit/types/util'
 
 type RefuelFormListProps = Parameters<typeof RefuelFormList>[0]
@@ -49,9 +49,9 @@ describe('RefuelFormList', () => {
       tokenBRate: constQ(undefined),
     })
 
-    getActionValue('refuel-size-action-info').should('be.undefined')
-    getActionValue('refuel-weekly-action-info').should('be.undefined')
-    getActionValue('refuel-bi-weekly-action-info').should('be.undefined')
-    getActionValue('refuel-monthly-action-info').should('be.undefined')
+    getActionInfo('refuel-size-action-info').should('not.have.attr', 'data-value')
+    getActionInfo('refuel-weekly-action-info').should('not.have.attr', 'data-value')
+    getActionInfo('refuel-bi-weekly-action-info').should('not.have.attr', 'data-value')
+    getActionInfo('refuel-monthly-action-info').should('not.have.attr', 'data-value')
   })
 })

@@ -11,18 +11,20 @@ export const DECIMAL_REGEX = /(\d(\.\d+)?)/
 export const DECIMAL_RANGE_REGEX = new RegExp([DECIMAL_REGEX.source, DECIMAL_REGEX.source].join(' - '))
 
 export const getActionValue = (name: string, field?: ActionInfoField) =>
-  getActionInfo(name, field).invoke(TRANSACTION_LOAD_TIMEOUT, 'attr', 'data-value')
+  getActionInfo(name, field).should('have.attr', 'data-value') as unknown as Cypress.Chainable<string>
 
 export const getMetricValue = (name: string) =>
   cy
     .get(`[data-testid="${name}-value"]`, TRANSACTION_LOAD_TIMEOUT)
-    .invoke(TRANSACTION_LOAD_TIMEOUT, 'attr', 'data-value')
+    .should('have.attr', 'data-value') as unknown as Cypress.Chainable<string>
 
 export const checkEstimatedTxCost = ({
   hasValue = true,
   name = 'estimated-tx-cost',
 }: { hasValue?: boolean; name?: string } = {}) =>
-  hasValue ? getActionValue(name).should('include', '$') : getActionValue(name).should('be.undefined')
+  hasValue
+    ? getActionValue(name).should('include', '$')
+    : getActionInfo(name).should('not.have.attr', 'data-value')
 
 export type DebtCheck = { current: Decimal; future: Decimal; symbol: string }
 /**
