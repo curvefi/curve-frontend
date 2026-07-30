@@ -1,7 +1,7 @@
-import { LOAD_TIMEOUT } from '@cy/support/ui'
 import type { MakeOptional } from '@ui-kit/types/util'
 import type { TenderlyAccount } from './account'
 import type { TestnetProps } from './types'
+import { requestTenderlyControlPlane } from './vnet-request'
 
 /** Implemented as per https://docs.tenderly.co/reference/api#/operations/createVnet */
 export type CreateVirtualTestnetOptions = Pick<TestnetProps, 'slug' | 'virtual_network_config' | 'sync_state_config'> &
@@ -30,20 +30,12 @@ export const createVirtualTestnet = ({
   accessKey,
   ...createOptions
 }: TenderlyAccount & CreateVirtualTestnetOptions) =>
-  cy
-    .request({
+  requestTenderlyControlPlane<CreateVirtualTestnetResponse>({
+    errorMessage: `Failed to create virtual testnet '${createOptions.slug}'`,
+    request: {
       method: 'POST',
       url: `https://api.tenderly.co/api/v1/account/${accountSlug}/project/${projectSlug}/vnets`,
       headers: { 'Content-Type': 'application/json', Accept: 'application/json', 'X-Access-Key': accessKey },
       body: createOptions,
-      failOnStatusCode: false,
-      ...LOAD_TIMEOUT,
-    })
-    .then(response => {
-      if (!response.isOkStatusCode) {
-        throw new Error(
-          `Failed to create virtual testnet '${createOptions.slug}': ${response.status} ${response.statusText}`,
-        )
-      }
-      return response.body as CreateVirtualTestnetResponse
-    })
+    },
+  }).then(response => response.body)

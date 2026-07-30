@@ -1,6 +1,6 @@
-import { LOAD_TIMEOUT } from '@cy/support/ui'
 import type { TenderlyAccount } from './account'
 import type { TestnetProps } from './types'
+import { requestTenderlyControlPlane } from './vnet-request'
 
 /** Implemented as per https://docs.tenderly.co/reference/api#/operations/getVnet */
 export type GetVirtualTestnetOptions = {
@@ -29,8 +29,9 @@ export const getVirtualTestnet = ({
   accessKey,
   vnetId,
 }: TenderlyAccount & GetVirtualTestnetOptions) =>
-  cy
-    .request({
+  requestTenderlyControlPlane<GetVirtualTestnetResponse>({
+    errorMessage: `Failed to get virtual testnet '${vnetId}'`,
+    request: {
       method: 'GET',
       url: `https://api.tenderly.co/api/v1/account/${accountSlug}/project/${projectSlug}/vnets/${vnetId}`,
       headers: {
@@ -38,12 +39,5 @@ export const getVirtualTestnet = ({
         Accept: 'application/json',
         'X-Access-Key': accessKey,
       },
-      failOnStatusCode: false,
-      ...LOAD_TIMEOUT,
-    })
-    .then(response => {
-      if (!response.isOkStatusCode) {
-        throw new Error(`Failed to get virtual testnet '${vnetId}': ${response.status} ${response.statusText}`)
-      }
-      return response.body as GetVirtualTestnetResponse
-    })
+    },
+  }).then(response => response.body)

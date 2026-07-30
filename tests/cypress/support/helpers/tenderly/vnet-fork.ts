@@ -1,6 +1,6 @@
-import { LOAD_TIMEOUT } from '@cy/support/ui'
 import type { TenderlyAccount } from './account'
 import type { TestnetProps } from './types'
+import { requestTenderlyControlPlane } from './vnet-request'
 
 /** Implemented as per https://docs.tenderly.co/reference/api#/operations/forkVnet */
 export type ForkVirtualTestnetOptions = Partial<Pick<TestnetProps, 'slug' | 'display_name' | 'description'>> & {
@@ -38,8 +38,9 @@ export const forkVirtualTestnet = ({
   accessKey,
   ...forkOptions
 }: TenderlyAccount & ForkVirtualTestnetOptions) =>
-  cy
-    .request({
+  requestTenderlyControlPlane<ForkVirtualTestnetResponse>({
+    errorMessage: `Failed to fork virtual testnet '${forkOptions.vnet_id}'`,
+    request: {
       method: 'POST',
       url: `https://api.tenderly.co/api/v1/account/${accountSlug}/project/${projectSlug}/vnets/fork`,
       headers: {
@@ -48,14 +49,5 @@ export const forkVirtualTestnet = ({
         'X-Access-Key': accessKey,
       },
       body: forkOptions,
-      failOnStatusCode: false,
-      ...LOAD_TIMEOUT,
-    })
-    .then(response => {
-      if (!response.isOkStatusCode) {
-        throw new Error(
-          `Failed to fork virtual testnet '${forkOptions.vnet_id}': ${response.status} ${response.statusText}`,
-        )
-      }
-      return response.body as ForkVirtualTestnetResponse
-    })
+    },
+  }).then(response => response.body)

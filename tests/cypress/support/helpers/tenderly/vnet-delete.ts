@@ -1,6 +1,6 @@
-import { LOAD_TIMEOUT } from '@cy/support/ui'
 import type { TenderlyAccount } from './account'
 import type { TestnetProps } from './types'
+import { requestTenderlyControlPlane } from './vnet-request'
 
 /** Implemented as per https://docs.tenderly.co/reference/api#/operations/deleteVnets */
 export type DeleteVirtualTestnetOptions = {
@@ -14,22 +14,15 @@ export const deleteVirtualTestnet = ({
   accessKey,
   vnetId,
 }: TenderlyAccount & DeleteVirtualTestnetOptions) =>
-  cy
-    .request({
+  requestTenderlyControlPlane<unknown>({
+    errorMessage: `Failed to delete virtual testnet '${JSON.stringify(vnetId)}'`,
+    isAccepted: response => response.isOkStatusCode || response.status === 404,
+    request: {
       method: 'DELETE',
       url: `https://api.tenderly.co/api/v1/account/${accountSlug}/project/${projectSlug}/vnets/${vnetId}`,
       headers: {
         'Content-Type': 'application/json',
         'X-Access-Key': accessKey,
       },
-      failOnStatusCode: false,
-      ...LOAD_TIMEOUT,
-    })
-    .then(response => {
-      if (!response.isOkStatusCode) {
-        throw new Error(
-          `Failed to delete virtual testnet '${JSON.stringify(vnetId)}': ${response.status} ${response.statusText}`,
-        )
-      }
-      return response
-    })
+    },
+  })

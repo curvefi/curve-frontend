@@ -1,7 +1,11 @@
+import { createPublicClient, http } from 'viem'
 import { generatePrivateKey } from 'viem/accounts'
+import { LOAD_TIMEOUT } from '@cy/support/ui'
 import type { Hex } from '@primitives/address.utils'
+import { assert } from '@primitives/objects.utils'
 import { resetWagmiConfigForTests } from '@ui-kit/features/connect-wallet/lib/wagmi/wagmi-config'
 import { DeepPartial } from '@ui-kit/types/util'
+import { waitFor } from '@ui-kit/utils/time.utils'
 import { getTenderlyAccount, loadTenderlyAccount } from './account'
 import {
   createVirtualTestnet as createVirtualTestnetRequest,
@@ -28,9 +32,51 @@ import { createTenderlyWagmiConfig } from './wagmi'
 export const getRpcUrls = (
   vnet: CreateVirtualTestnetResponse | GetVirtualTestnetResponse | ForkVirtualTestnetResponse,
 ) => ({
-  adminRpcUrl: vnet.rpcs.find(rpc => rpc.name === 'Admin RPC')!.url,
-  publicRpcUrl: vnet.rpcs.find(rpc => rpc.name === 'Public RPC')!.url,
+  adminRpcUrl: assert(vnet.rpcs.find(rpc => rpc.name === 'Admin RPC')?.url, 'Tenderly Admin RPC URL is missing'),
+  publicRpcUrl: assert(vnet.rpcs.find(rpc => rpc.name === 'Public RPC')?.url, 'Tenderly Public RPC URL is missing'),
 })
+
+type VirtualTestnetResponse = CreateVirtualTestnetResponse | GetVirtualTestnetResponse | ForkVirtualTestnetResponse
+
+const waitForRpcEndpoint = async ({
+  expectedChainId,
+  name,
+  rpcUrl,
+}: {
+  expectedChainId: number
+  name: string
+  rpcUrl: string
+}) => {
+  const client = createPublicClient({ transport: http(rpcUrl) })
+
+  await waitFor(
+    async () => {
+      let rpcState: readonly [number, bigint]
+      try {
+        rpcState = await Promise.all([client.getChainId(), client.getBlockNumber()])
+      } catch {
+        return false
+      }
+
+      const [chainId, blockNumber] = rpcState
+      assert(chainId === expectedChainId, `${name} returned chain ID ${chainId}; expected ${expectedChainId}`)
+      return blockNumber >= 0n
+    },
+    { ...LOAD_TIMEOUT, message: `${name} did not become usable` },
+  )
+}
+
+const waitForVirtualTestnetRpcs = (vnet: VirtualTestnetResponse) =>
+  cy.then(LOAD_TIMEOUT, async () => {
+    const { adminRpcUrl, publicRpcUrl } = getRpcUrls(vnet)
+    const expectedChainId = Number(vnet.virtual_network_config.chain_config.chain_id)
+    assert(Number.isSafeInteger(expectedChainId), `Invalid Tenderly chain ID: ${expectedChainId}`)
+
+    await Promise.all([
+      waitForRpcEndpoint({ expectedChainId, name: 'Tenderly Admin RPC', rpcUrl: adminRpcUrl }),
+      waitForRpcEndpoint({ expectedChainId, name: 'Tenderly Public RPC', rpcUrl: publicRpcUrl }),
+    ])
+  })
 
 export type TenderlyWagmiConfigFromVNet = {
   vnet: CreateVirtualTestnetResponse | GetVirtualTestnetResponse | ForkVirtualTestnetResponse
@@ -79,7 +125,10 @@ export function withVirtualTestnet(opts: () => GetVirtualTestnetOptions) {
 
   before(() => {
     loadTenderlyAccount().then(tenderlyAccount =>
-      getVirtualTestnetRequest({ ...tenderlyAccount, ...opts() }).then(fetched => (vnet = fetched)),
+      getVirtualTestnetRequest({ ...tenderlyAccount, ...opts() }).then(fetched => {
+        vnet = fetched
+        return waitForVirtualTestnetRpcs(fetched)
+      }),
     )
   })
 
@@ -108,7 +157,6 @@ export function createVirtualTestnet(
   opts: (uuid: number) => DeepPartial<CreateVirtualTestnetOptions> & { chain_id?: number },
 ) {
   let vnet: CreateVirtualTestnetResponse
-  let shouldDeleteVnet = true
 
   before(() => {
     const uuid = Cypress._.random(0, 1e6)
@@ -123,21 +171,16 @@ export function createVirtualTestnet(
     }
 
     loadTenderlyAccount().then(account =>
-      createVirtualTestnetRequest(Cypress._.merge(account, defaultOptions, givenOptions)).then(
-        created => (vnet = created),
-      ),
+      createVirtualTestnetRequest(Cypress._.merge(account, defaultOptions, givenOptions)).then(created => {
+        vnet = created
+        return waitForVirtualTestnetRpcs(created)
+      }),
     )
-  })
-
-  afterEach(function (this: Mocha.Context) {
-    // delete vnet only if all tests in the current suite passed
-    shouldDeleteVnet &&= this.currentTest?.state === 'passed'
   })
 
   after(() => {
     if (!vnet) return
-    if (!shouldDeleteVnet) return console.warn(`Keeping vnet '${vnet.id}' alive because of test failures.`)
-    deleteVirtualTestnetRequest({ ...getTenderlyAccount(), vnetId: vnet.id })
+    return deleteVirtualTestnetRequest({ ...getTenderlyAccount(), vnetId: vnet.id })
   })
 
   return () => vnet
@@ -171,14 +214,17 @@ export function forkVirtualTestnet(
     const defaultOpts = { wait: true }
     loadTenderlyAccount().then(tenderlyAccount => {
       const finalOpts = Cypress._.merge(tenderlyAccount, defaultOpts, opts(uuid))
-      forkVirtualTestnetRequest(finalOpts).then(forked => (vnet = forked))
+      forkVirtualTestnetRequest(finalOpts).then(forked => {
+        vnet = forked
+        return waitForVirtualTestnetRpcs(forked)
+      })
     })
   })
 
   after(() => {
     if (!vnet) return
     const tenderlyAccount = getTenderlyAccount()
-    deleteVirtualTestnetRequest({ ...tenderlyAccount, vnetId: vnet.id })
+    return deleteVirtualTestnetRequest({ ...tenderlyAccount, vnetId: vnet.id })
   })
 
   return () => vnet
