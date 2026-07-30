@@ -1,4 +1,4 @@
-import { useUserHealthValue } from '@/llamalend/queries/user/user-health.query'
+import { useUserHealthValues } from '@/llamalend/queries/user/user-health.query'
 import type { Theme } from '@mui/material/styles'
 import { Decimal } from '@primitives/decimal.utils'
 import { maybe, maybes, recordEntries, recordValues } from '@primitives/objects.utils'
@@ -30,96 +30,54 @@ const LIQUIDATION_BUFFER_THRESHOLDS: Record<
   /** Below this value the position is hard liquidated */
   hardLiquidation: 0,
   /** Below this value the position is critical */
-  critical: 2.5,
+  critical: 10,
   /** Below this value the position is risky. Above it is light */
   risky: 100,
 } as const
 
 export const clampPercentage = (health: number | undefined | null): number => Math.max(0, Math.min(health ?? 0, 100))
 
-const getHealthState = (health: number): HealthState =>
+export const getHealthState = (health: number): HealthState =>
   recordEntries(HEALTH_THRESHOLDS).find(([, threshold]) => health <= threshold)?.[0] ?? HEALTH_UPPER_BOUND_STATE
 
-const getLiquidationBufferState = (liquidationBuffer: number): LiquidationBufferState =>
+export const getLiquidationBufferState = (liquidationBuffer: number): LiquidationBufferState =>
   recordEntries(LIQUIDATION_BUFFER_THRESHOLDS).find(([, threshold]) => liquidationBuffer <= threshold)?.[0] ??
   LIQ_BUFFER_UPPER_BOUND_STATE
 
-export const getHealthColor = (state: HealthAndBufferState | undefined) => (theme: Theme) => {
+export const getHealthColor = (state: HealthState | undefined) => (theme: Theme) => {
   const { Layer } = theme.design
   const colors = {
-    pristine: Layer.Feedback.Success,
+    pristine: Layer.Feedback.Info,
     good: Layer.Feedback.Success,
     caution: Layer.Feedback.Caution,
-    tight: Layer.Feedback.Warning,
-    softLiquidation: undefined,
-    light: undefined,
-    risky: undefined,
-    critical: undefined,
-    hardLiquidation: Layer.Feedback.Error,
-  } satisfies Record<HealthAndBufferState, string | undefined>
+    tight: Layer.Feedback.Error,
+    softLiquidation: Layer.Feedback.Error,
+  } satisfies Record<HealthState, string | undefined>
 
   return maybe(state, s => colors[s])
 }
 
-export const getLiquidationBufferColor = (state: HealthAndBufferState | undefined) => (theme: Theme) => {
-  const { Color, Layer } = theme.design
+export const getLiquidationBufferColor = (state: LiquidationBufferState | undefined) => (theme: Theme) => {
+  const { Layer } = theme.design
   const colors = {
-    pristine: Color.Neutral[500],
-    good: Color.Neutral[500],
-    caution: Color.Neutral[500],
-    tight: Color.Neutral[500],
-    softLiquidation: Color.Neutral[500],
-    light: Layer.Feedback.Caution,
+    light: Layer.Feedback.Info,
     risky: Layer.Feedback.Warning,
     critical: Layer.Feedback.Error,
     hardLiquidation: Layer.Feedback.Error,
-  } satisfies Record<HealthAndBufferState, string | undefined>
+  } satisfies Record<LiquidationBufferState, string | undefined>
 
   return maybe(state, s => colors[s])
 }
 
-export const getHealthPercent = (state: HealthAndBufferState | undefined, health: Decimal | null | undefined) => {
-  if (health == null || state == null) return 0
-  const healthPercent = clampPercentage((+health / recordValues(HEALTH_THRESHOLDS).at(-1)!) * 100)
-  const percent = {
-    pristine: 100,
-    good: healthPercent,
-    caution: healthPercent,
-    tight: healthPercent,
-    softLiquidation: 0,
-    light: 0,
-    risky: 0,
-    critical: 0,
-    hardLiquidation: 100,
-  } satisfies Record<HealthAndBufferState, number>
+export const getHealthPercent = (health: Decimal | null | undefined) =>
+  health == null ? 0 : clampPercentage((+health / recordValues(HEALTH_THRESHOLDS).at(-1)!) * 100)
 
-  return percent[state]
-}
+export const getLiquidationBufferPercent = (liquidationBuffer: Decimal | null | undefined) =>
+  liquidationBuffer == null
+    ? 0
+    : clampPercentage((+liquidationBuffer / recordValues(LIQUIDATION_BUFFER_THRESHOLDS).at(-1)!) * 100)
 
-export const getLiquidationBufferPercent = (
-  state: HealthAndBufferState | undefined,
-  liquidationBuffer: Decimal | null | undefined,
-) => {
-  if (liquidationBuffer == null || state == null) return 0
-  const liquidationBufferPercent = clampPercentage(
-    (+liquidationBuffer / recordValues(LIQUIDATION_BUFFER_THRESHOLDS).at(-1)!) * 100,
-  )
-  const percent = {
-    pristine: liquidationBufferPercent,
-    good: liquidationBufferPercent,
-    caution: liquidationBufferPercent,
-    tight: liquidationBufferPercent,
-    softLiquidation: liquidationBufferPercent,
-    light: 100,
-    risky: liquidationBufferPercent,
-    critical: liquidationBufferPercent,
-    hardLiquidation: 100,
-  } satisfies Record<HealthAndBufferState, number>
-
-  return percent[state]
-}
-
-export const getHealthDetailsState = (healthData: QueryData<typeof useUserHealthValue> | undefined) => {
+export const getHealthDetailsState = (healthData: QueryData<typeof useUserHealthValues> | undefined) => {
   const { health, liquidationBuffer } = healthData ?? {}
   // it returns the current type of the position, to either show the "health" or the "liquidationBuffer"
   const type: HealthType =
@@ -129,14 +87,19 @@ export const getHealthDetailsState = (healthData: QueryData<typeof useUserHealth
         : 'health',
     ) ?? 'health'
 
-  const state = maybes([health, liquidationBuffer], (health, liquidationBuffer) => {
-    const stateByType = {
-      health: getHealthState(+health),
-      liquidationBuffer: getLiquidationBufferState(+liquidationBuffer),
-    } satisfies Record<HealthType, HealthAndBufferState>
+  const states = maybes(
+    [health, liquidationBuffer],
+    (health, liquidationBuffer) =>
+      ({
+        health: getHealthState(+health),
+        liquidationBuffer: getLiquidationBufferState(+liquidationBuffer),
+      }) satisfies Record<HealthType, HealthAndBufferState>,
+  )
 
-    return stateByType[type]
-  })
-
-  return { state, type }
+  return {
+    state: states?.[type],
+    healthState: states?.health,
+    liquidationBufferState: states?.liquidationBuffer,
+    type,
+  }
 }

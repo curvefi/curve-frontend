@@ -3,17 +3,14 @@ import { tokenMetric } from '@/llamalend/llama.utils'
 import { BorrowAprMetric } from '@/llamalend/widgets/BorrowAprMetric'
 import { MarketMetricGrid } from '@/llamalend/widgets/MarketMetricGrid'
 import { MarketSupplyRateTooltipContent, AvailableLiquidityTooltip, TooltipOptions } from '@/llamalend/widgets/tooltips'
-import Stack from '@mui/material/Stack'
 import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketType, MarketRateType } from '@ui-kit/types/market'
 import { mapQuery, type QueryProp } from '@ui-kit/types/util'
-import { AVERAGE_CATEGORIES } from '@ui-kit/utils'
+import { AVERAGE_CATEGORIES, formatCappedRateValue } from '@ui-kit/utils'
 import type { AvailableLiquidity, BorrowRate, SupplyRate } from './hooks/usePageHeader'
 
-const { Spacing } = SizesAndSpaces
 const METRIC_CATEGORY = 'llamalend.marketHeader'
 
 export const MetricsRow = ({
@@ -23,8 +20,7 @@ export const MetricsRow = ({
   marketType,
   collateral,
   borrowToken,
-  compact,
-  primaryRateType,
+  rateType,
 }: {
   borrowRate: QueryProp<BorrowRate>
   supplyRate?: QueryProp<SupplyRate>
@@ -32,23 +28,26 @@ export const MetricsRow = ({
   marketType: MarketType
   collateral: { symbol: string } | undefined
   borrowToken: { symbol: string } | undefined
-  compact: boolean
-  primaryRateType: MarketRateType
+  rateType: MarketRateType
 }) => {
   const supplyRatePeriod = supplyRate?.data ? AVERAGE_CATEGORIES[supplyRate.data.averageCategory].period : null
+
   const borrowRateMetric = (
     <BorrowAprMetric marketType={marketType} borrowRate={borrowRate} collateralSymbol={collateral?.symbol} />
   )
+
   const supplyRateMetric = supplyRate && (
     <Metric
       category={METRIC_CATEGORY}
       testId="market-net-supply-apy"
       label={NET_SUPPLY_RATE_TITLE}
-      value={mapQuery(supplyRate, data => data.totalMinBoost)}
-      valueOptions={{ unit: 'percentage' }}
+      value={mapQuery(supplyRate, ({ totalMinBoost }) => totalMinBoost)}
+      valueOptions={{ unit: 'percentage', abbreviate: false, formatter: formatCappedRateValue }}
       notional={mapQuery(supplyRate, ({ totalAverageMinBoost }) =>
         maybe(totalAverageMinBoost, value => ({
           value,
+          abbreviate: false,
+          formatter: formatCappedRateValue,
           unit: { symbol: `% ${supplyRatePeriod} Avg`, position: 'suffix' as const },
         })),
       )}
@@ -77,6 +76,7 @@ export const MetricsRow = ({
       }}
     />
   )
+
   const liquidityMetrics = (
     <>
       {marketType === MarketType.Lend && (
@@ -113,40 +113,15 @@ export const MetricsRow = ({
       />
     </>
   )
-  const rateMetrics =
-    primaryRateType === MarketRateType.Supply ? (
-      <>
-        {supplyRateMetric}
-        {borrowRateMetric}
-      </>
-    ) : (
-      <>
-        {borrowRateMetric}
-        {supplyRateMetric}
-      </>
-    )
 
-  return compact ? (
+  const [primaryRateMetric, secondaryRateMetric] =
+    rateType === MarketRateType.Supply ? [supplyRateMetric, borrowRateMetric] : [borrowRateMetric, supplyRateMetric]
+
+  return (
     <MarketMetricGrid>
-      {rateMetrics}
+      {primaryRateMetric}
+      {secondaryRateMetric}
       {liquidityMetrics}
     </MarketMetricGrid>
-  ) : (
-    <Stack
-      direction="row"
-      sx={{
-        display: { mobile: 'grid', desktop: 'flex' },
-        gridTemplateColumns: { mobile: 'repeat(2, minmax(0, 1fr))', desktop: 'none' },
-        columnGap: Spacing.xxl,
-        rowGap: Spacing.md,
-        alignItems: 'center',
-        flexWrap: 'wrap',
-        justifyContent: 'start',
-      }}
-    >
-      {borrowRateMetric}
-      {supplyRateMetric}
-      {liquidityMetrics}
-    </Stack>
   )
 }

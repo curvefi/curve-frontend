@@ -20,7 +20,7 @@ import { combineQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { MetricProps } from '@ui-kit/shared/ui/Metric'
 import { MarketType, MarketVersion } from '@ui-kit/types/market'
-import { QueryProp } from '@ui-kit/types/util'
+import { QueryProp, toQuery } from '@ui-kit/types/util'
 import { CRVUSD, decimal, decimalMinus, decimalMultiply, decimalSum, formatToken } from '@ui-kit/utils'
 import { SOLVENCY_THRESHOLDS } from './markets.constants'
 
@@ -41,7 +41,7 @@ export const tryGetMarket = (marketId: MarketTemplate | string | null | undefine
 /**
  * Checks if a market supports leverage or not. A market supports leverage if:
  * - Lend Market and its `leverage` property has leverage
- * - Mint Market and either its `leverageZap` is not the zero address or its `leverageV2` property has leverage
+ * - Mint Market and either ZapV2, its `leverageZap`, or its `leverageV2` property has leverage
  */
 export const hasLeverage = <T extends MarketTemplate | undefined>(market: T) =>
   maybe(
@@ -55,7 +55,7 @@ export const hasLeverage = <T extends MarketTemplate | undefined>(market: T) =>
  *
  * Returns true for:
  * - Lend markets with leverage support
- * - Mint markets with V2 leverage support (marketId >= 6)
+ * - Mint markets with ZapV2 or V2 leverage support
  *
  * Note: Some older Mint markets (marketId < 6) support leverage operations (open/close positions)
  * but cannot calculate the leverage multiplier value.
@@ -81,7 +81,7 @@ const hasV1Deleverage = (market: MarketTemplate) =>
 
 // hasV2Leverage works for deleverage as well
 export const hasDeleverage = (market: MarketTemplate) =>
-  hasV1Deleverage(market) || (market instanceof MintMarketTemplate && hasV2Leverage(market))
+  hasZapV2(market) || hasV1Deleverage(market) || (market instanceof MintMarketTemplate && hasV2Leverage(market))
 
 export const hasResetPosition = (market: MarketTemplate | null | undefined): market is LendMarketTemplate<'v2'> =>
   market instanceof LendMarketTemplate && market.version === 'v2'
@@ -100,15 +100,16 @@ export const canRepayFromStateCollateral = <T extends MarketTemplate | undefined
   maybe(market, market => (market instanceof MintMarketTemplate ? hasDeleverage(market) : hasLeverage(market)))
 
 export const canRepayFromUserCollateral = <T extends MarketTemplate | undefined>(market: T) =>
-  maybe(market, market => (market instanceof MintMarketTemplate ? hasV2Leverage(market) : hasLeverage(market)))
+  maybe(market, market =>
+    market instanceof MintMarketTemplate ? hasZapV2(market) || hasV2Leverage(market) : hasLeverage(market),
+  )
 
 export const canLeverageUserBorrowed = <T extends MarketTemplate | undefined>(market: T) =>
   maybe(market, market => hasLeverage(market) && !hasZapV2(market))
 
 export const hasVault = (market: MarketTemplate) => market instanceof LendMarketTemplate && 'vault' in market
 
-export const hasZapV2 = (market: MarketTemplate) =>
-  !isZapV2Disabled() && market instanceof LendMarketTemplate && market.leverageZapV2.hasLeverage()
+export const hasZapV2 = (market: MarketTemplate) => !isZapV2Disabled() && market.leverageZapV2.hasLeverage()
 
 export const isRouterRequired = (
   type: 'zapV2' | 'V0' | 'V1' | 'V2' | 'deleverage' | 'unleveragedMint' | 'unleveragedLend' | 'unleveraged',
@@ -524,7 +525,7 @@ export const tokenMetric = ({
     notional:
       notional ??
       (usdRate &&
-        combineQueries([value, usdRate], (value, usdRate) =>
+        combineQueries([toQuery(value), usdRate], (value, usdRate) =>
           maybe(decimal(value), value => ({ value: decimalMultiply(value, usdRate), unit: 'dollar' as const })),
         )),
   }) satisfies Pick<MetricProps, 'value' | 'valueOptions' | 'notional'>

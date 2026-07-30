@@ -2,10 +2,12 @@ import { useMemo } from 'react'
 import type { Address } from 'viem'
 import { useConnection } from 'wagmi'
 import type { Chain } from '@curvefi/prices-api'
+import { maybes } from '@primitives/objects.utils'
 import { useForm } from '@ui-kit/features/forms'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { useTokenDecimals } from '@ui-kit/hooks/useTokenDecimals'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { mapQuery, q } from '@ui-kit/types/util'
 import { useRefuelMutation } from '../mutations/refuel.mutation'
 import { useRefuelPool } from '../queries/pools.query'
 import type { RefuelFormValues, Tokens } from '../types'
@@ -15,6 +17,9 @@ const userDefaultValues = {
   tokenAAmount: undefined,
   tokenBAmount: undefined,
 } as const satisfies RefuelFormValues
+
+const maybeToken = (token: { address: Address; symbol: string } | undefined, decimals: number | undefined) =>
+  maybes([token, decimals], ({ address, symbol }, decimals) => ({ address, symbol, decimals }))
 
 export const useRefuelForm = ({
   chainId,
@@ -27,35 +32,31 @@ export const useRefuelForm = ({
 }) => {
   const { address: userAddress } = useConnection()
 
-  const { data: pool, isLoading: isPoolLoading } = useRefuelPool({ blockchainId, poolAddress })
-  const coins = useMemo(() => pool?.coins.toSorted((x, y) => x.poolIndex - y.poolIndex), [pool?.coins])
+  const pool = useRefuelPool({ blockchainId, poolAddress })
+  const [coinA, coinB] = useMemo(
+    () => pool.data?.coins.toSorted((x, y) => x.poolIndex - y.poolIndex) ?? [],
+    [pool.data?.coins],
+  )
 
-  const tokenADecimals = useTokenDecimals({ chainId, tokenAddress: coins?.[0]?.address })
-  const tokenBDecimals = useTokenDecimals({ chainId, tokenAddress: coins?.[1]?.address })
+  const tokenADecimals = useTokenDecimals({ chainId, tokenAddress: coinA?.address })
+  const tokenBDecimals = useTokenDecimals({ chainId, tokenAddress: coinB?.address })
 
-  const tokenABalance = useTokenBalance({ chainId, userAddress, tokenAddress: coins?.[0]?.address })
-  const tokenBBalance = useTokenBalance({ chainId, userAddress, tokenAddress: coins?.[1]?.address })
+  const tokenABalance = useTokenBalance({ chainId, userAddress, tokenAddress: coinA?.address })
+  const tokenBBalance = useTokenBalance({ chainId, userAddress, tokenAddress: coinB?.address })
 
-  const tokenAUsdRate = useTokenUsdRate({ chainId, tokenAddress: coins?.[0]?.address })
-  const tokenBUsdRate = useTokenUsdRate({ chainId, tokenAddress: coins?.[1]?.address })
+  const tokenAUsdRate = useTokenUsdRate({ chainId, tokenAddress: coinA?.address })
+  const tokenBUsdRate = useTokenUsdRate({ chainId, tokenAddress: coinB?.address })
 
   const tokens = useMemo(
     (): Tokens | undefined =>
-      coins != null && tokenADecimals.data != null && tokenBDecimals.data != null
-        ? {
-            tokenA: { address: coins[0].address, symbol: coins[0].symbol, decimals: tokenADecimals.data },
-            tokenB: { address: coins[1].address, symbol: coins[1].symbol, decimals: tokenBDecimals.data },
-          }
-        : undefined,
-    [coins, tokenADecimals.data, tokenBDecimals.data],
+      maybes([maybeToken(coinA, tokenADecimals.data), maybeToken(coinB, tokenBDecimals.data)], (tokenA, tokenB) => ({
+        tokenA,
+        tokenB,
+      })),
+    [coinA, coinB, tokenADecimals.data, tokenBDecimals.data],
   )
 
-  const form = useForm<RefuelFormValues>({
-    defaultValues: userDefaultValues,
-    validation: refuelFormValidationSuite,
-  })
-
-  const values = form.watchValues()
+  const form = useForm<RefuelFormValues>({ defaultValues: userDefaultValues, validation: refuelFormValidationSuite })
 
   const {
     onSubmit: onSubmitRefuel,
@@ -69,29 +70,24 @@ export const useRefuelForm = ({
 
   return {
     form,
-    values,
+    values: form.watchValues(),
     tokenA: {
-      address: coins?.[0]?.address,
-      symbol: coins?.[0]?.symbol,
-      decimals: tokenADecimals.data,
-      balance: tokenABalance.data,
-      usdRate: tokenAUsdRate.data,
-      isLoading: isPoolLoading || tokenADecimals.isLoading || tokenABalance.isLoading || tokenAUsdRate.isLoading,
+      address: coinA?.address,
+      symbol: coinA?.symbol,
+      decimals: q(tokenADecimals),
+      balance: q(tokenABalance),
+      usdRate: q(tokenAUsdRate),
       amountError: formErrors.find(([field]) => field === 'tokenAAmount')?.[1],
     },
     tokenB: {
-      address: coins?.[1]?.address,
-      symbol: coins?.[1]?.symbol,
-      decimals: tokenBDecimals.data,
-      balance: tokenBBalance.data,
-      usdRate: tokenBUsdRate.data,
-      isLoading: isPoolLoading || tokenBDecimals.isLoading || tokenBBalance.isLoading || tokenBUsdRate.isLoading,
+      address: coinB?.address,
+      symbol: coinB?.symbol,
+      decimals: q(tokenBDecimals),
+      balance: q(tokenBBalance),
+      usdRate: q(tokenBUsdRate),
       amountError: formErrors.find(([field]) => field === 'tokenBAmount')?.[1],
     },
-    poolTvl: {
-      usd: pool?.tvlUsd,
-      isLoading: isPoolLoading,
-    },
+    poolTvl: mapQuery(pool, p => p.tvlUsd),
     isPending,
     isDisabled: tokens == null || !formState.isValid || isPending,
     refuelError,

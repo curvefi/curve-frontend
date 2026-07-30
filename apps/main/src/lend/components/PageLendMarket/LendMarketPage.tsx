@@ -7,7 +7,7 @@ import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
 import { networks } from '@/lend/networks'
 import { type MarketUrlParams } from '@/lend/types/lend.types'
 import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/utilsRouter'
-import { MarketOverviewCard } from '@/llamalend/features/market-advanced-information'
+import { MarketOverviewCard } from '@/llamalend/features/market-advanced-information/MarketOverviewCard'
 import { MarketContextProvider } from '@/llamalend/features/market-context'
 import { PositionDetailsComposite } from '@/llamalend/features/market-position-details'
 import { useIsInLiquidation } from '@/llamalend/features/market-position-details/hooks/useUserLiquidationStatus'
@@ -24,9 +24,9 @@ import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useParams } from '@ui-kit/hooks/router'
 import {
-  useLlamaMarketDetailPageV2,
   useMarketResetPosition,
   useMarketMobileFormDrawer,
+  useNewLlamaMarketDetailPage,
 } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
@@ -47,7 +47,7 @@ export const LendMarketPage = () => {
   const { address: userAddress } = useConnection()
   useLendPageTitle(market?.collateral_token?.symbol ?? rMarket, t`Lend`)
   const isMobileFormDrawer = useMarketMobileFormDrawer()
-  const isMarketDetailPageV2 = useLlamaMarketDetailPageV2()
+  const isNewLlamaMarketDetailPage = useNewLlamaMarketDetailPage()
 
   const network = networks[chainId]
   const queryParams = { chainId, marketId: market?.id, userAddress }
@@ -105,47 +105,23 @@ export const LendMarketPage = () => {
               <CreateLoanTabs onPricesUpdated={setPreviewPrices} />
             )),
         }}
-        header={
-          <MarketPageHeader
-            isLoading={isLoading}
-            primaryRateType={MarketRateType.Borrow}
-            metricsBelowTitle={isMarketDetailPageV2}
-          />
-        }
-        pageNavigation={isMarketDetailPageV2 ? <MarketSectionNav sections={MARKET_SECTIONS} /> : undefined}
+        header={<MarketPageHeader isLoading={isLoading} rateType={MarketRateType.Borrow} />}
+        pageNavigation={isNewLlamaMarketDetailPage && <MarketSectionNav sections={MARKET_SECTIONS} />}
       >
         <MarketBanners
           chainId={chainId}
           market={market}
           rewardsBanner={<CampaignRewardsBanner chainId={chainId} market={market} />}
         />
-        {isMarketDetailPageV2 ? (
-          <>
-            <MarketSection id="position-details" ariaLabel={t`Position details`}>
-              <PositionDetailsComposite
-                hasPosition={loanExists}
-                events={collateralEvents}
-                positionLabel={t`Your position`}
-                compact
-              />
-            </MarketSection>
-            <MarketSection id="market-overview" ariaLabel={t`Overview`}>
-              <MarketOverviewCard />
-            </MarketSection>
-          </>
-        ) : (
-          <PositionDetailsComposite
-            hasPosition={loanExists}
-            events={collateralEvents}
-            positionLabel={t`Borrow Details`}
-            compact={false}
-          />
+        <MarketSection id="position-details" ariaLabel={t`Position details`}>
+          <PositionDetailsComposite hasPosition={loanExists} events={collateralEvents} />
+        </MarketSection>
+        {isNewLlamaMarketDetailPage && (
+          <MarketSection id="market-overview" ariaLabel={t`Overview`}>
+            <MarketOverviewCard />
+          </MarketSection>
         )}
-        <MarketInformationComposite
-          rateType={MarketRateType.Borrow}
-          previewPrices={previewPrices}
-          isMarketDetailPageV2={isMarketDetailPageV2}
-        />
+        <MarketInformationComposite rateType={MarketRateType.Borrow} previewPrices={previewPrices} />
       </DetailPageLayout>
     </MarketContextProvider>
   )

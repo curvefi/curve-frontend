@@ -4,37 +4,29 @@ import type { MarketSectionOption } from './types'
 
 const POSITION_SECTION = {
   value: 'position-details',
-  label: t`Position details`,
-  mobileLabel: t`Position`,
+  label: { default: t`Position details`, short: t`Position` },
 } as const
-const OVERVIEW_SECTION = { value: 'market-overview', label: t`Overview` } as const
-const RATES_SECTION = { value: 'historical-rates', label: t`Rates` } as const
+const RATES_SECTION = { value: 'historical-rates', label: { default: t`Rates` } } as const
 const PARAMETERS_SECTION = {
   value: 'market-parameters',
-  label: t`Advanced details`,
-  mobileLabel: t`Advanced`,
+  label: { default: t`Advanced details`, short: t`Advanced` },
 } as const
-const FAQ_SECTION = { value: 'faqs', label: t`FAQs` } as const
+const FAQ_SECTION = { value: 'faqs', label: { default: t`FAQs` } } as const
+const OVERVIEW_SECTION = { value: 'market-overview', label: { default: t`Overview` } } as const
 
-export const getMarketSections = ({
-  rateType,
-  hasPosition = true,
-  showOverview = true,
-}: {
-  rateType: MarketRateType
-  hasPosition?: boolean
-  showOverview?: boolean
-}): readonly MarketSectionOption[] => {
-  const leadingSections = [...(hasPosition ? [POSITION_SECTION] : []), ...(showOverview ? [OVERVIEW_SECTION] : [])]
+export const getMarketSections = ({ rateType }: { rateType: MarketRateType }): readonly MarketSectionOption[] => {
+  const sections = {
+    [MarketRateType.Supply]: [POSITION_SECTION, OVERVIEW_SECTION, RATES_SECTION, PARAMETERS_SECTION, FAQ_SECTION],
+    [MarketRateType.Borrow]: [
+      POSITION_SECTION,
+      OVERVIEW_SECTION,
+      { value: 'price-chart', label: { default: t`Risk & Liquidation`, short: t`Risk` } },
+      RATES_SECTION,
+      { value: 'market-activity', label: { default: t`Market activity`, short: t`Activity` } },
+      PARAMETERS_SECTION,
+      FAQ_SECTION,
+    ],
+  } satisfies Record<MarketRateType, readonly MarketSectionOption[]>
 
-  return rateType === MarketRateType.Supply
-    ? [...leadingSections, RATES_SECTION, PARAMETERS_SECTION, FAQ_SECTION]
-    : [
-        ...leadingSections,
-        { value: 'price-chart', label: t`Risk & Liquidation`, mobileLabel: t`Risk` },
-        RATES_SECTION,
-        { value: 'market-activity', label: t`Market activity`, mobileLabel: t`Activity` },
-        PARAMETERS_SECTION,
-        FAQ_SECTION,
-      ]
+  return sections[rateType]
 }

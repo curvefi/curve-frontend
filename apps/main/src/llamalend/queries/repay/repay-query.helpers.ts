@@ -21,8 +21,8 @@ export const isFullRepayFromDebtToken = (
 
 /**
  * Determines the appropriate repay implementation and its parameters based on the market type and leverage options.
- * We will use V2 leverage if available, then leverage V1 (lend markets only). Otherwise:
- * - mint markets: use deleverage when stateCollateral > 0 and deleverage is supported
+ * We use ZapV2 if available, then V2 leverage, then leverage V1 (lend markets only). Otherwise:
+ * - mint markets use deleverage when stateCollateral > 0 and deleverage is supported
  * - fallback to unleveraged repay from borrowed token
  */
 export function getRepayImplementation(
@@ -36,6 +36,10 @@ export function getRepayImplementation(
   )
   if (market instanceof MintMarketTemplate) {
     if (!hasUserCollateral && !hasStateCollateral) return ['unleveragedMint', market, [userBorrowed]] as const
+    if (hasZapV2(market) && !hasUserBorrowed) {
+      const route = (routeMeta as RouteMutationMeta) ?? parseMutationRoute(market, { routeId, slippage, isRepay: true })
+      return ['zapV2', market.leverageZapV2, [{ stateCollateral, userCollateral, ...route }]] as const
+    }
     if (hasV2Leverage(market))
       return ['V2', market.leverageV2, [stateCollateral, userCollateral, userBorrowed]] as const
     if (hasStateCollateral && !hasUserBorrowed && !hasUserCollateral && hasDeleverage(market))

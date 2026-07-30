@@ -6,7 +6,7 @@ import { parseMutationRoute } from '@ui-kit/entities/router-api'
 
 /**
  * Determines the appropriate borrow more implementation based on market type.
- * We use V2 leverage if available, then leverage V1 (lend markets only).
+ * We use ZapV2 if available, then V2 leverage, then leverage V1 (lend markets only).
  * Otherwise fallback to unleveraged borrow more.
  */
 export function getBorrowMoreImplementation(
@@ -16,8 +16,12 @@ export function getBorrowMoreImplementation(
   const market = getMarket(marketId)
   leverageEnabled ??= false // we don't know if leverage is supported when the API is offline
   return market instanceof MintMarketTemplate
-    ? leverageEnabled && hasV2Leverage(market)
-      ? (['V2', market.leverageV2] as const)
+    ? leverageEnabled
+      ? hasZapV2(market)
+        ? (['zapV2', market.leverageZapV2] as const)
+        : hasV2Leverage(market)
+          ? (['V2', market.leverageV2] as const)
+          : (['unleveraged', market] as const)
       : (['unleveraged', market] as const)
     : leverageEnabled && hasLeverage(market)
       ? hasZapV2(market)

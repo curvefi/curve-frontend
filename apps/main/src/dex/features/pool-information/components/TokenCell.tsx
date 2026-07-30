@@ -21,10 +21,7 @@ export const TokenCell = ({
   explorerUrl?: string
 }) => {
   address = address ?? ('address' in source ? source.address : undefined)
-  const copyAddress = useCopyToClipboard({
-    copyText: address ?? '',
-    confirmationText: t`Address has been copied to clipboard`,
-  })
+  const copyAddress = useCopyToClipboard({ copyText: address })
 
   return (
     <InlineTableCell>
