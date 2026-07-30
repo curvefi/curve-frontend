@@ -1,17 +1,32 @@
+import {
+  REFUEL_API_ALIASES,
+  REFUEL_POOL_ADDRESS,
+  setupRefuelMocks,
+} from '@cy/support/helpers/refuel-mocks'
 import type { AppRoute } from '@cy/support/routes'
 import { API_LOAD_TIMEOUT, LOAD_TIMEOUT } from '@cy/support/ui'
 
-const REFUEL_POOL_ADDRESS = '0x6e5492f8ea2370844ee098a56dd88e1717e4a9c2'
 const REFUEL_ROUTE = `dex/ethereum/pools/${REFUEL_POOL_ADDRESS}/manage-pool` satisfies AppRoute
 
 /** Smol helper to reduce amount of repetition */
 const getTestById = (testId: string, options?: Partial<Cypress.Timeoutable>) =>
   cy.get(`[data-testid="refuel-${testId}"]`, options)
 
+const expectNumericMetric = (testId: string) =>
+  getTestById(testId, API_LOAD_TIMEOUT).should($element => {
+    expect($element.attr('data-value')).to.match(/\d/)
+  })
+
 describe('Refuel page', () => {
+  beforeEach(setupRefuelMocks)
+
   const visitRefuelPage = () => {
     cy.visitWithoutTestConnector(REFUEL_ROUTE)
     cy.location('pathname', LOAD_TIMEOUT).should('equal', `/${REFUEL_ROUTE}`)
+    cy.wait(
+      Object.values(REFUEL_API_ALIASES).map((alias): `@${string}` => `@${alias}`),
+      API_LOAD_TIMEOUT,
+    )
     getTestById('page', LOAD_TIMEOUT).should('be.visible')
   }
 
@@ -35,22 +50,22 @@ describe('Refuel page', () => {
     getTestById('monthly-action-info-value').should('have.attr', 'data-value', '-')
 
     getTestById('pool-information').should('be.visible')
-    getTestById('pool-tvl-value').invoke(API_LOAD_TIMEOUT, 'attr', 'data-value').should('match', /\d/)
-    getTestById('pool-volume-value').invoke('attr', 'data-value').should('match', /\d/)
-    getTestById('pool-fees-value').invoke('attr', 'data-value').should('match', /\d/)
-    getTestById('pool-apr-value').invoke('attr', 'data-value').should('match', /\d/)
+    expectNumericMetric('pool-tvl-value')
+    expectNumericMetric('pool-volume-value')
+    expectNumericMetric('pool-fees-value')
+    expectNumericMetric('pool-apr-value')
 
     getTestById('prices-chart').should('be.visible')
-    getTestById('lp-token-value-value').invoke(API_LOAD_TIMEOUT, 'attr', 'data-value').should('match', /\d/)
-    getTestById('virtual-price-value').invoke('attr', 'data-value').should('match', /\d/)
+    expectNumericMetric('lp-token-value-value')
+    expectNumericMetric('virtual-price-value')
     getTestById('prices-chart').contains('Last price').should('be.visible')
     getTestById('prices-chart').contains('Oracle price').should('be.visible')
     getTestById('prices-chart').contains('Price scale').should('be.visible')
 
     getTestById('budget-chart').should('be.visible')
-    getTestById('shares-value').invoke('attr', 'data-value').should('match', /\d/)
-    getTestById('duration-value').invoke('attr', 'data-value').should('match', /\d/)
-    getTestById('max-ratio-value').invoke('attr', 'data-value').should('match', /\d/)
+    expectNumericMetric('shares-value')
+    expectNumericMetric('duration-value')
+    expectNumericMetric('max-ratio-value')
     getTestById('budget-chart').contains('Refuel shares').should('be.visible')
     getTestById('budget-chart').contains('Unlocked refuel shares').should('be.visible')
 
