@@ -1,9 +1,16 @@
 import { execFileSync, type ExecFileSyncOptionsWithStringEncoding, spawnSync } from 'child_process'
-import { mkdir, readdir, rmdir, unlink } from 'fs/promises'
+import { mkdir, readdir, rmdir, unlink, writeFile } from 'fs/promises'
 import { dirname, join } from 'path'
+import { stripVTControlCharacters } from 'util'
 
 const { BRANCH, WORKFLOW, RUN_ID, REPOSITORY = 'curvefi/curve-frontend' } = process.env
 const DEST_DIR = 'artifacts'
+const MAX_LOG_SIZE = 100 * 1024 * 1024
+
+type WorkflowJob = {
+  databaseId: number
+  name: string
+}
 
 /**
  * Execute a command and return trimmed stdout.
@@ -54,6 +61,45 @@ const findLatestRunId = (branch: string, workflow: string): string =>
 const downloadArtifacts = (runId: string, dest: string) => {
   runStreaming('gh', ['run', 'download', runId, '--repo', REPOSITORY, '--dir', dest])
 }
+
+const getFailedJobs = (runId: string): WorkflowJob[] =>
+  JSON.parse(
+    run('gh', [
+      'run',
+      'view',
+      runId,
+      '--repo',
+      REPOSITORY,
+      '--json',
+      'jobs',
+      '--jq',
+      '[.jobs[] | select(.conclusion == "failure") | {databaseId, name}]',
+    ]),
+  ) as WorkflowJob[]
+
+const safeFilename = (name: string) => name.replace(/[^a-zA-Z0-9._-]+/g, '-').replace(/^-|-$/g, '')
+
+/** Download the failed steps from each failed job because Actions logs are not workflow artifacts. */
+async function downloadFailedJobLogs(runId: string, dest: string) {
+  const failedJobs = getFailedJobs(runId)
+  if (failedJobs.length === 0) return console.info('No failed job logs to download.')
+
+  const logsDir = join(dest, 'failed-job-logs')
+  await mkdir(logsDir, { recursive: true })
+
+  for (const job of failedJobs) {
+    const log = run('gh', ['run', 'view', '--repo', REPOSITORY, '--job', String(job.databaseId), '--log-failed'], {
+      encoding: 'utf8',
+      maxBuffer: MAX_LOG_SIZE,
+    })
+    const path = join(logsDir, `${job.databaseId}-${safeFilename(job.name)}.log`)
+    await writeFile(path, `${stripVTControlCharacters(log)}\n`)
+    console.info(`Downloaded failed job log: ${path}`)
+  }
+}
+
+const getArtifactCount = (runId: string) =>
+  Number(run('gh', ['api', `repos/${REPOSITORY}/actions/runs/${runId}/artifacts`, '--jq', '.total_count']))
 
 /**
  * Check if a directory contains any .png files (indicating test failures).
@@ -125,8 +171,16 @@ async function downloadLatestArtifacts({ cleanup }: { cleanup: boolean }): Promi
   const destination = join(repoRoot, path)
   await mkdir(destination, { recursive: true })
 
-  console.info(`Downloading artifacts for branch '${branch}' (workflow: ${workflow}, run: ${runId}) into '${path}'...`)
-  downloadArtifacts(runId, destination)
+  console.info(
+    `Downloading failure evidence for branch '${branch}' (workflow: ${workflow}, run: ${runId}) into '${path}'...`,
+  )
+  await downloadFailedJobLogs(runId, destination)
+
+  if (getArtifactCount(runId) > 0) {
+    downloadArtifacts(runId, destination)
+  } else {
+    console.info('No workflow artifacts to download.')
+  }
 
   if (cleanup) {
     console.info('Cleaning up videos from successful tests...')
@@ -140,7 +194,7 @@ async function downloadLatestArtifacts({ cleanup }: { cleanup: boolean }): Promi
  *  node --experimental-strip-types scripts/download-artifacts.ts
  *
  * Custom usage:
- *  cd tests && BRANCH=main WORKFLOW=rpc-tests.yaml DEST_DIR=tests/artifacts \
+ *  cd tests && BRANCH=main WORKFLOW=rpc-tests \
  *    node --experimental-strip-types scripts/download-artifacts.ts --skip-cleanup
  */
 downloadLatestArtifacts({ cleanup: !process.argv.includes('--skip-cleanup') }).catch(error => {

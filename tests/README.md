@@ -48,6 +48,28 @@ TEST_SEED=18273645-1 yarn cy:run:component --browser firefox --spec cypress/comp
 
 GitHub Actions uses the run ID and test iteration as its seed. The same iteration uses the same seed across browsers, and rerunning a GitHub workflow run reuses its seeds.
 
+### Flake Detection
+
+Run repeated component or end-to-end tests with the manual `Cypress Flake Detection` workflow:
+
+```sh
+gh workflow run cypress-flake-detection.yaml --ref <branch> \
+  -f suite=e2e-llamalend \
+  -f browser=all \
+  -f repetitions=10
+```
+
+Use the optional `specs`, `seed_prefix`, and `start_iteration` inputs to target a spec or replay known seeds. RPC specs and video recording are intentionally excluded.
+
+Download uploaded artifacts and the failed step log from every failed job:
+
+```sh
+RUN_ID=<run-id> WORKFLOW=cypress-flake-detection \
+  yarn workspace tests download:artifacts --skip-cleanup
+```
+
+Failure evidence is stored under `artifacts/<branch>/<run-id>`, including a `failed-job-logs` directory. The workflow must exist on the default branch before GitHub allows manual dispatches.
+
 ### Folder Structure
 
 Tests for each DApp are created in the corresponding directory:
