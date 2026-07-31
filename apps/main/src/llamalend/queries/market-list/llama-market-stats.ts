@@ -10,7 +10,7 @@ import { useQueries } from '@tanstack/react-query'
 import { getTokenUsdRateQueryOptions } from '@ui-kit/lib/model/entities/token-usd-rate'
 import type { QueryOptionsData } from '@ui-kit/lib/queries/types'
 import { MarketType } from '@ui-kit/types/market'
-import { DISABLED_Q, mapQuery, q, type Query, type QueryProp } from '@ui-kit/types/util'
+import { DISABLED_Q, mapQuery, q, type QueryProp } from '@ui-kit/types/util'
 import { decimal, requireChainId } from '@ui-kit/utils'
 
 type LendBorrowStats = QueryOptionsData<ReturnType<typeof getUserLendingVaultStatsOptions>>
@@ -67,8 +67,6 @@ const EMPTY_POSITION_QUERIES: UserPositionQueries = {
 export type LlamaMarketRow = LlamaMarket & { positionQueries: UserPositionQueries }
 export type LlamaMarketsTableResult = Omit<LlamaMarketsResult, 'markets'> & { markets: LlamaMarketRow[] }
 
-const toQueryProps = <T>(results: readonly Query<T>[]) => results.map(result => q(result))
-
 const createStatsEntries = (markets: LlamaMarket[], userAddress: Address | undefined) =>
   markets
     .filter(({ userHasPositions }) => userHasPositions?.Borrow)
@@ -111,11 +109,11 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
 
   const statsQueries = useQueries({
     queries: useMemo(() => statsEntries.map(({ options }) => options), [statsEntries]),
-    combine: toQueryProps<BorrowStats>,
+    combine: results => results.map(result => q<BorrowStats>(result)),
   })
   const tokenPriceQueries = useQueries({
     queries: useMemo(() => tokenPriceEntries.map(params => getTokenUsdRateQueryOptions(params)), [tokenPriceEntries]),
-    combine: toQueryProps<TokenPrice>,
+    combine: results => results.map(result => q<TokenPrice>(result)),
   })
 
   return useMemo(() => {
