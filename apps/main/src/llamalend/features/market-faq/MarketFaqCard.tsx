@@ -1,9 +1,11 @@
 import { MarketCardHeader } from '@/llamalend/widgets/MarketCardHeader'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
+import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { EXTERNAL_LINKS } from '@ui/utils'
+import { useNewLlamaMarketDetailPage } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { Accordion } from '@ui-kit/shared/ui/Accordion'
 import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
@@ -59,11 +61,21 @@ const FaqContent = () => (
   </Stack>
 )
 
-export const MarketFaqCard = () => (
-  <Card size="small" data-testid="llamalend-market-faq">
-    <MarketCardHeader title={t`FAQs`} />
-    <CardContent component={Stack} sx={{ backgroundColor: theme => theme.design.Layer[1].Fill }}>
-      <FaqContent />
-    </CardContent>
-  </Card>
-)
+export const MarketFaqCard = () => {
+  const Header = useNewLlamaMarketDetailPage() ? MarketCardHeader : CardHeader
+
+  return (
+    <Card
+      size="small"
+      data-testid="llamalend-market-faq"
+      sx={{
+        '& .MuiCardContent-root': { paddingBlockStart: 0 }, // The FAQ content title handles the block-start padding.
+      }}
+    >
+      <Header title={t`FAQs`} />
+      <CardContent component={Stack} sx={{ backgroundColor: theme => theme.design.Layer[1].Fill }}>
+        <FaqContent />
+      </CardContent>
+    </Card>
+  )
+}

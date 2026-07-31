@@ -4,10 +4,12 @@ import { CrvUsdPriceTooltip } from '@/llamalend/widgets/tooltips/chart/CrvUsdPri
 import type { Timestamp } from '@curvefi/prices-api/timestamp'
 import { CardContent, Stack } from '@mui/material'
 import Card from '@mui/material/Card'
+import CardHeader from '@mui/material/CardHeader'
 import { useTheme } from '@mui/material/styles'
 import { maybe, notFalsyArray } from '@primitives/objects.utils'
 import { formatDate } from '@ui/utils'
 import { useCrvUsdPriceHistory } from '@ui-kit/entities/crvusd-price.query'
+import { useNewLlamaMarketDetailPage } from '@ui-kit/hooks/useFeatureFlags'
 import { useCombinedQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
@@ -62,6 +64,7 @@ const getOneWeekDeviation = (
   })?.deviation
 
 export const CrvUsdPriceChart = () => {
+  const Header = useNewLlamaMarketDetailPage() ? MarketCardHeader : CardHeader
   const [timeOption, setTimeOption] = useState<TimeOption>('1M')
   const [visibleSeries, setVisibleSeries] = useState<PriceSeriesKey[]>(SERIES_CONFIG.map(({ key }) => key))
   const {
@@ -121,7 +124,7 @@ export const CrvUsdPriceChart = () => {
 
   return (
     <Card size="small" data-testid="crvusd-price-chart">
-      <MarketCardHeader
+      <Header
         title={t`Historical crvUSD Peg`}
         action={
           <SelectTimeOption
