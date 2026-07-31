@@ -1,5 +1,5 @@
 import { MarketAdvancedDetails, MarketInfoLayout } from '@/llamalend/features/market-advanced-information'
-import { MarketFaq, MarketFaqCard } from '@/llamalend/features/market-faq'
+import { MarketFaqCard } from '@/llamalend/features/market-faq/MarketFaqCard'
 import { CrvUsdPriceChart } from '@/llamalend/widgets/CrvUsdPriceChart'
 import { MarketSection } from '@/llamalend/widgets/market-section-nav'
 import { MarketCardHeader } from '@/llamalend/widgets/MarketCardHeader'

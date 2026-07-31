@@ -14,7 +14,7 @@ import { FAQ_GROUPS } from './faq-groups'
 const { Spacing } = SizesAndSpaces
 
 const FaqContent = () => (
-  <>
+  <Stack sx={{ gap: Spacing.md }}>
     <Stack>
       {FAQ_GROUPS.map(group => (
         <Stack key={group.title} sx={{ gap: Spacing.xs }}>
@@ -44,7 +44,7 @@ const FaqContent = () => (
       ))}
     </Stack>
 
-    <Stack sx={{ alignItems: 'center', gap: Spacing.sm, paddingBlock: Spacing.md }}>
+    <Stack sx={{ alignItems: 'center', gap: Spacing.sm }}>
       <Typography color="textPrimary" variant="bodyMRegular">
         {t`Want to know even more?`}
       </Typography>
@@ -56,22 +56,11 @@ const FaqContent = () => (
         color="secondary"
       />
     </Stack>
-  </>
-)
-
-export const MarketFaq = () => (
-  <Stack component="section" data-testid="llamalend-market-faq">
-    <Stack sx={{ paddingBlockStart: Spacing.lg, paddingBlockEnd: Spacing.xs }}>
-      <Typography component="h2" color="textSecondary" variant="headingSBold">
-        {t`Frequently Asked Questions`}
-      </Typography>
-    </Stack>
-    <FaqContent />
   </Stack>
 )
 
 export const MarketFaqCard = () => (
-  <Card data-testid="llamalend-market-faq">
+  <Card size="small" data-testid="llamalend-market-faq">
     <MarketCardHeader title={t`FAQs`} />
     <CardContent component={Stack} sx={{ backgroundColor: theme => theme.design.Layer[1].Fill }}>
       <FaqContent />

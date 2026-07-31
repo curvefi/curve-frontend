@@ -2,7 +2,7 @@ import { ChartAndActivityComp, MarketActivityComp } from '@/lend/components/Char
 import { networks } from '@/lend/networks'
 import { MarketAdvancedDetails, MarketInfoLayout } from '@/llamalend/features/market-advanced-information'
 import { useMarketContext } from '@/llamalend/features/market-context'
-import { MarketFaq, MarketFaqCard } from '@/llamalend/features/market-faq'
+import { MarketFaqCard } from '@/llamalend/features/market-faq/MarketFaqCard'
 import { MarketSection } from '@/llamalend/widgets/market-section-nav'
 import { MarketCardHeader } from '@/llamalend/widgets/MarketCardHeader'
 import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
