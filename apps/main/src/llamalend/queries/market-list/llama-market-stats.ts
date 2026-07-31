@@ -68,8 +68,6 @@ export type LlamaMarketRow = LlamaMarket & { positionQueries: UserPositionQuerie
 export type LlamaMarketsTableResult = Omit<LlamaMarketsResult, 'markets'> & { markets: LlamaMarketRow[] }
 
 const toQueryProps = <T>(results: readonly Query<T>[]) => results.map(result => q(result))
-const combineStatsQueries = toQueryProps<BorrowStats>
-const combineTokenPriceQueries = toQueryProps<TokenPrice>
 export const getAvailableQueryData = <T>(query: Query<T>) =>
   query.isLoading || query.error != null ? undefined : query.data
 
@@ -112,19 +110,14 @@ const createTokenPriceEntries = (markets: LlamaMarket[]) =>
 export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address | undefined): LlamaMarketRow[] => {
   const statsEntries = useMemo(() => createStatsEntries(markets, userAddress), [markets, userAddress])
   const tokenPriceEntries = useMemo(() => createTokenPriceEntries(markets), [markets])
-  const statsOptions = useMemo(() => statsEntries.map(({ options }) => options), [statsEntries])
-  const tokenPriceOptions = useMemo(
-    () => tokenPriceEntries.map(params => getTokenUsdRateQueryOptions(params)),
-    [tokenPriceEntries],
-  )
 
   const statsQueries = useQueries({
-    queries: statsOptions,
-    combine: combineStatsQueries,
+    queries: useMemo(() => statsEntries.map(({ options }) => options), [statsEntries]),
+    combine: toQueryProps<BorrowStats>,
   })
   const tokenPriceQueries = useQueries({
-    queries: tokenPriceOptions,
-    combine: combineTokenPriceQueries,
+    queries: useMemo(() => tokenPriceEntries.map(params => getTokenUsdRateQueryOptions(params)), [tokenPriceEntries]),
+    combine: toQueryProps<TokenPrice>,
   })
 
   return useMemo(() => {
@@ -139,18 +132,13 @@ export const useLlamaMarketRows = (markets: LlamaMarket[], userAddress: Address 
     return markets.map(market => {
       if (!market.userHasPositions) return { ...market, positionQueries: EMPTY_POSITION_QUERIES }
 
-      const rawStats = statsByMarket.get(market) ?? DISABLED_Q
-      const borrowedPrice = getPriceQuery(market.chain, market.assets.borrowed.address)
-      const collateralPrice = getPriceQuery(market.chain, market.assets.collateral.address)
-      const stats = mapQuery(rawStats, normalizeMarketStats)
-
       return {
         ...market,
         positionQueries: {
-          stats,
+          stats: mapQuery(statsByMarket.get(market) ?? DISABLED_Q, normalizeMarketStats),
           prices: {
-            borrowed: borrowedPrice,
-            collateral: collateralPrice,
+            borrowed: getPriceQuery(market.chain, market.assets.borrowed.address),
+            collateral: getPriceQuery(market.chain, market.assets.collateral.address),
           },
         },
       }

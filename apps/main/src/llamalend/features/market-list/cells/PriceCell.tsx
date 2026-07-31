@@ -1,10 +1,6 @@
 import type { ReactNode } from 'react'
 import type { LendingPosition } from '@/llamalend/queries/market-list/lending-vaults'
-import {
-  getAvailableQueryData,
-  type LlamaMarketRow,
-  type MarketStats,
-} from '@/llamalend/queries/market-list/llama-market-stats'
+import { type LlamaMarketRow, type MarketStats } from '@/llamalend/queries/market-list/llama-market-stats'
 import { AssetDetails, LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
 import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'
@@ -171,22 +167,16 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarketRow,
   const { assets, lendingPosition } = market
   const columnId = column.id as MarketColumnId
 
-  const { stats: statsQuery, prices: positionPrices } = market.positionQueries
+  const { stats: statsQuery, prices } = market.positionQueries
+  const { data: stats, error: statsError, isLoading: isLoadingStats } = statsQuery
   const usesBorrowStats = columnId === MarketColumnId.UserBorrowed || columnId === MarketColumnId.UserCollateral
-  const stats = usesBorrowStats ? statsQuery.data : undefined
-  const statsError = usesBorrowStats ? statsQuery.error : null
-  const isLoadingStats = usesBorrowStats && statsQuery.isLoading
   const [primaryAsset, secondaryAsset] = getAssets(columnId, assets) ?? [assets.borrowed, undefined]
   const [primaryValue, secondaryValue] = getAssetValues(columnId, stats, lendingPosition) ?? [getValue(), undefined]
-  const primaryPriceQuery =
-    columnId === MarketColumnId.UserCollateral ? positionPrices.collateral : positionPrices.borrowed
-  const secondaryPriceQuery = positionPrices.borrowed
-  const primaryPrice = getAvailableQueryData(primaryPriceQuery)
-  const secondaryPrice = getAvailableQueryData(secondaryPriceQuery)
-  const { isLoading: isPrimaryPriceLoading } = primaryPriceQuery
-  const { isLoading: isSecondaryPriceLoading } = secondaryPriceQuery
+  const primaryPriceQuery = columnId === MarketColumnId.UserCollateral ? prices.collateral : prices.borrowed
+  const { data: primaryPrice, isLoading: isPrimaryPriceLoading } = primaryPriceQuery
+  const { data: secondaryPrice, isLoading: isSecondaryPriceLoading } = prices.borrowed
 
-  if (statsError) {
+  if (usesBorrowStats && statsError) {
     return <ErrorCell error={statsError} />
   }
 
@@ -196,7 +186,7 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarketRow,
   const totalValue = maybe(market.oraclePrice, oraclePrice =>
     decimal((stats?.collateral ?? 0) * oraclePrice + (stats?.borrowToken ?? 0)),
   )
-  const totalValueUsd = mapQuery(positionPrices.borrowed, borrowUsdRate =>
+  const totalValueUsd = mapQuery(prices.borrowed, borrowUsdRate =>
     maybe(totalValue, value => decimalMultiply(value, borrowUsdRate)),
   )
   const tooltipBody = getTooltipBody(columnId, stats, market, totalValue, totalValueUsd)
@@ -239,7 +229,7 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarketRow,
           <AssetValue
             asset={asset}
             value={value}
-            isValueLoading={isLoadingStats}
+            isValueLoading={usesBorrowStats && isLoadingStats}
             tooltipTitle={tooltipTitle}
             tooltipBody={tooltipBody}
           />

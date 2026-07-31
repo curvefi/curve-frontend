@@ -15,14 +15,9 @@ const { Spacing } = SizesAndSpaces
 
 export const HealthCell = ({ getValue, row }: CellContext<LlamaMarketRow, number | undefined>) => {
   const { assets } = row.original
-  const { data: stats, error } = row.original.positionQueries.stats
+  const { data: { status } = {}, error } = row.original.positionQueries.stats
   const health = getValue()
-  const { status } = stats ?? {}
-  const softLiquidation = status === 'softLiquidation'
-  const content = maybe(
-    status,
-    positionStatus => getPositionStatusContent(assets.collateral.symbol, assets.borrowed.symbol)[positionStatus],
-  )
+  const content = status ? getPositionStatusContent(assets.collateral.symbol, assets.borrowed.symbol)[status] : null
 
   if (error) return <ErrorCell error={error} />
 
@@ -34,7 +29,7 @@ export const HealthCell = ({ getValue, row }: CellContext<LlamaMarketRow, number
     >
       <Stack sx={{ gap: Spacing.xs }}>
         {formatNumber(health, 'percent.value')}
-        <HealthBar small health={health} softLiquidation={softLiquidation} />
+        <HealthBar small health={health} softLiquidation={status === 'softLiquidation'} />
       </Stack>
     </Tooltip>
   ))

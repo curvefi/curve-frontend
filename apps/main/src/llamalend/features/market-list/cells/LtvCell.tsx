@@ -11,10 +11,8 @@ import { formatNumber } from '@ui-kit/utils'
 export const LtvCell = ({ getValue, row }: CellContext<LlamaMarketRow, number | undefined>) => {
   const { stats, prices } = row.original.positionQueries
   const ltv = getValue()
-  const isLoading = stats.isLoading || prices.borrowed.isLoading || prices.collateral.isLoading
-  const error = stats.error ?? prices.borrowed.error ?? prices.collateral.error
 
-  if (isLoading) {
+  if (stats.isLoading || prices.borrowed.isLoading || prices.collateral.isLoading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'end' }}>
         <Typography variant="tableCellMBold" sx={{ textAlign: 'right' }}>
@@ -24,7 +22,7 @@ export const LtvCell = ({ getValue, row }: CellContext<LlamaMarketRow, number | 
     )
   }
 
-  if (!ltv || error) {
+  if (!ltv || stats.error || prices.borrowed.error || prices.collateral.error) {
     return (
       <Typography variant="tableCellMBold" color="textSecondary" sx={{ textAlign: 'right' }}>
         -

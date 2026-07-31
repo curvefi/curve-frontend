@@ -29,8 +29,10 @@ export const getUserPositionLtv = ({ positionQueries }: LlamaMarketRow) => {
   const stats = getAvailableQueryData(positionQueries.stats)
   const borrowedUsdRate = getAvailableQueryData(positionQueries.prices.borrowed)
   const collateralUsdRate = getAvailableQueryData(positionQueries.prices.collateral)
-  return maybes([stats, borrowedUsdRate, collateralUsdRate], (stats, borrowedRate, collateralRate) =>
-    calculateLtv(stats.borrowed, stats.collateral, stats.borrowToken, borrowedRate, collateralRate),
+  return maybes(
+    [stats, borrowedUsdRate, collateralUsdRate],
+    (stats, borrowedRate, collateralRate) =>
+      calculateLtv(stats.borrowed, stats.collateral, stats.borrowToken, borrowedRate, collateralRate) || undefined,
   )
 }
 
@@ -58,15 +60,15 @@ const aggregate = (queries: Query<unknown>[], values: (number | undefined)[]) =>
 export const getUserPositionsSummary = (markets: LlamaMarketRow[] = []): UserPositionSummaryMetric[] => {
   const borrowMarkets = markets.filter(({ userHasPositions }) => userHasPositions?.Borrow)
   const supplyMarkets = markets.filter(({ userHasPositions }) => userHasPositions?.Supply)
-  const borrowQueries = borrowMarkets.flatMap(({ positionQueries: { stats, prices } }) => [
-    stats,
-    prices.borrowed,
-    prices.collateral,
-  ])
+  const borrowQueries = borrowMarkets.flatMap(({ positionQueries: { stats, prices } }) => [stats, prices.borrowed])
+  const collateralQueries = [
+    ...borrowQueries,
+    ...borrowMarkets.map(({ positionQueries: { prices } }) => prices.collateral),
+  ]
   const supplyQueries = supplyMarkets.map(({ positionQueries: { prices } }) => prices.borrowed)
 
   return [
-    createMetric(t`Total Collateral`, aggregate(borrowQueries, borrowMarkets.map(getUserCollateralUsd))),
+    createMetric(t`Total Collateral`, aggregate(collateralQueries, borrowMarkets.map(getUserCollateralUsd))),
     createMetric(t`Total Borrowed`, aggregate(borrowQueries, borrowMarkets.map(getUserBorrowedUsd))),
     createMetric(t`Total Supplied`, aggregate(supplyQueries, supplyMarkets.map(getUserSuppliedUsd))),
   ]
