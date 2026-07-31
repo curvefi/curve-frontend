@@ -3,7 +3,11 @@ import { networks } from '@/lend/networks'
 import { ChainId } from '@/lend/types/lend.types'
 import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
 import { useMarketContext } from '@/llamalend/features/market-context'
-import { ChartAndActivityLayout, MarketPriceChartLayout } from '@/llamalend/widgets/ChartAndActivityLayout'
+import {
+  LegacyChartAndActivityLayout,
+  MarketActivityLayout,
+  MarketPriceChartLayout,
+} from '@/llamalend/widgets/ChartAndActivityLayout'
 import { getBlockchainId } from '@curvefi/prices-api'
 import type { Decimal } from '@primitives/decimal.utils'
 import { useNewLlamaMarketDetailPage } from '@ui-kit/hooks/useFeatureFlags'
@@ -70,7 +74,7 @@ export const ChartAndActivityComp = ({ previewPrices }: ChartAndActivityCompProp
   return useNewLlamaMarketDetailPage() ? (
     <MarketPriceChartLayout chart={chart} bands={bands} />
   ) : (
-    <ChartAndActivityLayout
+    <LegacyChartAndActivityLayout
       chart={chart}
       bands={bands}
       activity={{
@@ -94,7 +98,7 @@ export const MarketActivityComp = () => {
   const networkConfig = networks[chainId]
 
   return (
-    <ChartAndActivityLayout
+    <MarketActivityLayout
       activity={{
         network: getBlockchainId(networkConfig?.id),
         ammAddress,

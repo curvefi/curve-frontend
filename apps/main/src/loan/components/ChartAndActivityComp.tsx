@@ -1,5 +1,9 @@
 import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
-import { ChartAndActivityLayout, MarketPriceChartLayout } from '@/llamalend/widgets/ChartAndActivityLayout'
+import {
+  LegacyChartAndActivityLayout,
+  MarketActivityLayout,
+  MarketPriceChartLayout,
+} from '@/llamalend/widgets/ChartAndActivityLayout'
 import { useOhlcChartState } from '@/loan/hooks/useOhlcChartState'
 import { networks } from '@/loan/networks'
 import type { ChainId } from '@/loan/types/loan.types'
@@ -70,7 +74,7 @@ export const ChartAndActivityComp = ({ previewPrices }: ChartAndActivityCompProp
   return useNewLlamaMarketDetailPage() ? (
     <MarketPriceChartLayout chart={chart} bands={bands} />
   ) : (
-    <ChartAndActivityLayout
+    <LegacyChartAndActivityLayout
       chart={chart}
       bands={bands}
       activity={{
@@ -94,7 +98,7 @@ export const MarketActivityComp = () => {
   const networkConfig = networks[chainId]
 
   return (
-    <ChartAndActivityLayout
+    <MarketActivityLayout
       activity={{
         network: getBlockchainId(networkConfig?.id),
         ammAddress,
