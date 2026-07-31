@@ -29,7 +29,7 @@ describe('Refuel page', () => {
     getTestById('bi-weekly-action-info').should('contain.text', 'Bi-weekly')
     getTestById('monthly-action-info').should('contain.text', 'Monthly')
 
-    getTestById('size-action-info-value').should('have.attr', 'data-value', '-')
+    getTestById('size-action-info-value', API_LOAD_TIMEOUT).should('have.attr', 'data-value', '-')
     getTestById('weekly-action-info-value').should('have.attr', 'data-value', '-')
     getTestById('bi-weekly-action-info-value').should('have.attr', 'data-value', '-')
     getTestById('monthly-action-info-value').should('have.attr', 'data-value', '-')
