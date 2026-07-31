@@ -45,10 +45,7 @@ export const { useQuery: useBorrowMorePriceImpact, invalidate: invalidateBorrowM
       slippage,
     })
     if (type === 'unleveraged') return '0' // there is no price impact, user repays debt directly
-    const priceImpact =
-      type === 'zapV2'
-        ? (await impl.borrowMoreExpectedMetrics(...args)).priceImpact
-        : await impl.borrowMorePriceImpact(userBorrowed, debt)
+    const priceImpact = (await impl.borrowMoreExpectedMetrics(...args)).priceImpact
     return decimal(priceImpact) ?? null
   },
   category: 'llamalend.borrowMore',

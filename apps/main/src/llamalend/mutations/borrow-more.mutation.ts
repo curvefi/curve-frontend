@@ -28,15 +28,12 @@ type BorrowMoreOptions = {
 
 const approveBorrowMore = async (
   market: MarketTemplate,
-  { userCollateral = '0', userBorrowed = '0', leverageEnabled }: BorrowMoreMutation,
+  { userCollateral = '0', leverageEnabled }: BorrowMoreMutation,
 ): Promise<Hex[]> => {
   const [type, impl] = getBorrowMoreImplementation(market.id, leverageEnabled)
   switch (type) {
     case 'zapV2':
       return (await impl.borrowMoreApprove({ userCollateral })) as Hex[]
-    case 'V1':
-    case 'V2':
-      return (await impl.borrowMoreApprove(userCollateral, userBorrowed)) as Hex[]
     case 'unleveraged':
       return (await impl.borrowMoreApprove(userCollateral)) as Hex[]
   }
@@ -57,10 +54,6 @@ const borrowMore = async (
   switch (type) {
     case 'zapV2':
       return (await impl.borrowMore(...args)) as Hex
-    case 'V1':
-    case 'V2':
-      await impl.borrowMoreExpectedCollateral(userCollateral, userBorrowed, debt, +slippage)
-      return (await impl.borrowMore(...args, +slippage)) as Hex
     case 'unleveraged':
       return (await impl.borrowMore(...args)) as Hex
   }

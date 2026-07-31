@@ -89,9 +89,6 @@ export const {
             getExpected: getExpectedFn({ chainId, userAddress, zapAddress: getZapAddress(market), slippage }),
           }),
         )
-      case 'V1':
-      case 'V2':
-        return convertNumbers(await impl.createLoanMaxRecv(userCollateral, userBorrowed, range))
       case 'V0': {
         assert(!+userBorrowed, `userBorrowed must be 0 for non-leverage mint markets`)
         const result = await impl.createLoanMaxRecv(userCollateral, range)

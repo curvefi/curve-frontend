@@ -54,9 +54,6 @@ export const { useQuery: useRepayPriceImpact, invalidate: invalidateRepayPriceIm
         })
         return decimal(priceImpact) ?? null
       }
-      case 'V1':
-      case 'V2':
-        return decimal(await impl.repayPriceImpact(stateCollateral, userCollateral)) ?? null
       case 'deleverage':
         return decimal(await impl.priceImpact(stateCollateral)) ?? null
       case 'unleveragedLend':

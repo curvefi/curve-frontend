@@ -32,7 +32,6 @@ export const { useQuery: useCreateLoanPriceImpact, invalidate: invalidateCreateL
     ] as const,
   queryFn: async ({
     marketId,
-    userBorrowed = '0',
     userCollateral = '0',
     debt = '0',
     leverageEnabled,
@@ -50,9 +49,6 @@ export const { useQuery: useCreateLoanPriceImpact, invalidate: invalidateCreateL
         })
         return decimal(priceImpact) ?? null
       }
-      case 'V1':
-      case 'V2':
-        return decimal(await impl.createLoanPriceImpact(userBorrowed, debt)) ?? null
       case 'V0':
         return decimal(await impl.priceImpact(userCollateral, debt)) ?? null
       case 'unleveraged':

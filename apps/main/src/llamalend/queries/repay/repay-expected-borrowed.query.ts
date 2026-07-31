@@ -58,9 +58,6 @@ export const {
     switch (type) {
       case 'zapV2':
         return (await impl.repayExpectedBorrowed(...args)) as RepayExpectedBorrowedResult
-      case 'V1':
-      case 'V2':
-        return (await impl.repayExpectedBorrowed(...args, +slippage)) as RepayExpectedBorrowedResult
       case 'deleverage': {
         const { stablecoins, routeIdx } = await impl.repayStablecoins(...args)
         return { totalBorrowed: stablecoins[routeIdx] as Decimal }

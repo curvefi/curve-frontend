@@ -56,9 +56,6 @@ export const { getQueryOptions: getRepayHealthOptions, invalidate: invalidateRep
             ...parseRoute(routeId),
           })
         ).health as Decimal
-      case 'V1':
-      case 'V2':
-        return (await impl.repayHealth(stateCollateral, userCollateral, userBorrowed, isHealthFull)) as Decimal
       case 'deleverage':
         return (await impl.repayHealth(stateCollateral, isHealthFull)) as Decimal
       case 'unleveragedMint':

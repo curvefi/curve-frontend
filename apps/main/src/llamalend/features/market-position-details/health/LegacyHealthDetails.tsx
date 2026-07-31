@@ -28,7 +28,7 @@ export const LegacyHealthDetails = ({
       <Stack sx={{ gap: Spacing.xs }}>
         <Stack direction="row" sx={{ alignItems: 'flex-end', gap: Spacing.md.mobile }}>
           <Metric
-            category="llamalend.positionHealth"
+            category="llamalend.legacyPositionHealth"
             label={title}
             value={healthQuery}
             valueOptions={{ unit: 'none', color: getHealthValueColor({ health: decimal(health), theme }) }}
