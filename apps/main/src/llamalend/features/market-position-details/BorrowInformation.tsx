@@ -46,19 +46,7 @@ export const BorrowInformation = ({ params, tokens: { collateralToken, borrowTok
       : UNAVAILABLE_TOKEN_SYMBOL
 
   return (
-    <MarketMetricGrid
-      sx={
-        compact
-          ? undefined
-          : {
-              gridTemplateColumns: {
-                mobile: 'repeat(1, minmax(0, 1fr))',
-                tablet: 'repeat(4, minmax(0, 1fr))',
-                desktop: 'repeat(5, minmax(0, 1fr))',
-              },
-            }
-      }
-    >
+    <MarketMetricGrid category="secondaryDetail">
       <Metric
         category={METRIC_CATEGORY}
         label={t`Collateral value`}
