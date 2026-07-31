@@ -25,14 +25,9 @@ const METRIC_CATEGORY = 'llamalend.positionBorrowDetails'
 type BorrowInformationProps = {
   params: UserMarketParams
   tokens: MarketTokensOrEmpty
-  compact: boolean
 }
 
-export const BorrowInformation = ({
-  params,
-  tokens: { collateralToken, borrowToken },
-  compact,
-}: BorrowInformationProps) => {
+export const BorrowInformation = ({ params, tokens: { collateralToken, borrowToken } }: BorrowInformationProps) => {
   const userState = useUserState(params)
   const { data: userStateValue } = userState
   const leverage = useUserCurrentLeverage(params)
