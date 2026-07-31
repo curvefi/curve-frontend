@@ -33,6 +33,7 @@ export function ComponentTestWrapper({ config, children, autoConnect }: Props) {
   return (
     <ThemeProvider theme="light">
       <WithWrapper Wrapper={WagmiProvider} shouldWrap={config} config={config!} reconnectOnMount={autoConnect}>
+        {/* Persistence can restore stale mocked queries after Cypress clears state, leaking data between tests. */}
         <QueryProvider persister={null} queryClient={queryClient}>
           <RouterProvider router={router} />
           <Toast />
