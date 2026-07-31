@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import CardHeader from '@mui/material/CardHeader'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-const { ButtonSize, Padding } = SizesAndSpaces
+const { ButtonSize, Spacing, Tab } = SizesAndSpaces
 
 /** TODO: this shouldn't have been a new component, we need to update all card headers to this new styling in mui-card-header.ts */
 export const MarketCardHeader = ({ title, action }: { title: ReactNode; action?: ReactNode }) => (
@@ -18,9 +18,15 @@ export const MarketCardHeader = ({ title, action }: { title: ReactNode; action?:
         flexDirection: 'column',
         justifyContent: 'center',
         minHeight: ButtonSize.sm,
-        paddingInline: Padding.Card.sm,
+        paddingInline: Spacing[Tab.Padding.medium.inline],
       },
-      '& .MuiCardHeader-action': { alignSelf: 'end', margin: 0, marginInlineStart: 'auto' },
+      '& .MuiCardHeader-title': { color: theme.design.Tabs.Contained.Current.Label },
+      '& .MuiCardHeader-action': {
+        alignSelf: 'end',
+        margin: 0,
+        paddingBlockEnd: Spacing.xs,
+        marginInlineStart: 'auto',
+      },
     })}
   />
 )
