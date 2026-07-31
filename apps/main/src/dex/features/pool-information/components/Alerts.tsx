@@ -17,13 +17,13 @@ export const Alerts = ({ poolAlert, tokenAlert }: { poolAlert: PoolAlert | null;
   <Stack sx={{ gap: Spacing.sm, paddingBlockStart: Spacing.md, ':empty': { display: 'none' } }}>
     {poolAlert && !poolAlert.isDisableDeposit && !poolAlert.isInformationOnlyAndShowInForm && (
       <Alert variant="filled" severity={alertTypeToSeverity[poolAlert.alertType]}>
-        {poolAlert.message}
+        {poolAlert.message ?? poolAlert.banner?.subtitle}
       </Alert>
     )}
 
     {tokenAlert && tokenAlert.isInformationOnly && (
       <Alert variant="filled" severity={alertTypeToSeverity[tokenAlert.alertType]}>
-        {tokenAlert.message}
+        {tokenAlert.message ?? poolAlert?.banner?.subtitle}
       </Alert>
     )}
   </Stack>

@@ -13,6 +13,7 @@ export const vitePreprocessor = () => async (file: Cypress.FileObject) => {
   const { filePath, outputPath, shouldWatch } = file
   if (cache.has(filePath)) return cache.get(filePath)!
 
+  const testSeed = process.env.TEST_SEED ?? ''
   const filename = path.basename(outputPath)
   const filenameBase = path.basename(outputPath, path.extname(outputPath))
   const isHtml = filename.endsWith('.html')
@@ -24,8 +25,8 @@ export const vitePreprocessor = () => async (file: Cypress.FileObject) => {
     },
     define: {
       // Shim process for browser-only bundles; some deps expect it to exist.
-      'process.env': {},
-      process: { env: {} },
+      'process.env': { TEST_SEED: testSeed },
+      process: { env: { TEST_SEED: testSeed } },
     },
     build: {
       emptyOutDir: false, // do not clear between specs

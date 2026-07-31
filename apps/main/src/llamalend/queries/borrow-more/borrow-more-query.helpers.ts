@@ -16,14 +16,9 @@ export function getBorrowMoreImplementation(
    * leverageEnabled reflects the position's history, so it can be true for soft-liquidated positions in legacy markets
    * without Zap v2. Keep direct borrow more available unless the market actually supports Zap v2.
    */
-  const useZapV2 = !!leverageEnabled && hasZapV2(market)
-  return market instanceof MintMarketTemplate
-    ? useZapV2
-      ? (['zapV2', market.leverageZapV2] as const)
-      : (['unleveraged', market] as const)
-    : useZapV2
-      ? (['zapV2', market.leverageZapV2] as const)
-      : (['unleveraged', market.loan] as const)
+  return !!leverageEnabled && hasZapV2(market)
+    ? (['zapV2', market.leverageZapV2] as const)
+    : (['unleveraged', market instanceof MintMarketTemplate ? market : market.loan] as const)
 }
 
 /**
