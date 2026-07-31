@@ -20,5 +20,6 @@ export default defineConfig({
   },
   define: {
     'process.env.CYPRESS_COMPONENT_TEST': '"true"',
+    'process.env.TEST_SEED': JSON.stringify(process.env.TEST_SEED ?? ''),
   },
 })

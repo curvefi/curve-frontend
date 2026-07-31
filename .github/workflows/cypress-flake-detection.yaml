@@ -1,0 +1,216 @@
+name: Cypress Flake Detection
+
+on:
+  workflow_dispatch:
+    inputs:
+      suite:
+        description: Test suite to run
+        required: true
+        default: component
+        type: choice
+        options:
+          - component
+          - e2e-llamalend
+          - e2e-dex
+          - e2e-other
+      specs:
+        description: Optional Cypress spec or glob overriding the selected suite
+        required: false
+        type: string
+      browser:
+        description: Browser to test
+        required: true
+        default: all
+        type: choice
+        options:
+          - all
+          - chrome
+          - firefox
+          - electron
+      repetitions:
+        description: Number of independent jobs per browser (1-30)
+        required: true
+        default: 10
+        type: number
+      start_iteration:
+        description: First iteration number, used to replay a specific seed
+        required: true
+        default: 1
+        type: number
+      seed_prefix:
+        description: Optional seed prefix; defaults to this workflow run ID
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+env:
+  DO_NOT_TRACK: 1
+  VERCEL_ALLOW_NODEJS_24: 1
+  IBM_TELEMETRY_DISABLED: true
+  SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+  SENTRY_ORG: ${{ vars.SENTRY_ORG }}
+  SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
+
+jobs:
+  prepare:
+    name: Prepare test matrix
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+    steps:
+      - id: matrix
+        name: Build browser and iteration matrix
+        env:
+          BROWSER: ${{ inputs.browser }}
+          REPETITIONS: ${{ inputs.repetitions }}
+          START_ITERATION: ${{ inputs.start_iteration }}
+        run: |
+          if ! [[ "$REPETITIONS" =~ ^[0-9]+$ ]] || (( REPETITIONS < 1 || REPETITIONS > 30 )); then
+            echo "repetitions must be between 1 and 30" >&2
+            exit 1
+          fi
+          if ! [[ "$START_ITERATION" =~ ^[0-9]+$ ]] || (( START_ITERATION < 1 )); then
+            echo "start_iteration must be at least 1" >&2
+            exit 1
+          fi
+
+          if [[ "$BROWSER" == "all" ]]; then
+            browsers='["chrome","firefox","electron"]'
+          else
+            browsers="[\"$BROWSER\"]"
+          fi
+
+          matrix=$(jq -cn \
+            --argjson browsers "$browsers" \
+            --argjson start "$START_ITERATION" \
+            --argjson repetitions "$REPETITIONS" \
+            '{include: [range($start; $start + $repetitions) as $iteration | $browsers[] as $browser | {browser: $browser, iteration: $iteration}]}')
+          echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
+
+  cypress:
+    name: ${{ inputs.suite }} in ${{ matrix.browser }} ${{ matrix.iteration }}
+    needs: prepare
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: yarn
+      - name: Restore cache
+        uses: ./.github/actions/restore-cache
+      - run: yarn set version stable
+      - run: yarn install --immutable
+
+      - name: Optimize component dependencies
+        if: inputs.suite == 'component'
+        run: yarn vite optimize --config vite.config.ts
+        working-directory: tests
+
+      - name: Build app
+        if: inputs.suite != 'component'
+        run: |
+          set -o pipefail
+          yarn build 2>&1 | tee e2e-build-${{ matrix.browser }}-${{ matrix.iteration }}.log
+
+      - name: Start app
+        if: inputs.suite != 'component'
+        run: yarn start 2>&1 | tee ../../e2e-dev-${{ matrix.browser }}-${{ matrix.iteration }}.log &
+        working-directory: apps/main
+
+      - name: Start router API
+        if: inputs.suite != 'component'
+        run: yarn dev 2>&1 | tee ../../e2e-router-api-${{ matrix.browser }}-${{ matrix.iteration }}.log &
+        working-directory: apps/router-api
+
+      - name: Start Merkl API
+        if: inputs.suite != 'component'
+        run: yarn dev 2>&1 | tee ../../e2e-merkl-api-${{ matrix.browser }}-${{ matrix.iteration }}.log &
+        working-directory: apps/merkl-api
+        env:
+          MERKL_API_KEY: ${{ secrets.MERKL_API_KEY }}
+
+      - name: Run Cypress
+        working-directory: tests
+        timeout-minutes: 20
+        env:
+          BROWSER: ${{ matrix.browser }}
+          CYPRESS_VIDEO: ${{ matrix.browser == 'firefox' && 'false' || 'true' }} # Firefox doesn't support recording
+          ELECTRON_ENABLE_LOGGING: true
+          NODE_ENV: test
+          SPEC_OVERRIDE: ${{ inputs.specs }}
+          SUITE: ${{ inputs.suite }}
+          TEST_SEED: ${{ inputs.seed_prefix || github.run_id }}-${{ matrix.iteration }}
+        run: |
+          cypress_config=()
+          case "$SUITE" in
+            component)
+              testing_type=component
+              specs='cypress/component/**/!(*.rpc).cy.{ts,tsx}'
+              cypress_config=(--config 'excludeSpecPattern=**/*.rpc.cy.*')
+              ;;
+            e2e-llamalend)
+              testing_type=e2e
+              specs='cypress/e2e/loan/**/*,cypress/e2e/lend/**/*,cypress/e2e/llamalend/**/*'
+              ;;
+            e2e-dex)
+              testing_type=e2e
+              specs='cypress/e2e/dex/**/*'
+              ;;
+            e2e-other)
+              testing_type=e2e
+              specs='cypress/e2e/all/**/*,cypress/e2e/analytics/**/*,cypress/e2e/bridge/**/*,cypress/e2e/dao/**/*'
+              ;;
+          esac
+
+          if [[ -n "$SPEC_OVERRIDE" ]]; then
+            specs="$SPEC_OVERRIDE"
+          fi
+          if [[ "$specs" == *".rpc.cy."* ]]; then
+            echo "RPC specs are intentionally excluded from this workflow" >&2
+            exit 1
+          fi
+
+          if [[ "$testing_type" == "e2e" ]]; then
+            yarn wait-on http://localhost:3000 --timeout 1m
+          fi
+
+          set -o pipefail
+          yarn cypress run --"$testing_type" --browser "$BROWSER" --spec "$specs" "${cypress_config[@]}" 2>&1 | \
+            tee "../cypress-flake-$SUITE-$BROWSER-${{ matrix.iteration }}.log" \
+              >(grep --line-buffered --invert-match --fixed-strings 'INFO:CONSOLE' >&1) > /dev/null
+
+      - name: Check runtime errors
+        if: (success() || failure()) && inputs.suite != 'component'
+        env:
+          RUNTIME_ERRORS: |-
+            update depth exceeded
+            many re-renders
+            unmounted component
+            non-unique keys
+            uncontrolled to controlled
+            properties of undefined
+            cannot destructure
+            was reexported through module
+            dependencies of each other
+        run: |
+          ! grep --ignore-case --extended-regexp "$(echo -n "$RUNTIME_ERRORS" | tr '\n' '|')" e2e-*.log cypress-flake-*.log
+
+      - name: Upload failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: cypress-flake-${{ inputs.suite }}-${{ matrix.browser }}-${{ matrix.iteration }}
+          path: |
+            tests/cypress/screenshots
+            cypress-flake-*.log
+            e2e-*.log
+          retention-days: 7
+          if-no-files-found: warn
