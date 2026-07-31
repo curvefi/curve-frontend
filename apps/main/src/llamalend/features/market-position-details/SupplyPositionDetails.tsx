@@ -24,7 +24,6 @@ import { assert } from '@primitives/objects.utils'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
 import { LlamaChainId } from '@ui-kit/features/connect-wallet/lib/types'
-import { useNewLlamaMarketDetailPage } from '@ui-kit/hooks/useFeatureFlags'
 import { combineQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
@@ -59,7 +58,6 @@ const METRIC_CATEGORY = 'llamalend.positionSupplyDetails'
 const MetricGrid = ({ children }: { children: ReactNode }) => <Grid size={{ mobile: 12, tablet: 3 }}>{children}</Grid>
 
 export const SupplyPositionDetails = () => {
-  const isNewLlamaMarketDetailPage = useNewLlamaMarketDetailPage()
   const {
     chainId,
     blockchainId,
