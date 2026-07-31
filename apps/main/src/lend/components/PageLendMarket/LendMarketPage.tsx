@@ -7,7 +7,6 @@ import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
 import { networks } from '@/lend/networks'
 import { type MarketUrlParams } from '@/lend/types/lend.types'
 import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/utilsRouter'
-import { MarketOverviewCard } from '@/llamalend/features/market-advanced-information/MarketOverviewCard'
 import { MarketContextProvider } from '@/llamalend/features/market-context'
 import { PositionDetailsComposite } from '@/llamalend/features/market-position-details'
 import { useIsInLiquidation } from '@/llamalend/features/market-position-details/hooks/useUserLiquidationStatus'
@@ -116,11 +115,6 @@ export const LendMarketPage = () => {
         <MarketSection id="position-details" ariaLabel={t`Position details`}>
           <PositionDetailsComposite hasPosition={loanExists} events={collateralEvents} />
         </MarketSection>
-        {isNewLlamaMarketDetailPage && (
-          <MarketSection id="market-overview" ariaLabel={t`Overview`}>
-            <MarketOverviewCard />
-          </MarketSection>
-        )}
         <MarketInformationComposite rateType={MarketRateType.Borrow} previewPrices={previewPrices} />
       </DetailPageLayout>
     </MarketContextProvider>

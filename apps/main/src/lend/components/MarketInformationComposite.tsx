@@ -1,6 +1,7 @@
 import { ChartAndActivityComp, MarketActivityComp } from '@/lend/components/ChartAndActivityComp'
 import { networks } from '@/lend/networks'
 import { MarketAdvancedDetails, MarketInfoLayout } from '@/llamalend/features/market-advanced-information'
+import { MarketOverviewCard } from '@/llamalend/features/market-advanced-information/MarketOverviewCard'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { MarketFaqCard } from '@/llamalend/features/market-faq/MarketFaqCard'
 import { MarketSection } from '@/llamalend/widgets/market-section-nav'
@@ -34,6 +35,11 @@ export const MarketInformationComposite = ({ rateType, previewPrices }: MarketIn
 
   return (
     <Stack sx={{ gap: PAGE_SPACING }}>
+      {isNewLlamaMarketDetailPage && (
+        <MarketSection id="market-overview" ariaLabel={t`Overview`}>
+          <MarketOverviewCard network={networks[chainId]} />
+        </MarketSection>
+      )}
       {isBorrow && (
         <MarketSection id="price-chart" ariaLabel={t`Risk and liquidation`}>
           <ChartAndActivityComp previewPrices={previewPrices} />
