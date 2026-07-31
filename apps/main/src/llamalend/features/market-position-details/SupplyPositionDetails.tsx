@@ -136,12 +136,7 @@ export const SupplyPositionDetails = () => {
       <TabsSwitcher
         variant="contained"
         value={SUPPLY_POSITION_TAB}
-        options={[
-          {
-            value: SUPPLY_POSITION_TAB,
-            label: isNewLlamaMarketDetailPage ? t`Your position` : t`Supply Details`,
-          },
-        ]}
+        options={[{ value: SUPPLY_POSITION_TAB, label: t`Your position` }]}
       />
       <Grid container spacing={Spacing.md} sx={{ padding: Spacing.sm, backgroundColor: t => t.design.Layer[1].Fill }}>
         <MetricGrid>

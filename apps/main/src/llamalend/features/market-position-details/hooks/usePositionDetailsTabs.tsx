@@ -30,11 +30,7 @@ export const usePositionDetailsTabs = ({
           value: DEFAULT_TAB,
           label: t`Your position`,
           render: () =>
-            hasPosition ? (
-              <BorrowPositionDetails />
-            ) : (
-              <MarketEmptyPosition type={MarketRateType.Borrow} />
-            ),
+            hasPosition ? <BorrowPositionDetails /> : <MarketEmptyPosition type={MarketRateType.Borrow} />,
         },
         events.data?.length && {
           value: 'activity' as const,
