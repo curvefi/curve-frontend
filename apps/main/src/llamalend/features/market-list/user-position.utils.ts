@@ -1,6 +1,6 @@
 import { sum } from 'lodash'
 import { calculateLtv } from '@/llamalend/llama.utils'
-import { getAvailableQueryData, type LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
+import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import type { Amount } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
@@ -10,15 +10,15 @@ import { q, type Query, type QueryProp } from '@ui-kit/types/util'
 export type UserPositionSummaryMetric = { label: string; metric: QueryProp<Amount> }
 
 export const getUserBorrowedUsd = ({ positionQueries }: LlamaMarketRow) => {
-  const borrowed = getAvailableQueryData(positionQueries.stats)?.borrowed
-  const usdRate = getAvailableQueryData(positionQueries.prices.borrowed)
+  const borrowed = positionQueries.stats.data?.borrowed
+  const usdRate = positionQueries.prices.borrowed.data
   return maybes([borrowed, usdRate], (amount, rate) => amount * rate)
 }
 
 export const getUserCollateralUsd = ({ positionQueries }: LlamaMarketRow) => {
-  const stats = getAvailableQueryData(positionQueries.stats)
-  const collateralUsdRate = getAvailableQueryData(positionQueries.prices.collateral)
-  const borrowedUsdRate = stats?.borrowToken === 0 ? 0 : getAvailableQueryData(positionQueries.prices.borrowed)
+  const stats = positionQueries.stats.data
+  const collateralUsdRate = positionQueries.prices.collateral.data
+  const borrowedUsdRate = stats?.borrowToken === 0 ? 0 : positionQueries.prices.borrowed.data
   return maybes(
     [stats, collateralUsdRate, borrowedUsdRate],
     (stats, collateralRate, borrowedRate) => stats.collateral * collateralRate + stats.borrowToken * borrowedRate,
@@ -26,9 +26,9 @@ export const getUserCollateralUsd = ({ positionQueries }: LlamaMarketRow) => {
 }
 
 export const getUserPositionLtv = ({ positionQueries }: LlamaMarketRow) => {
-  const stats = getAvailableQueryData(positionQueries.stats)
-  const borrowedUsdRate = getAvailableQueryData(positionQueries.prices.borrowed)
-  const collateralUsdRate = getAvailableQueryData(positionQueries.prices.collateral)
+  const stats = positionQueries.stats.data
+  const borrowedUsdRate = positionQueries.prices.borrowed.data
+  const collateralUsdRate = positionQueries.prices.collateral.data
   return maybes(
     [stats, borrowedUsdRate, collateralUsdRate],
     (stats, borrowedRate, collateralRate) =>
@@ -36,12 +36,11 @@ export const getUserPositionLtv = ({ positionQueries }: LlamaMarketRow) => {
   )
 }
 
-export const getUserPositionHealth = ({ positionQueries }: LlamaMarketRow) =>
-  getAvailableQueryData(positionQueries.stats)?.health
+export const getUserPositionHealth = ({ positionQueries }: LlamaMarketRow) => positionQueries.stats.data?.health
 
 export const getUserSuppliedUsd = ({ lendingPosition, positionQueries }: LlamaMarketRow) => {
   const supplied = lendingPosition?.supplied
-  const usdRate = getAvailableQueryData(positionQueries.prices.borrowed)
+  const usdRate = positionQueries.prices.borrowed.data
   return maybes([supplied, usdRate], (amount, rate) => amount * rate)
 }
 

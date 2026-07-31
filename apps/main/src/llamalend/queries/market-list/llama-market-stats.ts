@@ -68,8 +68,6 @@ export type LlamaMarketRow = LlamaMarket & { positionQueries: UserPositionQuerie
 export type LlamaMarketsTableResult = Omit<LlamaMarketsResult, 'markets'> & { markets: LlamaMarketRow[] }
 
 const toQueryProps = <T>(results: readonly Query<T>[]) => results.map(result => q(result))
-export const getAvailableQueryData = <T>(query: Query<T>) =>
-  query.isLoading || query.error != null ? undefined : query.data
 
 const createStatsEntries = (markets: LlamaMarket[], userAddress: Address | undefined) =>
   markets
