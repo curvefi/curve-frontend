@@ -20,7 +20,7 @@ export const MarketCardHeader = ({ title, action }: { title: string; action?: Re
         minHeight: ButtonSize.sm,
         paddingInline: Padding.Card.sm,
       },
-      '& .MuiCardHeader-action': { alignSelf: 'end', margin: 0, marginInlineStart: 'auto' },
+      '& .MuiCardHeader-action': { alignSelf: 'center', margin: 0, marginInlineStart: 'auto' },
     })}
   />
 )
