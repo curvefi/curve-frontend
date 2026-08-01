@@ -7,7 +7,7 @@ import { aprToApy, AVERAGE_CATEGORIES, formatNumber, type NumberFormatCategory }
 import type { PoolRow } from '../types'
 
 const COMPOUND_WINDOW = AVERAGE_CATEGORIES['dex.poolYield.compoundRate'].window
-const MAX_CRV_BOOST = '2.50'
+const MAX_CRV_BOOST = '2.5x'
 const MAX_POINTS_CAMPAIGNS = 4
 type MissingAmount = null | undefined | ''
 

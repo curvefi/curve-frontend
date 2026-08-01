@@ -353,6 +353,28 @@ const mockPlatforms = () =>
     },
   )
 
+const mockBootstrapRequests = () => {
+  cy.intercept(
+    { method: 'GET', hostname: 'prices.curve.finance', pathname: '/v1/chains/' },
+    {
+      body: {
+        data: [
+          { name: 'ethereum', pool_tvl: 0, lending_tvl: 0 },
+          { name: 'taiko', pool_tvl: 0, lending_tvl: 0 },
+        ],
+      },
+    },
+  ).as('dex-v2-prices-chains')
+  cy.intercept(
+    { method: 'GET', hostname: 'prices.curve.finance', pathname: '/v1/chains/pool_filters' },
+    { body: { data: [] } },
+  ).as('dex-v2-pool-filters')
+  cy.intercept(
+    { method: 'GET', url: /^https:\/\/api(?:-core)?\.curve\.finance\/v1\/getHiddenPools(?:\?.*)?$/ },
+    { body: { success: true, data: {} } },
+  ).as('dex-v2-hidden-pools')
+}
+
 const mockMerklOpportunities = () =>
   cy.intercept({ method: 'GET', pathname: '/api/merkl/v1/opportunities' }, req => {
     const protocol = new URL(req.url).searchParams.get('mainProtocolId')
@@ -378,5 +400,6 @@ export const setupDexPoolListV2Mocks = () => {
   mockPoolChains().as('dex-v2-pool-chains')
   mockPoolList().as('dex-v2-pools')
   mockPlatforms().as('dex-v2-platforms')
+  mockBootstrapRequests()
   mockMerklOpportunities()
 }

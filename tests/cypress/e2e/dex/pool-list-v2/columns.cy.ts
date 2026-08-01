@@ -42,7 +42,7 @@ describe('V2 pool-list columns', () => {
         .find('[data-testid="pool-usd-value"]')
         .should('have.text', '-')
         .trigger('mouseover')
-      cy.get('[role="tooltip"]').should('contain.text', '$0.00')
+      cy.get('[role="tooltip"]').should('have.text', '$0')
       getV2PoolCell(V2_POOL_FIXTURES.highRewards.address, columnId)
         .find('[data-testid="pool-usd-value"]')
         .trigger('mouseout')

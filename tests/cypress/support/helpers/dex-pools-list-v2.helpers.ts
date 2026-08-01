@@ -21,6 +21,7 @@ export const visitV2PoolList = ({
   cy.visitWithoutTestConnector(`dex/${network}/pools/`)
   cy.wait('@dex-v2-platforms', API_LOAD_TIMEOUT)
   enableBeta(isMobile)
+  cy.wait(['@dex-v2-prices-chains', '@dex-v2-pool-filters', '@dex-v2-hidden-pools'], API_LOAD_TIMEOUT)
   cy.wait('@dex-v2-pool-chains', API_LOAD_TIMEOUT)
   cy.wait('@dex-v2-pools', API_LOAD_TIMEOUT)
   cy.wait('@dex-v2-merkl-curve', API_LOAD_TIMEOUT)
@@ -43,3 +44,11 @@ export const getV2PoolRow = (address: string) =>
 
 export const getV2PoolCell = (address: string, columnId: PoolColumnId) =>
   getV2PoolRow(address).find(`[data-testid="data-table-cell-${columnId}"]`)
+
+export const getV2PoolExpandedPanel = (address: string) =>
+  getV2PoolRow(address).next('tr').find('[data-testid="pool-age-value"]').should('be.visible').closest('tr')
+
+export const expandV2PoolRow = (address: string) => {
+  getV2PoolRow(address).find('[data-testid="expand-icon"]').click()
+  return getV2PoolExpandedPanel(address)
+}
