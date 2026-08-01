@@ -1,9 +1,12 @@
 import { Children, type ReactNode } from 'react'
+import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
+import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import type { SxProps } from '@mui/material/styles'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
 import { TokenIcon, type Size } from '@ui-kit/shared/ui/TokenIcon'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
+import { TRANSITION_FUNCTION } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
 import { applySxProps } from '@ui-kit/utils'
@@ -26,6 +29,32 @@ export const TooltipDescription = ({ text }: TooltipDescriptionProps) => (
   <Typography variant="bodySRegular" component="span">
     {text}
   </Typography>
+)
+
+export type TooltipValueLinkProps = {
+  children: ReactNode
+  href: string
+}
+
+export const TooltipValueLink = ({ children, href }: TooltipValueLinkProps) => (
+  <Stack
+    component={Link}
+    href={href}
+    rel="noopener noreferrer"
+    target="_blank"
+    direction="row"
+    sx={{
+      alignItems: 'center',
+      gap: Spacing.xs,
+      textDecoration: 'none',
+      color: theme => theme.design.Text.TextColors.Secondary,
+      svg: { fontSize: 0, transition: `font-size ${TRANSITION_FUNCTION}` },
+      '&:hover svg': { fontSize: 16 },
+    }}
+  >
+    {children}
+    <ArrowOutwardIcon />
+  </Stack>
 )
 
 /**

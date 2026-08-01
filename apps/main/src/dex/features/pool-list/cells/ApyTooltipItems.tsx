@@ -1,16 +1,9 @@
-import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
-import Link from '@mui/material/Link'
-import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { RewardIcon } from '@ui-kit/shared/ui/RewardIcon'
-import { TooltipItem } from '@ui-kit/shared/ui/TooltipComponents'
-import { TRANSITION_FUNCTION } from '@ui-kit/themes/design/0_primitives'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { TooltipItem, TooltipValueLink } from '@ui-kit/shared/ui/TooltipComponents'
 import { formatNumber } from '@ui-kit/utils'
 import type { PoolRow } from '../types'
 import { aprToPoolApy } from './utils'
-
-const { Spacing } = SizesAndSpaces
 
 type ExtraReward = PoolRow['extraRewardsApr'][number]
 type Campaign = PoolRow['campaigns'][number]
@@ -37,7 +30,9 @@ export const CampaignRewardTooltipItems = ({ campaigns }: { campaigns: Campaign[
       title={campaign.symbol || campaign.campaignName || campaign.platform || t`Campaign reward`}
       titleAdornment={<RewardIcon src={campaign.platformImageId} alt={campaign.platform} size="sm" />}
     >
-      {formatNumber(campaign.reward?.type === 'apr' ? aprToPoolApy(campaign.reward.value) : null, 'percent.rate')}
+      <TooltipValueLink href={campaign.dashboardLink}>
+        {formatNumber(campaign.reward?.type === 'apr' ? aprToPoolApy(campaign.reward.value) : null, 'percent.rate')}
+      </TooltipValueLink>
     </TooltipItem>
   ))
 
@@ -50,24 +45,10 @@ export const PointsTooltipItems = ({ campaigns }: { campaigns: Campaign[] }) =>
       title={t`Points`}
       titleAdornment={<RewardIcon src={campaign.platformImageId} alt={campaign.platform} size="sm" />}
     >
-      <Stack
-        component={Link}
-        href={campaign.dashboardLink}
-        target="_blank"
-        direction="row"
-        sx={{
-          alignItems: 'center',
-          gap: Spacing.xs,
-          textDecoration: 'none',
-          color: theme => theme.design.Text.TextColors.Secondary,
-          svg: { fontSize: 0, transition: `font-size ${TRANSITION_FUNCTION}` },
-          '&:hover svg': { fontSize: 16 },
-        }}
-      >
+      <TooltipValueLink href={campaign.dashboardLink}>
         {campaign.reward?.type === 'points'
           ? formatNumber(campaign.reward.value, 'multiplier')
           : campaign.symbol || '-'}
-        <ArrowOutwardIcon />
-      </Stack>
+      </TooltipValueLink>
     </TooltipItem>
   ))

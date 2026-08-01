@@ -10,6 +10,18 @@ const CRV_REWARD_BADGE = '[data-testid="pool-crv-reward-badge"]'
 const REWARD_BADGES = [POINTS_BADGE, EXTRA_REWARD_BADGE, CAMPAIGN_REWARD_BADGE, CRV_REWARD_BADGE].join(',')
 const TOOLTIP = '[role="tooltip"]'
 
+const expectTooltipTextOrder = (first: string, second: string) => {
+  cy.get(TOOLTIP)
+    .invoke('text')
+    .should(text => {
+      const firstIndex = text.indexOf(first)
+      const secondIndex = text.indexOf(second)
+
+      expect(firstIndex, `position of "${first}"`).to.be.greaterThan(-1)
+      expect(secondIndex, `position of "${second}"`).to.be.greaterThan(firstIndex)
+    })
+}
+
 const showYieldColumns = () => {
   cy.get('[data-testid="btn-visibility-settings"]').click()
   for (const columnId of [
@@ -87,8 +99,11 @@ describe('V2 pool-list yields', () => {
       .and('contain.text', '13.30%')
       .and('contain.text', 'Total max veCRV APY')
       .and('contain.text', '28.87%')
+      .and('contain.text', 'Points campaigns')
       .and('contain.text', 'weekly compounding rate')
-    cy.get(`${TOOLTIP} a[target="_blank"]`).should('have.length', 5)
+    expectTooltipTextOrder('Total max veCRV APY', 'Points campaigns')
+    cy.get(`${TOOLTIP} a[target="_blank"]`).should('have.length', 6)
+    cy.get(`${TOOLTIP} a[href$="/v2-apr-1"]`).should('have.text', '3.04%')
     cy.get(`${TOOLTIP} a[href="https://app.termmax.ts.finance"]`).should('contain.text', '30x')
     cy.get(`${TOOLTIP} a[href="https://app.re.xyz/points"]`).should('contain.text', '20x')
     cy.get(`${TOOLTIP} a[href$="/v2-points-1"]`).should('have.text', '-')
@@ -201,7 +216,9 @@ describe('V2 pool-list yields', () => {
       .and('contain.text', '5.06%')
       .and('contain.text', 'Net total APY')
       .and('contain.text', '6.07%')
+      .and('contain.text', 'Points campaigns')
       .and('not.contain.text', 'Max veCRV Boost (2.5x)')
+    expectTooltipTextOrder('Net total APY', 'Points campaigns')
     cy.get(`${TOOLTIP} [data-testid="token-icon-${MAINNET_CRV_ADDRESS}"]`).should('not.exist')
     getV2PoolCell(killed, PoolColumnId.NetApy).find('[data-testid="pool-net-apy-tooltip-trigger"]').trigger('mouseout')
     cy.get(TOOLTIP).should('not.exist')

@@ -24,23 +24,21 @@ import {
 const getIncentivesItems = (pool: PoolRow) => {
   const extraRewards = getExtraRewards(pool)
   const campaigns = getAprCampaigns(pool)
-  const pointsCampaigns = getPointsCampaigns(pool)
   const unboostedCrvApy = pool.gauge?.isKilled ? null : aprToPoolApy(pool.crvApr)
   const hasCrvApy = unboostedCrvApy != null && unboostedCrvApy !== 0
 
-  if (!hasCrvApy && !extraRewards.length && !campaigns.length && !pointsCampaigns.length) return null
+  if (!hasCrvApy && !extraRewards.length && !campaigns.length) return null
   else
     return {
       incentivesApy: getRewardsApy(pool) + (hasCrvApy ? unboostedCrvApy : 0),
       extraRewards,
       campaigns,
-      pointsCampaigns,
       unboostedCrvApy,
     }
 }
 
 export const NetApyIncentivesTooltipItems = ({
-  items: { incentivesApy, extraRewards, campaigns, pointsCampaigns, unboostedCrvApy },
+  items: { incentivesApy, extraRewards, campaigns, unboostedCrvApy },
   network,
 }: {
   items: NonNullable<ReturnType<typeof getIncentivesItems>>
@@ -59,7 +57,6 @@ export const NetApyIncentivesTooltipItems = ({
     )}
     <ExtraRewardTooltipItems network={network} rewards={extraRewards} />
     <CampaignRewardTooltipItems campaigns={campaigns} />
-    <PointsTooltipItems campaigns={pointsCampaigns} />
   </TooltipItems>
 )
 
@@ -69,6 +66,7 @@ export const NetApyTooltipContent = ({ pool, volatile }: { pool: PoolRow; volati
   const crvApyRange = pool.gauge && !pool.gauge.isKilled ? getCrvApyRange(pool) : null
   const maxNetApy = crvApyRange ? netApy - crvApyRange.unboostedApy + crvApyRange.boostedApy : null
   const incentiveItems = getIncentivesItems(pool)
+  const pointsCampaigns = getPointsCampaigns(pool)
 
   return (
     <TooltipWrapper>
@@ -102,6 +100,12 @@ export const NetApyTooltipContent = ({ pool, volatile }: { pool: PoolRow; volati
               </TooltipItem>
             </TooltipItems>
           </>
+        )}
+        {pointsCampaigns.length > 0 && (
+          <TooltipItems secondary extraMargin>
+            <TooltipItem title={t`Points campaigns`} />
+            <PointsTooltipItems campaigns={pointsCampaigns} />
+          </TooltipItems>
         )}
       </Stack>
       {volatile && <TooltipDescription text={t`This net APY is volatile and is unlikely to persist.`} />}

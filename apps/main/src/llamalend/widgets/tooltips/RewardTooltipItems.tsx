@@ -1,17 +1,10 @@
-import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
-import { Stack } from '@mui/material'
-import Link from '@mui/material/Link'
 import { CampaignRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { RewardIcon } from '@ui-kit/shared/ui/RewardIcon'
-import { TooltipItem } from '@ui-kit/shared/ui/TooltipComponents'
-import { TRANSITION_FUNCTION } from '@ui-kit/themes/design/0_primitives'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { TooltipItem, TooltipValueLink } from '@ui-kit/shared/ui/TooltipComponents'
 import type { ExtraIncentive } from '@ui-kit/types/market'
 import { aprToApy, formatNumber } from '@ui-kit/utils'
 import type { RewardsAction } from '@external-rewards'
-
-const { Spacing } = SizesAndSpaces
 
 type RewardsTooltipItemsProps = {
   title: string
@@ -54,25 +47,11 @@ export const RewardsTooltipItems = ({
               title={r.reward?.type === 'apr' ? r.symbol || '' : t`Points`}
               titleAdornment={<RewardIcon size="md" src={r.platformImageId} alt={r.platform} />}
             >
-              <Stack
-                component={Link}
-                href={r.dashboardLink}
-                target="_blank"
-                direction="row"
-                sx={{
-                  alignItems: 'center',
-                  gap: Spacing.xs,
-                  textDecoration: 'none',
-                  color: t => t.design.Text.TextColors.Secondary,
-                  svg: { fontSize: 0, transition: `font-size ${TRANSITION_FUNCTION}` },
-                  '&:hover svg': { fontSize: 16 },
-                }}
-              >
+              <TooltipValueLink href={r.dashboardLink}>
                 {r.reward?.type === 'apr'
                   ? `${tooltipType === 'supply' ? '+' : ''}${formatNumber(tooltipType === 'supply' ? aprToApy(r.reward.value) : -r.reward.value, 'percent.rate')}`
                   : formatNumber(r.reward?.value, 'multiplier')}
-                <ArrowOutwardIcon />
-              </Stack>
+              </TooltipValueLink>
             </TooltipItem>
           ),
       )}
