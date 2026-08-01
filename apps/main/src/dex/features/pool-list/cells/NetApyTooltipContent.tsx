@@ -88,7 +88,11 @@ export const NetApyTooltipContent = ({ pool, volatile }: { pool: PoolRow; volati
         {crvApyRange && (
           <>
             <TooltipItems secondary extraMargin>
-              <TooltipItem title={t`Max veCRV Boost (2.5x)`}>
+              <TooltipItem
+                title={t`Max veCRV Boost (2.5x)`}
+                titleIcon={{ blockchainId: MAINNET_CRV.chain, address: MAINNET_CRV.address, size: 'mui-sm' }}
+                variant="independent"
+              >
                 {formatNumber(crvApyRange.boostedApy, 'percent.rate')}
               </TooltipItem>
             </TooltipItems>
