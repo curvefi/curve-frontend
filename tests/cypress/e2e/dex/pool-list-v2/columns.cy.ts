@@ -23,8 +23,8 @@ const DEFAULT_FULL_COLUMNS = [PoolColumnId.PoolName, PoolColumnId.NetApy, PoolCo
 const OPTIONAL_FULL_COLUMNS = [
   PoolColumnId.BaseApy,
   PoolColumnId.WeeklyBaseApy,
-  PoolColumnId.RewardsApy,
   PoolColumnId.CrvApy,
+  PoolColumnId.RewardsApy,
   PoolColumnId.Points,
   PoolColumnId.Age,
 ]
@@ -63,8 +63,8 @@ describe('V2 pool-list columns', () => {
       PoolColumnId.NetApy,
       PoolColumnId.BaseApy,
       PoolColumnId.WeeklyBaseApy,
-      PoolColumnId.RewardsApy,
       PoolColumnId.CrvApy,
+      PoolColumnId.RewardsApy,
       PoolColumnId.Points,
       PoolColumnId.Volume,
       PoolColumnId.Tvl,
