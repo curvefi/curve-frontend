@@ -83,20 +83,20 @@ export const POOL_COLUMNS = [
     },
     sortUndefined: 'last',
   }),
-  display(PoolColumnId.RewardsApy, {
-    cell: ({ row }) => <RewardsApyCell pool={row.original} />,
-    enableSorting: false,
-    meta: {
-      type: 'numeric',
-      tooltip: createTooltip(PoolColumnId.RewardsApy, <RewardsApyHeaderTooltipContent />),
-    },
-  }),
   display(PoolColumnId.CrvApy, {
     cell: ({ row }) => <CrvApyCell pool={row.original} />,
     enableSorting: false,
     meta: {
       type: 'numeric',
       tooltip: createTooltip(PoolColumnId.CrvApy, <CrvApyHeaderTooltipContent />),
+    },
+  }),
+  display(PoolColumnId.RewardsApy, {
+    cell: ({ row }) => <RewardsApyCell pool={row.original} />,
+    enableSorting: false,
+    meta: {
+      type: 'numeric',
+      tooltip: createTooltip(PoolColumnId.RewardsApy, <RewardsApyHeaderTooltipContent />),
     },
   }),
   display(PoolColumnId.Points, {

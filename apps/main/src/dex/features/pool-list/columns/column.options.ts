@@ -26,17 +26,18 @@ const createVisibility = ({ isLite }: { isLite: boolean }): VisibilityGroup<Pool
         enabled: !isLite,
       },
       {
-        label: POOL_TITLES[PoolColumnId.RewardsApy],
-        columns: [PoolColumnId.RewardsApy],
-        active: false,
-        enabled: true,
-      },
-      {
         label: POOL_TITLES[PoolColumnId.CrvApy],
         columns: [PoolColumnId.CrvApy],
         active: false,
         enabled: !isLite,
       },
+      {
+        label: POOL_TITLES[PoolColumnId.RewardsApy],
+        columns: [PoolColumnId.RewardsApy],
+        active: false,
+        enabled: true,
+      },
+
       {
         label: POOL_TITLES[PoolColumnId.Points],
         columns: [PoolColumnId.Points],
