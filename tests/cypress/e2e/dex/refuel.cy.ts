@@ -48,7 +48,7 @@ describe('Refuel page', () => {
     getTestById('prices-chart').contains('Price scale').should('be.visible')
 
     getTestById('budget-chart').should('be.visible')
-    getTestById('shares-value').invoke('attr', 'data-value').should('match', /\d/)
+    getTestById('shares-value').invoke(LOAD_TIMEOUT, 'attr', 'data-value').should('match', /\d/)
     getTestById('duration-value').invoke('attr', 'data-value').should('match', /\d/)
     getTestById('max-ratio-value').invoke('attr', 'data-value').should('match', /\d/)
     getTestById('budget-chart').contains('Refuel shares').should('be.visible')
