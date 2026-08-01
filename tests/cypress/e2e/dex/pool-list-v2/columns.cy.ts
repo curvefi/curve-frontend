@@ -142,4 +142,49 @@ describe('V2 pool-list columns', () => {
       .find('[data-testid="badge-pool-inactive-gauge"]')
       .should('have.text', 'Inactive gauge')
   })
+
+  it('appends icon-only pool and token alert badges with severity colors and tooltips', () => {
+    visitV2PoolList({ viewport: DESKTOP_VIEWPORT })
+
+    getV2PoolRow(V2_POOL_FIXTURES.alerts.address)
+      .find('[data-testid="pool-badges"] [data-testid^="badge-"]')
+      .should($badges => {
+        expect([...$badges].map(badge => badge.dataset.testid)).to.deep.equal([
+          'badge-pool-type-stable',
+          'badge-pool-metapool',
+          'badge-pool-inactive-gauge',
+          'badge-pool-alert',
+          'badge-token-alert',
+        ])
+      })
+
+    getV2PoolRow(V2_POOL_FIXTURES.alerts.address)
+      .find('[data-testid="badge-pool-alert"]')
+      .should('have.class', 'MuiChip-colorAccent')
+      .and('have.attr', 'aria-label', 'Pool alert')
+      .and('have.attr', 'role', 'img')
+      .and('have.attr', 'tabindex', '0')
+      .and('have.text', '')
+      .find('svg')
+      .should('have.length', 1)
+    getV2PoolRow(V2_POOL_FIXTURES.alerts.address).find('[data-testid="badge-pool-alert"]').trigger('mouseover')
+    cy.get('[role="tooltip"]').should('contain.text', 'A dedicated market for absorbing distressed CRV long positions.')
+    getV2PoolRow(V2_POOL_FIXTURES.alerts.address).find('[data-testid="badge-pool-alert"]').trigger('mouseout')
+    cy.get('[role="tooltip"]').should('not.exist')
+
+    getV2PoolRow(V2_POOL_FIXTURES.alerts.address)
+      .find('[data-testid="badge-token-alert"]')
+      .should('have.class', 'MuiChip-colorWarning')
+      .and('have.attr', 'aria-label', 'Token alert')
+      .and('have.attr', 'role', 'img')
+      .and('have.attr', 'tabindex', '0')
+      .and('have.text', '')
+      .find('svg')
+      .should('have.length', 1)
+    getV2PoolRow(V2_POOL_FIXTURES.alerts.address).find('[data-testid="badge-token-alert"]').trigger('mouseover')
+    cy.get('[role="tooltip"]').should(
+      'contain.text',
+      'The Ren network is currently operational but is expected to go offline in the near future.',
+    )
+  })
 })

@@ -44,6 +44,7 @@ type V2PoolFixture = RawV2Pool & { network: V2PoolNetwork }
 
 const address = (suffix: string): Address => `0x${suffix.padStart(40, '0')}`
 const EXTRA_REWARD_ADDRESS = address('3001')
+const ALERT_TOKEN_ADDRESS: Address = '0xeb4c2781e4eba804ce9a9803c67d0893436bb27d'
 const MOCK_ICON = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22/%3E'
 const MINUTE_SECONDS = 60
 const DAY_SECONDS = 24 * 60 * 60
@@ -122,6 +123,16 @@ export const V2_POOL_FIXTURES = {
     extra_rewards_apr: [extraReward(2)],
     gauges: [{ address: address('2001'), is_killed: false }],
     trading_volume_24h: 6_000_000,
+  }),
+  alerts: createPoolFixture({
+    address: '0x516c3ecfe45f0820653e08dd7c93633d71b93cb5',
+    name: 'V2 Alert Badges',
+    is_metapool: true,
+    coins: createCoins('ethereum').map((coin, index) =>
+      index === 0 ? { ...coin, symbol: 'renBTC', address: ALERT_TOKEN_ADDRESS, name: 'renBTC', decimals: 8 } : coin,
+    ),
+    gauges: [{ address: address('2008'), is_killed: true }],
+    trading_volume_24h: 5_500_000,
   }),
   killed: createPoolFixture({
     address: address('1002'),
