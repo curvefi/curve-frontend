@@ -21,7 +21,7 @@ const TooltipFreeVolatileNetApyChip = styled(Chip)`
 
 const VOLATILE_NET_APY_LABEL = `${formatNumber(5000, { abbreviate: false })}+%`
 
-const NetApyCellContent = ({ pool }: { pool: PoolRow }) => {
+export const NetApyCell = ({ pool }: { pool: PoolRow }) => {
   const netApy = getNetApy(pool)
   const volatile = isVolatileApy(getBaseApy(pool, 'daily'))
 
@@ -62,5 +62,3 @@ const NetApyCellContent = ({ pool }: { pool: PoolRow }) => {
     </Stack>
   )
 }
-
-export const NetApyCell = ({ pool }: { pool: PoolRow }) => <NetApyCellContent pool={pool} />

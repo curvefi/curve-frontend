@@ -1,7 +1,6 @@
 import { PoolColumnId } from '@/dex/features/pool-list/columns'
 import { API_LOAD_TIMEOUT } from '@cy/support/ui'
 import { V2_POOL_FIXTURES } from './dex-pool-list-v2-mocks'
-import { enableBeta } from './user-profile.helpers'
 
 export const DESKTOP_VIEWPORT = [1200, 800] as const
 export const MOBILE_VIEWPORT = [375, 800] as const
@@ -20,7 +19,6 @@ export const visitV2PoolList = ({
   cy.viewport(viewport[0], viewport[1])
   cy.visitWithoutTestConnector(`dex/${network}/pools/`)
   cy.wait('@dex-v2-platforms', API_LOAD_TIMEOUT)
-  enableBeta(isMobile)
   cy.wait(['@dex-v2-prices-chains', '@dex-v2-pool-filters', '@dex-v2-hidden-pools'], API_LOAD_TIMEOUT)
   cy.wait('@dex-v2-pool-chains', API_LOAD_TIMEOUT)
   cy.wait('@dex-v2-pools', API_LOAD_TIMEOUT)

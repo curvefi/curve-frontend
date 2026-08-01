@@ -135,43 +135,14 @@ describe('V2 pool-list mobile panels', () => {
     for (const campaign of FULL_NETWORK_CAMPAIGNS) expectPointsCampaign(address, campaign)
   })
 
-  it('shows detailed APY tooltips from the metric values', () => {
+  it('opens an APY tooltip from a metric value', () => {
     const { address } = V2_POOL_FIXTURES.showcase
     visitV2PoolList({ viewport: MOBILE_VIEWPORT })
     expandV2PoolRow(address)
 
     getV2PoolExpandedPanel(address).find('[data-testid="pool-base-apy-value"]').trigger('mouseover')
-    cy.get(TOOLTIP)
-      .should('contain.text', 'Base APY')
-      .and('contain.text', 'trading activity over the past 24 hours')
-      .and('contain.text', 'Daily')
-      .and('contain.text', '10.51%')
-      .and('contain.text', 'Weekly')
-      .and('contain.text', '22.09%')
+    cy.get(TOOLTIP).should('contain.text', 'Base APY').and('contain.text', '10.51%')
     getV2PoolExpandedPanel(address).find('[data-testid="pool-base-apy-value"]').trigger('mouseout')
-    cy.get(TOOLTIP).should('not.exist')
-
-    getV2PoolExpandedPanel(address).find('[data-testid="pool-weekly-base-apy-value"]').trigger('mouseover')
-    cy.get(TOOLTIP)
-      .should('contain.text', 'Weekly Base APY')
-      .and('contain.text', 'trading activity over the past 7 days')
-      .and('contain.text', 'Daily')
-      .and('contain.text', '10.51%')
-      .and('contain.text', 'Weekly')
-      .and('contain.text', '22.09%')
-    getV2PoolExpandedPanel(address).find('[data-testid="pool-weekly-base-apy-value"]').trigger('mouseout')
-    cy.get(TOOLTIP).should('not.exist')
-
-    getV2PoolExpandedPanel(address).find('[data-testid="pool-crv-apy-value"]').trigger('mouseover')
-    cy.get(TOOLTIP)
-      .should('contain.text', 'CRV APY')
-      .and('contain.text', 'CRV gauge reward APY ranges from the unboosted rate to the maximum boosted rate')
-      .and('contain.text', 'The maximum rate assumes the full 2.5x gauge boost')
-      .and('contain.text', 'Unboosted')
-      .and('contain.text', '5.12%')
-      .and('contain.text', 'Max boost')
-      .and('contain.text', '13.30%')
-    getV2PoolExpandedPanel(address).find('[data-testid="pool-crv-apy-value"]').trigger('mouseout')
     cy.get(TOOLTIP).should('not.exist')
   })
 

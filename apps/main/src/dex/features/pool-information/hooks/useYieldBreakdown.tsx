@@ -8,19 +8,17 @@ import { defaultNetworks } from '@/dex/lib/networks'
 import { useStore } from '@/dex/store/useStore'
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import type { Chain as BlockchainId } from '@curvefi/prices-api'
-import Box from '@mui/material/Box'
 import { maybe } from '@primitives/objects.utils'
 import { scanAddressPath, scanTokenPath } from '@ui/utils'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate, useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { RewardIcon } from '@ui-kit/shared/ui/RewardIcon'
 import { AVERAGE_CATEGORIES, Chain } from '@ui-kit/utils'
 import { MAINNET_CRV_ADDRESS } from '@ui-kit/utils/address'
 import { aprToApy } from '@ui-kit/utils/rates'
 import type { YieldBreakdownRow } from '../components/yield-breakdown/columns/columns.definitions'
 
-const { IconSize } = SizesAndSpaces
 const COMPOUND_WINDOW = AVERAGE_CATEGORIES['dex.poolYield.compoundRate'].window
 
 export const useYieldBreakdown = ({
@@ -113,14 +111,7 @@ export const useYieldBreakdown = ({
       // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
       rows.push({
         source: {
-          icon: (
-            <Box
-              component="img"
-              src={platformImageId}
-              alt={platform}
-              sx={{ borderRadius: '50%', width: IconSize.lg, height: IconSize.lg }}
-            />
-          ),
+          icon: <RewardIcon src={platformImageId} alt={platform} size="lg" />,
           iconPosition: 'left',
           primary: symbol,
         },

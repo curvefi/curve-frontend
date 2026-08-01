@@ -7,7 +7,7 @@ import { getCompactPointsCampaigns } from './utils'
 
 const { Spacing } = SizesAndSpaces
 
-const PointsValue = ({ pool }: { pool: PoolRow }) => {
+export const PointsCell = ({ pool }: { pool: PoolRow }) => {
   const campaigns = getCompactPointsCampaigns(pool)
 
   if (!campaigns.length) {
@@ -41,5 +41,3 @@ const PointsValue = ({ pool }: { pool: PoolRow }) => {
     </Box>
   )
 }
-
-export const PointsCell = ({ pool }: { pool: PoolRow }) => <PointsValue pool={pool} />

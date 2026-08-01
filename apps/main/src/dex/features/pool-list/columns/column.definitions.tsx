@@ -9,17 +9,15 @@ import { PointsCell } from '../cells/PointsCell'
 import { PoolTitleCell } from '../cells/PoolTitleCell'
 import { RewardsApyCell } from '../cells/RewardsApyCell'
 import { UsdCell } from '../cells/UsdCell'
-import {
-  AgeHeaderTooltipContent,
-  BaseApyHeaderTooltipContent,
-  CrvApyHeaderTooltipContent,
-  NetApyHeaderTooltipContent,
-  PointsHeaderTooltipContent,
-  PoolHeaderTooltipContent,
-  RewardsApyHeaderTooltipContent,
-  TvlHeaderTooltipContent,
-  VolumeHeaderTooltipContent,
-} from '../header-tooltips'
+import { AgeHeaderTooltipContent } from '../header-tooltips/AgeHeaderTooltipContent'
+import { BaseApyHeaderTooltipContent } from '../header-tooltips/BaseApyHeaderTooltipContent'
+import { CrvApyHeaderTooltipContent } from '../header-tooltips/CrvApyHeaderTooltipContent'
+import { NetApyHeaderTooltipContent } from '../header-tooltips/NetApyHeaderTooltipContent'
+import { PointsHeaderTooltipContent } from '../header-tooltips/PointsHeaderTooltipContent'
+import { PoolHeaderTooltipContent } from '../header-tooltips/PoolHeaderTooltipContent'
+import { RewardsApyHeaderTooltipContent } from '../header-tooltips/RewardsApyHeaderTooltipContent'
+import { TvlHeaderTooltipContent } from '../header-tooltips/TvlHeaderTooltipContent'
+import { VolumeHeaderTooltipContent } from '../header-tooltips/VolumeHeaderTooltipContent'
 import type { PoolRow } from '../types'
 import { POOL_TITLES } from './column.titles'
 import { PoolColumnId } from './columns.enum'

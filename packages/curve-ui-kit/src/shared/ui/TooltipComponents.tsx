@@ -13,30 +13,17 @@ import { applySxProps } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
-type TooltipWrapperProps = {
-  children: ReactNode
-}
-
-export const TooltipWrapper = ({ children }: TooltipWrapperProps) => (
+export const TooltipWrapper = ({ children }: { children: ReactNode }) => (
   <Stack sx={{ gap: Spacing.sm, maxWidth: '20rem' }}>{children}</Stack>
 )
 
-type TooltipDescriptionProps = {
-  text: ReactNode | string
-}
-
-export const TooltipDescription = ({ text }: TooltipDescriptionProps) => (
+export const TooltipDescription = ({ text }: { text: ReactNode | string }) => (
   <Typography variant="bodySRegular" component="span">
     {text}
   </Typography>
 )
 
-type TooltipValueLinkProps = {
-  children: ReactNode
-  href: string
-}
-
-export const TooltipValueLink = ({ children, href }: TooltipValueLinkProps) => (
+export const TooltipValueLink = ({ children, href }: { children: ReactNode; href: string }) => (
   <Stack
     component={Link}
     href={href}
@@ -166,14 +153,17 @@ export const TooltipItem = ({
   </Stack>
 )
 
-export type TooltipItemsProps = {
+export const TooltipItems = ({
+  children,
+  secondary,
+  borderTop = false,
+  extraMargin = false,
+}: {
   children: ReactNode
   secondary?: boolean
   borderTop?: boolean
   extraMargin?: boolean
-}
-
-export const TooltipItems = ({ children, secondary, borderTop = false, extraMargin = false }: TooltipItemsProps) => (
+}) => (
   <Stack
     sx={{
       ...(borderTop && { borderTop: t => `1px solid ${t.design.Layer[3].Outline}` }),
@@ -187,11 +177,7 @@ export const TooltipItems = ({ children, secondary, borderTop = false, extraMarg
   </Stack>
 )
 
-export type TooltipFooterProps = {
-  children: ReactNode
-}
-
-export const TooltipFooter = ({ children }: TooltipFooterProps) => (
+export const TooltipFooter = ({ children }: { children: ReactNode }) => (
   <Typography variant="bodyXsRegular" component="span" sx={{ fontStyle: 'italic' }}>
     {children}
   </Typography>
