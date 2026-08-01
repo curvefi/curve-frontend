@@ -27,11 +27,9 @@ import { type PoolColumnVariant, usePoolsVisibility } from './hooks/usePoolsVisi
 import type { PoolRow } from './types'
 
 const LOCAL_STORAGE_KEY = 'dex-pool-list'
-const FullPoolExpandedPanel: ExpandedPanelComponent<PoolRow> = props => <PoolExpandedPanel {...props} variant="full" />
-const LitePoolExpandedPanel: ExpandedPanelComponent<PoolRow> = props => <PoolExpandedPanel {...props} variant="lite" />
 const POOL_EXPANDED_PANEL_BODIES = {
-  full: FullPoolExpandedPanel,
-  lite: LitePoolExpandedPanel,
+  full: props => <PoolExpandedPanel {...props} variant="full" />,
+  lite: props => <PoolExpandedPanel {...props} variant="lite" />,
 } satisfies Record<PoolColumnVariant, ExpandedPanelComponent<PoolRow>>
 
 export const PoolsTable = ({ network }: { network: NetworkConfig }) => {

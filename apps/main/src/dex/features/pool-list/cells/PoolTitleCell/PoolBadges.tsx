@@ -37,22 +37,14 @@ const alertTypeToBadgeColor: Record<AlertType, BadgeProps['color']> = {
   danger: 'alert',
 }
 
-const alertSourceLabels = {
-  pool: t`Pool alert`,
-  token: t`Token alert`,
-} as const
-
 const PoolBadge = (props: Omit<BadgeProps, 'size'>) => <Badge size="extraSmall" {...props} />
 
-const AlertBadge = ({ alert, source }: { alert: PoolAlert; source: keyof typeof alertSourceLabels }) => (
+const AlertBadge = ({ alert, source }: { alert: PoolAlert; source: 'pool' | 'token' }) => (
   <Tooltip title={alert.message ?? alert.banner?.subtitle ?? alert.banner?.title} clickable>
     <PoolBadge
       color={alertTypeToBadgeColor[alert.alertType]}
       icon={AlertIcons[alert.alertType]}
-      aria-label={alertSourceLabels[source]}
       data-testid={`badge-${source}-alert`}
-      role="img"
-      tabIndex={0}
     />
   </Tooltip>
 )

@@ -5,56 +5,42 @@ import Typography from '@mui/material/Typography'
 import type { CellContext } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
+import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import type { PoolRow } from '../types'
 import { formatCellValue, getBaseApy, isVolatileApy } from './utils'
 
-const BaseApyAmount = ({ apy }: { apy: ReturnType<typeof getBaseApy> }) => (
-  <Typography component="span" variant="tableCellMBold">
-    {formatCellValue(apy, 'percent.rate')}
-  </Typography>
-)
-
-const BaseApyValue = ({ apy, weekly }: { apy: ReturnType<typeof getBaseApy>; weekly: boolean }) => (
-  <Box
-    data-testid={weekly ? 'pool-weekly-base-apy-value' : 'pool-base-apy-value'}
-    sx={{ display: 'flex', justifyContent: 'end' }}
-  >
-    {isVolatileApy(apy) ? <ChipVolatileBaseApy /> : <BaseApyAmount apy={apy} />}
-  </Box>
-)
-
 const BaseApyTableCell = ({ pool, weekly = false }: { pool: PoolRow; weekly?: boolean }) => {
-  const apy = getBaseApy(pool, weekly ? 'weekly' : 'daily')
-
-  if (apy == null || isVolatileApy(apy)) {
-    return <BaseApyValue apy={apy} weekly={weekly} />
-  }
+  const dailyApy = getBaseApy(pool, 'daily')
+  const weeklyApy = getBaseApy(pool, 'weekly')
+  const apy = weekly ? weeklyApy : dailyApy
+  const volatile = isVolatileApy(apy)
+  const hasTooltip = apy != null && !volatile
 
   return (
     <Box
       data-testid={weekly ? 'pool-weekly-base-apy-value' : 'pool-base-apy-value'}
       sx={{ display: 'flex', justifyContent: 'end' }}
     >
-      <Tooltip
+      <WithWrapper
+        shouldWrap={hasTooltip}
+        Wrapper={Tooltip}
         clickable
         title={weekly ? t`Weekly Base APY` : t`Base APY`}
-        body={
-          <BaseApyTooltipContent
-            dailyApy={getBaseApy(pool, 'daily')}
-            weeklyApy={getBaseApy(pool, 'weekly')}
-            weekly={weekly}
-          />
-        }
+        body={<BaseApyTooltipContent dailyApy={dailyApy} weeklyApy={weeklyApy} weekly={weekly} />}
         placement="top"
       >
         <Box
           component="span"
-          data-testid={weekly ? undefined : 'pool-base-apy-tooltip-trigger'}
+          data-testid={!weekly && hasTooltip ? 'pool-base-apy-tooltip-trigger' : undefined}
           sx={{ display: 'inline-flex' }}
         >
-          <BaseApyAmount apy={apy} />
+          {volatile ? (
+            <ChipVolatileBaseApy />
+          ) : (
+            <Typography variant="tableCellMBold">{formatCellValue(apy, 'percent.rate')}</Typography>
+          )}
         </Box>
-      </Tooltip>
+      </WithWrapper>
     </Box>
   )
 }

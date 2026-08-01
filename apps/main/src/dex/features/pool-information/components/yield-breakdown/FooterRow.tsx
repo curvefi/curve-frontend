@@ -13,7 +13,7 @@ const { Spacing } = SizesAndSpaces
 
 type FooterRowProps = {
   visibleColumns: Column<YieldBreakdownRow, unknown>[]
-  maxBoostTotal: number | null
+  maxBoostTotal: number | undefined
   total: number
 }
 

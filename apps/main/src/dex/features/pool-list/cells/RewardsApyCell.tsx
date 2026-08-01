@@ -30,9 +30,7 @@ export const RewardsApyCell = ({ pool }: { pool: PoolRow }) => {
           data-testid={rewardsApy ? 'pool-rewards-apy-tooltip-trigger' : undefined}
           sx={{ display: 'inline-flex' }}
         >
-          <Typography component="span" variant="tableCellMBold">
-            {formatCellValue(getRewardsApy(pool), 'percent.rate')}
-          </Typography>
+          <Typography variant="tableCellMBold">{formatCellValue(getRewardsApy(pool), 'percent.rate')}</Typography>
         </Box>
       </WithWrapper>
       <RewardIcons pool={pool} />

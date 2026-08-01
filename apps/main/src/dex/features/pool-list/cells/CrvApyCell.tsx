@@ -40,9 +40,7 @@ export const CrvApyCell = ({ pool }: { pool: PoolRow }) => {
               sx={{ justifyContent: 'end' }}
             />
           ) : (
-            <Typography component="span" variant="tableCellMBold">
-              {formatCellValue(null, 'percent.rate')}
-            </Typography>
+            <Typography variant="tableCellMBold">{formatCellValue(null, 'percent.rate')}</Typography>
           )}
         </Box>
       </WithWrapper>

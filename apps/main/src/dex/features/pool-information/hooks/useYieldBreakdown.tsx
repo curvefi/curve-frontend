@@ -8,7 +8,7 @@ import { defaultNetworks } from '@/dex/lib/networks'
 import { useStore } from '@/dex/store/useStore'
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import type { Chain as BlockchainId } from '@curvefi/prices-api'
-import { maybe } from '@primitives/objects.utils'
+import { maybe, maybes } from '@primitives/objects.utils'
 import { scanAddressPath, scanTokenPath } from '@ui/utils'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
@@ -52,10 +52,15 @@ export const useYieldBreakdown = ({
   )
 
   const { data: crvPrice } = useTokenUsdRate({ chainId: Chain.Ethereum, tokenAddress: MAINNET_CRV_ADDRESS })
-  const unboostedCrvApy = gaugeIsKilled ? null : aprToApy(rewardsApy?.crv?.[0], COMPOUND_WINDOW)
-  const maxBoostCrvApy = gaugeIsKilled ? null : aprToApy(rewardsApy?.crv?.[1], COMPOUND_WINDOW)
+  const crvAprs = gaugeIsKilled ? undefined : rewardsApy?.crv
+  const unboostedCrvApy = maybe(crvAprs?.[0], apr => aprToApy(apr, COMPOUND_WINDOW))
+  const maxBoostCrvApy = maybe(crvAprs?.[1], apr => aprToApy(apr, COMPOUND_WINDOW))
   const crvApyRange = useMemo(
-    () => (unboostedCrvApy && maxBoostCrvApy ? { unboostedApy: unboostedCrvApy, maximumApy: maxBoostCrvApy } : null),
+    () =>
+      maybes([unboostedCrvApy, maxBoostCrvApy], (unboostedApy, maximumApy) => ({
+        unboostedApy,
+        maximumApy,
+      })),
     [maxBoostCrvApy, unboostedCrvApy],
   )
 
@@ -75,17 +80,15 @@ export const useYieldBreakdown = ({
         address: MAINNET_CRV_ADDRESS,
         explorerUrl: scanTokenPath(defaultNetworks[Chain.Ethereum], MAINNET_CRV_ADDRESS),
         price: crvPrice,
-        ...(!gaugeIsKilled && {
-          apy: unboostedCrvApy ?? undefined,
-          maxBoostApy: maxBoostCrvApy ?? undefined,
-          ...(crvApyRange && {
-            apyTooltip: {
-              title: t`Gauge APY`,
-              body: <CrvApyTooltipContent {...crvApyRange} />,
-              clickable: true,
-            },
-          }),
-        }),
+        apy: unboostedCrvApy,
+        maxBoostApy: maxBoostCrvApy,
+        ...maybe(crvApyRange, apyRange => ({
+          apyTooltip: {
+            title: t`Gauge APY`,
+            body: <CrvApyTooltipContent {...apyRange} />,
+            clickable: true,
+          },
+        })),
       })
     }
 
@@ -101,7 +104,7 @@ export const useYieldBreakdown = ({
         address: tokenAddress,
         explorerUrl: scanTokenPath(network, tokenAddress),
         price: tokenPrice ?? fallbackTokenRates?.[tokenAddress],
-        apy: aprToApy(apy, COMPOUND_WINDOW) ?? undefined,
+        apy: aprToApy(apy, COMPOUND_WINDOW),
       })
     })
 
@@ -118,7 +121,7 @@ export const useYieldBreakdown = ({
         address: reward.address,
         explorerUrl: scanAddressPath(network, reward.address),
         price: reward.price,
-        apy: aprToApy(reward.value, COMPOUND_WINDOW) ?? undefined,
+        apy: aprToApy(reward.value, COMPOUND_WINDOW),
       })
     })
 
@@ -146,7 +149,6 @@ export const useYieldBreakdown = ({
     crvPrice,
     fallbackTokenRates,
     crvApyRange,
-    gaugeIsKilled,
     maxBoostCrvApy,
     network,
     rewardsApy,
@@ -156,7 +158,10 @@ export const useYieldBreakdown = ({
   const total = useMemo(() => sum(rows.map(row => row.apy)), [rows])
 
   return {
-    maxBoostTotal: crvApyRange ? total - crvApyRange.unboostedApy + crvApyRange.maximumApy : null,
+    maxBoostTotal: maybe(
+      crvApyRange,
+      ({ unboostedApy, maximumApy }) => total - unboostedApy + maximumApy,
+    ),
     total,
     rows,
   }

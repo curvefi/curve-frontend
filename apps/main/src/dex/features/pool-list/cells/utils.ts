@@ -43,7 +43,6 @@ export const getCompactPointsCampaigns = (pool: PoolRow) => getPointsCampaigns(p
 export const getAprCampaigns = ({ campaigns }: PoolRow) => campaigns.filter(campaign => !isPointsCampaign(campaign))
 
 export const getExtraRewards = ({ extraRewardsApr }: PoolRow) => extraRewardsApr.filter(({ apr }) => apr > 0)
-
 export const getExtraRewardsApy = (pool: PoolRow) => sum(getExtraRewards(pool).map(({ apr }) => aprToPoolApy(apr)))
 
 export const getCampaignRewardsApy = (pool: PoolRow) =>
