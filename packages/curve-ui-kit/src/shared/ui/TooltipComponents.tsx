@@ -13,7 +13,7 @@ import { applySxProps } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
-export type TooltipWrapperProps = {
+type TooltipWrapperProps = {
   children: ReactNode
 }
 
@@ -21,7 +21,7 @@ export const TooltipWrapper = ({ children }: TooltipWrapperProps) => (
   <Stack sx={{ gap: Spacing.sm, maxWidth: '20rem' }}>{children}</Stack>
 )
 
-export type TooltipDescriptionProps = {
+type TooltipDescriptionProps = {
   text: ReactNode | string
 }
 
@@ -31,7 +31,7 @@ export const TooltipDescription = ({ text }: TooltipDescriptionProps) => (
   </Typography>
 )
 
-export type TooltipValueLinkProps = {
+type TooltipValueLinkProps = {
   children: ReactNode
   href: string
 }
@@ -64,7 +64,7 @@ export const TooltipValueLink = ({ children, href }: TooltipValueLinkProps) => (
  * - subItem: indented detail row with regular typography
  * - independent: compact row used outside a grouped breakdown
  */
-export type TooltipItemVariant = 'default' | 'primary' | 'subItem' | 'independent'
+type TooltipItemVariant = 'default' | 'primary' | 'subItem' | 'independent'
 
 const titleTypographyVariant: Record<TooltipItemVariant, TypographyVariantKey> = {
   default: 'bodySBold',
@@ -94,7 +94,7 @@ const valueTypographyColor: Record<TooltipItemVariant, TypographyProps['color']>
   independent: 'textPrimary',
 }
 
-export type TooltipItemProps = {
+type TooltipItemProps = {
   title: ReactNode
   children?: ReactNode
   /** Shows a skeleton in place of the value. */
