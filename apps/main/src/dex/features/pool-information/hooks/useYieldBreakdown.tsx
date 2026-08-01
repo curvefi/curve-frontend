@@ -144,24 +144,12 @@ export const useYieldBreakdown = ({
     })
 
     return rows
-  }, [
-    campaigns,
-    crvPrice,
-    fallbackTokenRates,
-    crvApyRange,
-    maxBoostCrvApy,
-    network,
-    rewardsApy,
-    unboostedCrvApy,
-  ])
+  }, [campaigns, crvPrice, fallbackTokenRates, crvApyRange, maxBoostCrvApy, network, rewardsApy, unboostedCrvApy])
 
   const total = useMemo(() => sum(rows.map(row => row.apy)), [rows])
 
   return {
-    maxBoostTotal: maybe(
-      crvApyRange,
-      ({ unboostedApy, maximumApy }) => total - unboostedApy + maximumApy,
-    ),
+    maxBoostTotal: maybe(crvApyRange, ({ unboostedApy, maximumApy }) => total - unboostedApy + maximumApy),
     total,
     rows,
   }

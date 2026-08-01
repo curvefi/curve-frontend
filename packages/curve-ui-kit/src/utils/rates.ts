@@ -29,10 +29,7 @@ export const formatCappedRatePercent = (value: Amount | null | undefined) =>
  * The function assumes APR is expressed as a percentage (e.g. 10 for 10%) and returns APY as a percentage.
  */
 export function aprToApy(aprPercentage: number, compoundingDays?: number): number
-export function aprToApy(
-  aprPercentage: number | null | undefined,
-  compoundingDays?: number,
-): number | null
+export function aprToApy(aprPercentage: number | null | undefined, compoundingDays?: number): number | null
 export function aprToApy(
   aprPercentage: number | null | undefined,
   compoundingDays = AVERAGE_CATEGORIES['llamalend.compoundRate'].window,
