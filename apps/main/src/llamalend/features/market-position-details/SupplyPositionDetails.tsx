@@ -120,7 +120,7 @@ export const SupplyPositionDetails = () => {
       formatSupplyExtraIncentives({
         incentives: rewardsApr.map(r => ({
           title: r.symbol,
-          percentage: aprToApy(r.apy)!,
+          percentage: aprToApy(r.apy),
           blockchainId,
           address: r.tokenAddress,
         })),
