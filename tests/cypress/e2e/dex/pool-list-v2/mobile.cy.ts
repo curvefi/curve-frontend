@@ -24,13 +24,7 @@ const FULL_NETWORK_METRIC_IDS = [
   'pool-age',
 ] as const
 
-const LITE_METRIC_IDS = [
-  'pool-volume',
-  'pool-tvl',
-  'pool-rewards-apy',
-  'pool-points-campaign-0',
-  'pool-age',
-] as const
+const LITE_METRIC_IDS = ['pool-volume', 'pool-tvl', 'pool-rewards-apy', 'pool-points-campaign-0', 'pool-age'] as const
 
 const FULL_NETWORK_CAMPAIGNS = [
   {
@@ -78,12 +72,7 @@ const expectMetricOrder = (testIds: readonly string[]) => {
     })
 }
 
-const expectPointsCampaign = ({
-  testId,
-  value,
-  platform,
-  href,
-}: (typeof FULL_NETWORK_CAMPAIGNS)[number]) => {
+const expectPointsCampaign = ({ testId, value, platform, href }: (typeof FULL_NETWORK_CAMPAIGNS)[number]) => {
   const selector = `[data-testid="${testId}"]`
 
   cy.get(EXPANDED_PANEL)
@@ -208,7 +197,9 @@ describe('V2 pool-list mobile panels', () => {
       'https://app.merkl.xyz/opportunities/taiko/POOL/v2-lite-points-1',
     )
     cy.get('@litePointsLink').should('have.attr', 'target', '_blank')
-    cy.get('@litePointsLink').invoke('attr', 'aria-label').should('match', /V2 taiko points/i)
+    cy.get('@litePointsLink')
+      .invoke('attr', 'aria-label')
+      .should('match', /V2 taiko points/i)
   })
 
   it('shows missing APYs without inventing a points row', () => {
