@@ -6,7 +6,7 @@ export enum PoolColumnId {
   RewardsApy = 'RewardsApy',
   CrvApy = 'CrvApy',
   Points = 'Points',
-  Volume = 'Volume',
-  Tvl = 'Tvl',
+  Volume = 'volume',
+  Tvl = 'tvl',
   Age = 'Age',
 }
