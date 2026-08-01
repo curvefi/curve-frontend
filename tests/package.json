@@ -24,17 +24,17 @@
   },
   "devDependencies": {
     "@cypress/react": "9.0.2",
-    "@cypress/vite-dev-server": "7.3.3",
+    "@cypress/vite-dev-server": "7.3.4",
     "@types/cypress": "1.1.6",
     "@vitejs/plugin-react": "*",
-    "@vitest/ui": "4.1.9",
-    "cypress": "15.18.0",
+    "@vitest/ui": "4.1.10",
+    "cypress": "15.19.0",
     "eslint": "*",
     "ethers": "*",
     "typescript": "*",
     "vite": "*",
     "vite-plugin-svgr": "*",
     "vitest": "*",
-    "wait-on": "9.0.10"
+    "wait-on": "9.1.0"
   }
 }
