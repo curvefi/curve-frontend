@@ -14,5 +14,5 @@ const MARKET_KEYS: DeepKeys<LlamaMarket>[] = [
 ]
 
 /** Search filter for market lists */
-export const useMarketsGlobalFilterFn = (data: readonly LlamaMarket[], filterValue: string) =>
+export const useMarketsGlobalFilterFn = <T extends LlamaMarket>(data: readonly T[], filterValue: string) =>
   useFuzzyFilterFn(data, filterValue, MARKET_KEYS)
