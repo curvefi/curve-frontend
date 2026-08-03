@@ -73,7 +73,7 @@ const shouldLoadMarketParameters = ({
   }
   getActionValue('market-param-max-ltv').should('match', DECIMAL_REGEX)
 
-  cy.get('[data-testid="market-prices-section"]', LOAD_TIMEOUT).should('be.visible')
+  cy.get('[data-testid="market-price-oracle"]', LOAD_TIMEOUT).should('be.visible')
   if (hasOraclePrice) getActionValue('market-price-oracle').should('match', DECIMAL_REGEX)
   if (hasPricePerShare) getActionValue('market-price-per-share').should('match', DECIMAL_REGEX)
 
