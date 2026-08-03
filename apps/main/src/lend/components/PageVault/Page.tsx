@@ -24,7 +24,10 @@ import { DetailPageSection as MarketSection } from '@ui-kit/widgets/DetailPageLa
 import { useLendMarket } from '../../hooks/useLendMarket'
 import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
 
-const MARKET_SECTIONS = getMarketSections({ rateType: MarketRateType.Supply })
+const MARKET_SECTIONS = {
+  withPosition: getMarketSections({ rateType: MarketRateType.Supply }),
+  withoutPosition: getMarketSections({ rateType: MarketRateType.Supply, hasPosition: false }),
+}
 
 export const Page = () => {
   const params = useParams<MarketUrlParams>()
@@ -51,6 +54,7 @@ export const Page = () => {
   )
   const supplied = +(useUserBalances({ marketId: market?.id, chainId, userAddress }).data?.totalShares ?? 0)
   const hasPosition = !!market && supplied > 0
+  const sections = hasPosition ? MARKET_SECTIONS.withPosition : MARKET_SECTIONS.withoutPosition
 
   const error = marketError ?? apiMarket.error
   return error ? (
@@ -73,7 +77,7 @@ export const Page = () => {
           placement: isMobileFormDrawer ? 'mobile-drawer' : 'inline',
         }}
         header={<MarketPageHeader isLoading={isLoading} rateType={MarketRateType.Supply} />}
-        {...(isNewLlamaMarketDetailPage && { sections: MARKET_SECTIONS })}
+        {...(isNewLlamaMarketDetailPage && { sections })}
       >
         <MarketBanners
           chainId={chainId}

@@ -13,6 +13,7 @@ type NavigateOptions = {
   replace?: boolean
   resetScroll?: boolean
   hashScrollIntoView?: boolean
+  hash?: string
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   state?: any
 }
