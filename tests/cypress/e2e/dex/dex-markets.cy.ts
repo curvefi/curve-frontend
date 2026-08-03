@@ -1,6 +1,5 @@
 import { orderBy } from 'lodash'
 import { getPoolsTvlLabelRange, POOL_DEFAULT_TVL_MIN } from '@/dex/features/pool-list/filters/utils'
-import { expandFirstRowOnMobile } from '@cy/support/helpers/data-table.helpers'
 import { DEX_POOL_LIST_SEARCH, setupDexPoolListMocks } from '@cy/support/helpers/dex-pool-list-mocks'
 import { mockMerklCampaigns } from '@cy/support/helpers/lending-mocks'
 import { API_LOAD_TIMEOUT, type Breakpoint, LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
@@ -335,10 +334,14 @@ describe('DEX Pools', () => {
     cy.get('[data-testid="table-text-search-dex-pool-list"] input').type(filter)
     cy.url().should('include', `?search=${filter}`)
     cy.wait('@dex-pools', API_LOAD_TIMEOUT)
-    cy.contains('[data-testid^="market-link-"]', filter, API_LOAD_TIMEOUT).should('be.visible')
+    const getMatchedPoolRow = () =>
+      cy.contains('[data-testid^="data-table-row-"]', filter, API_LOAD_TIMEOUT).should('be.visible')
+
+    getMatchedPoolRow()
     if (breakpoint === 'mobile') {
-      expandFirstRowOnMobile(breakpoint)
-      cy.get(`[data-testid="pool-link-deposit"]`).click({ waitForAnimations: false })
+      getMatchedPoolRow().find('[data-testid="expand-icon"]').click()
+      getMatchedPoolRow().find('[data-testid="collapse-icon"]').should('be.visible')
+      getMatchedPoolRow().next().find('[data-testid="pool-link-deposit"]').should('be.visible').click()
     } else {
       cy.contains('[data-testid^="market-link-"]', filter).click()
     }
