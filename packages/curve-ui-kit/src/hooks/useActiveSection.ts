@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { useRouterState } from '@tanstack/react-router'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useLocation, useNavigate } from '@ui-kit/hooks/router'
 import { useResizeObserver } from '@ui-kit/hooks/useResizeObserver'
@@ -43,8 +44,9 @@ export const useActiveSection = <T extends string>(sections: readonly Section<T>
   const { hash } = useLocation()
   const navigate = useNavigate()
   const navigationRef = useRef<HTMLElement>(null)
-  // Distinguishes hashes written by the scroll spy from external hash navigation.
+  // Coordinates URL-driven smooth scrolling with scroll-spy hash updates.
   const scrollSpyHashRef = useRef('')
+  const isNavigating = useRouterState({ select: state => state.status === 'pending' })
   const globalNavHeight = useLayoutStore(state => state.navHeight)
   const [, sectionNavHeight = 0] = useResizeObserver(navigationRef, { threshold: 1 })
   // The activation band starts immediately below both stacked navigation bars.
@@ -62,7 +64,10 @@ export const useActiveSection = <T extends string>(sections: readonly Section<T>
     const elements = sections
       .map(({ value }) => document.getElementById(value))
       .filter((element): element is HTMLElement => element != null)
-    if (target && getActiveSection<T>(elements, activationTop) !== section.value) target.scrollIntoView()
+    if (target && getActiveSection<T>(elements, activationTop) !== section.value) {
+      scrollSpyHashRef.current = section.value
+      target.scrollIntoView()
+    }
   }, [activationTop, hash, sections])
 
   useEffect(() => {
@@ -72,7 +77,18 @@ export const useActiveSection = <T extends string>(sections: readonly Section<T>
     if (!elements.length) return
 
     const updateActiveSection = () => {
+      if (isNavigating) return
       const section = getActiveSection<T>(elements, activationTop)
+      // Pause the scroll spy until the requested section becomes active.
+      if (scrollSpyHashRef.current) {
+        if (section === scrollSpyHashRef.current) scrollSpyHashRef.current = ''
+        return
+      }
+      // Clear the hash at the top so the first section becomes active.
+      if (!section && window.scrollY <= activationTop && hash) {
+        navigate('.', { replace: true, resetScroll: false, hashScrollIntoView: false, hash: '' })
+        return
+      }
       if (section && section !== hash) {
         scrollSpyHashRef.current = section
         // Replace keeps scrolling out of browser history; disabling hash scrolling prevents a feedback loop.
@@ -88,7 +104,7 @@ export const useActiveSection = <T extends string>(sections: readonly Section<T>
       window.removeEventListener('scroll', updateActiveSection)
       window.removeEventListener('resize', updateActiveSection)
     }
-  }, [activationTop, hash, navigate, sections])
+  }, [activationTop, hash, isNavigating, navigate, sections])
 
   return { activeSection, navigationRef }
 }

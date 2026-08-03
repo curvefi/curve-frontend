@@ -108,6 +108,8 @@ export const APP_LINK: Record<AppMenuOption, AppRoutes> = {
 /** Returns the full pathname for a given app and network */
 export const getInternalUrl = (app: AppName, networkId: string, route = '/') => `/${app}/${networkId}${route}`
 
+const removeTrailingSlash = (pathname: string) => pathname.replace(/\/$/, '')
+
 /** Converts a route to a page object, adding href and isActive properties */
 export const routeToPage = (
   { route, target, label, app, matchMode }: AppRoute,
@@ -118,7 +120,9 @@ export const routeToPage = (
     href,
     target,
     label: label(),
-    isActive: matchMode === 'exact' ? pathname === href : pathname.startsWith(href),
+    isActive:
+      // In-page section navigation can normalize the current pathname with a trailing slash.
+      matchMode === 'exact' ? removeTrailingSlash(pathname) === removeTrailingSlash(href) : pathname.startsWith(href),
   }
 }
 
