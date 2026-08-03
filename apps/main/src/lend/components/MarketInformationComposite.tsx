@@ -36,7 +36,7 @@ export const MarketInformationComposite = ({ rateType, previewPrices }: MarketIn
   return (
     <Stack sx={{ gap: PAGE_SPACING }}>
       {isNewLlamaMarketDetailPage && (
-        <MarketSection id="market-overview" ariaLabel={t`Overview`}>
+        <MarketSection id="market-overview">
           <MarketOverviewCard network={networks[chainId]} />
         </MarketSection>
       )}
