@@ -28,7 +28,7 @@ import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { MarketType, MarketRateType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
-import { DetailPageSection } from '@ui-kit/widgets/DetailPageLayout/DetailPageSection'
+import { DetailPageSection as MarketSection } from '@ui-kit/widgets/DetailPageLayout/DetailPageSection'
 import { DetailPageSectionNav } from '@ui-kit/widgets/DetailPageLayout/DetailPageSectionNav'
 import { useMintMarket } from '../../hooks/useMintMarket'
 
@@ -110,13 +110,13 @@ export const MintMarketPage = () => {
         pageNavigation={isNewLlamaMarketDetailPage && <DetailPageSectionNav sections={MARKET_SECTIONS} />}
       >
         <MarketBanners chainId={chainId} market={market} />
-        <DetailPageSection id="position-details">
+        <MarketSection id="position-details">
           <PositionDetailsComposite hasPosition={loanExists} events={collateralEvents} />
-        </DetailPageSection>
+        </MarketSection>
         {isNewLlamaMarketDetailPage && (
-          <DetailPageSection id="market-overview">
+          <MarketSection id="market-overview">
             <MarketOverviewCard />
-          </DetailPageSection>
+          </MarketSection>
         )}
         <MarketInformationComposite previewPrices={previewPrices} />
       </DetailPageLayout>

@@ -21,7 +21,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { MarketType, MarketRateType } from '@ui-kit/types/market'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
-import { DetailPageSection } from '@ui-kit/widgets/DetailPageLayout/DetailPageSection'
+import { DetailPageSection as MarketSection } from '@ui-kit/widgets/DetailPageLayout/DetailPageSection'
 import { DetailPageSectionNav } from '@ui-kit/widgets/DetailPageLayout/DetailPageSectionNav'
 import { useLendMarket } from '../../hooks/useLendMarket'
 import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
@@ -83,14 +83,14 @@ export const Page = () => {
           rewardsBanner={<CampaignRewardsBanner chainId={chainId} market={market} />}
         />
         {hasPosition && (
-          <DetailPageSection id="position-details">
+          <MarketSection id="position-details">
             <SupplyPositionDetails />
-          </DetailPageSection>
+          </MarketSection>
         )}
         {isNewLlamaMarketDetailPage && (
-          <DetailPageSection id="market-overview">
+          <MarketSection id="market-overview">
             <MarketOverviewCard />
-          </DetailPageSection>
+          </MarketSection>
         )}
         <MarketInformationComposite rateType={MarketRateType.Supply} />
       </DetailPageLayout>

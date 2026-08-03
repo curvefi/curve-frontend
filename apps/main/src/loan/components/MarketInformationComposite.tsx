@@ -15,7 +15,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { MarketRateType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
 import { PAGE_SPACING } from '@ui-kit/widgets/DetailPageLayout/constants'
-import { DetailPageSection } from '@ui-kit/widgets/DetailPageLayout/DetailPageSection'
+import { DetailPageSection as MarketSection } from '@ui-kit/widgets/DetailPageLayout/DetailPageSection'
 import { useMarketContext } from '../../llamalend/features/market-context'
 import { networks } from '../networks'
 
@@ -30,21 +30,21 @@ export const MarketInformationComposite = ({ previewPrices }: MarketInformationC
 
   return (
     <Stack sx={{ gap: PAGE_SPACING }}>
-      <DetailPageSection id="price-chart">
+      <MarketSection id="price-chart">
         <Stack sx={{ gap: PAGE_SPACING }}>
           <ChartAndActivityComp previewPrices={previewPrices} />
           <CrvUsdPriceChart />
         </Stack>
-      </DetailPageSection>
-      <DetailPageSection id="historical-rates">
+      </MarketSection>
+      <MarketSection id="historical-rates">
         <MarketHistoricalRatesChart rateMode={MarketRateType.Borrow} />
-      </DetailPageSection>
+      </MarketSection>
       {isNewLlamaMarketDetailPage && (
-        <DetailPageSection id="market-activity">
+        <MarketSection id="market-activity">
           <MarketActivityComp />
-        </DetailPageSection>
+        </MarketSection>
       )}
-      <DetailPageSection id="market-parameters">
+      <MarketSection id="market-parameters">
         <Card size="small" data-testid="market-parameters-card">
           <Header title={t`Advanced Details`} />
           <CardContent component={Stack}>
@@ -52,10 +52,10 @@ export const MarketInformationComposite = ({ previewPrices }: MarketInformationC
             <MarketInfoLayout network={networks[chainId]} />
           </CardContent>
         </Card>
-      </DetailPageSection>
-      <DetailPageSection id="faqs">
+      </MarketSection>
+      <MarketSection id="faqs">
         <MarketFaq />
-      </DetailPageSection>
+      </MarketSection>
     </Stack>
   )
 }

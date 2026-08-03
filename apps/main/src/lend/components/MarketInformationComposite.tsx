@@ -16,7 +16,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { MarketRateType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
 import { PAGE_SPACING } from '@ui-kit/widgets/DetailPageLayout/constants'
-import { DetailPageSection } from '@ui-kit/widgets/DetailPageLayout/DetailPageSection'
+import { DetailPageSection as MarketSection } from '@ui-kit/widgets/DetailPageLayout/DetailPageSection'
 
 type MarketInformationCompProps = {
   rateType: MarketRateType
@@ -35,23 +35,23 @@ export const MarketInformationComposite = ({ rateType, previewPrices }: MarketIn
   return (
     <Stack sx={{ gap: PAGE_SPACING }}>
       {isBorrow && (
-        <DetailPageSection id="price-chart">
+        <MarketSection id="price-chart">
           <ChartAndActivityComp previewPrices={previewPrices} />
-        </DetailPageSection>
+        </MarketSection>
       )}
-      <DetailPageSection id="historical-rates">
+      <MarketSection id="historical-rates">
         <Stack sx={{ gap: PAGE_SPACING }}>
           {isBorrow && <MarketHistoricalRatesChart rateMode={MarketRateType.Borrow} />}
           <MarketHistoricalRatesChart rateMode={MarketRateType.Supply} />
           <MarketRateCurveChart />
         </Stack>
-      </DetailPageSection>
+      </MarketSection>
       {isBorrow && isNewLlamaMarketDetailPage && (
-        <DetailPageSection id="market-activity">
+        <MarketSection id="market-activity">
           <MarketActivityComp />
-        </DetailPageSection>
+        </MarketSection>
       )}
-      <DetailPageSection id="market-parameters">
+      <MarketSection id="market-parameters">
         <Card size="small" data-testid="market-parameters-card">
           <Header title={t`Advanced Details`} />
           <CardContent component={Stack}>
@@ -59,10 +59,10 @@ export const MarketInformationComposite = ({ rateType, previewPrices }: MarketIn
             <MarketInfoLayout network={networks[chainId]} />
           </CardContent>
         </Card>
-      </DetailPageSection>
-      <DetailPageSection id="faqs">
+      </MarketSection>
+      <MarketSection id="faqs">
         <MarketFaq />
-      </DetailPageSection>
+      </MarketSection>
     </Stack>
   )
 }
