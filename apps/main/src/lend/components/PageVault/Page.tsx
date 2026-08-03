@@ -81,12 +81,12 @@ export const Page = () => {
           rewardsBanner={<CampaignRewardsBanner chainId={chainId} market={market} />}
         />
         {hasPosition && (
-          <MarketSection id="position-details" ariaLabel={t`Position details`}>
+          <MarketSection id="position-details">
             <SupplyPositionDetails />
           </MarketSection>
         )}
         {isNewLlamaMarketDetailPage && (
-          <MarketSection id="market-overview" ariaLabel={t`Overview`}>
+          <MarketSection id="market-overview">
             <MarketOverviewCard />
           </MarketSection>
         )}

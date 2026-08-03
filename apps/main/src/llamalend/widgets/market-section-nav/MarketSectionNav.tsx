@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Box from '@mui/material/Box'
+import { useLocation } from '@ui-kit/hooks/router'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
-import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { borderStyle } from '@ui-kit/utils/mui'
@@ -15,20 +15,37 @@ const { Spacing } = SizesAndSpaces
  */
 const ACTIVE_SECTION_ROOT_MARGIN = '-20% 0px -70% 0px'
 
-export const MarketSectionNav = ({ sections }: { sections: readonly MarketSectionOption[] }) => {
-  const isMobile = useIsMobile()
+/** Keeps the active section and scroll position synchronized with the URL hash. */
+const useSectionHashNavigation = (sections: readonly MarketSectionOption[]) => {
+  const { hash } = useLocation()
+  const scrolledHashRef = useRef('')
   const [activeSection, setActiveSection] = useState<MarketSectionId | undefined>(() => {
-    const hash = typeof window === 'undefined' ? '' : window.location.hash.slice(1)
-    return sections.find(({ value }) => value === hash)?.value ?? sections[0]?.value
+    const sectionId = hash.slice(1)
+    return sections.find(({ value }) => value === sectionId)?.value ?? sections[0]?.value
   })
 
-  // Restore the initial deep link once without moving the user again when sections change.
   useEffect(() => {
-    const initialHash = window.location.hash
-    if (initialHash) window.location.replace(initialHash)
-  }, [])
+    const sectionId = hash.slice(1)
+    const section = sections.find(({ value }) => value === sectionId)
+    // Router hash changes must override the current scroll-spy selection.
+    // eslint-disable-next-line @eslint-react/set-state-in-effect
+    if (section) setActiveSection(section.value)
+    // The target may render after TanStack Router's initial hash scroll attempt.
+    const target = section && document.getElementById(section.value)
+    if (target && scrolledHashRef.current !== hash) {
+      scrolledHashRef.current = hash
+      target.scrollIntoView()
+    }
+  }, [hash, sections])
 
-  // Recreate the observer when the set of rendered sections changes.
+  return [activeSection, setActiveSection] as const
+}
+
+/** Updates the active section as the user scrolls through the page. */
+const useSectionScrollSpy = (
+  sections: readonly MarketSectionOption[],
+  setActiveSection: (section: MarketSectionId) => void,
+) => {
   useEffect(() => {
     const elements = sections
       .map(({ value }) => document.getElementById(value))
@@ -46,18 +63,22 @@ export const MarketSectionNav = ({ sections }: { sections: readonly MarketSectio
 
     elements.forEach(element => observer.observe(element))
     return () => observer.disconnect()
-  }, [sections])
+  }, [sections, setActiveSection])
+}
+
+export const MarketSectionNav = ({ sections }: { sections: readonly MarketSectionOption[] }) => {
+  const isMobile = useIsMobile()
+  const [activeSection, setActiveSection] = useSectionHashNavigation(sections)
+  useSectionScrollSpy(sections, setActiveSection)
 
   return (
     !!sections.length && (
       <Box
         component="nav"
-        aria-label={t`Market sections`}
         data-testid="market-section-nav"
         sx={{ borderBlock: borderStyle, paddingBlockStart: Spacing.sm }}
       >
         <TabsSwitcher
-          aria-label={t`Market sections`}
           hideInactiveBorders
           options={sections.map(({ value, label }) => ({
             value,

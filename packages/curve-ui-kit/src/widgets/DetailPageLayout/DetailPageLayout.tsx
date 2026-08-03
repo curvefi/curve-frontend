@@ -14,7 +14,7 @@ import { FormPlacementProvider } from './form-context/FormPlacementProvider'
 import { FormSkeleton } from './FormSkeleton'
 import type { DetailPageLayoutFormTabs } from './types'
 
-const { ButtonSize, MaxWidth, Spacing } = SizesAndSpaces
+const { ButtonSize, MaxWidth, Spacing, BorderWidth } = SizesAndSpaces
 
 const PAGE_MARGIN = { marginInline: Spacing.md, marginBlockStart: Spacing.md, marginBlockEnd: Spacing.xxl }
 
@@ -98,7 +98,7 @@ export const DetailPageLayout = ({
             backgroundColor: theme => theme.palette.background.default,
             position: { tablet: 'sticky' },
             // -1 to hide the top border behind the page headers and not have two borders when sticky
-            top: { tablet: `${navHeight - 1}px` },
+            top: { tablet: `calc(${navHeight}px - ${BorderWidth.thin})` },
             zIndex: theme => theme.zIndex.appBar - 1,
           }}
         >

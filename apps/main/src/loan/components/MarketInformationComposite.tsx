@@ -30,21 +30,21 @@ export const MarketInformationComposite = ({ previewPrices }: MarketInformationC
 
   return (
     <Stack sx={{ gap: PAGE_SPACING }}>
-      <MarketSection id="price-chart" ariaLabel={t`Risk and liquidation`}>
+      <MarketSection id="price-chart">
         <Stack sx={{ gap: PAGE_SPACING }}>
           <ChartAndActivityComp previewPrices={previewPrices} />
           <CrvUsdPriceChart />
         </Stack>
       </MarketSection>
-      <MarketSection id="historical-rates" ariaLabel={t`Rates`}>
+      <MarketSection id="historical-rates">
         <MarketHistoricalRatesChart rateMode={MarketRateType.Borrow} />
       </MarketSection>
       {isNewLlamaMarketDetailPage && (
-        <MarketSection id="market-activity" ariaLabel={t`Market activity`}>
+        <MarketSection id="market-activity">
           <MarketActivityComp />
         </MarketSection>
       )}
-      <MarketSection id="market-parameters" ariaLabel={t`Advanced details`}>
+      <MarketSection id="market-parameters">
         <Card size="small" data-testid="market-parameters-card">
           <Header title={t`Advanced Details`} />
           <CardContent component={Stack}>
@@ -53,7 +53,7 @@ export const MarketInformationComposite = ({ previewPrices }: MarketInformationC
           </CardContent>
         </Card>
       </MarketSection>
-      <MarketSection id="faqs" ariaLabel={t`Frequently asked questions`}>
+      <MarketSection id="faqs">
         <MarketFaq />
       </MarketSection>
     </Stack>

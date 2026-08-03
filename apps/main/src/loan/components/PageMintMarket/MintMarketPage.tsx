@@ -108,11 +108,11 @@ export const MintMarketPage = () => {
         pageNavigation={isNewLlamaMarketDetailPage && <MarketSectionNav sections={MARKET_SECTIONS} />}
       >
         <MarketBanners chainId={chainId} market={market} />
-        <MarketSection id="position-details" ariaLabel={t`Position details`}>
+        <MarketSection id="position-details">
           <PositionDetailsComposite hasPosition={loanExists} events={collateralEvents} />
         </MarketSection>
         {isNewLlamaMarketDetailPage && (
-          <MarketSection id="market-overview" ariaLabel={t`Overview`}>
+          <MarketSection id="market-overview">
             <MarketOverviewCard />
           </MarketSection>
         )}
