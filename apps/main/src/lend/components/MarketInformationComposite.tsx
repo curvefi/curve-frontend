@@ -3,7 +3,6 @@ import { networks } from '@/lend/networks'
 import { MarketAdvancedDetails, MarketInfoLayout } from '@/llamalend/features/market-advanced-information'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import { MarketFaq } from '@/llamalend/features/market-faq'
-import { MarketSection } from '@/llamalend/widgets/market-section-nav'
 import { MarketCardHeader } from '@/llamalend/widgets/MarketCardHeader'
 import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
 import { MarketRateCurveChart } from '@/llamalend/widgets/MarketRateCurveChart'
@@ -17,6 +16,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { MarketRateType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
 import { PAGE_SPACING } from '@ui-kit/widgets/DetailPageLayout/constants'
+import { DetailPageSection } from '@ui-kit/widgets/DetailPageLayout/DetailPageSection'
 
 type MarketInformationCompProps = {
   rateType: MarketRateType
@@ -35,23 +35,23 @@ export const MarketInformationComposite = ({ rateType, previewPrices }: MarketIn
   return (
     <Stack sx={{ gap: PAGE_SPACING }}>
       {isBorrow && (
-        <MarketSection id="price-chart">
+        <DetailPageSection id="price-chart">
           <ChartAndActivityComp previewPrices={previewPrices} />
-        </MarketSection>
+        </DetailPageSection>
       )}
-      <MarketSection id="historical-rates">
+      <DetailPageSection id="historical-rates">
         <Stack sx={{ gap: PAGE_SPACING }}>
           {isBorrow && <MarketHistoricalRatesChart rateMode={MarketRateType.Borrow} />}
           <MarketHistoricalRatesChart rateMode={MarketRateType.Supply} />
           <MarketRateCurveChart />
         </Stack>
-      </MarketSection>
+      </DetailPageSection>
       {isBorrow && isNewLlamaMarketDetailPage && (
-        <MarketSection id="market-activity">
+        <DetailPageSection id="market-activity">
           <MarketActivityComp />
-        </MarketSection>
+        </DetailPageSection>
       )}
-      <MarketSection id="market-parameters">
+      <DetailPageSection id="market-parameters">
         <Card size="small" data-testid="market-parameters-card">
           <Header title={t`Advanced Details`} />
           <CardContent component={Stack}>
@@ -59,10 +59,10 @@ export const MarketInformationComposite = ({ rateType, previewPrices }: MarketIn
             <MarketInfoLayout network={networks[chainId]} />
           </CardContent>
         </Card>
-      </MarketSection>
-      <MarketSection id="faqs">
+      </DetailPageSection>
+      <DetailPageSection id="faqs">
         <MarketFaq />
-      </MarketSection>
+      </DetailPageSection>
     </Stack>
   )
 }

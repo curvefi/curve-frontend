@@ -14,7 +14,8 @@ html {
   scrollbar-gutter: stable;
 }
 
-html:has([data-testid='market-section-nav']) {
+/* The document scrolls on html, and this rule must exist before initial hash navigation runs. */
+html:has([data-detail-page-section-nav]) {
   scroll-behavior: smooth;
 }
 

@@ -11,7 +11,7 @@ import { SupplyPositionDetails } from '@/llamalend/features/market-position-deta
 import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
 import { useUserBalances } from '@/llamalend/queries/user/user-balances.query'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
-import { getMarketSections, MarketSection, MarketSectionNav } from '@/llamalend/widgets/market-section-nav'
+import { getMarketSections } from '@/llamalend/widgets/market-section-nav'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
@@ -21,6 +21,8 @@ import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { MarketType, MarketRateType } from '@ui-kit/types/market'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
+import { DetailPageSection } from '@ui-kit/widgets/DetailPageLayout/DetailPageSection'
+import { DetailPageSectionNav } from '@ui-kit/widgets/DetailPageLayout/DetailPageSectionNav'
 import { useLendMarket } from '../../hooks/useLendMarket'
 import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
 
@@ -73,7 +75,7 @@ export const Page = () => {
           placement: isMobileFormDrawer ? 'mobile-drawer' : 'inline',
         }}
         header={<MarketPageHeader isLoading={isLoading} rateType={MarketRateType.Supply} />}
-        pageNavigation={isNewLlamaMarketDetailPage && <MarketSectionNav sections={MARKET_SECTIONS} />}
+        pageNavigation={isNewLlamaMarketDetailPage && <DetailPageSectionNav sections={MARKET_SECTIONS} />}
       >
         <MarketBanners
           chainId={chainId}
@@ -81,14 +83,14 @@ export const Page = () => {
           rewardsBanner={<CampaignRewardsBanner chainId={chainId} market={market} />}
         />
         {hasPosition && (
-          <MarketSection id="position-details">
+          <DetailPageSection id="position-details">
             <SupplyPositionDetails />
-          </MarketSection>
+          </DetailPageSection>
         )}
         {isNewLlamaMarketDetailPage && (
-          <MarketSection id="market-overview">
+          <DetailPageSection id="market-overview">
             <MarketOverviewCard />
-          </MarketSection>
+          </DetailPageSection>
         )}
         <MarketInformationComposite rateType={MarketRateType.Supply} />
       </DetailPageLayout>

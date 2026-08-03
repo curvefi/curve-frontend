@@ -16,7 +16,7 @@ import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
 import { getControllerAddress, getTokens, hasResetPosition } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
-import { getMarketSections, MarketSection, MarketSectionNav } from '@/llamalend/widgets/market-section-nav'
+import { getMarketSections } from '@/llamalend/widgets/market-section-nav'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header'
 import { getBlockchainId } from '@curvefi/prices-api'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -33,6 +33,8 @@ import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { MarketType, MarketRateType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
+import { DetailPageSection } from '@ui-kit/widgets/DetailPageLayout/DetailPageSection'
+import { DetailPageSectionNav } from '@ui-kit/widgets/DetailPageLayout/DetailPageSectionNav'
 import { useLendMarket } from '../../hooks/useLendMarket'
 import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
 
@@ -106,20 +108,20 @@ export const LendMarketPage = () => {
             )),
         }}
         header={<MarketPageHeader isLoading={isLoading} rateType={MarketRateType.Borrow} />}
-        pageNavigation={isNewLlamaMarketDetailPage && <MarketSectionNav sections={MARKET_SECTIONS} />}
+        pageNavigation={isNewLlamaMarketDetailPage && <DetailPageSectionNav sections={MARKET_SECTIONS} />}
       >
         <MarketBanners
           chainId={chainId}
           market={market}
           rewardsBanner={<CampaignRewardsBanner chainId={chainId} market={market} />}
         />
-        <MarketSection id="position-details">
+        <DetailPageSection id="position-details">
           <PositionDetailsComposite hasPosition={loanExists} events={collateralEvents} />
-        </MarketSection>
+        </DetailPageSection>
         {isNewLlamaMarketDetailPage && (
-          <MarketSection id="market-overview">
+          <DetailPageSection id="market-overview">
             <MarketOverviewCard />
-          </MarketSection>
+          </DetailPageSection>
         )}
         <MarketInformationComposite rateType={MarketRateType.Borrow} previewPrices={previewPrices} />
       </DetailPageLayout>
