@@ -14,19 +14,18 @@ const PARAMETERS_SECTION = {
 const FAQ_SECTION = { value: 'faqs', label: { default: t`FAQs` } } as const
 const OVERVIEW_SECTION = { value: 'market-overview', label: { default: t`Overview` } } as const
 
-export const getMarketSections = ({ rateType }: { rateType: MarketRateType }): readonly MarketSectionOption[] => {
-  const sections = {
-    [MarketRateType.Supply]: [POSITION_SECTION, OVERVIEW_SECTION, RATES_SECTION, PARAMETERS_SECTION, FAQ_SECTION],
-    [MarketRateType.Borrow]: [
-      POSITION_SECTION,
-      OVERVIEW_SECTION,
-      { value: 'price-chart', label: { default: t`Risk & Liquidation`, short: t`Risk` } },
-      RATES_SECTION,
-      { value: 'market-activity', label: { default: t`Market activity`, short: t`Activity` } },
-      PARAMETERS_SECTION,
-      FAQ_SECTION,
-    ],
-  } satisfies Record<MarketRateType, readonly MarketSectionOption[]>
-
-  return sections[rateType]
-}
+export const getMarketSections = ({ rateType }: { rateType: MarketRateType }): readonly MarketSectionOption[] =>
+  (
+    ({
+      [MarketRateType.Supply]: [POSITION_SECTION, OVERVIEW_SECTION, RATES_SECTION, PARAMETERS_SECTION, FAQ_SECTION],
+      [MarketRateType.Borrow]: [
+        POSITION_SECTION,
+        OVERVIEW_SECTION,
+        { value: 'price-chart', label: { default: t`Risk & Liquidation`, short: t`Risk` } },
+        RATES_SECTION,
+        { value: 'market-activity', label: { default: t`Market activity`, short: t`Activity` } },
+        PARAMETERS_SECTION,
+        FAQ_SECTION,
+      ],
+    }) satisfies Record<MarketRateType, readonly MarketSectionOption[]>
+  )[rateType]
