@@ -10,7 +10,7 @@ import { SupplyPositionDetails } from '@/llamalend/features/market-position-deta
 import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
 import { useUserBalances } from '@/llamalend/queries/user/user-balances.query'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
-import { getMarketSections, MarketSection, MarketSectionNav } from '@/llamalend/widgets/market-section-nav'
+import { getMarketSections } from '@/llamalend/widgets/market-section-nav'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
@@ -20,6 +20,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { MarketType, MarketRateType } from '@ui-kit/types/market'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
+import { DetailPageSection as MarketSection } from '@ui-kit/widgets/DetailPageLayout/DetailPageSection'
 import { useLendMarket } from '../../hooks/useLendMarket'
 import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
 
@@ -72,7 +73,7 @@ export const Page = () => {
           placement: isMobileFormDrawer ? 'mobile-drawer' : 'inline',
         }}
         header={<MarketPageHeader isLoading={isLoading} rateType={MarketRateType.Supply} />}
-        pageNavigation={isNewLlamaMarketDetailPage && <MarketSectionNav sections={MARKET_SECTIONS} />}
+        {...(isNewLlamaMarketDetailPage && { sections: MARKET_SECTIONS })}
       >
         <MarketBanners
           chainId={chainId}
@@ -80,7 +81,7 @@ export const Page = () => {
           rewardsBanner={<CampaignRewardsBanner chainId={chainId} market={market} />}
         />
         {hasPosition && (
-          <MarketSection id="position-details" ariaLabel={t`Position details`}>
+          <MarketSection id="position-details">
             <SupplyPositionDetails />
           </MarketSection>
         )}

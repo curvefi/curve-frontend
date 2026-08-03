@@ -8,7 +8,7 @@ import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
 import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
-import { getMarketSections, MarketSection, MarketSectionNav } from '@/llamalend/widgets/market-section-nav'
+import { getMarketSections } from '@/llamalend/widgets/market-section-nav'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header'
 import { MarketInformationComposite } from '@/loan/components/MarketInformationComposite'
 import { CreateLoanTabs } from '@/loan/components/PageMintMarket/CreateLoanTabs'
@@ -27,6 +27,7 @@ import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { MarketType, MarketRateType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
+import { DetailPageSection as MarketSection } from '@ui-kit/widgets/DetailPageLayout/DetailPageSection'
 import { useMintMarket } from '../../hooks/useMintMarket'
 
 const MARKET_SECTIONS = getMarketSections({ rateType: MarketRateType.Borrow })
@@ -104,10 +105,10 @@ export const MintMarketPage = () => {
             )),
         }}
         header={<MarketPageHeader isLoading={isLoading} rateType={MarketRateType.Borrow} />}
-        pageNavigation={isNewLlamaMarketDetailPage && <MarketSectionNav sections={MARKET_SECTIONS} />}
+        {...(isNewLlamaMarketDetailPage && { sections: MARKET_SECTIONS })}
       >
         <MarketBanners chainId={chainId} market={market} />
-        <MarketSection id="position-details" ariaLabel={t`Position details`}>
+        <MarketSection id="position-details">
           <PositionDetailsComposite hasPosition={loanExists} events={collateralEvents} />
         </MarketSection>
         <MarketInformationComposite previewPrices={previewPrices} />

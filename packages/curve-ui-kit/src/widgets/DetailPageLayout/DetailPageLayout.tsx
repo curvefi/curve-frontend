@@ -9,12 +9,13 @@ import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { mapBreakpoints } from '@ui-kit/themes/basic-theme/basic-theme'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { PAGE_SPACING } from './constants'
+import { DetailPageSectionNav, type DetailPageSectionOption } from './DetailPageSectionNav'
 import { getIsMobileFormDrawer } from './form-context/FormPlacementContext'
 import { FormPlacementProvider } from './form-context/FormPlacementProvider'
 import { FormSkeleton } from './FormSkeleton'
 import type { DetailPageLayoutFormTabs } from './types'
 
-const { ButtonSize, MaxWidth, Spacing } = SizesAndSpaces
+const { ButtonSize, MaxWidth, Spacing, BorderWidth } = SizesAndSpaces
 
 const PAGE_MARGIN = { marginInline: Spacing.md, marginBlockStart: Spacing.md, marginBlockEnd: Spacing.xxl }
 
@@ -64,14 +65,15 @@ const stickyFormTabsSx = (navHeight: number, pageHeaderHeight: number) => ({
 export const DetailPageLayout = ({
   formTabs,
   header,
-  pageNavigation,
+  sections,
   children,
   footer,
   testId,
 }: {
   formTabs: DetailPageLayoutFormTabs | null
   header?: ReactNode
-  pageNavigation?: ReactNode
+  /** Ordered hash-addressable sections displayed in the sticky section navigation. */
+  sections?: readonly DetailPageSectionOption<string>[]
   children?: ReactNode
   footer?: ReactNode
   testId?: string
@@ -84,25 +86,26 @@ export const DetailPageLayout = ({
   const [, pageHeaderHeight = 0] = useResizeObserver(headerRef, { threshold: 5 })
   const placement = formTabs?.placement ?? 'inline'
   const showMobileDrawer = getIsMobileFormDrawer(placement, isMobile)
+  const hasSections = !!sections?.length
 
   const headerStack = (
     <>
       {header && (
-        <Stack ref={headerRef} sx={pageNavigation ? undefined : stickyHeaderSx(navHeight)}>
+        <Stack ref={headerRef} sx={hasSections ? undefined : stickyHeaderSx(navHeight)}>
           {header}
         </Stack>
       )}
-      {pageNavigation && (
+      {hasSections && (
         <Stack
           sx={{
             backgroundColor: theme => theme.palette.background.default,
             position: { tablet: 'sticky' },
             // -1 to hide the top border behind the page headers and not have two borders when sticky
-            top: { tablet: `${navHeight - 1}px` },
+            top: { tablet: `calc(${navHeight}px - ${BorderWidth.thin})` },
             zIndex: theme => theme.zIndex.appBar - 1,
           }}
         >
-          {pageNavigation}
+          <DetailPageSectionNav sections={sections} />
         </Stack>
       )}
     </>
@@ -115,7 +118,7 @@ export const DetailPageLayout = ({
         spacing={PAGE_SPACING}
         sx={{
           ...PAGE_MARGIN,
-          ...(pageNavigation && {
+          ...(hasSections && {
             // The section navigation is sticky from tablet up
             '--detail-page-scroll-margin-top': {
               mobile: `${navHeight}px`,
