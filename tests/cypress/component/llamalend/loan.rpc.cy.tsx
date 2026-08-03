@@ -71,6 +71,7 @@ testCases.forEach(
     marketType,
     hasLeverage,
     hasLeverageManagement,
+    hasFallbackPrice,
   }) => {
     describe(label, () => {
       skipTestsAfterFailure()
@@ -140,7 +141,7 @@ testCases.forEach(
       it(`creates the loan`, () => {
         cy.mount(<LoanTestWrapper />)
         writeCreateLoanForm({ collateral, borrow, leverageEnabled, hasLeverage })
-        checkLoanDetailsLoaded({ leverageEnabled, hasApi })
+        checkLoanDetailsLoaded({ leverageEnabled, hasApi, hasFallbackPrice })
         submitCreateLoanForm().then(() => expect(onPricesUpdated).to.be.called)
         waitUntilLendMarketUpdated(id, borrow, marketType)
       })

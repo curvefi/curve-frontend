@@ -31,6 +31,7 @@ export const LOAN_TEST_MARKETS = {
       path: '/crvusd/ethereum/markets/sfrxeth2',
       hasLeverage: true,
       hasLeverageManagement: false,
+      hasFallbackPrice: false,
       collateralDecimals: COLLATERAL_DECIMALS,
       borrowedAddress: CRVUSD_ADDRESS,
       borrowedDecimals: BORROWED_DECIMALS,
@@ -49,6 +50,7 @@ export const LOAN_TEST_MARKETS = {
       path: '/crvusd/ethereum/markets/wbtc',
       hasLeverage: true,
       hasLeverageManagement: false,
+      hasFallbackPrice: false,
       collateralDecimals: 8,
       borrowedAddress: CRVUSD_ADDRESS,
       borrowedDecimals: BORROWED_DECIMALS,
@@ -69,6 +71,8 @@ export const LOAN_TEST_MARKETS = {
       path: '/lend/ethereum/markets/0x4F79Fe450a2BAF833E8f50340BD230f5A3eCaFe9',
       hasLeverage: true,
       hasLeverageManagement: true,
+      // sreUSD derives its price on-chain when external price APIs are unavailable.
+      hasFallbackPrice: true,
       collateralDecimals: COLLATERAL_DECIMALS,
       borrowedAddress: CRVUSD_ADDRESS,
       borrowedDecimals: BORROWED_DECIMALS,
@@ -87,6 +91,7 @@ export const LOAN_TEST_MARKETS = {
       path: '/lend/optimism/markets/0x745422BF49f3F6e4A8E12E4abD19339E7910F8C9',
       hasLeverage: true,
       hasLeverageManagement: true,
+      hasFallbackPrice: false,
       collateralDecimals: COLLATERAL_DECIMALS,
       borrowedAddress: '0x4200000000000000000000000000000000000006', // WETH
       borrowedDecimals: BORROWED_DECIMALS,
@@ -113,15 +118,20 @@ export function checkLoanDetailsLoaded({
   leverageEnabled,
   expectError,
   hasApi = true,
+  // Some markets can still calculate LTV from an on-chain price fallback when external APIs are unavailable.
+  hasFallbackPrice = false,
 }: {
   leverageEnabled: boolean
   expectError?: string
   hasApi?: boolean
+  hasFallbackPrice?: boolean
 }) {
+  const expectLtv = hasApi || hasFallbackPrice
+
   getActionValue('borrow-price-range').should('match', DECIMAL_RANGE_REGEX)
   getActionValue('borrow-apr').should('include', '%')
   getActionValue('borrow-apr', 'previous').should('include', '%')
-  getActionValue('borrow-ltv').should(hasApi ? 'include' : 'equal', hasApi ? '%' : '-')
+  getActionValue('borrow-ltv').should(expectLtv ? 'include' : 'equal', expectLtv ? '%' : '-')
   getActionValue('borrow-ltv', 'previous').should('include', '%')
   checkEstimatedTxCost({ hasValue: hasApi && !expectError })
 
