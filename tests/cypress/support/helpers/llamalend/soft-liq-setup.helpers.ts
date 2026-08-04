@@ -400,9 +400,9 @@ const runSoftLiquidationPriceMove = ({
     const oracleBefore = await readOracleState({ client, ammAddress })
     const oracleStorageLayout = await findOracleStorageLayout({ client, oracleState: oracleBefore })
     const block = await client.getBlock()
-    // The oracle wrapper smooths storedPrice toward the live Chainlink answer as time elapses.
-    // Store the observation timestamp at the post-mine time so the next read uses storedPrice.
-    const oracleObservationTimestamp = block.timestamp + BigInt(CLOCK_STEP_SECONDS)
+    // The oracle wrapper smooths storedPrice toward the live Chainlink answer, and advanceVirtualNetworkClock consumes the first step.
+    // The second preserves deterministic headroom through approval/exchange so price_w() does not refresh the synthetic price.
+    const oracleObservationTimestamp = block.timestamp + BigInt(CLOCK_STEP_SECONDS * 2)
 
     setOracleStoragePrice({
       vnet,
