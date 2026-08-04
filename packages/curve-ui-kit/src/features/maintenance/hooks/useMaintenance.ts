@@ -3,7 +3,7 @@ import { Falsy } from '@primitives/objects.utils'
 import { formatDate, formatTime } from '@ui/utils/utilsDate'
 import { useDismissMaintenanceBanner, useDismissMaintenanceModal } from '@ui-kit/hooks/useLocalStorage'
 import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
-import { REFRESH_INTERVAL, TIME_OPTION_MS } from '@ui-kit/lib/model/time'
+import { REFRESH_INTERVAL, TIME_OPTION_MS } from '@ui-kit/utils/time'
 
 export type MaintenanceConfig = {
   // UTC ISO string date of the scheduled maintenance.

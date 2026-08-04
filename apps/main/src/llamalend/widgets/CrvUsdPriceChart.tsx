@@ -13,7 +13,6 @@ import { useCombinedQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { timeOptions, type TimeOption } from '@ui-kit/lib/model/query/time-option-validation'
-import { TIME_OPTION_MS } from '@ui-kit/lib/model/time'
 import {
   ChartStateWrapper,
   ChartFooter,
@@ -29,7 +28,7 @@ import {
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { mapQuery, q } from '@ui-kit/types/util'
-import { Chain, CRVUSD_ADDRESS } from '@ui-kit/utils'
+import { Chain, CRVUSD_ADDRESS, TIME_OPTION_MS } from '@ui-kit/utils'
 import { AVERAGE_WINDOW_DAYS, calculateAverageRates, hasFullTimeWindow } from '@ui-kit/utils/averageRates'
 import { MarketCardHeader } from './MarketCardHeader'
 

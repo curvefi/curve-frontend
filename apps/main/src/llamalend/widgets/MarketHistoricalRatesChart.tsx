@@ -16,7 +16,6 @@ import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
 import { useNewLlamaMarketDetailPage } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { type TimeOption, timeOptions } from '@ui-kit/lib/model/query/time-option-validation'
-import { TIME_OPTION_MS } from '@ui-kit/lib/model/time'
 import {
   addMovingAverages,
   CHART_LINE_DASH_PATTERNS,
@@ -32,7 +31,7 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
 import { fallbackQ, mapQuery, q, useMappedQuery } from '@ui-kit/types/util'
-import { formatNumber } from '@ui-kit/utils'
+import { formatNumber, TIME_OPTION_MS } from '@ui-kit/utils'
 import { AVERAGE_WINDOW_DAYS, calculateAverageRates, hasFullTimeWindow } from '@ui-kit/utils/averageRates'
 import { useMarketContext } from '../features/market-context'
 import { MarketCardHeader } from './MarketCardHeader'
