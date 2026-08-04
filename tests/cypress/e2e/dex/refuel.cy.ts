@@ -29,7 +29,7 @@ describe('Refuel page', () => {
     getTestById('bi-weekly-action-info').should('contain.text', 'Bi-weekly')
     getTestById('monthly-action-info').should('contain.text', 'Monthly')
 
-    getTestById('size-action-info-value').should('have.attr', 'data-value', '-')
+    getTestById('size-action-info-value', API_LOAD_TIMEOUT).should('have.attr', 'data-value', '-')
     getTestById('weekly-action-info-value').should('have.attr', 'data-value', '-')
     getTestById('bi-weekly-action-info-value').should('have.attr', 'data-value', '-')
     getTestById('monthly-action-info-value').should('have.attr', 'data-value', '-')
@@ -48,7 +48,7 @@ describe('Refuel page', () => {
     getTestById('prices-chart').contains('Price scale').should('be.visible')
 
     getTestById('budget-chart').should('be.visible')
-    getTestById('shares-value').invoke('attr', 'data-value').should('match', /\d/)
+    getTestById('shares-value').invoke(LOAD_TIMEOUT, 'attr', 'data-value').should('match', /\d/)
     getTestById('duration-value').invoke('attr', 'data-value').should('match', /\d/)
     getTestById('max-ratio-value').invoke('attr', 'data-value').should('match', /\d/)
     getTestById('budget-chart').contains('Refuel shares').should('be.visible')

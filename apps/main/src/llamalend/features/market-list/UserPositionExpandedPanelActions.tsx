@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
-import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
+import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { t } from '@ui-kit/lib/i18n'
 import { ExpandedPanelActions } from '@ui-kit/shared/ui/DataTable/ExpandedPanelActions'
 import type { ExpandedPanelComponent } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { useMarketExpandedPanelActions } from './hooks/useMarketExpandedPanelActions'
 
-export const UserPositionExpandedPanelActions: ExpandedPanelComponent<LlamaMarket> = ({
+export const UserPositionExpandedPanelActions: ExpandedPanelComponent<LlamaMarketRow> = ({
   row: { original: market },
 }) => {
   const extraPanels = useMarketExpandedPanelActions(market)
