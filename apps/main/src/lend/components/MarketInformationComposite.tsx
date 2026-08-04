@@ -1,4 +1,4 @@
-import { ChartAndActivityComp } from '@/lend/components/ChartAndActivityComp'
+import { ChartAndActivityComp, MarketActivityComp } from '@/lend/components/ChartAndActivityComp'
 import { networks } from '@/lend/networks'
 import { MarketAdvancedDetails, MarketInfoLayout } from '@/llamalend/features/market-advanced-information'
 import { useMarketContext } from '@/llamalend/features/market-context'
@@ -16,6 +16,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { MarketRateType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
 import { PAGE_SPACING } from '@ui-kit/widgets/DetailPageLayout/constants'
+import { DetailPageSection as MarketSection } from '@ui-kit/widgets/DetailPageLayout/DetailPageSection'
 
 type MarketInformationCompProps = {
   rateType: MarketRateType
@@ -28,27 +29,40 @@ type MarketInformationCompProps = {
 export const MarketInformationComposite = ({ rateType, previewPrices }: MarketInformationCompProps) => {
   const { chainId } = useMarketContext()
   const isNewLlamaMarketDetailPage = useNewLlamaMarketDetailPage()
+  const isBorrow = rateType === MarketRateType.Borrow
   const Header = isNewLlamaMarketDetailPage ? MarketCardHeader : CardHeader
 
   return (
     <Stack sx={{ gap: PAGE_SPACING }}>
-      {rateType === MarketRateType.Borrow && (
-        <>
+      {isBorrow && (
+        <MarketSection id="price-chart">
           <ChartAndActivityComp previewPrices={previewPrices} />
-          <MarketHistoricalRatesChart rateMode={MarketRateType.Borrow} />
-        </>
+        </MarketSection>
       )}
-      <MarketHistoricalRatesChart rateMode={MarketRateType.Supply} />
-      <MarketRateCurveChart />
-      <Card size="small" data-testid="market-parameters-card">
-        <Header title={t`Advanced Details`} />
-        <CardContent component={Stack}>
-          {!isNewLlamaMarketDetailPage && <MarketAdvancedDetails />}
-          <MarketInfoLayout network={networks[chainId]} />
-        </CardContent>
-      </Card>
-
-      <MarketFaq />
+      <MarketSection id="historical-rates">
+        <Stack sx={{ gap: PAGE_SPACING }}>
+          {isBorrow && <MarketHistoricalRatesChart rateMode={MarketRateType.Borrow} />}
+          <MarketHistoricalRatesChart rateMode={MarketRateType.Supply} />
+          <MarketRateCurveChart />
+        </Stack>
+      </MarketSection>
+      {isBorrow && isNewLlamaMarketDetailPage && (
+        <MarketSection id="market-activity">
+          <MarketActivityComp />
+        </MarketSection>
+      )}
+      <MarketSection id="market-parameters">
+        <Card size="small" data-testid="market-parameters-card">
+          <Header title={t`Advanced Details`} />
+          <CardContent component={Stack}>
+            {!isNewLlamaMarketDetailPage && <MarketAdvancedDetails />}
+            <MarketInfoLayout network={networks[chainId]} />
+          </CardContent>
+        </Card>
+      </MarketSection>
+      <MarketSection id="faqs">
+        <MarketFaq />
+      </MarketSection>
     </Stack>
   )
 }

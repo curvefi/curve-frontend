@@ -25,14 +25,15 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-type Tab = 'chart' | 'trades' | 'events'
-const DEFAULT_TAB: Tab = 'chart'
+type ChartAndActivityTab = 'chart' | 'trades' | 'events'
+const DEFAULT_TAB: ChartAndActivityTab = 'chart'
 
-const TABS: TabOption<Tab>[] = [
-  { value: 'chart', label: t`Chart` },
+type MarketActivityTab = Exclude<ChartAndActivityTab, 'chart'>
+const MARKET_ACTIVITY_TABS: TabOption<MarketActivityTab>[] = [
   { value: 'trades', label: t`Swaps` },
   { value: 'events', label: t`Activity` },
 ]
+const TABS: TabOption<ChartAndActivityTab>[] = [{ value: 'chart', label: t`Chart` }, ...MARKET_ACTIVITY_TABS]
 
 const EMPTY_ARRAY: never[] = []
 // Ignore tiny floating-point jitter from chart autoscale updates.
@@ -62,11 +63,38 @@ type ChartAndActivityLayoutProps = {
 }
 
 export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActivityLayoutProps) => {
+  const [activeTab, setActiveTab] = useState<ChartAndActivityTab>(DEFAULT_TAB)
+
+  return (
+    <Stack data-testid="market-chart-and-activity">
+      <TabsSwitcher variant="contained" value={activeTab} onChange={setActiveTab} options={TABS} />
+      <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
+        {activeTab === 'events' && <LlammaActivityEvents {...activity} />}
+        {activeTab === 'trades' && <LlammaActivityTrades {...activity} />}
+        {activeTab === 'chart' && <MarketPriceChartLayout chart={chart} bands={bands} />}
+      </Stack>
+    </Stack>
+  )
+}
+
+export const MarketActivityLayout = ({ activity }: { activity: LlammaActivityProps }) => {
+  const [activeTab, setActiveTab] = useState<MarketActivityTab>('trades')
+
+  return (
+    <Stack data-testid="market-activity">
+      <TabsSwitcher variant="contained" value={activeTab} onChange={setActiveTab} options={MARKET_ACTIVITY_TABS} />
+      <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
+        {activeTab === 'events' ? <LlammaActivityEvents {...activity} /> : <LlammaActivityTrades {...activity} />}
+      </Stack>
+    </Stack>
+  )
+}
+
+export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLayoutProps, 'chart' | 'bands'>) => {
   const { isConnected } = useConnection()
   const [isBandsVisible, setIsBandsVisible] = useBandsChartVisible()
   const toggleBandsVisible = useCallback(() => setIsBandsVisible(prev => !prev), [setIsBandsVisible])
   const bandsPalette = useBandsChartPalette()
-  const [tab, setTab] = useState<Tab>(DEFAULT_TAB)
   const [candlePriceRange, setCandlePriceRange] = useState<{ min: number; max: number } | undefined>()
 
   const handleVisiblePriceRangeChange = useCallback((min: number, max: number) => {
@@ -100,67 +128,61 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
   )
 
   return (
-    <Stack data-testid="market-chart-and-activity">
-      <TabsSwitcher variant="contained" value={tab} onChange={setTab} options={TABS} />
-      <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>
-        {tab === 'events' && <LlammaActivityEvents {...activity} />}
-        {tab === 'trades' && <LlammaActivityTrades {...activity} />}
-        {tab === 'chart' && (
-          <Stack sx={{ gap: Spacing.sm, padding: Spacing.sm }}>
-            <ChartHeader
-              chartOptionVariant="select"
-              chartSelections={{
-                selections: chart.ohlcChartProps.selectChartList,
-                activeSelection: chart.selectedChartKey,
-              }}
-              timeOption={{
-                options: TIME_OPTIONS,
-                activeOption: chart.ohlcChartProps.timeOption,
-                setActiveOption: chart.setTimeOption,
-              }}
-              isLoading={chart.isLoading}
-              customButton={
-                isConnected &&
-                bands && (
-                  <ToggleBandsChartButton
-                    label={t`Bands`}
-                    tooltip={t`The price ranges your position can move through during soft liquidation.`}
-                    isVisible={isBandsVisible}
-                    toggle={toggleBandsVisible}
-                  />
-                )
-              }
+    <Stack
+      data-testid="market-price-chart"
+      sx={{ gap: Spacing.sm, padding: Spacing.sm, backgroundColor: t => t.design.Layer[1].Fill }}
+    >
+      <ChartHeader
+        chartOptionVariant="select"
+        chartSelections={{
+          selections: chart.ohlcChartProps.selectChartList,
+          activeSelection: chart.selectedChartKey,
+        }}
+        timeOption={{
+          options: TIME_OPTIONS,
+          activeOption: chart.ohlcChartProps.timeOption,
+          setActiveOption: chart.setTimeOption,
+        }}
+        isLoading={chart.isLoading}
+        customButton={
+          isConnected &&
+          bands && (
+            <ToggleBandsChartButton
+              label={t`Bands`}
+              tooltip={t`The price ranges your position can move through during soft liquidation.`}
+              isVisible={isBandsVisible}
+              toggle={toggleBandsVisible}
             />
-            <Stack
-              sx={{
-                display: showBands ? 'grid' : undefined,
-                gridTemplateColumns: showBands ? { mobile: '5fr 1fr', tablet: '7fr 1fr' } : undefined,
-              }}
-            >
-              <ChartWrapper
-                {...chart.ohlcChartProps}
-                onVisiblePriceRangeChange={showBands ? handleVisiblePriceRangeChange : undefined}
-              />
-              {showBands && (
-                <BandsChart
-                  isLoading={bands.isLoading}
-                  error={bands.error}
-                  collateralToken={bands.collateralToken}
-                  borrowToken={bands.borrowToken}
-                  chartData={bands.chartData}
-                  userBandsBalances={bands.userBandsBalances ?? EMPTY_ARRAY}
-                  newLiquidationRange={chart.ohlcChartProps.liquidationRange?.new}
-                  liqRangeCurrentVisible={chart.ohlcChartProps.liqRangeCurrentVisible}
-                  liqRangeNewVisible={chart.ohlcChartProps.liqRangeNewVisible}
-                  oraclePrice={bands.oraclePrice}
-                  priceRange={candlePriceRange}
-                />
-              )}
-            </Stack>
-            <ChartFooter legendSets={chartFooterLegendSets} description={SOFT_LIQUIDATION_DESCRIPTION} />
-          </Stack>
+          )
+        }
+      />
+      <Stack
+        sx={{
+          display: showBands ? 'grid' : undefined,
+          gridTemplateColumns: showBands ? { mobile: '5fr 1fr', tablet: '7fr 1fr' } : undefined,
+        }}
+      >
+        <ChartWrapper
+          {...chart.ohlcChartProps}
+          onVisiblePriceRangeChange={showBands ? handleVisiblePriceRangeChange : undefined}
+        />
+        {showBands && (
+          <BandsChart
+            isLoading={bands.isLoading}
+            error={bands.error}
+            collateralToken={bands.collateralToken}
+            borrowToken={bands.borrowToken}
+            chartData={bands.chartData}
+            userBandsBalances={bands.userBandsBalances ?? EMPTY_ARRAY}
+            newLiquidationRange={chart.ohlcChartProps.liquidationRange?.new}
+            liqRangeCurrentVisible={chart.ohlcChartProps.liqRangeCurrentVisible}
+            liqRangeNewVisible={chart.ohlcChartProps.liqRangeNewVisible}
+            oraclePrice={bands.oraclePrice}
+            priceRange={candlePriceRange}
+          />
         )}
       </Stack>
+      <ChartFooter legendSets={chartFooterLegendSets} description={SOFT_LIQUIDATION_DESCRIPTION} />
     </Stack>
   )
 }
