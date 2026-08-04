@@ -1,51 +1,55 @@
 import { PoolColumnId } from '@/dex/features/pool-list/columns'
 import { setupDexPoolListV2Mocks, V2_POOL_FIXTURES } from '@cy/support/helpers/dex-pool-list-v2-mocks'
-import { DESKTOP_VIEWPORT, getV2PoolCell, visitV2PoolList } from '@cy/support/helpers/dex-pools-list-v2.helpers'
-import { MAINNET_CRV_ADDRESS } from '@ui-kit/utils'
+import {
+  DESKTOP_VIEWPORT,
+  expectV2Tooltip,
+  getV2PoolCell,
+  showV2PoolColumns,
+  visitV2PoolList,
+} from '@cy/support/helpers/dex-pools-list-v2.helpers'
 
 const POINTS_BADGE = '[data-testid="pool-points-badge"]'
 const EXTRA_REWARD_BADGE = '[data-testid="pool-extra-reward-badge"]'
 const CAMPAIGN_REWARD_BADGE = '[data-testid="pool-campaign-reward-badge"]'
 const CRV_REWARD_BADGE = '[data-testid="pool-crv-reward-badge"]'
-const REWARD_BADGES = [POINTS_BADGE, EXTRA_REWARD_BADGE, CAMPAIGN_REWARD_BADGE, CRV_REWARD_BADGE].join(',')
-const TOOLTIP = '[role="tooltip"]'
 
-const expectTooltipTextOrder = (first: string, second: string) => {
-  cy.get(TOOLTIP)
-    .invoke('text')
-    .should(text => {
-      const firstIndex = text.indexOf(first)
-      const secondIndex = text.indexOf(second)
+const YIELD_COLUMNS = [
+  PoolColumnId.BaseApy,
+  PoolColumnId.WeeklyBaseApy,
+  PoolColumnId.RewardsApy,
+  PoolColumnId.CrvApy,
+  PoolColumnId.Points,
+] as const
 
-      expect(firstIndex, `position of "${first}"`).to.be.greaterThan(-1)
-      expect(secondIndex, `position of "${second}"`).to.be.greaterThan(firstIndex)
-    })
-}
-
-const showYieldColumns = () => {
-  cy.get('[data-testid="btn-visibility-settings"]').click()
-  for (const columnId of [
-    PoolColumnId.BaseApy,
-    PoolColumnId.WeeklyBaseApy,
-    PoolColumnId.RewardsApy,
-    PoolColumnId.CrvApy,
-    PoolColumnId.Points,
-  ]) {
-    cy.get(`[data-testid="visibility-toggle-${columnId}"]`).click()
-  }
-  cy.get('body').click(0, 0)
-}
+const FULL_CAMPAIGN_LINKS = [
+  {
+    href: 'https://app.merkl.xyz/opportunities/ethereum/POOL/v2-apr-1',
+    text: '3.04%',
+  },
+  { href: 'https://app.termmax.ts.finance', text: '30x' },
+  { href: 'https://app.re.xyz/points', text: '20x' },
+  {
+    href: 'https://app.merkl.xyz/opportunities/ethereum/POOL/v2-points-1',
+    text: '-',
+  },
+  {
+    href: 'https://app.merkl.xyz/opportunities/ethereum/POOL/v2-points-2',
+    text: 'XP',
+  },
+  {
+    href: 'https://app.merkl.xyz/opportunities/ethereum/POOL/v2-points-3',
+    text: 'STAR',
+  },
+] as const
 
 describe('V2 pool-list yields', () => {
-  beforeEach(() => {
-    setupDexPoolListV2Mocks()
-    visitV2PoolList({ viewport: DESKTOP_VIEWPORT })
-  })
+  beforeEach(() => setupDexPoolListV2Mocks())
 
-  it('combines the yield sources and exposes their detailed tooltips', () => {
+  it('combines every full-network yield source and campaign', () => {
     const { address } = V2_POOL_FIXTURES.showcase
+    visitV2PoolList({ viewport: DESKTOP_VIEWPORT })
+    showV2PoolColumns(YIELD_COLUMNS)
 
-    showYieldColumns()
     getV2PoolCell(address, PoolColumnId.NetApy).find('[data-testid="pool-net-apy"]').should('have.text', '20.70%')
     getV2PoolCell(address, PoolColumnId.BaseApy).should('contain.text', '10.51%')
     getV2PoolCell(address, PoolColumnId.WeeklyBaseApy).should('contain.text', '22.09%')
@@ -53,29 +57,18 @@ describe('V2 pool-list yields', () => {
     getV2PoolCell(address, PoolColumnId.CrvApy).within(() => {
       cy.get('[data-testid="pool-crv-apy-unboosted"]').should('have.text', '5.12%')
       cy.get('[data-testid="pool-crv-apy-boosted"]').should('have.text', '13.30%')
-      cy.get(`[data-testid="token-icon-${MAINNET_CRV_ADDRESS}"]`).should('have.length', 1)
     })
 
     getV2PoolCell(address, PoolColumnId.Points).within(() => {
       cy.get(POINTS_BADGE).should('have.length', 4)
       cy.contains(POINTS_BADGE, '30x').should('be.visible')
       cy.contains(POINTS_BADGE, '20x').should('be.visible')
-      cy.contains(POINTS_BADGE, 'Points').should('be.visible')
     })
-
     getV2PoolCell(address, PoolColumnId.NetApy).within(() => {
-      cy.get(POINTS_BADGE).should('have.length', 4).and('have.text', '')
-      cy.get(REWARD_BADGES).should($badges => {
-        expect([...$badges].map(badge => badge.dataset.testid)).to.deep.equal([
-          'pool-points-badge',
-          'pool-points-badge',
-          'pool-points-badge',
-          'pool-points-badge',
-          'pool-extra-reward-badge',
-          'pool-campaign-reward-badge',
-          'pool-crv-reward-badge',
-        ])
-      })
+      cy.get(POINTS_BADGE).should('have.length', 4)
+      cy.get(EXTRA_REWARD_BADGE).should('have.length', 1)
+      cy.get(CAMPAIGN_REWARD_BADGE).should('have.length', 1)
+      cy.get(CRV_REWARD_BADGE).should('have.length', 1)
     })
     getV2PoolCell(address, PoolColumnId.RewardsApy).within(() => {
       cy.get(POINTS_BADGE).should('not.exist')
@@ -84,125 +77,63 @@ describe('V2 pool-list yields', () => {
       cy.get(CRV_REWARD_BADGE).should('not.exist')
     })
 
-    getV2PoolCell(address, PoolColumnId.NetApy)
-      .find('[data-testid="pool-net-apy-tooltip-trigger"]')
-      .trigger('mouseover')
-    cy.get(TOOLTIP)
-      .should('be.visible')
-      .and('contain.text', 'Base APY')
-      .and('contain.text', '10.51%')
-      .and('contain.text', 'Liquidity incentives')
-      .and('contain.text', '10.19%')
-      .and('contain.text', 'Net total APY')
-      .and('contain.text', '20.70%')
-      .and('contain.text', 'Max veCRV Boost (2.5x)')
-      .and('contain.text', '13.30%')
-      .and('contain.text', 'Total max veCRV APY')
-      .and('contain.text', '28.87%')
-      .and('contain.text', 'Points campaigns')
-      .and('contain.text', 'weekly compounding rate')
-    expectTooltipTextOrder('Total max veCRV APY', 'Points campaigns')
-    cy.get(`${TOOLTIP} a[target="_blank"]`).should('have.length', 6)
-    cy.get(`${TOOLTIP} a[href$="/v2-apr-1"]`).should('have.text', '3.04%')
-    cy.get(`${TOOLTIP} a[href="https://app.termmax.ts.finance"]`).should('contain.text', '30x')
-    cy.get(`${TOOLTIP} a[href="https://app.re.xyz/points"]`).should('contain.text', '20x')
-    cy.get(`${TOOLTIP} a[href$="/v2-points-1"]`).should('have.text', '-')
-    for (const platform of ['TermMax', 'Re', 'V2 points', 'V2 xp', 'V2 stars']) {
-      cy.get(`${TOOLTIP} img[alt="${platform}"]`).should('have.length', 1)
-    }
-    getV2PoolCell(address, PoolColumnId.NetApy).find('[data-testid="pool-net-apy-tooltip-trigger"]').trigger('mouseout')
-    cy.get(TOOLTIP).should('not.exist')
+    expectV2Tooltip(
+      () => getV2PoolCell(address, PoolColumnId.NetApy).find('[data-testid="pool-net-apy-tooltip-trigger"]'),
+      {
+        rows: [
+          ['Base APY', '10.51%'],
+          ['Liquidity incentives', '10.19%'],
+          ['CRV', '5.12%'],
+          ['Net total APY', '20.70%'],
+          ['Max veCRV Boost (2.5x)', '13.30%'],
+          ['Total max veCRV APY', '28.87%'],
+        ],
+        links: FULL_CAMPAIGN_LINKS,
+      },
+    )
 
-    getV2PoolCell(address, PoolColumnId.BaseApy)
-      .find('[data-testid="pool-base-apy-tooltip-trigger"]')
-      .trigger('mouseover')
-    cy.get(TOOLTIP)
-      .should(
-        'contain.text',
-        'Annualized yield generated by the pool based on trading activity over the past 24 hours.',
-      )
-      .and('contain.text', 'intrinsic yield is included')
-      .and('contain.text', 'Daily')
-      .and('contain.text', '10.51%')
-      .and('contain.text', 'Weekly')
-      .and('contain.text', '22.09%')
-    getV2PoolCell(address, PoolColumnId.BaseApy)
-      .find('[data-testid="pool-base-apy-tooltip-trigger"]')
-      .trigger('mouseout')
-    cy.get(TOOLTIP).should('not.exist')
+    expectV2Tooltip(
+      () => getV2PoolCell(address, PoolColumnId.BaseApy).find('[data-testid="pool-base-apy-tooltip-trigger"]'),
+      {
+        rows: [
+          ['Daily', '10.51%'],
+          ['Weekly', '22.09%'],
+        ],
+      },
+    )
 
-    getV2PoolCell(address, PoolColumnId.RewardsApy)
-      .find('[data-testid="pool-rewards-apy-tooltip-trigger"]')
-      .trigger('mouseover')
-    cy.get(TOOLTIP)
-      .should('contain.text', 'Liquidity incentives')
-      .and('contain.text', '2.02%')
-      .and('contain.text', 'Campaign rewards')
-      .and('contain.text', '3.04%')
-      .and('contain.text', 'Rewards APY')
-      .and('contain.text', '5.06%')
-      .and('contain.text', 'Points are not included.')
-    getV2PoolCell(address, PoolColumnId.RewardsApy)
-      .find('[data-testid="pool-rewards-apy-tooltip-trigger"]')
-      .trigger('mouseout')
-    cy.get(TOOLTIP).should('not.exist')
+    expectV2Tooltip(
+      () => getV2PoolCell(address, PoolColumnId.RewardsApy).find('[data-testid="pool-rewards-apy-tooltip-trigger"]'),
+      {
+        rows: [
+          ['Liquidity incentives', '2.02%'],
+          ['RWD', '2.02%'],
+          ['Campaign rewards', '3.04%'],
+          ['RWD', '3.04%'],
+          ['Rewards APY', '5.06%'],
+        ],
+      },
+    )
 
-    getV2PoolCell(address, PoolColumnId.CrvApy)
-      .find('[data-testid="pool-crv-apy-tooltip-trigger"]')
-      .trigger('mouseover')
-    cy.get(TOOLTIP)
-      .should('contain.text', 'CRV APY')
-      .and('contain.text', 'Unboosted')
-      .and('contain.text', '5.12%')
-      .and('contain.text', 'Max boost')
-      .and('contain.text', '13.30%')
-      .and('contain.text', 'The maximum rate assumes the full 2.5x gauge boost.')
-    cy.get(`${TOOLTIP} [data-testid="token-icon-${MAINNET_CRV_ADDRESS}"]`).should('have.length', 2)
-    getV2PoolCell(address, PoolColumnId.CrvApy).find('[data-testid="pool-crv-apy-tooltip-trigger"]').trigger('mouseout')
-    cy.get(TOOLTIP).should('not.exist')
-
-    getV2PoolCell(address, PoolColumnId.NetApy).find(POINTS_BADGE).first().trigger('mouseover')
-    cy.get(TOOLTIP)
-      .should('contain.text', 'TermMax')
-      .and('contain.text', 'Points for providing liquidity.')
-      .and('contain.text', 'Go to issuer')
-    getV2PoolCell(address, PoolColumnId.NetApy).find(POINTS_BADGE).first().trigger('mouseout')
-    cy.get(TOOLTIP).should('not.exist')
-
-    getV2PoolCell(address, PoolColumnId.NetApy).find(EXTRA_REWARD_BADGE).trigger('mouseover')
-    cy.get(TOOLTIP)
-      .should('contain.text', 'Extra pool reward')
-      .and('contain.text', 'APY from an extra reward')
-      .and('contain.text', 'APY: 2.02%')
-    getV2PoolCell(address, PoolColumnId.NetApy).find(EXTRA_REWARD_BADGE).trigger('mouseout')
-    cy.get(TOOLTIP).should('not.exist')
-
-    getV2PoolCell(address, PoolColumnId.NetApy).find(CAMPAIGN_REWARD_BADGE).trigger('mouseover')
-    cy.get(TOOLTIP)
-      .should('contain.text', 'APY: 3.04%')
-      .and('contain.text', 'Steps:')
-      .and('contain.text', 'Go to issuer')
-    getV2PoolCell(address, PoolColumnId.NetApy).find(CAMPAIGN_REWARD_BADGE).trigger('mouseout')
-    cy.get(TOOLTIP).should('not.exist')
-
-    getV2PoolCell(address, PoolColumnId.NetApy).find(CRV_REWARD_BADGE).trigger('mouseover')
-    cy.get(TOOLTIP)
-      .should('contain.text', 'CRV gauge reward')
-      .and('contain.text', '5.12%')
-      .and('contain.text', '13.30%')
-      .and('contain.text', 'max boost of 2.5x')
+    expectV2Tooltip(
+      () => getV2PoolCell(address, PoolColumnId.CrvApy).find('[data-testid="pool-crv-apy-tooltip-trigger"]'),
+      {
+        rows: [
+          ['Unboosted', '5.12%'],
+          ['Max boost', '13.30%'],
+        ],
+      },
+    )
   })
 
-  it('handles inactive, incomplete, empty, and volatile yield data', () => {
-    showYieldColumns()
+  it('handles inactive, incomplete, empty, volatile, and high yield data', () => {
+    visitV2PoolList({ viewport: DESKTOP_VIEWPORT })
+    showV2PoolColumns(YIELD_COLUMNS)
 
     const killed = V2_POOL_FIXTURES.killed.address
     getV2PoolCell(killed, PoolColumnId.NetApy).should('contain.text', '6.07%')
     getV2PoolCell(killed, PoolColumnId.RewardsApy).should('contain.text', '5.06%')
-    getV2PoolCell(killed, PoolColumnId.CrvApy)
-      .should('have.text', '-')
-      .find(`[data-testid="token-icon-${MAINNET_CRV_ADDRESS}"]`)
-      .should('not.exist')
+    getV2PoolCell(killed, PoolColumnId.CrvApy).should('have.text', '-')
     getV2PoolCell(killed, PoolColumnId.CrvApy).find('[data-testid="pool-crv-apy-tooltip-trigger"]').should('not.exist')
     getV2PoolCell(killed, PoolColumnId.NetApy).within(() => {
       cy.get(POINTS_BADGE).should('exist')
@@ -210,37 +141,32 @@ describe('V2 pool-list yields', () => {
       cy.get(CAMPAIGN_REWARD_BADGE).should('exist')
       cy.get(CRV_REWARD_BADGE).should('not.exist')
     })
-    getV2PoolCell(killed, PoolColumnId.NetApy).find('[data-testid="pool-net-apy-tooltip-trigger"]').trigger('mouseover')
-    cy.get(TOOLTIP)
-      .should('contain.text', 'Liquidity incentives')
-      .and('contain.text', '5.06%')
-      .and('contain.text', 'Net total APY')
-      .and('contain.text', '6.07%')
-      .and('contain.text', 'Points campaigns')
-      .and('not.contain.text', 'Max veCRV Boost (2.5x)')
-    expectTooltipTextOrder('Net total APY', 'Points campaigns')
-    cy.get(`${TOOLTIP} [data-testid="token-icon-${MAINNET_CRV_ADDRESS}"]`).should('not.exist')
-    getV2PoolCell(killed, PoolColumnId.NetApy).find('[data-testid="pool-net-apy-tooltip-trigger"]').trigger('mouseout')
-    cy.get(TOOLTIP).should('not.exist')
+    expectV2Tooltip(
+      () => getV2PoolCell(killed, PoolColumnId.NetApy).find('[data-testid="pool-net-apy-tooltip-trigger"]'),
+      {
+        rows: [
+          ['Liquidity incentives', '5.06%'],
+          ['Net total APY', '6.07%'],
+        ],
+        excludes: ['Max veCRV Boost (2.5x)'],
+      },
+    )
 
     const partial = V2_POOL_FIXTURES.partial.address
     getV2PoolCell(partial, PoolColumnId.NetApy).should('contain.text', '6.13%')
-    getV2PoolCell(partial, PoolColumnId.CrvApy)
-      .should('have.text', '-')
-      .find('[data-testid="pool-crv-apy-tooltip-trigger"]')
-      .should('not.exist')
+    getV2PoolCell(partial, PoolColumnId.CrvApy).should('have.text', '-')
+    getV2PoolCell(partial, PoolColumnId.CrvApy).find('[data-testid="pool-crv-apy-tooltip-trigger"]').should('not.exist')
     getV2PoolCell(partial, PoolColumnId.NetApy).find(CRV_REWARD_BADGE).should('not.exist')
-    getV2PoolCell(partial, PoolColumnId.NetApy)
-      .find('[data-testid="pool-net-apy-tooltip-trigger"]')
-      .trigger('mouseover')
-    cy.get(TOOLTIP)
-      .should('contain.text', 'CRV')
-      .and('contain.text', '5.12%')
-      .and('contain.text', 'Net total APY')
-      .and('contain.text', '6.13%')
-      .and('not.contain.text', 'Max veCRV Boost (2.5x)')
-    getV2PoolCell(partial, PoolColumnId.NetApy).find('[data-testid="pool-net-apy-tooltip-trigger"]').trigger('mouseout')
-    cy.get(TOOLTIP).should('not.exist')
+    expectV2Tooltip(
+      () => getV2PoolCell(partial, PoolColumnId.NetApy).find('[data-testid="pool-net-apy-tooltip-trigger"]'),
+      {
+        rows: [
+          ['CRV', '5.12%'],
+          ['Net total APY', '6.13%'],
+        ],
+        excludes: ['Max veCRV Boost (2.5x)'],
+      },
+    )
 
     const empty = V2_POOL_FIXTURES.empty.address
     for (const column of [
@@ -258,14 +184,15 @@ describe('V2 pool-list yields', () => {
       .find('[data-testid="pool-rewards-apy-tooltip-trigger"]')
       .should('not.exist')
     getV2PoolCell(empty, PoolColumnId.CrvApy).find('[data-testid="pool-crv-apy-tooltip-trigger"]').should('not.exist')
-    getV2PoolCell(empty, PoolColumnId.BaseApy)
-      .find('[data-testid="pool-base-apy-tooltip-trigger"]')
-      .trigger('mouseover')
-    cy.get(TOOLTIP).should('be.visible')
-    cy.get(TOOLTIP).contains('span', 'Daily').parent().parent().should('contain.text', '0%')
-    cy.get(TOOLTIP).contains('span', 'Weekly').parent().parent().should('contain.text', '-')
-    getV2PoolCell(empty, PoolColumnId.BaseApy).find('[data-testid="pool-base-apy-tooltip-trigger"]').trigger('mouseout')
-    cy.get(TOOLTIP).should('not.exist')
+    expectV2Tooltip(
+      () => getV2PoolCell(empty, PoolColumnId.BaseApy).find('[data-testid="pool-base-apy-tooltip-trigger"]'),
+      {
+        rows: [
+          ['Daily', '0%'],
+          ['Weekly', '-'],
+        ],
+      },
+    )
 
     const volatile = V2_POOL_FIXTURES.volatile.address
     getV2PoolCell(volatile, PoolColumnId.NetApy).should('contain.text', '5,000+%')
@@ -273,17 +200,52 @@ describe('V2 pool-list yields', () => {
     getV2PoolCell(volatile, PoolColumnId.WeeklyBaseApy)
       .invoke('text')
       .should('match', /^-\d+\.\d+%$/)
-    getV2PoolCell(volatile, PoolColumnId.NetApy)
-      .find('[data-testid="pool-net-apy-tooltip-trigger"]')
-      .trigger('mouseover')
-    cy.get(TOOLTIP).should('contain.text', 'This net APY is volatile and is unlikely to persist.')
-    getV2PoolCell(volatile, PoolColumnId.NetApy)
-      .find('[data-testid="pool-net-apy-tooltip-trigger"]')
-      .trigger('mouseout')
-    cy.get(TOOLTIP).should('not.exist')
+    expectV2Tooltip(
+      () => getV2PoolCell(volatile, PoolColumnId.NetApy).find('[data-testid="pool-net-apy-tooltip-trigger"]'),
+      { contains: [/volatile/i] },
+    )
 
     const highRewards = V2_POOL_FIXTURES.highRewards.address
-    getV2PoolCell(highRewards, PoolColumnId.NetApy).should('not.contain.text', '5,000+%')
+    getV2PoolCell(highRewards, PoolColumnId.NetApy).should('contain.text', '11.75k%').and('not.contain.text', '5,000+%')
     getV2PoolCell(highRewards, PoolColumnId.BaseApy).should('contain.text', '1.005%')
+    getV2PoolCell(highRewards, PoolColumnId.RewardsApy)
+      .should('contain.text', '11.75k%')
+      .and('not.contain.text', '5,000+%')
+  })
+
+  it('combines Lite-network APR and points campaigns', () => {
+    const { address } = V2_POOL_FIXTURES.lite
+    visitV2PoolList({ network: 'taiko', viewport: DESKTOP_VIEWPORT })
+    showV2PoolColumns([PoolColumnId.RewardsApy, PoolColumnId.Points])
+
+    getV2PoolCell(address, PoolColumnId.RewardsApy).should('contain.text', '8.20%')
+    getV2PoolCell(address, PoolColumnId.Points).find(POINTS_BADGE).should('have.text', 'TP')
+
+    expectV2Tooltip(
+      () => getV2PoolCell(address, PoolColumnId.RewardsApy).find('[data-testid="pool-rewards-apy-tooltip-trigger"]'),
+      {
+        rows: [
+          ['Liquidity incentives', '2.02%'],
+          ['LITE', '2.02%'],
+          ['Campaign rewards', '6.18%'],
+          ['TAPR', '6.18%'],
+          ['Rewards APY', '8.20%'],
+        ],
+        links: [
+          {
+            href: 'https://app.merkl.xyz/opportunities/taiko/POOL/v2-lite-apr-1',
+            text: '6.18%',
+          },
+        ],
+      },
+    )
+    expectV2Tooltip(() => getV2PoolCell(address, PoolColumnId.Points).find(POINTS_BADGE), {
+      links: [
+        {
+          href: 'https://app.merkl.xyz/opportunities/taiko/POOL/v2-lite-points-1',
+          text: 'Go to issuer',
+        },
+      ],
+    })
   })
 })

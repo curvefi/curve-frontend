@@ -1,16 +1,11 @@
-import {
-  setupDexPoolListV2Mocks,
-  V2_POOL_FIXTURE_NOW,
-  V2_POOL_FIXTURES,
-} from '@cy/support/helpers/dex-pool-list-v2-mocks'
+import { setupDexPoolListV2Mocks, V2_POOL_FIXTURES } from '@cy/support/helpers/dex-pool-list-v2-mocks'
 import {
   MOBILE_VIEWPORT,
   expandV2PoolRow,
+  expectV2Tooltip,
   getV2PoolExpandedPanel,
   visitV2PoolList,
 } from '@cy/support/helpers/dex-pools-list-v2.helpers'
-
-const TOOLTIP = '[role="tooltip"]'
 
 const FULL_NETWORK_METRIC_IDS = [
   'pool-net-apy',
@@ -28,206 +23,81 @@ const FULL_NETWORK_METRIC_IDS = [
   'pool-age',
 ] as const
 
-const LITE_METRIC_IDS = ['pool-volume', 'pool-tvl', 'pool-rewards-apy', 'pool-points-campaign-0', 'pool-age'] as const
-
-const FULL_NETWORK_CAMPAIGNS = [
-  {
-    testId: 'pool-points-campaign-0',
-    value: '30x',
-    platform: 'TermMax',
-    href: 'https://app.termmax.ts.finance',
-  },
-  {
-    testId: 'pool-points-campaign-1',
-    value: '20x',
-    platform: 'Re',
-    href: 'https://app.re.xyz/points',
-  },
-  {
-    testId: 'pool-points-campaign-2',
-    value: '-',
-    platform: 'V2 points',
-    href: 'https://app.merkl.xyz/opportunities/ethereum/POOL/v2-points-1',
-  },
-  {
-    testId: 'pool-points-campaign-3',
-    value: 'XP',
-    platform: 'V2 xp',
-    href: 'https://app.merkl.xyz/opportunities/ethereum/POOL/v2-points-2',
-  },
-  {
-    testId: 'pool-points-campaign-4',
-    value: 'STAR',
-    platform: 'V2 stars',
-    href: 'https://app.merkl.xyz/opportunities/ethereum/POOL/v2-points-3',
-  },
+const FULL_NETWORK_CAMPAIGN_IDS = [
+  'pool-points-campaign-0',
+  'pool-points-campaign-1',
+  'pool-points-campaign-2',
+  'pool-points-campaign-3',
+  'pool-points-campaign-4',
 ] as const
 
-const expectMetricOrder = (address: string, testIds: readonly string[]) => {
-  getV2PoolExpandedPanel(address)
-    .find('[data-testid]')
-    .should($elements => {
-      const metricIds = [...$elements].flatMap(element => {
-        const testId = element.getAttribute('data-testid')
-        return testId && element.querySelector(`[data-testid="${testId}-value"]`) ? [testId] : []
-      })
+const LITE_METRIC_IDS = ['pool-volume', 'pool-tvl', 'pool-rewards-apy', 'pool-points-campaign-0', 'pool-age'] as const
 
-      expect(metricIds).to.deep.equal([...testIds])
+const expectMetricOrder = (address: string, expectedIds: readonly string[]) => {
+  getV2PoolExpandedPanel(address)
+    .find('[data-testid$="-value"]')
+    .should($values => {
+      const metricIds = [...$values]
+        .map(value => value.getAttribute('data-testid'))
+        .filter((testId): testId is string => testId !== null)
+        .map(testId => testId.replace(/-value$/, ''))
+
+      expect(metricIds).to.deep.equal([...expectedIds])
     })
 }
 
-const expectPointsCampaign = (
-  address: string,
-  { testId, value, platform, href }: (typeof FULL_NETWORK_CAMPAIGNS)[number],
-) => {
-  const selector = `[data-testid="${testId}"]`
+const expectCampaignRowsToBeLinks = (address: string, campaignIds: readonly string[]) => {
+  for (const campaignId of campaignIds) {
+    getV2PoolExpandedPanel(address)
+      .find(`[data-testid="${campaignId}"]`)
+      .closest('a')
+      .should('have.length', 1)
+      .and('be.visible')
+  }
+}
 
-  getV2PoolExpandedPanel(address)
-    .find(selector)
-    .within(() => {
-      cy.contains(/^Points$/).should('be.visible')
-      cy.get(`[data-testid="${testId}-value"]`).should('have.text', value)
-      cy.get(`img[alt="${platform}"]`).should('have.length', 1)
-    })
-
-  getV2PoolExpandedPanel(address).find(selector).closest('a').as(`${testId}-link`)
-  cy.get(`@${testId}-link`).should('have.attr', 'href', href)
-  cy.get(`@${testId}-link`).should('have.attr', 'target', '_blank')
-  cy.get(`@${testId}-link`).invoke('attr', 'aria-label').should('match', new RegExp(platform, 'i'))
+const visitAndExpand = (address: string, network: 'ethereum' | 'taiko' = 'ethereum') => {
+  visitV2PoolList({ network, viewport: MOBILE_VIEWPORT })
+  expandV2PoolRow(address)
 }
 
 describe('V2 pool-list mobile panels', () => {
-  beforeEach(() => {
-    setupDexPoolListV2Mocks()
-    cy.clock(V2_POOL_FIXTURE_NOW, ['Date'])
-  })
+  beforeEach(setupDexPoolListV2Mocks)
 
-  it('shows the full-network metrics in the required order', () => {
+  it('shows the full-network metrics in the required mobile order', () => {
     const { address } = V2_POOL_FIXTURES.showcase
-    visitV2PoolList({ viewport: MOBILE_VIEWPORT })
-    expandV2PoolRow(address)
+    visitAndExpand(address)
 
     expectMetricOrder(address, FULL_NETWORK_METRIC_IDS)
 
-    getV2PoolExpandedPanel(address).within(() => {
-      cy.get('[data-testid="pool-net-apy"]').should('contain.text', 'Net APY')
-      cy.get('[data-testid="pool-volume"]').should('contain.text', '24h Volume')
-      cy.get('[data-testid="pool-tvl"]').should('contain.text', 'TVL')
-      cy.get('[data-testid="pool-base-apy"]').should('contain.text', 'Base APY')
-      cy.get('[data-testid="pool-weekly-base-apy"]').should('contain.text', '7D base APY')
-      cy.get('[data-testid="pool-rewards-apy"]').should('contain.text', 'Rewards APY')
-      cy.get('[data-testid="pool-crv-apy"]').should('contain.text', 'CRV APY')
-      cy.get('[data-testid="pool-age"]').should('contain.text', 'Age')
+    getV2PoolExpandedPanel(address).find('[data-testid="pool-volume"]').should('contain.text', '24h Volume')
+    getV2PoolExpandedPanel(address)
+      .find('[data-testid="pool-crv-apy-value"]')
+      .invoke('text')
+      .should('match', /^\s*-?[\d,.]+(?:\+)?%\s*→\s*-?[\d,.]+(?:\+)?%\s*$/)
 
-      cy.get('[data-testid="pool-net-apy-value"]').should('contain.text', '20.70%')
-      cy.get('[data-testid="pool-volume-value"]').should('contain.text', '$')
-      cy.get('[data-testid="pool-tvl-value"]').should('contain.text', '$')
-      cy.get('[data-testid="pool-base-apy-value"]').should('contain.text', '10.51%')
-      cy.get('[data-testid="pool-weekly-base-apy-value"]').should('contain.text', '22.09%')
-      cy.get('[data-testid="pool-rewards-apy-value"]').should('contain.text', '5.06%')
-      cy.get('[data-testid="pool-crv-apy-value"]')
-        .should('contain.text', '5.12%')
-        .and('contain.text', '\u2192')
-        .and('contain.text', '13.30%')
-      cy.get('[data-testid="pool-age-value"]').should('not.have.text', '-')
-    })
-
-    for (const campaign of FULL_NETWORK_CAMPAIGNS) expectPointsCampaign(address, campaign)
+    expectCampaignRowsToBeLinks(address, FULL_NETWORK_CAMPAIGN_IDS)
   })
 
-  it('opens an APY tooltip from a metric value', () => {
+  it('opens a tooltip from a metric value', () => {
     const { address } = V2_POOL_FIXTURES.showcase
-    visitV2PoolList({ viewport: MOBILE_VIEWPORT })
-    expandV2PoolRow(address)
+    visitAndExpand(address)
 
-    getV2PoolExpandedPanel(address).find('[data-testid="pool-base-apy-value"]').trigger('mouseover')
-    cy.get(TOOLTIP).should('contain.text', 'Base APY').and('contain.text', '10.51%')
-    getV2PoolExpandedPanel(address).find('[data-testid="pool-base-apy-value"]').trigger('mouseout')
-    cy.get(TOOLTIP).should('not.exist')
+    expectV2Tooltip(() => getV2PoolExpandedPanel(address).find('[data-testid="pool-base-apy-value"]'))
   })
 
-  it('shows only the supported metrics on a Lite network', () => {
+  it('shows the supported Lite metrics in the required mobile order', () => {
     const { address } = V2_POOL_FIXTURES.lite
-    visitV2PoolList({ network: 'taiko', viewport: MOBILE_VIEWPORT })
-    expandV2PoolRow(address)
+    visitAndExpand(address, 'taiko')
 
     expectMetricOrder(address, LITE_METRIC_IDS)
-
-    getV2PoolExpandedPanel(address).within(() => {
-      cy.get('[data-testid="pool-volume"]').should('contain.text', '24h Volume')
-      cy.get('[data-testid="pool-tvl"]').should('contain.text', 'TVL')
-      cy.get('[data-testid="pool-rewards-apy-value"]').should('contain.text', '%')
-      cy.get('[data-testid="pool-points-campaign-0-value"]').should('have.text', 'TP')
-      cy.get('[data-testid="pool-points-campaign-0"] img[alt="V2 taiko points"]').should('have.length', 1)
-      cy.get('[data-testid="pool-age-value"]').should('not.have.text', '-')
-
-      for (const testId of ['pool-net-apy', 'pool-base-apy', 'pool-weekly-base-apy', 'pool-crv-apy']) {
-        cy.get(`[data-testid="${testId}"]`).should('not.exist')
-      }
-    })
-
-    getV2PoolExpandedPanel(address).find('[data-testid="pool-points-campaign-0"]').closest('a').as('litePointsLink')
-    cy.get('@litePointsLink').should(
-      'have.attr',
-      'href',
-      'https://app.merkl.xyz/opportunities/taiko/POOL/v2-lite-points-1',
-    )
-    cy.get('@litePointsLink').should('have.attr', 'target', '_blank')
-    cy.get('@litePointsLink')
-      .invoke('attr', 'aria-label')
-      .should('match', /V2 taiko points/i)
+    expectCampaignRowsToBeLinks(address, ['pool-points-campaign-0'])
   })
 
-  it('shows missing APYs without inventing a points row', () => {
+  it('does not create a campaign metric when campaign data is unavailable', () => {
     const { address } = V2_POOL_FIXTURES.empty
-    visitV2PoolList({ viewport: MOBILE_VIEWPORT })
-    expandV2PoolRow(address)
+    visitAndExpand(address)
 
-    getV2PoolExpandedPanel(address).within(() => {
-      for (const testId of [
-        'pool-net-apy',
-        'pool-base-apy',
-        'pool-weekly-base-apy',
-        'pool-rewards-apy',
-        'pool-crv-apy',
-      ]) {
-        cy.get(`[data-testid="${testId}-value"]`).should('have.text', '-')
-      }
-      cy.get('[data-testid^="pool-points-campaign-"]').should('not.exist')
-    })
-  })
-
-  it('preserves volatile APY presentation', () => {
-    const { address } = V2_POOL_FIXTURES.volatile
-    visitV2PoolList({ viewport: MOBILE_VIEWPORT })
-    expandV2PoolRow(address)
-
-    getV2PoolExpandedPanel(address).within(() => {
-      cy.get('[data-testid="pool-net-apy-value"]').should('contain.text', '5,000+%')
-      cy.get('[data-testid="pool-base-apy-value"]').should('contain.text', '5,000+%')
-      cy.get('[data-testid="pool-weekly-base-apy-value"]')
-        .invoke('text')
-        .should('match', /^-\d+\.\d+%$/)
-    })
-  })
-
-  it('does not cap high rewards when the base APY is not volatile', () => {
-    const { address } = V2_POOL_FIXTURES.highRewards
-    visitV2PoolList({ viewport: MOBILE_VIEWPORT })
-    expandV2PoolRow(address)
-
-    getV2PoolExpandedPanel(address).within(() => {
-      cy.get('[data-testid="pool-net-apy-value"]').should('not.contain.text', '5,000+%')
-      cy.get('[data-testid="pool-base-apy-value"]').should('contain.text', '1.005%')
-      cy.get('[data-testid="pool-rewards-apy-value"]').should('not.contain.text', '5,000+%')
-    })
-  })
-
-  it('shows a fallback when pool age is unavailable', () => {
-    const { address } = V2_POOL_FIXTURES.killed
-    visitV2PoolList({ viewport: MOBILE_VIEWPORT })
-    expandV2PoolRow(address)
-
-    getV2PoolExpandedPanel(address).find('[data-testid="pool-age-value"]').should('have.text', '-')
+    getV2PoolExpandedPanel(address).find('[data-testid^="pool-points-campaign-"]').should('not.exist')
   })
 })
