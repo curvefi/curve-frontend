@@ -46,7 +46,7 @@ TEST_SEED=18273645-1 yarn cy:run:e2e --browser firefox --spec cypress/e2e/llamal
 TEST_SEED=18273645-1 yarn cy:run:component --browser firefox --spec cypress/component/<path>/<test>.cy.tsx
 ```
 
-GitHub Actions uses the run ID and test iteration as its seed. The same iteration uses the same seed across browsers, and rerunning a GitHub workflow run reuses its seeds.
+CI uses the run ID, run attempt, and test iteration as its seed. The same iteration uses the same seed across browsers within an attempt, while rerunning failed CI jobs gets a new replayable seed. The flake-detection workflow intentionally reuses its seeds when rerun.
 
 ### Flake Detection
 

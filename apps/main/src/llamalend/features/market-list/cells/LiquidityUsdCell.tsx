@@ -1,4 +1,4 @@
-import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
+import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { LiquidityUsdTooltipContent } from '@/llamalend/widgets/tooltips/LiquidityUsdTooltipContent'
 import Box from '@mui/material/Box'
 import { CellContext } from '@tanstack/react-table'
@@ -7,7 +7,7 @@ import { TokenInfo } from '@ui-kit/shared/ui/TokenInfo'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { formatNumber } from '@ui-kit/utils'
 
-export const LiquidityUsdCell = ({ getValue, row }: CellContext<LlamaMarket, number>) => {
+export const LiquidityUsdCell = ({ getValue, row }: CellContext<LlamaMarketRow, number>) => {
   const { liquidity, assets } = row.original
 
   return (
