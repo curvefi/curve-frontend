@@ -13,6 +13,7 @@ import { maybe, notFalsy } from '@primitives/objects.utils'
 import { formatDate } from '@ui/utils'
 import type { CrvUsdSnapshot } from '@ui-kit/entities/crvusd-snapshots'
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
+import { useNewLlamaMarketDetailPage } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { type TimeOption, timeOptions } from '@ui-kit/lib/model/query/time-option-validation'
 import { TIME_OPTION_MS } from '@ui-kit/lib/model/time'
@@ -34,6 +35,7 @@ import { fallbackQ, mapQuery, q, useMappedQuery } from '@ui-kit/types/util'
 import { formatNumber } from '@ui-kit/utils'
 import { AVERAGE_WINDOW_DAYS, calculateAverageRates, hasFullTimeWindow } from '@ui-kit/utils/averageRates'
 import { useMarketContext } from '../features/market-context'
+import { MarketCardHeader } from './MarketCardHeader'
 
 const { Spacing, Height } = SizesAndSpaces
 
@@ -132,6 +134,7 @@ const getAverageRates = (ratePoints: { rate: number; timestamp: number }[]) => (
 })
 
 export const MarketHistoricalRatesChart = ({ rateMode }: MarketHistoricalRatesChartProps) => {
+  const Header = useNewLlamaMarketDetailPage() ? MarketCardHeader : CardHeader
   const { chainId, blockchainId, marketId, controllerAddress, marketType, apiMarket } = useMarketContext()
   const [timeOption, setTimeOption] = useState<TimeOption>('1M')
   const modeConfig = RATE_MODE_CONFIG[rateMode]
@@ -200,7 +203,7 @@ export const MarketHistoricalRatesChart = ({ rateMode }: MarketHistoricalRatesCh
 
   return (
     <Card size="small" data-testid={`historical-${rateMode.toLowerCase()}-rate-chart`}>
-      <CardHeader
+      <Header
         title={modeConfig.chartTitle}
         action={
           <SelectTimeOption

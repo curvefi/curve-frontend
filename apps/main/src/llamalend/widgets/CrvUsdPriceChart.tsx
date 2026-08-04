@@ -8,6 +8,7 @@ import { useTheme } from '@mui/material/styles'
 import { notFalsyArray } from '@primitives/objects.utils'
 import { formatDate } from '@ui/utils'
 import { useCrvUsdPriceHistory } from '@ui-kit/entities/crvusd-price.query'
+import { useNewLlamaMarketDetailPage } from '@ui-kit/hooks/useFeatureFlags'
 import { useCombinedQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
@@ -30,6 +31,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { Chain, CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { AVERAGE_WINDOW_DAYS, calculateAverageRates, hasFullTimeWindow } from '@ui-kit/utils/averageRates'
+import { MarketCardHeader } from './MarketCardHeader'
 
 const { Spacing, Height } = SizesAndSpaces
 
@@ -68,6 +70,7 @@ const getDeviations = (priceHistory: PricePoint[], price: number, timestamp = Da
 }
 
 export const CrvUsdPriceChart = () => {
+  const Header = useNewLlamaMarketDetailPage() ? MarketCardHeader : CardHeader
   const [timeOption, setTimeOption] = useState<TimeOption>('1M')
   const [visibleSeries, setVisibleSeries] = useState<PriceSeriesKey[]>(SERIES_CONFIG.map(({ key }) => key))
   const {
@@ -128,7 +131,7 @@ export const CrvUsdPriceChart = () => {
 
   return (
     <Card size="small" data-testid="crvusd-price-chart">
-      <CardHeader
+      <Header
         title={t`Historical crvUSD Peg`}
         action={
           <SelectTimeOption

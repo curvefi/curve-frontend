@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
+import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { SolvencyTooltip } from '@/llamalend/widgets/tooltips'
 import { type ColumnMeta, createColumnHelper, FilterFnOption } from '@tanstack/react-table'
 import { type AccessorFn, type DeepKeys } from '@tanstack/table-core'
@@ -8,7 +9,6 @@ import type { ColumnDefinition } from '@ui-kit/shared/ui/DataTable/data-table.ut
 import { boolFilterFn, listNotEmptyFilterFn, multiFilterFn, rangeFilterFn } from '@ui-kit/shared/ui/DataTable/filters'
 import { MarketRateType } from '@ui-kit/types/market'
 import { AVERAGE_CATEGORIES } from '@ui-kit/utils'
-import { LlamaMarket } from '../../../queries/market-list/llama-markets'
 import {
   BoostCell,
   CompactUsdCell,
@@ -33,35 +33,34 @@ import {
   TvlHeaderTooltipContent,
   UtilizationHeaderTooltipContent,
 } from '../header-tooltips'
+import {
+  getUserBorrowedUsd,
+  getUserCollateralUsd,
+  getUserPositionHealth,
+  getUserPositionLtv,
+} from '../user-position.utils'
 import { MarketColumnId } from './columns.enum'
 
 type Tooltip = ColumnMeta<never, never>['tooltip']
-type MarketColumn = ColumnDefinition<LlamaMarket>
+type MarketColumn = ColumnDefinition<LlamaMarketRow>
 type MarketColumnOptions = Omit<MarketColumn, 'id' | 'header'>
-type MarketAccessor = DeepKeys<LlamaMarket> | AccessorFn<LlamaMarket>
+type MarketAccessor = DeepKeys<LlamaMarketRow> | AccessorFn<LlamaMarketRow>
 
 const createTooltip = (id: keyof typeof MARKET_TITLES, body: ReactNode): Tooltip => ({
   title: MARKET_TITLES[id],
   body,
 })
 
-/** Define a display column using its id as the title lookup key. */
-const display = (id: MarketColumnId, column: MarketColumnOptions): MarketColumn => ({
-  ...column,
-  id,
-  header: MARKET_TITLES[id],
-})
-
 /** Define an accessor column using separate data and table identifiers. */
 const accessor = (id: MarketColumnId, field: MarketAccessor, column: MarketColumnOptions): MarketColumn =>
-  createColumnHelper<LlamaMarket>().accessor(field, {
+  createColumnHelper<LlamaMarketRow>().accessor(field, {
     ...column,
     id,
     header: MARKET_TITLES[id],
   })
 
 /** Define a hidden column. */
-const hidden = (id: MarketColumnId, field: DeepKeys<LlamaMarket>, filterFn: FilterFnOption<LlamaMarket>) =>
+const hidden = (id: MarketColumnId, field: DeepKeys<LlamaMarketRow>, filterFn: FilterFnOption<LlamaMarketRow>) =>
   accessor(id, field, {
     filterFn,
     meta: { hidden: true },
@@ -101,16 +100,20 @@ export const MARKET_TITLES: Record<MarketColumnId, string> = {
 
 /** Columns for the lending markets table. */
 export const MARKET_COLUMNS = [
-  accessor(MarketColumnId.Assets, MarketColumnId.Assets, {
-    cell: MarketTitleCell,
-    meta: { tooltip: createTooltip(MarketColumnId.Assets, <CollateralBorrowHeaderTooltipContent />) },
-  }),
-  display(MarketColumnId.UserBorrowed, {
+  accessor(
+    MarketColumnId.Assets,
+    ({ assets }) => `${assets.collateral.symbol.toLowerCase()}•${assets.borrowed.symbol.toLowerCase()}`,
+    {
+      cell: MarketTitleCell,
+      meta: { tooltip: createTooltip(MarketColumnId.Assets, <CollateralBorrowHeaderTooltipContent />) },
+    },
+  ),
+  accessor(MarketColumnId.UserBorrowed, getUserBorrowedUsd, {
     cell: PriceCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
-  display(MarketColumnId.UserCollateral, {
+  accessor(MarketColumnId.UserCollateral, getUserCollateralUsd, {
     cell: PriceCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
@@ -148,12 +151,12 @@ export const MARKET_COLUMNS = [
     },
     sortUndefined: 'last',
   }),
-  display(MarketColumnId.UserLtv, {
+  accessor(MarketColumnId.UserLtv, getUserPositionLtv, {
     cell: LtvCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
-  display(MarketColumnId.UserHealth, {
+  accessor(MarketColumnId.UserHealth, getUserPositionHealth, {
     cell: HealthCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',

@@ -34,6 +34,7 @@ export const MarketEmptyPosition = ({ type }: NoPositionProps) => {
   return (
     <Stack sx={{ alignItems: 'center', padding: Spacing.md }} data-testid={`no-position-${emptyType.toLowerCase()}`}>
       <EmptyStateCard
+        size="sm"
         title={title}
         description={description}
         {...(emptyType === 'disconnected' && {

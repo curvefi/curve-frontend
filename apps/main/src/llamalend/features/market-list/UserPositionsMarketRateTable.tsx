@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { ExpandedState } from '@tanstack/react-table'
@@ -10,7 +11,6 @@ import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
 import { QueryProp } from '@ui-kit/types/util'
-import type { LlamaMarket } from '../../queries/market-list/llama-markets'
 import { DEFAULT_SORT_BORROW, DEFAULT_SORT_SUPPLY, MARKET_COLUMNS } from './columns'
 import { useMarketsVisibility } from './hooks/useMarketsVisibility'
 import { MarketExpandedPanel } from './MarketExpandedPanel'
@@ -36,7 +36,7 @@ const TABLE_CONFIG = {
 }
 
 type UserPositionsTableProps = {
-  tableQuery: QueryProp<LlamaMarket[]>
+  tableQuery: QueryProp<LlamaMarketRow[]>
   marketRateType: MarketRateType
   onReload: () => void
 }

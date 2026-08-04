@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import type { LendingPosition } from '@/llamalend/queries/market-list/lending-vaults'
-import { type MarketStats, useUserMarketStats } from '@/llamalend/queries/market-list/llama-market-stats'
+import { type LlamaMarketRow, type MarketStats } from '@/llamalend/queries/market-list/llama-market-stats'
 import { AssetDetails, LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
 import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'
@@ -11,13 +11,12 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, maybes, notFalsyArray } from '@primitives/objects.utils'
 import type { CellContext } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
-import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { type QueryProp, fakeLoadingQ } from '@ui-kit/types/util'
-import { decimal, decimalMultiply, requireChainId, formatNumber } from '@ui-kit/utils'
+import { mapQuery, type QueryProp } from '@ui-kit/types/util'
+import { decimal, decimalMultiply, formatNumber } from '@ui-kit/utils'
 import { MarketColumnId } from '../columns'
 import { ErrorCell } from './ErrorCell'
 
@@ -44,10 +43,14 @@ const getAssets = (columnId: MarketColumnId, assets: LlamaMarket['assets']) =>
  * Maps a column ID to the corresponding values from user market stats.
  * Returns a tuple of [primary value, secondary value] where secondary may be undefined.
  */
-const getAssetValues = (columnId: MarketColumnId, stats: MarketStats, lendingPosition: LendingPosition | undefined) =>
+const getAssetValues = (
+  columnId: MarketColumnId,
+  stats: MarketStats | undefined,
+  lendingPosition: LendingPosition | undefined,
+) =>
   (
     ({
-      [MarketColumnId.UserCollateral]: [stats?.collateral?.amount, stats?.borrowToken?.amount],
+      [MarketColumnId.UserCollateral]: [stats?.collateral, stats?.borrowToken],
       [MarketColumnId.UserBorrowed]: [stats?.borrowed, undefined],
       [MarketColumnId.UserEarnings]: [lendingPosition?.earnings, undefined],
       [MarketColumnId.UserDeposited]: [lendingPosition?.supplied, undefined],
@@ -71,8 +74,8 @@ const getTooltipTitle = (columnId: MarketColumnId) =>
  */
 const getTooltipBody = (
   columnId: MarketColumnId,
-  stats: MarketStats,
-  oraclePrice: number | undefined,
+  stats: MarketStats | undefined,
+  market: LlamaMarket,
   totalValue: Decimal | undefined,
   totalValueUsd: QueryProp<Decimal>,
 ): ReactNode | undefined => {
@@ -85,13 +88,13 @@ const getTooltipBody = (
       <CollateralMetricTooltipContent
         {...{
           collateral: {
-            value: decimal(stats?.collateral?.amount),
-            conversionRate: oraclePrice,
-            symbol: stats?.collateral?.symbol,
+            value: decimal(stats?.collateral),
+            conversionRate: market.oraclePrice,
+            symbol: market.assets.collateral.symbol,
           },
           borrow: {
-            value: decimal(stats?.borrowToken?.amount),
-            symbol: stats?.borrowToken?.symbol,
+            value: decimal(stats?.borrowToken),
+            symbol: market.assets.borrowed.symbol,
           },
           totalValue,
           totalValueUsd,
@@ -159,30 +162,21 @@ const AssetUsdValue = ({
  * - Two assets (2 columns, 2 rows): Each row shows [USD | Value] for each asset
  * This behaviour is easier to achieve with a vanilla CSS grid compared to MUI's Grid component.
  */
-export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, number>) => {
+export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarketRow, number | undefined>) => {
   const market = row.original
   const { assets, lendingPosition } = market
   const columnId = column.id as MarketColumnId
 
-  const { data: stats, error: statsError, isLoading: isLoadingStats } = useUserMarketStats(market, columnId)
-
+  const { stats: statsQuery, prices } = market.positionQueries
+  const { data: stats, error: statsError, isLoading: isLoadingStats } = statsQuery
+  const usesBorrowStats = columnId === MarketColumnId.UserBorrowed || columnId === MarketColumnId.UserCollateral
   const [primaryAsset, secondaryAsset] = getAssets(columnId, assets) ?? [assets.borrowed, undefined]
   const [primaryValue, secondaryValue] = getAssetValues(columnId, stats, lendingPosition) ?? [getValue(), undefined]
+  const primaryPriceQuery = columnId === MarketColumnId.UserCollateral ? prices.collateral : prices.borrowed
+  const { data: primaryPrice, isLoading: isPrimaryPriceLoading } = primaryPriceQuery
+  const { data: secondaryPrice, isLoading: isSecondaryPriceLoading } = prices.borrowed
 
-  const { data: primaryPrice, isLoading: isPrimaryPriceLoading } = useTokenUsdRate({
-    chainId: requireChainId(primaryAsset.chain),
-    tokenAddress: primaryAsset.address,
-  })
-
-  const { data: secondaryPrice, isLoading: isSecondaryPriceLoading } = useTokenUsdRate(
-    {
-      chainId: secondaryAsset && requireChainId(secondaryAsset.chain),
-      tokenAddress: secondaryAsset?.address,
-    },
-    secondaryAsset && !!secondaryValue,
-  )
-
-  if (statsError) {
+  if (usesBorrowStats && statsError) {
     return <ErrorCell error={statsError} />
   }
 
@@ -190,17 +184,15 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
     getTooltipTitle(columnId) ??
     `${formatNumber(primaryValue, { decimals: 5, abbreviate: false })} ${primaryAsset.symbol}`
   const totalValue = maybe(market.oraclePrice, oraclePrice =>
-    decimal((stats?.collateral?.amount ?? 0) * oraclePrice + (stats?.borrowToken?.amount ?? 0)),
+    decimal((stats?.collateral ?? 0) * oraclePrice + (stats?.borrowToken ?? 0)),
   )
-  const totalValueUsd = fakeLoadingQ(
-    maybes([totalValue, stats?.borrowToken?.usdRate], (totalValue, borrowUsdRate) =>
-      decimalMultiply(totalValue, borrowUsdRate),
-    ),
+  const totalValueUsd = mapQuery(prices.borrowed, borrowUsdRate =>
+    maybe(totalValue, value => decimalMultiply(value, borrowUsdRate)),
   )
-  const tooltipBody = getTooltipBody(columnId, stats, market.oraclePrice, totalValue, totalValueUsd)
+  const tooltipBody = getTooltipBody(columnId, stats, market, totalValue, totalValueUsd)
 
-  const primaryUsdValue = primaryPrice && primaryValue * primaryPrice
-  const secondaryUsdValue = secondaryPrice && secondaryValue && secondaryValue * secondaryPrice
+  const primaryUsdValue = maybes([primaryPrice, primaryValue], (price, value) => value * price)
+  const secondaryUsdValue = maybes([secondaryPrice, secondaryValue], (price, value) => value * price)
 
   const hasSecondaryAsset = secondaryAsset && !!secondaryValue
 
@@ -237,7 +229,7 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
           <AssetValue
             asset={asset}
             value={value}
-            isValueLoading={isLoadingStats}
+            isValueLoading={usesBorrowStats && isLoadingStats}
             tooltipTitle={tooltipTitle}
             tooltipBody={tooltipBody}
           />

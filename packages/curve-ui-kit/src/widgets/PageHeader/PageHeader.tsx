@@ -2,7 +2,6 @@ import type { ReactNode } from 'react'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { useGoBack } from '@ui-kit/hooks/router'
 import { ArrowLeft } from '@ui-kit/shared/icons/ArrowLeft'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
@@ -11,7 +10,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 const { Spacing } = SizesAndSpaces
 
 const BackButton = ({ href }: { href: string }) => (
-  <IconButton size="small" component={RouterLink} href={href} onClick={useGoBack()}>
+  <IconButton size="small" component={RouterLink} href={href}>
     <ArrowLeft />
   </IconButton>
 )

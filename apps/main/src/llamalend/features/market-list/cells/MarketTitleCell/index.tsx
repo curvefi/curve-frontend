@@ -1,4 +1,4 @@
-import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
+import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import Stack from '@mui/material/Stack'
 import { CellContext } from '@tanstack/react-table'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
@@ -10,7 +10,7 @@ import { UserMarketPositionIndicator } from './UserMarketPositionIndicator'
 
 const { Spacing, Height } = SizesAndSpaces
 
-export const MarketTitleCell = ({ row: { original: market } }: CellContext<LlamaMarket, LlamaMarket['assets']>) => {
+export const MarketTitleCell = ({ row: { original: market } }: CellContext<LlamaMarketRow, string>) => {
   const isMobile = useIsMobile()
   const { collateral, borrowed } = market.assets
   return (

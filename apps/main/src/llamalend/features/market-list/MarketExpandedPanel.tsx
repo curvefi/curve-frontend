@@ -1,6 +1,7 @@
 import { type FunctionComponent, ReactNode, useMemo } from 'react'
 import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { tokenMetric } from '@/llamalend/llama.utils'
+import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import CardHeader, { CardHeaderProps } from '@mui/material/CardHeader'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
@@ -92,7 +93,7 @@ const GridHeader = ({ ...props }: Omit<CardHeaderProps, 'sx'>) => (
 
 export const MarketExpandedPanel = ({
   row: { original: market },
-}: Parameters<ExpandedPanelComponent<LlamaMarket>>[0]) => {
+}: Parameters<ExpandedPanelComponent<LlamaMarketRow>>[0]) => {
   const { assets, leverage, liquidity, liquidityUsd, lendingPosition, utilizationPercent } = market
   const graphSize = useMobileGraphSize()
 
