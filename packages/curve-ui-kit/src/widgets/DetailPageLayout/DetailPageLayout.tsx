@@ -9,12 +9,13 @@ import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { mapBreakpoints } from '@ui-kit/themes/basic-theme/basic-theme'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { PAGE_SPACING } from './constants'
+import { DetailPageSectionNav, type DetailPageSectionOption } from './DetailPageSectionNav'
 import { getIsMobileFormDrawer } from './form-context/FormPlacementContext'
 import { FormPlacementProvider } from './form-context/FormPlacementProvider'
 import { FormSkeleton } from './FormSkeleton'
 import type { DetailPageLayoutFormTabs } from './types'
 
-const { MaxWidth, Spacing } = SizesAndSpaces
+const { ButtonSize, MaxWidth, Spacing, BorderWidth } = SizesAndSpaces
 
 const PAGE_MARGIN = { marginInline: Spacing.md, marginBlockStart: Spacing.md, marginBlockEnd: Spacing.xxl }
 
@@ -64,12 +65,15 @@ const stickyFormTabsSx = (navHeight: number, pageHeaderHeight: number) => ({
 export const DetailPageLayout = ({
   formTabs,
   header,
+  sections,
   children,
   footer,
   testId,
 }: {
   formTabs: DetailPageLayoutFormTabs | null
   header?: ReactNode
+  /** Ordered hash-addressable sections displayed in the sticky section navigation. */
+  sections?: readonly DetailPageSectionOption<string>[]
   children?: ReactNode
   footer?: ReactNode
   testId?: string
@@ -82,23 +86,56 @@ export const DetailPageLayout = ({
   const [, pageHeaderHeight = 0] = useResizeObserver(headerRef, { threshold: 5 })
   const placement = formTabs?.placement ?? 'inline'
   const showMobileDrawer = getIsMobileFormDrawer(placement, isMobile)
+  const hasSections = !!sections?.length
 
-  const headerStack = header && (
-    <Stack ref={headerRef} sx={stickyHeaderSx(navHeight)}>
-      {header}
-    </Stack>
+  const headerStack = (
+    <>
+      {header && (
+        <Stack ref={headerRef} sx={hasSections ? undefined : stickyHeaderSx(navHeight)}>
+          {header}
+        </Stack>
+      )}
+      {hasSections && (
+        <Stack
+          sx={{
+            backgroundColor: theme => theme.palette.background.default,
+            position: { tablet: 'sticky' },
+            // -1 to hide the top border behind the page headers and not have two borders when sticky
+            top: { tablet: `calc(${navHeight}px - ${BorderWidth.thin})` },
+            zIndex: theme => theme.zIndex.appBar - 1,
+          }}
+        >
+          <DetailPageSectionNav sections={sections} />
+        </Stack>
+      )}
+    </>
   )
-
   return (
     <WithWrapper shouldWrap={showMobileDrawer} Wrapper={MobileDrawerBoundary}>
       <Grid
         container
         data-testid={testId ?? 'detail-page-layout'}
         spacing={PAGE_SPACING}
-        sx={{ ...PAGE_MARGIN, ...(!header && { marginBlockStart: Spacing.xl }) }}
-        direction="row-reverse" // direction is only used when size<12 (on mobile, form shows first, otherwise children first)
+        sx={{
+          ...PAGE_MARGIN,
+          ...(hasSections && {
+            // The section navigation is sticky from tablet up
+            '--detail-page-scroll-margin-top': {
+              mobile: `${navHeight}px`,
+              // instead of tracking the navigation height bar with a ref, let's approximate with ButtonSize
+              tablet: `calc(${navHeight}px + ${ButtonSize.sm})`,
+            },
+          }),
+          ...(!header && { marginBlockStart: Spacing.xl }),
+        }}
+        // direction is only used when size<12 (on mobile, form shows first, otherwise children first)
+        {...(!showMobileDrawer && { direction: 'row-reverse' })}
       >
-        {isMobile && <Grid size={12}>{headerStack}</Grid>}
+        {isMobile && (
+          <Grid size={12}>
+            <Stack sx={{ gap: PAGE_SPACING }}>{headerStack}</Stack>
+          </Grid>
+        )}
         {/* In Figma, columns are 12/4/3, but too small around breakpoints. I've added one extra column.
             Ultrawide isn't a breakpoint yet, use maxWidth so it's not too large. */}
         {formTabs !== null && !showMobileDrawer && (
@@ -113,8 +150,7 @@ export const DetailPageLayout = ({
           </Grid>
         )}
         <Grid size="grow">
-          {/* Additional Stack because no gap between the page header and the children */}
-          <Stack>
+          <Stack sx={{ gap: PAGE_SPACING }}>
             {!isMobile && headerStack}
             <Stack sx={{ flexGrow: 1, gap: PAGE_SPACING }}>{children}</Stack>
           </Stack>

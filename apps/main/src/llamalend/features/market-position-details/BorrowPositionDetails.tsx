@@ -22,7 +22,7 @@ export const BorrowPositionDetails = () => {
   const softLiquidation = mapQuery(liquidationStatus, positionStatus => positionStatus === 'softLiquidation')
   const useNewHealth = useNewLlamalendHealth()
   return (
-    <Stack sx={{ padding: Spacing.sm, gap: Spacing.xs }}>
+    <Stack sx={{ padding: Spacing.md, gap: Spacing.xs }}>
       <Stack sx={{ gap: Spacing.sm }}>
         {useNewHealth ? (
           <HealthDetails params={params} />

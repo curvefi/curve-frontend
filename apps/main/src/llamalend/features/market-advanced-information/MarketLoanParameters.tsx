@@ -1,6 +1,7 @@
 import { useMarketParameters } from '@/llamalend/queries/market'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { useNewLlamaMarketDetailPage } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { fallbackQ, mapQuery, type QueryProp } from '@ui-kit/types/util'
@@ -91,7 +92,9 @@ export const MarketLoanParameters = ({
         )}
       />
 
-      <MarketMaxLtvRow chainId={chainId} marketId={marketId} apiMarket={apiMarket} />
+      {!useNewLlamaMarketDetailPage() && (
+        <MarketMaxLtvRow chainId={chainId} marketId={marketId} apiMarket={apiMarket} />
+      )}
     </>
   )
 }

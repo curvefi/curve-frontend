@@ -16,12 +16,12 @@ export const MarketInfoLayout = ({ network }: MarketInfoSectionsProps) => {
 
   return (
     <Stack
+      data-testid="market-advanced-details"
       sx={{
         display: 'grid',
         gridTemplateColumns: '1fr',
         gap: Spacing.lg,
         backgroundColor: t => t.design.Layer[1].Fill,
-
         [`@media (min-width: ${MaxWidth.candleAndBandChart})`]: {
           gridTemplateColumns: '1fr 1fr',
         },

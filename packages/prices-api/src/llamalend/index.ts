@@ -46,6 +46,8 @@ export async function getSnapshots(
     agg?: string
     fetch_on_chain?: boolean
     limit?: number
+    start?: number
+    end?: number
   } = { fetch_on_chain: true, agg: 'day', limit: 100 },
   options?: Options,
 ) {

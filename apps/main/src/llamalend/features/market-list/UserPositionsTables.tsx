@@ -1,5 +1,7 @@
 import { ReactNode } from 'react'
 import { useConnection } from 'wagmi'
+import type { LlamaMarketsTableResult } from '@/llamalend/queries/market-list/llama-market-stats'
+import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import Stack from '@mui/material/Stack'
 import { fromEntries, maybe, recordValues } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
@@ -11,7 +13,6 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
 import { mapQuery, QueryProp } from '@ui-kit/types/util'
 import { borderStyle, directChildrenAfterFirst } from '@ui-kit/utils/mui'
-import type { LlamaMarket, LlamaMarketsResult } from '../../queries/market-list/llama-markets'
 import { UserPositionsMarketRateTable } from './UserPositionsMarketRateTable'
 import { UserPositionSummary } from './UserPositionsSummary'
 
@@ -19,7 +20,7 @@ const { Spacing } = SizesAndSpaces
 
 type UserPositionsTableProps = {
   onReload: () => void
-  tableQuery: QueryProp<LlamaMarketsResult>
+  tableQuery: QueryProp<LlamaMarketsTableResult>
 }
 
 const buildVaultUrl = (market: LlamaMarket) =>

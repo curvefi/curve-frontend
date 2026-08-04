@@ -51,6 +51,7 @@ export const SUPPLY_TEST_MARKETS: readonly SupplyRpcTestMarket[] = [
     deposit: DEFAULT_DEPOSIT,
     partialWithdraw: DEFAULT_PARTIAL_WITHDRAW,
     borrowedTokenDecimals: DEFAULT_TOKEN_DECIMALS,
+    hasClaimableRewards: true,
   },
   {
     id: 'one-way-market-41',

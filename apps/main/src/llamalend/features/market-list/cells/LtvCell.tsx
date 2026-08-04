@@ -1,5 +1,4 @@
-import { useUserMarketStats } from '@/llamalend/queries/market-list/llama-market-stats'
-import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
+import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { CurrentLTVTooltipContent } from '@/llamalend/widgets/tooltips/CurrentLTVTooltipContent'
 import { Box } from '@mui/material'
 import Skeleton from '@mui/material/Skeleton'
@@ -8,12 +7,12 @@ import type { CellContext } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { formatNumber } from '@ui-kit/utils'
-import { MarketColumnId } from '../columns'
 
-export const LtvCell = ({ row }: CellContext<LlamaMarket, number>) => {
-  const { data, error, isLoading } = useUserMarketStats(row.original, MarketColumnId.UserLtv)
+export const LtvCell = ({ getValue, row }: CellContext<LlamaMarketRow, number | undefined>) => {
+  const { stats, prices } = row.original.positionQueries
+  const ltv = getValue()
 
-  if (isLoading) {
+  if (stats.isLoading || prices.borrowed.isLoading || prices.collateral.isLoading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'end' }}>
         <Typography variant="tableCellMBold" sx={{ textAlign: 'right' }}>
@@ -23,7 +22,7 @@ export const LtvCell = ({ row }: CellContext<LlamaMarket, number>) => {
     )
   }
 
-  if (!data?.ltv || error) {
+  if (!ltv || stats.error || prices.borrowed.error || prices.collateral.error) {
     return (
       <Typography variant="tableCellMBold" color="textSecondary" sx={{ textAlign: 'right' }}>
         -
@@ -39,7 +38,7 @@ export const LtvCell = ({ row }: CellContext<LlamaMarket, number>) => {
       placement="top"
     >
       <Typography variant="tableCellMBold" color="textPrimary" sx={{ textAlign: 'right' }}>
-        {formatNumber(data.ltv, 'percent.rate')}
+        {formatNumber(ltv, 'percent.rate')}
       </Typography>
     </Tooltip>
   )

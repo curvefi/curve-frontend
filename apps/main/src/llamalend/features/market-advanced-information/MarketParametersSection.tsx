@@ -4,6 +4,7 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
+import { useNewLlamaMarketDetailPage } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketType } from '@ui-kit/types/market'
@@ -22,17 +23,19 @@ type MarketParametersProps = {
 
 export const MarketParametersSection = ({ chainId, marketId, marketType, apiMarket }: MarketParametersProps) => (
   <Stack>
-    <Card size="inline" data-testid="market-prices-section">
-      <CardHeader title={t`Prices`} />
-      <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
-        <MarketPricesRows
-          chainId={chainId}
-          marketId={marketId}
-          enablePricePerShare={marketType === MarketType.Lend}
-          apiMarket={apiMarket}
-        />
-      </CardContent>
-    </Card>
+    {!useNewLlamaMarketDetailPage() && (
+      <Card size="inline" data-testid="market-prices-section">
+        <CardHeader title={t`Prices`} />
+        <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
+          <MarketPricesRows
+            chainId={chainId}
+            marketId={marketId}
+            enablePricePerShare={marketType === MarketType.Lend}
+            apiMarket={apiMarket}
+          />
+        </CardContent>
+      </Card>
+    )}
 
     <Card size="inline" data-testid="market-parameters-section">
       <CardHeader title={t`Parameters`} />

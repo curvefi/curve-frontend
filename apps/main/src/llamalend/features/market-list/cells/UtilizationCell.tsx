@@ -1,4 +1,5 @@
 import { ReactElement } from 'react'
+import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { type LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { Chain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
@@ -95,7 +96,7 @@ const UtilizationTooltip = ({ market, children }: { market: LlamaMarket; childre
   </Tooltip>
 )
 
-export const UtilizationCell = ({ row, getValue }: CellContext<LlamaMarket, number>) => (
+export const UtilizationCell = ({ row, getValue }: CellContext<LlamaMarketRow, number>) => (
   <UtilizationTooltip market={row.original}>
     <Stack sx={{ gap: Spacing.xs }}>
       {formatNumber(getValue(), 'percent.rate')}
