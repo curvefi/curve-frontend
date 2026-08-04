@@ -1,5 +1,6 @@
 import { MarketAdvancedDetails, MarketInfoLayout } from '@/llamalend/features/market-advanced-information'
-import { MarketFaq } from '@/llamalend/features/market-faq'
+import { MarketOverviewCard } from '@/llamalend/features/market-advanced-information/MarketOverviewCard'
+import { MarketFaqCard } from '@/llamalend/features/market-faq/MarketFaqCard'
 import { CrvUsdPriceChart } from '@/llamalend/widgets/CrvUsdPriceChart'
 import { MarketCardHeader } from '@/llamalend/widgets/MarketCardHeader'
 import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
@@ -30,6 +31,11 @@ export const MarketInformationComposite = ({ previewPrices }: MarketInformationC
 
   return (
     <Stack sx={{ gap: PAGE_SPACING }}>
+      {isNewLlamaMarketDetailPage && (
+        <MarketSection id="market-overview">
+          <MarketOverviewCard network={networks[chainId]} />
+        </MarketSection>
+      )}
       <MarketSection id="price-chart">
         <Stack sx={{ gap: PAGE_SPACING }}>
           <ChartAndActivityComp previewPrices={previewPrices} />
@@ -54,7 +60,7 @@ export const MarketInformationComposite = ({ previewPrices }: MarketInformationC
         </Card>
       </MarketSection>
       <MarketSection id="faqs">
-        <MarketFaq />
+        <MarketFaqCard />
       </MarketSection>
     </Stack>
   )

@@ -4,7 +4,7 @@ import { ChainId } from '@/lend/types/lend.types'
 import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import {
-  ChartAndActivityLayout,
+  LegacyChartAndActivityLayout,
   MarketActivityLayout,
   MarketPriceChartLayout,
 } from '@/llamalend/widgets/ChartAndActivityLayout'
@@ -74,7 +74,7 @@ export const ChartAndActivityComp = ({ previewPrices }: ChartAndActivityCompProp
   return useNewLlamaMarketDetailPage() ? (
     <MarketPriceChartLayout chart={chart} bands={bands} />
   ) : (
-    <ChartAndActivityLayout
+    <LegacyChartAndActivityLayout
       chart={chart}
       bands={bands}
       activity={{

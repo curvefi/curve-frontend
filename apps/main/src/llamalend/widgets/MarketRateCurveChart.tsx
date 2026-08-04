@@ -10,6 +10,7 @@ import CardHeader from '@mui/material/CardHeader'
 import { useTheme } from '@mui/material/styles'
 import { Decimal } from '@primitives/decimal.utils'
 import { maybes, notFalsy } from '@primitives/objects.utils'
+import { useNewLlamaMarketDetailPage } from '@ui-kit/hooks/useFeatureFlags'
 import { combineQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
@@ -28,6 +29,7 @@ import { MarketType } from '@ui-kit/types/market'
 import { fallbackQ, mapQuery, q, useMappedQuery } from '@ui-kit/types/util'
 import { decimal, decimalMax, decimalMinus, decimalMultiply, decimalSum, formatNumber } from '@ui-kit/utils'
 import { useMarketContext } from '../features/market-context'
+import { MarketCardHeader } from './MarketCardHeader'
 
 const { Spacing, Height } = SizesAndSpaces
 
@@ -75,6 +77,7 @@ const calculateCombinedCollateral = ({
       )
 
 export const MarketRateCurveChart = () => {
+  const Header = useNewLlamaMarketDetailPage() ? MarketCardHeader : CardHeader
   const {
     chainId,
     blockchainId,
@@ -162,7 +165,7 @@ export const MarketRateCurveChart = () => {
 
   return (
     <Card size="small" data-testid="interest-rate-utilization-chart">
-      <CardHeader title={t`Interest Rate & Utilization`} />
+      <Header title={t`Interest Rate & Utilization`} />
       <CardContent component={Stack} sx={{ gap: Spacing.md }}>
         <Stack
           sx={{

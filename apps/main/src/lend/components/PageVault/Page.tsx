@@ -5,7 +5,6 @@ import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
 import { networks } from '@/lend/networks'
 import { type MarketUrlParams } from '@/lend/types/lend.types'
 import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/utilsRouter'
-import { MarketOverviewCard } from '@/llamalend/features/market-advanced-information/MarketOverviewCard'
 import { MarketContextProvider } from '@/llamalend/features/market-context'
 import { SupplyPositionDetails } from '@/llamalend/features/market-position-details'
 import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
@@ -88,11 +87,6 @@ export const Page = () => {
         {hasPosition && (
           <MarketSection id="position-details">
             <SupplyPositionDetails />
-          </MarketSection>
-        )}
-        {isNewLlamaMarketDetailPage && (
-          <MarketSection id="market-overview">
-            <MarketOverviewCard />
           </MarketSection>
         )}
         <MarketInformationComposite rateType={MarketRateType.Supply} />

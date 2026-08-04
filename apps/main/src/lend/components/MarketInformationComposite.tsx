@@ -1,8 +1,9 @@
 import { ChartAndActivityComp, MarketActivityComp } from '@/lend/components/ChartAndActivityComp'
 import { networks } from '@/lend/networks'
 import { MarketAdvancedDetails, MarketInfoLayout } from '@/llamalend/features/market-advanced-information'
+import { MarketOverviewCard } from '@/llamalend/features/market-advanced-information/MarketOverviewCard'
 import { useMarketContext } from '@/llamalend/features/market-context'
-import { MarketFaq } from '@/llamalend/features/market-faq'
+import { MarketFaqCard } from '@/llamalend/features/market-faq/MarketFaqCard'
 import { MarketCardHeader } from '@/llamalend/widgets/MarketCardHeader'
 import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
 import { MarketRateCurveChart } from '@/llamalend/widgets/MarketRateCurveChart'
@@ -34,6 +35,11 @@ export const MarketInformationComposite = ({ rateType, previewPrices }: MarketIn
 
   return (
     <Stack sx={{ gap: PAGE_SPACING }}>
+      {isNewLlamaMarketDetailPage && (
+        <MarketSection id="market-overview">
+          <MarketOverviewCard network={networks[chainId]} />
+        </MarketSection>
+      )}
       {isBorrow && (
         <MarketSection id="price-chart">
           <ChartAndActivityComp previewPrices={previewPrices} />
@@ -61,7 +67,7 @@ export const MarketInformationComposite = ({ rateType, previewPrices }: MarketIn
         </Card>
       </MarketSection>
       <MarketSection id="faqs">
-        <MarketFaq />
+        <MarketFaqCard />
       </MarketSection>
     </Stack>
   )

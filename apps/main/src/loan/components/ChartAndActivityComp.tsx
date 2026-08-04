@@ -1,6 +1,6 @@
 import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
 import {
-  ChartAndActivityLayout,
+  LegacyChartAndActivityLayout,
   MarketActivityLayout,
   MarketPriceChartLayout,
 } from '@/llamalend/widgets/ChartAndActivityLayout'
@@ -74,7 +74,7 @@ export const ChartAndActivityComp = ({ previewPrices }: ChartAndActivityCompProp
   return useNewLlamaMarketDetailPage() ? (
     <MarketPriceChartLayout chart={chart} bands={bands} />
   ) : (
-    <ChartAndActivityLayout
+    <LegacyChartAndActivityLayout
       chart={chart}
       bands={bands}
       activity={{
