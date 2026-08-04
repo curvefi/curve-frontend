@@ -1,4 +1,4 @@
-import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
+import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { BoostTooltipContent } from '@/llamalend/widgets/tooltips/BoostTooltipContent'
 import Typography from '@mui/material/Typography'
 import type { CellContext } from '@tanstack/react-table'
@@ -7,7 +7,7 @@ import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { formatNumber } from '@ui-kit/utils'
 
-export const BoostCell = ({ getValue }: CellContext<LlamaMarket, number>) => (
+export const BoostCell = ({ getValue }: CellContext<LlamaMarketRow, number>) => (
   <WithWrapper
     Wrapper={Tooltip}
     shouldWrap={getValue()}
