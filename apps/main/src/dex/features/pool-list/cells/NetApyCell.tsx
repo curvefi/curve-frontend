@@ -34,7 +34,7 @@ export const NetApyCell = ({ pool }: { pool: PoolRow }) => {
         >
           {volatile ? (
             <Box component="span" data-testid="pool-net-apy" sx={{ textAlign: 'end' }}>
-              <ChipVolatileBaseApy isBold />
+              <ChipVolatileBaseApy isBold disableTooltip />
             </Box>
           ) : (
             <Typography
