@@ -64,11 +64,12 @@ Use the optional `specs`, `seed_prefix`, and `start_iteration` inputs to target 
 Download uploaded artifacts and the failed step log from every failed job:
 
 ```sh
-RUN_ID=<run-id> WORKFLOW=cypress-flake-detection \
+RUN_ID=<run-id> WORKFLOW=cypress-flake-detection BRANCH=<workflow-ref> \
+  ARTIFACT_BRANCH=<campaign-branch> \
   yarn workspace tests download:artifacts --skip-cleanup
 ```
 
-Failure evidence is stored under `artifacts/<branch>/<run-id>`, including a `failed-job-logs` directory. The workflow must exist on the default branch before GitHub allows manual dispatches.
+Failure evidence is stored under `artifacts/<artifact-branch>/<run-id>`, including a `failed-job-logs` directory. `ARTIFACT_BRANCH` defaults to `BRANCH` when omitted. The workflow must exist on the default branch before GitHub allows manual dispatches.
 
 ### Folder Structure
 
