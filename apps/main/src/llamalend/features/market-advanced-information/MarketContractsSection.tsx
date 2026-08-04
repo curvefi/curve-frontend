@@ -20,6 +20,7 @@ import Typography from '@mui/material/Typography'
 import { notFalsy } from '@primitives/objects.utils'
 import { type BaseConfig } from '@ui/utils'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
+import { useNewLlamaMarketDetailPage } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo, type ActionInfoProps } from '@ui-kit/shared/ui/ActionInfo'
 import { AddressActionInfo } from '@ui-kit/shared/ui/AddressActionInfo'
@@ -94,17 +95,38 @@ const AssetRow = ({
   </Stack>
 )
 
+export const MarketAssets = ({
+  market,
+  apiMarket,
+  network,
+}: Pick<MarketContractsProps, 'market' | 'apiMarket' | 'network'>) => {
+  const { collateralToken, borrowToken } = getTokens(market, apiMarket.data) ?? {}
+  const isLoading = !network || (!market && !apiMarket.data)
+
+  return (
+    <WithSkeleton loading={isLoading} variant="rectangular" height="4lh" width="100%">
+      <Stack>
+        <AssetRow
+          testId="market-contract-collateral-token"
+          network={network}
+          title={t`Collateral`}
+          token={collateralToken}
+        />
+        <AssetRow testId="market-contract-borrow-token" network={network} title={t`Borrowed`} token={borrowToken} />
+      </Stack>
+    </WithSkeleton>
+  )
+}
+
 export const MarketContractsSection = ({ chainId, market, apiMarket, network }: MarketContractsProps) => {
   const isMobile = useIsMobile()
-  const { collateralToken, borrowToken } = getTokens(market, apiMarket.data) ?? {}
   const { data: onChainOracleAddress, isLoading: oracleAddressIsLoading } = useMarketOracleAddress({
     chainId,
     marketId: market?.id,
   })
 
   const hasContractData = !!market || !!apiMarket.data
-  const assetsLoading = !network || !hasContractData
-  const contractsLoading = assetsLoading || (!!market && oracleAddressIsLoading)
+  const contractsLoading = !network || !hasContractData || (!!market && oracleAddressIsLoading)
   const gaugeAddress = getGaugeAddress(market)
   const vaultAddress = getVaultAddress(market, apiMarket.data) ?? undefined
   const monetaryPolicyAddress = getMonetaryPolicy(market, apiMarket.data)
@@ -135,27 +157,14 @@ export const MarketContractsSection = ({ chainId, market, apiMarket, network }: 
 
   return (
     <Stack data-testid="market-contracts-section">
-      <Card size="inline" data-testid="market-assets-section">
-        <CardHeader title={t`Assets`} />
-        <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
-          <WithSkeleton loading={assetsLoading} variant="rectangular" height="4lh" width="100%">
-            <Stack>
-              <AssetRow
-                testId="market-contract-collateral-token"
-                network={network}
-                title={t`Collateral`}
-                token={collateralToken}
-              />
-              <AssetRow
-                testId="market-contract-borrow-token"
-                network={network}
-                title={t`Borrowed`}
-                token={borrowToken}
-              />
-            </Stack>
-          </WithSkeleton>
-        </CardContent>
-      </Card>
+      {!useNewLlamaMarketDetailPage() && (
+        <Card size="inline" data-testid="market-assets-section">
+          <CardHeader title={t`Assets`} />
+          <CardContent component={Stack} sx={{ marginBlock: Spacing.sm }}>
+            <MarketAssets market={market} apiMarket={apiMarket} network={network} />
+          </CardContent>
+        </Card>
+      )}
 
       <Card size="inline">
         <CardHeader title={isMobile ? t`Market Contracts` : t`Contracts`} />

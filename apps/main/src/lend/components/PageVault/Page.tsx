@@ -5,12 +5,12 @@ import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
 import { networks } from '@/lend/networks'
 import { type MarketUrlParams } from '@/lend/types/lend.types'
 import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/utilsRouter'
-import { MarketOverviewCard } from '@/llamalend/features/market-advanced-information/MarketOverviewCard'
 import { MarketContextProvider } from '@/llamalend/features/market-context'
 import { SupplyPositionDetails } from '@/llamalend/features/market-position-details'
 import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
 import { useUserBalances } from '@/llamalend/queries/user/user-balances.query'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
+import { getMarketSections } from '@/llamalend/widgets/market-section-nav'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
@@ -20,8 +20,14 @@ import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { MarketType, MarketRateType } from '@ui-kit/types/market'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
+import { DetailPageSection as MarketSection } from '@ui-kit/widgets/DetailPageLayout/DetailPageSection'
 import { useLendMarket } from '../../hooks/useLendMarket'
 import { CampaignRewardsBanner } from '../CampaignRewardsBanner'
+
+const MARKET_SECTIONS = {
+  withPosition: getMarketSections({ rateType: MarketRateType.Supply }),
+  withoutPosition: getMarketSections({ rateType: MarketRateType.Supply, hasPosition: false }),
+}
 
 export const Page = () => {
   const params = useParams<MarketUrlParams>()
@@ -47,6 +53,8 @@ export const Page = () => {
     !isLoading && !market, // only enable API data when wallet is disconnected
   )
   const supplied = +(useUserBalances({ marketId: market?.id, chainId, userAddress }).data?.totalShares ?? 0)
+  const hasPosition = !!market && supplied > 0
+  const sections = hasPosition ? MARKET_SECTIONS.withPosition : MARKET_SECTIONS.withoutPosition
 
   const error = marketError ?? apiMarket.error
   return error ? (
@@ -69,14 +77,18 @@ export const Page = () => {
           placement: isMobileFormDrawer ? 'mobile-drawer' : 'inline',
         }}
         header={<MarketPageHeader isLoading={isLoading} rateType={MarketRateType.Supply} />}
+        {...(isNewLlamaMarketDetailPage && { sections })}
       >
         <MarketBanners
           chainId={chainId}
           market={market}
           rewardsBanner={<CampaignRewardsBanner chainId={chainId} market={market} />}
         />
-        {market && supplied > 0 && <SupplyPositionDetails />}
-        {isNewLlamaMarketDetailPage && <MarketOverviewCard />}
+        {hasPosition && (
+          <MarketSection id="position-details">
+            <SupplyPositionDetails />
+          </MarketSection>
+        )}
         <MarketInformationComposite rateType={MarketRateType.Supply} />
       </DetailPageLayout>
     </MarketContextProvider>
