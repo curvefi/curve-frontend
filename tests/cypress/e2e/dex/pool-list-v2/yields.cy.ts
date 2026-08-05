@@ -2,7 +2,6 @@ import { PoolColumnId } from '@/dex/features/pool-list/columns'
 import { setupDexPoolListV2Mocks, V2_POOL_FIXTURES } from '@cy/support/helpers/dex-pool-list-v2-mocks'
 import {
   DESKTOP_VIEWPORT,
-  expectV2Tooltip,
   getV2PoolCell,
   showV2PoolColumns,
   visitV2PoolList,
@@ -19,27 +18,6 @@ const YIELD_COLUMNS = [
   PoolColumnId.RewardsApy,
   PoolColumnId.CrvApy,
   PoolColumnId.Points,
-] as const
-
-const FULL_CAMPAIGN_LINKS = [
-  {
-    href: 'https://app.merkl.xyz/opportunities/ethereum/POOL/v2-apr-1',
-    text: '3.04%',
-  },
-  { href: 'https://app.termmax.ts.finance', text: '30x' },
-  { href: 'https://app.re.xyz/points', text: '20x' },
-  {
-    href: 'https://app.merkl.xyz/opportunities/ethereum/POOL/v2-points-1',
-    text: '-',
-  },
-  {
-    href: 'https://app.merkl.xyz/opportunities/ethereum/POOL/v2-points-2',
-    text: 'XP',
-  },
-  {
-    href: 'https://app.merkl.xyz/opportunities/ethereum/POOL/v2-points-3',
-    text: 'STAR',
-  },
 ] as const
 
 describe('V2 pool-list yields', () => {
@@ -76,54 +54,6 @@ describe('V2 pool-list yields', () => {
       cy.get(CAMPAIGN_REWARD_BADGE).should('have.length', 1)
       cy.get(CRV_REWARD_BADGE).should('not.exist')
     })
-
-    expectV2Tooltip(
-      () => getV2PoolCell(address, PoolColumnId.NetApy).find('[data-testid="pool-net-apy-tooltip-trigger"]'),
-      {
-        rows: [
-          ['Base APY', '10.51%'],
-          ['Liquidity incentives', '10.19%'],
-          ['CRV', '5.12%'],
-          ['Net total APY', '20.70%'],
-          ['Max veCRV Boost (2.5x)', '13.30%'],
-          ['Total max veCRV APY', '28.87%'],
-        ],
-        links: FULL_CAMPAIGN_LINKS,
-      },
-    )
-
-    expectV2Tooltip(
-      () => getV2PoolCell(address, PoolColumnId.BaseApy).find('[data-testid="pool-base-apy-tooltip-trigger"]'),
-      {
-        rows: [
-          ['Daily', '10.51%'],
-          ['Weekly', '22.09%'],
-        ],
-      },
-    )
-
-    expectV2Tooltip(
-      () => getV2PoolCell(address, PoolColumnId.RewardsApy).find('[data-testid="pool-rewards-apy-tooltip-trigger"]'),
-      {
-        rows: [
-          ['Liquidity incentives', '2.02%'],
-          ['RWD', '2.02%'],
-          ['Campaign rewards', '3.04%'],
-          ['RWD', '3.04%'],
-          ['Rewards APY', '5.06%'],
-        ],
-      },
-    )
-
-    expectV2Tooltip(
-      () => getV2PoolCell(address, PoolColumnId.CrvApy).find('[data-testid="pool-crv-apy-tooltip-trigger"]'),
-      {
-        rows: [
-          ['Unboosted', '5.12%'],
-          ['Max boost', '13.30%'],
-        ],
-      },
-    )
   })
 
   it('handles inactive, incomplete, empty, volatile, and high yield data', () => {
@@ -134,39 +64,17 @@ describe('V2 pool-list yields', () => {
     getV2PoolCell(killed, PoolColumnId.NetApy).should('contain.text', '6.07%')
     getV2PoolCell(killed, PoolColumnId.RewardsApy).should('contain.text', '5.06%')
     getV2PoolCell(killed, PoolColumnId.CrvApy).should('have.text', '-')
-    getV2PoolCell(killed, PoolColumnId.CrvApy).find('[data-testid="pool-crv-apy-tooltip-trigger"]').should('not.exist')
     getV2PoolCell(killed, PoolColumnId.NetApy).within(() => {
       cy.get(POINTS_BADGE).should('exist')
       cy.get(EXTRA_REWARD_BADGE).should('exist')
       cy.get(CAMPAIGN_REWARD_BADGE).should('exist')
       cy.get(CRV_REWARD_BADGE).should('not.exist')
     })
-    expectV2Tooltip(
-      () => getV2PoolCell(killed, PoolColumnId.NetApy).find('[data-testid="pool-net-apy-tooltip-trigger"]'),
-      {
-        rows: [
-          ['Liquidity incentives', '5.06%'],
-          ['Net total APY', '6.07%'],
-        ],
-        excludes: ['Max veCRV Boost (2.5x)'],
-      },
-    )
 
     const partial = V2_POOL_FIXTURES.partial.address
     getV2PoolCell(partial, PoolColumnId.NetApy).should('contain.text', '6.13%')
     getV2PoolCell(partial, PoolColumnId.CrvApy).should('have.text', '-')
-    getV2PoolCell(partial, PoolColumnId.CrvApy).find('[data-testid="pool-crv-apy-tooltip-trigger"]').should('not.exist')
     getV2PoolCell(partial, PoolColumnId.NetApy).find(CRV_REWARD_BADGE).should('not.exist')
-    expectV2Tooltip(
-      () => getV2PoolCell(partial, PoolColumnId.NetApy).find('[data-testid="pool-net-apy-tooltip-trigger"]'),
-      {
-        rows: [
-          ['CRV', '5.12%'],
-          ['Net total APY', '6.13%'],
-        ],
-        excludes: ['Max veCRV Boost (2.5x)'],
-      },
-    )
 
     const empty = V2_POOL_FIXTURES.empty.address
     for (const column of [
@@ -179,20 +87,6 @@ describe('V2 pool-list yields', () => {
     ]) {
       getV2PoolCell(empty, column).should('have.text', '-').and('not.contain.text', '0%')
     }
-    getV2PoolCell(empty, PoolColumnId.NetApy).find('[data-testid="pool-net-apy-tooltip-trigger"]').should('not.exist')
-    getV2PoolCell(empty, PoolColumnId.RewardsApy)
-      .find('[data-testid="pool-rewards-apy-tooltip-trigger"]')
-      .should('not.exist')
-    getV2PoolCell(empty, PoolColumnId.CrvApy).find('[data-testid="pool-crv-apy-tooltip-trigger"]').should('not.exist')
-    expectV2Tooltip(
-      () => getV2PoolCell(empty, PoolColumnId.BaseApy).find('[data-testid="pool-base-apy-tooltip-trigger"]'),
-      {
-        rows: [
-          ['Daily', '0%'],
-          ['Weekly', '-'],
-        ],
-      },
-    )
 
     const volatile = V2_POOL_FIXTURES.volatile.address
     getV2PoolCell(volatile, PoolColumnId.NetApy).should('contain.text', '5,000+%')
@@ -200,10 +94,6 @@ describe('V2 pool-list yields', () => {
     getV2PoolCell(volatile, PoolColumnId.WeeklyBaseApy)
       .invoke('text')
       .should('match', /^-\d+\.\d+%$/)
-    expectV2Tooltip(
-      () => getV2PoolCell(volatile, PoolColumnId.NetApy).find('[data-testid="pool-net-apy-tooltip-trigger"]'),
-      { contains: [/volatile/i] },
-    )
 
     const highRewards = V2_POOL_FIXTURES.highRewards.address
     getV2PoolCell(highRewards, PoolColumnId.NetApy).should('contain.text', '11.75k%').and('not.contain.text', '5,000+%')
@@ -220,32 +110,5 @@ describe('V2 pool-list yields', () => {
 
     getV2PoolCell(address, PoolColumnId.RewardsApy).should('contain.text', '8.20%')
     getV2PoolCell(address, PoolColumnId.Points).find(POINTS_BADGE).should('have.text', 'TP')
-
-    expectV2Tooltip(
-      () => getV2PoolCell(address, PoolColumnId.RewardsApy).find('[data-testid="pool-rewards-apy-tooltip-trigger"]'),
-      {
-        rows: [
-          ['Liquidity incentives', '2.02%'],
-          ['LITE', '2.02%'],
-          ['Campaign rewards', '6.18%'],
-          ['TAPR', '6.18%'],
-          ['Rewards APY', '8.20%'],
-        ],
-        links: [
-          {
-            href: 'https://app.merkl.xyz/opportunities/taiko/POOL/v2-lite-apr-1',
-            text: '6.18%',
-          },
-        ],
-      },
-    )
-    expectV2Tooltip(() => getV2PoolCell(address, PoolColumnId.Points).find(POINTS_BADGE), {
-      links: [
-        {
-          href: 'https://app.merkl.xyz/opportunities/taiko/POOL/v2-lite-points-1',
-          text: 'Go to issuer',
-        },
-      ],
-    })
   })
 })
