@@ -28,10 +28,12 @@ export const formatCappedRatePercent = (value: Amount | null | undefined) =>
  * Converts an APR into APY using periodic compounding based on a given number of days per compounding period.
  * The function assumes APR is expressed as a percentage (e.g. 10 for 10%) and returns APY as a percentage.
  */
-export const aprToApy = (
+export function aprToApy(aprPercentage: number, compoundingDays?: number): number
+export function aprToApy(aprPercentage: number | null | undefined, compoundingDays?: number): number | null
+export function aprToApy(
   aprPercentage: number | null | undefined,
   compoundingDays = AVERAGE_CATEGORIES['llamalend.compoundRate'].window,
-): number | null => {
+): number | null {
   if (aprPercentage == null) return null
 
   const periods = DAYS_PER_YEAR / compoundingDays

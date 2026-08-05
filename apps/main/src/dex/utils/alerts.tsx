@@ -1,11 +1,11 @@
-import type { ReactNode } from 'react'
+import type { ReactElement, ReactNode } from 'react'
 import type { AlertType } from '@/dex/types/main.types'
 import { TypographyProps } from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
 import { InfoCircledIcon } from '@ui-kit/shared/icons/InfoCircledIcon'
 
-export const AlertIcons: Record<AlertType, ReactNode> = {
+export const AlertIcons: Record<AlertType, ReactElement> = {
   info: <InfoCircledIcon />,
   warning: <ExclamationTriangleIcon />,
   error: <ExclamationTriangleIcon />,

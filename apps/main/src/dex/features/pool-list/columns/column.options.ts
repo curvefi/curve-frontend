@@ -1,5 +1,6 @@
 import { t } from '@ui-kit/lib/i18n'
 import type { VisibilityGroup } from '@ui-kit/shared/ui/DataTable/visibility.types'
+import { POOL_TITLES } from './column.titles'
 import { PoolColumnId } from './columns.enum'
 
 const createVisibility = ({ isLite }: { isLite: boolean }): VisibilityGroup<PoolColumnId>[] => [
@@ -7,27 +8,58 @@ const createVisibility = ({ isLite }: { isLite: boolean }): VisibilityGroup<Pool
     label: t`Pools`,
     options: [
       {
-        label: t`Rewards Base`,
-        columns: [PoolColumnId.RewardsBase],
+        label: POOL_TITLES[PoolColumnId.NetApy],
+        columns: [PoolColumnId.NetApy],
         active: !isLite,
+        enabled: !isLite,
+      },
+      {
+        label: POOL_TITLES[PoolColumnId.BaseApy],
+        columns: [PoolColumnId.BaseApy],
+        active: false,
+        enabled: !isLite,
+      },
+      {
+        label: POOL_TITLES[PoolColumnId.WeeklyBaseApy],
+        columns: [PoolColumnId.WeeklyBaseApy],
+        active: false,
+        enabled: !isLite,
+      },
+      {
+        label: POOL_TITLES[PoolColumnId.CrvApy],
+        columns: [PoolColumnId.CrvApy],
+        active: false,
+        enabled: !isLite,
+      },
+      {
+        label: POOL_TITLES[PoolColumnId.RewardsApy],
+        columns: [PoolColumnId.RewardsApy],
+        active: false,
+        enabled: true,
+      },
+
+      {
+        label: POOL_TITLES[PoolColumnId.Points],
+        columns: [PoolColumnId.Points],
+        active: false,
         enabled: true,
       },
       {
-        label: t`Rewards Other`,
-        columns: [PoolColumnId.RewardsOther],
+        label: POOL_TITLES[PoolColumnId.Volume],
+        columns: [PoolColumnId.Volume],
         active: true,
         enabled: true,
       },
       {
-        label: t`Volume`,
-        columns: [PoolColumnId.Volume],
-        active: !isLite,
-        enabled: true,
-      },
-      {
-        label: t`TVL`,
+        label: POOL_TITLES[PoolColumnId.Tvl],
         columns: [PoolColumnId.Tvl],
         active: true,
+        enabled: true,
+      },
+      {
+        label: POOL_TITLES[PoolColumnId.Age],
+        columns: [PoolColumnId.Age],
+        active: false,
         enabled: true,
       },
     ],

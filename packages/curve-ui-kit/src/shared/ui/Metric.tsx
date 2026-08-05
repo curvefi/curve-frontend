@@ -291,7 +291,7 @@ export const Metric = ({
         shouldWrap={isHorizontal}
         Wrapper={Stack}
         direction="row"
-        sx={{ alignItems: 'baseline', flexShrink: 0 }}
+        sx={{ alignItems: 'baseline', flexShrink: 0, gap: Spacing.sm }}
       >
         {isHorizontal && icon}
         <Typography variant={orientationStyle.labelVariant(size)} color={orientationStyle.labelColor}>

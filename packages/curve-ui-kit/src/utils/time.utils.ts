@@ -26,3 +26,30 @@ export const waitFor = async (
 }
 
 export const formatTimeDiff = (start: Date) => `${(new Date().getTime() - start.getTime()).toLocaleString()}ms`
+
+const JUST_NOW_SECONDS = 5 * 60
+
+const TIME_UNITS = [
+  { unit: 'year', seconds: 365 * 24 * 60 * 60 },
+  { unit: 'month', seconds: 30 * 24 * 60 * 60 },
+  { unit: 'week', seconds: 7 * 24 * 60 * 60 },
+  { unit: 'day', seconds: 24 * 60 * 60 },
+  { unit: 'hour', seconds: 60 * 60 },
+  { unit: 'minute', seconds: 60 },
+] as const
+
+/** Formats an elapsed timestamp using the largest matching unit. */
+export const relativeTime = (nowMs: number, timestampMs: number): string => {
+  const elapsedSeconds = Math.round((nowMs - timestampMs) / 1000)
+
+  if (elapsedSeconds < JUST_NOW_SECONDS) return 'just now'
+
+  for (const { unit, seconds } of TIME_UNITS) {
+    if (elapsedSeconds >= seconds) {
+      const value = Math.round(elapsedSeconds / seconds)
+      return `${value} ${value === 1 ? unit : `${unit}s`}`
+    }
+  }
+
+  return 'just now'
+}

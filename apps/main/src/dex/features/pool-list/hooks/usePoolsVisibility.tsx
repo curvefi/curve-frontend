@@ -7,10 +7,10 @@ import type { VisibilityGroup } from '@ui-kit/shared/ui/DataTable/visibility.typ
 import { POOL_COLUMNS, POOLS_COLUMN_OPTIONS, PoolColumnId } from '../columns'
 import type { PoolsSorting } from './usePoolsSorting'
 
-type PoolColumnVariant = keyof typeof POOLS_COLUMN_OPTIONS
+export type PoolColumnVariant = keyof typeof POOLS_COLUMN_OPTIONS
 
 const migration: MigrationOptions<Record<PoolColumnVariant, VisibilityGroup<PoolColumnId>[]>> = {
-  version: 2,
+  version: 3,
 }
 
 /**
@@ -35,5 +35,5 @@ export function usePoolsVisibility(
   const visibilitySettings = useVisibilitySettings(title, POOLS_COLUMN_OPTIONS, variant, POOL_COLUMNS, migration)
   const columnVisibility = useMemo(() => createMobileColumns(sortField), [sortField])
 
-  return { sortField, ...visibilitySettings, ...(useIsMobile() && { columnVisibility }) }
+  return { variant, sortField, ...visibilitySettings, ...(useIsMobile() && { columnVisibility }) }
 }

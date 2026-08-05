@@ -50,7 +50,7 @@ export const PoolRewardsCrv = ({
           isBold={isHighlight}
           size="md"
           {...(rewardsApy && {
-            tooltip: t`CRV LP reward annualized (max tAPR can be reached with max boost of 2.50)`,
+            tooltip: t`CRV LP reward annualized (max tAPR can be reached with max boost of 2.5x)`,
             tooltipProps: { placement: 'bottom-end' },
           })}
         >

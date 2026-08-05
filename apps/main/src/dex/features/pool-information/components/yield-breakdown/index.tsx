@@ -24,7 +24,7 @@ export const YieldBreakdown = ({
   poolId: string
 }) => {
   const isMobile = useIsMobile()
-  const { baseTotal, total, rows } = useYieldBreakdown({
+  const { maxBoostTotal, total, rows } = useYieldBreakdown({
     chainId,
     poolDataCacheOrApi,
     poolId,
@@ -46,7 +46,7 @@ export const YieldBreakdown = ({
           emptyState={{ title: t`No yield breakdown found` }}
           footerRow={
             rows.length > 1 && (
-              <FooterRow visibleColumns={table.getVisibleLeafColumns()} baseTotal={baseTotal} total={total} />
+              <FooterRow visibleColumns={table.getVisibleLeafColumns()} maxBoostTotal={maxBoostTotal} total={total} />
             )
           }
         />

@@ -4,11 +4,19 @@ import { Chip } from '@ui/Typography/Chip'
 import { t } from '@ui-kit/lib/i18n'
 import { formatNumber } from '@ui-kit/utils'
 
-export const ChipVolatileBaseApy = ({ isBold, showIcon }: { isBold?: boolean; showIcon?: boolean }) => (
+export const ChipVolatileBaseApy = ({
+  isBold,
+  showIcon,
+  disableTooltip = false,
+}: {
+  isBold?: boolean
+  showIcon?: boolean
+  disableTooltip?: boolean
+}) => (
   <VolatileChip
     size="md"
     isBold={isBold}
-    tooltip={t`This is a volatile number that will very likely not persist.`}
+    tooltip={disableTooltip ? undefined : t`This is a volatile number that will very likely not persist.`}
     tooltipProps={{ textAlign: 'left', minWidth: '250px' }}
   >
     {formatNumber(5000, { abbreviate: false })}
