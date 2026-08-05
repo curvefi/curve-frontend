@@ -1,15 +1,15 @@
+import Stack from '@mui/material/Stack'
+import type { CampaignRewards } from '@ui-kit/entities/campaigns'
+import { t } from '@ui-kit/lib/i18n'
 import {
   TooltipDescription,
   TooltipFooter,
   TooltipItem,
   TooltipItems,
   TooltipWrapper,
-} from '@/llamalend/widgets/tooltips/TooltipComponents'
-import Stack from '@mui/material/Stack'
-import type { CampaignRewards } from '@ui-kit/entities/campaigns'
-import { t } from '@ui-kit/lib/i18n'
+} from '@ui-kit/shared/ui/TooltipComponents'
 import type { ExtraIncentive } from '@ui-kit/types/market'
-import { AVERAGE_CATEGORIES, formatCappedRatePercent } from '@ui-kit/utils'
+import { AVERAGE_CATEGORIES, formatCappedRatePercent, MAINNET_CRV } from '@ui-kit/utils'
 import { RewardsTooltipItems } from './RewardTooltipItems'
 
 type SupplyBoostType = 'market' | 'user'
@@ -107,7 +107,12 @@ export const MarketSupplyRateTooltipContent = ({
 
         {showBoostRow && (
           <TooltipItems secondary extraMargin>
-            <TooltipItem title={t`Max veCRV Boost (2.5x)`} loading={isLoading}>
+            <TooltipItem
+              title={t`Max veCRV Boost (2.5x)`}
+              titleIcon={{ blockchainId: MAINNET_CRV.chain, address: MAINNET_CRV.address, size: 'mui-sm' }}
+              loading={isLoading}
+              variant="independent"
+            >
               {formatCappedRatePercent(boost.apy)}
             </TooltipItem>
           </TooltipItems>

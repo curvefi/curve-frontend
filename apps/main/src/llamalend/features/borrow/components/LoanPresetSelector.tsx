@@ -1,11 +1,11 @@
 import { type ReactNode, type MouseEvent, useCallback } from 'react'
-import { TooltipDescription, TooltipWrapper } from '@/llamalend/widgets/tooltips'
 import Stack from '@mui/material/Stack'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
+import { TooltipDescription, TooltipWrapper } from '@ui-kit/shared/ui/TooltipComponents'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { PRESET_RANGES, LoanPreset } from '../../../constants'
 
