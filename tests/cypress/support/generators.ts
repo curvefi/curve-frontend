@@ -4,11 +4,15 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { range, recordValues } from '@primitives/objects.utils'
 import { TIME_FRAMES } from '@ui-kit/lib/model/time'
 import { decimal } from '@ui-kit/utils/decimal'
+import { createSeededRandom, getTestSeed } from './seed'
 
 export const MAX_USD_VALUE = 400_000_000
 
+let seededRandom: (() => number) | undefined
+const random = () => (seededRandom ??= createSeededRandom(getTestSeed()))()
+
 export const oneFloat = (minOrMax = 1, maxExclusive?: number): number =>
-  maxExclusive == null ? Math.random() * minOrMax : minOrMax + Math.random() * (maxExclusive - minOrMax)
+  maxExclusive == null ? random() * minOrMax : minOrMax + random() * (maxExclusive - minOrMax)
 
 export const oneDecimal = (minOrMax = 1, maxExclusive?: number, maxDecimals = 6): Decimal =>
   decimal(new BigNumber(oneFloat(minOrMax, maxExclusive)).decimalPlaces(maxDecimals, BigNumber.ROUND_DOWN).toString())!

@@ -8,6 +8,8 @@ import { createRouterApiServer } from '../../src/server'
 
 process.loadEnvFile()
 
+const ADDRESS_REGEX = new RegExp(ADDRESS_HEX_PATTERN)
+
 const CHAIN_ID_ETHEREUM = '1'
 const CHAIN_ID_OPTIMISM = '10'
 const ETHEREUM_USDC = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'
@@ -33,7 +35,7 @@ type ErrorResponse = { statusCode: number; code: string; error: string; message:
 type FailureCase = { query: Partial<QueryString>; expectedResponse: ErrorResponse }
 
 /**
- * Success cases per provider. Curve supports amountIn and amountOut; Enso and Odos require amountIn.
+ * Success cases per provider. Curve supports amountIn and amountOut; Enso require amountIn.
  */
 const successCasesByProvider: PartialRecord<RouteProvider, Record<string, SuccessCase>> = {
   curve: {
@@ -103,20 +105,6 @@ const successCasesByProvider: PartialRecord<RouteProvider, Record<string, Succes
       expectedRoutes: 0, // Enso requires amountIn to return routes
     },
   },
-  odos: {
-    'ethereum amountIn': {
-      query: {
-        chainId: CHAIN_ID_ETHEREUM,
-        tokenIn: [ETHEREUM_USDT],
-        tokenOut: [ETHEREUM_USDC],
-        amountIn: [toWei('1000', USD_DECIMALS)],
-        blacklist: [ETHEREUM_USDC],
-        router: ['odos'],
-        zapAddress: '0xC5898606BdB494a994578453B92e7910a90aA873',
-        slippage: '0.5',
-      },
-    },
-  },
   '0x': {
     'ethereum amountIn': {
       query: {
@@ -184,8 +172,6 @@ const successCasesByProvider: PartialRecord<RouteProvider, Record<string, Succes
     },
   },
 }
-
-const ADDRESS_REGEX = new RegExp(ADDRESS_HEX_PATTERN)
 
 const requiredError = (property: string) => "querystring must have required property '" + property + "'"
 

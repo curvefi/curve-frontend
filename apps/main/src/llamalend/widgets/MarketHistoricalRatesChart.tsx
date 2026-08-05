@@ -13,8 +13,10 @@ import { maybe, notFalsy } from '@primitives/objects.utils'
 import { formatDate } from '@ui/utils'
 import type { CrvUsdSnapshot } from '@ui-kit/entities/crvusd-snapshots'
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
+import { useNewLlamaMarketDetailPage } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { type TimeOption, timeOptions } from '@ui-kit/lib/model/query/time-option-validation'
+import { TIME_OPTION_MS } from '@ui-kit/lib/model/time'
 import {
   addMovingAverages,
   CHART_LINE_DASH_PATTERNS,
@@ -31,8 +33,9 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
 import { fallbackQ, mapQuery, q, useMappedQuery } from '@ui-kit/types/util'
 import { formatNumber } from '@ui-kit/utils'
-import { calculateAverageRates } from '@ui-kit/utils/averageRates'
+import { AVERAGE_WINDOW_DAYS, calculateAverageRates, hasFullTimeWindow } from '@ui-kit/utils/averageRates'
 import { useMarketContext } from '../features/market-context'
+import { MarketCardHeader } from './MarketCardHeader'
 
 const { Spacing, Height } = SizesAndSpaces
 
@@ -58,7 +61,11 @@ type RateSeriesConfig = { key: RateSeriesKey; label: string; dash?: ChartLineDas
 type RateModeConfig = {
   chartTitle: string
   currentRateLabel: string
-  oneWeekAverageLabel: string
+  averageRateLabels: {
+    week: string
+    month: string
+    year: string
+  }
   series: RateSeriesConfig[]
   getLiveRate: (marketRates: MarketRates | undefined) => RateValue
   getApiRate: (market: LlamaMarket) => RateValue
@@ -83,7 +90,11 @@ const RATE_MODE_CONFIG = {
   [MarketRateType.Borrow]: {
     chartTitle: t`Historical Borrow Rate`,
     currentRateLabel: t`Current APR`,
-    oneWeekAverageLabel: t`1W Avg APR`,
+    averageRateLabels: {
+      week: t`1W average APR`,
+      month: t`1M average APR`,
+      year: t`1Y average APR`,
+    },
     series: [
       { key: 'rate', label: t`Borrow APR` },
       { key: 'movingAverage', label: t`7-day MA APR`, dash: CHART_LINE_DASH_PATTERNS.tight },
@@ -96,7 +107,11 @@ const RATE_MODE_CONFIG = {
   [MarketRateType.Supply]: {
     chartTitle: t`Historical Supply Rate`,
     currentRateLabel: t`Current APY`,
-    oneWeekAverageLabel: t`1W Avg APY`,
+    averageRateLabels: {
+      week: t`1W average APY`,
+      month: t`1M average APY`,
+      year: t`1Y average APY`,
+    },
     series: [
       { key: 'rate', label: t`Supply APY` },
       { key: 'movingAverage', label: t`7-day MA APY`, dash: CHART_LINE_DASH_PATTERNS.tight },
@@ -108,10 +123,18 @@ const RATE_MODE_CONFIG = {
   },
 } satisfies Record<MarketRateType, RateModeConfig>
 
-const averageRates = (ratePoints: { rate: number; timestamp: number }[]) =>
-  calculateAverageRates(ratePoints, 7, { rate: ({ rate }) => rate })?.rate
+const averageRate = (ratePoints: { rate: number; timestamp: number }[], days: number) =>
+  calculateAverageRates(ratePoints, days, { rate: ({ rate }) => rate })?.rate
+
+const getAverageRates = (ratePoints: { rate: number; timestamp: number }[]) => ({
+  week: averageRate(ratePoints, AVERAGE_WINDOW_DAYS.week),
+  month: averageRate(ratePoints, AVERAGE_WINDOW_DAYS.month),
+  year: averageRate(ratePoints, AVERAGE_WINDOW_DAYS.year),
+  hasFullYear: hasFullTimeWindow(ratePoints, AVERAGE_WINDOW_DAYS.year),
+})
 
 export const MarketHistoricalRatesChart = ({ rateMode }: MarketHistoricalRatesChartProps) => {
+  const Header = useNewLlamaMarketDetailPage() ? MarketCardHeader : CardHeader
   const { chainId, blockchainId, marketId, controllerAddress, marketType, apiMarket } = useMarketContext()
   const [timeOption, setTimeOption] = useState<TimeOption>('1M')
   const modeConfig = RATE_MODE_CONFIG[rateMode]
@@ -127,7 +150,7 @@ export const MarketHistoricalRatesChart = ({ rateMode }: MarketHistoricalRatesCh
     controllerAddress,
     marketType,
     blockchainId,
-    range: { kind: 'timeRange', timeOption },
+    range: { kind: 'timeRange', timeOption: '1Y' },
   })
 
   const ratePoints = useMappedQuery(
@@ -145,17 +168,17 @@ export const MarketHistoricalRatesChart = ({ rateMode }: MarketHistoricalRatesCh
     ),
   )
 
-  const chartData = useMemo<RateChartPoint[]>(
-    () =>
-      addMovingAverages(
-        ratePoints.data ?? [],
-        d => d.rate,
-        d => d.timestamp,
-      ),
-    [ratePoints.data],
-  )
+  const chartData = useMemo<RateChartPoint[]>(() => {
+    const cutoff = Date.now() - TIME_OPTION_MS[timeOption]
+    return addMovingAverages(
+      (ratePoints.data ?? []).filter(({ timestamp }) => timestamp >= cutoff),
+      d => d.rate,
+      d => d.timestamp,
+    )
+  }, [ratePoints.data, timeOption])
 
-  const oneWeekAverageRateQuery = useMappedQuery(ratePoints, averageRates)
+  const averageRates = useMappedQuery(ratePoints, getAverageRates)
+  const showOneYearAverage = averageRates.isLoading || averageRates.data?.hasFullYear
 
   const seriesColors: Record<RateSeriesKey, string> = useMemo(
     () => ({ rate: Color.Primary[500], movingAverage: Color.Secondary[500], totalAverage: Color.Tertiary[400] }),
@@ -180,7 +203,7 @@ export const MarketHistoricalRatesChart = ({ rateMode }: MarketHistoricalRatesCh
 
   return (
     <Card size="small" data-testid={`historical-${rateMode.toLowerCase()}-rate-chart`}>
-      <CardHeader
+      <Header
         title={modeConfig.chartTitle}
         action={
           <SelectTimeOption
@@ -196,7 +219,7 @@ export const MarketHistoricalRatesChart = ({ rateMode }: MarketHistoricalRatesCh
           sx={{
             display: 'grid',
             gap: Spacing.xl,
-            gridTemplateColumns: { mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)' },
+            gridTemplateColumns: { mobile: 'repeat(2, 1fr)', tablet: 'repeat(5, 1fr)' },
           }}
         >
           <Metric
@@ -211,10 +234,24 @@ export const MarketHistoricalRatesChart = ({ rateMode }: MarketHistoricalRatesCh
           />
           <Metric
             category={METRIC_CATEGORY}
-            label={modeConfig.oneWeekAverageLabel}
-            value={oneWeekAverageRateQuery}
+            label={modeConfig.averageRateLabels.week}
+            value={mapQuery(averageRates, ({ week }) => week)}
             valueOptions={{ unit: 'percentage' }}
           />
+          <Metric
+            category={METRIC_CATEGORY}
+            label={modeConfig.averageRateLabels.month}
+            value={mapQuery(averageRates, ({ month }) => month)}
+            valueOptions={{ unit: 'percentage' }}
+          />
+          {showOneYearAverage && (
+            <Metric
+              category={METRIC_CATEGORY}
+              label={modeConfig.averageRateLabels.year}
+              value={mapQuery(averageRates, ({ year }) => year)}
+              valueOptions={{ unit: 'percentage' }}
+            />
+          )}
         </Stack>
         <ChartStateWrapper
           height={Height.shortChart}

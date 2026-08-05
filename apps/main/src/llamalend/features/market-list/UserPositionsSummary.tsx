@@ -1,15 +1,15 @@
 import { useMemo } from 'react'
-import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
+import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import Grid, { GridProps } from '@mui/material/Grid'
 import { parseListFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { UserPositionSummaryMetric, useUserPositionsSummary } from './hooks/useUserPositionsSummary'
+import { getUserPositionsSummary, UserPositionSummaryMetric } from './user-position.utils'
 
 const { Spacing } = SizesAndSpaces
 
 type UserPositionStatisticsProps = {
-  markets: LlamaMarket[] | undefined
+  markets: LlamaMarketRow[] | undefined
   selectedChains: string | undefined // the table filter for the chains column, unserialized from the url
 }
 
@@ -19,14 +19,7 @@ const UserPositionStatisticItem = ({
   itemSize,
 }: UserPositionSummaryMetric & { itemSize: GridProps['size'] }) => (
   <Grid size={itemSize}>
-    <Metric
-      value={metric}
-      category="llamalend.marketListSummary"
-      valueOptions={{
-        unit: 'dollar',
-      }}
-      label={label}
-    />
+    <Metric value={metric} category="llamalend.marketListSummary" valueOptions={{ unit: 'dollar' }} label={label} />
   </Grid>
 )
 
@@ -35,7 +28,7 @@ export const UserPositionSummary = ({ markets, selectedChains }: UserPositionSta
     const chains = parseListFilter(selectedChains)
     return chains ? markets?.filter(market => chains.includes(market.chain)) : markets
   }, [markets, selectedChains])
-  const summary = useUserPositionsSummary({ markets: filteredMarkets })
+  const summary = getUserPositionsSummary(filteredMarkets)
   return (
     <Grid
       container

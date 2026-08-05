@@ -1,6 +1,7 @@
 import { type FunctionComponent, ReactNode, useMemo } from 'react'
 import { NET_SUPPLY_RATE_TITLE } from '@/llamalend/constants'
 import { tokenMetric } from '@/llamalend/llama.utils'
+import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import CardHeader, { CardHeaderProps } from '@mui/material/CardHeader'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
@@ -13,7 +14,7 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
 import { constQ } from '@ui-kit/types/util'
-import { AVERAGE_CATEGORIES, borderStyle } from '@ui-kit/utils'
+import { AVERAGE_CATEGORIES, borderStyle, formatCappedRateValue } from '@ui-kit/utils'
 import type { LlamaMarket } from '../../queries/market-list/llama-markets'
 import { LineGraphCell, RateTooltipProps } from './cells'
 import { BorrowRateTooltip } from './cells/RateCell/BorrowRateTooltip'
@@ -62,8 +63,13 @@ const RateItem = ({ market, type }: { market: LlamaMarket; type: MarketRateType 
             <Metric
               category="llamalend.marketListRates"
               label={title}
-              value={constQ(rateValue)}
-              valueOptions={{ unit: 'percentage', disableTooltip: true }}
+              value={rateValue}
+              valueOptions={{
+                unit: 'percentage',
+                abbreviate: false,
+                formatter: formatCappedRateValue,
+                disableTooltip: true,
+              }}
               icon={<RewardsIcons market={market} rateType={type} />}
             />
           </Stack>
@@ -87,7 +93,7 @@ const GridHeader = ({ ...props }: Omit<CardHeaderProps, 'sx'>) => (
 
 export const MarketExpandedPanel = ({
   row: { original: market },
-}: Parameters<ExpandedPanelComponent<LlamaMarket>>[0]) => {
+}: Parameters<ExpandedPanelComponent<LlamaMarketRow>>[0]) => {
   const { assets, leverage, liquidity, liquidityUsd, lendingPosition, utilizationPercent } = market
   const graphSize = useMobileGraphSize()
 
@@ -110,14 +116,14 @@ export const MarketExpandedPanel = ({
             <Metric
               category={EXPANDED_DETAILS_METRIC_CATEGORY}
               label={t`Leverage`}
-              value={constQ(leverage)}
+              value={leverage}
               valueOptions={{ unit: 'multiplier' }}
             />
           )}
           <Metric
             category={EXPANDED_DETAILS_METRIC_CATEGORY}
             label={t`Utilization`}
-            value={constQ(utilizationPercent)}
+            value={utilizationPercent}
             valueOptions={{ unit: 'percentage' }}
             testId="metric-utilizationPercent"
           />
@@ -125,7 +131,7 @@ export const MarketExpandedPanel = ({
             category={EXPANDED_DETAILS_METRIC_CATEGORY}
             label={t`Available Liquidity`}
             {...tokenMetric({
-              value: constQ(liquidity),
+              value: liquidity,
               symbol: assets.borrowed.symbol,
               notional: constQ({ value: liquidityUsd, unit: 'dollar' as const }),
             })}
@@ -146,7 +152,7 @@ export const MarketExpandedPanel = ({
               <Metric
                 category={POSITION_METRIC_CATEGORY}
                 label={t`Earnings`}
-                value={constQ(lendingPosition.earnings)}
+                value={lendingPosition.earnings}
                 valueOptions={{ unit: 'dollar' }}
               />
             )}
@@ -154,7 +160,7 @@ export const MarketExpandedPanel = ({
               <Metric
                 category={POSITION_METRIC_CATEGORY}
                 label={t`Supplied Amount`}
-                value={constQ(lendingPosition.supplied)}
+                value={lendingPosition.supplied}
                 valueOptions={{ unit: { symbol: assets.borrowed.symbol, position: 'suffix' } }}
               />
             )}

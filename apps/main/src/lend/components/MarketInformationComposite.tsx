@@ -1,8 +1,10 @@
-import { ChartAndActivityComp } from '@/lend/components/ChartAndActivityComp'
+import { ChartAndActivityComp, MarketActivityComp } from '@/lend/components/ChartAndActivityComp'
 import { networks } from '@/lend/networks'
-import { AdvancedDetails, MarketInfoLayout } from '@/llamalend/features/market-advanced-information'
+import { MarketAdvancedDetails, MarketInfoLayout } from '@/llamalend/features/market-advanced-information'
+import { MarketOverviewCard } from '@/llamalend/features/market-advanced-information/MarketOverviewCard'
 import { useMarketContext } from '@/llamalend/features/market-context'
-import { MarketFaq } from '@/llamalend/features/market-faq'
+import { MarketFaqCard } from '@/llamalend/features/market-faq/MarketFaqCard'
+import { MarketCardHeader } from '@/llamalend/widgets/MarketCardHeader'
 import { MarketHistoricalRatesChart } from '@/llamalend/widgets/MarketHistoricalRatesChart'
 import { MarketRateCurveChart } from '@/llamalend/widgets/MarketRateCurveChart'
 import Card from '@mui/material/Card'
@@ -10,10 +12,12 @@ import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
+import { useNewLlamaMarketDetailPage } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { MarketRateType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
 import { PAGE_SPACING } from '@ui-kit/widgets/DetailPageLayout/constants'
+import { DetailPageSection as MarketSection } from '@ui-kit/widgets/DetailPageLayout/DetailPageSection'
 
 type MarketInformationCompProps = {
   rateType: MarketRateType
@@ -25,25 +29,46 @@ type MarketInformationCompProps = {
  */
 export const MarketInformationComposite = ({ rateType, previewPrices }: MarketInformationCompProps) => {
   const { chainId } = useMarketContext()
+  const isNewLlamaMarketDetailPage = useNewLlamaMarketDetailPage()
+  const isBorrow = rateType === MarketRateType.Borrow
+  const Header = isNewLlamaMarketDetailPage ? MarketCardHeader : CardHeader
+
   return (
     <Stack sx={{ gap: PAGE_SPACING }}>
-      {rateType === MarketRateType.Borrow && (
-        <>
-          <ChartAndActivityComp previewPrices={previewPrices} />
-          <MarketHistoricalRatesChart rateMode={MarketRateType.Borrow} />
-        </>
+      {isNewLlamaMarketDetailPage && (
+        <MarketSection id="market-overview">
+          <MarketOverviewCard network={networks[chainId]} />
+        </MarketSection>
       )}
-      <MarketHistoricalRatesChart rateMode={MarketRateType.Supply} />
-      <MarketRateCurveChart />
-      <Card size="small">
-        <CardHeader title={t`Advanced Details`} />
-        <CardContent component={Stack}>
-          <AdvancedDetails />
-          <MarketInfoLayout network={networks[chainId]} />
-        </CardContent>
-      </Card>
-
-      <MarketFaq />
+      {isBorrow && (
+        <MarketSection id="price-chart">
+          <ChartAndActivityComp previewPrices={previewPrices} />
+        </MarketSection>
+      )}
+      <MarketSection id="historical-rates">
+        <Stack sx={{ gap: PAGE_SPACING }}>
+          {isBorrow && <MarketHistoricalRatesChart rateMode={MarketRateType.Borrow} />}
+          <MarketHistoricalRatesChart rateMode={MarketRateType.Supply} />
+          <MarketRateCurveChart />
+        </Stack>
+      </MarketSection>
+      {isBorrow && isNewLlamaMarketDetailPage && (
+        <MarketSection id="market-activity">
+          <MarketActivityComp />
+        </MarketSection>
+      )}
+      <MarketSection id="market-parameters">
+        <Card size="small" data-testid="market-parameters-card">
+          <Header title={t`Advanced Details`} />
+          <CardContent component={Stack}>
+            {!isNewLlamaMarketDetailPage && <MarketAdvancedDetails />}
+            <MarketInfoLayout network={networks[chainId]} />
+          </CardContent>
+        </Card>
+      </MarketSection>
+      <MarketSection id="faqs">
+        <MarketFaqCard />
+      </MarketSection>
     </Stack>
   )
 }

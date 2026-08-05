@@ -1,6 +1,7 @@
 import type { HealthQuery } from '@/llamalend/queries/user/user-health.query'
 import Grid from '@mui/material/Grid'
 import { useTheme } from '@mui/material/styles'
+import { mapRecord } from '@primitives/objects.utils'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { mapQuery } from '@ui-kit/types/util'
@@ -11,6 +12,9 @@ import { getHealthDetailsState, getHealthColor } from './utils'
 
 const { Spacing } = SizesAndSpaces
 
+const HEALTH_DETAILS_COLUMNS = { mobile: 4, tablet: 6, desktop: 10 } as const
+const PRIMARY_METRIC_SIZE = 2
+
 export const HealthDetails = ({ healthQuery }: { healthQuery: HealthQuery }) => {
   const theme = useTheme()
   const { state, healthState, type } = getHealthDetailsState(healthQuery.data)
@@ -18,8 +22,8 @@ export const HealthDetails = ({ healthQuery }: { healthQuery: HealthQuery }) => 
   return (
     <>
       <HealthAndBufferDebug healthQuery={healthQuery} state={state} type={type} />
-      <Grid container columns={5} columnSpacing={Spacing.xs} rowSpacing={Spacing.xxs} sx={{ alignItems: 'end' }}>
-        <Grid size={1}>
+      <Grid container columns={HEALTH_DETAILS_COLUMNS} columnSpacing={Spacing.xs} sx={{ alignItems: 'center' }}>
+        <Grid size={PRIMARY_METRIC_SIZE}>
           <Metric
             category="llamalend.positionHealth"
             label={HEALTH_TOOLTIP.shortTitle}
@@ -32,10 +36,10 @@ export const HealthDetails = ({ healthQuery }: { healthQuery: HealthQuery }) => 
             valueTooltip={HEALTH_FACTOR_TOOLTIP}
           />
         </Grid>
-        <Grid size={4}>
+        <Grid size={mapRecord(HEALTH_DETAILS_COLUMNS, (_, size) => size - PRIMARY_METRIC_SIZE)}>
           <HealthAndBufferBar query={healthQuery} state={state} type="health" />
         </Grid>
-        <Grid size={1}>
+        <Grid size={PRIMARY_METRIC_SIZE}>
           <Metric
             category="llamalend.positionLiquidationBuffer"
             label={LIQUIDATION_BUFFER_TOOLTIP.shortTitle}
@@ -47,7 +51,10 @@ export const HealthDetails = ({ healthQuery }: { healthQuery: HealthQuery }) => 
             valueTooltip={LIQUIDATION_BUFFER_TOOLTIP}
           />
         </Grid>
-        <Grid size={2}>
+        <Grid
+          // Liquidation buffer size is the half of the health bar
+          size={mapRecord(HEALTH_DETAILS_COLUMNS, (_, size) => (size - PRIMARY_METRIC_SIZE) / 2)}
+        >
           <HealthAndBufferBar query={healthQuery} state={state} type="liquidationBuffer" />
         </Grid>
       </Grid>

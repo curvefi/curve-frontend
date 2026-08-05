@@ -1,35 +1,30 @@
-import { getMarket, hasLeverage, hasV2Leverage, hasZapV2 } from '@/llamalend/llama.utils'
+import { getMarket, hasZapV2 } from '@/llamalend/llama.utils'
 import { MarketTemplate } from '@/llamalend/llamalend.types'
 import type { BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { parseMutationRoute } from '@ui-kit/entities/router-api'
 
 /**
- * Determines the appropriate borrow more implementation based on market type.
- * We use V2 leverage if available, then leverage V1 (lend markets only).
- * Otherwise fallback to unleveraged borrow more.
+ * Determines the appropriate borrow more implementation based on market capabilities.
  */
 export function getBorrowMoreImplementation(
   marketId: string | MarketTemplate,
   leverageEnabled: boolean | null | undefined,
 ) {
   const market = getMarket(marketId)
-  leverageEnabled ??= false // we don't know if leverage is supported when the API is offline
-  return market instanceof MintMarketTemplate
-    ? leverageEnabled && hasV2Leverage(market)
-      ? (['V2', market.leverageV2] as const)
-      : (['unleveraged', market] as const)
-    : leverageEnabled && hasLeverage(market)
-      ? hasZapV2(market)
-        ? (['zapV2', market.leverageZapV2] as const)
-        : (['V1', market.leverage] as const)
-      : (['unleveraged', market.loan] as const)
+  /**
+   * leverageEnabled reflects the position's history, so it can be true for soft-liquidated positions in legacy markets
+   * without Zap v2. Keep direct borrow more available unless the market actually supports Zap v2.
+   */
+  return !!leverageEnabled && hasZapV2(market)
+    ? (['zapV2', market.leverageZapV2] as const)
+    : (['unleveraged', market instanceof MintMarketTemplate ? market : market.loan] as const)
 }
 
 /**
  * Determines the borrow more implementation and constructs its argument tuple.
  * For unleveraged markets, returns `[type, impl, [userCollateral, debt]]`.
- * For leveraged (V1/V2) markets, returns `[type, impl, [userCollateral, userBorrowed, debt]]`.
+ * For leveraged markets, returns `[type, impl, [{ userCollateral, userBorrowed, debt, ...route }]]`.
  */
 export function getBorrowMoreImplementationArgs(
   marketId: string | MarketTemplate,
@@ -59,9 +54,7 @@ export function getBorrowMoreImplementationArgs(
     }
     return [type, impl, [routerArgs]] as const
   }
-  const args = [userCollateral, userBorrowed, debt] as const
-  if (type == 'V1') return [type, impl, args] as const
-  return [type, impl, args] as const
+  throw new Error('Unknown borrow more implementation')
 }
 
 /**
@@ -72,10 +65,10 @@ export function getBorrowMoreImplementationArgs(
 export const isLeverageBorrowMore = (
   marketId: string | MarketTemplate | null | undefined,
   leverageEnabled: boolean | null | undefined,
-) => !!marketId && ['V1', 'V2', 'zapV2'].includes(getBorrowMoreImplementation(marketId, leverageEnabled)[0])
+) => !!marketId && getBorrowMoreImplementation(marketId, leverageEnabled)[0] === 'zapV2'
 
 /**
  * Checks whether leverage may be enabled for a given market.
  * This is used to determine whether to show the leverage toggle in the UI.
  */
-export const isLeverageBorrowMoreSupported = (market?: MarketTemplate) => !!market && isLeverageBorrowMore(market, true)
+export const isLeverageBorrowMoreSupported = (market?: MarketTemplate) => !!market && hasZapV2(market)

@@ -2,7 +2,7 @@ import { type ReactElement } from 'react'
 import { WagmiProvider, type ResolvedRegister } from 'wagmi'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { createMemoryHistory, createRootRoute, createRouter, RouterProvider } from '@tanstack/react-router'
-import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
+import { queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { Toast } from '@ui-kit/widgets/Toast'
@@ -33,7 +33,8 @@ export function ComponentTestWrapper({ config, children, autoConnect }: Props) {
   return (
     <ThemeProvider theme="light">
       <WithWrapper Wrapper={WagmiProvider} shouldWrap={config} config={config!} reconnectOnMount={autoConnect}>
-        <QueryProvider persister={persister} queryClient={queryClient}>
+        {/* Persistence can restore stale mocked queries after Cypress clears state, leaking data between tests. */}
+        <QueryProvider persister={null} queryClient={queryClient}>
           <RouterProvider router={router} />
           <Toast />
           <ReactQueryDevtools />

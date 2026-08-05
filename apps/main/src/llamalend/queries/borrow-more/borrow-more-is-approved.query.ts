@@ -25,14 +25,11 @@ export const {
       { leverageEnabled },
       { routeId },
     ] as const,
-  queryFn: async ({ marketId, userCollateral = '0', userBorrowed = '0', leverageEnabled }: BorrowMoreQuery) => {
+  queryFn: async ({ marketId, userCollateral = '0', leverageEnabled }: BorrowMoreQuery) => {
     const [type, impl] = getBorrowMoreImplementation(marketId, leverageEnabled)
     switch (type) {
       case 'zapV2':
         return await impl.borrowMoreIsApproved({ userCollateral })
-      case 'V1':
-      case 'V2':
-        return await impl.borrowMoreIsApproved(userCollateral, userBorrowed)
       case 'unleveraged':
         return await impl.borrowMoreIsApproved(userCollateral)
     }

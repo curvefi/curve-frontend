@@ -26,7 +26,7 @@ import {
   HealthType,
 } from './utils'
 
-const { Height, MinWidth } = SizesAndSpaces
+const { Height, MinWidth, Spacing } = SizesAndSpaces
 
 const SOFT_LIQUIDATION_LABEL = t`Soft Liquidation`
 
@@ -84,14 +84,15 @@ export const HealthAndBufferBar = ({
   const label = type === 'health' ? maybe(state, state => HEALTH_LABEL[state]) : undefined
 
   return (
-    <Tooltip title={tooltip.title} body={tooltip.body}>
-      <WithSkeleton loading={isLoading} variant="rectangular" width="100%" height={Height.healthBar[size]}>
+    <WithSkeleton loading={isLoading} variant="rectangular" width="100%" height={Height.healthBar[size]}>
+      <Tooltip title={tooltip.title} body={tooltip.body}>
         <Stack
           sx={{
             height: Height.healthBar[size],
             backgroundColor: theme => theme.design.Color.Neutral[300],
             overflow: 'hidden',
             position: 'relative',
+            justifyContent: 'center',
           }}
         >
           <Box
@@ -107,12 +108,12 @@ export const HealthAndBufferBar = ({
               size={BADGE_SIZE_BY_BAR_SIZE[size]}
               color={state === 'hardLiquidation' ? 'alert' : 'warning'}
               label={label}
-              sx={{ position: 'absolute', bottom: 0, left: 0 }}
+              sx={{ position: 'absolute', left: Spacing['3xs'] }}
             />
           )}
         </Stack>
-      </WithSkeleton>
-    </Tooltip>
+      </Tooltip>
+    </WithSkeleton>
   )
 }
 

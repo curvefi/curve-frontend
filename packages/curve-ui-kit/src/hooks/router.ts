@@ -9,12 +9,18 @@ import {
 } from '@tanstack/react-router'
 import type { ParsedLocation, RegisteredRouter } from '@tanstack/router-core'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type NavigateOptions = { replace?: boolean; resetScroll?: boolean; state?: any }
+type NavigateOptions = {
+  replace?: boolean
+  resetScroll?: boolean
+  hashScrollIntoView?: boolean
+  hash?: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  state?: any
+}
 
 /**
  * Use navigate function from tanstack router.
- * Returns a function that accepts a URL string and an options object with `replace`, `resetScroll` and `state` properties.
+ * Returns a function that accepts a URL string and TanStack navigation options used by the app.
  * Scroll is reset on push navigation and preserved on replace navigation, unless `resetScroll` is explicitly set.
  */
 export function useNavigate() {

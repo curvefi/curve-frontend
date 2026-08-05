@@ -101,7 +101,6 @@ export const useOhlcInfiniteQuery = <TPage extends OhlcPageResult, TQueryKey ext
   fetchPageRef.current = fetchPage
 
   // Callers own the endpoint-specific fetcher and include its identity inputs in queryKey.
-  // eslint-disable-next-line @tanstack/query/exhaustive-deps
   return useInfiniteQuery<TPage, Error, InfiniteData<TPage, OhlcPageParam>, TQueryKey, OhlcPageParam>({
     ...CANDLE_CHART_QUERY_OPTIONS,
     queryKey,

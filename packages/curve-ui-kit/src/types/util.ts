@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { maybe, objectKeys } from '@primitives/objects.utils'
+import { objectKeys } from '@primitives/objects.utils'
 import type { UseQueryResult } from '@tanstack/react-query'
 
 export type Range<T> = [T, T]
@@ -60,6 +60,7 @@ export type Query<T> = Pick<UseQueryResult<T>, 'data' | 'isLoading' | 'error'>
 
 /** Branded {@link Query} to enforce it's been wrapped with `q()` or `mapQuery()`, stripping it of unserializable properties and reduce re-renders. */
 export type QueryProp<T> = Query<T> & { readonly __brand: 'QueryProp' }
+export type QueryOrValue<T> = QueryProp<T> | T
 
 /**
  * Helper to extract only the relevant fields from a UseQueryResult into the Query type.
@@ -91,12 +92,12 @@ export const fallbackQ = <const TQueries extends readonly QueryProp<unknown>[]>(
  */
 export const mapQuery = <TSource, TResult>(
   { data, isLoading, error }: Query<TSource>,
-  selector: (data: TSource) => TResult | null | undefined,
+  selector: (data: TSource) => TResult | undefined,
 ) =>
   q({
     isLoading,
-    // todo: maybe ignores null which is a valid query value and supported in combineQueries
-    data: maybe(data, data => selector(data) ?? undefined),
+    // eslint-disable-next-line local/use-maybe-pattern -- queries may return null, but not undefined
+    data: data === undefined ? undefined : selector(data),
     error,
   })
 
@@ -118,14 +119,8 @@ export const fakeLoadingQ = <T>(data: T | undefined) => q({ data, isLoading: dat
 /** Hook similar to mapQuery for queries that need memoization */
 export const useMappedQuery = <TSource, TResult>(
   { isLoading, error, data }: Query<TSource>,
-  transform: (data: TSource) => TResult,
-): QueryProp<TResult> =>
-  q({
-    isLoading,
-    // eslint-disable-next-line local/use-maybe-pattern -- we want to ignore undefined, but not null in this case
-    data: useMemo(() => (data === undefined ? undefined : transform(data)), [data, transform]),
-    error,
-  })
+  selector: (data: TSource) => TResult,
+) => useMemo(() => mapQuery({ isLoading, data, error }, selector), [data, selector, isLoading, error])
 
 /** a list of keys for query objects, i.e., data, isLoading, error */
 const queryObjectKeys = objectKeys(DISABLED_Q)
@@ -133,3 +128,10 @@ const queryObjectKeys = objectKeys(DISABLED_Q)
 /** Checks if a value is a query. */
 export const isQuery = <T>(value: unknown): value is QueryProp<T> =>
   value != null && typeof value === 'object' && queryObjectKeys.every(key => key in value)
+
+export const toQuery = <T>(
+  value: QueryOrValue<T>,
+  { isLoading = false, error = null }: { isLoading?: boolean; error?: Error | null } = {},
+) => (isQuery(value) ? value : q({ data: value, isLoading, error }))
+
+export const toValue = <T>(value: QueryOrValue<T>) => (isQuery(value) ? value.data : value)

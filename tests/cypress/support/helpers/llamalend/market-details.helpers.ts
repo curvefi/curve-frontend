@@ -73,7 +73,7 @@ const shouldLoadMarketParameters = ({
   }
   getActionValue('market-param-max-ltv').should('match', DECIMAL_REGEX)
 
-  cy.get('[data-testid="market-prices-section"]', LOAD_TIMEOUT).should('be.visible')
+  cy.get('[data-testid="market-price-oracle"]', LOAD_TIMEOUT).should('be.visible')
   if (hasOraclePrice) getActionValue('market-price-oracle').should('match', DECIMAL_REGEX)
   if (hasPricePerShare) getActionValue('market-price-per-share').should('match', DECIMAL_REGEX)
 
@@ -86,9 +86,7 @@ const shouldLoadMarketDetails = ({ hasApi }: { hasApi: boolean }) => {
   getActionValue('market-available-liquidity').should('match', DECIMAL_REGEX)
   cy.get('[data-testid="market-advanced-details"]', LOAD_TIMEOUT).should('be.visible')
   if (hasApi) {
-    getActionValue('market-total-borrowers').should('match', DECIMAL_REGEX)
-  } else {
-    getActionInfo('market-total-borrowers').should('not.exist')
+    getMetricValue('market-total-borrowers').should('match', DECIMAL_REGEX)
   }
   cy.get('[data-testid="llamalend-market-faq"]').should('be.visible')
 }
@@ -104,7 +102,7 @@ const shouldLoadBorrowDetails = ({ breakpoint, hasWallet, hasApi = false }: Mark
   cy.get(`[data-testid='no-position-disconnected']`).should(hasWallet ? 'not.exist' : 'be.visible')
   if (hasApi) {
     getActionValue('market-net-borrow-apr').should('match', DECIMAL_REGEX)
-    shouldShowCanvas('market-chart-and-activity')
+    shouldShowCanvas('market-price-chart')
     shouldLoadHistoricalBorrowRateChart()
   } else {
     getActionInfo('market-net-borrow-apr').should('not.exist')
@@ -127,7 +125,7 @@ export const shouldLoadMintBorrowDetails = ({ breakpoint, hasWallet, hasApi = tr
   shouldLoadBorrowDetails({ breakpoint, hasWallet, hasApi })
   if (hasApi) {
     shouldShowCanvas('crvusd-price-chart')
-    getActionValue('market-total-collateral').should('match', DECIMAL_REGEX)
+    // TODO: add back market total collateral metric
   }
   shouldLoadMarketContracts({ hasMonetaryPolicy: hasWallet, hasOracle: hasWallet, hasVault: false })
   shouldLoadMarketParameters({ hasOnChainParameters: hasWallet, hasOraclePrice: hasWallet, hasPricePerShare: false })

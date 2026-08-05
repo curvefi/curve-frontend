@@ -1,5 +1,9 @@
+import { randomUUID } from 'node:crypto'
 import { defineConfig } from 'cypress'
 import { vitePreprocessor } from './vite-cypress-preprocessor'
+
+const testSeed = (process.env.TEST_SEED = process.env.TEST_SEED?.trim() || randomUUID())
+console.info(`Cypress test seed: ${testSeed}`)
 
 export default defineConfig({
   allowCypressEnv: false,

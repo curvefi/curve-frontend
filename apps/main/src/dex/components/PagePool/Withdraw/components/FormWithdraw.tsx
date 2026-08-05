@@ -33,6 +33,7 @@ import { mediaQueries } from '@ui/utils/responsive'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { constQ } from '@ui-kit/types/util'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 import { amountsDescription, DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE, getSlippageType } from '../../utils'
 
@@ -71,11 +72,7 @@ export const FormWithdraw = ({
   const haveSigner = !!signerAddress
 
   const { address: userAddress } = useConnection()
-  const { lpTokenBalance, isLoading: lpTokenBalanceLoading } = usePoolTokenDepositBalances({
-    chainId,
-    userAddress,
-    poolId,
-  })
+  const { lpTokenBalance } = usePoolTokenDepositBalances({ chainId, userAddress, poolId })
 
   const config = useConfig()
 
@@ -148,8 +145,8 @@ export const FormWithdraw = ({
       isSeed: boolean,
     ) => {
       const haveFormLpToken = +formValues.lpToken > 0
-      const haveUserLpToken = lpTokenBalance != null && +lpTokenBalance > 0
-      const isValidLpToken = haveUserLpToken && haveFormLpToken && +lpTokenBalance >= +formValues.lpToken
+      const haveUserLpToken = lpTokenBalance.data != null && +lpTokenBalance.data > 0
+      const isValidLpToken = haveUserLpToken && haveFormLpToken && +lpTokenBalance.data! >= +formValues.lpToken
       let isValid = haveSigner && !isSeed && isValidLpToken && !!formValues.selected && !formStatus.error
 
       if (isValid && (formValues.selected === 'token' || formValues.selected === 'imbalance')) {
@@ -212,7 +209,7 @@ export const FormWithdraw = ({
 
       return stepsKey.map(key => stepsObj[key])
     },
-    [handleApproveClick, handleWithdrawClick, haveSigner, lpTokenBalance],
+    [handleApproveClick, handleWithdrawClick, haveSigner, lpTokenBalance.data],
   )
 
   // onMount
@@ -329,9 +326,8 @@ export const FormWithdraw = ({
     <>
       <FieldLpToken
         amount={formValues.lpToken}
-        balance={lpTokenBalance ?? ''}
-        balanceLoading={lpTokenBalanceLoading}
-        hasError={haveSigner && +formValues.lpToken > +(lpTokenBalance ?? '')}
+        balance={lpTokenBalance}
+        isNotEnough={haveSigner && +formValues.lpToken > +(lpTokenBalance.data ?? '0')}
         handleAmountChange={useCallback(
           (lpToken: string) =>
             updateFormValues({ amounts: resetFormAmounts(useStore.getState().poolWithdraw.formValues), lpToken }, null),
@@ -429,10 +425,9 @@ export const FormWithdraw = ({
                         key={tokenAddress}
                         idx={idx}
                         amount={amount?.value || ''}
-                        balance=""
-                        balanceLoading={false}
+                        balance={constQ(undefined)}
+                        isNotEnough={false}
                         disabled={isDisabled}
-                        hasError={false}
                         haveSigner={haveSigner}
                         haveSameTokenName={poolDataCacheOrApi?.tokensCountBy[token] > 1}
                         isWithdraw

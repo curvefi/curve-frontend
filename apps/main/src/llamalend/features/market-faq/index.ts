@@ -1,1 +1,0 @@
-export { MarketFaq } from './MarketFaq'

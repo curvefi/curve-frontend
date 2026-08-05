@@ -1,4 +1,4 @@
-import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
+import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { assert } from '@primitives/objects.utils'
 import { getFacetedRowModel, type RowModel, type Table } from '@tanstack/react-table'
 import { parseListFilter } from '@ui-kit/shared/ui/DataTable/filters'
@@ -8,9 +8,9 @@ const CHAIN_COLUMN_ID: string = MarketColumnId.Chain
 
 /** Build a row model containing all rows for the selected chains, or all rows when no chain is selected. */
 const getChainFilteredRowModel = (
-  preRowModel: RowModel<LlamaMarket>,
+  preRowModel: RowModel<LlamaMarketRow>,
   selectedChainsFilter: unknown,
-): RowModel<LlamaMarket> => {
+): RowModel<LlamaMarketRow> => {
   if (!selectedChainsFilter) return preRowModel
   const selectedChains = parseListFilter(
     assert(typeof selectedChainsFilter === 'string' && selectedChainsFilter, 'Selected chain filters must be a string'),
@@ -20,7 +20,7 @@ const getChainFilteredRowModel = (
 
   const selectedChainSet = new Set(selectedChains)
   const flatRows = preRowModel.flatRows.filter(row => selectedChainSet.has(row.getValue<string>(CHAIN_COLUMN_ID)))
-  const rowsById = Object.fromEntries(flatRows.map(row => [row.id, row])) as RowModel<LlamaMarket>['rowsById']
+  const rowsById = Object.fromEntries(flatRows.map(row => [row.id, row])) as RowModel<LlamaMarketRow>['rowsById']
 
   return {
     rows: preRowModel.rows.filter(row => rowsById[row.id]),
@@ -40,12 +40,12 @@ const getChainFilteredRowModel = (
  * `getFacetedUniqueValues` or `getFacetedMinMaxValues`, it automatically gets the same chain-scoped behavior unless it
  * is the chain column itself.
  */
-export const getMarketFacetedRowModel = (table: Table<LlamaMarket>, columnId: string) => {
-  if (columnId === CHAIN_COLUMN_ID) return getFacetedRowModel<LlamaMarket>()(table, columnId)
+export const getMarketFacetedRowModel = (table: Table<LlamaMarketRow>, columnId: string) => {
+  if (columnId === CHAIN_COLUMN_ID) return getFacetedRowModel<LlamaMarketRow>()(table, columnId)
 
-  let previousPreRowModel: RowModel<LlamaMarket> | undefined
+  let previousPreRowModel: RowModel<LlamaMarketRow> | undefined
   let previousSelectedChainsFilter: unknown
-  let previousRowModel: RowModel<LlamaMarket> | undefined
+  let previousRowModel: RowModel<LlamaMarketRow> | undefined
 
   return () => {
     const preRowModel = table.getPreFilteredRowModel()

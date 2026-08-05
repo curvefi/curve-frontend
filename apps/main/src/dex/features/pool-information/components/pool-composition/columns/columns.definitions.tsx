@@ -48,7 +48,7 @@ export const POOL_COMPOSITION_COLUMNS = [
     header: headers[PoolCompositionColumnId.Price],
     cell: ({ getValue }) => (
       <InlineTableCell>
-        <Typography>{formatNumber(getValue(), 'usd.amount')}</Typography>
+        <Typography>{formatNumber(getValue(), 'usd.precise')}</Typography>
       </InlineTableCell>
     ),
     enableSorting: false,

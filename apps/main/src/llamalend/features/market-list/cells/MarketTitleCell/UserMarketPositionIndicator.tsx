@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react'
 import type { UserPositionStatusKey } from '@/llamalend/llamalend.types'
 import { getPositionStatusContent } from '@/llamalend/position-status-content'
-import { useUserMarketStats } from '@/llamalend/queries/market-list/llama-market-stats'
-import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
+import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { Typography } from '@mui/material'
 import { UserPositionIndicator, type ColorState } from '@ui-kit/shared/ui/DataTable/UserPositionIndicator'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
-import { MarketColumnId } from '../../columns'
 
 /**
  * Creates a flicker effect by toggling between orange and red colors
@@ -36,8 +34,8 @@ const statusColorEffect: Record<UserPositionStatusKey, ColorEffect> = {
   hardLiquidation: flickerEffect,
 }
 
-export const UserMarketPositionIndicator = ({ market }: { market: LlamaMarket }) => {
-  const { status = 'healthy' } = useUserMarketStats(market, MarketColumnId.UserHealth)?.data ?? {}
+export const UserMarketPositionIndicator = ({ market }: { market: LlamaMarketRow }) => {
+  const { status = 'healthy' } = market.positionQueries.stats.data ?? {}
   const [colorState, setColorState] = useState<ColorState>('info')
 
   useEffect(() => statusColorEffect[status](setColorState), [status])

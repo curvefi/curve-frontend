@@ -26,33 +26,40 @@ type TabSizeStyleOptions = {
 type TabPadding = {
   blockStart?: SpacingKey
   blockEnd?: SpacingKey
-  inlineStart?: SpacingKey
-  inlineEnd?: SpacingKey
+  inline?: SpacingKey
 }
 
 export type TabSwitcherVariants = keyof typeof TABS_VARIANT_CLASSES
 
-const { Spacing, ButtonSize } = SizesAndSpaces
+const { Spacing, ButtonSize, Tab } = SizesAndSpaces
 
 // css classes used by the TabSwitcher component
 const CONTAINED = 'variant-contained' as const
 const UNDERLINED = 'variant-underlined' as const
 const OVERLINED = 'variant-overlined' as const
+const EXTRA_SMALL = 'size-extraSmall' as const
 const SMALL = 'size-small' as const
 const MEDIUM = 'size-medium' as const
 const EXTRA_EXTRA_LARGE = 'size-extraExtraLarge' as const
 export const TABS_VARIANT_CLASSES = { contained: CONTAINED, underlined: UNDERLINED, overlined: OVERLINED }
-export const TABS_SIZES_CLASSES = { small: SMALL, medium: MEDIUM, extraExtraLarge: EXTRA_EXTRA_LARGE }
+export const TABS_SIZES_CLASSES = {
+  extraSmall: EXTRA_SMALL,
+  small: SMALL,
+  medium: MEDIUM,
+  extraExtraLarge: EXTRA_EXTRA_LARGE,
+}
 export const HIDE_INACTIVE_BORDERS_CLASS = 'hide-inactive-borders' as const
 export const TAB_SUFFIX_CLASS = 'tab-suffix' as const
 
 export const TAB_TEXT_VARIANTS = {
+  extraSmall: 'buttonXxs',
   small: 'buttonTabsS',
   medium: 'buttonTabsM',
   extraExtraLarge: 'buttonTabsL',
 } as const satisfies Record<keyof typeof TABS_SIZES_CLASSES, TypographyVariantKey>
 
 const TAB_HEIGHT: Record<keyof typeof TABS_SIZES_CLASSES, string> = {
+  extraSmall: ButtonSize.xxs,
   small: ButtonSize.xs,
   medium: ButtonSize.sm,
   extraExtraLarge: ButtonSize.md,
@@ -63,23 +70,28 @@ const BORDER_SIZE_INACTIVE = '1px' as const
 const BORDER_SIZE_LARGE = '4px' as const
 export const CONTAINED_TABS_MARGIN_RIGHT = 1
 
-const DEFAULT_TAB_PADDING: TabPadding = { inlineStart: 0, inlineEnd: 0, blockStart: 0, blockEnd: 0 }
+const DEFAULT_TAB_PADDING: TabPadding = { blockStart: 0, blockEnd: 0, inline: 0 }
 
 const DEFAULT_TAB_STYLES_BY_SIZE: Record<keyof typeof TABS_SIZES_CLASSES, TabSizeConfig> = {
+  extraSmall: {
+    className: EXTRA_SMALL,
+    height: TAB_HEIGHT.extraSmall,
+    padding: { ...DEFAULT_TAB_PADDING, ...Tab.Padding.extraSmall },
+  },
   small: {
     className: SMALL,
     height: TAB_HEIGHT.small,
-    padding: { ...DEFAULT_TAB_PADDING, inlineStart: 'sm', inlineEnd: 'sm' },
+    padding: { ...DEFAULT_TAB_PADDING, ...Tab.Padding.small },
   },
   medium: {
     className: MEDIUM,
     height: TAB_HEIGHT.medium,
-    padding: { ...DEFAULT_TAB_PADDING, inlineStart: 'sm', inlineEnd: 'sm' },
+    padding: { ...DEFAULT_TAB_PADDING, ...Tab.Padding.medium },
   },
   extraExtraLarge: {
     className: EXTRA_EXTRA_LARGE,
     height: TAB_HEIGHT.extraExtraLarge,
-    padding: { ...DEFAULT_TAB_PADDING, inlineStart: 'md', inlineEnd: 'md' },
+    padding: { ...DEFAULT_TAB_PADDING, ...Tab.Padding.extraExtraLarge },
   },
 }
 
@@ -154,12 +166,11 @@ const buildTabStateStylesByVariant = ({ Current, Default, Hover, Inset }: TabVar
 })
 
 /** Build breakpoint-aware padding styles for a tab. */
-const tabPaddingStyles = ({ blockStart, blockEnd, inlineStart, inlineEnd }: TabPadding) => ({
+const tabPaddingStyles = ({ blockStart, blockEnd, inline }: TabPadding) => ({
   ...handleBreakpoints({
     paddingBlockStart: Spacing[blockStart as keyof typeof Spacing] ?? blockStart,
     paddingBlockEnd: Spacing[blockEnd as keyof typeof Spacing] ?? blockEnd,
-    paddingInlineStart: Spacing[inlineStart as keyof typeof Spacing] ?? inlineStart,
-    paddingInlineEnd: Spacing[inlineEnd as keyof typeof Spacing] ?? inlineEnd,
+    paddingInline: Spacing[inline as keyof typeof Spacing] ?? inline,
   }),
 })
 
@@ -219,11 +230,10 @@ export const defineMuiTabs = ({
         ...muiTabStyles({
           root: {
             ...buildTabStateStylesByVariant(Contained),
+            justifyContent: 'center',
           },
         }),
-        ...muiTabStylesBySize({
-          root: { padding: { blockEnd: 'xxs' } },
-        }),
+        ...muiTabStylesBySize({}),
         '& .MuiTab-root:not(.Mui-selected):not(:last-child)': {
           marginRight: `${CONTAINED_TABS_MARGIN_RIGHT}px`,
         },
@@ -256,6 +266,9 @@ export const defineMuiTabs = ({
         ...muiTabStylesBySize({
           root: { padding: { blockEnd: 'xs' } },
         }),
+        [`&.${EXTRA_SMALL}:not(.MuiTabs-vertical) .MuiTab-root`]: {
+          ...handleBreakpoints({ paddingBlockEnd: Spacing.xxs }),
+        },
       },
 
       // Inactive tabs have a smaller border size
@@ -302,7 +315,7 @@ export const defineMuiTabs = ({
     indicator: {
       backgroundColor: Layer.Highlight.Outline,
       [`.${OVERLINED} &`]: { top: 0 },
-      [`.${CONTAINED} &`]: { top: 0 },
+      [`.${CONTAINED}:not(.MuiTabs-vertical) &`]: { display: 'none' },
 
       [`.${EXTRA_EXTRA_LARGE} &`]: {
         height: BORDER_SIZE_LARGE,

@@ -24,19 +24,11 @@ export const {
       { userBorrowed },
       { leverageEnabled },
     ] as const,
-  queryFn: async ({
-    marketId,
-    userBorrowed = '0',
-    userCollateral = '0',
-    leverageEnabled,
-  }: CreateLoanDebtQuery): Promise<boolean> => {
+  queryFn: async ({ marketId, userCollateral = '0', leverageEnabled }: CreateLoanDebtQuery): Promise<boolean> => {
     const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
     switch (type) {
       case 'zapV2':
         return await impl.createLoanIsApproved({ userCollateral })
-      case 'V1':
-      case 'V2':
-        return await impl.createLoanIsApproved(userCollateral, userBorrowed)
       case 'V0':
       case 'unleveraged':
         return await impl.createLoanIsApproved(userCollateral)

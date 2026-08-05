@@ -19,7 +19,7 @@ const { Spacing } = SizesAndSpaces
 
 const METRIC_CATEGORY = 'llamalend.marketAdvancedDetails'
 
-export const AdvancedDetails = () => {
+export const MarketAdvancedDetails = () => {
   const { chainId, marketId, market, marketType, apiMarket } = useMarketContext()
   const { borrowedUsdRate, collateral, availableLiquidity, tvl, maxLeverage, solvency, totalBorrowers } =
     useAdvancedDetailsData({
@@ -33,7 +33,7 @@ export const AdvancedDetails = () => {
 
   return (
     <Box
-      data-testid="market-advanced-details"
+      data-testid="market-advanced-details-metrics"
       sx={{
         display: 'grid',
         gap: { ...Spacing.lg, mobile: 0 },
