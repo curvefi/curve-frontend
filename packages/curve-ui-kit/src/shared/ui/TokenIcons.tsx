@@ -124,7 +124,8 @@ export function TokenIcons({
             position: 'absolute',
             width: TOKEN_SIZE,
             height: TOKEN_SIZE,
-            zIndex: index + 1,
+            // Exception here is that for token pairs we want to render the first token over the second one
+            zIndex: tokens.length === 2 ? 2 - index : index + 1,
             ...TOKEN_POSITIONS[positions[index]],
           }}
         >
