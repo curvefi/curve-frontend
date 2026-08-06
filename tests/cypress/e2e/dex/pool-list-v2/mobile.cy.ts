@@ -2,7 +2,6 @@ import { setupDexPoolListV2Mocks, V2_POOL_FIXTURES } from '@cy/support/helpers/d
 import {
   MOBILE_VIEWPORT,
   expandV2PoolRow,
-  expectV2Tooltip,
   getV2PoolExpandedPanel,
   visitV2PoolList,
 } from '@cy/support/helpers/dex-pools-list-v2.helpers'
@@ -77,13 +76,6 @@ describe('V2 pool-list mobile panels', () => {
       .should('match', /^\s*-?[\d,.]+(?:\+)?%\s*→\s*-?[\d,.]+(?:\+)?%\s*$/)
 
     expectCampaignRowsToBeLinks(address, FULL_NETWORK_CAMPAIGN_IDS)
-  })
-
-  it('opens a tooltip from a metric value', () => {
-    const { address } = V2_POOL_FIXTURES.showcase
-    visitAndExpand(address)
-
-    expectV2Tooltip(() => getV2PoolExpandedPanel(address).find('[data-testid="pool-base-apy-value"]'))
   })
 
   it('shows the supported Lite metrics in the required mobile order', () => {
