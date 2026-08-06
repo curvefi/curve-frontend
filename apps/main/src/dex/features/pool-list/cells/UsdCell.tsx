@@ -4,14 +4,15 @@ import type { CellContext } from '@tanstack/react-table'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { formatNumber } from '@ui-kit/utils'
 import type { PoolRow } from '../types'
+import { formatCellValue } from './utils'
 
 export const UsdCell = ({ getValue }: CellContext<PoolRow, number | null | undefined>) => {
   const value = getValue()
 
   return (
     <Tooltip title={maybe(value, value => formatNumber(value, 'usd.amount'))}>
-      <Typography component="span" variant="tableCellMBold">
-        {formatNumber(value, 'usd.notional')}
+      <Typography data-testid="pool-usd-value" variant="tableCellMBold">
+        {formatCellValue(value, 'usd.notional')}
       </Typography>
     </Tooltip>
   )

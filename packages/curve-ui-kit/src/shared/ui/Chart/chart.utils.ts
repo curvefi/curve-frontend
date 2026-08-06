@@ -1,8 +1,8 @@
 import { meanBy } from 'lodash'
 import type { Theme } from '@mui/material/styles'
 import { movingAverage } from '@primitives/array.utils'
-import { TIME_FRAMES } from '@ui-kit/lib/model/time'
-import { formatNumber, type NumberFormatOptions } from '@ui-kit/utils/number'
+import { formatNumber, type NumberFormatOptions } from '@ui-kit/utils'
+import { TIME_FRAMES } from '@ui-kit/utils/time'
 
 export type ChartLineDashPattern = number[]
 

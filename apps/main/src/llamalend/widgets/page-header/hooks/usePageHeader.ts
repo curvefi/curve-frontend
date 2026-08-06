@@ -83,7 +83,7 @@ function buildSupplyRate({
           incentives: notFalsyArray(
             marketOnChainRewards?.rewardsApr?.map(reward => ({
               title: reward.symbol,
-              percentage: aprToApy(reward.apy)!,
+              percentage: aprToApy(reward.apy),
               blockchainId,
               address: reward.tokenAddress,
             })),

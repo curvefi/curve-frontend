@@ -11,11 +11,10 @@ import { t } from '@ui-kit/lib/i18n'
 import { POOL_TITLES, PoolColumnId, getDefaultPoolsSort } from '../columns'
 import type { PoolsQueryUpdater } from '../filters/utils'
 
-type PoolSortableColumn = PoolColumnId.PoolName | PoolColumnId.RewardsBase | PoolColumnId.Volume | PoolColumnId.Tvl
+type PoolSortableColumn = PoolColumnId.PoolName | PoolColumnId.Volume | PoolColumnId.Tvl
 
 export const POOL_SORT_BY = {
   [PoolColumnId.PoolName]: 'name',
-  [PoolColumnId.RewardsBase]: 'base_daily_apr',
   [PoolColumnId.Volume]: 'volume',
   [PoolColumnId.Tvl]: 'tvl',
 } as const satisfies Record<PoolSortableColumn, V2PoolSortField>
@@ -25,10 +24,6 @@ const SORT_COLUMNS = {
   [PoolColumnId.PoolName]: {
     sortBy: POOL_SORT_BY[PoolColumnId.PoolName],
     label: POOL_TITLES[PoolColumnId.PoolName],
-  },
-  [PoolColumnId.RewardsBase]: {
-    sortBy: POOL_SORT_BY[PoolColumnId.RewardsBase],
-    label: POOL_TITLES[PoolColumnId.RewardsBase],
   },
   [PoolColumnId.Volume]: {
     sortBy: POOL_SORT_BY[PoolColumnId.Volume],

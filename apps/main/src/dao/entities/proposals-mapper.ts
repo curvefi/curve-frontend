@@ -1,8 +1,8 @@
 import { paginate } from '@curvefi/prices-api/paginate'
 import { getProposals, type Proposal, type ProposalType } from '@curvefi/prices-api/proposal'
 import { EmptyValidationSuite } from '@ui-kit/lib'
-import { TIME_FRAMES } from '@ui-kit/lib/model'
 import { queryFactory } from '@ui-kit/lib/model/query'
+import { TIME_FRAMES } from '@ui-kit/utils'
 
 const { WEEK } = TIME_FRAMES
 

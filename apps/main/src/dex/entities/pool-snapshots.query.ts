@@ -3,7 +3,7 @@ import { getPoolSnapshots, type GetPoolSnapshotsParams } from '@curvefi/prices-a
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { contractValidationGroup } from '@ui-kit/lib/model/query/contract-validation'
-import { TIME_FRAMES } from '@ui-kit/lib/model/time'
+import { TIME_FRAMES } from '@ui-kit/utils'
 
 type PoolSnapshotsParams = FieldsOf<GetPoolSnapshotsParams>
 

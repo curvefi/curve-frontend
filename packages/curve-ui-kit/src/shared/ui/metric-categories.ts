@@ -93,6 +93,7 @@ export const METRIC_CATEGORIES = {
   'dex.refuelCharts': METRIC_TYPES.primaryStat,
   'dex.refuelPoolInformation': METRIC_TYPES.responsiveStat,
   'dex.poolListMobileExpanded': METRIC_TYPES.primaryStat,
+  'dex.poolListMobileExpandedDetails': METRIC_TYPES.responsiveDetail,
   'dex.legacyPoolListMobileExpanded': METRIC_TYPES.primaryStat,
 
   // LlamaLend

@@ -341,7 +341,12 @@ describe('DEX Pools', () => {
     if (breakpoint === 'mobile') {
       getMatchedPoolRow().find('[data-testid="expand-icon"]').click()
       getMatchedPoolRow().find('[data-testid="collapse-icon"]').should('be.visible')
-      getMatchedPoolRow().next().find('[data-testid="pool-link-deposit"]').should('be.visible').click()
+      getMatchedPoolRow()
+        .next()
+        .should('have.attr', 'data-testid', 'data-table-expansion-row')
+        .find('[data-testid="pool-link-deposit"]')
+        .should('be.visible')
+        .click({ waitForAnimations: false })
     } else {
       cy.contains('[data-testid^="market-link-"]', filter).click()
     }
