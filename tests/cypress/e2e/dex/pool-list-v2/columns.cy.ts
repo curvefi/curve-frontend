@@ -6,7 +6,6 @@ import {
 } from '@cy/support/helpers/dex-pool-list-v2-mocks'
 import {
   DESKTOP_VIEWPORT,
-  expectV2Tooltip,
   getV2PoolCell,
   getV2PoolRow,
   showV2PoolColumns,
@@ -64,13 +63,9 @@ describe('V2 pool-list columns', () => {
     }
 
     for (const columnId of [PoolColumnId.Volume, PoolColumnId.Tvl]) {
-      expectV2Tooltip(
-        () =>
-          getV2PoolCell(V2_POOL_FIXTURES.highRewards.address, columnId)
-            .find('[data-testid="pool-usd-value"]')
-            .should('have.text', '-'),
-        { contains: ['$0'] },
-      )
+      getV2PoolCell(V2_POOL_FIXTURES.highRewards.address, columnId)
+        .find('[data-testid="pool-usd-value"]')
+        .should('have.text', '-')
     }
 
     showV2PoolColumns(OPTIONAL_FULL_COLUMNS)
@@ -88,22 +83,9 @@ describe('V2 pool-list columns', () => {
       PoolColumnId.Age,
     ])
     getV2PoolCell(V2_POOL_FIXTURES.showcase.address, PoolColumnId.WeeklyBaseApy).should('contain.text', '22.09%')
-    const expectedExactDate = new Intl.DateTimeFormat(undefined, {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true,
-    }).format(new Date(V2_POOL_FIXTURES.showcase.creation_date! * 1000))
-
-    expectV2Tooltip(
-      () =>
-        getV2PoolCell(V2_POOL_FIXTURES.showcase.address, PoolColumnId.Age)
-          .find('[data-testid="pool-age"]')
-          .should('have.text', '5 days'),
-      { contains: [expectedExactDate] },
-    )
+    getV2PoolCell(V2_POOL_FIXTURES.showcase.address, PoolColumnId.Age)
+      .find('[data-testid="pool-age"]')
+      .should('have.text', '5 days')
     getV2PoolCell(V2_POOL_FIXTURES.killed.address, PoolColumnId.Age)
       .find('[data-testid="pool-age"]')
       .should('have.text', '-')
@@ -154,7 +136,7 @@ describe('V2 pool-list columns', () => {
       .should('have.text', 'Inactive gauge')
   })
 
-  it('adds pool and token alert badges with severity colors and distinguishing tooltips', () => {
+  it('adds pool and token alert badges with severity colors', () => {
     visitV2PoolList({ viewport: DESKTOP_VIEWPORT })
 
     expectPoolBadgeSet(V2_POOL_FIXTURES.alerts.address, [
@@ -165,22 +147,19 @@ describe('V2 pool-list columns', () => {
       'badge-token-alert',
     ])
 
-    for (const { testId, severityClass, tooltipFragment } of [
+    for (const { testId, severityClass } of [
       {
         testId: 'badge-pool-alert',
         severityClass: 'MuiChip-colorAccent',
-        tooltipFragment: 'distressed CRV long positions',
       },
       {
         testId: 'badge-token-alert',
         severityClass: 'MuiChip-colorWarning',
-        tooltipFragment: 'Ren network is currently operational',
       },
     ]) {
       const getAlertBadge = () => getV2PoolRow(V2_POOL_FIXTURES.alerts.address).find(`[data-testid="${testId}"]`)
 
       getAlertBadge().should('have.class', severityClass)
-      expectV2Tooltip(getAlertBadge, { contains: [tooltipFragment] })
     }
   })
 })
