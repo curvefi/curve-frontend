@@ -23,5 +23,5 @@ export const createSeededRandom = (seed: string) => {
 export const getTestSeed = () => {
   const seed = process.env.TEST_SEED
   if (typeof seed !== 'string' || seed.length === 0) throw new Error('Missing Cypress TEST_SEED')
-  return `${seed}:${Cypress.spec.relative}`
+  return `${seed}:${Cypress.spec.relative.replaceAll('\\', '/')}`
 }
