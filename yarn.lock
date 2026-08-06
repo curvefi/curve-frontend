@@ -471,15 +471,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@curvefi/api@npm:2.69.7":
-  version: 2.69.7
-  resolution: "@curvefi/api@npm:2.69.7"
+"@curvefi/api@npm:2.69.15":
+  version: 2.69.15
+  resolution: "@curvefi/api@npm:2.69.15"
   dependencies:
     "@curvefi/ethcall": "npm:6.0.20"
     bignumber.js: "npm:^10.0.2"
     ethers: "npm:^6.16.0"
     memoizee: "npm:^0.4.17"
-  checksum: 10c0/e77dfb360087d1fdd78eebdd67d72c15289897dea45888abff5a3a8c7825f4e05655f15b2aa4b9d5b77419cbab8433f38209233f9b38dee6741c730e311f1b8c
+  checksum: 10c0/2be426e82368e9873c5910c8d5cb940248a4c01b12fb128ea7415d18675e06ca4b0a6ee4d382ba5a391483ad139ee3d477acbf24b783cdf9824d83889a4d004c
   languageName: node
   linkType: hard
 

@@ -1,4 +1,4 @@
-import { mockMerklCampaigns } from '@cy/support/helpers/lending-mocks'
+import { mockLendingSnapshots, mockMerklCampaigns } from '@cy/support/helpers/lending-mocks'
 import {
   shouldLoadLendBorrowDetails,
   shouldLoadLendVaultDetails,
@@ -12,6 +12,7 @@ const [WIDTH, HEIGHT, BREAKPOINT] = oneViewport()
 
 describe('Lend app', () => {
   beforeEach(() => {
+    mockLendingSnapshots('ethereum')
     mockMerklCampaigns()
     cy.viewport(WIDTH, HEIGHT)
   })
