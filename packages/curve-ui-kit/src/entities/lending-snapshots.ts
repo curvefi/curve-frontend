@@ -3,7 +3,7 @@ import { type FieldsOf } from '@ui-kit/lib'
 import { ContractQuery, NoRetryError, queryFactory, rootKeys } from '@ui-kit/lib/model/query'
 import { contractValidationSuite } from '@ui-kit/lib/model/query/contract-validation'
 import type { TimeOption } from '@ui-kit/lib/model/query/time-option-validation'
-import { TIME_OPTION_MS } from '@ui-kit/lib/model/time'
+import { TIME_OPTION_MS } from '@ui-kit/utils/time'
 import { fetchDailySnapshotHistory } from './time-series-history'
 
 export type LendingSnapshot = Snapshot

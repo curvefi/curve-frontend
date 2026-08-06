@@ -15,7 +15,7 @@ import { queryClient } from '@ui-kit/lib/api/query-client'
 import { logError, logQuery, logSuccess } from '@ui-kit/lib/logging'
 import { QUERY_CATEGORIES, type QueryCategory } from '@ui-kit/lib/model/query/query-categories'
 import { FieldName, FieldsOf, validate } from '@ui-kit/lib/validation'
-import { formatTimeDiff } from '@ui-kit/utils/time.utils'
+import { formatTimeDiff } from '@ui-kit/utils/time'
 
 // Checks if T is a union type (e.g., 'a' | 'b')
 type IsUnion<T, U = T> = T extends T ? ([U] extends [T] ? false : true) : never

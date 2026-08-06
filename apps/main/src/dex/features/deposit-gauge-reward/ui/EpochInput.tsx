@@ -6,7 +6,7 @@ import { ChainId } from '@/dex/types/main.types'
 import { InputDebounced } from '@ui/InputComp'
 import { FlexContainer } from '@ui/styled-containers'
 import { useFormContext } from '@ui-kit/features/forms'
-import { TIME_FRAMES } from '@ui-kit/lib/model'
+import { TIME_FRAMES } from '@ui-kit/utils'
 
 export const EpochInput = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const { update: updateForm, formState, watchValue } = useFormContext<DepositRewardFormValues>()
