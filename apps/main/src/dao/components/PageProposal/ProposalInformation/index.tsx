@@ -7,9 +7,8 @@ import { Box } from '@ui/Box'
 import { InternalLink } from '@ui/Link'
 import { formatDateFromTimestamp } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
-import { TIME_FRAMES } from '@ui-kit/lib/model'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
-import { shortenAddress } from '@ui-kit/utils'
+import { shortenAddress, TIME_FRAMES } from '@ui-kit/utils'
 
 type ProposalInformationProps = {
   proposal: ProposalData | null

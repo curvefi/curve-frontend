@@ -13,9 +13,8 @@ import { notFalsy, recordValues } from '@primitives/objects.utils'
 import type { DeepKeys } from '@tanstack/table-core'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
-import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { DEX_ROUTES } from '@ui-kit/shared/routes'
-import { decimal } from '@ui-kit/utils'
+import { decimal, REFRESH_INTERVAL } from '@ui-kit/utils'
 import type { LegacyPoolRow, LegacyPoolTag } from '../types'
 
 const POOL_TEXT_FIELDS = [

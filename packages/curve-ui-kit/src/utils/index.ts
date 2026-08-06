@@ -12,6 +12,7 @@ export * from './errors'
 export * from './average-categories'
 export * from './rates'
 export * from './tokens'
+export * from './time'
 
 /**
  * Copies text to clipboard with Ethereum address checksumming
