@@ -28,7 +28,7 @@ export const visitV2PoolList = ({
   cy.viewport(viewport[0], viewport[1])
   cy.visitWithoutTestConnector(`dex/${network}/pools/`)
   cy.wait('@dex-v2-platforms', API_LOAD_TIMEOUT)
-  cy.wait(['@dex-v2-prices-chains', '@dex-v2-pool-filters', '@dex-v2-hidden-pools'], API_LOAD_TIMEOUT)
+  cy.wait(['@dex-v2-prices-chains'], API_LOAD_TIMEOUT)
   cy.wait('@dex-v2-pool-chains', API_LOAD_TIMEOUT)
   cy.wait('@dex-v2-pools', API_LOAD_TIMEOUT)
   cy.wait('@dex-v2-merkl-curve', API_LOAD_TIMEOUT)
