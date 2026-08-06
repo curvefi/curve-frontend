@@ -15,12 +15,6 @@ type UserHealthParams = UserMarketParams & { isFull: boolean }
 type UserHealthQuery = UserMarketQuery & { isFull: boolean }
 
 /**
- * Full and non-full health may be read from different blocks.
- * Treat tiny subtraction differences as zero when the position is at or below the upper band.
- */
-const HEALTH_DUST_THRESHOLD: Decimal = '0.0001'
-
-/**
  * Query to get the user's health in a market.
  * Note this is NOT the health change when repaying debt, use `repayHealth` query for that.
  */
@@ -58,7 +52,9 @@ export const useUserHealthValues = (params: UserMarketParams) => {
       (full, notFull, { loanDiscount, liquidationDiscount }) => {
         const discountGap = decimalMinus(loanDiscount, liquidationDiscount)
         const healthDelta = decimalMinus(full, notFull)
-        const health = decimalGreaterThan(healthDelta, HEALTH_DUST_THRESHOLD) ? healthDelta : ZERO
+        // Clamping at zero because separate RPC calls can resolve from different blocks and return a negative delta
+        // which shouldn't be possible
+        const health = decimalGreaterThan(healthDelta, ZERO) ? healthDelta : ZERO
         return {
           /** Percentage distance from entering liquidation protection: the above-band cushion, clamped at zero. */
           health,
