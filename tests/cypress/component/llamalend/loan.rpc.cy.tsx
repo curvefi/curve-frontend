@@ -34,7 +34,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { recordValues } from '@primitives/objects.utils'
 import { getLib } from '@ui-kit/features/connect-wallet'
 import { MarketType } from '@ui-kit/types/market'
-import { waitFor } from '@ui-kit/utils/time.utils'
+import { waitFor } from '@ui-kit/utils'
 
 const testCases = recordValues(MarketType).map(marketType => oneLoanTestMarket(marketType))
 /**

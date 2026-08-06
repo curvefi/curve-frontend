@@ -1,4 +1,4 @@
-import { TIME_FRAMES } from '@ui-kit/lib/model/time'
+import { TIME_FRAMES } from '@ui-kit/utils/time'
 
 type TimeRange = { start: number; end: number }
 
