@@ -303,6 +303,7 @@ export const defaultNetworks = Object.entries({
       ...getBaseNetworksConfig<NetworkEnum, ChainId>(chainId, NETWORK_BASE_CONFIG[chainId]),
       ...DEFAULT_NETWORK_CONFIG,
       ...config,
+      isLite: DOWNGRADED_CHAINS.has(chainId),
       isCrvRewardsEnabled: true,
     }
     return prev

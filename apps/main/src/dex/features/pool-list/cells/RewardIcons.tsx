@@ -35,7 +35,7 @@ const ExtraRewardTooltipBody = ({ reward }: { reward: ExtraReward }) => (
   </Stack>
 )
 
-const CampaignTooltip = ({ campaign, showApy }: { campaign: CampaignRewards; showApy: boolean }) => (
+export const CampaignTooltipContent = ({ campaign, showApy }: { campaign: CampaignRewards; showApy: boolean }) => (
   <Stack sx={{ gap: Spacing.sm }}>
     {showApy && campaign.reward?.type === 'apr' && (
       <Typography variant="bodySRegular" sx={{ textAlign: 'start' }}>
@@ -105,7 +105,7 @@ const CampaignRewardIcon = ({
     clickable
     placement={placement}
     testId="pool-campaign-reward-badge"
-    title={<CampaignTooltip campaign={campaign} showApy />}
+    title={<CampaignTooltipContent campaign={campaign} showApy />}
   >
     <CampaignIcon campaign={campaign} />
   </RewardIconTooltip>
@@ -150,7 +150,7 @@ export const PointsRewardIcon = ({
     clickable
     placement={placement}
     testId="pool-points-badge"
-    title={<CampaignTooltip campaign={campaign} showApy={false} />}
+    title={<CampaignTooltipContent campaign={campaign} showApy={false} />}
   >
     <Stack component="span" direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
       {showLabel && (
