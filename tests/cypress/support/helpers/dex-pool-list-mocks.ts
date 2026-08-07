@@ -87,6 +87,7 @@ const createPool = ({
   liquidity_volume_24h: 10_000 + index,
   liquidity_fee_24h: 100 + index,
   coins: createCoins(chainId),
+  tradeable_coins: createCoins(chainId),
   base_daily_apr: (index % 50) / 1_000,
   base_weekly_apr: (index % 50) / 900,
   crv_apr: null,
