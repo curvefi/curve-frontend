@@ -2,7 +2,7 @@ import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-marke
 import Stack from '@mui/material/Stack'
 import { CellContext } from '@tanstack/react-table'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
-import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
+import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketTitle } from '@ui-kit/widgets/MarketTitle'
 import { MarketBadges } from './MarketBadges'
@@ -17,7 +17,7 @@ export const MarketTitleCell = ({ row: { original: market } }: CellContext<Llama
     <Stack direction="row" sx={{ height: Height.row }}>
       {market.userHasPositions && <UserMarketPositionIndicator market={market} />}
       <Stack direction="row" sx={{ gap: Spacing.sm, alignItems: 'center' }}>
-        <TokenPair chain={market.chain} assets={{ primary: collateral, secondary: borrowed }} hideChainIcon />
+        <TokenIcons blockchainId={market.chain} tokens={[collateral, borrowed]} />
         <Stack direction="column" sx={{ justifyContent: 'center', gap: Spacing.xxs }}>
           <MarketTitle
             title={[collateral.symbol, borrowed.symbol].join(' • ')}

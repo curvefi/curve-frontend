@@ -47,7 +47,7 @@ export const DetailInfoTradeRouteRoute = ({
                   symbol,
                   address,
                 }))}
-                variant="icon"
+                size="md"
               />
             )}
             <RouterLink
