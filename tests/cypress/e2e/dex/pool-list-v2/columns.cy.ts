@@ -71,9 +71,9 @@ const OPTIONAL_FULL_COLUMNS = [
   PoolColumnId.Age,
 ]
 
-const DEFAULT_LITE_COLUMNS = [PoolColumnId.PoolName, PoolColumnId.Volume, PoolColumnId.Tvl]
-const OPTIONAL_LITE_COLUMNS = [PoolColumnId.RewardsApy, PoolColumnId.Points, PoolColumnId.Age]
-const FULL_ONLY_COLUMNS = [PoolColumnId.NetApy, PoolColumnId.BaseApy, PoolColumnId.WeeklyBaseApy, PoolColumnId.CrvApy]
+const DEFAULT_LITE_COLUMNS = [PoolColumnId.PoolName, PoolColumnId.NetApy, PoolColumnId.Tvl]
+const OPTIONAL_LITE_COLUMNS = [PoolColumnId.CrvApy, PoolColumnId.RewardsApy, PoolColumnId.Points]
+const FULL_ONLY_COLUMNS = [PoolColumnId.BaseApy, PoolColumnId.WeeklyBaseApy, PoolColumnId.Volume, PoolColumnId.Age]
 
 describe('V2 pool-list columns', () => {
   beforeEach(() => {
@@ -160,6 +160,8 @@ describe('V2 pool-list columns', () => {
     visitV2PoolList({ network: 'taiko', viewport: DESKTOP_VIEWPORT })
 
     expectHeaderOrder(DEFAULT_LITE_COLUMNS)
+    cy.get('[data-testid="btn-open-filters-dex-pools"]').should('not.exist')
+    cy.get('[data-testid="dex-pool-filters-collapsible"]').should('not.exist')
 
     cy.get('[data-testid="btn-visibility-settings"]').click()
     for (const columnId of OPTIONAL_LITE_COLUMNS) {
@@ -173,16 +175,45 @@ describe('V2 pool-list columns', () => {
     showV2PoolColumns(OPTIONAL_LITE_COLUMNS)
     expectHeaderOrder([
       PoolColumnId.PoolName,
+      PoolColumnId.NetApy,
+      PoolColumnId.CrvApy,
       PoolColumnId.RewardsApy,
       PoolColumnId.Points,
-      PoolColumnId.Volume,
       PoolColumnId.Tvl,
-      PoolColumnId.Age,
     ])
-    getV2PoolCell(V2_POOL_FIXTURES.lite.address, PoolColumnId.Age)
-      .find('[data-testid="pool-age"]')
-      // The fixture is four minutes old, which the shared formatter groups into its under-five-minute state.
-      .should('have.text', 'just now')
+  })
+
+  it('searches and sorts every Lite pool locally without refetching or applying the default TVL filter', () => {
+    visitV2PoolList({ network: 'taiko', viewport: DESKTOP_VIEWPORT })
+
+    cy.get('@dex-v2-pool-chains.all').should('have.length', 0)
+    cy.get('@dex-v2-pools.all').should('have.length', 0)
+    getV2PoolRow(V2_POOL_FIXTURES.liteLowTvl.address).should('be.visible')
+
+    const getSearch = () => cy.get('[data-testid="table-text-search-dex-pool-list"]').find('input')
+    for (const query of [
+      'Taiko Lite',
+      V2_POOL_FIXTURES.lite.address,
+      V2_POOL_FIXTURES.lite.gauge_address!,
+      V2_POOL_FIXTURES.lite.root_gauge_address!,
+      'USDC',
+      V2_POOL_FIXTURES.lite.coins[0].address,
+      'USDT',
+    ]) {
+      getSearch().clear({ scrollBehavior: false }).type(query, { scrollBehavior: false })
+      cy.get('[data-testid^="data-table-row-"]').should('have.length', 1)
+      getV2PoolRow(V2_POOL_FIXTURES.lite.address).should('be.visible')
+    }
+
+    getSearch().clear({ scrollBehavior: false })
+    cy.get('[data-testid^="data-table-row-"]').should('have.length', 2)
+
+    cy.get(`[data-testid="data-table-header-${PoolColumnId.Tvl}"]`).click()
+    cy.get('[data-testid^="data-table-row-"]')
+      .first()
+      .find(`[data-testid="market-link-${V2_POOL_FIXTURES.liteLowTvl.address}"]`)
+      .should('exist')
+    cy.get('@dex-v2-lite-pools.all').should('have.length', 1)
   })
 
   it('classifies representative pool types and adds status badges', () => {

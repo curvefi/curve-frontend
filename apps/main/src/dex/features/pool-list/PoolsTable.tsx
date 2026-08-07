@@ -20,6 +20,7 @@ import { PoolExpandedPanelActions } from './components/PoolExpandedPanelActions'
 import { PoolsFilters } from './filters/PoolsFilters'
 import { PoolsFiltersCollapsible } from './filters/PoolsFiltersCollapsible'
 import { usePoolsFilters } from './hooks/usePoolsFilters'
+import { usePoolsGlobalFilterFn } from './hooks/usePoolsGlobalFilter'
 import { usePoolsPagination } from './hooks/usePoolsPagination'
 import { usePoolsSorting } from './hooks/usePoolsSorting'
 import { usePoolsTable } from './hooks/usePoolsTable'
@@ -27,52 +28,65 @@ import { type PoolColumnVariant, usePoolsVisibility } from './hooks/usePoolsVisi
 import type { PoolRow } from './types'
 
 const LOCAL_STORAGE_KEY = 'dex-pool-list'
+const EMPTY_POOL_ROWS: readonly PoolRow[] = []
 const POOL_EXPANDED_PANEL_BODIES = {
   full: props => <PoolExpandedPanel {...props} variant="full" />,
   lite: props => <PoolExpandedPanel {...props} variant="lite" />,
 } satisfies Record<PoolColumnVariant, ExpandedPanelComponent<PoolRow>>
 
 export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
+  const isLite = network.isLite
   const isMobile = useIsMobile()
   const [filtersOpen, , , , setFiltersOpen] = useSwitch(false)
   const filterChipRef = useRef<HTMLDivElement>(null)
   const { onPaginationChange, pagination, updateQueryAndResetPage } = usePoolsPagination()
   const { globalFilter, columnFilters, apiParams, filterProps, onSearch, resetFilters, searchText } = usePoolsFilters()
   const { onSortingChange, sortBy, sortDirection, sortField, sorting, sortOptions } = usePoolsSorting(
-    network.isLite,
+    isLite,
     updateQueryAndResetPage,
   )
 
   const [expanded, setExpanded] = useState<ExpandedState>({})
   const { columnSettings, columnVisibility, toggleVisibility, variant } = usePoolsVisibility(LOCAL_STORAGE_KEY, {
-    isLite: network.isLite,
+    isLite,
     sorting,
   })
 
   const { isFetching, onReload, pageCount, userHasPositions, tableQuery } = usePoolsTable({
-    filters: apiParams,
+    filters: isLite ? {} : apiParams,
     network,
     page: pagination.pageIndex + 1,
     searchText,
     sortBy,
     sortDirection,
   })
+  const globalFilterFn = usePoolsGlobalFilterFn(
+    isLite ? (tableQuery?.data ?? EMPTY_POOL_ROWS) : EMPTY_POOL_ROWS,
+    globalFilter,
+  )
 
   const table = useTable({
     columns: POOL_COLUMNS,
     query: tableQuery,
-    state: { expanded, sorting, pagination, columnVisibility, columnFilters, globalFilter },
+    state: {
+      expanded,
+      sorting,
+      columnVisibility,
+      globalFilter,
+      ...(!isLite && { pagination, columnFilters }),
+    },
     onExpandedChange: setExpanded,
-    onPaginationChange,
+    ...(!isLite && { onPaginationChange }),
     onSortingChange,
     manualPagination: true,
-    manualSorting: true,
-    manualFiltering: true,
-    pageCount,
+    manualSorting: !isLite,
+    manualFiltering: !isLite,
+    pageCount: isLite ? 1 : pageCount,
+    ...(isLite && { globalFilterFn }),
     ...getTableOptions(tableQuery ? tableQuery.data : undefined),
   })
 
-  const hasActiveFilters = !!table.getState().columnFilters.length
+  const hasActiveFilters = !isLite && !!table.getState().columnFilters.length
 
   return (
     <Stack>
@@ -95,23 +109,29 @@ export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
           toggleVisibility={toggleVisibility}
           searchText={searchText}
           onSearch={onSearch}
-          collapsibleFilters={{
-            collapsible: (
-              <PoolsFiltersCollapsible
-                hasActiveFilters={hasActiveFilters}
-                resetFilters={resetFilters}
-                {...filterProps}
-              />
-            ),
-            hasActiveFilters,
-          }}
+          collapsibleFilters={
+            isLite
+              ? undefined
+              : {
+                  collapsible: (
+                    <PoolsFiltersCollapsible
+                      hasActiveFilters={hasActiveFilters}
+                      resetFilters={resetFilters}
+                      {...filterProps}
+                    />
+                  ),
+                  hasActiveFilters,
+                }
+          }
           filterChip={
-            <TableFiltersChip
-              popoverFilterChipRef={filterChipRef}
-              open={filtersOpen}
-              setOpen={setFiltersOpen}
-              testId="btn-open-filters-dex-pools"
-            />
+            !isLite && (
+              <TableFiltersChip
+                popoverFilterChipRef={filterChipRef}
+                open={filtersOpen}
+                setOpen={setFiltersOpen}
+                testId="btn-open-filters-dex-pools"
+              />
+            )
           }
           sortChip={
             isMobile && (
@@ -127,17 +147,19 @@ export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
         />
       </DataTable>
       {/* Keep the overlay outside DataTable children because DataTable remounts them when switching sticky header layout. */}
-      <TableFiltersOverlay
-        anchorRef={filterChipRef}
-        drawerTestId="drawer-filter-menu-dex-pools"
-        hasActiveFilters={hasActiveFilters}
-        open={filtersOpen}
-        resetFilters={resetFilters}
-        setOpen={setFiltersOpen}
-        title={t`Filter pools`}
-      >
-        <PoolsFilters {...filterProps} />
-      </TableFiltersOverlay>
+      {!isLite && (
+        <TableFiltersOverlay
+          anchorRef={filterChipRef}
+          drawerTestId="drawer-filter-menu-dex-pools"
+          hasActiveFilters={hasActiveFilters}
+          open={filtersOpen}
+          resetFilters={resetFilters}
+          setOpen={setFiltersOpen}
+          title={t`Filter pools`}
+        >
+          <PoolsFilters {...filterProps} />
+        </TableFiltersOverlay>
+      )}
     </Stack>
   )
 }

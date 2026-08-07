@@ -1,10 +1,10 @@
-import Fuse from 'fuse.js'
+import Fuse, { type FuseOptionKey } from 'fuse.js'
 import { get, partition } from 'lodash'
 import { useMemo } from 'react'
 import type { FilterFn, Row } from '@tanstack/react-table'
 
 /** Replace ₮ with T so users don't need the special character to find Tether markets */
-const cleanValue = <T>(value: T): T =>
+export const cleanValue = <T>(value: T): T =>
   (Array.isArray(value) ? value.map(cleanValue) : typeof value === 'string' ? value.replace(/₮/g, 'T') : value) as T
 
 /** Don't search for "0x" or "0xA", it's too broad */
@@ -35,10 +35,10 @@ const splitSearchTerms = (input: string) => {
  *
  * @param data        The dataset to index. Should be referentially stable (e.g. from `useMemo`).
  * @param filterValue The raw search string entered by the user.
- * @param keys        Dot-path keys to index (both text and address fields).
+ * @param keys        Dot-path keys or custom key extractors to index (both text and address fields).
  * @returns A `Set` of matching items, or `null` if there is no active filter.
  */
-function useFuseResultSet<T>(data: readonly T[], filterValue: string, keys: string[]) {
+function useFuseResultSet<T>(data: readonly T[], filterValue: string, keys: readonly FuseOptionKey<T>[]) {
   const fuse = useMemo(
     () =>
       new Fuse(data, {
@@ -48,7 +48,7 @@ function useFuseResultSet<T>(data: readonly T[], filterValue: string, keys: stri
         minMatchCharLength: 2,
         threshold: 0.01,
         getFn: (obj, path) => cleanValue(get(obj, path)) as string,
-        keys,
+        keys: [...keys],
       }),
     [data, keys],
   )
@@ -79,7 +79,11 @@ function useFuseResultSet<T>(data: readonly T[], filterValue: string, keys: stri
 }
 
 /** Returns a stable {@link FilterFn} backed by Fuse.js, for use as TanStack Table's `globalFilterFn`. */
-export function useFuzzyFilterFn<T>(data: readonly T[], filterValue: string, keys: string[]): FilterFn<T> {
+export function useFuzzyFilterFn<T>(
+  data: readonly T[],
+  filterValue: string,
+  keys: readonly FuseOptionKey<T>[],
+): FilterFn<T> {
   const resultSet = useFuseResultSet(data, filterValue, keys)
   return useMemo(() => (row: Row<T>) => !resultSet || resultSet.has(row.original), [resultSet])
 }
@@ -88,7 +92,7 @@ export function useFuzzyFilterFn<T>(data: readonly T[], filterValue: string, key
  * Returns a filtered copy of `data` using Fuse.js fuzzy search.
  * Use this outside of TanStack Table (e.g. token selectors, dropdowns).
  */
-export function useFuzzySearch<T>(data: readonly T[], filterValue: string, keys: string[]) {
+export function useFuzzySearch<T>(data: readonly T[], filterValue: string, keys: readonly FuseOptionKey<T>[]) {
   const resultSet = useFuseResultSet(data, filterValue, keys)
   return useMemo(() => (resultSet ? data.filter(item => resultSet.has(item)) : data), [data, resultSet])
 }

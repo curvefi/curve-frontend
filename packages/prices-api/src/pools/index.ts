@@ -6,6 +6,8 @@ import * as Schema from './schema'
 
 export type * from './schema'
 
+const LITE_POOLS_HOST = 'https://api2.curve.finance'
+
 export async function getPools(chain: Chain, options?: Options) {
   const host = getHost(options)
   const response = await fetch(`${host}/v1/chains/${chain}`)
@@ -25,6 +27,13 @@ export async function listPoolChains(options?: Options) {
   const response = await fetch(`${host}/v2/pools/chains/`)
 
   return Schema.listPoolChainsResponse.parse(response)
+}
+
+export async function listLitePools({ chainId }: { chainId: number }, options?: Options) {
+  const host = options?.host ?? LITE_POOLS_HOST
+  const response = await fetch(`${host}/get_pools/${chainId}`, { signal: options?.signal })
+
+  return Schema.listLitePoolsResponse.parse(response)
 }
 
 export type ListPoolsParams = {

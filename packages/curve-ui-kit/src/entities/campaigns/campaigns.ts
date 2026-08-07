@@ -1,6 +1,5 @@
 import memoizee from 'memoizee'
 import { useCallback } from 'react'
-import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
 import { fromEntries, notFalsy, objectKeys } from '@primitives/objects.utils'
 import { type QueriesResults, useQueries } from '@tanstack/react-query'
@@ -44,7 +43,7 @@ export const combineCampaigns = memoizee((campaigns: (Campaigns | undefined)[], 
   )
 })
 
-type UseCampaignsOptions = { blockchainId?: Chain; enabled?: boolean }
+type UseCampaignsOptions = { blockchainId?: string; enabled?: boolean }
 
 type CampaignQueries = [
   ReturnType<typeof getCampaignsExternalOptions>,

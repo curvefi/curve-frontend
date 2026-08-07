@@ -1,4 +1,4 @@
-import { listPoolChains, listPools, type ListPoolsParams } from '@curvefi/prices-api/pools'
+import { listLitePools, listPoolChains, listPools, type ListPoolsParams } from '@curvefi/prices-api/pools'
 import { createValidationSuite, EmptyValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys, type ChainQuery } from '@ui-kit/lib/model'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
@@ -70,6 +70,16 @@ export const { reset: resetPoolList, useQuery: usePoolList } = queryFactory({
   validationSuite: createValidationSuite(chainValidationGroup),
   category: 'dex.pools',
   keepPreviousData: true,
+})
+
+type LitePoolListQuery = ChainQuery
+type LitePoolListParams = FieldsOf<LitePoolListQuery>
+
+export const { reset: resetLitePoolList, useQuery: useLitePoolList } = queryFactory({
+  queryKey: ({ chainId }: LitePoolListParams) => [...rootKeys.chain({ chainId }), 'listLitePools'] as const,
+  queryFn: (params: LitePoolListQuery) => listLitePools(params),
+  validationSuite: createValidationSuite(chainValidationGroup),
+  category: 'dex.pools',
 })
 
 export const { useQuery: usePoolChains } = queryFactory({
