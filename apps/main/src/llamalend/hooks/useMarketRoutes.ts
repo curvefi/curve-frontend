@@ -1,6 +1,5 @@
 import { useEffect, useEffectEvent, useMemo, useState, useTransition } from 'react'
 import { useConnection } from 'wagmi'
-import { usePriceImpact } from '@/llamalend/hooks/usePriceImpact'
 import type { MarketToken } from '@/llamalend/llama.utils'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { Address } from '@primitives/address.utils'
@@ -19,7 +18,7 @@ import {
 } from '@ui-kit/entities/router-api'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { q, type QueryProp } from '@ui-kit/types/util'
-import { decimalCompare, decimalMax, toWei } from '@ui-kit/utils'
+import { decimal, decimalCompare, decimalMax, toWei } from '@ui-kit/utils'
 import type { PriceImpact } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 
 export type MarketRoutes = {
@@ -107,7 +106,11 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
   useEffect(() => startTransition(() => onChangeEffect(selectedRoute)), [selectedRoute])
 
   const selectedRouter = chosenRouter && queries[chosenRouter].enabled ? chosenRouter : selectedRoute?.router
-  const priceImpact = usePriceImpact({ params, selectedRoute, tokenIn, tokenOut, chainId }, enabled)
+  const priceImpact = q({
+    data: decimal(selectedRoute?.priceImpact) ?? null,
+    isLoading: enabled && !selectedRoute,
+    error: null,
+  })
 
   return {
     routes: {
