@@ -331,7 +331,7 @@ const saturnPoolMigrationAlert = (): PoolAlert => ({
         . This pool is no longer eligible for points.
       </Trans>
     ),
-    learnMoreUrl: 'https://x.com/saturn_credit/status/2084102789370937431',
+    learnMoreUrl: 'https://x.com/saturn_credit/status/2085805034005233685',
   },
 })
 
