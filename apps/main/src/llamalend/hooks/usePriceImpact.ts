@@ -5,10 +5,11 @@ import { assert, maybe, maybes } from '@primitives/objects.utils'
 import { type RouteResponse, type RoutesParams, useRouterApi } from '@ui-kit/entities/router-api'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { mapQuery, q, type QueryProp } from '@ui-kit/types/util'
-import { decimalDiv, decimalMax, decimalMinus, decimalMultiply, fromWei, toWei } from '@ui-kit/utils'
+import { decimal, decimalDiv, decimalMax, decimalMinus, decimalMultiply, fromWei, toWei } from '@ui-kit/utils'
 import type { PriceImpact } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 
 const REFERENCE_USD_PRICE = '0.1' as const
+const USE_PROVIDER_PRICE_IMPACT: Partial<Record<RouteResponse['router'], boolean>> = { enso: true }
 
 const calculatePriceImpact = ({
   selectedAmountIn,
@@ -58,12 +59,19 @@ export const usePriceImpact = (
   const tokenInUsd = maybes([route?.amountIn, tokenInDecimals, inUsdRate.data], ([amountIn], decimals, usdRate) =>
     decimalMultiply(fromWei(amountIn, decimals), `${usdRate}`),
   )
+  const providerPriceImpact = route && USE_PROVIDER_PRICE_IMPACT[route.router] ? decimal(route.priceImpact) : undefined
   const referenceAmountIn = maybes([inUsdRate.data, tokenInDecimals], (usdRate, decimals) =>
     toWei(decimalDiv(REFERENCE_USD_PRICE, `${usdRate}`), decimals),
   )
-  const isEnabled = enabled && !!route && !!referenceAmountIn && tokenInDecimals != null && tokenOutDecimals != null
+  const isEnabled =
+    enabled &&
+    providerPriceImpact == null &&
+    !!route &&
+    !!referenceAmountIn &&
+    tokenInDecimals != null &&
+    tokenOutDecimals != null
 
-  return mapQuery(
+  const referencePriceImpact = mapQuery(
     useRouterApi(
       {
         ...params,
@@ -88,4 +96,8 @@ export const usePriceImpact = (
       [route, tokenInDecimals, tokenOutDecimals, tokenInUsd],
     ),
   )
+
+  return providerPriceImpact == null
+    ? referencePriceImpact
+    : q({ data: { priceImpact: providerPriceImpact, tokenInUsd }, isLoading: false, error: null })
 }
