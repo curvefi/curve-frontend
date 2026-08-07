@@ -5,7 +5,6 @@ import Box from '@mui/material/Box'
 import MuiTooltip, { TooltipProps as MuiTooltipProps } from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
-import { useMobileTooltipDrawer } from '@ui-kit/hooks/useFeatureFlags'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { SwipeableDrawer } from '@ui-kit/shared/ui/SwipeableDrawer/SwipeableDrawer'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -50,7 +49,6 @@ const TooltipContent = (
  */
 export const Tooltip = ({ title, body, clickable, children, slotProps, ...props }: TooltipProps) => {
   const isMobile = useIsMobile()
-  const isMobileDrawerEnabled = useMobileTooltipDrawer() && isMobile
   const [drawerOpen, openDrawer, , , setDrawerOpen] = useSwitch(false)
 
   if (!title && !body) return children
@@ -64,7 +62,7 @@ export const Tooltip = ({ title, body, clickable, children, slotProps, ...props 
     ...props,
   }
 
-  if (!isMobileDrawerEnabled || props.open !== undefined) {
+  if (!isMobile || props.open !== undefined) {
     return <MuiTooltip {...tooltipProps}>{children}</MuiTooltip>
   }
 

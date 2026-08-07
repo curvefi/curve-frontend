@@ -38,9 +38,6 @@ export const useNewLlamaMarketDetailPage = useBetaChannel
 /** Mobile LlamaLend market forms open from a fixed action bar into a drawer */
 export const useMarketMobileFormDrawer = useBetaChannel
 
-/** Mobile tooltips open in a bottom drawer */
-export const useMobileTooltipDrawer = useBetaChannel
-
 /** New DEX pool list backed by Prices API v2 */
 export const useDexPoolListV2 = useBetaChannel
 

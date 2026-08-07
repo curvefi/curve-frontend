@@ -5,7 +5,6 @@ import Stack, { StackProps } from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
 import type { Amount } from '@primitives/decimal.utils'
 import { useBreakpoint, useIsMobile } from '@ui-kit/hooks/useBreakpoints'
-import { useMobileTooltipDrawer } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { CopyIcon } from '@ui-kit/shared/icons/CopyIcon'
 import { ErrorIconButton } from '@ui-kit/shared/ui/ErrorIconButton'
@@ -127,7 +126,6 @@ type MetricValueProps = Pick<MetricProps, 'valueOptions' | 'change' | 'testId'> 
 
 const MetricValue = ({ value, valueOptions = {}, change, size, copyValue, tooltip, testId }: MetricValueProps) => {
   const isMobile = useIsMobile()
-  const isMobileDrawerEnabled = useMobileTooltipDrawer() && isMobile
   const numberValue = useMemo(() => ((value || value === 0) && isFinite(Number(value)) ? Number(value) : null), [value])
   const {
     color = 'textPrimary',
@@ -142,8 +140,8 @@ const MetricValue = ({ value, valueOptions = {}, change, size, copyValue, toolti
   const fontVariant = MetricSize[size]
   const fontVariantUnit = MetricUnitSize[size]
   const valueColorProps = getTypographyColorProps(color)
-  const copyOnClick = isMobileDrawerEnabled ? undefined : copyValue
-  const mobileCopyButton = isMobileDrawerEnabled && !disableTooltip && copyValue && (
+  const copyOnClick = isMobile ? undefined : copyValue
+  const mobileCopyButton = isMobile && !disableTooltip && copyValue && (
     <Button
       fullWidth
       startIcon={<CopyIcon />}
