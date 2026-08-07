@@ -28,6 +28,9 @@ type PoolColumnOptions = Omit<PoolColumn, 'id' | 'header'>
 
 const columnHelper = createColumnHelper<PoolRow>()
 
+// TanStack requires an accessorFn for sorting controls, even when it's a computed value rather than a direct property; manualSorting leaves ordering to the v2 pools API.
+const serverSortableAccessor = () => 0
+
 const createTooltip = (id: keyof typeof POOL_TITLES, body: ReactNode): Tooltip => ({
   title: POOL_TITLES[id],
   body,
@@ -55,9 +58,8 @@ export const POOL_COLUMNS = [
     cell: PoolTitleCell,
     meta: { tooltip: createTooltip(PoolColumnId.PoolName, <PoolHeaderTooltipContent />) },
   }),
-  display(PoolColumnId.NetApy, {
+  accessor(PoolColumnId.NetApy, serverSortableAccessor, {
     cell: ({ row }) => <NetApyCell pool={row.original} />,
-    enableSorting: false,
     meta: {
       type: 'numeric',
       tooltip: createTooltip(PoolColumnId.NetApy, <NetApyHeaderTooltipContent />),
@@ -65,7 +67,6 @@ export const POOL_COLUMNS = [
   }),
   accessor(PoolColumnId.BaseApy, 'baseDailyApr', {
     cell: BaseApyCell,
-    enableSorting: false,
     meta: {
       type: 'numeric',
       tooltip: createTooltip(PoolColumnId.BaseApy, <BaseApyHeaderTooltipContent />),
@@ -81,9 +82,8 @@ export const POOL_COLUMNS = [
     },
     sortUndefined: 'last',
   }),
-  display(PoolColumnId.CrvApy, {
+  accessor(PoolColumnId.CrvApy, serverSortableAccessor, {
     cell: ({ row }) => <CrvApyCell pool={row.original} />,
-    enableSorting: false,
     meta: {
       type: 'numeric',
       tooltip: createTooltip(PoolColumnId.CrvApy, <CrvApyHeaderTooltipContent />),

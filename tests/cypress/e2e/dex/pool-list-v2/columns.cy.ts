@@ -28,6 +28,33 @@ const expectPoolBadgeSet = (address: string, expected: readonly string[]) =>
       expect(actual).to.deep.equal(expected.toSorted())
     })
 
+const SORTABLE_COLUMNS = [
+  PoolColumnId.PoolName,
+  PoolColumnId.NetApy,
+  PoolColumnId.BaseApy,
+  PoolColumnId.CrvApy,
+  PoolColumnId.Volume,
+  PoolColumnId.Tvl,
+] as const
+
+const NON_SORTABLE_COLUMNS = [
+  PoolColumnId.WeeklyBaseApy,
+  PoolColumnId.RewardsApy,
+  PoolColumnId.Points,
+  PoolColumnId.Age,
+] as const
+
+const APY_SORT_CASES = [
+  [PoolColumnId.NetApy, V2_POOL_FIXTURES.highRewards.address, V2_POOL_FIXTURES.empty.address],
+  [PoolColumnId.BaseApy, V2_POOL_FIXTURES.volatile.address, V2_POOL_FIXTURES.empty.address],
+  [PoolColumnId.CrvApy, V2_POOL_FIXTURES.showcase.address, V2_POOL_FIXTURES.alerts.address],
+] as const
+
+const getColumnHeader = (columnId: PoolColumnId) => cy.get(`[data-testid="data-table-header-${columnId}"]`)
+
+const expectFirstPool = (address: string) =>
+  cy.get('[data-testid^="data-table-row-"]').first().find(`[data-testid="market-link-${address}"]`).should('exist')
+
 const DEFAULT_FULL_COLUMNS = [PoolColumnId.PoolName, PoolColumnId.NetApy, PoolColumnId.Volume, PoolColumnId.Tvl]
 const OPTIONAL_FULL_COLUMNS = [
   PoolColumnId.BaseApy,
@@ -89,6 +116,30 @@ describe('V2 pool-list columns', () => {
     getV2PoolCell(V2_POOL_FIXTURES.killed.address, PoolColumnId.Age)
       .find('[data-testid="pool-age"]')
       .should('have.text', '-')
+  })
+
+  it('only exposes sorting controls for server-supported columns', () => {
+    visitV2PoolList({ viewport: DESKTOP_VIEWPORT })
+    showV2PoolColumns(OPTIONAL_FULL_COLUMNS)
+
+    for (const columnId of SORTABLE_COLUMNS) {
+      getColumnHeader(columnId).find(`[data-testid^="icon-sort-${columnId}-"]`).should('exist')
+    }
+    for (const columnId of NON_SORTABLE_COLUMNS) {
+      getColumnHeader(columnId).find(`[data-testid^="icon-sort-${columnId}-"]`).should('not.exist')
+    }
+  })
+
+  it('sorts APY columns', () => {
+    visitV2PoolList({ viewport: DESKTOP_VIEWPORT })
+    showV2PoolColumns([PoolColumnId.BaseApy, PoolColumnId.CrvApy])
+
+    for (const [columnId, firstDescending, firstAscending] of APY_SORT_CASES) {
+      getColumnHeader(columnId).click()
+      expectFirstPool(firstDescending)
+      getColumnHeader(columnId).click()
+      expectFirstPool(firstAscending)
+    }
   })
 
   it('shows only supported columns on a Lite network', () => {

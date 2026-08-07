@@ -9,13 +9,13 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { PoolRow } from '../types'
 import { NetApyTooltipContent } from './NetApyTooltipContent'
 import { RewardIcons } from './RewardIcons'
-import { formatCellValue, getBaseApy, getNetApy, isVolatileApy } from './utils'
+import { formatCellValue, getNetApy, isVolatileApy } from './utils'
 
 const { Spacing } = SizesAndSpaces
 
 export const NetApyCell = ({ pool }: { pool: PoolRow }) => {
   const netApy = getNetApy(pool)
-  const volatile = isVolatileApy(getBaseApy(pool, 'daily'))
+  const volatile = isVolatileApy(netApy)
 
   return (
     <Stack sx={{ alignItems: 'flex-end', gap: Spacing.xs }}>

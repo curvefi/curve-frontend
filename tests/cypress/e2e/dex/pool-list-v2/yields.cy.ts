@@ -96,7 +96,7 @@ describe('V2 pool-list yields', () => {
       .should('match', /^-\d+\.\d+%$/)
 
     const highRewards = V2_POOL_FIXTURES.highRewards.address
-    getV2PoolCell(highRewards, PoolColumnId.NetApy).should('contain.text', '11.75k%').and('not.contain.text', '5,000+%')
+    getV2PoolCell(highRewards, PoolColumnId.NetApy).should('contain.text', '5,000+%').and('not.contain.text', '11.75k%')
     getV2PoolCell(highRewards, PoolColumnId.BaseApy).should('contain.text', '1.005%')
     getV2PoolCell(highRewards, PoolColumnId.RewardsApy)
       .should('contain.text', '11.75k%')
