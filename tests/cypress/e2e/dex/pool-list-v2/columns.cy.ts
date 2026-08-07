@@ -11,6 +11,7 @@ import {
   showV2PoolColumns,
   visitV2PoolList,
 } from '@cy/support/helpers/dex-pools-list-v2.helpers'
+import { API_LOAD_TIMEOUT } from '@cy/support/ui'
 
 const expectHeaderOrder = (expected: readonly PoolColumnId[]) =>
   cy.get('[data-testid="data-table-head"] [data-testid^="data-table-header-"]').should($headers => {
@@ -53,7 +54,11 @@ const APY_SORT_CASES = [
 const getColumnHeader = (columnId: PoolColumnId) => cy.get(`[data-testid="data-table-header-${columnId}"]`)
 
 const expectFirstPool = (address: string) =>
-  cy.get('[data-testid^="data-table-row-"]').first().find(`[data-testid="market-link-${address}"]`).should('exist')
+  cy
+    .get('[data-testid^="data-table-row-"]', API_LOAD_TIMEOUT)
+    .first()
+    .find(`[data-testid="market-link-${address}"]`)
+    .should('exist')
 
 const DEFAULT_FULL_COLUMNS = [PoolColumnId.PoolName, PoolColumnId.NetApy, PoolColumnId.Volume, PoolColumnId.Tvl]
 const OPTIONAL_FULL_COLUMNS = [
@@ -136,8 +141,10 @@ describe('V2 pool-list columns', () => {
 
     for (const [columnId, firstDescending, firstAscending] of APY_SORT_CASES) {
       getColumnHeader(columnId).click()
+      cy.wait('@dex-v2-pools', API_LOAD_TIMEOUT)
       expectFirstPool(firstDescending)
       getColumnHeader(columnId).click()
+      cy.wait('@dex-v2-pools', API_LOAD_TIMEOUT)
       expectFirstPool(firstAscending)
     }
   })
