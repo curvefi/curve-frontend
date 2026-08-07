@@ -314,7 +314,17 @@ const v2PoolRegistry = z
   })
   .transform(camelizeKeys)
 
-export const v2PoolSortField = z.enum(['name', 'aggregate_apr', 'base_daily_apr', 'crv_apr', 'volume', 'tvl'])
+export const v2PoolSortField = z.enum([
+  'name',
+  'aggregate_apr',
+  'base_daily_apr',
+  'base_weekly_apr',
+  'crv_apr',
+  'rewards_apr',
+  'creation_date',
+  'volume',
+  'tvl',
+])
 export type V2PoolSortField = z.infer<typeof v2PoolSortField>
 
 export type SortDirection = z.infer<typeof sortDirection>
