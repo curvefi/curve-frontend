@@ -1,3 +1,4 @@
+import { getUserStateKey } from '@/llamalend/queries/user/user-state.query'
 import type { RepayQuery, RepayParams } from '@/llamalend/queries/validation/repay.types'
 import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -71,4 +72,5 @@ export const {
   },
   category: 'llamalend.repay',
   validationSuite: repayValidationSuite({ leverageRequired: false, validateMax: false }),
+  dependencies: params => [getUserStateKey(params)],
 })
