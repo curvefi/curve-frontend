@@ -1,14 +1,9 @@
-import { formatPercentage } from '@/llamalend/widgets/tooltips/tooltip.utils'
-import {
-  TooltipDescription,
-  TooltipItem,
-  TooltipItems,
-  TooltipWrapper,
-} from '@/llamalend/widgets/tooltips/TooltipComponents'
-import { Stack } from '@mui/material'
+import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
+import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui-kit/shared/ui/TooltipComponents'
 import { formatNumber, formatToken } from '@ui-kit/utils'
+import { formatPercentage } from './tooltip.utils'
 
 type TotalCollateralTooltipProps = Partial<{
   collateralSymbol: string | null

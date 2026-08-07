@@ -2,7 +2,6 @@ import type { ReactNode } from 'react'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { useGoBack } from '@ui-kit/hooks/router'
 import { ArrowLeft } from '@ui-kit/shared/icons/ArrowLeft'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
@@ -11,7 +10,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 const { Spacing } = SizesAndSpaces
 
 const BackButton = ({ href }: { href: string }) => (
-  <IconButton size="small" component={RouterLink} href={href} onClick={useGoBack()}>
+  <IconButton size="small" component={RouterLink} href={href}>
     <ArrowLeft />
   </IconButton>
 )
@@ -21,6 +20,7 @@ export const PageHeader = ({
   subtitle,
   titleLoading = false,
   subtitleLoading = false,
+  disableUpperCase = false,
   icon,
   titleItems,
   rightItems,
@@ -30,6 +30,7 @@ export const PageHeader = ({
   subtitle?: string
   titleLoading?: boolean
   subtitleLoading?: boolean
+  disableUpperCase?: boolean
   backHref?: string
   icon?: ReactNode
   titleItems?: ReactNode
@@ -48,7 +49,11 @@ export const PageHeader = ({
         <Stack>
           <Stack direction="row" sx={{ alignItems: 'center', flexWrap: 'wrap', gap: Spacing.xs }}>
             <WithSkeleton loading={titleLoading}>
-              <Typography variant="headingSBold" sx={{ overflowWrap: 'anywhere' }}>
+              {/* headingSBold uppercases text by default but some titles must preserve token symbol casing. */}
+              <Typography
+                variant="headingSBold"
+                sx={{ overflowWrap: 'anywhere', ...(disableUpperCase && { textTransform: 'none' }) }}
+              >
                 {title ?? 'Page header' /** For skeleton width inference */}
               </Typography>
             </WithSkeleton>

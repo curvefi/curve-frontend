@@ -26,6 +26,7 @@ import {
   plasma,
   plumeMainnet,
   polygon,
+  robinhood,
   sonic,
   stable,
   tac,
@@ -35,7 +36,7 @@ import {
   xLayer,
   zksync,
 } from '@wagmi/core/chains'
-import { ethereum as mainnet, expchain, hyperliquid, megaeth, robinhood, strata } from './custom-chains'
+import { ethereum as mainnet, expchain, hyperliquid, megaeth, strata } from './custom-chains'
 
 const wagmiChains = [
   arbitrum,
@@ -82,7 +83,9 @@ export const DEPRECATED_CHAINS: Record<number, Date> = {
   [aurora.id]: deprecateDate,
   [kava.id]: deprecateDate,
 }
-export const DOWNGRADED_CHAINS = new Set<number>([avalanche, xLayer, sonic, fantom].map(c => c.id))
+export const DOWNGRADED_CHAINS = new Set<number>(
+  [aurora, avalanche, celo, fantom, kava, mantle, moonbeam, sonic, xLayer, zksync].map(c => c.id),
+)
 
 /** Mapping of chain IDs to their corresponding Wagmi chain configurations for easy lookup */
 export const wagmiChainsMap = Object.fromEntries(wagmiChains.map(chain => [chain.id, chain]))

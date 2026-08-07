@@ -1,20 +1,12 @@
 import { useMarketParameters } from '@/llamalend/queries/market'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { useNewLlamaMarketDetailPage } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { fallbackQ, mapQuery, type QueryProp } from '@ui-kit/types/util'
 import { formatNumber } from '@ui-kit/utils'
-
-// In [1]: ltv = lambda x: ((x[0] - 1) / x[0])**2 * (1 - x[1])
-// In [2]: ltv((30, 0.11))
-// Out[2]: 0.8316555555555556
-// where x[0] is A, x[1] is loan discount normalised between 0 and 1 (so 11% is 0.11). multiply ltv by 100 to show percentage.
-// always show 'max ltv' which is the max possible loan at N=4 (not advisable but hey it exists!).
-function getMaxLTV(a: number | undefined, loanDiscount: string | undefined) {
-  if (a == null || loanDiscount == null) return
-  return ((+a - 1) / +a) ** 2 * (1 - +loanDiscount / 100) * 100
-}
+import { getMaxLtv } from './market-risk-values'
 
 export const MarketLoanParameters = ({
   chainId,
@@ -100,19 +92,37 @@ export const MarketLoanParameters = ({
         )}
       />
 
-      <ActionInfo
-        testId="market-param-max-ltv"
-        label={t`Max LTV`}
-        labelTooltip={{ title: t`The highest loan-to-value ratio allowed when opening or increasing a position.` }}
-        valueTooltip={t`Max possible loan at N=4`}
-        value={mapQuery(
-          fallbackQ(
-            mapQuery(parameters, ({ A, loan_discount }) => getMaxLTV(A, loan_discount)),
-            mapQuery(apiMarket, m => m.maxLtv),
-          ),
-          value => formatNumber(value, 'percent.rate'),
-        )}
-      />
+      {!useNewLlamaMarketDetailPage() && (
+        <MarketMaxLtvRow chainId={chainId} marketId={marketId} apiMarket={apiMarket} />
+      )}
     </>
+  )
+}
+
+export const MarketMaxLtvRow = ({
+  chainId,
+  marketId,
+  apiMarket,
+}: {
+  chainId: IChainId
+  marketId: string | undefined
+  apiMarket: QueryProp<LlamaMarket>
+}) => {
+  const parameters = useMarketParameters({ chainId, marketId })
+
+  return (
+    <ActionInfo
+      testId="market-param-max-ltv"
+      label={t`Max LTV`}
+      labelTooltip={{ title: t`The highest loan-to-value ratio allowed when opening or increasing a position.` }}
+      valueTooltip={t`Max possible loan at N=4`}
+      value={mapQuery(
+        fallbackQ(
+          mapQuery(parameters, ({ A, loan_discount }) => getMaxLtv(A, loan_discount)),
+          mapQuery(apiMarket, m => m.maxLtv),
+        ),
+        value => formatNumber(value, 'percent.rate'),
+      )}
+    />
   )
 }

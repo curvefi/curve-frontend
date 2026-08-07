@@ -276,6 +276,7 @@ const v2Pool = z
     chain_id: z.number(),
     name: z.string(),
     address,
+    creation_date: timestamp.nullable(),
     pool_type: poolType.nullable().optional(),
     is_metapool: z.boolean().nullable().optional(),
     base_pool: address.nullable().optional(),
@@ -313,7 +314,7 @@ const v2PoolRegistry = z
   })
   .transform(camelizeKeys)
 
-export const v2PoolSortField = z.enum(['name', 'base_daily_apr', 'volume', 'tvl'])
+export const v2PoolSortField = z.enum(['name', 'aggregate_apr', 'base_daily_apr', 'crv_apr', 'volume', 'tvl'])
 export type V2PoolSortField = z.infer<typeof v2PoolSortField>
 
 export type SortDirection = z.infer<typeof sortDirection>

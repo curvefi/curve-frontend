@@ -1,10 +1,35 @@
 import { meanBy } from 'lodash'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
+import { TIME_FRAMES } from '@ui-kit/utils/time'
 
 const { Weekly: WEEKLY, Monthly: MONTHLY } = Duration.AverageRates
 
 /** A timestamped snapshot record */
 export type WithTimestamp = { timestamp: string | number | Date }
+
+export const AVERAGE_WINDOW_DAYS = {
+  week: WEEKLY,
+  month: MONTHLY,
+  year: TIME_FRAMES.YEAR_MS / TIME_FRAMES.DAY_MS,
+} as const
+
+/**
+ * Checks that timestamped data covers an entire trailing window.
+ * A tolerance keeps daily aggregates eligible when their bucket timestamp is slightly inside the exact cutoff.
+ */
+export function hasFullTimeWindow(
+  snapshots: WithTimestamp[] | undefined,
+  daysBack: number,
+  now = Date.now(),
+  tolerance = TIME_FRAMES.DAY_MS,
+) {
+  const timestamps = (snapshots ?? []).map(snapshot => new Date(snapshot.timestamp).getTime()).filter(Number.isFinite)
+
+  if (timestamps.length === 0) return false
+
+  const cutoff = now - daysBack * TIME_FRAMES.DAY_MS
+  return Math.min(...timestamps) <= cutoff + tolerance && Math.max(...timestamps) >= now - tolerance
+}
 
 /**
  * Calculates average rates from snapshots over a given time period

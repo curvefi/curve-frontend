@@ -59,9 +59,6 @@ const {
     switch (type) {
       case 'zapV2':
         return await impl.estimateGas.repay(...args)
-      case 'V1':
-      case 'V2':
-        return await impl.estimateGas.repay(...args, +slippage)
       case 'deleverage':
         return await impl.estimateGas.repay(...args, +slippage)
       case 'unleveragedLend':
@@ -121,9 +118,6 @@ const { useQuery: useRepayApproveGasEstimate, invalidate: invalidateRepayApprove
     switch (type) {
       case 'zapV2':
         return await impl.estimateGas.repayApprove({ userCollateral })
-      case 'V1':
-      case 'V2':
-        return await impl.estimateGas.repayApprove(userCollateral, userBorrowed)
       case 'deleverage':
         throw new Error('estimateGas.repayApprove is not supported for deleverage repay')
       case 'unleveragedMint':

@@ -28,7 +28,7 @@ export const usePositionDetailsTabs = ({
       notFalsy(
         {
           value: DEFAULT_TAB,
-          label: t`Borrow Details`,
+          label: t`Your position`,
           render: () =>
             hasPosition ? <BorrowPositionDetails /> : <MarketEmptyPosition type={MarketRateType.Borrow} />,
         },

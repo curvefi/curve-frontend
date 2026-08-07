@@ -15,7 +15,6 @@ import { type Address, Hex } from '@primitives/address.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { type AllOrNone, assert, DEFAULT_DECIMALS, maybe, maybes, notFalsy } from '@primitives/objects.utils'
 import { getLib, requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
-import { isZapV2Disabled } from '@ui-kit/hooks/useLocalStorage'
 import { combineQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { MetricProps } from '@ui-kit/shared/ui/Metric'
@@ -40,48 +39,31 @@ export const tryGetMarket = (marketId: MarketTemplate | string | null | undefine
 
 /**
  * Checks if a market supports leverage or not. A market supports leverage if:
- * - Lend Market and its `leverage` property has leverage
- * - Mint Market and either its `leverageZap` is not the zero address or its `leverageV2` property has leverage
+ * - ZapV2 is available
+ * - A static legacy Mint market has its own V0 leverage zap
  */
 export const hasLeverage = <T extends MarketTemplate | undefined>(market: T) =>
-  maybe(
-    market,
-    market =>
-      hasZapV2(market) || hasV1Leverage(market) || (market instanceof MintMarketTemplate && hasV2Leverage(market)),
-  )
+  maybe(market, market => hasZapV2(market) || hasLegacyMintLeverage(market))
 
 /**
  * Checks if leverage value (multiplier) can be calculated and displayed for this market.
  *
  * Returns true for:
- * - Lend markets with leverage support
- * - Mint markets with V2 leverage support (marketId >= 6)
+ * - Markets with ZapV2 leverage support
  *
  * Note: Some older Mint markets (marketId < 6) support leverage operations (open/close positions)
  * but cannot calculate the leverage multiplier value.
  */
 export const hasLeverageValue = <T extends MarketTemplate | null | undefined>(market: T) =>
-  maybe(
-    market,
-    market =>
-      hasZapV2(market) ||
-      (market instanceof LendMarketTemplate && hasV1Leverage(market)) ||
-      (market instanceof MintMarketTemplate && hasV2Leverage(market)),
-  )
+  maybe(market, market => hasZapV2(market))
 
-export const hasV1Leverage = (market: MarketTemplate) =>
-  market instanceof LendMarketTemplate
-    ? market.version === 'v1' && market.leverage.hasLeverage()
-    : market?.leverageZap !== zeroAddress
-
-export const hasV2Leverage = (_market: MintMarketTemplate) => false // market?.leverageV2.hasLeverage()
+export const hasLegacyMintLeverage = (market: MarketTemplate) =>
+  market instanceof MintMarketTemplate && market.index == null && market.leverageZap !== zeroAddress
 
 const hasV1Deleverage = (market: MarketTemplate) =>
-  market instanceof LendMarketTemplate ? hasV1Leverage(market) : market?.deleverageZap !== zeroAddress
+  market instanceof MintMarketTemplate && market.index == null && market.deleverageZap !== zeroAddress
 
-// hasV2Leverage works for deleverage as well
-export const hasDeleverage = (market: MarketTemplate) =>
-  hasV1Deleverage(market) || (market instanceof MintMarketTemplate && hasV2Leverage(market))
+export const hasDeleverage = (market: MarketTemplate) => hasZapV2(market) || hasV1Deleverage(market)
 
 export const hasResetPosition = (market: MarketTemplate | null | undefined): market is LendMarketTemplate<'v2'> =>
   market instanceof LendMarketTemplate && market.version === 'v2'
@@ -100,18 +82,17 @@ export const canRepayFromStateCollateral = <T extends MarketTemplate | undefined
   maybe(market, market => (market instanceof MintMarketTemplate ? hasDeleverage(market) : hasLeverage(market)))
 
 export const canRepayFromUserCollateral = <T extends MarketTemplate | undefined>(market: T) =>
-  maybe(market, market => (market instanceof MintMarketTemplate ? hasV2Leverage(market) : hasLeverage(market)))
+  maybe(market, market => hasZapV2(market))
 
 export const canLeverageUserBorrowed = <T extends MarketTemplate | undefined>(market: T) =>
-  maybe(market, market => hasLeverage(market) && !hasZapV2(market))
+  maybe(market, market => hasLegacyMintLeverage(market))
 
 export const hasVault = (market: MarketTemplate) => market instanceof LendMarketTemplate && 'vault' in market
 
-export const hasZapV2 = (market: MarketTemplate) =>
-  !isZapV2Disabled() && market instanceof LendMarketTemplate && market.leverageZapV2.hasLeverage()
+export const hasZapV2 = (market: MarketTemplate) => market.leverageZapV2.hasLeverage()
 
 export const isRouterRequired = (
-  type: 'zapV2' | 'V0' | 'V1' | 'V2' | 'deleverage' | 'unleveragedMint' | 'unleveragedLend' | 'unleveraged',
+  type: 'zapV2' | 'V0' | 'deleverage' | 'unleveragedMint' | 'unleveragedLend' | 'unleveraged',
 ) => type == 'zapV2'
 
 export const hasGauge = (market: MarketTemplate) =>

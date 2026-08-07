@@ -8,6 +8,7 @@ import { useLlamaMarket } from '@/llamalend/hooks/useLlamaMarket'
 import { getControllerAddress, getTokens } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { MarketBanners } from '@/llamalend/widgets/banners/MarketBanners'
+import { getMarketSections } from '@/llamalend/widgets/market-section-nav'
 import { MarketPageHeader } from '@/llamalend/widgets/page-header'
 import { MarketInformationComposite } from '@/loan/components/MarketInformationComposite'
 import { CreateLoanTabs } from '@/loan/components/PageMintMarket/CreateLoanTabs'
@@ -20,13 +21,16 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useParams } from '@ui-kit/hooks/router'
-import { useMarketMobileFormDrawer } from '@ui-kit/hooks/useFeatureFlags'
+import { useMarketMobileFormDrawer, useNewLlamaMarketDetailPage } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
-import { MarketType } from '@ui-kit/types/market'
+import { MarketType, MarketRateType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
+import { DetailPageSection as MarketSection } from '@ui-kit/widgets/DetailPageLayout/DetailPageSection'
 import { useMintMarket } from '../../hooks/useMintMarket'
+
+const MARKET_SECTIONS = getMarketSections({ rateType: MarketRateType.Borrow })
 
 export const MintMarketPage = () => {
   const params = useParams<CollateralUrlParams>()
@@ -36,6 +40,7 @@ export const MintMarketPage = () => {
   const { address } = useConnection()
   const [previewPrices, setPreviewPrices] = useState<Range<Decimal> | undefined>(undefined)
   const isMobileFormDrawer = useMarketMobileFormDrawer()
+  const isNewLlamaMarketDetailPage = useNewLlamaMarketDetailPage()
 
   const marketQuery = useMintMarket({ chainId, rMarket: rCollateralId })
   const { data: market, isLoading: isMarketLoading, error: marketError } = marketQuery
@@ -99,10 +104,13 @@ export const MintMarketPage = () => {
               <CreateLoanTabs onPricesUpdated={setPreviewPrices} />
             )),
         }}
-        header={<MarketPageHeader isLoading={isLoading} />}
+        header={<MarketPageHeader isLoading={isLoading} rateType={MarketRateType.Borrow} />}
+        {...(isNewLlamaMarketDetailPage && { sections: MARKET_SECTIONS })}
       >
         <MarketBanners chainId={chainId} market={market} />
-        <PositionDetailsComposite hasPosition={loanExists} events={collateralEvents} />
+        <MarketSection id="position-details">
+          <PositionDetailsComposite hasPosition={loanExists} events={collateralEvents} />
+        </MarketSection>
         <MarketInformationComposite previewPrices={previewPrices} />
       </DetailPageLayout>
     </MarketContextProvider>

@@ -1,4 +1,5 @@
 import { repayExpectedBorrowedQueryKey } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
+import { getUserStateKey } from '@/llamalend/queries/user/user-state.query'
 import type { RepayQuery, RepayParams } from '@/llamalend/queries/validation/repay.types'
 import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
@@ -45,9 +46,6 @@ export const { useQuery: useRepayIsFull, invalidate: invalidateRepayIsFull } = q
     switch (type) {
       case 'zapV2':
         return await impl.repayIsFull(...args)
-      case 'V1':
-      case 'V2':
-        return await impl.repayIsFull(...args, userAddress)
       case 'deleverage':
         return await impl.isFullRepayment(...args, userAddress)
       case 'unleveragedLend':
@@ -58,5 +56,5 @@ export const { useQuery: useRepayIsFull, invalidate: invalidateRepayIsFull } = q
   },
   category: 'llamalend.repay',
   validationSuite: repayValidationSuite({ leverageRequired: false, validateMax: false }),
-  dependencies: params => [repayExpectedBorrowedQueryKey(params)],
+  dependencies: params => [getUserStateKey(params), repayExpectedBorrowedQueryKey(params)],
 })

@@ -6,7 +6,13 @@ import { MarketType } from '@ui-kit/types/market'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { Chain } from '@ui-kit/utils/network'
 import { DEFAULT_DECIMALS } from '@ui-kit/utils/units'
-import { checkEstimatedTxCost, DECIMAL_RANGE_REGEX, getActionValue } from './action-info.helpers'
+import {
+  checkEstimatedTxCost,
+  DECIMAL_RANGE_REGEX,
+  DECIMAL_REGEX,
+  getActionInfo,
+  getActionValue,
+} from './action-info.helpers'
 
 const chainId = Chain.Ethereum
 
@@ -121,7 +127,7 @@ export function checkLoanDetailsLoaded({
   getActionValue('borrow-price-range').should('match', DECIMAL_RANGE_REGEX)
   getActionValue('borrow-apr').should('include', '%')
   getActionValue('borrow-apr', 'previous').should('include', '%')
-  getActionValue('borrow-ltv').should('include', '%')
+  getActionValue('borrow-ltv').should(hasApi ? 'include' : 'equal', hasApi ? '%' : '-')
   getActionValue('borrow-ltv', 'previous').should('include', '%')
   checkEstimatedTxCost({ hasValue: hasApi && !expectError })
 
@@ -192,10 +198,10 @@ export function writeCreateLoanForm({
   getCollateralInput().type(collateral)
   getCollateralInput().blur()
   getMaxBorrowBalance().should('be.visible')
-  getActionValue('borrow-health').should('equal', '∞')
+  getActionInfo('borrow-health').should('have.text', '-')
   getBorrowInput().type(borrow)
   getBorrowInput().blur()
-  getActionValue('borrow-health').should('not.equal', '∞')
+  getActionValue('borrow-health').should('match', DECIMAL_REGEX)
   if (leverageEnabled) toggleLeverage()
   checkLeverageCheckbox({ leverageEnabled, hasLeverage })
   if (waitForRoutes) waitForRoutesLoaded({ submitButtonTestId: 'create-loan-submit-button' })

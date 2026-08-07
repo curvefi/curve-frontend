@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import type { LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
+import type { LlamaMarketsTableResult } from '@/llamalend/queries/market-list/llama-market-stats'
 import Stack from '@mui/material/Stack'
 import { ExpandedState } from '@tanstack/react-table'
 import { useIsMobile, useIsTablet } from '@ui-kit/hooks/useBreakpoints'
@@ -34,7 +34,7 @@ export const MarketsTable = ({
   tableQuery: { data: queryData, isLoading },
 }: {
   onReload: () => void
-  tableQuery: QueryProp<LlamaMarketsResult>
+  tableQuery: QueryProp<LlamaMarketsTableResult>
 }) => {
   const { markets: data = [], userHasPositions, hasFavorites } = queryData ?? {}
   const [filtersOpen, , , , setFiltersOpen] = useSwitch(false)

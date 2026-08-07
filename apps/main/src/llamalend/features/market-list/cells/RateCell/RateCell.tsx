@@ -1,4 +1,5 @@
 import type { FunctionComponent } from 'react'
+import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
@@ -40,7 +41,7 @@ export const RateCell = ({
   row: { original: market },
   getValue,
   column: { id },
-}: CellContext<LlamaMarket, number | null>) => {
+}: CellContext<LlamaMarketRow, number | null>) => {
   const rateType = assert(RateTypes[id as keyof typeof RateTypes], `RateCell: Unsupported column ID "${id}"`)
   const Tooltip = TooltipComponents[rateType][market.type]
   const rate = getValue()
@@ -50,7 +51,7 @@ export const RateCell = ({
       <Tooltip market={market}>
         <Stack sx={{ gap: Spacing.xs, alignItems: 'end' }}>
           <Typography variant="tableCellMBold" color="textPrimary">
-            {rate == null ? '—' : formatCappedRatePercent(rate)}
+            {formatCappedRatePercent(rate)}
           </Typography>
 
           <RewardsIcons market={market} rateType={rateType} />

@@ -40,7 +40,6 @@ export const { useQuery: useCreateLoanPrices, invalidate: invalidateCreateLoanPr
     ] as const,
   queryFn: async ({
     marketId,
-    userBorrowed = '0',
     userCollateral = '0',
     debt = '0',
     leverageEnabled,
@@ -52,9 +51,6 @@ export const { useQuery: useCreateLoanPrices, invalidate: invalidateCreateLoanPr
       case 'zapV2':
         return (await impl.createLoanExpectedMetrics({ userCollateral, debt, range, ...parseRoute(routeId) }))
           .prices as [Decimal, Decimal]
-      case 'V1':
-      case 'V2':
-        return convertNumbers(await impl.createLoanPrices(userCollateral, userBorrowed, debt, range))
       case 'V0':
       case 'unleveraged':
         return convertNumbers(await impl.createLoanPrices(userCollateral, debt, range))

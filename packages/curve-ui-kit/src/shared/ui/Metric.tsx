@@ -1,5 +1,6 @@
 import { type ReactNode, useCallback, useMemo } from 'react'
-import Button, { type ButtonProps } from '@mui/material/Button'
+import Button from '@mui/material/Button'
+import { type IconButtonProps } from '@mui/material/IconButton'
 import Stack, { StackProps } from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
 import type { Amount } from '@primitives/decimal.utils'
@@ -39,6 +40,7 @@ export const ALIGNMENTS = ['start', 'center', 'end'] as const
 type Alignment = (typeof ALIGNMENTS)[number]
 
 const MetricSize = {
+  extraSmall: 'highlightS',
   small: 'highlightM',
   medium: 'highlightL',
   large: 'highlightXl',
@@ -46,6 +48,7 @@ const MetricSize = {
 } as const satisfies Record<string, TypographyVariantKey>
 
 const MetricUnitSize = {
+  extraSmall: 'highlightXs',
   small: 'highlightXs',
   medium: 'highlightS',
   large: 'highlightM',
@@ -53,6 +56,7 @@ const MetricUnitSize = {
 } as const satisfies Record<string, TypographyVariantKey>
 
 const MetricChangeSize = {
+  extraSmall: 'highlightXs',
   small: 'highlightXs',
   medium: 'highlightM',
   large: 'highlightM',
@@ -60,13 +64,15 @@ const MetricChangeSize = {
 } as const satisfies Record<string, TypographyVariantKey>
 
 const MetricButtonSize = {
+  extraSmall: 'extraExtraSmall',
   small: 'extraSmall',
   medium: 'extraSmall',
   large: 'small',
   extraLarge: 'medium',
-} satisfies Record<keyof typeof MetricSize, ButtonProps['size']>
+} satisfies Record<keyof typeof MetricSize, IconButtonProps['size']>
 
 const MetricMinHeight = {
+  extraSmall: metricHorizontalSizes.xs,
   small: metricHorizontalSizes.sm,
   medium: metricHorizontalSizes.md,
   large: metricHorizontalSizes.lg,
@@ -76,14 +82,14 @@ const MetricMinHeight = {
 const ORIENTATION_STYLE = {
   horizontal: {
     direction: 'row',
-    alignItems: () => 'baseline',
-    labelVariant: 'bodyMRegular',
+    alignItems: () => 'center',
+    labelVariant: (size: MetricLayout['size']) => (size === 'extraSmall' ? 'bodyXsRegular' : 'bodyMRegular'),
     labelColor: 'textSecondary',
   },
   vertical: {
     direction: 'column',
     alignItems: (alignment: Alignment) => alignment,
-    labelVariant: 'bodyXsRegular',
+    labelVariant: () => 'bodyXsRegular',
     labelColor: 'textTertiary',
   },
 } as const satisfies Record<
@@ -91,7 +97,7 @@ const ORIENTATION_STYLE = {
   {
     direction: StackProps['direction']
     alignItems: (alignment: Alignment) => 'baseline' | Alignment
-    labelVariant: TypographyVariantKey
+    labelVariant: (size: MetricLayout['size']) => TypographyVariantKey
     labelColor: TypographyProps['color']
   }
 >
@@ -311,10 +317,10 @@ export const Metric = ({
         shouldWrap={isHorizontal}
         Wrapper={Stack}
         direction="row"
-        sx={{ alignItems: 'baseline', flexShrink: 0 }}
+        sx={{ alignItems: 'baseline', flexShrink: 0, gap: Spacing.sm }}
       >
         {isHorizontal && icon}
-        <Typography variant={orientationStyle.labelVariant} color={orientationStyle.labelColor}>
+        <Typography variant={orientationStyle.labelVariant(size)} color={orientationStyle.labelColor}>
           {label}
           <LabelTooltipIcon tooltip={labelTooltip} />
         </Typography>

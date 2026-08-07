@@ -1,5 +1,5 @@
-import { TooltipDescription, TooltipWrapper } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import { Trans } from '@ui-kit/lib/i18n'
+import { TooltipDescription, TooltipWrapper } from '@ui-kit/shared/ui/TooltipComponents'
 import { MarketType } from '@ui-kit/types/market'
 import { BORROW_APR_DESCRIPTION } from './constants'
 

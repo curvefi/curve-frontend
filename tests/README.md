@@ -39,6 +39,38 @@ yarn cy run --e2e --spec cypress/e2e/<path>/<test>.cy.ts
 yarn cy run --component --spec cypress/component/<path>/<test>.cy.tsx
 ```
 
+Each Cypress run prints the seed used to generate random test data. Runs without `TEST_SEED` use a new seed, while reusing a seed replays the same random sequence for each spec:
+
+```sh
+TEST_SEED=18273645-1 yarn cy:run:e2e --browser firefox --spec cypress/e2e/llamalend/llamalend-markets.cy.ts
+TEST_SEED=18273645-1 yarn cy:run:component --browser firefox --spec cypress/component/<path>/<test>.cy.tsx
+```
+
+CI uses the run ID, run attempt, and test iteration as its seed. The same iteration uses the same seed across browsers within an attempt, while rerunning failed CI jobs gets a new replayable seed. The flake-detection workflow intentionally reuses its seeds when rerun.
+
+### Flake Detection
+
+Run repeated component or end-to-end tests with the manual `Cypress Flake Detection` workflow:
+
+```sh
+gh workflow run cypress-flake-detection.yaml --ref <branch> \
+  -f suite=e2e-llamalend \
+  -f browser=all \
+  -f repetitions=10
+```
+
+Use the optional `specs`, `seed_prefix`, and `start_iteration` inputs to target a spec or replay known seeds. RPC specs are intentionally excluded. Videos are recorded in Chrome and Electron; Firefox does not support recording.
+
+Download uploaded artifacts and the failed step log from every failed job:
+
+```sh
+RUN_ID=<run-id> WORKFLOW=cypress-flake-detection BRANCH=<workflow-ref> \
+  ARTIFACT_BRANCH=<campaign-branch> \
+  yarn workspace tests download:artifacts --skip-cleanup
+```
+
+Failure evidence is stored under `artifacts/<artifact-branch>/<run-id>`, including a `failed-job-logs` directory. `ARTIFACT_BRANCH` defaults to `BRANCH` when omitted. The workflow must exist on the default branch before GitHub allows manual dispatches.
+
 ### Folder Structure
 
 Tests for each DApp are created in the corresponding directory:

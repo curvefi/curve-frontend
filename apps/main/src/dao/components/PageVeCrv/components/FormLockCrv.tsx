@@ -16,7 +16,7 @@ import { scanTxPath } from '@ui/utils'
 import { type CurveApi, isLoading, notify, useCurve } from '@ui-kit/features/connect-wallet'
 import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
-import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { REFRESH_INTERVAL } from '@ui-kit/utils'
 
 export const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const isSubscribedRef = useRef(false)

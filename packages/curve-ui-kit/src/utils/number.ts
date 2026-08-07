@@ -204,6 +204,14 @@ const preciseFormatter = (value: Amount) => {
 }
 
 const NUMBER_FORMAT_CATEGORIES = {
+  health: {
+    abbreviate: false,
+    fallback: '-',
+    minimumSignificantDigits: 3,
+    maximumSignificantDigits: 3,
+    trailingZeroDisplay: 'auto',
+  },
+  'health.compact': { abbreviate: true, fallback: '-' },
   multiplier: {
     abbreviate: false,
     fallback: '-',

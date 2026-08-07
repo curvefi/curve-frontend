@@ -6,7 +6,8 @@
 import { defaultReleaseChannel, ReleaseChannel } from '@ui-kit/utils'
 import { useReleaseChannel } from './useLocalStorage'
 
-const useBetaChannel = () => useReleaseChannel()[0] === ReleaseChannel.Beta
+const isBetaChannel = (releaseChannel: ReleaseChannel) => releaseChannel === ReleaseChannel.Beta
+const useBetaChannel = () => isBetaChannel(useReleaseChannel()[0])
 
 const useStableChannel = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy
 
@@ -19,11 +20,20 @@ const useAlphaChannel = () => useBetaChannel() && defaultReleaseChannel === Rele
 
 export const use0xRouter = useBetaChannel
 
+/** Curve route providers for LlamaLend leverage */
+export const useCurveRouter = useBetaChannel
+export const useCurveSolverRouter = useBetaChannel
+export const isCurveRouterEnabled = isBetaChannel
+export const isCurveSolverRouterEnabled = isBetaChannel
+
 /** Reset position form for LlamaLend soft liquidation */
 export const useMarketResetPosition = useStableChannel
 
 /** Split the LlamaLend (soon to be legacy) health into: Liquidation Buffer and Health */
 export const useNewLlamalendHealth = useBetaChannel
+
+/** New llamaLend market detail page layout preview */
+export const useNewLlamaMarketDetailPage = useBetaChannel
 
 /** Mobile LlamaLend market forms open from a fixed action bar into a drawer */
 export const useMarketMobileFormDrawer = useBetaChannel

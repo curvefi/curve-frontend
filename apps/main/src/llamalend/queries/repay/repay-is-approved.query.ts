@@ -52,9 +52,6 @@ export const {
     switch (type) {
       case 'zapV2':
         return await impl.repayIsApproved({ userCollateral })
-      case 'V1':
-      case 'V2':
-        return await impl.repayIsApproved(userCollateral, userBorrowed)
       case 'deleverage':
         return true // deleverage query doesn't need approval because it only uses the user stateCollateral
       case 'unleveragedMint':

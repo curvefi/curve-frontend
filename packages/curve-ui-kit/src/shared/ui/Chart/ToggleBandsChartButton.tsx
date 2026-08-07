@@ -1,8 +1,8 @@
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import Stack from '@mui/material/Stack'
-import ToggleButton from '@mui/material/ToggleButton'
 import { EyeClosed } from '@ui-kit/shared/icons/EyeClosed'
 import { EyeOpen } from '@ui-kit/shared/icons/EyeOpen'
+import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -20,12 +20,18 @@ export const ToggleBandsChartButton = ({
   toggle: () => void
   tooltip?: ReactNode
 }) => (
-  <ToggleButton size="extraSmall" onClick={toggle} value="unused" selected={isVisible}>
-    <WithWrapper Wrapper={Tooltip} title={tooltip} placement="top" shouldWrap={tooltip}>
-      <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
-        {isVisible ? <EyeOpen /> : <EyeClosed />}
-        {label}
-      </Stack>
-    </WithWrapper>
-  </ToggleButton>
+  <SelectableChip
+    size="small"
+    selected={isVisible}
+    toggle={toggle}
+    aria-pressed={isVisible}
+    label={
+      <WithWrapper Wrapper={Tooltip} title={tooltip} placement="top" shouldWrap={tooltip}>
+        <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
+          {isVisible ? <EyeOpen /> : <EyeClosed />}
+          {label}
+        </Stack>
+      </WithWrapper>
+    }
+  />
 )

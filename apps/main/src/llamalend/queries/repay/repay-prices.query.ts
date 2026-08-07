@@ -59,9 +59,6 @@ export const { useQuery: useRepayPrices, invalidate: invalidateRepayPrices } = q
             ...parseRoute(routeId),
           })
         ).prices as Range<Decimal>
-      case 'V1':
-      case 'V2':
-        return (await impl.repayPrices(...args, userAddress)) as Range<Decimal>
       case 'deleverage':
         return (await impl.repayPrices(...args, userAddress)) as Range<Decimal>
       case 'unleveragedMint':

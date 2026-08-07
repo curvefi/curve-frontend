@@ -52,9 +52,6 @@ export const { useQuery: useBorrowMoreFutureLeverage, invalidate: invalidateBorr
     switch (type) {
       case 'zapV2':
         return decimal(await impl.borrowMoreFutureLeverage(...args)) ?? null
-      case 'V1':
-      case 'V2':
-        return decimal(await impl.borrowMoreFutureLeverage(...args)) ?? null
       case 'unleveraged':
         throw new Error('Future leverage is not applicable for unleveraged borrow more')
     }

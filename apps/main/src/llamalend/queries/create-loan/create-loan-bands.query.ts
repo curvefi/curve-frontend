@@ -35,7 +35,6 @@ export const { invalidate: invalidateCreateLoanBands } = queryFactory({
     ] as const,
   queryFn: async ({
     marketId,
-    userBorrowed = '0',
     userCollateral = '0',
     debt = '0',
     leverageEnabled,
@@ -46,9 +45,6 @@ export const { invalidate: invalidateCreateLoanBands } = queryFactory({
     switch (type) {
       case 'zapV2':
         return (await impl.createLoanExpectedMetrics({ userCollateral, debt, range, ...parseRoute(routeId) })).bands
-      case 'V1':
-      case 'V2':
-        return impl.createLoanBands(userCollateral, userBorrowed, debt, range)
       case 'V0':
       case 'unleveraged':
         return impl.createLoanBands(userCollateral, debt, range)
