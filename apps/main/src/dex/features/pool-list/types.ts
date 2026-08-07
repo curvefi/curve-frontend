@@ -4,7 +4,27 @@ import type { V2Pool } from '@curvefi/prices-api/pools'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { CampaignRewards } from '@ui-kit/entities/campaigns'
 
-export type PoolRow = V2Pool & {
+type PoolListData = Pick<
+  V2Pool,
+  | 'address'
+  | 'baseDailyApr'
+  | 'baseWeeklyApr'
+  | 'coins'
+  | 'crvApr'
+  | 'crvAprBoosted'
+  | 'extraRewardsApr'
+  | 'gauge'
+  | 'gauges'
+  | 'isMetapool'
+  | 'poolType'
+  | 'tvlUsd'
+> & {
+  creationDate?: V2Pool['creationDate']
+  name: string
+  tradingVolume24h?: V2Pool['tradingVolume24h'] | null
+}
+
+export type PoolRow = PoolListData & {
   campaigns: CampaignRewards[]
   hasPosition: boolean | undefined
   hasVyperVulnerability: boolean | undefined

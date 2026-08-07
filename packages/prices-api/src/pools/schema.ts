@@ -326,17 +326,91 @@ const v2PoolChain = z
   })
   .transform(camelizeKeys)
 
-export const getPoolsResponse = z
+const litePoolCoin = z
   .object({
-    chain,
-    total: poolTotals,
-    data: z.array(pool),
+    address,
+    usd_price: z.number().nullable().optional(),
+    decimals: z.string().nullable().optional(),
+    is_base_pool_lp_token: z.boolean().default(false),
+    symbol: z.string().nullable().optional(),
+    pool_balance: z.string().nullable().optional(),
   })
-  .transform(({ chain, total, data }) => ({
-    chain,
-    totals: total,
-    pools: data,
-  }))
+  .transform(camelizeKeys)
+
+const litePoolGaugeExtraRewardApyData = z
+  .object({
+    is_reward_still_active: z.boolean(),
+    token_price: z.number().nullable().optional(),
+    rate: z.number(),
+    total_supply: z.number(),
+  })
+  .transform(camelizeKeys)
+
+const litePoolGaugeExtraRewardMetaData = z
+  .object({
+    rate: z.string(),
+    period_finish: z.number(),
+  })
+  .transform(camelizeKeys)
+
+const litePoolGaugeExtraReward = z
+  .object({
+    gauge_address: address,
+    token_address: address,
+    token_price: z.number().nullable().optional(),
+    name: z.string(),
+    symbol: z.string(),
+    decimals: z.string(),
+    apy_data: litePoolGaugeExtraRewardApyData,
+    apy: z.number().nullable().optional(),
+    meta_data: litePoolGaugeExtraRewardMetaData,
+  })
+  .transform(camelizeKeys)
+
+const litePoolGaugeData = z
+  .object({
+    working_supply: z.string().nullable().optional(),
+    total_supply: z.string().nullable().optional(),
+    gauge_relative_weight: z.string().nullable().optional(),
+    gauge_future_relative_weight: z.string().nullable().optional(),
+    get_gauge_weight: z.string().nullable().optional(),
+    inflation_rate: z.number().nullable().optional(),
+  })
+  .transform(camelizeKeys)
+
+const litePool = z
+  .object({
+    id: z.string(),
+    chain_id: z.number(),
+    address,
+    registry_id: z.string(),
+    name: z.string().nullable().optional(),
+    symbol: z.string().nullable().optional(),
+    total_supply: z.string().nullable().optional(),
+    factory: z.boolean().nullable().optional(),
+    tvl: z.number().default(0),
+    coins: z.array(litePoolCoin).optional(),
+    price_oracles: z.array(z.union([z.number(), z.string(), z.null()])).optional(),
+    virtual_price: z.union([z.number(), z.string(), z.null()]).optional(),
+    amplification_coefficient: z.string().nullable().optional(),
+    implementation_address: address.nullable().optional(),
+    lp_token_address: address.nullable().optional(),
+    lp_token_price: z.number().nullable().optional(),
+    is_meta_pool: z.boolean().default(false),
+    is_broken: z.boolean().default(false),
+    gauge_address: address.nullable().optional(),
+    root_gauge_address: address.nullable().optional(),
+    gauge_crv_apy: z.array(z.number()).nullable().optional(),
+    gauge_extra_rewards: z.array(litePoolGaugeExtraReward).optional(),
+    gauge_is_killed: z.boolean().nullable().optional(),
+    gauge_has_crv: z.boolean().nullable().optional(),
+    gauge_data: litePoolGaugeData.nullable().optional(),
+  })
+  .transform(camelizeKeys)
+
+export const getPoolsResponse = z
+  .object({ chain, total: poolTotals, data: z.array(pool) })
+  .transform(({ chain, total, data }) => ({ chain, totals: total, pools: data }))
 
 export const getPoolResponse = pool
 export const listPoolsResponse = z
@@ -353,17 +427,27 @@ export const listPoolsResponse = z
     pools,
   }))
 
-export const listPoolRegistriesResponse = z
-  .object({
-    data: z.array(v2PoolRegistry),
-  })
-  .transform(({ data }) => data)
+export const listPoolRegistriesResponse = z.object({ data: z.array(v2PoolRegistry) }).transform(({ data }) => data)
+export const listPoolChainsResponse = z.object({ data: z.array(v2PoolChain) }).transform(({ data }) => data)
 
-export const listPoolChainsResponse = z
+export const listLitePoolsResponse = z
   .object({
-    data: z.array(v2PoolChain),
+    success: z.boolean(),
+    data: z
+      .object({
+        pool_data: z.array(litePool).optional(),
+        tvl: z.number().default(0),
+      })
+      .transform(camelizeKeys),
+    generated_time_ms: z.number(),
   })
-  .transform(({ data }) => data)
+  .transform(camelizeKeys)
+  .transform(({ data, generatedTimeMs }) => ({
+    pools: data.poolData ?? [],
+    totalTvl: data.tvl,
+    generatedTimeMs,
+  }))
+
 export const getVolumeResponse = z.object({ data: z.array(volume) }).transform(({ data }) => data)
 export const getTvlResponse = z.object({ data: z.array(tvl) }).transform(({ data }) => data)
 
@@ -421,11 +505,7 @@ export const getPoolLiquidityEventsResponse = z
   }))
 
 export const getPoolSnapshotsResponse = z
-  .object({
-    chain: z.string(),
-    address: z.string(),
-    data: z.array(poolSnapshot),
-  })
+  .object({ chain: z.string(), address: z.string(), data: z.array(poolSnapshot) })
   .transform(({ data }) => data)
 
 export const getPoolMetadataResponse = z
@@ -463,6 +543,11 @@ export type V2Gauge = z.infer<typeof v2Gauge>
 export type V2Pool = z.infer<typeof v2Pool>
 export type V2PoolRegistry = z.infer<typeof v2PoolRegistry>
 export type V2PoolChain = z.infer<typeof v2PoolChain>
+export type LitePoolCoin = z.infer<typeof litePoolCoin>
+export type LitePoolGaugeExtraReward = z.infer<typeof litePoolGaugeExtraReward>
+export type LitePoolGaugeData = z.infer<typeof litePoolGaugeData>
+export type LitePool = z.infer<typeof litePool>
+export type ListLitePoolsResponse = z.infer<typeof listLitePoolsResponse>
 export type Volume = z.infer<typeof volume>
 export type Tvl = z.infer<typeof tvl>
 export type TradeToken = z.infer<typeof tradeToken>

@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import type { NetworkConfig } from '@/dex/types/main.types'
 import Stack from '@mui/material/Stack'
-import type { ExpandedState } from '@tanstack/react-table'
+import type { ExpandedState, FilterFn } from '@tanstack/react-table'
 import { CURVE_SOCIALS } from '@ui/utils'
 import { useIsMobile, useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
@@ -32,25 +32,37 @@ const POOL_EXPANDED_PANEL_BODIES = {
   lite: props => <PoolExpandedPanel {...props} variant="lite" />,
 } satisfies Record<PoolColumnVariant, ExpandedPanelComponent<PoolRow>>
 
+/** Temporary local but global pool filter for lite networks until the new API supports server-side filtering. Could've used fuse.js but meh. */
+const poolsGlobalFilter: FilterFn<PoolRow> = ({ original }, _columnId, filterValue: string) =>
+  !filterValue.trim() ||
+  ((pool: PoolRow) => [
+    pool.name,
+    pool.address,
+    pool.gauge?.address,
+    ...pool.gauges.map(({ address }) => address),
+    ...pool.coins.flatMap(({ symbol, address }) => [symbol, address]),
+  ])(original).some(value => value?.toLocaleLowerCase().includes(filterValue.trim().toLocaleLowerCase()))
+
 export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
+  const isLite = network.isLite
   const isMobile = useIsMobile()
   const [filtersOpen, , , , setFiltersOpen] = useSwitch(false)
   const filterChipRef = useRef<HTMLDivElement>(null)
   const { onPaginationChange, pagination, updateQueryAndResetPage } = usePoolsPagination()
   const { globalFilter, columnFilters, apiParams, filterProps, onSearch, resetFilters, searchText } = usePoolsFilters()
   const { onSortingChange, sortBy, sortDirection, sortField, sorting, sortOptions } = usePoolsSorting(
-    network.isLite,
+    isLite,
     updateQueryAndResetPage,
   )
 
   const [expanded, setExpanded] = useState<ExpandedState>({})
   const { columnSettings, columnVisibility, toggleVisibility, variant } = usePoolsVisibility(LOCAL_STORAGE_KEY, {
-    isLite: network.isLite,
+    isLite,
     sorting,
   })
 
   const { isFetching, onReload, pageCount, userHasPositions, tableQuery } = usePoolsTable({
-    filters: apiParams,
+    filters: isLite ? {} : apiParams,
     network,
     page: pagination.pageIndex + 1,
     searchText,
@@ -61,18 +73,25 @@ export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
   const table = useTable({
     columns: POOL_COLUMNS,
     query: tableQuery,
-    state: { expanded, sorting, pagination, columnVisibility, columnFilters, globalFilter },
+    state: {
+      expanded,
+      sorting,
+      columnVisibility,
+      globalFilter,
+      ...(!isLite && { pagination, columnFilters }),
+    },
     onExpandedChange: setExpanded,
-    onPaginationChange,
+    ...(!isLite && { onPaginationChange }),
     onSortingChange,
     manualPagination: true,
-    manualSorting: true,
-    manualFiltering: true,
-    pageCount,
+    manualSorting: !isLite,
+    manualFiltering: !isLite,
+    pageCount: isLite ? 1 : pageCount,
+    ...(isLite && { globalFilterFn: poolsGlobalFilter }),
     ...getTableOptions(tableQuery ? tableQuery.data : undefined),
   })
 
-  const hasActiveFilters = !!table.getState().columnFilters.length
+  const hasActiveFilters = !isLite && !!table.getState().columnFilters.length
 
   return (
     <Stack>
@@ -95,23 +114,29 @@ export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
           toggleVisibility={toggleVisibility}
           searchText={searchText}
           onSearch={onSearch}
-          collapsibleFilters={{
-            collapsible: (
-              <PoolsFiltersCollapsible
-                hasActiveFilters={hasActiveFilters}
-                resetFilters={resetFilters}
-                {...filterProps}
-              />
-            ),
-            hasActiveFilters,
-          }}
+          collapsibleFilters={
+            isLite
+              ? undefined
+              : {
+                  collapsible: (
+                    <PoolsFiltersCollapsible
+                      hasActiveFilters={hasActiveFilters}
+                      resetFilters={resetFilters}
+                      {...filterProps}
+                    />
+                  ),
+                  hasActiveFilters,
+                }
+          }
           filterChip={
-            <TableFiltersChip
-              popoverFilterChipRef={filterChipRef}
-              open={filtersOpen}
-              setOpen={setFiltersOpen}
-              testId="btn-open-filters-dex-pools"
-            />
+            !isLite && (
+              <TableFiltersChip
+                popoverFilterChipRef={filterChipRef}
+                open={filtersOpen}
+                setOpen={setFiltersOpen}
+                testId="btn-open-filters-dex-pools"
+              />
+            )
           }
           sortChip={
             isMobile && (
@@ -127,17 +152,19 @@ export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
         />
       </DataTable>
       {/* Keep the overlay outside DataTable children because DataTable remounts them when switching sticky header layout. */}
-      <TableFiltersOverlay
-        anchorRef={filterChipRef}
-        drawerTestId="drawer-filter-menu-dex-pools"
-        hasActiveFilters={hasActiveFilters}
-        open={filtersOpen}
-        resetFilters={resetFilters}
-        setOpen={setFiltersOpen}
-        title={t`Filter pools`}
-      >
-        <PoolsFilters {...filterProps} />
-      </TableFiltersOverlay>
+      {!isLite && (
+        <TableFiltersOverlay
+          anchorRef={filterChipRef}
+          drawerTestId="drawer-filter-menu-dex-pools"
+          hasActiveFilters={hasActiveFilters}
+          open={filtersOpen}
+          resetFilters={resetFilters}
+          setOpen={setFiltersOpen}
+          title={t`Filter pools`}
+        >
+          <PoolsFilters {...filterProps} />
+        </TableFiltersOverlay>
+      )}
     </Stack>
   )
 }
