@@ -302,6 +302,13 @@ const DEX_MERKL_OPPORTUNITIES = [
 
 const getRawPool = ({ network: _, ...pool }: V2PoolFixture): RawV2Pool => pool
 
+const getRewardsApr = (pool: V2PoolFixture) =>
+  pool.extra_rewards_apr.reduce((total, { apr }) => total + apr, 0) +
+  DEX_MERKL_OPPORTUNITIES.filter(({ explorerAddress }) => explorerAddress === pool.address).reduce(
+    (total, { apr }) => total + apr,
+    0,
+  )
+
 const getPoolSortValue = (pool: V2PoolFixture, sortBy: string | null) => {
   switch (sortBy) {
     case 'name':
@@ -314,8 +321,14 @@ const getPoolSortValue = (pool: V2PoolFixture, sortBy: string | null) => {
       )
     case 'base_daily_apr':
       return pool.base_daily_apr ?? 0
+    case 'base_weekly_apr':
+      return pool.base_weekly_apr ?? 0
     case 'crv_apr':
       return pool.crv_apr ?? 0
+    case 'rewards_apr':
+      return getRewardsApr(pool)
+    case 'creation_date':
+      return pool.creation_date ?? 0
     case 'volume':
       return pool.trading_volume_24h
     default:

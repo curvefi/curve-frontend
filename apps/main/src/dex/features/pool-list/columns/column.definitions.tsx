@@ -75,7 +75,6 @@ export const POOL_COLUMNS = [
   }),
   accessor(PoolColumnId.WeeklyBaseApy, 'baseWeeklyApr', {
     cell: WeeklyBaseApyCell,
-    enableSorting: false,
     meta: {
       type: 'numeric',
       tooltip: createTooltip(PoolColumnId.WeeklyBaseApy, <BaseApyHeaderTooltipContent weekly />),
@@ -89,9 +88,8 @@ export const POOL_COLUMNS = [
       tooltip: createTooltip(PoolColumnId.CrvApy, <CrvApyHeaderTooltipContent />),
     },
   }),
-  display(PoolColumnId.RewardsApy, {
+  accessor(PoolColumnId.RewardsApy, serverSortableAccessor, {
     cell: ({ row }) => <RewardsApyCell pool={row.original} />,
-    enableSorting: false,
     meta: {
       type: 'numeric',
       tooltip: createTooltip(PoolColumnId.RewardsApy, <RewardsApyHeaderTooltipContent />),
@@ -123,10 +121,10 @@ export const POOL_COLUMNS = [
   }),
   accessor(PoolColumnId.Age, 'creationDate', {
     cell: AgeCell,
-    enableSorting: false,
     meta: {
       type: 'numeric',
       tooltip: createTooltip(PoolColumnId.Age, <AgeHeaderTooltipContent />),
     },
+    sortUndefined: 'last',
   }),
 ] satisfies PoolColumn[]

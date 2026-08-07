@@ -33,22 +33,23 @@ const SORTABLE_COLUMNS = [
   PoolColumnId.PoolName,
   PoolColumnId.NetApy,
   PoolColumnId.BaseApy,
+  PoolColumnId.WeeklyBaseApy,
   PoolColumnId.CrvApy,
+  PoolColumnId.RewardsApy,
   PoolColumnId.Volume,
   PoolColumnId.Tvl,
-] as const
-
-const NON_SORTABLE_COLUMNS = [
-  PoolColumnId.WeeklyBaseApy,
-  PoolColumnId.RewardsApy,
-  PoolColumnId.Points,
   PoolColumnId.Age,
 ] as const
 
-const APY_SORT_CASES = [
+const NON_SORTABLE_COLUMNS = [PoolColumnId.Points] as const
+
+const SERVER_SORT_CASES = [
   [PoolColumnId.NetApy, V2_POOL_FIXTURES.highRewards.address, V2_POOL_FIXTURES.empty.address],
   [PoolColumnId.BaseApy, V2_POOL_FIXTURES.volatile.address, V2_POOL_FIXTURES.empty.address],
+  [PoolColumnId.WeeklyBaseApy, V2_POOL_FIXTURES.showcase.address, V2_POOL_FIXTURES.volatile.address],
   [PoolColumnId.CrvApy, V2_POOL_FIXTURES.showcase.address, V2_POOL_FIXTURES.alerts.address],
+  [PoolColumnId.RewardsApy, V2_POOL_FIXTURES.highRewards.address, V2_POOL_FIXTURES.alerts.address],
+  [PoolColumnId.Age, V2_POOL_FIXTURES.alerts.address, V2_POOL_FIXTURES.killed.address],
 ] as const
 
 const getColumnHeader = (columnId: PoolColumnId) => cy.get(`[data-testid="data-table-header-${columnId}"]`)
@@ -135,11 +136,17 @@ describe('V2 pool-list columns', () => {
     }
   })
 
-  it('sorts APY columns', () => {
+  it('sorts yield and age columns through the pools API', () => {
     visitV2PoolList({ viewport: DESKTOP_VIEWPORT })
-    showV2PoolColumns([PoolColumnId.BaseApy, PoolColumnId.CrvApy])
+    showV2PoolColumns([
+      PoolColumnId.BaseApy,
+      PoolColumnId.WeeklyBaseApy,
+      PoolColumnId.CrvApy,
+      PoolColumnId.RewardsApy,
+      PoolColumnId.Age,
+    ])
 
-    for (const [columnId, firstDescending, firstAscending] of APY_SORT_CASES) {
+    for (const [columnId, firstDescending, firstAscending] of SERVER_SORT_CASES) {
       getColumnHeader(columnId).click()
       cy.wait('@dex-v2-pools', API_LOAD_TIMEOUT)
       expectFirstPool(firstDescending)
