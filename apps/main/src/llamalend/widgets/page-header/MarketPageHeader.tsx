@@ -67,11 +67,7 @@ export const MarketPageHeader = ({ isLoading, rateType }: { isLoading: boolean; 
         icon={
           <WithSkeleton loading={isLoading} variant="rectangular" width={35} height={35}>
             {collateralToken && borrowToken && (
-              <TokenIcons
-                blockchainId={blockchainId}
-                tokens={[collateralToken, borrowToken]}
-                overflowMode="stack"
-              />
+              <TokenIcons blockchainId={blockchainId} tokens={[collateralToken, borrowToken]} overflowMode="stack" />
             )}
           </WithSkeleton>
         }
