@@ -160,16 +160,14 @@ export const LoanActionInfoList = ({
         <Stack>
           <ActionInfo
             label={t`Health`}
-            value={
-              prevHealth
-                ? mapQuery(prevHealth, data => formatNumber(data, { abbreviate: true, fallback: '∞' }))
-                : DISABLED_Q
-            }
+            value={prevHealth ? mapQuery(prevHealth, data => formatNumber(data, 'health.compact')) : DISABLED_Q}
             futureValue={
-              // todo: do not ignore loading state for health - some forms/tests expect ∞ when the query is disabled
-              isFullRepay || health?.data === undefined
+              // todo: do not ignore loading state for health - some forms/tests expect the fallback when the query is disabled
+              isFullRepay
                 ? '∞'
-                : mapQuery(health, data => formatNumber(data, { abbreviate: true, fallback: '∞' }))
+                : health?.data === undefined
+                  ? '-'
+                  : mapQuery(health, data => formatNumber(data, 'health.compact'))
             }
             valueColor={getHealthValueColor({
               health: health?.data,

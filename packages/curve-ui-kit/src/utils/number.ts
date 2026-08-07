@@ -211,6 +211,7 @@ const NUMBER_FORMAT_CATEGORIES = {
     maximumSignificantDigits: 3,
     trailingZeroDisplay: 'auto',
   },
+  'health.compact': { abbreviate: true, fallback: '-' },
   multiplier: {
     abbreviate: false,
     fallback: '-',

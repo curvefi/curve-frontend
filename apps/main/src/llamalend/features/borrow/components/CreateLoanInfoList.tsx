@@ -51,7 +51,6 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
       isOpen={isOpen}
       isApproved={q(useCreateLoanIsApproved(params))}
       health={q(useCreateLoanHealth(params, isOpen))}
-      prevHealth={constQ(null)}
       prices={q(useCreateLoanPrices(params, isOpen))}
       collateralSymbol={collateralToken?.symbol}
       borrowSymbol={borrowToken?.symbol}

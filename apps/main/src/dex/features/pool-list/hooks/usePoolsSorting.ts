@@ -1,39 +1,24 @@
 import { useCallback, useMemo } from 'react'
-import type {
-  SortDirection as PoolSortDirection,
-  V2PoolSortField as PoolSortField,
-  V2PoolSortField,
-} from '@curvefi/prices-api/pools'
+import type { SortDirection as PoolSortDirection, V2PoolSortField as PoolSortField } from '@curvefi/prices-api/pools'
 import { recordEntries } from '@primitives/objects.utils'
 import type { OnChangeFn, SortingState } from '@tanstack/react-table'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
-import { t } from '@ui-kit/lib/i18n'
 import { POOL_TITLES, PoolColumnId, getDefaultPoolsSort } from '../columns'
 import type { PoolsQueryUpdater } from '../filters/utils'
 
-type PoolSortableColumn = PoolColumnId.PoolName | PoolColumnId.Volume | PoolColumnId.Tvl
-
-export const POOL_SORT_BY = {
+const POOL_SORT_BY = {
   [PoolColumnId.PoolName]: 'name',
+  [PoolColumnId.NetApy]: 'aggregate_apr',
+  [PoolColumnId.BaseApy]: 'base_daily_apr',
+  [PoolColumnId.CrvApy]: 'crv_apr',
   [PoolColumnId.Volume]: 'volume',
   [PoolColumnId.Tvl]: 'tvl',
-} as const satisfies Record<PoolSortableColumn, V2PoolSortField>
+} as const satisfies Partial<Record<PoolColumnId, PoolSortField>>
+
+type PoolSortableColumn = keyof typeof POOL_SORT_BY
 
 const SORT_QUERY_FIELD = 'sort'
-const SORT_COLUMNS = {
-  [PoolColumnId.PoolName]: {
-    sortBy: POOL_SORT_BY[PoolColumnId.PoolName],
-    label: POOL_TITLES[PoolColumnId.PoolName],
-  },
-  [PoolColumnId.Volume]: {
-    sortBy: POOL_SORT_BY[PoolColumnId.Volume],
-    label: POOL_TITLES[PoolColumnId.Volume],
-  },
-  [PoolColumnId.Tvl]: {
-    sortBy: POOL_SORT_BY[PoolColumnId.Tvl],
-    label: t`Total Value Locked`,
-  },
-} as const satisfies Record<PoolSortableColumn, { sortBy: PoolSortField; label: string }>
+const LITE_SORT_COLUMNS = new Set<string>([PoolColumnId.PoolName, PoolColumnId.Volume, PoolColumnId.Tvl])
 
 type ColumnSort = { id: PoolSortableColumn; desc: boolean }
 export type PoolsSorting = [ColumnSort]
@@ -43,21 +28,19 @@ type PoolsSortParams = {
   sortField: PoolSortableColumn
 }
 
-const SORT_OPTIONS = recordEntries(SORT_COLUMNS).map(([id, { label }]) => ({ id, label }))
+const SORT_OPTIONS = recordEntries(POOL_SORT_BY).map(([id]) => ({ id, label: POOL_TITLES[id] }))
+const LITE_SORT_OPTIONS = SORT_OPTIONS.filter(({ id }) => LITE_SORT_COLUMNS.has(id))
 
-const isPoolsSortColumn = (value: string | undefined): value is PoolSortableColumn =>
-  value != null && value in SORT_COLUMNS
+const getPoolsSorting = (sorting: SortingState, defaultSort: SortingState, isLite: boolean): PoolsSorting => {
+  const sort = [...sorting, ...defaultSort].find(
+    ({ id }) => Object.hasOwn(POOL_SORT_BY, id) && (!isLite || LITE_SORT_COLUMNS.has(id)),
+  )
 
-const isColumnSort = (sort: SortingState[number]): sort is ColumnSort => isPoolsSortColumn(sort.id)
-
-const getPoolsSorting = (sorting: SortingState, defaultSort: SortingState): PoolsSorting => {
-  const sort = sorting.find(isColumnSort) ?? defaultSort.find(isColumnSort)
-
-  return sort ? [{ id: sort.id, desc: sort.desc }] : [{ id: PoolColumnId.Tvl, desc: true }]
+  return sort ? [{ id: sort.id as PoolSortableColumn, desc: sort.desc }] : [{ id: PoolColumnId.Tvl, desc: true }]
 }
 
 const getPoolsSortParams = ([{ id: sortField, desc }]: PoolsSorting): PoolsSortParams => ({
-  sortBy: SORT_COLUMNS[sortField].sortBy,
+  sortBy: POOL_SORT_BY[sortField],
   // TanStack table state uses `desc`; the prices API expects `sort_direction`.
   sortDirection: desc ? 'desc' : 'asc',
   sortField,
@@ -70,7 +53,10 @@ const getPoolsSortParams = ([{ id: sortField, desc }]: PoolsSorting): PoolsSortP
 export const usePoolsSorting = (isLite: boolean, updateQueryAndResetPage: PoolsQueryUpdater) => {
   const defaultSort = useMemo<SortingState>(() => getDefaultPoolsSort(isLite), [isLite])
   const [urlSorting] = useSortFromQueryString(defaultSort, SORT_QUERY_FIELD)
-  const sorting = useMemo<PoolsSorting>(() => getPoolsSorting(urlSorting, defaultSort), [defaultSort, urlSorting])
+  const sorting = useMemo<PoolsSorting>(
+    () => getPoolsSorting(urlSorting, defaultSort, isLite),
+    [defaultSort, isLite, urlSorting],
+  )
   const { sortBy, sortDirection, sortField } = getPoolsSortParams(sorting)
 
   const onSortingChange = useCallback<OnChangeFn<SortingState>>(
@@ -78,13 +64,14 @@ export const usePoolsSorting = (isLite: boolean, updateQueryAndResetPage: PoolsQ
       const nextSorting = getPoolsSorting(
         typeof newSorting == 'function' ? newSorting(sorting) : newSorting,
         defaultSort,
+        isLite,
       )
 
       updateQueryAndResetPage({
         [SORT_QUERY_FIELD]: nextSorting.map(({ id, desc }) => `${desc ? '-' : ''}${id}`),
       })
     },
-    [defaultSort, sorting, updateQueryAndResetPage],
+    [defaultSort, isLite, sorting, updateQueryAndResetPage],
   )
 
   return {
@@ -93,6 +80,6 @@ export const usePoolsSorting = (isLite: boolean, updateQueryAndResetPage: PoolsQ
     sortDirection,
     sortField,
     sorting,
-    sortOptions: SORT_OPTIONS,
+    sortOptions: isLite ? LITE_SORT_OPTIONS : SORT_OPTIONS,
   }
 }

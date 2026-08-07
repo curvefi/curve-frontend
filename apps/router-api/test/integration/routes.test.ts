@@ -1,5 +1,5 @@
 import type { FastifyInstance } from 'fastify'
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it, type TestOptions } from 'vitest'
 import { assert, type PartialRecord } from '@primitives/objects.utils'
 import type { RouteProvider, RouterRouteResponse } from '@primitives/router.utils'
 import { toWei } from '../../src/router.utils'
@@ -30,7 +30,7 @@ const USD_DECIMALS = 6
 const USDT0_DECIMALS = 6
 
 type QueryString = { [P in keyof RoutesQuery]?: string | string[] }
-type SuccessCase = { query: QueryString; expectedRoutes?: number }
+type SuccessCase = { query: QueryString; expectedRoutes?: number; retry?: TestOptions['retry'] }
 type ErrorResponse = { statusCode: number; code: string; error: string; message: string }
 type FailureCase = { query: Partial<QueryString>; expectedResponse: ErrorResponse }
 
@@ -62,6 +62,8 @@ const successCasesByProvider: PartialRecord<RouteProvider, Record<string, Succes
         tokenOut: [CORN_SUSDE],
         amountIn: [toWei('10', USDT0_DECIMALS)],
       },
+      // The public Plasma RPC reports its request limit directly or through curve-js' stored-rates wrapper.
+      retry: { count: 2, delay: 1_000, condition: /CALL_EXCEPTION|Failed to get stored rates/ },
     },
   },
   enso: {
@@ -238,8 +240,8 @@ describe('GET routes integration', () => {
   afterAll(() => server.close())
 
   Object.entries(successCasesByProvider).forEach(([router, cases]) => {
-    Object.entries(cases).forEach(([label, { query, expectedRoutes = 1 }]) => {
-      it(`returns a valid route for ${router} - ${label}`, async () => {
+    Object.entries(cases).forEach(([label, { query, expectedRoutes = 1, retry }]) => {
+      it(`returns a valid route for ${router} - ${label}`, { retry }, async () => {
         const { json, body, statusCode } = await server.inject({
           url: '/api/router/v1/routes',
           query: { ...query, router },
