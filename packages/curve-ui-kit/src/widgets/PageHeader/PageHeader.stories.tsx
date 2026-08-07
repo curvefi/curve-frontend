@@ -3,10 +3,9 @@ import Stack from '@mui/material/Stack'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 import { Badge } from '@ui-kit/shared/ui/Badge'
-import { IconStack } from '@ui-kit/shared/ui/IconStack'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
-import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
+import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { constQ, q } from '@ui-kit/types/util'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
@@ -54,13 +53,7 @@ type Story = StoryObj<typeof PageHeader>
 export const DexPool: Story = {
   args: {
     title: 'crvUSD/USDC/USDT',
-    icon: (
-      <IconStack iconSize="lg">
-        {[TOKENS.crvUSD, TOKENS.usdc, TOKENS.usdt].map(({ address, symbol }) => (
-          <TokenIcon key={`${address}-${symbol}`} blockchainId="ethereum" address={address} tooltip={symbol} />
-        ))}
-      </IconStack>
-    ),
+    icon: <TokenIcons blockchainId="ethereum" tokens={[TOKENS.crvUSD, TOKENS.usdc, TOKENS.usdt]} />,
     rightItems: (
       <Stack direction="row" sx={{ gap: Spacing.xl }}>
         <Metric
@@ -87,7 +80,7 @@ export const LlamalendLendMarket: Story = {
     backHref: '/llamalend/ethereum/markets',
     title: `${TOKENS.wstETH.symbol.toUpperCase()} • ${TOKENS.crvUSD.symbol.toUpperCase()}`,
     subtitle: `Use ${TOKENS.wstETH.symbol} to borrow ${TOKENS.crvUSD.symbol}`,
-    icon: <TokenPair chain="ethereum" assets={{ primary: TOKENS.wstETH, secondary: TOKENS.crvUSD }} hideChainIcon />,
+    icon: <TokenIcons blockchainId="ethereum" tokens={[TOKENS.wstETH, TOKENS.crvUSD]} />,
     titleItems: <LlamaTitleItems marketType="Lend" />,
     rightItems: (
       <Stack direction="row" sx={{ gap: Spacing.xxl, flexWrap: 'wrap' }}>
@@ -134,7 +127,7 @@ export const Loading: Story = {
     subtitle: 'Loading subtitle',
     titleLoading: true,
     subtitleLoading: true,
-    icon: <TokenPair chain="ethereum" assets={{ primary: TOKENS.wstETH, secondary: TOKENS.crvUSD }} hideChainIcon />,
+    icon: <TokenIcons blockchainId="ethereum" tokens={[TOKENS.wstETH, TOKENS.crvUSD]} />,
     titleItems: <LlamaTitleItems marketType="Lend" />,
     rightItems: (
       <>

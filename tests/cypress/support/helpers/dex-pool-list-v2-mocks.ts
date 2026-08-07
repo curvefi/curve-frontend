@@ -1,3 +1,4 @@
+import { orderBy } from 'lodash'
 import type { PoolType } from '@curvefi/prices-api/pools'
 import type { Address } from '@primitives/address.utils'
 import { Chain } from '@ui-kit/utils/network'
@@ -301,6 +302,27 @@ const DEX_MERKL_OPPORTUNITIES = [
 
 const getRawPool = ({ network: _, ...pool }: V2PoolFixture): RawV2Pool => pool
 
+const getPoolSortValue = (pool: V2PoolFixture, sortBy: string | null) => {
+  switch (sortBy) {
+    case 'name':
+      return pool.name.toLowerCase()
+    case 'aggregate_apr':
+      return (
+        (pool.base_daily_apr ?? 0) +
+        (pool.crv_apr ?? 0) +
+        pool.extra_rewards_apr.reduce((total, { apr }) => total + apr, 0)
+      )
+    case 'base_daily_apr':
+      return pool.base_daily_apr ?? 0
+    case 'crv_apr':
+      return pool.crv_apr ?? 0
+    case 'volume':
+      return pool.trading_volume_24h
+    default:
+      return pool.tvl_usd
+  }
+}
+
 const mockPoolChains = () =>
   cy.intercept(
     { method: 'GET', hostname: 'prices.curve.finance', pathname: '/v2/pools/chains/' },
@@ -321,15 +343,21 @@ const mockPoolList = () =>
     const search = url.searchParams.get('search_string')?.toLowerCase()
     const page = Number(url.searchParams.get('page') ?? 1)
     const pagination = Number(url.searchParams.get('pagination') ?? 50)
-    const matching = Object.values(V2_POOL_FIXTURES)
-      .filter(pool => pool.chain_id === chainId)
-      .filter(
-        pool =>
-          !search ||
-          [pool.address, pool.name, ...pool.coins.flatMap(coin => [coin.address, coin.symbol])].some(value =>
-            value.toLowerCase().includes(search),
-          ),
-      )
+    const sortBy = url.searchParams.get('sort_by')
+    const sortDirection = url.searchParams.get('sort_direction') === 'asc' ? 'asc' : 'desc'
+    const matching = orderBy(
+      Object.values(V2_POOL_FIXTURES)
+        .filter(pool => pool.chain_id === chainId)
+        .filter(
+          pool =>
+            !search ||
+            [pool.address, pool.name, ...pool.coins.flatMap(coin => [coin.address, coin.symbol])].some(value =>
+              value.toLowerCase().includes(search),
+            ),
+        ),
+      pool => getPoolSortValue(pool, sortBy),
+      sortDirection,
+    )
     const start = (page - 1) * pagination
 
     req.reply({
