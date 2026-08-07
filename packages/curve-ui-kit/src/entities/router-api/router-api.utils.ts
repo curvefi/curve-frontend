@@ -6,7 +6,9 @@ import type { Address } from '@primitives/address.utils'
 import { toArray } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
-import { Chain } from '@ui-kit/utils'
+import { isCurveRouterEnabled, isCurveSolverRouterEnabled } from '@ui-kit/hooks/useFeatureFlags'
+import { getReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { Chain, ReleaseChannel } from '@ui-kit/utils'
 import { fetchApiRoutes, getRouteById } from './router-api.query'
 import type { RouteMeta, RouteMutationMeta, RoutesQuery } from './router-api.types'
 
@@ -14,11 +16,18 @@ import type { RouteMeta, RouteMutationMeta, RoutesQuery } from './router-api.typ
  * Converts a cached router route into the minimal zapV2 payload expected by llamalend.js.
  */
 export const parseRoute = (routeId: string | undefined): RouteMeta => {
+  const route = getRouteById(routeId)
+  const releaseChannel = getReleaseChannel()
+  assert(
+    (route.router !== 'curve' || isCurveRouterEnabled(releaseChannel)) &&
+      (route.router !== 'curve-solver' || isCurveSolverRouterEnabled(releaseChannel)),
+    'Curve routes are only available in Beta',
+  )
   const {
     tx,
     amountOut: [outAmount],
     priceImpact,
-  } = getRouteById(routeId)
+  } = route
   const { to, data } = assert(tx, `No transaction information for route ${routeId}`)
   /* Enso returns no price impact when it has no usd price, the library will be updated to accept null */
   const quote = { outAmount, priceImpact: priceImpact! }
@@ -46,18 +55,33 @@ export const parseMutationRoute = (
  */
 const SOLVER_CHAINS = [Chain.Ethereum, Chain.Arbitrum] as const
 
+export const getDefaultRouteProvider = (chainId: number, releaseChannel: ReleaseChannel) =>
+  isCurveRouterEnabled(releaseChannel)
+    ? isCurveSolverRouterEnabled(releaseChannel) && SOLVER_CHAINS.includes(chainId)
+      ? 'curve-solver'
+      : 'curve'
+    : 'enso'
+
 /**
  * This function can be used as a callback for curve-js calldata methods or llamalend.js leverageZapV2 methods.
  */
-export const getExpectedFn =
-  ({
-    chainId,
-    router = SOLVER_CHAINS.includes(chainId) ? 'curve-solver' : 'curve', // router is unset when checking the max borrow
-    userAddress,
-    zapAddress,
-    slippage,
-  }: Pick<RoutesQuery, 'chainId' | 'router' | 'slippage' | 'userAddress' | 'zapAddress'>): GetExpectedFn =>
-  async (tokenIn, tokenOut, amountIn, blacklist) => {
+export const getExpectedFn = ({
+  chainId,
+  router = getDefaultRouteProvider(chainId, getReleaseChannel()), // router is unset when checking the max borrow
+  userAddress,
+  zapAddress,
+  slippage,
+}: Pick<RoutesQuery, 'chainId' | 'router' | 'slippage' | 'userAddress' | 'zapAddress'>): GetExpectedFn => {
+  const releaseChannel = getReleaseChannel()
+  assert(
+    toArray(router).every(
+      provider =>
+        (provider !== 'curve' || isCurveRouterEnabled(releaseChannel)) &&
+        (provider !== 'curve-solver' || isCurveSolverRouterEnabled(releaseChannel)),
+    ),
+    'Curve routes are only available in Beta',
+  )
+  return async (tokenIn, tokenOut, amountIn, blacklist) => {
     const routes = await fetchApiRoutes({
       chainId,
       tokenIn: tokenIn as Address,
@@ -72,6 +96,7 @@ export const getExpectedFn =
     const route = assert(routes?.[0], 'No route available')
     return parseRoute(route.id).quote
   }
+}
 
 export const createHash = async (
   input: (number | string | null | undefined | readonly number[] | readonly string[])[],
