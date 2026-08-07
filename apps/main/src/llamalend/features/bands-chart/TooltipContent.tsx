@@ -40,8 +40,7 @@ export const TooltipContent = ({ data, collateralToken, borrowToken }: TooltipCo
   const palette = useBandsChartPalette()
   const hasMarketData = isPositiveDecimal(data.bandTotalValue)
   const hasUserData = isPositiveDecimal(data.userBandTotalValue)
-  const borrowTokenSuffix = borrowToken?.symbol ? ` ${borrowToken.symbol}` : ''
-  const bandRange = `${formatChartAxisNumber(data.p_down, { abbreviateFrom: false })} - ${formatChartAxisNumber(data.p_up, { abbreviateFrom: false })}${borrowTokenSuffix}`
+  const bandRange = `${formatChartAxisNumber(data.p_down, { abbreviateFrom: false })} - ${formatChartAxisNumber(data.p_up, { abbreviateFrom: false })}${collateralToken?.symbol ? ` ${collateralToken.symbol}` : ''}`
 
   return (
     <Box sx={{ padding: Spacing.md, backgroundColor: t => t.design.Layer[1].Fill }} onClick={e => e.stopPropagation()}>
