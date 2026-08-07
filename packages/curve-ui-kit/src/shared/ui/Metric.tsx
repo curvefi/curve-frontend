@@ -1,10 +1,12 @@
 import { type ReactNode, useCallback, useMemo } from 'react'
+import Button from '@mui/material/Button'
 import { type IconButtonProps } from '@mui/material/IconButton'
 import Stack, { StackProps } from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
 import type { Amount } from '@primitives/decimal.utils'
-import { useBreakpoint } from '@ui-kit/hooks/useBreakpoints'
+import { useBreakpoint, useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
+import { CopyIcon } from '@ui-kit/shared/icons/CopyIcon'
 import { ErrorIconButton } from '@ui-kit/shared/ui/ErrorIconButton'
 import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -123,6 +125,7 @@ type MetricValueProps = Pick<MetricProps, 'valueOptions' | 'change' | 'testId'> 
 }
 
 const MetricValue = ({ value, valueOptions = {}, change, size, copyValue, tooltip, testId }: MetricValueProps) => {
+  const isMobile = useIsMobile()
   const numberValue = useMemo(() => ((value || value === 0) && isFinite(Number(value)) ? Number(value) : null), [value])
   const {
     color = 'textPrimary',
@@ -137,6 +140,7 @@ const MetricValue = ({ value, valueOptions = {}, change, size, copyValue, toolti
   const fontVariant = MetricSize[size]
   const fontVariantUnit = MetricUnitSize[size]
   const valueColorProps = getTypographyColorProps(color)
+  const copyOnClick = isMobile ? undefined : copyValue // On mobile we show the tooltip via drawer with a copy button instead of copying on click
 
   return (
     <Stack direction="row" sx={{ gap: Spacing.xxs, alignItems: 'baseline' }}>
@@ -146,12 +150,22 @@ const MetricValue = ({ value, valueOptions = {}, change, size, copyValue, toolti
         arrow
         placement="bottom"
         {...tooltip}
+        body={
+          <Stack>
+            {tooltip?.body}
+            {isMobile && (
+              <Button startIcon={<CopyIcon />} onClick={copyValue} sx={{ marginBlockStart: Spacing.md }}>
+                {t`Copy value`}
+              </Button>
+            )}
+          </Stack>
+        }
         title={tooltip?.title ?? (numberValue == null ? fallback : numberValue.toLocaleString())}
       >
         <Stack
           direction="row"
-          sx={applySxProps({ alignItems: 'baseline' }, copyValue && { cursor: 'pointer' })}
-          onClick={copyValue}
+          sx={applySxProps({ alignItems: 'baseline' }, copyOnClick && { cursor: 'pointer' })}
+          onClick={copyOnClick}
           data-testid={`${testId}-value`}
           data-value={value}
         >
