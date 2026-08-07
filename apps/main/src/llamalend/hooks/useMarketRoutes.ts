@@ -86,15 +86,20 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
     enabled && !!slippage, // enforce slippage, important for ZapV2 but not required for API
   )
 
+  // Disabled providers can retain cached query data after switching release channels, so exclude them from selection.
   const selectedRoute = useMemo(
-    () =>
-      chosenRouter
-        ? (queries[chosenRouter].data ?? undefined)
-        : recordValues(queries)
-            .map(q => q.data)
-            .filter((q): q is RouteResponse => !!q)
-            // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
-            .sort(sortRoutes)[0],
+    () => {
+      const chosenRoute = chosenRouter && queries[chosenRouter].enabled ? queries[chosenRouter].data : undefined
+      return (
+        chosenRoute ??
+        recordValues(queries)
+          .filter(q => q.enabled)
+          .map(q => q.data)
+          .filter((q): q is RouteResponse => !!q)
+          // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
+          .sort(sortRoutes)[0]
+      )
+    },
     // eslint-disable-next-line @eslint-react/exhaustive-deps
     [chosenRouter, ...recordValues(queries)],
   )
@@ -104,7 +109,7 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
   const onChangeEffect = useEffectEvent(onChangeProp)
   useEffect(() => startTransition(() => onChangeEffect(selectedRoute)), [selectedRoute])
 
-  const selectedRouter = chosenRouter ?? selectedRoute?.router
+  const selectedRouter = chosenRouter && queries[chosenRouter].enabled ? chosenRouter : selectedRoute?.router
   const priceImpact = usePriceImpact({ params, selectedRoute, tokenIn, tokenOut, chainId }, enabled)
 
   return {

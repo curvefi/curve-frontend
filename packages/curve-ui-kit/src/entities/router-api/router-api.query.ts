@@ -7,7 +7,7 @@ import { assert, maybe, notFalsy, pick } from '@primitives/objects.utils'
 import { type RouteProvider, RouteProviders, type RouterRouteResponse } from '@primitives/router.utils'
 import { type QueryKey, useQuery, type UseQueryOptions } from '@tanstack/react-query'
 import { createHash } from '@ui-kit/entities/router-api/router-api.utils'
-import { use0xRouter } from '@ui-kit/hooks/useFeatureFlags'
+import { use0xRouter, useCurveSolverRouter } from '@ui-kit/hooks/useFeatureFlags'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { NoRetryError } from '@ui-kit/lib/model/query/factory'
@@ -192,17 +192,25 @@ export const useRouterQueries = <TData extends TGas | null, TKey extends QueryKe
 ): {
   queries: RouteQueries
   onRefresh: () => Promise<RouteResponse[][]>
-} => ({
-  queries: {
-    curve: useCurveRouterQuery(params, getRouteGasOptions, enabled),
-    'curve-solver': useRouterQuery(params, 'curve-solver', enabled),
-    enso: useRouterQuery(params, 'enso', !!params.zapAddress && enabled),
-    '0x': useRouterQuery(params, '0x', use0xRouter() && enabled),
-  },
-  onRefresh: useCallback(
-    () => Promise.all(RouteProviders.map(router => fetchApiRoutes({ ...params, router }))),
-    [params],
-  ),
-})
+} => {
+  const is0xEnabled = use0xRouter()
+  const isCurveSolverEnabled = useCurveSolverRouter()
+  const enabledProviders = RouteProviders.filter(
+    provider => (provider !== '0x' || is0xEnabled) && (provider !== 'curve-solver' || isCurveSolverEnabled),
+  )
+
+  return {
+    queries: {
+      curve: useCurveRouterQuery(params, getRouteGasOptions, enabled),
+      'curve-solver': useRouterQuery(params, 'curve-solver', isCurveSolverEnabled && enabled),
+      enso: useRouterQuery(params, 'enso', !!params.zapAddress && enabled),
+      '0x': useRouterQuery(params, '0x', is0xEnabled && enabled),
+    },
+    onRefresh: useCallback(
+      () => Promise.all(enabledProviders.map(router => fetchApiRoutes({ ...params, router }))),
+      [enabledProviders, params],
+    ),
+  }
+}
 
 export { useRouterApi, fetchApiRoutes }

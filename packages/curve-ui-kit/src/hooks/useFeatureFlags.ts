@@ -19,6 +19,10 @@ const useAlphaChannel = () => useBetaChannel() && defaultReleaseChannel === Rele
 
 export const use0xRouter = useBetaChannel
 
+/** Curve Solver route provider for LlamaLend leverage */
+export const useCurveSolverRouter = useBetaChannel
+export const isCurveSolverRouterEnabled = (releaseChannel: ReleaseChannel) => releaseChannel === ReleaseChannel.Beta
+
 /** Reset position form for LlamaLend soft liquidation */
 export const useMarketResetPosition = useStableChannel
 
