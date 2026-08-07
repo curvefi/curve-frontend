@@ -317,6 +317,24 @@ const crvLongMarketRecoveryPoolAlert = (): PoolAlert => ({
   },
 })
 
+const saturnPoolMigrationAlert = (): PoolAlert => ({
+  alertType: 'info',
+  isPoolPageOnly: true,
+  banner: {
+    title: t`Pool Migration`,
+    subtitle: (
+      <Trans>
+        Gravity and Orbital Points have moved exclusively to the new{' '}
+        <InlineLink to="/dex/ethereum/pools/0x04710a7b238386da58efad8b65e150e5e17aa522/deposit">
+          USDC/sUSDat FXSwap pool
+        </InlineLink>
+        . This pool is no longer eligible for points.
+      </Trans>
+    ),
+    learnMoreUrl: 'https://x.com/saturn_credit/status/2085805034005233685',
+  },
+})
+
 const vsdCRVPoolAlert = (): PoolAlert => ({
   alertType: 'danger',
   isDisableDeposit: true,
@@ -368,6 +386,7 @@ const Alerts: Record<string, Record<string, PoolAlert>> = {
     '0xfd5db7463a3ab53fd211b4af195c5bccc1a03890': eurtPoolsAlert(),
     '0xb9446c4ef5ebe66268da6700d26f96273de3d571': eurtPoolsAlert(),
     '0x516c3ecfe45f0820653e08dd7c93633d71b93cb5': crvLongMarketRecoveryPoolAlert(),
+    '0x6206ca315c2fcdd2a857b47efb285aa12c529a7a': saturnPoolMigrationAlert(),
   },
 
   arbitrum: {
