@@ -5,10 +5,12 @@ import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import type { Address } from '@primitives/address.utils'
 import { toArray } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { assert } from '@primitives/objects.utils'
-import { Chain } from '@ui-kit/utils'
+import { FetchError } from '@primitives/fetch.utils'
+import { Chain } from '@primitives/network.utils'
+import { assert, notFalsy } from '@primitives/objects.utils'
+import type { RouteProvider } from '@primitives/router.utils'
 import { fetchApiRoutes, getRouteById } from './router-api.query'
-import type { RouteMeta, RouteMutationMeta, RoutesQuery } from './router-api.types'
+import type { RouteMeta, RouteMutationMeta, RouteResponse, RoutesQuery } from './router-api.types'
 
 /**
  * Converts a cached router route into the minimal zapV2 payload expected by llamalend.js.
@@ -46,32 +48,58 @@ export const parseMutationRoute = (
  */
 const SOLVER_CHAINS = [Chain.Ethereum, Chain.Arbitrum] as const
 
+const handleRouteError = (error: unknown) => {
+  if (error instanceof FetchError) return []
+  throw error
+}
+
+/** Tries providers in order, treating an upstream fetch failure like a missing route. */
+const fetchFirstRoute = async (
+  [router, ...fallbacks]: readonly RouteProvider[],
+  params: Omit<RoutesQuery, 'router'>,
+): Promise<RouteResponse | undefined> => {
+  if (!router) return
+  const [route] = await fetchApiRoutes({ ...params, router }).catch(handleRouteError)
+  return route ?? fetchFirstRoute(fallbacks, params)
+}
+
 /**
  * This function can be used as a callback for curve-js calldata methods or llamalend.js leverageZapV2 methods.
  */
-export const getExpectedFn =
-  ({
-    chainId,
-    router = SOLVER_CHAINS.includes(chainId) ? 'curve-solver' : 'curve', // router is unset when checking the max borrow
-    userAddress,
-    zapAddress,
-    slippage,
-  }: Pick<RoutesQuery, 'chainId' | 'router' | 'slippage' | 'userAddress' | 'zapAddress'>): GetExpectedFn =>
-  async (tokenIn, tokenOut, amountIn, blacklist) => {
-    const routes = await fetchApiRoutes({
-      chainId,
-      tokenIn: tokenIn as Address,
-      tokenOut: tokenOut as Address,
-      amountIn: `${amountIn}` as Decimal,
-      blacklist: toArray(blacklist as Address | readonly Address[]),
-      router,
-      slippage,
-      userAddress,
-      zapAddress,
-    })
-    const route = assert(routes?.[0], 'No route available')
+export const getExpectedFn = ({
+  chainId,
+  router,
+  userAddress,
+  zapAddress,
+  slippage,
+}: Pick<RoutesQuery, 'chainId' | 'router' | 'slippage' | 'userAddress' | 'zapAddress'>): GetExpectedFn => {
+  const curveRouter = SOLVER_CHAINS.includes(chainId) ? 'curve-solver' : 'curve'
+  // Max-receive runs before a route is selected, so ZapV2 falls back to other providers when the preferred one fails.
+  const routers: readonly RouteProvider[] = router
+    ? toArray(router)
+    : notFalsy<RouteProvider>(
+        curveRouter,
+        zapAddress && 'enso',
+        zapAddress && curveRouter === 'curve-solver' && 'curve',
+      )
+
+  return async (tokenIn, tokenOut, amountIn, blacklist) => {
+    const route = assert(
+      await fetchFirstRoute(routers, {
+        chainId,
+        tokenIn: tokenIn as Address,
+        tokenOut: tokenOut as Address,
+        amountIn: `${amountIn}` as Decimal,
+        blacklist: toArray(blacklist as Address | readonly Address[]),
+        slippage,
+        userAddress,
+        zapAddress,
+      }),
+      'No route available',
+    )
     return parseRoute(route.id).quote
   }
+}
 
 export const createHash = async (
   input: (number | string | null | undefined | readonly number[] | readonly string[])[],
