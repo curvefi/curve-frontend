@@ -88,18 +88,15 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
 
   // Disabled providers can retain cached query data after switching release channels, so exclude them from selection.
   const selectedRoute = useMemo(
-    () => {
-      const chosenRoute = chosenRouter && queries[chosenRouter].enabled ? queries[chosenRouter].data : undefined
-      return (
-        chosenRoute ??
-        recordValues(queries)
-          .filter(q => q.enabled)
-          .map(q => q.data)
-          .filter((q): q is RouteResponse => !!q)
-          // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
-          .sort(sortRoutes)[0]
-      )
-    },
+    () =>
+      chosenRouter && queries[chosenRouter].enabled
+        ? (queries[chosenRouter].data ?? undefined)
+        : recordValues(queries)
+            .filter(q => q.enabled)
+            .map(q => q.data)
+            .filter((q): q is RouteResponse => !!q)
+            // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
+            .sort(sortRoutes)[0],
     // eslint-disable-next-line @eslint-react/exhaustive-deps
     [chosenRouter, ...recordValues(queries)],
   )
