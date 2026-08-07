@@ -7,7 +7,7 @@ import { assert, maybe, notFalsy, pick } from '@primitives/objects.utils'
 import { type RouteProvider, RouteProviders, type RouterRouteResponse } from '@primitives/router.utils'
 import { type QueryKey, useQuery, type UseQueryOptions } from '@tanstack/react-query'
 import { createHash } from '@ui-kit/entities/router-api/router-api.utils'
-import { use0xRouter, useCurveSolverRouter } from '@ui-kit/hooks/useFeatureFlags'
+import { use0xRouter, useCurveRouter, useCurveSolverRouter } from '@ui-kit/hooks/useFeatureFlags'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { NoRetryError } from '@ui-kit/lib/model/query/factory'
@@ -194,14 +194,18 @@ export const useRouterQueries = <TData extends TGas | null, TKey extends QueryKe
   onRefresh: () => Promise<RouteResponse[][]>
 } => {
   const is0xEnabled = use0xRouter()
+  const isCurveEnabled = useCurveRouter()
   const isCurveSolverEnabled = useCurveSolverRouter()
   const enabledProviders = RouteProviders.filter(
-    provider => (provider !== '0x' || is0xEnabled) && (provider !== 'curve-solver' || isCurveSolverEnabled),
+    provider =>
+      (provider !== '0x' || is0xEnabled) &&
+      (provider !== 'curve' || isCurveEnabled) &&
+      (provider !== 'curve-solver' || isCurveSolverEnabled),
   )
 
   return {
     queries: {
-      curve: useCurveRouterQuery(params, getRouteGasOptions, enabled),
+      curve: useCurveRouterQuery(params, getRouteGasOptions, isCurveEnabled && enabled),
       'curve-solver': useRouterQuery(params, 'curve-solver', isCurveSolverEnabled && enabled),
       enso: useRouterQuery(params, 'enso', !!params.zapAddress && enabled),
       '0x': useRouterQuery(params, '0x', is0xEnabled && enabled),

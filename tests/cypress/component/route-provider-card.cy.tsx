@@ -3,10 +3,10 @@ import { mockedWagmiConfig } from '@cy/support/helpers/llamalend/test-wagmi.help
 import { allViewports } from '@cy/support/ui'
 import type { RouteProvider } from '@primitives/router.utils'
 import type { BaseConfig } from '@ui/utils'
-import { type RouteResponse } from '@ui-kit/entities/router-api'
+import { getDefaultRouteProvider, type RouteResponse } from '@ui-kit/entities/router-api'
 import { lightTheme } from '@ui-kit/themes'
 import { constQ, q, type QueryProp } from '@ui-kit/types/util'
-import { ReleaseChannel } from '@ui-kit/utils'
+import { Chain, ReleaseChannel } from '@ui-kit/utils'
 import { RouteProviderCard } from '@ui-kit/widgets/RouteProvider/RouteProviderCard'
 
 const { design } = lightTheme()
@@ -87,6 +87,18 @@ describe('route provider release channels', () => {
     window.localStorage.setItem('release-channel-v1', JSON.stringify(ReleaseChannel.Stable))
     mountRouteProviderCard({ router: 'curve-solver' })
     cy.get('[data-testid="route-provider-card"]').should('not.exist')
+  })
+
+  it('hides Curve on Stable', () => {
+    window.localStorage.setItem('release-channel-v1', JSON.stringify(ReleaseChannel.Stable))
+    mountRouteProviderCard({ router: 'curve' })
+    cy.get('[data-testid="route-provider-card"]').should('not.exist')
+  })
+
+  it('uses Enso for Stable default fetching', () => {
+    expect(getDefaultRouteProvider(Chain.Ethereum, ReleaseChannel.Beta)).to.equal('curve-solver')
+    expect(getDefaultRouteProvider(Chain.Optimism, ReleaseChannel.Beta)).to.equal('curve')
+    expect(getDefaultRouteProvider(Chain.Ethereum, ReleaseChannel.Stable)).to.equal('enso')
   })
 })
 

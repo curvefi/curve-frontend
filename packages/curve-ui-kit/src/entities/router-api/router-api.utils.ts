@@ -6,7 +6,7 @@ import type { Address } from '@primitives/address.utils'
 import { toArray } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
-import { isCurveSolverRouterEnabled } from '@ui-kit/hooks/useFeatureFlags'
+import { isCurveRouterEnabled, isCurveSolverRouterEnabled } from '@ui-kit/hooks/useFeatureFlags'
 import { getReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { Chain, ReleaseChannel } from '@ui-kit/utils'
 import { fetchApiRoutes, getRouteById } from './router-api.query'
@@ -17,9 +17,11 @@ import type { RouteMeta, RouteMutationMeta, RoutesQuery } from './router-api.typ
  */
 export const parseRoute = (routeId: string | undefined): RouteMeta => {
   const route = getRouteById(routeId)
+  const releaseChannel = getReleaseChannel()
   assert(
-    route.router !== 'curve-solver' || isCurveSolverRouterEnabled(getReleaseChannel()),
-    'Curve Solver routes are only available in Beta',
+    (route.router !== 'curve' || isCurveRouterEnabled(releaseChannel)) &&
+      (route.router !== 'curve-solver' || isCurveSolverRouterEnabled(releaseChannel)),
+    'Curve routes are only available in Beta',
   )
   const {
     tx,
@@ -54,7 +56,11 @@ export const parseMutationRoute = (
 const SOLVER_CHAINS = [Chain.Ethereum, Chain.Arbitrum] as const
 
 export const getDefaultRouteProvider = (chainId: number, releaseChannel: ReleaseChannel) =>
-  isCurveSolverRouterEnabled(releaseChannel) && SOLVER_CHAINS.includes(chainId) ? 'curve-solver' : 'curve'
+  isCurveRouterEnabled(releaseChannel)
+    ? isCurveSolverRouterEnabled(releaseChannel) && SOLVER_CHAINS.includes(chainId)
+      ? 'curve-solver'
+      : 'curve'
+    : 'enso'
 
 /**
  * This function can be used as a callback for curve-js calldata methods or llamalend.js leverageZapV2 methods.
@@ -66,9 +72,14 @@ export const getExpectedFn = ({
   zapAddress,
   slippage,
 }: Pick<RoutesQuery, 'chainId' | 'router' | 'slippage' | 'userAddress' | 'zapAddress'>): GetExpectedFn => {
+  const releaseChannel = getReleaseChannel()
   assert(
-    !toArray(router).includes('curve-solver') || isCurveSolverRouterEnabled(getReleaseChannel()),
-    'Curve Solver routes are only available in Beta',
+    toArray(router).every(
+      provider =>
+        (provider !== 'curve' || isCurveRouterEnabled(releaseChannel)) &&
+        (provider !== 'curve-solver' || isCurveSolverRouterEnabled(releaseChannel)),
+    ),
+    'Curve routes are only available in Beta',
   )
   return async (tokenIn, tokenOut, amountIn, blacklist) => {
     const routes = await fetchApiRoutes({

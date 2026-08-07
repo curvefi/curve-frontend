@@ -6,7 +6,8 @@
 import { defaultReleaseChannel, ReleaseChannel } from '@ui-kit/utils'
 import { useReleaseChannel } from './useLocalStorage'
 
-const useBetaChannel = () => useReleaseChannel()[0] === ReleaseChannel.Beta
+const isBetaChannel = (releaseChannel: ReleaseChannel) => releaseChannel === ReleaseChannel.Beta
+const useBetaChannel = () => isBetaChannel(useReleaseChannel()[0])
 
 const useStableChannel = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy
 
@@ -19,9 +20,11 @@ const useAlphaChannel = () => useBetaChannel() && defaultReleaseChannel === Rele
 
 export const use0xRouter = useBetaChannel
 
-/** Curve Solver route provider for LlamaLend leverage */
+/** Curve route providers for LlamaLend leverage */
+export const useCurveRouter = useBetaChannel
 export const useCurveSolverRouter = useBetaChannel
-export const isCurveSolverRouterEnabled = (releaseChannel: ReleaseChannel) => releaseChannel === ReleaseChannel.Beta
+export const isCurveRouterEnabled = isBetaChannel
+export const isCurveSolverRouterEnabled = isBetaChannel
 
 /** Reset position form for LlamaLend soft liquidation */
 export const useMarketResetPosition = useStableChannel

@@ -8,7 +8,7 @@ import { maybes } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
 import type { BaseConfig } from '@ui/utils'
 import type { RouteQuery } from '@ui-kit/entities/router-api'
-import { use0xRouter, useCurveSolverRouter } from '@ui-kit/hooks/useFeatureFlags'
+import { use0xRouter, useCurveRouter, useCurveSolverRouter } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { useEstimateGas } from '@ui-kit/lib/model/entities/gas-info'
 import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
@@ -53,9 +53,11 @@ export const RouteProviderCard = ({
   const disabledTooltip = t`${RouteProviderLabels[router]} is unavailable on ${networks[chainId].name}.`
   const onClick = useCallback(() => (enabled ? onSelect(router) : undefined), [onSelect, router, enabled])
   const is0xEnabled = use0xRouter()
+  const isCurveEnabled = useCurveRouter()
   const isCurveSolverEnabled = useCurveSolverRouter()
   return (
     (is0xEnabled || router !== '0x') &&
+    (isCurveEnabled || router !== 'curve') &&
     (isCurveSolverEnabled || router !== 'curve-solver') && (
       <WithWrapper shouldWrap={!enabled} Wrapper={Tooltip} title={disabledTooltip}>
         <SelectableCard
