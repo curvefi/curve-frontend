@@ -10,8 +10,8 @@ const createVisibility = ({ isLite }: { isLite: boolean }): VisibilityGroup<Pool
       {
         label: POOL_TITLES[PoolColumnId.NetApy],
         columns: [PoolColumnId.NetApy],
-        active: !isLite,
-        enabled: !isLite,
+        active: true,
+        enabled: true,
       },
       {
         label: POOL_TITLES[PoolColumnId.BaseApy],
@@ -29,7 +29,7 @@ const createVisibility = ({ isLite }: { isLite: boolean }): VisibilityGroup<Pool
         label: POOL_TITLES[PoolColumnId.CrvApy],
         columns: [PoolColumnId.CrvApy],
         active: false,
-        enabled: !isLite,
+        enabled: true,
       },
       {
         label: POOL_TITLES[PoolColumnId.RewardsApy],
@@ -47,8 +47,8 @@ const createVisibility = ({ isLite }: { isLite: boolean }): VisibilityGroup<Pool
       {
         label: POOL_TITLES[PoolColumnId.Volume],
         columns: [PoolColumnId.Volume],
-        active: true,
-        enabled: true,
+        active: !isLite,
+        enabled: !isLite,
       },
       {
         label: POOL_TITLES[PoolColumnId.Tvl],
@@ -60,7 +60,7 @@ const createVisibility = ({ isLite }: { isLite: boolean }): VisibilityGroup<Pool
         label: POOL_TITLES[PoolColumnId.Age],
         columns: [PoolColumnId.Age],
         active: false,
-        enabled: true,
+        enabled: !isLite,
       },
     ],
   },

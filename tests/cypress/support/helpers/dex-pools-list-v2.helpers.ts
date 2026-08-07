@@ -20,8 +20,12 @@ export const visitV2PoolList = ({
   cy.visitWithoutTestConnector(`dex/${network}/pools/`)
   cy.wait('@dex-v2-platforms', API_LOAD_TIMEOUT)
   cy.wait(['@dex-v2-prices-chains'], API_LOAD_TIMEOUT)
-  cy.wait('@dex-v2-pool-chains', API_LOAD_TIMEOUT)
-  cy.wait('@dex-v2-pools', API_LOAD_TIMEOUT)
+  if (network === 'taiko') {
+    cy.wait('@dex-v2-lite-pools', API_LOAD_TIMEOUT)
+  } else {
+    cy.wait('@dex-v2-pool-chains', API_LOAD_TIMEOUT)
+    cy.wait('@dex-v2-pools', API_LOAD_TIMEOUT)
+  }
   cy.wait('@dex-v2-merkl-curve', API_LOAD_TIMEOUT)
 
   if (!isMobile && network === 'ethereum') {
@@ -57,8 +61,7 @@ export const showV2PoolColumns = (columnIds: readonly PoolColumnId[]) => {
   cy.get('body').click(0, 0)
 }
 
-export const getV2PoolExpandedPanel = (address: string) =>
-  getV2PoolRow(address).next('tr').find('[data-testid="pool-age-value"]').should('be.visible').closest('tr')
+export const getV2PoolExpandedPanel = (address: string) => getV2PoolRow(address).next('tr').should('be.visible')
 
 export const expandV2PoolRow = (address: string) => {
   getV2PoolRow(address).find('[data-testid="expand-icon"]').click()

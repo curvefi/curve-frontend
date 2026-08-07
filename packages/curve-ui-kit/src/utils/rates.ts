@@ -41,3 +41,19 @@ export function aprToApy(
 
   return (Math.pow(compoundedRate, periods) - 1) * 100
 }
+
+// TODO: Temporary API2 APY-to-APR compatibility adapter for the beta pool list.
+// Remove when PoolRow and yield cells consume APY directly before beta graduation.
+export function apyToApr(apyPercentage: number, compoundingDays?: number): number
+export function apyToApr(apyPercentage: number | null | undefined, compoundingDays?: number): number | null
+export function apyToApr(
+  apyPercentage: number | null | undefined,
+  compoundingDays = AVERAGE_CATEGORIES['llamalend.compoundRate'].window,
+): number | null {
+  if (apyPercentage == null) return null
+
+  const periods = DAYS_PER_YEAR / compoundingDays
+  const periodicRate = Math.pow(1 + apyPercentage / 100, 1 / periods) - 1
+
+  return periodicRate * periods * 100
+}
