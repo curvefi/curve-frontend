@@ -4,6 +4,7 @@ import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import type { SxProps } from '@mui/material/styles'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { TokenIcon, type Size } from '@ui-kit/shared/ui/TokenIcon'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { TRANSITION_FUNCTION } from '@ui-kit/themes/design/0_primitives'
@@ -14,7 +15,7 @@ import { applySxProps } from '@ui-kit/utils'
 const { Spacing } = SizesAndSpaces
 
 export const TooltipWrapper = ({ children }: { children: ReactNode }) => (
-  <Stack sx={{ gap: Spacing.sm, maxWidth: '20rem' }}>{children}</Stack>
+  <Stack sx={{ gap: Spacing.sm, ...(!useIsMobile() && { maxWidth: '20rem' }) }}>{children}</Stack> // in mobile we show the tooltip in a drawer, so we don't need to limit the width
 )
 
 export const TooltipDescription = ({ text }: { text: ReactNode | string }) => (

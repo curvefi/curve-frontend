@@ -140,17 +140,7 @@ const MetricValue = ({ value, valueOptions = {}, change, size, copyValue, toolti
   const fontVariant = MetricSize[size]
   const fontVariantUnit = MetricUnitSize[size]
   const valueColorProps = getTypographyColorProps(color)
-  const copyOnClick = isMobile ? undefined : copyValue
-  const mobileCopyButton = isMobile && !disableTooltip && copyValue && (
-    <Button
-      fullWidth
-      startIcon={<CopyIcon />}
-      onClick={copyValue}
-      sx={{ marginBlockStart: tooltip?.body ? Spacing.md : undefined }}
-    >
-      {t`Copy value`}
-    </Button>
-  )
+  const copyOnClick = isMobile ? undefined : copyValue // On mobile we show the tooltip via drawer with a copy button instead of copying on click
 
   return (
     <Stack direction="row" sx={{ gap: Spacing.xxs, alignItems: 'baseline' }}>
@@ -161,14 +151,14 @@ const MetricValue = ({ value, valueOptions = {}, change, size, copyValue, toolti
         placement="bottom"
         {...tooltip}
         body={
-          mobileCopyButton ? (
-            <>
-              {tooltip?.body}
-              {mobileCopyButton}
-            </>
-          ) : (
-            tooltip?.body
-          )
+          <Stack>
+            {tooltip?.body}
+            {isMobile && (
+              <Button startIcon={<CopyIcon />} onClick={copyValue} sx={{ marginBlockStart: Spacing.md }}>
+                {t`Copy value`}
+              </Button>
+            )}
+          </Stack>
         }
         title={tooltip?.title ?? (numberValue == null ? fallback : numberValue.toLocaleString())}
       >
