@@ -14,7 +14,9 @@ import { getHealthDetailsState, getHealthColor } from './utils'
 const { Spacing } = SizesAndSpaces
 
 const HEALTH_DETAILS_COLUMNS = { mobile: 4, tablet: 6, desktop: 10 } as const
-const PRIMARY_METRIC_SIZE = 2
+const PRIMARY_METRIC_SIZE = 2.5
+
+const HEALTH_PRECISION_THRESHOLD = 1.1
 
 export const HealthDetails = ({ healthQuery }: { healthQuery: HealthQuery }) => {
   const theme = useTheme()
@@ -32,7 +34,8 @@ export const HealthDetails = ({ healthQuery }: { healthQuery: HealthQuery }) => 
             valueOptions={{
               abbreviate: false,
               color: getHealthColor(healthState)(theme),
-              formatter: value => formatNumber(value, 'health'),
+              formatter: value =>
+                formatNumber(value, +value < HEALTH_PRECISION_THRESHOLD ? 'health.precise' : 'health'),
             }}
             valueTooltip={HEALTH_FACTOR_TOOLTIP}
           />
