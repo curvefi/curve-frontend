@@ -2,6 +2,7 @@ import type { HealthQuery } from '@/llamalend/queries/user/user-health.query'
 import Grid from '@mui/material/Grid'
 import { useTheme } from '@mui/material/styles'
 import { mapRecord } from '@primitives/objects.utils'
+import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { mapQuery } from '@ui-kit/types/util'
@@ -44,6 +45,7 @@ export const HealthDetails = ({ healthQuery }: { healthQuery: HealthQuery }) => 
             category="llamalend.positionLiquidationBuffer"
             label={LIQUIDATION_BUFFER_TOOLTIP.shortTitle}
             value={mapQuery(healthQuery, data => data.liquidationBuffer)}
+            notional={mapQuery(healthQuery, data => t`(${formatNumber(data.healthNotFull, 'percent.value')} of debt)`)}
             valueOptions={{
               abbreviate: false,
               formatter: value => formatNumber(value, 'percent.value'),

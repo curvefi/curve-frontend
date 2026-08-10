@@ -6,7 +6,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { QueryData } from '@ui-kit/lib/queries/types'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q } from '@ui-kit/types/util'
-import { decimalDiv, decimalSum, ZERO } from '@ui-kit/utils'
+import { decimalDiv, decimalMultiply, decimalSum, ZERO } from '@ui-kit/utils'
 import { HealthDetails } from './HealthDetails'
 
 const { Spacing } = SizesAndSpaces
@@ -20,19 +20,23 @@ type HealthDetailsStoryProps = {
 
 const getHealthQuery = ({ health, liquidationBuffer, isLoading }: HealthDetailsStoryProps) =>
   q<QueryData<typeof useUserHealthValues>>({
-    data: maybes([health, liquidationBuffer], (h, lb) => ({
-      health: h,
-      healthFactor: decimalSum('1', decimalDiv(h, '100')),
-      liquidationBuffer: lb,
-      debug: {
-        healthFull: decimalSum(h, lb),
-        healthNotFull: lb,
-        loanDiscount: DISCOUNT_GAP,
-        liquidationDiscount: ZERO,
-        discountGap: DISCOUNT_GAP,
-        healthDelta: h,
-      },
-    })),
+    data: maybes([health, liquidationBuffer], (h, lb) => {
+      const healthNotFull = decimalMultiply(decimalDiv(lb, '100'), DISCOUNT_GAP)
+      return {
+        health: h,
+        healthFactor: decimalSum('1', decimalDiv(h, '100')),
+        healthNotFull,
+        liquidationBuffer: lb,
+        debug: {
+          healthFull: decimalSum(h, healthNotFull),
+          healthNotFull,
+          loanDiscount: DISCOUNT_GAP,
+          liquidationDiscount: ZERO,
+          discountGap: DISCOUNT_GAP,
+          healthDelta: h,
+        },
+      }
+    }),
     isLoading: isLoading ?? false,
     error: null,
   })

@@ -64,6 +64,8 @@ export const useUserHealthValues = (params: UserMarketParams) => {
            * The +1 is equivalent to adding debt / debt, similar to how other lending platforms display health.
            */
           healthFactor: decimalSum('1', decimalDiv(health, '100')),
+          /** Raw band-valued margin before full liquidation, as a percentage of debt. */
+          healthNotFull: notFull,
           /** Distance from liquidation as a percentage of the liquidation-discount gap. */
           liquidationBuffer: decimalGreaterThan(discountGap, ZERO) ? decimalPercent(notFull, discountGap) : undefined,
           /** Inputs and intermediate values exposed for developer diagnostics. */
