@@ -286,6 +286,7 @@ const v2Pool = z
     liquidity_volume_24h: z.number(),
     liquidity_fee_24h: z.number(),
     coins: z.array(v2Coin),
+    tradeable_coins: z.array(v2Coin),
     base_daily_apr: z.number().nullable().optional(),
     base_weekly_apr: z.number().nullable().optional(),
     crv_apr: z.number().nullable().optional(),

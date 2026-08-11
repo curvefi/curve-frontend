@@ -5,6 +5,14 @@ import { Chain } from '@ui-kit/utils/network'
 
 type V2PoolNetwork = 'ethereum' | 'taiko'
 
+type V2Coin = {
+  pool_index: number
+  symbol: string
+  address: Address
+  name: string
+  decimals: number
+}
+
 type RawV2Pool = {
   chain_id: number
   name: string
@@ -18,13 +26,8 @@ type RawV2Pool = {
   trading_fee_24h: number
   liquidity_volume_24h: number
   liquidity_fee_24h: number
-  coins: {
-    pool_index: number
-    symbol: string
-    address: Address
-    name: string
-    decimals: number
-  }[]
+  coins: V2Coin[]
+  tradeable_coins: V2Coin[]
   base_daily_apr: number | null
   base_weekly_apr: number | null
   crv_apr: number | null
@@ -99,6 +102,7 @@ const createPoolFixture = ({
   liquidity_volume_24h: 100_000,
   liquidity_fee_24h: 100,
   coins: createCoins(network),
+  tradeable_coins: createCoins(network),
   base_daily_apr: 1,
   base_weekly_apr: 1,
   crv_apr: null,
@@ -130,6 +134,9 @@ export const V2_POOL_FIXTURES = {
     name: 'V2 Alert Badges',
     is_metapool: true,
     coins: createCoins('ethereum').map((coin, index) =>
+      index === 0 ? { ...coin, symbol: 'renBTC', address: ALERT_TOKEN_ADDRESS, name: 'renBTC', decimals: 8 } : coin,
+    ),
+    tradeable_coins: createCoins('ethereum').map((coin, index) =>
       index === 0 ? { ...coin, symbol: 'renBTC', address: ALERT_TOKEN_ADDRESS, name: 'renBTC', decimals: 8 } : coin,
     ),
     gauges: [{ address: address('2008'), is_killed: true }],
