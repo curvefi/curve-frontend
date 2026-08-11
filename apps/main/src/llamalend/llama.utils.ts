@@ -95,6 +95,12 @@ export const isRouterRequired = (
   type: 'zapV2' | 'V0' | 'deleverage' | 'unleveragedMint' | 'unleveragedLend' | 'unleveraged',
 ) => type == 'zapV2'
 
+const LEVERAGED_MAX_BORROW_RATIO = '0.99999' // -0.001%
+
+/** Leaves a buffer below the quoted maximum to account for leverage quote changes before execution. */
+export const getMaxBorrowAmount = (maxDebt: Decimal | undefined, leverageEnabled: boolean | undefined) =>
+  maxDebt && leverageEnabled ? decimalMultiply(maxDebt, LEVERAGED_MAX_BORROW_RATIO) : maxDebt
+
 export const hasGauge = (market: MarketTemplate) =>
   market instanceof LendMarketTemplate && market.addresses.gauge !== zeroAddress
 
