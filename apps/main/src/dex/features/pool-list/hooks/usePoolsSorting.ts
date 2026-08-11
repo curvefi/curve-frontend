@@ -10,9 +10,12 @@ const POOL_SORT_BY = {
   [PoolColumnId.PoolName]: 'name',
   [PoolColumnId.NetApy]: 'aggregate_apr',
   [PoolColumnId.BaseApy]: 'base_daily_apr',
+  [PoolColumnId.WeeklyBaseApy]: 'base_weekly_apr',
   [PoolColumnId.CrvApy]: 'crv_apr',
+  [PoolColumnId.RewardsApy]: 'rewards_apr',
   [PoolColumnId.Volume]: 'volume',
   [PoolColumnId.Tvl]: 'tvl',
+  [PoolColumnId.Age]: 'creation_date',
 } as const satisfies Partial<Record<PoolColumnId, PoolSortField>>
 
 type PoolSortableColumn = keyof typeof POOL_SORT_BY
