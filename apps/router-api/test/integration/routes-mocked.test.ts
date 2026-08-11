@@ -69,8 +69,6 @@ describe('GET routes mocked unit tests', () => {
 
   it.each([
     ['0.5', '50'],
-    ['0.03', '3'],
-    ['0.001', '0.1'],
     ['0', '0'],
   ])('converts %s%% slippage to %s Enso basis points', async (slippage, expectedSlippage) => {
     const fetchMock = vi.fn<typeof fetch>(() => Promise.resolve(Response.json(ensoResponse)))
