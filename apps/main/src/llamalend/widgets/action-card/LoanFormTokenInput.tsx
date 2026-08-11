@@ -29,7 +29,10 @@ export type LoanFormTokenInputProps<
    * Optional max-value query for this field, including loading and error state.
    * When present, it also carries an optional related max-field name whose errors should be reflected here.
    */
-  max?: QueryProp<Decimal> & { fieldName: TMaxFieldName }
+  max?: QueryProp<Decimal> & {
+    fieldName: TMaxFieldName
+    onMax?: NonNullable<LargeTokenInputProps['maxBalance']>['onMax']
+  }
   name: TFieldName
   form: UseFormReturn<TFieldValues> // the form, used to set the value and get errors
   testId: string
@@ -145,7 +148,7 @@ export const LoanFormTokenInput = <
       balance={q({ data: value, isLoading: value == null, error: error ?? null })}
       onBalance={onBalance}
       {...(!hideBalance && { walletBalance })}
-      maxBalance={max && { chips: 'range', balance: max }}
+      maxBalance={max && { chips: 'range', balance: max, onMax: max.onMax }}
       inputBalanceUsd={decimal(usdRate && usdRate * +(value ?? 0))}
       message={errorMessage ? undefined : message}
       disabled={disabled}

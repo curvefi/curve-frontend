@@ -35,14 +35,23 @@ type InputChip = {
   label: string
   /** The function that returns the new input amount, possibly based on the max balance. */
   newBalance: (() => void) | ((maxBalance?: Decimal) => Decimal | undefined)
+  /** Whether the chip selects the maximum balance. */
+  isMax?: boolean
 }
+
+const [MIN_PERCENTAGE, MAX_PERCENTAGE] = [0, 100]
+
+/** Splits a maximum percentage into evenly spaced percentage steps. */
+const createPercentageSteps = (maxPercentage: number, count = 4) =>
+  Array.from({ length: count }, (_, i) => ((i + 1) * maxPercentage) / count)
 
 type ChipsPreset = 'max' | 'range'
 const CHIPS_PRESETS: Record<ChipsPreset, InputChip[]> = {
-  max: [{ label: t`Max`, newBalance: maxBalance => maxBalance }],
-  range: [25, 50, 75, 100].map(p => ({
+  max: [{ label: t`Max`, newBalance: maxBalance => maxBalance, isMax: true }],
+  range: createPercentageSteps(MAX_PERCENTAGE).map(p => ({
     label: `${p}%`,
     newBalance: maxBalance => maxBalance && calculateNewBalance(maxBalance, `${p}`),
+    isMax: p === MAX_PERCENTAGE,
   })),
 }
 
@@ -88,6 +97,8 @@ export type LargeTokenInputProps = {
     showSlider?: boolean
     /** Custom or preset chips to show. */
     chips?: ChipsPreset | InputChip[]
+    /** Optional override for the amount selected by a Max-style chip. */
+    onMax?: (maxBalance?: Decimal) => Decimal | undefined
   }
 
   /** Optional usd value of the balance given as input. */
@@ -167,8 +178,6 @@ const calculateNewPercentage = (newBalance: Decimal, max: Decimal) =>
 /** Converts two decimals to BigNumber for comparison */
 const bigNumEquals = (a?: Decimal, b?: Decimal) => a == b || (a != null && b != null && new BigNumber(a).isEqualTo(b))
 
-const [MIN_PERCENTAGE, MAX_PERCENTAGE] = [0, 100]
-
 export const LargeTokenInput = ({
   ref,
   tokenSelector,
@@ -195,6 +204,7 @@ export const LargeTokenInput = ({
   })
 
   const chips = typeof maxBalance?.chips === 'string' ? CHIPS_PRESETS[maxBalance.chips] : maxBalance?.chips
+  const onMax = maxBalance?.onMax
   const showChips = !!chips?.length
   const { data: maxBalanceValue, isLoading: maxBalanceLoading, error: maxBalanceError } = toQuery(maxBalance?.balance)
   const showSlider = !!maxBalance?.showSlider && maxBalanceValue != null
@@ -327,7 +337,8 @@ export const LargeTokenInput = ({
                       data-testid={!chipDisabled && `input-chip-${chip.label}`}
                       disabled={chipDisabled}
                       toggle={() => {
-                        const newBalance = chip.newBalance(maxBalanceValue)
+                        const newBalance =
+                          chip.isMax && onMax ? onMax(maxBalanceValue) : chip.newBalance(maxBalanceValue)
                         if (newBalance !== undefined) {
                           handleBalanceChange(newBalance)
                         }

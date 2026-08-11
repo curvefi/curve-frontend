@@ -1,5 +1,6 @@
 import { type ChangeEvent, useCallback } from 'react'
 import { LEVERAGE, LoanPreset } from '@/llamalend/constants'
+import { getMaxBorrowAmount } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
@@ -113,7 +114,11 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           blockchainId={network.id}
           name="debt"
           form={form}
-          max={{ ...q(maxDebt), fieldName: 'maxDebt' }}
+          max={{
+            ...q(maxDebt),
+            fieldName: 'maxDebt',
+            onMax: maxDebt => getMaxBorrowAmount(maxDebt, values.leverageEnabled),
+          }}
           hideBalance
           testId="borrow-debt-input"
           network={network}
@@ -124,7 +129,10 @@ export const CreateLoanForm = <ChainId extends IChainId>({
               tooltip={t`Max borrow`}
               symbol={borrowToken?.symbol}
               balance={q(maxDebt)}
-              onClick={useCallback(() => updateForm({ debt: values.maxDebt }), [updateForm, values.maxDebt])}
+              onClick={useCallback(
+                () => updateForm({ debt: getMaxBorrowAmount(values.maxDebt, values.leverageEnabled) }),
+                [updateForm, values.leverageEnabled, values.maxDebt],
+              )}
               buttonTestId="borrow-set-debt-to-max"
             />
           }
