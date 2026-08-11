@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { zeroAddress } from 'viem'
+import { getAddress, zeroAddress } from 'viem'
 import type { MarketTemplate, UserPositionStatus } from '@/llamalend/llamalend.types'
 import type { AssetDetails, LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { UserState } from '@/llamalend/queries/user'
@@ -21,7 +21,8 @@ import { MetricProps } from '@ui-kit/shared/ui/Metric'
 import { MarketType, MarketVersion } from '@ui-kit/types/market'
 import { QueryProp, toQuery } from '@ui-kit/types/util'
 import { CRVUSD, decimal, decimalMinus, decimalMultiply, decimalSum, formatToken } from '@ui-kit/utils'
-import { SOLVENCY_THRESHOLDS } from './markets.constants'
+import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
+import { MARKET_LEVERAGE, SOLVENCY_THRESHOLDS } from './markets.constants'
 
 /**
  * Gets a Llama market (either a mint or lend market) by its ID.
@@ -36,6 +37,11 @@ export const getMarket = (id: string | MarketTemplate, lib = requireLib('llamaAp
  */
 export const tryGetMarket = (marketId: MarketTemplate | string | null | undefined) =>
   typeof marketId === 'object' ? marketId : maybes([marketId, getLib('llamaApi')], getMarket)
+
+/** Returns the market-specific slippage, falling back to the default leverage slippage. */
+export const getMarketLeverageSlippage = (chainId: number, controllerAddress: Address | undefined) =>
+  (controllerAddress && MARKET_LEVERAGE[chainId]?.[getAddress(controllerAddress)]?.slippage) ??
+  SLIPPAGE.leverage.default
 
 /**
  * Checks if a market supports leverage or not. A market supports leverage if:

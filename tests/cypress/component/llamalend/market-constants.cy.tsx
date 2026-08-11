@@ -1,12 +1,14 @@
 import { zeroAddress, getAddress } from 'viem'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
-import { DEPRECATED_LLAMAS, MARKETS_ALERTS, NO_LEVERAGE_LEND } from '@/llamalend/markets.constants'
+import { getMarketLeverageSlippage } from '@/llamalend/llama.utils'
+import { DEPRECATED_LLAMAS, MARKET_LEVERAGE, MARKETS_ALERTS, NO_LEVERAGE_LEND } from '@/llamalend/markets.constants'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { oneOf, oneValueOf } from '@cy/support/generators'
 import type { Address } from '@primitives/address.utils'
 import { recordEntries, recordValues } from '@primitives/objects.utils'
 import { MarketType } from '@ui-kit/types/market'
 import { Chain } from '@ui-kit/utils'
+import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
 function MarketAlertHookTest({
   chainId,
@@ -34,6 +36,10 @@ const mountMarketAlert = ({
 
 const ALL_MARKET_ALERTS = recordValues(MARKETS_ALERTS)
 const ALL_DEPRECATED_LLAMAS = recordValues(DEPRECATED_LLAMAS)
+const STABLE_LEVERAGE_MARKETS = [
+  '0xC77d97cF01737EB7aCE46cAb7cd9F60eC51a40c0',
+  '0x2fb54c8eae57767A9A509A395b9C4FA0702e2675',
+] as const
 
 /** Get a list of all alerts for each market type, and chain */
 const ALERT_CASES = recordEntries(MARKETS_ALERTS).flatMap(([marketType, marketAlerts]) =>
@@ -73,6 +79,21 @@ describe('llama market constants', () => {
         expect(controllerAddress, `expected address to be checksummed`).to.eq(getAddress(controllerAddress))
       }
     }
+  })
+
+  it('keeps every leverage market address checksummed', () => {
+    for (const chainMarkets of recordValues(MARKET_LEVERAGE)) {
+      for (const controllerAddress of Object.keys(chainMarkets)) {
+        expect(controllerAddress, `expected address to be checksummed`).to.eq(getAddress(controllerAddress))
+      }
+    }
+  })
+
+  it('gets the configured market slippage with a leverage fallback', () => {
+    for (const controllerAddress of STABLE_LEVERAGE_MARKETS) {
+      expect(getMarketLeverageSlippage(Chain.Ethereum, controllerAddress)).to.eq(SLIPPAGE.stable.default)
+    }
+    expect(getMarketLeverageSlippage(Chain.Ethereum, zeroAddress)).to.eq(SLIPPAGE.leverage.default)
   })
 })
 
