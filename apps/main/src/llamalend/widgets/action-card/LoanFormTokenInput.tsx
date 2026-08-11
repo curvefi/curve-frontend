@@ -118,6 +118,7 @@ export const LoanFormTokenInput = <
 
   const errors = formErrors as PartialRecord<FieldPath<TFieldValues>, Error>
   const maxFieldName = max?.fieldName
+  const onMax = max?.onMax
   const relatedMaxFieldError = max?.data && maxFieldName && errors[maxFieldName]
   const error = name in touchedFields ? (errors[name] ?? max?.error ?? relatedMaxFieldError) : balanceError
   const value = getValue(name)
@@ -129,6 +130,10 @@ export const LoanFormTokenInput = <
       onValueChange?.(v)
     },
     [name, onValueChange, updateForm],
+  )
+  const onMaxBalance = useCallback(
+    (v?: Decimal) => onBalance(onMax ? onMax(v) : v),
+    [onBalance, onMax],
   )
   return (
     <LargeTokenInput
@@ -154,7 +159,7 @@ export const LoanFormTokenInput = <
       disabled={disabled}
     >
       {maxMessage && !errorMessage && <HelperMessage onNumberClick={onBalance} message={maxMessage} />}
-      {errorMessage && <HelperMessage message={errorMessage} onNumberClick={onBalance} isError />}
+      {errorMessage && <HelperMessage message={errorMessage} onNumberClick={onMaxBalance} isError />}
     </LargeTokenInput>
   )
 }
