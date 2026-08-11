@@ -192,7 +192,10 @@ const getSortValue = (pool: MockPool, sortBy: V2PoolSortField) =>
     name: pool.name.toLowerCase(),
     aggregate_apr: pool.base_daily_apr,
     base_daily_apr: pool.base_daily_apr,
+    base_weekly_apr: pool.base_weekly_apr,
     crv_apr: pool.crv_apr,
+    rewards_apr: 0,
+    creation_date: pool.creation_date,
     volume: pool.trading_volume_24h,
     tvl: pool.tvl_usd,
   })[sortBy]
