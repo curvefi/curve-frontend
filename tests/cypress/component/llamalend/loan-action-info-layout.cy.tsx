@@ -9,6 +9,7 @@ import { RouteProviders } from '@primitives/router.utils'
 import type { BaseConfig } from '@ui/utils'
 import { q } from '@ui-kit/types/util'
 import { mockRoutes } from '@ui-kit/widgets/RouteProvider/route.mock'
+import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
 const getHeight = (testId: string, subelement?: string) =>
   cy
@@ -85,5 +86,26 @@ allViewports().forEach(([width, height, viewport]) => {
         getHeight('route-provider-accordion', 'img').should('equal', expectedIconHeight)
       })
     })
+  })
+})
+
+describe('market slippage settings', () => {
+  it('uses the current market slippage without submitting an unchanged value', () => {
+    const onChanged = cy.spy().as('onChanged')
+    cy.mount(
+      <ComponentTestWrapper>
+        <SlippageToleranceActionInfo maxSlippage="0.03" type="leverage" onChanged={onChanged} />
+      </ComponentTestWrapper>,
+    )
+
+    cy.get('[data-testid="slippage-settings-button"]').click()
+    cy.get('[data-testid="slippage-input"] input').should('have.value', '0.03')
+    cy.get('[data-testid="slippage-save-button"]').click()
+    cy.get('@onChanged').should('not.have.been.called')
+
+    cy.get('[data-testid="slippage-settings-button"]').click()
+    cy.get('[data-testid="slippage-radio-group"] [value="0.5"]').click()
+    cy.get('[data-testid="slippage-save-button"]').click()
+    cy.get('@onChanged').should('have.been.calledOnce')
   })
 })
