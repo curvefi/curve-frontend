@@ -3,6 +3,7 @@ import { LEVERAGE } from '@/llamalend/constants'
 import { BorrowMoreLoanInfoList } from '@/llamalend/features/borrow/components/BorrowMoreLoanInfoList'
 import { LeverageInput } from '@/llamalend/features/borrow/components/LeverageInput'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import { getMaxBorrowAmount } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
@@ -68,6 +69,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     (event: ChangeEvent<HTMLInputElement>) => updateForm({ leverageEnabled: event.target.checked, routeId: undefined }),
     [updateForm],
   )
+  const getMaxDebt = (maxDebt?: Decimal) => getMaxBorrowAmount(maxDebt, values.leverageEnabled)
 
   return (
     <Form
@@ -119,7 +121,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           blockchainId={network.id}
           name="debt"
           form={form}
-          max={{ ...max.debt, fieldName: max.debt.field }}
+          max={{ ...max.debt, fieldName: max.debt.field, onMax: getMaxDebt }}
           testId="borrow-more-input-debt"
           network={network}
           hideBalance
@@ -130,7 +132,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
               tooltip={t`Max available to borrow`}
               symbol={borrowToken?.symbol}
               balance={max.debt}
-              onClick={() => updateForm({ debt: max.debt.data })}
+              onClick={() => updateForm({ debt: getMaxDebt(max.debt.data) })}
             />
           }
         />
