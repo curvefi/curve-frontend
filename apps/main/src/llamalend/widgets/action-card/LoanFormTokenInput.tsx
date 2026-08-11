@@ -131,10 +131,7 @@ export const LoanFormTokenInput = <
     },
     [name, onValueChange, updateForm],
   )
-  const onMaxBalance = useCallback(
-    (v?: Decimal) => onBalance(onMax ? onMax(v) : v),
-    [onBalance, onMax],
-  )
+  const onMaxBalance = useCallback((v?: Decimal) => onBalance(onMax ? onMax(v) : v), [onBalance, onMax])
   return (
     <LargeTokenInput
       name={name}
