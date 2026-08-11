@@ -40,7 +40,6 @@ export const TooltipContent = ({ data, collateralToken, borrowToken }: TooltipCo
   const palette = useBandsChartPalette()
   const hasMarketData = isPositiveDecimal(data.bandTotalValue)
   const hasUserData = isPositiveDecimal(data.userBandTotalValue)
-  const bandRange = `${formatChartAxisNumber(data.p_down, { abbreviateFrom: false })} - ${formatChartAxisNumber(data.p_up, { abbreviateFrom: false })}${collateralToken?.symbol ? ` ${collateralToken.symbol}` : ''}`
 
   return (
     <Box sx={{ padding: Spacing.md, backgroundColor: t => t.design.Layer[1].Fill }} onClick={e => e.stopPropagation()}>
@@ -83,12 +82,18 @@ export const TooltipContent = ({ data, collateralToken, borrowToken }: TooltipCo
         {hasMarketData && (
           <>
             <TooltipItems secondary>
-              <TooltipItem title={t`Band range`} sx={{ marginBottom: Spacing.sm }}>
-                {bandRange}
+              <TooltipItem title={t`Band range`}>
+                {maybes([collateralToken?.symbol, borrowToken?.symbol], (x, y) => `${x} / ${y}`)}
               </TooltipItem>
-              <TooltipItem
-                title={t`Band balances`}
-              >{`${calculateBandShare(data.bandCollateralValue, data.bandTotalValue)} / ${calculateBandShare(data.bandBorrowedAmount, data.bandTotalValue)}`}</TooltipItem>
+              <TooltipItem variant="subItem" title={t`Min`}>
+                {formatChartAxisNumber(data.p_down, { abbreviateFrom: false })}
+              </TooltipItem>
+              <TooltipItem variant="subItem" title={t`Max`}>
+                {formatChartAxisNumber(data.p_up, { abbreviateFrom: false })}
+              </TooltipItem>
+              <TooltipItem title={t`Band balances`} sx={{ marginTop: Spacing.sm }}>
+                {`${calculateBandShare(data.bandCollateralValue, data.bandTotalValue)} / ${calculateBandShare(data.bandBorrowedAmount, data.bandTotalValue)}`}
+              </TooltipItem>
               <TooltipItem variant="subItem" title={collateralToken?.symbol}>
                 {formatAbbreviatedNumber(data.bandCollateralAmount)}
               </TooltipItem>
