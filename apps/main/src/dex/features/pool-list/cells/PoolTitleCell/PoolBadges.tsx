@@ -51,7 +51,7 @@ const AlertBadge = ({ alert, source }: { alert: PoolAlert; source: 'pool' | 'tok
 
 /** Displays classification, status, pool alert, and token alert badges for a pool. */
 export const PoolBadges = ({ pool }: { pool: PoolRow }) => {
-  const tokenAddresses = useMemo(() => pool.tradeableCoins.map(({ address }) => address), [pool.tradeableCoins])
+  const tokenAddresses = useMemo(() => pool.coins.map(({ address }) => address), [pool.coins])
   const poolAlert = usePoolAlert({
     network: pool.network,
     poolAddress: pool.address,
