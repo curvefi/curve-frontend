@@ -6,58 +6,51 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { QueryData } from '@ui-kit/lib/queries/types'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { q } from '@ui-kit/types/util'
-import { decimalDiv, decimalSum, ZERO } from '@ui-kit/utils'
-import { HealthAndBufferBar } from './HealthAndBufferBar'
-import { getHealthDetailsState } from './utils'
+import { decimalDiv, decimalMultiply, decimalSum, ZERO } from '@ui-kit/utils'
+import { HealthDetails } from './HealthDetails'
 
 const { Spacing } = SizesAndSpaces
 const DISCOUNT_GAP: Decimal = '3'
 
-type HealthAndBufferBarStoryProps = {
+type HealthDetailsStoryProps = {
   health?: Decimal | null
   liquidationBuffer?: Decimal | null
   isLoading?: boolean
 }
 
-const getHealthQuery = ({ health, liquidationBuffer, isLoading }: HealthAndBufferBarStoryProps) =>
+const getHealthQuery = ({ health, liquidationBuffer, isLoading }: HealthDetailsStoryProps) =>
   q<QueryData<typeof useUserHealthValues>>({
-    data: maybes([health, liquidationBuffer], (h, lb) => ({
-      health: h,
-      healthFactor: decimalSum('1', decimalDiv(h, '100')),
-      liquidationBuffer: lb,
-      debug: {
-        healthFull: decimalSum(h, lb),
-        healthNotFull: lb,
-        loanDiscount: DISCOUNT_GAP,
-        liquidationDiscount: ZERO,
-        discountGap: DISCOUNT_GAP,
-        healthDelta: h,
-      },
-    })),
+    data: maybes([health, liquidationBuffer], (h, lb) => {
+      const healthNotFull = decimalMultiply(decimalDiv(lb, '100'), DISCOUNT_GAP)
+      return {
+        health: h,
+        healthFactor: decimalSum('1', decimalDiv(h, '100')),
+        healthNotFull,
+        liquidationBuffer: lb,
+        debug: {
+          healthFull: decimalSum(h, healthNotFull),
+          healthNotFull,
+          loanDiscount: DISCOUNT_GAP,
+          liquidationDiscount: ZERO,
+          discountGap: DISCOUNT_GAP,
+          healthDelta: h,
+        },
+      }
+    }),
     isLoading: isLoading ?? false,
     error: null,
   })
 
-const HealthAndBufferBarStory = (props: HealthAndBufferBarStoryProps) => {
-  const query = getHealthQuery(props)
-  const { state } = getHealthDetailsState(query.data)
+const HealthDetailsStory = (props: HealthDetailsStoryProps) => <HealthDetails healthQuery={getHealthQuery(props)} />
 
-  return (
-    <Stack sx={{ gap: Spacing['3xs'] }}>
-      <HealthAndBufferBar query={query} state={state} type="health" />
-      <HealthAndBufferBar query={query} state={state} type="liquidationBuffer" />
-    </Stack>
-  )
-}
-
-const meta: Meta<typeof HealthAndBufferBarStory> = {
-  title: 'Llamalend/HealthAndBufferBar',
-  component: HealthAndBufferBarStory,
+const meta: Meta<typeof HealthDetailsStory> = {
+  title: 'Llamalend/HealthDetails',
+  component: HealthDetailsStory,
   parameters: {
     layout: 'padded',
     docs: {
       description: {
-        component: 'Focused story for the stacked beta Health and Liquidation Buffer bars.',
+        component: 'Health details with controlled Health and Liquidation Buffer values.',
       },
     },
   },
@@ -69,18 +62,18 @@ const meta: Meta<typeof HealthAndBufferBarStory> = {
 }
 
 export default meta
-type Story = StoryObj<typeof HealthAndBufferBarStory>
+type Story = StoryObj<typeof HealthDetailsStory>
 
 export const Pristine: Story = {
   args: { health: '426.9', liquidationBuffer: '108' },
 }
 
 export const Loading: Story = {
-  args: { health: undefined, liquidationBuffer: undefined, isLoading: true },
+  args: { isLoading: true },
 }
 
 const allStates = [
-  { name: 'Undefined', args: { health: undefined, liquidationBuffer: undefined } },
+  { name: 'Undefined', args: {} },
   { name: 'Pristine', args: Pristine.args },
   { name: 'Good', args: { health: '24.1', liquidationBuffer: '110' } },
   { name: 'Caution', args: { health: '7.9', liquidationBuffer: '110' } },
@@ -96,7 +89,7 @@ export const AllStates: Story = {
   render: () => (
     <Stack sx={{ gap: Spacing.sm }}>
       {allStates.map(({ name, args }) => (
-        <HealthAndBufferBarStory key={name} {...args} />
+        <HealthDetails key={name} healthQuery={getHealthQuery(args ?? {})} />
       ))}
     </Stack>
   ),
