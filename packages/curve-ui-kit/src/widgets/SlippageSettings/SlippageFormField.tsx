@@ -88,8 +88,7 @@ export const SlippageFormField = ({
         decimalGreaterThan(min, value) && (
           <Alert severity="warning" variant="outlined">
             <AlertTitle>{t`Low ${type} slippage selected!`}</AlertTitle>
-            {t`Your transaction may fail if price moves slightly. Consider increasing slippage if it doesn't go through.`}{' '}
-            {t`Min. slippage is ${formatNumber(min, 'percent.rate')}`}
+            {t`Your transaction may fail if price moves slightly. Consider increasing slippage if it doesn't go through.`}
           </Alert>
         )
       )}
