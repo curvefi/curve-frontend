@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 import { type Chain as ApiChain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { type PartialRecord } from '@primitives/objects.utils'
 import { AlertType } from '@ui/AlertBox/types'
 import type { TooltipProps } from '@ui/Tooltip/types'
@@ -8,6 +9,7 @@ import { t } from '@ui-kit/lib/i18n'
 import type { BannerProps } from '@ui-kit/shared/ui/Banner'
 import { MarketType } from '@ui-kit/types/market'
 import { Chain } from '@ui-kit/utils'
+import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
 type MarketAlert = TooltipProps & {
   alertType: AlertType
@@ -398,6 +400,18 @@ export const NO_LEVERAGE_LEND: PartialRecord<ApiChain, Address[]> = {
     '0x4064Ed6Ae070F126F56c47c8a8CdD6B924668b5D',
   ],
 }
+
+type MarketLeverageConfig = { slippage?: Decimal }
+
+export const MARKET_LEVERAGE: PartialRecord<number, Record<Address, MarketLeverageConfig>> = {
+  [Chain.Ethereum]: {
+    // sDOLA-crvUSD v2
+    '0xC77d97cF01737EB7aCE46cAb7cd9F60eC51a40c0': { slippage: SLIPPAGE.stable.default },
+    // syrupUSDC-crvUSD
+    '0x2fb54c8eae57767A9A509A395b9C4FA0702e2675': { slippage: SLIPPAGE.stable.default },
+  },
+}
+
 /** Solvency thresholds for the llamalend markets to handle deprecation, banner and gate keeping forms */
 export const SOLVENCY_THRESHOLDS = {
   // Market above this threshold are considered fully solvent
