@@ -1,6 +1,7 @@
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { toArray } from '@primitives/array.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { FormProvider } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
 import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
@@ -18,15 +19,23 @@ export const SlippageSettingsModal = ({
   onClose,
   type,
   active,
+  maxSlippage,
 }: {
   isOpen: boolean
   onClose: () => void
   onChanged: (data: SlippageSettingsFormData) => void
   type: SlippageType | SlippageType[] | undefined
   active?: SlippageType
+  maxSlippage?: Decimal
 }) => {
-  const { onSubmit, form, reset } = useSlippageSettingsForm({ onChanged })
   const types = toArray(type)
+  const currentType = active ?? (typeof type === 'string' ? type : undefined)
+  const currentSlippage =
+    currentType && maxSlippage !== undefined ? { type: currentType, value: maxSlippage } : undefined
+  const { onSubmit, form, reset } = useSlippageSettingsForm({
+    onChanged,
+    current: currentSlippage,
+  })
   return (
     <FormProvider {...form}>
       <ModalDialog
@@ -39,7 +48,7 @@ export const SlippageSettingsModal = ({
             <Button
               disabled={!form.formState.isValid}
               fullWidth
-              type="submit"
+              type={form.formState.isDirty ? 'submit' : 'button'}
               data-testid="slippage-save-button"
               {...(!form.formState.isDirty && { onClick: onClose })}
             >{t`Save`}</Button>
