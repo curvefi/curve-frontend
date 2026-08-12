@@ -1,5 +1,6 @@
 import { Children, type ReactNode } from 'react'
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
+import { drawerClasses } from '@mui/material/Drawer'
 import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import type { SxProps } from '@mui/material/styles'
@@ -14,7 +15,7 @@ import { applySxProps } from '@ui-kit/utils'
 const { Spacing } = SizesAndSpaces
 
 export const TooltipWrapper = ({ children }: { children: ReactNode }) => (
-  <Stack sx={{ gap: Spacing.sm, maxWidth: '20rem' }}>{children}</Stack>
+  <Stack sx={{ gap: Spacing.sm, [`&:not(.${drawerClasses.paper} *)`]: { maxWidth: '20rem' } }}>{children}</Stack>
 )
 
 export const TooltipDescription = ({ text }: { text: ReactNode | string }) => (
