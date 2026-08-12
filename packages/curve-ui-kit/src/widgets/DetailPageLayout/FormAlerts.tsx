@@ -1,13 +1,17 @@
+import { useState } from 'react'
+import CloseIcon from '@mui/icons-material/Close'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
+import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { ErrorReportModal } from '@ui-kit/features/report-error'
 import { usePreviousValue } from '@ui-kit/hooks/usePreviousValue'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
+import { CopyIconButton } from '@ui-kit/shared/ui/CopyIconButton'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { type QueryProp } from '@ui-kit/types/util'
@@ -34,7 +38,10 @@ const { Spacing } = SizesAndSpaces
 
 export const FormAlerts = <Field extends string>({ error, formErrors, handledErrors }: FormAlertProps<Field>) => {
   const [isReportOpen, openReportModal, closeReportModal] = useSwitch(false)
+  const [dismissedError, setDismissedError] = useState<Error | null>(null)
   const unhandledErrors = formErrors.filter(([field]) => !handledErrors.includes(field))
+  const visibleError = error === dismissedError ? null : error
+  const errorMessage = visibleError ? getErrorMessage(visibleError) : ''
   return (
     <>
       {unhandledErrors.length > 0 && (
@@ -45,19 +52,46 @@ export const FormAlerts = <Field extends string>({ error, formErrors, handledErr
           ))}
         </Alert>
       )}
-      {error && (
+      {visibleError && (
         <Alert
           variant="outlined"
           severity="error"
           sx={{ overflowWrap: 'anywhere' /* break anywhere as there is often JSON in the error breaking the design */ }}
           data-testid="loan-alert-error"
+          action={
+            <IconButton
+              color="ghost"
+              size="extraSmall"
+              title={t`Dismiss error`}
+              aria-label={t`Dismiss error`}
+              data-testid="dismiss-loan-alert-error"
+              onClick={() => setDismissedError(visibleError)}
+            >
+              <CloseIcon />
+            </IconButton>
+          }
         >
           <AlertTitle>{t`An error occurred`}</AlertTitle>
           <Stack sx={{ gap: Spacing.xs, width: '100%' }}>
-            <span>{getErrorMessage(error)}</span>
-            <Button color="ghost" size="extraSmall" sx={{ alignSelf: 'flex-end' }} onClick={openReportModal}>
-              {t`Submit error report`}
-            </Button>
+            <Box
+              component="span"
+              data-testid="loan-alert-error-message"
+              sx={{ display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: 5, overflow: 'hidden' }}
+            >
+              {errorMessage}
+            </Box>
+            <Stack direction="row" sx={{ alignSelf: 'flex-end', alignItems: 'center', gap: Spacing.xxs }}>
+              <CopyIconButton
+                copyText={errorMessage}
+                label={t`Copy error message`}
+                confirmationText={t`Error message copied to clipboard`}
+                color="ghost"
+                data-testid="copy-loan-alert-error"
+              />
+              <Button color="ghost" size="extraSmall" onClick={openReportModal}>
+                {t`Submit error report`}
+              </Button>
+            </Stack>
           </Stack>
         </Alert>
       )}
