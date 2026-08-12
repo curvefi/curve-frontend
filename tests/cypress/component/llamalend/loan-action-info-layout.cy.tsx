@@ -10,6 +10,7 @@ import type { BaseConfig } from '@ui/utils'
 import { q } from '@ui-kit/types/util'
 import { mockRoutes } from '@ui-kit/widgets/RouteProvider/route.mock'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
+import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
 const getHeight = (testId: string, subelement?: string) =>
   cy
@@ -104,7 +105,7 @@ describe('market slippage settings', () => {
     cy.get('@onChanged').should('not.have.been.called')
 
     cy.get('[data-testid="slippage-settings-button"]').click()
-    cy.get('[data-testid="slippage-radio-group"] [value="0.5"]').click()
+    cy.get(`[data-testid="slippage-radio-group"] [value="${SLIPPAGE.leverage.default}"]`).click()
     cy.get('[data-testid="slippage-save-button"]').click()
     cy.get('@onChanged').should('have.been.calledOnce')
   })
