@@ -71,6 +71,13 @@ export const SUPPLY_TEST_MARKETS: readonly SupplyRpcTestMarket[] = [
 type SupplyFormType = 'deposit' | 'withdraw' | 'stake' | 'unstake'
 export type SupplyActionType = SupplyFormType | 'claim-crv-rewards' | 'claim-other-rewards'
 
+const BALANCE_TOOLTIP_TITLES: Record<SupplyFormType, string> = {
+  deposit: 'Wallet balance',
+  withdraw: 'Vault shares value',
+  stake: 'Vault share value',
+  unstake: 'Staked amount',
+}
+
 const getSupplyInput = (type: SupplyFormType) =>
   cy.get(`[data-testid="supply-${type}-input"] input[type="text"]`, LOAD_TIMEOUT)
 
@@ -84,6 +91,9 @@ export const selectMaxSupplyInput = (type: SupplyFormType) => {
   getSupplyInputBalanceValue(type)
     .should(value => expect(Number(value.attr('data-value'))).gt(0))
     .click()
+  cy.get('.MuiDrawer-paper:visible').should('contain.text', BALANCE_TOOLTIP_TITLES[type])
+  cy.get('.MuiBackdrop-root:visible').click('top')
+  cy.get('.MuiDrawer-paper:visible').should('not.exist')
   cy.get(`[data-testid="supply-${type}-input"] input[type="text"]`, LOAD_TIMEOUT)
     .invoke(LOAD_TIMEOUT, 'attr', 'data-value')
     .should(value => expect(Number(value)).gt(0))
