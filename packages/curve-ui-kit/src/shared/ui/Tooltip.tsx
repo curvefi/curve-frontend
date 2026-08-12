@@ -46,6 +46,7 @@ export const Tooltip = ({ title, body, clickable, children, slotProps, ...props 
   return title || body ? (
     <>
       <MuiTooltip
+        key={`${isMobile}`} // force remount when switching so we don't change from uncontrolled to controlled; internal mui tooltip shenanigans
         title={title && <TooltipContent title={title}>{body}</TooltipContent>}
         slotProps={lodash.merge(slotProps, {
           ...(!clickable && { popper: { sx: { userSelect: 'none', pointerEvents: 'none' } } }), // prevent text selection and pointer events
