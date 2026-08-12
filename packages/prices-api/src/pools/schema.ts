@@ -286,6 +286,7 @@ const v2Pool = z
     liquidity_volume_24h: z.number(),
     liquidity_fee_24h: z.number(),
     coins: z.array(v2Coin),
+    tradeable_coins: z.array(v2Coin),
     base_daily_apr: z.number().nullable().optional(),
     base_weekly_apr: z.number().nullable().optional(),
     crv_apr: z.number().nullable().optional(),
@@ -314,7 +315,17 @@ const v2PoolRegistry = z
   })
   .transform(camelizeKeys)
 
-export const v2PoolSortField = z.enum(['name', 'aggregate_apr', 'base_daily_apr', 'crv_apr', 'volume', 'tvl'])
+export const v2PoolSortField = z.enum([
+  'name',
+  'aggregate_apr',
+  'base_daily_apr',
+  'base_weekly_apr',
+  'crv_apr',
+  'rewards_apr',
+  'creation_date',
+  'volume',
+  'tvl',
+])
 export type V2PoolSortField = z.infer<typeof v2PoolSortField>
 
 export type SortDirection = z.infer<typeof sortDirection>

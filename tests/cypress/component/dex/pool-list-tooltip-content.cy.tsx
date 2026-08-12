@@ -74,6 +74,7 @@ const createPool = (overrides: Partial<PoolRow> = {}): PoolRow => ({
   liquidityVolume24h: 90_000,
   liquidityFee24h: 900,
   coins: [BOLD, USDC].map((token, poolIndex) => ({ poolIndex, ...token })),
+  tradeableCoins: [BOLD, USDC].map((token, poolIndex) => ({ poolIndex, ...token })),
   baseDailyApr: 10,
   baseWeeklyApr: 20,
   crvApr: 5,

@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
-import { LEVERAGE } from '@/llamalend/constants'
 import { useMaxRepayTokenValues } from '@/llamalend/features/manage-loan/hooks/useMaxRepayTokenValues'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
-import { isRouterRequired } from '@/llamalend/llama.utils'
+import { useSyncMarketLeverageSlippage } from '@/llamalend/hooks/useSyncMarketLeverageSlippage'
+import { getMarketLeverageSlippage, isRouterRequired } from '@/llamalend/llama.utils'
 import type { MarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useRepayMutation } from '@/llamalend/mutations/repay.mutation'
 import { getRepayLoanEstimateGasOptions } from '@/llamalend/queries/repay/repay-gas-estimate.query'
@@ -23,7 +23,6 @@ import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { type AllowUndefined, q, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
-import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import { useMarketContext } from '../../market-context'
 
 const NOT_AVAILABLE = ['root', t`Repay is not available, increase the repayment amount or repay fully.`] as const
@@ -88,11 +87,7 @@ const defaultValues = {
   maxCollateral: undefined,
   maxBorrowed: undefined,
   isFull: false,
-  slippage: SLIPPAGE[LEVERAGE].default,
 }
-const formOptions = {
-  defaultValues,
-} as const
 
 const isRepayRouteRequired = (
   market: MarketTemplate | undefined,
@@ -112,13 +107,16 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     marketId,
     ammAddress,
     zapAddress,
+    controllerAddress,
     tokens: { borrowToken, collateralToken },
     userAddress,
   } = useMarketContext<ChainId>()
+  const defaultSlippage = getMarketLeverageSlippage(chainId, controllerAddress)
   const form = useForm<RepayFormData>({
-    ...formOptions,
+    defaultValues: { ...defaultValues, slippage: defaultSlippage },
     validation: useMemo(() => repayFormValidationSuite(market), [market]),
   })
+  useSyncMarketLeverageSlippage(form, defaultSlippage)
 
   const values = form.watchValues()
   const [params, isDebouncing] = useRepayParams({ chainId, marketId, userAddress, ...values })

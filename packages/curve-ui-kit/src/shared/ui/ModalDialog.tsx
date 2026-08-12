@@ -85,7 +85,17 @@ type ModalDialogProps = {
  * so that we can keep the form submission in the footer.
  */
 const Form = ({ onSubmit, ...props }: ModalFormProps) => (
-  <form {...props} onSubmit={onSubmit ? event => void onSubmit(event) : undefined} />
+  <form
+    {...props}
+    onSubmit={
+      onSubmit
+        ? event => {
+            event.stopPropagation()
+            void onSubmit(event)
+          }
+        : undefined
+    }
+  />
 )
 
 export const ModalDialog = ({

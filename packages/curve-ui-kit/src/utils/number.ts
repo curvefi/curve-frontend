@@ -211,6 +211,14 @@ const NUMBER_FORMAT_CATEGORIES = {
     maximumSignificantDigits: 3,
     trailingZeroDisplay: 'auto',
   },
+  'health.precise': {
+    abbreviate: false,
+    fallback: '-',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 4,
+    roundingPriority: 'lessPrecision',
+    trailingZeroDisplay: 'auto',
+  },
   'health.compact': { abbreviate: true, fallback: '-' },
   multiplier: {
     abbreviate: false,

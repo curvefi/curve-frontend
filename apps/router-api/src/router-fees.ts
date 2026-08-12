@@ -2,7 +2,8 @@ import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { Chain } from '@primitives/network.utils'
 
-export const ROUTER_FEE_BPS: Decimal = '8' // note: no fractions allowed by enso
+// Fee is set to 0 because previous value (8) was too important for big leverages (like x30)
+export const ROUTER_FEE_BPS: Decimal = '0' // note: no fractions allowed by enso
 
 export const ROUTER_FEE_RECEIVER_BY_CHAIN_ID: Record<number, Address> = {
   [Chain.Ethereum]: '0xB4c2C0B045fA0517cACEebC917443Fa041A9c18B',

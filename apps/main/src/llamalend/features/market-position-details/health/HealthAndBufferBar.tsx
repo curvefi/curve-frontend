@@ -1,4 +1,4 @@
-import { useUserHealthValues } from '@/llamalend/queries/user/user-health.query'
+import { type HealthQuery, useUserHealthValues } from '@/llamalend/queries/user/user-health.query'
 import { Stack } from '@mui/material'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import Box from '@mui/material/Box'
@@ -12,7 +12,7 @@ import { Badge } from '@ui-kit/shared/ui/Badge'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { mapQuery, QueryProp } from '@ui-kit/types/util'
+import { mapQuery } from '@ui-kit/types/util'
 import { IS_DEVELOPMENT } from '@ui-kit/utils'
 import { HEALTH_TOOLTIP, LIQUIDATION_BUFFER_TOOLTIP } from '../tooltips'
 import {
@@ -27,8 +27,6 @@ import {
 } from './utils'
 
 const { Height, MinWidth, Spacing } = SizesAndSpaces
-
-type HealthQuery = QueryProp<QueryData<typeof useUserHealthValues>>
 
 const SOFT_LIQUIDATION_LABEL = t`Soft Liquidation`
 

@@ -46,6 +46,7 @@ export const SlippageToleranceActionInfo = ({
           type={type}
           isOpen={isOpen}
           active={active}
+          maxSlippage={maxSlippage}
           onChanged={slippage => {
             closeModal()
             onChanged?.(slippage)

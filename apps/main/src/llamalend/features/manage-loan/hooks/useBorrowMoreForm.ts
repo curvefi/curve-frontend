@@ -4,7 +4,8 @@ import { useMaxBorrowMoreValues } from '@/llamalend/features/manage-loan/hooks/u
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
-import { canLeverageUserBorrowed, isRouterRequired } from '@/llamalend/llama.utils'
+import { useSyncMarketLeverageSlippage } from '@/llamalend/hooks/useSyncMarketLeverageSlippage'
+import { canLeverageUserBorrowed, getMarketLeverageSlippage, isRouterRequired } from '@/llamalend/llama.utils'
 import type { MarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useBorrowMoreMutation } from '@/llamalend/mutations/borrow-more.mutation'
 import { useBorrowMoreLeverage } from '@/llamalend/queries/borrow-more/borrow-more-future-leverage.query'
@@ -32,7 +33,6 @@ import { useCallbackSync, useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { q, type QueryProp, type Range } from '@ui-kit/types/util'
 import { decimalSum, IS_DEVELOPMENT } from '@ui-kit/utils'
-import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import { useMarketContext } from '../../market-context'
 
 const useBorrowMoreParams = <ChainId extends LlamaChainId>({
@@ -77,13 +77,13 @@ const userDefaultValues = {
   routeId: undefined,
 } satisfies Partial<BorrowMoreForm>
 
-const emptyBorrowMoreForm = (): BorrowMoreForm => ({
+const emptyBorrowMoreForm = (slippage: Decimal): BorrowMoreForm => ({
   ...userDefaultValues,
   maxCollateral: undefined,
   maxBorrowed: undefined,
   maxDebt: undefined,
   leverageEnabled: undefined,
-  slippage: SLIPPAGE[LEVERAGE].default,
+  slippage,
 })
 
 /** Checks if we need a route for borrowing more */
@@ -104,13 +104,15 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   const { chainId, market, marketId, ammAddress, zapAddress, controllerAddress, tokens, marketType, userAddress } =
     useMarketContext<ChainId>()
   const marketAlert = useMarketAlert(chainId, controllerAddress, marketType)
+  const defaultSlippage = getMarketLeverageSlippage(chainId, controllerAddress)
 
   const { borrowToken, collateralToken } = tokens
 
   const form = useForm<BorrowMoreForm>({
     validation: borrowMoreFormValidationSuite,
-    defaultValues: emptyBorrowMoreForm(),
+    defaultValues: emptyBorrowMoreForm(defaultSlippage),
   })
+  useSyncMarketLeverageSlippage(form, defaultSlippage)
 
   const values = form.watchValues()
   const [params, isDebouncing] = useBorrowMoreParams({ chainId, marketId, userAddress, ...values })

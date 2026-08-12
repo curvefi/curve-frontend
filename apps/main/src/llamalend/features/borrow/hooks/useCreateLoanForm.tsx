@@ -1,7 +1,8 @@
 import { useMemo } from 'react'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
-import { hasLeverage } from '@/llamalend/llama.utils'
+import { useSyncMarketLeverageSlippage } from '@/llamalend/hooks/useSyncMarketLeverageSlippage'
+import { getMarketLeverageSlippage, hasLeverage } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { getCreateLoanEstimateGasOptions } from '@/llamalend/queries/create-loan/create-loan-estimate-gas.query'
 import { useCreateLoanExpectedCollateral } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
@@ -17,7 +18,6 @@ import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { q, type Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
-import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import { LEVERAGE, LoanPreset, PRESET_RANGES } from '../../../constants'
 import { useCreateLoanMutation } from '../../../mutations/create-loan.mutation'
 import { useCreateLoanIsApproved } from '../../../queries/create-loan/create-loan-approved.query'
@@ -61,19 +61,21 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     marketType,
     userAddress,
   } = useMarketContext<ChainId>()
+  const defaultSlippage = getMarketLeverageSlippage(chainId, controllerAddress)
   const marketAlert = useMarketAlert(chainId, controllerAddress, marketType)
   const formOptions = {
     validation,
     defaultValues: {
       ...userDefaultValues,
       leverageEnabled: false,
-      slippage: SLIPPAGE[LEVERAGE].default,
+      slippage: defaultSlippage,
       range: PRESET_RANGES[preset],
       maxDebt: undefined,
       maxCollateral: undefined,
     },
   }
   const form = useForm<CreateLoanForm>(formOptions)
+  useSyncMarketLeverageSlippage(form, defaultSlippage)
 
   const values = form.watchValues()
   const [params, isDebouncing] = useFormDebounce(

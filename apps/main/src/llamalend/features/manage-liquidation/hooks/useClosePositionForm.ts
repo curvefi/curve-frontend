@@ -1,7 +1,8 @@
 import { BigNumber } from 'bignumber.js'
 import { sum } from 'lodash'
 import { useCallback } from 'react'
-import { LEVERAGE } from '@/llamalend/constants'
+import { useSyncMarketLeverageSlippage } from '@/llamalend/hooks/useSyncMarketLeverageSlippage'
+import { getMarketLeverageSlippage } from '@/llamalend/llama.utils'
 import { type CloseLoanMutation, useClosePositionMutation } from '@/llamalend/mutations/close-position.mutation'
 import { useCloseLoanIsApproved } from '@/llamalend/queries/close-loan/close-loan-is-approved.query'
 import { type UserState, useUserBalances, useUserState } from '@/llamalend/queries/user'
@@ -15,16 +16,12 @@ import { useCombinedQueries } from '@ui-kit/lib/queries/combine'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { mapQuery } from '@ui-kit/types/util'
 import { decimal, decimalNegate } from '@ui-kit/utils'
-import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import { useMarketContext } from '../../market-context'
 import { CLOSE_POSITION_COLUMNS, type ClosePositionRow } from '../ui/columns/columns.definitions'
 
 const CLOSE_POSITION_SAFETY_BUFFER = 1.0001 // 0.01% safety margin
 
 const userDefaultValues = {}
-const formOptions = {
-  defaultValues: { ...userDefaultValues, slippage: SLIPPAGE[LEVERAGE].default },
-} as const
 
 /** Hook to build state for the close-position form */
 export function useClosePositionForm({
@@ -32,8 +29,9 @@ export function useClosePositionForm({
 }: {
   network: { id: LlamaNetworkId; chainId: LlamaChainId; name: string }
 }) {
-  const { marketId, tokens, userAddress } = useMarketContext<LlamaChainId>()
+  const { marketId, controllerAddress, tokens, userAddress } = useMarketContext<LlamaChainId>()
   const { chainId } = network
+  const defaultSlippage = getMarketLeverageSlippage(chainId, controllerAddress)
 
   // Token data
   const { borrowToken, collateralToken } = tokens
@@ -47,7 +45,10 @@ export function useClosePositionForm({
   const userStateQuery = useUserState({ chainId, marketId, userAddress })
 
   // Form state
-  const form = useForm<CloseLoanMutation>(formOptions)
+  const form = useForm<CloseLoanMutation>({
+    defaultValues: { ...userDefaultValues, slippage: defaultSlippage },
+  })
+  useSyncMarketLeverageSlippage(form, defaultSlippage)
 
   const values = form.watchValues()
   const {

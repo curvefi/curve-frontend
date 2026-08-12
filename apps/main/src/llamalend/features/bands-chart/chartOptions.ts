@@ -342,6 +342,7 @@ export const getChartOptions = (
         },
       },
       formatter: tooltipFormatter,
+      appendTo: 'body',
       backgroundColor: 'transparent',
       borderWidth: 0,
       padding: 0,

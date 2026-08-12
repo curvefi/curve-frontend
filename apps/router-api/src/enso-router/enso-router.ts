@@ -1,3 +1,4 @@
+import { BigNumber } from 'bignumber.js'
 import { FastifyBaseLogger } from 'fastify'
 import { Address } from 'viem'
 import { toArray } from '@primitives/array.utils'
@@ -46,6 +47,7 @@ export const buildEnsoRouteResponse = async (
     tokenOut: [tokenOut],
     amountIn: [amountIn] = [],
     amountOut: [minAmountOut] = [],
+    slippage,
     zapAddress,
   } = query
 
@@ -61,7 +63,9 @@ export const buildEnsoRouteResponse = async (
     ...(tokenIn && { tokenIn }),
     ...(tokenOut && { tokenOut }),
     ...(amountIn && { amountIn }),
-    ...(minAmountOut && { minAmountOut }),
+    ...(minAmountOut
+      ? { minAmountOut }
+      : slippage != null && { slippage: new BigNumber(slippage).times(100).toString() }),
     ...maybe(ROUTER_FEE_RECEIVER_BY_CHAIN_ID[chainId], feeReceiver => ({ fee: ROUTER_FEE_BPS, feeReceiver })),
   })}`
 

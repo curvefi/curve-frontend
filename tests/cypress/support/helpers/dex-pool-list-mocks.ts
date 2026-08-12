@@ -87,6 +87,7 @@ const createPool = ({
   liquidity_volume_24h: 10_000 + index,
   liquidity_fee_24h: 100 + index,
   coins: createCoins(chainId),
+  tradeable_coins: createCoins(chainId),
   base_daily_apr: (index % 50) / 1_000,
   base_weekly_apr: (index % 50) / 900,
   crv_apr: null,
@@ -192,7 +193,10 @@ const getSortValue = (pool: MockPool, sortBy: V2PoolSortField) =>
     name: pool.name.toLowerCase(),
     aggregate_apr: pool.base_daily_apr,
     base_daily_apr: pool.base_daily_apr,
+    base_weekly_apr: pool.base_weekly_apr,
     crv_apr: pool.crv_apr,
+    rewards_apr: 0,
+    creation_date: pool.creation_date,
     volume: pool.trading_volume_24h,
     tvl: pool.tvl_usd,
   })[sortBy]

@@ -5,7 +5,7 @@ import { useForm } from '@ui-kit/features/forms'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { createValidationSuite } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
-import { MAX_SLIPPAGE, MIN_SLIPPAGE, SLIPPAGE_TYPES, SlippageSettings } from './slippage.utils'
+import { MAX_SLIPPAGE, MIN_SLIPPAGE, SLIPPAGE_TYPES, SlippageSettings, SlippageType } from './slippage.utils'
 
 function isSlippage(nr: Decimal) {
   enforce(nr)
@@ -27,10 +27,19 @@ const validation = createValidationSuite(({ stable, leverage, crypto }: Slippage
   test('crypto', () => isSlippage(crypto))
 })
 
-export function useSlippageSettingsForm({ onChanged }: { onChanged: (data: SlippageSettingsFormData) => void }) {
+export function useSlippageSettingsForm({
+  onChanged,
+  current,
+}: {
+  onChanged: (data: SlippageSettingsFormData) => void
+  current?: { type: SlippageType; value: Decimal }
+}) {
   const maxSlippage = useUserProfileStore(state => state.maxSlippage)
   const setMaxSlippage = useUserProfileStore(state => state.setMaxSlippage)
-  const defaultValues = pick(maxSlippage, ...SLIPPAGE_TYPES)
+  const defaultValues: SlippageSettingsFormData = {
+    ...pick(maxSlippage, ...SLIPPAGE_TYPES),
+    ...(current && { [current.type]: current.value }),
+  }
   const form = useForm<SlippageSettingsFormData>({ validation, defaultValues })
   return {
     form,
