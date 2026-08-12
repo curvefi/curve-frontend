@@ -23,6 +23,7 @@ describe('FormAlerts', () => {
 
     cy.get('[data-testid="copy-loan-alert-error"]').click()
     cy.get('@writeText').should('have.been.calledOnceWith', ERROR_MESSAGE)
+    cy.get('[data-testid="copy-confirmation"]').should('not.contain.text', ERROR_MESSAGE)
   })
 
   it('dismisses submission errors', () => {

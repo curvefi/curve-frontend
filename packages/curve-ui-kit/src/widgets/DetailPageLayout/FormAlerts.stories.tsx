@@ -1,11 +1,11 @@
+import { range } from '@primitives/objects.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { FormAlerts } from './FormAlerts'
 
 const LONG_ERROR = new Error(
-  Array.from(
-    { length: 20 },
-    (_, index) => `Transaction error detail ${index}: reverted call data 0x${index.toString(16).padStart(8, '0')}`,
-  ).join(' '),
+  range(20)
+    .map(index => `Transaction error detail ${index}: reverted call data 0x${index.toString(16).padStart(8, '0')}`)
+    .join(' '),
 )
 
 const meta: Meta<typeof FormAlerts> = {

@@ -7,6 +7,7 @@ import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
+import { maybe } from '@primitives/objects.utils'
 import { ErrorReportModal } from '@ui-kit/features/report-error'
 import { usePreviousValue } from '@ui-kit/hooks/usePreviousValue'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
@@ -40,8 +41,8 @@ export const FormAlerts = <Field extends string>({ error, formErrors, handledErr
   const [isReportOpen, openReportModal, closeReportModal] = useSwitch(false)
   const [dismissedError, setDismissedError] = useState<Error | null>(null)
   const unhandledErrors = formErrors.filter(([field]) => !handledErrors.includes(field))
-  const visibleError = error === dismissedError ? null : error
-  const errorMessage = visibleError ? getErrorMessage(visibleError) : ''
+  const visibleError = error !== dismissedError && error
+  const errorMessage = maybe(visibleError, getErrorMessage)
   return (
     <>
       {unhandledErrors.length > 0 && (
@@ -63,7 +64,6 @@ export const FormAlerts = <Field extends string>({ error, formErrors, handledErr
               color="ghost"
               size="extraSmall"
               title={t`Dismiss error`}
-              aria-label={t`Dismiss error`}
               data-testid="dismiss-loan-alert-error"
               onClick={() => setDismissedError(visibleError)}
             >
@@ -85,6 +85,7 @@ export const FormAlerts = <Field extends string>({ error, formErrors, handledErr
                 copyText={errorMessage}
                 label={t`Copy error message`}
                 confirmationText={t`Error message copied to clipboard`}
+                confirmationMessage="" // confirmation title is enough
                 color="ghost"
                 data-testid="copy-loan-alert-error"
               />
