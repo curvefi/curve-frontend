@@ -31,7 +31,7 @@ import { combineQueriesMeta, PartialQueryResult, RESOLVED_QUERY_RESULT } from '@
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
 import { type ExtraIncentive, MarketType, MarketVersion, MarketRateType } from '@ui-kit/types/market'
 import { decimal, decimalDiv, ReleaseChannel, requireChainId } from '@ui-kit/utils'
-import { DEPRECATED_LLAMAS } from '../../markets.constants'
+import { DEPRECATED_LLAMAS, NO_LEVERAGE_LEND } from '../../markets.constants'
 import { getBadDebtLendMarketsOptions, getBadDebtMintMarketsOptions } from '../market/market-bad-debt.query'
 import { getFavoriteMarketOptions } from './favorite-markets'
 import {
@@ -247,9 +247,7 @@ const convertLendingVault = (
       DEPRECATED_LLAMAS[marketType][chain]?.[controller]?.message ?? lowSolvencyDeprecatedMessage(solvencyPercent),
     isFavorite: favoriteMarkets.has(vault),
     rewards,
-    leverage: getMarketLeverageProviders(requireChainId(chain), getAddress(controller), ReleaseChannel.Beta).length
-      ? leverage
-      : null,
+    leverage: NO_LEVERAGE_LEND[chain]?.includes(controller) ? null : leverage,
     userHasPositions:
       hasBorrowed || lendingPosition
         ? { [MarketRateType.Borrow]: hasBorrowed, [MarketRateType.Supply]: !!lendingPosition }
@@ -376,9 +374,7 @@ const convertMintMarket = (
     url: getInternalUrl('crvusd', chain, `${CRVUSD_ROUTES.PAGE_MARKETS}/${name}`),
     isFavorite: favoriteMarkets.has(llamma),
     rewards,
-    leverage: getMarketLeverageProviders(requireChainId(chain), getAddress(address), ReleaseChannel.Beta).length
-      ? leverage
-      : null,
+    leverage,
     userHasPositions: hasBorrow ? { [MarketRateType.Borrow]: hasBorrow, [MarketRateType.Supply]: false } : null,
     createdAt: new Date(createdAt).getTime(),
     favoriteKey: llamma,

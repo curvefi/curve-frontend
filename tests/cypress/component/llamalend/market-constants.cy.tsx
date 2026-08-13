@@ -1,7 +1,7 @@
 import { zeroAddress, getAddress } from 'viem'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import { getMarketLeverageProviders, getMarketLeverageSlippage } from '@/llamalend/llama.utils'
-import { DEPRECATED_LLAMAS, MARKET_LEVERAGE, MARKETS_ALERTS } from '@/llamalend/markets.constants'
+import { DEPRECATED_LLAMAS, MARKET_LEVERAGE, MARKETS_ALERTS, NO_LEVERAGE_LEND } from '@/llamalend/markets.constants'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { oneOf, oneValueOf } from '@cy/support/generators'
 import type { Address } from '@primitives/address.utils'
@@ -71,6 +71,14 @@ describe('llama market constants', () => {
         for (const controllerAddress of Object.keys(chainMarkets)) {
           expect(controllerAddress, `expected address to be checksummed`).to.eq(getAddress(controllerAddress))
         }
+      }
+    }
+  })
+
+  it('keeps every no leverage lend address checksummed', () => {
+    for (const chainMarkets of recordValues(NO_LEVERAGE_LEND)) {
+      for (const controllerAddress of chainMarkets) {
+        expect(controllerAddress, `expected address to be checksummed`).to.eq(getAddress(controllerAddress))
       }
     }
   })

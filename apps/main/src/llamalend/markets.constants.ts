@@ -354,6 +354,54 @@ export const DEPRECATED_LLAMAS: Record<MarketType, PartialRecord<ApiChain, Recor
   },
 }
 
+/**
+ * The following markets do not support leverage, but there's no on-chain method
+ * to determine this. Therefore, llamalend-js has the following hardcoded logic
+ * to filter out those markets:
+ *
+ * ```typescript
+ * private hasLeverage = (): boolean => {     return this.llamalend.constants.ALIASES.leverage_zap_v2 !== this.llamalend.constants.ZERO_ADDRESS &&
+       this._getMarketId() >= Number(this.llamalend.constants.ALIASES["leverage_markets_start_id"]);
+ * }
+ * ```
+ *
+ * However, we can't use that method in our market list, because we don't have
+ * access to a (hydrated) llamalend instance. Therefore, the addresses have been
+ * found by invoking the following code in prod, where api is a llamalend instance:
+ *
+ * ```typescript
+ * const marketsWithoutLeverage = api.lendMarkets
+ *   .getMarketList()
+ *   .map((marketId) => api.getLendMarket(marketId))
+ *   .filter((market) => !market.leverageZapV2.hasLeverage())
+ *   .map((market) => [market.id, market.addresses.controller])
+ * ```
+ */
+export const NO_LEVERAGE_LEND: PartialRecord<ApiChain, Address[]> = {
+  ethereum: [
+    '0x1E0165DbD2019441aB7927C018701f3138114D71',
+    '0xaade9230AA9161880E13a38C83400d3D1995267b',
+    '0x413FD2511BAD510947a91f5c6c79EBD8138C29Fc',
+    '0xEdA215b7666936DEd834f76f3fBC6F323295110A',
+    '0xC510d73Ad34BeDECa8978B6914461aA7b50CF3Fc',
+    '0xa5D9137d2A1Ee912469d911A8E74B6c77503bac8',
+    '0xe438658874b0acf4D81c24172E137F0eE00621b8',
+    '0x98Fc283d6636f6DCFf5a817A00Ac69A3ADd96907',
+    '0x09dBDEB3b301A4753589Ac6dF8A178C7716ce16B',
+  ],
+  arbitrum: [
+    '0xB5B6f0E69c283AA32425FA18220e64283B51F0A4',
+    '0x013be86e1cdb0f384dAF24Bd974FE75EdFfe6B68',
+    '0x28c20590de7539C316191F413686dcF794d8898E',
+    '0x5014AB37Fca7201baDEc3C0d0f28Dc7899cdC7D5',
+    '0x88f88e937Db48bBfe8E3091718576430704e47Ab',
+    '0x76709bC0dA299Ab0234EEC51385E900922AE98f5',
+    '0xAe659CE8f2f23649E09e92D164244AA127A7a2c7',
+    '0x7Adcc491f0B7f9BC12837B8F5Edf0e580d176F1f',
+    '0x4064Ed6Ae070F126F56c47c8a8CdD6B924668b5D',
+  ],
+}
+
 export type MarketLeverageConfig = { providers: readonly RouteProvider[]; slippage?: Decimal }
 
 const DEFAULT_LEVERAGE_CONFIG = { providers: ['enso'] } satisfies MarketLeverageConfig
