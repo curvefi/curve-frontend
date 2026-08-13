@@ -427,7 +427,7 @@ export const MARKET_LEVERAGE: PartialRecord<number, Record<Address, MarketLevera
     },
     // sDOLA-crvUSD v2
     '0xC77d97cF01737EB7aCE46cAb7cd9F60eC51a40c0': {
-      providers: ['enso', 'curve'],
+      ...DEFAULT_LEVERAGE_CONFIG,
       slippage: SLIPPAGE.stable.default,
     },
     // sreUSD-crvUSD

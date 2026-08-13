@@ -1,13 +1,12 @@
 import { countBy, sumBy } from 'lodash'
 import { useCallback, useMemo } from 'react'
-import { ethAddress, getAddress } from 'viem'
+import { ethAddress } from 'viem'
 import { LEND_V1_DEPRECATION_DATE } from '@/llamalend/constants'
 import {
   calculateLendMarketTvlUsd,
   calculateMarketSolvency,
   calculateMintMarketTvlUsd,
   createGetBadDebtMarket,
-  getMarketLeverageProviders,
   lowSolvencyDeprecatedMessage,
 } from '@/llamalend/llama.utils'
 import {
@@ -30,7 +29,7 @@ import { useStateTimeout } from '@ui-kit/hooks/useStateTimeout'
 import { combineQueriesMeta, PartialQueryResult, RESOLVED_QUERY_RESULT } from '@ui-kit/lib'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
 import { type ExtraIncentive, MarketType, MarketVersion, MarketRateType } from '@ui-kit/types/market'
-import { decimal, decimalDiv, ReleaseChannel, requireChainId } from '@ui-kit/utils'
+import { decimal, decimalDiv } from '@ui-kit/utils'
 import { DEPRECATED_LLAMAS, NO_LEVERAGE_LEND } from '../../markets.constants'
 import { getBadDebtLendMarketsOptions, getBadDebtMintMarketsOptions } from '../market/market-bad-debt.query'
 import { getFavoriteMarketOptions } from './favorite-markets'

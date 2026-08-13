@@ -79,11 +79,12 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   const form = useForm<CreateLoanForm>(formOptions)
   useSyncMarketLeverageSlippage(form, defaultSlippage)
   const isLeverageSupported = isLeverageCreateLoanSupported(market, leverageProviders)
+  const { update: formUpdate } = form
   useEffect(() => {
     if (market && !isLeverageSupported) {
-      form.update({ leverageEnabled: false, routeId: undefined }, { automated: true })
+      formUpdate({ leverageEnabled: false, routeId: undefined }, { automated: true })
     }
-  }, [isLeverageSupported, market, form.update])
+  }, [isLeverageSupported, market, formUpdate])
 
   const values = form.watchValues()
   const [params, isDebouncing] = useFormDebounce(
