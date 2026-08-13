@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { describe, expect, it } from 'vitest'
-import { amount, decimal, decimalSqrt } from './decimal'
+import { amount, decimal, decimalSqrt, toWei } from './decimal'
 
 describe('decimal', () => {
   it('handles basic, normal numbers', () => {
@@ -90,5 +90,11 @@ describe('decimalSqrt', () => {
 
   it('rejects negative numbers', () => {
     expect(() => decimalSqrt('-1')).toThrow('Cannot calculate square root of a negative Decimal: -1')
+  })
+})
+
+describe('toWei', () => {
+  it('truncates precision beyond the token decimals', () => {
+    expect(toWei('58.0208027707242457906', 18)).toBe('58020802770724245790')
   })
 })
