@@ -2,12 +2,13 @@ import { useEffect, useMemo } from 'react'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { useSyncMarketLeverageSlippage } from '@/llamalend/hooks/useSyncMarketLeverageSlippage'
-import { getMarketLeverageSlippage, hasLegacyMintLeverage, hasZapV2 } from '@/llamalend/llama.utils'
+import { getMarketLeverageSlippage } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { getCreateLoanEstimateGasOptions } from '@/llamalend/queries/create-loan/create-loan-estimate-gas.query'
 import { useCreateLoanExpectedCollateral } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
 import { useCreateLoanPriceImpact } from '@/llamalend/queries/create-loan/create-loan-price-impact.query'
 import { useCreateLoanPrices } from '@/llamalend/queries/create-loan/create-loan-prices.query'
+import { isLeverageCreateLoanSupported } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -77,12 +78,12 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   }
   const form = useForm<CreateLoanForm>(formOptions)
   useSyncMarketLeverageSlippage(form, defaultSlippage)
-  const { update: updateForm } = form
+  const isLeverageSupported = isLeverageCreateLoanSupported(market, leverageProviders)
   useEffect(() => {
-    if (market && hasZapV2(market) && !leverageProviders.length) {
-      updateForm({ leverageEnabled: false, routeId: undefined }, { automated: true })
+    if (market && !isLeverageSupported) {
+      form.update({ leverageEnabled: false, routeId: undefined }, { automated: true })
     }
-  }, [leverageProviders.length, market, updateForm])
+  }, [isLeverageSupported, market, form.update])
 
   const values = form.watchValues()
   const [params, isDebouncing] = useFormDebounce(
@@ -180,8 +181,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     },
     isApproved: useCreateLoanIsApproved(params),
     isHighLiquidationRisk,
-    isLeverageSupported:
-      !!market && (hasLegacyMintLeverage(market) || (hasZapV2(market) && leverageProviders.length > 0)),
+    isLeverageSupported,
     formErrors: formState.visibleErrors,
     disabledAlert,
     solvencyModal: { isOpen, onClose, onConfirm },

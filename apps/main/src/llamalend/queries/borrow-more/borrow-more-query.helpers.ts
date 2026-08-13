@@ -2,6 +2,7 @@ import { getMarket, hasZapV2 } from '@/llamalend/llama.utils'
 import { MarketTemplate } from '@/llamalend/llamalend.types'
 import type { BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
+import type { RouteProvider } from '@primitives/router.utils'
 import { parseMutationRoute } from '@ui-kit/entities/router-api'
 
 /**
@@ -71,4 +72,7 @@ export const isLeverageBorrowMore = (
  * Checks whether leverage may be enabled for a given market.
  * This is used to determine whether to show the leverage toggle in the UI.
  */
-export const isLeverageBorrowMoreSupported = (market?: MarketTemplate) => !!market && hasZapV2(market)
+export const isLeverageBorrowMoreSupported = (
+  market: MarketTemplate | undefined,
+  leverageProviders: readonly RouteProvider[],
+) => !!market && hasZapV2(market) && leverageProviders.length > 0

@@ -219,7 +219,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     }),
     // todo: delete this if users do not complain about it, for now dev-only feature
     showUserBorrowed: isLeverageEnabled && !!canLeverageUserBorrowed(market) && IS_DEVELOPMENT,
-    isLeverageSupported: isLeverageBorrowMoreSupported(market) && leverageProviders.length > 0,
+    isLeverageSupported: isLeverageBorrowMoreSupported(market, leverageProviders),
     leverage: useBorrowMoreLeverage(params),
     zapAddress,
   }

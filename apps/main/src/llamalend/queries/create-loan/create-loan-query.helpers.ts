@@ -1,6 +1,13 @@
 import { getMarket, hasLegacyMintLeverage, hasZapV2 } from '@/llamalend/llama.utils'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import type { RouteProvider } from '@primitives/router.utils'
+
+/** Checks whether leverage may be enabled for a create loan. */
+export const isLeverageCreateLoanSupported = (
+  market: MarketTemplate | undefined,
+  leverageProviders: readonly RouteProvider[],
+) => !!market && (hasLegacyMintLeverage(market) || (hasZapV2(market) && leverageProviders.length > 0))
 
 /**
  * Determines the appropriate create loan implementation based on market type and leverage settings.
