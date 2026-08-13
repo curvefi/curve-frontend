@@ -195,7 +195,7 @@ export const ActionInfo = (props: ActionInfoProps) => {
               />
             )}
 
-            <Tooltip title={tooltip} placement="top" clickable={!!tooltip}>
+            <Tooltip title={tooltip} placement="top" clickable={!!tooltip} mobileDrawer>
               {/** Additional stack to add some space between left (icon), value and right (icon) */}
               <Stack
                 direction="row"

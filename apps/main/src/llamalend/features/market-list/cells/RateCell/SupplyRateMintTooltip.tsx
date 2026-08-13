@@ -18,7 +18,7 @@ const TooltipContent = () => (
 )
 
 export const SupplyRateMintTooltip = () => (
-  <Tooltip clickable title={NET_SUPPLY_RATE_TITLE} body={<TooltipContent />} placement="top">
+  <Tooltip clickable title={NET_SUPPLY_RATE_TITLE} body={<TooltipContent />} placement="top" mobileDrawer>
     <Typography variant="tableCellMBold" color="textPrimary" sx={{ width: '100%' }}>
       -
     </Typography>
