@@ -60,6 +60,7 @@ export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
     sortBy,
     sortDirection,
   })
+
   const globalFilterFn = usePoolsGlobalFilterFn(
     isLite ? (tableQuery?.data ?? EMPTY_POOL_ROWS) : EMPTY_POOL_ROWS,
     globalFilter,
@@ -99,7 +100,11 @@ export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
           button: { label: t`Show all pools`, onClick: resetFilters, testId: 'dex-pool-empty-state-reset' },
           secondaryButton: { label: t`Telegram`, href: CURVE_SOCIALS.telegram.en },
         }}
-        errorState={{ title: t`Unable to retrieve pool list`, onReload }}
+        errorState={{
+          title: t`Unable to retrieve pool list`,
+          description: tableQuery.error?.message,
+          onReload,
+        }}
         expandedPanel={{ Body: POOL_EXPANDED_PANEL_BODIES[variant], Actions: PoolExpandedPanelActions }}
         shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       >

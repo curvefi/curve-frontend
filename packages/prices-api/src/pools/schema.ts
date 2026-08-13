@@ -330,12 +330,8 @@ export type V2PoolSortField = z.infer<typeof v2PoolSortField>
 
 export type SortDirection = z.infer<typeof sortDirection>
 
-const v2PoolChain = z
-  .object({
-    chain_id: z.number(),
-    name: z.string(),
-  })
-  .transform(camelizeKeys)
+const v2PoolChain = z.object({ chain_id: z.number(), name: z.string() }).transform(camelizeKeys)
+const litePoolChain = z.object({ chain_id: z.number(), name: z.string() }).transform(camelizeKeys)
 
 const litePoolCoin = z
   .object({
@@ -440,6 +436,22 @@ export const listPoolsResponse = z
 
 export const listPoolRegistriesResponse = z.object({ data: z.array(v2PoolRegistry) }).transform(({ data }) => data)
 export const listPoolChainsResponse = z.object({ data: z.array(v2PoolChain) }).transform(({ data }) => data)
+
+export const listLitePoolChainsResponse = z
+  .object({
+    success: z.boolean(),
+    data: z.object({
+      platforms: z.record(z.string(), z.array(z.string())),
+      platforms_metadata: z.record(z.string(), litePoolChain),
+    }),
+    generated_time_ms: z.number(),
+  })
+  .transform(({ data: { platforms, platforms_metadata: platformMetadata } }) =>
+    Object.keys(platforms).flatMap(platform => {
+      const metadata = platformMetadata[platform]
+      return metadata ? [metadata] : []
+    }),
+  )
 
 export const listLitePoolsResponse = z
   .object({
@@ -554,6 +566,8 @@ export type V2Gauge = z.infer<typeof v2Gauge>
 export type V2Pool = z.infer<typeof v2Pool>
 export type V2PoolRegistry = z.infer<typeof v2PoolRegistry>
 export type V2PoolChain = z.infer<typeof v2PoolChain>
+export type LitePoolChain = z.infer<typeof litePoolChain>
+export type ListLitePoolChainsResponse = z.infer<typeof listLitePoolChainsResponse>
 export type LitePoolCoin = z.infer<typeof litePoolCoin>
 export type LitePoolGaugeExtraReward = z.infer<typeof litePoolGaugeExtraReward>
 export type LitePoolGaugeData = z.infer<typeof litePoolGaugeData>

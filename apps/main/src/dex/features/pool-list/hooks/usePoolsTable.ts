@@ -1,5 +1,14 @@
 import { useCallback } from 'react'
-import { resetLitePoolList, resetPoolList, useLitePoolList, usePoolList } from '@/dex/queries/pool-list.query'
+import {
+  resetLitePoolChains,
+  resetLitePoolList,
+  resetPoolChains,
+  resetPoolList,
+  useLitePoolChains,
+  useLitePoolList,
+  usePoolChains,
+  usePoolList,
+} from '@/dex/queries/pool-list.query'
 import type { NetworkConfig } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import type {
@@ -11,12 +20,19 @@ import type {
 import type { Address } from '@primitives/address.utils'
 import { useCampaigns, type CampaignRewards } from '@ui-kit/entities/campaigns'
 import { DEX_ROUTES } from '@ui-kit/shared/routes'
-import { useMappedQuery } from '@ui-kit/types/util'
+import { q, useMappedQuery } from '@ui-kit/types/util'
 import { isVyperVulnerablePool } from '../alerts'
 import type { PoolsApiParams } from '../filters/utils'
 import type { PoolRow, PoolRowData } from '../types'
 import { POOLS_PAGE_SIZE } from './usePoolsPagination'
 import { usePoolsUserHasPosition } from './usePoolsUserHasPosition'
+
+class UnsupportedPoolListError extends Error {
+  constructor(readonly chainId: number) {
+    super(`The pool list is not supported on chain ${chainId}`)
+    this.name = 'UnsupportedPoolListError'
+  }
+}
 
 /** Maps Prices API pool data into the source-independent pool-list model. */
 const poolToRowData = (pool: V2Pool): PoolRowData => ({
@@ -123,6 +139,17 @@ export const usePoolsTable = ({
   sortDirection: PoolSortDirection
 }) => {
   const { chainId, id: blockchainId, isLite } = network
+
+  /** Network support */
+  const litePoolChainsQuery = useLitePoolChains({}, isLite)
+  const fullPoolChainsQuery = usePoolChains({}, !isLite)
+  const poolListSupportQuery = useMappedQuery(
+    isLite ? litePoolChainsQuery : fullPoolChainsQuery,
+    useCallback(poolChains => poolChains.some(poolChain => poolChain.chainId === chainId), [chainId]),
+  )
+  const isSupported = poolListSupportQuery.data ?? false
+
+  // Preferable we'd only enable these queries when the network is supported, but that in itself is not yet supported.
   const hasUserPoolPosition = usePoolsUserHasPosition(chainId)
   const { data: campaignsByAddress } = useCampaigns({ blockchainId })
 
@@ -139,8 +166,8 @@ export const usePoolsTable = ({
 
   /** Lite pools */
   const litePoolListParams = { chainId }
-  const litePoolListQuery = useLitePoolList(litePoolListParams, isLite)
-  const liteTableQuery = useMappedQuery(
+  const litePoolListQuery = useLitePoolList(litePoolListParams, isLite && isSupported)
+  const litePoolListTableQuery = useMappedQuery(
     litePoolListQuery,
     useCallback(({ pools }) => pools.map(pool => toPoolRow(litePoolToRowData(pool))), [toPoolRow]),
   )
@@ -155,17 +182,33 @@ export const usePoolsTable = ({
     sortBy,
     sortDirection,
   }
-  const poolListQuery = usePoolList(poolListParams, !isLite)
-  const fullTableQuery = useMappedQuery(
+  const poolListQuery = usePoolList(poolListParams, !isLite && isSupported)
+  const poolListTableQuery = useMappedQuery(
     poolListQuery,
     useCallback(({ pools }) => pools.map(pool => toPoolRow(poolToRowData(pool))), [toPoolRow]),
   )
 
-  const tableQuery = isLite ? liteTableQuery : fullTableQuery
+  const tableQuery = poolListSupportQuery.data
+    ? isLite
+      ? litePoolListTableQuery
+      : poolListTableQuery
+    : q({
+        data: undefined,
+        isLoading: poolListSupportQuery.isLoading,
+        error: poolListSupportQuery.data === false ? new UnsupportedPoolListError(chainId) : poolListSupportQuery.error,
+      })
 
   return {
-    isFetching: isLite ? litePoolListQuery.isFetching : poolListQuery.isFetching,
-    onReload: () => (isLite ? resetLitePoolList(litePoolListParams) : resetPoolList(poolListParams)),
+    isFetching: isLite
+      ? litePoolChainsQuery.isFetching || litePoolListQuery.isFetching
+      : fullPoolChainsQuery.isFetching || poolListQuery.isFetching,
+    onReload: () =>
+      Promise.all([
+        resetPoolChains({}),
+        resetLitePoolChains({}),
+        resetLitePoolList(litePoolListParams),
+        resetPoolList(poolListParams),
+      ]),
     pageCount: isLite ? 1 : (poolListQuery.data?.pageCount ?? -1),
     userHasPositions: tableQuery.data?.some(({ hasPosition }) => hasPosition),
     tableQuery,

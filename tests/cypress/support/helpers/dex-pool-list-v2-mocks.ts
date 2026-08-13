@@ -436,9 +436,20 @@ const getPoolSortValue = (pool: V2PoolFixture, sortBy: string | null) => {
 const mockPoolChains = () =>
   cy.intercept(
     { method: 'GET', hostname: 'prices.curve.finance', pathname: '/v2/pools/chains/' },
+    { body: { data: [{ chain_id: Chain.Ethereum, name: 'ethereum' }] } },
+  )
+
+const mockLitePoolChains = () =>
+  cy.intercept(
+    { method: 'GET', hostname: 'api2.curve.finance', pathname: '/get_platforms' },
     {
       body: {
-        data: [{ chain_id: Chain.Ethereum, name: 'ethereum' }],
+        success: true,
+        data: {
+          platforms: { taiko: [] },
+          platforms_metadata: { taiko: { chain_id: Chain.Taiko, name: 'Taiko' } },
+        },
+        generated_time_ms: V2_POOL_FIXTURE_NOW,
       },
     },
   )
@@ -562,6 +573,7 @@ export const setupDexPoolListV2Mocks = () => {
     req.reply({ statusCode: 503, body: { error: `Unexpected API2 pool-list request: ${req.url}` } })
   })
   mockPoolChains().as('dex-v2-pool-chains')
+  mockLitePoolChains().as('dex-v2-lite-pool-chains')
   mockPoolList().as('dex-v2-pools')
   mockLitePoolList().as('dex-v2-lite-pools')
   mockPlatforms().as('dex-v2-platforms')

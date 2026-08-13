@@ -21,6 +21,7 @@ export const visitV2PoolList = ({
   cy.wait('@dex-v2-platforms', API_LOAD_TIMEOUT)
   cy.wait(['@dex-v2-prices-chains'], API_LOAD_TIMEOUT)
   if (network === 'taiko') {
+    cy.wait('@dex-v2-lite-pool-chains', API_LOAD_TIMEOUT)
     cy.wait('@dex-v2-lite-pools', API_LOAD_TIMEOUT)
   } else {
     cy.wait('@dex-v2-pool-chains', API_LOAD_TIMEOUT)

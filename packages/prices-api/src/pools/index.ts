@@ -29,6 +29,13 @@ export async function listPoolChains(options?: Options) {
   return Schema.listPoolChainsResponse.parse(response)
 }
 
+export async function listLitePoolChains(options?: Options) {
+  const host = options?.host ?? LITE_POOLS_HOST
+  const response = await fetch(`${host}/get_platforms`, { signal: options?.signal })
+
+  return Schema.listLitePoolChainsResponse.parse(response)
+}
+
 export async function listLitePools({ chainId }: { chainId: number }, options?: Options) {
   const host = options?.host ?? LITE_POOLS_HOST
   const response = await fetch(`${host}/get_pools/${chainId}`, { signal: options?.signal })
