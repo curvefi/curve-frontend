@@ -37,7 +37,6 @@ export const defineMuiAlert = (
         flexGrow: 1,
         textWrapStyle: 'pretty',
         ...handleBreakpoints({
-          paddingInlineEnd: Spacing.sm,
           paddingBlockStart: Spacing.sm,
           paddingBlockEnd: Spacing.xs,
         }),
@@ -97,6 +96,14 @@ export const defineMuiAlert = (
         height: IconSize.sm,
       }),
     },
+    action: handleBreakpoints({
+      marginInlineStart: Spacing.xs,
+      marginInlineEnd: 0,
+      paddingInlineStart: 0,
+      paddingInlineEnd: 0,
+      paddingBlockStart: Spacing.sm,
+      paddingBlockEnd: Spacing.xs,
+    }),
   },
 })
 

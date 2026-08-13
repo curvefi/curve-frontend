@@ -10,6 +10,7 @@ const getTitle = (copyText: string, title: string | undefined) =>
 type CopyToClipboardWithToastOptions = {
   copyText: string | undefined
   confirmationText?: string
+  confirmationMessage?: string
   failureText?: string
   testId?: string
 }
@@ -17,6 +18,7 @@ type CopyToClipboardWithToastOptions = {
 export const copyToClipboardWithToast = async ({
   copyText,
   confirmationText,
+  confirmationMessage,
   failureText = t`Failed to copy to clipboard`,
   testId = 'copy-confirmation',
 }: CopyToClipboardWithToastOptions) => {
@@ -25,7 +27,12 @@ export const copyToClipboardWithToast = async ({
   const copied = await copyToClipboard(copyText)
   showToast(
     copied
-      ? { message: copyText, severity: 'info', title: getTitle(copyText, confirmationText), testId }
+      ? {
+          message: confirmationMessage ?? copyText,
+          severity: 'info',
+          title: getTitle(copyText, confirmationText),
+          testId,
+        }
       : { severity: 'error', title: failureText, testId },
   )
 }
@@ -33,12 +40,14 @@ export const copyToClipboardWithToast = async ({
 export const useCopyToClipboard = ({
   copyText,
   confirmationText,
+  confirmationMessage,
   testId,
 }: {
   copyText: string | undefined
   confirmationText?: string
+  confirmationMessage?: string
   testId?: string
 }) =>
   useCallback(() => {
-    void copyToClipboardWithToast({ copyText, confirmationText, testId })
-  }, [copyText, confirmationText, testId])
+    void copyToClipboardWithToast({ copyText, confirmationText, confirmationMessage, testId })
+  }, [copyText, confirmationText, confirmationMessage, testId])
