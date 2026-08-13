@@ -51,6 +51,7 @@ export const BorrowRateTooltip = ({ market, children }: RateTooltipProps) => {
         />
       }
       placement="top"
+      mobileDrawer
     >
       {children}
     </Tooltip>

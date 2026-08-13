@@ -68,6 +68,7 @@ export const SupplyRateLendTooltip = ({ market, children }: RateTooltipProps) =>
       open={open}
       onOpen={onOpen}
       onClose={onClose}
+      mobileDrawer
     >
       {children}
     </Tooltip>
