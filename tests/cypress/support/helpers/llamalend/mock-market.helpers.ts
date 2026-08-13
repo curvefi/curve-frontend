@@ -1,5 +1,5 @@
 import { zeroAddress } from 'viem'
-import { MARKET_LEVERAGE } from '@/llamalend/markets.constants'
+import { ZAPV2_MARKET_CONFIG } from '@/llamalend/markets.constants'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { oneAddress, oneDecimal, oneOf } from '@cy/support/generators'
@@ -28,9 +28,9 @@ export const createMockMintMarket = (overrides: object) =>
 
 const createMockLendRates = () => ({ borrowApr: '0.1', borrowApy: '0.1', lendApr: '0.04', lendApy: '0.04' })
 
-// Leverage tests need a controller recognized by the market whitelist, arbitrary addresses disable leverage providers.
-const oneWhitelistedLeverageController = () =>
-  oneOf(...recordEntries(MARKET_LEVERAGE[Chain.Ethereum] ?? {}).map(([controller]) => controller))
+// ZapV2 tests need a controller recognized by the market config; arbitrary addresses disable leverage providers.
+const oneConfiguredZapV2Controller = () =>
+  oneOf(...recordEntries(ZAPV2_MARKET_CONFIG[Chain.Ethereum] ?? {}).map(([controller]) => controller))
 
 export type MockLendStats = {
   rates: MockMethod
@@ -152,7 +152,7 @@ export const createMockLendMarket = (overrides?: object) =>
     },
     addresses: {
       amm: oneAddress(),
-      controller: oneWhitelistedLeverageController(),
+      controller: oneConfiguredZapV2Controller(),
       vault: oneAddress(),
       gauge: oneAddress(),
     },

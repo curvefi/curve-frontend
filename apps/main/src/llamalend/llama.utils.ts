@@ -23,7 +23,7 @@ import { MarketType, MarketVersion } from '@ui-kit/types/market'
 import { QueryProp, toQuery } from '@ui-kit/types/util'
 import { CRVUSD, decimal, decimalMinus, decimalMultiply, decimalSum, formatToken, ReleaseChannel } from '@ui-kit/utils'
 import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
-import { MARKET_LEVERAGE, SOLVENCY_THRESHOLDS } from './markets.constants'
+import { SOLVENCY_THRESHOLDS, ZAPV2_MARKET_CONFIG } from './markets.constants'
 
 /**
  * Gets a Llama market (either a mint or lend market) by its ID.
@@ -41,7 +41,7 @@ export const tryGetMarket = (marketId: MarketTemplate | string | null | undefine
 
 /** Returns the market-specific slippage, falling back to the default leverage slippage. */
 export const getMarketLeverageSlippage = (chainId: number, controllerAddress: Address | undefined) =>
-  (controllerAddress && MARKET_LEVERAGE[chainId]?.[getAddress(controllerAddress)]?.slippage) ??
+  (controllerAddress && ZAPV2_MARKET_CONFIG[chainId]?.[getAddress(controllerAddress)]?.slippage) ??
   SLIPPAGE.leverage.default
 
 /**
@@ -53,7 +53,7 @@ export const getMarketLeverageProviders = (
   controllerAddress: Address | undefined,
   releaseChannel: ReleaseChannel,
 ): readonly RouteProvider[] => {
-  const config = controllerAddress && MARKET_LEVERAGE[chainId]?.[getAddress(controllerAddress)]
+  const config = controllerAddress && ZAPV2_MARKET_CONFIG[chainId]?.[getAddress(controllerAddress)]
   return config ? (releaseChannel === ReleaseChannel.Beta ? RouteProviders : config.providers) : []
 }
 
