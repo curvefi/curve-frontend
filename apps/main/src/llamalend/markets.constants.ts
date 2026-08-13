@@ -405,10 +405,30 @@ type MarketLeverageConfig = { slippage?: Decimal }
 
 export const MARKET_LEVERAGE: PartialRecord<number, Record<Address, MarketLeverageConfig>> = {
   [Chain.Ethereum]: {
-    // sDOLA-crvUSD v2
-    '0xC77d97cF01737EB7aCE46cAb7cd9F60eC51a40c0': { slippage: SLIPPAGE.stable.default },
     // syrupUSDC-crvUSD
     '0x2fb54c8eae57767A9A509A395b9C4FA0702e2675': { slippage: SLIPPAGE.stable.default },
+    // sfrxUSD-crvUSD v2
+    '0x3cD4d86a2c65e57ce4b4121b67E2D2224BA41bbe': { slippage: SLIPPAGE.stable.default },
+    // sDOLA-crvUSD v2
+    '0xC77d97cF01737EB7aCE46cAb7cd9F60eC51a40c0': { slippage: SLIPPAGE.stable.default },
+    // sreUSD-crvUSD
+    '0x4F79Fe450a2BAF833E8f50340BD230f5A3eCaFe9': { slippage: SLIPPAGE.stable.default },
+    // fxSAVE-crvUSD
+    '0x8035b16053560b3C351b665b10f6C7dBDb6A1E05': { slippage: SLIPPAGE.stable.default },
+    // sUSDS-crvUSD
+    '0x2dA313f6DCEE04BA46466E100c4656618E5d3dDd': { slippage: SLIPPAGE.stable.default },
+    // sfrxUSD-crvUSD
+    '0x3DE37c38739dFb83b7A902842bF5393040f7BF50': { slippage: SLIPPAGE.stable.default },
+    // sUSDe-crvUSD
+    '0xB536FEa3a01c95Dd09932440eC802A75410139D6': { slippage: SLIPPAGE.stable.default },
+  },
+  [Chain.Optimism]: {
+    // wstETH-WETH v2
+    '0x745422BF49f3F6e4A8E12E4abD19339E7910F8C9': { slippage: SLIPPAGE.stable.default },
+  },
+  [Chain.Fraxtal]: {
+    // sfrxUSD-crvUSD
+    '0xB4EbF87A474569d8eB7f7182B4beBD8aE79ae675': { slippage: SLIPPAGE.stable.default },
   },
 }
 

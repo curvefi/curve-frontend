@@ -40,5 +40,5 @@ export const SLIPPAGE: Record<
 > = {
   stable: slippage('0.03', t`Stableswap slippage`, t`Used when the route only goes through stableswap pools`),
   crypto: slippage('0.1', t`Cryptoswap slippage`, t`Used when the route goes through at least one cryptoswap pool`),
-  leverage: slippage('0.5', t`Leverage slippage`, t`Used when leveraging on llamalend`),
+  leverage: slippage('0.2', t`Leverage slippage`, t`Used when leveraging on llamalend`),
 }
