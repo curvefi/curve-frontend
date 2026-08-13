@@ -1,8 +1,10 @@
 import { zeroAddress } from 'viem'
+import { MARKET_LEVERAGE } from '@/llamalend/markets.constants'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
-import { oneAddress, oneDecimal } from '@cy/support/generators'
-import { CRVUSD_ADDRESS, MAINNET_CRV_ADDRESS } from '@ui-kit/utils'
+import { oneAddress, oneDecimal, oneOf } from '@cy/support/generators'
+import { recordEntries } from '@primitives/objects.utils'
+import { Chain, CRVUSD_ADDRESS, MAINNET_CRV_ADDRESS } from '@ui-kit/utils'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type MockMethod = (...args: any[]) => any
@@ -25,6 +27,10 @@ export const createMockMintMarket = (overrides: object) =>
   }) as MintMarketTemplate
 
 const createMockLendRates = () => ({ borrowApr: '0.1', borrowApy: '0.1', lendApr: '0.04', lendApy: '0.04' })
+
+// Leverage tests need a controller recognized by the market whitelist, arbitrary addresses disable leverage providers.
+const oneWhitelistedLeverageController = () =>
+  oneOf(...recordEntries(MARKET_LEVERAGE[Chain.Ethereum] ?? {}).map(([controller]) => controller))
 
 export type MockLendStats = {
   rates: MockMethod
@@ -146,7 +152,7 @@ export const createMockLendMarket = (overrides?: object) =>
     },
     addresses: {
       amm: oneAddress(),
-      controller: '0xcaD85b7fe52B1939DCEebEe9bCf0b2a5Aa0cE617',
+      controller: oneWhitelistedLeverageController(),
       vault: oneAddress(),
       gauge: oneAddress(),
     },
