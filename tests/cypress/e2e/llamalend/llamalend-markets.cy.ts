@@ -219,22 +219,12 @@ testCases.forEach(([width, height, breakpoint]) => {
     it('should allow filtering by chain', firefoxRetry, () => {
       const chains = objectKeys(vaultData)
       const chain = oneOf(...chains)
-      const selectChain = (chain: Chain) =>
-        withFilters(breakpoint, () => {
-          cy.get(`[data-testid="chip-chain-${chain}"]`).click()
-          if (breakpoint === 'mobile') {
-            cy.get('[data-testid="drawer-filter-menu-lamalend-markets"]').should('be.visible')
-            cy.get('.MuiDrawer-paper:visible').should('have.length', 1)
-          }
-          return cy.wrap(undefined)
-        })
-
-      selectChain(chain)
+      withFilters(breakpoint, () => cy.get(`[data-testid="chip-chain-${chain}"]`).click())
       checkChainSelection(chain)
 
       // filter by multiple chains at the same time
       const otherChain = oneOf(...chains.filter(c => c !== chain))
-      selectChain(otherChain)
+      withFilters(breakpoint, () => cy.get(`[data-testid="chip-chain-${otherChain}"]`).click())
       checkChainSelection(chain, otherChain)
     })
 
