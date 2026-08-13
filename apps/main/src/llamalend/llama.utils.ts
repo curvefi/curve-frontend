@@ -14,13 +14,14 @@ import type { BadDebt } from '@curvefi/prices-api/liquidations'
 import { type Address, Hex } from '@primitives/address.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { type AllOrNone, assert, DEFAULT_DECIMALS, maybe, maybes, notFalsy } from '@primitives/objects.utils'
+import { type RouteProvider, RouteProviders } from '@primitives/router.utils'
 import { getLib, requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
 import { combineQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { MetricProps } from '@ui-kit/shared/ui/Metric'
 import { MarketType, MarketVersion } from '@ui-kit/types/market'
 import { QueryProp, toQuery } from '@ui-kit/types/util'
-import { CRVUSD, decimal, decimalMinus, decimalMultiply, decimalSum, formatToken } from '@ui-kit/utils'
+import { CRVUSD, decimal, decimalMinus, decimalMultiply, decimalSum, formatToken, ReleaseChannel } from '@ui-kit/utils'
 import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import { MARKET_LEVERAGE, SOLVENCY_THRESHOLDS } from './markets.constants'
 
@@ -42,6 +43,19 @@ export const tryGetMarket = (marketId: MarketTemplate | string | null | undefine
 export const getMarketLeverageSlippage = (chainId: number, controllerAddress: Address | undefined) =>
   (controllerAddress && MARKET_LEVERAGE[chainId]?.[getAddress(controllerAddress)]?.slippage) ??
   SLIPPAGE.leverage.default
+
+/**
+ * Resolves leverage providers from the market whitelist: approved markets get every provider on Beta and only their
+ * explicitly tested providers on Stable/Legacy, while unlisted markets remain disabled.
+ */
+export const getMarketLeverageProviders = (
+  chainId: number,
+  controllerAddress: Address | undefined,
+  releaseChannel: ReleaseChannel,
+): readonly RouteProvider[] => {
+  const config = controllerAddress && MARKET_LEVERAGE[chainId]?.[getAddress(controllerAddress)]
+  return config ? (releaseChannel === ReleaseChannel.Beta ? RouteProviders : config.providers) : []
+}
 
 /**
  * Checks if a market supports leverage or not. A market supports leverage if:

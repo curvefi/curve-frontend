@@ -8,7 +8,8 @@ import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/cre
 import { createLoanQueryValidationSuite } from '@/llamalend/queries/validation/borrow.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Address } from '@primitives/address.utils'
-import { parseMutationRoute } from '@ui-kit/entities/router-api'
+import type { RouteProvider } from '@primitives/router.utils'
+import { assertRouteProvider, parseMutationRoute } from '@ui-kit/entities/router-api'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
 import { waitForApproval } from '@ui-kit/utils'
@@ -17,6 +18,7 @@ import type { CreateLoanForm, CreateLoanFormQuery } from '../features/borrow/typ
 type CreateLoanMutationContext = {
   chainId: LlamaChainId
   marketId: string | undefined
+  leverageProviders: readonly RouteProvider[]
 }
 
 export type CreateLoanMutation = Omit<CreateLoanFormQuery, keyof CreateLoanMutationContext>
@@ -26,6 +28,7 @@ export type CreateLoanOptions = {
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
   onReset: () => void
   userAddress: Address | undefined
+  leverageProviders: readonly RouteProvider[]
 }
 
 const approve = async (market: MarketTemplate, { userCollateral, leverageEnabled }: CreateLoanMutation) => {
@@ -63,6 +66,7 @@ export const useCreateLoanMutation = ({
   network: { chainId },
   marketId,
   userAddress,
+  leverageProviders,
   ...props
 }: CreateLoanOptions) => {
   const config = useConfig()
@@ -72,6 +76,9 @@ export const useCreateLoanMutation = ({
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'createLoan'] as const,
     mutationFn: async (variables, { market }) => {
+      if (getCreateLoanImplementation(market, variables.leverageEnabled)[0] === 'zapV2') {
+        assertRouteProvider(variables.routeId, leverageProviders)
+      }
       const params = { ...variables, chainId, marketId }
       await waitForApproval({
         isApproved: async () => await fetchCreateLoanIsApproved(params, { staleTime: 0 }),

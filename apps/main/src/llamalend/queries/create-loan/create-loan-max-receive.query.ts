@@ -58,6 +58,7 @@ export const {
     range,
     leverageEnabled,
     slippage,
+    leverageProviders,
   }: CreateLoanMaxReceiveParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -67,6 +68,7 @@ export const {
       { range },
       { leverageEnabled },
       { slippage },
+      { leverageProviders },
     ] as const,
   queryFn: async ({
     chainId,
@@ -77,6 +79,7 @@ export const {
     range,
     leverageEnabled,
     slippage,
+    leverageProviders,
   }: CreateLoanMaxReceiveQuery): Promise<CreateLoanMaxReceiveResult> => {
     const market = getMarket(marketId)
     const [type, impl] = getCreateLoanImplementation(market, leverageEnabled)
@@ -86,7 +89,13 @@ export const {
           await impl.createLoanMaxRecv({
             userCollateral,
             range,
-            getExpected: getExpectedFn({ chainId, userAddress, zapAddress: getZapAddress(market), slippage }),
+            getExpected: getExpectedFn({
+              chainId,
+              router: leverageProviders,
+              userAddress,
+              zapAddress: getZapAddress(market),
+              slippage,
+            }),
           }),
         )
       case 'V0': {

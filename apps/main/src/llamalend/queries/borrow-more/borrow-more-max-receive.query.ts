@@ -53,6 +53,7 @@ export const { useQuery: useBorrowMoreMaxReceive, invalidate: invalidateBorrowMo
     leverageEnabled,
     routeId,
     slippage,
+    leverageProviders,
   }: BorrowMoreParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -62,6 +63,7 @@ export const { useQuery: useBorrowMoreMaxReceive, invalidate: invalidateBorrowMo
       { leverageEnabled },
       { routeId },
       { slippage },
+      { leverageProviders },
     ] as const,
   queryFn: async ({
     marketId,
@@ -71,11 +73,13 @@ export const { useQuery: useBorrowMoreMaxReceive, invalidate: invalidateBorrowMo
     routeId,
     userAddress,
     slippage,
+    leverageProviders,
   }: BorrowMoreQuery): Promise<BorrowMoreMaxReceiveResult> => {
     const market = getMarket(marketId)
     const [type, impl] = getBorrowMoreImplementation(market, leverageEnabled)
     switch (type) {
       case 'zapV2': {
+        const selectedProvider = routeId && getRouteById(routeId).router
         return castFieldsToDecimal(
           await impl.borrowMoreMaxRecv({
             userCollateral,
@@ -85,7 +89,8 @@ export const { useQuery: useBorrowMoreMaxReceive, invalidate: invalidateBorrowMo
               userAddress,
               zapAddress: getZapAddress(market),
               slippage,
-              ...(routeId && { router: getRouteById(routeId).router }),
+              router:
+                selectedProvider && leverageProviders.includes(selectedProvider) ? selectedProvider : leverageProviders,
             }),
           }),
         )

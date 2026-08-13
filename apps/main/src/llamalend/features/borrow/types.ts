@@ -1,5 +1,6 @@
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Decimal } from '@primitives/decimal.utils'
+import type { RouteProvider } from '@primitives/router.utils'
 import type { FieldsOf } from '@ui-kit/lib'
 import type { MarketQuery } from '@ui-kit/lib/model'
 import type { MakeOptional } from '@ui-kit/types/util'
@@ -22,7 +23,8 @@ type CalculatedValues = { maxDebt: Decimal | undefined; maxCollateral: Decimal |
 export type CreateLoanForm = MakeOptional<CompleteCreateLoanForm, 'debt' | 'userCollateral'> & CalculatedValues
 
 /** Full query type for create loan queries, including pool identification and all form fields */
-export type CreateLoanFormQuery<T = IChainId> = MarketQuery<T> & CompleteCreateLoanForm
+export type CreateLoanFormQuery<T = IChainId> = MarketQuery<T> &
+  CompleteCreateLoanForm & { leverageProviders: readonly RouteProvider[] }
 
 /** Fields of the create loan form query before validation */
 export type CreateLoanFormQueryParams<T = IChainId> = FieldsOf<CreateLoanFormQuery<T>>

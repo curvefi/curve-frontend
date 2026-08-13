@@ -13,6 +13,7 @@ import {
   validateUserCollateral,
 } from '@/llamalend/queries/validation/borrow-fields.validation'
 import type { Decimal } from '@primitives/decimal.utils'
+import type { RouteProvider } from '@primitives/router.utils'
 import { createValidationSuite, FieldsOf } from '@ui-kit/lib'
 import { type UserMarketQuery, validateSlippage } from '@ui-kit/lib/model'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
@@ -41,7 +42,7 @@ export type BorrowMoreForm = MakeOptional<BorrowMoreMutation, 'userCollateral' |
 
 export type BorrowMoreQuery<ChainId = number> = UserMarketQuery<ChainId> &
   BorrowMoreMutation &
-  Pick<CalculatedValues, 'maxDebt'>
+  Pick<CalculatedValues, 'maxDebt'> & { leverageProviders: readonly RouteProvider[] }
 export type BorrowMoreParams<ChainId = number> = FieldsOf<BorrowMoreQuery<ChainId>>
 
 const validateBorrowMoreFieldsForMarket = ({

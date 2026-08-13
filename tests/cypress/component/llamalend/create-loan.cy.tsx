@@ -1,4 +1,6 @@
+import { zeroAddress } from 'viem'
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
+import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import {
   checkLoanDetailsLoaded,
   submitCreateLoanForm,
@@ -59,5 +61,25 @@ describe('CreateLoanForm (mocked)', () => {
       cy.then(assertPreSubmit)
       submitCreateLoanForm().then(assertSubmit)
     })
+  })
+
+  it('hides leverage for an unlisted ZapV2 market', () => {
+    const { llamaApi, market } = createCreateLoanScenario({
+      chainId: CHAIN_ID,
+      presetRange: 50,
+      approved: true,
+      leverage: true,
+    })
+    Object.assign((market as LendMarketTemplate).addresses, { controller: zeroAddress })
+    setLlamaApi(llamaApi)
+    setGasInfo({ chainId: CHAIN_ID, networks: llamaNetworks })
+
+    cy.mount(
+      <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
+        <CreateLoanForm networks={llamaNetworks} onPricesUpdated={cy.spy()} />
+      </MockLoanTestWrapper>,
+    )
+
+    cy.get('[data-testid="leverage-checkbox"]').should('not.exist')
   })
 })

@@ -146,7 +146,7 @@ export const createMockLendMarket = (overrides?: object) =>
     },
     addresses: {
       amm: oneAddress(),
-      controller: oneAddress(),
+      controller: '0xcaD85b7fe52B1939DCEebEe9bCf0b2a5Aa0cE617',
       vault: oneAddress(),
       gauge: oneAddress(),
     },

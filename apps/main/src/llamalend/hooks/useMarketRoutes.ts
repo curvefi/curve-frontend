@@ -32,6 +32,7 @@ export type MarketRoutes = {
   tokenOut: Partial<{ symbol: string | undefined; address: Address; decimals: number }> & { usdRate: QueryProp<number> }
   networks: Record<number, BaseConfig>
   chainId: number
+  providers: readonly RouteProvider[]
 }
 
 const sortRoutes = (a: RouterRouteResponse, b: RouterRouteResponse) =>
@@ -74,6 +75,7 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
   networks,
   getRouteGasOptions,
   zapAddress,
+  providers,
 }: {
   chainId: number
   marketAddress: Address | undefined
@@ -85,6 +87,7 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
   networks: Record<number, BaseConfig>
   getRouteGasOptions: GetGasCallback<TData, GasQueryKey>
   zapAddress: Address | undefined
+  providers: readonly RouteProvider[]
   onChange: (option: RouteResponse | undefined) => Promise<void>
 }): { routes: MarketRoutes | undefined; priceImpact?: QueryProp<PriceImpact | Decimal | null> } {
   const [chosenRouter, setChosenRouter] = useState<RouteProvider | undefined>(undefined) // keep the preferred router while mounted
@@ -104,6 +107,7 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
   const { queries, onRefresh } = useRouterQueries<TData, GasQueryKey>(
     params,
     getRouteGasOptions,
+    providers,
     enabled && !!slippage, // enforce slippage, important for ZapV2 but not required for API
   )
 
@@ -134,6 +138,7 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
     routes: {
       networks,
       chainId,
+      providers,
       queries,
       enabled,
       selectedRoute,

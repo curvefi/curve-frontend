@@ -49,7 +49,9 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>({
   useFormSync(form, { maxBorrowed: maxUserBorrowed.data })
   useFormSync(form, { maxDebt: maxReceive.data?.maxDebt })
   // the leverage checkbox only shows after this value is known, purposefully override the value if the backend changes
-  useFormSync(form, { leverageEnabled: events && isPositionLeveraged(events.originalLeverage) })
+  useFormSync(form, {
+    leverageEnabled: !!params.leverageProviders?.length && events && isPositionLeveraged(events.originalLeverage),
+  })
 
   // some borrow queries depend on LL internal cache for expected collateral, reset when new market data arrives
   useOnChangeCallback(market, () => resetBorrowMoreExpectedCollateral(params))

@@ -1,12 +1,13 @@
 import { countBy, sumBy } from 'lodash'
 import { useCallback, useMemo } from 'react'
-import { ethAddress } from 'viem'
+import { ethAddress, getAddress } from 'viem'
 import { LEND_V1_DEPRECATION_DATE } from '@/llamalend/constants'
 import {
   calculateLendMarketTvlUsd,
   calculateMarketSolvency,
   calculateMintMarketTvlUsd,
   createGetBadDebtMarket,
+  getMarketLeverageProviders,
   lowSolvencyDeprecatedMessage,
 } from '@/llamalend/llama.utils'
 import {
@@ -29,8 +30,8 @@ import { useStateTimeout } from '@ui-kit/hooks/useStateTimeout'
 import { combineQueriesMeta, PartialQueryResult, RESOLVED_QUERY_RESULT } from '@ui-kit/lib'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
 import { type ExtraIncentive, MarketType, MarketVersion, MarketRateType } from '@ui-kit/types/market'
-import { decimal, decimalDiv } from '@ui-kit/utils'
-import { DEPRECATED_LLAMAS, NO_LEVERAGE_LEND } from '../../markets.constants'
+import { decimal, decimalDiv, ReleaseChannel, requireChainId } from '@ui-kit/utils'
+import { DEPRECATED_LLAMAS } from '../../markets.constants'
 import { getBadDebtLendMarketsOptions, getBadDebtMintMarketsOptions } from '../market/market-bad-debt.query'
 import { getFavoriteMarketOptions } from './favorite-markets'
 import {
@@ -246,7 +247,9 @@ const convertLendingVault = (
       DEPRECATED_LLAMAS[marketType][chain]?.[controller]?.message ?? lowSolvencyDeprecatedMessage(solvencyPercent),
     isFavorite: favoriteMarkets.has(vault),
     rewards,
-    leverage: NO_LEVERAGE_LEND[chain]?.includes(controller) ? null : leverage,
+    leverage: getMarketLeverageProviders(requireChainId(chain), getAddress(controller), ReleaseChannel.Beta).length
+      ? leverage
+      : null,
     userHasPositions:
       hasBorrowed || lendingPosition
         ? { [MarketRateType.Borrow]: hasBorrowed, [MarketRateType.Supply]: !!lendingPosition }
@@ -373,7 +376,9 @@ const convertMintMarket = (
     url: getInternalUrl('crvusd', chain, `${CRVUSD_ROUTES.PAGE_MARKETS}/${name}`),
     isFavorite: favoriteMarkets.has(llamma),
     rewards,
-    leverage,
+    leverage: getMarketLeverageProviders(requireChainId(chain), getAddress(address), ReleaseChannel.Beta).length
+      ? leverage
+      : null,
     userHasPositions: hasBorrow ? { [MarketRateType.Borrow]: hasBorrow, [MarketRateType.Supply]: false } : null,
     createdAt: new Date(createdAt).getTime(),
     favoriteKey: llamma,
