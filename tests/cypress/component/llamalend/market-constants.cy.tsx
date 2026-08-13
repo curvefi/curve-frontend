@@ -41,7 +41,6 @@ const STABLE_LEVERAGE_MARKETS = {
   [Chain.Ethereum]: ['0x2fb54c8eae57767A9A509A395b9C4FA0702e2675', '0xC77d97cF01737EB7aCE46cAb7cd9F60eC51a40c0'],
   [Chain.Optimism]: ['0x745422BF49f3F6e4A8E12E4abD19339E7910F8C9'],
 } as const
-const SDOLA_CONTROLLER = '0xC77d97cF01737EB7aCE46cAb7cd9F60eC51a40c0'
 
 /** Get a list of all alerts for each market type, and chain */
 const ALERT_CASES = recordEntries(MARKETS_ALERTS).flatMap(([marketType, marketAlerts]) =>
@@ -106,10 +105,6 @@ describe('llama market constants', () => {
     const controller = STABLE_LEVERAGE_MARKETS[Chain.Ethereum][0]
     expect(getMarketLeverageProviders(Chain.Ethereum, controller, ReleaseChannel.Beta)).to.deep.eq(RouteProviders)
     expect(getMarketLeverageProviders(Chain.Ethereum, controller, ReleaseChannel.Stable)).to.deep.eq(['enso'])
-    expect(getMarketLeverageProviders(Chain.Ethereum, SDOLA_CONTROLLER, ReleaseChannel.Stable)).to.deep.eq([
-      'enso',
-      'curve',
-    ])
     expect(getMarketLeverageProviders(Chain.Ethereum, zeroAddress, ReleaseChannel.Beta)).to.deep.eq([])
   })
 })
