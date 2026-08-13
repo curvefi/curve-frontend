@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import type { ReactNode } from 'react'
+import type { ReactNode, SyntheticEvent } from 'react'
 import Box from '@mui/material/Box'
 // eslint-disable-next-line no-restricted-imports
 import MuiTooltip, { TooltipProps as MuiTooltipProps } from '@mui/material/Tooltip'
@@ -13,6 +13,8 @@ import { InvertTheme } from './ThemeProvider'
 export type TooltipProps = MuiTooltipProps & {
   body?: ReactNode
   clickable?: boolean
+  /** Show the tooltip content in a drawer on mobile. Mobile tooltips are otherwise disabled. */
+  mobileDrawer?: boolean
 }
 
 const { MaxHeight, Spacing } = SizesAndSpaces
@@ -39,24 +41,35 @@ const TooltipContent = ({ title, children }: { title?: ReactNode; children?: Rea
  * Adds a tooltip to the children with a title and content, making sure the content is not inverted on hover.
  * It sucks that we have many components with this name, but we should try to use this one only 🤓
  */
-export const Tooltip = ({ title, body, clickable, children, slotProps, ...props }: TooltipProps) => {
+export const Tooltip = ({
+  title,
+  body,
+  clickable,
+  mobileDrawer = false,
+  children,
+  slotProps,
+  ...props
+}: TooltipProps) => {
   const isMobile = useIsMobile()
   const [drawerOpen, openDrawer, , , setDrawerOpen] = useSwitch(false)
+  const showMobileDrawer = isMobile && mobileDrawer
 
-  return title || body ? (
+  if (!(title || body) || (isMobile && !mobileDrawer)) return children
+
+  return (
     <>
       <MuiTooltip
-        key={`${isMobile}`} // force remount when switching so we don't change from uncontrolled to controlled; internal mui tooltip shenanigans
+        key={`${isMobile}`} // force remount when switching so we don't change from uncontrolled to controlled internal mui tooltip shenanigans
         title={title && <TooltipContent title={title}>{body}</TooltipContent>}
         slotProps={lodash.merge(slotProps, {
           ...(!clickable && { popper: { sx: { userSelect: 'none', pointerEvents: 'none' } } }), // prevent text selection and pointer events
           tooltip: { sx: { '&': { padding: 0 } } }, // remove padding with inverted color
         })}
         {...props}
-        {...(isMobile && {
-          enterTouchDelay: 0,
+        {...(showMobileDrawer && {
           open: false,
-          onOpen: event => {
+          enterTouchDelay: 0,
+          onOpen: (event: SyntheticEvent) => {
             props.onOpen?.(event)
             openDrawer()
           },
@@ -64,14 +77,12 @@ export const Tooltip = ({ title, body, clickable, children, slotProps, ...props 
       >
         {children}
       </MuiTooltip>
-      {isMobile && (
+      {showMobileDrawer && (
         <SwipeableDrawer open={drawerOpen} setOpen={setDrawerOpen} paperSx={{ maxHeight: MaxHeight.drawer }}>
           <TooltipContent title={title}>{body}</TooltipContent>
         </SwipeableDrawer>
       )}
     </>
-  ) : (
-    children
   )
 }
 

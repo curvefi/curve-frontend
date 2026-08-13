@@ -10,7 +10,7 @@ type LabelTooltipIconProps = {
 
 export const LabelTooltipIcon = ({ tooltip }: LabelTooltipIconProps) =>
   tooltip && (
-    <Tooltip arrow placement="top" {...tooltip}>
+    <Tooltip arrow placement="top" {...tooltip} mobileDrawer>
       <InfoOutlinedIcon sx={{ marginLeft: Spacing.xxs, width: IconSize.xs, height: IconSize.xs }} />
     </Tooltip>
   )
