@@ -1,5 +1,6 @@
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings/SlippageToleranceActionInfo'
+import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
 describe('Slippage settings', () => {
   it('does not submit an enclosing form when saving', () => {
@@ -19,7 +20,7 @@ describe('Slippage settings', () => {
     )
 
     cy.get('[data-testid="slippage-settings-button"]').click()
-    cy.get('[data-testid="slippage-radio-group"] [value="1"]').click()
+    cy.get(`[data-testid="slippage-radio-group"] [value="${SLIPPAGE.leverage.presets[1]}"]`).click()
     cy.get('[data-testid="slippage-save-button"]').click()
     cy.get('@onSubmit').should('not.have.been.called')
   })
