@@ -62,18 +62,25 @@ export const getExpectedFn =
     router: NonNullable<RoutesQuery['router']>
   }): GetExpectedFn =>
   async (tokenIn, tokenOut, amountIn, blacklist) => {
+    const providers = toArray(router)
     const routes = await fetchApiRoutes({
       chainId,
       tokenIn: tokenIn as Address,
       tokenOut: tokenOut as Address,
       amountIn: `${amountIn}` as Decimal,
       blacklist: toArray(blacklist as Address | readonly Address[]),
-      router,
+      router: providers,
       slippage,
       userAddress,
       zapAddress,
     })
-    const route = assert(routes?.[0], 'No route available')
+    // prioritize curve solver and curve router
+    const route = assert(
+      routes.find(({ router }) => router === 'curve-solver') ??
+        routes.find(({ router }) => router === 'curve') ??
+        routes[0],
+      'No route available',
+    )
     return parseRoute(route.id).quote
   }
 
