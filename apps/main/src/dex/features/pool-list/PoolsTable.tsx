@@ -14,7 +14,7 @@ import { TableFiltersChip } from '@ui-kit/shared/ui/DataTable/TableFiltersChip'
 import { TableFiltersOverlay } from '@ui-kit/shared/ui/DataTable/TableFiltersOverlay'
 import { TableHeader } from '@ui-kit/shared/ui/DataTable/TableHeader'
 import { TableSortDrawer } from '@ui-kit/shared/ui/DataTable/TableSortDrawer'
-import { POOL_COLUMNS, PoolColumnId } from './columns'
+import { LITE_POOL_COLUMNS, POOL_COLUMNS, PoolColumnId } from './columns'
 import { PoolExpandedPanel } from './components/PoolExpandedPanel'
 import { PoolExpandedPanelActions } from './components/PoolExpandedPanelActions'
 import { PoolsFilters } from './filters/PoolsFilters'
@@ -67,7 +67,7 @@ export const PoolsTable = ({ network }: { network: NetworkConfig }) => {
   )
 
   const table = useTable({
-    columns: POOL_COLUMNS,
+    columns: isLite ? LITE_POOL_COLUMNS : POOL_COLUMNS,
     query: tableQuery,
     state: {
       expanded,

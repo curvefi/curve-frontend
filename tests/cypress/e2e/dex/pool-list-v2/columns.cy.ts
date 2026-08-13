@@ -74,6 +74,13 @@ const OPTIONAL_FULL_COLUMNS = [
 const DEFAULT_LITE_COLUMNS = [PoolColumnId.PoolName, PoolColumnId.NetApy, PoolColumnId.Tvl]
 const OPTIONAL_LITE_COLUMNS = [PoolColumnId.CrvApy, PoolColumnId.RewardsApy, PoolColumnId.Points]
 const FULL_ONLY_COLUMNS = [PoolColumnId.BaseApy, PoolColumnId.WeeklyBaseApy, PoolColumnId.Volume, PoolColumnId.Age]
+const LITE_SORTABLE_COLUMNS = [PoolColumnId.PoolName, PoolColumnId.Tvl]
+const LITE_NON_SORTABLE_COLUMNS = [
+  PoolColumnId.NetApy,
+  PoolColumnId.CrvApy,
+  PoolColumnId.RewardsApy,
+  PoolColumnId.Points,
+]
 
 describe('V2 pool-list columns', () => {
   beforeEach(() => {
@@ -181,6 +188,13 @@ describe('V2 pool-list columns', () => {
       PoolColumnId.Points,
       PoolColumnId.Tvl,
     ])
+
+    for (const columnId of LITE_SORTABLE_COLUMNS) {
+      getColumnHeader(columnId).find(`[data-testid^="icon-sort-${columnId}-"]`).should('exist')
+    }
+    for (const columnId of LITE_NON_SORTABLE_COLUMNS) {
+      getColumnHeader(columnId).find(`[data-testid^="icon-sort-${columnId}-"]`).should('not.exist')
+    }
   })
 
   it('searches and sorts every Lite pool locally without refetching or applying the default TVL filter', () => {
