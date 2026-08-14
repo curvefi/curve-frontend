@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { useSyncMarketLeverageSlippage } from '@/llamalend/hooks/useSyncMarketLeverageSlippage'
@@ -14,7 +14,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { pick } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
 import type { RouteResponse } from '@ui-kit/entities/router-api'
-import { useCallbackSync, useForm } from '@ui-kit/features/forms'
+import { useCallbackSync, useForm, useFormSync } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
 import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { q, type Range } from '@ui-kit/types/util'
@@ -84,12 +84,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   const form = useForm<CreateLoanForm>(formOptions)
   useSyncMarketLeverageSlippage(form, defaultSlippage)
   const isLeverageSupported = isLeverageCreateLoanSupported(market, leverageProviders)
-  const { update: formUpdate } = form
-  useEffect(() => {
-    if (market && !isLeverageSupported) {
-      formUpdate({ leverageEnabled: false, routeId: undefined }, { automated: true })
-    }
-  }, [isLeverageSupported, market, formUpdate])
+  useFormSync(form, { leverageEnabled: false, routeId: undefined }, !!market && !isLeverageSupported)
 
   const values = form.watchValues()
   const [params, isDebouncing] = useFormDebounce(
