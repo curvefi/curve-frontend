@@ -2,7 +2,6 @@ import { useMemo } from 'react'
 import { type Address } from 'viem'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
-import type { Chain as BlockchainId } from '@curvefi/prices-api'
 import Box from '@mui/material/Box'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -21,7 +20,7 @@ export const usePointsCampaigns = ({
   const poolAddress = poolDataCacheOrApi.pool.address as Address
   const { data: network } = useNetworkByChain({ chainId })
   const { data: campaigns } = useCampaignsByAddress({
-    blockchainId: network?.networkId as BlockchainId | undefined,
+    blockchainId: network?.networkId,
     address: poolAddress,
   })
 

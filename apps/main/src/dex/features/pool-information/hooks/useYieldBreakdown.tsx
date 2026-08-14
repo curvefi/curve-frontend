@@ -7,7 +7,6 @@ import { useNetworkByChain } from '@/dex/entities/networks'
 import { defaultNetworks } from '@/dex/lib/networks'
 import { useStore } from '@/dex/store/useStore'
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
-import type { Chain as BlockchainId } from '@curvefi/prices-api'
 import { maybe, maybes } from '@primitives/objects.utils'
 import { scanAddressPath, scanTokenPath } from '@ui/utils'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
@@ -36,7 +35,7 @@ export const useYieldBreakdown = ({
   const rewardsApy = useStore(state => state.pools.rewardsApyMapper[chainId]?.[poolId])
 
   const { data: campaigns } = useCampaignsByAddress({
-    blockchainId: network?.networkId as BlockchainId | undefined,
+    blockchainId: network?.networkId,
     address: poolAddress,
   })
 

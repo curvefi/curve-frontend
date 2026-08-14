@@ -3,7 +3,6 @@ import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
 import { useTokenAlert } from '@/dex/hooks/useTokenAlert'
 import type { AlertType, PoolAlert } from '@/dex/types/main.types'
 import { AlertIcons } from '@/dex/utils/alerts'
-import type { PoolType } from '@curvefi/prices-api/pools'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { Badge, type BadgeProps } from '@ui-kit/shared/ui/Badge'
@@ -12,6 +11,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { PoolRow } from '../../types'
 
 const { Spacing } = SizesAndSpaces
+type PoolType = NonNullable<PoolRow['poolType']>
 
 const poolTypeClassifications: Record<PoolType, 'stable' | 'volatile'> = {
   main: 'stable',

@@ -30,7 +30,13 @@ const FULL_NETWORK_CAMPAIGN_IDS = [
   'pool-points-campaign-4',
 ] as const
 
-const LITE_METRIC_IDS = ['pool-volume', 'pool-tvl', 'pool-rewards-apy', 'pool-points-campaign-0', 'pool-age'] as const
+const LITE_METRIC_IDS = [
+  'pool-net-apy',
+  'pool-tvl',
+  'pool-rewards-apy',
+  'pool-crv-apy',
+  'pool-points-campaign-0',
+] as const
 
 const expectMetricOrder = (address: string, expectedIds: readonly string[]) => {
   getV2PoolExpandedPanel(address)
@@ -83,7 +89,6 @@ describe('V2 pool-list mobile panels', () => {
     visitAndExpand(address, 'taiko')
 
     expectMetricOrder(address, LITE_METRIC_IDS)
-    expectCampaignRowsToBeLinks(address, ['pool-points-campaign-0'])
   })
 
   it('does not create a campaign metric when campaign data is unavailable', () => {

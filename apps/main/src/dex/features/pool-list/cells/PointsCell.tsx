@@ -28,7 +28,6 @@ export const PointsCell = ({ pool }: { pool: PoolRow }) => {
         columnGap: Spacing.sm,
         rowGap: Spacing.xs,
         justifyContent: 'flex-end',
-        maxWidth: '12rem',
       }}
     >
       {campaigns.map((campaign, index) => (

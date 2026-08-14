@@ -2,7 +2,6 @@ import { ReactNode } from 'react'
 import { CampaignRewardsRow } from '@/dex/components/CampaignRewardsRow'
 import { TableCellRewardsOthers } from '@/dex/components/TableCellRewardsOthers'
 import { useNetworkFromUrl } from '@/dex/hooks/useChainId'
-import type { Chain } from '@curvefi/prices-api'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -41,7 +40,7 @@ export const LegacyPoolExpandedPanel: ExpandedPanelComponent<LegacyPoolRow> = ({
     network,
   } = poolData
   const { data: campaigns } = useCampaignsByAddress({
-    blockchainId: network as Chain,
+    blockchainId: network,
     address: address as Address,
   })
   const { volume, tvl, rewards } = poolData

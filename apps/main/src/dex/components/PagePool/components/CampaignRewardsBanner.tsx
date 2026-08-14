@@ -1,6 +1,5 @@
 import { useNetworkByChain } from '@/dex/entities/networks'
 import type { ChainId } from '@/dex/types/main.types'
-import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
 import { CampaignBannerComp } from '@ui/CampaignRewards/CampaignBannerComp'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
@@ -14,7 +13,7 @@ type CampaignRewardsBannerProps = {
 export const CampaignRewardsBanner = ({ chainId, address }: CampaignRewardsBannerProps) => {
   const { data: network } = useNetworkByChain({ chainId })
   const { data: campaigns } = useCampaignsByAddress({
-    blockchainId: network.networkId as Chain,
+    blockchainId: network.networkId,
     address: address as Address,
   })
   const message = campaigns.some(campaign => campaign.tags.includes('points'))
