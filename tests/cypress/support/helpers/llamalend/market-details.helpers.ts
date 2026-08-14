@@ -137,7 +137,8 @@ export const shouldLoadLendVaultDetails = ({ breakpoint, hasWallet, hasApi = tru
     cy.get(`[data-testid="supply-deposit-submit-button"]`).should(hasWallet ? 'be.visible' : 'not.exist')
     return cy.wrap(null)
   })
-  cy.get(`[data-testid^='no-position']`).should('not.exist')
+  cy.get(`[data-testid="no-position-${hasWallet ? 'supply' : 'disconnected'}"]`, LOAD_TIMEOUT).should('be.visible')
+  cy.get(`[data-testid="no-position-${hasWallet ? 'disconnected' : 'supply'}"]`).should('not.exist')
   getActionValue('market-total-liquidity').should('match', DECIMAL_REGEX)
   if (hasApi) {
     getActionValue('market-net-supply-apy').should('match', DECIMAL_REGEX)
