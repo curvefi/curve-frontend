@@ -2,17 +2,17 @@ import { useEffect, useMemo } from 'react'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { useSyncMarketLeverageSlippage } from '@/llamalend/hooks/useSyncMarketLeverageSlippage'
-import { getMarketLeverageSlippage } from '@/llamalend/llama.utils'
-import type { NetworkDict } from '@/llamalend/llamalend.types'
+import { getMarketLeverageSlippage, hasLegacyMintLeverage, hasZapV2 } from '@/llamalend/llama.utils'
+import type { MarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { getCreateLoanEstimateGasOptions } from '@/llamalend/queries/create-loan/create-loan-estimate-gas.query'
 import { useCreateLoanExpectedCollateral } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
 import { useCreateLoanPriceImpact } from '@/llamalend/queries/create-loan/create-loan-price-impact.query'
 import { useCreateLoanPrices } from '@/llamalend/queries/create-loan/create-loan-prices.query'
-import { isLeverageCreateLoanSupported } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Decimal } from '@primitives/decimal.utils'
 import { pick } from '@primitives/objects.utils'
+import type { RouteProvider } from '@primitives/router.utils'
 import type { RouteResponse } from '@ui-kit/entities/router-api'
 import { useCallbackSync, useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
@@ -41,6 +41,11 @@ const validation = createLoanQueryValidationSuite({
   skipMarketValidation: true, // given separately to the mutation
   collateralRequired: true,
 })
+
+const isLeverageCreateLoanSupported = (
+  market: MarketTemplate | undefined,
+  leverageProviders: readonly RouteProvider[],
+) => !!market && (hasLegacyMintLeverage(market) || (hasZapV2(market) && leverageProviders.length > 0))
 
 export function useCreateLoanForm<ChainId extends LlamaChainId>({
   networks,

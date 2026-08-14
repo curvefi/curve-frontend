@@ -1,5 +1,5 @@
 import { zeroAddress } from 'viem'
-import { DEPRECATED_LLAMAS, MARKETS_ALERTS, ZAPV2_MARKET_CONFIG } from '@/llamalend/markets.constants'
+import { DEPRECATED_LLAMAS, MARKETS_ALERTS, MARKETS_LEVERAGE_CONFIG } from '@/llamalend/markets.constants'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { oneAddress, oneDecimal, oneOf } from '@cy/support/generators'
@@ -31,7 +31,7 @@ const createMockLendRates = () => ({ borrowApr: '0.1', borrowApy: '0.1', lendApr
 // ZapV2 tests need an active controller recognized by the market config, arbitrary addresses disable leverage providers
 const oneConfiguredZapV2Controller = () =>
   oneOf(
-    ...recordEntries(ZAPV2_MARKET_CONFIG[Chain.Ethereum] ?? {})
+    ...recordEntries(MARKETS_LEVERAGE_CONFIG[Chain.Ethereum] ?? {})
       .filter(
         ([controller]) =>
           !DEPRECATED_LLAMAS.Lend.ethereum?.[controller] &&

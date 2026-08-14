@@ -1,7 +1,12 @@
 import { zeroAddress, getAddress } from 'viem'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import { getMarketLeverageProviders, getMarketLeverageSlippage } from '@/llamalend/llama.utils'
-import { DEPRECATED_LLAMAS, MARKETS_ALERTS, NO_LEVERAGE_LEND, ZAPV2_MARKET_CONFIG } from '@/llamalend/markets.constants'
+import {
+  DEPRECATED_LLAMAS,
+  MARKETS_ALERTS,
+  MARKETS_LEVERAGE_CONFIG,
+  NO_LEVERAGE_LEND,
+} from '@/llamalend/markets.constants'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { oneOf, oneValueOf } from '@cy/support/generators'
 import type { Address } from '@primitives/address.utils'
@@ -83,7 +88,7 @@ describe('llama market constants', () => {
   })
 
   it('keeps every ZapV2 market address checksummed', () => {
-    for (const chainMarkets of recordValues(ZAPV2_MARKET_CONFIG)) {
+    for (const chainMarkets of recordValues(MARKETS_LEVERAGE_CONFIG)) {
       for (const [controllerAddress, { providers }] of Object.entries(chainMarkets)) {
         expect(controllerAddress, `expected address to be checksummed`).to.eq(getAddress(controllerAddress))
         expect(providers.length, `${controllerAddress} must enable at least one provider`).to.be.greaterThan(0)

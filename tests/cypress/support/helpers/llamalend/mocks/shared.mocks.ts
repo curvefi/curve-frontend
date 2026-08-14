@@ -1,6 +1,7 @@
 import type { Address } from 'viem'
 import { LEVERAGE } from '@/llamalend/constants'
 import { oneAddress, oneDecimal } from '@cy/support/generators'
+import { toArray } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { RoutesQuery } from '@ui-kit/entities/router-api'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
@@ -78,10 +79,9 @@ export const routeMutationMeta = {
 export const mockRouterRoutes = (chainId: number) => {
   cy.intercept('GET', '**/api/router/v1/routes*', req => {
     const { router, amountIn, tokenIn, tokenOut } = req.query as Record<keyof RoutesQuery, string | string[]>
-    const routers = Array.isArray(router) ? router : [router]
     req.reply({
       statusCode: 200,
-      body: routers.map(router => ({
+      body: toArray(router).map(router => ({
         router,
         amountIn: [amountIn],
         amountOut: [ROUTE_AMOUNT_OUT],

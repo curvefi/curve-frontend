@@ -5,7 +5,7 @@ import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarket
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { useSyncMarketLeverageSlippage } from '@/llamalend/hooks/useSyncMarketLeverageSlippage'
-import { canLeverageUserBorrowed, getMarketLeverageSlippage, isRouterRequired } from '@/llamalend/llama.utils'
+import { canLeverageUserBorrowed, getMarketLeverageSlippage, hasZapV2, isRouterRequired } from '@/llamalend/llama.utils'
 import type { MarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useBorrowMoreMutation } from '@/llamalend/mutations/borrow-more.mutation'
 import { useBorrowMoreLeverage } from '@/llamalend/queries/borrow-more/borrow-more-future-leverage.query'
@@ -16,7 +16,6 @@ import { useBorrowMorePrices } from '@/llamalend/queries/borrow-more/borrow-more
 import {
   getBorrowMoreImplementation,
   isLeverageBorrowMore,
-  isLeverageBorrowMoreSupported,
 } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import { invalidateBorrowMoreRouteQueries } from '@/llamalend/queries/borrow-more/borrow-more-route-invalidation'
 import {
@@ -107,6 +106,11 @@ const isRouteRequired = (market: MarketTemplate | undefined, leverageEnabled: bo
   const [implementation] = market ? getBorrowMoreImplementation(market, leverageEnabled) : []
   return !!implementation && isRouterRequired(implementation)
 }
+
+const isLeverageBorrowMoreSupported = (
+  market: MarketTemplate | undefined,
+  leverageProviders: readonly RouteProvider[],
+) => !!market && hasZapV2(market) && leverageProviders.length > 0
 
 export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   networks,
