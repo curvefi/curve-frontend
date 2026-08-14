@@ -11,10 +11,10 @@ import { TIME_FRAMES } from '@ui-kit/utils'
 import { getLendingVaultsOptions } from '../market-list/lending-vaults'
 import { getMintMarketOptions } from '../market-list/mint-markets'
 
-type DeploymentQueries = [ReturnType<typeof getLendingVaultsOptions>, ReturnType<typeof getMintMarketOptions>]
+type OverviewQueries = [ReturnType<typeof getLendingVaultsOptions>, ReturnType<typeof getMintMarketOptions>]
 
-/** Returns the number of full days since a market was deployed, using the cached Prices API market lists. */
-export const useMarketDeployedDays = ({
+/** Returns overview stats a market page. */
+export const useMarketOverview = ({
   blockchainId,
   controllerAddress,
   marketType,
@@ -25,7 +25,7 @@ export const useMarketDeployedDays = ({
 }) =>
   q(
     useQueries({
-      queries: useMemo<DeploymentQueries>(
+      queries: useMemo<OverviewQueries>(
         () => [
           getLendingVaultsOptions({}, marketType === MarketType.Lend),
           getMintMarketOptions({}, marketType === MarketType.Mint),
@@ -33,24 +33,31 @@ export const useMarketDeployedDays = ({
         [marketType],
       ),
       combine: useCallback(
-        (results: QueriesResults<DeploymentQueries>) => {
+        (results: QueriesResults<OverviewQueries>) => {
           const [lendingVaults, mintMarkets] = results
-          const deployedMarket =
-            blockchainId &&
-            controllerAddress &&
-            (marketType === MarketType.Lend
-              ? lendingVaults.data?.find(
-                  item => item.chain === blockchainId && isAddressEqual(item.controller, controllerAddress),
-                )
-              : mintMarkets.data?.find(
-                  item => item.chain === blockchainId && isAddressEqual(item.address, controllerAddress),
-                ))
+          const marketOverview =
+            blockchainId && controllerAddress
+              ? marketType === MarketType.Lend
+                ? maybe(
+                    lendingVaults.data?.find(
+                      item => item.chain === blockchainId && isAddressEqual(item.controller, controllerAddress),
+                    ),
+                    ({ createdAt, nLoans }) => ({ createdAt, totalBorrowers: nLoans }),
+                  )
+                : maybe(
+                    mintMarkets.data?.find(
+                      item => item.chain === blockchainId && isAddressEqual(item.address, controllerAddress),
+                    ),
+                    ({ createdAt, loans }) => ({ createdAt, totalBorrowers: loans }),
+                  )
+              : undefined
 
           return {
             ...combineQueriesMeta(results),
-            data: maybe(deployedMarket?.createdAt, createdAt =>
-              Math.floor((Date.now() - createdAt) / TIME_FRAMES.DAY_MS),
-            ),
+            data: maybe(marketOverview, ({ createdAt, totalBorrowers }) => ({
+              deployedDays: Math.floor((Date.now() - createdAt) / TIME_FRAMES.DAY_MS),
+              totalBorrowers,
+            })),
           }
         },
         [blockchainId, controllerAddress, marketType],

@@ -8,13 +8,11 @@ import {
 import { MarketTemplate } from '@/llamalend/llamalend.types'
 import {
   useMarketCapAndAvailable,
-  useMarketDeployedDays,
   useMarketMaxLeverage,
+  useMarketOverview,
   useMarketTotalCollateral,
-  useMarketUsers,
 } from '@/llamalend/queries/market'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
-import type { Endpoint } from '@curvefi/prices-api/lending'
 import { maybe, maybes } from '@primitives/objects.utils'
 import { combineQueries } from '@ui-kit/lib'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
@@ -23,11 +21,6 @@ import { MarketType } from '@ui-kit/types/market'
 import { fallbackQ, mapQuery, q, type QueryProp } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 import { requireBlockchainId } from '@ui-kit/utils/network'
-
-const endpointFromMarketType: Record<MarketType, Endpoint> = {
-  [MarketType.Lend]: 'lending',
-  [MarketType.Mint]: 'crvusd',
-}
 
 export const useAdvancedDetailsData = ({
   chainId,
@@ -43,8 +36,7 @@ export const useAdvancedDetailsData = ({
   const { collateralToken, borrowToken } = getTokens(market, apiMarket.data) ?? {}
   const blockchainId = maybe(chainId, chainId => requireBlockchainId(chainId))
   const controllerAddress = getControllerAddress(market, apiMarket.data)
-  const endpoint = endpointFromMarketType[marketType]
-  const deployedDays = useMarketDeployedDays({ blockchainId, controllerAddress, marketType })
+  const marketOverview = useMarketOverview({ blockchainId, controllerAddress, marketType })
 
   const maxLeverage = useMarketMaxLeverage({
     chainId,
@@ -65,11 +57,6 @@ export const useAdvancedDetailsData = ({
     blockchainId,
     controllerAddress,
     marketType,
-  })
-  const marketUsers = useMarketUsers({
-    endpoint,
-    blockchainId,
-    contractAddress: controllerAddress,
   })
   const tvl = fallbackQ(
     marketType === MarketType.Lend
@@ -147,12 +134,9 @@ export const useAdvancedDetailsData = ({
         borrowSymbol: borrowToken?.symbol,
       })),
     ),
-    totalBorrowers: fallbackQ(
-      mapQuery(marketUsers, ({ count }) => ({ value: count })),
-      mapQuery(apiMarket, ({ loans }) => ({ value: loans })),
-    ),
+    totalBorrowers: mapQuery(marketOverview, ({ totalBorrowers }) => ({ value: totalBorrowers })),
     borrowedUsdRate: q(borrowedUsdRate),
-    deployedDays,
+    deployedDays: mapQuery(marketOverview, ({ deployedDays }) => deployedDays),
     tvl,
     ...(marketType === MarketType.Lend && {
       solvency: mapQuery(solvency, ({ solvencyPercent, badDebtUsd }) => ({ value: solvencyPercent, badDebtUsd })),
