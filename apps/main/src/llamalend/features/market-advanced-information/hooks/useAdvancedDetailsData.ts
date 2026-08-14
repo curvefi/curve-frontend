@@ -8,6 +8,7 @@ import {
 import { MarketTemplate } from '@/llamalend/llamalend.types'
 import {
   useMarketCapAndAvailable,
+  useMarketDeployedDays,
   useMarketMaxLeverage,
   useMarketTotalCollateral,
   useMarketUsers,
@@ -43,6 +44,7 @@ export const useAdvancedDetailsData = ({
   const blockchainId = maybe(chainId, chainId => requireBlockchainId(chainId))
   const controllerAddress = getControllerAddress(market, apiMarket.data)
   const endpoint = endpointFromMarketType[marketType]
+  const deployedDays = useMarketDeployedDays({ blockchainId, controllerAddress, marketType })
 
   const maxLeverage = useMarketMaxLeverage({
     chainId,
@@ -150,6 +152,7 @@ export const useAdvancedDetailsData = ({
       mapQuery(apiMarket, ({ loans }) => ({ value: loans })),
     ),
     borrowedUsdRate: q(borrowedUsdRate),
+    deployedDays,
     tvl,
     ...(marketType === MarketType.Lend && {
       solvency: mapQuery(solvency, ({ solvencyPercent, badDebtUsd }) => ({ value: solvencyPercent, badDebtUsd })),

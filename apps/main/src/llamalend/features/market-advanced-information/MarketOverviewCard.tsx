@@ -12,7 +12,7 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketType } from '@ui-kit/types/market'
 import { mapQuery } from '@ui-kit/types/util'
-import { formatNumber, TIME_FRAMES } from '@ui-kit/utils'
+import { formatNumber } from '@ui-kit/utils'
 import { useMarketContext } from '../market-context'
 import { useAdvancedDetailsData } from './hooks/useAdvancedDetailsData'
 import { MarketAssets } from './MarketContractsSection'
@@ -25,17 +25,13 @@ const OVERVIEW_METRIC_CATEGORY = 'llamalend.marketOverview'
 
 export const MarketOverviewCard = ({ network }: { network: BaseConfig | undefined }) => {
   const { apiMarket, chainId, market, marketId, marketType } = useMarketContext()
-  const { solvency, totalBorrowers, maxLeverage } = useAdvancedDetailsData({
+  const { solvency, totalBorrowers, maxLeverage, deployedDays } = useAdvancedDetailsData({
     chainId,
     market,
     marketId,
     marketType,
     apiMarket,
   })
-  const deployedDays = mapQuery(apiMarket, ({ createdAt }) =>
-    createdAt ? Math.max(0, Math.floor((Date.now() - createdAt) / TIME_FRAMES.DAY_MS)) : undefined,
-  )
-
   return (
     <Card size="small" data-testid="market-overview-card">
       <MarketCardHeader title={t`Overview`} />

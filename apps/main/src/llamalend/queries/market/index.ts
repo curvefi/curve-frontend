@@ -1,4 +1,5 @@
 export * from './market-bad-debt.query'
+export * from './market-deployed-days.query'
 export * from './market-future-rates.query'
 export * from './market-liquidation-band.query'
 export * from './market-cap-and-available.query'
