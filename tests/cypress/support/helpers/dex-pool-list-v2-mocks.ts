@@ -46,6 +46,37 @@ type RawV2Pool = {
 
 type V2PoolFixture = RawV2Pool & { network: V2PoolNetwork }
 
+type RawLitePool = {
+  id: string
+  chain_id: number
+  address: Address
+  registry_id: string
+  name: string | null
+  tvl: number
+  coins: {
+    address: Address
+    decimals?: string | null
+    symbol?: string | null
+  }[]
+  gauge_address?: Address | null
+  root_gauge_address?: Address | null
+  gauge_crv_apr?: number[] | null
+  gauge_extra_rewards?: {
+    gauge_address: Address
+    token_address: Address
+    name: string
+    symbol: string
+    decimals: string
+    apr_data: {
+      is_reward_still_active: boolean
+      rate: number
+      total_supply: number
+    }
+    apr?: number | null
+    meta_data: { rate: string; period_finish: number }
+  }[]
+}
+
 const address = (suffix: string): Address => `0x${suffix.padStart(40, '0')}`
 const EXTRA_REWARD_ADDRESS = address('3001')
 const ALERT_TOKEN_ADDRESS: Address = '0xeb4c2781e4eba804ce9a9803c67d0893436bb27d'
@@ -74,6 +105,19 @@ const createCoins = (network: V2PoolNetwork): RawV2Pool['coins'] => [
   },
 ]
 
+const createLiteCoins = (): RawLitePool['coins'] => [
+  {
+    address: address('4001'),
+    decimals: '6',
+    symbol: 'USDC',
+  },
+  {
+    address: address('4002'),
+    decimals: '6',
+    symbol: 'USD₮',
+  },
+]
+
 const extraReward = (apr: number, symbol = 'RWD'): RawV2Pool['extra_rewards_apr'][number] => ({
   address: EXTRA_REWARD_ADDRESS,
   symbol,
@@ -81,6 +125,21 @@ const extraReward = (apr: number, symbol = 'RWD'): RawV2Pool['extra_rewards_apr'
   decimals: 18,
   price: 1,
   apr,
+})
+
+const liteExtraReward = (apr: number, symbol = 'LITE'): NonNullable<RawLitePool['gauge_extra_rewards']>[number] => ({
+  gauge_address: address('2007'),
+  token_address: EXTRA_REWARD_ADDRESS,
+  name: `${symbol} reward`,
+  symbol,
+  decimals: '18',
+  apr_data: {
+    is_reward_still_active: true,
+    rate: 1,
+    total_supply: 1,
+  },
+  apr,
+  meta_data: { rate: '1', period_finish: V2_POOL_FIXTURE_NOW_SECONDS + YEAR_SECONDS },
 })
 
 const createPoolFixture = ({
@@ -114,7 +173,22 @@ const createPoolFixture = ({
   network,
 })
 
-export const V2_POOL_FIXTURES = {
+const createLitePoolFixture = ({
+  address: poolAddress,
+  name,
+  ...overrides
+}: Pick<RawLitePool, 'address' | 'name'> & Partial<RawLitePool>): RawLitePool => ({
+  id: `factory_stable_ng-${poolAddress.slice(-4)}`,
+  chain_id: Chain.Taiko,
+  address: poolAddress,
+  registry_id: 'factory_stable_ng',
+  name,
+  tvl: 10_000,
+  coins: createLiteCoins(),
+  ...overrides,
+})
+
+const FULL_V2_POOL_FIXTURES = {
   showcase: createPoolFixture({
     address: '0x6c5ff8dce52be77b4ece6b51996018f0c1713ba9',
     name: 'V2 Rewards Showcase',
@@ -188,23 +262,39 @@ export const V2_POOL_FIXTURES = {
     trading_volume_24h: 0,
     tvl_usd: 0,
   }),
-  lite: createPoolFixture({
-    address: address('1007'),
-    name: 'V2 Taiko Lite',
-    network: 'taiko',
-    pool_type: 'stableswapng',
-    base_daily_apr: 10,
-    base_weekly_apr: 20,
-    crv_apr: 5,
-    crv_apr_boosted: 12.5,
-    extra_rewards_apr: [extraReward(2, 'LITE')],
-    gauges: [{ address: address('2007'), is_killed: false }],
-  }),
 } as const satisfies Record<string, V2PoolFixture>
+
+const LITE_POOL_SHOWCASE = createLitePoolFixture({
+  address: address('1007'),
+  name: 'V2 Taiko Lite',
+  tvl: 10_000_000,
+  gauge_address: address('2007'),
+  root_gauge_address: address('2017'),
+  gauge_crv_apr: [5, 12.5],
+  gauge_extra_rewards: [liteExtraReward(2)],
+})
+
+const LITE_POOL_LOW_TVL = createLitePoolFixture({
+  address: '0x9999999999999999999999999999999999999999',
+  name: 'V2 Low TVL',
+  tvl: 1,
+  coins: [
+    { address: '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', decimals: '18', symbol: 'WETH' },
+    { address: '0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb', decimals: '18', symbol: 'TAIKO' },
+  ],
+})
+
+const LITE_POOL_FIXTURES = [LITE_POOL_SHOWCASE, LITE_POOL_LOW_TVL]
+
+export const V2_POOL_FIXTURES = {
+  ...FULL_V2_POOL_FIXTURES,
+  lite: LITE_POOL_SHOWCASE,
+  liteLowTvl: LITE_POOL_LOW_TVL,
+} as const
 
 type MerklOpportunityParams = {
   identifier: string
-  pool: V2PoolFixture
+  pool: Pick<RawLitePool | V2PoolFixture, 'address' | 'chain_id' | 'name'>
   apr: number
   symbol: string
   platform: string
@@ -230,7 +320,7 @@ const createMerklOpportunity = ({
   tags: [platform],
   chain: {
     id: pool.chain_id,
-    name: pool.network === 'ethereum' ? 'Ethereum' : 'Taiko',
+    name: pool.chain_id === Number(Chain.Ethereum) ? 'Ethereum' : 'Taiko',
   },
   rewardsRecord: {
     breakdowns: [
@@ -346,12 +436,20 @@ const getPoolSortValue = (pool: V2PoolFixture, sortBy: string | null) => {
 const mockPoolChains = () =>
   cy.intercept(
     { method: 'GET', hostname: 'prices.curve.finance', pathname: '/v2/pools/chains/' },
+    { body: { data: [{ chain_id: Chain.Ethereum, name: 'ethereum' }] } },
+  )
+
+const mockLitePoolChains = () =>
+  cy.intercept(
+    { method: 'GET', hostname: 'api2.curve.finance', pathname: '/get_platforms' },
     {
       body: {
-        data: [
-          { chain_id: Chain.Ethereum, name: 'ethereum' },
-          { chain_id: Chain.Taiko, name: 'taiko' },
-        ],
+        success: true,
+        data: {
+          platforms: { taiko: [] },
+          platforms_metadata: { taiko: { chain_id: Chain.Taiko, name: 'Taiko' } },
+        },
+        generated_time_ms: V2_POOL_FIXTURE_NOW,
       },
     },
   )
@@ -366,7 +464,7 @@ const mockPoolList = () =>
     const sortBy = url.searchParams.get('sort_by')
     const sortDirection = url.searchParams.get('sort_direction') === 'asc' ? 'asc' : 'desc'
     const matching = orderBy(
-      Object.values(V2_POOL_FIXTURES)
+      Object.values(FULL_V2_POOL_FIXTURES)
         .filter(pool => pool.chain_id === chainId)
         .filter(
           pool =>
@@ -389,6 +487,21 @@ const mockPoolList = () =>
       },
     })
   })
+
+const mockLitePoolList = () =>
+  cy.intercept(
+    { method: 'GET', hostname: 'api2.curve.finance', pathname: `/get_pools/${Chain.Taiko}` },
+    {
+      body: {
+        success: true,
+        data: {
+          pool_data: LITE_POOL_FIXTURES,
+          tvl: LITE_POOL_FIXTURES.reduce((total, pool) => total + pool.tvl, 0),
+        },
+        generated_time_ms: V2_POOL_FIXTURE_NOW,
+      },
+    },
+  )
 
 const mockPlatforms = () =>
   cy.intercept(
@@ -456,8 +569,13 @@ export const setupDexPoolListV2Mocks = () => {
   cy.intercept({ method: 'GET', hostname: 'prices.curve.finance', pathname: /^\/v2\/pools(?:\/.*)?$/ }, req => {
     req.reply({ statusCode: 503, body: { error: `Unexpected V2 pool-list request: ${req.url}` } })
   })
+  cy.intercept({ method: 'GET', hostname: 'api2.curve.finance', pathname: /^\/get_pools\/\d+$/ }, req => {
+    req.reply({ statusCode: 503, body: { error: `Unexpected API2 pool-list request: ${req.url}` } })
+  })
   mockPoolChains().as('dex-v2-pool-chains')
+  mockLitePoolChains().as('dex-v2-lite-pool-chains')
   mockPoolList().as('dex-v2-pools')
+  mockLitePoolList().as('dex-v2-lite-pools')
   mockPlatforms().as('dex-v2-platforms')
   mockBootstrapRequests()
   mockMerklOpportunities()

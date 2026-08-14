@@ -103,12 +103,17 @@ describe('V2 pool-list yields', () => {
       .and('not.contain.text', '5,000+%')
   })
 
-  it('combines Lite-network APR and points campaigns', () => {
+  it('combines Lite-network API2 APRs with campaign APRs and points', () => {
     const { address } = V2_POOL_FIXTURES.lite
     visitV2PoolList({ network: 'taiko', viewport: DESKTOP_VIEWPORT })
-    showV2PoolColumns([PoolColumnId.RewardsApy, PoolColumnId.Points])
+    showV2PoolColumns([PoolColumnId.CrvApy, PoolColumnId.RewardsApy, PoolColumnId.Points])
 
+    getV2PoolCell(address, PoolColumnId.NetApy).find('[data-testid="pool-net-apy"]').should('have.text', '13.32%')
     getV2PoolCell(address, PoolColumnId.RewardsApy).should('contain.text', '8.20%')
+    getV2PoolCell(address, PoolColumnId.CrvApy).within(() => {
+      cy.get('[data-testid="pool-crv-apy-unboosted"]').should('have.text', '5.12%')
+      cy.get('[data-testid="pool-crv-apy-boosted"]').should('have.text', '13.30%')
+    })
     getV2PoolCell(address, PoolColumnId.Points).find(POINTS_BADGE).should('have.text', 'TP')
   })
 })

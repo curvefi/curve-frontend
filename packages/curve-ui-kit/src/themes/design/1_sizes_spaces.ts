@@ -291,7 +291,7 @@ export const SizesAndSpaces = {
     connectWallet: '50rem', // 800px
     actionCard: '28rem', // 448px
     candleAndBandChart: '68.75rem', // 1100px, switches to column from row when charts start to become to small next to eachother
-    emptyStateCard: '27.5rem', // 440px
+    emptyStateCard: '35rem', // 560px
     tooltip: '27.5rem', // 440px
     chartTooltip: { mobile: '16.4rem', tablet: '20.5rem' }, // 264px/328px
     sliderInput: {
