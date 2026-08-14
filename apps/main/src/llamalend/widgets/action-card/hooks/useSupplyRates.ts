@@ -78,7 +78,7 @@ export function useSupplyRates<ChainId extends IChainId>(
   })
   const lendingSnapshotsQuery = q({
     ...snapshotsQuery,
-    data: snapshotsQuery.data as LendingSnapshot[] | undefined,
+    data: snapshotsQuery.data,
   })
   const marketOnChainRewardsQuery = useMarketVaultOnChainRewards({ chainId, marketId }, enabled)
   const userSupplyBoostQuery = useUserSupplyBoost({ chainId, marketId, userAddress }, enabled)
