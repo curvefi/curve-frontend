@@ -9,7 +9,7 @@ import { createLoanQueryValidationSuite } from '@/llamalend/queries/validation/b
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Address } from '@primitives/address.utils'
 import type { RouteProvider } from '@primitives/router.utils'
-import { assertRouteProvider, parseMutationRoute } from '@ui-kit/entities/router-api'
+import { parseMutationRoute } from '@ui-kit/entities/router-api'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
 import { waitForApproval } from '@ui-kit/utils'
@@ -76,9 +76,6 @@ export const useCreateLoanMutation = ({
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'createLoan'] as const,
     mutationFn: async (variables, { market }) => {
-      if (getCreateLoanImplementation(market, variables.leverageEnabled)[0] === 'zapV2') {
-        assertRouteProvider(variables.routeId, leverageProviders)
-      }
       const params = { ...variables, chainId, marketId }
       await waitForApproval({
         isApproved: async () => await fetchCreateLoanIsApproved(params, { staleTime: 0 }),
@@ -88,7 +85,7 @@ export const useCreateLoanMutation = ({
       })
       return { hash: await create(market, variables) }
     },
-    validationSuite: createLoanQueryValidationSuite({ debtRequired: true }),
+    validationSuite: createLoanQueryValidationSuite({ debtRequired: true, leverageProviders }),
     pendingMessage: (mutation, { market }) => t`Creating loan... ${formatTokenAmounts(market, mutation)}`,
     successMessage: (mutation, { market }) => t`Loan created! ${formatTokenAmounts(market, mutation)}`,
     ...props,

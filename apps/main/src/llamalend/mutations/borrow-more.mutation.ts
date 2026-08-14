@@ -16,7 +16,6 @@ import {
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Address, type Hex } from '@primitives/address.utils'
 import type { RouteProvider } from '@primitives/router.utils'
-import { assertRouteProvider } from '@ui-kit/entities/router-api'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
 import { waitForApproval } from '@ui-kit/utils'
@@ -76,9 +75,6 @@ export const useBorrowMoreMutation = ({
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'borrowMore'] as const,
     mutationFn: async (variables, { market }) => {
-      if (getBorrowMoreImplementation(market, variables.leverageEnabled)[0] === 'zapV2') {
-        assertRouteProvider(variables.routeId, leverageProviders)
-      }
       await waitForApproval({
         isApproved: async () =>
           await fetchBorrowMoreIsApproved({ marketId, chainId, userAddress, ...variables }, { staleTime: 0 }),
@@ -88,7 +84,7 @@ export const useBorrowMoreMutation = ({
       })
       return { hash: await borrowMore(market, variables) }
     },
-    validationSuite: borrowMoreMutationValidationSuite,
+    validationSuite: borrowMoreMutationValidationSuite(leverageProviders),
     pendingMessage: (mutation, { market }) => t`Borrowing more... ${formatTokenAmounts(market, mutation)}`,
     successMessage: (mutation, { market }) => t`Borrowed more! ${formatTokenAmounts(market, mutation)}`,
     ...props,

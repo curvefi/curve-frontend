@@ -9,6 +9,7 @@ import {
   validateMaxCollateral,
   validateMaxDebt,
   validateRoute,
+  validateRouteProvider,
   validateUserBorrowed,
   validateUserCollateral,
 } from '@/llamalend/queries/validation/borrow-fields.validation'
@@ -146,10 +147,14 @@ export const borrowMoreValidationSuite = ({
     borrowMoreValidationGroup(params, { leverageRequired, debtRequired, maxDebtRequired }),
   )
 
-export const borrowMoreMutationValidationSuite = createValidationSuite((params: BorrowMoreParams) => {
-  borrowMoreValidationGroup(params, { debtRequired: true, maxDebtRequired: true })
-  validateDebt(params.debt)
-})
+export const borrowMoreMutationValidationSuite = (leverageProviders: readonly RouteProvider[]) =>
+  createValidationSuite((params: BorrowMoreParams) => {
+    borrowMoreValidationGroup(params, { debtRequired: true, maxDebtRequired: true })
+    validateDebt(params.debt)
+    const market = tryGetMarket(params.marketId)
+    const [type] = market ? getBorrowMoreImplementation(market, params.leverageEnabled) : []
+    validateRouteProvider(params.routeId, leverageProviders, type === 'zapV2')
+  })
 
 export const borrowMoreLeverageValidationSuite = createValidationSuite((params: BorrowMoreParams) =>
   borrowMoreValidationGroup(params, { leverageRequired: true, debtRequired: true, maxDebtRequired: false }),

@@ -7,9 +7,11 @@ import {
   validateMaxDebt,
   validateRange,
   validateRoute,
+  validateRouteProvider,
   validateUserBorrowed,
   validateUserCollateral,
 } from '@/llamalend/queries/validation/borrow-fields.validation'
+import type { RouteProvider } from '@primitives/router.utils'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { validateSlippage } from '@ui-kit/lib/model'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
@@ -53,13 +55,17 @@ const createLoanFormValidationGroup = (
     validateLeverageEnabled(leverageEnabled, { required: isLeverageRequired })
   })
 
-function validateCreateLoanFieldsForMarket(params: CreateLoanDebtParams, { debtRequired }: { debtRequired: boolean }) {
+function validateCreateLoanFieldsForMarket(
+  params: CreateLoanDebtParams,
+  { debtRequired, leverageProviders }: { debtRequired: boolean; leverageProviders?: readonly RouteProvider[] },
+) {
   const { marketId, leverageEnabled, routeId, userBorrowed } = params
   const market = tryGetMarket(marketId)
   skipWhen(!market, () => {
     const [type] = market ? getCreateLoanImplementation(market, !!leverageEnabled) : []
     // if we don't need debt we cannot need a route, as we need a route to calculate max debt
     validateRoute(routeId, !!(type && debtRequired && leverageEnabled && isRouterRequired(type)))
+    validateRouteProvider(routeId, leverageProviders ?? [], !!leverageProviders && type === 'zapV2')
     skipWhen(type == null, () => {
       test('userBorrowed', `Borrow amount is not supported for creating loan ${type}`, () => {
         enforce(+(userBorrowed ?? '0')).equals(0)
@@ -75,6 +81,7 @@ export const createLoanQueryValidationSuite = ({
   ignoreMaxCollateral = !collateralRequired,
   isLeverageRequired = false,
   skipMarketValidation = false,
+  leverageProviders,
 }: {
   debtRequired: boolean
   ignoreMaxCollateral?: boolean
@@ -82,6 +89,7 @@ export const createLoanQueryValidationSuite = ({
   isMaxDebtRequired?: boolean
   isLeverageRequired?: boolean
   skipMarketValidation?: boolean
+  leverageProviders?: readonly RouteProvider[]
 }) =>
   createValidationSuite((params: CreateLoanDebtParams) => {
     skipWhen(skipMarketValidation, () => {
@@ -94,5 +102,5 @@ export const createLoanQueryValidationSuite = ({
       collateralRequired,
       ignoreMaxCollateral,
     })
-    validateCreateLoanFieldsForMarket(params, { debtRequired })
+    validateCreateLoanFieldsForMarket(params, { debtRequired, leverageProviders })
   })

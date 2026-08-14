@@ -5,18 +5,14 @@ import { MarketTemplate } from '@/llamalend/llamalend.types'
 import { useMarketMutation } from '@/llamalend/mutations/useMarketMutation'
 import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import { fetchRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
-import {
-  getRepayImplementation,
-  getRepayImplementationType,
-  isFullRepayFromDebtToken,
-} from '@/llamalend/queries/repay/repay-query.helpers'
+import { getRepayImplementation, isFullRepayFromDebtToken } from '@/llamalend/queries/repay/repay-query.helpers'
 import type { RepayFormData } from '@/llamalend/queries/validation/repay.types'
 import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Address, type Hex } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { RouteProvider } from '@primitives/router.utils'
-import { assertRouteProvider, parseMutationRoute } from '@ui-kit/entities/router-api'
+import { parseMutationRoute } from '@ui-kit/entities/router-api'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
 import { waitForApproval } from '@ui-kit/utils'
@@ -108,9 +104,6 @@ export const useRepayMutation = ({
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'repay'] as const,
     mutationFn: async (variables, { market }) => {
-      if (getRepayImplementationType(market, variables) === 'zapV2') {
-        assertRouteProvider(variables.routeId, leverageProviders)
-      }
       await waitForApproval({
         isApproved: async () =>
           await fetchRepayIsApproved({ marketId, chainId, userAddress, ...variables }, { staleTime: 0 }),
@@ -120,7 +113,7 @@ export const useRepayMutation = ({
       })
       return { hash: await repay(market, variables) }
     },
-    validationSuite: repayValidationSuite({ leverageRequired: false, validateMax: true }),
+    validationSuite: repayValidationSuite({ leverageRequired: false, validateMax: true, leverageProviders }),
     pendingMessage: (mutation, { market }) => t`Repaying loan... ${formatTokenAmounts(market, mutation)}`,
     successMessage: (mutation, { market }) => t`Loan repaid! ${formatTokenAmounts(market, mutation)}`,
     ...props,
