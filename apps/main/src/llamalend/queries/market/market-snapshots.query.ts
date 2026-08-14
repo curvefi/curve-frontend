@@ -6,7 +6,7 @@ import type { SnapshotRange } from '@ui-kit/lib/model/query/time-option-validati
 import { MarketType } from '@ui-kit/types/market'
 import type { Query } from '@ui-kit/types/util'
 
-export function useLlamaSnapshot({
+export function useMarketSnapshots({
   blockchainId,
   enabled = true,
   range = { kind: 'timeRange', timeOption: '1M' },

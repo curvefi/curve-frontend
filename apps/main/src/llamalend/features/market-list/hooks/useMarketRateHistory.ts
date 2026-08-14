@@ -11,7 +11,7 @@ import { LendingSnapshot, useLendingSnapshots } from '@ui-kit/entities/lending-s
 import { MarketRateType, MarketType } from '@ui-kit/types/market'
 import { AVERAGE_CATEGORIES, type AverageCategory } from '@ui-kit/utils'
 
-type UseSnapshotsResult<T> = {
+type UseRateHistoryResult<T> = {
   snapshots: T[] | null
   isLoading: boolean
   snapshotKey: keyof T
@@ -28,11 +28,11 @@ const RateKeys = {
   [MarketRateType.Supply]: 'lendApy',
 } as const satisfies Record<MarketRateType, 'borrowApr' | 'lendApy'>
 
-export function useMarketSnapshots<T extends CrvUsdSnapshot | LendingSnapshot>(
+export function useMarketRateHistory<T extends CrvUsdSnapshot | LendingSnapshot>(
   market: LlamaMarket | undefined,
   { type, category }: { type: MarketRateType; category: AverageCategory },
   enabled: boolean,
-): UseSnapshotsResult<T> {
+): UseRateHistoryResult<T> {
   const { chain, controllerAddress, type: marketType, rates } = market ?? {}
   const isLend = marketType == MarketType.Lend
   const showLendGraph = isLend && enabled
@@ -104,5 +104,5 @@ export function useMarketSnapshots<T extends CrvUsdSnapshot | LendingSnapshot>(
     minBoostedAprAverage: supplyRateMetrics?.totalAverageMinBoost ?? null,
     maxBoostedAprAverage: supplyRateMetrics?.totalAverageMaxBoost ?? null,
     error,
-  } as UseSnapshotsResult<T>
+  } as UseRateHistoryResult<T>
 }

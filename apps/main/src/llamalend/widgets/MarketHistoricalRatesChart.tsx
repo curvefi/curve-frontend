@@ -1,7 +1,6 @@
 import { sortBy } from 'lodash'
 import { useCallback, useMemo, useState } from 'react'
-import { useLlamaSnapshot } from '@/llamalend/queries/llamma-snapshots.query'
-import { type MarketRates, useMarketRates } from '@/llamalend/queries/market'
+import { type MarketRates, useMarketRates, useMarketSnapshots } from '@/llamalend/queries/market'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { HistoricalRatesTooltip } from '@/llamalend/widgets/tooltips/chart/HistoricalRatesTooltip'
 import { CardContent, Stack } from '@mui/material'
@@ -145,7 +144,7 @@ export const MarketHistoricalRatesChart = ({ rateMode }: MarketHistoricalRatesCh
 
   const marketRates = q(useMarketRates({ chainId, marketId }))
 
-  const snapshots = useLlamaSnapshot({
+  const snapshots = useMarketSnapshots({
     controllerAddress,
     marketType,
     blockchainId,

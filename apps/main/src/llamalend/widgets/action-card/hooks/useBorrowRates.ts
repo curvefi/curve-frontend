@@ -1,5 +1,4 @@
-import { useLlamaSnapshot } from '@/llamalend/queries/llamma-snapshots.query'
-import { useMarketFutureRates, useMarketRates } from '@/llamalend/queries/market'
+import { useMarketFutureRates, useMarketRates, useMarketSnapshots } from '@/llamalend/queries/market'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -41,7 +40,7 @@ export function useBorrowRates<ChainId extends IChainId>(
   },
   enabled: boolean,
 ) {
-  const snapshots = useLlamaSnapshot({
+  const snapshots = useMarketSnapshots({
     marketType,
     controllerAddress,
     blockchainId: chainId && BlockchainIds[chainId],
