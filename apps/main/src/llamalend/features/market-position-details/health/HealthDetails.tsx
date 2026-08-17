@@ -30,6 +30,7 @@ export const HealthDetails = ({ healthQuery }: { healthQuery: HealthQuery }) => 
           <Metric
             category="llamalend.positionHealth"
             label={HEALTH_TOOLTIP.shortTitle}
+            testId="health-details-health-metric"
             value={mapQuery(healthQuery, data => data.healthFactor)}
             valueOptions={{
               abbreviate: false,
@@ -47,6 +48,7 @@ export const HealthDetails = ({ healthQuery }: { healthQuery: HealthQuery }) => 
           <Metric
             category="llamalend.positionLiquidationBuffer"
             label={LIQUIDATION_BUFFER_TOOLTIP.shortTitle}
+            testId="health-details-liquidation-buffer-metric"
             value={mapQuery(healthQuery, data => data.liquidationBuffer)}
             notional={mapQuery(healthQuery, data => t`(${formatNumber(data.healthNotFull, 'percent.value')} of debt)`)}
             valueOptions={{
