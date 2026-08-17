@@ -137,7 +137,6 @@ export function checkLoanDetailsLoaded({
     getActionValue('borrow-slippage').should('include', '%')
   } else {
     cy.get('[data-testid="borrow-price-impact-value"]', LOAD_TIMEOUT).should('not.exist')
-    cy.get('[data-testid="loan-action-settings"]', LOAD_TIMEOUT).should('not.exist')
   }
 
   if (expectError) {
@@ -162,6 +161,7 @@ export const checkLeverageCheckbox = ({
   if (hasLeverage) {
     cy.get('[data-testid="leverage-checkbox"]').should('be.visible')
     cy.get('[data-testid="leverage-checkbox"] input').should(leverageEnabled ? 'be.checked' : 'not.be.checked')
+    if (!leverageEnabled) cy.get('[data-testid="loan-action-settings"]').should('not.be.visible')
   } else {
     cy.get('[data-testid="leverage-checkbox"]').should('not.exist')
   }

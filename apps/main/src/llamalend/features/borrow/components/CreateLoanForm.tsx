@@ -145,13 +145,12 @@ export const CreateLoanForm = <ChainId extends IChainId>({
             onToggle={toggleLeverage}
             maxLeverage={maxLeverage.data}
           />
-          {values.leverageEnabled && (
-            <LoanActionSettings
-              slippage={values.slippage}
-              onSlippageChange={slippage => updateForm({ slippage })}
-              routes={routes}
-            />
-          )}
+          <LoanActionSettings
+            show={values.leverageEnabled}
+            slippage={values.slippage}
+            onSlippageChange={slippage => updateForm({ slippage })}
+            routes={routes}
+          />
         </Stack>
       )}
       <LoanPresetSelector preset={preset} setPreset={setPreset} setRange={setRange}>

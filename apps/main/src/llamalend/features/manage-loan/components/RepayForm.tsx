@@ -186,13 +186,12 @@ export const RepayForm = <ChainId extends IChainId>({
           )
         }
       />
-      {showLeverage && (
-        <LoanActionSettings
-          slippage={values.slippage}
-          onSlippageChange={slippage => updateForm({ slippage })}
-          routes={routes}
-        />
-      )}
+      <LoanActionSettings
+        show={showLeverage}
+        slippage={values.slippage}
+        onSlippageChange={slippage => updateForm({ slippage })}
+        routes={routes}
+      />
       <HighPriceImpactAlert priceImpact={priceImpact} values={values} max={q(max.expected)} slippageType={LEVERAGE} />
       {isInSoftLiquidation && <AlertRepayDebtToIncreaseHealth />}
       <FormButton

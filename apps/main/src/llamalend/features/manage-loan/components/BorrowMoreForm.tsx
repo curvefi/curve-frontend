@@ -144,13 +144,12 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
             onToggle={onLeverageToggle}
             maxLeverage={max.maxLeverage.data}
           />
-          {values.leverageEnabled && (
-            <LoanActionSettings
-              slippage={values.slippage}
-              onSlippageChange={slippage => updateForm({ slippage })}
-              routes={routes}
-            />
-          )}
+          <LoanActionSettings
+            show={values.leverageEnabled}
+            slippage={values.slippage}
+            onSlippageChange={slippage => updateForm({ slippage })}
+            routes={routes}
+          />
         </Stack>
       )}
       <HighPriceImpactAlert
