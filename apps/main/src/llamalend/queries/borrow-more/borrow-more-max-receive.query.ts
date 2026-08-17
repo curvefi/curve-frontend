@@ -90,7 +90,9 @@ export const { useQuery: useBorrowMoreMaxReceive, invalidate: invalidateBorrowMo
               zapAddress: getZapAddress(market),
               slippage,
               router:
-                selectedProvider && leverageProviders.includes(selectedProvider) ? selectedProvider : leverageProviders,
+                selectedProvider && leverageProviders?.includes(selectedProvider)
+                  ? selectedProvider
+                  : leverageProviders,
             }),
           }),
         )

@@ -110,7 +110,7 @@ export const validateRoute = (routeId: string | null | undefined, isRequired: bo
 
 export const validateRouteProvider = (
   routeId: string | null | undefined,
-  providers: readonly RouteProvider[],
+  providers: readonly RouteProvider[] | undefined,
   isRequired: boolean,
 ) => {
   skipWhen(!isRequired || !routeId, () => {

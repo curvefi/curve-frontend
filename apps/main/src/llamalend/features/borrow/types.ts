@@ -24,7 +24,7 @@ export type CreateLoanForm = MakeOptional<CompleteCreateLoanForm, 'debt' | 'user
 
 /** Full query type for create loan queries, including pool identification and all form fields */
 export type CreateLoanFormQuery<T = IChainId> = MarketQuery<T> &
-  CompleteCreateLoanForm & { leverageProviders: readonly RouteProvider[] }
+  CompleteCreateLoanForm & { leverageProviders: readonly RouteProvider[] | undefined }
 
 /** Fields of the create loan form query before validation */
 export type CreateLoanFormQueryParams<T = IChainId> = FieldsOf<CreateLoanFormQuery<T>>

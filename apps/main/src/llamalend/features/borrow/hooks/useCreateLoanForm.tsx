@@ -11,7 +11,7 @@ import { useCreateLoanPrices } from '@/llamalend/queries/create-loan/create-loan
 import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Decimal } from '@primitives/decimal.utils'
-import { pick } from '@primitives/objects.utils'
+import { maybe, pick } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
 import type { RouteResponse } from '@ui-kit/entities/router-api'
 import { useCallbackSync, useForm, useFormSync } from '@ui-kit/features/forms'
@@ -44,8 +44,8 @@ const validation = createLoanQueryValidationSuite({
 
 const isLeverageCreateLoanSupported = (
   market: MarketTemplate | undefined,
-  leverageProviders: readonly RouteProvider[],
-) => !!market && (hasLegacyMintLeverage(market) || (hasZapV2(market) && leverageProviders.length > 0))
+  leverageProviders: readonly RouteProvider[] | undefined,
+) => maybe(market, market => hasLegacyMintLeverage(market) || (hasZapV2(market) && !!leverageProviders?.length))
 
 export function useCreateLoanForm<ChainId extends LlamaChainId>({
   networks,
@@ -84,7 +84,8 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   const form = useForm<CreateLoanForm>(formOptions)
   useSyncMarketLeverageSlippage(form, defaultSlippage)
   const isLeverageSupported = isLeverageCreateLoanSupported(market, leverageProviders)
-  useFormSync(form, { leverageEnabled: false, routeId: undefined }, !!market && !isLeverageSupported)
+  // Clear leverage state if the loaded market is not supported by the current provider
+  useFormSync(form, { leverageEnabled: false, routeId: undefined }, isLeverageSupported === false)
 
   const values = form.watchValues()
   const [params, isDebouncing] = useFormDebounce(

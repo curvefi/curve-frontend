@@ -8,6 +8,7 @@ import { useMarketMaxLeverage } from '@/llamalend/queries/market'
 import { BorrowMoreForm, BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Address } from '@primitives/address.utils'
+import { maybe } from '@primitives/objects.utils'
 import { useFormSync, useOnChangeCallback } from '@ui-kit/features/forms'
 import type { UseFormReturn } from '@ui-kit/features/forms'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
@@ -50,7 +51,10 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>({
   useFormSync(form, { maxDebt: maxReceive.data?.maxDebt })
   // the leverage checkbox only shows after this value is known, purposefully override the value if the backend changes
   useFormSync(form, {
-    leverageEnabled: !!params.leverageProviders?.length && events && isPositionLeveraged(events.originalLeverage),
+    leverageEnabled: maybe(
+      params.leverageProviders,
+      providers => !!providers.length && events && isPositionLeveraged(events.originalLeverage),
+    ),
   })
 
   // some borrow queries depend on LL internal cache for expected collateral, reset when new market data arrives

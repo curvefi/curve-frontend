@@ -57,7 +57,15 @@ const createLoanFormValidationGroup = (
 
 function validateCreateLoanFieldsForMarket(
   params: CreateLoanDebtParams,
-  { debtRequired, leverageProviders }: { debtRequired: boolean; leverageProviders?: readonly RouteProvider[] },
+  {
+    debtRequired,
+    leverageProviders,
+    validateLeverageProviders,
+  }: {
+    debtRequired: boolean
+    leverageProviders: readonly RouteProvider[] | undefined
+    validateLeverageProviders: boolean
+  },
 ) {
   const { marketId, leverageEnabled, routeId, userBorrowed } = params
   const market = tryGetMarket(marketId)
@@ -65,7 +73,7 @@ function validateCreateLoanFieldsForMarket(
     const [type] = market ? getCreateLoanImplementation(market, !!leverageEnabled) : []
     // if we don't need debt we cannot need a route, as we need a route to calculate max debt
     validateRoute(routeId, !!(type && debtRequired && leverageEnabled && isRouterRequired(type)))
-    validateRouteProvider(routeId, leverageProviders ?? [], !!leverageProviders && type === 'zapV2')
+    if (validateLeverageProviders) validateRouteProvider(routeId, leverageProviders, type === 'zapV2')
     skipWhen(type == null, () => {
       test('userBorrowed', `Borrow amount is not supported for creating loan ${type}`, () => {
         enforce(+(userBorrowed ?? '0')).equals(0)
@@ -74,15 +82,7 @@ function validateCreateLoanFieldsForMarket(
   })
 }
 
-export const createLoanQueryValidationSuite = ({
-  debtRequired,
-  isMaxDebtRequired = debtRequired,
-  collateralRequired = false,
-  ignoreMaxCollateral = !collateralRequired,
-  isLeverageRequired = false,
-  skipMarketValidation = false,
-  leverageProviders,
-}: {
+export const createLoanQueryValidationSuite = (options: {
   debtRequired: boolean
   ignoreMaxCollateral?: boolean
   collateralRequired?: boolean
@@ -90,8 +90,17 @@ export const createLoanQueryValidationSuite = ({
   isLeverageRequired?: boolean
   skipMarketValidation?: boolean
   leverageProviders?: readonly RouteProvider[]
-}) =>
-  createValidationSuite((params: CreateLoanDebtParams) => {
+}) => {
+  const {
+    debtRequired,
+    isMaxDebtRequired = debtRequired,
+    collateralRequired = false,
+    ignoreMaxCollateral = !collateralRequired,
+    isLeverageRequired = false,
+    skipMarketValidation = false,
+    leverageProviders,
+  } = options
+  return createValidationSuite((params: CreateLoanDebtParams) => {
     skipWhen(skipMarketValidation, () => {
       marketIdValidationSuite(params)
     })
@@ -102,5 +111,10 @@ export const createLoanQueryValidationSuite = ({
       collateralRequired,
       ignoreMaxCollateral,
     })
-    validateCreateLoanFieldsForMarket(params, { debtRequired, leverageProviders })
+    validateCreateLoanFieldsForMarket(params, {
+      debtRequired,
+      leverageProviders,
+      validateLeverageProviders: 'leverageProviders' in options, // If omitted skips provider validation for queries
+    })
   })
+}

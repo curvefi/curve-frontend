@@ -56,7 +56,8 @@ const validateRepayFieldsForMarket = (
   userCollateral: Decimal | null | undefined,
   userBorrowed: Decimal | null | undefined,
   routeId: string | null | undefined,
-  leverageProviders?: readonly RouteProvider[],
+  leverageProviders: readonly RouteProvider[] | undefined,
+  validateLeverageProviders: boolean,
 ) => {
   const market = tryGetMarket(marketId)
   skipWhen(!market, () => {
@@ -70,7 +71,7 @@ const validateRepayFieldsForMarket = (
       })
     const swapRequired = stateCollateral || userCollateral || routeId
     validateRoute(routeId, !!(type && swapRequired && isRouterRequired(type)))
-    validateRouteProvider(routeId, leverageProviders ?? [], !!leverageProviders && type === 'zapV2')
+    if (validateLeverageProviders) validateRouteProvider(routeId, leverageProviders, type === 'zapV2')
 
     skipWhen(!['deleverage', 'zapV2', null, undefined].includes(type), () => {
       test('userBorrowed', `Borrow amount is not supported for repay ${type}`, () => {
@@ -98,11 +99,13 @@ const repayValidationGroup = (
     validateMax,
     maxRequired = validateMax,
     leverageProviders,
+    validateLeverageProviders = false,
   }: {
     leverageRequired: boolean
     validateMax: boolean
     maxRequired?: boolean
     leverageProviders?: readonly RouteProvider[]
+    validateLeverageProviders?: boolean
   },
 ) => {
   const market = tryGetMarket(marketId)
@@ -110,7 +113,15 @@ const repayValidationGroup = (
   validateRepayCollateralField('stateCollateral', stateCollateral)
   validateRepayBorrowedField(userBorrowed)
   validateRepayHasValue(stateCollateral, userCollateral, userBorrowed)
-  validateRepayFieldsForMarket(market, stateCollateral, userCollateral, userBorrowed, routeId, leverageProviders)
+  validateRepayFieldsForMarket(
+    market,
+    stateCollateral,
+    userCollateral,
+    userBorrowed,
+    routeId,
+    leverageProviders,
+    validateLeverageProviders,
+  )
   validateSlippage({ slippage })
   validateLeverageSupported(market, { required: leverageRequired })
   validateIsFull(isFull)
@@ -122,23 +133,25 @@ const repayValidationGroup = (
   })
 }
 
-export const repayValidationSuite = ({
-  leverageRequired,
-  validateMax,
-  requireLeverageValue = leverageRequired,
-  leverageProviders,
-}: {
+export const repayValidationSuite = (options: {
   leverageRequired: boolean
   validateMax: boolean
   requireLeverageValue?: boolean
   leverageProviders?: readonly RouteProvider[]
-}) =>
-  createValidationSuite(({ chainId, marketId, userAddress, ...params }: RepayParams) => {
+}) => {
+  const { leverageRequired, validateMax, requireLeverageValue = leverageRequired, leverageProviders } = options
+  return createValidationSuite(({ chainId, marketId, userAddress, ...params }: RepayParams) => {
     const market = tryGetMarket(marketId)
     userMarketValidationSuite({ chainId, marketId, userAddress })
-    repayValidationGroup(market, params, { leverageRequired, validateMax, leverageProviders })
+    repayValidationGroup(market, params, {
+      leverageRequired,
+      validateMax,
+      leverageProviders,
+      validateLeverageProviders: 'leverageProviders' in options, // If omitted skips provider validation for queries
+    })
     validateLeverageValuesSupported(market, requireLeverageValue)
   })
+}
 
 export const repayFormValidationSuite = (market: MarketTemplate | undefined) =>
   createValidationSuite((params: RepayFormData) =>

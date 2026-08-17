@@ -43,7 +43,7 @@ export type BorrowMoreForm = MakeOptional<BorrowMoreMutation, 'userCollateral' |
 
 export type BorrowMoreQuery<ChainId = number> = UserMarketQuery<ChainId> &
   BorrowMoreMutation &
-  Pick<CalculatedValues, 'maxDebt'> & { leverageProviders: readonly RouteProvider[] }
+  Pick<CalculatedValues, 'maxDebt'> & { leverageProviders: readonly RouteProvider[] | undefined }
 export type BorrowMoreParams<ChainId = number> = FieldsOf<BorrowMoreQuery<ChainId>>
 
 const validateBorrowMoreFieldsForMarket = ({
@@ -147,7 +147,7 @@ export const borrowMoreValidationSuite = ({
     borrowMoreValidationGroup(params, { leverageRequired, debtRequired, maxDebtRequired }),
   )
 
-export const borrowMoreMutationValidationSuite = (leverageProviders: readonly RouteProvider[]) =>
+export const borrowMoreMutationValidationSuite = (leverageProviders: readonly RouteProvider[] | undefined) =>
   createValidationSuite((params: BorrowMoreParams) => {
     borrowMoreValidationGroup(params, { debtRequired: true, maxDebtRequired: true })
     validateDebt(params.debt)

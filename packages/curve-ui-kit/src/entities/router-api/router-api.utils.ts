@@ -27,9 +27,9 @@ export const parseRoute = (routeId: string | undefined): RouteMeta => {
 }
 
 /** Ensures a cached route still belongs to the provider policy resolved by the calling feature. */
-export const assertRouteProvider = (routeId: string | undefined, providers: readonly RouteProvider[]) => {
+export const assertRouteProvider = (routeId: string | undefined, providers: readonly RouteProvider[] | undefined) => {
   const route = getRouteById(routeId)
-  assert(providers.includes(route.router), `Route provider ${route.router} is not enabled`)
+  assert(providers?.includes(route.router), `Route provider ${route.router} is not enabled`)
   return route
 }
 
@@ -59,10 +59,12 @@ export const getExpectedFn =
     zapAddress,
     slippage,
   }: Pick<RoutesQuery, 'chainId' | 'slippage' | 'userAddress' | 'zapAddress'> & {
-    router: NonNullable<RoutesQuery['router']>
+    router: RoutesQuery['router']
   }): GetExpectedFn =>
   async (tokenIn, tokenOut, amountIn, blacklist) => {
     const providers = toArray(router)
+    assert(providers.length, 'No route providers enabled')
+    // Query every enabled provider before applying preference
     const routes = await fetchApiRoutes({
       chainId,
       tokenIn: tokenIn as Address,
@@ -74,7 +76,7 @@ export const getExpectedFn =
       userAddress,
       zapAddress,
     })
-    // prioritize curve solver and curve router
+    // Prefer Curve Solver, then Curve Router, then the rest
     const route = assert(
       routes.find(({ router }) => router === 'curve-solver') ??
         routes.find(({ router }) => router === 'curve') ??

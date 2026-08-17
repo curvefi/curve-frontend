@@ -31,7 +31,7 @@ type RepayOptions = {
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
   onReset: () => void
   userAddress: Address | undefined
-  leverageProviders: readonly RouteProvider[]
+  leverageProviders: readonly RouteProvider[] | undefined
 }
 
 const approveRepay = async (

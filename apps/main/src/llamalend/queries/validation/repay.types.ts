@@ -23,11 +23,11 @@ type RepayCalculatedValues = {
 export type RepayFormData = MakeOptional<CompleteRepayForm, 'userCollateral' | 'userBorrowed' | 'stateCollateral'> &
   RepayCalculatedValues
 export type RepayFormParams = RepayFormData &
-  UserMarketParams<IChainId> & { leverageProviders: readonly RouteProvider[] }
+  UserMarketParams<IChainId> & { leverageProviders: readonly RouteProvider[] | undefined }
 
 export type RepayQuery = UserMarketQuery<IChainId> &
   CompleteRepayForm &
-  RepayCalculatedValues & { leverageProviders: readonly RouteProvider[] }
+  RepayCalculatedValues & { leverageProviders: readonly RouteProvider[] | undefined }
 export type RepayParams = FieldsOf<RepayQuery>
 
 export type RepayHealthQuery = RepayQuery & { isHealthFull: boolean }

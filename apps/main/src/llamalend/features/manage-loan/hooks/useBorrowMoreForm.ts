@@ -26,7 +26,7 @@ import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFor
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { pick } from '@primitives/objects.utils'
+import { maybe, pick } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
 import type { RouteResponse } from '@ui-kit/entities/router-api'
 import { useCallbackSync, useForm } from '@ui-kit/features/forms'
@@ -51,7 +51,7 @@ const useBorrowMoreParams = <ChainId extends LlamaChainId>({
   chainId: ChainId
   marketId: string | undefined
   userAddress: Address | undefined
-  leverageProviders: readonly RouteProvider[]
+  leverageProviders: readonly RouteProvider[] | undefined
 }) =>
   useFormDebounce(
     useMemo(
@@ -109,8 +109,8 @@ const isRouteRequired = (market: MarketTemplate | undefined, leverageEnabled: bo
 
 const isLeverageBorrowMoreSupported = (
   market: MarketTemplate | undefined,
-  leverageProviders: readonly RouteProvider[],
-) => !!market && hasZapV2(market) && leverageProviders.length > 0
+  leverageProviders: readonly RouteProvider[] | undefined,
+) => maybe(leverageProviders, providers => hasZapV2(market) && providers.length > 0)
 
 export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   networks,

@@ -106,11 +106,11 @@ describe('llama market constants', () => {
     expect(getMarketLeverageSlippage(Chain.Ethereum, zeroAddress)).to.eq(SLIPPAGE.leverage.default)
   })
 
-  it('resolves configured market providers by release channel and defaults unknown markets to none', () => {
+  it('resolves configured market providers by release channel', () => {
     const controller = STABLE_LEVERAGE_MARKETS[Chain.Ethereum][0]
     expect(getMarketLeverageProviders(Chain.Ethereum, controller, ReleaseChannel.Beta)).to.deep.eq(RouteProviders)
     expect(getMarketLeverageProviders(Chain.Ethereum, controller, ReleaseChannel.Stable)).to.deep.eq(['enso'])
-    expect(getMarketLeverageProviders(Chain.Ethereum, zeroAddress, ReleaseChannel.Beta)).to.deep.eq([])
+    expect(getMarketLeverageProviders(Chain.Ethereum, zeroAddress, ReleaseChannel.Beta)).to.eq(undefined)
   })
 })
 

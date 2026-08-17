@@ -18,7 +18,7 @@ import type { CreateLoanForm, CreateLoanFormQuery } from '../features/borrow/typ
 type CreateLoanMutationContext = {
   chainId: LlamaChainId
   marketId: string | undefined
-  leverageProviders: readonly RouteProvider[]
+  leverageProviders: readonly RouteProvider[] | undefined
 }
 
 export type CreateLoanMutation = Omit<CreateLoanFormQuery, keyof CreateLoanMutationContext>
@@ -28,7 +28,7 @@ export type CreateLoanOptions = {
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
   onReset: () => void
   userAddress: Address | undefined
-  leverageProviders: readonly RouteProvider[]
+  leverageProviders: readonly RouteProvider[] | undefined
 }
 
 const approve = async (market: MarketTemplate, { userCollateral, leverageEnabled }: CreateLoanMutation) => {

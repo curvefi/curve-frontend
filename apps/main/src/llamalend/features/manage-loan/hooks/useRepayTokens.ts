@@ -41,7 +41,7 @@ const getRepayTokenOptions = ({
     },
     collateralToken &&
       canRepayFromStateCollateral(market) &&
-      (!market || !hasZapV2(market) || hasLeverageProvider) && {
+      (!hasZapV2(market) || hasLeverageProvider) && {
         address: collateralToken.address,
         chain: networkId,
         symbol: collateralToken.symbol,
@@ -78,9 +78,9 @@ export const useRepayTokens = ({
         collateralToken,
         networkId,
         market,
-        hasLeverageProvider: leverageProviders.length > 0,
+        hasLeverageProvider: !!leverageProviders?.length,
       }),
-    [borrowToken, collateralToken, networkId, market, leverageProviders.length],
+    [borrowToken, collateralToken, networkId, market, leverageProviders?.length],
   )
   const isLeveraged = collateralEvents.data && isPositionLeveraged(collateralEvents.data?.originalLeverage)
   const field = isLeveraged === true ? 'stateCollateral' : isLeveraged === false ? 'userBorrowed' : undefined
