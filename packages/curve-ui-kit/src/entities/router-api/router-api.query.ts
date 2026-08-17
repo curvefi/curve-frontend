@@ -194,10 +194,10 @@ export const useRouterQueries = <TData extends TGas | null, TKey extends QueryKe
   onRefresh: () => Promise<RouteResponse[][]>
 } => ({
   queries: {
-    curve: useCurveRouterQuery(params, getRouteGasOptions, providers?.includes('curve') && enabled),
-    'curve-solver': useRouterQuery(params, 'curve-solver', providers?.includes('curve-solver') && enabled),
-    enso: useRouterQuery(params, 'enso', providers?.includes('enso') && !!params.zapAddress && enabled),
-    '0x': useRouterQuery(params, '0x', providers?.includes('0x') && enabled),
+    curve: useCurveRouterQuery(params, getRouteGasOptions, !!providers?.includes('curve') && enabled),
+    'curve-solver': useRouterQuery(params, 'curve-solver', !!providers?.includes('curve-solver') && enabled),
+    enso: useRouterQuery(params, 'enso', !!providers?.includes('enso') && !!params.zapAddress && enabled),
+    '0x': useRouterQuery(params, '0x', !!providers?.includes('0x') && enabled),
   },
   onRefresh: useCallback(
     () => Promise.all((providers ?? []).map(router => fetchApiRoutes({ ...params, router }))),

@@ -73,6 +73,7 @@ describe('CreateLoanForm (mocked)', () => {
     Object.assign((market as LendMarketTemplate).addresses, { controller: zeroAddress })
     setLlamaApi(llamaApi)
     setGasInfo({ chainId: CHAIN_ID, networks: llamaNetworks })
+    cy.intercept('GET', '**/api/router/v1/routes*').as('routerRoutes')
 
     cy.mount(
       <MockLoanTestWrapper llamaApi={llamaApi} market={market}>
@@ -81,5 +82,6 @@ describe('CreateLoanForm (mocked)', () => {
     )
 
     cy.get('[data-testid="leverage-checkbox"]').should('not.exist')
+    cy.get('@routerRoutes.all').should('have.length', 0)
   })
 })
