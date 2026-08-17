@@ -21,7 +21,7 @@ const POOL_SORT_BY = {
 type PoolSortableColumn = keyof typeof POOL_SORT_BY
 
 const SORT_QUERY_FIELD = 'sort'
-const LITE_SORT_COLUMNS = new Set<string>([PoolColumnId.PoolName, PoolColumnId.Volume, PoolColumnId.Tvl])
+const LITE_SORT_COLUMNS = new Set<PoolColumnId>([PoolColumnId.PoolName, PoolColumnId.Tvl])
 
 type ColumnSort = { id: PoolSortableColumn; desc: boolean }
 export type PoolsSorting = [ColumnSort]
@@ -36,7 +36,7 @@ const LITE_SORT_OPTIONS = SORT_OPTIONS.filter(({ id }) => LITE_SORT_COLUMNS.has(
 
 const getPoolsSorting = (sorting: SortingState, defaultSort: SortingState, isLite: boolean): PoolsSorting => {
   const sort = [...sorting, ...defaultSort].find(
-    ({ id }) => Object.hasOwn(POOL_SORT_BY, id) && (!isLite || LITE_SORT_COLUMNS.has(id)),
+    ({ id }) => Object.hasOwn(POOL_SORT_BY, id) && (!isLite || LITE_SORT_COLUMNS.has(id as PoolColumnId)),
   )
 
   return sort ? [{ id: sort.id as PoolSortableColumn, desc: sort.desc }] : [{ id: PoolColumnId.Tvl, desc: true }]

@@ -6,7 +6,6 @@ import { CampaignTooltipContent } from '@/dex/features/pool-list/cells/RewardIco
 import { RewardsApyTooltipContent } from '@/dex/features/pool-list/cells/RewardsApyTooltipContent'
 import { aprToPoolApy } from '@/dex/features/pool-list/cells/utils'
 import type { PoolRow } from '@/dex/features/pool-list/types'
-import { fromDate } from '@curvefi/prices-api/timestamp'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import type { CampaignRewards } from '@ui-kit/entities/campaigns'
 
@@ -30,9 +29,10 @@ const USDC = {
   decimals: 6,
 } as const
 const EXTRA_REWARD = {
-  ...BOLD,
-  price: 1,
+  address: BOLD.address,
   apr: 2,
+  name: BOLD.name,
+  symbol: BOLD.symbol,
 } satisfies PoolRow['extraRewardsApr'][number]
 
 const BOLD_CAMPAIGN: CampaignRewards = {
@@ -60,35 +60,28 @@ const BOLD_APR_CAMPAIGN: CampaignRewards = {
   symbol: BOLD.symbol,
 }
 
-const createPool = (overrides: Partial<PoolRow> = {}): PoolRow => ({
-  chainId: 1,
+const createPool = (): PoolRow => ({
   name: 'BOLD/USDC Pool',
   address: POOL_ADDRESS,
-  creationDate: fromDate(new Date('2025-05-18T19:37:59.000Z')),
-  poolType: 'stableswapng',
-  isMetapool: false,
-  basePool: null,
-  tvlUsd: 1_000_000,
-  tradingVolume24h: 100_000,
-  tradingFee24h: 1_000,
-  liquidityVolume24h: 90_000,
-  liquidityFee24h: 900,
   coins: [BOLD, USDC].map((token, poolIndex) => ({ poolIndex, ...token })),
   tradeableCoins: [BOLD, USDC].map((token, poolIndex) => ({ poolIndex, ...token })),
   baseDailyApr: 10,
-  baseWeeklyApr: 20,
+  baseWeeklyApr: undefined,
+  creationDate: undefined,
   crvApr: 5,
   crvAprBoosted: 12.5,
   extraRewardsApr: [EXTRA_REWARD],
-  vyperVersion: null,
   gauge: { address: GAUGE_ADDRESS, isKilled: false },
   gauges: [{ address: GAUGE_ADDRESS, isKilled: false }],
   campaigns: [BOLD_CAMPAIGN, BOLD_APR_CAMPAIGN],
   hasPosition: false,
   hasVyperVulnerability: false,
+  isMetapool: false,
   network: 'ethereum',
+  poolType: undefined,
+  tradingVolume24h: undefined,
+  tvlUsd: undefined,
   url: `/dex/ethereum/pools/${POOL_ADDRESS}/deposit`,
-  ...overrides,
 })
 
 const mountContent = (content: ReactElement) =>
