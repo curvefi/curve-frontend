@@ -24,10 +24,10 @@ const { Grid, Spacing } = SizesAndSpaces
 const OVERVIEW_METRIC_CATEGORY = 'llamalend.marketOverview'
 
 export const MarketOverviewCard = ({ network }: { network: BaseConfig | undefined }) => {
-  const { apiMarket, chainId, market, marketId, marketType } = useMarketContext()
+  const { apiMarket, chainId, market, marketId, marketQuery, marketType } = useMarketContext()
   const { solvency, totalBorrowers, maxLeverage, deployedDays } = useAdvancedDetailsData({
     chainId,
-    market,
+    marketQuery,
     marketId,
     marketType,
     apiMarket,

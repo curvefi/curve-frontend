@@ -24,19 +24,25 @@ import { requireBlockchainId } from '@ui-kit/utils/network'
 
 export const useAdvancedDetailsData = ({
   chainId,
-  market,
+  marketQuery,
   marketId,
   marketType,
   apiMarket,
 }: MarketParams & {
-  market: MarketTemplate | undefined
+  marketQuery: QueryProp<MarketTemplate>
   marketType: MarketType
   apiMarket: QueryProp<LlamaMarket>
 }) => {
+  const market = marketQuery.data
   const { collateralToken, borrowToken } = getTokens(market, apiMarket.data) ?? {}
   const blockchainId = maybe(chainId, chainId => requireBlockchainId(chainId))
   const controllerAddress = getControllerAddress(market, apiMarket.data)
-  const marketOverview = useMarketOverview({ blockchainId, controllerAddress, marketType })
+  const isControllerLoading = !controllerAddress && (marketQuery.isLoading || apiMarket.isLoading)
+  const marketOverviewQuery = useMarketOverview({ blockchainId, controllerAddress, marketType })
+  const marketOverview = q({
+    ...marketOverviewQuery,
+    isLoading: marketOverviewQuery.isLoading || isControllerLoading,
+  })
 
   const maxLeverage = useMarketMaxLeverage({
     chainId,
@@ -139,7 +145,10 @@ export const useAdvancedDetailsData = ({
     deployedDays: mapQuery(marketOverview, ({ deployedDays }) => deployedDays),
     tvl,
     ...(marketType === MarketType.Lend && {
-      solvency: mapQuery(solvency, ({ solvencyPercent, badDebtUsd }) => ({ value: solvencyPercent, badDebtUsd })),
+      solvency: mapQuery(
+        q({ ...solvency, isLoading: solvency.isLoading || isControllerLoading }),
+        ({ solvencyPercent, badDebtUsd }) => ({ value: solvencyPercent, badDebtUsd }),
+      ),
     }),
   }
 }
