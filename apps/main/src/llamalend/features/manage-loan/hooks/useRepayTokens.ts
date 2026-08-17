@@ -90,5 +90,7 @@ export const useRepayTokens = ({
     // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     if (defaultToken) setToken(defaultToken)
   }, [defaultToken])
-  return { tokens, token: token && tokens.includes(token) ? token : tokens[0], onToken: setToken }
+  // Market or provider changes can remove a repayment source, so keep the selection within the current options.
+  const selectedToken = tokens.find(({ field }) => field === token?.field) ?? tokens[0]
+  return { tokens, token: selectedToken, onToken: setToken }
 }

@@ -3,6 +3,7 @@ import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/cre
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
+import type { RouteProvider } from '@primitives/router.utils'
 import { getExpectedFn } from '@ui-kit/entities/router-api'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
@@ -13,8 +14,9 @@ import { createLoanQueryValidationSuite } from '../validation/borrow.validation'
 type CreateLoanMaxReceiveQuery = Omit<CreateLoanFormQuery, 'userCollateral' | 'debt' | 'routeId'> & {
   userCollateral: Decimal
   userAddress: Address
+  leverageProviders: readonly RouteProvider[] | undefined
 }
-type CreateLoanMaxReceiveParams = FieldsOf<CreateLoanMaxReceiveQuery>
+export type CreateLoanMaxReceiveParams = FieldsOf<CreateLoanMaxReceiveQuery>
 
 type CreateLoanMaxReceiveResult = {
   maxDebt: Decimal

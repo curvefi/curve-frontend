@@ -43,7 +43,7 @@ export type BorrowMoreForm = MakeOptional<BorrowMoreMutation, 'userCollateral' |
 
 export type BorrowMoreQuery<ChainId = number> = UserMarketQuery<ChainId> &
   BorrowMoreMutation &
-  Pick<CalculatedValues, 'maxDebt'> & { leverageProviders: readonly RouteProvider[] | undefined }
+  Pick<CalculatedValues, 'maxDebt'>
 export type BorrowMoreParams<ChainId = number> = FieldsOf<BorrowMoreQuery<ChainId>>
 
 const validateBorrowMoreFieldsForMarket = ({

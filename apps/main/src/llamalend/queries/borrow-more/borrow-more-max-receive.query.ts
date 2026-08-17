@@ -1,10 +1,11 @@
 import { getMarket, getZapAddress } from '@/llamalend/llama.utils'
 import { getBorrowMoreImplementation } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
-import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
+import type { BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreValidationGroup } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { Decimal } from '@primitives/decimal.utils'
+import type { RouteProvider } from '@primitives/router.utils'
 import { getExpectedFn, getRouteById } from '@ui-kit/entities/router-api'
-import { createValidationSuite } from '@ui-kit/lib'
+import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { decimal } from '@ui-kit/utils'
 
@@ -16,6 +17,11 @@ type BorrowMoreMaxReceiveResult = {
   collateralFromMaxDebt?: Decimal
   avgPrice?: Decimal
 }
+
+type BorrowMoreMaxReceiveQuery<ChainId = number> = BorrowMoreQuery<ChainId> & {
+  leverageProviders: readonly RouteProvider[] | undefined
+}
+export type BorrowMoreMaxReceiveParams<ChainId = number> = FieldsOf<BorrowMoreMaxReceiveQuery<ChainId>>
 
 function castFieldsToDecimal(foo: {
   maxDebt: string
@@ -54,7 +60,7 @@ export const { useQuery: useBorrowMoreMaxReceive, invalidate: invalidateBorrowMo
     routeId,
     slippage,
     leverageProviders,
-  }: BorrowMoreParams) =>
+  }: BorrowMoreMaxReceiveParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'borrowMoreMaxRecv',
@@ -74,7 +80,7 @@ export const { useQuery: useBorrowMoreMaxReceive, invalidate: invalidateBorrowMo
     userAddress,
     slippage,
     leverageProviders,
-  }: BorrowMoreQuery): Promise<BorrowMoreMaxReceiveResult> => {
+  }: BorrowMoreMaxReceiveQuery): Promise<BorrowMoreMaxReceiveResult> => {
     const market = getMarket(marketId)
     const [type, impl] = getBorrowMoreImplementation(market, leverageEnabled)
     switch (type) {
@@ -102,7 +108,7 @@ export const { useQuery: useBorrowMoreMaxReceive, invalidate: invalidateBorrowMo
     }
   },
   category: 'llamalend.borrowMore',
-  validationSuite: createValidationSuite((params: BorrowMoreParams) =>
+  validationSuite: createValidationSuite((params: BorrowMoreMaxReceiveParams) =>
     borrowMoreValidationGroup(params, {
       leverageRequired: false,
       debtRequired: false,

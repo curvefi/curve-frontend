@@ -18,7 +18,6 @@ import type { CreateLoanForm, CreateLoanFormQuery } from '../features/borrow/typ
 type CreateLoanMutationContext = {
   chainId: LlamaChainId
   marketId: string | undefined
-  leverageProviders: readonly RouteProvider[] | undefined
 }
 
 export type CreateLoanMutation = Omit<CreateLoanFormQuery, keyof CreateLoanMutationContext>

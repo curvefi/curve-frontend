@@ -40,7 +40,6 @@ const useRepayParams = ({
   isFull,
   slippage,
   routeId,
-  leverageProviders,
 }: RepayFormParams) =>
   useFormDebounce(
     useMemo(
@@ -57,7 +56,6 @@ const useRepayParams = ({
         isFull,
         slippage,
         routeId,
-        leverageProviders,
       }),
       [
         chainId,
@@ -72,7 +70,6 @@ const useRepayParams = ({
         isFull,
         slippage,
         routeId,
-        leverageProviders,
       ],
     ),
   )
@@ -123,7 +120,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
   useSyncMarketLeverageSlippage(form, defaultSlippage)
 
   const values = form.watchValues()
-  const [params, isDebouncing] = useRepayParams({ chainId, marketId, userAddress, leverageProviders, ...values })
+  const [params, isDebouncing] = useRepayParams({ chainId, marketId, userAddress, ...values })
 
   const {
     onSubmit,

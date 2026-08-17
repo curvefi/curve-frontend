@@ -1,6 +1,5 @@
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Decimal } from '@primitives/decimal.utils'
-import type { RouteProvider } from '@primitives/router.utils'
 import type { FieldsOf } from '@ui-kit/lib'
 import type { UserMarketParams, UserMarketQuery } from '@ui-kit/lib/model'
 import type { MakeOptional } from '@ui-kit/types/util'
@@ -22,12 +21,9 @@ type RepayCalculatedValues = {
 
 export type RepayFormData = MakeOptional<CompleteRepayForm, 'userCollateral' | 'userBorrowed' | 'stateCollateral'> &
   RepayCalculatedValues
-export type RepayFormParams = RepayFormData &
-  UserMarketParams<IChainId> & { leverageProviders: readonly RouteProvider[] | undefined }
+export type RepayFormParams = RepayFormData & UserMarketParams<IChainId>
 
-export type RepayQuery = UserMarketQuery<IChainId> &
-  CompleteRepayForm &
-  RepayCalculatedValues & { leverageProviders: readonly RouteProvider[] | undefined }
+export type RepayQuery = UserMarketQuery<IChainId> & CompleteRepayForm & RepayCalculatedValues
 export type RepayParams = FieldsOf<RepayQuery>
 
 export type RepayHealthQuery = RepayQuery & { isHealthFull: boolean }
