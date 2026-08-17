@@ -83,11 +83,7 @@ export const DetailPageLayout = ({
 
   const headerStack = (
     <>
-      {header && (
-        <Stack sx={hasSections ? undefined : stickyHeaderSx(navHeight)}>
-          {header}
-        </Stack>
-      )}
+      {header && <Stack sx={hasSections ? undefined : stickyHeaderSx(navHeight)}>{header}</Stack>}
       {hasSections && (
         <Stack
           sx={{
