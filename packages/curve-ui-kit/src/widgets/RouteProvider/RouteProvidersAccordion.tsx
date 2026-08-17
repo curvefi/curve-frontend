@@ -89,7 +89,7 @@ export const RouteProvidersAccordion = ({
         expanded={isExpanded}
         toggle={onToggle}
       >
-        <Stack sx={{ paddingBlock: Spacing.sm, gap: Spacing.sm }}>
+        <Stack sx={{ gap: Spacing.sm }}>
           <Stack>
             <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
               <Typography variant="headingXsBold" color="textSecondary">

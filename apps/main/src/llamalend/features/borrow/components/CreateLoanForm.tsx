@@ -2,6 +2,7 @@ import { type ChangeEvent, useCallback } from 'react'
 import { LEVERAGE, LoanPreset } from '@/llamalend/constants'
 import { getMaxBorrowAmount } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
+import { LoanActionSettings } from '@/llamalend/widgets/action-card/LoanActionSettings'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -90,9 +91,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           collateralToken={collateralToken}
           borrowToken={borrowToken}
           networks={networks}
-          routes={routes}
           priceImpact={priceImpact}
-          onSlippageChange={value => updateForm({ slippage: value })}
         />
       }
       data-testid="create-loan-form"
@@ -139,12 +138,21 @@ export const CreateLoanForm = <ChainId extends IChainId>({
         />
       </Stack>
       {isLeverageSupported && (
-        <LeverageInput
-          checked={values.leverageEnabled}
-          leverage={leverage}
-          onToggle={toggleLeverage}
-          maxLeverage={maxLeverage.data}
-        />
+        <Stack>
+          <LeverageInput
+            checked={values.leverageEnabled}
+            leverage={leverage}
+            onToggle={toggleLeverage}
+            maxLeverage={maxLeverage.data}
+          />
+          {values.leverageEnabled && (
+            <LoanActionSettings
+              slippage={values.slippage}
+              onSlippageChange={slippage => updateForm({ slippage })}
+              routes={routes}
+            />
+          )}
+        </Stack>
       )}
       <LoanPresetSelector preset={preset} setPreset={setPreset} setRange={setRange}>
         <Collapse in={preset === LoanPreset.Custom}>

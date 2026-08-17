@@ -1,4 +1,3 @@
-import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
 import { useMarketOraclePrice } from '@/llamalend/queries/market'
@@ -27,8 +26,6 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
   collateralToken,
   borrowToken,
   networks,
-  routes,
-  onSlippageChange,
   form,
   priceImpact,
 }: {
@@ -39,8 +36,6 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
   collateralToken: Token | undefined
   borrowToken: Token | undefined
   networks: NetworkDict<ChainId>
-  routes: MarketRoutes | undefined
-  onSlippageChange: (newSlippage: Decimal) => void
   form: UseFormReturn<CreateLoanForm>
   priceImpact: QueryProp<PriceImpact | Decimal | null>
 }) => {
@@ -64,10 +59,8 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
       prevDebt={constQ('0')}
       {...getLeverageInfoFields({
         leverageEnabled,
-        routes,
         collateralDelta: userCollateral,
         slippage,
-        onSlippageChange,
         priceImpact,
         leverageValue: mapQuery(expectedCollateral, data => data.leverage),
         prevLeverageValue: constQ('0'),

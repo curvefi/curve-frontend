@@ -5,6 +5,7 @@ import { LeverageInput } from '@/llamalend/features/borrow/components/LeverageIn
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { getMaxBorrowAmount } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
+import { LoanActionSettings } from '@/llamalend/widgets/action-card/LoanActionSettings'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -83,9 +84,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           values={values}
           tokens={{ collateralToken, borrowToken }}
           networks={networks}
-          routes={routes}
           marketType={marketType}
-          onSlippageChange={value => updateForm({ slippage: value })}
           leverageEnabled={values.leverageEnabled}
           priceImpact={priceImpact}
         />
@@ -138,12 +137,21 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         />
       </Stack>
       {isLeverageSupported && (
-        <LeverageInput
-          checked={values.leverageEnabled}
-          leverage={leverage}
-          onToggle={onLeverageToggle}
-          maxLeverage={max.maxLeverage.data}
-        />
+        <Stack>
+          <LeverageInput
+            checked={values.leverageEnabled}
+            leverage={leverage}
+            onToggle={onLeverageToggle}
+            maxLeverage={max.maxLeverage.data}
+          />
+          {values.leverageEnabled && (
+            <LoanActionSettings
+              slippage={values.slippage}
+              onSlippageChange={slippage => updateForm({ slippage })}
+              routes={routes}
+            />
+          )}
+        </Stack>
       )}
       <HighPriceImpactAlert
         priceImpact={priceImpact}
