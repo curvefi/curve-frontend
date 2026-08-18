@@ -6,9 +6,13 @@ import { IS_DEVELOPMENT } from '@ui-kit/utils'
 import type { FieldValues, UseFormReturn } from './form.types'
 import { FormContext } from './useFormContext'
 
-export type FormProviderProps<T extends FieldValues> = UseFormReturn<T> & { children: ReactNode }
+export type FormProviderProps<T extends FieldValues> = UseFormReturn<T> & {
+  children: ReactNode
+  hideFormState?: boolean // Hide the development-only form state accordion.
+}
 export const FormProvider = <T extends FieldValues>({
   children,
+  hideFormState = false,
   handleSubmit,
   reset,
   watchValues,
@@ -59,7 +63,7 @@ export const FormProvider = <T extends FieldValues>({
       )}
     >
       {children}
-      {IS_DEVELOPMENT && (
+      {IS_DEVELOPMENT && !hideFormState && (
         <Accordion title={t`Form state`} ghost size="extraSmall">
           <AccordionDetails>
             <pre style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>

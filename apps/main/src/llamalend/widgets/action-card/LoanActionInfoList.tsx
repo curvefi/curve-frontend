@@ -1,6 +1,5 @@
 import { LEVERAGE } from '@/llamalend/constants'
 import { getHealthValueColor } from '@/llamalend/features/market-position-details'
-import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { ReturnToWalletActionInfo } from '@/llamalend/widgets/action-card/ReturnToWalletActionInfo'
 import { SmallLiquidationRangeChart } from '@/llamalend/widgets/small-liquidation-range-chart/SmallLiquidationRangeChart'
 import Stack from '@mui/material/Stack'
@@ -8,7 +7,6 @@ import { useTheme } from '@mui/material/styles'
 import { Decimal } from '@primitives/decimal.utils'
 import { maybe, notFalsy } from '@primitives/objects.utils'
 import { useShowNetRate } from '@ui-kit/hooks/useLocalStorage'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate, type TxGasInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
@@ -19,8 +17,6 @@ import {
   getPriceImpactPercent,
   type PriceImpact,
 } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
-import { RouteProvidersAccordion } from '@ui-kit/widgets/RouteProvider'
-import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 import { ActionInfoCollapse } from './ActionInfoCollapse'
 import { useShouldShowNetRate } from './hooks/useShouldShowNetRate'
 import { ACTION_INFO_GROUP_SX, formatAmount, formatLeverage } from './info-actions.helpers'
@@ -55,18 +51,16 @@ export type LoanActionInfoListProps = {
   leverageTotalCollateral?: QueryProp<Decimal | null>
   priceImpact?: QueryProp<PriceImpact | Decimal | null>
   slippage?: Decimal
-  onSlippageChange?: (newSlippage: Decimal) => void
   collateralSymbol?: string
   borrowSymbol?: string
   /** Whether to show leverage-related fields (leverage value, leverage collateral...) */
   leverageEnabled?: boolean
-  routes?: MarketRoutes
 }
 
 /**
- * List with action infos about the loan (like health, borrow APR, LTV, net borrow APR, estimated gas, slippage)
+ * List with action infos about the loan (like health, borrow APR, LTV, net borrow APR, estimated gas)
  * By default, the action info are hidden. They are visible when the isOpen prop is true.
- * When leverage is enabled, leverage-specific infos and slippage settings are also included.
+ * When leverage is enabled, leverage-specific infos are also included.
  */
 export const LoanActionInfoList = ({
   isOpen,
@@ -98,13 +92,10 @@ export const LoanActionInfoList = ({
   leverageTotalCollateral,
   priceImpact,
   slippage,
-  onSlippageChange,
   collateralSymbol,
   borrowSymbol,
   leverageEnabled,
-  routes,
 }: LoanActionInfoListProps) => {
-  const [isRoutesOpen, , , toggleRoutes] = useSwitch(false)
   const { label: priceImpactLabel, color: priceImpactColor } = getPriceImpactDisplay(priceImpact, {
     slippage,
     slippageType: LEVERAGE,
@@ -277,14 +268,6 @@ export const LoanActionInfoList = ({
       )}
 
       <Stack>
-        {slippage && onSlippageChange && (
-          <SlippageToleranceActionInfo
-            maxSlippage={slippage}
-            type={LEVERAGE}
-            onChanged={({ leverage }) => onSlippageChange(leverage)}
-            size="small"
-          />
-        )}
         {priceImpact && (
           <ActionInfo
             label={priceImpactLabel}
@@ -309,7 +292,6 @@ export const LoanActionInfoList = ({
             testId="borrow-exchange-rate"
           />
         )}
-        {routes && <RouteProvidersAccordion isExpanded={isRoutesOpen} onToggle={toggleRoutes} {...routes} />}
         <ActionInfoGasEstimate gas={gas} isApproved={isApproved?.data} />
       </Stack>
     </ActionInfoCollapse>

@@ -1,4 +1,3 @@
-import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { isPositionLeveraged } from '@/llamalend/llama.utils'
 import { calculateLeverageCollateral } from '@/llamalend/widgets/action-card/info-actions.helpers'
 import type { LoanActionInfoListProps } from '@/llamalend/widgets/action-card/LoanActionInfoList'
@@ -17,18 +16,14 @@ type LeverageInfoFieldsOptions = {
   leverageTotalCollateral: QueryProp<Decimal | null>
   expected?: Query<{ avgPrice?: Decimal }>
   priceImpact?: Query<PriceImpact | Decimal | null>
-  routes?: MarketRoutes | undefined
   slippage?: Decimal
-  onSlippageChange?: (newSlippage: Decimal) => void
   collateralDelta: Decimal | undefined // only used when leverage is disabled, otherwise `leverageTotalCollateral` is used
 }
 
 export const getLeverageInfoFields = ({
   leverageEnabled,
-  routes,
   collateralDelta,
   slippage,
-  onSlippageChange,
   priceImpact,
   leverageValue,
   prevLeverageValue,
@@ -55,9 +50,7 @@ export const getLeverageInfoFields = ({
           leverageTotalCollateral,
           ...(leverageEnabled && {
             exchangeRate: expected && mapQuery(expected, data => data.avgPrice ?? null),
-            routes,
             slippage,
-            onSlippageChange,
             priceImpact: priceImpact && q(priceImpact),
           }),
         }

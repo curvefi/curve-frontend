@@ -33,7 +33,7 @@ export const CheckboxField = ({
       sx={{
         justifyContent: 'space-between',
         gap: Spacing.sm,
-        alignItems: 'start',
+        alignItems: 'center',
         flexWrap: 'wrap',
       }}
     >
