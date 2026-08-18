@@ -82,11 +82,13 @@ export const HealthAndBufferBar = ({
   const { data, isLoading } = mapQuery(query, getValue)
   const percentage = getPercentage(data)
   const label = type === 'health' ? maybe(state, state => HEALTH_LABEL[state]) : undefined
+  const testId = `health-details-${type === 'liquidationBuffer' ? 'liquidation-buffer' : type}-bar`
 
   return (
     <WithSkeleton loading={isLoading} variant="rectangular" width="100%" height={Height.healthBar[size]}>
       <Tooltip title={tooltip.title} body={tooltip.body}>
         <Stack
+          data-testid={testId}
           sx={{
             height: Height.healthBar[size],
             backgroundColor: theme => theme.design.Color.Neutral[300],
@@ -96,6 +98,7 @@ export const HealthAndBufferBar = ({
           }}
         >
           <Box
+            data-testid={`${testId}-fill`}
             sx={{
               height: '100%',
               width: `${percentage}%`,
@@ -105,6 +108,7 @@ export const HealthAndBufferBar = ({
           />
           {label && (
             <Badge
+              data-testid={`${testId}-badge`}
               size={BADGE_SIZE_BY_BAR_SIZE[size]}
               color={state === 'hardLiquidation' ? 'alert' : 'warning'}
               label={label}

@@ -13,6 +13,20 @@ import { useUserDiscounts } from './user-discounts.query'
 
 type UserHealthParams = UserMarketParams & { isFull: boolean }
 type UserHealthQuery = UserMarketQuery & { isFull: boolean }
+type UserHealthValues = {
+  health: Decimal
+  healthFactor: Decimal
+  healthNotFull: Decimal
+  liquidationBuffer: Decimal | undefined
+  debug?: {
+    healthFull: Decimal
+    healthNotFull: Decimal
+    healthDelta: Decimal
+    loanDiscount: Decimal
+    liquidationDiscount: Decimal
+    discountGap: Decimal
+  }
+}
 
 /**
  * Query to get the user's health in a market.
@@ -49,7 +63,7 @@ export const useUserHealthValues = (params: UserMarketParams) => {
   return {
     data: maybes(
       [healthFull.data, healthNotFull.data, discounts.data],
-      (full, notFull, { loanDiscount, liquidationDiscount }) => {
+      (full, notFull, { loanDiscount, liquidationDiscount }): UserHealthValues => {
         const discountGap = decimalMinus(loanDiscount, liquidationDiscount)
         const healthDelta = decimalMinus(full, notFull)
         // Clamping at zero because separate RPC calls can resolve from different blocks and return a negative delta
