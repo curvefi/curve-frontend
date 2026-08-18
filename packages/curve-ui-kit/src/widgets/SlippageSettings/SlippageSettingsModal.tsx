@@ -37,7 +37,7 @@ export const SlippageSettingsModal = ({
     current: currentSlippage,
   })
   return (
-    <FormProvider {...form} showFormState={false}>
+    <FormProvider {...form} hideFormState>
       <ModalDialog
         open={isOpen}
         onClose={onClose}

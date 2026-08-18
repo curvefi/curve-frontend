@@ -8,11 +8,11 @@ import { FormContext } from './useFormContext'
 
 export type FormProviderProps<T extends FieldValues> = UseFormReturn<T> & {
   children: ReactNode
-  showFormState?: boolean // Show the development-only form state accordion.
+  hideFormState?: boolean // Hide the development-only form state accordion.
 }
 export const FormProvider = <T extends FieldValues>({
   children,
-  showFormState = true,
+  hideFormState = false,
   handleSubmit,
   reset,
   watchValues,
@@ -63,7 +63,7 @@ export const FormProvider = <T extends FieldValues>({
       )}
     >
       {children}
-      {IS_DEVELOPMENT && showFormState && (
+      {IS_DEVELOPMENT && !hideFormState && (
         <Accordion title={t`Form state`} ghost size="extraSmall">
           <AccordionDetails>
             <pre style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>
