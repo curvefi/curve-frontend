@@ -8,6 +8,7 @@ import { useSyncMarketLeverageSlippage } from '@/llamalend/hooks/useSyncMarketLe
 import { canLeverageUserBorrowed, getMarketLeverageSlippage, isRouterRequired } from '@/llamalend/llama.utils'
 import type { MarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useBorrowMoreMutation } from '@/llamalend/mutations/borrow-more.mutation'
+import { useBorrowMoreExpectedCollateral } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
 import { useBorrowMoreLeverage } from '@/llamalend/queries/borrow-more/borrow-more-future-leverage.query'
 import { getBorrowMoreGasEstimateQueryOptions } from '@/llamalend/queries/borrow-more/borrow-more-gas-estimate.query'
 import { useBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
@@ -31,7 +32,7 @@ import { pick } from '@primitives/objects.utils'
 import type { RouteResponse } from '@ui-kit/entities/router-api'
 import { useCallbackSync, useForm } from '@ui-kit/features/forms'
 import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
-import { q, type QueryProp, type Range } from '@ui-kit/types/util'
+import { mapQuery, q, type QueryProp, type Range } from '@ui-kit/types/util'
 import { decimalSum, IS_DEVELOPMENT } from '@ui-kit/utils'
 import { useMarketContext } from '../../market-context'
 
@@ -147,6 +148,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   useCallbackSync(useBorrowMorePrices(params), onPricesUpdated)
 
   const isLeverageEnabled = isLeverageBorrowMore(market, values.leverageEnabled)
+  const expectedCollateral = useBorrowMoreExpectedCollateral(params, values.leverageEnabled)
   const { formState } = form
   const isPending = formState.isSubmitting || isBorrowing
   return {
@@ -193,6 +195,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     showUserBorrowed: isLeverageEnabled && !!canLeverageUserBorrowed(market) && IS_DEVELOPMENT,
     isLeverageSupported: isLeverageBorrowMoreSupported(market),
     leverage: useBorrowMoreLeverage(params),
+    exchangeRate: mapQuery(expectedCollateral, data => data.avgPrice ?? null),
     zapAddress,
   }
 }

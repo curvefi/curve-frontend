@@ -61,6 +61,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     routes,
     values,
     leverage,
+    exchangeRate,
     priceImpact,
     solvencyModal: { onConfirm, onClose, isOpen },
     isHighLiquidationRisk,
@@ -91,7 +92,6 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           collateralToken={collateralToken}
           borrowToken={borrowToken}
           networks={networks}
-          priceImpact={priceImpact}
         />
       }
       data-testid="create-loan-form"
@@ -150,6 +150,10 @@ export const CreateLoanForm = <ChainId extends IChainId>({
             slippage={values.slippage}
             onSlippageChange={slippage => updateForm({ slippage })}
             routes={routes}
+            exchangeRate={exchangeRate}
+            priceImpact={priceImpact}
+            collateralSymbol={collateralToken?.symbol}
+            borrowSymbol={borrowToken?.symbol}
           />
         </Stack>
       )}
