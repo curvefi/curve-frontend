@@ -268,6 +268,17 @@ const userMarketEarnings = z
     boostMultiplier: data.boostMultiplier,
   }))
 
+const vaultDepositor = z
+  .object({
+    rank: z.number(),
+    address,
+    category: z.string(),
+    shares: z.number(),
+    assets: z.number(),
+    percent_of_total_shares: z.number(),
+  })
+  .transform(camelizeKeys)
+
 const marketUser = z
   .object({
     user: z.string(),
@@ -433,6 +444,19 @@ export const getAllUserLendingPositionsResponse = z
 export const getUserMarketStatsResponse = userMarketStats
 export const getUserMarketEarningsResponse = userMarketEarnings
 
+export const getVaultDepositorsResponse = z
+  .object({
+    chain,
+    vault_address: address,
+    total_shares: z.number(),
+    total_assets: z.number(),
+    total_suppliers: z.number(),
+    page: z.number(),
+    per_page: z.number(),
+    depositors: z.array(vaultDepositor),
+  })
+  .transform(camelizeKeys)
+
 export const getUserMarketSnapshotsResponse = z
   .object({
     user: address,
@@ -494,6 +518,7 @@ export type UserMarket = z.infer<typeof userMarket>
 export type UserLendingPosition = z.infer<typeof userLendingPosition>
 export type UserMarketStats = z.infer<typeof userMarketStats>
 export type UserMarketEarnings = z.infer<typeof userMarketEarnings>
+export type VaultDepositors = z.infer<typeof getVaultDepositorsResponse>
 export type UserMarketSnapshots = z.infer<typeof getUserMarketSnapshotsResponse>
 export type MarketUser = z.infer<typeof marketUser>
 export type MarketUsers = z.infer<typeof getMarketUsersResponse>
