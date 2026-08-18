@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react'
 import { isAddressEqual } from 'viem'
 import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
-import { maybe } from '@primitives/objects.utils'
+import { maybe, maybes } from '@primitives/objects.utils'
 import { type QueriesResults, useQueries } from '@tanstack/react-query'
 import { combineQueriesMeta } from '@ui-kit/lib/queries/combine'
 import { MarketType } from '@ui-kit/types/market'
@@ -35,22 +35,21 @@ export const useMarketOverview = ({
       combine: useCallback(
         (results: QueriesResults<OverviewQueries>) => {
           const [lendingVaults, mintMarkets] = results
-          const marketOverview =
-            blockchainId && controllerAddress
-              ? marketType === MarketType.Lend
-                ? maybe(
-                    lendingVaults.data?.find(
-                      item => item.chain === blockchainId && isAddressEqual(item.controller, controllerAddress),
-                    ),
-                    ({ createdAt, nLoans }) => ({ createdAt, totalBorrowers: nLoans }),
-                  )
-                : maybe(
-                    mintMarkets.data?.find(
-                      item => item.chain === blockchainId && isAddressEqual(item.address, controllerAddress),
-                    ),
-                    ({ createdAt, loans }) => ({ createdAt, totalBorrowers: loans }),
-                  )
-              : undefined
+          const marketOverview = maybes([blockchainId, controllerAddress], (blockchainId, controllerAddress) =>
+            marketType === MarketType.Lend
+              ? maybe(
+                  lendingVaults.data?.find(
+                    item => item.chain === blockchainId && isAddressEqual(item.controller, controllerAddress),
+                  ),
+                  ({ createdAt, nLoans }) => ({ createdAt, totalBorrowers: nLoans }),
+                )
+              : maybe(
+                  mintMarkets.data?.find(
+                    item => item.chain === blockchainId && isAddressEqual(item.address, controllerAddress),
+                  ),
+                  ({ createdAt, loans }) => ({ createdAt, totalBorrowers: loans }),
+                ),
+          )
 
           return {
             ...combineQueriesMeta(results),
