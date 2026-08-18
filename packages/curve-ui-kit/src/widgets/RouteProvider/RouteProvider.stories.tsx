@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { type ComponentProps, useCallback, useEffect, useMemo, useState } from 'react'
+import { ethAddress } from 'viem'
 import { WagmiProvider } from 'wagmi'
 import Box from '@mui/material/Box'
 import { fromEntries, mapRecord } from '@primitives/objects.utils'
@@ -21,9 +22,14 @@ const RouteProviderStory = ({
   isLoading: givenIsLoading,
   isFetching: givenIsFetching,
   queries: givenRoutes,
+  queryData,
   selectedRoute: givenSelectedRoute,
   ...args
-}: RouteProviderProps & { isLoading?: boolean; isFetching?: boolean }) => {
+}: RouteProviderProps & {
+  isLoading?: boolean
+  isFetching?: boolean
+  queryData?: ComponentProps<typeof TestQueryProvider>['data']
+}) => {
   const [routes, setRoutes] = useState(givenRoutes)
   const [selectedRouter, setSelectedRouter] = useState(givenSelectedRoute?.router)
   const [isLoading, setIsLoading] = useState(givenIsLoading ?? false)
@@ -41,7 +47,7 @@ const RouteProviderStory = ({
 
   return (
     <WagmiProvider config={mockedWagmiConfig}>
-      <TestQueryProvider data={[]}>
+      <TestQueryProvider data={queryData ?? []}>
         <Box sx={{ maxWidth: MaxWidth.actionCard }}>
           <RouteProvidersAccordion
             {...args}
@@ -104,6 +110,35 @@ export const Collapsed: Story = {}
 
 export const Expanded: Story = {
   args: { isExpanded: true },
+}
+
+export const GasEstimate: Story = {
+  args: {
+    isExpanded: true,
+    networks: {
+      1: {
+        name: 'Ethereum',
+        symbol: 'ETH',
+        gasL2: false,
+        gasPricesDefault: 0,
+        gasPricesUnit: 'GWEI',
+        gasPricesUrl: 'https://api.curve.finance/api/getGas',
+      } as BaseConfig,
+    },
+    queryData: [
+      [['chain', { chainId: 1 }, 'token', { tokenAddress: ethAddress }, 'usdRate'], 3_000],
+      [
+        [
+          'chain',
+          { chainId: 1 },
+          { gasPricesUrl: 'https://api.curve.finance/api/getGas' },
+          { gasPricesUrlL2: undefined },
+          'gasInfo',
+        ],
+        { gasPrice: null, max: [], priority: [], basePlusPriority: [30_000_000_000] },
+      ],
+    ],
+  },
 }
 
 export const Disabled: Story = {
