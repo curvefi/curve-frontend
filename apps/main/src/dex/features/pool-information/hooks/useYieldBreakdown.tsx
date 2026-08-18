@@ -148,7 +148,7 @@ export const useYieldBreakdown = ({
   const total = useMemo(() => sum(rows.map(row => row.apy)), [rows])
 
   return {
-    maxBoostTotal: maybe(crvApyRange, ({ unboostedApy, maximumApy }) => total - unboostedApy + maximumApy),
+    maxBoostTotal: maybe(crvApyRange, ({ unboostedApy, maximumApy }) => total - unboostedApy + maximumApy) ?? 0,
     total,
     rows,
   }
