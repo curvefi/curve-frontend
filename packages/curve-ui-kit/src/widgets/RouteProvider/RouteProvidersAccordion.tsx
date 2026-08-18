@@ -129,13 +129,7 @@ export const RouteProvidersAccordion = ({
             </Stack>
           ) : (
             <EmptyStateCard
-              title={
-                allLoading
-                  ? t`Finding the best route...`
-                  : allDisabled
-                    ? t`Please fill in the form to get routes.`
-                    : t`No routes available`
-              }
+              title={allLoading ? t`Finding the best route...` : t`No routes available`}
               description={!allDisabled && !allLoading && t`We could not find any routes with your parameters.`}
               size="sm"
             />
