@@ -145,7 +145,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
             maxLeverage={max.maxLeverage.data}
           />
           <LoanActionSettings
-            show={values.leverageEnabled}
+            show={values.leverageEnabled === true}
             slippage={values.slippage}
             onSlippageChange={slippage => updateForm({ slippage })}
             routes={routes}
