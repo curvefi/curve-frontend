@@ -2,7 +2,9 @@ import type { BaseConfig } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 import { BridgeForm } from './components/BridgeForm'
+import { LayerZeroBridgeForm } from './components/LayerZeroBridgeForm'
 import { useBridgeAlert } from './hooks/useBridgeAlert'
+import { isLayerZeroChain } from './layerzero'
 
 export type BridgeFormParams = {
   chainId: number
@@ -15,13 +17,17 @@ const BridgeTab = (params: BridgeFormParams) => {
     ? { message: bridgeAlert.message, alertType: bridgeAlert.alertType }
     : undefined
 
-  return <BridgeForm {...params} bridgeDisabledAlert={bridgeDisabledAlert} />
+  return isLayerZeroChain(params.chainId) ? (
+    <LayerZeroBridgeForm {...params} />
+  ) : (
+    <BridgeForm {...params} bridgeDisabledAlert={bridgeDisabledAlert} />
+  )
 }
 
 const BridgeMenu = [
   {
     value: 'bridge',
-    label: t`Bridge crvUSD`,
+    label: t`Bridge tokens`,
     component: BridgeTab,
   },
 ] satisfies FormTab<BridgeFormParams>[]

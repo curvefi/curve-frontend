@@ -1,9 +1,9 @@
+import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { HelperMessage, LargeTokenInput, type LargeTokenInputProps } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { type QueryProp } from '@ui-kit/types/util'
-import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 
 export type BridgeAmountProps = {
   /** Whether the input is disabled (e.g. during a pending transaction or invalid form) */
@@ -16,18 +16,33 @@ export type BridgeAmountProps = {
   walletBalance: Pick<NonNullable<LargeTokenInputProps['walletBalance']>, 'balance'>
   /** USD equivalent of the entered amount, displayed as helper text. */
   inputBalanceUsd: LargeTokenInputProps['inputBalanceUsd']
+  tokenAddress: Address
+  tokenBlockchainId: string
+  tokenSymbol: string
+  tokenSelector?: LargeTokenInputProps['tokenSelector']
 }
 
 /** Token amount input for the FastBridge. Currently hardcoded to crvUSD as the only supported bridging token. */
-export const BridgeAmount = ({ disabled, amount, onAmount, walletBalance, inputBalanceUsd }: BridgeAmountProps) => (
+export const BridgeAmount = ({
+  disabled,
+  amount,
+  onAmount,
+  walletBalance,
+  inputBalanceUsd,
+  tokenAddress,
+  tokenBlockchainId,
+  tokenSymbol,
+  tokenSelector,
+}: BridgeAmountProps) => (
   <LargeTokenInput
     name="amount"
     label={t`Amount to send`}
     disabled={disabled}
-    // For now FastBride only support bridging crvUSD
-    tokenSelector={<TokenLabel blockchainId="ethereum" address={CRVUSD_ADDRESS} label="crvUSD" />}
+    tokenSelector={
+      tokenSelector ?? <TokenLabel blockchainId={tokenBlockchainId} address={tokenAddress} label={tokenSymbol} />
+    }
     balance={amount}
-    walletBalance={{ ...walletBalance, symbol: 'crvUSD' }}
+    walletBalance={{ ...walletBalance, symbol: tokenSymbol }}
     inputBalanceUsd={inputBalanceUsd}
     onBalance={onAmount}
   >

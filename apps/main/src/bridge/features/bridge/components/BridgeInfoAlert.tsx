@@ -13,12 +13,14 @@ const { Spacing } = SizesAndSpaces
  * Explains how the bridge bypasses the 7-day challenge period
  * and links to the Curve documentation for more details.
  */
-export const BridgeInfoAlert = () => (
+export const BridgeInfoAlert = ({ mode = 'fastbridge' }: { mode?: 'fastbridge' | 'layerzero' }) => (
   <Alert variant="outlined" severity="info">
     <AlertTitle>{t`crvUSD to mainnet in minutes`}</AlertTitle>
     <Stack sx={{ gap: Spacing.xs }}>
       <Typography component="p" variant="bodyXsRegular">
-        {t`Fastbridge lets you use Curve’s decentralised infrastructure to bridge back crvUSD from selected L2s to Ethereum mainnet bypassing the 7 days challenge period.`}
+        {mode === 'layerzero'
+          ? t`Curve's LayerZero bridges move CRV, crvUSD, and scrvUSD between Ethereum and supported L1 networks. Settlement may take several minutes.`
+          : t`Fastbridge lets you use Curve’s decentralised infrastructure to bridge back crvUSD from selected L2s to Ethereum mainnet bypassing the 7 days challenge period.`}
       </Typography>
 
       <Typography component="p" variant="bodyXsRegular">
@@ -30,8 +32,17 @@ export const BridgeInfoAlert = () => (
       </Typography>
 
       <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
-        <ExternalLink href="https://curvefi.github.io/fast-bridge/" label={t`FastBridge Monitor`} />
-        <ExternalLink href="https://docs.curve.finance/developer/fast-bridge/overview" label={t`Learn More`} />
+        {mode === 'fastbridge' && (
+          <ExternalLink href="https://curvefi.github.io/fast-bridge/" label={t`FastBridge Monitor`} />
+        )}
+        <ExternalLink
+          href={
+            mode === 'layerzero'
+              ? 'https://docs.curve.finance/user/cross-chain/bridging-tokens'
+              : 'https://docs.curve.finance/developer/fast-bridge/overview'
+          }
+          label={t`Learn More`}
+        />
       </Stack>
     </Stack>
   </Alert>

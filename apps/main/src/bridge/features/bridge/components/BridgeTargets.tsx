@@ -97,6 +97,9 @@ export type BridgeTargetsProps = {
   loading: boolean
   /** Callback invoked when the user picks a new source network. Not really used in prod, as the ChainList component itself will update the URL. */
   onNetworkSelected?: (network: NetworkDef) => void
+  toChainId?: number
+  destinationNetworks?: NetworkDef[]
+  onDestinationSelected?: (network: NetworkDef) => void
 }
 
 /**
@@ -106,8 +109,19 @@ export type BridgeTargetsProps = {
  * while the destination ("To") is fixed to Ethereum mainnet. Perhaps later
  * we can support bridging to different networks.
  */
-export const BridgeTargets = ({ networks, fromChainId, disabled, loading, onNetworkSelected }: BridgeTargetsProps) => {
+export const BridgeTargets = ({
+  networks,
+  fromChainId,
+  disabled,
+  loading,
+  onNetworkSelected,
+  toChainId = Chain.Ethereum,
+  destinationNetworks,
+  onDestinationSelected,
+}: BridgeTargetsProps) => {
   const [isFromOpen, openFrom, closeFrom] = useSwitch(false)
+  const [isToOpen, openTo, closeTo] = useSwitch(false)
+  const tvls = useNetworksTVL('lending')
 
   return (
     <Box
@@ -136,7 +150,7 @@ export const BridgeTargets = ({ networks, fromChainId, disabled, loading, onNetw
           showTestnets={false}
           options={networks}
           selectedNetworkId={getCurrentNetwork(usePathname())}
-          tvls={useNetworksTVL('lending')}
+          tvls={tvls}
           onNetwork={useCallback(
             (network: NetworkDef) => {
               closeFrom()
@@ -152,7 +166,31 @@ export const BridgeTargets = ({ networks, fromChainId, disabled, loading, onNetw
       </Box>
 
       <SelectNetworkLabel label={t`To`} sx={{ gridArea: GRID_AREAS.to.label }} />
-      <SelectNetworkValue blockchainId={requireBlockchainId(Chain.Ethereum)} sx={{ gridArea: GRID_AREAS.to.input }} />
+      {destinationNetworks ? (
+        <>
+          <SelectNetworkButton
+            disabled={disabled}
+            chainId={toChainId}
+            onClick={openTo}
+            loading={loading}
+            sx={{ gridArea: GRID_AREAS.to.input }}
+          />
+          <ModalDialog open={isToOpen} onClose={closeTo} title={t`Select Network`}>
+            <ChainList
+              showTestnets={false}
+              options={destinationNetworks}
+              selectedNetworkId={requireBlockchainId(toChainId)}
+              tvls={tvls}
+              onNetwork={network => {
+                closeTo()
+                onDestinationSelected?.(network)
+              }}
+            />
+          </ModalDialog>
+        </>
+      ) : (
+        <SelectNetworkValue blockchainId={requireBlockchainId(Chain.Ethereum)} sx={{ gridArea: GRID_AREAS.to.input }} />
+      )}
     </Box>
   )
 }

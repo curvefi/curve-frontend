@@ -8,9 +8,23 @@ export type BridgeFormContentParams = Omit<
   BridgeButtonProps,
   'disableBridge' | 'disableConnect' | 'disableChangeNetwork'
 > &
-  Pick<BridgeTargetsProps, 'networks' | 'fromChainId' | 'onNetworkSelected'> &
-  Pick<BridgeAmountProps, 'amount' | 'onAmount' | 'walletBalance' | 'inputBalanceUsd'> & {
+  Pick<
+    BridgeTargetsProps,
+    'networks' | 'fromChainId' | 'onNetworkSelected' | 'toChainId' | 'destinationNetworks' | 'onDestinationSelected'
+  > &
+  Pick<
+    BridgeAmountProps,
+    | 'amount'
+    | 'onAmount'
+    | 'walletBalance'
+    | 'inputBalanceUsd'
+    | 'tokenAddress'
+    | 'tokenBlockchainId'
+    | 'tokenSymbol'
+    | 'tokenSelector'
+  > & {
     bridgeDisabledAlert?: Pick<BridgeAlert, 'alertType' | 'message'>
+    disableBridge?: boolean
     loading: boolean
   }
 
@@ -22,6 +36,7 @@ export const BridgeFormContent = ({
   inputBalanceUsd,
   bridgeDisabledAlert,
   loading,
+  disableBridge,
   isPending,
   isApproved,
   isConnected,
@@ -30,6 +45,13 @@ export const BridgeFormContent = ({
   onSubmit,
   onChangeNetwork,
   onNetworkSelected,
+  tokenAddress,
+  tokenBlockchainId,
+  tokenSymbol,
+  tokenSelector,
+  toChainId,
+  destinationNetworks,
+  onDestinationSelected,
 }: BridgeFormContentParams) => (
   <>
     <BridgeTargets
@@ -38,6 +60,9 @@ export const BridgeFormContent = ({
       disabled={loading}
       loading={loading}
       onNetworkSelected={onNetworkSelected}
+      toChainId={toChainId}
+      destinationNetworks={destinationNetworks}
+      onDestinationSelected={onDestinationSelected}
     />
 
     <BridgeAmount
@@ -45,6 +70,10 @@ export const BridgeFormContent = ({
       amount={amount}
       walletBalance={walletBalance}
       inputBalanceUsd={inputBalanceUsd}
+      tokenAddress={tokenAddress}
+      tokenBlockchainId={tokenBlockchainId}
+      tokenSymbol={tokenSymbol}
+      tokenSelector={tokenSelector}
       onAmount={onAmount}
     />
 
@@ -53,13 +82,14 @@ export const BridgeFormContent = ({
     ) : (
       <BridgeButton
         disableChangeNetwork={loading}
-        disableBridge={!!amount.error || !amount.data || loading || isApproved == null}
+        disableBridge={disableBridge === true || !!amount.error || !amount.data || loading || isApproved == null}
         isPending={isPending}
         isApproved={isApproved}
         isConnected={isConnected}
         isWrongNetwork={isWrongNetwork}
         onSubmit={onSubmit}
         onChangeNetwork={onChangeNetwork}
+        tokenSymbol={tokenSymbol}
       />
     )}
   </>

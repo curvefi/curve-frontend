@@ -99,6 +99,9 @@ const BridgeForm = (props: BridgeFormContentParams) => {
         loading={loading}
         walletBalance={walletBalance}
         inputBalanceUsd={amount && decimal(1.02 * +amount)} // Faking 1 crvUSD = $1.02
+        tokenAddress="0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E"
+        tokenBlockchainId="ethereum"
+        tokenSymbol="crvUSD"
         isPending={isPending}
         isApproved={isApproved}
         isConnected={props.isConnected}
