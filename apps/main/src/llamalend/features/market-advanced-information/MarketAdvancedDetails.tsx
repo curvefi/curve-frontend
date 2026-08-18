@@ -67,7 +67,7 @@ export const MarketAdvancedDetails = () => {
         category={METRIC_CATEGORY}
         testId="market-total-borrowers"
         label={t`Total borrowers`}
-        value={mapQuery(totalBorrowers, ({ value }) => value)}
+        value={totalBorrowers}
         valueOptions={{ abbreviate: true }}
       />
       {/* we show total collateral in the rate curve card for lend markets */}

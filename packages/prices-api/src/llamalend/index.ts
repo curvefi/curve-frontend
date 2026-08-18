@@ -123,6 +123,13 @@ export async function getUserMarketEarnings(userAddr: string, chain: Chain, vaul
   return Schema.getUserMarketEarningsResponse.parse(response)
 }
 
+export async function getVaultDepositors(chain: Chain, vaultAddress: string, options?: Options) {
+  const host = getHost(options)
+  const response = await fetch(`${host}/v1/lending/vaults/${chain}/${vaultAddress}/depositors`)
+
+  return Schema.getVaultDepositorsResponse.parse(response)
+}
+
 export async function getUserMarketSnapshots(
   userAddr: string,
   chain: Chain,

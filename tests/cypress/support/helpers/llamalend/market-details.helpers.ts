@@ -112,6 +112,7 @@ const shouldLoadBorrowDetails = ({ breakpoint, hasWallet, hasApi = false }: Mark
 
 export const shouldLoadLendBorrowDetails = ({ breakpoint, hasWallet, hasApi = true }: MarketDetailsOptions) => {
   shouldLoadBorrowDetails({ breakpoint, hasWallet, hasApi })
+  if (hasApi) getMetricValue('market-total-suppliers').should('match', DECIMAL_REGEX)
   getActionValue('market-total-liquidity').should('match', DECIMAL_REGEX)
   if (hasApi) {
     shouldLoadHistoricalSupplyRateChart()
@@ -140,6 +141,7 @@ export const shouldLoadLendVaultDetails = ({ breakpoint, hasWallet, hasApi = tru
   cy.get(`[data-testid="no-position-${hasWallet ? 'supply' : 'disconnected'}"]`, LOAD_TIMEOUT).should('be.visible')
   cy.get(`[data-testid="no-position-${hasWallet ? 'disconnected' : 'supply'}"]`).should('not.exist')
   getActionValue('market-total-liquidity').should('match', DECIMAL_REGEX)
+  if (hasApi) getMetricValue('market-total-suppliers').should('match', DECIMAL_REGEX)
   if (hasApi) {
     getActionValue('market-net-supply-apy').should('match', DECIMAL_REGEX)
     shouldLoadHistoricalSupplyRateChart()

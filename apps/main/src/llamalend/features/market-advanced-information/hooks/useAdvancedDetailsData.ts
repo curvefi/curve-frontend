@@ -4,6 +4,7 @@ import {
   calculateMintMarketTvlUsd,
   getControllerAddress,
   getTokens,
+  getVaultAddress,
 } from '@/llamalend/llama.utils'
 import { MarketTemplate } from '@/llamalend/llamalend.types'
 import {
@@ -11,6 +12,7 @@ import {
   useMarketMaxLeverage,
   useMarketOverview,
   useMarketTotalCollateral,
+  useMarketTotalSuppliers,
 } from '@/llamalend/queries/market'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { maybe, maybes } from '@primitives/objects.utils'
@@ -37,6 +39,7 @@ export const useAdvancedDetailsData = ({
   const { collateralToken, borrowToken } = getTokens(market, apiMarket.data) ?? {}
   const blockchainId = maybe(chainId, chainId => requireBlockchainId(chainId))
   const controllerAddress = getControllerAddress(market, apiMarket.data)
+  const vaultAddress = getVaultAddress(market, apiMarket.data)
   const isControllerLoading = !controllerAddress && (marketQuery.isLoading || apiMarket.isLoading)
   const marketOverviewQuery = useMarketOverview({ blockchainId, controllerAddress, marketType })
   const marketOverview = q({
@@ -51,6 +54,7 @@ export const useAdvancedDetailsData = ({
   })
   const capAndAvailable = useMarketCapAndAvailable({ chainId, marketId })
   const totalCollateral = useMarketTotalCollateral({ chainId, marketId })
+  const totalSuppliers = useMarketTotalSuppliers({ blockchainId, contractAddress: vaultAddress })
   const collateralUsdRate = useTokenUsdRate({
     chainId,
     tokenAddress: collateralToken?.address,
@@ -140,7 +144,8 @@ export const useAdvancedDetailsData = ({
         borrowSymbol: borrowToken?.symbol,
       })),
     ),
-    totalBorrowers: mapQuery(marketOverview, ({ totalBorrowers }) => ({ value: totalBorrowers })),
+    totalBorrowers: mapQuery(marketOverview, ({ totalBorrowers }) => totalBorrowers),
+    totalSuppliers: q(totalSuppliers),
     borrowedUsdRate: q(borrowedUsdRate),
     deployedDays: mapQuery(marketOverview, ({ deployedDays }) => deployedDays),
     tvl,

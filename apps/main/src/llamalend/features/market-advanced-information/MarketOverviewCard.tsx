@@ -25,7 +25,7 @@ const OVERVIEW_METRIC_CATEGORY = 'llamalend.marketOverview'
 
 export const MarketOverviewCard = ({ network }: { network: BaseConfig | undefined }) => {
   const { apiMarket, chainId, market, marketId, marketQuery, marketType } = useMarketContext()
-  const { solvency, totalBorrowers, maxLeverage, deployedDays } = useAdvancedDetailsData({
+  const { solvency, totalBorrowers, totalSuppliers, maxLeverage, deployedDays } = useAdvancedDetailsData({
     chainId,
     marketQuery,
     marketId,
@@ -47,19 +47,20 @@ export const MarketOverviewCard = ({ network }: { network: BaseConfig | undefine
               valueTooltip={{ title: t`Solvency`, body: <SolvencyTooltip type={MarketType.Lend} /> }}
             />
           )}
-          {/*
-            TODO: get total suppliers
-             <Metric
+          {marketType === MarketType.Lend && (
+            <Metric
               category={OVERVIEW_METRIC_CATEGORY}
               testId="market-total-suppliers"
               label={t`Total suppliers`}
-              value={}
-            /> */}
+              value={totalSuppliers}
+              valueOptions={{ abbreviate: true }}
+            />
+          )}
           <Metric
             category={OVERVIEW_METRIC_CATEGORY}
             testId="market-total-borrowers"
             label={t`Total borrowers`}
-            value={mapQuery(totalBorrowers, ({ value }) => value)}
+            value={totalBorrowers}
             valueOptions={{ abbreviate: true }}
           />
           <Metric
