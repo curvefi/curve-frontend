@@ -1,5 +1,4 @@
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
-import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useBorrowMoreExpectedCollateral } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
 import { useBorrowMoreFutureLeverage } from '@/llamalend/queries/borrow-more/borrow-more-future-leverage.query'
@@ -30,12 +29,10 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   values: { slippage, userCollateral, debt },
   tokens: { collateralToken, borrowToken },
   networks,
-  onSlippageChange,
   leverageEnabled,
   form,
   controllerAddress,
   marketType,
-  routes,
   priceImpact,
 }: {
   params: BorrowMoreParams<ChainId>
@@ -44,10 +41,8 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   networks: NetworkDict<ChainId>
   controllerAddress: Address | undefined
   marketType: MarketType
-  onSlippageChange: (newSlippage: Decimal) => void
   leverageEnabled: boolean | undefined
   form: UseFormReturn<BorrowMoreForm>
-  routes: MarketRoutes | undefined
   priceImpact: QueryProp<PriceImpact | Decimal | null>
 }) {
   const isOpen = form.isTouched('userCollateral', 'userBorrowed', 'debt')
@@ -90,9 +85,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
           (prevCollateral, { totalCollateral }) => maybes([totalCollateral, prevCollateral], decimalSum),
         ),
         expected: expectedCollateralQuery,
-        routes,
         slippage,
-        onSlippageChange,
         priceImpact,
         collateralDelta,
       })}

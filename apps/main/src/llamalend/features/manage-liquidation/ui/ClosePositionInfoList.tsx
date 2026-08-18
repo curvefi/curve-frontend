@@ -8,7 +8,6 @@ import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { usePrevLoanState } from '@/llamalend/widgets/action-card/hooks/usePrevLoanState'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { Decimal } from '@primitives/decimal.utils'
 import { constQ, q } from '@ui-kit/types/util'
 
 type ClosePositionInfoListProps = {
@@ -17,7 +16,6 @@ type ClosePositionInfoListProps = {
   chainId: LlamaChainId
   networks: NetworkDict<LlamaChainId>
   values: CloseLoanMutation
-  onSlippageChange: (newSlippage: Decimal) => void
 }
 
 export function ClosePositionInfoList({
@@ -26,14 +24,11 @@ export function ClosePositionInfoList({
   tokens: { borrowToken, collateralToken },
   networks,
   values: { slippage },
-  onSlippageChange,
 }: ClosePositionInfoListProps) {
   const params = { chainId, marketId, userAddress: useConnection().address, slippage }
   return (
     <LoanActionInfoList
       isOpen
-      slippage={slippage}
-      onSlippageChange={onSlippageChange}
       gas={q(useCloseEstimateGas(networks, params))}
       debt={constQ('0')}
       collateral={constQ('0')}

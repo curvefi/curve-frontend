@@ -17,6 +17,7 @@ const getResetPositionWalletInput = () =>
   cy.get('[data-testid="reset-position-input-user-borrowed"] input[type="text"]', LOAD_TIMEOUT)
 
 export function checkClosePositionDetailsLoaded({ debt }: { debt: Decimal }) {
+  cy.get('[data-testid="loan-action-settings"] [data-testid="borrow-slippage"]').should('be.visible')
   cy.get('[data-testid="outstanding-debt"]').invoke('text').should('match', DECIMAL_REGEX) // first check the number is displayed before converting to number
   cy.get('[data-testid="outstanding-debt"]')
     .invoke('text')

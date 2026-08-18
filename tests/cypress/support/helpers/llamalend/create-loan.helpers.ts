@@ -133,10 +133,10 @@ export function checkLoanDetailsLoaded({
 
   if (leverageEnabled) {
     getActionValue('borrow-price-impact').should('include', '%')
+    cy.get('[data-testid="loan-action-settings"] [data-testid="borrow-slippage"]').should('be.visible')
     getActionValue('borrow-slippage').should('include', '%')
   } else {
     cy.get('[data-testid="borrow-price-impact-value"]', LOAD_TIMEOUT).should('not.exist')
-    cy.get('[data-testid="borrow-slippage-value"]', LOAD_TIMEOUT).should('not.exist')
   }
 
   if (expectError) {
@@ -161,13 +161,14 @@ export const checkLeverageCheckbox = ({
   if (hasLeverage) {
     cy.get('[data-testid="leverage-checkbox"]').should('be.visible')
     cy.get('[data-testid="leverage-checkbox"] input').should(leverageEnabled ? 'be.checked' : 'not.be.checked')
+    if (!leverageEnabled) cy.get('[data-testid="loan-action-settings"]').should('not.be.visible')
   } else {
     cy.get('[data-testid="leverage-checkbox"]').should('not.exist')
   }
 }
 
 export const waitForRoutesLoaded = ({ submitButtonTestId }: { submitButtonTestId: string }) => {
-  cy.get('[data-testid="route-provider-accordion"]').click()
+  cy.get('[data-testid="loan-action-settings"] [data-testid="route-provider-accordion"]').click()
   cy.wait('@routerRoutes', LOAD_TIMEOUT)
   cy.get('[data-testid="refresh-button"]').should('be.enabled')
   cy.get(`[data-testid="${submitButtonTestId}"]`, LOAD_TIMEOUT).should('be.enabled')
