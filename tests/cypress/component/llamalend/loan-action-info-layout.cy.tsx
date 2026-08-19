@@ -118,7 +118,6 @@ describe('route provider allowlist', () => {
     cy.mount(
       <ComponentTestWrapper config={mockedWagmiConfig}>
         <LoanActionSettings
-          slippage={undefined}
           onSlippageChange={noop}
           routes={{ ...routes, providers: ['enso'], selectedRoute: undefined, selectedRouter: undefined }}
         />

@@ -56,7 +56,7 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>({
   useFormSync(form, {
     leverageEnabled: maybe(
       params.leverageProviders,
-      providers => !!providers.length && events && isPositionLeveraged(events.originalLeverage),
+      providers => providers.length > 0 && events && isPositionLeveraged(events.originalLeverage),
     ),
   })
 

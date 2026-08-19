@@ -42,8 +42,8 @@ const validation = createLoanQueryValidationSuite({
   collateralRequired: true,
 })
 
-const isLeverageCreateLoanSupported = (
-  market: MarketTemplate | undefined,
+const isLeverageCreateLoanSupported = <T extends MarketTemplate | undefined>(
+  market: T,
   leverageProviders: readonly RouteProvider[] | undefined,
 ) => maybe(market, market => hasLegacyMintLeverage(market) || (hasZapV2(market) && !!leverageProviders?.length))
 

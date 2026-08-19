@@ -411,6 +411,7 @@ const DEFAULT_STABLE_LEVERAGE_CONFIG = {
   slippage: SLIPPAGE.stable.default,
 }
 
+// This is a leverage allowlist: unlisted markets remain disabled until their leverage routes are tested and approved
 export const MARKETS_LEVERAGE_CONFIG: PartialRecord<number, Record<Address, MarketLeverageConfig>> = {
   [Chain.Ethereum]: {
     '0xcaD85b7fe52B1939DCEebEe9bCf0b2a5Aa0cE617': DEFAULT_LEVERAGE_CONFIG, // WBTC-long
