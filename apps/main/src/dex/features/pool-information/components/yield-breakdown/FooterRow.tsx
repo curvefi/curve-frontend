@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react'
 import TableCell from '@mui/material/TableCell'
 import Typography from '@mui/material/Typography'
-import { maybe } from '@primitives/objects.utils'
 import type { Column } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -13,7 +12,7 @@ const { Spacing } = SizesAndSpaces
 
 type FooterRowProps = {
   visibleColumns: Column<YieldBreakdownRow, unknown>[]
-  maxBoostTotal: number | undefined
+  maxBoostTotal: number
   total: number
 }
 
@@ -29,11 +28,11 @@ const footerCellByColumnId: Record<YieldBreakdownColumnId, (props: FooterCellPro
   [YieldBreakdownColumnId.Apy]: ({ columnId, maxBoostTotal, total }: FooterCellProps) => (
     <TableCell key={columnId} sx={{ paddingInline: Spacing.md, paddingBlock: Spacing.sm, textAlign: 'right' }}>
       <Typography variant="tableCellMBold">{formatNumber(total, 'percent.rate')}</Typography>
-      {maybe(maxBoostTotal, x => (
+      {!!maxBoostTotal && maxBoostTotal != total && (
         <Typography variant="tableCellSRegular" color="textSecondary">
-          {t`Max boost ${formatNumber(x, 'percent.rate')}`}
+          {t`Max boost ${formatNumber(maxBoostTotal, 'percent.rate')}`}
         </Typography>
-      ))}
+      )}
     </TableCell>
   ),
 }
