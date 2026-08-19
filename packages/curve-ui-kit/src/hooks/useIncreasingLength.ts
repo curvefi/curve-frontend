@@ -18,6 +18,7 @@ const INCREASING_LENGTH_CATEGORIES = {
   disabled: { ...DEFAULT, maxLength: DEFAULT.initialLength },
   chips: { ...DEFAULT, maxLength: 5 },
   limited: { ...DEFAULT, initialLength: 1, maxLength: 3 },
+  'loading-more': { ...DEFAULT, initialLength: 1, maxLength: 1 },
 } as const satisfies Record<string, IncreasingLengthOptions>
 
 export type IncreasingLengthCategory = keyof typeof INCREASING_LENGTH_CATEGORIES
