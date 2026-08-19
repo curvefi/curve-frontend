@@ -136,7 +136,7 @@ allViewports().forEach(([width, height, breakpoint]) => {
       mountRouteProviderCard()
       cy.get('[data-testid="route-provider-card"]').then(([$card]) => {
         const { height } = $card.getBoundingClientRect()
-        expect(height).to.equal(breakpoint === 'mobile' ? 46 : 48)
+        expect(height).to.equal(breakpoint === 'desktop' ? 50 : 48)
       })
     })
 
