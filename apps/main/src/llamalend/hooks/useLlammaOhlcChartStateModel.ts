@@ -14,6 +14,8 @@ import { useLlammaOhlcChartData } from './useLlammaOhlcChartData'
 
 const { Height } = SizesAndSpaces
 
+export type LlammaOhlcChartMode = 'oracle-pool' | 'oracle-price'
+
 type LlammaOhlcChartStateModelParams = {
   chainKey: string | number
   controllerAddress: Address | undefined
@@ -103,7 +105,8 @@ export const useLlammaOhlcChartStateModel = ({
     })
 
   const isLoading = !enabled || oraclePoolsChartQuery.isLoading || isWaitingForFallbackChartData
-  const selectedChartKey = isLoading ? undefined : isOracleLineOnly ? 'llamma' : 'oracle'
+  const chartMode = isLoading ? undefined : isOracleLineOnly ? ('oracle-price' as const) : ('oracle-pool' as const)
+  const selectedChartKey = maybe(chartMode, mode => (mode === 'oracle-price' ? 'llamma' : 'oracle'))
   const currentError = hasAnySeries ? null : (oraclePriceFallbackQuery.error ?? oraclePoolsChartQuery.error)
   const emptyMessage = t`No ${isLlammaFallbackEnabled ? 'LLAMMA' : 'oracle'} OHLC data found. Data may be unavailable for this market.`
 
@@ -153,6 +156,7 @@ export const useLlammaOhlcChartStateModel = ({
 
   return {
     ohlcChartProps,
+    chartMode,
     isLoading,
     selectedChartKey,
     setTimeOption,

@@ -8,6 +8,7 @@ import {
   type LlammaActivityProps,
   LlammaActivityTrades,
 } from '@/llamalend/features/llamma-activity'
+import type { LlammaOhlcChartMode } from '@/llamalend/hooks/useLlammaOhlcChartStateModel'
 import Card from '@mui/material/Card'
 import Stack from '@mui/material/Stack'
 import { type Token } from '@primitives/address.utils'
@@ -23,6 +24,7 @@ import { type LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
 import { SelectTimeOption } from '@ui-kit/shared/ui/Chart/SelectTimeOption'
 import { ToggleBandsChartButton } from '@ui-kit/shared/ui/Chart/ToggleBandsChartButton'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
+import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketCardHeader } from './MarketCardHeader'
 
@@ -47,6 +49,7 @@ const hasVisiblePriceRangeChanged = (previous: { min: number; max: number }, nex
 
 type ChartAndActivityLayoutProps = {
   chart: {
+    chartMode: LlammaOhlcChartMode | undefined
     isLoading: boolean
     selectedChartKey: string | undefined
     setTimeOption: (option: TimeOption) => void
@@ -123,11 +126,12 @@ export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLa
   return (
     <Card size="small" data-testid="market-price-chart">
       <MarketCardHeader
+        disableUpperCase={chart.chartMode === 'oracle-pool'}
         title={
-          chart.isLoading
-            ? t`Loading`
-            : (chart.ohlcChartProps.selectChartList.find(({ key }) => key === chart.selectedChartKey)?.activeTitle ??
-              '?')
+          <WithSkeleton loading={chart.isLoading} width="7rem" height="2lh">
+            {chart.ohlcChartProps.selectChartList.find(({ key }) => key === chart.selectedChartKey)?.activeTitle ??
+              (chart.isLoading ? '' : '?')}
+          </WithSkeleton>
         }
         action={
           <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xs }}>
