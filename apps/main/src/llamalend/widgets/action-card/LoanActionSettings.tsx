@@ -4,6 +4,7 @@ import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
+import { useLlamaLendRouterFees } from '@ui-kit/hooks/useFeatureFlags'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
@@ -20,6 +21,7 @@ import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
 const { Spacing } = SizesAndSpaces
 
+/** Displays route and execution settings for LlamaLend leverage swaps. */
 export const LoanActionSettings = ({
   slippage,
   onSlippageChange,
@@ -52,17 +54,6 @@ export const LoanActionSettings = ({
         sx={{ backgroundColor: t => t.design.Layer[2].Fill, border: borderStyle, padding: Spacing.xs }}
       >
         {routes && <RouteProvidersAccordion isExpanded={isRoutesOpen} onToggle={toggleRoutes} {...routes} />}
-        {routes?.selectedRoute && (
-          <ActionInfo
-            label={t`Router fee`}
-            labelTooltip={{
-              title: t`The total percentage of the routed amount charged as routing fees, excluding network gas costs.`,
-            }}
-            value={formatNumber(routes.selectedRoute.routerFeePercentage, 'percent.rate')}
-            size="small"
-            testId="borrow-router-fee"
-          />
-        )}
         {slippage && (
           <SlippageToleranceActionInfo
             maxSlippage={slippage}
@@ -92,6 +83,18 @@ export const LoanActionSettings = ({
             valueColor={priceImpactColor}
             size="small"
             testId="borrow-price-impact"
+          />
+        )}
+        {/* Test with live Enso routes before enabling because Enso quotes do not appear to work on previews. */}
+        {useLlamaLendRouterFees() && routes?.selectedRoute && (
+          <ActionInfo
+            label={t`Router fee`}
+            labelTooltip={{
+              title: t`The total percentage of the routed amount charged as routing fees, excluding network gas costs.`,
+            }}
+            value={formatNumber(routes.selectedRoute.routerFeePercentage, 'percent.rate')}
+            size="small"
+            testId="borrow-router-fee"
           />
         )}
       </Stack>

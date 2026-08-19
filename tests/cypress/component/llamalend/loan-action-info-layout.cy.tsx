@@ -86,6 +86,7 @@ allViewports().forEach(([width, height, viewport]) => {
         getHeight('borrow-health').should('equal', expectedHeight)
         getHeight('borrow-apr').should('equal', expectedHeight)
         getHeight('borrow-exchange-rate').should('equal', expectedHeight)
+        getHeight('borrow-router-fee').should('equal', expectedHeight)
         getHeight('borrow-slippage').should('equal', expectedHeight)
         getHeight('estimated-tx-cost').should('equal', expectedHeight)
         getHeight('route-provider-accordion').should('equal', expectedHeight)
