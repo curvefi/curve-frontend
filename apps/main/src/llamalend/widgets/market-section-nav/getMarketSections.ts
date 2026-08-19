@@ -1,4 +1,3 @@
-import { notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { MarketRateType } from '@ui-kit/types/market'
 import type { MarketSectionOption } from './types'
@@ -15,22 +14,10 @@ const PARAMETERS_SECTION = {
 const FAQ_SECTION = { value: 'faqs', label: { default: t`FAQs` } } as const
 const OVERVIEW_SECTION = { value: 'market-overview', label: { default: t`Overview` } } as const
 
-export const getMarketSections = ({
-  rateType,
-  hasPosition = true,
-}: {
-  rateType: MarketRateType
-  hasPosition?: boolean
-}): readonly MarketSectionOption[] =>
+export const getMarketSections = ({ rateType }: { rateType: MarketRateType }): readonly MarketSectionOption[] =>
   (
     ({
-      [MarketRateType.Supply]: notFalsy<MarketSectionOption>(
-        hasPosition && POSITION_SECTION,
-        OVERVIEW_SECTION,
-        RATES_SECTION,
-        PARAMETERS_SECTION,
-        FAQ_SECTION,
-      ),
+      [MarketRateType.Supply]: [POSITION_SECTION, OVERVIEW_SECTION, RATES_SECTION, PARAMETERS_SECTION, FAQ_SECTION],
       [MarketRateType.Borrow]: [
         POSITION_SECTION,
         OVERVIEW_SECTION,

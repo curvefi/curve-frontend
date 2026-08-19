@@ -1,5 +1,9 @@
-import { useLlamaSnapshot } from '@/llamalend/queries/llamma-snapshots.query'
-import { useMarketRates, useMarketSupplyFutureRates, useMarketVaultOnChainRewards } from '@/llamalend/queries/market'
+import {
+  useMarketRates,
+  useMarketSnapshots,
+  useMarketSupplyFutureRates,
+  useMarketVaultOnChainRewards,
+} from '@/llamalend/queries/market'
 import { useUserSupplyBoost } from '@/llamalend/queries/user'
 import {
   getLatestSnapshotValue,
@@ -66,7 +70,7 @@ export function useSupplyRates<ChainId extends IChainId>(
   enabled: boolean,
 ) {
   const blockchainId = maybe(chainId, chainId => BlockchainIds[chainId])
-  const snapshotsQuery = useLlamaSnapshot({
+  const snapshotsQuery = useMarketSnapshots({
     marketType: MarketType.Lend,
     controllerAddress,
     blockchainId,
@@ -74,7 +78,7 @@ export function useSupplyRates<ChainId extends IChainId>(
   })
   const lendingSnapshotsQuery = q({
     ...snapshotsQuery,
-    data: snapshotsQuery.data as LendingSnapshot[] | undefined,
+    data: snapshotsQuery.data,
   })
   const marketOnChainRewardsQuery = useMarketVaultOnChainRewards({ chainId, marketId }, enabled)
   const userSupplyBoostQuery = useUserSupplyBoost({ chainId, marketId, userAddress }, enabled)

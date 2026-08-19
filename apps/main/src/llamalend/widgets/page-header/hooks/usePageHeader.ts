@@ -1,14 +1,14 @@
 import { useMarketContext } from '@/llamalend/features/market-context'
-import { useMarketSnapshots } from '@/llamalend/features/market-list/hooks/useMarketSnapshots'
+import { useMarketRateHistory } from '@/llamalend/features/market-list/hooks/useMarketRateHistory'
 import { useFilteredRewards } from '@/llamalend/hooks/useFilteredRewards'
 import { getControllerAddress, getTokens, getVaultAddress } from '@/llamalend/llama.utils'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
-import { useLlamaSnapshot } from '@/llamalend/queries/llamma-snapshots.query'
 import {
   type MarketRates,
   useMarketCapAndAvailable,
   useMarketRates,
   useMarketVaultOnChainRewards,
+  useMarketSnapshots,
 } from '@/llamalend/queries/market'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import {
@@ -134,7 +134,7 @@ const useBorrowRate = ({
   })
 
   const useApiMarket = !!apiMarket.data && !marketQuery.data
-  const { averageRate: averageApr, averageTotalBorrowRate: totalAverageBorrowApr } = useMarketSnapshots(
+  const { averageRate: averageApr, averageTotalBorrowRate: totalAverageBorrowApr } = useMarketRateHistory(
     apiMarket.data,
     { type: MarketRateType.Borrow, category: RATE_CATEGORY },
     useApiMarket,
@@ -175,7 +175,7 @@ const useSupplyRate = ({
 }) => {
   const marketId = marketQuery.data?.id
   const enabled = marketType === MarketType.Lend
-  const apiSupplySnapshots = useMarketSnapshots<LendingSnapshot>(
+  const apiSupplySnapshots = useMarketRateHistory<LendingSnapshot>(
     apiMarket.data,
     { type: MarketRateType.Supply, category: RATE_CATEGORY },
     useApiMarket && enabled,
@@ -278,7 +278,12 @@ export const usePageHeader = () => {
   const vaultAddress = getVaultAddress(market, apiMarket.data)
   const controllerAddress = getControllerAddress(market, apiMarket.data)
   const snapshot = q(
-    useLlamaSnapshot({ marketType, controllerAddress, blockchainId, range: { kind: 'limit', limit: RATE_WINDOW } }),
+    useMarketSnapshots({
+      marketType,
+      controllerAddress,
+      blockchainId,
+      range: { kind: 'limit', limit: RATE_WINDOW },
+    }),
   )
   const marketRates = q(useMarketRates({ chainId, marketId: market?.id }))
   const campaigns = useCampaigns({ blockchainId, controllerAddress, vaultAddress, marketType })

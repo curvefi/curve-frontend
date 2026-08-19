@@ -6,7 +6,16 @@ import type { SnapshotRange } from '@ui-kit/lib/model/query/time-option-validati
 import { MarketType } from '@ui-kit/types/market'
 import type { Query } from '@ui-kit/types/util'
 
-export function useLlamaSnapshot({
+type SnapshotByMarketType = {
+  [MarketType.Lend]: LendingSnapshot
+  [MarketType.Mint]: CrvUsdSnapshot
+}
+
+type SnapshotsByMarketType<TMarketType extends MarketType> = TMarketType extends MarketType
+  ? SnapshotByMarketType[TMarketType][]
+  : never
+
+export function useMarketSnapshots<TMarketType extends MarketType>({
   blockchainId,
   enabled = true,
   range = { kind: 'timeRange', timeOption: '1M' },
@@ -17,11 +26,11 @@ export function useLlamaSnapshot({
   enabled?: boolean
   range?: SnapshotRange
   controllerAddress: Address | undefined
-  marketType: MarketType
-}): Query<LendingSnapshot[] | CrvUsdSnapshot[]> {
+  marketType: TMarketType
+}): Query<SnapshotsByMarketType<TMarketType>> {
   const timeOption = range.kind === 'timeRange' ? range.timeOption : undefined
   const limit = range.kind === 'limit' ? range.limit : undefined
-  return {
+  const snapshotsByMarketType = {
     Lend: useLendingSnapshots(
       { blockchainId, contractAddress: controllerAddress, timeOption, limit },
       enabled && marketType === MarketType.Lend,
@@ -30,5 +39,7 @@ export function useLlamaSnapshot({
       { blockchainId, contractAddress: controllerAddress, timeOption, limit },
       enabled && marketType === MarketType.Mint,
     ),
-  }[marketType]
+  } satisfies { [T in MarketType]: Query<SnapshotByMarketType[T][]> }
+
+  return snapshotsByMarketType[marketType] as Query<SnapshotsByMarketType<TMarketType>>
 }
