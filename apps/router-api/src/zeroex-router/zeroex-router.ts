@@ -98,6 +98,7 @@ export const buildZeroExRouteResponse = async (
   return [
     {
       router: PROTOCOL,
+      // TODO: research if the 0x fees can be calculated with only one token (sell or buy)
       routerFeePercentage: calculateZeroExFeePercentage(fees, sellToken, buyToken, sellAmount, buyAmount),
       amountIn: [sellAmount],
       amountOut: [buyAmount],
