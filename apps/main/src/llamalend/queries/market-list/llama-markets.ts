@@ -19,28 +19,23 @@ import {
 import { type Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { assert, recordValues } from '@primitives/objects.utils'
+import { assert } from '@primitives/objects.utils'
 import type { QueriesResults } from '@tanstack/react-query'
 import { useQueries } from '@tanstack/react-query'
 import { type CampaignRewards, combineCampaigns } from '@ui-kit/entities/campaigns'
 import { getCampaignsExternalOptions } from '@ui-kit/entities/campaigns/campaigns-external'
 import { getCampaignsMarketsMerklOptions } from '@ui-kit/entities/campaigns/campaigns-markets-merkl'
-import { useStateTimeout } from '@ui-kit/hooks/useStateTimeout'
-import { combineQueriesMeta, PartialQueryResult, RESOLVED_QUERY_RESULT } from '@ui-kit/lib'
+import { combineQueryState, RESOLVED_QUERY_RESULT } from '@ui-kit/lib'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
 import { type ExtraIncentive, MarketType, MarketVersion, MarketRateType } from '@ui-kit/types/market'
+import type { Query } from '@ui-kit/types/util'
 import { decimal, decimalDiv } from '@ui-kit/utils'
 import { DEPRECATED_LLAMAS, NO_LEVERAGE_LEND } from '../../markets.constants'
 import { getBadDebtLendMarketsOptions, getBadDebtMintMarketsOptions } from '../market/market-bad-debt.query'
 import { getFavoriteMarketOptions } from './favorite-markets'
-import {
-  getLendingVaultsOptions,
-  getUserLendingSuppliesOptions,
-  getUserLendingVaultsOptions,
-  type LendingPosition,
-  LendingVault,
-} from './lending-vaults'
-import { getMintMarketOptions, getUserMintMarketsOptions, MintMarket } from './mint-markets'
+import { getLendingVaultsOptions, type LendingPosition, LendingVault } from './lending-vaults'
+import { type UserHasPosition, type UserHasPositions, useUserLlamaPositions } from './llama-market-positions'
+import { getMintMarketOptions, MintMarket } from './mint-markets'
 
 type Assets = {
   borrowed: AssetDetails
@@ -102,14 +97,14 @@ export type LlamaMarket = {
   isFavorite: boolean
   leverage: number | null
   deprecatedMessage: string | null
-  userHasPositions: Record<MarketRateType, boolean> | null // null means no positions in either market and makes easy to filter
+  userHasPositions: UserHasPosition | null // null means no positions in either market and makes easy to filter
   createdAt: number
   favoriteKey: Address // this differs per market type; for lend markets the vault address, for mint markets the amm address
 }
 
 export type LlamaMarketsResult = {
   markets: LlamaMarket[]
-  userHasPositions: Record<MarketType, Record<MarketRateType, boolean>> | null
+  userHasPositions: UserHasPositions | null
   hasFavorites: boolean
 }
 
@@ -156,12 +151,12 @@ const convertLendingVault = (
   }: LendingVault,
   favoriteMarkets: Set<Address>,
   campaigns: Record<string, CampaignRewards[]> = {},
-  userBorrows: Set<Address>,
+  userBorrows: Set<Address> | undefined,
   lendingPosition: LendingPosition | undefined,
   badDebtUsd?: number,
 ): LlamaMarket => {
   const marketType = MarketType.Lend
-  const hasBorrowed = userBorrows.has(controller)
+  const hasBorrowed = userBorrows?.has(controller) ?? null
   const totalExtraRewardApy =
     // sumBy returns 0 for empty arrays
     extraRewardApr.length ? sumBy(extraRewardApr, reward => aprToApy(reward.rate)) : null
@@ -249,7 +244,7 @@ const convertLendingVault = (
     leverage: NO_LEVERAGE_LEND[chain]?.includes(controller) ? null : leverage,
     userHasPositions:
       hasBorrowed || lendingPosition
-        ? { [MarketRateType.Borrow]: hasBorrowed, [MarketRateType.Supply]: !!lendingPosition }
+        ? { [MarketRateType.Borrow]: !!hasBorrowed, [MarketRateType.Supply]: !!lendingPosition }
         : null,
     createdAt: new Date(createdAt).getTime(),
     favoriteKey: vault,
@@ -290,12 +285,12 @@ const convertMintMarket = (
   }: MintMarket,
   favoriteMarkets: Set<Address>,
   campaigns: Record<string, CampaignRewards[]> = {},
-  userMintMarkets: Set<Address>,
+  userMintMarkets: Set<Address> | undefined,
   collateralIndex: number, // index in the list of markets with the same collateral token, used to create a unique name
   badDebtUsd?: number,
 ): LlamaMarket => {
   const marketType = MarketType.Mint
-  const hasBorrow = userMintMarkets.has(address)
+  const hasBorrow = userMintMarkets?.has(address)
   const [collateralSymbol, collateralAddress] = getCollateral(collateralToken)
   const name = collateralIndex > 1 ? `${collateralSymbol}${collateralIndex}` : collateralSymbol
   const rewards = [...(campaigns[address.toLowerCase()] ?? []), ...(campaigns[llamma.toLowerCase()] ?? [])]
@@ -399,9 +394,6 @@ type LlamaMarketsQueries = [
   ReturnType<typeof getCampaignsExternalOptions>,
   ReturnType<typeof getCampaignsMarketsMerklOptions>,
   ReturnType<typeof getFavoriteMarketOptions>,
-  ReturnType<typeof getUserLendingVaultsOptions>,
-  ReturnType<typeof getUserLendingSuppliesOptions>,
-  ReturnType<typeof getUserMintMarketsOptions>,
 ]
 
 export type LlamaMarketParams = {
@@ -414,7 +406,7 @@ export type LlamaMarketParams = {
  * It also fetches the user's favorite markets and user's positions list (without the details).
  */
 export const useLlamaMarkets = ({ userAddress, enableDeprecatedMarkets }: LlamaMarketParams, enabled = true) => {
-  const [isTimedOut, setIsReady] = useStateTimeout()
+  const userPositions = useUserLlamaPositions({ userAddress }, enabled)
   return useQueries({
     queries: useMemo<LlamaMarketsQueries>(
       () => [
@@ -425,18 +417,12 @@ export const useLlamaMarkets = ({ userAddress, enableDeprecatedMarkets }: LlamaM
         getCampaignsExternalOptions({}, enabled),
         getCampaignsMarketsMerklOptions({}, enabled),
         getFavoriteMarketOptions({}, enabled),
-        getUserLendingVaultsOptions({ userAddress }, enabled),
-        getUserLendingSuppliesOptions({ userAddress }, enabled),
-        getUserMintMarketsOptions({ userAddress }, enabled),
       ],
-      [enabled, userAddress],
+      [enabled],
     ),
     combine: useCallback(
-      (results: QueriesResults<LlamaMarketsQueries>): PartialQueryResult<LlamaMarketsResult> => {
-        if (!enabled) {
-          // the query is used in the header, let's make sure we don't waste resources when llamalend isn't selected
-          return RESOLVED_QUERY_RESULT
-        }
+      (results: QueriesResults<LlamaMarketsQueries>): Query<LlamaMarketsResult> => {
+        if (!enabled) return RESOLVED_QUERY_RESULT // used in the header, only run when llamalend is selected
         const [
           lendingVaults,
           mintMarkets,
@@ -445,41 +431,19 @@ export const useLlamaMarkets = ({ userAddress, enableDeprecatedMarkets }: LlamaM
           externalCampaigns,
           merklCampaigns,
           favoriteMarkets,
-          userLendingVaults,
-          userSuppliedMarkets,
-          userMintMarkets,
         ] = results
         const favoriteMarketsSet = new Set(favoriteMarkets.data)
-        const userBorrows = new Set(recordValues(userLendingVaults.data ?? {}).flat())
-        const userMints = new Set(recordValues(userMintMarkets.data ?? {}).flat())
-        const hasSupplied = recordValues(userSuppliedMarkets.data ?? {}).some(
-          positions => recordValues(positions).length,
-        )
+        const { userBorrows, userMints, userSuppliesByChain, userHasPositions = null } = userPositions.data ?? {}
         const countMarket = createCountMarket(mintMarkets.data)
         const campaigns = combineCampaigns([externalCampaigns.data, merklCampaigns.data])
         const getLendMarketBadDebt = createGetBadDebtMarket(badDebtLendMarkets.data)
         const getMintMarketBadDebt = createGetBadDebtMarket(badDebtMintMarkets.data)
 
-        const userDataReady =
-          !userAddress || [userLendingVaults, userSuppliedMarkets, userMintMarkets].every(q => q.data ?? q.error)
         const marketsReady = [lendingVaults, mintMarkets].every(q => q.data ?? q.error)
-        const isReady = setIsReady(marketsReady && (userDataReady || isTimedOut))
 
-        const data: LlamaMarketsResult | undefined = isReady
+        const data: LlamaMarketsResult | undefined = marketsReady
           ? {
-              userHasPositions:
-                userBorrows.size > 0 || userMints.size > 0 || hasSupplied
-                  ? {
-                      [MarketType.Mint]: {
-                        [MarketRateType.Borrow]: userMints.size > 0,
-                        [MarketRateType.Supply]: false,
-                      },
-                      [MarketType.Lend]: {
-                        [MarketRateType.Borrow]: userBorrows.size > 0,
-                        [MarketRateType.Supply]: hasSupplied,
-                      },
-                    }
-                  : null,
+              userHasPositions,
               hasFavorites: favoriteMarketsSet.size > 0,
               markets: [
                 ...(lendingVaults.data ?? [])
@@ -490,7 +454,7 @@ export const useLlamaMarkets = ({ userAddress, enableDeprecatedMarkets }: LlamaM
                       favoriteMarketsSet,
                       campaigns,
                       userBorrows,
-                      userSuppliedMarkets.data?.[vault.chain]?.[vault.vault],
+                      userSuppliesByChain?.[vault.chain]?.[vault.vault],
                       getLendMarketBadDebt(vault.chain, vault.controller),
                     ),
                   ),
@@ -510,9 +474,9 @@ export const useLlamaMarkets = ({ userAddress, enableDeprecatedMarkets }: LlamaM
               ),
             }
           : undefined
-        return { ...combineQueriesMeta(results), data }
+        return { data, ...combineQueryState(userPositions, ...results) }
       },
-      [enabled, userAddress, enableDeprecatedMarkets, isTimedOut, setIsReady],
+      [enabled, enableDeprecatedMarkets, userPositions],
     ),
   })
 }

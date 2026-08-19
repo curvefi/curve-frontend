@@ -1,20 +1,30 @@
-import { Chain } from '@curvefi/prices-api'
+import { Chain, MINT_CHAINS } from '@curvefi/prices-api'
 import {
   getAllMarkets,
-  getAllUserMarkets,
+  getUserMarkets,
   getUserMarketStats,
   Market as MintMarketFromApi,
 } from '@curvefi/prices-api/crvusd'
 import type { Address } from '@primitives/address.utils'
-import { mapRecord, recordEntries } from '@primitives/objects.utils'
-import { queryFactory, type UserParams, type UserQuery } from '@ui-kit/lib/model/query'
-import { userAddressValidationSuite } from '@ui-kit/lib/model/query/evm-address-validation'
+import { recordEntries } from '@primitives/objects.utils'
+import { type FieldsOf } from '@ui-kit/lib'
+import { type ChainNameQuery, queryFactory, type UserQuery } from '@ui-kit/lib/model/query'
+import { userAddressValidationGroup } from '@ui-kit/lib/model/query/evm-address-validation'
+import { pricesApiChainNameValidationGroup } from '@ui-kit/lib/model/query/prices-chain-validation'
 import {
   UserContractParams,
   UserContractQuery,
   userContractValidationSuite,
 } from '@ui-kit/lib/model/query/user-contract'
-import { EmptyValidationSuite } from '@ui-kit/lib/validation'
+import { createValidationSuite, EmptyValidationSuite } from '@ui-kit/lib/validation'
+
+type UserChainNameQuery = UserQuery & ChainNameQuery
+type UserChainNameParams = FieldsOf<UserChainNameQuery>
+
+const userChainNameValidationSuite = createValidationSuite((params: UserChainNameParams) => {
+  userAddressValidationGroup(params)
+  pricesApiChainNameValidationGroup(params)
+})
 
 export type MintMarket = MintMarketFromApi & {
   chain: Chain
@@ -31,14 +41,15 @@ export const { getQueryOptions: getMintMarketOptions, reset: resetMintMarkets } 
 const {
   getQueryOptions: getUserMintMarketsQueryOptions,
   getQueryData: getCurrentUserMintMarkets,
-  invalidate: invalidateUserMintMarkets,
-  reset: resetUserMintMarkets,
+  invalidate: invalidateUserMintMarketsQuery,
+  reset: resetUserMintMarketsQuery,
 } = queryFactory({
-  queryKey: ({ userAddress }: UserParams) => ['user-mint-markets', { userAddress }, 'v1'] as const,
-  queryFn: async ({ userAddress }: UserQuery): Promise<Record<Chain, Address[]>> =>
-    mapRecord(await getAllUserMarkets(userAddress), (_, userMarkets) => userMarkets.map(market => market.controller)),
+  queryKey: ({ userAddress, blockchainId }: UserChainNameParams) =>
+    ['user-mint-markets', { blockchainId }, { userAddress }, 'v2'] as const,
+  queryFn: async ({ userAddress, blockchainId }: UserChainNameQuery): Promise<Address[]> =>
+    (await getUserMarkets(userAddress, blockchainId)).map(market => market.controller),
   category: 'llamalend.user',
-  validationSuite: userAddressValidationSuite,
+  validationSuite: userChainNameValidationSuite,
 })
 
 export const getUserMintMarketsOptions = getUserMintMarketsQueryOptions
@@ -58,33 +69,31 @@ const {
 })
 
 export const invalidateAllUserMintMarkets = async (userAddress: Address | null | undefined) => {
-  await invalidateUserMintMarkets({ userAddress })
+  await Promise.all(MINT_CHAINS.map(blockchainId => invalidateUserMintMarketsQuery({ userAddress, blockchainId })))
 
-  const invalidateContracts = recordEntries(getCurrentUserMintMarkets({ userAddress }) ?? {}).flatMap(
-    ([blockchainId, contracts]) =>
-      contracts.map(contractAddress =>
-        invalidateUserMintMarketStats({
-          userAddress,
-          blockchainId,
-          contractAddress,
-        }),
-      ),
+  const invalidateContracts = MINT_CHAINS.flatMap(blockchainId =>
+    (getCurrentUserMintMarkets({ userAddress, blockchainId }) ?? []).map(contractAddress =>
+      invalidateUserMintMarketStats({
+        userAddress,
+        blockchainId,
+        contractAddress,
+      }),
+    ),
   )
   await Promise.all(invalidateContracts)
 }
 
 export const resetAllUserMintMarkets = async (userAddress: Address | null | undefined) => {
-  await resetUserMintMarkets({ userAddress })
+  await Promise.all(MINT_CHAINS.map(blockchainId => resetUserMintMarketsQuery({ userAddress, blockchainId })))
 
-  const resetContracts = recordEntries(getCurrentUserMintMarkets({ userAddress }) ?? {}).flatMap(
-    ([blockchainId, contracts]) =>
-      contracts.map(contractAddress =>
-        resetUserMintMarketStats({
-          userAddress,
-          blockchainId,
-          contractAddress,
-        }),
-      ),
+  const resetContracts = MINT_CHAINS.flatMap(blockchainId =>
+    (getCurrentUserMintMarkets({ userAddress, blockchainId }) ?? []).map(contractAddress =>
+      resetUserMintMarketStats({
+        userAddress,
+        blockchainId,
+        contractAddress,
+      }),
+    ),
   )
   await Promise.all(resetContracts)
 }
