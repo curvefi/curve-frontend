@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 import { type Chain, LEND_CHAINS, MINT_CHAINS } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
-import { splitArrayTuple } from '@primitives/array.utils'
-import { fromEntries, recordValues } from '@primitives/objects.utils'
+import { splitArrayTuple, zip } from '@primitives/array.utils'
+import { fromEntries, type PartialRecord, recordValues } from '@primitives/objects.utils'
 import { useQueries } from '@tanstack/react-query'
 import { combineQueryState } from '@ui-kit/lib'
 import { MarketRateType, MarketType } from '@ui-kit/types/market'
@@ -19,9 +19,9 @@ export type UserHasPosition = Record<MarketRateType, boolean>
 export type UserHasPositions = Record<MarketType, UserHasPosition>
 
 export type LlamaMarketPositions = {
-  userBorrows: Set<Address>
-  userMints: Set<Address>
-  userSuppliesByChain: Partial<Record<Chain, Record<Address, LendingPosition>>>
+  userBorrows: PartialRecord<Chain, Set<Address>>
+  userMints: PartialRecord<Chain, Set<Address>>
+  userSuppliesByChain: PartialRecord<Chain, Record<Address, LendingPosition>>
   userHasPositions: UserHasPositions | null
 }
 
@@ -40,24 +40,27 @@ export const useUserLlamaPositions = ({ userAddress }: { userAddress: Address | 
         [Query<Address[]>, Query<UserLendingSupplies>, Query<Address[]>]
       >(results, [LEND_CHAINS, LEND_CHAINS, MINT_CHAINS])
 
-      const userBorrows = new Set(userLendingVaults.flatMap(query => query.data ?? []))
-      const userMints = new Set(userMintMarkets.flatMap(query => query.data ?? []))
+      const userBorrows = fromEntries(
+        zip(LEND_CHAINS, userLendingVaults).flatMap(([chain, { data }]) => (data ? [[chain, new Set(data)]] : [])),
+      )
+      const userMints = fromEntries(
+        zip(MINT_CHAINS, userMintMarkets).flatMap(([chain, { data }]) => (data ? [[chain, new Set(data)]] : [])),
+      )
       const userSuppliesByChain = fromEntries(
-        LEND_CHAINS.flatMap((chain, index) => {
-          const positions = userSuppliedMarkets[index].data
-          return positions ? [[chain, positions]] : []
-        }),
+        zip(LEND_CHAINS, userSuppliedMarkets).flatMap(([chain, { data }]) => (data ? [[chain, data]] : [])),
       )
       const hasSupplied = userSuppliedMarkets.some(query => recordValues(query.data ?? {}).length)
+      const hasBorrowed = recordValues(userBorrows).some(markets => markets.size)
+      const hasMinted = recordValues(userMints).some(markets => markets.size)
       const userHasPositions =
-        userBorrows.size > 0 || userMints.size > 0 || hasSupplied
+        hasBorrowed || hasMinted || hasSupplied
           ? {
               [MarketType.Mint]: {
-                [MarketRateType.Borrow]: userMints.size > 0,
+                [MarketRateType.Borrow]: hasMinted,
                 [MarketRateType.Supply]: false,
               },
               [MarketType.Lend]: {
-                [MarketRateType.Borrow]: userBorrows.size > 0,
+                [MarketRateType.Borrow]: hasBorrowed,
                 [MarketRateType.Supply]: hasSupplied,
               },
             }
