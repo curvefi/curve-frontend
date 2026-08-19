@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { type Chain, LEND_CHAINS, MINT_CHAINS } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
 import { splitArrayTuple, zip } from '@primitives/array.utils'
-import { fromEntries, type PartialRecord, recordValues } from '@primitives/objects.utils'
+import { fromEntries, notFalsy, type PartialRecord, recordValues } from '@primitives/objects.utils'
 import { useQueries } from '@tanstack/react-query'
 import { combineQueryState } from '@ui-kit/lib'
 import { MarketRateType, MarketType } from '@ui-kit/types/market'
@@ -25,6 +25,14 @@ export type LlamaMarketPositions = {
   userHasPositions: UserHasPositions | null
 }
 
+const groupAddressesByChain = (queries: Query<Address[]>[], chains: Chain[]) =>
+  [
+    fromEntries(
+      notFalsy(...zip(chains, queries).map(([chain, { data }]) => data && ([chain, new Set(data)] as const))),
+    ),
+    queries.some(({ data }) => data?.length),
+  ] as const
+
 export const useUserLlamaPositions = ({ userAddress }: { userAddress: Address | undefined }, enabled: boolean) =>
   useQueries({
     queries: useMemo(
@@ -40,18 +48,12 @@ export const useUserLlamaPositions = ({ userAddress }: { userAddress: Address | 
         [Query<Address[]>, Query<UserLendingSupplies>, Query<Address[]>]
       >(results, [LEND_CHAINS, LEND_CHAINS, MINT_CHAINS])
 
-      const userBorrows = fromEntries(
-        zip(LEND_CHAINS, userLendingVaults).flatMap(([chain, { data }]) => (data ? [[chain, new Set(data)]] : [])),
-      )
-      const userMints = fromEntries(
-        zip(MINT_CHAINS, userMintMarkets).flatMap(([chain, { data }]) => (data ? [[chain, new Set(data)]] : [])),
-      )
+      const [userBorrows, hasBorrowed] = groupAddressesByChain(userLendingVaults, LEND_CHAINS)
+      const [userMints, hasMinted] = groupAddressesByChain(userMintMarkets, MINT_CHAINS)
       const userSuppliesByChain = fromEntries(
-        zip(LEND_CHAINS, userSuppliedMarkets).flatMap(([chain, { data }]) => (data ? [[chain, data]] : [])),
+        zip(LEND_CHAINS, userSuppliedMarkets).flatMap(([chain, { data }]) => (data == null ? [] : [[chain, data]])),
       )
       const hasSupplied = userSuppliedMarkets.some(query => recordValues(query.data ?? {}).length)
-      const hasBorrowed = recordValues(userBorrows).some(markets => markets.size)
-      const hasMinted = recordValues(userMints).some(markets => markets.size)
       const userHasPositions =
         hasBorrowed || hasMinted || hasSupplied
           ? {
