@@ -10,7 +10,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { mapQuery, type QueryProp } from '@ui-kit/types/util'
-import { borderStyle, decimal, formatNumber } from '@ui-kit/utils'
+import { borderStyle, decimal, formatNumber, formatToken } from '@ui-kit/utils'
 import {
   getPriceImpactDisplay,
   getPriceImpactPercent,
@@ -68,8 +68,7 @@ export const LoanActionSettings = ({
             value={mapQuery(exchangeRate, er =>
               maybe(
                 decimal(er),
-                er =>
-                  `1 ${collateralSymbol} = ${formatNumber(er, { abbreviate: false, highPrecision: true })} ${borrowSymbol}`,
+                er => `1 ${collateralSymbol} = ${formatToken(er, borrowSymbol, 'balance')}`,
               ),
             )}
             size="small"

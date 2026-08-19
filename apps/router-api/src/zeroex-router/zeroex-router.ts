@@ -48,9 +48,7 @@ function calculateZeroExFeePercentage(
     '0x quote returned a fee in an unsupported token',
   )
   const sellFeeAmounts = volumeFees.filter(({ token }) => isAddressEqual(token, sellToken)).map(({ amount }) => amount)
-  const buyFeeAmounts = volumeFees
-    .filter(({ token }) => !isAddressEqual(token, sellToken) && isAddressEqual(token, buyToken))
-    .map(({ amount }) => amount)
+  const buyFeeAmounts = volumeFees.filter(({ token }) => isAddressEqual(token, buyToken)).map(({ amount }) => amount)
   const sellFeePercentage = calculateFeePercentage(sellFeeAmounts, sellAmount)
   const grossBuyAmount = new BigNumber(buyAmount).plus(BigNumber.sum(0, ...buyFeeAmounts)).toFixed() as Decimal
   const buyFeePercentage = calculateFeePercentage(buyFeeAmounts, grossBuyAmount)
