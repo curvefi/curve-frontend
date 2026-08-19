@@ -28,7 +28,7 @@ const footerCellByColumnId: Record<YieldBreakdownColumnId, (props: FooterCellPro
   [YieldBreakdownColumnId.Apy]: ({ columnId, maxBoostTotal, total }: FooterCellProps) => (
     <TableCell key={columnId} sx={{ paddingInline: Spacing.md, paddingBlock: Spacing.sm, textAlign: 'right' }}>
       <Typography variant="tableCellMBold">{formatNumber(total, 'percent.rate')}</Typography>
-      {maxBoostTotal && maxBoostTotal != total && (
+      {!!maxBoostTotal && maxBoostTotal != total && (
         <Typography variant="tableCellSRegular" color="textSecondary">
           {t`Max boost ${formatNumber(maxBoostTotal, 'percent.rate')}`}
         </Typography>
