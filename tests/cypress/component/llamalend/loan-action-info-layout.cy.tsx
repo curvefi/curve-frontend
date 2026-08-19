@@ -1,6 +1,7 @@
 import { noop } from 'lodash'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
+import { LoanActionSettings } from '@/llamalend/widgets/action-card/LoanActionSettings'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { mockedWagmiConfig } from '@cy/support/helpers/llamalend/test-wagmi.helpers'
 import { allViewports } from '@cy/support/ui'
@@ -60,20 +61,20 @@ allViewports().forEach(([width, height, viewport]) => {
       it(`has consistent heights ${label}`, () => {
         cy.mount(
           <ComponentTestWrapper config={mockedWagmiConfig}>
-            <LoanActionInfoList
-              isOpen
-              prevHealth={q({ data: '12.4', ...{ isLoading, error } })} // make sure `->` doesn't change the line height
-              health={q({ data: '123.4', ...{ isLoading, error, ...state } })}
-              oraclePrice={q({ data: '123.4', ...{ isLoading, error, ...state } })}
-              exchangeRate={q({ data: '123.4', ...{ isLoading, error, ...state } })}
-              gas={q({ data: { estGasCostUsd: '123.4' }, ...{ isLoading, error, ...state } })}
-              rates={q({ data: { borrowApr: '123.4' }, ...{ isLoading, error, ...state } })}
-              slippage="123.4"
-              onSlippageChange={noop}
-              collateralSymbol="wstETH"
-              borrowSymbol="crvUSD"
-              routes={routes}
-            />
+            <>
+              <LoanActionSettings slippage="123.4" onSlippageChange={noop} routes={routes} />
+              <LoanActionInfoList
+                isOpen
+                prevHealth={q({ data: '12.4', ...{ isLoading, error } })} // make sure `->` doesn't change the line height
+                health={q({ data: '123.4', ...{ isLoading, error, ...state } })}
+                oraclePrice={q({ data: '123.4', ...{ isLoading, error, ...state } })}
+                exchangeRate={q({ data: '123.4', ...{ isLoading, error, ...state } })}
+                gas={q({ data: { estGasCostUsd: '123.4' }, ...{ isLoading, error, ...state } })}
+                rates={q({ data: { borrowApr: '123.4' }, ...{ isLoading, error, ...state } })}
+                collateralSymbol="wstETH"
+                borrowSymbol="crvUSD"
+              />
+            </>
           </ComponentTestWrapper>,
         )
 

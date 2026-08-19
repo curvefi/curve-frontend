@@ -29,6 +29,7 @@ export const ChartAndActivityComp = ({ previewPrices }: ChartAndActivityCompProp
   const [isBandsVisible] = useBandsChartVisible()
   const networkConfig = networks[chainId]
   const {
+    chartMode,
     isLoading: isChartLoading,
     selectedChartKey,
     setTimeOption,
@@ -55,6 +56,7 @@ export const ChartAndActivityComp = ({ previewPrices }: ChartAndActivityCompProp
   })
 
   const chart = {
+    chartMode,
     isLoading: isChartLoading,
     selectedChartKey,
     setTimeOption,

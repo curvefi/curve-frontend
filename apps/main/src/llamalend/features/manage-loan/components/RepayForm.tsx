@@ -10,6 +10,7 @@ import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
 import { isRepayLeveraged } from '@/llamalend/queries/repay/repay-query.helpers'
 import { useUserPrices } from '@/llamalend/queries/user'
+import { LoanActionSettings } from '@/llamalend/widgets/action-card/LoanActionSettings'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -143,9 +144,7 @@ export const RepayForm = <ChainId extends IChainId>({
           values={values}
           tokens={{ collateralToken, borrowToken }}
           networks={networks}
-          onSlippageChange={value => updateForm({ slippage: value })}
           showLeverage={showLeverage}
-          routes={routes}
           prices={q(useRepayPrices(params, !isInSoftLiquidation))} // when in soft liquidation, the prices do not change
           prevPrices={q(useUserPrices(params))}
           priceImpact={priceImpact}
@@ -186,6 +185,12 @@ export const RepayForm = <ChainId extends IChainId>({
             />
           )
         }
+      />
+      <LoanActionSettings
+        show={showLeverage}
+        slippage={values.slippage}
+        onSlippageChange={slippage => updateForm({ slippage })}
+        routes={routes}
       />
       <HighPriceImpactAlert priceImpact={priceImpact} values={values} max={q(max.expected)} slippageType={LEVERAGE} />
       {isInSoftLiquidation && <AlertRepayDebtToIncreaseHealth />}

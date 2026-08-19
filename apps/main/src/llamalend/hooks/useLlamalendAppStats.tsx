@@ -37,7 +37,10 @@ export function useLlamalendAppStats(
 ) {
   const { address } = useConnection()
   const isDesktop = useIsDesktop()
-  const isMarketPage = useMatchRoute({ to: `${currentApp}/$network${LLAMALEND_ROUTES.PAGE_MARKETS}/$id` })
+  const isMarketPage = useMatchRoute({
+    to: `${currentApp}/$network${LLAMALEND_ROUTES.PAGE_MARKETS}/$id`,
+    fuzzy: true, // match this route and any routes nested beneath it
+  })
   const enableDeprecatedMarkets = useUserProfileStore(state => state.showDeprecatedMarkets)
 
   enabled &&= !isDesktop || !isMarketPage // hide header stats on lend/crvusd market pages only on desktop

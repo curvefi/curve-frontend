@@ -57,6 +57,18 @@ const METRIC_CATEGORY = 'llamalend.positionSupplyDetails'
 
 const MetricGrid = ({ children }: { children: ReactNode }) => <Grid size={{ mobile: 12, tablet: 3 }}>{children}</Grid>
 
+// TODO: use the same PositionDetailsComposite component as the borrow tab once the supply events are ready
+export const SupplyPositionDetailsCard = ({ children }: { children: ReactNode }) => (
+  <Stack>
+    <TabsSwitcher
+      variant="contained"
+      value={SUPPLY_POSITION_TAB}
+      options={[{ value: SUPPLY_POSITION_TAB, label: t`Your position` }]}
+    />
+    <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>{children}</Stack>
+  </Stack>
+)
+
 export const SupplyPositionDetails = () => {
   const {
     chainId,
@@ -130,13 +142,8 @@ export const SupplyPositionDetails = () => {
   )
 
   return (
-    <Stack>
-      <TabsSwitcher
-        variant="contained"
-        value={SUPPLY_POSITION_TAB}
-        options={[{ value: SUPPLY_POSITION_TAB, label: t`Your position` }]}
-      />
-      <Grid container spacing={Spacing.md} sx={{ padding: Spacing.sm, backgroundColor: t => t.design.Layer[1].Fill }}>
+    <SupplyPositionDetailsCard>
+      <Grid container spacing={Spacing.md} sx={{ padding: Spacing.sm }}>
         <MetricGrid>
           <Metric
             category={METRIC_CATEGORY}
@@ -231,6 +238,6 @@ export const SupplyPositionDetails = () => {
           />
         </MetricGrid>
       </Grid>
-    </Stack>
+    </SupplyPositionDetailsCard>
   )
 }

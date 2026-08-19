@@ -48,6 +48,8 @@ type MarketContractsProps = {
   network: BaseConfig | undefined
 }
 
+type MarketDataProps = Pick<MarketContractsProps, 'market' | 'apiMarket' | 'network'>
+
 const GaugeLabel = () => (
   <Stack direction="row" sx={{ gap: Spacing.xs, alignItems: 'center' }}>
     <Typography variant="bodyMRegular" color="textSecondary">
@@ -95,26 +97,30 @@ const AssetRow = ({
   </Stack>
 )
 
-export const MarketAssets = ({
+export const MarketOverviewSkeleton = ({
   market,
   apiMarket,
   network,
-}: Pick<MarketContractsProps, 'market' | 'apiMarket' | 'network'>) => {
+  children,
+}: MarketDataProps & { children: ReactNode }) => (
+  <WithSkeleton loading={!network || (!market && !apiMarket.data)} variant="rectangular" height="4lh" width="100%">
+    <Stack>{children}</Stack>
+  </WithSkeleton>
+)
+
+export const MarketAssets = ({ market, apiMarket, network }: MarketDataProps) => {
   const { collateralToken, borrowToken } = getTokens(market, apiMarket.data) ?? {}
-  const isLoading = !network || (!market && !apiMarket.data)
 
   return (
-    <WithSkeleton loading={isLoading} variant="rectangular" height="4lh" width="100%">
-      <Stack>
-        <AssetRow
-          testId="market-contract-collateral-token"
-          network={network}
-          title={t`Collateral`}
-          token={collateralToken}
-        />
-        <AssetRow testId="market-contract-borrow-token" network={network} title={t`Borrowed`} token={borrowToken} />
-      </Stack>
-    </WithSkeleton>
+    <MarketOverviewSkeleton market={market} apiMarket={apiMarket} network={network}>
+      <AssetRow
+        testId="market-contract-collateral-token"
+        network={network}
+        title={t`Collateral`}
+        token={collateralToken}
+      />
+      <AssetRow testId="market-contract-borrow-token" network={network} title={t`Borrowed`} token={borrowToken} />
+    </MarketOverviewSkeleton>
   )
 }
 

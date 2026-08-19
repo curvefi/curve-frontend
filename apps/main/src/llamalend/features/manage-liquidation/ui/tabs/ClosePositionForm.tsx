@@ -2,6 +2,7 @@ import { useClosePositionForm } from '@/llamalend/features/manage-liquidation/ho
 import { ClosePositionInfoList } from '@/llamalend/features/manage-liquidation/ui/ClosePositionInfoList'
 import { useMarketContext } from '@/llamalend/features/market-context'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
+import { LoanActionSettings } from '@/llamalend/widgets/action-card/LoanActionSettings'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import TableCell from '@mui/material/TableCell'
 import { FormButton } from '@ui-kit/features/forms'
@@ -49,7 +50,6 @@ export const ClosePositionForm = ({ networks }: { networks: NetworkDict<LlamaCha
           chainId={network.chainId}
           networks={networks}
           values={values}
-          onSlippageChange={slippage => form.update({ slippage })}
         />
       }
     >
@@ -73,6 +73,7 @@ export const ClosePositionForm = ({ networks }: { networks: NetworkDict<LlamaCha
           )
         }
       />
+      <LoanActionSettings slippage={values.slippage} onSlippageChange={slippage => form.update({ slippage })} />
       {missing != null && borrowedBalance != null && +missing > 0 ? (
         <AlertAdditionalDebtToken debtTokenSymbol={debtTokenSymbol} missing={missing} balance={borrowedBalance} />
       ) : (

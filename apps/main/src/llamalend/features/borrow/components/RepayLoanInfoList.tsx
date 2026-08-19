@@ -2,7 +2,6 @@ import { BigNumber } from 'bignumber.js'
 import { useMemo } from 'react'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
-import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { calculateReturnToWallet } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketOraclePrice } from '@/llamalend/queries/market'
@@ -90,9 +89,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   values: { slippage, stateCollateral, userCollateral, userBorrowed, isFull },
   tokens: { collateralToken, borrowToken },
   networks,
-  onSlippageChange,
   showLeverage,
-  routes,
   form,
   prices,
   prevPrices,
@@ -104,9 +101,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   values: RepayFormData
   tokens: { collateralToken: Token | undefined; borrowToken: Token | undefined }
   networks: NetworkDict<ChainId>
-  onSlippageChange: (newSlippage: Decimal) => void
   showLeverage: boolean | undefined
-  routes: MarketRoutes | undefined
   form: UseFormReturn<RepayFormData>
   prices?: QueryProp<Range<Decimal> | null>
   prevPrices?: QueryProp<Range<Decimal> | null>
@@ -163,10 +158,8 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
           isFull ? decimal(0) : decimal(new BigNumber(prev).minus(stateCollateral ?? '0')),
         ),
         expected: useRepayExpectedBorrowed(params, isOpen),
-        routes,
         // routeImage: useRepayRouteImage(params, isOpen),
         slippage,
-        onSlippageChange,
         priceImpact,
         collateralDelta: userCollateral,
       })}

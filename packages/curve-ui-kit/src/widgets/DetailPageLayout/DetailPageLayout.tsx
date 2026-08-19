@@ -1,10 +1,9 @@
-import { type ReactNode, useRef } from 'react'
+import type { ReactNode } from 'react'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Stack, { StackProps } from '@mui/material/Stack'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
-import { useResizeObserver } from '@ui-kit/hooks/useResizeObserver'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { mapBreakpoints } from '@ui-kit/themes/basic-theme/basic-theme'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -47,11 +46,9 @@ const stickyHeaderSx = (navHeight: number): StackProps['sx'] => ({
 })
 
 /** CSS rules for making the form tabs sticky */
-const stickyFormTabsSx = (navHeight: number, pageHeaderHeight: number) => ({
+const stickyFormTabsSx = (navHeight: number) => ({
   alignSelf: { tablet: 'flex-start' },
   position: { tablet: 'sticky' },
-  // additional margin to make the forms start at the same height as the page content
-  marginBlockStart: { desktop: `calc(${pageHeaderHeight}px - ${PAGE_MARGIN.marginBlockStart.desktop})` },
   // mobile breakpoint is not used because sticky only starts at tablet breakpoint
   top: mapBreakpoints(PAGE_MARGIN.marginBlockStart, marginBlockStart => `calc(${navHeight}px + ${marginBlockStart})`),
 })
@@ -59,7 +56,7 @@ const stickyFormTabsSx = (navHeight: number, pageHeaderHeight: number) => ({
 /**
  * A grid that separates the detail page into two or three main sections:
  * 1. action form (`FormTabs`) (right side on large screens, inside a drawer on mobile)
- * 2. market and user position details (right side on larger screens, left side in beta channel)
+ * 2. market and user position details
  * 3. an optional footer that goes at the bottom, but still inside the grid
  */
 export const DetailPageLayout = ({
@@ -80,21 +77,13 @@ export const DetailPageLayout = ({
 }) => {
   const navHeight = useLayoutStore(state => state.navHeight)
   const isMobile = useIsMobile()
-  // header ref needed to compute the top position of the sticky forms
-  const headerRef = useRef<HTMLDivElement>(null)
-  // page header metrics's notionals lazy rendering make the height change by 9px so we need a smaller threshold
-  const [, pageHeaderHeight = 0] = useResizeObserver(headerRef, { threshold: 5 })
   const placement = formTabs?.placement ?? 'inline'
   const showMobileDrawer = getIsMobileFormDrawer(placement, isMobile)
   const hasSections = !!sections?.length
 
   const headerStack = (
     <>
-      {header && (
-        <Stack ref={headerRef} sx={hasSections ? undefined : stickyHeaderSx(navHeight)}>
-          {header}
-        </Stack>
-      )}
+      {header && <Stack sx={hasSections ? undefined : stickyHeaderSx(navHeight)}>{header}</Stack>}
       {hasSections && (
         <Stack
           sx={{
@@ -143,7 +132,7 @@ export const DetailPageLayout = ({
             size={{ mobile: 12, tablet: 5, desktop: 4 }}
             sx={{
               maxWidth: { desktop: MaxWidth.actionCard },
-              ...stickyFormTabsSx(navHeight, pageHeaderHeight),
+              ...stickyFormTabsSx(navHeight),
             }}
           >
             <FormPlacementProvider placement={placement}>{formTabs?.content || <FormSkeleton />}</FormPlacementProvider>

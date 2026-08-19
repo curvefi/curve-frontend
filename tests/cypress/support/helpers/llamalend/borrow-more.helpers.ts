@@ -67,6 +67,7 @@ export function checkBorrowMoreDetailsLoaded({
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
   if (leverageEnabled) {
     getActionValue('borrow-price-impact').should('include', '%')
+    cy.get('[data-testid="loan-action-settings"] [data-testid="borrow-slippage"]').should('be.visible')
     getActionValue('borrow-slippage').should('include', '%')
   }
 }

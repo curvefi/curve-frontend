@@ -51,6 +51,7 @@ export function checkRepayDetailsLoaded({
   hasApi?: boolean
 }) {
   cy.get('[data-testid="borrow-leverage-info-list"]', LOAD_TIMEOUT).should(leverageEnabled ? 'be.visible' : 'not.exist')
+  cy.get('[data-testid="loan-action-settings"]', LOAD_TIMEOUT).should(leverageEnabled ? 'be.visible' : 'not.be.visible')
   getActionValue('borrow-price-range', ...notFalsy(!isPriceChanged && 'previous')).should(
     'match',
     /(\d(\.\d+)?) - (\d(\.\d+)?)/,
