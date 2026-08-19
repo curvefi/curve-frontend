@@ -117,10 +117,9 @@ describe('route provider allowlist', () => {
   it('renders only providers supplied by the market policy', () => {
     cy.mount(
       <ComponentTestWrapper config={mockedWagmiConfig}>
-        <LoanActionInfoList
-          isOpen
-          oraclePrice={q({ data: '1', isLoading: false, error: null })}
-          gas={q({ data: null, isLoading: false, error: null })}
+        <LoanActionSettings
+          slippage={undefined}
+          onSlippageChange={noop}
           routes={{ ...routes, providers: ['enso'], selectedRoute: undefined, selectedRouter: undefined }}
         />
       </ComponentTestWrapper>,
