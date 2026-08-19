@@ -92,5 +92,7 @@ describe('GET routes mocked unit tests', () => {
     expect(statusCode).toBe(200)
     expect(url.searchParams.get('slippage')).toBe(expectedSlippage)
     expect(url.searchParams.has('minAmountOut')).toBe(false)
+    expect(url.searchParams.has('fee')).toBe(false)
+    expect(url.searchParams.has('feeReceiver')).toBe(false)
   })
 })

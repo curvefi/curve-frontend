@@ -66,7 +66,11 @@ export const buildEnsoRouteResponse = async (
     ...(minAmountOut
       ? { minAmountOut }
       : slippage != null && { slippage: new BigNumber(slippage).times(100).toString() }),
-    ...maybe(ROUTER_FEE_RECEIVER_BY_CHAIN_ID[chainId], feeReceiver => ({ fee: ROUTER_FEE_BPS, feeReceiver })),
+    ...maybe(
+      // Enso rejects an explicit fee=0, so omit fee parameters when fees are disabled.
+      ROUTER_FEE_BPS === '0' ? undefined : ROUTER_FEE_RECEIVER_BY_CHAIN_ID[chainId],
+      feeReceiver => ({ fee: ROUTER_FEE_BPS, feeReceiver }),
+    ),
   })}`
 
   // Enso API is documented to return an array of routes, but in practice it returns a single object
