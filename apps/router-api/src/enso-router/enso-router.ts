@@ -15,7 +15,7 @@ type EnsoRouteResponse = {
   gas: string
   amountOut: Decimal
   priceImpact: number | null
-  feeAmount: Decimal[]
+  feeAmount?: Decimal[]
   minAmountOut: Decimal
   createdAt: number
   tx: TransactionData
@@ -31,7 +31,7 @@ type EnsoRouteResponse = {
     sourceChainId?: number
     destinationChainId?: number
   }[]
-  ensoFeeAmount: Decimal[]
+  ensoFeeAmount?: Decimal[]
 }
 
 /**
@@ -74,7 +74,7 @@ export const buildEnsoRouteResponse = async (
     ...(ENSO_API_KEY && { headers: { Authorization: `Bearer ${ENSO_API_KEY}` } }),
   }).catch(error => logEnsoError(error, log, url))
   return toArray(json).map(
-    ({ route, amountOut, gas, feeAmount, ensoFeeAmount, ...routeProps }): RouterRouteResponse => ({
+    ({ route, amountOut, gas, feeAmount = [], ensoFeeAmount = [], ...routeProps }): RouterRouteResponse => ({
       router: 'enso',
       routerFeePercentage: calculateFeePercentage([...feeAmount, ...ensoFeeAmount], amountIn),
       gas: gas as Decimal,

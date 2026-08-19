@@ -4,7 +4,6 @@ import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
-import { useLlamaLendRouterFees } from '@ui-kit/hooks/useFeatureFlags'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
@@ -66,10 +65,7 @@ export const LoanActionSettings = ({
           <ActionInfo
             label={t`Exchange rate`}
             value={mapQuery(exchangeRate, er =>
-              maybe(
-                decimal(er),
-                er => `1 ${collateralSymbol} = ${formatToken(er, borrowSymbol, 'balance')}`,
-              ),
+              maybe(decimal(er), er => `1 ${collateralSymbol} = ${formatToken(er, borrowSymbol, 'balance')}`),
             )}
             size="small"
             testId="borrow-exchange-rate"
@@ -84,8 +80,7 @@ export const LoanActionSettings = ({
             testId="borrow-price-impact"
           />
         )}
-        {/* Test with live Enso routes before enabling because Enso quotes do not appear to work on previews. */}
-        {useLlamaLendRouterFees() && routes?.selectedRoute && (
+        {routes?.selectedRoute && (
           <ActionInfo
             label={t`Router fee`}
             labelTooltip={{

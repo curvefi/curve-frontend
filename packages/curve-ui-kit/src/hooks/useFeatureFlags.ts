@@ -26,9 +26,6 @@ export const useCurveSolverRouter = useBetaChannel
 export const isCurveRouterEnabled = isBetaChannel
 export const isCurveSolverRouterEnabled = isBetaChannel
 
-/** Router fee display for LlamaLend leverage */
-export const useLlamaLendRouterFees = useBetaChannel
-
 /** Reset position form for LlamaLend soft liquidation */
 export const useMarketResetPosition = useStableChannel
 

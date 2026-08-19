@@ -13,12 +13,10 @@ describe('GET routes mocked unit tests', () => {
     gas: '100000',
     amountOut: '990000000',
     priceImpact: 0,
-    feeAmount: [],
     minAmountOut: '980000000',
     createdAt: 1,
     tx: { data: '0x', to: zeroAddress, from: zeroAddress, value: '0' },
     route: [],
-    ensoFeeAmount: [],
   }
 
   it.each([
@@ -69,7 +67,7 @@ describe('GET routes mocked unit tests', () => {
 
   // TODO: test 0x slippage and fees
   it.each([
-    { slippage: '0.5', expectedSlippage: '50', feeAmount: [], ensoFeeAmount: [], expectedFee: '0' },
+    { slippage: '0.5', expectedSlippage: '50', expectedFee: '0' },
     {
       slippage: '0',
       expectedSlippage: '0',
