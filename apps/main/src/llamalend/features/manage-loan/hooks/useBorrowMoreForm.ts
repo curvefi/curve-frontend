@@ -3,6 +3,7 @@ import { LEVERAGE } from '@/llamalend/constants'
 import { useMaxBorrowMoreValues } from '@/llamalend/features/manage-loan/hooks/useMaxBorrowMoreValues'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import { useMarketLeverageProviders } from '@/llamalend/hooks/useMarketLeverageProviders'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { useSyncMarketLeverageSlippage } from '@/llamalend/hooks/useSyncMarketLeverageSlippage'
 import { canLeverageUserBorrowed, getMarketLeverageSlippage, hasZapV2, isRouterRequired } from '@/llamalend/llama.utils'
@@ -121,18 +122,9 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
   collateralEvents: QueryProp<UserCollateralEvents>
 }) => {
-  const {
-    chainId,
-    market,
-    marketId,
-    ammAddress,
-    zapAddress,
-    controllerAddress,
-    tokens,
-    marketType,
-    userAddress,
-    leverageProviders,
-  } = useMarketContext<ChainId>()
+  const { chainId, market, marketId, ammAddress, zapAddress, controllerAddress, tokens, marketType, userAddress } =
+    useMarketContext<ChainId>()
+  const leverageProviders = useMarketLeverageProviders()
   const marketAlert = useMarketAlert(chainId, controllerAddress, marketType)
   const defaultSlippage = getMarketLeverageSlippage(chainId, controllerAddress)
 

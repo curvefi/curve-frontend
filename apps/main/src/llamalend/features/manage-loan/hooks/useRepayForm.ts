@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { useMaxRepayTokenValues } from '@/llamalend/features/manage-loan/hooks/useMaxRepayTokenValues'
+import { useMarketLeverageProviders } from '@/llamalend/hooks/useMarketLeverageProviders'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { useSyncMarketLeverageSlippage } from '@/llamalend/hooks/useSyncMarketLeverageSlippage'
 import { getMarketLeverageSlippage, isRouterRequired } from '@/llamalend/llama.utils'
@@ -110,8 +111,8 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     controllerAddress,
     tokens: { borrowToken, collateralToken },
     userAddress,
-    leverageProviders,
   } = useMarketContext<ChainId>()
+  const leverageProviders = useMarketLeverageProviders()
   const defaultSlippage = getMarketLeverageSlippage(chainId, controllerAddress)
   const form = useForm<RepayFormData>({
     defaultValues: { ...defaultValues, slippage: defaultSlippage },
