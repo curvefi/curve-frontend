@@ -6,6 +6,15 @@ import * as Schema from './schema'
 
 export type * from './schema'
 
+export const USER_MARKETS_FIRST_PAGE = 1
+export const USER_MARKETS_DEFAULT_PER_PAGE = 100
+
+type GetUserMarketsParams = {
+  page?: number
+  per_page?: number
+  include_closed?: boolean
+}
+
 /** Retrieve all markets for a specific chain, sorted by date of creation. */
 export async function getMarkets(
   chain: Chain,
@@ -68,9 +77,20 @@ export async function getKeepers(chain: Chain, options?: Options) {
   return Schema.getKeepersResponse.parse(response)
 }
 
-export async function getUserMarkets(userAddr: string, chain: Chain, options?: Options) {
+export async function getUserMarkets(
+  userAddr: string,
+  chain: Chain,
+  {
+    page = USER_MARKETS_FIRST_PAGE,
+    per_page = USER_MARKETS_DEFAULT_PER_PAGE,
+    include_closed = false,
+  }: GetUserMarketsParams = {},
+  options?: Options,
+) {
   const host = getHost(options)
-  const response = await fetch(`${host}/v1/crvusd/users/${chain}/${userAddr}?page=1&per_page=100&include_closed=false`)
+  const response = await fetch(
+    `${host}/v1/crvusd/users/${chain}/${userAddr}${addQueryString({ page, per_page, include_closed })}`,
+  )
 
   return Schema.getUserMarketsResponse.parse(response)
 }

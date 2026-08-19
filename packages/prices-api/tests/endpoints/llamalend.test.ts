@@ -32,7 +32,7 @@ runEndpointCases('llamalend', [
     llamalend.getAllUserMarkets(llamalendUserSeed().user, undefined, requestOptions),
   ),
   endpointCase('getUserMarkets', () =>
-    llamalend.getUserMarkets(llamalendUserSeed().user, llamalendUserSeed().chain, requestOptions),
+    llamalend.getUserMarkets(llamalendUserSeed().user, llamalendUserSeed().chain, undefined, requestOptions),
   ),
   endpointCase('getAllUserLendingPositions', () =>
     llamalend.getAllUserLendingPositions(llamalendUserSeed().user, undefined, requestOptions),

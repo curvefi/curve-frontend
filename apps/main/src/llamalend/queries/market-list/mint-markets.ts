@@ -1,9 +1,12 @@
 import { Chain, MINT_CHAINS } from '@curvefi/prices-api'
+import { paginate } from '@curvefi/prices-api/paginate'
 import {
   getAllMarkets,
   getUserMarkets,
   getUserMarketStats,
   Market as MintMarketFromApi,
+  USER_MARKETS_DEFAULT_PER_PAGE,
+  USER_MARKETS_FIRST_PAGE,
 } from '@curvefi/prices-api/crvusd'
 import type { Address } from '@primitives/address.utils'
 import { recordEntries } from '@primitives/objects.utils'
@@ -47,7 +50,13 @@ const {
   queryKey: ({ userAddress, blockchainId }: UserChainNameParams) =>
     ['user-mint-markets', { blockchainId }, { userAddress }, 'v2'] as const,
   queryFn: async ({ userAddress, blockchainId }: UserChainNameQuery): Promise<Address[]> =>
-    (await getUserMarkets(userAddress, blockchainId)).map(market => market.controller),
+    (
+      await paginate(
+        page => getUserMarkets(userAddress, blockchainId, { page }),
+        USER_MARKETS_FIRST_PAGE,
+        USER_MARKETS_DEFAULT_PER_PAGE,
+      )
+    ).map(market => market.controller),
   category: 'llamalend.user',
   validationSuite: userChainNameValidationSuite,
 })
