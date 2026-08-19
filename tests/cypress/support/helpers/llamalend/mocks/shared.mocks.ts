@@ -83,6 +83,7 @@ export const mockRouterRoutes = (chainId: number) => {
       body: [
         {
           router,
+          routerFeePercentage: ['curve', 'curve-solver'].includes(router) ? '0' : '0.15',
           amountIn: [amountIn],
           amountOut: [ROUTE_AMOUNT_OUT],
           gas: null,

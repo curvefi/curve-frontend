@@ -52,6 +52,17 @@ export const LoanActionSettings = ({
         sx={{ backgroundColor: t => t.design.Layer[2].Fill, border: borderStyle, padding: Spacing.xs }}
       >
         {routes && <RouteProvidersAccordion isExpanded={isRoutesOpen} onToggle={toggleRoutes} {...routes} />}
+        {routes?.selectedRoute && (
+          <ActionInfo
+            label={t`Router fee`}
+            labelTooltip={{
+              title: t`The total percentage of the routed amount charged as routing fees, excluding network gas costs.`,
+            }}
+            value={formatNumber(routes.selectedRoute.routerFeePercentage, 'percent.rate')}
+            size="small"
+            testId="borrow-router-fee"
+          />
+        )}
         {slippage && (
           <SlippageToleranceActionInfo
             maxSlippage={slippage}

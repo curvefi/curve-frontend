@@ -22,6 +22,7 @@ const mountRouteProviderCard = ({
   route = {
     id: 'curve',
     router: 'curve',
+    routerFeePercentage: '0',
     amountIn: ['69424100000000000000'],
     amountOut: ['69424100000000000000'],
     priceImpact: 0.01,

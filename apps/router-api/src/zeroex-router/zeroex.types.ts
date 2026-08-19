@@ -23,13 +23,14 @@ export type ZeroExQuoteResponse = {
   transaction: { to: Address; data: Hex; gas: Decimal; gasPrice: Decimal; value: Decimal }
   route: { fills: ZeroExRouteFill[]; tokens: ZeroExRouteToken[] }
   fees: {
-    integratorFee: unknown
-    zeroExFee: { amount: Decimal; token: Address; type: string } | null
-    gasFee: unknown
+    integratorFees: ZeroExVolumeFee[] | null
+    zeroExFee: ZeroExVolumeFee | null
   }
   issues: { simulationIncomplete: boolean; invalidSourcesPassed: string[] }
   zid: string
 }
+
+export type ZeroExVolumeFee = { amount: Decimal; token: Address; type: 'volume' }
 
 type ZeroExRouteFill = {
   from: Address

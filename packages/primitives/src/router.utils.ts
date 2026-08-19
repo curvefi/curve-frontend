@@ -20,6 +20,7 @@ export type TransactionData = { data: Hex; to: Address; from: Address; value: De
 
 export type RouterRouteResponse = {
   router: RouteProvider
+  routerFeePercentage: Decimal
   amountIn: [Decimal]
   amountOut: [Decimal]
   gas: Decimal | [Decimal, Decimal] | null

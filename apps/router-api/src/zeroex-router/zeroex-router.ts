@@ -1,8 +1,17 @@
+import { BigNumber } from 'bignumber.js'
 import { FastifyBaseLogger } from 'fastify'
+import { isAddressEqual } from 'viem'
+import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { FetchError, fetchJson } from '@primitives/fetch.utils'
-import { assert, maybe } from '@primitives/objects.utils'
+import { assert, maybe, notFalsy } from '@primitives/objects.utils'
 import type { RouteStep, RouterRouteResponse } from '@primitives/router.utils'
-import { ROUTER_FEE_BPS, ROUTER_FEE_RECEIVER_BY_CHAIN_ID } from '../router-fees'
+import {
+  calculateFeePercentage,
+  combineFeePercentages,
+  ROUTER_FEE_BPS,
+  ROUTER_FEE_RECEIVER_BY_CHAIN_ID,
+} from '../router-fees'
 import { type RoutesQuery } from '../routes/routes.schemas'
 import type { ZeroExQuoteRequest, ZeroExQuoteResponse } from './zeroex.types'
 
@@ -16,6 +25,36 @@ async function getZeroExQuote({ chainId, ...params }: ZeroExQuoteRequest) {
   )
   assert(quote.liquidityAvailable, `0x quote error - no liquidity available`)
   return quote
+}
+
+/**
+ * Normalizes 0x volume fees into one effective percentage.
+ *
+ * Unlike Enso, 0x can return fees in either the sell or buy token, so their raw amounts cannot be added together.
+ * Sell-token fees are measured against `sellAmount`, buy-token fees are measured against the gross buy amount because
+ * the returned `buyAmount` is net of those fees. The two rates are then compounded to account for fees applied on both
+ * sides of the swap.
+ */
+function calculateZeroExFeePercentage(
+  fees: ZeroExQuoteResponse['fees'],
+  sellToken: Address,
+  buyToken: Address,
+  sellAmount: Decimal,
+  buyAmount: Decimal,
+): Decimal {
+  const volumeFees = notFalsy(...(fees.integratorFees ?? []), fees.zeroExFee)
+  assert(
+    volumeFees.every(({ token }) => isAddressEqual(token, sellToken) || isAddressEqual(token, buyToken)),
+    '0x quote returned a fee in an unsupported token',
+  )
+  const sellFeeAmounts = volumeFees.filter(({ token }) => isAddressEqual(token, sellToken)).map(({ amount }) => amount)
+  const buyFeeAmounts = volumeFees
+    .filter(({ token }) => !isAddressEqual(token, sellToken) && isAddressEqual(token, buyToken))
+    .map(({ amount }) => amount)
+  const sellFeePercentage = calculateFeePercentage(sellFeeAmounts, sellAmount)
+  const grossBuyAmount = new BigNumber(buyAmount).plus(BigNumber.sum(0, ...buyFeeAmounts)).toFixed() as Decimal
+  const buyFeePercentage = calculateFeePercentage(buyFeeAmounts, grossBuyAmount)
+  return combineFeePercentages(sellFeePercentage, buyFeePercentage)
 }
 
 /**
@@ -52,13 +91,14 @@ export const buildZeroExRouteResponse = async (
       swapFeeToken: sellToken,
     })),
   }
-  const { buyAmount, route, sellAmount, transaction } = await getZeroExQuote(params).catch(error =>
+  const { buyAmount, fees, route, sellAmount, transaction } = await getZeroExQuote(params).catch(error =>
     logZeroExError(error, log, params),
   )
   const { data, gas, to, value } = transaction
   return [
     {
       router: PROTOCOL,
+      routerFeePercentage: calculateZeroExFeePercentage(fees, sellToken, buyToken, sellAmount, buyAmount),
       amountIn: [sellAmount],
       amountOut: [buyAmount],
       gas,
