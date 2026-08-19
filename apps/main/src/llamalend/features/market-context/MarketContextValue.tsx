@@ -3,6 +3,7 @@ import type { Address } from '@curvefi/primitives/address.utils'
 import type { LlamaApi } from '@ui-kit/features/connect-wallet'
 import type { MarketType } from '@ui-kit/types/market'
 import type { QueryProp } from '@ui-kit/types/util'
+import type { ReleaseChannel } from '@ui-kit/utils'
 import {
   type BandRangeOrEmpty,
   getAmmAddress,
@@ -10,6 +11,7 @@ import {
   getCrvTokenAddress,
   getGaugeAddress,
   getMarketBandRange,
+  getMarketLeverageProviders,
   getTokens,
   getVaultToken,
   getZapAddress,
@@ -26,11 +28,13 @@ export const createMarketContextValue = <ChainId extends IChainId>({
   marketType,
   userAddress,
   api,
+  releaseChannel,
 }: {
   chainId: ChainId
   blockchainId: LlamaNetworkId
   userAddress: Address | undefined
   api: LlamaApi | null
+  releaseChannel: ReleaseChannel
   marketQuery: QueryProp<MarketTemplate>
   apiMarket: QueryProp<LlamaMarket>
   marketType: MarketType
@@ -49,6 +53,7 @@ export const createMarketContextValue = <ChainId extends IChainId>({
     ammAddress: getAmmAddress(marketQuery.data, apiMarket.data),
     zapAddress: getZapAddress(marketQuery.data),
     controllerAddress,
+    leverageProviders: getMarketLeverageProviders(chainId, controllerAddress, releaseChannel),
     tokens: (getTokens(marketQuery.data, apiMarket.data) ?? {}) as MarketTokensOrEmpty,
     vaultToken: getVaultToken(marketQuery.data, apiMarket.data),
     gaugeAddress: getGaugeAddress(marketQuery.data),

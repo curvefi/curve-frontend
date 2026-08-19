@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
-import { useMarketLeverageProviders } from '@/llamalend/hooks/useMarketLeverageProviders'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { useSyncMarketLeverageSlippage } from '@/llamalend/hooks/useSyncMarketLeverageSlippage'
 import { getMarketLeverageSlippage, hasLegacyMintLeverage, hasZapV2 } from '@/llamalend/llama.utils'
@@ -67,8 +66,8 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     tokens: { borrowToken, collateralToken },
     marketType,
     userAddress,
+    leverageProviders,
   } = useMarketContext<ChainId>()
-  const leverageProviders = useMarketLeverageProviders()
   const defaultSlippage = getMarketLeverageSlippage(chainId, controllerAddress)
   const marketAlert = useMarketAlert(chainId, controllerAddress, marketType)
   const formOptions = {
