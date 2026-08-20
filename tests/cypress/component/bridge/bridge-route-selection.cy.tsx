@@ -106,6 +106,7 @@ describe('bridge route selection', () => {
     )
 
     cy.get('[data-testid="bridge-provider-value"]').should('have.text', 'FastBridge')
+    cy.get('input[name="amount"], [data-testid="bridge-origin-select"]').first().should('have.attr', 'name', 'amount')
     cy.get('[data-testid="bridge-origin-select"]').click()
     cy.contains('Select origin network').should('be.visible')
     for (const network of NETWORKS) cy.contains(network.name).should('be.visible')
@@ -131,6 +132,13 @@ describe('bridge route selection', () => {
     cy.get('[data-testid="token-option-CRV"]').click()
     cy.contains('This route is not currently supported. Use the canonical bridge instead.').should('be.visible')
     cy.contains('No FastBridge or LayerZero route supports CRV from Arbitrum to Ethereum.').should('be.visible')
+    cy.get('[data-testid="bridge-submit-button"]').should('be.disabled')
+
+    cy.get('[data-testid="bridge-origin-select"]').click()
+    cy.get('[data-testid="menu-item-chain-xdc"]').trigger('mousedown')
+    cy.get('[data-testid="bridge-token-select"]').click()
+    cy.get('[data-testid="token-option-crvUSD"]').click()
+    cy.contains('No FastBridge or LayerZero route supports crvUSD from XDC to Ethereum.').should('be.visible')
     cy.get('[data-testid="bridge-submit-button"]').should('be.disabled')
   })
 

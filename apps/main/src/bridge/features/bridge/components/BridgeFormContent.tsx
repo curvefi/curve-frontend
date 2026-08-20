@@ -56,17 +56,6 @@ export const BridgeFormContent = ({
   onDestinationSelected,
 }: BridgeFormContentParams) => (
   <>
-    <BridgeTargets
-      networks={networks}
-      fromChainId={fromChainId}
-      disabled={loading}
-      loading={loading}
-      onNetworkSelected={onNetworkSelected}
-      toChainId={toChainId}
-      destinationNetworks={destinationNetworks}
-      onDestinationSelected={onDestinationSelected}
-    />
-
     <BridgeAmount
       disabled={loading}
       amount={amount}
@@ -77,6 +66,17 @@ export const BridgeFormContent = ({
       tokenSymbol={tokenSymbol}
       tokenSelector={tokenSelector}
       onAmount={onAmount}
+    />
+
+    <BridgeTargets
+      networks={networks}
+      fromChainId={fromChainId}
+      disabled={loading}
+      loading={loading}
+      onNetworkSelected={onNetworkSelected}
+      toChainId={toChainId}
+      destinationNetworks={destinationNetworks}
+      onDestinationSelected={onDestinationSelected}
     />
 
     {bridgeDisabledAlert &&

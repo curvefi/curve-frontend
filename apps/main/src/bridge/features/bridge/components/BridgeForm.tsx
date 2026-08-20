@@ -7,7 +7,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { getCurrentApp, getInternalUrl } from '@ui-kit/shared/routes'
 import { q } from '@ui-kit/types/util'
-import { Chain, decimal, requireBlockchainId } from '@ui-kit/utils'
+import { Chain, decimal } from '@ui-kit/utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import type { BridgeFormParams } from '../BridgeFormTabs'
@@ -106,7 +106,7 @@ export const BridgeForm = ({
         walletBalance={walletBalance}
         inputBalanceUsd={inputBalanceUsd}
         tokenAddress={tokenAddress ?? LAYERZERO_TOKENS[token]}
-        tokenBlockchainId={requireBlockchainId(chainId)}
+        tokenBlockchainId={networks[chainId]?.id ?? 'ethereum'}
         tokenSymbol={token}
         tokenSelector={<BridgeTokenSelector form={form} token={token} disabled={isPending} />}
         bridgeDisabledAlert={activeAlert}
@@ -119,9 +119,7 @@ export const BridgeForm = ({
         onAmount={amount => form.update({ amount })}
         onSubmit={() => void onSubmit()}
         onChangeNetwork={() => switchChain({ chainId })}
-        onNetworkSelected={network =>
-          navigate(getInternalUrl(getCurrentApp(pathname), requireBlockchainId(network.chainId)))
-        }
+        onNetworkSelected={network => navigate(getInternalUrl(getCurrentApp(pathname), network.id))}
       />
 
       <FormAlerts error={error} formErrors={formErrors} handledErrors={['amount']} />

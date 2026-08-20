@@ -16,7 +16,7 @@ import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
 import { Select } from '@ui-kit/shared/ui/Select'
 import { Spinner } from '@ui-kit/shared/ui/Spinner'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { applySxProps, Chain, requireBlockchainId, type SxProps } from '@ui-kit/utils'
+import { applySxProps, Chain, type SxProps } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -57,14 +57,14 @@ const SelectNetworkValue = ({ blockchainId, sx }: { blockchainId: string; sx?: S
  * We ought to refactor this some time as it's becoming quite common.
  */
 const SelectNetworkButton = ({
-  chainId,
+  networkId,
   loading = false,
   disabled = false,
   onClick,
   testId,
   sx,
 }: {
-  chainId: number | undefined
+  networkId: string | undefined
   loading?: boolean
   disabled?: boolean
   onClick: () => void
@@ -80,11 +80,7 @@ const SelectNetworkButton = ({
     data-testid={testId}
     size="medium"
     renderValue={() =>
-      loading || !chainId ? (
-        <Spinner useTheme={true} />
-      ) : (
-        <SelectNetworkValue blockchainId={requireBlockchainId(chainId)} />
-      )
+      loading || !networkId ? <Spinner useTheme={true} /> : <SelectNetworkValue blockchainId={networkId} />
     }
     IconComponent={KeyboardArrowDownIcon}
     sx={sx}
@@ -125,6 +121,8 @@ export const BridgeTargets = ({
   const [isFromOpen, openFrom, closeFrom] = useSwitch(false)
   const [isToOpen, openTo, closeTo] = useSwitch(false)
   const tvls = useNetworksTVL('lending')
+  const fromNetworkId = networks.find(({ chainId }) => chainId === fromChainId)?.id
+  const toNetworkId = destinationNetworks?.find(({ chainId }) => chainId === toChainId)?.id
 
   return (
     <Box
@@ -141,7 +139,7 @@ export const BridgeTargets = ({
       <SelectNetworkLabel label={t`From`} sx={{ gridArea: GRID_AREAS.from.label }} />
       <SelectNetworkButton
         disabled={disabled}
-        chainId={fromChainId}
+        networkId={fromNetworkId}
         onClick={openFrom}
         testId="bridge-origin-select"
         loading={loading}
@@ -174,7 +172,7 @@ export const BridgeTargets = ({
         <>
           <SelectNetworkButton
             disabled={disabled}
-            chainId={toChainId}
+            networkId={toNetworkId}
             onClick={openTo}
             testId="bridge-destination-select"
             loading={loading}
@@ -184,7 +182,7 @@ export const BridgeTargets = ({
             <ChainList
               showTestnets={false}
               options={destinationNetworks}
-              selectedNetworkId={requireBlockchainId(toChainId)}
+              selectedNetworkId={toNetworkId}
               tvls={tvls}
               onNetwork={network => {
                 closeTo()
@@ -194,7 +192,7 @@ export const BridgeTargets = ({
           </ModalDialog>
         </>
       ) : (
-        <SelectNetworkValue blockchainId={requireBlockchainId(Chain.Ethereum)} sx={{ gridArea: GRID_AREAS.to.input }} />
+        <SelectNetworkValue blockchainId="ethereum" sx={{ gridArea: GRID_AREAS.to.input }} />
       )}
     </Box>
   )
