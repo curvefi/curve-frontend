@@ -19,7 +19,6 @@ import { getBridgeRoute, LAYERZERO_TOKENS } from '../layerzero'
 import { BridgeActionInfos } from './BridgeActionInfos'
 import { BridgeFormContent } from './BridgeFormContent'
 import { BridgeTokenSelector } from './BridgeTokenSelector'
-import { LayerZeroClaimsPanel } from './LayerZeroClaimsPanel'
 
 export const BridgeForm = ({
   chainId,
@@ -115,7 +114,7 @@ export const BridgeForm = ({
   const capacityWarning =
     layerZeroCapacity?.delayed && layerZeroCapacity.delayed > 0n
       ? token === 'CRV'
-        ? t`The requested amount exceeds current destination capacity. The excess will remain pending and may require one or more retry claims.`
+        ? t`The requested amount exceeds current destination capacity. The excess will remain pending and may need to be claimed later, possibly more than once.`
         : t`The requested amount exceeds today's remaining destination capacity. The full transfer will be delayed and can be retried after the bridge delay.`
       : undefined
 
@@ -200,7 +199,6 @@ export const BridgeForm = ({
       />
 
       <FormAlerts error={error} formErrors={formErrors} handledErrors={['amount']} />
-      <LayerZeroClaimsPanel networks={networks} />
     </Form>
   )
 }

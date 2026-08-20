@@ -123,53 +123,6 @@ const routes: Partial<Record<number, Partial<Record<LayerZeroToken, LayerZeroDep
   },
 }
 
-const scanStartBlock: Record<number, bigint> = {
-  [LZ_CHAIN.Ethereum]: 18_999_547n,
-  [LZ_CHAIN.Bsc]: 35_214_890n,
-  [LZ_CHAIN.Avalanche]: 40_319_544n,
-  [LZ_CHAIN.Fantom]: 70_000_000n,
-  [LZ_CHAIN.Sonic]: 1_582_999n,
-  [LZ_CHAIN.Xdc]: 90_846_163n,
-  [LZ_CHAIN.Etherlink]: 22_196_510n,
-}
-
-export type LayerZeroClaimDeployment = LayerZeroDeployment & {
-  chainId: number
-  originChainId: number
-  startBlock: bigint
-  token: LayerZeroToken
-}
-
-export const LAYERZERO_CLAIM_DEPLOYMENTS: LayerZeroClaimDeployment[] = Object.entries(routes).flatMap(
-  ([sidechainId, deployments]) =>
-    Object.entries(deployments ?? {}).flatMap(([token, deployment]) => {
-      if (!deployment) return []
-      const chainId = Number(sidechainId)
-      const typedToken = token as LayerZeroToken
-      return [
-        ...(chainId === LZ_CHAIN.Fantom && typedToken === 'CRV'
-          ? []
-          : [
-              {
-                ...deployment,
-                chainId,
-                originChainId: LZ_CHAIN.Ethereum,
-                startBlock: scanStartBlock[chainId],
-                token: typedToken,
-              },
-            ]),
-        {
-          ...deployment,
-          chainId: LZ_CHAIN.Ethereum,
-          originChainId: chainId,
-          startBlock: scanStartBlock[LZ_CHAIN.Ethereum],
-          token: typedToken,
-          tokenAddress: LAYERZERO_TOKENS[typedToken],
-        },
-      ]
-    }),
-)
-
 export const getLayerZeroRoute = ({
   fromChainId,
   toChainId,
@@ -273,30 +226,4 @@ export const layerZeroStableCapacityAbi = [
     outputs: [{ type: 'uint256' }],
   },
   { type: 'function', name: 'delay', stateMutability: 'view', inputs: [], outputs: [{ type: 'uint256' }] },
-] as const
-
-export const layerZeroRetryAbi = [
-  {
-    type: 'event',
-    name: 'Delayed',
-    inputs: [
-      { name: 'nonce', type: 'uint64', indexed: true },
-      { name: 'receiver', type: 'address', indexed: true },
-      { name: 'amount', type: 'uint256', indexed: false },
-    ],
-  },
-  {
-    type: 'function',
-    name: 'delayed',
-    stateMutability: 'view',
-    inputs: [{ type: 'uint64' }],
-    outputs: [{ type: 'bytes32' }],
-  },
-  {
-    type: 'function',
-    name: 'retry',
-    stateMutability: 'nonpayable',
-    inputs: [{ type: 'uint64' }, { type: 'uint256' }, { type: 'address' }, { type: 'uint256' }],
-    outputs: [],
-  },
 ] as const
