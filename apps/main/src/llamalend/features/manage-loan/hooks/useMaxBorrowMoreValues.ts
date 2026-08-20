@@ -3,11 +3,15 @@ import type { UserCollateralEvents } from '@/llamalend/features/user-position-hi
 import { isPositionLeveraged } from '@/llamalend/llama.utils'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import { resetBorrowMoreExpectedCollateral } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
-import { useBorrowMoreMaxReceive } from '@/llamalend/queries/borrow-more/borrow-more-max-receive.query'
+import {
+  type BorrowMoreMaxReceiveParams,
+  useBorrowMoreMaxReceive,
+} from '@/llamalend/queries/borrow-more/borrow-more-max-receive.query'
 import { useMarketMaxLeverage } from '@/llamalend/queries/market'
-import { BorrowMoreForm, BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
+import { BorrowMoreForm } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Address } from '@primitives/address.utils'
+import { maybe } from '@primitives/objects.utils'
 import { useFormSync, useOnChangeCallback } from '@ui-kit/features/forms'
 import type { UseFormReturn } from '@ui-kit/features/forms'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
@@ -22,7 +26,7 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>({
   collateralTokenAddress,
   collateralEvents: { data: events },
 }: {
-  params: BorrowMoreParams<ChainId>
+  params: BorrowMoreMaxReceiveParams<ChainId>
   form: UseFormReturn<BorrowMoreForm>
   market: MarketTemplate | undefined
   borrowTokenAddress: Address | undefined
@@ -49,7 +53,12 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>({
   useFormSync(form, { maxBorrowed: maxUserBorrowed.data })
   useFormSync(form, { maxDebt: maxReceive.data?.maxDebt })
   // the leverage checkbox only shows after this value is known, purposefully override the value if the backend changes
-  useFormSync(form, { leverageEnabled: events && isPositionLeveraged(events.originalLeverage) })
+  useFormSync(form, {
+    leverageEnabled: maybe(
+      params.leverageProviders,
+      providers => providers.length > 0 && events && isPositionLeveraged(events.originalLeverage),
+    ),
+  })
 
   // some borrow queries depend on LL internal cache for expected collateral, reset when new market data arrives
   useOnChangeCallback(market, () => resetBorrowMoreExpectedCollateral(params))

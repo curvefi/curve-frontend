@@ -11,6 +11,7 @@ import { repayValidationSuite } from '@/llamalend/queries/validation/repay.valid
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Address, type Hex } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import type { RouteProvider } from '@primitives/router.utils'
 import { parseMutationRoute } from '@ui-kit/entities/router-api'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
@@ -30,6 +31,7 @@ type RepayOptions = {
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
   onReset: () => void
   userAddress: Address | undefined
+  leverageProviders: readonly RouteProvider[] | undefined
 }
 
 const approveRepay = async (
@@ -88,7 +90,14 @@ const repay = async (
   }
 }
 
-export const useRepayMutation = ({ network, network: { chainId }, marketId, userAddress, ...props }: RepayOptions) => {
+export const useRepayMutation = ({
+  network,
+  network: { chainId },
+  marketId,
+  userAddress,
+  leverageProviders,
+  ...props
+}: RepayOptions) => {
   const config = useConfig()
   const { mutate, error, isPending } = useMarketMutation<RepayMutation>({
     network,
@@ -104,7 +113,7 @@ export const useRepayMutation = ({ network, network: { chainId }, marketId, user
       })
       return { hash: await repay(market, variables) }
     },
-    validationSuite: repayValidationSuite({ leverageRequired: false, validateMax: true }),
+    validationSuite: repayValidationSuite({ leverageRequired: false, validateMax: true, leverageProviders }),
     pendingMessage: (mutation, { market }) => t`Repaying loan... ${formatTokenAmounts(market, mutation)}`,
     successMessage: (mutation, { market }) => t`Loan repaid! ${formatTokenAmounts(market, mutation)}`,
     ...props,

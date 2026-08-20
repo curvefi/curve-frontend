@@ -6,7 +6,7 @@ import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { Address } from '@primitives/address.utils'
 import { toArray } from '@primitives/array.utils'
 import { Decimal } from '@primitives/decimal.utils'
-import { recordValues } from '@primitives/objects.utils'
+import { maybe, recordValues } from '@primitives/objects.utils'
 import { type RouteProvider, type RouterRouteResponse } from '@primitives/router.utils'
 import type { QueryKey } from '@tanstack/react-query'
 import type { BaseConfig } from '@ui/utils'
@@ -32,6 +32,7 @@ export type MarketRoutes = {
   tokenOut: Partial<{ symbol: string | undefined; address: Address; decimals: number }> & { usdRate: QueryProp<number> }
   networks: Record<number, BaseConfig>
   chainId: number
+  providers: readonly RouteProvider[]
 }
 
 const sortRoutes = (a: RouterRouteResponse, b: RouterRouteResponse) =>
@@ -74,6 +75,7 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
   networks,
   getRouteGasOptions,
   zapAddress,
+  providers,
 }: {
   chainId: number
   marketAddress: Address | undefined
@@ -85,6 +87,7 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
   networks: Record<number, BaseConfig>
   getRouteGasOptions: GetGasCallback<TData, GasQueryKey>
   zapAddress: Address | undefined
+  providers: readonly RouteProvider[] | undefined
   onChange: (option: RouteResponse | undefined) => Promise<void>
 }): { routes: MarketRoutes | undefined; priceImpact?: QueryProp<PriceImpact | Decimal | null> } {
   const [chosenRouter, setChosenRouter] = useState<RouteProvider | undefined>(undefined) // keep the preferred router while mounted
@@ -101,10 +104,12 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
     zapAddress,
     slippage,
   }
+  const routesEnabled = enabled && !!providers?.length
   const { queries, onRefresh } = useRouterQueries<TData, GasQueryKey>(
     params,
     getRouteGasOptions,
-    enabled && !!slippage, // enforce slippage, important for ZapV2 but not required for API
+    providers,
+    routesEnabled && !!slippage, // enforce slippage, important for ZapV2 but not required for API
   )
 
   // Disabled providers can retain cached query data after switching release channels, so exclude them from selection.
@@ -128,20 +133,22 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
   useEffect(() => startTransition(() => onChangeEffect(selectedRoute)), [selectedRoute])
 
   const selectedRouter = chosenRouter && queries[chosenRouter].enabled ? chosenRouter : selectedRoute?.router
-  const priceImpact = usePriceImpact({ selectedRoute, tokenIn, tokenOut, chainId }, enabled)
+  const priceImpact = usePriceImpact({ selectedRoute, tokenIn, tokenOut, chainId }, routesEnabled)
+  const tokenOutUsdRate = q(useTokenUsdRate({ tokenAddress: tokenOut?.address, chainId }, enabled))
 
   return {
-    routes: {
+    routes: maybe(providers, providers => ({
       networks,
       chainId,
+      providers,
       queries,
-      enabled,
+      enabled: routesEnabled,
       selectedRoute,
       selectedRouter,
       onChange: setChosenRouter,
       onRefresh,
-      tokenOut: { ...tokenOut, usdRate: q(useTokenUsdRate({ tokenAddress: tokenOut?.address, chainId }, enabled)) },
-    },
+      tokenOut: { ...tokenOut, usdRate: tokenOutUsdRate },
+    })),
     ...(enabled && { priceImpact }),
   }
 }

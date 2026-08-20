@@ -5,6 +5,8 @@ import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 import { getRouteQueryData, isZapV2RouterCalldataTooLarge } from '@ui-kit/entities/router-api'
+import type { RouteProvider } from '@primitives/router.utils'
+import { assertRouteProvider } from '@ui-kit/entities/router-api'
 
 export const validateUserBorrowed = (userBorrowed: Decimal | null | undefined) => {
   test('userBorrowed', 'Borrow amount must be a non-negative number', () => {
@@ -118,6 +120,18 @@ export const validateRouteCalldata = (routeId: string | null | undefined) => {
         enforce(isZapV2RouterCalldataTooLarge(route?.tx?.data)).isFalsy()
       },
     )
+  })
+}
+
+export const validateRouteProvider = (
+  routeId: string | null | undefined,
+  providers: readonly RouteProvider[] | undefined,
+  isRequired: boolean,
+) => {
+  skipWhen(!isRequired || !routeId, () => {
+    test('routeId', 'Route provider is not enabled', () => {
+      assertRouteProvider(routeId ?? undefined, providers)
+    })
   })
 }
 
