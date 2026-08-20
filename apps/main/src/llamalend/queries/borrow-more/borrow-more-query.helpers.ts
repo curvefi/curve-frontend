@@ -66,9 +66,3 @@ export const isLeverageBorrowMore = (
   marketId: string | MarketTemplate | null | undefined,
   leverageEnabled: boolean | null | undefined,
 ) => !!marketId && getBorrowMoreImplementation(marketId, leverageEnabled)[0] === 'zapV2'
-
-/**
- * Checks whether leverage may be enabled for a given market.
- * This is used to determine whether to show the leverage toggle in the UI.
- */
-export const isLeverageBorrowMoreSupported = (market?: MarketTemplate) => !!market && hasZapV2(market)

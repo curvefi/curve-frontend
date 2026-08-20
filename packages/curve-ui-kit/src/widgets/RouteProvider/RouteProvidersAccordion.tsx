@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { notFalsy, recordEntries, recordValues } from '@primitives/objects.utils'
+import { notFalsy } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
 import type { BaseConfig } from '@ui/utils'
 import type { RouteQueries, RouteResponse } from '@ui-kit/entities/router-api'
@@ -33,6 +33,7 @@ export type RouteProviderProps = {
   onRefresh: () => void
   networks: Record<number, BaseConfig>
   chainId: number
+  providers: readonly RouteProvider[]
 }
 
 export const RouteProvidersAccordion = ({
@@ -47,8 +48,9 @@ export const RouteProvidersAccordion = ({
   onRefresh,
   networks,
   chainId,
+  providers,
 }: RouteProviderProps) => {
-  const queryList = useMemo(() => recordValues(queries).filter(Boolean), [queries])
+  const queryList = useMemo(() => providers.map(provider => queries[provider]), [providers, queries])
   const maxAmountOut = useMemo(
     () => queries && decimalMax(...notFalsy(...queryList.flatMap(route => route.data?.amountOut))),
     [queryList, queries],
@@ -113,13 +115,13 @@ export const RouteProvidersAccordion = ({
           </Stack>
           {anyData ? (
             <Stack sx={{ gap: Spacing.xs }}>
-              {recordEntries(queries).map(([key, query]) => (
+              {providers.map(provider => (
                 <RouteProviderCard
-                  key={key}
+                  key={provider}
                   tokenOut={tokenOut}
-                  isSelected={key === selectedRouter}
-                  router={key}
-                  query={query}
+                  isSelected={provider === selectedRouter}
+                  router={provider}
+                  query={queries[provider]}
                   bestOutputAmount={maxAmountOut}
                   onSelect={onChange}
                   networks={networks}

@@ -22,7 +22,7 @@ import { getTokenUsdRateKey } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { TestQueryProvider } from '@ui-kit/lib/queries/test-query.provider.test'
 import { MarketType } from '@ui-kit/types/market'
 import { constQ, type Range } from '@ui-kit/types/util'
-import { CRVUSD_ADDRESS } from '@ui-kit/utils'
+import { CRVUSD_ADDRESS, ReleaseChannel } from '@ui-kit/utils'
 import { BorrowPositionDetails } from './'
 
 const baseProps = {
@@ -91,6 +91,7 @@ const BorrowPositionDetailsStory = ({
           marketType: MarketType.Mint,
           userAddress: params.userAddress,
           api: null,
+          releaseChannel: ReleaseChannel.Beta,
         }),
         marketId: params.marketId,
         tokens: {

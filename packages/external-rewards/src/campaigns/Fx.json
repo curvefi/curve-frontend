@@ -13,7 +13,7 @@
       "campaignEnd": "1770000000",
       "address": "0x5018be882dcce5e3f2f3b0913ae2096b9b3fb61f",
       "network": "ethereum",
-      "multiplier": "",
+      "multiplier": "FXN",
       "tags": ["tokens"],
       "lock": "false"
     },
@@ -25,7 +25,7 @@
       "campaignEnd": "1770000000",
       "address": "0x74345504eaea3d9408fc69ae7eb2d14095643c5b",
       "network": "ethereum",
-      "multiplier": "",
+      "multiplier": "FXN",
       "tags": ["tokens"],
       "lock": "false"
     },
@@ -37,7 +37,7 @@
       "campaignEnd": "1770000000",
       "address": "0x28Ca243dc0aC075dD012fCf9375C25D18A844d96",
       "network": "ethereum",
-      "multiplier": "",
+      "multiplier": "FXN",
       "tags": ["tokens"],
       "lock": "false"
     },
@@ -49,7 +49,7 @@
       "campaignEnd": "1770000000",
       "address": "0xc15f285679a1ef2d25f53d4cbd0265e1d02f2a92",
       "network": "ethereum",
-      "multiplier": "",
+      "multiplier": "FXN",
       "tags": ["tokens"],
       "lock": "false"
     },
@@ -61,7 +61,7 @@
       "campaignEnd": "1770000000",
       "address": "0x1062FD8eD633c1f080754c19317cb3912810B5e5",
       "network": "ethereum",
-      "multiplier": "",
+      "multiplier": "FXN",
       "tags": ["tokens"],
       "lock": "false"
     },
@@ -73,7 +73,7 @@
       "campaignEnd": "1770000000",
       "address": "0xb2ee8f9622C5A480928836c0575df7d150f72d98",
       "network": "ethereum",
-      "multiplier": "",
+      "multiplier": "FXN",
       "tags": ["tokens"],
       "lock": "false"
     },
@@ -85,7 +85,7 @@
       "campaignEnd": "1770000000",
       "address": "0xb0ef04ACE97d350E24Efa5139d2590D26a61A8Dc",
       "network": "ethereum",
-      "multiplier": "",
+      "multiplier": "FXN",
       "tags": ["tokens"],
       "lock": "false"
     },
@@ -97,7 +97,7 @@
       "campaignEnd": "1770000000",
       "address": "0xb6E4821c6fCABe32f5F452dfD3Ef20Ce2A3a48E2",
       "network": "ethereum",
-      "multiplier": "",
+      "multiplier": "FXN",
       "tags": ["tokens"],
       "lock": "false"
     },
@@ -109,7 +109,7 @@
       "campaignEnd": "1770000000",
       "address": "0x3204d754a3003cEc155e2D8F44b3b48eD60b7Cc6",
       "network": "ethereum",
-      "multiplier": "",
+      "multiplier": "FXN",
       "tags": ["tokens"],
       "lock": "false"
     },
@@ -121,7 +121,7 @@
       "campaignEnd": "1770000000",
       "address": "0x851907CAC684797eee43669798D78004e269Cb5E",
       "network": "ethereum",
-      "multiplier": "",
+      "multiplier": "FXN",
       "tags": ["tokens"],
       "lock": "false"
     },
@@ -133,7 +133,7 @@
       "campaignEnd": "1770000000",
       "address": "0x138Bb0f3208bd729a561F3786DDb97BBc69e6628",
       "network": "ethereum",
-      "multiplier": "",
+      "multiplier": "FXN",
       "tags": ["tokens"],
       "lock": "false"
     },
@@ -145,7 +145,7 @@
       "campaignEnd": "1770000000",
       "address": "0x8B878AFE454e31CF0A79c6D7cf2f077DD286C12f",
       "network": "ethereum",
-      "multiplier": "",
+      "multiplier": "FXN",
       "tags": ["tokens"],
       "lock": "false"
     }

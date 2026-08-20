@@ -31,7 +31,7 @@ export const LoanActionSettings = ({
   collateralSymbol,
   borrowSymbol,
 }: {
-  slippage: Decimal | undefined
+  slippage?: Decimal
   onSlippageChange: (newSlippage: Decimal) => void
   routes?: MarketRoutes
   show?: boolean
