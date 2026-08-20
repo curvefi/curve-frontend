@@ -1,7 +1,5 @@
-import { useEffect, useRef } from 'react'
-import { useRouterState } from '@tanstack/react-router'
+import { useEffect, useRef, useSyncExternalStore } from 'react'
 import { useLayoutStore } from '@ui-kit/features/layout'
-import { useLocation, useNavigate } from '@ui-kit/hooks/router'
 import { useResizeObserver } from '@ui-kit/hooks/useResizeObserver'
 
 /** Height in pixels of the viewport band used to determine the active section. */
@@ -26,6 +24,40 @@ const getActiveSection = <T extends string>(elements: readonly HTMLElement[], ac
   return activeElement?.overlap > 0 ? (activeElement.element.id as T) : undefined
 }
 
+const useHash = () => {
+  const HASH_CHANGE_EVENT = 'active-section-hashchange'
+
+  const getHash = () => window.location.hash.replace(/^#/, '')
+  const getServerHash = () => '' // The server has no URL fragment, so render with no selected hash until hydration.
+  const subscribeHash = (onStoreChange: () => void) => {
+    window.addEventListener('hashchange', onStoreChange)
+    window.addEventListener('popstate', onStoreChange)
+    window.addEventListener(HASH_CHANGE_EVENT, onStoreChange)
+    return () => {
+      window.removeEventListener('hashchange', onStoreChange)
+      window.removeEventListener('popstate', onStoreChange)
+      window.removeEventListener(HASH_CHANGE_EVENT, onStoreChange)
+    }
+  }
+
+  /**
+   * Updates scroll-spy hashes without notifying TanStack Router.
+   * TanStack patches `window.history.replaceState`; using the native prototype keeps wallet/provider state stable.
+   */
+  const replaceHash = (hash: string) => {
+    const { pathname, search } = window.location
+    History.prototype.replaceState.call(
+      window.history,
+      window.history.state,
+      '',
+      `${pathname}${search}${hash ? `#${hash}` : ''}`,
+    )
+    window.dispatchEvent(new Event(HASH_CHANGE_EVENT))
+  }
+
+  return { hash: useSyncExternalStore(subscribeHash, getHash, getServerHash), replaceHash }
+}
+
 /**
  * Synchronizes in-page section navigation with the URL hash and the user's scroll position.
  *
@@ -41,23 +73,15 @@ const getActiveSection = <T extends string>(elements: readonly HTMLElement[], ac
  * @returns The URL-selected section and the ref used to measure the section navigation.
  */
 export const useActiveSection = <T extends string>(sections: readonly Section<T>[]) => {
-  const { hash } = useLocation()
-  const navigate = useNavigate()
   const navigationRef = useRef<HTMLElement>(null)
-  // Coordinates URL-driven smooth scrolling with scroll-spy hash updates.
-  const scrollSpyHashRef = useRef('')
-  const isNavigating = useRouterState({ select: state => state.status === 'pending' })
   const globalNavHeight = useLayoutStore(state => state.navHeight)
   const [, sectionNavHeight = 0] = useResizeObserver(navigationRef, { threshold: 1 })
   // The activation band starts immediately below both stacked navigation bars.
   const activationTop = globalNavHeight + sectionNavHeight
+  const { hash, replaceHash } = useHash()
   const activeSection = sections.find(({ value }) => value === hash)?.value ?? sections[0]?.value
 
   useEffect(() => {
-    if (scrollSpyHashRef.current === hash) {
-      scrollSpyHashRef.current = ''
-      return
-    }
     const section = sections.find(({ value }) => value === hash)
     // The target may render after TanStack Router's initial hash scroll attempt.
     const target = section && document.getElementById(section.value)
@@ -65,10 +89,9 @@ export const useActiveSection = <T extends string>(sections: readonly Section<T>
       .map(({ value }) => document.getElementById(value))
       .filter((element): element is HTMLElement => element != null)
     if (target && getActiveSection<T>(elements, activationTop) !== section.value) {
-      scrollSpyHashRef.current = section.value
       target.scrollIntoView()
     }
-  }, [activationTop, hash, sections])
+  }, [activationTop, activeSection, hash, sections])
 
   useEffect(() => {
     const elements = sections
@@ -77,22 +100,15 @@ export const useActiveSection = <T extends string>(sections: readonly Section<T>
     if (!elements.length) return
 
     const updateActiveSection = () => {
-      if (isNavigating) return
       const section = getActiveSection<T>(elements, activationTop)
-      // Pause the scroll spy until the requested section becomes active.
-      if (scrollSpyHashRef.current) {
-        if (section === scrollSpyHashRef.current) scrollSpyHashRef.current = ''
-        return
-      }
       // Clear the hash at the top so the first section becomes active.
-      if (!section && window.scrollY <= activationTop && hash) {
-        navigate('.', { replace: true, resetScroll: false, hashScrollIntoView: false, hash: '' })
+      if (!section && window.scrollY <= activationTop && window.location.hash) {
+        replaceHash('')
         return
       }
-      if (section && section !== hash) {
-        scrollSpyHashRef.current = section
-        // Replace keeps scrolling out of browser history; disabling hash scrolling prevents a feedback loop.
-        navigate(`#${section}`, { replace: true, resetScroll: false, hashScrollIntoView: false })
+      if (section && section !== window.location.hash.replace(/^#/, '')) {
+        // Replace keeps scrolling out of browser history.
+        replaceHash(section)
       }
     }
 
@@ -104,7 +120,7 @@ export const useActiveSection = <T extends string>(sections: readonly Section<T>
       window.removeEventListener('scroll', updateActiveSection)
       window.removeEventListener('resize', updateActiveSection)
     }
-  }, [activationTop, hash, isNavigating, navigate, sections])
+  }, [activationTop, replaceHash, sections])
 
   return { activeSection, navigationRef }
 }
