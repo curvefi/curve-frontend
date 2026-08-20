@@ -1,4 +1,4 @@
-import { Chain } from 'curve-ui-kit/src/utils/network'
+import { Chain } from '@ui-kit/utils/network'
 import { styled } from 'styled-components'
 import { useProposalPricesApiQuery } from '@/dao/entities/proposal-prices-api'
 import { networks } from '@/dao/networks'

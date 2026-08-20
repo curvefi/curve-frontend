@@ -1,4 +1,4 @@
-import { Chain } from 'curve-ui-kit/src/utils/network'
+import { Chain } from '@ui-kit/utils/network'
 import { styled } from 'styled-components'
 import { Countdown } from '@/dao/components/Countdown'
 import { MetricsColumnData, MetricsComp } from '@/dao/components/MetricsComp'

@@ -1,4 +1,4 @@
-import { Chain } from 'curve-ui-kit/src/utils'
+import { Chain } from '@ui-kit/utils'
 import { ChainId, NetworkConfig, NetworkEnum } from '@/lend/types/lend.types'
 import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@legacy-ui/utils'
 

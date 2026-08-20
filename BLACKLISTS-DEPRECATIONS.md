@@ -18,7 +18,7 @@ Pools can be blacklisted in two ways:
 
 ### Token Blacklist
 
-**Location:** [`packages/curve-ui-kit/src/features/select-token/blacklist.ts`](packages/curve-ui-kit/src/features/select-token/blacklist.ts)
+**Location:** [`packages/evm-ui/src/features/select-token/blacklist.ts`](packages/evm-ui/src/features/select-token/blacklist.ts)
 
 Tokens can be blacklisted from token selection modals. Blacklisted tokens are shown as **disabled with a tooltip** (rather than hidden) to avoid user confusion.
 
@@ -80,7 +80,7 @@ These automatic protections only apply to **lend markets**. Mint markets keep us
 | Mechanism   | Scope         | Effect                                                                                     | Location                                                                         |
 | ----------- | ------------- | ------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
 | Blacklist   | Pools         | Hidden from front-end                                                                      | [`pools-blacklist.query.ts`](apps/main/src/dex/queries/pools-blacklist.query.ts) |
-| Blacklist   | Tokens        | Shown as disabled in token selector                                                        | [`blacklist.ts`](packages/curve-ui-kit/src/features/select-token/blacklist.ts)   |
+| Blacklist   | Tokens        | Shown as disabled in token selector                                                        | [`blacklist.ts`](packages/evm-ui/src/features/select-token/blacklist.ts)   |
 | Deprecation | Pools         | Warning shown, actions may be disabled                                                     | [`usePoolAlert.tsx`](apps/main/src/dex/hooks/usePoolAlert.tsx)                   |
 | Deprecation | Markets       | Hidden for new users when deprecated; existing users still retain access                   | [`markets.constants.ts`](apps/main/src/llamalend/markets.constants.ts)           |
 | Deprecation | Market alerts | Warning shown, borrow/deposit may be disabled                                              | [`markets.constants.ts`](apps/main/src/llamalend/markets.constants.ts)           |

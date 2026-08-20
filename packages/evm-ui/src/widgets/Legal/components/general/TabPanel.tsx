@@ -10,7 +10,7 @@ type Props = {
   sx?: SxProps
 }
 
-// Not a generic separate component yet in curve-ui-kit until it's used
+// Not a generic separate component yet in evm-ui until it's used
 // in more places and we have a better idea what to generalize.
 export const TabPanel = ({ sx, children }: Props) => (
   <Stack

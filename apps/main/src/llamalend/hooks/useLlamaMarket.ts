@@ -1,5 +1,5 @@
-import { t } from 'curve-ui-kit/src/lib/i18n'
-import { useMappedQuery } from 'curve-ui-kit/src/types/util'
+import { t } from '@ui-kit/lib/i18n'
+import { useMappedQuery } from '@ui-kit/types/util'
 import { useCallback, useMemo } from 'react'
 import { getBlockchainId } from '@curvefi/prices-api'
 import { maybe } from '@curvefi/primitives/objects.utils'

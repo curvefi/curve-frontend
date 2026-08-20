@@ -1,4 +1,3 @@
-import { dayjs } from 'curve-ui-kit/src/lib/dayjs'
 import { ReactNode, useEffect, useRef } from 'react'
 import type {
   AriaButtonProps,
@@ -36,6 +35,7 @@ import { Icon } from '@legacy-ui/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
 import { InputProvider } from '@legacy-ui/InputComp'
 import { Chip } from '@legacy-ui/Typography/Chip'
+import { dayjs } from '@ui-kit/lib/dayjs'
 import { type InputProviderProps } from '../InputComp/InputContext'
 
 // See https://react-spectrum.adobe.com/react-aria/useDatePicker.html for details

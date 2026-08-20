@@ -1,7 +1,7 @@
-import { ThemeKey } from 'curve-ui-kit/src/themes/basic-theme'
-import type { DotPathByValue } from 'curve-ui-kit/src/types/util'
 import { get } from 'lodash'
 import { assert } from '@primitives/objects.utils'
+import { ThemeKey } from '@ui-kit/themes/basic-theme'
+import type { DotPathByValue } from '@ui-kit/types/util'
 
 const CDN_ROOT_URL = 'https://cdn.jsdelivr.net'
 export const CURVE_CDN_URL = `${CDN_ROOT_URL}/gh/curvefi`
