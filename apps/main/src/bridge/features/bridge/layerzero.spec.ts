@@ -15,7 +15,17 @@ beforeAll(async () => {
   ;({ getLayerZeroRoute, getBridgeRoute, getBridgeDestinationChainIds } = await import('./layerzero'))
 })
 
-const chains = { ethereum: 1, bsc: 56, avalanche: 43114, fantom: 250, arbitrum: 42161 } as const
+const chains = {
+  ethereum: 1,
+  bsc: 56,
+  avalanche: 43114,
+  fantom: 250,
+  kava: 2222,
+  sonic: 146,
+  xdc: 50,
+  etherlink: 42793,
+  arbitrum: 42161,
+} as const
 
 describe('bridge route selection', () => {
   it('selects FastBridge and LayerZero without allowing unsupported tokens', () => {
@@ -29,16 +39,30 @@ describe('bridge route selection', () => {
   })
 
   it('limits destinations to valid network pairs', () => {
-    expect(getBridgeDestinationChainIds(chains.ethereum)).toEqual([chains.bsc, chains.avalanche, chains.fantom])
+    expect(getBridgeDestinationChainIds(chains.ethereum)).toEqual([
+      chains.bsc,
+      chains.avalanche,
+      chains.fantom,
+      chains.kava,
+      chains.sonic,
+      chains.xdc,
+      chains.etherlink,
+    ])
     expect(getBridgeDestinationChainIds(chains.arbitrum)).toEqual([chains.ethereum])
     expect(getBridgeDestinationChainIds(999_999)).toEqual([])
   })
 })
 
 describe('getLayerZeroRoute', () => {
-  it('resolves all supported Ethereum and sidechain directions', () => {
+  it('resolves the complete token matrix in both directions', () => {
+    const supported = {
+      CRV: [chains.bsc, chains.avalanche, chains.fantom, chains.kava, chains.sonic, chains.etherlink],
+      crvUSD: [chains.bsc, chains.avalanche, chains.fantom, chains.kava, chains.sonic, chains.etherlink],
+      scrvUSD: [chains.bsc, chains.avalanche, chains.fantom, chains.sonic, chains.xdc, chains.etherlink],
+    } as const
+
     for (const token of ['CRV', 'crvUSD', 'scrvUSD'] as const) {
-      for (const sidechain of [chains.bsc, chains.avalanche, chains.fantom]) {
+      for (const sidechain of supported[token]) {
         expect(getLayerZeroRoute({ fromChainId: chains.ethereum, toChainId: sidechain, token })).toBeDefined()
         expect(getLayerZeroRoute({ fromChainId: sidechain, toChainId: chains.ethereum, token })).toBeDefined()
       }
@@ -53,6 +77,10 @@ describe('getLayerZeroRoute', () => {
     expect(
       getLayerZeroRoute({ fromChainId: chains.arbitrum, toChainId: chains.ethereum, token: 'CRV' }),
     ).toBeUndefined()
+    expect(
+      getLayerZeroRoute({ fromChainId: chains.kava, toChainId: chains.ethereum, token: 'scrvUSD' }),
+    ).toBeUndefined()
+    expect(getLayerZeroRoute({ fromChainId: chains.xdc, toChainId: chains.ethereum, token: 'CRV' })).toBeUndefined()
   })
 
   it('selects the deployed ABI family by token', () => {

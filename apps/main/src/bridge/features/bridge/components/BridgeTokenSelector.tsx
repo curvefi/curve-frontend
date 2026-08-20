@@ -9,7 +9,7 @@ import type { BridgeFormValues } from '../types'
 type BridgeTokenOption = TokenOption & { symbol: LayerZeroToken }
 
 const TOKENS: BridgeTokenOption[] = BRIDGE_TOKENS.map(symbol => ({
-  address: LAYERZERO_TOKENS[symbol][Chain.Ethereum],
+  address: LAYERZERO_TOKENS[symbol],
   chain: requireBlockchainId(Chain.Ethereum),
   symbol,
 }))

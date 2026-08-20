@@ -5,6 +5,7 @@ import { BridgeTokenSelector } from '@/bridge/features/bridge/components/BridgeT
 import { getBridgeDestinationChainIds, getBridgeRoute, LAYERZERO_TOKENS } from '@/bridge/features/bridge/layerzero'
 import type { BridgeFormValues } from '@/bridge/features/bridge/types'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
+import { mockedWagmiConfig } from '@cy/support/helpers/llamalend/test-wagmi.helpers'
 import type { NetworkDef } from '@ui/utils'
 import { useForm } from '@ui-kit/features/forms'
 import { constQ, q } from '@ui-kit/types/util'
@@ -18,9 +19,13 @@ const NETWORKS = [
   { chainId: Chain.Bsc, id: 'bsc', name: 'BSC', symbol: 'BNB', isLite: true },
   { chainId: Chain.Avalanche, id: 'avalanche', name: 'Avalanche', symbol: 'AVAX', isLite: true },
   { chainId: Chain.Fantom, id: 'fantom', name: 'Fantom', symbol: 'FTM', isLite: true },
+  { chainId: Chain.Kava, id: 'kava', name: 'Kava', symbol: 'KAVA' },
+  { chainId: Chain.Sonic, id: 'sonic', name: 'Sonic', symbol: 'S', isLite: true },
+  { chainId: Chain.Xdc, id: 'xdc', name: 'XDC', symbol: 'XDC', isLite: true },
+  { chainId: Chain.Etherlink, id: 'etherlink', name: 'Etherlink', symbol: 'XTZ', isLite: true },
 ] as NetworkDef[]
 
-const BridgeRouteHarness = () => {
+const BridgeRouteHarness = ({ isConnected = true }: { isConnected?: boolean }) => {
   const form = useForm<BridgeFormValues>({
     defaultValues: {
       fromChainId: Chain.Arbitrum,
@@ -34,6 +39,11 @@ const BridgeRouteHarness = () => {
   })
   const values = form.watchValues()
   const route = getBridgeRoute(values)
+  const routeError = route
+    ? null
+    : new Error(
+        `No FastBridge or LayerZero route supports ${values.token} from ${NETWORKS.find(({ chainId }) => chainId === values.fromChainId)?.name} to ${NETWORKS.find(({ chainId }) => chainId === values.toChainId)?.name}.`,
+      )
   const destinationNetworks = useMemo(
     () => NETWORKS.filter(network => getBridgeDestinationChainIds(values.fromChainId).includes(network.chainId)),
     [values.fromChainId],
@@ -54,10 +64,10 @@ const BridgeRouteHarness = () => {
           })
         }
         onDestinationSelected={network => form.update({ toChainId: network.chainId, amount: undefined })}
-        amount={q({ data: values.amount, isLoading: false, error: null })}
+        amount={q({ data: values.amount, isLoading: false, error: routeError })}
         walletBalance={{ balance: values.walletBalance }}
         inputBalanceUsd={undefined}
-        tokenAddress={LAYERZERO_TOKENS[values.token][Chain.Ethereum]}
+        tokenAddress={LAYERZERO_TOKENS[values.token]}
         tokenBlockchainId="ethereum"
         tokenSymbol={values.token}
         tokenSelector={<BridgeTokenSelector form={form} token={values.token} disabled={false} />}
@@ -70,7 +80,7 @@ const BridgeRouteHarness = () => {
         loading={false}
         isPending={false}
         isApproved={true}
-        isConnected={true}
+        isConnected={isConnected}
         isWrongNetwork={false}
         onAmount={amount => form.update({ amount })}
         onSubmit={() => undefined}
@@ -90,7 +100,7 @@ const BridgeRouteHarness = () => {
 describe('bridge route selection', () => {
   it('combines bridge networks and reports unsupported token routes', () => {
     cy.mount(
-      <ComponentTestWrapper>
+      <ComponentTestWrapper config={mockedWagmiConfig}>
         <BridgeRouteHarness />
       </ComponentTestWrapper>,
     )
@@ -107,6 +117,10 @@ describe('bridge route selection', () => {
     cy.get('[data-testid="menu-item-chain-bsc"]').should('be.visible')
     cy.get('[data-testid="menu-item-chain-avalanche"]').should('be.visible')
     cy.get('[data-testid="menu-item-chain-fantom"]').should('be.visible')
+    cy.get('[data-testid="menu-item-chain-kava"]').should('be.visible')
+    cy.get('[data-testid="menu-item-chain-sonic"]').should('be.visible')
+    cy.get('[data-testid="menu-item-chain-xdc"]').should('be.visible')
+    cy.get('[data-testid="menu-item-chain-etherlink"]').should('be.visible')
     cy.get('[data-testid="menu-item-chain-arbitrum"]').should('not.exist')
 
     cy.get('body').type('{esc}')
@@ -116,6 +130,17 @@ describe('bridge route selection', () => {
     cy.contains('Select Token').should('be.visible')
     cy.get('[data-testid="token-option-CRV"]').click()
     cy.contains('This route is not currently supported. Use the canonical bridge instead.').should('be.visible')
+    cy.contains('No FastBridge or LayerZero route supports CRV from Arbitrum to Ethereum.').should('be.visible')
     cy.get('[data-testid="bridge-submit-button"]').should('be.disabled')
+  })
+
+  it('keeps the amount editable before wallet connection', () => {
+    cy.mount(
+      <ComponentTestWrapper config={mockedWagmiConfig}>
+        <BridgeRouteHarness isConnected={false} />
+      </ComponentTestWrapper>,
+    )
+
+    cy.get('input[name="amount"]').should('be.enabled').clear().type('2')
   })
 })

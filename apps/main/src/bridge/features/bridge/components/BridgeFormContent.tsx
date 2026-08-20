@@ -68,7 +68,7 @@ export const BridgeFormContent = ({
     />
 
     <BridgeAmount
-      disabled={loading || !isConnected || !!isWrongNetwork}
+      disabled={loading}
       amount={amount}
       walletBalance={walletBalance}
       inputBalanceUsd={inputBalanceUsd}

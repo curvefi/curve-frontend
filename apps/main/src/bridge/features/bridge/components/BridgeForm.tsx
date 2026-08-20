@@ -51,7 +51,7 @@ export const BridgeForm = ({
 
   const { data: tokenUsdRate } = useTokenUsdRate({
     chainId: Chain.Ethereum,
-    tokenAddress: LAYERZERO_TOKENS[token][Chain.Ethereum],
+    tokenAddress: LAYERZERO_TOKENS[token],
   })
   const inputBalanceUsd = useMemo(
     () => (tokenUsdRate && amount ? decimal(+amount * tokenUsdRate) : undefined),
@@ -67,6 +67,9 @@ export const BridgeForm = ({
           alertType: 'info' as const,
           message: t`This route is not currently supported. Use the canonical bridge instead.`,
         })
+  const routeError = route
+    ? undefined
+    : t`No FastBridge or LayerZero route supports ${token} from ${networks[chainId]?.name ?? chainId} to ${networks[toChainId]?.name ?? toChainId}.`
 
   return (
     <Form
@@ -95,10 +98,14 @@ export const BridgeForm = ({
         toChainId={toChainId}
         destinationNetworks={destinationNetworks}
         onDestinationSelected={network => form.update({ toChainId: network.chainId, amount: undefined })}
-        amount={q({ data: amount, isLoading: false, error: amountError ? new Error(amountError) : null })}
+        amount={q({
+          data: amount,
+          isLoading: false,
+          error: amountError || routeError ? new Error(amountError ?? routeError) : null,
+        })}
         walletBalance={walletBalance}
         inputBalanceUsd={inputBalanceUsd}
-        tokenAddress={tokenAddress ?? LAYERZERO_TOKENS[token][Chain.Ethereum]}
+        tokenAddress={tokenAddress ?? LAYERZERO_TOKENS[token]}
         tokenBlockchainId={requireBlockchainId(chainId)}
         tokenSymbol={token}
         tokenSelector={<BridgeTokenSelector form={form} token={token} disabled={isPending} />}
