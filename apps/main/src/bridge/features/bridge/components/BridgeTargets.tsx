@@ -1,16 +1,18 @@
+import { useMemo, useState } from 'react'
 import { ArrowRight } from '@mui/icons-material'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
+import MenuList from '@mui/material/MenuList'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { NetworkDef } from '@ui/utils'
-import { useNetworksTVL } from '@ui-kit/entities/prices-networks.query'
-import { ChainList } from '@ui-kit/features/switch-chain/ui/ChainList'
 import { ChainSwitcherIcon } from '@ui-kit/features/switch-chain/ui/ChainSwitcherIcon'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
+import { MenuItem } from '@ui-kit/shared/ui/MenuItem'
 import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
+import { SearchField } from '@ui-kit/shared/ui/SearchField'
 import { Select } from '@ui-kit/shared/ui/Select'
 import { Spinner } from '@ui-kit/shared/ui/Spinner'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -79,6 +81,40 @@ const SelectNetworkButton = ({
   />
 )
 
+const BridgeNetworkList = ({
+  networks,
+  selectedNetworkId,
+  onNetwork,
+}: {
+  networks: NetworkDef[]
+  selectedNetworkId: string | undefined
+  onNetwork: (network: NetworkDef) => void
+}) => {
+  const [search, setSearch] = useState('')
+  const options = useMemo(
+    () => networks.filter(({ name }) => name.toLowerCase().includes(search.toLowerCase())),
+    [networks, search],
+  )
+  return (
+    <>
+      <SearchField placeholder={t`Search Networks`} onSearch={setSearch} name="chainName" />
+      <MenuList>
+        {options.map(network => (
+          <MenuItem<string>
+            data-testid={`menu-item-chain-${network.id}`}
+            key={network.id}
+            value={network.id}
+            isSelected={network.id === selectedNetworkId}
+            icon={<ChainSwitcherIcon networkId={network.id} size={36} />}
+            label={network.name}
+            onSelected={() => onNetwork(network)}
+          />
+        ))}
+      </MenuList>
+    </>
+  )
+}
+
 export type BridgeTargetsProps = {
   /** List of networks available as bridge sources. */
   networks: NetworkDef[]
@@ -111,7 +147,6 @@ export const BridgeTargets = ({
 }: BridgeTargetsProps) => {
   const [isFromOpen, openFrom, closeFrom] = useSwitch(false)
   const [isToOpen, openTo, closeTo] = useSwitch(false)
-  const tvls = useNetworksTVL('lending')
   const fromNetwork = networks.find(({ chainId }) => chainId === fromChainId)
   const toNetwork = networks.find(({ chainId }) => chainId === toChainId)
 
@@ -137,12 +172,9 @@ export const BridgeTargets = ({
       />
 
       <ModalDialog open={isFromOpen} onClose={closeFrom} title={t`Select origin network`}>
-        <ChainList
-          showTestnets={false}
-          options={networks}
+        <BridgeNetworkList
+          networks={networks}
           selectedNetworkId={fromNetwork?.id}
-          tvls={tvls}
-          navigateOnSelect={false}
           onNetwork={network => {
             closeFrom()
             onNetworkSelected(network)
@@ -171,12 +203,9 @@ export const BridgeTargets = ({
         sx={{ gridArea: GRID_AREAS.to.input }}
       />
       <ModalDialog open={isToOpen} onClose={closeTo} title={t`Select destination network`}>
-        <ChainList
-          showTestnets={false}
-          options={destinationNetworks}
+        <BridgeNetworkList
+          networks={destinationNetworks}
           selectedNetworkId={toNetwork?.id}
-          tvls={tvls}
-          navigateOnSelect={false}
           onNetwork={network => {
             closeTo()
             onDestinationSelected(network)

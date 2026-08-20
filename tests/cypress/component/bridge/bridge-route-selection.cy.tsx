@@ -25,7 +25,13 @@ const NETWORKS = [
   { chainId: Chain.Etherlink, id: 'etherlink', name: 'Etherlink', symbol: 'XTZ', isLite: true },
 ] as NetworkDef[]
 
-const BridgeRouteHarness = ({ isConnected = true }: { isConnected?: boolean }) => {
+const BridgeRouteHarness = ({
+  isConnected = true,
+  capacityWarning = false,
+}: {
+  isConnected?: boolean
+  capacityWarning?: boolean
+}) => {
   const form = useForm<BridgeFormValues>({
     defaultValues: {
       fromChainId: Chain.Arbitrum,
@@ -92,6 +98,11 @@ const BridgeRouteHarness = ({ isConnected = true }: { isConnected?: boolean }) =
                   </>
                 ),
               }
+        }
+        bridgeAdvisoryAlert={
+          capacityWarning
+            ? { alertType: 'warning', message: 'Some tokens may need to be claimed later. You can still bridge.' }
+            : undefined
         }
         disableAmount={!route}
         disableBridge={!route}
@@ -190,5 +201,43 @@ describe('bridge route selection', () => {
     )
 
     cy.get('input[name="amount"]').should('be.enabled').clear().type('2')
+  })
+
+  it('keeps bridging enabled for destination capacity warnings', () => {
+    cy.mount(
+      <ComponentTestWrapper config={mockedWagmiConfig}>
+        <BridgeRouteHarness capacityWarning />
+      </ComponentTestWrapper>,
+    )
+
+    cy.contains('Some tokens may need to be claimed later. You can still bridge.').should('be.visible')
+    cy.get('[data-testid="bridge-submit-button"]').should('be.enabled')
+  })
+
+  it('highlights insufficient LayerZero capacity and explains the delayed claim', () => {
+    cy.mount(
+      <ComponentTestWrapper config={mockedWagmiConfig}>
+        <BridgeActionInfos
+          bridgeCost={constQ(0.001)}
+          gas={constQ({ estGasCostUsd: 0.1 })}
+          isApproved
+          nativeTokenSymbol="ETH"
+          provider="layerzero"
+          layerZeroCapacity={constQ('5 crvUSD')}
+          layerZeroCapacityWarning="The requested amount exceeds today's remaining destination capacity."
+        />
+      </ComponentTestWrapper>,
+    )
+
+    cy.get('[data-testid="bridge-provider-value"]')
+      .invoke('css', 'color')
+      .then(defaultColor => {
+        cy.get('[data-testid="bridge-capacity-value"]')
+          .should('have.text', '5 crvUSD')
+          .and('not.have.css', 'color', defaultColor)
+      })
+    cy.get('[data-testid="bridge-capacity"] .ActionInfo-value').find('svg').should('exist')
+    cy.get('[data-testid="bridge-capacity"] .ActionInfo-value').click()
+    cy.contains("The requested amount exceeds today's remaining destination capacity.").should('be.visible')
   })
 })

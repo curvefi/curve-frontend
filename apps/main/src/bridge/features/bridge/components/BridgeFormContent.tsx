@@ -22,6 +22,7 @@ export type BridgeFormContentParams = Omit<BridgeButtonProps, 'disableBridge' | 
     'amount' | 'onAmount' | 'walletBalance' | 'inputBalanceUsd' | 'tokenSymbol' | 'tokenSelector'
   > & {
     bridgeDisabledAlert?: Pick<BridgeAlert, 'alertType' | 'message'>
+    bridgeAdvisoryAlert?: Pick<BridgeAlert, 'alertType' | 'message'>
     disableAmount?: boolean
     disableBridge?: boolean
     loading: boolean
@@ -34,6 +35,7 @@ export const BridgeFormContent = ({
   walletBalance,
   inputBalanceUsd,
   bridgeDisabledAlert,
+  bridgeAdvisoryAlert,
   disableAmount = false,
   loading,
   disableBridge,
@@ -82,6 +84,11 @@ export const BridgeFormContent = ({
           <AlertTitle>{bridgeDisabledAlert.message}</AlertTitle>
         </Alert>
       ))}
+    {bridgeAdvisoryAlert && (
+      <Alert variant="outlined" severity={bridgeAdvisoryAlert.alertType === 'warning' ? 'warning' : 'info'}>
+        <AlertTitle>{bridgeAdvisoryAlert.message}</AlertTitle>
+      </Alert>
+    )}
     <BridgeButton
       disableChangeNetwork={loading}
       disableBridge={

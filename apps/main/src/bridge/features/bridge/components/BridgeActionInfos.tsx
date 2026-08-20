@@ -1,5 +1,7 @@
+import type { ReactNode } from 'react'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
+import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
 import { ActionInfo, ActionInfoGasEstimate, type EstimatedTxCostProps } from '@ui-kit/shared/ui/ActionInfo'
 import { mapQuery, type QueryProp } from '@ui-kit/types/util'
 import { formatToken } from '@ui-kit/utils'
@@ -10,6 +12,8 @@ type BridgeActionInfosProps = EstimatedTxCostProps & {
   bridgeCost: QueryProp<number>
   nativeTokenSymbol: string
   provider: BridgeProvider | undefined
+  layerZeroCapacity?: QueryProp<string>
+  layerZeroCapacityWarning?: ReactNode
 }
 
 const providerInfo = {
@@ -29,6 +33,8 @@ export const BridgeActionInfos = ({
   isApproved,
   nativeTokenSymbol,
   provider,
+  layerZeroCapacity,
+  layerZeroCapacityWarning,
 }: BridgeActionInfosProps) => (
   <Stack>
     <ActionInfo
@@ -38,6 +44,17 @@ export const BridgeActionInfos = ({
       size="small"
       testId="bridge-provider"
     />
+    {provider === 'layerzero' && (
+      <ActionInfo
+        label={t`Available to bridge`}
+        value={layerZeroCapacity ?? '-'}
+        valueColor={layerZeroCapacityWarning ? 'error' : undefined}
+        valueLeft={layerZeroCapacityWarning ? <ExclamationTriangleIcon color="error" fontSize="small" /> : undefined}
+        valueTooltip={layerZeroCapacityWarning}
+        size="small"
+        testId="bridge-capacity"
+      />
+    )}
     <ActionInfo
       label={provider === 'layerzero' ? t`Destination cost` : t`Estimated bridge cost`}
       value={mapQuery(bridgeCost, data => formatToken(data, nativeTokenSymbol, 'amount'))}
