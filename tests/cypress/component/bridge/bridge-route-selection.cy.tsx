@@ -20,7 +20,6 @@ const NETWORKS = [
   { chainId: Chain.Bsc, id: 'bsc', name: 'BSC', symbol: 'BNB', isLite: true },
   { chainId: Chain.Avalanche, id: 'avalanche', name: 'Avalanche', symbol: 'AVAX', isLite: true },
   { chainId: Chain.Fantom, id: 'fantom', name: 'Fantom', symbol: 'FTM', isLite: true },
-  { chainId: Chain.Kava, id: 'kava', name: 'Kava', symbol: 'KAVA' },
   { chainId: Chain.Sonic, id: 'sonic', name: 'Sonic', symbol: 'S', isLite: true },
   { chainId: Chain.Xdc, id: 'xdc', name: 'XDC', symbol: 'XDC', isLite: true },
   { chainId: Chain.Etherlink, id: 'etherlink', name: 'Etherlink', symbol: 'XTZ', isLite: true },
@@ -137,19 +136,25 @@ describe('bridge route selection', () => {
     cy.get('[data-testid="menu-item-chain-bsc"]').should('be.visible')
     cy.get('[data-testid="menu-item-chain-avalanche"]').should('be.visible')
     cy.get('[data-testid="menu-item-chain-fantom"]').should('be.visible')
-    cy.get('[data-testid="menu-item-chain-kava"]').should('be.visible')
-    cy.get('[data-testid="menu-item-chain-sonic"]').should('be.visible')
+    cy.get('[data-testid="menu-item-chain-kava"]').should('not.exist')
+    cy.get('[data-testid="menu-item-chain-sonic"]').should('not.exist')
     cy.get('[data-testid="menu-item-chain-xdc"]').should('not.exist')
     cy.get('[data-testid="menu-item-chain-etherlink"]').should('be.visible')
     cy.get('[data-testid="menu-item-chain-arbitrum"]').should('not.exist')
 
+    cy.get('[data-testid="menu-item-chain-bsc"]').click()
+    cy.get('[data-testid="bridge-destination-select"]').should('contain.text', 'BSC')
+    cy.get('[data-testid="bridge-token-select"]').click()
+    cy.get('[data-testid="token-option-CRV"]').click()
+    cy.get('[data-testid="bridge-destination-select"]').click()
+    cy.get('[data-testid="menu-item-chain-fantom"]').should('not.exist')
     cy.get('[data-testid="menu-item-chain-sonic"]').click()
-    cy.get('[data-testid="bridge-origin-select"]').should('contain.text', 'ethereum')
-    cy.get('[data-testid="bridge-destination-select"]').should('contain.text', 'sonic')
+    cy.get('[data-testid="bridge-origin-select"]').should('contain.text', 'Ethereum')
+    cy.get('[data-testid="bridge-destination-select"]').should('contain.text', 'Sonic')
     cy.get('[data-testid="bridge-provider-value"]').should('have.text', 'LayerZero')
     cy.get('[data-testid="bridge-swap-networks"]').click()
-    cy.get('[data-testid="bridge-origin-select"]').should('contain.text', 'sonic')
-    cy.get('[data-testid="bridge-destination-select"]').should('contain.text', 'ethereum')
+    cy.get('[data-testid="bridge-origin-select"]').should('contain.text', 'Sonic')
+    cy.get('[data-testid="bridge-destination-select"]').should('contain.text', 'Ethereum')
 
     cy.get('[data-testid="bridge-origin-select"]').click()
     cy.get('[data-testid="menu-item-chain-arbitrum"]').click()

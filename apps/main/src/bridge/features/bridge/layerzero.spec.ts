@@ -43,22 +43,22 @@ describe('bridge route selection', () => {
       chains.bsc,
       chains.avalanche,
       chains.fantom,
-      chains.kava,
       chains.sonic,
       chains.xdc,
       chains.etherlink,
     ])
     expect(getBridgeDestinationChainIds(chains.arbitrum)).toEqual([chains.ethereum])
+    expect(getBridgeDestinationChainIds(chains.kava)).toEqual([])
     expect(getBridgeDestinationChainIds(999_999)).toEqual([])
   })
 })
 
 describe('getLayerZeroRoute', () => {
-  it('resolves the complete token matrix in both directions', () => {
+  it('resolves the complete bidirectional token matrix', () => {
     const supported = {
-      CRV: [chains.bsc, chains.avalanche, chains.fantom, chains.kava, chains.sonic, chains.etherlink],
-      crvUSD: [chains.bsc, chains.avalanche, chains.fantom, chains.kava, chains.sonic, chains.etherlink],
-      scrvUSD: [chains.bsc, chains.avalanche, chains.fantom, chains.sonic, chains.xdc, chains.etherlink],
+      CRV: [chains.bsc, chains.avalanche, chains.sonic, chains.etherlink],
+      crvUSD: [chains.bsc, chains.avalanche, chains.fantom, chains.etherlink],
+      scrvUSD: [chains.bsc, chains.avalanche, chains.fantom, chains.xdc, chains.etherlink],
     } as const
 
     for (const token of ['CRV', 'crvUSD', 'scrvUSD'] as const) {
@@ -69,6 +69,11 @@ describe('getLayerZeroRoute', () => {
     }
   })
 
+  it('only allows CRV from Fantom to Ethereum', () => {
+    expect(getLayerZeroRoute({ fromChainId: chains.fantom, toChainId: chains.ethereum, token: 'CRV' })).toBeDefined()
+    expect(getLayerZeroRoute({ fromChainId: chains.ethereum, toChainId: chains.fantom, token: 'CRV' })).toBeUndefined()
+  })
+
   it('rejects same-chain, sidechain-to-sidechain, and unsupported routes', () => {
     expect(
       getLayerZeroRoute({ fromChainId: chains.ethereum, toChainId: chains.ethereum, token: 'CRV' }),
@@ -77,8 +82,12 @@ describe('getLayerZeroRoute', () => {
     expect(
       getLayerZeroRoute({ fromChainId: chains.arbitrum, toChainId: chains.ethereum, token: 'CRV' }),
     ).toBeUndefined()
+    expect(getLayerZeroRoute({ fromChainId: chains.kava, toChainId: chains.ethereum, token: 'CRV' })).toBeUndefined()
     expect(
-      getLayerZeroRoute({ fromChainId: chains.kava, toChainId: chains.ethereum, token: 'scrvUSD' }),
+      getLayerZeroRoute({ fromChainId: chains.sonic, toChainId: chains.ethereum, token: 'crvUSD' }),
+    ).toBeUndefined()
+    expect(
+      getLayerZeroRoute({ fromChainId: chains.ethereum, toChainId: chains.sonic, token: 'scrvUSD' }),
     ).toBeUndefined()
     expect(getLayerZeroRoute({ fromChainId: chains.xdc, toChainId: chains.ethereum, token: 'CRV' })).toBeUndefined()
   })

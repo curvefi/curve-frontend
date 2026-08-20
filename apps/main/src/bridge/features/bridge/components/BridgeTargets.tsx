@@ -38,13 +38,11 @@ const SelectNetworkLabel = ({ label, sx }: { label: string; sx?: SxProps }) => (
   </Typography>
 )
 
-/** Displays a chain icon and its human-readable name for the given {@link blockchainId}. */
-const SelectNetworkValue = ({ blockchainId, sx }: { blockchainId: string; sx?: SxProps }) => (
+/** Displays a chain icon and its human-readable name. */
+const SelectNetworkValue = ({ network, sx }: { network: NetworkDef; sx?: SxProps }) => (
   <Stack direction="row" sx={applySxProps({ alignItems: 'center', gap: Spacing.sm }, sx)}>
-    <ChainSwitcherIcon networkId={blockchainId} size={20} />
-    <Typography variant="bodyMBold" sx={{ textTransform: 'capitalize' }}>
-      {blockchainId}
-    </Typography>
+    <ChainSwitcherIcon networkId={network.id} size={20} />
+    <Typography variant="bodyMBold">{network.name}</Typography>
   </Stack>
 )
 
@@ -55,13 +53,13 @@ const SelectNetworkValue = ({ blockchainId, sx }: { blockchainId: string; sx?: S
  * We ought to refactor this some time as it's becoming quite common.
  */
 const SelectNetworkButton = ({
-  networkId,
+  network,
   loading,
   onClick,
   testId,
   sx,
 }: {
-  networkId: string | undefined
+  network: NetworkDef | undefined
   loading: boolean
   onClick: () => void
   testId: string
@@ -75,9 +73,7 @@ const SelectNetworkButton = ({
     displayEmpty
     data-testid={testId}
     size="medium"
-    renderValue={() =>
-      loading || !networkId ? <Spinner useTheme={true} /> : <SelectNetworkValue blockchainId={networkId} />
-    }
+    renderValue={() => (loading || !network ? <Spinner useTheme={true} /> : <SelectNetworkValue network={network} />)}
     IconComponent={KeyboardArrowDownIcon}
     sx={sx}
   />
@@ -116,8 +112,8 @@ export const BridgeTargets = ({
   const [isFromOpen, openFrom, closeFrom] = useSwitch(false)
   const [isToOpen, openTo, closeTo] = useSwitch(false)
   const tvls = useNetworksTVL('lending')
-  const fromNetworkId = networks.find(({ chainId }) => chainId === fromChainId)?.id
-  const toNetworkId = networks.find(({ chainId }) => chainId === toChainId)?.id
+  const fromNetwork = networks.find(({ chainId }) => chainId === fromChainId)
+  const toNetwork = networks.find(({ chainId }) => chainId === toChainId)
 
   return (
     <Box
@@ -133,7 +129,7 @@ export const BridgeTargets = ({
     >
       <SelectNetworkLabel label={t`From`} sx={{ gridArea: GRID_AREAS.from.label }} />
       <SelectNetworkButton
-        networkId={fromNetworkId}
+        network={fromNetwork}
         onClick={openFrom}
         testId="bridge-origin-select"
         loading={loading}
@@ -144,7 +140,7 @@ export const BridgeTargets = ({
         <ChainList
           showTestnets={false}
           options={networks}
-          selectedNetworkId={fromNetworkId}
+          selectedNetworkId={fromNetwork?.id}
           tvls={tvls}
           navigateOnSelect={false}
           onNetwork={network => {
@@ -168,7 +164,7 @@ export const BridgeTargets = ({
 
       <SelectNetworkLabel label={t`To`} sx={{ gridArea: GRID_AREAS.to.label }} />
       <SelectNetworkButton
-        networkId={toNetworkId}
+        network={toNetwork}
         onClick={openTo}
         testId="bridge-destination-select"
         loading={loading}
@@ -178,7 +174,7 @@ export const BridgeTargets = ({
         <ChainList
           showTestnets={false}
           options={destinationNetworks}
-          selectedNetworkId={toNetworkId}
+          selectedNetworkId={toNetwork?.id}
           tvls={tvls}
           navigateOnSelect={false}
           onNetwork={network => {

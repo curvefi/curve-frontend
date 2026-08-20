@@ -5,7 +5,6 @@ const LZ_CHAIN = {
   Bsc: 56,
   Avalanche: 43114,
   Fantom: 250,
-  Kava: 2222,
   Sonic: 146,
   Xdc: 50,
   Etherlink: 42793,
@@ -77,28 +76,10 @@ const routes: Partial<Record<number, Partial<Record<LayerZeroToken, LayerZeroDep
       tokenAddress: '0x5191946500e75f0A74476F146dF7d386e52961d9',
     },
   },
-  [LZ_CHAIN.Kava]: {
-    CRV: {
-      bridgeAddress: '0x3C8D2A033131551a3f09E7b5c07DB01d547311CC',
-      tokenAddress: '0x7736C61F00c72e868AA9904c9063e8445A1eF5DD',
-    },
-    crvUSD: {
-      bridgeAddress: '0x1C4e4553F95C28bc529233Cc35D550befE7B83Fc',
-      tokenAddress: '0x98B4029CaBEf7Fd525A36B0BF8555EC1d42ec0B6',
-    },
-  },
   [LZ_CHAIN.Sonic]: {
     CRV: {
       bridgeAddress: '0x5A537a46D780B1C70138aB98eDce69e7a53177ba',
       tokenAddress: '0x5Af79133999f7908953E94b7A5CF367740Ebee35',
-    },
-    crvUSD: {
-      bridgeAddress: '0xf6F07B393e4cEE82EFBcD502Db2903f28aA0472e',
-      tokenAddress: '0x5191946500e75f0A74476F146dF7d386e52961d9',
-    },
-    scrvUSD: {
-      bridgeAddress: '0x6F8012b70ba1fb7F40873CD7f1b03c6fb5bf666C',
-      tokenAddress: '0x8Fb3Ec8f2d1Dc089E70CD61f1E49496d443B2124',
     },
   },
   [LZ_CHAIN.Xdc]: {
@@ -134,6 +115,7 @@ export const getLayerZeroRoute = ({
 }) => {
   if (fromChainId === toChainId || (fromChainId !== LZ_CHAIN.Ethereum && toChainId !== LZ_CHAIN.Ethereum))
     return undefined
+  if (fromChainId === LZ_CHAIN.Ethereum && toChainId === LZ_CHAIN.Fantom && token === 'CRV') return undefined
 
   const sidechain = fromChainId === LZ_CHAIN.Ethereum ? toChainId : fromChainId
   const deployment = routes[sidechain]?.[token]
