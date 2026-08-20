@@ -10,6 +10,7 @@ import {
   validateMaxCollateral,
   validateMaxStateCollateral,
   validateRoute,
+  validateRouteCalldata,
 } from '@/llamalend/queries/validation/borrow-fields.validation'
 import type { RepayFormData, RepayParams } from '@/llamalend/queries/validation/repay.types'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -67,6 +68,7 @@ const validateRepayFieldsForMarket = (
       })
     const swapRequired = stateCollateral || userCollateral || routeId
     validateRoute(routeId, !!(type && swapRequired && isRouterRequired(type)))
+    validateRouteCalldata(routeId)
 
     skipWhen(!['deleverage', 'zapV2', null, undefined].includes(type), () => {
       test('userBorrowed', `Borrow amount is not supported for repay ${type}`, () => {

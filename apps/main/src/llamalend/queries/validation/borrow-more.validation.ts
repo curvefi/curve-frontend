@@ -9,6 +9,7 @@ import {
   validateMaxCollateral,
   validateMaxDebt,
   validateRoute,
+  validateRouteCalldata,
   validateUserBorrowed,
   validateUserCollateral,
 } from '@/llamalend/queries/validation/borrow-fields.validation'
@@ -80,6 +81,7 @@ export const borrowMoreFormValidationSuite = createValidationSuite(
     maxDebt,
     slippage,
     leverageEnabled,
+    routeId,
   }: BorrowMoreForm) => {
     validateUserCollateral(userCollateral, { required: false })
     validateMaxCollateral(userCollateral, maxCollateral, { required: false })
@@ -89,6 +91,7 @@ export const borrowMoreFormValidationSuite = createValidationSuite(
     validateMaxDebt(debt, maxDebt, { required: true })
     validateSlippage({ slippage })
     validateLeverageEnabled(leverageEnabled, { required: false })
+    validateRouteCalldata(routeId)
   },
 )
 
@@ -127,6 +130,7 @@ export const borrowMoreValidationGroup = <IChainId extends number>(
   validateDebt(debt, { required: debtRequired })
   if (!ignoreMaxDebt) validateMaxDebt(debt, maxDebt, { required: maxDebtRequired })
   validateBorrowMoreFieldsForMarket({ marketId, leverageEnabled, routeId, debt, userBorrowed })
+  validateRouteCalldata(routeId)
   validateSlippage({ slippage })
   validateLeverageEnabled(leverageEnabled, { required: leverageRequired })
   validateLeverageSupported(marketId, { required: leverageRequired })

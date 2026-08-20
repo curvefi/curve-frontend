@@ -7,6 +7,7 @@ import {
   validateMaxDebt,
   validateRange,
   validateRoute,
+  validateRouteCalldata,
   validateUserBorrowed,
   validateUserCollateral,
 } from '@/llamalend/queries/validation/borrow-fields.validation'
@@ -26,7 +27,7 @@ const createLoanFormValidationGroup = (
     maxDebt,
     maxCollateral,
     leverageEnabled,
-    routeId: _, // todo: we can't validate the routeId without the marketId
+    routeId,
   }: FieldsOf<CreateLoanForm>,
   {
     debtRequired,
@@ -51,6 +52,7 @@ const createLoanFormValidationGroup = (
     validateMaxDebt(debt, maxDebt, { required: isMaxDebtRequired })
     if (!ignoreMaxCollateral) validateMaxCollateral(userCollateral, maxCollateral, { required: collateralRequired })
     validateLeverageEnabled(leverageEnabled, { required: isLeverageRequired })
+    validateRouteCalldata(routeId)
   })
 
 function validateCreateLoanFieldsForMarket(params: CreateLoanDebtParams, { debtRequired }: { debtRequired: boolean }) {
