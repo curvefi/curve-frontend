@@ -1,6 +1,6 @@
 import lodash from 'lodash'
 import type { HttpTransportConfig } from 'viem'
-import type { NetworkDef } from '@ui/utils'
+import type { NetworkDef } from '@legacy-ui/utils'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { injected } from '@wagmi/connectors'
 import { fallback, http, unstable_connector } from '@wagmi/core'

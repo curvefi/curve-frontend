@@ -1,5 +1,5 @@
+import { NetworkMapping } from '@legacy-ui/utils'
 import Stack from '@mui/material/Stack'
-import { NetworkMapping } from '@ui/utils'
 import { ChainSwitcher } from '@ui-kit/features/switch-chain'
 import type { AppMenuOption } from '@ui-kit/shared/routes'
 import { HeaderLogo } from './HeaderLogo'

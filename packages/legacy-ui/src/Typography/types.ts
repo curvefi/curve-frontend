@@ -1,5 +1,5 @@
 import type { CSSProperties, JSX, ReactNode } from 'react'
-import type { TooltipProps } from '@ui/Tooltip/types'
+import type { TooltipProps } from '@legacy-ui/Tooltip/types'
 
 type ValueOf<T> = T[keyof T]
 

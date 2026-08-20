@@ -6,9 +6,9 @@ import {
   SummaryTitle,
 } from '@/dex/components/PageDashboard/components/Summary'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
-import { Spinner } from '@ui/Spinner'
-import { Stats } from '@ui/Stats'
-import { Chip } from '@ui/Typography/Chip'
+import { Spinner } from '@legacy-ui/Spinner'
+import { Stats } from '@legacy-ui/Stats'
+import { Chip } from '@legacy-ui/Typography/Chip'
 import { t } from '@ui-kit/lib/i18n'
 import { formatNumber, formatToken } from '@ui-kit/utils'
 import { tooltipProps } from '../utils'

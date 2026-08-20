@@ -1,10 +1,10 @@
+import { LlamaImg } from '@legacy-ui/images'
 import CloseIcon from '@mui/icons-material/Close'
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Address } from '@primitives/address.utils'
-import { LlamaImg } from '@ui/images'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { shortenAddress } from '@ui-kit/utils'
 

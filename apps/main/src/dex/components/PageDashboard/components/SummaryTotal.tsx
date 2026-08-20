@@ -6,8 +6,8 @@ import {
   SummarySpinnerWrapper,
 } from '@/dex/components/PageDashboard/components/Summary'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
-import { Spinner } from '@ui/Spinner'
-import { Chip } from '@ui/Typography'
+import { Spinner } from '@legacy-ui/Spinner'
+import { Chip } from '@legacy-ui/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { formatNumber } from '@ui-kit/utils'
 

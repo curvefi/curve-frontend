@@ -1,4 +1,4 @@
-import type { NetworkMapping } from '@ui/utils'
+import type { NetworkMapping } from '@legacy-ui/utils'
 import type { Maintenance } from '@ui-kit/features/maintenance/hooks/useMaintenance'
 import type { AppMenuOption, AppName } from '@ui-kit/shared/routes'
 

@@ -13,7 +13,7 @@ import {
   TransactionState,
 } from '@/dao/types/dao.types'
 import type { ProposalType } from '@curvefi/prices-api/proposal'
-import { scanTxPath } from '@ui/utils'
+import { scanTxPath } from '@legacy-ui/utils'
 import { notify, useWallet, getLib } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 

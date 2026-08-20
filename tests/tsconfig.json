@@ -5,8 +5,8 @@
     "paths": {
       "@/*": ["../apps/main/src/*"],
       "@cy/*": ["./cypress/*"],
-      "@ui": ["../packages/legacy-ui/src/index.ts"],
-      "@ui/*": ["../packages/legacy-ui/src/*"],
+      "@legacy-ui": ["../packages/legacy-ui/src/index.ts"],
+      "@legacy-ui/*": ["../packages/legacy-ui/src/*"],
       "@ui-kit/*": ["../packages/curve-ui-kit/src/*"],
       "@external-rewards": ["../packages/external-rewards/src/index.ts"],
       "@curvefi/prices-api": ["../packages/prices-api/src/index.ts"],

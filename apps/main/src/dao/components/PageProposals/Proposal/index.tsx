@@ -4,7 +4,7 @@ import { Countdown } from '@/dao/components/Countdown'
 import { ProposalVoteStatusBox } from '@/dao/components/ProposalVoteStatusBox'
 import { SmallLabel } from '@/dao/components/SmallLabel'
 import { ProposalData } from '@/dao/entities/proposals-mapper'
-import { LazyItem } from '@ui/LazyItem'
+import { LazyItem } from '@legacy-ui/LazyItem'
 import { t } from '@ui-kit/lib/i18n'
 
 type Props = {

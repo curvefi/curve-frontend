@@ -3,9 +3,9 @@ import { ReactNode, useRef } from 'react'
 import { useButton } from 'react-aria'
 import { OverlayTriggerState } from 'react-stately'
 import { styled } from 'styled-components'
-import { Button } from '@ui/Button'
-import type { ButtonProps } from '@ui/Button/types'
-import { Icon } from '@ui/Icon/Icon'
+import { Button } from '@legacy-ui/Button'
+import type { ButtonProps } from '@legacy-ui/Button/types'
+import { Icon } from '@legacy-ui/Icon/Icon'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 
 type OpenDialogButtonProps = {

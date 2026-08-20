@@ -10,7 +10,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': resolve(__dirname, '../../apps/main/src'),
-      '@ui': resolve(__dirname, '../legacy-ui/src'),
+      '@legacy-ui': resolve(__dirname, '../legacy-ui/src'),
       '@ui-kit': resolve(__dirname, './src'),
       '@external-rewards': resolve(__dirname, '../external-rewards/src/index.ts'),
       '@curvefi/prices-api': resolve(__dirname, '../prices-api/src'),

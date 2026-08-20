@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { EXTERNAL_LINKS } from '@ui/utils'
+import { EXTERNAL_LINKS } from '@legacy-ui/utils'
 import { WagmiConnectModal } from '@ui-kit/features/connect-wallet/ui/WagmiConnectModal'
 import { usePathname } from '@ui-kit/hooks/router'
 import { useIsDesktop } from '@ui-kit/hooks/useBreakpoints'

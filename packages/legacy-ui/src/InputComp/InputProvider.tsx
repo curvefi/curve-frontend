@@ -1,8 +1,8 @@
 import type { ComponentPropsWithRef } from 'react'
 import { useState } from 'react'
 import { styled, type IStyledComponent } from 'styled-components'
-import { Box } from '@ui/Box/Box'
-import { focusVisible } from '@ui/utils/sharedStyles'
+import { Box } from '@legacy-ui/Box/Box'
+import { focusVisible } from '@legacy-ui/utils/sharedStyles'
 import { type InputProviderProps, InputContext } from './InputContext'
 import type { InputMinHeight, InputVariant } from './types'
 

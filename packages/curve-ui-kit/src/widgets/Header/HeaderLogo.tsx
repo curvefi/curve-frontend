@@ -1,5 +1,5 @@
+import { CURVE_LOGO_URL } from '@legacy-ui/utils'
 import { styled } from '@mui/material/styles'
-import { CURVE_LOGO_URL } from '@ui/utils'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import type { SxProps } from '@ui-kit/utils'
 

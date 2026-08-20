@@ -1,7 +1,7 @@
+import { formatDate, formatTime } from '@legacy-ui/utils'
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { formatDate, formatTime } from '@ui/utils'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { TABLE_SECONDARY_TEXT_CLASS } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'

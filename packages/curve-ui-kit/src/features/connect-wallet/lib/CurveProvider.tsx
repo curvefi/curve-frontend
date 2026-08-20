@@ -1,6 +1,6 @@
 import { type ReactNode, useEffect, useState } from 'react'
 import { useChainId, useConfig } from 'wagmi'
-import type { NetworkDef } from '@ui/utils'
+import type { NetworkDef } from '@legacy-ui/utils'
 import { CurveContext, useWagmiWallet } from '@ui-kit/features/connect-wallet/lib/CurveContext'
 import {
   AppChainId,

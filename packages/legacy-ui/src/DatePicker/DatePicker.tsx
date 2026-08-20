@@ -30,12 +30,12 @@ import {
 } from 'react-stately'
 import { styled } from 'styled-components'
 import { createCalendar, getWeeksInMonth } from '@internationalized/date'
-import { Box } from '@ui/Box'
-import { ModalDialog } from '@ui/Dialog/ModalDialog'
-import { Icon } from '@ui/Icon'
-import { IconButton } from '@ui/IconButton'
-import { InputProvider } from '@ui/InputComp'
-import { Chip } from '@ui/Typography/Chip'
+import { Box } from '@legacy-ui/Box'
+import { ModalDialog } from '@legacy-ui/Dialog/ModalDialog'
+import { Icon } from '@legacy-ui/Icon'
+import { IconButton } from '@legacy-ui/IconButton'
+import { InputProvider } from '@legacy-ui/InputComp'
+import { Chip } from '@legacy-ui/Typography/Chip'
 import { type InputProviderProps } from '../InputComp/InputContext'
 
 // See https://react-spectrum.adobe.com/react-aria/useDatePicker.html for details

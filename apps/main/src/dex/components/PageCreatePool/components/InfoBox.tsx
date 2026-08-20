@@ -1,6 +1,6 @@
 import { styled } from 'styled-components'
-import { Box } from '@ui/Box'
-import { Icon } from '@ui/Icon'
+import { Box } from '@legacy-ui/Box'
+import { Icon } from '@legacy-ui/Icon'
 import { t } from '@ui-kit/lib/i18n'
 
 type Props = {

@@ -2,10 +2,10 @@ import { ButtonHTMLAttributes, CSSProperties, RefObject } from 'react'
 import type { AriaButtonProps } from 'react-aria'
 import { useButton } from 'react-aria'
 import { styled } from 'styled-components'
-import type { ButtonProps } from '@ui/Button/types'
-import { StyledBtn } from '@ui/Select/styles'
-import { Spinner } from '@ui/Spinner'
-import { SpinnerWrapper } from '@ui/Spinner/SpinnerWrapper'
+import type { ButtonProps } from '@legacy-ui/Button/types'
+import { StyledBtn } from '@legacy-ui/Select/styles'
+import { Spinner } from '@legacy-ui/Spinner'
+import { SpinnerWrapper } from '@legacy-ui/Spinner/SpinnerWrapper'
 
 export const SelectBtn = ({
   loading,

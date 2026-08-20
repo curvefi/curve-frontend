@@ -1,8 +1,8 @@
 import { ReactNode } from 'react'
+import type { AlertType } from '@legacy-ui/AlertBox/types'
+import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
+import type { TooltipProps } from '@legacy-ui/Tooltip/types'
 import WarningOutlinedIcon from '@mui/icons-material/WarningOutlined'
-import type { AlertType } from '@ui/AlertBox/types'
-import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
-import type { TooltipProps } from '@ui/Tooltip/types'
 
 export const TooltipAlert = ({
   alertType,

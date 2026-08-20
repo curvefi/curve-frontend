@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
-import { AlertBox } from '@ui/AlertBox'
-import { Box } from '@ui/Box'
-import { ExternalLink } from '@ui/Link'
+import { AlertBox } from '@legacy-ui/AlertBox'
+import { Box } from '@legacy-ui/Box'
+import { ExternalLink } from '@legacy-ui/Link'
 import { t } from '@ui-kit/lib/i18n'
 
 export const InfoBox = () => (

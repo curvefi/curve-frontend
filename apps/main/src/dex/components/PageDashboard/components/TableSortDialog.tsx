@@ -2,12 +2,12 @@ import { useOverlayTriggerState } from 'react-stately'
 import { styled } from 'styled-components'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 import type { Order, SortId, TableLabel } from '@/dex/components/PageDashboard/types'
-import { Box } from '@ui/Box'
-import { ModalDialog } from '@ui/Dialog/ModalDialog'
-import { OpenDialogButton } from '@ui/Dialog/OpenDialogButton'
-import { Icon } from '@ui/Icon'
-import { Radio, RadioGroup } from '@ui/Radio'
-import { Chip } from '@ui/Typography'
+import { Box } from '@legacy-ui/Box'
+import { ModalDialog } from '@legacy-ui/Dialog/ModalDialog'
+import { OpenDialogButton } from '@legacy-ui/Dialog/OpenDialogButton'
+import { Icon } from '@legacy-ui/Icon'
+import { Radio, RadioGroup } from '@legacy-ui/Radio'
+import { Chip } from '@legacy-ui/Typography'
 
 const sortOrder = {
   asc: { label: 'Ascending', icon: <Icon name="ArrowUp" size={24} /> },

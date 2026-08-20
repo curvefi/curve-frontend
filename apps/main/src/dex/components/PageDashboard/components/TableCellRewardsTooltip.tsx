@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import { RewardCrv } from '@/dex/types/main.types'
 import { rewardsApyCrvText } from '@/dex/utils/utilsCurvejs'
-import { Box } from '@ui/Box'
+import { Box } from '@legacy-ui/Box'
 import { decimal, formatNumber } from '@ui-kit/utils'
 
 type Props = {

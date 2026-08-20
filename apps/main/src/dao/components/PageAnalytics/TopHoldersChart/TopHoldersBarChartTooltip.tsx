@@ -1,7 +1,7 @@
 import type { VeCrvHolder } from '@/dao/entities/vecrv-holders'
 import { formatHolderName } from '@/dao/utils'
+import { formatDate } from '@legacy-ui/utils'
 import { maybe } from '@primitives/objects.utils'
-import { formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ChartTooltipDataRow, ChartTooltipSeriesGroup, ChartTooltipShell } from '@ui-kit/shared/ui/Chart'
 import { formatNumber } from '@ui-kit/utils'

@@ -1,7 +1,7 @@
+import { EXTERNAL_LINKS } from '@legacy-ui/utils'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { EXTERNAL_LINKS } from '@ui/utils'
 import { getSearchString } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'

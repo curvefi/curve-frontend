@@ -1,7 +1,7 @@
+import { CURVE_LOGO_URL } from '@legacy-ui/utils'
 import Box from '@mui/material/Box'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
-import { CURVE_LOGO_URL } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { Sizing } from '@ui-kit/themes/design/0_primitives'

@@ -1,5 +1,5 @@
 import { styled } from 'styled-components'
-import { RewardsCompSmall as CampaignRewardsComp } from '@ui/CampaignRewards/CampaignRewardsComp'
+import { RewardsCompSmall as CampaignRewardsComp } from '@legacy-ui/CampaignRewards/CampaignRewardsComp'
 import type { CampaignRewards } from '@ui-kit/entities/campaigns'
 
 type Props = {

@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
+import type { NetworkMapping } from '@legacy-ui/utils'
 import { recordValues } from '@primitives/objects.utils'
-import type { NetworkMapping } from '@ui/utils'
 import { usePathname } from '@ui-kit/hooks/router'
 import { getCurrentNetwork } from '@ui-kit/shared/routes'
 
