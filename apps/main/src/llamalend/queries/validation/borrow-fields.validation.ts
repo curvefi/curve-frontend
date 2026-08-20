@@ -4,9 +4,8 @@ import { getMarket, hasLeverage, hasLeverageValue, tryGetMarket } from '@/llamal
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
-import { getRouteQueryData, isZapV2RouterCalldataTooLarge } from '@ui-kit/entities/router-api'
 import type { RouteProvider } from '@primitives/router.utils'
-import { assertRouteProvider } from '@ui-kit/entities/router-api'
+import { assertRouteProvider, getRouteQueryData, isZapV2RouterCalldataTooLarge } from '@ui-kit/entities/router-api'
 
 export const validateUserBorrowed = (userBorrowed: Decimal | null | undefined) => {
   test('userBorrowed', 'Borrow amount must be a non-negative number', () => {
