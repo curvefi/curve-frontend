@@ -8,6 +8,7 @@ import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/cre
 import { createLoanQueryValidationSuite } from '@/llamalend/queries/validation/borrow.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Address } from '@primitives/address.utils'
+import type { RouteProvider } from '@primitives/router.utils'
 import { parseMutationRoute } from '@ui-kit/entities/router-api'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
@@ -26,6 +27,7 @@ export type CreateLoanOptions = {
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
   onReset: () => void
   userAddress: Address | undefined
+  leverageProviders: readonly RouteProvider[] | undefined
 }
 
 const approve = async (market: MarketTemplate, { userCollateral, leverageEnabled }: CreateLoanMutation) => {
@@ -63,6 +65,7 @@ export const useCreateLoanMutation = ({
   network: { chainId },
   marketId,
   userAddress,
+  leverageProviders,
   ...props
 }: CreateLoanOptions) => {
   const config = useConfig()
@@ -81,7 +84,7 @@ export const useCreateLoanMutation = ({
       })
       return { hash: await create(market, variables) }
     },
-    validationSuite: createLoanQueryValidationSuite({ debtRequired: true }),
+    validationSuite: createLoanQueryValidationSuite({ debtRequired: true, leverageProviders }),
     pendingMessage: (mutation, { market }) => t`Creating loan... ${formatTokenAmounts(market, mutation)}`,
     successMessage: (mutation, { market }) => t`Loan created! ${formatTokenAmounts(market, mutation)}`,
     ...props,

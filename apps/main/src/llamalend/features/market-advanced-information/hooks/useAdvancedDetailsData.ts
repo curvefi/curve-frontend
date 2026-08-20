@@ -4,16 +4,17 @@ import {
   calculateMintMarketTvlUsd,
   getControllerAddress,
   getTokens,
+  getVaultAddress,
 } from '@/llamalend/llama.utils'
 import { MarketTemplate } from '@/llamalend/llamalend.types'
 import {
   useMarketCapAndAvailable,
   useMarketMaxLeverage,
+  useMarketOverview,
   useMarketTotalCollateral,
-  useMarketUsers,
+  useMarketTotalSuppliers,
 } from '@/llamalend/queries/market'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
-import type { Endpoint } from '@curvefi/prices-api/lending'
 import { maybe, maybes } from '@primitives/objects.utils'
 import { combineQueries } from '@ui-kit/lib'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
@@ -23,26 +24,28 @@ import { fallbackQ, mapQuery, q, type QueryProp } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 import { requireBlockchainId } from '@ui-kit/utils/network'
 
-const endpointFromMarketType: Record<MarketType, Endpoint> = {
-  [MarketType.Lend]: 'lending',
-  [MarketType.Mint]: 'crvusd',
-}
-
 export const useAdvancedDetailsData = ({
   chainId,
-  market,
+  marketQuery,
   marketId,
   marketType,
   apiMarket,
 }: MarketParams & {
-  market: MarketTemplate | undefined
+  marketQuery: QueryProp<MarketTemplate>
   marketType: MarketType
   apiMarket: QueryProp<LlamaMarket>
 }) => {
+  const market = marketQuery.data
   const { collateralToken, borrowToken } = getTokens(market, apiMarket.data) ?? {}
   const blockchainId = maybe(chainId, chainId => requireBlockchainId(chainId))
   const controllerAddress = getControllerAddress(market, apiMarket.data)
-  const endpoint = endpointFromMarketType[marketType]
+  const vaultAddress = getVaultAddress(market, apiMarket.data)
+  const isControllerLoading = !controllerAddress && (marketQuery.isLoading || apiMarket.isLoading)
+  const marketOverviewQuery = useMarketOverview({ blockchainId, controllerAddress, marketType })
+  const marketOverview = q({
+    ...marketOverviewQuery,
+    isLoading: marketOverviewQuery.isLoading || isControllerLoading,
+  })
 
   const maxLeverage = useMarketMaxLeverage({
     chainId,
@@ -51,6 +54,7 @@ export const useAdvancedDetailsData = ({
   })
   const capAndAvailable = useMarketCapAndAvailable({ chainId, marketId })
   const totalCollateral = useMarketTotalCollateral({ chainId, marketId })
+  const totalSuppliers = useMarketTotalSuppliers({ blockchainId, contractAddress: vaultAddress })
   const collateralUsdRate = useTokenUsdRate({
     chainId,
     tokenAddress: collateralToken?.address,
@@ -63,11 +67,6 @@ export const useAdvancedDetailsData = ({
     blockchainId,
     controllerAddress,
     marketType,
-  })
-  const marketUsers = useMarketUsers({
-    endpoint,
-    blockchainId,
-    contractAddress: controllerAddress,
   })
   const tvl = fallbackQ(
     marketType === MarketType.Lend
@@ -145,14 +144,16 @@ export const useAdvancedDetailsData = ({
         borrowSymbol: borrowToken?.symbol,
       })),
     ),
-    totalBorrowers: fallbackQ(
-      mapQuery(marketUsers, ({ count }) => ({ value: count })),
-      mapQuery(apiMarket, ({ loans }) => ({ value: loans })),
-    ),
+    totalBorrowers: mapQuery(marketOverview, ({ totalBorrowers }) => totalBorrowers),
+    totalSuppliers: q(totalSuppliers),
     borrowedUsdRate: q(borrowedUsdRate),
+    deployedDays: mapQuery(marketOverview, ({ deployedDays }) => deployedDays),
     tvl,
     ...(marketType === MarketType.Lend && {
-      solvency: mapQuery(solvency, ({ solvencyPercent, badDebtUsd }) => ({ value: solvencyPercent, badDebtUsd })),
+      solvency: mapQuery(
+        q({ ...solvency, isLoading: solvency.isLoading || isControllerLoading }),
+        ({ solvencyPercent, badDebtUsd }) => ({ value: solvencyPercent, badDebtUsd }),
+      ),
     }),
   }
 }

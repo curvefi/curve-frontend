@@ -9,7 +9,7 @@ import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
 import { getInternalUrl, LLAMALEND_ROUTES } from '@ui-kit/shared/routes'
 import { Badge } from '@ui-kit/shared/ui/Badge'
-import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
+import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -56,11 +56,7 @@ export const MarketPageHeader = ({ isLoading, rateType }: { isLoading: boolean; 
   )
 
   return (
-    <WithWrapper
-      shouldWrap={isNewLlamaMarketDetailPage}
-      Wrapper={Stack}
-      sx={{ gap: Spacing.sm, paddingBlockEnd: Spacing.md }}
-    >
+    <WithWrapper shouldWrap={isNewLlamaMarketDetailPage} Wrapper={Stack} sx={{ gap: Spacing.sm }}>
       <PageHeader
         backHref={getInternalUrl('llamalend', blockchainId, LLAMALEND_ROUTES.PAGE_MARKETS)}
         title={title}
@@ -71,11 +67,7 @@ export const MarketPageHeader = ({ isLoading, rateType }: { isLoading: boolean; 
         icon={
           <WithSkeleton loading={isLoading} variant="rectangular" width={35} height={35}>
             {collateralToken && borrowToken && (
-              <TokenPair
-                chain={blockchainId}
-                assets={{ primary: collateralToken, secondary: borrowToken }}
-                hideChainIcon
-              />
+              <TokenIcons blockchainId={blockchainId} tokens={[collateralToken, borrowToken]} overflowMode="stack" />
             )}
           </WithSkeleton>
         }

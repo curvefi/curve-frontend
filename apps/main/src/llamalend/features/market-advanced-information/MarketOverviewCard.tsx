@@ -5,17 +5,17 @@ import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Stack from '@mui/material/Stack'
+import type { BaseConfig } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
-import { TIME_FRAMES } from '@ui-kit/lib/model/time'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { Metric } from '@ui-kit/shared/ui/Metric'
-import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketType } from '@ui-kit/types/market'
 import { mapQuery } from '@ui-kit/types/util'
 import { formatNumber } from '@ui-kit/utils'
 import { useMarketContext } from '../market-context'
 import { useAdvancedDetailsData } from './hooks/useAdvancedDetailsData'
+import { MarketAssets, MarketOverviewSkeleton } from './MarketContractsSection'
 import { MarketMaxLtvRow } from './MarketLoanParameters'
 import { MarketPricesRows } from './MarketParameterRows'
 
@@ -23,19 +23,15 @@ const { Grid, Spacing } = SizesAndSpaces
 
 const OVERVIEW_METRIC_CATEGORY = 'llamalend.marketOverview'
 
-export const MarketOverviewCard = () => {
-  const { apiMarket, blockchainId, chainId, market, marketId, marketType, tokens } = useMarketContext()
-  const { solvency, totalBorrowers, maxLeverage } = useAdvancedDetailsData({
+export const MarketOverviewCard = ({ network }: { network: BaseConfig | undefined }) => {
+  const { apiMarket, chainId, market, marketId, marketQuery, marketType } = useMarketContext()
+  const { solvency, totalBorrowers, totalSuppliers, maxLeverage, deployedDays } = useAdvancedDetailsData({
     chainId,
-    market,
+    marketQuery,
     marketId,
     marketType,
     apiMarket,
   })
-  const deployedDays = mapQuery(apiMarket, ({ createdAt }) =>
-    createdAt ? Math.max(0, Math.floor((Date.now() - createdAt) / TIME_FRAMES.DAY_MS)) : undefined,
-  )
-
   return (
     <Card size="small" data-testid="market-overview-card">
       <MarketCardHeader title={t`Overview`} />
@@ -51,19 +47,20 @@ export const MarketOverviewCard = () => {
               valueTooltip={{ title: t`Solvency`, body: <SolvencyTooltip type={MarketType.Lend} /> }}
             />
           )}
-          {/*
-            TODO: get total suppliers
-             <Metric
+          {marketType === MarketType.Lend && (
+            <Metric
               category={OVERVIEW_METRIC_CATEGORY}
               testId="market-total-suppliers"
               label={t`Total suppliers`}
-              value={}
-            /> */}
+              value={totalSuppliers}
+              valueOptions={{ abbreviate: true }}
+            />
+          )}
           <Metric
             category={OVERVIEW_METRIC_CATEGORY}
             testId="market-total-borrowers"
             label={t`Total borrowers`}
-            value={mapQuery(totalBorrowers, ({ value }) => value)}
+            value={totalBorrowers}
             valueOptions={{ abbreviate: true }}
           />
           <Metric
@@ -83,49 +80,22 @@ export const MarketOverviewCard = () => {
             gridTemplateColumns: { mobile: 'minmax(0, 1fr)', tablet: 'repeat(2, minmax(0, 1fr))' },
           }}
         >
-          <Stack>
-            <ActionInfo
-              testId="market-overview-collateral"
-              label={t`Collateral`}
-              value={tokens.collateralToken?.symbol}
-              valueRight={
-                <TokenIcon
-                  blockchainId={blockchainId}
-                  address={tokens.collateralToken?.address}
-                  tooltip={tokens.collateralToken?.symbol ?? t`Collateral`}
-                  size="mui-md"
-                />
-              }
-            />
-            <ActionInfo
-              testId="market-overview-borrowed"
-              label={t`Borrowed`}
-              value={tokens.borrowToken?.symbol}
-              valueRight={
-                <TokenIcon
-                  blockchainId={blockchainId}
-                  address={tokens.borrowToken?.address}
-                  tooltip={tokens.borrowToken?.symbol ?? t`Borrowed`}
-                  size="mui-md"
-                />
-              }
-            />
-            <MarketMaxLtvRow chainId={chainId} marketId={marketId} apiMarket={apiMarket} />
-          </Stack>
-          <Stack>
+          <MarketAssets market={market} apiMarket={apiMarket} network={network} />
+          <MarketOverviewSkeleton market={market} apiMarket={apiMarket} network={network}>
             <MarketPricesRows
               chainId={chainId}
               marketId={marketId}
               enablePricePerShare={marketType === MarketType.Lend}
               apiMarket={apiMarket}
             />
+            <MarketMaxLtvRow chainId={chainId} marketId={marketId} apiMarket={apiMarket} />
             <ActionInfo
               testId="market-overview-max-leverage"
               label={t`Max leverage`}
               labelTooltip={{ title: t`Maximum Leverage`, body: <MaxLeverageTooltip /> }}
               value={mapQuery(maxLeverage, ({ value }) => formatNumber(value, 'multiplier'))}
             />
-          </Stack>
+          </MarketOverviewSkeleton>
         </Box>
       </CardContent>
     </Card>

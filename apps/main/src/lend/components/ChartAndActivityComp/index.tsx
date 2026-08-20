@@ -3,9 +3,14 @@ import { networks } from '@/lend/networks'
 import { ChainId } from '@/lend/types/lend.types'
 import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
 import { useMarketContext } from '@/llamalend/features/market-context'
-import { ChartAndActivityLayout } from '@/llamalend/widgets/ChartAndActivityLayout'
+import {
+  LegacyChartAndActivityLayout,
+  MarketActivityLayout,
+  MarketPriceChartLayout,
+} from '@/llamalend/widgets/ChartAndActivityLayout'
 import { getBlockchainId } from '@curvefi/prices-api'
 import type { Decimal } from '@primitives/decimal.utils'
+import { useNewLlamaMarketDetailPage } from '@ui-kit/hooks/useFeatureFlags'
 import { useBandsChartVisible } from '@ui-kit/hooks/useLocalStorage'
 import type { Range } from '@ui-kit/types/util'
 
@@ -24,6 +29,7 @@ export const ChartAndActivityComp = ({ previewPrices }: ChartAndActivityCompProp
   const [isBandsVisible] = useBandsChartVisible()
   const networkConfig = networks[chainId]
   const {
+    chartMode,
     isLoading: isChartLoading,
     selectedChartKey,
     setTimeOption,
@@ -49,24 +55,52 @@ export const ChartAndActivityComp = ({ previewPrices }: ChartAndActivityCompProp
     enabled: isBandsVisible,
   })
 
-  return (
-    <ChartAndActivityLayout
-      chart={{
-        isLoading: isChartLoading,
-        selectedChartKey,
-        setTimeOption,
-        legendSets,
-        ohlcChartProps,
-      }}
-      bands={{
-        chartData,
-        userBandsBalances: userBandsBalances ?? [],
-        oraclePrice,
-        isLoading: isBandsLoading,
-        error: bandsError,
+  const chart = {
+    chartMode,
+    isLoading: isChartLoading,
+    selectedChartKey,
+    setTimeOption,
+    legendSets,
+    ohlcChartProps,
+  }
+  const bands = {
+    chartData,
+    userBandsBalances: userBandsBalances ?? [],
+    oraclePrice,
+    isLoading: isBandsLoading,
+    error: bandsError,
+    collateralToken,
+    borrowToken,
+  }
+
+  return useNewLlamaMarketDetailPage() ? (
+    <MarketPriceChartLayout chart={chart} bands={bands} />
+  ) : (
+    <LegacyChartAndActivityLayout
+      chart={chart}
+      bands={bands}
+      activity={{
+        network: getBlockchainId(networkConfig?.id),
+        ammAddress,
         collateralToken,
         borrowToken,
+        endpoint: 'lending',
+        networkConfig,
       }}
+    />
+  )
+}
+
+export const MarketActivityComp = () => {
+  const {
+    chainId,
+    ammAddress,
+    tokens: { collateralToken, borrowToken },
+  } = useMarketContext<ChainId>()
+  const networkConfig = networks[chainId]
+
+  return (
+    <MarketActivityLayout
       activity={{
         network: getBlockchainId(networkConfig?.id),
         ammAddress,

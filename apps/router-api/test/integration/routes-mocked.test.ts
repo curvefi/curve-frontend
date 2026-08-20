@@ -9,6 +9,18 @@ describe('GET routes mocked unit tests', () => {
   afterEach(() => vi.unstubAllGlobals())
   afterAll(() => server.close())
 
+  const ensoResponse = {
+    gas: '100000',
+    amountOut: '990000000',
+    priceImpact: 0,
+    feeAmount: [],
+    minAmountOut: '980000000',
+    createdAt: 1,
+    tx: { data: '0x', to: zeroAddress, from: zeroAddress, value: '0' },
+    route: [],
+    ensoFeeAmount: [],
+  }
+
   it.each([
     {
       label: 'preserves upstream 4xx statuses',
@@ -53,5 +65,34 @@ describe('GET routes mocked unit tests', () => {
 
     expect(statusCode).toBe(expectedStatus)
     expect(body).equals(expectedBody)
+  })
+
+  it.each([
+    ['0.5', '50'],
+    ['0', '0'],
+  ])('converts %s%% slippage to %s Enso basis points', async (slippage, expectedSlippage) => {
+    const fetchMock = vi.fn<typeof fetch>(() => Promise.resolve(Response.json(ensoResponse)))
+    vi.stubGlobal('fetch', fetchMock)
+
+    const { statusCode } = await server.inject({
+      url: '/api/router/v1/routes',
+      query: {
+        chainId: '1',
+        tokenIn: [zeroAddress],
+        tokenOut: [zeroAddress],
+        amountIn: ['1000000000'],
+        router: ['enso'],
+        zapAddress: zeroAddress,
+        slippage,
+      },
+    })
+
+    const request = fetchMock.mock.calls[0][0]
+    const url = new URL(request instanceof Request ? request.url : request)
+    expect(statusCode).toBe(200)
+    expect(url.searchParams.get('slippage')).toBe(expectedSlippage)
+    expect(url.searchParams.has('minAmountOut')).toBe(false)
+    expect(url.searchParams.has('fee')).toBe(false)
+    expect(url.searchParams.has('feeReceiver')).toBe(false)
   })
 })

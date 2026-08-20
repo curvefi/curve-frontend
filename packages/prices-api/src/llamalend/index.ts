@@ -46,6 +46,8 @@ export async function getSnapshots(
     agg?: string
     fetch_on_chain?: boolean
     limit?: number
+    start?: number
+    end?: number
   } = { fetch_on_chain: true, agg: 'day', limit: 100 },
   options?: Options,
 ) {
@@ -119,6 +121,13 @@ export async function getUserMarketEarnings(userAddr: string, chain: Chain, vaul
   const response = await fetch(`${host}/v1/lending/vaults/${chain}/${vaultAddress}/earnings/${userAddr}`)
 
   return Schema.getUserMarketEarningsResponse.parse(response)
+}
+
+export async function getVaultDepositors(chain: Chain, vaultAddress: string, options?: Options) {
+  const host = getHost(options)
+  const response = await fetch(`${host}/v1/lending/vaults/${chain}/${vaultAddress}/depositors`)
+
+  return Schema.getVaultDepositorsResponse.parse(response)
 }
 
 export async function getUserMarketSnapshots(

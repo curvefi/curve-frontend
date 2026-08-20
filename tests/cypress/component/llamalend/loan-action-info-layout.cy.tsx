@@ -1,6 +1,7 @@
 import { noop } from 'lodash'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
+import { LoanActionSettings } from '@/llamalend/widgets/action-card/LoanActionSettings'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { mockedWagmiConfig } from '@cy/support/helpers/llamalend/test-wagmi.helpers'
 import { allViewports } from '@cy/support/ui'
@@ -9,6 +10,8 @@ import { RouteProviders } from '@primitives/router.utils'
 import type { BaseConfig } from '@ui/utils'
 import { q } from '@ui-kit/types/util'
 import { mockRoutes } from '@ui-kit/widgets/RouteProvider/route.mock'
+import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
+import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
 const getHeight = (testId: string, subelement?: string) =>
   cy
@@ -17,6 +20,7 @@ const getHeight = (testId: string, subelement?: string) =>
     .then($element => $element[0].getBoundingClientRect().height)
 
 const routes: MarketRoutes = {
+  providers: RouteProviders,
   queries: fromEntries(
     RouteProviders.map(router => [
       router,
@@ -57,20 +61,20 @@ allViewports().forEach(([width, height, viewport]) => {
       it(`has consistent heights ${label}`, () => {
         cy.mount(
           <ComponentTestWrapper config={mockedWagmiConfig}>
-            <LoanActionInfoList
-              isOpen
-              prevHealth={q({ data: '12.4', ...{ isLoading, error } })} // make sure `->` doesn't change the line height
-              health={q({ data: '123.4', ...{ isLoading, error, ...state } })}
-              oraclePrice={q({ data: '123.4', ...{ isLoading, error, ...state } })}
-              exchangeRate={q({ data: '123.4', ...{ isLoading, error, ...state } })}
-              gas={q({ data: { estGasCostUsd: '123.4' }, ...{ isLoading, error, ...state } })}
-              rates={q({ data: { borrowApr: '123.4' }, ...{ isLoading, error, ...state } })}
-              slippage="123.4"
-              onSlippageChange={noop}
-              collateralSymbol="wstETH"
-              borrowSymbol="crvUSD"
-              routes={routes}
-            />
+            <>
+              <LoanActionSettings slippage="123.4" onSlippageChange={noop} routes={routes} />
+              <LoanActionInfoList
+                isOpen
+                prevHealth={q({ data: '12.4', ...{ isLoading, error } })} // make sure `->` doesn't change the line height
+                health={q({ data: '123.4', ...{ isLoading, error, ...state } })}
+                oraclePrice={q({ data: '123.4', ...{ isLoading, error, ...state } })}
+                exchangeRate={q({ data: '123.4', ...{ isLoading, error, ...state } })}
+                gas={q({ data: { estGasCostUsd: '123.4' }, ...{ isLoading, error, ...state } })}
+                rates={q({ data: { borrowApr: '123.4' }, ...{ isLoading, error, ...state } })}
+                collateralSymbol="wstETH"
+                borrowSymbol="crvUSD"
+              />
+            </>
           </ComponentTestWrapper>,
         )
 
@@ -85,5 +89,42 @@ allViewports().forEach(([width, height, viewport]) => {
         getHeight('route-provider-accordion', 'img').should('equal', expectedIconHeight)
       })
     })
+  })
+})
+
+describe('market slippage settings', () => {
+  it('uses the current market slippage without submitting an unchanged value', () => {
+    const onChanged = cy.spy().as('onChanged')
+    cy.mount(
+      <ComponentTestWrapper>
+        <SlippageToleranceActionInfo maxSlippage="0.03" type="leverage" onChanged={onChanged} />
+      </ComponentTestWrapper>,
+    )
+
+    cy.get('[data-testid="slippage-settings-button"]').click()
+    cy.get('[data-testid="slippage-input"] input').should('have.value', '0.03')
+    cy.get('[data-testid="slippage-save-button"]').click()
+    cy.get('@onChanged').should('not.have.been.called')
+
+    cy.get('[data-testid="slippage-settings-button"]').click()
+    cy.get(`[data-testid="slippage-radio-group"] [value="${SLIPPAGE.leverage.default}"]`).click()
+    cy.get('[data-testid="slippage-save-button"]').click()
+    cy.get('@onChanged').should('have.been.calledOnce')
+  })
+})
+
+describe('route provider allowlist', () => {
+  it('renders only providers supplied by the market policy', () => {
+    cy.mount(
+      <ComponentTestWrapper config={mockedWagmiConfig}>
+        <LoanActionSettings
+          onSlippageChange={noop}
+          routes={{ ...routes, providers: ['enso'], selectedRoute: undefined, selectedRouter: undefined }}
+        />
+      </ComponentTestWrapper>,
+    )
+
+    cy.get('[data-testid="route-provider-accordion"]').click()
+    cy.get('[data-testid="route-provider-card"]').should('have.length', 1).and('contain.text', 'Enso')
   })
 })

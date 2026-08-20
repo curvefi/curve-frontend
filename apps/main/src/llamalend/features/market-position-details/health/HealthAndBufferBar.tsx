@@ -1,4 +1,4 @@
-import { useUserHealthValues } from '@/llamalend/queries/user/user-health.query'
+import { type HealthQuery, useUserHealthValues } from '@/llamalend/queries/user/user-health.query'
 import { Stack } from '@mui/material'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import Box from '@mui/material/Box'
@@ -12,7 +12,7 @@ import { Badge } from '@ui-kit/shared/ui/Badge'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { mapQuery, QueryProp } from '@ui-kit/types/util'
+import { mapQuery } from '@ui-kit/types/util'
 import { IS_DEVELOPMENT } from '@ui-kit/utils'
 import { HEALTH_TOOLTIP, LIQUIDATION_BUFFER_TOOLTIP } from '../tooltips'
 import {
@@ -27,8 +27,6 @@ import {
 } from './utils'
 
 const { Height, MinWidth, Spacing } = SizesAndSpaces
-
-type HealthQuery = QueryProp<QueryData<typeof useUserHealthValues>>
 
 const SOFT_LIQUIDATION_LABEL = t`Soft Liquidation`
 
@@ -84,11 +82,13 @@ export const HealthAndBufferBar = ({
   const { data, isLoading } = mapQuery(query, getValue)
   const percentage = getPercentage(data)
   const label = type === 'health' ? maybe(state, state => HEALTH_LABEL[state]) : undefined
+  const testId = `health-details-${type === 'liquidationBuffer' ? 'liquidation-buffer' : type}-bar`
 
   return (
     <WithSkeleton loading={isLoading} variant="rectangular" width="100%" height={Height.healthBar[size]}>
       <Tooltip title={tooltip.title} body={tooltip.body}>
         <Stack
+          data-testid={testId}
           sx={{
             height: Height.healthBar[size],
             backgroundColor: theme => theme.design.Color.Neutral[300],
@@ -98,6 +98,7 @@ export const HealthAndBufferBar = ({
           }}
         >
           <Box
+            data-testid={`${testId}-fill`}
             sx={{
               height: '100%',
               width: `${percentage}%`,
@@ -107,6 +108,7 @@ export const HealthAndBufferBar = ({
           />
           {label && (
             <Badge
+              data-testid={`${testId}-badge`}
               size={BADGE_SIZE_BY_BAR_SIZE[size]}
               color={state === 'hardLiquidation' ? 'alert' : 'warning'}
               label={label}

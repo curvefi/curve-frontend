@@ -21,8 +21,7 @@ import { isLoading, notify, useCurve } from '@ui-kit/features/connect-wallet'
 import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
 import { dayjs } from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
-import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
-import { amount, formatToken } from '@ui-kit/utils'
+import { amount, formatToken, REFRESH_INTERVAL } from '@ui-kit/utils'
 
 export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const isSubscribedRef = useRef(false)

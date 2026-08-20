@@ -6,7 +6,7 @@ import { t } from '@ui-kit/lib/i18n'
 import type { TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { TokenInfo, type TokenInfoProps } from '@ui-kit/shared/ui/TokenInfo'
-import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
+import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
 import { formatNumber } from '@ui-kit/utils'
 import { TokenCell } from '../../TokenCell'
 import { YieldBreakdownColumnId } from './columns.enum'
@@ -17,8 +17,8 @@ export type YieldBreakdownRow = TableItem & {
   explorerUrl?: string
   price?: number
   apy?: number
-  apySecondary?: number
-  apyTooltip?: string
+  maxBoostApy?: number
+  apyTooltip?: Pick<TooltipProps, 'title' | 'body' | 'clickable'>
 }
 
 const columnHelper = createColumnHelper<YieldBreakdownRow>()
@@ -60,14 +60,14 @@ export const YIELD_BREAKDOWN_COLUMNS = [
     header: headers[YieldBreakdownColumnId.Apy],
     cell: ({ getValue, row }) => (
       <InlineTableCell sx={{ alignItems: 'end' }}>
-        <Tooltip title={row.original.apyTooltip} placement="top">
+        <Tooltip {...row.original.apyTooltip} title={row.original.apyTooltip?.title ?? null} placement="top">
           {/** Needed for tooltip to work for whatever reason */}
           <Box>
             <TokenInfo
               icon={null}
               iconPosition="right"
               primary={formatNumber(getValue(), 'percent.rate')}
-              secondary={maybe(row.original.apySecondary, value => t`Unboosted ${formatNumber(value, 'percent.rate')}`)}
+              secondary={maybe(row.original.maxBoostApy, value => t`Max boost ${formatNumber(value, 'percent.rate')}`)}
             />
           </Box>
         </Tooltip>

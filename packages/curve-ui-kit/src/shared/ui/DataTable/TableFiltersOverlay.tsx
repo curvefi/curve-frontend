@@ -5,7 +5,6 @@ import Popover from '@mui/material/Popover'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { Cross2Icon } from '@ui-kit/shared/icons/Cross2Icon'
 import { DrawerHeader } from '@ui-kit/shared/ui/SwipeableDrawer/DrawerHeader'
@@ -41,7 +40,6 @@ export const TableFiltersOverlay = ({
   title,
 }: TableFiltersOverlayProps) => {
   const isMobile = useIsMobile()
-  const [isReady, setReady, resetReady] = useSwitch()
   const resetButton = (
     <Button
       color="ghost"
@@ -69,13 +67,12 @@ export const TableFiltersOverlay = ({
       anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
       slotProps={{
         paper: {
+          ...{ 'data-testid': 'table-filters-popover-root' },
           sx: { backgroundColor: t => t.design.Layer[3].Fill, width: Width.modal.md },
         },
-        // Set the test ID once transition is ready to avoid flaky tests clicking during transition.
-        transition: { onEntered: setReady, onExit: resetReady },
       }}
     >
-      <Stack sx={directChildrenAfterFirst({ borderTop: borderStyle })} {...testId('table-filters-popover', isReady)}>
+      <Stack sx={directChildrenAfterFirst({ borderTop: borderStyle })} {...testId('table-filters-popover', open)}>
         <Stack
           direction="row"
           sx={{
@@ -89,7 +86,7 @@ export const TableFiltersOverlay = ({
           <Typography variant="headingXsBold" color="textSecondary" sx={{ paddingBlockEnd: Spacing.xs }}>
             {title}
           </Typography>
-          <IconButton size="extraSmall" onClick={() => setOpen(false)} {...testId('btn-close-filters', isReady)}>
+          <IconButton size="extraSmall" onClick={() => setOpen(false)} {...testId('btn-close-filters', open)}>
             <Cross2Icon />
           </IconButton>
         </Stack>

@@ -20,11 +20,11 @@ const { Spacing } = SizesAndSpaces
 const METRIC_CATEGORY = 'llamalend.marketAdvancedDetails'
 
 export const MarketAdvancedDetails = () => {
-  const { chainId, marketId, market, marketType, apiMarket } = useMarketContext()
+  const { chainId, marketId, marketQuery, marketType, apiMarket } = useMarketContext()
   const { borrowedUsdRate, collateral, availableLiquidity, tvl, maxLeverage, solvency, totalBorrowers } =
     useAdvancedDetailsData({
       chainId,
-      market,
+      marketQuery,
       marketId,
       marketType,
       apiMarket,
@@ -33,7 +33,7 @@ export const MarketAdvancedDetails = () => {
 
   return (
     <Box
-      data-testid="market-advanced-details"
+      data-testid="market-advanced-details-metrics"
       sx={{
         display: 'grid',
         gap: { ...Spacing.lg, mobile: 0 },
@@ -67,7 +67,7 @@ export const MarketAdvancedDetails = () => {
         category={METRIC_CATEGORY}
         testId="market-total-borrowers"
         label={t`Total borrowers`}
-        value={mapQuery(totalBorrowers, ({ value }) => value)}
+        value={totalBorrowers}
         valueOptions={{ abbreviate: true }}
       />
       {/* we show total collateral in the rate curve card for lend markets */}

@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { formatUnits, parseUnits } from 'viem'
+import { formatUnits } from 'viem'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 
@@ -71,5 +71,11 @@ export const decimalDiv = (first: Decimal, second: Decimal) =>
 export const decimalPercent = (part: Decimal, total: Decimal): Decimal =>
   +total ? decimalMultiply(decimalDiv(part, total), '100') : '0'
 
-export const toWei = (n: string, decimals: number) => decimal(parseUnits(n, decimals))!
+// Viem parseUnits rounds excess decimals, but we must truncate to match llamalend.js transaction amounts.
+export const toWei = (n: string, decimals: number) =>
+  decimal(
+    BigNumber(n || '0')
+      .shiftedBy(decimals)
+      .integerValue(BigNumber.ROUND_DOWN),
+  )!
 export const fromWei = (n: string, decimals: number) => decimal(formatUnits(BigInt(n), decimals))!

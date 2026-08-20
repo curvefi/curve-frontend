@@ -6,7 +6,7 @@ import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { Address } from '@primitives/address.utils'
 import { toArray } from '@primitives/array.utils'
 import { Decimal } from '@primitives/decimal.utils'
-import { recordValues } from '@primitives/objects.utils'
+import { maybe, recordValues } from '@primitives/objects.utils'
 import { type RouteProvider, type RouterRouteResponse } from '@primitives/router.utils'
 import type { QueryKey } from '@tanstack/react-query'
 import type { BaseConfig } from '@ui/utils'
@@ -19,7 +19,7 @@ import {
 } from '@ui-kit/entities/router-api'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { q, type QueryProp } from '@ui-kit/types/util'
-import { decimalCompare, decimalMax, toWei } from '@ui-kit/utils'
+import { decimalCompare, decimalMax, toWei, decimalDiv, decimalMinus, decimalMultiply, fromWei } from '@ui-kit/utils'
 import type { PriceImpact } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 
 export type MarketRoutes = {
@@ -32,11 +32,33 @@ export type MarketRoutes = {
   tokenOut: Partial<{ symbol: string | undefined; address: Address; decimals: number }> & { usdRate: QueryProp<number> }
   networks: Record<number, BaseConfig>
   chainId: number
+  providers: readonly RouteProvider[]
 }
 
 const sortRoutes = (a: RouterRouteResponse, b: RouterRouteResponse) =>
   decimalCompare(decimalMax(...b.amountOut) ?? '0', decimalMax(...a.amountOut) ?? '0') ||
   (a.priceImpact ?? 100) - (b.priceImpact ?? 100)
+
+export const calculatePriceImpact = ({
+  selectedAmountIn,
+  selectedAmountOut,
+  tokenInDecimals,
+  tokenOutDecimals,
+  tokenInUsdRate,
+  tokenOutUsdRate,
+}: {
+  selectedAmountIn: Decimal
+  selectedAmountOut: Decimal
+  tokenInDecimals: number
+  tokenOutDecimals: number
+  tokenInUsdRate: Decimal
+  tokenOutUsdRate: Decimal
+}) => {
+  const amountInUsd = decimalMultiply(fromWei(selectedAmountIn, tokenInDecimals), tokenInUsdRate)
+  const amountOutUsd = decimalMultiply(fromWei(selectedAmountOut, tokenOutDecimals), tokenOutUsdRate)
+  const ratio = decimalDiv(amountOutUsd, amountInUsd)
+  return decimalMax('0', decimalMultiply(decimalMinus('1', ratio), '100'))
+}
 
 /**
  * Queries and converts the routes for leveraging on llamalend markets.
@@ -53,6 +75,7 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
   networks,
   getRouteGasOptions,
   zapAddress,
+  providers,
 }: {
   chainId: number
   marketAddress: Address | undefined
@@ -64,6 +87,7 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
   networks: Record<number, BaseConfig>
   getRouteGasOptions: GetGasCallback<TData, GasQueryKey>
   zapAddress: Address | undefined
+  providers: readonly RouteProvider[] | undefined
   onChange: (option: RouteResponse | undefined) => Promise<void>
 }): { routes: MarketRoutes | undefined; priceImpact?: QueryProp<PriceImpact | Decimal | null> } {
   const [chosenRouter, setChosenRouter] = useState<RouteProvider | undefined>(undefined) // keep the preferred router while mounted
@@ -80,17 +104,21 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
     zapAddress,
     slippage,
   }
+  const routesEnabled = enabled && !!providers?.length
   const { queries, onRefresh } = useRouterQueries<TData, GasQueryKey>(
     params,
     getRouteGasOptions,
-    enabled && !!slippage, // enforce slippage, important for ZapV2 but not required for API
+    providers,
+    routesEnabled && !!slippage, // enforce slippage, important for ZapV2 but not required for API
   )
 
+  // Disabled providers can retain cached query data after switching release channels, so exclude them from selection.
   const selectedRoute = useMemo(
     () =>
-      chosenRouter
+      chosenRouter && queries[chosenRouter].enabled
         ? (queries[chosenRouter].data ?? undefined)
         : recordValues(queries)
+            .filter(q => q.enabled)
             .map(q => q.data)
             .filter((q): q is RouteResponse => !!q)
             // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
@@ -104,21 +132,23 @@ export function useMarketRoutes<TData extends TGas | null, GasQueryKey extends Q
   const onChangeEffect = useEffectEvent(onChangeProp)
   useEffect(() => startTransition(() => onChangeEffect(selectedRoute)), [selectedRoute])
 
-  const selectedRouter = chosenRouter ?? selectedRoute?.router
-  const priceImpact = usePriceImpact({ params, selectedRoute, tokenIn, tokenOut, chainId }, enabled)
+  const selectedRouter = chosenRouter && queries[chosenRouter].enabled ? chosenRouter : selectedRoute?.router
+  const priceImpact = usePriceImpact({ selectedRoute, tokenIn, tokenOut, chainId }, routesEnabled)
+  const tokenOutUsdRate = q(useTokenUsdRate({ tokenAddress: tokenOut?.address, chainId }, enabled))
 
   return {
-    routes: {
+    routes: maybe(providers, providers => ({
       networks,
       chainId,
+      providers,
       queries,
-      enabled,
+      enabled: routesEnabled,
       selectedRoute,
       selectedRouter,
       onChange: setChosenRouter,
       onRefresh,
-      tokenOut: { ...tokenOut, usdRate: q(useTokenUsdRate({ tokenAddress: tokenOut?.address, chainId }, enabled)) },
-    },
+      tokenOut: { ...tokenOut, usdRate: tokenOutUsdRate },
+    })),
     ...(enabled && { priceImpact }),
   }
 }

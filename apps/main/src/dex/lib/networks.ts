@@ -168,6 +168,7 @@ export const defaultNetworks = Object.entries({
     stableswapFactory: true,
     twocryptoFactory: true,
     tricryptoFactory: true,
+    fxswapFactory: true,
     hasFactory: true,
     pricesApi: true,
   },
@@ -303,6 +304,7 @@ export const defaultNetworks = Object.entries({
       ...getBaseNetworksConfig<NetworkEnum, ChainId>(chainId, NETWORK_BASE_CONFIG[chainId]),
       ...DEFAULT_NETWORK_CONFIG,
       ...config,
+      isLite: DOWNGRADED_CHAINS.has(chainId),
       isCrvRewardsEnabled: true,
     }
     return prev

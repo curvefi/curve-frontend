@@ -4,10 +4,9 @@ import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { toArray } from '@primitives/array.utils'
 import { fetchJson } from '@primitives/fetch.utils'
 import { assert, maybe, notFalsy, pick } from '@primitives/objects.utils'
-import { type RouteProvider, RouteProviders, type RouterRouteResponse } from '@primitives/router.utils'
+import { type RouteProvider, type RouterRouteResponse } from '@primitives/router.utils'
 import { type QueryKey, useQuery, type UseQueryOptions } from '@tanstack/react-query'
 import { createHash } from '@ui-kit/entities/router-api/router-api.utils'
-import { use0xRouter } from '@ui-kit/hooks/useFeatureFlags'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { NoRetryError } from '@ui-kit/lib/model/query/factory'
@@ -188,20 +187,21 @@ function useCurveRouterQuery<TData extends TGas | null, TKey extends QueryKey>(
 export const useRouterQueries = <TData extends TGas | null, TKey extends QueryKey>(
   params: Omit<RoutesParams, 'router'>,
   getRouteGasOptions: GetGasCallback<TData, TKey>,
+  providers: readonly RouteProvider[] | undefined,
   enabled?: boolean,
 ): {
   queries: RouteQueries
   onRefresh: () => Promise<RouteResponse[][]>
 } => ({
   queries: {
-    curve: useCurveRouterQuery(params, getRouteGasOptions, enabled),
-    'curve-solver': useRouterQuery(params, 'curve-solver', enabled),
-    enso: useRouterQuery(params, 'enso', !!params.zapAddress && enabled),
-    '0x': useRouterQuery(params, '0x', use0xRouter() && enabled),
+    curve: useCurveRouterQuery(params, getRouteGasOptions, !!providers?.includes('curve') && enabled),
+    'curve-solver': useRouterQuery(params, 'curve-solver', !!providers?.includes('curve-solver') && enabled),
+    enso: useRouterQuery(params, 'enso', !!providers?.includes('enso') && !!params.zapAddress && enabled),
+    '0x': useRouterQuery(params, '0x', !!providers?.includes('0x') && enabled),
   },
   onRefresh: useCallback(
-    () => Promise.all(RouteProviders.map(router => fetchApiRoutes({ ...params, router }))),
-    [params],
+    () => Promise.all((providers ?? []).map(router => fetchApiRoutes({ ...params, router }))),
+    [providers, params],
   ),
 })
 

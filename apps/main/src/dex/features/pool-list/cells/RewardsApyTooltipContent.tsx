@@ -1,0 +1,43 @@
+import Stack from '@mui/material/Stack'
+import { t } from '@ui-kit/lib/i18n'
+import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui-kit/shared/ui/TooltipComponents'
+import { formatNumber } from '@ui-kit/utils'
+import type { PoolRow } from '../types'
+import { CampaignRewardTooltipItems, ExtraRewardTooltipItems } from './ApyTooltipItems'
+import { getAprCampaigns, getCampaignRewardsApy, getExtraRewards, getExtraRewardsApy, getRewardsApy } from './utils'
+
+export const RewardsApyTooltipContent = ({ pool }: { pool: PoolRow }) => {
+  const extraRewards = getExtraRewards(pool)
+  const campaigns = getAprCampaigns(pool)
+
+  return (
+    <TooltipWrapper>
+      <TooltipDescription
+        text={t`Annualized yield from extra token rewards and APR campaigns. Points are not included.`}
+      />
+      <Stack>
+        {extraRewards.length > 0 && (
+          <TooltipItems secondary>
+            <TooltipItem title={t`Liquidity incentives`}>
+              {formatNumber(getExtraRewardsApy(pool), 'percent.rate')}
+            </TooltipItem>
+            <ExtraRewardTooltipItems network={pool.network} rewards={extraRewards} />
+          </TooltipItems>
+        )}
+        {campaigns.length > 0 && (
+          <TooltipItems secondary>
+            <TooltipItem title={t`Campaign rewards`}>
+              {formatNumber(getCampaignRewardsApy(pool), 'percent.rate')}
+            </TooltipItem>
+            <CampaignRewardTooltipItems campaigns={campaigns} />
+          </TooltipItems>
+        )}
+        <TooltipItems borderTop>
+          <TooltipItem variant="primary" title={t`Rewards APY`}>
+            {formatNumber(getRewardsApy(pool), 'percent.rate')}
+          </TooltipItem>
+        </TooltipItems>
+      </Stack>
+    </TooltipWrapper>
+  )
+}

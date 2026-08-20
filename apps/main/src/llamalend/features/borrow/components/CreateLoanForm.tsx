@@ -1,6 +1,8 @@
 import { type ChangeEvent, useCallback } from 'react'
 import { LEVERAGE, LoanPreset } from '@/llamalend/constants'
+import { getMaxBorrowAmount } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
+import { LoanActionSettings } from '@/llamalend/widgets/action-card/LoanActionSettings'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -89,9 +91,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           collateralToken={collateralToken}
           borrowToken={borrowToken}
           networks={networks}
-          routes={routes}
           priceImpact={priceImpact}
-          onSlippageChange={value => updateForm({ slippage: value })}
         />
       }
       data-testid="create-loan-form"
@@ -113,7 +113,11 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           blockchainId={network.id}
           name="debt"
           form={form}
-          max={{ ...q(maxDebt), fieldName: 'maxDebt' }}
+          max={{
+            ...q(maxDebt),
+            fieldName: 'maxDebt',
+            onMax: maxDebt => getMaxBorrowAmount(maxDebt, values.leverageEnabled),
+          }}
           hideBalance
           testId="borrow-debt-input"
           network={network}
@@ -124,19 +128,30 @@ export const CreateLoanForm = <ChainId extends IChainId>({
               tooltip={t`Max borrow`}
               symbol={borrowToken?.symbol}
               balance={q(maxDebt)}
-              onClick={useCallback(() => updateForm({ debt: values.maxDebt }), [updateForm, values.maxDebt])}
+              onClick={useCallback(
+                () => updateForm({ debt: getMaxBorrowAmount(values.maxDebt, values.leverageEnabled) }),
+                [updateForm, values.leverageEnabled, values.maxDebt],
+              )}
               buttonTestId="borrow-set-debt-to-max"
             />
           }
         />
       </Stack>
       {isLeverageSupported && (
-        <LeverageInput
-          checked={values.leverageEnabled}
-          leverage={leverage}
-          onToggle={toggleLeverage}
-          maxLeverage={maxLeverage.data}
-        />
+        <Stack>
+          <LeverageInput
+            checked={values.leverageEnabled}
+            leverage={leverage}
+            onToggle={toggleLeverage}
+            maxLeverage={maxLeverage.data}
+          />
+          <LoanActionSettings
+            show={values.leverageEnabled}
+            slippage={values.slippage}
+            onSlippageChange={slippage => updateForm({ slippage })}
+            routes={routes}
+          />
+        </Stack>
       )}
       <LoanPresetSelector preset={preset} setPreset={setPreset} setRange={setRange}>
         <Collapse in={preset === LoanPreset.Custom}>

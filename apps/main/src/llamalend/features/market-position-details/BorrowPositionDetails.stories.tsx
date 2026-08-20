@@ -22,93 +22,107 @@ import { getTokenUsdRateKey } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { TestQueryProvider } from '@ui-kit/lib/queries/test-query.provider.test'
 import { MarketType } from '@ui-kit/types/market'
 import { constQ, type Range } from '@ui-kit/types/util'
-import { CRVUSD_ADDRESS } from '@ui-kit/utils'
+import { CRVUSD_ADDRESS, ReleaseChannel } from '@ui-kit/utils'
 import { BorrowPositionDetails } from './'
 
 const baseProps = {
-  params: { chainId: 1, marketId: 'one-way-market-7', userAddress: zeroAddress },
-  healthNotFull: 1.56,
-  healthFull: 96,
+  userBandsCollateralValue: 110.7,
+  aboveBandsCollateralValue: 12.3,
+  totalDebt: 100,
   loanDiscount: 9,
   liquidationDiscount: 6,
-  userPrices: [`0.47`, `0.69`] as Range<Decimal>,
-  leverage: 1,
-  totalDebt: 1,
-  collateral: 1.8,
-  collateralSymbol: 'sUSDe',
-  collateralUsdPrice: 0.999,
-  collateralAddress: '0x9d39a5de30e57443bff2a8307a4256c8797a3497' as Address,
+  userPrices: [`0.80`, `0.90`] as Range<Decimal>,
   borrow: 0,
-  borrowSymbol: 'crvUSD',
-  borrowUsdPrice: 1,
-  borrowAddress: CRVUSD_ADDRESS,
-  marketLiquidationBand: null as number | null,
-  oraclePrice: -5,
-  userBands: [69, 118] as Range<number>,
+  oraclePrice: 1,
+}
+
+const params = { chainId: 1, marketId: 'one-way-market-7', userAddress: zeroAddress }
+const userBands = [69, 118] as Range<number>
+const COLLATERAL_SYMBOL = 'sUSDe'
+const COLLATERAL_ADDRESS = '0x9d39a5de30e57443bff2a8307a4256c8797a3497' as Address
+const BORROW_SYMBOL = 'crvUSD'
+const BORROW_ADDRESS = CRVUSD_ADDRESS
+
+const getHealthValues = ({
+  aboveBandsCollateralValue,
+  liquidationDiscount,
+  totalDebt,
+  userBandsCollateralValue,
+}: Pick<
+  typeof baseProps,
+  'aboveBandsCollateralValue' | 'liquidationDiscount' | 'totalDebt' | 'userBandsCollateralValue'
+>) => {
+  const healthNotFull = ((userBandsCollateralValue * (1 - liquidationDiscount / 100)) / totalDebt - 1) * 100
+
+  return {
+    healthNotFull,
+    healthFull: healthNotFull + (aboveBandsCollateralValue / totalDebt) * 100,
+  }
 }
 
 const BorrowPositionDetailsStory = ({
-  healthNotFull,
-  healthFull,
+  userBandsCollateralValue,
+  aboveBandsCollateralValue,
+  totalDebt,
   loanDiscount,
   liquidationDiscount,
-  collateral,
-  collateralSymbol,
-  collateralAddress,
-  collateralUsdPrice,
   borrow,
-  borrowSymbol,
-  borrowUsdPrice,
-  borrowAddress,
   oraclePrice,
   userPrices,
-  userBands,
-  totalDebt,
-  marketLiquidationBand,
-  leverage,
-  params,
-}: typeof baseProps) => (
-  <MarketContext
-    value={{
-      ...createMarketContextValue({
-        chainId: params.chainId as IChainId,
-        blockchainId: 'ethereum',
-        marketQuery: constQ<MarketTemplate | undefined>(undefined),
-        apiMarket: constQ<LlamaMarket | undefined>(undefined),
-        marketType: MarketType.Mint,
-        userAddress: params.userAddress,
-        api: null,
-      }),
-      marketId: params.marketId,
-      tokens: {
-        collateralToken: { address: collateralAddress, symbol: collateralSymbol, decimals: DEFAULT_DECIMALS },
-        borrowToken: { symbol: borrowSymbol, address: borrowAddress, decimals: DEFAULT_DECIMALS },
-      },
-    }}
-  >
-    <TestQueryProvider
-      data={[
-        [getMarketOraclePriceBandKey(params), oraclePrice],
-        [getUserCurrentLeverageKey(params), `${leverage}`],
-        [getUserBandsKey(params), userBands],
-        [getUserPricesKey(params), userPrices],
-        [getUserHealthKey({ ...params, isFull: true }), `${healthFull}`],
-        [getUserHealthKey({ ...params, isFull: false }), `${healthNotFull}`],
-        [
-          getUserDiscountsKey(params),
-          { loanDiscount: `${loanDiscount}`, liquidationDiscount: `${liquidationDiscount}` },
-        ],
-        [getMarketOraclePriceKey(params), `${oraclePrice}`],
-        [getMarketLiquidationBandKey(params), marketLiquidationBand],
-        [getTokenUsdRateKey({ ...params, tokenAddress: collateralAddress }), collateralUsdPrice],
-        [getTokenUsdRateKey({ ...params, tokenAddress: borrowAddress }), borrowUsdPrice],
-        [getUserStateKey(params), { collateral: `${collateral}`, stablecoin: `${borrow}`, debt: `${totalDebt}` }],
-      ]}
+}: typeof baseProps) => {
+  const { healthFull, healthNotFull } = getHealthValues({
+    aboveBandsCollateralValue,
+    liquidationDiscount,
+    totalDebt,
+    userBandsCollateralValue,
+  })
+  const collateral = (userBandsCollateralValue + aboveBandsCollateralValue - borrow) / oraclePrice
+  const oraclePriceBand =
+    oraclePrice > +userPrices[1] ? userBands[0] - 3 : oraclePrice < +userPrices[0] ? userBands[1] + 1 : userBands[0]
+
+  return (
+    <MarketContext
+      value={{
+        ...createMarketContextValue({
+          chainId: params.chainId as IChainId,
+          blockchainId: 'ethereum',
+          marketQuery: constQ<MarketTemplate | undefined>(undefined),
+          apiMarket: constQ<LlamaMarket | undefined>(undefined),
+          marketType: MarketType.Mint,
+          userAddress: params.userAddress,
+          api: null,
+          releaseChannel: ReleaseChannel.Beta,
+        }),
+        marketId: params.marketId,
+        tokens: {
+          collateralToken: { address: COLLATERAL_ADDRESS, symbol: COLLATERAL_SYMBOL, decimals: DEFAULT_DECIMALS },
+          borrowToken: { symbol: BORROW_SYMBOL, address: BORROW_ADDRESS, decimals: DEFAULT_DECIMALS },
+        },
+      }}
     >
-      <BorrowPositionDetails />
-    </TestQueryProvider>
-  </MarketContext>
-)
+      <TestQueryProvider
+        data={[
+          [getMarketOraclePriceBandKey(params), oraclePriceBand],
+          [getUserCurrentLeverageKey(params), '1'],
+          [getUserBandsKey(params), userBands],
+          [getUserPricesKey(params), userPrices],
+          [getUserHealthKey({ ...params, isFull: true }), `${healthFull}`],
+          [getUserHealthKey({ ...params, isFull: false }), `${healthNotFull}`],
+          [
+            getUserDiscountsKey(params),
+            { loanDiscount: `${loanDiscount}`, liquidationDiscount: `${liquidationDiscount}` },
+          ],
+          [getMarketOraclePriceKey(params), `${oraclePrice}`],
+          [getMarketLiquidationBandKey(params), null],
+          [getTokenUsdRateKey({ ...params, tokenAddress: BORROW_ADDRESS }), 1],
+          [getUserStateKey(params), { collateral: `${collateral}`, stablecoin: `${borrow}`, debt: `${totalDebt}` }],
+        ]}
+      >
+        <BorrowPositionDetails />
+      </TestQueryProvider>
+    </MarketContext>
+  )
+}
 
 const meta: Meta<typeof BorrowPositionDetailsStory> = {
   title: 'Llamalend/BorrowPositionDetails',
@@ -124,6 +138,15 @@ const meta: Meta<typeof BorrowPositionDetailsStory> = {
       },
     },
   },
+  argTypes: {
+    userBandsCollateralValue: { control: { type: 'number', min: 0, step: 0.1 } },
+    aboveBandsCollateralValue: { control: { type: 'number', min: 0, step: 0.1 } },
+    totalDebt: { control: { type: 'number', min: 0.1, step: 0.1 } },
+    loanDiscount: { control: { type: 'number', min: 0, max: 100, step: 0.1 } },
+    liquidationDiscount: { control: { type: 'number', min: 0, max: 100, step: 0.1 } },
+    borrow: { control: { type: 'number', min: 0, step: 0.1 } },
+    oraclePrice: { control: { type: 'number', min: 0.01, step: 0.01 } },
+  },
   tags: ['autodocs'],
 }
 
@@ -133,57 +156,71 @@ type Story = StoryObj<typeof BorrowPositionDetailsStory>
 export const Healthy: Story = {
   args: baseProps,
   parameters: {
-    docs: { description: { story: 'Healthy position with high health. No alert banner is shown.' } },
+    docs: {
+      description: {
+        story: 'Position above the liquidation range with a positive above-band cushion.',
+      },
+    },
   },
 }
 
 export const SoftLiquidation: Story = {
-  args: { ...baseProps, healthFull: 30, borrow: 1.5 },
+  args: { ...baseProps, userBandsCollateralValue: 108.5, aboveBandsCollateralValue: 0, oraclePrice: 0.85, borrow: 15 },
   parameters: {
     docs: {
       description: {
-        story:
-          'Position in soft liquidation — collateral is being converted. ' +
-          'Warning alert: "Liquidation protection active". Health bar shows "Liquidation protection" label.',
+        story: 'Position in liquidation protection with collateral being converted.',
       },
     },
   },
 }
 
 export const FullyConverted: Story = {
-  args: { ...baseProps, healthFull: 0, borrow: 1.8, collateral: 0, userBands: [-10, -6] },
+  args: {
+    ...baseProps,
+    userBandsCollateralValue: 108,
+    aboveBandsCollateralValue: 0,
+    oraclePrice: 0.75,
+    borrow: 108,
+  },
   parameters: {
     docs: {
       description: {
-        story:
-          'Collateral fully converted to borrowed token. ' +
-          'Warning alert: "Fully converted to crvUSD". Collateral value shows 0 WETH.',
+        story: 'Collateral fully converted to crvUSD below the liquidation range.',
       },
     },
   },
 }
 
 export const IncompleteConversion: Story = {
-  args: { ...baseProps, healthFull: 3, borrow: 1.5, collateral: 0.3, userBands: [-10, -6] },
+  args: {
+    ...baseProps,
+    userBandsCollateralValue: 107.5,
+    aboveBandsCollateralValue: 0,
+    oraclePrice: 0.75,
+    borrow: 100,
+  },
   parameters: {
     docs: {
       description: {
-        story:
-          'Price below range but collateral not fully converted — position is undercollateralized. ' +
-          'Error alert: "Position at risk — incomplete conversion".',
+        story: 'Price below the range with collateral not fully converted.',
       },
     },
   },
 }
 
 export const HardLiquidation: Story = {
-  args: { ...baseProps, healthFull: 0, healthNotFull: -2, collateral: 0, borrow: 1 },
+  args: {
+    ...baseProps,
+    userBandsCollateralValue: 106.38,
+    aboveBandsCollateralValue: 0,
+    oraclePrice: 0.75,
+    borrow: 106.38,
+  },
   parameters: {
     docs: {
       description: {
-        story:
-          'Health has reached 0 — position can be liquidated at any time. ' +
-          'Error alert: "Position can be hard-liquidated". Health bar is fully red.',
+        story: 'Discounted recoverable value has fallen just below debt, so full liquidation can occur.',
       },
     },
   },

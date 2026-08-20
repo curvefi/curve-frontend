@@ -34,9 +34,14 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { recordValues } from '@primitives/objects.utils'
 import { getLib } from '@ui-kit/features/connect-wallet'
 import { MarketType } from '@ui-kit/types/market'
-import { waitFor } from '@ui-kit/utils/time.utils'
+import { waitFor } from '@ui-kit/utils'
 
 const testCases = recordValues(MarketType).map(marketType => oneLoanTestMarket(marketType))
+/**
+ * Use one API mode because LlamaLend price caches are shared across generated market instances. Mixing API modes
+ * lets earlier online markets warm the cache, making later offline assertions order-dependent.
+ * */
+const HAS_API = oneBool()
 
 /**
  * The lend markets have a memoize() around the userState function that we cannot control from the outside.
@@ -75,7 +80,6 @@ testCases.forEach(
     describe(label, () => {
       skipTestsAfterFailure()
 
-      const hasApi = oneBool() // tests must work with or without api access
       const debtAfterBorrowMore = new BigNumber(borrow).plus(borrowMore).toFixed() as Decimal
       const debtAfterRepay = new BigNumber(debtAfterBorrowMore).minus(repay).toFixed() as Decimal
 
@@ -120,7 +124,7 @@ testCases.forEach(
         fundErc20({ adminRpcUrl, amountWei: CREATE_LOAN_FUND_AMOUNT, tokenAddress, recipientAddresses: [address] })
         cy.log(`Funded some eth and collateral to ${address} in vnet ${vnet.slug}`)
 
-        if (!hasApi) blockUnmockedApis()
+        if (!HAS_API) blockUnmockedApis()
       })
 
       const LoanTestWrapper = ({ tab }: Pick<LlammalendTestCaseProps, 'tab'>) => (
@@ -140,7 +144,7 @@ testCases.forEach(
       it(`creates the loan`, () => {
         cy.mount(<LoanTestWrapper />)
         writeCreateLoanForm({ collateral, borrow, leverageEnabled, hasLeverage })
-        checkLoanDetailsLoaded({ leverageEnabled, hasApi })
+        checkLoanDetailsLoaded({ leverageEnabled, hasApi: HAS_API })
         submitCreateLoanForm().then(() => expect(onPricesUpdated).to.be.called)
         waitUntilLendMarketUpdated(id, borrow, marketType)
       })
@@ -153,7 +157,7 @@ testCases.forEach(
           expectedFutureDebt: debtAfterBorrowMore,
           leverageEnabled,
           borrowedSymbol,
-          hasApi,
+          hasApi: HAS_API,
         })
         submitBorrowMoreForm().then(() => expect(onPricesUpdated).to.be.called)
         touchBorrowMoreForm() // make sure the new debt is shown
@@ -168,13 +172,13 @@ testCases.forEach(
         checkRepayDetailsLoaded({
           debt: { current: debtAfterBorrowMore, future: debtAfterRepay, symbol: borrowedSymbol },
           leverageEnabled,
-          hasApi,
+          hasApi: HAS_API,
         })
         submitRepayForm().then(() => expect(onPricesUpdated).to.be.called)
         touchRepayLoanForm() // make sure the new debt is shown
         checkDebt(
           { current: debtAfterRepay, future: debtAfterRepay, symbol: borrowedSymbol },
-          { checkLoanToValue: hasApi },
+          { checkLoanToValue: HAS_API },
         )
       })
     })

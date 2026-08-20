@@ -11,7 +11,7 @@ import { TxInfoBar } from '@ui/TxInfoBar'
 import { scanTxPath } from '@ui/utils'
 import { useFormContext } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
-import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { REFRESH_INTERVAL } from '@ui-kit/utils'
 
 type TxInfo = {
   description: string

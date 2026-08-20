@@ -6,7 +6,13 @@ import { MarketType } from '@ui-kit/types/market'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { Chain } from '@ui-kit/utils/network'
 import { DEFAULT_DECIMALS } from '@ui-kit/utils/units'
-import { checkEstimatedTxCost, DECIMAL_RANGE_REGEX, getActionValue } from './action-info.helpers'
+import {
+  checkEstimatedTxCost,
+  DECIMAL_RANGE_REGEX,
+  DECIMAL_REGEX,
+  getActionInfo,
+  getActionValue,
+} from './action-info.helpers'
 
 const chainId = Chain.Ethereum
 
@@ -127,10 +133,10 @@ export function checkLoanDetailsLoaded({
 
   if (leverageEnabled) {
     getActionValue('borrow-price-impact').should('include', '%')
+    cy.get('[data-testid="loan-action-settings"] [data-testid="borrow-slippage"]').should('be.visible')
     getActionValue('borrow-slippage').should('include', '%')
   } else {
     cy.get('[data-testid="borrow-price-impact-value"]', LOAD_TIMEOUT).should('not.exist')
-    cy.get('[data-testid="borrow-slippage-value"]', LOAD_TIMEOUT).should('not.exist')
   }
 
   if (expectError) {
@@ -155,13 +161,14 @@ export const checkLeverageCheckbox = ({
   if (hasLeverage) {
     cy.get('[data-testid="leverage-checkbox"]').should('be.visible')
     cy.get('[data-testid="leverage-checkbox"] input').should(leverageEnabled ? 'be.checked' : 'not.be.checked')
+    if (!leverageEnabled) cy.get('[data-testid="loan-action-settings"]').should('not.be.visible')
   } else {
     cy.get('[data-testid="leverage-checkbox"]').should('not.exist')
   }
 }
 
 export const waitForRoutesLoaded = ({ submitButtonTestId }: { submitButtonTestId: string }) => {
-  cy.get('[data-testid="route-provider-accordion"]').click()
+  cy.get('[data-testid="loan-action-settings"] [data-testid="route-provider-accordion"]').click()
   cy.wait('@routerRoutes', LOAD_TIMEOUT)
   cy.get('[data-testid="refresh-button"]').should('be.enabled')
   cy.get(`[data-testid="${submitButtonTestId}"]`, LOAD_TIMEOUT).should('be.enabled')
@@ -192,10 +199,10 @@ export function writeCreateLoanForm({
   getCollateralInput().type(collateral)
   getCollateralInput().blur()
   getMaxBorrowBalance().should('be.visible')
-  getActionValue('borrow-health').should('equal', '∞')
+  getActionInfo('borrow-health').should('have.text', '-')
   getBorrowInput().type(borrow)
   getBorrowInput().blur()
-  getActionValue('borrow-health').should('not.equal', '∞')
+  getActionValue('borrow-health').should('match', DECIMAL_REGEX)
   if (leverageEnabled) toggleLeverage()
   checkLeverageCheckbox({ leverageEnabled, hasLeverage })
   if (waitForRoutes) waitForRoutesLoaded({ submitButtonTestId: 'create-loan-submit-button' })

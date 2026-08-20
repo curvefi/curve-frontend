@@ -3,7 +3,7 @@ import { mkdir, readdir, rmdir, unlink, writeFile } from 'fs/promises'
 import { dirname, join } from 'path'
 import { stripVTControlCharacters } from 'util'
 
-const { BRANCH, WORKFLOW, RUN_ID, REPOSITORY = 'curvefi/curve-frontend' } = process.env
+const { ARTIFACT_BRANCH, BRANCH, WORKFLOW, RUN_ID, REPOSITORY = 'curvefi/curve-frontend' } = process.env
 const DEST_DIR = 'artifacts'
 const MAX_LOG_SIZE = 100 * 1024 * 1024
 
@@ -152,7 +152,7 @@ async function cleanupSuccessfulTestVideos(dir: string): Promise<void> {
 }
 
 /**
- * Orchestrate download + extraction of the latest workflow artifacts for the current branch.
+ * Orchestrate download + extraction of workflow artifacts.
  */
 async function downloadLatestArtifacts({ cleanup }: { cleanup: boolean }): Promise<void> {
   if (!hasCommand('gh')) {
@@ -163,16 +163,17 @@ async function downloadLatestArtifacts({ cleanup }: { cleanup: boolean }): Promi
   process.chdir(repoRoot)
 
   const branch = BRANCH?.trim() || run('git', ['rev-parse', '--abbrev-ref', 'HEAD'])
+  const artifactBranch = ARTIFACT_BRANCH?.trim() || branch
   const workflow = WORKFLOW?.trim() || 'ci'
   const runId = RUN_ID || findLatestRunId(branch, workflow)
   if (!runId) throw new Error(`No ${workflow} runs for branch '${branch}'`)
 
-  const path = join(DEST_DIR, branch.replace(/\//g, '-') || 'current', runId)
+  const path = join(DEST_DIR, artifactBranch.replace(/\//g, '-') || 'current', runId)
   const destination = join(repoRoot, path)
   await mkdir(destination, { recursive: true })
 
   console.info(
-    `Downloading failure evidence for branch '${branch}' (workflow: ${workflow}, run: ${runId}) into '${path}'...`,
+    `Downloading failure evidence for branch '${branch}' (artifact branch: ${artifactBranch}, workflow: ${workflow}, run: ${runId}) into '${path}'...`,
   )
   await downloadFailedJobLogs(runId, destination)
 
@@ -194,7 +195,7 @@ async function downloadLatestArtifacts({ cleanup }: { cleanup: boolean }): Promi
  *  node --experimental-strip-types scripts/download-artifacts.ts
  *
  * Custom usage:
- *  cd tests && BRANCH=main WORKFLOW=rpc-tests \
+ *  cd tests && BRANCH=main ARTIFACT_BRANCH=fix/flaky-tests-1234abcd WORKFLOW=rpc-tests \
  *    node --experimental-strip-types scripts/download-artifacts.ts --skip-cleanup
  */
 downloadLatestArtifacts({ cleanup: !process.argv.includes('--skip-cleanup') }).catch(error => {

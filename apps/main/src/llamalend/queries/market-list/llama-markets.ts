@@ -164,7 +164,7 @@ const convertLendingVault = (
   const hasBorrowed = userBorrows.has(controller)
   const totalExtraRewardApy =
     // sumBy returns 0 for empty arrays
-    extraRewardApr.length ? sumBy(extraRewardApr, reward => aprToApy(reward.rate)!) : null
+    extraRewardApr.length ? sumBy(extraRewardApr, reward => aprToApy(reward.rate)) : null
   const rewards = [...(campaigns[vault.toLowerCase()] ?? []), ...(campaigns[controller.toLowerCase()] ?? [])]
   const borrowCampaignsApr = sumCampaignsApr(rewards.filter(r => r.action === 'borrow'))
   const borrowCampaignsApy = sumCampaignsApy(rewards.filter(r => r.action === 'borrow'))

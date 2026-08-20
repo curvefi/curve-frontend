@@ -8,7 +8,8 @@ import { useFacetedMaxMinValue } from '@ui-kit/shared/ui/DataTable/hooks/useFace
 import { useFacetedSortedOptions } from '@ui-kit/shared/ui/DataTable/hooks/useFacetedSortedOptions'
 import { MarketType, MarketVersion } from '@ui-kit/types/market'
 import { type QueryProp } from '@ui-kit/types/util'
-import { type AssetDetails, LlamaMarket } from '../../../../queries/market-list/llama-markets'
+import type { LlamaMarketRow } from '../../../../queries/market-list/llama-market-stats'
+import type { AssetDetails, LlamaMarket } from '../../../../queries/market-list/llama-markets'
 import { MarketColumnId } from '../../columns'
 
 const ALL_FILTER_VALUE = 'all' as const
@@ -40,7 +41,7 @@ const MARKET_VERSION_LABELS: Record<MarketVersionFilterValue, string> = {
 
 export type MarketsFiltersProps = FilterProps<MarketColumnId> & {
   marketsQuery: QueryProp<LlamaMarket[]>
-  table: TanstackTable<LlamaMarket>
+  table: TanstackTable<LlamaMarketRow>
 }
 
 export const useMarketsFilters = ({ marketsQuery, table, ...filterProps }: MarketsFiltersProps) => {

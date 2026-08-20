@@ -2,6 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { useCallback, useEffect, useRef } from 'react'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import { resetCreateLoanExpectedCollateral } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
+import type { CreateLoanMaxReceiveParams } from '@/llamalend/queries/create-loan/create-loan-max-receive.query'
 import { useMarketMaxLeverage } from '@/llamalend/queries/market'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -10,7 +11,7 @@ import { useFormSync, useOnChangeCallback } from '@ui-kit/features/forms'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { decimal } from '@ui-kit/utils'
 import { useCreateLoanMaxReceive } from '../../../queries/create-loan/create-loan-max-receive.query'
-import type { CreateLoanForm, CreateLoanFormQueryParams } from '../types'
+import type { CreateLoanForm } from '../types'
 
 /**
  * Hook to fetch and set the maximum token values for collateral and debt in a create loan form.
@@ -27,7 +28,7 @@ export function useMaxTokenValues({
   market: MarketTemplate | undefined
   marketId: string | undefined
   collateralTokenAddress: Address | undefined
-  params: CreateLoanFormQueryParams & { userAddress?: Address }
+  params: CreateLoanMaxReceiveParams & { userAddress?: Address }
   form: UseFormReturn<CreateLoanForm>
 }) {
   const { update: updateForm, getValues } = form

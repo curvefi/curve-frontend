@@ -28,6 +28,7 @@ export const buildCurveSolverRouteResponse = async (
     amountIn: [amountIn] = [],
     amountOut: [amountOut] = [],
     userAddress,
+    zapAddress,
   } = query // todo: use slippage
 
   if (!API_URLS[chainId] || amountIn == null) {
@@ -35,13 +36,15 @@ export const buildCurveSolverRouteResponse = async (
     return []
   }
 
+  // Leveraged swaps must return collateral to the zap so it can complete the position
+  const receiver = zapAddress ?? userAddress
   const params: CurveSolverQuoteRequest = {
     input_token: tokenIn,
     output_token: tokenOut,
     amount_in: amountIn,
     blacklist,
     exact: true,
-    ...(userAddress && { receiver: userAddress }),
+    ...(receiver && { receiver }),
     min_out: amountOut ?? '0', // todo: use slippage?
   }
   const { calldata, debug, expected_out, gas_estimate, router_address } = await fetchJson<CurveSolverQuoteResponse>(

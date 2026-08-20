@@ -1,12 +1,12 @@
-import { TooltipItem, TooltipItems, TooltipWrapper } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import { Box, Stack, Typography } from '@mui/material'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { formatChartAxisNumber } from '@ui-kit/shared/ui/Chart'
 import { LegendBox } from '@ui-kit/shared/ui/Chart/LegendSet'
+import { TooltipItem, TooltipItems, TooltipWrapper } from '@ui-kit/shared/ui/TooltipComponents'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { decimalGreaterThan, decimalPercent, formatNumber, ZERO } from '@ui-kit/utils'
+import { decimalGreaterThan, decimalPercent, formatNumber, formatToken, ZERO } from '@ui-kit/utils'
 import { useBandsChartPalette } from './hooks/useBandsChartPalette'
 import type { BandsChartToken, ChartDataPoint } from './types'
 
@@ -19,29 +19,16 @@ type TooltipContentProps = {
 }
 
 const isPositiveDecimal = (value: Decimal | undefined): boolean => value != null && decimalGreaterThan(value, ZERO)
-
 const calculateBandShare = (part: Decimal | undefined, total: Decimal | undefined) =>
   formatNumber(
     maybes([part, total], (part, total) => decimalPercent(part, total)),
     'percent.rate',
   )
 
-const formatAbbreviatedNumber = (value: Decimal | undefined): string =>
-  formatNumber(value, { abbreviate: true, fallback: '?' })
-
-const formatBorrowTokenValue = (value: Decimal | undefined, borrowTokenSymbol: string | undefined): string =>
-  formatNumber(value, {
-    abbreviate: true,
-    fallback: '?',
-    unit: { symbol: borrowTokenSymbol ? ` ${borrowTokenSymbol}` : '', position: 'suffix' },
-  })
-
 export const TooltipContent = ({ data, collateralToken, borrowToken }: TooltipContentProps) => {
   const palette = useBandsChartPalette()
   const hasMarketData = isPositiveDecimal(data.bandTotalValue)
   const hasUserData = isPositiveDecimal(data.userBandTotalValue)
-  const borrowTokenSuffix = borrowToken?.symbol ? ` ${borrowToken.symbol}` : ''
-  const bandRange = `${formatChartAxisNumber(data.p_down, { abbreviateFrom: false })} - ${formatChartAxisNumber(data.p_up, { abbreviateFrom: false })}${borrowTokenSuffix}`
 
   return (
     <Box sx={{ padding: Spacing.md, backgroundColor: t => t.design.Layer[1].Fill }} onClick={e => e.stopPropagation()}>
@@ -66,39 +53,45 @@ export const TooltipContent = ({ data, collateralToken, borrowToken }: TooltipCo
                 title={collateralToken?.symbol}
                 titleAdornment={<LegendBox outline="none" fill={palette.userCollateralShareColor} />}
               >
-                {formatAbbreviatedNumber(data.userBandCollateralAmount)}
+                {formatNumber(data.userBandCollateralAmount, 'token.amount')}
               </TooltipItem>
               <TooltipItem
                 variant="subItem"
                 title={borrowToken?.symbol}
                 titleAdornment={<LegendBox outline="none" fill={palette.userBorrowedShareColor} />}
               >
-                {formatAbbreviatedNumber(data.userBandBorrowedAmount)}
+                {formatNumber(data.userBandBorrowedAmount, 'token.amount')}
               </TooltipItem>
             </TooltipItems>
             <TooltipItem variant="primary" title={t`Your band liquidity`}>
-              {formatBorrowTokenValue(data.userBandTotalValue, borrowToken?.symbol)}
+              {formatToken(data.userBandTotalValue, borrowToken?.symbol)}
             </TooltipItem>
           </Stack>
         )}
         {hasMarketData && (
           <>
             <TooltipItems secondary>
-              <TooltipItem title={t`Band range`} sx={{ marginBottom: Spacing.sm }}>
-                {bandRange}
+              <TooltipItem title={t`Band range`}>
+                {maybes([collateralToken?.symbol, borrowToken?.symbol], (x, y) => `${x} / ${y}`)}
               </TooltipItem>
-              <TooltipItem
-                title={t`Band balances`}
-              >{`${calculateBandShare(data.bandCollateralValue, data.bandTotalValue)} / ${calculateBandShare(data.bandBorrowedAmount, data.bandTotalValue)}`}</TooltipItem>
+              <TooltipItem variant="subItem" title={t`Min`}>
+                {formatChartAxisNumber(data.p_down, { abbreviateFrom: false })}
+              </TooltipItem>
+              <TooltipItem variant="subItem" title={t`Max`}>
+                {formatChartAxisNumber(data.p_up, { abbreviateFrom: false })}
+              </TooltipItem>
+              <TooltipItem title={t`Band balances`} sx={{ marginTop: Spacing.sm }}>
+                {`${calculateBandShare(data.bandCollateralValue, data.bandTotalValue)} / ${calculateBandShare(data.bandBorrowedAmount, data.bandTotalValue)}`}
+              </TooltipItem>
               <TooltipItem variant="subItem" title={collateralToken?.symbol}>
-                {formatAbbreviatedNumber(data.bandCollateralAmount)}
+                {formatNumber(data.bandCollateralAmount, 'token.amount')}
               </TooltipItem>
               <TooltipItem variant="subItem" title={borrowToken?.symbol}>
-                {formatAbbreviatedNumber(data.bandBorrowedAmount)}
+                {formatNumber(data.bandBorrowedAmount, 'token.amount')}
               </TooltipItem>
             </TooltipItems>
             <TooltipItem variant="primary" title={t`Band liquidity`}>
-              {formatBorrowTokenValue(data.bandTotalValue, borrowToken?.symbol)}
+              {formatToken(data.bandTotalValue, borrowToken?.symbol)}
             </TooltipItem>
           </>
         )}

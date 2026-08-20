@@ -4,19 +4,29 @@ import { maybes } from '@primitives/objects.utils'
 import { combineQueries, combineQueryState } from '@ui-kit/lib'
 import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } from '@ui-kit/lib/model'
 import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-validation'
+import type { QueryData } from '@ui-kit/lib/queries/types'
 import { createValidationSuite } from '@ui-kit/lib/validation'
+import type { QueryProp } from '@ui-kit/types/util'
 import { decimalDiv, decimalGreaterThan, decimalMinus, decimalPercent, decimalSum, ZERO } from '@ui-kit/utils'
 import { validateIsFull } from '../validation/borrow-fields.validation'
 import { useUserDiscounts } from './user-discounts.query'
 
 type UserHealthParams = UserMarketParams & { isFull: boolean }
 type UserHealthQuery = UserMarketQuery & { isFull: boolean }
-
-/**
- * Full and non-full health may be read from different blocks.
- * Treat tiny subtraction differences as zero when the position is at or below the upper band.
- */
-const HEALTH_DUST_THRESHOLD: Decimal = '0.0001'
+type UserHealthValues = {
+  health: Decimal
+  healthFactor: Decimal
+  healthNotFull: Decimal
+  liquidationBuffer: Decimal | undefined
+  debug?: {
+    healthFull: Decimal
+    healthNotFull: Decimal
+    healthDelta: Decimal
+    loanDiscount: Decimal
+    liquidationDiscount: Decimal
+    discountGap: Decimal
+  }
+}
 
 /**
  * Query to get the user's health in a market.
@@ -53,10 +63,12 @@ export const useUserHealthValues = (params: UserMarketParams) => {
   return {
     data: maybes(
       [healthFull.data, healthNotFull.data, discounts.data],
-      (full, notFull, { loanDiscount, liquidationDiscount }) => {
+      (full, notFull, { loanDiscount, liquidationDiscount }): UserHealthValues => {
         const discountGap = decimalMinus(loanDiscount, liquidationDiscount)
         const healthDelta = decimalMinus(full, notFull)
-        const health = decimalGreaterThan(healthDelta, HEALTH_DUST_THRESHOLD) ? healthDelta : ZERO
+        // Clamping at zero because separate RPC calls can resolve from different blocks and return a negative delta
+        // which shouldn't be possible
+        const health = decimalGreaterThan(healthDelta, ZERO) ? healthDelta : ZERO
         return {
           /** Percentage distance from entering liquidation protection: the above-band cushion, clamped at zero. */
           health,
@@ -66,6 +78,8 @@ export const useUserHealthValues = (params: UserMarketParams) => {
            * The +1 is equivalent to adding debt / debt, similar to how other lending platforms display health.
            */
           healthFactor: decimalSum('1', decimalDiv(health, '100')),
+          /** Raw band-valued margin before full liquidation, as a percentage of debt. */
+          healthNotFull: notFull,
           /** Distance from liquidation as a percentage of the liquidation-discount gap. */
           liquidationBuffer: decimalGreaterThan(discountGap, ZERO) ? decimalPercent(notFull, discountGap) : undefined,
           /** Inputs and intermediate values exposed for developer diagnostics. */
@@ -83,3 +97,5 @@ export const useUserHealthValues = (params: UserMarketParams) => {
     ...combineQueryState(healthFull, healthNotFull, discounts),
   }
 }
+
+export type HealthQuery = QueryProp<QueryData<typeof useUserHealthValues>>

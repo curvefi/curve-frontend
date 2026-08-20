@@ -1,11 +1,10 @@
 import { orderBy } from 'lodash'
 import { POOL_TYPE_FILTERS } from '@/dex/features/pool-list/filters/utils'
-import { POOL_SORT_BY } from '@/dex/features/pool-list/hooks/usePoolsSorting'
 import type { SortDirection, V2PoolSortField, PoolType } from '@curvefi/prices-api/pools'
 import { oneAddress, oneFloat } from '@cy/support/generators'
 import { oneToken } from '@cy/support/helpers/tokens'
 import type { Address } from '@primitives/address.utils'
-import { range, recordValues } from '@primitives/objects.utils'
+import { range } from '@primitives/objects.utils'
 import { Chain, requireBlockchainId } from '@ui-kit/utils/network'
 
 const MOCK_CHAIN_IDS = [Chain.Ethereum, Chain.Arbitrum] as const
@@ -15,6 +14,7 @@ type MockChainId = (typeof MOCK_CHAIN_IDS)[number]
 const POOL_COUNT = 500
 const MAX_GENERATED_POOL_VOLUME_USD = 1_000_000_000
 const POOL_USD_STEP = 1_000_000
+const POOL_CREATION_TIMESTAMP = 1_700_000_000
 const onePriorityPoolUsdValue = () =>
   oneFloat(MAX_GENERATED_POOL_VOLUME_USD + POOL_USD_STEP, MAX_GENERATED_POOL_VOLUME_USD * 2)
 
@@ -77,6 +77,7 @@ const createPool = ({
   chain_id: Number(chainId),
   name: name ?? `Mock Pool ${chainId}-${index.toString().padStart(3, '0')}`,
   address: address ?? oneAddress(),
+  creation_date: POOL_CREATION_TIMESTAMP + index,
   pool_type: poolType ?? POOL_TYPES[index % POOL_TYPES.length],
   is_metapool: false,
   base_pool: null,
@@ -86,6 +87,7 @@ const createPool = ({
   liquidity_volume_24h: 10_000 + index,
   liquidity_fee_24h: 100 + index,
   coins: createCoins(chainId),
+  tradeable_coins: createCoins(chainId),
   base_daily_apr: (index % 50) / 1_000,
   base_weekly_apr: (index % 50) / 900,
   crv_apr: null,
@@ -174,11 +176,7 @@ const MOCK_POOLS = MOCK_CHAIN_IDS.flatMap(createMockPools)
 
 const parseNumberParam = (value: string | null, fallback: number) => Number(value ?? fallback)
 
-const isOneOf = <T extends string>(values: readonly T[], value: string | null): value is T =>
-  value != null && (values as readonly string[]).includes(value)
-
-const POOL_SORT_FIELDS = recordValues(POOL_SORT_BY)
-const parseSortBy = (value: string | null): V2PoolSortField => (isOneOf(POOL_SORT_FIELDS, value) ? value : 'tvl')
+const parseSortBy = (value: string | null) => (value ?? 'tvl') as V2PoolSortField
 
 const parsePoolListQuery = (url: URL): PoolListQuery => ({
   chainId: Number(url.searchParams.get('chain_id')),
@@ -193,7 +191,12 @@ const parsePoolListQuery = (url: URL): PoolListQuery => ({
 const getSortValue = (pool: MockPool, sortBy: V2PoolSortField) =>
   ({
     name: pool.name.toLowerCase(),
+    aggregate_apr: pool.base_daily_apr,
     base_daily_apr: pool.base_daily_apr,
+    base_weekly_apr: pool.base_weekly_apr,
+    crv_apr: pool.crv_apr,
+    rewards_apr: 0,
+    creation_date: pool.creation_date,
     volume: pool.trading_volume_24h,
     tvl: pool.tvl_usd,
   })[sortBy]

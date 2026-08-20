@@ -80,7 +80,7 @@ export const toNumberOrNull = (value: number | string | null | undefined) =>
 type OnChainSupplyRewardApr = { apy: number; symbol: string; tokenAddress: string }
 
 export const sumOnChainExtraIncentivesApy = (rewardsApr: OnChainSupplyRewardApr[] | undefined) =>
-  rewardsApr && rewardsApr.length > 0 ? sumBy(rewardsApr, reward => aprToApy(reward.apy)!) : null
+  rewardsApr && rewardsApr.length > 0 ? sumBy(rewardsApr, reward => aprToApy(reward.apy)) : null
 
 export const sumCampaignsApr = (campaigns: CampaignRewards[] | undefined) =>
   campaigns && campaigns.length > 0
@@ -94,7 +94,7 @@ export const sumCampaignsApy = (campaigns: CampaignRewards[] | undefined) =>
   campaigns && campaigns.length > 0
     ? sumBy(
         campaigns.filter(c => c.reward?.type === 'apr'),
-        c => aprToApy(c.reward?.value ?? 0)!,
+        c => aprToApy(c.reward?.value ?? 0),
       )
     : null
 
@@ -184,7 +184,7 @@ export const getSupplyApyAverageMetrics = ({
     crvMinBoostApr: ({ lendAprCrv0Boost }) => lendAprCrv0Boost * 100,
     crvMinBoostApy: ({ lendAprCrv0Boost }) => aprToApy(lendAprCrv0Boost * 100),
     crvMaxBoostApy: ({ lendAprCrvMaxBoost }) => aprToApy(lendAprCrvMaxBoost * 100),
-    extraIncentivesApy: ({ extraRewardApr }) => sumBy(extraRewardApr, reward => aprToApy(reward.rate)!),
+    extraIncentivesApy: ({ extraRewardApr }) => sumBy(extraRewardApr, reward => aprToApy(reward.rate)),
   })
 
   const averageTotalWithoutBoost = sumRates(

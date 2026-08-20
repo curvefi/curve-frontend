@@ -99,11 +99,10 @@ export const TokenIcon = ({
         src={getTokenImageUrl(blockchainId, address)}
         loading="lazy"
         sx={applySxProps(
+          { display: 'block' }, // Not sure why, but without this the image is sometimes not properly centered and/or may have extra space below it
           theme => ({ borderRadius: '50%', ...getTokenIconSizeSx(theme, size) }),
           sx,
-          disabled && {
-            filter: 'saturate(0)',
-          },
+          disabled && { filter: 'saturate(0)' },
         )}
       />
     </Tooltip>

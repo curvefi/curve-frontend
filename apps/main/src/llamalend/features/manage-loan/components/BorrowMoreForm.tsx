@@ -3,7 +3,9 @@ import { LEVERAGE } from '@/llamalend/constants'
 import { BorrowMoreLoanInfoList } from '@/llamalend/features/borrow/components/BorrowMoreLoanInfoList'
 import { LeverageInput } from '@/llamalend/features/borrow/components/LeverageInput'
 import type { UserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import { getMaxBorrowAmount } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
+import { LoanActionSettings } from '@/llamalend/widgets/action-card/LoanActionSettings'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import { LowSolvencyActionModal } from '@/llamalend/widgets/action-card/LowSolvencyActionModal'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -68,6 +70,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     (event: ChangeEvent<HTMLInputElement>) => updateForm({ leverageEnabled: event.target.checked, routeId: undefined }),
     [updateForm],
   )
+  const getMaxDebt = (maxDebt?: Decimal) => getMaxBorrowAmount(maxDebt, values.leverageEnabled)
 
   return (
     <Form
@@ -81,9 +84,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           values={values}
           tokens={{ collateralToken, borrowToken }}
           networks={networks}
-          routes={routes}
           marketType={marketType}
-          onSlippageChange={value => updateForm({ slippage: value })}
           leverageEnabled={values.leverageEnabled}
           priceImpact={priceImpact}
         />
@@ -119,7 +120,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           blockchainId={network.id}
           name="debt"
           form={form}
-          max={{ ...max.debt, fieldName: max.debt.field }}
+          max={{ ...max.debt, fieldName: max.debt.field, onMax: getMaxDebt }}
           testId="borrow-more-input-debt"
           network={network}
           hideBalance
@@ -130,18 +131,26 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
               tooltip={t`Max available to borrow`}
               symbol={borrowToken?.symbol}
               balance={max.debt}
-              onClick={() => updateForm({ debt: max.debt.data })}
+              onClick={() => updateForm({ debt: getMaxDebt(max.debt.data) })}
             />
           }
         />
       </Stack>
       {isLeverageSupported && (
-        <LeverageInput
-          checked={values.leverageEnabled}
-          leverage={leverage}
-          onToggle={onLeverageToggle}
-          maxLeverage={max.maxLeverage.data}
-        />
+        <Stack>
+          <LeverageInput
+            checked={values.leverageEnabled}
+            leverage={leverage}
+            onToggle={onLeverageToggle}
+            maxLeverage={max.maxLeverage.data}
+          />
+          <LoanActionSettings
+            show={values.leverageEnabled === true}
+            slippage={values.slippage}
+            onSlippageChange={slippage => updateForm({ slippage })}
+            routes={routes}
+          />
+        </Stack>
       )}
       <HighPriceImpactAlert
         priceImpact={priceImpact}

@@ -1,6 +1,7 @@
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { mockedWagmiConfig } from '@cy/support/helpers/llamalend/test-wagmi.helpers'
 import { allViewports } from '@cy/support/ui'
+import type { RouteProvider } from '@primitives/router.utils'
 import type { BaseConfig } from '@ui/utils'
 import type { RouteResponse } from '@ui-kit/entities/router-api'
 import { lightTheme } from '@ui-kit/themes'
@@ -45,12 +46,14 @@ const mountRouteProviderCard = ({
   },
   isLoading = false,
   usdRate = constQ(1),
+  router = 'curve',
 }: {
   isSelected?: boolean
   enabled?: boolean
   route?: RouteResponse | null
   isLoading?: boolean
   usdRate?: QueryProp<number>
+  router?: RouteProvider
 } = {}) => {
   cy.mount(
     <ComponentTestWrapper config={mockedWagmiConfig}>
@@ -65,7 +68,7 @@ const mountRouteProviderCard = ({
         tokenOut={{ symbol: 'crvUSD', decimals: 18, usdRate }}
         isSelected={isSelected}
         bestOutputAmount="69.4241"
-        router="curve"
+        router={router}
         onSelect={() => undefined}
       />
     </ComponentTestWrapper>,
