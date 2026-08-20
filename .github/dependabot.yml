@@ -7,7 +7,7 @@ updates:
       - /apps/main/
       - /packages/curve-ui-kit/
       - /packages/prices-api/
-      - /packages/ui/
+      - /packages/legacy-ui/
       - /packages/external-rewards/
       - /tests/
     schedule:
