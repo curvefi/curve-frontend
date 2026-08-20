@@ -14,15 +14,16 @@ import type { BadDebt } from '@curvefi/prices-api/liquidations'
 import { type Address, Hex } from '@primitives/address.utils'
 import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { type AllOrNone, assert, DEFAULT_DECIMALS, maybe, maybes, notFalsy } from '@primitives/objects.utils'
+import { RouteProviders } from '@primitives/router.utils'
 import { getLib, requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
 import { combineQueries } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { MetricProps } from '@ui-kit/shared/ui/Metric'
 import { MarketType, MarketVersion } from '@ui-kit/types/market'
 import { QueryProp, toQuery } from '@ui-kit/types/util'
-import { CRVUSD, decimal, decimalMinus, decimalMultiply, decimalSum, formatToken } from '@ui-kit/utils'
+import { CRVUSD, decimal, decimalMinus, decimalMultiply, decimalSum, formatToken, ReleaseChannel } from '@ui-kit/utils'
 import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
-import { MARKET_LEVERAGE, SOLVENCY_THRESHOLDS } from './markets.constants'
+import { MARKETS_LEVERAGE_CONFIG, SOLVENCY_THRESHOLDS } from './markets.constants'
 
 /**
  * Gets a Llama market (either a mint or lend market) by its ID.
@@ -40,8 +41,21 @@ export const tryGetMarket = (marketId: MarketTemplate | string | null | undefine
 
 /** Returns the market-specific slippage, falling back to the default leverage slippage. */
 export const getMarketLeverageSlippage = (chainId: number, controllerAddress: Address | undefined) =>
-  (controllerAddress && MARKET_LEVERAGE[chainId]?.[getAddress(controllerAddress)]?.slippage) ??
+  (controllerAddress && MARKETS_LEVERAGE_CONFIG[chainId]?.[getAddress(controllerAddress)]?.slippage) ??
   SLIPPAGE.leverage.default
+
+/**
+ * Resolves leverage providers from the market whitelist: approved markets get every provider on Beta and only their
+ * explicitly tested providers on Stable/Legacy, while unlisted markets remain disabled.
+ */
+export const getMarketLeverageProviders = (
+  chainId: number,
+  controllerAddress: Address | undefined,
+  releaseChannel: ReleaseChannel,
+) => {
+  const config = controllerAddress && MARKETS_LEVERAGE_CONFIG[chainId]?.[getAddress(controllerAddress)]
+  return maybe(config, config => (releaseChannel === ReleaseChannel.Beta ? RouteProviders : config.providers))
+}
 
 /**
  * Checks if a market supports leverage or not. A market supports leverage if:
@@ -60,8 +74,7 @@ export const hasLeverage = <T extends MarketTemplate | undefined>(market: T) =>
  * Note: Some older Mint markets (marketId < 6) support leverage operations (open/close positions)
  * but cannot calculate the leverage multiplier value.
  */
-export const hasLeverageValue = <T extends MarketTemplate | null | undefined>(market: T) =>
-  maybe(market, market => hasZapV2(market))
+export const hasLeverageValue = <T extends MarketTemplate | null | undefined>(market: T) => hasZapV2(market)
 
 export const hasLegacyMintLeverage = (market: MarketTemplate) =>
   market instanceof MintMarketTemplate && market.index == null && market.leverageZap !== zeroAddress
@@ -87,15 +100,15 @@ export const isPositionLeveraged = (leverage: Amount | undefined | null) =>
 export const canRepayFromStateCollateral = <T extends MarketTemplate | undefined>(market: T) =>
   maybe(market, market => (market instanceof MintMarketTemplate ? hasDeleverage(market) : hasLeverage(market)))
 
-export const canRepayFromUserCollateral = <T extends MarketTemplate | undefined>(market: T) =>
-  maybe(market, market => hasZapV2(market))
+export const canRepayFromUserCollateral = <T extends MarketTemplate | undefined>(market: T) => hasZapV2(market)
 
 export const canLeverageUserBorrowed = <T extends MarketTemplate | undefined>(market: T) =>
   maybe(market, market => hasLegacyMintLeverage(market))
 
 export const hasVault = (market: MarketTemplate) => market instanceof LendMarketTemplate && 'vault' in market
 
-export const hasZapV2 = (market: MarketTemplate) => market.leverageZapV2.hasLeverage()
+export const hasZapV2 = <T extends MarketTemplate | null | undefined>(market: T) =>
+  maybe(market, market => market.leverageZapV2.hasLeverage())
 
 export const isRouterRequired = (
   type: 'zapV2' | 'V0' | 'deleverage' | 'unleveragedMint' | 'unleveragedLend' | 'unleveraged',

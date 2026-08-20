@@ -17,7 +17,7 @@ export const LoanActionSettings = ({
   routes,
   show = true,
 }: {
-  slippage: Decimal | undefined
+  slippage?: Decimal
   onSlippageChange: (newSlippage: Decimal) => void
   routes?: MarketRoutes
   show?: boolean

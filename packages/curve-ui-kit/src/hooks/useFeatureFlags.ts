@@ -18,14 +18,6 @@ const useStableChannel = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const useAlphaChannel = () => useBetaChannel() && defaultReleaseChannel === ReleaseChannel.Beta
 
-export const use0xRouter = useBetaChannel
-
-/** Curve route providers for LlamaLend leverage */
-export const useCurveRouter = useBetaChannel
-export const useCurveSolverRouter = useBetaChannel
-export const isCurveRouterEnabled = isBetaChannel
-export const isCurveSolverRouterEnabled = isBetaChannel
-
 /** Reset position form for LlamaLend soft liquidation */
 export const useMarketResetPosition = useStableChannel
 
