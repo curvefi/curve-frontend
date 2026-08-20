@@ -1,5 +1,4 @@
 import { Chain as ChainName, LEND_CHAINS } from '@curvefi/prices-api'
-import { paginate } from '@curvefi/prices-api/paginate'
 import {
   getAllMarkets,
   getUserLendingPositions,
@@ -10,6 +9,7 @@ import {
   USER_MARKETS_FIRST_PAGE,
   type UserMarketStats,
 } from '@curvefi/prices-api/llamalend'
+import { paginate } from '@curvefi/prices-api/paginate'
 import type { Address } from '@primitives/address.utils'
 import { fromEntries } from '@primitives/objects.utils'
 import { type FieldsOf } from '@ui-kit/lib'

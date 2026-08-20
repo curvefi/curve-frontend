@@ -1,5 +1,4 @@
 import { Chain, MINT_CHAINS } from '@curvefi/prices-api'
-import { paginate } from '@curvefi/prices-api/paginate'
 import {
   getAllMarkets,
   getUserMarkets,
@@ -8,6 +7,7 @@ import {
   USER_MARKETS_DEFAULT_PER_PAGE,
   USER_MARKETS_FIRST_PAGE,
 } from '@curvefi/prices-api/crvusd'
+import { paginate } from '@curvefi/prices-api/paginate'
 import type { Address } from '@primitives/address.utils'
 import { recordEntries } from '@primitives/objects.utils'
 import { type FieldsOf } from '@ui-kit/lib'
