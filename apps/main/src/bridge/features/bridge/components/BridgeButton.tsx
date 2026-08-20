@@ -5,7 +5,6 @@ import { t } from '@ui-kit/lib/i18n'
 export type BridgeButtonProps = {
   disableBridge: boolean
   disableChangeNetwork: boolean
-  disableConnect?: boolean
   isPending: boolean | undefined
   isApproved: boolean | undefined
   isConnected: boolean
@@ -18,7 +17,6 @@ export type BridgeButtonProps = {
 export const BridgeButton = ({
   disableBridge,
   disableChangeNetwork,
-  disableConnect,
   isPending,
   isApproved,
   isConnected,
@@ -50,5 +48,5 @@ export const BridgeButton = ({
       </Button>
     )
   ) : (
-    <ConnectWalletButton disabled={disableConnect} />
+    <ConnectWalletButton />
   )

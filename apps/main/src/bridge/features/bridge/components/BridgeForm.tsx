@@ -11,6 +11,7 @@ import { q } from '@ui-kit/types/util'
 import { Chain, decimal } from '@ui-kit/utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
+import { NATIVE_BRIDGES } from '../../bridges/bridges'
 import type { BridgeFormParams } from '../BridgeFormTabs'
 import type { BridgeAlert } from '../hooks/useBridgeAlert'
 import { useBridgeForm } from '../hooks/useBridgeForm'
@@ -58,6 +59,8 @@ export const BridgeForm = ({
     () => (tokenUsdRate && amount ? decimal(+amount * tokenUsdRate) : undefined),
     [amount, tokenUsdRate],
   )
+  const nativeNetwork = networks[chainId === networks[Chain.Ethereum].chainId ? toChainId : chainId]
+  const nativeBridgeUrl = NATIVE_BRIDGES.find(({ imageId }) => imageId === `chains/${nativeNetwork?.id}.png`)?.appUrl
   const activeAlert =
     bridgeDisabledAlert ??
     (route
@@ -69,7 +72,11 @@ export const BridgeForm = ({
           message: (
             <>
               {t`This route is not currently supported.`}{' '}
-              <InlineLink to={`${pathname}?tab=native`}>{t`Use a native bridge instead.`}</InlineLink>
+              {nativeBridgeUrl ? (
+                <InlineLink to={nativeBridgeUrl}>{t`Use the network's native bridge instead.`}</InlineLink>
+              ) : (
+                t`Use a native bridge instead.`
+              )}
             </>
           ),
         })

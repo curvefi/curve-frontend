@@ -91,7 +91,6 @@ export const BridgeFormContent = ({
       ))}
     <BridgeButton
       disableChangeNetwork={loading}
-      disableConnect={disableAmount}
       disableBridge={
         bridgeDisabledAlert != null ||
         disableBridge === true ||
