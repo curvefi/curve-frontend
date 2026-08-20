@@ -1,7 +1,6 @@
-import { type Address, isHash, type PublicClient, zeroHash } from 'viem'
+import { type Address, type PublicClient, zeroHash } from 'viem'
 import { useConfig } from 'wagmi'
-import { useQuery } from '@tanstack/react-query'
-import { queryClient } from '@ui-kit/lib/api'
+import { useQueries } from '@tanstack/react-query'
 import { getPublicClient } from '@wagmi/core'
 import {
   LAYERZERO_CLAIM_DEPLOYMENTS,
@@ -11,25 +10,28 @@ import {
   layerZeroStatusAbi,
   type LayerZeroClaimDeployment,
 } from '../layerzero'
-import {
-  getClaimStatus,
-  getDelayedHash,
-  groupDelayedEvents,
-  type ClaimStatus,
-  type DelayedEvent,
-} from '../layerzero-claims'
+import { getDelayedHash, groupDelayedEvents, type DelayedEvent } from '../layerzero-claims'
 
-const OVERLAP_BLOCKS = 128n
+const CONFIRMATION_BLOCKS = 32n
+const RECENT_BLOCKS = 50_000n
 
-type ChainScan = { chainId: number; cursor?: bigint; events: DelayedEvent[]; error?: string }
-export type LayerZeroClaim = DelayedEvent & { status: ClaimStatus; wait: bigint; available?: bigint }
-type ClaimsResult = { claims: LayerZeroClaim[]; scans: ChainScan[] }
+export type LayerZeroClaim = DelayedEvent & { wait: bigint; isKilled: boolean; available?: bigint }
 type DelayedLog = {
   address?: Address
   args?: { nonce?: bigint; receiver?: Address; amount?: bigint }
   blockNumber?: bigint
   logIndex?: number
 }
+
+const deploymentsByChain = Object.values(
+  LAYERZERO_CLAIM_DEPLOYMENTS.reduce<Record<number, LayerZeroClaimDeployment[]>>(
+    (result, deployment) => ({
+      ...result,
+      [deployment.chainId]: [...(result[deployment.chainId] ?? []), deployment],
+    }),
+    {},
+  ),
+)
 
 const isLogRangeError = (error: unknown) => {
   const message = String(error).toLowerCase()
@@ -72,140 +74,102 @@ const scanChain = async (
   config: ReturnType<typeof useConfig>,
   receiver: Address,
   deployments: LayerZeroClaimDeployment[],
-  previous?: ChainScan,
-): Promise<ChainScan> => {
+) => {
   const chainId = deployments[0].chainId
   const client = getPublicClient(config, { chainId }) as PublicClient | undefined
   if (!client) throw new Error('No public RPC client configured')
-  const toBlock = await client.getBlockNumber()
-  const firstBlock = deployments.reduce(
-    (earliest, deployment) => (deployment.startBlock < earliest ? deployment.startBlock : earliest),
+
+  const head = await client.getBlockNumber()
+  const toBlock = head > CONFIRMATION_BLOCKS ? head - CONFIRMATION_BLOCKS : head
+  const recentBlock = toBlock > RECENT_BLOCKS ? toBlock - RECENT_BLOCKS : 0n
+  const deploymentBlock = deployments.reduce(
+    (first, deployment) => (deployment.startBlock < first ? deployment.startBlock : first),
     deployments[0].startBlock,
   )
-  const fromBlock = previous?.cursor
-    ? previous.cursor > OVERLAP_BLOCKS
-      ? previous.cursor - OVERLAP_BLOCKS
-      : firstBlock
-    : firstBlock
+  const fromBlock = recentBlock > deploymentBlock ? recentBlock : deploymentBlock
   const logs = fromBlock <= toBlock ? await getLogs(client, deployments, receiver, fromBlock, toBlock) : []
-  const blockNumbers = [...new Set(logs.map(log => log.blockNumber).filter(value => value != null))] as bigint[]
+  const blockNumbers = [...new Set(logs.flatMap(log => (log.blockNumber == null ? [] : [log.blockNumber])))]
   const timestamps = new Map(
     await Promise.all(
       blockNumbers.map(async blockNumber => [blockNumber, (await client.getBlock({ blockNumber })).timestamp] as const),
     ),
   )
   const byAddress = new Map(deployments.map(deployment => [deployment.bridgeAddress.toLowerCase(), deployment]))
-  const fresh = logs.flatMap(log => {
+  const events = logs.flatMap(log => {
     const deployment = log.address ? byAddress.get(log.address.toLowerCase()) : undefined
     const nonce = log.args?.nonce
     const amount = log.args?.amount
-    if (!deployment || nonce == null || amount == null || log.blockNumber == null || log.logIndex == null) return []
+    let timestamp
+    if (log.blockNumber != null) timestamp = timestamps.get(log.blockNumber)
+    if (
+      !deployment ||
+      nonce == null ||
+      amount == null ||
+      timestamp == null ||
+      log.blockNumber == null ||
+      log.logIndex == null
+    )
+      return []
     return [
       {
-        chainId,
-        bridgeAddress: deployment.bridgeAddress,
-        token: deployment.token,
-        family: deployment.family,
-        nonce,
+        ...deployment,
         receiver,
+        nonce,
         amount,
-        timestamp: timestamps.get(log.blockNumber)!,
+        timestamp,
         blockNumber: log.blockNumber,
         logIndex: log.logIndex,
       } satisfies DelayedEvent,
     ]
   })
-  const retained = previous?.events.filter(event => event.blockNumber < fromBlock) ?? []
-  return { chainId, cursor: toBlock, events: [...retained, ...fresh] }
-}
 
-const confirmClaims = async (config: ReturnType<typeof useConfig>, scans: ChainScan[]): Promise<LayerZeroClaim[]> =>
-  (
+  return (
     await Promise.all(
-      groupDelayedEvents(scans.flatMap(({ events }) => events)).map(async event => {
-        try {
-          const client = getPublicClient(config, { chainId: event.chainId }) as PublicClient | undefined
-          if (!client) throw new Error('No public RPC client configured')
-          const stored = await client.readContract({
-            address: event.bridgeAddress,
-            abi: layerZeroRetryAbi,
-            functionName: 'delayed',
-            args: [event.nonce],
-          })
-          const expected = getDelayedHash(event)
-          if (!isHash(stored) || stored === zeroHash || stored.toLowerCase() !== expected.toLowerCase()) return []
-          const block = await client.getBlock()
-          const isKilled = await client.readContract({
-            address: event.bridgeAddress,
-            abi: layerZeroStatusAbi,
-            functionName: 'is_killed',
-          })
-          const wait = await client.readContract({
+      groupDelayedEvents(events).map(async event => {
+        const stored = await client.readContract({
+          address: event.bridgeAddress,
+          abi: layerZeroRetryAbi,
+          functionName: 'delayed',
+          args: [event.nonce],
+        })
+        if (stored === zeroHash || stored.toLowerCase() !== getDelayedHash(event).toLowerCase()) return []
+        const [isKilled, wait, available] = await Promise.all([
+          client.readContract({ address: event.bridgeAddress, abi: layerZeroStatusAbi, functionName: 'is_killed' }),
+          client.readContract({
             address: event.bridgeAddress,
             abi: event.family === 'crv' ? layerZeroCrvCapacityAbi : layerZeroStableCapacityAbi,
             functionName: event.family === 'crv' ? 'period' : 'delay',
-          })
-          const available =
-            event.family === 'crv'
-              ? await client.readContract({
-                  address: event.bridgeAddress,
-                  abi: layerZeroCrvCapacityAbi,
-                  functionName: 'available',
-                })
-              : undefined
-          return [
-            {
-              ...event,
-              wait,
-              ...(available == null ? {} : { available }),
-              status: getClaimStatus({ ...event, wait, now: block.timestamp, isKilled, available }),
-            } satisfies LayerZeroClaim,
-          ]
-        } catch (error) {
-          const scan = scans.find(({ chainId }) => chainId === event.chainId)
-          if (scan && !scan.error) scan.error = String(error)
-          return []
-        }
+          }),
+          event.family === 'crv'
+            ? client.readContract({
+                address: event.bridgeAddress,
+                abi: layerZeroCrvCapacityAbi,
+                functionName: 'available',
+              })
+            : undefined,
+        ])
+        return [{ ...event, isKilled, wait, ...(available == null ? {} : { available }) } satisfies LayerZeroClaim]
       }),
     )
   ).flat()
+}
 
 export const useLayerZeroClaims = (receiver: Address | undefined) => {
   const config = useConfig()
-  // eslint-disable-next-line @tanstack/query/exhaustive-deps -- wagmi config is stable infrastructure, not query data.
-  return useQuery({
-    queryKey: ['bridge', 'layerzero-claims', receiver],
-    enabled: !!receiver,
-    staleTime: 60_000,
-    queryFn: async (): Promise<ClaimsResult> => {
-      if (!receiver) return { claims: [], scans: [] }
-      const previous = queryClient.getQueryData<ClaimsResult>(['bridge', 'layerzero-claims', receiver])
-      const grouped = Object.values(
-        LAYERZERO_CLAIM_DEPLOYMENTS.reduce<Record<number, LayerZeroClaimDeployment[]>>(
-          (result, deployment) => ({
-            ...result,
-            [deployment.chainId]: [...(result[deployment.chainId] ?? []), deployment],
-          }),
-          {},
-        ),
-      )
-      const scans: ChainScan[] = grouped.map(deployments => ({ chainId: deployments[0].chainId, events: [] }))
-      let next = 0
-      const worker = async () => {
-        while (next < grouped.length) {
-          const index = next++
-          const deployments = grouped[index]
-          const chainId = deployments[0].chainId
-          const old = previous?.scans.find(scan => scan.chainId === chainId)
-          try {
-            scans[index] = await scanChain(config, receiver, deployments, old)
-          } catch (error) {
-            scans[index] = { chainId, cursor: old?.cursor, events: old?.events ?? [], error: String(error) }
-          }
-        }
-      }
-      await Promise.all([worker(), worker()])
-      return { scans, claims: await confirmClaims(config, scans) }
-    },
+  const queries = useQueries({
+    // eslint-disable-next-line @tanstack/query/exhaustive-deps -- wagmi config is stable infrastructure, not query data.
+    queries: deploymentsByChain.map(deployments => ({
+      queryKey: ['bridge', 'layerzero-claims', receiver, deployments[0].chainId],
+      enabled: !!receiver,
+      staleTime: 60_000,
+      queryFn: () => scanChain(config, receiver!, deployments),
+    })),
   })
+
+  return {
+    claims: queries.flatMap(query => query.data ?? []),
+    failures: queries.flatMap((query, index) => (query.error ? [deploymentsByChain[index][0].chainId] : [])),
+    isLoading: queries.every(query => query.isPending),
+    refetch: () => Promise.all(queries.map(query => query.refetch())),
+  }
 }

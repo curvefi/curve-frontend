@@ -4,7 +4,9 @@ import { getClaimStatus, getDelayedHash, groupDelayedEvents } from './layerzero-
 
 const event = {
   chainId: 1,
+  originChainId: 56,
   bridgeAddress: zeroAddress,
+  tokenAddress: zeroAddress,
   token: 'CRV' as const,
   family: 'crv' as const,
   nonce: 1n,

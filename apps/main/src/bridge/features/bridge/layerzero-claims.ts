@@ -3,7 +3,9 @@ import type { LayerZeroBridgeFamily, LayerZeroToken } from './layerzero'
 
 export type DelayedEvent = {
   chainId: number
+  originChainId: number
   bridgeAddress: Address
+  tokenAddress: Address
   token: LayerZeroToken
   family: LayerZeroBridgeFamily
   nonce: bigint
