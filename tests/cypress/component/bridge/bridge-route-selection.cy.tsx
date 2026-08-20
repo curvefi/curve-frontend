@@ -39,11 +39,6 @@ const BridgeRouteHarness = ({ isConnected = true }: { isConnected?: boolean }) =
   })
   const values = form.watchValues()
   const route = getBridgeRoute(values)
-  const routeError = route
-    ? null
-    : new Error(
-        `No FastBridge or LayerZero route supports ${values.token} from ${NETWORKS.find(({ chainId }) => chainId === values.fromChainId)?.name} to ${NETWORKS.find(({ chainId }) => chainId === values.toChainId)?.name}.`,
-      )
   const destinationNetworks = useMemo(
     () => NETWORKS.filter(network => getBridgeDestinationChainIds(values.fromChainId).includes(network.chainId)),
     [values.fromChainId],
@@ -64,7 +59,7 @@ const BridgeRouteHarness = ({ isConnected = true }: { isConnected?: boolean }) =
           })
         }
         onDestinationSelected={network => form.update({ toChainId: network.chainId, amount: undefined })}
-        amount={q({ data: values.amount, isLoading: false, error: routeError })}
+        amount={q({ data: values.amount, isLoading: false, error: null })}
         walletBalance={{ balance: values.walletBalance }}
         inputBalanceUsd={undefined}
         tokenAddress={LAYERZERO_TOKENS[values.token]}
@@ -74,8 +69,16 @@ const BridgeRouteHarness = ({ isConnected = true }: { isConnected?: boolean }) =
         bridgeDisabledAlert={
           route
             ? undefined
-            : { alertType: 'info', message: 'This route is not currently supported. Use the canonical bridge instead.' }
+            : {
+                alertType: 'warning',
+                message: (
+                  <>
+                    This route is not currently supported. <a href="?tab=native">Use a native bridge instead.</a>
+                  </>
+                ),
+              }
         }
+        disableAmount={!route}
         disableBridge={!route}
         loading={false}
         isPending={false}
@@ -130,15 +133,18 @@ describe('bridge route selection', () => {
     cy.get('[data-testid="bridge-token-select"]').click()
     cy.contains('Select Token').should('be.visible')
     cy.get('[data-testid="token-option-CRV"]').click()
-    cy.contains('This route is not currently supported. Use the canonical bridge instead.').should('be.visible')
-    cy.contains('No FastBridge or LayerZero route supports CRV from Arbitrum to Ethereum.').should('be.visible')
+    cy.contains('This route is not currently supported.').should('be.visible')
+    cy.contains('No FastBridge or LayerZero route supports CRV from Arbitrum to Ethereum.').should('not.exist')
+    cy.contains('a', 'Use a native bridge instead.').should('have.attr', 'href', '?tab=native')
+    cy.get('[role="alert"]').should('have.class', 'MuiAlert-colorWarning')
+    cy.get('input[name="amount"]').should('be.disabled')
     cy.get('[data-testid="bridge-submit-button"]').should('be.disabled')
 
     cy.get('[data-testid="bridge-origin-select"]').click()
     cy.get('[data-testid="menu-item-chain-xdc"]').trigger('mousedown')
     cy.get('[data-testid="bridge-token-select"]').click()
     cy.get('[data-testid="token-option-crvUSD"]').click()
-    cy.contains('No FastBridge or LayerZero route supports crvUSD from XDC to Ethereum.').should('be.visible')
+    cy.contains('No FastBridge or LayerZero route supports crvUSD from XDC to Ethereum.').should('not.exist')
     cy.get('[data-testid="bridge-submit-button"]').should('be.disabled')
   })
 
@@ -150,5 +156,8 @@ describe('bridge route selection', () => {
     )
 
     cy.get('input[name="amount"]').should('be.enabled').clear().type('2')
+    cy.get('[data-testid="bridge-origin-select"]').click()
+    cy.get('[data-testid="menu-item-chain-xdc"]').trigger('mousedown')
+    cy.contains('button', 'Connect Wallet').should('be.disabled')
   })
 })

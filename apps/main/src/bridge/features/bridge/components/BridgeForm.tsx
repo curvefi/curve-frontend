@@ -6,6 +6,7 @@ import { useNavigate, usePathname } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { getCurrentApp, getInternalUrl } from '@ui-kit/shared/routes'
+import { InlineLink } from '@ui-kit/shared/ui/InlineLink'
 import { q } from '@ui-kit/types/util'
 import { Chain, decimal } from '@ui-kit/utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
@@ -64,12 +65,14 @@ export const BridgeForm = ({
         ? { alertType: 'error' as const, message: t`This LayerZero bridge route is currently disabled` }
         : undefined
       : {
-          alertType: 'info' as const,
-          message: t`This route is not currently supported. Use the canonical bridge instead.`,
+          alertType: 'warning' as const,
+          message: (
+            <>
+              {t`This route is not currently supported.`}{' '}
+              <InlineLink to={`${pathname}?tab=native`}>{t`Use a native bridge instead.`}</InlineLink>
+            </>
+          ),
         })
-  const routeError = route
-    ? undefined
-    : t`No FastBridge or LayerZero route supports ${token} from ${networks[chainId]?.name ?? chainId} to ${networks[toChainId]?.name ?? toChainId}.`
 
   return (
     <Form
@@ -101,7 +104,7 @@ export const BridgeForm = ({
         amount={q({
           data: amount,
           isLoading: false,
-          error: amountError || routeError ? new Error(amountError ?? routeError) : null,
+          error: amountError ? new Error(amountError) : null,
         })}
         walletBalance={walletBalance}
         inputBalanceUsd={inputBalanceUsd}
@@ -110,6 +113,7 @@ export const BridgeForm = ({
         tokenSymbol={token}
         tokenSelector={<BridgeTokenSelector form={form} token={token} disabled={isPending} />}
         bridgeDisabledAlert={activeAlert}
+        disableAmount={!route || isKilled}
         disableBridge={disabled}
         loading={!supportedNetworks.length || loading}
         isPending={isPending}
