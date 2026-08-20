@@ -3,6 +3,7 @@ import type { Address } from '@curvefi/primitives/address.utils'
 import type { LlamaApi } from '@ui-kit/features/connect-wallet'
 import type { MarketType } from '@ui-kit/types/market'
 import type { QueryProp } from '@ui-kit/types/util'
+import type { ReleaseChannel } from '@ui-kit/utils'
 import {
   type BandRangeOrEmpty,
   getAmmAddress,
@@ -10,6 +11,7 @@ import {
   getCrvTokenAddress,
   getGaugeAddress,
   getMarketBandRange,
+  getMarketLeverageProviders,
   getTokens,
   getVaultToken,
   getZapAddress,
@@ -26,32 +28,38 @@ export const createMarketContextValue = <ChainId extends IChainId>({
   marketType,
   userAddress,
   api,
+  releaseChannel,
 }: {
   chainId: ChainId
   blockchainId: LlamaNetworkId
   userAddress: Address | undefined
   api: LlamaApi | null
+  releaseChannel: ReleaseChannel
   marketQuery: QueryProp<MarketTemplate>
   apiMarket: QueryProp<LlamaMarket>
   marketType: MarketType
-}) => ({
-  chainId,
-  blockchainId,
-  userAddress,
-  api,
-  market: marketQuery.data,
-  marketQuery,
-  apiMarket,
-  marketType,
-  marketId: marketQuery.data?.id,
-  ammAddress: getAmmAddress(marketQuery.data, apiMarket.data),
-  zapAddress: getZapAddress(marketQuery.data),
-  controllerAddress: getControllerAddress(marketQuery.data, apiMarket.data),
-  tokens: (getTokens(marketQuery.data, apiMarket.data) ?? {}) as MarketTokensOrEmpty,
-  vaultToken: getVaultToken(marketQuery.data, apiMarket.data),
-  gaugeAddress: getGaugeAddress(marketQuery.data),
-  bands: (getMarketBandRange(marketQuery.data, apiMarket.data) ?? {}) as BandRangeOrEmpty,
-  crvTokenAddress: getCrvTokenAddress(marketQuery.data),
-})
+}) => {
+  const controllerAddress = getControllerAddress(marketQuery.data, apiMarket.data)
+  return {
+    chainId,
+    blockchainId,
+    userAddress,
+    api,
+    market: marketQuery.data,
+    marketQuery,
+    apiMarket,
+    marketType,
+    marketId: marketQuery.data?.id,
+    ammAddress: getAmmAddress(marketQuery.data, apiMarket.data),
+    zapAddress: getZapAddress(marketQuery.data),
+    controllerAddress,
+    leverageProviders: getMarketLeverageProviders(chainId, controllerAddress, releaseChannel),
+    tokens: (getTokens(marketQuery.data, apiMarket.data) ?? {}) as MarketTokensOrEmpty,
+    vaultToken: getVaultToken(marketQuery.data, apiMarket.data),
+    gaugeAddress: getGaugeAddress(marketQuery.data),
+    bands: (getMarketBandRange(marketQuery.data, apiMarket.data) ?? {}) as BandRangeOrEmpty,
+    crvTokenAddress: getCrvTokenAddress(marketQuery.data),
+  }
+}
 
 export type MarketContextValue<T extends IChainId> = ReturnType<typeof createMarketContextValue<T>>

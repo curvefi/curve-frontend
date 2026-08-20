@@ -110,6 +110,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     controllerAddress,
     tokens: { borrowToken, collateralToken },
     userAddress,
+    leverageProviders,
   } = useMarketContext<ChainId>()
   const defaultSlippage = getMarketLeverageSlippage(chainId, controllerAddress)
   const form = useForm<RepayFormData>({
@@ -130,6 +131,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     marketId,
     onReset: () => form.reset(userDefaultValues),
     userAddress,
+    leverageProviders,
   })
 
   useCallbackSync(useRepayPrices(params), onPricesUpdated)
@@ -173,6 +175,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
       getRouteGasOptions: (routeId: string | undefined) => getRepayLoanEstimateGasOptions({ ...params, routeId }),
       networks,
       zapAddress,
+      providers: leverageProviders,
     }),
     formErrors: useMemo(
       // only show the 'not available' warn when there are no other form errors
