@@ -1,13 +1,19 @@
 import { zeroAddress, getAddress } from 'viem'
 import { useMarketAlert } from '@/llamalend/features/market-list/hooks/useMarketAlert'
-import { getMarketLeverageSlippage } from '@/llamalend/llama.utils'
-import { DEPRECATED_LLAMAS, MARKET_LEVERAGE, MARKETS_ALERTS, NO_LEVERAGE_LEND } from '@/llamalend/markets.constants'
+import { getMarketLeverageProviders, getMarketLeverageSlippage } from '@/llamalend/llama.utils'
+import {
+  DEPRECATED_LLAMAS,
+  MARKETS_ALERTS,
+  MARKETS_LEVERAGE_CONFIG,
+  NO_LEVERAGE_LEND,
+} from '@/llamalend/markets.constants'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { oneOf, oneValueOf } from '@cy/support/generators'
 import type { Address } from '@primitives/address.utils'
 import { recordEntries, recordValues } from '@primitives/objects.utils'
+import { RouteProviders } from '@primitives/router.utils'
 import { MarketType } from '@ui-kit/types/market'
-import { Chain } from '@ui-kit/utils'
+import { Chain, ReleaseChannel } from '@ui-kit/utils'
 import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
 function MarketAlertHookTest({
@@ -81,10 +87,12 @@ describe('llama market constants', () => {
     }
   })
 
-  it('keeps every leverage market address checksummed', () => {
-    for (const chainMarkets of recordValues(MARKET_LEVERAGE)) {
-      for (const controllerAddress of Object.keys(chainMarkets)) {
+  it('keeps every ZapV2 market address checksummed', () => {
+    for (const chainMarkets of recordValues(MARKETS_LEVERAGE_CONFIG)) {
+      for (const [controllerAddress, { providers }] of Object.entries(chainMarkets)) {
         expect(controllerAddress, `expected address to be checksummed`).to.eq(getAddress(controllerAddress))
+        expect(providers.length, `${controllerAddress} must enable at least one provider`).to.be.greaterThan(0)
+        expect(providers.every(provider => RouteProviders.includes(provider))).to.eq(true)
       }
     }
   })
@@ -96,6 +104,13 @@ describe('llama market constants', () => {
       }
     }
     expect(getMarketLeverageSlippage(Chain.Ethereum, zeroAddress)).to.eq(SLIPPAGE.leverage.default)
+  })
+
+  it('resolves configured market providers by release channel', () => {
+    const controller = STABLE_LEVERAGE_MARKETS[Chain.Ethereum][0]
+    expect(getMarketLeverageProviders(Chain.Ethereum, controller, ReleaseChannel.Beta)).to.deep.eq(RouteProviders)
+    expect(getMarketLeverageProviders(Chain.Ethereum, controller, ReleaseChannel.Stable)).to.deep.eq(['enso'])
+    expect(getMarketLeverageProviders(Chain.Ethereum, zeroAddress, ReleaseChannel.Beta)).to.eq(undefined)
   })
 })
 
