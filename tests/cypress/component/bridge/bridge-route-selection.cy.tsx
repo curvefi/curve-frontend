@@ -124,6 +124,7 @@ describe('bridge route selection', () => {
     )
 
     cy.get('[data-testid="bridge-provider-value"]').should('have.text', 'FastBridge')
+    cy.contains('Estimated bridge cost').should('be.visible')
     cy.get('input[name="amount"], [data-testid="bridge-origin-select"]').first().should('have.attr', 'name', 'amount')
     cy.get('[data-testid="bridge-origin-select"]').click()
     cy.contains('Select origin network').should('be.visible')
@@ -131,6 +132,8 @@ describe('bridge route selection', () => {
 
     cy.get('[data-testid="menu-item-chain-ethereum"]').click()
     cy.get('[data-testid="bridge-provider-value"]').should('have.text', 'LayerZero')
+    cy.contains('Destination cost').should('be.visible')
+    cy.contains('Estimated bridge cost').should('not.exist')
     cy.get('[data-testid="bridge-destination-select"]').click()
     cy.contains('Select destination network').should('be.visible')
     cy.get('[data-testid="menu-item-chain-bsc"]').should('be.visible')

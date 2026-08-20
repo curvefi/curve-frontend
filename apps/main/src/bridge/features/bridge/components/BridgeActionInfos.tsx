@@ -39,7 +39,7 @@ export const BridgeActionInfos = ({
       testId="bridge-provider"
     />
     <ActionInfo
-      label={t`Estimated bridge cost`}
+      label={provider === 'layerzero' ? t`Destination cost` : t`Estimated bridge cost`}
       value={mapQuery(bridgeCost, data => formatToken(data, nativeTokenSymbol, 'amount'))}
       size="small"
     />
