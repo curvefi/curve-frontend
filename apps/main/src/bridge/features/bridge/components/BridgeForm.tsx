@@ -15,7 +15,7 @@ import { NATIVE_BRIDGES } from '../../bridges/bridges'
 import type { BridgeFormParams } from '../BridgeFormTabs'
 import type { BridgeAlert } from '../hooks/useBridgeAlert'
 import { useBridgeForm } from '../hooks/useBridgeForm'
-import { getBridgeDestinationChainIds, LAYERZERO_TOKENS } from '../layerzero'
+import { getBridgeRoute, LAYERZERO_TOKENS } from '../layerzero'
 import { BridgeActionInfos } from './BridgeActionInfos'
 import { BridgeFormContent } from './BridgeFormContent'
 import { BridgeTokenSelector } from './BridgeTokenSelector'
@@ -39,7 +39,6 @@ export const BridgeForm = ({
     provider,
     supportedNetworks,
     destinationNetworks,
-    tokenAddress,
     walletBalance,
     loading,
     isPending,
@@ -120,7 +119,7 @@ export const BridgeForm = ({
           navigate(pathname + getSearchString({ destination: network.id }, searchParams), { replace: true })
         }
         onSwapNetworks={
-          getBridgeDestinationChainIds(toChainId).includes(chainId)
+          getBridgeRoute({ fromChainId: toChainId, toChainId: chainId, token })
             ? () =>
                 navigateToNetwork(
                   networks[toChainId].id,
@@ -135,8 +134,6 @@ export const BridgeForm = ({
         })}
         walletBalance={walletBalance}
         inputBalanceUsd={inputBalanceUsd}
-        tokenAddress={tokenAddress ?? LAYERZERO_TOKENS[token]}
-        tokenBlockchainId={networks[chainId]?.id ?? 'ethereum'}
         tokenSymbol={token}
         tokenSelector={<BridgeTokenSelector form={form} token={token} disabled={isPending} />}
         bridgeDisabledAlert={activeAlert}
@@ -153,7 +150,8 @@ export const BridgeForm = ({
         onNetworkSelected={network =>
           navigateToNetwork(
             network.id,
-            network.chainId === ethereumChainId && getBridgeDestinationChainIds(ethereumChainId).includes(chainId)
+            network.chainId === ethereumChainId &&
+              getBridgeRoute({ fromChainId: ethereumChainId, toChainId: chainId, token })
               ? networks[chainId].id
               : undefined,
           )

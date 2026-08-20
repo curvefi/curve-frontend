@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { enforce, test } from 'vest'
 import { encodeFunctionData, erc20Abi, parseUnits } from 'viem'
 import { useConfig, useConnection, useEstimateGas as useEstimateTransactionGas, useReadContract } from 'wagmi'
+import type { Address, Hex } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 import type { BaseConfig } from '@ui/utils'
@@ -12,7 +13,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
 import { approve } from '@ui-kit/lib/model/entities/allowance'
 import { useEstimateGas } from '@ui-kit/lib/model/entities/gas-info'
-import { useTransactionMutation } from '@ui-kit/lib/model/mutation/useTransactionMutation'
+import { type TransactionContext, useTransactionMutation } from '@ui-kit/lib/model/mutation/useTransactionMutation'
 import { writeContract } from '@wagmi/core'
 import { getLayerZeroRoute, layerZeroAmountFirstAbi, layerZeroReceiverFirstAbi, layerZeroStatusAbi } from '../layerzero'
 import type { BridgeFormValues } from '../types'
@@ -30,6 +31,8 @@ const layerZeroBridgeValidationSuite = createValidationSuite(({ amount }: Bridge
     enforce(amount).isNumeric().gt(0)
   })
 })
+
+type LayerZeroBridgeResult = { hash: Hex; tokenAddress: Address; userAddress: Address }
 
 export const useLayerZeroBridgeForm = ({
   chainId,
@@ -139,7 +142,7 @@ export const useLayerZeroBridgeForm = ({
     validationParams: {},
   })
 
-  const bridgeMutation = useTransactionMutation<BridgeFormValues>({
+  const bridgeMutation = useTransactionMutation<BridgeFormValues, TransactionContext, LayerZeroBridgeResult>({
     mutationKey: [...rootKeys.chain({ chainId }), 'layerzero-bridge', { toChainId, token }] as const,
     mutationFn: async () => {
       if (!route || !rawAmount || quote.data == null || !userAddress) {
@@ -162,15 +165,15 @@ export const useLayerZeroBridgeForm = ({
             args: [userAddress, rawAmount, userAddress],
             value: quote.data,
           })
-      return { hash }
+      return { hash, tokenAddress: route.tokenAddress, userAddress }
     },
     pendingMessage: () => t`Bridging ${token}...`,
     successMessage: () => t`Bridged ${token}`,
-    onSuccess: async () => {
+    onSuccess: async ({ tokenAddress, userAddress }) => {
       await invalidateTokenBalances(config, {
         chainId,
-        userAddress: userAddress!,
-        tokenAddresses: [route!.tokenAddress],
+        userAddress,
+        tokenAddresses: [tokenAddress],
       })
       form.reset({ amount: undefined })
     },

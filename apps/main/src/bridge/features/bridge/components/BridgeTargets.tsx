@@ -1,4 +1,3 @@
-import { useCallback } from 'react'
 import { ArrowRight } from '@mui/icons-material'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import Box from '@mui/material/Box'
@@ -9,15 +8,13 @@ import type { NetworkDef } from '@ui/utils'
 import { useNetworksTVL } from '@ui-kit/entities/prices-networks.query'
 import { ChainList } from '@ui-kit/features/switch-chain/ui/ChainList'
 import { ChainSwitcherIcon } from '@ui-kit/features/switch-chain/ui/ChainSwitcherIcon'
-import { usePathname } from '@ui-kit/hooks/router'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
-import { getCurrentNetwork } from '@ui-kit/shared/routes'
 import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
 import { Select } from '@ui-kit/shared/ui/Select'
 import { Spinner } from '@ui-kit/shared/ui/Spinner'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { applySxProps, Chain, type SxProps } from '@ui-kit/utils'
+import { applySxProps, type SxProps } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -59,24 +56,22 @@ const SelectNetworkValue = ({ blockchainId, sx }: { blockchainId: string; sx?: S
  */
 const SelectNetworkButton = ({
   networkId,
-  loading = false,
-  disabled = false,
+  loading,
   onClick,
   testId,
   sx,
 }: {
   networkId: string | undefined
-  loading?: boolean
-  disabled?: boolean
+  loading: boolean
   onClick: () => void
   testId: string
   sx?: SxProps
 }) => (
   <Select
     value=""
-    onClick={disabled || loading ? undefined : onClick}
+    onClick={loading ? undefined : onClick}
     open={false}
-    disabled={disabled || loading}
+    disabled={loading}
     displayEmpty
     data-testid={testId}
     size="medium"
@@ -92,14 +87,13 @@ export type BridgeTargetsProps = {
   /** List of networks available as bridge sources. */
   networks: NetworkDef[]
   /** Currently selected source chain id. */
-  fromChainId: number | undefined
-  disabled: boolean
+  fromChainId: number
   loading: boolean
   /** Callback invoked when the user picks a new source network. */
-  onNetworkSelected?: (network: NetworkDef) => void
-  toChainId?: number
-  destinationNetworks?: NetworkDef[]
-  onDestinationSelected?: (network: NetworkDef) => void
+  onNetworkSelected: (network: NetworkDef) => void
+  toChainId: number
+  destinationNetworks: NetworkDef[]
+  onDestinationSelected: (network: NetworkDef) => void
   onSwapNetworks?: () => void
 }
 
@@ -112,10 +106,9 @@ export type BridgeTargetsProps = {
 export const BridgeTargets = ({
   networks,
   fromChainId,
-  disabled,
   loading,
   onNetworkSelected,
-  toChainId = Chain.Ethereum,
+  toChainId,
   destinationNetworks,
   onDestinationSelected,
   onSwapNetworks,
@@ -124,7 +117,7 @@ export const BridgeTargets = ({
   const [isToOpen, openTo, closeTo] = useSwitch(false)
   const tvls = useNetworksTVL('lending')
   const fromNetworkId = networks.find(({ chainId }) => chainId === fromChainId)?.id
-  const toNetworkId = destinationNetworks?.find(({ chainId }) => chainId === toChainId)?.id
+  const toNetworkId = networks.find(({ chainId }) => chainId === toChainId)?.id
 
   return (
     <Box
@@ -140,7 +133,6 @@ export const BridgeTargets = ({
     >
       <SelectNetworkLabel label={t`From`} sx={{ gridArea: GRID_AREAS.from.label }} />
       <SelectNetworkButton
-        disabled={disabled}
         networkId={fromNetworkId}
         onClick={openFrom}
         testId="bridge-origin-select"
@@ -152,16 +144,13 @@ export const BridgeTargets = ({
         <ChainList
           showTestnets={false}
           options={networks}
-          selectedNetworkId={getCurrentNetwork(usePathname())}
+          selectedNetworkId={fromNetworkId}
           tvls={tvls}
           navigateOnSelect={false}
-          onNetwork={useCallback(
-            (network: NetworkDef) => {
-              closeFrom()
-              onNetworkSelected?.(network)
-            },
-            [closeFrom, onNetworkSelected],
-          )}
+          onNetwork={network => {
+            closeFrom()
+            onNetworkSelected(network)
+          }}
         />
       </ModalDialog>
 
@@ -169,7 +158,7 @@ export const BridgeTargets = ({
         <IconButton
           aria-label={t`Reverse bridge direction`}
           data-testid="bridge-swap-networks"
-          disabled={disabled || loading || !onSwapNetworks}
+          disabled={loading || !onSwapNetworks}
           onClick={onSwapNetworks}
           size="small"
         >
@@ -178,33 +167,26 @@ export const BridgeTargets = ({
       </Box>
 
       <SelectNetworkLabel label={t`To`} sx={{ gridArea: GRID_AREAS.to.label }} />
-      {destinationNetworks ? (
-        <>
-          <SelectNetworkButton
-            disabled={disabled}
-            networkId={toNetworkId}
-            onClick={openTo}
-            testId="bridge-destination-select"
-            loading={loading}
-            sx={{ gridArea: GRID_AREAS.to.input }}
-          />
-          <ModalDialog open={isToOpen} onClose={closeTo} title={t`Select destination network`}>
-            <ChainList
-              showTestnets={false}
-              options={destinationNetworks}
-              selectedNetworkId={toNetworkId}
-              tvls={tvls}
-              navigateOnSelect={false}
-              onNetwork={network => {
-                closeTo()
-                onDestinationSelected?.(network)
-              }}
-            />
-          </ModalDialog>
-        </>
-      ) : (
-        <SelectNetworkValue blockchainId="ethereum" sx={{ gridArea: GRID_AREAS.to.input }} />
-      )}
+      <SelectNetworkButton
+        networkId={toNetworkId}
+        onClick={openTo}
+        testId="bridge-destination-select"
+        loading={loading}
+        sx={{ gridArea: GRID_AREAS.to.input }}
+      />
+      <ModalDialog open={isToOpen} onClose={closeTo} title={t`Select destination network`}>
+        <ChainList
+          showTestnets={false}
+          options={destinationNetworks}
+          selectedNetworkId={toNetworkId}
+          tvls={tvls}
+          navigateOnSelect={false}
+          onNetwork={network => {
+            closeTo()
+            onDestinationSelected(network)
+          }}
+        />
+      </ModalDialog>
     </Box>
   )
 }

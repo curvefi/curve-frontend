@@ -1,8 +1,6 @@
-import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { HelperMessage, LargeTokenInput, type LargeTokenInputProps } from '@ui-kit/shared/ui/LargeTokenInput'
-import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { type QueryProp } from '@ui-kit/types/util'
 
 export type BridgeAmountProps = {
@@ -16,21 +14,17 @@ export type BridgeAmountProps = {
   walletBalance: Pick<NonNullable<LargeTokenInputProps['walletBalance']>, 'balance'>
   /** USD equivalent of the entered amount, displayed as helper text. */
   inputBalanceUsd: LargeTokenInputProps['inputBalanceUsd']
-  tokenAddress: Address
-  tokenBlockchainId: string
   tokenSymbol: string
-  tokenSelector?: LargeTokenInputProps['tokenSelector']
+  tokenSelector: LargeTokenInputProps['tokenSelector']
 }
 
-/** Token amount input for the FastBridge. Currently hardcoded to crvUSD as the only supported bridging token. */
+/** Token amount input shared by the supported bridge providers. */
 export const BridgeAmount = ({
   disabled,
   amount,
   onAmount,
   walletBalance,
   inputBalanceUsd,
-  tokenAddress,
-  tokenBlockchainId,
   tokenSymbol,
   tokenSelector,
 }: BridgeAmountProps) => (
@@ -38,9 +32,7 @@ export const BridgeAmount = ({
     name="amount"
     label={t`Amount to send`}
     disabled={disabled}
-    tokenSelector={
-      tokenSelector ?? <TokenLabel blockchainId={tokenBlockchainId} address={tokenAddress} label={tokenSymbol} />
-    }
+    tokenSelector={tokenSelector}
     balance={amount}
     walletBalance={{ ...walletBalance, symbol: tokenSymbol }}
     inputBalanceUsd={inputBalanceUsd}

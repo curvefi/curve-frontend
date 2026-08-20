@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { BridgeActionInfos } from '@/bridge/features/bridge/components/BridgeActionInfos'
 import { BridgeFormContent } from '@/bridge/features/bridge/components/BridgeFormContent'
 import { BridgeTokenSelector } from '@/bridge/features/bridge/components/BridgeTokenSelector'
-import { getBridgeDestinationChainIds, getBridgeRoute, LAYERZERO_TOKENS } from '@/bridge/features/bridge/layerzero'
+import { getBridgeDestinationChainIds, getBridgeRoute } from '@/bridge/features/bridge/layerzero'
 import type { BridgeFormValues } from '@/bridge/features/bridge/types'
 import { NATIVE_BRIDGES } from '@/bridge/features/bridges/bridges'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
@@ -46,8 +46,14 @@ const BridgeRouteHarness = ({ isConnected = true }: { isConnected?: boolean }) =
   )
   const nativeBridgeUrl = NATIVE_BRIDGES.find(({ imageId }) => imageId === `chains/${nativeNetwork?.id}.png`)?.appUrl
   const destinationNetworks = useMemo(
-    () => NETWORKS.filter(network => getBridgeDestinationChainIds(values.fromChainId).includes(network.chainId)),
-    [values.fromChainId],
+    () =>
+      NETWORKS.filter(
+        network =>
+          getBridgeDestinationChainIds(values.fromChainId).includes(network.chainId) &&
+          (values.fromChainId !== Number(Chain.Ethereum) ||
+            getBridgeRoute({ ...values, toChainId: network.chainId }) != null),
+      ),
+    [values],
   )
 
   return (
@@ -71,8 +77,6 @@ const BridgeRouteHarness = ({ isConnected = true }: { isConnected?: boolean }) =
         amount={q({ data: values.amount, isLoading: false, error: null })}
         walletBalance={{ balance: values.walletBalance }}
         inputBalanceUsd={undefined}
-        tokenAddress={LAYERZERO_TOKENS[values.token]}
-        tokenBlockchainId="ethereum"
         tokenSymbol={values.token}
         tokenSelector={<BridgeTokenSelector form={form} token={values.token} disabled={false} />}
         bridgeDisabledAlert={
@@ -135,7 +139,7 @@ describe('bridge route selection', () => {
     cy.get('[data-testid="menu-item-chain-fantom"]').should('be.visible')
     cy.get('[data-testid="menu-item-chain-kava"]').should('be.visible')
     cy.get('[data-testid="menu-item-chain-sonic"]').should('be.visible')
-    cy.get('[data-testid="menu-item-chain-xdc"]').should('be.visible')
+    cy.get('[data-testid="menu-item-chain-xdc"]').should('not.exist')
     cy.get('[data-testid="menu-item-chain-etherlink"]').should('be.visible')
     cy.get('[data-testid="menu-item-chain-arbitrum"]').should('not.exist')
 

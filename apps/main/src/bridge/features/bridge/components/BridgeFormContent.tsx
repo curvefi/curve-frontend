@@ -6,10 +6,7 @@ import { BridgeAmount, type BridgeAmountProps } from './BridgeAmount'
 import { BridgeButton, type BridgeButtonProps } from './BridgeButton'
 import { BridgeTargets, type BridgeTargetsProps } from './BridgeTargets'
 
-export type BridgeFormContentParams = Omit<
-  BridgeButtonProps,
-  'disableBridge' | 'disableConnect' | 'disableChangeNetwork'
-> &
+export type BridgeFormContentParams = Omit<BridgeButtonProps, 'disableBridge' | 'disableChangeNetwork'> &
   Pick<
     BridgeTargetsProps,
     | 'networks'
@@ -22,14 +19,7 @@ export type BridgeFormContentParams = Omit<
   > &
   Pick<
     BridgeAmountProps,
-    | 'amount'
-    | 'onAmount'
-    | 'walletBalance'
-    | 'inputBalanceUsd'
-    | 'tokenAddress'
-    | 'tokenBlockchainId'
-    | 'tokenSymbol'
-    | 'tokenSelector'
+    'amount' | 'onAmount' | 'walletBalance' | 'inputBalanceUsd' | 'tokenSymbol' | 'tokenSelector'
   > & {
     bridgeDisabledAlert?: Pick<BridgeAlert, 'alertType' | 'message'>
     disableAmount?: boolean
@@ -55,8 +45,6 @@ export const BridgeFormContent = ({
   onSubmit,
   onChangeNetwork,
   onNetworkSelected,
-  tokenAddress,
-  tokenBlockchainId,
   tokenSymbol,
   tokenSelector,
   toChainId,
@@ -70,8 +58,6 @@ export const BridgeFormContent = ({
       amount={amount}
       walletBalance={walletBalance}
       inputBalanceUsd={inputBalanceUsd}
-      tokenAddress={tokenAddress}
-      tokenBlockchainId={tokenBlockchainId}
       tokenSymbol={tokenSymbol}
       tokenSelector={tokenSelector}
       onAmount={onAmount}
@@ -80,7 +66,6 @@ export const BridgeFormContent = ({
     <BridgeTargets
       networks={networks}
       fromChainId={fromChainId}
-      disabled={loading}
       loading={loading}
       onNetworkSelected={onNetworkSelected}
       toChainId={toChainId}

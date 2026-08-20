@@ -118,7 +118,10 @@ export const useBridgeForm = ({
       ),
     [networks],
   )
-  const destinationChainIds = getBridgeDestinationChainIds(chainId)
+  const destinationChainIds = getBridgeDestinationChainIds(chainId).filter(
+    toChainId =>
+      chainId !== Number(Chain.Ethereum) || getBridgeRoute({ fromChainId: chainId, toChainId, token }) != null,
+  )
   const destinationNetworks = useMemo(
     () => supportedNetworks.filter(network => destinationChainIds.includes(network.chainId)),
     [destinationChainIds, supportedNetworks],
@@ -136,7 +139,6 @@ export const useBridgeForm = ({
     provider,
     supportedNetworks,
     destinationNetworks,
-    tokenAddress: isFastBridge ? fastTokenAddress : layerZero.route?.tokenAddress,
     walletBalance: {
       balance: walletBalance,
       loading: isFastBridge ? fastBalance.isLoading : layerZero.walletBalance.isLoading,
