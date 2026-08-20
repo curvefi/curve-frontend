@@ -5,6 +5,18 @@ export const isLayerZeroChain = (chainId: number): chainId is (typeof LAYERZERO_
   LAYERZERO_CHAINS.some(supportedChainId => supportedChainId === chainId)
 
 export type LayerZeroToken = 'CRV' | 'crvUSD' | 'scrvUSD'
+export type BridgeProvider = 'fastbridge' | 'layerzero'
+
+export const BRIDGE_TOKENS = ['CRV', 'crvUSD', 'scrvUSD'] as const satisfies readonly LayerZeroToken[]
+export const FASTBRIDGE_CHAINS = [42161, 10, 252] as const
+export const BRIDGE_CHAINS = [...LAYERZERO_CHAINS, ...FASTBRIDGE_CHAINS] as const
+
+export const getBridgeDestinationChainIds = (fromChainId: number): readonly number[] =>
+  fromChainId === LZ_CHAIN.Ethereum
+    ? [LZ_CHAIN.Bsc, LZ_CHAIN.Avalanche, LZ_CHAIN.Fantom]
+    : BRIDGE_CHAINS.includes(fromChainId as (typeof BRIDGE_CHAINS)[number])
+      ? [LZ_CHAIN.Ethereum]
+      : []
 
 type TokenAddresses = Record<(typeof LAYERZERO_CHAINS)[number], Address>
 
@@ -70,6 +82,17 @@ export const getLayerZeroRoute = ({
     bridgeAddress: bridges[token][sidechain],
     amountFirst: token !== 'CRV',
   }
+}
+
+export const getBridgeRoute = (params: { fromChainId: number; toChainId: number; token: LayerZeroToken }) => {
+  const layerZeroRoute = getLayerZeroRoute(params)
+  if (layerZeroRoute) return { provider: 'layerzero', ...layerZeroRoute } as const
+
+  return params.token === 'crvUSD' &&
+    params.toChainId === LZ_CHAIN.Ethereum &&
+    FASTBRIDGE_CHAINS.includes(params.fromChainId as (typeof FASTBRIDGE_CHAINS)[number])
+    ? ({ provider: 'fastbridge' } as const)
+    : undefined
 }
 
 const quote = {

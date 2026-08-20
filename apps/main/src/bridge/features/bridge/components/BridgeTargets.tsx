@@ -61,12 +61,14 @@ const SelectNetworkButton = ({
   loading = false,
   disabled = false,
   onClick,
+  testId,
   sx,
 }: {
   chainId: number | undefined
   loading?: boolean
   disabled?: boolean
   onClick: () => void
+  testId: string
   sx?: SxProps
 }) => (
   <Select
@@ -75,6 +77,7 @@ const SelectNetworkButton = ({
     open={false}
     disabled={disabled || loading}
     displayEmpty
+    data-testid={testId}
     size="medium"
     renderValue={() =>
       loading || !chainId ? (
@@ -140,11 +143,12 @@ export const BridgeTargets = ({
         disabled={disabled}
         chainId={fromChainId}
         onClick={openFrom}
+        testId="bridge-origin-select"
         loading={loading}
         sx={{ gridArea: GRID_AREAS.from.input }}
       />
 
-      <ModalDialog open={isFromOpen} onClose={closeFrom} title={t`Select Network`}>
+      <ModalDialog open={isFromOpen} onClose={closeFrom} title={t`Select origin network`}>
         {/** At the moment of writing, when selecting a network from the chain list feature it updates the URL */}
         <ChainList
           showTestnets={false}
@@ -172,10 +176,11 @@ export const BridgeTargets = ({
             disabled={disabled}
             chainId={toChainId}
             onClick={openTo}
+            testId="bridge-destination-select"
             loading={loading}
             sx={{ gridArea: GRID_AREAS.to.input }}
           />
-          <ModalDialog open={isToOpen} onClose={closeTo} title={t`Select Network`}>
+          <ModalDialog open={isToOpen} onClose={closeTo} title={t`Select destination network`}>
             <ChainList
               showTestnets={false}
               options={destinationNetworks}

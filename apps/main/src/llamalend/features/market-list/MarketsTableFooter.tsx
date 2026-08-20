@@ -5,7 +5,6 @@ import CardContent from '@mui/material/CardContent'
 import Grid from '@mui/material/Grid'
 import SvgIcon from '@mui/material/SvgIcon'
 import Typography from '@mui/material/Typography'
-import { EXTERNAL_LINKS } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { CardStackPlusIcon } from '@ui-kit/shared/icons/CardStackPlusIcon'
 import { SignIcon } from '@ui-kit/shared/icons/SignIcon'
@@ -48,7 +47,7 @@ export const MarketsTableFooter = () => (
         </GridItem>
         <Grid size={12}>
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <ExternalLink href={EXTERNAL_LINKS.docs.user.llamalend.overview} label={t`Learn More`} />
+            <ExternalLink href="https://docs.curve.finance/lending/overview/" label={t`Learn More`} />
           </Box>
         </Grid>
       </Grid>

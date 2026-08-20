@@ -11,7 +11,6 @@ import { Chain, decimal } from '@ui-kit/utils'
 import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 import { BridgeActionInfos } from './BridgeActionInfos'
 import { BridgeFormContent, type BridgeFormContentParams } from './BridgeFormContent'
-import { BridgeInfoAlert } from './BridgeInfoAlert'
 
 // Copied from curve-js fastbridge docs
 const SupportedNetworks: IFastBridgeNetwork[] = [
@@ -73,15 +72,13 @@ const BridgeForm = (props: BridgeFormContentParams) => {
   return (
     <FormContent
       footer={
-        <>
-          <BridgeActionInfos
-            bridgeCost={constQ(0.69)}
-            gas={constQ({ estGasCostUsd: 0.12 })}
-            isApproved={isApproved}
-            nativeTokenSymbol={BridgeNetworks.find(n => n.chainId === fromChainId)!.symbol}
-          />
-          <BridgeInfoAlert />
-        </>
+        <BridgeActionInfos
+          bridgeCost={constQ(0.69)}
+          gas={constQ({ estGasCostUsd: 0.12 })}
+          isApproved={isApproved}
+          nativeTokenSymbol={BridgeNetworks.find(n => n.chainId === fromChainId)!.symbol}
+          provider="fastbridge"
+        />
       }
     >
       <BridgeFormContent

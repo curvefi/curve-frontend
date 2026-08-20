@@ -1,3 +1,5 @@
+import Alert from '@mui/material/Alert'
+import AlertTitle from '@mui/material/AlertTitle'
 import { AlertDisableForm } from '@ui-kit/shared/ui/AlertDisableForm'
 import type { BridgeAlert } from '../hooks/useBridgeAlert'
 import { BridgeAmount, type BridgeAmountProps } from './BridgeAmount'
@@ -77,20 +79,31 @@ export const BridgeFormContent = ({
       onAmount={onAmount}
     />
 
-    {bridgeDisabledAlert ? (
-      <AlertDisableForm>{bridgeDisabledAlert.message}</AlertDisableForm>
-    ) : (
-      <BridgeButton
-        disableChangeNetwork={loading}
-        disableBridge={disableBridge === true || !!amount.error || !amount.data || loading || isApproved == null}
-        isPending={isPending}
-        isApproved={isApproved}
-        isConnected={isConnected}
-        isWrongNetwork={isWrongNetwork}
-        onSubmit={onSubmit}
-        onChangeNetwork={onChangeNetwork}
-        tokenSymbol={tokenSymbol}
-      />
-    )}
+    {bridgeDisabledAlert &&
+      (bridgeDisabledAlert.alertType === 'error' ? (
+        <AlertDisableForm>{bridgeDisabledAlert.message}</AlertDisableForm>
+      ) : (
+        <Alert variant="outlined" severity="info">
+          <AlertTitle>{bridgeDisabledAlert.message}</AlertTitle>
+        </Alert>
+      ))}
+    <BridgeButton
+      disableChangeNetwork={loading}
+      disableBridge={
+        bridgeDisabledAlert != null ||
+        disableBridge === true ||
+        !!amount.error ||
+        !amount.data ||
+        loading ||
+        isApproved == null
+      }
+      isPending={isPending}
+      isApproved={isApproved}
+      isConnected={isConnected}
+      isWrongNetwork={isWrongNetwork}
+      onSubmit={onSubmit}
+      onChangeNetwork={onChangeNetwork}
+      tokenSymbol={tokenSymbol}
+    />
   </>
 )

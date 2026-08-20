@@ -1,6 +1,6 @@
 import { parseEther } from 'viem'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
-import { LayerZeroBridgeForm } from '@/bridge/features/bridge/components/LayerZeroBridgeForm'
+import { BridgeForm } from '@/bridge/features/bridge/components/BridgeForm'
 import { networks } from '@/loan/networks'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { createVirtualTestnet, createTenderlyWagmiConfigFromVNet } from '@cy/support/helpers/tenderly'
@@ -46,14 +46,14 @@ const runBridgeTest = ({
     cy.mount(
       <ComponentTestWrapper config={createTenderlyWagmiConfigFromVNet({ vnet, privateKey: PRIVATE_KEY })} autoConnect>
         <CurveProvider app="bridge" network={network} onChainUnavailable={console.error}>
-          <LayerZeroBridgeForm chainId={chainId} networks={networks} />
+          <BridgeForm chainId={chainId} networks={networks} />
         </CurveProvider>
       </ComponentTestWrapper>,
     )
 
     if (token !== 'crvUSD') {
       cy.get('[data-testid="bridge-token-select"]').click()
-      cy.contains('[role="option"]', token).click()
+      cy.get(`[data-testid="token-option-${token}"]`).click()
     }
     cy.get('input[name="amount"]').type('1')
     cy.get('[data-testid="bridge-submit-button"]').should('contain.text', 'Approve').click()

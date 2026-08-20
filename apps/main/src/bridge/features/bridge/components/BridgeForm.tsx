@@ -1,91 +1,123 @@
 import { useMemo } from 'react'
-import { useConnection } from 'wagmi'
+import { formatUnits } from 'viem'
+import { useConnection, useSwitchChain } from 'wagmi'
+import { maybe } from '@primitives/objects.utils'
 import { useNavigate, usePathname } from '@ui-kit/hooks/router'
+import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { getCurrentApp, getInternalUrl } from '@ui-kit/shared/routes'
 import { q } from '@ui-kit/types/util'
-import { Chain, CRVUSD_ADDRESS, decimal, requireBlockchainId } from '@ui-kit/utils'
+import { Chain, decimal, requireBlockchainId } from '@ui-kit/utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import type { BridgeFormParams } from '../BridgeFormTabs'
 import type { BridgeAlert } from '../hooks/useBridgeAlert'
 import { useBridgeForm } from '../hooks/useBridgeForm'
+import { LAYERZERO_TOKENS } from '../layerzero'
 import { BridgeActionInfos } from './BridgeActionInfos'
 import { BridgeFormContent } from './BridgeFormContent'
-import { BridgeInfoAlert } from './BridgeInfoAlert'
+import { BridgeTokenSelector } from './BridgeTokenSelector'
 
-/** Hooks up the bridge form content with an actual form and hooks */
 export const BridgeForm = ({
   chainId,
   networks,
   bridgeDisabledAlert,
 }: BridgeFormParams & { bridgeDisabledAlert?: Pick<BridgeAlert, 'alertType' | 'message'> }) => {
-  const { isConnected } = useConnection()
+  const { isConnected, chainId: walletChainId } = useConnection()
+  const { switchChain } = useSwitchChain()
   const navigate = useNavigate()
   const pathname = usePathname()
-
   const {
     form,
-    values: { fromChainId, amount },
-    loading,
-    walletBalance,
+    values: { amount, token, toChainId },
+    route,
+    provider,
     supportedNetworks,
+    destinationNetworks,
+    tokenAddress,
+    walletBalance,
+    loading,
     isPending,
     isApproved,
     bridgeCost,
     gas,
     amountError,
-    approveError,
-    bridgeError,
+    error,
     formErrors,
+    isKilled,
+    disabled,
     onSubmit,
   } = useBridgeForm({ chainId, networks })
 
-  // Fetch usd rate for input usd value. We only care about the mainnet rate.
-  const { data: crvUsdRate } = useTokenUsdRate({ chainId: Chain.Ethereum, tokenAddress: CRVUSD_ADDRESS })
+  const { data: tokenUsdRate } = useTokenUsdRate({
+    chainId: Chain.Ethereum,
+    tokenAddress: LAYERZERO_TOKENS[token][Chain.Ethereum],
+  })
   const inputBalanceUsd = useMemo(
-    () => (crvUsdRate && amount ? decimal(+amount * crvUsdRate) : undefined),
-    [amount, crvUsdRate],
+    () => (tokenUsdRate && amount ? decimal(+amount * tokenUsdRate) : undefined),
+    [amount, tokenUsdRate],
   )
+  const activeAlert =
+    bridgeDisabledAlert ??
+    (route
+      ? isKilled
+        ? { alertType: 'error' as const, message: t`This LayerZero bridge route is currently disabled` }
+        : undefined
+      : {
+          alertType: 'info' as const,
+          message: t`This route is not currently supported. Use the canonical bridge instead.`,
+        })
 
   return (
     <Form
       {...form}
       onSubmit={onSubmit}
       footer={
-        <>
-          <BridgeActionInfos
-            bridgeCost={q(bridgeCost)}
-            gas={q(gas)}
-            isApproved={isApproved.data}
-            nativeTokenSymbol={networks[chainId].symbol}
-          />
-          <BridgeInfoAlert />
-        </>
+        <BridgeActionInfos
+          bridgeCost={q({
+            data:
+              provider === 'layerzero'
+                ? maybe(bridgeCost.data, value => Number(formatUnits(value as bigint, 18)))
+                : (bridgeCost.data as number | undefined),
+            isLoading: bridgeCost.isLoading,
+            error: bridgeCost.error,
+          })}
+          gas={q(gas)}
+          isApproved={isApproved}
+          nativeTokenSymbol={networks[chainId].symbol}
+          provider={provider}
+        />
       }
     >
       <BridgeFormContent
         networks={supportedNetworks}
-        fromChainId={fromChainId}
+        fromChainId={chainId}
+        toChainId={toChainId}
+        destinationNetworks={destinationNetworks}
+        onDestinationSelected={network => form.update({ toChainId: network.chainId, amount: undefined })}
         amount={q({ data: amount, isLoading: false, error: amountError ? new Error(amountError) : null })}
         walletBalance={walletBalance}
         inputBalanceUsd={inputBalanceUsd}
-        tokenAddress={CRVUSD_ADDRESS}
-        tokenBlockchainId="ethereum"
-        tokenSymbol="crvUSD"
-        bridgeDisabledAlert={bridgeDisabledAlert}
+        tokenAddress={tokenAddress ?? LAYERZERO_TOKENS[token][Chain.Ethereum]}
+        tokenBlockchainId={requireBlockchainId(chainId)}
+        tokenSymbol={token}
+        tokenSelector={<BridgeTokenSelector form={form} token={token} disabled={isPending} />}
+        bridgeDisabledAlert={activeAlert}
+        disableBridge={disabled}
         loading={!supportedNetworks.length || loading}
         isPending={isPending}
-        isApproved={isApproved?.data}
+        isApproved={isApproved}
         isConnected={isConnected}
-        isWrongNetwork={fromChainId != null && chainId !== fromChainId}
+        isWrongNetwork={walletChainId !== chainId}
         onAmount={amount => form.update({ amount })}
-        onChangeNetwork={() =>
-          navigate(getInternalUrl(getCurrentApp(pathname), requireBlockchainId(fromChainId as Chain)))
+        onSubmit={() => void onSubmit()}
+        onChangeNetwork={() => switchChain({ chainId })}
+        onNetworkSelected={network =>
+          navigate(getInternalUrl(getCurrentApp(pathname), requireBlockchainId(network.chainId)))
         }
       />
 
-      <FormAlerts error={approveError ?? bridgeError} formErrors={formErrors} handledErrors={['amount']} />
+      <FormAlerts error={error} formErrors={formErrors} handledErrors={['amount']} />
     </Form>
   )
 }

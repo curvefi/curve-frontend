@@ -1,15 +1,39 @@
 import { beforeAll, describe, expect, it, vi } from 'vitest'
-import type { getLayerZeroRoute as GetLayerZeroRoute } from './layerzero'
+import type {
+  getBridgeDestinationChainIds as GetBridgeDestinationChainIds,
+  getBridgeRoute as GetBridgeRoute,
+  getLayerZeroRoute as GetLayerZeroRoute,
+} from './layerzero'
 
 vi.stubGlobal('window', {})
 
 let getLayerZeroRoute: typeof GetLayerZeroRoute
+let getBridgeRoute: typeof GetBridgeRoute
+let getBridgeDestinationChainIds: typeof GetBridgeDestinationChainIds
 
 beforeAll(async () => {
-  ;({ getLayerZeroRoute } = await import('./layerzero'))
+  ;({ getLayerZeroRoute, getBridgeRoute, getBridgeDestinationChainIds } = await import('./layerzero'))
 })
 
 const chains = { ethereum: 1, bsc: 56, avalanche: 43114, fantom: 250, arbitrum: 42161 } as const
+
+describe('bridge route selection', () => {
+  it('selects FastBridge and LayerZero without allowing unsupported tokens', () => {
+    expect(
+      getBridgeRoute({ fromChainId: chains.arbitrum, toChainId: chains.ethereum, token: 'crvUSD' })?.provider,
+    ).toBe('fastbridge')
+    expect(getBridgeRoute({ fromChainId: chains.ethereum, toChainId: chains.bsc, token: 'CRV' })?.provider).toBe(
+      'layerzero',
+    )
+    expect(getBridgeRoute({ fromChainId: chains.arbitrum, toChainId: chains.ethereum, token: 'CRV' })).toBeUndefined()
+  })
+
+  it('limits destinations to valid network pairs', () => {
+    expect(getBridgeDestinationChainIds(chains.ethereum)).toEqual([chains.bsc, chains.avalanche, chains.fantom])
+    expect(getBridgeDestinationChainIds(chains.arbitrum)).toEqual([chains.ethereum])
+    expect(getBridgeDestinationChainIds(999_999)).toEqual([])
+  })
+})
 
 describe('getLayerZeroRoute', () => {
   it('resolves all supported Ethereum and sidechain directions', () => {

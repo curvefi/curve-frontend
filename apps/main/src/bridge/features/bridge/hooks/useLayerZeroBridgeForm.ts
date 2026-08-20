@@ -5,7 +5,7 @@ import { useConfig, useConnection, useEstimateGas as useEstimateTransactionGas, 
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
 import type { BaseConfig } from '@ui/utils'
-import { useForm, useFormSync } from '@ui-kit/features/forms'
+import type { UseFormReturn } from '@ui-kit/features/forms'
 import { invalidateTokenBalances, useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { createValidationSuite } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
@@ -13,23 +13,9 @@ import { rootKeys } from '@ui-kit/lib/model'
 import { approve } from '@ui-kit/lib/model/entities/allowance'
 import { useEstimateGas } from '@ui-kit/lib/model/entities/gas-info'
 import { useTransactionMutation } from '@ui-kit/lib/model/mutation/useTransactionMutation'
-import { Chain } from '@ui-kit/utils'
 import { writeContract } from '@wagmi/core'
-import {
-  getLayerZeroRoute,
-  isLayerZeroChain,
-  layerZeroAmountFirstAbi,
-  layerZeroReceiverFirstAbi,
-  layerZeroStatusAbi,
-  type LayerZeroToken,
-} from '../layerzero'
-
-export type LayerZeroBridgeFormValues = {
-  fromChainId: number
-  toChainId: number
-  token: LayerZeroToken
-  amount: Decimal | undefined
-}
+import { getLayerZeroRoute, layerZeroAmountFirstAbi, layerZeroReceiverFirstAbi, layerZeroStatusAbi } from '../layerzero'
+import type { BridgeFormValues } from '../types'
 
 const parseAmount = (amount: Decimal | undefined) => {
   try {
@@ -39,7 +25,7 @@ const parseAmount = (amount: Decimal | undefined) => {
   }
 }
 
-const layerZeroBridgeValidationSuite = createValidationSuite(({ amount }: LayerZeroBridgeFormValues) => {
+const layerZeroBridgeValidationSuite = createValidationSuite(({ amount }: BridgeFormValues) => {
   test('amount', 'Bridge amount must be greater than zero', () => {
     enforce(amount).isNumeric().gt(0)
   })
@@ -48,42 +34,22 @@ const layerZeroBridgeValidationSuite = createValidationSuite(({ amount }: LayerZ
 export const useLayerZeroBridgeForm = ({
   chainId,
   networks,
+  form,
+  enabled,
 }: {
   chainId: number
   networks: Record<number, BaseConfig>
+  form: UseFormReturn<BridgeFormValues>
+  enabled: boolean
 }) => {
   const config = useConfig()
   const { address: userAddress } = useConnection()
-  const form = useForm<LayerZeroBridgeFormValues>({
-    defaultValues: {
-      fromChainId: chainId,
-      toChainId: chainId === Number(Chain.Ethereum) ? Number(Chain.Bsc) : Number(Chain.Ethereum),
-      token: 'crvUSD',
-      amount: undefined,
-    },
-  })
   const values = form.watchValues()
   const { amount, token, toChainId } = values
   const rawAmount = useMemo(() => parseAmount(amount), [amount])
   const route = useMemo(
-    () => getLayerZeroRoute({ fromChainId: chainId, toChainId, token }),
-    [chainId, toChainId, token],
-  )
-
-  useFormSync(form, { fromChainId: chainId })
-
-  const supportedNetworks = useMemo(
-    () => Object.values(networks).filter(({ chainId }) => isLayerZeroChain(chainId)),
-    [networks],
-  )
-  const destinationNetworks = useMemo(
-    () =>
-      supportedNetworks.filter(({ chainId: destinationChainId }) =>
-        chainId === Number(Chain.Ethereum)
-          ? destinationChainId !== Number(Chain.Ethereum)
-          : destinationChainId === Number(Chain.Ethereum),
-      ),
-    [chainId, supportedNetworks],
+    () => (enabled ? getLayerZeroRoute({ fromChainId: chainId, toChainId, token }) : undefined),
+    [chainId, enabled, toChainId, token],
   )
 
   const walletBalance = useTokenBalance({ chainId, userAddress, tokenAddress: route?.tokenAddress })
@@ -153,7 +119,7 @@ export const useLayerZeroBridgeForm = ({
         ? t`Bridge amount cannot exceed wallet balance`
         : undefined
 
-  const approveMutation = useTransactionMutation<LayerZeroBridgeFormValues>({
+  const approveMutation = useTransactionMutation<BridgeFormValues>({
     mutationKey: [...rootKeys.chain({ chainId }), 'layerzero-bridge-approve'] as const,
     mutationFn: async () => {
       if (!route || !rawAmount) throw new Error('Invalid LayerZero bridge route or amount')
@@ -173,7 +139,7 @@ export const useLayerZeroBridgeForm = ({
     validationParams: {},
   })
 
-  const bridgeMutation = useTransactionMutation<LayerZeroBridgeFormValues>({
+  const bridgeMutation = useTransactionMutation<BridgeFormValues>({
     mutationKey: [...rootKeys.chain({ chainId }), 'layerzero-bridge', { toChainId, token }] as const,
     mutationFn: async () => {
       if (!route || !rawAmount || quote.data == null || !userAddress) {
@@ -213,14 +179,8 @@ export const useLayerZeroBridgeForm = ({
     validationParams: {},
   })
 
-  const onSubmit = form.handleSubmit(isApproved ? bridgeMutation.mutate : approveMutation.mutate)
-
   return {
-    form,
-    values,
     route,
-    supportedNetworks,
-    destinationNetworks,
     walletBalance,
     quote,
     isKilled,
@@ -231,6 +191,6 @@ export const useLayerZeroBridgeForm = ({
     error: approveMutation.error ?? bridgeMutation.error ?? quote.error ?? isKilled.error ?? allowance.error,
     disabled:
       !!amountError || !rawAmount || !route || quote.data == null || isKilled.data !== false || allowance.data == null,
-    onSubmit,
+    submit: isApproved ? bridgeMutation.mutate : approveMutation.mutate,
   }
 }
