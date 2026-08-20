@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
+import type { Hex } from 'viem'
 import { oneDecimal, oneInt } from '@cy/support/generators'
 import type { Decimal } from '@primitives/decimal.utils'
 import { decimalSum } from '@ui-kit/utils'
@@ -23,12 +24,14 @@ export const createBorrowMoreScenario = ({
   collateral = '0' as const,
   leverage = false,
   leverageImplementation,
+  routeCalldata,
 }: {
   chainId: number
   approved: boolean
   collateral?: Decimal
   leverage?: boolean
   leverageImplementation?: 'zapV2'
+  routeCalldata?: Hex
 }) => {
   seedMarketBalances(chainId, DEFAULT_COLLATERAL_ADDRESS)
   const borrow = oneDecimal(1, 45, 2)
@@ -83,7 +86,7 @@ export const createBorrowMoreScenario = ({
   } as const
   const useZapV2 = leverage && leverageImplementation === 'zapV2'
 
-  if (useZapV2) mockRouterRoutes(chainId)
+  if (useZapV2) mockRouterRoutes(chainId, routeCalldata)
 
   const leverageZapV2 = {
     hasLeverage: () => true,
