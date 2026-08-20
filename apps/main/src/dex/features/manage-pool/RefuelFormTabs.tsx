@@ -1,5 +1,5 @@
-import { t } from '@ui-kit/lib/i18n'
-import { FormTabs, type FormTab } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
+import { t } from '@evm-ui/lib/i18n'
+import { FormTabs, type FormTab } from '@evm-ui/widgets/DetailPageLayout/FormTabs'
 import { RefuelForm, type RefuelFormParams } from './components/RefuelForm'
 
 const RefuelMenu = [

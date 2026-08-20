@@ -1,11 +1,11 @@
 import { enforce, skipWhen, test } from 'vest'
+import { createValidationSuite } from '@evm-ui/lib'
+import { validateSlippage } from '@evm-ui/lib/model'
+import { chainValidationGroup } from '@evm-ui/lib/model/query/chain-validation'
+import { evmAddressValidationGroup } from '@evm-ui/lib/model/query/evm-address-validation'
 import type { Address } from '@primitives/address.utils'
 import { toArray } from '@primitives/array.utils'
 import { type RouteProvider, RouteProviders } from '@primitives/router.utils'
-import { createValidationSuite } from '@ui-kit/lib'
-import { validateSlippage } from '@ui-kit/lib/model'
-import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
-import { evmAddressValidationGroup } from '@ui-kit/lib/model/query/evm-address-validation'
 import type { RoutesQuery } from './router-api.types'
 
 const validateRouter = ({

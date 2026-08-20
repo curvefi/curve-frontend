@@ -8,8 +8,8 @@ import {
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 import { Spinner } from '@legacy-ui/Spinner'
 import { Chip } from '@legacy-ui/Typography'
-import { t } from '@ui-kit/lib/i18n'
-import { formatNumber } from '@ui-kit/utils'
+import { t } from '@evm-ui/lib/i18n'
+import { formatNumber } from '@evm-ui/utils'
 
 export const SummaryTotal = () => {
   const { dashboardDataMapper, isValidAddress } = useDashboardContext()

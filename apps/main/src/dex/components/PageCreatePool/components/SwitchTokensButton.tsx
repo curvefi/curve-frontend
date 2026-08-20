@@ -13,7 +13,7 @@ import { useStore } from '@/dex/store/useStore'
 import { CurveApi } from '@/dex/types/main.types'
 import { Icon } from '@legacy-ui/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
-import { t } from '@ui-kit/lib/i18n'
+import { t } from '@evm-ui/lib/i18n'
 
 type Props = {
   curve: CurveApi

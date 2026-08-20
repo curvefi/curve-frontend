@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { SwitchChainNotSupportedError, useSwitchChain as useWagmiSwitchChain } from 'wagmi'
-import { t } from '@ui-kit/lib/i18n'
+import { t } from '@evm-ui/lib/i18n'
 import { notify } from './notify'
 
 /**

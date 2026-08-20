@@ -15,9 +15,9 @@ import {
 import type { RepayFormData, RepayParams } from '@/llamalend/queries/validation/repay.types'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { RouteProvider } from '@primitives/router.utils'
-import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
-import { validateSlippage } from '@ui-kit/lib/model'
-import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-validation'
+import { createValidationSuite, type FieldsOf } from '@evm-ui/lib'
+import { validateSlippage } from '@evm-ui/lib/model'
+import { userMarketValidationSuite } from '@evm-ui/lib/model/query/user-market-validation'
 
 const validateRepayCollateralField = (
   field: 'stateCollateral' | 'userCollateral',

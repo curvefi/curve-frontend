@@ -2,7 +2,7 @@ import { getBorrowMoreImplementationArgs } from '@/llamalend/queries/borrow-more
 import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreLeverageValidationSuite } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { Decimal } from '@primitives/decimal.utils'
-import { queryFactory, rootKeys } from '@ui-kit/lib/model'
+import { queryFactory, rootKeys } from '@evm-ui/lib/model'
 
 const castFieldsToDecimal = ({
   userCollateral: newUserCollateral,

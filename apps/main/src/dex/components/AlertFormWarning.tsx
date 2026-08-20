@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { AlertType } from '@/dex/types/main.types'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import type { AlertBoxProps } from '@legacy-ui/AlertBox/types'
-import { t } from '@ui-kit/lib/i18n'
+import { t } from '@evm-ui/lib/i18n'
 
 const ALERT_FORM_WARNING_KEYS = {
   'warning-exchange-rate-low': 'warning-exchange-rate-low',

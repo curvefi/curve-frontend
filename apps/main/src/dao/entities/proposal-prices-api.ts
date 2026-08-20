@@ -1,7 +1,7 @@
 import { TOP_HOLDERS } from '@/dao/constants'
 import { getProposal, type ProposalType } from '@curvefi/prices-api/proposal'
-import { EmptyValidationSuite } from '@ui-kit/lib'
-import { queryFactory } from '@ui-kit/lib/model/query'
+import { EmptyValidationSuite } from '@evm-ui/lib'
+import { queryFactory } from '@evm-ui/lib/model/query'
 
 const _fetchProposalPricesApi = async ({
   proposalId,

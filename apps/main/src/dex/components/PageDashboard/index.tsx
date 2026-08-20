@@ -22,9 +22,9 @@ import { SpinnerWrapper, Spinner } from '@legacy-ui/Spinner'
 import { Table } from '@legacy-ui/Table'
 import { breakpoints } from '@legacy-ui/utils'
 import type { Address } from '@primitives/address.utils'
-import { useLayoutStore } from '@ui-kit/features/layout'
-import { useNavigate } from '@ui-kit/hooks/router'
-import { t } from '@ui-kit/lib/i18n'
+import { useLayoutStore } from '@evm-ui/features/layout'
+import { useNavigate } from '@evm-ui/hooks/router'
+import { t } from '@evm-ui/lib/i18n'
 
 export const Dashboard = ({
   curve,

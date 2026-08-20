@@ -10,15 +10,15 @@ import { Box } from '@legacy-ui/Box'
 import { useTheme } from '@mui/material/styles'
 import { sortBy, toArray } from '@primitives/array.utils'
 import { recordValues, notFalsy } from '@primitives/objects.utils'
-import { t } from '@ui-kit/lib/i18n'
+import { t } from '@evm-ui/lib/i18n'
 import {
   CHART_X_AXIS_LABEL_ROTATION,
   ChartStateWrapper,
   createChartSeriesColorScale,
   EChartsBarChart,
   formatChartAxisNumber,
-} from '@ui-kit/shared/ui/Chart'
-import { Chain } from '@ui-kit/utils/network'
+} from '@evm-ui/shared/ui/Chart'
+import { Chain } from '@evm-ui/utils/network'
 import { GaugesBarChartCustomTooltip } from '../../Charts/GaugesBarChartCustomTooltip'
 import { GaugeVotingBarChartCustomTooltip } from '../../Charts/GaugeVotingBarChartCustomTooltip'
 

@@ -1,7 +1,7 @@
 import Stack from '@mui/material/Stack'
 import type { CellContext } from '@tanstack/react-table'
-import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
-import { formatNumber } from '@ui-kit/utils'
+import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
+import { formatNumber } from '@evm-ui/utils'
 import type { LegacyPoolRow } from '../types'
 
 export const LegacyUsdCell = ({ getValue }: CellContext<LegacyPoolRow, number | null>) => {

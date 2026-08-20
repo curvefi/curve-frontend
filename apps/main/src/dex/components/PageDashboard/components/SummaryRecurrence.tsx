@@ -9,8 +9,8 @@ import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardCon
 import { Spinner } from '@legacy-ui/Spinner'
 import { Stats } from '@legacy-ui/Stats'
 import { Chip } from '@legacy-ui/Typography/Chip'
-import { t } from '@ui-kit/lib/i18n'
-import { formatNumber, formatToken } from '@ui-kit/utils'
+import { t } from '@evm-ui/lib/i18n'
+import { formatNumber, formatToken } from '@evm-ui/utils'
 import { tooltipProps } from '../utils'
 
 type TotalOtherProfit = Record<string, { symbol: string; day: number; price: number }>

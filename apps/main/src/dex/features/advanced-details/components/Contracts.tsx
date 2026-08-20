@@ -9,8 +9,8 @@ import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
 import { notFalsy } from '@primitives/objects.utils'
-import { t } from '@ui-kit/lib/i18n'
-import { AddressActionInfo } from '@ui-kit/shared/ui/AddressActionInfo'
+import { t } from '@evm-ui/lib/i18n'
+import { AddressActionInfo } from '@evm-ui/shared/ui/AddressActionInfo'
 import { Section } from './Section'
 
 export const Contracts = ({

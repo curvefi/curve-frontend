@@ -1,7 +1,7 @@
 import { Fragment } from 'react'
 import { RewardsApy } from '@/dex/types/main.types'
 import { Chip } from '@legacy-ui/Typography'
-import { formatNumber } from '@ui-kit/utils'
+import { formatNumber } from '@evm-ui/utils'
 
 type Prop = {
   isHighlight: boolean

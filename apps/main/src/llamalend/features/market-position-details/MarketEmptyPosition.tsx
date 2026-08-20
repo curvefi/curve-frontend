@@ -1,9 +1,9 @@
 import { useConnection } from 'wagmi'
 import { Stack } from '@mui/material'
-import { t } from '@ui-kit/lib/i18n'
-import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { MarketRateType } from '@ui-kit/types/market'
+import { t } from '@evm-ui/lib/i18n'
+import { EmptyStateCard } from '@evm-ui/shared/ui/EmptyStateCard'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { MarketRateType } from '@evm-ui/types/market'
 
 const { Spacing } = SizesAndSpaces
 

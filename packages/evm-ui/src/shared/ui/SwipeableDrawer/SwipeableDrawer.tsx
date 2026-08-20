@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
+import { applySxProps } from '@evm-ui/utils'
 import { Box, SxProps, Theme } from '@mui/material'
 import MuiSwipeableDrawer from '@mui/material/SwipeableDrawer'
-import { applySxProps } from '@ui-kit/utils'
 type Props = {
   button?: ReactNode
   children: ReactNode

@@ -5,10 +5,10 @@ import { networks } from '@/dao/networks'
 import { ChainId, EstimatedGas } from '@/dao/types/dao.types'
 import { DetailInfo } from '@legacy-ui/DetailInfo'
 import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
-import { t } from '@ui-kit/lib/i18n'
-import { calculateGas, useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
-import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
-import { formatNumber } from '@ui-kit/utils'
+import { t } from '@evm-ui/lib/i18n'
+import { calculateGas, useGasInfoAndUpdateLib } from '@evm-ui/lib/model/entities/gas-info'
+import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
+import { formatNumber } from '@evm-ui/utils'
 
 type StepProgress = {
   active: number

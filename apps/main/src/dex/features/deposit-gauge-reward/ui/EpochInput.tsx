@@ -5,8 +5,8 @@ import { EpochInputWrapper, EpochLabel, StyledInputProvider } from '@/dex/featur
 import { ChainId } from '@/dex/types/main.types'
 import { InputDebounced } from '@legacy-ui/InputComp'
 import { FlexContainer } from '@legacy-ui/styled-containers'
-import { useFormContext } from '@ui-kit/features/forms'
-import { TIME_FRAMES } from '@ui-kit/utils'
+import { useFormContext } from '@evm-ui/features/forms'
+import { TIME_FRAMES } from '@evm-ui/utils'
 
 export const EpochInput = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const { update: updateForm, formState, watchValue } = useFormContext<DepositRewardFormValues>()

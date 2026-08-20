@@ -3,7 +3,7 @@ import { formatDate } from '@legacy-ui/utils'
 import { Stack } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import type { Address } from '@primitives/address.utils'
-import { t } from '@ui-kit/lib/i18n'
+import { t } from '@evm-ui/lib/i18n'
 import {
   ChartFooter,
   ChartStateWrapper,
@@ -13,9 +13,9 @@ import {
   EChartsLineChart,
   type LegendItem,
   type LineSeriesConfig,
-} from '@ui-kit/shared/ui/Chart'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { formatNumber } from '@ui-kit/utils'
+} from '@evm-ui/shared/ui/Chart'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { formatNumber } from '@evm-ui/utils'
 
 const { Height, Spacing } = SizesAndSpaces
 const SERIES_LABEL = t`Relative Gauge Weight`

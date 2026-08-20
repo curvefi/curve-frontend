@@ -1,7 +1,7 @@
 import { getPools } from '@curvefi/prices-api/pools'
 import { fromEntries } from '@primitives/objects.utils'
-import { queryFactory, rootKeys, type ChainNameParams, type ChainNameQuery } from '@ui-kit/lib/model'
-import { pricesApiChainValidationSuite } from '@ui-kit/lib/model/query/prices-chain-validation'
+import { queryFactory, rootKeys, type ChainNameParams, type ChainNameQuery } from '@evm-ui/lib/model'
+import { pricesApiChainValidationSuite } from '@evm-ui/lib/model/query/prices-chain-validation'
 
 export const { useQuery: usePoolsPricesApi } = queryFactory({
   queryKey: ({ blockchainId }: ChainNameParams) =>

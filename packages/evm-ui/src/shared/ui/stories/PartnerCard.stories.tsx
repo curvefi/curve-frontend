@@ -1,7 +1,7 @@
+import { PartnerCard } from '@evm-ui/shared/ui/PartnerCard'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Box from '@mui/material/Box'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { PartnerCard } from '@ui-kit/shared/ui/PartnerCard'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 

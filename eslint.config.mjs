@@ -143,16 +143,16 @@ const config = [
           paths: [
             ...['Accordion', 'Tabs', 'Slider', 'Tooltip', 'Select'].map(component => ({
               name: `@mui/material/${component}`,
-              message: `Use \`import { ${component} } from '@ui-kit/shared/ui/${component}'\` instead.`,
+              message: `Use \`import { ${component} } from '@evm-ui/shared/ui/${component}'\` instead.`,
             })),
             {
               name: '@mui/material/Chip',
               message:
-                "Use `import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'` or `import { Badge } from '@ui-kit/shared/ui/Badge'` instead.",
+                "Use `import { SelectableChip } from '@evm-ui/shared/ui/SelectableChip'` or `import { Badge } from '@evm-ui/shared/ui/Badge'` instead.",
             },
             {
               name: 'react-hook-form',
-              message: "Use `'@ui-kit/features/forms'` instead of 'react-hook-form' directly.",
+              message: "Use `'@evm-ui/features/forms'` instead of 'react-hook-form' directly.",
             },
           ],
         },

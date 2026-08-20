@@ -3,7 +3,7 @@ import { getAddress } from 'viem'
 import { MARKETS_ALERTS } from '@/llamalend/markets.constants'
 import { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { Address } from '@primitives/address.utils'
-import { MarketType } from '@ui-kit/types/market'
+import { MarketType } from '@evm-ui/types/market'
 
 export const useMarketAlert = <ChainId extends IChainId>(
   rChainId: ChainId,

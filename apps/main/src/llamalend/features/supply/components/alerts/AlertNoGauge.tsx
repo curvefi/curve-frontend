@@ -1,7 +1,7 @@
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Typography from '@mui/material/Typography'
-import { t } from '@ui-kit/lib/i18n'
+import { t } from '@evm-ui/lib/i18n'
 
 export const AlertNoGauge = () => (
   <Alert severity="info" variant="outlined" data-testid="alert-no-gauge">

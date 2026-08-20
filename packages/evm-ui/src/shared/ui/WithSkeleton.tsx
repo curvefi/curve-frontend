@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
+import { WithWrapper } from '@evm-ui/shared/ui/WithWrapper'
 import { default as Skeleton, SkeletonProps } from '@mui/material/Skeleton'
-import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 
 type WithSkeletonProps = {
   /** Whether to show the skeleton or the children */

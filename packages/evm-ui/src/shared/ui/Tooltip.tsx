@@ -1,13 +1,12 @@
 import lodash from 'lodash'
 import type { ReactNode, SyntheticEvent } from 'react'
+import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
+import { useSwitch } from '@evm-ui/hooks/useSwitch'
+import { SwipeableDrawer } from '@evm-ui/shared/ui/SwipeableDrawer/SwipeableDrawer'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Box from '@mui/material/Box'
-// eslint-disable-next-line no-restricted-imports
 import MuiTooltip, { TooltipProps as MuiTooltipProps } from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
-import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
-import { SwipeableDrawer } from '@ui-kit/shared/ui/SwipeableDrawer/SwipeableDrawer'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { InvertTheme } from './ThemeProvider'
 
 export type TooltipProps = MuiTooltipProps & {

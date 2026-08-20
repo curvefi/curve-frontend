@@ -12,9 +12,9 @@ import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
 import { ExternalLink } from '@legacy-ui/Link'
 import { breakpoints } from '@legacy-ui/utils/responsive'
-import { useParams } from '@ui-kit/hooks/router'
-import { t } from '@ui-kit/lib/i18n'
-import { DEX_ROUTES } from '@ui-kit/shared/routes'
+import { useParams } from '@evm-ui/hooks/router'
+import { t } from '@evm-ui/lib/i18n'
+import { DEX_ROUTES } from '@evm-ui/shared/routes'
 
 type Props = {
   setStableFeeValue: Dispatch<SetStateAction<string>>

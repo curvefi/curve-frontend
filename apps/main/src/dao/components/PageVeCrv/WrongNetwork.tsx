@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
 import { ConnectEthereum } from '@/dao/components/ConnectEthereum'
 import { Box } from '@legacy-ui/Box'
-import { t } from '@ui-kit/lib/i18n'
+import { t } from '@evm-ui/lib/i18n'
 
 export const WrongNetwork = () => (
   <Box

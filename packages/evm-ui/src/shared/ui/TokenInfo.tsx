@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { applySxProps, SxProps } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { applySxProps, SxProps } from '@ui-kit/utils'
 import { TokenIcon, type Size } from './TokenIcon'
 
 const { Spacing } = SizesAndSpaces

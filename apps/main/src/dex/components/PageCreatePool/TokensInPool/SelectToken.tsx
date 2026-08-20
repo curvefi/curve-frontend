@@ -29,7 +29,7 @@ import { Button } from '@legacy-ui/Button'
 import { Checkbox } from '@legacy-ui/Checkbox'
 import { Icon } from '@legacy-ui/Icon'
 import type { Address } from '@primitives/address.utils'
-import { t } from '@ui-kit/lib/i18n'
+import { t } from '@evm-ui/lib/i18n'
 import { WarningBox } from '../components/WarningBox'
 import { SelectTokenButton } from './SelectTokenButton'
 

@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { useDebounced, useDebounce, useDebouncedValue, useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
-import { Duration } from '@ui-kit/themes/design/0_primitives'
+import { useDebounced, useDebounce, useDebouncedValue, useUniqueDebounce } from '@evm-ui/hooks/useDebounce'
+import { Duration } from '@evm-ui/themes/design/0_primitives'
 
 // Test component for useDebounced
 function UseDebouncedTest({

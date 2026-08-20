@@ -2,11 +2,11 @@ import { useEffect } from 'react'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
-import { t } from '@ui-kit/lib/i18n'
-import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { CheckboxField } from '@ui-kit/widgets/DetailPageLayout/CheckboxField'
+import { useSwitch } from '@evm-ui/hooks/useSwitch'
+import { t } from '@evm-ui/lib/i18n'
+import { ModalDialog } from '@evm-ui/shared/ui/ModalDialog'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { CheckboxField } from '@evm-ui/widgets/DetailPageLayout/CheckboxField'
 
 const { Spacing } = SizesAndSpaces
 

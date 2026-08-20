@@ -2,7 +2,7 @@ import { styled } from 'styled-components'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
 import { Icon } from '@legacy-ui/Icon'
-import { t } from '@ui-kit/lib/i18n'
+import { t } from '@evm-ui/lib/i18n'
 
 type PaginationProps = {
   currentPage: number

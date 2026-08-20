@@ -2,9 +2,9 @@ import { isAddressEqual } from 'viem'
 import { getRefuelPools } from '@curvefi/prices-api/refuel'
 import type { Address } from '@primitives/address.utils'
 import { maybe } from '@primitives/objects.utils'
-import { queryFactory, rootKeys, type ChainNameParams, type ChainNameQuery } from '@ui-kit/lib/model'
-import { pricesApiChainValidationSuite } from '@ui-kit/lib/model/query/prices-chain-validation'
-import { mapQuery } from '@ui-kit/types/util'
+import { queryFactory, rootKeys, type ChainNameParams, type ChainNameQuery } from '@evm-ui/lib/model'
+import { pricesApiChainValidationSuite } from '@evm-ui/lib/model/query/prices-chain-validation'
+import { mapQuery } from '@evm-ui/types/util'
 
 const { useQuery: useRefuelPools } = queryFactory({
   queryKey: ({ blockchainId }: ChainNameParams) => [...rootKeys.chainName({ blockchainId }), 'getRefuelPools'] as const,

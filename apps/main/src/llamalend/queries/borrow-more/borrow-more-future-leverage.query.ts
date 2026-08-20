@@ -3,9 +3,9 @@ import { useUserCurrentLeverage } from '@/llamalend/queries/user'
 import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreLeverageValidationSuite } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { Decimal } from '@primitives/decimal.utils'
-import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { q } from '@ui-kit/types/util'
-import { decimal } from '@ui-kit/utils'
+import { queryFactory, rootKeys } from '@evm-ui/lib/model'
+import { q } from '@evm-ui/types/util'
+import { decimal } from '@evm-ui/utils'
 
 /** Query to get expected leverage after borrow more with leverage enabled. */
 export const { useQuery: useBorrowMoreFutureLeverage, invalidate: invalidateBorrowMoreFutureLeverage } = queryFactory({

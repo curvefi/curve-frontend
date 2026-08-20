@@ -1,8 +1,8 @@
 import { Decimal } from '@primitives/decimal.utils'
-import { t } from '@ui-kit/lib/i18n'
-import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
-import { mapQuery, type QueryProp } from '@ui-kit/types/util'
-import { formatNumber, formatToken } from '@ui-kit/utils'
+import { t } from '@evm-ui/lib/i18n'
+import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
+import { mapQuery, type QueryProp } from '@evm-ui/types/util'
+import { formatNumber, formatToken } from '@evm-ui/utils'
 
 export function ReturnToWalletActionInfo({
   returnToWallet,

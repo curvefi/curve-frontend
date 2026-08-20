@@ -11,11 +11,11 @@ import type { NetworkUrlParams } from '@/loan/types/loan.types'
 import { RCScrvUSDLogoSM } from '@legacy-ui/images'
 import Box from '@mui/material/Box'
 import Fade from '@mui/material/Fade'
-import { useParams } from '@ui-kit/hooks/router'
-import { t } from '@ui-kit/lib/i18n'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
-import { PageHeader } from '@ui-kit/widgets/PageHeader'
+import { useParams } from '@evm-ui/hooks/router'
+import { t } from '@evm-ui/lib/i18n'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { DetailPageLayout } from '@evm-ui/widgets/DetailPageLayout/DetailPageLayout'
+import { PageHeader } from '@evm-ui/widgets/PageHeader'
 
 const { IconSize } = SizesAndSpaces
 

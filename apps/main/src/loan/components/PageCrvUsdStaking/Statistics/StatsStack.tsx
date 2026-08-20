@@ -3,11 +3,11 @@ import { useScrvUsdStatistics } from '@/loan/entities/scrvusd-statistics.query'
 import { useScrvUsdSupplies } from '@/loan/entities/scrvusd-supplies.query'
 import type { ChainId } from '@/loan/types/loan.types'
 import Grid from '@mui/material/Grid'
-import { t } from '@ui-kit/lib/i18n'
-import { Metric } from '@ui-kit/shared/ui/Metric'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { mapQuery } from '@ui-kit/types/util'
-import { weiToEther } from '@ui-kit/utils'
+import { t } from '@evm-ui/lib/i18n'
+import { Metric } from '@evm-ui/shared/ui/Metric'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { mapQuery } from '@evm-ui/types/util'
+import { weiToEther } from '@evm-ui/utils'
 
 const { Spacing } = SizesAndSpaces
 

@@ -17,12 +17,12 @@ import { CurveApi, FnStepApproveResponse, FnStepResponse } from '@/dex/types/mai
 import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
 import { getSlippageImpact, getSwapActionModalType } from '@/dex/utils/utilsSwap'
 import type { Decimal } from '@primitives/decimal.utils'
-import { useWallet } from '@ui-kit/features/connect-wallet'
-import { fetchTokenBalance } from '@ui-kit/hooks/useTokenBalance'
-import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
-import { sleep } from '@ui-kit/utils'
-import { setMissingProvider } from '@ui-kit/utils/store.util'
-import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
+import { useWallet } from '@evm-ui/features/connect-wallet'
+import { fetchTokenBalance } from '@evm-ui/hooks/useTokenBalance'
+import { fetchGasInfoAndUpdateLib } from '@evm-ui/lib/model/entities/gas-info'
+import { sleep } from '@evm-ui/utils'
+import { setMissingProvider } from '@evm-ui/utils/store.util'
+import { SLIPPAGE } from '@evm-ui/widgets/SlippageSettings/slippage.utils'
 import { fetchNetworks } from '../entities/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE

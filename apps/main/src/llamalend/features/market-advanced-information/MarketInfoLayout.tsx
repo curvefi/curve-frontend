@@ -1,6 +1,6 @@
 import { type BaseConfig } from '@legacy-ui/utils'
 import Stack from '@mui/material/Stack'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { useMarketContext } from '../market-context'
 import { MarketContractsSection } from './MarketContractsSection'
 import { MarketParametersSection } from './MarketParametersSection'

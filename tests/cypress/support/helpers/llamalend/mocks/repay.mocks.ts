@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { oneDecimal, oneInt } from '@cy/support/generators'
-import { decimalMinus, decimalSum } from '@ui-kit/utils'
+import { decimalMinus, decimalSum } from '@evm-ui/utils'
 import { createMockLlamaApi, TEST_ADDRESS, TEST_TX_HASH } from '../mock-loan-test-data'
 import { createMockMintMarket } from '../mock-market.helpers'
 import { createIsApprovedStub, createStub, createSyncStub } from '../test-stub.utils'

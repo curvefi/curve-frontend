@@ -1,6 +1,6 @@
 import { ChainId, NetworkConfig, NetworkEnum } from '@/loan/types/loan.types'
 import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@legacy-ui/utils'
-import { Chain } from '@ui-kit/utils'
+import { Chain } from '@evm-ui/utils'
 
 const DEFAULT_NETWORK_CONFIG = {
   isActiveNetwork: false,

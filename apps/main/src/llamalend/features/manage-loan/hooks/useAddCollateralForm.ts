@@ -11,10 +11,10 @@ import {
 } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Decimal } from '@primitives/decimal.utils'
-import { useCallbackSync, useForm, useFormSync, useOnChangeCallback } from '@ui-kit/features/forms'
-import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
-import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
-import type { Range } from '@ui-kit/types/util'
+import { useCallbackSync, useForm, useFormSync, useOnChangeCallback } from '@evm-ui/features/forms'
+import { useFormDebounce } from '@evm-ui/hooks/useDebounce'
+import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
+import type { Range } from '@evm-ui/types/util'
 import { useMarketContext } from '../../market-context'
 
 const userDefaultValues = { userCollateral: undefined }

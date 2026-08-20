@@ -1,16 +1,16 @@
 import { Children, type ReactNode } from 'react'
+import { TokenIcon, type Size } from '@evm-ui/shared/ui/TokenIcon'
+import { WithSkeleton } from '@evm-ui/shared/ui/WithSkeleton'
+import { TRANSITION_FUNCTION } from '@evm-ui/themes/design/0_primitives'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import type { TypographyVariantKey } from '@evm-ui/themes/typography'
+import { applySxProps } from '@evm-ui/utils'
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
 import { drawerClasses } from '@mui/material/Drawer'
 import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import type { SxProps } from '@mui/material/styles'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
-import { TokenIcon, type Size } from '@ui-kit/shared/ui/TokenIcon'
-import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
-import { TRANSITION_FUNCTION } from '@ui-kit/themes/design/0_primitives'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { TypographyVariantKey } from '@ui-kit/themes/typography'
-import { applySxProps } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 

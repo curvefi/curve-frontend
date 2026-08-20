@@ -10,9 +10,9 @@ import { Box } from '@legacy-ui/Box'
 import { SelectSortingMethod } from '@legacy-ui/Select/SelectSortingMethod'
 import MuiBox from '@mui/material/Box'
 import { sortBy } from '@primitives/array.utils'
-import { t } from '@ui-kit/lib/i18n'
-import { ChartStateWrapper } from '@ui-kit/shared/ui/Chart'
-import { decimalMinus, decimalSum } from '@ui-kit/utils'
+import { t } from '@evm-ui/lib/i18n'
+import { ChartStateWrapper } from '@evm-ui/shared/ui/Chart'
+import { decimalMinus, decimalSum } from '@evm-ui/utils'
 
 const TOP_HOLDERS_LIMIT = 100
 const MIN_TOP_HOLDER_WEIGHT_RATIO = 0.3

@@ -1,9 +1,9 @@
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
-import { parseRoute as parseRoute } from '@ui-kit/entities/router-api'
-import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { decimal } from '@ui-kit/utils'
+import { parseRoute as parseRoute } from '@evm-ui/entities/router-api'
+import { queryFactory, rootKeys } from '@evm-ui/lib/model'
+import { decimal } from '@evm-ui/utils'
 import type { CreateLoanDebtParams, CreateLoanDebtQuery } from '../../features/borrow/types'
 import { createLoanQueryValidationSuite } from '../validation/borrow.validation'
 

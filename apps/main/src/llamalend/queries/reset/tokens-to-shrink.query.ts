@@ -3,7 +3,7 @@ import { getResetImplementation } from '@/llamalend/queries/reset/reset-query.he
 import { resetSupportedValidationSuite } from '@/llamalend/queries/validation/reset.validation'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Decimal } from '@primitives/decimal.utils'
-import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } from '@ui-kit/lib/model'
+import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } from '@evm-ui/lib/model'
 
 /** Returns the amount of (borrow) tokens required at minimum in the user's wallet in order to repay with shrink. */
 export const { useQuery: useTokensToShrink } = queryFactory({

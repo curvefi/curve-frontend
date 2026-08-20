@@ -10,12 +10,12 @@ import AlertTitle from '@mui/material/AlertTitle'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
-import { TokenSection } from '@ui-kit/features/select-token/ui/modal/TokenSection'
-import { useTokenBalances } from '@ui-kit/hooks/useTokenBalance'
-import { t } from '@ui-kit/lib/i18n'
-import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { QueryProp } from '@ui-kit/types/util'
+import { TokenSection } from '@evm-ui/features/select-token/ui/modal/TokenSection'
+import { useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
+import { t } from '@evm-ui/lib/i18n'
+import { useTokenUsdRates } from '@evm-ui/lib/model/entities/token-usd-rate'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { QueryProp } from '@evm-ui/types/util'
 
 const { Spacing } = SizesAndSpaces
 

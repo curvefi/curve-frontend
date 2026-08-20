@@ -24,9 +24,9 @@ import { Box } from '@legacy-ui/Box'
 import Alert from '@mui/material/Alert'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { t } from '@ui-kit/lib/i18n'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { formatNumber } from '@ui-kit/utils'
+import { t } from '@evm-ui/lib/i18n'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { formatNumber } from '@evm-ui/utils'
 
 const { Spacing } = SizesAndSpaces
 

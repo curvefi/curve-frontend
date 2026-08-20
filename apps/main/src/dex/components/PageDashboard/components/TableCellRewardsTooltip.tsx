@@ -3,7 +3,7 @@ import { styled } from 'styled-components'
 import { RewardCrv } from '@/dex/types/main.types'
 import { rewardsApyCrvText } from '@/dex/utils/utilsCurvejs'
 import { Box } from '@legacy-ui/Box'
-import { decimal, formatNumber } from '@ui-kit/utils'
+import { decimal, formatNumber } from '@evm-ui/utils'
 
 type Props = {
   crv?: RewardCrv[]

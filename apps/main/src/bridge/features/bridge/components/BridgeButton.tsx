@@ -1,6 +1,6 @@
 import Button from '@mui/material/Button'
-import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
-import { t } from '@ui-kit/lib/i18n'
+import { ConnectWalletButton } from '@evm-ui/features/connect-wallet/ui/ConnectWalletButton'
+import { t } from '@evm-ui/lib/i18n'
 
 export type BridgeButtonProps = {
   disableBridge: boolean

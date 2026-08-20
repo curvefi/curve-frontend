@@ -5,8 +5,8 @@ import {
   oneLoanTestMarket,
   writeCreateLoanForm,
 } from '@cy/support/helpers/llamalend/create-loan.helpers'
+import { MarketType } from '@evm-ui/types/market'
 import { recordValues } from '@primitives/objects.utils'
-import { MarketType } from '@ui-kit/types/market'
 
 const testCases = recordValues(MarketType).map(marketType => oneLoanTestMarket(marketType))
 

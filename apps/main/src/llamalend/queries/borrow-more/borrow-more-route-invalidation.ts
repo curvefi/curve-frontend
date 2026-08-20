@@ -1,4 +1,4 @@
-import type { RouteResponse } from '@ui-kit/entities/router-api'
+import type { RouteResponse } from '@evm-ui/entities/router-api'
 import { invalidateBorrowMoreExpectedCollateral } from './borrow-more-expected-collateral.query'
 import { invalidateBorrowMoreFutureLeverage } from './borrow-more-future-leverage.query'
 import { invalidateBorrowMoreEstimateGasQueries } from './borrow-more-gas-estimate.query'

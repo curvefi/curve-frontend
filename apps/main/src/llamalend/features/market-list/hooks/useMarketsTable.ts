@@ -9,8 +9,8 @@ import { useLlamaMarketRows, type LlamaMarketsTableResult } from '@/llamalend/qu
 import { useLlamaMarkets, type LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import { resetMintMarkets, resetAllUserMintMarkets } from '@/llamalend/queries/market-list/mint-markets'
 import type { Address } from '@primitives/address.utils'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useMappedQuery } from '@ui-kit/types/util'
+import { useUserProfileStore } from '@evm-ui/features/user-profile'
+import { useMappedQuery } from '@evm-ui/types/util'
 
 const EMPTY_MARKETS: LlamaMarketsResult['markets'] = []
 

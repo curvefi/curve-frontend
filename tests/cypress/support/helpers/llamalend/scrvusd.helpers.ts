@@ -2,8 +2,8 @@ import { createPublicClient, erc20Abi, formatUnits, http, type Address } from 'v
 import { CRVUSD_ADDRESS, SCRVUSD_VAULT_ADDRESS } from '@/loan/constants'
 import { CRVUSD_DECIMALS } from '@cy/support/helpers/llamalend/supply/supply-setup.helpers'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
+import { decimalCompare, decimalMinus } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { decimalCompare, decimalMinus } from '@ui-kit/utils'
 import { DECIMAL_REGEX, getActionValue, getMetricValue } from './action-info.helpers'
 
 type ScrvUsdFormType = 'deposit' | 'withdraw'

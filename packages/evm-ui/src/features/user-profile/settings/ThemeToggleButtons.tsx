@@ -1,6 +1,6 @@
+import { t } from '@evm-ui/lib/i18n'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
-import { t } from '@ui-kit/lib/i18n'
 import { useUserProfileStore } from '../store'
 import { themes } from './themes'
 

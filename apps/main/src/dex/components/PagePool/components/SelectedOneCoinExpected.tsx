@@ -7,8 +7,8 @@ import { Spacer } from '@legacy-ui/Spacer'
 import { SpinnerWrapper, Spinner } from '@legacy-ui/Spinner'
 import { TextEllipsis } from '@legacy-ui/TextEllipsis'
 import { Chip } from '@legacy-ui/Typography'
-import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
-import { shortenAddress, formatNumber, amount } from '@ui-kit/utils'
+import { TokenIcon } from '@evm-ui/shared/ui/TokenIcon'
+import { shortenAddress, formatNumber, amount } from '@evm-ui/utils'
 
 export const SelectedOneCoinExpected = ({
   amounts,

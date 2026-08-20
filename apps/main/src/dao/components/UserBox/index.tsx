@@ -5,8 +5,8 @@ import { ConnectEthereum } from '@/dao/components/ConnectEthereum'
 import { ActiveProposal, SnapshotVotingPower } from '@/dao/types/dao.types'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
-import { isLoading, useWallet } from '@ui-kit/features/connect-wallet'
-import { t } from '@ui-kit/lib/i18n'
+import { isLoading, useWallet } from '@evm-ui/features/connect-wallet'
+import { t } from '@evm-ui/lib/i18n'
 import { UserInformation } from './UserInformation'
 
 type Props = {

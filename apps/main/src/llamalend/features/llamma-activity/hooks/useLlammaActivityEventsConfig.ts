@@ -7,12 +7,12 @@ import {
   useLlammaActivityVisibility,
   useManualPagination,
   DEFAULT_PAGE_SIZE,
-} from '@ui-kit/features/activity-table'
-import { combineQueries } from '@ui-kit/lib'
-import { t } from '@ui-kit/lib/i18n'
-import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { fakeLoadingQ } from '@ui-kit/types/util'
-import { getPageCount } from '@ui-kit/utils'
+} from '@evm-ui/features/activity-table'
+import { combineQueries } from '@evm-ui/lib'
+import { t } from '@evm-ui/lib/i18n'
+import { getTableOptions, useTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { fakeLoadingQ } from '@evm-ui/types/util'
+import { getPageCount } from '@evm-ui/utils'
 import { LlammaActivityProps } from '..'
 
 export const useLlammaActivityEventsConfig = ({

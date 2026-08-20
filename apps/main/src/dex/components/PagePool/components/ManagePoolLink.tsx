@@ -3,10 +3,10 @@ import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolsPricesApi } from '@/dex/queries/pools-prices-api.query'
 import type { Chain } from '@curvefi/prices-api'
 import Button from '@mui/material/Button'
-import { t } from '@ui-kit/lib/i18n'
-import { getInternalUrl } from '@ui-kit/shared/routes'
-import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { t } from '@evm-ui/lib/i18n'
+import { getInternalUrl } from '@evm-ui/shared/routes'
+import { RouterLink } from '@evm-ui/shared/ui/RouterLink'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 

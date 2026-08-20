@@ -1,8 +1,8 @@
 import type { Decimal } from '@primitives/decimal.utils'
-import { queryFactory } from '@ui-kit/lib/model/query'
-import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
-import type { MarketParams, MarketQuery } from '@ui-kit/lib/model/query/root-keys'
-import { rootKeys } from '@ui-kit/lib/model/query/root-keys'
+import { queryFactory } from '@evm-ui/lib/model/query'
+import { marketIdValidationSuite } from '@evm-ui/lib/model/query/market-id-validation'
+import type { MarketParams, MarketQuery } from '@evm-ui/lib/model/query/root-keys'
+import { rootKeys } from '@evm-ui/lib/model/query/root-keys'
 import { getLendVault } from './market.query-helpers'
 
 export const { useQuery: useMarketVaultPricePerShare } = queryFactory({

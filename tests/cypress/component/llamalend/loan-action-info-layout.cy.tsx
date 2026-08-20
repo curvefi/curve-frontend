@@ -5,13 +5,13 @@ import { LoanActionSettings } from '@/llamalend/widgets/action-card/LoanActionSe
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { mockedWagmiConfig } from '@cy/support/helpers/llamalend/test-wagmi.helpers'
 import { allViewports } from '@cy/support/ui'
+import { q } from '@evm-ui/types/util'
+import { mockRoutes } from '@evm-ui/widgets/RouteProvider/route.mock'
+import { SlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings'
+import { SLIPPAGE } from '@evm-ui/widgets/SlippageSettings/slippage.utils'
 import type { BaseConfig } from '@legacy-ui/utils'
 import { fromEntries, notFalsy } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
-import { q } from '@ui-kit/types/util'
-import { mockRoutes } from '@ui-kit/widgets/RouteProvider/route.mock'
-import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
-import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
 const getHeight = (testId: string, subelement?: string) =>
   cy

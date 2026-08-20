@@ -2,7 +2,7 @@ import { getMarket } from '@/llamalend/llama.utils'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { fromEntries, recordEntries } from '@primitives/objects.utils'
-import { requireLib } from '@ui-kit/features/connect-wallet'
+import { requireLib } from '@evm-ui/features/connect-wallet'
 
 export const getLendVault = (marketId: string) => requireLib('llamaApi').getLendMarket(marketId).vault
 

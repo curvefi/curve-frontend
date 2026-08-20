@@ -13,7 +13,7 @@ import { PoolWithdrawSlice, createPoolWithdrawSlice } from '@/dex/store/createPo
 import { QuickSwapSlice, createQuickSwapSlice } from '@/dex/store/createQuickSwapSlice'
 import { TokensSlice, createTokensSlice } from '@/dex/store/createTokensSlice'
 import { maybe } from '@primitives/objects.utils'
-import { setLocalStorageItem } from '@ui-kit/hooks/useLocalStorage'
+import { setLocalStorageItem } from '@evm-ui/hooks/useLocalStorage'
 
 export type State = GlobalSlice &
   CacheSlice &

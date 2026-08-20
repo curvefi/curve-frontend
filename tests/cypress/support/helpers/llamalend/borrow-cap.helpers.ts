@@ -1,8 +1,8 @@
 import { type Address, createPublicClient, encodeFunctionData, http, parseAbi, parseUnits } from 'viem'
 import { sendAdminTransaction } from '@cy/support/helpers/tenderly/vnet-tx'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
+import { Chain } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { Chain } from '@ui-kit/utils'
 import { fundErc20, fundEth } from '../tenderly/vnet-fund'
 
 const CONTROLLER_V2_ABI = parseAbi([

@@ -5,12 +5,12 @@ import CardContent from '@mui/material/CardContent'
 import Grid from '@mui/material/Grid'
 import SvgIcon from '@mui/material/SvgIcon'
 import Typography from '@mui/material/Typography'
-import { t } from '@ui-kit/lib/i18n'
-import { ArbitrageIcon } from '@ui-kit/shared/icons/ArbitrageIcon'
-import { RebalancingIcon } from '@ui-kit/shared/icons/RebalancingIcon'
-import { SecurityIcon } from '@ui-kit/shared/icons/SecurityIcon'
-import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { t } from '@evm-ui/lib/i18n'
+import { ArbitrageIcon } from '@evm-ui/shared/icons/ArbitrageIcon'
+import { RebalancingIcon } from '@evm-ui/shared/icons/RebalancingIcon'
+import { SecurityIcon } from '@evm-ui/shared/icons/SecurityIcon'
+import { ExternalLink } from '@evm-ui/shared/ui/ExternalLink'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 
 const { Spacing, IconSize } = SizesAndSpaces
 

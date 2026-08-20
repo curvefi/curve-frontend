@@ -4,9 +4,9 @@ import type { RepayQuery } from '@/llamalend/queries/validation/repay.types'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
-import { parseMutationRoute, type RouteMutationMeta } from '@ui-kit/entities/router-api'
-import type { FieldsOf } from '@ui-kit/lib'
-import { type UserMarketQuery } from '@ui-kit/lib/model'
+import { parseMutationRoute, type RouteMutationMeta } from '@evm-ui/entities/router-api'
+import type { FieldsOf } from '@evm-ui/lib'
+import { type UserMarketQuery } from '@evm-ui/lib/model'
 import { getUserState } from '../user/user-state.query'
 
 type RepayFields = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'userBorrowed' | 'routeId' | 'slippage'>

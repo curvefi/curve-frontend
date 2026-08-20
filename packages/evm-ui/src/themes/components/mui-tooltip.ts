@@ -1,6 +1,6 @@
+import { Duration } from '@evm-ui/themes/design/0_primitives'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import type { Components, TypographyVariantsOptions } from '@mui/material/styles'
-import { Duration } from '@ui-kit/themes/design/0_primitives'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { handleBreakpoints } from '../basic-theme'
 import { getShadow } from '../basic-theme/shadows'
 import type { DesignSystem } from '../design'

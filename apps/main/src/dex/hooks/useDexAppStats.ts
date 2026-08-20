@@ -6,9 +6,9 @@ import type { SwapFormValuesCache } from '@/dex/store/createCacheSlice'
 import { useStore } from '@/dex/store/useStore'
 import { type NetworkDef } from '@legacy-ui/utils'
 import { notFalsyArray } from '@primitives/objects.utils'
-import { t } from '@ui-kit/lib/i18n'
-import { APP_LINK } from '@ui-kit/shared/routes'
-import { formatNumber } from '@ui-kit/utils'
+import { t } from '@evm-ui/lib/i18n'
+import { APP_LINK } from '@evm-ui/shared/routes'
+import { formatNumber } from '@evm-ui/utils'
 import { useNetworkByChain } from '../entities/networks'
 
 export const useDexAppStats = ({ isLite, chainId }: NetworkDef, enabled: boolean) => {

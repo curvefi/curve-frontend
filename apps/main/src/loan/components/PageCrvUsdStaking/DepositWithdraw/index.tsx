@@ -1,9 +1,9 @@
 import { SCRVUSD_VAULT_ADDRESS } from '@/loan/constants'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
-import { t } from '@ui-kit/lib/i18n'
-import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
-import { CRVUSD_ADDRESS } from '@ui-kit/utils'
-import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
+import { t } from '@evm-ui/lib/i18n'
+import { DEX_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
+import { CRVUSD_ADDRESS } from '@evm-ui/utils'
+import { type FormTab, FormTabs } from '@evm-ui/widgets/DetailPageLayout/FormTabs'
 import { ScrvUsdDepositForm } from '../ScrvUsdDepositForm'
 import { ScrvUsdWithdrawForm } from '../ScrvUsdWithdrawForm'
 

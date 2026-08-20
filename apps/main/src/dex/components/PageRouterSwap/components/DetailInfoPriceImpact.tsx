@@ -1,7 +1,7 @@
 import { DetailInfo } from '@legacy-ui/DetailInfo'
 import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
-import { t } from '@ui-kit/lib/i18n'
-import { formatNumber, getFractionDigitsOptions } from '@ui-kit/utils'
+import { t } from '@evm-ui/lib/i18n'
+import { formatNumber, getFractionDigitsOptions } from '@evm-ui/utils'
 
 export const DetailInfoPriceImpact = ({
   loading,

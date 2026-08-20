@@ -17,11 +17,11 @@ import { Stepper } from '@legacy-ui/Stepper/Stepper'
 import type { Step } from '@legacy-ui/Stepper/types'
 import { TxInfoBar } from '@legacy-ui/TxInfoBar'
 import { formatDate, scanTxPath } from '@legacy-ui/utils'
-import { isLoading, notify, useCurve } from '@ui-kit/features/connect-wallet'
-import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
-import { dayjs } from '@ui-kit/lib/dayjs'
-import { t } from '@ui-kit/lib/i18n'
-import { REFRESH_INTERVAL } from '@ui-kit/utils'
+import { isLoading, notify, useCurve } from '@evm-ui/features/connect-wallet'
+import { usePageVisibleInterval } from '@evm-ui/hooks/usePageVisibleInterval'
+import { dayjs } from '@evm-ui/lib/dayjs'
+import { t } from '@evm-ui/lib/i18n'
+import { REFRESH_INTERVAL } from '@evm-ui/utils'
 
 export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const isSubscribedRef = useRef(false)

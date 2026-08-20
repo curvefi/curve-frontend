@@ -1,8 +1,8 @@
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { TvlTooltipContent } from '@/llamalend/widgets/tooltips/TvlTooltipContent'
 import { CellContext } from '@tanstack/react-table'
-import { t } from '@ui-kit/lib/i18n'
-import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
+import { t } from '@evm-ui/lib/i18n'
+import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
 import { CompactUsdCell } from './CompactUsdCell'
 
 export const TvlCell = ({ row, ...ctx }: CellContext<LlamaMarketRow, number>) => (

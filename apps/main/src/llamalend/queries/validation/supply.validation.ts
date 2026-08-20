@@ -4,10 +4,10 @@ import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
-import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
-import type { UserMarketParams, UserMarketQuery } from '@ui-kit/lib/model/query/root-keys'
-import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-validation'
-import type { MakeOptional } from '@ui-kit/types/util'
+import { createValidationSuite, type FieldsOf } from '@evm-ui/lib'
+import type { UserMarketParams, UserMarketQuery } from '@evm-ui/lib/model/query/root-keys'
+import { userMarketValidationSuite } from '@evm-ui/lib/model/query/user-market-validation'
+import type { MakeOptional } from '@evm-ui/types/util'
 
 export type DepositMutation = {
   depositAmount: Decimal

@@ -1,4 +1,4 @@
-import { ActivityTable, MarketTradesExpandedPanel } from '@ui-kit/features/activity-table'
+import { ActivityTable, MarketTradesExpandedPanel } from '@evm-ui/features/activity-table'
 import { useLlammaActivityTradesConfig } from './hooks/useLlammaActivityTradesConfig'
 import { LlammaActivityProps } from './'
 

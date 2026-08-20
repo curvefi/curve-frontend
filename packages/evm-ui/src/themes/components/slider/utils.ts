@@ -1,7 +1,7 @@
 import { sortBy } from 'lodash'
-import type { SliderProps } from '@ui-kit/shared/ui/Slider'
-import { DesignSystem } from '@ui-kit/themes/design'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { SliderProps } from '@evm-ui/shared/ui/Slider'
+import { DesignSystem } from '@evm-ui/themes/design'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import type {
   GradientStopsDefinition,
   OrientationConfig,

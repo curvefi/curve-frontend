@@ -16,8 +16,8 @@ import { Icon } from '@legacy-ui/Icon/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
 import { SpinnerWrapper, Spinner } from '@legacy-ui/Spinner'
 import { Switch } from '@legacy-ui/Switch/Switch'
-import { isLoading, useCurve } from '@ui-kit/features/connect-wallet'
-import { t } from '@ui-kit/lib/i18n'
+import { isLoading, useCurve } from '@evm-ui/features/connect-wallet'
+import { t } from '@evm-ui/lib/i18n'
 
 export const DeployGauge = (props: NetworkUrlParams) => {
   const { curveApi = null, connectState } = useCurve()

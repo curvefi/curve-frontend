@@ -1,9 +1,9 @@
 import { useCallback } from 'react'
 import { useConnect, useConnectors, useDisconnect, type Connector } from 'wagmi'
 import { ConnectorAlreadyConnectedError } from 'wagmi'
-import { useGlobalState } from '@ui-kit/hooks/useGlobalState'
-import type { Provider } from '@ui-kit/lib/ethers'
-import { IS_CYPRESS } from '@ui-kit/utils/env'
+import { useGlobalState } from '@evm-ui/hooks/useGlobalState'
+import type { Provider } from '@evm-ui/lib/ethers'
+import { IS_CYPRESS } from '@evm-ui/utils/env'
 import { useCurve } from './CurveContext'
 import type { Wallet } from './types'
 

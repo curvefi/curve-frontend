@@ -7,11 +7,11 @@ import { getUserMintMarketsStatsOptions } from '@/llamalend/queries/market-list/
 import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
 import { useQueries } from '@tanstack/react-query'
-import { getTokenUsdRateQueryOptions } from '@ui-kit/lib/model/entities/token-usd-rate'
-import type { QueryOptionsData } from '@ui-kit/lib/queries/types'
-import { MarketType } from '@ui-kit/types/market'
-import { DISABLED_Q, mapQuery, q, type QueryProp } from '@ui-kit/types/util'
-import { decimal, requireChainId } from '@ui-kit/utils'
+import { getTokenUsdRateQueryOptions } from '@evm-ui/lib/model/entities/token-usd-rate'
+import type { QueryOptionsData } from '@evm-ui/lib/queries/types'
+import { MarketType } from '@evm-ui/types/market'
+import { DISABLED_Q, mapQuery, q, type QueryProp } from '@evm-ui/types/util'
+import { decimal, requireChainId } from '@evm-ui/utils'
 
 type LendBorrowStats = QueryOptionsData<ReturnType<typeof getUserLendingVaultStatsOptions>>
 type MintBorrowStats = QueryOptionsData<ReturnType<typeof getUserMintMarketsStatsOptions>>

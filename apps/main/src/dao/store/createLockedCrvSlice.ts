@@ -16,10 +16,10 @@ import {
   TransactionState,
 } from '@/dao/types/dao.types'
 import { shortenAccount } from '@legacy-ui/utils'
-import { notify, requireLib, useWallet } from '@ui-kit/features/connect-wallet'
-import { t } from '@ui-kit/lib/i18n'
-import { getErrorMessage } from '@ui-kit/utils'
-import { setMissingProvider } from '@ui-kit/utils/store.util'
+import { notify, requireLib, useWallet } from '@evm-ui/features/connect-wallet'
+import { t } from '@evm-ui/lib/i18n'
+import { getErrorMessage } from '@evm-ui/utils'
+import { setMissingProvider } from '@evm-ui/utils/store.util'
 import { invalidateLockerVecrvUser } from '../entities/locker-vecrv-user'
 
 type StateKey = keyof typeof DEFAULT_STATE

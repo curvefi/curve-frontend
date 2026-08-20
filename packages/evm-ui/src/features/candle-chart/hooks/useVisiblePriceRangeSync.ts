@@ -1,7 +1,7 @@
 import type { IChartApi } from 'lightweight-charts'
 import { throttle } from 'lodash'
 import { useCallback, useEffect, useRef, type RefObject } from 'react'
-import { Duration } from '@ui-kit/themes/design/0_primitives'
+import { Duration } from '@evm-ui/themes/design/0_primitives'
 
 // Ignore microscopic floating-point drift from autoscale math so we don't
 // emit range updates that are visually identical but still trigger re-renders.

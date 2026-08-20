@@ -8,9 +8,9 @@ import { getPath } from '@/dex/utils/utilsRouter'
 import { Icon } from '@legacy-ui/Icon'
 import { TextEllipsis } from '@legacy-ui/TextEllipsis'
 import { breakpoints } from '@legacy-ui/utils/responsive'
-import { useCurve } from '@ui-kit/features/connect-wallet'
-import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
-import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
+import { useCurve } from '@evm-ui/features/connect-wallet'
+import { RouterLink } from '@evm-ui/shared/ui/RouterLink'
+import { copyToClipboard, shortenAddress } from '@evm-ui/utils'
 
 type ButtonProps = {
   className?: string

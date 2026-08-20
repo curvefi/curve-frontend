@@ -1,6 +1,6 @@
 import { type Dispatch, type SetStateAction, useEffect } from 'react'
 import type { Decimal } from '@primitives/decimal.utils'
-import type { QueryProp } from '@ui-kit/types/util'
+import type { QueryProp } from '@evm-ui/types/util'
 import { isQueryValueDifferent } from '../info-actions.helpers'
 
 type ShowNetRateState = [Record<string, boolean>, Dispatch<SetStateAction<Record<string, boolean>>>]

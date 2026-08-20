@@ -1,11 +1,11 @@
 import type { UrlParams } from '@/lend/types/lend.types'
 import { useLlamalendMarketSubNavRoutes } from '@/llamalend/hooks/useLlamalendRoutes'
 import Portal from '@mui/material/Portal'
-import { usePathname, useParams } from '@ui-kit/hooks/router'
-import { useIsDesktop } from '@ui-kit/hooks/useBreakpoints'
-import { routeToPage } from '@ui-kit/shared/routes'
-import { PageTabsSwitcher } from '@ui-kit/widgets/Header/PageTabsSwitcher'
-import { SubNav } from '@ui-kit/widgets/Header/SubNav'
+import { usePathname, useParams } from '@evm-ui/hooks/router'
+import { useIsDesktop } from '@evm-ui/hooks/useBreakpoints'
+import { routeToPage } from '@evm-ui/shared/routes'
+import { PageTabsSwitcher } from '@evm-ui/widgets/Header/PageTabsSwitcher'
+import { SubNav } from '@evm-ui/widgets/Header/SubNav'
 
 export const LendMarketSubNavMobile = () => {
   const isDesktop = useIsDesktop()

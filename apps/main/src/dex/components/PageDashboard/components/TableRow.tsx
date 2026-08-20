@@ -9,7 +9,7 @@ import type { DashboardTableRowProps } from '@/dex/components/PageDashboard/type
 import { SORT_ID } from '@/dex/components/PageDashboard/utils'
 import { PoolLabel } from '@/dex/components/PoolLabel'
 import { Tr, Td } from '@legacy-ui/Table'
-import { useIntersectionObserver } from '@ui-kit/hooks/useIntersectionObserver'
+import { useIntersectionObserver } from '@evm-ui/hooks/useIntersectionObserver'
 import { TableCellRewardsOthers } from '../../TableCellRewardsOthers'
 
 export const TableRow = ({

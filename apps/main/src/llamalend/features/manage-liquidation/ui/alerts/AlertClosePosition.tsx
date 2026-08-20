@@ -1,7 +1,7 @@
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Typography from '@mui/material/Typography'
-import { t } from '@ui-kit/lib/i18n'
+import { t } from '@evm-ui/lib/i18n'
 
 export const AlertClosePosition = ({ hasBadDebt }: { hasBadDebt: boolean }) => (
   <Alert severity={hasBadDebt ? 'error' : 'info'} variant="outlined">

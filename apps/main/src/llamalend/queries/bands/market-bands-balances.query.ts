@@ -2,10 +2,10 @@ import { getMarket } from '@/llamalend/llama.utils'
 import { fetchChartBandBalancesData, sortBands } from '@/llamalend/queries/bands/bands-balances.query-helpers'
 import { normalizeBands } from '@/llamalend/queries/market/market.query-helpers'
 import { liquidationBandValidationGroup } from '@/llamalend/queries/validation/bands-validation'
-import type { MarketQuery } from '@ui-kit/lib/model'
-import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
-import { createValidationSuite, FieldsOf } from '@ui-kit/lib/validation'
+import type { MarketQuery } from '@evm-ui/lib/model'
+import { queryFactory, rootKeys } from '@evm-ui/lib/model'
+import { marketIdValidationSuite } from '@evm-ui/lib/model/query/market-id-validation'
+import { createValidationSuite, FieldsOf } from '@evm-ui/lib/validation'
 
 const IS_MARKET = true
 const QUERY_KEY = 'bandsBalances' as const

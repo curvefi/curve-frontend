@@ -1,7 +1,7 @@
 import type { FunctionComponent, ReactNode } from 'react'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Stack from '@mui/material/Stack'
 import { notFalsy } from '@primitives/objects.utils'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { HiddenInlinedItems } from './HiddenInlinedItems'
 import { getInlinedItemsVisibility } from './HiddenInlinedItems.utils'
 import { TableActiveFilterChip } from './TableActiveFilterChip'

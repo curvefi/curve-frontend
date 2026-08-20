@@ -8,8 +8,8 @@ import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import CircularProgress from '@mui/material/CircularProgress'
 import Stack from '@mui/material/Stack'
-import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { WithWrapper } from '@evm-ui/shared/ui/WithWrapper'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 

@@ -4,7 +4,7 @@
     "paths": {
       "@legacy-ui": ["../legacy-ui/src/index.ts"],
       "@legacy-ui/*": ["../legacy-ui/src/*"],
-      "@ui-kit/*": ["./src/*"],
+      "@evm-ui/*": ["./src/*"],
       "@external-rewards": ["../external-rewards/src/index.ts"],
       "@external-rewards/*": ["../external-rewards/src/*"],
       "@curvefi/prices-api": ["../prices-api/src/index.ts"],

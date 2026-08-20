@@ -6,9 +6,9 @@ import { FormWithdraw } from '@/dex/components/PagePool/Withdraw/components/Form
 import type { FormType } from '@/dex/components/PagePool/Withdraw/types'
 import { useStore } from '@/dex/store/useStore'
 import { AlertBox } from '@legacy-ui/AlertBox/AlertBox'
-import { t } from '@ui-kit/lib/i18n'
-import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
-import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
+import { t } from '@evm-ui/lib/i18n'
+import { TabsSwitcher, type TabOption } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
+import { FormContent } from '@evm-ui/widgets/DetailPageLayout/FormContent'
 
 const tabs: TabOption<FormType>[] = [
   { value: 'WITHDRAW', label: t`Withdraw` },

@@ -1,7 +1,7 @@
 import type { PoolAlert } from '@/dex/types/main.types'
 import { AlertColor, AlertIcons, AlertText } from '@/dex/utils/alerts'
 import Typography from '@mui/material/Typography'
-import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
+import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
 
 export const PoolAlertBadge = ({
   alert: { alertType, isInformationOnly, isInformationOnlyAndShowInForm, isPoolPageOnly, message },

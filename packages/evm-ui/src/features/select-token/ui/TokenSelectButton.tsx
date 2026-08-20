@@ -1,7 +1,7 @@
+import { Select, type SelectProps } from '@evm-ui/shared/ui/Select'
+import { Spinner } from '@evm-ui/shared/ui/Spinner'
+import { TokenLabel } from '@evm-ui/shared/ui/TokenLabel'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
-import { Select, type SelectProps } from '@ui-kit/shared/ui/Select'
-import { Spinner } from '@ui-kit/shared/ui/Spinner'
-import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import type { TokenOption } from '../types'
 
 type TokenSelectButtonCallbacks = {

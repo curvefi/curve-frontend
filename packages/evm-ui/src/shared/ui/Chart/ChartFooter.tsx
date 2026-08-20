@@ -1,10 +1,10 @@
 import { type MouseEvent } from 'react'
+import { LegendSet, type LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { Typography } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
-import { LegendSet, type LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 

@@ -4,9 +4,9 @@ import type { VeCrvHolder } from '@/dao/entities/vecrv-holders'
 import { Box } from '@legacy-ui/Box'
 import { formatDate } from '@legacy-ui/utils/'
 import Stack from '@mui/material/Stack'
-import { t } from '@ui-kit/lib/i18n'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { formatNumber } from '@ui-kit/utils'
+import { t } from '@evm-ui/lib/i18n'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { formatNumber } from '@evm-ui/utils'
 
 const { Spacing } = SizesAndSpaces
 

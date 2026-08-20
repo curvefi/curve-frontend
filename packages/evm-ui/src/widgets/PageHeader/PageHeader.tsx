@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react'
+import { ArrowLeft } from '@evm-ui/shared/icons/ArrowLeft'
+import { RouterLink } from '@evm-ui/shared/ui/RouterLink'
+import { WithSkeleton } from '@evm-ui/shared/ui/WithSkeleton'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { ArrowLeft } from '@ui-kit/shared/icons/ArrowLeft'
-import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
-import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 

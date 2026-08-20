@@ -1,6 +1,6 @@
 import { custom, PrivateKeyAccount, type RpcTransactionRequest } from 'viem'
 import type { TenderlyConfig } from '@cy/support/helpers/tenderly/account'
-import { createTestConnector, CreateTestConnectorOptions } from '@ui-kit/features/connect-wallet/lib/wagmi/wagmi-test'
+import { createTestConnector, CreateTestConnectorOptions } from '@evm-ui/features/connect-wallet/lib/wagmi/wagmi-test'
 import { sendVnetTransaction } from './vnet-tx'
 
 /**

@@ -1,6 +1,6 @@
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { applySxProps } from '@evm-ui/utils'
 import Stack, { StackProps } from '@mui/material/Stack'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { applySxProps } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 

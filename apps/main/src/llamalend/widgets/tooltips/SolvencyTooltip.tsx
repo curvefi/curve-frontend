@@ -1,6 +1,6 @@
-import { t } from '@ui-kit/lib/i18n'
-import { TooltipWrapper, TooltipDescription } from '@ui-kit/shared/ui/TooltipComponents'
-import { MarketType } from '@ui-kit/types/market'
+import { t } from '@evm-ui/lib/i18n'
+import { TooltipWrapper, TooltipDescription } from '@evm-ui/shared/ui/TooltipComponents'
+import { MarketType } from '@evm-ui/types/market'
 
 type SolvencyTooltipType = MarketType | 'overview'
 

@@ -30,11 +30,11 @@ import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
 import { LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
+import { getLib } from '@evm-ui/features/connect-wallet'
+import { MarketType } from '@evm-ui/types/market'
+import { waitFor } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { recordValues } from '@primitives/objects.utils'
-import { getLib } from '@ui-kit/features/connect-wallet'
-import { MarketType } from '@ui-kit/types/market'
-import { waitFor } from '@ui-kit/utils'
 
 const testCases = recordValues(MarketType).map(marketType => oneLoanTestMarket(marketType))
 /**

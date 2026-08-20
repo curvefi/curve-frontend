@@ -6,12 +6,12 @@ import { useScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances.que
 import type { ChainId } from '@/loan/types/loan.types'
 import { Card, CardContent, CardHeader, Stack } from '@mui/material'
 import Grid from '@mui/material/Grid'
-import { combineQueries } from '@ui-kit/lib'
-import { t } from '@ui-kit/lib/i18n'
-import { Metric } from '@ui-kit/shared/ui/Metric'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { mapQuery } from '@ui-kit/types/util'
-import { decimal, decimalDiv, decimalPercent } from '@ui-kit/utils'
+import { combineQueries } from '@evm-ui/lib'
+import { t } from '@evm-ui/lib/i18n'
+import { Metric } from '@evm-ui/shared/ui/Metric'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { mapQuery } from '@evm-ui/types/util'
+import { decimal, decimalDiv, decimalPercent } from '@evm-ui/utils'
 
 const { Spacing } = SizesAndSpaces
 

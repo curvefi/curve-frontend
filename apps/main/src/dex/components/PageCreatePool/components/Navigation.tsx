@@ -5,7 +5,7 @@ import { useStore } from '@/dex/store/useStore'
 import { CurveApi, ChainId } from '@/dex/types/main.types'
 import { Button } from '@legacy-ui/Button'
 import { Icon } from '@legacy-ui/Icon'
-import { t } from '@ui-kit/lib/i18n'
+import { t } from '@evm-ui/lib/i18n'
 
 type Props = {
   navigation: number

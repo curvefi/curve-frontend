@@ -4,9 +4,9 @@ import { usePoolVolume } from '@/dex/queries/pool-volume.query'
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import type { Pool as PricesApiPool } from '@curvefi/prices-api/pools'
 import { maybes } from '@primitives/objects.utils'
-import { combineQueries } from '@ui-kit/lib'
-import { constQ, fallbackQ } from '@ui-kit/types/util'
-import { decimal, decimalPercent } from '@ui-kit/utils'
+import { combineQueries } from '@evm-ui/lib'
+import { constQ, fallbackQ } from '@evm-ui/types/util'
+import { decimal, decimalPercent } from '@evm-ui/utils'
 
 export const useMetrics = ({
   chainId,

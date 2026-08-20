@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars,@typescript-eslint/consistent-type-definitions */
 import '@tanstack/table-core'
+import type { TypographyVariantKey } from '@evm-ui/themes/typography'
+import { Unit } from '@evm-ui/utils/units'
 import type { RowData } from '@tanstack/table-core'
-import type { TypographyVariantKey } from '@ui-kit/themes/typography'
-import { Unit } from '@ui-kit/utils/units'
 import type { TooltipProps } from '../Tooltip'
 
 /**

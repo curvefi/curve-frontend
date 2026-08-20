@@ -1,11 +1,11 @@
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { createColumnHelper } from '@tanstack/react-table'
-import { t } from '@ui-kit/lib/i18n'
-import type { TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
-import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
-import { TokenInfo, type TokenInfoProps } from '@ui-kit/shared/ui/TokenInfo'
+import { t } from '@evm-ui/lib/i18n'
+import type { TableItem } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
+import { ExternalLink } from '@evm-ui/shared/ui/ExternalLink'
+import { TokenInfo, type TokenInfoProps } from '@evm-ui/shared/ui/TokenInfo'
 import { PointsCampaignsColumnId } from './columns.enum'
 
 export type PointsCampaignsRow = TableItem & {

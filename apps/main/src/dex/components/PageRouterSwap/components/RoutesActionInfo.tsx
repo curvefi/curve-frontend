@@ -3,10 +3,10 @@ import type { Route } from '@/dex/components/PageRouterSwap/types'
 import { type NetworkUrlParams, type PoolDataMapper, TokensNameMapper } from '@/dex/types/main.types'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
-import { t } from '@ui-kit/lib/i18n'
-import { IndicatorIcon } from '@ui-kit/shared/icons/IndicatorIcon'
-import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
-import { mapQuery, type QueryProp } from '@ui-kit/types/util'
+import { t } from '@evm-ui/lib/i18n'
+import { IndicatorIcon } from '@evm-ui/shared/icons/IndicatorIcon'
+import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
+import { mapQuery, type QueryProp } from '@evm-ui/types/util'
 
 export const RoutesActionInfo = ({
   params,

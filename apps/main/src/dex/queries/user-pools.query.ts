@@ -1,9 +1,9 @@
-import { requireLib } from '@ui-kit/features/connect-wallet'
-import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
-import { queryFactory, rootKeys, type ChainQuery, type UserQuery } from '@ui-kit/lib/model'
-import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
-import { curveApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
-import { evmAddressValidationGroup } from '@ui-kit/lib/model/query/evm-address-validation'
+import { requireLib } from '@evm-ui/features/connect-wallet'
+import { createValidationSuite, type FieldsOf } from '@evm-ui/lib'
+import { queryFactory, rootKeys, type ChainQuery, type UserQuery } from '@evm-ui/lib/model'
+import { chainValidationGroup } from '@evm-ui/lib/model/query/chain-validation'
+import { curveApiValidationGroup } from '@evm-ui/lib/model/query/curve-api-validation'
+import { evmAddressValidationGroup } from '@evm-ui/lib/model/query/evm-address-validation'
 
 type UserPoolsQuery = ChainQuery & UserQuery
 type UserPoolsParams = FieldsOf<UserPoolsQuery>

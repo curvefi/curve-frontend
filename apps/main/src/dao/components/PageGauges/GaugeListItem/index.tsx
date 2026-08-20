@@ -18,10 +18,10 @@ import { Button } from '@legacy-ui/Button'
 import { Icon } from '@legacy-ui/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
 import type { Address } from '@primitives/address.utils'
-import { useCurrentDate } from '@ui-kit/hooks/useCurrentDate'
-import { t } from '@ui-kit/lib/i18n'
-import { DAO_ROUTES } from '@ui-kit/shared/routes'
-import { Chain } from '@ui-kit/utils/network'
+import { useCurrentDate } from '@evm-ui/hooks/useCurrentDate'
+import { t } from '@evm-ui/lib/i18n'
+import { DAO_ROUTES } from '@evm-ui/shared/routes'
+import { Chain } from '@evm-ui/utils/network'
 
 type Props = {
   gaugeData: GaugeFormattedData

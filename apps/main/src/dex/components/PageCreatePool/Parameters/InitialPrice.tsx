@@ -5,7 +5,7 @@ import { TOKEN_A, TOKEN_B, TOKEN_C } from '@/dex/components/PageCreatePool/const
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi } from '@/dex/types/main.types'
 import { Box } from '@legacy-ui/Box'
-import { t } from '@ui-kit/lib/i18n'
+import { t } from '@evm-ui/lib/i18n'
 
 type Props = {
   curve: CurveApi

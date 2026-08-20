@@ -5,7 +5,7 @@ import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
 import { Chip } from '@legacy-ui/Typography/Chip'
 import { focusVisible } from '@legacy-ui/utils'
-import { shortenAddress } from '@ui-kit/utils'
+import { shortenAddress } from '@evm-ui/utils'
 
 export const ComboBoxListItem = ({
   testId,

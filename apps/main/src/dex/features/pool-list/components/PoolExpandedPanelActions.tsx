@@ -1,9 +1,9 @@
 import { ROUTE } from '@/dex/constants'
 import { getPath } from '@/dex/utils/utilsRouter'
-import { copyToClipboardWithToast } from '@ui-kit/hooks/useCopyToClipboard'
-import { t } from '@ui-kit/lib/i18n'
-import { ExpandedPanelActions } from '@ui-kit/shared/ui/DataTable/ExpandedPanelActions'
-import type { ExpandedPanelComponent } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
+import { copyToClipboardWithToast } from '@evm-ui/hooks/useCopyToClipboard'
+import { t } from '@evm-ui/lib/i18n'
+import { ExpandedPanelActions } from '@evm-ui/shared/ui/DataTable/ExpandedPanelActions'
+import type { ExpandedPanelComponent } from '@evm-ui/shared/ui/DataTable/ExpansionRow'
 import type { PoolRow } from '../types'
 
 export const PoolExpandedPanelActions: ExpandedPanelComponent<PoolRow> = ({ row }) => {

@@ -1,11 +1,11 @@
 import { formatPercentage } from '@/llamalend/widgets/tooltips/tooltip.utils'
 import { Stack } from '@mui/material'
 import type { Decimal } from '@primitives/decimal.utils'
-import { t } from '@ui-kit/lib/i18n'
-import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui-kit/shared/ui/TooltipComponents'
-import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
-import type { QueryProp } from '@ui-kit/types/util'
-import { formatNumber, formatToken } from '@ui-kit/utils'
+import { t } from '@evm-ui/lib/i18n'
+import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@evm-ui/shared/ui/TooltipComponents'
+import { WithSkeleton } from '@evm-ui/shared/ui/WithSkeleton'
+import type { QueryProp } from '@evm-ui/types/util'
+import { formatNumber, formatToken } from '@evm-ui/utils'
 
 type TokenValues = {
   value: Decimal | undefined | null

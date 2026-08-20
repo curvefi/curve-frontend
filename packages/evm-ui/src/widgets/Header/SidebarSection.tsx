@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
+import type { AppPage } from '@evm-ui/widgets/Header/types'
 import { List, ListSubheader } from '@mui/material'
 import Divider from '@mui/material/Divider'
 import Typography from '@mui/material/Typography'
-import type { AppPage } from '@ui-kit/widgets/Header/types'
 import { SidebarItem } from './SidebarItem'
 
 type SidebarSectionProps = {

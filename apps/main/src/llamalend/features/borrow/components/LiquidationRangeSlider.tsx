@@ -1,9 +1,9 @@
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { maybe } from '@primitives/objects.utils'
-import { t } from '@ui-kit/lib/i18n'
-import { SliderInput } from '@ui-kit/shared/ui/SliderInput'
-import { decimal } from '@ui-kit/utils'
+import { t } from '@evm-ui/lib/i18n'
+import { SliderInput } from '@evm-ui/shared/ui/SliderInput'
+import { decimal } from '@evm-ui/utils'
 import { PRESET_RANGES } from '../../../constants'
 
 export const LiquidationRangeSlider = ({

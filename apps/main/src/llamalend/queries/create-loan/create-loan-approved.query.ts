@@ -1,7 +1,7 @@
 import { createLoanExpectedCollateralQueryKey } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import { notFalsy } from '@primitives/objects.utils'
-import { queryFactory, rootKeys } from '@ui-kit/lib/model'
+import { queryFactory, rootKeys } from '@evm-ui/lib/model'
 import type { CreateLoanDebtQuery, CreateLoanFormQueryParams } from '../../features/borrow/types'
 import { createLoanQueryValidationSuite } from '../validation/borrow.validation'
 

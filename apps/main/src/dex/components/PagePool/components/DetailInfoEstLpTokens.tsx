@@ -3,8 +3,8 @@ import type { FormLpTokenExpected } from '@/dex/components/PagePool/Deposit/type
 import { PoolDataCacheOrApi } from '@/dex/types/main.types'
 import { DetailInfo } from '@legacy-ui/DetailInfo'
 import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
-import { t } from '@ui-kit/lib/i18n'
-import { amount, formatNumber, formatToken } from '@ui-kit/utils'
+import { t } from '@evm-ui/lib/i18n'
+import { amount, formatNumber, formatToken } from '@evm-ui/utils'
 
 export const DetailInfoEstLpTokens = ({
   formLpTokenExpected,

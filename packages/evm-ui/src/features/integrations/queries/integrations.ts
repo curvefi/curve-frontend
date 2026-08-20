@@ -1,10 +1,10 @@
 import { sortBy } from 'lodash'
+import { EmptyValidationSuite } from '@evm-ui/lib'
+import { queryFactory } from '@evm-ui/lib/model/query'
+import type { Partner } from '@evm-ui/shared/ui/PartnerCard'
 import { CURVE_CDN_URL } from '@legacy-ui/utils'
 import { fetchJson } from '@primitives/fetch.utils'
 import { fromEntries } from '@primitives/objects.utils'
-import { EmptyValidationSuite } from '@ui-kit/lib'
-import { queryFactory } from '@ui-kit/lib/model/query'
-import type { Partner } from '@ui-kit/shared/ui/PartnerCard'
 
 const INTEGRATIONS_URL = `${CURVE_CDN_URL}/curve-external-integrations/integrations-list.json`
 

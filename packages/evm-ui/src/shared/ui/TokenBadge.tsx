@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
+import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
 import { CSSObject } from '@mui/material'
 import Box from '@mui/material/Box'
-import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 
 type SecondaryIconBadgeProps = {
   children: ReactNode

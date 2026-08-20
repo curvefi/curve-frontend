@@ -8,9 +8,9 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
-import { t } from '@ui-kit/lib/i18n'
-import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
-import { amount, formatNumber } from '@ui-kit/utils'
+import { t } from '@evm-ui/lib/i18n'
+import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
+import { amount, formatNumber } from '@evm-ui/utils'
 
 export const Prices = ({
   chainId,

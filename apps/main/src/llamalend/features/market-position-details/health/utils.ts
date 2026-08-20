@@ -2,7 +2,7 @@ import { useUserHealthValues } from '@/llamalend/queries/user/user-health.query'
 import type { Theme } from '@mui/material/styles'
 import { Decimal } from '@primitives/decimal.utils'
 import { maybe, maybes, recordEntries, recordValues } from '@primitives/objects.utils'
-import { QueryData } from '@ui-kit/lib'
+import { QueryData } from '@evm-ui/lib'
 
 const HEALTH_UPPER_BOUND_STATE = 'pristine' as const
 const LIQ_BUFFER_UPPER_BOUND_STATE = 'light' as const

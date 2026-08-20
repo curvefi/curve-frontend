@@ -1,6 +1,6 @@
 import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
-import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { decimal } from '@ui-kit/utils/decimal'
+import { queryFactory, rootKeys } from '@evm-ui/lib/model'
+import { decimal } from '@evm-ui/utils/decimal'
 import { getUserCurrentLeverageKey } from '../user/user-current-leverage.query'
 import { type CollateralParams, type CollateralQuery } from '../validation/manage-loan.types'
 import { leverageCollateralValidationSuite } from '../validation/manage-loan.validation'

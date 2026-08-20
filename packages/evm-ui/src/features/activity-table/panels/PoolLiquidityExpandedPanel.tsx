@@ -1,11 +1,11 @@
+import { t } from '@evm-ui/lib/i18n'
+import type { ExpandedPanelComponent } from '@evm-ui/shared/ui/DataTable/ExpansionRow'
+import { TokenIcon } from '@evm-ui/shared/ui/TokenIcon'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { formatNumber } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { shortenString } from '@primitives/string.utils'
-import { t } from '@ui-kit/lib/i18n'
-import type { ExpandedPanelComponent } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
-import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { formatNumber } from '@ui-kit/utils'
 import type { PoolLiquidityRow } from '../types'
 
 const { Spacing } = SizesAndSpaces

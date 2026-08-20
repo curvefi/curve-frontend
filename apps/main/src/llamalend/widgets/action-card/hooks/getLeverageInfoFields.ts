@@ -3,10 +3,10 @@ import { calculateLeverageCollateral } from '@/llamalend/widgets/action-card/inf
 import type { LoanActionInfoListProps } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
-import { combineQueryState } from '@ui-kit/lib'
-import { mapQuery, q, type Query, type QueryProp } from '@ui-kit/types/util'
-import { decimalSum } from '@ui-kit/utils'
-import type { PriceImpact } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
+import { combineQueryState } from '@evm-ui/lib'
+import { mapQuery, q, type Query, type QueryProp } from '@evm-ui/types/util'
+import { decimalSum } from '@evm-ui/utils'
+import type { PriceImpact } from '@evm-ui/widgets/DetailPageLayout/price-impact.util'
 
 type LeverageInfoFieldsOptions = {
   leverageEnabled: boolean | undefined

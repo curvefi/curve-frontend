@@ -9,9 +9,9 @@ import { Stepper } from '@legacy-ui/Stepper/Stepper'
 import type { Step } from '@legacy-ui/Stepper/types'
 import { TxInfoBar } from '@legacy-ui/TxInfoBar'
 import { scanTxPath } from '@legacy-ui/utils'
-import { useFormContext } from '@ui-kit/features/forms'
-import { t } from '@ui-kit/lib/i18n'
-import { REFRESH_INTERVAL } from '@ui-kit/utils'
+import { useFormContext } from '@evm-ui/features/forms'
+import { t } from '@evm-ui/lib/i18n'
+import { REFRESH_INTERVAL } from '@evm-ui/utils'
 
 type TxInfo = {
   description: string

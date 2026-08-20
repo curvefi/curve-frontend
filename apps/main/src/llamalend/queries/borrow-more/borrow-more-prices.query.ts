@@ -4,8 +4,8 @@ import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/vali
 import { borrowMoreValidationSuite } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
-import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import type { Range } from '@ui-kit/types/util'
+import { queryFactory, rootKeys } from '@evm-ui/lib/model'
+import type { Range } from '@evm-ui/types/util'
 
 export const { useQuery: useBorrowMorePrices, invalidate: invalidateBorrowMorePrices } = queryFactory({
   queryKey: ({

@@ -13,12 +13,12 @@ import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
 import { TxInfoBar } from '@legacy-ui/TxInfoBar'
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment'
-import { t } from '@ui-kit/lib/i18n'
-import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { mapQuery } from '@ui-kit/types/util'
-import { amount, formatNumber } from '@ui-kit/utils'
-import { getIsLockExpired } from '@ui-kit/utils/vecrv'
+import { t } from '@evm-ui/lib/i18n'
+import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { mapQuery } from '@evm-ui/types/util'
+import { amount, formatNumber } from '@evm-ui/utils'
+import { getIsLockExpired } from '@evm-ui/utils/vecrv'
 
 const { IconSize } = SizesAndSpaces
 

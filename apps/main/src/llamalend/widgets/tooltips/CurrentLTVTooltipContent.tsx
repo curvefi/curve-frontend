@@ -1,5 +1,5 @@
-import { t } from '@ui-kit/lib/i18n'
-import { TooltipWrapper, TooltipDescription } from '@ui-kit/shared/ui/TooltipComponents'
+import { t } from '@evm-ui/lib/i18n'
+import { TooltipWrapper, TooltipDescription } from '@evm-ui/shared/ui/TooltipComponents'
 
 export const CurrentLTVTooltipContent = ({ debtDenomination = 'Debt' }: { debtDenomination?: string }) => (
   <TooltipWrapper>

@@ -12,11 +12,11 @@ import { BorrowMoreForm } from '@/llamalend/queries/validation/borrow-more.valid
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Address } from '@primitives/address.utils'
 import { maybe } from '@primitives/objects.utils'
-import { useFormSync, useOnChangeCallback } from '@ui-kit/features/forms'
-import type { UseFormReturn } from '@ui-kit/features/forms'
-import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
-import { mapQuery, type QueryProp } from '@ui-kit/types/util'
-import { decimal } from '@ui-kit/utils'
+import { useFormSync, useOnChangeCallback } from '@evm-ui/features/forms'
+import type { UseFormReturn } from '@evm-ui/features/forms'
+import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
+import { mapQuery, type QueryProp } from '@evm-ui/types/util'
+import { decimal } from '@evm-ui/utils'
 
 export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>({
   params,

@@ -1,7 +1,7 @@
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { GaugeQuery, type UserQuery } from '@ui-kit/lib/model/query'
-import { FieldsOf } from '@ui-kit/lib/validation'
+import { GaugeQuery, type UserQuery } from '@evm-ui/lib/model/query'
+import { FieldsOf } from '@evm-ui/lib/validation'
 
 export type AddReward = {
   rewardTokenId: Address

@@ -2,8 +2,8 @@ import { repayExpectedBorrowedQueryKey } from '@/llamalend/queries/repay/repay-e
 import type { RepayHealthParams, RepayHealthQuery } from '@/llamalend/queries/validation/repay.types'
 import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import type { Decimal } from '@primitives/decimal.utils'
-import { parseRoute } from '@ui-kit/entities/router-api'
-import { queryFactory, rootKeys } from '@ui-kit/lib/model'
+import { parseRoute } from '@evm-ui/entities/router-api'
+import { queryFactory, rootKeys } from '@evm-ui/lib/model'
 import { getRepayImplementation } from './repay-query.helpers'
 
 export const { getQueryOptions: getRepayHealthOptions, invalidate: invalidateRepayHealth } = queryFactory({

@@ -1,8 +1,8 @@
+import { notify } from '@evm-ui/features/connect-wallet'
+import { Duration } from '@evm-ui/themes/design/0_primitives'
+import { waitFor } from '@evm-ui/utils/time'
 import { type Hex } from '@primitives/address.utils'
 import { toArray } from '@primitives/array.utils'
-import { notify } from '@ui-kit/features/connect-wallet'
-import { Duration } from '@ui-kit/themes/design/0_primitives'
-import { waitFor } from '@ui-kit/utils/time'
 import { type Config, waitForTransactionReceipt } from '@wagmi/core'
 
 export const gweiToEther = (gwei: number) => gwei / 1e9

@@ -8,9 +8,9 @@ import {
 } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Address, type Hex } from '@primitives/address.utils'
-import { t } from '@ui-kit/lib/i18n'
-import { rootKeys } from '@ui-kit/lib/model'
-import { formatNumber } from '@ui-kit/utils'
+import { t } from '@evm-ui/lib/i18n'
+import { rootKeys } from '@evm-ui/lib/model'
+import { formatNumber } from '@evm-ui/utils'
 
 type UnstakeOptions = {
   marketId: string | undefined

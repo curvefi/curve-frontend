@@ -1,6 +1,6 @@
 import type { Decimal } from '@primitives/decimal.utils'
-import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import type { UserMarketParams, UserMarketQuery } from '@ui-kit/lib/model/query/root-keys'
+import { queryFactory, rootKeys } from '@evm-ui/lib/model'
+import type { UserMarketParams, UserMarketQuery } from '@evm-ui/lib/model/query/root-keys'
 import { requireVault, supplyUserValidationSuite } from '../validation/supply.validation'
 
 /** Queries the maximum underlying asset amount the user can withdraw from the vault. */

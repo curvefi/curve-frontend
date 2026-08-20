@@ -1,6 +1,6 @@
+import { t } from '@evm-ui/lib/i18n'
+import { GearIcon } from '@evm-ui/shared/icons/GearIcon'
 import Button from '@mui/material/Button'
-import { t } from '@ui-kit/lib/i18n'
-import { GearIcon } from '@ui-kit/shared/icons/GearIcon'
 
 export const ModalSettingsButton = (props: { onClick: () => void }) => (
   <Button

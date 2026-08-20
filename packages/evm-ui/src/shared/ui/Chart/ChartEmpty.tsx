@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
+import { t } from '@evm-ui/lib/i18n'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Stack from '@mui/material/Stack'
-import { t } from '@ui-kit/lib/i18n'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { EmptyStateCard } from '../EmptyStateCard'
 
 const { Spacing } = SizesAndSpaces

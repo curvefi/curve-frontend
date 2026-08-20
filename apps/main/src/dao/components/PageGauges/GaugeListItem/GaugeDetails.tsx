@@ -12,8 +12,8 @@ import type { IconProps } from '@legacy-ui/Icon/Icon'
 import { ExternalLink } from '@legacy-ui/Link'
 import { Chip } from '@legacy-ui/Typography'
 import { formatDate, scanAddressPath } from '@legacy-ui/utils'
-import { t } from '@ui-kit/lib/i18n'
-import { Chain, shortenAddress, formatNumber } from '@ui-kit/utils'
+import { t } from '@evm-ui/lib/i18n'
+import { Chain, shortenAddress, formatNumber } from '@evm-ui/utils'
 
 const StyledInformationSquare16: IStyledComponent<'web', IconProps> = styled(Icon)`
   opacity: 0.4;

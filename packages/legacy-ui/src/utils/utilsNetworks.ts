@@ -1,4 +1,4 @@
-import { Chain } from '@ui-kit/utils/network'
+import { Chain } from '@evm-ui/utils/network'
 
 const NETWORK_BASE_CONFIG_DEFAULT = {
   name: '',

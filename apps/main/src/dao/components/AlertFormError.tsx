@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import type { AlertBoxProps } from '@legacy-ui/AlertBox/types'
-import { t } from '@ui-kit/lib/i18n'
+import { t } from '@evm-ui/lib/i18n'
 
 enum AlertFormErrorKey {
   USER_REJECTED_ACTION = 'error-user-rejected-action',

@@ -1,8 +1,8 @@
+import { t } from '@evm-ui/lib/i18n'
+import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
+import { TokenInfo } from '@evm-ui/shared/ui/TokenInfo'
+import { formatNumber } from '@evm-ui/utils'
 import { createColumnHelper } from '@tanstack/react-table'
-import { t } from '@ui-kit/lib/i18n'
-import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
-import { TokenInfo } from '@ui-kit/shared/ui/TokenInfo'
-import { formatNumber } from '@ui-kit/utils'
 import { TimestampCell, AddressCell } from '../cells'
 import type { MarketTradeRow } from '../types'
 

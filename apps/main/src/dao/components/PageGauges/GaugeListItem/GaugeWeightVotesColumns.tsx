@@ -3,8 +3,8 @@ import { useStore } from '@/dao/store/useStore'
 import { UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import { Box } from '@legacy-ui/Box'
 import { TooltipButton as Tooltip } from '@legacy-ui/Tooltip/TooltipButton'
-import { t } from '@ui-kit/lib/i18n'
-import { formatNumber } from '@ui-kit/utils'
+import { t } from '@evm-ui/lib/i18n'
+import { formatNumber } from '@evm-ui/utils'
 
 type GaugeWeightVotesColumnsProps = {
   userGaugeWeightVoteData: UserGaugeVoteWeight

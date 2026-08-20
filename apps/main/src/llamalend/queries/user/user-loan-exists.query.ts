@@ -2,10 +2,10 @@ import { identity } from 'lodash'
 import { getMarket } from '@/llamalend/llama.utils'
 import { MarketTemplate } from '@/llamalend/llamalend.types'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
-import { combineQueries } from '@ui-kit/lib'
-import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } from '@ui-kit/lib/model'
-import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-validation'
-import { QueryProp } from '@ui-kit/types/util'
+import { combineQueries } from '@evm-ui/lib'
+import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } from '@evm-ui/lib/model'
+import { userMarketValidationSuite } from '@evm-ui/lib/model/query/user-market-validation'
+import { QueryProp } from '@evm-ui/types/util'
 
 export const { useQuery: useLoanExists } = queryFactory({
   queryKey: (params: UserMarketParams) => [...rootKeys.userMarket(params), 'loanExists'] as const,

@@ -1,5 +1,5 @@
 import { type UrlParams } from '@/dao/types/dao.types'
-import { getInternalUrl } from '@ui-kit/shared/routes'
+import { getInternalUrl } from '@evm-ui/shared/routes'
 
 /** Get the path for the given route in this app */
 export const getPath = ({ network }: UrlParams, route: string) => getInternalUrl('dao', network, route)

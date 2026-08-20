@@ -1,7 +1,7 @@
 import { defineChain, type Chain } from 'viem'
+import { defaultGetRpcUrls } from '@evm-ui/features/connect-wallet/lib/wagmi/transports'
 import type { NetworkDef } from '@legacy-ui/utils'
 import { DEFAULT_DECIMALS } from '@primitives/objects.utils'
-import { defaultGetRpcUrls } from '@ui-kit/features/connect-wallet/lib/wagmi/transports'
 import {
   arbitrum,
   arbitrumSepolia,

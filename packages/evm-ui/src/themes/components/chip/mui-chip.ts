@@ -1,13 +1,13 @@
 /// <reference types="./mui-chip.d.ts" />
+import { handleBreakpoints, Responsive, ResponsiveOrValue } from '@evm-ui/themes/basic-theme'
+import { DesignSystem } from '@evm-ui/themes/design'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import type { TypographyVariantKey } from '@evm-ui/themes/typography'
 import type { Components } from '@mui/material'
 // eslint-disable-next-line no-restricted-imports
 import type { ChipProps } from '@mui/material/Chip'
 import type { CSSObject, TypographyVariantsOptions } from '@mui/material/styles'
 import { mapRecord, recordValues } from '@primitives/objects.utils'
-import { handleBreakpoints, Responsive, ResponsiveOrValue } from '@ui-kit/themes/basic-theme'
-import { DesignSystem } from '@ui-kit/themes/design'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { TypographyVariantKey } from '@ui-kit/themes/typography'
 
 const { Spacing, IconSize, LineHeight, ButtonSize, Badge } = SizesAndSpaces
 

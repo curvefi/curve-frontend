@@ -5,8 +5,8 @@ import type { RepayParams, RepayQuery } from '@/llamalend/queries/validation/rep
 import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { notFalsy } from '@primitives/objects.utils'
-import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { createApprovedEstimateGasHook } from '@ui-kit/lib/model/entities/gas-info'
+import { queryFactory, rootKeys } from '@evm-ui/lib/model'
+import { createApprovedEstimateGasHook } from '@evm-ui/lib/model/entities/gas-info'
 import { getRepayImplementation, isFullRepayFromDebtToken, isRepayLeveraged } from './repay-query.helpers'
 
 const {

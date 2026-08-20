@@ -1,11 +1,11 @@
 import { ReactNode } from 'react'
+import { t } from '@evm-ui/lib/i18n'
+import { ExternalLink } from '@evm-ui/shared/ui/ExternalLink'
+import { ModalDialog } from '@evm-ui/shared/ui/ModalDialog'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import MuiTypography from '@mui/material/Typography'
-import { t } from '@ui-kit/lib/i18n'
-import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
-import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Maintenance } from '../hooks/useMaintenance'
 
 const { Spacing } = SizesAndSpaces

@@ -29,9 +29,9 @@ import { Stepper } from '@legacy-ui/Stepper/Stepper'
 import type { Step } from '@legacy-ui/Stepper/types'
 import { TxInfoBar } from '@legacy-ui/TxInfoBar'
 import { scanTxPath } from '@legacy-ui/utils'
-import { notify } from '@ui-kit/features/connect-wallet'
-import { t } from '@ui-kit/lib/i18n'
-import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
+import { notify } from '@evm-ui/features/connect-wallet'
+import { t } from '@evm-ui/lib/i18n'
+import { SlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings'
 
 export const FormDepositStake = ({
   curve,

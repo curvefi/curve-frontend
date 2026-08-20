@@ -1,7 +1,7 @@
 import { getUserMarketCollateralEvents, type UserCollateralEvents } from '@curvefi/prices-api/lending'
-import { FieldsOf } from '@ui-kit/lib'
-import { queryFactory } from '@ui-kit/lib/model/query'
-import type { UserQuery, ContractQuery } from '@ui-kit/lib/model/query'
+import { FieldsOf } from '@evm-ui/lib'
+import { queryFactory } from '@evm-ui/lib/model/query'
+import type { UserQuery, ContractQuery } from '@evm-ui/lib/model/query'
 import { userCollateralEventsValidationSuite } from './validation/user-collateral-events-validation'
 
 type UserLendCollateralEventsQuery = UserQuery & ContractQuery

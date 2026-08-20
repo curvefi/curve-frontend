@@ -5,10 +5,10 @@ import type { TooltipProps } from '@legacy-ui/Tooltip/types'
 import type { BaseConfig } from '@legacy-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { BannerProps } from '@ui-kit/shared/ui/Banner'
+import { BannerProps } from '@evm-ui/shared/ui/Banner'
 
-export type { Provider } from '@ui-kit/lib/ethers'
-export type { CurveApi, Wallet } from '@ui-kit/features/connect-wallet'
+export type { Provider } from '@evm-ui/lib/ethers'
+export type { CurveApi, Wallet } from '@evm-ui/features/connect-wallet'
 
 export type ChainId = IChainId
 export type NetworkEnum = INetworkName

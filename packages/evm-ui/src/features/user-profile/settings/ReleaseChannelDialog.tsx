@@ -1,12 +1,12 @@
+import { showReleaseChannelSnackbar } from '@evm-ui/features/user-profile/settings/settings.util'
+import { useReleaseChannel } from '@evm-ui/hooks/useLocalStorage'
+import { t, Trans } from '@evm-ui/lib/i18n'
+import { ModalDialog } from '@evm-ui/shared/ui/ModalDialog'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { ReleaseChannel } from '@evm-ui/utils'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { showReleaseChannelSnackbar } from '@ui-kit/features/user-profile/settings/settings.util'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
-import { t, Trans } from '@ui-kit/lib/i18n'
-import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { ReleaseChannel } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 

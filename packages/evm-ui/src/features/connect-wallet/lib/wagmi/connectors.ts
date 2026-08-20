@@ -1,5 +1,5 @@
+import { t } from '@evm-ui/lib/i18n'
 import { assert } from '@primitives/objects.utils'
-import { t } from '@ui-kit/lib/i18n'
 import { coinbaseWallet, injected, metaMask, safe, walletConnect } from '@wagmi/connectors'
 import type { CreateConnectorFn } from '@wagmi/core'
 

@@ -1,4 +1,4 @@
-import { createValidationSuite } from '@ui-kit/lib/validation'
+import { createValidationSuite } from '@evm-ui/lib/validation'
 import { evmAddressValidationGroup } from './evm-address-validation'
 import { poolValidationGroup } from './pool-validation'
 import type { UserPoolParams } from './root-keys'

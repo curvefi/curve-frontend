@@ -1,5 +1,5 @@
 import type { AddRewardParams, DepositRewardApproveParams, DepositRewardParams } from '@/dex/entities/gauge/types'
-import { GaugeParams, rootKeys } from '@ui-kit/lib/model/query'
+import { GaugeParams, rootKeys } from '@evm-ui/lib/model/query'
 
 export const gaugeKeys = {
   estimateGas: () => ['estimateGas'] as const,

@@ -1,7 +1,7 @@
 import type { PoolAlert } from '@/dex/types/main.types'
 import { AlertColor, AlertIcons } from '@/dex/utils/alerts'
 import Typography from '@mui/material/Typography'
-import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
+import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
 
 const PoolAlertIcon = ({ alert: { alertType, message } }: { alert: PoolAlert }) => (
   // made all tooltips clickable, even if most are not clickable, it's hard to know here when there is a link in the alert.

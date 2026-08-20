@@ -1,15 +1,15 @@
 import { type ReactNode, useId } from 'react'
+import { useSwitch } from '@evm-ui/hooks/useSwitch'
+import { RotatableIcon } from '@evm-ui/shared/ui/DataTable/RotatableIcon'
+import type { Responsive } from '@evm-ui/themes/basic-theme'
+import { TRANSITION_FUNCTION } from '@evm-ui/themes/design/0_primitives'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import type { TypographyVariantKey } from '@evm-ui/themes/typography'
+import { applySxProps, borderStyle, type SxProps } from '@evm-ui/utils'
 import AddIcon from '@mui/icons-material/Add'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import RemoveIcon from '@mui/icons-material/Remove'
 import { Box, ButtonBase, Collapse, Stack, type Theme, Typography } from '@mui/material'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
-import { RotatableIcon } from '@ui-kit/shared/ui/DataTable/RotatableIcon'
-import type { Responsive } from '@ui-kit/themes/basic-theme'
-import { TRANSITION_FUNCTION } from '@ui-kit/themes/design/0_primitives'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { TypographyVariantKey } from '@ui-kit/themes/typography'
-import { applySxProps, borderStyle, type SxProps } from '@ui-kit/utils'
 
 const { Spacing, IconSize } = SizesAndSpaces
 

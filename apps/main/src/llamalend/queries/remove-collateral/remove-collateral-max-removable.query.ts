@@ -1,10 +1,10 @@
 import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Decimal } from '@primitives/decimal.utils'
-import { type FieldsOf } from '@ui-kit/lib'
-import type { UserMarketQuery, UserQuery } from '@ui-kit/lib/model'
-import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { llamaApiValidationSuite } from '@ui-kit/lib/model/query/curve-api-validation'
+import { type FieldsOf } from '@evm-ui/lib'
+import type { UserMarketQuery, UserQuery } from '@evm-ui/lib/model'
+import { queryFactory, rootKeys } from '@evm-ui/lib/model'
+import { llamaApiValidationSuite } from '@evm-ui/lib/model/query/curve-api-validation'
 
 type MaxRemovableQuery<T = IChainId> = UserMarketQuery<T> & UserQuery
 type MaxRemovableParams<T = IChainId> = FieldsOf<MaxRemovableQuery<T>>

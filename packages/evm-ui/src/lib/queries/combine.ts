@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
+import { Query, QueryProp } from '@evm-ui/types/util'
+import { decimalMin } from '@evm-ui/utils/decimal'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { UseQueryOptions } from '@tanstack/react-query'
-import { Query, QueryProp } from '@ui-kit/types/util'
-import { decimalMin } from '@ui-kit/utils/decimal'
 import { QueryOptionsArray, QueryResultsArray } from './types'
 
 export const combineQueryState = (...queries: (Query<unknown> | undefined)[]) =>

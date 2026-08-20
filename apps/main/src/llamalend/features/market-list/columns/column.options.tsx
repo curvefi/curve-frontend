@@ -1,7 +1,7 @@
 import { fromEntries, recordValues } from '@primitives/objects.utils'
-import { t } from '@ui-kit/lib/i18n'
-import type { VisibilityGroup } from '@ui-kit/shared/ui/DataTable/visibility.types'
-import { MarketRateType } from '@ui-kit/types/market'
+import { t } from '@evm-ui/lib/i18n'
+import type { VisibilityGroup } from '@evm-ui/shared/ui/DataTable/visibility.types'
+import { MarketRateType } from '@evm-ui/types/market'
 import { MARKET_TITLES } from './column.titles'
 import { MarketColumnId } from './columns.enum'
 

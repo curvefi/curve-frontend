@@ -1,7 +1,7 @@
 import type { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import Stack from '@mui/material/Stack'
-import { findTab } from '@ui-kit/hooks/useTabs'
-import { TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
+import { findTab } from '@evm-ui/hooks/useTabs'
+import { TabsSwitcher } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
 import { usePositionDetailsTabs } from './hooks/usePositionDetailsTabs'
 
 type UserPositionProps = {

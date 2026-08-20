@@ -7,7 +7,7 @@ import { ChainId } from '@/loan/types/loan.types'
 import { getBlockchainId } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import type { Range } from '@ui-kit/types/util'
+import type { Range } from '@evm-ui/types/util'
 
 type OhlcChartStateProps = {
   chainId: ChainId

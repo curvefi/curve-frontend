@@ -1,7 +1,7 @@
 import { TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
+import { formatNumber } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
-import { formatNumber } from '@ui-kit/utils'
 
 type ActionInfoField = 'previous' | 'left' | 'right' | 'value'
 export const getActionInfo = (name: string, field: ActionInfoField = 'value') =>

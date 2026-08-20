@@ -25,8 +25,8 @@ import { useStore } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
 import { Icon } from '@legacy-ui/Icon'
 import { scanAddressPath } from '@legacy-ui/utils'
-import { t } from '@ui-kit/lib/i18n'
-import { shortenAddress } from '@ui-kit/utils'
+import { t } from '@evm-ui/lib/i18n'
+import { shortenAddress } from '@evm-ui/utils'
 
 type Props = {
   chainId: ChainId

@@ -12,9 +12,9 @@ import {
   validateUserCollateral,
 } from '@/llamalend/queries/validation/borrow-fields.validation'
 import type { RouteProvider } from '@primitives/router.utils'
-import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
-import { validateSlippage } from '@ui-kit/lib/model'
-import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
+import { createValidationSuite, type FieldsOf } from '@evm-ui/lib'
+import { validateSlippage } from '@evm-ui/lib/model'
+import { marketIdValidationSuite } from '@evm-ui/lib/model/query/market-id-validation'
 import { type CreateLoanDebtParams, type CreateLoanForm } from '../../features/borrow/types'
 import { getCreateLoanImplementation } from '../create-loan/create-loan-query.helpers'
 

@@ -3,11 +3,11 @@ import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { borderStyle } from '@ui-kit/utils'
-import { RouteProvidersAccordion } from '@ui-kit/widgets/RouteProvider'
-import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
+import { useSwitch } from '@evm-ui/hooks/useSwitch'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { borderStyle } from '@evm-ui/utils'
+import { RouteProvidersAccordion } from '@evm-ui/widgets/RouteProvider'
+import { SlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings'
 
 const { Spacing } = SizesAndSpaces
 

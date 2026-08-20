@@ -6,12 +6,12 @@ import { FormWithdraw } from '@/dao/components/PageVeCrv/components/FormWithdraw
 import type { FormType, PageVecrv } from '@/dao/components/PageVeCrv/types'
 import { useStore } from '@/dao/store/useStore'
 import Stack from '@mui/material/Stack'
-import { isLoading, useCurve } from '@ui-kit/features/connect-wallet'
-import { useLayoutStore } from '@ui-kit/features/layout'
-import { t } from '@ui-kit/lib/i18n'
-import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { getIsLockExpired } from '@ui-kit/utils/vecrv'
+import { isLoading, useCurve } from '@evm-ui/features/connect-wallet'
+import { useLayoutStore } from '@evm-ui/features/layout'
+import { t } from '@evm-ui/lib/i18n'
+import { TabsSwitcher, type TabOption } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { getIsLockExpired } from '@evm-ui/utils/vecrv'
 
 const { Spacing } = SizesAndSpaces
 

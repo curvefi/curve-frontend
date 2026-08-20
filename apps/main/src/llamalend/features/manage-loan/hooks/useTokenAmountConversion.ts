@@ -2,9 +2,9 @@ import { BigNumber } from 'bignumber.js'
 import { useMemo } from 'react'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
-import type { Query } from '@ui-kit/types/util'
-import { decimal } from '@ui-kit/utils'
+import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
+import type { Query } from '@evm-ui/types/util'
+import { decimal } from '@evm-ui/utils'
 /** Converts an amount from one token to another using USD rates as an intermediary. */
 export function useTokenAmountConversion({
   chainId,

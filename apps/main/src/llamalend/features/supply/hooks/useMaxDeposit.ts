@@ -2,11 +2,11 @@ import { useMarketVaultMaxDeposit } from '@/llamalend/queries/market'
 import type { DepositForm, DepositParams } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Address } from '@primitives/address.utils'
-import { useFormSync } from '@ui-kit/features/forms'
-import type { UseFormReturn } from '@ui-kit/features/forms'
-import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
-import { queryMinimum } from '@ui-kit/lib'
-import { q } from '@ui-kit/types/util'
+import { useFormSync } from '@evm-ui/features/forms'
+import type { UseFormReturn } from '@evm-ui/features/forms'
+import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
+import { queryMinimum } from '@evm-ui/lib'
+import { q } from '@evm-ui/types/util'
 
 export function useMaxDepositTokenValues<ChainId extends LlamaChainId>({
   params,

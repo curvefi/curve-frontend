@@ -15,7 +15,7 @@ import { Popover } from '@legacy-ui/Popover/Popover'
 import { Spinner } from '@legacy-ui/Spinner'
 import { SpinnerWrapper } from '@legacy-ui/Spinner/SpinnerWrapper'
 import { breakpoints } from '@legacy-ui/utils/responsive'
-import { t } from '@ui-kit/lib/i18n'
+import { t } from '@evm-ui/lib/i18n'
 
 export const ComboBox = ({
   testId,

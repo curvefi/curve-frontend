@@ -2,11 +2,11 @@ import { useFavoriteMarket } from '@/llamalend/queries/market-list/favorite-mark
 import IconButton from '@mui/material/IconButton'
 import type { Address } from '@primitives/address.utils'
 import { notFalsy } from '@primitives/objects.utils'
-import { t } from '@ui-kit/lib/i18n'
-import { FavoriteHeartIcon } from '@ui-kit/shared/icons/HeartIcon'
-import { CLICKABLE_IN_ROW_CLASS, DESKTOP_ONLY_HOVER_CLASS } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
-import { classNames } from '@ui-kit/utils/dom'
+import { t } from '@evm-ui/lib/i18n'
+import { FavoriteHeartIcon } from '@evm-ui/shared/icons/HeartIcon'
+import { CLICKABLE_IN_ROW_CLASS, DESKTOP_ONLY_HOVER_CLASS } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
+import { classNames } from '@evm-ui/utils/dom'
 
 export function FavoriteMarketButton({ address, desktopOnly }: { address: Address; desktopOnly?: boolean }) {
   const [isFavorite, toggleFavorite] = useFavoriteMarket(address)

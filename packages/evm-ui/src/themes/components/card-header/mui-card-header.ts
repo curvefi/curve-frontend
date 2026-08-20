@@ -1,8 +1,8 @@
 /// <reference types="./mui-card-header.d.ts" />
+import { handleBreakpoints } from '@evm-ui/themes/basic-theme'
+import { DesignSystem } from '@evm-ui/themes/design'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import type { Components, TypographyVariantsOptions } from '@mui/material/styles'
-import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
-import { DesignSystem } from '@ui-kit/themes/design'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { BorderWidth, Spacing, Sizing } = SizesAndSpaces
 

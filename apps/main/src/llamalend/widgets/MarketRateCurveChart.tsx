@@ -10,10 +10,10 @@ import CardHeader from '@mui/material/CardHeader'
 import { useTheme } from '@mui/material/styles'
 import { Decimal } from '@primitives/decimal.utils'
 import { maybes, notFalsy } from '@primitives/objects.utils'
-import { useNewLlamaMarketDetailPage } from '@ui-kit/hooks/useFeatureFlags'
-import { combineQueries } from '@ui-kit/lib'
-import { t } from '@ui-kit/lib/i18n'
-import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
+import { combineQueries } from '@evm-ui/lib'
+import { t } from '@evm-ui/lib/i18n'
+import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import {
   CHART_LINE_DASH_PATTERNS,
   ChartFooter,
@@ -22,12 +22,12 @@ import {
   EChartsLineChart,
   type LegendItem,
   type LineSeriesConfig,
-} from '@ui-kit/shared/ui/Chart'
-import { Metric } from '@ui-kit/shared/ui/Metric'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { MarketType } from '@ui-kit/types/market'
-import { fallbackQ, mapQuery, q, useMappedQuery } from '@ui-kit/types/util'
-import { decimal, decimalMax, decimalMinus, decimalMultiply, decimalSum, formatNumber } from '@ui-kit/utils'
+} from '@evm-ui/shared/ui/Chart'
+import { Metric } from '@evm-ui/shared/ui/Metric'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { MarketType } from '@evm-ui/types/market'
+import { fallbackQ, mapQuery, q, useMappedQuery } from '@evm-ui/types/util'
+import { decimal, decimalMax, decimalMinus, decimalMultiply, decimalSum, formatNumber } from '@evm-ui/utils'
 import { useMarketContext } from '../features/market-context'
 import { MarketCardHeader } from './MarketCardHeader'
 

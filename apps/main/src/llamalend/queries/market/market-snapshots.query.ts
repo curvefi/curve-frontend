@@ -1,10 +1,10 @@
 import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
-import { type CrvUsdSnapshot, useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
-import { type LendingSnapshot, useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
-import type { SnapshotRange } from '@ui-kit/lib/model/query/time-option-validation'
-import { MarketType } from '@ui-kit/types/market'
-import type { Query } from '@ui-kit/types/util'
+import { type CrvUsdSnapshot, useCrvUsdSnapshots } from '@evm-ui/entities/crvusd-snapshots'
+import { type LendingSnapshot, useLendingSnapshots } from '@evm-ui/entities/lending-snapshots'
+import type { SnapshotRange } from '@evm-ui/lib/model/query/time-option-validation'
+import { MarketType } from '@evm-ui/types/market'
+import type { Query } from '@evm-ui/types/util'
 
 type SnapshotByMarketType = {
   [MarketType.Lend]: LendingSnapshot

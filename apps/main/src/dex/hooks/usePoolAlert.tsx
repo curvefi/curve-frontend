@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 import { ROUTE } from '@/dex/constants'
 import { PoolAlert } from '@/dex/types/main.types'
-import { t, Trans } from '@ui-kit/lib/i18n'
-import { getInternalUrl } from '@ui-kit/shared/routes'
-import { InlineLink } from '@ui-kit/shared/ui/InlineLink'
+import { t, Trans } from '@evm-ui/lib/i18n'
+import { getInternalUrl } from '@evm-ui/shared/routes'
+import { InlineLink } from '@evm-ui/shared/ui/InlineLink'
 import { PoolAlertMessage } from '../components/pool-alert-messages'
 
 type PoolAlertTarget = {

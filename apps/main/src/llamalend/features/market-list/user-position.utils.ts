@@ -3,9 +3,9 @@ import { calculateLtv } from '@/llamalend/llama.utils'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import type { Amount } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
-import { t } from '@ui-kit/lib/i18n'
-import { combineQueryState } from '@ui-kit/lib/queries/combine'
-import { q, type Query, type QueryProp } from '@ui-kit/types/util'
+import { t } from '@evm-ui/lib/i18n'
+import { combineQueryState } from '@evm-ui/lib/queries/combine'
+import { q, type Query, type QueryProp } from '@evm-ui/types/util'
 
 export type UserPositionSummaryMetric = { label: string; metric: QueryProp<Amount> }
 

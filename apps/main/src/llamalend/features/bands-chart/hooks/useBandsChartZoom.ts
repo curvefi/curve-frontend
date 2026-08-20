@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { PRICE_SCALE_MARGINS } from '@ui-kit/features/candle-chart'
+import { PRICE_SCALE_MARGINS } from '@evm-ui/features/candle-chart'
 import { BANDS_CHART_SERIES_TYPE } from '../types'
 import type {
   BandsChartNativeMarkLineData,

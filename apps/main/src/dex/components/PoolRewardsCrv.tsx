@@ -5,8 +5,8 @@ import { PoolData, PoolDataCache, RewardsApy } from '@/dex/types/main.types'
 import { Icon } from '@legacy-ui/Icon'
 import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
 import { Chip } from '@legacy-ui/Typography'
-import { t, Trans } from '@ui-kit/lib/i18n'
-import { formatNumber } from '@ui-kit/utils'
+import { t, Trans } from '@evm-ui/lib/i18n'
+import { formatNumber } from '@evm-ui/utils'
 
 export const PoolRewardsCrv = ({
   isHighlight,

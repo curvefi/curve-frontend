@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
+import { useSearchNavigate, useSearchParams } from '@evm-ui/hooks/router'
 import { fromEntries, recordEntries, recordValues, type PartialRecord } from '@primitives/objects.utils'
-import { useSearchNavigate, useSearchParams } from '@ui-kit/hooks/router'
 
 /**
  * Similar to `ColumnFiltersState` from react-table, but restricted to string values

@@ -1,6 +1,6 @@
+import { addBreadcrumb, captureError } from '@evm-ui/features/sentry'
+import { logError, logMutation, logSuccess } from '@evm-ui/lib/logging'
 import { type Mutation, MutationCache, type QueryKey } from '@tanstack/react-query'
-import { addBreadcrumb, captureError } from '@ui-kit/features/sentry'
-import { logError, logMutation, logSuccess } from '@ui-kit/lib/logging'
 
 const getMutationKey = (mutation: Mutation<unknown, unknown>, variables: unknown) => {
   const queryKeyFn = mutation.options.meta?.queryKeyFn

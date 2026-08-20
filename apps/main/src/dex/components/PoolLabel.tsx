@@ -11,8 +11,8 @@ import { AlertBox } from '@legacy-ui/AlertBox'
 import { Box } from '@legacy-ui/Box'
 import { TooltipAlert } from '@legacy-ui/Tooltip/TooltipAlert'
 import { Chip } from '@legacy-ui/Typography'
-import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
-import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
+import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
+import { TokenIcons } from '@evm-ui/shared/ui/TokenIcons'
 
 type Props = {
   className?: string

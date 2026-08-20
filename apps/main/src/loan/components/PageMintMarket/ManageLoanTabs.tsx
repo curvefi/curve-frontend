@@ -9,10 +9,10 @@ import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { networks } from '@/loan/networks'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Decimal } from '@primitives/decimal.utils'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
-import { t } from '@ui-kit/lib/i18n'
-import type { QueryProp, Range } from '@ui-kit/types/util'
-import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
+import { useReleaseChannel } from '@evm-ui/hooks/useLocalStorage'
+import { t } from '@evm-ui/lib/i18n'
+import type { QueryProp, Range } from '@evm-ui/types/util'
+import { type FormTab, FormTabs } from '@evm-ui/widgets/DetailPageLayout/FormTabs'
 
 // casting the networks for the loan app so we don't need to make the whole form generic
 const softLiqNetworks = networks as unknown as NetworkDict<LlamaChainId>

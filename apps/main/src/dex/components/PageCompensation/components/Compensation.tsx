@@ -13,9 +13,9 @@ import { ExternalLink } from '@legacy-ui/Link/ExternalLink'
 import { TxInfoBar } from '@legacy-ui/TxInfoBar'
 import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
 import { Hex } from '@primitives/address.utils'
-import { notify } from '@ui-kit/features/connect-wallet'
-import { t } from '@ui-kit/lib/i18n'
-import { copyToClipboard, getErrorMessage, shortenAddress, formatNumber } from '@ui-kit/utils'
+import { notify } from '@evm-ui/features/connect-wallet'
+import { t } from '@evm-ui/lib/i18n'
+import { copyToClipboard, getErrorMessage, shortenAddress, formatNumber } from '@evm-ui/utils'
 
 export const Compensation = ({
   rChainId,

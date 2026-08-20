@@ -3,12 +3,12 @@ import { useScrvUsdStatistics } from '@/loan/entities/scrvusd-statistics.query'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
-import { t } from '@ui-kit/lib/i18n'
-import { Metric } from '@ui-kit/shared/ui/Metric'
-import { Sizing } from '@ui-kit/themes/design/0_primitives'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { mapQuery } from '@ui-kit/types/util'
-import { decimal } from '@ui-kit/utils'
+import { t } from '@evm-ui/lib/i18n'
+import { Metric } from '@evm-ui/shared/ui/Metric'
+import { Sizing } from '@evm-ui/themes/design/0_primitives'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { mapQuery } from '@evm-ui/types/util'
+import { decimal } from '@evm-ui/utils'
 
 const { Spacing } = SizesAndSpaces
 

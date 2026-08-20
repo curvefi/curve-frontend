@@ -1,8 +1,8 @@
 import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import { leverageUserMarketValidationSuite } from '@/llamalend/queries/validation/manage-loan.validation'
-import { queryFactory } from '@ui-kit/lib/model/query/factory'
-import { rootKeys, UserMarketParams, UserMarketQuery } from '@ui-kit/lib/model/query/root-keys'
-import { decimal } from '@ui-kit/utils/decimal'
+import { queryFactory } from '@evm-ui/lib/model/query/factory'
+import { rootKeys, UserMarketParams, UserMarketQuery } from '@evm-ui/lib/model/query/root-keys'
+import { decimal } from '@evm-ui/utils/decimal'
 
 /**
  * Query to get the user's current leverage value in a market.

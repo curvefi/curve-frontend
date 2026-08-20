@@ -4,11 +4,11 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
-import { t, Trans } from '@ui-kit/lib/i18n'
-import { CrvHubIcon } from '@ui-kit/shared/icons/CrvHubIcon'
-import { LAFIcon } from '@ui-kit/shared/icons/LAFIcon'
-import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { t, Trans } from '@evm-ui/lib/i18n'
+import { CrvHubIcon } from '@evm-ui/shared/icons/CrvHubIcon'
+import { LAFIcon } from '@evm-ui/shared/icons/LAFIcon'
+import { EmptyStateCard } from '@evm-ui/shared/ui/EmptyStateCard'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 

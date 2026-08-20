@@ -1,10 +1,10 @@
 import type { ChainId } from '@/dao/types/dao.types'
-import { requireLib } from '@ui-kit/features/connect-wallet'
-import type { ChainParams, ChainQuery, UserParams, UserQuery } from '@ui-kit/lib/model/query'
-import { queryFactory } from '@ui-kit/lib/model/query'
-import { curveApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
-import { evmAddressValidationGroup } from '@ui-kit/lib/model/query/evm-address-validation'
-import { createValidationSuite } from '@ui-kit/lib/validation'
+import { requireLib } from '@evm-ui/features/connect-wallet'
+import type { ChainParams, ChainQuery, UserParams, UserQuery } from '@evm-ui/lib/model/query'
+import { queryFactory } from '@evm-ui/lib/model/query'
+import { curveApiValidationGroup } from '@evm-ui/lib/model/query/curve-api-validation'
+import { evmAddressValidationGroup } from '@evm-ui/lib/model/query/evm-address-validation'
+import { createValidationSuite } from '@evm-ui/lib/validation'
 
 // There might be some overlap with locker-vecrv-info, but need to investigate and
 // refactor that at a later time.

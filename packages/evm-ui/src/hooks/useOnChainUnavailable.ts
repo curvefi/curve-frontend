@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
+import { getHashRedirectUrl } from '@evm-ui/shared/route-redirects'
+import { getCurrentNetwork, replaceNetworkInPath } from '@evm-ui/shared/routes'
 import type { NetworkMapping } from '@legacy-ui/utils'
-import { getHashRedirectUrl } from '@ui-kit/shared/route-redirects'
-import { getCurrentNetwork, replaceNetworkInPath } from '@ui-kit/shared/routes'
 import { useLocation, useNavigate } from './router'
 
 export function useOnChainUnavailable<T extends NetworkMapping>(networks: T | undefined) {

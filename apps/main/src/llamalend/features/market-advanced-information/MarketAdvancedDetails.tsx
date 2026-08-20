@@ -6,12 +6,12 @@ import {
   TooltipOptions,
 } from '@/llamalend/widgets/tooltips'
 import Box from '@mui/material/Box'
-import { t } from '@ui-kit/lib/i18n'
-import { Metric } from '@ui-kit/shared/ui/Metric'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { MarketType } from '@ui-kit/types/market'
-import { mapQuery } from '@ui-kit/types/util'
-import { decimal } from '@ui-kit/utils'
+import { t } from '@evm-ui/lib/i18n'
+import { Metric } from '@evm-ui/shared/ui/Metric'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { MarketType } from '@evm-ui/types/market'
+import { mapQuery } from '@evm-ui/types/util'
+import { decimal } from '@evm-ui/utils'
 import { useMarketContext } from '../market-context'
 import { useAdvancedDetailsData } from './hooks/useAdvancedDetailsData'
 

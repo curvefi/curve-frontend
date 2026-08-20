@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { type ColumnMeta, createColumnHelper } from '@tanstack/react-table'
-import type { ColumnDefinition } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import type { ColumnDefinition } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { AgeCell } from '../cells/AgeCell'
 import { BaseApyCell, WeeklyBaseApyCell } from '../cells/BaseApyCell'
 import { CrvApyCell } from '../cells/CrvApyCell'

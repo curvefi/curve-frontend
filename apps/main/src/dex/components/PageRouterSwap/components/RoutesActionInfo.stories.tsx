@@ -3,8 +3,8 @@ import { ethAddress } from 'viem'
 import { Route } from '@/dex/components/PageRouterSwap/types'
 import { PoolDataMapper, TokensNameMapper } from '@/dex/types/main.types'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { q } from '@ui-kit/types/util'
-import { CRVUSD_ADDRESS, REUSD_ADDRESS } from '@ui-kit/utils'
+import { q } from '@evm-ui/types/util'
+import { CRVUSD_ADDRESS, REUSD_ADDRESS } from '@evm-ui/utils'
 import { RoutesActionInfo } from './RoutesActionInfo'
 
 const tokensNameMapper: TokensNameMapper = { [REUSD_ADDRESS]: 'reUSD', [ethAddress]: 'ETH', [CRVUSD_ADDRESS]: 'crvUSD' }

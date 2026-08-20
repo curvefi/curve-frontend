@@ -11,8 +11,8 @@ import { useStore } from '@/dex/store/useStore'
 import { ChainId, type PoolUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import Button from '@mui/material/Button'
-import { useParams, useNavigate } from '@ui-kit/hooks/router'
-import { t } from '@ui-kit/lib/i18n'
+import { useParams, useNavigate } from '@evm-ui/hooks/router'
+import { t } from '@evm-ui/lib/i18n'
 
 export const AddGaugeLink = ({
   chainId,

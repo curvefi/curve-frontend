@@ -11,7 +11,7 @@ import {
   decimalMultiply,
   decimalSqrt,
   decimalSum,
-} from '@ui-kit/utils/decimal'
+} from '@evm-ui/utils/decimal'
 
 type BandsBalances = Record<number, { borrowed: string; collateral: string }>
 

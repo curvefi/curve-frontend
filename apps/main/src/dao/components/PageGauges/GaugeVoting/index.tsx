@@ -1,7 +1,7 @@
 import { WrongNetwork } from '@/dao/components/PageVeCrv/WrongNetwork'
 import Box from '@mui/material/Box'
-import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
-import { Chain } from '@ui-kit/utils'
+import { ConnectWalletPrompt, useCurve } from '@evm-ui/features/connect-wallet'
+import { Chain } from '@evm-ui/utils'
 import { CurrentVotes } from './CurrentVotes'
 
 export const GaugeVoting = () => {

@@ -11,8 +11,8 @@ import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
 import { Icon } from '@legacy-ui/Icon'
 import type { Address } from '@primitives/address.utils'
-import { t } from '@ui-kit/lib/i18n'
-import { formatNumber } from '@ui-kit/utils'
+import { t } from '@evm-ui/lib/i18n'
+import { formatNumber } from '@evm-ui/utils'
 
 type Props = {
   userAddress?: Address

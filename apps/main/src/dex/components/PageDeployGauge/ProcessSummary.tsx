@@ -10,9 +10,9 @@ import { Spinner } from '@legacy-ui/Spinner'
 import { scanTxPath } from '@legacy-ui/utils'
 import Button from '@mui/material/Button'
 import { shortenString } from '@primitives/string.utils'
-import { t } from '@ui-kit/lib/i18n'
-import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
-import { Chain } from '@ui-kit/utils'
+import { t } from '@evm-ui/lib/i18n'
+import { RouterLink } from '@evm-ui/shared/ui/RouterLink'
+import { Chain } from '@evm-ui/utils'
 
 type Props = {
   chainId: ChainId

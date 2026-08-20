@@ -33,8 +33,8 @@ import { Box } from '@legacy-ui/Box'
 import { Icon } from '@legacy-ui/Icon'
 import { Chip } from '@legacy-ui/Typography'
 import { scanAddressPath } from '@legacy-ui/utils'
-import { t } from '@ui-kit/lib/i18n'
-import { shortenAddress } from '@ui-kit/utils'
+import { t } from '@evm-ui/lib/i18n'
+import { shortenAddress } from '@evm-ui/utils'
 
 type Props = {
   blockchainId: string

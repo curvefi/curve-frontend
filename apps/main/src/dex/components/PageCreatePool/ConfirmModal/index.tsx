@@ -21,9 +21,9 @@ import { ModalPendingTx } from '@legacy-ui/ModalPendingTx'
 import { Spinner } from '@legacy-ui/Spinner/Spinner'
 import { breakpoints } from '@legacy-ui/utils/responsive'
 import MuiButton from '@mui/material/Button'
-import { useParams } from '@ui-kit/hooks/router'
-import { t } from '@ui-kit/lib/i18n'
-import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
+import { useParams } from '@evm-ui/hooks/router'
+import { t } from '@evm-ui/lib/i18n'
+import { RouterLink } from '@evm-ui/shared/ui/RouterLink'
 
 type Props = {
   disabled?: boolean

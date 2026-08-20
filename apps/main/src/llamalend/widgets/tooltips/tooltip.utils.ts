@@ -1,5 +1,5 @@
 import { Amount } from '@primitives/decimal.utils'
-import { formatNumber } from '@ui-kit/utils'
+import { formatNumber } from '@evm-ui/utils'
 
 export const UNAVAILABLE_NOTATION = '-'
 

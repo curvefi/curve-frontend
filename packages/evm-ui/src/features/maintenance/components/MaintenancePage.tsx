@@ -1,12 +1,12 @@
+import { t } from '@evm-ui/lib/i18n'
+import { XIcon } from '@evm-ui/shared/icons/XIcon'
+import { Badge } from '@evm-ui/shared/ui/Badge'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { CURVE_LOGO_URL, CURVE_SOCIALS } from '@legacy-ui/utils'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
-import { t } from '@ui-kit/lib/i18n'
-import { XIcon } from '@ui-kit/shared/icons/XIcon'
-import { Badge } from '@ui-kit/shared/ui/Badge'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { MinHeight, Spacing, MaxWidth } = SizesAndSpaces
 

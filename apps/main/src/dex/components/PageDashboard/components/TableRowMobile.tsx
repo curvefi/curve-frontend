@@ -11,7 +11,7 @@ import { Box } from '@legacy-ui/Box'
 import { Icon } from '@legacy-ui/Icon'
 import { IconButton } from '@legacy-ui/IconButton'
 import { Td, Tr } from '@legacy-ui/Table'
-import { useIntersectionObserver } from '@ui-kit/hooks/useIntersectionObserver'
+import { useIntersectionObserver } from '@evm-ui/hooks/useIntersectionObserver'
 import { TableCellRewardsOthers } from '../../TableCellRewardsOthers'
 
 export const TableRowMobile = ({

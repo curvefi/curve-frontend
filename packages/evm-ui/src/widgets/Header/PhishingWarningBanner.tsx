@@ -1,7 +1,7 @@
-import { useDismissPhishingWarn } from '@ui-kit/hooks/useLocalStorage'
-import { t } from '@ui-kit/lib/i18n'
-import { Banner } from '@ui-kit/shared/ui/Banner'
-import { IS_PREVIEW_HOST } from '@ui-kit/utils'
+import { useDismissPhishingWarn } from '@evm-ui/hooks/useLocalStorage'
+import { t } from '@evm-ui/lib/i18n'
+import { Banner } from '@evm-ui/shared/ui/Banner'
+import { IS_PREVIEW_HOST } from '@evm-ui/utils'
 
 const URL = 'https://www.curve.finance'
 

@@ -1,7 +1,7 @@
 import { fn } from 'storybook/test'
+import { LAFIcon } from '@evm-ui/shared/icons/LAFIcon'
 import Button from '@mui/material/Button'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { LAFIcon } from '@ui-kit/shared/icons/LAFIcon'
 
 const meta: Meta<typeof Button> = {
   title: 'UI Kit/Primitives/Button',

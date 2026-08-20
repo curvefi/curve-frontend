@@ -1,11 +1,11 @@
 import { type MouseEvent, useCallback, useMemo, useState } from 'react'
+import { useNavigate } from '@evm-ui/hooks/router'
+import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
+import { TRANSITION_FUNCTION } from '@evm-ui/themes/design/0_primitives'
+import { hasParentWithClass } from '@evm-ui/utils/dom'
 import TableRow from '@mui/material/TableRow'
 import { type Row } from '@tanstack/react-table'
 import type { Table } from '@tanstack/table-core'
-import { useNavigate } from '@ui-kit/hooks/router'
-import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
-import { TRANSITION_FUNCTION } from '@ui-kit/themes/design/0_primitives'
-import { hasParentWithClass } from '@ui-kit/utils/dom'
 import { InvertOnHover } from '../InvertOnHover'
 import {
   CLICKABLE_IN_ROW_CLASS,

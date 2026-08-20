@@ -1,8 +1,8 @@
-// eslint-disable-next-line no-restricted-imports
+ 
+import { TRANSPARENT } from '@evm-ui/themes/design/0_primitives'
+import { applySxProps } from '@evm-ui/utils'
 import MuiSelect, { type SelectProps as MuiSelectProps } from '@mui/material/Select'
 import type { Theme } from '@mui/material/styles'
-import { TRANSPARENT } from '@ui-kit/themes/design/0_primitives'
-import { applySxProps } from '@ui-kit/utils'
 
 const ghostSx = {
   '&.MuiInputBase-root': { backgroundColor: TRANSPARENT },

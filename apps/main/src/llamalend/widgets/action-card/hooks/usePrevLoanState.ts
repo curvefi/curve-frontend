@@ -4,8 +4,8 @@ import { getUserHealthOptions, useUserPrices, useUserState } from '@/llamalend/q
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import type { UserMarketParams } from '@ui-kit/lib/model'
-import { mapQuery, q, type QueryProp, type Range } from '@ui-kit/types/util'
+import type { UserMarketParams } from '@evm-ui/lib/model'
+import { mapQuery, q, type QueryProp, type Range } from '@evm-ui/types/util'
 
 /**
  * Shared hook for the "prev" (before-action) loan state fields passed to LoanActionInfoList.

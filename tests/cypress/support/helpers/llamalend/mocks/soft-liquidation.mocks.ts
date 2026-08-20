@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { oneDecimal, oneInt } from '@cy/support/generators'
+import { decimal, decimalMinus, decimalSum, formatToken } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { decimal, decimalMinus, decimalSum, formatToken } from '@ui-kit/utils'
 import { createMockLlamaApi, TEST_ADDRESS, TEST_TX_HASH } from '../mock-loan-test-data'
 import { createMockLendMarket, createMockMintMarket } from '../mock-market.helpers'
 import { createIsApprovedStub, createStub } from '../test-stub.utils'

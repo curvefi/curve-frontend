@@ -4,7 +4,7 @@ import { useUserPools } from '@/dex/queries/user-pools.query'
 import { useStore } from '@/dex/store/useStore'
 import type { ChainId, CurveApi, PoolData } from '@/dex/types/main.types'
 import { fromEntries, notFalsy, recordValues } from '@primitives/objects.utils'
-import { useCurve } from '@ui-kit/features/connect-wallet'
+import { useCurve } from '@evm-ui/features/connect-wallet'
 
 type PoolIdByAddressSource = Record<string, { pool: Pick<PoolData['pool'], 'address' | 'id'> }>
 

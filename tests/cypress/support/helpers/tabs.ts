@@ -1,5 +1,5 @@
 import { oneOf } from '@cy/support/generators'
-import { DISCLAIMER_TABS, TABS as LEGAL_PAGE_TABS } from '@ui-kit/widgets/Legal/constants'
+import { DISCLAIMER_TABS, TABS as LEGAL_PAGE_TABS } from '@evm-ui/widgets/Legal/constants'
 import { LOAD_TIMEOUT } from '../ui'
 
 export const oneLegalPageTab = () => oneOf(...LEGAL_PAGE_TABS.map(tab => tab.value))

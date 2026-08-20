@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { formatSupplyExtraIncentives } from '@/llamalend/rates.utils'
 import { notFalsyArray } from '@primitives/objects.utils'
-import { ExtraIncentive, MarketRateType } from '@ui-kit/types/market'
+import { ExtraIncentive, MarketRateType } from '@evm-ui/types/market'
 
 export const useMarketExtraIncentives = (
   type: MarketRateType,

@@ -1,5 +1,5 @@
 import { getUserMarketCollateralEvents, type UserCollateralEvents } from '@curvefi/prices-api/crvusd'
-import { queryFactory, type UserContractParams, type UserContractQuery } from '@ui-kit/lib/model/query'
+import { queryFactory, type UserContractParams, type UserContractQuery } from '@evm-ui/lib/model/query'
 import { userCollateralEventsValidationSuite } from './validation/user-collateral-events-validation'
 
 export const { useQuery: useUserCrvUsdCollateralEventsQuery, invalidate: invalidateUserCrvUsdCollateralEventsQuery } =

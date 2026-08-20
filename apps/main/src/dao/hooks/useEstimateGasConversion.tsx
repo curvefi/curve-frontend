@@ -2,10 +2,10 @@ import { useCallback } from 'react'
 import { ethAddress } from 'viem'
 import { useChainId } from 'wagmi'
 import { networks } from '@/dao/networks'
-import { useCombinedQueries } from '@ui-kit/lib'
-import { calculateGas, useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
-import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
-import { type Query } from '@ui-kit/types/util'
+import { useCombinedQueries } from '@evm-ui/lib'
+import { calculateGas, useGasInfoAndUpdateLib } from '@evm-ui/lib/model/entities/gas-info'
+import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
+import { type Query } from '@evm-ui/types/util'
 
 export const useEstimateGasConversion = (gas: Query<number | null>) => {
   const chainId = useChainId()

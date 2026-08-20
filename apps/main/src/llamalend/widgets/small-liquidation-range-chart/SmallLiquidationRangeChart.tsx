@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
-import { combineQueryState } from '@ui-kit/lib'
+import { combineQueryState } from '@evm-ui/lib'
 import {
   SMALL_LIQUIDATION_RANGE_CHART_HEIGHT_PX,
   SMALL_LIQUIDATION_RANGE_CHART_LOADER,

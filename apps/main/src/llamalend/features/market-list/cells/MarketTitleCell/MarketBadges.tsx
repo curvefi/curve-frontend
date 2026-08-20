@@ -1,11 +1,11 @@
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import Stack from '@mui/material/Stack'
-import { t } from '@ui-kit/lib/i18n'
-import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
-import { Badge, BadgeProps } from '@ui-kit/shared/ui/Badge'
-import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { MarketType, MarketVersion } from '@ui-kit/types/market'
+import { t } from '@evm-ui/lib/i18n'
+import { ChainIcon } from '@evm-ui/shared/icons/ChainIcon'
+import { Badge, BadgeProps } from '@evm-ui/shared/ui/Badge'
+import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { MarketType, MarketVersion } from '@evm-ui/types/market'
 import { FavoriteMarketButton } from '../../chips/FavoriteMarketButton'
 
 const { Spacing, Sizing } = SizesAndSpaces

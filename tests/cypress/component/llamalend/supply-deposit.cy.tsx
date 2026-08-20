@@ -17,9 +17,9 @@ import {
   setGasInfo,
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
+import { t } from '@evm-ui/lib/i18n'
+import { Chain } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { t } from '@ui-kit/lib/i18n'
-import { Chain } from '@ui-kit/utils'
 
 const chainId = Chain.Ethereum
 

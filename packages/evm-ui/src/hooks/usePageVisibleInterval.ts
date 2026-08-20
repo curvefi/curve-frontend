@@ -1,6 +1,6 @@
 import { useEffect, useEffectEvent } from 'react'
-import { useLayoutStore } from '@ui-kit/features/layout'
-import { setTimeoutInterval } from '@ui-kit/utils/timers'
+import { useLayoutStore } from '@evm-ui/features/layout'
+import { setTimeoutInterval } from '@evm-ui/utils/timers'
 
 type CallbackFunction = () => unknown
 

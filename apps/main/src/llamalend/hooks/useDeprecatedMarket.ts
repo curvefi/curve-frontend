@@ -4,7 +4,7 @@ import { DEPRECATED_LLAMAS } from '@/llamalend/markets.constants'
 import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
 import { maybes, recordEntries } from '@primitives/objects.utils'
-import type { MarketType } from '@ui-kit/types/market'
+import type { MarketType } from '@evm-ui/types/market'
 
 export const useDeprecatedMarket = ({
   blockchainId,

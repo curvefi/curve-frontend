@@ -1,10 +1,10 @@
 import { ReactNode, useEffect } from 'react'
+import { ErrorPage } from '@evm-ui/pages/ErrorPage'
+import { ErrorMessage } from '@evm-ui/shared/ui/ErrorMessage'
 import { Box } from '@mui/material'
 import { captureException } from '@sentry/react'
 import { CatchBoundary } from '@tanstack/react-router'
 import type { ErrorComponentProps } from '@tanstack/router-core'
-import { ErrorPage } from '@ui-kit/pages/ErrorPage'
-import { ErrorMessage } from '@ui-kit/shared/ui/ErrorMessage'
 
 const ErrorComponent = ({ error, reset, title }: ErrorComponentProps & { title: string }) => {
   useEffect(() => {

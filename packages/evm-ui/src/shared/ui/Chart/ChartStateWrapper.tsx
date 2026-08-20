@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { ErrorBoundary } from '@ui-kit/widgets/ErrorBoundary'
+import { ErrorBoundary } from '@evm-ui/widgets/ErrorBoundary'
 import { ChartEmpty } from './ChartEmpty'
 import { ChartError } from './ChartError'
 import { ChartLoading } from './ChartLoading'

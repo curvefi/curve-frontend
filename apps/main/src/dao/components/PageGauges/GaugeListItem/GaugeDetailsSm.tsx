@@ -7,8 +7,8 @@ import { parseTimestamp } from '@curvefi/prices-api/timestamp'
 import { Box } from '@legacy-ui/Box'
 import { ExternalLink } from '@legacy-ui/Link'
 import { formatDate, scanAddressPath } from '@legacy-ui/utils'
-import { t } from '@ui-kit/lib/i18n'
-import { Chain, shortenAddress, formatNumber } from '@ui-kit/utils'
+import { t } from '@evm-ui/lib/i18n'
+import { Chain, shortenAddress, formatNumber } from '@evm-ui/utils'
 
 type GaugeDetailsSmProps = {
   gaugeData: GaugeFormattedData

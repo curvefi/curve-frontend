@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { Chip } from '@legacy-ui/Typography/Chip'
-import { amount as toAmount, formatNumber } from '@ui-kit/utils'
+import { amount as toAmount, formatNumber } from '@evm-ui/utils'
 
 export const FieldHelperUsdRate = ({ amount, usdRate }: { amount: string; usdRate: number | undefined }) => {
   const usdRateTotal = useMemo(() => {

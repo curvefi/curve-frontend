@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
+import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
 import { type Token } from '@primitives/address.utils'
 import { fromEntries } from '@primitives/objects.utils'
 import type { VisibilityState } from '@tanstack/react-table'
-import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { getTokenAmountColumnId, PoolLiquidityColumnId } from '../columns/pool-liquidity-columns'
 import { PoolTradesColumnId } from '../columns/pool-trades-columns'
 

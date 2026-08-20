@@ -16,11 +16,11 @@ import {
   type RouteResponse,
   usePinRouteById,
   useRouterQueries,
-} from '@ui-kit/entities/router-api'
-import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
-import { q, type QueryProp } from '@ui-kit/types/util'
-import { decimalCompare, decimalMax, toWei, decimalDiv, decimalMinus, decimalMultiply, fromWei } from '@ui-kit/utils'
-import type { PriceImpact } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
+} from '@evm-ui/entities/router-api'
+import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
+import { q, type QueryProp } from '@evm-ui/types/util'
+import { decimalCompare, decimalMax, toWei, decimalDiv, decimalMinus, decimalMultiply, fromWei } from '@evm-ui/utils'
+import type { PriceImpact } from '@evm-ui/widgets/DetailPageLayout/price-impact.util'
 
 export type MarketRoutes = {
   queries: RouteQueries

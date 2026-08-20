@@ -10,10 +10,10 @@ import { useStore } from '@/dex/store/useStore'
 import type { PoolUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import type { Chain } from '@curvefi/prices-api'
-import { useCurve } from '@ui-kit/features/connect-wallet'
-import { useNavigate, useParams } from '@ui-kit/hooks/router'
-import { t } from '@ui-kit/lib/i18n'
-import { ErrorPage } from '@ui-kit/pages/ErrorPage'
+import { useCurve } from '@evm-ui/features/connect-wallet'
+import { useNavigate, useParams } from '@evm-ui/hooks/router'
+import { t } from '@evm-ui/lib/i18n'
+import { ErrorPage } from '@evm-ui/pages/ErrorPage'
 
 export const PagePool = () => {
   const push = useNavigate()

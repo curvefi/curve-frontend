@@ -1,8 +1,8 @@
 import type { CrvUsdPriceChartPoint } from '@/llamalend/widgets/CrvUsdPriceChart'
 import { formatDate } from '@legacy-ui/utils'
-import { ChartTooltipSeriesGroup, ChartTooltipSeriesRow, ChartTooltipShell } from '@ui-kit/shared/ui/Chart'
-import type { LineSeriesConfig } from '@ui-kit/shared/ui/Chart/EChartsLineChart'
-import { formatNumber } from '@ui-kit/utils'
+import { ChartTooltipSeriesGroup, ChartTooltipSeriesRow, ChartTooltipShell } from '@evm-ui/shared/ui/Chart'
+import type { LineSeriesConfig } from '@evm-ui/shared/ui/Chart/EChartsLineChart'
+import { formatNumber } from '@evm-ui/utils'
 
 type PriceSeriesKey = keyof Omit<CrvUsdPriceChartPoint, 'timestamp'>
 

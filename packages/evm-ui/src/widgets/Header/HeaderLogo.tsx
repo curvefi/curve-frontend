@@ -1,7 +1,7 @@
+import { RouterLink } from '@evm-ui/shared/ui/RouterLink'
+import type { SxProps } from '@evm-ui/utils'
 import { CURVE_LOGO_URL } from '@legacy-ui/utils'
 import { styled } from '@mui/material/styles'
-import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
-import type { SxProps } from '@ui-kit/utils'
 
 const Image = styled('img')({
   width: 26,

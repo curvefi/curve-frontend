@@ -6,12 +6,12 @@ import CardContent from '@mui/material/CardContent'
 import Grid from '@mui/material/Grid'
 import SvgIcon from '@mui/material/SvgIcon'
 import Typography from '@mui/material/Typography'
-import { t } from '@ui-kit/lib/i18n'
-import { CardStackPlusIcon } from '@ui-kit/shared/icons/CardStackPlusIcon'
-import { SignIcon } from '@ui-kit/shared/icons/SignIcon'
-import { SoftLiquidationIcon } from '@ui-kit/shared/icons/SoftLiquidationIcon'
-import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { t } from '@evm-ui/lib/i18n'
+import { CardStackPlusIcon } from '@evm-ui/shared/icons/CardStackPlusIcon'
+import { SignIcon } from '@evm-ui/shared/icons/SignIcon'
+import { SoftLiquidationIcon } from '@evm-ui/shared/icons/SoftLiquidationIcon'
+import { ExternalLink } from '@evm-ui/shared/ui/ExternalLink'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 
 const { Spacing, IconSize } = SizesAndSpaces
 

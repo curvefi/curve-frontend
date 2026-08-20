@@ -8,9 +8,9 @@ import { Button } from '@legacy-ui/Button'
 import { DatePicker } from '@legacy-ui/DatePicker'
 import { Chip } from '@legacy-ui/Typography'
 import { formatDate } from '@legacy-ui/utils'
-import { dayjs } from '@ui-kit/lib/dayjs'
-import { t } from '@ui-kit/lib/i18n'
-import { formatNumber, amount } from '@ui-kit/utils'
+import { dayjs } from '@evm-ui/lib/dayjs'
+import { t } from '@evm-ui/lib/i18n'
+import { formatNumber, amount } from '@evm-ui/utils'
 
 const QUICK_ACTIONS: { unit?: dayjs.ManipulateType; value?: number; label: string }[] = [
   { unit: 'week', value: 1, label: t`1 week` },

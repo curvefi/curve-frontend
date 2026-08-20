@@ -6,11 +6,11 @@ import { validateMaxBorrowed } from '@/llamalend/queries/validation/borrow-field
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
-import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
-import type { UserMarketParams, UserMarketQuery } from '@ui-kit/lib/model'
-import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-validation'
-import type { MakeOptional } from '@ui-kit/types/util'
-import { decimalGreaterThan } from '@ui-kit/utils'
+import { createValidationSuite, type FieldsOf } from '@evm-ui/lib'
+import type { UserMarketParams, UserMarketQuery } from '@evm-ui/lib/model'
+import { userMarketValidationSuite } from '@evm-ui/lib/model/query/user-market-validation'
+import type { MakeOptional } from '@evm-ui/types/util'
+import { decimalGreaterThan } from '@evm-ui/utils'
 
 type ResetInputs = {
   /** The amount of borrow tokens already converted from collateral in the user's band */

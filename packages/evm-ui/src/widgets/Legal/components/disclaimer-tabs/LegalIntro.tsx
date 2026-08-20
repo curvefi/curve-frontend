@@ -1,7 +1,7 @@
+import { getSearchString } from '@evm-ui/hooks/router'
+import { t } from '@evm-ui/lib/i18n'
+import { RouterLink } from '@evm-ui/shared/ui/RouterLink'
 import Typography from '@mui/material/Typography'
-import { getSearchString } from '@ui-kit/hooks/router'
-import { t } from '@ui-kit/lib/i18n'
-import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { List } from '../general/List'
 import { Paragraph } from '../general/Section'
 

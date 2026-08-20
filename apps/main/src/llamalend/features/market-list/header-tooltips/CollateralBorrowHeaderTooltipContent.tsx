@@ -1,5 +1,5 @@
-import { t, Trans } from '@ui-kit/lib/i18n'
-import { TooltipDescription, TooltipWrapper } from '@ui-kit/shared/ui/TooltipComponents'
+import { t, Trans } from '@evm-ui/lib/i18n'
+import { TooltipDescription, TooltipWrapper } from '@evm-ui/shared/ui/TooltipComponents'
 
 export const CollateralBorrowHeaderTooltipContent = () => (
   <TooltipWrapper>

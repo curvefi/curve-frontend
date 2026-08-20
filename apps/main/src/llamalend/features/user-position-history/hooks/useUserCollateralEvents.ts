@@ -7,11 +7,11 @@ import { scanTxPath, type BaseConfig } from '@legacy-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { pick } from '@primitives/objects.utils'
-import type { UserContractQuery } from '@ui-kit/lib/model'
-import type { TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { MarketType } from '@ui-kit/types/market'
-import { q, type QueryProp } from '@ui-kit/types/util'
-import { decimalDiv } from '@ui-kit/utils'
+import type { UserContractQuery } from '@evm-ui/lib/model'
+import type { TableItem } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { MarketType } from '@evm-ui/types/market'
+import { q, type QueryProp } from '@evm-ui/types/util'
+import { decimalDiv } from '@evm-ui/utils'
 import {
   invalidateUserCrvUsdCollateralEventsQuery,
   useUserCrvUsdCollateralEventsQuery,

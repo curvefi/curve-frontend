@@ -9,10 +9,10 @@ import { createLoanQueryValidationSuite } from '@/llamalend/queries/validation/b
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Address } from '@primitives/address.utils'
 import type { RouteProvider } from '@primitives/router.utils'
-import { parseMutationRoute } from '@ui-kit/entities/router-api'
-import { t } from '@ui-kit/lib/i18n'
-import { rootKeys } from '@ui-kit/lib/model'
-import { waitForApproval } from '@ui-kit/utils'
+import { parseMutationRoute } from '@evm-ui/entities/router-api'
+import { t } from '@evm-ui/lib/i18n'
+import { rootKeys } from '@evm-ui/lib/model'
+import { waitForApproval } from '@evm-ui/utils'
 import type { CreateLoanForm, CreateLoanFormQuery } from '../features/borrow/types'
 
 type CreateLoanMutationContext = {

@@ -1,6 +1,6 @@
+import { t } from '@evm-ui/lib/i18n'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Button from '@mui/material/Button'
-import { t } from '@ui-kit/lib/i18n'
 import { RotatableIcon } from './DataTable/RotatableIcon'
 
 /** Button to expand cards if they contain an inner Collapsible */

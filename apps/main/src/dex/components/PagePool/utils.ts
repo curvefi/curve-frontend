@@ -3,7 +3,7 @@ import { PoolData } from '@/dex/types/main.types'
 import { shortenTokenName } from '@/dex/utils'
 import type { IDict } from '@curvefi/api/lib/interfaces'
 import { maybe } from '@primitives/objects.utils'
-import type { SlippageType } from '@ui-kit/widgets/SlippageSettings'
+import type { SlippageType } from '@evm-ui/widgets/SlippageSettings'
 
 export type Amount = {
   value: string

@@ -1,6 +1,6 @@
 import { Icon } from '@legacy-ui/Icon'
 import { TooltipButton } from '@legacy-ui/Tooltip/TooltipButton'
-import { copyToClipboard } from '@ui-kit/utils'
+import { copyToClipboard } from '@evm-ui/utils'
 
 type CopyIconButtonProps = {
   copyContent: string

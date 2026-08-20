@@ -10,9 +10,9 @@ import { Button } from '@legacy-ui/Button'
 import { IconButton } from '@legacy-ui/IconButton'
 import { ExternalLink } from '@legacy-ui/Link/ExternalLink'
 import { SpinnerWrapper, Spinner } from '@legacy-ui/Spinner'
-import { isLoading, useCurve, useWallet } from '@ui-kit/features/connect-wallet'
-import { useParams } from '@ui-kit/hooks/router'
-import { t } from '@ui-kit/lib/i18n'
+import { isLoading, useCurve, useWallet } from '@evm-ui/features/connect-wallet'
+import { useParams } from '@evm-ui/hooks/router'
+import { t } from '@evm-ui/lib/i18n'
 
 export const PageCompensation = () => {
   const { network } = useParams<NetworkUrlParams>()

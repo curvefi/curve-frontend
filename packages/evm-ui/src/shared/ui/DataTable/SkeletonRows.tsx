@@ -1,9 +1,9 @@
+import { useIncreasingLength, type IncreasingLengthCategory } from '@evm-ui/hooks/useIncreasingLength'
 import Skeleton from '@mui/material/Skeleton'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
 import type { Column } from '@tanstack/react-table'
-import { useIncreasingLength, type IncreasingLengthCategory } from '@ui-kit/hooks/useIncreasingLength'
 import { useCellSx, getCellVariant, type TableItem, type TanstackTable } from './data-table.utils'
 
 const SkeletonCell = <T extends TableItem>({ column, isSticky }: { isSticky: boolean; column: Column<T> }) => (

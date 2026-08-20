@@ -12,13 +12,13 @@ import {
   usePoolActivityVisibility,
   useManualPagination,
   DEFAULT_PAGE_SIZE,
-} from '@ui-kit/features/activity-table'
-import { useCurve } from '@ui-kit/features/connect-wallet'
-import { t } from '@ui-kit/lib/i18n'
-import { useCombinedQueries } from '@ui-kit/lib/queries/combine'
-import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { fakeLoadingQ } from '@ui-kit/types/util'
-import { getPageCount } from '@ui-kit/utils'
+} from '@evm-ui/features/activity-table'
+import { useCurve } from '@evm-ui/features/connect-wallet'
+import { t } from '@evm-ui/lib/i18n'
+import { useCombinedQueries } from '@evm-ui/lib/queries/combine'
+import { getTableOptions, useTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { fakeLoadingQ } from '@evm-ui/types/util'
+import { getPageCount } from '@evm-ui/utils'
 
 type UsePoolActivityProps = {
   chainId: ChainId

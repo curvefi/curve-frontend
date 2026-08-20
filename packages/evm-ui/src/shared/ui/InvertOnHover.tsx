@@ -1,6 +1,6 @@
 import { type ReactElement, type RefObject } from 'react'
+import type { SxProps } from '@evm-ui/utils'
 import type { Theme } from '@mui/material'
-import type { SxProps } from '@ui-kit/utils'
 
 /**
  * A component that inverts the theme when hovered.

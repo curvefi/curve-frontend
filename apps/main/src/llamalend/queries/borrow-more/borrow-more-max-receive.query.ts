@@ -4,10 +4,10 @@ import type { BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more
 import { borrowMoreValidationGroup } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { RouteProvider } from '@primitives/router.utils'
-import { getExpectedFn, getRouteById } from '@ui-kit/entities/router-api'
-import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
-import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { decimal } from '@ui-kit/utils'
+import { getExpectedFn, getRouteById } from '@evm-ui/entities/router-api'
+import { createValidationSuite, type FieldsOf } from '@evm-ui/lib'
+import { queryFactory, rootKeys } from '@evm-ui/lib/model'
+import { decimal } from '@evm-ui/utils'
 
 type BorrowMoreMaxReceiveResult = {
   maxDebt: Decimal

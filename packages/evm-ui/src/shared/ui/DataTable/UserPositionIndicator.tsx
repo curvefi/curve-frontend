@@ -1,9 +1,9 @@
+import { LlamaIcon } from '@evm-ui/shared/icons/LlamaIcon'
+import { Tooltip, type TooltipProps } from '@evm-ui/shared/ui/Tooltip'
+import { mapBreakpoints } from '@evm-ui/themes/basic-theme'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Box from '@mui/material/Box'
 import type { Theme } from '@mui/material/styles'
-import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
-import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
-import { mapBreakpoints } from '@ui-kit/themes/basic-theme'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { IconSize, Spacing } = SizesAndSpaces
 

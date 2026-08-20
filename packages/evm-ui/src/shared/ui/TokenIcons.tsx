@@ -1,7 +1,7 @@
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { borderStyle } from '@evm-ui/utils'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { borderStyle } from '@ui-kit/utils'
 import { IconStack } from './IconStack'
 import { TokenIcon } from './TokenIcon'
 

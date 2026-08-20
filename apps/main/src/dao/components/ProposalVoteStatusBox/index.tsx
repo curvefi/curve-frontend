@@ -5,8 +5,8 @@ import { Box } from '@legacy-ui/Box'
 import { TooltipButton as Tooltip } from '@legacy-ui/Tooltip/TooltipButton'
 import { TooltipIcon } from '@legacy-ui/Tooltip/TooltipIcon'
 import { breakpoints } from '@legacy-ui/utils'
-import { t } from '@ui-kit/lib/i18n'
-import { formatNumber, formatToken } from '@ui-kit/utils'
+import { t } from '@evm-ui/lib/i18n'
+import { formatNumber, formatToken } from '@evm-ui/utils'
 
 type ProposalVoteStatusBoxProps = {
   proposalData: ProposalData

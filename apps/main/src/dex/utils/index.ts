@@ -1,9 +1,9 @@
 import { zeroAddress } from 'viem'
 import type { ChainId, NetworkConfig, Token } from '@/dex/types/main.types'
 import type { Address } from '@primitives/address.utils'
-import type { TokenOption } from '@ui-kit/features/select-token'
-import { isDexPoolListV2Enabled } from '@ui-kit/hooks/useFeatureFlags'
-import { ReleaseChannel } from '@ui-kit/utils'
+import type { TokenOption } from '@evm-ui/features/select-token'
+import { isDexPoolListV2Enabled } from '@evm-ui/hooks/useFeatureFlags'
+import { ReleaseChannel } from '@evm-ui/utils'
 
 export { getStorageValue, setStorageValue } from '@/dex/utils/storage'
 

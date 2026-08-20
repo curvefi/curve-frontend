@@ -1,6 +1,6 @@
+import type { Maintenance } from '@evm-ui/features/maintenance/hooks/useMaintenance'
+import type { AppMenuOption, AppName } from '@evm-ui/shared/routes'
 import type { NetworkMapping } from '@legacy-ui/utils'
-import type { Maintenance } from '@ui-kit/features/maintenance/hooks/useMaintenance'
-import type { AppMenuOption, AppName } from '@ui-kit/shared/routes'
 
 export type AppPage = {
   href: string // this is the full pathname to the page, including leading slash, the app name and the network

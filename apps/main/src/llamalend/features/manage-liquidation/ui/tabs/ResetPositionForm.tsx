@@ -5,11 +5,11 @@ import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Stack from '@mui/material/Stack'
-import { FormButton } from '@ui-kit/features/forms'
-import { t } from '@ui-kit/lib/i18n'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
-import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
+import { FormButton } from '@evm-ui/features/forms'
+import { t } from '@evm-ui/lib/i18n'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
+import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 
 const { Spacing } = SizesAndSpaces
 

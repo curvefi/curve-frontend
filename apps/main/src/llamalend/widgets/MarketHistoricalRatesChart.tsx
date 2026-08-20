@@ -10,11 +10,11 @@ import CardHeader from '@mui/material/CardHeader'
 import { useTheme } from '@mui/material/styles'
 import type { Amount } from '@primitives/decimal.utils'
 import { maybe, notFalsy } from '@primitives/objects.utils'
-import type { CrvUsdSnapshot } from '@ui-kit/entities/crvusd-snapshots'
-import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
-import { useNewLlamaMarketDetailPage } from '@ui-kit/hooks/useFeatureFlags'
-import { t } from '@ui-kit/lib/i18n'
-import { type TimeOption, timeOptions } from '@ui-kit/lib/model/query/time-option-validation'
+import type { CrvUsdSnapshot } from '@evm-ui/entities/crvusd-snapshots'
+import type { LendingSnapshot } from '@evm-ui/entities/lending-snapshots'
+import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
+import { t } from '@evm-ui/lib/i18n'
+import { type TimeOption, timeOptions } from '@evm-ui/lib/model/query/time-option-validation'
 import {
   addMovingAverages,
   CHART_LINE_DASH_PATTERNS,
@@ -25,13 +25,13 @@ import {
   type LegendItem,
   type LineSeriesConfig,
   SelectTimeOption,
-} from '@ui-kit/shared/ui/Chart'
-import { Metric } from '@ui-kit/shared/ui/Metric'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { MarketRateType } from '@ui-kit/types/market'
-import { fallbackQ, mapQuery, q, useMappedQuery } from '@ui-kit/types/util'
-import { formatNumber, TIME_OPTION_MS } from '@ui-kit/utils'
-import { AVERAGE_WINDOW_DAYS, calculateAverageRates, hasFullTimeWindow } from '@ui-kit/utils/averageRates'
+} from '@evm-ui/shared/ui/Chart'
+import { Metric } from '@evm-ui/shared/ui/Metric'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { MarketRateType } from '@evm-ui/types/market'
+import { fallbackQ, mapQuery, q, useMappedQuery } from '@evm-ui/types/util'
+import { formatNumber, TIME_OPTION_MS } from '@evm-ui/utils'
+import { AVERAGE_WINDOW_DAYS, calculateAverageRates, hasFullTimeWindow } from '@evm-ui/utils/averageRates'
 import { useMarketContext } from '../features/market-context'
 import { MarketCardHeader } from './MarketCardHeader'
 

@@ -1,5 +1,5 @@
+import { REFRESH_INTERVAL, TIME_FRAMES } from '@evm-ui/utils/time'
 import { keyframes } from '@mui/material/styles'
-import { REFRESH_INTERVAL, TIME_FRAMES } from '@ui-kit/utils/time'
 
 export const Grays = {
   '10': '#fdfcfc',

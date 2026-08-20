@@ -19,9 +19,9 @@ import { Stepper } from '@legacy-ui/Stepper/Stepper'
 import type { Step } from '@legacy-ui/Stepper/types'
 import { TxInfoBar } from '@legacy-ui/TxInfoBar'
 import { scanTxPath } from '@legacy-ui/utils'
-import { notify } from '@ui-kit/features/connect-wallet'
-import { t, Trans } from '@ui-kit/lib/i18n'
-import { amount as toAmount, formatNumber } from '@ui-kit/utils'
+import { notify } from '@evm-ui/features/connect-wallet'
+import { t, Trans } from '@evm-ui/lib/i18n'
+import { amount as toAmount, formatNumber } from '@evm-ui/utils'
 
 export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: TransferProps) => {
   const isSubscribedRef = useRef(false)

@@ -7,10 +7,10 @@ import { ActionInfoCollapse } from '@/llamalend/widgets/action-card/ActionInfoCo
 import { ACTION_INFO_GROUP_SX } from '@/llamalend/widgets/action-card/info-actions.helpers'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Stack from '@mui/material/Stack'
-import { t } from '@ui-kit/lib/i18n'
-import { UserMarketParams } from '@ui-kit/lib/model'
-import { ActionInfoGasEstimate } from '@ui-kit/shared/ui/ActionInfo'
-import { q } from '@ui-kit/types/util'
+import { t } from '@evm-ui/lib/i18n'
+import { UserMarketParams } from '@evm-ui/lib/model'
+import { ActionInfoGasEstimate } from '@evm-ui/shared/ui/ActionInfo'
+import { q } from '@evm-ui/types/util'
 
 type ClaimActionInfoListProps<ChainId extends IChainId> = {
   params: UserMarketParams<ChainId>

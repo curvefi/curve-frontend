@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
+import { useSearchNavigate, useSearchParams } from '@evm-ui/hooks/router'
 import { OnChangeFn, PaginationState } from '@tanstack/react-table'
-import { useSearchNavigate, useSearchParams } from '@ui-kit/hooks/router'
 
 /**
  * Hook to manage pagination state synchronized with the URL query string.

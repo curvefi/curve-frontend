@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import type { CellContext } from '@tanstack/react-table'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import type { ClosePositionRow } from '../columns/columns.definitions'
 
 const { Spacing } = SizesAndSpaces

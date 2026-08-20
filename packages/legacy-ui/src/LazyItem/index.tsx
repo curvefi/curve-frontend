@@ -1,6 +1,6 @@
 import { HTMLAttributes, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
-import { useIntersectionObserver } from '@ui-kit/hooks/useIntersectionObserver'
+import { useIntersectionObserver } from '@evm-ui/hooks/useIntersectionObserver'
 
 type Props = {
   defaultHeight: string

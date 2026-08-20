@@ -1,6 +1,6 @@
 import * as api from '@/dex/entities/gauge/api'
 import type { AddRewardParams, DepositRewardApproveParams, DepositRewardParams } from '@/dex/entities/gauge/types'
-import { queryFactory, rootKeys } from '@ui-kit/lib/model/query'
+import { queryFactory, rootKeys } from '@evm-ui/lib/model/query'
 import {
   gaugeAddRewardValidationSuite,
   gaugeDepositRewardApproveValidationSuite,

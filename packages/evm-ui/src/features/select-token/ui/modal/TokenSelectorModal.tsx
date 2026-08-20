@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
-import { t } from '@ui-kit/lib/i18n'
-import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { t } from '@evm-ui/lib/i18n'
+import { ModalDialog } from '@evm-ui/shared/ui/ModalDialog'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 
 const { MaxHeight } = SizesAndSpaces
 

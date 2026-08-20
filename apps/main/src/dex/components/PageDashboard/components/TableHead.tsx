@@ -7,7 +7,7 @@ import { Th, Thead, TheadSortButton } from '@legacy-ui/Table'
 import type { TheadSortButtonProps } from '@legacy-ui/Table/TheadSortButton'
 import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
 import { breakpoints } from '@legacy-ui/utils'
-import { t } from '@ui-kit/lib/i18n'
+import { t } from '@evm-ui/lib/i18n'
 
 export const TableHead = ({ tableLabel }: { tableLabel: TableLabel }) => {
   const { isLite, isLoading, formValues, updateFormValues } = useDashboardContext()

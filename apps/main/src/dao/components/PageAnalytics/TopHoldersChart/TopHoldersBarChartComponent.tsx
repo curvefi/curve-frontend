@@ -8,7 +8,7 @@ import {
   createChartSeriesColorScale,
   EChartsBarChart,
   formatChartAxisNumber,
-} from '@ui-kit/shared/ui/Chart'
+} from '@evm-ui/shared/ui/Chart'
 import { TopHoldersBarChartTooltip as CustomTooltip } from './TopHoldersBarChartTooltip'
 
 type TopHoldersBarChartProps = {

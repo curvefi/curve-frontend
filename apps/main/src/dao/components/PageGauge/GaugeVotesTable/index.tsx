@@ -6,9 +6,9 @@ import { useStore } from '@/dao/store/useStore'
 import { GaugeVote, GaugeVotesSortBy } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
 import { formatDate } from '@legacy-ui/utils/'
-import { t } from '@ui-kit/lib/i18n'
-import { DAO_ROUTES } from '@ui-kit/shared/routes'
-import { shortenAddress } from '@ui-kit/utils'
+import { t } from '@evm-ui/lib/i18n'
+import { DAO_ROUTES } from '@evm-ui/shared/routes'
+import { shortenAddress } from '@evm-ui/utils'
 import { GAUGE_VOTES_TABLE_LABELS } from './constants'
 
 type GaugeVotesTableProps = {

@@ -9,9 +9,9 @@ import { type CollateralForm, collateralValidationSuite } from '@/llamalend/quer
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Address, type Hex } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { t } from '@ui-kit/lib/i18n'
-import { rootKeys } from '@ui-kit/lib/model'
-import { waitForApproval } from '@ui-kit/utils'
+import { t } from '@evm-ui/lib/i18n'
+import { rootKeys } from '@evm-ui/lib/model'
+import { waitForApproval } from '@evm-ui/utils'
 
 type AddCollateralMutation = { userCollateral: Decimal }
 

@@ -1,4 +1,4 @@
-import { createValidationSuite } from '@ui-kit/lib/validation'
+import { createValidationSuite } from '@evm-ui/lib/validation'
 import { chainValidationGroup } from './chain-validation'
 import { llamaApiValidationGroup } from './curve-api-validation'
 import { evmAddressValidationGroup } from './evm-address-validation'

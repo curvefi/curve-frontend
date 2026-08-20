@@ -9,9 +9,9 @@ import { formatDate } from '@legacy-ui/utils'
 import Stack from '@mui/material/Stack'
 import { sortBy } from '@primitives/array.utils'
 import { maybe } from '@primitives/objects.utils'
-import { t } from '@ui-kit/lib/i18n'
-import { DAO_ROUTES } from '@ui-kit/shared/routes'
-import { formatNumber } from '@ui-kit/utils'
+import { t } from '@evm-ui/lib/i18n'
+import { DAO_ROUTES } from '@evm-ui/shared/routes'
+import { formatNumber } from '@evm-ui/utils'
 
 type HoldersSort = {
   key: AllHoldersSortBy

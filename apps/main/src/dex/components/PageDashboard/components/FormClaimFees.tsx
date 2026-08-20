@@ -9,8 +9,8 @@ import { claimButtonsKey } from '@/dex/types/main.types'
 import type { Step } from '@legacy-ui/Stepper/types'
 import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
 import { breakpoints } from '@legacy-ui/utils/responsive'
-import { t } from '@ui-kit/lib/i18n'
-import { formatNumber, amount } from '@ui-kit/utils'
+import { t } from '@evm-ui/lib/i18n'
+import { formatNumber, amount } from '@evm-ui/utils'
 
 export const FormClaimFees = () => {
   const {

@@ -1,10 +1,10 @@
 import { ABI_VECRV } from '@/dao/abis/vecrv'
 import { CONTRACT_VECRV } from '@/dao/constants'
 import type { Decimal } from '@primitives/decimal.utils'
-import { getWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/wagmi-config'
-import { queryFactory } from '@ui-kit/lib/model/query'
-import { EmptyValidationSuite } from '@ui-kit/lib/validation'
-import { Chain, decimalPercent, fromWei, MAINNET_CRV_ADDRESS } from '@ui-kit/utils'
+import { getWagmiConfig } from '@evm-ui/features/connect-wallet/lib/wagmi/wagmi-config'
+import { queryFactory } from '@evm-ui/lib/model/query'
+import { EmptyValidationSuite } from '@evm-ui/lib/validation'
+import { Chain, decimalPercent, fromWei, MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import { multicall } from '@wagmi/core'
 
 export type VeCrvStats = {

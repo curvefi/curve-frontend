@@ -6,11 +6,11 @@ import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { type PartialRecord } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
-import { t } from '@ui-kit/lib/i18n'
-import type { BannerProps } from '@ui-kit/shared/ui/Banner'
-import { MarketType } from '@ui-kit/types/market'
-import { Chain } from '@ui-kit/utils'
-import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
+import { t } from '@evm-ui/lib/i18n'
+import type { BannerProps } from '@evm-ui/shared/ui/Banner'
+import { MarketType } from '@evm-ui/types/market'
+import { Chain } from '@evm-ui/utils'
+import { SLIPPAGE } from '@evm-ui/widgets/SlippageSettings/slippage.utils'
 
 type MarketAlert = TooltipProps & {
   alertType: AlertType

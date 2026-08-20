@@ -4,7 +4,7 @@ import { getMarket, hasLeverage, hasLeverageValue, tryGetMarket } from '@/llamal
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { RouteProvider } from '@primitives/router.utils'
-import { assertRouteProvider } from '@ui-kit/entities/router-api'
+import { assertRouteProvider } from '@evm-ui/entities/router-api'
 
 export const validateUserBorrowed = (userBorrowed: Decimal | null | undefined) => {
   test('userBorrowed', 'Borrow amount must be a non-negative number', () => {

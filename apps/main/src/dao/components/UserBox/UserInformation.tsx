@@ -8,9 +8,9 @@ import { Box } from '@legacy-ui/Box'
 import { InternalLink } from '@legacy-ui/Link/InternalLink'
 import { Loader } from '@legacy-ui/Loader/Loader'
 import { TooltipIcon } from '@legacy-ui/Tooltip/TooltipIcon'
-import { t } from '@ui-kit/lib/i18n'
-import { DAO_ROUTES } from '@ui-kit/shared/routes'
-import { amount, Chain, formatToken, shortenAddress } from '@ui-kit/utils'
+import { t } from '@evm-ui/lib/i18n'
+import { DAO_ROUTES } from '@evm-ui/shared/routes'
+import { amount, Chain, formatToken, shortenAddress } from '@evm-ui/utils'
 
 type Props = {
   noLink?: boolean

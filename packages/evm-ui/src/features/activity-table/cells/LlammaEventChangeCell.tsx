@@ -1,11 +1,11 @@
 import type { Chain } from '@curvefi/prices-api'
+import type { Size } from '@evm-ui/shared/ui//TokenIcon'
+import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
+import { TokenInfo } from '@evm-ui/shared/ui/TokenInfo'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { formatNumber } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import { type Token } from '@primitives/address.utils'
-import type { Size } from '@ui-kit/shared/ui//TokenIcon'
-import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
-import { TokenInfo } from '@ui-kit/shared/ui/TokenInfo'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { formatNumber } from '@ui-kit/utils'
 import type { MarketEventRow } from '../types'
 
 const { Spacing } = SizesAndSpaces

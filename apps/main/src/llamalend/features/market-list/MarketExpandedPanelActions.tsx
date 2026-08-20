@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { notFalsy } from '@primitives/objects.utils'
-import { t } from '@ui-kit/lib/i18n'
-import { LEND_MARKET_ROUTES } from '@ui-kit/shared/routes'
-import { ExpandedPanelActions } from '@ui-kit/shared/ui/DataTable/ExpandedPanelActions'
-import type { ExpandedPanelComponent } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
-import { MarketType } from '@ui-kit/types/market'
+import { t } from '@evm-ui/lib/i18n'
+import { LEND_MARKET_ROUTES } from '@evm-ui/shared/routes'
+import { ExpandedPanelActions } from '@evm-ui/shared/ui/DataTable/ExpandedPanelActions'
+import type { ExpandedPanelComponent } from '@evm-ui/shared/ui/DataTable/ExpansionRow'
+import { MarketType } from '@evm-ui/types/market'
 import { useMarketExpandedPanelActions } from './hooks/useMarketExpandedPanelActions'
 
 export const MarketExpandedPanelActions: ExpandedPanelComponent<LlamaMarketRow> = ({ row: { original: market } }) => {

@@ -2,7 +2,7 @@ import { LARGE_APY } from '@/dex/constants'
 import { RewardBase, PoolData, PoolDataCache } from '@/dex/types/main.types'
 import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
 import { Chip } from '@legacy-ui/Typography'
-import { formatNumber, amount } from '@ui-kit/utils'
+import { formatNumber, amount } from '@evm-ui/utils'
 import { ChipVolatileBaseApy } from './ChipVolatileBaseApy'
 import { LegacyTooltipBaseApy } from './LegacyTooltipBaseApy'
 

@@ -1,4 +1,19 @@
 import { useState } from 'react'
+import { ErrorReportModal } from '@evm-ui/features/report-error'
+import { usePreviousValue } from '@evm-ui/hooks/usePreviousValue'
+import { useSwitch } from '@evm-ui/hooks/useSwitch'
+import { t } from '@evm-ui/lib/i18n'
+import { CopyIconButton } from '@evm-ui/shared/ui/CopyIconButton'
+import { WithSkeleton } from '@evm-ui/shared/ui/WithSkeleton'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { type QueryProp } from '@evm-ui/types/util'
+import { formatNumber, getErrorMessage } from '@evm-ui/utils'
+import {
+  getPriceImpactSeverity,
+  getPriceImpactPercent,
+  type PriceImpact,
+} from '@evm-ui/widgets/DetailPageLayout/price-impact.util'
+import type { SlippageType } from '@evm-ui/widgets/SlippageSettings'
 import CloseIcon from '@mui/icons-material/Close'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
@@ -8,21 +23,6 @@ import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe } from '@primitives/objects.utils'
-import { ErrorReportModal } from '@ui-kit/features/report-error'
-import { usePreviousValue } from '@ui-kit/hooks/usePreviousValue'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
-import { t } from '@ui-kit/lib/i18n'
-import { CopyIconButton } from '@ui-kit/shared/ui/CopyIconButton'
-import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { type QueryProp } from '@ui-kit/types/util'
-import { formatNumber, getErrorMessage } from '@ui-kit/utils'
-import {
-  getPriceImpactSeverity,
-  getPriceImpactPercent,
-  type PriceImpact,
-} from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
-import type { SlippageType } from '@ui-kit/widgets/SlippageSettings'
 
 type FormErrors<Field extends string> = readonly (readonly [Field, string])[]
 

@@ -1,6 +1,6 @@
 import type { RepayQuery, RepayParams } from '@/llamalend/queries/validation/repay.types'
 import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
-import { queryFactory, rootKeys } from '@ui-kit/lib/model'
+import { queryFactory, rootKeys } from '@evm-ui/lib/model'
 import { getRepayImplementation } from './repay-query.helpers'
 
 export const { invalidate: invalidateRepayRouteImage } = queryFactory({
