@@ -65,6 +65,9 @@ const BridgeRouteHarness = ({ isConnected = true }: { isConnected?: boolean }) =
           })
         }
         onDestinationSelected={network => form.update({ toChainId: network.chainId, amount: undefined })}
+        onSwapNetworks={() =>
+          form.update({ fromChainId: values.toChainId, toChainId: values.fromChainId, amount: undefined })
+        }
         amount={q({ data: values.amount, isLoading: false, error: null })}
         walletBalance={{ balance: values.walletBalance }}
         inputBalanceUsd={undefined}
@@ -123,7 +126,7 @@ describe('bridge route selection', () => {
     cy.contains('Select origin network').should('be.visible')
     for (const network of NETWORKS) cy.contains(network.name).should('be.visible')
 
-    cy.get('[data-testid="menu-item-chain-ethereum"]').trigger('mousedown')
+    cy.get('[data-testid="menu-item-chain-ethereum"]').click()
     cy.get('[data-testid="bridge-provider-value"]').should('have.text', 'LayerZero')
     cy.get('[data-testid="bridge-destination-select"]').click()
     cy.contains('Select destination network').should('be.visible')
@@ -136,9 +139,16 @@ describe('bridge route selection', () => {
     cy.get('[data-testid="menu-item-chain-etherlink"]').should('be.visible')
     cy.get('[data-testid="menu-item-chain-arbitrum"]').should('not.exist')
 
-    cy.get('body').type('{esc}')
+    cy.get('[data-testid="menu-item-chain-sonic"]').click()
+    cy.get('[data-testid="bridge-origin-select"]').should('contain.text', 'ethereum')
+    cy.get('[data-testid="bridge-destination-select"]').should('contain.text', 'sonic')
+    cy.get('[data-testid="bridge-provider-value"]').should('have.text', 'LayerZero')
+    cy.get('[data-testid="bridge-swap-networks"]').click()
+    cy.get('[data-testid="bridge-origin-select"]').should('contain.text', 'sonic')
+    cy.get('[data-testid="bridge-destination-select"]').should('contain.text', 'ethereum')
+
     cy.get('[data-testid="bridge-origin-select"]').click()
-    cy.get('[data-testid="menu-item-chain-arbitrum"]').trigger('mousedown')
+    cy.get('[data-testid="menu-item-chain-arbitrum"]').click()
     cy.get('[data-testid="bridge-token-select"]').click()
     cy.contains('Select Token').should('be.visible')
     cy.get('[data-testid="token-option-CRV"]').click()
@@ -152,7 +162,7 @@ describe('bridge route selection', () => {
     cy.get('[data-testid="bridge-submit-button"]').should('be.disabled')
 
     cy.get('[data-testid="bridge-origin-select"]').click()
-    cy.get('[data-testid="menu-item-chain-xdc"]').trigger('mousedown')
+    cy.get('[data-testid="menu-item-chain-xdc"]').click()
     cy.get('[data-testid="bridge-token-select"]').click()
     cy.get('[data-testid="token-option-crvUSD"]').click()
     cy.contains('No FastBridge or LayerZero route supports crvUSD from XDC to Ethereum.').should('not.exist')

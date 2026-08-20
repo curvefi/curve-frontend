@@ -34,12 +34,14 @@ export function ChainList({
   showTestnets,
   selectedNetworkId,
   onNetwork,
+  navigateOnSelect = true,
   tvls: { data: tvls, isLoading: tvlsLoading },
 }: {
   options: NetworkDef[]
   showTestnets: boolean
   selectedNetworkId: string | undefined
   onNetwork?: (network: NetworkDef) => void
+  navigateOnSelect?: boolean
   tvls: QueryProp<Record<string, number>>
 }) {
   const pathname = usePathname()
@@ -83,21 +85,29 @@ export function ChainList({
               <Fragment key={key}>
                 <MenuSectionHeader>{title}</MenuSectionHeader>
                 <MenuList>
-                  {groupedOptions[key]?.map(network => (
-                    <MenuItem<string, typeof Link>
-                      data-testid={`menu-item-chain-${network.id}`}
-                      key={network.id}
-                      value={network.id}
-                      component={Link}
-                      // navigate to app root to avoid deep-linking to non-existing resources across chains
-                      href={getInternalUrl(getCurrentApp(pathname), network.id)}
-                      isSelected={network.id == selectedNetworkId}
-                      icon={<ChainSwitcherIcon networkId={network.id} size={36} />}
-                      label={network.name}
-                      onMouseDown={() => onNetwork?.(network)} // onClick somehow doesn't work ???
-                      isLoading={tvlsLoading && key != ChainType.lite /* lite doesn't have tvl */}
-                    />
-                  ))}
+                  {groupedOptions[key]?.map(network => {
+                    const props = {
+                      'data-testid': `menu-item-chain-${network.id}`,
+                      key: network.id,
+                      value: network.id,
+                      isSelected: network.id == selectedNetworkId,
+                      icon: <ChainSwitcherIcon networkId={network.id} size={36} />,
+                      label: network.name,
+                      isLoading: tvlsLoading && key != ChainType.lite /* lite doesn't have tvl */,
+                    }
+
+                    return navigateOnSelect ? (
+                      <MenuItem<string, typeof Link>
+                        {...props}
+                        component={Link}
+                        // navigate to app root to avoid deep-linking to non-existing resources across chains
+                        href={getInternalUrl(getCurrentApp(pathname), network.id)}
+                        onMouseDown={() => onNetwork?.(network)} // onClick somehow doesn't work ???
+                      />
+                    ) : (
+                      <MenuItem<string> {...props} onSelected={() => onNetwork?.(network)} />
+                    )
+                  })}
                 </MenuList>
               </Fragment>
             ))

@@ -23,7 +23,12 @@ import { useLayerZeroBridgeForm } from './useLayerZeroBridgeForm'
 
 export type BridgeForm = BridgeFormValues
 
-const defaultDestination = (chainId: number) => getBridgeDestinationChainIds(chainId)[0] ?? Chain.Ethereum
+const getDestination = (chainId: number, preferredDestination?: number) => {
+  const destinations = getBridgeDestinationChainIds(chainId)
+  return preferredDestination != null && destinations.includes(preferredDestination)
+    ? preferredDestination
+    : (destinations[0] ?? Chain.Ethereum)
+}
 
 const useBridgeParams = ({
   chainId,
@@ -40,12 +45,21 @@ const useFastBridgeGas = createApprovedEstimateGasHook({
   useActionEstimate: useBridgeGasEstimate,
 })
 
-export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks: Record<number, BaseConfig> }) => {
+export const useBridgeForm = ({
+  chainId,
+  networks,
+  destinationChainId,
+}: {
+  chainId: number
+  networks: Record<number, BaseConfig>
+  destinationChainId?: number
+}) => {
+  const resolvedDestinationChainId = getDestination(chainId, destinationChainId)
   const form = useForm<BridgeFormValues>({
     validation: bridgeFormValidationSuite,
     defaultValues: {
       fromChainId: chainId,
-      toChainId: defaultDestination(chainId),
+      toChainId: resolvedDestinationChainId,
       token: 'crvUSD',
       amount: undefined,
       min: undefined,
@@ -65,7 +79,7 @@ export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks
 
   useFormSync(form, {
     fromChainId: chainId,
-    toChainId: defaultDestination(chainId),
+    toChainId: resolvedDestinationChainId,
     amount: undefined,
   })
 

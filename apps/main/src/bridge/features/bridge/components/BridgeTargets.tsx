@@ -2,6 +2,7 @@ import { useCallback } from 'react'
 import { ArrowRight } from '@mui/icons-material'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import Box from '@mui/material/Box'
+import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { NetworkDef } from '@ui/utils'
@@ -90,23 +91,23 @@ const SelectNetworkButton = ({
 export type BridgeTargetsProps = {
   /** List of networks available as bridge sources. */
   networks: NetworkDef[]
-  /** Currently selected source chain id. At the moment of writing the parent component reads this from the URL. */
+  /** Currently selected source chain id. */
   fromChainId: number | undefined
   disabled: boolean
   loading: boolean
-  /** Callback invoked when the user picks a new source network. Not really used in prod, as the ChainList component itself will update the URL. */
+  /** Callback invoked when the user picks a new source network. */
   onNetworkSelected?: (network: NetworkDef) => void
   toChainId?: number
   destinationNetworks?: NetworkDef[]
   onDestinationSelected?: (network: NetworkDef) => void
+  onSwapNetworks?: () => void
 }
 
 /**
  * Source / destination network selector for the bridge.
  *
- * The source ("From") network is user-selectable via a modal chain list,
- * while the destination ("To") is fixed to Ethereum mainnet. Perhaps later
- * we can support bridging to different networks.
+ * Both networks are selected through modal chain lists. Navigation and route
+ * state remain owned by the parent bridge form.
  */
 export const BridgeTargets = ({
   networks,
@@ -117,6 +118,7 @@ export const BridgeTargets = ({
   toChainId = Chain.Ethereum,
   destinationNetworks,
   onDestinationSelected,
+  onSwapNetworks,
 }: BridgeTargetsProps) => {
   const [isFromOpen, openFrom, closeFrom] = useSwitch(false)
   const [isToOpen, openTo, closeTo] = useSwitch(false)
@@ -147,12 +149,12 @@ export const BridgeTargets = ({
       />
 
       <ModalDialog open={isFromOpen} onClose={closeFrom} title={t`Select origin network`}>
-        {/** At the moment of writing, when selecting a network from the chain list feature it updates the URL */}
         <ChainList
           showTestnets={false}
           options={networks}
           selectedNetworkId={getCurrentNetwork(usePathname())}
           tvls={tvls}
+          navigateOnSelect={false}
           onNetwork={useCallback(
             (network: NetworkDef) => {
               closeFrom()
@@ -163,8 +165,16 @@ export const BridgeTargets = ({
         />
       </ModalDialog>
 
-      <Box sx={{ gridArea: GRID_AREAS.arrow, display: 'flex', alignItems: 'center', justifyItems: 'center' }}>
-        <ArrowRight />
+      <Box sx={{ gridArea: GRID_AREAS.arrow, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <IconButton
+          aria-label={t`Reverse bridge direction`}
+          data-testid="bridge-swap-networks"
+          disabled={disabled || loading || !onSwapNetworks}
+          onClick={onSwapNetworks}
+          size="small"
+        >
+          <ArrowRight />
+        </IconButton>
       </Box>
 
       <SelectNetworkLabel label={t`To`} sx={{ gridArea: GRID_AREAS.to.label }} />
@@ -184,6 +194,7 @@ export const BridgeTargets = ({
               options={destinationNetworks}
               selectedNetworkId={toNetworkId}
               tvls={tvls}
+              navigateOnSelect={false}
               onNetwork={network => {
                 closeTo()
                 onDestinationSelected?.(network)

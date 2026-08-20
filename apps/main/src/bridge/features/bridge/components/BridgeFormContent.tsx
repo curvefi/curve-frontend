@@ -12,7 +12,13 @@ export type BridgeFormContentParams = Omit<
 > &
   Pick<
     BridgeTargetsProps,
-    'networks' | 'fromChainId' | 'onNetworkSelected' | 'toChainId' | 'destinationNetworks' | 'onDestinationSelected'
+    | 'networks'
+    | 'fromChainId'
+    | 'onNetworkSelected'
+    | 'toChainId'
+    | 'destinationNetworks'
+    | 'onDestinationSelected'
+    | 'onSwapNetworks'
   > &
   Pick<
     BridgeAmountProps,
@@ -56,6 +62,7 @@ export const BridgeFormContent = ({
   toChainId,
   destinationNetworks,
   onDestinationSelected,
+  onSwapNetworks,
 }: BridgeFormContentParams) => (
   <>
     <BridgeAmount
@@ -79,6 +86,7 @@ export const BridgeFormContent = ({
       toChainId={toChainId}
       destinationNetworks={destinationNetworks}
       onDestinationSelected={onDestinationSelected}
+      onSwapNetworks={onSwapNetworks}
     />
 
     {bridgeDisabledAlert &&

@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { formatUnits } from 'viem'
 import { useConnection, useSwitchChain } from 'wagmi'
 import { maybe } from '@primitives/objects.utils'
-import { useNavigate, usePathname } from '@ui-kit/hooks/router'
+import { getSearchString, useNavigate, usePathname, useSearchParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { getCurrentApp, getInternalUrl } from '@ui-kit/shared/routes'
@@ -15,7 +15,7 @@ import { NATIVE_BRIDGES } from '../../bridges/bridges'
 import type { BridgeFormParams } from '../BridgeFormTabs'
 import type { BridgeAlert } from '../hooks/useBridgeAlert'
 import { useBridgeForm } from '../hooks/useBridgeForm'
-import { LAYERZERO_TOKENS } from '../layerzero'
+import { getBridgeDestinationChainIds, LAYERZERO_TOKENS } from '../layerzero'
 import { BridgeActionInfos } from './BridgeActionInfos'
 import { BridgeFormContent } from './BridgeFormContent'
 import { BridgeTokenSelector } from './BridgeTokenSelector'
@@ -29,6 +29,9 @@ export const BridgeForm = ({
   const { switchChain } = useSwitchChain()
   const navigate = useNavigate()
   const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const ethereumChainId = networks[Chain.Ethereum].chainId
+  const destinationChainId = Object.values(networks).find(({ id }) => id === searchParams.get('destination'))?.chainId
   const {
     form,
     values: { amount, token, toChainId },
@@ -49,7 +52,13 @@ export const BridgeForm = ({
     isKilled,
     disabled,
     onSubmit,
-  } = useBridgeForm({ chainId, networks })
+  } = useBridgeForm({ chainId, networks, destinationChainId })
+
+  const navigateToNetwork = (networkId: string, destinationId?: string) =>
+    navigate(
+      getInternalUrl(getCurrentApp(pathname), networkId) +
+        getSearchString({ destination: destinationId ?? null }, searchParams),
+    )
 
   const { data: tokenUsdRate } = useTokenUsdRate({
     chainId: Chain.Ethereum,
@@ -59,7 +68,7 @@ export const BridgeForm = ({
     () => (tokenUsdRate && amount ? decimal(+amount * tokenUsdRate) : undefined),
     [amount, tokenUsdRate],
   )
-  const nativeNetwork = networks[chainId === networks[Chain.Ethereum].chainId ? toChainId : chainId]
+  const nativeNetwork = networks[chainId === ethereumChainId ? toChainId : chainId]
   const nativeBridgeUrl = NATIVE_BRIDGES.find(({ imageId }) => imageId === `chains/${nativeNetwork?.id}.png`)?.appUrl
   const activeAlert =
     bridgeDisabledAlert ??
@@ -107,7 +116,18 @@ export const BridgeForm = ({
         fromChainId={chainId}
         toChainId={toChainId}
         destinationNetworks={destinationNetworks}
-        onDestinationSelected={network => form.update({ toChainId: network.chainId, amount: undefined })}
+        onDestinationSelected={network =>
+          navigate(pathname + getSearchString({ destination: network.id }, searchParams), { replace: true })
+        }
+        onSwapNetworks={
+          getBridgeDestinationChainIds(toChainId).includes(chainId)
+            ? () =>
+                navigateToNetwork(
+                  networks[toChainId].id,
+                  toChainId === ethereumChainId ? networks[chainId].id : undefined,
+                )
+            : undefined
+        }
         amount={q({
           data: amount,
           isLoading: false,
@@ -130,7 +150,14 @@ export const BridgeForm = ({
         onAmount={amount => form.update({ amount })}
         onSubmit={() => void onSubmit()}
         onChangeNetwork={() => switchChain({ chainId })}
-        onNetworkSelected={network => navigate(getInternalUrl(getCurrentApp(pathname), network.id))}
+        onNetworkSelected={network =>
+          navigateToNetwork(
+            network.id,
+            network.chainId === ethereumChainId && getBridgeDestinationChainIds(ethereumChainId).includes(chainId)
+              ? networks[chainId].id
+              : undefined,
+          )
+        }
       />
 
       <FormAlerts error={error} formErrors={formErrors} handledErrors={['amount']} />
