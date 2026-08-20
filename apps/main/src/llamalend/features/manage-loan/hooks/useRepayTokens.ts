@@ -3,6 +3,7 @@ import type { UserCollateralEvents } from '@/llamalend/features/user-position-hi
 import {
   canRepayFromStateCollateral,
   canRepayFromUserCollateral,
+  hasZapV2,
   isPositionLeveraged,
   type MarketToken,
   type MarketTokensOrEmpty,
@@ -23,11 +24,13 @@ const getRepayTokenOptions = ({
   collateralToken,
   networkId,
   market,
+  hasLeverageProvider,
 }: {
   borrowToken: MarketToken | undefined
   collateralToken: MarketToken | undefined
   networkId: string
   market: MarketTemplate | undefined
+  hasLeverageProvider: boolean
 }) =>
   notFalsy<RepayTokenOption>(
     borrowToken && {
@@ -37,14 +40,16 @@ const getRepayTokenOptions = ({
       field: 'userBorrowed',
     },
     collateralToken &&
-      canRepayFromStateCollateral(market) && {
+      canRepayFromStateCollateral(market) &&
+      (!hasZapV2(market) || hasLeverageProvider) && {
         address: collateralToken.address,
         chain: networkId,
         symbol: collateralToken.symbol,
         field: 'stateCollateral',
       },
     collateralToken &&
-      canRepayFromUserCollateral(market) && {
+      canRepayFromUserCollateral(market) &&
+      hasLeverageProvider && {
         address: collateralToken.address,
         chain: networkId,
         symbol: collateralToken.symbol,
@@ -64,11 +69,18 @@ export const useRepayTokens = ({
   networkId: string
   collateralEvents: QueryProp<UserCollateralEvents>
 }) => {
-  const { market } = useMarketContext()
+  const { market, leverageProviders } = useMarketContext()
   const [token, setToken] = useState<RepayTokenOption | undefined>()
   const tokens = useMemo(
-    () => getRepayTokenOptions({ borrowToken, collateralToken, networkId, market }),
-    [borrowToken, collateralToken, networkId, market],
+    () =>
+      getRepayTokenOptions({
+        borrowToken,
+        collateralToken,
+        networkId,
+        market,
+        hasLeverageProvider: !!leverageProviders?.length,
+      }),
+    [borrowToken, collateralToken, networkId, market, leverageProviders?.length],
   )
   const isLeveraged = collateralEvents.data && isPositionLeveraged(collateralEvents.data?.originalLeverage)
   const field = isLeveraged === true ? 'stateCollateral' : isLeveraged === false ? 'userBorrowed' : undefined
@@ -78,5 +90,7 @@ export const useRepayTokens = ({
     // eslint-disable-next-line @eslint-react/set-state-in-effect -- Existing violation before enabling this rule.
     if (defaultToken) setToken(defaultToken)
   }, [defaultToken])
-  return { tokens, token: token ?? tokens[0], onToken: setToken }
+  // Market or provider changes can remove a repayment source, so keep the selection within the current options.
+  const selectedToken = tokens.find(({ field }) => field === token?.field) ?? tokens[0]
+  return { tokens, token: selectedToken, onToken: setToken }
 }

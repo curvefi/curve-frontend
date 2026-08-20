@@ -2,6 +2,7 @@ import { type ReactNode, useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useCurve } from '@ui-kit/features/connect-wallet'
+import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import type { MarketType } from '@ui-kit/types/market'
 import { q, type QueryProp } from '@ui-kit/types/util'
 import type { MarketTemplate } from '../../llamalend.types'
@@ -24,6 +25,7 @@ export const MarketContextProvider = <ChainId extends LlamaChainId>({
 }) => {
   const { address: userAddress } = useConnection()
   const { llamaApi: api = null } = useCurve()
+  const [releaseChannel] = useReleaseChannel()
   const { data: market, isLoading: isMarketLoading, error: marketError } = marketQuery
   const { data: apiMarketData, isLoading: isApiMarketLoading, error: apiMarketError } = apiMarket
   return (
@@ -46,6 +48,7 @@ export const MarketContextProvider = <ChainId extends LlamaChainId>({
             marketType,
             userAddress,
             api,
+            releaseChannel,
           }),
         [
           api,
@@ -58,6 +61,7 @@ export const MarketContextProvider = <ChainId extends LlamaChainId>({
           marketType,
           network.chainId,
           network.id,
+          releaseChannel,
           userAddress,
         ],
       )}

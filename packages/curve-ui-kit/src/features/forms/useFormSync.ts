@@ -7,10 +7,13 @@ import type { FormUpdates, UseFormReturn, FieldValues } from './form.types'
 export const useFormSync = <T extends FieldValues>(
   { update: updateForm }: Pick<UseFormReturn<T>, 'update'>,
   values: FormUpdates<T>,
+  enabled = true,
 ) => {
   useEffect(
-    () => updateForm(values, { automated: true }),
+    () => {
+      if (enabled) updateForm(values, { automated: true })
+    },
     // eslint-disable-next-line @eslint-react/exhaustive-deps
-    [updateForm, ...Object.values(values)],
+    [enabled, updateForm, ...Object.values(values)],
   )
 }
