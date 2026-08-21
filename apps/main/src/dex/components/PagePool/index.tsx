@@ -12,6 +12,7 @@ import { useGaugeManager, useGaugeRewardsDistributors } from '@/dex/entities/gau
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { AdvancedDetails } from '@/dex/features/advanced-details'
 import { PoolInformation } from '@/dex/features/pool-information'
+import { PoolHistoricalBaseRateChart } from '@/dex/features/PoolHistoricalBaseRateChart'
 import { UserPosition } from '@/dex/features/user-position'
 import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
 import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
@@ -212,6 +213,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
         {!isLite && pricesApiPoolData && pricesApi && (
           <OhlcAndActivityComp rChainId={rChainId} poolAddress={poolAddress} pricesApiPoolData={pricesApiPoolData} />
         )}
+        {pricesApi && <PoolHistoricalBaseRateChart blockchainId={networkId} poolAddress={poolAddress} />}
         <PoolInformation
           curve={curve}
           routerParams={routerParams}
