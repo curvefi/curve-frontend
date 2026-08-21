@@ -29,7 +29,7 @@
     "legacy-ui": "*",
     "lightweight-charts": "5.2.0",
     "memoizee": "0.4.17",
-    "vest": "5.4.6",
+    "vest": "6.3.2",
     "vite-plugin-svgr": "*",
     "vite-plugin-vercel": "9.1.1"
   },
