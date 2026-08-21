@@ -11,6 +11,19 @@ import { fetchApiRoutes, getRouteById } from './router-api.query'
 import type { RouteMeta, RouteMutationMeta, RoutesQuery } from './router-api.types'
 
 /**
+ * Maximum router calldata accepted by ZapV2. Larger payloads exceed its fixed 9,600-byte buffer and deterministically
+ * revert. LlamaLend.js also adds roughly 200 bytes of metadata, leaving 9,400 bytes safely available to routers.
+ */
+const MAX_ZAP_V2_ROUTER_CALLDATA_BYTES = 9_400
+
+/**
+ * Checks the ZapV2 router calldata limit. Hex calldata starts with `0x` and uses two hex characters per byte, so the
+ * prefix is removed before dividing the remaining character count by two.
+ */
+export const isZapV2RouterCalldataTooLarge = (calldata: string | undefined) =>
+  !!calldata && (calldata.length - 2) / 2 > MAX_ZAP_V2_ROUTER_CALLDATA_BYTES
+
+/**
  * Converts a cached router route into the minimal zapV2 payload expected by llamalend.js.
  */
 export const parseRoute = (routeId: string | undefined): RouteMeta => {
