@@ -205,4 +205,4 @@ export const useRouterQueries = <TData extends TGas | null, TKey extends QueryKe
   ),
 })
 
-export { useRouterApi, fetchApiRoutes }
+export { useRouterApi, fetchApiRoutes, getRouteQueryData }

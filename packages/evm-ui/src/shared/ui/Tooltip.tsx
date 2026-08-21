@@ -5,6 +5,7 @@ import { useSwitch } from '@evm-ui/hooks/useSwitch'
 import { SwipeableDrawer } from '@evm-ui/shared/ui/SwipeableDrawer/SwipeableDrawer'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Box from '@mui/material/Box'
+// eslint-disable-next-line no-restricted-imports
 import MuiTooltip, { TooltipProps as MuiTooltipProps } from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 import { InvertTheme } from './ThemeProvider'

@@ -1,8 +1,8 @@
 /// <reference types="./mui-slider.d.ts" />
- 
 import { handleBreakpoints } from '@evm-ui/themes/basic-theme'
 import { type DesignSystem } from '@evm-ui/themes/design'
 import { TRANSITION_FUNCTION } from '@evm-ui/themes/design/0_primitives'
+// eslint-disable-next-line no-restricted-imports
 import type { SliderProps } from '@mui/material/Slider'
 import type { Components } from '@mui/material/styles'
 import { SliderSize } from './types'

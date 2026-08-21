@@ -10,6 +10,7 @@ import {
   validateMaxCollateral,
   validateMaxStateCollateral,
   validateRoute,
+  validateRouteCalldata,
   validateRouteProvider,
 } from '@/llamalend/queries/validation/borrow-fields.validation'
 import type { RepayFormData, RepayParams } from '@/llamalend/queries/validation/repay.types'
@@ -71,6 +72,7 @@ const validateRepayFieldsForMarket = (
       })
     const swapRequired = stateCollateral || userCollateral || routeId
     validateRoute(routeId, !!(type && swapRequired && isRouterRequired(type)))
+    validateRouteCalldata(routeId)
     if (validateLeverageProviders) validateRouteProvider(routeId, leverageProviders, type === 'zapV2')
 
     skipWhen(!['deleverage', 'zapV2', null, undefined].includes(type), () => {

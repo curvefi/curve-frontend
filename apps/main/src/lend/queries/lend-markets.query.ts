@@ -1,11 +1,11 @@
-import { requireLib } from '@evm-ui/features/connect-wallet'
-import { ChainParams, queryFactory, rootKeys } from '@evm-ui/lib/model/query'
-import { llamaApiValidationSuite } from '@evm-ui/lib/model/query/curve-api-validation'
 import { USE_API } from '@/llamalend/queries/market/market.constants'
 import type { IOneWayMarket } from '@curvefi/llamalend-api/lib/interfaces'
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
-import type { Address } from '@primitives/address.utils'
+import { requireLib } from '@evm-ui/features/connect-wallet'
+import { ChainParams, queryFactory, rootKeys } from '@evm-ui/lib/model/query'
+import { llamaApiValidationSuite } from '@evm-ui/lib/model/query/curve-api-validation'
 import { MarketVersion } from '@evm-ui/types/market'
+import type { Address } from '@primitives/address.utils'
 
 const { v1, v2 } = MarketVersion
 

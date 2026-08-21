@@ -1,13 +1,13 @@
-import { Chain } from '@evm-ui/utils/network'
 import { styled } from 'styled-components'
 import { Countdown } from '@/dao/components/Countdown'
 import { MetricsColumnData, MetricsComp } from '@/dao/components/MetricsComp'
 import { SmallLabel } from '@/dao/components/SmallLabel'
 import { ProposalData } from '@/dao/entities/proposals-mapper'
 import { networks } from '@/dao/networks'
+import { t } from '@evm-ui/lib/i18n'
+import { Chain } from '@evm-ui/utils/network'
 import { ExternalLink } from '@legacy-ui/Link'
 import { formatDate, scanTxPath } from '@legacy-ui/utils'
-import { t } from '@evm-ui/lib/i18n'
 
 type ProposalHeaderProps = {
   proposal: ProposalData | null

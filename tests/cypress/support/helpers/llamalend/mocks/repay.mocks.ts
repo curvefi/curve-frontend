@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
+import type { Hex } from 'viem'
 import { oneDecimal, oneInt } from '@cy/support/generators'
 import { decimalMinus, decimalSum } from '@evm-ui/utils'
 import { createMockLlamaApi, TEST_ADDRESS, TEST_TX_HASH } from '../mock-loan-test-data'
@@ -21,10 +22,12 @@ export const createRepayScenario = ({
   chainId,
   approved,
   leverage = false,
+  routeCalldata,
 }: {
   chainId: number
   approved: boolean
   leverage?: boolean
+  routeCalldata?: Hex
 }) => {
   seedMarketBalances(chainId, DEFAULT_COLLATERAL_ADDRESS)
   const borrow = oneDecimal(0.5, 20, 2)
@@ -70,7 +73,7 @@ export const createRepayScenario = ({
     calcMinRecv: createSyncStub(ROUTE_MIN_RECV),
   } as const
 
-  if (leverage) mockRouterRoutes(chainId)
+  if (leverage) mockRouterRoutes(chainId, routeCalldata)
 
   const leverageZapV2 = {
     hasLeverage: () => true,
