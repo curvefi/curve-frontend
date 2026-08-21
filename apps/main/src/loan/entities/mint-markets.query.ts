@@ -1,10 +1,10 @@
-import { requireLib } from '@ui-kit/features/connect-wallet'
-import { ChainParams, queryFactory, rootKeys } from '@ui-kit/lib/model/query'
-import { llamaApiValidationSuite } from '@ui-kit/lib/model/query/curve-api-validation'
 import { USE_API } from '@/llamalend/queries/market/market.constants'
 import type { ILlamma } from '@curvefi/llamalend-api/lib/interfaces'
 import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import type { Address } from '@primitives/address.utils'
+import { requireLib } from '@ui-kit/features/connect-wallet'
+import { ChainParams, queryFactory, rootKeys } from '@ui-kit/lib/model/query'
+import { llamaApiValidationSuite } from '@ui-kit/lib/model/query/curve-api-validation'
 
 export type MintMarketData = ILlamma & { id: string }
 

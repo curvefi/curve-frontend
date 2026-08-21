@@ -1,6 +1,6 @@
-import { Chain } from '@ui-kit/utils'
 import { ChainId, NetworkConfig, NetworkEnum } from '@/lend/types/lend.types'
 import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@legacy-ui/utils'
+import { Chain } from '@ui-kit/utils'
 
 const DEFAULT_NETWORK_CONFIG = {
   hideMarketsInUI: {},

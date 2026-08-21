@@ -1,4 +1,3 @@
-import { Chain } from '@ui-kit/utils/network'
 import { styled } from 'styled-components'
 import { Countdown } from '@/dao/components/Countdown'
 import { MetricsColumnData, MetricsComp } from '@/dao/components/MetricsComp'
@@ -8,6 +7,7 @@ import { networks } from '@/dao/networks'
 import { ExternalLink } from '@legacy-ui/Link'
 import { formatDate, scanTxPath } from '@legacy-ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { Chain } from '@ui-kit/utils/network'
 
 type ProposalHeaderProps = {
   proposal: ProposalData | null
