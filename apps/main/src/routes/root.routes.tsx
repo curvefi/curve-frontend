@@ -5,7 +5,7 @@ import { NetworkAwareLayout } from './RootLayout'
 
 export const rootRoute = createRootRoute({
   component: () => (
-    <ErrorBoundary title={t`Root layout error`}>
+    <ErrorBoundary title={t`Root route error`}>
       <NetworkAwareLayout />
     </ErrorBoundary>
   ),

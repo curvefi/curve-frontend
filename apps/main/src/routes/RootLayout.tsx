@@ -6,6 +6,7 @@ import { useNetworksQuery } from '@/dex/entities/networks'
 import { useStore as useDexStore } from '@/dex/store/useStore'
 import { BACKEND_MAINTENANCE } from '@/maintenances'
 import isPropValid from '@emotion/is-prop-valid'
+import MuiLink from '@mui/material/Link'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { HeadContent, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
@@ -96,7 +97,7 @@ export const RootLayout = ({ children }: { children: ReactNode }) => {
   return (
     <StyleSheetManager shouldForwardProp={shouldForwardProp}>
       <ThemeProvider theme={theme}>
-        <ErrorBoundary title={t`Layout error`}>
+        <ErrorBoundary title={t`Root layout error`} LinkComponent={MuiLink}>
           <OverlayProvider>
             <QueryProvider persister={persister} queryClient={queryClient}>
               <WagmiConfigProvider>{children}</WagmiConfigProvider>

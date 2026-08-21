@@ -148,7 +148,7 @@ describe('Error Boundary', () => {
     cy.get('[data-testid="error-subtitle"]').should('contain.text', 'Please refresh the page and try again.')
   })
 
-  it('should open error report when app crashes before WagmiProvider', () => {
+  it('should open error report with wallet address when the route-aware layout crashes after WagmiProvider', () => {
     cy.visit('/dex/bad-chain', {
       onLoad: win => {
         const warn = win.console.warn
@@ -160,7 +160,28 @@ describe('Error Boundary', () => {
       },
     })
 
-    cy.get('[data-testid="error-title"]', LOAD_TIMEOUT).should('contain.text', 'Layout error')
+    cy.get('[data-testid="error-title"]', LOAD_TIMEOUT).should('contain.text', 'Root route error')
+    cy.get('[data-testid="submit-error-report-button"]').click()
+    cy.get('[data-testid="submit-error-report-modal"]').should('be.visible')
+    cy.get('[data-testid="submit-error-report-address"]')
+      .invoke('val')
+      .should('match', /^0x[a-fA-F0-9]{40}$/)
+  })
+
+  it('should open error report without wallet address when app crashes before WagmiProvider', () => {
+    cy.visit('/dex/ethereum/pools', {
+      onBeforeLoad: win => {
+        const OriginalURL = win.URL
+        win.URL = class extends OriginalURL {
+          constructor(url: string | URL, base?: string | URL) {
+            if (String(url).includes('etherscan')) throw new Error('Simulating error before WagmiProvider')
+            super(url, base)
+          }
+        }
+      },
+    })
+
+    cy.get('[data-testid="error-title"]', LOAD_TIMEOUT).should('contain.text', 'Root layout error')
     cy.get('[data-testid="submit-error-report-button"]').click()
     cy.get('[data-testid="submit-error-report-modal"]').should('be.visible')
     cy.get('[data-testid="submit-error-report-address"]').should('have.value', '')
