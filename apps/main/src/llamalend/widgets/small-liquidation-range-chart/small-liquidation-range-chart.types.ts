@@ -1,5 +1,5 @@
-import type { Amount, Decimal } from '@primitives/decimal.utils'
 import type { QueryProp, Range } from '@evm-ui/types/util'
+import type { Amount, Decimal } from '@primitives/decimal.utils'
 
 export type LiquidationRange = readonly [Amount, Amount]
 export type RenderableLiquidationRange = readonly [number, number]

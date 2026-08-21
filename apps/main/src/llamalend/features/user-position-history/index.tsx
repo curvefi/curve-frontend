@@ -1,10 +1,10 @@
-import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import { t } from '@evm-ui/lib/i18n'
 import { Accordion } from '@evm-ui/shared/ui/Accordion'
 import { WithWrapper } from '@evm-ui/shared/ui/WithWrapper'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import type { QueryProp } from '@evm-ui/types/util'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import { ParsedUserCollateralEvent } from './hooks/useUserCollateralEvents'
 import { UserEventsTable } from './UserEventsTable'
 

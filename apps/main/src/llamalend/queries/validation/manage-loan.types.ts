@@ -1,7 +1,7 @@
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { Decimal } from '@primitives/decimal.utils'
 import { type FieldsOf } from '@evm-ui/lib'
 import type { UserMarketQuery } from '@evm-ui/lib/model'
+import type { Decimal } from '@primitives/decimal.utils'
 
 export type CollateralQuery<T = IChainId> = UserMarketQuery<T> & {
   userCollateral: Decimal

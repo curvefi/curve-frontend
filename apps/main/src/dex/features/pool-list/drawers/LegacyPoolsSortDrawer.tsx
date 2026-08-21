@@ -1,7 +1,4 @@
 import { useCallback, useMemo, useRef } from 'react'
-import { Button, MenuItem, MenuList } from '@mui/material'
-import Typography from '@mui/material/Typography'
-import { OnChangeFn, SortingState } from '@tanstack/react-table'
 import { useSwitch } from '@evm-ui/hooks/useSwitch'
 import { t } from '@evm-ui/lib/i18n'
 import { CaretSortIcon } from '@evm-ui/shared/icons/CaretSort'
@@ -11,6 +8,9 @@ import { DrawerHeader } from '@evm-ui/shared/ui/SwipeableDrawer/DrawerHeader'
 import { DrawerItems } from '@evm-ui/shared/ui/SwipeableDrawer/DrawerItems'
 import { SwipeableDrawer } from '@evm-ui/shared/ui/SwipeableDrawer/SwipeableDrawer'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { Button, MenuItem, MenuList } from '@mui/material'
+import Typography from '@mui/material/Typography'
+import { OnChangeFn, SortingState } from '@tanstack/react-table'
 import { LegacyPoolColumnId } from '../columns'
 
 const { Spacing, ButtonSize } = SizesAndSpaces

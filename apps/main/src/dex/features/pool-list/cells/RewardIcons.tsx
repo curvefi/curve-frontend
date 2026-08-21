@@ -1,7 +1,3 @@
-import { TooltipMessage } from '@legacy-ui/CampaignRewards/TooltipMessage'
-import Box from '@mui/material/Box'
-import Stack from '@mui/material/Stack'
-import Typography, { type TypographyProps } from '@mui/material/Typography'
 import type { CampaignRewards } from '@evm-ui/entities/campaigns'
 import { t } from '@evm-ui/lib/i18n'
 import { IconStack } from '@evm-ui/shared/ui/IconStack'
@@ -10,6 +6,10 @@ import { TokenIcon } from '@evm-ui/shared/ui/TokenIcon'
 import { Tooltip, type TooltipProps } from '@evm-ui/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { formatNumber, MAINNET_CRV } from '@evm-ui/utils'
+import { TooltipMessage } from '@legacy-ui/CampaignRewards/TooltipMessage'
+import Box from '@mui/material/Box'
+import Stack from '@mui/material/Stack'
+import Typography, { type TypographyProps } from '@mui/material/Typography'
 import type { PoolRow } from '../types'
 import {
   aprToPoolApy,

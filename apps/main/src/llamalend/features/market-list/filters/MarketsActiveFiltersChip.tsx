@@ -1,7 +1,5 @@
 import { capitalize } from 'lodash'
 import { useMemo } from 'react'
-import { toArray } from '@primitives/array.utils'
-import { assert, notFalsy } from '@primitives/objects.utils'
 import { ChainFilterChips } from '@evm-ui/shared/ui/DataTable/chips/ChainFilterChips'
 import type { ColumnMeta, FilterProps, TableItem, TanstackTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import {
@@ -17,6 +15,8 @@ import {
   type TableActiveFilterGroupChipsProps,
 } from '@evm-ui/shared/ui/DataTable/TableActiveFilterGroups'
 import { constQ } from '@evm-ui/types/util'
+import { toArray } from '@primitives/array.utils'
+import { assert, notFalsy } from '@primitives/objects.utils'
 import { MARKET_COLUMNS, MARKET_TITLES, MarketColumnId } from '../columns'
 
 const MARKET_COLUMN_ORDER = new Map(MARKET_COLUMNS.map((column, index) => [column.id, index]))

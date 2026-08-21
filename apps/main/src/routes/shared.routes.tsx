@@ -1,5 +1,5 @@
-import { createRoute, lazyRouteComponent } from '@tanstack/react-router'
 import type { AppName } from '@evm-ui/shared/routes'
+import { createRoute, lazyRouteComponent } from '@tanstack/react-router'
 import { Loading } from './Loading'
 import { redirectTo } from './util'
 

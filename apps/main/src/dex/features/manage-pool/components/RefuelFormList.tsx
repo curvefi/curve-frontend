@@ -1,12 +1,12 @@
 import { useCallback } from 'react'
-import Stack from '@mui/material/Stack'
-import { maybe } from '@primitives/objects.utils'
 import { useCombinedQueries } from '@evm-ui/lib'
 import { t } from '@evm-ui/lib/i18n'
 import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { mapQuery, type QueryProp } from '@evm-ui/types/util'
 import { formatNumber } from '@evm-ui/utils'
+import Stack from '@mui/material/Stack'
+import { maybe } from '@primitives/objects.utils'
 import type { RefuelFormValues } from '../types'
 
 const { Spacing } = SizesAndSpaces

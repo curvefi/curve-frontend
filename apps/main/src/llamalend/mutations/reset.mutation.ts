@@ -7,10 +7,10 @@ import { fetchResetIsApproved } from '@/llamalend/queries/reset/reset-is-approve
 import { getResetDebtReduction, getResetImplementation } from '@/llamalend/queries/reset/reset-query.helpers'
 import { type ResetForm, resetValidationSuite } from '@/llamalend/queries/validation/reset.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
-import { type Address, type Hex } from '@primitives/address.utils'
 import { t } from '@evm-ui/lib/i18n'
 import { rootKeys } from '@evm-ui/lib/model'
 import { waitForApproval } from '@evm-ui/utils'
+import { type Address, type Hex } from '@primitives/address.utils'
 
 type ResetMutation = ResetForm
 

@@ -21,15 +21,15 @@ import {
 import { useNetworks } from '@/dex/entities/networks'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, PoolData } from '@/dex/types/main.types'
+import { notify } from '@evm-ui/features/connect-wallet'
+import { t } from '@evm-ui/lib/i18n'
+import { SlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { getActiveStep, getStepStatus } from '@legacy-ui/Stepper/helpers'
 import { Stepper } from '@legacy-ui/Stepper/Stepper'
 import type { Step } from '@legacy-ui/Stepper/types'
 import { TxInfoBar } from '@legacy-ui/TxInfoBar'
 import { scanTxPath } from '@legacy-ui/utils'
-import { notify } from '@evm-ui/features/connect-wallet'
-import { t } from '@evm-ui/lib/i18n'
-import { SlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings'
 
 export const FormDeposit = ({
   curve,

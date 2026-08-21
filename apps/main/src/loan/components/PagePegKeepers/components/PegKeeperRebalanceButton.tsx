@@ -1,7 +1,7 @@
 import { useConnection } from 'wagmi'
-import Button from '@mui/material/Button'
 import { ConnectWalletButton } from '@evm-ui/features/connect-wallet/ui/ConnectWalletButton'
 import { t } from '@evm-ui/lib/i18n'
+import Button from '@mui/material/Button'
 
 type Props = {
   canRebalance: boolean

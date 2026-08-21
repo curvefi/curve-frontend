@@ -1,9 +1,9 @@
 import { sum } from 'lodash'
 import { LARGE_APY } from '@/dex/constants'
-import type { Amount } from '@primitives/decimal.utils'
 import type { CampaignRewards } from '@evm-ui/entities/campaigns'
 import { t } from '@evm-ui/lib/i18n'
 import { aprToApy, AVERAGE_CATEGORIES, formatNumber, type NumberFormatCategory } from '@evm-ui/utils'
+import type { Amount } from '@primitives/decimal.utils'
 import type { PoolRow } from '../types'
 
 const COMPOUND_WINDOW = AVERAGE_CATEGORIES['dex.poolYield.compoundRate'].window

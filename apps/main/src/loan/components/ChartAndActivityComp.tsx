@@ -8,10 +8,10 @@ import { useOhlcChartState } from '@/loan/hooks/useOhlcChartState'
 import { networks } from '@/loan/networks'
 import type { ChainId } from '@/loan/types/loan.types'
 import { getBlockchainId } from '@curvefi/prices-api'
-import type { Decimal } from '@primitives/decimal.utils'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { useBandsChartVisible } from '@evm-ui/hooks/useLocalStorage'
 import type { Range } from '@evm-ui/types/util'
+import type { Decimal } from '@primitives/decimal.utils'
 import { useMarketContext } from '../../llamalend/features/market-context'
 
 type ChartAndActivityCompProps = {

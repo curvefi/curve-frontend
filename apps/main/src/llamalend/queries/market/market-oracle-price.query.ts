@@ -1,7 +1,7 @@
 import { getPricesImplementation } from '@/llamalend/queries/market/market.query-helpers'
-import type { Decimal } from '@primitives/decimal.utils'
 import { type MarketParams, type MarketQuery, queryFactory, rootKeys } from '@evm-ui/lib/model'
 import { marketIdValidationSuite } from '@evm-ui/lib/model/query/market-id-validation'
+import type { Decimal } from '@primitives/decimal.utils'
 
 export const { useQuery: useMarketOraclePrice, queryKey: getMarketOraclePriceKey } = queryFactory({
   queryKey: (params: MarketParams) => [...rootKeys.market(params), 'oraclePrice'] as const,

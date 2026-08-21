@@ -1,9 +1,9 @@
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
-import Stack from '@mui/material/Stack'
 import { t } from '@evm-ui/lib/i18n'
 import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@evm-ui/shared/ui/TooltipComponents'
 import { MarketType } from '@evm-ui/types/market'
 import { formatNumber } from '@evm-ui/utils'
+import Stack from '@mui/material/Stack'
 
 const format = (value: number) => formatNumber(value, 'usd.notional')
 

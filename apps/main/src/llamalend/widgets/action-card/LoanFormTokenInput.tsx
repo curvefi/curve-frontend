@@ -2,9 +2,6 @@ import { type ReactNode, useCallback, useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
-import type { Address } from '@primitives/address.utils'
-import type { Decimal } from '@primitives/decimal.utils'
-import type { PartialRecord } from '@primitives/objects.utils'
 import { FieldPath, FieldPathByValue, FieldValues, type FormUpdates, UseFormReturn } from '@evm-ui/features/forms'
 import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
@@ -14,6 +11,9 @@ import { HelperMessage, LargeTokenInput } from '@evm-ui/shared/ui/LargeTokenInpu
 import { TokenLabel } from '@evm-ui/shared/ui/TokenLabel'
 import { q, type QueryProp } from '@evm-ui/types/util'
 import { decimal } from '@evm-ui/utils'
+import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
+import type { PartialRecord } from '@primitives/objects.utils'
 
 type WalletBalanceProps = NonNullable<LargeTokenInputProps['walletBalance']>
 

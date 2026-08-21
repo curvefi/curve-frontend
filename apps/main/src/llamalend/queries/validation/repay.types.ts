@@ -1,8 +1,8 @@
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { Decimal } from '@primitives/decimal.utils'
 import type { FieldsOf } from '@evm-ui/lib'
 import type { UserMarketParams, UserMarketQuery } from '@evm-ui/lib/model'
 import type { MakeOptional } from '@evm-ui/types/util'
+import type { Decimal } from '@primitives/decimal.utils'
 
 type CompleteRepayForm = {
   userCollateral: Decimal

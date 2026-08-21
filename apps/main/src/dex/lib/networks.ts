@@ -2,11 +2,11 @@ import { ethAddress } from 'viem'
 import { DEFAULT_NETWORK_CONFIG } from '@/dex/constants'
 import { ChainId, NetworkConfig, type NetworkEnum, type Networks } from '@/dex/types/main.types'
 import curve from '@curvefi/api'
-import { getBaseNetworksConfig, NETWORK_BASE_CONFIG as NETWORKS } from '@legacy-ui/utils/utilsNetworks'
 import { DOWNGRADED_CHAINS } from '@evm-ui/features/connect-wallet/lib/wagmi/chains'
 import { CRVUSD_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
 import { CRVUSD_ADDRESS } from '@evm-ui/utils'
 import { Chain } from '@evm-ui/utils/network'
+import { getBaseNetworksConfig, NETWORK_BASE_CONFIG as NETWORKS } from '@legacy-ui/utils/utilsNetworks'
 
 const NETWORK_BASE_CONFIG = NETWORKS as Record<ChainId, (typeof NETWORKS)[keyof typeof NETWORKS]>
 export const defaultNetworks = Object.entries({

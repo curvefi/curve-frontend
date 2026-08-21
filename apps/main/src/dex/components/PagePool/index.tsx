@@ -23,7 +23,6 @@ import { getPath } from '@/dex/utils/utilsRouter'
 import { ManageGauge } from '@/dex/widgets/manage-gauge'
 import { PoolPageHeader } from '@/dex/widgets/page-header'
 import type { Chain } from '@curvefi/prices-api'
-import { AlertBox } from '@legacy-ui/AlertBox'
 import { useUserProfileStore } from '@evm-ui/features/user-profile'
 import { useNavigate } from '@evm-ui/hooks/router'
 import { usePageVisibleInterval } from '@evm-ui/hooks/usePageVisibleInterval'
@@ -33,6 +32,7 @@ import { type TabOption, TabsSwitcher } from '@evm-ui/shared/ui/Tabs/TabsSwitche
 import { REFRESH_INTERVAL } from '@evm-ui/utils'
 import { DetailPageLayout } from '@evm-ui/widgets/DetailPageLayout/DetailPageLayout'
 import { FormMargins } from '@evm-ui/widgets/DetailPageLayout/FormTabs'
+import { AlertBox } from '@legacy-ui/AlertBox'
 import { PoolAlertBanner } from '../PoolAlertBanner'
 
 const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }

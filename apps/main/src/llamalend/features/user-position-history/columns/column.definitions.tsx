@@ -1,5 +1,5 @@
-import { createColumnHelper } from '@tanstack/react-table'
 import { t } from '@evm-ui/lib/i18n'
+import { createColumnHelper } from '@tanstack/react-table'
 import { TimestampCell, DebtChangeCell, EventTypeCell, CollateralChangeCell } from '../cells'
 import type { ParsedUserCollateralEvent } from '../hooks/useUserCollateralEvents'
 import { UserPositionHistoryColumnId } from './columns.enum'

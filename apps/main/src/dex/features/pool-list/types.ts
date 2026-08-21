@@ -1,8 +1,8 @@
 import type { PoolData, RewardsApy, NetworkConfig } from '@/dex/types/main.types'
 import type { INetworkName } from '@curvefi/api/lib/interfaces'
+import type { CampaignRewards } from '@evm-ui/entities/campaigns'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import type { CampaignRewards } from '@evm-ui/entities/campaigns'
 
 type PoolRowGauge = {
   address: Address

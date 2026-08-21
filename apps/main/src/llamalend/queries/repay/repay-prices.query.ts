@@ -1,10 +1,10 @@
 import { repayExpectedBorrowedQueryKey } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
 import type { RepayParams, RepayQuery } from '@/llamalend/queries/validation/repay.types'
 import { repayValidationSuite } from '@/llamalend/queries/validation/repay.validation'
-import type { Decimal } from '@primitives/decimal.utils'
 import { parseRoute } from '@evm-ui/entities/router-api'
 import { queryFactory, rootKeys } from '@evm-ui/lib/model'
 import { type Range } from '@evm-ui/types/util'
+import type { Decimal } from '@primitives/decimal.utils'
 import { getRepayImplementation } from './repay-query.helpers'
 
 export const { useQuery: useRepayPrices, invalidate: invalidateRepayPrices } = queryFactory({

@@ -3,9 +3,9 @@ import type { Route } from '@/dex/components/PageRouterSwap/types'
 import { parseRouterRoutes } from '@/dex/components/PageRouterSwap/utils'
 import { CurveApi, PoolData } from '@/dex/types/main.types'
 import type { IRoute } from '@curvefi/api/lib/interfaces'
-import { Decimal } from '@primitives/decimal.utils'
 import { t } from '@evm-ui/lib/i18n'
 import { decimalDiv } from '@evm-ui/utils'
+import { Decimal } from '@primitives/decimal.utils'
 
 const LOW_EXCHANGE_RATE = 0.98
 

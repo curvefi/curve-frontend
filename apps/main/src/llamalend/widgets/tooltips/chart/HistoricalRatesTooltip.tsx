@@ -1,8 +1,8 @@
 import type { RateChartPoint } from '@/llamalend/widgets/MarketHistoricalRatesChart'
-import { formatDate } from '@legacy-ui/utils'
 import { ChartTooltipSeriesGroup, ChartTooltipSeriesRow, ChartTooltipShell } from '@evm-ui/shared/ui/Chart'
 import type { LineSeriesConfig } from '@evm-ui/shared/ui/Chart/EChartsLineChart'
 import { formatNumber } from '@evm-ui/utils'
+import { formatDate } from '@legacy-ui/utils'
 
 type RateSeriesKey = keyof Omit<RateChartPoint, 'timestamp'>
 

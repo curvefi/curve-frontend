@@ -9,13 +9,13 @@ import type {
   FetchedBandsBalances,
   UserBandsPriceRange,
 } from '@/llamalend/features/bands-chart/types'
-import { Box, useTheme } from '@mui/material'
-import { notFalsy } from '@primitives/objects.utils'
 import type { LlammaLiquididationRange } from '@evm-ui/features/candle-chart/types'
 import { t } from '@evm-ui/lib/i18n'
 import { ChartStateWrapper } from '@evm-ui/shared/ui/Chart/ChartStateWrapper'
 import { useEChartsTooltip } from '@evm-ui/shared/ui/Chart/hooks/useEChartsTooltip'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { Box, useTheme } from '@mui/material'
+import { notFalsy } from '@primitives/objects.utils'
 import { getChartOptions } from './chartOptions'
 import { useBandsChartPalette } from './hooks/useBandsChartPalette'
 import { useBandsChartZoom } from './hooks/useBandsChartZoom'

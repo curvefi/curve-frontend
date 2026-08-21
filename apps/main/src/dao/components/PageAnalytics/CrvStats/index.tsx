@@ -4,7 +4,6 @@ import { styled } from 'styled-components'
 import { useStatsVecrvQuery } from '@/dao/entities/stats-vecrv'
 import { useVeCrvFeesQuery } from '@/dao/entities/vecrv-fees'
 import { useVeCrvHoldersQuery } from '@/dao/entities/vecrv-holders'
-import { Box } from '@legacy-ui/Box'
 import { useCurve } from '@evm-ui/features/connect-wallet'
 import { useCombinedQueries } from '@evm-ui/lib'
 import { t } from '@evm-ui/lib/i18n'
@@ -13,6 +12,7 @@ import { Metric } from '@evm-ui/shared/ui/Metric'
 import { constQ, mapQuery } from '@evm-ui/types/util'
 import { formatNumber, MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import { Chain } from '@evm-ui/utils/network'
+import { Box } from '@legacy-ui/Box'
 
 const WEEKS_PER_YEAR = 52
 const VECRV_APR_AVERAGE_WEEKS = 4

@@ -13,9 +13,9 @@ import {
   TransactionState,
 } from '@/dao/types/dao.types'
 import type { ProposalType } from '@curvefi/prices-api/proposal'
-import { scanTxPath } from '@legacy-ui/utils'
 import { notify, useWallet, getLib } from '@evm-ui/features/connect-wallet'
 import { t } from '@evm-ui/lib/i18n'
+import { scanTxPath } from '@legacy-ui/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

@@ -1,10 +1,4 @@
 import { useCallback } from 'react'
-import type { NetworkDef } from '@legacy-ui/utils'
-import { ArrowRight } from '@mui/icons-material'
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
-import Box from '@mui/material/Box'
-import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import { useNetworksTVL } from '@evm-ui/entities/prices-networks.query'
 import { ChainList } from '@evm-ui/features/switch-chain/ui/ChainList'
 import { ChainSwitcherIcon } from '@evm-ui/features/switch-chain/ui/ChainSwitcherIcon'
@@ -17,6 +11,12 @@ import { Select } from '@evm-ui/shared/ui/Select'
 import { Spinner } from '@evm-ui/shared/ui/Spinner'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { applySxProps, Chain, requireBlockchainId, type SxProps } from '@evm-ui/utils'
+import type { NetworkDef } from '@legacy-ui/utils'
+import { ArrowRight } from '@mui/icons-material'
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import Box from '@mui/material/Box'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 
 const { Spacing } = SizesAndSpaces
 

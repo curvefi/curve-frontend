@@ -1,8 +1,8 @@
 import { ReactNode } from 'react'
-import { Button } from '@legacy-ui/Button'
-import { Spinner } from '@legacy-ui/Spinner'
 import { isLoading, useWallet } from '@evm-ui/features/connect-wallet'
 import { t } from '@evm-ui/lib/i18n'
+import { Button } from '@legacy-ui/Button'
+import { Spinner } from '@legacy-ui/Spinner'
 
 export const FormActions = ({
   haveSigner,

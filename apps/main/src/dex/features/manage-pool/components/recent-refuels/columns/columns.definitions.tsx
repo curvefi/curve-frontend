@@ -1,8 +1,8 @@
-import type { Address } from '@primitives/address.utils'
-import { createColumnHelper } from '@tanstack/react-table'
 import { t } from '@evm-ui/lib/i18n'
 import type { TableItem } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { AddressCell, TimestampCell } from '@evm-ui/shared/ui/DataTable/inline-cells'
+import type { Address } from '@primitives/address.utils'
+import { createColumnHelper } from '@tanstack/react-table'
 import { AmountCell } from '../cells/AmountCell'
 import { getTokenAmountColumnId, RecentRefuelsColumnId } from './columns.enum'
 

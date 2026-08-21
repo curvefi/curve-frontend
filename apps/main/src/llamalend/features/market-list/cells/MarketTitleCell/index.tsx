@@ -1,10 +1,10 @@
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
-import Stack from '@mui/material/Stack'
-import { CellContext } from '@tanstack/react-table'
 import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
 import { TokenIcons } from '@evm-ui/shared/ui/TokenIcons'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { MarketTitle } from '@evm-ui/widgets/MarketTitle'
+import Stack from '@mui/material/Stack'
+import { CellContext } from '@tanstack/react-table'
 import { MarketBadges } from './MarketBadges'
 import { UserMarketPositionIndicator } from './UserMarketPositionIndicator'
 

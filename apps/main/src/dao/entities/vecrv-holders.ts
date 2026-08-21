@@ -1,9 +1,9 @@
 import { getLockers, type Locker } from '@curvefi/prices-api/dao'
-import type { Decimal } from '@primitives/decimal.utils'
-import { DEFAULT_DECIMALS } from '@primitives/objects.utils'
 import { queryFactory } from '@evm-ui/lib/model/query'
 import { EmptyValidationSuite } from '@evm-ui/lib/validation'
 import { decimal, fromWei } from '@evm-ui/utils'
+import type { Decimal } from '@primitives/decimal.utils'
+import { DEFAULT_DECIMALS } from '@primitives/objects.utils'
 
 export type VeCrvHolder = Omit<Locker, 'locked' | 'weight' | 'weightRatio'> & {
   locked: Decimal

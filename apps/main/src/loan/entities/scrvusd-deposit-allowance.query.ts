@@ -1,6 +1,6 @@
-import type { Decimal } from '@primitives/decimal.utils'
 import { requireLib } from '@evm-ui/features/connect-wallet'
 import { queryFactory, rootKeys } from '@evm-ui/lib/model'
+import type { Decimal } from '@primitives/decimal.utils'
 import type { ScrvUsdUserParams, ScrvUsdUserQuery } from './scrvusd.validation'
 import { scrvUsdUserValidationSuite } from './scrvusd.validation'
 

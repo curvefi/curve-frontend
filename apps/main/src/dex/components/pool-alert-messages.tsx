@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
-import Stack from '@mui/material/Stack'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import Stack from '@mui/material/Stack'
 
 const { Spacing } = SizesAndSpaces
 

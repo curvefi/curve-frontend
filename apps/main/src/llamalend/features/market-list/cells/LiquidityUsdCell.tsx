@@ -1,11 +1,11 @@
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { LiquidityUsdTooltipContent } from '@/llamalend/widgets/tooltips/LiquidityUsdTooltipContent'
-import Box from '@mui/material/Box'
-import { CellContext } from '@tanstack/react-table'
 import { t } from '@evm-ui/lib/i18n'
 import { TokenInfo } from '@evm-ui/shared/ui/TokenInfo'
 import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
 import { formatNumber } from '@evm-ui/utils'
+import Box from '@mui/material/Box'
+import { CellContext } from '@tanstack/react-table'
 
 export const LiquidityUsdCell = ({ getValue, row }: CellContext<LlamaMarketRow, number>) => {
   const { liquidity, assets } = row.original

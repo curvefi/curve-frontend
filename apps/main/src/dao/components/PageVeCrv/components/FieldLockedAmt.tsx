@@ -1,8 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import type { FormType, VecrvInfo } from '@/dao/components/PageVeCrv/types'
 import { CurveApi } from '@/dao/types/dao.types'
-import type { Decimal } from '@primitives/decimal.utils'
-import { maybe } from '@primitives/objects.utils'
 import { t } from '@evm-ui/lib/i18n'
 import { DEX_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
 import { HelperMessage, LargeTokenInput } from '@evm-ui/shared/ui/LargeTokenInput'
@@ -10,6 +8,8 @@ import { RouterLink } from '@evm-ui/shared/ui/RouterLink'
 import { TokenLabel } from '@evm-ui/shared/ui/TokenLabel'
 import { q } from '@evm-ui/types/util'
 import { MAINNET_CRV_ADDRESS, decimal, formatNumber, amount } from '@evm-ui/utils'
+import type { Decimal } from '@primitives/decimal.utils'
+import { maybe } from '@primitives/objects.utils'
 
 export const FieldLockedAmt = ({
   curve,

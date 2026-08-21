@@ -1,7 +1,7 @@
-import Typography from '@mui/material/Typography'
-import type { CellContext } from '@tanstack/react-table'
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { formatNumber } from '@evm-ui/utils'
+import Typography from '@mui/material/Typography'
+import type { CellContext } from '@tanstack/react-table'
 import type { ParsedUserCollateralEvent } from '../hooks/useUserCollateralEvents'
 
 export const CollateralChangeCell = ({

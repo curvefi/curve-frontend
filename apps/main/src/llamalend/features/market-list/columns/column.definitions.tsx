@@ -1,11 +1,11 @@
 import { ReactNode } from 'react'
 import type { LlamaMarketRow } from '@/llamalend/queries/market-list/llama-market-stats'
 import { SolvencyTooltip } from '@/llamalend/widgets/tooltips'
-import { type ColumnMeta, createColumnHelper, FilterFnOption } from '@tanstack/react-table'
-import { type AccessorFn, type DeepKeys } from '@tanstack/table-core'
 import type { ColumnDefinition } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { boolFilterFn, listNotEmptyFilterFn, multiFilterFn, rangeFilterFn } from '@evm-ui/shared/ui/DataTable/filters'
 import { MarketRateType } from '@evm-ui/types/market'
+import { type ColumnMeta, createColumnHelper, FilterFnOption } from '@tanstack/react-table'
+import { type AccessorFn, type DeepKeys } from '@tanstack/table-core'
 import {
   BoostCell,
   CompactUsdCell,

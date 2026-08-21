@@ -9,10 +9,6 @@ import {
   LlammaActivityTrades,
 } from '@/llamalend/features/llamma-activity'
 import type { LlammaOhlcChartMode } from '@/llamalend/hooks/useLlammaOhlcChartStateModel'
-import Card from '@mui/material/Card'
-import Stack from '@mui/material/Stack'
-import { type Token } from '@primitives/address.utils'
-import { notFalsy } from '@primitives/objects.utils'
 import { ChartWrapper, type OhlcChartProps } from '@evm-ui/features/candle-chart/ChartWrapper'
 import { SOFT_LIQUIDATION_DESCRIPTION, TIME_OPTIONS } from '@evm-ui/features/candle-chart/constants'
 import type { TimeOption } from '@evm-ui/features/candle-chart/types'
@@ -26,6 +22,10 @@ import { ToggleBandsChartButton } from '@evm-ui/shared/ui/Chart/ToggleBandsChart
 import { type TabOption, TabsSwitcher } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
 import { WithSkeleton } from '@evm-ui/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import Card from '@mui/material/Card'
+import Stack from '@mui/material/Stack'
+import { type Token } from '@primitives/address.utils'
+import { notFalsy } from '@primitives/objects.utils'
 import { MarketCardHeader } from './MarketCardHeader'
 
 const { Spacing } = SizesAndSpaces

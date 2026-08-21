@@ -1,6 +1,6 @@
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { BalancedWithdrawCard } from './components/BalancedWithdrawCard'
 import { MarketParticipationCard } from './components/MarketParticipationCard'
 import { Metrics } from './components/Metrics'

@@ -3,14 +3,14 @@ import { styled } from 'styled-components'
 import type { FormType, VecrvInfo } from '@/dao/components/PageVeCrv/types'
 import { CurveApi } from '@/dao/types/dao.types'
 import { toCalendarDate } from '@/dao/utils/utilsDates'
+import { dayjs } from '@evm-ui/lib/dayjs'
+import { t } from '@evm-ui/lib/i18n'
+import { formatNumber, amount } from '@evm-ui/utils'
 import type { DateValue } from '@internationalized/date'
 import { Button } from '@legacy-ui/Button'
 import { DatePicker } from '@legacy-ui/DatePicker'
 import { Chip } from '@legacy-ui/Typography'
 import { formatDate } from '@legacy-ui/utils'
-import { dayjs } from '@evm-ui/lib/dayjs'
-import { t } from '@evm-ui/lib/i18n'
-import { formatNumber, amount } from '@evm-ui/utils'
 
 const QUICK_ACTIONS: { unit?: dayjs.ManipulateType; value?: number; label: string }[] = [
   { unit: 'week', value: 1, label: t`1 week` },

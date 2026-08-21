@@ -1,9 +1,9 @@
 import type { ReactElement, ReactNode } from 'react'
 import type { AlertType } from '@/dex/types/main.types'
-import { TypographyProps } from '@mui/material/Typography'
 import { t } from '@evm-ui/lib/i18n'
 import { ExclamationTriangleIcon } from '@evm-ui/shared/icons/ExclamationTriangleIcon'
 import { InfoCircledIcon } from '@evm-ui/shared/icons/InfoCircledIcon'
+import { TypographyProps } from '@mui/material/Typography'
 
 export const AlertIcons: Record<AlertType, ReactElement> = {
   info: <InfoCircledIcon />,

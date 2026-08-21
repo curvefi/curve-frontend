@@ -18,8 +18,6 @@ import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId, Token } from '@/dex/types/main.types'
 import { toTokenOption } from '@/dex/utils'
-import { InputDebounced, InputMaxBtn } from '@legacy-ui/InputComp'
-import { FlexContainer } from '@legacy-ui/styled-containers'
 import { useFormContext } from '@evm-ui/features/forms'
 import { TokenList, type TokenOption, TokenSelector } from '@evm-ui/features/select-token'
 import { useSwitch } from '@evm-ui/hooks/useSwitch'
@@ -27,6 +25,8 @@ import { useTokenBalances } from '@evm-ui/hooks/useTokenBalance'
 import { t } from '@evm-ui/lib/i18n'
 import { useTokenUsdRates } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { formatNumber } from '@evm-ui/utils'
+import { InputDebounced, InputMaxBtn } from '@legacy-ui/InputComp'
+import { FlexContainer } from '@legacy-ui/styled-containers'
 
 export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const { update: updateForm, formState, watchValue } = useFormContext<DepositRewardFormValues>()

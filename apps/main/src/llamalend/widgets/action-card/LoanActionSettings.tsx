@@ -1,13 +1,13 @@
 import { LEVERAGE } from '@/llamalend/constants'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
-import Collapse from '@mui/material/Collapse'
-import Stack from '@mui/material/Stack'
-import type { Decimal } from '@primitives/decimal.utils'
 import { useSwitch } from '@evm-ui/hooks/useSwitch'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { borderStyle } from '@evm-ui/utils'
 import { RouteProvidersAccordion } from '@evm-ui/widgets/RouteProvider'
 import { SlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings'
+import Collapse from '@mui/material/Collapse'
+import Stack from '@mui/material/Stack'
+import type { Decimal } from '@primitives/decimal.utils'
 
 const { Spacing } = SizesAndSpaces
 

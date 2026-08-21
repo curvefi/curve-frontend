@@ -1,6 +1,6 @@
-import type { BaseConfig } from '@legacy-ui/utils'
 import { t } from '@evm-ui/lib/i18n'
 import { type FormTab, FormTabs } from '@evm-ui/widgets/DetailPageLayout/FormTabs'
+import type { BaseConfig } from '@legacy-ui/utils'
 import { BridgeForm } from './components/BridgeForm'
 import { useBridgeAlert } from './hooks/useBridgeAlert'
 

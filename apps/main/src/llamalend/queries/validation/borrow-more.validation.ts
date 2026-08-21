@@ -14,8 +14,6 @@ import {
   validateUserBorrowed,
   validateUserCollateral,
 } from '@/llamalend/queries/validation/borrow-fields.validation'
-import type { Decimal } from '@primitives/decimal.utils'
-import type { RouteProvider } from '@primitives/router.utils'
 import { createValidationSuite, FieldsOf } from '@evm-ui/lib'
 import { type UserMarketQuery, validateSlippage } from '@evm-ui/lib/model'
 import { chainValidationGroup } from '@evm-ui/lib/model/query/chain-validation'
@@ -23,6 +21,8 @@ import { llamaApiValidationGroup } from '@evm-ui/lib/model/query/curve-api-valid
 import { evmAddressValidationGroup } from '@evm-ui/lib/model/query/evm-address-validation'
 import { marketIdValidationGroup } from '@evm-ui/lib/model/query/market-id-validation'
 import type { MakeOptional } from '@evm-ui/types/util'
+import type { Decimal } from '@primitives/decimal.utils'
+import type { RouteProvider } from '@primitives/router.utils'
 
 export type BorrowMoreMutation = {
   userCollateral: Decimal

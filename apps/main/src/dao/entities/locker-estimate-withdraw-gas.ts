@@ -1,12 +1,12 @@
 import { curvejsApi as lib } from '@/dao/lib/curvejs'
 import type { ChainId } from '@/dao/types/dao.types'
-import type { Address } from '@primitives/address.utils'
 import { requireLib } from '@evm-ui/features/connect-wallet'
 import type { ChainParams, ChainQuery, UserParams, UserQuery } from '@evm-ui/lib/model/query'
 import { queryFactory } from '@evm-ui/lib/model/query'
 import { curveApiValidationGroup } from '@evm-ui/lib/model/query/curve-api-validation'
 import { evmAddressValidationGroup } from '@evm-ui/lib/model/query/evm-address-validation'
 import { createValidationSuite } from '@evm-ui/lib/validation'
+import type { Address } from '@primitives/address.utils'
 
 async function _fetchLockEstimateWithdrawGas({ userAddress }: ChainQuery<ChainId> & UserQuery) {
   const curve = requireLib('curveApi')

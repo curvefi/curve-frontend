@@ -3,12 +3,12 @@ import { styled } from 'styled-components'
 import { ethAddress } from 'viem'
 import { networks } from '@/dao/networks'
 import { ChainId, EstimatedGas } from '@/dao/types/dao.types'
-import { DetailInfo } from '@legacy-ui/DetailInfo'
-import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
 import { t } from '@evm-ui/lib/i18n'
 import { calculateGas, useGasInfoAndUpdateLib } from '@evm-ui/lib/model/entities/gas-info'
 import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { formatNumber } from '@evm-ui/utils'
+import { DetailInfo } from '@legacy-ui/DetailInfo'
+import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
 
 type StepProgress = {
   active: number

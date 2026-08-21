@@ -29,12 +29,12 @@ import { checkTokensInPoolUnset, containsOracle } from '@/dex/components/PageCre
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
+import { t } from '@evm-ui/lib/i18n'
+import { shortenAddress } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { Icon } from '@legacy-ui/Icon'
 import { Chip } from '@legacy-ui/Typography'
 import { scanAddressPath } from '@legacy-ui/utils'
-import { t } from '@evm-ui/lib/i18n'
-import { shortenAddress } from '@evm-ui/utils'
 
 type Props = {
   blockchainId: string

@@ -1,11 +1,11 @@
-import type { Decimal } from '@primitives/decimal.utils'
-import PromisePool from '@supercharge/promise-pool'
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
 import { createValidationSuite } from '@evm-ui/lib'
 import { queryFactory, rootKeys, type ChainParams, type PoolParams, type PoolQuery } from '@evm-ui/lib/model'
 import { chainValidationGroup } from '@evm-ui/lib/model/query/chain-validation'
 import { curveApiValidationGroup } from '@evm-ui/lib/model/query/curve-api-validation'
 import { poolValidationGroup } from '@evm-ui/lib/model/query/pool-validation'
+import type { Decimal } from '@primitives/decimal.utils'
+import PromisePool from '@supercharge/promise-pool'
 
 const getPoolTvlFromLib = async ({ poolId }: Pick<PoolQuery, 'poolId'>) =>
   (await requireLib('curveApi').getPool(poolId).stats.totalLiquidity()) as Decimal

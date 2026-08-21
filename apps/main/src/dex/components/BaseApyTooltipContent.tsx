@@ -1,7 +1,7 @@
-import Typography from '@mui/material/Typography'
 import { t } from '@evm-ui/lib/i18n'
 import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@evm-ui/shared/ui/TooltipComponents'
 import { formatNumber } from '@evm-ui/utils'
+import Typography from '@mui/material/Typography'
 
 export const BaseApyTooltipContent = ({
   dailyApy,

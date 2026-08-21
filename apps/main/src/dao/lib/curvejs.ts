@@ -1,10 +1,10 @@
 import type { FormType as LockFormType } from '@/dao/components/PageVeCrv/types'
 import { CurveApi, Provider, EstimatedGas, ClaimButtonsKey } from '@/dao/types/dao.types'
-import type { DateValue } from '@internationalized/date'
 import { log } from '@evm-ui/lib'
 import { dayjs } from '@evm-ui/lib/dayjs'
 import { waitForTransaction, waitForTransactions } from '@evm-ui/lib/ethers'
 import { getErrorMessage } from '@evm-ui/utils'
+import type { DateValue } from '@internationalized/date'
 
 export const helpers = {
   waitForTransaction,

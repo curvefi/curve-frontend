@@ -1,8 +1,8 @@
 import { getRefuelDailyDonations } from '@curvefi/prices-api/refuel'
-import type { Address } from '@primitives/address.utils'
 import { createValidationSuite, type FieldsOf } from '@evm-ui/lib'
 import { queryFactory, rootKeys, type ChainNameQuery } from '@evm-ui/lib/model'
 import { contractValidationGroup } from '@evm-ui/lib/model/query/contract-validation'
+import type { Address } from '@primitives/address.utils'
 
 type RefuelDailyDonationsQuery = ChainNameQuery & {
   poolAddress: Address

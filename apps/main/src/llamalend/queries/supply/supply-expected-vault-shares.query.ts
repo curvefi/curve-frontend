@@ -1,5 +1,5 @@
-import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory, rootKeys } from '@evm-ui/lib/model'
+import type { Decimal } from '@primitives/decimal.utils'
 import {
   DepositParams,
   DepositQuery,

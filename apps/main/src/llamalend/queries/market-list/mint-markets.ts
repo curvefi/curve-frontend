@@ -5,8 +5,6 @@ import {
   getUserMarketStats,
   Market as MintMarketFromApi,
 } from '@curvefi/prices-api/crvusd'
-import type { Address } from '@primitives/address.utils'
-import { mapRecord, recordEntries } from '@primitives/objects.utils'
 import { queryFactory, type UserParams, type UserQuery } from '@evm-ui/lib/model/query'
 import { userAddressValidationSuite } from '@evm-ui/lib/model/query/evm-address-validation'
 import {
@@ -15,6 +13,8 @@ import {
   userContractValidationSuite,
 } from '@evm-ui/lib/model/query/user-contract'
 import { EmptyValidationSuite } from '@evm-ui/lib/validation'
+import type { Address } from '@primitives/address.utils'
+import { mapRecord, recordEntries } from '@primitives/objects.utils'
 
 export type MintMarket = MintMarketFromApi & {
   chain: Chain

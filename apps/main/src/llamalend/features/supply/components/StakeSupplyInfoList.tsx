@@ -5,12 +5,12 @@ import type { StakeForm, StakeFormParams } from '@/llamalend/queries/validation/
 import { useSupplyRates } from '@/llamalend/widgets/action-card/hooks/useSupplyRates'
 import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { type Address, type Token } from '@primitives/address.utils'
-import { maybes } from '@primitives/objects.utils'
 import type { UseFormReturn } from '@evm-ui/features/forms'
 import { t } from '@evm-ui/lib/i18n'
 import { mapQuery, q } from '@evm-ui/types/util'
 import { decimalSum } from '@evm-ui/utils'
+import { type Address, type Token } from '@primitives/address.utils'
+import { maybes } from '@primitives/objects.utils'
 import { useVaultUserBalances } from '../hooks/useVaultUserBalances'
 
 type StakeSupplyInfoListProps<ChainId extends IChainId> = {

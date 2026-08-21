@@ -1,6 +1,4 @@
 import { sumBy } from 'lodash'
-import type { Decimal } from '@primitives/decimal.utils'
-import { maybe, maybes, notFalsy } from '@primitives/objects.utils'
 import type { CampaignRewards } from '@evm-ui/entities/campaigns'
 import type { CrvUsdSnapshot } from '@evm-ui/entities/crvusd-snapshots'
 import type { LendingSnapshot } from '@evm-ui/entities/lending-snapshots'
@@ -9,6 +7,8 @@ import type { Range } from '@evm-ui/types/util'
 import { decimal, formatNumber, MAINNET_CRV_ADDRESS } from '@evm-ui/utils'
 import { calculateAverageRates, type WithTimestamp } from '@evm-ui/utils/averageRates'
 import { aprToApy } from '@evm-ui/utils/rates'
+import type { Decimal } from '@primitives/decimal.utils'
+import { maybe, maybes, notFalsy } from '@primitives/objects.utils'
 
 export { aprToApy } from '@evm-ui/utils/rates'
 

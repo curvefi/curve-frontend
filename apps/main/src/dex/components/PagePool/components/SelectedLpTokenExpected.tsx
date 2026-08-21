@@ -1,13 +1,13 @@
 import { styled } from 'styled-components'
 import type { Amount } from '@/dex/components/PagePool/utils'
 import { TokensMapper, PoolDataCacheOrApi } from '@/dex/types/main.types'
+import { TokenIcon } from '@evm-ui/shared/ui/TokenIcon'
+import { shortenAddress, formatNumber, amount } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { Loader } from '@legacy-ui/Loader'
 import { Spacer } from '@legacy-ui/Spacer'
 import { TextEllipsis } from '@legacy-ui/TextEllipsis'
 import { Chip } from '@legacy-ui/Typography'
-import { TokenIcon } from '@evm-ui/shared/ui/TokenIcon'
-import { shortenAddress, formatNumber, amount } from '@evm-ui/utils'
 
 export const SelectedLpTokenExpected = ({
   amounts,

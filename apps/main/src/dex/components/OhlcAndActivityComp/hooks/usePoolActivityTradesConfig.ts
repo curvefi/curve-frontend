@@ -4,8 +4,6 @@ import { usePoolTrades } from '@/dex/entities/pool-trades.query'
 import { usePoolsPricesApi } from '@/dex/queries/pools-prices-api.query'
 import { ChainId } from '@/dex/types/main.types'
 import { getBlockchainId } from '@curvefi/prices-api'
-import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
-import type { Address } from '@primitives/address.utils'
 import {
   type PoolTradeRow,
   POOL_TRADES_COLUMNS,
@@ -19,6 +17,8 @@ import { useCombinedQueries } from '@evm-ui/lib/queries/combine'
 import { getTableOptions, useTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { fakeLoadingQ } from '@evm-ui/types/util'
 import { getPageCount } from '@evm-ui/utils'
+import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
+import type { Address } from '@primitives/address.utils'
 
 type UsePoolActivityProps = {
   chainId: ChainId

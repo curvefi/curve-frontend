@@ -1,11 +1,11 @@
 import { memo } from 'react'
-import Stack from '@mui/material/Stack'
-import type { CellContext } from '@tanstack/react-table'
 import { t } from '@evm-ui/lib/i18n'
 import { UserPositionIndicator } from '@evm-ui/shared/ui/DataTable/UserPositionIndicator'
 import { TokenIcons } from '@evm-ui/shared/ui/TokenIcons'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { MarketTitle } from '@evm-ui/widgets/MarketTitle'
+import Stack from '@mui/material/Stack'
+import type { CellContext } from '@tanstack/react-table'
 import type { PoolRow } from '../../types'
 import { PoolBadges } from './PoolBadges'
 

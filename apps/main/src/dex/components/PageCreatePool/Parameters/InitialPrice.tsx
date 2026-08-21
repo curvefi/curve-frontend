@@ -4,8 +4,8 @@ import { SwitchTokensButton } from '@/dex/components/PageCreatePool/components/S
 import { TOKEN_A, TOKEN_B, TOKEN_C } from '@/dex/components/PageCreatePool/constants'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi } from '@/dex/types/main.types'
-import { Box } from '@legacy-ui/Box'
 import { t } from '@evm-ui/lib/i18n'
+import { Box } from '@legacy-ui/Box'
 
 type Props = {
   curve: CurveApi

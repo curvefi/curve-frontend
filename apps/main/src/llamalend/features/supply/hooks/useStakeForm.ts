@@ -15,12 +15,12 @@ import {
 } from '@/llamalend/queries/validation/supply.validation'
 import { useFormLowSolvency } from '@/llamalend/widgets/action-card/hooks/useFormLowSolvency'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { Decimal } from '@primitives/decimal.utils'
 import { useForm, useFormSync } from '@evm-ui/features/forms'
 import { useFormDebounce } from '@evm-ui/hooks/useDebounce'
 import { queryFactory, rootKeys } from '@evm-ui/lib/model'
 import { MarketType } from '@evm-ui/types/market'
 import { mapQuery } from '@evm-ui/types/util'
+import type { Decimal } from '@primitives/decimal.utils'
 import { useMarketContext } from '../../market-context'
 import { useVaultUserBalances } from './useVaultUserBalances'
 

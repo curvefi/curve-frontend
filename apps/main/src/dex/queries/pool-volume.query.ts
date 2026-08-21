@@ -1,5 +1,3 @@
-import type { Address } from '@primitives/address.utils'
-import type { Decimal } from '@primitives/decimal.utils'
 import { requireLib, useCurve } from '@evm-ui/features/connect-wallet'
 import { createValidationSuite } from '@evm-ui/lib'
 import {
@@ -13,6 +11,8 @@ import {
 import { chainValidationGroup } from '@evm-ui/lib/model/query/chain-validation'
 import { curveApiValidationGroup } from '@evm-ui/lib/model/query/curve-api-validation'
 import { poolValidationGroup } from '@evm-ui/lib/model/query/pool-validation'
+import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { fetchNetworks, useNetworks } from '../entities/networks'
 
 const { useQuery: usePoolVolumeQuery } = queryFactory({

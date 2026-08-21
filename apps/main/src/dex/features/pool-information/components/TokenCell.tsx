@@ -1,4 +1,3 @@
-import Box from '@mui/material/Box'
 import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
 import { useCopyToClipboard } from '@evm-ui/hooks/useCopyToClipboard'
 import { t } from '@evm-ui/lib/i18n'
@@ -8,6 +7,7 @@ import { ExternalLink } from '@evm-ui/shared/ui/ExternalLink'
 import { TokenInfo, type TokenInfoProps } from '@evm-ui/shared/ui/TokenInfo'
 import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
 import { shortenAddress } from '@evm-ui/utils'
+import Box from '@mui/material/Box'
 
 export const TokenCell = ({
   source,

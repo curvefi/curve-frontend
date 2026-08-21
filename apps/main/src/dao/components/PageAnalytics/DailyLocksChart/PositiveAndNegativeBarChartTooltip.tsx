@@ -1,8 +1,8 @@
 import type { VeCrvLock } from '@/dao/entities/vecrv-locks'
-import { formatDate } from '@legacy-ui/utils'
 import { t } from '@evm-ui/lib/i18n'
 import { ChartTooltipDataRow, ChartTooltipSeriesGroup, ChartTooltipShell } from '@evm-ui/shared/ui/Chart'
 import { formatNumber } from '@evm-ui/utils'
+import { formatDate } from '@legacy-ui/utils'
 
 export const PositiveAndNegativeBarChartTooltip = ({ datum }: { datum: VeCrvLock }) => (
   <ChartTooltipShell title={formatDate(datum.day)}>

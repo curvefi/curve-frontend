@@ -1,10 +1,10 @@
 import type { EChartsOption } from 'echarts'
 import { useMemo } from 'react'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { formatNumber } from '@evm-ui/utils'
 import { useTheme, type Theme } from '@mui/material/styles'
 import { toArray } from '@primitives/array.utils'
 import { notFalsyArray, maybe } from '@primitives/objects.utils'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
-import { formatNumber } from '@evm-ui/utils'
 import { buildContinuousOption, buildRangeMarkAreas, buildSplitOption } from './small-liquidation-range-chart.options'
 import type {
   ChartColors,

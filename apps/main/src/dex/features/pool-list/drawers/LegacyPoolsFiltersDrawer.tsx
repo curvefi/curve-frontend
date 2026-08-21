@@ -1,7 +1,4 @@
 import { useCallback } from 'react'
-import Button from '@mui/material/Button'
-import Grid from '@mui/material/Grid'
-import Stack from '@mui/material/Stack'
 import { useSwitch } from '@evm-ui/hooks/useSwitch'
 import { t } from '@evm-ui/lib/i18n'
 import { FilterIcon } from '@evm-ui/shared/icons/FilterIcon'
@@ -9,6 +6,9 @@ import { HiddenCountResetButton } from '@evm-ui/shared/ui/DataTable/HiddenCountR
 import { DrawerHeader } from '@evm-ui/shared/ui/SwipeableDrawer/DrawerHeader'
 import { SwipeableDrawer } from '@evm-ui/shared/ui/SwipeableDrawer/SwipeableDrawer'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import Button from '@mui/material/Button'
+import Grid from '@mui/material/Grid'
+import Stack from '@mui/material/Stack'
 import { LegacyPoolsChips, LegacyPoolsChipsProps } from '../chips/LegacyPoolsChips'
 import type { LegacyPoolColumnId } from '../columns'
 

@@ -1,10 +1,10 @@
 import type { ChainId } from '@/dex/types/main.types'
-import Grid from '@mui/material/Grid'
 import { t } from '@evm-ui/lib/i18n'
 import { Metric } from '@evm-ui/shared/ui/Metric'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { mapQuery } from '@evm-ui/types/util'
 import { amount, Chain, formatToken } from '@evm-ui/utils'
+import Grid from '@mui/material/Grid'
 import type { LiquidityDetailsData } from '../hooks/useLiquidityDetails'
 
 const { Spacing } = SizesAndSpaces

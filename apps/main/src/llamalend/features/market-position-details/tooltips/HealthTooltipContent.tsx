@@ -1,6 +1,6 @@
-import Box from '@mui/material/Box'
 import { t, Trans } from '@evm-ui/lib/i18n'
 import { TooltipDescription, TooltipWrapper } from '@evm-ui/shared/ui/TooltipComponents'
+import Box from '@mui/material/Box'
 
 export const HealthTooltipContent = ({ variant = 'bar' }: { variant?: 'bar' | 'metric' }) => {
   const boundary = variant === 'metric' ? t`when at 1` : t`when the bar is empty`

@@ -3,8 +3,8 @@ import { useConnection } from 'wagmi'
 import { useUserPools } from '@/dex/queries/user-pools.query'
 import { useStore } from '@/dex/store/useStore'
 import type { ChainId, CurveApi, PoolData } from '@/dex/types/main.types'
-import { fromEntries, notFalsy, recordValues } from '@primitives/objects.utils'
 import { useCurve } from '@evm-ui/features/connect-wallet'
+import { fromEntries, notFalsy, recordValues } from '@primitives/objects.utils'
 
 type PoolIdByAddressSource = Record<string, { pool: Pick<PoolData['pool'], 'address' | 'id'> }>
 

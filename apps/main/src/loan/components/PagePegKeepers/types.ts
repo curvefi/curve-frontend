@@ -1,5 +1,5 @@
-import type { Decimal } from '@primitives/decimal.utils'
 import type { QueryProp } from '@evm-ui/types/util'
+import type { Decimal } from '@primitives/decimal.utils'
 import type { PEG_KEEPERS } from './constants'
 
 export type PegKeeper = (typeof PEG_KEEPERS)[number]

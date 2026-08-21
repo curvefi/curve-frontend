@@ -1,7 +1,4 @@
 import type { ReactNode } from 'react'
-import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
-import type { CellContext } from '@tanstack/react-table'
 import { CrossCircleIcon } from '@evm-ui/shared/icons/CrossCircleIcon'
 import { DownloadIcon } from '@evm-ui/shared/icons/DownloadIcon'
 import { ExclamationTriangleIcon } from '@evm-ui/shared/icons/ExclamationTriangleIcon'
@@ -11,6 +8,9 @@ import { RewardsIcon } from '@evm-ui/shared/icons/RewardsIcon'
 import { UploadIcon } from '@evm-ui/shared/icons/UploadIcon'
 import { InlineTableCell } from '@evm-ui/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
+import type { CellContext } from '@tanstack/react-table'
 import type { ParsedUserCollateralEvent, UserCollateralEventType } from '../hooks/useUserCollateralEvents'
 
 const { Spacing } = SizesAndSpaces

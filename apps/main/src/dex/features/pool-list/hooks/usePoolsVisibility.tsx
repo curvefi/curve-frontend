@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
-import { fromEntries, recordValues } from '@primitives/objects.utils'
 import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
 import type { MigrationOptions } from '@evm-ui/hooks/useStoredState'
 import { useVisibilitySettings } from '@evm-ui/shared/ui/DataTable/hooks/useVisibilitySettings'
 import type { VisibilityGroup } from '@evm-ui/shared/ui/DataTable/visibility.types'
+import { fromEntries, recordValues } from '@primitives/objects.utils'
 import { POOL_COLUMNS, POOLS_COLUMN_OPTIONS, PoolColumnId } from '../columns'
 import type { PoolsSorting } from './usePoolsSorting'
 

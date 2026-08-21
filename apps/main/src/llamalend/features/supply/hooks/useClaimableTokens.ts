@@ -4,10 +4,10 @@ import type { Address } from 'viem'
 import { useClaimableCrv, useClaimableRewards } from '@/llamalend/queries/supply/supply-claimable-rewards.query'
 import { hasClaimableRewards } from '@/llamalend/queries/supply/supply-query.helpers'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { notFalsy } from '@primitives/objects.utils'
 import { UserMarketParams } from '@evm-ui/lib/model'
 import { useTokenUsdRates } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { MAINNET_CRV } from '@evm-ui/utils'
+import { notFalsy } from '@primitives/objects.utils'
 
 export const useClaimableTokens = <ChainId extends LlamaChainId>({
   params,

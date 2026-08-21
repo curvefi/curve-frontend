@@ -1,7 +1,7 @@
 import { sum } from 'lodash'
 import type { RewardsApy } from '@/dex/types/main.types'
-import type { Address } from '@primitives/address.utils'
 import { useCampaignsByAddress } from '@evm-ui/entities/campaigns'
+import type { Address } from '@primitives/address.utils'
 import type { LegacyPoolRow } from '../types'
 
 export const hasLegacyCrvRewards = (rewards: RewardsApy | undefined) => sum(rewards?.crv) > 0

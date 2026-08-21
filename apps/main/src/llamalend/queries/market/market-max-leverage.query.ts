@@ -2,10 +2,10 @@ import { group } from 'vest'
 import { getMarket, hasLegacyMintLeverage, hasZapV2 } from '@/llamalend/llama.utils'
 import { validateRange } from '@/llamalend/queries/validation/borrow-fields.validation'
 import type { IChainId } from '@curvefi/api/lib/interfaces'
-import type { Decimal } from '@primitives/decimal.utils'
 import { createValidationSuite, type FieldsOf } from '@evm-ui/lib'
 import { type MarketQuery, queryFactory, rootKeys } from '@evm-ui/lib/model'
 import { marketIdValidationSuite } from '@evm-ui/lib/model/query/market-id-validation'
+import type { Decimal } from '@primitives/decimal.utils'
 
 type MaxLeverageQuery = MarketQuery<IChainId> & { range: number }
 type MaxLeverageParams = FieldsOf<MaxLeverageQuery>

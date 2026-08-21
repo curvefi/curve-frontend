@@ -5,9 +5,9 @@ import { useLlammaOhlcChartStateModel } from '@/llamalend/hooks/useLlammaOhlcCha
 import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useUserPrices } from '@/llamalend/queries/user'
 import { getBlockchainId } from '@curvefi/prices-api'
+import type { Range } from '@evm-ui/types/util'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import type { Range } from '@evm-ui/types/util'
 
 type UseOhlcChartStateProps = {
   chainId: ChainId

@@ -1,9 +1,9 @@
 import { styled } from 'styled-components'
 import { DAO_CHART_HEIGHT } from '@/dao/components/Charts/constants'
 import type { VeCrvFee } from '@/dao/entities/vecrv-fees'
-import { Box } from '@legacy-ui/Box'
 import { t } from '@evm-ui/lib/i18n'
 import { ChartStateWrapper } from '@evm-ui/shared/ui/Chart'
+import { Box } from '@legacy-ui/Box'
 import { FeesBarChart } from './FeesBarChart'
 
 export const VECRV_FEES_CHART_WEEKS = 52

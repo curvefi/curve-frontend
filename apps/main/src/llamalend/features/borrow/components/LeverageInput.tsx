@@ -1,12 +1,12 @@
 import { type ChangeEvent } from 'react'
-import type { Decimal } from '@primitives/decimal.utils'
-import { maybe } from '@primitives/objects.utils'
 import { t } from '@evm-ui/lib/i18n'
 import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
 import { WithSkeleton } from '@evm-ui/shared/ui/WithSkeleton'
 import { mapQuery, type QueryProp } from '@evm-ui/types/util'
 import { formatNumber } from '@evm-ui/utils'
 import { CheckboxField } from '@evm-ui/widgets/DetailPageLayout/CheckboxField'
+import type { Decimal } from '@primitives/decimal.utils'
+import { maybe } from '@primitives/objects.utils'
 
 const TEST_ID_PREFIX = 'leverage'
 

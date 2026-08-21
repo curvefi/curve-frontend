@@ -1,5 +1,4 @@
 import type { GaugeFormattedData } from '@/dao/types/dao.types'
-import { useTheme } from '@mui/material/styles'
 import { t } from '@evm-ui/lib/i18n'
 import {
   ChartTooltipDataRow,
@@ -8,6 +7,7 @@ import {
   getChartSignedValueColor,
 } from '@evm-ui/shared/ui/Chart'
 import { formatNumber } from '@evm-ui/utils'
+import { useTheme } from '@mui/material/styles'
 
 type GaugesBarChartCustomTooltipProps = {
   datum: GaugeFormattedData

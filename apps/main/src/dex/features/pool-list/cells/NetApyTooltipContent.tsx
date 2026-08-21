@@ -1,4 +1,3 @@
-import Stack from '@mui/material/Stack'
 import { t } from '@evm-ui/lib/i18n'
 import {
   TooltipDescription,
@@ -8,6 +7,7 @@ import {
   TooltipWrapper,
 } from '@evm-ui/shared/ui/TooltipComponents'
 import { AVERAGE_CATEGORIES, formatNumber, MAINNET_CRV } from '@evm-ui/utils'
+import Stack from '@mui/material/Stack'
 import type { PoolRow } from '../types'
 import { CampaignRewardTooltipItems, ExtraRewardTooltipItems, PointsTooltipItems } from './ApyTooltipItems'
 import {

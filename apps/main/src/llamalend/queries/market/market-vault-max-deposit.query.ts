@@ -1,8 +1,8 @@
-import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory } from '@evm-ui/lib/model/query'
 import { marketIdValidationSuite } from '@evm-ui/lib/model/query/market-id-validation'
 import type { MarketParams, MarketQuery } from '@evm-ui/lib/model/query/root-keys'
 import { rootKeys } from '@evm-ui/lib/model/query/root-keys'
+import type { Decimal } from '@primitives/decimal.utils'
 import { getLendVault } from './market.query-helpers'
 
 /** Queries the current maximum deposit allowed by the vault. */

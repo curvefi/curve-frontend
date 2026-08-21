@@ -1,9 +1,9 @@
 import { networks } from '@/lend/networks'
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
-import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@evm-ui/lib/i18n'
 import type { Range } from '@evm-ui/types/util'
 import { type FormTab, FormTabs } from '@evm-ui/widgets/DetailPageLayout/FormTabs'
+import type { Decimal } from '@primitives/decimal.utils'
 
 type CreateLoanTabsParams = {
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void

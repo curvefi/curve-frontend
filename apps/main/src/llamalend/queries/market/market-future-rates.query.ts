@@ -3,10 +3,10 @@ import { getMarket } from '@/llamalend/llama.utils'
 import { USE_API } from '@/llamalend/queries/market/market.constants'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
-import type { Decimal } from '@primitives/decimal.utils'
 import { createValidationSuite, type FieldsOf } from '@evm-ui/lib'
 import { type MarketQuery, queryFactory, rootKeys } from '@evm-ui/lib/model'
 import { marketIdValidationSuite } from '@evm-ui/lib/model/query/market-id-validation'
+import type { Decimal } from '@primitives/decimal.utils'
 import { convertRates } from '../../rates.utils'
 
 type BorrowApyQuery = MarketQuery<IChainId> & {

@@ -12,11 +12,11 @@ import { useBorrowRates } from '@/llamalend/widgets/action-card/hooks/useBorrowR
 import { usePrevLoanState } from '@/llamalend/widgets/action-card/hooks/usePrevLoanState'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { Address, Token } from '@primitives/address.utils'
-import { maybes } from '@primitives/objects.utils'
 import type { MarketType } from '@evm-ui/types/market'
 import { mapQuery, q } from '@evm-ui/types/util'
 import { decimalMax, decimalMinus } from '@evm-ui/utils'
+import type { Address, Token } from '@primitives/address.utils'
+import { maybes } from '@primitives/objects.utils'
 
 export function ResetPositionInfoList<ChainId extends IChainId>({
   params,

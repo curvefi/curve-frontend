@@ -4,14 +4,14 @@ import { useNetworkByChain } from '@/dex/entities/networks'
 import { DepositRewardFormValues, DepositRewardStep } from '@/dex/features/deposit-gauge-reward/types'
 import { StepperContainer } from '@/dex/features/deposit-gauge-reward/ui'
 import { ChainId } from '@/dex/types/main.types'
+import { useFormContext } from '@evm-ui/features/forms'
+import { t } from '@evm-ui/lib/i18n'
+import { REFRESH_INTERVAL } from '@evm-ui/utils'
 import { getStepStatus } from '@legacy-ui/Stepper/helpers'
 import { Stepper } from '@legacy-ui/Stepper/Stepper'
 import type { Step } from '@legacy-ui/Stepper/types'
 import { TxInfoBar } from '@legacy-ui/TxInfoBar'
 import { scanTxPath } from '@legacy-ui/utils'
-import { useFormContext } from '@evm-ui/features/forms'
-import { t } from '@evm-ui/lib/i18n'
-import { REFRESH_INTERVAL } from '@evm-ui/utils'
 
 type TxInfo = {
   description: string

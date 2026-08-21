@@ -2,13 +2,13 @@ import { useCallback, useMemo } from 'react'
 import type { VeCrvHolder } from '@/dao/entities/vecrv-holders'
 import type { TopHoldersSortBy } from '@/dao/types/dao.types'
 import { formatHolderName } from '@/dao/utils'
-import { useTheme } from '@mui/material/styles'
 import {
   CHART_X_AXIS_LABEL_ROTATION,
   createChartSeriesColorScale,
   EChartsBarChart,
   formatChartAxisNumber,
 } from '@evm-ui/shared/ui/Chart'
+import { useTheme } from '@mui/material/styles'
 import { TopHoldersBarChartTooltip as CustomTooltip } from './TopHoldersBarChartTooltip'
 
 type TopHoldersBarChartProps = {

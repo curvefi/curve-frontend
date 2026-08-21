@@ -12,8 +12,6 @@ import { useChainId } from '@/dex/hooks/useChainId'
 import type { PoolAddressParams } from '@/dex/types/main.types'
 import { PoolPageHeader } from '@/dex/widgets/page-header'
 import type { Chain } from '@curvefi/prices-api'
-import Grid from '@mui/material/Grid'
-import { DEFAULT_DECIMALS } from '@primitives/objects.utils'
 import { useParams } from '@evm-ui/hooks/router'
 import { t } from '@evm-ui/lib/i18n'
 import { DEX_ROUTES, getInternalUrl } from '@evm-ui/shared/routes'
@@ -21,6 +19,8 @@ import { Banner } from '@evm-ui/shared/ui/Banner'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { formatNumber } from '@evm-ui/utils'
 import { DetailPageLayout } from '@evm-ui/widgets/DetailPageLayout/DetailPageLayout'
+import Grid from '@mui/material/Grid'
+import { DEFAULT_DECIMALS } from '@primitives/objects.utils'
 
 const { Spacing } = SizesAndSpaces
 

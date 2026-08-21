@@ -15,11 +15,11 @@ import {
   FnStepResponse,
   TransactionState,
 } from '@/dao/types/dao.types'
-import { shortenAccount } from '@legacy-ui/utils'
 import { notify, requireLib, useWallet } from '@evm-ui/features/connect-wallet'
 import { t } from '@evm-ui/lib/i18n'
 import { getErrorMessage } from '@evm-ui/utils'
 import { setMissingProvider } from '@evm-ui/utils/store.util'
+import { shortenAccount } from '@legacy-ui/utils'
 import { invalidateLockerVecrvUser } from '../entities/locker-vecrv-user'
 
 type StateKey = keyof typeof DEFAULT_STATE

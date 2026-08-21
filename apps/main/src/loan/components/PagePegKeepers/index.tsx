@@ -1,6 +1,6 @@
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
-import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { Footer } from './components/Footer'
 import { PegKeeper } from './components/PegKeeper'
 import { Statistics } from './components/Statistics'

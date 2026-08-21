@@ -2,9 +2,9 @@ import { useCallback, useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 import type { Seed } from '@/dex/components/PagePool/types'
 import { PoolData } from '@/dex/types/main.types'
-import { AlertBox } from '@legacy-ui/AlertBox'
 import { t } from '@evm-ui/lib/i18n'
 import { formatNumber, amount } from '@evm-ui/utils'
+import { AlertBox } from '@legacy-ui/AlertBox'
 
 type Props = {
   seed: Seed

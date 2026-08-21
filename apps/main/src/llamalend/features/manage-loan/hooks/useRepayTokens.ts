@@ -9,9 +9,9 @@ import {
   type MarketTokensOrEmpty,
 } from '@/llamalend/llama.utils'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
-import { notFalsy } from '@primitives/objects.utils'
 import type { TokenOption } from '@evm-ui/features/select-token'
 import type { QueryProp } from '@evm-ui/types/util'
+import { notFalsy } from '@primitives/objects.utils'
 import { useMarketContext } from '../../market-context'
 
 export type RepayTokenOption = TokenOption & { field: 'stateCollateral' | 'userCollateral' | 'userBorrowed' }

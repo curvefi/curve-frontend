@@ -1,10 +1,10 @@
 import type { VeCrvHolder } from '@/dao/entities/vecrv-holders'
 import { formatHolderName } from '@/dao/utils'
-import { formatDate } from '@legacy-ui/utils'
-import { maybe } from '@primitives/objects.utils'
 import { t } from '@evm-ui/lib/i18n'
 import { ChartTooltipDataRow, ChartTooltipSeriesGroup, ChartTooltipShell } from '@evm-ui/shared/ui/Chart'
 import { formatNumber } from '@evm-ui/utils'
+import { formatDate } from '@legacy-ui/utils'
+import { maybe } from '@primitives/objects.utils'
 
 export const TopHoldersBarChartTooltip = ({ datum }: { datum: VeCrvHolder }) => (
   <ChartTooltipShell title={formatHolderName(datum.user)}>

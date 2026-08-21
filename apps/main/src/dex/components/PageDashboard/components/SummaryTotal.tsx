@@ -6,10 +6,10 @@ import {
   SummarySpinnerWrapper,
 } from '@/dex/components/PageDashboard/components/Summary'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
-import { Spinner } from '@legacy-ui/Spinner'
-import { Chip } from '@legacy-ui/Typography'
 import { t } from '@evm-ui/lib/i18n'
 import { formatNumber } from '@evm-ui/utils'
+import { Spinner } from '@legacy-ui/Spinner'
+import { Chip } from '@legacy-ui/Typography'
 
 export const SummaryTotal = () => {
   const { dashboardDataMapper, isValidAddress } = useDashboardContext()

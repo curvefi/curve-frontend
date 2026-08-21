@@ -3,11 +3,11 @@ import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
 import { useTokenAlert } from '@/dex/hooks/useTokenAlert'
 import type { AlertType, PoolAlert } from '@/dex/types/main.types'
 import { AlertIcons } from '@/dex/utils/alerts'
-import Stack from '@mui/material/Stack'
 import { t } from '@evm-ui/lib/i18n'
 import { Badge, type BadgeProps } from '@evm-ui/shared/ui/Badge'
 import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import Stack from '@mui/material/Stack'
 import type { PoolRow } from '../../types'
 
 const { Spacing } = SizesAndSpaces

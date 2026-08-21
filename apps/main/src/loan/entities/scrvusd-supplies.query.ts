@@ -1,7 +1,7 @@
-import type { Decimal } from '@primitives/decimal.utils'
 import { requireLib } from '@evm-ui/features/connect-wallet'
 import { type ChainParams, type ChainQuery, queryFactory, rootKeys } from '@evm-ui/lib/model'
 import { llamaApiValidationSuite } from '@evm-ui/lib/model/query/curve-api-validation'
+import type { Decimal } from '@primitives/decimal.utils'
 
 export const { useQuery: useScrvUsdSupplies } = queryFactory({
   queryKey: ({ chainId }: ChainParams) =>

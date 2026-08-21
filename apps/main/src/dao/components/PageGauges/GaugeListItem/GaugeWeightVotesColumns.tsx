@@ -1,10 +1,10 @@
 import { styled } from 'styled-components'
 import { useStore } from '@/dao/store/useStore'
 import { UserGaugeVoteWeight } from '@/dao/types/dao.types'
-import { Box } from '@legacy-ui/Box'
-import { TooltipButton as Tooltip } from '@legacy-ui/Tooltip/TooltipButton'
 import { t } from '@evm-ui/lib/i18n'
 import { formatNumber } from '@evm-ui/utils'
+import { Box } from '@legacy-ui/Box'
+import { TooltipButton as Tooltip } from '@legacy-ui/Tooltip/TooltipButton'
 
 type GaugeWeightVotesColumnsProps = {
   userGaugeWeightVoteData: UserGaugeVoteWeight

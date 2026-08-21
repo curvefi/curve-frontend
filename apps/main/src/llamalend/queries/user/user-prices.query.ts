@@ -1,6 +1,5 @@
 import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
-import type { Decimal } from '@primitives/decimal.utils'
 import { combineQueryState, type FieldsOf } from '@evm-ui/lib'
 import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } from '@evm-ui/lib/model'
 import { loanExistsValidationGroup } from '@evm-ui/lib/model/query/loan-exists-validation'
@@ -8,6 +7,7 @@ import { marketIdValidationSuite } from '@evm-ui/lib/model/query/market-id-valid
 import { createValidationSuite } from '@evm-ui/lib/validation'
 import { constQ, q, type Range } from '@evm-ui/types/util'
 import { decimalDiv, decimalMinus, decimalMultiply } from '@evm-ui/utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { useLoanExists } from './user-loan-exists.query'
 
 type UserPricesQuery = UserMarketQuery & { loanExists: boolean }

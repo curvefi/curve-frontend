@@ -1,10 +1,10 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import { RouterProvider } from '@tanstack/react-router'
 import { initSentry } from '@evm-ui/features/sentry'
 import { t } from '@evm-ui/lib/i18n'
 import { ErrorBoundary } from '@evm-ui/widgets/ErrorBoundary'
+import { RouterProvider } from '@tanstack/react-router'
 import { router } from './routes'
 
 initSentry()

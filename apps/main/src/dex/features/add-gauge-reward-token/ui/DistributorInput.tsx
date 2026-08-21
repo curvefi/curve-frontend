@@ -1,8 +1,8 @@
 import type { AddRewardFormValues } from '@/dex/features/add-gauge-reward-token/types'
-import { InputDebounced, InputProvider } from '@legacy-ui/InputComp'
-import type { Address } from '@primitives/address.utils'
 import { useFormContext } from '@evm-ui/features/forms'
 import { t } from '@evm-ui/lib/i18n'
+import { InputDebounced, InputProvider } from '@legacy-ui/InputComp'
+import type { Address } from '@primitives/address.utils'
 import { FlexItemDistributor, SubTitle } from './styled'
 
 export const DistributorInput = ({ disabled }: { disabled: boolean }) => {

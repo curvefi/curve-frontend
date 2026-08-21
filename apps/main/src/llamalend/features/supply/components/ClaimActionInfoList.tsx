@@ -6,11 +6,11 @@ import {
 import { ActionInfoCollapse } from '@/llamalend/widgets/action-card/ActionInfoCollapse'
 import { ACTION_INFO_GROUP_SX } from '@/llamalend/widgets/action-card/info-actions.helpers'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import Stack from '@mui/material/Stack'
 import { t } from '@evm-ui/lib/i18n'
 import { UserMarketParams } from '@evm-ui/lib/model'
 import { ActionInfoGasEstimate } from '@evm-ui/shared/ui/ActionInfo'
 import { q } from '@evm-ui/types/util'
+import Stack from '@mui/material/Stack'
 
 type ClaimActionInfoListProps<ChainId extends IChainId> = {
   params: UserMarketParams<ChainId>

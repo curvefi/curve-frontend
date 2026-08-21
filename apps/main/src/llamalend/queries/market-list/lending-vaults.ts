@@ -7,8 +7,6 @@ import {
   Market,
   type UserMarketStats,
 } from '@curvefi/prices-api/llamalend'
-import type { Address } from '@primitives/address.utils'
-import { fromEntries, recordEntries } from '@primitives/objects.utils'
 import { queryFactory, UserParams, type UserQuery } from '@evm-ui/lib/model/query'
 import { userAddressValidationSuite } from '@evm-ui/lib/model/query/evm-address-validation'
 import {
@@ -17,6 +15,8 @@ import {
   userContractValidationSuite,
 } from '@evm-ui/lib/model/query/user-contract'
 import { EmptyValidationSuite } from '@evm-ui/lib/validation'
+import type { Address } from '@primitives/address.utils'
+import { fromEntries, recordEntries } from '@primitives/objects.utils'
 
 export type LendingVault = Market & { chain: ChainName }
 

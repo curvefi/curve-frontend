@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
-import type { PartialRecord } from '@primitives/objects.utils'
 import type { FilterProps } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { useFilters } from '@evm-ui/shared/ui/DataTable/hooks/useFilters'
+import type { PartialRecord } from '@primitives/objects.utils'
 import {
   PoolFilterId,
   POOL_TYPE_FILTERS,

@@ -5,10 +5,10 @@ import { type UserLockFormatted, invalidateUserLocks, useUserLocksQuery } from '
 import { useStore } from '@/dao/store/useStore'
 import { SortDirection, UserLocksSortBy } from '@/dao/types/dao.types'
 import type { LockType } from '@curvefi/prices-api/dao'
-import { formatDate } from '@legacy-ui/utils'
-import Box from '@mui/material/Box'
 import { t } from '@evm-ui/lib/i18n'
 import { formatNumber } from '@evm-ui/utils'
+import { formatDate } from '@legacy-ui/utils'
+import Box from '@mui/material/Box'
 import { LOCKS_LABELS } from '../constants'
 
 type UserLocksTableProps = {

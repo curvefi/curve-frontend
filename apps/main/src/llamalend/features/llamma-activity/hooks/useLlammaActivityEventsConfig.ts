@@ -1,6 +1,5 @@
 import { useLlammaEvents } from '@/llamalend/queries/llamma-events.query'
 import type { LlammaEvent } from '@curvefi/prices-api/llamma'
-import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
 import {
   type MarketEventRow,
   LLAMMA_EVENTS_COLUMNS,
@@ -13,6 +12,7 @@ import { t } from '@evm-ui/lib/i18n'
 import { getTableOptions, useTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import { fakeLoadingQ } from '@evm-ui/types/util'
 import { getPageCount } from '@evm-ui/utils'
+import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
 import { LlammaActivityProps } from '..'
 
 export const useLlammaActivityEventsConfig = ({

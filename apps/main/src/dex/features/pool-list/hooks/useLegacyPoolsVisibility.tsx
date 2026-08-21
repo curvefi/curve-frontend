@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
-import { fromEntries, recordValues } from '@primitives/objects.utils'
-import { SortingState } from '@tanstack/react-table'
 import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
 import type { MigrationOptions } from '@evm-ui/hooks/useStoredState'
 import { useVisibilitySettings } from '@evm-ui/shared/ui/DataTable/hooks/useVisibilitySettings'
 import type { VisibilityGroup } from '@evm-ui/shared/ui/DataTable/visibility.types'
+import { fromEntries, recordValues } from '@primitives/objects.utils'
+import { SortingState } from '@tanstack/react-table'
 import {
   LEGACY_POOL_COLUMNS,
   LEGACY_POOLS_COLUMN_OPTIONS,

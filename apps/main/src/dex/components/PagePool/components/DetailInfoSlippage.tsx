@@ -1,10 +1,10 @@
 import { ReactNode, useMemo } from 'react'
 import type { Slippage } from '@/dex/components/PagePool/types'
+import { t, Trans } from '@evm-ui/lib/i18n'
+import { formatNumber } from '@evm-ui/utils'
 import { DetailInfo } from '@legacy-ui/DetailInfo'
 import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
 import { Chip } from '@legacy-ui/Typography'
-import { t, Trans } from '@evm-ui/lib/i18n'
-import { formatNumber } from '@evm-ui/utils'
 
 type SlippageDetail = {
   isBold: boolean

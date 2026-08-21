@@ -1,10 +1,10 @@
 import { enforce, group, test } from 'vest'
-import type { Amount } from '@primitives/decimal.utils'
 import { requireLib } from '@evm-ui/features/connect-wallet'
 import { createValidationSuite } from '@evm-ui/lib'
 import { chainValidationGroup } from '@evm-ui/lib/model/query/chain-validation'
 import { curveApiValidationGroup } from '@evm-ui/lib/model/query/curve-api-validation'
 import { evmAddressValidationGroup } from '@evm-ui/lib/model/query/evm-address-validation'
+import type { Amount } from '@primitives/decimal.utils'
 import type { BridgeForm } from '../hooks/useBridgeForm'
 import type { BridgeParams } from '../types'
 

@@ -9,10 +9,10 @@ import {
   MarketPriceChartLayout,
 } from '@/llamalend/widgets/ChartAndActivityLayout'
 import { getBlockchainId } from '@curvefi/prices-api'
-import type { Decimal } from '@primitives/decimal.utils'
 import { useNewLlamaMarketDetailPage } from '@evm-ui/hooks/useFeatureFlags'
 import { useBandsChartVisible } from '@evm-ui/hooks/useLocalStorage'
 import type { Range } from '@evm-ui/types/util'
+import type { Decimal } from '@primitives/decimal.utils'
 
 type ChartAndActivityCompProps = {
   previewPrices: Range<Decimal> | undefined

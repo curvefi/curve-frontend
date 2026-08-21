@@ -1,8 +1,6 @@
 import type { Chain } from '@curvefi/prices-api'
 import { getOracle, type Endpoint, type OraclePool } from '@curvefi/prices-api/lending'
 import { getOHLC } from '@curvefi/prices-api/llamma'
-import type { Address, Token } from '@primitives/address.utils'
-import { assert, maybe } from '@primitives/objects.utils'
 import { useOhlcInfiniteQuery } from '@evm-ui/features/candle-chart/hooks/useOhlcQueries'
 import {
   createCandleChartQueryKey,
@@ -12,6 +10,8 @@ import {
 import type { LpPriceOhlcDataFormatted, OraclePriceData, TimeOption } from '@evm-ui/features/candle-chart/types'
 import { formatCandleOhlcData, formatOraclePriceData } from '@evm-ui/features/candle-chart/utils'
 import { t } from '@evm-ui/lib/i18n'
+import type { Address, Token } from '@primitives/address.utils'
+import { assert, maybe } from '@primitives/objects.utils'
 
 type OhlcTimeUnit = Parameters<typeof getOHLC>[0]['units']
 

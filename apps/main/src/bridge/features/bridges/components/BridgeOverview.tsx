@@ -1,7 +1,5 @@
 import Fuse from 'fuse.js'
 import { useMemo, useState } from 'react'
-import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
 import { useSwitch } from '@evm-ui/hooks/useSwitch'
 import { t } from '@evm-ui/lib/i18n'
@@ -9,6 +7,8 @@ import { LegacyTableSearchField } from '@evm-ui/shared/ui/DataTable/LegacyTableS
 import { EmptyStateCard } from '@evm-ui/shared/ui/EmptyStateCard'
 import type { Partner } from '@evm-ui/shared/ui/PartnerCard'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import { BridgeGrid } from './BridgeGrid'
 
 const { Spacing, Sizing } = SizesAndSpaces

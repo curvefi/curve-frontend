@@ -1,8 +1,8 @@
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
-import type { Address } from '@primitives/address.utils'
 import { requireLib } from '@evm-ui/features/connect-wallet'
 import { queryFactory, rootKeys, type UserPoolParams, type UserPoolQuery } from '@evm-ui/lib/model'
 import { userPoolValidationSuite } from '@evm-ui/lib/model/query/user-pool-validation'
+import type { Address } from '@primitives/address.utils'
 import { isValidAddress } from '../utils'
 
 export async function userPoolRewardCrvApy(pool: PoolTemplate, userAddress: Address) {

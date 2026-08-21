@@ -1,9 +1,9 @@
-import Stack from '@mui/material/Stack'
 import { t } from '@evm-ui/lib/i18n'
 import { TableFilterButtonGroup } from '@evm-ui/shared/ui/DataTable/TableFilterButtonGroup'
 import { TableFilterItem } from '@evm-ui/shared/ui/DataTable/TableFilterItem'
 import { TableRangeFilter } from '@evm-ui/shared/ui/DataTable/TableRangeFilter'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import Stack from '@mui/material/Stack'
 import { POOL_DEFAULT_TVL_MIN, PoolFilterId, type PoolsFiltersProps } from '../hooks/usePoolsFilters'
 
 const { Spacing } = SizesAndSpaces

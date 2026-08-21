@@ -17,10 +17,6 @@ import {
 import { BoostTooltipContent } from '@/llamalend/widgets/tooltips/BoostTooltipContent'
 import { MarketSupplyRateTooltipContent } from '@/llamalend/widgets/tooltips/MarketSupplyRateTooltipContent'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
-import { Grid, Stack } from '@mui/material'
-import type { Address } from '@primitives/address.utils'
-import type { Decimal } from '@primitives/decimal.utils'
-import { assert } from '@primitives/objects.utils'
 import { useCampaignsByAddress } from '@evm-ui/entities/campaigns'
 import { useLendingSnapshots } from '@evm-ui/entities/lending-snapshots'
 import { LlamaChainId } from '@evm-ui/features/connect-wallet/lib/types'
@@ -38,6 +34,10 @@ import {
   formatCappedRateValue,
   formatNumber,
 } from '@evm-ui/utils'
+import { Grid, Stack } from '@mui/material'
+import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
+import { assert } from '@primitives/objects.utils'
 import { AmountSuppliedTooltipContent, VaultSharesTooltipContent } from './'
 
 const { Spacing } = SizesAndSpaces

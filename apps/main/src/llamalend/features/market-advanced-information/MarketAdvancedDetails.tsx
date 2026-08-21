@@ -5,13 +5,13 @@ import {
   TotalCollateralTooltip,
   TooltipOptions,
 } from '@/llamalend/widgets/tooltips'
-import Box from '@mui/material/Box'
 import { t } from '@evm-ui/lib/i18n'
 import { Metric } from '@evm-ui/shared/ui/Metric'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { MarketType } from '@evm-ui/types/market'
 import { mapQuery } from '@evm-ui/types/util'
 import { decimal } from '@evm-ui/utils'
+import Box from '@mui/material/Box'
 import { useMarketContext } from '../market-context'
 import { useAdvancedDetailsData } from './hooks/useAdvancedDetailsData'
 

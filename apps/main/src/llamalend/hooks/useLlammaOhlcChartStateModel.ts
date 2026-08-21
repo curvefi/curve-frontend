@@ -1,8 +1,5 @@
 import { useMemo } from 'react'
 import type { Chain } from '@curvefi/prices-api'
-import type { Address } from '@primitives/address.utils'
-import type { Decimal } from '@primitives/decimal.utils'
-import { maybe } from '@primitives/objects.utils'
 import { useChartLegendToggles, useChartTimeSettings, useLiquidationRange } from '@evm-ui/features/candle-chart'
 import type { OhlcChartProps } from '@evm-ui/features/candle-chart/ChartWrapper'
 import { useStableOhlcAnchorEnd } from '@evm-ui/features/candle-chart/hooks/useOhlcQueries'
@@ -10,6 +7,9 @@ import type { LpPriceOhlcDataFormatted, OraclePriceData } from '@evm-ui/features
 import { t } from '@evm-ui/lib/i18n'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import type { QueryProp, Range } from '@evm-ui/types/util'
+import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
+import { maybe } from '@primitives/objects.utils'
 import { useLlammaOhlcChartData } from './useLlammaOhlcChartData'
 
 const { Height } = SizesAndSpaces

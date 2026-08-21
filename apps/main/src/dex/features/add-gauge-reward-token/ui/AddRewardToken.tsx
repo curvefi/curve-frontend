@@ -12,12 +12,12 @@ import {
   FormActions,
   TokenSelector,
 } from '@/dex/features/add-gauge-reward-token/ui'
+import { FormProvider, useForm } from '@evm-ui/features/forms'
+import { t } from '@evm-ui/lib/i18n'
 import { FormErrorsDisplay } from '@legacy-ui/FormErrorsDisplay'
 import { FlexContainer, FormContainer, FormFieldsContainer } from '@legacy-ui/styled-containers'
 import { TxInfoBar } from '@legacy-ui/TxInfoBar'
 import { scanTxPath } from '@legacy-ui/utils'
-import { FormProvider, useForm } from '@evm-ui/features/forms'
-import { t } from '@evm-ui/lib/i18n'
 
 export const AddRewardToken = ({ chainId, poolId }: AddRewardTokenProps) => {
   const { address: signerAddress } = useConnection()

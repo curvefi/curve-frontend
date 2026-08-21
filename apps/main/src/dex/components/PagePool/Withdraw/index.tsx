@@ -5,10 +5,10 @@ import { FormUnstake } from '@/dex/components/PagePool/Withdraw/components/FormU
 import { FormWithdraw } from '@/dex/components/PagePool/Withdraw/components/FormWithdraw'
 import type { FormType } from '@/dex/components/PagePool/Withdraw/types'
 import { useStore } from '@/dex/store/useStore'
-import { AlertBox } from '@legacy-ui/AlertBox/AlertBox'
 import { t } from '@evm-ui/lib/i18n'
 import { TabsSwitcher, type TabOption } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
 import { FormContent } from '@evm-ui/widgets/DetailPageLayout/FormContent'
+import { AlertBox } from '@legacy-ui/AlertBox/AlertBox'
 
 const tabs: TabOption<FormType>[] = [
   { value: 'WITHDRAW', label: t`Withdraw` },

@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
-import { AlertBox } from '@legacy-ui/AlertBox'
 import { Trans } from '@evm-ui/lib/i18n'
 import { formatNumber, amount } from '@evm-ui/utils'
+import { AlertBox } from '@legacy-ui/AlertBox'
 
 type Props = {
   maxSlippage: string | undefined

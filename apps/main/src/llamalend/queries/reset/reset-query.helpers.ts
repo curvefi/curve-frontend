@@ -1,7 +1,7 @@
 import { getMarket, hasResetPosition } from '@/llamalend/llama.utils'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
-import type { Decimal } from '@primitives/decimal.utils'
 import { decimalSum } from '@evm-ui/utils'
+import type { Decimal } from '@primitives/decimal.utils'
 
 export const getResetImplementation = (marketId: string | MarketTemplate) => {
   const market = getMarket(marketId)

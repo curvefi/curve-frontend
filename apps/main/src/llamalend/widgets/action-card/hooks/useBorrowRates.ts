@@ -1,7 +1,5 @@
 import { useMarketFutureRates, useMarketRates, useMarketSnapshots } from '@/llamalend/queries/market'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { Address } from '@primitives/address.utils'
-import type { Decimal } from '@primitives/decimal.utils'
 import { CrvUsdSnapshot } from '@evm-ui/entities/crvusd-snapshots'
 import { LendingSnapshot } from '@evm-ui/entities/lending-snapshots'
 import type { MarketParams } from '@evm-ui/lib/model'
@@ -9,6 +7,8 @@ import { combineQueries } from '@evm-ui/lib/queries/combine'
 import type { MarketType } from '@evm-ui/types/market'
 import { q, Query, type QueryProp } from '@evm-ui/types/util'
 import { BlockchainIds, decimal, decimalMinus } from '@evm-ui/utils'
+import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 
 /**
  * Combines the given markets rates and snapshotsQuery to calculate net borrow APR.

@@ -5,13 +5,13 @@ import { FormLockDate } from '@/dao/components/PageVeCrv/components/FormLockDate
 import { FormWithdraw } from '@/dao/components/PageVeCrv/components/FormWithdraw'
 import type { FormType, PageVecrv } from '@/dao/components/PageVeCrv/types'
 import { useStore } from '@/dao/store/useStore'
-import Stack from '@mui/material/Stack'
 import { isLoading, useCurve } from '@evm-ui/features/connect-wallet'
 import { useLayoutStore } from '@evm-ui/features/layout'
 import { t } from '@evm-ui/lib/i18n'
 import { TabsSwitcher, type TabOption } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { getIsLockExpired } from '@evm-ui/utils/vecrv'
+import Stack from '@mui/material/Stack'
 
 const { Spacing } = SizesAndSpaces
 

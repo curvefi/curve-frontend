@@ -1,9 +1,4 @@
 import { type MouseEvent, ReactNode, useCallback, useRef } from 'react'
-import { Box, Stack } from '@mui/material'
-import Button from '@mui/material/Button'
-import Menu from '@mui/material/Menu'
-import MenuItem from '@mui/material/MenuItem'
-import Typography from '@mui/material/Typography'
 import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
 import { useResizeObserver } from '@evm-ui/hooks/useResizeObserver'
 import { useSwitch } from '@evm-ui/hooks/useSwitch'
@@ -16,6 +11,11 @@ import { getInlinedItemsVisibility } from '@evm-ui/shared/ui/DataTable/HiddenInl
 import { InvertOnHover } from '@evm-ui/shared/ui/InvertOnHover'
 import { Select } from '@evm-ui/shared/ui/Select'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { Box, Stack } from '@mui/material'
+import Button from '@mui/material/Button'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
+import Typography from '@mui/material/Typography'
 
 const { Spacing } = SizesAndSpaces
 

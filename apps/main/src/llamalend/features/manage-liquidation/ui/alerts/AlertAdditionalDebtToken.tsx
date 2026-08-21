@@ -1,10 +1,10 @@
+import { t, Trans } from '@evm-ui/lib/i18n'
+import { InlineLink } from '@evm-ui/shared/ui/InlineLink'
+import { formatToken } from '@evm-ui/utils'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Typography from '@mui/material/Typography'
 import type { Decimal } from '@primitives/decimal.utils'
-import { t, Trans } from '@evm-ui/lib/i18n'
-import { InlineLink } from '@evm-ui/shared/ui/InlineLink'
-import { formatToken } from '@evm-ui/utils'
 import { useCrvSwapUrl } from '../../hooks/useCrvSwapUrl'
 
 type Props = {

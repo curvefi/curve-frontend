@@ -1,8 +1,8 @@
-import Stack from '@mui/material/Stack'
-import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@evm-ui/lib/i18n'
 import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@evm-ui/shared/ui/TooltipComponents'
 import { formatNumber, formatToken } from '@evm-ui/utils'
+import Stack from '@mui/material/Stack'
+import type { Decimal } from '@primitives/decimal.utils'
 import { formatPercentage } from './tooltip.utils'
 
 type TotalCollateralTooltipProps = Partial<{

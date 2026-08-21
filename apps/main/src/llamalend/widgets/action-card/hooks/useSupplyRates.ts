@@ -13,9 +13,6 @@ import {
   toNumberOrNull,
 } from '@/llamalend/rates.utils'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { Address } from '@primitives/address.utils'
-import type { Decimal } from '@primitives/decimal.utils'
-import { maybe } from '@primitives/objects.utils'
 import { type CampaignRewards, useCampaignsByAddress } from '@evm-ui/entities/campaigns'
 import type { LendingSnapshot } from '@evm-ui/entities/lending-snapshots'
 import type { UserMarketParams } from '@evm-ui/lib/model'
@@ -23,6 +20,9 @@ import { combineQueryState } from '@evm-ui/lib/queries/combine'
 import { MarketType } from '@evm-ui/types/market'
 import { q, type Query, type QueryProp, type Range } from '@evm-ui/types/util'
 import { BlockchainIds, decimal } from '@evm-ui/utils'
+import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
+import { maybe } from '@primitives/objects.utils'
 
 type SupplyRewards = {
   crvRates?: Range<number> | null
