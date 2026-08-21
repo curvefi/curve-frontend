@@ -111,12 +111,16 @@ export async function getAllUserLendingPositions(
 export async function getUserLendingPositions(
   userAddr: string,
   chain: Chain,
-  params: { include_closed?: boolean } = { include_closed: false },
+  {
+    page = USER_MARKETS_FIRST_PAGE,
+    per_page = USER_MARKETS_DEFAULT_PER_PAGE,
+    include_closed = false,
+  }: GetUserMarketsParams = {},
   options?: Options,
 ) {
   const host = getHost(options)
   const response = await fetch(
-    `${host}/v1/lending/users/lending_positions/${chain}/${userAddr}${addQueryString(params)}`,
+    `${host}/v1/lending/users/lending_positions/${chain}/${userAddr}${addQueryString({ page, per_page, include_closed })}`,
   )
 
   return Schema.getUserLendingPositionsResponse.parse(response)
