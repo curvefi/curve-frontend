@@ -1,6 +1,6 @@
 import { styled } from 'styled-components'
-import { Icon } from '@ui/Icon/Icon'
-import { breakpoints } from '@ui/utils/responsive'
+import { Icon } from '@legacy-ui/Icon/Icon'
+import { breakpoints } from '@legacy-ui/utils/responsive'
 
 type SortIconProps = {
   className?: string

@@ -1,9 +1,9 @@
 import type { ComponentPropsWithRef } from 'react'
 import { styled, type IStyledComponent } from 'styled-components'
-import { Icon } from '@ui/Icon'
-import type { IconProps } from '@ui/Icon/Icon'
-import { ExternalLink } from '@ui/Link/ExternalLink'
-import type { ExternalLinkProps } from '@ui/Link/ExternalLink'
+import { Icon } from '@legacy-ui/Icon'
+import type { IconProps } from '@legacy-ui/Icon/Icon'
+import { ExternalLink } from '@legacy-ui/Link/ExternalLink'
+import type { ExternalLinkProps } from '@legacy-ui/Link/ExternalLink'
 import { TokenIcon, type TokenIconProps } from '@ui-kit/shared/ui/TokenIcon'
 
 type DivProps = ComponentPropsWithRef<'div'>

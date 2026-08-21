@@ -1,5 +1,5 @@
-import { Icon } from '@ui/Icon'
-import { StyledBtn } from '@ui/Select/styles'
+import { Icon } from '@legacy-ui/Icon'
+import { StyledBtn } from '@legacy-ui/Select/styles'
 
 export type SelectIconBtnDeleteProps = { loading?: boolean; onSelectionDelete?: () => void }
 

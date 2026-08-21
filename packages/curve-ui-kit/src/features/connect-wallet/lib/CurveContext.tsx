@@ -1,7 +1,7 @@
 import { BrowserProvider } from 'ethers'
 import { createContext, use, useEffect, useMemo, useState } from 'react'
 import { useConnection, useConnectorClient } from 'wagmi'
-import type { NetworkDef } from '@ui/utils'
+import type { NetworkDef } from '@legacy-ui/utils'
 import { setUser } from '@ui-kit/features/sentry'
 import type { Provider } from '@ui-kit/lib/ethers'
 import { constQ, fakeLoadingQ } from '@ui-kit/types/util'

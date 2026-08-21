@@ -4,8 +4,8 @@ import { usePoolTrades } from '@/dex/entities/pool-trades.query'
 import { usePoolsPricesApi } from '@/dex/queries/pools-prices-api.query'
 import { ChainId } from '@/dex/types/main.types'
 import { getBlockchainId } from '@curvefi/prices-api'
+import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
 import type { Address } from '@primitives/address.utils'
-import { scanAddressPath, scanTxPath } from '@ui/utils'
 import {
   type PoolTradeRow,
   POOL_TRADES_COLUMNS,

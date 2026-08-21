@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
-import { Icon } from '@ui/Icon'
-import { ExternalLink } from '@ui/Link/ExternalLink'
-import { Spinner } from '@ui/Spinner'
+import { Icon } from '@legacy-ui/Icon'
+import { ExternalLink } from '@legacy-ui/Link/ExternalLink'
+import { Spinner } from '@legacy-ui/Spinner'
 import { shortenHash } from '@ui-kit/utils/address'
 
 type Props = {

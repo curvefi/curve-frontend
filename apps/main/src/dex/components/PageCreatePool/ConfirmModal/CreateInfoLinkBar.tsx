@@ -1,6 +1,6 @@
 import { styled } from 'styled-components'
-import { RCExternal } from '@ui/images'
-import { ExternalLink } from '@ui/Link/ExternalLink'
+import { RCExternal } from '@legacy-ui/images'
+import { ExternalLink } from '@legacy-ui/Link/ExternalLink'
 
 type Props = {
   description: string

@@ -1,5 +1,5 @@
 import type { FormStatus, FormValues } from '@/dex/components/PageDashboard/types'
-import type { TooltipProps } from '@ui/Tooltip/types'
+import type { TooltipProps } from '@legacy-ui/Tooltip/types'
 
 export enum SORT_ID {
   poolName = 'poolName',

@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
 import { DAO_CHART_HEIGHT } from '@/dao/components/Charts/constants'
 import type { VeCrvFee } from '@/dao/entities/vecrv-fees'
-import { Box } from '@ui/Box'
+import { Box } from '@legacy-ui/Box'
 import { t } from '@ui-kit/lib/i18n'
 import { ChartStateWrapper } from '@ui-kit/shared/ui/Chart'
 import { FeesBarChart } from './FeesBarChart'

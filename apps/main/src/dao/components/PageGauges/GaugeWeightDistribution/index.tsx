@@ -6,10 +6,10 @@ import { useUserGaugeWeightVotesQuery } from '@/dao/entities/user-gauge-weight-v
 import { useGauges } from '@/dao/queries/gauges.query'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import { truncateToShortenedAddressLength } from '@/dao/utils'
+import { Box } from '@legacy-ui/Box'
 import { useTheme } from '@mui/material/styles'
 import { sortBy, toArray } from '@primitives/array.utils'
 import { recordValues, notFalsy } from '@primitives/objects.utils'
-import { Box } from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
 import {
   CHART_X_AXIS_LABEL_ROTATION,

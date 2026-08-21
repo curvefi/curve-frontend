@@ -1,7 +1,7 @@
 import type { ComponentPropsWithRef, ReactNode } from 'react'
 import { styled, type IStyledComponent } from 'styled-components'
-import { Box } from '@ui/Box/Box'
-import { Loader } from '@ui/Loader/Loader'
+import { Box } from '@legacy-ui/Box/Box'
+import { Loader } from '@legacy-ui/Loader/Loader'
 
 type Props = {
   loading?: boolean

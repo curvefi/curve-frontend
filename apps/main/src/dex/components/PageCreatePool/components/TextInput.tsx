@@ -2,7 +2,7 @@ import { ReactNode, useRef } from 'react'
 import type { AriaTextFieldProps } from 'react-aria'
 import { useTextField } from 'react-aria'
 import { styled } from 'styled-components'
-import { Box } from '@ui/Box'
+import { Box } from '@legacy-ui/Box'
 
 type Props = {
   row?: boolean

@@ -3,9 +3,9 @@ import type { AriaNumberFieldProps } from 'react-aria'
 import { useLocale, useNumberField } from 'react-aria'
 import { useNumberFieldState } from 'react-stately'
 import { styled } from 'styled-components'
-import { Box } from '@ui/Box'
-import { Icon } from '@ui/Icon'
-import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
+import { Box } from '@legacy-ui/Box'
+import { Icon } from '@legacy-ui/Icon'
+import { TooltipIcon as IconTooltip } from '@legacy-ui/Tooltip/TooltipIcon'
 
 type Props = {
   row?: boolean

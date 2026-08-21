@@ -5,9 +5,9 @@ import { LoanActionSettings } from '@/llamalend/widgets/action-card/LoanActionSe
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { mockedWagmiConfig } from '@cy/support/helpers/llamalend/test-wagmi.helpers'
 import { allViewports } from '@cy/support/ui'
+import type { BaseConfig } from '@legacy-ui/utils'
 import { fromEntries, notFalsy } from '@primitives/objects.utils'
 import { RouteProviders } from '@primitives/router.utils'
-import type { BaseConfig } from '@ui/utils'
 import { q } from '@ui-kit/types/util'
 import { mockRoutes } from '@ui-kit/widgets/RouteProvider/route.mock'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
@@ -62,13 +62,19 @@ allViewports().forEach(([width, height, viewport]) => {
         cy.mount(
           <ComponentTestWrapper config={mockedWagmiConfig}>
             <>
-              <LoanActionSettings slippage="123.4" onSlippageChange={noop} routes={routes} />
+              <LoanActionSettings
+                slippage="123.4"
+                onSlippageChange={noop}
+                routes={routes}
+                exchangeRate={q({ data: '123.4', ...{ isLoading, error, ...state } })}
+                collateralSymbol="wstETH"
+                borrowSymbol="crvUSD"
+              />
               <LoanActionInfoList
                 isOpen
                 prevHealth={q({ data: '12.4', ...{ isLoading, error } })} // make sure `->` doesn't change the line height
                 health={q({ data: '123.4', ...{ isLoading, error, ...state } })}
                 oraclePrice={q({ data: '123.4', ...{ isLoading, error, ...state } })}
-                exchangeRate={q({ data: '123.4', ...{ isLoading, error, ...state } })}
                 gas={q({ data: { estGasCostUsd: '123.4' }, ...{ isLoading, error, ...state } })}
                 rates={q({ data: { borrowApr: '123.4' }, ...{ isLoading, error, ...state } })}
                 collateralSymbol="wstETH"
@@ -81,6 +87,7 @@ allViewports().forEach(([width, height, viewport]) => {
         getHeight('borrow-health').should('equal', expectedHeight)
         getHeight('borrow-apr').should('equal', expectedHeight)
         getHeight('borrow-exchange-rate').should('equal', expectedHeight)
+        getHeight('borrow-router-fee').should('equal', expectedHeight)
         getHeight('borrow-slippage').should('equal', expectedHeight)
         getHeight('estimated-tx-cost').should('equal', expectedHeight)
         getHeight('route-provider-accordion').should('equal', expectedHeight)

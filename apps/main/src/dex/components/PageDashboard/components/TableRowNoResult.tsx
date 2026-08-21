@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
-import { SpinnerWrapper } from '@ui/Spinner'
-import { shortenAccount } from '@ui/utils'
+import { SpinnerWrapper } from '@legacy-ui/Spinner'
+import { shortenAccount } from '@legacy-ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
 type Props = {

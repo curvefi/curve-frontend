@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { BoxProps } from '@ui/Box/types'
+import { BoxProps } from '@legacy-ui/Box/types'
 
 export type AlertType = 'info' | 'warning' | 'error' | 'danger' | ''
 

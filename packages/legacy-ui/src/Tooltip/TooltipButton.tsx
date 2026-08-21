@@ -2,9 +2,9 @@ import { useIsMobile } from 'curve-ui-kit/src/hooks/useBreakpoints'
 import { Tooltip } from 'curve-ui-kit/src/shared/ui/Tooltip'
 import { ReactNode, useCallback, useState } from 'react'
 import { styled } from 'styled-components'
-import { Icon } from '@ui/Icon'
-import type { TooltipProps } from '@ui/Tooltip/types'
-import { breakpoints } from '@ui/utils'
+import { Icon } from '@legacy-ui/Icon'
+import type { TooltipProps } from '@legacy-ui/Tooltip/types'
+import { breakpoints } from '@legacy-ui/utils'
 
 export type IconStyles = { $svgTop?: string }
 

@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
 import { ProposalListFilter, ProposalListFilterItem } from '@/dao/types/dao.types'
-import { Button } from '@ui/Button'
-import { Spinner } from '@ui/Spinner'
+import { Button } from '@legacy-ui/Button'
+import { Spinner } from '@legacy-ui/Spinner'
 
 type Props = {
   className?: string

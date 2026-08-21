@@ -1,7 +1,7 @@
 import { sortBy } from 'lodash'
+import { CURVE_CDN_URL } from '@legacy-ui/utils'
 import { fetchJson } from '@primitives/fetch.utils'
 import { fromEntries } from '@primitives/objects.utils'
-import { CURVE_CDN_URL } from '@ui/utils'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import type { Partner } from '@ui-kit/shared/ui/PartnerCard'

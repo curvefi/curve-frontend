@@ -1,4 +1,4 @@
-import { ChadImg, RCMoon, RCSun } from '@ui/images'
+import { ChadImg, RCMoon, RCSun } from '@legacy-ui/images'
 
 const DEFAULT_SIZE = 24
 export const themes = [

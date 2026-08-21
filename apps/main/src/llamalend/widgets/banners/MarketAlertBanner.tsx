@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { AlertType } from '@ui/AlertBox/types'
+import { AlertType } from '@legacy-ui/AlertBox/types'
 import { Banner, type BannerProps } from '@ui-kit/shared/ui/Banner'
 
 export type MarketBannerAlert = {

@@ -1,4 +1,4 @@
-import { EXTERNAL_LINKS } from '@ui/utils'
+import { EXTERNAL_LINKS } from '@legacy-ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { AppPage, AppRoute, AppRoutes } from '@ui-kit/widgets/Header/types'
 

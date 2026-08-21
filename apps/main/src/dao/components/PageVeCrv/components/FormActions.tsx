@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
-import { Button } from '@ui/Button'
-import { Spinner } from '@ui/Spinner'
+import { Button } from '@legacy-ui/Button'
+import { Spinner } from '@legacy-ui/Spinner'
 import { isLoading, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 

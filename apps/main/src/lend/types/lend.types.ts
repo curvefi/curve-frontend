@@ -1,5 +1,5 @@
 import type { IChainId, INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
-import type { BaseConfig } from '@ui/utils'
+import type { BaseConfig } from '@legacy-ui/utils'
 
 export type ChainId = IChainId
 export type NetworkEnum = INetworkName

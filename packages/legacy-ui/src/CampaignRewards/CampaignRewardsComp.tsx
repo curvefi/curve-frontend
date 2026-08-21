@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
-import { TooltipMessage } from '@ui/CampaignRewards/TooltipMessage'
-import { Icon } from '@ui/Icon'
-import { TooltipButton as Tooltip } from '@ui/Tooltip/TooltipButton'
+import { TooltipMessage } from '@legacy-ui/CampaignRewards/TooltipMessage'
+import { Icon } from '@legacy-ui/Icon'
+import { TooltipButton as Tooltip } from '@legacy-ui/Tooltip/TooltipButton'
 import type { CampaignRewards } from '@ui-kit/entities/campaigns'
 import { aprToApy, formatNumber } from '@ui-kit/utils'
 

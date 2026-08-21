@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import type { NetworkMapping } from '@ui/utils'
+import type { NetworkMapping } from '@legacy-ui/utils'
 import { getHashRedirectUrl } from '@ui-kit/shared/route-redirects'
 import { getCurrentNetwork, replaceNetworkInPath } from '@ui-kit/shared/routes'
 import { useLocation, useNavigate } from './router'

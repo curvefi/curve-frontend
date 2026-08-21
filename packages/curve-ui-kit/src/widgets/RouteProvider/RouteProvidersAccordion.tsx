@@ -1,14 +1,15 @@
 import { useMemo } from 'react'
+import type { BaseConfig } from '@legacy-ui/utils'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { notFalsy } from '@primitives/objects.utils'
 import type { RouteProvider } from '@primitives/router.utils'
-import type { BaseConfig } from '@ui/utils'
 import type { RouteQueries, RouteResponse } from '@ui-kit/entities/router-api'
 import { t } from '@ui-kit/lib/i18n'
 import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
 import { Accordion } from '@ui-kit/shared/ui/Accordion'
+import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
 import { ErrorIconButton } from '@ui-kit/shared/ui/ErrorIconButton'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { LoadingAnimation } from '@ui-kit/themes/design/0_primitives'
@@ -57,6 +58,7 @@ export const RouteProvidersAccordion = ({
   const Icon = selectedRoute ? RouteProviderIcons[selectedRoute.router] : null
   const allError = queryList.every(r => r.error)
   const allLoading = queryList.every(r => r.isLoading)
+  const allDisabled = queryList.every(r => !r.enabled)
   const anyFetching = queryList.some(r => r.isFetching)
   const anyData = queryList.some(route => route.data)
   return (
@@ -95,13 +97,7 @@ export const RouteProvidersAccordion = ({
           <Stack>
             <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
               <Typography variant="headingXsBold" color="textSecondary">
-                {anyData
-                  ? t`Select a route`
-                  : allLoading
-                    ? t`Finding the best route...`
-                    : queries === undefined
-                      ? t`Please fill in the form to get routes.`
-                      : t`No routes available`}
+                {t`Select a route`}
               </Typography>
               <IconButton
                 size="extraExtraSmall"
@@ -114,28 +110,32 @@ export const RouteProvidersAccordion = ({
               </IconButton>
             </Stack>
             <Typography variant="bodyXsRegular" color="textTertiary">
-              {queryList.length === 0 && !anyFetching
-                ? t`We could not find any routes with your parameters.`
-                : selectedRoute || allLoading
-                  ? t`Best route is selected based on net output after gas fees (only when possible to calculate).`
-                  : t`Please fill in the form to get routes.`}
+              {t`Best route is selected based on net output after gas fees (only when possible to calculate).`}
             </Typography>
           </Stack>
-          <Stack sx={{ gap: Spacing.xs }}>
-            {providers.map(provider => (
-              <RouteProviderCard
-                key={provider}
-                tokenOut={tokenOut}
-                isSelected={provider === selectedRouter}
-                router={provider}
-                query={queries[provider]}
-                bestOutputAmount={maxAmountOut}
-                onSelect={onChange}
-                networks={networks}
-                chainId={chainId}
-              />
-            ))}
-          </Stack>
+          {anyData ? (
+            <Stack sx={{ gap: Spacing.xs }}>
+              {providers.map(provider => (
+                <RouteProviderCard
+                  key={provider}
+                  tokenOut={tokenOut}
+                  isSelected={provider === selectedRouter}
+                  router={provider}
+                  query={queries[provider]}
+                  bestOutputAmount={maxAmountOut}
+                  onSelect={onChange}
+                  networks={networks}
+                  chainId={chainId}
+                />
+              ))}
+            </Stack>
+          ) : (
+            <EmptyStateCard
+              title={anyFetching ? t`Finding the best route...` : t`No routes available`}
+              description={!allDisabled && !anyFetching && t`We could not find any routes with your parameters.`}
+              size="sm"
+            />
+          )}
         </Stack>
       </Accordion>
     )

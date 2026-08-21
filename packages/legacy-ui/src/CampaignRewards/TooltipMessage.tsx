@@ -1,6 +1,6 @@
 import { styled } from 'styled-components'
-import { Box } from '@ui/Box'
-import { ExternalLink } from '@ui/Link'
+import { Box } from '@legacy-ui/Box'
+import { ExternalLink } from '@legacy-ui/Link'
 import type { CampaignRewards } from '@ui-kit/entities/campaigns'
 import { formatDate } from '../utils'
 

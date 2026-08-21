@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
+import { BaseConfig, scanAddressPath } from '@legacy-ui/utils'
 import { Typography } from '@mui/material'
 import { maybe } from '@primitives/objects.utils'
-import { BaseConfig, scanAddressPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { shortenAddress } from '../../utils'
 import { ActionInfo, type ActionInfoProps } from './ActionInfo'

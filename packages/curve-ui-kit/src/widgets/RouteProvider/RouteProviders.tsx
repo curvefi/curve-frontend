@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react'
+import { CURVE_LOGO_GRAYSCALE_URL, CURVE_LOGO_URL } from '@legacy-ui/utils'
 import Box from '@mui/material/Box'
 import type { RouteProvider } from '@primitives/router.utils'
-import { CURVE_LOGO_GRAYSCALE_URL, CURVE_LOGO_URL } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { EnsoIcon } from '@ui-kit/shared/icons/EnsoIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'

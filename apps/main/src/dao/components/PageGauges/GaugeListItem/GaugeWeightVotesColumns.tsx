@@ -1,8 +1,8 @@
 import { styled } from 'styled-components'
 import { useStore } from '@/dao/store/useStore'
 import { UserGaugeVoteWeight } from '@/dao/types/dao.types'
-import { Box } from '@ui/Box'
-import { TooltipButton as Tooltip } from '@ui/Tooltip/TooltipButton'
+import { Box } from '@legacy-ui/Box'
+import { TooltipButton as Tooltip } from '@legacy-ui/Tooltip/TooltipButton'
 import { t } from '@ui-kit/lib/i18n'
 import { formatNumber } from '@ui-kit/utils'
 

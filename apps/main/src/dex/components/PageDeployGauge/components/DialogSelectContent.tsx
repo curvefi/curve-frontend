@@ -1,5 +1,5 @@
 import { styled } from 'styled-components'
-import { Button } from '@ui/Button'
+import { Button } from '@legacy-ui/Button'
 
 type Props<T> = {
   data: T[]

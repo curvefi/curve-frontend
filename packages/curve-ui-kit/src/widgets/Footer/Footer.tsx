@@ -1,7 +1,7 @@
+import { LlamaImg } from '@legacy-ui/images'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import { styled } from '@mui/material/styles'
-import { LlamaImg } from '@ui/images'
 import { useIsTiny } from '@ui-kit/hooks/useBreakpoints'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { AppName } from '@ui-kit/shared/routes'

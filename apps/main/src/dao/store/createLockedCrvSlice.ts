@@ -15,7 +15,7 @@ import {
   FnStepResponse,
   TransactionState,
 } from '@/dao/types/dao.types'
-import { shortenAccount } from '@ui/utils'
+import { shortenAccount } from '@legacy-ui/utils'
 import { notify, requireLib, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { getErrorMessage } from '@ui-kit/utils'
