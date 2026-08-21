@@ -9,8 +9,9 @@ export type BridgeButtonProps = {
   isApproved: boolean | undefined
   isConnected: boolean
   isWrongNetwork: boolean | undefined
-  onSubmit?: () => void
+  onSubmit: () => void
   onChangeNetwork: () => void
+  tokenSymbol: string
 }
 
 export const BridgeButton = ({
@@ -22,6 +23,7 @@ export const BridgeButton = ({
   isWrongNetwork,
   onSubmit,
   onChangeNetwork,
+  tokenSymbol,
 }: BridgeButtonProps) =>
   isConnected ? (
     isWrongNetwork ? (
@@ -42,7 +44,7 @@ export const BridgeButton = ({
         data-testid="bridge-submit-button"
         onClick={onSubmit}
       >
-        {isPending ? t`Processing...` : isApproved === false ? t`Approve` : t`Bridge crvUSD`}
+        {isPending ? t`Processing...` : isApproved === false ? t`Approve` : t`Bridge ${tokenSymbol}`}
       </Button>
     )
   ) : (

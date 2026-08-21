@@ -1,16 +1,30 @@
+import Alert from '@mui/material/Alert'
+import AlertTitle from '@mui/material/AlertTitle'
 import { AlertDisableForm } from '@ui-kit/shared/ui/AlertDisableForm'
 import type { BridgeAlert } from '../hooks/useBridgeAlert'
 import { BridgeAmount, type BridgeAmountProps } from './BridgeAmount'
 import { BridgeButton, type BridgeButtonProps } from './BridgeButton'
 import { BridgeTargets, type BridgeTargetsProps } from './BridgeTargets'
 
-export type BridgeFormContentParams = Omit<
-  BridgeButtonProps,
-  'disableBridge' | 'disableConnect' | 'disableChangeNetwork'
-> &
-  Pick<BridgeTargetsProps, 'networks' | 'fromChainId' | 'onNetworkSelected'> &
-  Pick<BridgeAmountProps, 'amount' | 'onAmount' | 'walletBalance' | 'inputBalanceUsd'> & {
+export type BridgeFormContentParams = Omit<BridgeButtonProps, 'disableBridge' | 'disableChangeNetwork'> &
+  Pick<
+    BridgeTargetsProps,
+    | 'networks'
+    | 'fromChainId'
+    | 'onNetworkSelected'
+    | 'toChainId'
+    | 'destinationNetworks'
+    | 'onDestinationSelected'
+    | 'onSwapNetworks'
+  > &
+  Pick<
+    BridgeAmountProps,
+    'amount' | 'onAmount' | 'walletBalance' | 'inputBalanceUsd' | 'tokenSymbol' | 'tokenSelector'
+  > & {
     bridgeDisabledAlert?: Pick<BridgeAlert, 'alertType' | 'message'>
+    bridgeAdvisoryAlert?: Pick<BridgeAlert, 'alertType' | 'message'>
+    disableAmount?: boolean
+    disableBridge?: boolean
     loading: boolean
   }
 
@@ -21,7 +35,10 @@ export const BridgeFormContent = ({
   walletBalance,
   inputBalanceUsd,
   bridgeDisabledAlert,
+  bridgeAdvisoryAlert,
+  disableAmount = false,
   loading,
+  disableBridge,
   isPending,
   isApproved,
   isConnected,
@@ -30,37 +47,65 @@ export const BridgeFormContent = ({
   onSubmit,
   onChangeNetwork,
   onNetworkSelected,
+  tokenSymbol,
+  tokenSelector,
+  toChainId,
+  destinationNetworks,
+  onDestinationSelected,
+  onSwapNetworks,
 }: BridgeFormContentParams) => (
   <>
-    <BridgeTargets
-      networks={networks}
-      fromChainId={fromChainId}
-      disabled={loading}
-      loading={loading}
-      onNetworkSelected={onNetworkSelected}
-    />
-
     <BridgeAmount
-      disabled={loading || !isConnected || !!isWrongNetwork}
+      disabled={loading || disableAmount}
       amount={amount}
       walletBalance={walletBalance}
       inputBalanceUsd={inputBalanceUsd}
+      tokenSymbol={tokenSymbol}
+      tokenSelector={tokenSelector}
       onAmount={onAmount}
     />
 
-    {bridgeDisabledAlert ? (
-      <AlertDisableForm>{bridgeDisabledAlert.message}</AlertDisableForm>
-    ) : (
-      <BridgeButton
-        disableChangeNetwork={loading}
-        disableBridge={!!amount.error || !amount.data || loading || isApproved == null}
-        isPending={isPending}
-        isApproved={isApproved}
-        isConnected={isConnected}
-        isWrongNetwork={isWrongNetwork}
-        onSubmit={onSubmit}
-        onChangeNetwork={onChangeNetwork}
-      />
+    <BridgeTargets
+      networks={networks}
+      fromChainId={fromChainId}
+      loading={loading}
+      onNetworkSelected={onNetworkSelected}
+      toChainId={toChainId}
+      destinationNetworks={destinationNetworks}
+      onDestinationSelected={onDestinationSelected}
+      onSwapNetworks={onSwapNetworks}
+    />
+
+    {bridgeDisabledAlert &&
+      (bridgeDisabledAlert.alertType === 'error' ? (
+        <AlertDisableForm>{bridgeDisabledAlert.message}</AlertDisableForm>
+      ) : (
+        <Alert variant="outlined" severity={bridgeDisabledAlert.alertType === 'warning' ? 'warning' : 'info'}>
+          <AlertTitle>{bridgeDisabledAlert.message}</AlertTitle>
+        </Alert>
+      ))}
+    {bridgeAdvisoryAlert && (
+      <Alert variant="outlined" severity={bridgeAdvisoryAlert.alertType === 'warning' ? 'warning' : 'info'}>
+        <AlertTitle>{bridgeAdvisoryAlert.message}</AlertTitle>
+      </Alert>
     )}
+    <BridgeButton
+      disableChangeNetwork={loading}
+      disableBridge={
+        bridgeDisabledAlert != null ||
+        disableBridge === true ||
+        !!amount.error ||
+        !amount.data ||
+        loading ||
+        isApproved == null
+      }
+      isPending={isPending}
+      isApproved={isApproved}
+      isConnected={isConnected}
+      isWrongNetwork={isWrongNetwork}
+      onSubmit={onSubmit}
+      onChangeNetwork={onChangeNetwork}
+      tokenSymbol={tokenSymbol}
+    />
   </>
 )

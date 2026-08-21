@@ -11,7 +11,6 @@ import { Chain, decimal } from '@ui-kit/utils'
 import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 import { BridgeActionInfos } from './BridgeActionInfos'
 import { BridgeFormContent, type BridgeFormContentParams } from './BridgeFormContent'
-import { BridgeInfoAlert } from './BridgeInfoAlert'
 
 // Copied from curve-js fastbridge docs
 const SupportedNetworks: IFastBridgeNetwork[] = [
@@ -73,15 +72,13 @@ const BridgeForm = (props: BridgeFormContentParams) => {
   return (
     <FormContent
       footer={
-        <>
-          <BridgeActionInfos
-            bridgeCost={constQ(0.69)}
-            gas={constQ({ estGasCostUsd: 0.12 })}
-            isApproved={isApproved}
-            nativeTokenSymbol={BridgeNetworks.find(n => n.chainId === fromChainId)!.symbol}
-          />
-          <BridgeInfoAlert />
-        </>
+        <BridgeActionInfos
+          bridgeCost={constQ(0.69)}
+          gas={constQ({ estGasCostUsd: 0.12 })}
+          isApproved={isApproved}
+          nativeTokenSymbol={BridgeNetworks.find(n => n.chainId === fromChainId)!.symbol}
+          provider="fastbridge"
+        />
       }
     >
       <BridgeFormContent
@@ -99,6 +96,8 @@ const BridgeForm = (props: BridgeFormContentParams) => {
         loading={loading}
         walletBalance={walletBalance}
         inputBalanceUsd={amount && decimal(1.02 * +amount)} // Faking 1 crvUSD = $1.02
+        tokenSymbol="crvUSD"
+        tokenSelector={<span>crvUSD</span>}
         isPending={isPending}
         isApproved={isApproved}
         isConnected={props.isConnected}
@@ -121,6 +120,7 @@ const BridgeForm = (props: BridgeFormContentParams) => {
         onAmount={setAmount}
         onChangeNetwork={() => setIsWrongNetwork(false)}
         onNetworkSelected={network => setFromChainId(network.chainId)}
+        onSwapNetworks={() => undefined}
       />
     </FormContent>
   )

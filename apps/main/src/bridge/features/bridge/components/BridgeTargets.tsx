@@ -1,22 +1,22 @@
-import { useCallback } from 'react'
+import { useMemo, useState } from 'react'
 import { ArrowRight } from '@mui/icons-material'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import Box from '@mui/material/Box'
+import IconButton from '@mui/material/IconButton'
+import MenuList from '@mui/material/MenuList'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { NetworkDef } from '@ui/utils'
-import { useNetworksTVL } from '@ui-kit/entities/prices-networks.query'
-import { ChainList } from '@ui-kit/features/switch-chain/ui/ChainList'
 import { ChainSwitcherIcon } from '@ui-kit/features/switch-chain/ui/ChainSwitcherIcon'
-import { usePathname } from '@ui-kit/hooks/router'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
-import { getCurrentNetwork } from '@ui-kit/shared/routes'
+import { MenuItem } from '@ui-kit/shared/ui/MenuItem'
 import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
+import { SearchField } from '@ui-kit/shared/ui/SearchField'
 import { Select } from '@ui-kit/shared/ui/Select'
 import { Spinner } from '@ui-kit/shared/ui/Spinner'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { applySxProps, Chain, requireBlockchainId, type SxProps } from '@ui-kit/utils'
+import { applySxProps, type SxProps } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -40,13 +40,11 @@ const SelectNetworkLabel = ({ label, sx }: { label: string; sx?: SxProps }) => (
   </Typography>
 )
 
-/** Displays a chain icon and its human-readable name for the given {@link blockchainId}. */
-const SelectNetworkValue = ({ blockchainId, sx }: { blockchainId: string; sx?: SxProps }) => (
+/** Displays a chain icon and its human-readable name. */
+const SelectNetworkValue = ({ network, sx }: { network: NetworkDef; sx?: SxProps }) => (
   <Stack direction="row" sx={applySxProps({ alignItems: 'center', gap: Spacing.sm }, sx)}>
-    <ChainSwitcherIcon networkId={blockchainId} size={20} />
-    <Typography variant="bodyMBold" sx={{ textTransform: 'capitalize' }}>
-      {blockchainId}
-    </Typography>
+    <ChainSwitcherIcon networkId={network.id} size={20} />
+    <Typography variant="bodyMBold">{network.name}</Typography>
   </Stack>
 )
 
@@ -57,57 +55,100 @@ const SelectNetworkValue = ({ blockchainId, sx }: { blockchainId: string; sx?: S
  * We ought to refactor this some time as it's becoming quite common.
  */
 const SelectNetworkButton = ({
-  chainId,
-  loading = false,
-  disabled = false,
+  network,
+  loading,
   onClick,
+  testId,
   sx,
 }: {
-  chainId: number | undefined
-  loading?: boolean
-  disabled?: boolean
+  network: NetworkDef | undefined
+  loading: boolean
   onClick: () => void
+  testId: string
   sx?: SxProps
 }) => (
   <Select
     value=""
-    onClick={disabled || loading ? undefined : onClick}
+    onClick={loading ? undefined : onClick}
     open={false}
-    disabled={disabled || loading}
+    disabled={loading}
     displayEmpty
+    data-testid={testId}
     size="medium"
-    renderValue={() =>
-      loading || !chainId ? (
-        <Spinner useTheme={true} />
-      ) : (
-        <SelectNetworkValue blockchainId={requireBlockchainId(chainId)} />
-      )
-    }
+    renderValue={() => (loading || !network ? <Spinner useTheme={true} /> : <SelectNetworkValue network={network} />)}
     IconComponent={KeyboardArrowDownIcon}
     sx={sx}
   />
 )
 
+const BridgeNetworkList = ({
+  networks,
+  selectedNetworkId,
+  onNetwork,
+}: {
+  networks: NetworkDef[]
+  selectedNetworkId: string | undefined
+  onNetwork: (network: NetworkDef) => void
+}) => {
+  const [search, setSearch] = useState('')
+  const options = useMemo(
+    () => networks.filter(({ name }) => name.toLowerCase().includes(search.toLowerCase())),
+    [networks, search],
+  )
+  return (
+    <>
+      <SearchField placeholder={t`Search Networks`} onSearch={setSearch} name="chainName" />
+      <MenuList>
+        {options.map(network => (
+          <MenuItem<string>
+            data-testid={`menu-item-chain-${network.id}`}
+            key={network.id}
+            value={network.id}
+            isSelected={network.id === selectedNetworkId}
+            icon={<ChainSwitcherIcon networkId={network.id} size={36} />}
+            label={network.name}
+            onSelected={() => onNetwork(network)}
+          />
+        ))}
+      </MenuList>
+    </>
+  )
+}
+
 export type BridgeTargetsProps = {
   /** List of networks available as bridge sources. */
   networks: NetworkDef[]
-  /** Currently selected source chain id. At the moment of writing the parent component reads this from the URL. */
-  fromChainId: number | undefined
-  disabled: boolean
+  /** Currently selected source chain id. */
+  fromChainId: number
   loading: boolean
-  /** Callback invoked when the user picks a new source network. Not really used in prod, as the ChainList component itself will update the URL. */
-  onNetworkSelected?: (network: NetworkDef) => void
+  /** Callback invoked when the user picks a new source network. */
+  onNetworkSelected: (network: NetworkDef) => void
+  toChainId: number
+  destinationNetworks: NetworkDef[]
+  onDestinationSelected: (network: NetworkDef) => void
+  onSwapNetworks?: () => void
 }
 
 /**
  * Source / destination network selector for the bridge.
  *
- * The source ("From") network is user-selectable via a modal chain list,
- * while the destination ("To") is fixed to Ethereum mainnet. Perhaps later
- * we can support bridging to different networks.
+ * Both networks are selected through modal chain lists. Navigation and route
+ * state remain owned by the parent bridge form.
  */
-export const BridgeTargets = ({ networks, fromChainId, disabled, loading, onNetworkSelected }: BridgeTargetsProps) => {
+export const BridgeTargets = ({
+  networks,
+  fromChainId,
+  loading,
+  onNetworkSelected,
+  toChainId,
+  destinationNetworks,
+  onDestinationSelected,
+  onSwapNetworks,
+}: BridgeTargetsProps) => {
   const [isFromOpen, openFrom, closeFrom] = useSwitch(false)
+  const [isToOpen, openTo, closeTo] = useSwitch(false)
+  const fromNetwork = networks.find(({ chainId }) => chainId === fromChainId)
+  const toNetwork = networks.find(({ chainId }) => chainId === toChainId)
 
   return (
     <Box
@@ -123,36 +164,54 @@ export const BridgeTargets = ({ networks, fromChainId, disabled, loading, onNetw
     >
       <SelectNetworkLabel label={t`From`} sx={{ gridArea: GRID_AREAS.from.label }} />
       <SelectNetworkButton
-        disabled={disabled}
-        chainId={fromChainId}
+        network={fromNetwork}
         onClick={openFrom}
+        testId="bridge-origin-select"
         loading={loading}
         sx={{ gridArea: GRID_AREAS.from.input }}
       />
 
-      <ModalDialog open={isFromOpen} onClose={closeFrom} title={t`Select Network`}>
-        {/** At the moment of writing, when selecting a network from the chain list feature it updates the URL */}
-        <ChainList
-          showTestnets={false}
-          options={networks}
-          selectedNetworkId={getCurrentNetwork(usePathname())}
-          tvls={useNetworksTVL('lending')}
-          onNetwork={useCallback(
-            (network: NetworkDef) => {
-              closeFrom()
-              onNetworkSelected?.(network)
-            },
-            [closeFrom, onNetworkSelected],
-          )}
+      <ModalDialog open={isFromOpen} onClose={closeFrom} title={t`Select origin network`}>
+        <BridgeNetworkList
+          networks={networks}
+          selectedNetworkId={fromNetwork?.id}
+          onNetwork={network => {
+            closeFrom()
+            onNetworkSelected(network)
+          }}
         />
       </ModalDialog>
 
-      <Box sx={{ gridArea: GRID_AREAS.arrow, display: 'flex', alignItems: 'center', justifyItems: 'center' }}>
-        <ArrowRight />
+      <Box sx={{ gridArea: GRID_AREAS.arrow, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <IconButton
+          aria-label={t`Reverse bridge direction`}
+          data-testid="bridge-swap-networks"
+          disabled={loading || !onSwapNetworks}
+          onClick={onSwapNetworks}
+          size="small"
+        >
+          <ArrowRight />
+        </IconButton>
       </Box>
 
       <SelectNetworkLabel label={t`To`} sx={{ gridArea: GRID_AREAS.to.label }} />
-      <SelectNetworkValue blockchainId={requireBlockchainId(Chain.Ethereum)} sx={{ gridArea: GRID_AREAS.to.input }} />
+      <SelectNetworkButton
+        network={toNetwork}
+        onClick={openTo}
+        testId="bridge-destination-select"
+        loading={loading}
+        sx={{ gridArea: GRID_AREAS.to.input }}
+      />
+      <ModalDialog open={isToOpen} onClose={closeTo} title={t`Select destination network`}>
+        <BridgeNetworkList
+          networks={destinationNetworks}
+          selectedNetworkId={toNetwork?.id}
+          onNetwork={network => {
+            closeTo()
+            onDestinationSelected(network)
+          }}
+        />
+      </ModalDialog>
     </Box>
   )
 }

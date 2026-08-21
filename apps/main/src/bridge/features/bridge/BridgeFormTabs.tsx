@@ -21,7 +21,7 @@ const BridgeTab = (params: BridgeFormParams) => {
 const BridgeMenu = [
   {
     value: 'bridge',
-    label: t`Bridge crvUSD`,
+    label: t`Bridge tokens`,
     component: BridgeTab,
   },
 ] satisfies FormTab<BridgeFormParams>[]
