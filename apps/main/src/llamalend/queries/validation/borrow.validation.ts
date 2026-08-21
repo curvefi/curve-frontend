@@ -7,6 +7,7 @@ import {
   validateMaxDebt,
   validateRange,
   validateRoute,
+  validateRouteCalldata,
   validateRouteProvider,
   validateUserBorrowed,
   validateUserCollateral,
@@ -28,7 +29,7 @@ const createLoanFormValidationGroup = (
     maxDebt,
     maxCollateral,
     leverageEnabled,
-    routeId: _, // todo: we can't validate the routeId without the marketId
+    routeId,
   }: FieldsOf<CreateLoanForm>,
   {
     debtRequired,
@@ -53,6 +54,7 @@ const createLoanFormValidationGroup = (
     validateMaxDebt(debt, maxDebt, { required: isMaxDebtRequired })
     if (!ignoreMaxCollateral) validateMaxCollateral(userCollateral, maxCollateral, { required: collateralRequired })
     validateLeverageEnabled(leverageEnabled, { required: isLeverageRequired })
+    validateRouteCalldata(routeId)
   })
 
 function validateCreateLoanFieldsForMarket(
