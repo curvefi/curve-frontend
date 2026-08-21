@@ -48,8 +48,29 @@ const visitNotFoundPage = () => {
   return e2eBaseUrl() + url
 }
 
-function check500Error({ context }: { context: object }) {
+type SentryException = { type: string; value: string; stacktrace?: { frames?: object[] } }
+
+type SentryPayload = {
+  message?: string
+  fingerprint?: string[]
+  exception?: { values?: SentryException[] }
+  extra: { body: ErrorReportBody }
+}
+
+type ErrorReportBody = {
+  formData: ErrorReportFormValues
+  url: string
+  context: { title: string; subtitle: string }
+  exception?: SentryException
+}
+
+function check500Error({ context, exception }: ErrorReportBody) {
   const [expectedName, expectedMessage] = ['TypeError', 'toLowerCase is not a function']
+  expect(exception).to.deep.include({
+    type: expectedName,
+    value: expectedMessage,
+  })
+  expect(exception?.stacktrace?.frames ?? []).not.to.have.length(0)
   expect(Object.keys(context)).to.have.members(['title', 'subtitle', 'error'])
   const { subtitle, error, title } = context as Record<keyof ErrorContext, string>
   expect(title).to.equal('Unexpected Error')
@@ -65,12 +86,6 @@ function check500Error({ context }: { context: object }) {
     expect(stack).to.contain(expectedName)
     expect(stack).to.contain(expectedMessage)
   }
-}
-
-type ErrorReportBody = {
-  formData: ErrorReportFormValues
-  url: string
-  context: { title: string; subtitle: string }
 }
 
 describe('Error Boundary', () => {
@@ -99,9 +114,10 @@ describe('Error Boundary', () => {
       // eslint-disable-next-line @typescript-eslint/unbound-method
       ({ body: envelope, reply }: CyHttpMessages.IncomingHttpRequest<string, unknown>) => {
         const lines = envelope.split('\n').filter(Boolean)
-        const event = JSON.parse(lines[2]) as { extra: { body: ErrorReportBody } } // event payload is the third line
+        const event = JSON.parse(lines[2]) as SentryPayload // event payload is the third line
 
         const body = event.extra.body
+        body.exception = event.exception?.values?.[0]
 
         expect(Object.keys(body)).to.have.members(['formData', 'url', 'context'])
         expect(body.formData).to.deep.equal({ address, contactMethod: 'email', contact, description })
@@ -109,6 +125,7 @@ describe('Error Boundary', () => {
         if (is500) {
           check500Error(body)
         } else {
+          expect(event.message).to.equal('Error Report')
           expect(body).to.deep.equal({
             formData: { address, contactMethod: 'email', contact, description },
             url,
