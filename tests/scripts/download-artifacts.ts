@@ -1,4 +1,4 @@
-import { execFileSync, type ExecFileSyncOptionsWithStringEncoding, spawnSync } from 'child_process'
+import { execFile, type ExecFileOptionsWithStringEncoding, spawnSync } from 'child_process'
 import { mkdir, readdir, rmdir, unlink, writeFile } from 'fs/promises'
 import { dirname, join } from 'path'
 import { stripVTControlCharacters } from 'util'
@@ -15,12 +15,12 @@ type WorkflowJob = {
 /**
  * Execute a command and return trimmed stdout.
  */
-const run = (command: string, args: string[], options?: ExecFileSyncOptionsWithStringEncoding): string =>
-  execFileSync(command, args, {
-    encoding: 'utf8',
-    stdio: ['inherit', 'pipe', 'pipe'],
-    ...options,
-  }).trim()
+const run = (command: string, args: string[], options?: ExecFileOptionsWithStringEncoding): Promise<string> =>
+  new Promise((resolve, reject) => {
+    execFile(command, args, { encoding: 'utf8', ...options }, (error, stdout) =>
+      error ? reject(new Error(`${error.code}`, { cause: error })) : resolve(stdout.trim()),
+    )
+  })
 
 /**
  * Stream a command to the terminal, throwing on failure.
@@ -37,7 +37,7 @@ const hasCommand = (command: string) => spawnSync(command, ['--version'], { stdi
 /**
  * Find the latest workflow run id for a branch and workflow.
  */
-const findLatestRunId = (branch: string, workflow: string): string =>
+const findLatestRunId = (branch: string, workflow: string): Promise<string> =>
   run('gh', [
     'run',
     'list',
@@ -58,13 +58,17 @@ const findLatestRunId = (branch: string, workflow: string): string =>
 /**
  * Download artifacts for the given run into dest.
  */
-const downloadArtifacts = (runId: string, dest: string) => {
-  runStreaming('gh', ['run', 'download', runId, '--repo', REPOSITORY, '--dir', dest])
+const downloadArtifacts = async (runId: string, dest: string) => {
+  if (await getArtifactCount(runId)) {
+    runStreaming('gh', ['run', 'download', runId, '--repo', REPOSITORY, '--dir', dest])
+  } else {
+    console.info('No workflow artifacts to download.')
+  }
 }
 
-const getFailedJobs = (runId: string): WorkflowJob[] =>
+const getFailedJobs = async (runId: string): Promise<WorkflowJob[]> =>
   JSON.parse(
-    run('gh', [
+    await run('gh', [
       'run',
       'view',
       runId,
@@ -81,25 +85,31 @@ const safeFilename = (name: string) => name.replace(/[^a-zA-Z0-9._-]+/g, '-').re
 
 /** Download the failed steps from each failed job because Actions logs are not workflow artifacts. */
 async function downloadFailedJobLogs(runId: string, dest: string) {
-  const failedJobs = getFailedJobs(runId)
+  const failedJobs = await getFailedJobs(runId)
   if (failedJobs.length === 0) return console.info('No failed job logs to download.')
 
   const logsDir = join(dest, 'failed-job-logs')
   await mkdir(logsDir, { recursive: true })
 
-  for (const job of failedJobs) {
-    const log = run('gh', ['run', 'view', '--repo', REPOSITORY, '--job', String(job.databaseId), '--log-failed'], {
-      encoding: 'utf8',
-      maxBuffer: MAX_LOG_SIZE,
-    })
-    const path = join(logsDir, `${job.databaseId}-${safeFilename(job.name)}.log`)
-    await writeFile(path, `${stripVTControlCharacters(log)}\n`)
-    console.info(`Downloaded failed job log: ${path}`)
-  }
+  await Promise.all(
+    failedJobs.map(async job => {
+      const log = await run(
+        'gh',
+        ['run', 'view', '--repo', REPOSITORY, '--job', String(job.databaseId), '--log-failed'],
+        {
+          encoding: 'utf8',
+          maxBuffer: MAX_LOG_SIZE,
+        },
+      )
+      const path = join(logsDir, `${job.databaseId}-${safeFilename(job.name)}.log`)
+      await writeFile(path, `${stripVTControlCharacters(log)}\n`)
+      console.info(`Downloaded failed job log: ${path}`)
+    }),
+  )
 }
 
 const getArtifactCount = (runId: string) =>
-  Number(run('gh', ['api', `repos/${REPOSITORY}/actions/runs/${runId}/artifacts`, '--jq', '.total_count']))
+  run('gh', ['api', `repos/${REPOSITORY}/actions/runs/${runId}/artifacts`, '--jq', '.total_count']).then(Number)
 
 /**
  * Check if a directory contains any .png files (indicating test failures).
@@ -159,13 +169,13 @@ async function downloadLatestArtifacts({ cleanup }: { cleanup: boolean }): Promi
     throw new Error('GitHub CLI (gh) is required but not installed.')
   }
 
-  const repoRoot = run('git', ['rev-parse', '--show-toplevel'])
+  const repoRoot = await run('git', ['rev-parse', '--show-toplevel'])
   process.chdir(repoRoot)
 
-  const branch = BRANCH?.trim() || run('git', ['rev-parse', '--abbrev-ref', 'HEAD'])
+  const branch = BRANCH?.trim() || (await run('git', ['rev-parse', '--abbrev-ref', 'HEAD']))
   const artifactBranch = ARTIFACT_BRANCH?.trim() || branch
   const workflow = WORKFLOW?.trim() || 'ci'
-  const runId = RUN_ID || findLatestRunId(branch, workflow)
+  const runId = RUN_ID || (await findLatestRunId(branch, workflow))
   if (!runId) throw new Error(`No ${workflow} runs for branch '${branch}'`)
 
   const path = join(DEST_DIR, artifactBranch.replace(/\//g, '-') || 'current', runId)
@@ -175,13 +185,7 @@ async function downloadLatestArtifacts({ cleanup }: { cleanup: boolean }): Promi
   console.info(
     `Downloading failure evidence for branch '${branch}' (artifact branch: ${artifactBranch}, workflow: ${workflow}, run: ${runId}) into '${path}'...`,
   )
-  await downloadFailedJobLogs(runId, destination)
-
-  if (getArtifactCount(runId) > 0) {
-    downloadArtifacts(runId, destination)
-  } else {
-    console.info('No workflow artifacts to download.')
-  }
+  await Promise.all([downloadFailedJobLogs(runId, destination), downloadArtifacts(runId, destination)])
 
   if (cleanup) {
     console.info('Cleaning up videos from successful tests...')
