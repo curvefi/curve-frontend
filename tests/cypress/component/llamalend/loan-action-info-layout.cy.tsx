@@ -20,6 +20,7 @@ const getHeight = (testId: string, subelement?: string) =>
     .then($element => $element[0].getBoundingClientRect().height)
 
 const routes: MarketRoutes = {
+  providers: RouteProviders,
   queries: fromEntries(
     RouteProviders.map(router => [
       router,
@@ -109,5 +110,21 @@ describe('market slippage settings', () => {
     cy.get(`[data-testid="slippage-radio-group"] [value="${SLIPPAGE.leverage.default}"]`).click()
     cy.get('[data-testid="slippage-save-button"]').click()
     cy.get('@onChanged').should('have.been.calledOnce')
+  })
+})
+
+describe('route provider allowlist', () => {
+  it('renders only providers supplied by the market policy', () => {
+    cy.mount(
+      <ComponentTestWrapper config={mockedWagmiConfig}>
+        <LoanActionSettings
+          onSlippageChange={noop}
+          routes={{ ...routes, providers: ['enso'], selectedRoute: undefined, selectedRouter: undefined }}
+        />
+      </ComponentTestWrapper>,
+    )
+
+    cy.get('[data-testid="route-provider-accordion"]').click()
+    cy.get('[data-testid="route-provider-card"]').should('have.length', 1).and('contain.text', 'Enso')
   })
 })

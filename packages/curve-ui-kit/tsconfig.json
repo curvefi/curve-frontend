@@ -2,8 +2,8 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "paths": {
-      "@ui": ["../ui/src/index.ts"],
-      "@ui/*": ["../ui/src/*"],
+      "@ui": ["../legacy-ui/src/index.ts"],
+      "@ui/*": ["../legacy-ui/src/*"],
       "@ui-kit/*": ["./src/*"],
       "@external-rewards": ["../external-rewards/src/index.ts"],
       "@external-rewards/*": ["../external-rewards/src/*"],
@@ -12,5 +12,5 @@
       "@primitives/*": ["../primitives/src/*"]
     }
   },
-  "include": ["src", "vite.config.mts", "../ui/src/globals.d.ts", "./src/types/*.d.ts"]
+  "include": ["src", "vite.config.mts", "../legacy-ui/src/globals.d.ts", "./src/types/*.d.ts"]
 }

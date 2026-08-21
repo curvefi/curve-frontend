@@ -42,6 +42,9 @@ export const chains = [
 
 export type Chain = (typeof chains)[number]
 
+export const LEND_CHAINS = ['ethereum', 'arbitrum', 'optimism', 'fraxtal', 'sonic'] as const satisfies Chain[]
+export const MINT_CHAINS = ['ethereum'] as const satisfies Chain[]
+
 export const isPricesApiChain = (chain: string): chain is Chain => chains.includes(chain as Chain)
 export const getBlockchainId = (networkId: string): Chain | undefined =>
   isPricesApiChain(networkId) ? networkId : undefined

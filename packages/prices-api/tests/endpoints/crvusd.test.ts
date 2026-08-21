@@ -20,7 +20,7 @@ runEndpointCases('crvusd', [
   endpointCase('getCrvUsdSupply', () => crvusd.getCrvUsdSupply(chainSeed(), 7, requestOptions)),
   endpointCase('getKeepers', () => crvusd.getKeepers(chainSeed(), requestOptions)),
   endpointCase('getUserMarkets', () =>
-    crvusd.getUserMarkets(crvUsdUserSeed().user, crvUsdUserSeed().chain, requestOptions),
+    crvusd.getUserMarkets(crvUsdUserSeed().user, crvUsdUserSeed().chain, undefined, requestOptions),
   ),
   endpointCase('getAllUserMarkets', () => crvusd.getAllUserMarkets(crvUsdUserSeed().user, undefined, requestOptions)),
   endpointCase('getUserMarketStats', () =>

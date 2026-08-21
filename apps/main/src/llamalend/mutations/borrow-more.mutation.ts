@@ -15,6 +15,7 @@ import {
 } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Address, type Hex } from '@primitives/address.utils'
+import type { RouteProvider } from '@primitives/router.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
 import { waitForApproval } from '@ui-kit/utils'
@@ -24,6 +25,7 @@ type BorrowMoreOptions = {
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
   onReset: () => void
   userAddress: Address | undefined
+  leverageProviders: readonly RouteProvider[] | undefined
 }
 
 const approveBorrowMore = async (
@@ -64,6 +66,7 @@ export const useBorrowMoreMutation = ({
   network: { chainId },
   marketId,
   userAddress,
+  leverageProviders,
   ...props
 }: BorrowMoreOptions) => {
   const config = useConfig()
@@ -81,7 +84,7 @@ export const useBorrowMoreMutation = ({
       })
       return { hash: await borrowMore(market, variables) }
     },
-    validationSuite: borrowMoreMutationValidationSuite,
+    validationSuite: borrowMoreMutationValidationSuite(leverageProviders),
     pendingMessage: (mutation, { market }) => t`Borrowing more... ${formatTokenAmounts(market, mutation)}`,
     successMessage: (mutation, { market }) => t`Borrowed more! ${formatTokenAmounts(market, mutation)}`,
     ...props,
