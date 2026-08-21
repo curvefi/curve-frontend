@@ -27,7 +27,7 @@
     "@cypress/vite-dev-server": "7.3.4",
     "@vitejs/plugin-react": "*",
     "@vitest/ui": "4.1.10",
-    "cypress": "15.19.0",
+    "cypress": "15.20.1",
     "eslint": "*",
     "ethers": "*",
     "typescript": "*",
