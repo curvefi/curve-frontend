@@ -1,6 +1,6 @@
 import type { YieldKeys } from '@/loan/components/PageCrvUsdStaking/types'
 import type { ScrvUsdYieldWithAverages } from '@/loan/entities/scrvusd-yield.query'
-import { formatDate } from '@ui/utils'
+import { formatDate } from '@legacy-ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ChartTooltipShell, ChartTooltipSeriesGroup, ChartTooltipSeriesRow } from '@ui-kit/shared/ui/Chart'
 import type { LineSeriesConfig } from '@ui-kit/shared/ui/Chart/EChartsLineChart'

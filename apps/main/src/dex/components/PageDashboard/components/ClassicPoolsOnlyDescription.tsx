@@ -2,7 +2,7 @@ import { Fragment } from 'react'
 import { styled } from 'styled-components'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import { ExternalLink } from '@ui/Link'
+import { ExternalLink } from '@legacy-ui/Link'
 import { t } from '@ui-kit/lib/i18n'
 
 export const ClassicPoolsOnlyDescription = () => {

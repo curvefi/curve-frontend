@@ -2,8 +2,8 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "paths": {
-      "@ui": ["./src/index.tsx"],
-      "@ui/*": ["./src/*"],
+      "@legacy-ui": ["./src/index.tsx"],
+      "@legacy-ui/*": ["./src/*"],
       "@external-rewards": ["../external-rewards/src/index.ts"],
       "@curvefi/prices-api": ["../prices-api/src/index.ts"],
       "@curvefi/prices-api/*": ["../prices-api/src/*"],

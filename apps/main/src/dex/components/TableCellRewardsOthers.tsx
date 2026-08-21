@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
 import { RewardsApy } from '@/dex/types/main.types'
-import { Chip } from '@ui/Typography'
+import { Chip } from '@legacy-ui/Typography'
 import { formatNumber } from '@ui-kit/utils'
 
 type Prop = {

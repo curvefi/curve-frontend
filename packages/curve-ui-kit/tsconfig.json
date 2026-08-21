@@ -2,8 +2,8 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "paths": {
-      "@ui": ["../legacy-ui/src/index.ts"],
-      "@ui/*": ["../legacy-ui/src/*"],
+      "@legacy-ui": ["../legacy-ui/src/index.ts"],
+      "@legacy-ui/*": ["../legacy-ui/src/*"],
       "@ui-kit/*": ["./src/*"],
       "@external-rewards": ["../external-rewards/src/index.ts"],
       "@external-rewards/*": ["../external-rewards/src/*"],

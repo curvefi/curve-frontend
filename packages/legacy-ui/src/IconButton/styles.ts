@@ -1,6 +1,6 @@
 import type { ComponentPropsWithRef } from 'react'
 import { styled, type IStyledComponent } from 'styled-components'
-import { focusVisible } from '@ui/utils/sharedStyles'
+import { focusVisible } from '@legacy-ui/utils/sharedStyles'
 import type { IconButtonProps } from './types'
 
 type StyledIconButtonProps = Omit<IconButtonProps, 'className'>

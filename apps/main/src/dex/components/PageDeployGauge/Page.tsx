@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
 import { DeployGauge } from '@/dex/components/PageDeployGauge/index'
 import type { NetworkUrlParams } from '@/dex/types/main.types'
-import { breakpoints } from '@ui/utils/responsive'
+import { breakpoints } from '@legacy-ui/utils/responsive'
 import { useParams } from '@ui-kit/hooks/router'
 
 export const PageDeployGauge = () => {

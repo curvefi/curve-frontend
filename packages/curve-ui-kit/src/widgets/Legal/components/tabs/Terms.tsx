@@ -1,5 +1,5 @@
+import { EXTERNAL_LINKS } from '@legacy-ui/utils'
 import Typography from '@mui/material/Typography'
-import { EXTERNAL_LINKS } from '@ui/utils'
 import { getSearchString } from '@ui-kit/hooks/router'
 import { t, Trans } from '@ui-kit/lib/i18n'
 import { type AppName, getInternalUrl, PAGE_INTEGRATIONS } from '@ui-kit/shared/routes'

@@ -1,5 +1,5 @@
+import { getBlockchainIconUrl } from '@legacy-ui/utils'
 import Box from '@mui/material/Box'
-import { getBlockchainIconUrl } from '@ui/utils'
 
 type ChainIconProps = {
   networkId: string

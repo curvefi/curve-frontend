@@ -1,6 +1,6 @@
 import { groupBy, inRange } from 'lodash'
+import { CURVE_ASSETS_URL } from '@legacy-ui/utils'
 import { mapRecord } from '@primitives/objects.utils'
-import { CURVE_ASSETS_URL } from '@ui/utils'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model'
 import { campaigns } from '@external-rewards'

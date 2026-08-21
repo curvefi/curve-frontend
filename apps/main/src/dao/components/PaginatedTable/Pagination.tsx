@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
-import { Box } from '@ui/Box'
-import { Button } from '@ui/Button'
-import { Icon } from '@ui/Icon'
+import { Box } from '@legacy-ui/Box'
+import { Button } from '@legacy-ui/Button'
+import { Icon } from '@legacy-ui/Icon'
 import { t } from '@ui-kit/lib/i18n'
 
 type PaginationProps = {

@@ -1,6 +1,6 @@
 import type { ComponentPropsWithRef } from 'react'
 import { styled, type IStyledComponent } from 'styled-components'
-import { breakpoints } from '@ui/utils/responsive'
+import { breakpoints } from '@legacy-ui/utils/responsive'
 import type { BoxProps } from './types'
 
 function attributes({ className, fillHeight, fillWidth, ...rest }: BoxProps) {

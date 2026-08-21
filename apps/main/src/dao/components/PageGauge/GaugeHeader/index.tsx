@@ -1,8 +1,8 @@
 import { styled } from 'styled-components'
 import { SmallLabel } from '@/dao/components/SmallLabel'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
-import { Box } from '@ui/Box'
-import { Loader } from '@ui/Loader'
+import { Box } from '@legacy-ui/Box'
+import { Loader } from '@legacy-ui/Loader'
 import { t } from '@ui-kit/lib/i18n'
 import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
 

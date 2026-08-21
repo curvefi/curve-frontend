@@ -1,11 +1,11 @@
 import { ReactNode } from 'react'
 import { styled } from 'styled-components'
+import { Box } from '@legacy-ui/Box'
+import { Icon } from '@legacy-ui/Icon'
+import { IconButton } from '@legacy-ui/IconButton'
+import { RCExternal } from '@legacy-ui/images'
+import { ExternalLink } from '@legacy-ui/Link'
 import { toArray } from '@primitives/array.utils'
-import { Box } from '@ui/Box'
-import { Icon } from '@ui/Icon'
-import { IconButton } from '@ui/IconButton'
-import { RCExternal } from '@ui/images'
-import { ExternalLink } from '@ui/Link'
 
 type Props = {
   description: ReactNode

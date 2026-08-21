@@ -1,6 +1,6 @@
 import { defineChain, type Chain } from 'viem'
+import type { NetworkDef } from '@legacy-ui/utils'
 import { DEFAULT_DECIMALS } from '@primitives/objects.utils'
-import type { NetworkDef } from '@ui/utils'
 import { defaultGetRpcUrls } from '@ui-kit/features/connect-wallet/lib/wagmi/transports'
 import {
   arbitrum,

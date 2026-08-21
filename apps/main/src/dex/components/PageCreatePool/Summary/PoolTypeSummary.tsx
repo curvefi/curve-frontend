@@ -8,7 +8,7 @@ import {
   StyledCheckmark,
 } from '@/dex/components/PageCreatePool/Summary/styles'
 import { useStore } from '@/dex/store/useStore'
-import { Box } from '@ui/Box'
+import { Box } from '@legacy-ui/Box'
 import { t } from '@ui-kit/lib/i18n'
 
 export const PoolTypeSummary = () => {

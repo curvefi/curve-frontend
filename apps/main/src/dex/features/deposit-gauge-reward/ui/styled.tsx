@@ -1,6 +1,6 @@
 import type { ComponentProps, ComponentPropsWithRef } from 'react'
 import { styled, type IStyledComponent } from 'styled-components'
-import { InputProvider } from '@ui/InputComp'
+import { InputProvider } from '@legacy-ui/InputComp'
 
 type DivProps = ComponentPropsWithRef<'div'>
 type LabelProps = ComponentPropsWithRef<'label'>

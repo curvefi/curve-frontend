@@ -1,7 +1,7 @@
+import { TooltipMessage } from '@legacy-ui/CampaignRewards/TooltipMessage'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
-import { TooltipMessage } from '@ui/CampaignRewards/TooltipMessage'
 import type { CampaignRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { IconStack } from '@ui-kit/shared/ui/IconStack'

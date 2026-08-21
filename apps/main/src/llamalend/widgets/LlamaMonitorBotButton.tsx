@@ -1,7 +1,7 @@
+import { CURVE_SOCIALS } from '@legacy-ui/utils'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
-import { CURVE_SOCIALS } from '@ui/utils'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { ArrowTopRightIcon } from '@ui-kit/shared/icons/ArrowTopRightIcon'

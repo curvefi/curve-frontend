@@ -1,5 +1,5 @@
+import { EXTERNAL_LINKS } from '@legacy-ui/utils'
 import Typography from '@mui/material/Typography'
-import { EXTERNAL_LINKS } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { LegalExternalLink } from '../general/LegalExternalLink'
 import { List } from '../general/List'

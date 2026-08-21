@@ -1,5 +1,5 @@
 import { useChainId, useConnection } from 'wagmi'
-import { formatDate } from '@ui/utils'
+import { formatDate } from '@legacy-ui/utils'
 import { DEPRECATED_CHAINS, isFailure, useCurve, useSwitchChain } from '@ui-kit/features/connect-wallet'
 import { DOWNGRADED_CHAINS } from '@ui-kit/features/connect-wallet/lib/wagmi/chains'
 import { BackendMaintenanceBanner } from '@ui-kit/features/maintenance/components/BackendMaintenanceBanner'

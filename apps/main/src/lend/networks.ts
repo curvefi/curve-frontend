@@ -1,6 +1,6 @@
 import { Chain } from 'curve-ui-kit/src/utils'
 import { ChainId, NetworkConfig, NetworkEnum } from '@/lend/types/lend.types'
-import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@ui/utils'
+import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@legacy-ui/utils'
 
 const DEFAULT_NETWORK_CONFIG = {
   hideMarketsInUI: {},

@@ -1,6 +1,6 @@
 import type { VeCrvLock } from '@/dao/entities/vecrv-locks'
+import { formatDate } from '@legacy-ui/utils'
 import { useTheme } from '@mui/material/styles'
-import { formatDate } from '@ui/utils'
 import { EChartsBarChart, formatChartAxisNumber, getChartSignedValueColor } from '@ui-kit/shared/ui/Chart'
 import { PositiveAndNegativeBarChartTooltip } from './PositiveAndNegativeBarChartTooltip'
 

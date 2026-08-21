@@ -1,4 +1,4 @@
-import { getBlockchainIconUrl } from '@ui/utils'
+import { getBlockchainIconUrl } from '@legacy-ui/utils'
 import { BadgeIcon, type BadgeIconProps } from '../ui/BadgeIcon'
 
 export type ChainIconProps = Omit<BadgeIconProps, 'src' | 'alt' | 'testId'> & {

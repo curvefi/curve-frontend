@@ -1,8 +1,8 @@
 import { useGaugeWeightHistoryQuery, type GaugeWeightHistoryData } from '@/dao/entities/gauge-weight-history'
+import { formatDate } from '@legacy-ui/utils'
 import { Stack } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import type { Address } from '@primitives/address.utils'
-import { formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import {
   ChartFooter,

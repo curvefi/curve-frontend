@@ -3,11 +3,11 @@ import { type AriaSelectOptions, HiddenSelect, useSelect, type AriaSelectProps }
 import type { SelectProps as ReactStatelySelectProps } from 'react-stately'
 import { useSelectState } from 'react-stately'
 import { styled } from 'styled-components'
-import { Icon } from '@ui/Icon/Icon'
-import { SelectBtn } from '@ui/Select/SelectBtn'
-import { SelectModal } from '@ui/Select/SelectModal'
-import { SelectModalFull } from '@ui/Select/SelectModalFull'
-import { getIsFullScreen } from '@ui/utils'
+import { Icon } from '@legacy-ui/Icon/Icon'
+import { SelectBtn } from '@legacy-ui/Select/SelectBtn'
+import { SelectModal } from '@legacy-ui/Select/SelectModal'
+import { SelectModalFull } from '@legacy-ui/Select/SelectModalFull'
+import { getIsFullScreen } from '@legacy-ui/utils'
 
 export type SelectProps<T extends object> = {
   buttonStyles?: CSSProperties

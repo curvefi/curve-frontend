@@ -1,6 +1,6 @@
+import { getImageBaseUrl } from '@legacy-ui/utils/utilsConstants'
 import Box from '@mui/material/Box'
 import type { Theme } from '@mui/material/styles'
-import { getImageBaseUrl } from '@ui/utils/utilsConstants'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
