@@ -117,6 +117,7 @@ export async function buildCurveRouteResponse(
   return [
     {
       router: 'curve',
+      routerFeePercentage: '0',
       amountIn: [toWei(fromAmount, fromDecimals)],
       amountOut: [toWei(toAmount, toDecimals)],
       priceImpact,
