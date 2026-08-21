@@ -151,23 +151,28 @@ export const DataTable = <T extends TableItem>({
               </TableHead>
             )}
             <TableBody>
-              {isLoading ? (
+              {visibleRows.map(row => (
+                <DataRow<T> key={row.id} row={row} shouldStickFirstColumn={shouldStickFirstColumn} {...rowProps} />
+              ))}
+              {error ? (
+                <EmptyStateRow table={table} size={emptyStateRowSize}>
+                  <ErrorMessage
+                    title={errorState?.title ?? t`Could not load data`}
+                    subtitle={errorState?.description ?? error.message}
+                    error={error}
+                    refreshData={errorState?.onReload}
+                    size={emptyStateSize}
+                  />
+                </EmptyStateRow>
+              ) : isLoading ? (
                 <SkeletonRows
                   table={table}
                   shouldStickFirstColumn={shouldStickFirstColumn}
-                  increasingLength={increasingLength}
+                  increasingLength={rows.length ? 'loading-more' : increasingLength}
                 />
-              ) : rows.length === 0 ? (
-                <EmptyStateRow table={table} size={emptyStateRowSize}>
-                  {error ? (
-                    <ErrorMessage
-                      title={errorState?.title ?? t`Could not load data`}
-                      subtitle={errorState?.description ?? error.message}
-                      error={error}
-                      refreshData={errorState?.onReload}
-                      size={emptyStateSize}
-                    />
-                  ) : (
+              ) : (
+                !rows.length && (
+                  <EmptyStateRow table={table} size={emptyStateRowSize}>
                     <EmptyStateCard
                       title={emptyState?.title ?? t`No results found`}
                       description={emptyState?.description}
@@ -176,12 +181,8 @@ export const DataTable = <T extends TableItem>({
                       size={emptyStateSize}
                       testId={emptyState?.testId}
                     />
-                  )}
-                </EmptyStateRow>
-              ) : (
-                visibleRows.map(row => (
-                  <DataRow<T> key={row.id} row={row} shouldStickFirstColumn={shouldStickFirstColumn} {...rowProps} />
-                ))
+                  </EmptyStateRow>
+                )
               )}
             </TableBody>
             {showFooter && (

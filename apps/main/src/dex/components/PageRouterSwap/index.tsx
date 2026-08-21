@@ -22,9 +22,6 @@ import { ChainId, CurveApi, type NetworkUrlParams, PoolDataMapper, TokensMapper 
 import { toTokenOption } from '@/dex/utils'
 import { getSlippageImpact } from '@/dex/utils/utilsSwap'
 import type { Chain } from '@curvefi/prices-api'
-import type { Decimal } from '@primitives/decimal.utils'
-import { assert, maybe, maybes } from '@primitives/objects.utils'
-import type { RouterRouteResponse } from '@primitives/router.utils'
 import { notify } from '@evm-ui/features/connect-wallet'
 import { useLayoutStore } from '@evm-ui/features/layout'
 import { TokenList, TokenSelector, useTokenSelectorData } from '@evm-ui/features/select-token'
@@ -53,6 +50,9 @@ import { TxInfoBar } from '@legacy-ui/TxInfoBar'
 import { scanTxPath } from '@legacy-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
+import { assert, maybe, maybes } from '@primitives/objects.utils'
+import type { RouterRouteResponse } from '@primitives/router.utils'
 
 const { Spacing } = SizesAndSpaces
 

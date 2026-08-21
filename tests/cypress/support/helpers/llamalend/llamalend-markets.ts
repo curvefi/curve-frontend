@@ -22,6 +22,7 @@ export function visitAndWait(
     cy.visitWithoutTestConnector(path, { ...LOAD_TIMEOUT, ...options })
   }
   cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('be.visible')
+  cy.get('[data-testid="submit-error-report-button"]').should('not.exist')
 }
 
 export const clickMarketAction = (breakpoint: Breakpoint, selector: string) =>
