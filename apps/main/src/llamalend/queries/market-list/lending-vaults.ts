@@ -1,22 +1,35 @@
-import { Chain as ChainName } from '@curvefi/prices-api'
+import { Chain as ChainName, LEND_CHAINS } from '@curvefi/prices-api'
 import {
   getAllMarkets,
-  getAllUserLendingPositions,
-  getAllUserMarkets,
+  getUserLendingPositions,
+  getUserMarkets,
   getUserMarketStats,
   Market,
+  USER_MARKETS_DEFAULT_PER_PAGE,
+  USER_MARKETS_FIRST_PAGE,
   type UserMarketStats,
 } from '@curvefi/prices-api/llamalend'
+import { paginate } from '@curvefi/prices-api/paginate'
 import type { Address } from '@primitives/address.utils'
-import { fromEntries, recordEntries } from '@primitives/objects.utils'
-import { queryFactory, UserParams, type UserQuery } from '@ui-kit/lib/model/query'
-import { userAddressValidationSuite } from '@ui-kit/lib/model/query/evm-address-validation'
+import { fromEntries } from '@primitives/objects.utils'
+import { type FieldsOf } from '@ui-kit/lib'
+import { type ChainNameQuery, queryFactory, type UserParams, type UserQuery } from '@ui-kit/lib/model/query'
+import { userAddressValidationGroup } from '@ui-kit/lib/model/query/evm-address-validation'
+import { pricesApiChainNameValidationGroup } from '@ui-kit/lib/model/query/prices-chain-validation'
 import {
   type UserContractParams,
   type UserContractQuery,
   userContractValidationSuite,
 } from '@ui-kit/lib/model/query/user-contract'
-import { EmptyValidationSuite } from '@ui-kit/lib/validation'
+import { createValidationSuite, EmptyValidationSuite } from '@ui-kit/lib/validation'
+
+type UserChainNameQuery = UserQuery & ChainNameQuery
+type UserChainNameParams = FieldsOf<UserChainNameQuery>
+
+const userChainNameValidationSuite = createValidationSuite((params: UserChainNameParams) => {
+  userAddressValidationGroup(params)
+  pricesApiChainNameValidationGroup(params)
+})
 
 export type LendingVault = Market & { chain: ChainName }
 
@@ -33,19 +46,21 @@ export const { getQueryOptions: getLendingVaultsOptions, reset: resetLendingVaul
 const {
   getQueryOptions: getUserLendingVaultsOptions,
   getQueryData: getCurrentUserLendingVaults,
-  invalidate: invalidateUserLendingVaults,
-  reset: resetUserLendingVaults,
+  invalidate: invalidateUserLendingVaultsQuery,
+  reset: resetUserLendingVaultsQuery,
 } = queryFactory({
-  queryKey: ({ userAddress }: UserParams) => ['user-lending-vaults', { userAddress }, 'v2'] as const,
-  queryFn: async ({ userAddress }: UserQuery) =>
-    Object.fromEntries(
-      Object.entries(await getAllUserMarkets(userAddress)).map(([chain, userMarkets]) => [
-        chain,
-        userMarkets.map(market => market.controller),
-      ]),
-    ) as Record<ChainName, Address[]>,
+  queryKey: ({ userAddress, blockchainId }: UserChainNameParams) =>
+    ['user-lending-vaults', { blockchainId }, { userAddress }, 'v3'] as const,
+  queryFn: async ({ userAddress, blockchainId }: UserChainNameQuery): Promise<Address[]> =>
+    (
+      await paginate(
+        page => getUserMarkets(userAddress, blockchainId, { page }),
+        USER_MARKETS_FIRST_PAGE,
+        USER_MARKETS_DEFAULT_PER_PAGE,
+      )
+    ).map(market => market.controller),
   category: 'llamalend.user',
-  validationSuite: userAddressValidationSuite,
+  validationSuite: userChainNameValidationSuite,
 })
 
 const {
@@ -62,36 +77,26 @@ const {
   validationSuite: userContractValidationSuite,
 })
 
-export async function invalidateAllUserLendingVaults(userAddress: Address | null | undefined) {
-  await invalidateUserLendingVaults({ userAddress })
-
-  const invalidateContracts = recordEntries(getCurrentUserLendingVaults({ userAddress }) ?? {}).flatMap(
-    ([blockchainId, contracts]) =>
-      contracts.map(contractAddress =>
-        invalidateUserLendingVaultStats({
-          userAddress,
-          blockchainId,
-          contractAddress,
-        }),
-      ),
+export const invalidateAllUserLendingVaults = async (userAddress: Address | null | undefined) => {
+  await Promise.all(
+    LEND_CHAINS.flatMap(blockchainId => [
+      invalidateUserLendingVaultsQuery({ userAddress, blockchainId }),
+      ...(getCurrentUserLendingVaults({ userAddress, blockchainId })?.map(contractAddress =>
+        invalidateUserLendingVaultStats({ userAddress, blockchainId, contractAddress }),
+      ) ?? []),
+    ]),
   )
-  await Promise.all(invalidateContracts)
 }
 
-export async function resetAllUserLendingVaults(userAddress: Address | null | undefined) {
-  await resetUserLendingVaults({ userAddress })
-
-  const resetContracts = recordEntries(getCurrentUserLendingVaults({ userAddress }) ?? {}).flatMap(
-    ([blockchainId, contracts]) =>
-      contracts.map(contractAddress =>
-        resetUserLendingVaultStats({
-          userAddress,
-          blockchainId,
-          contractAddress,
-        }),
-      ),
+export const resetAllUserLendingVaults = async (userAddress: Address | null | undefined) => {
+  await Promise.all(
+    LEND_CHAINS.flatMap(blockchainId => [
+      resetUserLendingVaultsQuery({ userAddress, blockchainId }),
+      ...(getCurrentUserLendingVaults({ userAddress, blockchainId })?.map(contractAddress =>
+        resetUserLendingVaultStats({ userAddress, blockchainId, contractAddress }),
+      ) ?? []),
+    ]),
   )
-  await Promise.all(resetContracts)
 }
 
 export type LendingPosition = {
@@ -100,34 +105,38 @@ export type LendingPosition = {
   boostMultiplier: number | null
 }
 
+export type UserLendingSupplies = Record<Address, LendingPosition>
+
 /**
  * Fetches the user's lending supplies across all chains.
  */
 const {
   getQueryOptions: getUserLendingSuppliesOptions,
-  invalidate: invalidateUserLendingSupplies,
-  reset: resetUserLendingSupplies,
+  invalidate: invalidateUserLendingSuppliesQuery,
+  reset: resetUserLendingSuppliesQuery,
 } = queryFactory({
-  queryKey: ({ userAddress }: UserParams) => ['user-lending-supplies', { userAddress }, 'v5'] as const,
+  queryKey: ({ userAddress, blockchainId }: UserChainNameParams) =>
+    ['user-lending-supplies', { blockchainId }, { userAddress }, 'v6'] as const,
   category: 'llamalend.user',
-  queryFn: async ({ userAddress }: UserQuery): Promise<Record<ChainName, Record<Address, LendingPosition>>> => {
-    const positions = await getAllUserLendingPositions(userAddress)
+  queryFn: async ({ userAddress, blockchainId }: UserChainNameQuery): Promise<UserLendingSupplies> => {
+    const positions = await getUserLendingPositions(userAddress, blockchainId)
     return fromEntries(
-      recordEntries(positions).map(([chain, positions]) => [
-        chain,
-        fromEntries(
-          positions
-            .filter(p => p.totalCurrentAssets > 0)
-            .map(({ vaultAddress, totalCurrentAssets, earnings, boostMultiplier }) => [
-              vaultAddress,
-              { supplied: totalCurrentAssets, earnings, boostMultiplier },
-            ]),
-        ),
-      ]),
+      positions
+        .filter(p => p.totalCurrentAssets > 0)
+        .map(({ vaultAddress, totalCurrentAssets, earnings, boostMultiplier }) => [
+          vaultAddress,
+          { supplied: totalCurrentAssets, earnings, boostMultiplier },
+        ]),
     )
   },
-  validationSuite: userAddressValidationSuite,
+  validationSuite: userChainNameValidationSuite,
 })
+
+const invalidateUserLendingSupplies = ({ userAddress }: UserParams) =>
+  Promise.all(LEND_CHAINS.map(blockchainId => invalidateUserLendingSuppliesQuery({ userAddress, blockchainId })))
+
+const resetUserLendingSupplies = ({ userAddress }: UserParams) =>
+  Promise.all(LEND_CHAINS.map(blockchainId => resetUserLendingSuppliesQuery({ userAddress, blockchainId })))
 
 export {
   getUserLendingSuppliesOptions,

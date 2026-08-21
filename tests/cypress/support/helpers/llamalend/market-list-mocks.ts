@@ -1,11 +1,10 @@
+import { LEND_CHAINS, MINT_CHAINS } from '@curvefi/prices-api'
 import {
   createLendingVaultChainsResponse,
-  LendingChains,
   mockLendingSnapshots,
   mockLendingVaults,
   mockMerklCampaigns,
 } from '@cy/support/helpers/lending-mocks'
-import { fromEntries } from '@primitives/objects.utils'
 import { mockMintMarkets, mockMintSnapshots } from '../minting-mocks'
 import { mockTokenPrices } from '../tokens'
 
@@ -33,17 +32,20 @@ export const blockUnmockedApis = () => {
 /** The cypress-wagmi-test-connector generates a fresh address at runtime, so we have to mock by pattern. */
 export const mockEmptyMarketUserData = () =>
   [
-    /\/v1\/lending\/users\/all\/0x[a-fA-F0-9]{40}$/,
-    /\/v1\/crvusd\/users\/all\/0x[a-fA-F0-9]{40}$/,
-    /\/v1\/lending\/users\/lending_positions\/all\/0x[a-fA-F0-9]{40}$/,
+    ...LEND_CHAINS.map(chain => new RegExp(`/v1/lending/users/${chain}/0x[a-fA-F0-9]{40}$`)),
+    ...LEND_CHAINS.map(chain => new RegExp(`/v1/lending/users/lending_positions/${chain}/0x[a-fA-F0-9]{40}$`)),
+    ...MINT_CHAINS.map(chain => new RegExp(`/v1/crvusd/users/${chain}/0x[a-fA-F0-9]{40}$`)),
   ].forEach(
     pathname =>
-      void cy.intercept({ method: 'GET', pathname, query: { include_closed: 'false' } }, req =>
+      void cy.intercept({ method: 'GET', pathname }, req =>
         req.reply({
           body: {
             // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
             user: new URL(req.url).pathname.split('/').pop(),
-            chains: fromEntries(LendingChains.map(chain => [chain, { count: 0, markets: [] }])),
+            markets: [],
+            page: 1,
+            per_page: 100,
+            count: 0,
           },
         }),
       ),
