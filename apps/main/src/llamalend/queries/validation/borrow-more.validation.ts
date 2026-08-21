@@ -9,10 +9,13 @@ import {
   validateMaxCollateral,
   validateMaxDebt,
   validateRoute,
+  validateRouteCalldata,
+  validateRouteProvider,
   validateUserBorrowed,
   validateUserCollateral,
 } from '@/llamalend/queries/validation/borrow-fields.validation'
 import type { Decimal } from '@primitives/decimal.utils'
+import type { RouteProvider } from '@primitives/router.utils'
 import { createValidationSuite, FieldsOf } from '@ui-kit/lib'
 import { type UserMarketQuery, validateSlippage } from '@ui-kit/lib/model'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
@@ -80,6 +83,7 @@ export const borrowMoreFormValidationSuite = createValidationSuite(
     maxDebt,
     slippage,
     leverageEnabled,
+    routeId,
   }: BorrowMoreForm) => {
     validateUserCollateral(userCollateral, { required: false })
     validateMaxCollateral(userCollateral, maxCollateral, { required: false })
@@ -89,6 +93,7 @@ export const borrowMoreFormValidationSuite = createValidationSuite(
     validateMaxDebt(debt, maxDebt, { required: true })
     validateSlippage({ slippage })
     validateLeverageEnabled(leverageEnabled, { required: false })
+    validateRouteCalldata(routeId)
   },
 )
 
@@ -127,6 +132,7 @@ export const borrowMoreValidationGroup = <IChainId extends number>(
   validateDebt(debt, { required: debtRequired })
   if (!ignoreMaxDebt) validateMaxDebt(debt, maxDebt, { required: maxDebtRequired })
   validateBorrowMoreFieldsForMarket({ marketId, leverageEnabled, routeId, debt, userBorrowed })
+  validateRouteCalldata(routeId)
   validateSlippage({ slippage })
   validateLeverageEnabled(leverageEnabled, { required: leverageRequired })
   validateLeverageSupported(marketId, { required: leverageRequired })
@@ -145,10 +151,14 @@ export const borrowMoreValidationSuite = ({
     borrowMoreValidationGroup(params, { leverageRequired, debtRequired, maxDebtRequired }),
   )
 
-export const borrowMoreMutationValidationSuite = createValidationSuite((params: BorrowMoreParams) => {
-  borrowMoreValidationGroup(params, { debtRequired: true, maxDebtRequired: true })
-  validateDebt(params.debt)
-})
+export const borrowMoreMutationValidationSuite = (leverageProviders: readonly RouteProvider[] | undefined) =>
+  createValidationSuite((params: BorrowMoreParams) => {
+    borrowMoreValidationGroup(params, { debtRequired: true, maxDebtRequired: true })
+    validateDebt(params.debt)
+    const market = tryGetMarket(params.marketId)
+    const [type] = market ? getBorrowMoreImplementation(market, params.leverageEnabled) : []
+    validateRouteProvider(params.routeId, leverageProviders, type === 'zapV2')
+  })
 
 export const borrowMoreLeverageValidationSuite = createValidationSuite((params: BorrowMoreParams) =>
   borrowMoreValidationGroup(params, { leverageRequired: true, debtRequired: true, maxDebtRequired: false }),

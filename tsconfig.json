@@ -11,7 +11,7 @@
     { "path": "./packages/external-rewards" },
     { "path": "./packages/primitives" },
     { "path": "./packages/prices-api" },
-    { "path": "./packages/ui" },
+    { "path": "./packages/legacy-ui" },
     { "path": "./tests" }
   ]
 }

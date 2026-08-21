@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { BigNumber } from 'bignumber.js'
+import type { Hex } from 'viem'
 import { oneAddress, oneDecimal, oneFloat, oneInt } from '@cy/support/generators'
 import { decimal } from '@ui-kit/utils'
 import { createMockLlamaApi, TEST_TX_HASH } from '../mock-loan-test-data'
@@ -23,11 +24,13 @@ export const createCreateLoanScenario = ({
   presetRange = 50,
   approved,
   leverage = false,
+  routeCalldata,
 }: {
   chainId: number
   presetRange?: number
   approved: boolean
   leverage?: boolean
+  routeCalldata?: Hex
 }) => {
   const collateral = oneDecimal(0.05, 1.2, 3)
   const borrow = oneDecimal(5, 140, 2)
@@ -82,7 +85,7 @@ export const createCreateLoanScenario = ({
 
   seedMarketBalances(chainId, collateralAddress)
 
-  if (leverage) mockRouterRoutes(chainId)
+  if (leverage) mockRouterRoutes(chainId, routeCalldata)
 
   const leverageZapV2 = {
     hasLeverage: () => true,

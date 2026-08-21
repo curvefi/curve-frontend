@@ -10232,6 +10232,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"legacy-ui@npm:*, legacy-ui@workspace:packages/legacy-ui":
+  version: 0.0.0-use.local
+  resolution: "legacy-ui@workspace:packages/legacy-ui"
+  dependencies:
+    "@carbon/icons-react": "npm:11.84.0"
+    "@types/react": "npm:*"
+    "@types/react-dom": "npm:*"
+    eslint: "npm:*"
+    react-aria: "npm:3.50.0"
+    react-stately: "npm:3.48.0"
+    typescript: "npm:*"
+  peerDependencies:
+    bignumber.js: "*"
+    ethers: "*"
+    lodash: "*"
+    react: "*"
+    react-dom: "*"
+    styled-components: "*"
+  languageName: unknown
+  linkType: soft
+
 "levn@npm:^0.4.1":
   version: 0.4.1
   resolution: "levn@npm:0.4.1"
@@ -10514,11 +10535,11 @@ __metadata:
     eslint: "npm:*"
     external-rewards: "npm:*"
     fuse.js: "npm:7.5.0"
+    legacy-ui: "npm:*"
     lightweight-charts: "npm:5.2.0"
     memoizee: "npm:0.4.17"
     pinst: "npm:3.0.0"
     typescript: "npm:*"
-    ui: "npm:*"
     vest: "npm:5.4.6"
     vite: "npm:*"
     vite-plugin-svgr: "npm:*"
@@ -13326,27 +13347,6 @@ __metadata:
   checksum: 10c0/bf0e4ebff99e54da1b9c7182ac2f40475988b41faa881d579bc97bc2a0509672107b0a0e94c4b8d31a0ab8c4bf07f4aa0b469ac6da8536d56bda5b085ea2e953
   languageName: node
   linkType: hard
-
-"ui@npm:*, ui@workspace:packages/ui":
-  version: 0.0.0-use.local
-  resolution: "ui@workspace:packages/ui"
-  dependencies:
-    "@carbon/icons-react": "npm:11.84.0"
-    "@types/react": "npm:*"
-    "@types/react-dom": "npm:*"
-    eslint: "npm:*"
-    react-aria: "npm:3.50.0"
-    react-stately: "npm:3.48.0"
-    typescript: "npm:*"
-  peerDependencies:
-    bignumber.js: "*"
-    ethers: "*"
-    lodash: "*"
-    react: "*"
-    react-dom: "*"
-    styled-components: "*"
-  languageName: unknown
-  linkType: soft
 
 "uint8arrays@npm:3.1.1, uint8arrays@npm:^3.0.0":
   version: 3.1.1
