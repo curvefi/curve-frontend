@@ -1,4 +1,3 @@
-import { LEVERAGE } from '@/llamalend/constants'
 import { getHealthValueColor } from '@/llamalend/features/market-position-details'
 import { ReturnToWalletActionInfo } from '@/llamalend/widgets/action-card/ReturnToWalletActionInfo'
 import { SmallLiquidationRangeChart } from '@/llamalend/widgets/small-liquidation-range-chart/SmallLiquidationRangeChart'
@@ -7,12 +6,7 @@ import { t } from '@evm-ui/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate, type TxGasInfo } from '@evm-ui/shared/ui/ActionInfo'
 import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
 import { mapQuery, type QueryProp, type Range, DISABLED_Q } from '@evm-ui/types/util'
-import { decimal, formatCappedRatePercent, formatNumber } from '@evm-ui/utils'
-import {
-  getPriceImpactDisplay,
-  getPriceImpactPercent,
-  type PriceImpact,
-} from '@evm-ui/widgets/DetailPageLayout/price-impact.util'
+import { formatCappedRatePercent, formatNumber } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import { Decimal } from '@primitives/decimal.utils'
@@ -31,7 +25,6 @@ export type LoanActionInfoListProps = {
   prevPrices?: QueryProp<Range<Decimal> | null>
   rates?: QueryProp<{ borrowApr?: Decimal } | null>
   prevRates?: QueryProp<{ borrowApr?: Decimal } | null>
-  exchangeRate?: QueryProp<Decimal | null>
   oraclePrice: QueryProp<Decimal | null>
   loanToValue?: QueryProp<Decimal | null>
   prevLoanToValue?: QueryProp<Decimal | null>
@@ -49,8 +42,6 @@ export type LoanActionInfoListProps = {
   leverageCollateral?: QueryProp<Decimal | null>
   prevLeverageTotalCollateral?: QueryProp<Decimal | null>
   leverageTotalCollateral?: QueryProp<Decimal | null>
-  priceImpact?: QueryProp<PriceImpact | Decimal | null>
-  slippage?: Decimal
   collateralSymbol?: string
   borrowSymbol?: string
   /** Whether to show leverage-related fields (leverage value, leverage collateral...) */
@@ -72,7 +63,6 @@ export const LoanActionInfoList = ({
   prevPrices,
   prevRates,
   rates,
-  exchangeRate,
   oraclePrice,
   loanToValue,
   prevLoanToValue,
@@ -90,16 +80,10 @@ export const LoanActionInfoList = ({
   leverageCollateral,
   prevLeverageTotalCollateral,
   leverageTotalCollateral,
-  priceImpact,
-  slippage,
   collateralSymbol,
   borrowSymbol,
   leverageEnabled,
 }: LoanActionInfoListProps) => {
-  const { label: priceImpactLabel, color: priceImpactColor } = getPriceImpactDisplay(priceImpact, {
-    slippage,
-    slippageType: LEVERAGE,
-  })
   const shouldShowNetBorrowApr = useShouldShowNetRate({
     tokenSymbol: collateralSymbol,
     prevNetRate: prevNetBorrowApr,
@@ -268,30 +252,6 @@ export const LoanActionInfoList = ({
       )}
 
       <Stack>
-        {priceImpact && (
-          <ActionInfo
-            label={priceImpactLabel}
-            value={mapQuery(priceImpact, data => formatNumber(getPriceImpactPercent(data), 'percent.rate'))}
-            valueColor={priceImpactColor}
-            size="small"
-            testId="borrow-price-impact"
-          />
-        )}
-
-        {exchangeRate && collateralSymbol && borrowSymbol && (
-          <ActionInfo
-            label={t`Exchange rate`}
-            value={mapQuery(exchangeRate, er =>
-              maybe(
-                decimal(er),
-                er =>
-                  `1 ${collateralSymbol} = ${formatNumber(er, { abbreviate: false, highPrecision: true })} ${borrowSymbol}`,
-              ),
-            )}
-            size="small"
-            testId="borrow-exchange-rate"
-          />
-        )}
         <ActionInfoGasEstimate gas={gas} isApproved={isApproved?.data} />
       </Stack>
     </ActionInfoCollapse>

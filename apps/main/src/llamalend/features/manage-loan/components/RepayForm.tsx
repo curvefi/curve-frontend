@@ -20,7 +20,7 @@ import { t } from '@evm-ui/lib/i18n'
 import { ExternalLink } from '@evm-ui/shared/ui/ExternalLink'
 import { Balance } from '@evm-ui/shared/ui/LargeTokenInput/Balance'
 import { TokenLabel } from '@evm-ui/shared/ui/TokenLabel'
-import { q, type QueryProp, type Range } from '@evm-ui/types/util'
+import { mapQuery, q, type QueryProp, type Range } from '@evm-ui/types/util'
 import { CRVUSD } from '@evm-ui/utils'
 import { Form } from '@evm-ui/widgets/DetailPageLayout/Form'
 import { FormAlerts, HighPriceImpactAlert } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
@@ -147,7 +147,6 @@ export const RepayForm = <ChainId extends IChainId>({
           showLeverage={showLeverage}
           prices={q(useRepayPrices(params, !isInSoftLiquidation))} // when in soft liquidation, the prices do not change
           prevPrices={q(useUserPrices(params))}
-          priceImpact={priceImpact}
         />
       }
     >
@@ -191,6 +190,10 @@ export const RepayForm = <ChainId extends IChainId>({
         slippage={values.slippage}
         onSlippageChange={slippage => updateForm({ slippage })}
         routes={routes}
+        exchangeRate={mapQuery(max.expected, data => data.avgPrice ?? null)}
+        priceImpact={priceImpact}
+        collateralSymbol={collateralToken?.symbol}
+        borrowSymbol={borrowToken?.symbol}
       />
       <HighPriceImpactAlert priceImpact={priceImpact} values={values} max={q(max.expected)} slippageType={LEVERAGE} />
       {isInSoftLiquidation && <AlertRepayDebtToIncreaseHealth />}

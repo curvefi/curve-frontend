@@ -8,6 +8,7 @@ import { useSyncMarketLeverageSlippage } from '@/llamalend/hooks/useSyncMarketLe
 import { canLeverageUserBorrowed, getMarketLeverageSlippage, hasZapV2, isRouterRequired } from '@/llamalend/llama.utils'
 import type { MarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useBorrowMoreMutation } from '@/llamalend/mutations/borrow-more.mutation'
+import { useBorrowMoreExpectedCollateral } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
 import { useBorrowMoreLeverage } from '@/llamalend/queries/borrow-more/borrow-more-future-leverage.query'
 import { getBorrowMoreGasEstimateQueryOptions } from '@/llamalend/queries/borrow-more/borrow-more-gas-estimate.query'
 import { useBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
@@ -27,7 +28,7 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import type { RouteResponse } from '@evm-ui/entities/router-api'
 import { useCallbackSync, useForm } from '@evm-ui/features/forms'
 import { useFormDebounce } from '@evm-ui/hooks/useDebounce'
-import { q, type QueryProp, type Range } from '@evm-ui/types/util'
+import { mapQuery, q, type QueryProp, type Range } from '@evm-ui/types/util'
 import { decimalSum, IS_DEVELOPMENT } from '@evm-ui/utils'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -178,6 +179,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   useCallbackSync(useBorrowMorePrices(params), onPricesUpdated)
 
   const isLeverageEnabled = isLeverageBorrowMore(market, values.leverageEnabled)
+  const expectedCollateral = useBorrowMoreExpectedCollateral(params, values.leverageEnabled)
   const { formState } = form
   const isPending = formState.isSubmitting || isBorrowing
   return {
@@ -225,6 +227,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     showUserBorrowed: isLeverageEnabled && !!canLeverageUserBorrowed(market) && IS_DEVELOPMENT,
     isLeverageSupported: isLeverageBorrowMoreSupported(market, leverageProviders),
     leverage: useBorrowMoreLeverage(params),
+    exchangeRate: mapQuery(expectedCollateral, data => data.avgPrice ?? null),
     zapAddress,
   }
 }

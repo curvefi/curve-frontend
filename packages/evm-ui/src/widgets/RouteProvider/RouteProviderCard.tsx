@@ -2,6 +2,7 @@ import { useCallback } from 'react'
 import type { RouteQuery } from '@evm-ui/entities/router-api'
 import { t } from '@evm-ui/lib/i18n'
 import { useEstimateGas } from '@evm-ui/lib/model/entities/gas-info'
+import { FireIcon } from '@evm-ui/shared/icons/FireIcon'
 import { ReloadIcon } from '@evm-ui/shared/icons/ReloadIcon'
 import { ErrorIconButton } from '@evm-ui/shared/ui/ErrorIconButton'
 import { SelectableCard } from '@evm-ui/shared/ui/SelectableCard'
@@ -86,11 +87,12 @@ export const RouteProviderCard = ({
                 </Typography>
               )}
             </Box>
-            {error ? (
-              <ErrorIconButton error={error} size="extraSmall" />
-            ) : (
-              route && <RouteComparisonChip maxAmountOut={bestOutputAmount} amountOut={route.amountOut} />
-            )}
+            <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xxs }}>
+              <Icon />
+              <Typography variant="bodyXsRegular" color="textSecondary">
+                {RouteProviderLabels[router]}
+              </Typography>
+            </Stack>
           </Stack>
           <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
             <Stack direction="row" sx={{ gap: Spacing.xxs, alignItems: 'center' }}>
@@ -104,19 +106,22 @@ export const RouteProviderCard = ({
                       ) ?? t`No route available`)}
                 </Typography>
               </WithSkeleton>
-              {gasEstimate?.estGasCostUsd != null && !isFetching && (
-                <Typography variant="bodyXsRegular" color="textTertiary">
-                  {' - '}
-                  {formatNumber(gasEstimate.estGasCostUsd, 'usd.notional')}
-                </Typography>
-              )}
               {isFetching && <ReloadIcon sx={{ ...LoadingAnimation, width: IconSize.xxs, height: IconSize.xxs }} />}
             </Stack>
-            <Stack direction="row" sx={{ alignItems: 'center', gap: Spacing.xxs }}>
-              <Icon />
-              <Typography variant="bodyXsRegular" color="textSecondary">
-                {RouteProviderLabels[router]}
-              </Typography>
+            <Stack direction="row" sx={{ gap: Spacing.sm, alignItems: 'center' }}>
+              {gasEstimate?.estGasCostUsd != null && !isFetching && (
+                <Stack direction="row">
+                  <FireIcon sx={{ width: IconSize.xs, height: IconSize.xs, color: 'textTertiary' }} />
+                  <Typography variant="bodyXsRegular" color="textTertiary">
+                    {formatNumber(gasEstimate.estGasCostUsd, 'usd.notional')}
+                  </Typography>
+                </Stack>
+              )}
+              {error ? (
+                <ErrorIconButton error={error} size="extraSmall" />
+              ) : (
+                route && <RouteComparisonChip maxAmountOut={bestOutputAmount} amountOut={route.amountOut} />
+              )}
             </Stack>
           </Stack>
         </Stack>

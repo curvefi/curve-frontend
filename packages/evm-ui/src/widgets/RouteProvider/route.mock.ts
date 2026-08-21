@@ -5,6 +5,7 @@ export const mockRoutes: RouteResponse[] = [
   {
     id: 'curve',
     router: 'curve',
+    routerFeePercentage: '0',
     amountIn: ['69424100000000000000'],
     amountOut: ['69424100000000000000'],
     priceImpact: 0.01,
@@ -19,6 +20,7 @@ export const mockRoutes: RouteResponse[] = [
   {
     id: 'enso',
     router: 'enso',
+    routerFeePercentage: '0.12',
     amountIn: ['69424100000000000000'],
     amountOut: ['67743200000000000000'],
     priceImpact: 0.1,
@@ -33,6 +35,7 @@ export const mockRoutes: RouteResponse[] = [
   {
     id: 'curve-solver',
     router: 'curve-solver',
+    routerFeePercentage: '0',
     amountIn: ['69424100000000000000'],
     amountOut: ['68324100000000000000'],
     priceImpact: null,
@@ -54,6 +57,7 @@ export const mockRoutes: RouteResponse[] = [
   {
     id: '0x',
     router: '0x',
+    routerFeePercentage: '0.15',
     amountIn: ['69424100000000000000'],
     amountOut: ['66914200000000000000'],
     priceImpact: null,

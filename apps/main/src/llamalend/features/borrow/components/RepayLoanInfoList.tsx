@@ -21,7 +21,6 @@ import { combineQueryState } from '@evm-ui/lib/queries/combine'
 import type { MarketType } from '@evm-ui/types/market'
 import { constQ, mapQuery, q, type Query, type QueryProp, type Range } from '@evm-ui/types/util'
 import { decimal, decimalMinus, decimalNegate } from '@evm-ui/utils'
-import type { PriceImpact } from '@evm-ui/widgets/DetailPageLayout/price-impact.util'
 import { type Address, type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
@@ -86,14 +85,13 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   controllerAddress,
   marketType,
   params,
-  values: { slippage, stateCollateral, userCollateral, userBorrowed, isFull },
+  values: { stateCollateral, userCollateral, userBorrowed, isFull },
   tokens: { collateralToken, borrowToken },
   networks,
   showLeverage,
   form,
   prices,
   prevPrices,
-  priceImpact,
 }: {
   controllerAddress: Address | undefined
   marketType: MarketType
@@ -105,7 +103,6 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   form: UseFormReturn<RepayFormData>
   prices?: QueryProp<Range<Decimal> | null>
   prevPrices?: QueryProp<Range<Decimal> | null>
-  priceImpact: QueryProp<PriceImpact | Decimal | null>
 }) {
   const isOpen = form.isTouched('stateCollateral', 'userCollateral', 'userBorrowed')
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken, prevPrices }, isOpen)
@@ -157,10 +154,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
         leverageTotalCollateral: mapQuery(prevCollateral, prev =>
           isFull ? decimal(0) : decimal(new BigNumber(prev).minus(stateCollateral ?? '0')),
         ),
-        expected: useRepayExpectedBorrowed(params, isOpen),
         // routeImage: useRepayRouteImage(params, isOpen),
-        slippage,
-        priceImpact,
         collateralDelta: userCollateral,
       })}
       {...useBorrowRates({ params, marketType, controllerAddress, debtDelta }, isOpen)}

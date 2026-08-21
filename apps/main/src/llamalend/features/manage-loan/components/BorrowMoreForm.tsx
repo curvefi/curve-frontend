@@ -55,6 +55,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     leverage,
     showUserBorrowed,
     isLeverageSupported,
+    exchangeRate,
     priceImpact,
     disabledAlert,
     solvencyModal: { onConfirm, onClose, isOpen },
@@ -86,7 +87,6 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           networks={networks}
           marketType={marketType}
           leverageEnabled={values.leverageEnabled}
-          priceImpact={priceImpact}
         />
       }
     >
@@ -149,6 +149,10 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
             slippage={values.slippage}
             onSlippageChange={slippage => updateForm({ slippage })}
             routes={routes}
+            exchangeRate={exchangeRate}
+            priceImpact={priceImpact}
+            collateralSymbol={collateralToken?.symbol}
+            borrowSymbol={borrowToken?.symbol}
           />
         </Stack>
       )}

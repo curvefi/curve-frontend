@@ -16,24 +16,21 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { UseFormReturn } from '@evm-ui/features/forms'
 import { combineQueries } from '@evm-ui/lib/queries/combine'
 import type { MarketType } from '@evm-ui/types/market'
-import { mapQuery, q, type QueryProp } from '@evm-ui/types/util'
+import { mapQuery, q } from '@evm-ui/types/util'
 import { decimalSum } from '@evm-ui/utils'
-import type { PriceImpact } from '@evm-ui/widgets/DetailPageLayout/price-impact.util'
 import { type Address, type Token } from '@primitives/address.utils'
-import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
 import { getLeverageInfoFields } from '../../../widgets/action-card/hooks/getLeverageInfoFields'
 
 export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   params,
-  values: { slippage, userCollateral, debt },
+  values: { userCollateral, debt },
   tokens: { collateralToken, borrowToken },
   networks,
   leverageEnabled,
   form,
   controllerAddress,
   marketType,
-  priceImpact,
 }: {
   params: BorrowMoreParams<ChainId>
   values: BorrowMoreForm
@@ -43,7 +40,6 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   marketType: MarketType
   leverageEnabled: boolean | undefined
   form: UseFormReturn<BorrowMoreForm>
-  priceImpact: QueryProp<PriceImpact | Decimal | null>
 }) {
   const isOpen = form.isTouched('userCollateral', 'userBorrowed', 'debt')
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken }, isOpen)
@@ -84,9 +80,6 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
           [prevCollateral, expectedCollateralQuery],
           (prevCollateral, { totalCollateral }) => maybes([totalCollateral, prevCollateral], decimalSum),
         ),
-        expected: expectedCollateralQuery,
-        slippage,
-        priceImpact,
         collateralDelta,
       })}
       {...useBorrowRates({ params, marketType, controllerAddress, debtDelta: debt }, isOpen)}

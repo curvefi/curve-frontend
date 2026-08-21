@@ -4,10 +4,8 @@ import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { UseFormReturn } from '@evm-ui/features/forms'
 import type { MarketType } from '@evm-ui/types/market'
-import { constQ, mapQuery, q, type QueryProp } from '@evm-ui/types/util'
-import type { PriceImpact } from '@evm-ui/widgets/DetailPageLayout/price-impact.util'
+import { constQ, mapQuery, q } from '@evm-ui/types/util'
 import { type Address, type Token } from '@primitives/address.utils'
-import type { Decimal } from '@primitives/decimal.utils'
 import { useCreateLoanEstimateGas } from '../../../queries/create-loan/create-loan-estimate-gas.query'
 import { useCreateLoanExpectedCollateral } from '../../../queries/create-loan/create-loan-expected-collateral.query'
 import { useCreateLoanHealth } from '../../../queries/create-loan/create-loan-health.query'
@@ -22,12 +20,11 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
   marketType,
   controllerAddress,
   params,
-  values: { slippage, leverageEnabled, userCollateral, debt },
+  values: { leverageEnabled, userCollateral, debt },
   collateralToken,
   borrowToken,
   networks,
   form,
-  priceImpact,
 }: {
   marketType: MarketType
   controllerAddress: Address | undefined
@@ -37,7 +34,6 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
   borrowToken: Token | undefined
   networks: NetworkDict<ChainId>
   form: UseFormReturn<CreateLoanForm>
-  priceImpact: QueryProp<PriceImpact | Decimal | null>
 }) => {
   const isOpen = form.isTouched('userCollateral', 'debt')
   const expectedCollateral = useCreateLoanExpectedCollateral(params, isOpen)
@@ -60,13 +56,10 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
       {...getLeverageInfoFields({
         leverageEnabled,
         collateralDelta: userCollateral,
-        slippage,
-        priceImpact,
         leverageValue: mapQuery(expectedCollateral, data => data.leverage),
         prevLeverageValue: constQ('0'),
         prevCollateral: constQ('0'),
         leverageTotalCollateral: mapQuery(expectedCollateral, data => data.totalCollateral),
-        expected: expectedCollateral,
       })}
       {...useBorrowRates({ params, marketType, controllerAddress, debtDelta: debt }, isOpen)}
     />

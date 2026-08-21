@@ -14,7 +14,7 @@ import type { RouteResponse } from '@evm-ui/entities/router-api'
 import { useCallbackSync, useForm, useFormSync } from '@evm-ui/features/forms'
 import { useFormDebounce } from '@evm-ui/hooks/useDebounce'
 import { combineQueryState } from '@evm-ui/lib/queries/combine'
-import { q, type Range } from '@evm-ui/types/util'
+import { mapQuery, q, type Range } from '@evm-ui/types/util'
 import { decimalSum } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybe, pick } from '@primitives/objects.utils'
@@ -181,6 +181,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
       // expectedCollateral is gated by maxDebt validation, so include maxDebt state for loading in the UI.
       ...combineQueryState(maxTokenValues.debt, expectedCollateral),
     },
+    exchangeRate: mapQuery(expectedCollateral, data => data.avgPrice ?? null),
     isApproved: useCreateLoanIsApproved(params),
     isHighLiquidationRisk,
     isLeverageSupported,

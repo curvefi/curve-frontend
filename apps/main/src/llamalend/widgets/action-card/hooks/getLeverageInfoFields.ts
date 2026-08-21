@@ -4,7 +4,6 @@ import type { LoanActionInfoListProps } from '@/llamalend/widgets/action-card/Lo
 import { combineQueryState } from '@evm-ui/lib'
 import { mapQuery, q, type Query, type QueryProp } from '@evm-ui/types/util'
 import { decimalSum } from '@evm-ui/utils'
-import type { PriceImpact } from '@evm-ui/widgets/DetailPageLayout/price-impact.util'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
 
@@ -14,22 +13,16 @@ type LeverageInfoFieldsOptions = {
   prevLeverageValue: Query<Decimal | null>
   prevCollateral: QueryProp<Decimal | null>
   leverageTotalCollateral: QueryProp<Decimal | null>
-  expected?: Query<{ avgPrice?: Decimal }>
-  priceImpact?: Query<PriceImpact | Decimal | null>
-  slippage?: Decimal
   collateralDelta: Decimal | undefined // only used when leverage is disabled, otherwise `leverageTotalCollateral` is used
 }
 
 export const getLeverageInfoFields = ({
   leverageEnabled,
   collateralDelta,
-  slippage,
-  priceImpact,
   leverageValue,
   prevLeverageValue,
   prevCollateral,
   leverageTotalCollateral,
-  expected,
 }: LeverageInfoFieldsOptions) =>
   ({
     // we show the leverage info even when the leverage is disabled for the current action
@@ -48,11 +41,6 @@ export const getLeverageInfoFields = ({
           },
           prevLeverageTotalCollateral: prevCollateral,
           leverageTotalCollateral,
-          ...(leverageEnabled && {
-            exchangeRate: expected && mapQuery(expected, data => data.avgPrice ?? null),
-            slippage,
-            priceImpact: priceImpact && q(priceImpact),
-          }),
         }
       : {
           prevCollateral,

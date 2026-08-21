@@ -21,6 +21,7 @@ const mountRouteProviderCard = ({
   route = {
     id: 'curve',
     router: 'curve',
+    routerFeePercentage: '0',
     amountIn: ['69424100000000000000'],
     amountOut: ['69424100000000000000'],
     priceImpact: 0.01,
@@ -109,7 +110,7 @@ allViewports().forEach(([width, height, breakpoint]) => {
       mountRouteProviderCard()
       cy.get('[data-testid="route-provider-card"]').then(([$card]) => {
         const { height } = $card.getBoundingClientRect()
-        expect(height).to.equal(breakpoint === 'mobile' ? 46 : 48)
+        expect(height).to.equal(breakpoint === 'desktop' ? 50 : 48)
       })
     })
 
