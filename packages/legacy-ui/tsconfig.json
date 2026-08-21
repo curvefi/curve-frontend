@@ -8,8 +8,8 @@
       "@curvefi/prices-api": ["../prices-api/src/index.ts"],
       "@curvefi/prices-api/*": ["../prices-api/src/*"],
       "@primitives/*": ["../primitives/src/*"],
-      "@ui-kit/*": ["../curve-ui-kit/src/*"]
+      "@ui-kit/*": ["../evm-ui/src/*"]
     }
   },
-  "include": ["src", "../curve-ui-kit/**/*.d.ts"]
+  "include": ["src", "../evm-ui/**/*.d.ts"]
 }

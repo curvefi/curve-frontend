@@ -1,4 +1,3 @@
-import { Chain } from 'curve-ui-kit/src/utils/network'
 import { styled } from 'styled-components'
 import { useProposalPricesApiQuery } from '@/dao/entities/proposal-prices-api'
 import { networks } from '@/dao/networks'
@@ -11,6 +10,7 @@ import { scanTxPath } from '@legacy-ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { formatNumber, formatToken, shortenAddress } from '@ui-kit/utils'
+import { Chain } from '@ui-kit/utils/network'
 
 type Props = {
   totalVotes: number

@@ -62,7 +62,7 @@ export default defineConfig(({ command }) => ({
     alias: [
       { find: '@', replacement: resolve(__dirname, './src') },
       { find: '@legacy-ui', replacement: resolve(__dirname, '../../packages/legacy-ui/src/') },
-      { find: '@ui-kit', replacement: resolve(__dirname, '../../packages/curve-ui-kit/src') },
+      { find: '@ui-kit', replacement: resolve(__dirname, '../../packages/evm-ui/src') },
       { find: '@external-rewards', replacement: resolve(__dirname, '../../packages/external-rewards/src/index.ts') },
       { find: '@curvefi/prices-api', replacement: resolve(__dirname, '../../packages/prices-api/src') },
       { find: '@primitives', replacement: resolve(__dirname, '../../packages/primitives/src') },
