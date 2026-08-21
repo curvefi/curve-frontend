@@ -3,7 +3,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import type { UseQueryOptions } from '@tanstack/react-query'
 import { Query, QueryProp } from '@ui-kit/types/util'
 import { decimalMin } from '@ui-kit/utils/decimal'
-import { QueryOptionsArray, QueryResultsArray } from './types'
+import { type PartialQueryResult, QueryResultsArray } from './types'
 
 export const combineQueryState = (...queries: (Query<unknown> | undefined)[]) =>
   ({
@@ -43,7 +43,7 @@ export const useCombinedQueries = <const TQueries extends Queries, TResult>(
   }) as QueryProp<TResult>
 
 /** Combines the metadata of multiple queries into a single object. */
-export const combineQueriesMeta = <T extends QueryOptionsArray>(results: QueryResultsArray<T>) => ({
+export const combineQueriesMeta = (results: PartialQueryResult<unknown>[]) => ({
   isLoading: results.some(result => result.isLoading),
   isPending: results.some(result => result.isPending),
   isError: results.some(result => result.isError),

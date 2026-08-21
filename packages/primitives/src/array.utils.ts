@@ -14,6 +14,19 @@ export const sortBy = <T>(items: T[], getKey: (item: T) => number, order: 'asc' 
 /** Split a list into two slices at the given index. */
 export const splitAt = <T>(items: T[], index: number) => [items.slice(0, index), items.slice(index)]
 
+/** Split a list into tuple groups using each group descriptor's length. */
+export const splitArrayTuple = <TGroups extends readonly unknown[]>(
+  items: readonly unknown[],
+  groups: { readonly [K in keyof TGroups]: readonly unknown[] },
+) => {
+  let offset = 0
+  return groups.map(group => {
+    const result = items.slice(offset, offset + group.length)
+    offset += group.length
+    return result
+  }) as { [K in keyof TGroups]: TGroups[K][] }
+}
+
 /** Split a list into two slices at the first index where the predicate is true. */
 export const splitAtFirst = <T>(items: T[], predicate: (value: T, index: number, obj: T[]) => unknown) => {
   const index = items.findIndex(predicate)

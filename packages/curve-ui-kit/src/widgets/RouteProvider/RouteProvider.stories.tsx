@@ -85,6 +85,7 @@ const meta: Meta<typeof RouteProviderStory> = {
         },
       ]),
     ),
+    providers: RouteProviders,
     selectedRoute: mockRoutes[0],
     selectedRouter: mockRoutes[0].router,
     tokenOut: { symbol: 'crvUSD', decimals: 18, usdRate: constQ(1) },

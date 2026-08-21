@@ -3,6 +3,9 @@ import { PRESET_RANGES } from '@/llamalend/constants'
 import { getMarket, hasLeverage, hasLeverageValue, tryGetMarket } from '@/llamalend/llama.utils'
 import type { MarketTemplate } from '@/llamalend/llamalend.types'
 import type { Decimal } from '@primitives/decimal.utils'
+import { maybe } from '@primitives/objects.utils'
+import type { RouteProvider } from '@primitives/router.utils'
+import { assertRouteProvider, getRouteQueryData, isZapV2RouterCalldataTooLarge } from '@ui-kit/entities/router-api'
 
 export const validateUserBorrowed = (userBorrowed: Decimal | null | undefined) => {
   test('userBorrowed', 'Borrow amount must be a non-negative number', () => {
@@ -102,6 +105,31 @@ export const validateRoute = (routeId: string | null | undefined, isRequired: bo
   skipWhen(!isRequired && !routeId, () => {
     test('routeId', 'Route is required', () => {
       enforce(routeId).isTruthy()
+    })
+  })
+}
+
+export const validateRouteCalldata = (routeId: string | null | undefined) => {
+  skipWhen(!routeId, () => {
+    test(
+      'routeId',
+      'The selected route is too large to execute. Select another route provider, reduce the amount, or split the operation into multiple transactions.',
+      () => {
+        const route = maybe(routeId, routeId => getRouteQueryData({ routeId }))
+        enforce(isZapV2RouterCalldataTooLarge(route?.tx?.data)).isFalsy()
+      },
+    )
+  })
+}
+
+export const validateRouteProvider = (
+  routeId: string | null | undefined,
+  providers: readonly RouteProvider[] | undefined,
+  isRequired: boolean,
+) => {
+  skipWhen(!isRequired || !routeId, () => {
+    test('routeId', 'Route provider is not enabled', () => {
+      assertRouteProvider(routeId ?? undefined, providers)
     })
   })
 }
