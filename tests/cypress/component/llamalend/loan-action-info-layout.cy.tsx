@@ -62,13 +62,19 @@ allViewports().forEach(([width, height, viewport]) => {
         cy.mount(
           <ComponentTestWrapper config={mockedWagmiConfig}>
             <>
-              <LoanActionSettings slippage="123.4" onSlippageChange={noop} routes={routes} />
+              <LoanActionSettings
+                slippage="123.4"
+                onSlippageChange={noop}
+                routes={routes}
+                exchangeRate={q({ data: '123.4', ...{ isLoading, error, ...state } })}
+                collateralSymbol="wstETH"
+                borrowSymbol="crvUSD"
+              />
               <LoanActionInfoList
                 isOpen
                 prevHealth={q({ data: '12.4', ...{ isLoading, error } })} // make sure `->` doesn't change the line height
                 health={q({ data: '123.4', ...{ isLoading, error, ...state } })}
                 oraclePrice={q({ data: '123.4', ...{ isLoading, error, ...state } })}
-                exchangeRate={q({ data: '123.4', ...{ isLoading, error, ...state } })}
                 gas={q({ data: { estGasCostUsd: '123.4' }, ...{ isLoading, error, ...state } })}
                 rates={q({ data: { borrowApr: '123.4' }, ...{ isLoading, error, ...state } })}
                 collateralSymbol="wstETH"
@@ -81,6 +87,7 @@ allViewports().forEach(([width, height, viewport]) => {
         getHeight('borrow-health').should('equal', expectedHeight)
         getHeight('borrow-apr').should('equal', expectedHeight)
         getHeight('borrow-exchange-rate').should('equal', expectedHeight)
+        getHeight('borrow-router-fee').should('equal', expectedHeight)
         getHeight('borrow-slippage').should('equal', expectedHeight)
         getHeight('estimated-tx-cost').should('equal', expectedHeight)
         getHeight('route-provider-accordion').should('equal', expectedHeight)

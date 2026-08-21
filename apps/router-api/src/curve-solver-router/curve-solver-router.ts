@@ -56,6 +56,7 @@ export const buildCurveSolverRouteResponse = async (
   return [
     {
       router: PROTOCOL,
+      routerFeePercentage: '0',
       amountIn: [amountIn],
       amountOut: [expected_out],
       gas: `${gas_estimate}`,
