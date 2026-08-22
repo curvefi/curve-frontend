@@ -23,7 +23,7 @@
     "@tanstack/react-router": "1.170.18",
     "@tanstack/react-router-devtools": "1.167.0",
     "@types/memoizee": "0.4.12",
-    "curve-ui-kit": "*",
+    "evm-ui": "*",
     "external-rewards": "*",
     "fuse.js": "7.5.0",
     "legacy-ui": "*",

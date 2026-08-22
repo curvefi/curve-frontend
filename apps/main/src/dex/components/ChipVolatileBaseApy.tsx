@@ -1,6 +1,6 @@
 import { styled } from 'styled-components'
-import { Icon } from '@ui/Icon'
-import { Chip } from '@ui/Typography/Chip'
+import { Icon } from '@legacy-ui/Icon'
+import { Chip } from '@legacy-ui/Typography/Chip'
 import { t } from '@ui-kit/lib/i18n'
 import { formatNumber } from '@ui-kit/utils'
 

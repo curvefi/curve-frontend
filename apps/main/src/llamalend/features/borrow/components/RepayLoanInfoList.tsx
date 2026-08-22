@@ -24,7 +24,6 @@ import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import type { MarketType } from '@ui-kit/types/market'
 import { constQ, mapQuery, q, type Query, type QueryProp, type Range } from '@ui-kit/types/util'
 import { decimal, decimalMinus, decimalNegate } from '@ui-kit/utils'
-import type { PriceImpact } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 import { getLeverageInfoFields } from '../../../widgets/action-card/hooks/getLeverageInfoFields'
 
 const remainingDebt = (debt: Decimal, repayAmount: Decimal) => {
@@ -86,14 +85,13 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   controllerAddress,
   marketType,
   params,
-  values: { slippage, stateCollateral, userCollateral, userBorrowed, isFull },
+  values: { stateCollateral, userCollateral, userBorrowed, isFull },
   tokens: { collateralToken, borrowToken },
   networks,
   showLeverage,
   form,
   prices,
   prevPrices,
-  priceImpact,
 }: {
   controllerAddress: Address | undefined
   marketType: MarketType
@@ -105,7 +103,6 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   form: UseFormReturn<RepayFormData>
   prices?: QueryProp<Range<Decimal> | null>
   prevPrices?: QueryProp<Range<Decimal> | null>
-  priceImpact: QueryProp<PriceImpact | Decimal | null>
 }) {
   const isOpen = form.isTouched('stateCollateral', 'userCollateral', 'userBorrowed')
   const prevLoanState = usePrevLoanState({ params, collateralToken, borrowToken, prevPrices }, isOpen)
@@ -157,10 +154,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
         leverageTotalCollateral: mapQuery(prevCollateral, prev =>
           isFull ? decimal(0) : decimal(new BigNumber(prev).minus(stateCollateral ?? '0')),
         ),
-        expected: useRepayExpectedBorrowed(params, isOpen),
         // routeImage: useRepayRouteImage(params, isOpen),
-        slippage,
-        priceImpact,
         collateralDelta: userCollateral,
       })}
       {...useBorrowRates({ params, marketType, controllerAddress, debtDelta }, isOpen)}

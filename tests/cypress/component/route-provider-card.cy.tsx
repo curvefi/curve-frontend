@@ -1,8 +1,8 @@
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { mockedWagmiConfig } from '@cy/support/helpers/llamalend/test-wagmi.helpers'
 import { allViewports } from '@cy/support/ui'
+import type { BaseConfig } from '@legacy-ui/utils'
 import type { RouteProvider } from '@primitives/router.utils'
-import type { BaseConfig } from '@ui/utils'
 import type { RouteResponse } from '@ui-kit/entities/router-api'
 import { lightTheme } from '@ui-kit/themes'
 import { constQ, q, type QueryProp } from '@ui-kit/types/util'
@@ -21,6 +21,7 @@ const mountRouteProviderCard = ({
   route = {
     id: 'curve',
     router: 'curve',
+    routerFeePercentage: '0',
     amountIn: ['69424100000000000000'],
     amountOut: ['69424100000000000000'],
     priceImpact: 0.01,
@@ -109,7 +110,7 @@ allViewports().forEach(([width, height, breakpoint]) => {
       mountRouteProviderCard()
       cy.get('[data-testid="route-provider-card"]').then(([$card]) => {
         const { height } = $card.getBoundingClientRect()
-        expect(height).to.equal(breakpoint === 'mobile' ? 46 : 48)
+        expect(height).to.equal(breakpoint === 'desktop' ? 50 : 48)
       })
     })
 

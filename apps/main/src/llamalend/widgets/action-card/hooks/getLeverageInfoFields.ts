@@ -6,7 +6,6 @@ import { maybes } from '@primitives/objects.utils'
 import { combineQueryState } from '@ui-kit/lib'
 import { mapQuery, q, type Query, type QueryProp } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
-import type { PriceImpact } from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
 
 type LeverageInfoFieldsOptions = {
   leverageEnabled: boolean | undefined
@@ -14,22 +13,16 @@ type LeverageInfoFieldsOptions = {
   prevLeverageValue: Query<Decimal | null>
   prevCollateral: QueryProp<Decimal | null>
   leverageTotalCollateral: QueryProp<Decimal | null>
-  expected?: Query<{ avgPrice?: Decimal }>
-  priceImpact?: Query<PriceImpact | Decimal | null>
-  slippage?: Decimal
   collateralDelta: Decimal | undefined // only used when leverage is disabled, otherwise `leverageTotalCollateral` is used
 }
 
 export const getLeverageInfoFields = ({
   leverageEnabled,
   collateralDelta,
-  slippage,
-  priceImpact,
   leverageValue,
   prevLeverageValue,
   prevCollateral,
   leverageTotalCollateral,
-  expected,
 }: LeverageInfoFieldsOptions) =>
   ({
     // we show the leverage info even when the leverage is disabled for the current action
@@ -48,11 +41,6 @@ export const getLeverageInfoFields = ({
           },
           prevLeverageTotalCollateral: prevCollateral,
           leverageTotalCollateral,
-          ...(leverageEnabled && {
-            exchangeRate: expected && mapQuery(expected, data => data.avgPrice ?? null),
-            slippage,
-            priceImpact: priceImpact && q(priceImpact),
-          }),
         }
       : {
           prevCollateral,

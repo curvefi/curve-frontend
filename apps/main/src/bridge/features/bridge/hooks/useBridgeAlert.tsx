@@ -1,5 +1,5 @@
 import { ReactNode, useMemo } from 'react'
-import { AlertType } from '@ui/AlertBox/types'
+import { AlertType } from '@legacy-ui/AlertBox/types'
 
 export type BridgeAlert = {
   alertType: AlertType

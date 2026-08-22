@@ -1,5 +1,5 @@
 import type { CrvUsdPriceChartPoint } from '@/llamalend/widgets/CrvUsdPriceChart'
-import { formatDate } from '@ui/utils'
+import { formatDate } from '@legacy-ui/utils'
 import { ChartTooltipSeriesGroup, ChartTooltipSeriesRow, ChartTooltipShell } from '@ui-kit/shared/ui/Chart'
 import type { LineSeriesConfig } from '@ui-kit/shared/ui/Chart/EChartsLineChart'
 import { formatNumber } from '@ui-kit/utils'

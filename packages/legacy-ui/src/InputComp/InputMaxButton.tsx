@@ -1,8 +1,8 @@
 import { ButtonHTMLAttributes } from 'react'
 import { styled } from 'styled-components'
-import { Box } from '@ui/Box'
-import { Button } from '@ui/Button'
-import type { ButtonProps } from '@ui/Button/types'
+import { Box } from '@legacy-ui/Box'
+import { Button } from '@legacy-ui/Button'
+import type { ButtonProps } from '@legacy-ui/Button/types'
 import { useInputContext } from './InputContext'
 
 export const InputMaxBtn = ({

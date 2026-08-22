@@ -1,4 +1,4 @@
-import { Chain } from 'curve-ui-kit/src/utils/network'
+import { Chain } from '@ui-kit/utils/network'
 
 const NETWORK_BASE_CONFIG_DEFAULT = {
   name: '',

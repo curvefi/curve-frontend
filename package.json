@@ -23,8 +23,8 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,md}\"",
     "prepare": "husky",
-    "storybook": "yarn workspace curve-ui-kit run storybook",
-    "storybook:build": "yarn workspace curve-ui-kit run build:storybook",
+    "storybook": "yarn workspace evm-ui run storybook",
+    "storybook:build": "yarn workspace evm-ui run build:storybook",
     "check-supply-chain": "node .github/check-supply-chain.mjs"
   },
   "devDependencies": {
@@ -89,7 +89,7 @@
     "styled-components": "6.4.4",
     "typescript": "6.0.3",
     "vite": "7.3.5",
-    "vite-plugin-svgr": "4.5.0",
+    "vite-plugin-svgr": "5.2.0",
     "vitest": "4.1.10",
     "zustand": "5.0.14"
   }

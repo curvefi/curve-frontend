@@ -1,6 +1,6 @@
 import { SCRVUSD_VAULT_ADDRESS } from '@/loan/constants'
+import type { BaseConfig } from '@legacy-ui/utils'
 import { Card, CardContent, CardHeader } from '@mui/material'
-import type { BaseConfig } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { AddressActionInfo } from '@ui-kit/shared/ui/AddressActionInfo'
 

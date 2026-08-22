@@ -1,5 +1,5 @@
 import { styled } from 'styled-components'
-import { SpinnerWrapper, Spinner } from '@ui/Spinner'
+import { SpinnerWrapper, Spinner } from '@legacy-ui/Spinner'
 
 type SpinnnerProps = {
   height: string

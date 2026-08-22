@@ -83,6 +83,7 @@ export const mockRouterRoutes = (chainId: number, calldata: Hex = ROUTER_CALLDAT
       statusCode: 200,
       body: toArray(router).map(router => ({
         router,
+        routerFeePercentage: ['curve', 'curve-solver'].includes(router) ? '0' : '0.15',
         amountIn: [amountIn],
         amountOut: [ROUTE_AMOUNT_OUT],
         gas: null,

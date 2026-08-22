@@ -1,5 +1,5 @@
 import { css } from 'styled-components'
-import type { Step, StepStatus } from '@ui/Stepper/types'
+import type { Step, StepStatus } from '@legacy-ui/Stepper/types'
 
 export const isInProgress = (step: Step) => step.status === 'in-progress'
 

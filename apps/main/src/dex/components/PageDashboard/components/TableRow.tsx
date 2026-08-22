@@ -8,7 +8,7 @@ import { TableCellRewards } from '@/dex/components/PageDashboard/components/Tabl
 import type { DashboardTableRowProps } from '@/dex/components/PageDashboard/types'
 import { SORT_ID } from '@/dex/components/PageDashboard/utils'
 import { PoolLabel } from '@/dex/components/PoolLabel'
-import { Tr, Td } from '@ui/Table'
+import { Tr, Td } from '@legacy-ui/Table'
 import { useIntersectionObserver } from '@ui-kit/hooks/useIntersectionObserver'
 import { TableCellRewardsOthers } from '../../TableCellRewardsOthers'
 

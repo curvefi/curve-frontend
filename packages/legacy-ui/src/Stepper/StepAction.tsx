@@ -1,10 +1,10 @@
 import { useOverlayTriggerState } from 'react-stately'
 import { styled, css } from 'styled-components'
+import { Spinner } from '@legacy-ui/Spinner/Spinner'
+import { StepModal } from '@legacy-ui/Stepper/StepModal'
+import type { Step, StepStatus } from '@legacy-ui/Stepper/types'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
-import { Spinner } from '@ui/Spinner/Spinner'
-import { StepModal } from '@ui/Stepper/StepModal'
-import type { Step, StepStatus } from '@ui/Stepper/types'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { isInProgress, taskStepStatusStyles } from './helpers'
 

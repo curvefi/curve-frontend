@@ -7,7 +7,7 @@ import { TokensInPoolSummary } from '@/dex/components/PageCreatePool/Summary/Tok
 import { checkFormReady } from '@/dex/components/PageCreatePool/utils'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, ChainId } from '@/dex/types/main.types'
-import { Box } from '@ui/Box'
+import { Box } from '@legacy-ui/Box'
 import { t } from '@ui-kit/lib/i18n'
 
 type Props = {

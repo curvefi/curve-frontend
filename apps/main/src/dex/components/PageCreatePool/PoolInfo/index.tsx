@@ -2,7 +2,7 @@ import { styled } from 'styled-components'
 import { TextInput } from '@/dex/components/PageCreatePool/components/TextInput'
 import { INVALID_POOLS_NAME_CHARACTERS } from '@/dex/constants'
 import { useStore } from '@/dex/store/useStore'
-import { Box } from '@ui/Box'
+import { Box } from '@legacy-ui/Box'
 import { t } from '@ui-kit/lib/i18n'
 
 export const PoolInfo = () => {

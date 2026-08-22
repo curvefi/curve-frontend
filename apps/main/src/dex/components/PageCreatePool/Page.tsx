@@ -1,6 +1,6 @@
 import { styled } from 'styled-components'
 import { CreatePool as PoolCreation } from '@/dex/components/PageCreatePool/index'
-import { breakpoints } from '@ui/utils/responsive'
+import { breakpoints } from '@legacy-ui/utils/responsive'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 
 export const PageCreatePool = () => {

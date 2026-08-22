@@ -2,9 +2,9 @@ import type { ComponentPropsWithRef } from 'react'
 import { forwardRef, ButtonHTMLAttributes, useRef } from 'react'
 import { useFocusRing } from 'react-aria'
 import { styled, type IStyledComponent } from 'styled-components'
-import { Box } from '@ui/Box/Box'
-import type { ButtonProps } from '@ui/Button/types'
-import { Spinner } from '@ui/Spinner/Spinner'
+import { Box } from '@legacy-ui/Box/Box'
+import type { ButtonProps } from '@legacy-ui/Button/types'
+import { Spinner } from '@legacy-ui/Spinner/Spinner'
 import { buttonBaseStyles } from './styles'
 
 // eslint-disable-next-line @eslint-react/no-forward-ref -- Existing violation before enabling this rule.

@@ -19,7 +19,7 @@ import {
   SortDirection,
 } from '@/dao/types/dao.types'
 import { findRootGauge } from '@/dao/utils'
-import { Box } from '@ui/Box'
+import { Box } from '@legacy-ui/Box'
 import { t } from '@ui-kit/lib/i18n'
 import { Chain } from '@ui-kit/utils/network'
 import { USER_VOTES_TABLE_LABELS } from './constants'

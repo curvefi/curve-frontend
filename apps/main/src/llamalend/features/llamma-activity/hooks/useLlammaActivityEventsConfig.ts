@@ -1,6 +1,6 @@
 import { useLlammaEvents } from '@/llamalend/queries/llamma-events.query'
 import type { LlammaEvent } from '@curvefi/prices-api/llamma'
-import { scanAddressPath, scanTxPath } from '@ui/utils'
+import { scanAddressPath, scanTxPath } from '@legacy-ui/utils'
 import {
   type MarketEventRow,
   LLAMMA_EVENTS_COLUMNS,

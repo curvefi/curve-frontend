@@ -1,7 +1,7 @@
 import type { ComponentPropsWithRef } from 'react'
 import { styled, type IStyledComponent } from 'styled-components'
-import { InternalLink } from '@ui/Link'
-import type { InternalLinkProps } from '@ui/Link/InternalLink'
+import { InternalLink } from '@legacy-ui/Link'
+import type { InternalLinkProps } from '@legacy-ui/Link/InternalLink'
 
 type TableRowWrapperProps = { columns: number; gridTemplateColumns?: string }
 

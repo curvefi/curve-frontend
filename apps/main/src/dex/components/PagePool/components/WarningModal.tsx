@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from 'react'
 import { styled } from 'styled-components'
-import { AlertBox } from '@ui/AlertBox'
-import { Checkbox } from '@ui/Checkbox'
+import { AlertBox } from '@legacy-ui/AlertBox'
+import { Checkbox } from '@legacy-ui/Checkbox'
 import { t, Trans } from '@ui-kit/lib/i18n'
 import { formatNumber, amount } from '@ui-kit/utils'
 

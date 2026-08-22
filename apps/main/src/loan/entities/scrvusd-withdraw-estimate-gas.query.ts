@@ -1,4 +1,4 @@
-import type { BaseConfig } from '@ui/utils'
+import type { BaseConfig } from '@legacy-ui/utils'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { useEstimateGas } from '@ui-kit/lib/model/entities/gas-info'

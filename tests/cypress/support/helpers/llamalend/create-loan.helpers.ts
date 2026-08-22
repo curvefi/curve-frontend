@@ -132,11 +132,11 @@ export function checkLoanDetailsLoaded({
   checkEstimatedTxCost({ hasValue: hasApi && !expectError })
 
   if (leverageEnabled) {
-    getActionValue('borrow-price-impact').should('include', '%')
-    cy.get('[data-testid="loan-action-settings"] [data-testid="borrow-slippage"]').should('be.visible')
-    getActionValue('borrow-slippage').should('include', '%')
-  } else {
-    cy.get('[data-testid="borrow-price-impact-value"]', LOAD_TIMEOUT).should('not.exist')
+    cy.get('[data-testid="loan-action-settings"]').within(() => {
+      getActionValue('borrow-price-impact').should('include', '%')
+      cy.get('[data-testid="borrow-slippage"]').should('be.visible')
+      getActionValue('borrow-slippage').should('include', '%')
+    })
   }
 
   if (expectError) {

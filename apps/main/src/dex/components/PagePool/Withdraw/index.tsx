@@ -5,7 +5,7 @@ import { FormUnstake } from '@/dex/components/PagePool/Withdraw/components/FormU
 import { FormWithdraw } from '@/dex/components/PagePool/Withdraw/components/FormWithdraw'
 import type { FormType } from '@/dex/components/PagePool/Withdraw/types'
 import { useStore } from '@/dex/store/useStore'
-import { AlertBox } from '@ui/AlertBox/AlertBox'
+import { AlertBox } from '@legacy-ui/AlertBox/AlertBox'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'

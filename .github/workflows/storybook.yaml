@@ -25,7 +25,7 @@ jobs:
         uses: ./.github/actions/restore-cache
 
       - name: 'Build'
-        working-directory: packages/curve-ui-kit
+        working-directory: packages/evm-ui
         run: |
           yarn install --immutable
           yarn build:storybook
@@ -33,7 +33,7 @@ jobs:
       - name: 'upload'
         uses: actions/upload-pages-artifact@v5
         with:
-          path: packages/curve-ui-kit/storybook-static
+          path: packages/evm-ui/storybook-static
           name: 'github-pages'
 
       - id: deploy

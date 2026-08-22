@@ -31,8 +31,8 @@ import {
 } from '@/dex/store/createCreatePoolSlice'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, ChainId } from '@/dex/types/main.types'
-import { Box } from '@ui/Box'
-import { Button } from '@ui/Button'
+import { Box } from '@legacy-ui/Box'
+import { Button } from '@legacy-ui/Button'
 import type { QueryData } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 

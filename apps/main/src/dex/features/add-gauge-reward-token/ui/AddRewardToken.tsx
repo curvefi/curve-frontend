@@ -12,10 +12,10 @@ import {
   FormActions,
   TokenSelector,
 } from '@/dex/features/add-gauge-reward-token/ui'
-import { FormErrorsDisplay } from '@ui/FormErrorsDisplay'
-import { FlexContainer, FormContainer, FormFieldsContainer } from '@ui/styled-containers'
-import { TxInfoBar } from '@ui/TxInfoBar'
-import { scanTxPath } from '@ui/utils'
+import { FormErrorsDisplay } from '@legacy-ui/FormErrorsDisplay'
+import { FlexContainer, FormContainer, FormFieldsContainer } from '@legacy-ui/styled-containers'
+import { TxInfoBar } from '@legacy-ui/TxInfoBar'
+import { scanTxPath } from '@legacy-ui/utils'
 import { FormProvider, useForm } from '@ui-kit/features/forms'
 import { t } from '@ui-kit/lib/i18n'
 

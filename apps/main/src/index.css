@@ -1,4 +1,4 @@
-@import '@ui/styles/base.css';
+@import '@legacy-ui/styles/base.css';
 
 body {
   --font: 'Mona Sans', 'Helvetica Neue', Helvetica, sans-serif;
@@ -153,7 +153,7 @@ li {
   font-family: 'Mona Sans';
   src:
     local('Mona Sans'),
-    url('../../../packages/curve-ui-kit/public/fonts/Mona-Sans.woff2') format('woff2');
+    url('../../../packages/evm-ui/public/fonts/Mona-Sans.woff2') format('woff2');
   font-weight: 200 900;
   font-style: normal;
   font-display: swap;
@@ -164,7 +164,7 @@ li {
   src:
     local('Ioskeley Mono Regular'),
     local('Ioskeley Mono'),
-    url('../../../packages/curve-ui-kit/public/fonts/Ioskeley-Mono.woff2') format('woff2');
+    url('../../../packages/evm-ui/public/fonts/Ioskeley-Mono.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -175,7 +175,7 @@ li {
   src:
     local('Ioskeley Mono Bold'),
     local('Ioskeley-Mono-Bold'),
-    url('../../../packages/curve-ui-kit/public/fonts/Ioskeley-Mono-Bold.woff2') format('woff2');
+    url('../../../packages/evm-ui/public/fonts/Ioskeley-Mono-Bold.woff2') format('woff2');
   font-weight: 700;
   font-style: normal;
   font-display: swap;

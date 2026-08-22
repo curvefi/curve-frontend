@@ -20,8 +20,8 @@ import { SelectPreset } from '@/dex/components/PageCreatePool/Parameters/SelectP
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, ChainId } from '@/dex/types/main.types'
-import { Box } from '@ui/Box'
-import { Button } from '@ui/Button'
+import { Box } from '@legacy-ui/Box'
+import { Button } from '@legacy-ui/Button'
 import { t } from '@ui-kit/lib/i18n'
 
 type Props = {

@@ -1,7 +1,7 @@
 import { SCRVUSD_GAS_ESTIMATE } from '@/loan/constants'
+import type { BaseConfig } from '@legacy-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { maybes } from '@primitives/objects.utils'
-import type { BaseConfig } from '@ui/utils'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { useEstimateGas } from '@ui-kit/lib/model/entities/gas-info'

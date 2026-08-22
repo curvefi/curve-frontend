@@ -1,7 +1,7 @@
 import { Item } from 'react-stately'
 import { styled } from 'styled-components'
-import { Select } from '@ui/Select'
-import type { SelectProps } from '@ui/Select/Select'
+import { Select } from '@legacy-ui/Select'
+import type { SelectProps } from '@legacy-ui/Select/Select'
 
 type ItemObj = {
   label: string

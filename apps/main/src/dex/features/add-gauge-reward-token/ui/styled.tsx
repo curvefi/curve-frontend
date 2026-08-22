@@ -1,6 +1,6 @@
 import type { ComponentProps, ComponentPropsWithRef } from 'react'
 import { styled, type IStyledComponent } from 'styled-components'
-import { Button } from '@ui/Button'
+import { Button } from '@legacy-ui/Button'
 
 type DivProps = ComponentPropsWithRef<'div'>
 type H3Props = ComponentPropsWithRef<'h3'>

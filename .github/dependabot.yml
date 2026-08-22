@@ -5,10 +5,10 @@ updates:
     directories:
       - /
       - /apps/main/
-      - /packages/curve-ui-kit/
-      - /packages/prices-api/
-      - /packages/legacy-ui/
+      - /packages/evm-ui/
       - /packages/external-rewards/
+      - /packages/legacy-ui/
+      - /packages/prices-api/
       - /tests/
     schedule:
       interval: 'monthly'
