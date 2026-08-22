@@ -28,7 +28,7 @@ import {
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { mapQuery } from '@ui-kit/types/util'
-import { formatNumber, TIME_OPTION_MS } from '@ui-kit/utils'
+import { decimal, formatNumber, TIME_OPTION_MS } from '@ui-kit/utils'
 
 const { Height, Spacing } = SizesAndSpaces
 
@@ -152,7 +152,7 @@ export const PoolHistoricalBaseRateChart = ({
             series={series}
             visibleSeries={visibleSeries}
             xTickFormatter={value => formatDate(value)}
-            yTickFormatter={value => formatNumber(+value, 'percent.value')}
+            yTickFormatter={value => formatNumber(decimal(value), 'percent.value')}
             yPaddingRatio={0.05}
             renderTooltip={({ datum, visibleSeries: activeSeries }) => (
               <ChartTooltipShell title={formatDate(datum.timestamp, 'long')}>
