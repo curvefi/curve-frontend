@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import type { Address } from 'viem'
 import { usePoolSnapshots } from '@/dex/entities/pool-snapshots.query'
 import { aprToPoolApy } from '@/dex/features/pool-list/cells/utils'
-import { usePoolsPricesApi } from '@/dex/queries/pools-prices-api.query'
+import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
 import type { Chain } from '@curvefi/prices-api'
 import { formatDate } from '@legacy-ui/utils'
 import Card from '@mui/material/Card'
@@ -75,7 +75,7 @@ export const PoolHistoricalBaseRateChart = ({
   )
 
   // Current metric values are based on pool list data to avoid mismatches, and is also updated more frequently than snapshots
-  const currentPool = mapQuery(usePoolsPricesApi({ blockchainId: chain }), pools => pools[poolAddress.toLowerCase()])
+  const currentPool = usePoolPricesApi({ blockchainId: chain, poolAddress })
 
   const {
     design: { Color },

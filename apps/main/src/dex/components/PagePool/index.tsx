@@ -17,7 +17,7 @@ import { UserPosition } from '@/dex/features/user-position'
 import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
 import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
-import { usePoolsPricesApi } from '@/dex/queries/pools-prices-api.query'
+import { usePoolPricesApi } from '@/dex/queries/pools-prices-api.query'
 import { useStore } from '@/dex/store/useStore'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { getPath } from '@/dex/utils/utilsRouter'
@@ -70,10 +70,8 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
 
   const { data: network } = useNetworkByChain({ chainId: rChainId })
   const { networkId, isLite, pricesApi } = network
-  const { data: pricesApiPoolsMapper } = usePoolsPricesApi({ blockchainId: networkId as Chain })
   const poolAddress = poolData?.pool.address as Address
-
-  const pricesApiPoolData = poolData && pricesApiPoolsMapper?.[poolData.pool.address]
+  const { data: pricesApiPoolData } = usePoolPricesApi({ blockchainId: networkId as Chain, poolAddress })
 
   const fetchPoolStats = useStore(state => state.pools.fetchPoolStats)
   usePageVisibleInterval(() => {
