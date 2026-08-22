@@ -30,7 +30,7 @@ export const RPC: Record<ChainId, string[]> = {
   [ChainId.Hyperliquid]: ['https://rpc.hyperliquid.xyz/evm', 'https://rpc.hypurrscan.io'],
   [ChainId.Plume]: ['https://rpc.plume.org'],
   [ChainId.Xdc]: ['https://rpc1.xinfin.network', 'https://rpc.xdcrpc.com'],
-  [ChainId.Tac]: ['https://turin.rpc.tac.build'],
+  [ChainId.Tac]: ['https://rpc.tac.build'],
   [ChainId.MegaEth]: ['https://carrot.megaeth.com/rpc'],
   [ChainId.Strata]: ['https://stratareth3666f0713.devnet-annapurna.stratabtc.org'],
   [ChainId.ExpChain]: ['https://rpc0-testnet.expchain.ai'],
