@@ -6,10 +6,11 @@ import type { CreateLoanMaxReceiveParams } from '@/llamalend/queries/create-loan
 import { useMarketMaxLeverage } from '@/llamalend/queries/market'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import type { UseFormReturn } from '@ui-kit/features/forms'
 import { useFormSync, useOnChangeCallback } from '@ui-kit/features/forms'
+import type { UseFormReturn } from '@ui-kit/features/forms'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { combineQueries } from '@ui-kit/lib'
+import { mapQuery } from '@ui-kit/types/util'
 import { decimal, decimalMin } from '@ui-kit/utils'
 import { useCreateLoanMaxReceive } from '../../../queries/create-loan/create-loan-max-receive.query'
 import type { CreateLoanForm } from '../types'
@@ -71,7 +72,7 @@ export function useMaxTokenValues({
   return {
     setRange,
     collateral: maxCollateral,
-    debt: maxBorrow,
+    debt: mapQuery(maxBorrow, ({ maxDebt }) => maxDebt),
     maxLeverage: combineQueries(
       [maxLeverage, maxBorrow],
       (maxTotalLeverage, { maxLeverage: maxBorrowLeverage }) => maxBorrowLeverage ?? maxTotalLeverage,
