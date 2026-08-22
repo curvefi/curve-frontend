@@ -1,5 +1,10 @@
 import type { Suite } from 'vest'
 import { CB } from 'vest-utils'
+import { queryClient } from '@evm-ui/lib/api/query-client'
+import { logError, logQuery, logSuccess } from '@evm-ui/lib/logging'
+import { QUERY_CATEGORIES, type QueryCategory } from '@evm-ui/lib/model/query/query-categories'
+import { FieldName, FieldsOf, validate } from '@evm-ui/lib/validation'
+import { formatTimeDiff } from '@evm-ui/utils/time'
 import { FetchError } from '@primitives/fetch.utils'
 import { isEmpty } from '@primitives/objects.utils'
 import {
@@ -11,11 +16,6 @@ import {
   queryOptions,
   useQuery,
 } from '@tanstack/react-query'
-import { queryClient } from '@ui-kit/lib/api/query-client'
-import { logError, logQuery, logSuccess } from '@ui-kit/lib/logging'
-import { QUERY_CATEGORIES, type QueryCategory } from '@ui-kit/lib/model/query/query-categories'
-import { FieldName, FieldsOf, validate } from '@ui-kit/lib/validation'
-import { formatTimeDiff } from '@ui-kit/utils/time'
 
 // Checks if T is a union type (e.g., 'a' | 'b')
 type IsUnion<T, U = T> = T extends T ? ([U] extends [T] ? false : true) : never

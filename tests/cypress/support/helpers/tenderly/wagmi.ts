@@ -1,9 +1,9 @@
 import { defineChain, http } from 'viem'
 import { arbitrum, mainnet, optimism } from 'viem/chains'
 import type { TenderlyConfig } from '@cy/support/helpers/tenderly/account'
+import { createWagmiConfig } from '@evm-ui/features/connect-wallet'
 import { type Hex } from '@primitives/address.utils'
 import { assert } from '@primitives/objects.utils'
-import { createWagmiConfig } from '@ui-kit/features/connect-wallet'
 import { createTenderlyConnector } from './connector'
 
 /** Configuration options for creating a test Wagmi config */

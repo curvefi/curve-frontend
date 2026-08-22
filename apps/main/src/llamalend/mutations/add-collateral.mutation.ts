@@ -7,11 +7,11 @@ import { fetchAddCollateralIsApproved } from '@/llamalend/queries/add-collateral
 import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import { type CollateralForm, collateralValidationSuite } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
+import { t } from '@evm-ui/lib/i18n'
+import { rootKeys } from '@evm-ui/lib/model'
+import { waitForApproval } from '@evm-ui/utils'
 import { type Address, type Hex } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { t } from '@ui-kit/lib/i18n'
-import { rootKeys } from '@ui-kit/lib/model'
-import { waitForApproval } from '@ui-kit/utils'
 
 type AddCollateralMutation = { userCollateral: Decimal }
 

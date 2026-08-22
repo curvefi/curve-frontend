@@ -1,5 +1,5 @@
-import { t } from '@ui-kit/lib/i18n'
-import { showToast } from '@ui-kit/widgets/Toast/toast.util'
+import { t } from '@evm-ui/lib/i18n'
+import { showToast } from '@evm-ui/widgets/Toast/toast.util'
 
 /**
  * Show a toast notification. The toast type can be 'pending', 'success', 'error', or 'hint'.

@@ -1,7 +1,7 @@
+import { t } from '@evm-ui/lib/i18n'
+import { TooltipWrapper, TooltipDescription } from '@evm-ui/shared/ui/TooltipComponents'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { Stack } from '@mui/material'
-import { t } from '@ui-kit/lib/i18n'
-import { TooltipWrapper, TooltipDescription } from '@ui-kit/shared/ui/TooltipComponents'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 

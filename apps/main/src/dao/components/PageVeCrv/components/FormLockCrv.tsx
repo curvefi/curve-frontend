@@ -8,15 +8,15 @@ import type { FormEstGas, FormStatus, FormValues, PageVecrv, StepKey } from '@/d
 import { DEFAULT_FORM_EST_GAS } from '@/dao/components/PageVeCrv/utils'
 import { networks } from '@/dao/networks'
 import { useStore } from '@/dao/store/useStore'
+import { type CurveApi, isLoading, notify, useCurve } from '@evm-ui/features/connect-wallet'
+import { usePageVisibleInterval } from '@evm-ui/hooks/usePageVisibleInterval'
+import { t } from '@evm-ui/lib/i18n'
+import { REFRESH_INTERVAL } from '@evm-ui/utils'
 import { getActiveStep, getStepStatus } from '@legacy-ui/Stepper/helpers'
 import { Stepper } from '@legacy-ui/Stepper/Stepper'
 import type { Step } from '@legacy-ui/Stepper/types'
 import { TxInfoBar } from '@legacy-ui/TxInfoBar'
 import { scanTxPath } from '@legacy-ui/utils'
-import { type CurveApi, isLoading, notify, useCurve } from '@ui-kit/features/connect-wallet'
-import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
-import { t } from '@ui-kit/lib/i18n'
-import { REFRESH_INTERVAL } from '@ui-kit/utils'
 
 export const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const isSubscribedRef = useRef(false)

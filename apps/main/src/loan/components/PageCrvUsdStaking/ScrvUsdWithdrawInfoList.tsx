@@ -5,12 +5,12 @@ import { useScrvUsdPreviewWithdraw } from '@/loan/entities/scrvusd-preview.query
 import { useScrvUsdWithdrawEstimateGas } from '@/loan/entities/scrvusd-withdraw-estimate-gas.query'
 import type { ScrvUsdWithdrawForm, ScrvUsdWithdrawParams } from '@/loan/entities/scrvusd.validation'
 import type { NetworkConfig } from '@/loan/types/loan.types'
+import type { UseFormReturn } from '@evm-ui/features/forms'
+import { t } from '@evm-ui/lib/i18n'
+import { ActionInfo, ActionInfoGasEstimate } from '@evm-ui/shared/ui/ActionInfo'
+import { mapQuery, q } from '@evm-ui/types/util'
+import { formatNumber } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
-import type { UseFormReturn } from '@ui-kit/features/forms'
-import { t } from '@ui-kit/lib/i18n'
-import { ActionInfo, ActionInfoGasEstimate } from '@ui-kit/shared/ui/ActionInfo'
-import { mapQuery, q } from '@ui-kit/types/util'
-import { formatNumber } from '@ui-kit/utils'
 
 type ScrvUsdWithdrawInfoListProps = {
   params: ScrvUsdWithdrawParams

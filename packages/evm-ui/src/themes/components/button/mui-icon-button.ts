@@ -1,9 +1,9 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference -- referring to a type definition file
 /// <reference path="./mui-icon-button.d.ts" />
+import { handleBreakpoints } from '@evm-ui/themes/basic-theme'
 import { IconButtonProps } from '@mui/material/IconButton'
 import type { Components } from '@mui/material/styles'
 import { recordEntries } from '@primitives/objects.utils'
-import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 import { DesignSystem } from '../../design'
 import { SizesAndSpaces } from '../../design/1_sizes_spaces'
 import { buttonColor } from './utils'

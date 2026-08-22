@@ -31,10 +31,10 @@ import {
 } from '@/dex/store/createCreatePoolSlice'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, ChainId } from '@/dex/types/main.types'
+import type { QueryData } from '@evm-ui/lib'
+import { t } from '@evm-ui/lib/i18n'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
-import type { QueryData } from '@ui-kit/lib'
-import { t } from '@ui-kit/lib/i18n'
 
 type BasePool = QueryData<typeof useBasePools>[number]
 

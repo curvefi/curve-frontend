@@ -1,11 +1,11 @@
 import { styled } from 'styled-components'
 import type { ComboBoxSelectGaugeProps } from '@/dao/components/ComboBoxSelectGauge/types'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
+import { shortenAddress } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
 import { Chip } from '@legacy-ui/Typography/Chip'
 import { focusVisible } from '@legacy-ui/utils'
-import { shortenAddress } from '@ui-kit/utils'
 
 export const ComboBoxListItem = ({
   testId,

@@ -1,5 +1,5 @@
-import { formatChartAxisNumber } from '@ui-kit/shared/ui/Chart'
-import { Duration } from '@ui-kit/themes/design/0_primitives'
+import { formatChartAxisNumber } from '@evm-ui/shared/ui/Chart'
+import { Duration } from '@evm-ui/themes/design/0_primitives'
 import { generateOracleReferenceLines, generateRangeBoundaryLines, type HorizontalLine } from './horizontalLines'
 import type {
   BandsChartOption,

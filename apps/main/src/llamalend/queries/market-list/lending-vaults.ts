@@ -10,18 +10,18 @@ import {
   type UserMarketStats,
 } from '@curvefi/prices-api/llamalend'
 import { paginate } from '@curvefi/prices-api/paginate'
-import type { Address } from '@primitives/address.utils'
-import { fromEntries } from '@primitives/objects.utils'
-import { type FieldsOf } from '@ui-kit/lib'
-import { type ChainNameQuery, queryFactory, type UserParams, type UserQuery } from '@ui-kit/lib/model/query'
-import { userAddressValidationGroup } from '@ui-kit/lib/model/query/evm-address-validation'
-import { pricesApiChainNameValidationGroup } from '@ui-kit/lib/model/query/prices-chain-validation'
+import { type FieldsOf } from '@evm-ui/lib'
+import { type ChainNameQuery, queryFactory, type UserParams, type UserQuery } from '@evm-ui/lib/model/query'
+import { userAddressValidationGroup } from '@evm-ui/lib/model/query/evm-address-validation'
+import { pricesApiChainNameValidationGroup } from '@evm-ui/lib/model/query/prices-chain-validation'
 import {
   type UserContractParams,
   type UserContractQuery,
   userContractValidationSuite,
-} from '@ui-kit/lib/model/query/user-contract'
-import { createValidationSuite, EmptyValidationSuite } from '@ui-kit/lib/validation'
+} from '@evm-ui/lib/model/query/user-contract'
+import { createValidationSuite, EmptyValidationSuite } from '@evm-ui/lib/validation'
+import type { Address } from '@primitives/address.utils'
+import { fromEntries } from '@primitives/objects.utils'
 
 type UserChainNameQuery = UserQuery & ChainNameQuery
 type UserChainNameParams = FieldsOf<UserChainNameQuery>

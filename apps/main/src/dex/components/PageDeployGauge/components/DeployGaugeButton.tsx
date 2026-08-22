@@ -12,14 +12,14 @@ import { curveProps } from '@/dex/lib/utils'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
 import { getPath, useRestFullPathname } from '@/dex/utils/utilsRouter'
+import { isLoading, useWallet } from '@evm-ui/features/connect-wallet'
+import { useNavigate } from '@evm-ui/hooks/router'
+import { t } from '@evm-ui/lib/i18n'
+import { shortenAddress } from '@evm-ui/utils'
 import { AlertBox } from '@legacy-ui/AlertBox'
 import { Button } from '@legacy-ui/Button'
 import { SpinnerWrapper, Spinner } from '@legacy-ui/Spinner'
 import { scanTxPath } from '@legacy-ui/utils'
-import { isLoading, useWallet } from '@ui-kit/features/connect-wallet'
-import { useNavigate } from '@ui-kit/hooks/router'
-import { t } from '@ui-kit/lib/i18n'
-import { shortenAddress } from '@ui-kit/utils'
 
 type Props = {
   disabled: boolean

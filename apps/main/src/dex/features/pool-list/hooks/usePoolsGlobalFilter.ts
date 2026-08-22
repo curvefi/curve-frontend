@@ -1,5 +1,5 @@
 import type { FuseOptionKey } from 'fuse.js'
-import { cleanValue, useFuzzyFilterFn } from '@ui-kit/hooks/useFuzzySearch'
+import { cleanValue, useFuzzyFilterFn } from '@evm-ui/hooks/useFuzzySearch'
 import type { PoolRow } from '../types'
 
 const POOL_SEARCH_KEYS = [

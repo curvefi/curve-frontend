@@ -10,14 +10,14 @@ import type {
   CollateralHealthParams,
   CollateralParams,
 } from '@/llamalend/queries/validation/manage-loan.types'
+import { createValidationSuite } from '@evm-ui/lib'
+import { validateSlippage } from '@evm-ui/lib/model'
+import { chainValidationGroup } from '@evm-ui/lib/model/query/chain-validation'
+import { llamaApiValidationGroup } from '@evm-ui/lib/model/query/curve-api-validation'
+import { evmAddressValidationGroup } from '@evm-ui/lib/model/query/evm-address-validation'
+import { marketIdValidationGroup, marketIdValidationSuite } from '@evm-ui/lib/model/query/market-id-validation'
+import type { UserMarketParams } from '@evm-ui/lib/model/query/root-keys'
 import type { Decimal } from '@primitives/decimal.utils'
-import { createValidationSuite } from '@ui-kit/lib'
-import { validateSlippage } from '@ui-kit/lib/model'
-import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
-import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
-import { evmAddressValidationGroup } from '@ui-kit/lib/model/query/evm-address-validation'
-import { marketIdValidationGroup, marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
-import type { UserMarketParams } from '@ui-kit/lib/model/query/root-keys'
 
 export type CollateralForm = {
   userCollateral: Decimal | undefined

@@ -1,8 +1,8 @@
 import { BigNumber } from 'bignumber.js'
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
+import { amount as toAmount, formatNumber } from '@evm-ui/utils'
 import { Chip } from '@legacy-ui/Typography/Chip'
-import { amount as toAmount, formatNumber } from '@ui-kit/utils'
 
 export const FieldHelperUsdRate = ({ amount, usdRate }: { amount: string; usdRate: number | undefined }) => {
   const usdRateTotal = useMemo(() => {

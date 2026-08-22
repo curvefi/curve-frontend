@@ -3,8 +3,8 @@ import { useCallback, useEffect } from 'react'
 import { type State, useStore } from '@/dex/store/useStore'
 import { PoolDataCacheOrApi, Provider } from '@/dex/types/main.types'
 import { isValidAddress } from '@/dex/utils'
-import { useCurve, useWallet } from '@ui-kit/features/connect-wallet'
-import { dayjs } from '@ui-kit/lib/dayjs'
+import { useCurve, useWallet } from '@evm-ui/features/connect-wallet'
+import { dayjs } from '@evm-ui/lib/dayjs'
 import { useNetworks } from '../entities/networks'
 
 type PoolTotalStaked = State['pools']['stakedMapper'][string]

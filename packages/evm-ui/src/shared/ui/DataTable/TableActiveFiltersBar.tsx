@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react'
+import { t } from '@evm-ui/lib/i18n'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { borderStyle } from '@evm-ui/utils'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
-import { t } from '@ui-kit/lib/i18n'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { borderStyle } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 

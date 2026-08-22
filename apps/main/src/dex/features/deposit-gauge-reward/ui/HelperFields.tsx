@@ -1,9 +1,9 @@
 import { useChainId } from 'wagmi'
 import { FieldHelperUsdRate } from '@/dex/components/FieldHelperUsdRate'
 import { type DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
+import { useFormContext } from '@evm-ui/features/forms'
+import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { FlexContainer } from '@legacy-ui/styled-containers'
-import { useFormContext } from '@ui-kit/features/forms'
-import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 export const HelperFields = () => {
   const { watchValue } = useFormContext<DepositRewardFormValues>()

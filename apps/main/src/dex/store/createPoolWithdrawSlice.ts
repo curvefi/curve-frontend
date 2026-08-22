@@ -19,9 +19,9 @@ import {
   PoolData,
 } from '@/dex/types/main.types'
 import { isBonus, isHighSlippage } from '@/dex/utils'
-import { useWallet } from '@ui-kit/features/connect-wallet'
-import { shortenAddress } from '@ui-kit/utils'
-import { setMissingProvider } from '@ui-kit/utils/store.util'
+import { useWallet } from '@evm-ui/features/connect-wallet'
+import { shortenAddress } from '@evm-ui/utils'
+import { setMissingProvider } from '@evm-ui/utils/store.util'
 import { fetchPoolLpTokenBalance } from '../hooks/usePoolTokenDepositBalances'
 import { invalidateUserPoolInfo } from '../queries/invalidation'
 import { invalidatePoolParameters } from '../queries/pool-parameters.query'

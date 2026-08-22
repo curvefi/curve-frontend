@@ -1,7 +1,7 @@
+import { ChainSwitcher } from '@evm-ui/features/switch-chain'
+import type { AppMenuOption } from '@evm-ui/shared/routes'
 import { NetworkMapping } from '@legacy-ui/utils'
 import Stack from '@mui/material/Stack'
-import { ChainSwitcher } from '@ui-kit/features/switch-chain'
-import type { AppMenuOption } from '@ui-kit/shared/routes'
 import { HeaderLogo } from './HeaderLogo'
 import { MenuToggleButton } from './MenuToggleButton'
 

@@ -1,7 +1,7 @@
 import { orderBy } from 'lodash'
 import type { PoolType } from '@curvefi/prices-api/pools'
+import { Chain } from '@evm-ui/utils/network'
 import type { Address } from '@primitives/address.utils'
-import { Chain } from '@ui-kit/utils/network'
 
 type V2PoolNetwork = 'ethereum' | 'taiko'
 

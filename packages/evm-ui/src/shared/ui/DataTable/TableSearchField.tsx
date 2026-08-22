@@ -1,6 +1,6 @@
+import { t } from '@evm-ui/lib/i18n'
+import { SearchField } from '@evm-ui/shared/ui/SearchField'
 import { notFalsy } from '@primitives/objects.utils'
-import { t } from '@ui-kit/lib/i18n'
-import { SearchField } from '@ui-kit/shared/ui/SearchField'
 
 type Props = {
   value: string

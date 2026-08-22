@@ -1,4 +1,4 @@
-import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
+import { SelectableChip } from '@evm-ui/shared/ui/SelectableChip'
 
 type TableActiveFilterChipProps = {
   label: string

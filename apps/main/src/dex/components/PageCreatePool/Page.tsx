@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
 import { CreatePool as PoolCreation } from '@/dex/components/PageCreatePool/index'
+import { ConnectWalletPrompt, useCurve } from '@evm-ui/features/connect-wallet'
 import { breakpoints } from '@legacy-ui/utils/responsive'
-import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 
 export const PageCreatePool = () => {
   const { provider, curveApi = null } = useCurve()

@@ -2,9 +2,9 @@ import { ReactNode } from 'react'
 import { styled } from 'styled-components'
 import type { UrlParams } from '@/dao/types/dao.types'
 import { getPath } from '@/dao/utils/utilsRouter'
+import { useParams } from '@evm-ui/hooks/router'
 import { Icon } from '@legacy-ui/Icon'
 import { InternalLink } from '@legacy-ui/Link'
-import { useParams } from '@ui-kit/hooks/router'
 
 type InternalLinkButtonProps = {
   to: string

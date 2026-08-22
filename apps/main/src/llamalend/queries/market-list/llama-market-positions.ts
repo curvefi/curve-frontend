@@ -1,12 +1,12 @@
 import { useMemo } from 'react'
 import { type Chain, LEND_CHAINS, MINT_CHAINS } from '@curvefi/prices-api'
+import { combineQueryState } from '@evm-ui/lib'
+import { MarketRateType, MarketType } from '@evm-ui/types/market'
+import type { Query } from '@evm-ui/types/util'
 import type { Address } from '@primitives/address.utils'
 import { splitArrayTuple, zip } from '@primitives/array.utils'
 import { fromEntries, notFalsy, type PartialRecord, recordValues } from '@primitives/objects.utils'
 import { useQueries } from '@tanstack/react-query'
-import { combineQueryState } from '@ui-kit/lib'
-import { MarketRateType, MarketType } from '@ui-kit/types/market'
-import type { Query } from '@ui-kit/types/util'
 import {
   getUserLendingSuppliesOptions,
   getUserLendingVaultsOptions,

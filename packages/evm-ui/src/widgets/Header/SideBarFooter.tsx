@@ -1,3 +1,9 @@
+import { ConnectWalletIndicator } from '@evm-ui/features/connect-wallet'
+import { Settings } from '@evm-ui/features/user-profile/settings/Settings'
+import { t } from '@evm-ui/lib/i18n'
+import { GearIcon } from '@evm-ui/shared/icons/GearIcon'
+import { MOBILE_SIDEBAR_WIDTH } from '@evm-ui/themes/components'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 // eslint-disable-next-line no-restricted-imports
 import Accordion from '@mui/material/Accordion'
@@ -6,12 +12,6 @@ import AccordionSummary from '@mui/material/AccordionSummary'
 import Stack from '@mui/material/Stack'
 import type { Theme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
-import { ConnectWalletIndicator } from '@ui-kit/features/connect-wallet'
-import { Settings } from '@ui-kit/features/user-profile/settings/Settings'
-import { t } from '@ui-kit/lib/i18n'
-import { GearIcon } from '@ui-kit/shared/icons/GearIcon'
-import { MOBILE_SIDEBAR_WIDTH } from '@ui-kit/themes/components'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 

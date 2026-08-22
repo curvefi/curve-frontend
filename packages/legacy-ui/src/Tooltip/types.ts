@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'styled-components'
-import type { MuiTooltipProps } from '@ui-kit/shared/ui/Tooltip'
+import type { MuiTooltipProps } from '@evm-ui/shared/ui/Tooltip'
 
 type ValueOf<T> = T[keyof T]
 

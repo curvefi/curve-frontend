@@ -12,14 +12,14 @@ import {
   type Period,
 } from '@/analytics/features/charts'
 import { llama } from '@/analytics/llamadash'
+import { useCrvUsdPriceHistory } from '@evm-ui/entities/crvusd-price.query'
+import { useSwitch } from '@evm-ui/hooks/useSwitch'
+import { t } from '@evm-ui/lib/i18n'
+import type { LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
+import { SelectTimeOption } from '@evm-ui/shared/ui/Chart/SelectTimeOption'
+import { formatNumber } from '@evm-ui/utils'
 import { useTheme } from '@mui/material/styles'
 import type { Amount } from '@primitives/decimal.utils'
-import { useCrvUsdPriceHistory } from '@ui-kit/entities/crvusd-price.query'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
-import { t } from '@ui-kit/lib/i18n'
-import type { LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
-import { SelectTimeOption } from '@ui-kit/shared/ui/Chart/SelectTimeOption'
-import { formatNumber } from '@ui-kit/utils'
 
 const PRICE_LABEL = t`Price`
 const PERIODS = ['7d', '1m', '3m', '6m'] as const satisfies Period[]

@@ -1,7 +1,7 @@
 import { type NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { useEstimateGas } from '@ui-kit/lib/model/entities/gas-info'
+import { queryFactory, rootKeys } from '@evm-ui/lib/model'
+import { useEstimateGas } from '@evm-ui/lib/model/entities/gas-info'
 import { requireVault, WithdrawParams, WithdrawQuery, withdrawValidationSuite } from '../validation/supply.validation'
 
 const { useQuery: useWithdrawEstimateGasQuery } = queryFactory({

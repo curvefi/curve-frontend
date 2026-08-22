@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { Stack, Typography } from '@mui/material'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing, LineHeight } = SizesAndSpaces
 

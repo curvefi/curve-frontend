@@ -1,5 +1,5 @@
+import { useFuzzyFilterFn } from '@evm-ui/hooks/useFuzzySearch'
 import type { DeepKeys } from '@tanstack/table-core'
-import { useFuzzyFilterFn } from '@ui-kit/hooks/useFuzzySearch'
 import type { LegacyPoolRow } from '../types'
 
 const POOL_KEYS: DeepKeys<LegacyPoolRow>[] = [

@@ -1,7 +1,7 @@
-import { t } from '@ui-kit/lib/i18n'
-import { RewardIcon } from '@ui-kit/shared/ui/RewardIcon'
-import { TooltipItem, TooltipValueLink } from '@ui-kit/shared/ui/TooltipComponents'
-import { formatNumber } from '@ui-kit/utils'
+import { t } from '@evm-ui/lib/i18n'
+import { RewardIcon } from '@evm-ui/shared/ui/RewardIcon'
+import { TooltipItem, TooltipValueLink } from '@evm-ui/shared/ui/TooltipComponents'
+import { formatNumber } from '@evm-ui/utils'
 import type { PoolRow } from '../types'
 import { aprToPoolApy } from './utils'
 

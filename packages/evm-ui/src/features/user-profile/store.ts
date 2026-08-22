@@ -1,9 +1,9 @@
 import lodash from 'lodash'
 import { create, type StateCreator } from 'zustand'
 import { devtools, persist, type PersistOptions } from 'zustand/middleware'
+import type { ThemeKey } from '@evm-ui/themes/basic-theme'
+import { SLIPPAGE, type SlippageSettings } from '@evm-ui/widgets/SlippageSettings/slippage.utils'
 import { mapRecord } from '@primitives/objects.utils'
-import type { ThemeKey } from '@ui-kit/themes/basic-theme'
-import { SLIPPAGE, type SlippageSettings } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
 type UserProfileState = {
   theme: ThemeKey

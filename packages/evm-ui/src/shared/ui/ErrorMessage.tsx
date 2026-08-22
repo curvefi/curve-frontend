@@ -1,10 +1,10 @@
 import { ReactNode } from 'react'
+import { ErrorReportModal } from '@evm-ui/features/report-error'
+import { useSwitch } from '@evm-ui/hooks/useSwitch'
+import { t } from '@evm-ui/lib/i18n'
+import { ReloadIcon } from '@evm-ui/shared/icons/ReloadIcon'
+import { applySxProps } from '@evm-ui/utils'
 import { Stack, SxProps } from '@mui/material'
-import { ErrorReportModal } from '@ui-kit/features/report-error'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
-import { t } from '@ui-kit/lib/i18n'
-import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
-import { applySxProps } from '@ui-kit/utils'
 import { EmptyStateCard, EmptyStateCardProps } from './EmptyStateCard'
 
 export const ErrorMessage = ({

@@ -1,8 +1,8 @@
+import { t } from '@evm-ui/lib/i18n'
+import { ResetFiltersButton } from '@evm-ui/shared/ui/DataTable/ResetFiltersButton'
+import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { Stack, Typography } from '@mui/material'
-import { t } from '@ui-kit/lib/i18n'
-import { ResetFiltersButton } from '@ui-kit/shared/ui/DataTable/ResetFiltersButton'
-import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 

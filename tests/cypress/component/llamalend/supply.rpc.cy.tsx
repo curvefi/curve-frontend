@@ -40,8 +40,8 @@ import {
 } from '@cy/support/helpers/llamalend/supply/withdraw.helpers'
 import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { skipTestsAfterFailure } from '@cy/support/ui'
+import { MarketType } from '@evm-ui/types/market'
 import type { Decimal } from '@primitives/decimal.utils'
-import { MarketType } from '@ui-kit/types/market'
 
 const testCases = [oneOf(...SUPPLY_TEST_MARKETS)]
 

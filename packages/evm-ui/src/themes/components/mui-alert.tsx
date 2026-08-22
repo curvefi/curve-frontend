@@ -1,10 +1,10 @@
+import { CheckIcon } from '@evm-ui/shared/icons/CheckIcon'
+import { ExclamationTriangleIcon } from '@evm-ui/shared/icons/ExclamationTriangleIcon'
+import { InfoCircledIcon } from '@evm-ui/shared/icons/InfoCircledIcon'
+import { handleBreakpoints } from '@evm-ui/themes/basic-theme'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import type { Components } from '@mui/material'
 import type { TypographyVariantsOptions } from '@mui/material/styles'
-import { CheckIcon } from '@ui-kit/shared/icons/CheckIcon'
-import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
-import { InfoCircledIcon } from '@ui-kit/shared/icons/InfoCircledIcon'
-import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { DesignSystem } from '../design'
 
 const { Spacing, IconSize, OutlineWidth: OUTLINE_WIDTH } = SizesAndSpaces

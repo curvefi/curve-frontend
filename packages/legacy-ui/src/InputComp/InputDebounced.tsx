@@ -1,7 +1,7 @@
+import { useDebounce } from '@evm-ui/hooks/useDebounce'
 import { Box } from '@legacy-ui/Box/Box'
 import { InputLabel } from '@legacy-ui/InputComp'
 import { Input } from '@legacy-ui/InputComp/Input'
-import { useDebounce } from '@ui-kit/hooks/useDebounce'
 import { useInputContext } from './InputContext'
 import type { InputLabelProps, InputProps } from './types'
 

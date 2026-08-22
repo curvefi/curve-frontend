@@ -1,12 +1,12 @@
 import { useConnection } from 'wagmi'
+import { Settings } from '@evm-ui/features/user-profile/settings/Settings'
+import { UserProfileHeader } from '@evm-ui/features/user-profile/UserProfileHeader'
+import { useSwitch } from '@evm-ui/hooks/useSwitch'
+import { LlamaIcon } from '@evm-ui/shared/icons/LlamaIcon'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Drawer from '@mui/material/Drawer'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
-import { Settings } from '@ui-kit/features/user-profile/settings/Settings'
-import { UserProfileHeader } from '@ui-kit/features/user-profile/UserProfileHeader'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
-import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing, Width } = SizesAndSpaces
 

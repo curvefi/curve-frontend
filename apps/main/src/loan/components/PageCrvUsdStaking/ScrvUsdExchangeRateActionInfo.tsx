@@ -1,7 +1,7 @@
-import { t } from '@ui-kit/lib/i18n'
-import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
-import { mapQuery } from '@ui-kit/types/util'
-import { formatNumber } from '@ui-kit/utils'
+import { t } from '@evm-ui/lib/i18n'
+import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
+import { mapQuery } from '@evm-ui/types/util'
+import { formatNumber } from '@evm-ui/utils'
 import { useScrvUsdExchangeRate } from '../../entities/scrvusd-exchange-rate.query'
 import type { ChainId } from '../../types/loan.types'
 

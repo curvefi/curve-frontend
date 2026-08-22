@@ -1,6 +1,6 @@
-import { t } from '@ui-kit/lib/i18n'
-import { CHART_LINE_DASH_PATTERNS, CHART_LINE_WIDTHS } from '@ui-kit/shared/ui/Chart/chart.utils'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { t } from '@evm-ui/lib/i18n'
+import { CHART_LINE_DASH_PATTERNS, CHART_LINE_WIDTHS } from '@evm-ui/shared/ui/Chart/chart.utils'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 

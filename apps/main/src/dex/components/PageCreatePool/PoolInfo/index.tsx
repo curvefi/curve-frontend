@@ -2,8 +2,8 @@ import { styled } from 'styled-components'
 import { TextInput } from '@/dex/components/PageCreatePool/components/TextInput'
 import { INVALID_POOLS_NAME_CHARACTERS } from '@/dex/constants'
 import { useStore } from '@/dex/store/useStore'
+import { t } from '@evm-ui/lib/i18n'
 import { Box } from '@legacy-ui/Box'
-import { t } from '@ui-kit/lib/i18n'
 
 export const PoolInfo = () => {
   const poolName = useStore(state => state.createPool.poolName)

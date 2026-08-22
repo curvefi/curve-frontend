@@ -1,5 +1,5 @@
 import { enforce, test } from 'vest'
-import { addressValidationFn, createValidationSuite } from '@ui-kit/lib/validation'
+import { addressValidationFn, createValidationSuite } from '@evm-ui/lib/validation'
 import type { CreateVoteForm } from './useCreateVoteForm'
 
 export const createVoteFormValidationSuite = createValidationSuite(

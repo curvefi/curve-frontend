@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { applySxProps } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import type { SxProps, Theme } from '@mui/material/styles'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { applySxProps } from '@ui-kit/utils'
 
 const { Sizing, Spacing } = SizesAndSpaces
 

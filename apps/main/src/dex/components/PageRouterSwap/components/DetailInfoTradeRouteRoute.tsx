@@ -4,13 +4,13 @@ import type { Route } from '@/dex/components/PageRouterSwap/types'
 import { ROUTE } from '@/dex/constants'
 import { type PoolData, type UrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
+import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
+import { RouterLink } from '@evm-ui/shared/ui/RouterLink'
+import { TokenIcons } from '@evm-ui/shared/ui/TokenIcons'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { shortenAddress } from '@evm-ui/utils'
 import { ExternalLink } from '@legacy-ui/Link'
 import Stack from '@mui/material/Stack'
-import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
-import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
-import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { shortenAddress } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 

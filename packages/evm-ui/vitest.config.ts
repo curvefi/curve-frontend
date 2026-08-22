@@ -10,7 +10,7 @@ export default defineConfig({
       '@curvefi/prices-api': resolve(rootDir, '../prices-api/src/index.ts'),
       '@curvefi/prices-api/': `${resolve(rootDir, '../prices-api/src')}/`,
       '@primitives': resolve(rootDir, '../primitives/src'),
-      '@ui-kit': resolve(rootDir, 'src'),
+      '@evm-ui': resolve(rootDir, 'src'),
     },
   },
   test: {

@@ -12,7 +12,7 @@ import {
   type PriceToCoordinateConverter,
   type Time,
 } from 'lightweight-charts'
-import { CHART_LINE_DASH_PATTERNS } from '@ui-kit/shared/ui/Chart/chart.utils'
+import { CHART_LINE_DASH_PATTERNS } from '@evm-ui/shared/ui/Chart/chart.utils'
 
 type Coordinate = number
 type LiquidationRangeLineStyle = LineStyle.Solid | LineStyle.Dashed

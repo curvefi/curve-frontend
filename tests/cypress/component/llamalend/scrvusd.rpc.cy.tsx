@@ -26,11 +26,11 @@ import { fundUserWithCrvUsd } from '@cy/support/helpers/llamalend/supply/supply-
 import { createVirtualTestnet, createTenderlyWagmiConfigFromVNet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls, type TenderlyWagmiConfigFromVNet } from '@cy/support/helpers/tenderly/vnet'
 import { skipTestsAfterFailure } from '@cy/support/ui'
+import { CurveProvider } from '@evm-ui/features/connect-wallet/lib/CurveProvider'
+import { Chain, decimalGreaterThan, decimalMultiply, decimalSum } from '@evm-ui/utils'
+import { FormPlacementProvider } from '@evm-ui/widgets/DetailPageLayout/form-context/FormPlacementProvider'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
-import { CurveProvider } from '@ui-kit/features/connect-wallet/lib/CurveProvider'
-import { Chain, decimalGreaterThan, decimalMultiply, decimalSum } from '@ui-kit/utils'
-import { FormPlacementProvider } from '@ui-kit/widgets/DetailPageLayout/form-context/FormPlacementProvider'
 
 type ScrvUsdForm = 'deposit' | 'withdraw'
 

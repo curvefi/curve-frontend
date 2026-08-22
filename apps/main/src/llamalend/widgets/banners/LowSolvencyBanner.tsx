@@ -1,7 +1,7 @@
 import { SOLVENCY_THRESHOLDS } from '@/llamalend/markets.constants'
-import { t } from '@ui-kit/lib/i18n'
-import { Banner } from '@ui-kit/shared/ui/Banner'
-import { formatNumber } from '@ui-kit/utils'
+import { t } from '@evm-ui/lib/i18n'
+import { Banner } from '@evm-ui/shared/ui/Banner'
+import { formatNumber } from '@evm-ui/utils'
 
 type Props = {
   solvencyPercent: number

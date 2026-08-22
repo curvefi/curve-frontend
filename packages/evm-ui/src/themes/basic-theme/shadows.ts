@@ -1,4 +1,4 @@
-import type { DesignSystem } from '@ui-kit/themes/design'
+import type { DesignSystem } from '@evm-ui/themes/design'
 
 type ShadowElevation = -2 | -1 | 1 | 2 | 3
 

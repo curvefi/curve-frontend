@@ -2,8 +2,8 @@ import type { EstimatedGas, Slippage } from '@/dex/components/PagePool/types'
 import { PoolData } from '@/dex/types/main.types'
 import { shortenTokenName } from '@/dex/utils'
 import type { IDict } from '@curvefi/api/lib/interfaces'
+import type { SlippageType } from '@evm-ui/widgets/SlippageSettings'
 import { maybe } from '@primitives/objects.utils'
-import type { SlippageType } from '@ui-kit/widgets/SlippageSettings'
 
 export type Amount = {
   value: string

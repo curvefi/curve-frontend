@@ -1,11 +1,11 @@
 import type { RefObject } from 'react'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { borderStyle } from '@evm-ui/utils'
 import { FormControlLabel } from '@mui/material'
 import Popover from '@mui/material/Popover'
 import Stack from '@mui/material/Stack'
 import Switch from '@mui/material/Switch'
 import Typography from '@mui/material/Typography'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { borderStyle } from '@ui-kit/utils'
 import type { VisibilityGroup } from './visibility.types'
 
 const { Spacing } = SizesAndSpaces

@@ -1,8 +1,8 @@
+import { handleBreakpoints } from '@evm-ui/themes/basic-theme'
+import { TypographyVariantKey } from '@evm-ui/themes/typography'
 import type { Components } from '@mui/material/styles'
 import type { CSSObject } from '@mui/styled-engine'
 import { fromEntries, recordValues } from '@primitives/objects.utils'
-import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
-import { TypographyVariantKey } from '@ui-kit/themes/typography'
 import { DesignSystem } from '../../design'
 import { SizesAndSpaces } from '../../design/1_sizes_spaces'
 

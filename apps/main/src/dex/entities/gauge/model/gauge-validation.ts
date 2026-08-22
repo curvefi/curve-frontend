@@ -1,15 +1,15 @@
 import { enforce, group, test } from 'vest'
-import { t } from '@ui-kit/lib/i18n'
-import { curveApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
-import { evmAddressValidationGroup } from '@ui-kit/lib/model/query/evm-address-validation'
-import { poolValidationGroup } from '@ui-kit/lib/model/query/pool-validation'
+import { t } from '@evm-ui/lib/i18n'
+import { curveApiValidationGroup } from '@evm-ui/lib/model/query/curve-api-validation'
+import { evmAddressValidationGroup } from '@evm-ui/lib/model/query/evm-address-validation'
+import { poolValidationGroup } from '@evm-ui/lib/model/query/pool-validation'
 import {
   addressValidationFn,
   amountValidationFn,
   createValidationSuite,
   tokenIdValidationFn,
-} from '@ui-kit/lib/validation'
-import { amount as toAmount, formatNumber, TIME_FRAMES } from '@ui-kit/utils'
+} from '@evm-ui/lib/validation'
+import { amount as toAmount, formatNumber, TIME_FRAMES } from '@evm-ui/utils'
 import {
   AddRewardParams,
   DepositRewardApproveParams,

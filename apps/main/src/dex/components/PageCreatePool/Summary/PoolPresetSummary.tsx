@@ -6,7 +6,7 @@ import {
   SummaryDataPlaceholder,
 } from '@/dex/components/PageCreatePool/Summary/styles'
 import { useStore } from '@/dex/store/useStore'
-import { t } from '@ui-kit/lib/i18n'
+import { t } from '@evm-ui/lib/i18n'
 
 export const PoolPresetSummary = () => {
   const poolPresetIndex = useStore(state => state.createPool.poolPresetIndex)

@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 import { fromDate } from '@curvefi/prices-api/timestamp'
+import { getTableOptions, useTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { constQ, fakeLoadingQ, q } from '@evm-ui/types/util'
 import type { Address, Token } from '@primitives/address.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { constQ, fakeLoadingQ, q } from '@ui-kit/types/util'
 import { ActivityTable } from './ActivityTable'
 import {
   createPoolLiquidityColumns,

@@ -1,7 +1,7 @@
 import { useCreateLoanPrices } from '@/llamalend/queries/create-loan/create-loan-prices.query'
 import { useMarketOraclePrice } from '@/llamalend/queries/market'
-import { combineQueryState } from '@ui-kit/lib'
-import { decimalDiv, decimalGreaterThan } from '@ui-kit/utils'
+import { combineQueryState } from '@evm-ui/lib'
+import { decimalDiv, decimalGreaterThan } from '@evm-ui/utils'
 import type { CreateLoanFormQueryParams } from '../types'
 
 /**

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
-import { setTimeoutInterval } from '@ui-kit/utils/timers'
+import { setTimeoutInterval } from '@evm-ui/utils/timers'
 
 type CountdownProps = {
   /** startDate adds 7 days to the current date to mimic a DAO proposal voting period */

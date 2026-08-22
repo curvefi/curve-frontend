@@ -2,7 +2,7 @@
 import { BigNumber } from 'bignumber.js'
 import type { Hex } from 'viem'
 import { oneAddress, oneDecimal, oneFloat, oneInt } from '@cy/support/generators'
-import { decimal } from '@ui-kit/utils'
+import { decimal } from '@evm-ui/utils'
 import { createMockLlamaApi, TEST_TX_HASH } from '../mock-loan-test-data'
 import { createMockMintMarket } from '../mock-market.helpers'
 import { createIsApprovedStub, createStub, createSyncStub } from '../test-stub.utils'

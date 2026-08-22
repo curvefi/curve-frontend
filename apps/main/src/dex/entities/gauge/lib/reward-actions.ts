@@ -12,11 +12,11 @@ import type {
   DepositRewardParams,
 } from '@/dex/entities/gauge/types'
 import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
+import { notify } from '@evm-ui/features/connect-wallet'
+import { queryClient } from '@evm-ui/lib/api/query-client'
+import { t } from '@evm-ui/lib/i18n'
+import { GaugeParams } from '@evm-ui/lib/model/query'
 import { DefaultError, Mutation, useIsMutating, useMutation, UseMutationResult } from '@tanstack/react-query'
-import { notify } from '@ui-kit/features/connect-wallet'
-import { queryClient } from '@ui-kit/lib/api/query-client'
-import { t } from '@ui-kit/lib/i18n'
-import { GaugeParams } from '@ui-kit/lib/model/query'
 
 // we cannot use a proper T here because `useIsMutating` expects `unknown` for some reason
 type QueryMutation = Mutation<unknown, DefaultError, unknown>

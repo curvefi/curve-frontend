@@ -1,5 +1,5 @@
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import type { SxProps as MuiSx, Theme } from '@mui/material/styles'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { BorderWidth } = SizesAndSpaces
 

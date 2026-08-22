@@ -5,7 +5,7 @@ import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
 import { skipTestsAfterFailure } from '@cy/support/ui'
-import { Chain } from '@ui-kit/utils/network'
+import { Chain } from '@evm-ui/utils/network'
 
 const FUND_AMOUNT = '0x3635c9adc5dea00000' // 1000 ETH in wei
 

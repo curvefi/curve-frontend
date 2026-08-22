@@ -17,27 +17,27 @@ import {
 import { BoostTooltipContent } from '@/llamalend/widgets/tooltips/BoostTooltipContent'
 import { MarketSupplyRateTooltipContent } from '@/llamalend/widgets/tooltips/MarketSupplyRateTooltipContent'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
-import { Grid, Stack } from '@mui/material'
-import type { Address } from '@primitives/address.utils'
-import type { Decimal } from '@primitives/decimal.utils'
-import { assert } from '@primitives/objects.utils'
-import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
-import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
-import { LlamaChainId } from '@ui-kit/features/connect-wallet/lib/types'
-import { combineQueries } from '@ui-kit/lib'
-import { t } from '@ui-kit/lib/i18n'
-import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
-import { Metric } from '@ui-kit/shared/ui/Metric'
-import { TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { mapQuery, q } from '@ui-kit/types/util'
+import { useCampaignsByAddress } from '@evm-ui/entities/campaigns'
+import { useLendingSnapshots } from '@evm-ui/entities/lending-snapshots'
+import { LlamaChainId } from '@evm-ui/features/connect-wallet/lib/types'
+import { combineQueries } from '@evm-ui/lib'
+import { t } from '@evm-ui/lib/i18n'
+import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
+import { Metric } from '@evm-ui/shared/ui/Metric'
+import { TabsSwitcher } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { mapQuery, q } from '@evm-ui/types/util'
 import {
   AVERAGE_CATEGORIES,
   type AverageCategory,
   decimalMultiply,
   formatCappedRateValue,
   formatNumber,
-} from '@ui-kit/utils'
+} from '@evm-ui/utils'
+import { Grid, Stack } from '@mui/material'
+import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
+import { assert } from '@primitives/objects.utils'
 import { AmountSuppliedTooltipContent, VaultSharesTooltipContent } from './'
 
 const { Spacing } = SizesAndSpaces

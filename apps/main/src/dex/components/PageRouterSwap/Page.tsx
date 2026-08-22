@@ -7,13 +7,13 @@ import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
 import { useStore } from '@/dex/store/useStore'
 import type { NetworkUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
+import { isLoading, useCurve } from '@evm-ui/features/connect-wallet'
+import { useNavigate, useSearchParams, useParams } from '@evm-ui/hooks/router'
+import { t } from '@evm-ui/lib/i18n'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
-import { isLoading, useCurve } from '@ui-kit/features/connect-wallet'
-import { useNavigate, useSearchParams, useParams } from '@ui-kit/hooks/router'
-import { t } from '@ui-kit/lib/i18n'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { MaxWidth } = SizesAndSpaces
 

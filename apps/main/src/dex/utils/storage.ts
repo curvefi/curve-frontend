@@ -1,6 +1,6 @@
 import { merge } from 'lodash'
+import { setLocalStorageItem } from '@evm-ui/hooks/useLocalStorage'
 import { toArray } from '@primitives/array.utils'
-import { setLocalStorageItem } from '@ui-kit/hooks/useLocalStorage'
 
 const APP_STORAGE = {
   APP_DASHBOARD: 'curve-app-dashboard',

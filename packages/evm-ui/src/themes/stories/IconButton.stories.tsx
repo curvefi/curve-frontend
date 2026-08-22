@@ -1,10 +1,10 @@
 import { fn } from 'storybook/test'
+import { ChevronLeftIcon } from '@evm-ui/shared/icons/ChevronLeftIcon'
+import { FavoriteHeartIcon } from '@evm-ui/shared/icons/HeartIcon'
+import { LlamaIcon } from '@evm-ui/shared/icons/LlamaIcon'
 import IconButton, { type IconButtonProps } from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { ChevronLeftIcon } from '@ui-kit/shared/icons/ChevronLeftIcon'
-import { FavoriteHeartIcon } from '@ui-kit/shared/icons/HeartIcon'
-import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
 
 const sizes: NonNullable<IconButtonProps['size']>[] = ['extraExtraSmall', 'extraSmall', 'small', 'medium', 'large']
 const colors: NonNullable<IconButtonProps['color']>[] = [

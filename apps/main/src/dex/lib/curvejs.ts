@@ -33,10 +33,10 @@ import {
   routerGetToStoredRate,
 } from '@/dex/utils/utilsSwap'
 import type { IProfit } from '@curvefi/api/lib/interfaces'
-import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
-import { t } from '@ui-kit/lib/i18n'
-import { log } from '@ui-kit/lib/logging'
-import { getErrorMessage } from '@ui-kit/utils'
+import { waitForTransaction, waitForTransactions } from '@evm-ui/lib/ethers'
+import { t } from '@evm-ui/lib/i18n'
+import { log } from '@evm-ui/lib/logging'
+import { getErrorMessage } from '@evm-ui/utils'
 import { fetchNetworks } from '../entities/networks'
 
 const helpers = { waitForTransaction, waitForTransactions }

@@ -1,9 +1,9 @@
 import { ReactNode } from 'react'
+import { ArrowDownIcon } from '@evm-ui/shared/icons/ArrowDownIcon'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import TableCell, { TableCellProps } from '@mui/material/TableCell'
-import { ArrowDownIcon } from '@ui-kit/shared/icons/ArrowDownIcon'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 

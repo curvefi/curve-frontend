@@ -1,7 +1,7 @@
+import { withPendingToast } from '@evm-ui/features/connect-wallet/lib/notify'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { Button, Stack } from '@mui/material'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { withPendingToast } from '@ui-kit/features/connect-wallet/lib/notify'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Toast } from './Toast'
 import { showToast } from './toast.util'
 

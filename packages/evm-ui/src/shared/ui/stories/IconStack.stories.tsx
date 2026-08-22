@@ -1,8 +1,8 @@
+import { ChainIcon } from '@evm-ui/shared/icons/ChainIcon'
+import { CRVUSD_ADDRESS } from '@evm-ui/utils'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
-import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { IconStack } from '../IconStack'
 import { TokenIcon } from '../TokenIcon'
 

@@ -1,10 +1,10 @@
+import { t } from '@evm-ui/lib/i18n'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { CURVE_LOGO_URL, getBackgroundUrl } from '@legacy-ui/utils/utilsConstants'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
-import { t } from '@ui-kit/lib/i18n'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { isLoading, useCurve } from '../lib/CurveContext'
 import { useWallet } from '../lib/useWallet'
 

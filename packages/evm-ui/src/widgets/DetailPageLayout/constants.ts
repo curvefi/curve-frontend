@@ -1,4 +1,4 @@
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 

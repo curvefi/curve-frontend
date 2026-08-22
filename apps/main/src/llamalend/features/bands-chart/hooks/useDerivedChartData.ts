@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
+import { decimalSum, ZERO } from '@evm-ui/utils/decimal'
 import type { Decimal } from '@primitives/decimal.utils'
-import { decimalSum, ZERO } from '@ui-kit/utils/decimal'
 import type { ChartDataPoint, DerivedChartData } from '../types'
 
 const toNumber = (value: Decimal | undefined): number => Number(value ?? ZERO)

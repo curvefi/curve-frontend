@@ -1,6 +1,5 @@
 import { oneAddress, oneOf, oneValueOf } from '@cy/support/generators'
 import { type AppPath, oneAppPath } from '@cy/support/ui'
-import { recordValues, assert } from '@primitives/objects.utils'
 import {
   CRVUSD_ROUTES,
   DAO_ROUTES,
@@ -10,7 +9,8 @@ import {
   LLAMALEND_ROUTES,
   PAGE_INTEGRATIONS,
   PAGE_LEGAL,
-} from '@ui-kit/shared/routes'
+} from '@evm-ui/shared/routes'
+import { recordValues, assert } from '@primitives/objects.utils'
 
 const WBTC_LEND_POOL = '0xcaD85b7fe52B1939DCEebEe9bCf0b2a5Aa0cE617'
 const DEFAULT_NETWORK = 'ethereum'

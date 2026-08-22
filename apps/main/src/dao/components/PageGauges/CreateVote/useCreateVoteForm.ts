@@ -1,7 +1,7 @@
-import { useForm, useFormSync } from '@ui-kit/features/forms'
-import { usePinataJwt } from '@ui-kit/hooks/useLocalStorage'
-import type { FieldsOf } from '@ui-kit/lib'
-import { t } from '@ui-kit/lib/i18n'
+import { useForm, useFormSync } from '@evm-ui/features/forms'
+import { usePinataJwt } from '@evm-ui/hooks/useLocalStorage'
+import type { FieldsOf } from '@evm-ui/lib'
+import { t } from '@evm-ui/lib/i18n'
 import { useCreateVoteMutation } from './create-vote.mutation'
 import { createVoteFormValidationSuite } from './create-vote.validation'
 

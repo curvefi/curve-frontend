@@ -1,6 +1,6 @@
-import type { ExpandedPanelContext, TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { DataTable, DataTableProps } from '@ui-kit/shared/ui/DataTable/DataTable'
-import { ExpandedPanelActions } from '@ui-kit/shared/ui/DataTable/ExpandedPanelActions'
+import type { ExpandedPanelContext, TableItem } from '@evm-ui/shared/ui/DataTable/data-table.utils'
+import { DataTable, DataTableProps } from '@evm-ui/shared/ui/DataTable/DataTable'
+import { ExpandedPanelActions } from '@evm-ui/shared/ui/DataTable/ExpandedPanelActions'
 import { getTransactionActions } from './utils'
 
 type ActivityTableItem = TableItem & { txUrl?: string | null }

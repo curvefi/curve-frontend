@@ -1,17 +1,12 @@
 import { type ReactNode, useCallback, useMemo } from 'react'
-import Button from '@mui/material/Button'
-import { type IconButtonProps } from '@mui/material/IconButton'
-import Stack, { StackProps } from '@mui/material/Stack'
-import Typography, { type TypographyProps } from '@mui/material/Typography'
-import type { Amount } from '@primitives/decimal.utils'
-import { useBreakpoint, useIsMobile } from '@ui-kit/hooks/useBreakpoints'
-import { t } from '@ui-kit/lib/i18n'
-import { CopyIcon } from '@ui-kit/shared/icons/CopyIcon'
-import { ErrorIconButton } from '@ui-kit/shared/ui/ErrorIconButton'
-import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { TypographyVariantKey } from '@ui-kit/themes/typography'
-import { type MakeOptional, type QueryOrValue, type QueryProp, toQuery } from '@ui-kit/types/util'
+import { useBreakpoint, useIsMobile } from '@evm-ui/hooks/useBreakpoints'
+import { t } from '@evm-ui/lib/i18n'
+import { CopyIcon } from '@evm-ui/shared/icons/CopyIcon'
+import { ErrorIconButton } from '@evm-ui/shared/ui/ErrorIconButton'
+import { Tooltip, type TooltipProps } from '@evm-ui/shared/ui/Tooltip'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import type { TypographyVariantKey } from '@evm-ui/themes/typography'
+import { type MakeOptional, type QueryOrValue, type QueryProp, toQuery } from '@evm-ui/types/util'
 import {
   applySxProps,
   copyToClipboard,
@@ -21,8 +16,13 @@ import {
   type NumberFormatOptions,
   PLACEHOLDER_USD,
   type SxProps,
-} from '@ui-kit/utils'
-import { showToast } from '@ui-kit/widgets/Toast/toast.util'
+} from '@evm-ui/utils'
+import { showToast } from '@evm-ui/widgets/Toast/toast.util'
+import Button from '@mui/material/Button'
+import { type IconButtonProps } from '@mui/material/IconButton'
+import Stack, { StackProps } from '@mui/material/Stack'
+import Typography, { type TypographyProps } from '@mui/material/Typography'
+import type { Amount } from '@primitives/decimal.utils'
 import { LabelTooltipIcon } from './LabelTooltipIcon'
 import { METRIC_CATEGORIES, type MetricCategory, type MetricLayout } from './metric-categories'
 import { WithSkeleton } from './WithSkeleton'

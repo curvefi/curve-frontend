@@ -24,13 +24,13 @@ import { fakeCollateralEvents } from '@cy/support/helpers/llamalend/mock-loan-te
 import { llamaNetworks } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createTenderlyWagmiConfigFromVNet } from '@cy/support/helpers/tenderly'
 import { type TenderlyWagmiConfigFromVNet } from '@cy/support/helpers/tenderly/vnet'
+import { CurveProvider } from '@evm-ui/features/connect-wallet/lib/CurveProvider'
+import type { UserMarketQuery } from '@evm-ui/lib/model'
+import { MarketType } from '@evm-ui/types/market'
+import { constQ, type Range } from '@evm-ui/types/util'
+import { FormPlacementProvider } from '@evm-ui/widgets/DetailPageLayout/form-context/FormPlacementProvider'
 import Box from '@mui/material/Box'
 import type { Decimal } from '@primitives/decimal.utils'
-import { CurveProvider } from '@ui-kit/features/connect-wallet/lib/CurveProvider'
-import type { UserMarketQuery } from '@ui-kit/lib/model'
-import { MarketType } from '@ui-kit/types/market'
-import { constQ, type Range } from '@ui-kit/types/util'
-import { FormPlacementProvider } from '@ui-kit/widgets/DetailPageLayout/form-context/FormPlacementProvider'
 
 // todo: soft liquidation should be detected not forced by passing a tab. However, that detection is in the separate apps for now.
 const LoanComponentMap = {

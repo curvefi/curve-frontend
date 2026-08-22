@@ -1,7 +1,7 @@
 import { LowSolvencyBanner } from '@/llamalend/widgets/banners/LowSolvencyBanner'
 import { oneFloat } from '@cy/support/generators'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
-import { formatNumber } from '@ui-kit/utils'
+import { formatNumber } from '@evm-ui/utils'
 
 const mountBanner = ({ solvencyPercent }: { solvencyPercent: number }) =>
   cy.mount(

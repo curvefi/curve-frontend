@@ -1,5 +1,5 @@
+import { TableSortDrawer } from '@evm-ui/shared/ui/DataTable/TableSortDrawer'
 import { OnChangeFn, SortingState } from '@tanstack/react-table'
-import { TableSortDrawer } from '@ui-kit/shared/ui/DataTable/TableSortDrawer'
 import { MarketColumnId } from '../columns'
 import { useMarketsSortOptions } from '../hooks/useMarketsSortOptions'
 

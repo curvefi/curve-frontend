@@ -1,8 +1,8 @@
 import type { ScrvUsdRevenue } from '@/loan/entities/scrvusd-revenue.query'
+import { t } from '@evm-ui/lib/i18n'
+import { ChartTooltipDataRow, ChartTooltipSeriesGroup, ChartTooltipShell } from '@evm-ui/shared/ui/Chart'
+import { formatNumber } from '@evm-ui/utils'
 import { formatDate } from '@legacy-ui/utils'
-import { t } from '@ui-kit/lib/i18n'
-import { ChartTooltipDataRow, ChartTooltipSeriesGroup, ChartTooltipShell } from '@ui-kit/shared/ui/Chart'
-import { formatNumber } from '@ui-kit/utils'
 
 type Epoch = ScrvUsdRevenue['epochs'][number]
 

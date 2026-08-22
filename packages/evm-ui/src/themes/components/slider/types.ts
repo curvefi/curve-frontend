@@ -1,6 +1,6 @@
-import type { SliderProps } from '@ui-kit/shared/ui/Slider'
-import { type Responsive } from '@ui-kit/themes/basic-theme'
-import { DesignSystem } from '@ui-kit/themes/design'
+import type { SliderProps } from '@evm-ui/shared/ui/Slider'
+import { type Responsive } from '@evm-ui/themes/basic-theme'
+import { DesignSystem } from '@evm-ui/themes/design'
 
 export type SliderSize = NonNullable<SliderProps['size']>
 export type SliderRailBackground = NonNullable<SliderProps['data-rail-background']>

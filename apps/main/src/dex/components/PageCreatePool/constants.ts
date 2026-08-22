@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { t } from '@ui-kit/lib/i18n'
+import { t } from '@evm-ui/lib/i18n'
 import type { NgAssetType, SwapType } from './types'
 
 export const CRYPTOSWAP = 'Cryptoswap'

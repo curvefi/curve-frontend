@@ -5,20 +5,20 @@ import { useScrvUsdRevenue } from '@/loan/entities/scrvusd-revenue.query'
 import { useScrvUsdYield } from '@/loan/entities/scrvusd-yield.query'
 import { networks } from '@/loan/networks'
 import type { ChainId } from '@/loan/types/loan.types'
-import { Card, CardHeader, Stack } from '@mui/material'
-import CardContent from '@mui/material/CardContent'
-import { useTheme } from '@mui/material/styles'
-import { recordEntries } from '@primitives/objects.utils'
-import { t } from '@ui-kit/lib/i18n'
-import { timeOptions } from '@ui-kit/lib/model/query/time-option-validation'
+import { t } from '@evm-ui/lib/i18n'
+import { timeOptions } from '@evm-ui/lib/model/query/time-option-validation'
 import {
   ChartFooter,
   ChartHeader,
   type ChartSelections,
   ChartStateWrapper,
   type LegendItem,
-} from '@ui-kit/shared/ui/Chart'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+} from '@evm-ui/shared/ui/Chart'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { Card, CardHeader, Stack } from '@mui/material'
+import CardContent from '@mui/material/CardContent'
+import { useTheme } from '@mui/material/styles'
+import { recordEntries } from '@primitives/objects.utils'
 import { AdvancedDetails } from './AdvancedDetails'
 import { RevenueDistributionsBarChart } from './DistributionsBarChart'
 import { RevenueLineChart } from './RevenueLineChart'

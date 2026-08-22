@@ -1,11 +1,11 @@
 import ReactECharts, { type EChartsOption } from 'echarts-for-react'
 import { useMemo, type ReactNode } from 'react'
+import { useLatestValueRef } from '@evm-ui/hooks/useLatestValueRef'
+import type { ChartLineDashPattern } from '@evm-ui/shared/ui/Chart/chart.utils'
+import { useEChartsTooltip } from '@evm-ui/shared/ui/Chart/hooks/useEChartsTooltip'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { useTheme } from '@mui/material/styles'
 import { maybe } from '@primitives/objects.utils'
-import { useLatestValueRef } from '@ui-kit/hooks/useLatestValueRef'
-import type { ChartLineDashPattern } from '@ui-kit/shared/ui/Chart/chart.utils'
-import { useEChartsTooltip } from '@ui-kit/shared/ui/Chart/hooks/useEChartsTooltip'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { FontSize } = SizesAndSpaces
 

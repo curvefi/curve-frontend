@@ -1,4 +1,4 @@
-import { t } from '@ui-kit/lib/i18n'
+import { t } from '@evm-ui/lib/i18n'
 
 type FaqItem = {
   question: string

@@ -11,11 +11,11 @@ import {
   HelperFields,
 } from '@/dex/features/deposit-gauge-reward/ui'
 import { ChainId } from '@/dex/types/main.types'
+import { useFormSync, FormProvider, useForm } from '@evm-ui/features/forms'
+import { useTokenBalance } from '@evm-ui/hooks/useTokenBalance'
 import { FormErrorsDisplay } from '@legacy-ui/FormErrorsDisplay'
 import { BlockSkeleton } from '@legacy-ui/skeleton'
 import { FormContainer, FormFieldsContainer, GroupedFieldsContainer } from '@legacy-ui/styled-containers'
-import { useFormSync, FormProvider, useForm } from '@ui-kit/features/forms'
-import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 
 export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const { address: signerAddress } = useConnection()

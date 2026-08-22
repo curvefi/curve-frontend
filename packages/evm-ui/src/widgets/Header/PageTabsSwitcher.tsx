@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
+import { RouterLink } from '@evm-ui/shared/ui/RouterLink'
+import { TabsSwitcher, TabsSwitcherProps } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
 import MuiLink from '@mui/material/Link'
-import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
-import { TabsSwitcher, TabsSwitcherProps } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import type { AppPage } from './types'
 
 type PageTabsProps = {

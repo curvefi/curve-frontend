@@ -1,5 +1,5 @@
 import { EstimatedGas } from '@/dex/types/main.types'
-import { weiToEther } from '@ui-kit/utils'
+import { weiToEther } from '@evm-ui/utils'
 
 export function getMaxAmountMinusGas(estimatedGas: EstimatedGas, gasCost: number, tokenBalance: string) {
   const parsedEstimatedGas = Array.isArray(estimatedGas) ? estimatedGas[0] + estimatedGas[1] : estimatedGas

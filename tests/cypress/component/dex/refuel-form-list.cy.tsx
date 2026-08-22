@@ -1,7 +1,7 @@
 import { RefuelFormList } from '@/dex/features/manage-pool/components/RefuelFormList'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
-import { constQ } from '@ui-kit/types/util'
+import { constQ } from '@evm-ui/types/util'
 
 type RefuelFormListProps = Parameters<typeof RefuelFormList>[0]
 

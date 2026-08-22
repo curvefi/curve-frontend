@@ -1,12 +1,12 @@
 import { type ReactNode, useCallback, useState } from 'react'
+import { BUTTON_FORM_SIZE } from '@evm-ui/features/forms/constants'
+import { SwipeableDrawer } from '@evm-ui/shared/ui/SwipeableDrawer/SwipeableDrawer'
+import type { TabOption } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
+import { MUI_BUTTON_SIZE } from '@evm-ui/themes/components/button'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { applySxProps } from '@evm-ui/utils'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
-import { BUTTON_FORM_SIZE } from '@ui-kit/features/forms/constants'
-import { SwipeableDrawer } from '@ui-kit/shared/ui/SwipeableDrawer/SwipeableDrawer'
-import type { TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
-import { MUI_BUTTON_SIZE } from '@ui-kit/themes/components/button'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { applySxProps } from '@ui-kit/utils'
 
 const { Spacing, ButtonSize } = SizesAndSpaces
 

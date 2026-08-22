@@ -5,6 +5,7 @@ import { SelectGaugeListChunk as ComboBoxListChunk } from '@/dao/components/Comb
 import type { ComboBoxSelectGaugeProps } from '@/dao/components/ComboBoxSelectGauge/types'
 import { useStore } from '@/dao/store/useStore'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
+import { t } from '@evm-ui/lib/i18n'
 import { Box } from '@legacy-ui/Box/Box'
 import { Icon } from '@legacy-ui/Icon'
 import { IconButton } from '@legacy-ui/IconButton/IconButton'
@@ -15,7 +16,6 @@ import { Popover } from '@legacy-ui/Popover/Popover'
 import { Spinner } from '@legacy-ui/Spinner'
 import { SpinnerWrapper } from '@legacy-ui/Spinner/SpinnerWrapper'
 import { breakpoints } from '@legacy-ui/utils/responsive'
-import { t } from '@ui-kit/lib/i18n'
 
 export const ComboBox = ({
   testId,

@@ -4,9 +4,9 @@ import { useChainId } from 'wagmi'
 import { AlertFormError } from '@/dex/components/AlertFormError'
 import { AlertSlippage } from '@/dex/components/AlertSlippage'
 import type { FormStatus, FormValues, SearchedParams } from '@/dex/components/PageRouterSwap/types'
+import { t } from '@evm-ui/lib/i18n'
+import { useTokenUsdRate } from '@evm-ui/lib/model/entities/token-usd-rate'
 import { AlertBox } from '@legacy-ui/AlertBox'
-import { t } from '@ui-kit/lib/i18n'
-import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 export const RouterSwapAlerts = ({
   formStatus,

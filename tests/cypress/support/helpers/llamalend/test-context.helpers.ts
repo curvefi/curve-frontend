@@ -2,10 +2,10 @@ import { ethAddress } from 'viem'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { networks as loanNetworks } from '@/loan/networks'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { globalLibs } from '@ui-kit/features/connect-wallet/lib/utils'
-import { queryClient } from '@ui-kit/lib/api'
-import { type GasInfo, type GasInfoQueryOptions, setGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
-import { getTokenUsdRateKey } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { globalLibs } from '@evm-ui/features/connect-wallet/lib/utils'
+import { queryClient } from '@evm-ui/lib/api'
+import { type GasInfo, type GasInfoQueryOptions, setGasInfoAndUpdateLib } from '@evm-ui/lib/model/entities/gas-info'
+import { getTokenUsdRateKey } from '@evm-ui/lib/model/entities/token-usd-rate'
 
 export const llamaNetworks = loanNetworks as unknown as NetworkDict<LlamaChainId>
 

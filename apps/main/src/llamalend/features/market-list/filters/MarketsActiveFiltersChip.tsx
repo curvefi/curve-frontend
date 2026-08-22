@@ -1,22 +1,22 @@
 import { capitalize } from 'lodash'
 import { useMemo } from 'react'
-import { toArray } from '@primitives/array.utils'
-import { assert, notFalsy } from '@primitives/objects.utils'
-import { ChainFilterChips } from '@ui-kit/shared/ui/DataTable/chips/ChainFilterChips'
-import type { ColumnMeta, FilterProps, TableItem, TanstackTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { ChainFilterChips } from '@evm-ui/shared/ui/DataTable/chips/ChainFilterChips'
+import type { ColumnMeta, FilterProps, TableItem, TanstackTable } from '@evm-ui/shared/ui/DataTable/data-table.utils'
 import {
   getRangeFilterLabel,
   parseListFilter,
   parseRangeFilter,
   rangeFilterFn,
   serializeListFilter,
-} from '@ui-kit/shared/ui/DataTable/filters'
+} from '@evm-ui/shared/ui/DataTable/filters'
 import {
   TableActiveFilterGroups,
   type TableActiveFilterGroup,
   type TableActiveFilterGroupChipsProps,
-} from '@ui-kit/shared/ui/DataTable/TableActiveFilterGroups'
-import { constQ } from '@ui-kit/types/util'
+} from '@evm-ui/shared/ui/DataTable/TableActiveFilterGroups'
+import { constQ } from '@evm-ui/types/util'
+import { toArray } from '@primitives/array.utils'
+import { assert, notFalsy } from '@primitives/objects.utils'
 import { MARKET_COLUMNS, MARKET_TITLES, MarketColumnId } from '../columns'
 
 const MARKET_COLUMN_ORDER = new Map(MARKET_COLUMNS.map((column, index) => [column.id, index]))

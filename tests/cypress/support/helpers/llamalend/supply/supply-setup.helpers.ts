@@ -2,8 +2,8 @@ import { parseEther, parseUnits, type Address } from 'viem'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import type { CreateVirtualTestnetResponse } from '@cy/support/helpers/tenderly/vnet-create'
 import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
+import { CRVUSD_ADDRESS } from '@evm-ui/utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 
 export const CRVUSD_DECIMALS = 18
 

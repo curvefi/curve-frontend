@@ -1,6 +1,6 @@
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
-import { SLIPPAGE } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
-import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings/SlippageToleranceActionInfo'
+import { SLIPPAGE } from '@evm-ui/widgets/SlippageSettings/slippage.utils'
+import { SlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings/SlippageToleranceActionInfo'
 
 describe('Slippage settings', () => {
   it('does not submit an enclosing form when saving', () => {

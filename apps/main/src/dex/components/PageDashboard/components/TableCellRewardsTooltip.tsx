@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import { RewardCrv } from '@/dex/types/main.types'
 import { rewardsApyCrvText } from '@/dex/utils/utilsCurvejs'
+import { decimal, formatNumber } from '@evm-ui/utils'
 import { Box } from '@legacy-ui/Box'
-import { decimal, formatNumber } from '@ui-kit/utils'
 
 type Props = {
   crv?: RewardCrv[]

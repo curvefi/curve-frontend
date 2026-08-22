@@ -1,8 +1,8 @@
 import type { VeCrvFee } from '@/dao/entities/vecrv-fees'
+import { useCurrentDate } from '@evm-ui/hooks/useCurrentDate'
+import { EChartsBarChart, formatChartAxisNumber } from '@evm-ui/shared/ui/Chart'
 import { formatDate } from '@legacy-ui/utils'
 import { useTheme } from '@mui/material/styles'
-import { useCurrentDate } from '@ui-kit/hooks/useCurrentDate'
-import { EChartsBarChart, formatChartAxisNumber } from '@ui-kit/shared/ui/Chart'
 import { FeesBarChartTooltip } from './FeesBarChartTooltip'
 
 type FeesBarChartProps = {

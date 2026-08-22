@@ -1,10 +1,10 @@
 /// <reference types="./mui-checkbox.d.ts" />
 import type { ReactNode } from 'react'
+import { CheckIcon } from '@evm-ui/shared/icons/CheckIcon'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Box from '@mui/material/Box'
 import type { Components } from '@mui/material/styles'
 import { createSvgIcon } from '@mui/material/utils'
-import { CheckIcon } from '@ui-kit/shared/icons/CheckIcon'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { handleBreakpoints } from '../../basic-theme'
 
 const { Sizing } = SizesAndSpaces

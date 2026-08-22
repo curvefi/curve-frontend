@@ -24,12 +24,12 @@ import {
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, ChainId } from '@/dex/types/main.types'
+import { t } from '@evm-ui/lib/i18n'
 import { Box } from '@legacy-ui/Box'
 import { Button } from '@legacy-ui/Button'
 import { Checkbox } from '@legacy-ui/Checkbox'
 import { Icon } from '@legacy-ui/Icon'
 import type { Address } from '@primitives/address.utils'
-import { t } from '@ui-kit/lib/i18n'
 import { WarningBox } from '../components/WarningBox'
 import { SelectTokenButton } from './SelectTokenButton'
 

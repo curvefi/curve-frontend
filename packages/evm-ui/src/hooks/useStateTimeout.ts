@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from 'react'
-import { Duration } from '@ui-kit/themes/design/0_primitives'
+import { Duration } from '@evm-ui/themes/design/0_primitives'
 
 /**
  * Timeout hook that returns a boolean indicating if the data has taken too long to load.

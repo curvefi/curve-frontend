@@ -1,5 +1,5 @@
 import { enforce, group, test } from 'vest'
-import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
+import { chainValidationGroup } from '@evm-ui/lib/model/query/chain-validation'
 import type { TokenParams } from './root-keys'
 
 export const tokenValidationGroup = ({ chainId, tokenAddress }: TokenParams) =>

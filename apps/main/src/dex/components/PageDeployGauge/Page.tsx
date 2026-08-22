@@ -1,8 +1,8 @@
 import { styled } from 'styled-components'
 import { DeployGauge } from '@/dex/components/PageDeployGauge/index'
 import type { NetworkUrlParams } from '@/dex/types/main.types'
+import { useParams } from '@evm-ui/hooks/router'
 import { breakpoints } from '@legacy-ui/utils/responsive'
-import { useParams } from '@ui-kit/hooks/router'
 
 export const PageDeployGauge = () => {
   const props = useParams<NetworkUrlParams>()

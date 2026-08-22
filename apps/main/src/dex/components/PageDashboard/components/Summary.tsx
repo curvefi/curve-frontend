@@ -10,14 +10,14 @@ import { TotalRecurrence as SummaryRecurrence } from '@/dex/components/PageDashb
 import { SummaryTotal } from '@/dex/components/PageDashboard/components/SummaryTotal'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 import { useStore } from '@/dex/store/useStore'
+import { useLayoutStore } from '@evm-ui/features/layout'
+import { t } from '@evm-ui/lib/i18n'
+import { TabsSwitcher, type TabOption } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
 import { Box } from '@legacy-ui/Box'
 import { SpinnerWrapper } from '@legacy-ui/Spinner'
 import { Stats } from '@legacy-ui/Stats'
 import { shortenAccount } from '@legacy-ui/utils'
 import { breakpoints } from '@legacy-ui/utils/responsive'
-import { useLayoutStore } from '@ui-kit/features/layout'
-import { t } from '@ui-kit/lib/i18n'
-import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 
 type Tab = 'DAY_PROFITS' | 'CLAIMABLE_TOKENS'
 const tabs: TabOption<Tab>[] = [

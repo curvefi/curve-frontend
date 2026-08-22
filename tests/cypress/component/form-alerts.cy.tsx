@@ -1,5 +1,5 @@
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
-import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
+import { FormAlerts } from '@evm-ui/widgets/DetailPageLayout/FormAlerts'
 
 const ERROR_MESSAGE = Array.from({ length: 20 }, (_, index) => `Transaction error detail ${index}`).join(' ')
 

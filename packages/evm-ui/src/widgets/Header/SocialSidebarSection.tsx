@@ -1,3 +1,7 @@
+import { isChinese } from '@evm-ui/lib/i18n'
+import { DiscordIcon } from '@evm-ui/shared/icons/DiscordIcon'
+import { DodoIcon } from '@evm-ui/shared/icons/DodoIcon'
+import { Tooltip } from '@evm-ui/shared/ui/Tooltip'
 import { CURVE_SOCIALS } from '@legacy-ui/utils'
 import TelegramIcon from '@mui/icons-material/Telegram'
 import TwitterIcon from '@mui/icons-material/Twitter'
@@ -6,10 +10,6 @@ import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
 import SvgIcon from '@mui/material/SvgIcon'
-import { isChinese } from '@ui-kit/lib/i18n'
-import { DiscordIcon } from '@ui-kit/shared/icons/DiscordIcon'
-import { DodoIcon } from '@ui-kit/shared/icons/DodoIcon'
-import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SidebarSection } from './SidebarSection'
 
 type SocialButtonProps = {

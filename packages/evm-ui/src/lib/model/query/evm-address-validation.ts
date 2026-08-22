@@ -1,6 +1,6 @@
 import { enforce, group, skipWhen, test } from 'vest'
 import { isAddress } from 'viem'
-import { createValidationSuite } from '@ui-kit/lib/validation'
+import { createValidationSuite } from '@evm-ui/lib/validation'
 import type { UserParams } from './root-keys'
 
 type EvmAddressValidationParams<T extends string, TField extends string = 'evmAddress'> = {

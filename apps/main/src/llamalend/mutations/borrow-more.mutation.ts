@@ -14,11 +14,11 @@ import {
   borrowMoreMutationValidationSuite,
 } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
+import { t } from '@evm-ui/lib/i18n'
+import { rootKeys } from '@evm-ui/lib/model'
+import { waitForApproval } from '@evm-ui/utils'
 import { type Address, type Hex } from '@primitives/address.utils'
 import type { RouteProvider } from '@primitives/router.utils'
-import { t } from '@ui-kit/lib/i18n'
-import { rootKeys } from '@ui-kit/lib/model'
-import { waitForApproval } from '@ui-kit/utils'
 
 type BorrowMoreOptions = {
   marketId: string | undefined

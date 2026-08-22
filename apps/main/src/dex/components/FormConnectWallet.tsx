@@ -1,8 +1,8 @@
 import { ReactNode } from 'react'
+import { isLoading, useCurve, useWallet } from '@evm-ui/features/connect-wallet'
+import { t } from '@evm-ui/lib/i18n'
 import { Button } from '@legacy-ui/Button'
 import { Spinner } from '@legacy-ui/Spinner'
-import { isLoading, useCurve, useWallet } from '@ui-kit/features/connect-wallet'
-import { t } from '@ui-kit/lib/i18n'
 
 export const FormConnectWallet = ({ loading, children }: { loading: boolean; children: ReactNode }) => {
   const { connectState, curveApi } = useCurve()

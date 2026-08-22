@@ -3,13 +3,13 @@ import { getDexChartSelectionKey, useDexOhlcQuery } from '@/dex/queries/ohlc-cha
 import type { ChainId } from '@/dex/types/main.types'
 import { getBlockchainId } from '@curvefi/prices-api'
 import type { Pool } from '@curvefi/prices-api/pools'
-import type { OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
-import { useChartTimeSettings } from '@ui-kit/features/candle-chart/hooks/useChartTimeSettings'
-import { useDexChartList } from '@ui-kit/features/candle-chart/hooks/useDexChartList'
-import { useOhlcQueryAdapter, useStableOhlcAnchorEnd } from '@ui-kit/features/candle-chart/hooks/useOhlcQueries'
-import type { LpPriceOhlcDataFormatted } from '@ui-kit/features/candle-chart/types'
-import { t } from '@ui-kit/lib/i18n'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { OhlcChartProps } from '@evm-ui/features/candle-chart/ChartWrapper'
+import { useChartTimeSettings } from '@evm-ui/features/candle-chart/hooks/useChartTimeSettings'
+import { useDexChartList } from '@evm-ui/features/candle-chart/hooks/useDexChartList'
+import { useOhlcQueryAdapter, useStableOhlcAnchorEnd } from '@evm-ui/features/candle-chart/hooks/useOhlcQueries'
+import type { LpPriceOhlcDataFormatted } from '@evm-ui/features/candle-chart/types'
+import { t } from '@evm-ui/lib/i18n'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 
 const { Height } = SizesAndSpaces
 

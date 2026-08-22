@@ -1,22 +1,22 @@
 import { LEVERAGE } from '@/llamalend/constants'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
-import Collapse from '@mui/material/Collapse'
-import Stack from '@mui/material/Stack'
-import type { Decimal } from '@primitives/decimal.utils'
-import { maybe } from '@primitives/objects.utils'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
-import { t } from '@ui-kit/lib/i18n'
-import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { mapQuery, type QueryProp } from '@ui-kit/types/util'
-import { borderStyle, decimal, formatNumber, formatToken } from '@ui-kit/utils'
+import { useSwitch } from '@evm-ui/hooks/useSwitch'
+import { t } from '@evm-ui/lib/i18n'
+import { ActionInfo } from '@evm-ui/shared/ui/ActionInfo'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
+import { mapQuery, type QueryProp } from '@evm-ui/types/util'
+import { borderStyle, decimal, formatNumber, formatToken } from '@evm-ui/utils'
 import {
   getPriceImpactDisplay,
   getPriceImpactPercent,
   type PriceImpact,
-} from '@ui-kit/widgets/DetailPageLayout/price-impact.util'
-import { RouteProvidersAccordion } from '@ui-kit/widgets/RouteProvider'
-import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
+} from '@evm-ui/widgets/DetailPageLayout/price-impact.util'
+import { RouteProvidersAccordion } from '@evm-ui/widgets/RouteProvider'
+import { SlippageToleranceActionInfo } from '@evm-ui/widgets/SlippageSettings'
+import Collapse from '@mui/material/Collapse'
+import Stack from '@mui/material/Stack'
+import type { Decimal } from '@primitives/decimal.utils'
+import { maybe } from '@primitives/objects.utils'
 
 const { Spacing } = SizesAndSpaces
 

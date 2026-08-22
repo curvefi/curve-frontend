@@ -40,7 +40,7 @@ Access the application in a web browser:
 This repository is organized as follows:
 
 - `/apps/main`: This application manages router swaps, pool-specific functions (deposit, withdraw, swap), and pool creation [React](https://react.dev/) application.
-- `/packages/evm-ui`: Shared UI kit created using Material UI, mapped as `@ui-kit`
+- `/packages/evm-ui`: Shared UI kit created using Material UI, mapped as `@evm-ui`
 - `/packages/prices-api`: Package for consuming the Prices API, mapped as `@curvefi/prices-api`. Soon to be to separated its own NPM package.
 - `/tests`: Cypress tests
 

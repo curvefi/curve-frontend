@@ -1,6 +1,6 @@
 import type { YieldKeys } from '@/loan/components/PageCrvUsdStaking/types'
-import { t } from '@ui-kit/lib/i18n'
-import { CHART_LINE_DASH_PATTERNS, type ChartLineDashPattern } from '@ui-kit/shared/ui/Chart'
+import { t } from '@evm-ui/lib/i18n'
+import { CHART_LINE_DASH_PATTERNS, type ChartLineDashPattern } from '@evm-ui/shared/ui/Chart'
 
 export const priceLineLabels: Record<YieldKeys, { label: string; dash?: ChartLineDashPattern }> = {
   apyProjected: { label: t`APR` },

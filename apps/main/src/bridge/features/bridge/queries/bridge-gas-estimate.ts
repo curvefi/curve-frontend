@@ -1,5 +1,5 @@
-import { requireLib } from '@ui-kit/features/connect-wallet'
-import { queryFactory, rootKeys } from '@ui-kit/lib/model'
+import { requireLib } from '@evm-ui/features/connect-wallet'
+import { queryFactory, rootKeys } from '@evm-ui/lib/model'
 import type { BridgeParams, BridgeQuery } from '../types'
 import { bridgeValidationSuite } from '../validation/bridge.validation'
 

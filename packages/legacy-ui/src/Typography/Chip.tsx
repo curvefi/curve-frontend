@@ -1,8 +1,8 @@
 import { PropsWithChildren } from 'react'
 import { styled } from 'styled-components'
+import { WithWrapper } from '@evm-ui/shared/ui/WithWrapper'
 import { TooltipButton as Tooltip } from '@legacy-ui/Tooltip/TooltipButton'
 import type { ChipProps } from '@legacy-ui/Typography/types'
-import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 
 export const Chip = ({
   as,

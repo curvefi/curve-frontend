@@ -2,10 +2,10 @@ import { styled } from 'styled-components'
 import { Dashboard } from '@/dex/components/PageDashboard/index'
 import { useChainId } from '@/dex/hooks/useChainId'
 import type { NetworkUrlParams } from '@/dex/types/main.types'
+import { ConnectWalletPrompt, isLoading, useCurve, useWallet } from '@evm-ui/features/connect-wallet'
+import { useParams } from '@evm-ui/hooks/router'
 import { SpinnerWrapper, Spinner } from '@legacy-ui/Spinner'
 import { breakpoints } from '@legacy-ui/utils/responsive'
-import { ConnectWalletPrompt, isLoading, useCurve, useWallet } from '@ui-kit/features/connect-wallet'
-import { useParams } from '@ui-kit/hooks/router'
 
 export const PageDashboard = () => {
   const props = useParams<NetworkUrlParams>()

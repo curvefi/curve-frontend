@@ -1,5 +1,5 @@
 import { useConnection } from 'wagmi'
-import type { SxProps } from '@ui-kit/utils/mui'
+import type { SxProps } from '@evm-ui/utils/mui'
 import { useWallet } from '../lib'
 import { ConnectedWalletLabel } from './ConnectedWalletLabel'
 import { ConnectWalletButton } from './ConnectWalletButton'

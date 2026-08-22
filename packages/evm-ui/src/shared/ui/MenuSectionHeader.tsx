@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
+import { borderStyle } from '@evm-ui/utils'
 import Typography from '@mui/material/Typography'
-import { borderStyle } from '@ui-kit/utils'
 import { SizesAndSpaces } from '../../themes/design/1_sizes_spaces'
 
 export const MenuSectionHeader = ({ children }: { children: ReactNode }) => (

@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react'
+import { Banner, type BannerProps } from '@evm-ui/shared/ui/Banner'
 import { AlertType } from '@legacy-ui/AlertBox/types'
-import { Banner, type BannerProps } from '@ui-kit/shared/ui/Banner'
 
 export type MarketBannerAlert = {
-  // TODO: move alertType to ui-kit and refactor lend/loan/dex etc alertType
+  // TODO: move alertType to evm-ui and refactor lend/loan/dex etc alertType
   alertType: AlertType
   banner: Omit<BannerProps, 'children'> & { title: ReactNode }
 }

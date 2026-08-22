@@ -4,11 +4,11 @@ import { useScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances.que
 import { useScrvUsdWithdrawMutation } from '@/loan/entities/scrvusd-withdraw.mutation'
 import { type ScrvUsdWithdrawForm, scrvUsdWithdrawFormValidationSuite } from '@/loan/entities/scrvusd.validation'
 import type { ChainId } from '@/loan/types/loan.types'
+import { useForm, useFormSync } from '@evm-ui/features/forms'
+import { useFormDebounce } from '@evm-ui/hooks/useDebounce'
+import { mapQuery } from '@evm-ui/types/util'
+import { decimalEqual } from '@evm-ui/utils'
 import { maybes } from '@primitives/objects.utils'
-import { useForm, useFormSync } from '@ui-kit/features/forms'
-import { useFormDebounce } from '@ui-kit/hooks/useDebounce'
-import { mapQuery } from '@ui-kit/types/util'
-import { decimalEqual } from '@ui-kit/utils'
 
 const userDefaultValues = { withdrawAmount: undefined }
 

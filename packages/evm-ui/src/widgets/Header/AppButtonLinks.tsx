@@ -1,9 +1,9 @@
+import { APP_LINK, type AppMenuOption, getInternalUrl } from '@evm-ui/shared/routes'
+import { RouterLink } from '@evm-ui/shared/ui/RouterLink'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import { recordEntries } from '@primitives/objects.utils'
-import { APP_LINK, type AppMenuOption, getInternalUrl } from '@ui-kit/shared/routes'
-import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 type AppNavAppsProps = { currentMenu: AppMenuOption; networkId: string }
 

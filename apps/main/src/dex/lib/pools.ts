@@ -2,9 +2,9 @@ import lodash from 'lodash'
 import { type Address, getAddress } from 'viem'
 import { CurveApi, type GaugeStatus, NetworkConfig, Pool, PoolData, PoolDataCache } from '@/dex/types/main.types'
 import { fulfilledValue, getCurvefiUrl } from '@/dex/utils'
+import { log } from '@evm-ui/lib'
+import { shortenAddress } from '@evm-ui/utils'
 import { PromisePool } from '@supercharge/promise-pool'
-import { log } from '@ui-kit/lib'
-import { shortenAddress } from '@ui-kit/utils'
 
 const hasNoWrapped = (pool: Pool) => pool?.isPlain || pool?.isFake
 

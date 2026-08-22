@@ -3,7 +3,7 @@ import { styled } from 'styled-components'
 import { ComboBoxListItem as SelectGaugeListItem } from '@/dao/components/ComboBoxSelectGauge/ComboBoxListItem'
 import type { ComboBoxSelectGaugeProps } from '@/dao/components/ComboBoxSelectGauge/types'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
-import { useIntersectionObserver } from '@ui-kit/hooks/useIntersectionObserver'
+import { useIntersectionObserver } from '@evm-ui/hooks/useIntersectionObserver'
 
 export const SelectGaugeListChunk = ({
   testId,

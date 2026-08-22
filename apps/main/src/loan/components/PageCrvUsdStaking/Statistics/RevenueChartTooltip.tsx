@@ -1,10 +1,10 @@
 import type { YieldKeys } from '@/loan/components/PageCrvUsdStaking/types'
 import type { ScrvUsdYieldWithAverages } from '@/loan/entities/scrvusd-yield.query'
+import { t } from '@evm-ui/lib/i18n'
+import { ChartTooltipShell, ChartTooltipSeriesGroup, ChartTooltipSeriesRow } from '@evm-ui/shared/ui/Chart'
+import type { LineSeriesConfig } from '@evm-ui/shared/ui/Chart/EChartsLineChart'
+import { formatNumber } from '@evm-ui/utils'
 import { formatDate } from '@legacy-ui/utils'
-import { t } from '@ui-kit/lib/i18n'
-import { ChartTooltipShell, ChartTooltipSeriesGroup, ChartTooltipSeriesRow } from '@ui-kit/shared/ui/Chart'
-import type { LineSeriesConfig } from '@ui-kit/shared/ui/Chart/EChartsLineChart'
-import { formatNumber } from '@ui-kit/utils'
 
 const lineLabels: Record<YieldKeys, string> = {
   apyProjected: t`APY`,

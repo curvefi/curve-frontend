@@ -15,8 +15,8 @@ import {
   setLlamaApi,
 } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { mockMintSnapshots } from '@cy/support/helpers/minting-mocks'
-import { constQ } from '@ui-kit/types/util'
-import { Chain } from '@ui-kit/utils'
+import { constQ } from '@evm-ui/types/util'
+import { Chain } from '@evm-ui/utils'
 
 const chainId = Chain.Ethereum
 

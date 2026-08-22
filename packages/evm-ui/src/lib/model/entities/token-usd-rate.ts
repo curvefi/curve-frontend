@@ -2,12 +2,10 @@ import { useCallback, useMemo } from 'react'
 import { type Address, ethAddress, formatEther, isAddressEqual } from 'viem'
 import { isPricesApiChain } from '@curvefi/prices-api'
 import { getUsdPrice } from '@curvefi/prices-api/usd-price'
-import { FetchError } from '@primitives/fetch.utils'
-import { type QueriesResults, useQueries } from '@tanstack/react-query'
-import { getLib } from '@ui-kit/features/connect-wallet'
-import type { LibKey } from '@ui-kit/features/connect-wallet/lib/types'
-import { getWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/wagmi-config'
-import { combineQueriesToObject, createValidationSuite, QueryData } from '@ui-kit/lib'
+import { getLib } from '@evm-ui/features/connect-wallet'
+import type { LibKey } from '@evm-ui/features/connect-wallet/lib/types'
+import { getWagmiConfig } from '@evm-ui/features/connect-wallet/lib/wagmi/wagmi-config'
+import { combineQueriesToObject, createValidationSuite, QueryData } from '@evm-ui/lib'
 import {
   type ChainParams,
   NoRetryError,
@@ -15,9 +13,11 @@ import {
   rootKeys,
   type TokenParams,
   type TokenQuery,
-} from '@ui-kit/lib/model/query'
-import { tokenValidationGroup } from '@ui-kit/lib/model/query/token-validation'
-import { BlockchainIds, Chain, REUSD_ADDRESS, SREUSD_ADDRESS } from '@ui-kit/utils'
+} from '@evm-ui/lib/model/query'
+import { tokenValidationGroup } from '@evm-ui/lib/model/query/token-validation'
+import { BlockchainIds, Chain, REUSD_ADDRESS, SREUSD_ADDRESS } from '@evm-ui/utils'
+import { FetchError } from '@primitives/fetch.utils'
+import { type QueriesResults, useQueries } from '@tanstack/react-query'
 import { readContract } from '@wagmi/core'
 
 const getTestTokenPrice = async (chainId: number, tokenAddress: Address): Promise<number | null> => {

@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
+import { useIsMobile } from '@evm-ui/hooks/useBreakpoints'
 import { fromEntries, recordValues } from '@primitives/objects.utils'
-import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { UserPositionHistoryColumnId } from '../columns'
 
 /**

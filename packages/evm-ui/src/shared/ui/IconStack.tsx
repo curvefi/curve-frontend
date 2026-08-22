@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
+import { handleBreakpoints } from '@evm-ui/themes/basic-theme'
+import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Stack from '@mui/material/Stack'
 import { mapRecord } from '@primitives/objects.utils'
-import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { IconSize, Spacing } = SizesAndSpaces
 

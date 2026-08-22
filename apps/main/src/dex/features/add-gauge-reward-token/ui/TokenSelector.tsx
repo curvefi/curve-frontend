@@ -8,11 +8,11 @@ import { FlexItemToken, SubTitle } from '@/dex/features/add-gauge-reward-token/u
 import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
 import { ChainId, Token } from '@/dex/types/main.types'
 import { toTokenOption } from '@/dex/utils'
-import { useCurve } from '@ui-kit/features/connect-wallet'
-import { useFormContext } from '@ui-kit/features/forms'
-import { TokenList, TokenSelector as TokenSelectorUIKit } from '@ui-kit/features/select-token'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
-import { t } from '@ui-kit/lib/i18n'
+import { useCurve } from '@evm-ui/features/connect-wallet'
+import { useFormContext } from '@evm-ui/features/forms'
+import { TokenList, TokenSelector as TokenSelectorUIKit } from '@evm-ui/features/select-token'
+import { useSwitch } from '@evm-ui/hooks/useSwitch'
+import { t } from '@evm-ui/lib/i18n'
 
 export const TokenSelector = ({
   chainId,

@@ -1,6 +1,6 @@
+import { requireLib } from '@evm-ui/features/connect-wallet'
+import { queryFactory, rootKeys } from '@evm-ui/lib/model'
 import type { Decimal } from '@primitives/decimal.utils'
-import { requireLib } from '@ui-kit/features/connect-wallet'
-import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { ScrvUsdUserParams, ScrvUsdUserQuery } from './scrvusd.validation'
 import { scrvUsdUserValidationSuite } from './scrvusd.validation'
 

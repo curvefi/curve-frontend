@@ -1,5 +1,5 @@
+import { ChainIcon } from '@evm-ui/shared/icons/ChainIcon'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 
 const meta: Meta<typeof ChainIcon> = {
   title: 'UI Kit/Icons/ChainIcon',
