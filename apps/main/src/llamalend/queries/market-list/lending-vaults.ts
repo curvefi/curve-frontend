@@ -119,7 +119,11 @@ const {
     ['user-lending-supplies', { blockchainId }, { userAddress }, 'v6'] as const,
   category: 'llamalend.user',
   queryFn: async ({ userAddress, blockchainId }: UserChainNameQuery): Promise<UserLendingSupplies> => {
-    const positions = await getUserLendingPositions(userAddress, blockchainId)
+    const positions = await paginate(
+      page => getUserLendingPositions(userAddress, blockchainId, { page }),
+      USER_MARKETS_FIRST_PAGE,
+      USER_MARKETS_DEFAULT_PER_PAGE,
+    )
     return fromEntries(
       positions
         .filter(p => p.totalCurrentAssets > 0)
