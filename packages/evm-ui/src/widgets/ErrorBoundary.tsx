@@ -1,4 +1,4 @@
-import { ReactNode, useEffect } from 'react'
+import { type ElementType, type ReactNode, useEffect } from 'react'
 import { Box } from '@mui/material'
 import { captureException } from '@sentry/react'
 import { CatchBoundary } from '@tanstack/react-router'
@@ -6,7 +6,12 @@ import type { ErrorComponentProps } from '@tanstack/router-core'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { ErrorMessage } from '@ui-kit/shared/ui/ErrorMessage'
 
-const ErrorComponent = ({ error, reset, title }: ErrorComponentProps & { title: string }) => {
+const ErrorComponent = ({
+  error,
+  reset,
+  title,
+  LinkComponent,
+}: ErrorComponentProps & { title: string; LinkComponent?: ElementType }) => {
   useEffect(() => {
     captureException(error, {
       tags: { boundary: title },
@@ -14,7 +19,9 @@ const ErrorComponent = ({ error, reset, title }: ErrorComponentProps & { title: 
     })
   }, [error, title])
 
-  return <ErrorPage title={title} subtitle={error.message} resetError={reset} error={error} />
+  return (
+    <ErrorPage title={title} subtitle={error.message} resetError={reset} error={error} LinkComponent={LinkComponent} />
+  )
 }
 
 export const ErrorBoundary = ({
@@ -23,12 +30,14 @@ export const ErrorBoundary = ({
   subtitle,
   refreshData,
   inline,
+  LinkComponent,
 }: {
   children: ReactNode
   title: string
   subtitle?: string
   refreshData?: () => Promise<unknown> | void
   inline?: boolean
+  LinkComponent?: ElementType
 }) => (
   <CatchBoundary
     getResetKey={() => 'reset'}
@@ -52,7 +61,7 @@ export const ErrorBoundary = ({
           />
         </Box>
       ) : (
-        <ErrorComponent error={error} reset={reset} title={title} />
+        <ErrorComponent error={error} reset={reset} title={title} LinkComponent={LinkComponent} />
       )
     }
   >

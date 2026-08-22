@@ -37,16 +37,18 @@ export const useErrorReportForm = ({ error, ...context }: ErrorContext, onClose:
             typeof error == 'string'
               ? error
               : JSON.stringify(
-                  error instanceof Error ? { name: error.name, message: error.message, stack: error.stack } : error,
+                  error instanceof Error
+                    ? { ...error, name: error.name, message: error.message, stack: error.stack, cause: error.cause }
+                    : error,
                 ),
         },
       }
       console.info(`Submitting error report:`, body)
       try {
         if (error instanceof Error) {
-          captureError(error, { body })
+          captureError(error, { body, userReport: true })
         } else {
-          captureString(error ?? 'Error Report', { body })
+          captureString(error ?? 'Error Report', { body, userReport: true })
         }
         onClose()
       } catch (e) {
