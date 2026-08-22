@@ -3,11 +3,12 @@ import { useCallback, useMemo } from 'react'
 import { type Address, erc20Abi, ethAddress, formatUnits, isAddressEqual } from 'viem'
 import { useBalance, useConfig, useReadContracts } from 'wagmi'
 import type { Decimal } from '@primitives/decimal.utils'
-import { useQueries, type UseQueryResult } from '@tanstack/react-query'
+import { useQueries } from '@tanstack/react-query'
 import { combineQueriesToObject, type FieldsOf } from '@ui-kit/lib'
 import { queryClient } from '@ui-kit/lib/api'
 import { type ChainQuery, type UserQuery } from '@ui-kit/lib/model'
 import { QUERY_CATEGORIES } from '@ui-kit/lib/model/query/query-categories'
+import type { Query } from '@ui-kit/types/util'
 import { uniqAddresses } from '@ui-kit/utils'
 import { DEFAULT_DECIMALS } from '@ui-kit/utils/units'
 import type { Config, GetBalanceReturnType, ReadContractsReturnType } from '@wagmi/core'
@@ -186,7 +187,7 @@ export function useTokenBalances(
       [config, chainId, userAddress, uniqueAddresses, isEnabled],
     ),
     combine: useCallback(
-      (results: UseQueryResult[]) => combineQueriesToObject(results as UseQueryResult<Decimal>[], uniqueAddresses),
+      (results: Query<unknown>[]) => combineQueriesToObject<Decimal>(results as Query<Decimal>[], uniqueAddresses),
       [uniqueAddresses],
     ),
   })

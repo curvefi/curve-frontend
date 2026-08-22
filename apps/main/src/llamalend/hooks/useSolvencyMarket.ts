@@ -5,9 +5,9 @@ import type { Address } from '@primitives/address.utils'
 import { maybes } from '@primitives/objects.utils'
 import type { QueriesResults } from '@tanstack/react-query'
 import { useQueries } from '@tanstack/react-query'
-import { RESOLVED_QUERY_RESULT } from '@ui-kit/lib/queries'
-import { combineQueriesMeta } from '@ui-kit/lib/queries/combine'
+import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { MarketType } from '@ui-kit/types/market'
+import { DISABLED_Q } from '@ui-kit/types/util'
 import { calculateMarketSolvency, createGetBadDebtMarket } from '../llama.utils'
 import { getBadDebtLendMarketsOptions } from '../queries/market/market-bad-debt.query'
 import { getLendingVaultsOptions } from '../queries/market-list/lending-vaults'
@@ -40,9 +40,7 @@ export const useSolvencyMarket = (
     ),
     combine: useCallback(
       (results: QueriesResults<SolvencyMarketsQueries>) => {
-        if (!isEnabled) {
-          return RESOLVED_QUERY_RESULT
-        }
+        if (!isEnabled) return DISABLED_Q
         const [lendingVaults, badDebtLendMarkets] = results
         const getLendMarketBadDebt = createGetBadDebtMarket(badDebtLendMarkets.data)
 
@@ -62,7 +60,7 @@ export const useSolvencyMarket = (
           })
 
         return {
-          ...combineQueriesMeta(results),
+          ...combineQueryState(...results),
           data: maybes([solvencyPercent, badDebtUsd], (solvencyPercent, badDebtUsd) => ({
             solvencyPercent,
             badDebtUsd,
