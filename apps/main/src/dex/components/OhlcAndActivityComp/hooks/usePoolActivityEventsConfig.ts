@@ -37,8 +37,8 @@ export const usePoolActivityEventsConfig = ({ chainId, poolAddress }: UsePoolAct
 
   const poolPriceApi = usePoolPricesApi({ blockchainId: network, poolAddress })
 
-  const poolTokens = mapQuery(poolPriceApi, pool => pool.coins)
-  const { liquidityColumnVisibility } = usePoolActivityVisibility({ poolTokens: poolTokens.data ?? [] })
+  const { data: poolTokens = [] } = mapQuery(poolPriceApi, pool => pool.coins)
+  const { liquidityColumnVisibility } = usePoolActivityVisibility({ poolTokens })
 
   const poolLiquidityEvents = usePoolLiquidityEvents({
     chain: network,
@@ -61,14 +61,14 @@ export const usePoolActivityEventsConfig = ({ chainId, poolAddress }: UsePoolAct
           providerUrl: scanAddressPath(networkConfig, event.provider),
           txUrl: scanTxPath(networkConfig, event.txHash),
           network,
-          poolTokens: poolTokens.data ?? [],
+          poolTokens,
         })),
       [network, networkConfig, poolTokens],
     ),
   )
 
   const liquidityColumns = useMemo(
-    () => createPoolLiquidityColumns({ blockchainId: network, poolTokens: poolTokens.data ?? [] }),
+    () => createPoolLiquidityColumns({ blockchainId: network, poolTokens }),
     [network, poolTokens],
   )
 

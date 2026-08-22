@@ -37,8 +37,8 @@ export const usePoolActivityTradesConfig = ({ chainId, poolAddress }: UsePoolAct
 
   const poolPriceApi = usePoolPricesApi({ blockchainId: network, poolAddress })
 
-  const poolTokens = mapQuery(poolPriceApi, pool => pool.coins)
-  const { tradesColumnVisibility } = usePoolActivityVisibility({ poolTokens: poolTokens.data ?? [] })
+  const { data: poolTokens = [] } = mapQuery(poolPriceApi, pool => pool.coins)
+  const { tradesColumnVisibility } = usePoolActivityVisibility({ poolTokens })
 
   const poolTrades = usePoolTrades({
     chain: network,
