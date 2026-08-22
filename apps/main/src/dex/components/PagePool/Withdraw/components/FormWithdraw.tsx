@@ -1,8 +1,7 @@
 import lodash from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { styled, css } from 'styled-components'
-import { useConnection, type Config } from 'wagmi'
-import { useConfig } from 'wagmi'
+import { css, styled } from 'styled-components'
+import { type Config, useConfig, useConnection } from 'wagmi'
 import { AlertFormError } from '@/dex/components/AlertFormError'
 import { AlertSlippage } from '@/dex/components/AlertSlippage'
 import { DetailInfoEstGas } from '@/dex/components/DetailInfoEstGas'
@@ -284,25 +283,21 @@ export const FormWithdraw = ({
   const estUsdAmountTotalReceive = useMemo(() => {
     if (formValues.selected === 'token') {
       const foundCoinWithAmount = formValues.amounts.find(a => Number(a.value) > 0)
-
-      if (foundCoinWithAmount && !lodash.isUndefined(usdRates[foundCoinWithAmount.tokenAddress])) {
+      if (foundCoinWithAmount && usdRates?.[foundCoinWithAmount.tokenAddress] != null) {
         const { value, tokenAddress } = foundCoinWithAmount
-        const usdRate = usdRates[tokenAddress]
-        if (usdRate && !lodash.isNaN(usdRate)) {
-          return (Number(usdRate) * Number(value)).toString()
+        const usdRate = usdRates?.[tokenAddress]
+        if (usdRate) {
+          return (usdRate * Number(value)).toString()
         }
       }
     } else if (formValues.selected === 'lpToken' || formValues.selected === 'imbalance') {
-      const amounts = formValues.amounts.filter(a => Number(a.value) > 0)
-      let usdAmountTotal = 0
-
-      amounts.forEach(a => {
-        const usdRate = usdRates[a.tokenAddress]
-        if (usdRate && !lodash.isNaN(usdRate)) {
-          usdAmountTotal += Number(a.value) * Number(usdRate)
-        }
-      })
-      return usdAmountTotal.toString()
+      return lodash
+        .sum(
+          formValues.amounts
+            .filter(({ tokenAddress, value }) => Number(value) > 0 && usdRates?.[tokenAddress])
+            .map(({ tokenAddress, value }) => Number(usdRates?.[tokenAddress]) * Number(value)),
+        )
+        .toString()
     }
 
     return ''
