@@ -61,10 +61,9 @@ type ErrorReportBody = {
   formData: ErrorReportFormValues
   url: string
   context: { title: string; subtitle: string }
-  exception?: SentryException
 }
 
-function check500Error({ context, exception }: ErrorReportBody) {
+function check500Error({ context }: ErrorReportBody, exception: SentryException | undefined) {
   const [expectedName, expectedMessage] = ['TypeError', 'toLowerCase is not a function']
   expect(exception).to.deep.include({
     type: expectedName,
@@ -117,13 +116,11 @@ describe('Error Boundary', () => {
         const event = JSON.parse(lines[2]) as SentryPayload // event payload is the third line
 
         const body = event.extra.body
-        body.exception = event.exception?.values?.[0]
-
         expect(Object.keys(body)).to.have.members(['formData', 'url', 'context'])
         expect(body.formData).to.deep.equal({ address, contactMethod: 'email', contact, description })
         expect(body.url).to.equal(url)
         if (is500) {
-          check500Error(body)
+          check500Error(body, event.exception?.values?.[0])
         } else {
           expect(event.message).to.equal('Error Report')
           expect(body).to.deep.equal({
