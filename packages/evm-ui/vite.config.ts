@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react'
 
 /** Configuration for Vite (used for storybook) */
 export default defineConfig({
-  cacheDir: resolve(__dirname, '../../.cache/vite/curve-ui-kit'),
+  cacheDir: resolve(__dirname, '../../.cache/vite/evm-ui'),
   build: { sourcemap: true },
   plugins: [react()],
   resolve: {

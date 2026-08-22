@@ -1,4 +1,3 @@
-import { Chain } from 'curve-ui-kit/src/utils/network'
 import { useEffect, useMemo } from 'react'
 import { styled } from 'styled-components'
 import { DialogSelect } from '@/dex/components/PageDeployGauge/components/DialogSelect'
@@ -16,6 +15,7 @@ import { ChainId } from '@/dex/types/main.types'
 import { Box } from '@legacy-ui/Box'
 import { maybe } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
+import { Chain } from '@ui-kit/utils/network'
 
 type Props = {
   chainId: ChainId

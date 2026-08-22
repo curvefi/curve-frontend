@@ -120,7 +120,7 @@ const config = [
             { target: ['apps/main/src/**'], from: 'apps/router-api' },
             { target: ['apps/main/src/**'], from: 'apps/merkl-api' },
             // forbid `wagmi` external dependency package imports, except from feature
-            { target: ['apps/**', 'packages/**', '!packages/curve-ui-kit/src/features/forms/**'], from: 'wagmi' },
+            { target: ['apps/**', 'packages/**', '!packages/evm-ui/src/features/forms/**'], from: 'wagmi' },
           ],
         },
       ],

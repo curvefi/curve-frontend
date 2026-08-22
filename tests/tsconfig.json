@@ -7,7 +7,7 @@
       "@cy/*": ["./cypress/*"],
       "@legacy-ui": ["../packages/legacy-ui/src/index.ts"],
       "@legacy-ui/*": ["../packages/legacy-ui/src/*"],
-      "@ui-kit/*": ["../packages/curve-ui-kit/src/*"],
+      "@ui-kit/*": ["../packages/evm-ui/src/*"],
       "@external-rewards": ["../packages/external-rewards/src/index.ts"],
       "@curvefi/prices-api": ["../packages/prices-api/src/index.ts"],
       "@curvefi/prices-api/*": ["../packages/prices-api/src/*"],
@@ -19,6 +19,6 @@
     "scripts",
     "cypress.config.ts",
     "../packages/legacy-ui/src/globals.d.ts",
-    "../packages/curve-ui-kit/src/**/*.d.ts"
+    "../packages/evm-ui/src/**/*.d.ts"
   ]
 }
