@@ -147,7 +147,7 @@ jobs:
           NODE_ENV: test
           SPEC_OVERRIDE: ${{ inputs.specs }}
           SUITE: ${{ inputs.suite }}
-          TEST_SEED: ${{ inputs.seed_prefix || github.run_id }}-${{ matrix.browser }}-${{ matrix.iteration }}
+          TEST_SEED: ${{ inputs.seed_prefix || github.run_id }}-${{ matrix.iteration }}
         run: |
           cypress_config=()
           case "$SUITE" in
