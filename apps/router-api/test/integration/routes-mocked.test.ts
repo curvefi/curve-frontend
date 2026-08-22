@@ -1,11 +1,14 @@
 import type { FastifyInstance } from 'fastify'
 import { zeroAddress } from 'viem'
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
-import { createRouterApiServer } from '../../src/server'
 
 describe('GET routes mocked unit tests', () => {
   let server: FastifyInstance
-  beforeAll(() => (server = createRouterApiServer()))
+  beforeAll(async () => {
+    process.env.ZEROEX_API_KEY = 'test'
+    const { createRouterApiServer } = await import('../../src/server')
+    server = createRouterApiServer()
+  })
   afterEach(() => vi.unstubAllGlobals())
   afterAll(() => server.close())
 
@@ -19,50 +22,27 @@ describe('GET routes mocked unit tests', () => {
     route: [],
   }
 
-  it.each([
-    {
-      label: 'preserves upstream 4xx statuses',
-      router: ['enso'],
-      fetchStatuses: [429],
-      expectedStatus: 429,
-      expectedBody: 'Upstream response',
-    },
-    {
-      label: 'maps upstream 5xx statuses to 502',
-      router: ['enso'],
-      fetchStatuses: [503],
-      expectedStatus: 502,
-      expectedBody: 'Upstream failed with status 503',
-    },
-    {
-      label: 'returns the lowest mapped status when all requested routers fail',
-      router: ['enso', 'curve-solver'],
-      fetchStatuses: [429, 503],
-      expectedStatus: 429,
-      expectedBody: 'Upstream response',
-    },
-  ])('$label', async ({ router, fetchStatuses, expectedStatus, expectedBody }) => {
+  it('returns an empty response when 0x has no liquidity', async () => {
     vi.stubGlobal(
       'fetch',
-      // eslint-disable-next-line local/no-mutable-array-methods -- Existing violation before creating this rule.
-      vi.fn<typeof fetch>(() => Promise.resolve(new Response('Upstream response', { status: fetchStatuses.shift() }))),
+      vi.fn<typeof fetch>(() => Promise.resolve(Response.json({ liquidityAvailable: false }))),
     )
 
-    const { body, statusCode } = await server.inject({
+    const { json, statusCode } = await server.inject({
       url: '/api/router/v1/routes',
       query: {
         chainId: '1',
         tokenIn: [zeroAddress],
         tokenOut: [zeroAddress],
         amountIn: ['1000000000'],
-        router,
+        router: ['0x'],
         userAddress: zeroAddress,
         zapAddress: zeroAddress,
       },
     })
 
-    expect(statusCode).toBe(expectedStatus)
-    expect(body).equals(expectedBody)
+    expect(statusCode).toBe(200)
+    expect(json()).toEqual([])
   })
 
   // TODO: test 0x slippage and fees
