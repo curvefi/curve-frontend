@@ -6,10 +6,12 @@ import type { CreateLoanMaxReceiveParams } from '@/llamalend/queries/create-loan
 import { useMarketMaxLeverage } from '@/llamalend/queries/market'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import type { UseFormReturn } from '@ui-kit/features/forms'
 import { useFormSync, useOnChangeCallback } from '@ui-kit/features/forms'
+import type { UseFormReturn } from '@ui-kit/features/forms'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
-import { decimal } from '@ui-kit/utils'
+import { combineQueries } from '@ui-kit/lib'
+import { mapQuery } from '@ui-kit/types/util'
+import { decimal, decimalMin } from '@ui-kit/utils'
 import { useCreateLoanMaxReceive } from '../../../queries/create-loan/create-loan-max-receive.query'
 import type { CreateLoanForm } from '../types'
 
@@ -20,38 +22,25 @@ import type { CreateLoanForm } from '../types'
  */
 export function useMaxTokenValues({
   market,
-  marketId,
   collateralTokenAddress,
   params,
   form,
 }: {
   market: MarketTemplate | undefined
-  marketId: string | undefined
   collateralTokenAddress: Address | undefined
   params: CreateLoanMaxReceiveParams & { userAddress?: Address }
   form: UseFormReturn<CreateLoanForm>
 }) {
   const { update: updateForm, getValues } = form
-  const {
-    data: userBalance,
-    error: balanceError,
-    isLoading: isBalanceLoading,
-  } = useTokenBalance({ ...params, tokenAddress: collateralTokenAddress })
-  const { data: maxBorrow, error: maxBorrowError, isLoading: isLoadingMaxBorrow } = useCreateLoanMaxReceive(params)
-  const {
-    data: maxTotalLeverage,
-    error: maxLeverageError,
-    isLoading: isLoadingMaxLeverage,
-  } = useMarketMaxLeverage(params)
+  const tokenBalance = useTokenBalance({ ...params, tokenAddress: collateralTokenAddress })
+  const maxBorrow = useCreateLoanMaxReceive(params)
+  const maxLeverage = useMarketMaxLeverage(params)
 
-  const { maxDebt, maxLeverage: maxBorrowLeverage, maxTotalCollateral } = maxBorrow ?? {}
+  const { maxDebt } = maxBorrow.data ?? {}
   const pendingRatioRef = useRef<Decimal>(null) // keep this in a ref so it doesn't trigger re-renders, used when maxDebt changes
-  const maxCollateral =
-    userBalance && maxTotalCollateral
-      ? (`${Math.min(+userBalance, +maxTotalCollateral)}` satisfies Decimal)
-      : (userBalance ?? maxTotalCollateral)
-
-  const maxLeverage = maxBorrowLeverage ?? maxTotalLeverage
+  const maxCollateral = combineQueries([tokenBalance, maxBorrow], (userBalance, { maxTotalCollateral = userBalance }) =>
+    decimalMin(userBalance, maxTotalCollateral),
+  )
 
   useEffect(() => {
     const pendingDebtRatio = pendingRatioRef.current
@@ -64,7 +53,7 @@ export function useMaxTokenValues({
     }
   }, [updateForm, maxDebt])
 
-  useFormSync(form, { maxCollateral })
+  useFormSync(form, { maxCollateral: maxCollateral.data })
 
   // some loan queries depend on LL internal cache for expected collateral, reset when new market data arrives
   useOnChangeCallback(market, () => resetCreateLoanExpectedCollateral(params))
@@ -82,16 +71,11 @@ export function useMaxTokenValues({
 
   return {
     setRange,
-    collateral: {
-      data: maxCollateral,
-      isLoading: !marketId || isLoadingMaxBorrow || isBalanceLoading,
-      error: maxBorrowError ?? balanceError,
-    },
-    debt: { data: maxDebt, isLoading: !marketId || isLoadingMaxBorrow, error: maxBorrowError },
-    maxLeverage: {
-      data: maxLeverage,
-      isLoading: isLoadingMaxLeverage || isLoadingMaxBorrow,
-      error: maxLeverageError ?? maxBorrowError,
-    },
+    collateral: maxCollateral,
+    debt: mapQuery(maxBorrow, ({ maxDebt }) => maxDebt),
+    maxLeverage: combineQueries(
+      [maxLeverage, maxBorrow],
+      (maxTotalLeverage, { maxLeverage: maxBorrowLeverage }) => maxBorrowLeverage ?? maxTotalLeverage,
+    ),
   }
 }
