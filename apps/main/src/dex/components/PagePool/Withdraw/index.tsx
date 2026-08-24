@@ -48,21 +48,25 @@ export const Withdraw = (transferProps: TransferProps) => {
     // eslint-disable-next-line @eslint-react/exhaustive-deps
   }, [poolData?.pool?.id])
 
-  const formTabs = useTabs({ menu, params: transferProps, value: formType, onChange: handleTabChange })
+  const {
+    content,
+    onChange,
+    tab: { value },
+    tabs,
+  } = useTabs({
+    menu,
+    params: transferProps,
+    value: formType,
+    onChange: handleTabChange,
+  })
 
   return (
     <FormContent
       header={
-        <TabsSwitcher
-          variant="underlined"
-          value={formTabs.tab.value}
-          onChange={formTabs.onChange}
-          options={formTabs.tabs}
-          overflow="fullWidth"
-        />
+        <TabsSwitcher variant="underlined" value={value} onChange={onChange} options={tabs} overflow="fullWidth" />
       }
     >
-      {formTabs.content}
+      {content}
     </FormContent>
   )
 }

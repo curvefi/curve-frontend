@@ -1,12 +1,12 @@
+import type { ReactNode } from 'react'
 import { ChainId } from '@/dex/types/main.types'
 import type { Pool } from '@curvefi/prices-api/pools'
 import { ActivityTable, PoolLiquidityExpandedPanel, PoolTradesExpandedPanel } from '@evm-ui/features/activity-table'
 import { ChartWrapper } from '@evm-ui/features/candle-chart/ChartWrapper'
 import { TIME_OPTIONS } from '@evm-ui/features/candle-chart/constants'
-import { useTabs } from '@evm-ui/hooks/useTabs'
 import { t } from '@evm-ui/lib/i18n'
 import { ChartHeader } from '@evm-ui/shared/ui/Chart/ChartHeader'
-import { TabsSwitcher } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
+import { Tabs } from '@evm-ui/shared/ui/Tabs/Tabs'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
@@ -69,6 +69,10 @@ const menu = [
   { value: 'events', label: t`Liquidity`, component: EventsTab },
 ]
 
+const OhlcTabsContent = ({ children }: { children: ReactNode }) => (
+  <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>{children}</Stack>
+)
+
 export const OhlcAndActivityComp = ({
   rChainId,
   poolAddress,
@@ -81,11 +85,14 @@ export const OhlcAndActivityComp = ({
   const chart = useOhlcChartState({ rChainId, pricesApiPoolData })
   const liquidityTable = usePoolActivityEventsConfig({ chainId: rChainId, poolAddress })
   const tradesTable = usePoolActivityTradesConfig({ chainId: rChainId, poolAddress })
-  const { tab, tabs, content, onChange } = useTabs({ menu, params: { chart, liquidityTable, tradesTable } })
   return (
     <Stack>
-      <TabsSwitcher variant="contained" value={tab.value} onChange={onChange} options={tabs} />
-      <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>{content}</Stack>
+      <Tabs
+        menu={menu}
+        params={{ chart, liquidityTable, tradesTable }}
+        variant="contained"
+        ContentWrapper={OhlcTabsContent}
+      />
     </Stack>
   )
 }

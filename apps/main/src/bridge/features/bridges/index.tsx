@@ -1,7 +1,8 @@
+import type { ReactNode } from 'react'
 import { getSearchString, useSearchParams } from '@evm-ui/hooks/router'
-import { useTabFromSearchParam, useTabs } from '@evm-ui/hooks/useTabs'
+import { useTabFromSearchParam } from '@evm-ui/hooks/useTabs'
 import { t } from '@evm-ui/lib/i18n'
-import { TabsSwitcher } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
+import { Tabs } from '@evm-ui/shared/ui/Tabs/Tabs'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import { TabPanel } from '@evm-ui/widgets/Legal/components/general/TabPanel'
 import Stack from '@mui/material/Stack'
@@ -13,6 +14,9 @@ const { Spacing } = SizesAndSpaces
 const Web3BridgesTab = () => <BridgeOverview bridges={WEB3_BRIDGES} title={t`Aggregators for the best routes`} />
 const NativeBridgesTab = () => (
   <BridgeOverview bridges={NATIVE_BRIDGES} title={t`Trust & security with chain canonical bridges`} />
+)
+const BridgeTabPanel = ({ children }: { children: ReactNode }) => (
+  <TabPanel sx={{ paddingBlock: Spacing.sm, paddingInline: Spacing.md }}>{children}</TabPanel>
 )
 
 type BridgeTabsParams = { searchParams: URLSearchParams }
@@ -35,12 +39,16 @@ const menu = [
 export const Bridges = () => {
   const searchParams = useSearchParams()
   const tabValue = useTabFromSearchParam(menu)
-  const { tab, tabs, content } = useTabs({ menu, params: { searchParams }, value: tabValue })
 
   return (
     <Stack data-testid="bridges">
-      <TabsSwitcher variant="contained" value={tab.value} options={tabs} />
-      <TabPanel sx={{ paddingBlock: Spacing.sm, paddingInline: Spacing.md }}>{content}</TabPanel>
+      <Tabs
+        menu={menu}
+        params={{ searchParams }}
+        value={tabValue}
+        variant="contained"
+        ContentWrapper={BridgeTabPanel}
+      />
     </Stack>
   )
 }

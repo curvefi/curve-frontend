@@ -76,12 +76,7 @@ const menu: TabItem<TransferFormType, TransferTabsParams>[] = [
   { value: 'deposit', label: t`Deposit`, component: DepositTab },
   { value: 'withdraw', label: t`Withdraw`, component: WithdrawTab },
   { value: 'swap', label: t`Swap`, component: SwapTab },
-  {
-    value: 'manage-gauge',
-    label: t`Gauge`,
-    visible: ({ isAvailableManageGauge }) => isAvailableManageGauge,
-    component: ManageGaugeTab,
-  },
+  { value: 'manage-gauge', label: t`Gauge`, visible: p => p.isAvailableManageGauge, component: ManageGaugeTab },
 ]
 
 export const Transfer = (pageTransferProps: PageTransferProps) => {

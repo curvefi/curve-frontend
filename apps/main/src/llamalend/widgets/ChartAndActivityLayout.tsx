@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { type ReactNode, useCallback, useMemo, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
 import { useBandsChartPalette } from '@/llamalend/features/bands-chart/hooks/useBandsChartPalette'
@@ -13,14 +13,13 @@ import { ChartWrapper, type OhlcChartProps } from '@evm-ui/features/candle-chart
 import { SOFT_LIQUIDATION_DESCRIPTION, TIME_OPTIONS } from '@evm-ui/features/candle-chart/constants'
 import type { TimeOption } from '@evm-ui/features/candle-chart/types'
 import { useBandsChartVisible } from '@evm-ui/hooks/useLocalStorage'
-import { type TabItem, useTabs } from '@evm-ui/hooks/useTabs'
 import { t } from '@evm-ui/lib/i18n'
 import { ChartFooter } from '@evm-ui/shared/ui/Chart/ChartFooter'
 import { ChartHeader, type ChartSelections } from '@evm-ui/shared/ui/Chart/ChartHeader'
 import { type LegendItem } from '@evm-ui/shared/ui/Chart/LegendSet'
 import { SelectTimeOption } from '@evm-ui/shared/ui/Chart/SelectTimeOption'
 import { ToggleBandsChartButton } from '@evm-ui/shared/ui/Chart/ToggleBandsChartButton'
-import { TabsSwitcher } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
+import { Tabs } from '@evm-ui/shared/ui/Tabs/Tabs'
 import { WithSkeleton } from '@evm-ui/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@evm-ui/themes/design/1_sizes_spaces'
 import Card from '@mui/material/Card'
@@ -30,8 +29,6 @@ import { notFalsy } from '@primitives/objects.utils'
 import { MarketCardHeader } from './MarketCardHeader'
 
 const { Spacing } = SizesAndSpaces
-
-type ChartAndActivityTab = 'chart' | 'trades' | 'events'
 
 const EMPTY_ARRAY: never[] = []
 // Ignore tiny floating-point jitter from chart autoscale updates.
@@ -69,36 +66,26 @@ const LegacyMarketPriceChartTab = ({ chart, bands }: ChartAndActivityLayoutProps
   <LegacyMarketPriceChartLayout chart={chart} bands={bands} />
 )
 
-const MARKET_ACTIVITY_MENU: TabItem<ChartAndActivityTab, MarketActivityTabsParams>[] = [
+const MARKET_ACTIVITY_MENU = [
   { value: 'trades', label: t`Swaps`, component: MarketActivityTradesTab },
   { value: 'events', label: t`Activity`, component: MarketActivityEventsTab },
 ]
 
-const CHART_AND_ACTIVITY_MENU: TabItem<ChartAndActivityTab, ChartAndActivityLayoutProps>[] = [
+const CHART_AND_ACTIVITY_MENU = [
   { value: 'chart', label: t`Chart`, component: LegacyMarketPriceChartTab },
   { value: 'trades', label: t`Swaps`, component: MarketActivityTradesTab },
   { value: 'events', label: t`Activity`, component: MarketActivityEventsTab },
 ]
 
-export const MarketActivityLayout = ({ activity }: Pick<ChartAndActivityLayoutProps, 'activity'>) => {
-  const { tab, tabs, content, onChange } = useTabs({
-    menu: MARKET_ACTIVITY_MENU,
-    params: { activity },
-  })
+const ActivityTabsContent = ({ children }: { children: ReactNode }) => (
+  <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>{children}</Stack>
+)
 
-  return (
-    <Stack data-testid="market-activity">
-      <TabsSwitcher variant="contained" value={tab.value} onChange={onChange} options={tabs} />
-      <Stack
-        sx={{
-          backgroundColor: t => t.design.Layer[1].Fill,
-        }}
-      >
-        {content}
-      </Stack>
-    </Stack>
-  )
-}
+export const MarketActivityLayout = ({ activity }: Pick<ChartAndActivityLayoutProps, 'activity'>) => (
+  <Stack data-testid="market-activity">
+    <Tabs menu={MARKET_ACTIVITY_MENU} params={{ activity }} variant="contained" ContentWrapper={ActivityTabsContent} />
+  </Stack>
+)
 
 export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLayoutProps, 'chart' | 'bands'>) => {
   const { isConnected } = useConnection()
@@ -199,19 +186,16 @@ export const MarketPriceChartLayout = ({ chart, bands }: Pick<ChartAndActivityLa
   )
 }
 
-export const LegacyChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActivityLayoutProps) => {
-  const { tab, tabs, content, onChange } = useTabs({
-    menu: CHART_AND_ACTIVITY_MENU,
-    params: { chart, bands, activity },
-  })
-
-  return (
-    <Stack data-testid="market-chart-and-activity">
-      <TabsSwitcher variant="contained" value={tab.value} onChange={onChange} options={tabs} />
-      <Stack sx={{ backgroundColor: t => t.design.Layer[1].Fill }}>{content}</Stack>
-    </Stack>
-  )
-}
+export const LegacyChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActivityLayoutProps) => (
+  <Stack data-testid="market-chart-and-activity">
+    <Tabs
+      menu={CHART_AND_ACTIVITY_MENU}
+      params={{ chart, bands, activity }}
+      variant="contained"
+      ContentWrapper={ActivityTabsContent}
+    />
+  </Stack>
+)
 
 export const LegacyMarketPriceChartLayout = ({
   chart,

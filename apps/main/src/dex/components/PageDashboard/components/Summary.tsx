@@ -10,17 +10,15 @@ import { SummaryTotal } from '@/dex/components/PageDashboard/components/SummaryT
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 import { useStore } from '@/dex/store/useStore'
 import { useLayoutStore } from '@evm-ui/features/layout'
-import { type TabItem, useTabs } from '@evm-ui/hooks/useTabs'
 import { t } from '@evm-ui/lib/i18n'
-import { TabsSwitcher } from '@evm-ui/shared/ui/Tabs/TabsSwitcher'
+import { Tabs } from '@evm-ui/shared/ui/Tabs/Tabs'
 import { Box } from '@legacy-ui/Box'
 import { SpinnerWrapper } from '@legacy-ui/Spinner'
 import { Stats } from '@legacy-ui/Stats'
 import { shortenAccount } from '@legacy-ui/utils'
 import { breakpoints } from '@legacy-ui/utils/responsive'
 
-type Tab = 'DAY_PROFITS' | 'CLAIMABLE_TOKENS'
-const menu: TabItem<Tab>[] = [
+const menu = [
   { value: 'DAY_PROFITS', label: t`Daily Profits`, component: SummaryRecurrence },
   { value: 'CLAIMABLE_TOKENS', label: t`Claimable Tokens`, component: SummaryClaimable },
 ]
@@ -32,8 +30,6 @@ export const Summary = () => {
   const searchedWalletAddresses = useStore(state => state.dashboard.searchedWalletAddresses)
 
   const networkHaveLockedCrv = rChainId === 1
-
-  const { tab, tabs, content, onChange } = useTabs({ menu })
 
   return (
     <div>
@@ -82,8 +78,7 @@ export const Summary = () => {
           <>
             <TabContentWrapper>
               <SummaryTitle>{t`Total Summary`}</SummaryTitle>
-              <TabsSwitcher variant="underlined" value={tab.value} onChange={onChange} options={tabs} />
-              {content}
+              <Tabs menu={menu} variant="underlined" />
             </TabContentWrapper>
           </>
         )}
