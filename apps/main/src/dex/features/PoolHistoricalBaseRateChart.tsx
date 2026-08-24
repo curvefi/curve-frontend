@@ -152,7 +152,7 @@ export const PoolHistoricalBaseRateChart = ({
             series={series}
             visibleSeries={visibleSeries}
             xTickFormatter={value => formatDate(value)}
-            yTickFormatter={value => formatNumber(decimal(value), 'percent.value')}
+            yTickFormatter={value => formatNumber(decimal(value), 'percent.rate')}
             yPaddingRatio={0.05}
             renderTooltip={({ datum, visibleSeries: activeSeries }) => (
               <ChartTooltipShell title={formatDate(datum.timestamp, 'long')}>
@@ -163,7 +163,7 @@ export const PoolHistoricalBaseRateChart = ({
                       label={activeSeriesItem.label}
                       lineColor={activeSeriesItem.color}
                       dash={activeSeriesItem.dash}
-                      value={formatNumber(datum[activeSeriesItem.key], 'percent.value')}
+                      value={formatNumber(datum[activeSeriesItem.key], 'percent.rate')}
                     />
                   ))}
                 </ChartTooltipSeriesGroup>
