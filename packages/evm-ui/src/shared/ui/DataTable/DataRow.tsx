@@ -48,6 +48,8 @@ export const DataRow = <T extends TableItem>({
   const push = useNavigate()
   const url = row.original.url
   const hasUrl = Boolean(url?.trim())
+  const hasExpansionRow = isMobile && !!expandedPanel
+  const isInteractive = hasUrl || hasExpansionRow
   const onClickDesktop = useCallback(
     (e: MouseEvent<HTMLTableRowElement>) => hasUrl && url && onCellClick(e.target, url, push),
     [url, push, hasUrl],
@@ -56,33 +58,39 @@ export const DataRow = <T extends TableItem>({
 
   return (
     <>
-      <InvertOnHover hoverColor={t => t.design.Table.Row.Hover} hoverRef={{ current: element }} disabled={isMobile}>
+      <InvertOnHover
+        hoverColor={t => t.design.Table.Row.Hover}
+        hoverRef={{ current: element }}
+        disabled={!isInteractive}
+      >
         <TableRow
           sx={useMemo(
             () => ({
               marginBlock: 0,
-              cursor: hasUrl ? 'pointer' : 'default',
+              cursor: isInteractive ? 'pointer' : 'default',
               verticalAlign,
               transition: `border-bottom ${TRANSITION_FUNCTION}`,
-              [`& .${DESKTOP_ONLY_HOVER_CLASS}`]: {
-                opacity: { mobile: 1, desktop: 0 },
-                transition: `opacity ${TRANSITION_FUNCTION}`,
-              },
               [`& .${TABLE_SECONDARY_TEXT_CLASS}`]: {
                 color: t => t.design.Table.Text.Default.Secondary,
               },
-              '&:hover': {
-                [`& .${DESKTOP_ONLY_HOVER_CLASS}`]: { opacity: { desktop: 1 } },
-                '& td, & th': {
-                  backgroundColor: t => t.design.Table.Row.Hover,
-                  color: t => t.design.Table.Text.Hover.Primary,
+              ...(isInteractive && {
+                [`& .${DESKTOP_ONLY_HOVER_CLASS}`]: {
+                  opacity: { mobile: 1, desktop: 0 },
+                  transition: `opacity ${TRANSITION_FUNCTION}`,
                 },
-                [`& .${TABLE_SECONDARY_TEXT_CLASS}`]: {
-                  color: t => t.design.Table.Text.Hover.Secondary,
+                '&:hover': {
+                  [`& .${DESKTOP_ONLY_HOVER_CLASS}`]: { opacity: { desktop: 1 } },
+                  '& td, & th': {
+                    backgroundColor: t => t.design.Table.Row.Hover,
+                    color: t => t.design.Table.Text.Hover.Primary,
+                  },
+                  [`& .${TABLE_SECONDARY_TEXT_CLASS}`]: {
+                    color: t => t.design.Table.Text.Hover.Secondary,
+                  },
                 },
-              },
+              }),
             }),
-            [hasUrl, verticalAlign],
+            [isInteractive, verticalAlign],
           )}
           ref={setElement}
           data-testid={element && `data-table-row-${row.id}`}
@@ -92,14 +100,14 @@ export const DataRow = <T extends TableItem>({
             <DataCell
               key={cell.id}
               cell={cell}
-              enableCollapse={isMobile && !!expandedPanel}
+              enableCollapse={hasExpansionRow}
               isSticky={!!shouldStickFirstColumn && !index}
             />
           ))}
         </TableRow>
       </InvertOnHover>
 
-      {isMobile && expandedPanel && (
+      {hasExpansionRow && (
         <ExpansionRow<T> colSpan={visibleCells.length} row={row} expandedPanel={expandedPanel} table={table} />
       )}
     </>
