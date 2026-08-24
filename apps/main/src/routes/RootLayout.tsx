@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { OverlayProvider } from 'react-aria'
 import { StyleSheetManager } from 'styled-components'
 import { WagmiProvider } from 'wagmi'
@@ -8,7 +8,7 @@ import { BACKEND_MAINTENANCE } from '@/maintenances'
 import isPropValid from '@emotion/is-prop-valid'
 import MuiLink from '@mui/material/Link'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import { HeadContent, Outlet } from '@tanstack/react-router'
+import { HeadContent, Outlet, RouterProvider, useRouteContext, type AnyRouter } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { CurveProvider } from '@ui-kit/features/connect-wallet'
 import { useWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/useWagmiConfig'
@@ -44,15 +44,8 @@ const useBreadcrumbs = (pathname: string, { origin, search } = window.location) 
     [origin, pathname, search],
   )
 
-const WagmiConfigProvider = ({ children }: { children: ReactNode }) => {
-  const { data: networks } = useNetworksQuery()
-  const config = useWagmiConfig(networks)
-  return config && networks ? <WagmiProvider config={config}>{children}</WagmiProvider> : <Loading />
-}
-
 export const NetworkAwareLayout = () => {
-  const backendMaintenance = useMaintenance(BACKEND_MAINTENANCE)
-  const { data: networks } = useNetworksQuery()
+  const { backendMaintenance, networks } = useRouteContext({ from: '__root__' })
   const network = useNetworkFromUrl(networks)
   const pathname = usePathname()
   const currentApp = getCurrentApp(pathname)
@@ -62,33 +55,49 @@ export const NetworkAwareLayout = () => {
   useBreadcrumbs(pathname)
 
   return (
-    <>
-      {backendMaintenance.isMaintenanceMode ? (
-        <MaintenancePage />
+    <CurveProvider app={currentApp} network={network} onChainUnavailable={onChainUnavailable} hydrate={hydrate}>
+      {network ? (
+        <GlobalLayout
+          backendMaintenance={backendMaintenance}
+          currentApp={currentApp}
+          network={network}
+          networks={networks}
+        >
+          <HeadContent />
+          <Outlet />
+        </GlobalLayout>
       ) : (
-        <CurveProvider app={currentApp} network={network} onChainUnavailable={onChainUnavailable} hydrate={hydrate}>
-          {network && networks ? (
-            <GlobalLayout
-              backendMaintenance={backendMaintenance}
-              currentApp={currentApp}
-              network={network}
-              networks={networks}
-            >
-              <HeadContent />
-              <Outlet />
-            </GlobalLayout>
-          ) : (
-            <Loading />
-          )}
-          {!IS_CYPRESS && <TanStackRouterDevtools />}
-        </CurveProvider>
+        <Loading />
       )}
+      {!IS_CYPRESS && <TanStackRouterDevtools />}
+    </CurveProvider>
+  )
+}
+
+const RootContent = ({ router }: { router: AnyRouter }) => {
+  const backendMaintenance = useMaintenance(BACKEND_MAINTENANCE)
+  const { data: networks } = useNetworksQuery()
+  const config = useWagmiConfig(networks)
+
+  if (backendMaintenance.isMaintenanceMode) {
+    return <MaintenancePage />
+  }
+
+  if (!config || !networks) {
+    return <Loading />
+  }
+
+  return (
+    <>
+      <WagmiProvider config={config}>
+        <RouterProvider router={router} context={{ backendMaintenance, networks }} />
+      </WagmiProvider>
       {!IS_CYPRESS && <BackendMaintenanceModal {...backendMaintenance} />}
     </>
   )
 }
 
-export const RootLayout = ({ children }: { children: ReactNode }) => {
+export const RootLayout = ({ router }: { router: AnyRouter }) => {
   const theme = useUserProfileStore(state => state.theme)
   const devTools = !IS_CYPRESS
   useBodyThemeClass()
@@ -100,7 +109,7 @@ export const RootLayout = ({ children }: { children: ReactNode }) => {
         <ErrorBoundary title={t`Root layout error`} LinkComponent={MuiLink}>
           <OverlayProvider>
             <QueryProvider persister={persister} queryClient={queryClient}>
-              <WagmiConfigProvider>{children}</WagmiConfigProvider>
+              <RootContent router={router} />
               {devTools && <ReactQueryDevtools />}
             </QueryProvider>
           </OverlayProvider>

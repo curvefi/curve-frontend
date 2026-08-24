@@ -28,6 +28,7 @@ const integrationsRedirectRoute = createRoute({
 })
 
 export const router = createRouter({
+  context: { backendMaintenance: undefined!, networks: undefined! },
   scrollRestoration: true,
   defaultPendingComponent: Loading,
   defaultPendingMs: Duration.Transition,
