@@ -4,7 +4,7 @@ import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
 import { maybe, maybes } from '@primitives/objects.utils'
 import { type QueriesResults, useQueries } from '@tanstack/react-query'
-import { combineQueriesMeta } from '@ui-kit/lib/queries/combine'
+import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import { MarketType } from '@ui-kit/types/market'
 import { q } from '@ui-kit/types/util'
 import { TIME_FRAMES } from '@ui-kit/utils'
@@ -52,7 +52,7 @@ export const useMarketOverview = ({
           )
 
           return {
-            ...combineQueriesMeta(results),
+            ...combineQueryState(...results),
             data: maybe(marketOverview, ({ createdAt, totalBorrowers }) => ({
               deployedDays: Math.floor((Date.now() - createdAt) / TIME_FRAMES.DAY_MS),
               totalBorrowers,

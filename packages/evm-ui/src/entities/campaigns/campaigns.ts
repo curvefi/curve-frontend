@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 import type { Address } from '@primitives/address.utils'
 import { fromEntries, notFalsy, objectKeys } from '@primitives/objects.utils'
 import { type QueriesResults, useQueries } from '@tanstack/react-query'
-import { combineQueriesMeta } from '@ui-kit/lib'
+import { combineQueryState } from '@ui-kit/lib'
 import { useMappedQuery } from '@ui-kit/types/util'
 import { getCampaignsExternalOptions } from './campaigns-external'
 import { getCampaignsMarketsMerklOptions } from './campaigns-markets-merkl'
@@ -80,7 +80,7 @@ export const useCampaigns = ({ blockchainId }: UseCampaignsOptions = {}) =>
     queries,
     combine: useCallback(
       ([external, merklPools, merklMarkets]: QueriesResults<CampaignQueries>) => ({
-        ...combineQueriesMeta([external, merklPools, merklMarkets]),
+        ...combineQueryState(external, merklPools, merklMarkets),
         // Combine campaigns with an optional network filter
         data: combineCampaigns([external.data, merklPools.data, merklMarkets.data], blockchainId),
       }),

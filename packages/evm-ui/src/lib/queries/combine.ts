@@ -1,9 +1,8 @@
 import { useMemo } from 'react'
 import type { Decimal } from '@primitives/decimal.utils'
-import type { UseQueryOptions } from '@tanstack/react-query'
-import { Query, QueryProp } from '@ui-kit/types/util'
+import { fromEntries, notFalsy } from '@primitives/objects.utils'
+import { q, Query, QueryProp } from '@ui-kit/types/util'
 import { decimalMin } from '@ui-kit/utils/decimal'
-import { type PartialQueryResult, QueryResultsArray } from './types'
 
 export const combineQueryState = (...queries: (Query<unknown> | undefined)[]) =>
   ({
@@ -42,24 +41,14 @@ export const useCombinedQueries = <const TQueries extends Queries, TResult>(
     ...combineQueryState(...queries),
   }) as QueryProp<TResult>
 
-/** Combines the metadata of multiple queries into a single object. */
-export const combineQueriesMeta = (results: PartialQueryResult<unknown>[]) => ({
-  isLoading: results.some(result => result.isLoading),
-  isPending: results.some(result => result.isPending),
-  isError: results.some(result => result.isError),
-  isFetching: results.some(result => result.isFetching),
-  error: results.find(result => result.error)?.error ?? null,
-})
-
-/** Combines the data and metadata of multiple queries into a single object. */
-export const combineQueriesToObject = <TData, K extends string[]>(
-  results: QueryResultsArray<UseQueryOptions<TData, Error, TData, unknown[]>[]>,
-  keys: K,
-) => ({
-  // Using flatMap instead of map + filter(Boolean), because it's not correctly erasing | undefined from the Record value type
-  data: Object.fromEntries(results.flatMap(({ data }, index) => (data == null ? [] : [[keys[index], data]]))),
-  ...combineQueriesMeta(results),
-})
+/** Combines multiple queries into a query whose data is keyed by the matching key list. */
+export const combineQueriesToObject = <TData, K extends string = string>(results: Query<TData>[], keys: readonly K[]) =>
+  q<Record<K, TData>>({
+    data: results.some(({ data }) => data != null)
+      ? fromEntries(notFalsy(...results.map(({ data }, index) => data != null && ([keys[index], data] as const))))
+      : undefined,
+    ...combineQueryState(...results),
+  })
 
 /**
  * Returns the minimum value from multiple queries returning Decimal values.

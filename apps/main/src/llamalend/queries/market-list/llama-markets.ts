@@ -25,10 +25,10 @@ import { useQueries } from '@tanstack/react-query'
 import { type CampaignRewards, combineCampaigns } from '@ui-kit/entities/campaigns'
 import { getCampaignsExternalOptions } from '@ui-kit/entities/campaigns/campaigns-external'
 import { getCampaignsMarketsMerklOptions } from '@ui-kit/entities/campaigns/campaigns-markets-merkl'
-import { combineQueryState, RESOLVED_QUERY_RESULT } from '@ui-kit/lib'
+import { combineQueryState } from '@ui-kit/lib'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
 import { type ExtraIncentive, MarketType, MarketVersion, MarketRateType } from '@ui-kit/types/market'
-import type { Query } from '@ui-kit/types/util'
+import { DISABLED_Q, type Query } from '@ui-kit/types/util'
 import { decimal, decimalDiv } from '@ui-kit/utils'
 import { DEPRECATED_LLAMAS, NO_LEVERAGE_LEND } from '../../markets.constants'
 import { getBadDebtLendMarketsOptions, getBadDebtMintMarketsOptions } from '../market/market-bad-debt.query'
@@ -422,7 +422,7 @@ export const useLlamaMarkets = ({ userAddress, enableDeprecatedMarkets }: LlamaM
     ),
     combine: useCallback(
       (results: QueriesResults<LlamaMarketsQueries>): Query<LlamaMarketsResult> => {
-        if (!enabled) return RESOLVED_QUERY_RESULT // used in the header, only run when llamalend is selected
+        if (!enabled) return DISABLED_Q // used in the header, only run when llamalend is selected
         const [
           lendingVaults,
           mintMarkets,
