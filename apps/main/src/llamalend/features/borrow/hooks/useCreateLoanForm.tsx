@@ -37,7 +37,7 @@ const userDefaultValues = {
 } satisfies Partial<CreateLoanForm>
 
 const validation = createLoanQueryValidationSuite({
-  debtRequired: false,
+  debtRequired: true,
   skipMarketValidation: true, // given separately to the mutation
   collateralRequired: true,
 })
